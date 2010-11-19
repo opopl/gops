@@ -1,0 +1,89 @@
+#!/bin/bash
+#vim:set fdm=marker
+
+source f.sh
+source set_base_pars.sh
+source set_gmin_pars.sh
+
+view_plot=1
+make_plot=1
+plot_type="plot"
+arg="ef"
+ext="ps"
+
+# plot title options
+
+echo_date_plotted=1 
+echo_out_dir=1 
+
+if [ -z "$1" ]; then
+cat << EOF
+SCRIPT NAME: pl
+PURPOSE: generate plots from output data files
+USAGE: pl OPTS
+OPTS:
+	-d 		 use defaults
+
+	-ps, -eps, -pdf
+	-it string	 inner title specified by string
+	-p arg		 arg specifies what to plot
+	---------
+	it can be:
+		   ef	-  energy vs force
+			   default value is arg=ef
+		   eft
+		   gm  	- 
+		   	   plot gm.xyz using pymol 
+		   pdf  - 
+		   	statistics for the mean first global minimum encounter time
+
+		   s_f0	- energy.dat, markov.dat for f=0
+	---------
+	-ac i	-	 use archive output dir with index i
+	-v 	-	 view plot file after plotting
+	-od	-	 output directory
+EOF
+	else
+		mkdir -p plots
+	  	while [ ! -z $1 ]; do 
+			case "$1" in
+			  	-od) output_dir="$2" ;;
+			  	-d) arg="ef" ; make_plot=1 ; view_plot=1 ; ext="ps" ;;
+			  	-v) view_plot=1 ;;
+				-p) arg=$2 
+				case "$arg" in
+					"gm") plot_type="xyz"  ;;  	
+					"s_f0") output_dir="f-0.0" ;;
+				esac
+				;;
+				-it) inner_title=$2 ;; 
+				-ac) 	
+					let ao_count=$2
+					ao_count=$(($ao_count+1)) 
+					awk_string="NR==$ao_count { print \$2 }"
+			                export output_dir=` awk "$awk_string" ao.log `	
+					;;
+				-ps) ext="ps" ;;
+				-eps) ext="eps" ;;
+				-pdf) ext="pdf" ;;
+			esac
+			shift
+		done
+
+		if [ $make_plot -eq 1 ]; then  
+
+			if [ $echo_date_plotted -eq 1 ]; then 
+				plot_title="Plotted on ` date_dmy_hms `	$plot_title"
+		        fi
+			if [ $echo_out_dir -eq 1 ]; then 
+				plot_title="Data directory: $output_dir  $plot_title"
+		        fi
+
+			source plot_arg.sh
+		fi
+
+		if [ $view_plot -eq 1 ]; then 
+			$psv $gv_opts $plot_file
+			#$pdfv $latex_plot_file
+		fi
+fi
