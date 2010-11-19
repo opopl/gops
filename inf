@@ -24,6 +24,8 @@ root_dir_size=` dir_size $root_dir `
 shd_size=` dir_size $shd `
 output_dir_size=` dir_size $output_dir `
 
+od_subdirs=( `ls -l $output_dir | awk '/^d/{print $8}'` )
+
 cat << EOF
 ==========================
 Directories
@@ -31,10 +33,10 @@ Directories
 This dir $shd, size: $shd_size 
 Root dir $root_dir, size: $root_dir_size
 Data dir $data_dir, size: $data_dir_size
-Output dir $output_dir, size: $output_dir_size
-
 Base output directory: $base_output_dir
-==========================
+
+Output dir: $output_dir
+Subdirs: ${od_subdirs[@]}
 EOF
 	;; # }}}
 		esac

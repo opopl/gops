@@ -5,8 +5,8 @@ else
   	job_number=""
 fi
 
-export main_log_file=$output_dir/r.log$job_number
 export output_dir=$data_dir/$base_output_dir
+export main_log_file=$output_dir/r.log$job_number
 
 ef_header_line="$datahdr $start_date; \
 	N=`printvar 'nsteps' $nsteps` ; \

@@ -29,8 +29,6 @@ force_min="${fr[0]}"
 force_max="${fr[1]}"
 force_i=$( echo "scale=10; ($force_max-$force_min)/$nf" | bc )
 
-od="out_$sys"
-
 od="$od"_N_`printf "%1.0e\n" $nsteps`
 od="$od"_f_`printf "%1.1e\n" $force_min`
 od="$od"_`printf "%1.1e\n" $force_max`
