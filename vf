@@ -1,6 +1,7 @@
 #!/bin/bash
   
-source sh_header.sh
+export shd="`dirname $(readlink -f $0)`"
+source $shd/sh_header.sh
 
 files="r q0 vo vf c ao rmo pl vpl"
 vim_opts="-n -p" 

@@ -29,6 +29,12 @@ nsteps=10000
 
 gmin_conv_always=1
 adj_target=0
+#
+# print_ef (string) 	determines what to write into ef.dat
+#		Possible values are:
+#			a: 	force (E-E0)/E0 [Several lowest energies]
+#
+print_ef="a"
 print_gmin_warnings=1
 print_acceptance_ratios=1 
 remove_dn=1
@@ -38,6 +44,7 @@ n_en=5
 temp=0.03
 
 target_energy=-0.2936531215
+gs_energy=-0.2936531215
 
 sys="G46"
 

@@ -24,6 +24,7 @@ cat pre.log >> q.log
 prog="GMIN"
 
 export shd="`dirname $(readlink -f $0)`"
+export shd="/home/op226/p46/sh"
 source $shd/sh_header.sh
 
 source $shd/set_base_pars.sh

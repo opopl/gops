@@ -162,6 +162,7 @@ while [ ! -z "$1" ]; do
 	  	[a-z]*) 
 		case "$1" in
 			"force") format_string="%1.1e\n"  ;; 	
+			"force_long") format_string="%1.4e\n"  ;; 	
 			"nsteps") format_string="%1.0e\n"  ;; 	
 			"float") format_string="%f\n"  ;; 	
 		esac

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 export shd="`dirname $(readlink -f $0)`"
+export shd="/home/op226/p46/sh"
 source $shd/sh_header.sh
 
 rm -f cmd_args

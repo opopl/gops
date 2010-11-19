@@ -12,7 +12,7 @@ if [ $n_cmd_args -eq 0 ]; then
 	eo "... no commandline arguments supplied"
 else
 	eo "Number of command-line arguments: $n_cmd_args"
-	eo "Command-line arguments: ${cmd_args[@]}"
+	eo "Command-line arguments: ` echo ${cmd_args[@]} `"
 	let i=0
 for arg in ${cmd_args[@]} # {{{
 	do
@@ -98,13 +98,13 @@ fi
 
 export main_log_file=$output_dir/r.log
 
-#if [ -f "pre.log" ]; then # {{{
-	#if [  $append_files -eq 1 ]; then 
-			#cat "pre.log" >> $main_log_file
-		 #else
-			#cat "pre.log" >& $main_log_file
-	#fi	  
-#fi # }}}
+if [ -f "pre.log" ]; then # {{{
+	if [  $append_files -eq 1 ]; then 
+			cat "pre.log" >> $main_log_file
+		 else
+			cat "pre.log" >& $main_log_file
+	fi	  
+fi # }}}
 
 cat $logf >> $main_log_file
 

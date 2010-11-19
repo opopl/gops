@@ -12,6 +12,7 @@ PURPOSE: give helpful information
 USAGE: $this_script OPTS
 OPTS:
 	d	directories
+	s	scripts
 ====================================
 EOF
 # }}}
@@ -39,6 +40,26 @@ Output dir: $output_dir
 Subdirs: ${od_subdirs[@]}
 EOF
 	;; # }}}
+			s) # info about scripts {{{
+cat << EOF
+====================================
+
+-----------------------
+Plotting/Visualizing:
+-----------------------
+
+pl, gp, xp 
+
+-----------------------
+Viewing
+-----------------------
+
+vo
+
+====================================
+EOF
+			;;
+			# }}}
 		esac
 		shift
 	done
