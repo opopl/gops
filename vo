@@ -80,7 +80,7 @@ EOF
 				vo -dn dn-j$2 
 				exit
 				;;
-			sv) # saved {{{ 
+			sv) # saved {{{
 				reset_files=1
 				export base_output_dir="sv"
 				export output_dir="$data_dir/$base_output_dir"

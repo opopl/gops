@@ -38,7 +38,7 @@ while [ ! -z "$1" ]
 		case "$1" in
 		  "gp") files="gp gp_loop_over_dat.sh gp_all.sh gp_cat_gnuplot.sh" ;;
 		  "crg") files="crg crg_main.sh" ;;
-		  "1") files="$files *.sh ao" ;;
+		  "b") files="$files *.sh ao inf" ;;
 		  "h") files="r_print_help*.sh" ;;
 		  "me") files="vf" ;;
 		  "xp") files="xp xp_*.sh xp_opt.txt" ;;
@@ -49,7 +49,6 @@ while [ ! -z "$1" ]
 		  "awk") files="awk/*a"  ;;
 		  "sb") files="sub.sh sub_sh_*.sh define_forces_0.sh" ;;
 		  "sh") files="sh_*.sh" ;;
-		  "b") ;;
 		  *) exit ;;
 		esac
 		shift

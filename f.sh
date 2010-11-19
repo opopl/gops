@@ -201,3 +201,12 @@ done
 
 } # }}}
 
+# general {{{
+
+dir_size(){
+
+du -hc $1 | awk '/total/{ print $1 }'  
+
+}
+
+#}}}
