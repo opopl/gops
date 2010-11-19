@@ -23,7 +23,7 @@ fr=( 0.0 0.0001 )
 let nf=100
 
 sys="P46"
-nsteps=10
+nsteps=100000
 
 force_min="${fr[0]}"
 force_max="${fr[1]}"

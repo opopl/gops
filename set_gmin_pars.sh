@@ -44,7 +44,7 @@ n_en=5
 temp=0.03
 
 target_energy=-0.2936531215
-gs_energy=-0.2936531215
+export gs_energy=-0.2936531215
 
 sys="G46"
 
