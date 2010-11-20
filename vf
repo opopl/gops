@@ -20,7 +20,7 @@ OPTS:
 	1	base files + *.sh ao
 	h	help 
 	o	vo + set_output_pars.sh
-	sb	sub.sh + sub_sh_*.sh files
+	sb	sb + sb_*.sh files: for job submission
 	crg	for calculation of rgyr's (radii of gyration)
 	gp	gp, gp_loop_over_dat.sh gp_all.sh
 	xp	XYZ -> pics
@@ -48,7 +48,7 @@ while [ ! -z "$1" ]
 		  "pl") files="pl vpl plot_arg.sh plot_energy_markov_dat.sh" ;;
 		  "r") files="set_runs.sh sub rrr.log rrr_switch_mode.sh define_forces_0.sh plot_energy_markov_dat.sh rrr.tex set_rrr_pars.sh rrr rr0 rr" ;;
 		  "awk") files="awk/*a"  ;;
-		  "sb") files="sub.sh sub_sh_*.sh define_forces_0.sh" ;;
+		  "sb") files="sb sb_*.sh define_forces_0.sh" ;;
 		  "sh") files="sh_*.sh" ;;
 		  *) exit ;;
 		esac

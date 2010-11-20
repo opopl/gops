@@ -19,11 +19,10 @@
 radius=2.0; nrg=1 ; temp=0.03 ; nst=2; queue=s2
 
 fr=( 0.0 0.0001 )
-
 let nf=100
 
 sys="P46"
-nsteps=100000
+nsteps=10000
 
 force_min="${fr[0]}"
 force_max="${fr[1]}"

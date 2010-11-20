@@ -210,4 +210,10 @@ du -hc $1 | awk '/total/{ print $1 }'
 
 }
 
+use(){
+
+source $shd/"$this_script"_$1.sh
+
+}
+
 #}}}

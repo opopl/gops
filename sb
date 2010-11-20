@@ -1,0 +1,40 @@
+#!/bin/bash 
+
+export shd="`dirname $(readlink -f $0)`"
+source $shd/f.sh
+
+r="$1"
+
+case "$r" in
+ 	1) # GO and WT in force ranges 0-3 {{{
+		for n in {0..7}
+			do
+
+				source $shd/sub_sh_set_pars.sh
+				opts0="-q $queue -sys $sys  \
+					-nrg $nrg -od $od  \
+					-radius $radius \
+					-nsteps $nsteps \
+					-temp $temp -nap"
+				opts="$opts0 -if $force_min $force_max $force_i"
+				r $opts
+				sleep 3
+		done
+		;;
+		# }}}
+	2)	# force increment run within a single force range {{{
+		source $shd/sub_sh_set_pars.sh
+		opts0="-q $queue \
+			-sys $sys \
+			-nrg $nrg \ 
+			-od $od \
+			-radius $radius \
+			-nsteps $nsteps \ 
+			-temp $temp -nap"
+		opts="$opts0 -if $force_min $force_max $force_i"
+		$shd/r $opts
+		# }}}
+	;;
+esac
+
+

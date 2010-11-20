@@ -7,7 +7,7 @@ export pref=$pref."force_iterate"
 
 for force in "${forces[@]}"
 	do
-		dn="dn-j$pbs_job_id"
+		dn="$data_dir/dnj/dn-j$pbs_job_id"
 
 		eo "force is now = ` printvar 'force' $force ` "
 		eo "test directory is = $dn "
