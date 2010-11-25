@@ -9,9 +9,9 @@ case "$mode" in
 		source $shd/define_forces.sh
 		source $shd/adjust_data.sh
 		
-		eo "$prog input file, after sourcing adjust_data.sh : "
+		eo "$prog input file: "
 		eo "=============================="
-		cat data.G46 >> $main_log_file
+		cat data >> $main_log_file
 		eo "=============================="
 		
 		source $shd/reset_files.sh

@@ -14,7 +14,7 @@ for force in "${forces[@]}"
 
 		echo "$dn" >& $data_dir/current_dn
 
-		$shd/change.sh force $force
+		$shd/adjust_data.sh 
 		eo "Running $exe..."
 		
 		start_time_1=` date_in_secs `
