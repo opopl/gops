@@ -1,0 +1,23 @@
+#
+# Objects {{{
+#
+OBJS1 =	common.o nodes.o porfuncs.o utils.o key.o dock.o main.o keywords.o setup.o input.o \
+	KMCcommit.o mysystem.o sort.o KMC.o inertia.o eig.o amhdump.o charmmdump.o \
+	cycle.o mywait.o submitoptimjob.o connectodata.o mindist.o unresdump.o \
+	centre.o getnewpath.o addperm.o tssearch.o \
+	mindouble.o tsdouble.o Pfold.o NGT.o GT.o getallpaths.o cycle2.o dprand.o sdprnd.o \
+        Dijkstra.o getdpair.o Dijinit.o calcorder.o getrpair.o connectd.o getspair.o \
+        getpair.o pairdouble.o donedouble.o newmindist.o mergedb.o getupair.o \
+	GT2.o GT2data.o GT2FibonacciHeap.o GT2DLL.o GT2input.o GT2FreeMemory.o \
+        minperm.o minpermdist.o rigidbodymod.o mathsconstants.o quaternionmatch.o \
+        regroupfree.o regroup.o dsort.o savestate.o orderodata.o regroupfree2.o \
+	probacc.o newconn.o getfreepair.o getfreebarrier.o kshortestpaths.o Dijinitfly.o \
+	getallmin.o myorient.o getusepair.o NGTmem.o NGTrealloc.o NGTrenorm.o \
+	NGTremoveid.o NGTremovei.o swapnode.o mymerge.o rigidb.o diagonalise2.o reweight.o \
+	rbperm.o Cv.o DOS.o bulkmindist.o frictionfac.o make_conpot.o
+
+OBJS_op226=read_cmd_args.o display_version.o
+OBJS = ${OBJS1} ${OBJS_op226}
+
+# }}}
+#

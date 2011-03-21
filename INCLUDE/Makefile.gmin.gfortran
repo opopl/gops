@@ -1,0 +1,13 @@
+FC = gfortran
+FFLAGS= -ffixed-line-length-265 -O0 
+FFLAGS= -ffixed-line-length-132 -O3 -ftree-vectorize
+FFLAGS= -ffixed-line-length-132 -g -fbounds-check -Wuninitialized -O -ftrapv 
+FFLAGS= -ffixed-line-length-132 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic
+NOOPT= -O0 
+SWITCH=gfortran
+SEARCH_PATH =  -I..
+LIBS = libmyblas.a libmylapack.a libmyblas.a 
+LDFLAGS = -LBLAS -LLAPACK
+FREEFORMAT_FLAG= -ffree-form
+EXTRA_FLAGS=-I
+

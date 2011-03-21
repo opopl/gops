@@ -1,0 +1,6 @@
+
+# AMBER9 {{{
+AMB9SRC = ../../AMBER
+SANDERSRC = ../../AMBER/src/sander
+# }}}
+

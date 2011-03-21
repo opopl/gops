@@ -1,0 +1,81 @@
+
+# Rules {{{
+
+.SUFFIXES: .o .f .F .f90
+
+.f90.o:
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -c $<
+.f.o:
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -c $<
+.F.f:
+	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
+
+default: $(GPROG)
+
+GMIN: $(GPROG)
+
+CHGMIN: $(CPROG)
+chgmin: $(CPROG)
+
+$(GPROG): $(CHDUM) $(AMHDUM) $(AMB9DUM) $(OBJS) $(EXTRAS) 
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(EXTRAS) $(OBJS) $(CHDUM) $(AMHDUM) $(AMB9DUM) $(LDFLAGS) $(LIBS)
+
+$(CPROG): $(AMHDUM) $(AMB9DUM) $(OBJS) $(EXTRAS) libcharmm.a 
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ ${CHOBJS31} $(EXTRAS) $(OBJS) $(AMHDUM) $(AMB9DUM) $(LDFLAGS) $(LIBS) \
+        ${CHLIBS31} ${CHLIBS31} ${CHLIBS31}
+
+AMBGMIN: $(AMBPROG) 
+
+$(AMBPROG): $(OBJS) $(EXTRAS) $(CHDUM) $(AMHDUM) libamber.a
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(OBJS) $(EXTRAS) $(CHDUM) $(AMHDUM) $(LDFLAGS) libamber.a $(LIBS) 
+
+AMHGMIN: $(AMHPROG)
+
+$(AMHPROG): $(OBJS) $(EXTRAS) $(CHDUM) $(AMB9DUM) libamh.a
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(OBJS) $(EXTRAS) $(CHDUM) $(AMB9DUM) $(LDFLAGS) libamh.a $(LIBS) 
+
+clean:
+	rm -f ${GPROG} ${CPROG} $(AMHPROG) $(AMBPROG) $(OBJS) *.mod $(EXTRAS) *.lst *.o pref.dat prefx.msg nag.f90 FOR021.DAT ${GENFFILES} *.a
+	if test -d ${BLAS_PATH} ;  then cd ${BLAS_PATH} ; make clean ; fi
+	if test -d ${LAPACK_PATH} ;  then cd ${LAPACK_PATH} ; make clean ; fi
+	if test -d CHARMMinterface ;  then cd CHARMMinterface ; make clean ; fi
+	if test -d AMH ;  then cd AMH ; make clean ; fi
+	if test -d $(SANDERSRC) ; then cd $(SANDERSRC) ; make clean ; fi
+
+cleanexe:
+	rm -f $(CPROG) $(GPROG) $(AMHPROG) $(AMBPROG)
+
+timing:
+	rm -f GMIN.2.0
+	$(FC) $(FFLAGS) -p $(OBJS) $(EXTRAS) -o $(GPROG) $(LIBS)
+
+feedback:
+	$(FC) $(FFLAGS) -xprofile=use:gmin.profile *.f -o $(GPROG)
+
+rebuild:
+	make clean
+	make
+
+rebuildamh:
+	make clean
+	make AMHGMIN
+
+libamber.a:
+	export SRCDIR=$(CURDIR);cd ${SANDERSRC}; make lib1 FC="${FC}" FFLAGS="${FFLAGS}" \
+	FREEFORMAT_FLAG="${FREEFORMAT_FLAG}" EXTRA_FLAGS="${EXTRA_FLAGS}"
+libamh.a: SAT-Ghost
+	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" 
+libmyblas.a: SAT-Ghost
+	cd ${BLAS_PATH}; make double FC="${FC}" FFLAGS="${FFLAGS}" BLAS_EXCLUDE_LIST="${BLAS_EXCLUDE_LIST}";\
+	cp libmyblas.a ../GMIN/source/
+libmylapack.a: SAT-Ghost
+	cd ${LAPACK_PATH}; make selection FC="${FC}" FFLAGS="${FFLAGS}" NOOPT="${NOOPT}";\
+	cp libmylapack.a ../GMIN/source/
+libcharmm.a: SAT-Ghost
+	cd CHARMMinterface; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" PREFLX="${PREFLX}" \
+	PREFDIR="${PREFDIR}" \
+	CTYPE="${CTYPE}" FCMDIR="${FCMDIR}" C31SRC="${C31SRC}" SRC31="${SRC31}"
+SAT-Ghost:
+
+
+# }}}

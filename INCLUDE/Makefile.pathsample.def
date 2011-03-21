@@ -1,0 +1,8 @@
+
+PROG =	../bin/PATHSAMPLE
+PROGNAME=PATHSAMPLE
+GENFFILES=display_version.f90 porfuncs.f90
+
+DEFS =
+CPP = /lib/cpp
+CPFLAGS = -traditional -P

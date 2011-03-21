@@ -1,0 +1,142 @@
+# Dependencies  {{{
+
+${GPROG}: libmyblas.a libmylapack.a
+${CPROG}: libmyblas.a libmylapack.a libcharmm.a
+${AMHPROG}: commons.o libmyblas.a libmylapack.a libamh.a
+${AMBPROG}: libmyblas.a libmylapack.a libamber.a porfuncs.o
+libcharmm.a: commons.o modcharmm.o modmxatms.o
+libamber.a: commons.o modamber9.o porfuncs.o grouprotation.o
+#${OBJS2}: ${OBJS1} ${OBJS_op226}
+
+Alglue.o:      commons.o
+BLJcluster.o:  commons.o
+EAMLJ_sub.o:   commons.o
+EAMal.o:       commons.o
+Gupta.o:       commons.o
+MSorig.o:      commons.o modconsts.o dist.o
+MSorigc.o:     commons.o modconsts.o dist.o
+MStrans.97.o:  commons.o modconsts_trans_97.o dist.o
+Mgglue.o:      commons.o
+PachecoC60.o:  commons.o
+Pbglue.o:      commons.o
+SW.o:          commons.o
+SiSW.o:        commons.o
+Zetterling.o:  commons.o
+amber.o:       commons.o modamb.o
+bmin.o:        commons.o modamb.o
+capsid.o:      commons.o
+centre.o:      commons.o
+centrecom.o:      commons.o
+cgmin.o:       commons.o
+checkd.o:      commons.o
+compress.o:    commons.o
+compress2.o:   commons.o
+countatoms.o:  modamber9.o
+dbpg.o:        commons.o
+dbptd.o:       commons.o
+dmblmorse.o:   commons.o
+ddfpmin.o:     commons.o
+dftb.o:        commons.o
+dzugutov.o:    commons.o
+evstep.o:      commons.o
+f1dim.o:       commons.o modf1com.o
+fd.o:          commons.o
+fdm.o:         commons.o
+finalio.o:     commons.o modamb.o qmod.o modcharmm.o AMH/amhglobals.o
+finalq.o:      commons.o qmod.o
+frausi.o:      dist.o
+gbcalamitic.o: commons.o
+gbdiscotic.o:  commons.o
+gbddp.o:       commons.o
+gem.o:         commons.o
+grnd.o:        commons.o
+hmat1n.o:      commons.o
+hmatd_.o:      commons.o
+hsmove.o:      commons.o
+io1.o:         commons.o modamb.o modperm.o qmod.o modcharmm.o porfuncs.o
+keyword.o:     commons.o modamb.o modcharmm.o porfuncs.o
+linmin.o:      commons.o modf1com.o
+linrod.o:      commons.o
+ljcoulomb.o:   commons.o
+lj.o:          commons.o
+ljpbin.o:      commons.o
+ljpshift.o:    commons.o
+lwotp.o:       commons.o
+newpah.o:      commons.o
+main.f: main.F
+main.o:        commons.o modf1com.o countatoms.o modperm.o qmod.o modamb.o modmxatms.o porfuncs.o read_cmd_args.o
+mcruns.o:      commons.o
+mf.o:          commons.o
+mnbrak.o:      commons.o
+commons.o:     countatoms.o
+dummyoptim.o:  commons.o
+morse.o:       commons.o
+mylbfgs.o:     commons.o modamb.o porfuncs.o
+mstbin.o:      commons.o
+multstock.o:   commons.o
+newtip.o:      commons.o
+odesd.o:       commons.o mododesd.o
+olami.o:       commons.o
+otp.o:         commons.o
+BLN.o:         commons.o
+pah.o:         commons.o
+multpaha.o:    commons.o qmod.o
+pahw99.o:      commons.o
+paha.o:        commons.o
+potential.o:   commons.o modperm.o qmod.o modcharmm.o porfuncs.o
+ptgrp.o:       commons.o
+pyg.o:         commons.o
+pygdp.o:       commons.o
+quench.o:      commons.o qmod.o porfuncs.o
+rad.o:         commons.o
+rdpot.o:       commons.o
+saveit.o:      commons.o qmod.o
+sc.o:          commons.o
+seed.o:        commons.o
+stockaa.o:     commons.o
+strand.o:      commons.o
+supermc.o:     commons.o
+symmetry.o:    commons.o porfuncs.o
+symmetrycsm.o:    commons.o porfuncs.o
+taboo.o:       commons.o
+takestep.o:    commons.o
+takestep2.o:   commons.o
+tetrahedra.o:  commons.o
+tip.o:         commons.o
+tosifumi.o:    commons.o
+welch.o:       commons.o
+waterpdc.o:    commons.o
+waterpkz.o:    commons.o
+zwischen.o:    commons.o modf1com.o 
+stock.o:       commons.o
+sticky.o:      commons.o
+tether.o:      tetherfunc.o
+mycpu_time.o:  commons.o
+gauss.o:       commons.o
+mc.o:          qmod.o modcharmm.o porfuncs.o mc.f mc.F AMH/amhglobals.o AMH/amh_interfaces.o AMH/E_write.o commons.o operations.o
+mc.f: mc.F
+ptmc.f: ptmc.F
+ptmc.o:          qmod.o modcharmm.o porfuncs.o ptmc.f ptmc.F
+bspt.f: bspt.F
+bspt.o:          qmod.o modcharmm.o porfuncs.o bspt.f bspt.F
+GMINdump.o: commons.o qmod.o porfuncs.o
+quad.o:        commons.o
+enumerate.o:  commons.o
+convert.o:  porfuncs.o
+getorbits.o: commons.o
+mysd.o: commons.o
+qdtest.o: commons.o
+MB.o: commons.o 
+sort2.o: qmod.o commons.o
+model1.o: commons.o
+FS.o: commons.o
+Ackland_wrapper.o: commons.o
+DF1.o: commons.o
+CSMinit.o: commons.o
+minpermdist.o: commons.o porfuncs.o
+grouprotation.o: commons.o
+
+# op226 
+read_cmd_args.o: display_version.o
+
+# }}}

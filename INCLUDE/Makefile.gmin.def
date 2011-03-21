@@ -1,0 +1,28 @@
+
+# Definitions {{{
+
+GPROG =	../bin/GMIN
+CPROG = ../bin/CHGMIN
+AMHPROG = ../bin/AMHGMIN
+AMBPROG = ../bin/AMBGMIN
+
+LAPACK_PATH=$(ROOT_BUILD_PATH)/LAPACK
+BLAS_PATH=$(ROOT_BUILD_PATH)/BLAS
+
+INC_PATH=$(ROOT_PATH)/INCLUDE/
+SCRIPTS_PATH=$(ROOT_PATH)/SCRIPTS/
+GENFFILES = porfuncs.f90 display_version.f90 mc.f ptmc.f bspt.f main.f 
+AMB9SRC = ../../AMBER
+SANDERSRC = ../../AMBER/src/sander
+
+CHDUM = chdummy.o
+AMHDUM = amhdummy.o
+AMB9DUM = amber9dummy.o
+VPATH = .:CHARMM:AMH:.
+LDFLAGS = -L.
+DEFS =
+# CPP = /usr/bin/cpp
+CPP = /lib/cpp
+CPFLAGS = -traditional -P
+
+# }}}

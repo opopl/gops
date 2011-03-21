@@ -1,0 +1,22 @@
+
+FC = ifort
+FC = mpif77 
+FC = mpif90  
+DEFS = -DMPI 
+#### ifort debugging flags 
+FFLAGS= -132 -C -g -traceback -debug full
+FFLAGS= -132 -O0 -g -traceback -fpe:0 -check all
+FFLAGS= -132 -g -debug all -check all -implicitnone -warn unused -fp-stack-check -heap-arrays -ftrapuv -check pointers -check bounds
+#### ifort optimization flags 
+FFLAGS= -132 -Vaxlib -O3 # for ifc
+FFLAGS= -132 -O3 -ip -static # -ipo or -fast doesnt work 
+FFLAGS= -132 -O4
+NOOPT= -O0
+SWITCH=ifort
+LDFLAGS= -L.
+
+SEARCH_PATH= -I..
+LIBS = libmyblas.a libmylapack.a libmyblas.a  
+FREEFORMAT_FLAG= -free
+EXTRA_FLAGS=-I
+

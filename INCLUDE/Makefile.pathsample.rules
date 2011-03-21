@@ -1,0 +1,42 @@
+
+# Rules {{{
+
+.SUFFIXES:
+.SUFFIXES: .o .f .F .f90 .c
+
+.f90.o:
+	$(FC) $(FFLAGS) -c $<
+.f.o:
+	$(FC) $(FFLAGS) -c $<
+.c.o:
+	$(CC) -c $<
+.F.f:
+	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
+		
+# first target encountered is the default build
+
+default: $(PROG) 
+
+$(PROGNAME): $(PROG)
+
+$(PROG): $(OBJS) blas_lapack
+	$(FC) $(FFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
+
+blas_lapack: libmyblas.a libmylapack.a
+libmyblas.a:
+	cd ../../BLAS; make double FC="${FC}" FFLAGS="${FFLAGS}" BLAS_EXCLUDE_LIST="${BLAS_EXCLUDE_LIST}";\
+        cp libmyblas.a ../${PROGNAME}/source
+
+libmylapack.a:
+	cd ../../LAPACK; make selection FC="${FC}" FFLAGS="${FFLAGS}" NOOPT="${NOOPT}";\
+        cp libmylapack.a ../${PROGNAME}/source
+
+porfuncs.f90: porfuncs.csh
+	./porfuncs.csh ${SWITCH} > porfuncs.f90
+
+clean:
+	rm -f $(PROG) $(OBJS) *.mod $(GENFFILES) *.lst *.a
+	cd ../../BLAS; make clean
+	cd ../../LAPACK; make clean
+
+# }}}

@@ -1,0 +1,76 @@
+
+# Dependencies {{{
+
+$(OBJS): libmyblas.a libmylapack.a
+
+KMC.o:     porfuncs.o common.o
+KMCcommit.o:      common.o porfuncs.o
+addperm.o:      porfuncs.o common.o
+centre.o:      common.o
+charmmdump.o:      key.o common.o utils.o
+connectodata.o:    key.o common.o
+dock.o:         porfuncs.o key.o common.o nodes.o
+getallpaths.o:     porfuncs.o common.o key.o
+getallmin.o:     porfuncs.o common.o key.o
+getnewpath.o:      porfuncs.o common.o key.o
+inertia.o:         common.o rigidbodymod.o
+keywords.o:      porfuncs.o nodes.o key.o common.o rigidbodymod.o
+main.o:      common.o porfuncs.o rigidbodymod.o dock.o
+nodes.o:     porfuncs.o common.o
+setup.o:      porfuncs.o utils.o key.o common.o
+tssearch.o:   porfuncs.o key.o common.o
+unresdump.o:  common.o
+Pfold.o:    common.o porfuncs.o
+cycle.o:    common.o porfuncs.o
+cycle2.o:    common.o porfuncs.o
+mind.o: porfuncs.o
+mindouble.o: common.o
+mysystem.o:   porfuncs.o
+mywait.o:     porfuncs.o
+nodes.o:           porfuncs.o
+submitoptimjob.o:  porfuncs.o nodes.o key.o common.o
+tsdouble.o:   common.o
+getdpair.o:   common.o
+diagonalise2.o: porfuncs.o common.o
+Dijkstra.o: common.o porfuncs.o
+Dijinit.o: common.o porfuncs.o
+Dijinitfly.o: common.o porfuncs.o
+connectd.o: common.o
+frictionfac.o: common.o
+getrpair.o: common.o
+getspair.o: common.o porfuncs.o
+getupair.o: common.o porfuncs.o
+getfreepair.o: common.o porfuncs.o
+getpair.o: common.o porfuncs.o
+pairdouble.o: common.o 
+donedouble.o: common.o 
+mergedb.o:     porfuncs.o common.o key.o
+GT.o: porfuncs.o common.o GT2.o GT2input.o GT2FreeMemory.o savestate.o
+NGT.o: porfuncs.o common.o savestate.o NGTmem.o
+NGTrealloc.o: NGTmem.o
+NGTrenorm.o: NGTmem.o
+NGTremovei.o: NGTmem.o porfuncs.o
+NGTremoveid.o: NGTmem.o
+GT2.o: common.o GT2data.o GT2FibonacciHeap.o GT2DLL.o
+GT2FibonacciHeap.o: GT2data.o
+GT2DLL.o: GT2data.o
+GT2input.o: GT2data.o GT2DLL.o
+GT2FreeMemory.o: GT2data.o GT2DLL.o
+minpermdist.o: common.o
+newmindist.o:   common.o rigidbodymod.o
+rbperm.o: common.o key.o
+rigidb.o: common.o
+rigidbodymod.o: mathsconstants.o
+regroupfree.o: common.o savestate.o
+regroupfree2.o: common.o savestate.o
+regroup.o: common.o
+orderodata.o: common.o
+kshortestpaths: common.o porfuncs.o
+reweight.o: porfuncs.o common.o
+Cv.o: common.o
+DOS.o: common.o
+bulkmindist.o: common.o
+make_conpot.o: common.o
+read_cmd_args.o: display_version.o
+
+# }}}

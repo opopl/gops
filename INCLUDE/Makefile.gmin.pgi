@@ -1,0 +1,28 @@
+
+FC = pgf90
+# FC = mpif77  # for lam - don't forget to uncomment MPI!
+# FC = mpif90  # for mpich and openmpi - don't forget to uncomment MPI!
+# DEFS = -DMPI
+# The usual flags for AMBGMIN:
+FFLAGS= -Mextend -O3 -Mvect=assoc,cachesize:1024000,recog,transform
+# These are the CHARMM31 flags for mpif90 64 bit library.
+# It is ESSENTIAL to use the same flags as for the CHARMM build!!!!
+#
+FFLAGS= -Mextend -O3 -Munroll -Mnoframe 
+#  FFLAGS= -Mextend -O0 -Mnoframe
+#  FFLAGS= -Mextend -C -g -traceback
+#   DEBUGGING flags
+#  FFLAGS= -Mextend -C -g -gopt -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mcoff -Mdwarf1 -Mdwarf2 -Mdwarf3 -Melf -Mnodwarf -Mpgicoff -traceback
+
+# flags for AMBER9
+#
+FREEFORMAT_FLAG= -Mfree
+EXTRA_FLAGS=-module
+#
+NOOPT = -O0
+SEARCH_PATH =  -I..
+# the double reference to -lblas seems to be needed!
+LIBS = libmyblas.a libmylapack.a libmyblas.a
+LDFLAGS= -L.
+SWITCH=pgi
+

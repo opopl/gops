@@ -1,0 +1,31 @@
+#
+# OBJECTS  {{{
+
+OBJS1 = porfuncs.o commons.o countatoms.o modamb.o modcharmm.o modmxatms.o modhess.o modamber9.o grouprotation.o
+OBJS2 =	centre.o finalio.o modconsts_trans_97.o modconsts.o dist.o\
+	io1.o keyword.o main.o mc.o mcruns.o morse.o \
+	potential.o quench.o rad.o dprand.o saveit.o seed.o \
+	sort.o sort2.o sort3.o sort4.o takestep.o mycpu_time.o trans.o \
+	finalq.o symmetry.o symmetrycsm.o ptgrp.o eigsrt.o SiSW.o taboo.o reseed.o newinertia.o supermc.o \
+	tosifumi.o ortho.o compress.o mylbfgs.o input.o ddfpmin.o dlnsrch.o cgmin.o linmin.o \
+	brent.o mnbrak.o dbrent.o f1dim.o zwischen.o hsmove.o PachecoC60.o AT.o EAMLJ_sub.o \
+	Pbglue.o wenzel.o odesd.o capsid.o rigidfuncs.o tip.o pah.o strand.o \
+	SW.o qmod.o ljpbin.o fdm.o dftb.o ljpshift.o dzugutov.o ljcoulomb.o \
+	fd.o fedor.o welch.o BLJcluster.o stock.o Farkas.o getorbits.o \
+	sc.o Zetterling.o MSorig.o MSorigc.o MStrans.97.o convert.o \
+	frausi.o p46merdiff.o g46merdiff.o lj.o modperm.o modf1com.o mododesd.o EAMal.o Alglue.o Mgglue.o \
+	Gupta.o orient.o Natb.o sticky.o enumerate.o minperm.o minpermdist.o LB2.o \
+	dgetrf.o dgetri.o reorient.o thomson.o Q4.o basinsampling.o tether.o tetherfunc.o BLN.o \
+	gauss.o newmindist.o centrecom.o qorderparam_blj.o qorderparam_lj.o bspt.o GMINdump.o quad.o \
+	rigidbaa.o checkd.o dbpg.o dbptd.o dmblmorse.o gbcalamitic.o gbdiscotic.o gem.o gbddp.o linrod.o \
+        lwotp.o	newcapsid.o newpah.o msgayberne.o mstbin.o multisitepy.o multstock.o paha.o pahw99.o pyg.o \
+        multpaha.o newtip.o pygdp.o stockaa.o tetrahedra.o waterpdc.o waterpkz.o takestepmsgb.o takestepmspy.o \
+	gay-berne.o JM.o projI.o projIh.o model1.o FS.o vgw.o \
+	mysd.o qdtest.o qdtest2.o MB.o dlsode.o dummyoptim.o Ackland_metals.o Ackland_wrapper.o DF1.o CSMinit.o
+
+OBJS_op226=read_cmd_args.o display_version.o 
+OBJS_add=operations.o
+
+OBJS = ${OBJS1} ${OBJS2} ${OBJS_op226} ${OBJS_add}
+
+# }}}

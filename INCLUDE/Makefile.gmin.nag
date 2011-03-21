@@ -1,0 +1,25 @@
+ #use this compiler for nag/64/5.1
+FC=f95
+ #use this compiler for nag/64/5.2
+FC=nagfor
+DEFS+=-DNAG
+ FFLAGS = -132 -maxcontin=3000 -kind=byte -mismatch_all -O0
+ FFLAGS = -132 -maxcontin=3000 -kind=byte -mismatch_all -O3 
+#this line is for garden variety debugging 
+ FFLAGS = -132 -maxcontin=3000 -C -g -kind=byte -mismatch_all
+#this line is for thorough but slow debugging 
+ FFLAGS = -132 -maxcontin=3000 -C=all -mtrace=all -gline -kind=byte
+ NOOPT= -O0
+ SEARCH_PATH = -I..
+ LDFLAGS= -L.
+ SWITCH=nag
+
+#the double reference to -lblas seems to be needed!
+
+ LIBS = libmyblas.a libmylapack.a libmyblas.a 
+
+#flags for AMBER9
+
+  FREEFORMAT_FLAG= -free
+  EXTRA_FLAGS=-I
+

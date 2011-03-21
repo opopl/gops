@@ -1,0 +1,26 @@
+
+# CHARMM interface section {{{
+
+# If you are not building CGMIN.X.X comment everything inside the 31 block!
+# You MUST comment the BLAS_EXCLUDE_LIST if compiling GMIN, AMBGMIN and AMHGMIN
+ C31SRC = /home/${USER}/svn/CHARMM31
+#C31SRC = /home/${USER}/svn/charmm31.mpi
+ CTYPE=C31
+BLAS_EXCLUDE_LIST = dnrm2.o daxpy.o dcopy.o ddot.o
+ FCMDIR = ${C31SRC}/source/fcm
+ SRC31 = charmm_main.src # energy.src
+ EXTRAS = myblas.o mylapack.o
+ PREFLX = ${C31SRC}/tool/prefx_gnu
+ PREFDIR = ${C31SRC}/build/gnu
+
+   LIBDIR31=${C31SRC}/lib/gnu
+   CHOBJS31 = $(LIBDIR31)/help.o $(LIBDIR31)/iniall.o $(LIBDIR31)/miscom.o $(LIBDIR31)/usersb.o
+   CHLIBS31 = $(LIBDIR31)/adumb.a \
+	       $(LIBDIR31)/flucq.a $(LIBDIR31)/cadint.a $(LIBDIR31)/cheq.a $(LIBDIR31)/cff.a $(LIBDIR31)/correl.a $(LIBDIR31)/dimb.a \
+	       $(LIBDIR31)/emap.a $(LIBDIR31)/dynamc.a $(LIBDIR31)/energy.a $(LIBDIR31)/gamint.a $(LIBDIR31)/gukint.a \
+		  $(LIBDIR31)/gener.a $(LIBDIR31)/image.a $(LIBDIR31)/io.a $(LIBDIR31)/machdep.a $(LIBDIR31)/manip.a $(LIBDIR31)/mbond.a \
+		  $(LIBDIR31)/mc.a $(LIBDIR31)/minmiz.a $(LIBDIR31)/misc.a $(LIBDIR31)/mmff.a $(LIBDIR31)/molvib.a $(LIBDIR31)/nbonds.a \
+		  $(LIBDIR31)/pert.a $(LIBDIR31)/quantum.a $(LIBDIR31)/rxncor.a $(LIBDIR31)/shapes.a $(LIBDIR31)/solvation.a \
+		  $(LIBDIR31)/util.a $(LIBDIR31)/vibran.a libcharmm.a
+# }}}
+
