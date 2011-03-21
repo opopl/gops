@@ -257,8 +257,6 @@ endif
 .F90.f90:
 	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
 
-cup:
-	rm -rf $(NOTUSEDSOURCE)
 
 default: $(GPROG)
 
@@ -267,6 +265,9 @@ gmin: $(GPROG)
 
 CHGMIN: $(CPROG)
 chgmin: $(CPROG)
+
+cup:
+	rm -rf $(NOTUSEDSOURCE)
 
 #$(GPROG): $(CHDUM) $(AMHDUM) $(AMB9DUM) $(OBJS) $(EXTRAS) 
 	#$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(EXTRAS) $(OBJS) $(CHDUM) $(AMHDUM) $(AMB9DUM) $(LDFLAGS) $(LIBS)
