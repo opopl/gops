@@ -130,7 +130,7 @@
 \maketitle
 
 \newcommand{\pname}{}
-\newcommand{\keyw}[1]{\hyperlink{\prog:#1}{\it #1\/}}
+\newcommand{\keyw}[1]{\hyperlink{\pname:#1}{\it #1\/}}
 \newcommand{\ksec}[2]{\subsubsection{#1\ {\it\ #2 \/}}\hypertarget{\pname:#1}}
 
 \newcommand{\gmin}{{\tt GMIN\ }}
@@ -159,7 +159,7 @@ implemented with MPI.
 
 To start a calculation you need a file called {\tt data} in the current directory,
 along with a file called {\tt coords} containing the initial coordinates,
-which can be random. If the {\it SEED} keyword is present in
+which can be random. If the {\keyw{SEED}} keyword is present in
 {\tt data} you also need a file called {\tt seed} containing the seed coordinates.
 Most output is written to stdout, although the file {\tt lowest} is always created
 at the end of the run, containing the energies and geometries of the lowest few
@@ -172,36 +172,36 @@ Dynamic memory allocation is now used, so there are no hard limits on parameters
 such as the number of atoms.
 A number of new keywords have also been added since the first version of the code,
 as well as numerous potentials.
-The most important are probably {\it SYMMETRY}, {\it AVOID}, and {\it COOPMOVE}, which 
+The most important are probably {\it SYMMETRY}, {\keyw{AVOID}}, and {\keyw{COOPMOVE}}, which 
 are directly used in global optimisation, 
 and {\it HISTOGRAM}, which specifies a `basin-sampling' calculation of the energy
 density of states.
-A new algorithm (bipartite matching) has also been introduced for use with {\it PERMDIST}
-and {\it AVOID} to deal with permutational isomers.
-The implementation of {\it PERMDIST} is now the same as in OPTIM
+A new algorithm (bipartite matching) has also been introduced for use with {\keyw{PERMDIST}}
+and {\keyw{AVOID}} to deal with permutational isomers.
+The implementation of {\keyw{PERMDIST}} is now the same as in OPTIM
 and PATHSAMPLE, with a {\tt perm.allow} file to specify groups of permutable
 atoms and secondary sets that can only permute together.
 Finally, GMIN has been interfaced with CHARMM in much the same way as OPTIM, and there
 are new keywords to specify how the current geometry should be perturbed in the
-step-taking process. Keyword {\it CHARMMTYPE} specifies the type of CHARMM potential,
-while {\it CHPMAX}, {\it CHPMIN}, {\it CHNMAX}, {\it CHNMIN},
-{\it NOPHIPSI}, and {\it TOMEGA} govern the step-taking procedure in {\bf charmmgmin.src}.
-Keyword {\it INTMIN} specifies that minimisation should be performed in internal coordinates,
+step-taking process. Keyword \keyw{CHARMMTYPE} specifies the type of CHARMM potential,
+while {\keyw{CHPMAX}}, {\keyw{CHPMIN}}, {\keyw{CHNMAX}}, {\keyw{CHNMIN}},
+{\keyw{NOPHIPSI}}, and {\keyw{TOMEGA}} govern the step-taking procedure in {\bf charmmgmin.src}.
+Keyword {\keyw{INTMIN}} specifies that minimisation should be performed in internal coordinates,
 but this seems to be slower than Cartesian coordinates in general.
 
 Also new from version 2.3, the global minimisation basin-hopping algorithm has been enhanced with a 
 parallel tempering option, which is implemented using MPI. Please see the notes
 in the Makefile when loading compilers and MPI libraries. 
 (Note that the LAM MPI 32-bit library is currently broken! MPICH has not been tested yet.)
-The keyword {\it MPI} specifies
-the number of processors for the parallel job and {\it BHPT} allows the user to specify the temperature
+The keyword {\keyw{MPI}} specifies
+the number of processors for the parallel job and {\keyw{BHPT}} allows the user to specify the temperature
 range over which the replicas are exponentially distributed and the probability of attempting 
 an exchange.
 
 Currently under development is a new implementation of basin-sampling where 
 the quench probability for local minima is obtained using parallel-tempering rather than
 a flat-histogram Wang-Landau method. This approach also employs MPI and can be invoked with 
-the keyword {\it BSPT}.
+the keyword {\keyw{BSPT}}.
 
 \subsection{Basin-Sampling using {\it HISTOGRAM} and {\it TETHER}}
 
@@ -212,7 +212,7 @@ It provides a direct temperature-independent estimate of the total energy densit
 along with thermodynamic properties such as the free energy and entropy via ensemble averages using
 samples of local minima, rather than instantaneous configurations.
 
-In the GMIN implementation setting {\it TEMPERATURE}
+In the GMIN implementation setting {\keyw{TEMPERATURE}}
 to zero and specifying the keyword {\it HISTOGRAM} invoke a `basin-sampling' run. 
 
 In the microcanonical `basin-sampling' 
@@ -233,7 +233,7 @@ are allowed to deviate from the mean. As $f$ approaches a predefined
 value $f_{final}$ ({\it histfacmin}), and provided the random walk is unbiased
 and all the energy levels are sampled uniformly, the energy density of local
 minima converges to its true value. If 
-the {\it VISITPROP} keyword is specified, the convergence of one WL iteration is governed by
+the {\keyw{VISITPROP}} keyword is specified, the convergence of one WL iteration is governed by
 the number of visits being proportional to $1/\sqrt(\ln(f))$\cite{ZhouB03}.
 
 The energy spectrum in question is bounded from below by the potential energy of the global 
@@ -294,7 +294,7 @@ a square root function, the values of $\overline{H}$ are reset and another WL it
 The final statistical weights, $g_i$, can be used to calculate the canonical partition function in 
 terms of contributions from the catchment basins in each energy range $i$.  
 
-The geometries of minima can be saved along the run by specifying {\it BINSTRUCTURES } keyword. Keyword {\it EQUILIBRATION}
+The geometries of minima can be saved along the run by specifying {\keyw{BINSTRUCTURES} } keyword. Keyword {\keyw{EQUILIBRATION}}
 regulates the starting point and frequency of recording statistics.
 
 The output of the `basin-sampling' run is printed in {\tt BL.Pjnorm.lnGj.Djnm.Djm.VT.his} in the
@@ -306,7 +306,7 @@ average {\it hdist}(i) minimised with respect to rigid body coordinates; unminim
 
 Calculation of the
 vibrational density of states for a given minimum is invoked by 
-the additional {\it TETHER} keyword, which
+the additional {\keyw{TETHER}} keyword, which
 requests a conventional Wang-Landau sampling of the configuration 
 space restricted to the average volume of the basin of
 attraction to which a given minimum belongs.\cite{BogdanWC06}
@@ -329,12 +329,12 @@ isomerisation of a peptide bond or cold fusion - the interaction enthalpy betwee
 should be calculated using the external script `AMBGMINintE.sh', and read back into GMIN. This is intended for
 use with protein/ligand systems where you are searching for low energy docked structures. As the total energy
 does not fully correlate with the protein/ligand interaction enthalpy, it is often useful to retain not only the
-lowest {\it SAVE\/} total energy structures, but also the lowest {\it SAVEINTE\/} interaction enthalpy structures.
+lowest {\keyw{SAVE}\/} total energy structures, but also the lowest {\keyw{SAVE}INTE\/} interaction enthalpy structures.
 To use this keyword, the `AMBGMINintE.sh' script (contained in the SVN repository in the SCRIPTS directory) must
 be present in the GMIN working directory. You should ensure that you have edited it to match the residue numbering
 of your system. You also need a full AMBER9+ installation with access to the `sander' executable. When using this
-keyword, an interaction enthalpy dump file is produced every {\it DUMPINT\/} steps, and at the end of the run, 
-structural output files are produced for the {\it SAVEINTE\/} lowest interaction enthalpy geometries. After each quench, 
+keyword, an interaction enthalpy dump file is produced every {\keyw{DUMP}INT\/} steps, and at the end of the run, 
+structural output files are produced for the {\keyw{SAVE}INTE\/} lowest interaction enthalpy geometries. After each quench, 
 the structure with the current lowest interaction energy is dumped in pdb and rst format prefixed with `bestint.' to allow
 monitoring.
 
@@ -348,8 +348,8 @@ coded by Dr Mihai-Cosmin Marinica.
 {\it id} specifies the particular metal: 1 is ?, 2 is ?, 3 is ?, 4 is ?, 5 is iron, 6 is a different iron,
 7 is tunsten.
 Positive values for {\it id} specify periodic boundary conditions, where box lengths must be
-specified by the {\it PERIODIC\/} keyword. 
-Negative values for {\it id\/} specify a cluster calculation. A {\it CUTOFF\/} value can also
+specified by the {\keyw{PERIODIC}\/} keyword. 
+Negative values for {\it id\/} specify a cluster calculation. A {\keyw{CUTOFF}\/} value can also
 be used for clusters.
 
 \ksec{ALGLUE}{\/}: specifies a glue potential for aluminium.
@@ -370,15 +370,15 @@ desired, a coordinate file different from {\it coords.inpcrd} containing
 starting coordinates.
 To turn on smooth cutoffs for the Generalised Born force fields, the keyword
 {\it ifswitch=1} has to be used in the {\it \&cntrl} namelist block of {\it min.in}.
-When using the {\it AMBER9} keyword, any calculated second derivatives will be
-numerical. If one wants analytical second derivatives, the {\it NAB} keyword
+When using the {\keyw{AMBER9}} keyword, any calculated second derivatives will be
+numerical. If one wants analytical second derivatives, the {\keyw{NAB}} keyword
 should be used instead, with the same syntax. 
-Additional keywords for the AMBER 9 runs are {\it DUMPSTRUCTURES}, {\it AMBERMDSTEPS},
-{\it LIGMOVE (0.0-1.0) (x.x)} and {\it MOVABLEATOMS}.
+Additional keywords for the AMBER 9 runs are {\keyw{DUMP}STRUCTURES}, {\keyw{AMBERMDSTEPS}},
+{\keyw{LIGMOVE} (0.0-1.0) (x.x)} and {\keyw{MOVABLEATOMS}}.
 % missing AMH - put it in after merger
 
-\ksec{AMCHNMAX}{\/}: The maximum number of angles that will be changed by up to {\it STEP\/} during an 
-AMBER dihedral step. If this is not set or is set to zero, cartesian steps of maximum size {\it STEP\/} are taken 
+\ksec{AMCHNMAX}{\/}: The maximum number of angles that will be changed by up to {\keyw{STEP}\/} during an 
+AMBER dihedral step. If this is not set or is set to zero, cartesian steps of maximum size {\keyw{STEP}\/} are taken 
 instead. 
 
 \ksec{AMCHNMIN}{\/}: The minimum number of angles that will be changed during an AMBER dihedral step.
@@ -387,12 +387,12 @@ instead.
 
 \ksec{AMCHPMIN}{\/}: The minimum probability for a single angle to be twisted in an AMBER dihedral step.
 
-\ksec{ANGSTROM}{\/}: specifies coordinates in \AA ngstrom for the {\it FRAUSI\/}
+\ksec{ANGSTROM}{\/}: specifies coordinates in \AA ngstrom for the {\keyw{FRAUSI}\/}
 potential.
 
 \ksec{ARGON}{\/}: introduces a diatomics-in-molecules calculation for
 a neutral, cationic or electronically excited argon cluster. See also
-{\it GROUND\/}, {\it PLUS\/}, {\it TWOPLUS\/} and {\it STAR\/}.
+{\keyw{GROUND}\/}, {\keyw{PLUS}\/}, {\keyw{TWOPLUS}\/} and {\keyw{STAR}\/}.
 
 \ksec{ARM}{ arma armb}: use the acceptance-ratio method (Bouzida et al., {\it Phys.~Rev.~A},
 {\bf 45}, 8894, 1992)  to adjust the step size to achieve the requested 
@@ -425,7 +425,7 @@ are needed for different potentials. {\it SLOPPYCONV} can be used instead.
 \ksec{BHPT}{ pttmin pttmax exchprob\/}: specifies minimum ({\it pttmin\/}) and maximum 
 ({\it pttmax\/}) temperatures
 for a parallel tempering basin-hopping run and the probability of attempting replica
-exchange ({\it exchprob\/}). Should be used together with the {\it MPI\/} keyword.
+exchange ({\it exchprob\/}). Should be used together with the {\keyw{MPI}\/} keyword.
 (Only available if the source is compiled with MPI enabled.)  
 
 \ksec{BINARY}{ ntypea epsab epsbb sigmaab sigmabb\/}: specifies a binary Lennard-Jones
@@ -434,18 +434,18 @@ A atoms---the rest are assumed to be type B and appear at the end of the list
 of coordinates. $\epsilon_{\rm AA}=\sigma_{\rm AA}=1$ define the units of energy and length,
 and {\it epsab\/}=$\epsilon_{\rm AB}$, {\it epsbb\/}=$\epsilon_{\rm BB}$,
 {\it sigmaab\/}=$\sigma_{\rm AB}$, {\it sigmabb\/}=$\sigma_{\rm BB}$.
-The box parameters and cutoff should be specified with the {\it PERIODIC\/} keyword.
+The box parameters and cutoff should be specified with the {\keyw{PERIODIC}\/} keyword.
 
 \ksec{BINSTRUCTURES}{ SaveNth}: requests that the geometry of every {\it SaveNth} 
 new structure found during basin-sampling is
 recorded in {\tt binstructures.j}, where {\it j} is the index of the bin
 to which a given minimum belongs. If this keyword is
 present then GMIN switches from plain PTMC to BSPT.  
-Without {\it BINSTRUCTURES} the {\it BSPT} keyword will perform a
+Without {\keyw{BINSTRUCTURES}} the {\keyw{BSPT}} keyword will perform a
 standard PTMC run with no quenching. 
 
 \ksec{BLJCLUSTER}{ ntypea epsab epsbb sigmaab sigmabb cutoff\/}: specifies a binary Lennard-Jones
-cluster. The parameters are the same as for {\it BINARY\/}, above.
+cluster. The parameters are the same as for {\keyw{BINARY}\/}, above.
 
 \ksec{BLN}{ $k_r$ $k_\theta$ \/}: specifies a BLN off-lattice protein model with
 bond-length and bond-angle force constants $k_r$ and $k_\theta$.
@@ -470,21 +470,21 @@ the number of parallel tempering MC steps with quenching,  {\it nquench},
 the number of bins for the histogram of instantaneous potential energy, {\it nenrper},
 the number of bins for the histogram of quench energies, {\it hbins},  
 and the quench frequency, {\it qfrq}.  
-Should be used together with the {\it MPI\/} keyword. % and {\it BINSTRUCTURES\/} keywords.
+Should be used together with the {\keyw{MPI}\/} keyword. % and {\keyw{BINSTRUCTURES}\/} keywords.
 (This option is only available if the source is compiled with an MPI enabled.)  
 
 \ksec{BSPTDUMPFRQ}{ n\/}, {\it n\/} is the interval at which intermediate statistics
 and {\it bsptrestart\/} files are dumped. If {\it n\/} is less than one these files
 will only be dumped at the end of a complete run. 
-See also {\it BSPTRESTART\/}.
+See also {\keyw{BSPT}RESTART\/}.
 
-\ksec{BSPTDUMPFRQ}{\/}: restart a previous {\it BSPT\/} or {\it PTMC\/} run.
+\ksec{BSPTDUMPFRQ}{\/}: restart a previous {\keyw{BSPT}\/} or {\keyw{PTMC}\/} run.
 The instantaneous and quench potential energy histograms are read from the last
 {\tt Visits.his} and {\tt Visits2.his} files, and the current state from 
 {\tt bsptrestart} files (one per node, numbered from zero).
 A finished run can be continued with more steps by changing the {\it nquench} 
-or {\it ptsteps} parameters on the {\it BSPT\/} or {\it PTMC\/} line of
-the data file. Setting the interval for {\it BSPTDUMPFRQ} to
+or {\it ptsteps} parameters on the {\keyw{BSPT}\/} or {\keyw{PTMC}\/} line of
+the data file. Setting the interval for {\keyw{BSPT}DUMPFRQ} to
 minus one will read the last set of dump files.
 
 % \ksec{BSWL}{\/}: obsolete Wang-Landau basin-sampling; do not use.
@@ -507,12 +507,12 @@ at which the acceptance ratio is checked and possible adjustments are made to th
 step size or the temperature. The default is {\it naccept\/}$=50$.
   
 \ksec{CHARMM}{}: specifies that a CHARMM potential should be used.
-See also keywords {\it CHARMMTYPE}, {\it CHPMAX}, {\it CHPMIN}, {\it CHNMAX}, {\it CHNMIN},
-{\it NOPHIPSI}, {\it TOMEGA}, {\it INTMIN}, {\it CHFREQ}, {\it CHRIGIDROT}, 
-{\it CHRIGIDTRANS}, and {\it RMS}. If {\it CHNMAX} is not specified, a cartesian 
-displacement step taking scheme will be used. For cartesian steps, rings are moved as rigid bodies to avoid false knotted minima. See {\it RINGROTSCALE}. Finally, Molecular Dynamics (MD) can be employed to generate new geometries. See {\it CHMD} 
+See also keywords {\keyw{CHARMM}TYPE}, {\keyw{CHPMAX}}, {\keyw{CHPMIN}}, {\keyw{CHNMAX}}, {\keyw{CHNMIN}},
+{\keyw{NOPHIPSI}}, {\keyw{TOMEGA}}, {\keyw{INTMIN}}, {\keyw{CHFREQ}}, {\keyw{CHRIGIDROT}}, 
+{\keyw{CHRIGIDTRANS}}, and {\keyw{RMS}}. If {\keyw{CHNMAX}} is not specified, a cartesian 
+displacement step taking scheme will be used. For cartesian steps, rings are moved as rigid bodies to avoid false knotted minima. See {\keyw{RINGROTSCALE}}. Finally, Molecular Dynamics (MD) can be employed to generate new geometries. See {\keyw{CHMD}} 
 
-\ksec{CHMD}{ CHMDFREQ\/}: Requests Molecular Dynamics (MD) runs to be performed every {\it CHMDFREQ} step to generate new geometries. A {\it CHMDFREQ} setting of 20 will execute an MD run every 20$^\mathrm{th}$ step, while dihedral or cartesian moves are applied otherwise as specified in the data file. A CHARMM parameter file named 'chmd.par' containing all relevant keywords for the CHARMM {\it DYNA} module has to be present in the working directory. All CHARMM keywords must be uppercase and given in the first line. A typical example is:
+\ksec{CHMD}{ CHMDFREQ\/}: Requests Molecular Dynamics (MD) runs to be performed every {\keyw{CHMD}FREQ} step to generate new geometries. A {\keyw{CHMD}FREQ} setting of 20 will execute an MD run every 20$^\mathrm{th}$ step, while dihedral or cartesian moves are applied otherwise as specified in the data file. A CHARMM parameter file named 'chmd.par' containing all relevant keywords for the CHARMM {\it DYNA} module has to be present in the working directory. All CHARMM keywords must be uppercase and given in the first line. A typical example is:
 
 VERL NSTEP 500 TIMESTEP 0.002 TWINDH 10.0 IEQFRQ 200 ICHECW 1 IASORS 0 IASVEL 1 FIRS 500 FINA 500 
 
@@ -523,33 +523,33 @@ Please consult the CHARMM manual for further details on the {\it DYNA} module. C
 \ksec{CHARMMTYPE}{ topfile paramfile\/}:  {\it topfile} and {\it paramfile} are the
 common CHARMM top and param files , e.g., `toph19\_eef1\_perm.inp' and `param19\_eef1\_perm.inp'.
 
-\ksec{CHFREQ}{ nfreq}: used with {\it CHARMM} keyword to specify that every
+\ksec{CHFREQ}{ nfreq}: used with {\keyw{CHARMM}} keyword to specify that every
 {\it nfreq} basin-hopping steps dihedrals are twisted. Default is {\it nfreq}=1.
 
-\ksec{CHNMAX}{}: used with {\it CHARMM} keyword to specify the maximum allowed
+\ksec{CHNMAX}{}: used with {\keyw{CHARMM}} keyword to specify the maximum allowed
 number of angles to be twisted. Specifies a dihedral angle step taking scheme. 
 
-\ksec{CHNMIN}{}: used with {\it CHARMM} keyword to specify the minimum allowed
+\ksec{CHNMIN}{}: used with {\keyw{CHARMM}} keyword to specify the minimum allowed
 number of angles to be twisted.
 
-\ksec{CHPMAX}{}: used with {\it CHARMM} keyword to specify the maximum allowed
+\ksec{CHPMAX}{}: used with {\keyw{CHARMM}} keyword to specify the maximum allowed
 probability for twisting an angle.
 
-\ksec{CHPMIN}{}: used with {\it CHARMM} keyword to specify the minimum allowed
+\ksec{CHPMIN}{}: used with {\keyw{CHARMM}} keyword to specify the minimum allowed
 probability for twisting an angle.
 
-\ksec{CHRIGIDROT}{ prot rotmax nrot}: used with {\it CHARMM} keyword 
+\ksec{CHRIGIDROT}{ prot rotmax nrot}: used with {\keyw{CHARMM}} keyword 
 to support rigid body rotation every {\it nrot} basin-hopping steps with maximum allowed 
 probability {\it prot} and maximum allowed rotation angle {\it rotmax} (in degrees). 
-The keyword {\it CHRIGIDROT} requires a file {\tt segments.tomove}, which specifies
+The keyword {\keyw{CHRIGIDROT}} requires a file {\tt segments.tomove}, which specifies
 the segments for rigid rotation. The segments are numbered and each line contains only one number.
 
-\ksec{CHRIGIDTRANS}{ ptrans transmax ntrans}: used with {\it CHARMM} keyword 
+\ksec{CHRIGIDTRANS}{ ptrans transmax ntrans}: used with {\keyw{CHARMM}} keyword 
 to support rigid body translation every {\it ntrans} basin-hopping steps with maximum allowed 
 probability {\it ptrans} and maximum allowed translation {\it transmax} (in \AA). 
-The keyword {\it CHRIGIDTRANS} requires a file {\tt segments.tomove}, which specifies
+The keyword {\keyw{CHRIGIDTRANS}} requires a file {\tt segments.tomove}, which specifies
 the segments for rigid translation. The segments are numbered and each line contains only one number.
-{\it CHRIGIDROT} and {\it CHRIGIDTRANS} use the same {\tt segments.tomove}.
+{\keyw{CHRIGIDROT}} and {\keyw{CHRIGIDTRANS}} use the same {\tt segments.tomove}.
 
 % \ksec{NOCISTRANS}{}: not used
 % \ksec{NORANDOM}{}: not used
@@ -576,14 +576,14 @@ tested!
 \ksec{CUTOFF}{ cutoff\/}: sets a cutoff beyond which the potential is truncated. This
 only has an effect for tight-binding silicon at present. Interaction cutoffs for other potentials
 should be specified in their input files e.g. {\textrm min.in} (and {\textrm min\_md.in} if used) 
-for AMBER or below the {\it CHARMM} line for CHARMM.
+for AMBER or below the {\keyw{CHARMM}} line for CHARMM.
 
 \ksec{DBRENT}{}: specifies minimisation using Brent's method with first derivatives in the
 conjugate-gradient procedure. 
 Inefficient compared to LBFGS.
 
 \ksec{DEBUG}{\/}: sets various debug printing options including the dumping of initial
-geometries and energies (to {\it dump.X.xyz\/}) if {\it DUMP} is also set.
+geometries and energies (to {\it dump.X.xyz\/}) if {\keyw{DUMP}} is also set.
 
 \ksec{DECAY}{ x\/}: magnitude of random move decays according to parameter
 {\it x\/} with distance from a randomly chosen atom.
@@ -592,18 +592,18 @@ geometries and energies (to {\it dump.X.xyz\/}) if {\it DUMP} is also set.
 The first $N/2$ atoms have unit radius and the rest
 have radius 1.4, with a cutoff for each pair type at the
 average radius.
-The keyword {\it 2D\/} must also be specified, along with a
-{\it PERIODIC\/} line to specify two box-lengths.
+The keyword {\keyw{2D}\/} must also be specified, along with a
+{\keyw{PERIODIC}\/} line to specify two box-lengths.
 Initial work uses box lengths of 3.31437171 for a number density of 0.9.
 
 \ksec{DFTB}{\/}: specifies a DFT-based tight-binding potential; the multiplicity is specified by
-keyword {\it MULTIPLICITY\/}.
+keyword {\keyw{MULTIPLICITY}\/}.
 
 \ksec{DGUESS}{ dguess\/}: initial guess for diagonal elements of the inverse
       Hessian, used whenever the LBFGS optimiser is reset. 
       The default is dguess=0.1.
 
-\ksec{DIELEC}{ dparam\/}: specifies dielectric constant for {\it AMBER\/}.
+\ksec{DIELEC}{ dparam\/}: specifies dielectric constant for {\keyw{AMBER}\/}.
 
 \ksec{DIPOLES}{\/}: causes the first order induction energy to be included
 in a diatomics-in-molecules calculation for Ne$^+_n$ or Ar$^+_n$. By default this
@@ -611,30 +611,30 @@ term is neglected, although it may be significant.
 
 \ksec{DONTMOVE}{ n1 n2 $\ldots$ \/}: prevents atoms {\it n1, n2,$\ldots$} moving during MC step taking. They can still move during minimisation.
 
-\ksec{DONTMOVEGROUP}{ centre radius type\/}: If {\it type} is set as default to {\textrm GT}, {\it DONTMOVEGROUP\/} prevent all atom greater than {\it radius} angstroms from the {\it centre} atom from moving during MC step taking. {\it type} can also be set to LT to not move all atoms within {\it radius} of {\it centre}.
+\ksec{DONTMOVEGROUP}{ centre radius type\/}: If {\it type} is set as default to {\textrm GT}, {\keyw{DONTMOVE}GROUP\/} prevent all atom greater than {\it radius} angstroms from the {\it centre} atom from moving during MC step taking. {\it type} can also be set to LT to not move all atoms within {\it radius} of {\it centre}.
 
 \ksec{DONTMOVERES}{ n1 n2 $\ldots$ \/}: prevents all atoms in residues {\it n1, n2,$\ldots$} from moving during MC step taking.
 
 \ksec{DONTMOVEALL}{ n1 n2 $\ldots$ \/}: prevents all atoms from moving during MC step taking (usually used with {\it DOMOVE} and {\it DOMOVERES}). 
 
 \ksec{DOMOVE}{ n1 n2 $\ldots$ \/}: allows atoms {\it n1, n2,$\ldots$} to move during MC step taking. Only functions in conjunction with 
-{\it DONTMOVEALL\/}
+{\keyw{DONTMOVE}ALL\/}
 
 \ksec{DOMOVERES}{ n1 n2 $\ldots$ \/}: allows all atoms in residues {\it n1, n2,$\ldots$} to move during MC step taking. Only functions in conjunction 
-with {\it DONTMOVEALL\/}
+with {\keyw{DONTMOVE}ALL\/}
 
 \ksec{DUMP}{\/}: if present will cause the energy and quench geometry for every step
 to be dumped into {\it dump.X.xyz\/} where X is an integer. The geometries are saved 
-in XMakemol xyz format. If {\it CHARMM\/} is also specified, {\it dump.pdb\/} and {\it dump.crd\/}
+in XMakemol xyz format. If {\keyw{CHARMM}\/} is also specified, {\it dump.pdb\/} and {\it dump.crd\/}
 are produced containing each quench geometry in PDB and CHARMM CRD format.
 
 \ksec{DUMPINT}{ int\/}: changes the default interval for dumping a restart 
 {\tt GMIN.dump} file from 1000 basin-hopping steps to {\it int\/}.
 
-\ksec{DUMPQU}{\/}: when using {\it AMBER9\/}, dumps each quench geometry in rst format to quenchX.rst 
+\ksec{DUMPQU}{\/}: when using {\keyw{AMBER9}\/}, dumps each quench geometry in rst format to quenchX.rst 
 and pdb format to quenchX.pdb. Dumping does not occur if a chirality check fails.
 
-\ksec{DUMPSTEPS}{\/}: when using {\it AMBER9\/}, dumps each geometry after the MC step has been taken in rst format to afterstepX.rst 
+\ksec{DUMPSTEPS}{\/}: when using {\keyw{AMBER9}\/}, dumps each geometry after the MC step has been taken in rst format to afterstepX.rst 
 and pdb format to afterstepX.pdb. 
 
 \ksec{DZUGUTOV}{ dzp1 dzp2 dzp3 dzp4 dzp5 dzp6 dzp7\/}: Dzugutov potential in a general form.
@@ -658,7 +658,7 @@ density of states histogram in a Wang-Landau
 basin-sampling run. The default is 0. {\it DumpEveryNthQuench} specifies how often the
 statistics are recorded into the output files.
 
-\ksec{FAKEWATER}{ \/}: specifies a distance-dependent dielectric in {\it AMBER\/}.
+\ksec{FAKEWATER}{ \/}: specifies a distance-dependent dielectric in {\keyw{AMBER}\/}.
 
 \ksec{FIXEDEND}{ \/}: requires documentation.
 
@@ -672,28 +672,28 @@ the calculated acceptance ratio.
 \ksec{FIXSTEP}{ \/}: the maximum step size is fixed and the temperature is varied to
 try and achieve the requested acceptance ratio.
 
-\ksec{FIXTEMP}{ \/}: explicitly fixes the temperature. Only used if {\it FIXSTEP\/} is set, in 
-which case using {\it FIXTEMP\/} gives a result equivalent to {\it FIXBOTH\/}.
+\ksec{FIXTEMP}{ \/}: explicitly fixes the temperature. Only used if {\keyw{FIXSTEP}\/} is set, in 
+which case using {\keyw{FIXTEMP}\/} gives a result equivalent to {\keyw{FIXBOTH}\/}.
 
 \ksec{FNI}{ \/}: specifies the Farkas potential for nickel.
 
 \ksec{FRAUSI}{ \/}: specifies a particular tight-binding potential for silicon.
-See also keyword {\it ANGSTROM\/}.
+See also keyword {\keyw{ANGSTROM}\/}.
 
 \ksec{FREEZE}{ n1 n2 $\ldots$ \/}: freeze the coordinates of atoms {\it n1, n2,$\ldots$}. Atoms affected by FREEZE will not move during MC step taking, 
 or during minimisation as their gradients are set to zero.
 
-\ksec{FREEZEGROUP}{ centre radius type\/}: If {\it type} is set as default to {\textrm GT}, {\it FREEZEGROUP\/} FREEZEs all atom greater than {\it radius} angstroms from the {\it centre} atom. {\it type} can also be set to LT to FREEZE all atoms within {\it radius} of {\it centre}.
+\ksec{FREEZEGROUP}{ centre radius type\/}: If {\it type} is set as default to {\textrm GT}, {\keyw{FREEZEGROUP}\/} FREEZEs all atom greater than {\it radius} angstroms from the {\it centre} atom. {\it type} can also be set to LT to FREEZE all atoms within {\it radius} of {\it centre}.
 
 \ksec{FREEZERES}{ n1 n2 $\ldots$ \/}: freeze the coordinates of all atoms in residues {\it n1, n2,$\ldots$}.
 
 \ksec{FREEZEALL}{ n1 n2 $\ldots$ \/}: freeze the coordinates of all atoms 
 
 \ksec{UNFREEZE}{ n1 n2 $\ldots$ \/}: unfreeze the coordinates of atoms {\it n1, n2,$\ldots$}. Only functions in conjunction with 
-{\it FREEZEALL\/}
+{\keyw{FREEZE}ALL\/}
 
 \ksec{UNFREEZERES}{ n1 n2 $\ldots$ \/}: unfreeze the coordinates of all atoms in residues {\it n1, n2,$\ldots$}. Only functions in conjunction with 
-{\it FREEZEALL\/}
+{\keyw{FREEZE}ALL\/}
 
 \ksec{FS}{ gatom}: specifies a Finnis-Sinclair potential using parameters from 
 Finnis and Sinclair, {\it Phil.~Mag.~A}, {\bf 50}, 45 (1984) 
@@ -703,7 +703,7 @@ for Cr, {\it gatom}=5 for Mo, {\it gatom}=6 for W, {\it gatom}=7
 for Fe (original parameters), {\it gatom}=8 for Fe (modified parameters in erratum). 
 Subtoutine {\bf FS} was coded by Ja,es Elliott in April 2009.
 
-\ksec{GROUND}{\/}: when combined with keywords {\it NEON\/} or {\it ARGON\/}
+\ksec{GROUND}{\/}: when combined with keywords {\keyw{NEON}\/} or {\keyw{ARGON}\/}
 uses an accurate (Aziz) potential to model the ground state neutral cluster.
 
 \ksec{GROUPROTATION}{ (freq) (offset)\/}: specifies group rotation moves for groups of atoms defined in {\rm atomgroups}. {\it freq\/} 
@@ -711,7 +711,7 @@ uses an accurate (Aziz) potential to model the ground state neutral cluster.
 {\it offset\/} (optional) can be used for systems with consistant ligand or cofactors to allow the ligand/cofactor group numbering to be
 system independant. For example, if there are 3500 atoms in a protein, and the ligand starts at atom 3501, setting {\it offset} to 3500 means
 that the GROUP in {\textrm atomgroups} numbering starts at 1 again. The default {\it offset\/} is 0. Currently this is only usable with 
-{\it AMBER9\/}.
+{\keyw{AMBER9}\/}.
 
 The {\textrm atomgroups} file is formatted as follows:
 
@@ -751,12 +751,12 @@ Here is an example {\textrm atomgroups} file containing two groups:
 {\textrm 29}
 
 \ksec{GUIDE}{\/ guidecut}: specifies the RMS force below which the real potential is used
-rather than a guiding potential. The systems affected are {\it CPMD\/} and {\it WELCH},
-which are guided by {\it AMBER\/} and {\it TOSI\/}, respectively, and also {\it PACHECO\/},
+rather than a guiding potential. The systems affected are {\keyw{CPMD}\/} and {\keyw{WELCH}},
+which are guided by {\keyw{AMBER}\/} and {\keyw{TOSI}\/}, respectively, and also {\keyw{PACHECO}\/},
 where the Axilrod-Teller contribution is only included when the RMS force falls below
 {\it guidecut\/}. Default {\it guidecut\/}=0.0001.
-New guided potentials are {\it ZETT1} and {\it ZETT2} (guided by Morse with $\rho=5$) and
-{\it NATB} (guided by {\it GUPTAT}). Parameters for the guiding potential must also be specified in
+New guided potentials are {\keyw{ZETT1}} and {\keyw{ZETT2}} (guided by Morse with $\rho=5$) and
+{\keyw{NATB}} (guided by {\keyw{GUPTA}T}). Parameters for the guiding potential must also be specified in
 {\tt data}.
 
 \ksec{GUPTA}{ gatom}: specifies a Gupta potential using parameters from Cleri and Rosato,
@@ -813,7 +813,7 @@ The {\bf Gupta} subroutine was recoded more efficiently by James Elliott in Apri
 % {\tt nWL.restart} and {\tt lnModfac.restart}.
 
 \subsection{I-M}
-\ksec{INTMIN}{}: used with {\it CHARMM} keyword to specify minimisation in internal 
+\ksec{INTMIN}{}: used with {\keyw{CHARMM}} keyword to specify minimisation in internal 
 coordinates. This generally appears to be
 slower than using Cartesian coordinates.
 
@@ -835,18 +835,18 @@ V = \frac{\epsilon}{2} \sum_{i<j} \left[ \left(\frac{r_{ij}}{\sigma}\right)^2+
 \end{equation}
 where $\epsilon$ and $\sigma$ are set to unity.
 
-\ksec{LIGMOVE}{ ligrotscale ligcartstep ligtransstep ligmovefreq\/}: used with {\it AMBER9\/} and {\it MOVABLEATOMS}. Specifies ligand only rotation, cartesian perturbation and translation. The ligand is defined by atom index in the file 'movableatoms'. Setting {\it ligrotscale} less than 1.0
+\ksec{LIGMOVE}{ ligrotscale ligcartstep ligtransstep ligmovefreq\/}: used with {\keyw{AMBER9}\/} and {\keyw{MOVABLEATOMS}}. Specifies ligand only rotation, cartesian perturbation and translation. The ligand is defined by atom index in the file 'movableatoms'. Setting {\it ligrotscale} less than 1.0
 limits the ammount of rotation possible - this may be required to prevent cold fusion with non-spherical ligands. {\it ligcartstep} and {\it ligtransstep} 
 define the maximum size (in angstroms) of the random cartesian perturbations and rigid body translation applied to the ligand respectively. 
 {\it ligmovefreq} can be set to greater than 1 to prevent ligand moves being applied every step i.e. {\it ligmovefreq = 2} for every other step.
-All ligand moves are applied AFTER any MD if {\it AMBERMDMOVES} is on to prevent the MD exploding.    
+All ligand moves are applied AFTER any MD if {\keyw{AMBER}MDMOVES} is on to prevent the MD exploding.    
 
 \ksec{LJCOUL}{ nc $q'$ f $T_{\rm swap}$} specifies a cluster of Lennard-Jones particles in which the first {\it nc}
 particles carry identical reduced charges {\it $q'$} in addition to the Lennard-Jones interaction.
 The parameter {\it f} specifies what fraction of the Monte Carlo steps should be swaps between the
 positions of a charged and a neutral particle, rather than a conventional step.
 $T_{\rm swap}$ is the temperature to be used in the acceptance criterion for swap moves, overriding
-that specified using the {\it TEMPERATURE} keyword.  Generally, a lower temperature is more effective
+that specified using the {\keyw{TEMPERATURE}} keyword.  Generally, a lower temperature is more effective
 at finding the lowest-energy permutation of charges.  The default value of $T_{\rm swap}$ is zero.
 The reduced charge $q'$ is related to the actual charge $q$ by $q'=q/(4\pi\epsilon_0\epsilon\sigma)^{1/2}$,
 where $\epsilon$ and $\sigma$ are the Lennard-Jones well depth and length parameter respectively.
@@ -902,38 +902,38 @@ with range parameter {\it rho\/}.\cite{braierbw90,doyewb95,doyew96a}
 
 \ksec{MULLERBROWN}{ \/}: specifies the 2D Muller-Brown potential.
 
-\ksec{MULTIPLICITY}{ xmul\/}: specifies the multiplicity of the electronic state in {\it DFTB\/}
+\ksec{MULTIPLICITY}{ xmul\/}: specifies the multiplicity of the electronic state in {\keyw{DFTB}\/}
 calculations.
 
 \subsection{N}
 \ksec{NATB}{}: specifies the sodium tight-binding potential of Calvo and Spiegelmann.
-This potential can be guided by also specifying {\it GUPTA 21} in the {\tt data} file.
+This potential can be guided by also specifying {\keyw{GUPTA} 21} in the {\tt data} file.
 
 \ksec{NEON}{\/}: introduces a diatomics-in-molecules calculation for
 a neutral, cationic or electronically excited neon cluster. See also
-{\it GROUND\/}, {\it PLUS\/}, {\it TWOPLUS\/} and {\it STAR\/}.
+{\keyw{GROUND}\/}, {\keyw{PLUS}\/}, {\keyw{TWOPLUS}\/} and {\keyw{STAR}\/}.
 
 \ksec{NEWJUMP}{ prob\/}: for (serial)
 `parallel' runs specifies a jump probability between runs 
 (parallel tempering) of {\it prob\/}.
-See the {\it BHPT\/} keyword for a better alternative.
+See the {\keyw{BHPT}\/} keyword for a better alternative.
 
 \ksec{NEWRESTART}{ nrelax nhs MD newrestemp\/}: reseed runs if the energy does not decrease within {\it nrelax} steps.
 {\it nhs} is the number of hard sphere moves used to produce the new starting configuration.
 If {\it nhs=0} (the default) then the geometry is changed by reseeding. If {\it MD} is present, then a short AMBER or CHARMM MD run is performed at temperature {\it newrestemp} to generate the new configuration.
 
 \ksec{NMAX}{ nmax\/}: {\it nmax\/} is an integer that specifies the maximum number of dihedral angles
-to be twisted in {\it AMBER\/}.
+to be twisted in {\keyw{AMBER}\/}.
 
 \ksec{NMIN}{ nmax\/}: {\it nmin\/} is an integer that specifies the minimum number of dihedral angles
-to be twisted in {\it AMBER\/}.
+to be twisted in {\keyw{AMBER}\/}.
 
 \ksec{NOCHIRALCHECKS}{\/}: disables checks for inversion of CA atoms and chiral side-chains for ILE and THR.
 
 \ksec{NOCISTRANS}{ minomega\/}: set on by default with a threshold {\it minomega} of 150 degrees.  
 If an amide bond is deformed to a angle below the specified threshold, the structure is discarded. 
 i.e.~with $|\omega|<${\it minomega}. {\it minomega\/} defaults to 150 degrees. 
-For proline every $\omega$ is allowed. To enable cis-trans isomerisation, the {\it CISTRANS} keyword should be used. 
+For proline every $\omega$ is allowed. To enable cis-trans isomerisation, the {\keyw{CISTRANS}} keyword should be used. 
 
 \ksec{NOCISTRANSDNA}{ minomega\/}: should be specified when working with DNA in AMBER to ensure the correct bonds are 
 checked. As above, the deformation threshold {\it minomega} can be set. It is defaulted to 150 degrees.
@@ -942,9 +942,9 @@ checked. As above, the deformation threshold {\it minomega} can be set. It is de
 checked. As above, the deformation threshold {\it minomega} can be set. It is defaulted to 150 degrees.
 
 \ksec{NOFREEZE}{\/}: don't freeze the core atoms when doing the initial geometry optimisations in 
-a run where {\it SEED\/} is specified.
+a run where {\keyw{SEED}\/} is specified.
 
-\ksec{NOPHIPSI}{}: used with the {\it CHARMM} keyword to specify twisting of 
+\ksec{NOPHIPSI}{}: used with the {\keyw{CHARMM}} keyword to specify twisting of 
 sidechain dihedrals only.
 
 \ksec{NORESET}{\/}: by default the configuration point is set to that of the
@@ -965,12 +965,12 @@ further documentation.
 \ksec{OSASA}{ \/}: order parameter---requires documentation.
 
 \ksec{P}{46\/}: specifies a 46-bead three-colour model polypeptide.
-See also the {\it BLN} keyword, which implements this potential in a more
+See also the {\keyw{BLN}} keyword, which implements this potential in a more
 general way and uses unit bond lengths.
 
 \ksec{PACHECO}{\/}: specifies the intermolecular Pacheco-Ramelho potential for C$_{60}$.
-The Axilrod-Teller contribution, specified with the {\it AXTELL\/} keyword, is included
-when the RMS force falls below the value entered with {\it GUIDECUT\/}.
+The Axilrod-Teller contribution, specified with the {\keyw{AXTELL}\/} keyword, is included
+when the RMS force falls below the value entered with {\keyw{GUIDE}CUT\/}.
 
 \ksec{PAH}{}: specifies a polycyclic aromatic hydrocarbon potential.
 
@@ -992,7 +992,7 @@ the coordinates in files {\tt coords} and the
 fixed coordinates in file {\tt finish} with respect to permutational isomerisation.
 Requires the auxiliary file {\tt perm.allow} to specify permutable atoms, otherwise
 all atoms are assumed to be permutable. The absence of a {\tt perm.allow}
-file is considered a mistake for {\it CHARMM\/} runs.
+file is considered a mistake for {\keyw{CHARMM}\/} runs.
 
 The first line of the {\tt perm.allow} file must contain an integer
 that specifies the number of primary groups of interchangeable atoms.
@@ -1022,7 +1022,7 @@ Here $n=2$ and $s=3$: if we exchange 7 and 8 then we must also exchange 5 and 6,
 since we have specified 7 and 8 as the two primary atoms.
 
 Here is an example {\tt perm.allow} file for a water trimer using
-the flexible {\it QTIP4PF\/} potential, where the energy is invariant to permutations
+the flexible {\keyw{QTIP4PF}\/} potential, where the energy is invariant to permutations
 of water molecules and to exchanges of hydrogens in the same molecule. However,
 hydrogens cannot exchange between different oxygens:
 {\obeylines
@@ -1049,12 +1049,12 @@ the group web site. It is essential to use symmetrised versions of the correspon
 force fields! 
 
 
-\ksec{PLUS}{\/}: when combined with keywords {\it NEON\/} or {\it ARGON\/}
+\ksec{PLUS}{\/}: when combined with keywords {\keyw{NEON}\/} or {\keyw{ARGON}\/}
 uses a diatomics-in-molecules potential for the singly charged cation.
 
-\ksec{PMAX}{ max\/}: {\it max\/} is the maximum probability of dihedral angle twisting for {\it AMBER\/}.
+\ksec{PMAX}{ max\/}: {\it max\/} is the maximum probability of dihedral angle twisting for {\keyw{AMBER}\/}.
 
-\ksec{PMIN}{ min\/}: {\it min\/} is the minimum probability of dihedral angle twisting for {\it AMBER\/}.
+\ksec{PMIN}{ min\/}: {\it min\/} is the minimum probability of dihedral angle twisting for {\keyw{AMBER}\/}.
 
 \ksec{POWER}{ ipow\/}: {\it ipow\/} is the initial power for shifts in the old line minimisation routine
 for conjugate gradient. LBFGS minimisation should be used instead.
@@ -1076,7 +1076,7 @@ number of equilibration steps, {\it nequil},
 the number of parallel tempering MC steps without quenching,  {\it ptsteps},
 the number of bins for the histogram of instantaneous potential energy, {\it nenrper}, and
 the number of bins for the histogram of quench energies, {\it hbins}.
-Should be used together with the {\it MPI\/} keyword. % and {\it BINSTRUCTURES\/} keywords.
+Should be used together with the {\keyw{MPI}\/} keyword. % and {\keyw{BINSTRUCTURES}\/} keywords.
 (This option is only available if the source is compiled with an MPI enabled.)  
 
 \ksec{PULL}{ a1 a2 f\/}: apply a static force to the potential, equivalent to adding
@@ -1085,7 +1085,7 @@ coordinates for atoms $a1$ and $a2$, and $f$ specifies the force.
 This potential is designed to simulate a pulling experiment with static force where
 a molecule is pulled along the $z$ axis from atoms $a1$ and $a2$.
 
-\ksec{QCUTOFF}{ qcut\/}: {\it qcut\/} is a distance cut-off for Coulomb interactions in {\it AMBER\/}.
+\ksec{QCUTOFF}{ qcut\/}: {\it qcut\/} is a distance cut-off for Coulomb interactions in {\keyw{AMBER}\/}.
 
 \ksec{QMAX}{ cgmax\/}: {\it cgmax\/} is the tolerance for the 
 RMS force in the final set of quenches that are used to produce
@@ -1095,7 +1095,7 @@ the output for file {\tt lowest}. The default is
 
 \ksec{QUAD}{\/}: requires documentation.
 
-\ksec{QUCENTRE}{\/}: sets the centre of coordinates to the origin (0,0,0) before each MC step is taken (so after each quench), but not during the minimisation itself unlike {\it CENTRE}. 
+\ksec{QUCENTRE}{\/}: sets the centre of coordinates to the origin (0,0,0) before each MC step is taken (so after each quench), but not during the minimisation itself unlike {\keyw{CENTRE}}. 
 
 \subsection{R-S}
 \ksec{RADIUS}{ radius\/}: sets the radius of the container that prevents particles
@@ -1111,7 +1111,7 @@ more open structures.
 
 \ksec{RANSEED}{ i\/}: integer seed for the random number generator.
 
-\ksec{RCUTOFF}{ rcut\/}: {\it rcut\/} is a distance cut-off in {\it AMBER\/}.
+\ksec{RCUTOFF}{ rcut\/}: {\it rcut\/} is a distance cut-off in {\keyw{AMBER}\/}.
 
 \ksec{RESIZE}{ resize\/}: all the coordinates are multiplied by {\it resize\/} after
 they have been read in, before any other operations are performed. This command is useful
@@ -1137,14 +1137,14 @@ dump file to restore from as a second arguement.
 \ksec{RKMIN}{\/}: specifies a Runga-Kutta minimisation scheme. 
 Very inefficient.
 
-\ksec{RMS}{ rmslimit rmstol rmssave lca best}: used with {\it CHARMM} keyword to
+\ksec{RMS}{ rmslimit rmstol rmssave lca best}: used with {\keyw{CHARMM}} keyword to
 specify that the RMSD compared to a reference geometry is calculated. The reference geometry must 
 be given in xyz-format in an additional file {\tt compare}. {\it rmssave} is an integer 
 that specifies the number of lowest energy geometries and RMSD $\le$ {\it rmslimit}
 to save. Geometries are only saved if their RMSD's are more than {\it rmstol} 
 different. The flag {\it lca} controls whether the all-atom RMSD ({\it lca}=0) or the $C_{\alpha}$-RMSD 
 ({\it lca}=1) is calculated. The flag {\it best} determines which structure is compared to the reference
-after each quench. {\it best}=0 implies the current quench minimum and {\it best}=1 implies the current best (lowest energy) minimum. If {\it TRACKDATA} is also specified, the RMSD calculated after each quench is produced in the file `rmsd' in gnuplot readable format.
+after each quench. {\it best}=0 implies the current quench minimum and {\it best}=1 implies the current best (lowest energy) minimum. If {\keyw{TRACKDATA}} is also specified, the RMSD calculated after each quench is produced in the file `rmsd' in gnuplot readable format.
 
 \ksec{ROTAMER}{ maxchange pselect occuw (centre cutoff)\/}: Used with AMBER9 only. Specifies that rotamer moves should be taken. Every step, up to {\it maxchange} rotamers may be selected with a probability {\it pselect}. {\it occuw} determines the minimum \% occupation a rotamer must have to be selected from the library\cite{lovelljm00} when making a change. For example, {\it occuw} $= 0.004$ restricts possible rotamer choice to those with a greater than 0.4\% occupation. If you want to focus rotamer changes around a ligand/binding pocket, the optional {\it centre} and {\it cutoff} arguements may be used. {\it centre} specifies the residue of interest (for example a ligand), and {\it cutoff} the limiting distance from this centre that rotamers may be changed. The selection probability decreases linearlly from the {\it centre} residue. To use these moves, you need three files found in the SCRIPTS directory: PdbRotamerSearch, penultimate.lib and rotamermove.csh in your working directory for each run. 
 
@@ -1155,14 +1155,14 @@ Arrays are now dynamically allocated, so any positive integer can be specified.
 \ksec{SAVEINTE}{ nsaveinte\/}: {\it nsaveinte\/} is an integer that specifies the number of lowest
 interaction enthalpy geometries to save and summarise in the file {\tt intelowest}. See {\it A9INTE\/}. 
 
-\ksec{SETCENTRE}{ x y z\/}: Sets the centre of mass/coordinates (before the initial quench) to ({\it x,y,z\/}). For example, {\it SETCENTRE 0.0 0.0 0.0\/}
+\ksec{SETCENTRE}{ x y z\/}: Sets the centre of mass/coordinates (before the initial quench) to ({\it x,y,z\/}). For example, {\keyw{SETCENTRE} 0.0 0.0 0.0\/}
 would translate the centre of mass to the origin.
 
 \ksec{SC}{ nn mm sig sceps scc\/}: specifies a Sutton-Chen potential\cite{suttonc90} with
 parameters $n=${\it nn\/}, $m=${\it mm\/}, $a$={\it sig\/}, $\epsilon=${\it sceps\/} and 
 $c=${\it scc\/}.
 
-\ksec{SEED}{ nsstop\/}: if the {\it SEED\/} keyword appears then the program
+\ksec{SEED}{ nsstop\/}: if the {\keyw{SEED}\/} keyword appears then the program
 looks for a file {\tt seed} containing coordinates, which are used to `seed' the new run.
 The number of coordinates given in this file should be no more than one less than the number
 given in {\tt coords}. The specified coordinates are frozen from the first step until 
@@ -1171,7 +1171,7 @@ step {\it nsstop\/}.
 \ksec{SHIFTCUT}{\/}: specifies a shifted-truncated potential for bulk binary Lennard-Jones.
 
 \ksec{SIDESTEP}{ smax\/}: specifies the maximum step in Cartesian coordinates for side-chains
-in {\it AMBER\/}.
+in {\keyw{AMBER}\/}.
 
 \ksec{SLOPPYCONV}{ bgmax\/}: specifies a basin-hopping run (as opposed to standard MC
 on the untransformed surface). {\it bgmax\/} is the convergence criterion
@@ -1181,13 +1181,13 @@ If it is too sloppy then the performance of the algorithm is impaired. Different
 are needed for different potentials. {\it BASIN} can be used instead.
 
 \ksec{SORT}{}: for pairwise potentials the atoms can be sorted from most to least
-strongly bound. The {\it SORT} keyword enables this sorting for the coordinates printed
+strongly bound. The {\keyw{SORT}} keyword enables this sorting for the coordinates printed
 in file {\tt lowest}. This can be useful for seeding subsequent runs by removing the
 most weakly bound atoms. This sort is not set by default and is meaningless if the
 pair energies are not computed.
 
 \ksec{STAR}{}: specifies an excited state calculation for Ar$^*_n$ or Ne$^*_n$ for
-a diatomics-in-molecules potential when used with {\it NEON\/} or {\it ARGON\/}.
+a diatomics-in-molecules potential when used with {\keyw{NEON}\/} or {\keyw{ARGON}\/}.
 
 \ksec{STEP}{ step astep ostep block\/}: specifies the maximum step sizes. {\it step\/} is
 for the maximum change of any Cartesian coordinate and {\it astep\/} specifies a tolerance
@@ -1201,7 +1201,7 @@ for rigid bodies. The default values for {\it step\/},
 {\it astep\/} and {\it ostep\/} are all 0.3 and the default value of {\it nblock\/} is zero.
 
 \ksec{STEEREDMIN}{ smink sminkinc smindiststart smindistfinish sminatoma sminatomb\/}: specified steered 
-minimisation should be performed (must be used with {\it AMBER9}). For a protein/ligand system, this adds a translation
+minimisation should be performed (must be used with {\keyw{AMBER9}}). For a protein/ligand system, this adds a translation
 to the MC move. The vector between the centre of coordinates of groups A and B (as defined in the file movableatoms)
 is calculated and set to {\it smindiststart}. During the following minimisation, a restoring force is applied to 
 the ligand. The harmonic force constant is initially zero, and rises by {\it sminkinc} every LBFGS step up to a
@@ -1251,12 +1251,12 @@ centre of mass distance of atom $i$ on the previous cycle.
 
 \ksec{TARGET}{ target1 target2 $\cdots$\/}: specifies any number of target energies. 
 The current run stops in an orderly
-fashion if the current quench energy is within {\it econv\/} of any target (see {\it EDIFF\/}).
+fashion if the current quench energy is within {\it econv\/} of any target (see {\keyw{EDIFF}\/}).
 
 \ksec{TEMPERATURE}{ temp\/}: defines the temperature, {\it temp\/}, at which the 
 MC runs are conducted. Different values can be specified for serial `parallel' runs if
-{\it PARALLEL} is set.
-For true parallel basin-hopping use the {\it BHPT\/} keyword and omit {\it TEMPERATURE\/}.
+{\keyw{PARALLEL}} is set.
+For true parallel basin-hopping use the {\keyw{BHPT}\/} keyword and omit {\keyw{TEMPERATURE}\/}.
 
 \ksec{TETHER}{ hdistconstraint hwindows ExtrapolationPercent lnHarmFreq}: requests a calculation of the vibrational density of
 states for a given minimum. {\it hdistconstraint} is the minimised average radius of the basin of attraction to which the minimum
@@ -1271,7 +1271,7 @@ therefore be different from all the other unit charges and is read as a real num
 
 % Doesn't appear to be coded?
 % \ksec{THRESHOLD}{ \/}: specifies threshold acceptance of steps. The change in potential energy must be
-% less than the value of the {\it TEMPERATURE\/} variable for a step to be accepted.
+% less than the value of the {\keyw{TEMPERATURE}\/} variable for a step to be accepted.
 
 \ksec{TIGHTCONV}{ cgmax\/}: cgmax is the tolerance for the
 RMS force in the final set of quenches that are used to produce
@@ -1282,10 +1282,10 @@ the output for file {\tt lowest}. The default is
 \ksec{TIP}{ n\/}: specifies a TIP{\it n\/}P intermolecular potential for rigid body water molecules.
 $\ \le n \le 5$.
 
-\ksec{TOLBRENT}{ tolb\/}: parameter for {\it DBRENT\/} minimisation. 
+\ksec{TOLBRENT}{ tolb\/}: parameter for {\keyw{DBRENT}\/} minimisation. 
 Inefficient compared to LBFGS.
 
-\ksec{TOMEGA}{}: used with the {\it CHARMM} keyword to specify that peptide bonds will be twisted along with all other dihedrals.
+\ksec{TOMEGA}{}: used with the {\keyw{CHARMM}} keyword to specify that peptide bonds will be twisted along with all other dihedrals.
 
 % \ksec{TN}{\/}: specifies a truncated Newton minimisation scheme. 
 % Inefficient compared to LBFGS.
@@ -1295,21 +1295,21 @@ with parameters $A_{++}$, $A_{--}$, $A_{+-}$ and $\rho$.
 
 \ksec{TRACKDATA}{}: produces `energy.dat' and `markov.dat' containing the quench number and 
 associated energy and markov energy in two columns and `best.dat', containing the current quench number and the current lowest
-total energy. If {\it RMS\/} is also specified, a file called `rmsd.dat' is produced containing the RMSD from a reference structure.
-See {\it RMS\/} for more information. This allows plotting with gnuplot to monitor convergence of multiple runs.
+total energy. If {\keyw{RMS}\/} is also specified, a file called `rmsd.dat' is produced containing the RMSD from a reference structure.
+See {\keyw{RMS}\/} for more information. This allows plotting with gnuplot to monitor convergence of multiple runs.
 If {\it A9INTE} is also specified, two additional output files are produced, `intE.dat' containing the quench number and associated interaction
 enthalpy, and `bestintE.dat' containing the quench number and current lowest interaction enthalpy. This keyword does not yet function for MPI runs.
 
 \ksec{TSALLIS}{ q\/}: specifies that steps are accepted/rejected using Tsallis statistics with the
 given value of {\it q\/}, rather than the usual Boltzmann condition.
 
-\ksec{TWOPLUS}{\/}: when combined with keywords {\it NEON\/} or {\it ARGON\/}
+\ksec{TWOPLUS}{\/}: when combined with keywords {\keyw{NEON}\/} or {\keyw{ARGON}\/}
 uses a diatomics-in-molecules potential for the doubly charged cation.
 
 \ksec{UACHIRAL}{\/}: MUST be included when using ff03ua, the AMBER united atom forcefield unless you have disabled the checks for inverted chiral carbons
- with {\it NOCHIRALCHECKS\/}. {\it UACHIRAL\/} ensures the correct impropers are used to define sidechain chirality when HB hydrogen is missing. 
+ with {\keyw{NOCHIRALCHECKS}\/}. {\keyw{UACHIRAL}\/} ensures the correct impropers are used to define sidechain chirality when HB hydrogen is missing. 
 
-\ksec{UPDATES}{ nup\/}: {\it UPDATES\/} is the number of previous steps saved in the LBFGS routine,
+\ksec{UPDATES}{ nup\/}: {\keyw{UPDATES}\/} is the number of previous steps saved in the LBFGS routine,
 default 4.
 
 \ksec{VGW}{ ljsigma ljepsilon taumaxsg taumaxfg}: Specifies use of VGW quantum quenching in place of
@@ -1337,7 +1337,7 @@ the modification factor, and not the histogram flatness criterion \cite{ZhouB03}
 \ksec{WELCH}{ $A_{++}\ A_{--}\ A_{+-}\ \rho\ Q_+\ Q_-\ \alpha_+\ \alpha_-$\/}: specifies a Welch binary
 salt potential with the parameters indicated.
 
-\ksec{ZETT}{1\/} and {\it ZETT2\/}: specify the Zetterling potentials.
+\ksec{ZETT}{1\/} and {\keyw{ZETT2}\/}: specify the Zetterling potentials.
 % </kwd>
 
 \section{Angular Steps}
@@ -1345,13 +1345,13 @@ salt potential with the parameters indicated.
 For pure pair potentials the total energy can be broken down into a sum of binding
 energies for the individual atoms. This is coded for the Morse and LJ potentials.
 If the binding energy of any atom is lower than that of the most tightly bound atom
-multiplied by the variable {\it astep\/} (see the {\it STEP\/} command above) then
+multiplied by the variable {\it astep\/} (see the {\keyw{STEP}\/} command above) then
 that atom is randomly replaced on the sphere of radius equal to that of the atom furthest
 from the centre of mass. Hence if {\it astep\/} is zero angular steps will never be taken,
 and the closer this parameter is to one the more atoms will undergo such displacements.
 If the step sizes are adjusted to give the required acceptance ratio then both {\it step\/} and
 {\it astep\/} are multiplied or divided by $1.05$ every {\it naccept\/} steps depending
-upon the current acceptance ratio. If {\it FIXSTEP\/} has been specified then the temperature
+upon the current acceptance ratio. If {\keyw{FIXSTEP}\/} has been specified then the temperature
 is adjusted in the same way and {\it step\/} and {\it astep\/} are unchanged.
 
 % <systems>
@@ -1360,20 +1360,20 @@ is adjusted in the same way and {\it step\/} and {\it astep\/} are unchanged.
 \subsection{AMBER}
 
 Specifies the AMBER force field. Coordinates are read from file {\tt coords.amber}.
-See also associated keywords {\it PMAX\/}, {\it PMIN\/}, {\it NMAX\/}, {\it NMIN\/},
-{\it SIDESTEP\/}, {\it RCUTOFF\/}, {\it QCUTOFF\/} and {\it FAKEWATER\/}.
+See also associated keywords {\keyw{PMAX}\/}, {\keyw{PMIN}\/}, {\keyw{NMAX}\/}, {\keyw{NMIN}\/},
+{\keyw{SIDESTEP}\/}, {\keyw{RCUTOFF}\/}, {\keyw{QCUTOFF}\/} and {\keyw{FAKEWATER}\/}.
 
 \subsection{Binary Lennard-Jones}
 
-If the {\it BINARY\/} keyword is specified then a binary Lennard-Jones
-potential is used\cite{sastryds98}. {\it PERIODIC\/} must also be
+If the {\keyw{BINARY}\/} keyword is specified then a binary Lennard-Jones
+potential is used\cite{sastryds98}. {\keyw{PERIODIC}\/} must also be
 specified. Reduced units are used with $\epsilon_{\rm AA}=\sigma_{AA}=1$.
-{\it BLJCLUSTER\/} specifies a binary Lennard-Jones cluster.
+{\keyw{BLJCLUSTER}\/} specifies a binary Lennard-Jones cluster.
 
 \subsection{BLN Off-Lattice Protein Model}
 \label{sec:BLN}
 
-The general three-colour bead protein model is specified by keyword {\it BLN}.
+The general three-colour bead protein model is specified by keyword {\keyw{BLN}}.
 The potential follows the form described in
 {\it Proc.~Natl.~Acad.~Sci.~USA}, {\bf 100}, 10712, 2003, expect that
 the coefficients $A_i$, $B_i$, $C_i$ and $D_i$ include a factor of $\epsilon$
@@ -1436,19 +1436,19 @@ parts of the structure.\cite{BrownFH03}
 \subsection{Diatomics-in-Molecules}
 
 At present diatomics-in-molecules (DIM) potentials are available for various
-clusters, which are specified by the line {\it ARGON\/}, {\it NEON\/},
-{\it ARNO} or {\it RGCL2\/} in {\tt data}.
+clusters, which are specified by the line {\keyw{ARGON}\/}, {\keyw{NEON}\/},
+{\keyw{ARNO}} or {\keyw{RGCL2}\/} in {\tt data}.
 Further keywords specify the precise nature of the system for argon or
 neon clusters: {\it NEUTRAL\/} for ground state neutral
-clusters, {\it PLUS\/} for a single positive charge, {\it TWOPLUS\/} for a double positive
-charge, {\it STAR\/} for an electronic excited state and {\it DIPOLES\/} for the first order
+clusters, {\keyw{PLUS}\/} for a single positive charge, {\keyw{TWOPLUS}\/} for a double positive
+charge, {\keyw{STAR}\/} for an electronic excited state and {\keyw{DIPOLES}\/} for the first order
 induction energy in a charged system. Rare gas-Cl$_2$ and Ar$_N$-NO DIM potentials
-are specified by the {\it RGCL2\/} keyword.
+are specified by the {\keyw{RGCL2}\/} keyword.
 
 \subsection{DFT-based tight-binding}
 
-If the {\it DFTB\/} keyword is specified then a DFT-based tight-binding potential
-is used. See also the {\it MULTIPLICITY\/} keyword.
+If the {\keyw{DFTB}\/} keyword is specified then a DFT-based tight-binding potential
+is used. See also the {\keyw{MULTIPLICITY}\/} keyword.
 
 \subsection{LB2}
 
@@ -1461,8 +1461,8 @@ where $\epsilon$ and $\sigma$ are set to unity.
 
 \subsection{Farkas}
 
-The Farkas potentials for aluminium and nickel are specified by keywords {\it FAL\/} and
-{\it FNI\/}, respectively.
+The Farkas potentials for aluminium and nickel are specified by keywords {\keyw{FAL}\/} and
+{\keyw{FNI}\/}, respectively.
 
 \subsection{Lennard-Jones}
 
@@ -1471,37 +1471,37 @@ assumed with $\epsilon=\sigma=1$.
 
 \subsection{Morse}
 
-This potential is specified by the line {\it MORSE rho\/} in {\tt data} and gives a
+This potential is specified by the line {\keyw{MORSE} rho\/} in {\tt data} and gives a
 a Morse potential with $D=r_e=1$. 
 The remaining range parameter,\cite{braierbw90,doyewb95,doyew96a} $\rho$, has a default 
 value of six.
 
 \subsection{P46}
 
-Keyword {\it P46\/} specifies a 46-bead three-colour model polypeptide. 
+Keyword {\keyw{P46}\/} specifies a 46-bead three-colour model polypeptide. 
 See also the more general implementation of the BLN model in \S \ref{sec:BLN}.
 
 \subsection{Stillinger-Weber Si}
 
-Specified by the keyword {\it SW\/}.
+Specified by the keyword {\keyw{SW}\/}.
 
 \subsection{Sutton-Chen}
 
-These potentials\cite{suttonc90} are specified by the line {\it SC nn mm sig sceps scc\/} in {\tt data},
+These potentials\cite{suttonc90} are specified by the line {\keyw{SC} nn mm sig sceps scc\/} in {\tt data},
 as described above. 
 
 \subsection{Tight-binding}
 
-Tight-binding potentials for silicon are specified by the keywords {\it MSORIG\/} 
-and {\it FRAUSI\/}.
+Tight-binding potentials for silicon are specified by the keywords {\keyw{MSORIG}\/} 
+and {\keyw{FRAUSI}\/}.
 These potentials also understand the 
-keywords {\it PERIODIC\/} and {\it CUTOFF\/} which enable calculations on bulk material
+keywords {\keyw{PERIODIC}\/} and {\keyw{CUTOFF}\/} which enable calculations on bulk material
 to be performed and a cutoff to be imposed on either cluster or bulk calculations.
-Keyword {\it ANGSTROM\/} specifies coordinates in \AA ngstrom rather than bohr.
+Keyword {\keyw{ANGSTROM}\/} specifies coordinates in \AA ngstrom rather than bohr.
 
 \subsection{TIP{\it n\/}P Water}
 
-The TIP{\it n\/}P intermolecular water potentials are specified by the keyword {\it TIP\/}.
+The TIP{\it n\/}P intermolecular water potentials are specified by the keyword {\keyw{TIP}\/}.
 {\it n\/}=1 through 5 are currently coded. For $N$ water molecules the first $N$ lines of
 the {\tt coords} file are the coordinates of a reference origin in each of $N$ rigid molecules,
 and the next $N$ lines are angle-axis coordinates. The same convention is used in the output
@@ -1509,7 +1509,7 @@ file {\tt lowest}. The lowest minima are also dumped in xyz format in the file {
 
 \subsection{Tosi-Fumi}
  
-Keyword {\it TOSI\/} specifies a Born-Mayer potential of the form
+Keyword {\keyw{TOSI}\/} specifies a Born-Mayer potential of the form
 $$ E = \sum_{i<j}\left[ {q_i q_j\over r_{ij}} + A_{ij}\exp(-r_{ij}/\rho) \right]. $$
 The sum runs over all ions. Tosi-Fumi\cite{tosif64} parameters in atomic units should be
 entered after the Tosi keyword in the order $A_{++}$, $A_{--}$, $A_{+-}$, $\rho$.
@@ -1544,7 +1544,7 @@ and can be in any order. There need not be equal numbers of positive and negativ
 \section{Example {\tt data} Files}
 
 A basin-hopping run of 10,000 MC steps at reduced temperature $0.8$ for the Lennard-Jones potential
-with a constant temperature specified by the `1.0' on the {\it STEPS\/} line.
+with a constant temperature specified by the `1.0' on the {\keyw{STEP}S\/} line.
 Seeding occurs for the first 100 steps, so a file {\tt seed} is required in the 
 working directory. The final quenches to produce the output in {\tt lowest} are much
 tighter than the relatively `sloppy' quenches for the basin-hopping run (compare the
@@ -1615,7 +1615,7 @@ separated into $50$ bins of width $0.25$ each. The
 starting modification factor and target number of WL iterations are 
 {\it histfac} =$ 1.01$ and {\it targetwl} =$ 10$. A square root function
 will  be used for decreasing the modification factor upon completion of each WL iteration, 
-and the convergence schedule is regulated by {\it VISITPROP}.  
+and the convergence schedule is regulated by {\keyw{VISITPROP}}.  
 
 
 \medskip
@@ -1643,11 +1643,11 @@ VISITPROP \\
 
 \subsection{12/10/10}
 Changed to a more flexible scheme for atoms that must move together when
-{\it PERMDIST\/} is pecified, in line with OPTIM and PATHSAMPLE.
+{\keyw{PERMDIST}\/} is pecified, in line with OPTIM and PATHSAMPLE.
 
 \subsection{2/11/07}
 Implementation of minimum image convention in distance minimisation.
-{\it PERMDIST} keyword now made consistent with OPTIM and PATHSAMPLE
+{\keyw{PERMDIST}} keyword now made consistent with OPTIM and PATHSAMPLE
 using {\tt perm.allow} file.
 
 \subsection{31/12/06}
@@ -1660,37 +1660,37 @@ parallel tempering basin-hopping algorithms implemented.
 \item GMIN.2.0 recoded in fortran90 by Tetyana Bogdan and DJW. All arrays are now dynamically allocated.
 \item Basin-sampling procedure programmed by DJW and developed by Tetyana Bogdan. See the new
 {\it HISTOGRAM} keyword.
-\item Interface to CHARMM added by David Evans and DJW. See keyword {\it CHARMM} and its associated 
+\item Interface to CHARMM added by David Evans and DJW. See keyword {\keyw{CHARMM}} and its associated 
 parameters. Internal coordinate minimisation (written by David Evans and developed by Joanne Carr) 
-is specified by keyword {\it INTMIN}.
+is specified by keyword {\keyw{INTMIN}}.
 \item Exploitation of approximate symmetry introduced through {\it SYMMETRY} keyword.
 \item Bipartite matching implemented for matching closest permutational isomers
 (thanks to Tomas Oppelstrup). Now used with 
-the {\it PERMDIST} keyword, as well as the new taboo-type procedure introduced through keyword {\it AVOID}.
-\item Cooperative moves introduced via keyword {\it COOPMOVE}.
-\item Various new potentials have been added: {\it NATB} specifies a tight-binding potential
-for sodium (can be guided by {\it GUPTA 21}); various Gupta potentials; Stockmeyer; sticky patches, etc.
+the {\keyw{PERMDIST}} keyword, as well as the new taboo-type procedure introduced through keyword {\keyw{AVOID}}.
+\item Cooperative moves introduced via keyword {\keyw{COOPMOVE}}.
+\item Various new potentials have been added: {\keyw{NATB}} specifies a tight-binding potential
+for sodium (can be guided by {\keyw{GUPTA} 21}); various Gupta potentials; Stockmeyer; sticky patches, etc.
 \end{itemize}
 
 \subsection{22/6/03}
 \begin{itemize}
-\item Support for rigid bodies added, e.g.~potentials {\it TIP\/}, {\it CAPSID\/} and {\it OTP\/}.
+\item Support for rigid bodies added, e.g.~potentials {\keyw{TIP}\/}, {\keyw{CAPSID}\/} and {\keyw{OTP}\/}.
 The centre-of-mass and angle-axis derivatives are calculated in subroutine {\tt rigidfunc.f}, so for pairwise
 site-site potentials all that is needed are additional statement functions for these potentials and their
 first derivative with respect to the distance.
-\item Guiding potentials changed. The new keyword {\it GUIDE\/} allows specification of a parameter,
+\item Guiding potentials changed. The new keyword {\keyw{GUIDE}\/} allows specification of a parameter,
 {\it guidecut\/}, the RMS force below which the real potential is used. 
 \item Glue potential for lead added.
-\item Keyword {\it TSALLIS\/} introduced for an alternative to the Metropolis
+\item Keyword {\keyw{TSALLIS}\/} introduced for an alternative to the Metropolis
 accept/reject step with Boltzmann statistics.
-\item Keywords {\it BINARY\/}, {\it BLJCLUSTER\/} and {\it SHIFTCUT\/} introduced for binary LJ systems,
-{\it ZETT1\/} and {\it ZETT2\/} for Zetterling potentials, {\it FAL\/} and {\it FNI\/} for Farkas Al and Ni
-potentials, {\it ARNO\/}, {\it MULTIPLICITY\/} for {\it DFTB\/} and 
-{\it AXTELL\/} for an additive Axilrod-Teller contribution.
-Keywords {\it NEWJUMP\/} and {\it PNEWJUMP\/} for parallel runs with parallel tempering-like jumps
-and {\it JUMPMOVE\/} for jump-walking parallel runs.
-Keyword {\it TABOO\/} for runs with a taboo list.
-\item Keyword {\it PERMDIST\/} added for runs that minimise the distance between two structures by permuting
+\item Keywords {\keyw{BINARY}\/}, {\keyw{BLJCLUSTER}\/} and {\keyw{SHIFTCUT}\/} introduced for binary LJ systems,
+{\keyw{ZETT1}\/} and {\keyw{ZETT2}\/} for Zetterling potentials, {\keyw{FAL}\/} and {\keyw{FNI}\/} for Farkas Al and Ni
+potentials, {\keyw{ARNO}\/}, {\keyw{MULTIPLICITY}\/} for {\keyw{DFTB}\/} and 
+{\keyw{AXTELL}\/} for an additive Axilrod-Teller contribution.
+Keywords {\keyw{NEWJUMP}\/} and {\it PNEWJUMP\/} for parallel runs with parallel tempering-like jumps
+and {\keyw{JUMPMOVE}\/} for jump-walking parallel runs.
+Keyword {\keyw{TABOO}\/} for runs with a taboo list.
+\item Keyword {\keyw{PERMDIST}\/} added for runs that minimise the distance between two structures by permuting
 atoms.
 
 \end{itemize}
@@ -1701,9 +1701,9 @@ atoms.
       of Jorge Nocedal\cite{lbfgs}.
 \item The convergence for {\it SLOPPYCONV\/} and {\it TIGHTCONV\/} is now
       based only on the RMS gradient. The energy change condition has gone.
-\item New parameters for the LBFGS routine. {\it PRINTLEVEL\/} sets the 
-      print level parameters, {\it UPDATES\/} the number of LBFGS updates
-      before resetting and {\it GTOL\/} the tolerance for line minimisation.
+\item New parameters for the LBFGS routine. {\keyw{PRINT}LEVEL\/} sets the 
+      print level parameters, {\keyw{UPDATES}\/} the number of LBFGS updates
+      before resetting and {\keyw{GT}OL\/} the tolerance for line minimisation.
 \end{itemize}
 
 \chapter{OPTIM}
@@ -1837,8 +1837,8 @@ coded by Dr Mihai-Cosmin Marinica.
 {\it id} specifies the particular metal: 1 is ?, 2 is ?, 3 is ?, 4 is ?, 5 is iron, 6 is a different iron,
 7 is tungsten.
 Positive values for {\it id} specify periodic boundary conditions, where box lengths must be
-specified by the {\it PERIODIC\/} keyword. 
-% Negative values for {\it id\/} specify a cluster calculation. A {\it CUTOFF\/} value can also
+specified by the {\keyw{PERIODIC}\/} keyword. 
+% Negative values for {\it id\/} specify a cluster calculation. A {\keyw{CUTOFF}\/} value can also
 % be used for clusters.
 
 \ksec{ADM}{ n}: will cause the
@@ -1871,11 +1871,11 @@ starting coordinates.
 To turn on smooth cutoffs for the Generalised Born force fields, the keyword 
 {\it ifswitch=1} has to be used in the {\it \&cntrl} namelist block of {\it min.in}.
 When using the {\keyw{AMBER}9} keyword, any calculated second derivatives will be 
-numerical. If one wants analytical second derivatives, the {\it NAB} keyword 
+numerical. If one wants analytical second derivatives, the {\keyw{NAB}} keyword 
 should be used instead, with the same syntax. The NAB interface does not 
 currently support smooth cutoffs, so analytical second derivatives are only 
 recommended for stationary points calculated with large cutoffs.
-Additional keywords for the AMBER 9 runs are {\it NAB} and {\it DUMPSTRUCTURES}.
+Additional keywords for the AMBER 9 runs are {\keyw{NAB}} and {\keyw{DUMP}STRUCTURES}.
 
 \ksec{AMBERIC}{}: interpolation in bhinterp with internal coordinates. If BACKBONE specified additionally (AMBERIC BACKBONE) the protein backbone is also interpolated in internals. Does not work for polymers.
 
@@ -2011,7 +2011,7 @@ and {\it epsab\/}=$\epsilon_{\rm AB}$, {\it epsbb\/}=$\epsilon_{\rm BB}$,
 \ksec{BISECT}{ dthresh maxe bisectsteps attempts ICINTERP\/}: specifies 
 the {\keyw{BISECT}} interpolation option,
 where no transition state searches are run. 
-This option is intended for use with {\it DUMMYTS} in {\tt PATHSAMPLE}.
+This option is intended for use with {\keyw{DUMMYTS}} in {\tt PATHSAMPLE}.
 The distance threshold parameter specifies that bisection between consecutive minima
 should occur if their minimum distance is greater than {\it dthresh}.
 The interpolated geometry is minimised and compared with the starting structures.
@@ -2360,7 +2360,7 @@ final geometry.
 found during a {\keyw{CONNECT}} or \keyw{NEWCONNECT} run to
 file {\tt path.info}. For each stationary point the energy, point group order and symbol, 
 Hessian eigenvalues and coordinates are given. Hessian eigenvalues are computed
-for all stationary points. This min-sad-min format corresponds to the {\it TRIPLES\/}
+for all stationary points. This min-sad-min format corresponds to the {\keyw{TRIPLES}\/}
 keyword in the {\tt PATHSAMPLE} program.
 
 \ksec{DUMPDATA}{\/}: creates a file in {\tt PATHSAMPLE} {\tt min.data} format for the minimum found
@@ -2700,7 +2700,7 @@ Lapack routine {\tt DSYEVR} is now used throughout instead.
 prior to DNEB interpolation using local alignment.
 {\it thresh} is used to define the tolerance for a `perfect' alignment
 in routine {\bf minpermdist}, which is called for subsets of atoms
-rather than all at the same time for {\it PERMDIST}.
+rather than all at the same time for {\keyw{PERMDIST}}.
 The threshold used is actually the number of atoms in the permutable
 group in question times {\it thresh\/}.
 The routine {\bf minpermrb} cycles through the permutable groups,
@@ -2735,11 +2735,11 @@ a time.
 
 Scripts to generate allowed permutations automatically for CHARMM and AMBER are available from
 the group web site. It is essential to use symmetrised versions of the corresponding
-force fields! See the {\it PERMDIST\/} keyword for example {\tt perm.allow} file entries.
+force fields! See the {\keyw{PERMDIST}\/} keyword for example {\tt perm.allow} file entries.
 
 \ksec{LOWESTFRQ}{\/}: specifies that the lowest positive eigenvalues associated
 with the Hessian and mass-weighted Hessian should be calculated and written to {\tt min.data.info\/}.
-These eigenvalues can then be used in combination with {\it DUMMYTS\/} in {\tt PATHSAMPLE}
+These eigenvalues can then be used in combination with {\keyw{DUMMYTS}\/} in {\tt PATHSAMPLE}
 to estimate the energy and frequency factor associated with dummy transition states.
 The {\keyw{LOWESTFRQ}} keyword must appear in {\tt odata.bhinterp} or {\tt odata.bisect} for
 such jobs, along with {\keyw{DUMPDATA}} and {\keyw{BHINTERP}} or {\keyw{BISECT}}.
@@ -2875,8 +2875,8 @@ DNEB runs. The default is 100, which may be larger than the optimal
 value for some systems.
 
 \ksec{NEBREADGUESS}{ file \/}: initial images for DNEB are read from file {\it file} 
-in xyz format, as dumped by {\it DUMPNEBXYZ\/}, to allow for restart from the last 
-step, if {\it DUMPNEBXYZ 1\/} is set. 
+in xyz format, as dumped by {\keyw{DUMP}NEBXYZ\/}, to allow for restart from the last 
+step, if {\keyw{DUMP}NEBXYZ 1\/} is set. 
 
 \ksec{NEWCONNECT}{ NConMax NTriesMax ImageDensity IterDensity ImageMax ImageIncr RMStol\/}: 
 specifies the new connection algorithm described by Trygubenko and Wales.\cite{TrygubenkoW04}
@@ -2898,13 +2898,13 @@ DNEB in terms of a density. The actual value used is {\it IterDensity\/}$\times$
 number of images.
 % separation between the two minima. 
 The default value of {\it IterDensity\/} is 30.0.
-{\it RMStol\/} is the convergence condition for the RMS DNEB force on all the
+{\keyw{RMS}tol\/} is the convergence condition for the RMS DNEB force on all the
 images. 
 
 \ksec{NEWNEB}{ Nimage NIterMax RMSTol\/}:
 specifies that the DNEB algorithm\cite{TrygubenkoW04} 
 should be used for a double-ended transition state search.
-{\it Nimage\/}, {\it NIterMax\/} and {\it RMSTol} are the number of images, the maximum
+{\it Nimage\/}, {\it NIterMax\/} and {\keyw{RMS}Tol} are the number of images, the maximum
 number of iterations and the RMS force convergence condition, respectively. 
 The default value for {\it Nimage\/} is 2 and there are no defaults for the other parameters.
 If \keyw{NEWCONNECT} is also specified then these values are used for the first \keyw{NEWCONNECT}
@@ -3198,7 +3198,7 @@ The operations are read in as the corresponding $3\times3$ matrices from a file
 {\tt rbsymops}, which must exist in the working directory.
 The first line of the file is an integer that specifies the number of operations; 
 the matrix elements are then read in one at a time in free format.
-This keyword can be combined with {\it PERMDIST\/} so that structures are aligned and
+This keyword can be combined with {\keyw{PERMDIST}\/} so that structures are aligned and
 a distance metric considered based on permutations of identical rigid
 bodies and any internal symmetry operation of each rigid body that is a symmetry
 of the potential energy function.
@@ -3268,7 +3268,7 @@ added to the Hamiltonian. Either constant angular momentum ({\keyw{ROT} JZ x\/})
 constant angular velocity ({\keyw{ROT} OMEGA x\/}) may be used to specify $J_z$
 or $\omega_z$.
 
-% \subsection {\it SAVECANDIDATES\/}: % unknown
+% \subsection {\keyw{SAVE}CANDIDATES\/}: % unknown
 
 \subsection{S}
 \ksec{SCALE}{ n\/}: sets the scaling algorithm for eigenvector-following
@@ -3363,12 +3363,12 @@ group determination. The default is 0.0001.
 with the parameters indicated (see \S\ref{sec:potentials}).
 
 \ksec{TOSIC}{6 c6pp c6mm c6pm\/}: specifies additional C6 dispersion coefficients
-for the {\it TOSI\/} potential. {\it c6pp, c6mm\/}, and  {\it c6pm\/} should be the values of the C6
+for the {\keyw{TOSI}\/} potential. {\it c6pp, c6mm\/}, and  {\it c6pm\/} should be the values of the C6
 parameters between positive ions, negative ions and positive and negative ions in atomic units
 (see \S\ref{sec:potentials}).
 
 \ksec{TOSIPOL}{ alphap alpham damp\/}: specifies cation and anion polarisabilities in atomic units
-and a damping parameter for the {\it TOSI\/} potential (see \S\ref{sec:potentials}).
+and a damping parameter for the {\keyw{TOSI}\/} potential (see \S\ref{sec:potentials}).
 
 \ksec{TRAD}{ x\/}: sets the trust radius (see \S\ref{sec:scaling}). The default value is 2.0.
 
@@ -3687,7 +3687,7 @@ The sum runs over all ions. Tosi-Fumi\cite{tosif64} parameters in atomic units s
 entered after the Tosi keyword in the order $A_{++}$, $A_{--}$, $A_{+-}$, $\rho$.
 The ions are then specified using atom types PL and MI for plus and minus, respectively,
 and can be in any order. There need not be equal numbers of positive and negative ions.
-C6 dispersion coefficients can be optionally added with the keyword {\it TOSIC6 c6pp c6mm c6pm\/},
+C6 dispersion coefficients can be optionally added with the keyword {\keyw{TOSI}C6 c6pp c6mm c6pm\/},
 where {\it c6pp, c6mm\/}, and  {\it c6pm\/} should be the values of the C6 parameters between positive ions,
 negative ions and positive and negative ions in atomic units. First order induction energy
 can be added with the keyword {\keyw{TOSIPOL} alphap alpham damp\/} where {\keyw{ALPHA}P\/} and
@@ -4351,13 +4351,13 @@ point databases in order to produce samples that are kinetically relevant.
 The main difference from {\tt PATHSAMPLE.2.0} is that the geometrical test for
 distinguishing stationary points has been changed to use the minimum distance.
 This usage is consistent with {\tt OPTIM} and the tolerance is set using the
-keyword {\it GEOMDIFFTOL}. Subsequent enhancements of the code are not implemented
+keyword {\keyw{GEOMDIFFTOL}}. Subsequent enhancements of the code are not implemented
 in {\tt PATHSAMPLE.2.0}.
 
 {\tt PATHSAMPLE} relies upon {\tt OPTIM} \cite{optim} to perform geometry optimisation, 
 especially double-ended searches for pathways between specified minima. 
 In the simplest case, all the {\tt OPTIM} calls will be Dijkstra connect runs
-\cite{CarrTW05} (this is the case if the {\it CONNECTIONS} parameter is less than or equal to one,
+\cite{CarrTW05} (this is the case if the {\keyw{CONNECT}IONS} parameter is less than or equal to one,
 see \S \ref{sec:keywords}).
 Please refer to the {\tt OPTIM} documentation for full details of this program \cite{optim}.
 
@@ -4377,31 +4377,31 @@ new paths by perturbing old ones.
 \section{Recent Changes}
 \label{sec:latest}
 
-The {\it NGT} keyword has been added for a new graph transformation procedure. 
+The {\keyw{NGT}} keyword has been added for a new graph transformation procedure. 
 This routine can calculate $k^{\rm SS}$, $k^{\rm NSS}$ and $k^{\rm KMC}$ for both
 $A\leftarrow B$ and $B\leftarrow A$, as well as committor probabilities, in one call.
 This is now the recommended way to calculate rate constants.
 
 The {\it DIJINIT\/} keyword has been replaced by two separate keywords,
-namely {\it DIJINITSTART\/} and {\it DIJINITCONT\/}, to simplify the generation of
+namely {\keyw{DIJINITSTART}\/} and {\keyw{DIJINITCONT}\/}, to simplify the generation of
 initial paths. 
 
-{\it DIJINITSTART\/} is intended for automatic setup of the {\tt min.A}, {\tt min.B},
+{\keyw{DIJINITSTART}\/} is intended for automatic setup of the {\tt min.A}, {\tt min.B},
 {\tt min.data}, {\tt ts.data}, {\tt points.ts} and {\tt points.min} files from initial
 {\tt odata.start} and {\tt odata.finish} files. In contrast to the previous 
-philosophy, {\it DIJINITSTART\/} will {\bf overwrite database files if they already exist}.
+philosophy, {\keyw{DIJINITSTART}\/} will {\bf overwrite database files if they already exist}.
 Hence it is possible to wipe an existing database with this keyword.
 
-{\it DIJINITCONT\/} is intended for continuation of initial path searches that have not yet 
+{\keyw{DIJINITCONT}\/} is intended for continuation of initial path searches that have not yet 
 completed. It can also be used to start a run if the required database entries for two
-end points have been created by hand. {\it DIJINITCONT\/} will check that the required
+end points have been created by hand. {\keyw{DIJINITCONT}\/} will check that the required
 files are present in the current working directory, and stop if they are not.
 
 The MFPT calculation for the fastest steady-state path (ignoring recrossings)
-in a {\it DIJKSTRA} calculation
+in a {\keyw{DIJKSTRA}} calculation
 has been changed to the graph transformation approach.\cite{TrygubenkoW06}
 
-The printing of rate constants at the end of a {\it GT\/} calculation has been changed
+The printing of rate constants at the end of a {\keyw{GT}\/} calculation has been changed
 to make it clear which values are calculated assuming that detailed balance holds.
 An extra summary line with the non-detailed balance rate constants is printed at the end.
 
@@ -4505,28 +4505,28 @@ file from a connect run that connects an A minimum to a B minimum.
 Note that an output file is not required, unlike older versions of {\tt PATHSAMPLE}.
 This file is needed to
 provide an initial path, and the file name startup is specified in the {\tt pathdata} file
-by the {\it STARTFROMPATH} keyword.
-If the files {\tt min.A} and {\tt min.B} are absent, then {\it STARTFROMPATH}
+by the {\keyw{STAR}TFROMPATH} keyword.
+If the files {\tt min.A} and {\tt min.B} are absent, then {\keyw{STAR}TFROMPATH}
 will create them, with a single minimum specified in each region, corresponding
-to the entries specified on the {\it STARTFROMPATH} line after the file extension
+to the entries specified on the {\keyw{STAR}TFROMPATH} line after the file extension
 startup.
 The rest of the minima read from the
 {\tt path.info.startup} file will be placed in the intervening set.
 Note that for {\tt path.info} files in the new {\tt OPTIM}
-{\it DUMPALLPATHS} format, the two end point minima will generally not
+{\keyw{DUMP}ALLPATHS} format, the two end point minima will generally not
 be the first and last entries.
 Since {\tt min.data} contains only unique minima, whereas the {\tt path.info} file may have
 duplicates, the positions of the starting and finishing minimum may not be obvious.
-A quick way to check these values is to run {\tt PATHSAMPLE} first with {\it CYCLES 0},
+A quick way to check these values is to run {\tt PATHSAMPLE} first with {\keyw{CYCLES} 0},
 find the positions of the two minima in {\tt min.data} and correct
 the values in {\tt pathdata}, remove {\tt min.*}, {\tt points.*}
 and {\tt *.data}, and start the real {\tt PATHSAMPLE} run.
-If the {\tt path.info.startup} file is in the new {\it DUMPALLPATHS} format
-then {\tt pathdata} must contain the keyword {\it STARTTRIPLES}.
+If the {\tt path.info.startup} file is in the new {\keyw{DUMP}ALLPATHS} format
+then {\tt pathdata} must contain the keyword {\keyw{STAR}TTRIPLES}.
 For a setup where the A and B sets are predefined in {\tt min.A} and {\tt min.B}
-a connecting pathway can be read using the keyword {\it ADDPATH add} in {\tt pathdata}.
+a connecting pathway can be read using the keyword {\keyw{ADDPATH} add} in {\tt pathdata}.
 A path will then be read from file {\tt add}; if this path is
-in the new {\it DUMPALLPATHS} format then the keyword {\it ADDTRIPLES} must
+in the new {\keyw{DUMP}ALLPATHS} format then the keyword {\keyw{ADDTRIPLES}} must
 be present in {\tt pathdata}.
 \end{itemize}
 
@@ -4543,7 +4543,7 @@ real and character data, respectively. A line beginning with {\it COMMENT} is ig
 \subsection{A}
 
 \ksec{ADDPATH}{ afile \/}: reads pathway data from file {\tt afile}. If this 
-file is in {\it DUMPALLPATHS} format then the keyword {\it ADDTRIPLES} is also needed.
+file is in {\keyw{DUMP}ALLPATHS} format then the keyword {\keyw{ADDTRIPLES}} is also needed.
 
 
 \ksec{ADDPERM}{\/}: adds permutational isomers of every 
@@ -4551,8 +4551,8 @@ stationary point to the databases. Not recommended except for small systems
 where you are using a tagged atom to study an isomerisation (e.g. 2D LJ7).
 
 \ksec{ADDTRIPLES}{ \/}: specifies that the {\tt afile} file to be read
-according to the {\it ADDPATH afile} keyword is in 
-{\it DUMPALLPATHS} format.
+according to the {\keyw{ADDPATH} afile} keyword is in 
+{\keyw{DUMP}ALLPATHS} format.
 
 \ksec{ANGLEAXIS}{ \/}: specifies angle-axis coordinates for rigid bodies.
 
@@ -4576,10 +4576,10 @@ Input structure is amhmin.pdb. Output structure is amhmin.pdb.scwrl. Scwrl outpu
 
 \subsection{B-C}
 \ksec{BHINTERP}{ dthresh maxe bhsteps conv T stepsize accrat K sfrac ICINTERP\/}: specifies that
-{\tt OPTIM} jobs should be run using only the {\it BHINTERP} interpolation option,
+{\tt OPTIM} jobs should be run using only the {\keyw{BHINTERP}} interpolation option,
 where no transition state searches are run. Requires the auxiliary file {\tt odata.bhinterp}.
-This option is intended for use with {\it DIJINITSTART} and {\it DIJINITCONT}.
-The various arguments are used to add a {\it BHINTERP} line to the {\tt OPTIM} {\tt odata} file.
+This option is intended for use with {\keyw{DIJINITSTART}} and {\keyw{DIJINITCONT}}.
+The various arguments are used to add a {\keyw{BHINTERP}} line to the {\tt OPTIM} {\tt odata} file.
 The distance threshold parameter specifies that interpolation between consecutive minima
 in the Dijkstra list should occur if their minimum distance is greater than {\it dthresh}. 
 The threshold actually used in the corresponding {\tt odata} file is either the minimum distance
@@ -4609,10 +4609,10 @@ currently trying to interpolate between are greater than the minimum distance
 between these minima.
 
 \ksec{BISECT}{ dthresh maxe bisectsteps attempts ICINTERP\/}: specifies that
-{\tt OPTIM} jobs should be run using only the {\it BISECT} interpolation option,
+{\tt OPTIM} jobs should be run using only the {\keyw{BISECT}} interpolation option,
 where no transition state searches are run. Requires the auxiliary file {\tt odata.bisect}.
-This option is intended for use with {\it DUMMYTS}.
-The various arguments are used to add a {\it BISECT} line to the {\tt OPTIM} {\tt odata} file.
+This option is intended for use with {\keyw{DUMMYTS}}.
+The various arguments are used to add a {\keyw{BISECT}} line to the {\tt OPTIM} {\tt odata} file.
 The distance threshold parameter specifies that bisection between consecutive minima
 is attempted if their minimum distance is greater than {\it dthresh}. 
 The interpolated geometry is minimised and compared with the starting structures.
@@ -4625,7 +4625,7 @@ greater than the original minimised distance.
 {\it attempts} is the number of attempts per step for a given pair.
 If minimisation leads to one of the end points the interpolation is changed to use 
 fractions of the two structures that become increasingly skewed, as for
-the adjustment of {\it sfrac\/} with {\it BHINTERP\/}, above.
+the adjustment of {\it sfrac\/} with {\keyw{BHINTERP}\/}, above.
 The {\tt ts.data} file is rewritten if the any dummy transition state energies are revised.
 If {\it ICINTERP\/} is present then amino acid side chains are interpolated using
 internal coordinates for CHARMM runs.
@@ -4644,8 +4644,8 @@ it is set to half $rad$ by default.
 if additional single-ended transition state searches are needed.
 
 \ksec{CHECKCONECTIONS}{\/}: instruction to check that each minimum has at least the number
-of connections specified by the {\it CONNECTIONS\/} keyword at the start of every run,
-before anything else is done. See {\it CONNECTIONS\/} below.
+of connections specified by the {\keyw{CONNECT}IONS\/} keyword at the start of every run,
+before anything else is done. See {\keyw{CONNECT}IONS\/} below.
 
 \ksec{CLOSEFILES}{\/}: open and close the {\tt min.data} and {\tt ts.data} files as needed.
 By default these files stay open all the time. For small systems this inevitably seems to cause
@@ -4679,13 +4679,13 @@ copied to distributed nodes. Only files {\tt odata.<pid>} and {\tt finish.<pid>}
 copied by default. For example, the BLN potential requires file {\tt BLN sequence}, while
 CHARMM runs may need one or more {\tt crd} files. Each string must be less than or equal to
 twenty characters in length, and the total, including separating blanks, must not exceed
-80 characters. If the {\it CHARMM\/} keyword is set and the {\it COPYFILES\/} 
+80 characters. If the {\keyw{CHARMM}\/} keyword is set and the {\keyw{COPYFILES}\/} 
 arguments do not include {\tt input.crd} then the program will stop.
 
 \ksec{COPYOPTIM}{\/}: if present, some of the {\tt OPTIM} output files will be copied to
-the mother superior node and not deleted. This behaviour also occurs if the {\it DEBUG\/}
+the mother superior node and not deleted. This behaviour also occurs if the {\keyw{DEBUG}\/}
 keyword is present. The copied files, in addition to {\tt path.info} ({\tt min.data.info} 
-for a {\it BHINTERP\/} run), are the {\tt OPTIM} output file, the {\tt odata} file
+for a {\keyw{BHINTERP}\/} run), are the {\tt OPTIM} output file, the {\tt odata} file
 and the {\tt finish} file.
 
 \ksec{CPUS}{ ncpu}: specifies the number of cpu's available on an SMP machine. If used on
@@ -4732,13 +4732,13 @@ The number of parallel searches is equal to the number of processors available.
 For the first cycle all the searches would be the same, because there must be a single 
 gap between the two end minima.
 To avoid unnecessary duplication it is best to perform an initial run on
-one processor, or a single node, for one cycle (see {\it DIJINITSTART\/} below). 
+one processor, or a single node, for one cycle (see {\keyw{DIJINITSTART}\/} below). 
 Then restart by simply increasing the number of cycles in the {\tt pathdata} file
 as well as the number of processors.
 In the Dijkstra analysis minima with zero connections are removed. 
-This value can be changed using a {\it DIJKSTRA n} line in {\tt pathdata}.
+This value can be changed using a {\keyw{DIJKSTRA} n} line in {\tt pathdata}.
 
-\ksec{DIJINITCONTFLY}{ exp or n\/}: performs the same function as {\it DIJINITCONT} but
+\ksec{DIJINITCONTFLY}{ exp or n\/}: performs the same function as {\keyw{DIJINITCONT}} but
 calculates distances between local minima on the fly. This approach may be necessary 
 for initial path runs that produce more that 20,000 minima, where fitting all the 
 distances into memory becomes an issue.
@@ -4749,7 +4749,7 @@ In this case the files {\tt min.A}, {\tt min.B}, {\tt min.data}, {\tt ts.data} (
 points files) will be created automatically.
 {\bf Any existing database information will be overwritten}.
 Note that the {\tt odata.start} and {\tt odata.finish} files must contain
-the {\tt OPTIM} keyword {\it DUMPDATA\/} and calculate the normal mode frequencies.
+the {\tt OPTIM} keyword {\keyw{DUMP}DATA\/} and calculate the normal mode frequencies.
 For a CHARMM run the files {\tt start.crd} and {\tt finish.crd} are also needed.
 The algorithm used is similar to {\tt OPTIM}, except that the missing connections can
 be sought in parallel {\tt OPTIM} runs, each of which is itself a separate
@@ -4764,7 +4764,7 @@ For the first cycle all the searches will be the same, because there must be a s
 gap between the two end minima.
 To avoid unnecessary duplication it is usual to perform the first cycle of an initial
 connection attempt on one processor for one cycle. 
-Then restart using {\it DIJINITCONT\/} 
+Then restart using {\keyw{DIJINITCONT}\/} 
 by simply increasing the number of cycles in the {\tt pathdata} file
 as well as the number of processors.
 For the first cycle it is also a good idea to use just one double-ended connection
@@ -4772,11 +4772,11 @@ cycle in {\tt odata.connect}, and increase this value on subsequent cycles
 when some intervening minima are known. 
 Otherwise the first {\tt OPTIM} job may spend a great deal of time performing
 connection attempts that could be spread over multiple processors in a
-{\tt PATHSAMPLE} {\it DIJINITCONT\/} job.
+{\tt PATHSAMPLE} {\keyw{DIJINITCONT}\/} job.
 In the Dijkstra analysis minima with zero connections are removed. 
-This value can be changed using a {\it DIJKSTRA n} line in {\tt pathdata}.
+This value can be changed using a {\keyw{DIJKSTRA} n} line in {\tt pathdata}.
 
-\ksec{DIJINITSTARTFLY}{ exp or n\/}: performs the same function as {\it DIJINITSTART} but
+\ksec{DIJINITSTARTFLY}{ exp or n\/}: performs the same function as {\keyw{DIJINITSTART}} but
 calculates distances between local minima on the fly. This approach may be necessary 
 for initial path runs that produce more that 20,000 minima, where fitting all the 
 distances into memory becomes an issue.
@@ -4784,7 +4784,7 @@ distances into memory becomes an issue.
 \ksec{DIJKSTRA}{ n\/}: perform a Dijkstra analysis to find the path
 with the largest contribution to the `SS' rate constant ignoring recrossings. Minima with
 {\it n} connections or fewer are pruned.
-If {\it REGROUPFREE}, {\it REGROUPRATE}, or {\it REGROUPPE} is present
+If {\keyw{REGROUP}FREE}, {\keyw{REGROUP}RATE}, or {\keyw{REGROUP}PE} is present
 in {\tt pathdata} then the stationary points will be regrouped first. In this
 case the energies in {\tt Epath} are free energies, and files such as
 {\tt redopoints} and {\tt stationary.points} are not produced.
@@ -4813,13 +4813,13 @@ that separates them. Otherwise they are sorted in order of increasing
 energy of the minimum that is separated from the product region.
 
 \ksec{DIRECTION}{ a\/}: the direction (`AB' or `BA') determines the sense in which KMC trajectories
-are run for {\it KMC} and {\it KMCcommit}. It also determines which state is the target
+are run for {\keyw{KMC}} and {\keyw{KMC}commit}. It also determines which state is the target
 in committor probability calculations. 
 
 \ksec{DSCALE}{ x\/}: specifies how the separation between local minima, {\it d}, is used
 to select the pair used in the next attempted connection. If
 $\exp(-(d-x)/x) < $ a random number drawn from $[0,1]$ then the distance criterion is accepted.
-There is also a criterion for the difference in committor probabilities (see {\it PSCALE}).
+There is also a criterion for the difference in committor probabilities (see {\keyw{PSCALE}}).
 If $d<x$ then the distance criterion is always satisfied; above $x$ the probability
 of acceptance decreases exponentially.
 
@@ -4828,12 +4828,12 @@ sleeps instead.
 
 \ksec{DUMMYTS}{\/}: specifies that dummy transition state entries should be created for
 selected pairs of minima. The corresponding database of minima and dummy transition states
-can be refined using any of the usual schemes, e.g.~{\it SHORTCUT\/}, {\it FREEPAIRS\/}, etc.
-Either {\it BHINTERP\/} or {\it BISECT\/} needs to be specified in the {\tt pathdata} file,
+can be refined using any of the usual schemes, e.g.~{\keyw{SHORTCUT}\/}, {\keyw{FREEPAIRS}\/}, etc.
+Either {\keyw{BHINTERP}\/} or {\keyw{BISECT}\/} needs to be specified in the {\tt pathdata} file,
 so that {\tt OPTIM} jobs only locate new local minima and feed them to {\tt PATHSAMPLE}
 via {\tt min.data.info} files.
 The dummy entries in {\tt ts.data} include connections for all nearest pairs of minima
-for {\it BHINTERP\/}, but only for successive pairs of minima with {\it BISECT\/}.
+for {\keyw{BHINTERP}\/}, but only for successive pairs of minima with {\keyw{BISECT}\/}.
 The dummy energy and log product of mass-weighted Hessian eigenvalues for each
 {\tt ts.data} entry are chosen according to properties of the two minima.
 The current energy estimate is the energy of the higher minimum plus the minimum distance
@@ -4841,7 +4841,7 @@ between the two minima.
 The estimate for the log product of eigenvalues simply rescales the value for the higher minimum,
 effectively removing one degree of freedom.
 At some point a decision must be made to start linking the minima via genuine transition
-states. To do this we use {\it USEPAIRS}, which reads a sequence of stationary points in
+states. To do this we use {\keyw{USEPAIRS}}, which reads a sequence of stationary points in
 the format of the {\tt Epath} file.
 The dummy {\tt ts.data} and {\tt pairs.data} files must be renamed or removed.
 
@@ -4851,15 +4851,15 @@ to files {\tt minima\_groups} and {\tt ts\_groups} following regrouping.
 
 \ksec{EDIFFTOL}{ x\/}: two stationary points will only be identified as the
 same structure if their energy difference is less than {\it x} and their minimum
-distance is less than the threshold specified by {\it GEOMDIFFTOL\/}.
-{\it ETOL\/} specifies the same parameter and is provided for backward compatibility.
+distance is less than the threshold specified by {\keyw{GEOMDIFFTOL}\/}.
+{\keyw{ETOL}\/} specifies the same parameter and is provided for backward compatibility.
 
 \ksec{ENERGY}{ x\/}: specifies that the microcanonical ensemble at energy {\it x\/} is to be used
-to calculate rate constants. Mutually exclusive with {\it TEMPERATURE\/}.
+to calculate rate constants. Mutually exclusive with {\keyw{TEMPERATURE}\/}.
 
 \ksec{ETOL}{ x\/}: energy difference criterion for distinguishing stationary points. 
-Used with {\it ITOL\/} in {\tt PATHSAMPLE.2.0\/} and {\it GEOMDIFFTOL\/} in
-{\tt PATHSAMPLE.2.1\/}. {\it EDIFFTOL\/} specifies the same parameter.
+Used with {\keyw{ITOL}\/} in {\tt PATHSAMPLE.2.0\/} and {\keyw{GEOMDIFFTOL}\/} in
+{\tt PATHSAMPLE.2.1\/}. {\keyw{EDIFF}TOL\/} specifies the same parameter.
 
 \ksec{EVCUT}{ x\/}: tolerance for Hessian eigenvalues or frequencies read from
 a {\tt path.info} file by the {\bf getallpaths} subroutine.
@@ -4869,19 +4869,19 @@ If an eigenvalue is detected that should belong to the positive set by lies belo
 \ksec{EXEC}{ a\/}: name of the {\tt OPTIM} executable to be called by {\tt PATHSAMPLE}.
 
 \ksec{EXTRACTMIN}{ n\/}: extract the coordinates of minimum {\it n} from
-{\tt points.min} and write them to file {\tt extractmin}. If the {\it CHARMM}
+{\tt points.min} and write them to file {\tt extractmin}. If the {\keyw{CHARMM}}
 keyword is present then a pdb format {\tt extractedmin.pdb} will also be
 produced. If $n\le0$ then all the minima are extracted to {\tt extractmin}.
 
 \ksec{EXTRACTTS}{ n\/}: extract the coordinates of minimum {\it n} from
 {\tt points.ts} and write them to file {\tt extractts}.
-If the {\it CHARMM}
+If the {\keyw{CHARMM}}
 keyword is present then a pdb format {\tt extractedts.pdb} will also be
 produced. If $n\le0$ then all the transition states are extracted to {\tt extractts}.
 
 \subsection{F-K}
 \ksec{FREEPAIRS}{ x1 x2 x3\/}: connection pairs are chosen based upon the same free energy
-regrouping scheme as {\it REGROUPFREE\/}.
+regrouping scheme as {\keyw{REGROUP}FREE\/}.
 {\it x1} corresponds to the free energy barrier height below which free energy
 minima are combined.
 Free energy minima that lie more than {\it x2} units of energy above the global
@@ -4896,12 +4896,12 @@ Local minima from these free energy groups are then chosen
 based upon an additional shortest distance criterion. 
 Searches are not repeated for the same potential energy minima.
 {\bf NOTE}: for this to work efficiently it is important to have the lowest
-minima specified in {\tt min.A} and {\it DIRECTION\/} set to AB, so that
+minima specified in {\tt min.A} and {\keyw{DIRECTION}\/} set to AB, so that
 the A minima are product, and lie at the bottom of the landscape.
-See also the {\it PAIRLIST\/} keyword.
+See also the {\keyw{PAIRLIST}\/} keyword.
 
 \ksec{FREEZE}{ n1 n1\ldots\/}: specifies that atoms $n1$, $n2\ldots$, should be frozen.
-This keyword must come after the {\it NATOMS\/} keyword.
+This keyword must come after the {\keyw{NATOMS}\/} keyword.
 
 \ksec{FRICTION}{ $\gamma$\/}: specifies that rate constants should be 
 calculated using the multi-dimensional version of Kramer's theory described by
@@ -4911,14 +4911,14 @@ must correspond to the units for the Hessian eigenvalue product in the
 {\tt ts.data} file. This formulation requires the imaginary normal mode
 frequency for each transition state, and the {\tt ts.data} file must therefore
 contain a ninth column corresponding to the unique negative Hessian eigenvalue.
-For the {\it CHARMM\/} and {\it AMBER\/} force fields this eigenvalue is the
+For the {\keyw{CHARMM}\/} and {\keyw{AMBER}\/} force fields this eigenvalue is the
 angular frequency squared in SI units, while for all other potentials it will
 be in reduced units. Such databases can be extended without using the `friction'
 formulation by setting the {\it IMFRQ\/} keyword (or by using $\gamma=0$).
 
 \ksec{GEOMDIFFTOL}{ x\/}: two stationary points will only be identified as the
 same structure if their minimum separation is less than {\it x} and their energy
-difference is less than the threshold specified by {\it EDIFFTOL\/}.
+difference is less than the threshold specified by {\keyw{EDIFF}TOL\/}.
 
 \ksec{GT}{ n1 n2\/}: specifies that the graph transformation approach\cite{TrygubenkoW06}
 should be used to calculate rate constants. 
@@ -4926,9 +4926,9 @@ Minima with {\it n1} connections or fewer are iteratively removed before the rat
 calculation. {\it n2} specifies that the rates should be calculated every {\it n2} cycles
 during the refinement of the stationary point database. For large databases making {\it n2} equal to one
 could slow the sampling down significantly.
-To run a GT calculation without changing the stationary point database set {\it CYCLES 0}.
-See keyword {\it GT2\/} for a more general implementation of graph transformation.
-The rates produced from the {\it GT} keyword correspond approximately to the
+To run a GT calculation without changing the stationary point database set {\keyw{CYCLES} 0}.
+See keyword {\keyw{GT}2\/} for a more general implementation of graph transformation.
+The rates produced from the {\keyw{GT}} keyword correspond approximately to the
 $k^{\rm NSS}$ rate constants \cite{TrygubenkoW06,Wales06}.
 Branching probabilities for return to the same initial state are set to zero,
 and all the other connections are renormalised accordingly. Hence the final branching
@@ -4938,12 +4938,12 @@ committor probabilities. In practice, the resulting rate constants generally see
 be close to the $k^{\rm NSS}$ values.
 
 \ksec{GT}{2 } This keyword has been removed. Please use {\it SGT},
-{\it DGT} or {\it SDGT}.
+{\it DGT} or {\keyw{SD}GT}.
 
 \ksec{GT}{2RSwitch x \/}: specifies that the generalised graph transformation
 routines switch from single to double precision when the density reaches {\it x\/}.
 The default value is $x=0.08$.
-See keyword {\it SDGT\/} and subroutine {\bf GT2} for more information. 
+See keyword {\keyw{SD}GT\/} and subroutine {\bf GT2} for more information. 
 
 \ksec{GT}{2PTOL x\/}: specifies the threshold for deciding that a node is dead
 in the generalised graph transformation routines. The default value is $x=0.00001$.
@@ -4951,14 +4951,14 @@ in the generalised graph transformation routines. The default value is $x=0.0000
 \ksec{IMFRQ}{\/}: specifies that the {\tt ts.data} file should contain a ninth 
 column containing the unique negative Hessian eigenvalue. This
 is the eigenvalue corresponding to the imaginary normal mode frequency.
-See also the {\it FRICTION\/} keyword, which implies the same format for
+See also the {\keyw{FRICTION}\/} keyword, which implies the same format for
 {\tt ts.data} and calculates the rate constants using a phenomenological
 description of dynamical solvent friction.
 
 \ksec{ITOL}{ x\/}: principal moment of inertia tensor difference criterion for 
 distinguishing stationary points. All three values are compared for stationary points
 in the initial setup phase. However, unlike {\tt PATHSAMPLE.2.0}, the alternative
-criterion specified by {\it GEOMDIFFTOL\/} is used to distinguish stationary points
+criterion specified by {\keyw{GEOMDIFFTOL}\/} is used to distinguish stationary points
 in {\tt PATHSAMPLE.2.1}.
 
 \ksec{JOBSPERNODE}{ jpn\/}: specifies the number of jobs to run on each node for a
@@ -4972,9 +4972,9 @@ branching probabilities between two minima.
 If {\it p} is greater than {\it x} then a leapfrog move will be attempted to a
 different connected minimum when either of the pair is encountered.
 Setting {\it p} to one or more means that leapfrog moves will not be used.
-No additional stationary points will be calculated in a {\it KMC}
-run: the {\it CYCLES} keyword is ignored if it is present in {\tt odata}.
-Only one of the {\it GT}, {\it GT2}, {\it KMC} and {\it KMCcommit} keywords should be
+No additional stationary points will be calculated in a {\keyw{KMC}}
+run: the {\keyw{CYCLES}} keyword is ignored if it is present in {\tt odata}.
+Only one of the {\keyw{GT}}, {\keyw{GT}2}, {\keyw{KMC}} and {\keyw{KMC}commit} keywords should be
 present in a given {\tt pathdata} file.
 
 \ksec{KMC}{commit n1 x1 x2 x3 x4 n2}: specifies a rate constant calculation using
@@ -5003,9 +5003,9 @@ Setting {\it p} to one or more means that leapfrog moves will not be used.
 {\it n2} determines the minimum connectivity allowed for local minima to be
 admitted into the calculation. The minima are iteratively pruned to remove those
 with {\it n2} connections or fewer.
-No additional stationary points will be calculated in a {\it KMCcommit}
-run: the {\it CYCLES} keyword is ignored if it is present in {\tt odata}.
-Only one of the {\it GT}, {\it GT2}, {\it KMC} and {\it KMCcommit} keywords should be
+No additional stationary points will be calculated in a {\keyw{KMC}commit}
+run: the {\keyw{CYCLES}} keyword is ignored if it is present in {\tt odata}.
+Only one of the {\keyw{GT}}, {\keyw{GT}2}, {\keyw{KMC}} and {\keyw{KMC}commit} keywords should be
 present in a given {\tt pathdata} file.
 
 \ksec{KSHORTESTPATHS}{ npaths nconnmin\/}: calculate the {\it npaths\/} paths
@@ -5018,9 +5018,9 @@ should be disregarded in this analysis.
 \ksec{LOWESTFRQ}{\/}: specifies that the lowest positive eigenvalues associated
 with the Hessian and mass-weighted Hessian should be read from {\tt min.data.info\/}
 files and recorded in {\tt min.data}.
-These eigenvalues can then be used in combination with {\it DUMMYTS\/}
+These eigenvalues can then be used in combination with {\keyw{DUMMYTS}\/}
 to estimate the energy and frequency factor associated with dummy transition states.
-The {\it LOWESTFRQ\/} keyword must also appear in {\tt odata.bhinterp} or {\tt odata.bisect}.
+The {\keyw{LOWESTFRQ}\/} keyword must also appear in {\tt odata.bhinterp} or {\tt odata.bisect}.
 The current estimate for dummy transition state parameters does not require these
 extra data.
 
@@ -5030,8 +5030,8 @@ binary rather than plain text.
 \ksec{MAXTSENERGY}{ x\/}: specifies that transition states above energy $x$ should
 not be included in the database. Probably most useful with CHARMM, where genuine 
 transition states with silly energies can certainly occur and give rise to underflow.
-This keyword performs the same function as {\it TSTHRESH\/}, and is provided because
-{\tt OPTIM} uses {\it MAXTSENERGY\/}.
+This keyword performs the same function as {\keyw{TSTHRESH}\/}, and is provided because
+{\tt OPTIM} uses {\keyw{MAXTSENERGY}\/}.
 
 \ksec{MERGEDB}{ dir\/}: merge the {\tt min.data}, {\tt min.ts}, {\tt points.min},
 {\tt points.ts}, {\tt min.A} and {\tt min.B} files from directory {\it dir} with
@@ -5042,8 +5042,8 @@ not repeated. Merged results are created corresponding to all six of the above f
 
 \ksec{NCONNMIN}{ n\/}: specifies that minima with {\it n} connections or fewer
 should be disregarded in regrouping and rate calculations. This parameter
-can be set via other keywords, but {\it NCONNMIN} is provided for use with
-{\it SGT}, {\it DGT} and {\it SDGT}.
+can be set via other keywords, but {\keyw{NCONNMIN}} is provided for use with
+{\it SGT}, {\it DGT} and {\keyw{SD}GT}.
 
 \ksec{NGT}{ nconnmin disconnectsources density size\/}: specifies that the new
 graph transformation approach should be used to calculate rate constants. 
@@ -5056,7 +5056,7 @@ The algorithm switches from sparse to dense storage when the number of connectio
 exceeds {\it density} times the maximum possible value, with the restriction that
 there must be {\it size} minima or fewer remaining. The default values for {\it density}
 and {\it size} are 0.3 and 11000.
-See also keyword {\it GT2\/} for the original graph transformation calculation of $k^{\rm KMC}$.
+See also keyword {\keyw{GT}2\/} for the original graph transformation calculation of $k^{\rm KMC}$.
 
 \ksec{NINTS}{ n\/}: the number of internal coordinates; required for runs 
 with the UNRES potential. 
@@ -5072,10 +5072,10 @@ The log product of positive eigenvalues is set to unity where it is read in from
 \ksec{PAIRLIST}{ n\/}: specifies that the list of minima for subsequent connection attempts
 should be regenerated every {\it n\/} cycles. The default is for the list to remain
 fixed throughout the run unless we run out of candidates. This option has been 
-implemented for the {\it FREEPAIRS\/}, {\it SHORTCUT\/}, {\it UNTRAP\/} and
-{\it DIJPAIR} keywords and for the default connection
+implemented for the {\keyw{FREEPAIRS}\/}, {\keyw{SHORTCUT}\/}, {\keyw{UNTRAP}\/} and
+{\keyw{DIJPAIR}} keywords and for the default connection
 strategy based on differences in the committor probability. It has not been 
-implemented for the {\it CONNECTREGION\/} keyword.
+implemented for the {\keyw{CONNECT}REGION\/} keyword.
 
 \ksec{PERMDIST}{\/}: specifies that all distance metrics should include minimisation
 with respect to permutational isomerisation, as well as optimal orientation.
@@ -5110,7 +5110,7 @@ Here $n=2$ and $s=3$: if we exchange 7 and 8 then we must also exchange 5 and 6,
 since we have specified 7 and 8 as the two primary atoms.
 
 Here is an example {\tt perm.allow} file for a water trimer using
-the flexible {\it QTIP4PF\/} potential, where the energy is invariant to permutations
+the flexible {\keyw{QTIP4PF}\/} potential, where the energy is invariant to permutations
 of water molecules and to exchanges of hydrogens in the same molecule. However,
 hydrogens cannot exchange between different oxygens:
 {\obeylines
@@ -5136,18 +5136,18 @@ Scripts to generate allowed permutations automatically for CHARMM and AMBER are 
 the group web site. It is essential to use symmetrised versions of the corresponding
 force fields! 
 
-\ksec{PERMISOMER}{\/}: equivalent to {\it PERMDIST\/} above, expect that
+\ksec{PERMISOMER}{\/}: equivalent to {\keyw{PERMDIST}\/} above, expect that
 distance minimisation 
 with respect to permutational isomerisation is only carried out for stationary
-points with energies that differ by less than the parameter specified by {\it EDIFFTOL}.
+points with energies that differ by less than the parameter specified by {\keyw{EDIFF}TOL}.
 Hence permutational isomers should be identified, but the distance between minima with
 different energies is not minimised with respect to atom permutations.
 This option is provided for cases where the number of permutations is too 
 minimise distances with respect to permutations in general.
-Should be used with the {\it PERMDIST\/} keyword in {\tt OPTIM}.
+Should be used with the {\keyw{PERMDIST}\/} keyword in {\tt OPTIM}.
 The auxiliary file {\tt perm.allow} specifies which atoms may be permuted; see
-{\it PERMDIST\/} above.
-Note that the {\it NATOMS\/} keyword must precede {\it PERMISOMER\/} in the
+{\keyw{PERMDIST}\/} above.
+Note that the {\keyw{NATOMS}\/} keyword must precede {\it PERMISOMER\/} in the
 {\tt pathdata} file.
 
 \ksec{PERTURB}{ x\/}: initial maximum perturbation of the Cartesian coordinates of a minimum, 
@@ -5164,7 +5164,7 @@ has just been created with {\it DIJINIT\/}.
 
 \ksec{PLANCK}{ h\/}: specifies the value of Planck's constant in units of the
 prevailing energy unit times seconds. This numerical value is required for 
-regrouping free energies. For example, for the {\it CHARMM} potential $h$ needs
+regrouping free energies. For example, for the {\keyw{CHARMM}} potential $h$ needs
 to be $9.546\times10^{-14}\,$s\,kcal/mol
 See \S \ref{sec:units} for more details.
 
@@ -5177,7 +5177,7 @@ are not required.
 \ksec{PSCALE}{ x\/}: determines how the difference in committor probabilities,
 $p$, is used to select the pair of minima used in the next attempted connection. If
 $p/x > $ a random number drawn from $[0,1]$ then the distance criterion is accepted.
-There is also a criterion for the minimum distance (see {\it DSCALE}).
+There is also a criterion for the minimum distance (see {\keyw{DSCALE}}).
 If $p>x$ then the committor probability criterion is always satisfied; below $x$ the probability
 of acceptance decreases linearly.
 
@@ -5187,7 +5187,7 @@ in {\tt OPTIM} min.data.info format and then stops.
 Any number of min.data.info files can be concatenated into {\it file}.
 New entries will be created in {\tt min.data} and {\tt points.min}.
 If {\tt min.A} and {\tt min.B} do not exist they are not created.
-{\it READMIN} therefore provides an alternative way to start an initial
+{\keyw{READMIN}} therefore provides an alternative way to start an initial
 path calculation by providing minima, so long as {\tt min.A} and {\tt min.B}
 are created by hand.
 It also provides a way to add additional minima to an existing database, since
@@ -5213,13 +5213,13 @@ In this scheme, groups that contain product and reactant minima
 The regrouping continues even if product and reactant groups
 could merge according to the barrier threshold: such mergers are simply forbidden.
 Don't forget to assign an appropriate value for the Planck constant using the
-{\it PLANCK\/} keyword. 
-If one of the {\it DIJKSTRA}, {\it SDGT}, {\it SGT}, or {\it DGT} keywords is
+{\keyw{PLANCK}\/} keyword. 
+If one of the {\keyw{DIJKSTRA}}, {\keyw{SD}GT}, {\it SGT}, or {\it DGT} keywords is
 present the corresponding analysis will be performed using the new groups
 and free energies.
 
 \ksec{REGROUPFREEAB}{ x\/}: the database will be regrouped as for
-{\it REGROUPFREE\/} above, but only the A and B groups are changed.
+{\keyw{REGROUP}FREE\/} above, but only the A and B groups are changed.
 
 \ksec{REGROUPPE}{ x\/}: the database will be regrouped based upon 
 a superbasin analysis at potential energy $x$.
@@ -5228,15 +5228,15 @@ with an A or B minimum for this threshold.
 New files {\tt min.data.regrouped}, {\tt ts.data.regrouped}, {\tt min.A.regrouped}
 and {\tt min.B.regrouped} will be created.
 Don't forget to assign an appropriate value for the Planck constant using the
-{\it PLANCK\/} keyword. See also {\it REGROUPRATE\/}.
-{\it REGROUPPE\/} and {\it REGROUPRATE\/} are different from {\it REGROUP\/}
+{\keyw{PLANCK}\/} keyword. See also {\keyw{REGROUP}RATE\/}.
+{\keyw{REGROUP}PE\/} and {\keyw{REGROUP}RATE\/} are different from {\keyw{REGROUP}\/}
 in that they actually change the internal database structure into free energy
 minima and groups of transition states linking them.
 In this scheme, groups that contain product and reactant minima
 (A and B sets) are not allowed to merge. 
 The regrouping continues even if product and reactant groups
 could merge according to the barrier threshold: such mergers are simply forbidden.
-If one of the {\it DIJKSTRA}, {\it SDGT}, {\it SGT}, or {\it DGT} keywords is
+If one of the {\keyw{DIJKSTRA}}, {\keyw{SD}GT}, {\it SGT}, or {\it DGT} keywords is
 present the corresponding analysis will be performed using the new groups
 and free energies.
 
@@ -5248,15 +5248,15 @@ with an A or B minimum for this threshold.
 New files {\tt min.data.regrouped}, {\tt ts.data.regrouped}, {\tt min.A.regrouped}
 and {\tt min.B.regrouped} will be created.
 Don't forget to assign an appropriate value for the Planck constant using the
-{\it PLANCK\/} keyword. See also {\it REGROUPPE\/}.
-{\it REGROUPPE\/} and {\it REGROUPRATE\/} are different from {\it REGROUP\/}
+{\keyw{PLANCK}\/} keyword. See also {\keyw{REGROUP}PE\/}.
+{\keyw{REGROUP}PE\/} and {\keyw{REGROUP}RATE\/} are different from {\keyw{REGROUP}\/}
 in that they actually change the internal database structure into free energy
 minima and groups of transition states linking them.
 In this scheme, groups that contain product and reactant minima
 (A and B sets) are not allowed to merge. 
 The regrouping continues even if product and reactant groups
 could merge according to the barrier threshold: such mergers are simply forbidden.
-If one of the {\it DIJKSTRA}, {\it SDGT}, {\it SGT}, or {\it DGT} keywords is
+If one of the {\keyw{DIJKSTRA}}, {\keyw{SD}GT}, {\it SGT}, or {\it DGT} keywords is
 present the corresponding analysis will be performed using the new groups
 and free energies.
 
@@ -5291,7 +5291,7 @@ to use in representing the minima in the reactant set.
 This is a somewhat experimental option. Consult DJW before using!
 
 \ksec{RIGIDBODIES}{ n\/}: specifies the number of rigid bodies; only one
-of {\it NATOMS\/} and {\it RIGIDBODIES} should be present.
+of {\keyw{NATOMS}\/} and {\keyw{RIGIDBODIES}} should be present.
 
 \ksec{SDGT}{ DisconnectSources AltPbb Rescale Normalise\/}: 
 graph transformation rate calculation, which switches from sparse optimised to
@@ -5330,7 +5330,7 @@ of branch probabilities. This should not be necessary.
 \ksec{SHORTCUT}{ minsep string\/}: try connecting minima that are further apart than {\it minsep\/}
 steps on the best path, as calculated using Dijkstra's algorithm.
 In the Dijkstra analysis minima with zero connections are removed. 
-This value can be changed using a {\it DIJKSTRA n} line in {\tt pathdata}.
+This value can be changed using a {\keyw{DIJKSTRA} n} line in {\tt pathdata}.
 If the option argument {\it string\/} is set to {\it BARRIER\/} or {\it RATE\/} then
 the strategy is different. We now look for pairs of minima on either side of
 the highest barriers or minima linked by the smallest
@@ -5339,14 +5339,14 @@ rate constant on the best path, sorted according to the barrier height or the ra
 the transition states for connection attempts.
 
 \ksec{STARTFROMPATH}{ afile n1 n2 \/}: reads an initial path from file {\tt afile}. If this 
-file is in {\it DUMPALLPATHS} format then the keyword {\it STARTTRIPLES} is also needed.
+file is in {\keyw{DUMP}ALLPATHS} format then the keyword {\keyw{STAR}TTRIPLES} is also needed.
 The files {\tt min.A} and {\tt min.B} are created: {\tt min.A} contains the entries
 1 and {\it n1} and {\tt min.B} contains the entries 1 and {\it n2}.
 If {\tt min.A} already exists then the run will terminate with a warning message
 without overwriting it.
 
 \ksec{STARTTRIPLES}{\/}: reads the initial path specified by
-{\it STARTFROMPATH a\/} from  file {\tt path.info.a} in the new {\it DUMPALLPATHS}
+{\keyw{STAR}TFROMPATH a\/} from  file {\tt path.info.a} in the new {\keyw{DUMP}ALLPATHS}
 format.
 
 \ksec{SYSTEM}{ a\/}: the atom type label to be written to {\tt odata} files for {\tt OPTIM},
@@ -5356,10 +5356,10 @@ thus specifying the potential that {\tt OPTIM} will use.
 an artificial mass {\it x\/}.
 
 \ksec{TEMPERATURE}{ x\/}: specifies that the canonical ensemble at reduced temperature {\it x\/}
-is to be used to calculate rate constants. Mutually exclusive with {\it ENERGY\/}.
+is to be used to calculate rate constants. Mutually exclusive with {\keyw{ENERGY}\/}.
 
 \ksec{TRIPLES}{\/}: specifies that {\tt path.info} files read after startup 
-have the new {\it DUMPALLPATHS} format. Use {\it STARTTRIPLES} and {\it ADDTRIPLES} to
+have the new {\keyw{DUMP}ALLPATHS} format. Use {\keyw{STAR}TTRIPLES} and {\keyw{ADDTRIPLES}} to
 read or add a single {\tt path.info} file in this format at the beginning of a run.
 
 \ksec{TSTHRESH}{ x\/}: specifies that transition states above energy $x$ should
@@ -5380,7 +5380,7 @@ minimum in question is not a member.
 Candidate pairs of minima are sorted based upon the ratio of the
 potential energy barrier to the potential energy difference between the minimum
 in question and the lowest product minimum.
-Hence this scheme is analogous to the {\it FREEPAIRS\/} procedure, but
+Hence this scheme is analogous to the {\keyw{FREEPAIRS}\/} procedure, but
 uses individual minima and potential energy, instead of free energy.
 Minima from the product basin above energy $thresh$ will only be considered if there
 are no minima below this threshold.
@@ -5388,10 +5388,10 @@ In a second phase the original product minimum may be replaced by a minimum from
 the same superbasin that is closer to the target minimum, so long as its energy
 lies below the threshold.
 Minima with zero connections are not considered; 
-this value can be changed using a {\it DIJKSTRA n} line in {\tt pathdata}, even
+this value can be changed using a {\keyw{DIJKSTRA} n} line in {\tt pathdata}, even
 though a Dijkstra analysis is not used.
-See also the {\it PAIRLIST\/} keyword.
-The {\it UNTRAP \/} keyword may provide the best way to remove artificial 
+See also the {\keyw{PAIRLIST}\/} keyword.
+The {\keyw{UNTRAP} \/} keyword may provide the best way to remove artificial 
 frustration from potential energy disconnectivity graphs.
 It may be helpful to choose a larger value of {\it einc\/} than would be
 used for the superbasin analysis in visualising the disconnectivity graph.
@@ -5400,11 +5400,11 @@ expanded product superbasin.
 
 \ksec{USEPAIRS}{ Epathfile\/}: pairs of minima are chosen for connection attempts based
 on the order of local minima specified in file {\tt Epathfile}, which must have the format
-of a {\tt PATHSAMPLE} {\tt Epath} output file 9as generated by {\it DIJKSTRA\/}, etc.
-This keyword is intended to follow a {\it DUMMYTS\/} run, where the stationary point
-database has been refined using {\it BHINTERP\/} or {\it BISECT\/} runs in {\tt OPTIM}.
+of a {\tt PATHSAMPLE} {\tt Epath} output file 9as generated by {\keyw{DIJKSTRA}\/}, etc.
+This keyword is intended to follow a {\keyw{DUMMYTS}\/} run, where the stationary point
+database has been refined using {\keyw{BHINTERP}\/} or {\keyw{BISECT}\/} runs in {\tt OPTIM}.
 The dummy {\tt ts.data} and {\tt pairs.data} files must be renamed or removed
-before the {\it USEPAIRS\/} run.
+before the {\keyw{USEPAIRS}\/} run.
 The pairs of minima are first chosen to be the adjacent structures from the list, then
 second-neighbours, until all possible pairs have been tried.
 
@@ -5414,7 +5414,7 @@ second-neighbours, until all possible pairs have been tried.
 
 The following {\tt odata} template
 files may be necessary, one for each type of {\tt OPTIM} job which can be launched by {\tt PATHSAMPLE}.
-If {\it CONNECTIONS} is set to one or fewer then only an {\tt odata.connect} template is
+If {\keyw{CONNECT}IONS} is set to one or fewer then only an {\tt odata.connect} template is
 needed.
 \smallskip
 \begin{itemize}
@@ -5430,14 +5430,14 @@ the negative eigenvalue (transition mode) from file {\tt vector.dump} produced b
 
 Please refer to the {\tt OPTIM} manual\cite{optim} for details of {\tt odata} files.
 In the templates the {\tt odata} file should not contain any coordinates, and should terminate
-with the {\it POINTS} or {\it CHARMM} keyword, as appropriate.
+with the {\it POINTS} or {\keyw{CHARMM}} keyword, as appropriate.
 \pagebreak
 
 \section{Output files}
 \label{sec:output}
 
 {\tt PATHSAMPLE} produces information about its progress on standard output;
-more details can be obtained with the {\it DEBUG} keyword. 
+more details can be obtained with the {\keyw{DEBUG}} keyword. 
 The databases of minima and
 transition states ({\tt min.data}, {\tt ts.data}, {\tt points.min} and {\tt points.ts}) described in
 \S\ref{sec:input} are updated as necessary. 
@@ -5445,7 +5445,7 @@ transition states ({\tt min.data}, {\tt ts.data}, {\tt points.min} and {\tt poin
 \section{ A Note on Units and Planck's Constant}
 \label{sec:units}
 
-Aside from {\it CHARMM} and {\it AMBER} {\tt OPTIM} does no
+Aside from {\keyw{CHARMM}} and {\keyw{AMBER}} {\tt OPTIM} does no
 unit conversions. These systems are treated differently, as explained below.
 For all other cases {\tt PATHSAMPLE} is
 expecting to receive $\ln\Pi_i \omega^2_i$ in the {\tt min.data}
@@ -5460,7 +5460,7 @@ calculated by {\tt PATHSAMPLE} can therefore be converted to SI units
 by multiplying by $\sqrt{(\epsilon/{\rm J})/(m/{\rm kg})(\sigma/{\rm m})^2}$.
 
 For calculations involving free energy regrouping schemes we need to supply
-a value for the Planck constant in reduced units via the {\it PLANCK} keyword.
+a value for the Planck constant in reduced units via the {\keyw{PLANCK}} keyword.
 Since the temperature is read in energy units, i.e.~$\epsilon$, so that $k_BT$
 is in $\epsilon$, we need to define $h$ in reduced units so that terms like
 $k_BT/h\nu$ are dimensionless. If $\nu$ is in reduced time units then we
@@ -5472,7 +5472,7 @@ The reduced value of $h$ is therefore
 = \frac{(h/{\rm Js})}{\sqrt{(m/{\rm kg})(\sigma/{\rm m})^2(\epsilon/{\rm J})}}.
 \end{equation}
 
-For {\it CHARMM} and {\it AMBER} we need to diagonalise the reciprocal
+For {\keyw{CHARMM}} and {\keyw{AMBER}} we need to diagonalise the reciprocal
 mass-weighted Hessian in {\tt OPTIM}, where the various masses are known.
 For convenience the frequency unit conversion is done in {\tt OPTIM} as
 well, so that the rate constants calculated in {\tt PATHSAMPLE} are
@@ -5481,7 +5481,7 @@ The value required for the Planck constant is therefore different because
 $\nu$ is not in reduced units. Instead, we need to convert $(h/{\rm Js})(\nu/{\rm s}^{-1})$
 to kcal/mol, since these are the units of $k_BT$. Hence we need $(h/{\rm Js})/(\epsilon/{\rm J})$,
 where $\epsilon$ is one kcal/mol. Since 1\,kcal/mol is $6.948\times10^{-21}\,$J
-the required value for the {\it PLANCK\/} keyword in regrouping calculations
+the required value for the {\keyw{PLANCK}\/} keyword in regrouping calculations
 is $6.626\times10^{-34}/6.948\times10^{-21}=9.536\times10^{-14}$.
 
 
@@ -5543,24 +5543,24 @@ STARTTRIPLES &
 \subsection{Starting from {\tt OPTIM} {\tt min.data.info} files}
 
 It is also possible to start {\tt PATHSAMPLE} runs without an existing 
-connection between the end points of interest. See keywords {\it DIJINITSTART\/}
-and {\it DIJINITCONT\/}.
+connection between the end points of interest. See keywords {\keyw{DIJINITSTART}\/}
+and {\keyw{DIJINITCONT}\/}.
 In this example we set up {\tt PATHSAMPLE} from {\tt min.data.info} files for the 
-two minima and use {\it DIJINITCONT\/} to continue the run and seek an initial 
+two minima and use {\keyw{DIJINITCONT}\/} to continue the run and seek an initial 
 connection using {\tt PATHSAMPLE}.
 
 First, a minimisation was run for each minimum using {\tt OPTIM} with the
-{\it DUMPDATA} keyword set. The {\it ENDHESS} keyword was used to produce frequencies after a
-{\it BFGSMIN\/} optimisation.
+{\keyw{DUMP}DATA} keyword set. The {\keyw{ENDHESS}} keyword was used to produce frequencies after a
+{\keyw{BFGS}MIN\/} optimisation.
 In a clean directory, with no preexisting {\tt PATHSAMPLE} files, two entries were created
-in {\tt min.data} and {\tt points.min} using the {\tt PATHSAMPLE} {\it READMIN\/} keyword
+in {\tt min.data} and {\tt points.min} using the {\tt PATHSAMPLE} {\keyw{READMIN}\/} keyword
 to read each of the {\tt min.data.info} files in turn. {\tt min.A} and {\tt min.B} files were
 then created using vi with one entry in each, pointing to minima 1 and 2, respectively. 
 After creating a suitable {\tt odata.connect} file a single cycle of {\tt PATHSAMPLE}
 was then run on one core to populate the database with enough minima to run on
 multiple cores in subsequent connection attempts. Since there is only one possible connection
 to try in the first cycle, it is necessary to use a single processor in this case
-along with the {\it DIJINITCONT\/} keyword in {\tt pathdata}. A couple of cycles on
+along with the {\keyw{DIJINITCONT}\/} keyword in {\tt pathdata}. A couple of cycles on
 eight cores then produced a connection for this bulk BLJ$_{60}$ example.
 \medskip
 

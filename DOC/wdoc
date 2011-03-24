@@ -159,8 +159,10 @@ SYSTEM TAG TEMPERATURE TFOLD TRIPLES TSTHRESH TWOD UNRES UNTRAP USEPAIRS
 #}}}
 
 kwds=( ${kwds_gmin[@]} ${kwds_optim[@]} ${kwds_ps[@]} )
+cp wg.tex wgn.tex
 for kwd in ${kwds[@]}; do
-	cat wg.tex | sed "s/\{[\t ]*\\it[ \t]*$kwd \}/\\keyw\{$kwd\}/g" > wgn.tex
+	#cat wg.tex | sed "s/\{[\t ]*\\it[ \t]*$kwd \}/\\keyw\{$kwd\}/g" > wgn.tex
+	cat wgn.tex | sed "s/it $kwd/keyw{$kwd}/g" > n; mv n wgn.tex
 done
   ;;
   # }}}
