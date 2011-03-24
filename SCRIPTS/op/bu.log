@@ -1,52 +1,74 @@
-bu> User: 0502790@venus Date: 2103-1356 Command: bu bsx
+bu> User: gates@Gates-PC5 Date: 2203-1343 Command: bu gfortran gmin
 bu> {{{
 bu> SVN revision: 
-bu> Creating self-extracting archive, on 2103-1356 by 0502790@venus
-bu> {{{
+bu> Will try to use the compiler provided:
+bu> 		gfortran
+bu> Compiler executable gfortran found.
+bu>GMIN compilation on 2203-1343 by gates@Gates-PC5 {{{
 bu>======================================
-bu> User: 0502790@venus Date: 2103-1356 Command: bu tgz
-bu> {{{
-bu> SVN revision: 
-bu> Archiving on 2103-1356 by 0502790@venus
-bu> {{{
-bu>======================================
-bu> SVN exporting: 
-bu> 		BLAS to /home/students/0502790/gops/SCRIPTS/op/../..//tar/BLAS
-make: clean: No such file or directory
-make: *** No rule to make target `clean'.  Stop.
-bu> SVN exporting: 
-bu> 		LAPACK to /home/students/0502790/gops/SCRIPTS/op/../..//tar/LAPACK
-make: clean: No such file or directory
-make: *** No rule to make target `clean'.  Stop.
-bu> SVN exporting: 
-bu> 		DOC to /home/students/0502790/gops/SCRIPTS/op/../..//tar/DOC
-make: clean: No such file or directory
-make: *** No rule to make target `clean'.  Stop.
-bu> SVN exporting: 
-bu> 		GMIN to /home/students/0502790/gops/SCRIPTS/op/../..//tar/GMIN
-make: clean: No such file or directory
-make: *** No rule to make target `clean'.  Stop.
-bu> SVN exporting: 
-bu> 		OPTIM to /home/students/0502790/gops/SCRIPTS/op/../..//tar/OPTIM
-make: clean: No such file or directory
-make: *** No rule to make target `clean'.  Stop.
-bu> SVN exporting: 
-bu> 		PATHSAMPLE to /home/students/0502790/gops/SCRIPTS/op/../..//tar/PATHSAMPLE
-make: clean: No such file or directory
-make: *** No rule to make target `clean'.  Stop.
-bu> SVN exporting: 
-bu> 		DISCONNECT to /home/students/0502790/gops/SCRIPTS/op/../..//tar/DISCONNECT
-bu> SVN exporting: 
-bu> 		SCRIPTS to /home/students/0502790/gops/SCRIPTS/op/../..//tar/SCRIPTS
-bu> SVN exporting: 
-bu> 		INCLUDE to /home/students/0502790/gops/SCRIPTS/op/../..//tar/INCLUDE
-bu>======================================
-bu> }}}
+bu>Intro {{{
+bu> Makefile target(s):
+bu> 		GMIN
+bu> Current build index is 0
+bu> Current source directory is
+bu> 		/home/gates/gops/BUILDS/0/GMIN/source
+bu> Current makefile target:
+bu> 		GMIN
+bu> We will create a new makefile named: 
+bu> 		the_makefile=Makefile
+bu> To do this, we will use the 'base' makefile called: 
+bu> 		base_mkf=Makefile.gmin 
+bu> Debugging/optimization options, as passed to bu:
+bu> 		
 bu> Created:
-bu> 	wg..tar.gz
-bu> Included:
-bu> 		BLAS LAPACK DOC GMIN OPTIM PATHSAMPLE DISCONNECT SCRIPTS INCLUDE
-bu> Size:
-bu> 	45 
+bu> 		/home/gates/gops/BUILDS/0/GMIN/source/Makefile
+bu> Makefile command-line options are:
+bu> 		
+bu> Compiler flags: 
+bu> 		FFLAGS=-ffixed-line-length-265 -fbounds-check 
+bu> Compiler executable:
+bu> 		FC=gfortran
 bu> }}}
-bu> Time:    1 (secs)		
+bu> make clean: cleaning files...
+bu>make clean output: {{{
+bu>======================================
+rm -f ../bin/GMIN ../bin/CHGMIN ../bin/AMHGMIN ../bin/AMBGMIN porfuncs.o commons.o countatoms.o modamb.o modcharmm.o modmxatms.o modhess.o modamber9.o grouprotation.o centre.o finalio.o modconsts_trans_97.o modconsts.o dist.o io1.o keyword.o main.o mc.o mcruns.o morse.o potential.o quench.o rad.o dprand.o saveit.o seed.o sort.o sort2.o sort3.o sort4.o takestep.o mycpu_time.o trans.o finalq.o symmetry.o symmetrycsm.o ptgrp.o eigsrt.o SiSW.o taboo.o reseed.o newinertia.o supermc.o tosifumi.o ortho.o compress.o mylbfgs.o input.o ddfpmin.o dlnsrch.o cgmin.o linmin.o brent.o mnbrak.o dbrent.o f1dim.o zwischen.o hsmove.o PachecoC60.o AT.o EAMLJ_sub.o Pbglue.o wenzel.o odesd.o capsid.o rigidfuncs.o tip.o pah.o strand.o SW.o qmod.o ljpbin.o fdm.o dftb.o ljpshift.o dzugutov.o ljcoulomb.o fd.o fedor.o welch.o BLJcluster.o stock.o Farkas.o getorbits.o sc.o Zetterling.o MSorig.o MSorigc.o MStrans.97.o convert.o frausi.o p46merdiff.o g46merdiff.o lj.o modperm.o modf1com.o mododesd.o EAMal.o Alglue.o Mgglue.o Gupta.o orient.o Natb.o sticky.o enumerate.o minperm.o minpermdist.o LB2.o dgetrf.o dgetri.o reorient.o thomson.o Q4.o basinsampling.o tether.o tetherfunc.o BLN.o gauss.o newmindist.o centrecom.o qorderparam_blj.o qorderparam_lj.o bspt.o GMINdump.o quad.o rigidbaa.o checkd.o dbpg.o dbptd.o dmblmorse.o gbcalamitic.o gbdiscotic.o gem.o gbddp.o linrod.o lwotp.o	newcapsid.o newpah.o msgayberne.o mstbin.o multisitepy.o multstock.o paha.o pahw99.o pyg.o multpaha.o newtip.o pygdp.o stockaa.o tetrahedra.o waterpdc.o waterpkz.o takestepmsgb.o takestepmspy.o gay-berne.o JM.o projI.o projIh.o model1.o FS.o vgw.o mysd.o qdtest.o qdtest2.o MB.o dlsode.o dummyoptim.o Ackland_metals.o Ackland_wrapper.o DF1.o CSMinit.o read_cmd_args.o display_version.o  operations.o *.mod  *.lst *.o pref.dat prefx.msg nag.f90 FOR021.DAT porfuncs.f90 display_version.f90 mc.f ptmc.f bspt.f main.f  *.a
+if test -d /home/gates/gops/SCRIPTS/op/../..//BUILDS//0//BLAS ;  then cd /home/gates/gops/SCRIPTS/op/../..//BUILDS//0//BLAS ; make clean ; fi
+make[1]: Entering directory `/home/gates/gops/BUILDS/0/BLAS'
+make cleanlib
+make[2]: Entering directory `/home/gates/gops/BUILDS/0/BLAS'
+rm -f libmyblas.a libmyblasS.a libmyblasC.a libmyblasC16.a
+make[2]: Leaving directory `/home/gates/gops/BUILDS/0/BLAS'
+rm -f *.o 
+make[1]: Leaving directory `/home/gates/gops/BUILDS/0/BLAS'
+if test -d /home/gates/gops/SCRIPTS/op/../..//BUILDS//0//LAPACK ;  then cd /home/gates/gops/SCRIPTS/op/../..//BUILDS//0//LAPACK ; make clean ; fi
+make[1]: Entering directory `/home/gates/gops/BUILDS/0/LAPACK'
+make cleanlib
+make[2]: Entering directory `/home/gates/gops/BUILDS/0/LAPACK'
+rm -f libmylapackD.a libmylapackS.a libmylapackC.a libmylapackC16.a libmylapack.a
+make[2]: Leaving directory `/home/gates/gops/BUILDS/0/LAPACK'
+rm -f *.o 
+make[1]: Leaving directory `/home/gates/gops/BUILDS/0/LAPACK'
+if test -d CHARMMinterface ;  then cd CHARMMinterface ; make clean ; fi
+make[1]: Entering directory `/home/gates/gops/BUILDS/0/GMIN/source/CHARMMinterface'
+make[1]: *** No rule to make target `clean'. Stop.
+make[1]: Leaving directory `/home/gates/gops/BUILDS/0/GMIN/source/CHARMMinterface'
+make: *** [clean] Error 2
+bu>======================================
+bu> }}}
+bu> make: compiling GMIN...
+bu>GMIN make output: {{{
+bu>======================================
+gfortran -ffixed-line-length-265 -fbounds-check  -I.. -c chdummy.f
+gfortran -ffixed-line-length-265 -fbounds-check  -I.. -c amhdummy.f
+gfortran -ffixed-line-length-265 -fbounds-check  -I.. -c amber9dummy.f90
+/home/gates/gops/SCRIPTS/op/../..//SCRIPTS//all/porfuncs.csh gfortran > porfuncs.f90
+/bin/sh: /home/gates/gops/SCRIPTS/op/../..//SCRIPTS//all/porfuncs.csh: not found
+make: *** [porfuncs.f90] Error 127
+bu>======================================
+bu>make finished }}}
+bu>======================================
+bu> Failure: No executable(s) produced.
+bu>GMIN compilation finished. }}}
+bu> }}}
+bu> Time:  < 1 sec		Failure
