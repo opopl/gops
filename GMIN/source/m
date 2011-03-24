@@ -58,42 +58,46 @@ L=
 
 ALLSOURCE := $(wildcard *.f) $(wildcard *.f90) $(wildcard *.F)
 
+## NOTUSEDSOURCE: source files not used in present GMIN build {{{
+#NOTUSEDSOURCE=\
+#blas.f\
+#bmin.f\
+#bsptsave.F\
+#charmmBildc.f\
+#compress2.f\
+#dblpy.f90\
+#dfuncs.f90\
+#dgetf2.f\
+#diffract.f90\
+#dlaswp.f\
+#dtrti2.f\
+#dtrtri.f\
+#evstep.f \
+#fsc1TH.f90\
+#funcs.f90\
+#io.f90\
+#lapack.f\
+#lbfgs.f\
+#mek-quake.f90\
+#mf.f\
+#mind.f\
+#nonATLASblas.f\
+#olami.f \
+#otp.f\
+#ptbs.f\
+#rdpot.f \
+#rk45ad.f\
+#symmetry3.f90\
+#takestep2.f\
+#tetherfuncall.f90 \
+#wenzel.1D.f\
+#wenzel.2D.f\
+#wham_djw.f90\
+## }}}
+
 # NOTUSEDSOURCE: source files not used in present GMIN build {{{
-NOTUSEDSOURCE=\
-blas.f\
-bmin.f\
-bsptsave.F\
-charmmBildc.f\
-compress2.f\
-dblpy.f90\
-dfuncs.f90\
-dgetf2.f\
-diffract.f90\
-dlaswp.f\
-dtrti2.f\
-dtrtri.f\
-evstep.f \
-fsc1TH.f90\
-funcs.f90\
-io.f90\
-lapack.f\
-lbfgs.f\
-mek-quake.f90\
-mf.f\
-mind.f\
-nonATLASblas.f\
-olami.f \
-otp.f\
-ptbs.f\
-rdpot.f \
-rk45ad.f\
-symmetry3.f90\
-takestep2.f\
-tetherfuncall.f90 \
-wenzel.1D.f\
-wenzel.2D.f\
-wham_djw.f90\
-# }}}
+NOTUSEDSOURCE= io_sanity.f90 molinfo.f90
+## }}} 
 
 SOURCE=$(filter-out $(NOTUSEDSOURCE),$(ALLSOURCE))
 OBJS := $(patsubst %.F,%.o,$(patsubst %.f,%.o,$(patsubst %.f90,%.o,$(SOURCE))))
@@ -371,6 +375,7 @@ cgmin.o:       commons.o
 checkd.o:      commons.o
 compress.o:    commons.o
 countatoms.o:  modamber9.o
+display_version.o: ../../SCRIPTS/all/display_version.sh
 dbpg.o:        commons.o
 dbptd.o:       commons.o
 dmblmorse.o:   commons.o
@@ -381,7 +386,7 @@ evstep.o:      commons.o
 f1dim.o:       commons.o modf1com.o
 fd.o:          commons.o
 fdm.o:         commons.o
-finalio.o:     commons.o modamb.o qmod.o modcharmm.o AMH/amhglobals.o
+finalio.o:     commons.o modamb.o qmod.o modcharmm.o AMH/amhglobals.o pymodule.o
 finalq.o:      commons.o qmod.o
 frausi.o:      dist.o
 gbcalamitic.o: commons.o

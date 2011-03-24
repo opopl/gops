@@ -64,9 +64,6 @@ integer file
 $w0 "==========================================="
 $w0
 $w0 "$prog - $prog_full"
-$w0
-$w0 "$copyright"
-$w0
 $w0 "SVN revision: $svn_rev" 
 $w0 
 $w0 "Compilation time: ` date `"
