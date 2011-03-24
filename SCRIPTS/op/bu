@@ -1645,7 +1645,7 @@ while [ ! -z "$1" ]; do
 	arg=$1
 			case "$1" in # read command-line arguments {{{
 				  ex) exists $2 ;;
-				  vm) $shd/vf $this_script ;;
+				  vm) $shd/vff $this_script ;;
 				  prefix) PREFIX=$2 ;;
 				  install) bu_install ;;
 			  	  dx | charmm | gmin | optim | pathsample | bsx | tgz ) build_bu_target $* ;;
