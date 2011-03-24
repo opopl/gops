@@ -70,7 +70,7 @@ set_man_path(){
 
 #man_cmd=man
 for p in ${wg_progs[@]}; do              
-	export MANPATH="$MANPATH:$wg_dir/dx/$p/man"
+	export MANPATH="$MANPATH:$shd/../../dx/$p/man"
 done
 
 }

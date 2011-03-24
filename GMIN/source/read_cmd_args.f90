@@ -2,12 +2,13 @@
 SUBROUTINE READ_CMD_ARGS
 
 USE PORFUNCS
-USE COMMONS,ONLY : INFILE
+!USE COMMONS,ONLY : INFILE
+use commons, only: infile,pforce
 
 IMPLICIT NONE
 
 INTEGER NARGS, I
-CHARACTER(LEN=80) BFF
+CHARACTER(LEN=80) BFF,VAR
 
 ! EXTERNAL DISPLAY_VERSION
 
@@ -20,13 +21,19 @@ IF (NARGS.GT.0) THEN
        CASE('-v') 
          CALL DISPLAY_VERSION(0)
          STOP
-       CASE('-t')
-         I=I+1
-         CALL GETARG_SUBR(I,BFF)
+       case default
+         CALL GETARG_SUBR(i+1,var)
+         SELECTCASE(BFF)
+                CASE('-f')
+                        READ(VAR,*) PFORCE
+                        WRITE(*,*) 'FORCE:',PFORCE
+                CASE DEFAULT
+         ENDSELECT
          !CALL MAKETEST(BFF)
-       CASE DEFAULT
-         INFILE=TRIM(ADJUSTL(BFF))
+       !CASE DEFAULT
+         !INFILE=TRIM(ADJUSTL(BFF))
      ENDSELECT
+         I=I+1
   ENDDO
 ENDIF
 
