@@ -346,7 +346,7 @@ PROGRAM manipulate
       SELECT CASE (TRIM(command))
 
       CASE ('ALIGN')
-!        Aligns a node with the one it is connected to above.
+! {{{       Aligns a node with the one it is connected to above.
 !        Specify: x, y
          CALL get_dp(x)
          CALL get_dp(y)
@@ -359,9 +359,9 @@ PROGRAM manipulate
             CALL move(x, y, xp, y)
             CALL write_tree('tree.ps')
          END IF
-
+! }}}
       CASE ('JOINUP')
-!        Removes the node above the one specified, and joins
+!   {{{     Removes the node above the one specified, and joins
 !        it directly to the one above that.
 !        Specify: x, y
          CALL get_dp(x)
@@ -376,9 +376,9 @@ PROGRAM manipulate
             CALL move(xp, yp, x, y)
             CALL write_tree('tree.ps')
          END IF
-
+! }}}
       CASE ('MOVEBY')
-!        Moves the x coordinate of a node by a specified amount.
+! {{{     Moves the x coordinate of a node by a specified amount.
 !        Specify: x, y, delta(x)
          CALL get_dp(x)
          CALL get_dp(y)
@@ -387,9 +387,9 @@ PROGRAM manipulate
          CALL write_tree('tree.ps.bak')
          CALL move(x, y, x+change, y)
          CALL write_tree('tree.ps')
-
+! }}}
       CASE ('MOVETO')
-!        Moves the x coordinate of a node to a specified place.
+! {{{    Moves the x coordinate of a node to a specified place.
 !        Specify: x, y, new x
          CALL get_dp(x)
          CALL get_dp(y)
@@ -398,8 +398,9 @@ PROGRAM manipulate
          CALL write_tree('tree.ps.bak')
          CALL move(x, y, xp, y)
          CALL write_tree('tree.ps')
-
+! }}}
       CASE ('PIVOT')
+! {{{
 !        Moves the x coordinate of a node to a specified place and
 !        pivots all lines connected below about their intersection with
 !        a line y = y'. The value of y' should be specified precisely.
@@ -419,8 +420,9 @@ PROGRAM manipulate
          END DO
          CALL move(x1, y1, x2, y1)
          CALL write_tree('tree.ps')
-
+! }}}
       CASE ('PSQUEEZE')
+! {{{
 !        Recursively compresses all nodes below the one specified by
 !        a fixed factor about the x coordinate of the node.
 !        Specify: x, y, factor
@@ -435,12 +437,11 @@ PROGRAM manipulate
             CALL move(list_x(i), list_y(i), list_x(i)+change, list_y(i))
          END DO
          CALL write_tree('tree.ps')
-
+! }}}
       CASE ('QUIT')
          EXIT
-
       CASE ('RALIGN')
-!        Aligns a node with the node above it and moves all nodes
+! {{{      Aligns a node with the node above it and moves all nodes
 !        connected below it by the same amount.
 !        Specify: x, y
          CALL get_dp(x)
@@ -457,12 +458,12 @@ PROGRAM manipulate
             END DO
             CALL write_tree('tree.ps')
          END IF
-
+! }}}
       CASE ('READ')
          CALL read_tree('tree.ps')
 
       CASE ('RMOVEBY')
-!        Moves a node and those below it by the same amount.
+!  {{{   Moves a node and those below it by the same amount.
 !        Specify: x, y, delta(x)
          CALL get_dp(x)
          CALL get_dp(y)
@@ -474,8 +475,9 @@ PROGRAM manipulate
             CALL move(list_x(i), list_y(i), list_x(i)+change, list_y(i))
          END DO
          CALL write_tree('tree.ps')
-
+! }}}
       CASE ('RMOVETO')
+! {{{
 !        Moves a node to a specified point and moves all nodes below
 !        it by the same amount.
 !        Specify: x, y, new x
@@ -489,8 +491,9 @@ PROGRAM manipulate
             CALL move(list_x(i), list_y(i), list_x(i)+xp-x, list_y(i))
          END DO
          CALL write_tree('tree.ps')
-
+! }}}
       CASE ('RSQUEEZE')
+! {{{
 !        Scales the x coordinate of a range of points about the
 !        centre point of the range by a constant factor, and moves
 !        all points connected below by the same amount.
@@ -526,8 +529,9 @@ PROGRAM manipulate
             DEALLOCATE(hlist)
          END IF
          CALL write_tree('tree.ps')
-
+! }}}
       CASE ('SQUEEZE')
+! {{{
 !        Scales the x coordinate of a range of points about the
 !        centre point of the range by a constant factor.
 !        Specify: left x, right x, y, factor.
@@ -553,13 +557,13 @@ PROGRAM manipulate
             END DO
          END IF
          CALL write_tree('tree.ps')
-
+! }}}
       CASE ('UNDO')
          CALL read_tree('tree.ps.bak')
          CALL write_tree('tree.ps')
 
       CASE ('UPALIGN')
-!        Aligns the x coordinate of the node above the one specified.
+! {{{    Aligns the x coordinate of the node above the one specified.
 !        Specify: x, y
          CALL get_dp(x)
          CALL get_dp(y)
@@ -572,7 +576,7 @@ PROGRAM manipulate
             CALL move(xp, yp, x, yp)
             CALL write_tree('tree.ps')
          END IF
-
+! }}}
       CASE ('WRITE')
          CALL write_tree('tree.ps')
 

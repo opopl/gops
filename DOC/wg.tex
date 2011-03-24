@@ -129,19 +129,21 @@
 \date{Last updated \today}
 \maketitle
 
-\newcommand{\prog}{}
+\newcommand{\pname}{}
 \newcommand{\keyw}[1]{\hyperlink{\prog:#1}{\it #1\/}}
-\newcommand{\ksec}[2]{\subsubsection{#1\ {\it\ #2 \/}}\hypertarget{\prog:#1}}
+\newcommand{\ksec}[2]{\subsubsection{#1\ {\it\ #2 \/}}\hypertarget{\pname:#1}}
 
-
-\newcommand{\gmin}{{\tt GMIN}}
-\newcommand{\optim}{{\tt OPTIM}}
-\renewcommand{\ps}{{\tt PATHSAMPLE}}
-\newcommand{\dps}{{\tt disconnectionDPS}}
-\newcommand{\dman}{{\tt manipulate}}
+\newcommand{\gmin}{{\tt GMIN\ }}
+\newcommand{\optim}{{\tt OPTIM\ }}
+\renewcommand{\ps}{{\tt PATHSAMPLE\ }}
+\newcommand{\ddps}{{\tt disconnectionDPS\ }}
+\newcommand{\dman}{{\tt manipulate\ }}
+\newcommand{\prog}[1]{{\tt #1}}
+\newcommand{\file}[1]{{\tt #1}}
+\newcommand{\progl}[1]{{\hyperlink{#1}{\prog{#1}}}}
 
 \chapter{GMIN}
-\renewcommand{\prog}{GMIN}
+\renewcommand{\pname}{GMIN}
 \section{Introduction}
 
 GMIN is a program that attempts to find the global potential energy minimum
@@ -1705,7 +1707,7 @@ atoms.
 \end{itemize}
 
 \chapter{OPTIM}
-\renewcommand{\prog}{OPTIM}
+\renewcommand{\pname}{OPTIM}
 
 \section{Introduction}
 \label{sec:intro}
@@ -4336,14 +4338,14 @@ found in the {\tt newtests} directory.
 
 
 \chapter{PATHSAMPLE}
-\renewcommand{\prog}{PATHSAMPLE}
+\renewcommand{\pname}{PATHSAMPLE}
 
 \section{Introduction}
 \label{sec:intro}
 
 {\tt PATHSAMPLE.2.1} is the current version of the {\tt OPTIM} driver program to implement a
 discrete path sampling (DPS) construction of stationary point 
-databases and perform kinetic analysis.\cite{wales02,Wales03,wales04,TrygubenkoW06,Wales06}
+databases and perform kinetic analysis.\cite{Wales02}\cite{Wales03,Wales04,TrygubenkoW06,Wales06}
 This implementation provides a number of different methods for growing stationary 
 point databases in order to produce samples that are kinetically relevant.
 The main difference from {\tt PATHSAMPLE.2.0} is that the geometrical test for
@@ -4361,7 +4363,7 @@ Please refer to the {\tt OPTIM} documentation for full details of this program \
 
 The DPS technique is designed to calculate rate constants
 between two different regions (A and B) on the potential energy surface, 
-where a region is defined by a set of local minima.\cite{wales02,Wales03,wales04,TrygubenkoW06,Wales06,
+where a region is defined by a set of local minima.\cite{Wales02,Wales03,Wales04,TrygubenkoW06,Wales06,
 EvansW03b,EvansW04,CarrW05}
 In {\tt PATHSAMPLE.2.0} and above, this objective is achieved by building up
 a stationary point database using successive double-ended connection runs between
@@ -5602,15 +5604,13 @@ without a complete connection between the desired end points.
 
 \chapter{DISCONNECT}
 
-\section{disconnectionDPS}
+\section{DisconnectionDPS} 
+\hypertarget{ddps}
+\ddps is a program which purpose is to plot disconnectivity graphs \cite{beckerk97}.
 
-\dps is a program which purpose is to plot disconnectivity graphs \cite{BeckerKarplus97}.
+It is adapted to read \ps data files.
 
-
- It is adapted to read PATHSAMPLE.2.0 data files.
- keyword NCONNMIN added
-
- Information and options are passed to the program in a file called {\tt dinfo}, which is keyword driven.
+Information and options are passed to the program in a file called {\tt dinfo}, which is keyword driven.
 
 \subsection{Compulsory Keywords}
 
@@ -5632,118 +5632,117 @@ Specifies filename for transition state info.
 \subsection{Optional Keywords}
 
 \ksec{CENTREGMIN}{}
- If this keyword is present, then when a node splits into its daughter
- nodes, the one containing the global minimum is always placed centrally
- (even if other nodes carry more minima). This does not guarantee that
- the global minimum is central in the overall diagram because other
- nodes may push the one containing the global minimum over to one side.
+If this keyword is present, then when a node splits into its daughter
+nodes, the one containing the global minimum is always placed centrally
+(even if other nodes carry more minima). This does not guarantee that
+the global minimum is central in the overall diagram because other
+nodes may push the one containing the global minimum over to one side.
 
 \ksec{DUMPNUMBERS}{}
- If present, a file called node\_numbers is written, listing the minima
- associated with each node in each level. Nodes are listed from left to
- right within each level.
+If present, a file called node\_numbers is written, listing the minima
+associated with each node in each level. Nodes are listed from left to
+right within each level.
 
-\ksec{DUMPSIZES}
- If present, a file called node\_sizes is written, listing how many minima
- are represented by each node in each level. Nodes are listed from left to
- right in each level.
+\ksec{DUMPSIZES}{}
+If present, a file called {\tt \verb|node_sizes|} is written, listing how many minima
+are represented by each node in each level. Nodes are listed from left to
+right in each level.
 
-\ksec{EXCLUDEALL}
- Removes all minima from the list of minima to be plotted.  This is to be
- used in conjunction with the PICK command which can be used to specify
- exclusively which minima are to be included.
+\ksec{EXCLUDEALL}{}
+Removes all minima from the list of minima to be plotted.  This is to be
+used in conjunction with the \keyw{PICK} command which can be used to specify
+exclusively which minima are to be included.
 
 \ksec{CONNECTMIN}{min}
- If present then the analysis for a connected database is based upon minimum
- number $min$. If absent then the global minimum is used to judge connectivity.
+If present then the analysis for a connected database is based upon minimum
+number $min$. If absent then the global minimum is used to judge connectivity.
 
-\ksec{COLOURPRINT}
+\ksec{COLOURPRINT}{}
 For use with \keyw{TRMIN}, if present colour analysis written to node\_sections.   
- Not actually required for colour analysis.
+Not actually required for colour analysis.
 
-\ksec{IDENTIFY}
- If present, the branch ends are labelled with the lowest-energy minimum
- they represent.
+\ksec{IDENTIFY}{}
+If present, the branch ends are labelled with the lowest-energy minimum
+they represent.
 
 \ksec{IDENTIFY\_NODE}{max\_min}
- If present, the nodes are labelled with the format N1\_N2, where N1 is the number of level,
- N2 is the number of the node at that level. The label is only printed if the
- number of minima below that node is smaller than max\_min. With this info
- you can pick the number of minima corresponding to that node from the node\_numbers file,
- produced by using the keyword \keyw{DUMPNUMBERS}... (and then print any branch of the graph separately)
+If present, the nodes are labelled with the format \verb|N1_N2|, where N1 is the number of level,
+N2 is the number of the node at that level. The label is only printed if the
+number of minima below that node is smaller than \verb|max_min|. With this info
+you can pick the number of minima corresponding to that node from the {\tt \verb|node_numbers|} file,
+produced by using the keyword \keyw{DUMPNUMBERS}... (and then print any branch of the graph separately)
 
 \ksec{IDENTIFY\_NODE\_SIZE}{max\_min2}
- If present, the nodes are labelled with number of minima corresponding to that node. 
- The label is only printed if the number of minima below that node is smaller than max\_min2
+If present, the nodes are labelled with number of minima corresponding to that node. 
+The label is only printed if the number of minima below that node is smaller than max\_min2
 
 \ksec{IDMIN}{min}
- Label this minimum on the graph. Repeat to label more than one minimum.
+Label this minimum on the graph. Repeat to label more than one minimum.
 
 \ksec{LABELFORMAT}{fmt}
- Specifies the Fortran format string for the energy level labels. The default
- is F6.1.
+Specifies the Fortran format string for the energy level labels. The default
+is F6.1.
 
 \ksec{LABELSIZE}{n}
 Set the size of the fonts in case of the labels (for \keyw{IDENTIFY}, \keyw{IDENTIFY\_NODE} ...)
- Default is 10 pt.
+Default is 10 pt.
 
-\ksec{LETTER}
+\ksec{LETTER}{}
 If present, the graph is formatted for American letter paper rather than
- European A4.
+European A4.
 
 \ksec{LOWEST}{n}
 If present, only the branches leading to the lowest $n$ minima are drawn. The
- pruning occurs after the basin analysis, so the "discarded" minima can still
- influence the connectivities.
+pruning occurs after the basin analysis, so the "discarded" minima can still
+influence the connectivities.
 
-\ksec{MONOTONIC}
+\ksec{MONOTONIC}{}
 If present, all minima not lying at the bottom of a monotonic sequences are
- not drawn. This tends to reduce the number of branches drastically. If the
- keyword \keyw{LOWEST} is also used, the MONOTONIC sequence analysis is applied after
- the high energy minima have been discarded.
+not drawn. This tends to reduce the number of branches drastically. If the
+keyword \keyw{LOWEST} is also used, the MONOTONIC sequence analysis is applied after
+the high energy minima have been discarded.
 
-\ksec{NCONNMIN}
-Minima with NCONNMIN connections or fewer are discarded. Default is zero.
+\ksec{NCONNMIN}{} Minima with NCONNMIN connections or fewer are discarded. Default is zero.
 
-\ksec{NOBARRIERS}
+\ksec{NOBARRIERS}{}
 If present, all transition state energies are reset to the energy of the higher
- of the two minima they connect. This transforms the energy landscape to the
- type explored by gmin.
+of the two minima they connect. This transforms the energy landscape to the
+type explored by gmin.
 
 \ksec{PICK}{file}
 Specifies the name of a list of numbers of minima, one per line.  Minima on
- this list are included on the graph.  Minima preceded with a minus sign are
- removed from the graph.  This process is executed after the commands
- \keyw{MONOTONIC}, \keyw{LOWEST} and \keyw{EXCLUDEALL} have been executed, thereby making it
- possible to override them for particular minima.  Examples: 
- \begin{itemize}
+this list are included on the graph.  Minima preceded with a minus sign are
+removed from the graph.  This process is executed after the commands
+\keyw{MONOTONIC}, \keyw{LOWEST} and \keyw{EXCLUDEALL} have been executed, thereby making it
+possible to override them for particular minima.  Examples: 
+\begin{itemize}
 \item 1. To remove certain minima from a full plot, just specify PICK 
-  and a list of negative minima numbers.
+and a list of negative minima numbers.
 \item 2. To include only specific minima, use \keyw{EXCLUDEALL} and
- \keyw{PICK} plus a list of positive minima numbers.  All basin analysis includes
- the full sample and is performed before minima are removed or added back in.
- \end{itemize}
+\keyw{PICK} plus a list of positive minima numbers.  All basin analysis includes
+the full sample and is performed before minima are removed or added back in.
+\end{itemize}
 
-\ksec{NOSPLIT}
+\ksec{NOSPLIT}{}
 By default, every minimum is indicated by its own branch, which splits off
- from the parent basin even if the minimum and its lowest transition state do
- not straddle an energy level in the basin analysis. This is to avoid it being
- dependent on precisely where the levels are placed (bulk shifting of the levels
- would cause some branch ends to appear or disappear rather than change node
- if this were not the case). The \keyw{NOSPLIT} option turns this feature off, so that
- if two minima are separated by a barrier lower than the level above their own
- energy, they are grouped together. This option should probably never be used.
+from the parent basin even if the minimum and its lowest transition state do
+not straddle an energy level in the basin analysis. This is to avoid it being
+dependent on precisely where the levels are placed (bulk shifting of the levels
+would cause some branch ends to appear or disappear rather than change node
+if this were not the case). The \keyw{NOSPLIT} option turns this feature off, so that
+if two minima are separated by a barrier lower than the level above their own
+energy, they are grouped together. This option should probably never be used.
 
 \ksec{TRMIN}{n max file file ...}
 Label $n$ different sections of the graph in colour as specified by the 
- minima in each file, one file for each section.  
- Each file is a list of numbers of minima, 
- one per line as for \keyw{PICK}. $max$ is the total number of minima, not the number 
- in the colour files. 
- currently used for array allocation.
- Colours are chosen automatically to spread over a rainbow spectrum  
- (from red to purple) in the order the files are specified but colours can 
- be specified individually at both \keyw{COLOURMARKER} in this file. - vkd 
+minima in each file, one file for each section.  
+Each file is a list of numbers of minima, 
+one per line as for \keyw{PICK}. $max$ is the total number of minima, not the number 
+in the colour files. 
+currently used for array allocation.
+Colours are chosen automatically to spread over a rainbow spectrum  
+(from red to purple) in the order the files are specified but colours can 
+be specified individually at both COLOURMARKER in this file. - vkd 
 
 \keyw{TSTHRESH}{threshold} ignore transition states above this threshold.
 \keyw{MAXTSENERGY}{threshold} ignore transition states above this threshold.
@@ -5754,6 +5753,67 @@ Label $n$ different sections of the graph in colour as specified by the
 If present, use weights in $file$ to scale the horizontal width. The expected 
 format of $file$ is:
 bin number  Vmin   Vmax  ln weight
+
+\section{Manipulate}
+\hypertarget{manipulate}
+\dman is a program for editing disconnectivity graphs produced by \hyperlink{ddps}{\ddps}.
+ The user types in commands on the terminal, and the postscript file is
+ rewritten after each command.  [Commands are not case sensitive.]
+
+ To get started, make a tree.ps file with \ddps.  Run \prog{ghostview}
+ in the background, and start \prog{manipulate}.  Type "READ" to load the graph.
+ Now use the coordinates of the mouse pointer in ghostview to identify the
+ approximate coordinates $x$ and $y$ of the node you would like to move. \progl{manipulate}
+ will find the closest node to the point you specify and can perform the
+ following operations.  Nodes are only moved horizontally.
+
+\subsection{Commands}
+\ksec{ALIGN}{x y}
+Align the node vertically with its parent in the next level up.
+
+\ksec{JOINUP}{x y}
+Removes the parent of a node and connects the node to its grandparent
+instead.  Only useful for nodes with no sisters.
+
+\ksec{MOVEBY}{x y dx}
+Moves the node by a horizontal amount $dx$.
+
+\ksec{MOVETO}{x y x'}
+Moves the node to horizontal coordinate $x'$.
+
+\ksec{PIVOT}{x y x' y'}
+Moves the $x$ coordinate of a node to $x'$ and pivots all lines connected
+below about their intersection with the line $y = y'$. The value of $y'$
+should be specified precisely as one of the levels of the graph.
+
+\ksec{PSQUEEZE}{x y f}
+Recursively compresses all nodes below the one specified by a fixed
+factor $f$ about the $x$ coordinate of the node.
+
+\ksec{QUIT}{} Leave the program
+
+\ksec{RALIGN}{x y}
+Recursive align.  Same as \keyw{ALIGN} but translates all nodes connected below
+the one moved by the same amount.
+
+\ksec{RMOVEBY}{x y dx}
+Recursive moveby.  Same as \keyw{MOVEBY} but translates all nodes connected below
+by the same amount.
+
+\ksec{RMOVETO}{x y x'}
+Recursive moveto.  Same as \keyw{MOVETO} but translates all nodes below by the
+same amount.
+
+\ksec{RSQUEEZE}{x0 x1 y f}
+Scales all $x$ coordinates in the range $x0$ to $x1$ on the level at $y$ about the
+midpoint of the range by a factor $f$, and recursively translates nodes below
+by the same amount.
+
+\ksec{SQUEEZE}{x0 x1 y f}
+Same as \keyw{RSQUEEZE} but does not recursively translate the nodes below.
+
+\ksec{UNDO}{} Undoes the last command by reading the previous state from disk.
+\ksec{UPALIGN}{x y} Vertically aligns the parent of the specified node.
 
 
 \input{bookmarks}
@@ -5772,9 +5832,6 @@ bin number  Vmin   Vmax  ln weight
 \bibliographystyle{apalike}
 \bibliography{wgdoc}
 \bibliography{repdoc}
-
-
-
 
 \end{document}
 
