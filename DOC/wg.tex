@@ -133,6 +133,13 @@
 \newcommand{\keyw}[1]{\hyperlink{\prog:#1}{\it #1\/}}
 \newcommand{\ksec}[2]{\subsubsection{#1\ {\it\ #2 \/}}\hypertarget{\prog:#1}}
 
+
+\newcommand{\gmin}{\tt GMIN}
+\newcommand{\optim}{\tt OPTIM}
+\newcommand{\ps}{\tt PATHSAMPLE}
+\newcommand{\dps}{\tt disconnectionDPS}
+\newcommand{\dman}{\tt manipulate}
+
 \chapter{GMIN}
 \renewcommand{\prog}{GMIN}
 \section{Introduction}
@@ -5608,6 +5615,185 @@ without a complete connection between the desired end points.
 %\bibliographystyle{thesis}
 \bibliographystyle{apalike}
 \bibliography{wgdoc}
+
+
+\chapter{DISCONNECT}
+
+\section{disconnectionDPS}
+
+\dps is a program which purpose is to plot disconnectivity graphs \cite{BeckerKarplus97}.
+
+! Program Info  {{{
+!
+! Program to plot disconnectivity trees.
+! See Becker and Karplus JCP 106 1495 (1997).
+!
+! Adapted to read PATHSAMPLE.2.0 data files.
+! keyword NCONNMIN added
+!
+! Information and options are passed to the program in a file called
+! "dinfo", which is keyword driven.
+!
+! Compulsory Keywords
+! -------------------
+!
+! DELTA <dE>
+! Energetic separation of levels in basin analysis.
+!
+! FIRST <E1>
+! Specifies the energy of the highest level on the energy axis.
+!
+! LEVELS <n>
+! The number of levels at which to perform the basin analysis.
+!
+! MINIMA <file>
+! Specifies filename for minima info.
+!
+! TS <file>
+! Specifies filename for transition state info.
+!
+!
+! Optional Keywords
+! -----------------
+!
+! CENTREGMIN
+! If this keyword is present, then when a node splits into its daughter
+! nodes, the one containing the global minimum is always placed centrally
+! (even if other nodes carry more minima). This does not guarantee that
+! the global minimum is central in the overall diagram because other
+! nodes may push the one containing the global minimum over to one side.
+!
+! DUMPNUMBERS
+! If present, a file called node_numbers is written, listing the minima
+! associated with each node in each level. Nodes are listed from left to
+! right within each level.
+!
+! DUMPSIZES
+! If present, a file called node_sizes is written, listing how many minima
+! are represented by each node in each level. Nodes are listed from left to
+! right in each level.
+!
+! EXCLUDEALL
+! Removes all minima from the list of minima to be plotted.  This is to be
+! used in conjunction with the PICK command which can be used to specify
+! exclusively which minima are to be included.
+!
+! CONNECTMIN <min>
+! If present then the analysis for a connected database is based upon minimum
+! number min. If absent then the global minimum is used to judge connectivity.
+!
+! COLOURPRINT
+! For use with TRMIN, if present colour analysis written to 'node_sections'.   
+! Not actually required for colour analysis.
+!
+! IDENTIFY
+! If present, the branch ends are labelled with the lowest-energy minimum
+! they represent.
+!
+! IDENTIFY_NODE <max_min>
+! If present, the nodes are labelled with the format N1_N2, where N1 is the number of level,
+! N2 is the number of the node at that level. The label is only printed if the
+! number of minima below that node is smaller than <max_min>. With this info
+! you can pick the number of minima correspondig to that node from the node_numbers file,
+! produced by using the keyword DUMPNUMBERS... (and then print any branch of the graph separately)
+!
+! IDENTIFY_NODE_SIZE <max_min2>
+! If present, the nodes are labelled with number of minima corresponding to that node. 
+! The label is only printed if the number of minima below that node is smaller than <max_min2>
+!
+! IDMIN <min>
+! Label this minimum on the graph. Repeat to label more than one minimum.
+!
+! LABELFORMAT <fmt>
+! Specifies the Fortran format string for the energy level labels. The default
+! is F6.1.
+!
+! LABELSIZE <n>
+! Set the size of the fonts in case of the labels (for IDENTIFY, IDENTIFY_NODE ...)
+! Default is 10 pt.
+!
+! LETTER
+! If present, the graph is formatted for American letter paper rather than
+! European A4.
+!
+! LOWEST <n>
+! If present, only the branches leading to the lowest n minima are drawn. The
+! pruning occurs after the basin analysis, so the "discarded" minima can still
+! influence the connectivities.
+!
+! MONOTONIC
+! If present, all minima not lying at the bottom of a monotonic sequences are
+! not drawn. This tends to reduce the number of branches drastically. If the
+! keyword LOWEST is also used, the MONOTONIC sequence analysis is applied after
+! the high energy minima have been discarded.
+!
+! NCONNMIN
+! Minima with NCONNMIN connections or fewer are discarded. Default is zero.
+!
+! NOBARRIERS
+! If present, all transition state energies are reset to the energy of the higher
+! of the two minima they connect. This transforms the energy landscape to the
+! type explored by gmin.
+!
+! PICK <file>
+! Specifies the name of a list of numbers of minima, one per line.  Minima on
+! this list are included on the graph.  Minima preceded with a minus sign are
+! removed from the graph.  This process is executed after the commands
+! MONOTONIC, LOWEST and EXCLUDEALL have been executed, thereby making it
+! possible to override them for particular minima.  Examples: 1. To remove
+! certain minima from a full plot, just specify PICK and a list of negative
+! minima numbers.  2. To include only specific minima, use EXCLUDEALL and
+! PICK plus a list of positive minima numbers.  All basin analysis includes
+! the full sample and is performed before minima are removed or added back in.
+!
+! NOSPLIT
+! By default, every minimum is indicated by its own branch, which splits off
+! from the parent basin even if the minimum and its lowest transition state do
+! not straddle an energy level in the basin analysis. This is to avoid it being
+! dependent on precisely where the levels are placed (bulk shifting of the levels
+! would cause some branch ends to appear or disappear rather than change node
+! if this were not the case). The NOSPLIT option turns this feature off, so that
+! if two minima are separated by a barrier lower than the level above their own
+! energy, they are grouped together. This option should probably never be used.
+!
+! TRMIN <n> <max> <file> <file> ...
+! Label n different sections of the graph in colour as specified by the 
+! minima in each file, one file for each section.  
+! Each file is a list of numbers of minima, 
+! one per line as for PICK. max is the total number of minima, not the number 
+! in the colour files. 
+! currently used for array allocation.
+! Colours are chosen automatically to spread over a rainbow spectrum  
+! (from red to purple) in the order the files are specified but colours can 
+! be specified individually at both COLOURMARKER in this file. - vkd 
+!
+! TSTHRESH    <threshold> ignore transition states above this threshold.
+! MAXTSENERGY <threshold> ignore transition states above this threshold.
+! MAXTSBARRIER <threshold> ignore transition states with both barriers above this threshold.
+!
+! WEIGHTS <file>
+! If present, use weights in <file> to scale the horizontal width. The expected 
+! format of <file> is 
+! bin number  Vmin   Vmax  ln weight
+
+!................................................................................!
+
+!!!
+!!! KEYWORDS LIBRARY
+!!!
+!!! Subroutines: ma readread_line(unit[,logical])
+!!!              get_string(string[,logical])
+!!!              get_integer(integer[,logical])
+!!!              get_dp(dp[,logical])
+!!!              get_logical(lgcl[,logical])
+!!!              upper_case(string)
+!!!
+!!! Version 2.0
+!!! MM 21.ix.96
+!!!
+! }}}
+
+
 
 \end{document}
 

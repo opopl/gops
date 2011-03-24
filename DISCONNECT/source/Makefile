@@ -1,4 +1,4 @@
-F90=pgf90
+F90=$(FC90)
 F90FLAGS = -O
 
 all: disconnectionDPS manipulate
