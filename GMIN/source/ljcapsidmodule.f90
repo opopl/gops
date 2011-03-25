@@ -604,8 +604,10 @@ END SUBROUTINE INITIALISEPYGPERIODIC
                dVDUMMY(j) = 0.0D0
               END IF
 !                dVDUMMY(j) = dLLJ1(j)
-               dVDUMMY(j) = dVDUMMY(j) + 24.0D0 * PYEPSNOT * ( 2.0D0*RHO1SQ*DG1DR(j)*(RHO16*RHO1SQ*RHO1SQ*RHO1-CLJ14(1)/(RHO1SQ*RHO1))&
-                   &+14.0D0*dCLJ1(1,j)*(CLJ13(1)/RHO1SQ-CLJ11(1))) !repulsive derivative
+               dVDUMMY(j) = dVDUMMY(j) + 24.0D0 * PYEPSNOT * ( &
+               & 2.0D0*RHO1SQ*DG1DR(j)*(RHO16*RHO1SQ*RHO1SQ*RHO1-CLJ14(1)/(RHO1SQ*RHO1))&
+               &+14.0D0*dCLJ1(1,j)*(CLJ13(1)/RHO1SQ-CLJ11(1))) 
+               !repulsive derivative
 
                dVDUMMY(j) = dVDUMMY(j) + 24.0D0 * PYEPSNOT * (-1.0D0*RHO2SQ*DG2DR(j)*(RHO2SQ*RHO2SQ*RHO2-CLJ8(2)/(RHO2SQ*RHO2))&
                    &-4.0D0*dCLJ1(2,j)*(CLJ7(2)/RHO2SQ-CLJ5(2))) !attractive derivative

@@ -44,7 +44,7 @@ while [ ! -z "$*"  ]; do
 	shift
 done
 
-copyright="Copyright (C) 1999-2010 David J. Wales"
+#copyright="Copyright (C) 1999-2010 David J. Wales"
 
 case "$prog" in
   	GMIN) prog_full="A program for finding global minima" ;;

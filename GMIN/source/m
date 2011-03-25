@@ -147,7 +147,7 @@ endif
 
 # COMPILERS AND COMPILER FLAGS  {{{
 
-FC = pgf90
+FC =$(FC90)
 DL=debug 
 LIBS = libmyblas.a libmylapack.a libmyblas.a 
 SEARCH_PATH =  -I..
@@ -224,7 +224,8 @@ endif
 
 ifeq ($(FC),gfortran)
 
-FFLAGS= -ffixed-line-length-132 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic
+FFLAGS= -ffixed-line-length-265 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic
+FFLAGS= -ffixed-line-length-none -O0 
 
 ifeq ($(DL),noopt)
 FFLAGS= -ffixed-line-length-265 -O0 

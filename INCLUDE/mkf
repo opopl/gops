@@ -1,6 +1,6 @@
 
 
-PRF=$(SCRIPTS_PATH)/all/porfuncs.csh
+PRF=$(SCRIPTS_PATH)/all/porfuncs.sh
 
 porfuncs.f90: $(PRF)
 	$(PRF) ${SWITCH} > porfuncs.f90

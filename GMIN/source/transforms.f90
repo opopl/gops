@@ -46,7 +46,8 @@ CONTAINS
         DOUBLE PRECISION, INTENT(IN), DIMENSION(:) :: INPUT_COORDS, TRANSLATION
 
         IF (SIZE(INPUT_COORDS) .NE. SIZE(TRANSLATION)) THEN
-            STOP 'Error: Sizes of the input coordinates and translation arrays are different in function TRANSLATE of module TRANSFORMS.'
+            STOP 'Error: Sizes of the input coordinates and translation arrays &
+            & are different in function TRANSLATE of module TRANSFORMS.'
         END IF
 
         OUTPUT_COORDS = INPUT_COORDS + TRANSLATION
@@ -54,7 +55,7 @@ CONTAINS
 
 !!! (Proper) rotations start here
 
-    FUNCTION ROTATE_ABOUT_AXIS_ORIGIN(INPUT_COORDS, ROTATION_AXIS, ROTATION_ANGLE) RESULT(OUTPUT_COORDS)
+   FUNCTION ROTATE_ABOUT_AXIS_ORIGIN(INPUT_COORDS, ROTATION_AXIS, ROTATION_ANGLE) RESULT(OUTPUT_COORDS)
     ! Rotates the input coordinates through the given angle about the axis provided.
     ! CAN THE INPUT_COORDS VECTOR BE LARGER THAN 3?  NEED TO THINK ABOUT COORDS, SHOULD IT BE AN ARRAY - COORDS(INDEX, ATOM) 
 
@@ -81,7 +82,7 @@ CONTAINS
         OUTPUT_COORDS = -INPUT_COORDS
     END FUNCTION INVERSION_THROUGH_ORIGIN
 
-    FUNCTION INVERSION_THROUGH_POINT(INPUT_COORDS, POINT_COORDS) RESULT(OUTPUT_COORDS)
+    FUNCTION INVERSION_THROUGH_POINT( INPUT_COORDS, POINT_COORDS ) RESULT(OUTPUT_COORDS)
     ! Inverts the input coordinates through POINT_COORDS (X1,Y1,Z1,X2,Y2,Z2...Xn,Yn,Zn)
     ! (x, y, z) -> (2X-x, 2Y-y, 2Z-z)
         IMPLICIT NONE

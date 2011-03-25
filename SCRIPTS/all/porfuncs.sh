@@ -28,204 +28,284 @@ compilers=( nag ifort pgi ifc g95 gfortran pathscale )
 
 if [ $# -eq 1 ]; then 
   	compiler="$1"
-
-
-if ( $#argv == 1) then
-  set compiler = $argv[1]
-  if ( $compiler != 'nag' && $compiler != 'ifort' && $compiler != 'pgi' && $compiler != 'ifc' && $compiler != 'g95'  && $compiler != 'gfortran' && $compiler != 'pathscale' ) then
-    echo 'Unknown compiler!'
-    exit 1
-  endif
+  	case $compiler in	
+    		nag|ifort|pgi|ifc|g95|gfortran|pathscale) ;;
+		*) 
+    			echo 'Unknown compiler!'
+        		exit 1
+		;;
+  	esac
 else
-  set compiler = 'pgi'
-endif
+  	compiler="pgi"
+fi
+
 #}}}
 
 echo "MODULE PORFUNCS" 
 #{{{
 
-if ( $compiler == 'nag' ) then
-  echo "     use f90_unix, only: getarg"
-  echo "     use f90_unix_proc, only: system, exit"
-endif
 
-echo "     implicit none"
-echo "     contains"
+case $compiler in 
+ 	nag)  
+cat << EOF
+use f90_unix, only: getarg
+use f90_unix_proc, only: system, exit
+EOF
+;;
+esac
+
+cat << EOF
+implicit none
+contains
+EOF
+
 # FLUSH {{{
-if ( $compiler == 'nag' ) then
-  echo "          subroutine flush(UNIT,ISTAT) ! flushes the output buffer of logical unit UNIT which must be"
-  echo "          use f90_unix, NAGflush => flush ! connected for formatted sequential output; ISTAT is ignored"
-  echo "               implicit none"
-  echo "               integer,intent(in) :: UNIT"
-  echo "               integer,intent(out),optional :: ISTAT"
-  echo "               call NAGflush(UNIT)"
-  echo "          end subroutine flush"
-  echo " "
-else if ( $compiler == 'g95' ) then
-  echo "          subroutine flush(UNIT,ISTAT) ! flushes the output buffer of logical unit UNIT which must be"
-  echo "               implicit none ! connected for formatted sequential output; ISTAT is ignored"
-  echo "               integer,intent(in) :: UNIT"
-  echo "               integer,intent(out),optional :: ISTAT"
-  echo "               call flush(UNIT)"
-  echo "          end subroutine flush"
-  echo " "
-else if ( $compiler == 'gfortran' ) then
-  echo "          subroutine flush(UNIT,ISTAT) ! flushes the output buffer of logical unit UNIT which must be"
-  echo "               implicit none ! connected for formatted sequential output; ISTAT is ignored"
-  echo "               integer,intent(in) :: UNIT"
-  echo "               integer,intent(out),optional :: ISTAT"
-  echo "!              call flush(UNIT)"
-  echo "          end subroutine flush"
-  echo " "
-endif
+case $compiler in
+  	nag) # {{{
+cat << EOF
+subroutine flush(UNIT,ISTAT) ! flushes the output buffer of logical unit UNIT which must be
+
+use f90_unix, NAGflush => flush ! connected for formatted sequential output; ISTAT is ignored
+
+implicit none
+
+integer,intent(in) :: UNIT
+integer,intent(out),optional :: ISTAT
+call NAGflush(UNIT)
+
+end subroutine flush
+EOF
+;;
 #}}}
-#op226> getarg  {{{
+  	g95) #{{{
+cat << EOF
+subroutine flush(UNIT,ISTAT) ! flushes the output buffer of logical unit UNIT which must be
+
+implicit none ! connected for formatted sequential output; ISTAT is ignored
+
+integer,intent(in) :: UNIT
+integer,intent(out),optional :: ISTAT
+
+call flush(UNIT)
+
+end subroutine flush
+EOF
+;;
+#}}}
+	gfortran) #{{{
+cat << EOF
+subroutine flush(UNIT,ISTAT) ! flushes the output buffer of logical unit UNIT which must be
+
+implicit none ! connected for formatted sequential output; ISTAT is ignored
+
+integer,intent(in) :: UNIT
+integer,intent(out),optional :: ISTAT
+!              call flush(UNIT)
+
+end subroutine flush
+EOF
+;;
+# }}}
+esac
+ 
+#}}}
+# GETARG (added by op226) {{{
+
 echo "          subroutine getarg_subr(position,value) ! wraps getarg function so it can be use-associated"
 
 #nag{{{
-if ( $compiler == 'nag' ) then
-  echo "               use f90_unix, only: getarg"
-endif
+case $compiler in
+  	nag) echo "               use f90_unix, only: getarg" ;;
+esac
 #}}}
 
-echo "               implicit none"
-echo " "
-echo "               integer,intent(in) :: position"
-echo "               character(len=*),intent(out) :: value"
-echo " "
+cat << EOF
 
-# not nag{{{
-if ( $compiler != 'nag' ) then
-  #echo "               integer getarg"
-  echo " "
-endif 
-#}}}
+implicit none
 
-echo "               call getarg(position,value)"
-echo "          end subroutine getarg_subr"
-echo " "
+integer,intent(in) :: position
+character(len=*),intent(out) :: value
+
+call getarg(position,value)
+
+end subroutine getarg_subr
+EOF
+
+
 #}}}
 # IARGC {{{
-echo "          subroutine iargc_subr(n) ! wraps iargc function so it can be use-associated"
+cat << EOF
 
-if ( $compiler == 'nag' ) then
-  echo "               use f90_unix, only: iargc"
-endif
+subroutine iargc_subr(n) ! wraps iargc function so it can be use-associated
 
-echo "               implicit none"
-echo "               integer,intent(out) :: n"
-echo " "
+EOF
 
-if ( $compiler != 'nag' ) then
-  echo "               integer iargc"
-  echo " "
-endif 
+case $compiler in
+  	nag) echo "use f90_unix, only: iargc" ;;
+esac
 
-echo "               n = iargc()"
-echo "          end subroutine iargc_subr"
-echo " "
+cat << EOF
+
+implicit none
+integer,intent(out) :: n
+
+EOF
+
+
+if [[ ! $compiler == "nag" ]]; then
+echo "integer iargc"
+fi
+
+cat << EOF
+n = iargc()
+end subroutine iargc_subr
+
+EOF
+ 
 #}}}
 # FORK {{{
 echo "          subroutine fork_subr(pid)" ! returns zero in the child process, PID of child in parent process
-if ( $compiler == 'nag' ) then
-  echo "               use f90_unix_proc, only: fork"
-endif
+
+case $compiler in
+  	nag) echo "               use f90_unix_proc, only: fork" ;;
+esac
+
 echo "               implicit none"
 echo "               integer, intent(inout) :: pid"
 echo " "
-if ( $compiler == 'pgi' ) then
+if [ $compiler == "pgi" ]; then
      echo "               integer fork"
-endif
+fi
+
 echo " "
-if ( $compiler == 'pgi' ) then
-     echo "               pid=fork()"
-else if ( $compiler == 'ifort' ) then
-     echo "               integer ierror"
-     echo "               call pxffork(pid,ierror)"
-else if ( $compiler == 'nag' ) then
-     echo "               call fork(pid)"
-else if ( $compiler == 'pathscale' ) then
-     echo "               integer fork"
-     echo "               pid=fork()"
-else if ( $compiler == 'gfortran' ) then
-endif
+
+case $compiler in
+  	pgi) 	echo "               pid=fork()" ;;
+      ifort) 	echo "               integer ierror"
+     		echo "               call pxffork(pid,ierror)"
+     	;;
+	nag) 	echo "               call fork(pid)";;
+	pathscale) 
+		echo "               integer fork"
+     		echo "               pid=fork()"
+		;;
+	gfortran);;
+esac
+
 echo "          end subroutine fork_subr"
 echo " "
 #}}}
 # SYSTEM {{{
 echo "          subroutine system_subr(JobString,ExitStatus)"
-if ( $compiler == 'nag' ) then
-  echo "               use f90_unix_proc, only: system"
-endif
-echo "               implicit none"
-echo " "
-echo "               character(len=*),intent(in) :: JobString"
-echo "               integer,intent(out) :: ExitStatus"
-echo " "
-if ( $compiler == 'ifort' ) then
-  echo "               integer shiftr,system"
-  echo " "
-  echo "               ExitStatus=system(JobString)"
-#  echo "               ExitStatus=shiftr(ExitStatus,-8)"
-else if ( $compiler == 'pgi' ) then
-  echo "               integer system"
-  echo " "
-     echo "               ExitStatus=system(JobString)"
-     echo "               ExitStatus=ishft(ExitStatus,-8)"
-else if ( $compiler == 'nag' ) then
-  echo "               call system(JobString,ExitStatus)"
-  echo "               ExitStatus=ishft(ExitStatus,-8)"
-else if ( $compiler == 'pathscale' ) then
-  echo "               integer system"
-  echo "               ExitStatus=system(JobString)"
-endif
-echo "          end subroutine system_subr"
-echo " "
+
+if [ $compiler == 'nag' ]; then
+	  echo "               use f90_unix_proc, only: system"
+fi
+
+cat << EOF
+               implicit none
+ 
+               character(len=*),intent(in) :: JobString
+               integer,intent(out) :: ExitStatus
+EOF
+ 
+case $compiler in 
+	ifort) # {{{
+		  echo "               integer shiftr,system"
+		  echo " "
+		  echo "               ExitStatus=system(JobString)"
+		  ;;
+		#}}}
+	pgi) # {{{
+		  echo "               integer system"
+		  echo " "
+		  echo "               ExitStatus=system(JobString)"
+		  echo "               ExitStatus=ishft(ExitStatus,-8)"
+		  ;;
+		  # }}}
+	nag) # {{{
+		  echo "               call system(JobString,ExitStatus)"
+		  echo "               ExitStatus=ishft(ExitStatus,-8)"
+		  ;;
+		#}}}
+	pathscale) # {{{
+		  echo "               integer system"
+		  echo "               ExitStatus=system(JobString)"
+		  ;;
+		#}}}
+esac
+
+cat << EOF
+          end subroutine system_subr
+ 
+EOF
+
 #}}}
 # WAIT {{{
 echo "          subroutine wait_subr(pid,ExitStatus)"
-if ( $compiler == 'nag' ) then
+if [[ $compiler == 'nag' ]]; then
   echo "               use f90_unix_proc, only: wait"
-endif
-echo "               implicit none"
-echo " "
-echo "               integer,intent(inout) :: pid,ExitStatus"
-echo " "
-if ( $compiler == 'ifort' ) then
+fi
+
+cat << EOF
+               implicit none
+ 
+               integer,intent(inout) :: pid,ExitStatus
+EOF
+ 
+case $compiler in
+ifort) # {{{
    echo "               integer shiftr,ierror"
    echo " "
    echo "               call pxfwait(ExitStatus,pid,ierror)"
-else if ( $compiler == 'pgi' ) then
+   ;;
+ #}}}
+pgi) # {{{
    echo "               integer wait"
    echo " "
    echo "               pid=wait(ExitStatus)"
    echo "               ExitStatus=ishft(ExitStatus,-8)"
-else if ( $compiler == 'nag' ) then
+   ;;
+ #}}}
+nag) #{{{
   echo "               call wait(ExitStatus,pid)"
   echo "               ExitStatus=ishft(ExitStatus,-8)"
-else if ( $compiler == 'pathscale' ) then
+  ;;
+  # }}}
+pathscale) # {{{
   echo "               INTEGER WAIT"
   echo "               pid=wait(ExitStatus)"
-else if ( $compiler == 'gfortran' ) then
-endif
-echo "          end subroutine wait_subr"
-echo " "
+  ;;
+  # }}}
+  gfortran) ;;
+esac
+
+echo "end subroutine wait_subr"
+ 
 #}}}
 # GETPID {{{
 echo "          subroutine getpid_subr(pid)"
-if ( $compiler == 'nag' ) then
+if [[ $compiler == 'nag' ]]; then
   echo "               use f90_unix, only: getpid"
-endif
-echo "               implicit none"
-echo " "
-echo "               integer,intent(out) :: pid"
-echo " "
-if ( $compiler == 'ifort' || $compiler == 'pgi' || $compiler == 'ifc' || $compiler == 'pathscale' ) then
+fi
+
+cat << EOF
+               implicit none
+ 
+               integer,intent(out) :: pid
+EOF
+
+case $compiler in
+  	ifort|pgi|ifc|pathscale)
   echo "               integer getpid"
   echo " "
-endif
-echo "               pid=getpid()"
-echo "          end subroutine getpid_subr"
+  ;;
+esac
+
+cat << EOF
+               pid=getpid()
+          end subroutine getpid_subr
+EOF
 #}}}
 #}}}
 echo "END MODULE PORFUNCS"
