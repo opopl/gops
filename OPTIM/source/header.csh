@@ -25,7 +25,6 @@ echo "     contains"
 echo "          subroutine PrintHeader"
 echo "               implicit none"
 echo
-echo "               write(*,'(/a)') ' OPTIM version `bash version.sh`, Copyright (C) 1999-2006 David J. Wales'"
 echo "               write(*,'(a)') ' OPTIM comes with ABSOLUTELY NO WARRANTY; for details supply WARRANTY as an input keyword.'"
 echo "               write(*,'(a)') ' This is free software, and you are welcome to redistribute it'"
 echo "               write(*,'(a/)') ' under certain conditions; provide keyword COPYRIGHT to see the details.'"

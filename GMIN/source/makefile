@@ -1,4 +1,4 @@
-#vim:set ft=make
+#vim:ft=make
 # Introductory remarks {{{
 # 
 # Default target gives GMIN
@@ -31,28 +31,18 @@
 # }}}
 
 # Definitions {{{
+#
+
 ROOT_PATH=$(PWD)/../../
-LAPACK_PATH=$(ROOT_PATH)/LAPACK
-BLAS_PATH=$(ROOT_PATH)/BLAS
 INC_PATH=$(ROOT_PATH)/INCLUDE/
-SCRIPTS_PATH=$(ROOT_PATH)/SCRIPTS/
+
+PROGNAME=GMIN
 GENFFILES = porfuncs.f90 display_version.f90 mc.f ptmc.f bspt.f main.f 
-AMB9SRC = ../../AMBER
-SANDERSRC = ../../AMBER/src/sander
+
+include $(INC_PATH)/def
 
 
-GPROG =	../bin/GMIN
-CPROG = ../bin/CGMIN
-AMHPROG = ../bin/AMHGMIN
-AMBPROG = ../bin/AMBGMIN
-
-LDFLAGS = -L.
-DEFS =
-# CPP = /usr/bin/cpp
-CPP = /lib/cpp
-CPFLAGS = -traditional -P
-L=
-
+AMHPROG = $(BIN_PATH)/AMHGMIN
 # }}}
 # Object files {{{
 
@@ -96,7 +86,7 @@ ALLSOURCE := $(wildcard *.f) $(wildcard *.f90) $(wildcard *.F)
 ## }}}
 
 # NOTUSEDSOURCE: source files not used in present GMIN build {{{
-NOTUSEDSOURCE= io_sanity.f90 molinfo.f90
+NOTUSEDSOURCE= io_sanity.f90 molinfo.f90 transforms.f90
 ## }}} 
 
 SOURCE=$(filter-out $(NOTUSEDSOURCE),$(ALLSOURCE))
@@ -106,44 +96,10 @@ OBJS := $(patsubst %.F,%.o,$(patsubst %.f,%.o,$(patsubst %.f90,%.o,$(SOURCE))))
 OBJSrt := porfuncs.o display_version.o
 OBJS+= $(OBJSrt)
 
-CHDUM = chdummy.o
 AMHDUM = amhdummy.o
-AMB9DUM = amber9dummy.o
-VPATH = .:CHARMM:AMH:.
+VPATH = .:AMH:.
 
 # }}}
-
-## CHARMM {{{
-
-ifeq ($(L),CHARMM) 
-
-CHDIR = ${ROOT_PATH}/CHARMM31
-
-ifdef MPI 
-CHDIR = ${ROOT_PATH}/charmm31.mpi
-endif
-
-FCMDIR = ${CHDIR}/source/fcm
-
-CTYPE=C31
-
-CHMAINSRC = charmm_main.src # energy.src
-
-EXTRAS = myblas.o mylapack.o
-BLAS_EXCLUDE_LIST = dnrm2.o daxpy.o dcopy.o ddot.o
-
-PREFLX = ${CHDIR}/tool/prefx_gnu
-PREFDIR = ${CHDIR}/build/gnu
-
-CHLIBDIR=${CHDIR}/lib/gnu
-# Object files in CHARMM directory
-CHOBJS = $(wildcard $(CHLIBDIR)/*.o ) 
-# Libraries in CHARMM directory
-CHLIBS = $(wildcard $(CHLIBDIR)/*.a ) 
-
-endif
-
-### end CHARMM }}}
 
 # COMPILERS AND COMPILER FLAGS  {{{
 
@@ -262,32 +218,16 @@ endif
 .F90.f90:
 	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
 
+default: $(PROG)
 
-default: $(GPROG)
-
-GMIN: $(GPROG)
-gmin: $(GPROG)
-
-CHGMIN: $(CPROG)
-chgmin: $(CPROG)
+GMIN: $(PROG)
+gmin: $(PROG)
 
 cup:
 	rm -rf $(NOTUSEDSOURCE)
 
-#$(GPROG): $(CHDUM) $(AMHDUM) $(AMB9DUM) $(OBJS) $(EXTRAS) 
-	#$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(EXTRAS) $(OBJS) $(CHDUM) $(AMHDUM) $(AMB9DUM) $(LDFLAGS) $(LIBS)
-$(GPROG): $(OBJS) $(EXTRAS) 
+$(PROG): $(OBJS) $(EXTRAS) 
 	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(EXTRAS) $(OBJS) $(LDFLAGS) $(LIBS)
-
-$(CPROG): $(OBJS) $(EXTRAS) libcharmm.a 
-	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ ${CHOBJS} $(EXTRAS) \
-	$(OBJS) $(LDFLAGS) $(LIBS) ${CHLIBS}
-
-AMBGMIN: $(AMBPROG) 
-ambgmin: $(AMBPROG) 
-
-$(AMBPROG): $(OBJS) $(EXTRAS) $(CHDUM) $(AMHDUM) libamber.a
-	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(OBJS) $(EXTRAS) $(CHDUM) $(AMHDUM) $(LDFLAGS) libamber.a $(LIBS) 
 
 AMHGMIN: $(AMHPROG)
 amhgmin: $(AMHPROG)
@@ -300,34 +240,11 @@ keyword.o: keyword.f
 	${FC} ${NOOPT} ${SEARCH_PATH} -c keyword.f
 
 clean:
-	rm -f ${GPROG} ${CPROG} $(AMHPROG) $(AMBPROG) $(OBJS) *.mod $(EXTRAS) *.lst *.o pref.dat prefx.msg nag.f90 FOR021.DAT ${GENFFILES} *.a
+	rm -f ${PROG} $(AMHPROG) $(OBJS) *.mod $(EXTRAS) *.lst *.o pref.dat prefx.msg nag.f90 FOR021.DAT ${GENFFILES} *.a
 	if test -d ../../BLAS ;  then cd ../../BLAS ; make clean ; fi
 	if test -d ../../LAPACK ;  then cd ../../LAPACK ; make clean ; fi
-	if test -d CHARMMinterface ;  then cd CHARMMinterface ; make -f mchi clean ; fi
 	if test -d AMH ;  then cd AMH ; make clean ; fi
-	if test -d $(SANDERSRC) ; then cd $(SANDERSRC) ; make clean ; fi
 
-cleanexe:
-	rm -f $(CPROG) $(GPROG) $(AMHPROG) $(AMBPROG)
-
-timing:
-	rm -f GMIN.2.0
-	$(FC) $(FFLAGS) -p $(OBJS) $(EXTRAS) -o $(GPROG) $(LIBS)
-
-feedback:
-	$(FC) $(FFLAGS) -xprofile=use:gmin.profile *.f -o $(GPROG)
-
-rebuild:
-	make clean
-	make
-
-rebuildamh:
-	make clean
-	make AMHGMIN
-
-libamber.a:
-	export SRCDIR=$(CURDIR);cd ${SANDERSRC}; make lib1 FC="${FC}" FFLAGS="${FFLAGS}" \
-	FREEFORMAT_FLAG="${FREEFORMAT_FLAG}" EXTRA_FLAGS="${EXTRA_FLAGS}"
 libamh.a: SAT-Ghost
 	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" 
 libmyblas.a: SAT-Ghost
@@ -336,22 +253,14 @@ libmyblas.a: SAT-Ghost
 libmylapack.a: SAT-Ghost
 	cd ../../LAPACK; make selection FC="${FC}" FFLAGS="${FFLAGS}" NOOPT="${NOOPT}";\
 	cp libmylapack.a ../GMIN/source/
-libcharmm.a: SAT-Ghost
-	cd CHARMMinterface; make -f mchi FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" PREFLX="${PREFLX}" \
-	PREFDIR="${PREFDIR}" \
-	CTYPE="${CTYPE}" FCMDIR="${FCMDIR}" C31SRC="${CHDIR}" SRC31="${CHMAINSRC}"
 SAT-Ghost:
 
 include $(INC_PATH)/mkf
 
 # }}}
 ## DEPENDENCIES  {{{
-${GPROG}: libmyblas.a libmylapack.a
-${CPROG}: libmyblas.a libmylapack.a libcharmm.a
+${PROG}: libmyblas.a libmylapack.a
 ${AMHPROG}: commons.o libmyblas.a libmylapack.a libamh.a
-${AMBPROG}: libmyblas.a libmylapack.a libamber.a porfuncs.o
-libcharmm.a: commons.o modcharmm.o modmxatms.o
-libamber.a: commons.o modamber9.o porfuncs.o grouprotation.o
 
 Alglue.o:      commons.o
 BLJcluster.o:  commons.o

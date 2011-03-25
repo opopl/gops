@@ -20,7 +20,7 @@ C  All the keywords possible for the odata file are contained here in
 C  alphabetical order. Initialisation statements procede the big IF block.
 C
       !op226 <begin>
-      SUBROUTINE KEYWORDS(Q)
+      SUBROUTINE KEYWORD(Q)
       ! Declarations {{{
       ! Modules  {{{
       USE COMMONS 
@@ -4083,7 +4083,7 @@ C
          ! }}}
          ! <end>
       ELSE
-        CALL REPORT(' keywords> Unrecognized command '//WORD,.TRUE.)
+        CALL REPORT(' keyword> Unrecognized command '//WORD,.TRUE.)
         STOP
       ENDIF
 

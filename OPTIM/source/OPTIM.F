@@ -108,7 +108,7 @@ C      STPMAX(:)=0.0D0
       KNOWE=.FALSE. ; KNOWG=.FALSE. ; KNOWH=.FALSE.
       RBATOMSMAX=10
 
-      CALL KEYWORDS(Q)
+      CALL KEYWORD(Q)
 
       IF (UNRST.AND.(RKMIN.OR.BSMIN.OR.(INR.GT.-1))) THEN
          PRINT '(A)','UNRES not coded for requested optimisation option'
