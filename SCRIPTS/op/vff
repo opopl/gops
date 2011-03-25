@@ -170,7 +170,7 @@ EOF
 			  		d="$wg_dir/$p/source/"
 				;;
 				# }}}
-			qu | u | mk | dv | bb | porfuncs | "com" | cf | M  | tem | "a" | dc | kw* | "chi" | "f" | "bln" | "b" | "b0" |  "bu"  | "m" | "main") 
+			vm | qu | u | mk | dv | bb | porfuncs | "com" | cf | M  | tem | "a" | dc | kw* | "chi" | "f" | "bln" | "b" | "b0" |  "bu"  | "m" | "main") 
 					view_files="$1" ; add_files=1 ;;
 				"-f") view_files="$2";; 
 				"-g") vim_opts="-g $vim_opts" ;;
@@ -274,36 +274,24 @@ EOF
 				base_files=( \
 					GMIN/source/Makefile \
 					PATHSAMPLE/source/Makefile )
-
 					;;
 					# }}}
+				"vm") base_files=( $this_script ) ; d=$shd ;;
 			 	"b") # makefiles/build scripts {{{
-					fill_mk_INCLUDE
-					
-					#base_files=( GMIN/source/Makefile \
-					base_files=( \
-						CHARMM31/install.com \
-						CHARMM31/compile.csh \
-						CHARMM31/clean.csh \
-						GMIN/source/Makefile \
-						GMIN/source/CHARMMinterface/Makefile \
-						SCRIPTS/all//svn_revision.sh \
-						SCRIPTS/all/display_version.sh \
-						INCLUDE/mkf \
-						SCRIPTS/op/makemake \	
-						OPTIM/source/build.csh \
-						OPTIM/source/version.sh \
-						PATHSAMPLE/source/Makefile \
-						DISCONNECT/source/Makefile \
-						DOC/makefile \
-						)
+					base_files=( 	GMIN/source/makefile \
+							GMIN/source/mold \
+							OPTIM/source/makefile \
+							OPTIM/source/mold \
+							PATHSAMPLE/source/makefile \
+							PATHSAMPLE/source/mold \
+							DISCONNECT/source/makefile \
+							INCLUDE/def \
+							INCLUDE/targets \
+							INCLUDE/mkf )
 					d="$wg_dir"
-					use fill_files
-					d="$shd"; 
-					#base_files=( bu doxygen.sh Doxyfile.full ) 
-					base_files=( bu doxygen.sh ) 
 				;;
 				# }}}
+				
 				"bu") # bu script {{{
 					base_files=( bu bu_*.sh decom sh_header.sh f.sh )
 				        d="$shd"

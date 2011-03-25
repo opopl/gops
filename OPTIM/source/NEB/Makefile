@@ -1,3 +1,5 @@
+#
+#   NEB (nudged elastic band method){{{
 #   NEB module is an implementation of the nudged elastic band method for performing double-ended pathway searches.
 #   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
 #   This file is part of NEB module. NEB module is part of OPTIM.
@@ -44,7 +46,10 @@
 #
 #    Semen Trygubenko  Tue Nov  9 23:24:36 GMT 2004
 #
+#}}}
+#
 
+FC=$(FC90)
 KEYOBJS = key_output.o key_sqvv.o key_grad.o key_tau.o key_minimizer.o key_lbfgs.o 
 OBJS = nndata.o grad.o oldnebgradient.o lbfgs.o newneb.o output.o sqvv.o nnutils.o ntc.o key_neb.o tau.o unresnebbfgs.o \
 charutils.o linkedlist.o ${KEYOBJS}

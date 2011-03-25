@@ -41,7 +41,6 @@ GENFFILES = porfuncs.f90 display_version.f90 mc.f ptmc.f bspt.f main.f
 
 include $(INC_PATH)/def
 
-
 AMHPROG = $(BIN_PATH)/AMHGMIN
 # }}}
 # Object files {{{
@@ -103,164 +102,14 @@ VPATH = .:AMH:.
 
 # COMPILERS AND COMPILER FLAGS  {{{
 
-FC =$(FC90)
-DL=debug 
-LIBS = libmyblas.a libmylapack.a libmyblas.a 
-SEARCH_PATH =  -I..
-#DEFS+=MPI
-
-# pgi {{{
-ifeq ($(FC),pgf90)
-
-#FFLAGS= -Mextend -O0 -Munroll -Mnoframe 
-FFLAGS= -Mextend -O0 -Mnoframe 
-NOOPT = -O0 -Mextend
-LDFLAGS= -L.
-FREEFORMAT_FLAG= -Mfree
-EXTRA_FLAGS=-module
-SWITCH=pgi
-
-endif
 # }}}
-# nagfor {{{
 
-ifeq ($(FC),nagfor)
-
-FFLAGS = -132 -maxcontin=3000 -C -g -kind=byte -mismatch_all
-
-ifeq ($(DL),noopt)
-FFLAGS = -132 -maxcontin=3000 -kind=byte -mismatch_all -O0
-endif
-
-ifeq ($(DL),opt)
-FFLAGS = -132 -maxcontin=3000 -kind=byte -mismatch_all -O3 
-endif
-
-ifeq ($(DL),debug)
- FFLAGS = -132 -maxcontin=3000 -C=all -mtrace=all -gline -kind=byte
-endif
-
-NOOPT= -O0 -132  -kind=byte
-LDFLAGS= -L.
-SWITCH=nag
-
-endif
-# }}}
-#ifort {{{
-
-ifeq ($(FC),ifort) 
-
-# FC = mpif77 
-# FC = mpif90  
-# DEFS+= -DMPI 
-#
-#FFLAGS= -132 -C -g -traceback -debug full
- #FFLAGS= -132 -O0 -g -traceback -fpe:0 -check all
- FFLAGS= -132 -g -debug all -check all -implicitnone -warn unused -fp-stack-check -heap-arrays -ftrapuv -check pointers -check bounds
-#
-#
-ifeq ($(DL),debug) 
-FFLAGS= -132 -C -g -traceback -debug full
-endif
-
-ifeq ($(DL),opt) 
-FFLAGS= -132 -O4
-endif
-
-NOOPT= -132 -O0
-SWITCH=ifort
-LDFLAGS= -L.
-FREEFORMAT_FLAG= -free
-EXTRA_FLAGS=-I
-
-endif
-
-# }}}
-# gfortran {{{
-
-ifeq ($(FC),gfortran)
-
-FFLAGS= -ffixed-line-length-265 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic
-FFLAGS= -ffixed-line-length-none -O0 
-
-ifeq ($(DL),noopt)
-FFLAGS= -ffixed-line-length-265 -O0 
-endif
-
-ifeq ($(DL),opt)
-FFLAGS= -ffixed-line-length-132 -O3 -ftree-vectorize
-endif
-
-ifeq ($(DL),debug)
-FFLAGS= -ffixed-line-length-132 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic
-endif
-
-NOOPT= -O0 -ffixed-line-length-132
-SWITCH=gfortran
-LDFLAGS = -LBLAS -LLAPACK
-FREEFORMAT_FLAG= -ffree-form
-EXTRA_FLAGS=-I
-
-endif
-# }}}
-# }}}
-## RULES AND TARGETS {{{
-
-.SUFFIXES:
-.SUFFIXES: .o .f .F .f90
-
-.f90.o:
-	$(FC) $(FFLAGS) ${SEARCH_PATH} -c $<
-.f.o:
-	$(FC) $(FFLAGS) ${SEARCH_PATH} -c $<
-.F.f:
-	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
-.F90.f90:
-	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
-
-default: $(PROG)
-
-GMIN: $(PROG)
-gmin: $(PROG)
-
-cup:
-	rm -rf $(NOTUSEDSOURCE)
-
-$(PROG): $(OBJS) $(EXTRAS) 
-	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(EXTRAS) $(OBJS) $(LDFLAGS) $(LIBS)
-
-AMHGMIN: $(AMHPROG)
-amhgmin: $(AMHPROG)
-
-$(AMHPROG): $(OBJS) $(EXTRAS) $(CHDUM) $(AMB9DUM) libamh.a
-	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(OBJS) $(EXTRAS) $(CHDUM) $(AMB9DUM) $(LDFLAGS) libamh.a $(LIBS) 
-
-#  no agressive optimizations for selected files to cut down on compile time
-keyword.o: keyword.f
-	${FC} ${NOOPT} ${SEARCH_PATH} -c keyword.f
-
-clean:
-	rm -f ${PROG} $(AMHPROG) $(OBJS) *.mod $(EXTRAS) *.lst *.o pref.dat prefx.msg nag.f90 FOR021.DAT ${GENFFILES} *.a
-	if test -d ../../BLAS ;  then cd ../../BLAS ; make clean ; fi
-	if test -d ../../LAPACK ;  then cd ../../LAPACK ; make clean ; fi
-	if test -d AMH ;  then cd AMH ; make clean ; fi
-
-libamh.a: SAT-Ghost
-	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" 
-libmyblas.a: SAT-Ghost
-	cd ../../BLAS; make double FC="${FC}" FFLAGS="${FFLAGS}" BLAS_EXCLUDE_LIST="${BLAS_EXCLUDE_LIST}";\
-	cp libmyblas.a ../GMIN/source/
-libmylapack.a: SAT-Ghost
-	cd ../../LAPACK; make selection FC="${FC}" FFLAGS="${FFLAGS}" NOOPT="${NOOPT}";\
-	cp libmylapack.a ../GMIN/source/
-SAT-Ghost:
-
+include $(INC_PATH)/targets
 include $(INC_PATH)/mkf
 
-# }}}
 ## DEPENDENCIES  {{{
-${PROG}: libmyblas.a libmylapack.a
-${AMHPROG}: commons.o libmyblas.a libmylapack.a libamh.a
+$(PROG): $(LIBS)
+${AMHPROG}: commons.o $(LIBS) libamh.a
 
 Alglue.o:      commons.o
 BLJcluster.o:  commons.o
