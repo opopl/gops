@@ -23,7 +23,7 @@
 # Definitions {{{
 #
 
-ROOT_PATH=$(PWD)/../../
+ROOT_PATH=$(PWD)/../
 INC_PATH=$(ROOT_PATH)/INCLUDE/
 
 PROGNAME=OPTIM
@@ -36,18 +36,13 @@ include $(INC_PATH)/def
 # Object files {{{
 
 ALLSOURCE := $(wildcard *.f) $(wildcard *.f90) $(wildcard *.F)
-
-##OTUSEDSOURCE: source files not used in present GMIN build {{{
-## }}}
-
-# NOTUSEDSOURCE: source files not used in present GMIN build {{{
 NOTUSEDSOURCE=
-## }}} 
 
 SOURCE=$(filter-out $(NOTUSEDSOURCE),$(ALLSOURCE))
 OBJS := $(patsubst %.F,%.o,$(patsubst %.f,%.o,$(patsubst %.f90,%.o,$(SOURCE))))
 
 # object files from source files generated during compilation
+
 OBJSrt := porfuncs.o display_version.o
 OBJS+= $(OBJSrt)
 
@@ -254,3 +249,6 @@ congrad.o: key.o commons.o
 intgradlj.o: key.o commons.o 
 EYtrap.o: key.o
 #}}}
+
+
+#

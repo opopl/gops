@@ -1,35 +1,4 @@
 #vim:ft=make
-# Introductory remarks {{{
-# 
-# Default target gives GMIN
-# binaries are now produced in the bin directory!
-# 'make chgmin' produces CGMIN
-# 'make AMBGMIN' produces AMBGMIN
-# 'make clean' removed all object and library files, and any binaries in the bin directory
-#
-#  DONT FORGET - mpirun
-#              - add MPI keyword to data to run with mpirun
-#              - change CHARMM library to the appropriate version
-#
-#  64 bit CGMIN openmpi executable works with BSPT LJ31. 
-#  
-#  Tried linking to CHARMM compiled with 64 bit openmpi. Reduced optimisation options.
-#  BSPT metenk run works fine on one node and more than one node when linked to openmpi charmm build.
-#  Also works when linked to 64 bit charmm library compiled with pgf90.
-#
-#  pgf90 7.1.6 works for 64 bit lam and openmpi
-#  pgf90 7.1.6 works for 64 bit openmpi with CHARMM library /home/wales/c31a2-sat39.openmpi.64
-#  pgf90 7.1.6 64 bit lam cannot be tested due to a dependency
-#
-#  openmpi works with ifort on mek-quake:
-#  ifort_em64t/10.0.025 mpi/openmpi/64/intel10/1.2.6 icc_em64t/10.0.023
-#
-#  openmpi fails on clust with module:
-#
-# ifort/64/10.1/015 icc/64/10.1/015 mpi/openmpi/64/intel10/1.2.6
-#
-# }}}
-
 # Definitions {{{
 #
 
@@ -43,6 +12,7 @@ GENFFILES = porfuncs.f90 display_version.f90 mc.f ptmc.f bspt.f main.f
 include $(INC_PATH)/def
 
 AMHPROG = $(BIN_PATH)/AMHGMIN
+
 # }}}
 # Object files {{{
 
@@ -98,10 +68,6 @@ OBJS+= $(OBJSrt)
 
 AMHDUM = amhdummy.o
 VPATH = .:AMH:.
-
-# }}}
-
-# COMPILERS AND COMPILER FLAGS  {{{
 
 # }}}
 
