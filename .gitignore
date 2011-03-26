@@ -2,6 +2,7 @@
 
 *.mod
 *.o
+*.a
 BUILDS/
 GMIN/source/porfuncs.f90
 DISCONNECT/source/manipulate

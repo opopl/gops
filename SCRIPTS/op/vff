@@ -278,13 +278,13 @@ EOF
 					# }}}
 				"vm") base_files=( $this_script ) ; d=$shd ;;
 			 	"b") # makefiles/build scripts {{{
-					base_files=( 	GMIN/source/makefile \
-							GMIN/source/mold \
-							OPTIM/source/makefile \
-							OPTIM/source/mold \
-							PATHSAMPLE/source/makefile \
-							PATHSAMPLE/source/mold \
-							DISCONNECT/source/makefile \
+					base_files=( 	GMIN/makefile \
+							GMIN/mold \
+							OPTIM/makefile \
+							OPTIM/mold \
+							PATHSAMPLE/makefile \
+							PATHSAMPLE/mold \
+							DISCONNECT/makefile \
 							INCLUDE/def \
 							INCLUDE/targets \
 							INCLUDE/mkf )

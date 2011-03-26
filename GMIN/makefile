@@ -33,9 +33,10 @@
 # Definitions {{{
 #
 
-ROOT_PATH=$(PWD)/../../
+ROOT_PATH=$(PWD)/../
 INC_PATH=$(ROOT_PATH)/INCLUDE/
 
+#PROGNAME=$(shell sh -c "readlink -f . | awk -F '/' '{ print $NF }'" )
 PROGNAME=GMIN
 GENFFILES = porfuncs.f90 display_version.f90 mc.f ptmc.f bspt.f main.f 
 
