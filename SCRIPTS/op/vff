@@ -10,7 +10,7 @@ exts=( f F f90 )
 #vim_opts="-n -p -S '$shd/f.vim'" 
 vim_opts="-n -p" 
 kwd_dir="$wg_dir/keywords"
-d="$wg_dir/GMIN/source"
+d="$wg_dir/GMIN/"
 p_arg="g"
 export the_makefile="Makefile.gmin"
 #view_files="a"
@@ -167,7 +167,7 @@ EOF
 						"ds") p="DISCONNECT";;
 					esac
 					add_files=0
-			  		d="$wg_dir/$p/source/"
+			  		d="$wg_dir/$p"
 				;;
 				# }}}
 			vm | qu | u | mk | dv | bb | porfuncs | "com" | cf | M  | tem | "a" | dc | kw* | "chi" | "f" | "bln" | "b" | "b0" |  "bu"  | "m" | "main") 
