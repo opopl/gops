@@ -1,0 +1,343 @@
+./Clatmin.o: ./commons.o
+./stock.o: ./commons.o ./key.o ./modhess.o ./vecck.o
+./intsecdiag.o: ./commons.o ./key.o
+./fd.o: ./key.o ./modhess.o
+./gmetry.o: ./commons.o ./key.o
+./ions.o: ./modhess.o
+./potential.o: ./Bowman/src/bowmanwater.o ./SD.o ./VRTMCY5f.o ./commons.o \
+	./finite_differences.o ./key.o ./modamber9.o ./modcharmm.o \
+	./modhess.o
+./secdiag.o: ./commons.o ./key.o ./modcharmm.o
+./hessout.o: ./modhess.o
+./ttm3f.o: ./ttm3f.o
+./SiO2.o: ./modhess.o
+./myorient.o: ./key.o
+./congrad.o: ./commons.o ./key.o
+./mied.o: ./modhess.o
+./binaryio.o: ./commons.o ./key.o
+./msevb_interfaces.o: ./msevb_common.o
+./vdump.o: ./key.o ./modhess.o
+./scdiff.o: ./modhess.o
+./patchyd.o: ./commons.o ./modhess.o
+./cleanmemory.o: ./msevb_common.o
+./bhinterp.o: ./commons.o ./efol.o ./key.o ./modamber9.o ./modcharmm.o \
+	./specialfuncts.o
+./unresguessts.o: ./commons.o ./key.o ./modtwoend.o ./modunres.o
+./newtip.o: ./commons.o ./key.o ./modhess.o
+./intbeig.o: ./commons.o ./key.o ./modneb.o ./modtwoend.o
+./xmylbfgs.o: ./commons.o ./key.o ./modtwoend.o
+./intlbfgs.o: ./amhglobals.o ./commons.o ./efol.o ./key.o
+./ljms.o: ./modhess.o
+./mindist.o: ./key.o
+./pahagh.o: ./commons.o ./key.o ./modhess.o
+./adm.o: ./commons.o ./key.o
+./intxmylbfgs.o: ./commons.o ./key.o ./modtwoend.o
+./msevb.o: ./commons.o ./msevb_common.o ./msevb_interfaces.o
+./intgradlj.o: ./commons.o ./key.o
+./drvmsevb.o: ./commons.o ./modhess.o ./msevb_common.o ./msevb_interfaces.o
+./mylbfgs.o: ./commons.o ./key.o ./modamber9.o ./modcharmm.o ./modhess.o \
+	./modtwoend.o ./modunres.o ./specialfuncts.o ./zwk.o
+./morph.o: ./commons.o ./key.o ./modcharmm.o ./modtwoend.o ./zwk.o
+./fmsevb.o: ./commons.o ./msevb_common.o ./msevb_interfaces.o
+./tip.o: ./commons.o ./key.o ./modhess.o
+./thomson.o: ./commons.o ./key.o ./modhess.o
+./path.o: ./amhglobals.o ./commons.o ./efol.o ./key.o ./modcharmm.o \
+	./modhess.o ./modunres.o ./syminf.o
+./newmindist.o: ./commons.o ./key.o
+./ljpbin.o: ./key.o ./modhess.o
+./minpermrb.o: ./commons.o ./intcommons.o ./intcoords.o ./key.o ./modcharmm.o
+./keyword.o: ./CONNECT/save_POINTER/key_connect.o ./NEB/keyneb.o \
+	./amhglobals.o ./binaryio.o ./commons.o ./cubsplstring.o ./gsdata.o \
+	./intcommons.o ./key.o ./modamber.o ./modamber9.o ./modcharmm.o \
+	./modguess.o ./modmec.o ./modmxatms.o ./modneb.o ./modtwoend.o \
+	./modunres.o ./msevb_common.o ./pymodule.o ./wc.o
+./dbptd.o: ./commons.o ./key.o ./modhess.o
+./c60diff.o: ./modhess.o
+./axdiff.o: ./modhess.o
+./ctest.o: ./modhess.o
+./input.o: 
+./unresnebguessts.o: ./NEB/keyneb.o ./commons.o ./key.o ./modunres.o
+./odesd.o: ./commons.o ./key.o ./modhess.o
+./unresconnectsections.o: ./commons.o ./key.o ./modtwoend.o ./modunres.o
+./gsdata.o: ./commons.o ./intcommons.o ./key.o
+./meccano.o: ./NEB/keyneb.o ./commons.o ./key.o ./modcharmm.o ./modmec.o \
+	./modneb.o ./modtwoend.o ./modunres.o
+./mdiff.o: ./modhess.o
+./shifth.o: ./key.o ./modhess.o
+./tight.o: ./key.o ./modhess.o
+./Ackland_wrapper.o: ./key.o
+./twoend.o: ./commons.o ./key.o ./modcharmm.o ./modhess.o ./modtwoend.o \
+	./zwk.o
+./morse.o: ./modhess.o
+./amber.o: ./commons.o ./key.o ./modamber.o ./modamber2.o ./modhess.o
+./p4diff.o: ./modhess.o
+./OPTIM.o: ./CONNECT/save_POINTER/newconnect.o ./NEB/charutils.o \
+	./NEB/keyneb.o ./NEB/newneb.o ./commons.o ./intcommons.o \
+	./intcoords.o ./key.o ./modcharmm.o ./modguess.o ./modhess.o \
+	./modmec.o ./modneb.o ./modtwoend.o ./modunres.o ./vecck.o ./zwk.o
+./EYtrap.o: ./key.o ./modhess.o
+./ljcapsidmodule.o: ./commons.o ./key.o ./modhess.o ./pymodule.o
+./BLN.o: ./key.o ./modhess.o
+./mycpu_time.o: ./key.o
+./Ackland_metals.o: ackland_mendelev_fe.h ackland_mishin_cu.h ackland_sma.h
+./gbbox.o: ./commons.o ./key.o ./modhess.o
+./inertia.o: ./commons.o ./key.o
+./dctrap.o: ./key.o ./modhess.o
+./DF1.o: ./key.o ./modhess.o
+./dzugutov.o: ./modhess.o
+./stockghaa.o: ./commons.o ./key.o ./modhess.o
+./intbfgsts.o: ./commons.o ./key.o ./modhess.o ./modunres.o ./vecck.o ./zwk.o
+./c10.o: ./modhess.o
+./changep.o: ./commons.o ./key.o ./modamber.o ./modneb.o ./modtwoend.o
+./mpdiff.o: ./key.o ./modhess.o
+./ectrap.o: ./key.o
+./GoOptim.o: ./key.o
+./minpermdistrbcom.o: ./commons.o ./key.o
+./repelsp.o: ./commons.o ./key.o
+./msdiff.o: ./modhess.o
+./connect.o: ./NEB/keyneb.o ./NEB/newneb.o ./commons.o ./efol.o ./key.o \
+	./modamber9.o ./modcharmm.o ./modhess.o ./modneb.o ./modtwoend.o \
+	./modunres.o ./syminf.o
+./caardiff.o: ./modhess.o
+./unresdump.o: ./commons.o
+./dbpg.o: ./commons.o ./key.o ./modhess.o
+./MB.o: ./commons.o ./modhess.o
+./cpmdlatmin.o: ./key.o
+./lwotpbox.o: ./commons.o ./key.o ./modhess.o
+./diis.o: ./gdiis.o ./key.o
+./unresdummy.o: ./commons.o
+./ljpkob.o: ./key.o ./modhess.o
+./PachecoC60.o: ./modhess.o
+./grouprotation.o: ./commons.o
+./tcheck.o: ./commons.o
+./cubsplstring.o: ./gsdata.o
+./gb.o: ./key.o ./modhess.o
+./unrestransform.o: ./commons.o ./modhess.o ./modunres.o
+./pertable.o: ./commons.o ./key.o
+./checkedtrig.o: ./msevb_common.o
+./minpermdist.o: ./intcommons.o ./intcoords.o ./key.o ./modamber9.o \
+	./modcharmm.o
+./double.o: ./modhess.o
+./rotd.o: ./modhess.o
+./dtrap.o: ./modhess.o
+./newcapsid.o: ./commons.o
+./dumpit.o: ./commons.o ./key.o
+./lwotpgh.o: ./commons.o ./key.o ./modhess.o
+./dimer.o: ./commons.o ./modhess.o
+./charmmBildc.o: ./commons.o ./modamber9.o
+./unguesspath.o: ./key.o ./modcharmm.o ./modguess.o ./modunres.o
+./sortxyz.o: ./commons.o
+./amb_natinterns.o: ./commons.o ./intcommons.o ./modamber9.o
+./unmeccano.o: ./NEB/keyneb.o ./commons.o ./key.o ./modcharmm.o ./modhess.o \
+	./modmec.o ./modneb.o ./modtwoend.o ./modunres.o ./zwk.o
+./growstring.o: ./commons.o ./cubsplstring.o ./gsdata.o ./intcommons.o \
+	./intcoords.o ./key.o ./specialfuncts.o
+./PV.o: ./commons.o ./key.o
+./h2o.o: ./modhess.o
+./2Dfunc.o: ./commons.o ./modhess.o
+./dftb.o: ./key.o ./modhess.o
+./bulkmindist.o: ./key.o
+./bisect.o: ./commons.o ./key.o ./modamber9.o ./modcharmm.o
+./symmetry.o: ./commons.o ./key.o ./syminf.o
+./gbd.o: ./key.o ./modhess.o
+./welch.o: ./modhess.o
+./unrescalcdihe.o: ./commons.o ./modunres.o
+./main.o: ./commons.o ./key.o ./modamber9.o
+./unresoptim.o: ./commons.o ./modunres.o
+./ljpdiff.o: ./key.o ./modhess.o
+./rigidb.o: ./commons.o ./key.o ./modhess.o
+./rbperm.o: ./commons.o ./key.o
+./Zetterling.o: ./key.o ./modhess.o
+./aziz.o: ./modhess.o
+./beig.o: ./commons.o ./key.o ./modneb.o ./modtwoend.o
+./unressetdihe.o: ./modunres.o
+./ljdiff.o: ./modhess.o
+./geopt.o: ./amhglobals.o ./binaryio.o ./commons.o ./efol.o ./key.o \
+	./modcharmm.o ./modhess.o ./modneb.o ./modtwoend.o
+./msstock.o: ./commons.o ./key.o ./modhess.o
+./hybridmin.o: ./commons.o ./key.o ./modcharmm.o ./modhess.o ./vecck.o \
+	./zwk.o
+./intcommons.o: ./modamber9.o
+./utils.o: ./commons.o
+./ambnatintern_extras.o: ./commons.o ./intcommons.o ./key.o ./modamber9.o \
+	./modmxatms.o ./specialfuncts.o
+./rad.o: ./commons.o ./key.o
+./SW.o: ./key.o ./modhess.o
+./oldneb.o: ./commons.o ./key.o ./modcharmm.o ./modhess.o ./modneb.o \
+	./modtwoend.o
+./specialfuncts.o: ./commons.o
+./g46merdiff.o: ./modhess.o
+./greatcirc.o: ./commons.o ./key.o ./modcharmm.o ./modhess.o ./modtwoend.o \
+	./modunres.o ./zwk.o
+./efol.o: ./commons.o ./key.o ./modcharmm.o ./modhess.o ./syminf.o ./zwk.o
+./TIPmodes.o: ./modhess.o
+./bbrsdm.o: ./commons.o ./key.o ./modcharmm.o
+./make_conpot.o: ./commons.o ./key.o
+./intcoords.o: ./commons.o ./intcommons.o ./intcoords.o ./key.o ./modamber9.o \
+	./modcharmm.o ./specialfuncts.o
+./unrestwist.o: ./commons.o ./modunres.o
+./chiralhyd.o: ./commons.o ./intcommons.o ./key.o ./modamber9.o
+./fetchz.o: ./Bowman/src/bowmanwater.o ./CONNECT/save_POINTER/key_connect.o \
+	./SD.o ./amhglobals.o ./binaryio.o ./commons.o ./key.o ./modamber9.o \
+	./modcharmm.o ./modguess.o ./modmec.o ./modneb.o ./modtwoend.o \
+	./modunres.o ./msevb_common.o ./syminf.o
+./p46merdiff.o: ./modhess.o
+./tosifumi.o: ./modhess.o
+./escp.o: ./modhess.o
+./capsid.o: ./modhess.o
+./JM.o: ./modhess.o
+./projh.o: ./modhess.o
+./dumpp.o: ./commons.o ./key.o ./modcharmm.o
+./bfgsts.o: ./commons.o ./key.o ./modcharmm.o ./modhess.o ./modtwoend.o \
+	./vecck.o ./zwk.o
+./ljpshift.o: ./key.o ./modhess.o
+./c60p.o: ./modhess.o
+./intlbfgslj.o: ./commons.o ./efol.o ./key.o
+./g2special.o: ./key.o ./modhess.o
+./main.o: ./commons.o ./key.o ./modamber9.o
+./guesspath.o: ./key.o ./modcharmm.o ./modguess.o ./modunres.o
+./pyg.o: ./commons.o ./key.o ./modhess.o
+./AMH/restrt.o: ./amhglobals.o ./key.o
+./AMH/Q_bias_seg_a.o: ./amhglobals.o
+./AMH/gomb.o: ./amhglobals.o
+./AMH/gengrd.o: ./amhglobals.o
+./AMH/altpot_utilities.o: ./AMH/globals_alt.o ./amhglobals.o
+./AMH/oxy.o: ./AMH/amh_interfaces.o ./amhglobals.o
+./AMH/gentab.o: ./AMH/amh_interfaces.o ./amhglobals.o
+./AMH/Rg_bias.o: ./amhglobals.o
+./AMH/altpot_interfaces.o: ./AMH/globals_alt.o ./amhglobals.o
+./AMH/walesamh_initial.o: ./amhglobals.o
+./AMH/dssp_hdrgn_eastwood.o: ./amhglobals.o
+./AMH/opnfil.o: ./amhglobals.o
+./AMH/dssp_hforce.o: ./amhglobals.o
+./AMH/savstr.o: ./amhglobals.o
+./AMH/rndcol.o: ./amhglobals.o
+./AMH/harm_spring.o: ./amhglobals.o
+./AMH/altpot_pairpotential.o: ./AMH/altpot_interfaces.o ./AMH/globals_alt.o \
+	./amhglobals.o
+./AMH/scltab.o: ./amhglobals.o
+./AMH/rama.o: ./amhglobals.o
+./AMH/hforce.o: ./amhglobals.o
+./AMH/amh_interfaces.o: ./amhglobals.o
+./AMH/num_to_char.o: ./amhglobals.o
+./AMH/initil.o: ./amhglobals.o
+./AMH/lookup.o: ./AMH/amh_interfaces.o ./amhglobals.o
+./AMH/non_add_contact.o: ./amhglobals.o
+./AMH/potind.o: ./amhglobals.o
+./AMH/rep_contact.o: ./amhglobals.o
+./AMH/ev_set_up.o: ./amhglobals.o
+./AMH/rep_bias.o: ./amhglobals.o
+./AMH/qchrgmk.o: ./AMH/globals_alt.o ./amhglobals.o
+./AMH/zero_amh.o: ./amhglobals.o
+./AMH/contact_P_AP.o: ./amhglobals.o
+./AMH/ev_gamma.o: ./amhglobals.o
+./AMH/altpot_onebody.o: ./AMH/altpot_interfaces.o ./AMH/globals_alt.o \
+	./amhglobals.o
+./AMH/Q_bias_seg_b.o: ./amhglobals.o
+./AMH/walesamh_interface.o: ./amhglobals.o
+./AMH/intstr.o: ./amhglobals.o
+./AMH/E_write.o: ./amhglobals.o
+./AMH/altpot_io.o: ./AMH/altpot_interfaces.o ./AMH/globals_alt.o \
+	./amhglobals.o
+./AMH/additive_ev.o: ./amhglobals.o
+./AMH/getmem.o: ./amhglobals.o
+./AMH/gaspot.o: ./amhglobals.o
+./AMH/altpot_subroutines.o: ./AMH/altpot_interfaces.o ./AMH/globals_alt.o \
+	./amhglobals.o
+./AMH/hdrgn.o: ./amhglobals.o
+./AMH/force.o: ./AMH/amh_interfaces.o ./AMH/globals_alt.o ./amhglobals.o
+./AMH/back/shakox.o: 
+./AMH/back/mdctrl.o: 
+./AMH/back/shkdrv.o: 
+./AMH/back/move.o: ./AMH/amh_interfaces.o ./AMH/globals_alt.o
+./AMH/back/move.o: ./AMH/amh_interfaces.o ./AMH/globals_alt.o
+./AMH/back/gentab_rama.o: 
+./AMH/back/initv.o: 
+./Bowman/src/bowman3b.o: 
+./Bowman/src/bowmanwater.o: ./Bowman/src/pes_shell.o
+./Bowman/src/hb3b.o: ./Bowman/src/hb3b_coef.o
+./Bowman/src/pes_shell.o: ./Bowman/src/hb3b_coef.o
+./NEB/unresnebbfgs.o: ./NEB/grad.o ./NEB/keylbfgs.o ./NEB/keyminimizer.o \
+	./NEB/keyneb.o ./NEB/nndata.o ./NEB/nnutils.o ./NEB/output.o ./key.o \
+	./modunres.o
+./NEB/tau.o: ./NEB/keyneb.o ./NEB/keytau.o ./NEB/nndata.o ./commons.o ./key.o \
+	./modunres.o
+./NEB/output.o: ./NEB/charutils.o ./NEB/keyneb.o ./NEB/keyoutput.o \
+	./NEB/linkedlist.o ./NEB/nndata.o ./NEB/ntc.o ./commons.o ./efol.o \
+	./gsdata.o ./intcommons.o ./key.o ./modcharmm.o ./modguess.o \
+	./modmec.o
+./NEB/newneb.o: ./NEB/keyneb.o ./NEB/lbfgs.o ./NEB/nndata.o ./NEB/nnutils.o \
+	./NEB/ntc.o ./NEB/output.o ./NEB/sqvv.o ./NEB/unresnebbfgs.o \
+	./amhglobals.o ./commons.o ./growstring.o ./gsdata.o ./intcommons.o \
+	./intcoords.o ./key.o ./modguess.o ./modmec.o ./specialfuncts.o
+./NEB/oldnebgradient.o: ./NEB/grad.o ./NEB/keygrad.o ./NEB/keyneb.o \
+	./NEB/nndata.o ./NEB/nnutils.o ./NEB/tau.o ./commons.o ./key.o
+./NEB/nnutils.o: ./NEB/charutils.o ./NEB/keyneb.o ./NEB/nndata.o \
+	./amhglobals.o ./commons.o ./intcommons.o ./key.o ./modamber9.o \
+	./modcharmm.o ./specialfuncts.o
+./NEB/keysqvv.o: ./NEB/charutils.o
+./NEB/keyneb.o: ./NEB/charutils.o ./NEB/keygrad.o ./NEB/keylbfgs.o \
+	./NEB/keyminimizer.o ./NEB/keyoutput.o ./NEB/keysqvv.o ./NEB/keytau.o \
+	./key.o
+./NEB/keylbfgs.o: ./NEB/charutils.o ./key.o
+./NEB/grad.o: ./NEB/keygrad.o ./NEB/keyneb.o ./NEB/keytau.o ./NEB/nndata.o \
+	./NEB/nnutils.o ./NEB/tau.o ./commons.o ./intcommons.o ./key.o \
+	./modcharmm.o ./modunres.o ./specialfuncts.o
+./NEB/lbfgs.o: ./NEB/grad.o ./NEB/keylbfgs.o ./NEB/keyminimizer.o \
+	./NEB/keyneb.o ./NEB/nndata.o ./NEB/nnutils.o ./NEB/output.o \
+	./commons.o ./intcommons.o ./key.o ./modcharmm.o
+./NEB/keyminimizer.o: ./NEB/charutils.o ./NEB/keylbfgs.o ./NEB/keysqvv.o
+./NEB/keygrad.o: ./NEB/charutils.o
+./NEB/sqvv.o: ./NEB/charutils.o ./NEB/grad.o ./NEB/keyminimizer.o \
+	./NEB/keyneb.o ./NEB/keysqvv.o ./NEB/nndata.o ./NEB/nnutils.o
+./CONNECT/key_utils.o: ./key.o
+./CONNECT/key_decide.o: ./NEB/charutils.o ./key.o
+./CONNECT/tryconnect.o: ./CONNECT/save_POINTER/key_connect.o \
+	./CONNECT/save_POINTER/key_utils.o ./CONNECT/save_POINTER/ncdata.o \
+	./CONNECT/save_POINTER/ncutils.o ./NEB/keyneb.o ./NEB/newneb.o \
+	./NEB/ntc.o ./amhglobals.o ./commons.o ./gsdata.o ./key.o \
+	./modamber9.o ./modcharmm.o ./modguess.o ./modmec.o ./modunres.o
+./CONNECT/ncutils.o: ./CONNECT/save_POINTER/key_connect.o \
+	./CONNECT/save_POINTER/key_decide.o \
+	./CONNECT/save_POINTER/key_utils.o ./CONNECT/save_POINTER/ncdata.o \
+	./NEB/ntc.o ./amhglobals.o ./commons.o ./intcommons.o ./key.o \
+	./modcharmm.o ./modhess.o ./modunres.o ./syminf.o
+./CONNECT/newconnect.o: ./CONNECT/save_POINTER/decide.o \
+	./CONNECT/save_POINTER/ido.o ./CONNECT/save_POINTER/key_connect.o \
+	./CONNECT/save_POINTER/ncdata.o ./CONNECT/save_POINTER/ncutils.o \
+	./CONNECT/save_POINTER/tryconnect.o ./amhglobals.o ./commons.o \
+	./key.o ./modcharmm.o ./modneb.o
+./CONNECT/decide.o: ./CONNECT/save_POINTER/key_decide.o \
+	./CONNECT/save_POINTER/ncdata.o ./CONNECT/save_POINTER/ncutils.o
+./CONNECT/key_connect.o: ./CONNECT/save_POINTER/key_decide.o \
+	./CONNECT/save_POINTER/key_utils.o ./NEB/charutils.o ./NEB/keyneb.o \
+	./gsdata.o ./key.o
+./CONNECT/dodumpsp.o: ./CONNECT/save_POINTER/ncdata.o
+./CONNECT/ido.o: ./CONNECT/save_POINTER/key_connect.o \
+	./CONNECT/save_POINTER/ncdata.o ./CONNECT/save_POINTER/ncutils.o \
+	./key.o
+./CONNECT/save_POINTER/key_utils.o: ./key.o
+./CONNECT/save_POINTER/key_decide.o: ./NEB/charutils.o
+./CONNECT/save_POINTER/tryconnect.o: ./CONNECT/save_POINTER/key_connect.o \
+	./CONNECT/save_POINTER/key_utils.o ./CONNECT/save_POINTER/ncdata.o \
+	./CONNECT/save_POINTER/ncutils.o ./NEB/keyneb.o ./NEB/newneb.o \
+	./NEB/ntc.o ./commons.o ./gsdata.o ./key.o ./modcharmm.o ./modguess.o \
+	./modmec.o ./modunres.o
+./CONNECT/save_POINTER/ncutils.o: ./CONNECT/save_POINTER/key_connect.o \
+	./CONNECT/save_POINTER/key_decide.o \
+	./CONNECT/save_POINTER/key_utils.o ./CONNECT/save_POINTER/ncdata.o \
+	./NEB/ntc.o ./commons.o ./key.o ./modcharmm.o ./modhess.o \
+	./modunres.o ./syminf.o
+./CONNECT/save_POINTER/newconnect.o: ./CONNECT/save_POINTER/decide.o \
+	./CONNECT/save_POINTER/ido.o ./CONNECT/save_POINTER/key_connect.o \
+	./CONNECT/save_POINTER/ncdata.o ./CONNECT/save_POINTER/ncutils.o \
+	./CONNECT/save_POINTER/tryconnect.o ./key.o
+./CONNECT/save_POINTER/decide.o: ./CONNECT/save_POINTER/key_decide.o \
+	./CONNECT/save_POINTER/ncdata.o ./CONNECT/save_POINTER/ncutils.o
+./CONNECT/save_POINTER/key_connect.o: ./CONNECT/save_POINTER/key_decide.o \
+	./CONNECT/save_POINTER/key_utils.o ./NEB/charutils.o ./NEB/keyneb.o \
+	./gsdata.o ./key.o
+./CONNECT/save_POINTER/dodumpsp.o: ./CONNECT/save_POINTER/ncdata.o
+./CONNECT/save_POINTER/ido.o: ./CONNECT/save_POINTER/key_connect.o \
+	./CONNECT/save_POINTER/ncdata.o ./CONNECT/save_POINTER/ncutils.o \
+	./key.o
