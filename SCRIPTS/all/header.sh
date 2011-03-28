@@ -1,4 +1,4 @@
-#!/bin/csh -f
+#!/bin/bash
 #
 #   OptimHeader module generator for easier version control.
 #   Copyright (C) 2003-2005 Semen A. Trygubenko and David J. Wales

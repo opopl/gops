@@ -337,7 +337,7 @@ DO J1=1,NPERMGROUP
    CALL MINPERM(PATOMS, PDUMMYB, PDUMMYA, BOXLX, BOXLY, BOXLZ, BULKT, LPERM, LDISTANCE, DIST2, WORSTRAD)
    SAVEPERM(1:NATOMS)=NEWPERM(1:NATOMS)
    DO J2=1,PATOMS
-      SAVEPERM(PERMGROUP(NDUMMY+J2-1))=NEWPERM(PERMGROUP(NDUMMY+LPERM(J2)-1))
+      saveperm(permgroup(ndummy+j2-1))=newperm(permgroup(ndummy+lperm(j2)-1))
    ENDDO
 !
 ! Update permutation of associated atoms, if any. 
