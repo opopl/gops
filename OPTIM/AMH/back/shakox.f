@@ -1,241 +1,241 @@
 
-c     --------------------- shakox -----------------------
+C     --------------------- SHAKOX -----------------------
 
-      subroutine shakox(prcord,qrcord,srcord,
-     *                 numpro,jstrt,jfins,
-     *                 maxshk,tolshk,ishkit,
-     *                 maxpro,maxcrd)
+      SUBROUTINE SHAKOX(PRCORD,QRCORD,SRCORD,
+     *                 NUMPRO,JSTRT,JFINS,
+     *                 MAXSHK,TOLSHK,ISHKIT,
+     *                 MAXPRO,MAXCRD)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     SHAKOX attempts to satisfy nearest-neighbor distance
-c           constraints using iterative procedure 
-c           proposed by Ryckaert et al., J. Comp. Phys. 
-c           23, 327-341 (1977).
+C     SHAKOX ATTEMPTS TO SATISFY NEAREST-NEIGHBOR DISTANCE
+C           CONSTRAINTS USING ITERATIVE PROCEDURE 
+C           PROPOSED BY RYCKAERT ET AL., J. COMP. PHYS. 
+C           23, 327-341 (1977).
 
-c     arguments:
+C     ARGUMENTS:
 
-c        maxsiz- maximum number of protein residues
-c        prcord- updated coordinates satisfying bond
-c                constraints
-c        qrcord- previous coordinates
-c        srcord- scratch space
-c        bondln- specified bond lengths
-c        numpro- number of configurations
-c        jstrt - first nonfixed site
-c        jfins - last nonfixed site
-c        maxshk- maximum number of shake iterations
-c        tolshk- shake tolerance
-c                shake
-c        ishkit- flag used to track number of shake 
-c                iterations
-c        maxpro- maximum number of proteins
-c        i_axis        - index over axes
-c        i_odd_even        - index over coordinate types CA and CB
-c        i_pro        - index over proteins in ensemble
-c        i_res        - index over residues
-c        i_shake        - index over shake iterations
-c
-c
-c
-c     skip additions
-c       eq_dist_sq        equilibrium distance squared
-c       
-c
-c     ---------------------------------------------------
+C        MAXSIZ- MAXIMUM NUMBER OF PROTEIN RESIDUES
+C        PRCORD- UPDATED COORDINATES SATISFYING BOND
+C                CONSTRAINTS
+C        QRCORD- PREVIOUS COORDINATES
+C        SRCORD- SCRATCH SPACE
+C        BONDLN- SPECIFIED BOND LENGTHS
+C        NUMPRO- NUMBER OF CONFIGURATIONS
+C        JSTRT - FIRST NONFIXED SITE
+C        JFINS - LAST NONFIXED SITE
+C        MAXSHK- MAXIMUM NUMBER OF SHAKE ITERATIONS
+C        TOLSHK- SHAKE TOLERANCE
+C                SHAKE
+C        ISHKIT- FLAG USED TO TRACK NUMBER OF SHAKE 
+C                ITERATIONS
+C        MAXPRO- MAXIMUM NUMBER OF PROTEINS
+C        I_AXIS        - INDEX OVER AXES
+C        I_ODD_EVEN        - INDEX OVER COORDINATE TYPES CA AND CB
+C        I_PRO        - INDEX OVER PROTEINS IN ENSEMBLE
+C        I_RES        - INDEX OVER RESIDUES
+C        I_SHAKE        - INDEX OVER SHAKE ITERATIONS
+C
+C
+C
+C     SKIP ADDITIONS
+C       EQ_DIST_SQ        EQUILIBRIUM DISTANCE SQUARED
+C       
+C
+C     ---------------------------------------------------
 
-      use globals, only:SO,maxsiz,maxcnt
+      USE GLOBALS, ONLY:SO,MAXSIZ,MAXCNT
 
-      implicit none
+      IMPLICIT NONE
 
-c     argument declarations:
+C     ARGUMENT DECLARATIONS:
 
-         integer jstrt,jfins,numpro,
-     *           maxshk,ishkit,maxpro,
-     *           maxcrd,maxpro1
+         INTEGER JSTRT,JFINS,NUMPRO,
+     *           MAXSHK,ISHKIT,MAXPRO,
+     *           MAXCRD,MAXPRO1
 
-         parameter (maxpro1=25)
+         PARAMETER (MAXPRO1=25)
 
-         real prcord(maxsiz,3,maxpro,maxcrd),
-     *        qrcord(maxsiz,3,maxpro,maxcrd),
-     *        srcord(maxsiz,3,maxpro),
-     *        tolshk
+         REAL PRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
+     *        QRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
+     *        SRCORD(MAXSIZ,3,MAXPRO),
+     *        TOLSHK
      
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-         character*3 res_type
+         CHARACTER*3 RES_TYPE
 
 
-         integer i_axis, i_odd_even, i_pro, i_res, i_shake,iii,jjj
+         INTEGER I_AXIS, I_ODD_EVEN, I_PRO, I_RES, I_SHAKE,III,JJJ
 
-         real myst(maxcnt), myst2(maxcnt)
+         REAL MYST(MAXCNT), MYST2(MAXCNT)
 
-c        --- implied do loop indices ---
+C        --- IMPLIED DO LOOP INDICES ---
 
-         real eqdist(2),lngth(maxsiz,3,maxpro1,2)
-         real eq_dist_sq(2)
+         REAL EQDIST(2),LNGTH(MAXSIZ,3,MAXPRO1,2)
+         REAL EQ_DIST_SQ(2)
 
-c     --------------------- begin -----------------------
+C     --------------------- BEGIN -----------------------
 
 CCCCCCCCCCCCCCCCCCCCC
 
 
-        eqdist(1)=2.42677
-        eqdist(2)=2.82146
-        eq_dist_sq(1)=eqdist(1)*eqdist(1)
-        eq_dist_sq(2)=eqdist(2)*eqdist(2)
+        EQDIST(1)=2.42677
+        EQDIST(2)=2.82146
+        EQ_DIST_SQ(1)=EQDIST(1)*EQDIST(1)
+        EQ_DIST_SQ(2)=EQDIST(2)*EQDIST(2)
 
-c     find the r of Ryckaert et al.
+C     FIND THE R OF RYCKAERT ET AL.
 
-      do 521 i_pro=1,numpro
-         do 520 i_axis=1,3
+      DO 521 I_PRO=1,NUMPRO
+         DO 520 I_AXIS=1,3
 
-c           compute r
+C           COMPUTE R
 
-          do 513 i_res=jstrt,jfins-1
-            lngth(i_res,i_axis,i_pro,1)=
-     *          qrcord(i_res,i_axis,i_pro,3)-qrcord(i_res,i_axis,i_pro,1)
-513     continue
+          DO 513 I_RES=JSTRT,JFINS-1
+            LNGTH(I_RES,I_AXIS,I_PRO,1)=
+     *          QRCORD(I_RES,I_AXIS,I_PRO,3)-QRCORD(I_RES,I_AXIS,I_PRO,1)
+513     CONTINUE
 
-          do 514 i_res=jstrt,jfins-1
-            lngth(i_res,i_axis,i_pro,2)=
-     *          qrcord(i_res+1,i_axis,i_pro,1)-qrcord(i_res,i_axis,i_pro,3)
-  514     continue
+          DO 514 I_RES=JSTRT,JFINS-1
+            LNGTH(I_RES,I_AXIS,I_PRO,2)=
+     *          QRCORD(I_RES+1,I_AXIS,I_PRO,1)-QRCORD(I_RES,I_AXIS,I_PRO,3)
+  514     CONTINUE
 
-  520    continue
-  521 continue
+  520    CONTINUE
+  521 CONTINUE
 
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc 
-c     loop over numpro protein configurations
-      do 501 i_pro=1,numpro
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC 
+C     LOOP OVER NUMPRO PROTEIN CONFIGURATIONS
+      DO 501 I_PRO=1,NUMPRO
 
-c        perform maxshk iterations in an attempt to satisfy the 
-c         nearest-neighbor distance constraints
+C        PERFORM MAXSHK ITERATIONS IN AN ATTEMPT TO SATISFY THE 
+C         NEAREST-NEIGHBOR DISTANCE CONSTRAINTS
 
-         do 500 i_shake=1,maxshk
+         DO 500 I_SHAKE=1,MAXSHK
 
-c           perform checkerboard breakup, i.e., analyze
-c           constraints independently of one another
+C           PERFORM CHECKERBOARD BREAKUP, I.E., ANALYZE
+C           CONSTRAINTS INDEPENDENTLY OF ONE ANOTHER
 
-            do 508 i_odd_even=1,2
+            DO 508 I_ODD_EVEN=1,2
 
-c              find r' of Ryckaert et al.
+C              FIND R' OF RYCKAERT ET AL.
 
-            do 503 i_axis=1,3
-              do 502 i_res=jstrt,jfins-1
-               if (i_odd_even.eq.1) then
-                 srcord(i_res,i_axis,i_pro)=
-     *           prcord(i_res,i_axis,i_pro,3)-prcord(i_res,i_axis,i_pro,1)
-               else
-                 srcord(i_res,i_axis,i_pro)=
-     *           prcord(i_res+1,i_axis,i_pro,1)-prcord(i_res,i_axis,i_pro,3) 
-               endif
-502           continue
-503         continue
+            DO 503 I_AXIS=1,3
+              DO 502 I_RES=JSTRT,JFINS-1
+               IF (I_ODD_EVEN.EQ.1) THEN
+                 SRCORD(I_RES,I_AXIS,I_PRO)=
+     *           PRCORD(I_RES,I_AXIS,I_PRO,3)-PRCORD(I_RES,I_AXIS,I_PRO,1)
+               ELSE
+                 SRCORD(I_RES,I_AXIS,I_PRO)=
+     *           PRCORD(I_RES+1,I_AXIS,I_PRO,1)-PRCORD(I_RES,I_AXIS,I_PRO,3) 
+               ENDIF
+502           CONTINUE
+503         CONTINUE
 
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc 
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC 
 
-c              find |r'|**2
+C              FIND |R'|**2
 
-               do 504 i_res=jstrt,jfins-1
-                     myst2(i_res)=srcord(i_res,1,i_pro)**2 + 
-     *                           srcord(i_res,2,i_pro)**2 +
-     *                           srcord(i_res,3,i_pro)**2
+               DO 504 I_RES=JSTRT,JFINS-1
+                     MYST2(I_RES)=SRCORD(I_RES,1,I_PRO)**2 + 
+     *                           SRCORD(I_RES,2,I_PRO)**2 +
+     *                           SRCORD(I_RES,3,I_PRO)**2
 
-c                     write(SO,*) 'myst2 ', myst2(i_res)
-504          continue
+C                     WRITE(SO,*) 'MYST2 ', MYST2(I_RES)
+504          CONTINUE
 
-c                     write(SO,*) 'myst2 ', myst2(75)
+C                     WRITE(SO,*) 'MYST2 ', MYST2(75)
 
-c              find d**2 - r'**2
+C              FIND D**2 - R'**2
 
-               do 505 i_res=jstrt,jfins-1
-                  myst2(i_res)=eq_dist_sq(i_odd_even) - myst2(i_res)
-505          continue
+               DO 505 I_RES=JSTRT,JFINS-1
+                  MYST2(I_RES)=EQ_DIST_SQ(I_ODD_EVEN) - MYST2(I_RES)
+505          CONTINUE
 
-c              check if done
+C              CHECK IF DONE
 
-               do 506 i_res=jstrt,jfins-1
+               DO 506 I_RES=JSTRT,JFINS-1
 
-c                 if all constraints not satisfied, then continue;
-c                 otherwise, consider next configuration
+C                 IF ALL CONSTRAINTS NOT SATISFIED, THEN CONTINUE;
+C                 OTHERWISE, CONSIDER NEXT CONFIGURATION
 
-                  if( abs(myst2(i_res)).gt.tolshk )then
-                     go to 522
-                  endif
+                  IF( ABS(MYST2(I_RES)).GT.TOLSHK )THEN
+                     GO TO 522
+                  ENDIF
 
-  506          continue
+  506          CONTINUE
 
-c              done
+C              DONE
 
-c              increment variable used to track the number
-c              of required iterations
+C              INCREMENT VARIABLE USED TO TRACK THE NUMBER
+C              OF REQUIRED ITERATIONS
 
-               ishkit=ishkit + i_shake - 1
+               ISHKIT=ISHKIT + I_SHAKE - 1
 
-               go to 501  ! go to loop for the next protien
+               GO TO 501  ! GO TO LOOP FOR THE NEXT PROTIEN
 
-  522          continue
+  522          CONTINUE
 
-c              find r.r'
+C              FIND R.R'
 
-               do 507 i_res=jstrt,jfins-1
+               DO 507 I_RES=JSTRT,JFINS-1
 
-                  myst(i_res)=lngth(i_res,1,i_pro,i_odd_even)
-     *                            *srcord(i_res,1,i_pro) +
-     *                        lngth(i_res,2,i_pro,i_odd_even)
-     *                            *srcord(i_res,2,i_pro) +
-     *                        lngth(i_res,3,i_pro,i_odd_even)
-     *                            *srcord(i_res,3,i_pro)
+                  MYST(I_RES)=LNGTH(I_RES,1,I_PRO,I_ODD_EVEN)
+     *                            *SRCORD(I_RES,1,I_PRO) +
+     *                        LNGTH(I_RES,2,I_PRO,I_ODD_EVEN)
+     *                            *SRCORD(I_RES,2,I_PRO) +
+     *                        LNGTH(I_RES,3,I_PRO,I_ODD_EVEN)
+     *                            *SRCORD(I_RES,3,I_PRO)
 
-507          continue
+507          CONTINUE
 
-c              compute g 
+C              COMPUTE G 
 
-               do 509 i_res=jstrt,jfins-1
-                  if (myst(i_res) .ne. 0.0) then
-                  myst(i_res)= (0.25*myst2(i_res)/myst(i_res))
-                  end if
-  509          continue 
+               DO 509 I_RES=JSTRT,JFINS-1
+                  IF (MYST(I_RES) .NE. 0.0) THEN
+                  MYST(I_RES)= (0.25*MYST2(I_RES)/MYST(I_RES))
+                  END IF
+  509          CONTINUE 
 
-               do 511 i_axis=1,3
+               DO 511 I_AXIS=1,3
 
-                  do 524 i_res=jstrt,jfins-1
-                    if (i_odd_even.eq.1) then
-                      prcord(i_res,i_axis,i_pro,3)=
-     *                prcord(i_res,i_axis,i_pro,3) +
-     *                lngth(i_res,i_axis,i_pro,1)*myst(i_res)
+                  DO 524 I_RES=JSTRT,JFINS-1
+                    IF (I_ODD_EVEN.EQ.1) THEN
+                      PRCORD(I_RES,I_AXIS,I_PRO,3)=
+     *                PRCORD(I_RES,I_AXIS,I_PRO,3) +
+     *                LNGTH(I_RES,I_AXIS,I_PRO,1)*MYST(I_RES)
  
-                      prcord(i_res,i_axis,i_pro,1)=
-     *                prcord(i_res,i_axis,i_pro,1) -
-     *                lngth(i_res,i_axis,i_pro,1)*myst(i_res)
-                    else
-                           prcord(i_res+1,i_axis,i_pro,1)=
-     *                prcord(i_res+1,i_axis,i_pro,1) +
-     *                lngth(i_res,i_axis,i_pro,2)*myst(i_res)
+                      PRCORD(I_RES,I_AXIS,I_PRO,1)=
+     *                PRCORD(I_RES,I_AXIS,I_PRO,1) -
+     *                LNGTH(I_RES,I_AXIS,I_PRO,1)*MYST(I_RES)
+                    ELSE
+                           PRCORD(I_RES+1,I_AXIS,I_PRO,1)=
+     *                PRCORD(I_RES+1,I_AXIS,I_PRO,1) +
+     *                LNGTH(I_RES,I_AXIS,I_PRO,2)*MYST(I_RES)
 
-                      prcord(i_res,i_axis,i_pro,3)=
-     *                prcord(i_res,i_axis,i_pro,3) -
-     *                lngth(i_res,i_axis,i_pro,2)*myst(i_res) 
-                    endif
-  524             continue
+                      PRCORD(I_RES,I_AXIS,I_PRO,3)=
+     *                PRCORD(I_RES,I_AXIS,I_PRO,3) -
+     *                LNGTH(I_RES,I_AXIS,I_PRO,2)*MYST(I_RES) 
+                    ENDIF
+  524             CONTINUE
 
-  511          continue   ! end of loop over axis
+  511          CONTINUE   ! END OF LOOP OVER AXIS
 
-  508       continue        ! End of loop over odd, even
+  508       CONTINUE        ! END OF LOOP OVER ODD, EVEN
 
-  500    continue        ! End of loop over max shake iterations
+  500    CONTINUE        ! END OF LOOP OVER MAX SHAKE ITERATIONS
 
-        write(SO,*) 'Failed to pass max iterations in shakox'
-        stop 'passed max iterations in shakox'
+        WRITE(SO,*) 'FAILED TO PASS MAX ITERATIONS IN SHAKOX'
+        STOP 'PASSED MAX ITERATIONS IN SHAKOX'
 
-501     continue                ! end of loop over proteins
-c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+501     CONTINUE                ! END OF LOOP OVER PROTEINS
+C!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-      continue
+      CONTINUE
 
-c     ---------------------- done ----------------------
+C     ---------------------- DONE ----------------------
      
-      return
-      end
+      RETURN
+      END

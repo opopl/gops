@@ -1,188 +1,188 @@
-	subroutine  gentab_rama
+	SUBROUTINE  GENTAB_RAMA
 
-        use globals,only:aminoa,maxsiz,tgsequences_amc,rama_prob, &
-                 ramascl,rama_force
+        USE GLOBALS,ONLY:AMINOA,MAXSIZ,TGSEQUENCES_AMC,RAMA_PROB, &
+                 RAMASCL,RAMA_FORCE
 
-	implicit none
+	IMPLICIT NONE
 
-!     internal variables:
+!     INTERNAL VARIABLES:
 
-!   rama_prob(phi_index,psi_index,amino,amino-1,amino,amino+1
+!   RAMA_PROB(PHI_INDEX,PSI_INDEX,AMINO,AMINO-1,AMINO,AMINO+1
 
-        integer isit1,isit2,mvm_scr
-        integer iaa,ires,ipre,ipost,open_status,i1,nmres
+        INTEGER ISIT1,ISIT2,MVM_SCR
+        INTEGER IAA,IRES,IPRE,IPOST,OPEN_STATUS,I1,NMRES
 
-!     required subroutines
+!     REQUIRED SUBROUTINES
 
-!       external 
+!       EXTERNAL 
 
-!  data in 10 degree wide bins from 180 to -180
+!  DATA IN 10 DEGREE WIDE BINS FROM 180 TO -180
  
-        rama_prob(:,:,:,:,:)=0.0
+        RAMA_PROB(:,:,:,:,:)=0.0
 
-!!$        do iaa = 1,20
-!!$         do ipre = 1,20
-!!$          do ipost = 1,20
+!!$        DO IAA = 1,20
+!!$         DO IPRE = 1,20
+!!$          DO IPOST = 1,20
 !!$
-!!$        open(mvm_scr, &
-!!$          file='~/marcio/bdtrimers/'//aminoa(iaa)//'/'//aminoa(ipre)//'_'//aminoa(iaa)//'_'//aminoa(ipost)//'.scr',status='old',iostat=open_status)
-!!$               if (open_status.ne.0) then
-!!$                 write(6,*) 'failure to open file in gentab_rama'
-!!$                 stop
-!!$               endif
-!!$        do isit1 = 1,36
-!!$        read(mvm_scr,*)(rama_prob(isit1,isit2,ipre,iaa,ipost),isit2=1,36)
-!!$        enddo
-!!$        close(mvm_scr)
+!!$        OPEN(MVM_SCR, &
+!!$          FILE='~/MARCIO/BDTRIMERS/'//AMINOA(IAA)//'/'//AMINOA(IPRE)//'_'//AMINOA(IAA)//'_'//AMINOA(IPOST)//'.SCR',STATUS='OLD',IOSTAT=OPEN_STATUS)
+!!$               IF (OPEN_STATUS.NE.0) THEN
+!!$                 WRITE(6,*) 'FAILURE TO OPEN FILE IN GENTAB_RAMA'
+!!$                 STOP
+!!$               ENDIF
+!!$        DO ISIT1 = 1,36
+!!$        READ(MVM_SCR,*)(RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST),ISIT2=1,36)
+!!$        ENDDO
+!!$        CLOSE(MVM_SCR)
 !!$ 
-!!$          enddo ! do ipost = 1,20
-!!$         enddo ! do ipre = 1,20
-!!$        enddo ! do iaa = 1,20
+!!$          ENDDO ! DO IPOST = 1,20
+!!$         ENDDO ! DO IPRE = 1,20
+!!$        ENDDO ! DO IAA = 1,20
 !!$
-!!$!   local filtering  
+!!$!   LOCAL FILTERING  
 !!$
-!!$        do iaa = 1,20
-!!$         do ipre = 1,20
-!!$          do ipost = 1,20
-!!$             do isit1 = 1,36
-!!$              do isit2 = 1,36
+!!$        DO IAA = 1,20
+!!$         DO IPRE = 1,20
+!!$          DO IPOST = 1,20
+!!$             DO ISIT1 = 1,36
+!!$              DO ISIT2 = 1,36
 !!$
-!!$               if(rama_prob(isit1,isit2,ipre,iaa,ipost).gt.0.0)then
-!!$                rama_prob(isit1,isit2,ipre,iaa,ipost) = & 
-!!$                -ramascl* Log(rama_prob(isit1,isit2,ipre,iaa,ipost))
-!!$               endif 
+!!$               IF(RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST).GT.0.0)THEN
+!!$                RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = & 
+!!$                -RAMASCL* LOG(RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST))
+!!$               ENDIF 
 !!$
-!!$                if((isit1.eq.1).and.(isit2.eq.1))then
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2,ipre,iaa,ipost) 
+!!$                IF((ISIT1.EQ.1).AND.(ISIT2.EQ.1))THEN
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2,IPRE,IAA,IPOST) 
 !!$
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) / 4
-!!$               else if((isit1.eq.1).and.(isit2.eq.36))then
-!!$                 rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2-1,ipre,iaa,ipost)
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) / 4
+!!$               ELSE IF((ISIT1.EQ.1).AND.(ISIT2.EQ.36))THEN
+!!$                 RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2-1,IPRE,IAA,IPOST)
 !!$
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) / 4
-!!$               else if((isit1.eq.36).and.(isit2.eq.36))then
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) / 4
+!!$               ELSE IF((ISIT1.EQ.36).AND.(ISIT2.EQ.36))THEN
 !!$
-!!$                 rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2,ipre,iaa,ipost) 
+!!$                 RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2,IPRE,IAA,IPOST) 
 !!$
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) / 4
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) / 4
 !!$
-!!$               else if((isit1.eq.36).and.(isit2.eq.1))then
-!!$                 rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2,ipre,iaa,ipost)  
+!!$               ELSE IF((ISIT1.EQ.36).AND.(ISIT2.EQ.1))THEN
+!!$                 RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2,IPRE,IAA,IPOST)  
 !!$
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost)/ 4
-!!$               else if((isit1.eq.1).and.((isit2.ne.1).or.(isit2.ne.36)))then
-!!$                 rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2,ipre,iaa,ipost)
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST)/ 4
+!!$               ELSE IF((ISIT1.EQ.1).AND.((ISIT2.NE.1).OR.(ISIT2.NE.36)))THEN
+!!$                 RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2,IPRE,IAA,IPOST)
 !!$
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) / 6
-!!$          else if((isit1.eq.36).and.((isit2.ne.1).or.(isit2.ne.36)))then
-!!$                 rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2,ipre,iaa,ipost) 
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) / 6
+!!$          ELSE IF((ISIT1.EQ.36).AND.((ISIT2.NE.1).OR.(ISIT2.NE.36)))THEN
+!!$                 RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2,IPRE,IAA,IPOST) 
 !!$
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) / 6
-!!$          else if((isit2.eq.1) .and. ((isit1.ne.1).or.(isit1.ne.36)))then
-!!$                 rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2,ipre,iaa,ipost)
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) / 6
+!!$          ELSE IF((ISIT2.EQ.1) .AND. ((ISIT1.NE.1).OR.(ISIT1.NE.36)))THEN
+!!$                 RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2,IPRE,IAA,IPOST)
 !!$
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) / 6
-!!$          else if((isit2.eq.36).and.((isit1.ne.1).or.(isit1.ne.36)))then
-!!$                 rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2,ipre,iaa,ipost)
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) / 6
+!!$          ELSE IF((ISIT2.EQ.36).AND.((ISIT1.NE.1).OR.(ISIT1.NE.36)))THEN
+!!$                 RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2,IPRE,IAA,IPOST)
 !!$
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) / 6
-!!$               else 
-!!$                 rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2+1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1,isit2-1,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1-1,isit2,ipre,iaa,ipost) +  &
-!!$                  rama_prob(isit1+1,isit2,ipre,iaa,ipost)
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) / 6
+!!$               ELSE 
+!!$                 RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2+1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1,ISIT2-1,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1-1,ISIT2,IPRE,IAA,IPOST) +  &
+!!$                  RAMA_PROB(ISIT1+1,ISIT2,IPRE,IAA,IPOST)
 !!$
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  rama_prob(isit1,isit2,ipre,iaa,ipost) / 9
-!!$               endif
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) / 9
+!!$               ENDIF
 !!$
-!!$              enddo  ! do isit1 = 1,36
-!!$            enddo ! do isit2 = 1,36
-!!$          enddo ! do ipost = 1,20
-!!$         enddo ! do ipre = 1,20
-!!$        enddo ! do iaa = 1,20
+!!$              ENDDO  ! DO ISIT1 = 1,36
+!!$            ENDDO ! DO ISIT2 = 1,36
+!!$          ENDDO ! DO IPOST = 1,20
+!!$         ENDDO ! DO IPRE = 1,20
+!!$        ENDDO ! DO IAA = 1,20
 !!$
-!!$! calc rama_force
+!!$! CALC RAMA_FORCE
 !!$
-!!$          do iaa = 1,20
-!!$           do ipre = 1,20
-!!$            do ipost = 1,20
-!!$             do isit1 = 1,36
-!!$              do isit2 = 1,36
+!!$          DO IAA = 1,20
+!!$           DO IPRE = 1,20
+!!$            DO IPOST = 1,20
+!!$             DO ISIT1 = 1,36
+!!$              DO ISIT2 = 1,36
 !!$
-!!$             if ( isit2 .eq. 1) then
-!!$               rama_force(isit1,isit2,ipre,iaa,ipost) =  & 
-!!$                  (rama_prob(isit1,isit2,ipre,iaa,ipost) - & 
-!!$                   rama_prob(isit1,36,ipre,iaa,ipost) )/2
-!!$             else if ( isit2 .eq. 1) then 
-!!$               rama_force(isit1,isit2,ipre,iaa,ipost) = &
-!!$                  (rama_prob(isit1,isit2,ipre,iaa,ipost) - &
-!!$                   rama_prob(36,isit2,ipre,iaa,ipost) )/2
-!!$             else 
-!!$               rama_force(isit1,isit2,ipre,iaa,ipost) = &
-!!$                 (rama_prob(isit1,isit2,ipre,iaa,ipost) - & 
-!!$                  rama_prob(isit1,isit2-1,ipre,iaa,ipost) )/2
-!!$             endif
+!!$             IF ( ISIT2 .EQ. 1) THEN
+!!$               RAMA_FORCE(ISIT1,ISIT2,IPRE,IAA,IPOST) =  & 
+!!$                  (RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) - & 
+!!$                   RAMA_PROB(ISIT1,36,IPRE,IAA,IPOST) )/2
+!!$             ELSE IF ( ISIT2 .EQ. 1) THEN 
+!!$               RAMA_FORCE(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                  (RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) - &
+!!$                   RAMA_PROB(36,ISIT2,IPRE,IAA,IPOST) )/2
+!!$             ELSE 
+!!$               RAMA_FORCE(ISIT1,ISIT2,IPRE,IAA,IPOST) = &
+!!$                 (RAMA_PROB(ISIT1,ISIT2,IPRE,IAA,IPOST) - & 
+!!$                  RAMA_PROB(ISIT1,ISIT2-1,IPRE,IAA,IPOST) )/2
+!!$             ENDIF
 !!$
-!!$              enddo ! do isit2 = 1,36
-!!$             enddo ! do isit1 = 1,36
-!!$            enddo ! do ipost = 1,20
-!!$           enddo ! do ipre = 1,20
-!!$          enddo ! do iaa = 1,20
+!!$              ENDDO ! DO ISIT2 = 1,36
+!!$             ENDDO ! DO ISIT1 = 1,36
+!!$            ENDDO ! DO IPOST = 1,20
+!!$           ENDDO ! DO IPRE = 1,20
+!!$          ENDDO ! DO IAA = 1,20
 
-        return
-	end
+        RETURN
+	END

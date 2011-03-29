@@ -1,101 +1,101 @@
-      subroutine ev_gamma(pro_cord,f_cord,E,tempav)
+      SUBROUTINE EV_GAMMA(PRO_CORD,F_CORD,E,TEMPAV)
 
-! excluded volume between gamma atoms
+! EXCLUDED VOLUME BETWEEN GAMMA ATOMS
 
-      use amhglobals,  only:SO, AMHmaxsiz,maxcrd,nmres,pexcld_gamma, & 
-           exvmin_gamma, i_type_ev_gamma,c_of_m_dist
+      USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXCRD,NMRES,PEXCLD_GAMMA, & 
+           EXVMIN_GAMMA, I_TYPE_EV_GAMMA,C_OF_M_DIST
 
-      implicit none
+      IMPLICIT NONE
 
-       double precision, intent(in):: pro_cord(AMHmaxsiz,3,maxcrd)
-       double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd),E(:,:)
-      logical, intent(in):: tempav
+       DOUBLE PRECISION, INTENT(IN):: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
+       DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD),E(:,:)
+      LOGICAL, INTENT(IN):: TEMPAV
 
-      double precision :: gamma_cord(AMHmaxsiz,3),diff(3),dist,factor(3),xi
-      integer :: i,j
+      DOUBLE PRECISION :: GAMMA_CORD(AMHMAXSIZ,3),DIFF(3),DIST,FACTOR(3),XI
+      INTEGER :: I,J
 
-!     zero force and energy
+!     ZERO FORCE AND ENERGY
 
-      f_cord=0.0D0
+      F_CORD=0.0D0
       E=0.0D0
       
-! calculate gamma positions
+! CALCULATE GAMMA POSITIONS
 
-      do i=1,nmres
-        gamma_cord(i,:)=pro_cord(i,:,1)+c_of_m_dist(i)*(pro_cord(i,:,2)-pro_cord(i,:,1))
-      enddo
+      DO I=1,NMRES
+        GAMMA_CORD(I,:)=PRO_CORD(I,:,1)+C_OF_M_DIST(I)*(PRO_CORD(I,:,2)-PRO_CORD(I,:,1))
+      ENDDO
       
-      if (i_type_ev_gamma.eq.1) then !quadratic (hard function)
-        do i=1,nmres-13
-        do j=i+13,nmres 
-          diff(:)=gamma_cord(i,:)-gamma_cord(j,:)
-          dist=dsqrt( dot_product( diff,diff ) )
-          if (dist.gt.exvmin_gamma(i,j)) cycle
-          factor(:)=-2.0D0*pexcld_gamma*( dist-exvmin_gamma(i,j) )*diff(:)/dist
-          f_cord(i,:,1)=f_cord(i,:,1)+factor*(1.0D0-c_of_m_dist(i))
-          f_cord(j,:,1)=f_cord(j,:,1)-factor*(1.0D0-c_of_m_dist(j))
-          f_cord(i,:,2)=f_cord(i,:,2)+factor*c_of_m_dist(i)
-          f_cord(j,:,2)=f_cord(j,:,2)-factor*c_of_m_dist(j)
-          if (tempav) E(1,9)=E(1,9)+pexcld_gamma*( dist-exvmin_gamma(i,j) )**2
-        enddo
-        enddo
-      elseif (i_type_ev_gamma.eq.2) then !tanh (soft function)
-        xi=0.5D0
-        do i=1,nmres-5
-        do j=i+5,nmres
-          diff(:)=gamma_cord(i,:)-gamma_cord(j,:)
-          dist=dsqrt( dot_product( diff,diff ) )
-          factor(:)=(pexcld_gamma/(2.0D0*xi))*( cosh((exvmin_gamma(i,j)-dist)/xi)**(-2) ) *diff(:)/dist
-          f_cord(i,:,1)=f_cord(i,:,1)+factor*(1.0D0-c_of_m_dist(i))
-          f_cord(j,:,1)=f_cord(j,:,1)-factor*(1.0D0-c_of_m_dist(j))
-          f_cord(i,:,2)=f_cord(i,:,2)+factor*c_of_m_dist(i)
-          f_cord(j,:,2)=f_cord(j,:,2)-factor*c_of_m_dist(j)
-          if (tempav) E(1,9)=E(1,9)+0.5D0*pexcld_gamma*(1.0D0+tanh((exvmin_gamma(i,j)-dist)/xi))
-        enddo
-        enddo
-      elseif (i_type_ev_gamma.eq.3) then !tanh (soft function MCP)
-        xi=0.5D0
+      IF (I_TYPE_EV_GAMMA.EQ.1) THEN !QUADRATIC (HARD FUNCTION)
+        DO I=1,NMRES-13
+        DO J=I+13,NMRES 
+          DIFF(:)=GAMMA_CORD(I,:)-GAMMA_CORD(J,:)
+          DIST=DSQRT( DOT_PRODUCT( DIFF,DIFF ) )
+          IF (DIST.GT.EXVMIN_GAMMA(I,J)) CYCLE
+          FACTOR(:)=-2.0D0*PEXCLD_GAMMA*( DIST-EXVMIN_GAMMA(I,J) )*DIFF(:)/DIST
+          F_CORD(I,:,1)=F_CORD(I,:,1)+FACTOR*(1.0D0-C_OF_M_DIST(I))
+          F_CORD(J,:,1)=F_CORD(J,:,1)-FACTOR*(1.0D0-C_OF_M_DIST(J))
+          F_CORD(I,:,2)=F_CORD(I,:,2)+FACTOR*C_OF_M_DIST(I)
+          F_CORD(J,:,2)=F_CORD(J,:,2)-FACTOR*C_OF_M_DIST(J)
+          IF (TEMPAV) E(1,9)=E(1,9)+PEXCLD_GAMMA*( DIST-EXVMIN_GAMMA(I,J) )**2
+        ENDDO
+        ENDDO
+      ELSEIF (I_TYPE_EV_GAMMA.EQ.2) THEN !TANH (SOFT FUNCTION)
+        XI=0.5D0
+        DO I=1,NMRES-5
+        DO J=I+5,NMRES
+          DIFF(:)=GAMMA_CORD(I,:)-GAMMA_CORD(J,:)
+          DIST=DSQRT( DOT_PRODUCT( DIFF,DIFF ) )
+          FACTOR(:)=(PEXCLD_GAMMA/(2.0D0*XI))*( COSH((EXVMIN_GAMMA(I,J)-DIST)/XI)**(-2) ) *DIFF(:)/DIST
+          F_CORD(I,:,1)=F_CORD(I,:,1)+FACTOR*(1.0D0-C_OF_M_DIST(I))
+          F_CORD(J,:,1)=F_CORD(J,:,1)-FACTOR*(1.0D0-C_OF_M_DIST(J))
+          F_CORD(I,:,2)=F_CORD(I,:,2)+FACTOR*C_OF_M_DIST(I)
+          F_CORD(J,:,2)=F_CORD(J,:,2)-FACTOR*C_OF_M_DIST(J)
+          IF (TEMPAV) E(1,9)=E(1,9)+0.5D0*PEXCLD_GAMMA*(1.0D0+TANH((EXVMIN_GAMMA(I,J)-DIST)/XI))
+        ENDDO
+        ENDDO
+      ELSEIF (I_TYPE_EV_GAMMA.EQ.3) THEN !TANH (SOFT FUNCTION MCP)
+        XI=0.5D0
 
-        do i=1,nmres
-        gamma_cord(i,:)=pro_cord(i,:,1)+c_of_m_dist(i)*(pro_cord(i,:,2)-pro_cord(i,:,1))
-        enddo
+        DO I=1,NMRES
+        GAMMA_CORD(I,:)=PRO_CORD(I,:,1)+C_OF_M_DIST(I)*(PRO_CORD(I,:,2)-PRO_CORD(I,:,1))
+        ENDDO
 
-        do i=1,nmres-5
-        do j=i+5,nmres
-          diff(:)=gamma_cord(i,:)-gamma_cord(j,:)
-          dist=dsqrt( dot_product( diff,diff ) )
-          factor(:)=(pexcld_gamma/(2.0D0*xi))*( cosh((exvmin_gamma(i,j)-dist)/xi)**(-2) ) *diff(:)/dist
-          f_cord(i,:,1)=f_cord(i,:,1)+factor*(1.0D0-c_of_m_dist(i))
-          f_cord(j,:,1)=f_cord(j,:,1)-factor*(1.0D0-c_of_m_dist(j))
-          f_cord(i,:,2)=f_cord(i,:,2)+factor*c_of_m_dist(i)
-          f_cord(j,:,2)=f_cord(j,:,2)-factor*c_of_m_dist(j)
+        DO I=1,NMRES-5
+        DO J=I+5,NMRES
+          DIFF(:)=GAMMA_CORD(I,:)-GAMMA_CORD(J,:)
+          DIST=DSQRT( DOT_PRODUCT( DIFF,DIFF ) )
+          FACTOR(:)=(PEXCLD_GAMMA/(2.0D0*XI))*( COSH((EXVMIN_GAMMA(I,J)-DIST)/XI)**(-2) ) *DIFF(:)/DIST
+          F_CORD(I,:,1)=F_CORD(I,:,1)+FACTOR*(1.0D0-C_OF_M_DIST(I))
+          F_CORD(J,:,1)=F_CORD(J,:,1)-FACTOR*(1.0D0-C_OF_M_DIST(J))
+          F_CORD(I,:,2)=F_CORD(I,:,2)+FACTOR*C_OF_M_DIST(I)
+          F_CORD(J,:,2)=F_CORD(J,:,2)-FACTOR*C_OF_M_DIST(J)
 
-          if (tempav) E(1,9)=E(1,9)+0.5D0*pexcld_gamma*(1.0D0+tanh((exvmin_gamma(i,j)-dist)/xi))
-        enddo
-        enddo
+          IF (TEMPAV) E(1,9)=E(1,9)+0.5D0*PEXCLD_GAMMA*(1.0D0+TANH((EXVMIN_GAMMA(I,J)-DIST)/XI))
+        ENDDO
+        ENDDO
 
-!        do i=1,nmres
-!          gamma_cord(i,:)=pro_cord(i,:,3)
-!        enddo
+!        DO I=1,NMRES
+!          GAMMA_CORD(I,:)=PRO_CORD(I,:,3)
+!        ENDDO
 
-!        do i=1,nmres-5
-!        do j=i+5,nmres
-!          diff(:)=gamma_cord(i,:)-gamma_cord(j,:)
-!          dist=dsqrt( dot_product( diff,diff ) )
-!          factor(:)=(pexcld_gamma/(2.0D0*xi))*( cosh((exvmin_gamma(i,j)-dist)/xi)**(-2) ) *diff(:)/dist
-!         f_cord(i,:,1)=f_cord(i,:,1)+factor(:)
-!          f_cord(j,:,1)=f_cord(j,:,1)-factor(:)
-!          f_cord(i,:,2)=f_cord(i,:,2)+factor(:)
-!          f_cord(j,:,2)=f_cord(j,:,2)-factor(:)
-!          if (tempav) E(1,11)=E(1,11)+0.5D0*pexcld_gamma*(1.0D0+tanh((exvmin_gamma(i,j)-dist)/xi))
-!        enddo
-!        enddo
+!        DO I=1,NMRES-5
+!        DO J=I+5,NMRES
+!          DIFF(:)=GAMMA_CORD(I,:)-GAMMA_CORD(J,:)
+!          DIST=DSQRT( DOT_PRODUCT( DIFF,DIFF ) )
+!          FACTOR(:)=(PEXCLD_GAMMA/(2.0D0*XI))*( COSH((EXVMIN_GAMMA(I,J)-DIST)/XI)**(-2) ) *DIFF(:)/DIST
+!         F_CORD(I,:,1)=F_CORD(I,:,1)+FACTOR(:)
+!          F_CORD(J,:,1)=F_CORD(J,:,1)-FACTOR(:)
+!          F_CORD(I,:,2)=F_CORD(I,:,2)+FACTOR(:)
+!          F_CORD(J,:,2)=F_CORD(J,:,2)-FACTOR(:)
+!          IF (TEMPAV) E(1,11)=E(1,11)+0.5D0*PEXCLD_GAMMA*(1.0D0+TANH((EXVMIN_GAMMA(I,J)-DIST)/XI))
+!        ENDDO
+!        ENDDO
 
-      else
-        write(SO,*) 'i_type_ev_gamma cock-up',i_type_ev_gamma
-        stop
+      ELSE
+        WRITE(SO,*) 'I_TYPE_EV_GAMMA COCK-UP',I_TYPE_EV_GAMMA
+        STOP
 
-      endif
+      ENDIF
 
-      return
-      end
+      RETURN
+      END

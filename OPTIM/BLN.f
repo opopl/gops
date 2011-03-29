@@ -1,26 +1,26 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999- David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999- DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C***********************************************************************
 C
 
-C Function: This subroutine calculates the energy and gradient
-C for a given configuration of a BLN polymer chain.
+C FUNCTION: THIS SUBROUTINE CALCULATES THE ENERGY AND GRADIENT
+C FOR A GIVEN CONFIGURATION OF A BLN POLYMER CHAIN.
 
       SUBROUTINE BLN(QO,NATOMS,GRAD,ENERGY,GRADT,SECT)
       USE KEY
@@ -34,8 +34,8 @@ C for a given configuration of a BLN polymer chain.
 
       N=NATOMS
 !
-! Without these initialisations the NAG compiler fills in random numbers for
-! unassigned elements with optimisation turned on.
+! WITHOUT THESE INITIALISATIONS THE NAG COMPILER FILLS IN RANDOM NUMBERS FOR
+! UNASSIGNED ELEMENTS WITH OPTIMISATION TURNED ON.
 !
       BOND_ANGLE(1:NATOMS)=0.0D0
       TOR_ANGLE(1:NATOMS)=0.0D0
@@ -64,158 +64,158 @@ C for a given configuration of a BLN polymer chain.
       RETURN
       END
 C
-C Calculate the Internal Coordinates
+C CALCULATE THE INTERNAL COORDINATES
 C
-      subroutine calc_int_coordsBLN(qo,n,x,y,z,xr,yr,zr,dot_prod,x_prod,bond_angle,tor_angle,radii,natoms,COSTOR,
+      SUBROUTINE CALC_INT_COORDSBLN(QO,N,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,COSTOR,
      &                              SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
-      implicit NONE
+      IMPLICIT NONE
       INTEGER I, N, J, NATOMS
       DOUBLE PRECISION COS_PHI, COS_THETA, DUMMY, DUMMY2
-      DOUBLE PRECISION qo(3*NATOMS)
+      DOUBLE PRECISION QO(3*NATOMS)
       DOUBLE PRECISION, PARAMETER :: TWOPI=6.283185307179586477D0
-      DOUBLE PRECISION x(NATOMS), y(NATOMS), z(NATOMS), xr(NATOMS,NATOMS), DFAC(NATOMS),
-     &  yr(NATOMS,NATOMS), zr(NATOMS,NATOMS), dot_prod(NATOMS,3), COSTOR(NATOMS), D_BLN(NATOMS), A_BLN(NATOMS), B_BLN(NATOMS),
-     &  x_prod(NATOMS), bond_angle(NATOMS), tor_angle(NATOMS), radii(NATOMS,NATOMS), SINBOND(NATOMS), C_BLN(NATOMS)
+      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS), XR(NATOMS,NATOMS), DFAC(NATOMS),
+     &  YR(NATOMS,NATOMS), ZR(NATOMS,NATOMS), DOT_PROD(NATOMS,3), COSTOR(NATOMS), D_BLN(NATOMS), A_BLN(NATOMS), B_BLN(NATOMS),
+     &  X_PROD(NATOMS), BOND_ANGLE(NATOMS), TOR_ANGLE(NATOMS), RADII(NATOMS,NATOMS), SINBOND(NATOMS), C_BLN(NATOMS)
 
-      do i = 1, n
-         j = (i-1)*3
-         x(i) = qo((i-1)*3+1)
-         y(i) = qo((i-1)*3+2)
-         z(i) = qo((i-1)*3+3)
-      enddo
+      DO I = 1, N
+         J = (I-1)*3
+         X(I) = QO((I-1)*3+1)
+         Y(I) = QO((I-1)*3+2)
+         Z(I) = QO((I-1)*3+3)
+      ENDDO
 C
-C Inter-particle distances
+C INTER-PARTICLE DISTANCES
 C
-      do i = 1, n-1
-         do j = i+1, n
-C        do j = 1, n
-            xr(i,j) = x(j) - x(i)
-            yr(i,j) = y(j) - y(i)
-            zr(i,j) = z(j) - z(i)
-            radii(i,j) = sqrt(xr(i,j)*xr(i,j) + yr(i,j)*yr(i,j) + zr(i,j)*zr(i,j))
-            radii(j,i) = radii(i,j)
-         enddo
-      enddo
+      DO I = 1, N-1
+         DO J = I+1, N
+C        DO J = 1, N
+            XR(I,J) = X(J) - X(I)
+            YR(I,J) = Y(J) - Y(I)
+            ZR(I,J) = Z(J) - Z(I)
+            RADII(I,J) = SQRT(XR(I,J)*XR(I,J) + YR(I,J)*YR(I,J) + ZR(I,J)*ZR(I,J))
+            RADII(J,I) = RADII(I,J)
+         ENDDO
+      ENDDO
 
-C Dot products between bond vectors
+C DOT PRODUCTS BETWEEN BOND VECTORS
 
-      do i = 1, n-3
-         dot_prod(i,1) = xr(i,i+1)*xr(i,i+1) + yr(i,i+1)*yr(i,i+1) + zr(i,i+1)*zr(i,i+1)
-         dot_prod(i,2) = xr(i,i+1)*xr(i+1,i+2)+yr(i,i+1)*yr(i+1,i+2)+ zr(i,i+1)*zr(i+1,i+2)
-         dot_prod(i,3) = xr(i,i+1)*xr(i+2,i+3)+yr(i,i+1)*yr(i+2,i+3)+ zr(i,i+1)*zr(i+2,i+3)
-      enddo
+      DO I = 1, N-3
+         DOT_PROD(I,1) = XR(I,I+1)*XR(I,I+1) + YR(I,I+1)*YR(I,I+1) + ZR(I,I+1)*ZR(I,I+1)
+         DOT_PROD(I,2) = XR(I,I+1)*XR(I+1,I+2)+YR(I,I+1)*YR(I+1,I+2)+ ZR(I,I+1)*ZR(I+1,I+2)
+         DOT_PROD(I,3) = XR(I,I+1)*XR(I+2,I+3)+YR(I,I+1)*YR(I+2,I+3)+ ZR(I,I+1)*ZR(I+2,I+3)
+      ENDDO
 
-      i = n-2
-      dot_prod(i,1) = xr(i,i+1)*xr(i,i+1) + yr(i,i+1)*yr(i,i+1) + zr(i,i+1)*zr(i,i+1)
-      dot_prod(i,2) = xr(i,i+1)*xr(i+1,i+2)+yr(i,i+1)*yr(i+1,i+2)+ zr(i,i+1)*zr(i+1,i+2)
-      i = n-1
-      dot_prod(i,1) = xr(i,i+1)*xr(i,i+1) + yr(i,i+1)*yr(i,i+1) + zr(i,i+1)*zr(i,i+1)
+      I = N-2
+      DOT_PROD(I,1) = XR(I,I+1)*XR(I,I+1) + YR(I,I+1)*YR(I,I+1) + ZR(I,I+1)*ZR(I,I+1)
+      DOT_PROD(I,2) = XR(I,I+1)*XR(I+1,I+2)+YR(I,I+1)*YR(I+1,I+2)+ ZR(I,I+1)*ZR(I+1,I+2)
+      I = N-1
+      DOT_PROD(I,1) = XR(I,I+1)*XR(I,I+1) + YR(I,I+1)*YR(I,I+1) + ZR(I,I+1)*ZR(I,I+1)
 
-C Cross-products between adjacent bond vectors
+C CROSS-PRODUCTS BETWEEN ADJACENT BOND VECTORS
 
-      do i = 1, n-2
-         x_prod(i) = dot_prod(i,1)*dot_prod(i+1,1) - dot_prod(i,2)*dot_prod(i,2)   
-      enddo
+      DO I = 1, N-2
+         X_PROD(I) = DOT_PROD(I,1)*DOT_PROD(I+1,1) - DOT_PROD(I,2)*DOT_PROD(I,2)   
+      ENDDO
 
-C Bond angles
+C BOND ANGLES
 
-      do i = 1, n-2
-         cos_theta=-dot_prod(i,2)/(sqrt(dot_prod(i,1)*dot_prod(i+1,1)))
-         bond_angle(i+1) = dacos(cos_theta)
-         SINBOND(i+1)=SIN(bond_angle(i+1))*SQRT(dot_prod(i,1)*dot_prod(i+1,1))
-      enddo
+      DO I = 1, N-2
+         COS_THETA=-DOT_PROD(I,2)/(SQRT(DOT_PROD(I,1)*DOT_PROD(I+1,1)))
+         BOND_ANGLE(I+1) = DACOS(COS_THETA)
+         SINBOND(I+1)=SIN(BOND_ANGLE(I+1))*SQRT(DOT_PROD(I,1)*DOT_PROD(I+1,1))
+      ENDDO
 
-C Torsional angles
+C TORSIONAL ANGLES
 
-      do i = 1, n-3
-         cos_phi = (dot_prod(i,2)*dot_prod(i+1,2) - dot_prod(i,3)*dot_prod(i+1,1))/sqrt(x_prod(i)*x_prod(i+1))
-         IF (ABS(cos_phi).GT.1.0D0) cos_phi=SIGN(1.0D0,cos_phi)
-         tor_angle(i+1) = dacos(cos_phi)
+      DO I = 1, N-3
+         COS_PHI = (DOT_PROD(I,2)*DOT_PROD(I+1,2) - DOT_PROD(I,3)*DOT_PROD(I+1,1))/SQRT(X_PROD(I)*X_PROD(I+1))
+         IF (ABS(COS_PHI).GT.1.0D0) COS_PHI=SIGN(1.0D0,COS_PHI)
+         TOR_ANGLE(I+1) = DACOS(COS_PHI)
 C
-C tor_angle is returned in the range 0 to Pi. 
-C dummy should take the opposite sign from the dihedral angle. Negative
-C values of the dihedral should be subtracted from 2*pi.
-C This is only necessary when the potential contains cos(phi+pi/4) terms because
-C the gradient is discontinuous when phi goes through pi for such terms if phi
-C is restricted to 0 < phi < pi. 
+C TOR_ANGLE IS RETURNED IN THE RANGE 0 TO PI. 
+C DUMMY SHOULD TAKE THE OPPOSITE SIGN FROM THE DIHEDRAL ANGLE. NEGATIVE
+C VALUES OF THE DIHEDRAL SHOULD BE SUBTRACTED FROM 2*PI.
+C THIS IS ONLY NECESSARY WHEN THE POTENTIAL CONTAINS COS(PHI+PI/4) TERMS BECAUSE
+C THE GRADIENT IS DISCONTINUOUS WHEN PHI GOES THROUGH PI FOR SUCH TERMS IF PHI
+C IS RESTRICTED TO 0 < PHI < PI. 
 C
-C        dummy=xr(i+2,i+3)*(yr(i+1,i)*zr(i+1,i+2)-yr(i+1,i+2)*zr(i+1,i))+
-C    &         yr(i+2,i+3)*(xr(i+1,i+2)*zr(i+1,i)-xr(i+1,i)*zr(i+1,i+2))+
-C    &         zr(i+2,i+3)*(xr(i+1,i)*yr(i+1,i+2)-xr(i+1,i+2)*yr(i+1,i))
-         dummy=xr(i+2,i+3)*(-yr(i,i+1)*zr(i+1,i+2)+yr(i+1,i+2)*zr(i,i+1))+
-     &         yr(i+2,i+3)*(-xr(i+1,i+2)*zr(i,i+1)+xr(i,i+1)*zr(i+1,i+2))+
-     &         zr(i+2,i+3)*(-xr(i,i+1)*yr(i+1,i+2)+xr(i+1,i+2)*yr(i,i+1))
-         IF (DUMMY.GT.0.0D0) tor_angle(i+1)=TWOPI-tor_angle(i+1)
-         COSTOR(i+1)=COS(tor_angle(i+1))
+C        DUMMY=XR(I+2,I+3)*(YR(I+1,I)*ZR(I+1,I+2)-YR(I+1,I+2)*ZR(I+1,I))+
+C    &         YR(I+2,I+3)*(XR(I+1,I+2)*ZR(I+1,I)-XR(I+1,I)*ZR(I+1,I+2))+
+C    &         ZR(I+2,I+3)*(XR(I+1,I)*YR(I+1,I+2)-XR(I+1,I+2)*YR(I+1,I))
+         DUMMY=XR(I+2,I+3)*(-YR(I,I+1)*ZR(I+1,I+2)+YR(I+1,I+2)*ZR(I,I+1))+
+     &         YR(I+2,I+3)*(-XR(I+1,I+2)*ZR(I,I+1)+XR(I,I+1)*ZR(I+1,I+2))+
+     &         ZR(I+2,I+3)*(-XR(I,I+1)*YR(I+1,I+2)+XR(I+1,I+2)*YR(I,I+1))
+         IF (DUMMY.GT.0.0D0) TOR_ANGLE(I+1)=TWOPI-TOR_ANGLE(I+1)
+         COSTOR(I+1)=COS(TOR_ANGLE(I+1))
 C
-C  This is an ugly hack to prevent division by zero. There will be a loss of precision
-C  if a dihedral is 0, PI, 2*PI, if D_BLN is non-zero.
+C  THIS IS AN UGLY HACK TO PREVENT DIVISION BY ZERO. THERE WILL BE A LOSS OF PRECISION
+C  IF A DIHEDRAL IS 0, PI, 2*PI, IF D_BLN IS NON-ZERO.
 C
-         IF (TAN(tor_angle(i+1)).EQ.0.0D0) THEN
-            PRINT '(A,I8,A,G20.10)','WARNING in BLN, dihedral angle ',i+1,' is ',tor_angle(i+1)
-            tor_angle(i+1)=tor_angle(i+1)+1.0D-10
-            PRINT '(A,G20.10)','WARNING in BLN, TAN perturbed angle=',tor_angle(i+1)
+         IF (TAN(TOR_ANGLE(I+1)).EQ.0.0D0) THEN
+            PRINT '(A,I8,A,G20.10)','WARNING IN BLN, DIHEDRAL ANGLE ',I+1,' IS ',TOR_ANGLE(I+1)
+            TOR_ANGLE(I+1)=TOR_ANGLE(I+1)+1.0D-10
+            PRINT '(A,G20.10)','WARNING IN BLN, TAN PERTURBED ANGLE=',TOR_ANGLE(I+1)
          ENDIF
-         DUMMY2=TAN(tor_angle(i+1))
-         DFAC(i+1)=(A_BLN(i+1)+D_BLN(i+1)*( 1.0D0+1.0D0/DUMMY2 )*0.7071067811865475244D0-B_BLN(i+1)
-     &              +C_BLN(i+1)*(12.0*costor(i+1)**2-3.0))/sqrt(x_prod(i+1)*x_prod(i))
-      enddo
-C     WRITE(*,'(A,4G20.10)') 'cosphi,angle,costor=',cos_phi,tor_angle(18),COSTOR(18),dummy
+         DUMMY2=TAN(TOR_ANGLE(I+1))
+         DFAC(I+1)=(A_BLN(I+1)+D_BLN(I+1)*( 1.0D0+1.0D0/DUMMY2 )*0.7071067811865475244D0-B_BLN(I+1)
+     &              +C_BLN(I+1)*(12.0*COSTOR(I+1)**2-3.0))/SQRT(X_PROD(I+1)*X_PROD(I))
+      ENDDO
+C     WRITE(*,'(A,4G20.10)') 'COSPHI,ANGLE,COSTOR=',COS_PHI,TOR_ANGLE(18),COSTOR(18),DUMMY
 
-      return
-      end
+      RETURN
+      END
 
-C Calculate the Energy
+C CALCULATE THE ENERGY
 
-      subroutine calc_energyBLN(qo,energy,n,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     &  bond_angle,tor_angle,radii,natoms,rk_r,rk_theta,COSTOR)
-      implicit NONE
+      SUBROUTINE CALC_ENERGYBLN(QO,ENERGY,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+     &  BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,RK_R,RK_THETA,COSTOR)
+      IMPLICIT NONE
       INTEGER NATOMS, N, I, J
-      DOUBLE PRECISION, parameter :: theta_0 = 1.8326D0, PI4=0.7853981633974483096D0 ! 1.8326 radians is 105 degrees
-      DOUBLE PRECISION qo(3*NATOMS), ENERGY
-      DOUBLE PRECISION x(NATOMS), y(NATOMS), z(NATOMS), xr(NATOMS,NATOMS), 
-     &  yr(NATOMS,NATOMS), zr(NATOMS,NATOMS), dot_prod(NATOMS,3), COSTOR(NATOMS),
-     &  x_prod(NATOMS), bond_angle(NATOMS), tor_angle(NATOMS), radii(NATOMS,NATOMS)
-      DOUBLE PRECISION RK_R, RK_THETA, e_nbond, e_bond, e_bangle, e_tangle, rad6
+      DOUBLE PRECISION, PARAMETER :: THETA_0 = 1.8326D0, PI4=0.7853981633974483096D0 ! 1.8326 RADIANS IS 105 DEGREES
+      DOUBLE PRECISION QO(3*NATOMS), ENERGY
+      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS), XR(NATOMS,NATOMS), 
+     &  YR(NATOMS,NATOMS), ZR(NATOMS,NATOMS), DOT_PROD(NATOMS,3), COSTOR(NATOMS),
+     &  X_PROD(NATOMS), BOND_ANGLE(NATOMS), TOR_ANGLE(NATOMS), RADII(NATOMS,NATOMS)
+      DOUBLE PRECISION RK_R, RK_THETA, E_NBOND, E_BOND, E_BANGLE, E_TANGLE, RAD6
       DOUBLE PRECISION LJREP_BLN(NATOMS,NATOMS),LJATT_BLN(NATOMS,NATOMS),C_BLN(NATOMS),A_BLN(NATOMS),B_BLN(NATOMS),D_BLN(NATOMS)
 
-      e_nbond=0.0D0
-      e_bond=0.0D0
-      e_bangle=0.0D0
-      e_tangle=0.0D0
+      E_NBOND=0.0D0
+      E_BOND=0.0D0
+      E_BANGLE=0.0D0
+      E_TANGLE=0.0D0
 
-      do i = 1, n-2
-         do j = i+2, n
-            rad6 = radii(i,j)**6
-            e_nbond = e_nbond + (LJREP_BLN(i,j)/rad6 + LJATT_BLN(i,j))/rad6
-         enddo
-      enddo
-      e_nbond=e_nbond*4.0D0
+      DO I = 1, N-2
+         DO J = I+2, N
+            RAD6 = RADII(I,J)**6
+            E_NBOND = E_NBOND + (LJREP_BLN(I,J)/RAD6 + LJATT_BLN(I,J))/RAD6
+         ENDDO
+      ENDDO
+      E_NBOND=E_NBOND*4.0D0
 
-      do i = 1, n-1
-         e_bond = e_bond + (radii(i,i+1)-1.0D0)**2 ! DJW
-!        e_bond = e_bond + (radii(i,i+1)-0.5D0)**2
-      enddo
-      e_bond=e_bond*rk_r/2.0D0
+      DO I = 1, N-1
+         E_BOND = E_BOND + (RADII(I,I+1)-1.0D0)**2 ! DJW
+!        E_BOND = E_BOND + (RADII(I,I+1)-0.5D0)**2
+      ENDDO
+      E_BOND=E_BOND*RK_R/2.0D0
 
-      do i = 2, n-1
-         e_bangle = e_bangle + (bond_angle(i)-theta_0)**2
-      enddo
-      e_bangle=e_bangle*rk_theta/2.0D0
+      DO I = 2, N-1
+         E_BANGLE = E_BANGLE + (BOND_ANGLE(I)-THETA_0)**2
+      ENDDO
+      E_BANGLE=E_BANGLE*RK_THETA/2.0D0
 
-      do i = 2, n-2
-         e_tangle = e_tangle + A_BLN(i)*(1.0D0 + costor(i)) + C_BLN(i)*(1.0D0 + cos(3.0D0*tor_angle(i)))
-     &                       + B_BLN(i)*(1.0D0 - costor(i)) + D_BLN(i)*(1.0D0 + cos(tor_angle(i)+PI4))
-      enddo
+      DO I = 2, N-2
+         E_TANGLE = E_TANGLE + A_BLN(I)*(1.0D0 + COSTOR(I)) + C_BLN(I)*(1.0D0 + COS(3.0D0*TOR_ANGLE(I)))
+     &                       + B_BLN(I)*(1.0D0 - COSTOR(I)) + D_BLN(I)*(1.0D0 + COS(TOR_ANGLE(I)+PI4))
+      ENDDO
 
-      energy = e_nbond + e_bond + e_bangle + e_tangle
+      ENERGY = E_NBOND + E_BOND + E_BANGLE + E_TANGLE
 
-C     write(*,'(A,4G20.10)') 'nbond,bond,bangle,tangle=',e_nbond,e_bond,e_bangle,e_tangle
+C     WRITE(*,'(A,4G20.10)') 'NBOND,BOND,BANGLE,TANGLE=',E_NBOND,E_BOND,E_BANGLE,E_TANGLE
 
-      return
-      end
+      RETURN
+      END
 C
-C Calculate the gradiants
+C CALCULATE THE GRADIANTS
 C
 
       SUBROUTINE CALC_GRADIENTBLN(QO,FQ,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,
@@ -224,759 +224,759 @@ C
 
       IMPLICIT NONE
       INTEGER NATOMS, N, I, J
-      DOUBLE PRECISION, parameter :: theta_0 = 1.8326D0
-      DOUBLE PRECISION qo(3*NATOMS),fq(3*NATOMS),fx(NATOMS),fy(NATOMS), fz(NATOMS), DFAC(NATOMS), SINBOND(NATOMS)
-      DOUBLE PRECISION fnb_x(NATOMS),fnb_y(NATOMS),fnb_z(NATOMS), fb_x(NATOMS),fb_y(NATOMS)
-      DOUBLE PRECISION fb_z(NATOMS),fba_x(NATOMS),fba_y(NATOMS),fba_z(NATOMS), COSTOR(NATOMS)
-      DOUBLE PRECISION fta_x(NATOMS),fta_y(NATOMS),fta_z(NATOMS), a3, coef, coef1, coef2, coef3, a4
-      DOUBLE PRECISION RK_R, RK_THETA, rad7, rad14, df, fxx, fzz, fyy, rvar, den, rnum, den1, a1, a2, den2
+      DOUBLE PRECISION, PARAMETER :: THETA_0 = 1.8326D0
+      DOUBLE PRECISION QO(3*NATOMS),FQ(3*NATOMS),FX(NATOMS),FY(NATOMS), FZ(NATOMS), DFAC(NATOMS), SINBOND(NATOMS)
+      DOUBLE PRECISION FNB_X(NATOMS),FNB_Y(NATOMS),FNB_Z(NATOMS), FB_X(NATOMS),FB_Y(NATOMS)
+      DOUBLE PRECISION FB_Z(NATOMS),FBA_X(NATOMS),FBA_Y(NATOMS),FBA_Z(NATOMS), COSTOR(NATOMS)
+      DOUBLE PRECISION FTA_X(NATOMS),FTA_Y(NATOMS),FTA_Z(NATOMS), A3, COEF, COEF1, COEF2, COEF3, A4
+      DOUBLE PRECISION RK_R, RK_THETA, RAD7, RAD14, DF, FXX, FZZ, FYY, RVAR, DEN, RNUM, DEN1, A1, A2, DEN2
 
-      DOUBLE PRECISION x(NATOMS), y(NATOMS), z(NATOMS), xr(NATOMS,NATOMS), 
-     &  yr(NATOMS,NATOMS), zr(NATOMS,NATOMS), dot_prod(NATOMS,3), 
-     &  x_prod(NATOMS), bond_angle(NATOMS), tor_angle(NATOMS), radii(NATOMS,NATOMS)
+      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS), XR(NATOMS,NATOMS), 
+     &  YR(NATOMS,NATOMS), ZR(NATOMS,NATOMS), DOT_PROD(NATOMS,3), 
+     &  X_PROD(NATOMS), BOND_ANGLE(NATOMS), TOR_ANGLE(NATOMS), RADII(NATOMS,NATOMS)
 
       DOUBLE PRECISION LJREP_BLN(NATOMS,NATOMS), LJATT_BLN(NATOMS,NATOMS),C_BLN(NATOMS),A_BLN(NATOMS),B_BLN(NATOMS),D_BLN(NATOMS)
 C
-C Gradients of potential
+C GRADIENTS OF POTENTIAL
 C
-      do i = 1,n
+      DO I = 1,N
 
-         fnb_x(i) = 0.0  
-         fnb_y(i) = 0.0 
-         fnb_z(i) = 0.0 
+         FNB_X(I) = 0.0  
+         FNB_Y(I) = 0.0 
+         FNB_Z(I) = 0.0 
    
-         fb_x(i)  = 0.0 
-         fb_y(i)  = 0.0 
-         fb_z(i)  = 0.0 
+         FB_X(I)  = 0.0 
+         FB_Y(I)  = 0.0 
+         FB_Z(I)  = 0.0 
    
-         fba_x(i) = 0.0 
-         fba_y(i) = 0.0 
-         fba_z(i) = 0.0 
+         FBA_X(I) = 0.0 
+         FBA_Y(I) = 0.0 
+         FBA_Z(I) = 0.0 
    
-         fta_x(i) = 0.0 
-         fta_y(i) = 0.0 
-         fta_z(i) = 0.0 
+         FTA_X(I) = 0.0 
+         FTA_Y(I) = 0.0 
+         FTA_Z(I) = 0.0 
    
-         fx(i)= 0.0 
-         fy(i)= 0.0 
-         fz(i)= 0.0 
+         FX(I)= 0.0 
+         FY(I)= 0.0 
+         FZ(I)= 0.0 
 
-      enddo
+      ENDDO
 C
-C ..... Non-bonded interaction forces ..... 
+C ..... NON-BONDED INTERACTION FORCES ..... 
 C
-      do i = 1, n-2
-         do j = i+2, n
+      DO I = 1, N-2
+         DO J = I+2, N
 
-            rad7 = radii(i,j)*radii(i,j)*radii(i,j)*radii(i,j)*radii(i,j)*radii(i,j)*radii(i,j)   
-            rad14 = rad7*rad7 
+            RAD7 = RADII(I,J)*RADII(I,J)*RADII(I,J)*RADII(I,J)*RADII(I,J)*RADII(I,J)*RADII(I,J)   
+            RAD14 = RAD7*RAD7 
 
-            df = -24.0*((2.0*LJREP_BLN(i,j)/rad14) + (LJATT_BLN(i,j)/(rad7*radii(i,j))))
+            DF = -24.0*((2.0*LJREP_BLN(I,J)/RAD14) + (LJATT_BLN(I,J)/(RAD7*RADII(I,J))))
 
-            fxx = df*xr(i,j) 
-            fyy = df*yr(i,j) 
-            fzz = df*zr(i,j) 
+            FXX = DF*XR(I,J) 
+            FYY = DF*YR(I,J) 
+            FZZ = DF*ZR(I,J) 
 
-            fnb_x(i) = fxx + fnb_x(i)
-            fnb_y(i) = fyy + fnb_y(i)
-            fnb_z(i) = fzz + fnb_z(i)
+            FNB_X(I) = FXX + FNB_X(I)
+            FNB_Y(I) = FYY + FNB_Y(I)
+            FNB_Z(I) = FZZ + FNB_Z(I)
 
-            fnb_x(j) = -fxx + fnb_x(j)
-            fnb_y(j) = -fyy + fnb_y(j)
-            fnb_z(j) = -fzz + fnb_z(j)
+            FNB_X(J) = -FXX + FNB_X(J)
+            FNB_Y(J) = -FYY + FNB_Y(J)
+            FNB_Z(J) = -FZZ + FNB_Z(J)
 
-         enddo
-      enddo
+         ENDDO
+      ENDDO
 
-C ... Bond interaction forces ... 
+C ... BOND INTERACTION FORCES ... 
 
-      do i = 1, n-1
+      DO I = 1, N-1
 
-         rvar = 1.0D0/radii(i,i+1) 
+         RVAR = 1.0D0/RADII(I,I+1) 
 
-         df = rk_r*(1.0 - rvar) ! DJW
-!        df = rk_r*(1.0D0 - 0.5D0*rvar) 
-         fxx = df*xr(i,i+1) 
-         fyy = df*yr(i,i+1) 
-         fzz = df*zr(i,i+1) 
+         DF = RK_R*(1.0 - RVAR) ! DJW
+!        DF = RK_R*(1.0D0 - 0.5D0*RVAR) 
+         FXX = DF*XR(I,I+1) 
+         FYY = DF*YR(I,I+1) 
+         FZZ = DF*ZR(I,I+1) 
 
-         fb_x(i) = fxx + fb_x(i)
-         fb_y(i) = fyy + fb_y(i)
-         fb_z(i) = fzz + fb_z(i)
+         FB_X(I) = FXX + FB_X(I)
+         FB_Y(I) = FYY + FB_Y(I)
+         FB_Z(I) = FZZ + FB_Z(I)
 
-         fb_x(i+1) = -fxx + fb_x(i+1)
-         fb_y(i+1) = -fyy + fb_y(i+1)
-         fb_z(i+1) = -fzz + fb_z(i+1)
+         FB_X(I+1) = -FXX + FB_X(I+1)
+         FB_Y(I+1) = -FYY + FB_Y(I+1)
+         FB_Z(I+1) = -FZZ + FB_Z(I+1)
 
-      enddo
+      ENDDO
 
-C bond angle forces  particle 1
-C particles 1,2,n-1, and n done outside of the loop
+C BOND ANGLE FORCES  PARTICLE 1
+C PARTICLES 1,2,N-1, AND N DONE OUTSIDE OF THE LOOP
 
-!     i = 1
-      den = sinbond(1+1)
-      rnum = rk_theta*(bond_angle(1+1) - theta_0)
+!     I = 1
+      DEN = SINBOND(1+1)
+      RNUM = RK_THETA*(BOND_ANGLE(1+1) - THETA_0)
 
-      fba_x(1) = -rnum*((dot_prod(1,2)/dot_prod(1,1))*xr(1,1+1) - xr(1+1,1+2))/den
+      FBA_X(1) = -RNUM*((DOT_PROD(1,2)/DOT_PROD(1,1))*XR(1,1+1) - XR(1+1,1+2))/DEN
 
-      fba_y(1) = -rnum*((dot_prod(1,2)/dot_prod(1,1))*yr(1,1+1) - yr(1+1,1+2))/den
+      FBA_Y(1) = -RNUM*((DOT_PROD(1,2)/DOT_PROD(1,1))*YR(1,1+1) - YR(1+1,1+2))/DEN
 
-      fba_z(1) = -rnum*((dot_prod(1,2)/dot_prod(1,1))*zr(1,1+1) - zr(1+1,1+2))/den
+      FBA_Z(1) = -RNUM*((DOT_PROD(1,2)/DOT_PROD(1,1))*ZR(1,1+1) - ZR(1+1,1+2))/DEN
 
-C particle 2
-!     i = 2
-      den = sinbond(2)
-      den1 = sinbond(3)
+C PARTICLE 2
+!     I = 2
+      DEN = SINBOND(2)
+      DEN1 = SINBOND(3)
 
-      a1 = -rk_theta*(bond_angle(2) - theta_0)*( (dot_prod(2-1,2)/
-     1  dot_prod(2,1))*xr(2,2+1) - (dot_prod(2-1,2)/dot_prod(2-1,1))
-     1      *xr(2-1,2) + xr(2,2+1) - xr(2-1,2))/den
+      A1 = -RK_THETA*(BOND_ANGLE(2) - THETA_0)*( (DOT_PROD(2-1,2)/
+     1  DOT_PROD(2,1))*XR(2,2+1) - (DOT_PROD(2-1,2)/DOT_PROD(2-1,1))
+     1      *XR(2-1,2) + XR(2,2+1) - XR(2-1,2))/DEN
 
-      a2 = -rk_theta*(bond_angle(2+1) - theta_0)*((dot_prod(2,2)/dot_prod(2,1))*xr(2,2+1) - xr(2+1,2+2))/den1
+      A2 = -RK_THETA*(BOND_ANGLE(2+1) - THETA_0)*((DOT_PROD(2,2)/DOT_PROD(2,1))*XR(2,2+1) - XR(2+1,2+2))/DEN1
 
-      fba_x(2) = a1 + a2
+      FBA_X(2) = A1 + A2
 
-      a1 = -rk_theta*(bond_angle(2) - theta_0)*( (dot_prod(2-1,2)/
-     1  dot_prod(2,1))*yr(2,2+1) - (dot_prod(2-1,2)/dot_prod(2-1,1))
-     1      *yr(2-1,2) + yr(2,2+1) - yr(2-1,2))/den
+      A1 = -RK_THETA*(BOND_ANGLE(2) - THETA_0)*( (DOT_PROD(2-1,2)/
+     1  DOT_PROD(2,1))*YR(2,2+1) - (DOT_PROD(2-1,2)/DOT_PROD(2-1,1))
+     1      *YR(2-1,2) + YR(2,2+1) - YR(2-1,2))/DEN
 
-      a2 = -rk_theta*(bond_angle(2+1) - theta_0)*((dot_prod(2,2)/dot_prod(2,1))*yr(2,2+1) - yr(2+1,2+2))/den1
+      A2 = -RK_THETA*(BOND_ANGLE(2+1) - THETA_0)*((DOT_PROD(2,2)/DOT_PROD(2,1))*YR(2,2+1) - YR(2+1,2+2))/DEN1
 
-      fba_y(2) = a1 + a2
+      FBA_Y(2) = A1 + A2
 
-      a1 = -rk_theta*(bond_angle(2) - theta_0)*( (dot_prod(2-1,2)/
-     1  dot_prod(2,1))*zr(2,2+1) - (dot_prod(2-1,2)/dot_prod(2-1,1))
-     1      *zr(2-1,2) + zr(2,2+1) - zr(2-1,2))/den
+      A1 = -RK_THETA*(BOND_ANGLE(2) - THETA_0)*( (DOT_PROD(2-1,2)/
+     1  DOT_PROD(2,1))*ZR(2,2+1) - (DOT_PROD(2-1,2)/DOT_PROD(2-1,1))
+     1      *ZR(2-1,2) + ZR(2,2+1) - ZR(2-1,2))/DEN
 
-      a2 = -rk_theta*(bond_angle(2+1) - theta_0)*((dot_prod(2,2)/dot_prod(2,1))*zr(2,2+1) - zr(2+1,2+2))/den1
+      A2 = -RK_THETA*(BOND_ANGLE(2+1) - THETA_0)*((DOT_PROD(2,2)/DOT_PROD(2,1))*ZR(2,2+1) - ZR(2+1,2+2))/DEN1
 
-      fba_z(2) = a1 + a2
+      FBA_Z(2) = A1 + A2
 
-C particles 3 thru n-2 
+C PARTICLES 3 THRU N-2 
 
-      do i = 3, n-2
+      DO I = 3, N-2
 
-C        den = sinbond(i)
-C        den1 = sinbond(i+1)
-C        den2 = sinbond(i-1)
+C        DEN = SINBOND(I)
+C        DEN1 = SINBOND(I+1)
+C        DEN2 = SINBOND(I-1)
 
-         fba_x(i)=-rk_theta*(bond_angle(i)-theta_0)*((dot_prod(i-1,2)/dot_prod(i,1))*xr(i,i+1)-(dot_prod(i-1,2)/dot_prod(i-1,1))
-     &      *xr(i-1,i) + xr(i,i+1) - xr(i-1,i))/sinbond(i)
-     &    -rk_theta*(bond_angle(i+1) - theta_0)*((dot_prod(i,2)/dot_prod(i,1))*xr(i,i+1) - xr(i+1,i+2))/sinbond(i+1)
-     &    + rk_theta*(bond_angle(i-1) - theta_0)*((dot_prod(i-2,2)/dot_prod(i-1,1))*xr(i-1,i) - xr(i-2,i-1))/sinbond(i-1)
+         FBA_X(I)=-RK_THETA*(BOND_ANGLE(I)-THETA_0)*((DOT_PROD(I-1,2)/DOT_PROD(I,1))*XR(I,I+1)-(DOT_PROD(I-1,2)/DOT_PROD(I-1,1))
+     &      *XR(I-1,I) + XR(I,I+1) - XR(I-1,I))/SINBOND(I)
+     &    -RK_THETA*(BOND_ANGLE(I+1) - THETA_0)*((DOT_PROD(I,2)/DOT_PROD(I,1))*XR(I,I+1) - XR(I+1,I+2))/SINBOND(I+1)
+     &    + RK_THETA*(BOND_ANGLE(I-1) - THETA_0)*((DOT_PROD(I-2,2)/DOT_PROD(I-1,1))*XR(I-1,I) - XR(I-2,I-1))/SINBOND(I-1)
 
-         fba_y(i)=-rk_theta*(bond_angle(i)-theta_0)*((dot_prod(i-1,2)/dot_prod(i,1))*yr(i,i+1)-(dot_prod(i-1,2)/dot_prod(i-1,1))
-     &      *yr(i-1,i) + yr(i,i+1) - yr(i-1,i))/sinbond(i)
-     &      -rk_theta*(bond_angle(i+1) - theta_0)*((dot_prod(i,2)/dot_prod(i,1))*yr(i,i+1) - yr(i+1,i+2))/sinbond(i+1)
-     &      +rk_theta*(bond_angle(i-1) - theta_0)*((dot_prod(i-2,2)/dot_prod(i-1,1))*yr(i-1,i) - yr(i-2,i-1))/sinbond(i-1)
-
-         fba_z(i)=-rk_theta*(bond_angle(i)-theta_0)*((dot_prod(i-1,2)/dot_prod(i,1))*zr(i,i+1)-(dot_prod(i-1,2)/dot_prod(i-1,1))
-     &      *zr(i-1,i) + zr(i,i+1) - zr(i-1,i))/sinbond(i)
-     &   -rk_theta*(bond_angle(i+1) - theta_0)*((dot_prod(i,2)/dot_prod(i,1))*zr(i,i+1) - zr(i+1,i+2))/sinbond(i+1)
-     &   +rk_theta*(bond_angle(i-1) - theta_0)*((dot_prod(i-2,2)/dot_prod(i-1,1))*zr(i-1,i) - zr(i-2,i-1))/sinbond(i-1)
-
-C        PRINT '(A,I8,3G15.7)','i,fba_x(i),fba_y(i),fba_z(i)=',i,fba_x(i),fba_y(i),fba_z(i)
-
-      enddo
-
-C particle n-1 
-!     i = n-1
-      den = sinbond(n-1)
-      den1 = sinbond(n-1-1)
-
-      a1 = -rk_theta*(bond_angle(n-1) - theta_0)*( (dot_prod(n-1-1,2)/
-     1   dot_prod(n-1,1))*xr(n-1,n-1+1) - (dot_prod(n-1-1,2)/dot_prod(n-1-1,1))
-     1      *xr(n-1-1,n-1) + xr(n-1,n-1+1) - xr(n-1-1,n-1))/den
-
-      a2 = rk_theta*(bond_angle(n-1-1) - theta_0)*((dot_prod(n-1-2,2)/
-     1      dot_prod(n-1-1,1))*xr(n-1-1,n-1) - xr(n-1-2,n-1-1))/den1
-
-      fba_x(n-1) = a1 + a2
-
-      a1 = -rk_theta*(bond_angle(n-1) - theta_0)*( (dot_prod(n-1-1,2)/
-     1   dot_prod(n-1,1))*yr(n-1,n-1+1) - (dot_prod(n-1-1,2)/dot_prod(n-1-1,1))
-     1      *yr(n-1-1,n-1) + yr(n-1,n-1+1) - yr(n-1-1,n-1))/den
-
-      a2 = rk_theta*(bond_angle(n-1-1) - theta_0)*((dot_prod(n-1-2,2)/
-     1      dot_prod(n-1-1,1))*yr(n-1-1,n-1) - yr(n-1-2,n-1-1))/den1
-
-      fba_y(n-1) = a1 + a2
-
-      a1 = -rk_theta*(bond_angle(n-1) - theta_0)*( (dot_prod(n-1-1,2)/
-     1  dot_prod(n-1,1))*zr(n-1,n-1+1) - (dot_prod(n-1-1,2)/dot_prod(n-1-1,1))
-     1      *zr(n-1-1,n-1) + zr(n-1,n-1+1) - zr(n-1-1,n-1))/den
-
-      a2 = rk_theta*(bond_angle(n-1-1) - theta_0)*((dot_prod(n-1-2,2)/
-     1      dot_prod(n-1-1,1))*zr(n-1-1,n-1) - zr(n-1-2,n-1-1))/den1
-
-      fba_z(n-1) = a1 + a2
-
-C particle n
-!     i = n
-      den = sinbond(n-1)
-
-      fba_x(n) = rk_theta*(bond_angle(n-1) - theta_0)*
-     1      ((dot_prod(n-2,2)/dot_prod(n-1,1))*xr(n-1,n)
-     1      - xr(n-2,n-1))/den
-
-      fba_y(n) = rk_theta*(bond_angle(n-1) - theta_0)*
-     1      ((dot_prod(n-2,2)/dot_prod(n-1,1))*yr(n-1,n)
-     1      - yr(n-2,n-1))/den
-
-      fba_z(n) = rk_theta*(bond_angle(n-1) - theta_0)*
-     1      ((dot_prod(n-2,2)/dot_prod(n-1,1))*zr(n-1,n)
-     1      - zr(n-2,n-1))/den
-
-C Torsional angle forces
-C particles 1, 2, 3, n-2, n-1, and n are done outside of the loop
-C particle 1
-!     i = 1
-      coef =DFAC(1+1)
-
-      fta_x(1) = -coef*(-dot_prod(1+1,2)*xr(1+1,1+2) +
-     1       dot_prod(1+1,1)*xr(1+2,1+3) -
-     1      (1.0/x_prod(1))*(dot_prod(1+1,2)*dot_prod(1,2) -
-     1      dot_prod(1,3)*dot_prod(1+1,1))*(-dot_prod(1+1,1)*xr(1,1+1) +
-     1      dot_prod(1,2)*xr(1+1,1+2))) 
-
-      fta_y(1) = -coef*(-dot_prod(1+1,2)*yr(1+1,1+2) +
-     1      dot_prod(1+1,1)*yr(1+2,1+3) -
-     1      (1.0/x_prod(1))*(dot_prod(1+1,2)*dot_prod(1,2) -
-     1      dot_prod(1,3)*dot_prod(1+1,1))*(-dot_prod(1+1,1)*yr(1,1+1) +
-     1      dot_prod(1,2)*yr(1+1,1+2))) 
-
-      fta_z(1) = -coef*(-dot_prod(1+1,2)*zr(1+1,1+2) +
-     1      dot_prod(1+1,1)*zr(1+2,1+3) -
-     1      (1.0/x_prod(1))*(dot_prod(1+1,2)*dot_prod(1,2) -
-     1      dot_prod(1,3)*dot_prod(1+1,1))*(-dot_prod(1+1,1)*zr(1,1+1) +
-     1      dot_prod(1,2)*zr(1+1,1+2))) 
-
-C particle 2
-!     i = 2
-      coef =DFAC(2+1)
-
-      coef1 = DFAC(2)
-
-      a1 =  -coef*(-dot_prod(2+1,2)*xr(2+1,2+2) +
-     1      dot_prod(2+1,1)*xr(2+2,2+3) -
-     1      (1.0/x_prod(2))*(dot_prod(2+1,2)*dot_prod(2,2) -
-     1      dot_prod(2,3)*dot_prod(2+1,1))*(-dot_prod(2+1,1)*xr(2,2+1) +
-     1      dot_prod(2,2)*xr(2+1,2+2))) 
-
-      a2 = -coef1*(-dot_prod(2-1,2)*xr(2+1,2+2) +
-     1      dot_prod(2,2)*xr(2,2+1) - dot_prod(2,2)*xr(2-1,2) -
-     1      dot_prod(2,1)*xr(2+1,2+2) + 2.0*dot_prod(2-1,3)*xr(2,2+1) -
-     1      (1.0/x_prod(2-1))*(dot_prod(2,2)*dot_prod(2-1,2) -
-     1      dot_prod(2-1,3)*dot_prod(2,1))*(dot_prod(2,1)*xr(2-1,2) -
-     1      dot_prod(2-1,1)*xr(2,2+1) - dot_prod(2-1,2)*xr(2,2+1) + 
-     1      dot_prod(2-1,2)*xr(2-1,2)) -
-     1      (1.0/x_prod(2))*(dot_prod(2,2)*dot_prod(2-1,2) -
-     1      dot_prod(2-1,3)*dot_prod(2,1))*(-dot_prod(2+1,1)*xr(2,2+1) +
-     1      dot_prod(2,2)*xr(2+1,2+2))) 
-
-      fta_x(2) = a1 + a2
-
-      a1 = -dot_prod(3,2)*yr(3,4) + dot_prod(3,1)*yr(4,5)
-      a1=a1-(dot_prod(3,2)*dot_prod(2,2) - dot_prod(2,3)*dot_prod(3,1))*
-     &     (-dot_prod(3,1)*yr(2,3) + dot_prod(2,2)*yr(3,4))/x_prod(2)
-      a1=-coef*a1
-
-      a2 = -coef1*(-dot_prod(2-1,2)*yr(2+1,2+2) +
-     1      dot_prod(2,2)*yr(2,2+1) - dot_prod(2,2)*yr(2-1,2) -
-     1      dot_prod(2,1)*yr(2+1,2+2) + 2.0*dot_prod(2-1,3)*yr(2,2+1) -
-     1      (1.0/x_prod(2-1))*(dot_prod(2,2)*dot_prod(2-1,2) -
-     1      dot_prod(2-1,3)*dot_prod(2,1))*(dot_prod(2,1)*yr(2-1,2) -
-     1      dot_prod(2-1,1)*yr(2,2+1) - dot_prod(2-1,2)*yr(2,2+1) +
-     1      dot_prod(2-1,2)*yr(2-1,2)) -
-     1      (1.0/x_prod(2))*(dot_prod(2,2)*dot_prod(2-1,2) -
-     1      dot_prod(2-1,3)*dot_prod(2,1))*(-dot_prod(2+1,1)*yr(2,2+1) +
-     1      dot_prod(2,2)*yr(2+1,2+2)))
-
-      fta_y(2) = a1 + a2
-!     WRITE(MYUNIT,'(A,I6,5G15.5)') 'y i,a1,a2,coef,coef1,fta_y=',2,a1,a2,coef,coef1,fta_y(2)
-
-      a1 = -coef*(-dot_prod(3,2)*zr(3,4) +
-     1      dot_prod(3,1)*zr(4,5) -
-     1      (1.0/x_prod(2))*(dot_prod(3,2)*dot_prod(2,2) -
-     1      dot_prod(2,3)*dot_prod(3,1))*(-dot_prod(3,1)*zr(2,3) +
-     1      dot_prod(2,2)*zr(3,4)))
-
-      a2 = -coef1*(-dot_prod(2-1,2)*zr(2+1,2+2) +
-     1      dot_prod(2,2)*zr(2,2+1) - dot_prod(2,2)*zr(2-1,2) -
-     1      dot_prod(2,1)*zr(2+1,2+2) + 2.0*dot_prod(2-1,3)*zr(2,2+1) -
-     1      (1.0/x_prod(2-1))*(dot_prod(2,2)*dot_prod(2-1,2) -
-     1      dot_prod(2-1,3)*dot_prod(2,1))*(dot_prod(2,1)*zr(2-1,2) -
-     1      dot_prod(2-1,1)*zr(2,2+1) - dot_prod(2-1,2)*zr(2,2+1) + 
-     1      dot_prod(2-1,2)*zr(2-1,2)) -
-     1      (1.0/x_prod(2))*(dot_prod(2,2)*dot_prod(2-1,2) -
-     1      dot_prod(2-1,3)*dot_prod(2,1))*(-dot_prod(2+1,1)*zr(2,2+1) +
-     1      dot_prod(2,2)*zr(2+1,2+2))) 
-
-      fta_z(2) = a1 + a2
-!     WRITE(MYUNIT,'(A,I6,4G15.5)') 'z i,a1,a2,coef,coef1=',2,a1,a2,coef,coef1
-
-C particle 3
-!     i = 3
-      coef=DFAC(3+1)
-
-      coef1=DFAC(3)
-
-      coef2=DFAC(3-1)
-
-      a1 = -coef*(-dot_prod(3+1,2)*xr(3+1,3+2) +
-     1      dot_prod(3+1,1)*xr(3+2,3+3) -
-     1      (1.0/x_prod(3))*(dot_prod(3+1,2)*dot_prod(3,2) -
-     1      dot_prod(3,3)*dot_prod(3+1,1))*(-dot_prod(3+1,1)*xr(3,3+1) +
-     1      dot_prod(3,2)*xr(3+1,3+2)))
-
-      a2 = -coef1*(-dot_prod(3-1,2)*xr(3+1,3+2) +
-     1      dot_prod(3,2)*xr(3,3+1) - dot_prod(3,2)*xr(3-1,3) -
-     1      dot_prod(3,1)*xr(3+1,3+2) + 2.0*dot_prod(3-1,3)*xr(3,3+1) -
-     1      (1.0/x_prod(3-1))*(dot_prod(3,2)*dot_prod(3-1,2) -
-     1      dot_prod(3-1,3)*dot_prod(3,1))*(dot_prod(3,1)*xr(3-1,3) -
-     1      dot_prod(3-1,1)*xr(3,3+1) - dot_prod(3-1,2)*xr(3,3+1) +
-     1      dot_prod(3-1,2)*xr(3-1,3)) -
-     1      (1.0/x_prod(3))*(dot_prod(3,2)*dot_prod(3-1,2) -
-     1      dot_prod(3-1,3)*dot_prod(3,1))*(-dot_prod(3+1,1)*xr(3,3+1) +
-     1      dot_prod(3,2)*xr(3+1,3+2)))
-
-      a3 = -coef2*(dot_prod(3-2,2)*xr(3,3+1) -
-     1      dot_prod(3-2,2)*xr(3-1,3) + dot_prod(3-1,2)*xr(3-2,3-1) +
-     1      dot_prod(3-1,1)*xr(3-2,3-1) - 2.0*dot_prod(3-2,3)*xr(3-1,3) -
-     1      (1.0/x_prod(3-2))*(dot_prod(3-1,2)*dot_prod(3-2,2) -
-     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3-2,1)*xr(3-1,3) -
-     1      dot_prod(3-2,2)*xr(3-2,3-1)) -
-     1      (1.0/x_prod(3-1))*(dot_prod(3-1,2)*dot_prod(3-2,2) -
-     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3,1)*xr(3-1,3) -
-     1      dot_prod(3-1,1)*xr(3,3+1) - dot_prod(3-1,2)*xr(3,3+1) +
-     1      dot_prod(3-1,2)*xr(3-1,3)))
-
-
-      fta_x(3) = a1 + a2 + a3
-
-      a1 = -coef*(-dot_prod(3+1,2)*yr(3+1,3+2) +
-     1      dot_prod(3+1,1)*yr(3+2,3+3) -
-     1      (1.0/x_prod(3))*(dot_prod(3+1,2)*dot_prod(3,2) -
-     1      dot_prod(3,3)*dot_prod(3+1,1))*(-dot_prod(3+1,1)*yr(3,3+1) +
-     1      dot_prod(3,2)*yr(3+1,3+2)))
-
-      a2 = -coef1*(-dot_prod(3-1,2)*yr(3+1,3+2) +
-     1      dot_prod(3,2)*yr(3,3+1) - dot_prod(3,2)*yr(3-1,3) -
-     1      dot_prod(3,1)*yr(3+1,3+2) + 2.0*dot_prod(3-1,3)*yr(3,3+1) -
-     1      (1.0/x_prod(3-1))*(dot_prod(3,2)*dot_prod(3-1,2) -
-     1      dot_prod(3-1,3)*dot_prod(3,1))*(dot_prod(3,1)*yr(3-1,3) -
-     1      dot_prod(3-1,1)*yr(3,3+1) - dot_prod(3-1,2)*yr(3,3+1) +
-     1      dot_prod(3-1,2)*yr(3-1,3)) -
-     1      (1.0/x_prod(3))*(dot_prod(3,2)*dot_prod(3-1,2) -
-     1      dot_prod(3-1,3)*dot_prod(3,1))*(-dot_prod(3+1,1)*yr(3,3+1) +
-     1      dot_prod(3,2)*yr(3+1,3+2)))
-
-      a3 = -coef2*(dot_prod(3-2,2)*yr(3,3+1) -
-     1      dot_prod(3-2,2)*yr(3-1,3) + dot_prod(3-1,2)*yr(3-2,3-1) +
-     1      dot_prod(3-1,1)*yr(3-2,3-1) - 2.0*dot_prod(3-2,3)*yr(3-1,3) -
-     1      (1.0/x_prod(3-2))*(dot_prod(3-1,2)*dot_prod(3-2,2) -
-     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3-2,1)*yr(3-1,3) -
-     1      dot_prod(3-2,2)*yr(3-2,3-1)) -
-     1      (1.0/x_prod(3-1))*(dot_prod(3-1,2)*dot_prod(3-2,2) -
-     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3,1)*yr(3-1,3) -
-     1      dot_prod(3-1,1)*yr(3,3+1) - dot_prod(3-1,2)*yr(3,3+1) +
-     1      dot_prod(3-1,2)*yr(3-1,3)))
-
-      fta_y(3) = a1 + a2 + a3
-      a1 = -coef*(-dot_prod(3+1,2)*zr(3+1,3+2) +
-     1      dot_prod(3+1,1)*zr(3+2,3+3) -
-     1      (1.0/x_prod(3))*(dot_prod(3+1,2)*dot_prod(3,2) -
-     1      dot_prod(3,3)*dot_prod(3+1,1))*(-dot_prod(3+1,1)*zr(3,3+1) +
-     1      dot_prod(3,2)*zr(3+1,3+2)))
-
-      a2 =  -coef1*(-dot_prod(3-1,2)*zr(3+1,3+2) +
-     1      dot_prod(3,2)*zr(3,3+1) - dot_prod(3,2)*zr(3-1,3) -
-     1      dot_prod(3,1)*zr(3+1,3+2) + 2.0*dot_prod(3-1,3)*zr(3,3+1) -
-     1      (1.0/x_prod(3-1))*(dot_prod(3,2)*dot_prod(3-1,2) -
-     1      dot_prod(3-1,3)*dot_prod(3,1))*(dot_prod(3,1)*zr(3-1,3) -
-     1      dot_prod(3-1,1)*zr(3,3+1) - dot_prod(3-1,2)*zr(3,3+1) +
-     1      dot_prod(3-1,2)*zr(3-1,3)) -
-     1      (1.0/x_prod(3))*(dot_prod(3,2)*dot_prod(3-1,2) -
-     1      dot_prod(3-1,3)*dot_prod(3,1))*(-dot_prod(3+1,1)*zr(3,3+1) +
-     1      dot_prod(3,2)*zr(3+1,3+2)))
-
-      a3 = -coef2*(dot_prod(3-2,2)*zr(3,3+1) -
-     1      dot_prod(3-2,2)*zr(3-1,3) + dot_prod(3-1,2)*zr(3-2,3-1) +
-     1      dot_prod(3-1,1)*zr(3-2,3-1) - 2.0*dot_prod(3-2,3)*zr(3-1,3) -
-     1      (1.0/x_prod(3-2))*(dot_prod(3-1,2)*dot_prod(3-2,2) -
-     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3-2,1)*zr(3-1,3) -
-     1      dot_prod(3-2,2)*zr(3-2,3-1)) -
-     1      (1.0/x_prod(3-1))*(dot_prod(3-1,2)*dot_prod(3-2,2) -
-     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3,1)*zr(3-1,3) -
-     1      dot_prod(3-1,1)*zr(3,3+1) - dot_prod(3-1,2)*zr(3,3+1) +
-     1      dot_prod(3-1,2)*zr(3-1,3)))
-
-      fta_z(3) = a1 + a2 + a3
-
-C particles 4 to n-3
-
-      do i = 4, n-3
-
-         coef=DFAC(i+1)
-
-         coef1=DFAC(i)
-
-         coef2=DFAC(i-1)
-
-         coef3=DFAC(i-2)
-
-         a1 = -coef*(-dot_prod(i+1,2)*xr(i+1,i+2) +
-     1      dot_prod(i+1,1)*xr(i+2,i+3) -
-     1      (1.0/x_prod(i))*(dot_prod(i+1,2)*dot_prod(i,2) -
-     1      dot_prod(i,3)*dot_prod(i+1,1))*(-dot_prod(i+1,1)*xr(i,i+1) +
-     1      dot_prod(i,2)*xr(i+1,i+2))) 
-
-         a2 = -coef1*(-dot_prod(i-1,2)*xr(i+1,i+2) +
-     1      dot_prod(i,2)*xr(i,i+1) - dot_prod(i,2)*xr(i-1,i) -
-     1      dot_prod(i,1)*xr(i+1,i+2) + 2.0*dot_prod(i-1,3)*xr(i,i+1) -
-     1      (1.0/x_prod(i-1))*(dot_prod(i,2)*dot_prod(i-1,2) -
-     1      dot_prod(i-1,3)*dot_prod(i,1))*(dot_prod(i,1)*xr(i-1,i) -
-     1      dot_prod(i-1,1)*xr(i,i+1) - dot_prod(i-1,2)*xr(i,i+1) +
-     1      dot_prod(i-1,2)*xr(i-1,i)) -
-     1      (1.0/x_prod(i))*(dot_prod(i,2)*dot_prod(i-1,2) -
-     1      dot_prod(i-1,3)*dot_prod(i,1))*(-dot_prod(i+1,1)*xr(i,i+1) +
-     1      dot_prod(i,2)*xr(i+1,i+2))) 
-
-         a3 = -coef2*(dot_prod(i-2,2)*xr(i,i+1) -
-     1      dot_prod(i-2,2)*xr(i-1,i) + dot_prod(i-1,2)*xr(i-2,i-1) +
-     1      dot_prod(i-1,1)*xr(i-2,i-1) - 2.0*dot_prod(i-2,3)*xr(i-1,i) -
-     1      (1.0/x_prod(i-2))*(dot_prod(i-1,2)*dot_prod(i-2,2) -
-     1      dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i-2,1)*xr(i-1,i) -
-     1      dot_prod(i-2,2)*xr(i-2,i-1)) -
-     1      (1.0/x_prod(i-1))*(dot_prod(i-1,2)*dot_prod(i-2,2) -
-     1  dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i,1)*xr(i-1,i) -
-     1      dot_prod(i-1,1)*xr(i,i+1) - dot_prod(i-1,2)*xr(i,i+1) +
-     1      dot_prod(i-1,2)*xr(i-1,i))) 
-
-         a4 = -coef3*(dot_prod(i-3,2)*xr(i-2,i-1) -
-     1      dot_prod(i-2,1)*xr(i-3,i-2) -
-     1      (1.0/x_prod(i-2))*(dot_prod(i-2,2)*dot_prod(i-3,2) -
-     1      dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*xr(i-1,i) -
-     1      dot_prod(i-2,2)*xr(i-2,i-1))) 
-
-         fta_x(i) = a1 + a2 + a3 + a4 
-
-         a1 = -coef*(-dot_prod(i+1,2)*yr(i+1,i+2) +
-     1      dot_prod(i+1,1)*yr(i+2,i+3) -
-     1      (1.0/x_prod(i))*(dot_prod(i+1,2)*dot_prod(i,2) -
-     1      dot_prod(i,3)*dot_prod(i+1,1))*(-dot_prod(i+1,1)*yr(i,i+1) +
-     1      dot_prod(i,2)*yr(i+1,i+2))) 
-
-         a2 = -coef1*(-dot_prod(i-1,2)*yr(i+1,i+2) +
-     1      dot_prod(i,2)*yr(i,i+1) - dot_prod(i,2)*yr(i-1,i) -
-     1      dot_prod(i,1)*yr(i+1,i+2) + 2.0*dot_prod(i-1,3)*yr(i,i+1) -
-     1      (1.0/x_prod(i-1))*(dot_prod(i,2)*dot_prod(i-1,2) -
-     1      dot_prod(i-1,3)*dot_prod(i,1))*(dot_prod(i,1)*yr(i-1,i) -
-     1      dot_prod(i-1,1)*yr(i,i+1) - dot_prod(i-1,2)*yr(i,i+1) +
-     1      dot_prod(i-1,2)*yr(i-1,i)) -
-     1      (1.0/x_prod(i))*(dot_prod(i,2)*dot_prod(i-1,2) -
-     1      dot_prod(i-1,3)*dot_prod(i,1))*(-dot_prod(i+1,1)*yr(i,i+1) +
-     1      dot_prod(i,2)*yr(i+1,i+2))) 
-
-         a3 = -coef2*(dot_prod(i-2,2)*yr(i,i+1) -
-     1      dot_prod(i-2,2)*yr(i-1,i) + dot_prod(i-1,2)*yr(i-2,i-1) +
-     1      dot_prod(i-1,1)*yr(i-2,i-1) - 2.0*dot_prod(i-2,3)*yr(i-1,i) -
-     1      (1.0/x_prod(i-2))*(dot_prod(i-1,2)*dot_prod(i-2,2) -
-     1      dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i-2,1)*yr(i-1,i) -
-     1      dot_prod(i-2,2)*yr(i-2,i-1)) -
-     1      (1.0/x_prod(i-1))*(dot_prod(i-1,2)*dot_prod(i-2,2) -
-     1      dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i,1)*yr(i-1,i) -
-     1      dot_prod(i-1,1)*yr(i,i+1) - dot_prod(i-1,2)*yr(i,i+1) +
-     1      dot_prod(i-1,2)*yr(i-1,i))) 
-
-         a4 = -coef3*(dot_prod(i-3,2)*yr(i-2,i-1) -
-     1      dot_prod(i-2,1)*yr(i-3,i-2) -
-     1      (1.0/x_prod(i-2))*(dot_prod(i-2,2)*dot_prod(i-3,2) -
-     1      dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*yr(i-1,i) -
-     1      dot_prod(i-2,2)*yr(i-2,i-1))) 
-
-         fta_y(i) = a1 + a2 + a3 + a4 
-
-         a1 = -coef*(-dot_prod(i+1,2)*zr(i+1,i+2) +
-     1      dot_prod(i+1,1)*zr(i+2,i+3) -
-     1      (1.0/x_prod(i))*(dot_prod(i+1,2)*dot_prod(i,2) -
-     1      dot_prod(i,3)*dot_prod(i+1,1))*(-dot_prod(i+1,1)*zr(i,i+1) +
-     1      dot_prod(i,2)*zr(i+1,i+2))) 
-
-         a2 = -coef1*(-dot_prod(i-1,2)*zr(i+1,i+2) +
-     1      dot_prod(i,2)*zr(i,i+1) - dot_prod(i,2)*zr(i-1,i) -
-     1      dot_prod(i,1)*zr(i+1,i+2) + 2.0*dot_prod(i-1,3)*zr(i,i+1) -
-     1      (1.0/x_prod(i-1))*(dot_prod(i,2)*dot_prod(i-1,2) -
-     1      dot_prod(i-1,3)*dot_prod(i,1))*(dot_prod(i,1)*zr(i-1,i) -
-     1      dot_prod(i-1,1)*zr(i,i+1) - dot_prod(i-1,2)*zr(i,i+1) +
-     1      dot_prod(i-1,2)*zr(i-1,i)) -
-     1      (1.0/x_prod(i))*(dot_prod(i,2)*dot_prod(i-1,2) -
-     1      dot_prod(i-1,3)*dot_prod(i,1))*(-dot_prod(i+1,1)*zr(i,i+1) +
-     1      dot_prod(i,2)*zr(i+1,i+2))) 
-
-         a3 = -coef2*(dot_prod(i-2,2)*zr(i,i+1) -
-     1      dot_prod(i-2,2)*zr(i-1,i) + dot_prod(i-1,2)*zr(i-2,i-1) +
-     1      dot_prod(i-1,1)*zr(i-2,i-1) - 2.0*dot_prod(i-2,3)*zr(i-1,i) -
-     1      (1.0/x_prod(i-2))*(dot_prod(i-1,2)*dot_prod(i-2,2) -
-     1      dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i-2,1)*zr(i-1,i) -
-     1      dot_prod(i-2,2)*zr(i-2,i-1)) -
-     1      (1.0/x_prod(i-1))*(dot_prod(i-1,2)*dot_prod(i-2,2) -
-     1      dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i,1)*zr(i-1,i) -
-     1      dot_prod(i-1,1)*zr(i,i+1) - dot_prod(i-1,2)*zr(i,i+1) +
-     1      dot_prod(i-1,2)*zr(i-1,i))) 
+         FBA_Y(I)=-RK_THETA*(BOND_ANGLE(I)-THETA_0)*((DOT_PROD(I-1,2)/DOT_PROD(I,1))*YR(I,I+1)-(DOT_PROD(I-1,2)/DOT_PROD(I-1,1))
+     &      *YR(I-1,I) + YR(I,I+1) - YR(I-1,I))/SINBOND(I)
+     &      -RK_THETA*(BOND_ANGLE(I+1) - THETA_0)*((DOT_PROD(I,2)/DOT_PROD(I,1))*YR(I,I+1) - YR(I+1,I+2))/SINBOND(I+1)
+     &      +RK_THETA*(BOND_ANGLE(I-1) - THETA_0)*((DOT_PROD(I-2,2)/DOT_PROD(I-1,1))*YR(I-1,I) - YR(I-2,I-1))/SINBOND(I-1)
+
+         FBA_Z(I)=-RK_THETA*(BOND_ANGLE(I)-THETA_0)*((DOT_PROD(I-1,2)/DOT_PROD(I,1))*ZR(I,I+1)-(DOT_PROD(I-1,2)/DOT_PROD(I-1,1))
+     &      *ZR(I-1,I) + ZR(I,I+1) - ZR(I-1,I))/SINBOND(I)
+     &   -RK_THETA*(BOND_ANGLE(I+1) - THETA_0)*((DOT_PROD(I,2)/DOT_PROD(I,1))*ZR(I,I+1) - ZR(I+1,I+2))/SINBOND(I+1)
+     &   +RK_THETA*(BOND_ANGLE(I-1) - THETA_0)*((DOT_PROD(I-2,2)/DOT_PROD(I-1,1))*ZR(I-1,I) - ZR(I-2,I-1))/SINBOND(I-1)
+
+C        PRINT '(A,I8,3G15.7)','I,FBA_X(I),FBA_Y(I),FBA_Z(I)=',I,FBA_X(I),FBA_Y(I),FBA_Z(I)
+
+      ENDDO
+
+C PARTICLE N-1 
+!     I = N-1
+      DEN = SINBOND(N-1)
+      DEN1 = SINBOND(N-1-1)
+
+      A1 = -RK_THETA*(BOND_ANGLE(N-1) - THETA_0)*( (DOT_PROD(N-1-1,2)/
+     1   DOT_PROD(N-1,1))*XR(N-1,N-1+1) - (DOT_PROD(N-1-1,2)/DOT_PROD(N-1-1,1))
+     1      *XR(N-1-1,N-1) + XR(N-1,N-1+1) - XR(N-1-1,N-1))/DEN
+
+      A2 = RK_THETA*(BOND_ANGLE(N-1-1) - THETA_0)*((DOT_PROD(N-1-2,2)/
+     1      DOT_PROD(N-1-1,1))*XR(N-1-1,N-1) - XR(N-1-2,N-1-1))/DEN1
+
+      FBA_X(N-1) = A1 + A2
+
+      A1 = -RK_THETA*(BOND_ANGLE(N-1) - THETA_0)*( (DOT_PROD(N-1-1,2)/
+     1   DOT_PROD(N-1,1))*YR(N-1,N-1+1) - (DOT_PROD(N-1-1,2)/DOT_PROD(N-1-1,1))
+     1      *YR(N-1-1,N-1) + YR(N-1,N-1+1) - YR(N-1-1,N-1))/DEN
+
+      A2 = RK_THETA*(BOND_ANGLE(N-1-1) - THETA_0)*((DOT_PROD(N-1-2,2)/
+     1      DOT_PROD(N-1-1,1))*YR(N-1-1,N-1) - YR(N-1-2,N-1-1))/DEN1
+
+      FBA_Y(N-1) = A1 + A2
+
+      A1 = -RK_THETA*(BOND_ANGLE(N-1) - THETA_0)*( (DOT_PROD(N-1-1,2)/
+     1  DOT_PROD(N-1,1))*ZR(N-1,N-1+1) - (DOT_PROD(N-1-1,2)/DOT_PROD(N-1-1,1))
+     1      *ZR(N-1-1,N-1) + ZR(N-1,N-1+1) - ZR(N-1-1,N-1))/DEN
+
+      A2 = RK_THETA*(BOND_ANGLE(N-1-1) - THETA_0)*((DOT_PROD(N-1-2,2)/
+     1      DOT_PROD(N-1-1,1))*ZR(N-1-1,N-1) - ZR(N-1-2,N-1-1))/DEN1
+
+      FBA_Z(N-1) = A1 + A2
+
+C PARTICLE N
+!     I = N
+      DEN = SINBOND(N-1)
+
+      FBA_X(N) = RK_THETA*(BOND_ANGLE(N-1) - THETA_0)*
+     1      ((DOT_PROD(N-2,2)/DOT_PROD(N-1,1))*XR(N-1,N)
+     1      - XR(N-2,N-1))/DEN
+
+      FBA_Y(N) = RK_THETA*(BOND_ANGLE(N-1) - THETA_0)*
+     1      ((DOT_PROD(N-2,2)/DOT_PROD(N-1,1))*YR(N-1,N)
+     1      - YR(N-2,N-1))/DEN
+
+      FBA_Z(N) = RK_THETA*(BOND_ANGLE(N-1) - THETA_0)*
+     1      ((DOT_PROD(N-2,2)/DOT_PROD(N-1,1))*ZR(N-1,N)
+     1      - ZR(N-2,N-1))/DEN
+
+C TORSIONAL ANGLE FORCES
+C PARTICLES 1, 2, 3, N-2, N-1, AND N ARE DONE OUTSIDE OF THE LOOP
+C PARTICLE 1
+!     I = 1
+      COEF =DFAC(1+1)
+
+      FTA_X(1) = -COEF*(-DOT_PROD(1+1,2)*XR(1+1,1+2) +
+     1       DOT_PROD(1+1,1)*XR(1+2,1+3) -
+     1      (1.0/X_PROD(1))*(DOT_PROD(1+1,2)*DOT_PROD(1,2) -
+     1      DOT_PROD(1,3)*DOT_PROD(1+1,1))*(-DOT_PROD(1+1,1)*XR(1,1+1) +
+     1      DOT_PROD(1,2)*XR(1+1,1+2))) 
+
+      FTA_Y(1) = -COEF*(-DOT_PROD(1+1,2)*YR(1+1,1+2) +
+     1      DOT_PROD(1+1,1)*YR(1+2,1+3) -
+     1      (1.0/X_PROD(1))*(DOT_PROD(1+1,2)*DOT_PROD(1,2) -
+     1      DOT_PROD(1,3)*DOT_PROD(1+1,1))*(-DOT_PROD(1+1,1)*YR(1,1+1) +
+     1      DOT_PROD(1,2)*YR(1+1,1+2))) 
+
+      FTA_Z(1) = -COEF*(-DOT_PROD(1+1,2)*ZR(1+1,1+2) +
+     1      DOT_PROD(1+1,1)*ZR(1+2,1+3) -
+     1      (1.0/X_PROD(1))*(DOT_PROD(1+1,2)*DOT_PROD(1,2) -
+     1      DOT_PROD(1,3)*DOT_PROD(1+1,1))*(-DOT_PROD(1+1,1)*ZR(1,1+1) +
+     1      DOT_PROD(1,2)*ZR(1+1,1+2))) 
+
+C PARTICLE 2
+!     I = 2
+      COEF =DFAC(2+1)
+
+      COEF1 = DFAC(2)
+
+      A1 =  -COEF*(-DOT_PROD(2+1,2)*XR(2+1,2+2) +
+     1      DOT_PROD(2+1,1)*XR(2+2,2+3) -
+     1      (1.0/X_PROD(2))*(DOT_PROD(2+1,2)*DOT_PROD(2,2) -
+     1      DOT_PROD(2,3)*DOT_PROD(2+1,1))*(-DOT_PROD(2+1,1)*XR(2,2+1) +
+     1      DOT_PROD(2,2)*XR(2+1,2+2))) 
+
+      A2 = -COEF1*(-DOT_PROD(2-1,2)*XR(2+1,2+2) +
+     1      DOT_PROD(2,2)*XR(2,2+1) - DOT_PROD(2,2)*XR(2-1,2) -
+     1      DOT_PROD(2,1)*XR(2+1,2+2) + 2.0*DOT_PROD(2-1,3)*XR(2,2+1) -
+     1      (1.0/X_PROD(2-1))*(DOT_PROD(2,2)*DOT_PROD(2-1,2) -
+     1      DOT_PROD(2-1,3)*DOT_PROD(2,1))*(DOT_PROD(2,1)*XR(2-1,2) -
+     1      DOT_PROD(2-1,1)*XR(2,2+1) - DOT_PROD(2-1,2)*XR(2,2+1) + 
+     1      DOT_PROD(2-1,2)*XR(2-1,2)) -
+     1      (1.0/X_PROD(2))*(DOT_PROD(2,2)*DOT_PROD(2-1,2) -
+     1      DOT_PROD(2-1,3)*DOT_PROD(2,1))*(-DOT_PROD(2+1,1)*XR(2,2+1) +
+     1      DOT_PROD(2,2)*XR(2+1,2+2))) 
+
+      FTA_X(2) = A1 + A2
+
+      A1 = -DOT_PROD(3,2)*YR(3,4) + DOT_PROD(3,1)*YR(4,5)
+      A1=A1-(DOT_PROD(3,2)*DOT_PROD(2,2) - DOT_PROD(2,3)*DOT_PROD(3,1))*
+     &     (-DOT_PROD(3,1)*YR(2,3) + DOT_PROD(2,2)*YR(3,4))/X_PROD(2)
+      A1=-COEF*A1
+
+      A2 = -COEF1*(-DOT_PROD(2-1,2)*YR(2+1,2+2) +
+     1      DOT_PROD(2,2)*YR(2,2+1) - DOT_PROD(2,2)*YR(2-1,2) -
+     1      DOT_PROD(2,1)*YR(2+1,2+2) + 2.0*DOT_PROD(2-1,3)*YR(2,2+1) -
+     1      (1.0/X_PROD(2-1))*(DOT_PROD(2,2)*DOT_PROD(2-1,2) -
+     1      DOT_PROD(2-1,3)*DOT_PROD(2,1))*(DOT_PROD(2,1)*YR(2-1,2) -
+     1      DOT_PROD(2-1,1)*YR(2,2+1) - DOT_PROD(2-1,2)*YR(2,2+1) +
+     1      DOT_PROD(2-1,2)*YR(2-1,2)) -
+     1      (1.0/X_PROD(2))*(DOT_PROD(2,2)*DOT_PROD(2-1,2) -
+     1      DOT_PROD(2-1,3)*DOT_PROD(2,1))*(-DOT_PROD(2+1,1)*YR(2,2+1) +
+     1      DOT_PROD(2,2)*YR(2+1,2+2)))
+
+      FTA_Y(2) = A1 + A2
+!     WRITE(MYUNIT,'(A,I6,5G15.5)') 'Y I,A1,A2,COEF,COEF1,FTA_Y=',2,A1,A2,COEF,COEF1,FTA_Y(2)
+
+      A1 = -COEF*(-DOT_PROD(3,2)*ZR(3,4) +
+     1      DOT_PROD(3,1)*ZR(4,5) -
+     1      (1.0/X_PROD(2))*(DOT_PROD(3,2)*DOT_PROD(2,2) -
+     1      DOT_PROD(2,3)*DOT_PROD(3,1))*(-DOT_PROD(3,1)*ZR(2,3) +
+     1      DOT_PROD(2,2)*ZR(3,4)))
+
+      A2 = -COEF1*(-DOT_PROD(2-1,2)*ZR(2+1,2+2) +
+     1      DOT_PROD(2,2)*ZR(2,2+1) - DOT_PROD(2,2)*ZR(2-1,2) -
+     1      DOT_PROD(2,1)*ZR(2+1,2+2) + 2.0*DOT_PROD(2-1,3)*ZR(2,2+1) -
+     1      (1.0/X_PROD(2-1))*(DOT_PROD(2,2)*DOT_PROD(2-1,2) -
+     1      DOT_PROD(2-1,3)*DOT_PROD(2,1))*(DOT_PROD(2,1)*ZR(2-1,2) -
+     1      DOT_PROD(2-1,1)*ZR(2,2+1) - DOT_PROD(2-1,2)*ZR(2,2+1) + 
+     1      DOT_PROD(2-1,2)*ZR(2-1,2)) -
+     1      (1.0/X_PROD(2))*(DOT_PROD(2,2)*DOT_PROD(2-1,2) -
+     1      DOT_PROD(2-1,3)*DOT_PROD(2,1))*(-DOT_PROD(2+1,1)*ZR(2,2+1) +
+     1      DOT_PROD(2,2)*ZR(2+1,2+2))) 
+
+      FTA_Z(2) = A1 + A2
+!     WRITE(MYUNIT,'(A,I6,4G15.5)') 'Z I,A1,A2,COEF,COEF1=',2,A1,A2,COEF,COEF1
+
+C PARTICLE 3
+!     I = 3
+      COEF=DFAC(3+1)
+
+      COEF1=DFAC(3)
+
+      COEF2=DFAC(3-1)
+
+      A1 = -COEF*(-DOT_PROD(3+1,2)*XR(3+1,3+2) +
+     1      DOT_PROD(3+1,1)*XR(3+2,3+3) -
+     1      (1.0/X_PROD(3))*(DOT_PROD(3+1,2)*DOT_PROD(3,2) -
+     1      DOT_PROD(3,3)*DOT_PROD(3+1,1))*(-DOT_PROD(3+1,1)*XR(3,3+1) +
+     1      DOT_PROD(3,2)*XR(3+1,3+2)))
+
+      A2 = -COEF1*(-DOT_PROD(3-1,2)*XR(3+1,3+2) +
+     1      DOT_PROD(3,2)*XR(3,3+1) - DOT_PROD(3,2)*XR(3-1,3) -
+     1      DOT_PROD(3,1)*XR(3+1,3+2) + 2.0*DOT_PROD(3-1,3)*XR(3,3+1) -
+     1      (1.0/X_PROD(3-1))*(DOT_PROD(3,2)*DOT_PROD(3-1,2) -
+     1      DOT_PROD(3-1,3)*DOT_PROD(3,1))*(DOT_PROD(3,1)*XR(3-1,3) -
+     1      DOT_PROD(3-1,1)*XR(3,3+1) - DOT_PROD(3-1,2)*XR(3,3+1) +
+     1      DOT_PROD(3-1,2)*XR(3-1,3)) -
+     1      (1.0/X_PROD(3))*(DOT_PROD(3,2)*DOT_PROD(3-1,2) -
+     1      DOT_PROD(3-1,3)*DOT_PROD(3,1))*(-DOT_PROD(3+1,1)*XR(3,3+1) +
+     1      DOT_PROD(3,2)*XR(3+1,3+2)))
+
+      A3 = -COEF2*(DOT_PROD(3-2,2)*XR(3,3+1) -
+     1      DOT_PROD(3-2,2)*XR(3-1,3) + DOT_PROD(3-1,2)*XR(3-2,3-1) +
+     1      DOT_PROD(3-1,1)*XR(3-2,3-1) - 2.0*DOT_PROD(3-2,3)*XR(3-1,3) -
+     1      (1.0/X_PROD(3-2))*(DOT_PROD(3-1,2)*DOT_PROD(3-2,2) -
+     1      DOT_PROD(3-2,3)*DOT_PROD(3-1,1))*(DOT_PROD(3-2,1)*XR(3-1,3) -
+     1      DOT_PROD(3-2,2)*XR(3-2,3-1)) -
+     1      (1.0/X_PROD(3-1))*(DOT_PROD(3-1,2)*DOT_PROD(3-2,2) -
+     1      DOT_PROD(3-2,3)*DOT_PROD(3-1,1))*(DOT_PROD(3,1)*XR(3-1,3) -
+     1      DOT_PROD(3-1,1)*XR(3,3+1) - DOT_PROD(3-1,2)*XR(3,3+1) +
+     1      DOT_PROD(3-1,2)*XR(3-1,3)))
+
+
+      FTA_X(3) = A1 + A2 + A3
+
+      A1 = -COEF*(-DOT_PROD(3+1,2)*YR(3+1,3+2) +
+     1      DOT_PROD(3+1,1)*YR(3+2,3+3) -
+     1      (1.0/X_PROD(3))*(DOT_PROD(3+1,2)*DOT_PROD(3,2) -
+     1      DOT_PROD(3,3)*DOT_PROD(3+1,1))*(-DOT_PROD(3+1,1)*YR(3,3+1) +
+     1      DOT_PROD(3,2)*YR(3+1,3+2)))
+
+      A2 = -COEF1*(-DOT_PROD(3-1,2)*YR(3+1,3+2) +
+     1      DOT_PROD(3,2)*YR(3,3+1) - DOT_PROD(3,2)*YR(3-1,3) -
+     1      DOT_PROD(3,1)*YR(3+1,3+2) + 2.0*DOT_PROD(3-1,3)*YR(3,3+1) -
+     1      (1.0/X_PROD(3-1))*(DOT_PROD(3,2)*DOT_PROD(3-1,2) -
+     1      DOT_PROD(3-1,3)*DOT_PROD(3,1))*(DOT_PROD(3,1)*YR(3-1,3) -
+     1      DOT_PROD(3-1,1)*YR(3,3+1) - DOT_PROD(3-1,2)*YR(3,3+1) +
+     1      DOT_PROD(3-1,2)*YR(3-1,3)) -
+     1      (1.0/X_PROD(3))*(DOT_PROD(3,2)*DOT_PROD(3-1,2) -
+     1      DOT_PROD(3-1,3)*DOT_PROD(3,1))*(-DOT_PROD(3+1,1)*YR(3,3+1) +
+     1      DOT_PROD(3,2)*YR(3+1,3+2)))
+
+      A3 = -COEF2*(DOT_PROD(3-2,2)*YR(3,3+1) -
+     1      DOT_PROD(3-2,2)*YR(3-1,3) + DOT_PROD(3-1,2)*YR(3-2,3-1) +
+     1      DOT_PROD(3-1,1)*YR(3-2,3-1) - 2.0*DOT_PROD(3-2,3)*YR(3-1,3) -
+     1      (1.0/X_PROD(3-2))*(DOT_PROD(3-1,2)*DOT_PROD(3-2,2) -
+     1      DOT_PROD(3-2,3)*DOT_PROD(3-1,1))*(DOT_PROD(3-2,1)*YR(3-1,3) -
+     1      DOT_PROD(3-2,2)*YR(3-2,3-1)) -
+     1      (1.0/X_PROD(3-1))*(DOT_PROD(3-1,2)*DOT_PROD(3-2,2) -
+     1      DOT_PROD(3-2,3)*DOT_PROD(3-1,1))*(DOT_PROD(3,1)*YR(3-1,3) -
+     1      DOT_PROD(3-1,1)*YR(3,3+1) - DOT_PROD(3-1,2)*YR(3,3+1) +
+     1      DOT_PROD(3-1,2)*YR(3-1,3)))
+
+      FTA_Y(3) = A1 + A2 + A3
+      A1 = -COEF*(-DOT_PROD(3+1,2)*ZR(3+1,3+2) +
+     1      DOT_PROD(3+1,1)*ZR(3+2,3+3) -
+     1      (1.0/X_PROD(3))*(DOT_PROD(3+1,2)*DOT_PROD(3,2) -
+     1      DOT_PROD(3,3)*DOT_PROD(3+1,1))*(-DOT_PROD(3+1,1)*ZR(3,3+1) +
+     1      DOT_PROD(3,2)*ZR(3+1,3+2)))
+
+      A2 =  -COEF1*(-DOT_PROD(3-1,2)*ZR(3+1,3+2) +
+     1      DOT_PROD(3,2)*ZR(3,3+1) - DOT_PROD(3,2)*ZR(3-1,3) -
+     1      DOT_PROD(3,1)*ZR(3+1,3+2) + 2.0*DOT_PROD(3-1,3)*ZR(3,3+1) -
+     1      (1.0/X_PROD(3-1))*(DOT_PROD(3,2)*DOT_PROD(3-1,2) -
+     1      DOT_PROD(3-1,3)*DOT_PROD(3,1))*(DOT_PROD(3,1)*ZR(3-1,3) -
+     1      DOT_PROD(3-1,1)*ZR(3,3+1) - DOT_PROD(3-1,2)*ZR(3,3+1) +
+     1      DOT_PROD(3-1,2)*ZR(3-1,3)) -
+     1      (1.0/X_PROD(3))*(DOT_PROD(3,2)*DOT_PROD(3-1,2) -
+     1      DOT_PROD(3-1,3)*DOT_PROD(3,1))*(-DOT_PROD(3+1,1)*ZR(3,3+1) +
+     1      DOT_PROD(3,2)*ZR(3+1,3+2)))
+
+      A3 = -COEF2*(DOT_PROD(3-2,2)*ZR(3,3+1) -
+     1      DOT_PROD(3-2,2)*ZR(3-1,3) + DOT_PROD(3-1,2)*ZR(3-2,3-1) +
+     1      DOT_PROD(3-1,1)*ZR(3-2,3-1) - 2.0*DOT_PROD(3-2,3)*ZR(3-1,3) -
+     1      (1.0/X_PROD(3-2))*(DOT_PROD(3-1,2)*DOT_PROD(3-2,2) -
+     1      DOT_PROD(3-2,3)*DOT_PROD(3-1,1))*(DOT_PROD(3-2,1)*ZR(3-1,3) -
+     1      DOT_PROD(3-2,2)*ZR(3-2,3-1)) -
+     1      (1.0/X_PROD(3-1))*(DOT_PROD(3-1,2)*DOT_PROD(3-2,2) -
+     1      DOT_PROD(3-2,3)*DOT_PROD(3-1,1))*(DOT_PROD(3,1)*ZR(3-1,3) -
+     1      DOT_PROD(3-1,1)*ZR(3,3+1) - DOT_PROD(3-1,2)*ZR(3,3+1) +
+     1      DOT_PROD(3-1,2)*ZR(3-1,3)))
+
+      FTA_Z(3) = A1 + A2 + A3
+
+C PARTICLES 4 TO N-3
+
+      DO I = 4, N-3
+
+         COEF=DFAC(I+1)
+
+         COEF1=DFAC(I)
+
+         COEF2=DFAC(I-1)
+
+         COEF3=DFAC(I-2)
+
+         A1 = -COEF*(-DOT_PROD(I+1,2)*XR(I+1,I+2) +
+     1      DOT_PROD(I+1,1)*XR(I+2,I+3) -
+     1      (1.0/X_PROD(I))*(DOT_PROD(I+1,2)*DOT_PROD(I,2) -
+     1      DOT_PROD(I,3)*DOT_PROD(I+1,1))*(-DOT_PROD(I+1,1)*XR(I,I+1) +
+     1      DOT_PROD(I,2)*XR(I+1,I+2))) 
+
+         A2 = -COEF1*(-DOT_PROD(I-1,2)*XR(I+1,I+2) +
+     1      DOT_PROD(I,2)*XR(I,I+1) - DOT_PROD(I,2)*XR(I-1,I) -
+     1      DOT_PROD(I,1)*XR(I+1,I+2) + 2.0*DOT_PROD(I-1,3)*XR(I,I+1) -
+     1      (1.0/X_PROD(I-1))*(DOT_PROD(I,2)*DOT_PROD(I-1,2) -
+     1      DOT_PROD(I-1,3)*DOT_PROD(I,1))*(DOT_PROD(I,1)*XR(I-1,I) -
+     1      DOT_PROD(I-1,1)*XR(I,I+1) - DOT_PROD(I-1,2)*XR(I,I+1) +
+     1      DOT_PROD(I-1,2)*XR(I-1,I)) -
+     1      (1.0/X_PROD(I))*(DOT_PROD(I,2)*DOT_PROD(I-1,2) -
+     1      DOT_PROD(I-1,3)*DOT_PROD(I,1))*(-DOT_PROD(I+1,1)*XR(I,I+1) +
+     1      DOT_PROD(I,2)*XR(I+1,I+2))) 
+
+         A3 = -COEF2*(DOT_PROD(I-2,2)*XR(I,I+1) -
+     1      DOT_PROD(I-2,2)*XR(I-1,I) + DOT_PROD(I-1,2)*XR(I-2,I-1) +
+     1      DOT_PROD(I-1,1)*XR(I-2,I-1) - 2.0*DOT_PROD(I-2,3)*XR(I-1,I) -
+     1      (1.0/X_PROD(I-2))*(DOT_PROD(I-1,2)*DOT_PROD(I-2,2) -
+     1      DOT_PROD(I-2,3)*DOT_PROD(I-1,1))*(DOT_PROD(I-2,1)*XR(I-1,I) -
+     1      DOT_PROD(I-2,2)*XR(I-2,I-1)) -
+     1      (1.0/X_PROD(I-1))*(DOT_PROD(I-1,2)*DOT_PROD(I-2,2) -
+     1  DOT_PROD(I-2,3)*DOT_PROD(I-1,1))*(DOT_PROD(I,1)*XR(I-1,I) -
+     1      DOT_PROD(I-1,1)*XR(I,I+1) - DOT_PROD(I-1,2)*XR(I,I+1) +
+     1      DOT_PROD(I-1,2)*XR(I-1,I))) 
+
+         A4 = -COEF3*(DOT_PROD(I-3,2)*XR(I-2,I-1) -
+     1      DOT_PROD(I-2,1)*XR(I-3,I-2) -
+     1      (1.0/X_PROD(I-2))*(DOT_PROD(I-2,2)*DOT_PROD(I-3,2) -
+     1      DOT_PROD(I-3,3)*DOT_PROD(I-2,1))*(DOT_PROD(I-2,1)*XR(I-1,I) -
+     1      DOT_PROD(I-2,2)*XR(I-2,I-1))) 
+
+         FTA_X(I) = A1 + A2 + A3 + A4 
+
+         A1 = -COEF*(-DOT_PROD(I+1,2)*YR(I+1,I+2) +
+     1      DOT_PROD(I+1,1)*YR(I+2,I+3) -
+     1      (1.0/X_PROD(I))*(DOT_PROD(I+1,2)*DOT_PROD(I,2) -
+     1      DOT_PROD(I,3)*DOT_PROD(I+1,1))*(-DOT_PROD(I+1,1)*YR(I,I+1) +
+     1      DOT_PROD(I,2)*YR(I+1,I+2))) 
+
+         A2 = -COEF1*(-DOT_PROD(I-1,2)*YR(I+1,I+2) +
+     1      DOT_PROD(I,2)*YR(I,I+1) - DOT_PROD(I,2)*YR(I-1,I) -
+     1      DOT_PROD(I,1)*YR(I+1,I+2) + 2.0*DOT_PROD(I-1,3)*YR(I,I+1) -
+     1      (1.0/X_PROD(I-1))*(DOT_PROD(I,2)*DOT_PROD(I-1,2) -
+     1      DOT_PROD(I-1,3)*DOT_PROD(I,1))*(DOT_PROD(I,1)*YR(I-1,I) -
+     1      DOT_PROD(I-1,1)*YR(I,I+1) - DOT_PROD(I-1,2)*YR(I,I+1) +
+     1      DOT_PROD(I-1,2)*YR(I-1,I)) -
+     1      (1.0/X_PROD(I))*(DOT_PROD(I,2)*DOT_PROD(I-1,2) -
+     1      DOT_PROD(I-1,3)*DOT_PROD(I,1))*(-DOT_PROD(I+1,1)*YR(I,I+1) +
+     1      DOT_PROD(I,2)*YR(I+1,I+2))) 
+
+         A3 = -COEF2*(DOT_PROD(I-2,2)*YR(I,I+1) -
+     1      DOT_PROD(I-2,2)*YR(I-1,I) + DOT_PROD(I-1,2)*YR(I-2,I-1) +
+     1      DOT_PROD(I-1,1)*YR(I-2,I-1) - 2.0*DOT_PROD(I-2,3)*YR(I-1,I) -
+     1      (1.0/X_PROD(I-2))*(DOT_PROD(I-1,2)*DOT_PROD(I-2,2) -
+     1      DOT_PROD(I-2,3)*DOT_PROD(I-1,1))*(DOT_PROD(I-2,1)*YR(I-1,I) -
+     1      DOT_PROD(I-2,2)*YR(I-2,I-1)) -
+     1      (1.0/X_PROD(I-1))*(DOT_PROD(I-1,2)*DOT_PROD(I-2,2) -
+     1      DOT_PROD(I-2,3)*DOT_PROD(I-1,1))*(DOT_PROD(I,1)*YR(I-1,I) -
+     1      DOT_PROD(I-1,1)*YR(I,I+1) - DOT_PROD(I-1,2)*YR(I,I+1) +
+     1      DOT_PROD(I-1,2)*YR(I-1,I))) 
+
+         A4 = -COEF3*(DOT_PROD(I-3,2)*YR(I-2,I-1) -
+     1      DOT_PROD(I-2,1)*YR(I-3,I-2) -
+     1      (1.0/X_PROD(I-2))*(DOT_PROD(I-2,2)*DOT_PROD(I-3,2) -
+     1      DOT_PROD(I-3,3)*DOT_PROD(I-2,1))*(DOT_PROD(I-2,1)*YR(I-1,I) -
+     1      DOT_PROD(I-2,2)*YR(I-2,I-1))) 
+
+         FTA_Y(I) = A1 + A2 + A3 + A4 
+
+         A1 = -COEF*(-DOT_PROD(I+1,2)*ZR(I+1,I+2) +
+     1      DOT_PROD(I+1,1)*ZR(I+2,I+3) -
+     1      (1.0/X_PROD(I))*(DOT_PROD(I+1,2)*DOT_PROD(I,2) -
+     1      DOT_PROD(I,3)*DOT_PROD(I+1,1))*(-DOT_PROD(I+1,1)*ZR(I,I+1) +
+     1      DOT_PROD(I,2)*ZR(I+1,I+2))) 
+
+         A2 = -COEF1*(-DOT_PROD(I-1,2)*ZR(I+1,I+2) +
+     1      DOT_PROD(I,2)*ZR(I,I+1) - DOT_PROD(I,2)*ZR(I-1,I) -
+     1      DOT_PROD(I,1)*ZR(I+1,I+2) + 2.0*DOT_PROD(I-1,3)*ZR(I,I+1) -
+     1      (1.0/X_PROD(I-1))*(DOT_PROD(I,2)*DOT_PROD(I-1,2) -
+     1      DOT_PROD(I-1,3)*DOT_PROD(I,1))*(DOT_PROD(I,1)*ZR(I-1,I) -
+     1      DOT_PROD(I-1,1)*ZR(I,I+1) - DOT_PROD(I-1,2)*ZR(I,I+1) +
+     1      DOT_PROD(I-1,2)*ZR(I-1,I)) -
+     1      (1.0/X_PROD(I))*(DOT_PROD(I,2)*DOT_PROD(I-1,2) -
+     1      DOT_PROD(I-1,3)*DOT_PROD(I,1))*(-DOT_PROD(I+1,1)*ZR(I,I+1) +
+     1      DOT_PROD(I,2)*ZR(I+1,I+2))) 
+
+         A3 = -COEF2*(DOT_PROD(I-2,2)*ZR(I,I+1) -
+     1      DOT_PROD(I-2,2)*ZR(I-1,I) + DOT_PROD(I-1,2)*ZR(I-2,I-1) +
+     1      DOT_PROD(I-1,1)*ZR(I-2,I-1) - 2.0*DOT_PROD(I-2,3)*ZR(I-1,I) -
+     1      (1.0/X_PROD(I-2))*(DOT_PROD(I-1,2)*DOT_PROD(I-2,2) -
+     1      DOT_PROD(I-2,3)*DOT_PROD(I-1,1))*(DOT_PROD(I-2,1)*ZR(I-1,I) -
+     1      DOT_PROD(I-2,2)*ZR(I-2,I-1)) -
+     1      (1.0/X_PROD(I-1))*(DOT_PROD(I-1,2)*DOT_PROD(I-2,2) -
+     1      DOT_PROD(I-2,3)*DOT_PROD(I-1,1))*(DOT_PROD(I,1)*ZR(I-1,I) -
+     1      DOT_PROD(I-1,1)*ZR(I,I+1) - DOT_PROD(I-1,2)*ZR(I,I+1) +
+     1      DOT_PROD(I-1,2)*ZR(I-1,I))) 
       
-         a4 = -coef3*(dot_prod(i-3,2)*zr(i-2,i-1) -
-     1      dot_prod(i-2,1)*zr(i-3,i-2) -
-     1      (1.0/x_prod(i-2))*(dot_prod(i-2,2)*dot_prod(i-3,2) -
-     1      dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*zr(i-1,i) -
-     1      dot_prod(i-2,2)*zr(i-2,i-1))) 
+         A4 = -COEF3*(DOT_PROD(I-3,2)*ZR(I-2,I-1) -
+     1      DOT_PROD(I-2,1)*ZR(I-3,I-2) -
+     1      (1.0/X_PROD(I-2))*(DOT_PROD(I-2,2)*DOT_PROD(I-3,2) -
+     1      DOT_PROD(I-3,3)*DOT_PROD(I-2,1))*(DOT_PROD(I-2,1)*ZR(I-1,I) -
+     1      DOT_PROD(I-2,2)*ZR(I-2,I-1))) 
 
-         fta_z(i) = a1 + a2 + a3 + a4 
+         FTA_Z(I) = A1 + A2 + A3 + A4 
 
-      enddo
+      ENDDO
 
-C particle n-2
-!     i = n-2
-      coef1=DFAC(n-2)
+C PARTICLE N-2
+!     I = N-2
+      COEF1=DFAC(N-2)
 
-      coef2=DFAC(n-2-1)
+      COEF2=DFAC(N-2-1)
 
-      coef3=DFAC(n-2-2)
+      COEF3=DFAC(N-2-2)
 
-      a1 = -coef1*(-dot_prod(n-2-1,2)*xr(n-2+1,n-2+2) +
-     1      dot_prod(n-2,2)*xr(n-2,n-2+1) - dot_prod(n-2,2)*xr(n-2-1,n-2) -
-     1      dot_prod(n-2,1)*xr(n-2+1,n-2+2) + 2.0*dot_prod(n-2-1,3)*xr(n-2,n-2+1) -
-     1      (1.0/x_prod(n-2-1))*(dot_prod(n-2,2)*dot_prod(n-2-1,2) -
-     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*xr(n-2-1,n-2) -
-     1      dot_prod(n-2-1,1)*xr(n-2,n-2+1) - dot_prod(n-2-1,2)*xr(n-2,n-2+1) +
-     1      dot_prod(n-2-1,2)*xr(n-2-1,n-2)) -
-     1      (1.0/x_prod(n-2))*(dot_prod(n-2,2)*dot_prod(n-2-1,2) -
-     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(-dot_prod(n-2+1,1)*xr(n-2,n-2+1) +
-     1      dot_prod(n-2,2)*xr(n-2+1,n-2+2)))
+      A1 = -COEF1*(-DOT_PROD(N-2-1,2)*XR(N-2+1,N-2+2) +
+     1      DOT_PROD(N-2,2)*XR(N-2,N-2+1) - DOT_PROD(N-2,2)*XR(N-2-1,N-2) -
+     1      DOT_PROD(N-2,1)*XR(N-2+1,N-2+2) + 2.0*DOT_PROD(N-2-1,3)*XR(N-2,N-2+1) -
+     1      (1.0/X_PROD(N-2-1))*(DOT_PROD(N-2,2)*DOT_PROD(N-2-1,2) -
+     1      DOT_PROD(N-2-1,3)*DOT_PROD(N-2,1))*(DOT_PROD(N-2,1)*XR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-1,1)*XR(N-2,N-2+1) - DOT_PROD(N-2-1,2)*XR(N-2,N-2+1) +
+     1      DOT_PROD(N-2-1,2)*XR(N-2-1,N-2)) -
+     1      (1.0/X_PROD(N-2))*(DOT_PROD(N-2,2)*DOT_PROD(N-2-1,2) -
+     1      DOT_PROD(N-2-1,3)*DOT_PROD(N-2,1))*(-DOT_PROD(N-2+1,1)*XR(N-2,N-2+1) +
+     1      DOT_PROD(N-2,2)*XR(N-2+1,N-2+2)))
 
 
-      a2 = -coef2*(dot_prod(n-2-2,2)*xr(n-2,n-2+1) -
-     1      dot_prod(n-2-2,2)*xr(n-2-1,n-2) + dot_prod(n-2-1,2)*xr(n-2-2,n-2-1) +
-     1      dot_prod(n-2-1,1)*xr(n-2-2,n-2-1) - 2.0*dot_prod(n-2-2,3)*xr(n-2-1,n-2) -
-     1      (1.0/x_prod(n-2-2))*(dot_prod(n-2-1,2)*dot_prod(n-2-2,2) -
-     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2-2,1)*xr(n-2-1,n-2) -
-     1      dot_prod(n-2-2,2)*xr(n-2-2,n-2-1)) -
-     1      (1.0/x_prod(n-2-1))*(dot_prod(n-2-1,2)*dot_prod(n-2-2,2) -
-     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2,1)*xr(n-2-1,n-2) -
-     1      dot_prod(n-2-1,1)*xr(n-2,n-2+1) - dot_prod(n-2-1,2)*xr(n-2,n-2+1) + 
-     1      dot_prod(n-2-1,2)*xr(n-2-1,n-2))) 
+      A2 = -COEF2*(DOT_PROD(N-2-2,2)*XR(N-2,N-2+1) -
+     1      DOT_PROD(N-2-2,2)*XR(N-2-1,N-2) + DOT_PROD(N-2-1,2)*XR(N-2-2,N-2-1) +
+     1      DOT_PROD(N-2-1,1)*XR(N-2-2,N-2-1) - 2.0*DOT_PROD(N-2-2,3)*XR(N-2-1,N-2) -
+     1      (1.0/X_PROD(N-2-2))*(DOT_PROD(N-2-1,2)*DOT_PROD(N-2-2,2) -
+     1      DOT_PROD(N-2-2,3)*DOT_PROD(N-2-1,1))*(DOT_PROD(N-2-2,1)*XR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-2,2)*XR(N-2-2,N-2-1)) -
+     1      (1.0/X_PROD(N-2-1))*(DOT_PROD(N-2-1,2)*DOT_PROD(N-2-2,2) -
+     1      DOT_PROD(N-2-2,3)*DOT_PROD(N-2-1,1))*(DOT_PROD(N-2,1)*XR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-1,1)*XR(N-2,N-2+1) - DOT_PROD(N-2-1,2)*XR(N-2,N-2+1) + 
+     1      DOT_PROD(N-2-1,2)*XR(N-2-1,N-2))) 
 
-      a3 = -coef3*(dot_prod(n-2-3,2)*xr(n-2-2,n-2-1) -
-     1      dot_prod(n-2-2,1)*xr(n-2-3,n-2-2) -
-     1      (1.0/x_prod(n-2-2))*(dot_prod(n-2-2,2)*dot_prod(n-2-3,2) -
-     1      dot_prod(n-2-3,3)*dot_prod(n-2-2,1))*(dot_prod(n-2-2,1)*xr(n-2-1,n-2) -
-     1      dot_prod(n-2-2,2)*xr(n-2-2,n-2-1)))
+      A3 = -COEF3*(DOT_PROD(N-2-3,2)*XR(N-2-2,N-2-1) -
+     1      DOT_PROD(N-2-2,1)*XR(N-2-3,N-2-2) -
+     1      (1.0/X_PROD(N-2-2))*(DOT_PROD(N-2-2,2)*DOT_PROD(N-2-3,2) -
+     1      DOT_PROD(N-2-3,3)*DOT_PROD(N-2-2,1))*(DOT_PROD(N-2-2,1)*XR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-2,2)*XR(N-2-2,N-2-1)))
 
-      fta_x(n-2) = a1 + a2 + a3
+      FTA_X(N-2) = A1 + A2 + A3
 
-      a1 =  -coef1*(-dot_prod(n-2-1,2)*yr(n-2+1,n-2+2) +
-     1      dot_prod(n-2,2)*yr(n-2,n-2+1) - dot_prod(n-2,2)*yr(n-2-1,n-2) -
-     1      dot_prod(n-2,1)*yr(n-2+1,n-2+2) + 2.0*dot_prod(n-2-1,3)*yr(n-2,n-2+1) -
-     1      (1.0/x_prod(n-2-1))*(dot_prod(n-2,2)*dot_prod(n-2-1,2) -
-     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*yr(n-2-1,n-2) -
-     1      dot_prod(n-2-1,1)*yr(n-2,n-2+1) - dot_prod(n-2-1,2)*yr(n-2,n-2+1) +
-     1      dot_prod(n-2-1,2)*yr(n-2-1,n-2)) -
-     1      (1.0/x_prod(n-2))*(dot_prod(n-2,2)*dot_prod(n-2-1,2) -
-     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(-dot_prod(n-2+1,1)*yr(n-2,n-2+1) +
-     1      dot_prod(n-2,2)*yr(n-2+1,n-2+2)))
+      A1 =  -COEF1*(-DOT_PROD(N-2-1,2)*YR(N-2+1,N-2+2) +
+     1      DOT_PROD(N-2,2)*YR(N-2,N-2+1) - DOT_PROD(N-2,2)*YR(N-2-1,N-2) -
+     1      DOT_PROD(N-2,1)*YR(N-2+1,N-2+2) + 2.0*DOT_PROD(N-2-1,3)*YR(N-2,N-2+1) -
+     1      (1.0/X_PROD(N-2-1))*(DOT_PROD(N-2,2)*DOT_PROD(N-2-1,2) -
+     1      DOT_PROD(N-2-1,3)*DOT_PROD(N-2,1))*(DOT_PROD(N-2,1)*YR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-1,1)*YR(N-2,N-2+1) - DOT_PROD(N-2-1,2)*YR(N-2,N-2+1) +
+     1      DOT_PROD(N-2-1,2)*YR(N-2-1,N-2)) -
+     1      (1.0/X_PROD(N-2))*(DOT_PROD(N-2,2)*DOT_PROD(N-2-1,2) -
+     1      DOT_PROD(N-2-1,3)*DOT_PROD(N-2,1))*(-DOT_PROD(N-2+1,1)*YR(N-2,N-2+1) +
+     1      DOT_PROD(N-2,2)*YR(N-2+1,N-2+2)))
 
-      a2 =  -coef2*(dot_prod(n-2-2,2)*yr(n-2,n-2+1) -
-     1      dot_prod(n-2-2,2)*yr(n-2-1,n-2) + dot_prod(n-2-1,2)*yr(n-2-2,n-2-1) +
-     1      dot_prod(n-2-1,1)*yr(n-2-2,n-2-1) - 2.0*dot_prod(n-2-2,3)*yr(n-2-1,n-2) -
-     1      (1.0/x_prod(n-2-2))*(dot_prod(n-2-1,2)*dot_prod(n-2-2,2) -
-     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2-2,1)*yr(n-2-1,n-2) -
-     1      dot_prod(n-2-2,2)*yr(n-2-2,n-2-1)) -
-     1      (1.0/x_prod(n-2-1))*(dot_prod(n-2-1,2)*dot_prod(n-2-2,2) -
-     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2,1)*yr(n-2-1,n-2) -
-     1      dot_prod(n-2-1,1)*yr(n-2,n-2+1) - dot_prod(n-2-1,2)*yr(n-2,n-2+1) + 
-     1      dot_prod(n-2-1,2)*yr(n-2-1,n-2))) 
+      A2 =  -COEF2*(DOT_PROD(N-2-2,2)*YR(N-2,N-2+1) -
+     1      DOT_PROD(N-2-2,2)*YR(N-2-1,N-2) + DOT_PROD(N-2-1,2)*YR(N-2-2,N-2-1) +
+     1      DOT_PROD(N-2-1,1)*YR(N-2-2,N-2-1) - 2.0*DOT_PROD(N-2-2,3)*YR(N-2-1,N-2) -
+     1      (1.0/X_PROD(N-2-2))*(DOT_PROD(N-2-1,2)*DOT_PROD(N-2-2,2) -
+     1      DOT_PROD(N-2-2,3)*DOT_PROD(N-2-1,1))*(DOT_PROD(N-2-2,1)*YR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-2,2)*YR(N-2-2,N-2-1)) -
+     1      (1.0/X_PROD(N-2-1))*(DOT_PROD(N-2-1,2)*DOT_PROD(N-2-2,2) -
+     1      DOT_PROD(N-2-2,3)*DOT_PROD(N-2-1,1))*(DOT_PROD(N-2,1)*YR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-1,1)*YR(N-2,N-2+1) - DOT_PROD(N-2-1,2)*YR(N-2,N-2+1) + 
+     1      DOT_PROD(N-2-1,2)*YR(N-2-1,N-2))) 
 
-      a3 = -coef3*(dot_prod(n-2-3,2)*yr(n-2-2,n-2-1) -
-     1      dot_prod(n-2-2,1)*yr(n-2-3,n-2-2) -
-     1      (1.0/x_prod(n-2-2))*(dot_prod(n-2-2,2)*dot_prod(n-2-3,2) -
-     1      dot_prod(n-2-3,3)*dot_prod(n-2-2,1))*(dot_prod(n-2-2,1)*yr(n-2-1,n-2) -
-     1      dot_prod(n-2-2,2)*yr(n-2-2,n-2-1))) 
+      A3 = -COEF3*(DOT_PROD(N-2-3,2)*YR(N-2-2,N-2-1) -
+     1      DOT_PROD(N-2-2,1)*YR(N-2-3,N-2-2) -
+     1      (1.0/X_PROD(N-2-2))*(DOT_PROD(N-2-2,2)*DOT_PROD(N-2-3,2) -
+     1      DOT_PROD(N-2-3,3)*DOT_PROD(N-2-2,1))*(DOT_PROD(N-2-2,1)*YR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-2,2)*YR(N-2-2,N-2-1))) 
 
-      fta_y(n-2) = a1 + a2 + a3
-      a1 = -coef1*(-dot_prod(n-2-1,2)*zr(n-2+1,n-2+2) +
-     1      dot_prod(n-2,2)*zr(n-2,n-2+1) - dot_prod(n-2,2)*zr(n-2-1,n-2) -
-     1      dot_prod(n-2,1)*zr(n-2+1,n-2+2) + 2.0*dot_prod(n-2-1,3)*zr(n-2,n-2+1) -
-     1      (1.0/x_prod(n-2-1))*(dot_prod(n-2,2)*dot_prod(n-2-1,2) -
-     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*zr(n-2-1,n-2) -
-     1      dot_prod(n-2-1,1)*zr(n-2,n-2+1) - dot_prod(n-2-1,2)*zr(n-2,n-2+1) +
-     1      dot_prod(n-2-1,2)*zr(n-2-1,n-2)) -
-     1      (1.0/x_prod(n-2))*(dot_prod(n-2,2)*dot_prod(n-2-1,2) -
-     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(-dot_prod(n-2+1,1)*zr(n-2,n-2+1) +
-     1      dot_prod(n-2,2)*zr(n-2+1,n-2+2)))
+      FTA_Y(N-2) = A1 + A2 + A3
+      A1 = -COEF1*(-DOT_PROD(N-2-1,2)*ZR(N-2+1,N-2+2) +
+     1      DOT_PROD(N-2,2)*ZR(N-2,N-2+1) - DOT_PROD(N-2,2)*ZR(N-2-1,N-2) -
+     1      DOT_PROD(N-2,1)*ZR(N-2+1,N-2+2) + 2.0*DOT_PROD(N-2-1,3)*ZR(N-2,N-2+1) -
+     1      (1.0/X_PROD(N-2-1))*(DOT_PROD(N-2,2)*DOT_PROD(N-2-1,2) -
+     1      DOT_PROD(N-2-1,3)*DOT_PROD(N-2,1))*(DOT_PROD(N-2,1)*ZR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-1,1)*ZR(N-2,N-2+1) - DOT_PROD(N-2-1,2)*ZR(N-2,N-2+1) +
+     1      DOT_PROD(N-2-1,2)*ZR(N-2-1,N-2)) -
+     1      (1.0/X_PROD(N-2))*(DOT_PROD(N-2,2)*DOT_PROD(N-2-1,2) -
+     1      DOT_PROD(N-2-1,3)*DOT_PROD(N-2,1))*(-DOT_PROD(N-2+1,1)*ZR(N-2,N-2+1) +
+     1      DOT_PROD(N-2,2)*ZR(N-2+1,N-2+2)))
 
-      a2 = -coef2*(dot_prod(n-2-2,2)*zr(n-2,n-2+1) -
-     1      dot_prod(n-2-2,2)*zr(n-2-1,n-2) + dot_prod(n-2-1,2)*zr(n-2-2,n-2-1) +
-     1      dot_prod(n-2-1,1)*zr(n-2-2,n-2-1) - 2.0*dot_prod(n-2-2,3)*zr(n-2-1,n-2) -
-     1      (1.0/x_prod(n-2-2))*(dot_prod(n-2-1,2)*dot_prod(n-2-2,2) -
-     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2-2,1)*zr(n-2-1,n-2) -
-     1      dot_prod(n-2-2,2)*zr(n-2-2,n-2-1)) -
-     1      (1.0/x_prod(n-2-1))*(dot_prod(n-2-1,2)*dot_prod(n-2-2,2) -
-     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2,1)*zr(n-2-1,n-2) -
-     1      dot_prod(n-2-1,1)*zr(n-2,n-2+1) - dot_prod(n-2-1,2)*zr(n-2,n-2+1) +
-     1      dot_prod(n-2-1,2)*zr(n-2-1,n-2)))
+      A2 = -COEF2*(DOT_PROD(N-2-2,2)*ZR(N-2,N-2+1) -
+     1      DOT_PROD(N-2-2,2)*ZR(N-2-1,N-2) + DOT_PROD(N-2-1,2)*ZR(N-2-2,N-2-1) +
+     1      DOT_PROD(N-2-1,1)*ZR(N-2-2,N-2-1) - 2.0*DOT_PROD(N-2-2,3)*ZR(N-2-1,N-2) -
+     1      (1.0/X_PROD(N-2-2))*(DOT_PROD(N-2-1,2)*DOT_PROD(N-2-2,2) -
+     1      DOT_PROD(N-2-2,3)*DOT_PROD(N-2-1,1))*(DOT_PROD(N-2-2,1)*ZR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-2,2)*ZR(N-2-2,N-2-1)) -
+     1      (1.0/X_PROD(N-2-1))*(DOT_PROD(N-2-1,2)*DOT_PROD(N-2-2,2) -
+     1      DOT_PROD(N-2-2,3)*DOT_PROD(N-2-1,1))*(DOT_PROD(N-2,1)*ZR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-1,1)*ZR(N-2,N-2+1) - DOT_PROD(N-2-1,2)*ZR(N-2,N-2+1) +
+     1      DOT_PROD(N-2-1,2)*ZR(N-2-1,N-2)))
 
-      a3 = -coef3*(dot_prod(n-2-3,2)*zr(n-2-2,n-2-1) -
-     1      dot_prod(n-2-2,1)*zr(n-2-3,n-2-2) -
-     1      (1.0/x_prod(n-2-2))*(dot_prod(n-2-2,2)*dot_prod(n-2-3,2) -
-     1      dot_prod(n-2-3,3)*dot_prod(n-2-2,1))*(dot_prod(n-2-2,1)*zr(n-2-1,n-2) -
-     1      dot_prod(n-2-2,2)*zr(n-2-2,n-2-1)))
+      A3 = -COEF3*(DOT_PROD(N-2-3,2)*ZR(N-2-2,N-2-1) -
+     1      DOT_PROD(N-2-2,1)*ZR(N-2-3,N-2-2) -
+     1      (1.0/X_PROD(N-2-2))*(DOT_PROD(N-2-2,2)*DOT_PROD(N-2-3,2) -
+     1      DOT_PROD(N-2-3,3)*DOT_PROD(N-2-2,1))*(DOT_PROD(N-2-2,1)*ZR(N-2-1,N-2) -
+     1      DOT_PROD(N-2-2,2)*ZR(N-2-2,N-2-1)))
 
-      fta_z(n-2) = a1 + a2 + a3
+      FTA_Z(N-2) = A1 + A2 + A3
 
-C particle n-1
-!     i = n-1
-      coef2=DFAC(n-1-1)
+C PARTICLE N-1
+!     I = N-1
+      COEF2=DFAC(N-1-1)
 
-      coef3=DFAC(n-1-2)
+      COEF3=DFAC(N-1-2)
 
-      a1 = -coef2*(dot_prod(n-1-2,2)*xr(n-1,n-1+1) -
-     1      dot_prod(n-1-2,2)*xr(n-1-1,n-1) +
-     1      dot_prod(n-1-1,2)*xr(n-1-2,n-1-1) +  dot_prod(n-1-1,1)*xr(n-1-2,n-1-1) -
-     1      2.0*dot_prod(n-1-2,3)*xr(n-1-1,n-1) -
-     1      (1.0/x_prod(n-1-2))*(dot_prod(n-1-1,2)*dot_prod(n-1-2,2) -
-     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1-2,1)*xr(n-1-1,n-1) -
-     1      dot_prod(n-1-2,2)*xr(n-1-2,n-1-1)) -
-     1      (1.0/x_prod(n-1-1))*(dot_prod(n-1-1,2)*dot_prod(n-1-2,2) -
-     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1,1)*xr(n-1-1,n-1) -
-     1      dot_prod(n-1-1,1)*xr(n-1,n-1+1) - dot_prod(n-1-1,2)*xr(n-1,n-1+1) + 
-     1      dot_prod(n-1-1,2)*xr(n-1-1,n-1))) 
+      A1 = -COEF2*(DOT_PROD(N-1-2,2)*XR(N-1,N-1+1) -
+     1      DOT_PROD(N-1-2,2)*XR(N-1-1,N-1) +
+     1      DOT_PROD(N-1-1,2)*XR(N-1-2,N-1-1) +  DOT_PROD(N-1-1,1)*XR(N-1-2,N-1-1) -
+     1      2.0*DOT_PROD(N-1-2,3)*XR(N-1-1,N-1) -
+     1      (1.0/X_PROD(N-1-2))*(DOT_PROD(N-1-1,2)*DOT_PROD(N-1-2,2) -
+     1      DOT_PROD(N-1-2,3)*DOT_PROD(N-1-1,1))*(DOT_PROD(N-1-2,1)*XR(N-1-1,N-1) -
+     1      DOT_PROD(N-1-2,2)*XR(N-1-2,N-1-1)) -
+     1      (1.0/X_PROD(N-1-1))*(DOT_PROD(N-1-1,2)*DOT_PROD(N-1-2,2) -
+     1      DOT_PROD(N-1-2,3)*DOT_PROD(N-1-1,1))*(DOT_PROD(N-1,1)*XR(N-1-1,N-1) -
+     1      DOT_PROD(N-1-1,1)*XR(N-1,N-1+1) - DOT_PROD(N-1-1,2)*XR(N-1,N-1+1) + 
+     1      DOT_PROD(N-1-1,2)*XR(N-1-1,N-1))) 
 
-      a2 = -coef3*(dot_prod(n-1-3,2)*xr(n-1-2,n-1-1) -
-     1      dot_prod(n-1-2,1)*xr(n-1-3,n-1-2) -
-     1      (1.0/x_prod(n-1-2))*(dot_prod(n-1-2,2)*dot_prod(n-1-3,2) -
-     1      dot_prod(n-1-3,3)*dot_prod(n-1-2,1))*(dot_prod(n-1-2,1)*xr(n-1-1,n-1) -
-     1      dot_prod(n-1-2,2)*xr(n-1-2,n-1-1))) 
+      A2 = -COEF3*(DOT_PROD(N-1-3,2)*XR(N-1-2,N-1-1) -
+     1      DOT_PROD(N-1-2,1)*XR(N-1-3,N-1-2) -
+     1      (1.0/X_PROD(N-1-2))*(DOT_PROD(N-1-2,2)*DOT_PROD(N-1-3,2) -
+     1      DOT_PROD(N-1-3,3)*DOT_PROD(N-1-2,1))*(DOT_PROD(N-1-2,1)*XR(N-1-1,N-1) -
+     1      DOT_PROD(N-1-2,2)*XR(N-1-2,N-1-1))) 
 
-      fta_x(n-1) = a1 + a2
+      FTA_X(N-1) = A1 + A2
 
-      a1 = -coef2*(dot_prod(n-1-2,2)*yr(n-1,n-1+1) -
-     1      dot_prod(n-1-2,2)*yr(n-1-1,n-1) +
-     1      dot_prod(n-1-1,2)*yr(n-1-2,n-1-1) +  dot_prod(n-1-1,1)*yr(n-1-2,n-1-1) -
-     1      2.0*dot_prod(n-1-2,3)*yr(n-1-1,n-1) -
-     1      (1.0/x_prod(n-1-2))*(dot_prod(n-1-1,2)*dot_prod(n-1-2,2) -
-     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1-2,1)*yr(n-1-1,n-1) -
-     1      dot_prod(n-1-2,2)*yr(n-1-2,n-1-1)) -
-     1      (1.0/x_prod(n-1-1))*(dot_prod(n-1-1,2)*dot_prod(n-1-2,2) -
-     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1,1)*yr(n-1-1,n-1) -
-     1  dot_prod(n-1-1,1)*yr(n-1,n-1+1) - dot_prod(n-1-1,2)*yr(n-1,n-1+1) +
-     1      dot_prod(n-1-1,2)*yr(n-1-1,n-1))) 
+      A1 = -COEF2*(DOT_PROD(N-1-2,2)*YR(N-1,N-1+1) -
+     1      DOT_PROD(N-1-2,2)*YR(N-1-1,N-1) +
+     1      DOT_PROD(N-1-1,2)*YR(N-1-2,N-1-1) +  DOT_PROD(N-1-1,1)*YR(N-1-2,N-1-1) -
+     1      2.0*DOT_PROD(N-1-2,3)*YR(N-1-1,N-1) -
+     1      (1.0/X_PROD(N-1-2))*(DOT_PROD(N-1-1,2)*DOT_PROD(N-1-2,2) -
+     1      DOT_PROD(N-1-2,3)*DOT_PROD(N-1-1,1))*(DOT_PROD(N-1-2,1)*YR(N-1-1,N-1) -
+     1      DOT_PROD(N-1-2,2)*YR(N-1-2,N-1-1)) -
+     1      (1.0/X_PROD(N-1-1))*(DOT_PROD(N-1-1,2)*DOT_PROD(N-1-2,2) -
+     1      DOT_PROD(N-1-2,3)*DOT_PROD(N-1-1,1))*(DOT_PROD(N-1,1)*YR(N-1-1,N-1) -
+     1  DOT_PROD(N-1-1,1)*YR(N-1,N-1+1) - DOT_PROD(N-1-1,2)*YR(N-1,N-1+1) +
+     1      DOT_PROD(N-1-1,2)*YR(N-1-1,N-1))) 
 
-      a2 = -coef3*(dot_prod(n-1-3,2)*yr(n-1-2,n-1-1) -
-     1      dot_prod(n-1-2,1)*yr(n-1-3,n-1-2) -
-     1      (1.0/x_prod(n-1-2))*(dot_prod(n-1-2,2)*dot_prod(n-1-3,2) -
-     1      dot_prod(n-1-3,3)*dot_prod(n-1-2,1))*(dot_prod(n-1-2,1)*yr(n-1-1,n-1) -
-     1      dot_prod(n-1-2,2)*yr(n-1-2,n-1-1))) 
+      A2 = -COEF3*(DOT_PROD(N-1-3,2)*YR(N-1-2,N-1-1) -
+     1      DOT_PROD(N-1-2,1)*YR(N-1-3,N-1-2) -
+     1      (1.0/X_PROD(N-1-2))*(DOT_PROD(N-1-2,2)*DOT_PROD(N-1-3,2) -
+     1      DOT_PROD(N-1-3,3)*DOT_PROD(N-1-2,1))*(DOT_PROD(N-1-2,1)*YR(N-1-1,N-1) -
+     1      DOT_PROD(N-1-2,2)*YR(N-1-2,N-1-1))) 
 
-      fta_y(n-1) = a1 + a2
+      FTA_Y(N-1) = A1 + A2
 
-      a1 = -coef2*(dot_prod(n-1-2,2)*zr(n-1,n-1+1) -
-     1      dot_prod(n-1-2,2)*zr(n-1-1,n-1) +
-     1      dot_prod(n-1-1,2)*zr(n-1-2,n-1-1) +  dot_prod(n-1-1,1)*zr(n-1-2,n-1-1) -
-     1      2.0*dot_prod(n-1-2,3)*zr(n-1-1,n-1) -
-     1      (1.0/x_prod(n-1-2))*(dot_prod(n-1-1,2)*dot_prod(n-1-2,2) -
-     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1-2,1)*zr(n-1-1,n-1) -
-     1      dot_prod(n-1-2,2)*zr(n-1-2,n-1-1)) -
-     1      (1.0/x_prod(n-1-1))*(dot_prod(n-1-1,2)*dot_prod(n-1-2,2) -
-     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1,1)*zr(n-1-1,n-1) -
-     1      dot_prod(n-1-1,1)*zr(n-1,n-1+1) - dot_prod(n-1-1,2)*zr(n-1,n-1+1) +
-     1      dot_prod(n-1-1,2)*zr(n-1-1,n-1)))
+      A1 = -COEF2*(DOT_PROD(N-1-2,2)*ZR(N-1,N-1+1) -
+     1      DOT_PROD(N-1-2,2)*ZR(N-1-1,N-1) +
+     1      DOT_PROD(N-1-1,2)*ZR(N-1-2,N-1-1) +  DOT_PROD(N-1-1,1)*ZR(N-1-2,N-1-1) -
+     1      2.0*DOT_PROD(N-1-2,3)*ZR(N-1-1,N-1) -
+     1      (1.0/X_PROD(N-1-2))*(DOT_PROD(N-1-1,2)*DOT_PROD(N-1-2,2) -
+     1      DOT_PROD(N-1-2,3)*DOT_PROD(N-1-1,1))*(DOT_PROD(N-1-2,1)*ZR(N-1-1,N-1) -
+     1      DOT_PROD(N-1-2,2)*ZR(N-1-2,N-1-1)) -
+     1      (1.0/X_PROD(N-1-1))*(DOT_PROD(N-1-1,2)*DOT_PROD(N-1-2,2) -
+     1      DOT_PROD(N-1-2,3)*DOT_PROD(N-1-1,1))*(DOT_PROD(N-1,1)*ZR(N-1-1,N-1) -
+     1      DOT_PROD(N-1-1,1)*ZR(N-1,N-1+1) - DOT_PROD(N-1-1,2)*ZR(N-1,N-1+1) +
+     1      DOT_PROD(N-1-1,2)*ZR(N-1-1,N-1)))
 
-      a2 = -coef3*(dot_prod(n-1-3,2)*zr(n-1-2,n-1-1) -
-     1      dot_prod(n-1-2,1)*zr(n-1-3,n-1-2) -
-     1      (1.0/x_prod(n-1-2))*(dot_prod(n-1-2,2)*dot_prod(n-1-3,2) -
-     1      dot_prod(n-1-3,3)*dot_prod(n-1-2,1))*(dot_prod(n-1-2,1)*zr(n-1-1,n-1) -
-     1      dot_prod(n-1-2,2)*zr(n-1-2,n-1-1)))
+      A2 = -COEF3*(DOT_PROD(N-1-3,2)*ZR(N-1-2,N-1-1) -
+     1      DOT_PROD(N-1-2,1)*ZR(N-1-3,N-1-2) -
+     1      (1.0/X_PROD(N-1-2))*(DOT_PROD(N-1-2,2)*DOT_PROD(N-1-3,2) -
+     1      DOT_PROD(N-1-3,3)*DOT_PROD(N-1-2,1))*(DOT_PROD(N-1-2,1)*ZR(N-1-1,N-1) -
+     1      DOT_PROD(N-1-2,2)*ZR(N-1-2,N-1-1)))
 
-      fta_z(n-1) = a1 + a2
+      FTA_Z(N-1) = A1 + A2
 
-C particle n
-!     i = n
-      coef3=DFAC(n-2)
+C PARTICLE N
+!     I = N
+      COEF3=DFAC(N-2)
 
-      fta_x(n) = -coef3*(dot_prod(n-3,2)*xr(n-2,n-1)
-     1      - dot_prod(n-2,1)*xr(n-3,n-2) -
-     1      (1.0/x_prod(n-2))*(dot_prod(n-2,2)*dot_prod(n-3,2) -
-     1      dot_prod(n-3,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*xr(n-1,n) -
-     1      dot_prod(n-2,2)*xr(n-2,n-1)))
+      FTA_X(N) = -COEF3*(DOT_PROD(N-3,2)*XR(N-2,N-1)
+     1      - DOT_PROD(N-2,1)*XR(N-3,N-2) -
+     1      (1.0/X_PROD(N-2))*(DOT_PROD(N-2,2)*DOT_PROD(N-3,2) -
+     1      DOT_PROD(N-3,3)*DOT_PROD(N-2,1))*(DOT_PROD(N-2,1)*XR(N-1,N) -
+     1      DOT_PROD(N-2,2)*XR(N-2,N-1)))
 
-      fta_y(n) = -coef3*(dot_prod(n-3,2)*yr(n-2,n-1) -
-     1      dot_prod(n-2,1)*yr(n-3,n-2)
-     1      - (1.0/x_prod(n-2))*(dot_prod(n-2,2)*dot_prod(n-3,2)
-     1      - dot_prod(n-3,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*yr(n-1,n) -
-     1      dot_prod(n-2,2)*yr(n-2,n-1)))
+      FTA_Y(N) = -COEF3*(DOT_PROD(N-3,2)*YR(N-2,N-1) -
+     1      DOT_PROD(N-2,1)*YR(N-3,N-2)
+     1      - (1.0/X_PROD(N-2))*(DOT_PROD(N-2,2)*DOT_PROD(N-3,2)
+     1      - DOT_PROD(N-3,3)*DOT_PROD(N-2,1))*(DOT_PROD(N-2,1)*YR(N-1,N) -
+     1      DOT_PROD(N-2,2)*YR(N-2,N-1)))
 
-      fta_z(n) = -coef3*(dot_prod(n-3,2)*zr(n-2,n-1) -
-     1      dot_prod(n-2,1)*zr(n-3,n-2) -
-     1      (1.0/x_prod(n-2))*(dot_prod(n-2,2)*dot_prod(n-3,2) -
-     1      dot_prod(n-3,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*zr(n-1,n) -
-     1      dot_prod(n-2,2)*zr(n-2,n-1)))
+      FTA_Z(N) = -COEF3*(DOT_PROD(N-3,2)*ZR(N-2,N-1) -
+     1      DOT_PROD(N-2,1)*ZR(N-3,N-2) -
+     1      (1.0/X_PROD(N-2))*(DOT_PROD(N-2,2)*DOT_PROD(N-3,2) -
+     1      DOT_PROD(N-3,3)*DOT_PROD(N-2,1))*(DOT_PROD(N-2,1)*ZR(N-1,N) -
+     1      DOT_PROD(N-2,2)*ZR(N-2,N-1)))
 
-C Total up the gradients
+C TOTAL UP THE GRADIENTS
 
-      do i = 1, n
-C          WRITE(*,'(A,I6,4F15.5)') 'i,fnbx,fbx,fbax,ftax=',i,fnb_x(i),fb_x(i),fba_x(i),fta_x(i)
-C          WRITE(*,'(A,I6,4F15.5)') 'i,fnby,fby,fbay,ftay=',i,fnb_y(i),fb_y(i),fba_y(i),fta_y(i)
-C          WRITE(*,'(A,I6,4F15.5)') 'i,fnbz,fbz,fbaz,ftaz=',i,fnb_z(i),fb_z(i),fba_z(i),fta_z(i)
-         fx(i) = fnb_x(i) + fb_x(i) + fba_x(i) + fta_x(i) 
-         fy(i) = fnb_y(i) + fb_y(i) + fba_y(i) + fta_y(i) 
-         fz(i) = fnb_z(i) + fb_z(i) + fba_z(i) + fta_z(i) 
-      enddo
+      DO I = 1, N
+C          WRITE(*,'(A,I6,4F15.5)') 'I,FNBX,FBX,FBAX,FTAX=',I,FNB_X(I),FB_X(I),FBA_X(I),FTA_X(I)
+C          WRITE(*,'(A,I6,4F15.5)') 'I,FNBY,FBY,FBAY,FTAY=',I,FNB_Y(I),FB_Y(I),FBA_Y(I),FTA_Y(I)
+C          WRITE(*,'(A,I6,4F15.5)') 'I,FNBZ,FBZ,FBAZ,FTAZ=',I,FNB_Z(I),FB_Z(I),FBA_Z(I),FTA_Z(I)
+         FX(I) = FNB_X(I) + FB_X(I) + FBA_X(I) + FTA_X(I) 
+         FY(I) = FNB_Y(I) + FB_Y(I) + FBA_Y(I) + FTA_Y(I) 
+         FZ(I) = FNB_Z(I) + FB_Z(I) + FBA_Z(I) + FTA_Z(I) 
+      ENDDO
 
-      do i = 1, n
-         j = (i-1)*3
-         fq(j+1) = -fx(i)
-         fq(j+2) = -fy(i)
-         fq(j+3) = -fz(i)
-      enddo
+      DO I = 1, N
+         J = (I-1)*3
+         FQ(J+1) = -FX(I)
+         FQ(J+2) = -FY(I)
+         FQ(J+3) = -FZ(I)
+      ENDDO
 
-      return
-      end
+      RETURN
+      END
 C
-C  Fill the parameter arrays
+C  FILL THE PARAMETER ARRAYS
 C
-      subroutine param_arrayBLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
+      SUBROUTINE PARAM_ARRAYBLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
      &   LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, 
-     &   HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN, n)
-      implicit NONE
+     &   HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN, N)
+      IMPLICIT NONE
       INTEGER N
-      INTEGER ntype(n), J1, i, j, icount
-      DOUBLE PRECISION LJREP_BLN(n,n), LJATT_BLN(n,n), A_BLN(n), B_BLN(n), C_BLN(N), D_BLN(N),
+      INTEGER NTYPE(N), J1, I, J, ICOUNT
+      DOUBLE PRECISION LJREP_BLN(N,N), LJATT_BLN(N,N), A_BLN(N), B_BLN(N), C_BLN(N), D_BLN(N),
      &                 LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, 
      &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN
       CHARACTER(LEN=1) BEADLETTER(N), BLNSSTRUCT(N)
 C
-C Amino Acid types
+C AMINO ACID TYPES
 C B=1 L=2 N=3
 C
       DO J1=1,N
          IF (BEADLETTER(J1).EQ.'B') THEN
-            ntype(J1)=1
+            NTYPE(J1)=1
          ELSEIF (BEADLETTER(J1).EQ.'L') THEN
-            ntype(J1)=2
+            NTYPE(J1)=2
          ELSEIF (BEADLETTER(J1).EQ.'N') THEN
-            ntype(J1)=3
+            NTYPE(J1)=3
          ELSE
-            PRINT '(A,A1)','ERROR in param_arrayBLN, unrecognised bead type: ',BEADLETTER(J1)
+            PRINT '(A,A1)','ERROR IN PARAM_ARRAYBLN, UNRECOGNISED BEAD TYPE: ',BEADLETTER(J1)
             STOP
          ENDIF
       ENDDO
 
-C Parameters for the dihedral angle potential
-C The end bonds have no dihedral term, so the total number of terms
-C is N-3 (e.g. 4 atoms, 1 dihedral). Non-zero terms for
-C 2 to 3, 3 to 4, 4 to 5, ... , N-3 to N-2, N-2 to N-1. The
-C H, E and T parameters are defined for the first bead of each edge,
-C i.e. for 2, 3, 4, ..., N-2.
+C PARAMETERS FOR THE DIHEDRAL ANGLE POTENTIAL
+C THE END BONDS HAVE NO DIHEDRAL TERM, SO THE TOTAL NUMBER OF TERMS
+C IS N-3 (E.G. 4 ATOMS, 1 DIHEDRAL). NON-ZERO TERMS FOR
+C 2 TO 3, 3 TO 4, 4 TO 5, ... , N-3 TO N-2, N-2 TO N-1. THE
+C H, E AND T PARAMETERS ARE DEFINED FOR THE FIRST BEAD OF EACH EDGE,
+C I.E. FOR 2, 3, 4, ..., N-2.
 
       A_BLN(1:N)=0.0D0
       B_BLN(1:N)=0.0D0
@@ -999,73 +999,73 @@ C i.e. for 2, 3, 4, ..., N-2.
             C_BLN(I+1)=TCBLN
             D_BLN(I+1)=TDBLN
          ELSE
-            PRINT '(A,A1)','ERROR in param_arrayBLN, unrecognised SS type: ',BLNSSTRUCT(J1)
+            PRINT '(A,A1)','ERROR IN PARAM_ARRAYBLN, UNRECOGNISED SS TYPE: ',BLNSSTRUCT(J1)
             STOP
          ENDIF
-C        PRINT '(A,I6,A,A1,A,4F12.4)','I+1=',I+1,' symbol=',BLNSSTRUCT(I),' A,B,C,D=',A_BLN(I+1),B_BLN(I+1),C_BLN(I+1),D_BLN(I+1)
+C        PRINT '(A,I6,A,A1,A,4F12.4)','I+1=',I+1,' SYMBOL=',BLNSSTRUCT(I),' A,B,C,D=',A_BLN(I+1),B_BLN(I+1),C_BLN(I+1),D_BLN(I+1)
       ENDDO
 
-C  Parameters for the L-J interaction between non-bonded particles
+C  PARAMETERS FOR THE L-J INTERACTION BETWEEN NON-BONDED PARTICLES
 
-      do i = 1, n-1
-         do j = i+1, n
-            if (ntype(i) .eq. 3 .or. ntype(j) .eq. 3) then
-               LJREP_BLN(i,j) = LJREPNN
-               LJATT_BLN(i,j) = LJATTNN
-               LJREP_BLN(j,i) = LJREPNN
-               LJATT_BLN(j,i) = LJATTNN
-            else if (ntype(i) .eq. 1 .and. ntype(j) .eq. 1) then
-               LJREP_BLN(i,j) = LJREPBB
-               LJATT_BLN(i,j) = LJATTBB
-               LJREP_BLN(j,i) = LJREPBB
-               LJATT_BLN(j,i) = LJATTBB
-            else
-               LJREP_BLN(i,j) = LJREPLL
-               LJATT_BLN(i,j) = LJATTLL
-               LJREP_BLN(j,i) = LJREPLL
-               LJATT_BLN(j,i) = LJATTLL
-            endif
-         enddo
-      enddo
+      DO I = 1, N-1
+         DO J = I+1, N
+            IF (NTYPE(I) .EQ. 3 .OR. NTYPE(J) .EQ. 3) THEN
+               LJREP_BLN(I,J) = LJREPNN
+               LJATT_BLN(I,J) = LJATTNN
+               LJREP_BLN(J,I) = LJREPNN
+               LJATT_BLN(J,I) = LJATTNN
+            ELSE IF (NTYPE(I) .EQ. 1 .AND. NTYPE(J) .EQ. 1) THEN
+               LJREP_BLN(I,J) = LJREPBB
+               LJATT_BLN(I,J) = LJATTBB
+               LJREP_BLN(J,I) = LJREPBB
+               LJATT_BLN(J,I) = LJATTBB
+            ELSE
+               LJREP_BLN(I,J) = LJREPLL
+               LJATT_BLN(I,J) = LJATTLL
+               LJREP_BLN(J,I) = LJREPLL
+               LJATT_BLN(J,I) = LJATTLL
+            ENDIF
+         ENDDO
+      ENDDO
 
-      return
-      end
+      RETURN
+      END
 
-C Calculate the Second Derivative matrix (two-sided numerical approach)
+C CALCULATE THE SECOND DERIVATIVE MATRIX (TWO-SIDED NUMERICAL APPROACH)
 
-      subroutine calc_dynBLN(qo,n,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,RK_R,RK_THETA,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     1                      bond_angle,tor_angle,radii)
+      SUBROUTINE CALC_DYNBLN(QO,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,RK_R,RK_THETA,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+     1                      BOND_ANGLE,TOR_ANGLE,RADII)
       USE MODHESS
       IMPLICIT NONE
-      DOUBLE PRECISION delta, theta_0, rk_r, rk_theta
-      parameter (delta=1.0d-5, theta_0 = 1.8326)
+      DOUBLE PRECISION DELTA, THETA_0, RK_R, RK_THETA
+      PARAMETER (DELTA=1.0D-5, THETA_0 = 1.8326)
       INTEGER N, I, J
-      DOUBLE PRECISION qo(3*n), fq1(3*n), fq2(3*n)
+      DOUBLE PRECISION QO(3*N), FQ1(3*N), FQ2(3*N)
       DOUBLE PRECISION LJREP_BLN(N,N), LJATT_BLN(N,N),C_BLN(N),A_BLN(N),B_BLN(N),D_BLN(N)
-      DOUBLE PRECISION x(n), y(n),z(n),xr(n,n),yr(n,n),zr(n,n), dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n),
-     &                 COSTOR(N), DFAC(N), sinbond(N)
+      DOUBLE PRECISION X(N), Y(N),Z(N),XR(N,N),YR(N,N),ZR(N,N), DOT_PROD(N,3), X_PROD(N), BOND_ANGLE(N), TOR_ANGLE(N), RADII(N,N),
+     &                 COSTOR(N), DFAC(N), SINBOND(N)
 
 
-C Fill in the Hessian matrix
+C FILL IN THE HESSIAN MATRIX
 
-      do j = 1, 3*n
-         qo(j) = qo(j) + delta
-         call calc_int_coordsBLN(qo,n,x,y,z,xr,yr,zr,dot_prod,x_prod,bond_angle,tor_angle,radii,N,COSTOR,
+      DO J = 1, 3*N
+         QO(J) = QO(J) + DELTA
+         CALL CALC_INT_COORDSBLN(QO,N,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,N,COSTOR,
      &                           SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
-         call calc_gradientBLN(qo,fq2,n,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     &                              bond_angle,tor_angle,radii,N,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
-         qo(j) = qo(j) - 2.0*delta
-         call calc_int_coordsBLN(qo,n,x,y,z,xr,yr,zr,dot_prod,x_prod,bond_angle,tor_angle,radii,N,COSTOR,
+         CALL CALC_GRADIENTBLN(QO,FQ2,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+     &                              BOND_ANGLE,TOR_ANGLE,RADII,N,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
+         QO(J) = QO(J) - 2.0*DELTA
+         CALL CALC_INT_COORDSBLN(QO,N,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,N,COSTOR,
      &                           SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
-         call calc_gradientBLN(qo,fq1,n,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     &                              bond_angle,tor_angle,radii,N,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
-         qo(j) = qo(j) + delta
-         do i = j, 3*n
-            HESS(i,j) = (fq2(i) -  fq1(i))/(2.0*delta)
-            HESS(j,i) = HESS(i,j)
-         enddo
-      enddo
+         CALL CALC_GRADIENTBLN(QO,FQ1,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+     &                              BOND_ANGLE,TOR_ANGLE,RADII,N,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
+         QO(J) = QO(J) + DELTA
+         DO I = J, 3*N
+            HESS(I,J) = (FQ2(I) -  FQ1(I))/(2.0*DELTA)
+            HESS(J,I) = HESS(I,J)
+         ENDDO
+      ENDDO
 
-      return
-      end
+      RETURN
+      END
 

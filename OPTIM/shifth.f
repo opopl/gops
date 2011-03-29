@@ -1,20 +1,20 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       SUBROUTINE SHIFTH(Q,UNDO,NOPT,NATOMS,ATMASS)
       USE KEY
@@ -26,9 +26,9 @@ C
 
       LOGICAL UNDO
 
-C     PRINT*,'in shifth shiftl=',shiftl
+C     PRINT*,'IN SHIFTH SHIFTL=',SHIFTL
 C
-C  If MASST then the coordinates, Q, have already been multiplied by the square root of the mass
+C  IF MASST THEN THE COORDINATES, Q, HAVE ALREADY BEEN MULTIPLIED BY THE SQUARE ROOT OF THE MASS
 C
       SHIFTED=.TRUE.
 
@@ -156,7 +156,7 @@ C           RNORM(6)=RNORM(6)+Q(J3+2)**2+Q(J3+1)**2
          EV(J3+2,6)=EV(J3+2,6)*RNORM(6)
       ENDDO
 
-C     PRINT*,'unshifted hess:'
+C     PRINT*,'UNSHIFTED HESS:'
 C     WRITE(*,'(6F15.5)') ((HESS(J1,J2),J1=1,NOPT),J2=1,NOPT)
 
       IF (FREEZE) THEN
@@ -216,9 +216,9 @@ C     WRITE(*,'(6F15.5)') ((HESS(J1,J2),J1=1,NOPT),J2=1,NOPT)
          ENDDO
       ENDIF
 
-C     PRINT*,'shifted hess:'
+C     PRINT*,'SHIFTED HESS:'
 C     WRITE(*,'(6F15.5)') ((HESS(J1,J2),J1=1,NOPT),J2=1,NOPT)
-C     PRINT*,'coordinates:'
+C     PRINT*,'COORDINATES:'
 C     WRITE(*,'(6F15.5)') (Q(J1),J1=1,NOPT)
 
       IF (RIGIDBODY) NATOMS=NATOMS*2

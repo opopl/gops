@@ -1,20 +1,20 @@
-module bowmanwater
+MODULE BOWMANWATER
 
-implicit none
+IMPLICIT NONE
 
-contains
+CONTAINS
 
-subroutine bowmaninit(nw, pes, dname)
-integer, intent(in) :: nw, pes
-character (len=*), intent(in) :: dname
-print *, "must compile with ifort in order to use Bowmans water potential"
-stop
-end subroutine bowmaninit
+SUBROUTINE BOWMANINIT(NW, PES, DNAME)
+INTEGER, INTENT(IN) :: NW, PES
+CHARACTER (LEN=*), INTENT(IN) :: DNAME
+PRINT *, "MUST COMPILE WITH IFORT IN ORDER TO USE BOWMANS WATER POTENTIAL"
+STOP
+END SUBROUTINE BOWMANINIT
 
-double precision function bowmanpot(x)
-double precision, dimension(:), intent(in) :: x
-print *, "must compile with ifort in order to use Bowmans water potential"
-stop
-end function bowmanpot
+DOUBLE PRECISION FUNCTION BOWMANPOT(X)
+DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: X
+PRINT *, "MUST COMPILE WITH IFORT IN ORDER TO USE BOWMANS WATER POTENTIAL"
+STOP
+END FUNCTION BOWMANPOT
 
-end module bowmanwater
+END MODULE BOWMANWATER

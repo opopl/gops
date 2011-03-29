@@ -1,72 +1,72 @@
 *DECK D1MACH
       DOUBLE PRECISION FUNCTION D1MACH (I)
 C***BEGIN PROLOGUE  D1MACH
-C***PURPOSE  Return floating point machine dependent constants.
+C***PURPOSE  RETURN FLOATING POINT MACHINE DEPENDENT CONSTANTS.
 C***LIBRARY   SLATEC
 C***CATEGORY  R1
 C***TYPE      DOUBLE PRECISION (R1MACH-S, D1MACH-D)
 C***KEYWORDS  MACHINE CONSTANTS
-C***AUTHOR  Fox, P. A., (Bell Labs)
-C           Hall, A. D., (Bell Labs)
-C           Schryer, N. L., (Bell Labs)
+C***AUTHOR  FOX, P. A., (BELL LABS)
+C           HALL, A. D., (BELL LABS)
+C           SCHRYER, N. L., (BELL LABS)
 C***DESCRIPTION
 C
-C   D1MACH can be used to obtain machine-dependent parameters for the
-C   local machine environment.  It is a function subprogram with one
-C   (input) argument, and can be referenced as follows:
+C   D1MACH CAN BE USED TO OBTAIN MACHINE-DEPENDENT PARAMETERS FOR THE
+C   LOCAL MACHINE ENVIRONMENT.  IT IS A FUNCTION SUBPROGRAM WITH ONE
+C   (INPUT) ARGUMENT, AND CAN BE REFERENCED AS FOLLOWS:
 C
 C        D = D1MACH(I)
 C
-C   where I=1,...,5.  The (output) value of D above is determined by
-C   the (input) value of I.  The results for various values of I are
-C   discussed below.
+C   WHERE I=1,...,5.  THE (OUTPUT) VALUE OF D ABOVE IS DETERMINED BY
+C   THE (INPUT) VALUE OF I.  THE RESULTS FOR VARIOUS VALUES OF I ARE
+C   DISCUSSED BELOW.
 C
-C   D1MACH( 1) = B**(EMIN-1), the smallest positive magnitude.
-C   D1MACH( 2) = B**EMAX*(1 - B**(-T)), the largest magnitude.
-C   D1MACH( 3) = B**(-T), the smallest relative spacing.
-C   D1MACH( 4) = B**(1-T), the largest relative spacing.
+C   D1MACH( 1) = B**(EMIN-1), THE SMALLEST POSITIVE MAGNITUDE.
+C   D1MACH( 2) = B**EMAX*(1 - B**(-T)), THE LARGEST MAGNITUDE.
+C   D1MACH( 3) = B**(-T), THE SMALLEST RELATIVE SPACING.
+C   D1MACH( 4) = B**(1-T), THE LARGEST RELATIVE SPACING.
 C   D1MACH( 5) = LOG10(B)
 C
-C   Assume double precision numbers are represented in the T-digit,
-C   base-B form
+C   ASSUME DOUBLE PRECISION NUMBERS ARE REPRESENTED IN THE T-DIGIT,
+C   BASE-B FORM
 C
-C              sign (B**E)*( (X(1)/B) + ... + (X(T)/B**T) )
+C              SIGN (B**E)*( (X(1)/B) + ... + (X(T)/B**T) )
 C
-C   where 0 .LE. X(I) .LT. B for I=1,...,T, 0 .LT. X(1), and
+C   WHERE 0 .LE. X(I) .LT. B FOR I=1,...,T, 0 .LT. X(1), AND
 C   EMIN .LE. E .LE. EMAX.
 C
-C   The values of B, T, EMIN and EMAX are provided in I1MACH as
-C   follows:
-C   I1MACH(10) = B, the base.
-C   I1MACH(14) = T, the number of base-B digits.
-C   I1MACH(15) = EMIN, the smallest exponent E.
-C   I1MACH(16) = EMAX, the largest exponent E.
+C   THE VALUES OF B, T, EMIN AND EMAX ARE PROVIDED IN I1MACH AS
+C   FOLLOWS:
+C   I1MACH(10) = B, THE BASE.
+C   I1MACH(14) = T, THE NUMBER OF BASE-B DIGITS.
+C   I1MACH(15) = EMIN, THE SMALLEST EXPONENT E.
+C   I1MACH(16) = EMAX, THE LARGEST EXPONENT E.
 C
-C   To alter this function for a particular environment, the desired
-C   set of DATA statements should be activated by removing the C from
-C   column 1.  Also, the values of D1MACH(1) - D1MACH(4) should be
-C   checked for consistency with the local operating system.
+C   TO ALTER THIS FUNCTION FOR A PARTICULAR ENVIRONMENT, THE DESIRED
+C   SET OF DATA STATEMENTS SHOULD BE ACTIVATED BY REMOVING THE C FROM
+C   COLUMN 1.  ALSO, THE VALUES OF D1MACH(1) - D1MACH(4) SHOULD BE
+C   CHECKED FOR CONSISTENCY WITH THE LOCAL OPERATING SYSTEM.
 C
-C***REFERENCES  P. A. Fox, A. D. Hall and N. L. Schryer, Framework for
-C                 a portable library, ACM Transactions on Mathematical
-C                 Software 4, 2 (June 1978), pp. 177-188.
+C***REFERENCES  P. A. FOX, A. D. HALL AND N. L. SCHRYER, FRAMEWORK FOR
+C                 A PORTABLE LIBRARY, ACM TRANSACTIONS ON MATHEMATICAL
+C                 SOFTWARE 4, 2 (JUNE 1978), PP. 177-188.
 C***ROUTINES CALLED  XERMSG
 C***REVISION HISTORY  (YYMMDD)
 C   750101  DATE WRITTEN
-C   890213  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900315  CALLs to XERROR changed to CALLs to XERMSG.  (THJ)
-C   900618  Added DEC RISC constants.  (WRB)
-C   900723  Added IBM RS 6000 constants.  (WRB)
-C   900911  Added SUN 386i constants.  (WRB)
-C   910710  Added HP 730 constants.  (SMR)
-C   911114  Added Convex IEEE constants.  (WRB)
-C   920121  Added SUN -r8 compiler option constants.  (WRB)
-C   920229  Added Touchstone Delta i860 constants.  (WRB)
-C   920501  Reformatted the REFERENCES section.  (WRB)
-C   920625  Added CONVEX -p8 and -pd8 compiler option constants.
+C   890213  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900315  CALLS TO XERROR CHANGED TO CALLS TO XERMSG.  (THJ)
+C   900618  ADDED DEC RISC CONSTANTS.  (WRB)
+C   900723  ADDED IBM RS 6000 CONSTANTS.  (WRB)
+C   900911  ADDED SUN 386I CONSTANTS.  (WRB)
+C   910710  ADDED HP 730 CONSTANTS.  (SMR)
+C   911114  ADDED CONVEX IEEE CONSTANTS.  (WRB)
+C   920121  ADDED SUN -R8 COMPILER OPTION CONSTANTS.  (WRB)
+C   920229  ADDED TOUCHSTONE DELTA I860 CONSTANTS.  (WRB)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
+C   920625  ADDED CONVEX -P8 AND -PD8 COMPILER OPTION CONSTANTS.
 C           (BKS, WRB)
-C   930201  Added DEC Alpha and SGI constants.  (RWC and WRB)
+C   930201  ADDED DEC ALPHA AND SGI CONSTANTS.  (RWC AND WRB)
 C***END PROLOGUE  D1MACH
 C
       INTEGER SMALL(4)
@@ -184,7 +184,7 @@ C     DATA DIVER(1), DIVER(2) / Z'3CB00000', Z'00000000' /
 C     DATA LOG10(1), LOG10(2) / Z'3FD34413', Z'509F79FF' /
 C
 C     MACHINE CONSTANTS FOR THE CONVEX
-C     USING THE -fn OR -pd8 COMPILER OPTION
+C     USING THE -FN OR -PD8 COMPILER OPTION
 C
 C     DATA DMACH(1) / Z'0010000000000000' /
 C     DATA DMACH(2) / Z'7FFFFFFFFFFFFFFF' /
@@ -193,7 +193,7 @@ C     DATA DMACH(4) / Z'3CD0000000000000' /
 C     DATA DMACH(5) / Z'3FF34413509F79FF' /
 C
 C     MACHINE CONSTANTS FOR THE CONVEX
-C     USING THE -fi COMPILER OPTION
+C     USING THE -FI COMPILER OPTION
 C
 C     DATA DMACH(1) / Z'0010000000000000' /
 C     DATA DMACH(2) / Z'7FEFFFFFFFFFFFFF' /
@@ -202,7 +202,7 @@ C     DATA DMACH(4) / Z'3CB0000000000000' /
 C     DATA DMACH(5) / Z'3FD34413509F79FF' /
 C
 C     MACHINE CONSTANTS FOR THE CONVEX
-C     USING THE -p8 COMPILER OPTION
+C     USING THE -P8 COMPILER OPTION
 C
 C     DATA DMACH(1) / Z'00010000000000000000000000000000' /
 C     DATA DMACH(2) / Z'7FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF' /
@@ -387,7 +387,7 @@ C     DATA DMACH(3) / Z'3CA0000000000000' /
 C     DATA DMACH(4) / Z'3CB0000000000000' /
 C     DATA DMACH(5) / Z'3FD34413509F79FF' /
 C
-C     MACHINE CONSTANTS FOR THE INTEL i860
+C     MACHINE CONSTANTS FOR THE INTEL I860
 C
 C     DATA DMACH(1) / Z'0010000000000000' /
 C     DATA DMACH(2) / Z'7FEFFFFFFFFFFFFF' /
@@ -468,7 +468,7 @@ C     DATA DMACH(4) / Z'3CB0000000000000' /
 C     DATA DMACH(5) / Z'3FD34413509F79FF' /
 C
 C     MACHINE CONSTANTS FOR THE SUN
-C     USING THE -r8 COMPILER OPTION
+C     USING THE -R8 COMPILER OPTION
 C
 C     DATA DMACH(1) / Z'00010000000000000000000000000000' /
 C     DATA DMACH(2) / Z'7FFEFFFFFFFFFFFFFFFFFFFFFFFFFFFF' /
@@ -476,7 +476,7 @@ C     DATA DMACH(3) / Z'3F8E0000000000000000000000000000' /
 C     DATA DMACH(4) / Z'3F8F0000000000000000000000000000' /
 C     DATA DMACH(5) / Z'3FFD34413509F79FEF311F12B35816F9' /
 C
-C     MACHINE CONSTANTS FOR THE SUN 386i
+C     MACHINE CONSTANTS FOR THE SUN 386I
 C
 C     DATA SMALL(1), SMALL(2) / Z'FFFFFFFD', Z'000FFFFF' /
 C     DATA LARGE(1), LARGE(2) / Z'FFFFFFB0', Z'7FEFFFFF' /
@@ -504,9 +504,9 @@ C
       SUBROUTINE DQAG (F, A, B, EPSABS, EPSREL, KEY, RESULT, ABSERR,
      +   NEVAL, IER, LIMIT, LENW, LAST, IWORK, WORK)
 C***BEGIN PROLOGUE  DQAG
-C***PURPOSE  The routine calculates an approximation result to a given
-C            definite integral I = integral of F over (A,B),
-C            hopefully satisfying following claim for accuracy
+C***PURPOSE  THE ROUTINE CALCULATES AN APPROXIMATION RESULT TO A GIVEN
+C            DEFINITE INTEGRAL I = INTEGRAL OF F OVER (A,B),
+C            HOPEFULLY SATISFYING FOLLOWING CLAIM FOR ACCURACY
 C            ABS(I-RESULT)LE.MAX(EPSABS,EPSREL*ABS(I)).
 C***LIBRARY   SLATEC (QUADPACK)
 C***CATEGORY  H2A1A1
@@ -514,151 +514,151 @@ C***TYPE      DOUBLE PRECISION (QAG-S, DQAG-D)
 C***KEYWORDS  AUTOMATIC INTEGRATOR, GAUSS-KRONROD RULES,
 C             GENERAL-PURPOSE, GLOBALLY ADAPTIVE, INTEGRAND EXAMINATOR,
 C             QUADPACK, QUADRATURE
-C***AUTHOR  Piessens, Robert
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
-C           de Doncker, Elise
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
+C***AUTHOR  PIESSENS, ROBERT
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
+C           DE DONCKER, ELISE
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
 C***DESCRIPTION
 C
-C        Computation of a definite integral
-C        Standard fortran subroutine
-C        Double precision version
+C        COMPUTATION OF A DEFINITE INTEGRAL
+C        STANDARD FORTRAN SUBROUTINE
+C        DOUBLE PRECISION VERSION
 C
-C            F      - Double precision
-C                     Function subprogram defining the integrand
-C                     Function F(X). The actual name for F needs to be
-C                     Declared E X T E R N A L in the driver program.
+C            F      - DOUBLE PRECISION
+C                     FUNCTION SUBPROGRAM DEFINING THE INTEGRAND
+C                     FUNCTION F(X). THE ACTUAL NAME FOR F NEEDS TO BE
+C                     DECLARED E X T E R N A L IN THE DRIVER PROGRAM.
 C
-C            A      - Double precision
-C                     Lower limit of integration
+C            A      - DOUBLE PRECISION
+C                     LOWER LIMIT OF INTEGRATION
 C
-C            B      - Double precision
-C                     Upper limit of integration
+C            B      - DOUBLE PRECISION
+C                     UPPER LIMIT OF INTEGRATION
 C
-C            EPSABS - Double precision
-C                     Absolute accuracy requested
-C            EPSREL - Double precision
-C                     Relative accuracy requested
-C                     If  EPSABS.LE.0
-C                     And EPSREL.LT.MAX(50*REL.MACH.ACC.,0.5D-28),
-C                     The routine will end with IER = 6.
+C            EPSABS - DOUBLE PRECISION
+C                     ABSOLUTE ACCURACY REQUESTED
+C            EPSREL - DOUBLE PRECISION
+C                     RELATIVE ACCURACY REQUESTED
+C                     IF  EPSABS.LE.0
+C                     AND EPSREL.LT.MAX(50*REL.MACH.ACC.,0.5D-28),
+C                     THE ROUTINE WILL END WITH IER = 6.
 C
-C            KEY    - Integer
-C                     Key for choice of local integration rule
-C                     A GAUSS-KRONROD PAIR is used with
-C                       7 - 15 POINTS If KEY.LT.2,
-C                      10 - 21 POINTS If KEY = 2,
-C                      15 - 31 POINTS If KEY = 3,
-C                      20 - 41 POINTS If KEY = 4,
-C                      25 - 51 POINTS If KEY = 5,
-C                      30 - 61 POINTS If KEY.GT.5.
+C            KEY    - INTEGER
+C                     KEY FOR CHOICE OF LOCAL INTEGRATION RULE
+C                     A GAUSS-KRONROD PAIR IS USED WITH
+C                       7 - 15 POINTS IF KEY.LT.2,
+C                      10 - 21 POINTS IF KEY = 2,
+C                      15 - 31 POINTS IF KEY = 3,
+C                      20 - 41 POINTS IF KEY = 4,
+C                      25 - 51 POINTS IF KEY = 5,
+C                      30 - 61 POINTS IF KEY.GT.5.
 C
 C         ON RETURN
-C            RESULT - Double precision
-C                     Approximation to the integral
+C            RESULT - DOUBLE PRECISION
+C                     APPROXIMATION TO THE INTEGRAL
 C
-C            ABSERR - Double precision
-C                     Estimate of the modulus of the absolute error,
-C                     Which should EQUAL or EXCEED ABS(I-RESULT)
+C            ABSERR - DOUBLE PRECISION
+C                     ESTIMATE OF THE MODULUS OF THE ABSOLUTE ERROR,
+C                     WHICH SHOULD EQUAL OR EXCEED ABS(I-RESULT)
 C
-C            NEVAL  - Integer
-C                     Number of integrand evaluations
+C            NEVAL  - INTEGER
+C                     NUMBER OF INTEGRAND EVALUATIONS
 C
-C            IER    - Integer
-C                     IER = 0 Normal and reliable termination of the
-C                             routine. It is assumed that the requested
-C                             accuracy has been achieved.
-C                     IER.GT.0 Abnormal termination of the routine
-C                             The estimates for RESULT and ERROR are
-C                             Less reliable. It is assumed that the
-C                             requested accuracy has not been achieved.
+C            IER    - INTEGER
+C                     IER = 0 NORMAL AND RELIABLE TERMINATION OF THE
+C                             ROUTINE. IT IS ASSUMED THAT THE REQUESTED
+C                             ACCURACY HAS BEEN ACHIEVED.
+C                     IER.GT.0 ABNORMAL TERMINATION OF THE ROUTINE
+C                             THE ESTIMATES FOR RESULT AND ERROR ARE
+C                             LESS RELIABLE. IT IS ASSUMED THAT THE
+C                             REQUESTED ACCURACY HAS NOT BEEN ACHIEVED.
 C                      ERROR MESSAGES
-C                     IER = 1 Maximum number of subdivisions allowed
-C                             has been achieved. One can allow more
-C                             subdivisions by increasing the value of
-C                             LIMIT (and taking the according dimension
-C                             adjustments into account). HOWEVER, If
-C                             this yield no improvement it is advised
-C                             to analyze the integrand in order to
-C                             determine the integration difficulties.
-C                             If the position of a local difficulty can
-C                             be determined (I.E. SINGULARITY,
-C                             DISCONTINUITY WITHIN THE INTERVAL) One
-C                             will probably gain from splitting up the
-C                             interval at this point and calling the
-C                             INTEGRATOR on the SUBRANGES. If possible,
+C                     IER = 1 MAXIMUM NUMBER OF SUBDIVISIONS ALLOWED
+C                             HAS BEEN ACHIEVED. ONE CAN ALLOW MORE
+C                             SUBDIVISIONS BY INCREASING THE VALUE OF
+C                             LIMIT (AND TAKING THE ACCORDING DIMENSION
+C                             ADJUSTMENTS INTO ACCOUNT). HOWEVER, IF
+C                             THIS YIELD NO IMPROVEMENT IT IS ADVISED
+C                             TO ANALYZE THE INTEGRAND IN ORDER TO
+C                             DETERMINE THE INTEGRATION DIFFICULTIES.
+C                             IF THE POSITION OF A LOCAL DIFFICULTY CAN
+C                             BE DETERMINED (I.E. SINGULARITY,
+C                             DISCONTINUITY WITHIN THE INTERVAL) ONE
+C                             WILL PROBABLY GAIN FROM SPLITTING UP THE
+C                             INTERVAL AT THIS POINT AND CALLING THE
+C                             INTEGRATOR ON THE SUBRANGES. IF POSSIBLE,
 C                             AN APPROPRIATE SPECIAL-PURPOSE INTEGRATOR
-C                             should be used which is designed for
-C                             handling the type of difficulty involved.
-C                         = 2 The occurrence of roundoff error is
-C                             detected, which prevents the requested
-C                             tolerance from being achieved.
-C                         = 3 Extremely bad integrand behaviour occurs
-C                             at some points of the integration
-C                             interval.
-C                         = 6 The input is invalid, because
+C                             SHOULD BE USED WHICH IS DESIGNED FOR
+C                             HANDLING THE TYPE OF DIFFICULTY INVOLVED.
+C                         = 2 THE OCCURRENCE OF ROUNDOFF ERROR IS
+C                             DETECTED, WHICH PREVENTS THE REQUESTED
+C                             TOLERANCE FROM BEING ACHIEVED.
+C                         = 3 EXTREMELY BAD INTEGRAND BEHAVIOUR OCCURS
+C                             AT SOME POINTS OF THE INTEGRATION
+C                             INTERVAL.
+C                         = 6 THE INPUT IS INVALID, BECAUSE
 C                             (EPSABS.LE.0 AND
 C                              EPSREL.LT.MAX(50*REL.MACH.ACC.,0.5D-28))
 C                             OR LIMIT.LT.1 OR LENW.LT.LIMIT*4.
-C                             RESULT, ABSERR, NEVAL, LAST are set
-C                             to zero.
-C                             EXCEPT when LENW is invalid, IWORK(1),
-C                             WORK(LIMIT*2+1) and WORK(LIMIT*3+1) are
-C                             set to zero, WORK(1) is set to A and
-C                             WORK(LIMIT+1) to B.
+C                             RESULT, ABSERR, NEVAL, LAST ARE SET
+C                             TO ZERO.
+C                             EXCEPT WHEN LENW IS INVALID, IWORK(1),
+C                             WORK(LIMIT*2+1) AND WORK(LIMIT*3+1) ARE
+C                             SET TO ZERO, WORK(1) IS SET TO A AND
+C                             WORK(LIMIT+1) TO B.
 C
 C         DIMENSIONING PARAMETERS
-C            LIMIT - Integer
-C                    Dimensioning parameter for IWORK
-C                    Limit determines the maximum number of subintervals
-C                    in the partition of the given integration interval
+C            LIMIT - INTEGER
+C                    DIMENSIONING PARAMETER FOR IWORK
+C                    LIMIT DETERMINES THE MAXIMUM NUMBER OF SUBINTERVALS
+C                    IN THE PARTITION OF THE GIVEN INTEGRATION INTERVAL
 C                    (A,B), LIMIT.GE.1.
-C                    If LIMIT.LT.1, the routine will end with IER = 6.
+C                    IF LIMIT.LT.1, THE ROUTINE WILL END WITH IER = 6.
 C
-C            LENW  - Integer
-C                    Dimensioning parameter for work
-C                    LENW must be at least LIMIT*4.
-C                    IF LENW.LT.LIMIT*4, the routine will end with
+C            LENW  - INTEGER
+C                    DIMENSIONING PARAMETER FOR WORK
+C                    LENW MUST BE AT LEAST LIMIT*4.
+C                    IF LENW.LT.LIMIT*4, THE ROUTINE WILL END WITH
 C                    IER = 6.
 C
-C            LAST  - Integer
-C                    On return, LAST equals the number of subintervals
-C                    produced in the subdivision process, which
-C                    determines the number of significant elements
-C                    actually in the WORK ARRAYS.
+C            LAST  - INTEGER
+C                    ON RETURN, LAST EQUALS THE NUMBER OF SUBINTERVALS
+C                    PRODUCED IN THE SUBDIVISION PROCESS, WHICH
+C                    DETERMINES THE NUMBER OF SIGNIFICANT ELEMENTS
+C                    ACTUALLY IN THE WORK ARRAYS.
 C
 C         WORK ARRAYS
-C            IWORK - Integer
-C                    Vector of dimension at least limit, the first K
-C                    elements of which contain pointers to the error
-C                    estimates over the subintervals, such that
+C            IWORK - INTEGER
+C                    VECTOR OF DIMENSION AT LEAST LIMIT, THE FIRST K
+C                    ELEMENTS OF WHICH CONTAIN POINTERS TO THE ERROR
+C                    ESTIMATES OVER THE SUBINTERVALS, SUCH THAT
 C                    WORK(LIMIT*3+IWORK(1)),... , WORK(LIMIT*3+IWORK(K))
-C                    form a decreasing sequence with K = LAST If
-C                    LAST.LE.(LIMIT/2+2), and K = LIMIT+1-LAST otherwise
+C                    FORM A DECREASING SEQUENCE WITH K = LAST IF
+C                    LAST.LE.(LIMIT/2+2), AND K = LIMIT+1-LAST OTHERWISE
 C
-C            WORK  - Double precision
-C                    Vector of dimension at least LENW
-C                    on return
-C                    WORK(1), ..., WORK(LAST) contain the left end
-C                    points of the subintervals in the partition of
+C            WORK  - DOUBLE PRECISION
+C                    VECTOR OF DIMENSION AT LEAST LENW
+C                    ON RETURN
+C                    WORK(1), ..., WORK(LAST) CONTAIN THE LEFT END
+C                    POINTS OF THE SUBINTERVALS IN THE PARTITION OF
 C                     (A,B),
-C                    WORK(LIMIT+1), ..., WORK(LIMIT+LAST) contain the
-C                     right end points,
-C                    WORK(LIMIT*2+1), ..., WORK(LIMIT*2+LAST) contain
-C                     the integral approximations over the subintervals,
-C                    WORK(LIMIT*3+1), ..., WORK(LIMIT*3+LAST) contain
-C                     the error estimates.
+C                    WORK(LIMIT+1), ..., WORK(LIMIT+LAST) CONTAIN THE
+C                     RIGHT END POINTS,
+C                    WORK(LIMIT*2+1), ..., WORK(LIMIT*2+LAST) CONTAIN
+C                     THE INTEGRAL APPROXIMATIONS OVER THE SUBINTERVALS,
+C                    WORK(LIMIT*3+1), ..., WORK(LIMIT*3+LAST) CONTAIN
+C                     THE ERROR ESTIMATES.
 C
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  DQAGE, XERMSG
 C***REVISION HISTORY  (YYMMDD)
 C   800101  DATE WRITTEN
-C   890831  Modified array declarations.  (WRB)
-C   890831  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900315  CALLs to XERROR changed to CALLs to XERMSG.  (THJ)
+C   890831  MODIFIED ARRAY DECLARATIONS.  (WRB)
+C   890831  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900315  CALLS TO XERROR CHANGED TO CALLS TO XERMSG.  (THJ)
 C***END PROLOGUE  DQAG
       DOUBLE PRECISION A,ABSERR,B,EPSABS,EPSREL,F,RESULT,WORK
       INTEGER IER,IWORK,KEY,LAST,LENW,LIMIT,LVL,L1,L2,L3,NEVAL
@@ -697,9 +697,9 @@ C
       SUBROUTINE DQAGE (F, A, B, EPSABS, EPSREL, KEY, LIMIT, RESULT,
      +   ABSERR, NEVAL, IER, ALIST, BLIST, RLIST, ELIST, IORD, LAST)
 C***BEGIN PROLOGUE  DQAGE
-C***PURPOSE  The routine calculates an approximation result to a given
-C            definite integral   I = Integral of F over (A,B),
-C            hopefully satisfying following claim for accuracy
+C***PURPOSE  THE ROUTINE CALCULATES AN APPROXIMATION RESULT TO A GIVEN
+C            DEFINITE INTEGRAL   I = INTEGRAL OF F OVER (A,B),
+C            HOPEFULLY SATISFYING FOLLOWING CLAIM FOR ACCURACY
 C            ABS(I-RESLT).LE.MAX(EPSABS,EPSREL*ABS(I)).
 C***LIBRARY   SLATEC (QUADPACK)
 C***CATEGORY  H2A1A1
@@ -707,148 +707,148 @@ C***TYPE      DOUBLE PRECISION (QAGE-S, DQAGE-D)
 C***KEYWORDS  AUTOMATIC INTEGRATOR, GAUSS-KRONROD RULES,
 C             GENERAL-PURPOSE, GLOBALLY ADAPTIVE, INTEGRAND EXAMINATOR,
 C             QUADPACK, QUADRATURE
-C***AUTHOR  Piessens, Robert
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
-C           de Doncker, Elise
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
+C***AUTHOR  PIESSENS, ROBERT
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
+C           DE DONCKER, ELISE
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
 C***DESCRIPTION
 C
-C        Computation of a definite integral
-C        Standard fortran subroutine
-C        Double precision version
+C        COMPUTATION OF A DEFINITE INTEGRAL
+C        STANDARD FORTRAN SUBROUTINE
+C        DOUBLE PRECISION VERSION
 C
 C        PARAMETERS
 C         ON ENTRY
-C            F      - Double precision
-C                     Function subprogram defining the integrand
-C                     function F(X). The actual name for F needs to be
-C                     declared E X T E R N A L in the driver program.
+C            F      - DOUBLE PRECISION
+C                     FUNCTION SUBPROGRAM DEFINING THE INTEGRAND
+C                     FUNCTION F(X). THE ACTUAL NAME FOR F NEEDS TO BE
+C                     DECLARED E X T E R N A L IN THE DRIVER PROGRAM.
 C
-C            A      - Double precision
-C                     Lower limit of integration
+C            A      - DOUBLE PRECISION
+C                     LOWER LIMIT OF INTEGRATION
 C
-C            B      - Double precision
-C                     Upper limit of integration
+C            B      - DOUBLE PRECISION
+C                     UPPER LIMIT OF INTEGRATION
 C
-C            EPSABS - Double precision
-C                     Absolute accuracy requested
-C            EPSREL - Double precision
-C                     Relative accuracy requested
-C                     If  EPSABS.LE.0
-C                     and EPSREL.LT.MAX(50*REL.MACH.ACC.,0.5D-28),
-C                     the routine will end with IER = 6.
+C            EPSABS - DOUBLE PRECISION
+C                     ABSOLUTE ACCURACY REQUESTED
+C            EPSREL - DOUBLE PRECISION
+C                     RELATIVE ACCURACY REQUESTED
+C                     IF  EPSABS.LE.0
+C                     AND EPSREL.LT.MAX(50*REL.MACH.ACC.,0.5D-28),
+C                     THE ROUTINE WILL END WITH IER = 6.
 C
-C            KEY    - Integer
-C                     Key for choice of local integration rule
-C                     A Gauss-Kronrod pair is used with
-C                          7 - 15 points if KEY.LT.2,
-C                         10 - 21 points if KEY = 2,
-C                         15 - 31 points if KEY = 3,
-C                         20 - 41 points if KEY = 4,
-C                         25 - 51 points if KEY = 5,
-C                         30 - 61 points if KEY.GT.5.
+C            KEY    - INTEGER
+C                     KEY FOR CHOICE OF LOCAL INTEGRATION RULE
+C                     A GAUSS-KRONROD PAIR IS USED WITH
+C                          7 - 15 POINTS IF KEY.LT.2,
+C                         10 - 21 POINTS IF KEY = 2,
+C                         15 - 31 POINTS IF KEY = 3,
+C                         20 - 41 POINTS IF KEY = 4,
+C                         25 - 51 POINTS IF KEY = 5,
+C                         30 - 61 POINTS IF KEY.GT.5.
 C
-C            LIMIT  - Integer
-C                     Gives an upper bound on the number of subintervals
-C                     in the partition of (A,B), LIMIT.GE.1.
+C            LIMIT  - INTEGER
+C                     GIVES AN UPPER BOUND ON THE NUMBER OF SUBINTERVALS
+C                     IN THE PARTITION OF (A,B), LIMIT.GE.1.
 C
 C         ON RETURN
-C            RESULT - Double precision
-C                     Approximation to the integral
+C            RESULT - DOUBLE PRECISION
+C                     APPROXIMATION TO THE INTEGRAL
 C
-C            ABSERR - Double precision
-C                     Estimate of the modulus of the absolute error,
-C                     which should equal or exceed ABS(I-RESULT)
+C            ABSERR - DOUBLE PRECISION
+C                     ESTIMATE OF THE MODULUS OF THE ABSOLUTE ERROR,
+C                     WHICH SHOULD EQUAL OR EXCEED ABS(I-RESULT)
 C
-C            NEVAL  - Integer
-C                     Number of integrand evaluations
+C            NEVAL  - INTEGER
+C                     NUMBER OF INTEGRAND EVALUATIONS
 C
-C            IER    - Integer
-C                     IER = 0 Normal and reliable termination of the
-C                             routine. It is assumed that the requested
-C                             accuracy has been achieved.
-C                     IER.GT.0 Abnormal termination of the routine
-C                             The estimates for result and error are
-C                             less reliable. It is assumed that the
-C                             requested accuracy has not been achieved.
+C            IER    - INTEGER
+C                     IER = 0 NORMAL AND RELIABLE TERMINATION OF THE
+C                             ROUTINE. IT IS ASSUMED THAT THE REQUESTED
+C                             ACCURACY HAS BEEN ACHIEVED.
+C                     IER.GT.0 ABNORMAL TERMINATION OF THE ROUTINE
+C                             THE ESTIMATES FOR RESULT AND ERROR ARE
+C                             LESS RELIABLE. IT IS ASSUMED THAT THE
+C                             REQUESTED ACCURACY HAS NOT BEEN ACHIEVED.
 C            ERROR MESSAGES
-C                     IER = 1 Maximum number of subdivisions allowed
-C                             has been achieved. One can allow more
-C                             subdivisions by increasing the value
-C                             of LIMIT.
-C                             However, if this yields no improvement it
-C                             is rather advised to analyze the integrand
-C                             in order to determine the integration
-C                             difficulties. If the position of a local
-C                             difficulty can be determined(e.g.
-C                             SINGULARITY, DISCONTINUITY within the
-C                             interval) one will probably gain from
-C                             splitting up the interval at this point
-C                             and calling the integrator on the
-C                             subranges. If possible, an appropriate
-C                             special-purpose integrator should be used
-C                             which is designed for handling the type of
-C                             difficulty involved.
-C                         = 2 The occurrence of roundoff error is
-C                             detected, which prevents the requested
-C                             tolerance from being achieved.
-C                         = 3 Extremely bad integrand behaviour occurs
-C                             at some points of the integration
-C                             interval.
-C                         = 6 The input is invalid, because
-C                             (EPSABS.LE.0 and
+C                     IER = 1 MAXIMUM NUMBER OF SUBDIVISIONS ALLOWED
+C                             HAS BEEN ACHIEVED. ONE CAN ALLOW MORE
+C                             SUBDIVISIONS BY INCREASING THE VALUE
+C                             OF LIMIT.
+C                             HOWEVER, IF THIS YIELDS NO IMPROVEMENT IT
+C                             IS RATHER ADVISED TO ANALYZE THE INTEGRAND
+C                             IN ORDER TO DETERMINE THE INTEGRATION
+C                             DIFFICULTIES. IF THE POSITION OF A LOCAL
+C                             DIFFICULTY CAN BE DETERMINED(E.G.
+C                             SINGULARITY, DISCONTINUITY WITHIN THE
+C                             INTERVAL) ONE WILL PROBABLY GAIN FROM
+C                             SPLITTING UP THE INTERVAL AT THIS POINT
+C                             AND CALLING THE INTEGRATOR ON THE
+C                             SUBRANGES. IF POSSIBLE, AN APPROPRIATE
+C                             SPECIAL-PURPOSE INTEGRATOR SHOULD BE USED
+C                             WHICH IS DESIGNED FOR HANDLING THE TYPE OF
+C                             DIFFICULTY INVOLVED.
+C                         = 2 THE OCCURRENCE OF ROUNDOFF ERROR IS
+C                             DETECTED, WHICH PREVENTS THE REQUESTED
+C                             TOLERANCE FROM BEING ACHIEVED.
+C                         = 3 EXTREMELY BAD INTEGRAND BEHAVIOUR OCCURS
+C                             AT SOME POINTS OF THE INTEGRATION
+C                             INTERVAL.
+C                         = 6 THE INPUT IS INVALID, BECAUSE
+C                             (EPSABS.LE.0 AND
 C                              EPSREL.LT.MAX(50*REL.MACH.ACC.,0.5D-28),
 C                             RESULT, ABSERR, NEVAL, LAST, RLIST(1) ,
-C                             ELIST(1) and IORD(1) are set to zero.
-C                             ALIST(1) and BLIST(1) are set to A and B
-C                             respectively.
+C                             ELIST(1) AND IORD(1) ARE SET TO ZERO.
+C                             ALIST(1) AND BLIST(1) ARE SET TO A AND B
+C                             RESPECTIVELY.
 C
-C            ALIST   - Double precision
-C                      Vector of dimension at least LIMIT, the first
-C                       LAST  elements of which are the left
-C                      end points of the subintervals in the partition
-C                      of the given integration range (A,B)
+C            ALIST   - DOUBLE PRECISION
+C                      VECTOR OF DIMENSION AT LEAST LIMIT, THE FIRST
+C                       LAST  ELEMENTS OF WHICH ARE THE LEFT
+C                      END POINTS OF THE SUBINTERVALS IN THE PARTITION
+C                      OF THE GIVEN INTEGRATION RANGE (A,B)
 C
-C            BLIST   - Double precision
-C                      Vector of dimension at least LIMIT, the first
-C                       LAST  elements of which are the right
-C                      end points of the subintervals in the partition
-C                      of the given integration range (A,B)
+C            BLIST   - DOUBLE PRECISION
+C                      VECTOR OF DIMENSION AT LEAST LIMIT, THE FIRST
+C                       LAST  ELEMENTS OF WHICH ARE THE RIGHT
+C                      END POINTS OF THE SUBINTERVALS IN THE PARTITION
+C                      OF THE GIVEN INTEGRATION RANGE (A,B)
 C
-C            RLIST   - Double precision
-C                      Vector of dimension at least LIMIT, the first
-C                       LAST  elements of which are the
-C                      integral approximations on the subintervals
+C            RLIST   - DOUBLE PRECISION
+C                      VECTOR OF DIMENSION AT LEAST LIMIT, THE FIRST
+C                       LAST  ELEMENTS OF WHICH ARE THE
+C                      INTEGRAL APPROXIMATIONS ON THE SUBINTERVALS
 C
-C            ELIST   - Double precision
-C                      Vector of dimension at least LIMIT, the first
-C                       LAST  elements of which are the moduli of the
-C                      absolute error estimates on the subintervals
+C            ELIST   - DOUBLE PRECISION
+C                      VECTOR OF DIMENSION AT LEAST LIMIT, THE FIRST
+C                       LAST  ELEMENTS OF WHICH ARE THE MODULI OF THE
+C                      ABSOLUTE ERROR ESTIMATES ON THE SUBINTERVALS
 C
-C            IORD    - Integer
-C                      Vector of dimension at least LIMIT, the first K
-C                      elements of which are pointers to the
-C                      error estimates over the subintervals,
-C                      such that ELIST(IORD(1)), ...,
-C                      ELIST(IORD(K)) form a decreasing sequence,
-C                      with K = LAST if LAST.LE.(LIMIT/2+2), and
-C                      K = LIMIT+1-LAST otherwise
+C            IORD    - INTEGER
+C                      VECTOR OF DIMENSION AT LEAST LIMIT, THE FIRST K
+C                      ELEMENTS OF WHICH ARE POINTERS TO THE
+C                      ERROR ESTIMATES OVER THE SUBINTERVALS,
+C                      SUCH THAT ELIST(IORD(1)), ...,
+C                      ELIST(IORD(K)) FORM A DECREASING SEQUENCE,
+C                      WITH K = LAST IF LAST.LE.(LIMIT/2+2), AND
+C                      K = LIMIT+1-LAST OTHERWISE
 C
-C            LAST    - Integer
-C                      Number of subintervals actually produced in the
-C                      subdivision process
+C            LAST    - INTEGER
+C                      NUMBER OF SUBINTERVALS ACTUALLY PRODUCED IN THE
+C                      SUBDIVISION PROCESS
 C
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  D1MACH, DQK15, DQK21, DQK31, DQK41, DQK51, DQK61,
 C                    DQPSRT
 C***REVISION HISTORY  (YYMMDD)
 C   800101  DATE WRITTEN
-C   890531  Changed all specific intrinsics to generic.  (WRB)
-C   890831  Modified array declarations.  (WRB)
-C   890831  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
+C   890531  CHANGED ALL SPECIFIC INTRINSICS TO GENERIC.  (WRB)
+C   890831  MODIFIED ARRAY DECLARATIONS.  (WRB)
+C   890831  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
 C***END PROLOGUE  DQAGE
 C
       DOUBLE PRECISION A,ABSERR,ALIST,AREA,AREA1,AREA12,AREA2,A1,A2,B,
@@ -1047,63 +1047,63 @@ C
 *DECK DQK15
       SUBROUTINE DQK15 (F, A, B, RESULT, ABSERR, RESABS, RESASC)
 C***BEGIN PROLOGUE  DQK15
-C***PURPOSE  To compute I = Integral of F over (A,B), with error
-C                           estimate
-C                       J = integral of ABS(F) over (A,B)
+C***PURPOSE  TO COMPUTE I = INTEGRAL OF F OVER (A,B), WITH ERROR
+C                           ESTIMATE
+C                       J = INTEGRAL OF ABS(F) OVER (A,B)
 C***LIBRARY   SLATEC (QUADPACK)
 C***CATEGORY  H2A1A2
 C***TYPE      DOUBLE PRECISION (QK15-S, DQK15-D)
 C***KEYWORDS  15-POINT GAUSS-KRONROD RULES, QUADPACK, QUADRATURE
-C***AUTHOR  Piessens, Robert
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
-C           de Doncker, Elise
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
+C***AUTHOR  PIESSENS, ROBERT
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
+C           DE DONCKER, ELISE
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
 C***DESCRIPTION
 C
-C           Integration rules
-C           Standard fortran subroutine
-C           Double precision version
+C           INTEGRATION RULES
+C           STANDARD FORTRAN SUBROUTINE
+C           DOUBLE PRECISION VERSION
 C
 C           PARAMETERS
 C            ON ENTRY
-C              F      - Double precision
-C                       Function subprogram defining the integrand
-C                       FUNCTION F(X). The actual name for F needs to be
-C                       Declared E X T E R N A L in the calling program.
+C              F      - DOUBLE PRECISION
+C                       FUNCTION SUBPROGRAM DEFINING THE INTEGRAND
+C                       FUNCTION F(X). THE ACTUAL NAME FOR F NEEDS TO BE
+C                       DECLARED E X T E R N A L IN THE CALLING PROGRAM.
 C
-C              A      - Double precision
-C                       Lower limit of integration
+C              A      - DOUBLE PRECISION
+C                       LOWER LIMIT OF INTEGRATION
 C
-C              B      - Double precision
-C                       Upper limit of integration
+C              B      - DOUBLE PRECISION
+C                       UPPER LIMIT OF INTEGRATION
 C
 C            ON RETURN
-C              RESULT - Double precision
-C                       Approximation to the integral I
-C                       Result is computed by applying the 15-POINT
-C                       KRONROD RULE (RESK) obtained by optimal addition
-C                       of abscissae to the 7-POINT GAUSS RULE(RESG).
+C              RESULT - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL I
+C                       RESULT IS COMPUTED BY APPLYING THE 15-POINT
+C                       KRONROD RULE (RESK) OBTAINED BY OPTIMAL ADDITION
+C                       OF ABSCISSAE TO THE 7-POINT GAUSS RULE(RESG).
 C
-C              ABSERR - Double precision
-C                       Estimate of the modulus of the absolute error,
-C                       which should not exceed ABS(I-RESULT)
+C              ABSERR - DOUBLE PRECISION
+C                       ESTIMATE OF THE MODULUS OF THE ABSOLUTE ERROR,
+C                       WHICH SHOULD NOT EXCEED ABS(I-RESULT)
 C
-C              RESABS - Double precision
-C                       Approximation to the integral J
+C              RESABS - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL J
 C
-C              RESASC - Double precision
-C                       Approximation to the integral of ABS(F-I/(B-A))
-C                       over (A,B)
+C              RESASC - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL OF ABS(F-I/(B-A))
+C                       OVER (A,B)
 C
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  D1MACH
 C***REVISION HISTORY  (YYMMDD)
 C   800101  DATE WRITTEN
-C   890531  Changed all specific intrinsics to generic.  (WRB)
-C   890531  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
+C   890531  CHANGED ALL SPECIFIC INTRINSICS TO GENERIC.  (WRB)
+C   890531  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
 C***END PROLOGUE  DQK15
 C
       DOUBLE PRECISION A,ABSC,ABSERR,B,CENTR,DHLGTH,
@@ -1232,63 +1232,63 @@ C
 *DECK DQK21
       SUBROUTINE DQK21 (F, A, B, RESULT, ABSERR, RESABS, RESASC)
 C***BEGIN PROLOGUE  DQK21
-C***PURPOSE  To compute I = Integral of F over (A,B), with error
-C                           estimate
-C                       J = Integral of ABS(F) over (A,B)
+C***PURPOSE  TO COMPUTE I = INTEGRAL OF F OVER (A,B), WITH ERROR
+C                           ESTIMATE
+C                       J = INTEGRAL OF ABS(F) OVER (A,B)
 C***LIBRARY   SLATEC (QUADPACK)
 C***CATEGORY  H2A1A2
 C***TYPE      DOUBLE PRECISION (QK21-S, DQK21-D)
 C***KEYWORDS  21-POINT GAUSS-KRONROD RULES, QUADPACK, QUADRATURE
-C***AUTHOR  Piessens, Robert
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
-C           de Doncker, Elise
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
+C***AUTHOR  PIESSENS, ROBERT
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
+C           DE DONCKER, ELISE
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
 C***DESCRIPTION
 C
-C           Integration rules
-C           Standard fortran subroutine
-C           Double precision version
+C           INTEGRATION RULES
+C           STANDARD FORTRAN SUBROUTINE
+C           DOUBLE PRECISION VERSION
 C
 C           PARAMETERS
 C            ON ENTRY
-C              F      - Double precision
-C                       Function subprogram defining the integrand
-C                       FUNCTION F(X). The actual name for F needs to be
-C                       Declared E X T E R N A L in the driver program.
+C              F      - DOUBLE PRECISION
+C                       FUNCTION SUBPROGRAM DEFINING THE INTEGRAND
+C                       FUNCTION F(X). THE ACTUAL NAME FOR F NEEDS TO BE
+C                       DECLARED E X T E R N A L IN THE DRIVER PROGRAM.
 C
-C              A      - Double precision
-C                       Lower limit of integration
+C              A      - DOUBLE PRECISION
+C                       LOWER LIMIT OF INTEGRATION
 C
-C              B      - Double precision
-C                       Upper limit of integration
+C              B      - DOUBLE PRECISION
+C                       UPPER LIMIT OF INTEGRATION
 C
 C            ON RETURN
-C              RESULT - Double precision
-C                       Approximation to the integral I
-C                       RESULT is computed by applying the 21-POINT
-C                       KRONROD RULE (RESK) obtained by optimal addition
-C                       of abscissae to the 10-POINT GAUSS RULE (RESG).
+C              RESULT - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL I
+C                       RESULT IS COMPUTED BY APPLYING THE 21-POINT
+C                       KRONROD RULE (RESK) OBTAINED BY OPTIMAL ADDITION
+C                       OF ABSCISSAE TO THE 10-POINT GAUSS RULE (RESG).
 C
-C              ABSERR - Double precision
-C                       Estimate of the modulus of the absolute error,
-C                       which should not exceed ABS(I-RESULT)
+C              ABSERR - DOUBLE PRECISION
+C                       ESTIMATE OF THE MODULUS OF THE ABSOLUTE ERROR,
+C                       WHICH SHOULD NOT EXCEED ABS(I-RESULT)
 C
-C              RESABS - Double precision
-C                       Approximation to the integral J
+C              RESABS - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL J
 C
-C              RESASC - Double precision
-C                       Approximation to the integral of ABS(F-I/(B-A))
-C                       over (A,B)
+C              RESASC - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL OF ABS(F-I/(B-A))
+C                       OVER (A,B)
 C
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  D1MACH
 C***REVISION HISTORY  (YYMMDD)
 C   800101  DATE WRITTEN
-C   890531  Changed all specific intrinsics to generic.  (WRB)
-C   890531  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
+C   890531  CHANGED ALL SPECIFIC INTRINSICS TO GENERIC.  (WRB)
+C   890531  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
 C***END PROLOGUE  DQK21
 C
       DOUBLE PRECISION A,ABSC,ABSERR,B,CENTR,DHLGTH,
@@ -1425,64 +1425,64 @@ C
 *DECK DQK31
       SUBROUTINE DQK31 (F, A, B, RESULT, ABSERR, RESABS, RESASC)
 C***BEGIN PROLOGUE  DQK31
-C***PURPOSE  To compute I = Integral of F over (A,B) with error
-C                           estimate
-C                       J = Integral of ABS(F) over (A,B)
+C***PURPOSE  TO COMPUTE I = INTEGRAL OF F OVER (A,B) WITH ERROR
+C                           ESTIMATE
+C                       J = INTEGRAL OF ABS(F) OVER (A,B)
 C***LIBRARY   SLATEC (QUADPACK)
 C***CATEGORY  H2A1A2
 C***TYPE      DOUBLE PRECISION (QK31-S, DQK31-D)
 C***KEYWORDS  31-POINT GAUSS-KRONROD RULES, QUADPACK, QUADRATURE
-C***AUTHOR  Piessens, Robert
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
-C           de Doncker, Elise
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
+C***AUTHOR  PIESSENS, ROBERT
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
+C           DE DONCKER, ELISE
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
 C***DESCRIPTION
 C
-C           Integration rules
-C           Standard fortran subroutine
-C           Double precision version
+C           INTEGRATION RULES
+C           STANDARD FORTRAN SUBROUTINE
+C           DOUBLE PRECISION VERSION
 C
 C           PARAMETERS
 C            ON ENTRY
-C              F      - Double precision
-C                       Function subprogram defining the integrand
-C                       FUNCTION F(X). The actual name for F needs to be
-C                       Declared E X T E R N A L in the calling program.
+C              F      - DOUBLE PRECISION
+C                       FUNCTION SUBPROGRAM DEFINING THE INTEGRAND
+C                       FUNCTION F(X). THE ACTUAL NAME FOR F NEEDS TO BE
+C                       DECLARED E X T E R N A L IN THE CALLING PROGRAM.
 C
-C              A      - Double precision
-C                       Lower limit of integration
+C              A      - DOUBLE PRECISION
+C                       LOWER LIMIT OF INTEGRATION
 C
-C              B      - Double precision
-C                       Upper limit of integration
+C              B      - DOUBLE PRECISION
+C                       UPPER LIMIT OF INTEGRATION
 C
 C            ON RETURN
-C              RESULT - Double precision
-C                       Approximation to the integral I
-C                       RESULT is computed by applying the 31-POINT
-C                       GAUSS-KRONROD RULE (RESK), obtained by optimal
-C                       addition of abscissae to the 15-POINT GAUSS
+C              RESULT - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL I
+C                       RESULT IS COMPUTED BY APPLYING THE 31-POINT
+C                       GAUSS-KRONROD RULE (RESK), OBTAINED BY OPTIMAL
+C                       ADDITION OF ABSCISSAE TO THE 15-POINT GAUSS
 C                       RULE (RESG).
 C
-C              ABSERR - Double precision
-C                       Estimate of the modulus of the modulus,
-C                       which should not exceed ABS(I-RESULT)
+C              ABSERR - DOUBLE PRECISION
+C                       ESTIMATE OF THE MODULUS OF THE MODULUS,
+C                       WHICH SHOULD NOT EXCEED ABS(I-RESULT)
 C
-C              RESABS - Double precision
-C                       Approximation to the integral J
+C              RESABS - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL J
 C
-C              RESASC - Double precision
-C                       Approximation to the integral of ABS(F-I/(B-A))
-C                       over (A,B)
+C              RESASC - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL OF ABS(F-I/(B-A))
+C                       OVER (A,B)
 C
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  D1MACH
 C***REVISION HISTORY  (YYMMDD)
 C   800101  DATE WRITTEN
-C   890531  Changed all specific intrinsics to generic.  (WRB)
-C   890531  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
+C   890531  CHANGED ALL SPECIFIC INTRINSICS TO GENERIC.  (WRB)
+C   890531  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
 C***END PROLOGUE  DQK31
       DOUBLE PRECISION A,ABSC,ABSERR,B,CENTR,DHLGTH,
      1  D1MACH,EPMACH,F,FC,FSUM,FVAL1,FVAL2,FV1,FV2,HLGTH,RESABS,RESASC,
@@ -1627,64 +1627,64 @@ C
 *DECK DQK41
       SUBROUTINE DQK41 (F, A, B, RESULT, ABSERR, RESABS, RESASC)
 C***BEGIN PROLOGUE  DQK41
-C***PURPOSE  To compute I = Integral of F over (A,B), with error
-C                           estimate
-C                       J = Integral of ABS(F) over (A,B)
+C***PURPOSE  TO COMPUTE I = INTEGRAL OF F OVER (A,B), WITH ERROR
+C                           ESTIMATE
+C                       J = INTEGRAL OF ABS(F) OVER (A,B)
 C***LIBRARY   SLATEC (QUADPACK)
 C***CATEGORY  H2A1A2
 C***TYPE      DOUBLE PRECISION (QK41-S, DQK41-D)
 C***KEYWORDS  41-POINT GAUSS-KRONROD RULES, QUADPACK, QUADRATURE
-C***AUTHOR  Piessens, Robert
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
-C           de Doncker, Elise
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
+C***AUTHOR  PIESSENS, ROBERT
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
+C           DE DONCKER, ELISE
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
 C***DESCRIPTION
 C
-C           Integration rules
-C           Standard fortran subroutine
-C           Double precision version
+C           INTEGRATION RULES
+C           STANDARD FORTRAN SUBROUTINE
+C           DOUBLE PRECISION VERSION
 C
 C           PARAMETERS
 C            ON ENTRY
-C              F      - Double precision
-C                       Function subprogram defining the integrand
-C                       FUNCTION F(X). The actual name for F needs to be
-C                       declared E X T E R N A L in the calling program.
+C              F      - DOUBLE PRECISION
+C                       FUNCTION SUBPROGRAM DEFINING THE INTEGRAND
+C                       FUNCTION F(X). THE ACTUAL NAME FOR F NEEDS TO BE
+C                       DECLARED E X T E R N A L IN THE CALLING PROGRAM.
 C
-C              A      - Double precision
-C                       Lower limit of integration
+C              A      - DOUBLE PRECISION
+C                       LOWER LIMIT OF INTEGRATION
 C
-C              B      - Double precision
-C                       Upper limit of integration
+C              B      - DOUBLE PRECISION
+C                       UPPER LIMIT OF INTEGRATION
 C
 C            ON RETURN
-C              RESULT - Double precision
-C                       Approximation to the integral I
-C                       RESULT is computed by applying the 41-POINT
-C                       GAUSS-KRONROD RULE (RESK) obtained by optimal
-C                       addition of abscissae to the 20-POINT GAUSS
+C              RESULT - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL I
+C                       RESULT IS COMPUTED BY APPLYING THE 41-POINT
+C                       GAUSS-KRONROD RULE (RESK) OBTAINED BY OPTIMAL
+C                       ADDITION OF ABSCISSAE TO THE 20-POINT GAUSS
 C                       RULE (RESG).
 C
-C              ABSERR - Double precision
-C                       Estimate of the modulus of the absolute error,
-C                       which should not exceed ABS(I-RESULT)
+C              ABSERR - DOUBLE PRECISION
+C                       ESTIMATE OF THE MODULUS OF THE ABSOLUTE ERROR,
+C                       WHICH SHOULD NOT EXCEED ABS(I-RESULT)
 C
-C              RESABS - Double precision
-C                       Approximation to the integral J
+C              RESABS - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL J
 C
-C              RESASC - Double precision
-C                       Approximation to the integral of ABS(F-I/(B-A))
-C                       over (A,B)
+C              RESASC - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL OF ABS(F-I/(B-A))
+C                       OVER (A,B)
 C
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  D1MACH
 C***REVISION HISTORY  (YYMMDD)
 C   800101  DATE WRITTEN
-C   890531  Changed all specific intrinsics to generic.  (WRB)
-C   890531  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
+C   890531  CHANGED ALL SPECIFIC INTRINSICS TO GENERIC.  (WRB)
+C   890531  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
 C***END PROLOGUE  DQK41
 C
       DOUBLE PRECISION A,ABSC,ABSERR,B,CENTR,DHLGTH,
@@ -1845,64 +1845,64 @@ C
 *DECK DQK51
       SUBROUTINE DQK51 (F, A, B, RESULT, ABSERR, RESABS, RESASC)
 C***BEGIN PROLOGUE  DQK51
-C***PURPOSE  To compute I = Integral of F over (A,B) with error
-C                           estimate
-C                       J = Integral of ABS(F) over (A,B)
+C***PURPOSE  TO COMPUTE I = INTEGRAL OF F OVER (A,B) WITH ERROR
+C                           ESTIMATE
+C                       J = INTEGRAL OF ABS(F) OVER (A,B)
 C***LIBRARY   SLATEC (QUADPACK)
 C***CATEGORY  H2A1A2
 C***TYPE      DOUBLE PRECISION (QK51-S, DQK51-D)
 C***KEYWORDS  51-POINT GAUSS-KRONROD RULES, QUADPACK, QUADRATURE
-C***AUTHOR  Piessens, Robert
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
-C           de Doncker, Elise
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
+C***AUTHOR  PIESSENS, ROBERT
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
+C           DE DONCKER, ELISE
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
 C***DESCRIPTION
 C
-C           Integration rules
-C           Standard fortran subroutine
-C           Double precision version
+C           INTEGRATION RULES
+C           STANDARD FORTRAN SUBROUTINE
+C           DOUBLE PRECISION VERSION
 C
 C           PARAMETERS
 C            ON ENTRY
-C              F      - Double precision
-C                       Function subroutine defining the integrand
-C                       function F(X). The actual name for F needs to be
-C                       declared E X T E R N A L in the calling program.
+C              F      - DOUBLE PRECISION
+C                       FUNCTION SUBROUTINE DEFINING THE INTEGRAND
+C                       FUNCTION F(X). THE ACTUAL NAME FOR F NEEDS TO BE
+C                       DECLARED E X T E R N A L IN THE CALLING PROGRAM.
 C
-C              A      - Double precision
-C                       Lower limit of integration
+C              A      - DOUBLE PRECISION
+C                       LOWER LIMIT OF INTEGRATION
 C
-C              B      - Double precision
-C                       Upper limit of integration
+C              B      - DOUBLE PRECISION
+C                       UPPER LIMIT OF INTEGRATION
 C
 C            ON RETURN
-C              RESULT - Double precision
-C                       Approximation to the integral I
-C                       RESULT is computed by applying the 51-point
-C                       Kronrod rule (RESK) obtained by optimal addition
-C                       of abscissae to the 25-point Gauss rule (RESG).
+C              RESULT - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL I
+C                       RESULT IS COMPUTED BY APPLYING THE 51-POINT
+C                       KRONROD RULE (RESK) OBTAINED BY OPTIMAL ADDITION
+C                       OF ABSCISSAE TO THE 25-POINT GAUSS RULE (RESG).
 C
-C              ABSERR - Double precision
-C                       Estimate of the modulus of the absolute error,
-C                       which should not exceed ABS(I-RESULT)
+C              ABSERR - DOUBLE PRECISION
+C                       ESTIMATE OF THE MODULUS OF THE ABSOLUTE ERROR,
+C                       WHICH SHOULD NOT EXCEED ABS(I-RESULT)
 C
-C              RESABS - Double precision
-C                       Approximation to the integral J
+C              RESABS - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL J
 C
-C              RESASC - Double precision
-C                       Approximation to the integral of ABS(F-I/(B-A))
-C                       over (A,B)
+C              RESASC - DOUBLE PRECISION
+C                       APPROXIMATION TO THE INTEGRAL OF ABS(F-I/(B-A))
+C                       OVER (A,B)
 C
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  D1MACH
 C***REVISION HISTORY  (YYMMDD)
 C   800101  DATE WRITTEN
-C   890531  Changed all specific intrinsics to generic.  (WRB)
-C   890531  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   910819  Added WGK(26) to code.  (WRB)
+C   890531  CHANGED ALL SPECIFIC INTRINSICS TO GENERIC.  (WRB)
+C   890531  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   910819  ADDED WGK(26) TO CODE.  (WRB)
 C***END PROLOGUE  DQK51
 C
       DOUBLE PRECISION A,ABSC,ABSERR,B,CENTR,DHLGTH,
@@ -2076,63 +2076,63 @@ C
 *DECK DQK61
       SUBROUTINE DQK61 (F, A, B, RESULT, ABSERR, RESABS, RESASC)
 C***BEGIN PROLOGUE  DQK61
-C***PURPOSE  To compute I = Integral of F over (A,B) with error
-C                           estimate
-C                       J = Integral of ABS(F) over (A,B)
+C***PURPOSE  TO COMPUTE I = INTEGRAL OF F OVER (A,B) WITH ERROR
+C                           ESTIMATE
+C                       J = INTEGRAL OF ABS(F) OVER (A,B)
 C***LIBRARY   SLATEC (QUADPACK)
 C***CATEGORY  H2A1A2
 C***TYPE      DOUBLE PRECISION (QK61-S, DQK61-D)
 C***KEYWORDS  61-POINT GAUSS-KRONROD RULES, QUADPACK, QUADRATURE
-C***AUTHOR  Piessens, Robert
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
-C           de Doncker, Elise
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
+C***AUTHOR  PIESSENS, ROBERT
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
+C           DE DONCKER, ELISE
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
 C***DESCRIPTION
 C
-C        Integration rule
-C        Standard fortran subroutine
-C        Double precision version
+C        INTEGRATION RULE
+C        STANDARD FORTRAN SUBROUTINE
+C        DOUBLE PRECISION VERSION
 C
 C
 C        PARAMETERS
 C         ON ENTRY
-C           F      - Double precision
-C                    Function subprogram defining the integrand
-C                    function F(X). The actual name for F needs to be
-C                    declared E X T E R N A L in the calling program.
+C           F      - DOUBLE PRECISION
+C                    FUNCTION SUBPROGRAM DEFINING THE INTEGRAND
+C                    FUNCTION F(X). THE ACTUAL NAME FOR F NEEDS TO BE
+C                    DECLARED E X T E R N A L IN THE CALLING PROGRAM.
 C
-C           A      - Double precision
-C                    Lower limit of integration
+C           A      - DOUBLE PRECISION
+C                    LOWER LIMIT OF INTEGRATION
 C
-C           B      - Double precision
-C                    Upper limit of integration
+C           B      - DOUBLE PRECISION
+C                    UPPER LIMIT OF INTEGRATION
 C
 C         ON RETURN
-C           RESULT - Double precision
-C                    Approximation to the integral I
-C                    RESULT is computed by applying the 61-point
-C                    Kronrod rule (RESK) obtained by optimal addition of
-C                    abscissae to the 30-point Gauss rule (RESG).
+C           RESULT - DOUBLE PRECISION
+C                    APPROXIMATION TO THE INTEGRAL I
+C                    RESULT IS COMPUTED BY APPLYING THE 61-POINT
+C                    KRONROD RULE (RESK) OBTAINED BY OPTIMAL ADDITION OF
+C                    ABSCISSAE TO THE 30-POINT GAUSS RULE (RESG).
 C
-C           ABSERR - Double precision
-C                    Estimate of the modulus of the absolute error,
-C                    which should equal or exceed ABS(I-RESULT)
+C           ABSERR - DOUBLE PRECISION
+C                    ESTIMATE OF THE MODULUS OF THE ABSOLUTE ERROR,
+C                    WHICH SHOULD EQUAL OR EXCEED ABS(I-RESULT)
 C
-C           RESABS - Double precision
-C                    Approximation to the integral J
+C           RESABS - DOUBLE PRECISION
+C                    APPROXIMATION TO THE INTEGRAL J
 C
-C           RESASC - Double precision
-C                    Approximation to the integral of ABS(F-I/(B-A))
+C           RESASC - DOUBLE PRECISION
+C                    APPROXIMATION TO THE INTEGRAL OF ABS(F-I/(B-A))
 C
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  D1MACH
 C***REVISION HISTORY  (YYMMDD)
 C   800101  DATE WRITTEN
-C   890531  Changed all specific intrinsics to generic.  (WRB)
-C   890531  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
+C   890531  CHANGED ALL SPECIFIC INTRINSICS TO GENERIC.  (WRB)
+C   890531  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
 C***END PROLOGUE  DQK61
 C
       DOUBLE PRECISION A,DABSC,ABSERR,B,CENTR,DHLGTH,
@@ -2318,67 +2318,67 @@ C
       SUBROUTINE DQPSRT (LIMIT, LAST, MAXERR, ERMAX, ELIST, IORD, NRMAX)
 C***BEGIN PROLOGUE  DQPSRT
 C***SUBSIDIARY
-C***PURPOSE  This routine maintains the descending ordering in the
-C            list of the local error estimated resulting from the
-C            interval subdivision process. At each call two error
-C            estimates are inserted using the sequential search
-C            method, top-down for the largest error estimate and
-C            bottom-up for the smallest error estimate.
+C***PURPOSE  THIS ROUTINE MAINTAINS THE DESCENDING ORDERING IN THE
+C            LIST OF THE LOCAL ERROR ESTIMATED RESULTING FROM THE
+C            INTERVAL SUBDIVISION PROCESS. AT EACH CALL TWO ERROR
+C            ESTIMATES ARE INSERTED USING THE SEQUENTIAL SEARCH
+C            METHOD, TOP-DOWN FOR THE LARGEST ERROR ESTIMATE AND
+C            BOTTOM-UP FOR THE SMALLEST ERROR ESTIMATE.
 C***LIBRARY   SLATEC
 C***TYPE      DOUBLE PRECISION (QPSRT-S, DQPSRT-D)
 C***KEYWORDS  SEQUENTIAL SORTING
-C***AUTHOR  Piessens, Robert
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
-C           de Doncker, Elise
-C             Applied Mathematics and Programming Division
-C             K. U. Leuven
+C***AUTHOR  PIESSENS, ROBERT
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
+C           DE DONCKER, ELISE
+C             APPLIED MATHEMATICS AND PROGRAMMING DIVISION
+C             K. U. LEUVEN
 C***DESCRIPTION
 C
-C           Ordering routine
-C           Standard fortran subroutine
-C           Double precision version
+C           ORDERING ROUTINE
+C           STANDARD FORTRAN SUBROUTINE
+C           DOUBLE PRECISION VERSION
 C
 C           PARAMETERS (MEANING AT OUTPUT)
-C              LIMIT  - Integer
-C                       Maximum number of error estimates the list
-C                       can contain
+C              LIMIT  - INTEGER
+C                       MAXIMUM NUMBER OF ERROR ESTIMATES THE LIST
+C                       CAN CONTAIN
 C
-C              LAST   - Integer
-C                       Number of error estimates currently in the list
+C              LAST   - INTEGER
+C                       NUMBER OF ERROR ESTIMATES CURRENTLY IN THE LIST
 C
-C              MAXERR - Integer
-C                       MAXERR points to the NRMAX-th largest error
-C                       estimate currently in the list
+C              MAXERR - INTEGER
+C                       MAXERR POINTS TO THE NRMAX-TH LARGEST ERROR
+C                       ESTIMATE CURRENTLY IN THE LIST
 C
-C              ERMAX  - Double precision
-C                       NRMAX-th largest error estimate
+C              ERMAX  - DOUBLE PRECISION
+C                       NRMAX-TH LARGEST ERROR ESTIMATE
 C                       ERMAX = ELIST(MAXERR)
 C
-C              ELIST  - Double precision
-C                       Vector of dimension LAST containing
-C                       the error estimates
+C              ELIST  - DOUBLE PRECISION
+C                       VECTOR OF DIMENSION LAST CONTAINING
+C                       THE ERROR ESTIMATES
 C
-C              IORD   - Integer
-C                       Vector of dimension LAST, the first K elements
-C                       of which contain pointers to the error
-C                       estimates, such that
+C              IORD   - INTEGER
+C                       VECTOR OF DIMENSION LAST, THE FIRST K ELEMENTS
+C                       OF WHICH CONTAIN POINTERS TO THE ERROR
+C                       ESTIMATES, SUCH THAT
 C                       ELIST(IORD(1)),...,  ELIST(IORD(K))
-C                       form a decreasing sequence, with
-C                       K = LAST if LAST.LE.(LIMIT/2+2), and
-C                       K = LIMIT+1-LAST otherwise
+C                       FORM A DECREASING SEQUENCE, WITH
+C                       K = LAST IF LAST.LE.(LIMIT/2+2), AND
+C                       K = LIMIT+1-LAST OTHERWISE
 C
-C              NRMAX  - Integer
+C              NRMAX  - INTEGER
 C                       MAXERR = IORD(NRMAX)
 C
 C***SEE ALSO  DQAGE, DQAGIE, DQAGPE, DQAWSE
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   800101  DATE WRITTEN
-C   890831  Modified array declarations.  (WRB)
-C   890831  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900328  Added TYPE section.  (WRB)
+C   890831  MODIFIED ARRAY DECLARATIONS.  (WRB)
+C   890831  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900328  ADDED TYPE SECTION.  (WRB)
 C***END PROLOGUE  DQPSRT
 C
       DOUBLE PRECISION ELIST,ERMAX,ERRMAX,ERRMIN
@@ -2459,30 +2459,30 @@ C
 *DECK FDUMP
       SUBROUTINE FDUMP
 C***BEGIN PROLOGUE  FDUMP
-C***PURPOSE  Symbolic dump (should be locally written).
+C***PURPOSE  SYMBOLIC DUMP (SHOULD BE LOCALLY WRITTEN).
 C***LIBRARY   SLATEC (XERROR)
 C***CATEGORY  R3
 C***TYPE      ALL (FDUMP-A)
 C***KEYWORDS  ERROR, XERMSG
-C***AUTHOR  Jones, R. E., (SNLA)
+C***AUTHOR  JONES, R. E., (SNLA)
 C***DESCRIPTION
 C
-C        ***Note*** Machine Dependent Routine
-C        FDUMP is intended to be replaced by a locally written
-C        version which produces a symbolic dump.  Failing this,
-C        it should be replaced by a version which prints the
-C        subprogram nesting list.  Note that this dump must be
-C        printed on each of up to five files, as indicated by the
-C        XGETUA routine.  See XSETUA and XGETUA for details.
+C        ***NOTE*** MACHINE DEPENDENT ROUTINE
+C        FDUMP IS INTENDED TO BE REPLACED BY A LOCALLY WRITTEN
+C        VERSION WHICH PRODUCES A SYMBOLIC DUMP.  FAILING THIS,
+C        IT SHOULD BE REPLACED BY A VERSION WHICH PRINTS THE
+C        SUBPROGRAM NESTING LIST.  NOTE THAT THIS DUMP MUST BE
+C        PRINTED ON EACH OF UP TO FIVE FILES, AS INDICATED BY THE
+C        XGETUA ROUTINE.  SEE XSETUA AND XGETUA FOR DETAILS.
 C
-C     Written by Ron Jones, with SLATEC Common Math Library Subcommittee
+C     WRITTEN BY RON JONES, WITH SLATEC COMMON MATH LIBRARY SUBCOMMITTEE
 C
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   790801  DATE WRITTEN
-C   861211  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
+C   861211  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
 C***END PROLOGUE  FDUMP
 C***FIRST EXECUTABLE STATEMENT  FDUMP
       RETURN
@@ -2490,93 +2490,93 @@ C***FIRST EXECUTABLE STATEMENT  FDUMP
 *DECK I1MACH
       INTEGER FUNCTION I1MACH (I)
 C***BEGIN PROLOGUE  I1MACH
-C***PURPOSE  Return integer machine dependent constants.
+C***PURPOSE  RETURN INTEGER MACHINE DEPENDENT CONSTANTS.
 C***LIBRARY   SLATEC
 C***CATEGORY  R1
 C***TYPE      INTEGER (I1MACH-I)
 C***KEYWORDS  MACHINE CONSTANTS
-C***AUTHOR  Fox, P. A., (Bell Labs)
-C           Hall, A. D., (Bell Labs)
-C           Schryer, N. L., (Bell Labs)
+C***AUTHOR  FOX, P. A., (BELL LABS)
+C           HALL, A. D., (BELL LABS)
+C           SCHRYER, N. L., (BELL LABS)
 C***DESCRIPTION
 C
-C   I1MACH can be used to obtain machine-dependent parameters for the
-C   local machine environment.  It is a function subprogram with one
-C   (input) argument and can be referenced as follows:
+C   I1MACH CAN BE USED TO OBTAIN MACHINE-DEPENDENT PARAMETERS FOR THE
+C   LOCAL MACHINE ENVIRONMENT.  IT IS A FUNCTION SUBPROGRAM WITH ONE
+C   (INPUT) ARGUMENT AND CAN BE REFERENCED AS FOLLOWS:
 C
 C        K = I1MACH(I)
 C
-C   where I=1,...,16.  The (output) value of K above is determined by
-C   the (input) value of I.  The results for various values of I are
-C   discussed below.
+C   WHERE I=1,...,16.  THE (OUTPUT) VALUE OF K ABOVE IS DETERMINED BY
+C   THE (INPUT) VALUE OF I.  THE RESULTS FOR VARIOUS VALUES OF I ARE
+C   DISCUSSED BELOW.
 C
-C   I/O unit numbers:
-C     I1MACH( 1) = the standard input unit.
-C     I1MACH( 2) = the standard output unit.
-C     I1MACH( 3) = the standard punch unit.
-C     I1MACH( 4) = the standard error message unit.
+C   I/O UNIT NUMBERS:
+C     I1MACH( 1) = THE STANDARD INPUT UNIT.
+C     I1MACH( 2) = THE STANDARD OUTPUT UNIT.
+C     I1MACH( 3) = THE STANDARD PUNCH UNIT.
+C     I1MACH( 4) = THE STANDARD ERROR MESSAGE UNIT.
 C
-C   Words:
-C     I1MACH( 5) = the number of bits per integer storage unit.
-C     I1MACH( 6) = the number of characters per integer storage unit.
+C   WORDS:
+C     I1MACH( 5) = THE NUMBER OF BITS PER INTEGER STORAGE UNIT.
+C     I1MACH( 6) = THE NUMBER OF CHARACTERS PER INTEGER STORAGE UNIT.
 C
-C   Integers:
-C     assume integers are represented in the S-digit, base-A form
+C   INTEGERS:
+C     ASSUME INTEGERS ARE REPRESENTED IN THE S-DIGIT, BASE-A FORM
 C
-C                sign ( X(S-1)*A**(S-1) + ... + X(1)*A + X(0) )
+C                SIGN ( X(S-1)*A**(S-1) + ... + X(1)*A + X(0) )
 C
-C                where 0 .LE. X(I) .LT. A for I=0,...,S-1.
-C     I1MACH( 7) = A, the base.
-C     I1MACH( 8) = S, the number of base-A digits.
-C     I1MACH( 9) = A**S - 1, the largest magnitude.
+C                WHERE 0 .LE. X(I) .LT. A FOR I=0,...,S-1.
+C     I1MACH( 7) = A, THE BASE.
+C     I1MACH( 8) = S, THE NUMBER OF BASE-A DIGITS.
+C     I1MACH( 9) = A**S - 1, THE LARGEST MAGNITUDE.
 C
-C   Floating-Point Numbers:
-C     Assume floating-point numbers are represented in the T-digit,
-C     base-B form
-C                sign (B**E)*( (X(1)/B) + ... + (X(T)/B**T) )
+C   FLOATING-POINT NUMBERS:
+C     ASSUME FLOATING-POINT NUMBERS ARE REPRESENTED IN THE T-DIGIT,
+C     BASE-B FORM
+C                SIGN (B**E)*( (X(1)/B) + ... + (X(T)/B**T) )
 C
-C                where 0 .LE. X(I) .LT. B for I=1,...,T,
-C                0 .LT. X(1), and EMIN .LE. E .LE. EMAX.
-C     I1MACH(10) = B, the base.
+C                WHERE 0 .LE. X(I) .LT. B FOR I=1,...,T,
+C                0 .LT. X(1), AND EMIN .LE. E .LE. EMAX.
+C     I1MACH(10) = B, THE BASE.
 C
-C   Single-Precision:
-C     I1MACH(11) = T, the number of base-B digits.
-C     I1MACH(12) = EMIN, the smallest exponent E.
-C     I1MACH(13) = EMAX, the largest exponent E.
+C   SINGLE-PRECISION:
+C     I1MACH(11) = T, THE NUMBER OF BASE-B DIGITS.
+C     I1MACH(12) = EMIN, THE SMALLEST EXPONENT E.
+C     I1MACH(13) = EMAX, THE LARGEST EXPONENT E.
 C
-C   Double-Precision:
-C     I1MACH(14) = T, the number of base-B digits.
-C     I1MACH(15) = EMIN, the smallest exponent E.
-C     I1MACH(16) = EMAX, the largest exponent E.
+C   DOUBLE-PRECISION:
+C     I1MACH(14) = T, THE NUMBER OF BASE-B DIGITS.
+C     I1MACH(15) = EMIN, THE SMALLEST EXPONENT E.
+C     I1MACH(16) = EMAX, THE LARGEST EXPONENT E.
 C
-C   To alter this function for a particular environment, the desired
-C   set of DATA statements should be activated by removing the C from
-C   column 1.  Also, the values of I1MACH(1) - I1MACH(4) should be
-C   checked for consistency with the local operating system.
+C   TO ALTER THIS FUNCTION FOR A PARTICULAR ENVIRONMENT, THE DESIRED
+C   SET OF DATA STATEMENTS SHOULD BE ACTIVATED BY REMOVING THE C FROM
+C   COLUMN 1.  ALSO, THE VALUES OF I1MACH(1) - I1MACH(4) SHOULD BE
+C   CHECKED FOR CONSISTENCY WITH THE LOCAL OPERATING SYSTEM.
 C
-C***REFERENCES  P. A. Fox, A. D. Hall and N. L. Schryer, Framework for
-C                 a portable library, ACM Transactions on Mathematical
-C                 Software 4, 2 (June 1978), pp. 177-188.
+C***REFERENCES  P. A. FOX, A. D. HALL AND N. L. SCHRYER, FRAMEWORK FOR
+C                 A PORTABLE LIBRARY, ACM TRANSACTIONS ON MATHEMATICAL
+C                 SOFTWARE 4, 2 (JUNE 1978), PP. 177-188.
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   750101  DATE WRITTEN
-C   891012  Added VAX G-floating constants.  (WRB)
-C   891012  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900618  Added DEC RISC constants.  (WRB)
-C   900723  Added IBM RS 6000 constants.  (WRB)
-C   901009  Correct I1MACH(7) for IBM Mainframes. Should be 2 not 16.
+C   891012  ADDED VAX G-FLOATING CONSTANTS.  (WRB)
+C   891012  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900618  ADDED DEC RISC CONSTANTS.  (WRB)
+C   900723  ADDED IBM RS 6000 CONSTANTS.  (WRB)
+C   901009  CORRECT I1MACH(7) FOR IBM MAINFRAMES. SHOULD BE 2 NOT 16.
 C           (RWC)
-C   910710  Added HP 730 constants.  (SMR)
-C   911114  Added Convex IEEE constants.  (WRB)
-C   920121  Added SUN -r8 compiler option constants.  (WRB)
-C   920229  Added Touchstone Delta i860 constants.  (WRB)
-C   920501  Reformatted the REFERENCES section.  (WRB)
-C   920625  Added Convex -p8 and -pd8 compiler option constants.
+C   910710  ADDED HP 730 CONSTANTS.  (SMR)
+C   911114  ADDED CONVEX IEEE CONSTANTS.  (WRB)
+C   920121  ADDED SUN -R8 COMPILER OPTION CONSTANTS.  (WRB)
+C   920229  ADDED TOUCHSTONE DELTA I860 CONSTANTS.  (WRB)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
+C   920625  ADDED CONVEX -P8 AND -PD8 COMPILER OPTION CONSTANTS.
 C           (BKS, WRB)
-C   930201  Added DEC Alpha and SGI constants.  (RWC and WRB)
-C   930618  Corrected I1MACH(5) for Convex -p8 and -pd8 compiler
-C           options.  (DWL, RWC and WRB).
+C   930201  ADDED DEC ALPHA AND SGI CONSTANTS.  (RWC AND WRB)
+C   930618  CORRECTED I1MACH(5) FOR CONVEX -P8 AND -PD8 COMPILER
+C           OPTIONS.  (DWL, RWC AND WRB).
 C***END PROLOGUE  I1MACH
 C
       INTEGER IMACH(16),OUTPUT
@@ -2737,7 +2737,7 @@ C     DATA IMACH(15) /      -1022 /
 C     DATA IMACH(16) /       1023 /
 C
 C     MACHINE CONSTANTS FOR THE CONVEX
-C     USING THE -fn COMPILER OPTION
+C     USING THE -FN COMPILER OPTION
 C
 C     DATA IMACH( 1) /          5 /
 C     DATA IMACH( 2) /          6 /
@@ -2757,7 +2757,7 @@ C     DATA IMACH(15) /      -1023 /
 C     DATA IMACH(16) /       1023 /
 C
 C     MACHINE CONSTANTS FOR THE CONVEX
-C     USING THE -fi COMPILER OPTION
+C     USING THE -FI COMPILER OPTION
 C
 C     DATA IMACH( 1) /          5 /
 C     DATA IMACH( 2) /          6 /
@@ -2777,7 +2777,7 @@ C     DATA IMACH(15) /      -1021 /
 C     DATA IMACH(16) /       1024 /
 C
 C     MACHINE CONSTANTS FOR THE CONVEX
-C     USING THE -p8 COMPILER OPTION
+C     USING THE -P8 COMPILER OPTION
 C
 C     DATA IMACH( 1) /          5 /
 C     DATA IMACH( 2) /          6 /
@@ -2797,7 +2797,7 @@ C     DATA IMACH(15) /     -16383 /
 C     DATA IMACH(16) /      16383 /
 C
 C     MACHINE CONSTANTS FOR THE CONVEX
-C     USING THE -pd8 COMPILER OPTION
+C     USING THE -PD8 COMPILER OPTION
 C
 C     DATA IMACH( 1) /          5 /
 C     DATA IMACH( 2) /          6 /
@@ -3168,7 +3168,7 @@ C     DATA IMACH(14) /         53 /
 C     DATA IMACH(15) /      -1021 /
 C     DATA IMACH(16) /       1024 /
 C
-C     MACHINE CONSTANTS FOR THE INTEL i860
+C     MACHINE CONSTANTS FOR THE INTEL I860
 C
 C     DATA IMACH( 1) /          5 /
 C     DATA IMACH( 2) /          6 /
@@ -3304,7 +3304,7 @@ C     DATA IMACH(15) /      -1021 /
 C     DATA IMACH(16) /       1024 /
 C
 C     MACHINE CONSTANTS FOR THE SUN
-C     USING THE -r8 COMPILER OPTION
+C     USING THE -R8 COMPILER OPTION
 C
 C     DATA IMACH( 1) /          5 /
 C     DATA IMACH( 2) /          6 /
@@ -3379,55 +3379,55 @@ C
       FUNCTION J4SAVE (IWHICH, IVALUE, ISET)
 C***BEGIN PROLOGUE  J4SAVE
 C***SUBSIDIARY
-C***PURPOSE  Save or recall global variables needed by error
-C            handling routines.
+C***PURPOSE  SAVE OR RECALL GLOBAL VARIABLES NEEDED BY ERROR
+C            HANDLING ROUTINES.
 C***LIBRARY   SLATEC (XERROR)
 C***TYPE      INTEGER (J4SAVE-I)
 C***KEYWORDS  ERROR MESSAGES, ERROR NUMBER, RECALL, SAVE, XERROR
-C***AUTHOR  Jones, R. E., (SNLA)
+C***AUTHOR  JONES, R. E., (SNLA)
 C***DESCRIPTION
 C
-C     Abstract
-C        J4SAVE saves and recalls several global variables needed
-C        by the library error handling routines.
+C     ABSTRACT
+C        J4SAVE SAVES AND RECALLS SEVERAL GLOBAL VARIABLES NEEDED
+C        BY THE LIBRARY ERROR HANDLING ROUTINES.
 C
-C     Description of Parameters
-C      --Input--
-C        IWHICH - Index of item desired.
-C                = 1 Refers to current error number.
-C                = 2 Refers to current error control flag.
-C                = 3 Refers to current unit number to which error
-C                    messages are to be sent.  (0 means use standard.)
-C                = 4 Refers to the maximum number of times any
-C                     message is to be printed (as set by XERMAX).
-C                = 5 Refers to the total number of units to which
-C                     each error message is to be written.
-C                = 6 Refers to the 2nd unit for error messages
-C                = 7 Refers to the 3rd unit for error messages
-C                = 8 Refers to the 4th unit for error messages
-C                = 9 Refers to the 5th unit for error messages
-C        IVALUE - The value to be set for the IWHICH-th parameter,
-C                 if ISET is .TRUE. .
-C        ISET   - If ISET=.TRUE., the IWHICH-th parameter will BE
-C                 given the value, IVALUE.  If ISET=.FALSE., the
-C                 IWHICH-th parameter will be unchanged, and IVALUE
-C                 is a dummy parameter.
-C      --Output--
-C        The (old) value of the IWHICH-th parameter will be returned
-C        in the function value, J4SAVE.
+C     DESCRIPTION OF PARAMETERS
+C      --INPUT--
+C        IWHICH - INDEX OF ITEM DESIRED.
+C                = 1 REFERS TO CURRENT ERROR NUMBER.
+C                = 2 REFERS TO CURRENT ERROR CONTROL FLAG.
+C                = 3 REFERS TO CURRENT UNIT NUMBER TO WHICH ERROR
+C                    MESSAGES ARE TO BE SENT.  (0 MEANS USE STANDARD.)
+C                = 4 REFERS TO THE MAXIMUM NUMBER OF TIMES ANY
+C                     MESSAGE IS TO BE PRINTED (AS SET BY XERMAX).
+C                = 5 REFERS TO THE TOTAL NUMBER OF UNITS TO WHICH
+C                     EACH ERROR MESSAGE IS TO BE WRITTEN.
+C                = 6 REFERS TO THE 2ND UNIT FOR ERROR MESSAGES
+C                = 7 REFERS TO THE 3RD UNIT FOR ERROR MESSAGES
+C                = 8 REFERS TO THE 4TH UNIT FOR ERROR MESSAGES
+C                = 9 REFERS TO THE 5TH UNIT FOR ERROR MESSAGES
+C        IVALUE - THE VALUE TO BE SET FOR THE IWHICH-TH PARAMETER,
+C                 IF ISET IS .TRUE. .
+C        ISET   - IF ISET=.TRUE., THE IWHICH-TH PARAMETER WILL BE
+C                 GIVEN THE VALUE, IVALUE.  IF ISET=.FALSE., THE
+C                 IWHICH-TH PARAMETER WILL BE UNCHANGED, AND IVALUE
+C                 IS A DUMMY PARAMETER.
+C      --OUTPUT--
+C        THE (OLD) VALUE OF THE IWHICH-TH PARAMETER WILL BE RETURNED
+C        IN THE FUNCTION VALUE, J4SAVE.
 C
 C***SEE ALSO  XERMSG
-C***REFERENCES  R. E. Jones and D. K. Kahaner, XERROR, the SLATEC
-C                 Error-handling Package, SAND82-0800, Sandia
-C                 Laboratories, 1982.
+C***REFERENCES  R. E. JONES AND D. K. KAHANER, XERROR, THE SLATEC
+C                 ERROR-HANDLING PACKAGE, SAND82-0800, SANDIA
+C                 LABORATORIES, 1982.
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   790801  DATE WRITTEN
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900205  Minor modifications to prologue.  (WRB)
-C   900402  Added TYPE section.  (WRB)
-C   910411  Added KEYWORDS section.  (WRB)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900205  MINOR MODIFICATIONS TO PROLOGUE.  (WRB)
+C   900402  ADDED TYPE SECTION.  (WRB)
+C   910411  ADDED KEYWORDS SECTION.  (WRB)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  J4SAVE
       LOGICAL ISET
       INTEGER IPARAM(9)
@@ -3444,57 +3444,57 @@ C***FIRST EXECUTABLE STATEMENT  J4SAVE
       SUBROUTINE XERCNT (LIBRAR, SUBROU, MESSG, NERR, LEVEL, KONTRL)
 C***BEGIN PROLOGUE  XERCNT
 C***SUBSIDIARY
-C***PURPOSE  Allow user control over handling of errors.
+C***PURPOSE  ALLOW USER CONTROL OVER HANDLING OF ERRORS.
 C***LIBRARY   SLATEC (XERROR)
 C***CATEGORY  R3C
 C***TYPE      ALL (XERCNT-A)
 C***KEYWORDS  ERROR, XERROR
-C***AUTHOR  Jones, R. E., (SNLA)
+C***AUTHOR  JONES, R. E., (SNLA)
 C***DESCRIPTION
 C
-C     Abstract
-C        Allows user control over handling of individual errors.
-C        Just after each message is recorded, but before it is
-C        processed any further (i.e., before it is printed or
-C        a decision to abort is made), a call is made to XERCNT.
-C        If the user has provided his own version of XERCNT, he
-C        can then override the value of KONTROL used in processing
-C        this message by redefining its value.
-C        KONTRL may be set to any value from -2 to 2.
-C        The meanings for KONTRL are the same as in XSETF, except
-C        that the value of KONTRL changes only for this message.
-C        If KONTRL is set to a value outside the range from -2 to 2,
-C        it will be moved back into that range.
+C     ABSTRACT
+C        ALLOWS USER CONTROL OVER HANDLING OF INDIVIDUAL ERRORS.
+C        JUST AFTER EACH MESSAGE IS RECORDED, BUT BEFORE IT IS
+C        PROCESSED ANY FURTHER (I.E., BEFORE IT IS PRINTED OR
+C        A DECISION TO ABORT IS MADE), A CALL IS MADE TO XERCNT.
+C        IF THE USER HAS PROVIDED HIS OWN VERSION OF XERCNT, HE
+C        CAN THEN OVERRIDE THE VALUE OF KONTROL USED IN PROCESSING
+C        THIS MESSAGE BY REDEFINING ITS VALUE.
+C        KONTRL MAY BE SET TO ANY VALUE FROM -2 TO 2.
+C        THE MEANINGS FOR KONTRL ARE THE SAME AS IN XSETF, EXCEPT
+C        THAT THE VALUE OF KONTRL CHANGES ONLY FOR THIS MESSAGE.
+C        IF KONTRL IS SET TO A VALUE OUTSIDE THE RANGE FROM -2 TO 2,
+C        IT WILL BE MOVED BACK INTO THAT RANGE.
 C
-C     Description of Parameters
+C     DESCRIPTION OF PARAMETERS
 C
-C      --Input--
-C        LIBRAR - the library that the routine is in.
-C        SUBROU - the subroutine that XERMSG is being called from
-C        MESSG  - the first 20 characters of the error message.
-C        NERR   - same as in the call to XERMSG.
-C        LEVEL  - same as in the call to XERMSG.
-C        KONTRL - the current value of the control flag as set
-C                 by a call to XSETF.
+C      --INPUT--
+C        LIBRAR - THE LIBRARY THAT THE ROUTINE IS IN.
+C        SUBROU - THE SUBROUTINE THAT XERMSG IS BEING CALLED FROM
+C        MESSG  - THE FIRST 20 CHARACTERS OF THE ERROR MESSAGE.
+C        NERR   - SAME AS IN THE CALL TO XERMSG.
+C        LEVEL  - SAME AS IN THE CALL TO XERMSG.
+C        KONTRL - THE CURRENT VALUE OF THE CONTROL FLAG AS SET
+C                 BY A CALL TO XSETF.
 C
-C      --Output--
-C        KONTRL - the new value of KONTRL.  If KONTRL is not
-C                 defined, it will remain at its original value.
-C                 This changed value of control affects only
-C                 the current occurrence of the current message.
+C      --OUTPUT--
+C        KONTRL - THE NEW VALUE OF KONTRL.  IF KONTRL IS NOT
+C                 DEFINED, IT WILL REMAIN AT ITS ORIGINAL VALUE.
+C                 THIS CHANGED VALUE OF CONTROL AFFECTS ONLY
+C                 THE CURRENT OCCURRENCE OF THE CURRENT MESSAGE.
 C
-C***REFERENCES  R. E. Jones and D. K. Kahaner, XERROR, the SLATEC
-C                 Error-handling Package, SAND82-0800, Sandia
-C                 Laboratories, 1982.
+C***REFERENCES  R. E. JONES AND D. K. KAHANER, XERROR, THE SLATEC
+C                 ERROR-HANDLING PACKAGE, SAND82-0800, SANDIA
+C                 LABORATORIES, 1982.
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   790801  DATE WRITTEN
-C   861211  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900206  Routine changed from user-callable to subsidiary.  (WRB)
-C   900510  Changed calling sequence to include LIBRARY and SUBROUTINE
-C           names, changed routine name from XERCTL to XERCNT.  (RWC)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   861211  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900206  ROUTINE CHANGED FROM USER-CALLABLE TO SUBSIDIARY.  (WRB)
+C   900510  CHANGED CALLING SEQUENCE TO INCLUDE LIBRARY AND SUBROUTINE
+C           NAMES, CHANGED ROUTINE NAME FROM XERCTL TO XERCNT.  (RWC)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  XERCNT
       CHARACTER*(*) LIBRAR, SUBROU, MESSG
 C***FIRST EXECUTABLE STATEMENT  XERCNT
@@ -3504,36 +3504,36 @@ C***FIRST EXECUTABLE STATEMENT  XERCNT
       SUBROUTINE XERHLT (MESSG)
 C***BEGIN PROLOGUE  XERHLT
 C***SUBSIDIARY
-C***PURPOSE  Abort program execution and print error message.
+C***PURPOSE  ABORT PROGRAM EXECUTION AND PRINT ERROR MESSAGE.
 C***LIBRARY   SLATEC (XERROR)
 C***CATEGORY  R3C
 C***TYPE      ALL (XERHLT-A)
 C***KEYWORDS  ABORT PROGRAM EXECUTION, ERROR, XERROR
-C***AUTHOR  Jones, R. E., (SNLA)
+C***AUTHOR  JONES, R. E., (SNLA)
 C***DESCRIPTION
 C
-C     Abstract
-C        ***Note*** machine dependent routine
-C        XERHLT aborts the execution of the program.
-C        The error message causing the abort is given in the calling
-C        sequence, in case one needs it for printing on a dayfile,
-C        for example.
+C     ABSTRACT
+C        ***NOTE*** MACHINE DEPENDENT ROUTINE
+C        XERHLT ABORTS THE EXECUTION OF THE PROGRAM.
+C        THE ERROR MESSAGE CAUSING THE ABORT IS GIVEN IN THE CALLING
+C        SEQUENCE, IN CASE ONE NEEDS IT FOR PRINTING ON A DAYFILE,
+C        FOR EXAMPLE.
 C
-C     Description of Parameters
-C        MESSG is as in XERMSG.
+C     DESCRIPTION OF PARAMETERS
+C        MESSG IS AS IN XERMSG.
 C
-C***REFERENCES  R. E. Jones and D. K. Kahaner, XERROR, the SLATEC
-C                 Error-handling Package, SAND82-0800, Sandia
-C                 Laboratories, 1982.
+C***REFERENCES  R. E. JONES AND D. K. KAHANER, XERROR, THE SLATEC
+C                 ERROR-HANDLING PACKAGE, SAND82-0800, SANDIA
+C                 LABORATORIES, 1982.
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   790801  DATE WRITTEN
-C   861211  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900206  Routine changed from user-callable to subsidiary.  (WRB)
-C   900510  Changed calling sequence to delete length of character
-C           and changed routine name from XERABT to XERHLT.  (RWC)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   861211  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900206  ROUTINE CHANGED FROM USER-CALLABLE TO SUBSIDIARY.  (WRB)
+C   900510  CHANGED CALLING SEQUENCE TO DELETE LENGTH OF CHARACTER
+C           AND CHANGED ROUTINE NAME FROM XERABT TO XERHLT.  (RWC)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  XERHLT
       CHARACTER*(*) MESSG
 C***FIRST EXECUTABLE STATEMENT  XERHLT
@@ -3542,55 +3542,55 @@ C***FIRST EXECUTABLE STATEMENT  XERHLT
 *DECK XERMSG
       SUBROUTINE XERMSG (LIBRAR, SUBROU, MESSG, NERR, LEVEL)
 C***BEGIN PROLOGUE  XERMSG
-C***PURPOSE  Process error messages for SLATEC and other libraries.
+C***PURPOSE  PROCESS ERROR MESSAGES FOR SLATEC AND OTHER LIBRARIES.
 C***LIBRARY   SLATEC (XERROR)
 C***CATEGORY  R3C
 C***TYPE      ALL (XERMSG-A)
 C***KEYWORDS  ERROR MESSAGE, XERROR
-C***AUTHOR  Fong, Kirby, (NMFECC at LLNL)
+C***AUTHOR  FONG, KIRBY, (NMFECC AT LLNL)
 C***DESCRIPTION
 C
-C   XERMSG processes a diagnostic message in a manner determined by the
-C   value of LEVEL and the current value of the library error control
-C   flag, KONTRL.  See subroutine XSETF for details.
+C   XERMSG PROCESSES A DIAGNOSTIC MESSAGE IN A MANNER DETERMINED BY THE
+C   VALUE OF LEVEL AND THE CURRENT VALUE OF THE LIBRARY ERROR CONTROL
+C   FLAG, KONTRL.  SEE SUBROUTINE XSETF FOR DETAILS.
 C
-C    LIBRAR   A character constant (or character variable) with the name
-C             of the library.  This will be 'SLATEC' for the SLATEC
-C             Common Math Library.  The error handling package is
-C             general enough to be used by many libraries
-C             simultaneously, so it is desirable for the routine that
-C             detects and reports an error to identify the library name
-C             as well as the routine name.
+C    LIBRAR   A CHARACTER CONSTANT (OR CHARACTER VARIABLE) WITH THE NAME
+C             OF THE LIBRARY.  THIS WILL BE 'SLATEC' FOR THE SLATEC
+C             COMMON MATH LIBRARY.  THE ERROR HANDLING PACKAGE IS
+C             GENERAL ENOUGH TO BE USED BY MANY LIBRARIES
+C             SIMULTANEOUSLY, SO IT IS DESIRABLE FOR THE ROUTINE THAT
+C             DETECTS AND REPORTS AN ERROR TO IDENTIFY THE LIBRARY NAME
+C             AS WELL AS THE ROUTINE NAME.
 C
-C    SUBROU   A character constant (or character variable) with the name
-C             of the routine that detected the error.  Usually it is the
-C             name of the routine that is calling XERMSG.  There are
-C             some instances where a user callable library routine calls
-C             lower level subsidiary routines where the error is
-C             detected.  In such cases it may be more informative to
-C             supply the name of the routine the user called rather than
-C             the name of the subsidiary routine that detected the
-C             error.
+C    SUBROU   A CHARACTER CONSTANT (OR CHARACTER VARIABLE) WITH THE NAME
+C             OF THE ROUTINE THAT DETECTED THE ERROR.  USUALLY IT IS THE
+C             NAME OF THE ROUTINE THAT IS CALLING XERMSG.  THERE ARE
+C             SOME INSTANCES WHERE A USER CALLABLE LIBRARY ROUTINE CALLS
+C             LOWER LEVEL SUBSIDIARY ROUTINES WHERE THE ERROR IS
+C             DETECTED.  IN SUCH CASES IT MAY BE MORE INFORMATIVE TO
+C             SUPPLY THE NAME OF THE ROUTINE THE USER CALLED RATHER THAN
+C             THE NAME OF THE SUBSIDIARY ROUTINE THAT DETECTED THE
+C             ERROR.
 C
-C    MESSG    A character constant (or character variable) with the text
-C             of the error or warning message.  In the example below,
-C             the message is a character constant that contains a
-C             generic message.
+C    MESSG    A CHARACTER CONSTANT (OR CHARACTER VARIABLE) WITH THE TEXT
+C             OF THE ERROR OR WARNING MESSAGE.  IN THE EXAMPLE BELOW,
+C             THE MESSAGE IS A CHARACTER CONSTANT THAT CONTAINS A
+C             GENERIC MESSAGE.
 C
 C                   CALL XERMSG ('SLATEC', 'MMPY',
 C                  *'THE ORDER OF THE MATRIX EXCEEDS THE ROW DIMENSION',
 C                  *3, 1)
 C
-C             It is possible (and is sometimes desirable) to generate a
-C             specific message--e.g., one that contains actual numeric
-C             values.  Specific numeric values can be converted into
-C             character strings using formatted WRITE statements into
-C             character variables.  This is called standard Fortran
-C             internal file I/O and is exemplified in the first three
-C             lines of the following example.  You can also catenate
-C             substrings of characters to construct the error message.
-C             Here is an example showing the use of both writing to
-C             an internal file and catenating character strings.
+C             IT IS POSSIBLE (AND IS SOMETIMES DESIRABLE) TO GENERATE A
+C             SPECIFIC MESSAGE--E.G., ONE THAT CONTAINS ACTUAL NUMERIC
+C             VALUES.  SPECIFIC NUMERIC VALUES CAN BE CONVERTED INTO
+C             CHARACTER STRINGS USING FORMATTED WRITE STATEMENTS INTO
+C             CHARACTER VARIABLES.  THIS IS CALLED STANDARD FORTRAN
+C             INTERNAL FILE I/O AND IS EXEMPLIFIED IN THE FIRST THREE
+C             LINES OF THE FOLLOWING EXAMPLE.  YOU CAN ALSO CATENATE
+C             SUBSTRINGS OF CHARACTERS TO CONSTRUCT THE ERROR MESSAGE.
+C             HERE IS AN EXAMPLE SHOWING THE USE OF BOTH WRITING TO
+C             AN INTERNAL FILE AND CATENATING CHARACTER STRINGS.
 C
 C                   CHARACTER*5 CHARN, CHARL
 C                   WRITE (CHARN,10) N
@@ -3600,96 +3600,96 @@ C                   CALL XERMSG ('SLATEC', 'MMPY', 'THE ORDER'//CHARN//
 C                  *   ' OF THE MATRIX EXCEEDS ITS ROW DIMENSION OF'//
 C                  *   CHARL, 3, 1)
 C
-C             There are two subtleties worth mentioning.  One is that
-C             the // for character catenation is used to construct the
-C             error message so that no single character constant is
-C             continued to the next line.  This avoids confusion as to
-C             whether there are trailing blanks at the end of the line.
-C             The second is that by catenating the parts of the message
-C             as an actual argument rather than encoding the entire
-C             message into one large character variable, we avoid
-C             having to know how long the message will be in order to
-C             declare an adequate length for that large character
-C             variable.  XERMSG calls XERPRN to print the message using
-C             multiple lines if necessary.  If the message is very long,
-C             XERPRN will break it into pieces of 72 characters (as
-C             requested by XERMSG) for printing on multiple lines.
-C             Also, XERMSG asks XERPRN to prefix each line with ' *  '
-C             so that the total line length could be 76 characters.
-C             Note also that XERPRN scans the error message backwards
-C             to ignore trailing blanks.  Another feature is that
-C             the substring '$$' is treated as a new line sentinel
-C             by XERPRN.  If you want to construct a multiline
-C             message without having to count out multiples of 72
-C             characters, just use '$$' as a separator.  '$$'
-C             obviously must occur within 72 characters of the
-C             start of each line to have its intended effect since
-C             XERPRN is asked to wrap around at 72 characters in
-C             addition to looking for '$$'.
+C             THERE ARE TWO SUBTLETIES WORTH MENTIONING.  ONE IS THAT
+C             THE // FOR CHARACTER CATENATION IS USED TO CONSTRUCT THE
+C             ERROR MESSAGE SO THAT NO SINGLE CHARACTER CONSTANT IS
+C             CONTINUED TO THE NEXT LINE.  THIS AVOIDS CONFUSION AS TO
+C             WHETHER THERE ARE TRAILING BLANKS AT THE END OF THE LINE.
+C             THE SECOND IS THAT BY CATENATING THE PARTS OF THE MESSAGE
+C             AS AN ACTUAL ARGUMENT RATHER THAN ENCODING THE ENTIRE
+C             MESSAGE INTO ONE LARGE CHARACTER VARIABLE, WE AVOID
+C             HAVING TO KNOW HOW LONG THE MESSAGE WILL BE IN ORDER TO
+C             DECLARE AN ADEQUATE LENGTH FOR THAT LARGE CHARACTER
+C             VARIABLE.  XERMSG CALLS XERPRN TO PRINT THE MESSAGE USING
+C             MULTIPLE LINES IF NECESSARY.  IF THE MESSAGE IS VERY LONG,
+C             XERPRN WILL BREAK IT INTO PIECES OF 72 CHARACTERS (AS
+C             REQUESTED BY XERMSG) FOR PRINTING ON MULTIPLE LINES.
+C             ALSO, XERMSG ASKS XERPRN TO PREFIX EACH LINE WITH ' *  '
+C             SO THAT THE TOTAL LINE LENGTH COULD BE 76 CHARACTERS.
+C             NOTE ALSO THAT XERPRN SCANS THE ERROR MESSAGE BACKWARDS
+C             TO IGNORE TRAILING BLANKS.  ANOTHER FEATURE IS THAT
+C             THE SUBSTRING '$$' IS TREATED AS A NEW LINE SENTINEL
+C             BY XERPRN.  IF YOU WANT TO CONSTRUCT A MULTILINE
+C             MESSAGE WITHOUT HAVING TO COUNT OUT MULTIPLES OF 72
+C             CHARACTERS, JUST USE '$$' AS A SEPARATOR.  '$$'
+C             OBVIOUSLY MUST OCCUR WITHIN 72 CHARACTERS OF THE
+C             START OF EACH LINE TO HAVE ITS INTENDED EFFECT SINCE
+C             XERPRN IS ASKED TO WRAP AROUND AT 72 CHARACTERS IN
+C             ADDITION TO LOOKING FOR '$$'.
 C
-C    NERR     An integer value that is chosen by the library routine's
-C             author.  It must be in the range -99 to 999 (three
-C             printable digits).  Each distinct error should have its
-C             own error number.  These error numbers should be described
-C             in the machine readable documentation for the routine.
-C             The error numbers need be unique only within each routine,
-C             so it is reasonable for each routine to start enumerating
-C             errors from 1 and proceeding to the next integer.
+C    NERR     AN INTEGER VALUE THAT IS CHOSEN BY THE LIBRARY ROUTINE'S
+C             AUTHOR.  IT MUST BE IN THE RANGE -99 TO 999 (THREE
+C             PRINTABLE DIGITS).  EACH DISTINCT ERROR SHOULD HAVE ITS
+C             OWN ERROR NUMBER.  THESE ERROR NUMBERS SHOULD BE DESCRIBED
+C             IN THE MACHINE READABLE DOCUMENTATION FOR THE ROUTINE.
+C             THE ERROR NUMBERS NEED BE UNIQUE ONLY WITHIN EACH ROUTINE,
+C             SO IT IS REASONABLE FOR EACH ROUTINE TO START ENUMERATING
+C             ERRORS FROM 1 AND PROCEEDING TO THE NEXT INTEGER.
 C
-C    LEVEL    An integer value in the range 0 to 2 that indicates the
-C             level (severity) of the error.  Their meanings are
+C    LEVEL    AN INTEGER VALUE IN THE RANGE 0 TO 2 THAT INDICATES THE
+C             LEVEL (SEVERITY) OF THE ERROR.  THEIR MEANINGS ARE
 C
-C            -1  A warning message.  This is used if it is not clear
-C                that there really is an error, but the user's attention
-C                may be needed.  An attempt is made to only print this
-C                message once.
+C            -1  A WARNING MESSAGE.  THIS IS USED IF IT IS NOT CLEAR
+C                THAT THERE REALLY IS AN ERROR, BUT THE USER'S ATTENTION
+C                MAY BE NEEDED.  AN ATTEMPT IS MADE TO ONLY PRINT THIS
+C                MESSAGE ONCE.
 C
-C             0  A warning message.  This is used if it is not clear
-C                that there really is an error, but the user's attention
-C                may be needed.
+C             0  A WARNING MESSAGE.  THIS IS USED IF IT IS NOT CLEAR
+C                THAT THERE REALLY IS AN ERROR, BUT THE USER'S ATTENTION
+C                MAY BE NEEDED.
 C
-C             1  A recoverable error.  This is used even if the error is
-C                so serious that the routine cannot return any useful
-C                answer.  If the user has told the error package to
-C                return after recoverable errors, then XERMSG will
-C                return to the Library routine which can then return to
-C                the user's routine.  The user may also permit the error
-C                package to terminate the program upon encountering a
-C                recoverable error.
+C             1  A RECOVERABLE ERROR.  THIS IS USED EVEN IF THE ERROR IS
+C                SO SERIOUS THAT THE ROUTINE CANNOT RETURN ANY USEFUL
+C                ANSWER.  IF THE USER HAS TOLD THE ERROR PACKAGE TO
+C                RETURN AFTER RECOVERABLE ERRORS, THEN XERMSG WILL
+C                RETURN TO THE LIBRARY ROUTINE WHICH CAN THEN RETURN TO
+C                THE USER'S ROUTINE.  THE USER MAY ALSO PERMIT THE ERROR
+C                PACKAGE TO TERMINATE THE PROGRAM UPON ENCOUNTERING A
+C                RECOVERABLE ERROR.
 C
-C             2  A fatal error.  XERMSG will not return to its caller
-C                after it receives a fatal error.  This level should
-C                hardly ever be used; it is much better to allow the
-C                user a chance to recover.  An example of one of the few
-C                cases in which it is permissible to declare a level 2
-C                error is a reverse communication Library routine that
-C                is likely to be called repeatedly until it integrates
-C                across some interval.  If there is a serious error in
-C                the input such that another step cannot be taken and
-C                the Library routine is called again without the input
-C                error having been corrected by the caller, the Library
-C                routine will probably be called forever with improper
-C                input.  In this case, it is reasonable to declare the
-C                error to be fatal.
+C             2  A FATAL ERROR.  XERMSG WILL NOT RETURN TO ITS CALLER
+C                AFTER IT RECEIVES A FATAL ERROR.  THIS LEVEL SHOULD
+C                HARDLY EVER BE USED; IT IS MUCH BETTER TO ALLOW THE
+C                USER A CHANCE TO RECOVER.  AN EXAMPLE OF ONE OF THE FEW
+C                CASES IN WHICH IT IS PERMISSIBLE TO DECLARE A LEVEL 2
+C                ERROR IS A REVERSE COMMUNICATION LIBRARY ROUTINE THAT
+C                IS LIKELY TO BE CALLED REPEATEDLY UNTIL IT INTEGRATES
+C                ACROSS SOME INTERVAL.  IF THERE IS A SERIOUS ERROR IN
+C                THE INPUT SUCH THAT ANOTHER STEP CANNOT BE TAKEN AND
+C                THE LIBRARY ROUTINE IS CALLED AGAIN WITHOUT THE INPUT
+C                ERROR HAVING BEEN CORRECTED BY THE CALLER, THE LIBRARY
+C                ROUTINE WILL PROBABLY BE CALLED FOREVER WITH IMPROPER
+C                INPUT.  IN THIS CASE, IT IS REASONABLE TO DECLARE THE
+C                ERROR TO BE FATAL.
 C
-C    Each of the arguments to XERMSG is input; none will be modified by
-C    XERMSG.  A routine may make multiple calls to XERMSG with warning
-C    level messages; however, after a call to XERMSG with a recoverable
-C    error, the routine should return to the user.  Do not try to call
-C    XERMSG with a second recoverable error after the first recoverable
-C    error because the error package saves the error number.  The user
-C    can retrieve this error number by calling another entry point in
-C    the error handling package and then clear the error number when
-C    recovering from the error.  Calling XERMSG in succession causes the
-C    old error number to be overwritten by the latest error number.
-C    This is considered harmless for error numbers associated with
-C    warning messages but must not be done for error numbers of serious
-C    errors.  After a call to XERMSG with a recoverable error, the user
-C    must be given a chance to call NUMXER or XERCLR to retrieve or
-C    clear the error number.
-C***REFERENCES  R. E. Jones and D. K. Kahaner, XERROR, the SLATEC
-C                 Error-handling Package, SAND82-0800, Sandia
-C                 Laboratories, 1982.
+C    EACH OF THE ARGUMENTS TO XERMSG IS INPUT; NONE WILL BE MODIFIED BY
+C    XERMSG.  A ROUTINE MAY MAKE MULTIPLE CALLS TO XERMSG WITH WARNING
+C    LEVEL MESSAGES; HOWEVER, AFTER A CALL TO XERMSG WITH A RECOVERABLE
+C    ERROR, THE ROUTINE SHOULD RETURN TO THE USER.  DO NOT TRY TO CALL
+C    XERMSG WITH A SECOND RECOVERABLE ERROR AFTER THE FIRST RECOVERABLE
+C    ERROR BECAUSE THE ERROR PACKAGE SAVES THE ERROR NUMBER.  THE USER
+C    CAN RETRIEVE THIS ERROR NUMBER BY CALLING ANOTHER ENTRY POINT IN
+C    THE ERROR HANDLING PACKAGE AND THEN CLEAR THE ERROR NUMBER WHEN
+C    RECOVERING FROM THE ERROR.  CALLING XERMSG IN SUCCESSION CAUSES THE
+C    OLD ERROR NUMBER TO BE OVERWRITTEN BY THE LATEST ERROR NUMBER.
+C    THIS IS CONSIDERED HARMLESS FOR ERROR NUMBERS ASSOCIATED WITH
+C    WARNING MESSAGES BUT MUST NOT BE DONE FOR ERROR NUMBERS OF SERIOUS
+C    ERRORS.  AFTER A CALL TO XERMSG WITH A RECOVERABLE ERROR, THE USER
+C    MUST BE GIVEN A CHANCE TO CALL NUMXER OR XERCLR TO RETRIEVE OR
+C    CLEAR THE ERROR NUMBER.
+C***REFERENCES  R. E. JONES AND D. K. KAHANER, XERROR, THE SLATEC
+C                 ERROR-HANDLING PACKAGE, SAND82-0800, SANDIA
+C                 LABORATORIES, 1982.
 C***ROUTINES CALLED  FDUMP, J4SAVE, XERCNT, XERHLT, XERPRN, XERSVE
 C***REVISION HISTORY  (YYMMDD)
 C   880101  DATE WRITTEN
@@ -3718,12 +3718,12 @@ C           CLEAN UP THE CODING.
 C   890721  REVISED TO USE NEW FEATURE IN XERPRN TO COUNT CHARACTERS IN
 C           PREFIX.
 C   891013  REVISED TO CORRECT COMMENTS.
-C   891214  Prologue converted to Version 4.0 format.  (WRB)
-C   900510  Changed test on NERR to be -9999999 < NERR < 99999999, but
-C           NERR .ne. 0, and on LEVEL to be -2 < LEVEL < 3.  Added
-C           LEVEL=-1 logic, changed calls to XERSAV to XERSVE, and
-C           XERCTL to XERCNT.  (RWC)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (WRB)
+C   900510  CHANGED TEST ON NERR TO BE -9999999 < NERR < 99999999, BUT
+C           NERR .NE. 0, AND ON LEVEL TO BE -2 < LEVEL < 3.  ADDED
+C           LEVEL=-1 LOGIC, CHANGED CALLS TO XERSAV TO XERSVE, AND
+C           XERCTL TO XERCNT.  (RWC)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  XERMSG
       CHARACTER*(*) LIBRAR, SUBROU, MESSG
       CHARACTER*8 XLIBR, XSUBR
@@ -3907,61 +3907,61 @@ C
       SUBROUTINE XERPRN (PREFIX, NPREF, MESSG, NWRAP)
 C***BEGIN PROLOGUE  XERPRN
 C***SUBSIDIARY
-C***PURPOSE  Print error messages processed by XERMSG.
+C***PURPOSE  PRINT ERROR MESSAGES PROCESSED BY XERMSG.
 C***LIBRARY   SLATEC (XERROR)
 C***CATEGORY  R3C
 C***TYPE      ALL (XERPRN-A)
 C***KEYWORDS  ERROR MESSAGES, PRINTING, XERROR
-C***AUTHOR  Fong, Kirby, (NMFECC at LLNL)
+C***AUTHOR  FONG, KIRBY, (NMFECC AT LLNL)
 C***DESCRIPTION
 C
-C This routine sends one or more lines to each of the (up to five)
-C logical units to which error messages are to be sent.  This routine
-C is called several times by XERMSG, sometimes with a single line to
-C print and sometimes with a (potentially very long) message that may
-C wrap around into multiple lines.
+C THIS ROUTINE SENDS ONE OR MORE LINES TO EACH OF THE (UP TO FIVE)
+C LOGICAL UNITS TO WHICH ERROR MESSAGES ARE TO BE SENT.  THIS ROUTINE
+C IS CALLED SEVERAL TIMES BY XERMSG, SOMETIMES WITH A SINGLE LINE TO
+C PRINT AND SOMETIMES WITH A (POTENTIALLY VERY LONG) MESSAGE THAT MAY
+C WRAP AROUND INTO MULTIPLE LINES.
 C
-C PREFIX  Input argument of type CHARACTER.  This argument contains
-C         characters to be put at the beginning of each line before
-C         the body of the message.  No more than 16 characters of
-C         PREFIX will be used.
+C PREFIX  INPUT ARGUMENT OF TYPE CHARACTER.  THIS ARGUMENT CONTAINS
+C         CHARACTERS TO BE PUT AT THE BEGINNING OF EACH LINE BEFORE
+C         THE BODY OF THE MESSAGE.  NO MORE THAN 16 CHARACTERS OF
+C         PREFIX WILL BE USED.
 C
-C NPREF   Input argument of type INTEGER.  This argument is the number
-C         of characters to use from PREFIX.  If it is negative, the
-C         intrinsic function LEN is used to determine its length.  If
-C         it is zero, PREFIX is not used.  If it exceeds 16 or if
-C         LEN(PREFIX) exceeds 16, only the first 16 characters will be
-C         used.  If NPREF is positive and the length of PREFIX is less
-C         than NPREF, a copy of PREFIX extended with blanks to length
-C         NPREF will be used.
+C NPREF   INPUT ARGUMENT OF TYPE INTEGER.  THIS ARGUMENT IS THE NUMBER
+C         OF CHARACTERS TO USE FROM PREFIX.  IF IT IS NEGATIVE, THE
+C         INTRINSIC FUNCTION LEN IS USED TO DETERMINE ITS LENGTH.  IF
+C         IT IS ZERO, PREFIX IS NOT USED.  IF IT EXCEEDS 16 OR IF
+C         LEN(PREFIX) EXCEEDS 16, ONLY THE FIRST 16 CHARACTERS WILL BE
+C         USED.  IF NPREF IS POSITIVE AND THE LENGTH OF PREFIX IS LESS
+C         THAN NPREF, A COPY OF PREFIX EXTENDED WITH BLANKS TO LENGTH
+C         NPREF WILL BE USED.
 C
-C MESSG   Input argument of type CHARACTER.  This is the text of a
-C         message to be printed.  If it is a long message, it will be
-C         broken into pieces for printing on multiple lines.  Each line
-C         will start with the appropriate prefix and be followed by a
-C         piece of the message.  NWRAP is the number of characters per
-C         piece; that is, after each NWRAP characters, we break and
-C         start a new line.  In addition the characters '$$' embedded
-C         in MESSG are a sentinel for a new line.  The counting of
-C         characters up to NWRAP starts over for each new line.  The
-C         value of NWRAP typically used by XERMSG is 72 since many
-C         older error messages in the SLATEC Library are laid out to
-C         rely on wrap-around every 72 characters.
+C MESSG   INPUT ARGUMENT OF TYPE CHARACTER.  THIS IS THE TEXT OF A
+C         MESSAGE TO BE PRINTED.  IF IT IS A LONG MESSAGE, IT WILL BE
+C         BROKEN INTO PIECES FOR PRINTING ON MULTIPLE LINES.  EACH LINE
+C         WILL START WITH THE APPROPRIATE PREFIX AND BE FOLLOWED BY A
+C         PIECE OF THE MESSAGE.  NWRAP IS THE NUMBER OF CHARACTERS PER
+C         PIECE; THAT IS, AFTER EACH NWRAP CHARACTERS, WE BREAK AND
+C         START A NEW LINE.  IN ADDITION THE CHARACTERS '$$' EMBEDDED
+C         IN MESSG ARE A SENTINEL FOR A NEW LINE.  THE COUNTING OF
+C         CHARACTERS UP TO NWRAP STARTS OVER FOR EACH NEW LINE.  THE
+C         VALUE OF NWRAP TYPICALLY USED BY XERMSG IS 72 SINCE MANY
+C         OLDER ERROR MESSAGES IN THE SLATEC LIBRARY ARE LAID OUT TO
+C         RELY ON WRAP-AROUND EVERY 72 CHARACTERS.
 C
-C NWRAP   Input argument of type INTEGER.  This gives the maximum size
-C         piece into which to break MESSG for printing on multiple
-C         lines.  An embedded '$$' ends a line, and the count restarts
-C         at the following character.  If a line break does not occur
-C         on a blank (it would split a word) that word is moved to the
-C         next line.  Values of NWRAP less than 16 will be treated as
-C         16.  Values of NWRAP greater than 132 will be treated as 132.
-C         The actual line length will be NPREF + NWRAP after NPREF has
-C         been adjusted to fall between 0 and 16 and NWRAP has been
-C         adjusted to fall between 16 and 132.
+C NWRAP   INPUT ARGUMENT OF TYPE INTEGER.  THIS GIVES THE MAXIMUM SIZE
+C         PIECE INTO WHICH TO BREAK MESSG FOR PRINTING ON MULTIPLE
+C         LINES.  AN EMBEDDED '$$' ENDS A LINE, AND THE COUNT RESTARTS
+C         AT THE FOLLOWING CHARACTER.  IF A LINE BREAK DOES NOT OCCUR
+C         ON A BLANK (IT WOULD SPLIT A WORD) THAT WORD IS MOVED TO THE
+C         NEXT LINE.  VALUES OF NWRAP LESS THAN 16 WILL BE TREATED AS
+C         16.  VALUES OF NWRAP GREATER THAN 132 WILL BE TREATED AS 132.
+C         THE ACTUAL LINE LENGTH WILL BE NPREF + NWRAP AFTER NPREF HAS
+C         BEEN ADJUSTED TO FALL BETWEEN 0 AND 16 AND NWRAP HAS BEEN
+C         ADJUSTED TO FALL BETWEEN 16 AND 132.
 C
-C***REFERENCES  R. E. Jones and D. K. Kahaner, XERROR, the SLATEC
-C                 Error-handling Package, SAND82-0800, Sandia
-C                 Laboratories, 1982.
+C***REFERENCES  R. E. JONES AND D. K. KAHANER, XERROR, THE SLATEC
+C                 ERROR-HANDLING PACKAGE, SAND82-0800, SANDIA
+C                 LABORATORIES, 1982.
 C***ROUTINES CALLED  I1MACH, XGETUA
 C***REVISION HISTORY  (YYMMDD)
 C   880621  DATE WRITTEN
@@ -3975,9 +3975,9 @@ C           LINES TO BE PRINTED.
 C   890721  REVISED TO ADD A NEW FEATURE.  A NEGATIVE VALUE OF NPREF
 C           CAUSES LEN(PREFIX) TO BE USED AS THE LENGTH.
 C   891013  REVISED TO CORRECT ERROR IN CALCULATING PREFIX LENGTH.
-C   891214  Prologue converted to Version 4.0 format.  (WRB)
-C   900510  Added code to break messages between words.  (RWC)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (WRB)
+C   900510  ADDED CODE TO BREAK MESSAGES BETWEEN WORDS.  (RWC)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  XERPRN
       CHARACTER*(*) PREFIX, MESSG
       INTEGER NPREF, NWRAP
@@ -4136,59 +4136,59 @@ C
      +   ICOUNT)
 C***BEGIN PROLOGUE  XERSVE
 C***SUBSIDIARY
-C***PURPOSE  Record that an error has occurred.
+C***PURPOSE  RECORD THAT AN ERROR HAS OCCURRED.
 C***LIBRARY   SLATEC (XERROR)
 C***CATEGORY  R3
 C***TYPE      ALL (XERSVE-A)
 C***KEYWORDS  ERROR, XERROR
-C***AUTHOR  Jones, R. E., (SNLA)
+C***AUTHOR  JONES, R. E., (SNLA)
 C***DESCRIPTION
 C
-C *Usage:
+C *USAGE:
 C
 C        INTEGER  KFLAG, NERR, LEVEL, ICOUNT
-C        CHARACTER * (len) LIBRAR, SUBROU, MESSG
+C        CHARACTER * (LEN) LIBRAR, SUBROU, MESSG
 C
 C        CALL XERSVE (LIBRAR, SUBROU, MESSG, KFLAG, NERR, LEVEL, ICOUNT)
 C
-C *Arguments:
+C *ARGUMENTS:
 C
-C        LIBRAR :IN    is the library that the message is from.
-C        SUBROU :IN    is the subroutine that the message is from.
-C        MESSG  :IN    is the message to be saved.
-C        KFLAG  :IN    indicates the action to be performed.
-C                      when KFLAG > 0, the message in MESSG is saved.
-C                      when KFLAG=0 the tables will be dumped and
-C                      cleared.
-C                      when KFLAG < 0, the tables will be dumped and
-C                      not cleared.
-C        NERR   :IN    is the error number.
-C        LEVEL  :IN    is the error severity.
-C        ICOUNT :OUT   the number of times this message has been seen,
-C                      or zero if the table has overflowed and does not
-C                      contain this message specifically.  When KFLAG=0,
-C                      ICOUNT will not be altered.
+C        LIBRAR :IN    IS THE LIBRARY THAT THE MESSAGE IS FROM.
+C        SUBROU :IN    IS THE SUBROUTINE THAT THE MESSAGE IS FROM.
+C        MESSG  :IN    IS THE MESSAGE TO BE SAVED.
+C        KFLAG  :IN    INDICATES THE ACTION TO BE PERFORMED.
+C                      WHEN KFLAG > 0, THE MESSAGE IN MESSG IS SAVED.
+C                      WHEN KFLAG=0 THE TABLES WILL BE DUMPED AND
+C                      CLEARED.
+C                      WHEN KFLAG < 0, THE TABLES WILL BE DUMPED AND
+C                      NOT CLEARED.
+C        NERR   :IN    IS THE ERROR NUMBER.
+C        LEVEL  :IN    IS THE ERROR SEVERITY.
+C        ICOUNT :OUT   THE NUMBER OF TIMES THIS MESSAGE HAS BEEN SEEN,
+C                      OR ZERO IF THE TABLE HAS OVERFLOWED AND DOES NOT
+C                      CONTAIN THIS MESSAGE SPECIFICALLY.  WHEN KFLAG=0,
+C                      ICOUNT WILL NOT BE ALTERED.
 C
-C *Description:
+C *DESCRIPTION:
 C
-C   Record that this error occurred and possibly dump and clear the
-C   tables.
+C   RECORD THAT THIS ERROR OCCURRED AND POSSIBLY DUMP AND CLEAR THE
+C   TABLES.
 C
-C***REFERENCES  R. E. Jones and D. K. Kahaner, XERROR, the SLATEC
-C                 Error-handling Package, SAND82-0800, Sandia
-C                 Laboratories, 1982.
+C***REFERENCES  R. E. JONES AND D. K. KAHANER, XERROR, THE SLATEC
+C                 ERROR-HANDLING PACKAGE, SAND82-0800, SANDIA
+C                 LABORATORIES, 1982.
 C***ROUTINES CALLED  I1MACH, XGETUA
 C***REVISION HISTORY  (YYMMDD)
 C   800319  DATE WRITTEN
-C   861211  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900413  Routine modified to remove reference to KFLAG.  (WRB)
-C   900510  Changed to add LIBRARY NAME and SUBROUTINE to calling
-C           sequence, use IF-THEN-ELSE, make number of saved entries
-C           easily changeable, changed routine name from XERSAV to
+C   861211  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900413  ROUTINE MODIFIED TO REMOVE REFERENCE TO KFLAG.  (WRB)
+C   900510  CHANGED TO ADD LIBRARY NAME AND SUBROUTINE TO CALLING
+C           SEQUENCE, USE IF-THEN-ELSE, MAKE NUMBER OF SAVED ENTRIES
+C           EASILY CHANGEABLE, CHANGED ROUTINE NAME FROM XERSAV TO
 C           XERSVE.  (RWC)
-C   910626  Added LIBTAB and SUBTAB to SAVE statement.  (BKS)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   910626  ADDED LIBTAB AND SUBTAB TO SAVE STATEMENT.  (BKS)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  XERSVE
       PARAMETER (LENTAB=10)
       INTEGER LUN(5)
@@ -4202,35 +4202,35 @@ C***FIRST EXECUTABLE STATEMENT  XERSVE
 C
       IF (KFLAG.LE.0) THEN
 C
-C        Dump the table.
+C        DUMP THE TABLE.
 C
          IF (NMSG.EQ.0) RETURN
 C
-C        Print to each unit.
+C        PRINT TO EACH UNIT.
 C
          CALL XGETUA (LUN, NUNIT)
          DO 20 KUNIT = 1,NUNIT
             IUNIT = LUN(KUNIT)
             IF (IUNIT.EQ.0) IUNIT = I1MACH(4)
 C
-C           Print the table header.
+C           PRINT THE TABLE HEADER.
 C
             WRITE (IUNIT,9000)
 C
-C           Print body of table.
+C           PRINT BODY OF TABLE.
 C
             DO 10 I = 1,NMSG
                WRITE (IUNIT,9010) LIBTAB(I), SUBTAB(I), MESTAB(I),
      *            NERTAB(I),LEVTAB(I),KOUNT(I)
    10       CONTINUE
 C
-C           Print number of other errors.
+C           PRINT NUMBER OF OTHER ERRORS.
 C
             IF (KOUNTX.NE.0) WRITE (IUNIT,9020) KOUNTX
             WRITE (IUNIT,9030)
    20    CONTINUE
 C
-C        Clear the error tables.
+C        CLEAR THE ERROR TABLES.
 C
          IF (KFLAG.EQ.0) THEN
             NMSG = 0
@@ -4257,7 +4257,7 @@ C
 C
          IF (NMSG.LT.LENTAB) THEN
 C
-C           Empty slot found for new message.
+C           EMPTY SLOT FOUND FOR NEW MESSAGE.
 C
             NMSG = NMSG + 1
             LIBTAB(I) = LIB
@@ -4269,7 +4269,7 @@ C
             ICOUNT    = 1
          ELSE
 C
-C           Table is full.
+C           TABLE IS FULL.
 C
             KOUNTX = KOUNTX+1
             ICOUNT = 0
@@ -4277,7 +4277,7 @@ C
       ENDIF
       RETURN
 C
-C     Formats.
+C     FORMATS.
 C
  9000 FORMAT ('0          ERROR MESSAGE SUMMARY' /
      +   ' LIBRARY    SUBROUTINE MESSAGE START             NERR',
@@ -4289,43 +4289,43 @@ C
 *DECK XGETUA
       SUBROUTINE XGETUA (IUNITA, N)
 C***BEGIN PROLOGUE  XGETUA
-C***PURPOSE  Return unit number(s) to which error messages are being
-C            sent.
+C***PURPOSE  RETURN UNIT NUMBER(S) TO WHICH ERROR MESSAGES ARE BEING
+C            SENT.
 C***LIBRARY   SLATEC (XERROR)
 C***CATEGORY  R3C
 C***TYPE      ALL (XGETUA-A)
 C***KEYWORDS  ERROR, XERROR
-C***AUTHOR  Jones, R. E., (SNLA)
+C***AUTHOR  JONES, R. E., (SNLA)
 C***DESCRIPTION
 C
-C     Abstract
-C        XGETUA may be called to determine the unit number or numbers
-C        to which error messages are being sent.
-C        These unit numbers may have been set by a call to XSETUN,
-C        or a call to XSETUA, or may be a default value.
+C     ABSTRACT
+C        XGETUA MAY BE CALLED TO DETERMINE THE UNIT NUMBER OR NUMBERS
+C        TO WHICH ERROR MESSAGES ARE BEING SENT.
+C        THESE UNIT NUMBERS MAY HAVE BEEN SET BY A CALL TO XSETUN,
+C        OR A CALL TO XSETUA, OR MAY BE A DEFAULT VALUE.
 C
-C     Description of Parameters
-C      --Output--
-C        IUNIT - an array of one to five unit numbers, depending
-C                on the value of N.  A value of zero refers to the
-C                default unit, as defined by the I1MACH machine
-C                constant routine.  Only IUNIT(1),...,IUNIT(N) are
-C                defined by XGETUA.  The values of IUNIT(N+1),...,
-C                IUNIT(5) are not defined (for N .LT. 5) or altered
-C                in any way by XGETUA.
-C        N     - the number of units to which copies of the
-C                error messages are being sent.  N will be in the
-C                range from 1 to 5.
+C     DESCRIPTION OF PARAMETERS
+C      --OUTPUT--
+C        IUNIT - AN ARRAY OF ONE TO FIVE UNIT NUMBERS, DEPENDING
+C                ON THE VALUE OF N.  A VALUE OF ZERO REFERS TO THE
+C                DEFAULT UNIT, AS DEFINED BY THE I1MACH MACHINE
+C                CONSTANT ROUTINE.  ONLY IUNIT(1),...,IUNIT(N) ARE
+C                DEFINED BY XGETUA.  THE VALUES OF IUNIT(N+1),...,
+C                IUNIT(5) ARE NOT DEFINED (FOR N .LT. 5) OR ALTERED
+C                IN ANY WAY BY XGETUA.
+C        N     - THE NUMBER OF UNITS TO WHICH COPIES OF THE
+C                ERROR MESSAGES ARE BEING SENT.  N WILL BE IN THE
+C                RANGE FROM 1 TO 5.
 C
-C***REFERENCES  R. E. Jones and D. K. Kahaner, XERROR, the SLATEC
-C                 Error-handling Package, SAND82-0800, Sandia
-C                 Laboratories, 1982.
+C***REFERENCES  R. E. JONES AND D. K. KAHANER, XERROR, THE SLATEC
+C                 ERROR-HANDLING PACKAGE, SAND82-0800, SANDIA
+C                 LABORATORIES, 1982.
 C***ROUTINES CALLED  J4SAVE
 C***REVISION HISTORY  (YYMMDD)
 C   790801  DATE WRITTEN
-C   861211  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   861211  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  XGETUA
       DIMENSION IUNITA(5)
 C***FIRST EXECUTABLE STATEMENT  XGETUA

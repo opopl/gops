@@ -1,26 +1,26 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  Subroutine CAARDIFF calculates the cartesian gradient and second
-C  derivative matrix analytically. Atomic units for CaAr_n clusters
+C  SUBROUTINE CAARDIFF CALCULATES THE CARTESIAN GRADIENT AND SECOND
+C  DERIVATIVE MATRIX ANALYTICALLY. ATOMIC UNITS FOR CAAR_N CLUSTERS
 C
 C*************************************************************************
 C
@@ -36,7 +36,7 @@ C
       DOUBLE PRECISION R1(N),R1T
       DOUBLE PRECISION SIGAR6,EPSAR,CAAR0,CAAR1,CAAR2,CAAR3
 C 
-C  Store distance matrices.
+C  STORE DISTANCE MATRICES.
 C
 
       SIGAR6=58808.93841
@@ -46,12 +46,12 @@ C
       CAAR2=-0.85*606.872
       CAAR3=0.85*6.4D5
 
-c      SIGAR6=58808.93841
-c      EPSAR=0.00045935
-c      CAAR0=12.472220
-c      CAAR1=1.09357
-c      CAAR2=-515.84120
-c      CAAR3=5.55475d5
+C      SIGAR6=58808.93841
+C      EPSAR=0.00045935
+C      CAAR0=12.472220
+C      CAAR1=1.09357
+C      CAAR2=-515.84120
+C      CAAR3=5.55475D5
 
       ENERGY=0.0D0
       IF (GTEST) THEN
@@ -63,18 +63,18 @@ c      CAAR3=5.55475d5
                R2(J2,J1)=(X(3*(J1-1)+1)-X(3*(J2-1)+1))**2
      1                  +(X(3*(J1-1)+2)-X(3*(J2-1)+2))**2
      2                  +(X(3*(J1-1)+3)-X(3*(J2-1)+3))**2
-               if (j1.eq.1) then
-                  r1(j2)=dsqrt(r2(j2,j1))
-               endif
+               IF (J1.EQ.1) THEN
+                  R1(J2)=DSQRT(R2(J2,J1))
+               ENDIF
                R2(J2,J1)=1.0D0/R2(J2,J1)
                R6=R2(J2,J1)**3
-               if (j1.eq.1) then
-                  energy=energy+caar0*dexp(-caar1*r1(j2))
-                  energy=energy+caar2*r6+caar3*r6*r6
-               else
-                  energy=energy+4.d0*epsar*sigar6*r6*(sigar6*r6-1.d0)
-               endif
-               R8(J2,J1)=R2(J2,J1)*r6
+               IF (J1.EQ.1) THEN
+                  ENERGY=ENERGY+CAAR0*DEXP(-CAAR1*R1(J2))
+                  ENERGY=ENERGY+CAAR2*R6+CAAR3*R6*R6
+               ELSE
+                  ENERGY=ENERGY+4.D0*EPSAR*SIGAR6*R6*(SIGAR6*R6-1.D0)
+               ENDIF
+               R8(J2,J1)=R2(J2,J1)*R6
                R14(J2,J1)=R8(J2,J1)*R8(J2,J1)/R2(J2,J1)
                R2(J1,J2)=R2(J2,J1)
             ENDDO
@@ -84,36 +84,36 @@ c      CAAR3=5.55475d5
             J3=3*(J1-1)
             DO J2=J1+1,N
                J4=3*(J2-1)
-               r1t=0.d0
+               R1T=0.D0
                R2T=(X(J3+1)-X(J4+1))**2+(X(J3+2)-X(J4+2))**2+(X(J3+3)-X(J4+3))**2
-               if (j1.eq.1) r1t=dsqrt(r2t)
+               IF (J1.EQ.1) R1T=DSQRT(R2T)
                R2T=1.0D0/R2T
                R6=R2T**3
-               if (j1.eq.1) then
-                  energy=energy+caar0*dexp(-caar1*r1t)
-                  energy=energy+caar2*r6+caar3*r6*r6
-               else
-                  energy=energy+4.d0*epsar*sigar6*r6*(sigar6*r6-1.d0)
-               endif
+               IF (J1.EQ.1) THEN
+                  ENERGY=ENERGY+CAAR0*DEXP(-CAAR1*R1T)
+                  ENERGY=ENERGY+CAAR2*R6+CAAR3*R6*R6
+               ELSE
+                  ENERGY=ENERGY+4.D0*EPSAR*SIGAR6*R6*(SIGAR6*R6-1.D0)
+               ENDIF
             ENDDO
          ENDDO
 
       ENDIF
 
-      energy=energy/epsar
+      ENERGY=ENERGY/EPSAR
 
       IF (.NOT.GTEST) RETURN
-      CALL CAARG(G,r1,R14,R8,V,X,N)
+      CALL CAARG(G,R1,R14,R8,V,X,N)
       
       IF (.NOT.STEST) RETURN
-      CALL CAARS(G,F,r1,R2,R14,R8,X,N)
+      CALL CAARS(G,F,R1,R2,R14,R8,X,N)
 
       RETURN
       END
 
 C*****************************************************************************
   
-      SUBROUTINE CAARG(G,r1,R14,R8,V,X,N)
+      SUBROUTINE CAARG(G,R1,R14,R8,V,X,N)
       IMPLICIT NONE
       INTEGER N, J1, J2, J3, J4
       DOUBLE PRECISION G(N,N), R14(N,N), R8(N,N),
@@ -121,7 +121,7 @@ C*****************************************************************************
       DOUBLE PRECISION R1(N)
       DOUBLE PRECISION SIGAR6,EPSAR,CAAR0,CAAR1,CAAR2,CAAR3
 C
-C  Calculate the g tensor.
+C  CALCULATE THE G TENSOR.
 C
       SIGAR6=58808.93841
       EPSAR=0.00045935
@@ -130,35 +130,35 @@ C
       CAAR2=-0.85*606.872
       CAAR3=0.85*6.4D5
 
-c      SIGAR6=58808.93841
-c      EPSAR=0.00045935
-c      CAAR0=12.472220
-c      CAAR1=1.09357
-c      CAAR2=-515.84120
-c      CAAR3=5.55475d5
+C      SIGAR6=58808.93841
+C      EPSAR=0.00045935
+C      CAAR0=12.472220
+C      CAAR1=1.09357
+C      CAAR2=-515.84120
+C      CAAR3=5.55475D5
 
       DO J1=1,N
          G(J1,J1)=0.0D0
          DO J2=J1+1,N
-            if (j1.eq.1) then
-               g(j2,j1)=-caar1*caar0*dexp(-caar1*r1(j2))/r1(j2)
-               g(j2,j1)=g(j2,j1)-6.d0*caar2*r8(j2,j1)-12.d0*caar3*r14(j2,j1)
-            else
-               g(j2,j1)=-24.d0*sigar6*epsar*(2.d0*sigar6*r14(j2,j1)-r8(j2,j1))
-            endif
+            IF (J1.EQ.1) THEN
+               G(J2,J1)=-CAAR1*CAAR0*DEXP(-CAAR1*R1(J2))/R1(J2)
+               G(J2,J1)=G(J2,J1)-6.D0*CAAR2*R8(J2,J1)-12.D0*CAAR3*R14(J2,J1)
+            ELSE
+               G(J2,J1)=-24.D0*SIGAR6*EPSAR*(2.D0*SIGAR6*R14(J2,J1)-R8(J2,J1))
+            ENDIF
             G(J1,J2)=G(J2,J1)
          ENDDO
       ENDDO
 
-      do j1=1,n
-         do j2=1,n
-            g(j1,j2)=g(j1,j2)/epsar
-         enddo
-      enddo
+      DO J1=1,N
+         DO J2=1,N
+            G(J1,J2)=G(J1,J2)/EPSAR
+         ENDDO
+      ENDDO
 
 C
-C  From here on down the code is system-independent!
-C  First calculate the gradient analytically.
+C  FROM HERE ON DOWN THE CODE IS SYSTEM-INDEPENDENT!
+C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
 C
       DO J1=1,N
          DO J2=1,3
@@ -176,7 +176,7 @@ C
 
 C*****************************************************************************
 
-      SUBROUTINE CAARS(G,F,r1,R2,R14,R8,X,N)
+      SUBROUTINE CAARS(G,F,R1,R2,R14,R8,X,N)
       USE MODHESS
       IMPLICIT NONE
       INTEGER N, J1, J2, I
@@ -190,7 +190,7 @@ C*****************************************************************************
       DOUBLE PRECISION WXX,WYY,WZZ,WXY,WYZ,WXZ,WTOT,RIJ,XIJ,YIJ,ZIJ
       DOUBLE PRECISION W,S,WX,WY,WZ
 
-      sigar2=38.887896
+      SIGAR2=38.887896
       SIGAR6=58808.93841
       EPSAR=0.00045935
       CAAR0=0.85*14.6732
@@ -198,109 +198,109 @@ C*****************************************************************************
       CAAR2=-0.85*606.872
       CAAR3=0.85*6.4D5
 
-c      SIGAR6=58808.93841
-c      EPSAR=0.00045935
-c      CAAR0=12.472220
-c      CAAR1=1.09357
-c      CAAR2=-515.84120
-c      CAAR3=5.55475d5
+C      SIGAR6=58808.93841
+C      EPSAR=0.00045935
+C      CAAR0=12.472220
+C      CAAR1=1.09357
+C      CAAR2=-515.84120
+C      CAAR3=5.55475D5
 
-c     first do the Ar-Ar part
+C     FIRST DO THE AR-AR PART
 
-      do j1=1,n*3
-         do j2=1,n*3
-            HESS(j1,j2)=0.d0
-         enddo
-      enddo
+      DO J1=1,N*3
+         DO J2=1,N*3
+            HESS(J1,J2)=0.D0
+         ENDDO
+      ENDDO
 
-c     Ar-Ar part
+C     AR-AR PART
       
-      do i=2,n
-         xx=0.0
-         yy=0.0
-         zz=0.0
-         xi=x(3*i-2)
-         yi=x(3*i-1)
-         zi=x(3*i  )
-         do j1=2,N
-            if (i.ne.j1) then
-               xij=xi-x(3*j1-2)
-               yij=yi-x(3*j1-1)
-               zij=zi-x(3*j1  )
-                 rij=xij**2.+yij**2.+zij**2.
-                 w=2.*(sigar2/rij)**3-1.
-                 s=(7.*(sigar2/rij)**3.-2.)/rij
-                 wx=w-4.*s*xij**2.
-                 wy=w-4.*s*yij**2.
-                 wz=w-4.*s*zij**2.
-                 wx=24.*epsar*wx*(sigar2**3)/(rij**4.)
-                 wy=24.*epsar*wy*(sigar2**3)/(rij**4.)
-                 wz=24.*epsar*wz*(sigar2**3)/(rij**4.)
-                 xx=xx-wx
-                 yy=yy-wy
-                 zz=zz-wz
+      DO I=2,N
+         XX=0.0
+         YY=0.0
+         ZZ=0.0
+         XI=X(3*I-2)
+         YI=X(3*I-1)
+         ZI=X(3*I  )
+         DO J1=2,N
+            IF (I.NE.J1) THEN
+               XIJ=XI-X(3*J1-2)
+               YIJ=YI-X(3*J1-1)
+               ZIJ=ZI-X(3*J1  )
+                 RIJ=XIJ**2.+YIJ**2.+ZIJ**2.
+                 W=2.*(SIGAR2/RIJ)**3-1.
+                 S=(7.*(SIGAR2/RIJ)**3.-2.)/RIJ
+                 WX=W-4.*S*XIJ**2.
+                 WY=W-4.*S*YIJ**2.
+                 WZ=W-4.*S*ZIJ**2.
+                 WX=24.*EPSAR*WX*(SIGAR2**3)/(RIJ**4.)
+                 WY=24.*EPSAR*WY*(SIGAR2**3)/(RIJ**4.)
+                 WZ=24.*EPSAR*WZ*(SIGAR2**3)/(RIJ**4.)
+                 XX=XX-WX
+                 YY=YY-WY
+                 ZZ=ZZ-WZ
                  
-                 HESS(3*i-2,3*j1-2)=wx
-                 HESS(3*i-1,3*j1-1)=wy
-                 HESS(3*i,3*j1)=wz
+                 HESS(3*I-2,3*J1-2)=WX
+                 HESS(3*I-1,3*J1-1)=WY
+                 HESS(3*I,3*J1)=WZ
                  
-                 HESS(3*j1,3*i)=HESS(3*i,3*j1)
-                 HESS(3*j1-1,3*i-1)=HESS(3*i-1,3*j1-1)
-                 HESS(3*j1-2,3*i-2)=HESS(3*i-2,3*j1-2)
+                 HESS(3*J1,3*I)=HESS(3*I,3*J1)
+                 HESS(3*J1-1,3*I-1)=HESS(3*I-1,3*J1-1)
+                 HESS(3*J1-2,3*I-2)=HESS(3*I-2,3*J1-2)
                  
-              endif
-           enddo
-           HESS(3*i-2,3*i-2)=xx
-           HESS(3*i-1,3*i-1)=yy
-           HESS(3*i,3*i)=zz
-        enddo
+              ENDIF
+           ENDDO
+           HESS(3*I-2,3*I-2)=XX
+           HESS(3*I-1,3*I-1)=YY
+           HESS(3*I,3*I)=ZZ
+        ENDDO
 
-        do i=2,N
-           xy=0.0
-           xz=0.0
-           yz=0.0
-           xi=x(3*i-2)
-           yi=x(3*i-1)
-           zi=x(3*i)
-           do j1=2,N
-              if (i.ne.j1) then
-                 xij=xi-x(3*j1-2)
-                 yij=yi-x(3*j1-1)
-                 zij=zi-x(3*j1)
-                 rij=xij**2.+yij**2.+zij**2.
-                 s=sigar6*(7.*(sigar2/rij)**3.-2.)/(rij**5.)
-                 wz=epsar*96.*s*xij*yij
-                 wy=epsar*96.*s*xij*zij
-                 wx=epsar*96.*s*yij*zij
-                 xy=xy+wz
-                 xz=xz+wy
-                 yz=yz+wx
+        DO I=2,N
+           XY=0.0
+           XZ=0.0
+           YZ=0.0
+           XI=X(3*I-2)
+           YI=X(3*I-1)
+           ZI=X(3*I)
+           DO J1=2,N
+              IF (I.NE.J1) THEN
+                 XIJ=XI-X(3*J1-2)
+                 YIJ=YI-X(3*J1-1)
+                 ZIJ=ZI-X(3*J1)
+                 RIJ=XIJ**2.+YIJ**2.+ZIJ**2.
+                 S=SIGAR6*(7.*(SIGAR2/RIJ)**3.-2.)/(RIJ**5.)
+                 WZ=EPSAR*96.*S*XIJ*YIJ
+                 WY=EPSAR*96.*S*XIJ*ZIJ
+                 WX=EPSAR*96.*S*YIJ*ZIJ
+                 XY=XY+WZ
+                 XZ=XZ+WY
+                 YZ=YZ+WX
 
-                 HESS(3*i-2,3*j1-1)=-wz
-                 HESS(3*i-2,3*j1)=-wy
-                 HESS(3*i-1,3*j1)=-wx
-                 HESS(3*j1,3*i-1)=HESS(3*i-1,3*j1)
-                 HESS(3*j1,3*i-2)=HESS(3*i-2,3*j1)
-                 HESS(3*j1-1,3*i-2)=HESS(3*i-2,3*j1-1)
+                 HESS(3*I-2,3*J1-1)=-WZ
+                 HESS(3*I-2,3*J1)=-WY
+                 HESS(3*I-1,3*J1)=-WX
+                 HESS(3*J1,3*I-1)=HESS(3*I-1,3*J1)
+                 HESS(3*J1,3*I-2)=HESS(3*I-2,3*J1)
+                 HESS(3*J1-1,3*I-2)=HESS(3*I-2,3*J1-1)
                  
-                 HESS(3*j1-2,3*i-1)=HESS(3*i-2,3*j1-1)
-                 HESS(3*j1-2,3*i)=HESS(3*i-2,3*j1)
-                 HESS(3*i,3*j1-2)=HESS(3*j1,3*i-2)
-                 HESS(3*i-1,3*j1-2)=HESS(3*j1-1,3*i-2)
-                 HESS(3*j1-1,3*i)=HESS(3*i-1,3*j1)
-                 HESS(3*i,3*j1-1)=HESS(3*j1,3*i-1)
+                 HESS(3*J1-2,3*I-1)=HESS(3*I-2,3*J1-1)
+                 HESS(3*J1-2,3*I)=HESS(3*I-2,3*J1)
+                 HESS(3*I,3*J1-2)=HESS(3*J1,3*I-2)
+                 HESS(3*I-1,3*J1-2)=HESS(3*J1-1,3*I-2)
+                 HESS(3*J1-1,3*I)=HESS(3*I-1,3*J1)
+                 HESS(3*I,3*J1-1)=HESS(3*J1,3*I-1)
                  
-              endif
-           enddo
-           HESS(3*i-2,3*i-1)=xy
-           HESS(3*i-1,3*i-2)=xy
-           HESS(3*i-2,3*i)=xz
-           HESS(3*i,3*i-2)=xz
-           HESS(3*i-1,3*i)=yz
-           HESS(3*i,3*i-1)=yz
-        enddo
+              ENDIF
+           ENDDO
+           HESS(3*I-2,3*I-1)=XY
+           HESS(3*I-1,3*I-2)=XY
+           HESS(3*I-2,3*I)=XZ
+           HESS(3*I,3*I-2)=XZ
+           HESS(3*I-1,3*I)=YZ
+           HESS(3*I,3*I-1)=YZ
+        ENDDO
 
-C     Ca-Ar part
+C     CA-AR PART
 
       X0=X(1)
       Y0=X(2)
@@ -346,24 +346,24 @@ C     Ca-Ar part
          WYY=WY1-WY2-WY3
          WZZ=WZ1-WZ2-WZ3
 
-c         WXX=-WXX
-c         WYY=-WYY
-c         WZZ=-WZZ
+C         WXX=-WXX
+C         WYY=-WYY
+C         WZZ=-WZZ
 
          XX=XX+WXX
          YY=YY+WYY
          ZZ=ZZ+WZZ
 
-         HESS(1,3*I-2)=HESS(1,3*i-2)-WXX
+         HESS(1,3*I-2)=HESS(1,3*I-2)-WXX
          HESS(3*I-2,1)=HESS(3*I-2,1)-WXX
          HESS(2,3*I-1)=HESS(2,3*I-1)-WYY
          HESS(3*I-1,2)=HESS(3*I-1,2)-WYY
          HESS(3,3*I  )=HESS(3,3*I  )-WZZ
          HESS(3*I  ,3)=HESS(3*I  ,3)-WZZ
 
-         HESS(3*i-2,3*i-2)=HESS(3*i-2,3*i-2)+wxx
-         HESS(3*i-1,3*i-1)=HESS(3*i-1,3*i-1)+wyy
-         HESS(3*i  ,3*i  )=HESS(3*i  ,3*i  )+wzz
+         HESS(3*I-2,3*I-2)=HESS(3*I-2,3*I-2)+WXX
+         HESS(3*I-1,3*I-1)=HESS(3*I-1,3*I-1)+WYY
+         HESS(3*I  ,3*I  )=HESS(3*I  ,3*I  )+WZZ
 
          W1=CAAR0*CAAR1*(CAAR1+1.D0/RI)*DEXP(-CAAR1*RI)/RI2
          W2=48.D0*CAAR2/RI2**5
@@ -393,12 +393,12 @@ c         WZZ=-WZZ
          HESS(3,3*I-1)=HESS(3,3*I-1)-WYZ
          HESS(3*I-1,3)=HESS(3*I-1,3)-WYZ
 
-         HESS(3*i-2,3*i-1)=HESS(3*i-2,3*i-1)+wxy
-         HESS(3*i-1,3*i-2)=HESS(3*i-1,3*i-2)+wxy
-         HESS(3*i-1,3*i  )=HESS(3*i-1,3*i  )+wyz
-         HESS(3*i  ,3*i-1)=HESS(3*i  ,3*i-1)+wyz
-         HESS(3*i-2,3*i  )=HESS(3*i-2,3*i  )+wxz
-         HESS(3*i  ,3*i-2)=HESS(3*i  ,3*i-2)+wxz
+         HESS(3*I-2,3*I-1)=HESS(3*I-2,3*I-1)+WXY
+         HESS(3*I-1,3*I-2)=HESS(3*I-1,3*I-2)+WXY
+         HESS(3*I-1,3*I  )=HESS(3*I-1,3*I  )+WYZ
+         HESS(3*I  ,3*I-1)=HESS(3*I  ,3*I-1)+WYZ
+         HESS(3*I-2,3*I  )=HESS(3*I-2,3*I  )+WXZ
+         HESS(3*I  ,3*I-2)=HESS(3*I  ,3*I-2)+WXZ
 
       ENDDO
 
@@ -412,11 +412,11 @@ c         WZZ=-WZZ
       HESS(2,3)=YZ
       HESS(3,2)=YZ
 
-      do j1=1,3*n
-         do j2=1,3*n
-            HESS(j1,j2)=HESS(j1,j2)/epsar
-         enddo
-      enddo
+      DO J1=1,3*N
+         DO J2=1,3*N
+            HESS(J1,J2)=HESS(J1,J2)/EPSAR
+         ENDDO
+      ENDDO
 
       RETURN
       END

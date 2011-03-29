@@ -1,25 +1,25 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C Pair potential for a trapped ion cluster
+C PAIR POTENTIAL FOR A TRAPPED ION CLUSTER
 C                                        
       SUBROUTINE ETRAP (N, X, POTEL, C1, C2, C3)
       IMPLICIT NONE 
@@ -30,9 +30,9 @@ C
       C2=0.0D0
       C3=0.0D0
 C
-C  We must fix the centre of mass at the origin, otherwise the first and second
-C  derivatives need extra terms corresponding to the derivative of the centre of
-C  mass with respect to cartesian coordinates.
+C  WE MUST FIX THE CENTRE OF MASS AT THE ORIGIN, OTHERWISE THE FIRST AND SECOND
+C  DERIVATIVES NEED EXTRA TERMS CORRESPONDING TO THE DERIVATIVE OF THE CENTRE OF
+C  MASS WITH RESPECT TO CARTESIAN COORDINATES.
 C
 C      DO 27 J1=1,N
 C         C3=C3+X(3*J1)

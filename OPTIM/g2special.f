@@ -1,25 +1,25 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       SUBROUTINE G2SPECIAL(NATOMS,XOLD,GRAD,G2GRAD,G2ENERGY,G2RMS,EREAL,RMSREAL,MFLAG)
       USE MODHESS
       USE KEY
-      use porfuncs
+      USE PORFUNCS
       IMPLICIT NONE 
       INTEGER NATOMS, INFO, J1, JMIN, JZERO, NTRANS, J2, NCOUNT, NINFO
       LOGICAL MFLAG
@@ -35,8 +35,8 @@ C
       G2RMSP=G2RMS
 
       CALL DSYEV('V','U',3*NATOMS,HESS,3*NATOMS,DIAG,TEMPA,9*NATOMS,INFO)
-      IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' in DSYEV'
-c     call eigensort_val_asc(diag,hess,3*natoms,3*natoms)
+      IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' IN DSYEV'
+C     CALL EIGENSORT_VAL_ASC(DIAG,HESS,3*NATOMS,3*NATOMS)
 
       EVMIN=1.0D6
       ZERO=1.0D6
@@ -59,25 +59,25 @@ c     call eigensort_val_asc(diag,hess,3*natoms,3*natoms)
       ZEROOLD=ZERO
       ZEROOLD2=ZERO
 C     WRITE(*,'(6F20.10)') (DIAG(J1),J1=1,3*NATOMS)
-C     WRITE(*,'(A,i4)') 'Number of translations=',NTRANS
-      WRITE(*,'(A,2F20.10)') 'Lowest eigenvalue and closest to zero= ',EVMIN,ZERO
-      WRITE(*,'(A,4F20.10)') 'G^2, RMS force and real energy and RMS=',G2ENERGY,G2RMS,EREAL,RMSREAL
+C     WRITE(*,'(A,I4)') 'NUMBER OF TRANSLATIONS=',NTRANS
+      WRITE(*,'(A,2F20.10)') 'LOWEST EIGENVALUE AND CLOSEST TO ZERO= ',EVMIN,ZERO
+      WRITE(*,'(A,4F20.10)') 'G^2, RMS FORCE AND REAL ENERGY AND RMS=',G2ENERGY,G2RMS,EREAL,RMSREAL
       GMOD=SQRT(G2ENERGY)
       GOVER=DDOT(3*NATOMS,GRAD,1,HESS(1,JZERO),1)/GMOD
-      WRITE(*,'(A,F20.10)') 'Overlap between normalised gradient vector and hessian eigenvector=',GOVER
+      WRITE(*,'(A,F20.10)') 'OVERLAP BETWEEN NORMALISED GRADIENT VECTOR AND HESSIAN EIGENVECTOR=',GOVER
 
       IF (ABS(ABS(GOVER)-1.0D0).LT.1.0D-2) THEN
 
-         WRITE(*,'(A)') 'Trying special steps for solution with an extra zero eigenvalue'
+         WRITE(*,'(A)') 'TRYING SPECIAL STEPS FOR SOLUTION WITH AN EXTRA ZERO EIGENVALUE'
          FIXIMAGE=.TRUE.
 
-         WRITE(*,'(A,I3,A,4F20.10)') 'At step    ',0,' zero, G2energy, G2RMS=',ZERO,G2ENERGY,G2RMS
+         WRITE(*,'(A,I3,A,4F20.10)') 'AT STEP    ',0,' ZERO, G2ENERGY, G2RMS=',ZERO,G2ENERGY,G2RMS
          NCOUNT=0
 
 10       NCOUNT=NCOUNT+1
 C
-C  Combined tangent and gradient step. If this is the first step, then no move
-C  along the gradient.
+C  COMBINED TANGENT AND GRADIENT STEP. IF THIS IS THE FIRST STEP, THEN NO MOVE
+C  ALONG THE GRADIENT.
 C
          DO J2=1,3*NATOMS
             SVEC(J2)=0.0D0
@@ -98,7 +98,7 @@ C              WRITE(*,'(A,I4,2F20.10)') 'J1,DIAG,STEP=',J1,DIAG(J1),STEP
 
 30       CONTINUE 
 C
-C  Step along the gradient. 
+C  STEP ALONG THE GRADIENT. 
 C
          IF (NCOUNT.GT.1) THEN
             GSTEP=0.0D0
@@ -108,7 +108,7 @@ C
             SIXC=(ZEROOLD-ZEROOLD2)/GSTEP
             Q1MQ0=ZEROOLD2/SIXC
 
-            WRITE(*,'(A,4G20.10)') '6*C, Q1-Q0 a, Q1-Q0 b, STEP=',SIXC,Q1MQ0,(ZEROOLD-SIXC*GSTEP)/SIXC,-Q1MQ0
+            WRITE(*,'(A,4G20.10)') '6*C, Q1-Q0 A, Q1-Q0 B, STEP=',SIXC,Q1MQ0,(ZEROOLD-SIXC*GSTEP)/SIXC,-Q1MQ0
          ELSE
             Q1MQ0=0.0D0
          ENDIF
@@ -117,15 +117,15 @@ C
             XNEW(J2)=XOLD(J2)-(SVEC(J2)+GRAD(J2)*Q1MQ0/GMOD)*SCALE
          ENDDO
 C
-C  Calculate properties for the new geometry.
+C  CALCULATE PROPERTIES FOR THE NEW GEOMETRY.
 C
          CALL POTENTIAL(XNEW,EREAL,GRAD,.TRUE.,.TRUE.,RMSREAL,.FALSE.,.FALSE.)
          CALL DSYMV('U',3*NATOMS,2.0D0,HESS,3*NATOMS,GRAD,1,0.0D0,G2GRAD,1)
          G2RMS= DSQRT(DDOT(3*NATOMS,G2GRAD,1,G2GRAD,1)/(3*NATOMS))
          CALL DSYEV('V','U',3*NATOMS,HESS,3*NATOMS,DIAG,TEMPA,9*NATOMS,INFO)
-         IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' in DSYEV'
+         IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' IN DSYEV'
 
-         call eigensort_val_asc(diag,hess,3*natoms,3*natoms)
+         CALL EIGENSORT_VAL_ASC(DIAG,HESS,3*NATOMS,3*NATOMS)
          WRITE(*,'(6F20.10)') (DIAG(J1),J1=1,3*NATOMS)
 
          G2ENERGY=DDOT(3*NATOMS,GRAD,1,GRAD,1)
@@ -142,14 +142,14 @@ C
             ENDIF
          ENDDO
          ZERO=DIAG(JZERO)
-         WRITE(*,'(A,I3,A,4F20.10)') 'After step ',NCOUNT,' zero, G2energy, G2RMS=',ZERO,G2ENERGY,G2RMS,SCALE
+         WRITE(*,'(A,I3,A,4F20.10)') 'AFTER STEP ',NCOUNT,' ZERO, G2ENERGY, G2RMS=',ZERO,G2ENERGY,G2RMS,SCALE
          CALL FLUSH(6,ISTAT)
          IF (G2RMS.GT.G2RMSP) THEN
             IF (SCALE.LT.0.000001D0) THEN
-               WRITE(*,'(A,F15.5,A)') 'G2 RMS increased for step of ',SCALE,' return'
+               WRITE(*,'(A,F15.5,A)') 'G2 RMS INCREASED FOR STEP OF ',SCALE,' RETURN'
                RETURN
             ELSE
-C              WRITE(*,'(A,F15.5,A)') 'G2 RMS increased for step of ',SCALE,' try half the step'
+C              WRITE(*,'(A,F15.5,A)') 'G2 RMS INCREASED FOR STEP OF ',SCALE,' TRY HALF THE STEP'
                SCALE=SCALE/2.0D0
                GOTO 30
             ENDIF
@@ -175,7 +175,7 @@ C              WRITE(*,'(A,F15.5,A)') 'G2 RMS increased for step of ',SCALE,' tr
 
       ELSE IF ((G2ENERGY.LT.1.0D-1).AND.(RMSREAL.LT.1.0D-1)) THEN
 
-         WRITE(*,'(A)') 'Trying special steps for solution at a true stationary point'
+         WRITE(*,'(A)') 'TRYING SPECIAL STEPS FOR SOLUTION AT A TRUE STATIONARY POINT'
          FIXIMAGE=.TRUE.
 
 20       NCOUNT=NCOUNT+1
@@ -205,9 +205,9 @@ C              WRITE(*,'(A,I4,2F20.10)') 'J1,DIAG,STEP=',J1,DIAG2(J1),STEP
          CALL DSYMV('U',3*NATOMS,2.0D0,HESS,3*NATOMS,GRAD,1,0.0D0,G2GRAD,1)
          G2RMS= DSQRT(DDOT(3*NATOMS,G2GRAD,1,G2GRAD,1)/(3*NATOMS))
          CALL DSYEV('V','U',3*NATOMS,HESS,3*NATOMS,DIAG,TEMPA,9*NATOMS,INFO)
-         IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' in DSYEV'
+         IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' IN DSYEV'
 
-         call eigensort_val_asc(diag,hess,3*natoms,3*natoms)
+         CALL EIGENSORT_VAL_ASC(DIAG,HESS,3*NATOMS,3*NATOMS)
          WRITE(*,'(6F20.10)') (DIAG(J1),J1=1,3*NATOMS)
 
          G2ENERGY=DDOT(3*NATOMS,GRAD,1,GRAD,1)
@@ -224,16 +224,16 @@ C              WRITE(*,'(A,I4,2F20.10)') 'J1,DIAG,STEP=',J1,DIAG2(J1),STEP
             ENDIF
          ENDDO
          ZERO=DIAG(JZERO)
-         WRITE(*,'(A,I3,A,4F20.10)') 'After NR/EF   step ',NCOUNT,' zero, G2energy, G2RMS=',ZERO,G2ENERGY,G2RMS
+         WRITE(*,'(A,I3,A,4F20.10)') 'AFTER NR/EF   STEP ',NCOUNT,' ZERO, G2ENERGY, G2RMS=',ZERO,G2ENERGY,G2RMS
          IF (G2RMS.GT.G2RMSP) THEN
             DO J2=1,3*NATOMS
                XOLD(J2)=XOLD(J2)-SVEC(J2)*SCALE
             ENDDO
             IF (SCALE.LT.0.000001D0) THEN
-               WRITE(*,'(A,F15.5,A)') 'G2 RMS increased for step of ',SCALE,' return'
+               WRITE(*,'(A,F15.5,A)') 'G2 RMS INCREASED FOR STEP OF ',SCALE,' RETURN'
                RETURN
             ELSE
-C              WRITE(*,'(A,F15.5,A)') 'G2 RMS increased for step of ',SCALE,' try half the step'
+C              WRITE(*,'(A,F15.5,A)') 'G2 RMS INCREASED FOR STEP OF ',SCALE,' TRY HALF THE STEP'
                SCALE=SCALE/2.0D0
                GOTO 40
             ENDIF

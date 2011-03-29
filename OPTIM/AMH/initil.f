@@ -1,1312 +1,1312 @@
 
 
-c     --------------------- initil ----------------------
+C     --------------------- INITIL ----------------------
 
-      subroutine initil
+      SUBROUTINE INITIL
 
-c     INITIL open required files, read in input_amh 
-c            parameters and print header
+C     INITIL OPEN REQUIRED FILES, READ IN INPUT_AMH 
+C            PARAMETERS AND PRINT HEADER
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-      use amhglobals,  only:SO,iprolst,iprolstscl,input_amh,oamh,oamhsr,
-     * oamhlr,nummem,maxmem,numpro,maxpro,nmres,AMHmaxsiz,numcrd,
-     * maxcrd,numtab,maxtab,crdixn,i505,hrdrad,igomb,
-     * ngomb,n_letters,max_letters,i_alt_prox,
-     * alt_prox_cut,iexcld,allow_neg,lambdaR,eres,minmr,maxmr,maxs,
-     * maxr,i_rama,hbond,hbscl,chrlscl,delta,delte,
-     * ibiasgauss,bias_weight,i_hbond_eastwood,i_hbond_czong,
-     * bias_av,bias_var,bias_prefactor,ibiaspoly,nbiaspoly,
-     * biaspoly,i_Qbias_a,n_Qbias_a,Qbiaspoly_a,nmstep,iseed_amh,
-     * it1,it2,it3,
-     * it4,it5,ictemp,ctemp,nmtemp,mxtemp,incmov,nmdif,iresrt,
-     * iscltab,movanal,itgrd,i1,i2,i503,hydscl,
-     * aminoa,idigns,oarchv,omovi,
-     *  orep,imemri,ires,
-     *  oPE_no_bias,oPE_with_bias,oPE_plus_KE,oPE_backbone,
-     * ohdrgn,orama,ooxy,ochiral,oKE,occev,ooev,
-     * obias_Rg,oamhmr,ohdrgn_s,ohdrgn_m,ohdrgn_l,ohdrgn_seq,
-     * ononadd,ocon_P_AP,oobiassega,oobiassegb,
-     * omoviseg,pexcld,oxexcldv,o_exvmin,o_exvminS,
-     * oexcldscl,ran_force,ran_file,
-     * r_ran,s_ran,ran_min_seq_dist,srplr,oxscl,ramascl,timstp,
-     * tolshk,rcut,rcutAMH,srcut,welscl,width_Qexp_a,t1,t2,
-     *  t3,t4,t5,temgrd,qchrg,qchrg2,i_Rg_bias,n_Rg_bias,
-     *  i_rg_garyk,i_rg_first, D_rg, T_rg, delR_rg, M_rg, kappa_rg,
-     *  rg_shift,rg_scl,Rg_biaspoly,i_3rd_is_contact,
-     * min_seq_sep,iclassweight,exvmin,exvminS,exvminS_beta,
-     *  r_min,r_max,gly_con,width_Qexp_b,
-     * i_V_test,test_site,rg_bounds,i_rg_corey,
-     * alpha_c_of_n,ab_c_of_n_old,ab_c_of_n_new,num_well,sigma_h,
-     * sigma_NO,ho_zero,maxseq,homlfl,
-     * ave_seq,ave_seq_hb,ave_seq_amw,ave_seq_amc,
-     * numseq,numseq_hb,numseq_amw,numseq_amc,
-     * NO_zero,four_plus,i_non_add_contact,i_Etim_step,i_Etim,quench,
-     * known,pexcld_gamma,iexcld_gamma,i_type_ev_gamma,iexcld_beta,
-     * i_contact_order,i_contact_order_min,i_contact_order_max,
-     * gamma_contact_order,r_min_contact_order,r_max_contact_order,
-     * n_contact_order_terms,max_contact_order_terms,
-     * i_Qbias_b,n_Qbias_b,Qbiaspoly_b,
-     * num_foldon_a,foldstrt_min_a, foldstrt_max_a,cyclic,
-     * num_foldon_b,foldstrt_min_b, foldstrt_max_b,const_mode,
-     * targ_cons,mem_cons,Q0_safe_a,Q0_safe_b,iss_bias,
-     * i_Q_format_a, Q0_a, Q_weight_a,n_Q_anneal_a,Q0_inc_a, Q_clip_a,
-     * seglist_a,numconst_a,seglist_b,numconst_b,i_bias_native_a,
-     * i_Q_format_b, Q0_b, Q_weight_b,n_Q_anneal_b,Q0_inc_b, Q_clip_b,
-     * ss_a,ss_b,
-     * con_local_a, con_local_a_cut , con_local_b, con_local_b_cut,
-     * i_bias_native_b,totalssnorm,
-     * i_con_P_AP,i_atom_P_AP,weight_P_AP,r_cut_P_AP,i_diff_P_AP,
-     * i_ignore_chain_dirn,mismatch,
-     * go_con, go_con_dist,ssweight,aps,ss_pattern_a,ss_pattern_b,
-     * i_rep,rep_cut_off,rep_tol,
-     * i_rep_lambda_uniform,rep_lambda,n_letters_con,dist_cut,
-     * itarg_seq,tgsequences,maxres,tgsequences_hb,tgsequences_amw,
-     * tgsequences_amc 
+      USE AMHGLOBALS,  ONLY:SO,IPROLST,IPROLSTSCL,INPUT_AMH,OAMH,OAMHSR,
+     * OAMHLR,NUMMEM,MAXMEM,NUMPRO,MAXPRO,NMRES,AMHMAXSIZ,NUMCRD,
+     * MAXCRD,NUMTAB,MAXTAB,CRDIXN,I505,HRDRAD,IGOMB,
+     * NGOMB,N_LETTERS,MAX_LETTERS,I_ALT_PROX,
+     * ALT_PROX_CUT,IEXCLD,ALLOW_NEG,LAMBDAR,ERES,MINMR,MAXMR,MAXS,
+     * MAXR,I_RAMA,HBOND,HBSCL,CHRLSCL,DELTA,DELTE,
+     * IBIASGAUSS,BIAS_WEIGHT,I_HBOND_EASTWOOD,I_HBOND_CZONG,
+     * BIAS_AV,BIAS_VAR,BIAS_PREFACTOR,IBIASPOLY,NBIASPOLY,
+     * BIASPOLY,I_QBIAS_A,N_QBIAS_A,QBIASPOLY_A,NMSTEP,ISEED_AMH,
+     * IT1,IT2,IT3,
+     * IT4,IT5,ICTEMP,CTEMP,NMTEMP,MXTEMP,INCMOV,NMDIF,IRESRT,
+     * ISCLTAB,MOVANAL,ITGRD,I1,I2,I503,HYDSCL,
+     * AMINOA,IDIGNS,OARCHV,OMOVI,
+     *  OREP,IMEMRI,IRES,
+     *  OPE_NO_BIAS,OPE_WITH_BIAS,OPE_PLUS_KE,OPE_BACKBONE,
+     * OHDRGN,ORAMA,OOXY,OCHIRAL,OKE,OCCEV,OOEV,
+     * OBIAS_RG,OAMHMR,OHDRGN_S,OHDRGN_M,OHDRGN_L,OHDRGN_SEQ,
+     * ONONADD,OCON_P_AP,OOBIASSEGA,OOBIASSEGB,
+     * OMOVISEG,PEXCLD,OXEXCLDV,O_EXVMIN,O_EXVMINS,
+     * OEXCLDSCL,RAN_FORCE,RAN_FILE,
+     * R_RAN,S_RAN,RAN_MIN_SEQ_DIST,SRPLR,OXSCL,RAMASCL,TIMSTP,
+     * TOLSHK,RCUT,RCUTAMH,SRCUT,WELSCL,WIDTH_QEXP_A,T1,T2,
+     *  T3,T4,T5,TEMGRD,QCHRG,QCHRG2,I_RG_BIAS,N_RG_BIAS,
+     *  I_RG_GARYK,I_RG_FIRST, D_RG, T_RG, DELR_RG, M_RG, KAPPA_RG,
+     *  RG_SHIFT,RG_SCL,RG_BIASPOLY,I_3RD_IS_CONTACT,
+     * MIN_SEQ_SEP,ICLASSWEIGHT,EXVMIN,EXVMINS,EXVMINS_BETA,
+     *  R_MIN,R_MAX,GLY_CON,WIDTH_QEXP_B,
+     * I_V_TEST,TEST_SITE,RG_BOUNDS,I_RG_COREY,
+     * ALPHA_C_OF_N,AB_C_OF_N_OLD,AB_C_OF_N_NEW,NUM_WELL,SIGMA_H,
+     * SIGMA_NO,HO_ZERO,MAXSEQ,HOMLFL,
+     * AVE_SEQ,AVE_SEQ_HB,AVE_SEQ_AMW,AVE_SEQ_AMC,
+     * NUMSEQ,NUMSEQ_HB,NUMSEQ_AMW,NUMSEQ_AMC,
+     * NO_ZERO,FOUR_PLUS,I_NON_ADD_CONTACT,I_ETIM_STEP,I_ETIM,QUENCH,
+     * KNOWN,PEXCLD_GAMMA,IEXCLD_GAMMA,I_TYPE_EV_GAMMA,IEXCLD_BETA,
+     * I_CONTACT_ORDER,I_CONTACT_ORDER_MIN,I_CONTACT_ORDER_MAX,
+     * GAMMA_CONTACT_ORDER,R_MIN_CONTACT_ORDER,R_MAX_CONTACT_ORDER,
+     * N_CONTACT_ORDER_TERMS,MAX_CONTACT_ORDER_TERMS,
+     * I_QBIAS_B,N_QBIAS_B,QBIASPOLY_B,
+     * NUM_FOLDON_A,FOLDSTRT_MIN_A, FOLDSTRT_MAX_A,CYCLIC,
+     * NUM_FOLDON_B,FOLDSTRT_MIN_B, FOLDSTRT_MAX_B,CONST_MODE,
+     * TARG_CONS,MEM_CONS,Q0_SAFE_A,Q0_SAFE_B,ISS_BIAS,
+     * I_Q_FORMAT_A, Q0_A, Q_WEIGHT_A,N_Q_ANNEAL_A,Q0_INC_A, Q_CLIP_A,
+     * SEGLIST_A,NUMCONST_A,SEGLIST_B,NUMCONST_B,I_BIAS_NATIVE_A,
+     * I_Q_FORMAT_B, Q0_B, Q_WEIGHT_B,N_Q_ANNEAL_B,Q0_INC_B, Q_CLIP_B,
+     * SS_A,SS_B,
+     * CON_LOCAL_A, CON_LOCAL_A_CUT , CON_LOCAL_B, CON_LOCAL_B_CUT,
+     * I_BIAS_NATIVE_B,TOTALSSNORM,
+     * I_CON_P_AP,I_ATOM_P_AP,WEIGHT_P_AP,R_CUT_P_AP,I_DIFF_P_AP,
+     * I_IGNORE_CHAIN_DIRN,MISMATCH,
+     * GO_CON, GO_CON_DIST,SSWEIGHT,APS,SS_PATTERN_A,SS_PATTERN_B,
+     * I_REP,REP_CUT_OFF,REP_TOL,
+     * I_REP_LAMBDA_UNIFORM,REP_LAMBDA,N_LETTERS_CON,DIST_CUT,
+     * ITARG_SEQ,TGSEQUENCES,MAXRES,TGSEQUENCES_HB,TGSEQUENCES_AMW,
+     * TGSEQUENCES_AMC 
 
-      implicit none
+      IMPLICIT NONE
 
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-         integer iunit,i,i_homlist,iseq,j,k,gap(AMHmaxsiz),
-     *              tempgap, switch, ss_pat_iter_a,
-     *              ss_pat_iter_b,temp_a, id3,nmrss,open_status
-c     getval
+         INTEGER IUNIT,I,I_HOMLIST,ISEQ,J,K,GAP(AMHMAXSIZ),
+     *              TEMPGAP, SWITCH, SS_PAT_ITER_A,
+     *              SS_PAT_ITER_B,TEMP_A, ID3,NMRSS,OPEN_STATUS
+C     GETVAL
 
-         double precision rnorm 
+         DOUBLE PRECISION RNORM 
 
-         character*5 proflinit
+         CHARACTER*5 PROFLINIT
 
-c     list required subroutines
+C     LIST REQUIRED SUBROUTINES
 
-         external opnfil,qchrgmk,read_altgamma,read_input_alt
+         EXTERNAL OPNFIL,QCHRGMK,READ_ALTGAMMA,READ_INPUT_ALT
       
-         data i_homlist/21/
+         DATA I_HOMLIST/21/
 
-	iunit = 998
-	rnorm = 0.0D0
+	IUNIT = 998
+	RNORM = 0.0D0
 
-c     --------------------- begin -----------------------
-
-
-c      write(6,*) 'here we go initil'
-
-c      write(*,*) 'initil.f: here we go initil'
-c      call read_input_alt()  ! For alternative potential
-
-c      write(SO,*) 'call opnfil'
-
-        call  opnfil(iprolst,iprolstscl,input_amh,oarchv,
-     *           omovi,ohdrgn,ohdrgn_s,ohdrgn_m,ohdrgn_l,ohdrgn_seq,
-     *           orama,ooxy,ochiral,oamh,oamhsr,orep,
-     *            oPE_no_bias,oPE_with_bias,oPE_plus_KE,oPE_backbone,
-     *            oKE,oamhlr,oamhmr,ononadd,ocon_P_AP,occev,
-     *            ooev,obias_Rg,omoviseg,oobiassega,oobiassegb)
+C     --------------------- BEGIN -----------------------
 
 
-c             write(*,*) 'exit opnfil'
+C      WRITE(6,*) 'HERE WE GO INITIL'
 
-c       write(SO,*)'iprolst ',iprolst
-c       write(SO,*)'input_amh ',input_amh
-c       write(SO,*)'oarchv ',oarchv
-c       write(SO,*)'omovi ',omovi
-c       write(SO,*)'ohdrgn ',ohdrgn
-c       write(SO,*)'ohdrgn_s ',ohdrgn_s
-c       write(SO,*)'ohdrgn_m ',ohdrgn_m
-c       write(SO,*)'ohdrgn_l ',ohdrgn_l
-c       write(SO,*)'ohdrgn_seq ',ohdrgn_seq
-c       write(SO,*)'orama ',orama
-c       write(SO,*)'ooxy ',ooxy
-c       write(SO,*)'ochiral ',ochiral
-c       write(SO,*)'oamh ',oamh
-c       write(SO,*)'ototal ',ototal
-c       write(SO,*)'oamhsr ',oamhsr
-c       write(SO,*)'oPE ',oPE
-c       write(SO,*)'oKE ',oKE
-c       write(SO,*)'oamhlr ',oamhlr
-c       write(SO,*)'oamhmr ',oamhmr
-c       write(SO,*)'ononadd ',ononadd
-c       write(SO,*)'oamhlr ',oamhlr
-c       write(SO,*)'oamhmr ',oamhmr
-c       write(SO,*)'ononadd ',ononadd
-c       write(SO,*)'ocon_P_AP',ocon_P_AP
-c       write(SO,*)'obias_Rg',obias_Rg
-c      write(SO,*)'omoviseg',omoviseg
-c      write(SO,*)'ocrap',ocrap
-c      write(SO,*)'oobiassega',oobiassega
-c      write(SO,*)'oobiassegb',oobiassegb
+C      WRITE(*,*) 'INITIL.F: HERE WE GO INITIL'
+C      CALL READ_INPUT_ALT()  ! FOR ALTERNATIVE POTENTIAL
 
-c   read in various parameters and check that they are consistent with 
-c   the maximum space allowed
-c   nummem is the number of protein memories used in the potential
+C      WRITE(SO,*) 'CALL OPNFIL'
 
-      read(input_amh,*)nummem
-      if( nummem.gt.maxmem )then
-         write(oarchv,720)nummem,maxmem
-  720    format('nummem too large',2(1x,i3))
-         PRINT '(A,2I8)',' AMH/initil> ERROR **** nummem > maxmem, values are ',nummem,maxmem
-         stop
-      endif
+        CALL  OPNFIL(IPROLST,IPROLSTSCL,INPUT_AMH,OARCHV,
+     *           OMOVI,OHDRGN,OHDRGN_S,OHDRGN_M,OHDRGN_L,OHDRGN_SEQ,
+     *           ORAMA,OOXY,OCHIRAL,OAMH,OAMHSR,OREP,
+     *            OPE_NO_BIAS,OPE_WITH_BIAS,OPE_PLUS_KE,OPE_BACKBONE,
+     *            OKE,OAMHLR,OAMHMR,ONONADD,OCON_P_AP,OCCEV,
+     *            OOEV,OBIAS_RG,OMOVISEG,OOBIASSEGA,OOBIASSEGB)
 
-c     numpro is the number of ensemble proteins 
+
+C             WRITE(*,*) 'EXIT OPNFIL'
+
+C       WRITE(SO,*)'IPROLST ',IPROLST
+C       WRITE(SO,*)'INPUT_AMH ',INPUT_AMH
+C       WRITE(SO,*)'OARCHV ',OARCHV
+C       WRITE(SO,*)'OMOVI ',OMOVI
+C       WRITE(SO,*)'OHDRGN ',OHDRGN
+C       WRITE(SO,*)'OHDRGN_S ',OHDRGN_S
+C       WRITE(SO,*)'OHDRGN_M ',OHDRGN_M
+C       WRITE(SO,*)'OHDRGN_L ',OHDRGN_L
+C       WRITE(SO,*)'OHDRGN_SEQ ',OHDRGN_SEQ
+C       WRITE(SO,*)'ORAMA ',ORAMA
+C       WRITE(SO,*)'OOXY ',OOXY
+C       WRITE(SO,*)'OCHIRAL ',OCHIRAL
+C       WRITE(SO,*)'OAMH ',OAMH
+C       WRITE(SO,*)'OTOTAL ',OTOTAL
+C       WRITE(SO,*)'OAMHSR ',OAMHSR
+C       WRITE(SO,*)'OPE ',OPE
+C       WRITE(SO,*)'OKE ',OKE
+C       WRITE(SO,*)'OAMHLR ',OAMHLR
+C       WRITE(SO,*)'OAMHMR ',OAMHMR
+C       WRITE(SO,*)'ONONADD ',ONONADD
+C       WRITE(SO,*)'OAMHLR ',OAMHLR
+C       WRITE(SO,*)'OAMHMR ',OAMHMR
+C       WRITE(SO,*)'ONONADD ',ONONADD
+C       WRITE(SO,*)'OCON_P_AP',OCON_P_AP
+C       WRITE(SO,*)'OBIAS_RG',OBIAS_RG
+C      WRITE(SO,*)'OMOVISEG',OMOVISEG
+C      WRITE(SO,*)'OCRAP',OCRAP
+C      WRITE(SO,*)'OOBIASSEGA',OOBIASSEGA
+C      WRITE(SO,*)'OOBIASSEGB',OOBIASSEGB
+
+C   READ IN VARIOUS PARAMETERS AND CHECK THAT THEY ARE CONSISTENT WITH 
+C   THE MAXIMUM SPACE ALLOWED
+C   NUMMEM IS THE NUMBER OF PROTEIN MEMORIES USED IN THE POTENTIAL
+
+      READ(INPUT_AMH,*)NUMMEM
+      IF( NUMMEM.GT.MAXMEM )THEN
+         WRITE(OARCHV,720)NUMMEM,MAXMEM
+  720    FORMAT('NUMMEM TOO LARGE',2(1X,I3))
+         PRINT '(A,2I8)',' AMH/INITIL> ERROR **** NUMMEM > MAXMEM, VALUES ARE ',NUMMEM,MAXMEM
+         STOP
+      ENDIF
+
+C     NUMPRO IS THE NUMBER OF ENSEMBLE PROTEINS 
  
-      write(SO,*)'nummem=',nummem
+      WRITE(SO,*)'NUMMEM=',NUMMEM
 
-      read(input_amh,*)numpro
-      write(SO,*)'numpro=',numpro
+      READ(INPUT_AMH,*)NUMPRO
+      WRITE(SO,*)'NUMPRO=',NUMPRO
 
-      if( numpro.gt.maxpro )then
-         write(oarchv,721)numpro,maxpro
-  721    format('numpro too large',2(1x,i3))
-         stop
-      endif
+      IF( NUMPRO.GT.MAXPRO )THEN
+         WRITE(OARCHV,721)NUMPRO,MAXPRO
+  721    FORMAT('NUMPRO TOO LARGE',2(1X,I3))
+         STOP
+      ENDIF
 
-c     AMHmaxsiz is the maximum number of amino acid residues;
-c     nmres is the actual protein size used
+C     AMHMAXSIZ IS THE MAXIMUM NUMBER OF AMINO ACID RESIDUES;
+C     NMRES IS THE ACTUAL PROTEIN SIZE USED
 
-       read(input_amh,*)nmres
+       READ(INPUT_AMH,*)NMRES
 
-       write(SO,*)'nmres=',nmres
+       WRITE(SO,*)'NMRES=',NMRES
 
-      if( nmres.gt.AMHmaxsiz )then
-         write(oarchv,722)nmres,AMHmaxsiz
-         write(SO,722)nmres,AMHmaxsiz
-  722    format('nmres too large',2(1x,i3))
-         stop
-      endif
+      IF( NMRES.GT.AMHMAXSIZ )THEN
+         WRITE(OARCHV,722)NMRES,AMHMAXSIZ
+         WRITE(SO,722)NMRES,AMHMAXSIZ
+  722    FORMAT('NMRES TOO LARGE',2(1X,I3))
+         STOP
+      ENDIF
 
-      read(input_amh,*) known
+      READ(INPUT_AMH,*) KNOWN
 
-c     assign number of coordinate types
+C     ASSIGN NUMBER OF COORDINATE TYPES
 
-      numcrd=3
+      NUMCRD=3
 
-c     check that the number of specified
-c     coordinate types does not exceed the maximum
+C     CHECK THAT THE NUMBER OF SPECIFIED
+C     COORDINATE TYPES DOES NOT EXCEED THE MAXIMUM
 
-      if( numcrd.gt.maxcrd )then
-         write(oarchv,236)numcrd,maxcrd
-  236    format(/'number of specified coordinate types ',i3,
-     *          ' is greater than maximum ',i3)
-         stop
-      endif
+      IF( NUMCRD.GT.MAXCRD )THEN
+         WRITE(OARCHV,236)NUMCRD,MAXCRD
+  236    FORMAT(/'NUMBER OF SPECIFIED COORDINATE TYPES ',I3,
+     *          ' IS GREATER THAN MAXIMUM ',I3)
+         STOP
+      ENDIF
 
-c     assign number of different types of ixns
+C     ASSIGN NUMBER OF DIFFERENT TYPES OF IXNS
 
-      numtab=4
+      NUMTAB=4
      
-c     check that the number of specified
-c     interactions does not exceed the maximum
+C     CHECK THAT THE NUMBER OF SPECIFIED
+C     INTERACTIONS DOES NOT EXCEED THE MAXIMUM
 
-      if( numtab.gt.maxtab )then
-         write(oarchv,237)numtab,maxtab
-  237    format(/'number of specified tables ',i3,
-     *          ' is greater than maximum ',i3)
-         stop
-      endif
+      IF( NUMTAB.GT.MAXTAB )THEN
+         WRITE(OARCHV,237)NUMTAB,MAXTAB
+  237    FORMAT(/'NUMBER OF SPECIFIED TABLES ',I3,
+     *          ' IS GREATER THAN MAXIMUM ',I3)
+         STOP
+      ENDIF
 
-c     assign coordinate types for each interaction
+C     ASSIGN COORDINATE TYPES FOR EACH INTERACTION
 
-      crdixn(1,1)=1
-      crdixn(1,2)=1
+      CRDIXN(1,1)=1
+      CRDIXN(1,2)=1
 
-      crdixn(2,1)=1
-      crdixn(2,2)=2
+      CRDIXN(2,1)=1
+      CRDIXN(2,2)=2
 
-      crdixn(3,1)=2
-      crdixn(3,2)=1
+      CRDIXN(3,1)=2
+      CRDIXN(3,2)=1
 
-      crdixn(4,1)=2
-      crdixn(4,2)=2
+      CRDIXN(4,1)=2
+      CRDIXN(4,2)=2
       
-c     read in coordinate type to be used
-c     (beta or center of mass)
+C     READ IN COORDINATE TYPE TO BE USED
+C     (BETA OR CENTER OF MASS)
 
-c     sequence charge switches and their weights
+C     SEQUENCE CHARGE SWITCHES AND THEIR WEIGHTS
 
-      read(input_amh,*)igomb
-      read(input_amh,*)ngomb
+      READ(INPUT_AMH,*)IGOMB
+      READ(INPUT_AMH,*)NGOMB
 
-      write(SO,*) 'ngomb=',ngomb
+      WRITE(SO,*) 'NGOMB=',NGOMB
 
-      if (igomb) then
-        write(oarchv,1724) ngomb
-1724    format('Many-body factor ngomb=',f6.3)
-       endif
+      IF (IGOMB) THEN
+        WRITE(OARCHV,1724) NGOMB
+1724    FORMAT('MANY-BODY FACTOR NGOMB=',F6.3)
+       ENDIF
 
-c      degeneracy of our code
+C      DEGENERACY OF OUR CODE
 
-       read(input_amh,*) 
-       read(input_amh,*)dist_cut
-       read(input_amh,*)
-       read(input_amh,*)ave_seq_amc
-       read(input_amh,*)ave_seq_hb
-       read(input_amh,*)ave_seq_amw
+       READ(INPUT_AMH,*) 
+       READ(INPUT_AMH,*)DIST_CUT
+       READ(INPUT_AMH,*)
+       READ(INPUT_AMH,*)AVE_SEQ_AMC
+       READ(INPUT_AMH,*)AVE_SEQ_HB
+       READ(INPUT_AMH,*)AVE_SEQ_AMW
 
-c       write(6,*)'ave_seq_amc ', ave_seq_amc
-c       write(6,*)'ave_seq_hb ', ave_seq_hb
-c       write(6,*)'ave_seq_amw ', ave_seq_amw
+C       WRITE(6,*)'AVE_SEQ_AMC ', AVE_SEQ_AMC
+C       WRITE(6,*)'AVE_SEQ_HB ', AVE_SEQ_HB
+C       WRITE(6,*)'AVE_SEQ_AMW ', AVE_SEQ_AMW
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     read in sequences to average force over, if avg_seq is on
-         do iseq = 1,maxseq
-           do id3 = 1,maxres
-             tgsequences(id3,iseq)=0
-             tgsequences_hb(id3,iseq)=0
-             tgsequences_amw(id3,iseq)=0
-              tgsequences_amc(id3,iseq)=0
-           enddo
-         enddo
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     READ IN SEQUENCES TO AVERAGE FORCE OVER, IF AVG_SEQ IS ON
+         DO ISEQ = 1,MAXSEQ
+           DO ID3 = 1,MAXRES
+             TGSEQUENCES(ID3,ISEQ)=0
+             TGSEQUENCES_HB(ID3,ISEQ)=0
+             TGSEQUENCES_AMW(ID3,ISEQ)=0
+              TGSEQUENCES_AMC(ID3,ISEQ)=0
+           ENDDO
+         ENDDO
 
-         rewind iprolst
-         read (iprolst,1000)proflinit
-1000     format(a5)
-c         write(6,*) 'target in initil',proflinit
-         rewind iprolst
-            open(imemri,file='proteins/'//proflinit,
-     *                    status='old',iostat=open_status)
-         if (open_status.ne.0) then
-           write(SO,*) 'failure to open file in initil',proflinit
-           stop
-         endif
+         REWIND IPROLST
+         READ (IPROLST,1000)PROFLINIT
+1000     FORMAT(A5)
+C         WRITE(6,*) 'TARGET IN INITIL',PROFLINIT
+         REWIND IPROLST
+            OPEN(IMEMRI,FILE='PROTEINS/'//PROFLINIT,
+     *                    STATUS='OLD',IOSTAT=OPEN_STATUS)
+         IF (OPEN_STATUS.NE.0) THEN
+           WRITE(SO,*) 'FAILURE TO OPEN FILE IN INITIL',PROFLINIT
+           STOP
+         ENDIF
 
-         read(imemri,*)
-         read(imemri,101)nmrss
-101      format(i5)
-         IF (nmrss.GT.maxres) THEN
-            PRINT '(A,2I8)',' AMH/initil> ERROR **** nmrss > maxres, values ',nmrss,maxres
+         READ(IMEMRI,*)
+         READ(IMEMRI,101)NMRSS
+101      FORMAT(I5)
+         IF (NMRSS.GT.MAXRES) THEN
+            PRINT '(A,2I8)',' AMH/INITIL> ERROR **** NMRSS > MAXRES, VALUES ',NMRSS,MAXRES
             STOP
          ENDIF
-         read(imemri,106)(ires(i1),i1=1,nmrss)
-106      format(25(i2,1x))
-         close(imemri)
-         write(SO,*)'in initil ires'
-         write(SO,106)(ires(i1),i1=1,nmrss)
+         READ(IMEMRI,106)(IRES(I1),I1=1,NMRSS)
+106      FORMAT(25(I2,1X))
+         CLOSE(IMEMRI)
+         WRITE(SO,*)'IN INITIL IRES'
+         WRITE(SO,106)(IRES(I1),I1=1,NMRSS)
 
-          if (ave_seq_amc .or. ave_seq_hb .or. ave_seq_amw) then
-           write(6,*)'target_sequences itarg_seq '
-           open(itarg_seq,file='target_sequences',status='old')
-           read(itarg_seq,*)numseq
-454          format(i5)
-c           write(6,*)'numseq ',numseq
-             do iseq = 1,numseq
-                  read(itarg_seq,999)(tgsequences(id3,iseq),id3=1,nmres)
-c                  write(6,999)(tgsequences(id3,iseq),id3=1,nmres)
-999               format(25(i2,1x))
+          IF (AVE_SEQ_AMC .OR. AVE_SEQ_HB .OR. AVE_SEQ_AMW) THEN
+           WRITE(6,*)'TARGET_SEQUENCES ITARG_SEQ '
+           OPEN(ITARG_SEQ,FILE='TARGET_SEQUENCES',STATUS='OLD')
+           READ(ITARG_SEQ,*)NUMSEQ
+454          FORMAT(I5)
+C           WRITE(6,*)'NUMSEQ ',NUMSEQ
+             DO ISEQ = 1,NUMSEQ
+                  READ(ITARG_SEQ,999)(TGSEQUENCES(ID3,ISEQ),ID3=1,NMRES)
+C                  WRITE(6,999)(TGSEQUENCES(ID3,ISEQ),ID3=1,NMRES)
+999               FORMAT(25(I2,1X))
 
-           do id3 = 1,nmres
-                if( (tgsequences(id3,iseq) .lt. 1) .or.
-     *                    (tgsequences(id3,iseq) .gt. 20) ) then
-                    write(6,*)'target_sequence  out of seq range '
-                    write(6,*)'resnum   ', id3
-                    write(6,*)'seqnum   ', iseq
-                    write(6,*)'target_sequence  ', tgsequences(id3,iseq)
-                    stop
-                endif
-           enddo
+           DO ID3 = 1,NMRES
+                IF( (TGSEQUENCES(ID3,ISEQ) .LT. 1) .OR.
+     *                    (TGSEQUENCES(ID3,ISEQ) .GT. 20) ) THEN
+                    WRITE(6,*)'TARGET_SEQUENCE  OUT OF SEQ RANGE '
+                    WRITE(6,*)'RESNUM   ', ID3
+                    WRITE(6,*)'SEQNUM   ', ISEQ
+                    WRITE(6,*)'TARGET_SEQUENCE  ', TGSEQUENCES(ID3,ISEQ)
+                    STOP
+                ENDIF
+           ENDDO
 
-             enddo
-            close(itarg_seq)
-c            write(6,*)'itarg_seq closed ',itarg_seq
-          endif
+             ENDDO
+            CLOSE(ITARG_SEQ)
+C            WRITE(6,*)'ITARG_SEQ CLOSED ',ITARG_SEQ
+          ENDIF
 
-          if  (numseq.gt.maxseq) then
-            write(6,*) 'numseq greater than maxseq'
-            stop
-          endif
+          IF  (NUMSEQ.GT.MAXSEQ) THEN
+            WRITE(6,*) 'NUMSEQ GREATER THAN MAXSEQ'
+            STOP
+          ENDIF
 
-         if ( ave_seq_amc ) then
-            numseq_amc=numseq
-          else
-             numseq_amc=1
-            tgsequences_amc(1:nmres,1)=ires(1:nmres)
-          endif
-c         write(6,*)'ave_seq_amc numseq_amc ', ave_seq_amc, numseq_amc
+         IF ( AVE_SEQ_AMC ) THEN
+            NUMSEQ_AMC=NUMSEQ
+          ELSE
+             NUMSEQ_AMC=1
+            TGSEQUENCES_AMC(1:NMRES,1)=IRES(1:NMRES)
+          ENDIF
+C         WRITE(6,*)'AVE_SEQ_AMC NUMSEQ_AMC ', AVE_SEQ_AMC, NUMSEQ_AMC
 
-         if ( ave_seq_hb ) then
-            numseq_hb=numseq
-          else
-            numseq_hb=1
-            tgsequences_hb(1:nmres,1)=ires(1:nmres)
-          endif
-c         write(6,*)'ave_seq_hb numseq_hb ', ave_seq_hb, numseq_hb
+         IF ( AVE_SEQ_HB ) THEN
+            NUMSEQ_HB=NUMSEQ
+          ELSE
+            NUMSEQ_HB=1
+            TGSEQUENCES_HB(1:NMRES,1)=IRES(1:NMRES)
+          ENDIF
+C         WRITE(6,*)'AVE_SEQ_HB NUMSEQ_HB ', AVE_SEQ_HB, NUMSEQ_HB
 
-       if ( ave_seq_amw) then
-        numseq_amw=numseq
-        write(6,*)'tgsequences_amw sequences'
-         do iseq = 1,numseq_amw
-            do id3 = 1,nmres
-              tgsequences_amw(id3,iseq) = tgsequences(id3,iseq)
-c              write(6,*)'tgseq_amw ave_seq_amw ',ave_seq_amw
-c              write(6,*)'numseq_amw ', numseq_amw
-c              write(6,106)(tgsequences_amw(i1,iseq),i1=1,nmrss)
-            enddo
-         enddo
-        else
-           numseq_amw=1
-           tgsequences_amw(1:nmres,1)=ires(1:nmres)
-c           write(6,*)'tgseq_amw ave_seq_amw ',ave_seq_amw
-c           write(6,*)'numseq_amw ', numseq_amw
-c           write(6,*)'numseq ', numseq
-c           write(6,106)(tgsequences_amw(i1,1),i1=1,nmrss)
-        endif
-c        write(6,*)'ave_seq_amw numseq_amw ', ave_seq_amw, numseq_amw
+       IF ( AVE_SEQ_AMW) THEN
+        NUMSEQ_AMW=NUMSEQ
+        WRITE(6,*)'TGSEQUENCES_AMW SEQUENCES'
+         DO ISEQ = 1,NUMSEQ_AMW
+            DO ID3 = 1,NMRES
+              TGSEQUENCES_AMW(ID3,ISEQ) = TGSEQUENCES(ID3,ISEQ)
+C              WRITE(6,*)'TGSEQ_AMW AVE_SEQ_AMW ',AVE_SEQ_AMW
+C              WRITE(6,*)'NUMSEQ_AMW ', NUMSEQ_AMW
+C              WRITE(6,106)(TGSEQUENCES_AMW(I1,ISEQ),I1=1,NMRSS)
+            ENDDO
+         ENDDO
+        ELSE
+           NUMSEQ_AMW=1
+           TGSEQUENCES_AMW(1:NMRES,1)=IRES(1:NMRES)
+C           WRITE(6,*)'TGSEQ_AMW AVE_SEQ_AMW ',AVE_SEQ_AMW
+C           WRITE(6,*)'NUMSEQ_AMW ', NUMSEQ_AMW
+C           WRITE(6,*)'NUMSEQ ', NUMSEQ
+C           WRITE(6,106)(TGSEQUENCES_AMW(I1,1),I1=1,NMRSS)
+        ENDIF
+C        WRITE(6,*)'AVE_SEQ_AMW NUMSEQ_AMW ', AVE_SEQ_AMW, NUMSEQ_AMW
 
-c        if (ave_seq_amw) then
-c             write(6,*)'tgsequences_amw sequences'
-c         do iseq = 1,numseq_amw
-c          do id3 = 1,nmres
-c             tgsequences_amw(id3,iseq) = tgsequences(id3,iseq)
-c             write(6,*)'tgsequences_amw sequences'
-c             write(6,106)(tgsequences_amw(i1,1),i1=1,nmrss)
-c          enddo
-c         enddo
-c        endif
+C        IF (AVE_SEQ_AMW) THEN
+C             WRITE(6,*)'TGSEQUENCES_AMW SEQUENCES'
+C         DO ISEQ = 1,NUMSEQ_AMW
+C          DO ID3 = 1,NMRES
+C             TGSEQUENCES_AMW(ID3,ISEQ) = TGSEQUENCES(ID3,ISEQ)
+C             WRITE(6,*)'TGSEQUENCES_AMW SEQUENCES'
+C             WRITE(6,106)(TGSEQUENCES_AMW(I1,1),I1=1,NMRSS)
+C          ENDDO
+C         ENDDO
+C        ENDIF
 
-       if (ave_seq_hb) then
-             write(6,*)'tgsequences_hb sequences'
-         do iseq = 1,numseq_hb
-          do id3 = 1,nmres
-             tgsequences_hb(id3,iseq) = tgsequences(id3,iseq)
-             write(6,*)'tgsequences_hb sequences'
-             write(6,106)(tgsequences_hb(i1,1),i1=1,nmrss)
-          enddo
-         enddo
-        endif
+       IF (AVE_SEQ_HB) THEN
+             WRITE(6,*)'TGSEQUENCES_HB SEQUENCES'
+         DO ISEQ = 1,NUMSEQ_HB
+          DO ID3 = 1,NMRES
+             TGSEQUENCES_HB(ID3,ISEQ) = TGSEQUENCES(ID3,ISEQ)
+             WRITE(6,*)'TGSEQUENCES_HB SEQUENCES'
+             WRITE(6,106)(TGSEQUENCES_HB(I1,1),I1=1,NMRSS)
+          ENDDO
+         ENDDO
+        ENDIF
 
-        if ( ave_seq_amc) then
-             write(6,*)'tgsequences_amc sequences'
-         do iseq = 1,numseq_amc
-          do id3 = 1,nmres
-             tgsequences_amc(id3,iseq) = tgsequences(id3,iseq)
-             write(6,*)'tgsequences_amc sequences'
-             write(6,106)(tgsequences_amc(i1,1),i1=1,nmrss)
-          enddo
-         enddo
-        endif
+        IF ( AVE_SEQ_AMC) THEN
+             WRITE(6,*)'TGSEQUENCES_AMC SEQUENCES'
+         DO ISEQ = 1,NUMSEQ_AMC
+          DO ID3 = 1,NMRES
+             TGSEQUENCES_AMC(ID3,ISEQ) = TGSEQUENCES(ID3,ISEQ)
+             WRITE(6,*)'TGSEQUENCES_AMC SEQUENCES'
+             WRITE(6,106)(TGSEQUENCES_AMC(I1,1),I1=1,NMRSS)
+          ENDDO
+         ENDDO
+        ENDIF
 
                        
-c         write(6,106)(tgsequences_amc(i1,1),i1=1,nmrss)
+C         WRITE(6,106)(TGSEQUENCES_AMC(I1,1),I1=1,NMRSS)
                                       
-       read(input_amh,*) targ_cons
-       read(input_amh,*) mem_cons
-       read(input_amh,*)ssweight
-       read(input_amh,*)
-
-c           write(6,*) 'targ_cons = ',targ_cons
-c           write(6,*) 'mem_cons = ',mem_cons
-c           write(6,*) 'ssweight = ',ssweight
-          if((ave_seq) .and. (numseq.gt.maxseq) ) then
-            write(6,*) 'numseq greater than maxseq'
-            stop
-          endif
-
-        if (ssweight) then
-
-        open(iss_bias,file='rama_ss_bias',status='old')
-
-        do i = 1,nmres
-        read(iss_bias,*)aps(i,5),aps(i,6)
-        aps(i,1)=1.0D0
-        aps(i,2)=1.0D0
-        aps(i,3)=1.0D0
-        aps(i,4)=1.0D0
-        enddo
-
-        close(iss_bias)
-        else
-
-        aps(:,1)=1.0D0
-        aps(:,2)=1.0D0
-        aps(:,3)=1.0D0
-        aps(:,4)=1.0D0
-        aps(:,5)=0.0D0
-        aps(:,6)=0.0D0
-        endif
-
-c   gamma averaging
-
-c      if (ave_seq) then
-c            open(i_homlist,file='target_sequences',status='old')
-c         do iseq = 1,numseq
-c             read (i_homlist,1000)homlfl(iseq)
-c1000         format(a5)
-c             write(SO,*) 'homologue ',homlfl(iseq)
-c         enddo
-c         close (i_homlist)
-c       endif  !ave_seq  avg_gammas
-
-
-       read(input_amh,*) n_letters
-c       write(SO,*)'n_letters ',n_letters
-       if ((n_letters.ne.2).and.(n_letters.ne.4)) then
-         write(SO,*) 'must be 2 or 4 letter code, not',n_letters
-         stop
-       endif
-       read(input_amh,*) four_plus
-       write(SO,*)'four_plus ',four_plus
-       read(input_amh,*)go_con
-       read(input_amh,*)go_con_dist
-       write(SO,*)'go_con ',go_con
-       write(SO,*)'go_con_dist ',go_con_dist
-       read(input_amh,*)i_ignore_chain_dirn
-       read(input_amh,*)mismatch
-       write(SO,*)'mismatch ',mismatch
-
-       read(input_amh,*) i_non_add_contact
-       if (four_plus.and.(n_letters.ne.4)) then
-         write(SO,*) 'can only extend 4 letter code if using it'
-         stop
-       endif
-
-       if (n_letters.gt.max_letters) then
-          write(SO,*) 'degeneracy too high'
-          stop
-       endif
-
-       read(input_amh,*) min_seq_sep
-       write(SO,*) ' min_seq_sep',  min_seq_sep
-       read(input_amh,*) i_3rd_is_contact
-       write(SO,*) 'i_3rd_is_contact' , i_3rd_is_contact
-       if (i_3rd_is_contact.and.(n_letters.ne.4)) then
-           write(SO,*) 'contact potential for 4 letter code only'
-           stop
-       endif
-
-       read(input_amh,*) n_letters_con
-       if (n_letters_con.ne.4.and.n_letters_con.ne.20) then
-         write(SO,*) 'only 2,4 or 20 letter contact int supported',
-     *                                                 n_letters_con
-         stop
-       endif
-
-       read(input_amh,*) num_well
-       write(SO,*)'num_well=',num_well
-       if (num_well.ne.2.and.num_well.ne.3.and.num_well.ne.5
-     *                                      .and.num_well.ne.10) then
-         write(SO,*) 'only 3 or 10 well contact pot supported',num_well
-         stop
-       endif
-
-       read(input_amh,*) gly_con
-       do i=1,num_well
-         read(input_amh,*) r_min(i),r_max(i)
-         write(SO,*)'r_min(i),r_max(i)=',r_min(i),r_max(i)
-       enddo
-       read(input_amh,*) i_alt_prox
-       write(SO,*)'i_alt_prox=',i_alt_prox
-       read(input_amh,*) alt_prox_cut
-       write(SO,*)'alt_prox_cut=',alt_prox_cut
+       READ(INPUT_AMH,*) TARG_CONS
+       READ(INPUT_AMH,*) MEM_CONS
+       READ(INPUT_AMH,*)SSWEIGHT
+       READ(INPUT_AMH,*)
+
+C           WRITE(6,*) 'TARG_CONS = ',TARG_CONS
+C           WRITE(6,*) 'MEM_CONS = ',MEM_CONS
+C           WRITE(6,*) 'SSWEIGHT = ',SSWEIGHT
+          IF((AVE_SEQ) .AND. (NUMSEQ.GT.MAXSEQ) ) THEN
+            WRITE(6,*) 'NUMSEQ GREATER THAN MAXSEQ'
+            STOP
+          ENDIF
+
+        IF (SSWEIGHT) THEN
+
+        OPEN(ISS_BIAS,FILE='RAMA_SS_BIAS',STATUS='OLD')
+
+        DO I = 1,NMRES
+        READ(ISS_BIAS,*)APS(I,5),APS(I,6)
+        APS(I,1)=1.0D0
+        APS(I,2)=1.0D0
+        APS(I,3)=1.0D0
+        APS(I,4)=1.0D0
+        ENDDO
+
+        CLOSE(ISS_BIAS)
+        ELSE
+
+        APS(:,1)=1.0D0
+        APS(:,2)=1.0D0
+        APS(:,3)=1.0D0
+        APS(:,4)=1.0D0
+        APS(:,5)=0.0D0
+        APS(:,6)=0.0D0
+        ENDIF
+
+C   GAMMA AVERAGING
+
+C      IF (AVE_SEQ) THEN
+C            OPEN(I_HOMLIST,FILE='TARGET_SEQUENCES',STATUS='OLD')
+C         DO ISEQ = 1,NUMSEQ
+C             READ (I_HOMLIST,1000)HOMLFL(ISEQ)
+C1000         FORMAT(A5)
+C             WRITE(SO,*) 'HOMOLOGUE ',HOMLFL(ISEQ)
+C         ENDDO
+C         CLOSE (I_HOMLIST)
+C       ENDIF  !AVE_SEQ  AVG_GAMMAS
+
+
+       READ(INPUT_AMH,*) N_LETTERS
+C       WRITE(SO,*)'N_LETTERS ',N_LETTERS
+       IF ((N_LETTERS.NE.2).AND.(N_LETTERS.NE.4)) THEN
+         WRITE(SO,*) 'MUST BE 2 OR 4 LETTER CODE, NOT',N_LETTERS
+         STOP
+       ENDIF
+       READ(INPUT_AMH,*) FOUR_PLUS
+       WRITE(SO,*)'FOUR_PLUS ',FOUR_PLUS
+       READ(INPUT_AMH,*)GO_CON
+       READ(INPUT_AMH,*)GO_CON_DIST
+       WRITE(SO,*)'GO_CON ',GO_CON
+       WRITE(SO,*)'GO_CON_DIST ',GO_CON_DIST
+       READ(INPUT_AMH,*)I_IGNORE_CHAIN_DIRN
+       READ(INPUT_AMH,*)MISMATCH
+       WRITE(SO,*)'MISMATCH ',MISMATCH
+
+       READ(INPUT_AMH,*) I_NON_ADD_CONTACT
+       IF (FOUR_PLUS.AND.(N_LETTERS.NE.4)) THEN
+         WRITE(SO,*) 'CAN ONLY EXTEND 4 LETTER CODE IF USING IT'
+         STOP
+       ENDIF
+
+       IF (N_LETTERS.GT.MAX_LETTERS) THEN
+          WRITE(SO,*) 'DEGENERACY TOO HIGH'
+          STOP
+       ENDIF
+
+       READ(INPUT_AMH,*) MIN_SEQ_SEP
+       WRITE(SO,*) ' MIN_SEQ_SEP',  MIN_SEQ_SEP
+       READ(INPUT_AMH,*) I_3RD_IS_CONTACT
+       WRITE(SO,*) 'I_3RD_IS_CONTACT' , I_3RD_IS_CONTACT
+       IF (I_3RD_IS_CONTACT.AND.(N_LETTERS.NE.4)) THEN
+           WRITE(SO,*) 'CONTACT POTENTIAL FOR 4 LETTER CODE ONLY'
+           STOP
+       ENDIF
+
+       READ(INPUT_AMH,*) N_LETTERS_CON
+       IF (N_LETTERS_CON.NE.4.AND.N_LETTERS_CON.NE.20) THEN
+         WRITE(SO,*) 'ONLY 2,4 OR 20 LETTER CONTACT INT SUPPORTED',
+     *                                                 N_LETTERS_CON
+         STOP
+       ENDIF
+
+       READ(INPUT_AMH,*) NUM_WELL
+       WRITE(SO,*)'NUM_WELL=',NUM_WELL
+       IF (NUM_WELL.NE.2.AND.NUM_WELL.NE.3.AND.NUM_WELL.NE.5
+     *                                      .AND.NUM_WELL.NE.10) THEN
+         WRITE(SO,*) 'ONLY 3 OR 10 WELL CONTACT POT SUPPORTED',NUM_WELL
+         STOP
+       ENDIF
+
+       READ(INPUT_AMH,*) GLY_CON
+       DO I=1,NUM_WELL
+         READ(INPUT_AMH,*) R_MIN(I),R_MAX(I)
+         WRITE(SO,*)'R_MIN(I),R_MAX(I)=',R_MIN(I),R_MAX(I)
+       ENDDO
+       READ(INPUT_AMH,*) I_ALT_PROX
+       WRITE(SO,*)'I_ALT_PROX=',I_ALT_PROX
+       READ(INPUT_AMH,*) ALT_PROX_CUT
+       WRITE(SO,*)'ALT_PROX_CUT=',ALT_PROX_CUT
 
-       if (i_3rd_is_contact.and.(.not.i_alt_prox)) then
-           write(SO,*) 'conatct potential only supported'
-           write(SO,*) 'in Coreys alternative prox class'
-           stop
-       endif
+       IF (I_3RD_IS_CONTACT.AND.(.NOT.I_ALT_PROX)) THEN
+           WRITE(SO,*) 'CONATCT POTENTIAL ONLY SUPPORTED'
+           WRITE(SO,*) 'IN COREYS ALTERNATIVE PROX CLASS'
+           STOP
+       ENDIF
 
 
 
-c     excluded volume parameters
+C     EXCLUDED VOLUME PARAMETERS
 
-      read(input_amh,*)
-      read(input_amh,*)iexcld
-      read(input_amh,*)iexcld_beta
-      read(input_amh,*)iexcld_gamma,i_type_ev_gamma
-      if (i_type_ev_gamma.ne.1.and.i_type_ev_gamma.ne.2.and.i_type_ev_gamma.ne.3) then
-        write(SO,*) 'i_type_ev_gamma cock-up',i_type_ev_gamma
-        stop
-      endif
-c  pexcld  penalty for violating excluded volume
-      read(input_amh,*)pexcld
-       write(SO,*)'pexcld=',pexcld
-      read(input_amh,*)exvmin
-       write(SO,*)'exvmin=',exvmin
-      read(input_amh,*)exvminS
-       write(SO,*)'exvminS=',exvminS
-      read(input_amh,*)exvminS_beta(1:4)
-       write(SO,*) 'exvminS_beta(1:4)=',exvminS_beta(1:4)
-      read(input_amh,*)oxexcldv
-       write(SO,*)'oxexcldv=',oxexcldv
-      read(input_amh,*) o_exvmin
-       write(SO,*)'o_exvmin=',o_exvmin
-      read(input_amh,*) o_exvminS(1:4)
-       write(SO,*) 'o_exvminS(1:4)',o_exvminS(1:4)
-      read(input_amh,*)oexcldscl
-      write(SO,*) 'oexcldscl',oexcldscl
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*)IEXCLD
+      READ(INPUT_AMH,*)IEXCLD_BETA
+      READ(INPUT_AMH,*)IEXCLD_GAMMA,I_TYPE_EV_GAMMA
+      IF (I_TYPE_EV_GAMMA.NE.1.AND.I_TYPE_EV_GAMMA.NE.2.AND.I_TYPE_EV_GAMMA.NE.3) THEN
+        WRITE(SO,*) 'I_TYPE_EV_GAMMA COCK-UP',I_TYPE_EV_GAMMA
+        STOP
+      ENDIF
+C  PEXCLD  PENALTY FOR VIOLATING EXCLUDED VOLUME
+      READ(INPUT_AMH,*)PEXCLD
+       WRITE(SO,*)'PEXCLD=',PEXCLD
+      READ(INPUT_AMH,*)EXVMIN
+       WRITE(SO,*)'EXVMIN=',EXVMIN
+      READ(INPUT_AMH,*)EXVMINS
+       WRITE(SO,*)'EXVMINS=',EXVMINS
+      READ(INPUT_AMH,*)EXVMINS_BETA(1:4)
+       WRITE(SO,*) 'EXVMINS_BETA(1:4)=',EXVMINS_BETA(1:4)
+      READ(INPUT_AMH,*)OXEXCLDV
+       WRITE(SO,*)'OXEXCLDV=',OXEXCLDV
+      READ(INPUT_AMH,*) O_EXVMIN
+       WRITE(SO,*)'O_EXVMIN=',O_EXVMIN
+      READ(INPUT_AMH,*) O_EXVMINS(1:4)
+       WRITE(SO,*) 'O_EXVMINS(1:4)',O_EXVMINS(1:4)
+      READ(INPUT_AMH,*)OEXCLDSCL
+      WRITE(SO,*) 'OEXCLDSCL',OEXCLDSCL
 
-      pexcld_gamma=pexcld
+      PEXCLD_GAMMA=PEXCLD
 
-         hrdrad(0,1)=0.0D0
-         hrdrad(0,2)=0.0D0
-         do 505 i505=1,21
-            hrdrad(i505,1)=exvmin*0.5D0
-            hrdrad(i505,2)=exvmin*0.5D0
-  505    continue
-ccccccc
+         HRDRAD(0,1)=0.0D0
+         HRDRAD(0,2)=0.0D0
+         DO 505 I505=1,21
+            HRDRAD(I505,1)=EXVMIN*0.5D0
+            HRDRAD(I505,2)=EXVMIN*0.5D0
+  505    CONTINUE
+CCCCCCC
 
-      read(input_amh,*)
+      READ(INPUT_AMH,*)
 
-c     ran_force is flag for random force
-      read(input_amh,*) ran_force
-      write(SO,*) 'ran_force ',ran_force
-      if (ran_force  .and. nummem .gt. 1) then
-        write(SO,*) 'random force and >1 memory, so stopping'
-        stop
-      endif
+C     RAN_FORCE IS FLAG FOR RANDOM FORCE
+      READ(INPUT_AMH,*) RAN_FORCE
+      WRITE(SO,*) 'RAN_FORCE ',RAN_FORCE
+      IF (RAN_FORCE  .AND. NUMMEM .GT. 1) THEN
+        WRITE(SO,*) 'RANDOM FORCE AND >1 MEMORY, SO STOPPING'
+        STOP
+      ENDIF
 
-c     use previous random data if ran_file true
+C     USE PREVIOUS RANDOM DATA IF RAN_FILE TRUE
 
-      read(input_amh,*) ran_file
+      READ(INPUT_AMH,*) RAN_FILE
 
-c     r_ran  is eqm dist for random force
+C     R_RAN  IS EQM DIST FOR RANDOM FORCE
 
-      read(input_amh,*) r_ran
+      READ(INPUT_AMH,*) R_RAN
 
-c     s_ran  is sd of randon int
+C     S_RAN  IS SD OF RANDON INT
 
-      read(input_amh,*) s_ran
+      READ(INPUT_AMH,*) S_RAN
 
-c     ran_min_seq_dist is minimum seq-sep for random ints
+C     RAN_MIN_SEQ_DIST IS MINIMUM SEQ-SEP FOR RANDOM INTS
 
-      read(input_amh,*) ran_min_seq_dist
+      READ(INPUT_AMH,*) RAN_MIN_SEQ_DIST
 
-c     allow_neg allows negative prefactors to random potential if true
+C     ALLOW_NEG ALLOWS NEGATIVE PREFACTORS TO RANDOM POTENTIAL IF TRUE
 
-      read(input_amh,*) allow_neg
+      READ(INPUT_AMH,*) ALLOW_NEG
 
-c     lambdaR is the scale factor given to
-c     incorrect memories or random ints
+C     LAMBDAR IS THE SCALE FACTOR GIVEN TO
+C     INCORRECT MEMORIES OR RANDOM INTS
 
-      read(input_amh,*) lambdaR
+      READ(INPUT_AMH,*) LAMBDAR
 
-      write(SO,*) 'lambdaR',lambdaR
+      WRITE(SO,*) 'LAMBDAR',LAMBDAR
 
-c     srplr is ratio of total short-med-long range (in seq) energy
-c     in native state if iclassweight=.true.
+C     SRPLR IS RATIO OF TOTAL SHORT-MED-LONG RANGE (IN SEQ) ENERGY
+C     IN NATIVE STATE IF ICLASSWEIGHT=.TRUE.
 
-      read(input_amh,*)
-      read(input_amh,*)srplr
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*)SRPLR
 
-      write(SO,*) 'srplr',srplr
+      WRITE(SO,*) 'SRPLR',SRPLR
 
-c     eres is the desired potential energy/residue
+C     ERES IS THE DESIRED POTENTIAL ENERGY/RESIDUE
 
-      read(input_amh,*)eres
+      READ(INPUT_AMH,*)ERES
 
-c     short-range ixn cutoff
-      write(SO,*) 'bottom 2a'
+C     SHORT-RANGE IXN CUTOFF
+      WRITE(SO,*) 'BOTTOM 2A'
 
-      read(input_amh,*)minmr,maxmr
-      write(SO,*) 'minmr, maxmr',minmr,maxmr
+      READ(INPUT_AMH,*)MINMR,MAXMR
+      WRITE(SO,*) 'MINMR, MAXMR',MINMR,MAXMR
 
-c     maxs is the r-grid resolution
+C     MAXS IS THE R-GRID RESOLUTION
 
-      read(input_amh,*)maxs
+      READ(INPUT_AMH,*)MAXS
 
-c     check that maxs is less than or equal to the
-c     maximum number of r-grid points
+C     CHECK THAT MAXS IS LESS THAN OR EQUAL TO THE
+C     MAXIMUM NUMBER OF R-GRID POINTS
 
-      if( maxs.gt.maxr )then
-         write(oarchv,726)maxs,maxr
-  726    format('maxs too large',2(1x,i3))
-         stop
-      endif
+      IF( MAXS.GT.MAXR )THEN
+         WRITE(OARCHV,726)MAXS,MAXR
+  726    FORMAT('MAXS TOO LARGE',2(1X,I3))
+         STOP
+      ENDIF
 
-c     read switch for rama potential
+C     READ SWITCH FOR RAMA POTENTIAL
 
 
-      read(input_amh,*)
-      read(input_amh,*) i_rama
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*) I_RAMA
 
-      if (i_rama.ne.0 .and. i_rama.ne.1 .and. i_rama.ne.2 
-     *  .and. i_rama.ne.3) then
-         write(SO,*) 'i_rama set incorrectly',i_rama
-         stop
-      endif
+      IF (I_RAMA.NE.0 .AND. I_RAMA.NE.1 .AND. I_RAMA.NE.2 
+     *  .AND. I_RAMA.NE.3) THEN
+         WRITE(SO,*) 'I_RAMA SET INCORRECTLY',I_RAMA
+         STOP
+      ENDIF
 
-c     read hbond flag
-      write(SO,*) 'reading hbond'
+C     READ HBOND FLAG
+      WRITE(SO,*) 'READING HBOND'
 
-      read(input_amh,*)hbond
-      read(input_amh,*)i_hbond_eastwood ! old dssp_hbond
-      read(input_amh,*)i_hbond_czong
+      READ(INPUT_AMH,*)HBOND
+      READ(INPUT_AMH,*)I_HBOND_EASTWOOD ! OLD DSSP_HBOND
+      READ(INPUT_AMH,*)I_HBOND_CZONG
 
-       if((hbond.and.(i_hbond_eastwood.or.i_hbond_czong)).or.
-     * (hbond .and. (i_hbond_eastwood .or. i_hbond_czong))) then
-         write(SO,*) 'cannot have both sorts of H-bond'
-         write(SO,*) 'for a start they use same avep array'
-         stop
-       endif
-
-c     input_amh in switch for oxygen potential and scaling factor
-c     and hbscl
-
-      write(SO,*) 'reading input_amh in switch'
-      read(input_amh,*)NO_zero
-      read(input_amh,*)sigma_NO
-      read(input_amh,*)ho_zero
-      read(input_amh,*)sigma_h
-      read(input_amh,*)hbscl(1:17)
-
-
-c     input_amh in switch for oxygen potential and scaling factor
-c     and hbscl
-
-      write(SO,*) 'reading input_amh in switch'
-
-      read(input_amh,*)oxscl
-      write(SO,*) 'oxscl',oxscl
-      read(input_amh,*)ramascl
-      write(SO,*) 'ramascl', ramascl
-c     chiral forces
-      read(input_amh,*)chrlscl
-      write(SO,*)'chrscl',chrlscl
-
-! read in parameters for replica force
-      read(input_amh,*) 
-      read(input_amh,*) i_rep
-      write(SO,*) i_rep
-      read(input_amh,*) rep_cut_off
-      write(SO,*) rep_cut_off
-      read(input_amh,*) rep_tol
-      write(SO,*) rep_tol
-      read(input_amh,*) i_rep_lambda_uniform,rep_lambda(1)
-      write(SO,*) i_rep_lambda_uniform,rep_lambda(1)
-
-c     central potential switch and scaling factor
-c     for central potential
-
-      write(SO,*) 'bottom 2b'
-
-c     MD timestep
-
-      read(input_amh,*)
-      read(input_amh,*)timstp
-      write(SO,*) 'timstp',timstp
-
-c     set tolerance for SHAKE routines
-c
-c
-c Changing this temporarily
-c tolshk=0.2
-
-c        tolshk=200000000*timstp
-       tolshk=0.2*timstp
-c     minimal well-width
-
-      read(input_amh,*)delta
-
-c     exponent for well-width as function |i-j-1|
-
-      read(input_amh,*)delte
-
-c     maximum interaction distance
-
-      read(input_amh,*)rcut
-      read(input_amh,*)rcutAMH
-      read(input_amh,*)srcut
-      read(input_amh,*)welscl
-      write(SO,*) 'rcut,rcutAMH,srcut,welscl',rcut
-     *                              ,rcutAMH,welscl
-
-
-c     read parameters/flags for biasing functions
-
-      read(input_amh,*)
-      read(input_amh,*) ibiasgauss           ! first biasong funcs that depend on E_amh
-      read(input_amh,*) bias_weight
-      read(input_amh,*) bias_av
-      read(input_amh,*) bias_var
-      bias_prefactor=bias_weight/sqrt(2.0*3.1415926*
-     *                                        bias_var)
-      if (.not.ibiasgauss) bias_prefactor=0.0D0
-      read(input_amh,*) ibiaspoly
-      read(input_amh,*) nbiaspoly
-      read(input_amh,*) (biaspoly(i),i=1,nbiaspoly)
-      if (nbiaspoly.gt.100) then
-         write(SO,*) 'nbias too high'
-         stop
-      endif
-      if (ibiasgauss.and.ibiaspoly) then
-        write(SO,*) 'polynomial + gaussian bias cannot
-     *                 be on at same time'
-         stop
-      endif
-      do i=nbiaspoly+1,100
-        biaspoly(i)=0.0D0
-      enddo
-ccc  part for partial contstraint
-ccc  mode 1  for generate list for f of qs
-ccc  mode 2  for two seperate bits with flexible part in between
-
-       read(input_amh,*)
-       read(input_amh,*)cyclic
-       write(SO,*)'cyclic = ',cyclic
-       read(input_amh,*)const_mode
-       write(SO,*)'const_mode = ',const_mode
-       read(input_amh,*) num_foldon_a
-       write(SO,*)'num_foldon_a',num_foldon_a
-c        if (num_foldon_a .eq. 0) goto 75
-         if (num_foldon_a .gt. 30) STOP 'Too many Foldons: Max = 30'
-       do i = 1,num_foldon_a
-          read(input_amh,*) foldstrt_min_a(i),foldstrt_max_a(i)
-          write(SO,*) foldstrt_min_a(i),foldstrt_max_a(i),i
-          if( foldstrt_max_a(i).gt.nmres )then
-          write(oarchv,724)foldstrt_max_a,nmres
-724       format('foldstrt_max_a too large',2(1x,i3))
-          stop
-          endif
-       enddo
-
-       if( const_mode .eq. 2 )then
-              read(input_amh,*) num_foldon_b
-              write(SO,*) num_foldon_b
-            if (num_foldon_b .gt. 20) STOP 'Too many Foldons: Max = 20'
-                do i = 1,num_foldon_b
-                   read(input_amh,*) foldstrt_min_b(i),foldstrt_max_b(i)
-                   write(SO,*) foldstrt_min_b(i),foldstrt_max_b(i)
-                if( foldstrt_max_b(i).gt.nmres )then
-                    write(oarchv,725)foldstrt_max_b,nmres
-725                 format('foldstrt_max_b too large',2(1x,i3))
-                     stop
-                 endif
-            enddo
-        endif ! const_mode
-
-      read(input_amh,*)
-      read(input_amh,*) i_Qbias_a          ! now biasing funcs that dep on Q
-      write(SO,*)'iQbias_a ',i_Qbias_a
-      read(input_amh,*)n_Q_anneal_a, Q0_inc_a
-      write(SO,*)'n_Q_anneal_a Q0_inc_a', n_Q_anneal_a, Q0_inc_a
-      read(input_amh,*)con_local_a, con_local_a_cut
-      write(SO,*)'con_local_a  con_local_a_cut',
-     *                             con_local_a,con_local_a_cut
-      read(input_amh,*) i_bias_native_a
-      write(SO,*)'i_bias_native_a',  i_bias_native_a
-      read(input_amh,*) ss_a
-      write(SO,*)'ss_a ', ss_a
-      write(SO,*)'simulate s.s. units ss_a ', ss_a
-      if (.not. ss_a) ss_pat_iter_a = 1
-      if (ss_a) ss_pat_iter_a = num_foldon_a 
-      write(SO,*)'ss_pat_iter_a ',ss_pat_iter_a
-      read(input_amh,*)(ss_pattern_a(i),i=1,ss_pat_iter_a)
-       do i = 1, ss_pat_iter_a
-            write(SO,*)'ss_pattern_a ',  ss_pattern_a(i)
-       enddo
-
-      read(input_amh,*) width_Qexp_a
-      write(SO,*)'width_Qexp_a',  width_Qexp_a
-      read(input_amh,*) n_Qbias_a
-      write(SO,*)'n_Qbias_a', n_Qbias_a
-      read(input_amh,*) i_Q_format_a
-      write(SO,*)'i_Q_format_a', i_Q_format_a 
-
-      read(input_amh,*) (Qbiaspoly_a(i),i=1,n_Qbias_a)
-      if (n_Qbias_a.gt.100) then
-         write(SO,*) 'n_Qbias too high'
-         stop
-      endif
-      read(input_amh,*) Q0_safe_a,Q_weight_a
-      write(SO,*)'Q0_safe_a  ', Q0_safe_a
-      read(input_amh,*) Q_clip_a
-      write(SO,*)'Q_clip_a  ', Q_clip_a
-
-       Q0_a =  Q0_safe_a
-
-      do i=n_Qbias_a+1,100
-        Qbiaspoly_a(i)=0.0D0
-      enddo
-
-c  count number of contacts for ss_a
-          if(ss_a)then
-            totalssnorm = 0
-          do i = 1,num_foldon_a
-              temp_a = 0
-           do j = foldstrt_min_a(i), foldstrt_max_a(i)
-              temp_a  = temp_a + 1
-           enddo
-              totalssnorm = totalssnorm + (temp_a-1)*(temp_a-2)
-          enddo
-              write(SO,*)'totalssnorm',totalssnorm
-          endif ! ss_a
-
-ccccccccccccccc   NEWNEWNEWNEWNEWNEW
-
-      read(input_amh,*)
-      read(input_amh,*) i_Qbias_b         ! now biasing funcs that dep on Q
-      write(SO,*)'i_Qbias_b ',i_Qbias_b
-      read(input_amh,*)n_Q_anneal_b, Q0_inc_b
-      write(SO,*)'n_Q_anneal_b, Q0_inc_b ', n_Q_anneal_b, Q0_inc_b
-      read(input_amh,*)con_local_b, con_local_b_cut
-      write(SO,*)'con_local_b  con_local_b_cut',
-     *                                  con_local_b,con_local_b_cut
-      read(input_amh,*) i_bias_native_b
-      write(SO,*)'i_bias_native_b ', i_bias_native_b
-      read(input_amh,*) ss_b
-      write(SO,*)'simulate s.s. units  ss_b ', ss_b 
-      if (.not. ss_b) ss_pat_iter_b = 1
-      if (ss_b) ss_pat_iter_b = num_foldon_b
-      write(SO,*)'ss_pat_iter_b ',ss_pat_iter_b
-      read(input_amh,*)(ss_pattern_b(i),i=1,ss_pat_iter_b)
-      read(input_amh,*) width_Qexp_b
-      read(input_amh,*) n_Qbias_b
-      read(input_amh,*) i_Q_format_b
-      read(input_amh,*) (Qbiaspoly_b(i),i=1,n_Qbias_b)
-
-      if (n_Qbias_b .gt. 100) then
-         write(SO,*) 'n_Qbias_b too high'
-         stop
-      endif
-      read(input_amh,*) Q0_safe_b,Q_weight_b
-      read(input_amh,*) Q_clip_b
-
-      Q0_b = Q0_safe_b
-
-
-      do i=n_Qbias_b+1,100
-        Qbiaspoly_b(i)=0.0D0
-      enddo
-
-c make constraint lists
-
-          do i = 1,  AMHmaxsiz
-             gap(i) = 0
-          enddo
-
-          do i = 1,  nmres
-	                seglist_a(i) = 0
-          enddo
-
-          if ( num_foldon_a .ne. 1 .and. num_foldon_a .ne. 0) then
-             do i = 1,num_foldon_a - 1
-               gap(i) = foldstrt_min_a(i+1) - foldstrt_max_a(i) - 1
-             enddo
-          endif
-
-          do i = 1,num_foldon_a
-          if ( i .eq. 1 .and. num_foldon_a .ne. 0 ) then
-            do j = foldstrt_min_a(i), foldstrt_max_a(i)
-                seglist_a(j - (foldstrt_min_a(i)-1)) = j
-                numconst_a = j - (foldstrt_min_a(i)-1)
-            enddo
-          endif
-          tempgap = 0
-          if ( i .ne. 1 .and. num_foldon_a .ne. 0 ) then
-              do k = 1 , i - 1
-                  tempgap = tempgap + gap(k)
-              enddo
-              do j = foldstrt_min_a(i), foldstrt_max_a(i)
-                  seglist_a(j - tempgap -  (foldstrt_min_a(1)-1)) = j
-                  numconst_a = j - tempgap  - (foldstrt_min_a(1)-1)
-              enddo
-          endif   ! if ( i .ne. 1) then
-          enddo
-
-             write(SO,*)'numconst_a',numconst_a
-             do i = 1, numconst_a
-               write(SO,*)'seglist_a ',  seglist_a(i)
-             enddo
-
-
-cc construct  second list
-
-       if (const_mode .eq. 1) then
-             do i = 1,  nmres
-                       seglist_b(i)= 0
-             enddo
-             numconst_b  = 0
-             do  266 k = 1 ,  nmres
-                 switch = 0
-              if (num_foldon_a .eq. 0) numconst_a = nmres
-                  do 255 j = 1, numconst_b
-                     if  (seglist_b(j) .eq. k) switch = 1
-255            enddo
-                 if (switch .eq. 0) then
-                    numconst_b  = numconst_b  + 1
-                    seglist_b(numconst_b) =  k
-                 endif
-266           enddo
-      endif  !    listmode 1
-
-c   lists for manual assignment of two lists for q constraints
-
-       if (const_mode .eq. 2) then
-             do i = 1,  nmres
-                       seglist_b(i)= 0
-             enddo
-                numconst_b  = 0
-
-          if ( num_foldon_b .ne. 1 .and. num_foldon_b .ne. 0) then
-             do i = 1,num_foldon_b - 1
-                  gap(i) = foldstrt_min_b(i+1) - foldstrt_max_b(i) - 1
-             enddo
-          endif
-
-          do i = 1,num_foldon_b
-          if ( i .eq. 1 .and. num_foldon_b .ne. 0 ) then
-            do j = foldstrt_min_b(i), foldstrt_max_b(i)
-                seglist_b(j - (foldstrt_min_b(i)-1)) = j
-                numconst_b = j - (foldstrt_min_b(i)-1)
-            enddo
-          endif
-          tempgap = 0
-          if ( i .ne. 1 .and. num_foldon_b .ne. 0 ) then
-              do k = 1 , i - 1
-                  tempgap = tempgap + gap(k)
-              enddo
-              do j = foldstrt_min_b(i), foldstrt_max_b(i)
-                  seglist_b(j - tempgap -  (foldstrt_min_b(1)-1)) = j
-                  numconst_b = j - tempgap  - (foldstrt_min_b(1)-1)
-              enddo
-          endif   ! if ( i .ne. 1) then
-          enddo
-
-           write(SO,*)'numconst_b',numconst_b
-                  do i = 1,  numconst_b
-             write(SO,*)'seglist_b ',  seglist_b(i)
-                  enddo
-
-        endif  !    listmode 2
-
-c       if (con_local_a) then
-c          j = 0 
-c          do i= 1, numconst_a
-c           if((seglist_a(i)+1-seglist_a(i)).lt.con_local_a_cut)then
-c                j = j  + 1
-c           endif
-c          enddo
-c         numconst_a = j
-c       endif   ! if (con_local_a)  then
-c
-c
-c       if ( con_local_b) then
-c        j = 0 
-c         do i= 1, numconst_b
-c           if((seglist_b(i)+1 -seglist_b(i)) .lt. con_local_b_cut)then 
-c             j = j  + 1 
-c           endif 
-c         enddo
-c        numconst_b = j 
-c       endif   ! if (con_local_b)  then
-c
-cccccccccccccccccc NEWNEWNEWNEWNEWNEW
-
-      read(input_amh,*)
-      read(input_amh,*) i_contact_order
-      write(SO,*)'i_contact_order ',i_contact_order
-      read(input_amh,*) n_contact_order_terms
-      if (n_contact_order_terms.gt.max_contact_order_terms) then
-         write(SO,*) 'n_contact_order_terms too big'
-         stop
-      endif
-      do i=1,n_contact_order_terms
-        read(input_amh,*) i_contact_order_min(i),i_contact_order_max(i)
-        read(input_amh,*) r_min_contact_order(i),r_max_contact_order(i)
-        read(input_amh,*) gamma_contact_order(i,1:3)
-      enddo
-
-ccccccccccccccccccccHydrogoen bond parameters
-
-      read(input_amh,*)
-      read(input_amh,*) i_con_P_AP,i_atom_P_AP
-      write(SO,*)'i_con_P_AP   i_atom_P_AP ',i_con_P_AP, i_atom_P_AP
-      read(input_amh,*) r_cut_P_AP,i_diff_P_AP
-      write(SO,*)'r_cut_P_AP  i_diff_P_AP ',r_cut_P_AP, i_diff_P_AP
-      read(input_amh,*) weight_P_AP(1:3)
-
-      read(input_amh,*)
-      read(input_amh,*) alpha_c_of_n
-      read(input_amh,*) ab_c_of_n_new
-      read(input_amh,*) ab_c_of_n_old
-      if ( (alpha_c_of_n.and.ab_c_of_n_new) .or.
-     *     (alpha_c_of_n.and.ab_c_of_n_old) .or.
-     *     (ab_c_of_n_new.and.ab_c_of_n_old) ) then
-         write(SO,*) 'c of n problem',alpha_c_of_n
-         write(SO,*) 'c of n problem',ab_c_of_n_new
-         write(SO,*) 'c of n problem',ab_c_of_n_old
-         stop
-      endif
-
-      read(input_amh,*)
-      read(input_amh,*) i_Rg_bias          ! now biasing funcs that dep on Rg
-      read(input_amh,*) i_rg_corey
-      read(input_amh,*) rg_bounds(1)
-      read(input_amh,*) rg_bounds(2)
-      read(input_amh,*) rg_shift, rg_scl
-      read(input_amh,*) i_rg_garyk
-      read(input_amh,*) D_rg, T_rg, delR_rg, M_rg, kappa_rg
-      read(input_amh,*) n_Rg_bias
-      read(input_amh,*) (Rg_biaspoly(i),i=1,n_Rg_bias)
-      if (n_Rg_bias.gt.100) then
-         write(SO,*) 'n_Rg_bias too high'
-         stop
-      endif
+       IF((HBOND.AND.(I_HBOND_EASTWOOD.OR.I_HBOND_CZONG)).OR.
+     * (HBOND .AND. (I_HBOND_EASTWOOD .OR. I_HBOND_CZONG))) THEN
+         WRITE(SO,*) 'CANNOT HAVE BOTH SORTS OF H-BOND'
+         WRITE(SO,*) 'FOR A START THEY USE SAME AVEP ARRAY'
+         STOP
+       ENDIF
+
+C     INPUT_AMH IN SWITCH FOR OXYGEN POTENTIAL AND SCALING FACTOR
+C     AND HBSCL
+
+      WRITE(SO,*) 'READING INPUT_AMH IN SWITCH'
+      READ(INPUT_AMH,*)NO_ZERO
+      READ(INPUT_AMH,*)SIGMA_NO
+      READ(INPUT_AMH,*)HO_ZERO
+      READ(INPUT_AMH,*)SIGMA_H
+      READ(INPUT_AMH,*)HBSCL(1:17)
+
+
+C     INPUT_AMH IN SWITCH FOR OXYGEN POTENTIAL AND SCALING FACTOR
+C     AND HBSCL
+
+      WRITE(SO,*) 'READING INPUT_AMH IN SWITCH'
+
+      READ(INPUT_AMH,*)OXSCL
+      WRITE(SO,*) 'OXSCL',OXSCL
+      READ(INPUT_AMH,*)RAMASCL
+      WRITE(SO,*) 'RAMASCL', RAMASCL
+C     CHIRAL FORCES
+      READ(INPUT_AMH,*)CHRLSCL
+      WRITE(SO,*)'CHRSCL',CHRLSCL
+
+! READ IN PARAMETERS FOR REPLICA FORCE
+      READ(INPUT_AMH,*) 
+      READ(INPUT_AMH,*) I_REP
+      WRITE(SO,*) I_REP
+      READ(INPUT_AMH,*) REP_CUT_OFF
+      WRITE(SO,*) REP_CUT_OFF
+      READ(INPUT_AMH,*) REP_TOL
+      WRITE(SO,*) REP_TOL
+      READ(INPUT_AMH,*) I_REP_LAMBDA_UNIFORM,REP_LAMBDA(1)
+      WRITE(SO,*) I_REP_LAMBDA_UNIFORM,REP_LAMBDA(1)
+
+C     CENTRAL POTENTIAL SWITCH AND SCALING FACTOR
+C     FOR CENTRAL POTENTIAL
+
+      WRITE(SO,*) 'BOTTOM 2B'
+
+C     MD TIMESTEP
+
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*)TIMSTP
+      WRITE(SO,*) 'TIMSTP',TIMSTP
+
+C     SET TOLERANCE FOR SHAKE ROUTINES
+C
+C
+C CHANGING THIS TEMPORARILY
+C TOLSHK=0.2
+
+C        TOLSHK=200000000*TIMSTP
+       TOLSHK=0.2*TIMSTP
+C     MINIMAL WELL-WIDTH
+
+      READ(INPUT_AMH,*)DELTA
+
+C     EXPONENT FOR WELL-WIDTH AS FUNCTION |I-J-1|
+
+      READ(INPUT_AMH,*)DELTE
+
+C     MAXIMUM INTERACTION DISTANCE
+
+      READ(INPUT_AMH,*)RCUT
+      READ(INPUT_AMH,*)RCUTAMH
+      READ(INPUT_AMH,*)SRCUT
+      READ(INPUT_AMH,*)WELSCL
+      WRITE(SO,*) 'RCUT,RCUTAMH,SRCUT,WELSCL',RCUT
+     *                              ,RCUTAMH,WELSCL
+
+
+C     READ PARAMETERS/FLAGS FOR BIASING FUNCTIONS
+
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*) IBIASGAUSS           ! FIRST BIASONG FUNCS THAT DEPEND ON E_AMH
+      READ(INPUT_AMH,*) BIAS_WEIGHT
+      READ(INPUT_AMH,*) BIAS_AV
+      READ(INPUT_AMH,*) BIAS_VAR
+      BIAS_PREFACTOR=BIAS_WEIGHT/SQRT(2.0*3.1415926*
+     *                                        BIAS_VAR)
+      IF (.NOT.IBIASGAUSS) BIAS_PREFACTOR=0.0D0
+      READ(INPUT_AMH,*) IBIASPOLY
+      READ(INPUT_AMH,*) NBIASPOLY
+      READ(INPUT_AMH,*) (BIASPOLY(I),I=1,NBIASPOLY)
+      IF (NBIASPOLY.GT.100) THEN
+         WRITE(SO,*) 'NBIAS TOO HIGH'
+         STOP
+      ENDIF
+      IF (IBIASGAUSS.AND.IBIASPOLY) THEN
+        WRITE(SO,*) 'POLYNOMIAL + GAUSSIAN BIAS CANNOT
+     *                 BE ON AT SAME TIME'
+         STOP
+      ENDIF
+      DO I=NBIASPOLY+1,100
+        BIASPOLY(I)=0.0D0
+      ENDDO
+CCC  PART FOR PARTIAL CONTSTRAINT
+CCC  MODE 1  FOR GENERATE LIST FOR F OF QS
+CCC  MODE 2  FOR TWO SEPERATE BITS WITH FLEXIBLE PART IN BETWEEN
+
+       READ(INPUT_AMH,*)
+       READ(INPUT_AMH,*)CYCLIC
+       WRITE(SO,*)'CYCLIC = ',CYCLIC
+       READ(INPUT_AMH,*)CONST_MODE
+       WRITE(SO,*)'CONST_MODE = ',CONST_MODE
+       READ(INPUT_AMH,*) NUM_FOLDON_A
+       WRITE(SO,*)'NUM_FOLDON_A',NUM_FOLDON_A
+C        IF (NUM_FOLDON_A .EQ. 0) GOTO 75
+         IF (NUM_FOLDON_A .GT. 30) STOP 'TOO MANY FOLDONS: MAX = 30'
+       DO I = 1,NUM_FOLDON_A
+          READ(INPUT_AMH,*) FOLDSTRT_MIN_A(I),FOLDSTRT_MAX_A(I)
+          WRITE(SO,*) FOLDSTRT_MIN_A(I),FOLDSTRT_MAX_A(I),I
+          IF( FOLDSTRT_MAX_A(I).GT.NMRES )THEN
+          WRITE(OARCHV,724)FOLDSTRT_MAX_A,NMRES
+724       FORMAT('FOLDSTRT_MAX_A TOO LARGE',2(1X,I3))
+          STOP
+          ENDIF
+       ENDDO
+
+       IF( CONST_MODE .EQ. 2 )THEN
+              READ(INPUT_AMH,*) NUM_FOLDON_B
+              WRITE(SO,*) NUM_FOLDON_B
+            IF (NUM_FOLDON_B .GT. 20) STOP 'TOO MANY FOLDONS: MAX = 20'
+                DO I = 1,NUM_FOLDON_B
+                   READ(INPUT_AMH,*) FOLDSTRT_MIN_B(I),FOLDSTRT_MAX_B(I)
+                   WRITE(SO,*) FOLDSTRT_MIN_B(I),FOLDSTRT_MAX_B(I)
+                IF( FOLDSTRT_MAX_B(I).GT.NMRES )THEN
+                    WRITE(OARCHV,725)FOLDSTRT_MAX_B,NMRES
+725                 FORMAT('FOLDSTRT_MAX_B TOO LARGE',2(1X,I3))
+                     STOP
+                 ENDIF
+            ENDDO
+        ENDIF ! CONST_MODE
+
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*) I_QBIAS_A          ! NOW BIASING FUNCS THAT DEP ON Q
+      WRITE(SO,*)'IQBIAS_A ',I_QBIAS_A
+      READ(INPUT_AMH,*)N_Q_ANNEAL_A, Q0_INC_A
+      WRITE(SO,*)'N_Q_ANNEAL_A Q0_INC_A', N_Q_ANNEAL_A, Q0_INC_A
+      READ(INPUT_AMH,*)CON_LOCAL_A, CON_LOCAL_A_CUT
+      WRITE(SO,*)'CON_LOCAL_A  CON_LOCAL_A_CUT',
+     *                             CON_LOCAL_A,CON_LOCAL_A_CUT
+      READ(INPUT_AMH,*) I_BIAS_NATIVE_A
+      WRITE(SO,*)'I_BIAS_NATIVE_A',  I_BIAS_NATIVE_A
+      READ(INPUT_AMH,*) SS_A
+      WRITE(SO,*)'SS_A ', SS_A
+      WRITE(SO,*)'SIMULATE S.S. UNITS SS_A ', SS_A
+      IF (.NOT. SS_A) SS_PAT_ITER_A = 1
+      IF (SS_A) SS_PAT_ITER_A = NUM_FOLDON_A 
+      WRITE(SO,*)'SS_PAT_ITER_A ',SS_PAT_ITER_A
+      READ(INPUT_AMH,*)(SS_PATTERN_A(I),I=1,SS_PAT_ITER_A)
+       DO I = 1, SS_PAT_ITER_A
+            WRITE(SO,*)'SS_PATTERN_A ',  SS_PATTERN_A(I)
+       ENDDO
+
+      READ(INPUT_AMH,*) WIDTH_QEXP_A
+      WRITE(SO,*)'WIDTH_QEXP_A',  WIDTH_QEXP_A
+      READ(INPUT_AMH,*) N_QBIAS_A
+      WRITE(SO,*)'N_QBIAS_A', N_QBIAS_A
+      READ(INPUT_AMH,*) I_Q_FORMAT_A
+      WRITE(SO,*)'I_Q_FORMAT_A', I_Q_FORMAT_A 
+
+      READ(INPUT_AMH,*) (QBIASPOLY_A(I),I=1,N_QBIAS_A)
+      IF (N_QBIAS_A.GT.100) THEN
+         WRITE(SO,*) 'N_QBIAS TOO HIGH'
+         STOP
+      ENDIF
+      READ(INPUT_AMH,*) Q0_SAFE_A,Q_WEIGHT_A
+      WRITE(SO,*)'Q0_SAFE_A  ', Q0_SAFE_A
+      READ(INPUT_AMH,*) Q_CLIP_A
+      WRITE(SO,*)'Q_CLIP_A  ', Q_CLIP_A
+
+       Q0_A =  Q0_SAFE_A
+
+      DO I=N_QBIAS_A+1,100
+        QBIASPOLY_A(I)=0.0D0
+      ENDDO
+
+C  COUNT NUMBER OF CONTACTS FOR SS_A
+          IF(SS_A)THEN
+            TOTALSSNORM = 0
+          DO I = 1,NUM_FOLDON_A
+              TEMP_A = 0
+           DO J = FOLDSTRT_MIN_A(I), FOLDSTRT_MAX_A(I)
+              TEMP_A  = TEMP_A + 1
+           ENDDO
+              TOTALSSNORM = TOTALSSNORM + (TEMP_A-1)*(TEMP_A-2)
+          ENDDO
+              WRITE(SO,*)'TOTALSSNORM',TOTALSSNORM
+          ENDIF ! SS_A
+
+CCCCCCCCCCCCCCC   NEWNEWNEWNEWNEWNEW
+
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*) I_QBIAS_B         ! NOW BIASING FUNCS THAT DEP ON Q
+      WRITE(SO,*)'I_QBIAS_B ',I_QBIAS_B
+      READ(INPUT_AMH,*)N_Q_ANNEAL_B, Q0_INC_B
+      WRITE(SO,*)'N_Q_ANNEAL_B, Q0_INC_B ', N_Q_ANNEAL_B, Q0_INC_B
+      READ(INPUT_AMH,*)CON_LOCAL_B, CON_LOCAL_B_CUT
+      WRITE(SO,*)'CON_LOCAL_B  CON_LOCAL_B_CUT',
+     *                                  CON_LOCAL_B,CON_LOCAL_B_CUT
+      READ(INPUT_AMH,*) I_BIAS_NATIVE_B
+      WRITE(SO,*)'I_BIAS_NATIVE_B ', I_BIAS_NATIVE_B
+      READ(INPUT_AMH,*) SS_B
+      WRITE(SO,*)'SIMULATE S.S. UNITS  SS_B ', SS_B 
+      IF (.NOT. SS_B) SS_PAT_ITER_B = 1
+      IF (SS_B) SS_PAT_ITER_B = NUM_FOLDON_B
+      WRITE(SO,*)'SS_PAT_ITER_B ',SS_PAT_ITER_B
+      READ(INPUT_AMH,*)(SS_PATTERN_B(I),I=1,SS_PAT_ITER_B)
+      READ(INPUT_AMH,*) WIDTH_QEXP_B
+      READ(INPUT_AMH,*) N_QBIAS_B
+      READ(INPUT_AMH,*) I_Q_FORMAT_B
+      READ(INPUT_AMH,*) (QBIASPOLY_B(I),I=1,N_QBIAS_B)
+
+      IF (N_QBIAS_B .GT. 100) THEN
+         WRITE(SO,*) 'N_QBIAS_B TOO HIGH'
+         STOP
+      ENDIF
+      READ(INPUT_AMH,*) Q0_SAFE_B,Q_WEIGHT_B
+      READ(INPUT_AMH,*) Q_CLIP_B
+
+      Q0_B = Q0_SAFE_B
+
+
+      DO I=N_QBIAS_B+1,100
+        QBIASPOLY_B(I)=0.0D0
+      ENDDO
+
+C MAKE CONSTRAINT LISTS
+
+          DO I = 1,  AMHMAXSIZ
+             GAP(I) = 0
+          ENDDO
+
+          DO I = 1,  NMRES
+	                SEGLIST_A(I) = 0
+          ENDDO
+
+          IF ( NUM_FOLDON_A .NE. 1 .AND. NUM_FOLDON_A .NE. 0) THEN
+             DO I = 1,NUM_FOLDON_A - 1
+               GAP(I) = FOLDSTRT_MIN_A(I+1) - FOLDSTRT_MAX_A(I) - 1
+             ENDDO
+          ENDIF
+
+          DO I = 1,NUM_FOLDON_A
+          IF ( I .EQ. 1 .AND. NUM_FOLDON_A .NE. 0 ) THEN
+            DO J = FOLDSTRT_MIN_A(I), FOLDSTRT_MAX_A(I)
+                SEGLIST_A(J - (FOLDSTRT_MIN_A(I)-1)) = J
+                NUMCONST_A = J - (FOLDSTRT_MIN_A(I)-1)
+            ENDDO
+          ENDIF
+          TEMPGAP = 0
+          IF ( I .NE. 1 .AND. NUM_FOLDON_A .NE. 0 ) THEN
+              DO K = 1 , I - 1
+                  TEMPGAP = TEMPGAP + GAP(K)
+              ENDDO
+              DO J = FOLDSTRT_MIN_A(I), FOLDSTRT_MAX_A(I)
+                  SEGLIST_A(J - TEMPGAP -  (FOLDSTRT_MIN_A(1)-1)) = J
+                  NUMCONST_A = J - TEMPGAP  - (FOLDSTRT_MIN_A(1)-1)
+              ENDDO
+          ENDIF   ! IF ( I .NE. 1) THEN
+          ENDDO
+
+             WRITE(SO,*)'NUMCONST_A',NUMCONST_A
+             DO I = 1, NUMCONST_A
+               WRITE(SO,*)'SEGLIST_A ',  SEGLIST_A(I)
+             ENDDO
+
+
+CC CONSTRUCT  SECOND LIST
+
+       IF (CONST_MODE .EQ. 1) THEN
+             DO I = 1,  NMRES
+                       SEGLIST_B(I)= 0
+             ENDDO
+             NUMCONST_B  = 0
+             DO  266 K = 1 ,  NMRES
+                 SWITCH = 0
+              IF (NUM_FOLDON_A .EQ. 0) NUMCONST_A = NMRES
+                  DO 255 J = 1, NUMCONST_B
+                     IF  (SEGLIST_B(J) .EQ. K) SWITCH = 1
+255            ENDDO
+                 IF (SWITCH .EQ. 0) THEN
+                    NUMCONST_B  = NUMCONST_B  + 1
+                    SEGLIST_B(NUMCONST_B) =  K
+                 ENDIF
+266           ENDDO
+      ENDIF  !    LISTMODE 1
+
+C   LISTS FOR MANUAL ASSIGNMENT OF TWO LISTS FOR Q CONSTRAINTS
+
+       IF (CONST_MODE .EQ. 2) THEN
+             DO I = 1,  NMRES
+                       SEGLIST_B(I)= 0
+             ENDDO
+                NUMCONST_B  = 0
+
+          IF ( NUM_FOLDON_B .NE. 1 .AND. NUM_FOLDON_B .NE. 0) THEN
+             DO I = 1,NUM_FOLDON_B - 1
+                  GAP(I) = FOLDSTRT_MIN_B(I+1) - FOLDSTRT_MAX_B(I) - 1
+             ENDDO
+          ENDIF
+
+          DO I = 1,NUM_FOLDON_B
+          IF ( I .EQ. 1 .AND. NUM_FOLDON_B .NE. 0 ) THEN
+            DO J = FOLDSTRT_MIN_B(I), FOLDSTRT_MAX_B(I)
+                SEGLIST_B(J - (FOLDSTRT_MIN_B(I)-1)) = J
+                NUMCONST_B = J - (FOLDSTRT_MIN_B(I)-1)
+            ENDDO
+          ENDIF
+          TEMPGAP = 0
+          IF ( I .NE. 1 .AND. NUM_FOLDON_B .NE. 0 ) THEN
+              DO K = 1 , I - 1
+                  TEMPGAP = TEMPGAP + GAP(K)
+              ENDDO
+              DO J = FOLDSTRT_MIN_B(I), FOLDSTRT_MAX_B(I)
+                  SEGLIST_B(J - TEMPGAP -  (FOLDSTRT_MIN_B(1)-1)) = J
+                  NUMCONST_B = J - TEMPGAP  - (FOLDSTRT_MIN_B(1)-1)
+              ENDDO
+          ENDIF   ! IF ( I .NE. 1) THEN
+          ENDDO
+
+           WRITE(SO,*)'NUMCONST_B',NUMCONST_B
+                  DO I = 1,  NUMCONST_B
+             WRITE(SO,*)'SEGLIST_B ',  SEGLIST_B(I)
+                  ENDDO
+
+        ENDIF  !    LISTMODE 2
+
+C       IF (CON_LOCAL_A) THEN
+C          J = 0 
+C          DO I= 1, NUMCONST_A
+C           IF((SEGLIST_A(I)+1-SEGLIST_A(I)).LT.CON_LOCAL_A_CUT)THEN
+C                J = J  + 1
+C           ENDIF
+C          ENDDO
+C         NUMCONST_A = J
+C       ENDIF   ! IF (CON_LOCAL_A)  THEN
+C
+C
+C       IF ( CON_LOCAL_B) THEN
+C        J = 0 
+C         DO I= 1, NUMCONST_B
+C           IF((SEGLIST_B(I)+1 -SEGLIST_B(I)) .LT. CON_LOCAL_B_CUT)THEN 
+C             J = J  + 1 
+C           ENDIF 
+C         ENDDO
+C        NUMCONST_B = J 
+C       ENDIF   ! IF (CON_LOCAL_B)  THEN
+C
+CCCCCCCCCCCCCCCCCC NEWNEWNEWNEWNEWNEW
+
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*) I_CONTACT_ORDER
+      WRITE(SO,*)'I_CONTACT_ORDER ',I_CONTACT_ORDER
+      READ(INPUT_AMH,*) N_CONTACT_ORDER_TERMS
+      IF (N_CONTACT_ORDER_TERMS.GT.MAX_CONTACT_ORDER_TERMS) THEN
+         WRITE(SO,*) 'N_CONTACT_ORDER_TERMS TOO BIG'
+         STOP
+      ENDIF
+      DO I=1,N_CONTACT_ORDER_TERMS
+        READ(INPUT_AMH,*) I_CONTACT_ORDER_MIN(I),I_CONTACT_ORDER_MAX(I)
+        READ(INPUT_AMH,*) R_MIN_CONTACT_ORDER(I),R_MAX_CONTACT_ORDER(I)
+        READ(INPUT_AMH,*) GAMMA_CONTACT_ORDER(I,1:3)
+      ENDDO
+
+CCCCCCCCCCCCCCCCCCCCHYDROGOEN BOND PARAMETERS
+
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*) I_CON_P_AP,I_ATOM_P_AP
+      WRITE(SO,*)'I_CON_P_AP   I_ATOM_P_AP ',I_CON_P_AP, I_ATOM_P_AP
+      READ(INPUT_AMH,*) R_CUT_P_AP,I_DIFF_P_AP
+      WRITE(SO,*)'R_CUT_P_AP  I_DIFF_P_AP ',R_CUT_P_AP, I_DIFF_P_AP
+      READ(INPUT_AMH,*) WEIGHT_P_AP(1:3)
+
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*) ALPHA_C_OF_N
+      READ(INPUT_AMH,*) AB_C_OF_N_NEW
+      READ(INPUT_AMH,*) AB_C_OF_N_OLD
+      IF ( (ALPHA_C_OF_N.AND.AB_C_OF_N_NEW) .OR.
+     *     (ALPHA_C_OF_N.AND.AB_C_OF_N_OLD) .OR.
+     *     (AB_C_OF_N_NEW.AND.AB_C_OF_N_OLD) ) THEN
+         WRITE(SO,*) 'C OF N PROBLEM',ALPHA_C_OF_N
+         WRITE(SO,*) 'C OF N PROBLEM',AB_C_OF_N_NEW
+         WRITE(SO,*) 'C OF N PROBLEM',AB_C_OF_N_OLD
+         STOP
+      ENDIF
+
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*) I_RG_BIAS          ! NOW BIASING FUNCS THAT DEP ON RG
+      READ(INPUT_AMH,*) I_RG_COREY
+      READ(INPUT_AMH,*) RG_BOUNDS(1)
+      READ(INPUT_AMH,*) RG_BOUNDS(2)
+      READ(INPUT_AMH,*) RG_SHIFT, RG_SCL
+      READ(INPUT_AMH,*) I_RG_GARYK
+      READ(INPUT_AMH,*) D_RG, T_RG, DELR_RG, M_RG, KAPPA_RG
+      READ(INPUT_AMH,*) N_RG_BIAS
+      READ(INPUT_AMH,*) (RG_BIASPOLY(I),I=1,N_RG_BIAS)
+      IF (N_RG_BIAS.GT.100) THEN
+         WRITE(SO,*) 'N_RG_BIAS TOO HIGH'
+         STOP
+      ENDIF
                                                                                                      
-      if (i_rg_corey.and.i_rg_garyk) then
-         write(SO,*)
-     *     'Rg_bias: you must choose between i_rg_corey and i_rg_garyk'
-         stop
-      endif
+      IF (I_RG_COREY.AND.I_RG_GARYK) THEN
+         WRITE(SO,*)
+     *     'RG_BIAS: YOU MUST CHOOSE BETWEEN I_RG_COREY AND I_RG_GARYK'
+         STOP
+      ENDIF
                                                                                                      
-      i_rg_first=.true.
+      I_RG_FIRST=.TRUE.
 
-      do i=n_Rg_bias+1,100
-        Rg_biaspoly(i)=0.0D0
-      enddo
+      DO I=N_RG_BIAS+1,100
+        RG_BIASPOLY(I)=0.0D0
+      ENDDO
 
-c     nmstep is the number of time steps per temperature
+C     NMSTEP IS THE NUMBER OF TIME STEPS PER TEMPERATURE
 
-      read(input_amh,*)nmstep
+      READ(INPUT_AMH,*)NMSTEP
 
-c     read seed values for random number generators
+C     READ SEED VALUES FOR RANDOM NUMBER GENERATORS
 
-      read(input_amh,*)iseed_amh
-      write(SO,*) 'iseed_amh',iseed_amh
+      READ(INPUT_AMH,*)ISEED_AMH
+      WRITE(SO,*) 'ISEED_AMH',ISEED_AMH
 
-c     it1-it5 are then number of T grid points allocated to each
-c     of the intervals [t1,t2], [t2,t3],...
+C     IT1-IT5 ARE THEN NUMBER OF T GRID POINTS ALLOCATED TO EACH
+C     OF THE INTERVALS [T1,T2], [T2,T3],...
 
-c     t1-t5 are the cutoff points in the temperature-annealing
-c     schedule
+C     T1-T5 ARE THE CUTOFF POINTS IN THE TEMPERATURE-ANNEALING
+C     SCHEDULE
 
-      read(input_amh,*)
-      read(input_amh,*)
-      read(input_amh,*)it1,t1
-      read(input_amh,*)it2,t2
-      read(input_amh,*)it3,t3
-      read(input_amh,*)it4,t4
-      read(input_amh,*)it5,t5
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*)IT1,T1
+      READ(INPUT_AMH,*)IT2,T2
+      READ(INPUT_AMH,*)IT3,T3
+      READ(INPUT_AMH,*)IT4,T4
+      READ(INPUT_AMH,*)IT5,T5
 
-      write(SO,*) it1,it2,it3,it4,it5
-      write(SO,*) t1,t2,t3,t4,t5
+      WRITE(SO,*) IT1,IT2,IT3,IT4,IT5
+      WRITE(SO,*) T1,T2,T3,T4,T5
 
-c     if ictemp, then the minimization is performed at a
-c     constant temperature, ctemp
+C     IF ICTEMP, THEN THE MINIMIZATION IS PERFORMED AT A
+C     CONSTANT TEMPERATURE, CTEMP
 
-      read(input_amh,*)ictemp
-      read(input_amh,*)ctemp
+      READ(INPUT_AMH,*)ICTEMP
+      READ(INPUT_AMH,*)CTEMP
 
-      write(SO,*)'ictemp ',ictemp
-      write(SO,*)'ctemp  ',ctemp
+      WRITE(SO,*)'ICTEMP ',ICTEMP
+      WRITE(SO,*)'CTEMP  ',CTEMP
 
-c     nmtemp is the number of temperature grid points
+C     NMTEMP IS THE NUMBER OF TEMPERATURE GRID POINTS
 
-      nmtemp=it1 + it2 + it3 + it4
-      if( mxtemp.lt.nmtemp )then
-         write(oarchv,981)mxtemp,nmtemp
-  981    format(/'mxtemp ',i6,' too small ',i6)
-         stop
-      endif
+      NMTEMP=IT1 + IT2 + IT3 + IT4
+      IF( MXTEMP.LT.NMTEMP )THEN
+         WRITE(OARCHV,981)MXTEMP,NMTEMP
+  981    FORMAT(/'MXTEMP ',I6,' TOO SMALL ',I6)
+         STOP
+      ENDIF
 
-       write(SO,*) 'bottom 3b'
+       WRITE(SO,*) 'BOTTOM 3B'
 
-c     incmov is the increment for the number of
-c     structures to be saved fixed T
+C     INCMOV IS THE INCREMENT FOR THE NUMBER OF
+C     STRUCTURES TO BE SAVED FIXED T
 
-      read(input_amh,*)
-      read(input_amh,*)incmov
-      rnorm=float(nmtemp)/float(incmov)
-      if( int(rnorm).gt.nmdif )then
-         write(oarchv,728)incmov
-  728    format(/'incmov too small ',i3)
-         stop
-      endif
+      READ(INPUT_AMH,*)
+      READ(INPUT_AMH,*)INCMOV
+      RNORM=FLOAT(NMTEMP)/FLOAT(INCMOV)
+      IF( INT(RNORM).GT.NMDIF )THEN
+         WRITE(OARCHV,728)INCMOV
+  728    FORMAT(/'INCMOV TOO SMALL ',I3)
+         STOP
+      ENDIF
 
-      read(input_amh,*)
+      READ(INPUT_AMH,*)
 
-      read(input_amh,*) i_V_test
-      read(input_amh,*) test_site(1),test_site(2)
+      READ(INPUT_AMH,*) I_V_TEST
+      READ(INPUT_AMH,*) TEST_SITE(1),TEST_SITE(2)
 
-      read(input_amh,*)
-
-
-c     if iresrt, then read in previously generated
-c     proteins used for restarting program or analysis
-
-      read(input_amh,*)iresrt
-c     if iscltab go into scltab
-
-      read(input_amh,*) iscltab
-
-c     if iclassweight scale gammas according to srplr
-      read(input_amh,*) iclassweight
-      if (iclassweight.and.igomb) then
-         write(SO,*) 'cannot divide energies into s/lr if igomb=true'
-         stop
-      endif
-
-c      if movanal, then perform analysis of movie strs only
-
-      read(input_amh,*) movanal
-      read(input_amh,*) quench
-      write(SO,*) 'quench=',quench 
-      read(input_amh,*) i_Etim,i_Etim_step
-
-c     check nmdif large enough -- rolling D average
+      READ(INPUT_AMH,*)
 
 
-      rnorm=float(nmstep)/float(incmov)
-      if( int(rnorm).gt.nmdif )then
-         write(oarchv,251)nmstep,incmov,nmdif
-  251    format(/'nmdif too small:nmstep ',i5,
-     *           ' incmov ',i5,' nmdif ',i5)
-         stop
-      endif
+C     IF IRESRT, THEN READ IN PREVIOUSLY GENERATED
+C     PROTEINS USED FOR RESTARTING PROGRAM OR ANALYSIS
+
+      READ(INPUT_AMH,*)IRESRT
+C     IF ISCLTAB GO INTO SCLTAB
+
+      READ(INPUT_AMH,*) ISCLTAB
+
+C     IF ICLASSWEIGHT SCALE GAMMAS ACCORDING TO SRPLR
+      READ(INPUT_AMH,*) ICLASSWEIGHT
+      IF (ICLASSWEIGHT.AND.IGOMB) THEN
+         WRITE(SO,*) 'CANNOT DIVIDE ENERGIES INTO S/LR IF IGOMB=TRUE'
+         STOP
+      ENDIF
+
+C      IF MOVANAL, THEN PERFORM ANALYSIS OF MOVIE STRS ONLY
+
+      READ(INPUT_AMH,*) MOVANAL
+      READ(INPUT_AMH,*) QUENCH
+      WRITE(SO,*) 'QUENCH=',QUENCH 
+      READ(INPUT_AMH,*) I_ETIM,I_ETIM_STEP
+
+C     CHECK NMDIF LARGE ENOUGH -- ROLLING D AVERAGE
 
 
-c     set annealing grid parameters
+      RNORM=FLOAT(NMSTEP)/FLOAT(INCMOV)
+      IF( INT(RNORM).GT.NMDIF )THEN
+         WRITE(OARCHV,251)NMSTEP,INCMOV,NMDIF
+  251    FORMAT(/'NMDIF TOO SMALL:NMSTEP ',I5,
+     *           ' INCMOV ',I5,' NMDIF ',I5)
+         STOP
+      ENDIF
 
-      itgrd(1)=it1
-      itgrd(2)=it2
-      itgrd(3)=it3
-      itgrd(4)=it4
+
+C     SET ANNEALING GRID PARAMETERS
+
+      ITGRD(1)=IT1
+      ITGRD(2)=IT2
+      ITGRD(3)=IT3
+      ITGRD(4)=IT4
   
-      temgrd(1)=t1
-      temgrd(2)=t2
-      temgrd(3)=t3
-      temgrd(4)=t4
-      temgrd(5)=t5
+      TEMGRD(1)=T1
+      TEMGRD(2)=T2
+      TEMGRD(3)=T3
+      TEMGRD(4)=T4
+      TEMGRD(5)=T5
 
-c     set charge weights
+C     SET CHARGE WEIGHTS
 
 
 
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     print header for archive file
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     PRINT HEADER FOR ARCHIVE FILE
 
-      write(SO,*) 'about to print header'
+      WRITE(SO,*) 'ABOUT TO PRINT HEADER'
  
-            iunit=oarchv
+            IUNIT=OARCHV
 
-c        echo relevant parameters
+C        ECHO RELEVANT PARAMETERS
 
-         if (movanal) write(iunit,*) 'movie str analysis only'
+         IF (MOVANAL) WRITE(IUNIT,*) 'MOVIE STR ANALYSIS ONLY'
 
-c         write(iunit,145)
-c  145    format('PARAMETER LIST'/)
+C         WRITE(IUNIT,145)
+C  145    FORMAT('PARAMETER LIST'/)
 
-c         write(iunit,102)nmres
-c  102    format('protein length ',i3)
+C         WRITE(IUNIT,102)NMRES
+C  102    FORMAT('PROTEIN LENGTH ',I3)
 
-c         write(iunit,103)numpro
-c  103    format('ensemble size ',i3)
+C         WRITE(IUNIT,103)NUMPRO
+C  103    FORMAT('ENSEMBLE SIZE ',I3)
 
-c        potential parameters
+C        POTENTIAL PARAMETERS
 
-        write(iunit,151)
-  151    format(/'POTENTIAL PARAMETERS'/)
+        WRITE(IUNIT,151)
+  151    FORMAT(/'POTENTIAL PARAMETERS'/)
 
-         write(iunit,141)nummem
-  141    format('actual # protein memories ',i4)
+         WRITE(IUNIT,141)NUMMEM
+  141    FORMAT('ACTUAL # PROTEIN MEMORIES ',I4)
 
-         write(iunit,270)numcrd
-  270    format(/'number of coordinate types ',i2,
-     *          ' beta-coordinates ',l1)
+         WRITE(IUNIT,270)NUMCRD
+  270    FORMAT(/'NUMBER OF COORDINATE TYPES ',I2,
+     *          ' BETA-COORDINATES ',L1)
 
-         write(iunit,271)numtab,
-     *                  ((crdixn(i1,i2),i2=1,2),i1=1,numtab)
-  271    format('Ixns: ',i2,' coordinates ',4('(',i2,',',i2,')'))
+         WRITE(IUNIT,271)NUMTAB,
+     *                  ((CRDIXN(I1,I2),I2=1,2),I1=1,NUMTAB)
+  271    FORMAT('IXNS: ',I2,' COORDINATES ',4('(',I2,',',I2,')'))
 
-         write(iunit,107)timstp
-  107    format(/'timstp ',1pe10.3)
+         WRITE(IUNIT,107)TIMSTP
+  107    FORMAT(/'TIMSTP ',1PE10.3)
        
-         write(iunit,378)oxscl,ramascl
-  378    format('ox pot on: ',' oxy scl ',f8.3,' rma scl ',f8.3)
+         WRITE(IUNIT,378)OXSCL,RAMASCL
+  378    FORMAT('OX POT ON: ',' OXY SCL ',F8.3,' RMA SCL ',F8.3)
 
-           write(iunit,376)chrlscl
-  376      format('chiral pot on: ',' scaling factor ',f8.3)
+           WRITE(IUNIT,376)CHRLSCL
+  376      FORMAT('CHIRAL POT ON: ',' SCALING FACTOR ',F8.3)
 
-c         write(iunit,11379) lambdaR
-c11379    format('lambdaR: ',f8.3)
+C         WRITE(IUNIT,11379) LAMBDAR
+C11379    FORMAT('LAMBDAR: ',F8.3)
 
-c            write (iunit,123)
-c  123       format('charges=hydrophobicity ')
+C            WRITE (IUNIT,123)
+C  123       FORMAT('CHARGES=HYDROPHOBICITY ')
 
-c         write(iunit,148)delta,delte
-c  148    format(/'well-width ',1pe10.3,' exponent ',
-c     *          1pe10.3)
+C         WRITE(IUNIT,148)DELTA,DELTE
+C  148    FORMAT(/'WELL-WIDTH ',1PE10.3,' EXPONENT ',
+C     *          1PE10.3)
 
-c         write(iunit,817)iexcld,pexcld
-c  817    format(/'Excluded volume ',l1,
-c     *          ' harmonic coefficient ',1pe10.3)
+C         WRITE(IUNIT,817)IEXCLD,PEXCLD
+C  817    FORMAT(/'EXCLUDED VOLUME ',L1,
+C     *          ' HARMONIC COEFFICIENT ',1PE10.3)
 
-c	  write(iunit,818)oxexcldv,oexcldscl
-c  818	  format(/'Ox. Exlcuded Volume',l1,
-c     *          'Scale factor ', 1pe10.3)
-
-
-c       print seeds for random number generators
-
-c         write(iunit,844)
-c  844    format(/'Seeds for Random Number Generators')
-c         write(iunit,843)iseed_amh
-
-c  843    format('iseed_amhs ',4(i10,2x))
+C	  WRITE(IUNIT,818)OXEXCLDV,OEXCLDSCL
+C  818	  FORMAT(/'OX. EXLCUDED VOLUME',L1,
+C     *          'SCALE FACTOR ', 1PE10.3)
 
 
-c         write(iunit,795)welscl
-c  795    format('Well scale ',l1)
+C       PRINT SEEDS FOR RANDOM NUMBER GENERATORS
 
-c        annealing parameters
+C         WRITE(IUNIT,844)
+C  844    FORMAT(/'SEEDS FOR RANDOM NUMBER GENERATORS')
+C         WRITE(IUNIT,843)ISEED_AMH
 
-c         write(iunit,140)
-c  140    format(/'ANNEALING PARAMETERS'/)
-
-c         write(iunit,104)nmtemp,nmstep
-c  104    format('# Temperature sets ',i8,
-c     *          ' # time steps/T ',i6)
-
-c         write(iunit,113)ictemp,ctemp
-c  113    format('fixed T ',l1,' @T=',1pe12.5)
-
-c         write(iunit,114)
-c  114    format('temperature-annealing grid')
-
-c         write(iunit,115)(itgrd(i1),i1=1,4),nmtemp
-c  115    format(5(i12,1x))
-
-c         write(iunit,116)(temgrd(i1),i1=1,5)
-c  116    format(5(1pe12.5,1x))
+C  843    FORMAT('ISEED_AMHS ',4(I10,2X))
 
 
-c        print h scale
+C         WRITE(IUNIT,795)WELSCL
+C  795    FORMAT('WELL SCALE ',L1)
 
-         do 503 i503=1,20
-            hydscl(i503,2)=hydscl(i503,1)
-  503    continue
-         hydscl(8,2)=0.0D0
+C        ANNEALING PARAMETERS
 
-         write(iunit,118)
-  118    format(/'Hard-Sphere Radii'/)
+C         WRITE(IUNIT,140)
+C  140    FORMAT(/'ANNEALING PARAMETERS'/)
 
-c         write(oarchv,868)
-c  868    format('Reduced hard-sphere radii on Beta-carbons'/)
+C         WRITE(IUNIT,104)NMTEMP,NMSTEP
+C  104    FORMAT('# TEMPERATURE SETS ',I8,
+C     *          ' # TIME STEPS/T ',I6)
 
-         write(iunit,389)
-  389    format('alpha-carbons')
-         write(iunit,119)(aminoa(i1),hrdrad(i1,1),i1=1,20)
-  119    format(5(a4,1x,f5.2,2x))
-         write(iunit,*)
-         write(iunit,379)
-  379    format('beta-carbons')
-         write(iunit,119)(aminoa(i1),hrdrad(i1,2),i1=1,20)
+C         WRITE(IUNIT,113)ICTEMP,CTEMP
+C  113    FORMAT('FIXED T ',L1,' @T=',1PE12.5)
 
-c     end header
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     create qchrg
-      call qchrgmk(qchrg,qchrg2,oarchv,n_letters)
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+C         WRITE(IUNIT,114)
+C  114    FORMAT('TEMPERATURE-ANNEALING GRID')
 
-c     create alternative gamma (or qchrg if you will)
-      call read_altgamma()
+C         WRITE(IUNIT,115)(ITGRD(I1),I1=1,4),NMTEMP
+C  115    FORMAT(5(I12,1X))
+
+C         WRITE(IUNIT,116)(TEMGRD(I1),I1=1,5)
+C  116    FORMAT(5(1PE12.5,1X))
 
 
-c      write(6,*) 'leaving initil'
+C        PRINT H SCALE
+
+         DO 503 I503=1,20
+            HYDSCL(I503,2)=HYDSCL(I503,1)
+  503    CONTINUE
+         HYDSCL(8,2)=0.0D0
+
+         WRITE(IUNIT,118)
+  118    FORMAT(/'HARD-SPHERE RADII'/)
+
+C         WRITE(OARCHV,868)
+C  868    FORMAT('REDUCED HARD-SPHERE RADII ON BETA-CARBONS'/)
+
+         WRITE(IUNIT,389)
+  389    FORMAT('ALPHA-CARBONS')
+         WRITE(IUNIT,119)(AMINOA(I1),HRDRAD(I1,1),I1=1,20)
+  119    FORMAT(5(A4,1X,F5.2,2X))
+         WRITE(IUNIT,*)
+         WRITE(IUNIT,379)
+  379    FORMAT('BETA-CARBONS')
+         WRITE(IUNIT,119)(AMINOA(I1),HRDRAD(I1,2),I1=1,20)
+
+C     END HEADER
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     CREATE QCHRG
+      CALL QCHRGMK(QCHRG,QCHRG2,OARCHV,N_LETTERS)
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+C     CREATE ALTERNATIVE GAMMA (OR QCHRG IF YOU WILL)
+      CALL READ_ALTGAMMA()
 
 
-c     set diagnostic flag
+C      WRITE(6,*) 'LEAVING INITIL'
 
-      idigns=.false.
-c     ---------------------- done -----------------------
-      return
-      end
+
+C     SET DIAGNOSTIC FLAG
+
+      IDIGNS=.FALSE.
+C     ---------------------- DONE -----------------------
+      RETURN
+      END

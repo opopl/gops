@@ -1,268 +1,268 @@
 !-----------------------------------------
 !        A L T P O T    R E A D    M E ! 
 !
-!   Requires small alterations in "qchrgmk.f" and "nnet.f" and "initil.f" from standard AMH
+!   REQUIRES SMALL ALTERATIONS IN "QCHRGMK.F" AND "NNET.F" AND "INITIL.F" FROM STANDARD AMH
 !     
 !
-!    Most PARAMETERS are stored in MODULE "globals_alt"
+!    MOST PARAMETERS ARE STORED IN MODULE "GLOBALS_ALT"
 !
-!    ALTPOT_MASTER is the routine that generally should be called by a main program
-!    READ_INPUT_ALT initializes the parameters and should be called
-!    only  ONCE but PRIOR to any use of ALTPOT_MASTER.
+!    ALTPOT_MASTER IS THE ROUTINE THAT GENERALLY SHOULD BE CALLED BY A MAIN PROGRAM
+!    READ_INPUT_ALT INITIALIZES THE PARAMETERS AND SHOULD BE CALLED
+!    ONLY  ONCE BUT PRIOR TO ANY USE OF ALTPOT_MASTER.
 !    
-!    the others are "slaves" (compare with private and public in C++)
+!    THE OTHERS ARE "SLAVES" (COMPARE WITH PRIVATE AND PUBLIC IN C++)
 !
 !    PUBLIC:
-!     subroutine ALTPOT_MASTER
-!     subroutine READ_INPUT_ALT
+!     SUBROUTINE ALTPOT_MASTER
+!     SUBROUTINE READ_INPUT_ALT
 !    PRIVATE:
-!     subroutine READ_ALTGAMMA    (slave)
-!     subroutine default_alt()    (slave)
-!     subroutine CALC_FORCE_ALT   (slave)
-!     function   CALC_ENERGY_ALT  (slave)
-!     subroutine CALC_XYZ         (slave)
-!     subroutine CALC_THETA_ALT   (slave)
-!     subroutine CALC_A_ALT       (slave)
-!     subroutine CALC_SIGMA_ALT   (slave)
+!     SUBROUTINE READ_ALTGAMMA    (SLAVE)
+!     SUBROUTINE DEFAULT_ALT()    (SLAVE)
+!     SUBROUTINE CALC_FORCE_ALT   (SLAVE)
+!     FUNCTION   CALC_ENERGY_ALT  (SLAVE)
+!     SUBROUTINE CALC_XYZ         (SLAVE)
+!     SUBROUTINE CALC_THETA_ALT   (SLAVE)
+!     SUBROUTINE CALC_A_ALT       (SLAVE)
+!     SUBROUTINE CALC_SIGMA_ALT   (SLAVE)
 !
-! DESCRIPTION: ALTPOT refers to potential functions used for describing the use of
-!  interaction-"gamma"-parameters whose weights alters in response to different environments.
-!  This is supposed to mimick a many-body potential and in particular to lett gammas vary
-! depending on if residue pairs are located in the core or at the surface.
+! DESCRIPTION: ALTPOT REFERS TO POTENTIAL FUNCTIONS USED FOR DESCRIBING THE USE OF
+!  INTERACTION-"GAMMA"-PARAMETERS WHOSE WEIGHTS ALTERS IN RESPONSE TO DIFFERENT ENVIRONMENTS.
+!  THIS IS SUPPOSED TO MIMICK A MANY-BODY POTENTIAL AND IN PARTICULAR TO LETT GAMMAS VARY
+! DEPENDING ON IF RESIDUE PAIRS ARE LOCATED IN THE CORE OR AT THE SURFACE.
 ! 
-! Variables: A(i) = density around site i ; Theta(i,j,well))=number of guys ij in well 
-!           sigma=measure of how buried -> weighting function
+! VARIABLES: A(I) = DENSITY AROUND SITE I ; THETA(I,J,WELL))=NUMBER OF GUYS IJ IN WELL 
+!           SIGMA=MEASURE OF HOW BURIED -> WEIGHTING FUNCTION
 !
 ! PARAMETERS:
-!  debugflag-  set statically during compilation in module.
-!  altpotflag- is set in file 'input'. Format=i1,i2,keyword "altpotflag" i1 and i1 refers to 
-!              well 1 and 2 and non-zero values -> TRUE for that particular well. e.g.
-!              "1,1,altpot" 
-!  kappa_alt : steepness of step-function for sigma, set in file 'input' e.g. "7.0,kappa_alt"
-!  kappa_well : steepness of step-functions for wells, set in file 'input' e.g. "7.0,kappa_well"
-!  treshold_alt : Treshold value for contacts determines wether in or out.e.g. "3,treshold_alt"
-!  kappa_OB : steepness of the wells for the Onebodypotential. set in 'input', keyword "kappa_OB"
-!  onebodyflag,onebody_type : ff flag is not 0 -> onebodypot included.onebody_type makes for different
-!                            types of OB_pot, see "onebody.f90"  keyword "onebodyflag"
+!  DEBUGFLAG-  SET STATICALLY DURING COMPILATION IN MODULE.
+!  ALTPOTFLAG- IS SET IN FILE 'INPUT'. FORMAT=I1,I2,KEYWORD "ALTPOTFLAG" I1 AND I1 REFERS TO 
+!              WELL 1 AND 2 AND NON-ZERO VALUES -> TRUE FOR THAT PARTICULAR WELL. E.G.
+!              "1,1,ALTPOT" 
+!  KAPPA_ALT : STEEPNESS OF STEP-FUNCTION FOR SIGMA, SET IN FILE 'INPUT' E.G. "7.0,KAPPA_ALT"
+!  KAPPA_WELL : STEEPNESS OF STEP-FUNCTIONS FOR WELLS, SET IN FILE 'INPUT' E.G. "7.0,KAPPA_WELL"
+!  TRESHOLD_ALT : TRESHOLD VALUE FOR CONTACTS DETERMINES WETHER IN OR OUT.E.G. "3,TRESHOLD_ALT"
+!  KAPPA_OB : STEEPNESS OF THE WELLS FOR THE ONEBODYPOTENTIAL. SET IN 'INPUT', KEYWORD "KAPPA_OB"
+!  ONEBODYFLAG,ONEBODY_TYPE : FF FLAG IS NOT 0 -> ONEBODYPOT INCLUDED.ONEBODY_TYPE MAKES FOR DIFFERENT
+!                            TYPES OF OB_POT, SEE "ONEBODY.F90"  KEYWORD "ONEBODYFLAG"
 !
 ! DATA INPUT: 
-!       gamma.dat: 1                  2              3             4       
-!       gamma.dat: gamma(direct) gamma(exposed)  i_well            keyword="altpot" somewhere in line
+!       GAMMA.DAT: 1                  2              3             4       
+!       GAMMA.DAT: GAMMA(DIRECT) GAMMA(EXPOSED)  I_WELL            KEYWORD="ALTPOT" SOMEWHERE IN LINE
 !       OENBODY            1                        2
-!       gamma.dat: Onebodygamma(exposed)   Onebodygamma(buried)   keyword="onebody" somewhere in line
+!       GAMMA.DAT: ONEBODYGAMMA(EXPOSED)   ONEBODYGAMMA(BURIED)   KEYWORD="ONEBODY" SOMEWHERE IN LINE
 !-----------------------------------------
 
-      subroutine altpot_master(pro_cord,f_cord,E,tempav,nmres)
+      SUBROUTINE ALTPOT_MASTER(PRO_CORD,F_CORD,E,TEMPAV,NMRES)
   
-        use amhglobals,  only : AMHmaxsiz,maxcrd,r_min,r_max, ires
-        use globals_alt, only : debug_numer_forces, debugflag,kappa_alt,treshold_alt &
-          ,altpotflag,max_well_alt,kappa_well, do_send_output , onebodyflag, accumulated_time
+        USE AMHGLOBALS,  ONLY : AMHMAXSIZ,MAXCRD,R_MIN,R_MAX, IRES
+        USE GLOBALS_ALT, ONLY : DEBUG_NUMER_FORCES, DEBUGFLAG,KAPPA_ALT,TRESHOLD_ALT &
+          ,ALTPOTFLAG,MAX_WELL_ALT,KAPPA_WELL, DO_SEND_OUTPUT , ONEBODYFLAG, ACCUMULATED_TIME
 
-        use altpot_interfaces, only: calc_xyz, calc_theta_alt, calc_A_alt, calc_sigma_alt, &
-             calc_force_alt, calc_energy_alt, calc_onebody_force, calc_onebody_pot, &
-             send_output_alt, calc_numerical_force_alt
+        USE ALTPOT_INTERFACES, ONLY: CALC_XYZ, CALC_THETA_ALT, CALC_A_ALT, CALC_SIGMA_ALT, &
+             CALC_FORCE_ALT, CALC_ENERGY_ALT, CALC_ONEBODY_FORCE, CALC_ONEBODY_POT, &
+             SEND_OUTPUT_ALT, CALC_NUMERICAL_FORCE_ALT
 
-        implicit none
-        integer, intent(in):: nmres
-         double precision, intent(in) ::  pro_cord(AMHmaxsiz,3,maxcrd)
-        logical, intent(in):: tempav
-        !       double precision, intent(out) :: f_cord(AMHmaxsiz,3,maxcrd),E
-        double precision f_cord(AMHmaxsiz,3,maxcrd),E
+        IMPLICIT NONE
+        INTEGER, INTENT(IN):: NMRES
+         DOUBLE PRECISION, INTENT(IN) ::  PRO_CORD(AMHMAXSIZ,3,MAXCRD)
+        LOGICAL, INTENT(IN):: TEMPAV
+        !       DOUBLE PRECISION, INTENT(OUT) :: F_CORD(AMHMAXSIZ,3,MAXCRD),E
+        DOUBLE PRECISION F_CORD(AMHMAXSIZ,3,MAXCRD),E
 
-        ! Local Variables:
-        integer i,j,i_well,maxloop
-        double precision start_time, end_time1, end_time2
-        double precision xyz_dist(AMHmaxsiz,AMHmaxsiz),xyz_unit_vect(AMHmaxsiz,AMHmaxsiz,3)
-        double precision theta(AMHmaxsiz,AMHmaxsiz,max_well_alt),theta_dot(AMHmaxsiz,AMHmaxsiz,max_well_alt)
-        double precision A(AMHmaxsiz),sigma(AMHmaxsiz,AMHmaxsiz),E_alt(2,max_well_alt),E_OB(3) 
+        ! LOCAL VARIABLES:
+        INTEGER I,J,I_WELL,MAXLOOP
+        DOUBLE PRECISION START_TIME, END_TIME1, END_TIME2
+        DOUBLE PRECISION XYZ_DIST(AMHMAXSIZ,AMHMAXSIZ),XYZ_UNIT_VECT(AMHMAXSIZ,AMHMAXSIZ,3)
+        DOUBLE PRECISION THETA(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT),THETA_DOT(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
+        DOUBLE PRECISION A(AMHMAXSIZ),SIGMA(AMHMAXSIZ,AMHMAXSIZ),E_ALT(2,MAX_WELL_ALT),E_OB(3) 
 
-        integer iatom
-        double precision pp_1_f_cord(AMHmaxsiz,3,maxcrd), pp_2_f_cord(AMHmaxsiz,3,maxcrd), ob_f_cord(AMHmaxsiz,3,maxcrd)
-        double precision f_alt_numer_pair_pot(AMHmaxsiz,3,maxcrd), f_alt_numer_ob_pot(AMHmaxsiz,3,maxcrd)
+        INTEGER IATOM
+        DOUBLE PRECISION PP_1_F_CORD(AMHMAXSIZ,3,MAXCRD), PP_2_F_CORD(AMHMAXSIZ,3,MAXCRD), OB_F_CORD(AMHMAXSIZ,3,MAXCRD)
+        DOUBLE PRECISION F_ALT_NUMER_PAIR_POT(AMHMAXSIZ,3,MAXCRD), F_ALT_NUMER_OB_POT(AMHMAXSIZ,3,MAXCRD)
 
-!        external CPU_TIME
+!        EXTERNAL CPU_TIME
 
-        call CPU_TIME(start_time)
+        CALL CPU_TIME(START_TIME)
 
-        f_cord=0.0D0
+        F_CORD=0.0D0
         E=0.0D0
-        E_alt=0.0D0
+        E_ALT=0.0D0
         E_OB=0.0D0
-        pp_1_f_cord=0.D0;
-        pp_2_f_cord=0.D0;
+        PP_1_F_CORD=0.D0;
+        PP_2_F_CORD=0.D0;
 
         !                                START SEGMENT_ALTPOTCALC
-        !        IMPORTANT!!! Note the ordering is not arbitrary and should be:      IMPORTANT!!! 
-        !        calc_xyz , calc_theta , calc_A , calc_sigma and calc_force
+        !        IMPORTANT!!! NOTE THE ORDERING IS NOT ARBITRARY AND SHOULD BE:      IMPORTANT!!! 
+        !        CALC_XYZ , CALC_THETA , CALC_A , CALC_SIGMA AND CALC_FORCE
         ! 
-        if((altpotflag(1).gt.0).or.(altpotflag(2).gt.0))then
-           call calc_xyz (xyz_dist,xyz_unit_vect,pro_cord,nmres)
+        IF((ALTPOTFLAG(1).GT.0).OR.(ALTPOTFLAG(2).GT.0))THEN
+           CALL CALC_XYZ (XYZ_DIST,XYZ_UNIT_VECT,PRO_CORD,NMRES)
 
-           call calc_theta_alt(theta,theta_dot,xyz_dist,r_min(1),r_max(1),kappa_well,nmres,1)
-           if(altpotflag(2).gt.0)then
-              call calc_theta_alt(theta,theta_dot,xyz_dist,r_min(2),r_max(2),kappa_well,nmres,2)
-           endif
-           call calc_A_alt(A,theta,nmres)
-           call calc_sigma_alt(sigma,A,treshold_alt,kappa_alt,nmres) ! kappa OK
-        endif
+           CALL CALC_THETA_ALT(THETA,THETA_DOT,XYZ_DIST,R_MIN(1),R_MAX(1),KAPPA_WELL,NMRES,1)
+           IF(ALTPOTFLAG(2).GT.0)THEN
+              CALL CALC_THETA_ALT(THETA,THETA_DOT,XYZ_DIST,R_MIN(2),R_MAX(2),KAPPA_WELL,NMRES,2)
+           ENDIF
+           CALL CALC_A_ALT(A,THETA,NMRES)
+           CALL CALC_SIGMA_ALT(SIGMA,A,TRESHOLD_ALT,KAPPA_ALT,NMRES) ! KAPPA OK
+        ENDIF
 
-        call CPU_TIME(end_time1)
-        accumulated_time(10)=accumulated_time(10)+(end_time1-start_time)
+        CALL CPU_TIME(END_TIME1)
+        ACCUMULATED_TIME(10)=ACCUMULATED_TIME(10)+(END_TIME1-START_TIME)
 
-        maxloop=1                        ! NOTE HARDWIRE!!  max_well is  
-        if(altpotflag(2).gt.0)maxloop=2  !  currently 2 , need be changed for more wells
-        do i_well=1,maxloop,1
-           if(altpotflag(i_well).gt.0)then
-              call calc_force_alt &
-                   (f_cord,pro_cord,theta,theta_dot,sigma,xyz_unit_vect,nmres,i_well &
-                   ,A, kappa_alt, treshold_alt)
-              if(tempav.or.do_send_output)E=E+calc_energy_alt(theta,sigma,E_alt,nmres,i_well)
-           endif
-           if(do_send_output .and. debug_numer_forces) then 
-              if(i_well .eq. 1) pp_1_f_cord=f_cord
-              if(i_well .eq. 2) pp_2_f_cord=f_cord-pp_1_f_cord
-           endif
-        enddo
+        MAXLOOP=1                        ! NOTE HARDWIRE!!  MAX_WELL IS  
+        IF(ALTPOTFLAG(2).GT.0)MAXLOOP=2  !  CURRENTLY 2 , NEED BE CHANGED FOR MORE WELLS
+        DO I_WELL=1,MAXLOOP,1
+           IF(ALTPOTFLAG(I_WELL).GT.0)THEN
+              CALL CALC_FORCE_ALT &
+                   (F_CORD,PRO_CORD,THETA,THETA_DOT,SIGMA,XYZ_UNIT_VECT,NMRES,I_WELL &
+                   ,A, KAPPA_ALT, TRESHOLD_ALT)
+              IF(TEMPAV.OR.DO_SEND_OUTPUT)E=E+CALC_ENERGY_ALT(THETA,SIGMA,E_ALT,NMRES,I_WELL)
+           ENDIF
+           IF(DO_SEND_OUTPUT .AND. DEBUG_NUMER_FORCES) THEN 
+              IF(I_WELL .EQ. 1) PP_1_F_CORD=F_CORD
+              IF(I_WELL .EQ. 2) PP_2_F_CORD=F_CORD-PP_1_F_CORD
+           ENDIF
+        ENDDO
 
         !                             ONE BODY POTENTIAL
 
-        if(onebodyflag.eq.1)then
-           call calc_onebody_force(f_cord,theta_dot,xyz_unit_vect,nmres,A)
-           if(tempav.or.do_send_output)E=E+calc_onebody_pot(A,nmres,E_OB)
-        endif
+        IF(ONEBODYFLAG.EQ.1)THEN
+           CALL CALC_ONEBODY_FORCE(F_CORD,THETA_DOT,XYZ_UNIT_VECT,NMRES,A)
+           IF(TEMPAV.OR.DO_SEND_OUTPUT)E=E+CALC_ONEBODY_POT(A,NMRES,E_OB)
+        ENDIF
 
         !                             END SEGMENT_ALTPOTCALC
 
 
         !DEBUG FORCES:
-        if(do_send_output .and. debug_numer_forces) then
-           call calc_numerical_force_alt(pro_cord,f_alt_numer_pair_pot,f_alt_numer_ob_pot,nmres)
-           open(unit=1282,file='alt_numer_force_pp',status='unknown')  
-           open(unit=1283,file='alt_analyt_force_pp',status='unknown')  
-           if(onebodyflag.eq.1)then
-              ob_f_cord=f_cord-pp_1_f_cord-pp_2_f_cord
-              open(unit=1284,file='alt_numer_force_ob',status='unknown')  
-              open(unit=1285,file='alt_analyt_force_ob',status='unknown')  
-           endif
-           do i=1,nmres
-              iatom=2
-              if (ires(i) .eq. 8) iatom=1
-              write(1282,100) (f_alt_numer_pair_pot(i,j,iatom),j=1,3)
-              write(1283,100) (pp_2_f_cord(i,j,iatom),j=1,3)
-              if(onebodyflag.eq.1)then
-                 write(1284,100) (f_alt_numer_ob_pot(i,j,iatom),j=1,3)
-                 write(1285,100) (ob_f_cord(i,j,iatom),j=1,3)
-              endif
-           enddo
-           close(1282)
-           close(1283)
-           if(onebodyflag.eq.1)then
-              close(1284)
-              close(1285)
-           endif
-100        format(400(1x,e12.6))
-        endif
+        IF(DO_SEND_OUTPUT .AND. DEBUG_NUMER_FORCES) THEN
+           CALL CALC_NUMERICAL_FORCE_ALT(PRO_CORD,F_ALT_NUMER_PAIR_POT,F_ALT_NUMER_OB_POT,NMRES)
+           OPEN(UNIT=1282,FILE='ALT_NUMER_FORCE_PP',STATUS='UNKNOWN')  
+           OPEN(UNIT=1283,FILE='ALT_ANALYT_FORCE_PP',STATUS='UNKNOWN')  
+           IF(ONEBODYFLAG.EQ.1)THEN
+              OB_F_CORD=F_CORD-PP_1_F_CORD-PP_2_F_CORD
+              OPEN(UNIT=1284,FILE='ALT_NUMER_FORCE_OB',STATUS='UNKNOWN')  
+              OPEN(UNIT=1285,FILE='ALT_ANALYT_FORCE_OB',STATUS='UNKNOWN')  
+           ENDIF
+           DO I=1,NMRES
+              IATOM=2
+              IF (IRES(I) .EQ. 8) IATOM=1
+              WRITE(1282,100) (F_ALT_NUMER_PAIR_POT(I,J,IATOM),J=1,3)
+              WRITE(1283,100) (PP_2_F_CORD(I,J,IATOM),J=1,3)
+              IF(ONEBODYFLAG.EQ.1)THEN
+                 WRITE(1284,100) (F_ALT_NUMER_OB_POT(I,J,IATOM),J=1,3)
+                 WRITE(1285,100) (OB_F_CORD(I,J,IATOM),J=1,3)
+              ENDIF
+           ENDDO
+           CLOSE(1282)
+           CLOSE(1283)
+           IF(ONEBODYFLAG.EQ.1)THEN
+              CLOSE(1284)
+              CLOSE(1285)
+           ENDIF
+100        FORMAT(400(1X,E12.6))
+        ENDIF
 
-        call CPU_TIME(end_time2)
-        accumulated_time(1)=accumulated_time(1)+(end_time2-start_time)
+        CALL CPU_TIME(END_TIME2)
+        ACCUMULATED_TIME(1)=ACCUMULATED_TIME(1)+(END_TIME2-START_TIME)
 
-        call send_output_alt(A,E_alt,nmres,E_OB)
+        CALL SEND_OUTPUT_ALT(A,E_ALT,NMRES,E_OB)
 
-      end subroutine altpot_master
+      END SUBROUTINE ALTPOT_MASTER
 
-      ! This is for debugging analytical forces
-      subroutine calc_numerical_force_alt (pro_cord,f_alt_numer_pair_pot,f_alt_numer_ob_pot,nmres)
+      ! THIS IS FOR DEBUGGING ANALYTICAL FORCES
+      SUBROUTINE CALC_NUMERICAL_FORCE_ALT (PRO_CORD,F_ALT_NUMER_PAIR_POT,F_ALT_NUMER_OB_POT,NMRES)
 
-        use amhglobals,  only : AMHmaxsiz,maxcrd,r_min,r_max, ires
-        use globals_alt, only : kappa_alt,treshold_alt &
-             ,altpotflag,max_well_alt,kappa_well, onebodyflag,accumulated_time
+        USE AMHGLOBALS,  ONLY : AMHMAXSIZ,MAXCRD,R_MIN,R_MAX, IRES
+        USE GLOBALS_ALT, ONLY : KAPPA_ALT,TRESHOLD_ALT &
+             ,ALTPOTFLAG,MAX_WELL_ALT,KAPPA_WELL, ONEBODYFLAG,ACCUMULATED_TIME
 
-        use altpot_interfaces, only: calc_xyz, calc_theta_alt, calc_A_alt, calc_sigma_alt, &
-                           calc_force_alt, calc_energy_alt, calc_onebody_force, calc_onebody_pot
+        USE ALTPOT_INTERFACES, ONLY: CALC_XYZ, CALC_THETA_ALT, CALC_A_ALT, CALC_SIGMA_ALT, &
+                           CALC_FORCE_ALT, CALC_ENERGY_ALT, CALC_ONEBODY_FORCE, CALC_ONEBODY_POT
 
-        implicit none
-        integer, intent(in) :: nmres
-        double precision pro_cord(AMHmaxsiz,3,maxcrd)
-         double precision, intent(out) :: f_alt_numer_pair_pot(AMHmaxsiz,3,maxcrd)
-         double precision, intent(out) ::  f_alt_numer_ob_pot(AMHmaxsiz,3,maxcrd)
-
-
-        ! Local Variables (JU):
-        double precision xyz_dist(AMHmaxsiz,AMHmaxsiz),xyz_unit_vect(AMHmaxsiz,AMHmaxsiz,3)
-        double precision theta(AMHmaxsiz,AMHmaxsiz,max_well_alt), theta_dot(AMHmaxsiz,AMHmaxsiz,max_well_alt)
-        double precision A(AMHmaxsiz),sigma(AMHmaxsiz,AMHmaxsiz),E_alt(2,max_well_alt),E_OB(3)
-
-        ! Local Variables (GAP):
-
-        integer, parameter :: r16 = SELECTED_REAL_KIND(16, 50) ! at least 16 decimal digits of precision and the exponent range 200
-        !      double precision (kind = r16) :: E_pair_pot(2), E_ob_pot(2)
-        double precision :: E_pair_pot(2), E_ob_pot(2)
-         double precision, parameter :: step_size=0.005D0
-
-        integer k,katom,xyz,step
-
-        integer, parameter :: WELL=2 !NOTE: 2nd well is hardwired for numerical forces, see also printing in altpot_master
-
-        double precision save_pro_cord(AMHmaxsiz,3,maxcrd), saved_cord, start_time, end_time
-
-!        external CPU_TIME
-
-        call CPU_TIME(start_time)
+        IMPLICIT NONE
+        INTEGER, INTENT(IN) :: NMRES
+        DOUBLE PRECISION PRO_CORD(AMHMAXSIZ,3,MAXCRD)
+         DOUBLE PRECISION, INTENT(OUT) :: F_ALT_NUMER_PAIR_POT(AMHMAXSIZ,3,MAXCRD)
+         DOUBLE PRECISION, INTENT(OUT) ::  F_ALT_NUMER_OB_POT(AMHMAXSIZ,3,MAXCRD)
 
 
-        save_pro_cord=pro_cord
+        ! LOCAL VARIABLES (JU):
+        DOUBLE PRECISION XYZ_DIST(AMHMAXSIZ,AMHMAXSIZ),XYZ_UNIT_VECT(AMHMAXSIZ,AMHMAXSIZ,3)
+        DOUBLE PRECISION THETA(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT), THETA_DOT(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
+        DOUBLE PRECISION A(AMHMAXSIZ),SIGMA(AMHMAXSIZ,AMHMAXSIZ),E_ALT(2,MAX_WELL_ALT),E_OB(3)
 
-        f_alt_numer_pair_pot=0.D0
-        f_alt_numer_ob_pot=0.D0
+        ! LOCAL VARIABLES (GAP):
 
-        do k=1,nmres
-           katom=2
-           if (ires(k) .eq. 8) katom=1
-           do xyz=1,3
-              pro_cord=save_pro_cord
-              saved_cord=pro_cord(k,xyz,katom)
-              do step=-1,1,2
-                 pro_cord(k,xyz,katom)=saved_cord+step_size*step
+        INTEGER, PARAMETER :: R16 = SELECTED_REAL_KIND(16, 50) ! AT LEAST 16 DECIMAL DIGITS OF PRECISION AND THE EXPONENT RANGE 200
+        !      DOUBLE PRECISION (KIND = R16) :: E_PAIR_POT(2), E_OB_POT(2)
+        DOUBLE PRECISION :: E_PAIR_POT(2), E_OB_POT(2)
+         DOUBLE PRECISION, PARAMETER :: STEP_SIZE=0.005D0
 
-                 E_alt=0.0D0
+        INTEGER K,KATOM,XYZ,STEP
+
+        INTEGER, PARAMETER :: WELL=2 !NOTE: 2ND WELL IS HARDWIRED FOR NUMERICAL FORCES, SEE ALSO PRINTING IN ALTPOT_MASTER
+
+        DOUBLE PRECISION SAVE_PRO_CORD(AMHMAXSIZ,3,MAXCRD), SAVED_CORD, START_TIME, END_TIME
+
+!        EXTERNAL CPU_TIME
+
+        CALL CPU_TIME(START_TIME)
+
+
+        SAVE_PRO_CORD=PRO_CORD
+
+        F_ALT_NUMER_PAIR_POT=0.D0
+        F_ALT_NUMER_OB_POT=0.D0
+
+        DO K=1,NMRES
+           KATOM=2
+           IF (IRES(K) .EQ. 8) KATOM=1
+           DO XYZ=1,3
+              PRO_CORD=SAVE_PRO_CORD
+              SAVED_CORD=PRO_CORD(K,XYZ,KATOM)
+              DO STEP=-1,1,2
+                 PRO_CORD(K,XYZ,KATOM)=SAVED_CORD+STEP_SIZE*STEP
+
+                 E_ALT=0.0D0
                  E_OB=0.0D0
 
-                 call calc_xyz (xyz_dist,xyz_unit_vect,pro_cord,nmres)
+                 CALL CALC_XYZ (XYZ_DIST,XYZ_UNIT_VECT,PRO_CORD,NMRES)
 
-                 call calc_theta_alt(theta,theta_dot,xyz_dist,r_min(1),r_max(1),kappa_well,nmres,1)
-                 call calc_theta_alt(theta,theta_dot,xyz_dist,r_min(2),r_max(2),kappa_well,nmres,2)
-                 call calc_A_alt(A,theta,nmres)
-                 call calc_sigma_alt(sigma,A,treshold_alt,kappa_alt,nmres) 
+                 CALL CALC_THETA_ALT(THETA,THETA_DOT,XYZ_DIST,R_MIN(1),R_MAX(1),KAPPA_WELL,NMRES,1)
+                 CALL CALC_THETA_ALT(THETA,THETA_DOT,XYZ_DIST,R_MIN(2),R_MAX(2),KAPPA_WELL,NMRES,2)
+                 CALL CALC_A_ALT(A,THETA,NMRES)
+                 CALL CALC_SIGMA_ALT(SIGMA,A,TRESHOLD_ALT,KAPPA_ALT,NMRES) 
 
-                 if(altpotflag(WELL).gt.0)then
-                    E_pair_pot((step+3)/2)=calc_energy_alt(theta,sigma,E_alt,nmres,WELL)
-                 endif
+                 IF(ALTPOTFLAG(WELL).GT.0)THEN
+                    E_PAIR_POT((STEP+3)/2)=CALC_ENERGY_ALT(THETA,SIGMA,E_ALT,NMRES,WELL)
+                 ENDIF
 
-                 if(onebodyflag.eq.1)then
-                    E_ob_pot((step+3)/2)=calc_onebody_pot(A,nmres,E_OB)
-                    !                  write(*,*) "NumDiff 2: ",k,xyz,step,E_ob_pot((step+3)/2)
-                 endif
+                 IF(ONEBODYFLAG.EQ.1)THEN
+                    E_OB_POT((STEP+3)/2)=CALC_ONEBODY_POT(A,NMRES,E_OB)
+                    !                  WRITE(*,*) "NUMDIFF 2: ",K,XYZ,STEP,E_OB_POT((STEP+3)/2)
+                 ENDIF
 
-              enddo
+              ENDDO
 
-              if(altpotflag(WELL).gt.0)then
-                 f_alt_numer_pair_pot(k,xyz,katom)=-1*(E_pair_pot(2)-E_pair_pot(1))/2/step_size
-                 !           write(*,664) WELL,k,xyz,E_pair_pot(1),E_pair_pot(2),f_alt_numer_pair_pot(k,xyz,katom)
-                 !664        format('NumDiff PP: WELL=',i3,' k=', i3,' xyz=',i3,' E1=',E16.8,' E2=',E16.8,' F=',E16.8)
-              endif
-              if(onebodyflag.eq.1)then
-                 f_alt_numer_ob_pot(k,xyz,katom)=-1*(E_ob_pot(2)-E_ob_pot(1))/2/step_size
-                 !           write(*,665) k,xyz,E_ob_pot(1),E_ob_pot(2),f_alt_numer_ob_pot(k,xyz,katom)
-                 !665        format('NumDiff OB: k=', i3,' xyz=',i3,' E1=',E16.8,' E2=',E16.8,' F=',E16.8)
-              endif
-           enddo
-        enddo
+              IF(ALTPOTFLAG(WELL).GT.0)THEN
+                 F_ALT_NUMER_PAIR_POT(K,XYZ,KATOM)=-1*(E_PAIR_POT(2)-E_PAIR_POT(1))/2/STEP_SIZE
+                 !           WRITE(*,664) WELL,K,XYZ,E_PAIR_POT(1),E_PAIR_POT(2),F_ALT_NUMER_PAIR_POT(K,XYZ,KATOM)
+                 !664        FORMAT('NUMDIFF PP: WELL=',I3,' K=', I3,' XYZ=',I3,' E1=',E16.8,' E2=',E16.8,' F=',E16.8)
+              ENDIF
+              IF(ONEBODYFLAG.EQ.1)THEN
+                 F_ALT_NUMER_OB_POT(K,XYZ,KATOM)=-1*(E_OB_POT(2)-E_OB_POT(1))/2/STEP_SIZE
+                 !           WRITE(*,665) K,XYZ,E_OB_POT(1),E_OB_POT(2),F_ALT_NUMER_OB_POT(K,XYZ,KATOM)
+                 !665        FORMAT('NUMDIFF OB: K=', I3,' XYZ=',I3,' E1=',E16.8,' E2=',E16.8,' F=',E16.8)
+              ENDIF
+           ENDDO
+        ENDDO
 
-        pro_cord=save_pro_cord
+        PRO_CORD=SAVE_PRO_CORD
 
-        call CPU_TIME(end_time)
-        accumulated_time(4) = accumulated_time(4) + (end_time-start_time)
+        CALL CPU_TIME(END_TIME)
+        ACCUMULATED_TIME(4) = ACCUMULATED_TIME(4) + (END_TIME-START_TIME)
 
-        return
-      end subroutine calc_numerical_force_alt
+        RETURN
+      END SUBROUTINE CALC_NUMERICAL_FORCE_ALT
 

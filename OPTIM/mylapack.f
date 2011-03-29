@@ -1,20 +1,20 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       SUBROUTINE SMESSG(NUNIT,IP,NMESS) 
 C     DEFINE THE TEXT OF ERROR MESSAGES.
@@ -2544,22 +2544,22 @@ C     AUTH=R. J. HANSON, SANDIA NATIONAL LABS.
 C
 C***********************************************************************
 C
-C     File of the REAL              Level 2 BLAS routines:  
+C     FILE OF THE REAL              LEVEL 2 BLAS ROUTINES:  
 C
 C      SGEMV, SGBMV, SSYMV, SSBMV, SSPMV, STRMV, STBMV, STPMV,
 C      SGER , SSYR , SSPR ,
 C      SSYR2, SSPR2,
 C      STRSV, STBSV, STPSV.
 C
-C     See: 
+C     SEE: 
 C
-C        Dongarra J. J., Du Croz J. J., Hammarling S. and Hanson R. J.. 
-C        A proposal for an extended set of Fortran Basic Linear Algebra
-C        Subprograms. Technical Memorandum No.41 (revision 1),
-C        Mathematics and Computer Science Division, Argone National
-C        Laboratory, 9700 South Cass Avenue, Argonne, Illinois 60439,
-C        USA, or NAG Technical Report TR4/85, Numerical Algorithms Group
-C        Inc., 1101 31st Street, Suite 100, Downers Grove, Illinois
+C        DONGARRA J. J., DU CROZ J. J., HAMMARLING S. AND HANSON R. J.. 
+C        A PROPOSAL FOR AN EXTENDED SET OF FORTRAN BASIC LINEAR ALGEBRA
+C        SUBPROGRAMS. TECHNICAL MEMORANDUM NO.41 (REVISION 1),
+C        MATHEMATICS AND COMPUTER SCIENCE DIVISION, ARGONE NATIONAL
+C        LABORATORY, 9700 SOUTH CASS AVENUE, ARGONNE, ILLINOIS 60439,
+C        USA, OR NAG TECHNICAL REPORT TR4/85, NUMERICAL ALGORITHMS GROUP
+C        INC., 1101 31ST STREET, SUITE 100, DOWNERS GROVE, ILLINOIS
 C        60606-1263, USA.
 C
 C***********************************************************************
@@ -2569,98 +2569,98 @@ C
       INTEGER M,N,LDA,INCX,INCY
       REAL ALPHA,A(LDA,*),X(*),BETA,Y(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  SGEMV  performs one of the matrix-vector operations
+*  SGEMV  PERFORMS ONE OF THE MATRIX-VECTOR OPERATIONS
 *
-*     y := alpha*A*x + beta*y,   or   y := alpha*A'*x + beta*y, 
+*     Y := ALPHA*A*X + BETA*Y,   OR   Y := ALPHA*A'*X + BETA*Y, 
 *
-*  where alpha and beta are scalars, x and y are vectors and A is an
-*  m by n matrix.
+*  WHERE ALPHA AND BETA ARE SCALARS, X AND Y ARE VECTORS AND A IS AN
+*  M BY N MATRIX.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  TRANS  - CHARACTER*1.
-*           On entry, TRANS specifies the operation to be performed as
-*           follows: 
+*           ON ENTRY, TRANS SPECIFIES THE OPERATION TO BE PERFORMED AS
+*           FOLLOWS: 
 *
-*              TRANS = 'N'  y := alpha*A*x + beta*y.
+*              TRANS = 'N'  Y := ALPHA*A*X + BETA*Y.
 *
-*              TRANS = 'T'  y := alpha*A'*x + beta*y.
+*              TRANS = 'T'  Y := ALPHA*A'*X + BETA*Y.
 *
-*              TRANS = 'C'  y := alpha*A'*x + beta*y
+*              TRANS = 'C'  Y := ALPHA*A'*X + BETA*Y
 *.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  M      - INTEGER.
-*           On entry, M specifies the number of rows of the matrix A.
-*           M must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, M SPECIFIES THE NUMBER OF ROWS OF THE MATRIX A.
+*           M MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the number of columns of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE NUMBER OF COLUMNS OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  ALPHA  - REAL            . 
-*           On entry, ALPHA specifies the scalar alpha.
-*           Unchanged on exit.
+*           ON ENTRY, ALPHA SPECIFIES THE SCALAR ALPHA.
+*           UNCHANGED ON EXIT.
 *
-*  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry, the leading m by n part of the array A must
-*           contain the matrix of coefficients.
-*           Unchanged on exit.
+*  A      - REAL             ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY, THE LEADING M BY N PART OF THE ARRAY A MUST
+*           CONTAIN THE MATRIX OF COEFFICIENTS.
+*           UNCHANGED ON EXIT.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the leading dimension of A as
-*           declared in the calling (sub) program. LDA must be at least
-*           max(m,1).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE LEADING DIMENSION OF A AS
+*           DECLARED IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST
+*           MAX(M,1).
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of DIMENSION at least
-*           ( 1 + ( n - 1 )*abs( INCX ) ) when TRANS = 'N'
-*           and at least
-*           ( 1 + ( m - 1 )*abs( INCX ) ) otherwise.
-*           Before entry, the incremented array X must contain the 
-*           vector x.
-*           Unchanged on exit.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST
+*           ( 1 + ( N - 1 )*ABS( INCX ) ) WHEN TRANS = 'N'
+*           AND AT LEAST
+*           ( 1 + ( M - 1 )*ABS( INCX ) ) OTHERWISE.
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE 
+*           VECTOR X.
+*           UNCHANGED ON EXIT.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  BETA   - REAL
-*           On entry, BETA specifies the scalar beta. When BETA is 
-*           supplied as zero then Y need not be set on input.
-*           Unchanged on exit.
+*           ON ENTRY, BETA SPECIFIES THE SCALAR BETA. WHEN BETA IS 
+*           SUPPLIED AS ZERO THEN Y NEED NOT BE SET ON INPUT.
+*           UNCHANGED ON EXIT.
 *
-*  Y      - REAL             array of DIMENSION at least
-*           ( 1 + ( m - 1 )*abs( INCY ) ) when TRANS = 'N'
-*           and at least
-*           ( 1 + ( n - 1 )*abs( INCY ) ) otherwise.
-*           Before entry with BETA non-zero, the incremented array Y
-*           must contain the vector y. On exit, Y is overwritten by the
-*           updated vector y.
+*  Y      - REAL             ARRAY OF DIMENSION AT LEAST
+*           ( 1 + ( M - 1 )*ABS( INCY ) ) WHEN TRANS = 'N'
+*           AND AT LEAST
+*           ( 1 + ( N - 1 )*ABS( INCY ) ) OTHERWISE.
+*           BEFORE ENTRY WITH BETA NON-ZERO, THE INCREMENTED ARRAY Y
+*           MUST CONTAIN THE VECTOR Y. ON EXIT, Y IS OVERWRITTEN BY THE
+*           UPDATED VECTOR Y.
 *
 *  INCY   - INTEGER.
-*           On entry, INCY specifies the increment for the elements of
+*           ON ENTRY, INCY SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           Y.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *
-*  Note that TRANS, M, N and LDA must be such that the value of the
-*  LOGICAL variable OK in the following statement is true.
+*  NOTE THAT TRANS, M, N AND LDA MUST BE SUCH THAT THE VALUE OF THE
+*  LOGICAL VARIABLE OK IN THE FOLLOWING STATEMENT IS TRUE.
 *
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 30-August-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 30-AUGUST-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -2675,11 +2675,11 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
      .     LSAME(TRANS,'C')) .AND. ((M.GT.0) .AND. (N.GT.0) .AND.
      .     (LDA.GE.M))
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF (((ALPHA.EQ.ZERO).AND. (BETA.EQ.ONE)) .OR. .NOT. OK) RETURN
 *
-*     Set LENX and LENY, the lengths of the vectors x and y.
+*     SET LENX AND LENY, THE LENGTHS OF THE VECTORS X AND Y.
 *
       IF (LSAME(TRANS,'N')) THEN
           LENX = N
@@ -2690,11 +2690,11 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           LENY = N
       END IF
 *
-*     Start the operations. In this version the elements of A are
-*     accessed sequentially with one pass through A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH A.
 *
-*     First form  y := beta*y  and set up the start points in X and Y if
-*     the increments are not both unity.
+*     FIRST FORM  Y := BETA*Y  AND SET UP THE START POINTS IN X AND Y IF
+*     THE INCREMENTS ARE NOT BOTH UNITY.
 *
       IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
           IF (BETA.NE.ONE) THEN
@@ -2748,7 +2748,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       IF (ALPHA.EQ.ZERO) RETURN
       IF (LSAME(TRANS,'N')) THEN
 *
-*        Form  y := alpha*A*x + y.
+*        FORM  Y := ALPHA*A*X + Y.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 60,J = 1,N
@@ -2779,7 +2779,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  y := alpha*A'*x + y.
+*        FORM  Y := ALPHA*A'*X + Y.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 100,J = 1,N
@@ -2808,7 +2808,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of SGEMV .
+*     END OF SGEMV .
 *
       END 
       SUBROUTINE SGBMV(TRANS,M,N,KL,KU,ALPHA,A,LDA,X,INCX,BETA,Y,INCY)
@@ -2816,122 +2816,122 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER M,N,KL,KU,LDA,INCX,INCY
       REAL ALPHA,A(LDA,*),X(*),BETA,Y(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  SGBMV  performs one of the matrix-vector operations
+*  SGBMV  PERFORMS ONE OF THE MATRIX-VECTOR OPERATIONS
 *
-*     y := alpha*A*x + beta*y,   or   y := alpha*A'*x + beta*y, 
+*     Y := ALPHA*A*X + BETA*Y,   OR   Y := ALPHA*A'*X + BETA*Y, 
 *
-*  where alpha and beta are scalars, x and y are vectors and A is an
-*  m by n band matrix, with kl sub-diagonals and ku super-diagonals. 
+*  WHERE ALPHA AND BETA ARE SCALARS, X AND Y ARE VECTORS AND A IS AN
+*  M BY N BAND MATRIX, WITH KL SUB-DIAGONALS AND KU SUPER-DIAGONALS. 
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  TRANS  - CHARACTER*1.
-*           On entry, TRANS specifies the operation to be performed as
-*           follows: 
+*           ON ENTRY, TRANS SPECIFIES THE OPERATION TO BE PERFORMED AS
+*           FOLLOWS: 
 *
-*              TRANS = 'N'  y := alpha*A*x + beta*y.
+*              TRANS = 'N'  Y := ALPHA*A*X + BETA*Y.
 *
-*              TRANS = 'T'  y := alpha*A'*x + beta*y.
+*              TRANS = 'T'  Y := ALPHA*A'*X + BETA*Y.
 *
-*              TRANS = 'C'  y := alpha*A'*x + beta*y.
+*              TRANS = 'C'  Y := ALPHA*A'*X + BETA*Y.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  M      - INTEGER.
-*           On entry, M specifies the number of rows of the matrix A.
-*           M must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, M SPECIFIES THE NUMBER OF ROWS OF THE MATRIX A.
+*           M MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the number of columns of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE NUMBER OF COLUMNS OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  KL     - INTEGER.
-*           On entry, KL specifies the number of sub-diagonals of the
-*           matrix A. KL must satisfy  0 .le. KL.
-*           Unchanged on exit.
+*           ON ENTRY, KL SPECIFIES THE NUMBER OF SUB-DIAGONALS OF THE
+*           MATRIX A. KL MUST SATISFY  0 .LE. KL.
+*           UNCHANGED ON EXIT.
 *
 *  KU     - INTEGER.
-*           On entry, KU specifies the number of super-diagonals of the
-*           matrix A. KU must satisfy   0 .le. KU. 
-*           Unchanged on exit.
+*           ON ENTRY, KU SPECIFIES THE NUMBER OF SUPER-DIAGONALS OF THE
+*           MATRIX A. KU MUST SATISFY   0 .LE. KU. 
+*           UNCHANGED ON EXIT.
 *
-*  Users may find that efficiency of their application is enhanced by
-*  adjusting the values of m and n so that KL .ge. max(0,m-n) and
-*  KU .ge. max(0,n-m) or KL and KU so that KL .lt. m and KU .lt. n.
+*  USERS MAY FIND THAT EFFICIENCY OF THEIR APPLICATION IS ENHANCED BY
+*  ADJUSTING THE VALUES OF M AND N SO THAT KL .GE. MAX(0,M-N) AND
+*  KU .GE. MAX(0,N-M) OR KL AND KU SO THAT KL .LT. M AND KU .LT. N.
 *
 *  ALPHA  - REAL            . 
-*           On entry, ALPHA specifies the scalar alpha.
-*           Unchanged on exit.
+*           ON ENTRY, ALPHA SPECIFIES THE SCALAR ALPHA.
+*           UNCHANGED ON EXIT.
 *
-*  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry, the leading ( kl + ku + 1 ) by n part of the
-*           array A must contain the matrix of coefficients, supplied
-*           column by column, with the leading diagonal of the matrix in
-*           row ( ku + 1 ) of the array, the first super-diagonal
-*           starting at position 2 in row ku, the first sub-diagonal
-*           starting at position 1 in row ( ku + 2 ), and so on.
-*           This placement of the data can be realized with the
-*           following loops: 
+*  A      - REAL             ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY, THE LEADING ( KL + KU + 1 ) BY N PART OF THE
+*           ARRAY A MUST CONTAIN THE MATRIX OF COEFFICIENTS, SUPPLIED
+*           COLUMN BY COLUMN, WITH THE LEADING DIAGONAL OF THE MATRIX IN
+*           ROW ( KU + 1 ) OF THE ARRAY, THE FIRST SUPER-DIAGONAL
+*           STARTING AT POSITION 2 IN ROW KU, THE FIRST SUB-DIAGONAL
+*           STARTING AT POSITION 1 IN ROW ( KU + 2 ), AND SO ON.
+*           THIS PLACEMENT OF THE DATA CAN BE REALIZED WITH THE
+*           FOLLOWING LOOPS: 
 *               DO 20 J =1,N
 *                    K=KU+1-J 
 *                    DO 10 I =MAX(1,J-KU),MIN(M,J+KL)
-*                         A(K+I,J)=matrix entry of row I, column J. 
+*                         A(K+I,J)=MATRIX ENTRY OF ROW I, COLUMN J. 
 *     10             CONTINUE 
 *     20        CONTINUE
-*           Elements in the array A that do not correspond to elements
-*           in the band matrix (such as the top left ku by ku triangle)
-*           are not referenced.
-*           Unchanged on exit.
+*           ELEMENTS IN THE ARRAY A THAT DO NOT CORRESPOND TO ELEMENTS
+*           IN THE BAND MATRIX (SUCH AS THE TOP LEFT KU BY KU TRIANGLE)
+*           ARE NOT REFERENCED.
+*           UNCHANGED ON EXIT.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the leading dimension of A as
-*           declared in the calling (sub) program. LDA must be at least
-*           ( kl + ku + 1 ).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE LEADING DIMENSION OF A AS
+*           DECLARED IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST
+*           ( KL + KU + 1 ).
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of DIMENSION at least
-*           ( 1 + ( n - 1 )*abs( INCX ) ) when TRANS = 'N'
-*           and at least
-*           ( 1 + ( m - 1 )*abs( INCX ) ) otherwise.
-*           Before entry, the incremented array X must contain the 
-*           vector x.
-*           Unchanged on exit.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST
+*           ( 1 + ( N - 1 )*ABS( INCX ) ) WHEN TRANS = 'N'
+*           AND AT LEAST
+*           ( 1 + ( M - 1 )*ABS( INCX ) ) OTHERWISE.
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE 
+*           VECTOR X.
+*           UNCHANGED ON EXIT.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  BETA   - REAL            . 
-*           On entry, BETA specifies the scalar beta. When BETA is 
-*           supplied as zero then Y need not be set on input.
-*           Unchanged on exit.
+*           ON ENTRY, BETA SPECIFIES THE SCALAR BETA. WHEN BETA IS 
+*           SUPPLIED AS ZERO THEN Y NEED NOT BE SET ON INPUT.
+*           UNCHANGED ON EXIT.
 *
-*  Y      - REAL             array of DIMENSION at least
-*           ( 1 + ( m - 1 )*abs( INCY ) ) when TRANS = 'N'
-*           and at least
-*           ( 1 + ( n - 1 )*abs( INCY ) ) otherwise.
-*           Before entry, the incremented array Y must contain the 
-*           vector y. On exit, Y is overwritten by the updated vector y.
+*  Y      - REAL             ARRAY OF DIMENSION AT LEAST
+*           ( 1 + ( M - 1 )*ABS( INCY ) ) WHEN TRANS = 'N'
+*           AND AT LEAST
+*           ( 1 + ( N - 1 )*ABS( INCY ) ) OTHERWISE.
+*           BEFORE ENTRY, THE INCREMENTED ARRAY Y MUST CONTAIN THE 
+*           VECTOR Y. ON EXIT, Y IS OVERWRITTEN BY THE UPDATED VECTOR Y.
 *
 *  INCY   - INTEGER.
-*           On entry, INCY specifies the increment for the elements of
+*           ON ENTRY, INCY SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           Y.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 27-Sept-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 27-SEPT-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -2948,11 +2948,11 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
      .     (KL.GE.0) .AND. (KU.GE.0) .AND.
      .     (LDA.GE. (KL+KU+1))
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK .OR. ((ALPHA.EQ.ZERO).AND. (BETA.EQ.ONE))) RETURN 
 *
-*     Set  LENX  and  LENY, the lengths of the vectors x and y.
+*     SET  LENX  AND  LENY, THE LENGTHS OF THE VECTORS X AND Y.
 *
       IF (LSAME(TRANS,'N')) THEN
           LENX = N
@@ -2963,11 +2963,11 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           LENY = N
       END IF
 *
-*     Start the operations. In this version the elements of A are
-*     accessed sequentially with one pass through the band part of A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH THE BAND PART OF A.
 *
-*     First form  y := beta*y  and set up the start points in  X  and  Y
-*     if the increments are not both unity.
+*     FIRST FORM  Y := BETA*Y  AND SET UP THE START POINTS IN  X  AND  Y
+*     IF THE INCREMENTS ARE NOT BOTH UNITY.
 *
       IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
           IF (BETA.NE.ONE) THEN
@@ -3022,7 +3022,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       KUP1 = KU + 1 
       IF (LSAME(TRANS,'N')) THEN
 *
-*        Form  y := alpha*A*x + y.
+*        FORM  Y := ALPHA*A*X + Y.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 60,J = 1,N
@@ -3056,7 +3056,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  y := alpha*A'*x + y.
+*        FORM  Y := ALPHA*A'*X + Y.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 100,J = 1,N
@@ -3088,7 +3088,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of SGBMV .
+*     END OF SGBMV .
 *
       END 
       SUBROUTINE SSYMV(UPLO,N,ALPHA,A,LDA,X,INCX,BETA,Y,INCY)
@@ -3096,89 +3096,89 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,LDA,INCX,INCY 
       REAL ALPHA,A(LDA,*),X(*),BETA,Y(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  SSYMV  performs the matrix-vector  operation 
+*  SSYMV  PERFORMS THE MATRIX-VECTOR  OPERATION 
 *
-*     y := alpha*A*x + beta*y,
+*     Y := ALPHA*A*X + BETA*Y,
 *
-*  where alpha and beta are scalars, x and y are n element vectors and
-*  A is an n by n symmetric matrix.
+*  WHERE ALPHA AND BETA ARE SCALARS, X AND Y ARE N ELEMENT VECTORS AND
+*  A IS AN N BY N SYMMETRIC MATRIX.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the upper or lower
-*           triangular part of the array A is to be referenced as
-*           follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE UPPER OR LOWER
+*           TRIANGULAR PART OF THE ARRAY A IS TO BE REFERENCED AS
+*           FOLLOWS: 
 *
-*              UPLO = 'U'          Only the upper triangular part of A
-*                                  is to be referenced.
+*              UPLO = 'U'          ONLY THE UPPER TRIANGULAR PART OF A
+*                                  IS TO BE REFERENCED.
 *
-*              UPLO = 'L'          Only the lower triangular part of A
-*                                  is to be referenced.
+*              UPLO = 'L'          ONLY THE LOWER TRIANGULAR PART OF A
+*                                  IS TO BE REFERENCED.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  ALPHA  - REAL            . 
-*           On entry, ALPHA specifies the scalar alpha.
-*           Unchanged on exit.
+*           ON ENTRY, ALPHA SPECIFIES THE SCALAR ALPHA.
+*           UNCHANGED ON EXIT.
 *
-*  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry with  UPLO = 'U', the leading n by n 
-*           upper triangular part of the array A must contain the upper 
-*           triangular part of the symmetric matrix and the strictly
-*           lower triangular part of A is not referenced.
-*           Before entry with UPLO = 'L', the leading n by n
-*           lower triangular part of the array A must contain the lower 
-*           triangular part of the symmetric matrix and the strictly
-*           upper triangular part of A is not referenced.
-*           Unchanged on exit.
+*  A      - REAL             ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY WITH  UPLO = 'U', THE LEADING N BY N 
+*           UPPER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE UPPER 
+*           TRIANGULAR PART OF THE SYMMETRIC MATRIX AND THE STRICTLY
+*           LOWER TRIANGULAR PART OF A IS NOT REFERENCED.
+*           BEFORE ENTRY WITH UPLO = 'L', THE LEADING N BY N
+*           LOWER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE LOWER 
+*           TRIANGULAR PART OF THE SYMMETRIC MATRIX AND THE STRICTLY
+*           UPPER TRIANGULAR PART OF A IS NOT REFERENCED.
+*           UNCHANGED ON EXIT.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the first dimension of A as declared
-*           in the calling (sub) program. LDA must be at least max(n,1).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE FIRST DIMENSION OF A AS DECLARED
+*           IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST MAX(N,1).
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element vector x.
-*           Unchanged on exit.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT VECTOR X.
+*           UNCHANGED ON EXIT.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  BETA   - REAL            . 
-*           On entry, BETA specifies the scalar beta. When BETA is 
-*           supplied as zero then Y need not be set on input.
-*           Unchanged on exit.
+*           ON ENTRY, BETA SPECIFIES THE SCALAR BETA. WHEN BETA IS 
+*           SUPPLIED AS ZERO THEN Y NEED NOT BE SET ON INPUT.
+*           UNCHANGED ON EXIT.
 *
-*  Y      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCY ) ).
-*           Before entry, the incremented array Y must contain the n
-*           element vector y. On exit, Y is overwritten by the updated
-*           vector y.
+*  Y      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCY ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY Y MUST CONTAIN THE N
+*           ELEMENT VECTOR Y. ON EXIT, Y IS OVERWRITTEN BY THE UPDATED
+*           VECTOR Y.
 *
 *  INCY   - INTEGER.
-*           On entry, INCY specifies the increment for the elements of
+*           ON ENTRY, INCY SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           Y.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 27-Sept-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 27-SEPT-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -3192,16 +3192,16 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       OK = (LSAME(UPLO,'U') .OR. LSAME(UPLO,'L')) .AND. (N.GT.0) .AND.
      .     (LDA.GE.N)
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK .OR. ((ALPHA.EQ.ZERO).AND. (BETA.EQ.ONE))) RETURN 
 *
-*     Start the operations. In this version the elements of A are
-*     accessed sequentially with one pass through the triangular part
-*     of A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH THE TRIANGULAR PART
+*     OF A.
 *
-*     First form  y := beta*y  and set up the start points in X and Y if
-*     the increments are not both unity.
+*     FIRST FORM  Y := BETA*Y  AND SET UP THE START POINTS IN X AND Y IF
+*     THE INCREMENTS ARE NOT BOTH UNITY.
 *
       IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
           IF (BETA.NE.ONE) THEN
@@ -3255,7 +3255,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       IF (ALPHA.EQ.ZERO) RETURN
       IF (LSAME(UPLO,'U')) THEN
 *
-*        Form  y  when A is stored in upper triangle.
+*        FORM  Y  WHEN A IS STORED IN UPPER TRIANGLE.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 60,J = 1,N
@@ -3287,7 +3287,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  y  when A is stored in lower triangle.
+*        FORM  Y  WHEN A IS STORED IN LOWER TRIANGLE.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 100,J = 1,N
@@ -3326,7 +3326,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of SSYMV .
+*     END OF SSYMV .
 *
       END 
       SUBROUTINE SSBMV(UPLO,N,K,ALPHA,A,LDA,X,INCX,BETA,Y,INCY)
@@ -3334,100 +3334,100 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,K,LDA,INCX,INCY
       REAL ALPHA,A(LDA,*),X(*),BETA,Y(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  SSBMV  performs the matrix-vector  operation 
+*  SSBMV  PERFORMS THE MATRIX-VECTOR  OPERATION 
 *
-*     y := alpha*A*x + beta*y,
+*     Y := ALPHA*A*X + BETA*Y,
 *
-*  where alpha and beta are scalars, x and y are n element vectors and
-*  A is an n by n symmetric band matrix, with k super-diagonals.
+*  WHERE ALPHA AND BETA ARE SCALARS, X AND Y ARE N ELEMENT VECTORS AND
+*  A IS AN N BY N SYMMETRIC BAND MATRIX, WITH K SUPER-DIAGONALS.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the upper or lower
-*           triangular part of the band matrix A is being supplied as
-*           follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE UPPER OR LOWER
+*           TRIANGULAR PART OF THE BAND MATRIX A IS BEING SUPPLIED AS
+*           FOLLOWS: 
 *
-*              UPLO = 'U'          The upper triangular part of A is
-*                                  being supplied.
+*              UPLO = 'U'          THE UPPER TRIANGULAR PART OF A IS
+*                                  BEING SUPPLIED.
 *
-*              UPLO = 'L'          The lower triangular part of A is
-*                                  being supplied.
+*              UPLO = 'L'          THE LOWER TRIANGULAR PART OF A IS
+*                                  BEING SUPPLIED.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  K      - INTEGER.
-*           On entry, K specifies the number of super-diagonals of the
-*           matrix A. K must satisfy  0 .le. K .lt. n.
-*           Unchanged on exit.
+*           ON ENTRY, K SPECIFIES THE NUMBER OF SUPER-DIAGONALS OF THE
+*           MATRIX A. K MUST SATISFY  0 .LE. K .LT. N.
+*           UNCHANGED ON EXIT.
 *
 *  ALPHA  - REAL            . 
-*           On entry, ALPHA specifies the scalar alpha.
-*           Unchanged on exit.
+*           ON ENTRY, ALPHA SPECIFIES THE SCALAR ALPHA.
+*           UNCHANGED ON EXIT.
 *
-*  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry with UPLO = 'U', the leading ( k + 1 )
-*           by n part of the array A must contain the upper triangular
-*           band part of the symmetric matrix, supplied column by 
-*           column, with the leading diagonal of the matrix in row
-*           ( k + 1 ) of the array, the first super-diagonal starting at
-*           position 2 in row k, and so on. The top left k by k triangle
-*           of the array A is not referenced.
-*           Before entry with UPLO = 'L', the leading ( k + 1 )
-*           by n part of the array A must contain the lower triangular
-*           band part of the symmetric matrix, supplied column by 
-*           column, with the leading diagonal of the matrix in row 1 of
-*           the array, the first sub-diagonal starting at position 1 in
-*           row 2, and so on. The bottom right k by k triangle of the 
-*           array A is not referenced.
-*           Unchanged on exit.
+*  A      - REAL             ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY WITH UPLO = 'U', THE LEADING ( K + 1 )
+*           BY N PART OF THE ARRAY A MUST CONTAIN THE UPPER TRIANGULAR
+*           BAND PART OF THE SYMMETRIC MATRIX, SUPPLIED COLUMN BY 
+*           COLUMN, WITH THE LEADING DIAGONAL OF THE MATRIX IN ROW
+*           ( K + 1 ) OF THE ARRAY, THE FIRST SUPER-DIAGONAL STARTING AT
+*           POSITION 2 IN ROW K, AND SO ON. THE TOP LEFT K BY K TRIANGLE
+*           OF THE ARRAY A IS NOT REFERENCED.
+*           BEFORE ENTRY WITH UPLO = 'L', THE LEADING ( K + 1 )
+*           BY N PART OF THE ARRAY A MUST CONTAIN THE LOWER TRIANGULAR
+*           BAND PART OF THE SYMMETRIC MATRIX, SUPPLIED COLUMN BY 
+*           COLUMN, WITH THE LEADING DIAGONAL OF THE MATRIX IN ROW 1 OF
+*           THE ARRAY, THE FIRST SUB-DIAGONAL STARTING AT POSITION 1 IN
+*           ROW 2, AND SO ON. THE BOTTOM RIGHT K BY K TRIANGLE OF THE 
+*           ARRAY A IS NOT REFERENCED.
+*           UNCHANGED ON EXIT.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the leading dimension of A as
-*           declared in the calling (sub) program. LDA must be at least
-*           ( k + 1 ).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE LEADING DIMENSION OF A AS
+*           DECLARED IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST
+*           ( K + 1 ).
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of DIMENSION at least
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the 
-*           vector x.
-*           Unchanged on exit.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE 
+*           VECTOR X.
+*           UNCHANGED ON EXIT.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  BETA   - REAL            . 
-*           On entry, BETA specifies the scalar beta.
-*           Unchanged on exit.
+*           ON ENTRY, BETA SPECIFIES THE SCALAR BETA.
+*           UNCHANGED ON EXIT.
 *
-*  Y      - REAL             array of DIMENSION at least
-*           ( 1 + ( n - 1 )*abs( INCY ) ).
-*           Before entry, the incremented array Y must contain the 
-*           vector y. On exit, Y is overwritten by the updated vector y.
+*  Y      - REAL             ARRAY OF DIMENSION AT LEAST
+*           ( 1 + ( N - 1 )*ABS( INCY ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY Y MUST CONTAIN THE 
+*           VECTOR Y. ON EXIT, Y IS OVERWRITTEN BY THE UPDATED VECTOR Y.
 *
 *  INCY   - INTEGER.
-*           On entry, INCY specifies the increment for the elements of
+*           ON ENTRY, INCY SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           Y.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 30-September-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 30-SEPTEMBER-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -3442,15 +3442,15 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       OK = (LSAME(UPLO,'U') .OR. LSAME(UPLO,'L')) .AND. (N.GT.0) .AND.
      .     (K.GE.0) .AND. (K.LT.N) .AND. (LDA.GE. (K+1))
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK .OR. ((ALPHA.EQ.ZERO).AND. (BETA.EQ.ONE))) RETURN 
 *
-*     Start the operations. In this version the elements of the array A
-*     are accessed sequentially with one pass through A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF THE ARRAY A
+*     ARE ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH A.
 *
-*     First form  y := beta*y  and set up the start points in X and Y if
-*     the increments are not both unity.
+*     FIRST FORM  Y := BETA*Y  AND SET UP THE START POINTS IN X AND Y IF
+*     THE INCREMENTS ARE NOT BOTH UNITY.
 *
       IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
           IF (BETA.NE.ONE) THEN
@@ -3504,7 +3504,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       IF (ALPHA.EQ.ZERO) RETURN
       IF (LSAME(UPLO,'U')) THEN
 *
-*        Form  y  when upper triangle of A is stored.
+*        FORM  Y  WHEN UPPER TRIANGLE OF A IS STORED.
 *
           KPLUS1 = K + 1
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
@@ -3544,7 +3544,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  y  when lower triangle of A is stored.
+*        FORM  Y  WHEN LOWER TRIANGLE OF A IS STORED.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 100,J = 1,N
@@ -3585,7 +3585,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of SSBMV .
+*     END OF SSBMV .
 *
       END 
       SUBROUTINE SSPMV(UPLO,N,ALPHA,AP,X,INCX,BETA,Y,INCY)
@@ -3593,90 +3593,90 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,INCX,INCY
       REAL ALPHA,AP(*),X(*),BETA,Y(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  SSPMV  performs the matrix-vector operation
+*  SSPMV  PERFORMS THE MATRIX-VECTOR OPERATION
 *
-*     y := alpha*A*x + beta*y,
+*     Y := ALPHA*A*X + BETA*Y,
 *
-*  where alpha and beta are scalars, x and y are n element vectors and
-*  A is an n by n symmetric matrix.
+*  WHERE ALPHA AND BETA ARE SCALARS, X AND Y ARE N ELEMENT VECTORS AND
+*  A IS AN N BY N SYMMETRIC MATRIX.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the upper or lower
-*           triangular part of the matrix A is supplied in the packed
-*           array AP as follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE UPPER OR LOWER
+*           TRIANGULAR PART OF THE MATRIX A IS SUPPLIED IN THE PACKED
+*           ARRAY AP AS FOLLOWS: 
 *
-*              UPLO = 'U'          The upper triangular part of A is
-*                                  supplied in AP.
+*              UPLO = 'U'          THE UPPER TRIANGULAR PART OF A IS
+*                                  SUPPLIED IN AP.
 *
-*              UPLO = 'L'          The lower triangular part of A is
-*                                  supplied in AP.
+*              UPLO = 'L'          THE LOWER TRIANGULAR PART OF A IS
+*                                  SUPPLIED IN AP.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  ALPHA  - REAL            . 
-*           On entry, ALPHA specifies the scalar alpha.
-*           Unchanged on exit.
+*           ON ENTRY, ALPHA SPECIFIES THE SCALAR ALPHA.
+*           UNCHANGED ON EXIT.
 *
-*  AP     - REAL             array of DIMENSION at least
-*           ( ( n*( n + 1 ) )/2 ).
-*           Before entry with UPLO = 'U', the array AP must
-*           contain the upper triangular part of the symmetric matrix
-*           packed sequentially, column by column, so that AP( 1 )
-*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 1, 2 ) 
-*           and a( 2, 2 ) respectively, and so on.
-*           Before entry with UPLO = 'L', the array AP must
-*           contain the lower triangular part of the symmetric matrix
-*           packed sequentially, column by column, so that AP( 1 )
-*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 2, 1 ) 
-*           and a( 3, 1 ) respectively, and so on.
-*           Unchanged on exit.
+*  AP     - REAL             ARRAY OF DIMENSION AT LEAST
+*           ( ( N*( N + 1 ) )/2 ).
+*           BEFORE ENTRY WITH UPLO = 'U', THE ARRAY AP MUST
+*           CONTAIN THE UPPER TRIANGULAR PART OF THE SYMMETRIC MATRIX
+*           PACKED SEQUENTIALLY, COLUMN BY COLUMN, SO THAT AP( 1 )
+*           CONTAINS A( 1, 1 ), AP( 2 ) AND AP( 3 ) CONTAIN A( 1, 2 ) 
+*           AND A( 2, 2 ) RESPECTIVELY, AND SO ON.
+*           BEFORE ENTRY WITH UPLO = 'L', THE ARRAY AP MUST
+*           CONTAIN THE LOWER TRIANGULAR PART OF THE SYMMETRIC MATRIX
+*           PACKED SEQUENTIALLY, COLUMN BY COLUMN, SO THAT AP( 1 )
+*           CONTAINS A( 1, 1 ), AP( 2 ) AND AP( 3 ) CONTAIN A( 2, 1 ) 
+*           AND A( 3, 1 ) RESPECTIVELY, AND SO ON.
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element vector x.
-*           Unchanged on exit.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT VECTOR X.
+*           UNCHANGED ON EXIT.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  BETA   - REAL            . 
-*           On entry, BETA specifies the scalar beta. When BETA is 
-*           supplied as zero then Y need not be set on input.
-*           Unchanged on exit.
+*           ON ENTRY, BETA SPECIFIES THE SCALAR BETA. WHEN BETA IS 
+*           SUPPLIED AS ZERO THEN Y NEED NOT BE SET ON INPUT.
+*           UNCHANGED ON EXIT.
 *
-*  Y      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCY ) ).
-*           Before entry, the incremented array Y must contain the n
-*           element vector y. On exit, Y is overwritten by the updated
-*           vector y.
+*  Y      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCY ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY Y MUST CONTAIN THE N
+*           ELEMENT VECTOR Y. ON EXIT, Y IS OVERWRITTEN BY THE UPDATED
+*           VECTOR Y.
 *
 *  INCY   - INTEGER.
-*           On entry, INCY specifies the increment for the elements of
+*           ON ENTRY, INCY SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           Y.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 27-Sept-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 27-SEPT-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -3689,15 +3689,15 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       LOGICAL OK,LSAME
       OK = (LSAME(UPLO,'U') .OR. LSAME(UPLO,'L')) .AND. (N.GT.0)
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK .OR. ((ALPHA.EQ.ZERO).AND. (BETA.EQ.ONE))) RETURN 
 *
-*     Start the operations. In this version the elements of the array AP
-*     are accessed sequentially with one pass through AP.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF THE ARRAY AP
+*     ARE ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH AP.
 *
-*     First form  y := beta*y  and set up the start points in X and Y if
-*     the increments are not both unity.
+*     FIRST FORM  Y := BETA*Y  AND SET UP THE START POINTS IN X AND Y IF
+*     THE INCREMENTS ARE NOT BOTH UNITY.
 *
       IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
           IF (BETA.NE.ONE) THEN
@@ -3752,7 +3752,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       K = 1
       IF (LSAME(UPLO,'U')) THEN
 *
-*        Form  y  when AP contains the upper triangle.
+*        FORM  Y  WHEN AP CONTAINS THE UPPER TRIANGLE.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 60,J = 1,N
@@ -3788,7 +3788,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  y  when AP contains the upper triangle.
+*        FORM  Y  WHEN AP CONTAINS THE UPPER TRIANGLE.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 100,J = 1,N
@@ -3830,7 +3830,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of SSPMV .
+*     END OF SSPMV .
 *
       END 
       SUBROUTINE STRMV(UPLO,TRANS,DIAG,N,A,LDA,X,INCX)
@@ -3838,93 +3838,93 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,LDA,INCX
       REAL A(LDA,*),X(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  STRMV  performs one of the matrix-vector operations
+*  STRMV  PERFORMS ONE OF THE MATRIX-VECTOR OPERATIONS
 *
-*     x := A*x,   or   x := A'*x, 
+*     X := A*X,   OR   X := A'*X, 
 *
-*  where x is n element vector and A is an n by n unit, or non-unit,
-*  upper or lower triangular matrix.
+*  WHERE X IS N ELEMENT VECTOR AND A IS AN N BY N UNIT, OR NON-UNIT,
+*  UPPER OR LOWER TRIANGULAR MATRIX.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the matrix is an upper or
-*           lower triangular matrix as follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE MATRIX IS AN UPPER OR
+*           LOWER TRIANGULAR MATRIX AS FOLLOWS: 
 *
-*              UPLO = 'U'          A is an upper triangular matrix.
+*              UPLO = 'U'          A IS AN UPPER TRIANGULAR MATRIX.
 *
-*              UPLO = 'L'          A is a lower triangular matrix.
+*              UPLO = 'L'          A IS A LOWER TRIANGULAR MATRIX.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  TRANS  - CHARACTER*1.
-*           On entry, TRANS specifies the operation to be performed as
-*           follows: 
+*           ON ENTRY, TRANS SPECIFIES THE OPERATION TO BE PERFORMED AS
+*           FOLLOWS: 
 *
-*              TRANS = 'N' x := A*x.
+*              TRANS = 'N' X := A*X.
 *
-*              TRANS = 'T' x := A'*x. 
+*              TRANS = 'T' X := A'*X. 
 *
-*              TRANS = 'C' x := A'*x. 
+*              TRANS = 'C' X := A'*X. 
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  DIAG   - CHARACTER*1.
-*           On entry, DIAG specifies whether or not A is unit
-*           triangular as follows: 
+*           ON ENTRY, DIAG SPECIFIES WHETHER OR NOT A IS UNIT
+*           TRIANGULAR AS FOLLOWS: 
 *
-*              DIAG = 'U'          A is assumed to be unit triangular.
+*              DIAG = 'U'          A IS ASSUMED TO BE UNIT TRIANGULAR.
 *
-*              DIAG = 'N'          A is not assumed to be unit
-*                                  triangular.
+*              DIAG = 'N'          A IS NOT ASSUMED TO BE UNIT
+*                                  TRIANGULAR.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
-*  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry with  UPLO = 'U', the leading n by n 
-*           upper triangular part of the array A must contain the upper 
-*           triangular matrix and the strictly lower triangular part of
-*           A is not referenced.
-*           Before entry with UPLO = 'L', the leading n by n
-*           lower triangular part of the array A must contain the lower 
-*           triangular matrix and the strictly upper triangular part of
-*           A is not referenced.
-*           Note that when  DIAG = 'U', the diagonal elements of
-*           A are not referenced either, but are assumed to be unity.
-*           Unchanged on exit.
+*  A      - REAL             ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY WITH  UPLO = 'U', THE LEADING N BY N 
+*           UPPER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE UPPER 
+*           TRIANGULAR MATRIX AND THE STRICTLY LOWER TRIANGULAR PART OF
+*           A IS NOT REFERENCED.
+*           BEFORE ENTRY WITH UPLO = 'L', THE LEADING N BY N
+*           LOWER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE LOWER 
+*           TRIANGULAR MATRIX AND THE STRICTLY UPPER TRIANGULAR PART OF
+*           A IS NOT REFERENCED.
+*           NOTE THAT WHEN  DIAG = 'U', THE DIAGONAL ELEMENTS OF
+*           A ARE NOT REFERENCED EITHER, BUT ARE ASSUMED TO BE UNITY.
+*           UNCHANGED ON EXIT.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the first dimension of A as declared
-*           in the calling (sub) program. LDA must be at least max(n,1).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE FIRST DIMENSION OF A AS DECLARED
+*           IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST MAX(N,1).
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element vector x. On exit, X is overwritten with the
-*           tranformed vector x. 
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT VECTOR X. ON EXIT, X IS OVERWRITTEN WITH THE
+*           TRANFORMED VECTOR X. 
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 30-September-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 30-SEPTEMBER-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -3940,13 +3940,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
      .     LSAME(DIAG,'N')) .AND. (N.GT.0) .AND. (LDA.GE.N) 
 *
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK) RETURN
       NOUNIT = LSAME(DIAG,'N')
 *
-*     Set up the start point in X if the increment is not unity. This
-*     will be  ( N - 1 )*INCX  too small for descending loops.
+*     SET UP THE START POINT IN X IF THE INCREMENT IS NOT UNITY. THIS
+*     WILL BE  ( N - 1 )*INCX  TOO SMALL FOR DESCENDING LOOPS.
 *
       IF (INCX.LE.0) THEN
           KX = 1 - (N-1)*INCX 
@@ -3955,12 +3955,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           KX = 1
       END IF
 *
-*     Start the operations. In this version the elements of A are
-*     accessed sequentially with one pass through A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH A.
 *
       IF (LSAME(TRANS,'N')) THEN
 *
-*        Form  x := A*x. 
+*        FORM  X := A*X. 
 *
           IF (LSAME(UPLO,'U')) THEN
               IF (INCX.EQ.1) THEN
@@ -4023,7 +4023,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  x := A'*x.
+*        FORM  X := A'*X.
 *
           IF (LSAME(UPLO,'U')) THEN
               IF (INCX.EQ.1) THEN
@@ -4075,7 +4075,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of STRMV .
+*     END OF STRMV .
 *
       END 
       SUBROUTINE STBMV(UPLO,TRANS,DIAG,N,K,A,LDA,X,INCX)
@@ -4083,109 +4083,109 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,K,LDA,INCX
       REAL A(LDA,*),X(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  STBMV  performs one of the matrix-vector operations
+*  STBMV  PERFORMS ONE OF THE MATRIX-VECTOR OPERATIONS
 *
-*     x := A*x,   or   x := A'*x, 
+*     X := A*X,   OR   X := A'*X, 
 *
-*  where x is n element vector and A is an n by n unit, or non-unit,
-*  upper or lower triangular band matrix, with ( k + 1 ) diagonals.
+*  WHERE X IS N ELEMENT VECTOR AND A IS AN N BY N UNIT, OR NON-UNIT,
+*  UPPER OR LOWER TRIANGULAR BAND MATRIX, WITH ( K + 1 ) DIAGONALS.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the matrix is an upper or
-*           lower triangular matrix as follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE MATRIX IS AN UPPER OR
+*           LOWER TRIANGULAR MATRIX AS FOLLOWS: 
 *
-*              UPLO = 'U' A is an upper triangular matrix.
+*              UPLO = 'U' A IS AN UPPER TRIANGULAR MATRIX.
 *
-*              UPLO = 'L' A is a lower triangular matrix.
+*              UPLO = 'L' A IS A LOWER TRIANGULAR MATRIX.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  TRANS  - CHARACTER*1.
-*           On entry, TRANS specifies the operation to be performed as
-*           follows: 
+*           ON ENTRY, TRANS SPECIFIES THE OPERATION TO BE PERFORMED AS
+*           FOLLOWS: 
 *
-*              TRANS = 'N' x := A*x.
+*              TRANS = 'N' X := A*X.
 *
-*              TRANS = 'T' x := A'*x. 
+*              TRANS = 'T' X := A'*X. 
 *
-*              TRANS = 'C' x := A'*x. 
+*              TRANS = 'C' X := A'*X. 
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  DIAG   - CHARACTER*1.
-*           On entry, DIAG specifies whether or not A is unit
-*           triangular as follows: 
+*           ON ENTRY, DIAG SPECIFIES WHETHER OR NOT A IS UNIT
+*           TRIANGULAR AS FOLLOWS: 
 *
-*              DIAG = 'U' A is assumed to be unit triangular.
+*              DIAG = 'U' A IS ASSUMED TO BE UNIT TRIANGULAR.
 *
-*              DIAG = 'N' A is not assumed to be unit
-*                                  triangular.
+*              DIAG = 'N' A IS NOT ASSUMED TO BE UNIT
+*                                  TRIANGULAR.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  K      - INTEGER.
-*           On entry with UPLO = 'U', K specifies the number of
-*           super-diagonals of the matrix A. 
-*           On entry with UPLO = 'L', K specifies the number of
-*           sub-diagonals of the matrix A.
-*           K must satisfy  0 .le. K.
-*           Unchanged on exit.
+*           ON ENTRY WITH UPLO = 'U', K SPECIFIES THE NUMBER OF
+*           SUPER-DIAGONALS OF THE MATRIX A. 
+*           ON ENTRY WITH UPLO = 'L', K SPECIFIES THE NUMBER OF
+*           SUB-DIAGONALS OF THE MATRIX A.
+*           K MUST SATISFY  0 .LE. K.
+*           UNCHANGED ON EXIT.
 *
-*  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry with UPLO = 'U', the leading ( k + 1 )
-*           by n part of the array A must contain the upper triangular
-*           band part of the matrix of coefficients, supplied column by
-*           column, with the leading diagonal of the matrix in row
-*           ( k + 1 ) of the array, the first super-diagonal starting at
-*           position 2 in row k, and so on. The top left k by k triangle
-*           of the array A is not referenced.
-*           Before entry with UPLO = 'L', the leading ( k + 1 )
-*           by n part of the array A must contain the lower triangular
-*           band part of the matrix of coefficients, supplied column by
-*           column, with the leading diagonal of the matrix in row 1 of
-*           the array, the first sub-diagonal starting at position 1 in
-*           row 2, and so on. The bottom right k by k triangle of the 
-*           array A is not referenced.
-*           Note that when DIAG = 'U' the elements of the array A
-*           corresponding to the diagonal elements of the matrix are not
-*           referenced, but are assumed to be unity.
-*           Unchanged on exit.
+*  A      - REAL             ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY WITH UPLO = 'U', THE LEADING ( K + 1 )
+*           BY N PART OF THE ARRAY A MUST CONTAIN THE UPPER TRIANGULAR
+*           BAND PART OF THE MATRIX OF COEFFICIENTS, SUPPLIED COLUMN BY
+*           COLUMN, WITH THE LEADING DIAGONAL OF THE MATRIX IN ROW
+*           ( K + 1 ) OF THE ARRAY, THE FIRST SUPER-DIAGONAL STARTING AT
+*           POSITION 2 IN ROW K, AND SO ON. THE TOP LEFT K BY K TRIANGLE
+*           OF THE ARRAY A IS NOT REFERENCED.
+*           BEFORE ENTRY WITH UPLO = 'L', THE LEADING ( K + 1 )
+*           BY N PART OF THE ARRAY A MUST CONTAIN THE LOWER TRIANGULAR
+*           BAND PART OF THE MATRIX OF COEFFICIENTS, SUPPLIED COLUMN BY
+*           COLUMN, WITH THE LEADING DIAGONAL OF THE MATRIX IN ROW 1 OF
+*           THE ARRAY, THE FIRST SUB-DIAGONAL STARTING AT POSITION 1 IN
+*           ROW 2, AND SO ON. THE BOTTOM RIGHT K BY K TRIANGLE OF THE 
+*           ARRAY A IS NOT REFERENCED.
+*           NOTE THAT WHEN DIAG = 'U' THE ELEMENTS OF THE ARRAY A
+*           CORRESPONDING TO THE DIAGONAL ELEMENTS OF THE MATRIX ARE NOT
+*           REFERENCED, BUT ARE ASSUMED TO BE UNITY.
+*           UNCHANGED ON EXIT.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the leading dimension of A as
-*           declared in the calling (sub) program. LDA must be at least
-*           ( k + 1 ).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE LEADING DIMENSION OF A AS
+*           DECLARED IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST
+*           ( K + 1 ).
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element vector x. On exit, X is overwritten with the
-*           tranformed vector x. 
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT VECTOR X. ON EXIT, X IS OVERWRITTEN WITH THE
+*           TRANFORMED VECTOR X. 
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 5-November-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 5-NOVEMBER-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -4204,13 +4204,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
      .     (LDA.GE. (K+1))
 *
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK) RETURN
       NOUNIT = LSAME(DIAG,'N')
 *
-*     Set up the start point in X if the increment is not unity. This
-*     will be  ( N - 1 )*INCX   too small for descending loops.
+*     SET UP THE START POINT IN X IF THE INCREMENT IS NOT UNITY. THIS
+*     WILL BE  ( N - 1 )*INCX   TOO SMALL FOR DESCENDING LOOPS.
 *
       IF (INCX.LE.0) THEN
           KX = 1 - (N-1)*INCX 
@@ -4219,12 +4219,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           KX = 1
       END IF
 *
-*     Start the operations. In this version the elements of A are
-*     accessed sequentially with one pass through A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH A.
 *
       IF (LSAME(TRANS,'N')) THEN
 *
-*         Form  x := A*x.
+*         FORM  X := A*X.
 *
           IF (LSAME(UPLO,'U')) THEN
               KPLUS1 = K + 1
@@ -4294,7 +4294,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  x := A'*x.
+*        FORM  X := A'*X.
 *
           IF (LSAME(UPLO,'U')) THEN
               KPLUS1 = K + 1
@@ -4354,7 +4354,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of STBMV .
+*     END OF STBMV .
 *
       END 
       SUBROUTINE STPMV(UPLO,TRANS,DIAG,N,AP,X,INCX)
@@ -4362,94 +4362,94 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,INCX
       REAL AP(*),X(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  STPMV  performs one of the matrix-vector operations
+*  STPMV  PERFORMS ONE OF THE MATRIX-VECTOR OPERATIONS
 *
-*     x := A*x,   or   x := A'*x, 
+*     X := A*X,   OR   X := A'*X, 
 *
-*  where x is n element vector and A is an n by n unit, or non-unit,
-*  upper or lower triangular matrix.
+*  WHERE X IS N ELEMENT VECTOR AND A IS AN N BY N UNIT, OR NON-UNIT,
+*  UPPER OR LOWER TRIANGULAR MATRIX.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the matrix is an upper or
-*           lower triangular matrix as follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE MATRIX IS AN UPPER OR
+*           LOWER TRIANGULAR MATRIX AS FOLLOWS: 
 *
-*              UPLO = 'U'          A is an upper triangular matrix.
+*              UPLO = 'U'          A IS AN UPPER TRIANGULAR MATRIX.
 *
-*              UPLO = 'L'          A is a lower triangular matrix.
+*              UPLO = 'L'          A IS A LOWER TRIANGULAR MATRIX.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  TRANS  - CHARACTER*1.
-*           On entry, TRANS specifies the operation to be performed as
-*           follows: 
+*           ON ENTRY, TRANS SPECIFIES THE OPERATION TO BE PERFORMED AS
+*           FOLLOWS: 
 *
-*              TRANS = 'N' x := A*x.
+*              TRANS = 'N' X := A*X.
 *
-*              TRANS = 'T' x := A'*x. 
+*              TRANS = 'T' X := A'*X. 
 *
-*              TRANS = 'C' x := A'*x. 
+*              TRANS = 'C' X := A'*X. 
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  DIAG   - CHARACTER*1.
-*           On entry, DIAG specifies whether or not A is unit
-*           triangular as follows: 
+*           ON ENTRY, DIAG SPECIFIES WHETHER OR NOT A IS UNIT
+*           TRIANGULAR AS FOLLOWS: 
 *
-*              DIAG = 'U'          A is assumed to be unit triangular.
+*              DIAG = 'U'          A IS ASSUMED TO BE UNIT TRIANGULAR.
 *
-*              DIAG = 'N'          A is not assumed to be unit
-*                                  triangular.
+*              DIAG = 'N'          A IS NOT ASSUMED TO BE UNIT
+*                                  TRIANGULAR.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
-*  AP     - REAL             array of DIMENSION at least
-*           ( ( n*( n + 1 ) )/2 ).
-*           Before entry with  UPLO = 'U', the array AP must
-*           contain the upper triangular matrix packed sequentially,
-*           column by column, so that AP( 1 ) contains a( 1, 1 ),
-*           AP( 2 ) and AP( 3 ) contain a( 1, 2 ) and a( 2, 2 )
-*           respectively, and so on.
-*           Before entry with UPLO = 'L', the array AP must
-*           contain the lower triangular matrix packed sequentially,
-*           column by column, so that AP( 1 ) contains a( 1, 1 ),
-*           AP( 2 ) and AP( 3 ) contain a( 2, 1 ) and a( 3, 1 )
-*           respectively, and so on.
-*           Note that when  DIAG = 'U', the diagonal elements of
-*           A are not referenced, but are assumed to be unity.
-*           Unchanged on exit.
+*  AP     - REAL             ARRAY OF DIMENSION AT LEAST
+*           ( ( N*( N + 1 ) )/2 ).
+*           BEFORE ENTRY WITH  UPLO = 'U', THE ARRAY AP MUST
+*           CONTAIN THE UPPER TRIANGULAR MATRIX PACKED SEQUENTIALLY,
+*           COLUMN BY COLUMN, SO THAT AP( 1 ) CONTAINS A( 1, 1 ),
+*           AP( 2 ) AND AP( 3 ) CONTAIN A( 1, 2 ) AND A( 2, 2 )
+*           RESPECTIVELY, AND SO ON.
+*           BEFORE ENTRY WITH UPLO = 'L', THE ARRAY AP MUST
+*           CONTAIN THE LOWER TRIANGULAR MATRIX PACKED SEQUENTIALLY,
+*           COLUMN BY COLUMN, SO THAT AP( 1 ) CONTAINS A( 1, 1 ),
+*           AP( 2 ) AND AP( 3 ) CONTAIN A( 2, 1 ) AND A( 3, 1 )
+*           RESPECTIVELY, AND SO ON.
+*           NOTE THAT WHEN  DIAG = 'U', THE DIAGONAL ELEMENTS OF
+*           A ARE NOT REFERENCED, BUT ARE ASSUMED TO BE UNITY.
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element vector x. On exit, X is overwritten with the
-*           tranformed vector x. 
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT VECTOR X. ON EXIT, X IS OVERWRITTEN WITH THE
+*           TRANFORMED VECTOR X. 
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *
-*  Note that UPLO, TRANS, DIAG and N must be such that the value of the
-*  LOGICAL variable OK in the following statement is true.
+*  NOTE THAT UPLO, TRANS, DIAG AND N MUST BE SUCH THAT THE VALUE OF THE
+*  LOGICAL VARIABLE OK IN THE FOLLOWING STATEMENT IS TRUE.
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 2-October-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 2-OCTOBER-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -4466,13 +4466,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
      .     LSAME(DIAG,'N')) .AND. (N.GT.0)
 *
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK) RETURN
       NOUNIT = LSAME(DIAG,'N')
 *
-*     Set up the start point in X if the increment is not unity. This
-*     will be  ( N - 1 )*INCX  too small for descending loops.
+*     SET UP THE START POINT IN X IF THE INCREMENT IS NOT UNITY. THIS
+*     WILL BE  ( N - 1 )*INCX  TOO SMALL FOR DESCENDING LOOPS.
 *
       IF (INCX.LE.0) THEN
           KX = 1 - (N-1)*INCX 
@@ -4481,12 +4481,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           KX = 1
       END IF
 *
-*     Start the operations. In this version the elements of AP are
-*     accessed sequentially with one pass through AP.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF AP ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH AP.
 *
       IF (LSAME(TRANS,'N')) THEN
 *
-*        Form  x:= A*x.
+*        FORM  X:= A*X.
 *
           IF (LSAME(UPLO,'U')) THEN
               K = 1 
@@ -4571,7 +4571,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  x := A'*x.
+*        FORM  X := A'*X.
 *
           IF (LSAME(UPLO,'U')) THEN
               K = (N* (N+1))/2
@@ -4631,7 +4631,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of STPMV .
+*     END OF STPMV .
 *
       END 
       SUBROUTINE STRSV(UPLO,TRANS,DIAG,N,A,LDA,X,INCX)
@@ -4639,96 +4639,96 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,LDA,INCX
       REAL A(LDA,*),X(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  STRSV  solves one of the systems of equations
+*  STRSV  SOLVES ONE OF THE SYSTEMS OF EQUATIONS
 *
-*     A*x = b,   or   A'*x = b,
+*     A*X = B,   OR   A'*X = B,
 *
-*  where b and x are n element vectors and A is an n by n unit, or
-*  non-unit, upper or lower triangular matrix.
+*  WHERE B AND X ARE N ELEMENT VECTORS AND A IS AN N BY N UNIT, OR
+*  NON-UNIT, UPPER OR LOWER TRIANGULAR MATRIX.
 *
-*  No test for singularity or near-singularity is included in this
-*  routine. Such tests must be performed before calling this routine.
+*  NO TEST FOR SINGULARITY OR NEAR-SINGULARITY IS INCLUDED IN THIS
+*  ROUTINE. SUCH TESTS MUST BE PERFORMED BEFORE CALLING THIS ROUTINE.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the matrix is an upper or
-*           lower triangular matrix as follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE MATRIX IS AN UPPER OR
+*           LOWER TRIANGULAR MATRIX AS FOLLOWS: 
 *
-*              UPLO = 'U'          A is an upper triangular matrix.
+*              UPLO = 'U'          A IS AN UPPER TRIANGULAR MATRIX.
 *
-*              UPLO = 'L'          A is a lower triangular matrix.
+*              UPLO = 'L'          A IS A LOWER TRIANGULAR MATRIX.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  TRANS  - CHARACTER*1.
-*           On entry, TRANS specifies the equations to be solved as
-*           follows: 
+*           ON ENTRY, TRANS SPECIFIES THE EQUATIONS TO BE SOLVED AS
+*           FOLLOWS: 
 *
-*              TRANS = 'N' A*x = b.
+*              TRANS = 'N' A*X = B.
 *
-*              TRANS = 'T' A'*x = b.
+*              TRANS = 'T' A'*X = B.
 *
-*              TRANS = 'C' A'*x = b.
+*              TRANS = 'C' A'*X = B.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  DIAG   - CHARACTER*1.
-*           On entry, DIAG specifies whether or not A is unit
-*           triangular as follows: 
+*           ON ENTRY, DIAG SPECIFIES WHETHER OR NOT A IS UNIT
+*           TRIANGULAR AS FOLLOWS: 
 *
-*              DIAG = 'U'          A is assumed to be unit triangular.
+*              DIAG = 'U'          A IS ASSUMED TO BE UNIT TRIANGULAR.
 *
-*              DIAG = 'N'          A is not assumed to be unit
-*                                  triangular.
+*              DIAG = 'N'          A IS NOT ASSUMED TO BE UNIT
+*                                  TRIANGULAR.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
-*  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry with  UPLO = 'U', the leading n by n 
-*           upper triangular part of the array A must contain the upper 
-*           triangular matrix and the strictly lower triangular part of
-*           A is not referenced.
-*           Before entry with UPLO = 'L', the leading n by n
-*           lower triangular part of the array A must contain the lower 
-*           triangular matrix and the strictly upper triangular part of
-*           A is not referenced.
-*           Note that when  DIAG = 'U', the diagonal elements of
-*           A are not referenced either, but are assumed to be unity.
-*           Unchanged on exit.
+*  A      - REAL             ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY WITH  UPLO = 'U', THE LEADING N BY N 
+*           UPPER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE UPPER 
+*           TRIANGULAR MATRIX AND THE STRICTLY LOWER TRIANGULAR PART OF
+*           A IS NOT REFERENCED.
+*           BEFORE ENTRY WITH UPLO = 'L', THE LEADING N BY N
+*           LOWER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE LOWER 
+*           TRIANGULAR MATRIX AND THE STRICTLY UPPER TRIANGULAR PART OF
+*           A IS NOT REFERENCED.
+*           NOTE THAT WHEN  DIAG = 'U', THE DIAGONAL ELEMENTS OF
+*           A ARE NOT REFERENCED EITHER, BUT ARE ASSUMED TO BE UNITY.
+*           UNCHANGED ON EXIT.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the first dimension of A as declared
-*           in the calling (sub) program. LDA must be at least max(n,1).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE FIRST DIMENSION OF A AS DECLARED
+*           IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST MAX(N,1).
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element right-hand side vector b. On exit, X is overwritten
-*           with the solution vector x.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT RIGHT-HAND SIDE VECTOR B. ON EXIT, X IS OVERWRITTEN
+*           WITH THE SOLUTION VECTOR X.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 30-September-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 30-SEPTEMBER-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -4744,13 +4744,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
      .     LSAME(DIAG,'N')) .AND. (N.GT.0) .AND. (LDA.GE.N) 
 *
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK) RETURN
       NOUNIT = LSAME(DIAG,'N')
 *
-*     Set up the start point in X if the increment is not unity. This
-*     will be  ( N - 1 )*INCX  too small for descending loops.
+*     SET UP THE START POINT IN X IF THE INCREMENT IS NOT UNITY. THIS
+*     WILL BE  ( N - 1 )*INCX  TOO SMALL FOR DESCENDING LOOPS.
 *
       IF (INCX.LE.0) THEN
           KX = 1 - (N-1)*INCX 
@@ -4759,12 +4759,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           KX = 1
       END IF
 *
-*     Start the operations. In this version the elements of A are
-*     accessed sequentially with one pass through A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH A.
 *
       IF (LSAME(TRANS,'N')) THEN
 *
-*        Form  x := inv( A )*x. 
+*        FORM  X := INV( A )*X. 
 *
           IF (LSAME(UPLO,'U')) THEN
               IF (INCX.EQ.1) THEN
@@ -4826,7 +4826,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  x := inv( A' )*x.
+*        FORM  X := INV( A' )*X.
 *
           IF (LSAME(UPLO,'U')) THEN
               IF (INCX.EQ.1) THEN
@@ -4879,7 +4879,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of STRSV .
+*     END OF STRSV .
 *
       END 
       SUBROUTINE STBSV(UPLO,TRANS,DIAG,N,K,A,LDA,X,INCX)
@@ -4887,114 +4887,114 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,K,LDA,INCX
       REAL A(LDA,*),X(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  STBSV  solves one of the systems of equations
+*  STBSV  SOLVES ONE OF THE SYSTEMS OF EQUATIONS
 *
-*     A*x = b,   or   A'*x = b,
+*     A*X = B,   OR   A'*X = B,
 *
-*  where b and x are n element vectors and A is an n by n unit, or
-*  non-unit, upper or lower triangular band matrix, with ( k + 1 )
-*  diagonals.
+*  WHERE B AND X ARE N ELEMENT VECTORS AND A IS AN N BY N UNIT, OR
+*  NON-UNIT, UPPER OR LOWER TRIANGULAR BAND MATRIX, WITH ( K + 1 )
+*  DIAGONALS.
 *
-*  No test for singularity or near-singularity is included in this
-*  routine. Such tests must be performed before calling this routine.
+*  NO TEST FOR SINGULARITY OR NEAR-SINGULARITY IS INCLUDED IN THIS
+*  ROUTINE. SUCH TESTS MUST BE PERFORMED BEFORE CALLING THIS ROUTINE.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the matrix is an upper or
-*           lower triangular matrix as follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE MATRIX IS AN UPPER OR
+*           LOWER TRIANGULAR MATRIX AS FOLLOWS: 
 *
-*              UPLO = 'U'          A is an upper triangular matrix.
+*              UPLO = 'U'          A IS AN UPPER TRIANGULAR MATRIX.
 *
-*              UPLO = 'L'          A is a lower triangular matrix.
+*              UPLO = 'L'          A IS A LOWER TRIANGULAR MATRIX.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  TRANS  - CHARACTER*1.
-*           On entry, TRANS specifies the equations to be solved as
-*           follows: 
+*           ON ENTRY, TRANS SPECIFIES THE EQUATIONS TO BE SOLVED AS
+*           FOLLOWS: 
 *
-*              TRANS = 'N' A*x = b.
+*              TRANS = 'N' A*X = B.
 *
-*              TRANS = 'T' A'*x = b.
+*              TRANS = 'T' A'*X = B.
 *
-*              TRANS = 'C' A'*x = b.
+*              TRANS = 'C' A'*X = B.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  DIAG   - CHARACTER*1.
-*           On entry, DIAG specifies whether or not A is unit
-*           triangular as follows: 
+*           ON ENTRY, DIAG SPECIFIES WHETHER OR NOT A IS UNIT
+*           TRIANGULAR AS FOLLOWS: 
 *
-*              DIAG = 'U' A is assumed to be unit triangular.
+*              DIAG = 'U' A IS ASSUMED TO BE UNIT TRIANGULAR.
 *
-*              DIAG = 'N' A is not assumed to be unit
-*                                  triangular.
+*              DIAG = 'N' A IS NOT ASSUMED TO BE UNIT
+*                                  TRIANGULAR.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  K      - INTEGER.
-*           On entry with UPLO = 'U', K specifies the number of
-*           super-diagonals of the matrix A. 
-*           On entry with UPLO = 'L', K specifies the number of
-*           sub-diagonals of the matrix A.
-*           K must satisfy  0 .le. K.
-*           Unchanged on exit.
+*           ON ENTRY WITH UPLO = 'U', K SPECIFIES THE NUMBER OF
+*           SUPER-DIAGONALS OF THE MATRIX A. 
+*           ON ENTRY WITH UPLO = 'L', K SPECIFIES THE NUMBER OF
+*           SUB-DIAGONALS OF THE MATRIX A.
+*           K MUST SATISFY  0 .LE. K.
+*           UNCHANGED ON EXIT.
 *
-*  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry with UPLO = 'U', the leading ( k + 1 )
-*           by n part of the array A must contain the upper triangular
-*           band part of the matrix of coefficients, supplied column by
-*           column, with the leading diagonal of the matrix in row
-*           ( k + 1 ) of the array, the first super-diagonal starting at
-*           position 2 in row k, and so on. The top left k by k triangle
-*           of the array A is not referenced.
-*           Before entry with UPLO = 'L', the leading ( k + 1 )
-*           by n part of the array A must contain the lower triangular
-*           band part of the matrix of coefficients, supplied column by
-*           column, with the leading diagonal of the matrix in row 1 of
-*           the array, the first sub-diagonal starting at position 1 in
-*           row 2, and so on. The bottom right k by k triangle of the 
-*           array A is not referenced.
-*           Note that when DIAG = 'U' the elements of the array A
-*           corresponding to the diagonal elements of the matrix are not
-*           referenced, but are assumed to be unity.
-*           Unchanged on exit.
+*  A      - REAL             ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY WITH UPLO = 'U', THE LEADING ( K + 1 )
+*           BY N PART OF THE ARRAY A MUST CONTAIN THE UPPER TRIANGULAR
+*           BAND PART OF THE MATRIX OF COEFFICIENTS, SUPPLIED COLUMN BY
+*           COLUMN, WITH THE LEADING DIAGONAL OF THE MATRIX IN ROW
+*           ( K + 1 ) OF THE ARRAY, THE FIRST SUPER-DIAGONAL STARTING AT
+*           POSITION 2 IN ROW K, AND SO ON. THE TOP LEFT K BY K TRIANGLE
+*           OF THE ARRAY A IS NOT REFERENCED.
+*           BEFORE ENTRY WITH UPLO = 'L', THE LEADING ( K + 1 )
+*           BY N PART OF THE ARRAY A MUST CONTAIN THE LOWER TRIANGULAR
+*           BAND PART OF THE MATRIX OF COEFFICIENTS, SUPPLIED COLUMN BY
+*           COLUMN, WITH THE LEADING DIAGONAL OF THE MATRIX IN ROW 1 OF
+*           THE ARRAY, THE FIRST SUB-DIAGONAL STARTING AT POSITION 1 IN
+*           ROW 2, AND SO ON. THE BOTTOM RIGHT K BY K TRIANGLE OF THE 
+*           ARRAY A IS NOT REFERENCED.
+*           NOTE THAT WHEN DIAG = 'U' THE ELEMENTS OF THE ARRAY A
+*           CORRESPONDING TO THE DIAGONAL ELEMENTS OF THE MATRIX ARE NOT
+*           REFERENCED, BUT ARE ASSUMED TO BE UNITY.
+*           UNCHANGED ON EXIT.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the leading dimension of A as
-*           declared in the calling (sub) program. LDA must be at least
-*           ( k + 1 ).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE LEADING DIMENSION OF A AS
+*           DECLARED IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST
+*           ( K + 1 ).
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element right-hand side vector b. On exit, X is overwritten
-*           with the solution vector x.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT RIGHT-HAND SIDE VECTOR B. ON EXIT, X IS OVERWRITTEN
+*           WITH THE SOLUTION VECTOR X.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 7-November-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 7-NOVEMBER-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -5013,13 +5013,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
      .     (LDA.GE. (K+1))
 *
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK) RETURN
       NOUNIT = LSAME(DIAG,'N')
 *
-*     Set up the start point in X if the increment is not unity. This
-*     will be  ( N - 1 )*INCX  too small for descending loops.
+*     SET UP THE START POINT IN X IF THE INCREMENT IS NOT UNITY. THIS
+*     WILL BE  ( N - 1 )*INCX  TOO SMALL FOR DESCENDING LOOPS.
 *
       IF (INCX.LE.0) THEN
           KX = 1 - (N-1)*INCX 
@@ -5028,12 +5028,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           KX = 1
       END IF
 *
-*     Start the operations. In this version the elements of A are
-*     accessed by sequentially with one pass through A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED BY SEQUENTIALLY WITH ONE PASS THROUGH A.
 *
       IF (LSAME(TRANS,'N')) THEN
 *
-*        Form  x := inv( A )*x. 
+*        FORM  X := INV( A )*X. 
 *
           IF (LSAME(UPLO,'U')) THEN
               KPLUS1 = K + 1
@@ -5103,7 +5103,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  x := inv( A')*x. 
+*        FORM  X := INV( A')*X. 
 *
           IF (LSAME(UPLO,'U')) THEN
               KPLUS1 = K + 1
@@ -5163,7 +5163,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of STBSV .
+*     END OF STBSV .
 *
       END 
       SUBROUTINE STPSV(UPLO,TRANS,DIAG,N,AP,X,INCX)
@@ -5171,95 +5171,95 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,INCX
       REAL AP(*),X(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  STPSV  solves one of the systems of equations
+*  STPSV  SOLVES ONE OF THE SYSTEMS OF EQUATIONS
 *
-*     A*x = b,   or   A'*x = b,
+*     A*X = B,   OR   A'*X = B,
 *
-*  where b and x are n element vectors and A is an n by n unit, or
-*  non-unit, upper or lower triangular matrix.
+*  WHERE B AND X ARE N ELEMENT VECTORS AND A IS AN N BY N UNIT, OR
+*  NON-UNIT, UPPER OR LOWER TRIANGULAR MATRIX.
 *
-*  No test for singularity or near-singularity is included in this
-*  routine. Such tests must be performed before calling this routine.
+*  NO TEST FOR SINGULARITY OR NEAR-SINGULARITY IS INCLUDED IN THIS
+*  ROUTINE. SUCH TESTS MUST BE PERFORMED BEFORE CALLING THIS ROUTINE.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the matrix is an upper or
-*           lower triangular matrix as follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE MATRIX IS AN UPPER OR
+*           LOWER TRIANGULAR MATRIX AS FOLLOWS: 
 *
-*              UPLO = 'U' A is an upper triangular matrix.
+*              UPLO = 'U' A IS AN UPPER TRIANGULAR MATRIX.
 *
-*              UPLO = 'L' A is a lower triangular matrix.
+*              UPLO = 'L' A IS A LOWER TRIANGULAR MATRIX.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  TRANS  - CHARACTER*1.
-*           On entry, TRANS specifies the equations to be solved as
-*           follows: 
+*           ON ENTRY, TRANS SPECIFIES THE EQUATIONS TO BE SOLVED AS
+*           FOLLOWS: 
 *
-*              TRANS = 'N' A*x = b.
+*              TRANS = 'N' A*X = B.
 *
-*              TRANS = 'T' A'*x = b.
+*              TRANS = 'T' A'*X = B.
 *
-*              TRANS = 'C' A'*x = b.
+*              TRANS = 'C' A'*X = B.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  DIAG   - CHARACTER*1.
-*           On entry, DIAG specifies whether or not A is unit
-*           triangular as follows: 
+*           ON ENTRY, DIAG SPECIFIES WHETHER OR NOT A IS UNIT
+*           TRIANGULAR AS FOLLOWS: 
 *
-*              DIAG = 'U' A is assumed to be unit triangular.
+*              DIAG = 'U' A IS ASSUMED TO BE UNIT TRIANGULAR.
 *
-*              DIAG = 'N' A is not assumed to be unit
-*                                  triangular.
+*              DIAG = 'N' A IS NOT ASSUMED TO BE UNIT
+*                                  TRIANGULAR.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
-*  AP     - REAL             array of DIMENSION at least
-*           ( ( n*( n + 1 ) )/2 ).
-*           Before entry with  UPLO = 'U', the array AP must
-*           contain the upper triangular matrix packed sequentially,
-*           column by column, so that AP( 1 ) contains a( 1, 1 ),
-*           AP( 2 ) and AP( 3 ) contain a( 1, 2 ) and a( 2, 2 )
-*           respectively, and so on.
-*           Before entry with UPLO = 'L', the array AP must
-*           contain the lower triangular matrix packed sequentially,
-*           column by column, so that AP( 1 ) contains a( 1, 1 ),
-*           AP( 2 ) and AP( 3 ) contain a( 2, 1 ) and a( 3, 1 )
-*           respectively, and so on.
-*           Note that when  DIAG = 'U', the diagonal elements of
-*           A are not referenced, but are assumed to be unity.
-*           Unchanged on exit.
+*  AP     - REAL             ARRAY OF DIMENSION AT LEAST
+*           ( ( N*( N + 1 ) )/2 ).
+*           BEFORE ENTRY WITH  UPLO = 'U', THE ARRAY AP MUST
+*           CONTAIN THE UPPER TRIANGULAR MATRIX PACKED SEQUENTIALLY,
+*           COLUMN BY COLUMN, SO THAT AP( 1 ) CONTAINS A( 1, 1 ),
+*           AP( 2 ) AND AP( 3 ) CONTAIN A( 1, 2 ) AND A( 2, 2 )
+*           RESPECTIVELY, AND SO ON.
+*           BEFORE ENTRY WITH UPLO = 'L', THE ARRAY AP MUST
+*           CONTAIN THE LOWER TRIANGULAR MATRIX PACKED SEQUENTIALLY,
+*           COLUMN BY COLUMN, SO THAT AP( 1 ) CONTAINS A( 1, 1 ),
+*           AP( 2 ) AND AP( 3 ) CONTAIN A( 2, 1 ) AND A( 3, 1 )
+*           RESPECTIVELY, AND SO ON.
+*           NOTE THAT WHEN  DIAG = 'U', THE DIAGONAL ELEMENTS OF
+*           A ARE NOT REFERENCED, BUT ARE ASSUMED TO BE UNITY.
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element right-hand side vector b. On exit, X is overwritten
-*           with the solution vector x.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT RIGHT-HAND SIDE VECTOR B. ON EXIT, X IS OVERWRITTEN
+*           WITH THE SOLUTION VECTOR X.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 11-November-1985. 
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 11-NOVEMBER-1985. 
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -5275,13 +5275,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
      .     LSAME(TRANS,'C')) .AND. (LSAME(DIAG,'U') .OR.
      .     LSAME(DIAG,'N')) .AND. (N.GT.0)
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK) RETURN
       NOUNIT = LSAME(DIAG,'N')
 *
-*     Set up the start point in X if the increment is not unity. This
-*     will be  ( N - 1 )*INCX  too small for descending loops.
+*     SET UP THE START POINT IN X IF THE INCREMENT IS NOT UNITY. THIS
+*     WILL BE  ( N - 1 )*INCX  TOO SMALL FOR DESCENDING LOOPS.
 *
       IF (INCX.LE.0) THEN
           KX = 1 - (N-1)*INCX 
@@ -5290,12 +5290,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           KX = 1
       END IF
 *
-*     Start the operations. In this version the elements of AP are
-*     accessed sequentially with one pass through AP.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF AP ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH AP.
 *
       IF (LSAME(TRANS,'N')) THEN
 *
-*        Form  x := inv( A )*x. 
+*        FORM  X := INV( A )*X. 
 *
           IF (LSAME(UPLO,'U')) THEN
               K = (N* (N+1))/2
@@ -5377,7 +5377,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  x := inv( A' )*x.
+*        FORM  X := INV( A' )*X.
 *
           IF (LSAME(UPLO,'U')) THEN
               K = 1 
@@ -5440,78 +5440,78 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of STPSV .
+*     END OF STPSV .
 *
       END 
       SUBROUTINE SGER(M,N,ALPHA,X,INCX,Y,INCY,A,LDA)
       INTEGER M,N,INCX,INCY,LDA
       REAL ALPHA,X(*),Y(*),A(LDA,*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  SGER   performs the rank 1 operation
+*  SGER   PERFORMS THE RANK 1 OPERATION
 *
-*     A := alpha*x*y' + A,
+*     A := ALPHA*X*Y' + A,
 *
-*  where alpha is a scalar, x is an m element vector, y is an n element
-*  vector and A is an m by n matrix. 
+*  WHERE ALPHA IS A SCALAR, X IS AN M ELEMENT VECTOR, Y IS AN N ELEMENT
+*  VECTOR AND A IS AN M BY N MATRIX. 
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  M      - INTEGER.
-*           On entry, M specifies the number of rows of the matrix A.
-*           M must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, M SPECIFIES THE NUMBER OF ROWS OF THE MATRIX A.
+*           M MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the number of columns of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE NUMBER OF COLUMNS OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  ALPHA  - REAL            . 
-*           On entry, ALPHA specifies the scalar alpha.
-*           Unchanged on exit.
+*           ON ENTRY, ALPHA SPECIFIES THE SCALAR ALPHA.
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( m - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the m
-*           element vector x.
-*           Unchanged on exit.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( M - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE M
+*           ELEMENT VECTOR X.
+*           UNCHANGED ON EXIT.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
-*  Y      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCY ) ).
-*           Before entry, the incremented array Y must contain the n
-*           element vector y.
-*           Unchanged on exit.
+*  Y      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCY ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY Y MUST CONTAIN THE N
+*           ELEMENT VECTOR Y.
+*           UNCHANGED ON EXIT.
 *
 *  INCY   - INTEGER.
-*           On entry, INCY specifies the increment for the elements of
+*           ON ENTRY, INCY SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           Y.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
-*  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry, the leading m by n part of the array A must
-*           contain the matrix of coefficients. On exit, A is
-*           overwritten by the updated matrix.
+*  A      - REAL             ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY, THE LEADING M BY N PART OF THE ARRAY A MUST
+*           CONTAIN THE MATRIX OF COEFFICIENTS. ON EXIT, A IS
+*           OVERWRITTEN BY THE UPDATED MATRIX.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the first dimension of A as declared
-*           in the calling (sub) program. LDA must be at least max(1,m).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE FIRST DIMENSION OF A AS DECLARED
+*           IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST MAX(1,M).
+*           UNCHANGED ON EXIT.
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 30-August-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 30-AUGUST-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -5524,12 +5524,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       OK = (M.GT.0) .AND. (N.GT.0) .AND. (LDA.GE.M)
 *
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK .OR. (ALPHA.EQ.ZERO)) RETURN
 *
-*     Start the operations. In this version the elements of A are
-*     accessed sequentially with one pass through A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH A.
 *
       IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN
           DO 20,J = 1,N
@@ -5573,7 +5573,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of SGER  .
+*     END OF SGER  .
 *
       END 
       SUBROUTINE SSYR(UPLO,N,ALPHA,X,INCX,A,LDA)
@@ -5581,79 +5581,79 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,INCX,LDA
       REAL ALPHA,X(*),A(LDA,*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  SSYR   performs the symmetric rank 1 operation
+*  SSYR   PERFORMS THE SYMMETRIC RANK 1 OPERATION
 *
-*     A := alpha*x*x' + A,
+*     A := ALPHA*X*X' + A,
 *
-*  where alpha is a real scalar, x is an n element vector and A is an
-*  n by n symmetric matrix.
+*  WHERE ALPHA IS A REAL SCALAR, X IS AN N ELEMENT VECTOR AND A IS AN
+*  N BY N SYMMETRIC MATRIX.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the upper or lower
-*           triangular part of the array A is to be referenced as
-*           follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE UPPER OR LOWER
+*           TRIANGULAR PART OF THE ARRAY A IS TO BE REFERENCED AS
+*           FOLLOWS: 
 *
-*              UPLO = 'U' Only the upper triangular part of A
-*                                  is to be referenced.
+*              UPLO = 'U' ONLY THE UPPER TRIANGULAR PART OF A
+*                                  IS TO BE REFERENCED.
 *
-*              UPLO = 'L' Only the lower triangular part of A
-*                                  is to be referenced.
+*              UPLO = 'L' ONLY THE LOWER TRIANGULAR PART OF A
+*                                  IS TO BE REFERENCED.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  ALPHA  - REAL            . 
-*           On entry, ALPHA specifies the scalar alpha.
-*           Unchanged on exit.
+*           ON ENTRY, ALPHA SPECIFIES THE SCALAR ALPHA.
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element vector x.
-*           Unchanged on exit.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT VECTOR X.
+*           UNCHANGED ON EXIT.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
-*  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry with  UPLO = 'U', the leading n by n 
-*           upper triangular part of the array A must contain the upper 
-*           triangular part of the symmetric matrix and the strictly
-*           lower triangular part of A is not referenced. On exit, the
-*           upper triangular part of the array A is overwritten by the
-*           upper triangular part of the updated matrix.
-*           Before entry with UPLO = 'L', the leading n by n
-*           lower triangular part of the array A must contain the lower 
-*           triangular part of the symmetric matrix and the strictly
-*           upper triangular part of A is not referenced. On exit, the
-*           lower triangular part of the array A is overwritten by the
-*           lower triangular part of the updated matrix.
+*  A      - REAL             ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY WITH  UPLO = 'U', THE LEADING N BY N 
+*           UPPER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE UPPER 
+*           TRIANGULAR PART OF THE SYMMETRIC MATRIX AND THE STRICTLY
+*           LOWER TRIANGULAR PART OF A IS NOT REFERENCED. ON EXIT, THE
+*           UPPER TRIANGULAR PART OF THE ARRAY A IS OVERWRITTEN BY THE
+*           UPPER TRIANGULAR PART OF THE UPDATED MATRIX.
+*           BEFORE ENTRY WITH UPLO = 'L', THE LEADING N BY N
+*           LOWER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE LOWER 
+*           TRIANGULAR PART OF THE SYMMETRIC MATRIX AND THE STRICTLY
+*           UPPER TRIANGULAR PART OF A IS NOT REFERENCED. ON EXIT, THE
+*           LOWER TRIANGULAR PART OF THE ARRAY A IS OVERWRITTEN BY THE
+*           LOWER TRIANGULAR PART OF THE UPDATED MATRIX.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the first dimension of A as declared
-*           in the calling (sub) program. LDA must be at least max(1,n).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE FIRST DIMENSION OF A AS DECLARED
+*           IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST MAX(1,N).
+*           UNCHANGED ON EXIT.
 *
 *
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 27-September-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 27-SEPTEMBER-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -5666,11 +5666,11 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       OK = (LSAME(UPLO,'U') .OR. LSAME(UPLO,'L')) .AND. (N.GT.0) .AND.
      .     (LDA.GE.N)
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK .OR. (ALPHA.EQ.ZERO)) RETURN
 *
-*     Set the start point in X if the increment is not unity.
+*     SET THE START POINT IN X IF THE INCREMENT IS NOT UNITY.
 *
       IF (INCX.LE.0) THEN
           KX = 1 - (N-1)*INCX 
@@ -5679,13 +5679,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           KX = 1
       END IF
 *
-*     Start the operations. In this version the elements of A are
-*     accessed sequentially with one pass through the triangular part
-*     of A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH THE TRIANGULAR PART
+*     OF A.
 *
       IF (LSAME(UPLO,'U')) THEN
 *
-*        Form  A  when A is stored in upper triangle.
+*        FORM  A  WHEN A IS STORED IN UPPER TRIANGLE.
 *
           IF (INCX.EQ.1) THEN 
               DO 20,J = 1,N
@@ -5716,7 +5716,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  A  when A is stored in lower triangle.
+*        FORM  A  WHEN A IS STORED IN LOWER TRIANGLE.
 *
           IF (INCX.EQ.1) THEN 
               DO 60,J = 1,N
@@ -5749,7 +5749,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of SSYR  .
+*     END OF SSYR  .
 *
       END 
       SUBROUTINE SSPR(UPLO,N,ALPHA,X,INCX,AP)
@@ -5757,76 +5757,76 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,INCX
       REAL ALPHA,X(*),AP(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  SSPR    performs the symmetric rank 1 operation
+*  SSPR    PERFORMS THE SYMMETRIC RANK 1 OPERATION
 *
-*     A := alpha*x*x' + A,
+*     A := ALPHA*X*X' + A,
 *
-*  where alpha is a real scalar, x is an n element vector and A is an
-*  n by n symmetric matrix.
+*  WHERE ALPHA IS A REAL SCALAR, X IS AN N ELEMENT VECTOR AND A IS AN
+*  N BY N SYMMETRIC MATRIX.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the upper or lower
-*           triangular part of the matrix A is supplied in the packed
-*           array AP as follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE UPPER OR LOWER
+*           TRIANGULAR PART OF THE MATRIX A IS SUPPLIED IN THE PACKED
+*           ARRAY AP AS FOLLOWS: 
 *
-*              UPLO = 'U' The upper triangular part of A is
-*                                  supplied in AP.
+*              UPLO = 'U' THE UPPER TRIANGULAR PART OF A IS
+*                                  SUPPLIED IN AP.
 *
-*              UPLO = 'L' The lower triangular part of A is
-*                                  supplied in AP.
+*              UPLO = 'L' THE LOWER TRIANGULAR PART OF A IS
+*                                  SUPPLIED IN AP.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  ALPHA  - REAL            . 
-*           On entry, ALPHA specifies the scalar alpha.
-*           Unchanged on exit.
+*           ON ENTRY, ALPHA SPECIFIES THE SCALAR ALPHA.
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element vector x.
-*           Unchanged on exit.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT VECTOR X.
+*           UNCHANGED ON EXIT.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
-*  AP     - REAL             array of DIMENSION at least
-*           ( ( n*( n + 1 ) )/2 ).
-*           Before entry with  UPLO = 'U', the array AP must
-*           contain the upper triangular part of the symmetric matrix
-*           packed sequentially, column by column, so that AP( 1 )
-*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 1, 2 ) 
-*           and a( 2, 2 ) respectively, and so on. On exit, the array
-*           AP is overwritten by the upper triangular part of the
-*           updated matrix.
-*           Before entry with UPLO = 'L', the array AP must
-*           contain the lower triangular part of the symmetric matrix
-*           packed sequentially, column by column, so that AP( 1 )
-*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 2, 1 ) 
-*           and a( 3, 1 ) respectively, and so on. On exit, the array
-*           AP is overwritten by the lower triangular part of the
-*           updated matrix.
-*
-*
+*  AP     - REAL             ARRAY OF DIMENSION AT LEAST
+*           ( ( N*( N + 1 ) )/2 ).
+*           BEFORE ENTRY WITH  UPLO = 'U', THE ARRAY AP MUST
+*           CONTAIN THE UPPER TRIANGULAR PART OF THE SYMMETRIC MATRIX
+*           PACKED SEQUENTIALLY, COLUMN BY COLUMN, SO THAT AP( 1 )
+*           CONTAINS A( 1, 1 ), AP( 2 ) AND AP( 3 ) CONTAIN A( 1, 2 ) 
+*           AND A( 2, 2 ) RESPECTIVELY, AND SO ON. ON EXIT, THE ARRAY
+*           AP IS OVERWRITTEN BY THE UPPER TRIANGULAR PART OF THE
+*           UPDATED MATRIX.
+*           BEFORE ENTRY WITH UPLO = 'L', THE ARRAY AP MUST
+*           CONTAIN THE LOWER TRIANGULAR PART OF THE SYMMETRIC MATRIX
+*           PACKED SEQUENTIALLY, COLUMN BY COLUMN, SO THAT AP( 1 )
+*           CONTAINS A( 1, 1 ), AP( 2 ) AND AP( 3 ) CONTAIN A( 2, 1 ) 
+*           AND A( 3, 1 ) RESPECTIVELY, AND SO ON. ON EXIT, THE ARRAY
+*           AP IS OVERWRITTEN BY THE LOWER TRIANGULAR PART OF THE
+*           UPDATED MATRIX.
 *
 *
-*  Level 2 Blas routine.
 *
-*  -- Written on 30-September-1985.
-*     Sven Hammarling, Nag Central Office.
+*
+*  LEVEL 2 BLAS ROUTINE.
+*
+*  -- WRITTEN ON 30-SEPTEMBER-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -5839,11 +5839,11 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       LOGICAL OK,LSAME
       OK = (LSAME(UPLO,'U') .OR. LSAME(UPLO,'L')) .AND. (N.GT.0)
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK .OR. (ALPHA.EQ.ZERO)) RETURN
 *
-*     Set the start point in X if the increment is not unity.
+*     SET THE START POINT IN X IF THE INCREMENT IS NOT UNITY.
 *
       IF (INCX.LE.0) THEN
           KX = 1 - (N-1)*INCX 
@@ -5852,13 +5852,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
           KX = 1
       END IF
 *
-*     Start the operations. In this version the elements of the array AP
-*     are accessed sequentially with one pass through AP.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF THE ARRAY AP
+*     ARE ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH AP.
 *
       K = 1
       IF (LSAME(UPLO,'U')) THEN
 *
-*        Form  A  when upper triangle is stored in AP.
+*        FORM  A  WHEN UPPER TRIANGLE IS STORED IN AP.
 *
           IF (INCX.EQ.1) THEN 
               DO 20,J = 1,N
@@ -5897,7 +5897,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  A  when lower triangle is stored in AP.
+*        FORM  A  WHEN LOWER TRIANGLE IS STORED IN AP.
 *
           IF (INCX.EQ.1) THEN 
               DO 60,J = 1,N
@@ -5938,7 +5938,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of SSPR  .
+*     END OF SSPR  .
 *
       END 
       SUBROUTINE SSYR2(UPLO,N,ALPHA,X,INCX,Y,INCY,A,LDA)
@@ -5946,90 +5946,90 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,INCX,INCY,LDA 
       REAL ALPHA,X(*),Y(*),A(LDA,*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  SSYR2  performs the symmetric rank 2 operation
+*  SSYR2  PERFORMS THE SYMMETRIC RANK 2 OPERATION
 *
-*     A := alpha*x*y' + alpha*y*x' + A,
+*     A := ALPHA*X*Y' + ALPHA*Y*X' + A,
 *
-*  where alpha is a scalar, x and y are n element vectors and A is an n
-*  by n symmetric matrix.
+*  WHERE ALPHA IS A SCALAR, X AND Y ARE N ELEMENT VECTORS AND A IS AN N
+*  BY N SYMMETRIC MATRIX.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the upper or lower
-*           triangular part of the array A is to be referenced as
-*           follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE UPPER OR LOWER
+*           TRIANGULAR PART OF THE ARRAY A IS TO BE REFERENCED AS
+*           FOLLOWS: 
 *
-*              UPLO = 'U' Only the upper triangular part of A
-*                                  is to be referenced.
+*              UPLO = 'U' ONLY THE UPPER TRIANGULAR PART OF A
+*                                  IS TO BE REFERENCED.
 *
-*              UPLO = 'L' Only the lower triangular part of A
-*                                  is to be referenced.
+*              UPLO = 'L' ONLY THE LOWER TRIANGULAR PART OF A
+*                                  IS TO BE REFERENCED.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  ALPHA  - REAL            . 
-*           On entry, ALPHA specifies the scalar alpha.
-*           Unchanged on exit.
+*           ON ENTRY, ALPHA SPECIFIES THE SCALAR ALPHA.
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element vector x.
-*           Unchanged on exit.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT VECTOR X.
+*           UNCHANGED ON EXIT.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
-*  Y      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCY ) ).
-*           Before entry, the incremented array Y must contain the n
-*           element vector y.
-*           Unchanged on exit.
+*  Y      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCY ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY Y MUST CONTAIN THE N
+*           ELEMENT VECTOR Y.
+*           UNCHANGED ON EXIT.
 *
 *  INCY   - INTEGER.
-*           On entry, INCY specifies the increment for the elements of
+*           ON ENTRY, INCY SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           Y.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
-*  A      - REAL             array of DIMENSION ( LDA, n ).
-*           Before entry with  UPLO = 'U', the leading n by n 
-*           upper triangular part of the array A must contain the upper 
-*           triangular part of the symmetric matrix and the strictly
-*           lower triangular part of A is not referenced. On exit, the
-*           upper triangular part of the array A is overwritten by the
-*           upper triangular part of the updated matrix.
-*           Before entry with UPLO = 'L', the leading n by n
-*           lower triangular part of the array A must contain the lower 
-*           triangular part of the symmetric matrix and the strictly
-*           upper triangular part of A is not referenced. On exit, the
-*           lower triangular part of the array A is overwritten by the
-*           lower triangular part of the updated matrix.
+*  A      - REAL             ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY WITH  UPLO = 'U', THE LEADING N BY N 
+*           UPPER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE UPPER 
+*           TRIANGULAR PART OF THE SYMMETRIC MATRIX AND THE STRICTLY
+*           LOWER TRIANGULAR PART OF A IS NOT REFERENCED. ON EXIT, THE
+*           UPPER TRIANGULAR PART OF THE ARRAY A IS OVERWRITTEN BY THE
+*           UPPER TRIANGULAR PART OF THE UPDATED MATRIX.
+*           BEFORE ENTRY WITH UPLO = 'L', THE LEADING N BY N
+*           LOWER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE LOWER 
+*           TRIANGULAR PART OF THE SYMMETRIC MATRIX AND THE STRICTLY
+*           UPPER TRIANGULAR PART OF A IS NOT REFERENCED. ON EXIT, THE
+*           LOWER TRIANGULAR PART OF THE ARRAY A IS OVERWRITTEN BY THE
+*           LOWER TRIANGULAR PART OF THE UPDATED MATRIX.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the first dimension of A as declared
-*           in the calling (sub) program. LDA must be at least max(1,n).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE FIRST DIMENSION OF A AS DECLARED
+*           IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST MAX(1,N).
+*           UNCHANGED ON EXIT.
 *
 *
 *
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 27-September-1985.
-*     Sven Hammarling, Nag Central Office.
+*  -- WRITTEN ON 27-SEPTEMBER-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -6043,12 +6043,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       OK = (LSAME(UPLO,'U') .OR. LSAME(UPLO,'L')) .AND. (N.GT.0) .AND.
      .     (LDA.GE.N)
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK .OR. (ALPHA.EQ.ZERO)) RETURN
 *
-*     Set up the start points in X and Y if the increments are not both 
-*     unity.
+*     SET UP THE START POINTS IN X AND Y IF THE INCREMENTS ARE NOT BOTH 
+*     UNITY.
 *
       IF ((INCX.NE.1) .OR. (INCY.NE.1)) THEN
           IF (INCX.GT.0) THEN 
@@ -6067,13 +6067,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       END IF
 *
-*     Start the operations. In this version the elements of A are
-*     accessed sequentially with one pass through the triangular part
-*     of A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH THE TRIANGULAR PART
+*     OF A.
 *
       IF (LSAME(UPLO,'U')) THEN
 *
-*        Form  A  when A is stored in the upper triangle.
+*        FORM  A  WHEN A IS STORED IN THE UPPER TRIANGLE.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 20,J = 1,N
@@ -6110,7 +6110,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  A  when A is stored in the upper triangle.
+*        FORM  A  WHEN A IS STORED IN THE UPPER TRIANGLE.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 60,J = 1,N
@@ -6149,7 +6149,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of SSYR2 .
+*     END OF SSYR2 .
 *
       END 
       SUBROUTINE SSPR2(UPLO,N,ALPHA,X,INCX,Y,INCY,AP)
@@ -6157,88 +6157,88 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INTEGER N,INCX,INCY
       REAL ALPHA,X(*),Y(*),AP(*)
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  SSPR2  performs the symmetric rank 2 operation
+*  SSPR2  PERFORMS THE SYMMETRIC RANK 2 OPERATION
 *
-*     A := alpha*x*y' + alpha*y*x' + A,
+*     A := ALPHA*X*Y' + ALPHA*Y*X' + A,
 *
-*  where alpha is a scalar, x and y are n element vectors and A is an
-*  n by n symmetric matrix.
+*  WHERE ALPHA IS A SCALAR, X AND Y ARE N ELEMENT VECTORS AND A IS AN
+*  N BY N SYMMETRIC MATRIX.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the upper or lower
-*           triangular part of the matrix A is supplied in the packed
-*           array AP as follows: 
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE UPPER OR LOWER
+*           TRIANGULAR PART OF THE MATRIX A IS SUPPLIED IN THE PACKED
+*           ARRAY AP AS FOLLOWS: 
 *
-*              UPLO = 'U' The upper triangular part of A is
-*                                  supplied in AP.
+*              UPLO = 'U' THE UPPER TRIANGULAR PART OF A IS
+*                                  SUPPLIED IN AP.
 *
-*              UPLO = 'L' The lower triangular part of A is
-*                                  supplied in AP.
+*              UPLO = 'L' THE LOWER TRIANGULAR PART OF A IS
+*                                  SUPPLIED IN AP.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  ALPHA  - REAL            . 
-*           On entry, ALPHA specifies the scalar alpha.
-*           Unchanged on exit.
+*           ON ENTRY, ALPHA SPECIFIES THE SCALAR ALPHA.
+*           UNCHANGED ON EXIT.
 *
-*  X      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element vector x.
-*           Unchanged on exit.
+*  X      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT VECTOR X.
+*           UNCHANGED ON EXIT.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           X.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
-*  Y      - REAL             array of dimension at least 
-*           ( 1 + ( n - 1 )*abs( INCY ) ).
-*           Before entry, the incremented array Y must contain the n
-*           element vector y.
-*           Unchanged on exit.
+*  Y      - REAL             ARRAY OF DIMENSION AT LEAST 
+*           ( 1 + ( N - 1 )*ABS( INCY ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY Y MUST CONTAIN THE N
+*           ELEMENT VECTOR Y.
+*           UNCHANGED ON EXIT.
 *
 *  INCY   - INTEGER.
-*           On entry, INCY specifies the increment for the elements of
+*           ON ENTRY, INCY SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
 *           Y.
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
-*  AP     - REAL             array of DIMENSION at least
-*           ( ( n*( n + 1 ) )/2 ).
-*           Before entry with  UPLO = 'U', the array AP must
-*           contain the upper triangular part of the symmetric matrix
-*           packed sequentially, column by column, so that AP( 1 )
-*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 1, 2 ) 
-*           and a( 2, 2 ) respectively, and so on. On exit, the array
-*           AP is overwritten by the upper triangular part of the
-*           updated matrix.
-*           Before entry with UPLO = 'L', the array AP must
-*           contain the lower triangular part of the symmetric matrix
-*           packed sequentially, column by column, so that AP( 1 )
-*           contains a( 1, 1 ), AP( 2 ) and AP( 3 ) contain a( 2, 1 ) 
-*           and a( 3, 1 ) respectively, and so on. On exit, the array
-*           AP is overwritten by the lower triangular part of the
-*           updated matrix.
-*
-*
+*  AP     - REAL             ARRAY OF DIMENSION AT LEAST
+*           ( ( N*( N + 1 ) )/2 ).
+*           BEFORE ENTRY WITH  UPLO = 'U', THE ARRAY AP MUST
+*           CONTAIN THE UPPER TRIANGULAR PART OF THE SYMMETRIC MATRIX
+*           PACKED SEQUENTIALLY, COLUMN BY COLUMN, SO THAT AP( 1 )
+*           CONTAINS A( 1, 1 ), AP( 2 ) AND AP( 3 ) CONTAIN A( 1, 2 ) 
+*           AND A( 2, 2 ) RESPECTIVELY, AND SO ON. ON EXIT, THE ARRAY
+*           AP IS OVERWRITTEN BY THE UPPER TRIANGULAR PART OF THE
+*           UPDATED MATRIX.
+*           BEFORE ENTRY WITH UPLO = 'L', THE ARRAY AP MUST
+*           CONTAIN THE LOWER TRIANGULAR PART OF THE SYMMETRIC MATRIX
+*           PACKED SEQUENTIALLY, COLUMN BY COLUMN, SO THAT AP( 1 )
+*           CONTAINS A( 1, 1 ), AP( 2 ) AND AP( 3 ) CONTAIN A( 2, 1 ) 
+*           AND A( 3, 1 ) RESPECTIVELY, AND SO ON. ON EXIT, THE ARRAY
+*           AP IS OVERWRITTEN BY THE LOWER TRIANGULAR PART OF THE
+*           UPDATED MATRIX.
 *
 *
 *
-*  Level 2 Blas routine.
 *
-*  -- Written on 30-September-1985.
-*     Sven Hammarling, Nag Central Office.
+*
+*  LEVEL 2 BLAS ROUTINE.
+*
+*  -- WRITTEN ON 30-SEPTEMBER-1985.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
 C     REVISED 860623
 C     REVISED YYMMDD
 C     BY R. J. HANSON, SANDIA NATIONAL LABS.
@@ -6251,12 +6251,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       LOGICAL OK,LSAME
       OK = (LSAME(UPLO,'U') .OR. LSAME(UPLO,'L')) .AND. (N.GT.0)
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF ( .NOT. OK .OR. (ALPHA.EQ.ZERO)) RETURN
 *
-*     Set up the start points in X and Y if the increments are not both 
-*     unity.
+*     SET UP THE START POINTS IN X AND Y IF THE INCREMENTS ARE NOT BOTH 
+*     UNITY.
 *
       IF ((INCX.NE.1) .OR. (INCY.NE.1)) THEN
           IF (INCX.GT.0) THEN 
@@ -6275,13 +6275,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       END IF
 *
-*     Start the operations. In this version the elements of the array AP
-*     are accessed sequentially with one pass through AP.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF THE ARRAY AP
+*     ARE ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH AP.
 *
       K = 1
       IF (LSAME(UPLO,'U')) THEN
 *
-*        Form  A  when upper triangle is stored in AP.
+*        FORM  A  WHEN UPPER TRIANGLE IS STORED IN AP.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 20,J = 1,N
@@ -6326,7 +6326,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       ELSE
 *
-*        Form  A  when lower triangle is stored in AP.
+*        FORM  A  WHEN LOWER TRIANGLE IS STORED IN AP.
 *
           IF ((INCX.EQ.1) .AND. (INCY.EQ.1)) THEN 
               DO 60,J = 1,N
@@ -6373,122 +6373,122 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of SSPR2 .
+*     END OF SSPR2 .
 *
       END 
       SUBROUTINE DPBTF2( UPLO, N, KD, AB, LDAB, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     February 29, 1992
+*  -- LAPACK ROUTINE (VERSION 3.0) --
+*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
+*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
+*     FEBRUARY 29, 1992
 *
-*     .. Scalar Arguments ..
+*     .. SCALAR ARGUMENTS ..
       CHARACTER          UPLO
       INTEGER            INFO, KD, LDAB, N
 *     ..
-*     .. Array Arguments ..
+*     .. ARRAY ARGUMENTS ..
       DOUBLE PRECISION   AB( LDAB, * )
 *     ..
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  DPBTF2 computes the Cholesky factorization of a real symmetric
-*  positive definite band matrix A.
+*  DPBTF2 COMPUTES THE CHOLESKY FACTORIZATION OF A REAL SYMMETRIC
+*  POSITIVE DEFINITE BAND MATRIX A.
 *
-*  The factorization has the form
-*     A = U' * U ,  if UPLO = 'U', or
-*     A = L  * L',  if UPLO = 'L',
-*  where U is an upper triangular matrix, U' is the transpose of U, and
-*  L is lower triangular.
+*  THE FACTORIZATION HAS THE FORM
+*     A = U' * U ,  IF UPLO = 'U', OR
+*     A = L  * L',  IF UPLO = 'L',
+*  WHERE U IS AN UPPER TRIANGULAR MATRIX, U' IS THE TRANSPOSE OF U, AND
+*  L IS LOWER TRIANGULAR.
 *
-*  This is the unblocked version of the algorithm, calling Level 2 BLAS.
+*  THIS IS THE UNBLOCKED VERSION OF THE ALGORITHM, CALLING LEVEL 2 BLAS.
 *
-*  Arguments
+*  ARGUMENTS
 *  =========
 *
-*  UPLO    (input) CHARACTER*1
-*          Specifies whether the upper or lower triangular part of the
-*          symmetric matrix A is stored:
-*          = 'U':  Upper triangular
-*          = 'L':  Lower triangular
+*  UPLO    (INPUT) CHARACTER*1
+*          SPECIFIES WHETHER THE UPPER OR LOWER TRIANGULAR PART OF THE
+*          SYMMETRIC MATRIX A IS STORED:
+*          = 'U':  UPPER TRIANGULAR
+*          = 'L':  LOWER TRIANGULAR
 *
-*  N       (input) INTEGER
-*          The order of the matrix A.  N >= 0.
+*  N       (INPUT) INTEGER
+*          THE ORDER OF THE MATRIX A.  N >= 0.
 *
-*  KD      (input) INTEGER
-*          The number of super-diagonals of the matrix A if UPLO = 'U',
-*          or the number of sub-diagonals if UPLO = 'L'.  KD >= 0.
+*  KD      (INPUT) INTEGER
+*          THE NUMBER OF SUPER-DIAGONALS OF THE MATRIX A IF UPLO = 'U',
+*          OR THE NUMBER OF SUB-DIAGONALS IF UPLO = 'L'.  KD >= 0.
 *
-*  AB      (input/output) DOUBLE PRECISION array, dimension (LDAB,N)
-*          On entry, the upper or lower triangle of the symmetric band
-*          matrix A, stored in the first KD+1 rows of the array.  The
-*          j-th column of A is stored in the j-th column of the array AB
-*          as follows:
-*          if UPLO = 'U', AB(kd+1+i-j,j) = A(i,j) for max(1,j-kd)<=i<=j;
-*          if UPLO = 'L', AB(1+i-j,j)    = A(i,j) for j<=i<=min(n,j+kd).
+*  AB      (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDAB,N)
+*          ON ENTRY, THE UPPER OR LOWER TRIANGLE OF THE SYMMETRIC BAND
+*          MATRIX A, STORED IN THE FIRST KD+1 ROWS OF THE ARRAY.  THE
+*          J-TH COLUMN OF A IS STORED IN THE J-TH COLUMN OF THE ARRAY AB
+*          AS FOLLOWS:
+*          IF UPLO = 'U', AB(KD+1+I-J,J) = A(I,J) FOR MAX(1,J-KD)<=I<=J;
+*          IF UPLO = 'L', AB(1+I-J,J)    = A(I,J) FOR J<=I<=MIN(N,J+KD).
 *
-*          On exit, if INFO = 0, the triangular factor U or L from the
-*          Cholesky factorization A = U'*U or A = L*L' of the band
-*          matrix A, in the same storage format as A.
+*          ON EXIT, IF INFO = 0, THE TRIANGULAR FACTOR U OR L FROM THE
+*          CHOLESKY FACTORIZATION A = U'*U OR A = L*L' OF THE BAND
+*          MATRIX A, IN THE SAME STORAGE FORMAT AS A.
 *
-*  LDAB    (input) INTEGER
-*          The leading dimension of the array AB.  LDAB >= KD+1.
+*  LDAB    (INPUT) INTEGER
+*          THE LEADING DIMENSION OF THE ARRAY AB.  LDAB >= KD+1.
 *
-*  INFO    (output) INTEGER
-*          = 0: successful exit
-*          < 0: if INFO = -k, the k-th argument had an illegal value
-*          > 0: if INFO = k, the leading minor of order k is not
-*               positive definite, and the factorization could not be
-*               completed.
+*  INFO    (OUTPUT) INTEGER
+*          = 0: SUCCESSFUL EXIT
+*          < 0: IF INFO = -K, THE K-TH ARGUMENT HAD AN ILLEGAL VALUE
+*          > 0: IF INFO = K, THE LEADING MINOR OF ORDER K IS NOT
+*               POSITIVE DEFINITE, AND THE FACTORIZATION COULD NOT BE
+*               COMPLETED.
 *
-*  Further Details
+*  FURTHER DETAILS
 *  ===============
 *
-*  The band storage scheme is illustrated by the following example, when
-*  N = 6, KD = 2, and UPLO = 'U':
+*  THE BAND STORAGE SCHEME IS ILLUSTRATED BY THE FOLLOWING EXAMPLE, WHEN
+*  N = 6, KD = 2, AND UPLO = 'U':
 *
-*  On entry:                       On exit:
+*  ON ENTRY:                       ON EXIT:
 *
-*      *    *   a13  a24  a35  a46      *    *   u13  u24  u35  u46
-*      *   a12  a23  a34  a45  a56      *   u12  u23  u34  u45  u56
-*     a11  a22  a33  a44  a55  a66     u11  u22  u33  u44  u55  u66
+*      *    *   A13  A24  A35  A46      *    *   U13  U24  U35  U46
+*      *   A12  A23  A34  A45  A56      *   U12  U23  U34  U45  U56
+*     A11  A22  A33  A44  A55  A66     U11  U22  U33  U44  U55  U66
 *
-*  Similarly, if UPLO = 'L' the format of A is as follows:
+*  SIMILARLY, IF UPLO = 'L' THE FORMAT OF A IS AS FOLLOWS:
 *
-*  On entry:                       On exit:
+*  ON ENTRY:                       ON EXIT:
 *
-*     a11  a22  a33  a44  a55  a66     l11  l22  l33  l44  l55  l66
-*     a21  a32  a43  a54  a65   *      l21  l32  l43  l54  l65   *
-*     a31  a42  a53  a64   *    *      l31  l42  l53  l64   *    *
+*     A11  A22  A33  A44  A55  A66     L11  L22  L33  L44  L55  L66
+*     A21  A32  A43  A54  A65   *      L21  L32  L43  L54  L65   *
+*     A31  A42  A53  A64   *    *      L31  L42  L53  L64   *    *
 *
-*  Array elements marked * are not used by the routine.
+*  ARRAY ELEMENTS MARKED * ARE NOT USED BY THE ROUTINE.
 *
 *  =====================================================================
 *
-*     .. Parameters ..
+*     .. PARAMETERS ..
       DOUBLE PRECISION   ONE, ZERO
       PARAMETER          ( ONE = 1.0D+0, ZERO = 0.0D+0 )
 *     ..
-*     .. Local Scalars ..
+*     .. LOCAL SCALARS ..
       LOGICAL            UPPER
       INTEGER            J, KLD, KN
       DOUBLE PRECISION   AJJ
 *     ..
-*     .. External Functions ..
+*     .. EXTERNAL FUNCTIONS ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
-*     .. External Subroutines ..
+*     .. EXTERNAL SUBROUTINES ..
       EXTERNAL           DSCAL, DSYR, XERBLA
 *     ..
-*     .. Intrinsic Functions ..
+*     .. INTRINSIC FUNCTIONS ..
       INTRINSIC          MAX, MIN, SQRT
 *     ..
-*     .. Executable Statements ..
+*     .. EXECUTABLE STATEMENTS ..
 *
-*     Test the input parameters.
+*     TEST THE INPUT PARAMETERS.
 *
       INFO = 0
       UPPER = LSAME( UPLO, 'U' )
@@ -6506,7 +6506,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
          RETURN
       END IF
 *
-*     Quick return if possible
+*     QUICK RETURN IF POSSIBLE
 *
       IF( N.EQ.0 )
      $   RETURN
@@ -6515,11 +6515,11 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       IF( UPPER ) THEN
 *
-*        Compute the Cholesky factorization A = U'*U.
+*        COMPUTE THE CHOLESKY FACTORIZATION A = U'*U.
 *
          DO 10 J = 1, N
 *
-*           Compute U(J,J) and test for non-positive-definiteness.
+*           COMPUTE U(J,J) AND TEST FOR NON-POSITIVE-DEFINITENESS.
 *
             AJJ = AB( KD+1, J )
             IF( AJJ.LE.ZERO )
@@ -6527,23 +6527,23 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
             AJJ = SQRT( AJJ )
             AB( KD+1, J ) = AJJ
 *
-*           Compute elements J+1:J+KN of row J and update the
-*           trailing submatrix within the band.
+*           COMPUTE ELEMENTS J+1:J+KN OF ROW J AND UPDATE THE
+*           TRAILING SUBMATRIX WITHIN THE BAND.
 *
             KN = MIN( KD, N-J )
             IF( KN.GT.0 ) THEN
                CALL DSCAL( KN, ONE / AJJ, AB( KD, J+1 ), KLD )
-               CALL DSYR( 'Upper', KN, -ONE, AB( KD, J+1 ), KLD,
+               CALL DSYR( 'UPPER', KN, -ONE, AB( KD, J+1 ), KLD,
      $                    AB( KD+1, J+1 ), KLD )
             END IF
    10    CONTINUE
       ELSE
 *
-*        Compute the Cholesky factorization A = L*L'.
+*        COMPUTE THE CHOLESKY FACTORIZATION A = L*L'.
 *
          DO 20 J = 1, N
 *
-*           Compute L(J,J) and test for non-positive-definiteness.
+*           COMPUTE L(J,J) AND TEST FOR NON-POSITIVE-DEFINITENESS.
 *
             AJJ = AB( 1, J )
             IF( AJJ.LE.ZERO )
@@ -6551,13 +6551,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
             AJJ = SQRT( AJJ )
             AB( 1, J ) = AJJ
 *
-*           Compute elements J+1:J+KN of column J and update the
-*           trailing submatrix within the band.
+*           COMPUTE ELEMENTS J+1:J+KN OF COLUMN J AND UPDATE THE
+*           TRAILING SUBMATRIX WITHIN THE BAND.
 *
             KN = MIN( KD, N-J )
             IF( KN.GT.0 ) THEN
                CALL DSCAL( KN, ONE / AJJ, AB( 2, J ), 1 )
-               CALL DSYR( 'Lower', KN, -ONE, AB( 2, J ), 1,
+               CALL DSYR( 'LOWER', KN, -ONE, AB( 2, J ), 1,
      $                    AB( 1, J+1 ), KLD )
             END IF
    20    CONTINUE
@@ -6568,124 +6568,124 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
       INFO = J
       RETURN
 *
-*     End of DPBTF2
+*     END OF DPBTF2
 *
       END
       SUBROUTINE DPBTRF( UPLO, N, KD, AB, LDAB, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     March 31, 1993
+*  -- LAPACK ROUTINE (VERSION 3.0) --
+*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
+*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
+*     MARCH 31, 1993
 *
-*     .. Scalar Arguments ..
+*     .. SCALAR ARGUMENTS ..
       CHARACTER          UPLO
       INTEGER            INFO, KD, LDAB, N
 *     ..
-*     .. Array Arguments ..
+*     .. ARRAY ARGUMENTS ..
       DOUBLE PRECISION   AB( LDAB, * )
 *     ..
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  DPBTRF computes the Cholesky factorization of a real symmetric
-*  positive definite band matrix A.
+*  DPBTRF COMPUTES THE CHOLESKY FACTORIZATION OF A REAL SYMMETRIC
+*  POSITIVE DEFINITE BAND MATRIX A.
 *
-*  The factorization has the form
-*     A = U**T * U,  if UPLO = 'U', or
-*     A = L  * L**T,  if UPLO = 'L',
-*  where U is an upper triangular matrix and L is lower triangular.
+*  THE FACTORIZATION HAS THE FORM
+*     A = U**T * U,  IF UPLO = 'U', OR
+*     A = L  * L**T,  IF UPLO = 'L',
+*  WHERE U IS AN UPPER TRIANGULAR MATRIX AND L IS LOWER TRIANGULAR.
 *
-*  Arguments
+*  ARGUMENTS
 *  =========
 *
-*  UPLO    (input) CHARACTER*1
-*          = 'U':  Upper triangle of A is stored;
-*          = 'L':  Lower triangle of A is stored.
+*  UPLO    (INPUT) CHARACTER*1
+*          = 'U':  UPPER TRIANGLE OF A IS STORED;
+*          = 'L':  LOWER TRIANGLE OF A IS STORED.
 *
-*  N       (input) INTEGER
-*          The order of the matrix A.  N >= 0.
+*  N       (INPUT) INTEGER
+*          THE ORDER OF THE MATRIX A.  N >= 0.
 *
-*  KD      (input) INTEGER
-*          The number of superdiagonals of the matrix A if UPLO = 'U',
-*          or the number of subdiagonals if UPLO = 'L'.  KD >= 0.
+*  KD      (INPUT) INTEGER
+*          THE NUMBER OF SUPERDIAGONALS OF THE MATRIX A IF UPLO = 'U',
+*          OR THE NUMBER OF SUBDIAGONALS IF UPLO = 'L'.  KD >= 0.
 *
-*  AB      (input/output) DOUBLE PRECISION array, dimension (LDAB,N)
-*          On entry, the upper or lower triangle of the symmetric band
-*          matrix A, stored in the first KD+1 rows of the array.  The
-*          j-th column of A is stored in the j-th column of the array AB
-*          as follows:
-*          if UPLO = 'U', AB(kd+1+i-j,j) = A(i,j) for max(1,j-kd)<=i<=j;
-*          if UPLO = 'L', AB(1+i-j,j)    = A(i,j) for j<=i<=min(n,j+kd).
+*  AB      (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDAB,N)
+*          ON ENTRY, THE UPPER OR LOWER TRIANGLE OF THE SYMMETRIC BAND
+*          MATRIX A, STORED IN THE FIRST KD+1 ROWS OF THE ARRAY.  THE
+*          J-TH COLUMN OF A IS STORED IN THE J-TH COLUMN OF THE ARRAY AB
+*          AS FOLLOWS:
+*          IF UPLO = 'U', AB(KD+1+I-J,J) = A(I,J) FOR MAX(1,J-KD)<=I<=J;
+*          IF UPLO = 'L', AB(1+I-J,J)    = A(I,J) FOR J<=I<=MIN(N,J+KD).
 *
-*          On exit, if INFO = 0, the triangular factor U or L from the
-*          Cholesky factorization A = U**T*U or A = L*L**T of the band
-*          matrix A, in the same storage format as A.
+*          ON EXIT, IF INFO = 0, THE TRIANGULAR FACTOR U OR L FROM THE
+*          CHOLESKY FACTORIZATION A = U**T*U OR A = L*L**T OF THE BAND
+*          MATRIX A, IN THE SAME STORAGE FORMAT AS A.
 *
-*  LDAB    (input) INTEGER
-*          The leading dimension of the array AB.  LDAB >= KD+1.
+*  LDAB    (INPUT) INTEGER
+*          THE LEADING DIMENSION OF THE ARRAY AB.  LDAB >= KD+1.
 *
-*  INFO    (output) INTEGER
-*          = 0:  successful exit
-*          < 0:  if INFO = -i, the i-th argument had an illegal value
-*          > 0:  if INFO = i, the leading minor of order i is not
-*                positive definite, and the factorization could not be
-*                completed.
+*  INFO    (OUTPUT) INTEGER
+*          = 0:  SUCCESSFUL EXIT
+*          < 0:  IF INFO = -I, THE I-TH ARGUMENT HAD AN ILLEGAL VALUE
+*          > 0:  IF INFO = I, THE LEADING MINOR OF ORDER I IS NOT
+*                POSITIVE DEFINITE, AND THE FACTORIZATION COULD NOT BE
+*                COMPLETED.
 *
-*  Further Details
+*  FURTHER DETAILS
 *  ===============
 *
-*  The band storage scheme is illustrated by the following example, when
-*  N = 6, KD = 2, and UPLO = 'U':
+*  THE BAND STORAGE SCHEME IS ILLUSTRATED BY THE FOLLOWING EXAMPLE, WHEN
+*  N = 6, KD = 2, AND UPLO = 'U':
 *
-*  On entry:                       On exit:
+*  ON ENTRY:                       ON EXIT:
 *
-*      *    *   a13  a24  a35  a46      *    *   u13  u24  u35  u46
-*      *   a12  a23  a34  a45  a56      *   u12  u23  u34  u45  u56
-*     a11  a22  a33  a44  a55  a66     u11  u22  u33  u44  u55  u66
+*      *    *   A13  A24  A35  A46      *    *   U13  U24  U35  U46
+*      *   A12  A23  A34  A45  A56      *   U12  U23  U34  U45  U56
+*     A11  A22  A33  A44  A55  A66     U11  U22  U33  U44  U55  U66
 *
-*  Similarly, if UPLO = 'L' the format of A is as follows:
+*  SIMILARLY, IF UPLO = 'L' THE FORMAT OF A IS AS FOLLOWS:
 *
-*  On entry:                       On exit:
+*  ON ENTRY:                       ON EXIT:
 *
-*     a11  a22  a33  a44  a55  a66     l11  l22  l33  l44  l55  l66
-*     a21  a32  a43  a54  a65   *      l21  l32  l43  l54  l65   *
-*     a31  a42  a53  a64   *    *      l31  l42  l53  l64   *    *
+*     A11  A22  A33  A44  A55  A66     L11  L22  L33  L44  L55  L66
+*     A21  A32  A43  A54  A65   *      L21  L32  L43  L54  L65   *
+*     A31  A42  A53  A64   *    *      L31  L42  L53  L64   *    *
 *
-*  Array elements marked * are not used by the routine.
+*  ARRAY ELEMENTS MARKED * ARE NOT USED BY THE ROUTINE.
 *
-*  Contributed by
-*  Peter Mayes and Giuseppe Radicati, IBM ECSEC, Rome, March 23, 1989
+*  CONTRIBUTED BY
+*  PETER MAYES AND GIUSEPPE RADICATI, IBM ECSEC, ROME, MARCH 23, 1989
 *
 *  =====================================================================
 *
-*     .. Parameters ..
+*     .. PARAMETERS ..
       DOUBLE PRECISION   ONE, ZERO
       PARAMETER          ( ONE = 1.0D+0, ZERO = 0.0D+0 )
       INTEGER            NBMAX, LDWORK
       PARAMETER          ( NBMAX = 32, LDWORK = NBMAX+1 )
 *     ..
-*     .. Local Scalars ..
+*     .. LOCAL SCALARS ..
       INTEGER            I, I2, I3, IB, II, J, JJ, NB
 *     ..
-*     .. Local Arrays ..
+*     .. LOCAL ARRAYS ..
       DOUBLE PRECISION   WORK( LDWORK, NBMAX )
 *     ..
-*     .. External Functions ..
+*     .. EXTERNAL FUNCTIONS ..
       LOGICAL            LSAME
       INTEGER            ILAENV
       EXTERNAL           LSAME, ILAENV
 *     ..
-*     .. External Subroutines ..
+*     .. EXTERNAL SUBROUTINES ..
       EXTERNAL           DGEMM, DPBTF2, DPOTF2, DSYRK, DTRSM, XERBLA
 *     ..
-*     .. Intrinsic Functions ..
+*     .. INTRINSIC FUNCTIONS ..
       INTRINSIC          MIN
 *     ..
-*     .. Executable Statements ..
+*     .. EXECUTABLE STATEMENTS ..
 *
-*     Test the input parameters.
+*     TEST THE INPUT PARAMETERS.
 *
       INFO = 0
       IF( ( .NOT.LSAME( UPLO, 'U' ) ) .AND.
@@ -6703,36 +6703,36 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
          RETURN
       END IF
 *
-*     Quick return if possible
+*     QUICK RETURN IF POSSIBLE
 *
       IF( N.EQ.0 )
      $   RETURN
 *
-*     Determine the block size for this environment
+*     DETERMINE THE BLOCK SIZE FOR THIS ENVIRONMENT
 *
       NB = ILAENV( 1, 'DPBTRF', UPLO, N, KD, -1, -1 )
 *
-*     The block size must not exceed the semi-bandwidth KD, and must not
-*     exceed the limit set by the size of the local array WORK.
+*     THE BLOCK SIZE MUST NOT EXCEED THE SEMI-BANDWIDTH KD, AND MUST NOT
+*     EXCEED THE LIMIT SET BY THE SIZE OF THE LOCAL ARRAY WORK.
 *
       NB = MIN( NB, NBMAX )
 *
       IF( NB.LE.1 .OR. NB.GT.KD ) THEN
 *
-*        Use unblocked code
+*        USE UNBLOCKED CODE
 *
          CALL DPBTF2( UPLO, N, KD, AB, LDAB, INFO )
       ELSE
 *
-*        Use blocked code
+*        USE BLOCKED CODE
 *
          IF( LSAME( UPLO, 'U' ) ) THEN
 *
-*           Compute the Cholesky factorization of a symmetric band
-*           matrix, given the upper triangle of the matrix in band
-*           storage.
+*           COMPUTE THE CHOLESKY FACTORIZATION OF A SYMMETRIC BAND
+*           MATRIX, GIVEN THE UPPER TRIANGLE OF THE MATRIX IN BAND
+*           STORAGE.
 *
-*           Zero the upper triangle of the work array.
+*           ZERO THE UPPER TRIANGLE OF THE WORK ARRAY.
 *
             DO 20 J = 1, NB
                DO 10 I = 1, J - 1
@@ -6740,12 +6740,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
    10          CONTINUE
    20       CONTINUE
 *
-*           Process the band matrix one diagonal block at a time.
+*           PROCESS THE BAND MATRIX ONE DIAGONAL BLOCK AT A TIME.
 *
             DO 70 I = 1, N, NB
                IB = MIN( NB, N-I+1 )
 *
-*              Factorize the diagonal block
+*              FACTORIZE THE DIAGONAL BLOCK
 *
                CALL DPOTF2( UPLO, IB, AB( KD+1, I ), LDAB-1, II )
                IF( II.NE.0 ) THEN
@@ -6754,41 +6754,41 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
                END IF
                IF( I+IB.LE.N ) THEN
 *
-*                 Update the relevant part of the trailing submatrix.
-*                 If A11 denotes the diagonal block which has just been
-*                 factorized, then we need to update the remaining
-*                 blocks in the diagram:
+*                 UPDATE THE RELEVANT PART OF THE TRAILING SUBMATRIX.
+*                 IF A11 DENOTES THE DIAGONAL BLOCK WHICH HAS JUST BEEN
+*                 FACTORIZED, THEN WE NEED TO UPDATE THE REMAINING
+*                 BLOCKS IN THE DIAGRAM:
 *
 *                    A11   A12   A13
 *                          A22   A23
 *                                A33
 *
-*                 The numbers of rows and columns in the partitioning
-*                 are IB, I2, I3 respectively. The blocks A12, A22 and
-*                 A23 are empty if IB = KD. The upper triangle of A13
-*                 lies outside the band.
+*                 THE NUMBERS OF ROWS AND COLUMNS IN THE PARTITIONING
+*                 ARE IB, I2, I3 RESPECTIVELY. THE BLOCKS A12, A22 AND
+*                 A23 ARE EMPTY IF IB = KD. THE UPPER TRIANGLE OF A13
+*                 LIES OUTSIDE THE BAND.
 *
                   I2 = MIN( KD-IB, N-I-IB+1 )
                   I3 = MIN( IB, N-I-KD+1 )
 *
                   IF( I2.GT.0 ) THEN
 *
-*                    Update A12
+*                    UPDATE A12
 *
-                     CALL DTRSM( 'Left', 'Upper', 'Transpose',
-     $                           'Non-unit', IB, I2, ONE, AB( KD+1, I ),
+                     CALL DTRSM( 'LEFT', 'UPPER', 'TRANSPOSE',
+     $                           'NON-UNIT', IB, I2, ONE, AB( KD+1, I ),
      $                           LDAB-1, AB( KD+1-IB, I+IB ), LDAB-1 )
 *
-*                    Update A22
+*                    UPDATE A22
 *
-                     CALL DSYRK( 'Upper', 'Transpose', I2, IB, -ONE,
+                     CALL DSYRK( 'UPPER', 'TRANSPOSE', I2, IB, -ONE,
      $                           AB( KD+1-IB, I+IB ), LDAB-1, ONE,
      $                           AB( KD+1, I+IB ), LDAB-1 )
                   END IF
 *
                   IF( I3.GT.0 ) THEN
 *
-*                    Copy the lower triangle of A13 into the work array.
+*                    COPY THE LOWER TRIANGLE OF A13 INTO THE WORK ARRAY.
 *
                      DO 40 JJ = 1, I3
                         DO 30 II = JJ, IB
@@ -6796,27 +6796,27 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
    30                   CONTINUE
    40                CONTINUE
 *
-*                    Update A13 (in the work array).
+*                    UPDATE A13 (IN THE WORK ARRAY).
 *
-                     CALL DTRSM( 'Left', 'Upper', 'Transpose',
-     $                           'Non-unit', IB, I3, ONE, AB( KD+1, I ),
+                     CALL DTRSM( 'LEFT', 'UPPER', 'TRANSPOSE',
+     $                           'NON-UNIT', IB, I3, ONE, AB( KD+1, I ),
      $                           LDAB-1, WORK, LDWORK )
 *
-*                    Update A23
+*                    UPDATE A23
 *
                      IF( I2.GT.0 )
-     $                  CALL DGEMM( 'Transpose', 'No Transpose', I2, I3,
+     $                  CALL DGEMM( 'TRANSPOSE', 'NO TRANSPOSE', I2, I3,
      $                              IB, -ONE, AB( KD+1-IB, I+IB ),
      $                              LDAB-1, WORK, LDWORK, ONE,
      $                              AB( 1+IB, I+KD ), LDAB-1 )
 *
-*                    Update A33
+*                    UPDATE A33
 *
-                     CALL DSYRK( 'Upper', 'Transpose', I3, IB, -ONE,
+                     CALL DSYRK( 'UPPER', 'TRANSPOSE', I3, IB, -ONE,
      $                           WORK, LDWORK, ONE, AB( KD+1, I+KD ),
      $                           LDAB-1 )
 *
-*                    Copy the lower triangle of A13 back into place.
+*                    COPY THE LOWER TRIANGLE OF A13 BACK INTO PLACE.
 *
                      DO 60 JJ = 1, I3
                         DO 50 II = JJ, IB
@@ -6828,11 +6828,11 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
    70       CONTINUE
          ELSE
 *
-*           Compute the Cholesky factorization of a symmetric band
-*           matrix, given the lower triangle of the matrix in band
-*           storage.
+*           COMPUTE THE CHOLESKY FACTORIZATION OF A SYMMETRIC BAND
+*           MATRIX, GIVEN THE LOWER TRIANGLE OF THE MATRIX IN BAND
+*           STORAGE.
 *
-*           Zero the lower triangle of the work array.
+*           ZERO THE LOWER TRIANGLE OF THE WORK ARRAY.
 *
             DO 90 J = 1, NB
                DO 80 I = J + 1, NB
@@ -6840,12 +6840,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
    80          CONTINUE
    90       CONTINUE
 *
-*           Process the band matrix one diagonal block at a time.
+*           PROCESS THE BAND MATRIX ONE DIAGONAL BLOCK AT A TIME.
 *
             DO 140 I = 1, N, NB
                IB = MIN( NB, N-I+1 )
 *
-*              Factorize the diagonal block
+*              FACTORIZE THE DIAGONAL BLOCK
 *
                CALL DPOTF2( UPLO, IB, AB( 1, I ), LDAB-1, II )
                IF( II.NE.0 ) THEN
@@ -6854,41 +6854,41 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
                END IF
                IF( I+IB.LE.N ) THEN
 *
-*                 Update the relevant part of the trailing submatrix.
-*                 If A11 denotes the diagonal block which has just been
-*                 factorized, then we need to update the remaining
-*                 blocks in the diagram:
+*                 UPDATE THE RELEVANT PART OF THE TRAILING SUBMATRIX.
+*                 IF A11 DENOTES THE DIAGONAL BLOCK WHICH HAS JUST BEEN
+*                 FACTORIZED, THEN WE NEED TO UPDATE THE REMAINING
+*                 BLOCKS IN THE DIAGRAM:
 *
 *                    A11
 *                    A21   A22
 *                    A31   A32   A33
 *
-*                 The numbers of rows and columns in the partitioning
-*                 are IB, I2, I3 respectively. The blocks A21, A22 and
-*                 A32 are empty if IB = KD. The lower triangle of A31
-*                 lies outside the band.
+*                 THE NUMBERS OF ROWS AND COLUMNS IN THE PARTITIONING
+*                 ARE IB, I2, I3 RESPECTIVELY. THE BLOCKS A21, A22 AND
+*                 A32 ARE EMPTY IF IB = KD. THE LOWER TRIANGLE OF A31
+*                 LIES OUTSIDE THE BAND.
 *
                   I2 = MIN( KD-IB, N-I-IB+1 )
                   I3 = MIN( IB, N-I-KD+1 )
 *
                   IF( I2.GT.0 ) THEN
 *
-*                    Update A21
+*                    UPDATE A21
 *
-                     CALL DTRSM( 'Right', 'Lower', 'Transpose',
-     $                           'Non-unit', I2, IB, ONE, AB( 1, I ),
+                     CALL DTRSM( 'RIGHT', 'LOWER', 'TRANSPOSE',
+     $                           'NON-UNIT', I2, IB, ONE, AB( 1, I ),
      $                           LDAB-1, AB( 1+IB, I ), LDAB-1 )
 *
-*                    Update A22
+*                    UPDATE A22
 *
-                     CALL DSYRK( 'Lower', 'No Transpose', I2, IB, -ONE,
+                     CALL DSYRK( 'LOWER', 'NO TRANSPOSE', I2, IB, -ONE,
      $                           AB( 1+IB, I ), LDAB-1, ONE,
      $                           AB( 1, I+IB ), LDAB-1 )
                   END IF
 *
                   IF( I3.GT.0 ) THEN
 *
-*                    Copy the upper triangle of A31 into the work array.
+*                    COPY THE UPPER TRIANGLE OF A31 INTO THE WORK ARRAY.
 *
                      DO 110 JJ = 1, IB
                         DO 100 II = 1, MIN( JJ, I3 )
@@ -6896,27 +6896,27 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
   100                   CONTINUE
   110                CONTINUE
 *
-*                    Update A31 (in the work array).
+*                    UPDATE A31 (IN THE WORK ARRAY).
 *
-                     CALL DTRSM( 'Right', 'Lower', 'Transpose',
-     $                           'Non-unit', I3, IB, ONE, AB( 1, I ),
+                     CALL DTRSM( 'RIGHT', 'LOWER', 'TRANSPOSE',
+     $                           'NON-UNIT', I3, IB, ONE, AB( 1, I ),
      $                           LDAB-1, WORK, LDWORK )
 *
-*                    Update A32
+*                    UPDATE A32
 *
                      IF( I2.GT.0 )
-     $                  CALL DGEMM( 'No transpose', 'Transpose', I3, I2,
+     $                  CALL DGEMM( 'NO TRANSPOSE', 'TRANSPOSE', I3, I2,
      $                              IB, -ONE, WORK, LDWORK,
      $                              AB( 1+IB, I ), LDAB-1, ONE,
      $                              AB( 1+KD-IB, I+IB ), LDAB-1 )
 *
-*                    Update A33
+*                    UPDATE A33
 *
-                     CALL DSYRK( 'Lower', 'No Transpose', I3, IB, -ONE,
+                     CALL DSYRK( 'LOWER', 'NO TRANSPOSE', I3, IB, -ONE,
      $                           WORK, LDWORK, ONE, AB( 1, I+KD ),
      $                           LDAB-1 )
 *
-*                    Copy the upper triangle of A31 back into place.
+*                    COPY THE UPPER TRIANGLE OF A31 BACK INTO PLACE.
 *
                      DO 130 JJ = 1, IB
                         DO 120 II = 1, MIN( JJ, I3 )
@@ -6933,168 +6933,168 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
   150 CONTINUE
       RETURN
 *
-*     End of DPBTRF
+*     END OF DPBTRF
 *
       END
 *
       SUBROUTINE DTBSV ( UPLO, TRANS, DIAG, N, K, A, LDA, X, INCX )
-*     .. Scalar Arguments ..
+*     .. SCALAR ARGUMENTS ..
       INTEGER            INCX, K, LDA, N
       CHARACTER*1        DIAG, TRANS, UPLO
-*     .. Array Arguments ..
+*     .. ARRAY ARGUMENTS ..
       DOUBLE PRECISION   A( LDA, * ), X( * )
 *     ..
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  DTBSV  solves one of the systems of equations
+*  DTBSV  SOLVES ONE OF THE SYSTEMS OF EQUATIONS
 *
-*     A*x = b,   or   A'*x = b,
+*     A*X = B,   OR   A'*X = B,
 *
-*  where b and x are n element vectors and A is an n by n unit, or
-*  non-unit, upper or lower triangular band matrix, with ( k + 1 )
-*  diagonals.
+*  WHERE B AND X ARE N ELEMENT VECTORS AND A IS AN N BY N UNIT, OR
+*  NON-UNIT, UPPER OR LOWER TRIANGULAR BAND MATRIX, WITH ( K + 1 )
+*  DIAGONALS.
 *
-*  No test for singularity or near-singularity is included in this
-*  routine. Such tests must be performed before calling this routine.
+*  NO TEST FOR SINGULARITY OR NEAR-SINGULARITY IS INCLUDED IN THIS
+*  ROUTINE. SUCH TESTS MUST BE PERFORMED BEFORE CALLING THIS ROUTINE.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the matrix is an upper or
-*           lower triangular matrix as follows:
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE MATRIX IS AN UPPER OR
+*           LOWER TRIANGULAR MATRIX AS FOLLOWS:
 *
-*              UPLO = 'U' or 'u'   A is an upper triangular matrix.
+*              UPLO = 'U' OR 'U'   A IS AN UPPER TRIANGULAR MATRIX.
 *
-*              UPLO = 'L' or 'l'   A is a lower triangular matrix.
+*              UPLO = 'L' OR 'L'   A IS A LOWER TRIANGULAR MATRIX.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  TRANS  - CHARACTER*1.
-*           On entry, TRANS specifies the equations to be solved as
-*           follows:
+*           ON ENTRY, TRANS SPECIFIES THE EQUATIONS TO BE SOLVED AS
+*           FOLLOWS:
 *
-*              TRANS = 'N' or 'n'   A*x = b.
+*              TRANS = 'N' OR 'N'   A*X = B.
 *
-*              TRANS = 'T' or 't'   A'*x = b.
+*              TRANS = 'T' OR 'T'   A'*X = B.
 *
-*              TRANS = 'C' or 'c'   A'*x = b.
+*              TRANS = 'C' OR 'C'   A'*X = B.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  DIAG   - CHARACTER*1.
-*           On entry, DIAG specifies whether or not A is unit
-*           triangular as follows:
+*           ON ENTRY, DIAG SPECIFIES WHETHER OR NOT A IS UNIT
+*           TRIANGULAR AS FOLLOWS:
 *
-*              DIAG = 'U' or 'u'   A is assumed to be unit triangular.
+*              DIAG = 'U' OR 'U'   A IS ASSUMED TO BE UNIT TRIANGULAR.
 *
-*              DIAG = 'N' or 'n'   A is not assumed to be unit
-*                                  triangular.
+*              DIAG = 'N' OR 'N'   A IS NOT ASSUMED TO BE UNIT
+*                                  TRIANGULAR.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  K      - INTEGER.
-*           On entry with UPLO = 'U' or 'u', K specifies the number of
-*           super-diagonals of the matrix A.
-*           On entry with UPLO = 'L' or 'l', K specifies the number of
-*           sub-diagonals of the matrix A.
-*           K must satisfy  0 .le. K.
-*           Unchanged on exit.
+*           ON ENTRY WITH UPLO = 'U' OR 'U', K SPECIFIES THE NUMBER OF
+*           SUPER-DIAGONALS OF THE MATRIX A.
+*           ON ENTRY WITH UPLO = 'L' OR 'L', K SPECIFIES THE NUMBER OF
+*           SUB-DIAGONALS OF THE MATRIX A.
+*           K MUST SATISFY  0 .LE. K.
+*           UNCHANGED ON EXIT.
 *
-*  A      - DOUBLE PRECISION array of DIMENSION ( LDA, n ).
-*           Before entry with UPLO = 'U' or 'u', the leading ( k + 1 )
-*           by n part of the array A must contain the upper triangular
-*           band part of the matrix of coefficients, supplied column by
-*           column, with the leading diagonal of the matrix in row
-*           ( k + 1 ) of the array, the first super-diagonal starting at
-*           position 2 in row k, and so on. The top left k by k triangle
-*           of the array A is not referenced.
-*           The following program segment will transfer an upper
-*           triangular band matrix from conventional full matrix storage
-*           to band storage:
+*  A      - DOUBLE PRECISION ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY WITH UPLO = 'U' OR 'U', THE LEADING ( K + 1 )
+*           BY N PART OF THE ARRAY A MUST CONTAIN THE UPPER TRIANGULAR
+*           BAND PART OF THE MATRIX OF COEFFICIENTS, SUPPLIED COLUMN BY
+*           COLUMN, WITH THE LEADING DIAGONAL OF THE MATRIX IN ROW
+*           ( K + 1 ) OF THE ARRAY, THE FIRST SUPER-DIAGONAL STARTING AT
+*           POSITION 2 IN ROW K, AND SO ON. THE TOP LEFT K BY K TRIANGLE
+*           OF THE ARRAY A IS NOT REFERENCED.
+*           THE FOLLOWING PROGRAM SEGMENT WILL TRANSFER AN UPPER
+*           TRIANGULAR BAND MATRIX FROM CONVENTIONAL FULL MATRIX STORAGE
+*           TO BAND STORAGE:
 *
 *                 DO 20, J = 1, N
 *                    M = K + 1 - J
 *                    DO 10, I = MAX( 1, J - K ), J
-*                       A( M + I, J ) = matrix( I, J )
+*                       A( M + I, J ) = MATRIX( I, J )
 *              10    CONTINUE
 *              20 CONTINUE
 *
-*           Before entry with UPLO = 'L' or 'l', the leading ( k + 1 )
-*           by n part of the array A must contain the lower triangular
-*           band part of the matrix of coefficients, supplied column by
-*           column, with the leading diagonal of the matrix in row 1 of
-*           the array, the first sub-diagonal starting at position 1 in
-*           row 2, and so on. The bottom right k by k triangle of the
-*           array A is not referenced.
-*           The following program segment will transfer a lower
-*           triangular band matrix from conventional full matrix storage
-*           to band storage:
+*           BEFORE ENTRY WITH UPLO = 'L' OR 'L', THE LEADING ( K + 1 )
+*           BY N PART OF THE ARRAY A MUST CONTAIN THE LOWER TRIANGULAR
+*           BAND PART OF THE MATRIX OF COEFFICIENTS, SUPPLIED COLUMN BY
+*           COLUMN, WITH THE LEADING DIAGONAL OF THE MATRIX IN ROW 1 OF
+*           THE ARRAY, THE FIRST SUB-DIAGONAL STARTING AT POSITION 1 IN
+*           ROW 2, AND SO ON. THE BOTTOM RIGHT K BY K TRIANGLE OF THE
+*           ARRAY A IS NOT REFERENCED.
+*           THE FOLLOWING PROGRAM SEGMENT WILL TRANSFER A LOWER
+*           TRIANGULAR BAND MATRIX FROM CONVENTIONAL FULL MATRIX STORAGE
+*           TO BAND STORAGE:
 *
 *                 DO 20, J = 1, N
 *                    M = 1 - J
 *                    DO 10, I = J, MIN( N, J + K )
-*                       A( M + I, J ) = matrix( I, J )
+*                       A( M + I, J ) = MATRIX( I, J )
 *              10    CONTINUE
 *              20 CONTINUE
 *
-*           Note that when DIAG = 'U' or 'u' the elements of the array A
-*           corresponding to the diagonal elements of the matrix are not
-*           referenced, but are assumed to be unity.
-*           Unchanged on exit.
+*           NOTE THAT WHEN DIAG = 'U' OR 'U' THE ELEMENTS OF THE ARRAY A
+*           CORRESPONDING TO THE DIAGONAL ELEMENTS OF THE MATRIX ARE NOT
+*           REFERENCED, BUT ARE ASSUMED TO BE UNITY.
+*           UNCHANGED ON EXIT.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the first dimension of A as declared
-*           in the calling (sub) program. LDA must be at least
-*           ( k + 1 ).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE FIRST DIMENSION OF A AS DECLARED
+*           IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST
+*           ( K + 1 ).
+*           UNCHANGED ON EXIT.
 *
-*  X      - DOUBLE PRECISION array of dimension at least
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element right-hand side vector b. On exit, X is overwritten
-*           with the solution vector x.
+*  X      - DOUBLE PRECISION ARRAY OF DIMENSION AT LEAST
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT RIGHT-HAND SIDE VECTOR B. ON EXIT, X IS OVERWRITTEN
+*           WITH THE SOLUTION VECTOR X.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
-*           X. INCX must not be zero.
-*           Unchanged on exit.
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
+*           X. INCX MUST NOT BE ZERO.
+*           UNCHANGED ON EXIT.
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 22-October-1986.
-*     Jack Dongarra, Argonne National Lab.
-*     Jeremy Du Croz, Nag Central Office.
-*     Sven Hammarling, Nag Central Office.
-*     Richard Hanson, Sandia National Labs.
+*  -- WRITTEN ON 22-OCTOBER-1986.
+*     JACK DONGARRA, ARGONNE NATIONAL LAB.
+*     JEREMY DU CROZ, NAG CENTRAL OFFICE.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
+*     RICHARD HANSON, SANDIA NATIONAL LABS.
 *
 *
-*     .. Parameters ..
+*     .. PARAMETERS ..
       DOUBLE PRECISION   ZERO
       PARAMETER        ( ZERO = 0.0D+0 )
-*     .. Local Scalars ..
+*     .. LOCAL SCALARS ..
       DOUBLE PRECISION   TEMP
       INTEGER            I, INFO, IX, J, JX, KPLUS1, KX, L
       LOGICAL            NOUNIT
-*     .. External Functions ..
+*     .. EXTERNAL FUNCTIONS ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
-*     .. External Subroutines ..
+*     .. EXTERNAL SUBROUTINES ..
       EXTERNAL           XERBLA
-*     .. Intrinsic Functions ..
+*     .. INTRINSIC FUNCTIONS ..
       INTRINSIC          MAX, MIN
 *     ..
-*     .. Executable Statements ..
+*     .. EXECUTABLE STATEMENTS ..
 *
-*     Test the input parameters.
+*     TEST THE INPUT PARAMETERS.
 *
       INFO = 0
       IF     ( .NOT.LSAME( UPLO , 'U' ).AND.
@@ -7121,15 +7121,15 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
          RETURN
       END IF
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF( N.EQ.0 )
      $   RETURN
 *
       NOUNIT = LSAME( DIAG, 'N' )
 *
-*     Set up the start point in X if the increment is not unity. This
-*     will be  ( N - 1 )*INCX  too small for descending loops.
+*     SET UP THE START POINT IN X IF THE INCREMENT IS NOT UNITY. THIS
+*     WILL BE  ( N - 1 )*INCX  TOO SMALL FOR DESCENDING LOOPS.
 *
       IF( INCX.LE.0 )THEN
          KX = 1 - ( N - 1 )*INCX
@@ -7137,12 +7137,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
          KX = 1
       END IF
 *
-*     Start the operations. In this version the elements of A are
-*     accessed by sequentially with one pass through A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED BY SEQUENTIALLY WITH ONE PASS THROUGH A.
 *
       IF( LSAME( TRANS, 'N' ) )THEN
 *
-*        Form  x := inv( A )*x.
+*        FORM  X := INV( A )*X.
 *
          IF( LSAME( UPLO, 'U' ) )THEN
             KPLUS1 = K + 1
@@ -7211,7 +7211,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
          END IF
       ELSE
 *
-*        Form  x := inv( A')*x.
+*        FORM  X := INV( A')*X.
 *
          IF( LSAME( UPLO, 'U' ) )THEN
             KPLUS1 = K + 1
@@ -7280,90 +7280,90 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of DTBSV .
+*     END OF DTBSV .
 *
       END
       SUBROUTINE DPBTRS( UPLO, N, KD, NRHS, AB, LDAB, B, LDB, INFO )
 *
-*  -- LAPACK routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     September 30, 1994
+*  -- LAPACK ROUTINE (VERSION 3.0) --
+*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
+*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
+*     SEPTEMBER 30, 1994
 *
-*     .. Scalar Arguments ..
+*     .. SCALAR ARGUMENTS ..
       CHARACTER          UPLO
       INTEGER            INFO, KD, LDAB, LDB, N, NRHS
 *     ..
-*     .. Array Arguments ..
+*     .. ARRAY ARGUMENTS ..
       DOUBLE PRECISION   AB( LDAB, * ), B( LDB, * )
 *     ..
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  DPBTRS solves a system of linear equations A*X = B with a symmetric
-*  positive definite band matrix A using the Cholesky factorization
-*  A = U**T*U or A = L*L**T computed by DPBTRF.
+*  DPBTRS SOLVES A SYSTEM OF LINEAR EQUATIONS A*X = B WITH A SYMMETRIC
+*  POSITIVE DEFINITE BAND MATRIX A USING THE CHOLESKY FACTORIZATION
+*  A = U**T*U OR A = L*L**T COMPUTED BY DPBTRF.
 *
-*  Arguments
+*  ARGUMENTS
 *  =========
 *
-*  UPLO    (input) CHARACTER*1
-*          = 'U':  Upper triangular factor stored in AB;
-*          = 'L':  Lower triangular factor stored in AB.
+*  UPLO    (INPUT) CHARACTER*1
+*          = 'U':  UPPER TRIANGULAR FACTOR STORED IN AB;
+*          = 'L':  LOWER TRIANGULAR FACTOR STORED IN AB.
 *
-*  N       (input) INTEGER
-*          The order of the matrix A.  N >= 0.
+*  N       (INPUT) INTEGER
+*          THE ORDER OF THE MATRIX A.  N >= 0.
 *
-*  KD      (input) INTEGER
-*          The number of superdiagonals of the matrix A if UPLO = 'U',
-*          or the number of subdiagonals if UPLO = 'L'.  KD >= 0.
+*  KD      (INPUT) INTEGER
+*          THE NUMBER OF SUPERDIAGONALS OF THE MATRIX A IF UPLO = 'U',
+*          OR THE NUMBER OF SUBDIAGONALS IF UPLO = 'L'.  KD >= 0.
 *
-*  NRHS    (input) INTEGER
-*          The number of right hand sides, i.e., the number of columns
-*          of the matrix B.  NRHS >= 0.
+*  NRHS    (INPUT) INTEGER
+*          THE NUMBER OF RIGHT HAND SIDES, I.E., THE NUMBER OF COLUMNS
+*          OF THE MATRIX B.  NRHS >= 0.
 *
-*  AB      (input) DOUBLE PRECISION array, dimension (LDAB,N)
-*          The triangular factor U or L from the Cholesky factorization
-*          A = U**T*U or A = L*L**T of the band matrix A, stored in the
-*          first KD+1 rows of the array.  The j-th column of U or L is
-*          stored in the j-th column of the array AB as follows:
-*          if UPLO ='U', AB(kd+1+i-j,j) = U(i,j) for max(1,j-kd)<=i<=j;
-*          if UPLO ='L', AB(1+i-j,j)    = L(i,j) for j<=i<=min(n,j+kd).
+*  AB      (INPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDAB,N)
+*          THE TRIANGULAR FACTOR U OR L FROM THE CHOLESKY FACTORIZATION
+*          A = U**T*U OR A = L*L**T OF THE BAND MATRIX A, STORED IN THE
+*          FIRST KD+1 ROWS OF THE ARRAY.  THE J-TH COLUMN OF U OR L IS
+*          STORED IN THE J-TH COLUMN OF THE ARRAY AB AS FOLLOWS:
+*          IF UPLO ='U', AB(KD+1+I-J,J) = U(I,J) FOR MAX(1,J-KD)<=I<=J;
+*          IF UPLO ='L', AB(1+I-J,J)    = L(I,J) FOR J<=I<=MIN(N,J+KD).
 *
-*  LDAB    (input) INTEGER
-*          The leading dimension of the array AB.  LDAB >= KD+1.
+*  LDAB    (INPUT) INTEGER
+*          THE LEADING DIMENSION OF THE ARRAY AB.  LDAB >= KD+1.
 *
-*  B       (input/output) DOUBLE PRECISION array, dimension (LDB,NRHS)
-*          On entry, the right hand side matrix B.
-*          On exit, the solution matrix X.
+*  B       (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDB,NRHS)
+*          ON ENTRY, THE RIGHT HAND SIDE MATRIX B.
+*          ON EXIT, THE SOLUTION MATRIX X.
 *
-*  LDB     (input) INTEGER
-*          The leading dimension of the array B.  LDB >= max(1,N).
+*  LDB     (INPUT) INTEGER
+*          THE LEADING DIMENSION OF THE ARRAY B.  LDB >= MAX(1,N).
 *
-*  INFO    (output) INTEGER
-*          = 0:  successful exit
-*          < 0:  if INFO = -i, the i-th argument had an illegal value
+*  INFO    (OUTPUT) INTEGER
+*          = 0:  SUCCESSFUL EXIT
+*          < 0:  IF INFO = -I, THE I-TH ARGUMENT HAD AN ILLEGAL VALUE
 *
 *  =====================================================================
 *
-*     .. Local Scalars ..
+*     .. LOCAL SCALARS ..
       LOGICAL            UPPER
       INTEGER            J
 *     ..
-*     .. External Functions ..
+*     .. EXTERNAL FUNCTIONS ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
-*     .. External Subroutines ..
+*     .. EXTERNAL SUBROUTINES ..
       EXTERNAL           DTBSV, XERBLA
 *     ..
-*     .. Intrinsic Functions ..
+*     .. INTRINSIC FUNCTIONS ..
       INTRINSIC          MAX
 *     ..
-*     .. Executable Statements ..
+*     .. EXECUTABLE STATEMENTS ..
 *
-*     Test the input parameters.
+*     TEST THE INPUT PARAMETERS.
 *
       INFO = 0
       UPPER = LSAME( UPLO, 'U' )
@@ -7385,152 +7385,152 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
          RETURN
       END IF
 *
-*     Quick return if possible
+*     QUICK RETURN IF POSSIBLE
 *
       IF( N.EQ.0 .OR. NRHS.EQ.0 )
      $   RETURN
 *
       IF( UPPER ) THEN
 *
-*        Solve A*X = B where A = U'*U.
+*        SOLVE A*X = B WHERE A = U'*U.
 *
          DO 10 J = 1, NRHS
 *
-*           Solve U'*X = B, overwriting B with X.
+*           SOLVE U'*X = B, OVERWRITING B WITH X.
 *
-            CALL DTBSV( 'Upper', 'Transpose', 'Non-unit', N, KD, AB,
+            CALL DTBSV( 'UPPER', 'TRANSPOSE', 'NON-UNIT', N, KD, AB,
      $                  LDAB, B( 1, J ), 1 )
 *
-*           Solve U*X = B, overwriting B with X.
+*           SOLVE U*X = B, OVERWRITING B WITH X.
 *
-            CALL DTBSV( 'Upper', 'No transpose', 'Non-unit', N, KD, AB,
+            CALL DTBSV( 'UPPER', 'NO TRANSPOSE', 'NON-UNIT', N, KD, AB,
      $                  LDAB, B( 1, J ), 1 )
    10    CONTINUE
       ELSE
 *
-*        Solve A*X = B where A = L*L'.
+*        SOLVE A*X = B WHERE A = L*L'.
 *
          DO 20 J = 1, NRHS
 *
-*           Solve L*X = B, overwriting B with X.
+*           SOLVE L*X = B, OVERWRITING B WITH X.
 *
-            CALL DTBSV( 'Lower', 'No transpose', 'Non-unit', N, KD, AB,
+            CALL DTBSV( 'LOWER', 'NO TRANSPOSE', 'NON-UNIT', N, KD, AB,
      $                  LDAB, B( 1, J ), 1 )
 *
-*           Solve L'*X = B, overwriting B with X.
+*           SOLVE L'*X = B, OVERWRITING B WITH X.
 *
-            CALL DTBSV( 'Lower', 'Transpose', 'Non-unit', N, KD, AB,
+            CALL DTBSV( 'LOWER', 'TRANSPOSE', 'NON-UNIT', N, KD, AB,
      $                  LDAB, B( 1, J ), 1 )
    20    CONTINUE
       END IF
 *
       RETURN
 *
-*     End of DPBTRS
+*     END OF DPBTRS
 *
       END
       SUBROUTINE DSYR  ( UPLO, N, ALPHA, X, INCX, A, LDA )
-*     .. Scalar Arguments ..
+*     .. SCALAR ARGUMENTS ..
       DOUBLE PRECISION   ALPHA
       INTEGER            INCX, LDA, N
       CHARACTER*1        UPLO
-*     .. Array Arguments ..
+*     .. ARRAY ARGUMENTS ..
       DOUBLE PRECISION   A( LDA, * ), X( * )
 *     ..
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  DSYR   performs the symmetric rank 1 operation
+*  DSYR   PERFORMS THE SYMMETRIC RANK 1 OPERATION
 *
-*     A := alpha*x*x' + A,
+*     A := ALPHA*X*X' + A,
 *
-*  where alpha is a real scalar, x is an n element vector and A is an
-*  n by n symmetric matrix.
+*  WHERE ALPHA IS A REAL SCALAR, X IS AN N ELEMENT VECTOR AND A IS AN
+*  N BY N SYMMETRIC MATRIX.
 *
-*  Parameters
+*  PARAMETERS
 *  ==========
 *
 *  UPLO   - CHARACTER*1.
-*           On entry, UPLO specifies whether the upper or lower
-*           triangular part of the array A is to be referenced as
-*           follows:
+*           ON ENTRY, UPLO SPECIFIES WHETHER THE UPPER OR LOWER
+*           TRIANGULAR PART OF THE ARRAY A IS TO BE REFERENCED AS
+*           FOLLOWS:
 *
-*              UPLO = 'U' or 'u'   Only the upper triangular part of A
-*                                  is to be referenced.
+*              UPLO = 'U' OR 'U'   ONLY THE UPPER TRIANGULAR PART OF A
+*                                  IS TO BE REFERENCED.
 *
-*              UPLO = 'L' or 'l'   Only the lower triangular part of A
-*                                  is to be referenced.
+*              UPLO = 'L' OR 'L'   ONLY THE LOWER TRIANGULAR PART OF A
+*                                  IS TO BE REFERENCED.
 *
-*           Unchanged on exit.
+*           UNCHANGED ON EXIT.
 *
 *  N      - INTEGER.
-*           On entry, N specifies the order of the matrix A.
-*           N must be at least zero.
-*           Unchanged on exit.
+*           ON ENTRY, N SPECIFIES THE ORDER OF THE MATRIX A.
+*           N MUST BE AT LEAST ZERO.
+*           UNCHANGED ON EXIT.
 *
 *  ALPHA  - DOUBLE PRECISION.
-*           On entry, ALPHA specifies the scalar alpha.
-*           Unchanged on exit.
+*           ON ENTRY, ALPHA SPECIFIES THE SCALAR ALPHA.
+*           UNCHANGED ON EXIT.
 *
-*  X      - DOUBLE PRECISION array of dimension at least
-*           ( 1 + ( n - 1 )*abs( INCX ) ).
-*           Before entry, the incremented array X must contain the n
-*           element vector x.
-*           Unchanged on exit.
+*  X      - DOUBLE PRECISION ARRAY OF DIMENSION AT LEAST
+*           ( 1 + ( N - 1 )*ABS( INCX ) ).
+*           BEFORE ENTRY, THE INCREMENTED ARRAY X MUST CONTAIN THE N
+*           ELEMENT VECTOR X.
+*           UNCHANGED ON EXIT.
 *
 *  INCX   - INTEGER.
-*           On entry, INCX specifies the increment for the elements of
-*           X. INCX must not be zero.
-*           Unchanged on exit.
+*           ON ENTRY, INCX SPECIFIES THE INCREMENT FOR THE ELEMENTS OF
+*           X. INCX MUST NOT BE ZERO.
+*           UNCHANGED ON EXIT.
 *
-*  A      - DOUBLE PRECISION array of DIMENSION ( LDA, n ).
-*           Before entry with  UPLO = 'U' or 'u', the leading n by n
-*           upper triangular part of the array A must contain the upper
-*           triangular part of the symmetric matrix and the strictly
-*           lower triangular part of A is not referenced. On exit, the
-*           upper triangular part of the array A is overwritten by the
-*           upper triangular part of the updated matrix.
-*           Before entry with UPLO = 'L' or 'l', the leading n by n
-*           lower triangular part of the array A must contain the lower
-*           triangular part of the symmetric matrix and the strictly
-*           upper triangular part of A is not referenced. On exit, the
-*           lower triangular part of the array A is overwritten by the
-*           lower triangular part of the updated matrix.
+*  A      - DOUBLE PRECISION ARRAY OF DIMENSION ( LDA, N ).
+*           BEFORE ENTRY WITH  UPLO = 'U' OR 'U', THE LEADING N BY N
+*           UPPER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE UPPER
+*           TRIANGULAR PART OF THE SYMMETRIC MATRIX AND THE STRICTLY
+*           LOWER TRIANGULAR PART OF A IS NOT REFERENCED. ON EXIT, THE
+*           UPPER TRIANGULAR PART OF THE ARRAY A IS OVERWRITTEN BY THE
+*           UPPER TRIANGULAR PART OF THE UPDATED MATRIX.
+*           BEFORE ENTRY WITH UPLO = 'L' OR 'L', THE LEADING N BY N
+*           LOWER TRIANGULAR PART OF THE ARRAY A MUST CONTAIN THE LOWER
+*           TRIANGULAR PART OF THE SYMMETRIC MATRIX AND THE STRICTLY
+*           UPPER TRIANGULAR PART OF A IS NOT REFERENCED. ON EXIT, THE
+*           LOWER TRIANGULAR PART OF THE ARRAY A IS OVERWRITTEN BY THE
+*           LOWER TRIANGULAR PART OF THE UPDATED MATRIX.
 *
 *  LDA    - INTEGER.
-*           On entry, LDA specifies the first dimension of A as declared
-*           in the calling (sub) program. LDA must be at least
-*           max( 1, n ).
-*           Unchanged on exit.
+*           ON ENTRY, LDA SPECIFIES THE FIRST DIMENSION OF A AS DECLARED
+*           IN THE CALLING (SUB) PROGRAM. LDA MUST BE AT LEAST
+*           MAX( 1, N ).
+*           UNCHANGED ON EXIT.
 *
 *
-*  Level 2 Blas routine.
+*  LEVEL 2 BLAS ROUTINE.
 *
-*  -- Written on 22-October-1986.
-*     Jack Dongarra, Argonne National Lab.
-*     Jeremy Du Croz, Nag Central Office.
-*     Sven Hammarling, Nag Central Office.
-*     Richard Hanson, Sandia National Labs.
+*  -- WRITTEN ON 22-OCTOBER-1986.
+*     JACK DONGARRA, ARGONNE NATIONAL LAB.
+*     JEREMY DU CROZ, NAG CENTRAL OFFICE.
+*     SVEN HAMMARLING, NAG CENTRAL OFFICE.
+*     RICHARD HANSON, SANDIA NATIONAL LABS.
 *
 *
-*     .. Parameters ..
+*     .. PARAMETERS ..
       DOUBLE PRECISION   ZERO
       PARAMETER        ( ZERO = 0.0D+0 )
-*     .. Local Scalars ..
+*     .. LOCAL SCALARS ..
       DOUBLE PRECISION   TEMP
       INTEGER            I, INFO, IX, J, JX, KX
-*     .. External Functions ..
+*     .. EXTERNAL FUNCTIONS ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
-*     .. External Subroutines ..
+*     .. EXTERNAL SUBROUTINES ..
       EXTERNAL           XERBLA
-*     .. Intrinsic Functions ..
+*     .. INTRINSIC FUNCTIONS ..
       INTRINSIC          MAX
 *     ..
-*     .. Executable Statements ..
+*     .. EXECUTABLE STATEMENTS ..
 *
-*     Test the input parameters.
+*     TEST THE INPUT PARAMETERS.
 *
       INFO = 0
       IF     ( .NOT.LSAME( UPLO, 'U' ).AND.
@@ -7548,12 +7548,12 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
          RETURN
       END IF
 *
-*     Quick return if possible.
+*     QUICK RETURN IF POSSIBLE.
 *
       IF( ( N.EQ.0 ).OR.( ALPHA.EQ.ZERO ) )
      $   RETURN
 *
-*     Set the start point in X if the increment is not unity.
+*     SET THE START POINT IN X IF THE INCREMENT IS NOT UNITY.
 *
       IF( INCX.LE.0 )THEN
          KX = 1 - ( N - 1 )*INCX
@@ -7561,13 +7561,13 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
          KX = 1
       END IF
 *
-*     Start the operations. In this version the elements of A are
-*     accessed sequentially with one pass through the triangular part
-*     of A.
+*     START THE OPERATIONS. IN THIS VERSION THE ELEMENTS OF A ARE
+*     ACCESSED SEQUENTIALLY WITH ONE PASS THROUGH THE TRIANGULAR PART
+*     OF A.
 *
       IF( LSAME( UPLO, 'U' ) )THEN
 *
-*        Form  A  when A is stored in upper triangle.
+*        FORM  A  WHEN A IS STORED IN UPPER TRIANGLE.
 *
          IF( INCX.EQ.1 )THEN
             DO 20, J = 1, N
@@ -7594,7 +7594,7 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
          END IF
       ELSE
 *
-*        Form  A  when A is stored in lower triangle.
+*        FORM  A  WHEN A IS STORED IN LOWER TRIANGLE.
 *
          IF( INCX.EQ.1 )THEN
             DO 60, J = 1, N
@@ -7623,6 +7623,6 @@ C     BY R. J. HANSON, SANDIA NATIONAL LABS.
 *
       RETURN
 *
-*     End of DSYR  .
+*     END OF DSYR  .
 *
       END

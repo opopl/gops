@@ -223,86 +223,86 @@
                  
 !     [1] SIX COMPLETELY DIAGONAL TERMS: SAME MOLECULE, SAME COORDINATES
 
-!     xi,xi
+!     XI,XI
                      HESS(J3-2,J3-2) = HESS(J3-2,J3-2) + D2VDR2(J7,J8)*RSS(1)*RSS(1) + DVDR(J7,J8)
-!     yi,yi             
+!     YI,YI             
                      HESS(J3-1,J3-1) = HESS(J3-1,J3-1) + D2VDR2(J7,J8)*RSS(2)*RSS(2) + DVDR(J7,J8)
-!     zi,zi
+!     ZI,ZI
                      HESS(J3,J3)     = HESS(J3,J3)     + D2VDR2(J7,J8)*RSS(3)*RSS(3) + DVDR(J7,J8)
-!     pi1,pi1
+!     PI1,PI1
                      HESS(J5-2,J5-2) = HESS(J5-2,J5-2) + D2VDR2(J7,J8)*DOTI1(J7,J8)*DOTI1(J7,J8) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(DR1(J7,:),DR1(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R1(J7,:))
-!     pi2,pi2
+!     PI2,PI2
                      HESS(J5-1,J5-1) = HESS(J5-1,J5-1) + D2VDR2(J7,J8)*DOTI2(J7,J8)*DOTI2(J7,J8) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(DR2(J7,:),DR2(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R2(J7,:))
-!     pi3,pi3
+!     PI3,PI3
                      HESS(J5,J5)     = HESS(J5,J5) + D2VDR2(J7,J8)*DOTI3(J7,J8)*DOTI3(J7,J8) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(DR3(J7,:),DR3(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R3(J7,:))
 
 !     [2] OFF-DIAGONAL TERMS ON THE DIAGONAL BLOCKS: SAME MOLECULE, DIFFERENT COORDINATES
 
-!     xi,yi
+!     XI,YI
                      DUMMY           = D2VDR2(J7,J8)*RSS(1)*RSS(2)
                      HESS(J3-2,J3-1) = HESS(J3-2,J3-1) + DUMMY
                      HESS(J3-1,J3-2) = HESS(J3-1,J3-2) + DUMMY
-!     yi,zi
+!     YI,ZI
                      DUMMY           = D2VDR2(J7,J8)*RSS(2)*RSS(3)
                      HESS(J3-1,J3)   = HESS(J3-1,J3) + DUMMY
                      HESS(J3,J3-1)   = HESS(J3,J3-1) + DUMMY
-!     zi,xi
+!     ZI,XI
                      DUMMY           = D2VDR2(J7,J8)*RSS(3)*RSS(1)
                      HESS(J3,J3-2)   = HESS(J3,J3-2) + DUMMY
                      HESS(J3-2,J3)   = HESS(J3-2,J3) + DUMMY
-!     xi,pi1
+!     XI,PI1
                      DUMMY           = D2VDR2(J7,J8)*DOTI1(J7,J8)*RSS(1) + DVDR(J7,J8)*DR1(J7,1)
                      HESS(J3-2,J5-2) = HESS(J3-2,J5-2) + DUMMY
                      HESS(J5-2,J3-2) = HESS(J5-2,J3-2) + DUMMY
-!     yi,pi1
+!     YI,PI1
                      DUMMY           = D2VDR2(J7,J8)*DOTI1(J7,J8)*RSS(2) + DVDR(J7,J8)*DR1(J7,2)
                      HESS(J3-1,J5-2) = HESS(J3-1,J5-2) + DUMMY
                      HESS(J5-2,J3-1) = HESS(J5-2,J3-1) + DUMMY
-!     zi,pi1
+!     ZI,PI1
                      DUMMY           = D2VDR2(J7,J8)*DOTI1(J7,J8)*RSS(3) + DVDR(J7,J8)*DR1(J7,3)
                      HESS(J3,J5-2)   = HESS(J3,J5-2) + DUMMY
                      HESS(J5-2,J3)   = HESS(J5-2,J3) + DUMMY
-!     xi,pi2
+!     XI,PI2
                      DUMMY           = D2VDR2(J7,J8)*DOTI2(J7,J8)*RSS(1) + DVDR(J7,J8)*DR2(J7,1)
                      HESS(J3-2,J5-1) = HESS(J3-2,J5-1) + DUMMY
                      HESS(J5-1,J3-2) = HESS(J5-1,J3-2) + DUMMY
-!     yi,pi2
+!     YI,PI2
                      DUMMY           = D2VDR2(J7,J8)*DOTI2(J7,J8)*RSS(2) + DVDR(J7,J8)*DR2(J7,2)
                      HESS(J3-1,J5-1) = HESS(J3-1,J5-1) + DUMMY
                      HESS(J5-1,J3-1) = HESS(J5-1,J3-1) + DUMMY
-!     zi,pi2
+!     ZI,PI2
                      DUMMY           = D2VDR2(J7,J8)*DOTI2(J7,J8)*RSS(3) + DVDR(J7,J8)*DR2(J7,3)
                      HESS(J3,J5-1)   = HESS(J3,J5-1) + DUMMY
                      HESS(J5-1,J3)   = HESS(J5-1,J3) + DUMMY
-!     xi,pi3
+!     XI,PI3
                      DUMMY           = D2VDR2(J7,J8)*DOTI3(J7,J8)*RSS(1) + DVDR(J7,J8)*DR3(J7,1)
                      HESS(J3-2,J5)   = HESS(J3-2,J5) + DUMMY
                      HESS(J5,J3-2)   = HESS(J5,J3-2) + DUMMY
-!     yi,pi3
+!     YI,PI3
                      DUMMY           = D2VDR2(J7,J8)*DOTI3(J7,J8)*RSS(2) + DVDR(J7,J8)*DR3(J7,2)
                      HESS(J3-1,J5)   = HESS(J3-1,J5) + DUMMY
                      HESS(J5,J3-1)   = HESS(J5,J3-1) + DUMMY
-!     zi,pi3
+!     ZI,PI3
                      DUMMY           = D2VDR2(J7,J8)*DOTI3(J7,J8)*RSS(3) + DVDR(J7,J8)*DR3(J7,3)
                      HESS(J3,J5)     = HESS(J3,J5) + DUMMY
                      HESS(J5,J3)     = HESS(J5,J3) + DUMMY
-!     pi1,pi2
+!     PI1,PI2
                      DUMMY           = D2VDR2(J7,J8)*DOTI1(J7,J8)*DOTI2(J7,J8) + DVDR(J7,J8)*DOT_PRODUCT(DR2(J7,:),DR1(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R12(J7,:))
                      HESS(J5-2,J5-1) = HESS(J5-2,J5-1) + DUMMY
                      HESS(J5-1,J5-2) = HESS(J5-1,J5-2) + DUMMY
-!     pi2,pi3
+!     PI2,PI3
                      DUMMY           = D2VDR2(J7,J8)*DOTI2(J7,J8)*DOTI3(J7,J8) + DVDR(J7,J8)*DOT_PRODUCT(DR3(J7,:),DR2(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R23(J7,:))
                      HESS(J5-1,J5)   = HESS(J5-1,J5) + DUMMY
                      HESS(J5,J5-1)   = HESS(J5,J5-1) + DUMMY
-!     pi3,pi1
+!     PI3,PI1
                      DUMMY           = D2VDR2(J7,J8)*DOTI3(J7,J8)*DOTI1(J7,J8) + DVDR(J7,J8)*DOT_PRODUCT(DR1(J7,:),DR3(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R31(J7,:))
                      HESS(J5,J5-2)   = HESS(J5,J5-2) + DUMMY
@@ -311,83 +311,83 @@
                  
 !     [3] DIAGONAL ELEMENTS ON OFF-DIAGONAL BLOCKS: DIFFERENT MOLECULES, SAME COORDINATE
 
-!     xi,xj
+!     XI,XJ
                      HESS(J3-2,J4-2) = HESS(J3-2,J4-2) - D2VDR2(J7,J8)*RSS(1)*RSS(1) - DVDR(J7,J8)
-!     yi,yj
+!     YI,YJ
                      HESS(J3-1,J4-1) = HESS(J3-1,J4-1) - D2VDR2(J7,J8)*RSS(2)*RSS(2) - DVDR(J7,J8)
-!     zi,zj
+!     ZI,ZJ
                      HESS(J3,J4)     = HESS(J3,J4)     - D2VDR2(J7,J8)*RSS(3)*RSS(3) - DVDR(J7,J8)
-!     pi1,pj1
+!     PI1,PJ1
                      HESS(J5-2,J6-2) = HESS(J5-2,J6-2) - D2VDR2(J7,J8)*DOTJ1(J7,J8)*DOTI1(J7,J8) &
                                      - DVDR(J7,J8)*DOT_PRODUCT(DR1(J8,:),DR1(J7,:))
-!     pi2,pj2
+!     PI2,PJ2
                      HESS(J5-1,J6-1) = HESS(J5-1,J6-1) - D2VDR2(J7,J8)*DOTJ2(J7,J8)*DOTI2(J7,J8) &
                                      - DVDR(J7,J8)*DOT_PRODUCT(DR2(J8,:),DR2(J7,:))
-!     pi3,pj3
+!     PI3,PJ3
                      HESS(J5,J6)     = HESS(J5,J6)     - D2VDR2(J7,J8)*DOTJ3(J7,J8)*DOTI3(J7,J8) &
                                     - DVDR(J7,J8)*DOT_PRODUCT(DR3(J8,:),DR3(J7,:))
 
 !     [4] COMPLETELY OFF-DIAGONAL TERMS: DIFFERENT MOLECULES, DIFFERENT COORDINATES
 
-!     xi,yj
+!     XI,YJ
                      DUMMY           = - D2VDR2(J7,J8)*RSS(1)*RSS(2)
                      HESS(J3-2,J4-1) = HESS(J3-2,J4-1) + DUMMY
                      HESS(J4-1,J3-2) = HESS(J4-1,J3-2) + DUMMY
-!     yi,zj
+!     YI,ZJ
                      DUMMY           = - D2VDR2(J7,J8)*RSS(2)*RSS(3)
                      HESS(J3-1,J4)   = HESS(J3-1,J4) + DUMMY
                      HESS(J4,J3-1)   = HESS(J4,J3-1) + DUMMY
-!     zi,xj
+!     ZI,XJ
                      DUMMY           = - D2VDR2(J7,J8)*RSS(3)*RSS(1)
                      HESS(J3,J4-2)   = HESS(J3,J4-2) + DUMMY
                      HESS(J4-2,J3)   = HESS(J4-2,J3) + DUMMY
 
 
-!     xi,pj1
+!     XI,PJ1
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ1(J7,J8)*RSS(1) - DVDR(J7,J8)*DR1(J8,1)
                      HESS(J3-2,J6-2) = HESS(J3-2,J6-2) + DUMMY
                      HESS(J6-2,J3-2) = HESS(J6-2,J3-2) + DUMMY
-!     yi,pj1
+!     YI,PJ1
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ1(J7,J8)*RSS(2) - DVDR(J7,J8)*DR1(J8,2)
                      HESS(J3-1,J6-2) = HESS(J3-1,J6-2) + DUMMY
                      HESS(J6-2,J3-1) = HESS(J6-2,J3-1) + DUMMY
-!     zi,pj1
+!     ZI,PJ1
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ1(J7,J8)*RSS(3) - DVDR(J7,J8)*DR1(J8,3)
                      HESS(J3,J6-2)   = HESS(J3,J6-2) + DUMMY
                      HESS(J6-2,J3)   = HESS(J6-2,J3) + DUMMY
-!     xi,pj2
+!     XI,PJ2
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ2(J7,J8)*RSS(1) - DVDR(J7,J8)*DR2(J8,1)
                      HESS(J3-2,J6-1) = HESS(J3-2,J6-1) + DUMMY
                      HESS(J6-1,J3-2) = HESS(J6-1,J3-2) + DUMMY
-!     yi,pj2
+!     YI,PJ2
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ2(J7,J8)*RSS(2) - DVDR(J7,J8)*DR2(J8,2)
                      HESS(J3-1,J6-1) = HESS(J3-1,J6-1) + DUMMY
                      HESS(J6-1,J3-1) = HESS(J6-1,J3-1) + DUMMY
-!     zi,pj2
+!     ZI,PJ2
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ2(J7,J8)*RSS(3) - DVDR(J7,J8)*DR2(J8,3)
                      HESS(J3,J6-1)   = HESS(J3,J6-1) + DUMMY
                      HESS(J6-1,J3)   = HESS(J6-1,J3) + DUMMY
-!     xi,pj3
+!     XI,PJ3
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ3(J7,J8)*RSS(1) - DVDR(J7,J8)*DR3(J8,1)
                      HESS(J3-2,J6)   = HESS(J3-2,J6) + DUMMY
                      HESS(J6,J3-2)   = HESS(J6,J3-2) + DUMMY
-!     yi,pj3
+!     YI,PJ3
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ3(J7,J8)*RSS(2) - DVDR(J7,J8)*DR3(J8,2)
                      HESS(J3-1,J6)   = HESS(J3-1,J6) + DUMMY
                      HESS(J6,J3-1)   = HESS(J6,J3-1) + DUMMY
-!     zi,pj3
+!     ZI,PJ3
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ3(J7,J8)*RSS(3) - DVDR(J7,J8)*DR3(J8,3)
                      HESS(J3,J6)     = HESS(J3,J6) + DUMMY
                      HESS(J6,J3)     = HESS(J6,J3) + DUMMY
-!     pi1,pj2
+!     PI1,PJ2
                      DUMMY           = - D2VDR2(J7,J8)*DOTI1(J7,J8)*DOTJ2(J7,J8) - DVDR(J7,J8)*DOT_PRODUCT(DR2(J8,:),DR1(J7,:))
                      HESS(J5-2,J6-1) = HESS(J5-2,J6-1) + DUMMY
                      HESS(J6-1,J5-2) = HESS(J6-1,J5-2) + DUMMY
-!     pi2,pj3
+!     PI2,PJ3
                      DUMMY           = - D2VDR2(J7,J8)*DOTI2(J7,J8)*DOTJ3(J7,J8) - DVDR(J7,J8)*DOT_PRODUCT(DR3(J8,:),DR2(J7,:))
                      HESS(J5-1,J6)   = HESS(J5-1,J6) + DUMMY
                      HESS(J6,J5-1)   = HESS(J6,J5-1) + DUMMY
-!     pi3,pj1
+!     PI3,PJ1
                      DUMMY           = - D2VDR2(J7,J8)*DOTI3(J7,J8)*DOTJ1(J7,J8) - DVDR(J7,J8)*DOT_PRODUCT(DR1(J8,:),DR3(J7,:))
                      HESS(J5,J6-2)   = HESS(J5,J6-2) + DUMMY
                      HESS(J6-2,J5)   = HESS(J6-2,J5) + DUMMY
@@ -411,7 +411,7 @@
 !     ---------------------------------------------------------------------------------------------
 
       SUBROUTINE DEFTIP4(C12, C6, CH2O)
-!     TIP4P water
+!     TIP4P WATER
 
       USE COMMONS, ONLY: NATOMS, NRBSITES, RBSITE, STCHRG
 
@@ -446,9 +446,9 @@
       RBSITE(4,3) = ROM
 
       STCHRG(:) = (/0.D0, 0.52D0, 0.52D0, -1.04D0/)
-      C6        = 2552.24D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+      C6        = 2552.24D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
       C12       = 2510.4D3
-      CH2O      = 1389.354848D0 ! Conversion factor for coulomb energy
+      CH2O      = 1389.354848D0 ! CONVERSION FACTOR FOR COULOMB ENERGY
 
       M(:)  = (/16.D0, 1.D0, 1.D0, 0.D0/)
       CM(:) = 0.D0; MASS = 0.D0
@@ -480,45 +480,45 @@
       DOUBLE PRECISION :: KD(3*NATOMS), U(3*NATOMS,3*NATOMS)
       DOUBLE PRECISION :: HUK(3*NATOMS,3*NATOMS), AP(3*NATOMS,3*NATOMS)
       LOGICAL          :: GTEST, STEST
-!     the following required to call the LAPACK routine DSYEV
+!     THE FOLLOWING REQUIRED TO CALL THE LAPACK ROUTINE DSYEV
       INTEGER          :: INFO
-      INTEGER, PARAMETER :: LWORK = 10000 ! the dimension is set arbitrarily
+      INTEGER, PARAMETER :: LWORK = 10000 ! THE DIMENSION IS SET ARBITRARILY
       DOUBLE PRECISION :: WORK(LWORK)
 
-!     Computes the normal modes and frequencies
-!     following Pohorille et al. JCP 87, 6070 (1987)
+!     COMPUTES THE NORMAL MODES AND FREQUENCIES
+!     FOLLOWING POHORILLE ET AL. JCP 87, 6070 (1987)
 !     INPUT:
-!     ndim   : number of degrees of freedom
-!     second : second derivatives (ORIENT convention) from derivs
-!     common "sites" : coordinates of sites in global coordinates
+!     NDIM   : NUMBER OF DEGREES OF FREEDOM
+!     SECOND : SECOND DERIVATIVES (ORIENT CONVENTION) FROM DERIVS
+!     COMMON "SITES" : COORDINATES OF SITES IN GLOBAL COORDINATES
 !     OUTPUT:
-!     freq   : eigenfrequencies of normal modes
+!     FREQ   : EIGENFREQUENCIES OF NORMAL MODES
 
-!     We adopt Pohorille's notation for clarity:
-!     K matrix : block diagonal kinetic energy matrix (6N x 6N)
-!     kblock : for each rigid body we have one 6x6 matrix which consists
-!     of two blocks : left upper or "mass" diagonal submatrix
-!     and right lower or inertia tensor matrix. Here kblock
-!     is the 3 x 3 inertia tensor.
-!     KD     : using the diagonalized kinetic energy tensor
-!     we keep track of the diagonal of KD only
-!     U      : eigenvector matrix (Pohorille's S)
+!     WE ADOPT POHORILLE'S NOTATION FOR CLARITY:
+!     K MATRIX : BLOCK DIAGONAL KINETIC ENERGY MATRIX (6N X 6N)
+!     KBLOCK : FOR EACH RIGID BODY WE HAVE ONE 6X6 MATRIX WHICH CONSISTS
+!     OF TWO BLOCKS : LEFT UPPER OR "MASS" DIAGONAL SUBMATRIX
+!     AND RIGHT LOWER OR INERTIA TENSOR MATRIX. HERE KBLOCK
+!     IS THE 3 X 3 INERTIA TENSOR.
+!     KD     : USING THE DIAGONALIZED KINETIC ENERGY TENSOR
+!     WE KEEP TRACK OF THE DIAGONAL OF KD ONLY
+!     U      : EIGENVECTOR MATRIX (POHORILLE'S S)
 
-!     Frequency conversion factor: Energy in KJ/mol and length in angstrom
-!     to get frequencies in cm^{-1}
+!     FREQUENCY CONVERSION FACTOR: ENERGY IN KJ/MOL AND LENGTH IN ANGSTROM
+!     TO GET FREQUENCIES IN CM^{-1}
       
       FRQCNV = 1.D03/(2.D0*4.D0*DATAN(1.D0)*2.998D0)
       MS(:)  = (/16.D0, 1.D0, 1.D0/)
       TMASS  = 18.D0
 
-!     Initialize
+!     INITIALIZE
 
       U(:,:) = 0.D0
       IR     = 0
       IC     = 0
 
 
-!     Get the site positions
+!     GET THE SITE POSITIONS
 
       OFFSET = 3*NATOMS/2
       GTEST = .FALSE.; STEST = .FALSE.
@@ -540,7 +540,7 @@
 
                KBLOCK(I,I) = KBLOCK(I,I) + MS(J2)*(DR(1)*DR(1) + DR(2)*DR(2) + DR(3)*DR(3))
 
-               DO J = 1, 3    ! could have been J = 1, I; KBLOCK is a symmetric matrix
+               DO J = 1, 3    ! COULD HAVE BEEN J = 1, I; KBLOCK IS A SYMMETRIC MATRIX
 
                   KBLOCK(I,J) = KBLOCK(I,J) - MS(J2)*DR(I)*DR(J)
 
@@ -550,31 +550,31 @@
 
          ENDDO
 
-!     Diagonalise KBLOCK using LAPACK routine DSYEV
-!     DSYEV computes all eigenvalues and, optionally, eigenvectors of a real symmetric matrix KBLOCK 
+!     DIAGONALISE KBLOCK USING LAPACK ROUTINE DSYEV
+!     DSYEV COMPUTES ALL EIGENVALUES AND, OPTIONALLY, EIGENVECTORS OF A REAL SYMMETRIC MATRIX KBLOCK 
 
          CALL DSYEV('V','L',3,KBLOCK,3,KBEGNV,WORK,LWORK,INFO)
 
-!     The character 'V' instructs to return the eigenvector as well
-!     On exit, if INFO = 0, KBLOCK contains the orthonormal eigenvectors of the matrix KBLOCK in columns
-!     The character 'L' tells that the Lower triangle of KBLOCK is stored 
-!     Next is the order of the matrix KBLOCK
-!     The integer after KBLOCK is the leading dimension of the array KBLOCK
-!     KEGNV holds the eigenvalues in ascending order if INFO = 0
+!     THE CHARACTER 'V' INSTRUCTS TO RETURN THE EIGENVECTOR AS WELL
+!     ON EXIT, IF INFO = 0, KBLOCK CONTAINS THE ORTHONORMAL EIGENVECTORS OF THE MATRIX KBLOCK IN COLUMNS
+!     THE CHARACTER 'L' TELLS THAT THE LOWER TRIANGLE OF KBLOCK IS STORED 
+!     NEXT IS THE ORDER OF THE MATRIX KBLOCK
+!     THE INTEGER AFTER KBLOCK IS THE LEADING DIMENSION OF THE ARRAY KBLOCK
+!     KEGNV HOLDS THE EIGENVALUES IN ASCENDING ORDER IF INFO = 0
 
          IF (INFO /= 0) THEN
-            WRITE(*,*) 'NRMLMD > Error in DSYEV with KBLOCK, INFO =', INFO
+            WRITE(*,*) 'NRMLMD > ERROR IN DSYEV WITH KBLOCK, INFO =', INFO
             STOP
          ENDIF
 
-!     Construction of the matrix U
-!     First: translation coordinates
+!     CONSTRUCTION OF THE MATRIX U
+!     FIRST: TRANSLATION COORDINATES
 
 !         U(IR+1,IC+1) = 1.D0; U(IR+2,IC+2) = 1.D0; U(IR+3,IC+3) = 1.D0
          U(IR+1,IC+1) = 1.D0/SQRT(3.D0); U(IR+2,IC+2) = 1.D0/SQRT(3.D0); U(IR+3,IC+3) = 1.D0/SQRT(3.D0)
          KD(IC+1:IC+3) = 1.D0/SQRT(TMASS)
             
-!     Now rotational coordinates
+!     NOW ROTATIONAL COORDINATES
 
          U(OFFSET+IR+1:OFFSET+IR+3,OFFSET+IC+1:OFFSET+IC+3) = KBLOCK(:,:) 
          KD(OFFSET+IC+1:OFFSET+IC+3) = 1.D0/SQRT(KBEGNV(:))
@@ -598,7 +598,7 @@
 !         DO J = 1, NDIM
 !            AP(I,J) = 0.D0
 !            DO K  = 1, NDIM
-!               AP(I,J) = AP(I,J) + KD(I)*U(K,I)*HUK(K,J) ! times U transpose
+!               AP(I,J) = AP(I,J) + KD(I)*U(K,I)*HUK(K,J) ! TIMES U TRANSPOSE
 !            ENDDO
 !         ENDDO 
 !      ENDDO

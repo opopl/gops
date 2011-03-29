@@ -1,293 +1,293 @@
-!   OPTIM: A program for optimizing geometries and calculating reaction pathways
-!   Copyright (C) 1999-2006 David J. Wales
-!   This file is part of OPTIM.
+!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!   THIS FILE IS PART OF OPTIM.
 !   
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !   
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !   
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 !###################################################################################
 !############################ FMSEVB SUBROUTINE ####################################
 !###################################################################################
 
-	subroutine fmsevb(ncoord, Q, dQ, assignVBstates)
+	SUBROUTINE FMSEVB(NCOORD, Q, DQ, ASSIGNVBSTATES)
 
-	use commons
-	use msevb_common
-	use msevb_interfaces
+	USE COMMONS
+	USE MSEVB_COMMON
+	USE MSEVB_INTERFACES
 
-	implicit none
+	IMPLICIT NONE
 
 !#####################################################################
-! 24-09-00  R. A. Christie
+! 24-09-00  R. A. CHRISTIE
 !
-! Parameter set used is from:
-!    U. Schmitt and G. A. Voth, J. Chem. Phys. 111, 1999, 9361
-! and not the earlier set, nor the later one, or even the buggy one.
+! PARAMETER SET USED IS FROM:
+!    U. SCHMITT AND G. A. VOTH, J. CHEM. PHYS. 111, 1999, 9361
+! AND NOT THE EARLIER SET, NOR THE LATER ONE, OR EVEN THE BUGGY ONE.
 !
-! Call the various routines necessary to build up the Hellman-Feynman
+! CALL THE VARIOUS ROUTINES NECESSARY TO BUILD UP THE HELLMAN-FEYNMAN
 !
-! *NB* This routine used to be called hellfeyn, but the name was 
-!      altered on 3rd Aug 2002 when introduced into OPTIM 2.3
+! *NB* THIS ROUTINE USED TO BE CALLED HELLFEYN, BUT THE NAME WAS 
+!      ALTERED ON 3RD AUG 2002 WHEN INTRODUCED INTO OPTIM 2.3
 !
 !#####################################################################  
 
-	integer ncoord
+	INTEGER NCOORD
 	DOUBLE PRECISION DQ(NCOORD), Q(NCOORD)
-	logical assignVBstates
+	LOGICAL ASSIGNVBSTATES
 
 	DOUBLE PRECISION XF(NATOMS),YF(NATOMS),ZF(NATOMS)
-	integer atompos,atompos_temp,proton,atom_num
-	integer i,jj,j,ii
+	INTEGER ATOMPOS,ATOMPOS_TEMP,PROTON,ATOM_NUM
+	INTEGER I,JJ,J,II
 	DOUBLE PRECISION FXH(REDUCED_NUM_EIG,REDUCED_NUM_EIG),FYH(REDUCED_NUM_EIG,REDUCED_NUM_EIG), &
-               fzH(reduced_num_eig,reduced_num_eig),dx,dy, &
-      	       dz,R1,R2,minimum_x(natoms),scale,minimum_y(natoms),minimum_z(natoms), &
-               probable_state(reduced_num_eig),tempScale
-	integer m,eigenstate,pivotOxygen,jk,posn_in_state1,position,position_temp
+               FZH(REDUCED_NUM_EIG,REDUCED_NUM_EIG),DX,DY, &
+      	       DZ,R1,R2,MINIMUM_X(NATOMS),SCALE,MINIMUM_Y(NATOMS),MINIMUM_Z(NATOMS), &
+               PROBABLE_STATE(REDUCED_NUM_EIG),TEMPSCALE
+	INTEGER M,EIGENSTATE,PIVOTOXYGEN,JK,POSN_IN_STATE1,POSITION,POSITION_TEMP
 	DOUBLE PRECISION FXATOM1,FXATOM3,FXATOM4(NATOMS),OFFDIAGX,OFFDIAGY, &
-      		offdiagz,Roo,Roh,Fyatom1,Fzatom1, &
-      		Fyatom3,Fzatom4(natoms),Fyatom4(natoms),Fzatom3, &
-      		force_x,force_y,force_z, &
-      		dRoo(3),dRoh(3),startEnergy,maxforcemag,keech
-	character*5 atomtype
+      		OFFDIAGZ,ROO,ROH,FYATOM1,FZATOM1, &
+      		FYATOM3,FZATOM4(NATOMS),FYATOM4(NATOMS),FZATOM3, &
+      		FORCE_X,FORCE_Y,FORCE_Z, &
+      		DROO(3),DROH(3),STARTENERGY,MAXFORCEMAG,KEECH
+	CHARACTER*5 ATOMTYPE
 	DOUBLE PRECISION DX1,DX2,DX3,DY1,DY2,DY3,DZ1,DZ2,DZ3,R12_1,R12_2,R12_3,ASYMM
-	integer hmin,positioni,positionj,jl,atomorder(natoms)
+	INTEGER HMIN,POSITIONI,POSITIONJ,JL,ATOMORDER(NATOMS)
 	DOUBLE PRECISION ENEW
 	DOUBLE PRECISION R,RCUT
-	integer currentAtom,state1,positionInState1,state2,positionInState2
+	INTEGER CURRENTATOM,STATE1,POSITIONINSTATE1,STATE2,POSITIONINSTATE2
 	DOUBLE PRECISION :: H2OINTERXFORCES(NATOMS,REDUCED_NUM_EIG)
 	DOUBLE PRECISION :: H2OINTERYFORCES(NATOMS,REDUCED_NUM_EIG)
 	DOUBLE PRECISION :: H2OINTERZFORCES(NATOMS,REDUCED_NUM_EIG)
 
 !###################################################################
-! Check that there is no Roo vectors smaller in magnitude than
-! the RCut cutoff value
+! CHECK THAT THERE IS NO ROO VECTORS SMALLER IN MAGNITUDE THAN
+! THE RCUT CUTOFF VALUE
 !  
-! 	RCut = 2.0
-!         do i = 3,num_atom-4,3
-!            do j = i+3,num_atom-1,3
-!               dx = psix(i) - psix(j)
-!               dy = psiy(i) - psiy(j)
-!               dz = psiz(i) - psiz(j)
-!               R = DSQRT(dx**2 + dy**2 + dz**2)
-!               if (R.lt.RCut) then
-! 		  dQ(3*i+1) = -1.0d02
-! 	          dQ(3*i+2) = -1.0d02
-!                 dQ(3*i+3) = -1.0d02
-!                 dQ(3*j+1) = -1.0d02
-!                 dQ(3*j+2) = -1.0d02
-!                 dQ(3*j+3) = -1.0d02
+! 	RCUT = 2.0
+!         DO I = 3,NUM_ATOM-4,3
+!            DO J = I+3,NUM_ATOM-1,3
+!               DX = PSIX(I) - PSIX(J)
+!               DY = PSIY(I) - PSIY(J)
+!               DZ = PSIZ(I) - PSIZ(J)
+!               R = DSQRT(DX**2 + DY**2 + DZ**2)
+!               IF (R.LT.RCUT) THEN
+! 		  DQ(3*I+1) = -1.0D02
+! 	          DQ(3*I+2) = -1.0D02
+!                 DQ(3*I+3) = -1.0D02
+!                 DQ(3*J+1) = -1.0D02
+!                 DQ(3*J+2) = -1.0D02
+!                 DQ(3*J+3) = -1.0D02
 !                 RETURN
-!               endif
-!            enddo
-!         enddo              
+!               ENDIF
+!            ENDDO
+!         ENDDO              
 !
 !#######################################################################################
-! Evaluation of the force terms requires the coordinates to be in 
-! vectors "psix,psiy" etc. However, Polak-Ribiere routines pass the
-! vector with which the energy is to be minimized as the vector "p".
+! EVALUATION OF THE FORCE TERMS REQUIRES THE COORDINATES TO BE IN 
+! VECTORS "PSIX,PSIY" ETC. HOWEVER, POLAK-RIBIERE ROUTINES PASS THE
+! VECTOR WITH WHICH THE ENERGY IS TO BE MINIMIZED AS THE VECTOR "P".
 ! 
 !########################################################################################
 
-! Not always necessary to recall the energy step
-! The only things carried over are the VB assignments and the exchange energies
+! NOT ALWAYS NECESSARY TO RECALL THE ENERGY STEP
+! THE ONLY THINGS CARRIED OVER ARE THE VB ASSIGNMENTS AND THE EXCHANGE ENERGIES
 
-	if (assignVBstates) call msevb(ncoord,Q,assignVBstates,enew)
+	IF (ASSIGNVBSTATES) CALL MSEVB(NCOORD,Q,ASSIGNVBSTATES,ENEW)
 
-! Calculate H2O-H2O interactions all in one go
+! CALCULATE H2O-H2O INTERACTIONS ALL IN ONE GO
 
-	call calculateH2OinterForces (h2oInterXforces, h2oInterYforces, h2oInterZforces)
+	CALL CALCULATEH2OINTERFORCES (H2OINTERXFORCES, H2OINTERYFORCES, H2OINTERZFORCES)
 
 !#######################################################################################
-! Loop over all atoms
+! LOOP OVER ALL ATOMS
 !
 !####################################################################################### 
- 	do currentAtom = 1,natoms
+ 	DO CURRENTATOM = 1,NATOMS
 
 !#######################################################################################
-! Loop Over the Eigenstates of System
+! LOOP OVER THE EIGENSTATES OF SYSTEM
 !#######################################################################################
 
-	   do state1 = 1, reduced_num_eig
+	   DO STATE1 = 1, REDUCED_NUM_EIG
 
-! Which atom is this in the current VB state?
+! WHICH ATOM IS THIS IN THE CURRENT VB STATE?
 
-	      do j = 1, natoms
-		 if (atmpl(state1,j).eq.currentAtom) then
-		    positionInState1 = j
-		    exit
-		 endif
-	      enddo
-
-!###############################################################################################
-! Determine the diagonal matrix element
-
-	      call fdiag(positionInState1,state1,force_x,force_y,force_z)
-
-	      fxH(state1,state1) = force_x + h2oInterXforces(currentAtom,state1)
-	      fyH(state1,state1) = force_y + h2oInterYforces(currentAtom,state1)
-	      fzH(state1,state1) = force_z + h2oInterZforces(currentAtom,state1)
+	      DO J = 1, NATOMS
+		 IF (ATMPL(STATE1,J).EQ.CURRENTATOM) THEN
+		    POSITIONINSTATE1 = J
+		    EXIT
+		 ENDIF
+	      ENDDO
 
 !###############################################################################################
-! Having calculated the diagonal element, now determine the off-diagonal elements
+! DETERMINE THE DIAGONAL MATRIX ELEMENT
 
-	      do state2 = (state1+1),reduced_num_eig
+	      CALL FDIAG(POSITIONINSTATE1,STATE1,FORCE_X,FORCE_Y,FORCE_Z)
 
-		 if (statesInteract(state1,state2)) then
+	      FXH(STATE1,STATE1) = FORCE_X + H2OINTERXFORCES(CURRENTATOM,STATE1)
+	      FYH(STATE1,STATE1) = FORCE_Y + H2OINTERYFORCES(CURRENTATOM,STATE1)
+	      FZH(STATE1,STATE1) = FORCE_Z + H2OINTERZFORCES(CURRENTATOM,STATE1)
+
+!###############################################################################################
+! HAVING CALCULATED THE DIAGONAL ELEMENT, NOW DETERMINE THE OFF-DIAGONAL ELEMENTS
+
+	      DO STATE2 = (STATE1+1),REDUCED_NUM_EIG
+
+		 IF (STATESINTERACT(STATE1,STATE2)) THEN
 		 
-		    do j = 1, natoms
-		       if (atmpl(state2,j).eq.currentAtom) then
-			  positionInState2 = j
-			  exit
-		       endif
-		    enddo  
+		    DO J = 1, NATOMS
+		       IF (ATMPL(STATE2,J).EQ.CURRENTATOM) THEN
+			  POSITIONINSTATE2 = J
+			  EXIT
+		       ENDIF
+		    ENDDO  
 
-! Already have determined the Zundel species for this combination
+! ALREADY HAVE DETERMINED THE ZUNDEL SPECIES FOR THIS COMBINATION
 
-		    roh = interAtomicR(zundel_species(state1,state2,4), atmpl(state1,3))
+		    ROH = INTERATOMICR(ZUNDEL_SPECIES(STATE1,STATE2,4), ATMPL(STATE1,3))
     
-		    if (currentAtom.eq.zundel_species(state1,state2,4)) then
-		       dRoh(1) = psix(zundel_species(state1,state2,4)) - psix(atmpl(state1,3))
-		       dRoh(2) = psiy(zundel_species(state1,state2,4)) - psiy(atmpl(state1,3))
-		       dRoh(3) = psiz(zundel_species(state1,state2,4)) - psiz(atmpl(state1,3))
-		    else
-		       dRoh(1) = psix(atmpl(state1,3)) - psix(zundel_species(state1,state2,4))
-		       dRoh(2) = psiy(atmpl(state1,3)) - psiy(zundel_species(state1,state2,4))
-		       dRoh(3) = psiz(atmpl(state1,3)) - psiz(zundel_species(state1,state2,4))            
-		    endif
+		    IF (CURRENTATOM.EQ.ZUNDEL_SPECIES(STATE1,STATE2,4)) THEN
+		       DROH(1) = PSIX(ZUNDEL_SPECIES(STATE1,STATE2,4)) - PSIX(ATMPL(STATE1,3))
+		       DROH(2) = PSIY(ZUNDEL_SPECIES(STATE1,STATE2,4)) - PSIY(ATMPL(STATE1,3))
+		       DROH(3) = PSIZ(ZUNDEL_SPECIES(STATE1,STATE2,4)) - PSIZ(ATMPL(STATE1,3))
+		    ELSE
+		       DROH(1) = PSIX(ATMPL(STATE1,3)) - PSIX(ZUNDEL_SPECIES(STATE1,STATE2,4))
+		       DROH(2) = PSIY(ATMPL(STATE1,3)) - PSIY(ZUNDEL_SPECIES(STATE1,STATE2,4))
+		       DROH(3) = PSIZ(ATMPL(STATE1,3)) - PSIZ(ZUNDEL_SPECIES(STATE1,STATE2,4))            
+		    ENDIF
 
-		    if (currentAtom.eq.atmpl(state2,3)) then
-		       dRoo(1) = psix(atmpl(state2,3)) - psix(atmpl(state1,3))
-		       dRoo(2) = psiy(atmpl(state2,3)) - psiy(atmpl(state1,3))
-		       dRoo(3) = psiz(atmpl(state2,3)) - psiz(atmpl(state1,3))  
-		    else
-		       dRoo(1) = psix(atmpl(state1,3)) - psix(atmpl(state2,3))
-		       dRoo(2) = psiy(atmpl(state1,3)) - psiy(atmpl(state2,3))
-		       dRoo(3) = psiz(atmpl(state1,3)) - psiz(atmpl(state2,3))  
-		    endif
+		    IF (CURRENTATOM.EQ.ATMPL(STATE2,3)) THEN
+		       DROO(1) = PSIX(ATMPL(STATE2,3)) - PSIX(ATMPL(STATE1,3))
+		       DROO(2) = PSIY(ATMPL(STATE2,3)) - PSIY(ATMPL(STATE1,3))
+		       DROO(3) = PSIZ(ATMPL(STATE2,3)) - PSIZ(ATMPL(STATE1,3))  
+		    ELSE
+		       DROO(1) = PSIX(ATMPL(STATE1,3)) - PSIX(ATMPL(STATE2,3))
+		       DROO(2) = PSIY(ATMPL(STATE1,3)) - PSIY(ATMPL(STATE2,3))
+		       DROO(3) = PSIZ(ATMPL(STATE1,3)) - PSIZ(ATMPL(STATE2,3))  
+		    ENDIF
 
-		    Roo = interAtomicR(atmpl(state1,3), atmpl(state2,3))
+		    ROO = INTERATOMICR(ATMPL(STATE1,3), ATMPL(STATE2,3))
 
 !###############################################################################################
-! Determine the appropriate off-diagonal routine to call
+! DETERMINE THE APPROPRIATE OFF-DIAGONAL ROUTINE TO CALL
 !
 
-		    if (MOD(currentAtom,3).eq.0) then
-		       if ((positionInState1.eq.3).OR.(positionInState2.eq.3)) then
+		    IF (MOD(CURRENTATOM,3).EQ.0) THEN
+		       IF ((POSITIONINSTATE1.EQ.3).OR.(POSITIONINSTATE2.EQ.3)) THEN
 
-! Hydronium O atom in either of the VB states under consideration
-			  call offd_atom3(currentAtom,Roo,Roh,dRoo,dRoh,Fxatom3,Fyatom3,Fzatom3,state1,state2)
-			  offdiagx = Fxatom3
-			  offdiagy = Fyatom3
-			  offdiagz = Fzatom3 
+! HYDRONIUM O ATOM IN EITHER OF THE VB STATES UNDER CONSIDERATION
+			  CALL OFFD_ATOM3(CURRENTATOM,ROO,ROH,DROO,DROH,FXATOM3,FYATOM3,FZATOM3,STATE1,STATE2)
+			  OFFDIAGX = FXATOM3
+			  OFFDIAGY = FYATOM3
+			  OFFDIAGZ = FZATOM3 
 
-		       else	
-! Pure H2O O atom
-			  call offd_atom1(currentAtom,Roo,Roh,Fxatom1,Fyatom1,Fzatom1,state1,state2)
-			  offdiagx = Fxatom1
-			  offdiagy = Fyatom1
-			  offdiagz = Fzatom1
-		       endif
-!---		       elseif (atmpl(i,4).eq.4) then
-!---		       elseif (position.eq.hmin) then
-		    elseif (currentAtom.eq.zundel_species(state1,state2,4)) then
+		       ELSE	
+! PURE H2O O ATOM
+			  CALL OFFD_ATOM1(CURRENTATOM,ROO,ROH,FXATOM1,FYATOM1,FZATOM1,STATE1,STATE2)
+			  OFFDIAGX = FXATOM1
+			  OFFDIAGY = FYATOM1
+			  OFFDIAGZ = FZATOM1
+		       ENDIF
+!---		       ELSEIF (ATMPL(I,4).EQ.4) THEN
+!---		       ELSEIF (POSITION.EQ.HMIN) THEN
+		    ELSEIF (CURRENTATOM.EQ.ZUNDEL_SPECIES(STATE1,STATE2,4)) THEN
 
-! Exchanging H atom
-		       call offd_atom4(currentAtom,Roo,Roh,dRoo,dRoh,Fxatom1,Fyatom1,Fzatom1,state1,state2)
-		       offdiagx = Fxatom1
-		       offdiagy = Fyatom1
-		       offdiagz = Fzatom1 
-		    else
+! EXCHANGING H ATOM
+		       CALL OFFD_ATOM4(CURRENTATOM,ROO,ROH,DROO,DROH,FXATOM1,FYATOM1,FZATOM1,STATE1,STATE2)
+		       OFFDIAGX = FXATOM1
+		       OFFDIAGY = FYATOM1
+		       OFFDIAGZ = FZATOM1 
+		    ELSE
 
-! Either a pure water H or a non-exchanging Zundel H
+! EITHER A PURE WATER H OR A NON-EXCHANGING ZUNDEL H
 
-		       call offd_atom1(currentAtom,Roo,Roh,Fxatom1,Fyatom1,Fzatom1,state1,state2)
-		       offdiagx = Fxatom1
-		       offdiagy = Fyatom1
-		       offdiagz = Fzatom1
-		    endif
+		       CALL OFFD_ATOM1(CURRENTATOM,ROO,ROH,FXATOM1,FYATOM1,FZATOM1,STATE1,STATE2)
+		       OFFDIAGX = FXATOM1
+		       OFFDIAGY = FYATOM1
+		       OFFDIAGZ = FZATOM1
+		    ENDIF
 		    
-		    fxH(state1,state2) = offdiagx
-		    fyH(state1,state2) = offdiagy
-		    fzH(state1,state2) = offdiagz
-		    fxH(state2,state1) = offdiagx
-		    fyH(state2,state1) = offdiagy
-		    fzH(state2,state1) = offdiagz
+		    FXH(STATE1,STATE2) = OFFDIAGX
+		    FYH(STATE1,STATE2) = OFFDIAGY
+		    FZH(STATE1,STATE2) = OFFDIAGZ
+		    FXH(STATE2,STATE1) = OFFDIAGX
+		    FYH(STATE2,STATE1) = OFFDIAGY
+		    FZH(STATE2,STATE1) = OFFDIAGZ
 
-! Debugging
-!		       off_diag_forces(state1,state2,3*jj-2)=offdiagx
-!		       off_diag_forces(state1,state2,3*jj-1)=offdiagy
-!		       off_diag_forces(state1,state2,3*jj)=offdiagz
+! DEBUGGING
+!		       OFF_DIAG_FORCES(STATE1,STATE2,3*JJ-2)=OFFDIAGX
+!		       OFF_DIAG_FORCES(STATE1,STATE2,3*JJ-1)=OFFDIAGY
+!		       OFF_DIAG_FORCES(STATE1,STATE2,3*JJ)=OFFDIAGZ
 		 
-		 else
-		    fxH(state1,state2) = 0.0d0
-		    fyH(state1,state2) = 0.0d0
-		    fzH(state1,state2) = 0.0d0
-		    fxH(state2,state1) = 0.0d0
-		    fyH(state2,state1) = 0.0d0
-		    fzH(state2,state1) = 0.0d0
-		 endif
-	      enddo
+		 ELSE
+		    FXH(STATE1,STATE2) = 0.0D0
+		    FYH(STATE1,STATE2) = 0.0D0
+		    FZH(STATE1,STATE2) = 0.0D0
+		    FXH(STATE2,STATE1) = 0.0D0
+		    FYH(STATE2,STATE1) = 0.0D0
+		    FZH(STATE2,STATE1) = 0.0D0
+		 ENDIF
+	      ENDDO
 
-!----Sum up the components to make the element Hij
+!----SUM UP THE COMPONENTS TO MAKE THE ELEMENT HIJ
 
-	   enddo
+	   ENDDO
 
-! Sum components
+! SUM COMPONENTS
 
 !#####################################################################
-! Assign the ground state eigenvector as corresponding to the 
-! lowest eigenvalue
-!  *NB* No consideration of sign is observed here
+! ASSIGN THE GROUND STATE EIGENVECTOR AS CORRESPONDING TO THE 
+! LOWEST EIGENVALUE
+!  *NB* NO CONSIDERATION OF SIGN IS OBSERVED HERE
 !
 !#####################################################################
 
-	   minimum_x(currentAtom) = 0.0d0
-	   minimum_y(currentAtom) = 0.0d0
-	   minimum_z(currentAtom) = 0.0d0
+	   MINIMUM_X(CURRENTATOM) = 0.0D0
+	   MINIMUM_Y(CURRENTATOM) = 0.0D0
+	   MINIMUM_Z(CURRENTATOM) = 0.0D0
 
-	   do i = 1,reduced_num_eig
-	      do j = 1,reduced_num_eig
-		 minimum_x(currentAtom) = minimum_x(currentAtom) + grstwfu(i)*grstwfu(j)*fxH(i,j)
-		 minimum_y(currentAtom) = minimum_y(currentAtom) + grstwfu(i)*grstwfu(j)*fyH(i,j)
-		 minimum_z(currentAtom) = minimum_z(currentAtom) + grstwfu(i)*grstwfu(j)*fzH(i,j)
-	      enddo
-	   enddo
+	   DO I = 1,REDUCED_NUM_EIG
+	      DO J = 1,REDUCED_NUM_EIG
+		 MINIMUM_X(CURRENTATOM) = MINIMUM_X(CURRENTATOM) + GRSTWFU(I)*GRSTWFU(J)*FXH(I,J)
+		 MINIMUM_Y(CURRENTATOM) = MINIMUM_Y(CURRENTATOM) + GRSTWFU(I)*GRSTWFU(J)*FYH(I,J)
+		 MINIMUM_Z(CURRENTATOM) = MINIMUM_Z(CURRENTATOM) + GRSTWFU(I)*GRSTWFU(J)*FZH(I,J)
+	      ENDDO
+	   ENDDO
 
-!	   print *, 'Force matrix: atom', currentAtom
-!	   do i=1,reduced_num_eig
-!	   do j=1,reduced_num_eig
-!	      print *, '***', i, j, '***'
-!	      print *, '***', i, '***'
-!	      write(*, '(3(a3,F14.6))') 'x:', fxH(i,i), 'y:', fyH(i,i), 'z:', fzH(i,i) 
-!	   enddo
-!	   enddo
+!	   PRINT *, 'FORCE MATRIX: ATOM', CURRENTATOM
+!	   DO I=1,REDUCED_NUM_EIG
+!	   DO J=1,REDUCED_NUM_EIG
+!	      PRINT *, '***', I, J, '***'
+!	      PRINT *, '***', I, '***'
+!	      WRITE(*, '(3(A3,F14.6))') 'X:', FXH(I,I), 'Y:', FYH(I,I), 'Z:', FZH(I,I) 
+!	   ENDDO
+!	   ENDDO
 
 !#####################################################################
-! End loop over Atoms
+! END LOOP OVER ATOMS
 !
 !#####################################################################
- 	enddo
+ 	ENDDO
 
-	j = 1
-	do i = 1,natoms
-	   dQ(j) = minimum_x(i)
-	   dQ(j+1) = minimum_y(i)
-	   dQ(j+2) = minimum_z(i)
-	   j = j + 3
-	enddo
+	J = 1
+	DO I = 1,NATOMS
+	   DQ(J) = MINIMUM_X(I)
+	   DQ(J+1) = MINIMUM_Y(I)
+	   DQ(J+2) = MINIMUM_Z(I)
+	   J = J + 3
+	ENDDO
 
-!	stop
+!	STOP
 
 	RETURN 
         END
@@ -296,73 +296,73 @@
 !############### SUBROUTINE FDIAG ####################################
 !#####################################################################
 
-! H20-H2O intermolecular forces are calculated separately
+! H20-H2O INTERMOLECULAR FORCES ARE CALCULATED SEPARATELY
 
-	subroutine fdiag(atompos, vbState, force_x, force_y, force_z)
+	SUBROUTINE FDIAG(ATOMPOS, VBSTATE, FORCE_X, FORCE_Y, FORCE_Z)
 
-	use msevb_common
+	USE MSEVB_COMMON
 
-! atompos is the number of the atom in VBstate, the VB state of interest
+! ATOMPOS IS THE NUMBER OF THE ATOM IN VBSTATE, THE VB STATE OF INTEREST
 
-	implicit none
+	IMPLICIT NONE
 
 !-----------------------------------------------------------------
-! 23-7-00 R.A. Christie
-! routine to call the diagonal Hellman-Feynman force calculations
+! 23-7-00 R.A. CHRISTIE
+! ROUTINE TO CALL THE DIAGONAL HELLMAN-FEYNMAN FORCE CALCULATIONS
 !
-! Includes the following routines:
-! 	fh3ointra.f
-!	finter.f
-!	fh2ointra.f
+! INCLUDES THE FOLLOWING ROUTINES:
+! 	FH3OINTRA.F
+!	FINTER.F
+!	FH2OINTRA.F
 !-----------------------------------------------------------------
 
-!----Variables to be passed
-        integer atompos,vbState
+!----VARIABLES TO BE PASSED
+        INTEGER ATOMPOS,VBSTATE
 	DOUBLE PRECISION FH3OINTRAX,FH3OINTRAY,FH3OINTRAZ
 	DOUBLE PRECISION FINTERX,FINTERY,FINTERZ
 	DOUBLE PRECISION FORCE_X,FORCE_Y,FORCE_Z
 	DOUBLE PRECISION FH2OINTRAX,FH2OINTRAY,FH2OINTRAZ
 
 !-----------------------------------------------------------------
-! Initialize variables
+! INITIALIZE VARIABLES
 !
 !----------------------------------------------------------------- 
 
-	fh3ointrax = 0.0d0
-	fh3ointray = 0.0d0
-	fh3ointraz = 0.0d0
-	finterx = 0.0d0
-	fintery = 0.0d0
-	finterz = 0.0d0
-	fh2ointrax = 0.0d0
-	fh2ointray = 0.0d0
-	fh2ointraz = 0.0d0
-	force_x = 0.0d0
-	force_y = 0.0d0
-	force_z = 0.0d0
+	FH3OINTRAX = 0.0D0
+	FH3OINTRAY = 0.0D0
+	FH3OINTRAZ = 0.0D0
+	FINTERX = 0.0D0
+	FINTERY = 0.0D0
+	FINTERZ = 0.0D0
+	FH2OINTRAX = 0.0D0
+	FH2OINTRAY = 0.0D0
+	FH2OINTRAZ = 0.0D0
+	FORCE_X = 0.0D0
+	FORCE_Y = 0.0D0
+	FORCE_Z = 0.0D0
 
 !-----------------------------------------------------------------
-! Call subroutines according to the atom in question
+! CALL SUBROUTINES ACCORDING TO THE ATOM IN QUESTION
 !-----------------------------------------------------------------
 
-        if (atompos.le.4) then  ! Hydronium atom in this state
+        IF (ATOMPOS.LE.4) THEN  ! HYDRONIUM ATOM IN THIS STATE
 
-           call fh3ointra(atompos,vbState,fh3ointrax,fh3ointray,fh3ointraz)
-           call finter(atompos,vbState,finterx,fintery,finterz)
+           CALL FH3OINTRA(ATOMPOS,VBSTATE,FH3OINTRAX,FH3OINTRAY,FH3OINTRAZ)
+           CALL FINTER(ATOMPOS,VBSTATE,FINTERX,FINTERY,FINTERZ)
 
-	   force_x = fh3ointrax + finterx 
-	   force_y = fh3ointray + fintery
-           force_z = fh3ointraz + finterz 
+	   FORCE_X = FH3OINTRAX + FINTERX 
+	   FORCE_Y = FH3OINTRAY + FINTERY
+           FORCE_Z = FH3OINTRAZ + FINTERZ 
 
-        else  ! Water atom in this state
+        ELSE  ! WATER ATOM IN THIS STATE
 
-           call fh2ointra(atompos,vbState,fh2ointrax,fh2ointray,fh2ointraz)
-           call finter(atompos,vbState,finterx,fintery,finterz)
+           CALL FH2OINTRA(ATOMPOS,VBSTATE,FH2OINTRAX,FH2OINTRAY,FH2OINTRAZ)
+           CALL FINTER(ATOMPOS,VBSTATE,FINTERX,FINTERY,FINTERZ)
 
-	   force_x = fh2ointrax + finterx
-	   force_y = fh2ointray + fintery
-	   force_z = fh2ointraz + finterz
-        endif
+	   FORCE_X = FH2OINTRAX + FINTERX
+	   FORCE_Y = FH2OINTRAY + FINTERY
+	   FORCE_Z = FH2OINTRAZ + FINTERZ
+        ENDIF
 
         RETURN
         END
@@ -371,449 +371,449 @@
 !################### SUBROUTINE FH3OINTRA ############################
 !#####################################################################
 
-        subroutine fh3ointra(atompos,vbState,fh3ointrax,fh3ointray,fh3ointraz)
+        SUBROUTINE FH3OINTRA(ATOMPOS,VBSTATE,FH3OINTRAX,FH3OINTRAY,FH3OINTRAZ)
 
-	use msevb_common
+	USE MSEVB_COMMON
 
-	implicit none
+	IMPLICIT NONE
 
 !-----------------------------------------------------------------
-! 30-7-99 R.A. Christie
+! 30-7-99 R.A. CHRISTIE
 !
-!   -- Update: 21-07-00
-! Subroutine to determine the forces from the intramolecular bend
-! and stretch of the H3O+ molecule
+!   -- UPDATE: 21-07-00
+! SUBROUTINE TO DETERMINE THE FORCES FROM THE INTRAMOLECULAR BEND
+! AND STRETCH OF THE H3O+ MOLECULE
 !
 !-----------------------------------------------------------------
 
-!----Incoming variables
-        integer atompos,vbState
+!----INCOMING VARIABLES
+        INTEGER ATOMPOS,VBSTATE
 	DOUBLE PRECISION FH3OINTRAX,FH3OINTRAY,FH3OINTRAZ
 
-!----Local variables
-	integer atomNo
+!----LOCAL VARIABLES
+	INTEGER ATOMNO
         DOUBLE PRECISION DX,DY,DZ,EXPTERM,VROH(10),RFH3OSTR,FH3OSTR,RFH3OSTRX, &
-             rfh3ostry,rfh3ostrz,roh(3),theta(3),dxroh(10),dyroh(10), &
-             dzroh(10),rfh3obendx1,rfh3obendy1,rfh3obendz1,rohstr, &
-             rfh3obendx,rfh3obendy,rfh3obendz,rfh3obendx2,AdotA,AdotB, &
-      	     AdotC,rfh3obendy2,rfh3obendz2,fh3ostr_temp,dxoh(10),dyoh(10), &
-      	     dzoh(10),vectSq(3),angleDiff(3),part1x,part2x,part3x,part4x,part1y, &
-      	     part2y,part3y,part4y,part1z,part2z,part3z,part4z,angleDiff2, &
-      	     vectSq2,theta_temp
-        integer i,j,otherb1,otherb2,bnd,hyd
+             RFH3OSTRY,RFH3OSTRZ,ROH(3),THETA(3),DXROH(10),DYROH(10), &
+             DZROH(10),RFH3OBENDX1,RFH3OBENDY1,RFH3OBENDZ1,ROHSTR, &
+             RFH3OBENDX,RFH3OBENDY,RFH3OBENDZ,RFH3OBENDX2,ADOTA,ADOTB, &
+      	     ADOTC,RFH3OBENDY2,RFH3OBENDZ2,FH3OSTR_TEMP,DXOH(10),DYOH(10), &
+      	     DZOH(10),VECTSQ(3),ANGLEDIFF(3),PART1X,PART2X,PART3X,PART4X,PART1Y, &
+      	     PART2Y,PART3Y,PART4Y,PART1Z,PART2Z,PART3Z,PART4Z,ANGLEDIFF2, &
+      	     VECTSQ2,THETA_TEMP
+        INTEGER I,J,OTHERB1,OTHERB2,BND,HYD
 !	DOUBLE PRECISION RADS
-!----New variables
+!----NEW VARIABLES
 	DOUBLE PRECISION ATOMPOSVECTOR,OTHERB1VECTOR,OTHERB2VECTOR,RFH3OBENDX_TEMP1, &
-      		rfh3oBendX_temp2,rfh3oBendX_temp3,rfh3oBendY_temp1, &
-      		rfh3oBendY_temp2,rfh3oBendY_temp3,rfh3oBendZ_temp1, &
-      		rfh3oBendZ_temp2,rfh3oBendZ_temp3,tempR
-	integer pivotOxygen
+      		RFH3OBENDX_TEMP2,RFH3OBENDX_TEMP3,RFH3OBENDY_TEMP1, &
+      		RFH3OBENDY_TEMP2,RFH3OBENDY_TEMP3,RFH3OBENDZ_TEMP1, &
+      		RFH3OBENDZ_TEMP2,RFH3OBENDZ_TEMP3,TEMPR
+	INTEGER PIVOTOXYGEN
 	DOUBLE PRECISION CHECKED_ACOS
 
-!-----Initialize variables
-	expterm = 0.0d0
-	fh3ostr = 0.0d0
-	rfh3ostrx = 0.0d0
-	fh3ostr_temp = 0.0d0
-	rfh3ostry = 0.0d0
-	rfh3ostrz = 0.0d0
-	rfh3obendx1 = 0.0d0
-	rfh3obendy1 = 0.0d0
-	rfh3obendz1 = 0.0d0
-	rfh3obendx = 0.0d0
-        rfh3obendy = 0.0d0
-        rfh3obendz = 0.0d0
-	do i = 1,10
-	   dxroh(i) = 0.0d0
-	   dxoh(i) = 0.0d0
-	   dyroh(i) = 0.0d0
-	   dyoh(i) = 0.0d0
-	   dzroh(i) = 0.0d0
-	   dzoh(i) = 0.d0
-	enddo
+!-----INITIALIZE VARIABLES
+	EXPTERM = 0.0D0
+	FH3OSTR = 0.0D0
+	RFH3OSTRX = 0.0D0
+	FH3OSTR_TEMP = 0.0D0
+	RFH3OSTRY = 0.0D0
+	RFH3OSTRZ = 0.0D0
+	RFH3OBENDX1 = 0.0D0
+	RFH3OBENDY1 = 0.0D0
+	RFH3OBENDZ1 = 0.0D0
+	RFH3OBENDX = 0.0D0
+        RFH3OBENDY = 0.0D0
+        RFH3OBENDZ = 0.0D0
+	DO I = 1,10
+	   DXROH(I) = 0.0D0
+	   DXOH(I) = 0.0D0
+	   DYROH(I) = 0.0D0
+	   DYOH(I) = 0.0D0
+	   DZROH(I) = 0.0D0
+	   DZOH(I) = 0.D0
+	ENDDO
 
-!----Initialize new variables
-	atomposVector = 0.0d0
-	otherb1Vector = 0.0d0
-	otherb2Vector = 0.0d0
-	rfh3oBendX_temp1 = 0.0d0
-	rfh3oBendX_temp2 = 0.0d0
-	rfh3oBendX_temp3 = 0.0d0
-	rfh3oBendY_temp1 = 0.0d0
-        rfh3oBendY_temp2 = 0.0d0
-        rfh3oBendY_temp3 = 0.0d0
-	rfh3oBendZ_temp1 = 0.0d0
-        rfh3oBendZ_temp2 = 0.0d0
-        rfh3oBendZ_temp3 = 0.0d0
-	do i = 1,3
-           vectSq(i) = 0.0d0
-	   angleDiff(i) = 0.0d0
-	enddo
+!----INITIALIZE NEW VARIABLES
+	ATOMPOSVECTOR = 0.0D0
+	OTHERB1VECTOR = 0.0D0
+	OTHERB2VECTOR = 0.0D0
+	RFH3OBENDX_TEMP1 = 0.0D0
+	RFH3OBENDX_TEMP2 = 0.0D0
+	RFH3OBENDX_TEMP3 = 0.0D0
+	RFH3OBENDY_TEMP1 = 0.0D0
+        RFH3OBENDY_TEMP2 = 0.0D0
+        RFH3OBENDY_TEMP3 = 0.0D0
+	RFH3OBENDZ_TEMP1 = 0.0D0
+        RFH3OBENDZ_TEMP2 = 0.0D0
+        RFH3OBENDZ_TEMP3 = 0.0D0
+	DO I = 1,3
+           VECTSQ(I) = 0.0D0
+	   ANGLEDIFF(I) = 0.0D0
+	ENDDO
 
-! The position of the atom in the original input vectors
+! THE POSITION OF THE ATOM IN THE ORIGINAL INPUT VECTORS
 
-	atomNo = atmpl(vbState, atompos)
+	ATOMNO = ATMPL(VBSTATE, ATOMPOS)
 
 !-----------------------------------------------------------------------
-! Calculate the stretch contribution to the force first.
+! CALCULATE THE STRETCH CONTRIBUTION TO THE FORCE FIRST.
 !
 !-----------------------------------------------------------------------
 
-        if (atompos.ne.3) then    ! H atom
-           dx = psix(atomNo) - psix(atmpl(vbState,3))
-           dy = psiy(atomNo) - psiy(atmpl(vbState,3))
-           dz = psiz(atomNo) - psiz(atmpl(vbState,3))
-	   rohstr = interAtomicR(atomNo,atmpl(vbState,3))
-           expterm = DEXP(-1.0d0*aoheq*(rohstr-roheq))
-           fh3ostr = (2.0d0/rohstr)*expterm*aoheq*doh*(1.0d0-expterm)
-	   rfh3ostrx = dx*fh3ostr
-	   rfh3ostry = dy*fh3ostr
-           rfh3ostrz = dz*fh3ostr
-        else                    ! O atom
-	   j = 1
-           do i = 1,3
-              dxoh(i) = psix(atomNo) - psix(atmpl(vbState,j))
-              dyoh(i) = psiy(atomNo) - psiy(atmpl(vbState,j))
-              dzoh(i) = psiz(atomNo) - psiz(atmpl(vbState,j))
-	      vroh(i) = interAtomicR(atomNo,atmpl(vbState,j))
-              expterm = DEXP(-1.0d0*aoheq*(vroh(i)-roheq))
-              fh3ostr_temp = (2.0d0/vroh(i))*expterm*aoheq*doh*(1.0d0-expterm)
-              rfh3ostrx = rfh3ostrx + fh3ostr_temp*dxoh(i)
- 	      rfh3ostry = rfh3ostry + fh3ostr_temp*dyoh(i) 
- 	      rfh3ostrz = rfh3ostrz + fh3ostr_temp*dzoh(i) 
-              j = j+1
-              if (j.eq.3) j = 4
-           enddo
-        endif
+        IF (ATOMPOS.NE.3) THEN    ! H ATOM
+           DX = PSIX(ATOMNO) - PSIX(ATMPL(VBSTATE,3))
+           DY = PSIY(ATOMNO) - PSIY(ATMPL(VBSTATE,3))
+           DZ = PSIZ(ATOMNO) - PSIZ(ATMPL(VBSTATE,3))
+	   ROHSTR = INTERATOMICR(ATOMNO,ATMPL(VBSTATE,3))
+           EXPTERM = DEXP(-1.0D0*AOHEQ*(ROHSTR-ROHEQ))
+           FH3OSTR = (2.0D0/ROHSTR)*EXPTERM*AOHEQ*DOH*(1.0D0-EXPTERM)
+	   RFH3OSTRX = DX*FH3OSTR
+	   RFH3OSTRY = DY*FH3OSTR
+           RFH3OSTRZ = DZ*FH3OSTR
+        ELSE                    ! O ATOM
+	   J = 1
+           DO I = 1,3
+              DXOH(I) = PSIX(ATOMNO) - PSIX(ATMPL(VBSTATE,J))
+              DYOH(I) = PSIY(ATOMNO) - PSIY(ATMPL(VBSTATE,J))
+              DZOH(I) = PSIZ(ATOMNO) - PSIZ(ATMPL(VBSTATE,J))
+	      VROH(I) = INTERATOMICR(ATOMNO,ATMPL(VBSTATE,J))
+              EXPTERM = DEXP(-1.0D0*AOHEQ*(VROH(I)-ROHEQ))
+              FH3OSTR_TEMP = (2.0D0/VROH(I))*EXPTERM*AOHEQ*DOH*(1.0D0-EXPTERM)
+              RFH3OSTRX = RFH3OSTRX + FH3OSTR_TEMP*DXOH(I)
+ 	      RFH3OSTRY = RFH3OSTRY + FH3OSTR_TEMP*DYOH(I) 
+ 	      RFH3OSTRZ = RFH3OSTRZ + FH3OSTR_TEMP*DZOH(I) 
+              J = J+1
+              IF (J.EQ.3) J = 4
+           ENDDO
+        ENDIF
 
 !---------------------------------------------------------------------
-! Calculate the contribution to the force from the harmonic bending
-! potential
+! CALCULATE THE CONTRIBUTION TO THE FORCE FROM THE HARMONIC BENDING
+! POTENTIAL
 !
-! 1. Determine the "other atoms" which the atom in question is
-!    interacting with.
-! 2. Find the magnitude of the position vectors in a global coordinate
-!    system.
-! 3. Determine the magnitude of the O-H vectors in a local, molecule,
-!    coordinate system.
-! 4. Calculate the angle between the O and H vectors
-! 5. Finally, calculate the bending component of force.
+! 1. DETERMINE THE "OTHER ATOMS" WHICH THE ATOM IN QUESTION IS
+!    INTERACTING WITH.
+! 2. FIND THE MAGNITUDE OF THE POSITION VECTORS IN A GLOBAL COORDINATE
+!    SYSTEM.
+! 3. DETERMINE THE MAGNITUDE OF THE O-H VECTORS IN A LOCAL, MOLECULE,
+!    COORDINATE SYSTEM.
+! 4. CALCULATE THE ANGLE BETWEEN THE O AND H VECTORS
+! 5. FINALLY, CALCULATE THE BENDING COMPONENT OF FORCE.
 !
 !---------------------------------------------------------------------
 
 !----OXYGEN
-        if (atompos.eq.3) then
+        IF (ATOMPOS.EQ.3) THEN
 
-	   dxoh(1) = psix(atmpl(vbState,1)) - psix(atomNo) 
-	   dyoh(1) = psiy(atmpl(vbState,1)) - psiy(atomNo) 
-	   dzoh(1) = psiz(atmpl(vbState,1)) - psiz(atomNo) 
-	   vroh(1) = interAtomicR(atmpl(vbState,1),atomNo)
+	   DXOH(1) = PSIX(ATMPL(VBSTATE,1)) - PSIX(ATOMNO) 
+	   DYOH(1) = PSIY(ATMPL(VBSTATE,1)) - PSIY(ATOMNO) 
+	   DZOH(1) = PSIZ(ATMPL(VBSTATE,1)) - PSIZ(ATOMNO) 
+	   VROH(1) = INTERATOMICR(ATMPL(VBSTATE,1),ATOMNO)
 
-	   dxoh(2) = psix(atmpl(vbState,2)) - psix(atomNo) 
-	   dyoh(2) = psiy(atmpl(vbState,2)) - psiy(atomNo) 
-	   dzoh(2) = psiz(atmpl(vbState,2)) - psiz(atomNo) 
-	   vroh(2) = interAtomicR(atmpl(vbState,2),atomNo)
+	   DXOH(2) = PSIX(ATMPL(VBSTATE,2)) - PSIX(ATOMNO) 
+	   DYOH(2) = PSIY(ATMPL(VBSTATE,2)) - PSIY(ATOMNO) 
+	   DZOH(2) = PSIZ(ATMPL(VBSTATE,2)) - PSIZ(ATOMNO) 
+	   VROH(2) = INTERATOMICR(ATMPL(VBSTATE,2),ATOMNO)
 
-	   dxoh(3) = psix(atmpl(vbState,4)) - psix(atomNo) 
-	   dyoh(3) = psiy(atmpl(vbState,4)) - psiy(atomNo) 
-	   dzoh(3) = psiz(atmpl(vbState,4)) - psiz(atomNo) 
-	   vroh(3) = interAtomicR(atmpl(vbState,4),atomNo)
+	   DXOH(3) = PSIX(ATMPL(VBSTATE,4)) - PSIX(ATOMNO) 
+	   DYOH(3) = PSIY(ATMPL(VBSTATE,4)) - PSIY(ATOMNO) 
+	   DZOH(3) = PSIZ(ATMPL(VBSTATE,4)) - PSIZ(ATOMNO) 
+	   VROH(3) = INTERATOMICR(ATMPL(VBSTATE,4),ATOMNO)
 
-	   theta_temp = dxoh(1)*dxoh(2) + dyoh(1)*dyoh(2) &
-              + dzoh(1)*dzoh(2)
-	   theta(1) = checked_acos(theta_temp/(vroh(1)*vroh(2)))
+	   THETA_TEMP = DXOH(1)*DXOH(2) + DYOH(1)*DYOH(2) &
+              + DZOH(1)*DZOH(2)
+	   THETA(1) = CHECKED_ACOS(THETA_TEMP/(VROH(1)*VROH(2)))
 
-	   theta_temp = dxoh(1)*dxoh(3) + dyoh(1)*dyoh(3) &
-              + dzoh(1)*dzoh(3)
-	   theta(2) = checked_acos(theta_temp/(vroh(1)*vroh(3)))
+	   THETA_TEMP = DXOH(1)*DXOH(3) + DYOH(1)*DYOH(3) &
+              + DZOH(1)*DZOH(3)
+	   THETA(2) = CHECKED_ACOS(THETA_TEMP/(VROH(1)*VROH(3)))
 
-	   theta_temp = dxoh(3)*dxoh(2) + dyoh(3)*dyoh(2) &
-              + dzoh(3)*dzoh(2)
-	   theta(3) = checked_acos(theta_temp/(vroh(3)*vroh(2)))
+	   THETA_TEMP = DXOH(3)*DXOH(2) + DYOH(3)*DYOH(2) &
+              + DZOH(3)*DZOH(2)
+	   THETA(3) = CHECKED_ACOS(THETA_TEMP/(VROH(3)*VROH(2)))
  
-	   angleDiff(1) = theta(1) - alphaeq
-	   angleDiff(2) = theta(2) - alphaeq
-	   angleDiff(3) = theta(3) - alphaeq
+	   ANGLEDIFF(1) = THETA(1) - ALPHAEQ
+	   ANGLEDIFF(2) = THETA(2) - ALPHAEQ
+	   ANGLEDIFF(3) = THETA(3) - ALPHAEQ
 
-	   vectSq(1) = dxoh(1)*dxoh(2) + dyoh(1)*dyoh(2) + dzoh(1)*dzoh(2)
-	   vectSq(2) = dxoh(1)*dxoh(3) + dyoh(1)*dyoh(3) + dzoh(1)*dzoh(3)
-	   vectSq(3) = dxoh(2)*dxoh(3) + dyoh(2)*dyoh(3) + dzoh(2)*dzoh(3)
+	   VECTSQ(1) = DXOH(1)*DXOH(2) + DYOH(1)*DYOH(2) + DZOH(1)*DZOH(2)
+	   VECTSQ(2) = DXOH(1)*DXOH(3) + DYOH(1)*DYOH(3) + DZOH(1)*DZOH(3)
+	   VECTSQ(3) = DXOH(2)*DXOH(3) + DYOH(2)*DYOH(3) + DZOH(2)*DZOH(3)
  
 !---------------------------------------------------------------------
 !  X
 !---------------------------------------------------------------------
-	   part1x = (dxoh(1)*vectSq(1))/(vroh(2)*vroh(1)**3) + (dxoh(2)*vectSq(1))/(vroh(1)*vroh(2)**3)
-	   part2x = dxoh(1)/(vroh(1)*vroh(2)) + dxoh(2)/(vroh(1)*vroh(2))
-	   part3x = -1.0d0*DSIN(theta(1))
+	   PART1X = (DXOH(1)*VECTSQ(1))/(VROH(2)*VROH(1)**3) + (DXOH(2)*VECTSQ(1))/(VROH(1)*VROH(2)**3)
+	   PART2X = DXOH(1)/(VROH(1)*VROH(2)) + DXOH(2)/(VROH(1)*VROH(2))
+	   PART3X = -1.0D0*DSIN(THETA(1))
 
-	   if (DABS(part3x)<numericalZeroLimit) then
-	      rfh3obendx_temp1 = large_force
-	   else
-	      rfh3obendx_temp1 = kalpha*(theta(1) - alphaeq)*(part1x - part2x)/part3x
-	   endif
+	   IF (DABS(PART3X)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDX_TEMP1 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDX_TEMP1 = KALPHA*(THETA(1) - ALPHAEQ)*(PART1X - PART2X)/PART3X
+	   ENDIF
 
-	   rfh3obendx = rfh3obendx + rfh3obendx_temp1
+	   RFH3OBENDX = RFH3OBENDX + RFH3OBENDX_TEMP1
 	     
-	   part1x = (dxoh(1)*vectSq(2))/(vroh(3)*vroh(1)**3) + (dxoh(3)*vectSq(2))/(vroh(1)*vroh(3)**3)
-	   part2x = dxoh(1)/(vroh(1)*vroh(3)) + dxoh(3)/(vroh(1)*vroh(3))
-	   part3x = -1.0d0*DSIN(theta(2))
+	   PART1X = (DXOH(1)*VECTSQ(2))/(VROH(3)*VROH(1)**3) + (DXOH(3)*VECTSQ(2))/(VROH(1)*VROH(3)**3)
+	   PART2X = DXOH(1)/(VROH(1)*VROH(3)) + DXOH(3)/(VROH(1)*VROH(3))
+	   PART3X = -1.0D0*DSIN(THETA(2))
 
-	   if (DABS(part3x)<numericalZeroLimit) then
-	      rfh3obendx_temp1 = large_force
-	   else 
-	      rfh3obendx_temp1 = kalpha*(theta(2) - alphaeq)*(part1x - part2x)/part3x
-	   endif
+	   IF (DABS(PART3X)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDX_TEMP1 = LARGE_FORCE
+	   ELSE 
+	      RFH3OBENDX_TEMP1 = KALPHA*(THETA(2) - ALPHAEQ)*(PART1X - PART2X)/PART3X
+	   ENDIF
 
-	   rfh3obendx = rfh3obendx + rfh3obendx_temp1 
+	   RFH3OBENDX = RFH3OBENDX + RFH3OBENDX_TEMP1 
 
-	   part1x = (dxoh(2)*vectSq(3))/(vroh(3)*vroh(2)**3) + (dxoh(3)*vectSq(3))/(vroh(2)*vroh(3)**3)
-	   part2x = dxoh(2)/(vroh(2)*vroh(3)) + dxoh(3)/(vroh(2)*vroh(3))
-	   part3x = -1.0d0*DSIN(theta(3))
+	   PART1X = (DXOH(2)*VECTSQ(3))/(VROH(3)*VROH(2)**3) + (DXOH(3)*VECTSQ(3))/(VROH(2)*VROH(3)**3)
+	   PART2X = DXOH(2)/(VROH(2)*VROH(3)) + DXOH(3)/(VROH(2)*VROH(3))
+	   PART3X = -1.0D0*DSIN(THETA(3))
 
-	   if (DABS(part3x)<numericalZeroLimit) then
-	      rfh3obendx_temp1 = large_force
-	   else     
-	      rfh3obendx_temp1 = kalpha*(theta(3) - alphaeq)*(part1x - part2x)/part3x
-	   endif
+	   IF (DABS(PART3X)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDX_TEMP1 = LARGE_FORCE
+	   ELSE     
+	      RFH3OBENDX_TEMP1 = KALPHA*(THETA(3) - ALPHAEQ)*(PART1X - PART2X)/PART3X
+	   ENDIF
 	   
-	   rfh3obendx = rfh3obendx + rfh3obendx_temp1 
+	   RFH3OBENDX = RFH3OBENDX + RFH3OBENDX_TEMP1 
 
 !---------------------------------------------------------------------
 !  Y
 !---------------------------------------------------------------------
-	   part1y = -1.0d0*dyoh(1)*vectSq(1)/(vroh(2)*vroh(1)**3)
-	   part2y = (dyoh(2)+dyoh(1))/(vroh(2)*vroh(1))
-	   part3y = -1.0d0*dyoh(2)*vectSq(1)/(vroh(1)*vroh(2)**3)
-	   part4y = 1.0d0 - vectSq(1)**2/((vroh(2)**2)*(vroh(1)**2))
+	   PART1Y = -1.0D0*DYOH(1)*VECTSQ(1)/(VROH(2)*VROH(1)**3)
+	   PART2Y = (DYOH(2)+DYOH(1))/(VROH(2)*VROH(1))
+	   PART3Y = -1.0D0*DYOH(2)*VECTSQ(1)/(VROH(1)*VROH(2)**3)
+	   PART4Y = 1.0D0 - VECTSQ(1)**2/((VROH(2)**2)*(VROH(1)**2))
 
-	   if (DABS(part4y)<numericalZeroLimit) then
-	      rfh3obendy_temp1 = large_force
-	   else
-	      rfh3obendy_temp1 = (kalpha*(part1y + part2y + part3y)*angleDiff(1))/DSQRT(part4y)
-	   endif
+	   IF (DABS(PART4Y)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDY_TEMP1 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDY_TEMP1 = (KALPHA*(PART1Y + PART2Y + PART3Y)*ANGLEDIFF(1))/DSQRT(PART4Y)
+	   ENDIF
 		 
-	   rfh3obendy = rfh3obendy + rfh3obendy_temp1
+	   RFH3OBENDY = RFH3OBENDY + RFH3OBENDY_TEMP1
 	   
-	   part1y = -1.0d0*dyoh(2)*vectSq(3)/(vroh(3)*vroh(2)**3)
-	   part2y = (dyoh(3)+dyoh(2))/(vroh(3)*vroh(2))
-	   part3y = -1.0d0*dyoh(3)*vectSq(3)/(vroh(2)*vroh(3)**3)
-	   part4y = 1.0d0 - vectSq(3)**2/((vroh(3)**2)*(vroh(2)**2))
+	   PART1Y = -1.0D0*DYOH(2)*VECTSQ(3)/(VROH(3)*VROH(2)**3)
+	   PART2Y = (DYOH(3)+DYOH(2))/(VROH(3)*VROH(2))
+	   PART3Y = -1.0D0*DYOH(3)*VECTSQ(3)/(VROH(2)*VROH(3)**3)
+	   PART4Y = 1.0D0 - VECTSQ(3)**2/((VROH(3)**2)*(VROH(2)**2))
 	      
-	   if (DABS(part4y)<numericalZeroLimit) then
-	      rfh3obendy_temp1 = large_force
-	   else
-	      rfh3obendy_temp1 = (kalpha*(part1y + part2y + part3y)*angleDiff(3))/DSQRT(part4y)
-	   endif
+	   IF (DABS(PART4Y)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDY_TEMP1 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDY_TEMP1 = (KALPHA*(PART1Y + PART2Y + PART3Y)*ANGLEDIFF(3))/DSQRT(PART4Y)
+	   ENDIF
 	   
-	   rfh3obendy = rfh3obendy + rfh3obendy_temp1 
+	   RFH3OBENDY = RFH3OBENDY + RFH3OBENDY_TEMP1 
 
-	   part1y = -1.0d0*dyoh(3)*vectSq(2)/(vroh(1)*vroh(3)**3)
-	   part2y = (dyoh(1)+dyoh(3))/(vroh(1)*vroh(3))
-	   part3y = -1.0d0*dyoh(1)*vectSq(2)/(vroh(3)*vroh(1)**3)
-	   part4y = 1.0d0 - vectSq(2)**2/((vroh(1)**2)*(vroh(3)**2))
+	   PART1Y = -1.0D0*DYOH(3)*VECTSQ(2)/(VROH(1)*VROH(3)**3)
+	   PART2Y = (DYOH(1)+DYOH(3))/(VROH(1)*VROH(3))
+	   PART3Y = -1.0D0*DYOH(1)*VECTSQ(2)/(VROH(3)*VROH(1)**3)
+	   PART4Y = 1.0D0 - VECTSQ(2)**2/((VROH(1)**2)*(VROH(3)**2))
 
-	   if (DABS(part4y)<numericalZeroLimit) then
-	      rfh3obendy_temp1 = large_force
-	   else
-	      rfh3obendy_temp1 = (kalpha*(part1y + part2y + part3y)*angleDiff(2))/DSQRT(part4y)
-	   endif
+	   IF (DABS(PART4Y)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDY_TEMP1 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDY_TEMP1 = (KALPHA*(PART1Y + PART2Y + PART3Y)*ANGLEDIFF(2))/DSQRT(PART4Y)
+	   ENDIF
 
-	   rfh3obendy = rfh3obendy + rfh3obendy_temp1 
+	   RFH3OBENDY = RFH3OBENDY + RFH3OBENDY_TEMP1 
 !---------------------------------------------------------------------
 !  Z
 !---------------------------------------------------------------------
-	   part1z = -1.0d0*dzoh(1)*vectSq(1)/(vroh(2)*vroh(1)**3)
-	   part2z = (dzoh(2)+dzoh(1))/(vroh(2)*vroh(1))
-	   part3z = -1.0d0*dzoh(2)*vectSq(1)/(vroh(1)*vroh(2)**3)
-	   part4z = 1.0d0 - vectSq(1)**2/((vroh(2)**2)*(vroh(1)**2))
+	   PART1Z = -1.0D0*DZOH(1)*VECTSQ(1)/(VROH(2)*VROH(1)**3)
+	   PART2Z = (DZOH(2)+DZOH(1))/(VROH(2)*VROH(1))
+	   PART3Z = -1.0D0*DZOH(2)*VECTSQ(1)/(VROH(1)*VROH(2)**3)
+	   PART4Z = 1.0D0 - VECTSQ(1)**2/((VROH(2)**2)*(VROH(1)**2))
 
-	   if (DABS(part4z)<numericalZeroLimit) then
-	      rfh3obendz_temp1 = large_force
-	   else
-	      rfh3obendz_temp1 = (kalpha*(part1z + part2z + part3z)*angleDiff(1))/DSQRT(part4z)
-	   endif
+	   IF (DABS(PART4Z)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDZ_TEMP1 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDZ_TEMP1 = (KALPHA*(PART1Z + PART2Z + PART3Z)*ANGLEDIFF(1))/DSQRT(PART4Z)
+	   ENDIF
 	   
-	   rfh3obendz = rfh3obendz + rfh3obendz_temp1
+	   RFH3OBENDZ = RFH3OBENDZ + RFH3OBENDZ_TEMP1
 	   
-	   part1z = -1.0d0*dzoh(2)*vectSq(3)/(vroh(3)*vroh(2)**3)
-	   part2z = (dzoh(3)+dzoh(2))/(vroh(3)*vroh(2))
-	   part3z = -1.0d0*dzoh(3)*vectSq(3)/(vroh(2)*vroh(3)**3)
-	   part4z = 1.0d0 - vectSq(3)**2/((vroh(3)**2)*(vroh(2)**2))
+	   PART1Z = -1.0D0*DZOH(2)*VECTSQ(3)/(VROH(3)*VROH(2)**3)
+	   PART2Z = (DZOH(3)+DZOH(2))/(VROH(3)*VROH(2))
+	   PART3Z = -1.0D0*DZOH(3)*VECTSQ(3)/(VROH(2)*VROH(3)**3)
+	   PART4Z = 1.0D0 - VECTSQ(3)**2/((VROH(3)**2)*(VROH(2)**2))
 
-	   if (DABS(part4z)<numericalZeroLimit) then
-	      rfh3obendz_temp1 = large_force
-	   else
-	      rfh3obendz_temp1 = (kalpha*(part1z + part2z + part3z)*angleDiff(3))/DSQRT(part4z)
-	   endif
+	   IF (DABS(PART4Z)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDZ_TEMP1 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDZ_TEMP1 = (KALPHA*(PART1Z + PART2Z + PART3Z)*ANGLEDIFF(3))/DSQRT(PART4Z)
+	   ENDIF
 	      
-	   rfh3obendz = rfh3obendz + rfh3obendz_temp1   
+	   RFH3OBENDZ = RFH3OBENDZ + RFH3OBENDZ_TEMP1   
 
-	   part1z = -1.0d0*dzoh(3)*vectSq(2)/(vroh(1)*vroh(3)**3)
-	   part2z = (dzoh(1)+dzoh(3))/(vroh(1)*vroh(3))
-	   part3z = -1.0d0*dzoh(1)*vectSq(2)/(vroh(3)*vroh(1)**3)
-	   part4z = 1.0d0 - vectSq(2)**2/((vroh(1)**2)*(vroh(3)**2))
+	   PART1Z = -1.0D0*DZOH(3)*VECTSQ(2)/(VROH(1)*VROH(3)**3)
+	   PART2Z = (DZOH(1)+DZOH(3))/(VROH(1)*VROH(3))
+	   PART3Z = -1.0D0*DZOH(1)*VECTSQ(2)/(VROH(3)*VROH(1)**3)
+	   PART4Z = 1.0D0 - VECTSQ(2)**2/((VROH(1)**2)*(VROH(3)**2))
 
-	   if (DABS(part4z)<numericalZeroLimit) then
-	      rfh3obendz_temp1 = large_force
-	   else
-	      rfh3obendz_temp1 = (kalpha*(part1z + part2z + part3z)*angleDiff(2))/DSQRT(part4z)
-	   endif
+	   IF (DABS(PART4Z)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDZ_TEMP1 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDZ_TEMP1 = (KALPHA*(PART1Z + PART2Z + PART3Z)*ANGLEDIFF(2))/DSQRT(PART4Z)
+	   ENDIF
 
-	   rfh3obendz = rfh3obendz + rfh3obendz_temp1   
+	   RFH3OBENDZ = RFH3OBENDZ + RFH3OBENDZ_TEMP1   
  	     
-	else
+	ELSE
 
 !---------------------------------------------------------------------
 !  HYDROGEN
 !---------------------------------------------------------------------   
-           if (atompos.eq.1) then
-              otherb1 = atmpl(vbState,2)
-              otherb2 = atmpl(vbState,4)
-           elseif (atompos.eq.2) then
-              otherb1 = atmpl(vbState,1)
-              otherb2 = atmpl(vbState,4)
-	   else
-	      otherb1 = atmpl(vbState,1)
-	      otherb2 = atmpl(vbState,2)
-           endif
+           IF (ATOMPOS.EQ.1) THEN
+              OTHERB1 = ATMPL(VBSTATE,2)
+              OTHERB2 = ATMPL(VBSTATE,4)
+           ELSEIF (ATOMPOS.EQ.2) THEN
+              OTHERB1 = ATMPL(VBSTATE,1)
+              OTHERB2 = ATMPL(VBSTATE,4)
+	   ELSE
+	      OTHERB1 = ATMPL(VBSTATE,1)
+	      OTHERB2 = ATMPL(VBSTATE,2)
+           ENDIF
 
-           do i = 1,3
-              roh(i) = 0.0d0
-              theta(i) = 0.0d0
-           enddo
+           DO I = 1,3
+              ROH(I) = 0.0D0
+              THETA(I) = 0.0D0
+           ENDDO
 
-!----Determine the O-H distances in hydronium
-           dxroh(1) = psix(atomNo) - psix(atmpl(vbState,3))
-           dyroh(1) = psiy(atomNo) - psiy(atmpl(vbState,3))
-           dzroh(1) = psiz(atomNo) - psiz(atmpl(vbState,3))
-	   roh(1) = interAtomicR(atomNo,atmpl(vbState,3))
+!----DETERMINE THE O-H DISTANCES IN HYDRONIUM
+           DXROH(1) = PSIX(ATOMNO) - PSIX(ATMPL(VBSTATE,3))
+           DYROH(1) = PSIY(ATOMNO) - PSIY(ATMPL(VBSTATE,3))
+           DZROH(1) = PSIZ(ATOMNO) - PSIZ(ATMPL(VBSTATE,3))
+	   ROH(1) = INTERATOMICR(ATOMNO,ATMPL(VBSTATE,3))
 
-           dxroh(2) = psix(otherb1) - psix(atmpl(vbState,3))
-           dyroh(2) = psiy(otherb1) - psiy(atmpl(vbState,3))
-           dzroh(2) = psiz(otherb1) - psiz(atmpl(vbState,3))
-	   roh(2) = interAtomicR(otherb1,atmpl(vbState,3))
+           DXROH(2) = PSIX(OTHERB1) - PSIX(ATMPL(VBSTATE,3))
+           DYROH(2) = PSIY(OTHERB1) - PSIY(ATMPL(VBSTATE,3))
+           DZROH(2) = PSIZ(OTHERB1) - PSIZ(ATMPL(VBSTATE,3))
+	   ROH(2) = INTERATOMICR(OTHERB1,ATMPL(VBSTATE,3))
 
-           dxroh(3) = psix(otherb2) - psix(atmpl(vbState,3))
-           dyroh(3) = psiy(otherb2) - psiy(atmpl(vbState,3))
-           dzroh(3) = psiz(otherb2) - psiz(atmpl(vbState,3))
-	   roh(3) = interAtomicR(otherb2,atmpl(vbState,3))
+           DXROH(3) = PSIX(OTHERB2) - PSIX(ATMPL(VBSTATE,3))
+           DYROH(3) = PSIY(OTHERB2) - PSIY(ATMPL(VBSTATE,3))
+           DZROH(3) = PSIZ(OTHERB2) - PSIZ(ATMPL(VBSTATE,3))
+	   ROH(3) = INTERATOMICR(OTHERB2,ATMPL(VBSTATE,3))
 
-!----Determine the bending angles, alpha
-           theta(1) = dxroh(1)*dxroh(2)+dyroh(1)*dyroh(2) &
-                        + dzroh(1)*dzroh(2)
-	   theta(1) = checked_acos(theta(1)/(roh(1)*roh(2)))
+!----DETERMINE THE BENDING ANGLES, ALPHA
+           THETA(1) = DXROH(1)*DXROH(2)+DYROH(1)*DYROH(2) &
+                        + DZROH(1)*DZROH(2)
+	   THETA(1) = CHECKED_ACOS(THETA(1)/(ROH(1)*ROH(2)))
 
-           theta(2) = dxroh(3)*dxroh(1)+dyroh(3)*dyroh(1) &
-                        + dzroh(3)*dzroh(1)
-           theta(2) = checked_acos(theta(2)/(roh(3)*roh(1)))
+           THETA(2) = DXROH(3)*DXROH(1)+DYROH(3)*DYROH(1) &
+                        + DZROH(3)*DZROH(1)
+           THETA(2) = CHECKED_ACOS(THETA(2)/(ROH(3)*ROH(1)))
 
-	   vectSq(1) = dxroh(1)*dxroh(2) + dyroh(1)*dyroh(2) + dzroh(1)*dzroh(2)
-	   vectSq(2) = dxroh(1)*dxroh(3) + dyroh(1)*dyroh(3) + dzroh(1)*dzroh(3)
-	   angleDiff(1) = theta(1) - alphaeq
-	   angleDiff(2) = theta(2) - alphaeq
+	   VECTSQ(1) = DXROH(1)*DXROH(2) + DYROH(1)*DYROH(2) + DZROH(1)*DZROH(2)
+	   VECTSQ(2) = DXROH(1)*DXROH(3) + DYROH(1)*DYROH(3) + DZROH(1)*DZROH(3)
+	   ANGLEDIFF(1) = THETA(1) - ALPHAEQ
+	   ANGLEDIFF(2) = THETA(2) - ALPHAEQ
 
 !---------------------------------------------------------------------
 !  X
 !---------------------------------------------------------------------
-!----Consider the first angle
-	   part1x = dxroh(1)*vectSq(1)/(roh(2)*roh(1)**3)
-	   part2x = dxroh(2)/(Roh(1)*Roh(2))
-	   part3x = 1.0d0 - (vectSq(1)/(roh(1)*roh(2)))**2 ! = (sin(alpha))^2
+!----CONSIDER THE FIRST ANGLE
+	   PART1X = DXROH(1)*VECTSQ(1)/(ROH(2)*ROH(1)**3)
+	   PART2X = DXROH(2)/(ROH(1)*ROH(2))
+	   PART3X = 1.0D0 - (VECTSQ(1)/(ROH(1)*ROH(2)))**2 ! = (SIN(ALPHA))^2
 
-! Check, there is a discontinuity in the potential/force when alpha = 180
+! CHECK, THERE IS A DISCONTINUITY IN THE POTENTIAL/FORCE WHEN ALPHA = 180
 
-	   if (DABS(part3x)<numericalZeroLimit) then
-	      rfh3obendx_temp1 = large_force
-	   else
-	      rfh3obendx_temp1 = (kalpha*(part1x - part2x)*angleDiff(1))/DSQRT(part3x)
-	   endif
+	   IF (DABS(PART3X)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDX_TEMP1 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDX_TEMP1 = (KALPHA*(PART1X - PART2X)*ANGLEDIFF(1))/DSQRT(PART3X)
+	   ENDIF
 
-!----Consider the Second angle
-	   part1x = dxroh(1)*vectSq(2)/(roh(3)*roh(1)**3)
-	   part2x = dxroh(3)/(Roh(1)*Roh(3))
-	   part3x = 1.0d0 - vectSq(2)**2/((roh(1)**2)*(roh(3)**2))
+!----CONSIDER THE SECOND ANGLE
+	   PART1X = DXROH(1)*VECTSQ(2)/(ROH(3)*ROH(1)**3)
+	   PART2X = DXROH(3)/(ROH(1)*ROH(3))
+	   PART3X = 1.0D0 - VECTSQ(2)**2/((ROH(1)**2)*(ROH(3)**2))
 
-	   if (DABS(part3x)<numericalZeroLimit) then
-	      rfh3obendx_temp1 = large_force
-	   else
-	      rfh3obendx_temp2 = (kalpha*(part1x - part2x)*angleDiff(2))/DSQRT(part3x)
-	   endif
+	   IF (DABS(PART3X)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDX_TEMP1 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDX_TEMP2 = (KALPHA*(PART1X - PART2X)*ANGLEDIFF(2))/DSQRT(PART3X)
+	   ENDIF
 
-!----Sum up the contributions
-	   rfh3obendx = rfh3obendx_temp1 + rfh3obendx_temp2
+!----SUM UP THE CONTRIBUTIONS
+	   RFH3OBENDX = RFH3OBENDX_TEMP1 + RFH3OBENDX_TEMP2
 !---------------------------------------------------------------------
 !  Y
 !---------------------------------------------------------------------
-!----Consider the first angle
-	   part1y = dyroh(1)*vectSq(1)/(roh(2)*roh(1)**3)
-	   part2y = dyroh(2)/(Roh(1)*Roh(2))
-	   part3y = 1.0d0 - vectSq(1)**2/((roh(1)**2)*(roh(2)**2))
+!----CONSIDER THE FIRST ANGLE
+	   PART1Y = DYROH(1)*VECTSQ(1)/(ROH(2)*ROH(1)**3)
+	   PART2Y = DYROH(2)/(ROH(1)*ROH(2))
+	   PART3Y = 1.0D0 - VECTSQ(1)**2/((ROH(1)**2)*(ROH(2)**2))
 
-	   if (DABS(part3y)<numericalZeroLimit) then
-	      rfh3obendy_temp1 = large_force
-	   else
-	      rfh3obendy_temp1 = (kalpha*(part1y - part2y)*angleDiff(1))/DSQRT(part3y)
-	   endif
+	   IF (DABS(PART3Y)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDY_TEMP1 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDY_TEMP1 = (KALPHA*(PART1Y - PART2Y)*ANGLEDIFF(1))/DSQRT(PART3Y)
+	   ENDIF
 
-!----Consider the Second angle
-	   part1y = dyroh(1)*vectSq(2)/(roh(3)*roh(1)**3)
-	   part2y = dyroh(3)/(Roh(1)*Roh(3))
-	   part3y = 1.0d0 - vectSq(2)**2/((roh(1)**2)*(roh(3)**2))
+!----CONSIDER THE SECOND ANGLE
+	   PART1Y = DYROH(1)*VECTSQ(2)/(ROH(3)*ROH(1)**3)
+	   PART2Y = DYROH(3)/(ROH(1)*ROH(3))
+	   PART3Y = 1.0D0 - VECTSQ(2)**2/((ROH(1)**2)*(ROH(3)**2))
 
-	   if (DABS(part3y)<numericalZeroLimit) then
-	      rfh3obendy_temp2 = large_force
-	   else
-	      rfh3obendy_temp2 = (kalpha*(part1y - part2y)*angleDiff(2))/DSQRT(part3y)
-	   endif
+	   IF (DABS(PART3Y)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDY_TEMP2 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDY_TEMP2 = (KALPHA*(PART1Y - PART2Y)*ANGLEDIFF(2))/DSQRT(PART3Y)
+	   ENDIF
 
-!----Sum up the contributions
-	   rfh3obendy = rfh3obendy_temp1 + rfh3obendy_temp2  
+!----SUM UP THE CONTRIBUTIONS
+	   RFH3OBENDY = RFH3OBENDY_TEMP1 + RFH3OBENDY_TEMP2  
 
 !---------------------------------------------------------------------
 !  Z
 !---------------------------------------------------------------------
-!----Consider the first angle
-	   part1z = dzroh(1)*vectSq(1)/(roh(2)*roh(1)**3)
-	   part2z = dzroh(2)/(Roh(1)*Roh(2))
-	   part3z = 1.0d0 - vectSq(1)**2/((roh(1)**2)*(roh(2)**2))
+!----CONSIDER THE FIRST ANGLE
+	   PART1Z = DZROH(1)*VECTSQ(1)/(ROH(2)*ROH(1)**3)
+	   PART2Z = DZROH(2)/(ROH(1)*ROH(2))
+	   PART3Z = 1.0D0 - VECTSQ(1)**2/((ROH(1)**2)*(ROH(2)**2))
 
-	   if (DABS(part3z)<numericalZeroLimit) then
-	      rfh3obendz_temp1 = large_force
-	   else
-	      rfh3obendz_temp1 = (kalpha*(part1z - part2z)*angleDiff(1))/DSQRT(part3z)
-	   endif
+	   IF (DABS(PART3Z)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDZ_TEMP1 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDZ_TEMP1 = (KALPHA*(PART1Z - PART2Z)*ANGLEDIFF(1))/DSQRT(PART3Z)
+	   ENDIF
 
-!----Consider the Second angle
-	   part1z = dzroh(1)*vectSq(2)/(roh(3)*roh(1)**3)
-	   part2z = dzroh(3)/(Roh(1)*Roh(3))
-	   part3z = 1.0d0 - vectSq(2)**2/((roh(1)**2)*(roh(3)**2))
+!----CONSIDER THE SECOND ANGLE
+	   PART1Z = DZROH(1)*VECTSQ(2)/(ROH(3)*ROH(1)**3)
+	   PART2Z = DZROH(3)/(ROH(1)*ROH(3))
+	   PART3Z = 1.0D0 - VECTSQ(2)**2/((ROH(1)**2)*(ROH(3)**2))
 
-	   if (DABS(part3z)<numericalZeroLimit) then
-	      rfh3obendz_temp2 = large_force
-	   else
-	      rfh3obendz_temp2 = (kalpha*(part1z - part2z)*angleDiff(2))/DSQRT(part3z)
-	   endif
+	   IF (DABS(PART3Z)<NUMERICALZEROLIMIT) THEN
+	      RFH3OBENDZ_TEMP2 = LARGE_FORCE
+	   ELSE
+	      RFH3OBENDZ_TEMP2 = (KALPHA*(PART1Z - PART2Z)*ANGLEDIFF(2))/DSQRT(PART3Z)
+	   ENDIF
 
-!----Sum up the contributions
-	   rfh3obendz = rfh3obendz_temp1 + rfh3obendz_temp2  
+!----SUM UP THE CONTRIBUTIONS
+	   RFH3OBENDZ = RFH3OBENDZ_TEMP1 + RFH3OBENDZ_TEMP2  
 
-!----end of the conditional statement (if(atompos.ne.3)---
-        endif
+!----END OF THE CONDITIONAL STATEMENT (IF(ATOMPOS.NE.3)---
+        ENDIF
 
 !---------------------------------------------------------------------
-! Finally sum the force components to get the total force
+! FINALLY SUM THE FORCE COMPONENTS TO GET THE TOTAL FORCE
 !
 !---------------------------------------------------------------------
 
-        fh3ointrax = rfh3obendx + rfh3ostrx
-        fh3ointray = rfh3obendy + rfh3ostry
-        fh3ointraz = rfh3obendz + rfh3ostrz
+        FH3OINTRAX = RFH3OBENDX + RFH3OSTRX
+        FH3OINTRAY = RFH3OBENDY + RFH3OSTRY
+        FH3OINTRAZ = RFH3OBENDZ + RFH3OSTRZ
 
-! Debugging
+! DEBUGGING
 
-!	h3o_intra_forces(vbState,(3*atomNo)-2) = fh3ointrax
-!	h3o_intra_forces(vbState,(3*atomNo)-1) = fh3ointray
-!	h3o_intra_forces(vbState,(3*atomNo)) = fh3ointraz	
+!	H3O_INTRA_FORCES(VBSTATE,(3*ATOMNO)-2) = FH3OINTRAX
+!	H3O_INTRA_FORCES(VBSTATE,(3*ATOMNO)-1) = FH3OINTRAY
+!	H3O_INTRA_FORCES(VBSTATE,(3*ATOMNO)) = FH3OINTRAZ	
 
         RETURN
         END
@@ -822,233 +822,233 @@
 !############## SUBROUTINE FINTER ####################################
 !#####################################################################
 
-	subroutine finter(atompos,vbState,finterx,fintery,finterz)
+	SUBROUTINE FINTER(ATOMPOS,VBSTATE,FINTERX,FINTERY,FINTERZ)
 
-	use commons
-	use msevb_common
+	USE COMMONS
+	USE MSEVB_COMMON
 
-	implicit none
+	IMPLICIT NONE
 
 !---------------------------------------------------------------------------
-! 06/08/99 R.A. Christie
-! routine to determine the forces resulting from the H3O+ - H2O interaction
+! 06/08/99 R.A. CHRISTIE
+! ROUTINE TO DETERMINE THE FORCES RESULTING FROM THE H3O+ - H2O INTERACTION
 !
-! Need as input into this routine: 	atompos (atom # in question)
+! NEED AS INPUT INTO THIS ROUTINE: 	ATOMPOS (ATOM # IN QUESTION)
 !
-! Type scenarios:
-!	1. Atom in Q is hydrogen atom; only has coulomb interaction.
-!	2. Atom in Q is a oxygen atom; coulomb, repulse and LJ interaction.
+! TYPE SCENARIOS:
+!	1. ATOM IN Q IS HYDROGEN ATOM; ONLY HAS COULOMB INTERACTION.
+!	2. ATOM IN Q IS A OXYGEN ATOM; COULOMB, REPULSE AND LJ INTERACTION.
 !---------------------------------------------------------------------------
 
-!----Incoming variables
+!----INCOMING VARIABLES
 	DOUBLE PRECISION FINTERX,FINTERY,FINTERZ
-	integer atompos,vbState,atomNo
-!----Local variables 
+	INTEGER ATOMPOS,VBSTATE,ATOMNO
+!----LOCAL VARIABLES 
 	DOUBLE PRECISION QI,QJ,RFCOULOMB,DX,DY,DZ,RIJ,TRIG,RFREPULSE,FREPULSE, &
-      	  	rfLJ,fLJ,Roo,Roo2,Roo8,Roo14,fcoulombx,fcoulomby,fcoulombz	
-	integer i,j
-!----New variables:
+      	  	RFLJ,FLJ,ROO,ROO2,ROO8,ROO14,FCOULOMBX,FCOULOMBY,FCOULOMBZ	
+	INTEGER I,J
+!----NEW VARIABLES:
 	DOUBLE PRECISION FLJX,FLJY,FLJZ,FREPULSEX,FREPULSEY,FREPULSEZ,ROO_SIGMA
-	integer wheech
+	INTEGER WHEECH
 
-! Debugging variables
+! DEBUGGING VARIABLES
 
-	integer coord_pos
+	INTEGER COORD_POS
 
-!----initialize variables
-	rfcoulomb = 0.0d0
-	fcoulombx = 0.0d0
-	fcoulomby = 0.0d0
-	fcoulombz = 0.0d0
-	fLJx = 0.0d0
-	fLJy = 0.0d0
-	fLJz = 0.0d0
-	rfLJ = 0.0d0
-	frepulsex = 0.0d0
-	frepulsey = 0.0d0
-	frepulsez = 0.0d0
-	dx = 0.0d0
-	dy = 0.0d0
-	dz = 0.0d0
-	frepulse = 0.0d0
-	wheech = 1
-	roo_sigma = 0.0d0
+!----INITIALIZE VARIABLES
+	RFCOULOMB = 0.0D0
+	FCOULOMBX = 0.0D0
+	FCOULOMBY = 0.0D0
+	FCOULOMBZ = 0.0D0
+	FLJX = 0.0D0
+	FLJY = 0.0D0
+	FLJZ = 0.0D0
+	RFLJ = 0.0D0
+	FREPULSEX = 0.0D0
+	FREPULSEY = 0.0D0
+	FREPULSEZ = 0.0D0
+	DX = 0.0D0
+	DY = 0.0D0
+	DZ = 0.0D0
+	FREPULSE = 0.0D0
+	WHEECH = 1
+	ROO_SIGMA = 0.0D0
 
-! Number of the atom in the original input vectors
+! NUMBER OF THE ATOM IN THE ORIGINAL INPUT VECTORS
 
-	atomNo = atmpl(vbState,atompos)
-
-!---------------------------------------------------------------------
-! Determine the Coulombic part of the interaction first
-!
-! Two possibilities:
-!   1. Atom is in hydronium unit
-!   2. Atom is in solvating water molecule
-!
-! This part of the code calculates the Coulombic interaction of both
-! oxygen and hydrogen atoms.
-!
-! ** NB ** units for Coulombic  interaction should be kcal/angstroms
-!
-!---------------------------------------------------------------------
-
-	if (atompos.le.4) then
-!----case 1. When atom Q is in hydronium
-	   if (atompos.eq.3) then
-	      qi = qintero
-	   else
-	      qi = qinterh
-	   endif
-	   do j = 5,natoms
-	      wheech = atmpl(vbState,j)
-	      if (MOD(wheech,3).eq.0) then
-                 qj = qtip3p_o
-              else
-                 qj = qtip3p_h
-              endif
-              dx = psix(atomNo) - psix(wheech)
-              dy = psiy(atomNo) - psiy(wheech)
-              dz = psiz(atomNo) - psiz(wheech)
-	      rij = interAtomicR(atomNo,wheech)
- 	      rfcoulomb = -1.0d0*dampchge*(qi*qj*fourpieo)/(rij**3)
-	      fcoulombx = rfcoulomb*dx + fcoulombx
-	      fcoulomby = rfcoulomb*dy + fcoulomby
-	      fcoulombz = rfcoulomb*dz + fcoulombz
-           enddo 
-	else
-
-!----case 2. When atom in Q is in water molecule
-	   if (MOD(atompos,3).eq.0) then
-              qi = qtip3p_o
-           else
-              qi = qtip3p_h
-           endif
-	   do j = 1,4
-	      wheech = atmpl(vbState,j)
-              if (MOD(j,3).eq.0) then
-                 qj = qintero
-              else
-                 qj = qinterh
-              endif
-              dx = psix(atomNo) - psix(wheech)
-              dy = psiy(atomNo) - psiy(wheech)
-              dz = psiz(atomNo) - psiz(wheech)
-	      rij = interAtomicR(atomNo,wheech)
-   	      rfcoulomb = -1.0d0*dampchge*(qi*qj*fourpieo)/(rij**3)
-              fcoulombx = rfcoulomb*dx + fcoulombx
-	      fcoulomby = rfcoulomb*dy + fcoulomby
-	      fcoulombz = rfcoulomb*dz + fcoulombz
-	   enddo
-	endif
+	ATOMNO = ATMPL(VBSTATE,ATOMPOS)
 
 !---------------------------------------------------------------------
-! Calculate the LJ and Repulsive interactions
+! DETERMINE THE COULOMBIC PART OF THE INTERACTION FIRST
 !
-! This part of the code only applies to Oxygen atoms, and applies to
-! both Hydronium and solvating Water molecule Oxygen atoms
+! TWO POSSIBILITIES:
+!   1. ATOM IS IN HYDRONIUM UNIT
+!   2. ATOM IS IN SOLVATING WATER MOLECULE
 !
+! THIS PART OF THE CODE CALCULATES THE COULOMBIC INTERACTION OF BOTH
+! OXYGEN AND HYDROGEN ATOMS.
+!
+! ** NB ** UNITS FOR COULOMBIC  INTERACTION SHOULD BE KCAL/ANGSTROMS
 !
 !---------------------------------------------------------------------
 
-	if (MOD(atompos,3).eq.0) then
-!----------------Oxygen atom on water molecule
-	   if (atompos.ne.3) then
-	       dx = psix(atomNo) - psix(atmpl(vbState,3))
-	       dy = psiy(atomNo) - psiy(atmpl(vbState,3))
-	       dz = psiz(atomNo) - psiz(atmpl(vbState,3))
-	       Roo = interAtomicR(atomNo,atmpl(vbState,3))
- 	       Roo_sigma = sigma_mix/Roo
-	       Roo14 = Roo_sigma**14
-	       Roo8 = Roo_sigma**8
- 	       rfLJ = (-6.0d0/sigma_mix**2)*epsilon_mix*(2.0d0*Roo14 - Roo8)
-	       fLJx = rfLJ*dx
-	       fLJy = rfLJ*dy
-	       fLJz = rfLJ*dz	
-	       trig = DTANH(small_b*(Roo-dooeq))
-	       frepulse = (-1.0d00/Roo)*small_b*big_b*(1.0d0 - trig**2)
-	       frepulsex = frepulse*dx
-	       frepulsey = frepulse*dy
-	       frepulsez = frepulse*dz
-	   else
-!----------------Oxygen atom on hydronium ion
-	       do i = 6,(natoms-1),3
- 		  dx = psix(atomNo) - psix(atmpl(vbState,i))
- 	          dy = psiy(atomNo) - psiy(atmpl(vbState,i))
- 	 	  dz = psiz(atomNo) - psiz(atmpl(vbState,i))
-		  Roo = interAtomicR(atomNo,atmpl(vbState,i))
- 	          Roo_sigma = sigma_mix/Roo
-                  Roo8 = Roo_sigma**8
-                  Roo14 = Roo_sigma**14 
-                  rfLJ = (-6.0d0/sigma_mix**2)*epsilon_mix*(2.0d0*Roo14 - Roo8)
-                  trig = DTANH(small_b*(Roo-dooeq))
-		  rfrepulse = (-1.0d00/Roo)*small_b*big_b*(1.0d0 - trig**2)
-	          fLJx = fLJx + rfLJ*dx
-		  fLJy = fLJy + rfLJ*dy
-                  fLJz = fLJz + rfLJ*dz
-	          frepulsex = frepulsex + rfrepulse*dx
-		  frepulsey = frepulsey + rfrepulse*dy
-		  frepulsez = frepulsez + rfrepulse*dz
-	      enddo
-	   endif
-!----End of Oxygen-Atom Case
-	endif
+	IF (ATOMPOS.LE.4) THEN
+!----CASE 1. WHEN ATOM Q IS IN HYDRONIUM
+	   IF (ATOMPOS.EQ.3) THEN
+	      QI = QINTERO
+	   ELSE
+	      QI = QINTERH
+	   ENDIF
+	   DO J = 5,NATOMS
+	      WHEECH = ATMPL(VBSTATE,J)
+	      IF (MOD(WHEECH,3).EQ.0) THEN
+                 QJ = QTIP3P_O
+              ELSE
+                 QJ = QTIP3P_H
+              ENDIF
+              DX = PSIX(ATOMNO) - PSIX(WHEECH)
+              DY = PSIY(ATOMNO) - PSIY(WHEECH)
+              DZ = PSIZ(ATOMNO) - PSIZ(WHEECH)
+	      RIJ = INTERATOMICR(ATOMNO,WHEECH)
+ 	      RFCOULOMB = -1.0D0*DAMPCHGE*(QI*QJ*FOURPIEO)/(RIJ**3)
+	      FCOULOMBX = RFCOULOMB*DX + FCOULOMBX
+	      FCOULOMBY = RFCOULOMB*DY + FCOULOMBY
+	      FCOULOMBZ = RFCOULOMB*DZ + FCOULOMBZ
+           ENDDO 
+	ELSE
 
- 	if (MOD(atompos,3).eq.0) then
- 	   finterx = 1.0d0*(fLJx+frepulsex+fcoulombx)
- 	   fintery = 1.0d0*(fLJy+frepulsey+fcoulomby)
- 	   finterz = 1.0d0*(fLJz+frepulsez+fcoulombz)
- 	else
- 	   finterx = 1.0d0*fcoulombx
- 	   fintery = 1.0d0*fcoulomby
- 	   finterz = 1.0d0*fcoulombz
- 	endif
+!----CASE 2. WHEN ATOM IN Q IS IN WATER MOLECULE
+	   IF (MOD(ATOMPOS,3).EQ.0) THEN
+              QI = QTIP3P_O
+           ELSE
+              QI = QTIP3P_H
+           ENDIF
+	   DO J = 1,4
+	      WHEECH = ATMPL(VBSTATE,J)
+              IF (MOD(J,3).EQ.0) THEN
+                 QJ = QINTERO
+              ELSE
+                 QJ = QINTERH
+              ENDIF
+              DX = PSIX(ATOMNO) - PSIX(WHEECH)
+              DY = PSIY(ATOMNO) - PSIY(WHEECH)
+              DZ = PSIZ(ATOMNO) - PSIZ(WHEECH)
+	      RIJ = INTERATOMICR(ATOMNO,WHEECH)
+   	      RFCOULOMB = -1.0D0*DAMPCHGE*(QI*QJ*FOURPIEO)/(RIJ**3)
+              FCOULOMBX = RFCOULOMB*DX + FCOULOMBX
+	      FCOULOMBY = RFCOULOMB*DY + FCOULOMBY
+	      FCOULOMBZ = RFCOULOMB*DZ + FCOULOMBZ
+	   ENDDO
+	ENDIF
 
-! Debugging
+!---------------------------------------------------------------------
+! CALCULATE THE LJ AND REPULSIVE INTERACTIONS
+!
+! THIS PART OF THE CODE ONLY APPLIES TO OXYGEN ATOMS, AND APPLIES TO
+! BOTH HYDRONIUM AND SOLVATING WATER MOLECULE OXYGEN ATOMS
+!
+!
+!---------------------------------------------------------------------
 
-!	coord_pos=3*atomNo-2
+	IF (MOD(ATOMPOS,3).EQ.0) THEN
+!----------------OXYGEN ATOM ON WATER MOLECULE
+	   IF (ATOMPOS.NE.3) THEN
+	       DX = PSIX(ATOMNO) - PSIX(ATMPL(VBSTATE,3))
+	       DY = PSIY(ATOMNO) - PSIY(ATMPL(VBSTATE,3))
+	       DZ = PSIZ(ATOMNO) - PSIZ(ATMPL(VBSTATE,3))
+	       ROO = INTERATOMICR(ATOMNO,ATMPL(VBSTATE,3))
+ 	       ROO_SIGMA = SIGMA_MIX/ROO
+	       ROO14 = ROO_SIGMA**14
+	       ROO8 = ROO_SIGMA**8
+ 	       RFLJ = (-6.0D0/SIGMA_MIX**2)*EPSILON_MIX*(2.0D0*ROO14 - ROO8)
+	       FLJX = RFLJ*DX
+	       FLJY = RFLJ*DY
+	       FLJZ = RFLJ*DZ	
+	       TRIG = DTANH(SMALL_B*(ROO-DOOEQ))
+	       FREPULSE = (-1.0D00/ROO)*SMALL_B*BIG_B*(1.0D0 - TRIG**2)
+	       FREPULSEX = FREPULSE*DX
+	       FREPULSEY = FREPULSE*DY
+	       FREPULSEZ = FREPULSE*DZ
+	   ELSE
+!----------------OXYGEN ATOM ON HYDRONIUM ION
+	       DO I = 6,(NATOMS-1),3
+ 		  DX = PSIX(ATOMNO) - PSIX(ATMPL(VBSTATE,I))
+ 	          DY = PSIY(ATOMNO) - PSIY(ATMPL(VBSTATE,I))
+ 	 	  DZ = PSIZ(ATOMNO) - PSIZ(ATMPL(VBSTATE,I))
+		  ROO = INTERATOMICR(ATOMNO,ATMPL(VBSTATE,I))
+ 	          ROO_SIGMA = SIGMA_MIX/ROO
+                  ROO8 = ROO_SIGMA**8
+                  ROO14 = ROO_SIGMA**14 
+                  RFLJ = (-6.0D0/SIGMA_MIX**2)*EPSILON_MIX*(2.0D0*ROO14 - ROO8)
+                  TRIG = DTANH(SMALL_B*(ROO-DOOEQ))
+		  RFREPULSE = (-1.0D00/ROO)*SMALL_B*BIG_B*(1.0D0 - TRIG**2)
+	          FLJX = FLJX + RFLJ*DX
+		  FLJY = FLJY + RFLJ*DY
+                  FLJZ = FLJZ + RFLJ*DZ
+	          FREPULSEX = FREPULSEX + RFREPULSE*DX
+		  FREPULSEY = FREPULSEY + RFREPULSE*DY
+		  FREPULSEZ = FREPULSEZ + RFREPULSE*DZ
+	      ENDDO
+	   ENDIF
+!----END OF OXYGEN-ATOM CASE
+	ENDIF
 
-!	LJ_forces(eigenstate,coord_pos) = fLJx
-!	LJ_forces(eigenstate,coord_pos+1) = fLJy
-!	LJ_forces(eigenstate,coord_pos+2) = fLJz
-!	coulomb_forces(eigenstate,coord_pos) = fcoulombx
-!	coulomb_forces(eigenstate,coord_pos+1) = fcoulomby
-!	coulomb_forces(eigenstate,coord_pos+2) = fcoulombz
-!	rep_forces(eigenstate,coord_pos) = frepulsex
-!	rep_forces(eigenstate,coord_pos+1) = frepulsey
-!	rep_forces(eigenstate,coord_pos+2) = frepulsez
+ 	IF (MOD(ATOMPOS,3).EQ.0) THEN
+ 	   FINTERX = 1.0D0*(FLJX+FREPULSEX+FCOULOMBX)
+ 	   FINTERY = 1.0D0*(FLJY+FREPULSEY+FCOULOMBY)
+ 	   FINTERZ = 1.0D0*(FLJZ+FREPULSEZ+FCOULOMBZ)
+ 	ELSE
+ 	   FINTERX = 1.0D0*FCOULOMBX
+ 	   FINTERY = 1.0D0*FCOULOMBY
+ 	   FINTERZ = 1.0D0*FCOULOMBZ
+ 	ENDIF
 
-!	h3o_h2o_forces(vbState,coord_pos) = finterx
-!	h3o_h2o_forces(vbState,coord_pos+1) = fintery
-!	h3o_h2o_forces(vbState,coord_pos+2) = finterz	
+! DEBUGGING
+
+!	COORD_POS=3*ATOMNO-2
+
+!	LJ_FORCES(EIGENSTATE,COORD_POS) = FLJX
+!	LJ_FORCES(EIGENSTATE,COORD_POS+1) = FLJY
+!	LJ_FORCES(EIGENSTATE,COORD_POS+2) = FLJZ
+!	COULOMB_FORCES(EIGENSTATE,COORD_POS) = FCOULOMBX
+!	COULOMB_FORCES(EIGENSTATE,COORD_POS+1) = FCOULOMBY
+!	COULOMB_FORCES(EIGENSTATE,COORD_POS+2) = FCOULOMBZ
+!	REP_FORCES(EIGENSTATE,COORD_POS) = FREPULSEX
+!	REP_FORCES(EIGENSTATE,COORD_POS+1) = FREPULSEY
+!	REP_FORCES(EIGENSTATE,COORD_POS+2) = FREPULSEZ
+
+!	H3O_H2O_FORCES(VBSTATE,COORD_POS) = FINTERX
+!	H3O_H2O_FORCES(VBSTATE,COORD_POS+1) = FINTERY
+!	H3O_H2O_FORCES(VBSTATE,COORD_POS+2) = FINTERZ	
 
 	RETURN
 	END
 
 !#####################################################################
 
-! Calculate the H2O-H2O interaction forces all in one go
+! CALCULATE THE H2O-H2O INTERACTION FORCES ALL IN ONE GO
 
-	subroutine calculateH2OinterForces (h2oInterXforces, h2oInterYforces, h2oInterZforces)
+	SUBROUTINE CALCULATEH2OINTERFORCES (H2OINTERXFORCES, H2OINTERYFORCES, H2OINTERZFORCES)
 
-	use commons
-	use msevb_common
+	USE COMMONS
+	USE MSEVB_COMMON
 
-	implicit none
+	IMPLICIT NONE
 
-! Subroutine arguments
+! SUBROUTINE ARGUMENTS
 
 	DOUBLE PRECISION, INTENT(OUT) :: H2OINTERXFORCES(NATOMS, REDUCED_NUM_EIG)
 	DOUBLE PRECISION, INTENT(OUT) :: H2OINTERYFORCES(NATOMS, REDUCED_NUM_EIG)
 	DOUBLE PRECISION, INTENT(OUT) :: H2OINTERZFORCES(NATOMS, REDUCED_NUM_EIG)
 
-! Local variables
+! LOCAL VARIABLES
 
 	DOUBLE PRECISION :: XFORCES(NATOMS, NATOMS)
 	DOUBLE PRECISION :: YFORCES(NATOMS, NATOMS)
 	DOUBLE PRECISION :: ZFORCES(NATOMS, NATOMS)
 	
-	integer :: atom1, atom2, currentOatom, Hatom1, Hatom2
-	integer :: currentVBstate
+	INTEGER :: ATOM1, ATOM2, CURRENTOATOM, HATOM1, HATOM2
+	INTEGER :: CURRENTVBSTATE
 	DOUBLE PRECISION :: CHARGEONATOM1, CHARGEONATOM2
 	DOUBLE PRECISION :: DX, DY, DZ
 	DOUBLE PRECISION :: COULOMBPREFACTOR
@@ -1056,484 +1056,484 @@
 	DOUBLE PRECISION, PARAMETER :: LJCONSTANT = -24.0D0*H2OINTEREPSILON
 	DOUBLE PRECISION, PARAMETER :: H2OINTERSIGMA_SQ = H2OINTERSIGMA**2
 
-! Initialise
+! INITIALISE
 
-	xForces = 0.0
-	yForces = 0.0
-	zForces = 0.0
+	XFORCES = 0.0
+	YFORCES = 0.0
+	ZFORCES = 0.0
 
-	h2oInterXforces = 0.0
-	h2oInterYforces = 0.0
-	h2oInterZforces = 0.0
+	H2OINTERXFORCES = 0.0
+	H2OINTERYFORCES = 0.0
+	H2OINTERZFORCES = 0.0
 
-! Calculate the interactions
+! CALCULATE THE INTERACTIONS
 
-	do atom1 = 1, (natoms-1)
+	DO ATOM1 = 1, (NATOMS-1)
 
-	   if (MOD(atom1,3).eq.0) then
-	      chargeOnAtom1 = qtip3p_o
-	   else
-	      chargeOnAtom1 = qtip3p_h
-	   endif
+	   IF (MOD(ATOM1,3).EQ.0) THEN
+	      CHARGEONATOM1 = QTIP3P_O
+	   ELSE
+	      CHARGEONATOM1 = QTIP3P_H
+	   ENDIF
 
-	   do atom2 = (atom1+1), natoms
+	   DO ATOM2 = (ATOM1+1), NATOMS
 
-	      if (MOD(atom2,3).eq.0) then
-		 chargeOnAtom2 = qtip3p_o
-	      else
-		 chargeOnAtom2 = qtip3p_h
-	      endif
+	      IF (MOD(ATOM2,3).EQ.0) THEN
+		 CHARGEONATOM2 = QTIP3P_O
+	      ELSE
+		 CHARGEONATOM2 = QTIP3P_H
+	      ENDIF
 
-! Determine the coulombic part of the force
+! DETERMINE THE COULOMBIC PART OF THE FORCE
 
-	      dx = psix(atom1) - psix(atom2)   ! Defined this way around for consistency
-	      dy = psiy(atom1) - psiy(atom2)
-	      dz = psiz(atom1) - psiz(atom2)      
+	      DX = PSIX(ATOM1) - PSIX(ATOM2)   ! DEFINED THIS WAY AROUND FOR CONSISTENCY
+	      DY = PSIY(ATOM1) - PSIY(ATOM2)
+	      DZ = PSIZ(ATOM1) - PSIZ(ATOM2)      
 
-	      coulombPrefactor = -1.0d0*fourpieo*chargeOnAtom1*chargeOnAtom2/((interAtomicR(atom1,atom2))**3)
+	      COULOMBPREFACTOR = -1.0D0*FOURPIEO*CHARGEONATOM1*CHARGEONATOM2/((INTERATOMICR(ATOM1,ATOM2))**3)
 
-! xForces(i,j) is the force on atom i due to presence of atom j
-! xForces(j,i) = -xForces(i,j) because Newton`s law holds
+! XFORCES(I,J) IS THE FORCE ON ATOM I DUE TO PRESENCE OF ATOM J
+! XFORCES(J,I) = -XFORCES(I,J) BECAUSE NEWTON`S LAW HOLDS
 
-	      xForces(atom1,atom2) = coulombPrefactor * dx
-	      yForces(atom1,atom2) = coulombPrefactor * dy
-	      zForces(atom1,atom2) = coulombPrefactor * dz
+	      XFORCES(ATOM1,ATOM2) = COULOMBPREFACTOR * DX
+	      YFORCES(ATOM1,ATOM2) = COULOMBPREFACTOR * DY
+	      ZFORCES(ATOM1,ATOM2) = COULOMBPREFACTOR * DZ
 
-! Determine the LJ part of the force if necessary
+! DETERMINE THE LJ PART OF THE FORCE IF NECESSARY
 
-	      if (chargeOnAtom1.eq.qtip3p_o .and. chargeOnAtom2.eq.qtip3p_o) then
-		 invRoo2 = 1.0d0/(interAtomicR(atom1,atom2)**2)
-		 sigmaInvRoo6 = h2ointerSigma_sq*invRoo2
-		 sigmaInvRoo6 = sigmaInvRoo6**3
+	      IF (CHARGEONATOM1.EQ.QTIP3P_O .AND. CHARGEONATOM2.EQ.QTIP3P_O) THEN
+		 INVROO2 = 1.0D0/(INTERATOMICR(ATOM1,ATOM2)**2)
+		 SIGMAINVROO6 = H2OINTERSIGMA_SQ*INVROO2
+		 SIGMAINVROO6 = SIGMAINVROO6**3
 
-		 LJprefactor = LJconstant*(2.0d0*(sigmaInvRoo6**2) - sigmaInvRoo6)*invRoo2
+		 LJPREFACTOR = LJCONSTANT*(2.0D0*(SIGMAINVROO6**2) - SIGMAINVROO6)*INVROO2
 
-		 xForces(atom1,atom2) = xForces(atom1,atom2) + LJprefactor*dx
-		 yForces(atom1,atom2) = yForces(atom1,atom2) + LJprefactor*dy
-		 zForces(atom1,atom2) = zForces(atom1,atom2) + LJprefactor*dz
-	      endif
+		 XFORCES(ATOM1,ATOM2) = XFORCES(ATOM1,ATOM2) + LJPREFACTOR*DX
+		 YFORCES(ATOM1,ATOM2) = YFORCES(ATOM1,ATOM2) + LJPREFACTOR*DY
+		 ZFORCES(ATOM1,ATOM2) = ZFORCES(ATOM1,ATOM2) + LJPREFACTOR*DZ
+	      ENDIF
 
-! Fill in the lower triangle explicitly
-! This makes it easier than trying to work out which number is lower all the time in the next section
+! FILL IN THE LOWER TRIANGLE EXPLICITLY
+! THIS MAKES IT EASIER THAN TRYING TO WORK OUT WHICH NUMBER IS LOWER ALL THE TIME IN THE NEXT SECTION
 
-	      xForces(atom2,atom1) = -1.0d0 *  xForces(atom1,atom2)
-	      yForces(atom2,atom1) = -1.0d0 *  yForces(atom1,atom2)	      
-	      zForces(atom2,atom1) = -1.0d0 *  zForces(atom1,atom2)	      
+	      XFORCES(ATOM2,ATOM1) = -1.0D0 *  XFORCES(ATOM1,ATOM2)
+	      YFORCES(ATOM2,ATOM1) = -1.0D0 *  YFORCES(ATOM1,ATOM2)	      
+	      ZFORCES(ATOM2,ATOM1) = -1.0D0 *  ZFORCES(ATOM1,ATOM2)	      
 
-! Add the new forces to the accumulating totals
+! ADD THE NEW FORCES TO THE ACCUMULATING TOTALS
 
-	      h2oInterXforces(atom1,1) = h2oInterXforces(atom1,1) + xForces(atom1,atom2)
-	      h2oInterXforces(atom2,1) = h2oInterXforces(atom2,1) - xForces(atom1,atom2)	      
+	      H2OINTERXFORCES(ATOM1,1) = H2OINTERXFORCES(ATOM1,1) + XFORCES(ATOM1,ATOM2)
+	      H2OINTERXFORCES(ATOM2,1) = H2OINTERXFORCES(ATOM2,1) - XFORCES(ATOM1,ATOM2)	      
 
-	      h2oInterYforces(atom1,1) = h2oInterYforces(atom1,1) + yForces(atom1,atom2)
-	      h2oInterYforces(atom2,1) = h2oInterYforces(atom2,1) - yForces(atom1,atom2)
+	      H2OINTERYFORCES(ATOM1,1) = H2OINTERYFORCES(ATOM1,1) + YFORCES(ATOM1,ATOM2)
+	      H2OINTERYFORCES(ATOM2,1) = H2OINTERYFORCES(ATOM2,1) - YFORCES(ATOM1,ATOM2)
 
-	      h2oInterZforces(atom1,1) = h2oInterZforces(atom1,1) + zForces(atom1,atom2)
-	      h2oInterZforces(atom2,1) = h2oInterZforces(atom2,1) - zForces(atom1,atom2)
-	   enddo
-	enddo
+	      H2OINTERZFORCES(ATOM1,1) = H2OINTERZFORCES(ATOM1,1) + ZFORCES(ATOM1,ATOM2)
+	      H2OINTERZFORCES(ATOM2,1) = H2OINTERZFORCES(ATOM2,1) - ZFORCES(ATOM1,ATOM2)
+	   ENDDO
+	ENDDO
 	
-! Copy across the accumulated totals
+! COPY ACROSS THE ACCUMULATED TOTALS
 
-	do currentVBstate = 2, reduced_num_eig
-	   h2oInterXforces(:,currentVBstate) =  h2oInterXforces(:,1)
-	   h2oInterYforces(:,currentVBstate) =  h2oInterYforces(:,1)
-	   h2oInterZforces(:,currentVBstate) =  h2oInterZforces(:,1)
-	enddo
+	DO CURRENTVBSTATE = 2, REDUCED_NUM_EIG
+	   H2OINTERXFORCES(:,CURRENTVBSTATE) =  H2OINTERXFORCES(:,1)
+	   H2OINTERYFORCES(:,CURRENTVBSTATE) =  H2OINTERYFORCES(:,1)
+	   H2OINTERZFORCES(:,CURRENTVBSTATE) =  H2OINTERZFORCES(:,1)
+	ENDDO
 
-! Subtract for each VB state those interactions which are wrongly included in the totals
+! SUBTRACT FOR EACH VB STATE THOSE INTERACTIONS WHICH ARE WRONGLY INCLUDED IN THE TOTALS
 
-	do currentVBstate = 1, reduced_num_eig
+	DO CURRENTVBSTATE = 1, REDUCED_NUM_EIG
 
-! Firstly make zero the forces for those atoms in the hydronium species
+! FIRSTLY MAKE ZERO THE FORCES FOR THOSE ATOMS IN THE HYDRONIUM SPECIES
 
-	   do atom1 = 1, 4
-	      h2oInterXforces(atmpl(currentVBstate,atom1),currentVBstate) = 0.0	      
-	      h2oInterYforces(atmpl(currentVBstate,atom1),currentVBstate) = 0.0	      
-	      h2oInterZforces(atmpl(currentVBstate,atom1),currentVBstate) = 0.0	      
-	   enddo
+	   DO ATOM1 = 1, 4
+	      H2OINTERXFORCES(ATMPL(CURRENTVBSTATE,ATOM1),CURRENTVBSTATE) = 0.0	      
+	      H2OINTERYFORCES(ATMPL(CURRENTVBSTATE,ATOM1),CURRENTVBSTATE) = 0.0	      
+	      H2OINTERZFORCES(ATMPL(CURRENTVBSTATE,ATOM1),CURRENTVBSTATE) = 0.0	      
+	   ENDDO
 
-! Other atoms
+! OTHER ATOMS
 
-	   do atom1 = 6, (natoms-1), 3
+	   DO ATOM1 = 6, (NATOMS-1), 3
 
-	      currentOatom = atmpl(currentVBstate,atom1)
-	      Hatom1 = atmpl(currentVBstate,atom1-1)
-	      Hatom2 = atmpl(currentVBstate,atom1+1)
+	      CURRENTOATOM = ATMPL(CURRENTVBSTATE,ATOM1)
+	      HATOM1 = ATMPL(CURRENTVBSTATE,ATOM1-1)
+	      HATOM2 = ATMPL(CURRENTVBSTATE,ATOM1+1)
 
-! Remove interactions between other atoms and the hydronium atom
+! REMOVE INTERACTIONS BETWEEN OTHER ATOMS AND THE HYDRONIUM ATOM
 
-	      do atom2 = 1,4
-! O-atom
-		 h2oInterXforces(currentOatom,currentVBstate) =   &
-      		 h2oInterXforces(currentOatom,currentVBstate) - xForces(currentOatom, atmpl(currentVBstate,atom2))
-  		 h2oInterYforces(currentOatom,currentVBstate) =   &
-      		 h2oInterYforces(currentOatom,currentVBstate) - yForces(currentOatom, atmpl(currentVBstate,atom2))
-		 h2oInterZforces(currentOatom,currentVBstate) =   &
-      		 h2oInterZforces(currentOatom,currentVBstate) - zForces(currentOatom, atmpl(currentVBstate,atom2))
+	      DO ATOM2 = 1,4
+! O-ATOM
+		 H2OINTERXFORCES(CURRENTOATOM,CURRENTVBSTATE) =   &
+      		 H2OINTERXFORCES(CURRENTOATOM,CURRENTVBSTATE) - XFORCES(CURRENTOATOM, ATMPL(CURRENTVBSTATE,ATOM2))
+  		 H2OINTERYFORCES(CURRENTOATOM,CURRENTVBSTATE) =   &
+      		 H2OINTERYFORCES(CURRENTOATOM,CURRENTVBSTATE) - YFORCES(CURRENTOATOM, ATMPL(CURRENTVBSTATE,ATOM2))
+		 H2OINTERZFORCES(CURRENTOATOM,CURRENTVBSTATE) =   &
+      		 H2OINTERZFORCES(CURRENTOATOM,CURRENTVBSTATE) - ZFORCES(CURRENTOATOM, ATMPL(CURRENTVBSTATE,ATOM2))
 
-! H-atom 1
-		 h2oInterXforces(Hatom1,currentVBstate) =   &
-      		 h2oInterXforces(Hatom1,currentVBstate) - xForces(Hatom1, atmpl(currentVBstate,atom2))
-		 h2oInterYforces(Hatom1,currentVBstate) =   &
-      		 h2oInterYforces(Hatom1,currentVBstate) - yForces(Hatom1, atmpl(currentVBstate,atom2))
-		 h2oInterZforces(Hatom1,currentVBstate) =   &
-      		 h2oInterZforces(Hatom1,currentVBstate) - zForces(Hatom1, atmpl(currentVBstate,atom2))
+! H-ATOM 1
+		 H2OINTERXFORCES(HATOM1,CURRENTVBSTATE) =   &
+      		 H2OINTERXFORCES(HATOM1,CURRENTVBSTATE) - XFORCES(HATOM1, ATMPL(CURRENTVBSTATE,ATOM2))
+		 H2OINTERYFORCES(HATOM1,CURRENTVBSTATE) =   &
+      		 H2OINTERYFORCES(HATOM1,CURRENTVBSTATE) - YFORCES(HATOM1, ATMPL(CURRENTVBSTATE,ATOM2))
+		 H2OINTERZFORCES(HATOM1,CURRENTVBSTATE) =   &
+      		 H2OINTERZFORCES(HATOM1,CURRENTVBSTATE) - ZFORCES(HATOM1, ATMPL(CURRENTVBSTATE,ATOM2))
 
-! H-atom 2
-		 h2oInterXforces(Hatom2,currentVBstate) =  &
-      		 h2oInterXforces(Hatom2,currentVBstate) - xForces(Hatom2, atmpl(currentVBstate,atom2))
-		 h2oInterYforces(Hatom2,currentVBstate) =  &
-      		 h2oInterYforces(Hatom2,currentVBstate) - yForces(Hatom2, atmpl(currentVBstate,atom2))
-		 h2oInterZforces(Hatom2,currentVBstate) =  &
-      		 h2oInterZforces(Hatom2,currentVBstate) - zForces(Hatom2, atmpl(currentVBstate,atom2))
-	      enddo
+! H-ATOM 2
+		 H2OINTERXFORCES(HATOM2,CURRENTVBSTATE) =  &
+      		 H2OINTERXFORCES(HATOM2,CURRENTVBSTATE) - XFORCES(HATOM2, ATMPL(CURRENTVBSTATE,ATOM2))
+		 H2OINTERYFORCES(HATOM2,CURRENTVBSTATE) =  &
+      		 H2OINTERYFORCES(HATOM2,CURRENTVBSTATE) - YFORCES(HATOM2, ATMPL(CURRENTVBSTATE,ATOM2))
+		 H2OINTERZFORCES(HATOM2,CURRENTVBSTATE) =  &
+      		 H2OINTERZFORCES(HATOM2,CURRENTVBSTATE) - ZFORCES(HATOM2, ATMPL(CURRENTVBSTATE,ATOM2))
+	      ENDDO
 
-! Remove interactions between atoms in the same water molecule
+! REMOVE INTERACTIONS BETWEEN ATOMS IN THE SAME WATER MOLECULE
 
-! O-atom
-		 h2oInterXforces(currentOatom,currentVBstate) = h2oInterXforces(currentOatom,currentVBstate) - &
-      		 xForces(currentOatom, Hatom1) - xForces(currentOatom, Hatom2)
-		 h2oInterYforces(currentOatom,currentVBstate) = h2oInterYforces(currentOatom,currentVBstate) - &
-      		 yForces(currentOatom, Hatom1) - yForces(currentOatom, Hatom2)
-		 h2oInterZforces(currentOatom,currentVBstate) = h2oInterZforces(currentOatom,currentVBstate) - &
-      		 zForces(currentOatom, Hatom1) - zForces(currentOatom, Hatom2)
+! O-ATOM
+		 H2OINTERXFORCES(CURRENTOATOM,CURRENTVBSTATE) = H2OINTERXFORCES(CURRENTOATOM,CURRENTVBSTATE) - &
+      		 XFORCES(CURRENTOATOM, HATOM1) - XFORCES(CURRENTOATOM, HATOM2)
+		 H2OINTERYFORCES(CURRENTOATOM,CURRENTVBSTATE) = H2OINTERYFORCES(CURRENTOATOM,CURRENTVBSTATE) - &
+      		 YFORCES(CURRENTOATOM, HATOM1) - YFORCES(CURRENTOATOM, HATOM2)
+		 H2OINTERZFORCES(CURRENTOATOM,CURRENTVBSTATE) = H2OINTERZFORCES(CURRENTOATOM,CURRENTVBSTATE) - &
+      		 ZFORCES(CURRENTOATOM, HATOM1) - ZFORCES(CURRENTOATOM, HATOM2)
 
-! H-atom 1
-		 h2oInterXforces(Hatom1,currentVBstate) = h2oInterXforces(Hatom1,currentVBstate) - &
-      		 xForces(Hatom1, currentOatom) - xForces(Hatom1, Hatom2)
-		 h2oInterYforces(Hatom1,currentVBstate) = h2oInterYforces(Hatom1,currentVBstate) - &
-      		 yForces(Hatom1, currentOatom) - yForces(Hatom1, Hatom2)
-		 h2oInterZforces(Hatom1,currentVBstate) = h2oInterZforces(Hatom1,currentVBstate) - &
-      		 zForces(Hatom1, currentOatom) - zForces(Hatom1, Hatom2)
+! H-ATOM 1
+		 H2OINTERXFORCES(HATOM1,CURRENTVBSTATE) = H2OINTERXFORCES(HATOM1,CURRENTVBSTATE) - &
+      		 XFORCES(HATOM1, CURRENTOATOM) - XFORCES(HATOM1, HATOM2)
+		 H2OINTERYFORCES(HATOM1,CURRENTVBSTATE) = H2OINTERYFORCES(HATOM1,CURRENTVBSTATE) - &
+      		 YFORCES(HATOM1, CURRENTOATOM) - YFORCES(HATOM1, HATOM2)
+		 H2OINTERZFORCES(HATOM1,CURRENTVBSTATE) = H2OINTERZFORCES(HATOM1,CURRENTVBSTATE) - &
+      		 ZFORCES(HATOM1, CURRENTOATOM) - ZFORCES(HATOM1, HATOM2)
 
-! H-atom 2
-		 h2oInterXforces(Hatom2,currentVBstate) = h2oInterXforces(Hatom2,currentVBstate) - &
-      		 xForces(Hatom2, currentOatom) - xForces(Hatom2, Hatom1)
-		 h2oInterYforces(Hatom2,currentVBstate) = h2oInterYforces(Hatom2,currentVBstate) - &
-      		 yForces(Hatom2, currentOatom) - yForces(Hatom2, Hatom1)
-		 h2oInterZforces(Hatom2,currentVBstate) = h2oInterZforces(Hatom2,currentVBstate) - &
-      		 zForces(Hatom2, currentOatom) - zForces(Hatom2, Hatom1)
-	   enddo
-	enddo
+! H-ATOM 2
+		 H2OINTERXFORCES(HATOM2,CURRENTVBSTATE) = H2OINTERXFORCES(HATOM2,CURRENTVBSTATE) - &
+      		 XFORCES(HATOM2, CURRENTOATOM) - XFORCES(HATOM2, HATOM1)
+		 H2OINTERYFORCES(HATOM2,CURRENTVBSTATE) = H2OINTERYFORCES(HATOM2,CURRENTVBSTATE) - &
+      		 YFORCES(HATOM2, CURRENTOATOM) - YFORCES(HATOM2, HATOM1)
+		 H2OINTERZFORCES(HATOM2,CURRENTVBSTATE) = H2OINTERZFORCES(HATOM2,CURRENTVBSTATE) - &
+      		 ZFORCES(HATOM2, CURRENTOATOM) - ZFORCES(HATOM2, HATOM1)
+	   ENDDO
+	ENDDO
 
-	return
+	RETURN
 
-	end subroutine
+	END SUBROUTINE
 
 !#####################################################################
 !###################### SUBROUTINE FH2OINTER #########################
 !#####################################################################
 
-	subroutine fh2ointer(atompos,vbState,fh2ointerx,fh2ointery,fh2ointerz)
+	SUBROUTINE FH2OINTER(ATOMPOS,VBSTATE,FH2OINTERX,FH2OINTERY,FH2OINTERZ)
 
-	use commons
-	use msevb_common
+	USE COMMONS
+	USE MSEVB_COMMON
 
-	implicit none
+	IMPLICIT NONE
 
 !---------------------------------------------------------------------------
-!  06/08/99 R.A. Christie
-! routine for determining the intermolecular water-water forces
+!  06/08/99 R.A. CHRISTIE
+! ROUTINE FOR DETERMINING THE INTERMOLECULAR WATER-WATER FORCES
 !
 !---------------------------------------------------------------------------
 
 	DOUBLE PRECISION FH2OINTERX,FH2OINTERY,FH2OINTERZ
-	integer atompos,vbState,atomNo
+	INTEGER ATOMPOS,VBSTATE,ATOMNO
 	DOUBLE PRECISION RFLJ,RFCOULOMB,FCOULOMBX,FCOULOMBY,FCOULOMBZ,QI,QJ,DX_OO, &
-                dy_oo,dz_oo, &
-      		Roo,Roo2,Roo8,Roo14,rij,dx,dy,dz,fLJx,fLJy,fLJz
-	integer i,j,avoid2,avoid3
+                DY_OO,DZ_OO, &
+      		ROO,ROO2,ROO8,ROO14,RIJ,DX,DY,DZ,FLJX,FLJY,FLJZ
+	INTEGER I,J,AVOID2,AVOID3
 
 	DOUBLE PRECISION, PARAMETER :: LJPREFACTOR = -2.4D01*1.522D-01
 	DOUBLE PRECISION :: COULOMBPREFACTOR
 
-!----initialize variables
-	coulombPrefactor = -1.0d0*fourpieo
+!----INITIALIZE VARIABLES
+	COULOMBPREFACTOR = -1.0D0*FOURPIEO
 
-	rfLJ = 0.0d0
-	fLJx = 0.0d0
-	fLJy = 0.0d0
-	fLJz = 0.0d0
-	rfcoulomb = 0.0d0
-	fcoulombx = 0.0d0
-	fcoulomby = 0.0d0
-	fcoulombz = 0.0d0
+	RFLJ = 0.0D0
+	FLJX = 0.0D0
+	FLJY = 0.0D0
+	FLJZ = 0.0D0
+	RFCOULOMB = 0.0D0
+	FCOULOMBX = 0.0D0
+	FCOULOMBY = 0.0D0
+	FCOULOMBZ = 0.0D0
 	
-	avoid2 = 0
-	avoid3 = 0
-	dx_oo = 0.0d0
-	dy_oo = 0.0d0
-	dz_oo = 0.0d0
+	AVOID2 = 0
+	AVOID3 = 0
+	DX_OO = 0.0D0
+	DY_OO = 0.0D0
+	DZ_OO = 0.0D0
 
-! Position of the atom in the original input vector
+! POSITION OF THE ATOM IN THE ORIGINAL INPUT VECTOR
 
-	atomNo = atmpl(vbState,atompos)
+	ATOMNO = ATMPL(VBSTATE,ATOMPOS)
 
-!----find out which type of atom is: 
+!----FIND OUT WHICH TYPE OF ATOM IS: 
 
-	if (MOD(atompos,3).eq.0) then	
-	   qi = qtip3p_o
-	   avoid2 = atompos - 1 
-	   avoid3 = atompos + 1
+	IF (MOD(ATOMPOS,3).EQ.0) THEN	
+	   QI = QTIP3P_O
+	   AVOID2 = ATOMPOS - 1 
+	   AVOID3 = ATOMPOS + 1
 
-!----detemine LJ part of force if considering an oxygen atom
+!----DETEMINE LJ PART OF FORCE IF CONSIDERING AN OXYGEN ATOM
 
-           do j = 6,(natoms-1),3
+           DO J = 6,(NATOMS-1),3
 
-	      if (j.eq.atompos) cycle
+	      IF (J.EQ.ATOMPOS) CYCLE
 
-              dx_oo = psix(atomNo) - psix(atmpl(vbState,j))
-              dy_oo = psiy(atomNo) - psiy(atmpl(vbState,j))
-              dz_oo = psiz(atomNo) - psiz(atmpl(vbState,j))
-	      Roo = DSQRT(dx_oo**2 + dy_oo**2 + dz_oo**2)
-	      Roo2 = Roo**2
-	      Roo = 3.1506d0/Roo
-	      Roo8 = Roo**6
-	      Roo14 = Roo8**2
-!	      rfLJ = -2.4d01*1.522d-01*(2.0d0*Roo14 - Roo8)*(1.0d0/Roo2)
-	      rfLJ = LJprefactor*(2.0d0*Roo14 - Roo8)/Roo2
-	      fLJx = fLJx + rfLJ*dx_oo
-	      fLJy = fLJy + rfLJ*dy_oo
-	      fLJz = fLJz + rfLJ*dz_oo
-	   enddo
+              DX_OO = PSIX(ATOMNO) - PSIX(ATMPL(VBSTATE,J))
+              DY_OO = PSIY(ATOMNO) - PSIY(ATMPL(VBSTATE,J))
+              DZ_OO = PSIZ(ATOMNO) - PSIZ(ATMPL(VBSTATE,J))
+	      ROO = DSQRT(DX_OO**2 + DY_OO**2 + DZ_OO**2)
+	      ROO2 = ROO**2
+	      ROO = 3.1506D0/ROO
+	      ROO8 = ROO**6
+	      ROO14 = ROO8**2
+!	      RFLJ = -2.4D01*1.522D-01*(2.0D0*ROO14 - ROO8)*(1.0D0/ROO2)
+	      RFLJ = LJPREFACTOR*(2.0D0*ROO14 - ROO8)/ROO2
+	      FLJX = FLJX + RFLJ*DX_OO
+	      FLJY = FLJY + RFLJ*DY_OO
+	      FLJZ = FLJZ + RFLJ*DZ_OO
+	   ENDDO
 
-	elseif (MOD(atompos+1,3).eq.0) then
-	   avoid2 = atompos + 1
-	   avoid3 = atompos + 2
-	   qi = qtip3p_h
-	elseif (MOD(atompos-1,3).eq.0) then
-	   qi = qtip3p_h
-	   avoid2 = atompos-1
-	   avoid3 = atompos-2
-	else
-	   print *, " Stopping here..........#$%^&***"
-	   stop
-	endif
+	ELSEIF (MOD(ATOMPOS+1,3).EQ.0) THEN
+	   AVOID2 = ATOMPOS + 1
+	   AVOID3 = ATOMPOS + 2
+	   QI = QTIP3P_H
+	ELSEIF (MOD(ATOMPOS-1,3).EQ.0) THEN
+	   QI = QTIP3P_H
+	   AVOID2 = ATOMPOS-1
+	   AVOID3 = ATOMPOS-2
+	ELSE
+	   PRINT *, " STOPPING HERE..........#$%^&***"
+	   STOP
+	ENDIF
 
-!----determine coulomb part of TIP3P potential
-	do i = 5,natoms
-	   if ((i.eq.atompos).or.(i.eq.avoid2).or.(i.eq.avoid3)) cycle
-	   if (MOD(i,3).eq.0) then
-	      qj = qtip3p_o
-	   else
-	      qj = qtip3p_h
-	   endif
-	   dx = psix(atomNo) - psix(atmpl(vbState,i))
-	   dy = psiy(atomNo) - psiy(atmpl(vbState,i))
-	   dz = psiz(atomNo) - psiz(atmpl(vbState,i))
-	   rij = DSQRT(dx**2+dy**2+dz**2)  
-!	   rfcoulomb = -1.0d0*qi*qj*fourpieo/(rij**3)
-	   rfcoulomb = coulombPrefactor*qi*qj/(rij**3)   
-	   fcoulombx = rfcoulomb*dx + fcoulombx 
-	   fcoulomby = rfcoulomb*dy + fcoulomby 
-	   fcoulombz = rfcoulomb*dz + fcoulombz 
-	enddo
+!----DETERMINE COULOMB PART OF TIP3P POTENTIAL
+	DO I = 5,NATOMS
+	   IF ((I.EQ.ATOMPOS).OR.(I.EQ.AVOID2).OR.(I.EQ.AVOID3)) CYCLE
+	   IF (MOD(I,3).EQ.0) THEN
+	      QJ = QTIP3P_O
+	   ELSE
+	      QJ = QTIP3P_H
+	   ENDIF
+	   DX = PSIX(ATOMNO) - PSIX(ATMPL(VBSTATE,I))
+	   DY = PSIY(ATOMNO) - PSIY(ATMPL(VBSTATE,I))
+	   DZ = PSIZ(ATOMNO) - PSIZ(ATMPL(VBSTATE,I))
+	   RIJ = DSQRT(DX**2+DY**2+DZ**2)  
+!	   RFCOULOMB = -1.0D0*QI*QJ*FOURPIEO/(RIJ**3)
+	   RFCOULOMB = COULOMBPREFACTOR*QI*QJ/(RIJ**3)   
+	   FCOULOMBX = RFCOULOMB*DX + FCOULOMBX 
+	   FCOULOMBY = RFCOULOMB*DY + FCOULOMBY 
+	   FCOULOMBZ = RFCOULOMB*DZ + FCOULOMBZ 
+	ENDDO
 
-	fh2ointerx = 1.0d0*(fLJx + fcoulombx)
-	fh2ointery = 1.0d0*(fLJy + fcoulomby)
-	fh2ointerz = 1.0d0*(fLJz + fcoulombz)
+	FH2OINTERX = 1.0D0*(FLJX + FCOULOMBX)
+	FH2OINTERY = 1.0D0*(FLJY + FCOULOMBY)
+	FH2OINTERZ = 1.0D0*(FLJZ + FCOULOMBZ)
 
-! Debugging
+! DEBUGGING
 
-!	h2o_h2o_forces(vbState,(3*atomNo)-2) = fh2ointerx
-!	h2o_h2o_forces(vbState,(3*atomNo)-1) = fh2ointery
-!	h2o_h2o_forces(vbState,(3*atomNo)) = fh2ointerz	
+!	H2O_H2O_FORCES(VBSTATE,(3*ATOMNO)-2) = FH2OINTERX
+!	H2O_H2O_FORCES(VBSTATE,(3*ATOMNO)-1) = FH2OINTERY
+!	H2O_H2O_FORCES(VBSTATE,(3*ATOMNO)) = FH2OINTERZ	
 
-	return
-	end
+	RETURN
+	END
 
 !#####################################################################
 !####################### SUBROUTINE FH2OINTRA ########################
 !#####################################################################
 
-	subroutine fh2ointra(atompos,vbState,fh2ointrax,fh2ointray,fh2ointraz)
+	SUBROUTINE FH2OINTRA(ATOMPOS,VBSTATE,FH2OINTRAX,FH2OINTRAY,FH2OINTRAZ)
 
-	use msevb_common
+	USE MSEVB_COMMON
 
-	implicit none
+	IMPLICIT NONE
 
 !-------------------------------------------------------------------------
-! 07/08/99 R.A. Christie
+! 07/08/99 R.A. CHRISTIE
 !
-! routine for determining the intramolecular water forces
+! ROUTINE FOR DETERMINING THE INTRAMOLECULAR WATER FORCES
 !
 !-------------------------------------------------------------------------
 
-!----Incoming variables
-	integer atompos,vbState,atomNo
+!----INCOMING VARIABLES
+	INTEGER ATOMPOS,VBSTATE,ATOMNO
 	DOUBLE PRECISION FH2OINTRAX,FH2OINTRAY,FH2OINTRAZ
-!----Local
+!----LOCAL
 	DOUBLE PRECISION DXROH(2),DYROH(2),DZROH(2),ROH(2),RFH2OSTRX,RFH2OSTRY, &
-      		rfh2ostrz,rfh2obendx,rfh2obendy,rfh2obendz,theta, &
-      		rfh2obendx1,rfh2obendy1,rfh2obendz1,AdotA,AdotB,vectSq, &
-      		angleDiff,part1x,part2x,part3x,part1y,part2y,part3y,part1z, &
-      		part2z,part3z,part4x,part4y,part4z,theta_temp
-	integer i,j,otherb1,otherb2
-	character*2 type
+      		RFH2OSTRZ,RFH2OBENDX,RFH2OBENDY,RFH2OBENDZ,THETA, &
+      		RFH2OBENDX1,RFH2OBENDY1,RFH2OBENDZ1,ADOTA,ADOTB,VECTSQ, &
+      		ANGLEDIFF,PART1X,PART2X,PART3X,PART1Y,PART2Y,PART3Y,PART1Z, &
+      		PART2Z,PART3Z,PART4X,PART4Y,PART4Z,THETA_TEMP
+	INTEGER I,J,OTHERB1,OTHERB2
+	CHARACTER*2 TYPE
 	DOUBLE PRECISION CHECKED_ACOS
 
-! Position of the atom in the original input vector
+! POSITION OF THE ATOM IN THE ORIGINAL INPUT VECTOR
 
-	atomNo = atmpl(vbState,atompos)
+	ATOMNO = ATMPL(VBSTATE,ATOMPOS)
 
 !#####################################################################
-! Consider whether atom selected was originally in a hydronium
-! position, or a water position
+! CONSIDER WHETHER ATOM SELECTED WAS ORIGINALLY IN A HYDRONIUM
+! POSITION, OR A WATER POSITION
 !##################################################################### 
 
-	if (MOD(atompos,3).eq.0) then
-           type = "ox"
-	   otherb1 = atmpl(vbState,atompos+1)
-           otherb2 = atmpl(vbState,atompos-1)
-	elseif (MOD((atompos+1),3).eq.0) then
-           type = "hg"
-           otherb1 = atmpl(vbState,atompos+1)
-           otherb2 = atmpl(vbState,atompos+2)
-	elseif (MOD((atompos-1),3).eq.0) then
-           type = "lw"
-           otherb1 = atmpl(vbState,atompos-1)
-           otherb2 = atmpl(vbState,atompos-2)
-	endif
+	IF (MOD(ATOMPOS,3).EQ.0) THEN
+           TYPE = "OX"
+	   OTHERB1 = ATMPL(VBSTATE,ATOMPOS+1)
+           OTHERB2 = ATMPL(VBSTATE,ATOMPOS-1)
+	ELSEIF (MOD((ATOMPOS+1),3).EQ.0) THEN
+           TYPE = "HG"
+           OTHERB1 = ATMPL(VBSTATE,ATOMPOS+1)
+           OTHERB2 = ATMPL(VBSTATE,ATOMPOS+2)
+	ELSEIF (MOD((ATOMPOS-1),3).EQ.0) THEN
+           TYPE = "LW"
+           OTHERB1 = ATMPL(VBSTATE,ATOMPOS-1)
+           OTHERB2 = ATMPL(VBSTATE,ATOMPOS-2)
+	ENDIF
 	
-!----determine the Roh distances in water
-	if (MOD(atompos,3).eq.0) then 
-           dxroh(1) = psix(otherb1) - psix(atomNo)
-           dyroh(1) = psiy(otherb1) - psiy(atomNo)
-           dzroh(1) = psiz(otherb1) - psiz(atomNo)
-	   roh(1) = interAtomicR(otherb1,atomNo)
+!----DETERMINE THE ROH DISTANCES IN WATER
+	IF (MOD(ATOMPOS,3).EQ.0) THEN 
+           DXROH(1) = PSIX(OTHERB1) - PSIX(ATOMNO)
+           DYROH(1) = PSIY(OTHERB1) - PSIY(ATOMNO)
+           DZROH(1) = PSIZ(OTHERB1) - PSIZ(ATOMNO)
+	   ROH(1) = INTERATOMICR(OTHERB1,ATOMNO)
 
-           dxroh(2) = psix(otherb2) - psix(atomNo)
-           dyroh(2) = psiy(otherb2) - psiy(atomNo)
-           dzroh(2) = psiz(otherb2) - psiz(atomNo)
-	   roh(2) = interAtomicR(otherb2,atomNo)
-	else
-	   dxroh(1) = psix(otherb1) - psix(atomNo)
-           dyroh(1) = psiy(otherb1) - psiy(atomNo)
-           dzroh(1) = psiz(otherb1) - psiz(atomNo)
-	   roh(1) = interAtomicR(otherb1,atomNo)
-           dxroh(2) = psix(otherb1) - psix(otherb2)
-           dyroh(2) = psiy(otherb1) - psiy(otherb2)
-           dzroh(2) = psiz(otherb1) - psiz(otherb2)
-	   roh(2) = interAtomicR(otherb1,otherb2)
-	endif
+           DXROH(2) = PSIX(OTHERB2) - PSIX(ATOMNO)
+           DYROH(2) = PSIY(OTHERB2) - PSIY(ATOMNO)
+           DZROH(2) = PSIZ(OTHERB2) - PSIZ(ATOMNO)
+	   ROH(2) = INTERATOMICR(OTHERB2,ATOMNO)
+	ELSE
+	   DXROH(1) = PSIX(OTHERB1) - PSIX(ATOMNO)
+           DYROH(1) = PSIY(OTHERB1) - PSIY(ATOMNO)
+           DZROH(1) = PSIZ(OTHERB1) - PSIZ(ATOMNO)
+	   ROH(1) = INTERATOMICR(OTHERB1,ATOMNO)
+           DXROH(2) = PSIX(OTHERB1) - PSIX(OTHERB2)
+           DYROH(2) = PSIY(OTHERB1) - PSIY(OTHERB2)
+           DZROH(2) = PSIZ(OTHERB1) - PSIZ(OTHERB2)
+	   ROH(2) = INTERATOMICR(OTHERB1,OTHERB2)
+	ENDIF
 
 !---------------------------------------------------------------------
-! Calculate the bending terms:
+! CALCULATE THE BENDING TERMS:
 !
 !---------------------------------------------------------------------
 
-        theta_temp = dxroh(1)*dxroh(2)+dyroh(1)*dyroh(2) &
-                        + dzroh(1)*dzroh(2)
-	theta = checked_acos(theta_temp/(roh(1)*roh(2)))
+        THETA_TEMP = DXROH(1)*DXROH(2)+DYROH(1)*DYROH(2) &
+                        + DZROH(1)*DZROH(2)
+	THETA = CHECKED_ACOS(THETA_TEMP/(ROH(1)*ROH(2)))
 
-        angleDiff = theta - thetaeq
-        vectSq = dxroh(1)*dxroh(2) + dyroh(1)*dyroh(2) + dzroh(1)*dzroh(2)
+        ANGLEDIFF = THETA - THETAEQ
+        VECTSQ = DXROH(1)*DXROH(2) + DYROH(1)*DYROH(2) + DZROH(1)*DZROH(2)
 
-!----Initially consider the Oxygen
-        if (MOD(atompos,3).eq.0) then 
+!----INITIALLY CONSIDER THE OXYGEN
+        IF (MOD(ATOMPOS,3).EQ.0) THEN 
 !---------------------------------------------------------------------
 !  X
 !---------------------------------------------------------------------
-	   part1x = (dxroh(1)*vectSq)/(roh(2)*roh(1)**3) + (dxroh(2)*vectSq)/(roh(1)*roh(2)**3)
-	   part2x = dxroh(1)/(roh(1)*roh(2)) + dxroh(2)/(roh(1)*roh(2))
-	   part3x = -1.0d0*DSIN(theta)
+	   PART1X = (DXROH(1)*VECTSQ)/(ROH(2)*ROH(1)**3) + (DXROH(2)*VECTSQ)/(ROH(1)*ROH(2)**3)
+	   PART2X = DXROH(1)/(ROH(1)*ROH(2)) + DXROH(2)/(ROH(1)*ROH(2))
+	   PART3X = -1.0D0*DSIN(THETA)
 
-	   if (DABS(part3x)<numericalZeroLimit) then
-	      rfh2obendz = large_force
-	   else
-	      rfh2obendx = h2oktheta*(theta - thetaeq)*(part1x - part2x)/part3x 
-	   endif
+	   IF (DABS(PART3X)<NUMERICALZEROLIMIT) THEN
+	      RFH2OBENDZ = LARGE_FORCE
+	   ELSE
+	      RFH2OBENDX = H2OKTHETA*(THETA - THETAEQ)*(PART1X - PART2X)/PART3X 
+	   ENDIF
 !---------------------------------------------------------------------
 !  Y
 !---------------------------------------------------------------------
-            part1y = dyroh(2)*vectSq/(roh(1)*roh(2)**3)
-            part2y = -1.0d0*(dyroh(1)+dyroh(2))/(roh(1)*roh(2))
-            part3y = dyroh(1)*vectSq/(roh(2)*roh(1)**3)
-            part4y = 1.0d0 - vectSq**2/((roh(1)**2)*(roh(2)**2))
+            PART1Y = DYROH(2)*VECTSQ/(ROH(1)*ROH(2)**3)
+            PART2Y = -1.0D0*(DYROH(1)+DYROH(2))/(ROH(1)*ROH(2))
+            PART3Y = DYROH(1)*VECTSQ/(ROH(2)*ROH(1)**3)
+            PART4Y = 1.0D0 - VECTSQ**2/((ROH(1)**2)*(ROH(2)**2))
 
-	    if (DABS(part4y)<numericalZeroLimit) then
-	       rfh2obendy = large_force
-	    else
-	       rfh2obendy = -1.0d0*(h2oktheta*(part1y + part2y + part3y)*angleDiff)/DSQRT(part4y)
-	    endif
+	    IF (DABS(PART4Y)<NUMERICALZEROLIMIT) THEN
+	       RFH2OBENDY = LARGE_FORCE
+	    ELSE
+	       RFH2OBENDY = -1.0D0*(H2OKTHETA*(PART1Y + PART2Y + PART3Y)*ANGLEDIFF)/DSQRT(PART4Y)
+	    ENDIF
 !---------------------------------------------------------------------
 !  Z
 !---------------------------------------------------------------------
-            part1z = dzroh(2)*vectSq/(roh(1)*roh(2)**3)
-            part2z = -1.0d0*(dzroh(1)+dzroh(2))/(roh(1)*roh(2))
-            part3z = dzroh(1)*vectSq/(roh(2)*roh(1)**3)
-            part4z = 1.0d0 - vectSq**2/((roh(1)**2)*(roh(2)**2))
+            PART1Z = DZROH(2)*VECTSQ/(ROH(1)*ROH(2)**3)
+            PART2Z = -1.0D0*(DZROH(1)+DZROH(2))/(ROH(1)*ROH(2))
+            PART3Z = DZROH(1)*VECTSQ/(ROH(2)*ROH(1)**3)
+            PART4Z = 1.0D0 - VECTSQ**2/((ROH(1)**2)*(ROH(2)**2))
 
-	    if (DABS(part4z)<numericalZeroLimit) then
-	       rfh2obendz = large_force
-	    else
-	       rfh2obendz = -1.0d0*(h2oktheta*(part1z + part2z + part3z)*angleDiff)/DSQRT(part4z)
-	    endif
+	    IF (DABS(PART4Z)<NUMERICALZEROLIMIT) THEN
+	       RFH2OBENDZ = LARGE_FORCE
+	    ELSE
+	       RFH2OBENDZ = -1.0D0*(H2OKTHETA*(PART1Z + PART2Z + PART3Z)*ANGLEDIFF)/DSQRT(PART4Z)
+	    ENDIF
 
-!----Now Consider Hydrogen
-	 else
+!----NOW CONSIDER HYDROGEN
+	 ELSE
 !---------------------------------------------------------------------
 !  X
 !--------------------------------------------------------------------- 
-	    part1x = dxroh(1)*vectSq/(roh(2)*roh(1)**3) 
-	    part2x = dxroh(2)/(Roh(1)*Roh(2))
-	    part3x = 1.0d0 - vectSq**2/((roh(1)**2)*(roh(2)**2))
+	    PART1X = DXROH(1)*VECTSQ/(ROH(2)*ROH(1)**3) 
+	    PART2X = DXROH(2)/(ROH(1)*ROH(2))
+	    PART3X = 1.0D0 - VECTSQ**2/((ROH(1)**2)*(ROH(2)**2))
 
-	    if (DABS(part3x)<numericalZeroLimit) then
-	       rfh2obendx = large_force
-	    else
-	       rfh2obendx = -1.0d0*(h2oktheta*(part1x - part2x)*angleDiff)/DSQRT(part3x)
-	    endif
+	    IF (DABS(PART3X)<NUMERICALZEROLIMIT) THEN
+	       RFH2OBENDX = LARGE_FORCE
+	    ELSE
+	       RFH2OBENDX = -1.0D0*(H2OKTHETA*(PART1X - PART2X)*ANGLEDIFF)/DSQRT(PART3X)
+	    ENDIF
 !---------------------------------------------------------------------
 !  Y
 !---------------------------------------------------------------------
-            part1y = dyroh(1)*vectSq/(roh(2)*roh(1)**3)
-            part2y = dyroh(2)/(Roh(1)*Roh(2))
-            part3y = 1.0d0 - vectSq**2/((roh(1)**2)*(roh(2)**2))
+            PART1Y = DYROH(1)*VECTSQ/(ROH(2)*ROH(1)**3)
+            PART2Y = DYROH(2)/(ROH(1)*ROH(2))
+            PART3Y = 1.0D0 - VECTSQ**2/((ROH(1)**2)*(ROH(2)**2))
 	    
-	    if (DABS(part3y)<numericalZeroLimit) then
-	       rfh2obendy = large_force
-	    else
-	       rfh2obendy = -1.0d0*(h2oktheta*(part1y - part2y)*angleDiff)/DSQRT(part3y) 
-	    endif
+	    IF (DABS(PART3Y)<NUMERICALZEROLIMIT) THEN
+	       RFH2OBENDY = LARGE_FORCE
+	    ELSE
+	       RFH2OBENDY = -1.0D0*(H2OKTHETA*(PART1Y - PART2Y)*ANGLEDIFF)/DSQRT(PART3Y) 
+	    ENDIF
 !---------------------------------------------------------------------
 !  Z
 !---------------------------------------------------------------------
-            part1z = dzroh(1)*vectSq/(roh(2)*roh(1)**3)
-            part2z = dzroh(2)/(Roh(1)*Roh(2))
-            part3z = 1.0d0 - vectSq**2/((roh(1)**2)*(roh(2)**2))
+            PART1Z = DZROH(1)*VECTSQ/(ROH(2)*ROH(1)**3)
+            PART2Z = DZROH(2)/(ROH(1)*ROH(2))
+            PART3Z = 1.0D0 - VECTSQ**2/((ROH(1)**2)*(ROH(2)**2))
 
-	    if (DABS(part3z)<numericalZeroLimit) then
-	       rfh2obendz = large_force
-	    else
-	       rfh2obendz = -1.0d0*(h2oktheta*(part1z - part2z)*angleDiff)/DSQRT(part3z) 
-	    endif
-	 endif
+	    IF (DABS(PART3Z)<NUMERICALZEROLIMIT) THEN
+	       RFH2OBENDZ = LARGE_FORCE
+	    ELSE
+	       RFH2OBENDZ = -1.0D0*(H2OKTHETA*(PART1Z - PART2Z)*ANGLEDIFF)/DSQRT(PART3Z) 
+	    ENDIF
+	 ENDIF
 !---------------------------------------------------------------------
-! Calculate the stretching terms:
+! CALCULATE THE STRETCHING TERMS:
 !
 !---------------------------------------------------------------------
 
-	 rfh2ostrx = -1.0d0*dxroh(1)*(h2okb/roh(1))*(roh(1)-h2oroheq) 
-	 rfh2ostry = -1.0d0*dyroh(1)*(h2okb/roh(1))*(roh(1)-h2oroheq)
-	 rfh2ostrz = -1.0d0*dzroh(1)*(h2okb/roh(1))*(roh(1)-h2oroheq)
+	 RFH2OSTRX = -1.0D0*DXROH(1)*(H2OKB/ROH(1))*(ROH(1)-H2OROHEQ) 
+	 RFH2OSTRY = -1.0D0*DYROH(1)*(H2OKB/ROH(1))*(ROH(1)-H2OROHEQ)
+	 RFH2OSTRZ = -1.0D0*DZROH(1)*(H2OKB/ROH(1))*(ROH(1)-H2OROHEQ)
 	
-	 if (type.eq."ox") then
-	    rfh2ostrx = rfh2ostrx - 1.0d0*dxroh(2)*(h2okb/roh(2))*(roh(2)-h2oroheq) 
-	    rfh2ostry = rfh2ostry - 1.0d0*dyroh(2)*(h2okb/roh(2))*(roh(2)-h2oroheq)
-	    rfh2ostrz = rfh2ostrz - 1.0d0*dzroh(2)*(h2okb/roh(2))*(roh(2)-h2oroheq)
-	 endif
+	 IF (TYPE.EQ."OX") THEN
+	    RFH2OSTRX = RFH2OSTRX - 1.0D0*DXROH(2)*(H2OKB/ROH(2))*(ROH(2)-H2OROHEQ) 
+	    RFH2OSTRY = RFH2OSTRY - 1.0D0*DYROH(2)*(H2OKB/ROH(2))*(ROH(2)-H2OROHEQ)
+	    RFH2OSTRZ = RFH2OSTRZ - 1.0D0*DZROH(2)*(H2OKB/ROH(2))*(ROH(2)-H2OROHEQ)
+	 ENDIF
 
-	 fh2ointrax = 1.0d0*(rfh2ostrx + rfh2obendx)
-	 fh2ointray = 1.0d0*(rfh2ostry + rfh2obendy)
-	 fh2ointraz = 1.0d0*(rfh2ostrz + rfh2obendz)
+	 FH2OINTRAX = 1.0D0*(RFH2OSTRX + RFH2OBENDX)
+	 FH2OINTRAY = 1.0D0*(RFH2OSTRY + RFH2OBENDY)
+	 FH2OINTRAZ = 1.0D0*(RFH2OSTRZ + RFH2OBENDZ)
 
-! Debugging
+! DEBUGGING
 
-!	h2o_intra_forces(vbState,(3*atomNo)-2) = fh2ointrax
-!	h2o_intra_forces(vbState,(3*atomNo)-1) = fh2ointray
-!	h2o_intra_forces(vbState,(3*atomNo)) = fh2ointraz
+!	H2O_INTRA_FORCES(VBSTATE,(3*ATOMNO)-2) = FH2OINTRAX
+!	H2O_INTRA_FORCES(VBSTATE,(3*ATOMNO)-1) = FH2OINTRAY
+!	H2O_INTRA_FORCES(VBSTATE,(3*ATOMNO)) = FH2OINTRAZ
 
 	RETURN 
 	END
@@ -1542,149 +1542,149 @@
 !##################### SUBROUTINE OFFD_ATOM1 #########################
 !#####################################################################
 
-! Calculate the off diagonal contributions to the force for an H2O atom (O or H)
-! or a hydronium H which is not the exchanging H
+! CALCULATE THE OFF DIAGONAL CONTRIBUTIONS TO THE FORCE FOR AN H2O ATOM (O OR H)
+! OR A HYDRONIUM H WHICH IS NOT THE EXCHANGING H
 
-	subroutine offd_atom1(atomNo,Roo,Roh,Fxatom1,Fyatom1,Fzatom1,vbState1,vbState2) 
+	SUBROUTINE OFFD_ATOM1(ATOMNO,ROO,ROH,FXATOM1,FYATOM1,FZATOM1,VBSTATE1,VBSTATE2) 
 
-	use commons
-	use msevb_common
+	USE COMMONS
+	USE MSEVB_COMMON
 	
-	implicit none
+	IMPLICIT NONE
 
 !========================================================================
-! 29/7/99 R.A. Christie
+! 29/7/99 R.A. CHRISTIE
 !
-! Routine for calculating the forces on atom type 1
-! *NB* This routine also includes f2_force
-! *NB* Roo takes on the distance of the H5O2+ dimer being considered
+! ROUTINE FOR CALCULATING THE FORCES ON ATOM TYPE 1
+! *NB* THIS ROUTINE ALSO INCLUDES F2_FORCE
+! *NB* ROO TAKES ON THE DISTANCE OF THE H5O2+ DIMER BEING CONSIDERED
 ! INPUT:
-!	1. atom number(position)
+!	1. ATOM NUMBER(POSITION)
 !
-!  -- Update: 21-07-00
-! Atom 1 undergoes interactions with the H3O+ atoms, the H2O atoms of a
-! water molecule and the exchange-coupling terms.
-! Thus the derivatives of the V(H3O+), V(H3O+,H2O) and V(OffDiag) are
-! included in this routine.
+!  -- UPDATE: 21-07-00
+! ATOM 1 UNDERGOES INTERACTIONS WITH THE H3O+ ATOMS, THE H2O ATOMS OF A
+! WATER MOLECULE AND THE EXCHANGE-COUPLING TERMS.
+! THUS THE DERIVATIVES OF THE V(H3O+), V(H3O+,H2O) AND V(OFFDIAG) ARE
+! INCLUDED IN THIS ROUTINE.
 !
 !========================================================================
 
-! Subroutine arguments
+! SUBROUTINE ARGUMENTS
 
-        integer, intent(IN) :: atomNo
+        INTEGER, INTENT(IN) :: ATOMNO
         DOUBLE PRECISION, INTENT(IN) :: ROO,ROH
 	DOUBLE PRECISION, INTENT(OUT) :: FXATOM1,FYATOM1,FZATOM1
-        integer, intent(IN) :: vbState1, vbState2
+        INTEGER, INTENT(IN) :: VBSTATE1, VBSTATE2
 
-! Local variables
+! LOCAL VARIABLES
 
 	DOUBLE PRECISION DX,DY,DZ,Q	
-	integer i,j,wheech
+	INTEGER I,J,WHEECH
         DOUBLE PRECISION KROO,TANHROO,ALPHAROO
 	DOUBLE PRECISION DHIJ_TEMP
-	logical zundelH
+	LOGICAL ZUNDELH
 
 !       DOUBLE PRECISION, INTENT(IN) :: DROO(3),DROH(3)
 !       DOUBLE PRECISION F,G,RIJ,VEX,DVEXDRIJ
 !	DOUBLE PRECISION SECHROO,DGDQ,DROODX,DROODY,DROODZ,DROHDX,DROHDY,DROHDZ,DQDX,DQDY,DQDZ,GAMMAROO
 
-	Fxatom1 = 0.0d0
-	Fyatom1 = 0.0d0
-	Fzatom1 = 0.0d0
+	FXATOM1 = 0.0D0
+	FYATOM1 = 0.0D0
+	FZATOM1 = 0.0D0
         
- 	if (num_eig.gt.2) then
+ 	IF (NUM_EIG.GT.2) THEN
  
 !---------------------------------------------------------------------
-! Determine initial information to be utilised in the loop
-! This is now stored from the energy calculations rather than recalculated
+! DETERMINE INITIAL INFORMATION TO BE UTILISED IN THE LOOP
+! THIS IS NOW STORED FROM THE ENERGY CALCULATIONS RATHER THAN RECALCULATED
 !---------------------------------------------------------------------  
 
-!	   q = 5.0d-1*Roo - Roh
-!	   alphaRoo = DEXP(-1.0d0*alpha_bleh*(Roo - rooeq))
-!	   kRoo = DEXP(-1.0d0*kexp*(Roo - Doo)**2)
-!	   tanhRoo = DTANH(beta*(Roo - big_rooeq))
-!	   f = (1.0d0 + P*kRoo)*(5.0d-01*(1.0d0 - tanhRoo) + 1.0d01*(alphaRoo))
-!	   g = DEXP(-1.0d0*gamma_msevb*(q)**2)
+!	   Q = 5.0D-1*ROO - ROH
+!	   ALPHAROO = DEXP(-1.0D0*ALPHA_BLEH*(ROO - ROOEQ))
+!	   KROO = DEXP(-1.0D0*KEXP*(ROO - DOO)**2)
+!	   TANHROO = DTANH(BETA*(ROO - BIG_ROOEQ))
+!	   F = (1.0D0 + P*KROO)*(5.0D-01*(1.0D0 - TANHROO) + 1.0D01*(ALPHAROO))
+!	   G = DEXP(-1.0D0*GAMMA_MSEVB*(Q)**2)
 
-!	   gammaRoo = DEXP(-1.0d0*gamma_msevb*(q)**2)
-!	   sechRoo = 1.0d0 - tanhRoo**2
-!	   dgdq = -2.0d0*gammaRoo*gamma_msevb*q
-!	   dRoodx = dRoo(1)/Roo
-!	   dRoody = dRoo(2)/Roo
-!	   dRoodz = dRoo(3)/Roo
-!	   dRohdx = dRoh(1)/Roh
-!	   dRohdy = dRoh(2)/Roh
-!	   dRohdz = dRoh(3)/Roh
-!	   dqdx = 5.0d-01*dRoodx - dRohdx
-!	   dqdy = 5.0d-01*dRoody - dRohdy
-!	   dqdz = 5.0d-01*dRoodz - dRohdz    
+!	   GAMMAROO = DEXP(-1.0D0*GAMMA_MSEVB*(Q)**2)
+!	   SECHROO = 1.0D0 - TANHROO**2
+!	   DGDQ = -2.0D0*GAMMAROO*GAMMA_MSEVB*Q
+!	   DROODX = DROO(1)/ROO
+!	   DROODY = DROO(2)/ROO
+!	   DROODZ = DROO(3)/ROO
+!	   DROHDX = DROH(1)/ROH
+!	   DROHDY = DROH(2)/ROH
+!	   DROHDZ = DROH(3)/ROH
+!	   DQDX = 5.0D-01*DROODX - DROHDX
+!	   DQDY = 5.0D-01*DROODY - DROHDY
+!	   DQDZ = 5.0D-01*DROODZ - DROHDZ    
 
-! Decide whether this is an H2O atom or a Zundel atom
+! DECIDE WHETHER THIS IS AN H2O ATOM OR A ZUNDEL ATOM
 
-	   zundelH = .FALSE.
+	   ZUNDELH = .FALSE.
 
- 	   if (MOD(atomNo,3).ne.0) then
- 	      do i=1,7
- 		 if (zundel_species(vbState1,vbState2,i).eq.atomNo) then
- 		    zundelH = .TRUE.
- 		    exit
- 		 endif
- 	      enddo
- 	   endif
+ 	   IF (MOD(ATOMNO,3).NE.0) THEN
+ 	      DO I=1,7
+ 		 IF (ZUNDEL_SPECIES(VBSTATE1,VBSTATE2,I).EQ.ATOMNO) THEN
+ 		    ZUNDELH = .TRUE.
+ 		    EXIT
+ 		 ENDIF
+ 	      ENDDO
+ 	   ENDIF
 
- 	   if (zundelH) then
+ 	   IF (ZUNDELH) THEN
 
- 	      Interact: do i = 1, natoms
- 		 do j = 1, 7
- 		    if (atmpl(vbState1,i).eq.zundel_species(vbState1,vbState2,j)) cycle Interact
- 		 enddo
+ 	      INTERACT: DO I = 1, NATOMS
+ 		 DO J = 1, 7
+ 		    IF (ATMPL(VBSTATE1,I).EQ.ZUNDEL_SPECIES(VBSTATE1,VBSTATE2,J)) CYCLE INTERACT
+ 		 ENDDO
 
- 		 wheech = atmpl(vbState1,i)
+ 		 WHEECH = ATMPL(VBSTATE1,I)
 
- 		 dx = psix(atomNo) - psix(wheech)
- 		 dy = psiy(atomNo) - psiy(wheech)
- 		 dz = psiz(atomNo) - psiz(wheech)
+ 		 DX = PSIX(ATOMNO) - PSIX(WHEECH)
+ 		 DY = PSIY(ATOMNO) - PSIY(WHEECH)
+ 		 DZ = PSIZ(ATOMNO) - PSIZ(WHEECH)
 
-! 		 Rij = interAtomicR(atomNo,wheech)
-! 		 Vex = each_coulomb(atomNo,wheech)     ! subscripts have to be this way around
-! 		 dVexdRij = -1.0d0*Vex/Rij 
-!		 dHij_temp = dVexdRij*f*g/Rij
+! 		 RIJ = INTERATOMICR(ATOMNO,WHEECH)
+! 		 VEX = EACH_COULOMB(ATOMNO,WHEECH)     ! SUBSCRIPTS HAVE TO BE THIS WAY AROUND
+! 		 DVEXDRIJ = -1.0D0*VEX/RIJ 
+!		 DHIJ_TEMP = DVEXDRIJ*F*G/RIJ
 
-		 dHij_temp = -1.0d0*each_coulomb(atomNo,wheech)*zundel_f(vbState1,vbState2)*zundel_g(vbState1,vbState2)/ &
-                             (interAtomicR(atomNo,wheech)**2)
+		 DHIJ_TEMP = -1.0D0*EACH_COULOMB(ATOMNO,WHEECH)*ZUNDEL_F(VBSTATE1,VBSTATE2)*ZUNDEL_G(VBSTATE1,VBSTATE2)/ &
+                             (INTERATOMICR(ATOMNO,WHEECH)**2)
 
- 		 Fxatom1 = Fxatom1 + dHij_temp*dx
- 		 Fyatom1 = Fyatom1 + dHij_temp*dy
- 		 Fzatom1 = Fzatom1 + dHij_temp*dz
+ 		 FXATOM1 = FXATOM1 + DHIJ_TEMP*DX
+ 		 FYATOM1 = FYATOM1 + DHIJ_TEMP*DY
+ 		 FZATOM1 = FZATOM1 + DHIJ_TEMP*DZ
 
- 	      enddo Interact
+ 	      ENDDO INTERACT
 
- 	   else  ! H2O atom
+ 	   ELSE  ! H2O ATOM
 
- 	      do i = 1, 7
- 		 wheech = zundel_species(vbState1,vbState2,i)
+ 	      DO I = 1, 7
+ 		 WHEECH = ZUNDEL_SPECIES(VBSTATE1,VBSTATE2,I)
 
- 		 dx = psix(atomNo) - psix(wheech)
- 		 dy = psiy(atomNo) - psiy(wheech)
- 		 dz = psiz(atomNo) - psiz(wheech)
+ 		 DX = PSIX(ATOMNO) - PSIX(WHEECH)
+ 		 DY = PSIY(ATOMNO) - PSIY(WHEECH)
+ 		 DZ = PSIZ(ATOMNO) - PSIZ(WHEECH)
 
-!!		 Vex = (qexchi*qexchj*fourpieo)/rij
-!!		 dVexdRij = -1.0d0*qexchi*qexchj*fourpieo/(Rij**2)
+!!		 VEX = (QEXCHI*QEXCHJ*FOURPIEO)/RIJ
+!!		 DVEXDRIJ = -1.0D0*QEXCHI*QEXCHJ*FOURPIEO/(RIJ**2)
 
-! 		 Rij = interAtomicR(atomNo,wheech)
-! 		 Vex = each_coulomb(wheech,atomNo)
-! 		 dVexdRij = -1.0d0*Vex/Rij
-!		 dHij_temp = dVexdRij*f*g/Rij
+! 		 RIJ = INTERATOMICR(ATOMNO,WHEECH)
+! 		 VEX = EACH_COULOMB(WHEECH,ATOMNO)
+! 		 DVEXDRIJ = -1.0D0*VEX/RIJ
+!		 DHIJ_TEMP = DVEXDRIJ*F*G/RIJ
 
-		 dHij_temp = -1.0d0*each_coulomb(wheech,atomNo)*zundel_f(vbState1,vbState2)*zundel_g(vbState1,vbState2)/ &
-                             (interAtomicR(atomNo,wheech)**2)
+		 DHIJ_TEMP = -1.0D0*EACH_COULOMB(WHEECH,ATOMNO)*ZUNDEL_F(VBSTATE1,VBSTATE2)*ZUNDEL_G(VBSTATE1,VBSTATE2)/ &
+                             (INTERATOMICR(ATOMNO,WHEECH)**2)
 
- 		 Fxatom1 = Fxatom1 + dHij_temp*dx
- 		 Fyatom1 = Fyatom1 + dHij_temp*dy
- 		 Fzatom1 = Fzatom1 + dHij_temp*dz
- 	      enddo
-	   endif 
-	endif
+ 		 FXATOM1 = FXATOM1 + DHIJ_TEMP*DX
+ 		 FYATOM1 = FYATOM1 + DHIJ_TEMP*DY
+ 		 FZATOM1 = FZATOM1 + DHIJ_TEMP*DZ
+ 	      ENDDO
+	   ENDIF 
+	ENDIF
 
 	RETURN
 	END
@@ -1693,217 +1693,217 @@
 !####################### SUBROUTINE OFFD_ATOM3 ################################
 !##############################################################################
 
-! Called when the atom in question is the hydronium O atom in one of the two
-! interacting VB states
+! CALLED WHEN THE ATOM IN QUESTION IS THE HYDRONIUM O ATOM IN ONE OF THE TWO
+! INTERACTING VB STATES
 
-	subroutine offd_atom3(atomNo,Roo,Roh,dRoo,dRoh,Fxatom3,Fyatom3,Fzatom3, &
-      		vbState1,vbState2)
+	SUBROUTINE OFFD_ATOM3(ATOMNO,ROO,ROH,DROO,DROH,FXATOM3,FYATOM3,FZATOM3, &
+      		VBSTATE1,VBSTATE2)
 
-	use commons
-	use msevb_common
+	USE COMMONS
+	USE MSEVB_COMMON
 
-	implicit none
+	IMPLICIT NONE
 
-! atomNo is the position of the O atom in the initial coordinate vector
+! ATOMNO IS THE POSITION OF THE O ATOM IN THE INITIAL COORDINATE VECTOR
 
 !===============================================================
-! 23-7-00 R.A. Christie
-! Routine to determine the atom-type-3 forces. 
+! 23-7-00 R.A. CHRISTIE
+! ROUTINE TO DETERMINE THE ATOM-TYPE-3 FORCES. 
 !
-! Need to determine the force on the particle in question 
-! resulting from both the coulombic interaction, the asymmetric
-! stretch and the Roo repulsion
+! NEED TO DETERMINE THE FORCE ON THE PARTICLE IN QUESTION 
+! RESULTING FROM BOTH THE COULOMBIC INTERACTION, THE ASYMMETRIC
+! STRETCH AND THE ROO REPULSION
 !
 !===============================================================
 
-!----Variables to be passed
+!----VARIABLES TO BE PASSED
 	DOUBLE PRECISION ROO,ROH,DROO(3),DROH(3),FXATOM3,FYATOM3,FZATOM3
 
-	integer atomNo,vbState1,vbState2
-!----Local Variables
+	INTEGER ATOMNO,VBSTATE1,VBSTATE2
+!----LOCAL VARIABLES
 	DOUBLE PRECISION DX,DY,DZ,RIJ,RCOULOMB,COULOMB,COULOMBSQ,QEXCHJ, &
-      		part1f,part2f,part3fai,part3fa,coeff,derf2f, &
-      		alphaRoo,f2_f,part3f,derf2_f,f2force,f2Roo,qexchi, &
-      		rcoulombsq
-	integer i,start,end,wheech,j,ninteractions,count
-!----New method variables
+      		PART1F,PART2F,PART3FAI,PART3FA,COEFF,DERF2F, &
+      		ALPHAROO,F2_F,PART3F,DERF2_F,F2FORCE,F2ROO,QEXCHI, &
+      		RCOULOMBSQ
+	INTEGER I,START,END,WHEECH,J,NINTERACTIONS,COUNT
+!----NEW METHOD VARIABLES
 	DOUBLE PRECISION KROO,GAMMAROO,TANHROO,SECHROO,DXOO,DYOO,DZOO,DXOH,DYOH, &
-      		dzoh,q
-!----Even more recent method variables
+      		DZOH,Q
+!----EVEN MORE RECENT METHOD VARIABLES
 	DOUBLE PRECISION F,DFDROO,G,DGDQ,DROODX,DROODY,DROODZ,DROHDX,DROHDY,DROHDZ, &
-      	   dqdx,dqdy,dqdz,dHijdx,dHijdy,dHijdz, &
-           dVexdRij,Vex,f1,f2,df2dRoo,dVexdRijAdivRij
-	logical inexchange
+      	   DQDX,DQDY,DQDZ,DHIJDX,DHIJDY,DHIJDZ, &
+           DVEXDRIJ,VEX,F1,F2,DF2DROO,DVEXDRIJADIVRIJ
+	LOGICAL INEXCHANGE
 
-!	print *, 'Atom:', position, 'x-coord:', 
+!	PRINT *, 'ATOM:', POSITION, 'X-COORD:', 
 
-!----Initialize variables
+!----INITIALIZE VARIABLES
 
-	Fxatom3 = 0.0d0
-	Fyatom3 = 0.0d0
-	Fzatom3 = 0.0d0
+	FXATOM3 = 0.0D0
+	FYATOM3 = 0.0D0
+	FZATOM3 = 0.0D0
 
-	dHijdx = 0.0d0
-	dHijdy = 0.0d0
-	dHijdz = 0.0d0
+	DHIJDX = 0.0D0
+	DHIJDY = 0.0D0
+	DHIJDZ = 0.0D0
 
-!----determine the initial information 
-	q = 5.0d-1*Roo - Roh
-	alphaRoo = DEXP(-1.0d0*alpha_bleh*(Roo - rooeq))
-	kRoo = DEXP(-1.0d0*kexp*(Roo - Doo)*(Roo - Doo))
-	gammaRoo = DEXP(-1.0d0*gamma_msevb*q*q)
-	tanhRoo = DTANH(beta*(Roo - big_rooeq))
-	sechRoo = 1.0d0 - tanhRoo**2
-	qexchi = qexcho
-	dxoo = dRoo(1)
-	dyoo = dRoo(2)
-	dzoo = dRoo(3)
-	dxoh = dRoh(1)
-	dyoh = dRoh(2)
-	dzoh = dRoh(3)
+!----DETERMINE THE INITIAL INFORMATION 
+	Q = 5.0D-1*ROO - ROH
+	ALPHAROO = DEXP(-1.0D0*ALPHA_BLEH*(ROO - ROOEQ))
+	KROO = DEXP(-1.0D0*KEXP*(ROO - DOO)*(ROO - DOO))
+	GAMMAROO = DEXP(-1.0D0*GAMMA_MSEVB*Q*Q)
+	TANHROO = DTANH(BETA*(ROO - BIG_ROOEQ))
+	SECHROO = 1.0D0 - TANHROO**2
+	QEXCHI = QEXCHO
+	DXOO = DROO(1)
+	DYOO = DROO(2)
+	DZOO = DROO(3)
+	DXOH = DROH(1)
+	DYOH = DROH(2)
+	DZOH = DROH(3)
 
 !#####################################################################
-! New method variables:
+! NEW METHOD VARIABLES:
 !
- 	f = (1.0d0 + P*kRoo)*(5.0d-01*(1.0d0 - tanhRoo) + 1.0d01*(alphaRoo))
+ 	F = (1.0D0 + P*KROO)*(5.0D-01*(1.0D0 - TANHROO) + 1.0D01*(ALPHAROO))
 
-	dfdroo = (1.0d0+ kRoo*P)*(-1.0d01*alpha_bleh*alphaRoo - 5.0d-01*beta*sechRoo) - &
-      		2.0d0*kRoo*kexp*P*(Roo - Doo)*(1.0d01*alphaRoo + 5.0d-01*(1.0d0 - tanhroo))
+	DFDROO = (1.0D0+ KROO*P)*(-1.0D01*ALPHA_BLEH*ALPHAROO - 5.0D-01*BETA*SECHROO) - &
+      		2.0D0*KROO*KEXP*P*(ROO - DOO)*(1.0D01*ALPHAROO + 5.0D-01*(1.0D0 - TANHROO))
 
 !
-!----AFTER REVIEW OF DERIVATIVES - 19/08/02 - atom3_offd_forces.nb:
-!----THIS NOW AGREES WITH MATHEMATICA VERSION OF df/dRoo.
-! trj25 22/10/03 - not according to Mathematica4 it doesn`t, previous expression was correct 
-!	dfdroo = kRoo*P*(-1.0d01*alpha_bleh*alphaRoo - 5.0d-01*beta*sechRoo) -
-!     &         2.0d0*kRoo*kexp*P*(Roo - Doo)*(1.0d01*alphaRoo + 5.0d-01*(1.0d0 - tanhroo)) 
+!----AFTER REVIEW OF DERIVATIVES - 19/08/02 - ATOM3_OFFD_FORCES.NB:
+!----THIS NOW AGREES WITH MATHEMATICA VERSION OF DF/DROO.
+! TRJ25 22/10/03 - NOT ACCORDING TO MATHEMATICA4 IT DOESN`T, PREVIOUS EXPRESSION WAS CORRECT 
+!	DFDROO = KROO*P*(-1.0D01*ALPHA_BLEH*ALPHAROO - 5.0D-01*BETA*SECHROO) -
+!     &         2.0D0*KROO*KEXP*P*(ROO - DOO)*(1.0D01*ALPHAROO + 5.0D-01*(1.0D0 - TANHROO)) 
 
-!	f1 = (1.0d0 + P*kRoo)
-!	f2 = 5.0d-01*(1.0d0 - tanhRoo) + 1.0d01*(alphaRoo)
-!	df2droo = (-1.0d01*alpha_bleh*alphaRoo - 5.0d-01*beta*sechRoo)
-	g = gammaRoo
-	dgdq = -2.0d0*gammaRoo*gamma_msevb*q
-	dRoodx = dxoo/Roo
-	dRoody = dyoo/Roo 
-	dRoodz = dzoo/Roo
-	dRohdx = dxoh/Roh
-	dRohdy = dyoh/Roh
-	dRohdz = dzoh/Roh
+!	F1 = (1.0D0 + P*KROO)
+!	F2 = 5.0D-01*(1.0D0 - TANHROO) + 1.0D01*(ALPHAROO)
+!	DF2DROO = (-1.0D01*ALPHA_BLEH*ALPHAROO - 5.0D-01*BETA*SECHROO)
+	G = GAMMAROO
+	DGDQ = -2.0D0*GAMMAROO*GAMMA_MSEVB*Q
+	DROODX = DXOO/ROO
+	DROODY = DYOO/ROO 
+	DROODZ = DZOO/ROO
+	DROHDX = DXOH/ROH
+	DROHDY = DYOH/ROH
+	DROHDZ = DZOH/ROH
 
-! trj25 Change so that dq/dcoordinate now includes the influence of d(Roh)/dcoordinate
-! in a manner consistent with the energy calculation
+! TRJ25 CHANGE SO THAT DQ/DCOORDINATE NOW INCLUDES THE INFLUENCE OF D(ROH)/DCOORDINATE
+! IN A MANNER CONSISTENT WITH THE ENERGY CALCULATION
 
-	if (atomNo.eq.zundel_species(vbState1,vbState2,3)) then
-	   dqdx = 0.5d0*dRoodx - dRohdx 
-	   dqdy = 0.5d0*dRoody - dRohdy
-	   dqdz = 0.5d0*dRoodz - dRohdz
-	else
-	   dqdx = 0.5d0*dRoodx
-	   dqdy = 0.5d0*dRoody
-	   dqdz = 0.5d0*dRoodz
-	endif
+	IF (ATOMNO.EQ.ZUNDEL_SPECIES(VBSTATE1,VBSTATE2,3)) THEN
+	   DQDX = 0.5D0*DROODX - DROHDX 
+	   DQDY = 0.5D0*DROODY - DROHDY
+	   DQDZ = 0.5D0*DROODZ - DROHDZ
+	ELSE
+	   DQDX = 0.5D0*DROODX
+	   DQDY = 0.5D0*DROODY
+	   DQDZ = 0.5D0*DROODZ
+	ENDIF
 
 !---------------------------------------------------------------------
-! Determine the Coulombic interaction arising from the Exchange term
-! first. 
-! Note that this is calculated as the sum of all interactions to be 
-! used later in the full for this off-diagonal term
+! DETERMINE THE COULOMBIC INTERACTION ARISING FROM THE EXCHANGE TERM
+! FIRST. 
+! NOTE THAT THIS IS CALCULATED AS THE SUM OF ALL INTERACTIONS TO BE 
+! USED LATER IN THE FULL FOR THIS OFF-DIAGONAL TERM
 !
 !---------------------------------------------------------------------
 
- 	if (num_eig.gt.2) then
+ 	IF (NUM_EIG.GT.2) THEN
 
-	   count = 0
+	   COUNT = 0
 
-	   Exchange: do i = 1,natoms
-	      if (count.eq.(natoms-7)) exit
+	   EXCHANGE: DO I = 1,NATOMS
+	      IF (COUNT.EQ.(NATOMS-7)) EXIT
 
-! Check that we are not calculating a hydronium-hydronium exchange interaction
-	      do j = 1,7
-		 if (atmpl(vbState2,i).eq.zundel_species(vbState1,vbState2,j)) cycle Exchange
-	      enddo
+! CHECK THAT WE ARE NOT CALCULATING A HYDRONIUM-HYDRONIUM EXCHANGE INTERACTION
+	      DO J = 1,7
+		 IF (ATMPL(VBSTATE2,I).EQ.ZUNDEL_SPECIES(VBSTATE1,VBSTATE2,J)) CYCLE EXCHANGE
+	      ENDDO
 
-	      wheech = atmpl(vbState2,i)
-	      qexchi = qexcho
-	      count = count + 1
+	      WHEECH = ATMPL(VBSTATE2,I)
+	      QEXCHI = QEXCHO
+	      COUNT = COUNT + 1
  
-	      if (MOD(wheech,3).eq.0) then
-		 qexchj = qtip3p_o
-	      else
-		 qexchj = qtip3p_h
-	      endif
+	      IF (MOD(WHEECH,3).EQ.0) THEN
+		 QEXCHJ = QTIP3P_O
+	      ELSE
+		 QEXCHJ = QTIP3P_H
+	      ENDIF
 	   
-	      dx = psix(atomNo) - psix(wheech)
-	      dy = psiy(atomNo) - psiy(wheech)
-	      dz = psiz(atomNo) - psiz(wheech)
-	      Rij = interAtomicR(atomNo,wheech)
-	      Vex = (qexchi*qexchj*fourpieo)/Rij
-	      dVexdRij = -1.0d0*Vex/Rij
+	      DX = PSIX(ATOMNO) - PSIX(WHEECH)
+	      DY = PSIY(ATOMNO) - PSIY(WHEECH)
+	      DZ = PSIZ(ATOMNO) - PSIZ(WHEECH)
+	      RIJ = INTERATOMICR(ATOMNO,WHEECH)
+	      VEX = (QEXCHI*QEXCHJ*FOURPIEO)/RIJ
+	      DVEXDRIJ = -1.0D0*VEX/RIJ
 
-	      dVexdRijAdivRij = dVexdRij*f*g/Rij
+	      DVEXDRIJADIVRIJ = DVEXDRIJ*F*G/RIJ
 
-!	   if (inexchange) then
-!	      dHijdx_temp = (gammaRoo*f1*(vij+Vex)*df2dRoo*(dxoo/Roo)) - 
-!     &  (fourpieo*gammaRoo*f1*qexchi*qexchj*dx*f2)/(Rij)**3 - 
-!     &  (2.0d0*gammaRoo*kRoo*kexp*P*dxoo*(vij+Vex)*(Roo-Doo)*f2)/Roo -
-!     &  (2.0d0*gamma_msevb*f1*(vij+Vex)*(dxoo/(2.0d0*Roo)-dxoh/Roh)*(Roo/2.0d0 - Roh)*f2)
-!	      dHijdy_temp = (gammaRoo*f1*(vij+Vex)*df2dRoo*(dyoo/Roo)) -
-!     &  (fourpieo*gammaRoo*f1*qexchi*qexchj*dy*f2)/(Rij)**3 -
-!     &  (2.0d0*gammaRoo*kRoo*kexp*P*dyoo*(vij+Vex)*(Roo-Doo)*f2)/Roo -
-!     &  (2.0d0*gamma_msevb*f1*(vij+Vex)*(dyoo/(2.0d0*Roo)-dyoh/Roh)*(Roo/2.0d0 - Roh)*f2) 
-!	      dHijdz_temp = (gammaRoo*f1*(vij+Vex)*df2dRoo*(dzoo/Roo)) -
-!     &  (fourpieo*gammaRoo*f1*qexchi*qexchj*dz*f2)/(Rij)**3 -
-!     &  (2.0d0*gammaRoo*kRoo*kexp*P*dzoo*(vij+Vex)*(Roo-Doo)*f2)/Roo -
-!     &  (2.0d0*gamma_msevb*f1*(vij+Vex)*(dzoo/(2.0d0*Roo)-dzoh/Roh)*(Roo/2.0d0 - Roh)*f2) 
-!	print *, "dHijdx_temp = ", dHijdx_temp
+!	   IF (INEXCHANGE) THEN
+!	      DHIJDX_TEMP = (GAMMAROO*F1*(VIJ+VEX)*DF2DROO*(DXOO/ROO)) - 
+!     &  (FOURPIEO*GAMMAROO*F1*QEXCHI*QEXCHJ*DX*F2)/(RIJ)**3 - 
+!     &  (2.0D0*GAMMAROO*KROO*KEXP*P*DXOO*(VIJ+VEX)*(ROO-DOO)*F2)/ROO -
+!     &  (2.0D0*GAMMA_MSEVB*F1*(VIJ+VEX)*(DXOO/(2.0D0*ROO)-DXOH/ROH)*(ROO/2.0D0 - ROH)*F2)
+!	      DHIJDY_TEMP = (GAMMAROO*F1*(VIJ+VEX)*DF2DROO*(DYOO/ROO)) -
+!     &  (FOURPIEO*GAMMAROO*F1*QEXCHI*QEXCHJ*DY*F2)/(RIJ)**3 -
+!     &  (2.0D0*GAMMAROO*KROO*KEXP*P*DYOO*(VIJ+VEX)*(ROO-DOO)*F2)/ROO -
+!     &  (2.0D0*GAMMA_MSEVB*F1*(VIJ+VEX)*(DYOO/(2.0D0*ROO)-DYOH/ROH)*(ROO/2.0D0 - ROH)*F2) 
+!	      DHIJDZ_TEMP = (GAMMAROO*F1*(VIJ+VEX)*DF2DROO*(DZOO/ROO)) -
+!     &  (FOURPIEO*GAMMAROO*F1*QEXCHI*QEXCHJ*DZ*F2)/(RIJ)**3 -
+!     &  (2.0D0*GAMMAROO*KROO*KEXP*P*DZOO*(VIJ+VEX)*(ROO-DOO)*F2)/ROO -
+!     &  (2.0D0*GAMMA_MSEVB*F1*(VIJ+VEX)*(DZOO/(2.0D0*ROO)-DZOH/ROH)*(ROO/2.0D0 - ROH)*F2) 
+!	PRINT *, "DHIJDX_TEMP = ", DHIJDX_TEMP
 
-	      dHijdx = dHijdx + dVexdRijAdivRij*dx
-	      dHijdy = dHijdy + dVexdRijAdivRij*dy
-	      dHijdz = dHijdz + dVexdRijAdivRij*dz
+	      DHIJDX = DHIJDX + DVEXDRIJADIVRIJ*DX
+	      DHIJDY = DHIJDY + DVEXDRIJADIVRIJ*DY
+	      DHIJDZ = DHIJDZ + DVEXDRIJADIVRIJ*DZ
 
-!----End of Loop over the solvating atoms
+!----END OF LOOP OVER THE SOLVATING ATOMS
 
-	   enddo Exchange
+	   ENDDO EXCHANGE
 
 !----END OF IF STATEMENT FOR > 2 EIGENSTATES
 
-! Add the second part of the derivatives, use the total exchange energy between these two VB states	
+! ADD THE SECOND PART OF THE DERIVATIVES, USE THE TOTAL EXCHANGE ENERGY BETWEEN THESE TWO VB STATES	
 
-	   dHijdx = dHijdx + (vij+vijexch(vbState1,vbState2))*(dfdroo*droodx*g + f*dgdq*dqdx)
-	   dHijdy = dHijdy + (vij+vijexch(vbState1,vbState2))*(dfdroo*droody*g + f*dgdq*dqdy)
-	   dHijdz = dHijdz + (vij+vijexch(vbState1,vbState2))*(dfdroo*droodz*g + f*dgdq*dqdz)
+	   DHIJDX = DHIJDX + (VIJ+VIJEXCH(VBSTATE1,VBSTATE2))*(DFDROO*DROODX*G + F*DGDQ*DQDX)
+	   DHIJDY = DHIJDY + (VIJ+VIJEXCH(VBSTATE1,VBSTATE2))*(DFDROO*DROODY*G + F*DGDQ*DQDY)
+	   DHIJDZ = DHIJDZ + (VIJ+VIJEXCH(VBSTATE1,VBSTATE2))*(DFDROO*DROODZ*G + F*DGDQ*DQDZ)
 
-	else
+	ELSE
 !----DETERMINE THE OFF-DIAGONAL ELEMENT FOR 2 EIGENSTATE SYSTEM
 
-	    dHijdx = vij*(dfdroo*g*droodx + f*dgdq*dqdx)
-	    dHijdy = vij*(dfdroo*g*droody + f*dgdq*dqdy)  
-	    dHijdz = vij*(dfdroo*g*droodz + f*dgdq*dqdz)  
-	endif
+	    DHIJDX = VIJ*(DFDROO*G*DROODX + F*DGDQ*DQDX)
+	    DHIJDY = VIJ*(DFDROO*G*DROODY + F*DGDQ*DQDY)  
+	    DHIJDZ = VIJ*(DFDROO*G*DROODZ + F*DGDQ*DQDZ)  
+	ENDIF
 
-!	    print *, 'At end:'
-!	print *, 'vij:', vij
-!	print *, 'Roo:', roo
-!	print *, 'Roh:', roh
-!	print *, 'f:', f
-!	print *, 'df/droo:', dfdroo
-!	print *, 'g:', g
-!	print *, 'dg/dq:', dgdq
-!	print *, 'q:', q
-!	print *, 'dq/dx:', dqdx
-!	print *, 'dq/dy:', dqdy
-!	print *, 'dq/dz:', dqdz
-!	print *, 'droo/dx:', droodx
-!	print *, 'droo/dy:', droody	
-!	print *, 'droo/dz:', droodz
-!	print *, 'Total exchange energy: ', vijexch(eigenstate1,eigenstate2)
+!	    PRINT *, 'AT END:'
+!	PRINT *, 'VIJ:', VIJ
+!	PRINT *, 'ROO:', ROO
+!	PRINT *, 'ROH:', ROH
+!	PRINT *, 'F:', F
+!	PRINT *, 'DF/DROO:', DFDROO
+!	PRINT *, 'G:', G
+!	PRINT *, 'DG/DQ:', DGDQ
+!	PRINT *, 'Q:', Q
+!	PRINT *, 'DQ/DX:', DQDX
+!	PRINT *, 'DQ/DY:', DQDY
+!	PRINT *, 'DQ/DZ:', DQDZ
+!	PRINT *, 'DROO/DX:', DROODX
+!	PRINT *, 'DROO/DY:', DROODY	
+!	PRINT *, 'DROO/DZ:', DROODZ
+!	PRINT *, 'TOTAL EXCHANGE ENERGY: ', VIJEXCH(EIGENSTATE1,EIGENSTATE2)
 
-!	print *, 'dHij/dx:', dHijdx
-!	print *, 'dHij/dy:', dHijdy
-!	print *, 'dHij/dz:', dHijdz
+!	PRINT *, 'DHIJ/DX:', DHIJDX
+!	PRINT *, 'DHIJ/DY:', DHIJDY
+!	PRINT *, 'DHIJ/DZ:', DHIJDZ
 
-	Fxatom3 = dHijdx
-	Fyatom3 = dHijdy
-	Fzatom3 = dHijdz
+	FXATOM3 = DHIJDX
+	FYATOM3 = DHIJDY
+	FZATOM3 = DHIJDZ
 
 	RETURN
 	END
@@ -1912,152 +1912,152 @@
 !#################### SUBROUTINE OFFD_ATOM4 ##########################
 !#####################################################################
 
-	subroutine offd_atom4(atomNo,Roo,Roh,dRoo,dRoh,Fxatom4,Fyatom4,Fzatom4,vbState1,vbState2) 
+	SUBROUTINE OFFD_ATOM4(ATOMNO,ROO,ROH,DROO,DROH,FXATOM4,FYATOM4,FZATOM4,VBSTATE1,VBSTATE2) 
 
-	use commons
-	use msevb_common
+	USE COMMONS
+	USE MSEVB_COMMON
 	  
-	implicit none
+	IMPLICIT NONE
 
-! Calculate the off-diagonal forces for the exchanging H atom
+! CALCULATE THE OFF-DIAGONAL FORCES FOR THE EXCHANGING H ATOM
 
 !===============================================================
-! 30/7/99 R.A. Christie
-! Routine to calculate the atom-4-type forces. Applies only to
-! atom4
+! 30/7/99 R.A. CHRISTIE
+! ROUTINE TO CALCULATE THE ATOM-4-TYPE FORCES. APPLIES ONLY TO
+! ATOM4
 !
-! *NB* function f2force is in routine f_atom1
-! *NB* Need two Roo distances as input
+! *NB* FUNCTION F2FORCE IS IN ROUTINE F_ATOM1
+! *NB* NEED TWO ROO DISTANCES AS INPUT
 !
 !===============================================================
 
-!----Incoming variables
+!----INCOMING VARIABLES
 	DOUBLE PRECISION ROO,ROH,DROO(3),DROH(3),FXATOM4,FYATOM4,FZATOM4
-        integer atomNo,vbState1,vbState2
-!----Local variables
+        INTEGER ATOMNO,VBSTATE1,VBSTATE2
+!----LOCAL VARIABLES
 	DOUBLE PRECISION DX,DY,DZ,REXCH,COULOMB,TMPFX,TMPFY,TMPFZ,QEXCHJ, &
-      		qexchi,part1f,part2f,alphaRoo,q,Rij,rcoulomb
-	integer i,j,start,wheech,count
-!----New method variables
+      		QEXCHI,PART1F,PART2F,ALPHAROO,Q,RIJ,RCOULOMB
+	INTEGER I,J,START,WHEECH,COUNT
+!----NEW METHOD VARIABLES
         DOUBLE PRECISION KROO,GAMMAROO,TANHROO,SECHROO,DXOO,DYOO,DZOO,DXOH,DYOH, &
-                dzoh
-!----New method variables
+                DZOH
+!----NEW METHOD VARIABLES
         DOUBLE PRECISION F,G,DGDQ,DROHDX,DROHDY,DROHDZ,DQDX,DQDY,DQDZ,DHIJDX,DHIJDY, &
-      		dHijdz,Vex,dVexdRij
-	logical inexchange
+      		DHIJDZ,VEX,DVEXDRIJ
+	LOGICAL INEXCHANGE
 
 !---------------------------------------------------------------------
-! Initialize variables
+! INITIALIZE VARIABLES
 !
 !---------------------------------------------------------------------  
 
-	Fxatom4 = 0.0d0
-	Fyatom4 = 0.0d0
-	Fzatom4 = 0.0d0
+	FXATOM4 = 0.0D0
+	FYATOM4 = 0.0D0
+	FZATOM4 = 0.0D0
 
-        dHijdx = 0.0d0
-        dHijdy = 0.0d0
-        dHijdz = 0.0d0  
-	count = 0
+        DHIJDX = 0.0D0
+        DHIJDY = 0.0D0
+        DHIJDZ = 0.0D0  
+	COUNT = 0
 
 !---------------------------------------------------------------------
-! Determine the initial information
+! DETERMINE THE INITIAL INFORMATION
 !
 !---------------------------------------------------------------------
-	q = Roo*5.0d-01 - Roh
-	alphaRoo = DEXP(-1.0d0*alpha_bleh*(Roo - rooeq))
-        kRoo = DEXP(-1.0d0*kexp*(Roo - Doo)**2)
-        gammaRoo = DEXP(-1.0d0*gamma_msevb*(q)**2)
-        tanhRoo = DTANH(beta*(Roo - big_rooeq))
-        sechRoo = 1.0d0 - tanhRoo**2
-        qexchi = qexchh
-        dxoo = dRoo(1)
-        dyoo = dRoo(2)
-        dzoo = dRoo(3)
-        dxoh = dRoh(1)
-        dyoh = dRoh(2)
-        dzoh = dRoh(3) 
+	Q = ROO*5.0D-01 - ROH
+	ALPHAROO = DEXP(-1.0D0*ALPHA_BLEH*(ROO - ROOEQ))
+        KROO = DEXP(-1.0D0*KEXP*(ROO - DOO)**2)
+        GAMMAROO = DEXP(-1.0D0*GAMMA_MSEVB*(Q)**2)
+        TANHROO = DTANH(BETA*(ROO - BIG_ROOEQ))
+        SECHROO = 1.0D0 - TANHROO**2
+        QEXCHI = QEXCHH
+        DXOO = DROO(1)
+        DYOO = DROO(2)
+        DZOO = DROO(3)
+        DXOH = DROH(1)
+        DYOH = DROH(2)
+        DZOH = DROH(3) 
 
 !#####################################################################
-! New method variables
+! NEW METHOD VARIABLES
 !
-	f = (1.0d0 + P*kRoo)*(5.0d-01*(1.0d0 - tanhRoo) + 1.0d01*(alphaRoo))
-        g = gammaRoo
-        dgdq = -2.0d0*gammaRoo*gamma_msevb*q
-        dRohdx = dxoh/Roh
-        dRohdy = dyoh/Roh
-        dRohdz = dzoh/Roh
-        dqdx = -1.0d0*dRohdx
-        dqdy = -1.0d0*dRohdy
-        dqdz = -1.0d0*dRohdz    
+	F = (1.0D0 + P*KROO)*(5.0D-01*(1.0D0 - TANHROO) + 1.0D01*(ALPHAROO))
+        G = GAMMAROO
+        DGDQ = -2.0D0*GAMMAROO*GAMMA_MSEVB*Q
+        DROHDX = DXOH/ROH
+        DROHDY = DYOH/ROH
+        DROHDZ = DZOH/ROH
+        DQDX = -1.0D0*DROHDX
+        DQDY = -1.0D0*DROHDY
+        DQDZ = -1.0D0*DROHDZ    
 
 !################################################################################
-! Calculate the Off-Diagonal Element.
-! Two cases:
-!   (1) Any system other than H5O2+
+! CALCULATE THE OFF-DIAGONAL ELEMENT.
+! TWO CASES:
+!   (1) ANY SYSTEM OTHER THAN H5O2+
 !   (2) H5O2+
 !
-! Loop over all atoms in this eigenstate, given by atmpl(eigenstate,j), which 
-! are not part of the H5O2+ in this eigenstate, if the atom in question, atompos,
-! is part of the H5O2+ in this eigenstate. If atompos isn't part of the H5O2+
-! in this eigenstate, then the loop over atoms should only include the H5O2+
-! atoms for this eigenstate.
+! LOOP OVER ALL ATOMS IN THIS EIGENSTATE, GIVEN BY ATMPL(EIGENSTATE,J), WHICH 
+! ARE NOT PART OF THE H5O2+ IN THIS EIGENSTATE, IF THE ATOM IN QUESTION, ATOMPOS,
+! IS PART OF THE H5O2+ IN THIS EIGENSTATE. IF ATOMPOS ISN'T PART OF THE H5O2+
+! IN THIS EIGENSTATE, THEN THE LOOP OVER ATOMS SHOULD ONLY INCLUDE THE H5O2+
+! ATOMS FOR THIS EIGENSTATE.
 !
 !################################################################################ 
 
- 	if (num_eig.gt.2) then
+ 	IF (NUM_EIG.GT.2) THEN
 
-!----Determine which atoms atomNo should be interacting with
+!----DETERMINE WHICH ATOMS ATOMNO SHOULD BE INTERACTING WITH
 
-	   Exchange: do i = 1,natoms
-	      if (count.eq.(natoms-7)) exit
+	   EXCHANGE: DO I = 1,NATOMS
+	      IF (COUNT.EQ.(NATOMS-7)) EXIT
 
-!----Determine whether atom i is in H5O2+
+!----DETERMINE WHETHER ATOM I IS IN H5O2+
 
-	      do j = 1,7
-		 if (atmpl(vbState1,i).eq.zundel_species(vbState1,vbState2,j)) cycle Exchange
-	      enddo 
-	      wheech = atmpl(vbState1,i) 
-	      count = count + 1
+	      DO J = 1,7
+		 IF (ATMPL(VBSTATE1,I).EQ.ZUNDEL_SPECIES(VBSTATE1,VBSTATE2,J)) CYCLE EXCHANGE
+	      ENDDO 
+	      WHEECH = ATMPL(VBSTATE1,I) 
+	      COUNT = COUNT + 1
 
-	      if (MOD(wheech,3).eq.0) then 
-		 qexchj = qtip3p_o
-	      else 
-		 qexchj = qtip3p_h
-	      endif
+	      IF (MOD(WHEECH,3).EQ.0) THEN 
+		 QEXCHJ = QTIP3P_O
+	      ELSE 
+		 QEXCHJ = QTIP3P_H
+	      ENDIF
 
-	      dx = psix(atomNo) - psix(wheech)
-	      dy = psiy(atomNo) - psiy(wheech)
-	      dz = psiz(atomNo) - psiz(wheech)
+	      DX = PSIX(ATOMNO) - PSIX(WHEECH)
+	      DY = PSIY(ATOMNO) - PSIY(WHEECH)
+	      DZ = PSIZ(ATOMNO) - PSIZ(WHEECH)
 
-	      Rij = interAtomicR(atomNo,wheech)
-	      Vex = (qexchi*qexchj*fourpieo)/Rij 
-	      dVexdRij = -1.0d0*qexchi*qexchj*fourpieo/(Rij**2)
+	      RIJ = INTERATOMICR(ATOMNO,WHEECH)
+	      VEX = (QEXCHI*QEXCHJ*FOURPIEO)/RIJ 
+	      DVEXDRIJ = -1.0D0*QEXCHI*QEXCHJ*FOURPIEO/(RIJ**2)
 
-	      dHijdx = dHijdx + dVexdRij*(dx/Rij)
-	      dHijdy = dHijdy + dVexdRij*(dy/Rij)
-	      dHijdz = dHijdz + dVexdRij*(dz/Rij)	      
+	      DHIJDX = DHIJDX + DVEXDRIJ*(DX/RIJ)
+	      DHIJDY = DHIJDY + DVEXDRIJ*(DY/RIJ)
+	      DHIJDZ = DHIJDZ + DVEXDRIJ*(DZ/RIJ)	      
 
-	   enddo Exchange
+	   ENDDO EXCHANGE
 
-! Complete the exchange terms
+! COMPLETE THE EXCHANGE TERMS
 
-	   dHijdx = f*g*dHijdx + (vij+vijexch(vbState1,vbState2))*dgdq*f*dqdx 
-	   dHijdy = f*g*dHijdy + (vij+vijexch(vbState1,vbState2))*dgdq*f*dqdy
-	   dHijdz = f*g*dHijdz + (vij+vijexch(vbState1,vbState2))*dgdq*f*dqdz	
+	   DHIJDX = F*G*DHIJDX + (VIJ+VIJEXCH(VBSTATE1,VBSTATE2))*DGDQ*F*DQDX 
+	   DHIJDY = F*G*DHIJDY + (VIJ+VIJEXCH(VBSTATE1,VBSTATE2))*DGDQ*F*DQDY
+	   DHIJDZ = F*G*DHIJDZ + (VIJ+VIJEXCH(VBSTATE1,VBSTATE2))*DGDQ*F*DQDZ	
 
-!----Consider now the case when have only H5O2+ i.e. no exchange term
-	else
+!----CONSIDER NOW THE CASE WHEN HAVE ONLY H5O2+ I.E. NO EXCHANGE TERM
+	ELSE
 
-	   dHijdx = vij*f*dgdq*dqdx  
-	   dHijdy = vij*f*dgdq*dqdy 
-	   dHijdz = vij*f*dgdq*dqdz 
+	   DHIJDX = VIJ*F*DGDQ*DQDX  
+	   DHIJDY = VIJ*F*DGDQ*DQDY 
+	   DHIJDZ = VIJ*F*DGDQ*DQDZ 
 
-	endif
+	ENDIF
 
-	Fxatom4 = dHijdx
-	Fyatom4 = dHijdy
-	Fzatom4 = dHijdz
+	FXATOM4 = DHIJDX
+	FYATOM4 = DHIJDY
+	FZATOM4 = DHIJDZ
 
 	RETURN
 	END

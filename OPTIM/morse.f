@@ -1,25 +1,25 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  Here we calculate the two-body Morse potential 
+C  HERE WE CALCULATE THE TWO-BODY MORSE POTENTIAL 
 C                                        
 C*************************************************************************
 C
@@ -68,7 +68,7 @@ C
 C
 C*************************************************************************
 C
-C  Subroutine MG calculates the cartesian gradient analytically for the Morse potential.
+C  SUBROUTINE MG CALCULATES THE CARTESIAN GRADIENT ANALYTICALLY FOR THE MORSE POTENTIAL.
 C
 C*************************************************************************
 C
@@ -78,7 +78,7 @@ C
       DOUBLE PRECISION X(3*N), RHO, V(3*N), RR(N,N),
      1                 DUMMY1, ERMR(N,N), ERMRM(N,N)
 C
-C  First calculate the gradient analytically.
+C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
 C
       DO J1=1,N
          DO J2=1,3
@@ -97,8 +97,8 @@ C
 C
 C*************************************************************************
 C
-C  Subroutine MS calculates the cartesian second derivative matrix 
-C  analytically for the Morse potential.
+C  SUBROUTINE MS CALCULATES THE CARTESIAN SECOND DERIVATIVE MATRIX 
+C  ANALYTICALLY FOR THE MORSE POTENTIAL.
 C
 C*************************************************************************
 C
@@ -110,7 +110,7 @@ C
      1                 RR(N,N), DUMMY1, ERMRM(N,N),
      2                 ERMRT(N,N)
 C
-C  First are the entirely diagonal terms.
+C  FIRST ARE THE ENTIRELY DIAGONAL TERMS.
 C
       DO J1=1,N
          DO J2=1,3
@@ -127,8 +127,8 @@ C
          ENDDO
       ENDDO
 C
-C  Next are the terms where x_i and x_j are on the same atom
-C  but are different, e.g. y and z.
+C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
+C  BUT ARE DIFFERENT, E.G. Y AND Z.
 C
       DO J1=1,N
          DO J2=1,3
@@ -148,7 +148,7 @@ C
          ENDDO
       ENDDO
 C
-C  Case III, different atoms, same cartesian coordinate.
+C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
 C
       DO J1=1,N
          DO J2=1,3
@@ -164,7 +164,7 @@ C
          ENDDO
       ENDDO
 C
-C  Case IV: different atoms and different cartesian coordinates.
+C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
 C
       DO J1=1,N
          DO J2=1,3

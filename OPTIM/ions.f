@@ -1,26 +1,26 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  Shielded Born-Mayer potential. Ions must be enerted alternating
-C  plus, minus, plus and there must be equal numbers of each sign.
+C  SHIELDED BORN-MAYER POTENTIAL. IONS MUST BE ENERTED ALTERNATING
+C  PLUS, MINUS, PLUS AND THERE MUST BE EQUAL NUMBERS OF EACH SIGN.
 C
 C*************************************************************************
 C
@@ -29,7 +29,7 @@ C
       IMPLICIT NONE
       INTEGER N, J1, J2, J3, J4, J5, J6, NTEST
 !
-! should really make the 2D arrays allocatble
+! SHOULD REALLY MAKE THE 2D ARRAYS ALLOCATBLE
 !
       DOUBLE PRECISION X(3*N), ENERGY, GAMMA, CHARGE,
      1                 V(3*N), R(N,N), EXG(N,N), RHO, APP, 
@@ -42,7 +42,7 @@ C
       IF (AMM.EQ.0.0D0) AMM=70.735D0
       IF (APM.EQ.0.0D0) APM=65.667D0
 C 
-C  Store distance matrices.
+C  STORE DISTANCE MATRICES.
 C
       DO 20 J1=1,N
          R(J1,J1)=0.0D0
@@ -66,9 +66,9 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  Calculate the g and f tensors and the energy.
+C  CALCULATE THE G AND F TENSORS AND THE ENERGY.
 C
-C  plus - plus
+C  PLUS - PLUS
 C
       ENERGY=0.0D0
 
@@ -88,7 +88,7 @@ C
          ENDDO
       ENDDO
 C
-C  minus - minus
+C  MINUS - MINUS
 C
       DO J1=2,N,2
          G(J1,J1)=0.0D0
@@ -105,7 +105,7 @@ C
          ENDDO
       ENDDO
 C
-C  plus - minus
+C  PLUS - MINUS
 C
       DO J1=1,N-1,2
          G(J1,J1)=0.0D0
@@ -124,8 +124,8 @@ C
 
       IF (NTEST.EQ.0) RETURN
 C
-C  From here on down the code is system-independent!
-C  First calculate the gradient analytically.
+C  FROM HERE ON DOWN THE CODE IS SYSTEM-INDEPENDENT!
+C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
 C
       DO 50 J1=1,N
          DO 40 J2=1,3
@@ -138,7 +138,7 @@ C           PRINT*,'J3,V(J3)=',J3,V(J3)
 40       CONTINUE
 50    CONTINUE
 C
-C  Now do the hessian. First are the entirely diagonal terms.
+C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
 C
       DO 80 J1=1,N
          DO 70 J2=1,3
@@ -151,8 +151,8 @@ C
 70       CONTINUE
 80    CONTINUE
 C
-C  Next are the terms where x_i and x_j are on the same atom
-C  but are different, e.g. y and z.
+C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
+C  BUT ARE DIFFERENT, E.G. Y AND Z.
 C
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -168,7 +168,7 @@ C
 110      CONTINUE
 120   CONTINUE
 C
-C  Case III, different atoms, same cartesian coordinate.
+C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
 C
       DO 150 J1=1,N
          DO 140 J2=1,3
@@ -180,7 +180,7 @@ C
 140      CONTINUE
 150   CONTINUE
 C
-C  Case IV: different atoms and different cartesian coordinates.
+C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3
@@ -197,7 +197,7 @@ C
 170      CONTINUE
 180   CONTINUE
 C
-C  Symmetrise Hessian
+C  SYMMETRISE HESSIAN
 C
       DO 200 J1=1,3*N
          DO 190 J2=J1+1,3*N

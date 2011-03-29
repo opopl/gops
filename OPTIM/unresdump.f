@@ -1,26 +1,26 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
-C dae 
-C get coordinates from external file 'coords'
-C which is CHARMM format but use standard fortran
-C reading commands, unlike CHARMM which has a limit
-C on total line length and does involved procedure with strings
+C DAE 
+C GET COORDINATES FROM EXTERNAL FILE 'COORDS'
+C WHICH IS CHARMM FORMAT BUT USE STANDARD FORTRAN
+C READING COMMANDS, UNLIKE CHARMM WHICH HAS A LIMIT
+C ON TOTAL LINE LENGTH AND DOES INVOLVED PROCEDURE WITH STRINGS
 C
       SUBROUTINE UNEWREAD(X,Y,Z,NATOMS,FILTH2,FILTHSTR)
       IMPLICIT NONE
@@ -32,9 +32,9 @@ C
       REAL*8 X(NATOMS),Y(NATOMS),Z(NATOMS)
  
       IF (FILTH2.EQ.0) THEN
-         WRITE(CFNAME, '(A)') 'coords'
+         WRITE(CFNAME, '(A)') 'COORDS'
       ELSE
-         WRITE(CFNAME, '(A)') 'coords.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(CFNAME, '(A)') 'COORDS.'//TRIM(ADJUSTL(FILTHSTR))
       ENDIF
 
       OPEN(UNIT=19,FILE=CFNAME,STATUS='UNKNOWN')
@@ -57,9 +57,9 @@ C
       REAL*8 COORDS(3*NATOMS)
       REAL*8 PEPCOORDS(3*NATOMS)
 
-C jmc requires an open file
-C also writes coordinates for dummy peptide atoms (O [representing C=O],N), for
-C visualisation purposes.
+C JMC REQUIRES AN OPEN FILE
+C ALSO WRITES COORDINATES FOR DUMMY PEPTIDE ATOMS (O [REPRESENTING C=O],N), FOR
+C VISUALISATION PURPOSES.
       DO J=1,(NATOMS/2)-1
          DO K=1,3
             PEPCOORDS(6*(J-1)+K)=(2.0D0*COORDS(6*(J-1)+K)+COORDS(6*J+K))/3.0D0
@@ -71,11 +71,11 @@ C visualisation purposes.
       WRITE(IUNIT,'(A)') ' ' 
 
       DO J=1,NATOMS/2
-C Calpha
+C CALPHA
          WRITE(IUNIT,'(A2,3F20.10)') 'C ',(COORDS(6*(J-1)+K),K=1,3)
-C side chain
+C SIDE CHAIN
          WRITE(IUNIT,'(A2,3F20.10)') 'C ',(COORDS(6*(J-1)+K),K=4,6)
-C peptide atoms
+C PEPTIDE ATOMS
          IF (J.LT.(NATOMS/2)) THEN
              WRITE(IUNIT,'(A2,3F20.10)') 'O ',(PEPCOORDS(6*(J-1)+K),K=1,3)
              WRITE(IUNIT,'(A2,3F20.10)') 'N ',(PEPCOORDS(6*(J-1)+K),K=4,6)
@@ -99,9 +99,9 @@ C peptide atoms
       WRITE(IUNIT,'(I5)') NATOMS
 
       DO J=1,NATOMS/2
-C Calpha
+C CALPHA
          WRITE(IUNIT,'(A2,3F20.10)') 'C ',(COORDS(6*(J-1)+K),K=1,3)
-C side chain
+C SIDE CHAIN
          WRITE(IUNIT,'(A2,3F20.10)') 'C ',(COORDS(6*(J-1)+K),K=4,6)
       END DO
 
@@ -122,8 +122,8 @@ C side chain
 
       IUNIT=19
       OPEN(UNIT=IUNIT,FILE=FNAMEF,STATUS='UNKNOWN')
-C also writes coordinates for dummy peptide atoms (O [representing C=O],N), for
-C visualisation purposes.
+C ALSO WRITES COORDINATES FOR DUMMY PEPTIDE ATOMS (O [REPRESENTING C=O],N), FOR
+C VISUALISATION PURPOSES.
       DO J=1,(NATOMS/2)-1
          DO K=1,3
             PEPCOORDS(6*(J-1)+K)=(2.0D0*COORDS(6*(J-1)+K)+COORDS(6*J+K))/3.0D0
@@ -135,11 +135,11 @@ C visualisation purposes.
       WRITE(IUNIT,'(A)') ' '
 
       DO J=1,NATOMS/2
-C Calpha
+C CALPHA
          WRITE(IUNIT,'(A2,3F20.10)') 'C ',(COORDS(6*(J-1)+K),K=1,3)
-C side chain
+C SIDE CHAIN
          WRITE(IUNIT,'(A2,3F20.10)') 'C ',(COORDS(6*(J-1)+K),K=4,6)
-C peptide atoms
+C PEPTIDE ATOMS
          IF (J.LT.(NATOMS/2)) THEN
              WRITE(IUNIT,'(A2,3F20.10)') 'O ',(PEPCOORDS(6*(J-1)+K),K=1,3)
              WRITE(IUNIT,'(A2,3F20.10)') 'N ',(PEPCOORDS(6*(J-1)+K),K=4,6)

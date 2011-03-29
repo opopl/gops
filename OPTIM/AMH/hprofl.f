@@ -1,58 +1,58 @@
 
-c     --------------------- hprofl ----------------------
+C     --------------------- HPROFL ----------------------
 
-      subroutine hprofl(AMHmaxsiz,nmres,ires,hydseq,hydscl)
+      SUBROUTINE HPROFL(AMHMAXSIZ,NMRES,IRES,HYDSEQ,HYDSCL)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     HPROFL set hydrophobicity profile for coded amino
-c            acid sequence in the array ires
+C     HPROFL SET HYDROPHOBICITY PROFILE FOR CODED AMINO
+C            ACID SEQUENCE IN THE ARRAY IRES
 
-c     arguments:
+C     ARGUMENTS:
 
-c        AMHmaxsiz- maximum protein length (i)
-c        nmres - length of current protein (i)
-c        ires  - coded amino acid sequence (i)
-c        hydseq- hydrophobicity profile (o)
-c        hydscl- hydrophobicity scale (i)
+C        AMHMAXSIZ- MAXIMUM PROTEIN LENGTH (I)
+C        NMRES - LENGTH OF CURRENT PROTEIN (I)
+C        IRES  - CODED AMINO ACID SEQUENCE (I)
+C        HYDSEQ- HYDROPHOBICITY PROFILE (O)
+C        HYDSCL- HYDROPHOBICITY SCALE (I)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     set required parameters
+C     SET REQUIRED PARAMETERS
 
-      implicit none
+      IMPLICIT NONE
 
-c     argument declarations:
+C     ARGUMENT DECLARATIONS:
 
-         integer AMHmaxsiz,nmres,ires(AMHmaxsiz)
+         INTEGER AMHMAXSIZ,NMRES,IRES(AMHMAXSIZ)
 
-         double precision hydseq(AMHmaxsiz),hydscl(0:21)
+         DOUBLE PRECISION HYDSEQ(AMHMAXSIZ),HYDSCL(0:21)
 
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-         integer i500,i501
+         INTEGER I500,I501
      
-c     --------------------- begin -----------------------
+C     --------------------- BEGIN -----------------------
 
-c     set hydrophobicity profile
+C     SET HYDROPHOBICITY PROFILE
 
-c     put h value from array hydscl in 'utility'
+C     PUT H VALUE FROM ARRAY HYDSCL IN 'UTILITY'
 
-      do 500 i500=1,nmres
-         hydseq(i500)=hydscl(ires(i500))
-  500 continue
+      DO 500 I500=1,NMRES
+         HYDSEQ(I500)=HYDSCL(IRES(I500))
+  500 CONTINUE
 
-c     translate h values to binary scale
+C     TRANSLATE H VALUES TO BINARY SCALE
 
-      do 501 i501=1,nmres
-         if( hydseq(i501).lt.0.0 )then
-            hydseq(i501)=-1.0
-         elseif( hydseq(i501).gt.0.0 )then
-            hydseq(i501)=1.0
-         endif
-  501 continue
+      DO 501 I501=1,NMRES
+         IF( HYDSEQ(I501).LT.0.0 )THEN
+            HYDSEQ(I501)=-1.0
+         ELSEIF( HYDSEQ(I501).GT.0.0 )THEN
+            HYDSEQ(I501)=1.0
+         ENDIF
+  501 CONTINUE
 
-c     ---------------------- done -----------------------
+C     ---------------------- DONE -----------------------
 
-      return
-      end
+      RETURN
+      END

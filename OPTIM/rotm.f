@@ -1,56 +1,56 @@
 C 
-C  GPL License Info {{{
+C  GPL LICENSE INFO {{{
 C
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C }}}
 C 
       SUBROUTINE ROTM(IDIR,ANG,IX,RT)
-! Doxygen {{{
+! DOXYGEN {{{
 !>
-!> \name ROTM
-!> \brief Forms three dimensional rotation matrix
-!>  (IX=0 if ANG is expressed in radians, IX=1 if deg, add 10 to ix to get transpose)                 
+!> \NAME ROTM
+!> \BRIEF FORMS THREE DIMENSIONAL ROTATION MATRIX
+!>  (IX=0 IF ANG IS EXPRESSED IN RADIANS, IX=1 IF DEG, ADD 10 TO IX TO GET TRANSPOSE)                 
 !>
-!> \param[in] IDIR - axis around which the angle ANG is specified
-!> \param[in] ANG - angle; can be expressed either in radians (IX=0) or in
-!>              degrees (IX=1).
-!> \param[in] IX - specify the input format for the angle ANG. Values:
-!>              0 - radians
-!>              1 - degrees
-!>              Adding +10 to IX results in the matrix being transposed. 
-!> \param[out] RT - the 3x3 rotation matrix 
+!> \PARAM[IN] IDIR - AXIS AROUND WHICH THE ANGLE ANG IS SPECIFIED
+!> \PARAM[IN] ANG - ANGLE; CAN BE EXPRESSED EITHER IN RADIANS (IX=0) OR IN
+!>              DEGREES (IX=1).
+!> \PARAM[IN] IX - SPECIFY THE INPUT FORMAT FOR THE ANGLE ANG. VALUES:
+!>              0 - RADIANS
+!>              1 - DEGREES
+!>              ADDING +10 TO IX RESULTS IN THE MATRIX BEING TRANSPOSED. 
+!> \PARAM[OUT] RT - THE 3X3 ROTATION MATRIX 
 !>
 ! }}}
 C
 C     FORMS THREE DIMENSIONAL ROTATION MATRIX (IX=0 IF ANG IN RADS,
-c     IX=1 IF DEG,  ADD 10 TO IX TO GET TRANSPOSE)
+C     IX=1 IF DEG,  ADD 10 TO IX TO GET TRANSPOSE)
 C
       IMPLICIT NONE
-! subroutine parameters 
+! SUBROUTINE PARAMETERS 
       INTEGER IDIR,IX
       DOUBLE PRECISION RT(3,3),ANG
 
-! local parameters 
+! LOCAL PARAMETERS 
       INTEGER I,J,INK,IEO,IBTAND
       DOUBLE PRECISION ATOR,TANG
-! Subroutine body {{{
+! SUBROUTINE BODY {{{
       IBTAND(I,J) = IAND(I,J)
       IEO(I)=2*IBTAND(I,1)-1
 C

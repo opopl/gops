@@ -1,28 +1,28 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C***********************************************************************
 C
-C  Subroutine aziz calculates the cartesian gradient and second
-C  derivative matrix analytically for the accurate Ar-Ar pair potential
-C  of Aziz (JCP, 99, 4518, 1993). Epsilon and R_e are set to unity.
-C  Input coordinates are assumed to be in sigma=R_e/2**(1/6).
+C  SUBROUTINE AZIZ CALCULATES THE CARTESIAN GRADIENT AND SECOND
+C  DERIVATIVE MATRIX ANALYTICALLY FOR THE ACCURATE AR-AR PAIR POTENTIAL
+C  OF AZIZ (JCP, 99, 4518, 1993). EPSILON AND R_E ARE SET TO UNITY.
+C  INPUT COORDINATES ARE ASSUMED TO BE IN SIGMA=R_E/2**(1/6).
 C
 C***********************************************************************
 C
@@ -42,21 +42,21 @@ C     PARAMETER (SR10=DSQRT(10.0D0), SR2=DSQRT(2.0D0), SR6=DSQRT(6.0D0))
       PARAMETER (CONV=1.122462048D0, SR14=3.741657387D0, 
      1           SR3=1.732050808D0)
       DOUBLE PRECISION AA, ALPHA, BETA, C6, C8, C10, C12, C14, RHO, RM,
-     1                 atob, z1, z2, z3, rc1, rc2, rc3, rc4, rc5
-      PARAMETER (AA= 8.73933927D4, alpha=9.0328328D0, 
-     1           beta=-2.37132823D0,
-     2           c6=1.09309955D0, c8=0.51568309D0, c10=0.32521242D0, 
-     3           c12=0.27818156D0, c14=0.31111959D0,
-     4           rho=1.107D0, rm=3.757D0, atob=1.889726164D0, 
-     5           z1=2.1D0, z2=0.109D0, z3=0.78D0)
+     1                 ATOB, Z1, Z2, Z3, RC1, RC2, RC3, RC4, RC5
+      PARAMETER (AA= 8.73933927D4, ALPHA=9.0328328D0, 
+     1           BETA=-2.37132823D0,
+     2           C6=1.09309955D0, C8=0.51568309D0, C10=0.32521242D0, 
+     3           C12=0.27818156D0, C14=0.31111959D0,
+     4           RHO=1.107D0, RM=3.757D0, ATOB=1.889726164D0, 
+     5           Z1=2.1D0, Z2=0.109D0, Z3=0.78D0)
 C
-C  Convert distances to R_e rather than sigma.
+C  CONVERT DISTANCES TO R_E RATHER THAN SIGMA.
 C
       DO J1=1,3*N
          X(J1)=X(J1)/CONV
       ENDDO
 C 
-C  Store distance matrices.
+C  STORE DISTANCE MATRICES.
 C
       DO 20 J1=1,N
          R2(J1,J1)=0.0D0
@@ -85,170 +85,170 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  Calculate the energy in epsilon.
+C  CALCULATE THE ENERGY IN EPSILON.
 C
       ENERGY=0.0D0
       DO J1=1,N
          DO J2=J1+1,N
             R=R1(J2,J1)
-            rc1=atob*R*rho*rm*z1
-            rc2=atob**2*R**2*rho**2*rm**2*z2
-            rc3=atob*R*rho*rm
-            ENERGY=ENERGY + AA*DEXP(-(alpha*R) + beta*R**2) - 
-     1             (1 - rc3**1.68/DEXP(rc3*z3))*
-     2   (c10*(1 - DEXP(-rc1/10 - rc2/SR10))**10*R10(J2,J1) + 
-     3   c12*(1 - DEXP(-rc1/12 - rc2/(2*SR3)))**12*R12(J2,J1) + 
-     4    c14*(1 - DEXP(-rc1/14 - rc2/SR14))**14*R14(J2,J1) 
-     5   + c6*(1 - DEXP(-rc1/6 - rc2/SR6))**6*R6(J2,J1) + 
-     6     c8*(1 - DEXP(-rc1/8 - rc2/(2*SR2)))**8*R8(J2,J1))
+            RC1=ATOB*R*RHO*RM*Z1
+            RC2=ATOB**2*R**2*RHO**2*RM**2*Z2
+            RC3=ATOB*R*RHO*RM
+            ENERGY=ENERGY + AA*DEXP(-(ALPHA*R) + BETA*R**2) - 
+     1             (1 - RC3**1.68/DEXP(RC3*Z3))*
+     2   (C10*(1 - DEXP(-RC1/10 - RC2/SR10))**10*R10(J2,J1) + 
+     3   C12*(1 - DEXP(-RC1/12 - RC2/(2*SR3)))**12*R12(J2,J1) + 
+     4    C14*(1 - DEXP(-RC1/14 - RC2/SR14))**14*R14(J2,J1) 
+     5   + C6*(1 - DEXP(-RC1/6 - RC2/SR6))**6*R6(J2,J1) + 
+     6     C8*(1 - DEXP(-RC1/8 - RC2/(2*SR2)))**8*R8(J2,J1))
          ENDDO
       ENDDO
 
       IF (NTEST.EQ.0) GOTO 11
 C
-C  Calculate the g and f tensors.
+C  CALCULATE THE G AND F TENSORS.
 C
       DO 21 J1=1,N
          G(J1,J1)=0.0D0
          F(J1,J1)=0.0D0
          DO 22 J2=J1+1,N 
             R=R1(J2,J1)
-            rc1=atob*R*rho*rm*z1
-            rc2=atob**2*R**2*rho**2*rm**2*z2
-            rc3=atob*R*rho*rm
-            rc4=atob*rho*rm*z1
-            rc5=atob**2*R*rho**2*rm**2
+            RC1=ATOB*R*RHO*RM*Z1
+            RC2=ATOB**2*R**2*RHO**2*RM**2*Z2
+            RC3=ATOB*R*RHO*RM
+            RC4=ATOB*RHO*RM*Z1
+            RC5=ATOB**2*R*RHO**2*RM**2
 
-            G(J2,J1)= (AA*DEXP(-(alpha*R) + beta*R**2)*(-alpha 
-     %       + 2*beta*R) - 
-     %                (1 - rc3**1.68/DEXP(rc3*z3))*
-     %     (-14*c14*(1 - DEXP(-rc1/14 - rc2/SR14))**14/R**15 - 
-     %       12*c12*(1 - DEXP(-rc1/12 - rc2/(2*SR3)))**12/R**13 - 
-     %       10*c10*(1 - DEXP(-rc1/10 - rc2/SR10))**10/R**11 - 
-     %       8*c8*(1 - DEXP(-rc1/8 - rc2/(2*SR2)))**8/R**9 - 
-     %       6*c6*(1 - DEXP(-rc1/6 - rc2/SR6))**6/R**7 - 
-     %       14*c14*DEXP(-rc1/14 - rc2/SR14)*(1 - DEXP(-rc1/14 
-     %       - rc2/SR14))**13*
-     %        R14(J2,J1)*(-rc4/14 - DSqrt(2.0D0/7.0D0)*rc5*z2) - 
-     %       10*c10*DEXP(-rc1/10 - rc2/SR10)*(1 - DEXP(-rc1/10 
-     %       - rc2/SR10))**9*
-     %        R10(J2,J1)*(-rc4/10 - DSqrt(2.0D0/5.0D0)*rc5*z2) - 
-     %       6*c6*DEXP(-rc1/6 - rc2/SR6)*(1 - DEXP(-rc1/6 
-     %       - rc2/SR6))**5*R6(J2,J1)*
-     %        (-rc4/6 - DSqrt(2.0D0/3.0D0)*rc5*z2) - 
-     %       8*c8*DEXP(-rc1/8 - rc2/(2*SR2))*
-     %        (1 - DEXP(-rc1/8 - rc2/(2*SR2)))**7*R8(J2,J1)*(-rc4/8 
-     %        - rc5*z2/SR2) - 
-     %       12*c12*DEXP(-rc1/12 - rc2/(2*SR3))*
-     %        (1 - DEXP(-rc1/12 - rc2/(2*SR3)))**11*R12(J2,J1)
-     %       *(-rc4/12 - rc5*z2/SR3))
-     %      - (c10*(1 - DEXP(-rc1/10 - rc2/SR10))**10*R10(J2,J1) + 
-     %       c12*(1 - DEXP(-rc1/12 - rc2/(2*SR3)))**12*R12(J2,J1) + 
-     %       c14*(1 - DEXP(-rc1/14 - rc2/SR14))**14*R14(J2,J1) + 
-     %       c6*(1 - DEXP(-rc1/6 - rc2/SR6))**6*R6(J2,J1) + 
-     %       c8*(1 - DEXP(-rc1/8 - rc2/(2*SR2)))**8*R8(J2,J1))*
-     %     (-1.68*atob*rc3**0.68*rho*rm/DEXP(rc3*z3) + 
-     %       atob*rc3**1.68*rho*rm*z3/DEXP(rc3*z3)))/R
+            G(J2,J1)= (AA*DEXP(-(ALPHA*R) + BETA*R**2)*(-ALPHA 
+     %       + 2*BETA*R) - 
+     %                (1 - RC3**1.68/DEXP(RC3*Z3))*
+     %     (-14*C14*(1 - DEXP(-RC1/14 - RC2/SR14))**14/R**15 - 
+     %       12*C12*(1 - DEXP(-RC1/12 - RC2/(2*SR3)))**12/R**13 - 
+     %       10*C10*(1 - DEXP(-RC1/10 - RC2/SR10))**10/R**11 - 
+     %       8*C8*(1 - DEXP(-RC1/8 - RC2/(2*SR2)))**8/R**9 - 
+     %       6*C6*(1 - DEXP(-RC1/6 - RC2/SR6))**6/R**7 - 
+     %       14*C14*DEXP(-RC1/14 - RC2/SR14)*(1 - DEXP(-RC1/14 
+     %       - RC2/SR14))**13*
+     %        R14(J2,J1)*(-RC4/14 - DSQRT(2.0D0/7.0D0)*RC5*Z2) - 
+     %       10*C10*DEXP(-RC1/10 - RC2/SR10)*(1 - DEXP(-RC1/10 
+     %       - RC2/SR10))**9*
+     %        R10(J2,J1)*(-RC4/10 - DSQRT(2.0D0/5.0D0)*RC5*Z2) - 
+     %       6*C6*DEXP(-RC1/6 - RC2/SR6)*(1 - DEXP(-RC1/6 
+     %       - RC2/SR6))**5*R6(J2,J1)*
+     %        (-RC4/6 - DSQRT(2.0D0/3.0D0)*RC5*Z2) - 
+     %       8*C8*DEXP(-RC1/8 - RC2/(2*SR2))*
+     %        (1 - DEXP(-RC1/8 - RC2/(2*SR2)))**7*R8(J2,J1)*(-RC4/8 
+     %        - RC5*Z2/SR2) - 
+     %       12*C12*DEXP(-RC1/12 - RC2/(2*SR3))*
+     %        (1 - DEXP(-RC1/12 - RC2/(2*SR3)))**11*R12(J2,J1)
+     %       *(-RC4/12 - RC5*Z2/SR3))
+     %      - (C10*(1 - DEXP(-RC1/10 - RC2/SR10))**10*R10(J2,J1) + 
+     %       C12*(1 - DEXP(-RC1/12 - RC2/(2*SR3)))**12*R12(J2,J1) + 
+     %       C14*(1 - DEXP(-RC1/14 - RC2/SR14))**14*R14(J2,J1) + 
+     %       C6*(1 - DEXP(-RC1/6 - RC2/SR6))**6*R6(J2,J1) + 
+     %       C8*(1 - DEXP(-RC1/8 - RC2/(2*SR2)))**8*R8(J2,J1))*
+     %     (-1.68*ATOB*RC3**0.68*RHO*RM/DEXP(RC3*Z3) + 
+     %       ATOB*RC3**1.68*RHO*RM*Z3/DEXP(RC3*Z3)))/R
 
-            F(J2,J1)= 2*AA*beta*DEXP(-(alpha*R) + beta*R**2) + 
-     -  AA*DEXP(-(alpha*R) + beta*R**2)*(-alpha + 2*beta*R)**2 - 
-     -  (1.0D0 - rc3**1.68/DEXP(rc3*z3))*
-     -   (210*c14*(1.0D0 - DEXP(-rc1/14.0D0 - rc2/SR14))**14/R**16 + 
-     -   72*c8*(1.0D0 - DEXP(-rc1/8.0D0 - rc2/(2*SR2)))**8*R10(J2,J1) + 
-     -   110*c10*(1.0D0 - DEXP(-rc1/10.0D0 - rc2/SR10))**10*R12(J2,J1) +
-     -  156*c12*(1.0D0-DEXP(-rc1/12.0D0 - rc2/(2*SR3)))**12*R14(J2,J1) +
-     -     42*c6*(1.0D0 - DEXP(-rc1/6.0D0 - rc2/SR6))**6*R8(J2,J1) + 
-     -     2*SR10*atob**2*c10*DEXP(-rc1/10.0D0 - rc2/SR10)*
-     -      (1.0D0 - DEXP(-rc1/10.0D0 - rc2/SR10))**9
-     -    *rho**2*rm**2*R10(J2,J1)*z2 + 
-     -     4*SR3*atob**2*c12*DEXP(-rc1/12.0D0 - rc2/(2*SR3))*
-     -      (1.0D0 - DEXP(-rc1/12.0D0 - rc2/(2.0D0*SR3)))**11
-     -   *rho**2*rm**2*R12(J2,J1)*z2 + 
-     -     2*SR14*atob**2*c14*DEXP(-rc1/14.0D0 - rc2/SR14)*
-     -      (1.0D0 - DEXP(-rc1/14.0D0 - rc2/SR14))**13*rho**2
-     -    *rm**2*R14(J2,J1)*z2 + 
-     -     2*SR6*atob**2*c6*DEXP(-rc1/6.0D0 - rc2/SR6)*
-     -      (1.0D0 - DEXP(-rc1/6.0D0 - rc2/SR6))**5
-     -    *rho**2*rm**2*R6(J2,J1)*z2 + 
-     -     4*SR2*atob**2*c8*DEXP(-rc1/8.0D0 - rc2/(2*SR2))*
-     -      (1.0D0 - DEXP(-rc1/8.0D0 - rc2/(2*SR2)))**7*rho**2
-     -     *rm**2*R8(J2,J1)*z2 + 
-     -     392*c14*DEXP(-rc1/14 - rc2/SR14)*(1 - DEXP(-rc1/14 - 
-     -     rc2/SR14))**13*
-     -       (-rc4/14.0D0 - DSqrt(2.0D0/7.0D0)*rc5*z2)/R**15 + 
-     -     182*c14*DEXP(-rc1/7.0D0 - DSqrt(2.0D0/7.0D0)*rc2)*
-     -      (1.0D0 - DEXP(-rc1/14.0D0 - rc2/SR14))**12*R14(J2,J1)*
-     -      (-rc4/14.0D0 - DSqrt(2.0D0/7.0D0)*rc5*z2)**2 - 
-     -     14*c14*DEXP(-rc1/14.0D0 - rc2/SR14)*(1.0D0 - DEXP(-rc1/14 
-     -     - rc2/SR14))**13*
-     -      R14(J2,J1)*(-rc4/14.0D0 - DSQRT(2.0D0/7.0D0)*rc5*z2)**2 + 
-     -     200*c10*DEXP(-rc1/10.0D0 - rc2/SR10)*(1.0D0 - 
-     -      DEXP(-rc1/10.0D0 - rc2/SR10))**9*
-     -       (-rc4/10.0D0 - DSQRT(2.0D0/5.0D0)*rc5*z2)/R**11 + 
-     -     90*c10*DEXP(-rc1/5.0D0 - DSQRT(2.0D0/5.0D0)*rc2)*
-     -      (1.0D0 - DEXP(-rc1/10.0D0 - rc2/SR10))**8*R10(J2,J1)*
-     -      (-rc4/10.0D0 - DSQRT(2.0D0/5.0D0)*rc5*z2)**2 - 
-     -     10*c10*DEXP(-rc1/10.0D0 - rc2/SR10)*(1.0D0 - 
-     -     DEXP(-rc1/10.0D0 - rc2/SR10))**9*
-     -      R10(J2,J1)*(-rc4/10.0D0 - DSQRT(2.0D0/5.0D0)*rc5*z2)**2 + 
-     -     72*c6*DEXP(-rc1/6.0D0 - rc2/SR6)*(1.0D0 - DEXP(-rc1/6.0D0 
-     -      - rc2/SR6))**5*
-     -       (-rc4/6.0D0 - DSQRT(2.0D0/3.0D0)*rc5*z2)/R**7 + 
-     -     30*c6*DEXP(-rc1/3.0D0 - DSQRT(2.0D0/3.0D0)*rc2)*(1.0D0 
-     -     - DEXP(-rc1/6.0D0 - rc2/SR6))**4*
-     -      R6(J2,J1)*(-rc4/6.0D0 - DSQRT(2.0D0/3.0D0)*rc5*z2)**2 - 
-     -     6*c6*DEXP(-rc1/6.0D0 - rc2/SR6)*(1.0D0 - DEXP(-rc1/6 
-     -     - rc2/SR6))**5*R6(J2,J1)*
-     -      (-rc4/6.0D0 - DSQRT(2.0D0/3.0D0)*rc5*z2)**2 + 
-     -     128*c8*DEXP(-rc1/8.0D0 - rc2/(2*SR2))*
-     -       (1.0D0 - DEXP(-rc1/8.0D0 - rc2/(2*SR2)))**7*(-rc4/8 
-     -      - rc5*z2/SR2)/R**9 + 
-     -     56*c8*DEXP(-rc1/4.0D0 - rc2/SR2)*(1.0D0 - DEXP(-rc1/8 
-     -    - rc2/(2*SR2)))**6*
-     -      R8(J2,J1)*(-rc4/8.0D0 - rc5*z2/SR2)**2 - 
-     -     8*c8*DEXP(-rc1/8.0D0 - rc2/(2*SR2))*(1.0D0 - DEXP(-rc1/8 
-     -     - rc2/(2*SR2)))**7*
-     -      R8(J2,J1)*(-rc4/8.0D0 - rc5*z2/SR2)**2 + 
-     -     288*c12*DEXP(-rc1/12.0D0 - rc2/(2*SR3))*
-     -       (1.0D0 - DEXP(-rc1/12.0D0 - rc2/(2*SR3)))**11*(-rc4/12 
-     -     - rc5*z2/SR3)/R**13
-     -       + 132*c12*DEXP(-rc1/6.0D0 - rc2/SR3)*
-     -      (1.0D0 - DEXP(-rc1/12.0D0 - rc2/(2*SR3)))**10*R12(J2,J1)*
-     -      (-rc4/12.0D0 - rc5*z2/SR3)**2 - 
-     -     12*c12*DEXP(-rc1/12.0D0 - rc2/(2*SR3))*
-     -      (1.0D0 - DEXP(-rc1/12.0D0 - rc2/(2*SR3)))**11*R12(J2,J1)*
-     -      (-rc4/12.0D0 - rc5*z2/SR3)**2) - 
-     -  2*(-14*c14*(1.0D0 - DEXP(-rc1/14.0D0 - rc2/SR14))**14/R**15 - 
-     -     12*c12*(1.0D0 - DEXP(-rc1/12.0D0 - rc2/(2*SR3)))**12/R**13 - 
-     -     10*c10*(1.0D0 - DEXP(-rc1/10.0D0 - rc2/SR10))**10/R**11 - 
-     -     8*c8*(1.0D0 - DEXP(-rc1/8.0D0 - rc2/(2*SR2)))**8/R**9 - 
-     -     6*c6*(1.0D0 - DEXP(-rc1/6.0D0 - rc2/SR6))**6/R**7 - 
-     -     14*c14*DEXP(-rc1/14.0D0 - rc2/SR14)*(1.0D0 - DEXP(-rc1/14 
-     -      - rc2/SR14))**13*
-     -      R14(J2,J1)*(-rc4/14.0D0 - DSQRT(2.0D0/7.0D0)*rc5*z2) - 
-     -     10*c10*DEXP(-rc1/10.0D0 - rc2/SR10)*(1.0D0 - DEXP(-rc1/10 
-     -     - rc2/SR10))**9*
-     -      R10(J2,J1)*(-rc4/10.0D0 - DSQRT(2.0D0/5.0D0)*rc5*z2) - 
-     -     6*c6*DEXP(-rc1/6.0D0 - rc2/SR6)*(1.0D0 - DEXP(-rc1/6 - 
-     -     rc2/SR6))**5*R6(J2,J1)*
-     -      (-rc4/6.0D0 - DSQRT(2.0D0/3.0D0)*rc5*z2) - 
-     -     8*c8*DEXP(-rc1/8.0D0 - rc2/(2*SR2))*(1.0D0 - DEXP(-rc1/8 
-     -     - rc2/(2*SR2)))**7*
-     -      R8(J2,J1)*(-rc4/8.0D0 - rc5*z2/SR2) - 
-     -     12*c12*DEXP(-rc1/12.0D0 - rc2/(2*SR3))*
-     -      (1.0D0 - DEXP(-rc1/12.0D0 - rc2/(2*SR3)))**11*R12(J2,J1)*
-     -      (-rc4/12.0D0 - rc5*z2/SR3))*
-     -   (-1.68*atob*rc3**0.68*rho*rm/DEXP(rc3*z3) + 
-     -     atob*rc3**1.68*rho*rm*z3/DEXP(rc3*z3)) - 
-     -  (c10*(1.0D0 - DEXP(-rc1/10.0D0 - rc2/SR10))**10*R10(J2,J1) + 
-     -     c12*(1.0D0-DEXP(-rc1/12.0D0 - rc2/(2*SR3)))**12*R12(J2,J1) + 
-     -     c14*(1.0D0 - DEXP(-rc1/14.0D0 - rc2/SR14))**14*R14(J2,J1) + 
-     -     c6*(1.0D0 - DEXP(-rc1/6.0D0 - rc2/SR6))**6*R6(J2,J1) + 
-     -     c8*(1.0D0 - DEXP(-rc1/8.0D0 - rc2/(2*SR2)))**8*R8(J2,J1))*
-     -   (-1.1424*atob**2*rho**2*rm**2/
-     -      (DEXP(rc3*z3)*rc3**0.32) + 
-     -     3.36*atob**2*rc3**0.68*rho**2*rm**2*z3/DEXP(rc3*z3) - 
-     -     atob**2*rc3**1.68*rho**2*rm**2*z3**2/DEXP(rc3*z3)) 
+            F(J2,J1)= 2*AA*BETA*DEXP(-(ALPHA*R) + BETA*R**2) + 
+     -  AA*DEXP(-(ALPHA*R) + BETA*R**2)*(-ALPHA + 2*BETA*R)**2 - 
+     -  (1.0D0 - RC3**1.68/DEXP(RC3*Z3))*
+     -   (210*C14*(1.0D0 - DEXP(-RC1/14.0D0 - RC2/SR14))**14/R**16 + 
+     -   72*C8*(1.0D0 - DEXP(-RC1/8.0D0 - RC2/(2*SR2)))**8*R10(J2,J1) + 
+     -   110*C10*(1.0D0 - DEXP(-RC1/10.0D0 - RC2/SR10))**10*R12(J2,J1) +
+     -  156*C12*(1.0D0-DEXP(-RC1/12.0D0 - RC2/(2*SR3)))**12*R14(J2,J1) +
+     -     42*C6*(1.0D0 - DEXP(-RC1/6.0D0 - RC2/SR6))**6*R8(J2,J1) + 
+     -     2*SR10*ATOB**2*C10*DEXP(-RC1/10.0D0 - RC2/SR10)*
+     -      (1.0D0 - DEXP(-RC1/10.0D0 - RC2/SR10))**9
+     -    *RHO**2*RM**2*R10(J2,J1)*Z2 + 
+     -     4*SR3*ATOB**2*C12*DEXP(-RC1/12.0D0 - RC2/(2*SR3))*
+     -      (1.0D0 - DEXP(-RC1/12.0D0 - RC2/(2.0D0*SR3)))**11
+     -   *RHO**2*RM**2*R12(J2,J1)*Z2 + 
+     -     2*SR14*ATOB**2*C14*DEXP(-RC1/14.0D0 - RC2/SR14)*
+     -      (1.0D0 - DEXP(-RC1/14.0D0 - RC2/SR14))**13*RHO**2
+     -    *RM**2*R14(J2,J1)*Z2 + 
+     -     2*SR6*ATOB**2*C6*DEXP(-RC1/6.0D0 - RC2/SR6)*
+     -      (1.0D0 - DEXP(-RC1/6.0D0 - RC2/SR6))**5
+     -    *RHO**2*RM**2*R6(J2,J1)*Z2 + 
+     -     4*SR2*ATOB**2*C8*DEXP(-RC1/8.0D0 - RC2/(2*SR2))*
+     -      (1.0D0 - DEXP(-RC1/8.0D0 - RC2/(2*SR2)))**7*RHO**2
+     -     *RM**2*R8(J2,J1)*Z2 + 
+     -     392*C14*DEXP(-RC1/14 - RC2/SR14)*(1 - DEXP(-RC1/14 - 
+     -     RC2/SR14))**13*
+     -       (-RC4/14.0D0 - DSQRT(2.0D0/7.0D0)*RC5*Z2)/R**15 + 
+     -     182*C14*DEXP(-RC1/7.0D0 - DSQRT(2.0D0/7.0D0)*RC2)*
+     -      (1.0D0 - DEXP(-RC1/14.0D0 - RC2/SR14))**12*R14(J2,J1)*
+     -      (-RC4/14.0D0 - DSQRT(2.0D0/7.0D0)*RC5*Z2)**2 - 
+     -     14*C14*DEXP(-RC1/14.0D0 - RC2/SR14)*(1.0D0 - DEXP(-RC1/14 
+     -     - RC2/SR14))**13*
+     -      R14(J2,J1)*(-RC4/14.0D0 - DSQRT(2.0D0/7.0D0)*RC5*Z2)**2 + 
+     -     200*C10*DEXP(-RC1/10.0D0 - RC2/SR10)*(1.0D0 - 
+     -      DEXP(-RC1/10.0D0 - RC2/SR10))**9*
+     -       (-RC4/10.0D0 - DSQRT(2.0D0/5.0D0)*RC5*Z2)/R**11 + 
+     -     90*C10*DEXP(-RC1/5.0D0 - DSQRT(2.0D0/5.0D0)*RC2)*
+     -      (1.0D0 - DEXP(-RC1/10.0D0 - RC2/SR10))**8*R10(J2,J1)*
+     -      (-RC4/10.0D0 - DSQRT(2.0D0/5.0D0)*RC5*Z2)**2 - 
+     -     10*C10*DEXP(-RC1/10.0D0 - RC2/SR10)*(1.0D0 - 
+     -     DEXP(-RC1/10.0D0 - RC2/SR10))**9*
+     -      R10(J2,J1)*(-RC4/10.0D0 - DSQRT(2.0D0/5.0D0)*RC5*Z2)**2 + 
+     -     72*C6*DEXP(-RC1/6.0D0 - RC2/SR6)*(1.0D0 - DEXP(-RC1/6.0D0 
+     -      - RC2/SR6))**5*
+     -       (-RC4/6.0D0 - DSQRT(2.0D0/3.0D0)*RC5*Z2)/R**7 + 
+     -     30*C6*DEXP(-RC1/3.0D0 - DSQRT(2.0D0/3.0D0)*RC2)*(1.0D0 
+     -     - DEXP(-RC1/6.0D0 - RC2/SR6))**4*
+     -      R6(J2,J1)*(-RC4/6.0D0 - DSQRT(2.0D0/3.0D0)*RC5*Z2)**2 - 
+     -     6*C6*DEXP(-RC1/6.0D0 - RC2/SR6)*(1.0D0 - DEXP(-RC1/6 
+     -     - RC2/SR6))**5*R6(J2,J1)*
+     -      (-RC4/6.0D0 - DSQRT(2.0D0/3.0D0)*RC5*Z2)**2 + 
+     -     128*C8*DEXP(-RC1/8.0D0 - RC2/(2*SR2))*
+     -       (1.0D0 - DEXP(-RC1/8.0D0 - RC2/(2*SR2)))**7*(-RC4/8 
+     -      - RC5*Z2/SR2)/R**9 + 
+     -     56*C8*DEXP(-RC1/4.0D0 - RC2/SR2)*(1.0D0 - DEXP(-RC1/8 
+     -    - RC2/(2*SR2)))**6*
+     -      R8(J2,J1)*(-RC4/8.0D0 - RC5*Z2/SR2)**2 - 
+     -     8*C8*DEXP(-RC1/8.0D0 - RC2/(2*SR2))*(1.0D0 - DEXP(-RC1/8 
+     -     - RC2/(2*SR2)))**7*
+     -      R8(J2,J1)*(-RC4/8.0D0 - RC5*Z2/SR2)**2 + 
+     -     288*C12*DEXP(-RC1/12.0D0 - RC2/(2*SR3))*
+     -       (1.0D0 - DEXP(-RC1/12.0D0 - RC2/(2*SR3)))**11*(-RC4/12 
+     -     - RC5*Z2/SR3)/R**13
+     -       + 132*C12*DEXP(-RC1/6.0D0 - RC2/SR3)*
+     -      (1.0D0 - DEXP(-RC1/12.0D0 - RC2/(2*SR3)))**10*R12(J2,J1)*
+     -      (-RC4/12.0D0 - RC5*Z2/SR3)**2 - 
+     -     12*C12*DEXP(-RC1/12.0D0 - RC2/(2*SR3))*
+     -      (1.0D0 - DEXP(-RC1/12.0D0 - RC2/(2*SR3)))**11*R12(J2,J1)*
+     -      (-RC4/12.0D0 - RC5*Z2/SR3)**2) - 
+     -  2*(-14*C14*(1.0D0 - DEXP(-RC1/14.0D0 - RC2/SR14))**14/R**15 - 
+     -     12*C12*(1.0D0 - DEXP(-RC1/12.0D0 - RC2/(2*SR3)))**12/R**13 - 
+     -     10*C10*(1.0D0 - DEXP(-RC1/10.0D0 - RC2/SR10))**10/R**11 - 
+     -     8*C8*(1.0D0 - DEXP(-RC1/8.0D0 - RC2/(2*SR2)))**8/R**9 - 
+     -     6*C6*(1.0D0 - DEXP(-RC1/6.0D0 - RC2/SR6))**6/R**7 - 
+     -     14*C14*DEXP(-RC1/14.0D0 - RC2/SR14)*(1.0D0 - DEXP(-RC1/14 
+     -      - RC2/SR14))**13*
+     -      R14(J2,J1)*(-RC4/14.0D0 - DSQRT(2.0D0/7.0D0)*RC5*Z2) - 
+     -     10*C10*DEXP(-RC1/10.0D0 - RC2/SR10)*(1.0D0 - DEXP(-RC1/10 
+     -     - RC2/SR10))**9*
+     -      R10(J2,J1)*(-RC4/10.0D0 - DSQRT(2.0D0/5.0D0)*RC5*Z2) - 
+     -     6*C6*DEXP(-RC1/6.0D0 - RC2/SR6)*(1.0D0 - DEXP(-RC1/6 - 
+     -     RC2/SR6))**5*R6(J2,J1)*
+     -      (-RC4/6.0D0 - DSQRT(2.0D0/3.0D0)*RC5*Z2) - 
+     -     8*C8*DEXP(-RC1/8.0D0 - RC2/(2*SR2))*(1.0D0 - DEXP(-RC1/8 
+     -     - RC2/(2*SR2)))**7*
+     -      R8(J2,J1)*(-RC4/8.0D0 - RC5*Z2/SR2) - 
+     -     12*C12*DEXP(-RC1/12.0D0 - RC2/(2*SR3))*
+     -      (1.0D0 - DEXP(-RC1/12.0D0 - RC2/(2*SR3)))**11*R12(J2,J1)*
+     -      (-RC4/12.0D0 - RC5*Z2/SR3))*
+     -   (-1.68*ATOB*RC3**0.68*RHO*RM/DEXP(RC3*Z3) + 
+     -     ATOB*RC3**1.68*RHO*RM*Z3/DEXP(RC3*Z3)) - 
+     -  (C10*(1.0D0 - DEXP(-RC1/10.0D0 - RC2/SR10))**10*R10(J2,J1) + 
+     -     C12*(1.0D0-DEXP(-RC1/12.0D0 - RC2/(2*SR3)))**12*R12(J2,J1) + 
+     -     C14*(1.0D0 - DEXP(-RC1/14.0D0 - RC2/SR14))**14*R14(J2,J1) + 
+     -     C6*(1.0D0 - DEXP(-RC1/6.0D0 - RC2/SR6))**6*R6(J2,J1) + 
+     -     C8*(1.0D0 - DEXP(-RC1/8.0D0 - RC2/(2*SR2)))**8*R8(J2,J1))*
+     -   (-1.1424*ATOB**2*RHO**2*RM**2/
+     -      (DEXP(RC3*Z3)*RC3**0.32) + 
+     -     3.36*ATOB**2*RC3**0.68*RHO**2*RM**2*Z3/DEXP(RC3*Z3) - 
+     -     ATOB**2*RC3**1.68*RHO**2*RM**2*Z3**2/DEXP(RC3*Z3)) 
 
             F(J2,J1)=F(J2,J1)-G(J2,J1)
 
@@ -257,8 +257,8 @@ C
 22       CONTINUE
 21    CONTINUE
 C
-C  From here on down the code is system-independent!
-C  First calculate the gradient analytically.
+C  FROM HERE ON DOWN THE CODE IS SYSTEM-INDEPENDENT!
+C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
 C
       DO 50 J1=1,N
          DO 40 J2=1,3
@@ -271,7 +271,7 @@ C           PRINT*,'J3,V(J3)=',J3,V(J3)
 40       CONTINUE
 50    CONTINUE
 C
-C  Now do the hessian. First are the entirely diagonal terms.
+C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
 C
       DO 80 J1=1,N
          DO 70 J2=1,3
@@ -284,8 +284,8 @@ C
 70       CONTINUE
 80    CONTINUE
 C
-C  Next are the terms where x_i and x_j are on the same atom
-C  but are different, e.g. y and z.
+C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
+C  BUT ARE DIFFERENT, E.G. Y AND Z.
 C
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -301,7 +301,7 @@ C
 110      CONTINUE
 120   CONTINUE
 C
-C  Case III, different atoms, same cartesian coordinate.
+C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
 C
       DO 150 J1=1,N
          DO 140 J2=1,3
@@ -313,7 +313,7 @@ C
 140      CONTINUE
 150   CONTINUE
 C
-C  Case IV: different atoms and different cartesian coordinates.
+C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3
@@ -330,7 +330,7 @@ C
 170      CONTINUE
 180   CONTINUE
 C
-C  Symmetrise Hessian
+C  SYMMETRISE HESSIAN
 C
       DO 200 J1=1,3*N
          V(J1)=V(J1)/CONV
@@ -341,7 +341,7 @@ C
 190      CONTINUE
 200   CONTINUE
 C
-C  Convert distances back to sigma.
+C  CONVERT DISTANCES BACK TO SIGMA.
 C
 11    DO J1=1,3*N
           X(J1)=X(J1)*CONV

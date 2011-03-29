@@ -1,19 +1,19 @@
-!   Copyright (C) 2003-2010 David J. Wales
-!   This file is part of OPTIM.
+!   COPYRIGHT (C) 2003-2010 DAVID J. WALES
+!   THIS FILE IS PART OF OPTIM.
 !
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 SUBROUTINE INTLBFGS(QSTART,QFINISH,NMINFOUND,NTSFOUND,MINFOUND,TSFOUND)
 USE PORFUNCS
@@ -31,7 +31,7 @@ USE MODEFOL
 
 IMPLICIT NONE 
 
-DOUBLE PRECISION, INTENT(IN) :: QSTART(NOPT), QFINISH(NOPT)  ! The two end points
+DOUBLE PRECISION, INTENT(IN) :: QSTART(NOPT), QFINISH(NOPT)  ! THE TWO END POINTS
 INTEGER D, U
 DOUBLE PRECISION DMAX, DS, DF, FRAC, DMIN
 DOUBLE PRECISION, ALLOCATABLE :: REPTEMP(:)
@@ -63,16 +63,16 @@ INTEGER NDIST1(NATOMS), NCYCLE, DMIN1, DMAX1, NUNCON1
 DOUBLE PRECISION, POINTER :: X(:), G(:)
 DOUBLE PRECISION, ALLOCATABLE :: EINT(:)
 !
-! These declarations have to match those in NEB/ntc.f90
+! THESE DECLARATIONS HAVE TO MATCH THOSE IN NEB/NTC.F90
 !
 TYPE MINFOUNDTYPE
    DOUBLE PRECISION,POINTER :: E
    DOUBLE PRECISION,POINTER :: COORD(:)
 END TYPE MINFOUNDTYPE
-INTEGER,PARAMETER :: NMINMAX = 3000 ! Maximal number of min to be checked in one intlbfgs run
+INTEGER,PARAMETER :: NMINMAX = 3000 ! MAXIMAL NUMBER OF MIN TO BE CHECKED IN ONE INTLBFGS RUN
 TYPE (MINFOUNDTYPE) :: MINFOUND(NMINMAX)
 
-INTEGER,PARAMETER :: NTSMAX = 3000 ! Maximal number of ts to be checked in one intlbfgs run
+INTEGER,PARAMETER :: NTSMAX = 3000 ! MAXIMAL NUMBER OF TS TO BE CHECKED IN ONE INTLBFGS RUN
 TYPE TSFOUNDTYPE
      DOUBLE PRECISION,POINTER :: E
      DOUBLE PRECISION,POINTER :: EVALMIN
@@ -82,7 +82,7 @@ END TYPE TSFOUNDTYPE
 
 TYPE (TSFOUNDTYPE) :: TSFOUND(NTSMAX)
 !
-! efk: for freezenodes
+! EFK: FOR FREEZENODES
 !
 DOUBLE PRECISION :: TESTG, TOTGNORM
 INTEGER :: IM
@@ -90,7 +90,7 @@ INTEGER NDFORNEWATOM, BESTPRESERVEDN(NATOMS)
 INTEGER NCFORNEWATOM, BESTCLOSESTN(NATOMS)
 DOUBLE PRECISION BESTPRESERVEDD(NATOMS), BESTCLOSESTD(NATOMS)
 !
-! Dimensions involving INTIMAGE
+! DIMENSIONS INVOLVING INTIMAGE
 !
 DOUBLE PRECISION, ALLOCATABLE :: SAVEX(:), TRUEEE(:), GOODSAVE(:), &
   &              EEETMP(:), MYGTMP(:), XSAVED(:,:), XSAVEC(:,:), EEE(:), STEPIMAGE(:), &
@@ -110,7 +110,7 @@ SWITCHED=.FALSE.
 INTIMAGESAVE=INTIMAGE
 NBACKTRACK=1
 CALL MYCPU_TIME(STIME,.FALSE.)
-PRINT '(A,I6)',' intlbfgs> Maximum number of steps for constraint potential phase is ',INTSTEPS1
+PRINT '(A,I6)',' INTLBFGS> MAXIMUM NUMBER OF STEPS FOR CONSTRAINT POTENTIAL PHASE IS ',INTSTEPS1
 PREVGRAD=1.0D100
 ADDATOM=.FALSE.
 NFAIL=0
@@ -121,23 +121,23 @@ NITERDONE=1
 LINTCONSTRAINTTOL=INTCONSTRAINTTOL
 
 IF ( D<=0 ) THEN
-   PRINT *, 'd is not positive, d=',d
+   PRINT *, 'D IS NOT POSITIVE, D=',D
    CALL TSUMMARY
    STOP
 ENDIF
 IF ( U<=0 ) THEN
-   PRINT *, 'u is not positive, u=',u
+   PRINT *, 'U IS NOT POSITIVE, U=',U
    CALL TSUMMARY
    STOP
 ENDIF
 IF (INTSTEPS1 < 0) THEN
-   PRINT '(1x,a)', 'Maximal number of iterations is less than zero! Stop.'
+   PRINT '(1X,A)', 'MAXIMAL NUMBER OF ITERATIONS IS LESS THAN ZERO! STOP.'
    CALL TSUMMARY
    STOP
 ENDIF
 !
-! XYZ, GGG, EEE include the end point images
-! X, G do not.
+! XYZ, GGG, EEE INCLUDE THE END POINT IMAGES
+! X, G DO NOT.
 !
 IF (.NOT.ALLOCATED(CONI)) THEN 
    ALLOCATE(CONI(INTCONMAX),CONJ(INTCONMAX),CONDISTREF(INTCONMAX))
@@ -146,7 +146,7 @@ ENDIF
 X=>XYZ(NOPT+1:NOPT*(INTIMAGE+1))
 G=>GGG(NOPT+1:NOPT*(INTIMAGE+1))
 !
-! Initialise XYZ
+! INITIALISE XYZ
 !
 XYZ(1:NOPT)=QSTART(1:NOPT)
 XYZ(NOPT*(INTIMAGE+1)+1:NOPT*(INTIMAGE+2))=QFINISH(1:NOPT)
@@ -154,7 +154,7 @@ DO J1=1,INTIMAGE+2
    XYZ((J1-1)*NOPT+1:J1*NOPT)=((INTIMAGE+2-J1)*QSTART(1:NOPT)+(J1-1)*QFINISH(1:NOPT))/(INTIMAGE+1)
 ENDDO
 !
-! Calculate initial constraints.
+! CALCULATE INITIAL CONSTRAINTS.
 !
 NLASTGOODE=0
 LASTGOODE=1.0D100
@@ -166,22 +166,22 @@ SAVEX(1:D)=X(1:D)
 MINCONDIST=1.0D100
 DO J2=1,NATOMS
    DO J3=J2+1,NATOMS
-      IF (J3-J2.GT.INTCONSEP) CYCLE ! forbid constraints corresponding to atoms distant in sequence
+      IF (J3-J2.GT.INTCONSEP) CYCLE ! FORBID CONSTRAINTS CORRESPONDING TO ATOMS DISTANT IN SEQUENCE
       DS=SQRT((XYZ(3*(J2-1)+1)-XYZ(3*(J3-1)+1))**2 &
   &          +(XYZ(3*(J2-1)+2)-XYZ(3*(J3-1)+2))**2 &
   &          +(XYZ(3*(J2-1)+3)-XYZ(3*(J3-1)+3))**2) 
-      IF (DS.GT.5.0D0) CYCLE ! don't allow constraints if either endpoint separation is too large DJW
+      IF (DS.GT.5.0D0) CYCLE ! DON'T ALLOW CONSTRAINTS IF EITHER ENDPOINT SEPARATION IS TOO LARGE DJW
       DF=SQRT((XYZ((INTIMAGE+1)*3*NATOMS+3*(J2-1)+1)-XYZ((INTIMAGE+1)*3*NATOMS+3*(J3-1)+1))**2 &
   &          +(XYZ((INTIMAGE+1)*3*NATOMS+3*(J2-1)+2)-XYZ((INTIMAGE+1)*3*NATOMS+3*(J3-1)+2))**2 &
   &          +(XYZ((INTIMAGE+1)*3*NATOMS+3*(J2-1)+3)-XYZ((INTIMAGE+1)*3*NATOMS+3*(J3-1)+3))**2) 
-      IF (DF.GT.5.0D0) CYCLE ! don't allow constraints if either endpoint separation is too large DJW
+      IF (DF.GT.5.0D0) CYCLE ! DON'T ALLOW CONSTRAINTS IF EITHER ENDPOINT SEPARATION IS TOO LARGE DJW
 !     IF (2.0D0*ABS(DS-DF)/(DS+DF).LT.LINTCONSTRAINTTOL) THEN
       IF (ABS(DS-DF).LT.LINTCONSTRAINTTOL) THEN
 !
-!  Add constraint for this distance to the list.
+!  ADD CONSTRAINT FOR THIS DISTANCE TO THE LIST.
 !
          NCONSTRAINT=NCONSTRAINT+1
-!        PRINT '(A,2I6,A,I6)','intlbfgs> Adding constraint for atoms ',J2,J3,'  total=',NCONSTRAINT
+!        PRINT '(A,2I6,A,I6)','INTLBFGS> ADDING CONSTRAINT FOR ATOMS ',J2,J3,'  TOTAL=',NCONSTRAINT
          IF (NCONSTRAINT.GT.INTCONMAX) THEN
             ALLOCATE(IREPTEMP(INTCONMAX))
                
@@ -211,15 +211,15 @@ DO J2=1,NATOMS
          CONDISTREF(NCONSTRAINT)=(DF+DS)/2.0D0
          IF (CONDISTREF(NCONSTRAINT).GT.MAXCONDIST) MAXCONDIST=CONDISTREF(NCONSTRAINT)
          IF (CONDISTREF(NCONSTRAINT).LT.MINCONDIST) MINCONDIST=CONDISTREF(NCONSTRAINT)
-         IF (DEBUG) PRINT '(A,2I6,A,2F12.2,A,F12.4,A,I8)',' intlbfgs> constrain distance for atoms ',CONI(NCONSTRAINT), &
-  &              CONJ(NCONSTRAINT),' values are ',DS,DF,' fraction=',2*ABS(DS-DF)/(DS+DF), &
-  &             ' # constraints=',NCONSTRAINT
+         IF (DEBUG) PRINT '(A,2I6,A,2F12.2,A,F12.4,A,I8)',' INTLBFGS> CONSTRAIN DISTANCE FOR ATOMS ',CONI(NCONSTRAINT), &
+  &              CONJ(NCONSTRAINT),' VALUES ARE ',DS,DF,' FRACTION=',2*ABS(DS-DF)/(DS+DF), &
+  &             ' # CONSTRAINTS=',NCONSTRAINT
       ENDIF
    ENDDO
 ENDDO
 !
-! Check that we have a percolating constraint network. If not, increase the tolerance and try again!
-! Calculate minimum number of steps of each atom from number 1.
+! CHECK THAT WE HAVE A PERCOLATING CONSTRAINT NETWORK. IF NOT, INCREASE THE TOLERANCE AND TRY AGAIN!
+! CALCULATE MINIMUM NUMBER OF STEPS OF EACH ATOM FROM NUMBER 1.
 !
 NDIST1(1:NATOMS)=1000000
 NDIST1(1)=0
@@ -230,7 +230,7 @@ DMIN1=100000
 DMAX1=0
 NUNCON1=0
 DO J1=1,NATOMS
-   IF (NDIST1(J1).EQ.0) CYCLE ! minimum 1
+   IF (NDIST1(J1).EQ.0) CYCLE ! MINIMUM 1
      DO J2=1,NCONSTRAINT
         IF (CONI(J2).EQ.J1) THEN
            IF (NDIST1(CONJ(J2))+1.LT.NDIST1(J1)) THEN
@@ -249,20 +249,20 @@ DO J1=1,NATOMS
      IF (NDIST1(J1).EQ.1000000) NUNCON1=NUNCON1+1
 ENDDO
 IF (CHANGED) GOTO 5
-PRINT '(3(A,I8))',' intlbfgs> steps to atom 1 converged in ',NCYCLE-1, &
-  &               ' cycles; maximum=',DMAX1,' disconnected=',NUNCON1
+PRINT '(3(A,I8))',' INTLBFGS> STEPS TO ATOM 1 CONVERGED IN ',NCYCLE-1, &
+  &               ' CYCLES; MAXIMUM=',DMAX1,' DISCONNECTED=',NUNCON1
 IF (NUNCON1.GT.0) THEN
    LINTCONSTRAINTTOL=LINTCONSTRAINTTOL*1.1D0
-   PRINT '(A,F15.5)',' intlbfgs> increasing the local constraint tolerance parameter to ',LINTCONSTRAINTTOL
+   PRINT '(A,F15.5)',' INTLBFGS> INCREASING THE LOCAL CONSTRAINT TOLERANCE PARAMETER TO ',LINTCONSTRAINTTOL
    GOTO 51
 ENDIF
 NCONATOM(1:NATOMS)=0
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-PRINT '(A,I6,2(A,F15.5))',' intlbfgs> total distance constraints=',NCONSTRAINT, &
-  &                    ' shortest=',MINCONDIST,' longest=',MAXCONDIST
-REPCON=-INTCONSTRAINTREP/INTCONSTRAINREPCUT**6 ! also needed for congrad.f90 potential
+PRINT '(A,I6,2(A,F15.5))',' INTLBFGS> TOTAL DISTANCE CONSTRAINTS=',NCONSTRAINT, &
+  &                    ' SHORTEST=',MINCONDIST,' LONGEST=',MAXCONDIST
+REPCON=-INTCONSTRAINTREP/INTCONSTRAINREPCUT**6 ! ALSO NEEDED FOR CONGRAD.F90 POTENTIAL
 IF (ALLOCATED(CONDISTREFLOCAL)) THEN
    DEALLOCATE(CONDISTREFLOCAL)
 ENDIF
@@ -286,8 +286,8 @@ DO J1=1,NCONSTRAINT
       DUMMY=DF
    ENDIF
 ENDDO
-IF (DEBUG) PRINT '(A,I6,A,2I6,A,F15.5)',' intlbfgs> Smallest overall motion for constraint ',NBEST,' atoms ', &
-  &                           CONI(NBEST),CONJ(NBEST),' distance=',DUMMY
+IF (DEBUG) PRINT '(A,I6,A,2I6,A,F15.5)',' INTLBFGS> SMALLEST OVERALL MOTION FOR CONSTRAINT ',NBEST,' ATOMS ', &
+  &                           CONI(NBEST),CONJ(NBEST),' DISTANCE=',DUMMY
 NACTIVE=2
 TURNONORDER(1:NATOMS)=0
 NTRIES(1:NATOMS)=1
@@ -311,8 +311,8 @@ CONDISTREFON(1)=CONDISTREF(NBEST)
 CONION(1)=CONI(NBEST)
 CONJON(1)=CONJ(NBEST)
 !
-! Don;t want to redistribute images before even taking a step, so don;t call CHECKSEP.
-! Must call CHECKREP to initialise NNREULSIVE, NREPI, NREPJ, etc. SEGV otherwise on second cycle!
+! DON;T WANT TO REDISTRIBUTE IMAGES BEFORE EVEN TAKING A STEP, SO DON;T CALL CHECKSEP.
+! MUST CALL CHECKREP TO INITIALISE NNREULSIVE, NREPI, NREPJ, ETC. SEGV OTHERWISE ON SECOND CYCLE!
 !
 
 CALL CHECKREP(INTIMAGE,XYZ,NOPT)
@@ -326,7 +326,7 @@ GLAST(1:D)=G(1:D)
 XSAVE(1:D)=X(1:D)
 
 IF (ETOTAL/INTIMAGE.LT.COLDFUSIONLIMIT) THEN
-   WRITE(*,'(A,2G20.10)') ' intlbfgs> Cold fusion diagnosed - step discarded, energy, limit=', &
+   WRITE(*,'(A,2G20.10)') ' INTLBFGS> COLD FUSION DIAGNOSED - STEP DISCARDED, ENERGY, LIMIT=', &
   &                       ETOTAL/INTIMAGE,COLDFUSIONLIMIT
    DEALLOCATE(CONI,CONJ,CONDISTREF,REPI,REPJ,NREPI,NREPJ,REPCUT,NREPCUT)
    DEALLOCATE(SAVEX,TRUEEE,GOODSAVE, EEETMP, MYGTMP, XSAVED, XSAVEC, XSAVE0, GTMP, &
@@ -337,20 +337,20 @@ IF (ETOTAL/INTIMAGE.LT.COLDFUSIONLIMIT) THEN
    RETURN
 ENDIF
 
-IF (DEBUG) WRITE(*,'(A6,A20,A20,A9,A9)') 'Iter','Energy per image','RMS Force','Step'
+IF (DEBUG) WRITE(*,'(A6,A20,A20,A9,A9)') 'ITER','ENERGY PER IMAGE','RMS FORCE','STEP'
 NSTEPSMAX=INTSTEPS1
 
 
-DO ! Main do loop with counter NITERDONE, initially set to one
+DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
 !
-!  Add next atom to active set if ADDATOM is true. 
-!  Constraints to atoms already in the active set are turned on
-!  and short-range repulsions to active atoms that are not distance constrained are turned on.
-!  *** OLD Find nearest atom to active set attached by a constraint
-!  *** NEW Find atom with most constraints to active set
-!  Turn on constraint terms for this atom with all previous members of the active set
-!  Add repulsions to non-constrained atoms in this set
-!  NTOADD is the number of atoms to add to the active set in each pass. 1 seems best!
+!  ADD NEXT ATOM TO ACTIVE SET IF ADDATOM IS TRUE. 
+!  CONSTRAINTS TO ATOMS ALREADY IN THE ACTIVE SET ARE TURNED ON
+!  AND SHORT-RANGE REPULSIONS TO ACTIVE ATOMS THAT ARE NOT DISTANCE CONSTRAINED ARE TURNED ON.
+!  *** OLD FIND NEAREST ATOM TO ACTIVE SET ATTACHED BY A CONSTRAINT
+!  *** NEW FIND ATOM WITH MOST CONSTRAINTS TO ACTIVE SET
+!  TURN ON CONSTRAINT TERMS FOR THIS ATOM WITH ALL PREVIOUS MEMBERS OF THE ACTIVE SET
+!  ADD REPULSIONS TO NON-CONSTRAINED ATOMS IN THIS SET
+!  NTOADD IS THE NUMBER OF ATOMS TO ADD TO THE ACTIVE SET IN EACH PASS. 1 SEEMS BEST!
 !
    NTOADD=1
 !  NTOADD=NATOMS-2  !!!! DJW
@@ -363,7 +363,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
       INVDTOACTIVE(1:NATOMS)=0.0D0
       SAVEX(D)=X(D)
       DO J2=1,NCONSTRAINT
-         IF (CONACTIVE(J2)) CYCLE   ! count new, inactive constraints
+         IF (CONACTIVE(J2)) CYCLE   ! COUNT NEW, INACTIVE CONSTRAINTS
          IF (ATOMACTIVE(CONI(J2))) THEN
             IF (.NOT.ATOMACTIVE(CONJ(J2))) THEN
                NCONTOACTIVE(CONJ(J2))=NCONTOACTIVE(CONJ(J2))+1
@@ -387,8 +387,8 @@ DO ! Main do loop with counter NITERDONE, initially set to one
 
       ENDDO
 !
-!  Choose NEWATOM stochastically. Bias towards atoms with the maximum constraints.
-!  Use a normalised probability and generate a random number between 0 and 1.
+!  CHOOSE NEWATOM STOCHASTICALLY. BIAS TOWARDS ATOMS WITH THE MAXIMUM CONSTRAINTS.
+!  USE A NORMALISED PROBABILITY AND GENERATE A RANDOM NUMBER BETWEEN 0 AND 1.
 !
       DUMMY2=0.0D0
       DO J2=1,NATOMS
@@ -396,36 +396,36 @@ DO ! Main do loop with counter NITERDONE, initially set to one
          IF (ATOMACTIVE(J2)) CYCLE
 !        DUMMY2=DUMMY2+((1.0D0*NCONTOACTIVE(J2))/(1.0D0*CONDISTREF(J2)*NTRIES(J2)))**4 
          DUMMY2=DUMMY2+((1.0D0*INVDTOACTIVE(J2))/(1.0D0*NTRIES(J2)))**4 
-!        PRINT '(A,I6,A,G20.10)',' intlbfgs> Unnormalised probability for choosing atom ',J2,' is ', &
+!        PRINT '(A,I6,A,G20.10)',' INTLBFGS> UNNORMALISED PROBABILITY FOR CHOOSING ATOM ',J2,' IS ', &
 ! &                ((1.0D0*INVDTOACTIVE(J2))/(1.0D0*NTRIES(J2)))**4
       ENDDO
 
       RANDOM=DUMMY2*DPRAND()
       DUMMY2=0.0D0
-      choosenew: DO J2=1,NATOMS
+      CHOOSENEW: DO J2=1,NATOMS
          IF (NCONTOACTIVE(J2).EQ.0) CYCLE
          IF (ATOMACTIVE(J2)) CYCLE
 !        DUMMY2=DUMMY2+((1.0D0*NCONTOACTIVE(J2))/(1.0D0*CONDISTREF(J2)*NTRIES(J2)))**4 
          DUMMY2=DUMMY2+((1.0D0*INVDTOACTIVE(J2))/(1.0D0*NTRIES(J2)))**4 
          IF (DUMMY2.GE.RANDOM) THEN
             NEWATOM=J2
-            IF (DEBUG) PRINT '(3(A,I6))',' intlbfgs> Choosing new active atom ',NEWATOM,' new constraints=', &
-  &                                       NCONTOACTIVE(J2),' maximum=',NBEST
-            EXIT choosenew
+            IF (DEBUG) PRINT '(3(A,I6))',' INTLBFGS> CHOOSING NEW ACTIVE ATOM ',NEWATOM,' NEW CONSTRAINTS=', &
+  &                                       NCONTOACTIVE(J2),' MAXIMUM=',NBEST
+            EXIT CHOOSENEW
          ENDIF
-      ENDDO choosenew
+      ENDDO CHOOSENEW
           
-      IF (NEWATOM*NBEST.EQ.0) THEN ! sanity check
-         PRINT '(A,I6,A,2I6)',' intlbfgs> ERROR *** new active atom not set'
+      IF (NEWATOM*NBEST.EQ.0) THEN ! SANITY CHECK
+         PRINT '(A,I6,A,2I6)',' INTLBFGS> ERROR *** NEW ACTIVE ATOM NOT SET'
          STOP
       ELSE
 !
-!  We need a sorted list of up to 3 active atoms, sorted according to how well the
-!  end point distance is preserved, even if they don't satisfy the constraint 
-!  condition. We want three atoms to use for a local axis system in the interpolation.
+!  WE NEED A SORTED LIST OF UP TO 3 ACTIVE ATOMS, SORTED ACCORDING TO HOW WELL THE
+!  END POINT DISTANCE IS PRESERVED, EVEN IF THEY DON'T SATISFY THE CONSTRAINT 
+!  CONDITION. WE WANT THREE ATOMS TO USE FOR A LOCAL AXIS SYSTEM IN THE INTERPOLATION.
 !
-!  Try sorting on the shortest average distances in the endpoint structures instead, to avoid
-!  problems with distant atoms acidentally having a well-preserved distance.
+!  TRY SORTING ON THE SHORTEST AVERAGE DISTANCES IN THE ENDPOINT STRUCTURES INSTEAD, TO AVOID
+!  PROBLEMS WITH DISTANT ATOMS ACIDENTALLY HAVING A WELL-PRESERVED DISTANCE.
 !
          NDFORNEWATOM=0
          BESTPRESERVEDD(1:NATOMS)=1.0D100
@@ -443,24 +443,24 @@ DO ! Main do loop with counter NITERDONE, initially set to one
                IF (DUMMY.LT.BESTPRESERVEDD(J2)) THEN
 !                 PRINT '(A,I6,G12.4,I6,G12.4)','J1,DUMMY < J2,BESTPRESERVEDD: ',J1,DUMMY,J2,BESTPRESERVEDD(J2)
                   DO J3=NDFORNEWATOM,J2+1,-1 
-!                    PRINT '(A,I6,A,I6,A,G12.4)',' moving diff and list from ',J3-1,' to ',J3, &
+!                    PRINT '(A,I6,A,I6,A,G12.4)',' MOVING DIFF AND LIST FROM ',J3-1,' TO ',J3, &
 !&                                               ' DIFF=',BESTPRESERVEDD(J3-1)
                      BESTPRESERVEDD(J3)=BESTPRESERVEDD(J3-1)
                      BESTPRESERVEDN(J3)=BESTPRESERVEDN(J3-1)
                   ENDDO
                   BESTPRESERVEDD(J2)=DUMMY
-!                 PRINT '(A,I6,A,G12.4)',' setting BESTPRESERVEDD element ',J2,' to ',DUMMY
+!                 PRINT '(A,I6,A,G12.4)',' SETTING BESTPRESERVEDD ELEMENT ',J2,' TO ',DUMMY
                   BESTPRESERVEDN(J2)=J1
-!                 PRINT '(A,I6,A,G12.4)',' setting BESTPRESERVEDN element ',J2,' to ',J1
+!                 PRINT '(A,I6,A,G12.4)',' SETTING BESTPRESERVEDN ELEMENT ',J2,' TO ',J1
                   GOTO 653
                ENDIF
             ENDDO
 653         CONTINUE
          ENDDO
          IF (DEBUG) THEN
-            PRINT '(A,I6,A,I6,A)',' intlbfgs> New active atom ',NEWATOM,' best preserved distances:'
+            PRINT '(A,I6,A,I6,A)',' INTLBFGS> NEW ACTIVE ATOM ',NEWATOM,' BEST PRESERVED DISTANCES:'
             PRINT '(20I6)',BESTPRESERVEDN(1:MIN(10,NDFORNEWATOM))
-            PRINT '(A,I6,A,I6,A)',' intlbfgs> sorted differences:'
+            PRINT '(A,I6,A,I6,A)',' INTLBFGS> SORTED DIFFERENCES:'
             PRINT '(10G12.4)',BESTPRESERVEDD(1:MIN(10,NDFORNEWATOM))
          ENDIF
          IF (FREEZENODEST) IMGFREEZE(1:INTIMAGE)=.FALSE.
@@ -481,34 +481,34 @@ DO ! Main do loop with counter NITERDONE, initially set to one
                IF (DUMMY.LT.BESTCLOSESTD(J2)) THEN
 !                 PRINT '(A,I6,G12.4,I6,G12.4)','J1,DUMMY < J2,BESTCLOSESTD: ',J1,DUMMY,J2,BESTCLOSESTD(J2)
                   DO J3=NCFORNEWATOM,J2+1,-1
-!                    PRINT '(A,I6,A,I6,A,G12.4)',' moving diff and list from ',J3-1,' to ',J3, &
+!                    PRINT '(A,I6,A,I6,A,G12.4)',' MOVING DIFF AND LIST FROM ',J3-1,' TO ',J3, &
 !&                                               ' DIFF=',BESTCLOSESTD(J3-1)
                      BESTCLOSESTD(J3)=BESTCLOSESTD(J3-1)
                      BESTCLOSESTN(J3)=BESTCLOSESTN(J3-1)
                   ENDDO
                   BESTCLOSESTD(J2)=DUMMY
-!                 PRINT '(A,I6,A,G12.4)',' setting BESTCLOSESTD element ',J2,' to ',DUMMY
+!                 PRINT '(A,I6,A,G12.4)',' SETTING BESTCLOSESTD ELEMENT ',J2,' TO ',DUMMY
                   BESTCLOSESTN(J2)=J1
-!                 PRINT '(A,I6,A,G12.4)',' setting BESTCLOSESTN element ',J2,' to ',J1
+!                 PRINT '(A,I6,A,G12.4)',' SETTING BESTCLOSESTN ELEMENT ',J2,' TO ',J1
                   GOTO 659
                ENDIF
             ENDDO
 659         CONTINUE
          ENDDO
          IF (DEBUG) THEN
-            PRINT '(A,I6,A,I6,A)',' intlbfgs> New active atom ',NEWATOM,' shortest average distances in endpoints:'
+            PRINT '(A,I6,A,I6,A)',' INTLBFGS> NEW ACTIVE ATOM ',NEWATOM,' SHORTEST AVERAGE DISTANCES IN ENDPOINTS:'
             PRINT '(20I6)',BESTCLOSESTN(1:MIN(10,NCFORNEWATOM))
-            PRINT '(A,I6,A,I6,A)',' intlbfgs> sorted differences:'
+            PRINT '(A,I6,A,I6,A)',' INTLBFGS> SORTED DIFFERENCES:'
             PRINT '(10G12.4)',BESTCLOSESTN(1:MIN(10,NCFORNEWATOM))
          ENDIF
 !
-!  Maintain a sorted list of active atoms that are constrained to the new atom, sorted
-!  according to their distance.
+!  MAINTAIN A SORTED LIST OF ACTIVE ATOMS THAT ARE CONSTRAINED TO THE NEW ATOM, SORTED
+!  ACCORDING TO THEIR DISTANCE.
 !
          NCONFORNEWATOM=0
          CONDIST(1:NATOMS)=1.0D100
-         IF (DEBUG) PRINT '(3(A,I6))',' intlbfgs> New active atom is number ',NEWATOM,' total=',NACTIVE+1, &
- &                        ' steps=',NITERDONE
+         IF (DEBUG) PRINT '(3(A,I6))',' INTLBFGS> NEW ACTIVE ATOM IS NUMBER ',NEWATOM,' TOTAL=',NACTIVE+1, &
+ &                        ' STEPS=',NITERDONE
          DO J1=1,NCONSTRAINT
             IF (CONACTIVE(J1)) CYCLE
             IF ((CONI(J1).EQ.NEWATOM).AND.(ATOMACTIVE(CONJ(J1))).OR.(CONJ(J1).EQ.NEWATOM).AND.(ATOMACTIVE(CONI(J1)))) THEN  
@@ -517,14 +517,14 @@ DO ! Main do loop with counter NITERDONE, initially set to one
 !                NITSTART(J1)=NITERDONE
 !                NCONSTRAINTON=NCONSTRAINTON+1
 ! !
-! ! The ...ON variables are not actually used in congrad.f90.
+! ! THE ...ON VARIABLES ARE NOT ACTUALLY USED IN CONGRAD.F90.
 ! !
 !                CONDISTREFLOCALON(NCONSTRAINTON)=CONDISTREFLOCAL(J1)
 !                CONDISTREFON(NCONSTRAINTON)=CONDISTREF(J1)
 !                CONION(NCONSTRAINTON)=CONI(J1)
 !                CONJON(NCONSTRAINTON)=CONJ(J1)
 ! 
-!                IF (DEBUG) PRINT '(A,I6,A,2I6)',' intlbfgs> Turning on constraint ',J1,' for atoms ',CONI(J1),CONJ(J1)
+!                IF (DEBUG) PRINT '(A,I6,A,2I6)',' INTLBFGS> TURNING ON CONSTRAINT ',J1,' FOR ATOMS ',CONI(J1),CONJ(J1)
                IF (NCONFORNEWATOM.EQ.1) THEN
                   CONDIST(1)=CONDISTREF(J1)
                   IF (CONI(J1).EQ.NEWATOM) CONLIST(1)=CONJ(J1)
@@ -534,30 +534,30 @@ DO ! Main do loop with counter NITERDONE, initially set to one
                   IF (CONDISTREF(J1).LT.CONDIST(J2)) THEN
 !                    PRINT '(A,I6,G12.4,I6,G12.4)','J1,CONDISTREF < J2,CONDIST: ',J1,CONDISTREF(J1),J2,CONDIST(J2)
                      DO J3=NCONFORNEWATOM,J2+1,-1
-!                       PRINT '(A,I6,A,I6,A,G12.4)',' moving dist and list from ',J3-1,' to ',J3,' CONDIST=',CONDIST(J3-1)
+!                       PRINT '(A,I6,A,I6,A,G12.4)',' MOVING DIST AND LIST FROM ',J3-1,' TO ',J3,' CONDIST=',CONDIST(J3-1)
                         CONDIST(J3)=CONDIST(J3-1)
                         CONLIST(J3)=CONLIST(J3-1)
                      ENDDO
                      CONDIST(J2)=CONDISTREF(J1)
-!                    PRINT '(A,I6,A,G12.4)',' setting condist element ',J2,' to ',CONDISTREF(J1)
+!                    PRINT '(A,I6,A,G12.4)',' SETTING CONDIST ELEMENT ',J2,' TO ',CONDISTREF(J1)
                      IF (CONI(J1).EQ.NEWATOM) CONLIST(J2)=CONJ(J1)
                      IF (CONJ(J1).EQ.NEWATOM) CONLIST(J2)=CONI(J1)
-!                    PRINT '(A,I6,A,G12.4)',' setting conlist element ',J2,' to ',CONLIST(J2)
+!                    PRINT '(A,I6,A,G12.4)',' SETTING CONLIST ELEMENT ',J2,' TO ',CONLIST(J2)
                      GOTO 654
                   ENDIF
                ENDDO 
                CONDIST(NCONFORNEWATOM)=CONDISTREF(J1)
-!              PRINT '(A,I6,A,G12.4)',' setting condist element ',NCONFORNEWATOM,' to ',CONDISTREF(J1)
+!              PRINT '(A,I6,A,G12.4)',' SETTING CONDIST ELEMENT ',NCONFORNEWATOM,' TO ',CONDISTREF(J1)
                IF (CONI(J1).EQ.NEWATOM) CONLIST(NCONFORNEWATOM)=CONJ(J1)
                IF (CONJ(J1).EQ.NEWATOM) CONLIST(NCONFORNEWATOM)=CONI(J1)
-!              PRINT '(A,I6,A,G12.4)',' setting conlist element ',NCONFORNEWATOM,' to ',CONLIST(NCONFORNEWATOM)
+!              PRINT '(A,I6,A,G12.4)',' SETTING CONLIST ELEMENT ',NCONFORNEWATOM,' TO ',CONLIST(NCONFORNEWATOM)
 654          CONTINUE
             ENDIF
          ENDDO 
          IF (DEBUG) THEN
-            PRINT '(A,I6,A,I6,A)',' intlbfgs> New active atom ',NEWATOM,' is constrained to ',NCONFORNEWATOM,' other active atoms:'
+            PRINT '(A,I6,A,I6,A)',' INTLBFGS> NEW ACTIVE ATOM ',NEWATOM,' IS CONSTRAINED TO ',NCONFORNEWATOM,' OTHER ACTIVE ATOMS:'
             PRINT '(20I6)',CONLIST(1:NCONFORNEWATOM)
-            PRINT '(A,I6,A,I6,A)',' intlbfgs> sorted distances:'
+            PRINT '(A,I6,A,I6,A)',' INTLBFGS> SORTED DISTANCES:'
             PRINT '(10G12.4)',CONDIST(1:NCONFORNEWATOM)
          ENDIF
          DO J1=1,MIN(MAXCONUSE,NCONFORNEWATOM)
@@ -566,30 +566,30 @@ DO ! Main do loop with counter NITERDONE, initially set to one
                      CONACTIVE(J2)=.TRUE.
                      NCONATOM(CONI(J2))=NCONATOM(CONI(J2))+1
                      NCONATOM(CONJ(J2))=NCONATOM(CONJ(J2))+1
-                     IF (DEBUG) PRINT '(A,I6,A,2I6)',' intlbfgs> Turning on constraint ',J2,' for atoms ',CONI(J2),CONJ(J2)
+                     IF (DEBUG) PRINT '(A,I6,A,2I6)',' INTLBFGS> TURNING ON CONSTRAINT ',J2,' FOR ATOMS ',CONI(J2),CONJ(J2)
                ELSE IF ((CONJ(J2).EQ.NEWATOM).AND.(CONI(J2).EQ.CONLIST(J1))) THEN
                      CONACTIVE(J2)=.TRUE.
                      NCONATOM(CONI(J2))=NCONATOM(CONI(J2))+1
                      NCONATOM(CONJ(J2))=NCONATOM(CONJ(J2))+1
-                     IF (DEBUG) PRINT '(A,I6,A,2I6)',' intlbfgs> Turning on constraint ',J2,' for atoms ',CONI(J2),CONJ(J2)
+                     IF (DEBUG) PRINT '(A,I6,A,2I6)',' INTLBFGS> TURNING ON CONSTRAINT ',J2,' FOR ATOMS ',CONI(J2),CONJ(J2)
                ENDIF
             ENDDO
          ENDDO
          DO J1=1,NATOMS
-            IF (.NOT.ATOMACTIVE(J1)) CYCLE ! identify active atoms
-            IF (ABS(J1-NEWATOM).LE.INTREPSEP) CYCLE ! no repulsion for atoms too close in sequence
+            IF (.NOT.ATOMACTIVE(J1)) CYCLE ! IDENTIFY ACTIVE ATOMS
+            IF (ABS(J1-NEWATOM).LE.INTREPSEP) CYCLE ! NO REPULSION FOR ATOMS TOO CLOSE IN SEQUENCE
             DO J2=1,NCONSTRAINT
 !
-!  With MAXCONUSE set to a finite value there could be constraints for the new atom that are
-!  not active. We don't want these to be changed to repulsion, surely?!
-!  Or perhaps we do need to do something with them?
+!  WITH MAXCONUSE SET TO A FINITE VALUE THERE COULD BE CONSTRAINTS FOR THE NEW ATOM THAT ARE
+!  NOT ACTIVE. WE DON'T WANT THESE TO BE CHANGED TO REPULSION, SURELY?!
+!  OR PERHAPS WE DO NEED TO DO SOMETHING WITH THEM?
 !
-               IF (.NOT.CONACTIVE(J2)) CYCLE ! identify active constraints 
+               IF (.NOT.CONACTIVE(J2)) CYCLE ! IDENTIFY ACTIVE CONSTRAINTS 
                IF (((CONI(J2).EQ.J1).AND.(CONJ(J2).EQ.NEWATOM)).OR.((CONJ(J2).EQ.J1).AND.(CONI(J2).EQ.NEWATOM))) GOTO 543
             ENDDO
             DMIN=1.0D100
             DMAX=-1.0D0
-            DO J2=1,INTIMAGE+2,INTIMAGE+1 ! only consider the end-point distances
+            DO J2=1,INTIMAGE+2,INTIMAGE+1 ! ONLY CONSIDER THE END-POINT DISTANCES
                DF=SQRT((XYZ((J2-1)*3*NATOMS+3*(NEWATOM-1)+1)-XYZ((J2-1)*3*NATOMS+3*(J1-1)+1))**2+ &
   &                    (XYZ((J2-1)*3*NATOMS+3*(NEWATOM-1)+2)-XYZ((J2-1)*3*NATOMS+3*(J1-1)+2))**2+ &
   &                    (XYZ((J2-1)*3*NATOMS+3*(NEWATOM-1)+3)-XYZ((J2-1)*3*NATOMS+3*(J1-1)+3))**2)
@@ -597,7 +597,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
                IF (DF.LT.DMIN) DMIN=DF
             ENDDO
 !
-! Use the minimum of the end point distances and INTCONSTRAINREPCUT for each contact.
+! USE THE MINIMUM OF THE END POINT DISTANCES AND INTCONSTRAINREPCUT FOR EACH CONTACT.
 !
             DMIN=MIN(DMIN-1.0D-3,INTCONSTRAINREPCUT)
             NREPULSIVE=NREPULSIVE+1
@@ -636,8 +636,8 @@ DO ! Main do loop with counter NITERDONE, initially set to one
             REPI(NREPULSIVE)=J1
             REPJ(NREPULSIVE)=NEWATOM
             REPCUT(NREPULSIVE)=DMIN
-            IF (DEBUG) PRINT '(A,I6,A,I6,A,F15.5)',' intlbfgs> Adding repulsion for new atom ',NEWATOM,' with atom ',J1, &
-  &                                                   ' cutoff=',DMIN
+            IF (DEBUG) PRINT '(A,I6,A,I6,A,F15.5)',' INTLBFGS> ADDING REPULSION FOR NEW ATOM ',NEWATOM,' WITH ATOM ',J1, &
+  &                                                   ' CUTOFF=',DMIN
 543         CONTINUE
          ENDDO
          ATOMACTIVE(NEWATOM)=.TRUE.
@@ -648,26 +648,26 @@ DO ! Main do loop with counter NITERDONE, initially set to one
             IF (ATOMACTIVE(J1)) NDUMMY=NDUMMY+1
          ENDDO
          IF (NDUMMY.NE.NACTIVE) THEN
-            PRINT '(A,I6)',' intlbfgs> ERROR *** inconsistency in number of active atoms. Should be ',NACTIVE
+            PRINT '(A,I6)',' INTLBFGS> ERROR *** INCONSISTENCY IN NUMBER OF ACTIVE ATOMS. SHOULD BE ',NACTIVE
             DO J1=1,NATOMS
-               IF (ATOMACTIVE(J1)) PRINT '(A,I6)',' active atom ',J1
+               IF (ATOMACTIVE(J1)) PRINT '(A,I6)',' ACTIVE ATOM ',J1
             ENDDO
             STOP
          ENDIF
 
          TURNONORDER(NACTIVE)=NEWATOM
 !
-! Initial guess for new active atom position. This is crucial for success in INTCONSTRAINT schemes!
+! INITIAL GUESS FOR NEW ACTIVE ATOM POSITION. THIS IS CRUCIAL FOR SUCCESS IN INTCONSTRAINT SCHEMES!
 !
          ESAVED=1.0D100
          ESAVE0=1.0D100
          ESAVEC=1.0D100
          IF (NCONFORNEWATOM.GE.3) THEN
 !
-! Move the new atom consistently in the local environment of its three nearest actively constrained atoms.
-! Make a local orthogonal coordinate system and use constant components in this basis.
+! MOVE THE NEW ATOM CONSISTENTLY IN THE LOCAL ENVIRONMENT OF ITS THREE NEAREST ACTIVELY CONSTRAINED ATOMS.
+! MAKE A LOCAL ORTHOGONAL COORDINATE SYSTEM AND USE CONSTANT COMPONENTS IN THIS BASIS.
 !
-            IF (DEBUG) PRINT '(A)',' intlbfgs> initial guess from closest three constrained active atoms'
+            IF (DEBUG) PRINT '(A)',' INTLBFGS> INITIAL GUESS FROM CLOSEST THREE CONSTRAINED ACTIVE ATOMS'
             VEC1(1:3)=XYZ(3*(CONLIST(2)-1)+1:3*(CONLIST(2)-1)+3)-XYZ(3*(CONLIST(1)-1)+1:3*(CONLIST(1)-1)+3)
             DUMMY=SQRT(VEC1(1)**2+VEC1(2)**2+VEC1(3)**2)
             IF (DUMMY.NE.0.0D0) VEC1(1:3)=VEC1(1:3)/DUMMY
@@ -705,7 +705,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
                XYZ((J1-1)*3*NATOMS+3*(NEWATOM-1)+1:(J1-1)*3*NATOMS+3*(NEWATOM-1)+3)= &
   &            XYZ((J1-1)*3*NATOMS+3*(CONLIST(1)-1)+1:(J1-1)*3*NATOMS+3*(CONLIST(1)-1)+3)+C1*VEC1(1:3)+C2*VEC2(1:3)+C3*VEC3(1:3)
             ENDDO
-            CALL CHECKREP(INTIMAGE,XYZ,NOPT) ! set up repulsive neighbour list
+            CALL CHECKREP(INTIMAGE,XYZ,NOPT) ! SET UP REPULSIVE NEIGHBOUR LIST
             IF (CHECKCONINT) THEN
                CALL CONGRAD2(NMAXINT,NMININT,ETOTAL,XYZ,GGG,EEE,IMGFREEZE,RMS)
             ELSE
@@ -718,9 +718,9 @@ DO ! Main do loop with counter NITERDONE, initially set to one
          ENDIF
          IF (NDFORNEWATOM.GE.3) THEN
 !
-! Choose three atoms from the BESTPRESERVEDN list at random with bias towards the 
-! start of the list. Let the relative weight for position i be 1/i**2 and calculate
-! the sum to normalise.
+! CHOOSE THREE ATOMS FROM THE BESTPRESERVEDN LIST AT RANDOM WITH BIAS TOWARDS THE 
+! START OF THE LIST. LET THE RELATIVE WEIGHT FOR POSITION I BE 1/I**2 AND CALCULATE
+! THE SUM TO NORMALISE.
 !
             DUMMY=0.0D0
             DO J1=1,NDFORNEWATOM
@@ -737,7 +737,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
 !                 DUMMY2=DUMMY2+1.0D0/(1.0D0*BESTPRESERVEDD(J1))
                   DUMMY2=DUMMY2+1.0D0/(1.0D0*J1**2)
                   IF (DUMMY2.GE.RAN1) THEN
-                     IF ((J1.EQ.N1).OR.(J1.EQ.N2)) EXIT ! already chosen
+                     IF ((J1.EQ.N1).OR.(J1.EQ.N2)) EXIT ! ALREADY CHOSEN
                      IF (N1.EQ.0) THEN
                         N1=J1
                         EXIT
@@ -751,17 +751,17 @@ DO ! Main do loop with counter NITERDONE, initially set to one
                   ENDIF
                ENDDO
             ENDDO
-            IF (DEBUG) PRINT '(A,3I6,A)',' intlbfgs> choosing positions ',N1,N2,N3,' in best preserved list'
-            IF (DEBUG) PRINT '(A,3I6)',' intlbfgs> atoms are ',BESTPRESERVEDN(N1),BESTPRESERVEDN(N2),BESTPRESERVEDN(N3)
-!           IF (DEBUG) PRINT '(A,3I6,A)',' intlbfgs> full list has length ',NDFORNEWATOM
+            IF (DEBUG) PRINT '(A,3I6,A)',' INTLBFGS> CHOOSING POSITIONS ',N1,N2,N3,' IN BEST PRESERVED LIST'
+            IF (DEBUG) PRINT '(A,3I6)',' INTLBFGS> ATOMS ARE ',BESTPRESERVEDN(N1),BESTPRESERVEDN(N2),BESTPRESERVEDN(N3)
+!           IF (DEBUG) PRINT '(A,3I6,A)',' INTLBFGS> FULL LIST HAS LENGTH ',NDFORNEWATOM
 !           IF (DEBUG) PRINT '(20I6)',BESTPRESERVEDN(1:NDFORNEWATOM)
 
 !
-! Move the new atom consistently in the local environment of the three active atoms with the
-! best preserved absolute distances or the shortest average distances in the end points.
-! Check the energies and compare linear interpolation as well, then choose the interpolation
-! with the lowest energy.
-! Make a local orthogonal coordinate system and use constant components in this basis.
+! MOVE THE NEW ATOM CONSISTENTLY IN THE LOCAL ENVIRONMENT OF THE THREE ACTIVE ATOMS WITH THE
+! BEST PRESERVED ABSOLUTE DISTANCES OR THE SHORTEST AVERAGE DISTANCES IN THE END POINTS.
+! CHECK THE ENERGIES AND COMPARE LINEAR INTERPOLATION AS WELL, THEN CHOOSE THE INTERPOLATION
+! WITH THE LOWEST ENERGY.
+! MAKE A LOCAL ORTHOGONAL COORDINATE SYSTEM AND USE CONSTANT COMPONENTS IN THIS BASIS.
 !
             VEC1(1:3)=XYZ(3*(BESTPRESERVEDN(N2)-1)+1:3*(BESTPRESERVEDN(N2)-1)+3) &
   &                  -XYZ(3*(BESTPRESERVEDN(N1)-1)+1:3*(BESTPRESERVEDN(N1)-1)+3)
@@ -804,7 +804,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
   &                   C1*VEC1(1:3)+C2*VEC2(1:3)+C3*VEC3(1:3)
             ENDDO
 
-            CALL CHECKREP(INTIMAGE,XYZ,NOPT) ! set up repulsive neighbour list
+            CALL CHECKREP(INTIMAGE,XYZ,NOPT) ! SET UP REPULSIVE NEIGHBOUR LIST
             IF (CHECKCONINT) THEN
                CALL CONGRAD2(NMAXINT,NMININT,ETOTAL,XYZ,GGG,EEE,IMGFREEZE,RMS)
             ELSE
@@ -818,9 +818,9 @@ DO ! Main do loop with counter NITERDONE, initially set to one
 
          IF (NCFORNEWATOM.GE.3) THEN
 !
-! Choose three atoms from the BESTCLOSEST list at random with bias towards the
-! start of the list. Let the relative weight for position i be 1/i**2 and calculate
-! the sum to normalise.
+! CHOOSE THREE ATOMS FROM THE BESTCLOSEST LIST AT RANDOM WITH BIAS TOWARDS THE
+! START OF THE LIST. LET THE RELATIVE WEIGHT FOR POSITION I BE 1/I**2 AND CALCULATE
+! THE SUM TO NORMALISE.
 !
             DUMMY=0.0D0
             DO J1=1,NCFORNEWATOM
@@ -837,7 +837,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
 !                 DUMMY2=DUMMY2+1.0D0/(1.0D0*BESTCLOSESTD(J1))
                   DUMMY2=DUMMY2+1.0D0/(1.0D0*J1**2)
                   IF (DUMMY2.GE.RAN1) THEN
-                     IF ((J1.EQ.N1).OR.(J1.EQ.N2)) EXIT ! already chosen
+                     IF ((J1.EQ.N1).OR.(J1.EQ.N2)) EXIT ! ALREADY CHOSEN
                      IF (N1.EQ.0) THEN
                         N1=J1
                         EXIT
@@ -851,7 +851,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
                   ENDIF
                ENDDO
             ENDDO
-            IF (DEBUG) PRINT '(A,3I6,A)',' intlbfgs> choosing positions ',N1,N2,N3,' in closest list'
+            IF (DEBUG) PRINT '(A,3I6,A)',' INTLBFGS> CHOOSING POSITIONS ',N1,N2,N3,' IN CLOSEST LIST'
 
             VEC1(1:3)=XYZ(3*(BESTCLOSESTN(N2)-1)+1:3*(BESTCLOSESTN(N2)-1)+3)-XYZ(3*(BESTCLOSESTN(N1)-1)+1:3*(BESTCLOSESTN(N1)-1)+3)
             DUMMY=SQRT(VEC1(1)**2+VEC1(2)**2+VEC1(3)**2)
@@ -892,7 +892,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
   &                   C1*VEC1(1:3)+C2*VEC2(1:3)+C3*VEC3(1:3)
             ENDDO
 
-            CALL CHECKREP(INTIMAGE,XYZ,NOPT) ! set up repulsive neighbour list
+            CALL CHECKREP(INTIMAGE,XYZ,NOPT) ! SET UP REPULSIVE NEIGHBOUR LIST
             IF (CHECKCONINT) THEN
                CALL CONGRAD2(NMAXINT,NMININT,ETOTAL,XYZ,GGG,EEE,IMGFREEZE,RMS)
             ELSE
@@ -904,10 +904,10 @@ DO ! Main do loop with counter NITERDONE, initially set to one
             ENDDO
          ENDIF
 !
-! Standard linear interpolation, with constraint distance scaled by FRAC.
-! Works for FRAC as small as 0.1 with repulsion turned off.
-! We use an appropriately weighted displacement from atom CONLIST(1) using the displacements
-! in the two end points.
+! STANDARD LINEAR INTERPOLATION, WITH CONSTRAINT DISTANCE SCALED BY FRAC.
+! WORKS FOR FRAC AS SMALL AS 0.1 WITH REPULSION TURNED OFF.
+! WE USE AN APPROPRIATELY WEIGHTED DISPLACEMENT FROM ATOM CONLIST(1) USING THE DISPLACEMENTS
+! IN THE TWO END POINTS.
 !
          FRAC=1.0D0
          DO J1=2,INTIMAGE+1
@@ -921,30 +921,30 @@ DO ! Main do loop with counter NITERDONE, initially set to one
  &            +(INTIMAGE-J1+2)*FRAC*(XYZ(3*(NEWATOM-1)+3)-XYZ(3*(CONLIST(1)-1)+3))/(INTIMAGE+1) &
  &   +(J1-1)*(XYZ(3*NATOMS*(INTIMAGE+1)+3*(NEWATOM-1)+3)-XYZ(3*NATOMS*(INTIMAGE+1)+3*(CONLIST(1)-1)+3))/(INTIMAGE+1)
          ENDDO
-         CALL CHECKREP(INTIMAGE,XYZ,NOPT) ! set up repulsive neighbour list
+         CALL CHECKREP(INTIMAGE,XYZ,NOPT) ! SET UP REPULSIVE NEIGHBOUR LIST
          IF (CHECKCONINT) THEN
             CALL CONGRAD2(NMAXINT,NMININT,ETOTAL,XYZ,GGG,EEE,IMGFREEZE,RMS)
          ELSE
             CALL CONGRAD(NMAXINT,NMININT,ETOTAL,XYZ,GGG,EEE,IMGFREEZE,RMS)
          ENDIF
-         IF (DEBUG) PRINT '(A,4G15.5)',' intlbfgs> energies for constrained, preserved, closest, and linear schemes=', &
+         IF (DEBUG) PRINT '(A,4G15.5)',' INTLBFGS> ENERGIES FOR CONSTRAINED, PRESERVED, CLOSEST, AND LINEAR SCHEMES=', &
   &                 ESAVE0,ESAVED,ESAVEC,ETOTAL
          IF ((ETOTAL.LT.ESAVEC).AND.(ETOTAL.LT.ESAVED).AND.(ETOTAL.LT.ESAVE0)) THEN
-            IF (DEBUG) PRINT '(A,2G20.10)',' intlbfgs> lowest energy from linear interpolation'
+            IF (DEBUG) PRINT '(A,2G20.10)',' INTLBFGS> LOWEST ENERGY FROM LINEAR INTERPOLATION'
          ELSE IF ((ESAVEC.LT.ESAVED).AND.(ESAVEC.LT.ESAVE0)) THEN
-            IF (DEBUG) PRINT '(A,2G20.10)',' intlbfgs> lowest energy from interpolation using closest atoms'
+            IF (DEBUG) PRINT '(A,2G20.10)',' INTLBFGS> LOWEST ENERGY FROM INTERPOLATION USING CLOSEST ATOMS'
             DO J1=2,INTIMAGE+1
                XYZ((J1-1)*3*NATOMS+3*(NEWATOM-1)+1:(J1-1)*3*NATOMS+3*(NEWATOM-1)+3)=XSAVEC(1:3,J1)
             ENDDO
             ETOTAL=ESAVEC
          ELSE IF (ESAVED.LT.ESAVE0) THEN
-            IF (DEBUG) PRINT '(A,2G20.10)',' intlbfgs> lowest energy from interpolation using preserved distances'
+            IF (DEBUG) PRINT '(A,2G20.10)',' INTLBFGS> LOWEST ENERGY FROM INTERPOLATION USING PRESERVED DISTANCES'
             DO J1=2,INTIMAGE+1
                XYZ((J1-1)*3*NATOMS+3*(NEWATOM-1)+1:(J1-1)*3*NATOMS+3*(NEWATOM-1)+3)=XSAVED(1:3,J1)
             ENDDO
             ETOTAL=ESAVED
          ELSE 
-            IF (DEBUG) PRINT '(A,2G20.10)',' intlbfgs> lowest energy from interpolation using closest constraints'
+            IF (DEBUG) PRINT '(A,2G20.10)',' INTLBFGS> LOWEST ENERGY FROM INTERPOLATION USING CLOSEST CONSTRAINTS'
             DO J1=2,INTIMAGE+1
                XYZ((J1-1)*3*NATOMS+3*(NEWATOM-1)+1:(J1-1)*3*NATOMS+3*(NEWATOM-1)+3)=XSAVE0(1:3,J1)
             ENDDO
@@ -953,9 +953,9 @@ DO ! Main do loop with counter NITERDONE, initially set to one
       ENDIF
       NADDED=NADDED+1
       IF (NADDED.LT.NTOADD) GOTO 542
-      CALL CHECKREP(INTIMAGE,XYZ,NOPT) ! set up repulsive neighbour list
+      CALL CHECKREP(INTIMAGE,XYZ,NOPT) ! SET UP REPULSIVE NEIGHBOUR LIST
 !
-! need a new gradient since the active atom has changed !
+! NEED A NEW GRADIENT SINCE THE ACTIVE ATOM HAS CHANGED !
 !
       IF (CHECKCONINT) THEN
          CALL CONGRAD2(NMAXINT,NMININT,ETOTAL,XYZ,GGG,EEE,IMGFREEZE,RMS)
@@ -980,16 +980,16 @@ DO ! Main do loop with counter NITERDONE, initially set to one
         YS=DOT_PRODUCT( GDIF(NPT/D,:), SEARCHSTEP(NPT/D,:)  )
         IF (YS==0.0D0) YS=1.0D0
     
-        ! Update estimate of diagonal inverse Hessian elements.
-        ! We divide by both YS and YY at different points, so they had better not be zero!
+        ! UPDATE ESTIMATE OF DIAGONAL INVERSE HESSIAN ELEMENTS.
+        ! WE DIVIDE BY BOTH YS AND YY AT DIFFERENT POINTS, SO THEY HAD BETTER NOT BE ZERO!
 
         YY=DOT_PRODUCT( GDIF(NPT/D,:) , GDIF(NPT/D,:) )
         IF (YY==0.0D0) YY=1.0D0
 !       DIAG = ABS(YS/YY)
         DIAG = YS/YY
       
-        ! COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980, "Updating quasi-Newton matrices with limited storage",
-        ! Mathematics of Computation, Vol.35, No.151, pp. 773-782
+        ! COMPUTE -H*G USING THE FORMULA GIVEN IN: NOCEDAL, J. 1980, "UPDATING QUASI-NEWTON MATRICES WITH LIMITED STORAGE",
+        ! MATHEMATICS OF COMPUTATION, VOL.35, NO.151, PP. 773-782
         CP= POINT; IF (POINT==0) CP = INTMUPDATE
         RHO1(CP)=1.0D0/YS
         GTMP(1:D) = -G(1:D)
@@ -1018,27 +1018,27 @@ DO ! Main do loop with counter NITERDONE, initially set to one
         STP(1:D) = 1.0D0
    ENDIF MAIN
 
-   !  Store the new search direction
+   !  STORE THE NEW SEARCH DIRECTION
    IF (NITERDONE.GT.1) SEARCHSTEP(POINT,1:D)=GTMP(1:D)
       
 !
-! If the number of images has changed since G was declared then G is not the same
-! size as Gtmp and Dot_Product cannot be used.
+! IF THE NUMBER OF IMAGES HAS CHANGED SINCE G WAS DECLARED THEN G IS NOT THE SAME
+! SIZE AS GTMP AND DOT_PRODUCT CANNOT BE USED.
 !
-!  IF (Dot_Product(G,Gtmp)/SQRT( Dot_Product(G,G)*Dot_Product(Gtmp,Gtmp) ) > 0.0D0) THEN
+!  IF (DOT_PRODUCT(G,GTMP)/SQRT( DOT_PRODUCT(G,G)*DOT_PRODUCT(GTMP,GTMP) ) > 0.0D0) THEN
 !
-!  Separate sqrt;s to avoid overflow.
+!  SEPARATE SQRT;S TO AVOID OVERFLOW.
 !
    IF (DDOT(D,G,1,GTMP,1)/MAX(1.0D-100,SQRT( DDOT(D,G,1,G,1))*SQRT(DDOT(D,GTMP,1,GTMP,1)) ) > 0.0D0) THEN
-        IF (DEBUG) PRINT*,'Search direction has positive projection onto gradient - reversing step'
+        IF (DEBUG) PRINT*,'SEARCH DIRECTION HAS POSITIVE PROJECTION ONTO GRADIENT - REVERSING STEP'
         GTMP(1:D)=-GTMP(1:D)
         SEARCHSTEP(POINT,1:D)=GTMP(1:D)
    ENDIF
    GTMP(1:D)=G(1:D)
 
-!  We should apply the maximum LBFGS step to each image separately.
-!  However, using different scale factors for different images leads to huge
-!  discontinuities! Now take the minimum scale factor for all images. DJW 26/11/07
+!  WE SHOULD APPLY THE MAXIMUM LBFGS STEP TO EACH IMAGE SEPARATELY.
+!  HOWEVER, USING DIFFERENT SCALE FACTORS FOR DIFFERENT IMAGES LEADS TO HUGE
+!  DISCONTINUITIES! NOW TAKE THE MINIMUM SCALE FACTOR FOR ALL IMAGES. DJW 26/11/07
 
    STPMIN=1.0D0
    DO J2=1,INTIMAGE
@@ -1048,11 +1048,11 @@ DO ! Main do loop with counter NITERDONE, initially set to one
            STP(NOPT*(J2-1)+1:NOPT*J2) = MAXINTBFGS/STEPIMAGE(J2)
            STPMIN=MIN(STPMIN,STP(NOPT*(J2-1)+1))
       ENDIF
-!     PRINT '(A,I8,3G20.10)',' image,initial step size,STP,prod=',J2,DUMMY,STP(NOPT*(J2-1)+1),STEPIMAGE(J2)*STP(NOPT*(J2-1)+1)
+!     PRINT '(A,I8,3G20.10)',' IMAGE,INITIAL STEP SIZE,STP,PROD=',J2,DUMMY,STP(NOPT*(J2-1)+1),STEPIMAGE(J2)*STP(NOPT*(J2-1)+1)
    ENDDO
    STP(1:D)=STPMIN
 
-! EFK: decide whether to freeze some nodes
+! EFK: DECIDE WHETHER TO FREEZE SOME NODES
    IF (FREEZENODEST) THEN
       TOTGNORM=SQRT(DOT_PRODUCT(G(1:NOPT*INTIMAGE),G(1:NOPT*INTIMAGE))/INTIMAGE)
       NIMAGEFREEZE=0
@@ -1061,7 +1061,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
          IMGFREEZE(IM)=.FALSE.
          IF (TOTGNORM.NE.0.0D0) THEN
             IF (TESTG/TOTGNORM.LT.FREEZETOL) THEN
-!              IF (DEBUG) PRINT '(A,I6,2G20.10)', ' intlbfgs> Freezing image: ', IM, TESTG, TOTGNORM
+!              IF (DEBUG) PRINT '(A,I6,2G20.10)', ' INTLBFGS> FREEZING IMAGE: ', IM, TESTG, TOTGNORM
                IMGFREEZE(IM)=.TRUE.
                STEPIMAGE(IM)=0.0D0
                NIMAGEFREEZE=NIMAGEFREEZE+1
@@ -1069,9 +1069,9 @@ DO ! Main do loop with counter NITERDONE, initially set to one
             ENDIF
          ENDIF
       ENDDO
-      IF (DEBUG) PRINT '(2(A,I6))', ' intlbfgs> Number of frozen images=',NIMAGEFREEZE,' / ',INTIMAGE
+      IF (DEBUG) PRINT '(2(A,I6))', ' INTLBFGS> NUMBER OF FROZEN IMAGES=',NIMAGEFREEZE,' / ',INTIMAGE
    ENDIF
-   !  We now have the proposed step - update geometry and calculate new gradient
+   !  WE NOW HAVE THE PROPOSED STEP - UPDATE GEOMETRY AND CALCULATE NEW GRADIENT
    NDECREASE=0
 20 X(1:D) = X(1:D) + STP(1:D)*SEARCHSTEP(POINT,1:D)
 
@@ -1097,11 +1097,11 @@ DO ! Main do loop with counter NITERDONE, initially set to one
                DMIN=DUMMY
                JMIN=J1
             ENDIF
-            IF (DEBUG) PRINT '(A,I6,A,I6,A,G20.10)',' intlbfgs> distance between images ', &
-  &                                                  J1,' and ',J1+1,' is ',DUMMY
+            IF (DEBUG) PRINT '(A,I6,A,I6,A,G20.10)',' INTLBFGS> DISTANCE BETWEEN IMAGES ', &
+  &                                                  J1,' AND ',J1+1,' IS ',DUMMY
          ENDDO
          IF ((DMAX.GT.IMSEPMAX).AND.(INTIMAGE.LT.MAXINTIMAGE)) THEN
-            PRINT '(A,I6,A,I6)',' intlbfgs> Add an image between ',JMAX,' and ',JMAX+1
+            PRINT '(A,I6,A,I6)',' INTLBFGS> ADD AN IMAGE BETWEEN ',JMAX,' AND ',JMAX+1
             ALLOCATE(DPTMP(3*NATOMS*(INTIMAGE+2)))
             DPTMP(1:3*NATOMS*(INTIMAGE+2))=XYZ(1:3*NATOMS*(INTIMAGE+2))
             DEALLOCATE(XYZ)
@@ -1111,9 +1111,9 @@ DO ! Main do loop with counter NITERDONE, initially set to one
   &                                               + DPTMP(3*NATOMS*JMAX+1:3*NATOMS*(JMAX+1)))/2.0D0
             XYZ(3*NATOMS*(JMAX+1)+1:3*NATOMS*(INTIMAGE+3))=DPTMP(3*NATOMS*JMAX+1:3*NATOMS*(INTIMAGE+2))
 !
-! Save step-taking memories in SEARCHSTEP and GDIF.
-! These arrays run from 0 to INTMUPDATE over memories and
-! 1:NOPT*INTIMAGE over only the variable images.
+! SAVE STEP-TAKING MEMORIES IN SEARCHSTEP AND GDIF.
+! THESE ARRAYS RUN FROM 0 TO INTMUPDATE OVER MEMORIES AND
+! 1:NOPT*INTIMAGE OVER ONLY THE VARIABLE IMAGES.
 !
             DEALLOCATE(DPTMP)
             ALLOCATE(D2TMP(0:INTMUPDATE,1:NOPT*INTIMAGE))
@@ -1178,7 +1178,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
             ENDIF
          ELSEIF ((DMIN.LT.IMSEPMIN).AND.(INTIMAGE.GT.1)) THEN
             IF (JMIN.EQ.1) JMIN=2
-            PRINT '(A,I6,A,I6)',' intlbfgs> Remove image ',JMIN
+            PRINT '(A,I6,A,I6)',' INTLBFGS> REMOVE IMAGE ',JMIN
             ALLOCATE(DPTMP(3*NATOMS*(INTIMAGE+2)))
             DPTMP(1:3*NATOMS*(INTIMAGE+2))=XYZ(1:3*NATOMS*(INTIMAGE+2))
             DEALLOCATE(XYZ)
@@ -1188,9 +1188,9 @@ DO ! Main do loop with counter NITERDONE, initially set to one
 
             DEALLOCATE(DPTMP)
 !
-! Save step-taking memories in SEARCHSTEP and GDIF.
-! These arrays run from 0 to INTMUPDATE over memories and
-! 1:NOPT*INTIMAGE over only the variable images.
+! SAVE STEP-TAKING MEMORIES IN SEARCHSTEP AND GDIF.
+! THESE ARRAYS RUN FROM 0 TO INTMUPDATE OVER MEMORIES AND
+! 1:NOPT*INTIMAGE OVER ONLY THE VARIABLE IMAGES.
 !
             ALLOCATE(D2TMP(0:INTMUPDATE,1:NOPT*INTIMAGE))
             D2TMP(0:INTMUPDATE,1:NOPT*INTIMAGE)=SEARCHSTEP(0:INTMUPDATE,1:NOPT*INTIMAGE)
@@ -1257,7 +1257,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
             CALL CONGRAD(NMAXINT,NMININT,ETOTAL,XYZ,GGG,EEE,IMGFREEZE,RMS)
          ENDIF
       ENDIF
-      IF ((ETOTAL-EOLD.LT.1.0D100).OR.ADDATOM) THEN ! MAXERISE effectively set to 1.0D100 here
+      IF ((ETOTAL-EOLD.LT.1.0D100).OR.ADDATOM) THEN ! MAXERISE EFFECTIVELY SET TO 1.0D100 HERE
 !     IF ((ETOTAL-EOLD.LT.2.0D-1).OR.ADDATOM) THEN 
          EOLD=ETOTAL
          GLAST(1:D)=G(1:D)
@@ -1266,30 +1266,30 @@ DO ! Main do loop with counter NITERDONE, initially set to one
          NDECREASE=NDECREASE+1
          IF (NDECREASE.GT.5) THEN
             NFAIL=NFAIL+1
-            WRITE(*,'(A,I6)') ' intlbfgs> WARNING *** in lbfgs cannot find a lower energy, NFAIL=',NFAIL
+            WRITE(*,'(A,I6)') ' INTLBFGS> WARNING *** IN LBFGS CANNOT FIND A LOWER ENERGY, NFAIL=',NFAIL
             X(1:D)=XSAVE(1:D)
             G(1:D)=GLAST(1:D)
          ELSE
             X(1:D)=XSAVE(1:D)
             G(1:D)=GLAST(1:D)
             STP(1:D)=STP(1:D)/10.0D0
-            WRITE(*,'(A,G25.15,A,G25.15,A)') ' intlbfgs> energy increased from ',EOLD,' to ',ETOTAL, &
-     &          ' decreasing step size'
+            WRITE(*,'(A,G25.15,A,G25.15,A)') ' INTLBFGS> ENERGY INCREASED FROM ',EOLD,' TO ',ETOTAL, &
+     &          ' DECREASING STEP SIZE'
             GOTO 20
          ENDIF
       ENDIF
       ADDATOM=.FALSE.
-   ELSE ! combine constraint and true potentials
+   ELSE ! COMBINE CONSTRAINT AND TRUE POTENTIALS
 !     IF ((RMS.LT.INTRMSTOL*1.0D10).AND.(MOD(NITERDONE,10).EQ.0).AND.(NSTEPSMAX-NITERDONE.GT.100)) &
 ! &               CALL CHECKSEP(NMAXINT,NMININT,INTIMAGE,XYZ,NOPT)
 
 !!!
 !
-! Check that MAKE_CONPOT produces the same constraints and repulsions - this is to debug MAKE_CONPOT
+! CHECK THAT MAKE_CONPOT PRODUCES THE SAME CONSTRAINTS AND REPULSIONS - THIS IS TO DEBUG MAKE_CONPOT
 !
 !     MINCOORDS(1,1:NOPT)=XYZ(1:NOPT)
 !     MINCOORDS(2,1:NOPT)=XYZ(NOPT*(INTIMAGE+1)+1:NOPT*(INTIMAGE+2))
-!     PRINT '(A)',' intlbfgs> Before make_conpot'
+!     PRINT '(A)',' INTLBFGS> BEFORE MAKE_CONPOT'
 !     CALL CHECKREP(INTIMAGE,XYZ,NOPT)
 !     DO J2=1,NCONSTRAINT
 !        PRINT '(A,I6,L5,2I6,2F20.10)','J2,CONACTIVE,CONI,CONJ,CONDISTREF,CONDISTREFLOCAL=', &
@@ -1301,7 +1301,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
 !     DO J2=1,NNREPULSIVE
 !        PRINT '(A,3I6,F20.10)','J2,NREPI,NREPJ,NREPCUT=',J2,NREPI(J2),NREPJ(J2),NREPCUT(J2)
 !     ENDDO
-!     PRINT '(A)',' intlbfgs> Calling make_conpot'
+!     PRINT '(A)',' INTLBFGS> CALLING MAKE_CONPOT'
 !     CALL MAKE_CONPOT(2,MINCOORDS)
 !     CALL CHECKREP(INTIMAGE,XYZ,NOPT)
 !     DO J2=1,NCONSTRAINT
@@ -1335,10 +1335,10 @@ DO ! Main do loop with counter NITERDONE, initially set to one
       G(1:D)=USEFRAC*MYGTMP(1:D)+(1.0D0-USEFRAC)*G(1:D)
       EEE(1:INTIMAGE+2)=USEFRAC*EEETMP(1:INTIMAGE+2)+(1.0D0-USEFRAC)*EEE(1:INTIMAGE+2)
 !     USEFRAC=USEFRAC+INTCONFRAC
-      IF (USEFRAC.GE.1.0D0) PRINT '(A,I6)',' intlbfgs> switching off constraint potential completely at step ',NITERDONE
+      IF (USEFRAC.GE.1.0D0) PRINT '(A,I6)',' INTLBFGS> SWITCHING OFF CONSTRAINT POTENTIAL COMPLETELY AT STEP ',NITERDONE
    ENDIF
    IF (ETOTAL/INTIMAGE.LT.COLDFUSIONLIMIT) THEN
-      WRITE(*,'(A,2G20.10)') ' intlbfgs> Cold fusion diagnosed - step discarded, energy, limit=',ETOTAL/INTIMAGE,COLDFUSIONLIMIT
+      WRITE(*,'(A,2G20.10)') ' INTLBFGS> COLD FUSION DIAGNOSED - STEP DISCARDED, ENERGY, LIMIT=',ETOTAL/INTIMAGE,COLDFUSIONLIMIT
       DEALLOCATE(CONI,CONJ,CONDISTREF,REPI,REPJ,NREPI,NREPJ,REPCUT,NREPCUT)
       DEALLOCATE(SAVEX,TRUEEE,GOODSAVE, EEETMP, MYGTMP, XSAVED, XSAVEC, XSAVE0, GTMP, &
   &              DIAG, STP, SEARCHSTEP, GDIF,GLAST, XSAVE, XYZ, GGG, CHECKG, IMGFREEZE, EEE, STEPIMAGE)
@@ -1351,54 +1351,54 @@ DO ! Main do loop with counter NITERDONE, initially set to one
    STEPTOT = SUM(STEPIMAGE)/INTIMAGE
 
    IF (DEBUG) THEN
-      WRITE(*,'(A,I6,2G20.10,G20.10,I8)') ' intlbfgs> steps: ',NITERDONE,ETOTAL/INTIMAGE,RMS,STEPTOT,NACTIVE
+      WRITE(*,'(A,I6,2G20.10,G20.10,I8)') ' INTLBFGS> STEPS: ',NITERDONE,ETOTAL/INTIMAGE,RMS,STEPTOT,NACTIVE
       CALL FLUSH(6,ISTAT)
    ENDIF
 
    IF (.NOT.SWITCHED) THEN
       IF ((NITERDONE-NLASTGOODE.GT.INTRELSTEPS).AND.((ETOTAL.GT.LASTGOODE).OR.(ETOTAL/INTIMAGE.GT.MAXCONE*1.0D8))) THEN
-         PRINT '(2(A,I6))',' intlbfgs> Backtracking ',NBACKTRACK,' steps, active atoms=',NACTIVE-NBACKTRACK
+         PRINT '(2(A,I6))',' INTLBFGS> BACKTRACKING ',NBACKTRACK,' STEPS, ACTIVE ATOMS=',NACTIVE-NBACKTRACK
          NTRIES(NEWATOM)=NTRIES(NEWATOM)+1
          IF (FREEZENODEST) IMGFREEZE(1:INTIMAGE)=.FALSE.
 !
-! Backtrack by removing the last NBACKTRACK atoms along with their active constraints and
-! repulsions.
+! BACKTRACK BY REMOVING THE LAST NBACKTRACK ATOMS ALONG WITH THEIR ACTIVE CONSTRAINTS AND
+! REPULSIONS.
 !
          DO J1=1,NBACKTRACK
             NDUMMY=TURNONORDER(NACTIVE-J1+1)
-            IF (DEBUG) PRINT '(A,I6,A,2I6)',' intlbfgs> Turning off active atom ',NDUMMY
+            IF (DEBUG) PRINT '(A,I6,A,2I6)',' INTLBFGS> TURNING OFF ACTIVE ATOM ',NDUMMY
             DO J2=1,NCONSTRAINT
                IF (.NOT.CONACTIVE(J2)) CYCLE
                IF ((CONI(J2).EQ.NDUMMY).OR.(CONJ(J2).EQ.NDUMMY)) THEN
                   CONACTIVE(J2)=.FALSE.
-                  IF (DEBUG) PRINT '(A,I6,A,2I6)',' intlbfgs> Turning off constraint ',J2,' for atoms ',CONI(J2),CONJ(J2)
+                  IF (DEBUG) PRINT '(A,I6,A,2I6)',' INTLBFGS> TURNING OFF CONSTRAINT ',J2,' FOR ATOMS ',CONI(J2),CONJ(J2)
                ENDIF
             ENDDO
             ATOMACTIVE(NDUMMY)=.FALSE.
          ENDDO
 !
-! Reconstruct repulsions. 
+! RECONSTRUCT REPULSIONS. 
 !
          NREPULSIVE=0
          DO J1=1,NATOMS
-            IF (.NOT.ATOMACTIVE(J1)) CYCLE ! identify active atoms
+            IF (.NOT.ATOMACTIVE(J1)) CYCLE ! IDENTIFY ACTIVE ATOMS
             DO J2=J1+1,NATOMS
-               IF (.NOT.ATOMACTIVE(J2)) CYCLE ! identify active atoms
-               IF (ABS(J1-J2).LE.INTREPSEP) CYCLE ! no repulsion for atoms too close in sequence
+               IF (.NOT.ATOMACTIVE(J2)) CYCLE ! IDENTIFY ACTIVE ATOMS
+               IF (ABS(J1-J2).LE.INTREPSEP) CYCLE ! NO REPULSION FOR ATOMS TOO CLOSE IN SEQUENCE
                DO J3=1,NCONSTRAINT
-                  IF (.NOT.CONACTIVE(J3)) CYCLE ! identify active constraints 
+                  IF (.NOT.CONACTIVE(J3)) CYCLE ! IDENTIFY ACTIVE CONSTRAINTS 
                   IF (((CONI(J3).EQ.J1).AND.(CONJ(J3).EQ.J2)).OR. &
   &                   ((CONJ(J3).EQ.J1).AND.(CONI(J3).EQ.J2))) GOTO 548
                ENDDO
                DMIN=1.0D100
-               DO J3=1,INTIMAGE+2,INTIMAGE+1 ! only consider the end-point distances
+               DO J3=1,INTIMAGE+2,INTIMAGE+1 ! ONLY CONSIDER THE END-POINT DISTANCES
                   DF=SQRT((XYZ((J3-1)*3*NATOMS+3*(J2-1)+1)-XYZ((J3-1)*3*NATOMS+3*(J1-1)+1))**2+ &
   &                       (XYZ((J3-1)*3*NATOMS+3*(J2-1)+2)-XYZ((J3-1)*3*NATOMS+3*(J1-1)+2))**2+ &
   &                       (XYZ((J3-1)*3*NATOMS+3*(J2-1)+3)-XYZ((J3-1)*3*NATOMS+3*(J1-1)+3))**2)
                   IF (DF.LT.DMIN) DMIN=DF
                ENDDO
 !
-! Use the minimum of the end point distances and INTCONSTRAINREPCUT for each contact.
+! USE THE MINIMUM OF THE END POINT DISTANCES AND INTCONSTRAINREPCUT FOR EACH CONTACT.
 !
                DMIN=MIN(DMIN-1.0D-3,INTCONSTRAINREPCUT)
                NREPULSIVE=NREPULSIVE+1
@@ -1411,15 +1411,15 @@ DO ! Main do loop with counter NITERDONE, initially set to one
 
          NACTIVE=NACTIVE-NBACKTRACK
          NBACKTRACK=MIN(MIN(1.0D0*(NBACKTRACK+1),1.0D0*20),0.1D0*(NACTIVE-2))
-         IF (DEBUG) PRINT '(A,I6)',' intlbfgs> Number of atoms to backtrack is now ',NBACKTRACK
+         IF (DEBUG) PRINT '(A,I6)',' INTLBFGS> NUMBER OF ATOMS TO BACKTRACK IS NOW ',NBACKTRACK
          NDUMMY=0
          DO J1=1,NATOMS
             IF (ATOMACTIVE(J1)) NDUMMY=NDUMMY+1
          ENDDO
          IF (NDUMMY.NE.NACTIVE) THEN
-            PRINT '(A,I6)',' intlbfgs> ERROR *** inconsistency in number of active atoms. Should be ',NACTIVE
+            PRINT '(A,I6)',' INTLBFGS> ERROR *** INCONSISTENCY IN NUMBER OF ACTIVE ATOMS. SHOULD BE ',NACTIVE
             DO J1=1,NATOMS
-               IF (ATOMACTIVE(J1)) PRINT '(A,I6)',' active atom ',J1
+               IF (ATOMACTIVE(J1)) PRINT '(A,I6)',' ACTIVE ATOM ',J1
             ENDDO
             STOP
          ENDIF
@@ -1436,11 +1436,11 @@ DO ! Main do loop with counter NITERDONE, initially set to one
    ENDIF
 
    EXITSTATUS=0
-   IF (INTIMAGE.EQ.0) THEN ! sanity check - should be unnecessary
-      PRINT '(A,2I10)','intlbfgs> ERROR *** INTIMAGE,SIZE(DIAG,1)=',INTIMAGE,SIZE(DIAG,1)
+   IF (INTIMAGE.EQ.0) THEN ! SANITY CHECK - SHOULD BE UNNECESSARY
+      PRINT '(A,2I10)','INTLBFGS> ERROR *** INTIMAGE,SIZE(DIAG,1)=',INTIMAGE,SIZE(DIAG,1)
       STOP
    ENDIF
-   INTDGUESS=DIAG(1) ! should be ok for subsequent runs of the same system DJW
+   INTDGUESS=DIAG(1) ! SHOULD BE OK FOR SUBSEQUENT RUNS OF THE SAME SYSTEM DJW
    IF (RMS<=INTRMSTOL.AND.NITERDONE>1) EXITSTATUS=1
    IF (NITERDONE==NSTEPSMAX) EXITSTATUS=2
 
@@ -1464,11 +1464,11 @@ DO ! Main do loop with counter NITERDONE, initially set to one
       ENDIF
       GLAST(1:D)=G(1:D)
       DIFF=1.0D-6
-      PRINT '(A,I6)',' intlbfgs> analytic and numerical gradients: D=',D
+      PRINT '(A,I6)',' INTLBFGS> ANALYTIC AND NUMERICAL GRADIENTS: D=',D
       DO J2=1,D
          IF (.NOT.CHECKG(J2)) CYCLE
          X(J2)=X(J2)+DIFF
-!        PRINT '(A,I6)',' intlbfgs> calling congrad + for coordinate J2'
+!        PRINT '(A,I6)',' INTLBFGS> CALLING CONGRAD + FOR COORDINATE J2'
          IF (CHECKCONINT) THEN
             CALL CONGRAD2(NMAXINT,NMININT,ETOTAL,XYZ,GGG,EEE,IMGFREEZE,RMS)
          ELSE
@@ -1476,7 +1476,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
          ENDIF
          EPLUS=ETOTAL
          X(J2)=X(J2)-2.0D0*DIFF
-!        PRINT '(A,I6)',' intlbfgs> calling congrad - for coordinate J2'
+!        PRINT '(A,I6)',' INTLBFGS> CALLING CONGRAD - FOR COORDINATE J2'
          IF (CHECKCONINT) THEN
             CALL CONGRAD2(NMAXINT,NMININT,ETOTAL,XYZ,GGG,EEE,IMGFREEZE,RMS)
          ELSE
@@ -1486,7 +1486,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
          X(J2)=X(J2)+DIFF
          IF (ABS(GLAST(J2)).NE.0.0D0) THEN
             IF (100.0D0*ABS((GLAST(J2)-(EPLUS-EMINUS)/(2.0D0*DIFF))/GLAST(J2)).GT.10.0D0) THEN
-               WRITE(*,'(A,3I8,3G20.10)') 'error ',(J2-1)/NOPT+1,(J2-NOPT*((J2-1)/NOPT)-1)/3+1,J2, &
+               WRITE(*,'(A,3I8,3G20.10)') 'ERROR ',(J2-1)/NOPT+1,(J2-NOPT*((J2-1)/NOPT)-1)/3+1,J2, &
   &                                 GLAST(J2),(EPLUS-EMINUS)/(2.0D0*DIFF), &
   &                                 (EPLUS-EMINUS)/(2.0D0*DIFF*GLAST(J2))
             ELSE
@@ -1499,16 +1499,16 @@ DO ! Main do loop with counter NITERDONE, initially set to one
    ENDIF
 
    IF (EXITSTATUS > 0) THEN  
-      IF ((.NOT.SWITCHED).AND.(EXITSTATUS.EQ.1)) THEN ! add active atom or restart with true potential on
+      IF ((.NOT.SWITCHED).AND.(EXITSTATUS.EQ.1)) THEN ! ADD ACTIVE ATOM OR RESTART WITH TRUE POTENTIAL ON
          IF (ETOTAL/INTIMAGE.GT.MAXCONE) GOTO 777
          IF (NACTIVE.LT.NATOMS) THEN 
             ADDATOM=.TRUE.
             GOTO 777
          ENDIF
          CALL MYCPU_TIME(FTIME,.FALSE.)
-         PRINT '(A,I6,A,F12.6,A,I6,A,F10.1)',' intlbfgs> switch on true potential at step ',NITERDONE, &
-  &                                     ' fraction=',INTCONFRAC,' images=',INTIMAGE,' time=',FTIME-STIME
-         PRINT '(A,I6,A,F15.6)',' intlbfgs> Allowing ',INTCONSTEPS,' further optimization steps'
+         PRINT '(A,I6,A,F12.6,A,I6,A,F10.1)',' INTLBFGS> SWITCH ON TRUE POTENTIAL AT STEP ',NITERDONE, &
+  &                                     ' FRACTION=',INTCONFRAC,' IMAGES=',INTIMAGE,' TIME=',FTIME-STIME
+         PRINT '(A,I6,A,F15.6)',' INTLBFGS> ALLOWING ',INTCONSTEPS,' FURTHER OPTIMIZATION STEPS'
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    IF (.FALSE.) THEN
       CHECKG(1:D)=.FALSE.
@@ -1525,11 +1525,11 @@ DO ! Main do loop with counter NITERDONE, initially set to one
       ENDIF
       GLAST(1:D)=G(1:D)
       DIFF=1.0D-6
-      PRINT '(A,I6)',' intlbfgs> analytic and numerical gradients: D=',D
+      PRINT '(A,I6)',' INTLBFGS> ANALYTIC AND NUMERICAL GRADIENTS: D=',D
       DO J2=1,D
          IF (.NOT.CHECKG(J2)) CYCLE
          X(J2)=X(J2)+DIFF
-!        PRINT '(A,I6)',' intlbfgs> calling congrad + for coordinate J2'
+!        PRINT '(A,I6)',' INTLBFGS> CALLING CONGRAD + FOR COORDINATE J2'
          IF (CHECKCONINT) THEN
             CALL CONGRAD2(NMAXINT,NMININT,ETOTAL,XYZ,GGG,EEE,IMGFREEZE,RMS)
          ELSE
@@ -1537,7 +1537,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
          ENDIF
          EPLUS=ETOTAL
          X(J2)=X(J2)-2.0D0*DIFF
-!        PRINT '(A,I6)',' intlbfgs> calling congrad - for coordinate J2'
+!        PRINT '(A,I6)',' INTLBFGS> CALLING CONGRAD - FOR COORDINATE J2'
          IF (CHECKCONINT) THEN
             CALL CONGRAD2(NMAXINT,NMININT,ETOTAL,XYZ,GGG,EEE,IMGFREEZE,RMS)
          ELSE
@@ -1547,7 +1547,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
          X(J2)=X(J2)+DIFF
          IF (ABS(GLAST(J2)).NE.0.0D0) THEN
             IF (100.0D0*ABS((GLAST(J2)-(EPLUS-EMINUS)/(2.0D0*DIFF))/GLAST(J2)).GT.10.0D0) THEN
-               WRITE(*,'(A,3I8,3G20.10)') 'error ',(J2-1)/NOPT+1,(J2-NOPT*((J2-1)/NOPT)-1)/3+1,J2, &
+               WRITE(*,'(A,3I8,3G20.10)') 'ERROR ',(J2-1)/NOPT+1,(J2-NOPT*((J2-1)/NOPT)-1)/3+1,J2, &
   &                                 GLAST(J2),(EPLUS-EMINUS)/(2.0D0*DIFF), &
   &                                 (EPLUS-EMINUS)/(2.0D0*DIFF*GLAST(J2))
             ELSE
@@ -1561,7 +1561,7 @@ DO ! Main do loop with counter NITERDONE, initially set to one
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
          DO J1=1,NATOMS
             IF (.NOT.ATOMACTIVE(J1)) THEN
-               PRINT '(A,I6,A,I6,A)',' intlbfgs> ERROR *** number of active atoms=',NACTIVE,' but atom ',J1,' is not active'
+               PRINT '(A,I6,A,I6,A)',' INTLBFGS> ERROR *** NUMBER OF ACTIVE ATOMS=',NACTIVE,' BUT ATOM ',J1,' IS NOT ACTIVE'
             ENDIF
          ENDDO
          NSTEPSMAX=NITERDONE+INTCONSTEPS
@@ -1569,17 +1569,17 @@ DO ! Main do loop with counter NITERDONE, initially set to one
          USEFRAC=INTCONFRAC
          GOTO 777
       ELSEIF ((.NOT.SWITCHED).AND.(EXITSTATUS.EQ.2)) THEN 
-         PRINT '(A,I6)',' intlbfgs> ERROR *** number of active atoms at final step=',NACTIVE
+         PRINT '(A,I6)',' INTLBFGS> ERROR *** NUMBER OF ACTIVE ATOMS AT FINAL STEP=',NACTIVE
          STOP
       ELSEIF (DEBUG) THEN
-         PRINT '(A,I6,A,I6)','intlbfgs> energies for images:'
+         PRINT '(A,I6,A,I6)','INTLBFGS> ENERGIES FOR IMAGES:'
          PRINT '(I6,F20.10)',(J2,EEE(J2),J2=1,INTIMAGE+2)
       ENDIF
       EXIT
    ENDIF
    777 CONTINUE
 !
-! Compute the new step and gradient change
+! COMPUTE THE NEW STEP AND GRADIENT CHANGE
 !
    NPT=POINT*D
    SEARCHSTEP(POINT,:) = STP*SEARCHSTEP(POINT,:)
@@ -1593,35 +1593,35 @@ DO ! Main do loop with counter NITERDONE, initially set to one
    NITERDONE=NITERDONE+1
    IF (NITERDONE.GT.NSTEPSMAX) EXIT
 
-ENDDO ! end of main do loop over counter NITERDONE
+ENDDO ! END OF MAIN DO LOOP OVER COUNTER NITERDONE
 
 IF (.NOT.SWITCHED) THEN 
-   PRINT '(A,I6)',' intlbfgs> ERROR *** number of active atoms at final step=',NACTIVE,' no potential switch'
+   PRINT '(A,I6)',' INTLBFGS> ERROR *** NUMBER OF ACTIVE ATOMS AT FINAL STEP=',NACTIVE,' NO POTENTIAL SWITCH'
    STOP
 ENDIF
 IF (EXITSTATUS.EQ.1) THEN
-   WRITE(*,'(A,I6,A,G20.10,A,G20.10)') ' intlbfgs> Converged after ',NITERDONE,' steps, energy per image=',ETOTAL/INTIMAGE, &
-  &                               ' RMS gradient=',RMS
+   WRITE(*,'(A,I6,A,G20.10,A,G20.10)') ' INTLBFGS> CONVERGED AFTER ',NITERDONE,' STEPS, ENERGY PER IMAGE=',ETOTAL/INTIMAGE, &
+  &                               ' RMS GRADIENT=',RMS
 ELSEIF (EXITSTATUS.EQ.2) THEN
-   WRITE(*,'(A,I6,A,G20.10,A,G20.10)') ' intlbfgs> After ',NITERDONE,' steps, energy per image=',ETOTAL/INTIMAGE, &
-  &                               ' RMS gradient=',RMS
+   WRITE(*,'(A,I6,A,G20.10,A,G20.10)') ' INTLBFGS> AFTER ',NITERDONE,' STEPS, ENERGY PER IMAGE=',ETOTAL/INTIMAGE, &
+  &                               ' RMS GRADIENT=',RMS
 ENDIF
 !
-! Linear interpolation for constraint potential and real potential separately.
-! Constraint potential need not be flat if we have done some steps with both
-! potentials turned on.
+! LINEAR INTERPOLATION FOR CONSTRAINT POTENTIAL AND REAL POTENTIAL SEPARATELY.
+! CONSTRAINT POTENTIAL NEED NOT BE FLAT IF WE HAVE DONE SOME STEPS WITH BOTH
+! POTENTIALS TURNED ON.
 !
 DINCREMENT=0.02D0
 DTOTAL=0.0D0
-OPEN(UNIT=753,FILE='intenergy',STATUS='UNKNOWN')
+OPEN(UNIT=753,FILE='INTENERGY',STATUS='UNKNOWN')
 !
-! local maxima must have NSIDE higher energies on each side
-! This has the desirable side-effect that we don't bother with
-! images that are essentially collapsed on each other - their
-! spacing will probably be < DINCREMENT, or 5*DINCREMENT.
+! LOCAL MAXIMA MUST HAVE NSIDE HIGHER ENERGIES ON EACH SIDE
+! THIS HAS THE DESIRABLE SIDE-EFFECT THAT WE DON'T BOTHER WITH
+! IMAGES THAT ARE ESSENTIALLY COLLAPSED ON EACH OTHER - THEIR
+! SPACING WILL PROBABLY BE < DINCREMENT, OR 5*DINCREMENT.
 !
 NSIDE=5
-INTTST=.TRUE. ! try passing local maxima back as ts guesses
+INTTST=.TRUE. ! TRY PASSING LOCAL MAXIMA BACK AS TS GUESSES
 ! INTTST=.FALSE. 
 NTSFOUND=0
 NMINFOUND=0
@@ -1633,16 +1633,16 @@ DO J1=1,INTIMAGE+1
    ENDDO
    DUMMY=SQRT(DUMMY)
    DIST=0.0D0
-   PRINT '(A,I6,A,I6,A,G20.10)',' intlbfgs> distance between images ',J1,' and ',J1+1,' is ',DUMMY
+   PRINT '(A,I6,A,I6,A,G20.10)',' INTLBFGS> DISTANCE BETWEEN IMAGES ',J1,' AND ',J1+1,' IS ',DUMMY
    NDUMMY=DUMMY/DINCREMENT+1
    ALLOCATE(EINT(NDUMMY))
    J3=1
 
-   intloop: DO
+   INTLOOP: DO
       LOCALCOORDS(1:3*NATOMS)=((DUMMY-DIST)*XYZ((J1-1)*3*NATOMS+1:J1*3*NATOMS)+ &
   &                                    DIST*XYZ(J1*3*NATOMS+1:(J1+1)*3*NATOMS))/DUMMY
       CALL POTENTIAL(LOCALCOORDS,EREAL,VNEW,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-      If (DEBUG) PRINT '(A,3G20.10)',' intlbfgs> ',DTOTAL+DIST,EREAL
+      IF (DEBUG) PRINT '(A,3G20.10)',' INTLBFGS> ',DTOTAL+DIST,EREAL
       WRITE(753,'(3G20.10)') DTOTAL+DIST,EREAL
       DIST=DIST+DINCREMENT
       EINT(J3)=EREAL
@@ -1653,11 +1653,11 @@ DO J1=1,INTIMAGE+1
                IF (EINT(J3-NSIDE).LT.EINT(J4)) GOTO 432
             ENDDO
 !
-! We have a ts candidate. Try optimising it!
+! WE HAVE A TS CANDIDATE. TRY OPTIMISING IT!
 !
             CALL MYCPU_TIME(STARTTIME,.FALSE.)
             KNOWG=.FALSE.
-            KNOWE=.FALSE. ! to be safe!
+            KNOWE=.FALSE. ! TO BE SAFE!
             LOCALCOORDS(1:NOPT)= &
   &                 ((DUMMY-(J3-NSIDE-1)*DINCREMENT)*XYZ((J1-1)*NOPT+1:J1*NOPT)+ &
   &                         (J3-NSIDE-1)*DINCREMENT *XYZ(J1*NOPT+1:(J1+1)*NOPT))/DUMMY
@@ -1672,8 +1672,8 @@ DO J1=1,INTIMAGE+1
             IF (TSCONVERGED) THEN
                NTSFOUND=NTSFOUND+1
 !
-! Save coordinates and direction vector between images to use as starting guess
-! for the eigenvector.
+! SAVE COORDINATES AND DIRECTION VECTOR BETWEEN IMAGES TO USE AS STARTING GUESS
+! FOR THE EIGENVECTOR.
 !
                ALLOCATE(TSFOUND(NTSFOUND)%E,TSFOUND(NTSFOUND)%COORD(NOPT), &
   &                     TSFOUND(NTSFOUND)%EVALMIN,TSFOUND(NTSFOUND)%VECS(NOPT))
@@ -1681,8 +1681,8 @@ DO J1=1,INTIMAGE+1
                TSFOUND(NTSFOUND)%COORD(1:NOPT)=LOCALCOORDS(1:NOPT)
                TSFOUND(NTSFOUND)%E=EDUMMY
                TSFOUND(NTSFOUND)%EVALMIN=EVALMIN
-               PRINT '(A,I6,A,G20.10,A,F10.1)',' intlbfgs> transition state found, iterations=',ITDONE, &
-  &                                  ' energy=',EDUMMY,' time=',TIME0-STARTTIME
+               PRINT '(A,I6,A,G20.10,A,F10.1)',' INTLBFGS> TRANSITION STATE FOUND, ITERATIONS=',ITDONE, &
+  &                                  ' ENERGY=',EDUMMY,' TIME=',TIME0-STARTTIME
             ENDIF
 432         CONTINUE
          ENDIF
@@ -1690,31 +1690,31 @@ DO J1=1,INTIMAGE+1
       J3=J3+1
       IF (DIST.GT.DUMMY) EXIT INTLOOP
       IF (J3.GT.NDUMMY) THEN
-         PRINT '(A,I6)',' intlbfgs> ERROR *** number of interpolated energies should not be ',J3
+         PRINT '(A,I6)',' INTLBFGS> ERROR *** NUMBER OF INTERPOLATED ENERGIES SHOULD NOT BE ',J3
       ENDIF
-   ENDDO intloop
+   ENDDO INTLOOP
    DTOTAL=DTOTAL+DUMMY
    DEALLOCATE(EINT)
 ENDDO
 
 LOCALCOORDS(1:3*NATOMS)=XYZ((INTIMAGE+1)*3*NATOMS+1:(INTIMAGE+2)*3*NATOMS)
 CALL POTENTIAL(LOCALCOORDS,EREAL,VNEW,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-PRINT '(A,3G20.10)',' intlbfgs> ',DTOTAL,EREAL
+PRINT '(A,3G20.10)',' INTLBFGS> ',DTOTAL,EREAL
 WRITE(753,'(3G20.10)') DTOTAL,EREAL
 CLOSE(753)
 
 IF (.NOT.INTTST) THEN
    PTEST=.FALSE.
    INTTST=.FALSE.
-   PRINT '(A,I8)',' intlbfgs> minimising all the images - results written to images.min'
-   OPEN(987,FILE='images.min',STATUS='UNKNOWN')
+   PRINT '(A,I8)',' INTLBFGS> MINIMISING ALL THE IMAGES - RESULTS WRITTEN TO IMAGES.MIN'
+   OPEN(987,FILE='IMAGES.MIN',STATUS='UNKNOWN')
    WRITE(987,'(I6)') NATOMS
-   WRITE(987,'(A)') 'start - image 1'
+   WRITE(987,'(A)') 'START - IMAGE 1'
    WRITE(987,'(A,3G20.10)') (ZSYM(J2),XYZ(3*(J2-1)+1:3*(J2-1)+3),J2=1,NATOMS)
    DO J1=2,INTIMAGE+1
       KNOWG=.FALSE.
-      KNOWE=.FALSE. ! could use EEE value
-      PRINT '(A,I8,A,F20.10)',' intlbfgs> minimising image ',J1,' initial energy=',EEE(J1)
+      KNOWE=.FALSE. ! COULD USE EEE VALUE
+      PRINT '(A,I8,A,F20.10)',' INTLBFGS> MINIMISING IMAGE ',J1,' INITIAL ENERGY=',EEE(J1)
 
 !     BSMIN=.TRUE.
 !     DEBUG=.TRUE.
@@ -1732,21 +1732,21 @@ IF (.NOT.INTTST) THEN
       IF (MFLAG) THEN
          NMINFOUND=NMINFOUND+1
 !
-!  We have to communicate the minima found back to tryconnect using the data structure
-!  set up for new transition states.
-!  Added new variable MINFOUND to allow for this check in tryconnect.
-!  It seems impossible to make intlbfgs see isnewmin and addnewmin for some reason.
+!  WE HAVE TO COMMUNICATE THE MINIMA FOUND BACK TO TRYCONNECT USING THE DATA STRUCTURE
+!  SET UP FOR NEW TRANSITION STATES.
+!  ADDED NEW VARIABLE MINFOUND TO ALLOW FOR THIS CHECK IN TRYCONNECT.
+!  IT SEEMS IMPOSSIBLE TO MAKE INTLBFGS SEE ISNEWMIN AND ADDNEWMIN FOR SOME REASON.
 !
          ALLOCATE(MINFOUND(NMINFOUND)%E,MINFOUND(NMINFOUND)%COORD(NOPT))
          MINFOUND(NMINFOUND)%COORD(1:NOPT)=XYZ(NOPT*(J1-1)+1:NOPT*J1)
          MINFOUND(NMINFOUND)%E=EREAL
          WRITE(987,'(I6)') NATOMS
-         WRITE(987,'(A,I5)') 'image ',J1
+         WRITE(987,'(A,I5)') 'IMAGE ',J1
          WRITE(987,'(A,3G20.10)') (ZSYM(J2), MINFOUND(NMINFOUND)%COORD(3*(J2-1)+1:3*(J2-1)+3),J2=1,NATOMS)
       ENDIF
    ENDDO
    WRITE(987,'(I6)') NATOMS
-   WRITE(987,'(A)') 'finish - image INTIMAGE+2'
+   WRITE(987,'(A)') 'FINISH - IMAGE INTIMAGE+2'
    WRITE(987,'(A,3G20.10)') (ZSYM(J2),XYZ(NOPT*(INTIMAGE+1)+3*(J2-1)+1:NOPT*(INTIMAGE+1)+3*(J2-1)+3),J2=1,NATOMS)
    CLOSE(987)
 ENDIF
@@ -1758,7 +1758,7 @@ INTIMAGE=INTIMAGESAVE
 
 END SUBROUTINE INTLBFGS
 !
-! Possible redistribution of images for INTCONSTRAINT depending upon distances.
+! POSSIBLE REDISTRIBUTION OF IMAGES FOR INTCONSTRAINT DEPENDING UPON DISTANCES.
 !
 SUBROUTINE CHECKSEP(NMAXINT,NMININT,INTIMAGE,XYZ,NOPT,NATOMS)
 IMPLICIT NONE
@@ -1768,17 +1768,17 @@ DOUBLE PRECISION SEPMAX, SEPMIN, XYZ(*), DUMMY
 RETURN !!! DJW
 
 IF ((NMININT.EQ.NMAXINT).OR.(NMININT.EQ.NMAXINT+1)) THEN
-   PRINT '(A,2I6)',' checksep> skipping image redistribution for images ',NMININT,NMAXINT
+   PRINT '(A,2I6)',' CHECKSEP> SKIPPING IMAGE REDISTRIBUTION FOR IMAGES ',NMININT,NMAXINT
    RETURN
 ENDIF
 IF ((NMININT.EQ.1).OR.(NMININT.EQ.INTIMAGE+2)) THEN
-   PRINT '(A,I6)',' checksep> ERROR *** NMININT=',NMININT
+   PRINT '(A,I6)',' CHECKSEP> ERROR *** NMININT=',NMININT
 ENDIF
 IF ((NMAXINT.EQ.1).OR.(NMAXINT.EQ.INTIMAGE+2)) THEN
-   PRINT '(A,I6)',' checksep> ERROR *** NMAXINT=',NMAXINT
+   PRINT '(A,I6)',' CHECKSEP> ERROR *** NMAXINT=',NMAXINT
 ENDIF
 ! 
-! DVEC(J) contains the distance between image J and image J+1
+! DVEC(J) CONTAINS THE DISTANCE BETWEEN IMAGE J AND IMAGE J+1
 !
 !      SEPMAX=-1.0D0
 !      SEPMIN=1.0D100
@@ -1794,25 +1794,25 @@ ENDIF
 !            NSEPMIN=J
 !         ENDIF
 !      ENDDO
-!      PRINT '(A,F20.10,A,I6,A,I6)',' checksep> maximum image separation=',SEPMAX,' for images ',NSEPMAX,' and ',NSEPMAX+1
-!      PRINT '(A,F20.10,A,I6)',' checksep> minimum sum of image separations=',SEPMIN,' for image ',NSEPMIN
+!      PRINT '(A,F20.10,A,I6,A,I6)',' CHECKSEP> MAXIMUM IMAGE SEPARATION=',SEPMAX,' FOR IMAGES ',NSEPMAX,' AND ',NSEPMAX+1
+!      PRINT '(A,F20.10,A,I6)',' CHECKSEP> MINIMUM SUM OF IMAGE SEPARATIONS=',SEPMIN,' FOR IMAGE ',NSEPMIN
 
-!    IF (SEPMIN*2.0D0.LT.SEPMAX) THEN ! redistribute images
+!    IF (SEPMIN*2.0D0.LT.SEPMAX) THEN ! REDISTRIBUTE IMAGES
 
-IF (.TRUE.) THEN ! redistribute images
-   PRINT '(A,I6,A,2I6)',' checksep> removing image ',NMININT,' and adding one between images ',NMAXINT,NMAXINT+1
+IF (.TRUE.) THEN ! REDISTRIBUTE IMAGES
+   PRINT '(A,I6,A,2I6)',' CHECKSEP> REMOVING IMAGE ',NMININT,' AND ADDING ONE BETWEEN IMAGES ',NMAXINT,NMAXINT+1
 !  IF (NSEPMIN.LT.NSEPMAX) THEN
    IF (NMININT.LT.NMAXINT) THEN
-!     DO J=NSEPMIN,NSEPMAX-1 ! move image J+1 to position J for images J=NSEPMIN+1 to NSEPMAX-1
-      DO J=NMININT,NMAXINT-1 ! move image J+1 to position J for images J=NMININT+1 to NMAXINT-1
+!     DO J=NSEPMIN,NSEPMAX-1 ! MOVE IMAGE J+1 TO POSITION J FOR IMAGES J=NSEPMIN+1 TO NSEPMAX-1
+      DO J=NMININT,NMAXINT-1 ! MOVE IMAGE J+1 TO POSITION J FOR IMAGES J=NMININT+1 TO NMAXINT-1
          XYZ(NOPT*(J-1)+1:NOPT*J)=XYZ(NOPT*J+1:NOPT*(J+1))
       ENDDO
 !     XYZ(NOPT*(NSEPMAX-1)+1:NOPT*NSEPMAX)=(XYZ(NOPT*(NSEPMAX-1)+1:NOPT*NSEPMAX)+XYZ(NOPT*NSEPMAX+1:NOPT*(NSEPMAX+1)))/2.0D0
       XYZ(NOPT*(NMAXINT-1)+1:NOPT*NMAXINT)=(XYZ(NOPT*(NMAXINT-1)+1:NOPT*NMAXINT)+XYZ(NOPT*NMAXINT+1:NOPT*(NMAXINT+1)))/2.0D0
    ELSE
-!     DO J=NSEPMIN,NSEPMAX+2,-1 ! move image J-1 to position J for images J=NSEPMIN-1 to NSEPMAX+1
-      DO J=NMININT,NMAXINT+2,-1 ! move image J-1 to position J for images J=NMININT-1 to NMAXINT+1
-         PRINT '(2(A,I6))',' putting image ',J-1,' in image ',J
+!     DO J=NSEPMIN,NSEPMAX+2,-1 ! MOVE IMAGE J-1 TO POSITION J FOR IMAGES J=NSEPMIN-1 TO NSEPMAX+1
+      DO J=NMININT,NMAXINT+2,-1 ! MOVE IMAGE J-1 TO POSITION J FOR IMAGES J=NMININT-1 TO NMAXINT+1
+         PRINT '(2(A,I6))',' PUTTING IMAGE ',J-1,' IN IMAGE ',J
          XYZ(NOPT*(J-1)+1:NOPT*J)=XYZ(NOPT*(J-2)+1:NOPT*(J-1))
       ENDDO
       XYZ(NOPT*NMAXINT+1:NOPT*(NMAXINT+1))=(XYZ(NOPT*NMAXINT+1:NOPT*(NMAXINT+1))+XYZ(NOPT*(NMAXINT-1)+1:NOPT*NMAXINT))/2.0D0
@@ -1821,7 +1821,7 @@ ENDIF
 
 END SUBROUTINE CHECKSEP
 !
-! Neighbour list for repulsions to reduce cost of constraint potential.
+! NEIGHBOUR LIST FOR REPULSIONS TO REDUCE COST OF CONSTRAINT POTENTIAL.
 !
 SUBROUTINE CHECKREP(INTIMAGE,XYZ,NOPT)
 USE KEY,ONLY : NREPI, NREPJ, NREPCUT, NNREPULSIVE, NREPULSIVE, REPI, REPJ, REPCUT, DEBUG
@@ -1835,7 +1835,7 @@ LOGICAL NOINT
 NNREPULSIVE=0
 DO JJ=1,NREPULSIVE
  CALL FLUSH(6,ISTAT)
-   DO KK=1,INTIMAGE+2 ! first check for standard distances within threshold
+   DO KK=1,INTIMAGE+2 ! FIRST CHECK FOR STANDARD DISTANCES WITHIN THRESHOLD
       LDIST=SQRT((XYZ((KK-1)*NOPT+3*(REPI(JJ)-1)+1)-XYZ((KK-1)*NOPT+3*(REPJ(JJ)-1)+1))**2 &
   &             +(XYZ((KK-1)*NOPT+3*(REPI(JJ)-1)+2)-XYZ((KK-1)*NOPT+3*(REPJ(JJ)-1)+2))**2 &
   &             +(XYZ((KK-1)*NOPT+3*(REPI(JJ)-1)+3)-XYZ((KK-1)*NOPT+3*(REPJ(JJ)-1)+3))**2)
@@ -1848,7 +1848,7 @@ DO JJ=1,NREPULSIVE
       ENDIF
    ENDDO 
  CALL FLUSH(6,ISTAT)
-   DO KK=2,INTIMAGE+2 ! now check internal minima within threshold
+   DO KK=2,INTIMAGE+2 ! NOW CHECK INTERNAL MINIMA WITHIN THRESHOLD
       DMIN=1.0D10
       NI2=NOPT*(KK-2)+3*(REPI(JJ)-1)
       NI1=NOPT*(KK-1)+3*(REPI(JJ)-1)
@@ -1861,10 +1861,10 @@ DO JJ=1,NREPULSIVE
       CALL INTMINONLY(R1AX,R1AY,R1AZ,R2AX,R2AY,R2AZ,R1BX,R1BY,R1BZ,R2BX,R2BY,R2BZ,DMIN,NOINT)
 
 !     IF ((REPI(JJ).EQ.143).AND.(REPJ(JJ).EQ.191)) THEN
-!        PRINT '(A,3G20.10)',' checkrep> R1AX,R1AY,R1AZ=',R1AX,R1AY,R1AZ
-!        PRINT '(A,3G20.10)',' checkrep> R1BX,R1BY,R1BZ=',R1BX,R1BY,R1BZ
-!        PRINT '(A,3G20.10)',' checkrep> R2AX,R2AY,R2AZ=',R2AX,R2AY,R2AZ
-!        PRINT '(A,3G20.10)',' checkrep> R2BX,R2BY,R2BZ=',R2BX,R2BY,R2BZ
+!        PRINT '(A,3G20.10)',' CHECKREP> R1AX,R1AY,R1AZ=',R1AX,R1AY,R1AZ
+!        PRINT '(A,3G20.10)',' CHECKREP> R1BX,R1BY,R1BZ=',R1BX,R1BY,R1BZ
+!        PRINT '(A,3G20.10)',' CHECKREP> R2AX,R2AY,R2AZ=',R2AX,R2AY,R2AZ
+!        PRINT '(A,3G20.10)',' CHECKREP> R2BX,R2BY,R2BZ=',R2BX,R2BY,R2BZ
 !        PRINT '(A,3I6,2G20.10)','JJ,REPI(JJ),REPJ(JJ),LDIST,DMIN=',JJ,REPI(JJ),REPJ(JJ),LDIST,DMIN
 !     ENDIF
       IF (NOINT) CYCLE
@@ -1879,7 +1879,7 @@ DO JJ=1,NREPULSIVE
  CALL FLUSH(6,ISTAT)
 246 CONTINUE
 ENDDO
-IF (DEBUG) PRINT '(A,2I8)',' checkrep> number of active repulsions and total=',NNREPULSIVE,NREPULSIVE
+IF (DEBUG) PRINT '(A,2I8)',' CHECKREP> NUMBER OF ACTIVE REPULSIONS AND TOTAL=',NNREPULSIVE,NREPULSIVE
 
 END SUBROUTINE CHECKREP
 
@@ -1890,8 +1890,8 @@ USE COMMONS, ONLY: ZSYM, NRBSITES
 USE AMHGLOBALS, ONLY : NMRES
 USE COMMONS, ONLY: NATOMS, NOPT
 IMPLICIT NONE
-CHARACTER(LEN=10) :: XYZFILE   = 'int.xyz   '
-CHARACTER(LEN=12) :: RBXYZFILE = 'rbint.xyz   '
+CHARACTER(LEN=10) :: XYZFILE   = 'INT.XYZ   '
+CHARACTER(LEN=12) :: RBXYZFILE = 'RBINT.XYZ   '
 INTEGER,INTENT(IN) :: NITER
 INTEGER :: J1,J2,GLY_COUNT,INTIMAGE
 CHARACTER(LEN=80) :: FILENAME,FILENAME2,DUMMYS,DUMMYS2
@@ -1909,81 +1909,81 @@ IF (NITER.GT.0) THEN
    IF (FILTH.EQ.0) THEN
       WRITE(DUMMYS,'(I8)') NITER
       DUMMYS2=TRIM(ADJUSTL(FILENAME))
-      FILENAME='int.' // TRIM(ADJUSTL(DUMMYS)) // '.xyz' ! so that vmd recognises the file type!
-      FILENAME2='rbint.' // TRIM(ADJUSTL(DUMMYS)) // '.xyz'
+      FILENAME='INT.' // TRIM(ADJUSTL(DUMMYS)) // '.XYZ' ! SO THAT VMD RECOGNISES THE FILE TYPE!
+      FILENAME2='RBINT.' // TRIM(ADJUSTL(DUMMYS)) // '.XYZ'
    ELSE 
       WRITE(DUMMYS,'(I8)') NITER
       DUMMYS2=TRIM(ADJUSTL(FILENAME))
-      FILENAME='int.' // TRIM(ADJUSTL(DUMMYS)) // '.' // TRIM(ADJUSTL(FILTHSTR)) // '.xyz' 
-      FILENAME2='rbint.' // TRIM(ADJUSTL(DUMMYS)) // '.' // TRIM(ADJUSTL(FILTHSTR)) // '.xyz'
+      FILENAME='INT.' // TRIM(ADJUSTL(DUMMYS)) // '.' // TRIM(ADJUSTL(FILTHSTR)) // '.XYZ' 
+      FILENAME2='RBINT.' // TRIM(ADJUSTL(DUMMYS)) // '.' // TRIM(ADJUSTL(FILTHSTR)) // '.XYZ'
    ENDIF
 ENDIF
-OPEN(UNIT=993,FILE=FILENAME,STATUS='replace')
+OPEN(UNIT=993,FILE=FILENAME,STATUS='REPLACE')
 IF (STOCKT .OR. STOCKAAT) THEN
    DO J2=1,INTIMAGE+2 
-      WRITE(993,'(i4/)') (natoms/2)
-      DO J1=1,(natoms/2) 
-         WRITE(993,'(a5,1x,6f20.10)') ZSYM((j1+2)/3), &
+      WRITE(993,'(I4/)') (NATOMS/2)
+      DO J1=1,(NATOMS/2) 
+         WRITE(993,'(A5,1X,6F20.10)') ZSYM((J1+2)/3), &
   & XYZ((J2-1)*NOPT+3*(J1-1)+1), XYZ((J2-1)*NOPT+3*(J1-1)+2), XYZ((J2-1)*NOPT+3*(J1-1)+3), &
-  &    XYZ((J2-1)*NOPT+3*((natoms/2)+J1-1)+1), XYZ((J2-1)*NOPT+3*((natoms/2)+J1-1)+2), XYZ((J2-1)*NOPT+3*((natoms/2)+J1-1)+3)
+  &    XYZ((J2-1)*NOPT+3*((NATOMS/2)+J1-1)+1), XYZ((J2-1)*NOPT+3*((NATOMS/2)+J1-1)+2), XYZ((J2-1)*NOPT+3*((NATOMS/2)+J1-1)+3)
       ENDDO
    ENDDO
 ELSEIF (RBAAT .AND. (.NOT. STOCKAAT)) THEN
-   PRINT '(A)',' intlbfgs> ERROR *** RGW routine needs to be taught STXYZ for this potential'
+   PRINT '(A)',' INTLBFGS> ERROR *** RGW ROUTINE NEEDS TO BE TAUGHT STXYZ FOR THIS POTENTIAL'
    STOP
-!  OPEN(UNIT=114,FILE=FILENAME2,STATUS='unknown')
+!  OPEN(UNIT=114,FILE=FILENAME2,STATUS='UNKNOWN')
 !  DO J2=1,INTIMAGE+2
-!     WRITE(993,'(i4/)') NATOMS/2
+!     WRITE(993,'(I4/)') NATOMS/2
 !     DO J1=1,(NATOMS/2) 
-!        WRITE(993,'(a5,1x,3f20.10)') 'O', &
+!        WRITE(993,'(A5,1X,3F20.10)') 'O', &
 ! & XYZ((J2-1)*NOPT+3*(J1-1)+1), XYZ((J2-1)*NOPT+3*(J1-1)+2), XYZ((J2-1)*NOPT+3*(J1-1)+3)
 !     ENDDO
 !     CALL SITEPOS(XYZ((J2-1)*NOPT+1:J2*NOPT),STXYZ)
-!     WRITE(114,'(i4/)') (NATOMS/2)*NRBSITES
+!     WRITE(114,'(I4/)') (NATOMS/2)*NRBSITES
 !     DO J1=1,(NATOMS/2)*NRBSITES
 !        J3 = 3*J1
-!        WRITE(114,'(a5,1x,3f20.10)') 'O', STXYZ(J3-2), STXYZ(J3-1), STXYZ(J3)
+!        WRITE(114,'(A5,1X,3F20.10)') 'O', STXYZ(J3-2), STXYZ(J3-1), STXYZ(J3)
 !     ENDDO
 !  ENDDO
 !  CLOSE(UNIT=114)
 ELSEIF (AMHT) THEN
    DO J2=1,INTIMAGE+2
-!  GLY set getparams.f
-!               WRITE(993,'(i4)')NATOMS +NUMGLY
-!  GLY printing turned off DJW
-      WRITE(993,'(i4)')NATOMS
-      WRITE(993,*)'Energy'
+!  GLY SET GETPARAMS.F
+!               WRITE(993,'(I4)')NATOMS +NUMGLY
+!  GLY PRINTING TURNED OFF DJW
+      WRITE(993,'(I4)')NATOMS
+      WRITE(993,*)'ENERGY'
       GLY_COUNT = 0
 
       DO J1=1,NMRES
          IF (SEQ(J1).EQ.8) THEN
-            WRITE(993,'(a5,1x,3f20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
+            WRITE(993,'(A5,1X,3F20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
      &                                  XYZ((J2-1)*NOPT+9*(J1-1)+3-GLY_COUNT*3)
-!  GLY printing turned off DJW
-!           WRITE(993,'(a5,1x,3f20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
+!  GLY PRINTING TURNED OFF DJW
+!           WRITE(993,'(A5,1X,3F20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
 !    &                                  XYZ((J2-1)*NOPT+9*(J1-1)+3-GLY_COUNT*3)
-            WRITE(993,'(a5,1x,3f20.10)') 'O    ',XYZ((J2-1)*NOPT+9*(J1-1)+4-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+5-GLY_COUNT*3), &
+            WRITE(993,'(A5,1X,3F20.10)') 'O    ',XYZ((J2-1)*NOPT+9*(J1-1)+4-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+5-GLY_COUNT*3), &
      &                                  XYZ((J2-1)*NOPT+9*(J1-1)+6-GLY_COUNT*3)
             GLY_COUNT = GLY_COUNT +1
          ELSE
-            WRITE(993,'(a5,1x,3f20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
+            WRITE(993,'(A5,1X,3F20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
      &                                  XYZ((J2-1)*NOPT+9*(J1-1)+3-GLY_COUNT*3)
-            WRITE(993,'(a5,1x,3f20.10)') 'C2   ',XYZ((J2-1)*NOPT+9*(J1-1)+4-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+5-GLY_COUNT*3), &
+            WRITE(993,'(A5,1X,3F20.10)') 'C2   ',XYZ((J2-1)*NOPT+9*(J1-1)+4-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+5-GLY_COUNT*3), &
      &                                  XYZ((J2-1)*NOPT+9*(J1-1)+6-GLY_COUNT*3)
-            WRITE(993,'(a5,1x,3f20.10)') 'O    ',XYZ((J2-1)*NOPT+9*(J1-1)+7-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+8-GLY_COUNT*3), &
+            WRITE(993,'(A5,1X,3F20.10)') 'O    ',XYZ((J2-1)*NOPT+9*(J1-1)+7-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+8-GLY_COUNT*3), &
      &                                  XYZ((J2-1)*NOPT+9*(J1-1)+9-GLY_COUNT*3)
          ENDIF
       ENDDO
    ENDDO
 ELSE
    DO J2=1,INTIMAGE+2
-      WRITE(993,'(i4/)') natoms
-      WRITE(993,'(a5,1x,3f20.10)') (ZSYM((j1+2)/3),xyz( (j2-1)*Nopt+j1),&
+      WRITE(993,'(I4/)') NATOMS
+      WRITE(993,'(A5,1X,3F20.10)') (ZSYM((J1+2)/3),XYZ( (J2-1)*NOPT+J1),&
     & XYZ((J2-1)*NOPT+J1+1), XYZ((J2-1)*NOPT+J1+2),J1=1,NOPT,3)
    ENDDO
 ENDIF
 
-PRINT *, 'rwg> Interpolated image coordinates were saved to xyz file "'//TRIM(FILENAME)//'"'
+PRINT *, 'RWG> INTERPOLATED IMAGE COORDINATES WERE SAVED TO XYZ FILE "'//TRIM(FILENAME)//'"'
 
 CLOSE(UNIT=993)
 END SUBROUTINE RWG
@@ -1999,22 +1999,22 @@ CHARACTER(LEN=20) :: FILENAME
 UNIT=992
 IF (NITER.GT.0) THEN
    WRITE(FILENAME,'(I8)') NITER
-   FILENAME='int.EofS.' // TRIM(ADJUSTL(FILENAME))
+   FILENAME='INT.EOFS.' // TRIM(ADJUSTL(FILENAME))
 ELSE   
-   FILENAME='int.EofS'
+   FILENAME='INT.EOFS'
 ENDIF
 IF (.NOT.FILTH==0) THEN
    FILENAME=TRIM(FILENAME)//'.'//TRIM(ADJUSTL(FILTHSTR))
 ENDIF
-OPEN(UNIT=UNIT,FILE=FILENAME,STATUS='replace')
+OPEN(UNIT=UNIT,FILE=FILENAME,STATUS='REPLACE')
 
-WRITE(UNIT=UNIT,FMT='(2g24.13)') EEE(1)
+WRITE(UNIT=UNIT,FMT='(2G24.13)') EEE(1)
 DO I=2,INTIMAGE+1
    WRITE(UNIT=UNIT,FMT='(2G24.13)') EEE(I)
 ENDDO
 WRITE(UNIT=UNIT,FMT='(2G24.13)') EEE(INTIMAGE+2)
 
 CLOSE(UNIT)
-PRINT '(A)',' writeprofile> Interpolated energy profile was saved to file "'//trim(filename)//'"'
+PRINT '(A)',' WRITEPROFILE> INTERPOLATED ENERGY PROFILE WAS SAVED TO FILE "'//TRIM(FILENAME)//'"'
 
 END SUBROUTINE WRITEPROFILE

@@ -1,156 +1,156 @@
 
-c     --------------------- gengrd ----------------------
+C     --------------------- GENGRD ----------------------
 
-      subroutine gengrd(maxcnt,ilong,numlng,nmres,maxs,maxrij,xwork,delta,delte,
-     *                  AMHmaxsiz,deltz,rinc,idigns,oarchv,rsep,rcutAMH)
+      SUBROUTINE GENGRD(MAXCNT,ILONG,NUMLNG,NMRES,MAXS,MAXRIJ,XWORK,DELTA,DELTE,
+     *                  AMHMAXSIZ,DELTZ,RINC,IDIGNS,OARCHV,RSEP,RCUTAMH)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     GENGRD generates the r-grid
+C     GENGRD GENERATES THE R-GRID
 
-c     arguments:
+C     ARGUMENTS:
 
-c        maxcnt- maximum number of interactions (i)
-c        ilong - list of interacting sites (i)
-c        numlng- breakdown of structure of ilong (i)
-c        nmres - number of target sites (i)
-c        maxs  - number of r-grid points (i)
-c        maxrij- maximum grid value for each  (w)
-c        xwork - work array (w)
-c        delta - Gaussian well-width (i)
-c        delte - exponent for scaling of Gaussian as 
-c                function of i-j (i)
-c        AMHmaxsiz- maximum protein length (i)
-c        deltz - denominator in Gaussian for each interaction
-c                pair (o)
-c        rinc  - r-grid increment for each interaction pair (o)
+C        MAXCNT- MAXIMUM NUMBER OF INTERACTIONS (I)
+C        ILONG - LIST OF INTERACTING SITES (I)
+C        NUMLNG- BREAKDOWN OF STRUCTURE OF ILONG (I)
+C        NMRES - NUMBER OF TARGET SITES (I)
+C        MAXS  - NUMBER OF R-GRID POINTS (I)
+C        MAXRIJ- MAXIMUM GRID VALUE FOR EACH  (W)
+C        XWORK - WORK ARRAY (W)
+C        DELTA - GAUSSIAN WELL-WIDTH (I)
+C        DELTE - EXPONENT FOR SCALING OF GAUSSIAN AS 
+C                FUNCTION OF I-J (I)
+C        AMHMAXSIZ- MAXIMUM PROTEIN LENGTH (I)
+C        DELTZ - DENOMINATOR IN GAUSSIAN FOR EACH INTERACTION
+C                PAIR (O)
+C        RINC  - R-GRID INCREMENT FOR EACH INTERACTION PAIR (O)
 
 
-c       indxt  - total number of interactions.
-c       idiff  - distance in number of residues
-c
-c     ---------------------------------------------------
+C       INDXT  - TOTAL NUMBER OF INTERACTIONS.
+C       IDIFF  - DISTANCE IN NUMBER OF RESIDUES
+C
+C     ---------------------------------------------------
 
-      use amhglobals,  only: n_letters
+      USE AMHGLOBALS,  ONLY: N_LETTERS
 
-c     set required parameters
+C     SET REQUIRED PARAMETERS
 
-      implicit none
+      IMPLICIT NONE
 
-c     argument declarations:
+C     ARGUMENT DECLARATIONS:
 
-         logical idigns
+         LOGICAL IDIGNS
 
-         integer AMHmaxsiz,maxcnt,ilong(maxcnt,2),numlng(0:AMHmaxsiz),nmres,maxs,oarchv
+         INTEGER AMHMAXSIZ,MAXCNT,ILONG(MAXCNT,2),NUMLNG(0:AMHMAXSIZ),NMRES,MAXS,OARCHV
 
-         double precision deltz(maxcnt),rinc(maxcnt),xwork(maxcnt),
-     *        maxrij(maxcnt),delta,delte,rsep,rcutAMH
+         DOUBLE PRECISION DELTZ(MAXCNT),RINC(MAXCNT),XWORK(MAXCNT),
+     *        MAXRIJ(MAXCNT),DELTA,DELTE,RSEP,RCUTAMH
      
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-         integer indxt,idiff
+         INTEGER INDXT,IDIFF
 
-c        --- do loop indices ---
+C        --- DO LOOP INDICES ---
 
-         integer i_indx
+         INTEGER I_INDX
  
-c        --- implied do loop indices ---
+C        --- IMPLIED DO LOOP INDICES ---
 
 
-         double precision deltc,scalr
+         DOUBLE PRECISION DELTC,SCALR
 
 
-c     --------------------- begin -----------------------
+C     --------------------- BEGIN -----------------------
 
-c     --- diagnostics ---
+C     --- DIAGNOSTICS ---
 
-c      write(oarchv,145)maxcnt,numlng(nmres),nmres,maxs,
-c     *                 AMHmaxsiz,delta,delte
-c  145 format(/'Gengrd: maxcnt ',i5,' numlng ',i5,
-c     *        ' nmres ',i3,' maxs ',i4,' AMHmaxsiz ',i4,
-c     *        ' delta ',1pe10.3,' delte ',1pe10.3)
+C      WRITE(OARCHV,145)MAXCNT,NUMLNG(NMRES),NMRES,MAXS,
+C     *                 AMHMAXSIZ,DELTA,DELTE
+C  145 FORMAT(/'GENGRD: MAXCNT ',I5,' NUMLNG ',I5,
+C     *        ' NMRES ',I3,' MAXS ',I4,' AMHMAXSIZ ',I4,
+C     *        ' DELTA ',1PE10.3,' DELTE ',1PE10.3)
 
-c     --- end diagnostics ---
+C     --- END DIAGNOSTICS ---
 
-c     initialize number of interactions
+C     INITIALIZE NUMBER OF INTERACTIONS
 
-      indxt=numlng(nmres)
-      numlng(0)=0
+      INDXT=NUMLNG(NMRES)
+      NUMLNG(0)=0
 
-c     initialize maximum r_{ij} 
+C     INITIALIZE MAXIMUM R_{IJ} 
 
-      do 500 i_indx=1,indxt
-         idiff=ilong(i_indx,2) - ilong(i_indx,1)    ! distance in sequence space
-         maxrij(i_indx)=min( rsep*float(idiff), rcutAMH )
-  500 continue
-c     set endpoints so that gaussian potential is continuous,
-c     i.e., V and F at endpoints are 'small'
+      DO 500 I_INDX=1,INDXT
+         IDIFF=ILONG(I_INDX,2) - ILONG(I_INDX,1)    ! DISTANCE IN SEQUENCE SPACE
+         MAXRIJ(I_INDX)=MIN( RSEP*FLOAT(IDIFF), RCUTAMH )
+  500 CONTINUE
+C     SET ENDPOINTS SO THAT GAUSSIAN POTENTIAL IS CONTINUOUS,
+C     I.E., V AND F AT ENDPOINTS ARE 'SMALL'
 
-      deltc=0.5D0/delta**2
-      scalr=(-delte*2)
+      DELTC=0.5D0/DELTA**2
+      SCALR=(-DELTE*2)
 
-      do 501 i_indx=1,indxt
-         deltz(i_indx)=deltc*(float(ilong(i_indx,2) - ilong(i_indx,1) ))**scalr
-        if ( (ilong(i_indx,2) - ilong(i_indx,1) .gt. 4 ) .and.
-     *  (ilong(i_indx,2) - ilong(i_indx,1) .lt. 13).and.n_letters.eq.4) then
+      DO 501 I_INDX=1,INDXT
+         DELTZ(I_INDX)=DELTC*(FLOAT(ILONG(I_INDX,2) - ILONG(I_INDX,1) ))**SCALR
+        IF ( (ILONG(I_INDX,2) - ILONG(I_INDX,1) .GT. 4 ) .AND.
+     *  (ILONG(I_INDX,2) - ILONG(I_INDX,1) .LT. 13).AND.N_LETTERS.EQ.4) THEN
 
-         deltz(i_indx)=2.0D0*(float(ilong(i_indx,2) - ilong(i_indx,1) ))**(-0.60D0) 
-        endif
+         DELTZ(I_INDX)=2.0D0*(FLOAT(ILONG(I_INDX,2) - ILONG(I_INDX,1) ))**(-0.60D0) 
+        ENDIF
 
-  501 continue
+  501 CONTINUE
 
-c     set upper bound for r-grid
+C     SET UPPER BOUND FOR R-GRID
 
-      deltc=-log(1.0e-08)
+      DELTC=-LOG(1.0E-08)
 
-c     set addend for determining maximum r-grid value
+C     SET ADDEND FOR DETERMINING MAXIMUM R-GRID VALUE
 
-      do 502 i_indx=1,indxt
-         xwork(i_indx)=sqrt(deltc/deltz(i_indx))
-  502 continue
-c     set endpoint for each interaction pair
+      DO 502 I_INDX=1,INDXT
+         XWORK(I_INDX)=SQRT(DELTC/DELTZ(I_INDX))
+  502 CONTINUE
+C     SET ENDPOINT FOR EACH INTERACTION PAIR
 
-      do 503 i_indx=1,indxt
-         maxrij(i_indx)=maxrij(i_indx) + xwork(i_indx)
-  503 continue
-c     initialize grid increments based on min and max
-c     distance values for each constraint
+      DO 503 I_INDX=1,INDXT
+         MAXRIJ(I_INDX)=MAXRIJ(I_INDX) + XWORK(I_INDX)
+  503 CONTINUE
+C     INITIALIZE GRID INCREMENTS BASED ON MIN AND MAX
+C     DISTANCE VALUES FOR EACH CONSTRAINT
 
-      do 504 i_indx=1,indxt
-         rinc(i_indx)=maxrij(i_indx)/float(maxs-1)
-  504 continue
+      DO 504 I_INDX=1,INDXT
+         RINC(I_INDX)=MAXRIJ(I_INDX)/FLOAT(MAXS-1)
+  504 CONTINUE
 
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     --- diagnostics ---
-      if( idigns )then
-c        list spanning interval for each | i - j |
-c         write(oarchv,113)indxt
-c  113    format(/'b1 and deltz:indx ',i8)
-c         do 517 i517=1,min( 53,nmres )
-cc            if( (ilong(i517,1).eq.4).and.
-cc     *          (ilong(i517,2).eq.88) )then 
-cc            do 518 i518=numlng(i517-1)+1,
-cc     *              min(numlng(i517-1)+10,numlng(i517))
-c             do 519 i519=1,2
-c               if( i519.eq.1 )then
-c                  i518=numlng(i517-1)+1
-c               else
-c                  i518=numlng(i517)
-c               endif
-c               write(oarchv,114)ilong(i518,1),ilong(i518,2),
-c     *                          maxrij(i518)-xwork(i518),
-c     *                          xwork(i518),deltz(i518),
-c     *                          rinc(i518)
-c  114          format(2(i3,1x),4(1x,1pe10.3))
-c  519       continue
-cc  518       continue
-cc            endif
-c  517    continue
-      endif
-c     --- end diagnostics ---
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     --- DIAGNOSTICS ---
+      IF( IDIGNS )THEN
+C        LIST SPANNING INTERVAL FOR EACH | I - J |
+C         WRITE(OARCHV,113)INDXT
+C  113    FORMAT(/'B1 AND DELTZ:INDX ',I8)
+C         DO 517 I517=1,MIN( 53,NMRES )
+CC            IF( (ILONG(I517,1).EQ.4).AND.
+CC     *          (ILONG(I517,2).EQ.88) )THEN 
+CC            DO 518 I518=NUMLNG(I517-1)+1,
+CC     *              MIN(NUMLNG(I517-1)+10,NUMLNG(I517))
+C             DO 519 I519=1,2
+C               IF( I519.EQ.1 )THEN
+C                  I518=NUMLNG(I517-1)+1
+C               ELSE
+C                  I518=NUMLNG(I517)
+C               ENDIF
+C               WRITE(OARCHV,114)ILONG(I518,1),ILONG(I518,2),
+C     *                          MAXRIJ(I518)-XWORK(I518),
+C     *                          XWORK(I518),DELTZ(I518),
+C     *                          RINC(I518)
+C  114          FORMAT(2(I3,1X),4(1X,1PE10.3))
+C  519       CONTINUE
+CC  518       CONTINUE
+CC            ENDIF
+C  517    CONTINUE
+      ENDIF
+C     --- END DIAGNOSTICS ---
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-c     ---------------------- done -----------------------
+C     ---------------------- DONE -----------------------
 
-      return
-      end
+      RETURN
+      END

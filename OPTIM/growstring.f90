@@ -8,7 +8,7 @@ MODULE GROWSTRINGUTILS
   USE INTCOMMONS, ONLY : NINTC, NINTIM, INTINTERPT, NATINT, DESMINT, NNZ, KD, NDIH, ALIGNDIR, &
        & DIHINFO, PREVDIH, BACKTCUTOFF, INTERPBACKTCUT, MINBACKTCUT
 !
-! Moved this line to prevent a segmentation fault in gfortran
+! MOVED THIS LINE TO PREVENT A SEGMENTATION FAULT IN GFORTRAN
 !
 ! USE INTCUTILS, ONLY : CART2INT, INTINTERPOLATE
   IMPLICIT NONE
@@ -16,9 +16,9 @@ MODULE GROWSTRINGUTILS
 CONTAINS
     
   SUBROUTINE GROWSTRING(RS, RF, INPUTIM, FINALX, FINALE, FINALTAN,RMS,MFLAG)
-    ! RS and RF are start and end coordinates, respectively
-    ! Implement growing string method using EVOLVESTRING subroutine
-    ! FINALTAN is a 2d array pointer with coordinates as first dim, image as second
+    ! RS AND RF ARE START AND END COORDINATES, RESPECTIVELY
+    ! IMPLEMENT GROWING STRING METHOD USING EVOLVESTRING SUBROUTINE
+    ! FINALTAN IS A 2D ARRAY POINTER WITH COORDINATES AS FIRST DIM, IMAGE AS SECOND
 
     USE INTCUTILS, ONLY : CART2INT, INTINTERPOLATE
     IMPLICIT NONE
@@ -34,7 +34,7 @@ CONTAINS
     DOUBLE PRECISION :: PREVBACKTCUTOFF
 
     LOGICAL :: GROWLEFT
-    ! make sure diff is big enough to hold either cartesians or internals
+    ! MAKE SURE DIFF IS BIG ENOUGH TO HOLD EITHER CARTESIANS OR INTERNALS
     DOUBLE PRECISION :: TMPRMS, PARAM, DIFF(3*NATOMS+NINTC), TOL, DIST
     DOUBLE PRECISION :: TMPXYZ(1:3*NATOMS*INPUTIM)
     INTEGER :: IM, CRD
@@ -44,18 +44,18 @@ CONTAINS
 
     INTEGER :: ISTAT
 
-    ! alignment stuff
+    ! ALIGNMENT STUFF
     DOUBLE PRECISION :: DISTF, DIST2, RMAT(3,3)
     CHARACTER(LEN=5) :: ZSYMSAVE
     COMMON /SYS/ ZSYMSAVE
 
-    ! testing only
+    ! TESTING ONLY
     DOUBLE PRECISION :: TESTINT(NINTC)
 
     ! --------------------------------------------    
 
     IF (.NOT.EVOLVESTRINGT.AND.INTINTERPT) THEN
-       print*, 'ERROR! Growing strings not implemented with INTINTERP'
+       PRINT*, 'ERROR! GROWING STRINGS NOT IMPLEMENTED WITH INTINTERP'
        STOP
     ENDIF
 
@@ -63,13 +63,13 @@ CONTAINS
     INTPTEST = .FALSE.
 
     IF (PTEST) THEN
-       CALL DUMPCOORDS(RS, 'start.xyz')
-       CALL DUMPCOORDS(RF, 'fin.xyz')
+       CALL DUMPCOORDS(RS, 'START.XYZ')
+       CALL DUMPCOORDS(RF, 'FIN.XYZ')
     ENDIF
 
-    ! Initialize some stuff; TIM & NC are declared in GSDATA
-    TIM = INPUTIM ! total number of images
-    IF (DESMINT) THEN ! number of coordinates
+    ! INITIALIZE SOME STUFF; TIM & NC ARE DECLARED IN GSDATA
+    TIM = INPUTIM ! TOTAL NUMBER OF IMAGES
+    IF (DESMINT) THEN ! NUMBER OF COORDINATES
        NC = NINTC 
     ELSE
        NC = 3*NATOMS
@@ -80,27 +80,27 @@ CONTAINS
     IF (GSMAXTOTITD.GE.0) MAXTOTSTEPS = GSMAXTOTITD*TIM
     TOTSTEPS = 0
 
-    ! zero coordinates 1:4 and 7:8 of both start and end structures      
+    ! ZERO COORDINATES 1:4 AND 7:8 OF BOTH START AND END STRUCTURES      
     IF (FIXATMS.AND.PREROTATE.AND..NOT.DESMINT) THEN
-       ! shift molecule so 1st atm is at origin
+       ! SHIFT MOLECULE SO 1ST ATM IS AT ORIGIN
        CALL SHIFTZERO(RS, NATOMS, 1)
        CALL SHIFTZERO(RF, NATOMS, 1)
 
-       ! rotate arount y axis to zero x component of 3rd atom       
+       ! ROTATE AROUNT Y AXIS TO ZERO X COMPONENT OF 3RD ATOM       
        CALL ROTATEZERO(RS, NATOMS, 3, 2, 1)
        CALL ROTATEZERO(RF, NATOMS, 3, 2, 1)
 
-       ! rotate arount x axis to zero y component of 3rd atom
+       ! ROTATE AROUNT X AXIS TO ZERO Y COMPONENT OF 3RD ATOM
        CALL ROTATEZERO(RS, NATOMS, 3, 1, 2)
        CALL ROTATEZERO(RF, NATOMS, 3, 1, 2)
 
-       ! now 3rd atom is on z axis
-       ! rotate around z axis to zero x component of 2nd atom
+       ! NOW 3RD ATOM IS ON Z AXIS
+       ! ROTATE AROUND Z AXIS TO ZERO X COMPONENT OF 2ND ATOM
        CALL ROTATEZERO(RS, NATOMS, 2, 3, 1)
        CALL ROTATEZERO(RF, NATOMS, 2, 3, 1)
     ENDIF
 
-    ! make the endpoints
+    ! MAKE THE ENDPOINTS
     NULLIFY(FIRST,LAST, LEFTFRONT, RIGHTFRONT)
     CALL NEWNODE(FIRST); CALL NEWNODE(LAST)        
     LEFTFRONT => FIRST; RIGHTFRONT => LAST
@@ -114,7 +114,7 @@ CONTAINS
        PREVDIH => DIHINFO(1,:)
        CALL CART2INT(FIRST%XYZCART(1:3*NATOMS),FIRST%XYZ(1:NC))
        
-       !align to first image
+       !ALIGN TO FIRST IMAGE
        ALIGNDIR = .TRUE.
        DIHINFO(TIM+2,:) = DIHINFO(1,:)
        PREVDIH => DIHINFO(TIM+2,:)
@@ -133,11 +133,11 @@ CONTAINS
     DIFF(1:NC) = LAST%XYZ(1:NC) - FIRST%XYZ(1:NC)
 
     STRINGLEN = SQRT(DOT_PRODUCT(DIFF(1:NC),DIFF(1:NC)))
-    IF(PTEST) print*, 'Starting string len: ', STRINGLEN
+    IF(PTEST) PRINT*, 'STARTING STRING LEN: ', STRINGLEN
 
     FIRST%ARC = 0.0D0; FIRST%CHORD = 0.0D0; FIRST%IND = 0          
 
-    ! get initial energies
+    ! GET INITIAL ENERGIES
     IF (DESMINT) THEN
        CALL POTENTIAL(RS(:), FIRST%E, FIRST%GCART, .FALSE., .FALSE., &
             & TMPRMS, .FALSE., .FALSE.)    
@@ -152,7 +152,7 @@ CONTAINS
 
     IF (CUBSPLT.OR.TANTYPE.EQ.3) THEN
        IF (DESMINT) THEN
-          print*, 'ERROR! DESMINT not implemented with cubic splines yet!'
+          PRINT*, 'ERROR! DESMINT NOT IMPLEMENTED WITH CUBIC SPLINES YET!'
           STOP
        ENDIF
 
@@ -162,7 +162,7 @@ CONTAINS
 
     IF (EVOLVESTRINGT) THEN       
 
-       ! for just evolving a linear interpolation       
+       ! FOR JUST EVOLVING A LINEAR INTERPOLATION       
        NIM = TIM
        NLIM = TIM/2; NRIM = TIM-TIM/2
        JOINED = .TRUE.
@@ -173,7 +173,7 @@ CONTAINS
           CALL EXTENDRIGHT
        ENDDO
 
-       ! move first and last to images rather than endpoints
+       ! MOVE FIRST AND LAST TO IMAGES RATHER THAN ENDPOINTS
        FIRST => FIRST%NEXT; LAST => LAST%PREV 
 
        IF (INTINTERPT) THEN
@@ -196,7 +196,7 @@ CONTAINS
                 CALL TRANSBACKDELTA(STPINT,STPCART,DUMMYP%PREV%XYZCART,NINTC,3*NATOMS,NNZ,KD,FAILED,INTPTEST,INTEPSILON)
                 DUMMYP%XYZCART(:) = DUMMYP%PREV%XYZCART(:) + STPCART(:)
                 
-                ! align to start struct
+                ! ALIGN TO START STRUCT
                 CALL NEWMINDIST(RF(:),DUMMYP%XYZCART,NATOMS,DIST,.FALSE.,.FALSE.,ZSYM(1),.FALSE.,.FALSE.,.FALSE.,RMAT)
              ENDIF             
 
@@ -205,7 +205,7 @@ CONTAINS
           BACKTCUTOFF = MINBACKTCUT
        ENDIF
 
-       CALL CHECKENERGIES ! check energies aren't infinite
+       CALL CHECKENERGIES ! CHECK ENERGIES AREN'T INFINITE
 
        IF (PTEST) CALL TSUMMARY
 
@@ -218,7 +218,7 @@ CONTAINS
        DO WHILE(.NOT.JOINED)
           IF (NIM.EQ.0) THEN
 
-             ! make first images          
+             ! MAKE FIRST IMAGES          
              CALL EXTENDLEFT; CALL EXTENDRIGHT
 
              FIRST => LEFTFRONT; LAST => RIGHTFRONT 
@@ -251,10 +251,10 @@ CONTAINS
                 DUMMYP => DUMMYP%NEXT
              ENDDO
           ELSE
-             ! Assume string interpolated, so diffs, chords, arcs are set
-             IF (GROWLEFT) THEN ! grow from the left
+             ! ASSUME STRING INTERPOLATED, SO DIFFS, CHORDS, ARCS ARE SET
+             IF (GROWLEFT) THEN ! GROW FROM THE LEFT
 
-                IF (PTEST) print*, 'GROWING LEFT'             
+                IF (PTEST) PRINT*, 'GROWING LEFT'             
                 CALL EXTENDLEFT
 
                 IF(CUBSPLT) THEN
@@ -277,7 +277,7 @@ CONTAINS
                 CALL GETIMGPOT(LEFTFRONT, TMPRMS)
 
              ELSE
-                IF (PTEST) print*, 'GROWING RIGHT'
+                IF (PTEST) PRINT*, 'GROWING RIGHT'
 
                 CALL EXTENDRIGHT
 
@@ -304,7 +304,7 @@ CONTAINS
           ENDIF
 
           IF (NIM.EQ.TIM) THEN
-             IF (PTEST) print*, 'GS> String has joined!'
+             IF (PTEST) PRINT*, 'GS> STRING HAS JOINED!'
              JOINED = .TRUE.
           ENDIF
 
@@ -314,13 +314,13 @@ CONTAINS
        ENDDO
     ENDIF
 
-    IF(PTEST) print '(A,I6,2G20.10)', 'Final string length, len per image: ', NIM, STRINGLEN, STRINGLEN/(NIM+1)
+    IF(PTEST) PRINT '(A,I6,2G20.10)', 'FINAL STRING LENGTH, LEN PER IMAGE: ', NIM, STRINGLEN, STRINGLEN/(NIM+1)
 
-    ! output results
+    ! OUTPUT RESULTS
 
     CALL OUTPUT(FINALX, FINALE, FINALTAN)
 
-    ! if for some reason outputting before full string grown:
+    ! IF FOR SOME REASON OUTPUTTING BEFORE FULL STRING GROWN:
     IF (NIM.LT.TIM) THEN 
        DO IM = NIM+1, TIM
           FINALE(IM) = LAST%NEXT%E
@@ -338,10 +338,10 @@ CONTAINS
   END SUBROUTINE GROWSTRING
 
   SUBROUTINE EVOLVESTRING(GROWLEFT, FNRMS, MFLAG)
-    ! Evolve string until either one of the frontier rms or the entire rms fperp is below a given tolerance
-    ! lots of the variables are defined in gsdata
-    ! returns growleft true if left side converged before right
-    ! returns mflag true if successfully converged
+    ! EVOLVE STRING UNTIL EITHER ONE OF THE FRONTIER RMS OR THE ENTIRE RMS FPERP IS BELOW A GIVEN TOLERANCE
+    ! LOTS OF THE VARIABLES ARE DEFINED IN GSDATA
+    ! RETURNS GROWLEFT TRUE IF LEFT SIDE CONVERGED BEFORE RIGHT
+    ! RETURNS MFLAG TRUE IF SUCCESSFULLY CONVERGED
 
     IMPLICIT NONE
 
@@ -363,25 +363,25 @@ CONTAINS
     DOUBLE PRECISION :: AVGE, MAXE, PREVE
     INTEGER :: ISTAT
     
-    ! benchmarks only
+    ! BENCHMARKS ONLY
     DOUBLE PRECISION :: TOTE
 
-    ! for internals
+    ! FOR INTERNALS
     LOGICAL :: FAILED
     DOUBLE PRECISION :: STPINT(NC), STPCART(3*NATOMS)
 
-    ! testing only
+    ! TESTING ONLY
     INTEGER :: CRD
 
     ! -------------------------------------------    
 
-    ! do some initializing stuff
+    ! DO SOME INITIALIZING STUFF
     MFLAG = .FALSE.
 
     !---------
-    ! Evolution step, using LBFGS method as described in Nocedal & Wright, 2000, Ch.9
+    ! EVOLUTION STEP, USING LBFGS METHOD AS DESCRIBED IN NOCEDAL & WRIGHT, 2000, CH.9
     !---------
-    EVOLIT = 0 ! current string evolution iteration (the index k in Peters, et al)
+    EVOLIT = 0 ! CURRENT STRING EVOLUTION ITERATION (THE INDEX K IN PETERS, ET AL)
     K = 0
 
     IF (HESSGRAD) THEN
@@ -396,18 +396,18 @@ CONTAINS
        EVOLIT = EVOLIT + 1
        TOTSTEPS = TOTSTEPS + 1
 
-       CALL INTERPOLATE          ! Interpolate string, reset DIFFS, ARCS, CHORDS       
+       CALL INTERPOLATE          ! INTERPOLATE STRING, RESET DIFFS, ARCS, CHORDS       
 
-       CALL DECIDEREPARAM(REPARAM) ! decide whether to reparameterize       
+       CALL DECIDEREPARAM(REPARAM) ! DECIDE WHETHER TO REPARAMETERIZE       
 
        IF (REPARAM) CALL REPARAMETRIZE          
 
-       IMCOUNT = NIM ! imcount is the number of movable images
-       START => FIRST ! start of movable images
+       IMCOUNT = NIM ! IMCOUNT IS THE NUMBER OF MOVABLE IMAGES
+       START => FIRST ! START OF MOVABLE IMAGES
        
-       ! get energies and grad vectors
-       ! if not reparametrizing, can just use energies and grads from end of last cycle
-       ! assumes energies were precalculated before entering EVOLVESTRING routine
+       ! GET ENERGIES AND GRAD VECTORS
+       ! IF NOT REPARAMETRIZING, CAN JUST USE ENERGIES AND GRADS FROM END OF LAST CYCLE
+       ! ASSUMES ENERGIES WERE PRECALCULATED BEFORE ENTERING EVOLVESTRING ROUTINE
        IF (REPARAM) THEN
           DUMMYP => START
           DO IM = 1,IMCOUNT
@@ -415,7 +415,7 @@ CONTAINS
              IF (HESSGRAD) FULLGRAD(NC*(IM-1)+1:NC*IM) = DUMMYP%GRAD(:)
              DUMMYP => DUMMYP%NEXT
           ENDDO
-          ! reset Hessian approximation
+          ! RESET HESSIAN APPROXIMATION
           K = 0
        ENDIF
 
@@ -426,7 +426,7 @@ CONTAINS
 
        DUMMYP => START
        DO IM = 1,NIM
-          ! recalculate fperp and fnorms
+          ! RECALCULATE FPERP AND FNORMS
           FPERP(NC*(IM-1)+1:NC*IM) = - DUMMYP%GRAD(:) + &
                & DOT_PRODUCT(DUMMYP%GRAD, DUMMYP%TGT)*DUMMYP%TGT(:)       
 
@@ -448,13 +448,13 @@ CONTAINS
 
        FNRMS = SQRT(FNORM2/IMCOUNT)
 
-       ! decide whether to freeze some nodes b/c not contributing significantly to FNRMS
+       ! DECIDE WHETHER TO FREEZE SOME NODES B/C NOT CONTRIBUTING SIGNIFICANTLY TO FNRMS
        IF (FREEZENODEST) THEN
           DUMMYP => START
           DO IM = 1,IMCOUNT
              DUMMYP%FREEZE = (SQRT(DUMMYP%FNORM2)/FNRMS.LT.FREEZETOL)
              IF (DUMMYP%FREEZE.AND.PTEST) &
-                  & print '(A,I4,L2,2F15.5)', 'Freezing image: ', IM, DUMMYP%FREEZE,SQRT(DUMMYP%FNORM2),FNRMS
+                  & PRINT '(A,I4,L2,2F15.5)', 'FREEZING IMAGE: ', IM, DUMMYP%FREEZE,SQRT(DUMMYP%FNORM2),FNRMS
              DUMMYP => DUMMYP%NEXT
           ENDDO
        ENDIF
@@ -469,7 +469,7 @@ CONTAINS
        ENDIF
        
        IF (PTEST) THEN
-          ! get average and maximum energy
+          ! GET AVERAGE AND MAXIMUM ENERGY
           AVGE = 0.0D0
           MAXE = -1.0D10
           DUMMYP => FIRST
@@ -487,69 +487,69 @@ CONTAINS
           ENDIF
 
           IF (JOINED) THEN
-             print '(A,1x,3G20.10,1x,2I6)', '>>> FNRMS, MAXE, AVGE, NIM, EVOLIT: ', FNRMS, MAXE, AVGE, NIM, EVOLIT
+             PRINT '(A,1X,3G20.10,1X,2I6)', '>>> FNRMS, MAXE, AVGE, NIM, EVOLIT: ', FNRMS, MAXE, AVGE, NIM, EVOLIT
           ELSE
-             print '(A,1x,3G20.10,1x,2I6)', '>>> FNRMSL, FNRMSR, FNRMS, NIM, EVOLIT: ', FNRMSL, FNRMSR, FNRMS, NIM, EVOLIT
+             PRINT '(A,1X,3G20.10,1X,2I6)', '>>> FNRMSL, FNRMSR, FNRMS, NIM, EVOLIT: ', FNRMSL, FNRMSR, FNRMS, NIM, EVOLIT
           ENDIF
 
 !         CALL FLUSH(6,ISTAT)
        ENDIF
 
-       ! check for convergence
+       ! CHECK FOR CONVERGENCE
        IF (JOINED.AND.FNRMSL.LT.GSCONV) THEN
-          IF (PTEST) print*, 'SUCCESS! - whole string converged!'
+          IF (PTEST) PRINT*, 'SUCCESS! - WHOLE STRING CONVERGED!'
           MFLAG = .TRUE.
           EXIT 
        ELSE IF (.NOT.JOINED.AND.FNRMSL.LT.GSGROWTOL) THEN
-          IF (PTEST) print*, 'SUCCESS! - left end converged!'
+          IF (PTEST) PRINT*, 'SUCCESS! - LEFT END CONVERGED!'
           GROWLEFT = .TRUE.
           MFLAG = .TRUE.
           EXIT 
        ELSE IF (.NOT.JOINED.AND.FNRMSR.LT.GSGROWTOL) THEN
-          IF (PTEST) print*, 'SUCCESS! - right end converged!'
+          IF (PTEST) PRINT*, 'SUCCESS! - RIGHT END CONVERGED!'
           MFLAG = .TRUE.
           GROWLEFT = .FALSE.
           EXIT  
        ENDIF
 
        IF (GSMAXTOTITD.GE.0.AND.TOTSTEPS.GT.MAXTOTSTEPS) THEN
-          print*, 'Total number of steps for entire string exceeded maximum.', NIM, TOTSTEPS, MAXTOTSTEPS
-          IF(PTEST) print*, 'String length: ', STRINGLEN
+          PRINT*, 'TOTAL NUMBER OF STEPS FOR ENTIRE STRING EXCEEDED MAXIMUM.', NIM, TOTSTEPS, MAXTOTSTEPS
+          IF(PTEST) PRINT*, 'STRING LENGTH: ', STRINGLEN
           EXIT
        ELSE IF(JOINED.AND.EVOLIT.GT.ITERD*NIM.AND.AVGE.LT.DESMAXAVGE) THEN
           IF (PTEST) THEN 
-             print*, 'Number of final evolution steps exceeded maximum; average energy below MAXAVGE.'
-             IF (PTEST) print*, 'String length: ', STRINGLEN
+             PRINT*, 'NUMBER OF FINAL EVOLUTION STEPS EXCEEDED MAXIMUM; AVERAGE ENERGY BELOW MAXAVGE.'
+             IF (PTEST) PRINT*, 'STRING LENGTH: ', STRINGLEN
           ENDIF
           GROWLEFT = (FNRMSL <= FNRMSR)
           EXIT
        ELSE IF (.NOT.JOINED.AND.EVOLIT.GT.MAXGROWSTEPS) THEN
-          print*, 'Number of growing evolution steps exceeded maximum.'
-          IF (PTEST) print*, 'String length: ', STRINGLEN
+          PRINT*, 'NUMBER OF GROWING EVOLUTION STEPS EXCEEDED MAXIMUM.'
+          IF (PTEST) PRINT*, 'STRING LENGTH: ', STRINGLEN
           GROWLEFT = (FNRMSL <= FNRMSR)
           EXIT
        ENDIF
 
 
-       ! get the NR steps and move images       
-       lbfgs: IF (.NOT.NOLBFGS) THEN
-       main: IF(K.EQ.0) THEN
-          ! Use DGUESS as the initial guess for the inverse Hessian diagonal
+       ! GET THE NR STEPS AND MOVE IMAGES       
+       LBFGS: IF (.NOT.NOLBFGS) THEN
+       MAIN: IF(K.EQ.0) THEN
+          ! USE DGUESS AS THE INITIAL GUESS FOR THE INVERSE HESSIAN DIAGONAL
           HF(:) = GSDGUESS*FPERP(:)
              
-          ! Make the first guess for the step length cautious
+          ! MAKE THE FIRST GUESS FOR THE STEP LENGTH CAUTIOUS
           IF (FNORM2.EQ.0.0D0) THEN
-             FNORM2=1.0D0 ! exact zero is presumably wrong!
-             PRINT '(A)','WARNING - FNORM was zero in lbfgs,&
-                  & resetting to one'
+             FNORM2=1.0D0 ! EXACT ZERO IS PRESUMABLY WRONG!
+             PRINT '(A)','WARNING - FNORM WAS ZERO IN LBFGS,&
+                  & RESETTING TO ONE'
           ENDIF
           STP(:) = MIN(1.0D0/SQRT(FNORM2), SQRT(FNORM2))
           
           POINT = 0
        
-       ELSE main
-          P = MODULO(POINT-1,M) ! position in lbfgs lists
-          BOUND = MIN(K,M) ! how far backwards to look for Hessian  
+       ELSE MAIN
+          P = MODULO(POINT-1,M) ! POSITION IN LBFGS LISTS
+          BOUND = MIN(K,M) ! HOW FAR BACKWARDS TO LOOK FOR HESSIAN  
           
           IF (HESSGRAD) THEN
              Y(P,:) = FULLGRAD(:) - PREVFULLGRAD(:)
@@ -557,7 +557,7 @@ CONTAINS
              Y(P,:) = PREVFPERP(:) - FPERP(:)
           ENDIF
         
-          ! Get initial diagonal Hessian estimate; eq. 9.6 in Nocedal, et al.
+          ! GET INITIAL DIAGONAL HESSIAN ESTIMATE; EQ. 9.6 IN NOCEDAL, ET AL.
           SY = DOT_PRODUCT(S(P,:),Y(P,:))               
           YY = DOT_PRODUCT(Y(P,:), Y(P,:))               
           IF (SY.EQ.0.0D0) SY = 1.0D0
@@ -565,10 +565,10 @@ CONTAINS
           GAMMA = SY / YY
           DIAG(:) = GAMMA
 
-          ! update RO
+          ! UPDATE RO
           RO(P) = 1.0D0/SY
              
-          ! Get HF = Hk*fperp (two-loop algorithm 9.1 in Nocedal et al)
+          ! GET HF = HK*FPERP (TWO-LOOP ALGORITHM 9.1 IN NOCEDAL ET AL)
           Q(:) = FPERP(:)             
                     
           DO I = 1,BOUND                             
@@ -585,8 +585,8 @@ CONTAINS
              HF(:) = HF(:) + (ALPHA(P) - BETA)*S(P,:)                
           ENDDO
           STP(:) = 1.0
-       ENDIF main
-       ENDIF lbfgs
+       ENDIF MAIN
+       ENDIF LBFGS
 
        IF (HESSGRAD) THEN
           DUMMYP => START
@@ -610,11 +610,11 @@ CONTAINS
        ENDIF
        
        IF (DOT_PRODUCT(NRDIR,FPERP).LT.0) THEN 
-          IF(PTEST) print*, 'NRDIR has negative projection onto fperp. Reversing step.'
+          IF(PTEST) PRINT*, 'NRDIR HAS NEGATIVE PROJECTION ONTO FPERP. REVERSING STEP.'
           NRDIR(:) = -NRDIR(:)
        ENDIF
 
-       ! take no more than max step for each individual image
+       ! TAKE NO MORE THAN MAX STEP FOR EACH INDIVIDUAL IMAGE
        IF (HESSGRAD) PREVFULLGRAD(:) = FULLGRAD(:)
 
        DUMMYP => START
@@ -643,7 +643,7 @@ CONTAINS
              CALL GETIMGPOT(DUMMYP,RMS)
 
              IF ((PREVE.LT.0.AND.DUMMYP%E-PREVE.GT.DESMAXEJUMP).OR.(DESMINT.AND.FAILED)) THEN
-                IF (PTEST) print*, 'Energy jump too big for image or failed transbackdelta. Skipping this image.', &
+                IF (PTEST) PRINT*, 'ENERGY JUMP TOO BIG FOR IMAGE OR FAILED TRANSBACKDELTA. SKIPPING THIS IMAGE.', &
                      & IM, PREVE, DUMMYP%E
                 DUMMYP%XYZ(:) = DUMMYP%PREVXYZ(:)
                 IF (DESMINT) DUMMYP%XYZCART(:) = DUMMYP%PREVXCART(:)
@@ -659,7 +659,7 @@ CONTAINS
 
        IF (.NOT.HESSGRAD) PREVFPERP(:) = FPERP(:)       
 
-       ! update iteration number and point in lbfgs lists
+       ! UPDATE ITERATION NUMBER AND POINT IN LBFGS LISTS
        K = K + 1
        POINT = MODULO(POINT+1,M)          
 
@@ -672,7 +672,7 @@ CONTAINS
   END SUBROUTINE EVOLVESTRING
 
   SUBROUTINE DECIDEREPARAM(REPARAM)
-    ! decide whether or not to reparametrize string
+    ! DECIDE WHETHER OR NOT TO REPARAMETRIZE STRING
     
     IMPLICIT NONE
     
@@ -690,14 +690,14 @@ CONTAINS
     DO IM = 1,NIM+1
        DUMMYP => DUMMYP%NEXT
 
-       ! get desired length
+       ! GET DESIRED LENGTH
        IF (.NOT.JOINED.AND.DUMMYP%RF) THEN 
           GOODLEN = STRINGLEN*(1.0-DBLE(NIM)/(TIM+1))
        ELSE
           GOODLEN = STRINGLEN*1.0D0/(TIM+1)
        ENDIF
        
-       ! get actual length
+       ! GET ACTUAL LENGTH
        IF (CUBSPLT) THEN 
           ACTLEN = DUMMYP%ARC-DUMMYP%PREV%ARC
        ELSE
@@ -714,15 +714,15 @@ CONTAINS
     ENDDO       
     
     IF (MINOFFSET/MAXOFFSET.LT.REPARAMTOL) THEN
-       IF(PTEST) print '(A,5F20.10)', ' minoffset, maxoffset, ratio, reparamtol, total length: ', &
+       IF(PTEST) PRINT '(A,5F20.10)', ' MINOFFSET, MAXOFFSET, RATIO, REPARAMTOL, TOTAL LENGTH: ', &
   &              MINOFFSET, MAXOFFSET, MINOFFSET/MAXOFFSET, REPARAMTOL, STRINGLEN
        REPARAM = .TRUE.
     ENDIF    
   END SUBROUTINE DECIDEREPARAM
 
   SUBROUTINE REPARAMETRIZE
-    ! reparametrize string
-    ! assume chords, arcs, diffs, stringlen have all been set already
+    ! REPARAMETRIZE STRING
+    ! ASSUME CHORDS, ARCS, DIFFS, STRINGLEN HAVE ALL BEEN SET ALREADY
 
     IMPLICIT NONE
 
@@ -731,16 +731,16 @@ CONTAINS
     DOUBLE PRECISION :: PARAM, STPINT(NINTC), STPCART(3*NATOMS)
     LOGICAL :: FAILED
 
-    ! alignment stuff
+    ! ALIGNMENT STUFF
     DOUBLE PRECISION :: DISTF, DIST, DIST2, RMAT(3,3)
     CHARACTER(LEN=5) :: ZSYMSAVE
     COMMON /SYS/ ZSYMSAVE
 
     DOUBLE PRECISION :: STPDIST1, STPDIST2, STEP(NC)
 
-    IF(PTEST) print*, 'reparametrizing string...'
+    IF(PTEST) PRINT*, 'REPARAMETRIZING STRING...'
 
-    ! save current coordinates in prevxyz
+    ! SAVE CURRENT COORDINATES IN PREVXYZ
     CURN1 => FIRST
     DO IM = 1, NIM       
        CURN1%PREVXYZ(1:NC) = CURN1%XYZ(1:NC)
@@ -776,18 +776,18 @@ CONTAINS
              ENDIF
 
              IF (STPDIST1.LT.STPDIST2) THEN 
-                ! take step from previous image position
+                ! TAKE STEP FROM PREVIOUS IMAGE POSITION
                 CALL TRANSBACKDELTA(STEP,STPCART,CURN2%PREV%PREVXCART,NINTC,3*NATOMS,NNZ,KD,FAILED,INTPTEST,INTEPSILON)
                 IF (FAILED) THEN
-                   print*, 'TRANSBACKDELTA failed in REPARAMETRIZE w/ STPDIST1', STPDIST1, STPDIST2
+                   PRINT*, 'TRANSBACKDELTA FAILED IN REPARAMETRIZE W/ STPDIST1', STPDIST1, STPDIST2
                    STOP
                 ENDIF
                 CURN1%XYZCART = CURN2%PREV%PREVXCART + STPCART
              ELSE
-                ! take step from this image position
+                ! TAKE STEP FROM THIS IMAGE POSITION
                 CALL TRANSBACKDELTA(STPINT,STPCART,CURN1%PREVXCART,NINTC,3*NATOMS,NNZ,KD,FAILED,INTPTEST,INTEPSILON)
                 IF (FAILED) THEN
-                   print*, 'TRANSBACKDELTA failed in REPARAMETRIZE w/ STPDIST2', STPDIST1, STPDIST2
+                   PRINT*, 'TRANSBACKDELTA FAILED IN REPARAMETRIZE W/ STPDIST2', STPDIST1, STPDIST2
                    STOP
                 ENDIF
                 CURN1%XYZCART = CURN1%PREVXCART + STPCART
@@ -823,14 +823,14 @@ CONTAINS
              IF (STPDIST1.LT.STPDIST2) THEN
                 CALL TRANSBACKDELTA(STEP,STPCART,CURN2%PREVXCART,NINTC,3*NATOMS,NNZ,KD,FAILED,INTPTEST,INTEPSILON)
                 IF (FAILED) THEN
-                   print*, 'TRANSBACKDELTA failed in REPARAMETRIZE w/ STPDIST1', STPDIST1, STPDIST2
+                   PRINT*, 'TRANSBACKDELTA FAILED IN REPARAMETRIZE W/ STPDIST1', STPDIST1, STPDIST2
                    STOP
                 ENDIF
                 CURN1%XYZCART = CURN2%PREVXCART + STPCART
              ELSE                
                 CALL TRANSBACKDELTA(STPINT,STPCART,CURN1%PREVXCART,NINTC,3*NATOMS,NNZ,KD,FAILED,INTPTEST,INTEPSILON)
                 IF (FAILED) THEN
-                   print*, 'TRANSBACKDELTA failed in REPARAMETRIZE w/ STPDIST2', STPDIST1, STPDIST2
+                   PRINT*, 'TRANSBACKDELTA FAILED IN REPARAMETRIZE W/ STPDIST2', STPDIST1, STPDIST2
                    STOP
                 ENDIF
                 CURN1%XYZCART = CURN1%PREVXCART + STPCART
@@ -841,7 +841,7 @@ CONTAINS
        CURN1 => CURN1%PREV         
     ENDDO
 
-    ! align cartesian structures along string
+    ! ALIGN CARTESIAN STRUCTURES ALONG STRING
     IF (DESMINT) THEN
        CURN1 => FIRST%PREV
        DO IM = 1,NIM+1
@@ -852,15 +852,15 @@ CONTAINS
 
     CALL INTERPOLATE
 
-    IF (PTEST) print*, 'String length, NIM after reparam: ', STRINGLEN, NIM
+    IF (PTEST) PRINT*, 'STRING LENGTH, NIM AFTER REPARAM: ', STRINGLEN, NIM
     
     RETURN
   END SUBROUTINE REPARAMETRIZE
 
   SUBROUTINE INTERPOLATE
-    ! interpolate string
-    !recalculate diffs, chords, arcs, stringlen
-    ! if using internal coords, these are all in internals
+    ! INTERPOLATE STRING
+    !RECALCULATE DIFFS, CHORDS, ARCS, STRINGLEN
+    ! IF USING INTERNAL COORDS, THESE ARE ALL IN INTERNALS
 
     IMPLICIT NONE
 
@@ -885,7 +885,7 @@ CONTAINS
     STRINGLEN = DUMMYP%ARC
 
     IF (STRINGLEN.GT.MAXLEN) THEN
-       print*, 'STRINGLEN exceeds MAXLEN', STRINGLEN, MAXLEN
+       PRINT*, 'STRINGLEN EXCEEDS MAXLEN', STRINGLEN, MAXLEN
        STOP
     ENDIF
 
@@ -893,8 +893,8 @@ CONTAINS
 
   SUBROUTINE GETTANGENTS
     IMPLICIT NONE
-    ! get tangent vectors; entire tangent vector for all images is normalized
-    ! Assumes images, diffs, chords, arcs are all properly allocated and calculated
+    ! GET TANGENT VECTORS; ENTIRE TANGENT VECTOR FOR ALL IMAGES IS NORMALIZED
+    ! ASSUMES IMAGES, DIFFS, CHORDS, ARCS ARE ALL PROPERLY ALLOCATED AND CALCULATED
 
     INTEGER :: IM
     DOUBLE PRECISION :: WP, WM
@@ -924,14 +924,14 @@ CONTAINS
        ELSE IF (TANTYPE.EQ.4) THEN
           CURN%TGT = CURN%NEXT%DIFF + CURN%DIFF
        ELSE
-          print*, 'TANTYPE must be 1,2,3,or 4 if using linear interpolation: ', TANTYPE
+          PRINT*, 'TANTYPE MUST BE 1,2,3,OR 4 IF USING LINEAR INTERPOLATION: ', TANTYPE
           STOP
        ENDIF
 
        CURN%TNORM = SQRT(DOT_PRODUCT(CURN%TGT,CURN%TGT))
        
        IF (CURN%TNORM.EQ.0.0D0) THEN
-          print*, 'ERROR: TNORM is zero. Images too close together. This is image: ', IM
+          PRINT*, 'ERROR: TNORM IS ZERO. IMAGES TOO CLOSE TOGETHER. THIS IS IMAGE: ', IM
           STOP
        ENDIF
 
@@ -951,18 +951,18 @@ CONTAINS
     CHARACTER*30 :: FNAME
 
     IF (N.LT.0) THEN
-       FNAME = 'gspathway.xyz'
+       FNAME = 'GSPATHWAY.XYZ'
     ELSE
-       WRITE(FNAME,'(A,I0.3,A)') 'gspathway.', N, '.xyz'
+       WRITE(FNAME,'(A,I0.3,A)') 'GSPATHWAY.', N, '.XYZ'
     ENDIF
 
-    ! output pathway
+    ! OUTPUT PATHWAY
     OPEN(UNIT=45,FILE=FNAME,STATUS='UNKNOWN')
 
     DUMMYP => FIRST%PREV
     DO I = 0,NIM+1
        WRITE(45,'(I6)') NATOMS
-       WRITE(45,'(A,G25.15)') ' Energy= ', DUMMYP%E
+       WRITE(45,'(A,G25.15)') ' ENERGY= ', DUMMYP%E
        IF (DESMINT) THEN
           WRITE(45,'(A3,3G20.10)') ('LA ',DUMMYP%XYZCART(3*(J-1)+1:3*(J-1)+3),J=1,NATOMS)
        ELSE
@@ -973,7 +973,7 @@ CONTAINS
     ENDDO
     CLOSE(45)
 
-    OPEN(UNIT=45,FILE='imgenergies.out', STATUS='UNKNOWN')
+    OPEN(UNIT=45,FILE='IMGENERGIES.OUT', STATUS='UNKNOWN')
     DUMMYP => FIRST%PREV
     DO I=0,NIM+1
        WRITE(45,'(I6,G20.10)') I+1, DUMMYP%E
@@ -985,7 +985,7 @@ CONTAINS
   END SUBROUTINE DUMPGSPATH    
 
   SUBROUTINE OUTPUT(FINALX, FINALE, FINALTAN)
-    ! output the final coordinates and energy
+    ! OUTPUT THE FINAL COORDINATES AND ENERGY
 
     IMPLICIT NONE
 
@@ -1015,7 +1015,7 @@ CONTAINS
     DOUBLE PRECISION :: X(3*NATOMS)
     INTEGER :: A
 
-    ! given coordinate array X for a single molecule, dump into file FNAME
+    ! GIVEN COORDINATE ARRAY X FOR A SINGLE MOLECULE, DUMP INTO FILE FNAME
     OPEN (UNIT = 55, FILE = FNAME, STATUS = 'UNKNOWN')
     WRITE(55,'(I6)') NATOMS
     WRITE(55,'(A)') ' '
@@ -1024,8 +1024,8 @@ CONTAINS
   END SUBROUTINE DUMPCOORDS
 
   SUBROUTINE CHECKENERGIES
-    ! calculate energies for points on the current string
-    ! if any are too large, randomly perturb the images
+    ! CALCULATE ENERGIES FOR POINTS ON THE CURRENT STRING
+    ! IF ANY ARE TOO LARGE, RANDOMLY PERTURB THE IMAGES
 
     TYPE (IMGNODE), POINTER :: DUMMYP
     INTEGER :: IM, J
@@ -1037,12 +1037,12 @@ CONTAINS
        CALL GETIMGPOT(DUMMYP,RMS)
        IF (-DUMMYP%E.LT.-HUGE(DUMMYP%E)) THEN
           IF (DESMINT) THEN
-             print*, 'ERROR: shouldnt have infinite energies when working in internals'
+             PRINT*, 'ERROR: SHOULDNT HAVE INFINITE ENERGIES WHEN WORKING IN INTERNALS'
              STOP
           ENDIF
 
-          ! energy is NaN or infinite
-          PRINT *, "IMAGE",IM," IS BAD! - trying to lower it's energy..."
+          ! ENERGY IS NAN OR INFINITE
+          PRINT *, "IMAGE",IM," IS BAD! - TRYING TO LOWER IT'S ENERGY..."
           DO J=1,3*NATOMS ! CHANGING GEOMETRY RANDOMLY
              HARVEST=DPRAND()
              DUMMYP%XYZ(J) = DUMMYP%XYZ(J) + HARVEST*0.01
@@ -1051,7 +1051,7 @@ CONTAINS
           CALL GETIMGPOT(DUMMYP, RMS)
 
           IF (-DUMMYP%E.LT.-HUGE(DUMMYP%E)) THEN
-             print*, 'FAILED!'
+             PRINT*, 'FAILED!'
              CALL TSUMMARY
              STOP
           ENDIF
@@ -1062,9 +1062,9 @@ CONTAINS
   END SUBROUTINE CHECKENERGIES
 
   SUBROUTINE GETIMGPOT(IMGP, RMS)
-    ! run potential for the given string image, given XYZCART
-    ! set IMGP%GRAD, IMGP%GCART, IMGP%E
-    ! returns RMS
+    ! RUN POTENTIAL FOR THE GIVEN STRING IMAGE, GIVEN XYZCART
+    ! SET IMGP%GRAD, IMGP%GCART, IMGP%E
+    ! RETURNS RMS
 
     IMPLICIT NONE
 

@@ -1,26 +1,26 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
-C jmc hacked to work in internal coordinates (with unres)
-C NOPT will be set to the value for Cartesians, NINTS is for internals
-C DUMMY3, COORDS, VEC will be in internals
-C GRAD1,GRAD2 will be returned from potential in internals
-C Therefore only thing that should really be affected is the call to potential 
+C JMC HACKED TO WORK IN INTERNAL COORDINATES (WITH UNRES)
+C NOPT WILL BE SET TO THE VALUE FOR CARTESIANS, NINTS IS FOR INTERNALS
+C DUMMY3, COORDS, VEC WILL BE IN INTERNALS
+C GRAD1,GRAD2 WILL BE RETURNED FROM POTENTIAL IN INTERNALS
+C THEREFORE ONLY THING THAT SHOULD REALLY BE AFFECTED IS THE CALL TO POTENTIAL 
 
       SUBROUTINE INTSECDIAG(VEC,COORDS,ENERGY,GL,DIAG,GTEST,XRMS)
       USE COMMONS
@@ -39,8 +39,8 @@ C Therefore only thing that should really be affected is the call to potential
       LOCALV(1:NINTS)=VEC(1:NINTS)
       CALL VECNORM(LOCALV(1:NINTS),NINTS)
 
-C jmc      IF (NFREEZE.LT.3) CALL ORTHOGOPT(VEC,COORDS,.TRUE.)
-C to orthogonalise the displacement to translations and rotations
+C JMC      IF (NFREEZE.LT.3) CALL ORTHOGOPT(VEC,COORDS,.TRUE.)
+C TO ORTHOGONALISE THE DISPLACEMENT TO TRANSLATIONS AND ROTATIONS
 
       DUMCART=1.0D0
 
@@ -58,8 +58,8 @@ C     ZETA=DIFF/SQRT(VECL)
 C     WRITE(*,'(6F15.5)') (DUMMY3(J1),J1=1,NINTS)
 
       IF (UNRST) THEN
-         CALL var_to_geom(NINTS,DUMMY3)
-         CALL chainbuild
+         CALL VAR_TO_GEOM(NINTS,DUMMY3)
+         CALL CHAINBUILD
       END IF
       CALL POTENTIAL(DUMCART,EPLUS,GRAD1,GTEST,.FALSE.,RMS,.FALSE.,.FALSE.)
 
@@ -68,13 +68,13 @@ C     WRITE(*,'(6F15.5)') (DUMMY3(J1),J1=1,NINTS)
 C     WRITE(*,'(6F15.5)') (DUMMY3(J1),J1=1,NINTS)
 
       IF (UNRST) THEN
-         CALL var_to_geom(NINTS,DUMMY3)
-         CALL chainbuild
+         CALL VAR_TO_GEOM(NINTS,DUMMY3)
+         CALL CHAINBUILD
       END IF
-C jmc remember for unres, passing of coords array (first arg) is irrelevant...
+C JMC REMEMBER FOR UNRES, PASSING OF COORDS ARRAY (FIRST ARG) IS IRRELEVANT...
       CALL POTENTIAL(DUMCART,EMINUS,GRAD2,GTEST,.FALSE.,RMS,.FALSE.,.FALSE.)
 
-      DIAG=(EPLUS+EMINUS-2.0D0*ENERGY)/((ZETA**2)*VECL) ! jmc DIAG is lambda*vecl (but vecl=1.0d0 anyway...)
+      DIAG=(EPLUS+EMINUS-2.0D0*ENERGY)/((ZETA**2)*VECL) ! JMC DIAG IS LAMBDA*VECL (BUT VECL=1.0D0 ANYWAY...)
 
       DIAG2=0.0D0
       DO J1=1,NINTS
@@ -86,22 +86,22 @@ C        WRITE(*,'(A,I4,4F20.10)') 'J1,GRAD1,GRAD2,LOCALV,DIAG2=',J1,GRAD1(J1),G
 C     WRITE(*,'(A,6F20.10)') 'D,D2,D3,E+,E-,E=',DIAG,DIAG2,DIAG3,EPLUS,EMINUS,ENERGY
 C     IF (.NOT.GTEST) WRITE(*,'(A,6F20.10)') 'D,D2,D3,E+,E-,E=',DIAG,DIAG2,DIAG3,EPLUS,EMINUS,ENERGY
 C
-C  Although DIAG3 is a more accurate estimate of the diagonal second derivative, it
-C  cannot be differentiated analytically.
+C  ALTHOUGH DIAG3 IS A MORE ACCURATE ESTIMATE OF THE DIAGONAL SECOND DERIVATIVE, IT
+C  CANNOT BE DIFFERENTIATED ANALYTICALLY.
 C
       IF (GTEST) THEN
 C        DO J1=1,NINTS
-C this is from eqn 6.20 in Chapter 6 of 'The Book'...
+C THIS IS FROM EQN 6.20 IN CHAPTER 6 OF 'THE BOOK'...
 C           GL(J1)=(GRAD1(J1)-GRAD2(J1))/(ZETA*VECL**2)-2.0D0*DIAG*LOCALV(J1)/VECL**2
 C           WRITE(*,'(A,I4,4G16.7)') 'J1,GRAD1,GRAD2,VEC,GL=',J1,GRAD1(J1),GRAD2(J1),LOCALV(J1),GL(J1)
 C        ENDDO
          GL(1:NINTS)=(GRAD1(1:NINTS)-GRAD2(1:NINTS))/(ZETA*VECL**2)-2.0D0*DIAG*LOCALV(1:NINTS)/VECL**2
-C jmc so GL is vecl*dlambda/dx...
-C to orthogonalise the **gradient** to translations and rotations (obviously not necessary...)
+C JMC SO GL IS VECL*DLAMBDA/DX...
+C TO ORTHOGONALISE THE **GRADIENT** TO TRANSLATIONS AND ROTATIONS (OBVIOUSLY NOT NECESSARY...)
 C        CALL ORTHOGOPT(GL,COORDS,.FALSE.)
 
 C
-C  Project out any component of the gradient along LOCALV (which is a unit vector).
+C  PROJECT OUT ANY COMPONENT OF THE GRADIENT ALONG LOCALV (WHICH IS A UNIT VECTOR).
 C
          PROJ=0.0D0
          DO J1=1,NINTS
@@ -117,11 +117,11 @@ C
          ENDDO
          XRMS=DSQRT(XRMS/NINTS)
          IF (DEBUG) WRITE(*,'(A,3G15.5,3G20.12,G10.3)') 'D,D2,D3,E+,E-,E,RMS=',DIAG,DIAG2,DIAG3,EPLUS,EMINUS,ENERGY,XRMS
-         IF (DEBUG) WRITE(*,'(A,G20.10)') 'predicted gradient component=',(EPLUS-EMINUS)/(2*ZETA)
+         IF (DEBUG) WRITE(*,'(A,G20.10)') 'PREDICTED GRADIENT COMPONENT=',(EPLUS-EMINUS)/(2*ZETA)
 C        WRITE(*,'(A,5G20.10)') 'D,E+,E-,E,RMS=',DIAG,EPLUS,EMINUS,ENERGY,XRMS
       ENDIF
 CC
-CC  Project out any component of the gradient along LOCALV (which is a unit vector).
+CC  PROJECT OUT ANY COMPONENT OF THE GRADIENT ALONG LOCALV (WHICH IS A UNIT VECTOR).
 CC
 C      PROJ=0.0D0
 C      DO J1=1,NINTS

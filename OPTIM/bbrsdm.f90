@@ -40,8 +40,8 @@
       DO WHILE (RMSGRD > EPS2)
 
          IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A)') &
-     &        ' bbrsdm> Energy and RMS force=',ENERGY,RMSGRD,' after ',ITDONE,' BBRSDM steps'
-         WRITE(ESTRING,16) 'bbrsdm> Energy for last cycle=',ENERGY,' '
+     &        ' BBRSDM> ENERGY AND RMS FORCE=',ENERGY,RMSGRD,' AFTER ',ITDONE,' BBRSDM STEPS'
+         WRITE(ESTRING,16) 'BBRSDM> ENERGY FOR LAST CYCLE=',ENERGY,' '
 16       FORMAT(A,27X,F20.10,A)
 
 

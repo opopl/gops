@@ -1,20 +1,20 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       SUBROUTINE CLATMIN(COORDS,V)
       USE COMMONS
@@ -24,7 +24,7 @@ C
      1                 AMAT(3,3), AINV(3,3), COORDS(3*NATOMS), DIF, TEMP1, RMS
       COMMON /CAS/ AMAT, AINV, NELEMENTS, NTYPE
 C
-C  Value of DIF is the order of magnitude to which the lattice constant can be optimised. 
+C  VALUE OF DIF IS THE ORDER OF MAGNITUDE TO WHICH THE LATTICE CONSTANT CAN BE OPTIMISED. 
 C
       DIF=1.0D-3
       NCOUNT=1
@@ -46,22 +46,22 @@ C
       GRAD=(F1-F2)/(2.0D0*DIF)
 
       SECOND=(F1+F2-2.0D0*F3)/(DIF*DIF)
-      PRINT*,'Energy for lattice cycle ',NCOUNT,' is ',F3,' length=',TEMP1
-      PRINT*,'Gradient wrt box length=',GRAD
-      PRINT*,'Second derivative wrt box length=',SECOND
+      PRINT*,'ENERGY FOR LATTICE CYCLE ',NCOUNT,' IS ',F3,' LENGTH=',TEMP1
+      PRINT*,'GRADIENT WRT BOX LENGTH=',GRAD
+      PRINT*,'SECOND DERIVATIVE WRT BOX LENGTH=',SECOND
       WRITE(*,'(A,3F20.10)') 'F1,F2,F3=',F1,F2,F3
       NCOUNT=NCOUNT+1
       IF (ABS(GRAD/SECOND).GT.5.0D-2) THEN
          AMAT(1,1)=TEMP1-5.0D-2*GRAD/DABS(GRAD)
          AMAT(2,2)=AMAT(1,1)
          AMAT(3,3)=AMAT(1,1)
-         PRINT*,'Step=',-5.0D-2*GRAD/DABS(GRAD)
+         PRINT*,'STEP=',-5.0D-2*GRAD/DABS(GRAD)
          GOTO 10
       ELSE
          AMAT(1,1)=TEMP1-GRAD/ABS(SECOND)
          AMAT(2,2)=AMAT(1,1)
          AMAT(3,3)=AMAT(1,1)
-         PRINT*,'Step=',-GRAD/ABS(SECOND)
+         PRINT*,'STEP=',-GRAD/ABS(SECOND)
          IF (DABS(GRAD/SECOND).GT.DIF/10) GOTO 10
       ENDIF
       RETURN

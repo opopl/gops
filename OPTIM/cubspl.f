@@ -1,119 +1,119 @@
-      subroutine cubspl ( tau, c, n, ibcbeg, ibcend )
-c  from  * a practical guide to splines *  by c. de boor    
-c     ************************  input  ***************************
-c     n = number of data points. assumed to be .ge. 2.
-c     (tau(i), c(1,i), i=1,...,n) = abscissae and ordinates of the
-c        data points. tau is assumed to be strictly increasing.
-c     ibcbeg, ibcend = boundary condition indicators, and
-c     c(2,1), c(2,n) = boundary condition information. specifically,
-c        ibcbeg = 0  means no boundary condition at tau(1) is given.
-c           in this case, the not-a-knot condition is used, i.e. the
-c           jump in the third derivative across tau(2) is forced to
-c           zero, thus the first and the second cubic polynomial pieces
-c           are made to coincide.)
-c        ibcbeg = 1  means that the slope at tau(1) is made to equal
-c           c(2,1), supplied by input.
-c        ibcbeg = 2  means that the second derivative at tau(1) is
-c           made to equal c(2,1), supplied by input.
-c        ibcend = 0, 1, or 2 has analogous meaning concerning the
-c           boundary condition at tau(n), with the additional infor-
-c           mation taken from c(2,n).
-c     ***********************  output  **************************
-c     c(j,i), j=1,...,4; i=1,...,l (= n-1) = the polynomial coefficients
-c        of the cubic interpolating spline with interior knots (or
-c        joints) tau(2), ..., tau(n-1). precisely, in the interval
-c        (tau(i), tau(i+1)), the spline f is given by
-c           f(x) = c(1,i)+h*(c(2,i)+h*(c(3,i)+h*c(4,i)/3.)/2.)
-c        where h = x - tau(i). the function program *ppvalu* may be
-c        used to evaluate f or its derivatives from tau,c, l = n-1,
-c        and k=4.
-      integer ibcbeg,ibcend,n,   i,j,l,m
-      double precision c(4,n),tau(n),   divdf1,divdf3,dtau,g
-c****** a tridiagonal linear system for the unknown slopes s(i) of
-c  f  at tau(i), i=1,...,n, is generated and then solved by gauss elim-
-c  ination, with s(i) ending up in c(2,i), all i.
-c     c(3,.) and c(4,.) are used initially for temporary storage.
-      l = n-1
-compute first differences of tau sequence and store in c(3,.). also,
-compute first divided difference of data and store in c(4,.).
-      do 10 m=2,n
-         c(3,m) = tau(m) - tau(m-1)
-   10    c(4,m) = (c(1,m) - c(1,m-1))/c(3,m)
-construct first equation from the boundary condition, of the form
-c             c(4,1)*s(1) + c(3,1)*s(2) = c(2,1)
-      if (ibcbeg-1)                     11,15,16
-   11 if (n .gt. 2)                     go to 12
-c     no condition at left end and n = 2.
-      c(4,1) = 1.
-      c(3,1) = 1.
-      c(2,1) = 2.*c(4,2)
-                                        go to 25
-c     not-a-knot condition at left end and n .gt. 2.
-   12 c(4,1) = c(3,3)
-      c(3,1) = c(3,2) + c(3,3)
-      c(2,1) =((c(3,2)+2.*c(3,1))*c(4,2)*c(3,3)+c(3,2)**2*c(4,3))/c(3,1)
-                                        go to 19
-c     slope prescribed at left end.
-   15 c(4,1) = 1.
-      c(3,1) = 0.
-                                        go to 18
-c     second derivative prescribed at left end.
-   16 c(4,1) = 2.
-      c(3,1) = 1.
-      c(2,1) = 3.*c(4,2) - c(3,2)/2.*c(2,1)
-   18 if(n .eq. 2)                      go to 25
-c  if there are interior knots, generate the corresp. equations and car-
-c  ry out the forward pass of gauss elimination, after which the m-th
-c  equation reads    c(4,m)*s(m) + c(3,m)*s(m+1) = c(2,m).
-   19 do 20 m=2,l
-         g = -c(3,m+1)/c(4,m-1)
-         c(2,m) = g*c(2,m-1) + 3.*(c(3,m)*c(4,m+1)+c(3,m+1)*c(4,m))
-   20    c(4,m) = g*c(3,m-1) + 2.*(c(3,m) + c(3,m+1))
-construct last equation from the second boundary condition, of the form
-c           (-g*c(4,n-1))*s(n-1) + c(4,n)*s(n) = c(2,n)
-c     if slope is prescribed at right end, one can go directly to back-
-c     substitution, since c array happens to be set up just right for it
-c     at this point.
-      if (ibcend-1)                     21,30,24
-   21 if (n .eq. 3 .and. ibcbeg .eq. 0) go to 22
-c     not-a-knot and n .ge. 3, and either n.gt.3 or  also not-a-knot at
-c     left end point.
-      g = c(3,n-1) + c(3,n)
-      c(2,n) = ((c(3,n)+2.*g)*c(4,n)*c(3,n-1)
-     *            + c(3,n)**2*(c(1,n-1)-c(1,n-2))/c(3,n-1))/g
-      g = -g/c(4,n-1)
-      c(4,n) = c(3,n-1)
-                                        go to 29
-c     either (n=3 and not-a-knot also at left) or (n=2 and not not-a-
-c     knot at left end point).
-   22 c(2,n) = 2.*c(4,n)
-      c(4,n) = 1.
-                                        go to 28
-c     second derivative prescribed at right endpoint.
-   24 c(2,n) = 3.*c(4,n) + c(3,n)/2.*c(2,n)
-      c(4,n) = 2.
-                                        go to 28
-   25 if (ibcend-1)                     26,30,24
-   26 if (ibcbeg .gt. 0)                go to 22
-c     not-a-knot at right endpoint and at left endpoint and n = 2.
-      c(2,n) = c(4,n)
-                                        go to 30
-   28 g = -1./c(4,n-1)
-complete forward pass of gauss elimination.
-   29 c(4,n) = g*c(3,n-1) + c(4,n)
-      c(2,n) = (g*c(2,n-1) + c(2,n))/c(4,n)
-carry out back substitution
-   30 j = l 
-   40    c(2,j) = (c(2,j) - c(3,j)*c(2,j+1))/c(4,j)
-         j = j - 1
-         if (j .gt. 0)                  go to 40
-c****** generate cubic coefficients in each interval, i.e., the deriv.s
-c  at its left endpoint, from value and slope at its endpoints.
-      do 50 i=2,n
-         dtau = c(3,i)
-         divdf1 = (c(1,i) - c(1,i-1))/dtau
-         divdf3 = c(2,i-1) + c(2,i) - 2.*divdf1
-         c(3,i-1) = 2.*(divdf1 - c(2,i-1) - divdf3)/dtau
-   50    c(4,i-1) = (divdf3/dtau)*(6./dtau)
-                                        return
-      end
+      SUBROUTINE CUBSPL ( TAU, C, N, IBCBEG, IBCEND )
+C  FROM  * A PRACTICAL GUIDE TO SPLINES *  BY C. DE BOOR    
+C     ************************  INPUT  ***************************
+C     N = NUMBER OF DATA POINTS. ASSUMED TO BE .GE. 2.
+C     (TAU(I), C(1,I), I=1,...,N) = ABSCISSAE AND ORDINATES OF THE
+C        DATA POINTS. TAU IS ASSUMED TO BE STRICTLY INCREASING.
+C     IBCBEG, IBCEND = BOUNDARY CONDITION INDICATORS, AND
+C     C(2,1), C(2,N) = BOUNDARY CONDITION INFORMATION. SPECIFICALLY,
+C        IBCBEG = 0  MEANS NO BOUNDARY CONDITION AT TAU(1) IS GIVEN.
+C           IN THIS CASE, THE NOT-A-KNOT CONDITION IS USED, I.E. THE
+C           JUMP IN THE THIRD DERIVATIVE ACROSS TAU(2) IS FORCED TO
+C           ZERO, THUS THE FIRST AND THE SECOND CUBIC POLYNOMIAL PIECES
+C           ARE MADE TO COINCIDE.)
+C        IBCBEG = 1  MEANS THAT THE SLOPE AT TAU(1) IS MADE TO EQUAL
+C           C(2,1), SUPPLIED BY INPUT.
+C        IBCBEG = 2  MEANS THAT THE SECOND DERIVATIVE AT TAU(1) IS
+C           MADE TO EQUAL C(2,1), SUPPLIED BY INPUT.
+C        IBCEND = 0, 1, OR 2 HAS ANALOGOUS MEANING CONCERNING THE
+C           BOUNDARY CONDITION AT TAU(N), WITH THE ADDITIONAL INFOR-
+C           MATION TAKEN FROM C(2,N).
+C     ***********************  OUTPUT  **************************
+C     C(J,I), J=1,...,4; I=1,...,L (= N-1) = THE POLYNOMIAL COEFFICIENTS
+C        OF THE CUBIC INTERPOLATING SPLINE WITH INTERIOR KNOTS (OR
+C        JOINTS) TAU(2), ..., TAU(N-1). PRECISELY, IN THE INTERVAL
+C        (TAU(I), TAU(I+1)), THE SPLINE F IS GIVEN BY
+C           F(X) = C(1,I)+H*(C(2,I)+H*(C(3,I)+H*C(4,I)/3.)/2.)
+C        WHERE H = X - TAU(I). THE FUNCTION PROGRAM *PPVALU* MAY BE
+C        USED TO EVALUATE F OR ITS DERIVATIVES FROM TAU,C, L = N-1,
+C        AND K=4.
+      INTEGER IBCBEG,IBCEND,N,   I,J,L,M
+      DOUBLE PRECISION C(4,N),TAU(N),   DIVDF1,DIVDF3,DTAU,G
+C****** A TRIDIAGONAL LINEAR SYSTEM FOR THE UNKNOWN SLOPES S(I) OF
+C  F  AT TAU(I), I=1,...,N, IS GENERATED AND THEN SOLVED BY GAUSS ELIM-
+C  INATION, WITH S(I) ENDING UP IN C(2,I), ALL I.
+C     C(3,.) AND C(4,.) ARE USED INITIALLY FOR TEMPORARY STORAGE.
+      L = N-1
+COMPUTE FIRST DIFFERENCES OF TAU SEQUENCE AND STORE IN C(3,.). ALSO,
+COMPUTE FIRST DIVIDED DIFFERENCE OF DATA AND STORE IN C(4,.).
+      DO 10 M=2,N
+         C(3,M) = TAU(M) - TAU(M-1)
+   10    C(4,M) = (C(1,M) - C(1,M-1))/C(3,M)
+CONSTRUCT FIRST EQUATION FROM THE BOUNDARY CONDITION, OF THE FORM
+C             C(4,1)*S(1) + C(3,1)*S(2) = C(2,1)
+      IF (IBCBEG-1)                     11,15,16
+   11 IF (N .GT. 2)                     GO TO 12
+C     NO CONDITION AT LEFT END AND N = 2.
+      C(4,1) = 1.
+      C(3,1) = 1.
+      C(2,1) = 2.*C(4,2)
+                                        GO TO 25
+C     NOT-A-KNOT CONDITION AT LEFT END AND N .GT. 2.
+   12 C(4,1) = C(3,3)
+      C(3,1) = C(3,2) + C(3,3)
+      C(2,1) =((C(3,2)+2.*C(3,1))*C(4,2)*C(3,3)+C(3,2)**2*C(4,3))/C(3,1)
+                                        GO TO 19
+C     SLOPE PRESCRIBED AT LEFT END.
+   15 C(4,1) = 1.
+      C(3,1) = 0.
+                                        GO TO 18
+C     SECOND DERIVATIVE PRESCRIBED AT LEFT END.
+   16 C(4,1) = 2.
+      C(3,1) = 1.
+      C(2,1) = 3.*C(4,2) - C(3,2)/2.*C(2,1)
+   18 IF(N .EQ. 2)                      GO TO 25
+C  IF THERE ARE INTERIOR KNOTS, GENERATE THE CORRESP. EQUATIONS AND CAR-
+C  RY OUT THE FORWARD PASS OF GAUSS ELIMINATION, AFTER WHICH THE M-TH
+C  EQUATION READS    C(4,M)*S(M) + C(3,M)*S(M+1) = C(2,M).
+   19 DO 20 M=2,L
+         G = -C(3,M+1)/C(4,M-1)
+         C(2,M) = G*C(2,M-1) + 3.*(C(3,M)*C(4,M+1)+C(3,M+1)*C(4,M))
+   20    C(4,M) = G*C(3,M-1) + 2.*(C(3,M) + C(3,M+1))
+CONSTRUCT LAST EQUATION FROM THE SECOND BOUNDARY CONDITION, OF THE FORM
+C           (-G*C(4,N-1))*S(N-1) + C(4,N)*S(N) = C(2,N)
+C     IF SLOPE IS PRESCRIBED AT RIGHT END, ONE CAN GO DIRECTLY TO BACK-
+C     SUBSTITUTION, SINCE C ARRAY HAPPENS TO BE SET UP JUST RIGHT FOR IT
+C     AT THIS POINT.
+      IF (IBCEND-1)                     21,30,24
+   21 IF (N .EQ. 3 .AND. IBCBEG .EQ. 0) GO TO 22
+C     NOT-A-KNOT AND N .GE. 3, AND EITHER N.GT.3 OR  ALSO NOT-A-KNOT AT
+C     LEFT END POINT.
+      G = C(3,N-1) + C(3,N)
+      C(2,N) = ((C(3,N)+2.*G)*C(4,N)*C(3,N-1)
+     *            + C(3,N)**2*(C(1,N-1)-C(1,N-2))/C(3,N-1))/G
+      G = -G/C(4,N-1)
+      C(4,N) = C(3,N-1)
+                                        GO TO 29
+C     EITHER (N=3 AND NOT-A-KNOT ALSO AT LEFT) OR (N=2 AND NOT NOT-A-
+C     KNOT AT LEFT END POINT).
+   22 C(2,N) = 2.*C(4,N)
+      C(4,N) = 1.
+                                        GO TO 28
+C     SECOND DERIVATIVE PRESCRIBED AT RIGHT ENDPOINT.
+   24 C(2,N) = 3.*C(4,N) + C(3,N)/2.*C(2,N)
+      C(4,N) = 2.
+                                        GO TO 28
+   25 IF (IBCEND-1)                     26,30,24
+   26 IF (IBCBEG .GT. 0)                GO TO 22
+C     NOT-A-KNOT AT RIGHT ENDPOINT AND AT LEFT ENDPOINT AND N = 2.
+      C(2,N) = C(4,N)
+                                        GO TO 30
+   28 G = -1./C(4,N-1)
+COMPLETE FORWARD PASS OF GAUSS ELIMINATION.
+   29 C(4,N) = G*C(3,N-1) + C(4,N)
+      C(2,N) = (G*C(2,N-1) + C(2,N))/C(4,N)
+CARRY OUT BACK SUBSTITUTION
+   30 J = L 
+   40    C(2,J) = (C(2,J) - C(3,J)*C(2,J+1))/C(4,J)
+         J = J - 1
+         IF (J .GT. 0)                  GO TO 40
+C****** GENERATE CUBIC COEFFICIENTS IN EACH INTERVAL, I.E., THE DERIV.S
+C  AT ITS LEFT ENDPOINT, FROM VALUE AND SLOPE AT ITS ENDPOINTS.
+      DO 50 I=2,N
+         DTAU = C(3,I)
+         DIVDF1 = (C(1,I) - C(1,I-1))/DTAU
+         DIVDF3 = C(2,I-1) + C(2,I) - 2.*DIVDF1
+         C(3,I-1) = 2.*(DIVDF1 - C(2,I-1) - DIVDF3)/DTAU
+   50    C(4,I-1) = (DIVDF3/DTAU)*(6./DTAU)
+                                        RETURN
+      END

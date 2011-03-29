@@ -1,61 +1,61 @@
-module ttm3f_mod
+MODULE TTM3F_MOD
 !----------------------------------------------------------------------------!
-! Parameters of the TTM3F potential                                         !
+! PARAMETERS OF THE TTM3F POTENTIAL                                         !
 !----------------------------------------------------------------------------!
-! (12-10-6) inverse polynomial + exponential parameters for the vdw ineractions
-double precision, parameter ::   &
-                                 vdwC=-0.72298855D+03,vdwD=0.10211829D+06, vdwE=0.37170376D+01
-! smearing factors for dipole-dipole(aDD), charge-charge/charge-dipole(aCCaCD)
-double precision, parameter :: aDD=0.175d0, aCCaCD=0.175d0
-!   ........... polarizabilities
-double precision, parameter :: polarM=1.444d0
-double precision, parameter :: polfacO=0.837d0, polfacH = 0.496d0, polfacM=0.837d0
-double precision, parameter :: dms_param1 =0.5d0,dms_param2 = 0.9578d0, dms_param3=0.012d0
-!   ...........   gammaM
-double precision, parameter :: gammaM=0.46d0
+! (12-10-6) INVERSE POLYNOMIAL + EXPONENTIAL PARAMETERS FOR THE VDW INERACTIONS
+DOUBLE PRECISION, PARAMETER ::   &
+                                 VDWC=-0.72298855D+03,VDWD=0.10211829D+06, VDWE=0.37170376D+01
+! SMEARING FACTORS FOR DIPOLE-DIPOLE(ADD), CHARGE-CHARGE/CHARGE-DIPOLE(ACCACD)
+DOUBLE PRECISION, PARAMETER :: ADD=0.175D0, ACCACD=0.175D0
+!   ........... POLARIZABILITIES
+DOUBLE PRECISION, PARAMETER :: POLARM=1.444D0
+DOUBLE PRECISION, PARAMETER :: POLFACO=0.837D0, POLFACH = 0.496D0, POLFACM=0.837D0
+DOUBLE PRECISION, PARAMETER :: DMS_PARAM1 =0.5D0,DMS_PARAM2 = 0.9578D0, DMS_PARAM3=0.012D0
+!   ...........   GAMMAM
+DOUBLE PRECISION, PARAMETER :: GAMMAM=0.46D0
 !----------------------------------------------------------------------------!
-! Parameters related to the accuracy of the energy/derivatives calculation   !
+! PARAMETERS RELATED TO THE ACCURACY OF THE ENERGY/DERIVATIVES CALCULATION   !
 !----------------------------------------------------------------------------!
-integer, parameter          :: MAXITER  = 400
-double precision, parameter :: diptol   = 1.d-15 
-double precision, parameter :: dmix     = 0.7d0
+INTEGER, PARAMETER          :: MAXITER  = 400
+DOUBLE PRECISION, PARAMETER :: DIPTOL   = 1.D-15 
+DOUBLE PRECISION, PARAMETER :: DMIX     = 0.7D0
 !----------------------------------------------------------------------------!
 ! CONSTANTS                                                                  !
 !----------------------------------------------------------------------------!
-double precision, parameter :: CHARGECON = 18.22234397655801030455d0
-double precision, parameter :: DEBYE  = 4.8033324d0
+DOUBLE PRECISION, PARAMETER :: CHARGECON = 18.22234397655801030455D0
+DOUBLE PRECISION, PARAMETER :: DEBYE  = 4.8033324D0
 !----------------------------------------------------------------------------!
-! Variables and allocatable arrays needed by the "ttm3f" subroutine         !
+! VARIABLES AND ALLOCATABLE ARRAYS NEEDED BY THE "TTM3F" SUBROUTINE         !
 !----------------------------------------------------------------------------!
-integer :: fO, lO, fH, lH, fM, lM, fO3, lO3, fH3, lH3, fM3, lM3
-integer :: Nw_old
-integer :: Nats, Natsd, Natsq
-double precision, dimension(:,:), allocatable :: RM
-double precision, dimension(:,:), allocatable :: dRM
-double precision, dimension(:,:), allocatable :: DDT
-double precision, dimension( : ), allocatable :: dip
-double precision, dimension( : ), allocatable :: pr_dip
-double precision, dimension( : ), allocatable :: Efq
-double precision, dimension( : ), allocatable :: Efd
-double precision, dimension( : ), allocatable :: charge
-double precision, dimension( : ), allocatable :: phi
-double precision, dimension(:,:,:,:), allocatable :: grdq
-end module ttm3f_mod
-!*** Parameters used for the calculation of the potential energy and the
-!*** Dipole moment of the water monomer. Taken from:
-!*** "H. Partridge and D. W. Schwenke, J. Chem. Phys. 106, 4618 (1997)"
-module mnasa_mod
-implicit none
-integer, dimension(245,3) :: idx
-integer, dimension(84 ,3) :: idxD
-double precision, dimension(84) :: coefD
-double precision, dimension(245) :: c5zA, cbasis, ccore, crest
-integer, dimension(9,3) :: idxm
-double precision, dimension(9) :: cmass 
-double precision :: reoh,thetae,b1,roh,alphaoh,deohA,phh1A,phh2
-double precision :: f5z,fbasis,fcore,frest
-double precision :: a,b,c0,c1,c2,b1D
-data idx(:,1)/  &
+INTEGER :: FO, LO, FH, LH, FM, LM, FO3, LO3, FH3, LH3, FM3, LM3
+INTEGER :: NW_OLD
+INTEGER :: NATS, NATSD, NATSQ
+DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: RM
+DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: DRM
+DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: DDT
+DOUBLE PRECISION, DIMENSION( : ), ALLOCATABLE :: DIP
+DOUBLE PRECISION, DIMENSION( : ), ALLOCATABLE :: PR_DIP
+DOUBLE PRECISION, DIMENSION( : ), ALLOCATABLE :: EFQ
+DOUBLE PRECISION, DIMENSION( : ), ALLOCATABLE :: EFD
+DOUBLE PRECISION, DIMENSION( : ), ALLOCATABLE :: CHARGE
+DOUBLE PRECISION, DIMENSION( : ), ALLOCATABLE :: PHI
+DOUBLE PRECISION, DIMENSION(:,:,:,:), ALLOCATABLE :: GRDQ
+END MODULE TTM3F_MOD
+!*** PARAMETERS USED FOR THE CALCULATION OF THE POTENTIAL ENERGY AND THE
+!*** DIPOLE MOMENT OF THE WATER MONOMER. TAKEN FROM:
+!*** "H. PARTRIDGE AND D. W. SCHWENKE, J. CHEM. PHYS. 106, 4618 (1997)"
+MODULE MNASA_MOD
+IMPLICIT NONE
+INTEGER, DIMENSION(245,3) :: IDX
+INTEGER, DIMENSION(84 ,3) :: IDXD
+DOUBLE PRECISION, DIMENSION(84) :: COEFD
+DOUBLE PRECISION, DIMENSION(245) :: C5ZA, CBASIS, CCORE, CREST
+INTEGER, DIMENSION(9,3) :: IDXM
+DOUBLE PRECISION, DIMENSION(9) :: CMASS 
+DOUBLE PRECISION :: REOH,THETAE,B1,ROH,ALPHAOH,DEOHA,PHH1A,PHH2
+DOUBLE PRECISION :: F5Z,FBASIS,FCORE,FREST
+DOUBLE PRECISION :: A,B,C0,C1,C2,B1D
+DATA IDX(:,1)/  &
        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2,  &
        2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  &
        2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,  &
@@ -69,7 +69,7 @@ data idx(:,1)/  &
        7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6,  &
        6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 9, 9,  &
        9, 9, 9, 9, 9/
-data idx(:,2)/ &
+DATA IDX(:,2)/ &
        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  &
        1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,  &
        2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2,  &
@@ -83,7 +83,7 @@ data idx(:,2)/ &
        2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 5, 5, 5, 5, 5, 5, 5, 4, 4, 4,  &
        4, 4, 4, 4, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 1, 1,  &
        1, 1, 1, 1, 1/
-data idx(:,3)/ &
+DATA IDX(:,3)/ &
        1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15, 1, 2, 3, 4, 5,  &
        6, 7, 8, 9,10,11,12,13,14, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,  &
       12,13, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13, 1, 2, 3, 4, 5,  &
@@ -97,7 +97,7 @@ data idx(:,3)/ &
        7, 8, 1, 2, 3, 4, 5, 6, 7, 8, 1, 2, 3, 4, 5, 6, 7, 1, 2, 3,  &
        4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1, 2, 3, 4, 5, 6, 7, 1, 2,  &
        3, 4, 5, 6, 7/
-data c5zA(1:245)/  &
+DATA C5ZA(1:245)/  &
        4.2278462684916D+04, 4.5859382909906D-02, 9.4804986183058D+03, &
        7.5485566680955D+02, 1.9865052511496D+03, 4.3768071560862D+02, &
        1.4466054104131D+03, 1.3591924557890D+02,-1.4299027252645D+03, &
@@ -181,9 +181,9 @@ data c5zA(1:245)/  &
        8.9440694919836D+04,-2.5558967650731D+05,-2.2130423988459D+04, &
        4.4973674518316D+05,-2.2094939343618D+05/
 !
-!     expansion coefficients for basis correction
+!     EXPANSION COEFFICIENTS FOR BASIS CORRECTION
 !
-data cbasis(1:245)/ &
+DATA CBASIS(1:245)/ &
        6.9770019624764D-04,-2.4209870001642D+01, 1.8113927151562D+01, &
        3.5107416275981D+01,-5.4600021126735D+00,-4.8731149608386D+01, &
        3.6007189184766D+01, 0.0000000000000D+00, 0.0000000000000D+00, &
@@ -267,9 +267,9 @@ data cbasis(1:245)/ &
        0.0000000000000D+00, 0.0000000000000D+00, 0.0000000000000D+00, &
        0.0000000000000D+00, 0.0000000000000D+00/
 !
-!     expansion coefficients for core correction
+!     EXPANSION COEFFICIENTS FOR CORE CORRECTION
 !
-data ccore(1:245)/ &
+DATA CCORE(1:245)/ &
        2.4332191647159D-02,-2.9749090113656D+01, 1.8638980892831D+01, &
       -6.1272361746520D+00, 2.1567487597605D+00,-1.5552044084945D+01, &
        8.9752150543954D+00, 0.0000000000000D+00, 0.0000000000000D+00, &
@@ -353,9 +353,9 @@ data ccore(1:245)/ &
        0.0000000000000D+00, 0.0000000000000D+00, 0.0000000000000D+00, &
        0.0000000000000D+00, 0.0000000000000D+00/
 !
-!     expansion coefficients for v rest
+!     EXPANSION COEFFICIENTS FOR V REST
 !
-data crest(1:245)/ &
+DATA CREST(1:245)/ &
        0.0000000000000D+00,-4.7430930170000D+00,-1.4422132560000D+01, &
       -1.8061146510000D+01, 7.5186735000000D+00, 0.0000000000000D+00, &
        0.0000000000000D+00, 0.0000000000000D+00, 0.0000000000000D+00, &
@@ -439,49 +439,49 @@ data crest(1:245)/ &
        0.0000000000000D+00, 0.0000000000000D+00, 0.0000000000000D+00, &
        0.0000000000000D+00, 0.0000000000000D+00/
 !
-!     expansion indicies for mass correction
+!     EXPANSION INDICIES FOR MASS CORRECTION
 !
-       data idxm/1,2,1,1,3,2,1,2,1, &
+       DATA IDXM/1,2,1,1,3,2,1,2,1, &
                  2,1,1,3,1,2,2,1,1, &
                  1,1,2,1,1,1,2,2,3/
 !
-!     expansion coefficients for mass correction
+!     EXPANSION COEFFICIENTS FOR MASS CORRECTION
 !
-       data cmass/ -8.3554183D+00,3.7036552D+01,-5.2722136D+00, &
+       DATA CMASS/ -8.3554183D+00,3.7036552D+01,-5.2722136D+00, &
             1.6843857D+01,-7.0929741D+01,5.5380337D+00,-2.9962997D+01, &
-            1.3637682D+02,-3.0530195d+00/
+            1.3637682D+02,-3.0530195D+00/
 !
-!     two body parameters
+!     TWO BODY PARAMETERS
 !
-       data reoh,thetae,b1,roh,alphaoh,deohA,phh1A,phh2/0.958649d0, &
-            104.3475d0,2.0d0,0.9519607159623009d0,2.587949757553683d0, &
-            42290.92019288289d0,16.94879431193463d0,12.66426998162947d0/
+       DATA REOH,THETAE,B1,ROH,ALPHAOH,DEOHA,PHH1A,PHH2/0.958649D0, &
+            104.3475D0,2.0D0,0.9519607159623009D0,2.587949757553683D0, &
+            42290.92019288289D0,16.94879431193463D0,12.66426998162947D0/
 !
-!     scaling factors for contributions to emperical potential
+!     SCALING FACTORS FOR CONTRIBUTIONS TO EMPERICAL POTENTIAL
 !
-       data f5z,fbasis,fcore,frest/0.99967788500000d0, &
-           0.15860145369897d0,-1.6351695982132d0,1d0/
+       DATA F5Z,FBASIS,FCORE,FREST/0.99967788500000D0, &
+           0.15860145369897D0,-1.6351695982132D0,1D0/
 
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-data idxD(1:84,1)/ &
+DATA IDXD(1:84,1)/ &
        1, 1, 1, 2, 1, 1, 1, 2, 2, 3, 1, 1, 1, 1, 2, 2, 2, 3, 3, 4, &
        1, 1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 4, 4, 5, 1, 1, 1, 1, 1, &
        1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 6, 1, 1, 1, 1, &
        1, 1, 1, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, &
        5, 6, 6, 7/ 
-data idxD(1:84,2)/ &
+DATA IDXD(1:84,2)/ &
        1, 1, 2, 1, 1, 2, 3, 1, 2, 1, 1, 2, 3, 4, 1, 2, 3, 1, 2, 1, &
        1, 2, 3, 4, 5, 1, 2, 3, 4, 1, 2, 3, 1, 2, 1, 1, 2, 3, 4, 5, &
        6, 1, 2, 3, 4, 5, 1, 2, 3, 4, 1, 2, 3, 1, 2, 1, 1, 2, 3, 4, &
        5, 6, 7, 1, 2, 3, 4, 5, 6, 1, 2, 3, 4, 5, 1, 2, 3, 4, 1, 2, &
        3, 1, 2, 1/
-data idxD(1:84,3)/ &
+DATA IDXD(1:84,3)/ &
        1, 2, 1, 1, 3, 2, 1, 2, 1, 1, 4, 3, 2, 1, 3, 2, 1, 2, 1, 1, &
        5, 4, 3, 2, 1, 4, 3, 2, 1, 3, 2, 1, 2, 1, 1, 6, 5, 4, 3, 2, &
        1, 5, 4, 3, 2, 1, 4, 3, 2, 1, 3, 2, 1, 2, 1, 1, 7, 6, 5, 4, &
        3, 2, 1, 6, 5, 4, 3, 2, 1, 5, 4, 3, 2, 1, 4, 3, 2, 1, 3, 2, &
        1, 2, 1, 1/
-data coefD(1:84) /&
+DATA COEFD(1:84) /&
       -2.1689686086730D-03, 1.4910379754728D-02, 5.3546078430060D-02, &
       -7.4055995388666D-02,-3.7764333017616D-03, 1.4089887256484D-01, &
       -6.2584207687264D-02,-1.1260393113022D-01,-5.7824159269319D-02, &
@@ -510,807 +510,807 @@ data coefD(1:84) /&
       -4.7924491598635D-01, 2.4287790137314D-01,-1.4296023329441D-01, &
        8.9664665907006D-02,-1.4003228575602D-01,-1.3321543452254D-01,&
       -1.8340983193745D-01, 2.3426707273520D-01, 1.5141050914514D-01/
-data b1D/1.d0/
-data a,b,c0,c1,c2/0.2999d0,-0.6932d0,1.0099d0,-0.1801d0,0.0892d0/
+DATA B1D/1.D0/
+DATA A,B,C0,C1,C2/0.2999D0,-0.6932D0,1.0099D0,-0.1801D0,0.0892D0/
 
-end module mnasa_mod
+END MODULE MNASA_MOD
 
-function gamma1(x)
-implicit none
-double precision :: x
-double precision :: gamma1
-integer :: J
-double precision :: SER,STP,TMP,Y
-double precision, DIMENSION(6) :: COF
-SAVE cof,stp
-data COF,STP/76.18009172947146D0,-86.50532032941677d0,24.01409824083091D0,  &
+FUNCTION GAMMA1(X)
+IMPLICIT NONE
+DOUBLE PRECISION :: X
+DOUBLE PRECISION :: GAMMA1
+INTEGER :: J
+DOUBLE PRECISION :: SER,STP,TMP,Y
+DOUBLE PRECISION, DIMENSION(6) :: COF
+SAVE COF,STP
+DATA COF,STP/76.18009172947146D0,-86.50532032941677D0,24.01409824083091D0,  &
             -1.231739572450155D0,.1208650973866179D-2,-.5395239384953D-5, &
             2.5066282746310005D0/
 Y=X
 TMP=X+5.5D0
 TMP=(X+0.5D0)*DLOG(TMP)-TMP
 SER=1.000000000190015D0
-do j=1,6
+DO J=1,6
    Y=Y+1.D0
    SER=SER+COF(J)/Y
-enddo
-gamma1=TMP+DLOG(STP*SER/X)
-END FUNCTION gamma1
-function gamma4(a,x)
-implicit none
-double precision :: gamma4
-double precision :: a, x
-double precision :: gamser, gammcf, gln
-if (x<a+1.d0) then
-   call gamma2(gamser, a, x, gln)
-   gamma4 = 1.d0 - gamser
-else
-   call gamma3(gammcf, a, x, gln)
-   gamma4 = gammcf
-endif
-end function gamma4
-subroutine gamma2(gamser, a, x, gln)
-implicit none
-double precision :: gamser
-double precision :: a, x, gln
-integer          :: n
-integer, parameter :: ITMAX = 800
-double precision, parameter :: EPS = 3.d-7
-double precision :: ap, ssum, del, gamma1
-gln = gamma1(a)
-ap = a
-ssum = 1.d0 / a
-del =ssum
-do n=1, ITMAX
-   ap = ap+1.d0
-   del = del*x/ap
-   ssum = ssum+del
-   if (dabs(del) .lt. dabs(ssum)*EPS) goto 1
-enddo
-1 gamser = ssum*dexp(-x+a*dlog(x)-gln)
-end subroutine gamma2
-subroutine gamma3(gammcf, a, x, gln)
-implicit none
-double precision :: gammcf
-double precision :: a, x, gln
-integer          :: i
-double precision :: an, b, c, d, del, h, gamma1
-integer,parameter :: ITMAX = 100
-double precision, parameter :: EPS = 3.d-7, FPMIN=1.d-30
-gln = gamma1(a)
-b = x+1.d0-a
-c = 1.d0/FPMIN
-d = 1.d0/b
-h=d
-do i=1, ITMAX
-   an = -i*(i-a)
-   b = b+2.d0
-   d = an*d+b
-   if (dabs(d) < FPMIN) d=FPMIN
-   c = b+an/c
-   if (dabs(c) < FPMIN) c=FPMIN
-   d = 1.d0/d
-   del = d*c
-   h = h*del
-   if (dabs(del-1.d0) < EPS) goto 1
-enddo
-1 gammcf=dexp(-x+a*dlog(x)-gln)*h
-end subroutine gamma3
-subroutine smear01(drsq, pol12, a, ts0, ts1)
-implicit none
-double precision, parameter :: g23=1.3541179394264d0
-double precision, intent(in) :: drsq, pol12, a
-double precision, intent(out) :: ts0, ts1
-double precision :: dd,dri,drsqi,AA, rA,rA3,exp1, a_sqrt3 
-double precision, external :: gamma4
+ENDDO
+GAMMA1=TMP+DLOG(STP*SER/X)
+END FUNCTION GAMMA1
+FUNCTION GAMMA4(A,X)
+IMPLICIT NONE
+DOUBLE PRECISION :: GAMMA4
+DOUBLE PRECISION :: A, X
+DOUBLE PRECISION :: GAMSER, GAMMCF, GLN
+IF (X<A+1.D0) THEN
+   CALL GAMMA2(GAMSER, A, X, GLN)
+   GAMMA4 = 1.D0 - GAMSER
+ELSE
+   CALL GAMMA3(GAMMCF, A, X, GLN)
+   GAMMA4 = GAMMCF
+ENDIF
+END FUNCTION GAMMA4
+SUBROUTINE GAMMA2(GAMSER, A, X, GLN)
+IMPLICIT NONE
+DOUBLE PRECISION :: GAMSER
+DOUBLE PRECISION :: A, X, GLN
+INTEGER          :: N
+INTEGER, PARAMETER :: ITMAX = 800
+DOUBLE PRECISION, PARAMETER :: EPS = 3.D-7
+DOUBLE PRECISION :: AP, SSUM, DEL, GAMMA1
+GLN = GAMMA1(A)
+AP = A
+SSUM = 1.D0 / A
+DEL =SSUM
+DO N=1, ITMAX
+   AP = AP+1.D0
+   DEL = DEL*X/AP
+   SSUM = SSUM+DEL
+   IF (DABS(DEL) .LT. DABS(SSUM)*EPS) GOTO 1
+ENDDO
+1 GAMSER = SSUM*DEXP(-X+A*DLOG(X)-GLN)
+END SUBROUTINE GAMMA2
+SUBROUTINE GAMMA3(GAMMCF, A, X, GLN)
+IMPLICIT NONE
+DOUBLE PRECISION :: GAMMCF
+DOUBLE PRECISION :: A, X, GLN
+INTEGER          :: I
+DOUBLE PRECISION :: AN, B, C, D, DEL, H, GAMMA1
+INTEGER,PARAMETER :: ITMAX = 100
+DOUBLE PRECISION, PARAMETER :: EPS = 3.D-7, FPMIN=1.D-30
+GLN = GAMMA1(A)
+B = X+1.D0-A
+C = 1.D0/FPMIN
+D = 1.D0/B
+H=D
+DO I=1, ITMAX
+   AN = -I*(I-A)
+   B = B+2.D0
+   D = AN*D+B
+   IF (DABS(D) < FPMIN) D=FPMIN
+   C = B+AN/C
+   IF (DABS(C) < FPMIN) C=FPMIN
+   D = 1.D0/D
+   DEL = D*C
+   H = H*DEL
+   IF (DABS(DEL-1.D0) < EPS) GOTO 1
+ENDDO
+1 GAMMCF=DEXP(-X+A*DLOG(X)-GLN)*H
+END SUBROUTINE GAMMA3
+SUBROUTINE SMEAR01(DRSQ, POL12, A, TS0, TS1)
+IMPLICIT NONE
+DOUBLE PRECISION, PARAMETER :: G23=1.3541179394264D0
+DOUBLE PRECISION, INTENT(IN) :: DRSQ, POL12, A
+DOUBLE PRECISION, INTENT(OUT) :: TS0, TS1
+DOUBLE PRECISION :: DD,DRI,DRSQI,AA, RA,RA3,EXP1, A_SQRT3 
+DOUBLE PRECISION, EXTERNAL :: GAMMA4
 
-dd = dsqrt(drsq)
-dri = 1.d0/dd
-drsqi = dri*dri
+DD = DSQRT(DRSQ)
+DRI = 1.D0/DD
+DRSQI = DRI*DRI
 
-AA = (pol12)**(1.d0/6.d0)
-rA = dd/AA
-rA3 = rA**3
-exp1 = dexp(-a*rA3)
-a_sqrt3 = a**(1.d0/3.d0)
+AA = (POL12)**(1.D0/6.D0)
+RA = DD/AA
+RA3 = RA**3
+EXP1 = DEXP(-A*RA3)
+A_SQRT3 = A**(1.D0/3.D0)
 
-ts0 = (1.d0-exp1 + a_sqrt3*rA*g23*gamma4(2.d0/3.d0,a*ra3))*dri
-ts1 = (1.d0 -exp1)*dri*drsqi
-end subroutine smear01
+TS0 = (1.D0-EXP1 + A_SQRT3*RA*G23*GAMMA4(2.D0/3.D0,A*RA3))*DRI
+TS1 = (1.D0 -EXP1)*DRI*DRSQI
+END SUBROUTINE SMEAR01
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-subroutine smear1(drsq, pol12, a, ts1)
-implicit none
-double precision, intent(in) :: drsq, pol12, a
-double precision, intent(out) :: ts1
-double precision :: dd,dri,drsqi,AA, rA,rA3,exp1
-double precision, external :: gamma4
+SUBROUTINE SMEAR1(DRSQ, POL12, A, TS1)
+IMPLICIT NONE
+DOUBLE PRECISION, INTENT(IN) :: DRSQ, POL12, A
+DOUBLE PRECISION, INTENT(OUT) :: TS1
+DOUBLE PRECISION :: DD,DRI,DRSQI,AA, RA,RA3,EXP1
+DOUBLE PRECISION, EXTERNAL :: GAMMA4
 
-dd = dsqrt(drsq)
-dri = 1.d0/dd
-drsqi = dri*dri
+DD = DSQRT(DRSQ)
+DRI = 1.D0/DD
+DRSQI = DRI*DRI
 
-AA = (pol12)**(1.d0/6.d0)
-rA = dd/AA
-rA3 = rA**3
-exp1 = dexp(-a*rA3)
-ts1 = (1.d0 -exp1)*dri*drsqi
-end subroutine smear1
+AA = (POL12)**(1.D0/6.D0)
+RA = DD/AA
+RA3 = RA**3
+EXP1 = DEXP(-A*RA3)
+TS1 = (1.D0 -EXP1)*DRI*DRSQI
+END SUBROUTINE SMEAR1
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-subroutine smear2(drsq, pol12, a, ts1, ts2)
-implicit none
-double precision, intent(in) :: drsq, pol12, a
-double precision, intent(out) :: ts1, ts2
-double precision :: dd,dri,drsqi,AA, rA,rA3,exp1
+SUBROUTINE SMEAR2(DRSQ, POL12, A, TS1, TS2)
+IMPLICIT NONE
+DOUBLE PRECISION, INTENT(IN) :: DRSQ, POL12, A
+DOUBLE PRECISION, INTENT(OUT) :: TS1, TS2
+DOUBLE PRECISION :: DD,DRI,DRSQI,AA, RA,RA3,EXP1
 
-dd = dsqrt(drsq)
-dri = 1.d0/dd
-drsqi = dri*dri
+DD = DSQRT(DRSQ)
+DRI = 1.D0/DD
+DRSQI = DRI*DRI
 
-AA = (pol12)**(1.d0/6.d0)
-rA = dd/AA
-rA3 = rA**3
-exp1 = dexp(-a*rA3)
-ts1 = (1.d0 -exp1)*dri*drsqi
-ts2 = (ts1 - exp1*a/AA**3) *drsqi
-end subroutine smear2
+AA = (POL12)**(1.D0/6.D0)
+RA = DD/AA
+RA3 = RA**3
+EXP1 = DEXP(-A*RA3)
+TS1 = (1.D0 -EXP1)*DRI*DRSQI
+TS2 = (TS1 - EXP1*A/AA**3) *DRSQI
+END SUBROUTINE SMEAR2
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-subroutine smear3(drsq, pol12, a, ts1, ts2, ts3)
-implicit none
-double precision, intent(in) :: drsq, pol12, a
-double precision, intent(out) :: ts1, ts2, ts3
-double precision :: dd,dri,drsqi,AA, rA,rA3,exp1
+SUBROUTINE SMEAR3(DRSQ, POL12, A, TS1, TS2, TS3)
+IMPLICIT NONE
+DOUBLE PRECISION, INTENT(IN) :: DRSQ, POL12, A
+DOUBLE PRECISION, INTENT(OUT) :: TS1, TS2, TS3
+DOUBLE PRECISION :: DD,DRI,DRSQI,AA, RA,RA3,EXP1
 
-dd = dsqrt(drsq)
-dri = 1.d0/dd
-drsqi = dri*dri
+DD = DSQRT(DRSQ)
+DRI = 1.D0/DD
+DRSQI = DRI*DRI
 
-AA = (pol12)**(1.d0/6.d0)
-rA = dd/AA
-rA3 = rA**3
-exp1 = dexp(-a*rA3)
-ts1 = (1.d0 -exp1)*dri*drsqi
-ts2 = (ts1 - exp1*a/AA**3) *drsqi
-ts3 = (ts2 - 0.6d0*exp1*dd*a*a/AA**6) * drsqi
+AA = (POL12)**(1.D0/6.D0)
+RA = DD/AA
+RA3 = RA**3
+EXP1 = DEXP(-A*RA3)
+TS1 = (1.D0 -EXP1)*DRI*DRSQI
+TS2 = (TS1 - EXP1*A/AA**3) *DRSQI
+TS3 = (TS2 - 0.6D0*EXP1*DD*A*A/AA**6) * DRSQI
 
-end subroutine smear3
+END SUBROUTINE SMEAR3
 
 !***
-!***  allocate necessery arrays needed for the calculation of the potenial
+!***  ALLOCATE NECESSERY ARRAYS NEEDED FOR THE CALCULATION OF THE POTENIAL
 !***
-subroutine init_ttm3f(Nw)
-use ttm3f_mod
-implicit none
-integer, intent(in) :: Nw
-logical :: alloc
+SUBROUTINE INIT_TTM3F(NW)
+USE TTM3F_MOD
+IMPLICIT NONE
+INTEGER, INTENT(IN) :: NW
+LOGICAL :: ALLOC
 
 
-if (.not. allocated(RM)) then
-   alloc = .true.
-else if (Nw/=Nw_old) then
-   alloc = .true.
-   deallocate( RM )    ! temporary array keeping the coordinates of the Msite
-   deallocate( dRM )   ! temporary array keeping the derivatives of the Msite
-   deallocate( DDT )   ! dipole tensor
-   deallocate( dip )   ! array containg the induced dipoles
-   deallocate( pr_dip )  ! 
-   deallocate( phi )    ! electrostatic potential
-   deallocate( Efq )     ! electric field from charges
-   deallocate( Efd )     ! electric field from dipoles
-   deallocate( charge )  ! charges 
-   deallocate( grdq )    ! dericatives of charge wrt monomer geometry
-else
-   alloc = .false.
-endif
+IF (.NOT. ALLOCATED(RM)) THEN
+   ALLOC = .TRUE.
+ELSE IF (NW/=NW_OLD) THEN
+   ALLOC = .TRUE.
+   DEALLOCATE( RM )    ! TEMPORARY ARRAY KEEPING THE COORDINATES OF THE MSITE
+   DEALLOCATE( DRM )   ! TEMPORARY ARRAY KEEPING THE DERIVATIVES OF THE MSITE
+   DEALLOCATE( DDT )   ! DIPOLE TENSOR
+   DEALLOCATE( DIP )   ! ARRAY CONTAING THE INDUCED DIPOLES
+   DEALLOCATE( PR_DIP )  ! 
+   DEALLOCATE( PHI )    ! ELECTROSTATIC POTENTIAL
+   DEALLOCATE( EFQ )     ! ELECTRIC FIELD FROM CHARGES
+   DEALLOCATE( EFD )     ! ELECTRIC FIELD FROM DIPOLES
+   DEALLOCATE( CHARGE )  ! CHARGES 
+   DEALLOCATE( GRDQ )    ! DERICATIVES OF CHARGE WRT MONOMER GEOMETRY
+ELSE
+   ALLOC = .FALSE.
+ENDIF
 
-if (alloc) then
-   Natsq = 3*Nw       ! # of atoms with charge   (including M-sites)
-   Natsd =   Nw       ! # of atoms with dipole   (including M-sites)
-   Nats  = 4*Nw       ! # of total atoms         (including M-sites)
-   Nw_old = Nw
-   fO = 1             ! index on the first oxygen
-   lO = Nw            ! index on the last oxygen        
-   fH = Nw+1          ! index on the first hydrogen
-   lH = 3*Nw          ! index on the last hydrogen
-   fM = 3*Nw+1        ! index on the first M-site
-   lM = 4*Nw          ! index on the lst M-site
-   fO3 = 3*fO-2  ! index on the x-comp. (out of the x,y,z) of the first oxygen
-   lO3 = 3*lO    ! index on the x-comp. (out of the x,y,z) of the last oxygen
-   fH3 = 3*fH-2  ! index on the x-comp. (out of the x,y,z) of the first hydrogen
-   lH3 = 3*lH    ! index on the x-comp. (out of the x,y,z) of the last hydrogen
-   fM3 = 3*fM-2  ! index on the x-comp. (out of the x,y,z) of the first M-site
-   lM3 = 3*lM    ! index on the x-comp. (out of the x,y,z) of the last M-site
+IF (ALLOC) THEN
+   NATSQ = 3*NW       ! # OF ATOMS WITH CHARGE   (INCLUDING M-SITES)
+   NATSD =   NW       ! # OF ATOMS WITH DIPOLE   (INCLUDING M-SITES)
+   NATS  = 4*NW       ! # OF TOTAL ATOMS         (INCLUDING M-SITES)
+   NW_OLD = NW
+   FO = 1             ! INDEX ON THE FIRST OXYGEN
+   LO = NW            ! INDEX ON THE LAST OXYGEN        
+   FH = NW+1          ! INDEX ON THE FIRST HYDROGEN
+   LH = 3*NW          ! INDEX ON THE LAST HYDROGEN
+   FM = 3*NW+1        ! INDEX ON THE FIRST M-SITE
+   LM = 4*NW          ! INDEX ON THE LST M-SITE
+   FO3 = 3*FO-2  ! INDEX ON THE X-COMP. (OUT OF THE X,Y,Z) OF THE FIRST OXYGEN
+   LO3 = 3*LO    ! INDEX ON THE X-COMP. (OUT OF THE X,Y,Z) OF THE LAST OXYGEN
+   FH3 = 3*FH-2  ! INDEX ON THE X-COMP. (OUT OF THE X,Y,Z) OF THE FIRST HYDROGEN
+   LH3 = 3*LH    ! INDEX ON THE X-COMP. (OUT OF THE X,Y,Z) OF THE LAST HYDROGEN
+   FM3 = 3*FM-2  ! INDEX ON THE X-COMP. (OUT OF THE X,Y,Z) OF THE FIRST M-SITE
+   LM3 = 3*LM    ! INDEX ON THE X-COMP. (OUT OF THE X,Y,Z) OF THE LAST M-SITE
 
-   allocate(charge(fO:lM))          
-   allocate(RM (3, fM:lM))          
-   allocate(dRM(3, fM:lM))         
-   allocate(dip(fM3:lM3))
-   allocate(pr_dip(fM3:lM3))
-   allocate(phi(fH:lM))
-   allocate(Efq(fO3:lM3))
-   allocate(Efd(fM3:lM3))
-   allocate( DDT(fM3:lM3, fM3:lM3) )
-   allocate( grdq(Nw, 3, 3, 3) )
-endif
+   ALLOCATE(CHARGE(FO:LM))          
+   ALLOCATE(RM (3, FM:LM))          
+   ALLOCATE(DRM(3, FM:LM))         
+   ALLOCATE(DIP(FM3:LM3))
+   ALLOCATE(PR_DIP(FM3:LM3))
+   ALLOCATE(PHI(FH:LM))
+   ALLOCATE(EFQ(FO3:LM3))
+   ALLOCATE(EFD(FM3:LM3))
+   ALLOCATE( DDT(FM3:LM3, FM3:LM3) )
+   ALLOCATE( GRDQ(NW, 3, 3, 3) )
+ENDIF
 
-end subroutine init_ttm3f
-subroutine ttm3f(Nw,RR,dRR,En)
-!** for a system of "Nw" water molecules returns the potential energy (En) and 
-!** the derivatives of the energy wrt the atomic displacements (dRR).
-!** The coordinates of the atoms are found in the array "RR".
-!** NOTE. It is very important the input coordinates to be stored in the
-!** array RR in the proper way. The first column of RR has dimension 3 that
-!** corresponds to the x,y,z- cartesian coordinates, while in the second one 
-!** all the oxygens of the system should be saved before the hydrogens.
-!** It follows an example for a system with 3-water molecules (Nw=3)
-!**   RR(1:3, 1)   = x,y,z-coordinates of the Oxygen of the first molecule
-!**   RR(1:3, 2)   = x,y,z-coordinates of the Oxygen of the second molecule
-!**   RR(1:3, 3)   = x,y,z-coordinates of the Oxygen of the third molecule
-!**   RR(1:3, 4)   = x,y,z-coordinates of the hydrogen-1 of the first molecule
-!**   RR(1:3, 5)   = x,y,z-coordinates of the hydrogen-2 of the first molecule
-!**   RR(1:3, 6)   = x,y,z-coordinates of the hydrogen-1 of the second molecule
-!**   RR(1:3, 7)   = x,y,z-coordinates of the hydrogen-2 of the second molecule
-!**   RR(1:3, 8)   = x,y,z-coordinates of the hydrogen-1 of the third molecule
-!**   RR(1:3, 9)   = x,y,z-coordinates of the hydrogen-2 of the third molecule
-use ttm3f_mod
-implicit none
-integer, intent(in) :: Nw
-double precision, dimension(3, 3*Nw), intent(in)  ::  RR
-double precision, dimension(3, 3*Nw), intent(out) :: dRR
-double precision, intent(out) :: En
+END SUBROUTINE INIT_TTM3F
+SUBROUTINE TTM3F(NW,RR,DRR,EN)
+!** FOR A SYSTEM OF "NW" WATER MOLECULES RETURNS THE POTENTIAL ENERGY (EN) AND 
+!** THE DERIVATIVES OF THE ENERGY WRT THE ATOMIC DISPLACEMENTS (DRR).
+!** THE COORDINATES OF THE ATOMS ARE FOUND IN THE ARRAY "RR".
+!** NOTE. IT IS VERY IMPORTANT THE INPUT COORDINATES TO BE STORED IN THE
+!** ARRAY RR IN THE PROPER WAY. THE FIRST COLUMN OF RR HAS DIMENSION 3 THAT
+!** CORRESPONDS TO THE X,Y,Z- CARTESIAN COORDINATES, WHILE IN THE SECOND ONE 
+!** ALL THE OXYGENS OF THE SYSTEM SHOULD BE SAVED BEFORE THE HYDROGENS.
+!** IT FOLLOWS AN EXAMPLE FOR A SYSTEM WITH 3-WATER MOLECULES (NW=3)
+!**   RR(1:3, 1)   = X,Y,Z-COORDINATES OF THE OXYGEN OF THE FIRST MOLECULE
+!**   RR(1:3, 2)   = X,Y,Z-COORDINATES OF THE OXYGEN OF THE SECOND MOLECULE
+!**   RR(1:3, 3)   = X,Y,Z-COORDINATES OF THE OXYGEN OF THE THIRD MOLECULE
+!**   RR(1:3, 4)   = X,Y,Z-COORDINATES OF THE HYDROGEN-1 OF THE FIRST MOLECULE
+!**   RR(1:3, 5)   = X,Y,Z-COORDINATES OF THE HYDROGEN-2 OF THE FIRST MOLECULE
+!**   RR(1:3, 6)   = X,Y,Z-COORDINATES OF THE HYDROGEN-1 OF THE SECOND MOLECULE
+!**   RR(1:3, 7)   = X,Y,Z-COORDINATES OF THE HYDROGEN-2 OF THE SECOND MOLECULE
+!**   RR(1:3, 8)   = X,Y,Z-COORDINATES OF THE HYDROGEN-1 OF THE THIRD MOLECULE
+!**   RR(1:3, 9)   = X,Y,Z-COORDINATES OF THE HYDROGEN-2 OF THE THIRD MOLECULE
+USE TTM3F_MOD
+IMPLICIT NONE
+INTEGER, INTENT(IN) :: NW
+DOUBLE PRECISION, DIMENSION(3, 3*NW), INTENT(IN)  ::  RR
+DOUBLE PRECISION, DIMENSION(3, 3*NW), INTENT(OUT) :: DRR
+DOUBLE PRECISION, INTENT(OUT) :: EN
 !
-integer :: iter, i3, j3, isp, jsp, ix, iy, iw, jw, iat, jat, iO, iH1, iH2, iM
-double precision, dimension(3) :: Ri, Rij
-double precision, dimension(3,3) :: r1, dr1, dd3
-double precision, dimension(3) :: q3, di, dj, derij
-double precision, dimension(3,3,3) :: dq3
-double precision :: dRijsq, dRij, dR6, dR10, dR12
-double precision :: Eint, Evdw, Eelec, Eind, e1
-double precision :: deltadip,tmp,expon, stath, didj, dir, djr,qi,qj
-double precision :: ts0, ts1, ts2, ts3
+INTEGER :: ITER, I3, J3, ISP, JSP, IX, IY, IW, JW, IAT, JAT, IO, IH1, IH2, IM
+DOUBLE PRECISION, DIMENSION(3) :: RI, RIJ
+DOUBLE PRECISION, DIMENSION(3,3) :: R1, DR1, DD3
+DOUBLE PRECISION, DIMENSION(3) :: Q3, DI, DJ, DERIJ
+DOUBLE PRECISION, DIMENSION(3,3,3) :: DQ3
+DOUBLE PRECISION :: DRIJSQ, DRIJ, DR6, DR10, DR12
+DOUBLE PRECISION :: EINT, EVDW, EELEC, EIND, E1
+DOUBLE PRECISION :: DELTADIP,TMP,EXPON, STATH, DIDJ, DIR, DJR,QI,QJ
+DOUBLE PRECISION :: TS0, TS1, TS2, TS3
 
 !-------------------------------------------------------------------------!
-! initialize (if neccesary) some arrays, needed for following calculations!
+! INITIALIZE (IF NECCESARY) SOME ARRAYS, NEEDED FOR FOLLOWING CALCULATIONS!
 !-------------------------------------------------------------------------!
-call init_ttm3f(Nw)
-dRR = 0.d0
-dRM = 0.d0
-Eint = 0.d0
-Evdw = 0.d0
-Eelec = 0.d0
-Eind = 0.d0
-Efq = 0.d0
-phi = 0.d0
-ddt = 0.d0
+CALL INIT_TTM3F(NW)
+DRR = 0.D0
+DRM = 0.D0
+EINT = 0.D0
+EVDW = 0.D0
+EELEC = 0.D0
+EIND = 0.D0
+EFQ = 0.D0
+PHI = 0.D0
+DDT = 0.D0
 !-------------------------------------------------------------------------!
-! calculate the coordinates of the Msites and store them in RM            !
+! CALCULATE THE COORDINATES OF THE MSITES AND STORE THEM IN RM            !
 !-------------------------------------------------------------------------!
-do iw=1, Nw
-   iO  = fO + iw-1
-   iH1 = fH + 2*iw - 2
-   iH2 = fH + 2*iw - 1
-   iM  = fM + iw-1
-   RM(1:3,iM) = RR(1:3,iO)*(1.d0-gammaM) + &
-                           0.5d0*gammaM*( RR(1:3,iH1) + RR(1:3,iH2) )
-enddo
+DO IW=1, NW
+   IO  = FO + IW-1
+   IH1 = FH + 2*IW - 2
+   IH2 = FH + 2*IW - 1
+   IM  = FM + IW-1
+   RM(1:3,IM) = RR(1:3,IO)*(1.D0-GAMMAM) + &
+                           0.5D0*GAMMAM*( RR(1:3,IH1) + RR(1:3,IH2) )
+ENDDO
 !-------------------------------------------------------------------------!
-! calculates the INTRA-molecular energy and Dipole Moment Surface         !
-!                     according the Partridge Sw  (JCP     )              !
+! CALCULATES THE INTRA-MOLECULAR ENERGY AND DIPOLE MOMENT SURFACE         !
+!                     ACCORDING THE PARTRIDGE SW  (JCP     )              !
 !-------------------------------------------------------------------------!
-tmp = 0.5d0*gammaM/(1.d0-gammaM)
-do iw=1, Nw
-   iO  = fO + iw-1
-   iH1 = fH+2*iw-2
-   iH2 = fH+2*iw-1
-   iM  = fM + iw-1
-   r1(1:3, 1:3) = RR(1:3, (/iO, iH1, iH2/) )
-   call pot_nasa(r1, dr1, e1)
-   call dms_nasa(r1, q3, dq3)
-   Eint = Eint + e1
-   dRR(1:3, (/iO,iH1,iH2/) ) = dr1
-   charge(iH1)  = q3(2)+tmp*(q3(2)+q3(3) )
-   charge(iH2)  = q3(3)+tmp*(q3(2)+q3(3) )
-   charge(iM )  = q3(1) / (1.d0-gammaM)
-   grdq(iw,1,1,:)= dq3(1,1,:) + tmp*(dq3(1,1,:)+dq3(1,2,:))
-   grdq(iw,2,1,:)= dq3(2,1,:) + tmp*(dq3(2,1,:)+dq3(2,2,:))
-   grdq(iw,3,1,:)= dq3(3,1,:) + tmp*(dq3(3,1,:)+dq3(3,2,:))
+TMP = 0.5D0*GAMMAM/(1.D0-GAMMAM)
+DO IW=1, NW
+   IO  = FO + IW-1
+   IH1 = FH+2*IW-2
+   IH2 = FH+2*IW-1
+   IM  = FM + IW-1
+   R1(1:3, 1:3) = RR(1:3, (/IO, IH1, IH2/) )
+   CALL POT_NASA(R1, DR1, E1)
+   CALL DMS_NASA(R1, Q3, DQ3)
+   EINT = EINT + E1
+   DRR(1:3, (/IO,IH1,IH2/) ) = DR1
+   CHARGE(IH1)  = Q3(2)+TMP*(Q3(2)+Q3(3) )
+   CHARGE(IH2)  = Q3(3)+TMP*(Q3(2)+Q3(3) )
+   CHARGE(IM )  = Q3(1) / (1.D0-GAMMAM)
+   GRDQ(IW,1,1,:)= DQ3(1,1,:) + TMP*(DQ3(1,1,:)+DQ3(1,2,:))
+   GRDQ(IW,2,1,:)= DQ3(2,1,:) + TMP*(DQ3(2,1,:)+DQ3(2,2,:))
+   GRDQ(IW,3,1,:)= DQ3(3,1,:) + TMP*(DQ3(3,1,:)+DQ3(3,2,:))
 
-   grdq(iw,1,2,:)= dq3(1,2,:) + tmp*(dq3(1,1,:)+dq3(1,2,:))
-   grdq(iw,2,2,:)= dq3(2,2,:) + tmp*(dq3(2,1,:)+dq3(2,2,:))
-   grdq(iw,3,2,:)= dq3(3,2,:) + tmp*(dq3(3,1,:)+dq3(3,2,:))
+   GRDQ(IW,1,2,:)= DQ3(1,2,:) + TMP*(DQ3(1,1,:)+DQ3(1,2,:))
+   GRDQ(IW,2,2,:)= DQ3(2,2,:) + TMP*(DQ3(2,1,:)+DQ3(2,2,:))
+   GRDQ(IW,3,2,:)= DQ3(3,2,:) + TMP*(DQ3(3,1,:)+DQ3(3,2,:))
 
-   grdq(iw,1,3,:)= dq3(1,3,:)-2.d0*tmp*(dq3(1,1,:)+dq3(1,2,:))
-   grdq(iw,2,3,:)= dq3(2,3,:)-2.d0*tmp*(dq3(2,1,:)+dq3(2,2,:))
-   grdq(iw,3,3,:)= dq3(3,3,:)-2.d0*tmp*(dq3(3,1,:)+dq3(3,2,:))
-enddo
-charge = charge*CHARGECON
-grdq   = grdq*CHARGECON
+   GRDQ(IW,1,3,:)= DQ3(1,3,:)-2.D0*TMP*(DQ3(1,1,:)+DQ3(1,2,:))
+   GRDQ(IW,2,3,:)= DQ3(2,3,:)-2.D0*TMP*(DQ3(2,1,:)+DQ3(2,2,:))
+   GRDQ(IW,3,3,:)= DQ3(3,3,:)-2.D0*TMP*(DQ3(3,1,:)+DQ3(3,2,:))
+ENDDO
+CHARGE = CHARGE*CHARGECON
+GRDQ   = GRDQ*CHARGECON
 !-------------------------------------------------------------------------!
-! Calculate the CHARGE-CHARGE interactions for all atoms                  !
+! CALCULATE THE CHARGE-CHARGE INTERACTIONS FOR ALL ATOMS                  !
 !-------------------------------------------------------------------------!
-do iw=1, Nw-1
-   do jw=iw+1, Nw
-      !Oxygen-Oxygen interactions
-      iat=fO+iw-1          ! iat=Oxygen-1   
-      jat=fO+jw-1          ! jat=Oxygen-2
-      Rij=RR(:,iat) - RR(:,jat)
-      dRijsq=Rij(1)*Rij(1) + Rij(2)*Rij(2) + Rij(3)*Rij(3)
-      dRij = dsqrt(dRijsq)
-      !... vdw interactions
-      dR6 = dRijsq**3
-      dR10=dR6*dRijsq*dRijsq
-      dR12=dR6*dR6
-      expon = vdwD*dexp(-vdwE*dRij)
-      Evdw = Evdw + vdwC/dR6 + expon
-      tmp=-(6.d0*vdwC/dR6)/dRijsq -vdwE*expon/dRij
-      dRR(:,iat) = dRR(:,iat) + tmp * Rij
-      dRR(:,jat) = dRR(:,jat) - tmp * Rij
-      !Hydrogen-Hydrogen interactions
-      do isp=1, 2
-         iat=fH+2*(iw-1)+ isp-1   ! iat=Hydrogen-1A/Hydrogen-1B
-         Ri = RR(1:3, iat)
-         do jsp=1, 2
-            jat=fH+2*(jw-1)+ jsp-1   ! jat=Hydrogen-2A/Hydrogen-2B
-            Rij = Ri - RR(1:3, jat)
-            dRijsq=Rij(1)*Rij(1) + Rij(2)*Rij(2) + Rij(3)*Rij(3)
-            call smear01(dRijsq, polfacH**2, aCCaCD, ts0, ts1)
-            phi(iat) = phi(iat) + ts0*charge(jat)
-            phi(jat) = phi(jat) + ts0*charge(iat)
-            Efq(3*iat-2:3*iat) = Efq(3*iat-2:3*iat) + ts1*charge(jat)*Rij
-            Efq(3*jat-2:3*jat) = Efq(3*jat-2:3*jat) - ts1*charge(iat)*Rij
-         enddo
-      enddo
-      !Msite-Msite interactions
-      iat=fM+iw-1          ! iat=Msite-1   
-      jat=fM+jw-1          ! jat=Msite-2
-      Rij=RM(:,iat) - RM(:,jat)
-      dRijsq=Rij(1)*Rij(1) + Rij(2)*Rij(2) + Rij(3)*Rij(3)
-      call smear01(dRijsq, polfacM**2, aCCaCD, ts0, ts1)
-      phi(iat) = phi(iat) + ts0*charge(jat)
-      phi(jat) = phi(jat) + ts0*charge(iat)
-      Efq(3*iat-2:3*iat) = Efq(3*iat-2:3*iat) + ts1*charge(jat)*Rij
-      Efq(3*jat-2:3*jat) = Efq(3*jat-2:3*jat) - ts1*charge(iat)*Rij
-   enddo
-enddo
-do iw=1, Nw
-   do jw=1, Nw
-      if (iw/=jw) then
-         !Msite-Hydrogen interactions
-         iat = fM + iw -1   ! iat=Msite
-         Ri = RM(1:3, iat)
-         do jsp=1,2
-            jat = fH+2*(jw-1) + jsp-1  !jat = hydrogen-2
-            Rij = Ri - RR(1:3, jat)
-            dRijsq=Rij(1)*Rij(1) + Rij(2)*Rij(2) + Rij(3)*Rij(3)
-            call smear01(dRijsq, polfacH*polfacM, aCCaCD, ts0, ts1)
-            phi(iat) = phi(iat) + ts0*charge(jat)
-            phi(jat) = phi(jat) + ts0*charge(iat)
-            Efq(3*iat-2:3*iat) = Efq(3*iat-2:3*iat) + ts1*charge(jat)*Rij
-            Efq(3*jat-2:3*jat) = Efq(3*jat-2:3*jat) - ts1*charge(iat)*Rij
-         enddo
-      endif 
-   enddo
-enddo
+DO IW=1, NW-1
+   DO JW=IW+1, NW
+      !OXYGEN-OXYGEN INTERACTIONS
+      IAT=FO+IW-1          ! IAT=OXYGEN-1   
+      JAT=FO+JW-1          ! JAT=OXYGEN-2
+      RIJ=RR(:,IAT) - RR(:,JAT)
+      DRIJSQ=RIJ(1)*RIJ(1) + RIJ(2)*RIJ(2) + RIJ(3)*RIJ(3)
+      DRIJ = DSQRT(DRIJSQ)
+      !... VDW INTERACTIONS
+      DR6 = DRIJSQ**3
+      DR10=DR6*DRIJSQ*DRIJSQ
+      DR12=DR6*DR6
+      EXPON = VDWD*DEXP(-VDWE*DRIJ)
+      EVDW = EVDW + VDWC/DR6 + EXPON
+      TMP=-(6.D0*VDWC/DR6)/DRIJSQ -VDWE*EXPON/DRIJ
+      DRR(:,IAT) = DRR(:,IAT) + TMP * RIJ
+      DRR(:,JAT) = DRR(:,JAT) - TMP * RIJ
+      !HYDROGEN-HYDROGEN INTERACTIONS
+      DO ISP=1, 2
+         IAT=FH+2*(IW-1)+ ISP-1   ! IAT=HYDROGEN-1A/HYDROGEN-1B
+         RI = RR(1:3, IAT)
+         DO JSP=1, 2
+            JAT=FH+2*(JW-1)+ JSP-1   ! JAT=HYDROGEN-2A/HYDROGEN-2B
+            RIJ = RI - RR(1:3, JAT)
+            DRIJSQ=RIJ(1)*RIJ(1) + RIJ(2)*RIJ(2) + RIJ(3)*RIJ(3)
+            CALL SMEAR01(DRIJSQ, POLFACH**2, ACCACD, TS0, TS1)
+            PHI(IAT) = PHI(IAT) + TS0*CHARGE(JAT)
+            PHI(JAT) = PHI(JAT) + TS0*CHARGE(IAT)
+            EFQ(3*IAT-2:3*IAT) = EFQ(3*IAT-2:3*IAT) + TS1*CHARGE(JAT)*RIJ
+            EFQ(3*JAT-2:3*JAT) = EFQ(3*JAT-2:3*JAT) - TS1*CHARGE(IAT)*RIJ
+         ENDDO
+      ENDDO
+      !MSITE-MSITE INTERACTIONS
+      IAT=FM+IW-1          ! IAT=MSITE-1   
+      JAT=FM+JW-1          ! JAT=MSITE-2
+      RIJ=RM(:,IAT) - RM(:,JAT)
+      DRIJSQ=RIJ(1)*RIJ(1) + RIJ(2)*RIJ(2) + RIJ(3)*RIJ(3)
+      CALL SMEAR01(DRIJSQ, POLFACM**2, ACCACD, TS0, TS1)
+      PHI(IAT) = PHI(IAT) + TS0*CHARGE(JAT)
+      PHI(JAT) = PHI(JAT) + TS0*CHARGE(IAT)
+      EFQ(3*IAT-2:3*IAT) = EFQ(3*IAT-2:3*IAT) + TS1*CHARGE(JAT)*RIJ
+      EFQ(3*JAT-2:3*JAT) = EFQ(3*JAT-2:3*JAT) - TS1*CHARGE(IAT)*RIJ
+   ENDDO
+ENDDO
+DO IW=1, NW
+   DO JW=1, NW
+      IF (IW/=JW) THEN
+         !MSITE-HYDROGEN INTERACTIONS
+         IAT = FM + IW -1   ! IAT=MSITE
+         RI = RM(1:3, IAT)
+         DO JSP=1,2
+            JAT = FH+2*(JW-1) + JSP-1  !JAT = HYDROGEN-2
+            RIJ = RI - RR(1:3, JAT)
+            DRIJSQ=RIJ(1)*RIJ(1) + RIJ(2)*RIJ(2) + RIJ(3)*RIJ(3)
+            CALL SMEAR01(DRIJSQ, POLFACH*POLFACM, ACCACD, TS0, TS1)
+            PHI(IAT) = PHI(IAT) + TS0*CHARGE(JAT)
+            PHI(JAT) = PHI(JAT) + TS0*CHARGE(IAT)
+            EFQ(3*IAT-2:3*IAT) = EFQ(3*IAT-2:3*IAT) + TS1*CHARGE(JAT)*RIJ
+            EFQ(3*JAT-2:3*JAT) = EFQ(3*JAT-2:3*JAT) - TS1*CHARGE(IAT)*RIJ
+         ENDDO
+      ENDIF 
+   ENDDO
+ENDDO
 !-------------------------------------------------------------------------!
-! Calculate the DIPOLE-DIPOLE TENSOR Array.  (according to the Tholes   --!  
-!   model the intra-molecular interactions  should be also considered)  --!
+! CALCULATE THE DIPOLE-DIPOLE TENSOR ARRAY.  (ACCORDING TO THE THOLES   --!  
+!   MODEL THE INTRA-MOLECULAR INTERACTIONS  SHOULD BE ALSO CONSIDERED)  --!
 !-------------------------------------------------------------------------!
-do iat=fM, lM-1
-   i3=3*iat-2
-   Ri = RM(:, iat)
-   do jat=iat+1, lM
-      j3=3*jat-2
-      Rij = Ri - RM(:, jat)
-      dRijsq=Rij(1)*Rij(1) + Rij(2)*Rij(2) + Rij(3)*Rij(3)
-      call smear2(dRijsq, polfacM**2, aDD, ts1, ts2)
-      dd3(1,1) = 3.d0*ts2*Rij(1)*Rij(1) - ts1
-      dd3(2,2) = 3.d0*ts2*Rij(2)*Rij(2) - ts1
-      dd3(3,3) = 3.d0*ts2*Rij(3)*Rij(3) - ts1
-      dd3(1,2) = 3.d0*ts2*Rij(1)*Rij(2)
-      dd3(1,3) = 3.d0*ts2*Rij(1)*Rij(3)
-      dd3(2,3) = 3.d0*ts2*Rij(2)*Rij(3)
-      dd3(2,1)=dd3(1,2); dd3(3,1)=dd3(1,3); dd3(3,2)=dd3(2,3)
-      ddt(i3:i3+2, j3:j3+2) = dd3
-      ddt(j3:j3+2, i3:i3+2) = dd3
-   enddo  ! do jat=iat+1, Natsd
-enddo  ! do iat=1, Natsd
+DO IAT=FM, LM-1
+   I3=3*IAT-2
+   RI = RM(:, IAT)
+   DO JAT=IAT+1, LM
+      J3=3*JAT-2
+      RIJ = RI - RM(:, JAT)
+      DRIJSQ=RIJ(1)*RIJ(1) + RIJ(2)*RIJ(2) + RIJ(3)*RIJ(3)
+      CALL SMEAR2(DRIJSQ, POLFACM**2, ADD, TS1, TS2)
+      DD3(1,1) = 3.D0*TS2*RIJ(1)*RIJ(1) - TS1
+      DD3(2,2) = 3.D0*TS2*RIJ(2)*RIJ(2) - TS1
+      DD3(3,3) = 3.D0*TS2*RIJ(3)*RIJ(3) - TS1
+      DD3(1,2) = 3.D0*TS2*RIJ(1)*RIJ(2)
+      DD3(1,3) = 3.D0*TS2*RIJ(1)*RIJ(3)
+      DD3(2,3) = 3.D0*TS2*RIJ(2)*RIJ(3)
+      DD3(2,1)=DD3(1,2); DD3(3,1)=DD3(1,3); DD3(3,2)=DD3(2,3)
+      DDT(I3:I3+2, J3:J3+2) = DD3
+      DDT(J3:J3+2, I3:I3+2) = DD3
+   ENDDO  ! DO JAT=IAT+1, NATSD
+ENDDO  ! DO IAT=1, NATSD
 !-------------------------------------------------------------------------!
-! Calculate the induced Electric Field using an iterative proced.         !
+! CALCULATE THE INDUCED ELECTRIC FIELD USING AN ITERATIVE PROCED.         !
 !-------------------------------------------------------------------------!
-dip(fM3:lM3) = polarM*Efq(fM3:lM3)
-pr_dip(fM3:lM3) = dip(fM3:lM3)   ! keep the previous dipole
+DIP(FM3:LM3) = POLARM*EFQ(FM3:LM3)
+PR_DIP(FM3:LM3) = DIP(FM3:LM3)   ! KEEP THE PREVIOUS DIPOLE
 
-stath = DEBYE/CHARGECON/dsqrt(dble(Natsd))
-do iter=1, MAXITER
-   Efd = matmul(ddt, dip)
-   dip(fM3:lM3) = polarM*( Efq(fM3:lM3) + Efd(fM3:lM3) )
-   dip(fM3:lM3) = dmix*dip(fM3:lM3) + (1.d0-dmix)*pr_dip(fM3:lM3)
-   deltadip = sum(  (dip(fM3:lM3)-pr_dip(fM3:lM3))**2  )
-   deltadip = dsqrt(deltadip)*stath
-!   print*,'iter=',iter, deltadip
-   if (deltadip<diptol) then
-      goto 100
-   else
-      pr_dip(fM3:lM3) = dip(fM3:lM3)
-   endif
-enddo
-100 Continue
-Eelec = 0.5d0*sum(charge(fH:lM)*phi(fH:lM))
-Eind = -0.5d0*sum(dip(fM3:lM3)*Efq(fM3:lM3))
-En = Eint + Evdw + Eelec + Eind
-!print*,'Eint=',Eint; print*,'Evdw', Evdw; print*,'Eelec=',Eelec; print*,'Eind=',Eind
+STATH = DEBYE/CHARGECON/DSQRT(DBLE(NATSD))
+DO ITER=1, MAXITER
+   EFD = MATMUL(DDT, DIP)
+   DIP(FM3:LM3) = POLARM*( EFQ(FM3:LM3) + EFD(FM3:LM3) )
+   DIP(FM3:LM3) = DMIX*DIP(FM3:LM3) + (1.D0-DMIX)*PR_DIP(FM3:LM3)
+   DELTADIP = SUM(  (DIP(FM3:LM3)-PR_DIP(FM3:LM3))**2  )
+   DELTADIP = DSQRT(DELTADIP)*STATH
+!   PRINT*,'ITER=',ITER, DELTADIP
+   IF (DELTADIP<DIPTOL) THEN
+      GOTO 100
+   ELSE
+      PR_DIP(FM3:LM3) = DIP(FM3:LM3)
+   ENDIF
+ENDDO
+100 CONTINUE
+EELEC = 0.5D0*SUM(CHARGE(FH:LM)*PHI(FH:LM))
+EIND = -0.5D0*SUM(DIP(FM3:LM3)*EFQ(FM3:LM3))
+EN = EINT + EVDW + EELEC + EIND
+!PRINT*,'EINT=',EINT; PRINT*,'EVDW', EVDW; PRINT*,'EELEC=',EELEC; PRINT*,'EIND=',EIND
 !-------------------------------------------------------------------------!
-!---------  Calculate the remaining part of the derivatives   ------------!
+!---------  CALCULATE THE REMAINING PART OF THE DERIVATIVES   ------------!
 !-------------------------------------------------------------------------!
-!....... derivatives due to charge-charge interaction
-do iat=fH, lH
-   dRR(:,iat) = dRR(:,iat) - charge(iat)*Efq(3*iat-2:3*iat)
-enddo
-do iat=fM, lM
-   dRM(:,iat) = dRM(:,iat) - charge(iat)*Efq(3*iat-2:3*iat)
-enddo
-!....... derivatives due to charge-dipole and dipole-dipole interaction
-do iw=1, Nw-1
-   do jw=iw+1, Nw
-      !Msite-Msite interactions
-      iat=fM+iw-1          ! iat=Msite-1   
-      jat=fM+jw-1          ! jat=Msite-2
-      Rij=RM(:,iat) - RM(:,jat)
-      dRijsq=Rij(1)*Rij(1) + Rij(2)*Rij(2) + Rij(3)*Rij(3)
-      call smear3(dRijsq, polfacM**2, aDD, ts1, ts2, ts3)
-      qi = charge(iat)
-      qj = charge(jat)
-      di = dip(3*iat-2:3*iat)  ! dipole-I
-      dj = dip(3*jat-2:3*jat)  ! dipole-J
-      didj = di(1)*dj(1) + di(2)*dj(2) + di(3)*dj(3)
-      dir = di(1)*Rij(1) + di(2)*Rij(2) + di(3)*Rij(3)
-      djr = dj(1)*Rij(1) + dj(2)*Rij(2) + dj(3)*Rij(3)
-      derij=-3.d0*ts2*(didj*Rij+djr*di+dir*dj) + 15.d0*ts3*dir*djr*Rij 
-      derij=derij-3.d0*ts2*qi*djr*Rij + ts1*qi*dj
-      derij=derij+3.d0*ts2*qj*dir*Rij - ts1*qj*di
-      dRM(:,iat) = dRM(:,iat) + derij 
-      dRM(:,jat) = dRM(:,jat) - derij 
-      phi(iat) = phi(iat) + ts1*djr
-      phi(jat) = phi(jat) - ts1*dir
-   enddo
-enddo
-!Hydrogen-Msite interactions
-do iw=1, Nw
-   iat = fM + iw -1   ! iat=Msite
-   qi = charge(iat)         ! charge-I
-   di = dip(3*iat-2:3*iat)
-   Ri = RM(1:3, iat)
-   do jw=1, Nw
-      if (iw/=jw) then
-         do jsp=1,2
-            jat = fH+2*(jw-1) + jsp-1  !jat = hydrogen-2
-            qj = charge(jat)         ! charge-J
-            Rij = Ri - RR(1:3, jat)
-            dRijsq=Rij(1)*Rij(1) + Rij(2)*Rij(2) + Rij(3)*Rij(3)
-            call smear2(dRijsq, polfacH*polfacM, aCCaCD, ts1, ts2)
-            dir  = di(1)*Rij(1) + di(2)*Rij(2) + di(3)*Rij(3)
-            derij=   3.d0*ts2*qj*dir*Rij - ts1*qj*di
-            dRM(:,iat) = dRM(:,iat) + derij
-            dRR(:,jat) = dRR(:,jat) - derij
-            phi(jat) = phi(jat)-ts1*dir
-         enddo
-      endif
-   enddo
-enddo
-!----derivatives from the adjustable charges of the NASA PES
-do iw=1,Nw
-   iO  = fO + iw-1
-   iH1 = fH + 2*iw-2
-   iH2 = fH + 2*iw-1
-   iM  = fM + iw-1
-   dRR(:,iH1)=dRR(:,iH1)+(grdq(iw,1,1,:)*phi(iH1)+  &
-                          grdq(iw,1,2,:)*phi(iH2)+grdq(iw,1,3,:)*phi(iM))
-   dRR(:,iH2)=dRR(:,iH2)+(grdq(iw,2,1,:)*phi(iH1)+  & 
-                          grdq(iw,2,2,:)*phi(iH2)+grdq(iw,2,3,:)*phi(iM))
-   dRR(:,iO )=dRR(:,iO )+(grdq(iw,3,1,:)*phi(iH1)+  &  
-                          grdq(iw,3,2,:)*phi(iH2)+grdq(iw,3,3,:)*phi(iM))
-enddo
+!....... DERIVATIVES DUE TO CHARGE-CHARGE INTERACTION
+DO IAT=FH, LH
+   DRR(:,IAT) = DRR(:,IAT) - CHARGE(IAT)*EFQ(3*IAT-2:3*IAT)
+ENDDO
+DO IAT=FM, LM
+   DRM(:,IAT) = DRM(:,IAT) - CHARGE(IAT)*EFQ(3*IAT-2:3*IAT)
+ENDDO
+!....... DERIVATIVES DUE TO CHARGE-DIPOLE AND DIPOLE-DIPOLE INTERACTION
+DO IW=1, NW-1
+   DO JW=IW+1, NW
+      !MSITE-MSITE INTERACTIONS
+      IAT=FM+IW-1          ! IAT=MSITE-1   
+      JAT=FM+JW-1          ! JAT=MSITE-2
+      RIJ=RM(:,IAT) - RM(:,JAT)
+      DRIJSQ=RIJ(1)*RIJ(1) + RIJ(2)*RIJ(2) + RIJ(3)*RIJ(3)
+      CALL SMEAR3(DRIJSQ, POLFACM**2, ADD, TS1, TS2, TS3)
+      QI = CHARGE(IAT)
+      QJ = CHARGE(JAT)
+      DI = DIP(3*IAT-2:3*IAT)  ! DIPOLE-I
+      DJ = DIP(3*JAT-2:3*JAT)  ! DIPOLE-J
+      DIDJ = DI(1)*DJ(1) + DI(2)*DJ(2) + DI(3)*DJ(3)
+      DIR = DI(1)*RIJ(1) + DI(2)*RIJ(2) + DI(3)*RIJ(3)
+      DJR = DJ(1)*RIJ(1) + DJ(2)*RIJ(2) + DJ(3)*RIJ(3)
+      DERIJ=-3.D0*TS2*(DIDJ*RIJ+DJR*DI+DIR*DJ) + 15.D0*TS3*DIR*DJR*RIJ 
+      DERIJ=DERIJ-3.D0*TS2*QI*DJR*RIJ + TS1*QI*DJ
+      DERIJ=DERIJ+3.D0*TS2*QJ*DIR*RIJ - TS1*QJ*DI
+      DRM(:,IAT) = DRM(:,IAT) + DERIJ 
+      DRM(:,JAT) = DRM(:,JAT) - DERIJ 
+      PHI(IAT) = PHI(IAT) + TS1*DJR
+      PHI(JAT) = PHI(JAT) - TS1*DIR
+   ENDDO
+ENDDO
+!HYDROGEN-MSITE INTERACTIONS
+DO IW=1, NW
+   IAT = FM + IW -1   ! IAT=MSITE
+   QI = CHARGE(IAT)         ! CHARGE-I
+   DI = DIP(3*IAT-2:3*IAT)
+   RI = RM(1:3, IAT)
+   DO JW=1, NW
+      IF (IW/=JW) THEN
+         DO JSP=1,2
+            JAT = FH+2*(JW-1) + JSP-1  !JAT = HYDROGEN-2
+            QJ = CHARGE(JAT)         ! CHARGE-J
+            RIJ = RI - RR(1:3, JAT)
+            DRIJSQ=RIJ(1)*RIJ(1) + RIJ(2)*RIJ(2) + RIJ(3)*RIJ(3)
+            CALL SMEAR2(DRIJSQ, POLFACH*POLFACM, ACCACD, TS1, TS2)
+            DIR  = DI(1)*RIJ(1) + DI(2)*RIJ(2) + DI(3)*RIJ(3)
+            DERIJ=   3.D0*TS2*QJ*DIR*RIJ - TS1*QJ*DI
+            DRM(:,IAT) = DRM(:,IAT) + DERIJ
+            DRR(:,JAT) = DRR(:,JAT) - DERIJ
+            PHI(JAT) = PHI(JAT)-TS1*DIR
+         ENDDO
+      ENDIF
+   ENDDO
+ENDDO
+!----DERIVATIVES FROM THE ADJUSTABLE CHARGES OF THE NASA PES
+DO IW=1,NW
+   IO  = FO + IW-1
+   IH1 = FH + 2*IW-2
+   IH2 = FH + 2*IW-1
+   IM  = FM + IW-1
+   DRR(:,IH1)=DRR(:,IH1)+(GRDQ(IW,1,1,:)*PHI(IH1)+  &
+                          GRDQ(IW,1,2,:)*PHI(IH2)+GRDQ(IW,1,3,:)*PHI(IM))
+   DRR(:,IH2)=DRR(:,IH2)+(GRDQ(IW,2,1,:)*PHI(IH1)+  & 
+                          GRDQ(IW,2,2,:)*PHI(IH2)+GRDQ(IW,2,3,:)*PHI(IM))
+   DRR(:,IO )=DRR(:,IO )+(GRDQ(IW,3,1,:)*PHI(IH1)+  &  
+                          GRDQ(IW,3,2,:)*PHI(IH2)+GRDQ(IW,3,3,:)*PHI(IM))
+ENDDO
 !-------------------------------------------------------------------------!
-!-- Redistribute the ders from the sites (H,H,M) to the atoms (O,H,H)     !
+!-- REDISTRIBUTE THE DERS FROM THE SITES (H,H,M) TO THE ATOMS (O,H,H)     !
 !-------------------------------------------------------------------------!
-do iw=1, Nw
-   iO  = fO + iw-1
-   iH1 = fH + 2*iw-2
-   iH2 = fH + 2*iw-1
-   iM  = fM + iw-1
-   dRR(:,iH1) = dRR(:,iH1) +  0.5d0*gammaM*dRM(:,iM)
-   dRR(:,iH2) = dRR(:,iH2) +  0.5d0*gammaM*dRM(:,iM)
-   dRR(:, iO) = dRR(:, iO) + (1.d0-gammaM)*dRM(:,iM)
-enddo
+DO IW=1, NW
+   IO  = FO + IW-1
+   IH1 = FH + 2*IW-2
+   IH2 = FH + 2*IW-1
+   IM  = FM + IW-1
+   DRR(:,IH1) = DRR(:,IH1) +  0.5D0*GAMMAM*DRM(:,IM)
+   DRR(:,IH2) = DRR(:,IH2) +  0.5D0*GAMMAM*DRM(:,IM)
+   DRR(:, IO) = DRR(:, IO) + (1.D0-GAMMAM)*DRM(:,IM)
+ENDDO
 
-end subroutine ttm3f
-subroutine pot_nasa(r1, dr1, e1)
+END SUBROUTINE TTM3F
+SUBROUTINE POT_NASA(R1, DR1, E1)
 !****
-!**** calculates the energy (e1) and the derivatives (dr1) of a water monomer
-!**** (coordinates in the array r1). The potential has been developed by
-!**** "H. Partridge and D. W. Schwenke, J. Chem. Phys. 106, 4618 (1997)".
-!**** Some extra code for the calculation of the energy derivatives has been
-!**** added  by C. J. Burnham.
+!**** CALCULATES THE ENERGY (E1) AND THE DERIVATIVES (DR1) OF A WATER MONOMER
+!**** (COORDINATES IN THE ARRAY R1). THE POTENTIAL HAS BEEN DEVELOPED BY
+!**** "H. PARTRIDGE AND D. W. SCHWENKE, J. CHEM. PHYS. 106, 4618 (1997)".
+!**** SOME EXTRA CODE FOR THE CALCULATION OF THE ENERGY DERIVATIVES HAS BEEN
+!**** ADDED  BY C. J. BURNHAM.
 !****
-use mnasa_mod
-implicit none
-double precision, dimension(3, 3), intent(in) :: r1
-double precision, dimension(3, 3), intent(out) :: dr1
-double precision, intent(out) :: e1
-double precision, dimension(3) :: ROH1, ROH2, RHH
-double precision, dimension(0:15,3) :: fmat
-double precision :: dROH1, dROH2, dROH1OH2, dRHH
-double precision :: Va, Vb, Vc
-double precision :: dVa1,dVa2,dVb, dVcdr1, dVcdr2, dVcdcth, sum0,sum1,sum2,sum3
-double precision :: x1, x2, x3
-double precision :: costhe, costh, sinth
-double precision :: exp1, exp2, efac
-integer          :: i, j, inI, inJ, inK, ix, iy
-double precision :: deoh, phh1
-double precision, dimension(245) :: c5z
-double precision :: P1, P2, PL1, PL2, PC0
+USE MNASA_MOD
+IMPLICIT NONE
+DOUBLE PRECISION, DIMENSION(3, 3), INTENT(IN) :: R1
+DOUBLE PRECISION, DIMENSION(3, 3), INTENT(OUT) :: DR1
+DOUBLE PRECISION, INTENT(OUT) :: E1
+DOUBLE PRECISION, DIMENSION(3) :: ROH1, ROH2, RHH
+DOUBLE PRECISION, DIMENSION(0:15,3) :: FMAT
+DOUBLE PRECISION :: DROH1, DROH2, DROH1OH2, DRHH
+DOUBLE PRECISION :: VA, VB, VC
+DOUBLE PRECISION :: DVA1,DVA2,DVB, DVCDR1, DVCDR2, DVCDCTH, SUM0,SUM1,SUM2,SUM3
+DOUBLE PRECISION :: X1, X2, X3
+DOUBLE PRECISION :: COSTHE, COSTH, SINTH
+DOUBLE PRECISION :: EXP1, EXP2, EFAC
+INTEGER          :: I, J, INI, INJ, INK, IX, IY
+DOUBLE PRECISION :: DEOH, PHH1
+DOUBLE PRECISION, DIMENSION(245) :: C5Z
+DOUBLE PRECISION :: P1, P2, PL1, PL2, PC0
 
-ROH1(:) = r1(1:3, 2) - r1(1:3,1)
-ROH2(:) = r1(1:3, 3) - r1(1:3,1)
-RHH(:)  = r1(1:3, 2) - r1(1:3,3)
-dROH1 = dsqrt(dot_product(ROH1, ROH1))
-dROH2 = dsqrt(dot_product(ROH2, ROH2))
-dRHH  = dsqrt(dot_product(RHH , RHH ))
-costh = (ROH1(1)*ROH2(1) + ROH1(2)*ROH2(2) + ROH1(3)*ROH2(3) ) / (dROH1*dROH2)
+ROH1(:) = R1(1:3, 2) - R1(1:3,1)
+ROH2(:) = R1(1:3, 3) - R1(1:3,1)
+RHH(:)  = R1(1:3, 2) - R1(1:3,3)
+DROH1 = DSQRT(DOT_PRODUCT(ROH1, ROH1))
+DROH2 = DSQRT(DOT_PRODUCT(ROH2, ROH2))
+DRHH  = DSQRT(DOT_PRODUCT(RHH , RHH ))
+COSTH = (ROH1(1)*ROH2(1) + ROH1(2)*ROH2(2) + ROH1(3)*ROH2(3) ) / (DROH1*DROH2)
 
 
-c5z = f5z*c5zA + fbasis*cbasis + fcore*ccore + frest*crest
-deoh = f5z*deohA
-phh1 = f5z*phh1A
-phh1 = phh1*dexp(phh2)
+C5Z = F5Z*C5ZA + FBASIS*CBASIS + FCORE*CCORE + FREST*CREST
+DEOH = F5Z*DEOHA
+PHH1 = F5Z*PHH1A
+PHH1 = PHH1*DEXP(PHH2)
 
-costhe = -.24780227221366464506d0
+COSTHE = -.24780227221366464506D0
 
-exp1 = dexp(-alphaoh*(dROH1-roh))
-exp2 = dexp(-alphaoh*(dROH2-roh))
-Va = deoh*(exp1*(exp1-2.d0)+exp2*(exp2-2.d0))
-Vb  = phh1*dexp(-phh2*dRHH)
-dVa1= 2.d0*alphaoh*deoh*exp1*(1.d0-exp1)/dROH1
-dVa2= 2.d0*alphaoh*deoh*exp2*(1.d0-exp2)/dROH2
-dVb = -phh2*Vb/dRHH
-x1 = (dROH1-reoh)/reoh
-x2 = (dROH2-reoh)/reoh
-x3 = costh - costhe
-fmat(0,1:3) = 0.d0
-fmat(1,1:3) = 1.d0
-do j=2,15
-   fmat(j,1) = fmat(j-1,1)*x1
-   fmat(j,2) = fmat(j-1,2)*x2
-   fmat(j,3) = fmat(j-1,3)*x3
-enddo
+EXP1 = DEXP(-ALPHAOH*(DROH1-ROH))
+EXP2 = DEXP(-ALPHAOH*(DROH2-ROH))
+VA = DEOH*(EXP1*(EXP1-2.D0)+EXP2*(EXP2-2.D0))
+VB  = PHH1*DEXP(-PHH2*DRHH)
+DVA1= 2.D0*ALPHAOH*DEOH*EXP1*(1.D0-EXP1)/DROH1
+DVA2= 2.D0*ALPHAOH*DEOH*EXP2*(1.D0-EXP2)/DROH2
+DVB = -PHH2*VB/DRHH
+X1 = (DROH1-REOH)/REOH
+X2 = (DROH2-REOH)/REOH
+X3 = COSTH - COSTHE
+FMAT(0,1:3) = 0.D0
+FMAT(1,1:3) = 1.D0
+DO J=2,15
+   FMAT(J,1) = FMAT(J-1,1)*X1
+   FMAT(J,2) = FMAT(J-1,2)*X2
+   FMAT(J,3) = FMAT(J-1,3)*X3
+ENDDO
 
-efac = dexp(-b1*(  (dROH1-reoh)**2 + (dROH2-reoh)**2))
+EFAC = DEXP(-B1*(  (DROH1-REOH)**2 + (DROH2-REOH)**2))
 
-sum0 = 0.d0; sum1 = 0.d0; sum2 = 0.d0; sum3 = 0.d0
-do j=2,245
-   inI = idx(j,1)
-   inJ = idx(j,2)
-   inK = idx(j,3)
-   sum0 = sum0 + c5z(j) *  ( fmat(inI,1)*fmat(inJ,2) +   &
-        fmat(inJ,1)*fmat(inI,2)) *fmat(inK,3) 
-   sum1 = sum1 + c5z(j) *  ( dble(inI-1)*fmat(inI-1,1)*fmat(inJ,2) +   &
-        dble(inJ-1)*fmat(inJ-1,1)*fmat(inI,2)  )*fmat(inK,3) 
-   sum2 = sum2 + c5z(j) *  ( dble(inJ-1)*fmat(inI,1)*fmat(inJ-1,2) +   &
-        dble(inI-1)*fmat(inJ,1)*fmat(inI-1,2)  )*fmat(inK,3) 
-   sum3 = sum3 + c5z(j) *  ( fmat(inI,1)*fmat(inJ,2) +   &
-        fmat(inJ,1)*fmat(inI,2)) * dble(inK-1)*fmat(inK-1,3) 
-enddo     
+SUM0 = 0.D0; SUM1 = 0.D0; SUM2 = 0.D0; SUM3 = 0.D0
+DO J=2,245
+   INI = IDX(J,1)
+   INJ = IDX(J,2)
+   INK = IDX(J,3)
+   SUM0 = SUM0 + C5Z(J) *  ( FMAT(INI,1)*FMAT(INJ,2) +   &
+        FMAT(INJ,1)*FMAT(INI,2)) *FMAT(INK,3) 
+   SUM1 = SUM1 + C5Z(J) *  ( DBLE(INI-1)*FMAT(INI-1,1)*FMAT(INJ,2) +   &
+        DBLE(INJ-1)*FMAT(INJ-1,1)*FMAT(INI,2)  )*FMAT(INK,3) 
+   SUM2 = SUM2 + C5Z(J) *  ( DBLE(INJ-1)*FMAT(INI,1)*FMAT(INJ-1,2) +   &
+        DBLE(INI-1)*FMAT(INJ,1)*FMAT(INI-1,2)  )*FMAT(INK,3) 
+   SUM3 = SUM3 + C5Z(J) *  ( FMAT(INI,1)*FMAT(INJ,2) +   &
+        FMAT(INJ,1)*FMAT(INI,2)) * DBLE(INK-1)*FMAT(INK-1,3) 
+ENDDO     
 
-!.... energy..........
-Vc= 2.d0*c5z(1)+efac*sum0
-e1 = Va+Vb+Vc
-e1 = e1+0.44739574026257d0! correction
-e1 = e1*0.00285914375100642899d0 ! cm-1 --> Kcal/mol
-!.... derivatives .............
-dVcdr1 = (-2.d0*b1*efac*(dROH1-reoh)*sum0 + efac*sum1/reoh)/dROH1
-dVcdr2 = (-2.d0*b1*efac*(dROH2-reoh)*sum0 + efac*sum2/reoh)/dROH2
-dVcdcth = efac*sum3
+!.... ENERGY..........
+VC= 2.D0*C5Z(1)+EFAC*SUM0
+E1 = VA+VB+VC
+E1 = E1+0.44739574026257D0! CORRECTION
+E1 = E1*0.00285914375100642899D0 ! CM-1 --> KCAL/MOL
+!.... DERIVATIVES .............
+DVCDR1 = (-2.D0*B1*EFAC*(DROH1-REOH)*SUM0 + EFAC*SUM1/REOH)/DROH1
+DVCDR2 = (-2.D0*B1*EFAC*(DROH2-REOH)*SUM0 + EFAC*SUM2/REOH)/DROH2
+DVCDCTH = EFAC*SUM3
 
-dr1(:,2) = dVa1*ROH1 + dVb*RHH + dVcdr1*ROH1 + &
-       dVcdcth*(ROH2(:)/(dROH1*dROH2)-costh*ROH1(:)/(dROH1*dROH1))
-dr1(:,3) = dVa2*ROH2-dVb*RHH +dVcdr2*ROH2  + &
-       dVcdcth*(ROH1(:)/(dROH1*dROH2)-costh*ROH2(:)/(dROH2*dROH2))
-dr1(:,1) = -(dr1(:,2)+dr1(:,3))
-dr1 = dr1*.00285914375100642899d0
+DR1(:,2) = DVA1*ROH1 + DVB*RHH + DVCDR1*ROH1 + &
+       DVCDCTH*(ROH2(:)/(DROH1*DROH2)-COSTH*ROH1(:)/(DROH1*DROH1))
+DR1(:,3) = DVA2*ROH2-DVB*RHH +DVCDR2*ROH2  + &
+       DVCDCTH*(ROH1(:)/(DROH1*DROH2)-COSTH*ROH2(:)/(DROH2*DROH2))
+DR1(:,1) = -(DR1(:,2)+DR1(:,3))
+DR1 = DR1*.00285914375100642899D0
 
-end subroutine pot_nasa
+END SUBROUTINE POT_NASA
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-subroutine dms_nasa(r1, q3, gradq)
+SUBROUTINE DMS_NASA(R1, Q3, GRADQ)
 !****
-!**** calculates the charges (q3) on the Oxygen and the Hydrogen sites that
-!**** reproduce the dipole moment surface  of a water monomer
-!**** (coordinates in the array r1). The model has been developed by
-!**** "H. Partridge and D. W. Schwenke, J. Chem. Phys. 106, 4618 (1997)"
-!**** while some extra code for the calculation of the deivatives of the 
-!**** charges with respect to the atomic displacemets (gradq) has
-!**** added  by C. J. Burnham.
+!**** CALCULATES THE CHARGES (Q3) ON THE OXYGEN AND THE HYDROGEN SITES THAT
+!**** REPRODUCE THE DIPOLE MOMENT SURFACE  OF A WATER MONOMER
+!**** (COORDINATES IN THE ARRAY R1). THE MODEL HAS BEEN DEVELOPED BY
+!**** "H. PARTRIDGE AND D. W. SCHWENKE, J. CHEM. PHYS. 106, 4618 (1997)"
+!**** WHILE SOME EXTRA CODE FOR THE CALCULATION OF THE DEIVATIVES OF THE 
+!**** CHARGES WITH RESPECT TO THE ATOMIC DISPLACEMETS (GRADQ) HAS
+!**** ADDED  BY C. J. BURNHAM.
 !*** ------------------------------------------------------------------------
-!***  In the version 3.0 of the TTM3-F model some additional terms have been
-!***  used for the calculation of the charges (See the comments)
+!***  IN THE VERSION 3.0 OF THE TTM3-F MODEL SOME ADDITIONAL TERMS HAVE BEEN
+!***  USED FOR THE CALCULATION OF THE CHARGES (SEE THE COMMENTS)
 !*** ------------------------------------------------------------------------
 
-use mnasa_mod
-use ttm3f_mod
-implicit none
-double precision, dimension(3, 3) :: R1
-double precision, dimension(3):: q3
-double precision, dimension(3,3,3):: gradq
-double precision, dimension(3) :: ROH1, ROH2, RHH, AxB
-double precision, dimension(0:15,3) :: fmat
-double precision :: dROH1, dROH2, dRHH, dAxB, ang, ath0
-double precision :: x1, x2, x3
-double precision :: costhe, costh, sinth
-double precision :: exp1, exp2, efac
-integer          :: i, j, inI, inJ, inK, ix, iy
-double precision :: deoh, phh1
-double precision :: p1, p2, pl1, pl2, pc0
-double precision :: dp1dr1, dp1dr2, dp1dcabc, dp2dr1, dp2dr2, dp2dcabc
-double precision :: defacdr1, defacdr2, dpc0dr1, dpc0dr2, dpc0dcabc
-double precision :: f1q1r13, f1q1r23, f2q1r23, f2q1r13
-double precision :: f1q2r13, f1q2r23, f2q2r23, f2q2r13
-double precision :: bfac
-integer :: ll1, ll2
+USE MNASA_MOD
+USE TTM3F_MOD
+IMPLICIT NONE
+DOUBLE PRECISION, DIMENSION(3, 3) :: R1
+DOUBLE PRECISION, DIMENSION(3):: Q3
+DOUBLE PRECISION, DIMENSION(3,3,3):: GRADQ
+DOUBLE PRECISION, DIMENSION(3) :: ROH1, ROH2, RHH, AXB
+DOUBLE PRECISION, DIMENSION(0:15,3) :: FMAT
+DOUBLE PRECISION :: DROH1, DROH2, DRHH, DAXB, ANG, ATH0
+DOUBLE PRECISION :: X1, X2, X3
+DOUBLE PRECISION :: COSTHE, COSTH, SINTH
+DOUBLE PRECISION :: EXP1, EXP2, EFAC
+INTEGER          :: I, J, INI, INJ, INK, IX, IY
+DOUBLE PRECISION :: DEOH, PHH1
+DOUBLE PRECISION :: P1, P2, PL1, PL2, PC0
+DOUBLE PRECISION :: DP1DR1, DP1DR2, DP1DCABC, DP2DR1, DP2DR2, DP2DCABC
+DOUBLE PRECISION :: DEFACDR1, DEFACDR2, DPC0DR1, DPC0DR2, DPC0DCABC
+DOUBLE PRECISION :: F1Q1R13, F1Q1R23, F2Q1R23, F2Q1R13
+DOUBLE PRECISION :: F1Q2R13, F1Q2R23, F2Q2R23, F2Q2R13
+DOUBLE PRECISION :: BFAC
+INTEGER :: LL1, LL2
 
 
-deoh = f5z*deohA
-phh1 = f5z*phh1A
-phh1 = phh1*dexp(phh2)
+DEOH = F5Z*DEOHA
+PHH1 = F5Z*PHH1A
+PHH1 = PHH1*DEXP(PHH2)
 
-ath0 = 1.82400520401572996557d0
-costhe = -.24780227221366464506d0
+ATH0 = 1.82400520401572996557D0
+COSTHE = -.24780227221366464506D0
 
 ROH1 = R1(:,2) - R1(:,1)
 ROH2 = R1(:,3) - R1(:,1)
 RHH  = R1(:,2) - R1(:,3)
-dROH1 = dsqrt(dot_product(ROH1, ROH1))
-dROH2 = dsqrt(dot_product(ROH2, ROH2))
-dRHH  = dsqrt(dot_product(RHH, RHH))
-costh = dot_product(ROH1, ROH2)/(dROH1*dROH2)
-efac = dexp(-b1D*(  (dROH1-reoh)**2 + (dROH2-reoh)**2))
+DROH1 = DSQRT(DOT_PRODUCT(ROH1, ROH1))
+DROH2 = DSQRT(DOT_PRODUCT(ROH2, ROH2))
+DRHH  = DSQRT(DOT_PRODUCT(RHH, RHH))
+COSTH = DOT_PRODUCT(ROH1, ROH2)/(DROH1*DROH2)
+EFAC = DEXP(-B1D*(  (DROH1-REOH)**2 + (DROH2-REOH)**2))
    
-x1 = (dROH1-reoh)/reoh
-x2 = (dROH2-reoh)/reoh
-x3 = costh - costhe
-fmat(0,1:3) = 0.d0
-fmat(1,1:3) = 1.d0
-do j=2,15
-   fmat(j,1) = fmat(j-1,1)*x1
-   fmat(j,2) = fmat(j-1,2)*x2
-   fmat(j,3) = fmat(j-1,3)*x3
-enddo
+X1 = (DROH1-REOH)/REOH
+X2 = (DROH2-REOH)/REOH
+X3 = COSTH - COSTHE
+FMAT(0,1:3) = 0.D0
+FMAT(1,1:3) = 1.D0
+DO J=2,15
+   FMAT(J,1) = FMAT(J-1,1)*X1
+   FMAT(J,2) = FMAT(J-1,2)*X2
+   FMAT(J,3) = FMAT(J-1,3)*X3
+ENDDO
 !
-!    Calculate dipole moment
+!    CALCULATE DIPOLE MOMENT
 !
-P1 = 0.d0; 
-P2 = 0.d0
-PL1 = costh
-PL2 = 0.5d0*(3.d0*PL1*PL1-1.d0)
-dp1dr1 = 0.d0
-dp1dr2 = 0.d0
-dp1dcabc = 0.d0
-dp2dr1 = 0.d0
-dp2dr2 = 0.d0
-dp2dcabc = 0.d0
-do j=2,84
-   inI = idxD(j,1)
-   inJ = idxD(j,2)
-   inK = idxD(j,3)
-   P1 = P1 + coefD(j) * fmat(inI ,1)*fmat(inJ, 2)*fmat(inK, 3)
-   P2 = P2 + coefD(j) * fmat(inJ ,1)*fmat(inI, 2)*fmat(inK, 3)
-   dp1dr1 =dp1dr1+coefD(j)*(dble(inI-1)*fmat(inI-1,1)*fmat(inJ,2)*fmat(inK,3))
-   dp1dr2 =dp1dr2+coefD(j)*(dble(inJ-1)*fmat(inI,1)*fmat(inJ-1,2)*fmat(inK,3))
-  dp1dcabc=dp1dcabc+coefD(j)*(dble(inK-1)*fmat(inI,1)*fmat(inJ,2)*fmat(inK-1,3))
+P1 = 0.D0; 
+P2 = 0.D0
+PL1 = COSTH
+PL2 = 0.5D0*(3.D0*PL1*PL1-1.D0)
+DP1DR1 = 0.D0
+DP1DR2 = 0.D0
+DP1DCABC = 0.D0
+DP2DR1 = 0.D0
+DP2DR2 = 0.D0
+DP2DCABC = 0.D0
+DO J=2,84
+   INI = IDXD(J,1)
+   INJ = IDXD(J,2)
+   INK = IDXD(J,3)
+   P1 = P1 + COEFD(J) * FMAT(INI ,1)*FMAT(INJ, 2)*FMAT(INK, 3)
+   P2 = P2 + COEFD(J) * FMAT(INJ ,1)*FMAT(INI, 2)*FMAT(INK, 3)
+   DP1DR1 =DP1DR1+COEFD(J)*(DBLE(INI-1)*FMAT(INI-1,1)*FMAT(INJ,2)*FMAT(INK,3))
+   DP1DR2 =DP1DR2+COEFD(J)*(DBLE(INJ-1)*FMAT(INI,1)*FMAT(INJ-1,2)*FMAT(INK,3))
+  DP1DCABC=DP1DCABC+COEFD(J)*(DBLE(INK-1)*FMAT(INI,1)*FMAT(INJ,2)*FMAT(INK-1,3))
 
-   dp2dr1 = dp2dr1+coefD(j)*( dble(inJ-1)*fmat(inJ-1,1)*fmat(inI,2)*fmat(inK,3))
-   dp2dr2 = dp2dr2+coefD(j)*( dble(inI-1)*fmat(inJ,1)*fmat(inI-1,2)*fmat(inK,3))
-  dp2dcabc=dp2dcabc+coefD(j)*(dble(inK-1)*fmat(inJ,1)*fmat(inI,2)*fmat(inK-1,3))
-enddo
-dp1dr1=dp1dr1 / reoh*0.529177249d0
-dp1dr2=dp1dr2 / reoh*0.529177249d0
-dp2dr1=dp2dr1 / reoh*0.529177249d0
-dp2dr2=dp2dr2 / reoh*0.529177249d0
-PC0 = A*((dROH1**B)+(dROH2**B))*(C0+PL1*C1+PL2*C2)
-dpc0dr1=a*(b*dROH1**(b-1))*(c0+pl1*c1+pl2*c2)*0.529177249d0*0.529177249d0
-dpc0dr2=a*(b*dROH2**(b-1))*(c0+pl1*c1+pl2*c2)*0.529177249d0*0.529177249d0
-dpc0dcabc=a*((dROH1**b)+(dROH2**b))*(c1+0.5d0*(6.d0*pl1)*c2)*0.529177249d0
-defacdr1 =-2.d0*b1D*(dROH1-reoh)*efac*0.529177249d0
-defacdr2 =-2.d0*b1D*(dROH2-reoh)*efac*0.529177249d0
-dp1dr1=dp1dr1*efac+p1*defacdr1+dpc0dr1
-dp1dr2=dp1dr2*efac+p1*defacdr2+dpc0dr2
-dp1dcabc=dp1dcabc*efac+dpc0dcabc
-dp2dr1=dp2dr1*efac+p2*defacdr1+dpc0dr1
-dp2dr2=dp2dr2*efac+p2*defacdr2+dpc0dr2
-dp2dcabc=dp2dcabc*efac+dpc0dcabc
-P1 = coefD(1)+P1*efac+PC0*0.529177249d0
-P2 = coefD(1)+P2*efac+PC0*0.529177249d0
-bfac=1.d0/0.529177249
-q3(1) = -(P1+P2)   ! Oxygen
-q3(2) = P1   ! Hydrogen-1
-q3(3) = P2   !  Hydrogen-2
-dp1dr1=dp1dr1*bfac
-dp1dr2=dp1dr2*bfac
-dp2dr1=dp2dr1*bfac
-dp2dr2=dp2dr2*bfac
+   DP2DR1 = DP2DR1+COEFD(J)*( DBLE(INJ-1)*FMAT(INJ-1,1)*FMAT(INI,2)*FMAT(INK,3))
+   DP2DR2 = DP2DR2+COEFD(J)*( DBLE(INI-1)*FMAT(INJ,1)*FMAT(INI-1,2)*FMAT(INK,3))
+  DP2DCABC=DP2DCABC+COEFD(J)*(DBLE(INK-1)*FMAT(INJ,1)*FMAT(INI,2)*FMAT(INK-1,3))
+ENDDO
+DP1DR1=DP1DR1 / REOH*0.529177249D0
+DP1DR2=DP1DR2 / REOH*0.529177249D0
+DP2DR1=DP2DR1 / REOH*0.529177249D0
+DP2DR2=DP2DR2 / REOH*0.529177249D0
+PC0 = A*((DROH1**B)+(DROH2**B))*(C0+PL1*C1+PL2*C2)
+DPC0DR1=A*(B*DROH1**(B-1))*(C0+PL1*C1+PL2*C2)*0.529177249D0*0.529177249D0
+DPC0DR2=A*(B*DROH2**(B-1))*(C0+PL1*C1+PL2*C2)*0.529177249D0*0.529177249D0
+DPC0DCABC=A*((DROH1**B)+(DROH2**B))*(C1+0.5D0*(6.D0*PL1)*C2)*0.529177249D0
+DEFACDR1 =-2.D0*B1D*(DROH1-REOH)*EFAC*0.529177249D0
+DEFACDR2 =-2.D0*B1D*(DROH2-REOH)*EFAC*0.529177249D0
+DP1DR1=DP1DR1*EFAC+P1*DEFACDR1+DPC0DR1
+DP1DR2=DP1DR2*EFAC+P1*DEFACDR2+DPC0DR2
+DP1DCABC=DP1DCABC*EFAC+DPC0DCABC
+DP2DR1=DP2DR1*EFAC+P2*DEFACDR1+DPC0DR1
+DP2DR2=DP2DR2*EFAC+P2*DEFACDR2+DPC0DR2
+DP2DCABC=DP2DCABC*EFAC+DPC0DCABC
+P1 = COEFD(1)+P1*EFAC+PC0*0.529177249D0
+P2 = COEFD(1)+P2*EFAC+PC0*0.529177249D0
+BFAC=1.D0/0.529177249
+Q3(1) = -(P1+P2)   ! OXYGEN
+Q3(2) = P1   ! HYDROGEN-1
+Q3(3) = P2   !  HYDROGEN-2
+DP1DR1=DP1DR1*BFAC
+DP1DR2=DP1DR2*BFAC
+DP2DR1=DP2DR1*BFAC
+DP2DR2=DP2DR2*BFAC
 !--------------------------------------------------------------------------------
-!............. Modification of the gas-phase dipole moment surface...........
+!............. MODIFICATION OF THE GAS-PHASE DIPOLE MOMENT SURFACE...........
 !--------------------------------------------------------------------------------
-   AxB(1) = ROH1(2)*ROH2(3) - ROH1(3)*ROH2(2)
-   AxB(2) =-ROH1(1)*ROH2(3) + ROH1(3)*ROH2(1)
-   AxB(3) = ROH1(1)*ROH2(2) - ROH1(2)*ROH2(1)
-   dAxB = dsqrt(dot_product(AxB, AxB) )
-   sinth = dAxB / (dROH1*dROH2)
-   ang = atan2(sinth, costh)
-   P1 = dms_param1*(dROH1 -dms_param2) + dms_param3*(ang-ath0)
-   P2 = dms_param1*(dROH2 -dms_param2) + dms_param3*(ang-ath0)
-   q3(1) = q3(1) - (P1+P2)
-   q3(2) = q3(2) + P1
-   q3(3) = q3(3) + P2
-   dp1dr1 = dp1dr1 + dms_param1
-   dp2dr2 = dp2dr2 + dms_param1
-   dp1dcabc = dp1dcabc   - dms_param3/sinth
-   dp2dcabc = dp2dcabc   - dms_param3/sinth
+   AXB(1) = ROH1(2)*ROH2(3) - ROH1(3)*ROH2(2)
+   AXB(2) =-ROH1(1)*ROH2(3) + ROH1(3)*ROH2(1)
+   AXB(3) = ROH1(1)*ROH2(2) - ROH1(2)*ROH2(1)
+   DAXB = DSQRT(DOT_PRODUCT(AXB, AXB) )
+   SINTH = DAXB / (DROH1*DROH2)
+   ANG = ATAN2(SINTH, COSTH)
+   P1 = DMS_PARAM1*(DROH1 -DMS_PARAM2) + DMS_PARAM3*(ANG-ATH0)
+   P2 = DMS_PARAM1*(DROH2 -DMS_PARAM2) + DMS_PARAM3*(ANG-ATH0)
+   Q3(1) = Q3(1) - (P1+P2)
+   Q3(2) = Q3(2) + P1
+   Q3(3) = Q3(3) + P2
+   DP1DR1 = DP1DR1 + DMS_PARAM1
+   DP2DR2 = DP2DR2 + DMS_PARAM1
+   DP1DCABC = DP1DCABC   - DMS_PARAM3/SINTH
+   DP2DCABC = DP2DCABC   - DMS_PARAM3/SINTH
 !--------------------------------------------------------------------------------
 
-f1q1r13=(dp1dr1-(dp1dcabc*costh/dROH1))/dROH1
-f1q1r23=dp1dcabc/(dROH1*dROH2)
-f2q1r23=(dp1dr2-(dp1dcabc*costh/dROH2))/dROH2
-f2q1r13=dp1dcabc/(dROH2*dROH1)
-f1q2r13=(dp2dr1-(dp2dcabc*costh/dROH1))/dROH1
-f1q2r23=dp2dcabc/(dROH1*dROH2)
-f2q2r23=(dp2dr2-(dp2dcabc*costh/dROH2))/dROH2
-f2q2r13=dp2dcabc/(dROH2*dROH1)
+F1Q1R13=(DP1DR1-(DP1DCABC*COSTH/DROH1))/DROH1
+F1Q1R23=DP1DCABC/(DROH1*DROH2)
+F2Q1R23=(DP1DR2-(DP1DCABC*COSTH/DROH2))/DROH2
+F2Q1R13=DP1DCABC/(DROH2*DROH1)
+F1Q2R13=(DP2DR1-(DP2DCABC*COSTH/DROH1))/DROH1
+F1Q2R23=DP2DCABC/(DROH1*DROH2)
+F2Q2R23=(DP2DR2-(DP2DCABC*COSTH/DROH2))/DROH2
+F2Q2R13=DP2DCABC/(DROH2*DROH1)
 
 
-!gradient of charge h1 wrt displacement of h1
-gradq(1,1,1)=f1q1r13*ROH1(1)+f1q1r23*ROH2(1)
-gradq(1,1,2)=f1q1r13*ROH1(2)+f1q1r23*ROH2(2)
-gradq(1,1,3)=f1q1r13*ROH1(3)+f1q1r23*ROH2(3)
-!gradient of charge h1 wrt displacement of h2
-gradq(2,1,1)=f2q1r13*ROH1(1)+f2q1r23*ROH2(1)
-gradq(2,1,2)=f2q1r13*ROH1(2)+f2q1r23*ROH2(2)
-gradq(2,1,3)=f2q1r13*ROH1(3)+f2q1r23*ROH2(3)
-!gradient of charge h1 wrt displacement of O
-gradq(3,1,1)=-(gradq(1,1,1)+gradq(2,1,1))
-gradq(3,1,2)=-(gradq(1,1,2)+gradq(2,1,2))
-gradq(3,1,3)=-(gradq(1,1,3)+gradq(2,1,3))
-!gradient of charge h2 wrt displacement of h1
-gradq(1,2,1)=f1q2r13*ROH1(1)+f1q2r23*ROH2(1)
-gradq(1,2,2)=f1q2r13*ROH1(2)+f1q2r23*ROH2(2)
-gradq(1,2,3)=f1q2r13*ROH1(3)+f1q2r23*ROH2(3)
-!gradient of charge h2 wrt displacement of h2
-gradq(2,2,1)=f2q2r13*ROH1(1)+f2q2r23*ROH2(1)
-gradq(2,2,2)=f2q2r13*ROH1(2)+f2q2r23*ROH2(2)
-gradq(2,2,3)=f2q2r13*ROH1(3)+f2q2r23*ROH2(3)
-!gradient of charge h2 wrt displacement of O
-gradq(3,2,1)=-(gradq(1,2,1)+gradq(2,2,1))
-gradq(3,2,2)=-(gradq(1,2,2)+gradq(2,2,2))
-gradq(3,2,3)=-(gradq(1,2,3)+gradq(2,2,3))
-!gradient of charge O wrt displacement of h1
-gradq(1,3,1)=-(gradq(1,1,1)+gradq(1,2,1))
-gradq(1,3,2)=-(gradq(1,1,2)+gradq(1,2,2))
-gradq(1,3,3)=-(gradq(1,1,3)+gradq(1,2,3))
-!gradient of charge O wrt displacement of h2
-gradq(2,3,1)=-(gradq(2,1,1)+gradq(2,2,1))
-gradq(2,3,2)=-(gradq(2,1,2)+gradq(2,2,2))
-gradq(2,3,3)=-(gradq(2,1,3)+gradq(2,2,3))
-!gradient of charge O wrt displacement of O
-gradq(3,3,1)=-(gradq(3,1,1)+gradq(3,2,1))
-gradq(3,3,2)=-(gradq(3,1,2)+gradq(3,2,2))
-gradq(3,3,3)=-(gradq(3,1,3)+gradq(3,2,3))
+!GRADIENT OF CHARGE H1 WRT DISPLACEMENT OF H1
+GRADQ(1,1,1)=F1Q1R13*ROH1(1)+F1Q1R23*ROH2(1)
+GRADQ(1,1,2)=F1Q1R13*ROH1(2)+F1Q1R23*ROH2(2)
+GRADQ(1,1,3)=F1Q1R13*ROH1(3)+F1Q1R23*ROH2(3)
+!GRADIENT OF CHARGE H1 WRT DISPLACEMENT OF H2
+GRADQ(2,1,1)=F2Q1R13*ROH1(1)+F2Q1R23*ROH2(1)
+GRADQ(2,1,2)=F2Q1R13*ROH1(2)+F2Q1R23*ROH2(2)
+GRADQ(2,1,3)=F2Q1R13*ROH1(3)+F2Q1R23*ROH2(3)
+!GRADIENT OF CHARGE H1 WRT DISPLACEMENT OF O
+GRADQ(3,1,1)=-(GRADQ(1,1,1)+GRADQ(2,1,1))
+GRADQ(3,1,2)=-(GRADQ(1,1,2)+GRADQ(2,1,2))
+GRADQ(3,1,3)=-(GRADQ(1,1,3)+GRADQ(2,1,3))
+!GRADIENT OF CHARGE H2 WRT DISPLACEMENT OF H1
+GRADQ(1,2,1)=F1Q2R13*ROH1(1)+F1Q2R23*ROH2(1)
+GRADQ(1,2,2)=F1Q2R13*ROH1(2)+F1Q2R23*ROH2(2)
+GRADQ(1,2,3)=F1Q2R13*ROH1(3)+F1Q2R23*ROH2(3)
+!GRADIENT OF CHARGE H2 WRT DISPLACEMENT OF H2
+GRADQ(2,2,1)=F2Q2R13*ROH1(1)+F2Q2R23*ROH2(1)
+GRADQ(2,2,2)=F2Q2R13*ROH1(2)+F2Q2R23*ROH2(2)
+GRADQ(2,2,3)=F2Q2R13*ROH1(3)+F2Q2R23*ROH2(3)
+!GRADIENT OF CHARGE H2 WRT DISPLACEMENT OF O
+GRADQ(3,2,1)=-(GRADQ(1,2,1)+GRADQ(2,2,1))
+GRADQ(3,2,2)=-(GRADQ(1,2,2)+GRADQ(2,2,2))
+GRADQ(3,2,3)=-(GRADQ(1,2,3)+GRADQ(2,2,3))
+!GRADIENT OF CHARGE O WRT DISPLACEMENT OF H1
+GRADQ(1,3,1)=-(GRADQ(1,1,1)+GRADQ(1,2,1))
+GRADQ(1,3,2)=-(GRADQ(1,1,2)+GRADQ(1,2,2))
+GRADQ(1,3,3)=-(GRADQ(1,1,3)+GRADQ(1,2,3))
+!GRADIENT OF CHARGE O WRT DISPLACEMENT OF H2
+GRADQ(2,3,1)=-(GRADQ(2,1,1)+GRADQ(2,2,1))
+GRADQ(2,3,2)=-(GRADQ(2,1,2)+GRADQ(2,2,2))
+GRADQ(2,3,3)=-(GRADQ(2,1,3)+GRADQ(2,2,3))
+!GRADIENT OF CHARGE O WRT DISPLACEMENT OF O
+GRADQ(3,3,1)=-(GRADQ(3,1,1)+GRADQ(3,2,1))
+GRADQ(3,3,2)=-(GRADQ(3,1,2)+GRADQ(3,2,2))
+GRADQ(3,3,3)=-(GRADQ(3,1,3)+GRADQ(3,2,3))
     
-end subroutine dms_nasa
+END SUBROUTINE DMS_NASA
 
-subroutine ttm3fcall(Nw, coords, energy, vnew) !adds energy and gradient
-implicit none
-integer :: Nw
-double precision, intent(in) :: coords(9*Nw)
-double precision, intent(inout) :: energy, vnew(9*Nw)
-double precision :: En, dRR(3,size(vnew)/3)
-call ttm3f(Nw, reshape(coords,(/3,3*Nw/)), dRR, En)
-vnew = vnew + reshape(dRR, (/9*Nw/))
-energy = energy + En
-end subroutine ttm3fcall
+SUBROUTINE TTM3FCALL(NW, COORDS, ENERGY, VNEW) !ADDS ENERGY AND GRADIENT
+IMPLICIT NONE
+INTEGER :: NW
+DOUBLE PRECISION, INTENT(IN) :: COORDS(9*NW)
+DOUBLE PRECISION, INTENT(INOUT) :: ENERGY, VNEW(9*NW)
+DOUBLE PRECISION :: EN, DRR(3,SIZE(VNEW)/3)
+CALL TTM3F(NW, RESHAPE(COORDS,(/3,3*NW/)), DRR, EN)
+VNEW = VNEW + RESHAPE(DRR, (/9*NW/))
+ENERGY = ENERGY + EN
+END SUBROUTINE TTM3FCALL

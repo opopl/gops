@@ -10,11 +10,11 @@ MODULE GSDATA
      DOUBLE PRECISION, POINTER :: XYZ(:), GRAD(:), TGT(:), XINT(:)
      DOUBLE PRECISION, POINTER :: PREVGRAD(:), DIFF(:), PREVXYZ(:)
      DOUBLE PRECISION, POINTER :: XYZCART(:), GCART(:), PREVXCART(:)
-     DOUBLE PRECISION :: TNORM, FNORM2, E !energy
+     DOUBLE PRECISION :: TNORM, FNORM2, E !ENERGY
      DOUBLE PRECISION :: CHORD, ARC, ARCDIFF
-     LOGICAL :: LF, RF ! is this left or right front?
+     LOGICAL :: LF, RF ! IS THIS LEFT OR RIGHT FRONT?
      LOGICAL :: FREEZE
-     INTEGER :: IND ! index
+     INTEGER :: IND ! INDEX
 
      TYPE(IMGNODE), POINTER :: NEXT
      TYPE(IMGNODE), POINTER :: PREV
@@ -22,7 +22,7 @@ MODULE GSDATA
 
   DOUBLE PRECISION, PARAMETER :: TINY=1.0D-8
 
-  ! keywords
+  ! KEYWORDS
   INTEGER :: GSUPDATE, MAXGROWSTEPS
   LOGICAL :: EVOLVESTRINGT
   LOGICAL :: CUBSPLT,FIXATMS, PREROTATE, DUMPGSALL = .FALSE.
@@ -33,21 +33,21 @@ MODULE GSDATA
   DOUBLE PRECISION :: MAXLENPERIM
   LOGICAL :: NOLBFGS
 
-  INTEGER :: NC ! number of coordinates
+  INTEGER :: NC ! NUMBER OF COORDINATES
   LOGICAL :: PTEST, JOINED, HESSGRAD, INTPTEST
-  DOUBLE PRECISION :: STRINGLEN ! total string length
+  DOUBLE PRECISION :: STRINGLEN ! TOTAL STRING LENGTH
   DOUBLE PRECISION :: MAXLEN
-  INTEGER :: NIM, NLIM, NRIM ! number of images on left and right sides
-  INTEGER :: TIM ! total number of images
-  INTEGER :: MAXTOTSTEPS, TOTSTEPS ! total steps taken so far
+  INTEGER :: NIM, NLIM, NRIM ! NUMBER OF IMAGES ON LEFT AND RIGHT SIDES
+  INTEGER :: TIM ! TOTAL NUMBER OF IMAGES
+  INTEGER :: MAXTOTSTEPS, TOTSTEPS ! TOTAL STEPS TAKEN SO FAR
 
-  ! pointers to the first node, last node, left and right frontiers
-  ! first and last point to actual images not terminal configurations
-  ! (ie: there's actually one node before first and one after last)
+  ! POINTERS TO THE FIRST NODE, LAST NODE, LEFT AND RIGHT FRONTIERS
+  ! FIRST AND LAST POINT TO ACTUAL IMAGES NOT TERMINAL CONFIGURATIONS
+  ! (IE: THERE'S ACTUALLY ONE NODE BEFORE FIRST AND ONE AFTER LAST)
   TYPE(IMGNODE), POINTER :: FIRST, LAST, LEFTFRONT, RIGHTFRONT
 
-  DOUBLE PRECISION :: IMGD, ITERD ! current image and iteration densities
-  INTEGER :: MAXDROPS, M ! M is the lbfgs memory
+  DOUBLE PRECISION :: IMGD, ITERD ! CURRENT IMAGE AND ITERATION DENSITIES
+  INTEGER :: MAXDROPS, M ! M IS THE LBFGS MEMORY
   DOUBLE PRECISION :: MAXERISE  
 
   INTEGER :: DUMPIND
@@ -56,35 +56,35 @@ CONTAINS
   SUBROUTINE KEYGSPRINT(VARIABLE)
     USE KEY, ONLY : DESMAXAVGE, DESMAXEJUMP
     IMPLICIT NONE
-    LOGICAL :: VARIABLE ! is the number of images variable?
+    LOGICAL :: VARIABLE ! IS THE NUMBER OF IMAGES VARIABLE?
 
     IF(VARIABLE) THEN
-       WRITE(*,'(1x,a)') 'KeyGS> Number of images will vary depending on the separation of the endpoints'
-       WRITE(*,'(1x,a,F10.5)') 'KeyGS> Starting iteration density per image: ', GSITERDENSITY
+       WRITE(*,'(1X,A)') 'KEYGS> NUMBER OF IMAGES WILL VARY DEPENDING ON THE SEPARATION OF THE ENDPOINTS'
+       WRITE(*,'(1X,A,F10.5)') 'KEYGS> STARTING ITERATION DENSITY PER IMAGE: ', GSITERDENSITY
     ELSE
-       WRITE(*,'(1x,a,F10.5)') 'KeyGS> iteration density per image: ', ITERD
-       WRITE(*,'(1x,a,I4,a)') 'KeyGS> Using ', TIM, ' images'
+       WRITE(*,'(1X,A,F10.5)') 'KEYGS> ITERATION DENSITY PER IMAGE: ', ITERD
+       WRITE(*,'(1X,A,I4,A)') 'KEYGS> USING ', TIM, ' IMAGES'
     ENDIF
 
-    IF (NOLBFGS) WRITE(*,'(1x,a)') 'KeyGS> No LBFGS optimization. Move images according to FPERP'
-    IF (EVOLVESTRINGT) WRITE(*,'(1x,a)') 'KeyGS> Using evolving string method.&
-         & String will start out populated with images'
-    IF (CUBSPLT) WRITE(*,'(1x,a)') 'KeyGS> Using cubic spline interpolation between images'
-    IF (FIXATMS) WRITE(*,'(1x,a)') 'KeyGS> Projecting out overall translation and rotations &
-         & by fixing coordinates 1-4 and 7-8'
-    IF(HESSGRAD) WRITE(*,'(1x,a)') 'KeyGS> Using method described in Appendix of &
-         & Peters et al to generate the Newton-Raphston step; Hessian determined by &
-         & changing gradient rather than changing perpendicular force; tangential &
-         & component projected after multiplying by Hessian'
-    WRITE(*,'(1x,a,I2)') 'KeyGS> Tangent type: ', TANTYPE
-    WRITE(*,'(1x,a,2F10.5)') 'KeyGS> Reparametrization tolerance, growth tolerance: ', &
+    IF (NOLBFGS) WRITE(*,'(1X,A)') 'KEYGS> NO LBFGS OPTIMIZATION. MOVE IMAGES ACCORDING TO FPERP'
+    IF (EVOLVESTRINGT) WRITE(*,'(1X,A)') 'KEYGS> USING EVOLVING STRING METHOD.&
+         & STRING WILL START OUT POPULATED WITH IMAGES'
+    IF (CUBSPLT) WRITE(*,'(1X,A)') 'KEYGS> USING CUBIC SPLINE INTERPOLATION BETWEEN IMAGES'
+    IF (FIXATMS) WRITE(*,'(1X,A)') 'KEYGS> PROJECTING OUT OVERALL TRANSLATION AND ROTATIONS &
+         & BY FIXING COORDINATES 1-4 AND 7-8'
+    IF(HESSGRAD) WRITE(*,'(1X,A)') 'KEYGS> USING METHOD DESCRIBED IN APPENDIX OF &
+         & PETERS ET AL TO GENERATE THE NEWTON-RAPHSTON STEP; HESSIAN DETERMINED BY &
+         & CHANGING GRADIENT RATHER THAN CHANGING PERPENDICULAR FORCE; TANGENTIAL &
+         & COMPONENT PROJECTED AFTER MULTIPLYING BY HESSIAN'
+    WRITE(*,'(1X,A,I2)') 'KEYGS> TANGENT TYPE: ', TANTYPE
+    WRITE(*,'(1X,A,2F10.5)') 'KEYGS> REPARAMETRIZATION TOLERANCE, GROWTH TOLERANCE: ', &
          & REPARAMTOL, GSGROWTOL
-    WRITE(*,'(1x,a,F10.5)') 'KeyGS> Convergence tolerance: ', GSCONV
-    WRITE(*,'(1x,a,F10.5,I4)') 'KeyGS> Max step size, LBFGS memory: ', GSMXSTP, GSUPDATE
-    WRITE(*,'(1x,a,I6)') 'KeyGS> Max growth steps: ', MAXGROWSTEPS 
-    IF (DESMAXAVGE.LT.0.99*HUGE(1.0D0)) WRITE(*,'(1x,a,G20.10)') 'KeyGS> Max average energy: ', DESMAXAVGE
-    IF (DESMAXEJUMP.LT.0.99*HUGE(1.0D0)) WRITE(*,'(1x,a,G20.10)') 'KeyGS> Max energy jump per image: ', DESMAXEJUMP
-    IF(GSMAXTOTITD.GE.0) WRITE(*,'(1x,a,F10.1)') 'KeyGS> Max total iteration density: ', GSMAXTOTITD    
+    WRITE(*,'(1X,A,F10.5)') 'KEYGS> CONVERGENCE TOLERANCE: ', GSCONV
+    WRITE(*,'(1X,A,F10.5,I4)') 'KEYGS> MAX STEP SIZE, LBFGS MEMORY: ', GSMXSTP, GSUPDATE
+    WRITE(*,'(1X,A,I6)') 'KEYGS> MAX GROWTH STEPS: ', MAXGROWSTEPS 
+    IF (DESMAXAVGE.LT.0.99*HUGE(1.0D0)) WRITE(*,'(1X,A,G20.10)') 'KEYGS> MAX AVERAGE ENERGY: ', DESMAXAVGE
+    IF (DESMAXEJUMP.LT.0.99*HUGE(1.0D0)) WRITE(*,'(1X,A,G20.10)') 'KEYGS> MAX ENERGY JUMP PER IMAGE: ', DESMAXEJUMP
+    IF(GSMAXTOTITD.GE.0) WRITE(*,'(1X,A,F10.1)') 'KEYGS> MAX TOTAL ITERATION DENSITY: ', GSMAXTOTITD    
   END SUBROUTINE KEYGSPRINT
 
   SUBROUTINE NEWNODE(P)
@@ -92,8 +92,8 @@ CONTAINS
     IMPLICIT NONE    
     TYPE(IMGNODE), POINTER :: P
     
-    ! make a new imgnode and return a pointer to that node
-    ! assumes previous association of P is checked elsewhere and it's ok to allocate it
+    ! MAKE A NEW IMGNODE AND RETURN A POINTER TO THAT NODE
+    ! ASSUMES PREVIOUS ASSOCIATION OF P IS CHECKED ELSEWHERE AND IT'S OK TO ALLOCATE IT
     
     ALLOCATE(P)
     NULLIFY(P%NEXT, P%PREV, P%XYZ, P%GRAD, P%TGT, P%PREVGRAD, P%DIFF)
@@ -113,7 +113,7 @@ CONTAINS
     
     TYPE(IMGNODE), POINTER :: P
     
-    ! deallocate the imagenode to which P is pointing and nullify p
+    ! DEALLOCATE THE IMAGENODE TO WHICH P IS POINTING AND NULLIFY P
     
     DEALLOCATE(P%XYZ, P%GRAD, P%TGT, P%PREVGRAD, P%DIFF, P%PREVXYZ)
     IF (DESMINT) DEALLOCATE(P%XYZCART, P%GCART, P%PREVXCART)
@@ -124,7 +124,7 @@ CONTAINS
   
   SUBROUTINE EXTENDLEFT
     
-    ! extend left side of string    
+    ! EXTEND LEFT SIDE OF STRING    
 
     LEFTFRONT%LF = .FALSE.
 
@@ -138,7 +138,7 @@ CONTAINS
   END SUBROUTINE EXTENDLEFT
   
   SUBROUTINE EXTENDRIGHT   
-    ! extend right side of string    
+    ! EXTEND RIGHT SIDE OF STRING    
 
     RIGHTFRONT%RF = .FALSE.
 
@@ -152,7 +152,7 @@ CONTAINS
   END SUBROUTINE EXTENDRIGHT
 
   SUBROUTINE DELETESTRING
-    ! delete entire string, from FIRST%PREV to LAST%NEXT
+    ! DELETE ENTIRE STRING, FROM FIRST%PREV TO LAST%NEXT
 
     IMPLICIT NONE
     TYPE(IMGNODE), POINTER :: DUMMYP

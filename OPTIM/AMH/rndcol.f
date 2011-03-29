@@ -1,473 +1,473 @@
 
-c     --------------------- rndcol ----------------------
+C     --------------------- RNDCOL ----------------------
 
-      subroutine rndcol(nmres,maxpro,numpro,
-     *                  ires,procnt,numcrd,prcord,iseed_amh)
+      SUBROUTINE RNDCOL(NMRES,MAXPRO,NUMPRO,
+     *                  IRES,PROCNT,NUMCRD,PRCORD,ISEED_AMH)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     RNDCOL generate random coil configurations
+C     RNDCOL GENERATE RANDOM COIL CONFIGURATIONS
 
-c     arguments:
+C     ARGUMENTS:
 
-c        AMHmaxsiz- maximum target protein size (i)
-c        maxpro- maximum number of trial structures (i)
-c        numpro- actual number of trial structures (i)
-c        procnt- number of random coil configurations to
-c                be constructed (i)
-c        numcrd- number of coordinate types (i)
-c        prcord- random coil strucures (o)
-c        bondln- bond lengths for coordinates types (i)
+C        AMHMAXSIZ- MAXIMUM TARGET PROTEIN SIZE (I)
+C        MAXPRO- MAXIMUM NUMBER OF TRIAL STRUCTURES (I)
+C        NUMPRO- ACTUAL NUMBER OF TRIAL STRUCTURES (I)
+C        PROCNT- NUMBER OF RANDOM COIL CONFIGURATIONS TO
+C                BE CONSTRUCTED (I)
+C        NUMCRD- NUMBER OF COORDINATE TYPES (I)
+C        PRCORD- RANDOM COIL STRUCURES (O)
+C        BONDLN- BOND LENGTHS FOR COORDINATES TYPES (I)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-      use amhglobals,  only:AMHmaxsiz,pdb,quench_crd,x_mcp,aminoa
+      USE AMHGLOBALS,  ONLY:AMHMAXSIZ,PDB,QUENCH_CRD,X_MCP,AMINOA
 
-      implicit none
+      IMPLICIT NONE
 
-c     passed argument declarations:
+C     PASSED ARGUMENT DECLARATIONS:
 
-      integer nmres,numpro,procnt,numcrd,maxpro,ires(AMHmaxsiz),gly_c,iseed_amh(4)
+      INTEGER NMRES,NUMPRO,PROCNT,NUMCRD,MAXPRO,IRES(AMHMAXSIZ),GLY_C,ISEED_AMH(4)
 
-      double precision prcord(AMHmaxsiz,3,maxpro,numcrd)
+      DOUBLE PRECISION PRCORD(AMHMAXSIZ,3,MAXPRO,NUMCRD)
 
-      logical touch
+      LOGICAL TOUCH
 
-ccccccccccccccccccccccccccccccc
-c     internal variables
-       double precision pi,pi2,dist1,dist2,
-     *     nitcord(AMHmaxsiz,3),cprcord(AMHmaxsiz,3),phi,cphi,sphi,cpsi,spsi,
-     *     xprime(3),yprime(3),zprime(3),xlen,ylen,zlen
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     INTERNAL VARIABLES
+       DOUBLE PRECISION PI,PI2,DIST1,DIST2,
+     *     NITCORD(AMHMAXSIZ,3),CPRCORD(AMHMAXSIZ,3),PHI,CPHI,SPHI,CPSI,SPSI,
+     *     XPRIME(3),YPRIME(3),ZPRIME(3),XLEN,YLEN,ZLEN
 
-         integer try(AMHmaxsiz,2), iii, jjj
+         INTEGER TRY(AMHMAXSIZ,2), III, JJJ
 
-         character*3 res_type
+         CHARACTER*3 RES_TYPE
 
-c        --- do loop indices ---
+C        --- DO LOOP INDICES ---
 
-         integer i501,i503,i506,i507,i1
+         INTEGER I501,I503,I506,I507,I1
 
-c My changes below   - Skip
-       double precision ran_num_array(1),ran_num
+C MY CHANGES BELOW   - SKIP
+       DOUBLE PRECISION RAN_NUM_ARRAY(1),RAN_NUM
 
-       external SLARNV
+       EXTERNAL SLARNV
 
-c     --------------------- begin -----------------------
-        pi=3.141592653589793238462643383279502884197
-        pi2=2.0D0*pi
-        do 600 i1=1,AMHmaxsiz
-          try(i1,1)=0
-          try(i1,2)=0
-600        continue
+C     --------------------- BEGIN -----------------------
+        PI=3.141592653589793238462643383279502884197
+        PI2=2.0D0*PI
+        DO 600 I1=1,AMHMAXSIZ
+          TRY(I1,1)=0
+          TRY(I1,2)=0
+600        CONTINUE
 
 
-        procnt=procnt + 1
-        do 503 i503=procnt,numpro
+        PROCNT=PROCNT + 1
+        DO 503 I503=PROCNT,NUMPRO
 
-c        generate initial configurations for residue 1
+C        GENERATE INITIAL CONFIGURATIONS FOR RESIDUE 1
 
-        prcord(1,1,i503,1)=0.0D0
-        prcord(1,2,i503,1)=0.0D0
-        prcord(1,3,i503,1)=0.0D0
-        cprcord(1,1)=0.0D0
-        cprcord(1,2)=0.0D0
-        cprcord(1,3)=1.53D0
-        nitcord(1,1)=0.0D0
-        nitcord(1,2)=-1.3859293D0
-        nitcord(1,3)=-0.4899999D0
-        prcord(1,1,i503,2)=-1.2574047D0
-        prcord(1,2,i503,2)=0.7259629D0
-        prcord(1,3,i503,2)=-0.5133333D0
+        PRCORD(1,1,I503,1)=0.0D0
+        PRCORD(1,2,I503,1)=0.0D0
+        PRCORD(1,3,I503,1)=0.0D0
+        CPRCORD(1,1)=0.0D0
+        CPRCORD(1,2)=0.0D0
+        CPRCORD(1,3)=1.53D0
+        NITCORD(1,1)=0.0D0
+        NITCORD(1,2)=-1.3859293D0
+        NITCORD(1,3)=-0.4899999D0
+        PRCORD(1,1,I503,2)=-1.2574047D0
+        PRCORD(1,2,I503,2)=0.7259629D0
+        PRCORD(1,3,I503,2)=-0.5133333D0
         
-        if (ires(1).eq.8) then
-          prcord(1,1,i503,2)=prcord(1,1,i503,1)
-          prcord(1,2,i503,2)=prcord(1,2,i503,1)
-          prcord(1,3,i503,2)=prcord(1,3,i503,1)
-        endif
+        IF (IRES(1).EQ.8) THEN
+          PRCORD(1,1,I503,2)=PRCORD(1,1,I503,1)
+          PRCORD(1,2,I503,2)=PRCORD(1,2,I503,1)
+          PRCORD(1,3,I503,2)=PRCORD(1,3,I503,1)
+        ENDIF
 
-        i501=1
+        I501=1
 
-         do while (i501.lt.nmres)
+         DO WHILE (I501.LT.NMRES)
 
-c           generate random numbers for x- and
-c           y-coordinates
+C           GENERATE RANDOM NUMBERS FOR X- AND
+C           Y-COORDINATES
 
-105      zprime(1)=(cprcord(i501,1)-prcord(i501,1,i503,1))
-         zprime(2)=(cprcord(i501,2)-prcord(i501,2,i503,1))
-         zprime(3)=(cprcord(i501,3)-prcord(i501,3,i503,1))
+105      ZPRIME(1)=(CPRCORD(I501,1)-PRCORD(I501,1,I503,1))
+         ZPRIME(2)=(CPRCORD(I501,2)-PRCORD(I501,2,I503,1))
+         ZPRIME(3)=(CPRCORD(I501,3)-PRCORD(I501,3,I503,1))
 
-         zlen=dsqrt(zprime(1)*zprime(1)+zprime(2)*zprime(2)+zprime(3)*zprime(3))
+         ZLEN=DSQRT(ZPRIME(1)*ZPRIME(1)+ZPRIME(2)*ZPRIME(2)+ZPRIME(3)*ZPRIME(3))
 
-         zprime(1)=zprime(1)/zlen
-         zprime(2)=zprime(2)/zlen
-         zprime(3)=zprime(3)/zlen
+         ZPRIME(1)=ZPRIME(1)/ZLEN
+         ZPRIME(2)=ZPRIME(2)/ZLEN
+         ZPRIME(3)=ZPRIME(3)/ZLEN
 
-         yprime(1)=(prcord(i501,1,i503,1)-nitcord(i501,1)-zprime(1)*0.4899999D0)
-         yprime(2)=(prcord(i501,2,i503,1)-nitcord(i501,2)-zprime(2)*0.4899999D0)
-         yprime(3)=(prcord(i501,3,i503,1)-nitcord(i501,3)-zprime(3)*0.4899999D0)
+         YPRIME(1)=(PRCORD(I501,1,I503,1)-NITCORD(I501,1)-ZPRIME(1)*0.4899999D0)
+         YPRIME(2)=(PRCORD(I501,2,I503,1)-NITCORD(I501,2)-ZPRIME(2)*0.4899999D0)
+         YPRIME(3)=(PRCORD(I501,3,I503,1)-NITCORD(I501,3)-ZPRIME(3)*0.4899999D0)
 
-         ylen=dsqrt(yprime(1)*yprime(1)+yprime(2)*yprime(2)+yprime(3)*yprime(3))
+         YLEN=DSQRT(YPRIME(1)*YPRIME(1)+YPRIME(2)*YPRIME(2)+YPRIME(3)*YPRIME(3))
 
-         yprime(1)=yprime(1)/ylen
-         yprime(2)=yprime(2)/ylen
-         yprime(3)=yprime(3)/ylen
+         YPRIME(1)=YPRIME(1)/YLEN
+         YPRIME(2)=YPRIME(2)/YLEN
+         YPRIME(3)=YPRIME(3)/YLEN
 
-         xprime(1)=yprime(2)*zprime(3)-yprime(3)*zprime(2)
-         xprime(2)=yprime(3)*zprime(1)-yprime(1)*zprime(3)
-         xprime(3)=yprime(1)*zprime(2)-yprime(2)*zprime(1)
+         XPRIME(1)=YPRIME(2)*ZPRIME(3)-YPRIME(3)*ZPRIME(2)
+         XPRIME(2)=YPRIME(3)*ZPRIME(1)-YPRIME(1)*ZPRIME(3)
+         XPRIME(3)=YPRIME(1)*ZPRIME(2)-YPRIME(2)*ZPRIME(1)
 
-         xlen=dsqrt(xprime(1)*xprime(1)+xprime(2)*xprime(2)+xprime(3)*xprime(3))
+         XLEN=DSQRT(XPRIME(1)*XPRIME(1)+XPRIME(2)*XPRIME(2)+XPRIME(3)*XPRIME(3))
 
-         xprime(1)=xprime(1)/xlen
-         xprime(2)=xprime(2)/xlen
-         xprime(3)=xprime(3)/xlen
+         XPRIME(1)=XPRIME(1)/XLEN
+         XPRIME(2)=XPRIME(2)/XLEN
+         XPRIME(3)=XPRIME(3)/XLEN
 
-c 110               phi=rand()*1.92+1.57
+C 110               PHI=RAND()*1.92+1.57
 
-         call SLARNV(1, iseed_amh,1,ran_num_array)
-               ran_num=ran_num_array(1)
+         CALL SLARNV(1, ISEED_AMH,1,RAN_NUM_ARRAY)
+               RAN_NUM=RAN_NUM_ARRAY(1)
 
-110            phi=ran_num*1.92D0+1.57D0
+110            PHI=RAN_NUM*1.92D0+1.57D0
 
-               if (phi.gt.pi) phi=phi+2.09D0
-               cphi=dcos(phi)
-               sphi=dsin(phi)
+               IF (PHI.GT.PI) PHI=PHI+2.09D0
+               CPHI=DCOS(PHI)
+               SPHI=DSIN(PHI)
 
-               prcord(i501,1,i503,3)
-     *                  =-1.0515796D0*sphi*xprime(1)
-     *                   +1.0515796D0*cphi*yprime(1)
-     *                   +0.6570998D0*zprime(1)
-     *                   +cprcord(i501,1)
-               prcord(i501,2,i503,3)
-     *                  =-1.0515796D0*sphi*xprime(2)
-     *                   +1.0515796D0*cphi*yprime(2)
-     *                   +0.6570998D0*zprime(2)
-     *                   +cprcord(i501,2)
-               prcord(i501,3,i503,3)
-     *                  =-1.0515796D0*sphi*xprime(3)
-     *                   +1.0515796D0*cphi*yprime(3)
-     *                   +0.6570998D0*zprime(3)
-     *                   +cprcord(i501,3)
+               PRCORD(I501,1,I503,3)
+     *                  =-1.0515796D0*SPHI*XPRIME(1)
+     *                   +1.0515796D0*CPHI*YPRIME(1)
+     *                   +0.6570998D0*ZPRIME(1)
+     *                   +CPRCORD(I501,1)
+               PRCORD(I501,2,I503,3)
+     *                  =-1.0515796D0*SPHI*XPRIME(2)
+     *                   +1.0515796D0*CPHI*YPRIME(2)
+     *                   +0.6570998D0*ZPRIME(2)
+     *                   +CPRCORD(I501,2)
+               PRCORD(I501,3,I503,3)
+     *                  =-1.0515796D0*SPHI*XPRIME(3)
+     *                   +1.0515796D0*CPHI*YPRIME(3)
+     *                   +0.6570998D0*ZPRIME(3)
+     *                   +CPRCORD(I501,3)
 
-               nitcord(i501+1,1)
-     *                   =1.20588D0*sphi*xprime(1)
-     *                   -1.20588D0*cphi*yprime(1)
-     *                   +0.5368923D0*zprime(1)
-     *                   +cprcord(i501,1)
-               nitcord(i501+1,2)
-     *                   =1.20588D0*sphi*xprime(2)
-     *                   -1.20588D0*cphi*yprime(2)
-     *                   +0.5368923D0*zprime(2)
-     *                   +cprcord(i501,2)
-               nitcord(i501+1,3)
-     *                   =1.20588D0*sphi*xprime(3)
-     *                   -1.20588D0*cphi*yprime(3)
-     *                   +0.5368923D0*zprime(3)
-     *                   +cprcord(i501,3)
+               NITCORD(I501+1,1)
+     *                   =1.20588D0*SPHI*XPRIME(1)
+     *                   -1.20588D0*CPHI*YPRIME(1)
+     *                   +0.5368923D0*ZPRIME(1)
+     *                   +CPRCORD(I501,1)
+               NITCORD(I501+1,2)
+     *                   =1.20588D0*SPHI*XPRIME(2)
+     *                   -1.20588D0*CPHI*YPRIME(2)
+     *                   +0.5368923D0*ZPRIME(2)
+     *                   +CPRCORD(I501,2)
+               NITCORD(I501+1,3)
+     *                   =1.20588D0*SPHI*XPRIME(3)
+     *                   -1.20588D0*CPHI*YPRIME(3)
+     *                   +0.5368923D0*ZPRIME(3)
+     *                   +CPRCORD(I501,3)
 
-               prcord(i501+1,1,i503,1)
-     *                   =1.4358387D0*sphi*xprime(1)
-     *                   -1.4358387D0*cphi*yprime(1)
-     *                   +1.9887942D0*zprime(1)
-     *                   +cprcord(i501,1)
-               prcord(i501+1,2,i503,1)
-     *                   =1.4358387D0*sphi*xprime(2)
-     *                   -1.4358387D0*cphi*yprime(2)
-     *                   +1.9887942D0*zprime(2)
-     *                   +cprcord(i501,2)
-               prcord(i501+1,3,i503,1)
-     *                   =1.4358387D0*sphi*xprime(3)
-     *                   -1.4358387D0*cphi*yprime(3)
-     *                   +1.9887942D0*zprime(3)
-     *                   +cprcord(i501,3)
+               PRCORD(I501+1,1,I503,1)
+     *                   =1.4358387D0*SPHI*XPRIME(1)
+     *                   -1.4358387D0*CPHI*YPRIME(1)
+     *                   +1.9887942D0*ZPRIME(1)
+     *                   +CPRCORD(I501,1)
+               PRCORD(I501+1,2,I503,1)
+     *                   =1.4358387D0*SPHI*XPRIME(2)
+     *                   -1.4358387D0*CPHI*YPRIME(2)
+     *                   +1.9887942D0*ZPRIME(2)
+     *                   +CPRCORD(I501,2)
+               PRCORD(I501+1,3,I503,1)
+     *                   =1.4358387D0*SPHI*XPRIME(3)
+     *                   -1.4358387D0*CPHI*YPRIME(3)
+     *                   +1.9887942D0*ZPRIME(3)
+     *                   +CPRCORD(I501,3)
 
-c      make chain self-avoiding
+C      MAKE CHAIN SELF-AVOIDING
 
-            touch=.false.
+            TOUCH=.FALSE.
 
-            do 506 i506=1,i501-1
+            DO 506 I506=1,I501-1
 
-             dist1=dsqrt( (prcord(i501+1,1,i503,1)-prcord(i506,1,i503,1))**2
-     *                   +(prcord(i501+1,2,i503,1)-prcord(i506,2,i503,1))**2
-     *                   +(prcord(i501+1,3,i503,1)-prcord(i506,3,i503,1))**2)
+             DIST1=DSQRT( (PRCORD(I501+1,1,I503,1)-PRCORD(I506,1,I503,1))**2
+     *                   +(PRCORD(I501+1,2,I503,1)-PRCORD(I506,2,I503,1))**2
+     *                   +(PRCORD(I501+1,3,I503,1)-PRCORD(I506,3,I503,1))**2)
 
-             dist2=dsqrt( (prcord(i501+1,1,i503,1)-prcord(i506,1,i503,2))**2
-     *                   +(prcord(i501+1,2,i503,1)-prcord(i506,2,i503,2))**2
-     *                   +(prcord(i501+1,3,i503,1)-prcord(i506,3,i503,2))**2)
+             DIST2=DSQRT( (PRCORD(I501+1,1,I503,1)-PRCORD(I506,1,I503,2))**2
+     *                   +(PRCORD(I501+1,2,I503,1)-PRCORD(I506,2,I503,2))**2
+     *                   +(PRCORD(I501+1,3,I503,1)-PRCORD(I506,3,I503,2))**2)
 
-                if ( (dist1.lt.5.0D0).or.(dist2.lt.4.0D0) ) 
-     *             touch=.true.
+                IF ( (DIST1.LT.5.0D0).OR.(DIST2.LT.4.0D0) ) 
+     *             TOUCH=.TRUE.
 
-506              continue
+506              CONTINUE
 
-                if (touch) then
+                IF (TOUCH) THEN
 
-                   try(i501,1)=try(i501,1)+1
-                   if (try(i501,1).lt.11) goto 110
+                   TRY(I501,1)=TRY(I501,1)+1
+                   IF (TRY(I501,1).LT.11) GOTO 110
                    
-c           failed 10 times-backtrack to previous good bond
+C           FAILED 10 TIMES-BACKTRACK TO PREVIOUS GOOD BOND
 
-c                   write (6,*) i501,1,try(i501,1)
+C                   WRITE (6,*) I501,1,TRY(I501,1)
 
-                   do 301 i501=i501-1,1,-1
+                   DO 301 I501=I501-1,1,-1
 
-                   try(i501+1,1)=0
-                   try(i501,2)=try(i501,2)+1
-                   if (try(i501,2).lt.11) goto 115 
+                   TRY(I501+1,1)=0
+                   TRY(I501,2)=TRY(I501,2)+1
+                   IF (TRY(I501,2).LT.11) GOTO 115 
 
-                   try(i501,2)=0
-                   try(i501,1)=try(i501,1)+1
-                   if (try(i501,1).lt.11) goto 105
-c                   write (6,*) i501,1,try(i501,1)
+                   TRY(I501,2)=0
+                   TRY(I501,1)=TRY(I501,1)+1
+                   IF (TRY(I501,1).LT.11) GOTO 105
+C                   WRITE (6,*) I501,1,TRY(I501,1)
 
-301                continue        
+301                CONTINUE        
 
-                   stop ' failed in rndcol '
+                   STOP ' FAILED IN RNDCOL '
 
-                endif
+                ENDIF
 
-115    zprime(1)=(prcord(i501+1,1,i503,1)-nitcord(i501+1,1))/1.47D0
-       zprime(2)=(prcord(i501+1,2,i503,1)-nitcord(i501+1,2))/1.47D0
-       zprime(3)=(prcord(i501+1,3,i503,1)-nitcord(i501+1,3))/1.47D0
+115    ZPRIME(1)=(PRCORD(I501+1,1,I503,1)-NITCORD(I501+1,1))/1.47D0
+       ZPRIME(2)=(PRCORD(I501+1,2,I503,1)-NITCORD(I501+1,2))/1.47D0
+       ZPRIME(3)=(PRCORD(I501+1,3,I503,1)-NITCORD(I501+1,3))/1.47D0
 
-       zlen=dsqrt(zprime(1)*zprime(1)+zprime(2)*zprime(2)+zprime(3)*zprime(3))
+       ZLEN=DSQRT(ZPRIME(1)*ZPRIME(1)+ZPRIME(2)*ZPRIME(2)+ZPRIME(3)*ZPRIME(3))
 
-               zprime(1)=zprime(1)/zlen
-               zprime(2)=zprime(2)/zlen
-               zprime(3)=zprime(3)/zlen
+               ZPRIME(1)=ZPRIME(1)/ZLEN
+               ZPRIME(2)=ZPRIME(2)/ZLEN
+               ZPRIME(3)=ZPRIME(3)/ZLEN
 
-               yprime(1)=(nitcord(i501+1,1)-cprcord(i501,1)
-     *                     -zprime(1)*0.7189235D0)
+               YPRIME(1)=(NITCORD(I501+1,1)-CPRCORD(I501,1)
+     *                     -ZPRIME(1)*0.7189235D0)
      *                     /1.1070451D0
-               yprime(2)=(nitcord(i501+1,2)-cprcord(i501,2)
-     *                     -zprime(2)*0.7189235D0)
+               YPRIME(2)=(NITCORD(I501+1,2)-CPRCORD(I501,2)
+     *                     -ZPRIME(2)*0.7189235D0)
      *                     /1.1070451D0
-               yprime(3)=(nitcord(i501+1,3)-cprcord(i501,3)
-     *                     -zprime(3)*0.7189235D0)
+               YPRIME(3)=(NITCORD(I501+1,3)-CPRCORD(I501,3)
+     *                     -ZPRIME(3)*0.7189235D0)
      *                     /1.1070451D0
 
-        ylen=sqrt(yprime(1)*yprime(1)+yprime(2)*yprime(2)+yprime(3)*yprime(3))
+        YLEN=SQRT(YPRIME(1)*YPRIME(1)+YPRIME(2)*YPRIME(2)+YPRIME(3)*YPRIME(3))
 
-        yprime(1)=yprime(1)/ylen
-        yprime(2)=yprime(2)/ylen
-        yprime(3)=yprime(3)/ylen
+        YPRIME(1)=YPRIME(1)/YLEN
+        YPRIME(2)=YPRIME(2)/YLEN
+        YPRIME(3)=YPRIME(3)/YLEN
 
-        xprime(1)=yprime(2)*zprime(3)-yprime(3)*zprime(2)
-        xprime(2)=yprime(3)*zprime(1)-yprime(1)*zprime(3)
-        xprime(3)=yprime(1)*zprime(2)-yprime(2)*zprime(1)
+        XPRIME(1)=YPRIME(2)*ZPRIME(3)-YPRIME(3)*ZPRIME(2)
+        XPRIME(2)=YPRIME(3)*ZPRIME(1)-YPRIME(1)*ZPRIME(3)
+        XPRIME(3)=YPRIME(1)*ZPRIME(2)-YPRIME(2)*ZPRIME(1)
 
-        xlen=sqrt(xprime(1)*xprime(1)+xprime(2)*xprime(2)+xprime(3)*xprime(3))
+        XLEN=SQRT(XPRIME(1)*XPRIME(1)+XPRIME(2)*XPRIME(2)+XPRIME(3)*XPRIME(3))
 
-        xprime(1)=xprime(1)/xlen
-        xprime(2)=xprime(2)/xlen
-        xprime(3)=xprime(3)/xlen
+        XPRIME(1)=XPRIME(1)/XLEN
+        XPRIME(2)=XPRIME(2)/XLEN
+        XPRIME(3)=XPRIME(3)/XLEN
 
-c  120               phi=rand()*1.75+3.49
+C  120               PHI=RAND()*1.75+3.49
 
-               call SLARNV(1, iseed_amh,1,ran_num_array(1))
-               ran_num=ran_num_array(1)
+               CALL SLARNV(1, ISEED_AMH,1,RAN_NUM_ARRAY(1))
+               RAN_NUM=RAN_NUM_ARRAY(1)
 
-120            phi=ran_num*1.75D0+3.49D0
-               cphi=dcos(phi)
-               sphi=dsin(phi)
-               cpsi=dcos(phi-pi2/3.0D0)
-               spsi=dsin(phi-pi2/3.0D0)
+120            PHI=RAN_NUM*1.75D0+3.49D0
+               CPHI=DCOS(PHI)
+               SPHI=DSIN(PHI)
+               CPSI=DCOS(PHI-PI2/3.0D0)
+               SPSI=DSIN(PHI-PI2/3.0D0)
 
-               prcord(i501+1,1,i503,2)
-     *                  =1.4519259D0*spsi*xprime(1)-1.4519259D0*cpsi*yprime(1)
-     *                  +0.5133333D0*zprime(1)+prcord(i501+1,1,i503,1)
-               prcord(i501+1,2,i503,2)
-     *                  =1.4519259D0*spsi*xprime(2)-1.4519259D0*cpsi*yprime(2)
-     *                  +0.5133333D0*zprime(2)+prcord(i501+1,2,i503,1)
-               prcord(i501+1,3,i503,2)
-     *                  =1.4519259D0*spsi*xprime(3)-1.4519259D0*cpsi*yprime(3)
-     *                  +0.5133333D0*zprime(3)+prcord(i501+1,3,i503,1)
+               PRCORD(I501+1,1,I503,2)
+     *                  =1.4519259D0*SPSI*XPRIME(1)-1.4519259D0*CPSI*YPRIME(1)
+     *                  +0.5133333D0*ZPRIME(1)+PRCORD(I501+1,1,I503,1)
+               PRCORD(I501+1,2,I503,2)
+     *                  =1.4519259D0*SPSI*XPRIME(2)-1.4519259D0*CPSI*YPRIME(2)
+     *                  +0.5133333D0*ZPRIME(2)+PRCORD(I501+1,2,I503,1)
+               PRCORD(I501+1,3,I503,2)
+     *                  =1.4519259D0*SPSI*XPRIME(3)-1.4519259D0*CPSI*YPRIME(3)
+     *                  +0.5133333D0*ZPRIME(3)+PRCORD(I501+1,3,I503,1)
 
-        if (ires(i501+1).eq.8) then
-          prcord(i501+1,1,i503,2)=prcord(i501+1,1,i503,1)
-          prcord(i501+1,2,i503,2)=prcord(i501+1,2,i503,1)
-          prcord(i501+1,3,i503,2)=prcord(i501+1,3,i503,1)
-        endif
+        IF (IRES(I501+1).EQ.8) THEN
+          PRCORD(I501+1,1,I503,2)=PRCORD(I501+1,1,I503,1)
+          PRCORD(I501+1,2,I503,2)=PRCORD(I501+1,2,I503,1)
+          PRCORD(I501+1,3,I503,2)=PRCORD(I501+1,3,I503,1)
+        ENDIF
 
-c      make chain self-avoiding
+C      MAKE CHAIN SELF-AVOIDING
 
-            touch=.false.
+            TOUCH=.FALSE.
 
-            do 507 i507=1,i501-1
+            DO 507 I507=1,I501-1
 
-                dist1=dsqrt( (prcord(i501+1,1,i503,2)
-     *                      -prcord(i507,1,i503,1))**2
-     *                     +(prcord(i501+1,2,i503,2)
-     *                      -prcord(i507,2,i503,1))**2
-     *                     +(prcord(i501+1,3,i503,2)
-     *                      -prcord(i507,3,i503,1))**2)
+                DIST1=DSQRT( (PRCORD(I501+1,1,I503,2)
+     *                      -PRCORD(I507,1,I503,1))**2
+     *                     +(PRCORD(I501+1,2,I503,2)
+     *                      -PRCORD(I507,2,I503,1))**2
+     *                     +(PRCORD(I501+1,3,I503,2)
+     *                      -PRCORD(I507,3,I503,1))**2)
 
-                dist2=dsqrt( (prcord(i501+1,1,i503,2)
-     *                      -prcord(i507,1,i503,2))**2
-     *                     +(prcord(i501+1,2,i503,2)
-     *                      -prcord(i507,2,i503,2))**2
-     *                     +(prcord(i501+1,3,i503,2)
-     *                      -prcord(i507,3,i503,2))**2)
+                DIST2=DSQRT( (PRCORD(I501+1,1,I503,2)
+     *                      -PRCORD(I507,1,I503,2))**2
+     *                     +(PRCORD(I501+1,2,I503,2)
+     *                      -PRCORD(I507,2,I503,2))**2
+     *                     +(PRCORD(I501+1,3,I503,2)
+     *                      -PRCORD(I507,3,I503,2))**2)
 
-                if ( (dist1.lt.4.0D0).or.(dist2.lt.3.0D0) ) 
-     *             touch=.true.
+                IF ( (DIST1.LT.4.0D0).OR.(DIST2.LT.3.0D0) ) 
+     *             TOUCH=.TRUE.
 
-507        continue
+507        CONTINUE
 
-                if (touch) then
+                IF (TOUCH) THEN
 
-                   try(i501,2)=try(i501,2)+1
-                   if (try(i501,2).lt.11) goto 120
+                   TRY(I501,2)=TRY(I501,2)+1
+                   IF (TRY(I501,2).LT.11) GOTO 120
 
-c           failed 10 times-backtrack to previous good bond
+C           FAILED 10 TIMES-BACKTRACK TO PREVIOUS GOOD BOND
 
-c                   write (6,*) i501,2,try(i501,2)
-                   try(i501,2)=0
-                   try(i501,1)=try(i501,1)+1
-                   if (try(i501,1).lt.11) goto 105
-c                   write (6,*) i501,1,try(i501,1)
+C                   WRITE (6,*) I501,2,TRY(I501,2)
+                   TRY(I501,2)=0
+                   TRY(I501,1)=TRY(I501,1)+1
+                   IF (TRY(I501,1).LT.11) GOTO 105
+C                   WRITE (6,*) I501,1,TRY(I501,1)
 
-                   do 302 i501=i501-1,1,-1
+                   DO 302 I501=I501-1,1,-1
 
-                   try(i501+1,1)=0
-                   try(i501,2)=try(i501,2)+1
-                   if (try(i501,2).lt.11) goto 115
-c                   write (6,*) i501,2,try(i501,2)
+                   TRY(I501+1,1)=0
+                   TRY(I501,2)=TRY(I501,2)+1
+                   IF (TRY(I501,2).LT.11) GOTO 115
+C                   WRITE (6,*) I501,2,TRY(I501,2)
 
-                   try(i501,2)=0
-                   try(i501,1)=try(i501,1)+1
-                   if (try(i501,1).lt.11) goto 105
-                   write (6,*) i501,1,try(i501,1)
+                   TRY(I501,2)=0
+                   TRY(I501,1)=TRY(I501,1)+1
+                   IF (TRY(I501,1).LT.11) GOTO 105
+                   WRITE (6,*) I501,1,TRY(I501,1)
 
-302             continue
+302             CONTINUE
 
-                   stop ' failed in rndcol '
+                   STOP ' FAILED IN RNDCOL '
 
-                endif
+                ENDIF
 
-       cprcord(i501+1,1)=1.4424978D0*sphi*xprime(1)-1.4424978D0*cphi*yprime(1)
-     *                  +0.51D0*zprime(1)+prcord(i501+1,1,i503,1)
-       cprcord(i501+1,2)=1.4424978D0*sphi*xprime(2)-1.4424978D0*cphi*yprime(2)
-     *                  +0.51D0*zprime(2)+prcord(i501+1,2,i503,1)
-       cprcord(i501+1,3)=1.4424978D0*sphi*xprime(3)-1.4424978D0*cphi*yprime(3)
-     *                  +0.51D0*zprime(3)+prcord(i501+1,3,i503,1)
+       CPRCORD(I501+1,1)=1.4424978D0*SPHI*XPRIME(1)-1.4424978D0*CPHI*YPRIME(1)
+     *                  +0.51D0*ZPRIME(1)+PRCORD(I501+1,1,I503,1)
+       CPRCORD(I501+1,2)=1.4424978D0*SPHI*XPRIME(2)-1.4424978D0*CPHI*YPRIME(2)
+     *                  +0.51D0*ZPRIME(2)+PRCORD(I501+1,2,I503,1)
+       CPRCORD(I501+1,3)=1.4424978D0*SPHI*XPRIME(3)-1.4424978D0*CPHI*YPRIME(3)
+     *                  +0.51D0*ZPRIME(3)+PRCORD(I501+1,3,I503,1)
 
-        i501=i501+1
-       end do
+        I501=I501+1
+       END DO
 
- 503   continue
+ 503   CONTINUE
 
-         open(unit=pdb,file='0.pdb',form='formatted',status = 'unknown')
+         OPEN(UNIT=PDB,FILE='0.PDB',FORM='FORMATTED',STATUS = 'UNKNOWN')
 
-       do 664 iii = 1,nmres
-            res_type = 'ALA'
-             if (ires(iii) .eq. 8) then
-              res_type = 'GLY'
-             end if
+       DO 664 III = 1,NMRES
+            RES_TYPE = 'ALA'
+             IF (IRES(III) .EQ. 8) THEN
+              RES_TYPE = 'GLY'
+             END IF
 
 CACACACACACACACACACACAC
-       write(pdb,665) iii, res_type,iii,(prcord(iii, jjj, 1, 1), jjj =1,3), iii
-665    format('ATOM    ',i3,'  CA  ',a3,'   ',i3,'    ',3(f8.3),
-     *             '  1.00  0.00      TPDB ',i3)
+       WRITE(PDB,665) III, RES_TYPE,III,(PRCORD(III, JJJ, 1, 1), JJJ =1,3), III
+665    FORMAT('ATOM    ',I3,'  CA  ',A3,'   ',I3,'    ',3(F8.3),
+     *             '  1.00  0.00      TPDB ',I3)
 C'C'C'C'C'C'C'C'C'C'C'C'
-       write(pdb,671) iii, res_type,iii, (cprcord(iii, jjj),jjj =1,3), iii
-671   format('ATOM    ',i3,'  C   ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)
+       WRITE(PDB,671) III, RES_TYPE,III, (CPRCORD(III, JJJ),JJJ =1,3), III
+671   FORMAT('ATOM    ',I3,'  C   ',A3,'   ',I3,'    ',3(F8.3),'  1.00  0.00      TPDB ',I3)
 COOOOOOOOOOOOOOOOOOOOOOOO
-       if (iii .lt. nmres) then
-        write(pdb,670) iii, res_type,iii, (prcord(iii, jjj, 1,3),jjj =1,3), iii
-670     format('ATOM    ',i3,'  O   ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)
-       end if
+       IF (III .LT. NMRES) THEN
+        WRITE(PDB,670) III, RES_TYPE,III, (PRCORD(III, JJJ, 1,3),JJJ =1,3), III
+670     FORMAT('ATOM    ',I3,'  O   ',A3,'   ',I3,'    ',3(F8.3),'  1.00  0.00      TPDB ',I3)
+       END IF
 CNNNNNNNNNNNNNNNNNNNNNNN
-        write(pdb,669) iii, res_type, iii, (nitcord(iii, jjj),jjj =1,3), iii
-669     format('ATOM    ',i3,'  N   ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)
+        WRITE(PDB,669) III, RES_TYPE, III, (NITCORD(III, JJJ),JJJ =1,3), III
+669     FORMAT('ATOM    ',I3,'  N   ',A3,'   ',I3,'    ',3(F8.3),'  1.00  0.00      TPDB ',I3)
 
 CBCBCBCBCBCBCBCBCBCBCBCB
-       if (ires(iii) .ne. 8) then
-        write(pdb,668) iii, iii, (prcord(iii, jjj, 1, 2),jjj =1,3), iii
-668     format('ATOM    ',i3,'  CB  ALA   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)
-       end if
-ccccccccccccccccccccccccc
+       IF (IRES(III) .NE. 8) THEN
+        WRITE(PDB,668) III, III, (PRCORD(III, JJJ, 1, 2),JJJ =1,3), III
+668     FORMAT('ATOM    ',I3,'  CB  ALA   ',I3,'    ',3(F8.3),'  1.00  0.00      TPDB ',I3)
+       END IF
+CCCCCCCCCCCCCCCCCCCCCCCCC
 
-664     continue
-        close(pdb)
+664     CONTINUE
+        CLOSE(PDB)
 
-c  MCP structure for GMIN
+C  MCP STRUCTURE FOR GMIN
 
-       gly_c = 0
+       GLY_C = 0
 
-       do 764 iii = 1,nmres
+       DO 764 III = 1,NMRES
 
-       if (ires(iii).eq.8) gly_c = gly_c +1
+       IF (IRES(III).EQ.8) GLY_C = GLY_C +1
 
-c  prcord(iii, jjj, 1, 1)  = prcord(res id , coord id, num pro id , atom id)
-c  convert nmres to num of atoms 
-c  assume x(CA(x,y,z),CB(x,y,z),O(x,y,z))  
+C  PRCORD(III, JJJ, 1, 1)  = PRCORD(RES ID , COORD ID, NUM PRO ID , ATOM ID)
+C  CONVERT NMRES TO NUM OF ATOMS 
+C  ASSUME X(CA(X,Y,Z),CB(X,Y,Z),O(X,Y,Z))  
 
-       res_type = aminoa(ires(iii))
+       RES_TYPE = AMINOA(IRES(III))
 
-       if (ires(iii).eq.8) then
-        x_mcp(9*(iii-1)+1-(gly_c-1)*3) = (prcord(iii, 1, 1, 1))   !  CA X
-        x_mcp(9*(iii-1)+2-(gly_c-1)*3) = (prcord(iii, 2, 1, 1))   !  CA Y
-        x_mcp(9*(iii-1)+3-(gly_c-1)*3) = (prcord(iii, 3, 1, 1))   !  CA Z
-!       x_mcp(9*(iii-1)+4) = (prcord(iii, 1, 1, 2))   !  CB X
-!       x_mcp(9*(iii-1)+5) = (prcord(iii, 2, 1, 2))   !  CB Y
-!       x_mcp(9*(iii-1)+6) = (prcord(iii, 3, 1, 2))   !  CB Z
-        x_mcp(9*(iii-1)+4-(gly_c-1)*3) = (prcord(iii, 1, 1, 3))   !   O X
-        x_mcp(9*(iii-1)+5-(gly_c-1)*3) = (prcord(iii, 2, 1, 3))   !   O Y
-        x_mcp(9*(iii-1)+6-(gly_c-1)*3) = (prcord(iii, 3, 1, 3))   !   O Z
-      else
-        x_mcp(9*(iii-1)+1-gly_c*3) = (prcord(iii, 1, 1, 1))   !  CA X
-        x_mcp(9*(iii-1)+2-gly_c*3) = (prcord(iii, 2, 1, 1))   !  CA Y
-        x_mcp(9*(iii-1)+3-gly_c*3) = (prcord(iii, 3, 1, 1))   !  CA Z
-        x_mcp(9*(iii-1)+4-gly_c*3) = (prcord(iii, 1, 1, 2))   !  CB X
-        x_mcp(9*(iii-1)+5-gly_c*3) = (prcord(iii, 2, 1, 2))   !  CB Y
-        x_mcp(9*(iii-1)+6-gly_c*3) = (prcord(iii, 3, 1, 2))   !  CB Z
-        x_mcp(9*(iii-1)+7-gly_c*3) = (prcord(iii, 1, 1, 3))   !   O X
-        x_mcp(9*(iii-1)+8-gly_c*3) = (prcord(iii, 2, 1, 3))   !   O Y
-        x_mcp(9*(iii-1)+9-gly_c*3) = (prcord(iii, 3, 1, 3))   !   O Z
-      endif
+       IF (IRES(III).EQ.8) THEN
+        X_MCP(9*(III-1)+1-(GLY_C-1)*3) = (PRCORD(III, 1, 1, 1))   !  CA X
+        X_MCP(9*(III-1)+2-(GLY_C-1)*3) = (PRCORD(III, 2, 1, 1))   !  CA Y
+        X_MCP(9*(III-1)+3-(GLY_C-1)*3) = (PRCORD(III, 3, 1, 1))   !  CA Z
+!       X_MCP(9*(III-1)+4) = (PRCORD(III, 1, 1, 2))   !  CB X
+!       X_MCP(9*(III-1)+5) = (PRCORD(III, 2, 1, 2))   !  CB Y
+!       X_MCP(9*(III-1)+6) = (PRCORD(III, 3, 1, 2))   !  CB Z
+        X_MCP(9*(III-1)+4-(GLY_C-1)*3) = (PRCORD(III, 1, 1, 3))   !   O X
+        X_MCP(9*(III-1)+5-(GLY_C-1)*3) = (PRCORD(III, 2, 1, 3))   !   O Y
+        X_MCP(9*(III-1)+6-(GLY_C-1)*3) = (PRCORD(III, 3, 1, 3))   !   O Z
+      ELSE
+        X_MCP(9*(III-1)+1-GLY_C*3) = (PRCORD(III, 1, 1, 1))   !  CA X
+        X_MCP(9*(III-1)+2-GLY_C*3) = (PRCORD(III, 2, 1, 1))   !  CA Y
+        X_MCP(9*(III-1)+3-GLY_C*3) = (PRCORD(III, 3, 1, 1))   !  CA Z
+        X_MCP(9*(III-1)+4-GLY_C*3) = (PRCORD(III, 1, 1, 2))   !  CB X
+        X_MCP(9*(III-1)+5-GLY_C*3) = (PRCORD(III, 2, 1, 2))   !  CB Y
+        X_MCP(9*(III-1)+6-GLY_C*3) = (PRCORD(III, 3, 1, 2))   !  CB Z
+        X_MCP(9*(III-1)+7-GLY_C*3) = (PRCORD(III, 1, 1, 3))   !   O X
+        X_MCP(9*(III-1)+8-GLY_C*3) = (PRCORD(III, 2, 1, 3))   !   O Y
+        X_MCP(9*(III-1)+9-GLY_C*3) = (PRCORD(III, 3, 1, 3))   !   O Z
+      ENDIF
 
 CACACACACACACACACACACAC
-      if (ires(iii) .ne. 8) then
-c        write(6,765) iii, res_type,iii,x_mcp(9*(iii-1)+1-gly_c*3),x_mcp(9*(iii-1)+2-gly_c*3),x_mcp(9*(iii-1)+3-gly_c*3), iii
-765     format('ATOM    ',i3,'  CA  ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)
-      endif
+      IF (IRES(III) .NE. 8) THEN
+C        WRITE(6,765) III, RES_TYPE,III,X_MCP(9*(III-1)+1-GLY_C*3),X_MCP(9*(III-1)+2-GLY_C*3),X_MCP(9*(III-1)+3-GLY_C*3), III
+765     FORMAT('ATOM    ',I3,'  CA  ',A3,'   ',I3,'    ',3(F8.3),'  1.00  0.00      TPDB ',I3)
+      ENDIF
 
-      if (ires(iii) .eq. 8) then
-c      write(6,865)iii,res_type,iii,x_mcp(9*(iii-1)+1-(gly_c-1)*3),x_mcp(9*(iii-1)+2-(gly_c-1)*3),x_mcp(9*(iii-1)+3-(gly_c-1)*3),iii
-865     format('ATOM    ',i3,'  XA  ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00     TPDB ',i3)
-      endif
+      IF (IRES(III) .EQ. 8) THEN
+C      WRITE(6,865)III,RES_TYPE,III,X_MCP(9*(III-1)+1-(GLY_C-1)*3),X_MCP(9*(III-1)+2-(GLY_C-1)*3),X_MCP(9*(III-1)+3-(GLY_C-1)*3),III
+865     FORMAT('ATOM    ',I3,'  XA  ',A3,'   ',I3,'    ',3(F8.3),'  1.00  0.00     TPDB ',I3)
+      ENDIF
 
 CBCBCBCBCBCBCBCBCBCBCBCB
-       if (ires(iii) .ne. 8) then
-c        write(6,768) iii, res_type,iii, x_mcp(9*(iii-1)+4- gly_c*3),x_mcp(9*(iii-1)+5-gly_c*3),x_mcp(9*(iii-1)+6-gly_c*3) , iii
-768     format('ATOM    ',i3,'  CB  ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)
-       end if
+       IF (IRES(III) .NE. 8) THEN
+C        WRITE(6,768) III, RES_TYPE,III, X_MCP(9*(III-1)+4- GLY_C*3),X_MCP(9*(III-1)+5-GLY_C*3),X_MCP(9*(III-1)+6-GLY_C*3) , III
+768     FORMAT('ATOM    ',I3,'  CB  ',A3,'   ',I3,'    ',3(F8.3),'  1.00  0.00      TPDB ',I3)
+       END IF
 
 COOOOOOOOOOOOOOOOOOOOOOOO
-c       if (iii .lt. nmres) then
-      if (ires(iii) .ne. 8) then
-c        write(6,770) iii, res_type,iii, x_mcp(9*(iii-1)+7-gly_c*3),x_mcp(9*(iii-1)+8-gly_c*3),x_mcp(9*(iii-1)+9-gly_c*3), iii
-770     format('ATOM    ',i3,'  O   ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)
-       endif
+C       IF (III .LT. NMRES) THEN
+      IF (IRES(III) .NE. 8) THEN
+C        WRITE(6,770) III, RES_TYPE,III, X_MCP(9*(III-1)+7-GLY_C*3),X_MCP(9*(III-1)+8-GLY_C*3),X_MCP(9*(III-1)+9-GLY_C*3), III
+770     FORMAT('ATOM    ',I3,'  O   ',A3,'   ',I3,'    ',3(F8.3),'  1.00  0.00      TPDB ',I3)
+       ENDIF
 
-      if (ires(iii) .eq. 8) then
-c       write(6,965)iii,res_type,iii,x_mcp(9*(iii-1)+4-(gly_c-1)*3),x_mcp(9*(iii-1)+5-(gly_c-1)*3),x_mcp(9*(iii-1)+6-(gly_c-1)*3),iii
-965     format('ATOM    ',i3,'  X0  ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)
-      endif
+      IF (IRES(III) .EQ. 8) THEN
+C       WRITE(6,965)III,RES_TYPE,III,X_MCP(9*(III-1)+4-(GLY_C-1)*3),X_MCP(9*(III-1)+5-(GLY_C-1)*3),X_MCP(9*(III-1)+6-(GLY_C-1)*3),III
+965     FORMAT('ATOM    ',I3,'  X0  ',A3,'   ',I3,'    ',3(F8.3),'  1.00  0.00      TPDB ',I3)
+      ENDIF
 
-ccccccccccccccccccccccccc
+CCCCCCCCCCCCCCCCCCCCCCCCC
 
-764     continue
+764     CONTINUE
 
-c      write(6,*)'out rndcol'
+C      WRITE(6,*)'OUT RNDCOL'
 
-c       do 364 iii = 1,nmres*3*3
-c           write(6,*)'coord   res',  x_mcp(iii), iii
-c364    continue 
+C       DO 364 III = 1,NMRES*3*3
+C           WRITE(6,*)'COORD   RES',  X_MCP(III), III
+C364    CONTINUE 
 
    
-      quench_crd(:,:,:,:,1)=prcord
+      QUENCH_CRD(:,:,:,:,1)=PRCORD
 
-      return
-      end
+      RETURN
+      END

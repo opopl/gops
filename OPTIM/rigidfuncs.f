@@ -1,120 +1,120 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
-C Derivatives of R(i,j) with respect to rigid body coordinates of two
-C molecules x1,y1,z1,n1,l1,m1 and x2,y2,z2,l2,m2,n2.
-C P(i) = (p1x,p1y,p1z), P(j)=(p2x,p2y,p2z) are the site cordinates in
-C the reference geometry for the molecule at the origin and rdist is the inverse
-C actual distance between the two sites in question.
+C DERIVATIVES OF R(I,J) WITH RESPECT TO RIGID BODY COORDINATES OF TWO
+C MOLECULES X1,Y1,Z1,N1,L1,M1 AND X2,Y2,Z2,L2,M2,N2.
+C P(I) = (P1X,P1Y,P1Z), P(J)=(P2X,P2Y,P2Z) ARE THE SITE CORDINATES IN
+C THE REFERENCE GEOMETRY FOR THE MOLECULE AT THE ORIGIN AND RDIST IS THE INVERSE
+C ACTUAL DISTANCE BETWEEN THE TWO SITES IN QUESTION.
 C
-C This should enable rigid body systems to be coded in a
-C straightforward, systematic way.
+C THIS SHOULD ENABLE RIGID BODY SYSTEMS TO BE CODED IN A
+C STRAIGHTFORWARD, SYSTEMATIC WAY.
 C
 
 ! #######################################################################################################
 
-! Wrapper function for the rigid body first derivatives
-! coordNo runs from 1 to 12, with 1 specifying dRij/dx1, 2 specifying dRij/dy1 etc
+! WRAPPER FUNCTION FOR THE RIGID BODY FIRST DERIVATIVES
+! COORDNO RUNS FROM 1 TO 12, WITH 1 SPECIFYING DRIJ/DX1, 2 SPECIFYING DRIJ/DY1 ETC
 
-      function dRijdXrb(coordNo,
-     1                  p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+      FUNCTION DRIJDXRB(COORDNO,
+     1                  P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
 
-       implicit none
+       IMPLICIT NONE
 
        DOUBLE PRECISION :: DRIJDXRB
-       integer :: coordNo
+       INTEGER :: COORDNO
        DOUBLE PRECISION :: P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R 
        DOUBLE PRECISION :: C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
 
-! External functions
+! EXTERNAL FUNCTIONS
        
        DOUBLE PRECISION :: D1,D2,D3,D4,D5,D6,D7,D8,D9,DA,DB,DC
 
-       select case (coordNo)
-          case (1)
-             dRijdXrb = D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       SELECT CASE (COORDNO)
+          CASE (1)
+             DRIJDXRB = D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (2)
-             dRijdXrb = D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (2)
+             DRIJDXRB = D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)      
-          case (3)
-             dRijdXrb = D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (3)
+             DRIJDXRB = D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (4)
-             dRijdXrb = D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (4)
+             DRIJDXRB = D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (5)
-             dRijdXrb = D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (5)
+             DRIJDXRB = D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (6)
-             dRijdXrb = D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (6)
+             DRIJDXRB = D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (7)
-             dRijdXrb = D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (7)
+             DRIJDXRB = D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (8)
-             dRijdXrb = D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (8)
+             DRIJDXRB = D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (9)
-             dRijdXrb = D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (9)
+             DRIJDXRB = D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (10)
-             dRijdXrb = DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (10)
+             DRIJDXRB = DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (11)
-             dRijdXrb = DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (11)
+             DRIJDXRB = DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             dRijdXrb = DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             DRIJDXRB = DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range coordinate index passed to dRijdXrb'
-             stop
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE COORDINATE INDEX PASSED TO DRIJDXRB'
+             STOP
 
-       end select
+       END SELECT
 
-       return
+       RETURN
             
-      end function dRijdXrb
+      END FUNCTION DRIJDXRB
 
 ! #######################################################################################################
 
-! Wrapper function for the rigid body second derivatives
-! coordNo`s run from 1 to 12, with 1 specifying dRij/dx1, 2 specifying dRij/dy1 etc
+! WRAPPER FUNCTION FOR THE RIGID BODY SECOND DERIVATIVES
+! COORDNO`S RUN FROM 1 TO 12, WITH 1 SPECIFYING DRIJ/DX1, 2 SPECIFYING DRIJ/DY1 ETC
 
-      function d2RijdXrb1dXrb2(coordNo1,coordNo2,
-     1                    p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+      FUNCTION D2RIJDXRB1DXRB2(COORDNO1,COORDNO2,
+     1                    P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
 
-       implicit none
+       IMPLICIT NONE
 
        DOUBLE PRECISION :: D2RIJDXRB1DXRB2
-       integer :: coordNo1,coordNo2
+       INTEGER :: COORDNO1,COORDNO2
        DOUBLE PRECISION :: P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R 
        DOUBLE PRECISION :: C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
 
-! Local variables
+! LOCAL VARIABLES
 
-       integer :: firstCoord, secondCoord
+       INTEGER :: FIRSTCOORD, SECONDCOORD
 
-! External functions
+! EXTERNAL FUNCTIONS
 
        DOUBLE PRECISION :: DD11,DD12,DD13,DD14,DD15,DD16,DD17,DD18,DD19,DD1A,DD1B,DD1C
        DOUBLE PRECISION :: DD22,DD23,DD24,DD25,DD26,DD27,DD28,DD29,DD2A,DD2B,DD2C
@@ -129,3184 +129,3184 @@ C
        DOUBLE PRECISION :: DDBB,DDBC
        DOUBLE PRECISION :: DDCC
 
-       if (coordNo1.gt.coordNo2) then
-          firstCoord = coordNo2
-          secondCoord = coordNo1
-       else
-          firstCoord = coordNo1
-          secondCoord = coordNo2          
-       end if
+       IF (COORDNO1.GT.COORDNO2) THEN
+          FIRSTCOORD = COORDNO2
+          SECONDCOORD = COORDNO1
+       ELSE
+          FIRSTCOORD = COORDNO1
+          SECONDCOORD = COORDNO2          
+       END IF
 
-       select case (firstCoord)
-       case (1)
-          select case (secondCoord)
-          case (1)   
-             d2RijdXrb1dXrb2 = DD11(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       SELECT CASE (FIRSTCOORD)
+       CASE (1)
+          SELECT CASE (SECONDCOORD)
+          CASE (1)   
+             D2RIJDXRB1DXRB2 = DD11(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (2)
-             d2RijdXrb1dXrb2 = DD12(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (2)
+             D2RIJDXRB1DXRB2 = DD12(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (3)
-             d2RijdXrb1dXrb2 = DD13(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (3)
+             D2RIJDXRB1DXRB2 = DD13(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (4)
-             d2RijdXrb1dXrb2 = DD14(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (4)
+             D2RIJDXRB1DXRB2 = DD14(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (5)
-             d2RijdXrb1dXrb2 = DD15(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (5)
+             D2RIJDXRB1DXRB2 = DD15(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (6)
-             d2RijdXrb1dXrb2 = DD16(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (6)
+             D2RIJDXRB1DXRB2 = DD16(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (7)
-             d2RijdXrb1dXrb2 = DD17(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (7)
+             D2RIJDXRB1DXRB2 = DD17(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (8)
-             d2RijdXrb1dXrb2 = DD18(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (8)
+             D2RIJDXRB1DXRB2 = DD18(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (9)
-             d2RijdXrb1dXrb2 = DD19(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (9)
+             D2RIJDXRB1DXRB2 = DD19(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (10)
-             d2RijdXrb1dXrb2 = DD1A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (10)
+             D2RIJDXRB1DXRB2 = DD1A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (11)
-             d2RijdXrb1dXrb2 = DD1B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (11)
+             D2RIJDXRB1DXRB2 = DD1B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             d2RijdXrb1dXrb2 = DD1C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DD1C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
 
-       case (2)
-          select case (secondCoord)
-          case (2)
-             d2RijdXrb1dXrb2 = DD22(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       CASE (2)
+          SELECT CASE (SECONDCOORD)
+          CASE (2)
+             D2RIJDXRB1DXRB2 = DD22(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (3)
-             d2RijdXrb1dXrb2 = DD23(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (3)
+             D2RIJDXRB1DXRB2 = DD23(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (4)
-             d2RijdXrb1dXrb2 = DD24(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (4)
+             D2RIJDXRB1DXRB2 = DD24(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (5)
-             d2RijdXrb1dXrb2 = DD25(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (5)
+             D2RIJDXRB1DXRB2 = DD25(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (6)
-             d2RijdXrb1dXrb2 = DD26(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (6)
+             D2RIJDXRB1DXRB2 = DD26(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (7)
-             d2RijdXrb1dXrb2 = DD27(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (7)
+             D2RIJDXRB1DXRB2 = DD27(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (8)
-             d2RijdXrb1dXrb2 = DD28(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (8)
+             D2RIJDXRB1DXRB2 = DD28(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (9)
-             d2RijdXrb1dXrb2 = DD29(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (9)
+             D2RIJDXRB1DXRB2 = DD29(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (10)
-             d2RijdXrb1dXrb2 = DD2A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (10)
+             D2RIJDXRB1DXRB2 = DD2A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (11)
-             d2RijdXrb1dXrb2 = DD2B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (11)
+             D2RIJDXRB1DXRB2 = DD2B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             d2RijdXrb1dXrb2 = DD2C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DD2C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
       
-       case (3)
-          select case (secondCoord)
-          case (3)
-             d2RijdXrb1dXrb2 = DD33(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       CASE (3)
+          SELECT CASE (SECONDCOORD)
+          CASE (3)
+             D2RIJDXRB1DXRB2 = DD33(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (4)
-             d2RijdXrb1dXrb2 = DD34(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (4)
+             D2RIJDXRB1DXRB2 = DD34(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (5)
-             d2RijdXrb1dXrb2 = DD35(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (5)
+             D2RIJDXRB1DXRB2 = DD35(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (6)
-             d2RijdXrb1dXrb2 = DD36(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (6)
+             D2RIJDXRB1DXRB2 = DD36(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (7)
-             d2RijdXrb1dXrb2 = DD37(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (7)
+             D2RIJDXRB1DXRB2 = DD37(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (8)
-             d2RijdXrb1dXrb2 = DD38(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (8)
+             D2RIJDXRB1DXRB2 = DD38(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (9)
-             d2RijdXrb1dXrb2 = DD39(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (9)
+             D2RIJDXRB1DXRB2 = DD39(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (10)
-             d2RijdXrb1dXrb2 = DD3A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (10)
+             D2RIJDXRB1DXRB2 = DD3A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (11)
-             d2RijdXrb1dXrb2 = DD3B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (11)
+             D2RIJDXRB1DXRB2 = DD3B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             d2RijdXrb1dXrb2 = DD3C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DD3C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
 
-       case (4)
-          select case (secondCoord)
-          case (4)
-             d2RijdXrb1dXrb2 = DD44(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       CASE (4)
+          SELECT CASE (SECONDCOORD)
+          CASE (4)
+             D2RIJDXRB1DXRB2 = DD44(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (5)
-             d2RijdXrb1dXrb2 = DD45(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (5)
+             D2RIJDXRB1DXRB2 = DD45(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (6)
-             d2RijdXrb1dXrb2 = DD46(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (6)
+             D2RIJDXRB1DXRB2 = DD46(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (7)
-             d2RijdXrb1dXrb2 = DD47(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (7)
+             D2RIJDXRB1DXRB2 = DD47(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (8)
-             d2RijdXrb1dXrb2 = DD48(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (8)
+             D2RIJDXRB1DXRB2 = DD48(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (9)
-             d2RijdXrb1dXrb2 = DD49(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (9)
+             D2RIJDXRB1DXRB2 = DD49(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (10)
-             d2RijdXrb1dXrb2 = DD4A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (10)
+             D2RIJDXRB1DXRB2 = DD4A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (11)
-             d2RijdXrb1dXrb2 = DD4B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (11)
+             D2RIJDXRB1DXRB2 = DD4B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             d2RijdXrb1dXrb2 = DD4C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DD4C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
 
-       case (5)
-          select case (secondCoord)
-          case (5)
-             d2RijdXrb1dXrb2 = DD55(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       CASE (5)
+          SELECT CASE (SECONDCOORD)
+          CASE (5)
+             D2RIJDXRB1DXRB2 = DD55(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (6)
-             d2RijdXrb1dXrb2 = DD56(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (6)
+             D2RIJDXRB1DXRB2 = DD56(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (7)
-             d2RijdXrb1dXrb2 = DD57(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (7)
+             D2RIJDXRB1DXRB2 = DD57(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (8)
-             d2RijdXrb1dXrb2 = DD58(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (8)
+             D2RIJDXRB1DXRB2 = DD58(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (9)
-             d2RijdXrb1dXrb2 = DD59(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (9)
+             D2RIJDXRB1DXRB2 = DD59(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (10)
-             d2RijdXrb1dXrb2 = DD5A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (10)
+             D2RIJDXRB1DXRB2 = DD5A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (11)
-             d2RijdXrb1dXrb2 = DD5B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (11)
+             D2RIJDXRB1DXRB2 = DD5B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             d2RijdXrb1dXrb2 = DD5C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DD5C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
 
-       case (6)
-          select case (secondCoord)
-          case (6)
-             d2RijdXrb1dXrb2 = DD66(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       CASE (6)
+          SELECT CASE (SECONDCOORD)
+          CASE (6)
+             D2RIJDXRB1DXRB2 = DD66(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (7)
-             d2RijdXrb1dXrb2 = DD67(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (7)
+             D2RIJDXRB1DXRB2 = DD67(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (8)
-             d2RijdXrb1dXrb2 = DD68(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (8)
+             D2RIJDXRB1DXRB2 = DD68(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (9)
-             d2RijdXrb1dXrb2 = DD69(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (9)
+             D2RIJDXRB1DXRB2 = DD69(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (10)
-             d2RijdXrb1dXrb2 = DD6A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (10)
+             D2RIJDXRB1DXRB2 = DD6A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (11)
-             d2RijdXrb1dXrb2 = DD6B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (11)
+             D2RIJDXRB1DXRB2 = DD6B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             d2RijdXrb1dXrb2 = DD6C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DD6C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
 
-       case (7)
-          select case (secondCoord)
-          case (7)
-             d2RijdXrb1dXrb2 = DD77(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       CASE (7)
+          SELECT CASE (SECONDCOORD)
+          CASE (7)
+             D2RIJDXRB1DXRB2 = DD77(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (8)
-             d2RijdXrb1dXrb2 = DD78(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (8)
+             D2RIJDXRB1DXRB2 = DD78(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (9)
-             d2RijdXrb1dXrb2 = DD79(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (9)
+             D2RIJDXRB1DXRB2 = DD79(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (10)
-             d2RijdXrb1dXrb2 = DD7A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (10)
+             D2RIJDXRB1DXRB2 = DD7A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (11)
-             d2RijdXrb1dXrb2 = DD7B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (11)
+             D2RIJDXRB1DXRB2 = DD7B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             d2RijdXrb1dXrb2 = DD7C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DD7C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
 
-       case (8)
-          select case (secondCoord)
-          case (8)
-             d2RijdXrb1dXrb2 = DD88(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       CASE (8)
+          SELECT CASE (SECONDCOORD)
+          CASE (8)
+             D2RIJDXRB1DXRB2 = DD88(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (9)
-             d2RijdXrb1dXrb2 = DD89(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (9)
+             D2RIJDXRB1DXRB2 = DD89(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (10)
-             d2RijdXrb1dXrb2 = DD8A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (10)
+             D2RIJDXRB1DXRB2 = DD8A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (11)
-             d2RijdXrb1dXrb2 = DD8B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (11)
+             D2RIJDXRB1DXRB2 = DD8B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             d2RijdXrb1dXrb2 = DD8C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DD8C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
 
-       case (9)
-          select case (secondCoord)
-          case (9)
-             d2RijdXrb1dXrb2 = DD99(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       CASE (9)
+          SELECT CASE (SECONDCOORD)
+          CASE (9)
+             D2RIJDXRB1DXRB2 = DD99(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (10)
-             d2RijdXrb1dXrb2 = DD9A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (10)
+             D2RIJDXRB1DXRB2 = DD9A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (11)
-             d2RijdXrb1dXrb2 = DD9B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (11)
+             D2RIJDXRB1DXRB2 = DD9B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             d2RijdXrb1dXrb2 = DD9C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DD9C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
 
-       case (10)
-          select case (secondCoord)
-          case (10)
-             d2RijdXrb1dXrb2 = DDAA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       CASE (10)
+          SELECT CASE (SECONDCOORD)
+          CASE (10)
+             D2RIJDXRB1DXRB2 = DDAA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (11)
-             d2RijdXrb1dXrb2 = DDAB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (11)
+             D2RIJDXRB1DXRB2 = DDAB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             d2RijdXrb1dXrb2 = DDAC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DDAC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
 
-       case (11)
-          select case (secondCoord)
-          case (11)
-             d2RijdXrb1dXrb2 = DDBB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       CASE (11)
+          SELECT CASE (SECONDCOORD)
+          CASE (11)
+             D2RIJDXRB1DXRB2 = DDBB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case (12)
-             d2RijdXrb1dXrb2 = DDBC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DDBC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
 
-       case (12)
-          select case (secondCoord)
-          case (12)
-             d2RijdXrb1dXrb2 = DDCC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,inv_R,
+       CASE (12)
+          SELECT CASE (SECONDCOORD)
+          CASE (12)
+             D2RIJDXRB1DXRB2 = DDCC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,INV_R,
      1                              C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-          case default
-             print *, 'Out of range second coordinate index passed to d2RijdXrb1dXrb2'
-             stop
-          end select
+          CASE DEFAULT
+             PRINT *, 'OUT OF RANGE SECOND COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+             STOP
+          END SELECT
 
-       case default
-          print *, 'Out of range first coordinate index passed to d2RijdXrb1dXrb2'
-          stop
+       CASE DEFAULT
+          PRINT *, 'OUT OF RANGE FIRST COORDINATE INDEX PASSED TO D2RIJDXRB1DXRB2'
+          STOP
           
-       end select
+       END SELECT
        
-       return
+       RETURN
             
-      end function d2RijdXrb1dXrb2
+      END FUNCTION D2RIJDXRB1DXRB2
 
 ! #######################################################################################################
 
-! drij/dx1
+! DRIJ/DX1
 
-      DOUBLE PRECISION FUNCTION D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       D1=
-     @    rdist*(c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     @    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - n2*p2y*s2 + 
-     @    m2*p2z*s2 + x1 - x2)
+     @    RDIST*(C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     @    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - N2*P2Y*S2 + 
+     @    M2*P2Z*S2 + X1 - X2)
       
       RETURN
       END
 
-! drij/dy1
+! DRIJ/DY1
 
-      DOUBLE PRECISION FUNCTION D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       D2 =
-     @    rdist*(c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     @    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + n2*p2x*s2 - 
-     @    l2*p2z*s2 + y1 - y2)
+     @    RDIST*(C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     @    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + N2*P2X*S2 - 
+     @    L2*P2Z*S2 + Y1 - Y2)
 
       RETURN
       END
 
-! drij/dz1
+! DRIJ/DZ1
 
-      DOUBLE PRECISION FUNCTION D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       D3=
-     @    rdist*(c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     @    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - m2*p2x*s2 + 
-     @    l2*p2y*s2 + z1 - z2)
+     @    RDIST*(C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     @    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - M2*P2X*S2 + 
+     @    L2*P2Y*S2 + Z1 - Z2)
 
       RETURN
       END
 
-! drij/dl1
+! DRIJ/DL1
 
-      DOUBLE PRECISION FUNCTION D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       D4 =
-     @      rdist*((c3a1*(2*l1*p1x*(-1 + l12*ralpha12) + 
-     @            (m1*p1y + n1*p1z)*(-1 + 2*l12*ralpha12)) + 
-     @         (l1*l12*p1x + l12*m1*p1y - l1*n1*p1y + l1*m1*p1z + l12*n1*p1z)*
-     @          ralpha12*s1 + l1*(c2a1*(n1*p1y - m1*p1z)*ralpha12 - p1x*s1))*
-     @       (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     @         c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     @         n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + 
-     @      (c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     @         c3a1*m1*(-p1x + 2*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + 
-     @         (-(l1*p1y) + p1z + l1* (l1*m1*p1x + n1*p1x + m1**2*p1y - l1*p1z + m1*n1*p1z)*ralpha12)*
-     @          s1)*(c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     @         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-     @         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + 
-     @      (-(c2a1*l1*(-(m1*p1x) + l1*p1y)*ralpha12) + 
-     @         c3a1*n1*(-p1x + 2*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + 
-     @         (-p1y - l1*p1z + l1*(-(m1*p1x) + l1*n1*p1x + l1*p1y + m1*n1*p1y + n1**2*p1z)*ralpha12)*s1)*
-     @       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     @         c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - 
-     @         m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+     @      RDIST*((C3A1*(2*L1*P1X*(-1 + L12*RALPHA12) + 
+     @            (M1*P1Y + N1*P1Z)*(-1 + 2*L12*RALPHA12)) + 
+     @         (L1*L12*P1X + L12*M1*P1Y - L1*N1*P1Y + L1*M1*P1Z + L12*N1*P1Z)*
+     @          RALPHA12*S1 + L1*(C2A1*(N1*P1Y - M1*P1Z)*RALPHA12 - P1X*S1))*
+     @       (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     @         C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     @         N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + 
+     @      (C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     @         C3A1*M1*(-P1X + 2*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + 
+     @         (-(L1*P1Y) + P1Z + L1* (L1*M1*P1X + N1*P1X + M1**2*P1Y - L1*P1Z + M1*N1*P1Z)*RALPHA12)*
+     @          S1)*(C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     @         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+     @         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + 
+     @      (-(C2A1*L1*(-(M1*P1X) + L1*P1Y)*RALPHA12) + 
+     @         C3A1*N1*(-P1X + 2*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + 
+     @         (-P1Y - L1*P1Z + L1*(-(M1*P1X) + L1*N1*P1X + L1*P1Y + M1*N1*P1Y + N1**2*P1Z)*RALPHA12)*S1)*
+     @       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     @         C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - 
+     @         M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 
       RETURN
       END
 
-! drij/dm1
+! DRIJ/DM1
 
-      DOUBLE PRECISION FUNCTION D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       D5=
-     @ rdist*((-(c2a1*m1*(-(n1*p1y) + m1*p1z)*ralpha12) + 
-     @         c3a1*l1*(-p1y + 2*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + 
-     @         (-(m1*p1x) - p1z + m1* (l1**2*p1x + l1*m1*p1y - n1*p1y + m1*p1z + l1*n1*p1z)*ralpha12)*
-     @          s1)*(c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     @         c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     @         n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + (-(c3a1*(l1*p1x + 2*m1*p1y + n1*p1z)) + 
-     @         c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-     @         (-(m1*p1y) + (l1*m12*p1x + m1*n1*p1x + m1*m12*p1y - l1*m1*p1z + 
-     @               m12*n1*p1z)*ralpha12)*s1)*
-     @       (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     @         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-     @         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + (c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-     @         c3a1*n1*(-p1y + 2*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + 
-     @         (p1x - m1*(m1 - l1*n1)*p1x*ralpha12 + 
-     @            m1*((l1 + m1*n1)*p1y*ralpha12 + p1z*(-1 + n1**2*ralpha12)))*s1)*
-     @       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     @         c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - 
-     @         m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+     @ RDIST*((-(C2A1*M1*(-(N1*P1Y) + M1*P1Z)*RALPHA12) + 
+     @         C3A1*L1*(-P1Y + 2*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + 
+     @         (-(M1*P1X) - P1Z + M1* (L1**2*P1X + L1*M1*P1Y - N1*P1Y + M1*P1Z + L1*N1*P1Z)*RALPHA12)*
+     @          S1)*(C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     @         C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     @         N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + (-(C3A1*(L1*P1X + 2*M1*P1Y + N1*P1Z)) + 
+     @         C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+     @         (-(M1*P1Y) + (L1*M12*P1X + M1*N1*P1X + M1*M12*P1Y - L1*M1*P1Z + 
+     @               M12*N1*P1Z)*RALPHA12)*S1)*
+     @       (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     @         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+     @         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + (C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     @         C3A1*N1*(-P1Y + 2*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + 
+     @         (P1X - M1*(M1 - L1*N1)*P1X*RALPHA12 + 
+     @            M1*((L1 + M1*N1)*P1Y*RALPHA12 + P1Z*(-1 + N1**2*RALPHA12)))*S1)*
+     @       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     @         C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - 
+     @         M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 
       RETURN
       END
 
-! drij/dn1
+! DRIJ/DN1
 
-      DOUBLE PRECISION FUNCTION D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       D6=
-     @ rdist*((c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-     @         c3a1*l1*(-p1z + 2*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + (-(n1*p1x) + p1y + n1*
-     @             (l1**2*p1x + l1*m1*p1y - n1*p1y + m1*p1z + l1*n1*p1z)*ralpha12)*
-     @          s1)*(c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     @         c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     @         n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + 
-     @      (-(c2a1*n1*(n1*p1x - l1*p1z)*ralpha12) + 
-     @         c3a1*m1*(-p1z + 2*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + 
-     @         (-p1x - n1*p1y + n1*(l1*m1*p1x + n1*p1x + m1**2*p1y - l1*p1z + 
-     @               m1*n1*p1z)*ralpha12)*s1)*
-     @       (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     @         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-     @         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + 
-     @      (-(c3a1*(l1*p1x + m1*p1y + 2*n1*p1z)) + 
-     @         c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-     @         2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-     @         (-(n1*p1z) + (-(m1*n1*p1x) + l1*n12*p1x + l1*n1*p1y + m1*n12*p1y + 
-     @               n1*n12*p1z)*ralpha12)*s1)*
-     @       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     @         c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - 
-     @         m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+     @ RDIST*((C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     @         C3A1*L1*(-P1Z + 2*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + (-(N1*P1X) + P1Y + N1*
+     @             (L1**2*P1X + L1*M1*P1Y - N1*P1Y + M1*P1Z + L1*N1*P1Z)*RALPHA12)*
+     @          S1)*(C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     @         C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     @         N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + 
+     @      (-(C2A1*N1*(N1*P1X - L1*P1Z)*RALPHA12) + 
+     @         C3A1*M1*(-P1Z + 2*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + 
+     @         (-P1X - N1*P1Y + N1*(L1*M1*P1X + N1*P1X + M1**2*P1Y - L1*P1Z + 
+     @               M1*N1*P1Z)*RALPHA12)*S1)*
+     @       (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     @         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+     @         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + 
+     @      (-(C3A1*(L1*P1X + M1*P1Y + 2*N1*P1Z)) + 
+     @         C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     @         2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+     @         (-(N1*P1Z) + (-(M1*N1*P1X) + L1*N12*P1X + L1*N1*P1Y + M1*N12*P1Y + 
+     @               N1*N12*P1Z)*RALPHA12)*S1)*
+     @       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     @         C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - 
+     @         M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 
       RETURN
       END
 
-! drij/dx2
+! DRIJ/DX2
 
-      DOUBLE PRECISION FUNCTION D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       D7=
-     @   -rdist*(c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     @    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - n2*p2y*s2 + 
-     @    m2*p2z*s2 + x1 - x2)
+     @   -RDIST*(C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     @    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - N2*P2Y*S2 + 
+     @    M2*P2Z*S2 + X1 - X2)
 
       RETURN
       END
 
-! drij/dy2
+! DRIJ/DY2
 
-      DOUBLE PRECISION FUNCTION D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       D8=
-     @   -rdist*(c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     @    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + n2*p2x*s2 - 
-     @    l2*p2z*s2 + y1 - y2)
+     @   -RDIST*(C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     @    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + N2*P2X*S2 - 
+     @    L2*P2Z*S2 + Y1 - Y2)
 
       RETURN
       END
 
-! drij/dz2
+! DRIJ/DZ2
 
-      DOUBLE PRECISION FUNCTION D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       D9=
-     @   -rdist*(c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     @    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - m2*p2x*s2 + 
-     @    l2*p2y*s2 + z1 - z2)
+     @   -RDIST*(C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     @    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - M2*P2X*S2 + 
+     @    L2*P2Y*S2 + Z1 - Z2)
 
       RETURN
       END
 
-! drij/dl2
+! DRIJ/DL2
 
-      DOUBLE PRECISION FUNCTION DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       DA=
-     @         rdist*((c3a2*(2*l2*p2x + m2*p2y + n2*p2z - 
-     @            2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) - 
-     @         (l2*l22*p2x + l22*m2*p2y - l2*n2*p2y + l2*m2*p2z + l22*n2*p2z)*
-     @          ralpha22*s2 + l2*(-(c2a2*n2*p2y*ralpha22) + c2a2*m2*p2z*ralpha22 + 
-     @            p2x*s2))*(c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - 
-     @         c2a2*p2x + c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + 
-     @         (n1*p1y - m1*p1z)*s1 - n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + 
-     @      (-(c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22) + 
-     @         c3a2*m2*(p2x - 2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) - (-(l2*p2y) + p2z + l2*
-     @             (l2*m2*p2x + n2*p2x + m2**2*p2y - l2*p2z + m2*n2*p2z)*ralpha22)*
-     @          s2)*(c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     @         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-     @         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + 
-     @      (c2a2*l2*(-(m2*p2x) + l2*p2y)*ralpha22 + 
-     @         c3a2*n2*(p2x - 2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-     @    (p2y + l2*p2z - l2*(-(m2*p2x) + l2*n2*p2x + l2*p2y + m2*n2*p2y + n2**2*p2z)*ralpha22)*s2)*
-     @       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     @    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+     @         RDIST*((C3A2*(2*L2*P2X + M2*P2Y + N2*P2Z - 
+     @            2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) - 
+     @         (L2*L22*P2X + L22*M2*P2Y - L2*N2*P2Y + L2*M2*P2Z + L22*N2*P2Z)*
+     @          RALPHA22*S2 + L2*(-(C2A2*N2*P2Y*RALPHA22) + C2A2*M2*P2Z*RALPHA22 + 
+     @            P2X*S2))*(C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - 
+     @         C2A2*P2X + C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + 
+     @         (N1*P1Y - M1*P1Z)*S1 - N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + 
+     @      (-(C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22) + 
+     @         C3A2*M2*(P2X - 2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) - (-(L2*P2Y) + P2Z + L2*
+     @             (L2*M2*P2X + N2*P2X + M2**2*P2Y - L2*P2Z + M2*N2*P2Z)*RALPHA22)*
+     @          S2)*(C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     @         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+     @         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + 
+     @      (C2A2*L2*(-(M2*P2X) + L2*P2Y)*RALPHA22 + 
+     @         C3A2*N2*(P2X - 2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+     @    (P2Y + L2*P2Z - L2*(-(M2*P2X) + L2*N2*P2X + L2*P2Y + M2*N2*P2Y + N2**2*P2Z)*RALPHA22)*S2)*
+     @       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     @    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 
       RETURN
       END
 
-! drij/dm2
+! DRIJ/DM2
 
-      DOUBLE PRECISION FUNCTION DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       DB=
-     @ rdist*((c2a2*m2*(-(n2*p2y) + m2*p2z)*ralpha22 + 
-     @         c3a2*l2*(p2y - 2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-     @         (m2*p2x + p2z - m2*(l2**2*p2x + l2*m2*p2y - n2*p2y + m2*p2z + l2*n2*p2z)*ralpha22)*s2)*
-     @       (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     @         c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     @         n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + (c3a2*(l2*p2x + 2*m2*p2y + n2*p2z - 
-     @            2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) - 
-     @         (l2*m22*p2x + m2*n2*p2x + m2*m22*p2y - l2*m2*p2z + m22*n2*p2z)*
-     @          ralpha22*s2 + m2*(c2a2*(n2*p2x - l2*p2z)*ralpha22 + p2y*s2))*
-     @       (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     @         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-     @         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + (-(c2a2*m2*(m2*p2x - l2*p2y)*ralpha22) + 
-     @         c3a2*n2*(p2y - 2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-     @         (-p2x + m2*p2z - m2*(-(m2*p2x) + l2*n2*p2x + l2*p2y + m2*n2*p2y + 
-     @               n2**2*p2z)*ralpha22)*s2)*
-     @       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     @         c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - 
-     @         m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+     @ RDIST*((C2A2*M2*(-(N2*P2Y) + M2*P2Z)*RALPHA22 + 
+     @         C3A2*L2*(P2Y - 2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+     @         (M2*P2X + P2Z - M2*(L2**2*P2X + L2*M2*P2Y - N2*P2Y + M2*P2Z + L2*N2*P2Z)*RALPHA22)*S2)*
+     @       (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     @         C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     @         N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + (C3A2*(L2*P2X + 2*M2*P2Y + N2*P2Z - 
+     @            2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) - 
+     @         (L2*M22*P2X + M2*N2*P2X + M2*M22*P2Y - L2*M2*P2Z + M22*N2*P2Z)*
+     @          RALPHA22*S2 + M2*(C2A2*(N2*P2X - L2*P2Z)*RALPHA22 + P2Y*S2))*
+     @       (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     @         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+     @         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + (-(C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22) + 
+     @         C3A2*N2*(P2Y - 2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+     @         (-P2X + M2*P2Z - M2*(-(M2*P2X) + L2*N2*P2X + L2*P2Y + M2*N2*P2Y + 
+     @               N2**2*P2Z)*RALPHA22)*S2)*
+     @       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     @         C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - 
+     @         M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 
       RETURN
       END
 
-! drij/dn2
+! DRIJ/DN2
 
-      DOUBLE PRECISION FUNCTION DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
 
       DC=
-     @ rdist*((-(c2a2*n2*(n2*p2y - m2*p2z)*ralpha22) + 
-     @         c3a2*l2*(p2z - 2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-     @         (n2*p2x - p2y - n2*(l2**2*p2x + l2*m2*p2y - n2*p2y + m2*p2z + l2*n2*p2z)*ralpha22)*s2)*
-     @       (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     @         c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     @         n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + (c2a2*n2*(n2*p2x - l2*p2z)*ralpha22 + 
-     @         c3a2*m2*(p2z - 2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-     @         (p2x + n2*p2y - n2*(l2*m2*p2x + n2*p2x + m2**2*p2y - l2*p2z + m2*n2*p2z)*ralpha22)*s2)*
-     @       (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     @         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-     @         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + (c3a2*(l2*p2x + m2*p2y + 2*n2*p2z - 
-     @            2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-     @         (n2*(m2*p2x - l2*p2y) - n22*(l2*p2x + m2*p2y + n2*p2z))*ralpha22*
-     @          s2 + n2*(-(c2a2*m2*p2x*ralpha22) + c2a2*l2*p2y*ralpha22 + p2z*s2))*
-     @       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     @         c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - 
-     @         m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+     @ RDIST*((-(C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22) + 
+     @         C3A2*L2*(P2Z - 2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+     @         (N2*P2X - P2Y - N2*(L2**2*P2X + L2*M2*P2Y - N2*P2Y + M2*P2Z + L2*N2*P2Z)*RALPHA22)*S2)*
+     @       (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     @         C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     @         N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + (C2A2*N2*(N2*P2X - L2*P2Z)*RALPHA22 + 
+     @         C3A2*M2*(P2Z - 2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+     @         (P2X + N2*P2Y - N2*(L2*M2*P2X + N2*P2X + M2**2*P2Y - L2*P2Z + M2*N2*P2Z)*RALPHA22)*S2)*
+     @       (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     @         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+     @         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + (C3A2*(L2*P2X + M2*P2Y + 2*N2*P2Z - 
+     @            2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+     @         (N2*(M2*P2X - L2*P2Y) - N22*(L2*P2X + M2*P2Y + N2*P2Z))*RALPHA22*
+     @          S2 + N2*(-(C2A2*M2*P2X*RALPHA22) + C2A2*L2*P2Y*RALPHA22 + P2Z*S2))*
+     @       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     @         C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - 
+     @         M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 
        RETURN
        END
 
-! Second derivatives of R(i,j) with respect to rigid body coordinates.
+! SECOND DERIVATIVES OF R(I,J) WITH RESPECT TO RIGID BODY COORDINATES.
 
-       DOUBLE PRECISION FUNCTION DD11(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DOUBLE PRECISION FUNCTION DD11(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                                C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D1
 
-       DD11 = rdist*(1.0d0 -
-     1               D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD11 = RDIST*(1.0D0 -
+     1               D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)**2)
 
-       return
-      end FUNCTION DD11
+       RETURN
+      END FUNCTION DD11
 
-      DOUBLE PRECISION FUNCTION DD12(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD12(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D1, D2
 
-       DD12 = -rdist *
-     1        D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD12 = -RDIST *
+     1        D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1        D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
 
-       return
-      end FUNCTION DD12
+       RETURN
+      END FUNCTION DD12
 
-      DOUBLE PRECISION FUNCTION DD13(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD13(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D1, D3
 
-       DD13 = -rdist *
-     1        D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD13 = -RDIST *
+     1        D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1        D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
 
-       return
-      end FUNCTION DD13
+       RETURN
+      END FUNCTION DD13
 
-      DOUBLE PRECISION FUNCTION DD14(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD14(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D1, D4
 
-       DD14 = rdist*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1        c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1        2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-     1        l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1        l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) -
-     1        D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD14 = RDIST*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1        C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1        2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+     1        L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1        L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) -
+     1        D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1        D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD14
+       RETURN
+      END FUNCTION DD14
 
-      DOUBLE PRECISION FUNCTION DD15(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD15(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist      
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST      
        DOUBLE PRECISION D1, D5
        
-       DD15 = rdist*(-(c3a1*l1*p1y) + c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1        2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - p1z*s1 - 
-     1        m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1        l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) -
-     1        D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD15 = RDIST*(-(C3A1*L1*P1Y) + C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1        2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - P1Z*S1 - 
+     1        M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1        L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) -
+     1        D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1        D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD15
+       RETURN
+      END FUNCTION DD15
 
-      DOUBLE PRECISION FUNCTION DD16(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD16(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D1, D6
 
-       DD16 = rdist*(-(c3a1*l1*p1z) + c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1        2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + p1y*s1 - 
-     1        n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1        l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) -
-     1        D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD16 = RDIST*(-(C3A1*L1*P1Z) + C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1        2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + P1Y*S1 - 
+     1        N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1        L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) -
+     1        D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1        D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD16
+       RETURN
+      END FUNCTION DD16
 
-      DOUBLE PRECISION FUNCTION DD17(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD17(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D1, D7
 
-       DD17 = -rdist*(1.0d0 + 
-     1                D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD17 = -RDIST*(1.0D0 + 
+     1                D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                   C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1                D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1                D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                   C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22))
       
-       return
-      end FUNCTION DD17
+       RETURN
+      END FUNCTION DD17
 
-      DOUBLE PRECISION FUNCTION DD18(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD18(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D1, D8
 
-       DD18 = -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD18 = -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1         D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1         D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD18
+       RETURN
+      END FUNCTION DD18
 
-      DOUBLE PRECISION FUNCTION DD19(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD19(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D1, D9
 
-       DD19 = -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD19 = -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1         D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1         D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD19
+       RETURN
+      END FUNCTION DD19
 
-      DOUBLE PRECISION FUNCTION DD1A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD1A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D1, DA
 
-       DD1A = rdist*(c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1        c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1        2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-     1        l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1        l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) -
-     1        D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD1A = RDIST*(C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1        C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1        2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+     1        L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1        L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) -
+     1        D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1        DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD1A
+       RETURN
+      END FUNCTION DD1A
 
-      DOUBLE PRECISION FUNCTION DD1B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD1B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D1, DB
 
-       DD1B = rdist*(c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1        2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + p2z*s2 + 
-     1        m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1        l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) -
-     1        D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD1B = RDIST*(C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1        2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + P2Z*S2 + 
+     1        M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1        L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) -
+     1        D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1        DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD1B
+       RETURN
+      END FUNCTION DD1B
 
-      DOUBLE PRECISION FUNCTION DD1C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD1C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D1, DC
 
-       DD1C = rdist*(c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1        2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - p2y*s2 + 
-     1        n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1        l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) -
-     1        D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD1C = RDIST*(C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1        2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - P2Y*S2 + 
+     1        N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1        L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) -
+     1        D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1        DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD1C
+       RETURN
+      END FUNCTION DD1C
 
-      DOUBLE PRECISION FUNCTION DD22(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD22(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
       IMPLICIT NONE
       DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-      DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+      DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
       DOUBLE PRECISION D2
 
-      DD22 = rdist*(1.0d0 -
-     1              D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DD22 = RDIST*(1.0D0 -
+     1              D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)**2)
 
-      return
-      end FUNCTION DD22
+      RETURN
+      END FUNCTION DD22
 
-      DOUBLE PRECISION FUNCTION DD23(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD23(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D2, D3
 
-       DD23 = -rdist *
-     1        D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD23 = -RDIST *
+     1        D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1        D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
 
-       return
-      end FUNCTION DD23
+       RETURN
+      END FUNCTION DD23
 
-      DOUBLE PRECISION FUNCTION DD24(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD24(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D2, D4
 
       DD24 
-     1 = rdist*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1 2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + p1z*s1 - 
-     1 l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1 l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1 2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + P1Z*S1 - 
+     1 L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1 L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD24
+       RETURN
+      END FUNCTION DD24
 
-      DOUBLE PRECISION FUNCTION DD25(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD25(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D2, D5
 
       DD25  
-     1 = rdist*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1 c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1 2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-     1 m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1 m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1 C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1 2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+     1 M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1 M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD25
+       RETURN
+      END FUNCTION DD25
 
-      DOUBLE PRECISION FUNCTION DD26(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD26(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D2, D6
 
       DD26  
-     1 = rdist*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1 2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - n1*p1y*s1 - 
-     1 n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1 m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1 2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - N1*P1Y*S1 - 
+     1 N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1 M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD26
+       RETURN
+      END FUNCTION DD26
 
-      DOUBLE PRECISION FUNCTION DD27(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD27(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D2, D7
 
-       DD27 = -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD27 = -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1         D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1         D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD27
+       RETURN
+      END FUNCTION DD27
 
-      DOUBLE PRECISION FUNCTION DD28(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD28(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D2, D8
 
-       DD28 = -rdist*(1.0d0 + 
-     1                D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD28 = -RDIST*(1.0D0 + 
+     1                D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                   C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1                D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1                D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                   C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22))
       
-       return
-      end FUNCTION DD28
+       RETURN
+      END FUNCTION DD28
 
-      DOUBLE PRECISION FUNCTION DD29(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD29(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D2, D9
 
-       DD29 = -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD29 = -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1         D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1         D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD29
+       RETURN
+      END FUNCTION DD29
 
-      DOUBLE PRECISION FUNCTION DD2A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD2A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D2, DA
 
       DD2A  
-     1 = rdist*(c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1 2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - p2z*s2 + 
-     1 l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1 l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1 2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - P2Z*S2 + 
+     1 L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1 L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD2A
+       RETURN
+      END FUNCTION DD2A
 
-      DOUBLE PRECISION FUNCTION DD2B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD2B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D2, DB
 
       DD2B  
-     1 = rdist*(c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1 c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1 2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-     1 m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1 m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1 C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1 2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+     1 M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1 M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD2B
+       RETURN
+      END FUNCTION DD2B
 
-      DOUBLE PRECISION FUNCTION DD2C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD2C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D2, DC
 
       DD2C  
-     1 = rdist*(c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1 2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + n2*p2y*s2 + 
-     1 n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1 m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1 2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + N2*P2Y*S2 + 
+     1 N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1 M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD2C
+       RETURN
+      END FUNCTION DD2C
 
-      DOUBLE PRECISION FUNCTION DD33(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD33(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D3
 
-       DD33 = rdist*(1.0d0 -
-     1               D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD33 = RDIST*(1.0D0 -
+     1               D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)**2)
 
-       return
-      end FUNCTION DD33
+       RETURN
+      END FUNCTION DD33
 
-      DOUBLE PRECISION FUNCTION DD34(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD34(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D3, D4
 
       DD34  
-     1 = rdist*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1 2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - l1*p1z*s1 - 
-     1 l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1 l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1 2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - L1*P1Z*S1 - 
+     1 L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1 L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD34
+       RETURN
+      END FUNCTION DD34
 
-      DOUBLE PRECISION FUNCTION DD35 (p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD35 (P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D3, D5
 
       DD35  
-     1 = rdist*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1 2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - m1*p1z*s1 - 
-     1 m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1 m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1 2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - M1*P1Z*S1 - 
+     1 M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1 M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD35
+       RETURN
+      END FUNCTION DD35
 
-      DOUBLE PRECISION FUNCTION DD36(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD36(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D3, D6
 
       DD36  
-     1 = rdist*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1 c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1 2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-     1 n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1 n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1 C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1 2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+     1 N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1 N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD36
+       RETURN
+      END FUNCTION DD36
 
-      DOUBLE PRECISION FUNCTION DD37(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD37(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D3, D7
 
-       DD37 = -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD37 = -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1         D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1         D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD37
+       RETURN
+      END FUNCTION DD37
 
-      DOUBLE PRECISION FUNCTION DD38(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD38(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D3, D8
 
-       DD38 = -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD38 = -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1         D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1         D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1            C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD38
+       RETURN
+      END FUNCTION DD38
 
-      DOUBLE PRECISION FUNCTION DD39(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD39(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D3, D9
 
-       DD39 = -rdist*(1.0d0 + 
-     1                D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD39 = -RDIST*(1.0D0 + 
+     1                D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                   C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1                D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1                D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                   C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22))
       
-       return
-      end FUNCTION DD39
+       RETURN
+      END FUNCTION DD39
 
-      DOUBLE PRECISION FUNCTION DD3A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD3A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D3, DA
 
       DD3A  
-     1 = rdist*(c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1 2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + l2*p2z*s2 + 
-     1 l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1 l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1 2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + L2*P2Z*S2 + 
+     1 L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1 L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD3A
+       RETURN
+      END FUNCTION DD3A
 
-      DOUBLE PRECISION FUNCTION DD3B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD3B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D3, DB
 
       DD3B  
-     1 = rdist*(c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1 2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + m2*p2z*s2 + 
-     1 m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1 m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1 2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + M2*P2Z*S2 + 
+     1 M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1 M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD3B
+       RETURN
+      END FUNCTION DD3B
 
-      DOUBLE PRECISION FUNCTION DD3C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD3C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D3, DC
 
       DD3C  
-     1 = rdist*(c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1 c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1 2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-     1 n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1 n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = RDIST*(C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1 C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1 2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+     1 N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1 N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD3C
+       RETURN
+      END FUNCTION DD3C
 
-      DOUBLE PRECISION FUNCTION DD44(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD44(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D4
 
       DD44  
-     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1     c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1     2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-     1     l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1     l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1     2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-     1     p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1     l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1     2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-     1     l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1     l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-     1 2*(-2*c3a1*p1x - (3*c2a1*l12*(n1*p1y - m1*p1z))*(ralpha12**2) + 
-     1    (c2a1*l1**3*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l1**3*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    c2a1*l12*p1x*ralpha12 + 4*c3a1*l12*p1x*ralpha12 + 
-     1    c2a1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    6*c3a1*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 + 
-     1    (3*l12*(n1*p1y - m1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*l1**3*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    3*l12*p1x*ralpha12*s1 - (n1*p1y - m1*p1z)*ralpha12*s1 - 
-     1    l12*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    3*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*((-3*c2a1*l12*(-(n1*p1x) + l1*p1z))*(ralpha12**2) + 
-     1    (c2a1*l12*m1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l12*m1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) + 
-     1    4*c3a1*l1*m1*p1x*ralpha12 - c2a1*l12*p1y*ralpha12 + 
-     1    2*c2a1*l1*p1z*ralpha12 + c2a1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 + 
-     1    (3*l12*(-(n1*p1x) + l1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*l12*m1*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    2*l1*m1*p1x*ralpha12*s1 + l12*p1y*ralpha12*s1 - 
-     1    2*l1*p1z*ralpha12*s1 - (-(n1*p1x) + l1*p1z)*ralpha12*s1 - 
-     1    l12*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*((-3*c2a1*l12*(m1*p1x - l1*p1y))*(ralpha12**2) + 
-     1    (c2a1*l12*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l12*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) + 
-     1    4*c3a1*l1*n1*p1x*ralpha12 - 2*c2a1*l1*p1y*ralpha12 + 
-     1    c2a1*(m1*p1x - l1*p1y)*ralpha12 - c2a1*l12*p1z*ralpha12 + 
-     1    2*c3a1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-     1    (3*l12*(m1*p1x - l1*p1y)*s1)*(ralpha12**2) - p1z*s1 - 
-     1    (5*l12*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    2*l1*n1*p1x*ralpha12*s1 + 2*l1*p1y*ralpha12*s1 - 
-     1    (m1*p1x - l1*p1y)*ralpha12*s1 - 
-     1    l12*(m1*p1x - l1*p1y)*ralpha12*s1 + l12*p1z*ralpha12*s1 + 
-     1    n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1     C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1     2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+     1     L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1     L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1     2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+     1     P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1     L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1     2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+     1     L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1     L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+     1 2*(-2*C3A1*P1X - (3*C2A1*L12*(N1*P1Y - M1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*L1**3*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L1**3*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    C2A1*L12*P1X*RALPHA12 + 4*C3A1*L12*P1X*RALPHA12 + 
+     1    C2A1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    6*C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 + 
+     1    (3*L12*(N1*P1Y - M1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*L1**3*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    3*L12*P1X*RALPHA12*S1 - (N1*P1Y - M1*P1Z)*RALPHA12*S1 - 
+     1    L12*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    3*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*((-3*C2A1*L12*(-(N1*P1X) + L1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) + 
+     1    4*C3A1*L1*M1*P1X*RALPHA12 - C2A1*L12*P1Y*RALPHA12 + 
+     1    2*C2A1*L1*P1Z*RALPHA12 + C2A1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 + 
+     1    (3*L12*(-(N1*P1X) + L1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    2*L1*M1*P1X*RALPHA12*S1 + L12*P1Y*RALPHA12*S1 - 
+     1    2*L1*P1Z*RALPHA12*S1 - (-(N1*P1X) + L1*P1Z)*RALPHA12*S1 - 
+     1    L12*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*((-3*C2A1*L12*(M1*P1X - L1*P1Y))*(RALPHA12**2) + 
+     1    (C2A1*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) + 
+     1    4*C3A1*L1*N1*P1X*RALPHA12 - 2*C2A1*L1*P1Y*RALPHA12 + 
+     1    C2A1*(M1*P1X - L1*P1Y)*RALPHA12 - C2A1*L12*P1Z*RALPHA12 + 
+     1    2*C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+     1    (3*L12*(M1*P1X - L1*P1Y)*S1)*(RALPHA12**2) - P1Z*S1 - 
+     1    (5*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    2*L1*N1*P1X*RALPHA12*S1 + 2*L1*P1Y*RALPHA12*S1 - 
+     1    (M1*P1X - L1*P1Y)*RALPHA12*S1 - 
+     1    L12*(M1*P1X - L1*P1Y)*RALPHA12*S1 + L12*P1Z*RALPHA12*S1 + 
+     1    N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD44
+       RETURN
+      END FUNCTION DD44
 
-      DOUBLE PRECISION FUNCTION DD45(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD45(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D4, D5
 
       DD45  
-     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-     1    l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (-(c3a1*l1*p1y) + c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-     1    p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-     1    p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-     1    m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-     1    l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-     1    m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-     1 2*(-(c3a1*p1y) - (3*c2a1*l1*m1*(n1*p1y - m1*p1z))*(ralpha12**2) + 
-     1    (c2a1*l12*m1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l12*m1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    c2a1*l1*m1*p1x*ralpha12 + 2*c3a1*l1*m1*p1x*ralpha12 + 
-     1    2*c3a1*l12*p1y*ralpha12 - c2a1*l1*p1z*ralpha12 + 
-     1    2*c3a1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-     1    (3*l1*m1*(n1*p1y - m1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*l12*m1*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    2*l1*m1*p1x*ralpha12*s1 + l12*p1y*ralpha12*s1 + 
-     1    l1*p1z*ralpha12*s1 - l1*m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*(-(c3a1*p1x) - (3*c2a1*l1*m1*(-(n1*p1x) + l1*p1z))*(ralpha12**2) + 
-     1    (c2a1*l1*m12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l1*m12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) + 
-     1    2*c3a1*m12*p1x*ralpha12 - c2a1*l1*m1*p1y*ralpha12 + 
-     1    2*c3a1*l1*m1*p1y*ralpha12 + c2a1*m1*p1z*ralpha12 + 
-     1    2*c3a1*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-     1    (3*l1*m1*(-(n1*p1x) + l1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*l1*m12*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    m12*p1x*ralpha12*s1 + 2*l1*m1*p1y*ralpha12*s1 - 
-     1    m1*p1z*ralpha12*s1 - l1*m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*((-3*c2a1*l1*m1*(m1*p1x - l1*p1y))*(ralpha12**2) + 
-     1    (c2a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) + 
-     1    c2a1*l1*p1x*ralpha12 + 2*c3a1*m1*n1*p1x*ralpha12 - 
-     1    c2a1*m1*p1y*ralpha12 + 2*c3a1*l1*n1*p1y*ralpha12 - 
-     1    c2a1*l1*m1*p1z*ralpha12 + 
-     1    (3*l1*m1*(m1*p1x - l1*p1y)*s1)*(ralpha12**2) - 
-     1    (5*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) - 
-     1    l1*p1x*ralpha12*s1 + m1*n1*p1x*ralpha12*s1 + m1*p1y*ralpha12*s1 + 
-     1    l1*n1*p1y*ralpha12*s1 - l1*m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    l1*m1*p1z*ralpha12*s1)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+     1    L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (-(C3A1*L1*P1Y) + C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+     1    P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+     1    P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+     1    M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+     1    L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+     1    M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+     1 2*(-(C3A1*P1Y) - (3*C2A1*L1*M1*(N1*P1Y - M1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    C2A1*L1*M1*P1X*RALPHA12 + 2*C3A1*L1*M1*P1X*RALPHA12 + 
+     1    2*C3A1*L12*P1Y*RALPHA12 - C2A1*L1*P1Z*RALPHA12 + 
+     1    2*C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+     1    (3*L1*M1*(N1*P1Y - M1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    2*L1*M1*P1X*RALPHA12*S1 + L12*P1Y*RALPHA12*S1 + 
+     1    L1*P1Z*RALPHA12*S1 - L1*M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*(-(C3A1*P1X) - (3*C2A1*L1*M1*(-(N1*P1X) + L1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) + 
+     1    2*C3A1*M12*P1X*RALPHA12 - C2A1*L1*M1*P1Y*RALPHA12 + 
+     1    2*C3A1*L1*M1*P1Y*RALPHA12 + C2A1*M1*P1Z*RALPHA12 + 
+     1    2*C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+     1    (3*L1*M1*(-(N1*P1X) + L1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    M12*P1X*RALPHA12*S1 + 2*L1*M1*P1Y*RALPHA12*S1 - 
+     1    M1*P1Z*RALPHA12*S1 - L1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*((-3*C2A1*L1*M1*(M1*P1X - L1*P1Y))*(RALPHA12**2) + 
+     1    (C2A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) + 
+     1    C2A1*L1*P1X*RALPHA12 + 2*C3A1*M1*N1*P1X*RALPHA12 - 
+     1    C2A1*M1*P1Y*RALPHA12 + 2*C3A1*L1*N1*P1Y*RALPHA12 - 
+     1    C2A1*L1*M1*P1Z*RALPHA12 + 
+     1    (3*L1*M1*(M1*P1X - L1*P1Y)*S1)*(RALPHA12**2) - 
+     1    (5*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) - 
+     1    L1*P1X*RALPHA12*S1 + M1*N1*P1X*RALPHA12*S1 + M1*P1Y*RALPHA12*S1 + 
+     1    L1*N1*P1Y*RALPHA12*S1 - L1*M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    L1*M1*P1Z*RALPHA12*S1)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*rdist
+     1  D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*RDIST
 
-       return
-      end FUNCTION DD45
+       RETURN
+      END FUNCTION DD45
 
-      DOUBLE PRECISION FUNCTION DD46(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD46(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D4, D6
 
       DD46  
-     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-     1    l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (-(c3a1*l1*p1z) + c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-     1    p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-     1    p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-     1    n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-     1    l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-     1    n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-     1 2*(-(c3a1*p1z) - (3*c2a1*l1*n1*(n1*p1y - m1*p1z))*(ralpha12**2) + 
-     1    (c2a1*l12*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l12*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    c2a1*l1*n1*p1x*ralpha12 + 2*c3a1*l1*n1*p1x*ralpha12 + 
-     1    c2a1*l1*p1y*ralpha12 + 2*c3a1*l12*p1z*ralpha12 + 
-     1    2*c3a1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-     1    (3*l1*n1*(n1*p1y - m1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*l12*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    2*l1*n1*p1x*ralpha12*s1 - l1*p1y*ralpha12*s1 + 
-     1    l12*p1z*ralpha12*s1 - l1*n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*((-3*c2a1*l1*n1*(-(n1*p1x) + l1*p1z))*(ralpha12**2) + 
-     1    (c2a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    c2a1*l1*p1x*ralpha12 + 2*c3a1*m1*n1*p1x*ralpha12 - 
-     1    c2a1*l1*n1*p1y*ralpha12 + 2*c3a1*l1*m1*p1z*ralpha12 + 
-     1    c2a1*n1*p1z*ralpha12 + 
-     1    (3*l1*n1*(-(n1*p1x) + l1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    l1*p1x*ralpha12*s1 + m1*n1*p1x*ralpha12*s1 + 
-     1    l1*n1*p1y*ralpha12*s1 + l1*m1*p1z*ralpha12*s1 - 
-     1    n1*p1z*ralpha12*s1 - l1*n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*(-(c3a1*p1x) - (3*c2a1*l1*n1*(m1*p1x - l1*p1y))*(ralpha12**2) + 
-     1    (c2a1*l1*n12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l1*n12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) + 
-     1    2*c3a1*n12*p1x*ralpha12 - c2a1*n1*p1y*ralpha12 - 
-     1    c2a1*l1*n1*p1z*ralpha12 + 2*c3a1*l1*n1*p1z*ralpha12 + 
-     1    2*c3a1*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-     1    (3*l1*n1*(m1*p1x - l1*p1y)*s1)*(ralpha12**2) - 
-     1    (5*l1*n12*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    n12*p1x*ralpha12*s1 + n1*p1y*ralpha12*s1 - 
-     1    l1*n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 2*l1*n1*p1z*ralpha12*s1 + 
-     1    l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+     1    L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (-(C3A1*L1*P1Z) + C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+     1    P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+     1    P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+     1    N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+     1    L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+     1    N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+     1 2*(-(C3A1*P1Z) - (3*C2A1*L1*N1*(N1*P1Y - M1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    C2A1*L1*N1*P1X*RALPHA12 + 2*C3A1*L1*N1*P1X*RALPHA12 + 
+     1    C2A1*L1*P1Y*RALPHA12 + 2*C3A1*L12*P1Z*RALPHA12 + 
+     1    2*C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+     1    (3*L1*N1*(N1*P1Y - M1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    2*L1*N1*P1X*RALPHA12*S1 - L1*P1Y*RALPHA12*S1 + 
+     1    L12*P1Z*RALPHA12*S1 - L1*N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*((-3*C2A1*L1*N1*(-(N1*P1X) + L1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    C2A1*L1*P1X*RALPHA12 + 2*C3A1*M1*N1*P1X*RALPHA12 - 
+     1    C2A1*L1*N1*P1Y*RALPHA12 + 2*C3A1*L1*M1*P1Z*RALPHA12 + 
+     1    C2A1*N1*P1Z*RALPHA12 + 
+     1    (3*L1*N1*(-(N1*P1X) + L1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    L1*P1X*RALPHA12*S1 + M1*N1*P1X*RALPHA12*S1 + 
+     1    L1*N1*P1Y*RALPHA12*S1 + L1*M1*P1Z*RALPHA12*S1 - 
+     1    N1*P1Z*RALPHA12*S1 - L1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*(-(C3A1*P1X) - (3*C2A1*L1*N1*(M1*P1X - L1*P1Y))*(RALPHA12**2) + 
+     1    (C2A1*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) + 
+     1    2*C3A1*N12*P1X*RALPHA12 - C2A1*N1*P1Y*RALPHA12 - 
+     1    C2A1*L1*N1*P1Z*RALPHA12 + 2*C3A1*L1*N1*P1Z*RALPHA12 + 
+     1    2*C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+     1    (3*L1*N1*(M1*P1X - L1*P1Y)*S1)*(RALPHA12**2) - 
+     1    (5*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    N12*P1X*RALPHA12*S1 + N1*P1Y*RALPHA12*S1 - 
+     1    L1*N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 2*L1*N1*P1Z*RALPHA12*S1 + 
+     1    L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD46
+       RETURN
+      END FUNCTION DD46
 
-      DOUBLE PRECISION FUNCTION DD47(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD47(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D4, D7
 
       DD47  
-     1 = -(rdist*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1 c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1 2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-     1 l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1 l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1 C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1 2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+     1 L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1 L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD47
+       RETURN
+      END FUNCTION DD47
 
-      DOUBLE PRECISION FUNCTION DD48(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD48(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D4, D8
 
       DD48  
-     1 = -(rdist*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1 2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-     1 p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1 l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1 2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+     1 P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1 L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD48
+       RETURN
+      END FUNCTION DD48
 
-      DOUBLE PRECISION FUNCTION DD49(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD49(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D4, D9
 
       DD49  
-     1 = -(rdist*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1 2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-     1 l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1 l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1 2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+     1 L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1 L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD49
+       RETURN
+      END FUNCTION DD49
 
-      DOUBLE PRECISION FUNCTION DD4A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD4A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D4, DA
 
       DD4A  
-     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-     1    l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-     1    l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-     1    p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-     1    p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-     1    l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-     1    l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+     1    L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+     1    L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+     1    P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+     1    P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+     1    L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+     1    L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD4A
+       RETURN
+      END FUNCTION DD4A
 
-      DOUBLE PRECISION FUNCTION DD4B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD4B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D4, DB
 
       DD4B  
-     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-     1    l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-     1    p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-     1    p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-     1    m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-     1    l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-     1    m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+     1    L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+     1    P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+     1    P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+     1    M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+     1    L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+     1    M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD4B
+       RETURN
+      END FUNCTION DD4B
 
-      DOUBLE PRECISION FUNCTION DD4C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD4C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D4, DC
 
       DD4C  
-     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-     1    l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-     1    p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-     1    p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-     1    n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-     1    l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-     1    n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+     1    L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+     1    P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+     1    P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+     1    N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+     1    L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+     1    N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD4C
+       RETURN
+      END FUNCTION DD4C
 
-      DOUBLE PRECISION FUNCTION DD55(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD55(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D5
 
       DD55  
-     1 = (rdist*(2*(-(c3a1*l1*p1y) + 
-     1     c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1     2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-     1     p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1     l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-     1 2*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1     c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1     2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-     1     m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1     m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-     1 2*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1     2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-     1     m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1     m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-     1 2*((-3*c2a1*m12*(n1*p1y - m1*p1z))*(ralpha12**2) + 
-     1    (c2a1*l1*m12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l1*m12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    c2a1*m12*p1x*ralpha12 + 4*c3a1*l1*m1*p1y*ralpha12 - 
-     1    2*c2a1*m1*p1z*ralpha12 + c2a1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 + 
-     1    (3*m12*(n1*p1y - m1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*l1*m12*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    m12*p1x*ralpha12*s1 + 2*l1*m1*p1y*ralpha12*s1 + 
-     1    2*m1*p1z*ralpha12*s1 - (n1*p1y - m1*p1z)*ralpha12*s1 - 
-     1    m12*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*(-2*c3a1*p1y - (3*c2a1*m12*(-(n1*p1x) + l1*p1z))*(ralpha12**2) + 
-     1    (c2a1*m1**3*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*m1**3*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    c2a1*m12*p1y*ralpha12 + 4*c3a1*m12*p1y*ralpha12 + 
-     1    c2a1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    6*c3a1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 + 
-     1    (3*m12*(-(n1*p1x) + l1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*m1**3*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    3*m12*p1y*ralpha12*s1 - (-(n1*p1x) + l1*p1z)*ralpha12*s1 - 
-     1    m12*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    3*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*((-3*c2a1*m12*(m1*p1x - l1*p1y))*(ralpha12**2) + 
-     1    (c2a1*m12*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*m12*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) + 
-     1    2*c2a1*m1*p1x*ralpha12 + 4*c3a1*m1*n1*p1y*ralpha12 + 
-     1    c2a1*(m1*p1x - l1*p1y)*ralpha12 - c2a1*m12*p1z*ralpha12 + 
-     1    2*c3a1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-     1    (3*m12*(m1*p1x - l1*p1y)*s1)*(ralpha12**2) - p1z*s1 - 
-     1    (5*m12*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) - 
-     1    2*m1*p1x*ralpha12*s1 + 2*m1*n1*p1y*ralpha12*s1 - 
-     1    (m1*p1x - l1*p1y)*ralpha12*s1 - 
-     1    m12*(m1*p1x - l1*p1y)*ralpha12*s1 + m12*p1z*ralpha12*s1 + 
-     1    n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1Y) + 
+     1     C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1     2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+     1     P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1     L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+     1 2*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1     C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1     2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+     1     M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1     M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+     1 2*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1     2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+     1     M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1     M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+     1 2*((-3*C2A1*M12*(N1*P1Y - M1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    C2A1*M12*P1X*RALPHA12 + 4*C3A1*L1*M1*P1Y*RALPHA12 - 
+     1    2*C2A1*M1*P1Z*RALPHA12 + C2A1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 + 
+     1    (3*M12*(N1*P1Y - M1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    M12*P1X*RALPHA12*S1 + 2*L1*M1*P1Y*RALPHA12*S1 + 
+     1    2*M1*P1Z*RALPHA12*S1 - (N1*P1Y - M1*P1Z)*RALPHA12*S1 - 
+     1    M12*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*(-2*C3A1*P1Y - (3*C2A1*M12*(-(N1*P1X) + L1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*M1**3*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*M1**3*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    C2A1*M12*P1Y*RALPHA12 + 4*C3A1*M12*P1Y*RALPHA12 + 
+     1    C2A1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    6*C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 + 
+     1    (3*M12*(-(N1*P1X) + L1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*M1**3*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    3*M12*P1Y*RALPHA12*S1 - (-(N1*P1X) + L1*P1Z)*RALPHA12*S1 - 
+     1    M12*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    3*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*((-3*C2A1*M12*(M1*P1X - L1*P1Y))*(RALPHA12**2) + 
+     1    (C2A1*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) + 
+     1    2*C2A1*M1*P1X*RALPHA12 + 4*C3A1*M1*N1*P1Y*RALPHA12 + 
+     1    C2A1*(M1*P1X - L1*P1Y)*RALPHA12 - C2A1*M12*P1Z*RALPHA12 + 
+     1    2*C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+     1    (3*M12*(M1*P1X - L1*P1Y)*S1)*(RALPHA12**2) - P1Z*S1 - 
+     1    (5*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) - 
+     1    2*M1*P1X*RALPHA12*S1 + 2*M1*N1*P1Y*RALPHA12*S1 - 
+     1    (M1*P1X - L1*P1Y)*RALPHA12*S1 - 
+     1    M12*(M1*P1X - L1*P1Y)*RALPHA12*S1 + M12*P1Z*RALPHA12*S1 + 
+     1    N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD55
+       RETURN
+      END FUNCTION DD55
 
-      DOUBLE PRECISION FUNCTION DD56(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD56(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D5, D6
 
       DD56  
-     1 = (rdist*(2*(-(c3a1*l1*p1y) + 
-     1    c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-     1    p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (-(c3a1*l1*p1z) + c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-     1    p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-     1 2*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-     1    m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-     1    n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-     1 2*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-     1    m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-     1    n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-     1 2*((-3*c2a1*m1*n1*(n1*p1y - m1*p1z))*(ralpha12**2) + 
-     1    (c2a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    c2a1*m1*n1*p1x*ralpha12 + c2a1*m1*p1y*ralpha12 + 
-     1    2*c3a1*l1*n1*p1y*ralpha12 + 2*c3a1*l1*m1*p1z*ralpha12 - 
-     1    c2a1*n1*p1z*ralpha12 + 
-     1    (3*m1*n1*(n1*p1y - m1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    m1*n1*p1x*ralpha12*s1 - m1*p1y*ralpha12*s1 + 
-     1    l1*n1*p1y*ralpha12*s1 + l1*m1*p1z*ralpha12*s1 + 
-     1    n1*p1z*ralpha12*s1 - m1*n1*(n1*p1y - m1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*(-(c3a1*p1z) - (3*c2a1*m1*n1*(-(n1*p1x) + l1*p1z))*(ralpha12**2) + 
-     1    (c2a1*m12*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*m12*n1*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    c2a1*m1*p1x*ralpha12 - c2a1*m1*n1*p1y*ralpha12 + 
-     1    2*c3a1*m1*n1*p1y*ralpha12 + 2*c3a1*m12*p1z*ralpha12 + 
-     1    2*c3a1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-     1    (3*m1*n1*(-(n1*p1x) + l1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*m12*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    m1*p1x*ralpha12*s1 + 2*m1*n1*p1y*ralpha12*s1 + 
-     1    m12*p1z*ralpha12*s1 - m1*n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*(-(c3a1*p1y) - (3*c2a1*m1*n1*(m1*p1x - l1*p1y))*(ralpha12**2) + 
-     1    (c2a1*m1*n12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*m1*n12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) + 
-     1    c2a1*n1*p1x*ralpha12 + 2*c3a1*n12*p1y*ralpha12 - 
-     1    c2a1*m1*n1*p1z*ralpha12 + 2*c3a1*m1*n1*p1z*ralpha12 + 
-     1    2*c3a1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-     1    (3*m1*n1*(m1*p1x - l1*p1y)*s1)*(ralpha12**2) - 
-     1    (5*m1*n12*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) - 
-     1    n1*p1x*ralpha12*s1 + n12*p1y*ralpha12*s1 - 
-     1    m1*n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 2*m1*n1*p1z*ralpha12*s1 + 
-     1    m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1Y) + 
+     1    C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+     1    P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (-(C3A1*L1*P1Z) + C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+     1    P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+     1 2*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+     1    M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+     1    N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+     1 2*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+     1    M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+     1    N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+     1 2*((-3*C2A1*M1*N1*(N1*P1Y - M1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    C2A1*M1*N1*P1X*RALPHA12 + C2A1*M1*P1Y*RALPHA12 + 
+     1    2*C3A1*L1*N1*P1Y*RALPHA12 + 2*C3A1*L1*M1*P1Z*RALPHA12 - 
+     1    C2A1*N1*P1Z*RALPHA12 + 
+     1    (3*M1*N1*(N1*P1Y - M1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    M1*N1*P1X*RALPHA12*S1 - M1*P1Y*RALPHA12*S1 + 
+     1    L1*N1*P1Y*RALPHA12*S1 + L1*M1*P1Z*RALPHA12*S1 + 
+     1    N1*P1Z*RALPHA12*S1 - M1*N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*(-(C3A1*P1Z) - (3*C2A1*M1*N1*(-(N1*P1X) + L1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    C2A1*M1*P1X*RALPHA12 - C2A1*M1*N1*P1Y*RALPHA12 + 
+     1    2*C3A1*M1*N1*P1Y*RALPHA12 + 2*C3A1*M12*P1Z*RALPHA12 + 
+     1    2*C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+     1    (3*M1*N1*(-(N1*P1X) + L1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    M1*P1X*RALPHA12*S1 + 2*M1*N1*P1Y*RALPHA12*S1 + 
+     1    M12*P1Z*RALPHA12*S1 - M1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*(-(C3A1*P1Y) - (3*C2A1*M1*N1*(M1*P1X - L1*P1Y))*(RALPHA12**2) + 
+     1    (C2A1*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) + 
+     1    C2A1*N1*P1X*RALPHA12 + 2*C3A1*N12*P1Y*RALPHA12 - 
+     1    C2A1*M1*N1*P1Z*RALPHA12 + 2*C3A1*M1*N1*P1Z*RALPHA12 + 
+     1    2*C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+     1    (3*M1*N1*(M1*P1X - L1*P1Y)*S1)*(RALPHA12**2) - 
+     1    (5*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) - 
+     1    N1*P1X*RALPHA12*S1 + N12*P1Y*RALPHA12*S1 - 
+     1    M1*N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 2*M1*N1*P1Z*RALPHA12*S1 + 
+     1    M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD56
+       RETURN
+      END FUNCTION DD56
 
-      DOUBLE PRECISION FUNCTION DD57(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD57(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D5, D7
 
       DD57  
-     1 = -(rdist*(-(c3a1*l1*p1y) + c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1 2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-     1 p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1 l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(-(C3A1*L1*P1Y) + C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1 2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+     1 P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1 L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD57
+       RETURN
+      END FUNCTION DD57
 
-      DOUBLE PRECISION FUNCTION DD58(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD58(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D5, D8
 
       DD58  
-     1 = -(rdist*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1 c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1 2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-     1 m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1 m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1 C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1 2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+     1 M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1 M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD58
+       RETURN
+      END FUNCTION DD58
 
-      DOUBLE PRECISION FUNCTION DD59(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD59(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D5, D9
 
       DD59  
-     1 = -(rdist*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1 2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-     1 m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1 m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1 2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+     1 M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1 M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD59
+       RETURN
+      END FUNCTION DD59
 
-      DOUBLE PRECISION FUNCTION DD5A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD5A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D5, DA
 
       DD5A  
-     1 = (rdist*(2*(-(c3a1*l1*p1y) + 
-     1    c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-     1    p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-     1    l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-     1    m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-     1    p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-     1    m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-     1    l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1Y) + 
+     1    C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+     1    P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+     1    L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+     1    M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+     1    P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+     1    M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+     1    L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD5A
+       RETURN
+      END FUNCTION DD5A
 
-      DOUBLE PRECISION FUNCTION DD5B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD5B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D5, DB
 
       DD5B  
-     1 = (rdist*(2*(-(c3a1*l1*p1y) + 
-     1    c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-     1    p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-     1    p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-     1    m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-     1    m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-     1    m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-     1    m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1Y) + 
+     1    C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+     1    P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+     1    P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+     1    M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+     1    M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+     1    M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+     1    M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD5B
+       RETURN
+      END FUNCTION DD5B
 
-      DOUBLE PRECISION FUNCTION DD5C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD5C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D5, DC
 
       DD5C  
-     1 = (rdist*(2*(-(c3a1*l1*p1y) + 
-     1    c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-     1    p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-     1    p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-     1    m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-     1    n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-     1    m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-     1    n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1Y) + 
+     1    C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+     1    P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+     1    P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+     1    M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+     1    N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+     1    M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+     1    N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD5C
+       RETURN
+      END FUNCTION DD5C
 
-      DOUBLE PRECISION FUNCTION DD66(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD66(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D6
 
       DD66  
-     1 = (rdist*(2*(-(c3a1*l1*p1z) + 
-     1     c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1     2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-     1     p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1     l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-     1 2*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1     2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-     1     n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1     m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-     1 2*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1     c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1     2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-     1     n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1     n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-     1 2*((-3*c2a1*n12*(n1*p1y - m1*p1z))*(ralpha12**2) + 
-     1    (c2a1*l1*n12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*l1*n12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    c2a1*n12*p1x*ralpha12 + 2*c2a1*n1*p1y*ralpha12 + 
-     1    4*c3a1*l1*n1*p1z*ralpha12 + c2a1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 + 
-     1    (3*n12*(n1*p1y - m1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*l1*n12*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    n12*p1x*ralpha12*s1 - 2*n1*p1y*ralpha12*s1 + 
-     1    2*l1*n1*p1z*ralpha12*s1 - (n1*p1y - m1*p1z)*ralpha12*s1 - 
-     1    n12*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*((-3*c2a1*n12*(-(n1*p1x) + l1*p1z))*(ralpha12**2) + 
-     1    (c2a1*m1*n12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*m1*n12*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    2*c2a1*n1*p1x*ralpha12 - c2a1*n12*p1y*ralpha12 + 
-     1    4*c3a1*m1*n1*p1z*ralpha12 + c2a1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 + 
-     1    (3*n12*(-(n1*p1x) + l1*p1z)*s1)*(ralpha12**2) - 
-     1    (5*m1*n12*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) + 
-     1    2*n1*p1x*ralpha12*s1 + n12*p1y*ralpha12*s1 + 
-     1    2*m1*n1*p1z*ralpha12*s1 - (-(n1*p1x) + l1*p1z)*ralpha12*s1 - 
-     1    n12*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*((-3*c2a1*n12*(m1*p1x - l1*p1y))*(ralpha12**2) - 2*c3a1*p1z + 
-     1    (c2a1*n1**3*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) - 
-     1    (8*c3a1*n1**3*(l1*p1x + m1*p1y + n1*p1z))*(ralpha12**2) + 
-     1    c2a1*(m1*p1x - l1*p1y)*ralpha12 - c2a1*n12*p1z*ralpha12 + 
-     1    4*c3a1*n12*p1z*ralpha12 + 
-     1    6*c3a1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-     1    (3*n12*(m1*p1x - l1*p1y)*s1)*(ralpha12**2) - p1z*s1 - 
-     1    (5*n1**3*(l1*p1x + m1*p1y + n1*p1z)*s1)*(ralpha12**2) - 
-     1    (m1*p1x - l1*p1y)*ralpha12*s1 - 
-     1    n12*(m1*p1x - l1*p1y)*ralpha12*s1 + 3*n12*p1z*ralpha12*s1 + 
-     1    3*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1Z) + 
+     1     C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1     2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+     1     P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1     L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+     1 2*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1     2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+     1     N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1     M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+     1 2*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1     C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1     2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+     1     N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1     N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+     1 2*((-3*C2A1*N12*(N1*P1Y - M1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    C2A1*N12*P1X*RALPHA12 + 2*C2A1*N1*P1Y*RALPHA12 + 
+     1    4*C3A1*L1*N1*P1Z*RALPHA12 + C2A1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 + 
+     1    (3*N12*(N1*P1Y - M1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    N12*P1X*RALPHA12*S1 - 2*N1*P1Y*RALPHA12*S1 + 
+     1    2*L1*N1*P1Z*RALPHA12*S1 - (N1*P1Y - M1*P1Z)*RALPHA12*S1 - 
+     1    N12*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*((-3*C2A1*N12*(-(N1*P1X) + L1*P1Z))*(RALPHA12**2) + 
+     1    (C2A1*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    2*C2A1*N1*P1X*RALPHA12 - C2A1*N12*P1Y*RALPHA12 + 
+     1    4*C3A1*M1*N1*P1Z*RALPHA12 + C2A1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 + 
+     1    (3*N12*(-(N1*P1X) + L1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (5*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) + 
+     1    2*N1*P1X*RALPHA12*S1 + N12*P1Y*RALPHA12*S1 + 
+     1    2*M1*N1*P1Z*RALPHA12*S1 - (-(N1*P1X) + L1*P1Z)*RALPHA12*S1 - 
+     1    N12*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*((-3*C2A1*N12*(M1*P1X - L1*P1Y))*(RALPHA12**2) - 2*C3A1*P1Z + 
+     1    (C2A1*N1**3*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) - 
+     1    (8*C3A1*N1**3*(L1*P1X + M1*P1Y + N1*P1Z))*(RALPHA12**2) + 
+     1    C2A1*(M1*P1X - L1*P1Y)*RALPHA12 - C2A1*N12*P1Z*RALPHA12 + 
+     1    4*C3A1*N12*P1Z*RALPHA12 + 
+     1    6*C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+     1    (3*N12*(M1*P1X - L1*P1Y)*S1)*(RALPHA12**2) - P1Z*S1 - 
+     1    (5*N1**3*(L1*P1X + M1*P1Y + N1*P1Z)*S1)*(RALPHA12**2) - 
+     1    (M1*P1X - L1*P1Y)*RALPHA12*S1 - 
+     1    N12*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 3*N12*P1Z*RALPHA12*S1 + 
+     1    3*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD66
+       RETURN
+      END FUNCTION DD66
 
-      DOUBLE PRECISION FUNCTION DD67(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD67(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D6, D7
 
       DD67  
-     1 = -(rdist*(-(c3a1*l1*p1z) + c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1 2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-     1 p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1 l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(-(C3A1*L1*P1Z) + C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1 2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+     1 P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1 L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD67
+       RETURN
+      END FUNCTION DD67
 
-      DOUBLE PRECISION FUNCTION DD68(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD68(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D6, D8
 
       DD68  
-     1 = -(rdist*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1 2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-     1 n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1 m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1 2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+     1 N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1 M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD68
+       RETURN
+      END FUNCTION DD68
 
-      DOUBLE PRECISION FUNCTION DD69(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD69(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D6, D9
 
       DD69  
-     1 = -(rdist*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1 c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1 2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-     1 n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1 n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1 C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1 2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+     1 N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1 N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD69
+       RETURN
+      END FUNCTION DD69
 
-      DOUBLE PRECISION FUNCTION DD6A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD6A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D6, DA
 
       DD6A  
-     1 = (rdist*(2*(-(c3a1*l1*p1z) + 
-     1    c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-     1    p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-     1    l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-     1    n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-     1    p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-     1    n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-     1    l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1Z) + 
+     1    C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+     1    P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+     1    L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+     1    N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+     1    P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+     1    N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+     1    L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD6A
+       RETURN
+      END FUNCTION DD6A
 
-      DOUBLE PRECISION FUNCTION DD6B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD6B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D6, DB
 
       DD6B  
-     1 = (rdist*(2*(-(c3a1*l1*p1z) + 
-     1    c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-     1    p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-     1    p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-     1    n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-     1    m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-     1    n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-     1    m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1Z) + 
+     1    C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+     1    P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+     1    P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+     1    N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+     1    M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+     1    N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+     1    M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD6B
+       RETURN
+      END FUNCTION DD6B
 
-      DOUBLE PRECISION FUNCTION DD6C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD6C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D6, DC
 
       DD6C  
-     1 = (rdist*(2*(-(c3a1*l1*p1z) + 
-     1    c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-     1    p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-     1    p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-     1    n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-     1    n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-     1    c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-     1    2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-     1    n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-     1    n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-     1  (c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-     1    n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(-(C3A1*L1*P1Z) + 
+     1    C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+     1    P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+     1    P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+     1    N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+     1    N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+     1    C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+     1    2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+     1    N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+     1    N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+     1  (C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+     1    N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD6C
+       RETURN
+      END FUNCTION DD6C
 
-      DOUBLE PRECISION FUNCTION DD77(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD77(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D7
 
-       DD77 = rdist*(1.0d0 -
-     1               D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD77 = RDIST*(1.0D0 -
+     1               D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)**2)
 
-       return
-      end FUNCTION DD77
+       RETURN
+      END FUNCTION DD77
 
-      DOUBLE PRECISION FUNCTION DD78(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD78(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D7, D8
 
-       DD78 = -rdist *
-     1        D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD78 = -RDIST *
+     1        D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1        D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
 
-       return
-      end FUNCTION DD78
+       RETURN
+      END FUNCTION DD78
 
-      DOUBLE PRECISION FUNCTION DD79(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD79(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D7, D9
 
-       DD79 = -rdist *
-     1        D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD79 = -RDIST *
+     1        D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1        D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
 
-       return
-      end FUNCTION DD79
+       RETURN
+      END FUNCTION DD79
 
-      DOUBLE PRECISION FUNCTION DD7A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD7A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D7, DA
 
       DD7A  
-     1 = -(rdist*(c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1 c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1 2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-     1 l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1 l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-     1 -D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1 C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1 2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+     1 L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1 L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+     1 -D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD7A
+       RETURN
+      END FUNCTION DD7A
 
-      DOUBLE PRECISION FUNCTION DD7B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD7B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D7, DB
 
       DD7B  
-     1 = -(rdist*(c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1 2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-     1 p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1 l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-     1 -D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1 2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+     1 P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1 L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+     1 -D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD7B
+       RETURN
+      END FUNCTION DD7B
 
-      DOUBLE PRECISION FUNCTION DD7C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD7C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D7, DC
 
       DD7C  
-     1 = -(rdist*(c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1 2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-     1 p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1 l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-     1 -D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1 2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+     1 P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1 L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+     1 -D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD7C
+       RETURN
+      END FUNCTION DD7C
 
-      DOUBLE PRECISION FUNCTION DD88(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD88(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D8
 
-       DD88 = rdist*(1.0d0 -
-     1               D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD88 = RDIST*(1.0D0 -
+     1               D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)**2)
 
-       return
-      end FUNCTION DD88
+       RETURN
+      END FUNCTION DD88
 
-      DOUBLE PRECISION FUNCTION DD89(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD89(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D8, D9
 
-       DD89 = -rdist *
-     1        D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD89 = -RDIST *
+     1        D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1        D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1        D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1           C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
 
-       return
-      end FUNCTION DD89
+       RETURN
+      END FUNCTION DD89
 
-      DOUBLE PRECISION FUNCTION DD8A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD8A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D8, DA
 
       DD8A  
-     1 = -(rdist*(c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1 2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-     1 p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1 l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-     1 -D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1 2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+     1 P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1 L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+     1 -D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD8A
+       RETURN
+      END FUNCTION DD8A
 
-      DOUBLE PRECISION FUNCTION DD8B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD8B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D8, DB
 
       DD8B  
-     1 = -(rdist*(c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1 c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1 2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-     1 m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1 m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-     1 -D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1 C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1 2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+     1 M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1 M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+     1 -D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD8B
+       RETURN
+      END FUNCTION DD8B
       
-      DOUBLE PRECISION FUNCTION DD8C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD8C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D8, DC
 
       DD8C  
-     1 = -(rdist*(c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1 2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-     1 n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1 m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-     1 -D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1 2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+     1 N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1 M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+     1 -D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD8C
+       RETURN
+      END FUNCTION DD8C
 
-      DOUBLE PRECISION FUNCTION DD99(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD99(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D9
 
-       DD99 = rdist*(1.0d0 -
-     1               D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+       DD99 = RDIST*(1.0D0 -
+     1               D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)**2)
 
-       return
-      end FUNCTION DD99
+       RETURN
+      END FUNCTION DD99
 
-      DOUBLE PRECISION FUNCTION DD9A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD9A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D9, DA
 
       DD9A  
-     1 = -(rdist*(c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1 2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-     1 l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1 l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-     1 -D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1 2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+     1 L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1 L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+     1 -D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD9A
+       RETURN
+      END FUNCTION DD9A
 
-      DOUBLE PRECISION FUNCTION DD9B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD9B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D9, DB
 
       DD9B  
-     1 = -(rdist*(c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1 2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-     1 m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1 m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-     1 -D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1 2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+     1 M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1 M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+     1 -D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD9B
+       RETURN
+      END FUNCTION DD9B
 
-      DOUBLE PRECISION FUNCTION DD9C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DD9C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION D9, DC
 
       DD9C  
-     1 = -(rdist*(c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1 c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1 2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-     1 n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1 n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-     1 -D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = -(RDIST*(C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1 C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1 2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+     1 N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1 N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+     1 -D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DD9C
+       RETURN
+      END FUNCTION DD9C
 
-      DOUBLE PRECISION FUNCTION DDAA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DDAA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION DA
 
       DDAA  
-     1 = (rdist*(2*(c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1     c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1     2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-     1     l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1     l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-     1 2*(c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1     2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-     1     p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1     l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-     1 2*(c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1     2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-     1     l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1     l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-     1 2*(2*c3a2*p2x + (3*c2a2*l22*(n2*p2y - m2*p2z))*(ralpha22**2) - 
-     1    (c2a2*l2**3*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l2**3*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    c2a2*l22*p2x*ralpha22 - 4*c3a2*l22*p2x*ralpha22 - 
-     1    c2a2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    6*c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 - 
-     1    (3*l22*(n2*p2y - m2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*l2**3*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    3*l22*p2x*ralpha22*s2 + (n2*p2y - m2*p2z)*ralpha22*s2 + 
-     1    l22*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    3*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*((3*c2a2*l22*(-(n2*p2x) + l2*p2z))*(ralpha22**2) - 
-     1    (c2a2*l22*m2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l22*m2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) - 
-     1    4*c3a2*l2*m2*p2x*ralpha22 + c2a2*l22*p2y*ralpha22 - 
-     1    2*c2a2*l2*p2z*ralpha22 - c2a2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 - 
-     1    (3*l22*(-(n2*p2x) + l2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*l22*m2*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    2*l2*m2*p2x*ralpha22*s2 - l22*p2y*ralpha22*s2 + 
-     1    2*l2*p2z*ralpha22*s2 + (-(n2*p2x) + l2*p2z)*ralpha22*s2 + 
-     1    l22*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*((3*c2a2*l22*(m2*p2x - l2*p2y))*(ralpha22**2) - 
-     1    (c2a2*l22*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l22*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) - 
-     1    4*c3a2*l2*n2*p2x*ralpha22 + 2*c2a2*l2*p2y*ralpha22 - 
-     1    c2a2*(m2*p2x - l2*p2y)*ralpha22 + c2a2*l22*p2z*ralpha22 - 
-     1    2*c3a2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-     1    (3*l22*(m2*p2x - l2*p2y)*s2)*(ralpha22**2) + p2z*s2 + 
-     1    (5*l22*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    2*l2*n2*p2x*ralpha22*s2 - 2*l2*p2y*ralpha22*s2 + 
-     1    (m2*p2x - l2*p2y)*ralpha22*s2 + 
-     1    l22*(m2*p2x - l2*p2y)*ralpha22*s2 - l22*p2z*ralpha22*s2 - 
-     1    n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1     C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1     2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+     1     L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1     L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+     1 2*(C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1     2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+     1     P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1     L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+     1 2*(C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1     2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+     1     L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1     L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+     1 2*(2*C3A2*P2X + (3*C2A2*L22*(N2*P2Y - M2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*L2**3*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L2**3*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    C2A2*L22*P2X*RALPHA22 - 4*C3A2*L22*P2X*RALPHA22 - 
+     1    C2A2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    6*C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 - 
+     1    (3*L22*(N2*P2Y - M2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*L2**3*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    3*L22*P2X*RALPHA22*S2 + (N2*P2Y - M2*P2Z)*RALPHA22*S2 + 
+     1    L22*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    3*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*((3*C2A2*L22*(-(N2*P2X) + L2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) - 
+     1    4*C3A2*L2*M2*P2X*RALPHA22 + C2A2*L22*P2Y*RALPHA22 - 
+     1    2*C2A2*L2*P2Z*RALPHA22 - C2A2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 - 
+     1    (3*L22*(-(N2*P2X) + L2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    2*L2*M2*P2X*RALPHA22*S2 - L22*P2Y*RALPHA22*S2 + 
+     1    2*L2*P2Z*RALPHA22*S2 + (-(N2*P2X) + L2*P2Z)*RALPHA22*S2 + 
+     1    L22*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*((3*C2A2*L22*(M2*P2X - L2*P2Y))*(RALPHA22**2) - 
+     1    (C2A2*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) - 
+     1    4*C3A2*L2*N2*P2X*RALPHA22 + 2*C2A2*L2*P2Y*RALPHA22 - 
+     1    C2A2*(M2*P2X - L2*P2Y)*RALPHA22 + C2A2*L22*P2Z*RALPHA22 - 
+     1    2*C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+     1    (3*L22*(M2*P2X - L2*P2Y)*S2)*(RALPHA22**2) + P2Z*S2 + 
+     1    (5*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    2*L2*N2*P2X*RALPHA22*S2 - 2*L2*P2Y*RALPHA22*S2 + 
+     1    (M2*P2X - L2*P2Y)*RALPHA22*S2 + 
+     1    L22*(M2*P2X - L2*P2Y)*RALPHA22*S2 - L22*P2Z*RALPHA22*S2 - 
+     1    N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DDAA
+       RETURN
+      END FUNCTION DDAA
 
-      DOUBLE PRECISION FUNCTION DDAB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DDAB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION DA, DB
 
       DDAB  
-     1 = (rdist*(2*(c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-     1    l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-     1    p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-     1    p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-     1    m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-     1    l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-     1    m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(c3a2*p2y + (3*c2a2*l2*m2*(n2*p2y - m2*p2z))*(ralpha22**2) - 
-     1    (c2a2*l22*m2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l22*m2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    c2a2*l2*m2*p2x*ralpha22 - 2*c3a2*l2*m2*p2x*ralpha22 - 
-     1    2*c3a2*l22*p2y*ralpha22 + c2a2*l2*p2z*ralpha22 - 
-     1    2*c3a2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-     1    (3*l2*m2*(n2*p2y - m2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*l22*m2*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    2*l2*m2*p2x*ralpha22*s2 - l22*p2y*ralpha22*s2 - 
-     1    l2*p2z*ralpha22*s2 + l2*m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*(c3a2*p2x + (3*c2a2*l2*m2*(-(n2*p2x) + l2*p2z))*(ralpha22**2) - 
-     1    (c2a2*l2*m22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l2*m22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) - 
-     1    2*c3a2*m22*p2x*ralpha22 + c2a2*l2*m2*p2y*ralpha22 - 
-     1    2*c3a2*l2*m2*p2y*ralpha22 - c2a2*m2*p2z*ralpha22 - 
-     1    2*c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-     1    (3*l2*m2*(-(n2*p2x) + l2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*l2*m22*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    m22*p2x*ralpha22*s2 - 2*l2*m2*p2y*ralpha22*s2 + 
-     1    m2*p2z*ralpha22*s2 + l2*m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*((3*c2a2*l2*m2*(m2*p2x - l2*p2y))*(ralpha22**2) - 
-     1    (c2a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) - 
-     1    c2a2*l2*p2x*ralpha22 - 2*c3a2*m2*n2*p2x*ralpha22 + 
-     1    c2a2*m2*p2y*ralpha22 - 2*c3a2*l2*n2*p2y*ralpha22 + 
-     1    c2a2*l2*m2*p2z*ralpha22 - 
-     1    (3*l2*m2*(m2*p2x - l2*p2y)*s2)*(ralpha22**2) + 
-     1    (5*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) + 
-     1    l2*p2x*ralpha22*s2 - m2*n2*p2x*ralpha22*s2 - m2*p2y*ralpha22*s2 - 
-     1    l2*n2*p2y*ralpha22*s2 + l2*m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    l2*m2*p2z*ralpha22*s2)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+     1    L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+     1    P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+     1    P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+     1    M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+     1    L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+     1    M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(C3A2*P2Y + (3*C2A2*L2*M2*(N2*P2Y - M2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    C2A2*L2*M2*P2X*RALPHA22 - 2*C3A2*L2*M2*P2X*RALPHA22 - 
+     1    2*C3A2*L22*P2Y*RALPHA22 + C2A2*L2*P2Z*RALPHA22 - 
+     1    2*C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+     1    (3*L2*M2*(N2*P2Y - M2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    2*L2*M2*P2X*RALPHA22*S2 - L22*P2Y*RALPHA22*S2 - 
+     1    L2*P2Z*RALPHA22*S2 + L2*M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*(C3A2*P2X + (3*C2A2*L2*M2*(-(N2*P2X) + L2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) - 
+     1    2*C3A2*M22*P2X*RALPHA22 + C2A2*L2*M2*P2Y*RALPHA22 - 
+     1    2*C3A2*L2*M2*P2Y*RALPHA22 - C2A2*M2*P2Z*RALPHA22 - 
+     1    2*C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+     1    (3*L2*M2*(-(N2*P2X) + L2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    M22*P2X*RALPHA22*S2 - 2*L2*M2*P2Y*RALPHA22*S2 + 
+     1    M2*P2Z*RALPHA22*S2 + L2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*((3*C2A2*L2*M2*(M2*P2X - L2*P2Y))*(RALPHA22**2) - 
+     1    (C2A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) - 
+     1    C2A2*L2*P2X*RALPHA22 - 2*C3A2*M2*N2*P2X*RALPHA22 + 
+     1    C2A2*M2*P2Y*RALPHA22 - 2*C3A2*L2*N2*P2Y*RALPHA22 + 
+     1    C2A2*L2*M2*P2Z*RALPHA22 - 
+     1    (3*L2*M2*(M2*P2X - L2*P2Y)*S2)*(RALPHA22**2) + 
+     1    (5*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) + 
+     1    L2*P2X*RALPHA22*S2 - M2*N2*P2X*RALPHA22*S2 - M2*P2Y*RALPHA22*S2 - 
+     1    L2*N2*P2Y*RALPHA22*S2 + L2*M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    L2*M2*P2Z*RALPHA22*S2)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DDAB
+       RETURN
+      END FUNCTION DDAB
 
-      DOUBLE PRECISION FUNCTION DDAC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DDAC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION DA, DC
 
       DDAC  
-     1 = (rdist*(2*(c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-     1    l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-     1    p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-     1    p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-     1    n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-     1    l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-     1    n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(c3a2*p2z + (3*c2a2*l2*n2*(n2*p2y - m2*p2z))*(ralpha22**2) - 
-     1    (c2a2*l22*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l22*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    c2a2*l2*n2*p2x*ralpha22 - 2*c3a2*l2*n2*p2x*ralpha22 - 
-     1    c2a2*l2*p2y*ralpha22 - 2*c3a2*l22*p2z*ralpha22 - 
-     1    2*c3a2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-     1    (3*l2*n2*(n2*p2y - m2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*l22*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    2*l2*n2*p2x*ralpha22*s2 + l2*p2y*ralpha22*s2 - 
-     1    l22*p2z*ralpha22*s2 + l2*n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*((3*c2a2*l2*n2*(-(n2*p2x) + l2*p2z))*(ralpha22**2) - 
-     1    (c2a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    c2a2*l2*p2x*ralpha22 - 2*c3a2*m2*n2*p2x*ralpha22 + 
-     1    c2a2*l2*n2*p2y*ralpha22 - 2*c3a2*l2*m2*p2z*ralpha22 - 
-     1    c2a2*n2*p2z*ralpha22 - 
-     1    (3*l2*n2*(-(n2*p2x) + l2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    l2*p2x*ralpha22*s2 - m2*n2*p2x*ralpha22*s2 - 
-     1    l2*n2*p2y*ralpha22*s2 - l2*m2*p2z*ralpha22*s2 + 
-     1    n2*p2z*ralpha22*s2 + l2*n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*(c3a2*p2x + (3*c2a2*l2*n2*(m2*p2x - l2*p2y))*(ralpha22**2) - 
-     1    (c2a2*l2*n22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l2*n22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) - 
-     1    2*c3a2*n22*p2x*ralpha22 + c2a2*n2*p2y*ralpha22 + 
-     1    c2a2*l2*n2*p2z*ralpha22 - 2*c3a2*l2*n2*p2z*ralpha22 - 
-     1    2*c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-     1    (3*l2*n2*(m2*p2x - l2*p2y)*s2)*(ralpha22**2) + 
-     1    (5*l2*n22*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    n22*p2x*ralpha22*s2 - n2*p2y*ralpha22*s2 + 
-     1    l2*n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 2*l2*n2*p2z*ralpha22*s2 - 
-     1    l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+     1    L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+     1    P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+     1    P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+     1    N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+     1    L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+     1    N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(C3A2*P2Z + (3*C2A2*L2*N2*(N2*P2Y - M2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    C2A2*L2*N2*P2X*RALPHA22 - 2*C3A2*L2*N2*P2X*RALPHA22 - 
+     1    C2A2*L2*P2Y*RALPHA22 - 2*C3A2*L22*P2Z*RALPHA22 - 
+     1    2*C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+     1    (3*L2*N2*(N2*P2Y - M2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    2*L2*N2*P2X*RALPHA22*S2 + L2*P2Y*RALPHA22*S2 - 
+     1    L22*P2Z*RALPHA22*S2 + L2*N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*((3*C2A2*L2*N2*(-(N2*P2X) + L2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    C2A2*L2*P2X*RALPHA22 - 2*C3A2*M2*N2*P2X*RALPHA22 + 
+     1    C2A2*L2*N2*P2Y*RALPHA22 - 2*C3A2*L2*M2*P2Z*RALPHA22 - 
+     1    C2A2*N2*P2Z*RALPHA22 - 
+     1    (3*L2*N2*(-(N2*P2X) + L2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    L2*P2X*RALPHA22*S2 - M2*N2*P2X*RALPHA22*S2 - 
+     1    L2*N2*P2Y*RALPHA22*S2 - L2*M2*P2Z*RALPHA22*S2 + 
+     1    N2*P2Z*RALPHA22*S2 + L2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*(C3A2*P2X + (3*C2A2*L2*N2*(M2*P2X - L2*P2Y))*(RALPHA22**2) - 
+     1    (C2A2*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) - 
+     1    2*C3A2*N22*P2X*RALPHA22 + C2A2*N2*P2Y*RALPHA22 + 
+     1    C2A2*L2*N2*P2Z*RALPHA22 - 2*C3A2*L2*N2*P2Z*RALPHA22 - 
+     1    2*C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+     1    (3*L2*N2*(M2*P2X - L2*P2Y)*S2)*(RALPHA22**2) + 
+     1    (5*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    N22*P2X*RALPHA22*S2 - N2*P2Y*RALPHA22*S2 + 
+     1    L2*N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 2*L2*N2*P2Z*RALPHA22*S2 - 
+     1    L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DDAC
+       RETURN
+      END FUNCTION DDAC
 
-      DOUBLE PRECISION FUNCTION DDBB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DDBB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION DB
 
       DDBB  
-     1 = (rdist*(2*(c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1     2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-     1     p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1     l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-     1 2*(c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1     c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1     2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-     1     m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1     m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-     1 2*(c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1     2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-     1     m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1     m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-     1 2*((3*c2a2*m22*(n2*p2y - m2*p2z))*(ralpha22**2) - 
-     1    (c2a2*l2*m22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l2*m22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    c2a2*m22*p2x*ralpha22 - 4*c3a2*l2*m2*p2y*ralpha22 + 
-     1    2*c2a2*m2*p2z*ralpha22 - c2a2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 - 
-     1    (3*m22*(n2*p2y - m2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*l2*m22*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    m22*p2x*ralpha22*s2 - 2*l2*m2*p2y*ralpha22*s2 - 
-     1    2*m2*p2z*ralpha22*s2 + (n2*p2y - m2*p2z)*ralpha22*s2 + 
-     1    m22*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*(2*c3a2*p2y + (3*c2a2*m22*(-(n2*p2x) + l2*p2z))*(ralpha22**2) - 
-     1    (c2a2*m2**3*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*m2**3*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    c2a2*m22*p2y*ralpha22 - 4*c3a2*m22*p2y*ralpha22 - 
-     1    c2a2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    6*c3a2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 - 
-     1    (3*m22*(-(n2*p2x) + l2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*m2**3*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    3*m22*p2y*ralpha22*s2 + (-(n2*p2x) + l2*p2z)*ralpha22*s2 + 
-     1    m22*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    3*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*((3*c2a2*m22*(m2*p2x - l2*p2y))*(ralpha22**2) - 
-     1    (c2a2*m22*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*m22*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) - 
-     1    2*c2a2*m2*p2x*ralpha22 - 4*c3a2*m2*n2*p2y*ralpha22 - 
-     1    c2a2*(m2*p2x - l2*p2y)*ralpha22 + c2a2*m22*p2z*ralpha22 - 
-     1    2*c3a2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-     1    (3*m22*(m2*p2x - l2*p2y)*s2)*(ralpha22**2) + p2z*s2 + 
-     1    (5*m22*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) + 
-     1    2*m2*p2x*ralpha22*s2 - 2*m2*n2*p2y*ralpha22*s2 + 
-     1    (m2*p2x - l2*p2y)*ralpha22*s2 + 
-     1    m22*(m2*p2x - l2*p2y)*ralpha22*s2 - m22*p2z*ralpha22*s2 - 
-     1    n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1     2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+     1     P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1     L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+     1 2*(C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1     C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1     2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+     1     M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1     M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+     1 2*(C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1     2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+     1     M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1     M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+     1 2*((3*C2A2*M22*(N2*P2Y - M2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    C2A2*M22*P2X*RALPHA22 - 4*C3A2*L2*M2*P2Y*RALPHA22 + 
+     1    2*C2A2*M2*P2Z*RALPHA22 - C2A2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 - 
+     1    (3*M22*(N2*P2Y - M2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    M22*P2X*RALPHA22*S2 - 2*L2*M2*P2Y*RALPHA22*S2 - 
+     1    2*M2*P2Z*RALPHA22*S2 + (N2*P2Y - M2*P2Z)*RALPHA22*S2 + 
+     1    M22*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*(2*C3A2*P2Y + (3*C2A2*M22*(-(N2*P2X) + L2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*M2**3*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*M2**3*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    C2A2*M22*P2Y*RALPHA22 - 4*C3A2*M22*P2Y*RALPHA22 - 
+     1    C2A2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    6*C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 - 
+     1    (3*M22*(-(N2*P2X) + L2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*M2**3*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    3*M22*P2Y*RALPHA22*S2 + (-(N2*P2X) + L2*P2Z)*RALPHA22*S2 + 
+     1    M22*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    3*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*((3*C2A2*M22*(M2*P2X - L2*P2Y))*(RALPHA22**2) - 
+     1    (C2A2*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) - 
+     1    2*C2A2*M2*P2X*RALPHA22 - 4*C3A2*M2*N2*P2Y*RALPHA22 - 
+     1    C2A2*(M2*P2X - L2*P2Y)*RALPHA22 + C2A2*M22*P2Z*RALPHA22 - 
+     1    2*C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+     1    (3*M22*(M2*P2X - L2*P2Y)*S2)*(RALPHA22**2) + P2Z*S2 + 
+     1    (5*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) + 
+     1    2*M2*P2X*RALPHA22*S2 - 2*M2*N2*P2Y*RALPHA22*S2 + 
+     1    (M2*P2X - L2*P2Y)*RALPHA22*S2 + 
+     1    M22*(M2*P2X - L2*P2Y)*RALPHA22*S2 - M22*P2Z*RALPHA22*S2 - 
+     1    N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DDBB
+       RETURN
+      END FUNCTION DDBB
 
-      DOUBLE PRECISION FUNCTION DDBC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DDBC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION DB, DC
 
       DDBC  
-     1 = (rdist*(2*(c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-     1    p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-     1    p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-     1    m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-     1    n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*(c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-     1    m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1    c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1    2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-     1    n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1    n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-     1 2*((3*c2a2*m2*n2*(n2*p2y - m2*p2z))*(ralpha22**2) - 
-     1    (c2a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    c2a2*m2*n2*p2x*ralpha22 - c2a2*m2*p2y*ralpha22 - 
-     1    2*c3a2*l2*n2*p2y*ralpha22 - 2*c3a2*l2*m2*p2z*ralpha22 + 
-     1    c2a2*n2*p2z*ralpha22 - 
-     1    (3*m2*n2*(n2*p2y - m2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    m2*n2*p2x*ralpha22*s2 + m2*p2y*ralpha22*s2 - 
-     1    l2*n2*p2y*ralpha22*s2 - l2*m2*p2z*ralpha22*s2 - 
-     1    n2*p2z*ralpha22*s2 + m2*n2*(n2*p2y - m2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*(c3a2*p2z + (3*c2a2*m2*n2*(-(n2*p2x) + l2*p2z))*(ralpha22**2) - 
-     1    (c2a2*m22*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*m22*n2*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    c2a2*m2*p2x*ralpha22 + c2a2*m2*n2*p2y*ralpha22 - 
-     1    2*c3a2*m2*n2*p2y*ralpha22 - 2*c3a2*m22*p2z*ralpha22 - 
-     1    2*c3a2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-     1    (3*m2*n2*(-(n2*p2x) + l2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*m22*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    m2*p2x*ralpha22*s2 - 2*m2*n2*p2y*ralpha22*s2 - 
-     1    m22*p2z*ralpha22*s2 + m2*n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*(c3a2*p2y + (3*c2a2*m2*n2*(m2*p2x - l2*p2y))*(ralpha22**2) - 
-     1    (c2a2*m2*n22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*m2*n22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) - 
-     1    c2a2*n2*p2x*ralpha22 - 2*c3a2*n22*p2y*ralpha22 + 
-     1    c2a2*m2*n2*p2z*ralpha22 - 2*c3a2*m2*n2*p2z*ralpha22 - 
-     1    2*c3a2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-     1    (3*m2*n2*(m2*p2x - l2*p2y)*s2)*(ralpha22**2) + 
-     1    (5*m2*n22*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) + 
-     1    n2*p2x*ralpha22*s2 - n22*p2y*ralpha22*s2 + 
-     1    m2*n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 2*m2*n2*p2z*ralpha22*s2 - 
-     1    m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+     1    P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+     1    P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+     1    M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+     1    N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*(C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+     1    M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1    C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1    2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+     1    N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1    N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+     1 2*((3*C2A2*M2*N2*(N2*P2Y - M2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    C2A2*M2*N2*P2X*RALPHA22 - C2A2*M2*P2Y*RALPHA22 - 
+     1    2*C3A2*L2*N2*P2Y*RALPHA22 - 2*C3A2*L2*M2*P2Z*RALPHA22 + 
+     1    C2A2*N2*P2Z*RALPHA22 - 
+     1    (3*M2*N2*(N2*P2Y - M2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    M2*N2*P2X*RALPHA22*S2 + M2*P2Y*RALPHA22*S2 - 
+     1    L2*N2*P2Y*RALPHA22*S2 - L2*M2*P2Z*RALPHA22*S2 - 
+     1    N2*P2Z*RALPHA22*S2 + M2*N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*(C3A2*P2Z + (3*C2A2*M2*N2*(-(N2*P2X) + L2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    C2A2*M2*P2X*RALPHA22 + C2A2*M2*N2*P2Y*RALPHA22 - 
+     1    2*C3A2*M2*N2*P2Y*RALPHA22 - 2*C3A2*M22*P2Z*RALPHA22 - 
+     1    2*C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+     1    (3*M2*N2*(-(N2*P2X) + L2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    M2*P2X*RALPHA22*S2 - 2*M2*N2*P2Y*RALPHA22*S2 - 
+     1    M22*P2Z*RALPHA22*S2 + M2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*(C3A2*P2Y + (3*C2A2*M2*N2*(M2*P2X - L2*P2Y))*(RALPHA22**2) - 
+     1    (C2A2*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) - 
+     1    C2A2*N2*P2X*RALPHA22 - 2*C3A2*N22*P2Y*RALPHA22 + 
+     1    C2A2*M2*N2*P2Z*RALPHA22 - 2*C3A2*M2*N2*P2Z*RALPHA22 - 
+     1    2*C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+     1    (3*M2*N2*(M2*P2X - L2*P2Y)*S2)*(RALPHA22**2) + 
+     1    (5*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) + 
+     1    N2*P2X*RALPHA22*S2 - N22*P2Y*RALPHA22*S2 + 
+     1    M2*N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 2*M2*N2*P2Z*RALPHA22*S2 - 
+     1    M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1    C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DDBC
+       RETURN
+      END FUNCTION DDBC
 
-      DOUBLE PRECISION FUNCTION DDCC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+      DOUBLE PRECISION FUNCTION DDCC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                               C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
        IMPLICIT NONE
        DOUBLE PRECISION C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22
-       DOUBLE PRECISION p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist
+       DOUBLE PRECISION P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST
        DOUBLE PRECISION DC
 
       DDCC 
-     1 = (rdist*(2*(c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1     2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-     1     p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1     l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-     1 2*(c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1     2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-     1     n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1     m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-     1 2*(c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-     1     c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-     1     2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-     1     n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-     1     n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-     1 2*((3*c2a2*n22*(n2*p2y - m2*p2z))*(ralpha22**2) - 
-     1    (c2a2*l2*n22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*l2*n22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    c2a2*n22*p2x*ralpha22 - 2*c2a2*n2*p2y*ralpha22 - 
-     1    4*c3a2*l2*n2*p2z*ralpha22 - c2a2*(n2*p2y - m2*p2z)*ralpha22 - 
-     1    2*c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 - 
-     1    (3*n22*(n2*p2y - m2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*l2*n22*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    n22*p2x*ralpha22*s2 + 2*n2*p2y*ralpha22*s2 - 
-     1    2*l2*n2*p2z*ralpha22*s2 + (n2*p2y - m2*p2z)*ralpha22*s2 + 
-     1    n22*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-     1    l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-     1 2*((3*c2a2*n22*(-(n2*p2x) + l2*p2z))*(ralpha22**2) - 
-     1    (c2a2*m2*n22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*m2*n22*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    2*c2a2*n2*p2x*ralpha22 + c2a2*n22*p2y*ralpha22 - 
-     1    4*c3a2*m2*n2*p2z*ralpha22 - c2a2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-     1    2*c3a2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 - 
-     1    (3*n22*(-(n2*p2x) + l2*p2z)*s2)*(ralpha22**2) + 
-     1    (5*m2*n22*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) - 
-     1    2*n2*p2x*ralpha22*s2 - n22*p2y*ralpha22*s2 - 
-     1    2*m2*n2*p2z*ralpha22*s2 + (-(n2*p2x) + l2*p2z)*ralpha22*s2 + 
-     1    n22*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-     1    m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-     1 2*((3*c2a2*n22*(m2*p2x - l2*p2y))*(ralpha22**2) + 2*c3a2*p2z - 
-     1    (c2a2*n2**3*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) + 
-     1    (8*c3a2*n2**3*(l2*p2x + m2*p2y + n2*p2z))*(ralpha22**2) - 
-     1    c2a2*(m2*p2x - l2*p2y)*ralpha22 + c2a2*n22*p2z*ralpha22 - 
-     1    4*c3a2*n22*p2z*ralpha22 - 
-     1    6*c3a2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-     1    (3*n22*(m2*p2x - l2*p2y)*s2)*(ralpha22**2) + p2z*s2 + 
-     1    (5*n2**3*(l2*p2x + m2*p2y + n2*p2z)*s2)*(ralpha22**2) + 
-     1    (m2*p2x - l2*p2y)*ralpha22*s2 + 
-     1    n22*(m2*p2x - l2*p2y)*ralpha22*s2 - 3*n22*p2z*ralpha22*s2 - 
-     1    3*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-     1 -DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+     1 = (RDIST*(2*(C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1     2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+     1     P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1     L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+     1 2*(C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1     2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+     1     N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1     M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+     1 2*(C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+     1     C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+     1     2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+     1     N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+     1     N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+     1 2*((3*C2A2*N22*(N2*P2Y - M2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    C2A2*N22*P2X*RALPHA22 - 2*C2A2*N2*P2Y*RALPHA22 - 
+     1    4*C3A2*L2*N2*P2Z*RALPHA22 - C2A2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+     1    2*C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 - 
+     1    (3*N22*(N2*P2Y - M2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    N22*P2X*RALPHA22*S2 + 2*N2*P2Y*RALPHA22*S2 - 
+     1    2*L2*N2*P2Z*RALPHA22*S2 + (N2*P2Y - M2*P2Z)*RALPHA22*S2 + 
+     1    N22*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+     1    L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+     1 2*((3*C2A2*N22*(-(N2*P2X) + L2*P2Z))*(RALPHA22**2) - 
+     1    (C2A2*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    2*C2A2*N2*P2X*RALPHA22 + C2A2*N22*P2Y*RALPHA22 - 
+     1    4*C3A2*M2*N2*P2Z*RALPHA22 - C2A2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+     1    2*C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 - 
+     1    (3*N22*(-(N2*P2X) + L2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (5*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) - 
+     1    2*N2*P2X*RALPHA22*S2 - N22*P2Y*RALPHA22*S2 - 
+     1    2*M2*N2*P2Z*RALPHA22*S2 + (-(N2*P2X) + L2*P2Z)*RALPHA22*S2 + 
+     1    N22*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+     1    M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+     1 2*((3*C2A2*N22*(M2*P2X - L2*P2Y))*(RALPHA22**2) + 2*C3A2*P2Z - 
+     1    (C2A2*N2**3*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) + 
+     1    (8*C3A2*N2**3*(L2*P2X + M2*P2Y + N2*P2Z))*(RALPHA22**2) - 
+     1    C2A2*(M2*P2X - L2*P2Y)*RALPHA22 + C2A2*N22*P2Z*RALPHA22 - 
+     1    4*C3A2*N22*P2Z*RALPHA22 - 
+     1    6*C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+     1    (3*N22*(M2*P2X - L2*P2Y)*S2)*(RALPHA22**2) + P2Z*S2 + 
+     1    (5*N2**3*(L2*P2X + M2*P2Y + N2*P2Z)*S2)*(RALPHA22**2) + 
+     1    (M2*P2X - L2*P2Y)*RALPHA22*S2 + 
+     1    N22*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 3*N22*P2Z*RALPHA22*S2 - 
+     1    3*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+     1 -DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)*
-     1  DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
-     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* rdist
+     1  DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
+     1     C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)* RDIST
 
-       return
-      end FUNCTION DDCC
-
-! ****************************************************************************************************
-
-! trj25 annotated derivatives of individual Cartesian coordinates for use with electric fields
-! See notebook entries circa 18/3/05
+       RETURN
+      END FUNCTION DDCC
 
 ! ****************************************************************************************************
 
-      function dxdpx (px, py, pz, x0, y0, z0, 
-     &                cos_alpha, sin_alpha, inv_alpha, inv_alpha2, 
-     &                pdotX0)
+! TRJ25 ANNOTATED DERIVATIVES OF INDIVIDUAL CARTESIAN COORDINATES FOR USE WITH ELECTRIC FIELDS
+! SEE NOTEBOOK ENTRIES CIRCA 18/3/05
 
-        implicit none
+! ****************************************************************************************************
+
+      FUNCTION DXDPX (PX, PY, PZ, X0, Y0, Z0, 
+     &                COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2, 
+     &                PDOTX0)
+
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: DXDPX
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
         DOUBLE PRECISION, INTENT(IN) :: COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        dxdpx = pdotX0*(1.0d0-cos_alpha)*inv_alpha2 - px*x0*sin_alpha*inv_alpha +
-     &          px*inv_alpha2*(x0*(1.0d0-cos_alpha) + 
-     &          pdotX0*px*inv_alpha*(sin_alpha-2.0d0*(1.0d0-cos_alpha)*inv_alpha)) +
-     &          (pz*y0-py*z0)*px*inv_alpha2*(cos_alpha-sin_alpha*inv_alpha)
+        DXDPX = PDOTX0*(1.0D0-COS_ALPHA)*INV_ALPHA2 - PX*X0*SIN_ALPHA*INV_ALPHA +
+     &          PX*INV_ALPHA2*(X0*(1.0D0-COS_ALPHA) + 
+     &          PDOTX0*PX*INV_ALPHA*(SIN_ALPHA-2.0D0*(1.0D0-COS_ALPHA)*INV_ALPHA)) +
+     &          (PZ*Y0-PY*Z0)*PX*INV_ALPHA2*(COS_ALPHA-SIN_ALPHA*INV_ALPHA)
 
-        return
+        RETURN
 
-      end function dxdpx
+      END FUNCTION DXDPX
 
 ! ****************************************************************************************************
 
-      function dxdpy (px, py, pz, x0, y0, z0, 
-     &                cos_alpha, sin_alpha, inv_alpha, inv_alpha2, 
-     &                pdotX0)
+      FUNCTION DXDPY (PX, PY, PZ, X0, Y0, Z0, 
+     &                COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2, 
+     &                PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: DXDPY
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
         DOUBLE PRECISION, INTENT(IN) :: COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        dxdpy = px*inv_alpha2*(y0*(1.0d0-cos_alpha) + 
-     &          pdotX0*py*inv_alpha*(sin_alpha-2.0d0*(1.0d0-cos_alpha)*inv_alpha)) -
-     &          (py*x0+z0)*sin_alpha*inv_alpha +
-     &          (pz*y0-py*z0)*py*inv_alpha2*(cos_alpha-sin_alpha*inv_alpha)
+        DXDPY = PX*INV_ALPHA2*(Y0*(1.0D0-COS_ALPHA) + 
+     &          PDOTX0*PY*INV_ALPHA*(SIN_ALPHA-2.0D0*(1.0D0-COS_ALPHA)*INV_ALPHA)) -
+     &          (PY*X0+Z0)*SIN_ALPHA*INV_ALPHA +
+     &          (PZ*Y0-PY*Z0)*PY*INV_ALPHA2*(COS_ALPHA-SIN_ALPHA*INV_ALPHA)
         
-        return
+        RETURN
 
-      end function dxdpy
+      END FUNCTION DXDPY
 
 ! ****************************************************************************************************
 
-      function dxdpz (px, py, pz, x0, y0, z0, 
-     &                cos_alpha, sin_alpha, inv_alpha, inv_alpha2, 
-     &                pdotX0)
+      FUNCTION DXDPZ (PX, PY, PZ, X0, Y0, Z0, 
+     &                COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2, 
+     &                PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: DXDPZ
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
         DOUBLE PRECISION, INTENT(IN) :: COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        dxdpz = (y0-pz*x0)*sin_alpha*inv_alpha +
-     &          px*inv_alpha2*(z0*(1.0d0-cos_alpha) + 
-     &          pdotX0*pz*inv_alpha*(sin_alpha-2.0d0*(1.0d0-cos_alpha)*inv_alpha)) +
-     &          (pz*y0-py*z0)*pz*inv_alpha2*(cos_alpha-sin_alpha*inv_alpha)
+        DXDPZ = (Y0-PZ*X0)*SIN_ALPHA*INV_ALPHA +
+     &          PX*INV_ALPHA2*(Z0*(1.0D0-COS_ALPHA) + 
+     &          PDOTX0*PZ*INV_ALPHA*(SIN_ALPHA-2.0D0*(1.0D0-COS_ALPHA)*INV_ALPHA)) +
+     &          (PZ*Y0-PY*Z0)*PZ*INV_ALPHA2*(COS_ALPHA-SIN_ALPHA*INV_ALPHA)
 
-        return
+        RETURN
 
-      end function dxdpz
+      END FUNCTION DXDPZ
 
 ! ****************************************************************************************************
 
-      function dydpx (px, py, pz, x0, y0, z0, 
-     &                cos_alpha, sin_alpha, inv_alpha, inv_alpha2, 
-     &                pdotX0)
+      FUNCTION DYDPX (PX, PY, PZ, X0, Y0, Z0, 
+     &                COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2, 
+     &                PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: DYDPX
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
         DOUBLE PRECISION, INTENT(IN) :: COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        dydpx = (z0-px*y0)*sin_alpha*inv_alpha +
-     &          py*inv_alpha2*(x0*(1.0d0-cos_alpha) + 
-     &          pdotX0*px*inv_alpha*(sin_alpha-2.0d0*(1.0d0-cos_alpha)*inv_alpha)) +
-     &          (px*z0-pz*x0)*px*inv_alpha2*(cos_alpha-sin_alpha*inv_alpha)
+        DYDPX = (Z0-PX*Y0)*SIN_ALPHA*INV_ALPHA +
+     &          PY*INV_ALPHA2*(X0*(1.0D0-COS_ALPHA) + 
+     &          PDOTX0*PX*INV_ALPHA*(SIN_ALPHA-2.0D0*(1.0D0-COS_ALPHA)*INV_ALPHA)) +
+     &          (PX*Z0-PZ*X0)*PX*INV_ALPHA2*(COS_ALPHA-SIN_ALPHA*INV_ALPHA)
 
-        return
+        RETURN
 
-      end function dydpx
+      END FUNCTION DYDPX
 
 ! ****************************************************************************************************
 
-      function dydpy (px, py, pz, x0, y0, z0, 
-     &                cos_alpha, sin_alpha, inv_alpha, inv_alpha2, 
-     &                pdotX0)
+      FUNCTION DYDPY (PX, PY, PZ, X0, Y0, Z0, 
+     &                COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2, 
+     &                PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: DYDPY
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
         DOUBLE PRECISION, INTENT(IN) :: COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        dydpy = pdotX0*(1.0d0-cos_alpha)*inv_alpha2 - py*y0*sin_alpha*inv_alpha +
-     &          py*inv_alpha2*(y0*(1.0d0-cos_alpha) + 
-     &          pdotX0*py*inv_alpha*(sin_alpha-2.0d0*(1.0d0-cos_alpha)*inv_alpha)) +
-     &          (px*z0-pz*x0)*py*inv_alpha2*(cos_alpha-sin_alpha*inv_alpha)
+        DYDPY = PDOTX0*(1.0D0-COS_ALPHA)*INV_ALPHA2 - PY*Y0*SIN_ALPHA*INV_ALPHA +
+     &          PY*INV_ALPHA2*(Y0*(1.0D0-COS_ALPHA) + 
+     &          PDOTX0*PY*INV_ALPHA*(SIN_ALPHA-2.0D0*(1.0D0-COS_ALPHA)*INV_ALPHA)) +
+     &          (PX*Z0-PZ*X0)*PY*INV_ALPHA2*(COS_ALPHA-SIN_ALPHA*INV_ALPHA)
 
-        return
+        RETURN
 
-      end function dydpy
+      END FUNCTION DYDPY
 
 ! ****************************************************************************************************
 
-      function dydpz (px, py, pz, x0, y0, z0, 
-     &                cos_alpha, sin_alpha, inv_alpha, inv_alpha2, 
-     &                pdotX0)
+      FUNCTION DYDPZ (PX, PY, PZ, X0, Y0, Z0, 
+     &                COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2, 
+     &                PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: DYDPZ
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
         DOUBLE PRECISION, INTENT(IN) :: COS_ALPHA, SIN_ALPHA, INV_ALPHA, INV_ALPHA2
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        dydpz = py*inv_alpha2*(z0*(1.0d0-cos_alpha) + 
-     &          pdotX0*pz*inv_alpha*(sin_alpha-2.0d0*(1.0d0-cos_alpha)*inv_alpha)) -
-     &          (pz*y0+x0)*sin_alpha*inv_alpha +
-     &          (px*z0-pz*x0)*pz*inv_alpha2*(cos_alpha-sin_alpha*inv_alpha)
+        DYDPZ = PY*INV_ALPHA2*(Z0*(1.0D0-COS_ALPHA) + 
+     &          PDOTX0*PZ*INV_ALPHA*(SIN_ALPHA-2.0D0*(1.0D0-COS_ALPHA)*INV_ALPHA)) -
+     &          (PZ*Y0+X0)*SIN_ALPHA*INV_ALPHA +
+     &          (PX*Z0-PZ*X0)*PZ*INV_ALPHA2*(COS_ALPHA-SIN_ALPHA*INV_ALPHA)
 
-        return
+        RETURN
 
-      end function dydpz
+      END FUNCTION DYDPZ
 
 ! ****************************************************************************************************
 
-! Wrapper function for dzdXrb
+! WRAPPER FUNCTION FOR DZDXRB
 
-      function dzdXrb (coordNo,px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
+      FUNCTION DZDXRB (COORDNO,PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: DZDXRB
-        integer, intent(IN) :: coordNo
+        INTEGER, INTENT(IN) :: COORDNO
         DOUBLE PRECISION, INTENT(IN) :: PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0
         
-! External functions
+! EXTERNAL FUNCTIONS
 
         DOUBLE PRECISION :: DZDPX,DZDPY,DZDPZ
         
-        select case (coordNo)
-           case (1:2)
-              dzdXrb = 0.0d0
-           case (3)
-              dzdXrb = 1.0d0
-           case (4)
-              dzdXrb = dzdpx(px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
-           case (5)
-              dzdXrb = dzdpy(px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)              
-           case (6)
-              dzdXrb = dzdpz(px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
-           case default
-              print *, 'Out of range coordinate index passed to dzdXrb'
-              stop
-        end select
+        SELECT CASE (COORDNO)
+           CASE (1:2)
+              DZDXRB = 0.0D0
+           CASE (3)
+              DZDXRB = 1.0D0
+           CASE (4)
+              DZDXRB = DZDPX(PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
+           CASE (5)
+              DZDXRB = DZDPY(PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)              
+           CASE (6)
+              DZDXRB = DZDPZ(PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
+           CASE DEFAULT
+              PRINT *, 'OUT OF RANGE COORDINATE INDEX PASSED TO DZDXRB'
+              STOP
+        END SELECT
 
-        return
+        RETURN
 
-      end function dzdXrb
+      END FUNCTION DZDXRB
 
 
 ! ****************************************************************************************************
 
-      function dzdpx (px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
+      FUNCTION DZDPX (PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: DZDPX
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
@@ -3314,20 +3314,20 @@ C
         DOUBLE PRECISION, INTENT(IN) :: SINA_A    ! SIN(ALPHA)/ALPHA
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        dzdpx = pz*inv_alpha2*(x0*(1.0d0-cos_alpha) + 
-     &          pdotX0*px*(sina_a-2.0d0*(1.0d0-cos_alpha)*inv_alpha2)) -
-     &          sina_a*(px*z0+y0) + 
-     &          (py*x0-px*y0)*px*inv_alpha2*(cos_alpha-sina_a)
+        DZDPX = PZ*INV_ALPHA2*(X0*(1.0D0-COS_ALPHA) + 
+     &          PDOTX0*PX*(SINA_A-2.0D0*(1.0D0-COS_ALPHA)*INV_ALPHA2)) -
+     &          SINA_A*(PX*Z0+Y0) + 
+     &          (PY*X0-PX*Y0)*PX*INV_ALPHA2*(COS_ALPHA-SINA_A)
         
-        return
+        RETURN
  
-      end function dzdpx
+      END FUNCTION DZDPX
 
 ! ****************************************************************************************************
 
-      function dzdpy (px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
+      FUNCTION DZDPY (PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: DZDPY
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
@@ -3335,19 +3335,19 @@ C
         DOUBLE PRECISION, INTENT(IN) :: SINA_A    ! SIN(ALPHA)/ALPHA
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        dzdpy = sina_a*(x0-z0*py) + pz*inv_alpha2*(y0*(1.0d0-cos_alpha) + 
-     &          pdotX0*py*(sina_a-2.0d0*(1.0d0-cos_alpha)*inv_alpha2)) +
-     &          (py*x0-px*y0)*py*inv_alpha2*(cos_alpha-sina_a)
+        DZDPY = SINA_A*(X0-Z0*PY) + PZ*INV_ALPHA2*(Y0*(1.0D0-COS_ALPHA) + 
+     &          PDOTX0*PY*(SINA_A-2.0D0*(1.0D0-COS_ALPHA)*INV_ALPHA2)) +
+     &          (PY*X0-PX*Y0)*PY*INV_ALPHA2*(COS_ALPHA-SINA_A)
         
-        return
+        RETURN
 
-      end function dzdpy
+      END FUNCTION DZDPY
 
 ! ****************************************************************************************************
 
-      function dzdpz (px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
+      FUNCTION DZDPZ (PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: DZDPZ
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
@@ -3355,108 +3355,108 @@ C
         DOUBLE PRECISION, INTENT(IN) :: SINA_A    ! SIN(ALPHA)/ALPHA
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        dzdpz = pdotX0*(1.0d0-cos_alpha)*inv_alpha2 - pz*z0*sina_a +
-     &          pz*inv_alpha2*(z0*(1.0d0-cos_alpha) + 
-     &          pdotX0*pz*(sina_a-2.0d0*(1.0d0-cos_alpha)*inv_alpha2)) +
-     &          (py*x0-px*y0)*pz*inv_alpha2*(cos_alpha-sina_a)
+        DZDPZ = PDOTX0*(1.0D0-COS_ALPHA)*INV_ALPHA2 - PZ*Z0*SINA_A +
+     &          PZ*INV_ALPHA2*(Z0*(1.0D0-COS_ALPHA) + 
+     &          PDOTX0*PZ*(SINA_A-2.0D0*(1.0D0-COS_ALPHA)*INV_ALPHA2)) +
+     &          (PY*X0-PX*Y0)*PZ*INV_ALPHA2*(COS_ALPHA-SINA_A)
 
-        return
+        RETURN
 
-      end function dzdpz
-
-! ****************************************************************************************************
-
-! And selected second derivatives
+      END FUNCTION DZDPZ
 
 ! ****************************************************************************************************
 
-! Wrapper function for the rigid body second derivatives
-! coordNo`s run from 1 to 6, with 1 specifying dz/dxcom, 2 specifying dz/dycom etc
+! AND SELECTED SECOND DERIVATIVES
 
-      function d2zdXrb1dXrb2(coordNo1,coordNo2,
-     1                       px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
+! ****************************************************************************************************
 
-       implicit none
+! WRAPPER FUNCTION FOR THE RIGID BODY SECOND DERIVATIVES
+! COORDNO`S RUN FROM 1 TO 6, WITH 1 SPECIFYING DZ/DXCOM, 2 SPECIFYING DZ/DYCOM ETC
+
+      FUNCTION D2ZDXRB1DXRB2(COORDNO1,COORDNO2,
+     1                       PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
+
+       IMPLICIT NONE
 
        DOUBLE PRECISION :: D2ZDXRB1DXRB2
-       integer :: coordNo1,coordNo2
+       INTEGER :: COORDNO1,COORDNO2
        DOUBLE PRECISION :: PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0
 
-! Local variables
+! LOCAL VARIABLES
 
-       integer :: firstCoord, secondCoord
+       INTEGER :: FIRSTCOORD, SECONDCOORD
 
-! External functions
+! EXTERNAL FUNCTIONS
 
        DOUBLE PRECISION :: D2ZDPX2,D2ZDPXDPY,D2ZDPXDPZ,D2ZDPY2,D2ZDPYDPZ,D2ZDPZ2
 
-! Check for range
+! CHECK FOR RANGE
 
-       if (coordNo1.lt.1 .or. coordNo1.gt.6) then
-          print *, 'Out of range coordNo1 passed to d2zdXrb1dXrb2:', coordNo1
-          stop
-       endif
-       if (coordNo2.lt.1 .or. coordNo2.gt.6) then
-          print *, 'Out of range coordNo1 passed to d2zdXrb1dXrb2:', coordNo2
-          stop
-       endif
+       IF (COORDNO1.LT.1 .OR. COORDNO1.GT.6) THEN
+          PRINT *, 'OUT OF RANGE COORDNO1 PASSED TO D2ZDXRB1DXRB2:', COORDNO1
+          STOP
+       ENDIF
+       IF (COORDNO2.LT.1 .OR. COORDNO2.GT.6) THEN
+          PRINT *, 'OUT OF RANGE COORDNO1 PASSED TO D2ZDXRB1DXRB2:', COORDNO2
+          STOP
+       ENDIF
 
-       if (coordNo1.gt.coordNo2) then
-          firstCoord = coordNo2
-          secondCoord = coordNo1
-       else
-          firstCoord = coordNo1
-          secondCoord = coordNo2          
-       end if
+       IF (COORDNO1.GT.COORDNO2) THEN
+          FIRSTCOORD = COORDNO2
+          SECONDCOORD = COORDNO1
+       ELSE
+          FIRSTCOORD = COORDNO1
+          SECONDCOORD = COORDNO2          
+       END IF
 
-       select case (firstCoord)
-       case (4)
-          select case (secondCoord)
-          case (4)   
-             d2zdXrb1dXrb2 = d2zdpx2(px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
-          case (5)
-             d2zdXrb1dXrb2 = d2zdpxdpy(px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
-          case (6)
-             d2zdXrb1dXrb2 = d2zdpxdpz(px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
-          case default
-             print *, 'Should not get here'
-             stop
-          end select
+       SELECT CASE (FIRSTCOORD)
+       CASE (4)
+          SELECT CASE (SECONDCOORD)
+          CASE (4)   
+             D2ZDXRB1DXRB2 = D2ZDPX2(PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
+          CASE (5)
+             D2ZDXRB1DXRB2 = D2ZDPXDPY(PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
+          CASE (6)
+             D2ZDXRB1DXRB2 = D2ZDPXDPZ(PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
+          CASE DEFAULT
+             PRINT *, 'SHOULD NOT GET HERE'
+             STOP
+          END SELECT
 
-       case (5)
-          select case (secondCoord)
-          case (5)
-             d2zdXrb1dXrb2 = d2zdpy2(px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
-          case (6)
-             d2zdXrb1dXrb2 = d2zdpydpz(px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
-          case default
-             print *, 'Should not get here'
-             stop
-          end select
+       CASE (5)
+          SELECT CASE (SECONDCOORD)
+          CASE (5)
+             D2ZDXRB1DXRB2 = D2ZDPY2(PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
+          CASE (6)
+             D2ZDXRB1DXRB2 = D2ZDPYDPZ(PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
+          CASE DEFAULT
+             PRINT *, 'SHOULD NOT GET HERE'
+             STOP
+          END SELECT
 
-       case (6)
-          select case (secondCoord)
-          case (6)
-             d2zdXrb1dXrb2 = d2zdpz2(px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
-          case default
-             print *, 'Should not get here'
-             stop
-          end select
+       CASE (6)
+          SELECT CASE (SECONDCOORD)
+          CASE (6)
+             D2ZDXRB1DXRB2 = D2ZDPZ2(PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
+          CASE DEFAULT
+             PRINT *, 'SHOULD NOT GET HERE'
+             STOP
+          END SELECT
 
-       case default
-          d2zdXrb1dXrb2 = 0.0d0
+       CASE DEFAULT
+          D2ZDXRB1DXRB2 = 0.0D0
 
-       end select
+       END SELECT
 
-       return
+       RETURN
 
-      end function d2zdXrb1dXrb2
+      END FUNCTION D2ZDXRB1DXRB2
 
 ! ****************************************************************************************************
 
-      function d2zdpx2 (px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
+      FUNCTION D2ZDPX2 (PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: D2ZDPX2
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
@@ -3464,23 +3464,23 @@ C
         DOUBLE PRECISION, INTENT(IN) :: SINA_A    ! SIN(ALPHA)/ALPHA
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        d2zdpx2 = -2.0d0*px*(y0+px*(py*x0-px*y0)*inv_alpha2)*cos_alpha*inv_alpha2 +
-     &            (8.0d0*(px**2)*inv_alpha2-2.0d0)*pz*(1.0d0-cos_alpha)*pdotX0*(inv_alpha2**2) +
-     &            (2.0d0*px*y0 + (3.0d0*(px**2)*inv_alpha2-1.0d0)*(py*x0-px*y0))*sina_a*inv_alpha2 +
-     &            (py*x0-px*y0)*(cos_alpha*(1.0d0-(px**2)*inv_alpha2)-(px**2)*sina_a)*inv_alpha2 +
-     &            z0*((px**2)*inv_alpha2*(sina_a-cos_alpha) - sina_a) -
-     &            4.0d0*px*pz*(x0*(1.0d0-cos_alpha) + px*pdotX0*sina_a)*(inv_alpha2**2) +
-     &            pz*(2.0d0*px*x0*sina_a+pdotX0*((px**2)*inv_alpha2*(cos_alpha-sina_a)+sina_a))*inv_alpha2
+        D2ZDPX2 = -2.0D0*PX*(Y0+PX*(PY*X0-PX*Y0)*INV_ALPHA2)*COS_ALPHA*INV_ALPHA2 +
+     &            (8.0D0*(PX**2)*INV_ALPHA2-2.0D0)*PZ*(1.0D0-COS_ALPHA)*PDOTX0*(INV_ALPHA2**2) +
+     &            (2.0D0*PX*Y0 + (3.0D0*(PX**2)*INV_ALPHA2-1.0D0)*(PY*X0-PX*Y0))*SINA_A*INV_ALPHA2 +
+     &            (PY*X0-PX*Y0)*(COS_ALPHA*(1.0D0-(PX**2)*INV_ALPHA2)-(PX**2)*SINA_A)*INV_ALPHA2 +
+     &            Z0*((PX**2)*INV_ALPHA2*(SINA_A-COS_ALPHA) - SINA_A) -
+     &            4.0D0*PX*PZ*(X0*(1.0D0-COS_ALPHA) + PX*PDOTX0*SINA_A)*(INV_ALPHA2**2) +
+     &            PZ*(2.0D0*PX*X0*SINA_A+PDOTX0*((PX**2)*INV_ALPHA2*(COS_ALPHA-SINA_A)+SINA_A))*INV_ALPHA2
         
-        return
+        RETURN
  
-      end function d2zdpx2
+      END FUNCTION D2ZDPX2
 
 ! ****************************************************************************************************
 
-      function d2zdpxdpy (px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
+      FUNCTION D2ZDPXDPY (PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: D2ZDPXDPY
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
@@ -3488,22 +3488,22 @@ C
         DOUBLE PRECISION, INTENT(IN) :: SINA_A    ! SIN(ALPHA)/ALPHA
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        d2zdpxdpy = inv_alpha2*(cos_alpha*(px*x0 - py*y0 - px*py*z0) + 
-     &                          sina_a*(py*pz*x0+py*y0+px*pz*y0+px*py*z0-px*py*(py*x0-px*y0)-px*x0)) +
-     &              (inv_alpha2**2)*(cos_alpha*px*py*(pz*pdotX0 - 3.0d0*(py*x0 - px*y0)) +
-     &                               sina_a*px*py*(3.0d0*(py*x0 - px*y0) - 5.0d0*pz*pdotX0) -
-     &                               2.0d0*(1.0d0 - cos_alpha)*pz*(py*x0 + px*y0)) +
-     &              (inv_alpha2**3)*8.0d0*px*py*pz*(1.0d0 - cos_alpha)*pdotX0 
+        D2ZDPXDPY = INV_ALPHA2*(COS_ALPHA*(PX*X0 - PY*Y0 - PX*PY*Z0) + 
+     &                          SINA_A*(PY*PZ*X0+PY*Y0+PX*PZ*Y0+PX*PY*Z0-PX*PY*(PY*X0-PX*Y0)-PX*X0)) +
+     &              (INV_ALPHA2**2)*(COS_ALPHA*PX*PY*(PZ*PDOTX0 - 3.0D0*(PY*X0 - PX*Y0)) +
+     &                               SINA_A*PX*PY*(3.0D0*(PY*X0 - PX*Y0) - 5.0D0*PZ*PDOTX0) -
+     &                               2.0D0*(1.0D0 - COS_ALPHA)*PZ*(PY*X0 + PX*Y0)) +
+     &              (INV_ALPHA2**3)*8.0D0*PX*PY*PZ*(1.0D0 - COS_ALPHA)*PDOTX0 
  
-        return
+        RETURN
  
-      end function d2zdpxdpy
+      END FUNCTION D2ZDPXDPY
 
 ! ****************************************************************************************************
 
-      function d2zdpxdpz (px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
+      FUNCTION D2ZDPXDPZ (PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: D2ZDPXDPZ
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
@@ -3511,22 +3511,22 @@ C
         DOUBLE PRECISION, INTENT(IN) :: SINA_A    ! SIN(ALPHA)/ALPHA
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        d2zdpxdpz = inv_alpha2*(x0*(1.0d0-cos_alpha) - cos_alpha*pz*(y0+px*z0) + 
-     &                          sina_a*(pz*(pz*x0+y0-px*(py*x0-px*y0)+2.0d0*px*z0)+px*pdotX0)) +
-     &              (inv_alpha2**2)*(cos_alpha*px*pz*(pz*pdotX0-3.0d0*(py*x0-px*y0)) + 
-     &                               sina_a*px*pz*(3.0d0*(py*x0-px*y0)-5.0d0*pz*pdotX0) -
-     &                               2.0d0*(1.0d0-cos_alpha)*((pz**2)*x0+px*pz*z0+px*pdotX0)) +
-     &              (inv_alpha2**3)*8.0d0*px*(pz**2)*(1.0d0 - cos_alpha)*pdotX0 
+        D2ZDPXDPZ = INV_ALPHA2*(X0*(1.0D0-COS_ALPHA) - COS_ALPHA*PZ*(Y0+PX*Z0) + 
+     &                          SINA_A*(PZ*(PZ*X0+Y0-PX*(PY*X0-PX*Y0)+2.0D0*PX*Z0)+PX*PDOTX0)) +
+     &              (INV_ALPHA2**2)*(COS_ALPHA*PX*PZ*(PZ*PDOTX0-3.0D0*(PY*X0-PX*Y0)) + 
+     &                               SINA_A*PX*PZ*(3.0D0*(PY*X0-PX*Y0)-5.0D0*PZ*PDOTX0) -
+     &                               2.0D0*(1.0D0-COS_ALPHA)*((PZ**2)*X0+PX*PZ*Z0+PX*PDOTX0)) +
+     &              (INV_ALPHA2**3)*8.0D0*PX*(PZ**2)*(1.0D0 - COS_ALPHA)*PDOTX0 
 
-        return
+        RETURN
  
-      end function d2zdpxdpz
+      END FUNCTION D2ZDPXDPZ
 
 ! ****************************************************************************************************
 
-      function d2zdpy2 (px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
+      FUNCTION D2ZDPY2 (PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: D2ZDPY2
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
@@ -3534,23 +3534,23 @@ C
         DOUBLE PRECISION, INTENT(IN) :: SINA_A    ! SIN(ALPHA)/ALPHA
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        d2zdpy2 = 2.0d0*py*(x0-py*(py*x0-px*y0)*inv_alpha2)*cos_alpha*inv_alpha2 +
-     &            (8.0d0*(py**2)*inv_alpha2-2.0d0)*pz*(1.0d0-cos_alpha)*pdotX0*(inv_alpha2**2) +
-     &            (-2.0d0*py*x0 + (3.0d0*(py**2)*inv_alpha2-1.0d0)*(py*x0-px*y0))*sina_a*inv_alpha2 +
-     &            (py*x0-px*y0)*(cos_alpha*(1.0d0-(py**2)*inv_alpha2)-(py**2)*sina_a)*inv_alpha2 +
-     &            z0*((py**2)*inv_alpha2*(sina_a-cos_alpha) - sina_a) -
-     &            4.0d0*py*pz*(y0*(1.0d0-cos_alpha) + py*pdotX0*sina_a)*(inv_alpha2**2) +
-     &            pz*(2.0d0*py*y0*sina_a+pdotX0*((py**2)*inv_alpha2*(cos_alpha-sina_a)+sina_a))*inv_alpha2
+        D2ZDPY2 = 2.0D0*PY*(X0-PY*(PY*X0-PX*Y0)*INV_ALPHA2)*COS_ALPHA*INV_ALPHA2 +
+     &            (8.0D0*(PY**2)*INV_ALPHA2-2.0D0)*PZ*(1.0D0-COS_ALPHA)*PDOTX0*(INV_ALPHA2**2) +
+     &            (-2.0D0*PY*X0 + (3.0D0*(PY**2)*INV_ALPHA2-1.0D0)*(PY*X0-PX*Y0))*SINA_A*INV_ALPHA2 +
+     &            (PY*X0-PX*Y0)*(COS_ALPHA*(1.0D0-(PY**2)*INV_ALPHA2)-(PY**2)*SINA_A)*INV_ALPHA2 +
+     &            Z0*((PY**2)*INV_ALPHA2*(SINA_A-COS_ALPHA) - SINA_A) -
+     &            4.0D0*PY*PZ*(Y0*(1.0D0-COS_ALPHA) + PY*PDOTX0*SINA_A)*(INV_ALPHA2**2) +
+     &            PZ*(2.0D0*PY*Y0*SINA_A+PDOTX0*((PY**2)*INV_ALPHA2*(COS_ALPHA-SINA_A)+SINA_A))*INV_ALPHA2
         
-        return
+        RETURN
  
-      end function d2zdpy2
+      END FUNCTION D2ZDPY2
 
 ! ****************************************************************************************************
 
-      function d2zdpydpz (px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
+      FUNCTION D2ZDPYDPZ (PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: D2ZDPYDPZ
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
@@ -3558,22 +3558,22 @@ C
         DOUBLE PRECISION, INTENT(IN) :: SINA_A    ! SIN(ALPHA)/ALPHA
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        d2zdpydpz = inv_alpha2*(y0*(1.0d0-cos_alpha) + cos_alpha*pz*(x0-py*z0) +
-     &                          sina_a*(pz*(pz*y0+2.0d0*py*z0-x0-py*(py*x0 - px*y0)) + py*pdotX0)) +
-     &              (inv_alpha2**2)*(cos_alpha*py*pz*(pz*pdotX0-3.0d0*(py*x0-px*y0)) +
-     &                               sina_a*py*pz*(3.0d0*(py*x0 - px*y0) - 5.0d0*pz*pdotX0) -
-     &                               2.0d0*(1.0d0 - cos_alpha)*(pz*(pz*y0+py*z0) + py*pdotX0)) +
-     &              (inv_alpha2**3)*8.0d0*py*(pz**2)*(1.0d0 - cos_alpha)*pdotX0 
+        D2ZDPYDPZ = INV_ALPHA2*(Y0*(1.0D0-COS_ALPHA) + COS_ALPHA*PZ*(X0-PY*Z0) +
+     &                          SINA_A*(PZ*(PZ*Y0+2.0D0*PY*Z0-X0-PY*(PY*X0 - PX*Y0)) + PY*PDOTX0)) +
+     &              (INV_ALPHA2**2)*(COS_ALPHA*PY*PZ*(PZ*PDOTX0-3.0D0*(PY*X0-PX*Y0)) +
+     &                               SINA_A*PY*PZ*(3.0D0*(PY*X0 - PX*Y0) - 5.0D0*PZ*PDOTX0) -
+     &                               2.0D0*(1.0D0 - COS_ALPHA)*(PZ*(PZ*Y0+PY*Z0) + PY*PDOTX0)) +
+     &              (INV_ALPHA2**3)*8.0D0*PY*(PZ**2)*(1.0D0 - COS_ALPHA)*PDOTX0 
 
-        return
+        RETURN
  
-      end function d2zdpydpz 
+      END FUNCTION D2ZDPYDPZ 
 
 ! ****************************************************************************************************
 
-      function d2zdpz2 (px,py,pz,x0,y0,z0,cos_alpha,sina_a,inv_alpha2,pdotX0)
+      FUNCTION D2ZDPZ2 (PX,PY,PZ,X0,Y0,Z0,COS_ALPHA,SINA_A,INV_ALPHA2,PDOTX0)
 
-        implicit none
+        IMPLICIT NONE
 
         DOUBLE PRECISION :: D2ZDPZ2
         DOUBLE PRECISION, INTENT(IN) :: PX, PY, PZ, X0, Y0, Z0
@@ -3581,17 +3581,17 @@ C
         DOUBLE PRECISION, INTENT(IN) :: SINA_A    ! SIN(ALPHA)/ALPHA
         DOUBLE PRECISION, INTENT(IN) :: PDOTX0
 
-        d2zdpz2 = -2.0d0*(pz**2)*(py*x0-px*y0)*cos_alpha*(inv_alpha2**2) +
-     &            pz*(8.0d0*(pz**2)*inv_alpha2 - 6.0d0)*(1.0d0-cos_alpha)*pdotX0*(inv_alpha2**2) +
-     &            (3.0d0*(pz**2)*inv_alpha2 - 1.0d0)*(py*x0 - px*y0)*sina_a*inv_alpha2 +
-     &            (py*x0-px*y0)*(cos_alpha-(pz**2)*(cos_alpha*inv_alpha2-sina_a))*inv_alpha2 +
-     &            z0*((pz**2)*inv_alpha2*(sina_a-cos_alpha) - sina_a) +
-     &            2.0d0*inv_alpha2*(1.0d0-2.0d0*(pz**2)*inv_alpha2)*(z0*(1.0d0-cos_alpha)+pz*pdotX0*sina_a) +
-     &            pz*(2.0d0*pz*z0*sina_a+pdotX0*((pz**2)*inv_alpha2*(cos_alpha-sina_a)+sina_a))*inv_alpha2
+        D2ZDPZ2 = -2.0D0*(PZ**2)*(PY*X0-PX*Y0)*COS_ALPHA*(INV_ALPHA2**2) +
+     &            PZ*(8.0D0*(PZ**2)*INV_ALPHA2 - 6.0D0)*(1.0D0-COS_ALPHA)*PDOTX0*(INV_ALPHA2**2) +
+     &            (3.0D0*(PZ**2)*INV_ALPHA2 - 1.0D0)*(PY*X0 - PX*Y0)*SINA_A*INV_ALPHA2 +
+     &            (PY*X0-PX*Y0)*(COS_ALPHA-(PZ**2)*(COS_ALPHA*INV_ALPHA2-SINA_A))*INV_ALPHA2 +
+     &            Z0*((PZ**2)*INV_ALPHA2*(SINA_A-COS_ALPHA) - SINA_A) +
+     &            2.0D0*INV_ALPHA2*(1.0D0-2.0D0*(PZ**2)*INV_ALPHA2)*(Z0*(1.0D0-COS_ALPHA)+PZ*PDOTX0*SINA_A) +
+     &            PZ*(2.0D0*PZ*Z0*SINA_A+PDOTX0*((PZ**2)*INV_ALPHA2*(COS_ALPHA-SINA_A)+SINA_A))*INV_ALPHA2
         
-        return
+        RETURN
  
-      end function d2zdpz2       
+      END FUNCTION D2ZDPZ2       
 
 ! ****************************************************************************************************
 

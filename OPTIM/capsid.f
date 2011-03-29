@@ -1,25 +1,25 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 
 C
-C  Energy and gradient for rigid body molecule - 6-site virus pentamer.
-C  Variables have been reordered to the OPTIM convention.
+C  ENERGY AND GRADIENT FOR RIGID BODY MOLECULE - 6-SITE VIRUS PENTAMER.
+C  VARIABLES HAVE BEEN REORDERED TO THE OPTIM CONVENTION.
 C
       SUBROUTINE FCAPSID(NATOMS,X,V,ECAPSID,GTEST,SECT)
       USE MODHESS
@@ -62,7 +62,7 @@ C
       COMMON /EV/ EVAP
       COMMON /CAPS/ RHO, EPS2, RAD, HEIGHT
 C
-C  Attractive and repulsive function definitions and their derivatives.
+C  ATTRACTIVE AND REPULSIVE FUNCTION DEFINITIONS AND THEIR DERIVATIVES.
 C
       FATT(RHO,XDUMM)=-1.0D0 + (1.0D0 - EXP(RHO*(1.0D0 - XDUMM)))**2
       DFATT(RHO,XDUMM)=2.0D0*(-EXP(2.0D0*RHO*(1.0D0-XDUMM)) + EXP(RHO*(1.0D0-XDUMM)))*RHO
@@ -71,1644 +71,1644 @@ C
       DFREP(SIGMA,XDUMM)=-12.0D0*(SIGMA/XDUMM)**12/XDUMM
       DDFREP(SIGMA,XDUMM)=156.0D0*(SIGMA/XDUMM)**12/XDUMM**2
 C
-C Derivatives of R(i,j) with respect to rigid body coordinates.
-C P(i) = (p1x,p1y,p1z), P(j)=(p2x,p2y,p2z) are the site cordinates in
-C the reference geometry for the molecule at the origin.
+C DERIVATIVES OF R(I,J) WITH RESPECT TO RIGID BODY COORDINATES.
+C P(I) = (P1X,P1Y,P1Z), P(J)=(P2X,P2Y,P2Z) ARE THE SITE CORDINATES IN
+C THE REFERENCE GEOMETRY FOR THE MOLECULE AT THE ORIGIN.
 C
-C      D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1    rdist*(c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - n2*p2y*s2 + 
-C     1    m2*p2z*s2 + x1 - x2)
+C      D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1    RDIST*(C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - N2*P2Y*S2 + 
+C     1    M2*P2Z*S2 + X1 - X2)
 
-C      D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1    rdist*(c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + n2*p2x*s2 - 
-C     1    l2*p2z*s2 + y1 - y2)
+C      D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1    RDIST*(C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + N2*P2X*S2 - 
+C     1    L2*P2Z*S2 + Y1 - Y2)
 
-C      D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1    rdist*(c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - m2*p2x*s2 + 
-C     1    l2*p2y*s2 + z1 - z2)
+C      D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1    RDIST*(C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - M2*P2X*S2 + 
+C     1    L2*P2Y*S2 + Z1 - Z2)
 
-C      D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1      rdist*((c3a1*(2*l1*p1x*(-1 + l12*ralpha12) + 
-C     1            (m1*p1y + n1*p1z)*(-1 + 2*l12*ralpha12)) + 
-C     1         (l1*l12*p1x + l12*m1*p1y - l1*n1*p1y + l1*m1*p1z + l12*n1*p1z)*
-C     1          ralpha12*s1 + l1*(c2a1*(n1*p1y - m1*p1z)*ralpha12 - p1x*s1))*
-C     1       (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1         c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1         n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + 
-C     1      (c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1         c3a1*m1*(-p1x + 2*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + 
-C     1         (-(l1*p1y) + p1z + l1* (l1*m1*p1x + n1*p1x + m1**2*p1y - l1*p1z + m1*n1*p1z)*ralpha12)*
-C     1          s1)*(c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-C     1         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + 
-C     1      (-(c2a1*l1*(-(m1*p1x) + l1*p1y)*ralpha12) + 
-C     1         c3a1*n1*(-p1x + 2*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + 
-C     1         (-p1y - l1*p1z + l1*(-(m1*p1x) + l1*n1*p1x + l1*p1y + m1*n1*p1y + n1**2*p1z)*ralpha12)*s1)*
-C     1       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1         c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - 
-C     1         m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+C      D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1      RDIST*((C3A1*(2*L1*P1X*(-1 + L12*RALPHA12) + 
+C     1            (M1*P1Y + N1*P1Z)*(-1 + 2*L12*RALPHA12)) + 
+C     1         (L1*L12*P1X + L12*M1*P1Y - L1*N1*P1Y + L1*M1*P1Z + L12*N1*P1Z)*
+C     1          RALPHA12*S1 + L1*(C2A1*(N1*P1Y - M1*P1Z)*RALPHA12 - P1X*S1))*
+C     1       (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1         C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1         N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + 
+C     1      (C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1         C3A1*M1*(-P1X + 2*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + 
+C     1         (-(L1*P1Y) + P1Z + L1* (L1*M1*P1X + N1*P1X + M1**2*P1Y - L1*P1Z + M1*N1*P1Z)*RALPHA12)*
+C     1          S1)*(C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+C     1         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + 
+C     1      (-(C2A1*L1*(-(M1*P1X) + L1*P1Y)*RALPHA12) + 
+C     1         C3A1*N1*(-P1X + 2*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + 
+C     1         (-P1Y - L1*P1Z + L1*(-(M1*P1X) + L1*N1*P1X + L1*P1Y + M1*N1*P1Y + N1**2*P1Z)*RALPHA12)*S1)*
+C     1       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1         C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - 
+C     1         M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 
-C      D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 rdist*((-(c2a1*m1*(-(n1*p1y) + m1*p1z)*ralpha12) + 
-C     1         c3a1*l1*(-p1y + 2*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + 
-C     1         (-(m1*p1x) - p1z + m1* (l1**2*p1x + l1*m1*p1y - n1*p1y + m1*p1z + l1*n1*p1z)*ralpha12)*
-C     1          s1)*(c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1         c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1         n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + (-(c3a1*(l1*p1x + 2*m1*p1y + n1*p1z)) + 
-C     1         c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-C     1         (-(m1*p1y) + (l1*m12*p1x + m1*n1*p1x + m1*m12*p1y - l1*m1*p1z + 
-C     1               m12*n1*p1z)*ralpha12)*s1)*
-C     1       (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-C     1         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + (c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1         c3a1*n1*(-p1y + 2*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + 
-C     1         (p1x - m1*(m1 - l1*n1)*p1x*ralpha12 + 
-C     1            m1*((l1 + m1*n1)*p1y*ralpha12 + p1z*(-1 + n1**2*ralpha12)))*s1)*
-C     1       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1         c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - 
-C     1         m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+C      D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 RDIST*((-(C2A1*M1*(-(N1*P1Y) + M1*P1Z)*RALPHA12) + 
+C     1         C3A1*L1*(-P1Y + 2*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + 
+C     1         (-(M1*P1X) - P1Z + M1* (L1**2*P1X + L1*M1*P1Y - N1*P1Y + M1*P1Z + L1*N1*P1Z)*RALPHA12)*
+C     1          S1)*(C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1         C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1         N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + (-(C3A1*(L1*P1X + 2*M1*P1Y + N1*P1Z)) + 
+C     1         C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+C     1         (-(M1*P1Y) + (L1*M12*P1X + M1*N1*P1X + M1*M12*P1Y - L1*M1*P1Z + 
+C     1               M12*N1*P1Z)*RALPHA12)*S1)*
+C     1       (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+C     1         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + (C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1         C3A1*N1*(-P1Y + 2*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + 
+C     1         (P1X - M1*(M1 - L1*N1)*P1X*RALPHA12 + 
+C     1            M1*((L1 + M1*N1)*P1Y*RALPHA12 + P1Z*(-1 + N1**2*RALPHA12)))*S1)*
+C     1       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1         C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - 
+C     1         M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 
-C      D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 rdist*((c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1         c3a1*l1*(-p1z + 2*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + (-(n1*p1x) + p1y + n1*
-C     1             (l1**2*p1x + l1*m1*p1y - n1*p1y + m1*p1z + l1*n1*p1z)*ralpha12)*
-C     1          s1)*(c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1         c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1         n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + 
-C     1      (-(c2a1*n1*(n1*p1x - l1*p1z)*ralpha12) + 
-C     1         c3a1*m1*(-p1z + 2*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12) + 
-C     1         (-p1x - n1*p1y + n1*(l1*m1*p1x + n1*p1x + m1**2*p1y - l1*p1z + 
-C     1               m1*n1*p1z)*ralpha12)*s1)*
-C     1       (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-C     1         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + 
-C     1      (-(c3a1*(l1*p1x + m1*p1y + 2*n1*p1z)) + 
-C     1         c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1         2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-C     1         (-(n1*p1z) + (-(m1*n1*p1x) + l1*n12*p1x + l1*n1*p1y + m1*n12*p1y + 
-C     1               n1*n12*p1z)*ralpha12)*s1)*
-C     1       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1         c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - 
-C     1         m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+C      D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 RDIST*((C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1         C3A1*L1*(-P1Z + 2*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + (-(N1*P1X) + P1Y + N1*
+C     1             (L1**2*P1X + L1*M1*P1Y - N1*P1Y + M1*P1Z + L1*N1*P1Z)*RALPHA12)*
+C     1          S1)*(C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1         C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1         N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + 
+C     1      (-(C2A1*N1*(N1*P1X - L1*P1Z)*RALPHA12) + 
+C     1         C3A1*M1*(-P1Z + 2*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12) + 
+C     1         (-P1X - N1*P1Y + N1*(L1*M1*P1X + N1*P1X + M1**2*P1Y - L1*P1Z + 
+C     1               M1*N1*P1Z)*RALPHA12)*S1)*
+C     1       (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+C     1         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + 
+C     1      (-(C3A1*(L1*P1X + M1*P1Y + 2*N1*P1Z)) + 
+C     1         C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1         2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+C     1         (-(N1*P1Z) + (-(M1*N1*P1X) + L1*N12*P1X + L1*N1*P1Y + M1*N12*P1Y + 
+C     1               N1*N12*P1Z)*RALPHA12)*S1)*
+C     1       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1         C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - 
+C     1         M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 
-C      D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1   -rdist*(c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - n2*p2y*s2 + 
-C     1    m2*p2z*s2 + x1 - x2)
+C      D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1   -RDIST*(C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - N2*P2Y*S2 + 
+C     1    M2*P2Z*S2 + X1 - X2)
 
-C      D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1   -rdist*(c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + n2*p2x*s2 - 
-C     1    l2*p2z*s2 + y1 - y2)
+C      D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1   -RDIST*(C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + N2*P2X*S2 - 
+C     1    L2*P2Z*S2 + Y1 - Y2)
 
-C      D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1   -rdist*(c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - m2*p2x*s2 + 
-C     1    l2*p2y*s2 + z1 - z2)
+C      D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1   -RDIST*(C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - M2*P2X*S2 + 
+C     1    L2*P2Y*S2 + Z1 - Z2)
 
-C      DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1         rdist*((c3a2*(2*l2*p2x + m2*p2y + n2*p2z - 
-C     1            2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) - 
-C     1         (l2*l22*p2x + l22*m2*p2y - l2*n2*p2y + l2*m2*p2z + l22*n2*p2z)*
-C     1          ralpha22*s2 + l2*(-(c2a2*n2*p2y*ralpha22) + c2a2*m2*p2z*ralpha22 + 
-C     1            p2x*s2))*(c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - 
-C     1         c2a2*p2x + c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + 
-C     1         (n1*p1y - m1*p1z)*s1 - n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + 
-C     1      (-(c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22) + 
-C     1         c3a2*m2*(p2x - 2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) - (-(l2*p2y) + p2z + l2*
-C     1             (l2*m2*p2x + n2*p2x + m2**2*p2y - l2*p2z + m2*n2*p2z)*ralpha22)*
-C     1          s2)*(c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-C     1         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + 
-C     1      (c2a2*l2*(-(m2*p2x) + l2*p2y)*ralpha22 + 
-C     1         c3a2*n2*(p2x - 2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-C     1    (p2y + l2*p2z - l2*(-(m2*p2x) + l2*n2*p2x + l2*p2y + m2*n2*p2y + n2**2*p2z)*ralpha22)*s2)*
-C     1       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+C      DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1         RDIST*((C3A2*(2*L2*P2X + M2*P2Y + N2*P2Z - 
+C     1            2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) - 
+C     1         (L2*L22*P2X + L22*M2*P2Y - L2*N2*P2Y + L2*M2*P2Z + L22*N2*P2Z)*
+C     1          RALPHA22*S2 + L2*(-(C2A2*N2*P2Y*RALPHA22) + C2A2*M2*P2Z*RALPHA22 + 
+C     1            P2X*S2))*(C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - 
+C     1         C2A2*P2X + C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + 
+C     1         (N1*P1Y - M1*P1Z)*S1 - N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + 
+C     1      (-(C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22) + 
+C     1         C3A2*M2*(P2X - 2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) - (-(L2*P2Y) + P2Z + L2*
+C     1             (L2*M2*P2X + N2*P2X + M2**2*P2Y - L2*P2Z + M2*N2*P2Z)*RALPHA22)*
+C     1          S2)*(C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+C     1         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + 
+C     1      (C2A2*L2*(-(M2*P2X) + L2*P2Y)*RALPHA22 + 
+C     1         C3A2*N2*(P2X - 2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+C     1    (P2Y + L2*P2Z - L2*(-(M2*P2X) + L2*N2*P2X + L2*P2Y + M2*N2*P2Y + N2**2*P2Z)*RALPHA22)*S2)*
+C     1       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 
-C      DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 rdist*((c2a2*m2*(-(n2*p2y) + m2*p2z)*ralpha22 + 
-C     1         c3a2*l2*(p2y - 2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-C     1         (m2*p2x + p2z - m2*(l2**2*p2x + l2*m2*p2y - n2*p2y + m2*p2z + l2*n2*p2z)*ralpha22)*s2)*
-C     1       (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1         c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1         n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + (c3a2*(l2*p2x + 2*m2*p2y + n2*p2z - 
-C     1            2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) - 
-C     1         (l2*m22*p2x + m2*n2*p2x + m2*m22*p2y - l2*m2*p2z + m22*n2*p2z)*
-C     1          ralpha22*s2 + m2*(c2a2*(n2*p2x - l2*p2z)*ralpha22 + p2y*s2))*
-C     1       (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-C     1         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + (-(c2a2*m2*(m2*p2x - l2*p2y)*ralpha22) + 
-C     1         c3a2*n2*(p2y - 2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-C     1         (-p2x + m2*p2z - m2*(-(m2*p2x) + l2*n2*p2x + l2*p2y + m2*n2*p2y + 
-C     1               n2**2*p2z)*ralpha22)*s2)*
-C     1       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1         c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - 
-C     1         m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+C      DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 RDIST*((C2A2*M2*(-(N2*P2Y) + M2*P2Z)*RALPHA22 + 
+C     1         C3A2*L2*(P2Y - 2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+C     1         (M2*P2X + P2Z - M2*(L2**2*P2X + L2*M2*P2Y - N2*P2Y + M2*P2Z + L2*N2*P2Z)*RALPHA22)*S2)*
+C     1       (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1         C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1         N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + (C3A2*(L2*P2X + 2*M2*P2Y + N2*P2Z - 
+C     1            2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) - 
+C     1         (L2*M22*P2X + M2*N2*P2X + M2*M22*P2Y - L2*M2*P2Z + M22*N2*P2Z)*
+C     1          RALPHA22*S2 + M2*(C2A2*(N2*P2X - L2*P2Z)*RALPHA22 + P2Y*S2))*
+C     1       (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+C     1         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + (-(C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22) + 
+C     1         C3A2*N2*(P2Y - 2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+C     1         (-P2X + M2*P2Z - M2*(-(M2*P2X) + L2*N2*P2X + L2*P2Y + M2*N2*P2Y + 
+C     1               N2**2*P2Z)*RALPHA22)*S2)*
+C     1       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1         C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - 
+C     1         M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 
-C      DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 rdist*((-(c2a2*n2*(n2*p2y - m2*p2z)*ralpha22) + 
-C     1         c3a2*l2*(p2z - 2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-C     1         (n2*p2x - p2y - n2*(l2**2*p2x + l2*m2*p2y - n2*p2y + m2*p2z + l2*n2*p2z)*ralpha22)*s2)*
-C     1       (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1         c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1         n2*p2y*s2 + m2*p2z*s2 + x1 - x2) + (c2a2*n2*(n2*p2x - l2*p2z)*ralpha22 + 
-C     1         c3a2*m2*(p2z - 2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-C     1         (p2x + n2*p2y - n2*(l2*m2*p2x + n2*p2x + m2**2*p2y - l2*p2z + m2*n2*p2z)*ralpha22)*s2)*
-C     1       (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1         c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) - n1*p1x*s1 + l1*p1z*s1 + 
-C     1         n2*p2x*s2 - l2*p2z*s2 + y1 - y2) + (c3a2*(l2*p2x + m2*p2y + 2*n2*p2z - 
-C     1            2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22) + 
-C     1         (n2*(m2*p2x - l2*p2y) - n22*(l2*p2x + m2*p2y + n2*p2z))*ralpha22*
-C     1          s2 + n2*(-(c2a2*m2*p2x*ralpha22) + c2a2*l2*p2y*ralpha22 + p2z*s2))*
-C     1       (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1         c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + m1*p1x*s1 - l1*p1y*s1 - 
-C     1         m2*p2x*s2 + l2*p2y*s2 + z1 - z2))
+C      DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 RDIST*((-(C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22) + 
+C     1         C3A2*L2*(P2Z - 2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+C     1         (N2*P2X - P2Y - N2*(L2**2*P2X + L2*M2*P2Y - N2*P2Y + M2*P2Z + L2*N2*P2Z)*RALPHA22)*S2)*
+C     1       (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1         C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1         N2*P2Y*S2 + M2*P2Z*S2 + X1 - X2) + (C2A2*N2*(N2*P2X - L2*P2Z)*RALPHA22 + 
+C     1         C3A2*M2*(P2Z - 2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+C     1         (P2X + N2*P2Y - N2*(L2*M2*P2X + N2*P2X + M2**2*P2Y - L2*P2Z + M2*N2*P2Z)*RALPHA22)*S2)*
+C     1       (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1         C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) - N1*P1X*S1 + L1*P1Z*S1 + 
+C     1         N2*P2X*S2 - L2*P2Z*S2 + Y1 - Y2) + (C3A2*(L2*P2X + M2*P2Y + 2*N2*P2Z - 
+C     1            2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22) + 
+C     1         (N2*(M2*P2X - L2*P2Y) - N22*(L2*P2X + M2*P2Y + N2*P2Z))*RALPHA22*
+C     1          S2 + N2*(-(C2A2*M2*P2X*RALPHA22) + C2A2*L2*P2Y*RALPHA22 + P2Z*S2))*
+C     1       (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1         C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + M1*P1X*S1 - L1*P1Y*S1 - 
+C     1         M2*P2X*S2 + L2*P2Y*S2 + Z1 - Z2))
 C 
-C  Second derivatives of R(i,j) with respect to rigid body coordinates.
+C  SECOND DERIVATIVES OF R(I,J) WITH RESPECT TO RIGID BODY COORDINATES.
 C 
 
-C      DD11(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = rdist
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD12(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD13(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD14(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1  rdist*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1 c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1 2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-C     1 l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1 l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD15(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 rdist*(-(c3a1*l1*p1y) + c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1 2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - p1z*s1 - 
-C     1 m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1 l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD16(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 rdist*(-(c3a1*l1*p1z) + c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1 2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + p1y*s1 - 
-C     1 n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1 l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD17(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = -rdist
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD18(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD19(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD1A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1 c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1 2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-C     1 l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1 l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD1B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1 2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + p2z*s2 + 
-C     1 m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1 l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD1C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1 2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - p2y*s2 + 
-C     1 n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1 l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-C     1 -D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD22(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = rdist
-C     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD23(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD24(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1 2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + p1z*s1 - 
-C     1 l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1 l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-C     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD25(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1 c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1 2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-C     1 m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1 m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-C     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD26(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1 2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - n1*p1y*s1 - 
-C     1 n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1 m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-C     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD27(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD28(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = -rdist
-C     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD29(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 0
-C     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD2A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1 2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - p2z*s2 + 
-C     1 l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1 l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-C     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD2B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1 c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1 2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-C     1 m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1 m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-C     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD2C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1 2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + n2*p2y*s2 + 
-C     1 n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1 m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-C     1 -D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD33(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = rdist
-C     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD34(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1 2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - l1*p1z*s1 - 
-C     1 l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1 l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-C     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD35(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1 2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - m1*p1z*s1 - 
-C     1 m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1 m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-C     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD36(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1 c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1 2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-C     1 n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1 n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)
-C     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD37(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD38(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD39(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = -rdist
-C     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD3A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1 2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + l2*p2z*s2 + 
-C     1 l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1 l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-C     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD3B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1 2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + m2*p2z*s2 + 
-C     1 m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1 m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-C     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD3C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = rdist*(c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1 c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1 2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-C     1 n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1 n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)
-C     1 -D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD44(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1     c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1     2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-C     1     l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1     l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-C     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1     2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-C     1     p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1     l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-C     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1     2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-C     1     l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1     l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-C     1 2*(-2*c3a1*p1x - (3*c2a1*l12*(n1*p1y - m1*p1z))/alpha1**4 + 
-C     1    (c2a1*l1**3*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l1**3*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    c2a1*l12*p1x*ralpha12 + 4*c3a1*l12*p1x*ralpha12 + 
-C     1    c2a1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    6*c3a1*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 + 
-C     1    (3*l12*(n1*p1y - m1*p1z)*s1)/alpha1**4 - 
-C     1    (5*l1**3*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    3*l12*p1x*ralpha12*s1 - (n1*p1y - m1*p1z)*ralpha12*s1 - 
-C     1    l12*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    3*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*((-3*c2a1*l12*(-(n1*p1x) + l1*p1z))/alpha1**4 + 
-C     1    (c2a1*l12*m1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l12*m1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 + 
-C     1    4*c3a1*l1*m1*p1x*ralpha12 - c2a1*l12*p1y*ralpha12 + 
-C     1    2*c2a1*l1*p1z*ralpha12 + c2a1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 + 
-C     1    (3*l12*(-(n1*p1x) + l1*p1z)*s1)/alpha1**4 - 
-C     1    (5*l12*m1*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    2*l1*m1*p1x*ralpha12*s1 + l12*p1y*ralpha12*s1 - 
-C     1    2*l1*p1z*ralpha12*s1 - (-(n1*p1x) + l1*p1z)*ralpha12*s1 - 
-C     1    l12*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*((-3*c2a1*l12*(m1*p1x - l1*p1y))/alpha1**4 + 
-C     1    (c2a1*l12*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l12*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 + 
-C     1    4*c3a1*l1*n1*p1x*ralpha12 - 2*c2a1*l1*p1y*ralpha12 + 
-C     1    c2a1*(m1*p1x - l1*p1y)*ralpha12 - c2a1*l12*p1z*ralpha12 + 
-C     1    2*c3a1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-C     1    (3*l12*(m1*p1x - l1*p1y)*s1)/alpha1**4 - p1z*s1 - 
-C     1    (5*l12*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    2*l1*n1*p1x*ralpha12*s1 + 2*l1*p1y*ralpha12*s1 - 
-C     1    (m1*p1x - l1*p1y)*ralpha12*s1 - 
-C     1    l12*(m1*p1x - l1*p1y)*ralpha12*s1 + l12*p1z*ralpha12*s1 + 
-C     1    n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD45(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-C     1    l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (-(c3a1*l1*p1y) + c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-C     1    p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-C     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-C     1    p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-C     1    m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-C     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-C     1    l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-C     1    m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-C     1 2*(-(c3a1*p1y) - (3*c2a1*l1*m1*(n1*p1y - m1*p1z))/alpha1**4 + 
-C     1    (c2a1*l12*m1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l12*m1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    c2a1*l1*m1*p1x*ralpha12 + 2*c3a1*l1*m1*p1x*ralpha12 + 
-C     1    2*c3a1*l12*p1y*ralpha12 - c2a1*l1*p1z*ralpha12 + 
-C     1    2*c3a1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-C     1    (3*l1*m1*(n1*p1y - m1*p1z)*s1)/alpha1**4 - 
-C     1    (5*l12*m1*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    2*l1*m1*p1x*ralpha12*s1 + l12*p1y*ralpha12*s1 + 
-C     1    l1*p1z*ralpha12*s1 - l1*m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*(-(c3a1*p1x) - (3*c2a1*l1*m1*(-(n1*p1x) + l1*p1z))/alpha1**4 + 
-C     1    (c2a1*l1*m12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l1*m12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 + 
-C     1    2*c3a1*m12*p1x*ralpha12 - c2a1*l1*m1*p1y*ralpha12 + 
-C     1    2*c3a1*l1*m1*p1y*ralpha12 + c2a1*m1*p1z*ralpha12 + 
-C     1    2*c3a1*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-C     1    (3*l1*m1*(-(n1*p1x) + l1*p1z)*s1)/alpha1**4 - 
-C     1    (5*l1*m12*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    m12*p1x*ralpha12*s1 + 2*l1*m1*p1y*ralpha12*s1 - 
-C     1    m1*p1z*ralpha12*s1 - l1*m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*((-3*c2a1*l1*m1*(m1*p1x - l1*p1y))/alpha1**4 + 
-C     1    (c2a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 + 
-C     1    c2a1*l1*p1x*ralpha12 + 2*c3a1*m1*n1*p1x*ralpha12 - 
-C     1    c2a1*m1*p1y*ralpha12 + 2*c3a1*l1*n1*p1y*ralpha12 - 
-C     1    c2a1*l1*m1*p1z*ralpha12 + 
-C     1    (3*l1*m1*(m1*p1x - l1*p1y)*s1)/alpha1**4 - 
-C     1    (5*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 - 
-C     1    l1*p1x*ralpha12*s1 + m1*n1*p1x*ralpha12*s1 + m1*p1y*ralpha12*s1 + 
-C     1    l1*n1*p1y*ralpha12*s1 - l1*m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    l1*m1*p1z*ralpha12*s1)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*rdist
-
-C      DD46(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-C     1    l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (-(c3a1*l1*p1z) + c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-C     1    p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-C     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-C     1    p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-C     1    n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-C     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-C     1    l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-C     1    n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-C     1 2*(-(c3a1*p1z) - (3*c2a1*l1*n1*(n1*p1y - m1*p1z))/alpha1**4 + 
-C     1    (c2a1*l12*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l12*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    c2a1*l1*n1*p1x*ralpha12 + 2*c3a1*l1*n1*p1x*ralpha12 + 
-C     1    c2a1*l1*p1y*ralpha12 + 2*c3a1*l12*p1z*ralpha12 + 
-C     1    2*c3a1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-C     1    (3*l1*n1*(n1*p1y - m1*p1z)*s1)/alpha1**4 - 
-C     1    (5*l12*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    2*l1*n1*p1x*ralpha12*s1 - l1*p1y*ralpha12*s1 + 
-C     1    l12*p1z*ralpha12*s1 - l1*n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*((-3*c2a1*l1*n1*(-(n1*p1x) + l1*p1z))/alpha1**4 + 
-C     1    (c2a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    c2a1*l1*p1x*ralpha12 + 2*c3a1*m1*n1*p1x*ralpha12 - 
-C     1    c2a1*l1*n1*p1y*ralpha12 + 2*c3a1*l1*m1*p1z*ralpha12 + 
-C     1    c2a1*n1*p1z*ralpha12 + 
-C     1    (3*l1*n1*(-(n1*p1x) + l1*p1z)*s1)/alpha1**4 - 
-C     1    (5*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    l1*p1x*ralpha12*s1 + m1*n1*p1x*ralpha12*s1 + 
-C     1    l1*n1*p1y*ralpha12*s1 + l1*m1*p1z*ralpha12*s1 - 
-C     1    n1*p1z*ralpha12*s1 - l1*n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*(-(c3a1*p1x) - (3*c2a1*l1*n1*(m1*p1x - l1*p1y))/alpha1**4 + 
-C     1    (c2a1*l1*n12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l1*n12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 + 
-C     1    2*c3a1*n12*p1x*ralpha12 - c2a1*n1*p1y*ralpha12 - 
-C     1    c2a1*l1*n1*p1z*ralpha12 + 2*c3a1*l1*n1*p1z*ralpha12 + 
-C     1    2*c3a1*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-C     1    (3*l1*n1*(m1*p1x - l1*p1y)*s1)/alpha1**4 - 
-C     1    (5*l1*n12*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    n12*p1x*ralpha12*s1 + n1*p1y*ralpha12*s1 - 
-C     1    l1*n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 2*l1*n1*p1z*ralpha12*s1 + 
-C     1    l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD47(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1 c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1 2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-C     1 l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1 l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-C     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD48(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1 2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-C     1 p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1 l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-C     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD49(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1 2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-C     1 l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1 l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-C     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD4A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-C     1    l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-C     1    l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-C     1    p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-C     1    p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-C     1    l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-C     1    l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-C     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD4B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-C     1    l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-C     1    p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-C     1    p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-C     1    m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-C     1    l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-C     1    m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-C     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD4C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1x) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*l1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1x*s1 - 
-C     1    l1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-C     1    p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*m1*p1x) + c2a1*l1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - l1*p1y*s1 + 
-C     1    p1z*s1 - l1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-C     1    n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*n1*p1x) + c2a1*l1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 - 
-C     1    l1*p1z*s1 - l1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-C     1    n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-C     1 -D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD55(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1y) + 
-C     1     c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1     2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-C     1     p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1     l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-C     1 2*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1     c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1     2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-C     1     m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1     m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-C     1 2*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1     2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-C     1     m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1     m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-C     1 2*((-3*c2a1*m12*(n1*p1y - m1*p1z))/alpha1**4 + 
-C     1    (c2a1*l1*m12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l1*m12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    c2a1*m12*p1x*ralpha12 + 4*c3a1*l1*m1*p1y*ralpha12 - 
-C     1    2*c2a1*m1*p1z*ralpha12 + c2a1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 + 
-C     1    (3*m12*(n1*p1y - m1*p1z)*s1)/alpha1**4 - 
-C     1    (5*l1*m12*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    m12*p1x*ralpha12*s1 + 2*l1*m1*p1y*ralpha12*s1 + 
-C     1    2*m1*p1z*ralpha12*s1 - (n1*p1y - m1*p1z)*ralpha12*s1 - 
-C     1    m12*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*(-2*c3a1*p1y - (3*c2a1*m12*(-(n1*p1x) + l1*p1z))/alpha1**4 + 
-C     1    (c2a1*m1**3*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*m1**3*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    c2a1*m12*p1y*ralpha12 + 4*c3a1*m12*p1y*ralpha12 + 
-C     1    c2a1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    6*c3a1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 + 
-C     1    (3*m12*(-(n1*p1x) + l1*p1z)*s1)/alpha1**4 - 
-C     1    (5*m1**3*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    3*m12*p1y*ralpha12*s1 - (-(n1*p1x) + l1*p1z)*ralpha12*s1 - 
-C     1    m12*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    3*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*((-3*c2a1*m12*(m1*p1x - l1*p1y))/alpha1**4 + 
-C     1    (c2a1*m12*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*m12*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 + 
-C     1    2*c2a1*m1*p1x*ralpha12 + 4*c3a1*m1*n1*p1y*ralpha12 + 
-C     1    c2a1*(m1*p1x - l1*p1y)*ralpha12 - c2a1*m12*p1z*ralpha12 + 
-C     1    2*c3a1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-C     1    (3*m12*(m1*p1x - l1*p1y)*s1)/alpha1**4 - p1z*s1 - 
-C     1    (5*m12*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 - 
-C     1    2*m1*p1x*ralpha12*s1 + 2*m1*n1*p1y*ralpha12*s1 - 
-C     1    (m1*p1x - l1*p1y)*ralpha12*s1 - 
-C     1    m12*(m1*p1x - l1*p1y)*ralpha12*s1 + m12*p1z*ralpha12*s1 + 
-C     1    n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD56(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1y) + 
-C     1    c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-C     1    p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (-(c3a1*l1*p1z) + c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-C     1    p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-C     1 2*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-C     1    m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-C     1    n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-C     1 2*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-C     1    m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-C     1    n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1) + 
-C     1 2*((-3*c2a1*m1*n1*(n1*p1y - m1*p1z))/alpha1**4 + 
-C     1    (c2a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    c2a1*m1*n1*p1x*ralpha12 + c2a1*m1*p1y*ralpha12 + 
-C     1    2*c3a1*l1*n1*p1y*ralpha12 + 2*c3a1*l1*m1*p1z*ralpha12 - 
-C     1    c2a1*n1*p1z*ralpha12 + 
-C     1    (3*m1*n1*(n1*p1y - m1*p1z)*s1)/alpha1**4 - 
-C     1    (5*l1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    m1*n1*p1x*ralpha12*s1 - m1*p1y*ralpha12*s1 + 
-C     1    l1*n1*p1y*ralpha12*s1 + l1*m1*p1z*ralpha12*s1 + 
-C     1    n1*p1z*ralpha12*s1 - m1*n1*(n1*p1y - m1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*(-(c3a1*p1z) - (3*c2a1*m1*n1*(-(n1*p1x) + l1*p1z))/alpha1**4 + 
-C     1    (c2a1*m12*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*m12*n1*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    c2a1*m1*p1x*ralpha12 - c2a1*m1*n1*p1y*ralpha12 + 
-C     1    2*c3a1*m1*n1*p1y*ralpha12 + 2*c3a1*m12*p1z*ralpha12 + 
-C     1    2*c3a1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-C     1    (3*m1*n1*(-(n1*p1x) + l1*p1z)*s1)/alpha1**4 - 
-C     1    (5*m12*n1*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    m1*p1x*ralpha12*s1 + 2*m1*n1*p1y*ralpha12*s1 + 
-C     1    m12*p1z*ralpha12*s1 - m1*n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*(-(c3a1*p1y) - (3*c2a1*m1*n1*(m1*p1x - l1*p1y))/alpha1**4 + 
-C     1    (c2a1*m1*n12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*m1*n12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 + 
-C     1    c2a1*n1*p1x*ralpha12 + 2*c3a1*n12*p1y*ralpha12 - 
-C     1    c2a1*m1*n1*p1z*ralpha12 + 2*c3a1*m1*n1*p1z*ralpha12 + 
-C     1    2*c3a1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-C     1    (3*m1*n1*(m1*p1x - l1*p1y)*s1)/alpha1**4 - 
-C     1    (5*m1*n12*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 - 
-C     1    n1*p1x*ralpha12*s1 + n12*p1y*ralpha12*s1 - 
-C     1    m1*n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 2*m1*n1*p1z*ralpha12*s1 + 
-C     1    m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD57(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(-(c3a1*l1*p1y) + c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1 2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-C     1 p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1 l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-C     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD58(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1 c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1 2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-C     1 m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1 m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-C     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD59(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1 2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-C     1 m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1 m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-C     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD5A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1y) + 
-C     1    c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-C     1    p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-C     1    l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-C     1    m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-C     1    p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-C     1    m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-C     1    l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-C     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD5B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1y) + 
-C     1    c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-C     1    p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-C     1    p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-C     1    m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-C     1    m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-C     1    m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-C     1    m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-C     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD5C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1y) + 
-C     1    c2a1*m1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1x*s1 - 
-C     1    p1z*s1 - m1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-C     1    p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*m1*p1y) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*m1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - m1*p1y*s1 - 
-C     1    m1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-C     1    n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*n1*p1y) + c2a1*m1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + p1x*s1 - 
-C     1    m1*p1z*s1 - m1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-C     1    n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-C     1 -D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD66(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1z) + 
-C     1     c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1     2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-C     1     p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1     l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-C     1 2*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1     2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-C     1     n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1     m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-C     1 2*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1     c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1     2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-C     1     n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1     n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)**2 + 
-C     1 2*((-3*c2a1*n12*(n1*p1y - m1*p1z))/alpha1**4 + 
-C     1    (c2a1*l1*n12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*l1*n12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    c2a1*n12*p1x*ralpha12 + 2*c2a1*n1*p1y*ralpha12 + 
-C     1    4*c3a1*l1*n1*p1z*ralpha12 + c2a1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 + 
-C     1    (3*n12*(n1*p1y - m1*p1z)*s1)/alpha1**4 - 
-C     1    (5*l1*n12*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    n12*p1x*ralpha12*s1 - 2*n1*p1y*ralpha12*s1 + 
-C     1    2*l1*n1*p1z*ralpha12*s1 - (n1*p1y - m1*p1z)*ralpha12*s1 - 
-C     1    n12*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*((-3*c2a1*n12*(-(n1*p1x) + l1*p1z))/alpha1**4 + 
-C     1    (c2a1*m1*n12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*m1*n12*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    2*c2a1*n1*p1x*ralpha12 - c2a1*n12*p1y*ralpha12 + 
-C     1    4*c3a1*m1*n1*p1z*ralpha12 + c2a1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1y*s1 + 
-C     1    (3*n12*(-(n1*p1x) + l1*p1z)*s1)/alpha1**4 - 
-C     1    (5*m1*n12*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 + 
-C     1    2*n1*p1x*ralpha12*s1 + n12*p1y*ralpha12*s1 + 
-C     1    2*m1*n1*p1z*ralpha12*s1 - (-(n1*p1x) + l1*p1z)*ralpha12*s1 - 
-C     1    n12*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*((-3*c2a1*n12*(m1*p1x - l1*p1y))/alpha1**4 - 2*c3a1*p1z + 
-C     1    (c2a1*n1**3*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 - 
-C     1    (8*c3a1*n1**3*(l1*p1x + m1*p1y + n1*p1z))/alpha1**4 + 
-C     1    c2a1*(m1*p1x - l1*p1y)*ralpha12 - c2a1*n12*p1z*ralpha12 + 
-C     1    4*c3a1*n12*p1z*ralpha12 + 
-C     1    6*c3a1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 + 
-C     1    (3*n12*(m1*p1x - l1*p1y)*s1)/alpha1**4 - p1z*s1 - 
-C     1    (5*n1**3*(l1*p1x + m1*p1y + n1*p1z)*s1)/alpha1**4 - 
-C     1    (m1*p1x - l1*p1y)*ralpha12*s1 - 
-C     1    n12*(m1*p1x - l1*p1y)*ralpha12*s1 + 3*n12*p1z*ralpha12*s1 + 
-C     1    3*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD67(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(-(c3a1*l1*p1z) + c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1 2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-C     1 p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1 l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-C     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD68(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1 2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-C     1 n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1 m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-C     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD69(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1 c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1 2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-C     1 n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1 n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1))
-C     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD6A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1z) + 
-C     1    c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-C     1    p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-C     1    l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-C     1    n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-C     1    p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-C     1    n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-C     1    l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-C     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD6B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1z) + 
-C     1    c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-C     1    p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-C     1    p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-C     1    n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-C     1    m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-C     1    n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-C     1    m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-C     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD6C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(-(c3a1*l1*p1z) + 
-C     1    c2a1*n1*(n1*p1y - m1*p1z)*ralpha12 + 
-C     1    2*c3a1*l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1x*s1 + 
-C     1    p1y*s1 - n1*(n1*p1y - m1*p1z)*ralpha12*s1 + 
-C     1    l1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-C     1    p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*m1*p1z) + c2a1*n1*(-(n1*p1x) + l1*p1z)*ralpha12 + 
-C     1    2*c3a1*m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - p1x*s1 - 
-C     1    n1*p1y*s1 - n1*(-(n1*p1x) + l1*p1z)*ralpha12*s1 + 
-C     1    m1*n1*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-C     1    n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(-(c3a1*n1*p1z) - c3a1*(l1*p1x + m1*p1y + n1*p1z) + 
-C     1    c2a1*n1*(m1*p1x - l1*p1y)*ralpha12 + 
-C     1    2*c3a1*n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12 - n1*p1z*s1 - 
-C     1    n1*(m1*p1x - l1*p1y)*ralpha12*s1 + 
-C     1    n12*(l1*p1x + m1*p1y + n1*p1z)*ralpha12*s1)*
-C     1  (c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-C     1    n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)))/2.
-C     1 -D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD77(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = rdist
-C     1 -D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD78(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = 
-C     1 -D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD79(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) =
-C     1 -D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD7A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1 c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1 2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-C     1 l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1 l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-C     1 -D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD7B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1 2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-C     1 p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1 l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-C     1 -D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD7C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1 2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-C     1 p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1 l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-C     1 -D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD88(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = rdist
-C     1 -D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD89(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) =
-C     1 -D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD8A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1 2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-C     1 p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1 l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-C     1 -D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD8B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1 c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1 2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-C     1 m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1 m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-C     1 -D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD8C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1 2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-C     1 n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1 m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-C     1 -D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD99(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) = rdist
-C     1 -D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD9A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1 2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-C     1 l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1 l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-C     1 -D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD9B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1 2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-C     1 m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1 m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-C     1 -D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DD9C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = -(rdist*(c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1 c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1 2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-C     1 n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1 n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2))
-C     1 -D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DDAA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1     c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1     2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-C     1     l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1     l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-C     1 2*(c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1     2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-C     1     p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1     l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-C     1 2*(c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1     2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-C     1     l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1     l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-C     1 2*(2*c3a2*p2x + (3*c2a2*l22*(n2*p2y - m2*p2z))/alpha2**4 - 
-C     1    (c2a2*l2**3*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l2**3*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    c2a2*l22*p2x*ralpha22 - 4*c3a2*l22*p2x*ralpha22 - 
-C     1    c2a2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    6*c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 - 
-C     1    (3*l22*(n2*p2y - m2*p2z)*s2)/alpha2**4 + 
-C     1    (5*l2**3*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    3*l22*p2x*ralpha22*s2 + (n2*p2y - m2*p2z)*ralpha22*s2 + 
-C     1    l22*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    3*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*((3*c2a2*l22*(-(n2*p2x) + l2*p2z))/alpha2**4 - 
-C     1    (c2a2*l22*m2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l22*m2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 - 
-C     1    4*c3a2*l2*m2*p2x*ralpha22 + c2a2*l22*p2y*ralpha22 - 
-C     1    2*c2a2*l2*p2z*ralpha22 - c2a2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 - 
-C     1    (3*l22*(-(n2*p2x) + l2*p2z)*s2)/alpha2**4 + 
-C     1    (5*l22*m2*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    2*l2*m2*p2x*ralpha22*s2 - l22*p2y*ralpha22*s2 + 
-C     1    2*l2*p2z*ralpha22*s2 + (-(n2*p2x) + l2*p2z)*ralpha22*s2 + 
-C     1    l22*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*((3*c2a2*l22*(m2*p2x - l2*p2y))/alpha2**4 - 
-C     1    (c2a2*l22*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l22*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 - 
-C     1    4*c3a2*l2*n2*p2x*ralpha22 + 2*c2a2*l2*p2y*ralpha22 - 
-C     1    c2a2*(m2*p2x - l2*p2y)*ralpha22 + c2a2*l22*p2z*ralpha22 - 
-C     1    2*c3a2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-C     1    (3*l22*(m2*p2x - l2*p2y)*s2)/alpha2**4 + p2z*s2 + 
-C     1    (5*l22*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    2*l2*n2*p2x*ralpha22*s2 - 2*l2*p2y*ralpha22*s2 + 
-C     1    (m2*p2x - l2*p2y)*ralpha22*s2 + 
-C     1    l22*(m2*p2x - l2*p2y)*ralpha22*s2 - l22*p2z*ralpha22*s2 - 
-C     1    n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DDAB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-C     1    l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-C     1    p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-C     1    p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-C     1    m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-C     1    l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-C     1    m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(c3a2*p2y + (3*c2a2*l2*m2*(n2*p2y - m2*p2z))/alpha2**4 - 
-C     1    (c2a2*l22*m2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l22*m2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    c2a2*l2*m2*p2x*ralpha22 - 2*c3a2*l2*m2*p2x*ralpha22 - 
-C     1    2*c3a2*l22*p2y*ralpha22 + c2a2*l2*p2z*ralpha22 - 
-C     1    2*c3a2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-C     1    (3*l2*m2*(n2*p2y - m2*p2z)*s2)/alpha2**4 + 
-C     1    (5*l22*m2*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    2*l2*m2*p2x*ralpha22*s2 - l22*p2y*ralpha22*s2 - 
-C     1    l2*p2z*ralpha22*s2 + l2*m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*(c3a2*p2x + (3*c2a2*l2*m2*(-(n2*p2x) + l2*p2z))/alpha2**4 - 
-C     1    (c2a2*l2*m22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l2*m22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 - 
-C     1    2*c3a2*m22*p2x*ralpha22 + c2a2*l2*m2*p2y*ralpha22 - 
-C     1    2*c3a2*l2*m2*p2y*ralpha22 - c2a2*m2*p2z*ralpha22 - 
-C     1    2*c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-C     1    (3*l2*m2*(-(n2*p2x) + l2*p2z)*s2)/alpha2**4 + 
-C     1    (5*l2*m22*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    m22*p2x*ralpha22*s2 - 2*l2*m2*p2y*ralpha22*s2 + 
-C     1    m2*p2z*ralpha22*s2 + l2*m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*((3*c2a2*l2*m2*(m2*p2x - l2*p2y))/alpha2**4 - 
-C     1    (c2a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 - 
-C     1    c2a2*l2*p2x*ralpha22 - 2*c3a2*m2*n2*p2x*ralpha22 + 
-C     1    c2a2*m2*p2y*ralpha22 - 2*c3a2*l2*n2*p2y*ralpha22 + 
-C     1    c2a2*l2*m2*p2z*ralpha22 - 
-C     1    (3*l2*m2*(m2*p2x - l2*p2y)*s2)/alpha2**4 + 
-C     1    (5*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 + 
-C     1    l2*p2x*ralpha22*s2 - m2*n2*p2x*ralpha22*s2 - m2*p2y*ralpha22*s2 - 
-C     1    l2*n2*p2y*ralpha22*s2 + l2*m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    l2*m2*p2z*ralpha22*s2)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DDAC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(c3a2*l2*p2x + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*l2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2x*s2 + 
-C     1    l2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-C     1    p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(c3a2*m2*p2x - c2a2*l2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + l2*p2y*s2 - 
-C     1    p2z*s2 + l2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-C     1    n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(c3a2*n2*p2x - c2a2*l2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 + 
-C     1    l2*p2z*s2 + l2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-C     1    n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(c3a2*p2z + (3*c2a2*l2*n2*(n2*p2y - m2*p2z))/alpha2**4 - 
-C     1    (c2a2*l22*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l22*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    c2a2*l2*n2*p2x*ralpha22 - 2*c3a2*l2*n2*p2x*ralpha22 - 
-C     1    c2a2*l2*p2y*ralpha22 - 2*c3a2*l22*p2z*ralpha22 - 
-C     1    2*c3a2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-C     1    (3*l2*n2*(n2*p2y - m2*p2z)*s2)/alpha2**4 + 
-C     1    (5*l22*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    2*l2*n2*p2x*ralpha22*s2 + l2*p2y*ralpha22*s2 - 
-C     1    l22*p2z*ralpha22*s2 + l2*n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*((3*c2a2*l2*n2*(-(n2*p2x) + l2*p2z))/alpha2**4 - 
-C     1    (c2a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    c2a2*l2*p2x*ralpha22 - 2*c3a2*m2*n2*p2x*ralpha22 + 
-C     1    c2a2*l2*n2*p2y*ralpha22 - 2*c3a2*l2*m2*p2z*ralpha22 - 
-C     1    c2a2*n2*p2z*ralpha22 - 
-C     1    (3*l2*n2*(-(n2*p2x) + l2*p2z)*s2)/alpha2**4 + 
-C     1    (5*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    l2*p2x*ralpha22*s2 - m2*n2*p2x*ralpha22*s2 - 
-C     1    l2*n2*p2y*ralpha22*s2 - l2*m2*p2z*ralpha22*s2 + 
-C     1    n2*p2z*ralpha22*s2 + l2*n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*(c3a2*p2x + (3*c2a2*l2*n2*(m2*p2x - l2*p2y))/alpha2**4 - 
-C     1    (c2a2*l2*n22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l2*n22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 - 
-C     1    2*c3a2*n22*p2x*ralpha22 + c2a2*n2*p2y*ralpha22 + 
-C     1    c2a2*l2*n2*p2z*ralpha22 - 2*c3a2*l2*n2*p2z*ralpha22 - 
-C     1    2*c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-C     1    (3*l2*n2*(m2*p2x - l2*p2y)*s2)/alpha2**4 + 
-C     1    (5*l2*n22*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    n22*p2x*ralpha22*s2 - n2*p2y*ralpha22*s2 + 
-C     1    l2*n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 2*l2*n2*p2z*ralpha22*s2 - 
-C     1    l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DDBB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1     2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-C     1     p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1     l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-C     1 2*(c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1     c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1     2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-C     1     m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1     m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-C     1 2*(c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1     2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-C     1     m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1     m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-C     1 2*((3*c2a2*m22*(n2*p2y - m2*p2z))/alpha2**4 - 
-C     1    (c2a2*l2*m22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l2*m22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    c2a2*m22*p2x*ralpha22 - 4*c3a2*l2*m2*p2y*ralpha22 + 
-C     1    2*c2a2*m2*p2z*ralpha22 - c2a2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 - 
-C     1    (3*m22*(n2*p2y - m2*p2z)*s2)/alpha2**4 + 
-C     1    (5*l2*m22*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    m22*p2x*ralpha22*s2 - 2*l2*m2*p2y*ralpha22*s2 - 
-C     1    2*m2*p2z*ralpha22*s2 + (n2*p2y - m2*p2z)*ralpha22*s2 + 
-C     1    m22*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*(2*c3a2*p2y + (3*c2a2*m22*(-(n2*p2x) + l2*p2z))/alpha2**4 - 
-C     1    (c2a2*m2**3*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*m2**3*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    c2a2*m22*p2y*ralpha22 - 4*c3a2*m22*p2y*ralpha22 - 
-C     1    c2a2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    6*c3a2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 - 
-C     1    (3*m22*(-(n2*p2x) + l2*p2z)*s2)/alpha2**4 + 
-C     1    (5*m2**3*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    3*m22*p2y*ralpha22*s2 + (-(n2*p2x) + l2*p2z)*ralpha22*s2 + 
-C     1    m22*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    3*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*((3*c2a2*m22*(m2*p2x - l2*p2y))/alpha2**4 - 
-C     1    (c2a2*m22*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*m22*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 - 
-C     1    2*c2a2*m2*p2x*ralpha22 - 4*c3a2*m2*n2*p2y*ralpha22 - 
-C     1    c2a2*(m2*p2x - l2*p2y)*ralpha22 + c2a2*m22*p2z*ralpha22 - 
-C     1    2*c3a2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-C     1    (3*m22*(m2*p2x - l2*p2y)*s2)/alpha2**4 + p2z*s2 + 
-C     1    (5*m22*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 + 
-C     1    2*m2*p2x*ralpha22*s2 - 2*m2*n2*p2y*ralpha22*s2 + 
-C     1    (m2*p2x - l2*p2y)*ralpha22*s2 + 
-C     1    m22*(m2*p2x - l2*p2y)*ralpha22*s2 - m22*p2z*ralpha22*s2 - 
-C     1    n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DDBC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(c3a2*l2*p2y - c2a2*m2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2x*s2 + 
-C     1    p2z*s2 + m2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-C     1    p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(c3a2*m2*p2y + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*m2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + m2*p2y*s2 + 
-C     1    m2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-C     1    n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*(c3a2*n2*p2y - c2a2*m2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - p2x*s2 + 
-C     1    m2*p2z*s2 + m2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1    c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1    2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-C     1    n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1    n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2) + 
-C     1 2*((3*c2a2*m2*n2*(n2*p2y - m2*p2z))/alpha2**4 - 
-C     1    (c2a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    c2a2*m2*n2*p2x*ralpha22 - c2a2*m2*p2y*ralpha22 - 
-C     1    2*c3a2*l2*n2*p2y*ralpha22 - 2*c3a2*l2*m2*p2z*ralpha22 + 
-C     1    c2a2*n2*p2z*ralpha22 - 
-C     1    (3*m2*n2*(n2*p2y - m2*p2z)*s2)/alpha2**4 + 
-C     1    (5*l2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    m2*n2*p2x*ralpha22*s2 + m2*p2y*ralpha22*s2 - 
-C     1    l2*n2*p2y*ralpha22*s2 - l2*m2*p2z*ralpha22*s2 - 
-C     1    n2*p2z*ralpha22*s2 + m2*n2*(n2*p2y - m2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*(c3a2*p2z + (3*c2a2*m2*n2*(-(n2*p2x) + l2*p2z))/alpha2**4 - 
-C     1    (c2a2*m22*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*m22*n2*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    c2a2*m2*p2x*ralpha22 + c2a2*m2*n2*p2y*ralpha22 - 
-C     1    2*c3a2*m2*n2*p2y*ralpha22 - 2*c3a2*m22*p2z*ralpha22 - 
-C     1    2*c3a2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-C     1    (3*m2*n2*(-(n2*p2x) + l2*p2z)*s2)/alpha2**4 + 
-C     1    (5*m22*n2*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    m2*p2x*ralpha22*s2 - 2*m2*n2*p2y*ralpha22*s2 - 
-C     1    m22*p2z*ralpha22*s2 + m2*n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*(c3a2*p2y + (3*c2a2*m2*n2*(m2*p2x - l2*p2y))/alpha2**4 - 
-C     1    (c2a2*m2*n22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*m2*n22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 - 
-C     1    c2a2*n2*p2x*ralpha22 - 2*c3a2*n22*p2y*ralpha22 + 
-C     1    c2a2*m2*n2*p2z*ralpha22 - 2*c3a2*m2*n2*p2z*ralpha22 - 
-C     1    2*c3a2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-C     1    (3*m2*n2*(m2*p2x - l2*p2y)*s2)/alpha2**4 + 
-C     1    (5*m2*n22*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 + 
-C     1    n2*p2x*ralpha22*s2 - n22*p2y*ralpha22*s2 + 
-C     1    m2*n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 2*m2*n2*p2z*ralpha22*s2 - 
-C     1    m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1 DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
-
-C      DDCC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist) 
-C     1 = (rdist*(2*(c3a2*l2*p2z - c2a2*n2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1     2*c3a2*l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2x*s2 - 
-C     1     p2y*s2 + n2*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1     l2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-C     1 2*(c3a2*m2*p2z - c2a2*n2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1     2*c3a2*m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 + 
-C     1     n2*p2y*s2 + n2*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1     m2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-C     1 2*(c3a2*n2*p2z + c3a2*(l2*p2x + m2*p2y + n2*p2z) - 
-C     1     c2a2*n2*(m2*p2x - l2*p2y)*ralpha22 - 
-C     1     2*c3a2*n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + n2*p2z*s2 + 
-C     1     n2*(m2*p2x - l2*p2y)*ralpha22*s2 - 
-C     1     n22*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)**2 + 
-C     1 2*((3*c2a2*n22*(n2*p2y - m2*p2z))/alpha2**4 - 
-C     1    (c2a2*l2*n22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*l2*n22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    c2a2*n22*p2x*ralpha22 - 2*c2a2*n2*p2y*ralpha22 - 
-C     1    4*c3a2*l2*n2*p2z*ralpha22 - c2a2*(n2*p2y - m2*p2z)*ralpha22 - 
-C     1    2*c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2x*s2 - 
-C     1    (3*n22*(n2*p2y - m2*p2z)*s2)/alpha2**4 + 
-C     1    (5*l2*n22*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    n22*p2x*ralpha22*s2 + 2*n2*p2y*ralpha22*s2 - 
-C     1    2*l2*n2*p2z*ralpha22*s2 + (n2*p2y - m2*p2z)*ralpha22*s2 + 
-C     1    n22*(n2*p2y - m2*p2z)*ralpha22*s2 - 
-C     1    l2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1x - c3a1*l1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2x + 
-C     1    c3a2*l2*(l2*p2x + m2*p2y + n2*p2z) + (n1*p1y - m1*p1z)*s1 - 
-C     1    (n2*p2y - m2*p2z)*s2 + x1 - x2) + 
-C     1 2*((3*c2a2*n22*(-(n2*p2x) + l2*p2z))/alpha2**4 - 
-C     1    (c2a2*m2*n22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*m2*n22*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    2*c2a2*n2*p2x*ralpha22 + c2a2*n22*p2y*ralpha22 - 
-C     1    4*c3a2*m2*n2*p2z*ralpha22 - c2a2*(-(n2*p2x) + l2*p2z)*ralpha22 - 
-C     1    2*c3a2*m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 + p2y*s2 - 
-C     1    (3*n22*(-(n2*p2x) + l2*p2z)*s2)/alpha2**4 + 
-C     1    (5*m2*n22*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 - 
-C     1    2*n2*p2x*ralpha22*s2 - n22*p2y*ralpha22*s2 - 
-C     1    2*m2*n2*p2z*ralpha22*s2 + (-(n2*p2x) + l2*p2z)*ralpha22*s2 + 
-C     1    n22*(-(n2*p2x) + l2*p2z)*ralpha22*s2 - 
-C     1    m2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y + 
-C     1    c3a2*m2*(l2*p2x + m2*p2y + n2*p2z) + (-(n1*p1x) + l1*p1z)*s1 - 
-C     1    (-(n2*p2x) + l2*p2z)*s2 + y1 - y2) + 
-C     1 2*((3*c2a2*n22*(m2*p2x - l2*p2y))/alpha2**4 + 2*c3a2*p2z - 
-C     1    (c2a2*n2**3*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 + 
-C     1    (8*c3a2*n2**3*(l2*p2x + m2*p2y + n2*p2z))/alpha2**4 - 
-C     1    c2a2*(m2*p2x - l2*p2y)*ralpha22 + c2a2*n22*p2z*ralpha22 - 
-C     1    4*c3a2*n22*p2z*ralpha22 - 
-C     1    6*c3a2*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22 - 
-C     1    (3*n22*(m2*p2x - l2*p2y)*s2)/alpha2**4 + p2z*s2 + 
-C     1    (5*n2**3*(l2*p2x + m2*p2y + n2*p2z)*s2)/alpha2**4 + 
-C     1    (m2*p2x - l2*p2y)*ralpha22*s2 + 
-C     1    n22*(m2*p2x - l2*p2y)*ralpha22*s2 - 3*n22*p2z*ralpha22*s2 - 
-C     1    3*n2*(l2*p2x + m2*p2y + n2*p2z)*ralpha22*s2)*
-C     1  (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z + 
-C     1    c3a2*n2*(l2*p2x + m2*p2y + n2*p2z) + (m1*p1x - l1*p1y)*s1 - 
-C     1    (m2*p2x - l2*p2y)*s2 + z1 - z2)))/2.
-C     1 -DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)*
-C     1  DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist)* rdist
+C      DD11(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = RDIST
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD12(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD13(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD14(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1  RDIST*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1 C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+C     1 L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1 L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD15(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 RDIST*(-(C3A1*L1*P1Y) + C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - P1Z*S1 - 
+C     1 M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1 L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD16(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 RDIST*(-(C3A1*L1*P1Z) + C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + P1Y*S1 - 
+C     1 N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1 L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD17(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = -RDIST
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD18(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD19(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD1A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1 C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+C     1 L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1 L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD1B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + P2Z*S2 + 
+C     1 M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1 L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD1C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - P2Y*S2 + 
+C     1 N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1 L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+C     1 -D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD22(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = RDIST
+C     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD23(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD24(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + P1Z*S1 - 
+C     1 L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1 L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+C     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD25(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1 C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+C     1 M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1 M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+C     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD26(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - N1*P1Y*S1 - 
+C     1 N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1 M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+C     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD27(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD28(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = -RDIST
+C     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD29(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 0
+C     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD2A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - P2Z*S2 + 
+C     1 L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1 L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+C     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD2B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1 C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+C     1 M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1 M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+C     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD2C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + N2*P2Y*S2 + 
+C     1 N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1 M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+C     1 -D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD33(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = RDIST
+C     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD34(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1 2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - L1*P1Z*S1 - 
+C     1 L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1 L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+C     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD35(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1 2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - M1*P1Z*S1 - 
+C     1 M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1 M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+C     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD36(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1 C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1 2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+C     1 N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1 N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)
+C     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD37(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD38(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD39(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = -RDIST
+C     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD3A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1 2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + L2*P2Z*S2 + 
+C     1 L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1 L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+C     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD3B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1 2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + M2*P2Z*S2 + 
+C     1 M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1 M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+C     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD3C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = RDIST*(C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1 C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1 2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+C     1 N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1 N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)
+C     1 -D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD44(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1     C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1     2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+C     1     L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1     L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+C     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1     2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+C     1     P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1     L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+C     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1     2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+C     1     L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1     L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+C     1 2*(-2*C3A1*P1X - (3*C2A1*L12*(N1*P1Y - M1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*L1**3*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L1**3*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    C2A1*L12*P1X*RALPHA12 + 4*C3A1*L12*P1X*RALPHA12 + 
+C     1    C2A1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    6*C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 + 
+C     1    (3*L12*(N1*P1Y - M1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*L1**3*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    3*L12*P1X*RALPHA12*S1 - (N1*P1Y - M1*P1Z)*RALPHA12*S1 - 
+C     1    L12*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    3*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*((-3*C2A1*L12*(-(N1*P1X) + L1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 + 
+C     1    4*C3A1*L1*M1*P1X*RALPHA12 - C2A1*L12*P1Y*RALPHA12 + 
+C     1    2*C2A1*L1*P1Z*RALPHA12 + C2A1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 + 
+C     1    (3*L12*(-(N1*P1X) + L1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    2*L1*M1*P1X*RALPHA12*S1 + L12*P1Y*RALPHA12*S1 - 
+C     1    2*L1*P1Z*RALPHA12*S1 - (-(N1*P1X) + L1*P1Z)*RALPHA12*S1 - 
+C     1    L12*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*((-3*C2A1*L12*(M1*P1X - L1*P1Y))/ALPHA1**4 + 
+C     1    (C2A1*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 + 
+C     1    4*C3A1*L1*N1*P1X*RALPHA12 - 2*C2A1*L1*P1Y*RALPHA12 + 
+C     1    C2A1*(M1*P1X - L1*P1Y)*RALPHA12 - C2A1*L12*P1Z*RALPHA12 + 
+C     1    2*C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+C     1    (3*L12*(M1*P1X - L1*P1Y)*S1)/ALPHA1**4 - P1Z*S1 - 
+C     1    (5*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    2*L1*N1*P1X*RALPHA12*S1 + 2*L1*P1Y*RALPHA12*S1 - 
+C     1    (M1*P1X - L1*P1Y)*RALPHA12*S1 - 
+C     1    L12*(M1*P1X - L1*P1Y)*RALPHA12*S1 + L12*P1Z*RALPHA12*S1 + 
+C     1    N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD45(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+C     1    L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (-(C3A1*L1*P1Y) + C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+C     1    P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+C     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+C     1    P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+C     1    M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+C     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+C     1    L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+C     1    M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+C     1 2*(-(C3A1*P1Y) - (3*C2A1*L1*M1*(N1*P1Y - M1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    C2A1*L1*M1*P1X*RALPHA12 + 2*C3A1*L1*M1*P1X*RALPHA12 + 
+C     1    2*C3A1*L12*P1Y*RALPHA12 - C2A1*L1*P1Z*RALPHA12 + 
+C     1    2*C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+C     1    (3*L1*M1*(N1*P1Y - M1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*L12*M1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    2*L1*M1*P1X*RALPHA12*S1 + L12*P1Y*RALPHA12*S1 + 
+C     1    L1*P1Z*RALPHA12*S1 - L1*M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*(-(C3A1*P1X) - (3*C2A1*L1*M1*(-(N1*P1X) + L1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 + 
+C     1    2*C3A1*M12*P1X*RALPHA12 - C2A1*L1*M1*P1Y*RALPHA12 + 
+C     1    2*C3A1*L1*M1*P1Y*RALPHA12 + C2A1*M1*P1Z*RALPHA12 + 
+C     1    2*C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+C     1    (3*L1*M1*(-(N1*P1X) + L1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    M12*P1X*RALPHA12*S1 + 2*L1*M1*P1Y*RALPHA12*S1 - 
+C     1    M1*P1Z*RALPHA12*S1 - L1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*((-3*C2A1*L1*M1*(M1*P1X - L1*P1Y))/ALPHA1**4 + 
+C     1    (C2A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 + 
+C     1    C2A1*L1*P1X*RALPHA12 + 2*C3A1*M1*N1*P1X*RALPHA12 - 
+C     1    C2A1*M1*P1Y*RALPHA12 + 2*C3A1*L1*N1*P1Y*RALPHA12 - 
+C     1    C2A1*L1*M1*P1Z*RALPHA12 + 
+C     1    (3*L1*M1*(M1*P1X - L1*P1Y)*S1)/ALPHA1**4 - 
+C     1    (5*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 - 
+C     1    L1*P1X*RALPHA12*S1 + M1*N1*P1X*RALPHA12*S1 + M1*P1Y*RALPHA12*S1 + 
+C     1    L1*N1*P1Y*RALPHA12*S1 - L1*M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    L1*M1*P1Z*RALPHA12*S1)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*RDIST
+
+C      DD46(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+C     1    L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (-(C3A1*L1*P1Z) + C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+C     1    P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+C     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+C     1    P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+C     1    N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+C     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+C     1    L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+C     1    N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+C     1 2*(-(C3A1*P1Z) - (3*C2A1*L1*N1*(N1*P1Y - M1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    C2A1*L1*N1*P1X*RALPHA12 + 2*C3A1*L1*N1*P1X*RALPHA12 + 
+C     1    C2A1*L1*P1Y*RALPHA12 + 2*C3A1*L12*P1Z*RALPHA12 + 
+C     1    2*C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+C     1    (3*L1*N1*(N1*P1Y - M1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*L12*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    2*L1*N1*P1X*RALPHA12*S1 - L1*P1Y*RALPHA12*S1 + 
+C     1    L12*P1Z*RALPHA12*S1 - L1*N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*((-3*C2A1*L1*N1*(-(N1*P1X) + L1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    C2A1*L1*P1X*RALPHA12 + 2*C3A1*M1*N1*P1X*RALPHA12 - 
+C     1    C2A1*L1*N1*P1Y*RALPHA12 + 2*C3A1*L1*M1*P1Z*RALPHA12 + 
+C     1    C2A1*N1*P1Z*RALPHA12 + 
+C     1    (3*L1*N1*(-(N1*P1X) + L1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    L1*P1X*RALPHA12*S1 + M1*N1*P1X*RALPHA12*S1 + 
+C     1    L1*N1*P1Y*RALPHA12*S1 + L1*M1*P1Z*RALPHA12*S1 - 
+C     1    N1*P1Z*RALPHA12*S1 - L1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*(-(C3A1*P1X) - (3*C2A1*L1*N1*(M1*P1X - L1*P1Y))/ALPHA1**4 + 
+C     1    (C2A1*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 + 
+C     1    2*C3A1*N12*P1X*RALPHA12 - C2A1*N1*P1Y*RALPHA12 - 
+C     1    C2A1*L1*N1*P1Z*RALPHA12 + 2*C3A1*L1*N1*P1Z*RALPHA12 + 
+C     1    2*C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+C     1    (3*L1*N1*(M1*P1X - L1*P1Y)*S1)/ALPHA1**4 - 
+C     1    (5*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    N12*P1X*RALPHA12*S1 + N1*P1Y*RALPHA12*S1 - 
+C     1    L1*N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 2*L1*N1*P1Z*RALPHA12*S1 + 
+C     1    L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD47(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1 C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+C     1 L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1 L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+C     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD48(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+C     1 P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1 L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+C     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD49(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1 2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+C     1 L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1 L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+C     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD4A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+C     1    L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+C     1    L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+C     1    P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+C     1    P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+C     1    L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+C     1    L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+C     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD4B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+C     1    L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+C     1    P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+C     1    P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+C     1    M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+C     1    L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+C     1    M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+C     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD4C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1X) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*L1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1X*S1 - 
+C     1    L1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+C     1    P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*M1*P1X) + C2A1*L1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - L1*P1Y*S1 + 
+C     1    P1Z*S1 - L1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+C     1    N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*N1*P1X) + C2A1*L1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 - 
+C     1    L1*P1Z*S1 - L1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+C     1    N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+C     1 -D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD55(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1Y) + 
+C     1     C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1     2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+C     1     P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1     L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+C     1 2*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1     C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1     2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+C     1     M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1     M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+C     1 2*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1     2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+C     1     M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1     M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+C     1 2*((-3*C2A1*M12*(N1*P1Y - M1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    C2A1*M12*P1X*RALPHA12 + 4*C3A1*L1*M1*P1Y*RALPHA12 - 
+C     1    2*C2A1*M1*P1Z*RALPHA12 + C2A1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 + 
+C     1    (3*M12*(N1*P1Y - M1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*L1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    M12*P1X*RALPHA12*S1 + 2*L1*M1*P1Y*RALPHA12*S1 + 
+C     1    2*M1*P1Z*RALPHA12*S1 - (N1*P1Y - M1*P1Z)*RALPHA12*S1 - 
+C     1    M12*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*(-2*C3A1*P1Y - (3*C2A1*M12*(-(N1*P1X) + L1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*M1**3*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*M1**3*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    C2A1*M12*P1Y*RALPHA12 + 4*C3A1*M12*P1Y*RALPHA12 + 
+C     1    C2A1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    6*C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 + 
+C     1    (3*M12*(-(N1*P1X) + L1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*M1**3*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    3*M12*P1Y*RALPHA12*S1 - (-(N1*P1X) + L1*P1Z)*RALPHA12*S1 - 
+C     1    M12*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    3*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*((-3*C2A1*M12*(M1*P1X - L1*P1Y))/ALPHA1**4 + 
+C     1    (C2A1*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 + 
+C     1    2*C2A1*M1*P1X*RALPHA12 + 4*C3A1*M1*N1*P1Y*RALPHA12 + 
+C     1    C2A1*(M1*P1X - L1*P1Y)*RALPHA12 - C2A1*M12*P1Z*RALPHA12 + 
+C     1    2*C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+C     1    (3*M12*(M1*P1X - L1*P1Y)*S1)/ALPHA1**4 - P1Z*S1 - 
+C     1    (5*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 - 
+C     1    2*M1*P1X*RALPHA12*S1 + 2*M1*N1*P1Y*RALPHA12*S1 - 
+C     1    (M1*P1X - L1*P1Y)*RALPHA12*S1 - 
+C     1    M12*(M1*P1X - L1*P1Y)*RALPHA12*S1 + M12*P1Z*RALPHA12*S1 + 
+C     1    N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD56(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1Y) + 
+C     1    C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+C     1    P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (-(C3A1*L1*P1Z) + C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+C     1    P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+C     1 2*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+C     1    M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+C     1    N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+C     1 2*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+C     1    M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+C     1    N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1) + 
+C     1 2*((-3*C2A1*M1*N1*(N1*P1Y - M1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    C2A1*M1*N1*P1X*RALPHA12 + C2A1*M1*P1Y*RALPHA12 + 
+C     1    2*C3A1*L1*N1*P1Y*RALPHA12 + 2*C3A1*L1*M1*P1Z*RALPHA12 - 
+C     1    C2A1*N1*P1Z*RALPHA12 + 
+C     1    (3*M1*N1*(N1*P1Y - M1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*L1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    M1*N1*P1X*RALPHA12*S1 - M1*P1Y*RALPHA12*S1 + 
+C     1    L1*N1*P1Y*RALPHA12*S1 + L1*M1*P1Z*RALPHA12*S1 + 
+C     1    N1*P1Z*RALPHA12*S1 - M1*N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*(-(C3A1*P1Z) - (3*C2A1*M1*N1*(-(N1*P1X) + L1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    C2A1*M1*P1X*RALPHA12 - C2A1*M1*N1*P1Y*RALPHA12 + 
+C     1    2*C3A1*M1*N1*P1Y*RALPHA12 + 2*C3A1*M12*P1Z*RALPHA12 + 
+C     1    2*C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+C     1    (3*M1*N1*(-(N1*P1X) + L1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*M12*N1*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    M1*P1X*RALPHA12*S1 + 2*M1*N1*P1Y*RALPHA12*S1 + 
+C     1    M12*P1Z*RALPHA12*S1 - M1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*(-(C3A1*P1Y) - (3*C2A1*M1*N1*(M1*P1X - L1*P1Y))/ALPHA1**4 + 
+C     1    (C2A1*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 + 
+C     1    C2A1*N1*P1X*RALPHA12 + 2*C3A1*N12*P1Y*RALPHA12 - 
+C     1    C2A1*M1*N1*P1Z*RALPHA12 + 2*C3A1*M1*N1*P1Z*RALPHA12 + 
+C     1    2*C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+C     1    (3*M1*N1*(M1*P1X - L1*P1Y)*S1)/ALPHA1**4 - 
+C     1    (5*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 - 
+C     1    N1*P1X*RALPHA12*S1 + N12*P1Y*RALPHA12*S1 - 
+C     1    M1*N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 2*M1*N1*P1Z*RALPHA12*S1 + 
+C     1    M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD57(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(-(C3A1*L1*P1Y) + C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+C     1 P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1 L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+C     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD58(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1 C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+C     1 M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1 M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+C     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD59(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1 2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+C     1 M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1 M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+C     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD5A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1Y) + 
+C     1    C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+C     1    P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+C     1    L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+C     1    M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+C     1    P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+C     1    M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+C     1    L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+C     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD5B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1Y) + 
+C     1    C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+C     1    P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+C     1    P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+C     1    M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+C     1    M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+C     1    M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+C     1    M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+C     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD5C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1Y) + 
+C     1    C2A1*M1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1X*S1 - 
+C     1    P1Z*S1 - M1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+C     1    P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*M1*P1Y) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*M1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - M1*P1Y*S1 - 
+C     1    M1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+C     1    N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*N1*P1Y) + C2A1*M1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + P1X*S1 - 
+C     1    M1*P1Z*S1 - M1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+C     1    N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+C     1 -D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD66(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1Z) + 
+C     1     C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1     2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+C     1     P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1     L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+C     1 2*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1     2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+C     1     N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1     M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+C     1 2*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1     C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1     2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+C     1     N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1     N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)**2 + 
+C     1 2*((-3*C2A1*N12*(N1*P1Y - M1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    C2A1*N12*P1X*RALPHA12 + 2*C2A1*N1*P1Y*RALPHA12 + 
+C     1    4*C3A1*L1*N1*P1Z*RALPHA12 + C2A1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 + 
+C     1    (3*N12*(N1*P1Y - M1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*L1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    N12*P1X*RALPHA12*S1 - 2*N1*P1Y*RALPHA12*S1 + 
+C     1    2*L1*N1*P1Z*RALPHA12*S1 - (N1*P1Y - M1*P1Z)*RALPHA12*S1 - 
+C     1    N12*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*((-3*C2A1*N12*(-(N1*P1X) + L1*P1Z))/ALPHA1**4 + 
+C     1    (C2A1*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    2*C2A1*N1*P1X*RALPHA12 - C2A1*N12*P1Y*RALPHA12 + 
+C     1    4*C3A1*M1*N1*P1Z*RALPHA12 + C2A1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1Y*S1 + 
+C     1    (3*N12*(-(N1*P1X) + L1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (5*M1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 + 
+C     1    2*N1*P1X*RALPHA12*S1 + N12*P1Y*RALPHA12*S1 + 
+C     1    2*M1*N1*P1Z*RALPHA12*S1 - (-(N1*P1X) + L1*P1Z)*RALPHA12*S1 - 
+C     1    N12*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*((-3*C2A1*N12*(M1*P1X - L1*P1Y))/ALPHA1**4 - 2*C3A1*P1Z + 
+C     1    (C2A1*N1**3*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 - 
+C     1    (8*C3A1*N1**3*(L1*P1X + M1*P1Y + N1*P1Z))/ALPHA1**4 + 
+C     1    C2A1*(M1*P1X - L1*P1Y)*RALPHA12 - C2A1*N12*P1Z*RALPHA12 + 
+C     1    4*C3A1*N12*P1Z*RALPHA12 + 
+C     1    6*C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 + 
+C     1    (3*N12*(M1*P1X - L1*P1Y)*S1)/ALPHA1**4 - P1Z*S1 - 
+C     1    (5*N1**3*(L1*P1X + M1*P1Y + N1*P1Z)*S1)/ALPHA1**4 - 
+C     1    (M1*P1X - L1*P1Y)*RALPHA12*S1 - 
+C     1    N12*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 3*N12*P1Z*RALPHA12*S1 + 
+C     1    3*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD67(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(-(C3A1*L1*P1Z) + C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+C     1 P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1 L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+C     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD68(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1 2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+C     1 N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1 M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+C     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD69(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1 C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1 2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+C     1 N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1 N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1))
+C     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD6A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1Z) + 
+C     1    C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+C     1    P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+C     1    L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+C     1    N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+C     1    P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+C     1    N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+C     1    L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+C     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD6B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1Z) + 
+C     1    C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+C     1    P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+C     1    P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+C     1    N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+C     1    M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+C     1    N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+C     1    M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+C     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD6C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(-(C3A1*L1*P1Z) + 
+C     1    C2A1*N1*(N1*P1Y - M1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1X*S1 + 
+C     1    P1Y*S1 - N1*(N1*P1Y - M1*P1Z)*RALPHA12*S1 + 
+C     1    L1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+C     1    P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*M1*P1Z) + C2A1*N1*(-(N1*P1X) + L1*P1Z)*RALPHA12 + 
+C     1    2*C3A1*M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - P1X*S1 - 
+C     1    N1*P1Y*S1 - N1*(-(N1*P1X) + L1*P1Z)*RALPHA12*S1 + 
+C     1    M1*N1*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+C     1    N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(-(C3A1*N1*P1Z) - C3A1*(L1*P1X + M1*P1Y + N1*P1Z) + 
+C     1    C2A1*N1*(M1*P1X - L1*P1Y)*RALPHA12 + 
+C     1    2*C3A1*N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12 - N1*P1Z*S1 - 
+C     1    N1*(M1*P1X - L1*P1Y)*RALPHA12*S1 + 
+C     1    N12*(L1*P1X + M1*P1Y + N1*P1Z)*RALPHA12*S1)*
+C     1  (C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+C     1    N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)))/2.
+C     1 -D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD77(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = RDIST
+C     1 -D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD78(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = 
+C     1 -D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD79(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) =
+C     1 -D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD7A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1 C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+C     1 L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1 L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+C     1 -D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD7B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+C     1 P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1 L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+C     1 -D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD7C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+C     1 P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1 L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+C     1 -D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD88(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = RDIST
+C     1 -D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD89(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) =
+C     1 -D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD8A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+C     1 P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1 L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+C     1 -D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD8B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1 C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+C     1 M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1 M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+C     1 -D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD8C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1 2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+C     1 N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1 M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+C     1 -D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD99(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) = RDIST
+C     1 -D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD9A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1 2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+C     1 L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1 L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+C     1 -D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD9B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1 2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+C     1 M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1 M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+C     1 -D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DD9C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = -(RDIST*(C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1 C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1 2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+C     1 N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1 N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2))
+C     1 -D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DDAA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1     C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1     2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+C     1     L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1     L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+C     1 2*(C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1     2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+C     1     P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1     L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+C     1 2*(C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1     2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+C     1     L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1     L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+C     1 2*(2*C3A2*P2X + (3*C2A2*L22*(N2*P2Y - M2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*L2**3*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L2**3*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    C2A2*L22*P2X*RALPHA22 - 4*C3A2*L22*P2X*RALPHA22 - 
+C     1    C2A2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    6*C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 - 
+C     1    (3*L22*(N2*P2Y - M2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*L2**3*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    3*L22*P2X*RALPHA22*S2 + (N2*P2Y - M2*P2Z)*RALPHA22*S2 + 
+C     1    L22*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    3*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*((3*C2A2*L22*(-(N2*P2X) + L2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 - 
+C     1    4*C3A2*L2*M2*P2X*RALPHA22 + C2A2*L22*P2Y*RALPHA22 - 
+C     1    2*C2A2*L2*P2Z*RALPHA22 - C2A2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 - 
+C     1    (3*L22*(-(N2*P2X) + L2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    2*L2*M2*P2X*RALPHA22*S2 - L22*P2Y*RALPHA22*S2 + 
+C     1    2*L2*P2Z*RALPHA22*S2 + (-(N2*P2X) + L2*P2Z)*RALPHA22*S2 + 
+C     1    L22*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*((3*C2A2*L22*(M2*P2X - L2*P2Y))/ALPHA2**4 - 
+C     1    (C2A2*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 - 
+C     1    4*C3A2*L2*N2*P2X*RALPHA22 + 2*C2A2*L2*P2Y*RALPHA22 - 
+C     1    C2A2*(M2*P2X - L2*P2Y)*RALPHA22 + C2A2*L22*P2Z*RALPHA22 - 
+C     1    2*C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+C     1    (3*L22*(M2*P2X - L2*P2Y)*S2)/ALPHA2**4 + P2Z*S2 + 
+C     1    (5*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    2*L2*N2*P2X*RALPHA22*S2 - 2*L2*P2Y*RALPHA22*S2 + 
+C     1    (M2*P2X - L2*P2Y)*RALPHA22*S2 + 
+C     1    L22*(M2*P2X - L2*P2Y)*RALPHA22*S2 - L22*P2Z*RALPHA22*S2 - 
+C     1    N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DDAB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+C     1    L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+C     1    P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+C     1    P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+C     1    M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+C     1    L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+C     1    M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(C3A2*P2Y + (3*C2A2*L2*M2*(N2*P2Y - M2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    C2A2*L2*M2*P2X*RALPHA22 - 2*C3A2*L2*M2*P2X*RALPHA22 - 
+C     1    2*C3A2*L22*P2Y*RALPHA22 + C2A2*L2*P2Z*RALPHA22 - 
+C     1    2*C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+C     1    (3*L2*M2*(N2*P2Y - M2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*L22*M2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    2*L2*M2*P2X*RALPHA22*S2 - L22*P2Y*RALPHA22*S2 - 
+C     1    L2*P2Z*RALPHA22*S2 + L2*M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*(C3A2*P2X + (3*C2A2*L2*M2*(-(N2*P2X) + L2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 - 
+C     1    2*C3A2*M22*P2X*RALPHA22 + C2A2*L2*M2*P2Y*RALPHA22 - 
+C     1    2*C3A2*L2*M2*P2Y*RALPHA22 - C2A2*M2*P2Z*RALPHA22 - 
+C     1    2*C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+C     1    (3*L2*M2*(-(N2*P2X) + L2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    M22*P2X*RALPHA22*S2 - 2*L2*M2*P2Y*RALPHA22*S2 + 
+C     1    M2*P2Z*RALPHA22*S2 + L2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*((3*C2A2*L2*M2*(M2*P2X - L2*P2Y))/ALPHA2**4 - 
+C     1    (C2A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 - 
+C     1    C2A2*L2*P2X*RALPHA22 - 2*C3A2*M2*N2*P2X*RALPHA22 + 
+C     1    C2A2*M2*P2Y*RALPHA22 - 2*C3A2*L2*N2*P2Y*RALPHA22 + 
+C     1    C2A2*L2*M2*P2Z*RALPHA22 - 
+C     1    (3*L2*M2*(M2*P2X - L2*P2Y)*S2)/ALPHA2**4 + 
+C     1    (5*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 + 
+C     1    L2*P2X*RALPHA22*S2 - M2*N2*P2X*RALPHA22*S2 - M2*P2Y*RALPHA22*S2 - 
+C     1    L2*N2*P2Y*RALPHA22*S2 + L2*M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    L2*M2*P2Z*RALPHA22*S2)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DDAC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(C3A2*L2*P2X + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*L2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2X*S2 + 
+C     1    L2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+C     1    P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(C3A2*M2*P2X - C2A2*L2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + L2*P2Y*S2 - 
+C     1    P2Z*S2 + L2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+C     1    N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(C3A2*N2*P2X - C2A2*L2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 + 
+C     1    L2*P2Z*S2 + L2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+C     1    N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(C3A2*P2Z + (3*C2A2*L2*N2*(N2*P2Y - M2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    C2A2*L2*N2*P2X*RALPHA22 - 2*C3A2*L2*N2*P2X*RALPHA22 - 
+C     1    C2A2*L2*P2Y*RALPHA22 - 2*C3A2*L22*P2Z*RALPHA22 - 
+C     1    2*C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+C     1    (3*L2*N2*(N2*P2Y - M2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*L22*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    2*L2*N2*P2X*RALPHA22*S2 + L2*P2Y*RALPHA22*S2 - 
+C     1    L22*P2Z*RALPHA22*S2 + L2*N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*((3*C2A2*L2*N2*(-(N2*P2X) + L2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    C2A2*L2*P2X*RALPHA22 - 2*C3A2*M2*N2*P2X*RALPHA22 + 
+C     1    C2A2*L2*N2*P2Y*RALPHA22 - 2*C3A2*L2*M2*P2Z*RALPHA22 - 
+C     1    C2A2*N2*P2Z*RALPHA22 - 
+C     1    (3*L2*N2*(-(N2*P2X) + L2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    L2*P2X*RALPHA22*S2 - M2*N2*P2X*RALPHA22*S2 - 
+C     1    L2*N2*P2Y*RALPHA22*S2 - L2*M2*P2Z*RALPHA22*S2 + 
+C     1    N2*P2Z*RALPHA22*S2 + L2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*(C3A2*P2X + (3*C2A2*L2*N2*(M2*P2X - L2*P2Y))/ALPHA2**4 - 
+C     1    (C2A2*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 - 
+C     1    2*C3A2*N22*P2X*RALPHA22 + C2A2*N2*P2Y*RALPHA22 + 
+C     1    C2A2*L2*N2*P2Z*RALPHA22 - 2*C3A2*L2*N2*P2Z*RALPHA22 - 
+C     1    2*C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+C     1    (3*L2*N2*(M2*P2X - L2*P2Y)*S2)/ALPHA2**4 + 
+C     1    (5*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    N22*P2X*RALPHA22*S2 - N2*P2Y*RALPHA22*S2 + 
+C     1    L2*N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 2*L2*N2*P2Z*RALPHA22*S2 - 
+C     1    L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DDBB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1     2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+C     1     P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1     L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+C     1 2*(C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1     C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1     2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+C     1     M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1     M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+C     1 2*(C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1     2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+C     1     M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1     M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+C     1 2*((3*C2A2*M22*(N2*P2Y - M2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    C2A2*M22*P2X*RALPHA22 - 4*C3A2*L2*M2*P2Y*RALPHA22 + 
+C     1    2*C2A2*M2*P2Z*RALPHA22 - C2A2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 - 
+C     1    (3*M22*(N2*P2Y - M2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*L2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    M22*P2X*RALPHA22*S2 - 2*L2*M2*P2Y*RALPHA22*S2 - 
+C     1    2*M2*P2Z*RALPHA22*S2 + (N2*P2Y - M2*P2Z)*RALPHA22*S2 + 
+C     1    M22*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*(2*C3A2*P2Y + (3*C2A2*M22*(-(N2*P2X) + L2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*M2**3*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*M2**3*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    C2A2*M22*P2Y*RALPHA22 - 4*C3A2*M22*P2Y*RALPHA22 - 
+C     1    C2A2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    6*C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 - 
+C     1    (3*M22*(-(N2*P2X) + L2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*M2**3*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    3*M22*P2Y*RALPHA22*S2 + (-(N2*P2X) + L2*P2Z)*RALPHA22*S2 + 
+C     1    M22*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    3*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*((3*C2A2*M22*(M2*P2X - L2*P2Y))/ALPHA2**4 - 
+C     1    (C2A2*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 - 
+C     1    2*C2A2*M2*P2X*RALPHA22 - 4*C3A2*M2*N2*P2Y*RALPHA22 - 
+C     1    C2A2*(M2*P2X - L2*P2Y)*RALPHA22 + C2A2*M22*P2Z*RALPHA22 - 
+C     1    2*C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+C     1    (3*M22*(M2*P2X - L2*P2Y)*S2)/ALPHA2**4 + P2Z*S2 + 
+C     1    (5*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 + 
+C     1    2*M2*P2X*RALPHA22*S2 - 2*M2*N2*P2Y*RALPHA22*S2 + 
+C     1    (M2*P2X - L2*P2Y)*RALPHA22*S2 + 
+C     1    M22*(M2*P2X - L2*P2Y)*RALPHA22*S2 - M22*P2Z*RALPHA22*S2 - 
+C     1    N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DDBC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(C3A2*L2*P2Y - C2A2*M2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2X*S2 + 
+C     1    P2Z*S2 + M2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+C     1    P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(C3A2*M2*P2Y + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*M2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + M2*P2Y*S2 + 
+C     1    M2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+C     1    N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*(C3A2*N2*P2Y - C2A2*M2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - P2X*S2 + 
+C     1    M2*P2Z*S2 + M2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1    C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1    2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+C     1    N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1    N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2) + 
+C     1 2*((3*C2A2*M2*N2*(N2*P2Y - M2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    C2A2*M2*N2*P2X*RALPHA22 - C2A2*M2*P2Y*RALPHA22 - 
+C     1    2*C3A2*L2*N2*P2Y*RALPHA22 - 2*C3A2*L2*M2*P2Z*RALPHA22 + 
+C     1    C2A2*N2*P2Z*RALPHA22 - 
+C     1    (3*M2*N2*(N2*P2Y - M2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*L2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    M2*N2*P2X*RALPHA22*S2 + M2*P2Y*RALPHA22*S2 - 
+C     1    L2*N2*P2Y*RALPHA22*S2 - L2*M2*P2Z*RALPHA22*S2 - 
+C     1    N2*P2Z*RALPHA22*S2 + M2*N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*(C3A2*P2Z + (3*C2A2*M2*N2*(-(N2*P2X) + L2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    C2A2*M2*P2X*RALPHA22 + C2A2*M2*N2*P2Y*RALPHA22 - 
+C     1    2*C3A2*M2*N2*P2Y*RALPHA22 - 2*C3A2*M22*P2Z*RALPHA22 - 
+C     1    2*C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+C     1    (3*M2*N2*(-(N2*P2X) + L2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*M22*N2*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    M2*P2X*RALPHA22*S2 - 2*M2*N2*P2Y*RALPHA22*S2 - 
+C     1    M22*P2Z*RALPHA22*S2 + M2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*(C3A2*P2Y + (3*C2A2*M2*N2*(M2*P2X - L2*P2Y))/ALPHA2**4 - 
+C     1    (C2A2*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 - 
+C     1    C2A2*N2*P2X*RALPHA22 - 2*C3A2*N22*P2Y*RALPHA22 + 
+C     1    C2A2*M2*N2*P2Z*RALPHA22 - 2*C3A2*M2*N2*P2Z*RALPHA22 - 
+C     1    2*C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+C     1    (3*M2*N2*(M2*P2X - L2*P2Y)*S2)/ALPHA2**4 + 
+C     1    (5*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 + 
+C     1    N2*P2X*RALPHA22*S2 - N22*P2Y*RALPHA22*S2 + 
+C     1    M2*N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 2*M2*N2*P2Z*RALPHA22*S2 - 
+C     1    M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1 DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
+
+C      DDCC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST) 
+C     1 = (RDIST*(2*(C3A2*L2*P2Z - C2A2*N2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1     2*C3A2*L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2X*S2 - 
+C     1     P2Y*S2 + N2*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1     L2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+C     1 2*(C3A2*M2*P2Z - C2A2*N2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1     2*C3A2*M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 + 
+C     1     N2*P2Y*S2 + N2*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1     M2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+C     1 2*(C3A2*N2*P2Z + C3A2*(L2*P2X + M2*P2Y + N2*P2Z) - 
+C     1     C2A2*N2*(M2*P2X - L2*P2Y)*RALPHA22 - 
+C     1     2*C3A2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + N2*P2Z*S2 + 
+C     1     N2*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 
+C     1     N22*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)**2 + 
+C     1 2*((3*C2A2*N22*(N2*P2Y - M2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    C2A2*N22*P2X*RALPHA22 - 2*C2A2*N2*P2Y*RALPHA22 - 
+C     1    4*C3A2*L2*N2*P2Z*RALPHA22 - C2A2*(N2*P2Y - M2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2X*S2 - 
+C     1    (3*N22*(N2*P2Y - M2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*L2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    N22*P2X*RALPHA22*S2 + 2*N2*P2Y*RALPHA22*S2 - 
+C     1    2*L2*N2*P2Z*RALPHA22*S2 + (N2*P2Y - M2*P2Z)*RALPHA22*S2 + 
+C     1    N22*(N2*P2Y - M2*P2Z)*RALPHA22*S2 - 
+C     1    L2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1X - C3A1*L1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2X + 
+C     1    C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z) + (N1*P1Y - M1*P1Z)*S1 - 
+C     1    (N2*P2Y - M2*P2Z)*S2 + X1 - X2) + 
+C     1 2*((3*C2A2*N22*(-(N2*P2X) + L2*P2Z))/ALPHA2**4 - 
+C     1    (C2A2*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    2*C2A2*N2*P2X*RALPHA22 + C2A2*N22*P2Y*RALPHA22 - 
+C     1    4*C3A2*M2*N2*P2Z*RALPHA22 - C2A2*(-(N2*P2X) + L2*P2Z)*RALPHA22 - 
+C     1    2*C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 + P2Y*S2 - 
+C     1    (3*N22*(-(N2*P2X) + L2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (5*M2*N22*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 - 
+C     1    2*N2*P2X*RALPHA22*S2 - N22*P2Y*RALPHA22*S2 - 
+C     1    2*M2*N2*P2Z*RALPHA22*S2 + (-(N2*P2X) + L2*P2Z)*RALPHA22*S2 + 
+C     1    N22*(-(N2*P2X) + L2*P2Z)*RALPHA22*S2 - 
+C     1    M2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y + 
+C     1    C3A2*M2*(L2*P2X + M2*P2Y + N2*P2Z) + (-(N1*P1X) + L1*P1Z)*S1 - 
+C     1    (-(N2*P2X) + L2*P2Z)*S2 + Y1 - Y2) + 
+C     1 2*((3*C2A2*N22*(M2*P2X - L2*P2Y))/ALPHA2**4 + 2*C3A2*P2Z - 
+C     1    (C2A2*N2**3*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 + 
+C     1    (8*C3A2*N2**3*(L2*P2X + M2*P2Y + N2*P2Z))/ALPHA2**4 - 
+C     1    C2A2*(M2*P2X - L2*P2Y)*RALPHA22 + C2A2*N22*P2Z*RALPHA22 - 
+C     1    4*C3A2*N22*P2Z*RALPHA22 - 
+C     1    6*C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22 - 
+C     1    (3*N22*(M2*P2X - L2*P2Y)*S2)/ALPHA2**4 + P2Z*S2 + 
+C     1    (5*N2**3*(L2*P2X + M2*P2Y + N2*P2Z)*S2)/ALPHA2**4 + 
+C     1    (M2*P2X - L2*P2Y)*RALPHA22*S2 + 
+C     1    N22*(M2*P2X - L2*P2Y)*RALPHA22*S2 - 3*N22*P2Z*RALPHA22*S2 - 
+C     1    3*N2*(L2*P2X + M2*P2Y + N2*P2Z)*RALPHA22*S2)*
+C     1  (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z + 
+C     1    C3A2*N2*(L2*P2X + M2*P2Y + N2*P2Z) + (M1*P1X - L1*P1Y)*S1 - 
+C     1    (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)))/2.
+C     1 -DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)*
+C     1  DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST)* RDIST
 C
-C  The six reference site positions per capped pentagon. These need to
-C  be multiplied by RAD.
+C  THE SIX REFERENCE SITE POSITIONS PER CAPPED PENTAGON. THESE NEED TO
+C  BE MULTIPLIED BY RAD.
 C
       SITE(1,1)=1.0D0
       SITE(1,2)=0.0D0
       SITE(1,3)=0.0D0
-      SITE(2,1)=((-1.0D0 + Sqrt(5.0D0)))/4.0D0
-      SITE(2,2)=(Sqrt((5.0D0 + Sqrt(5.0D0))/2.0D0))/2.0D0
+      SITE(2,1)=((-1.0D0 + SQRT(5.0D0)))/4.0D0
+      SITE(2,2)=(SQRT((5.0D0 + SQRT(5.0D0))/2.0D0))/2.0D0
       SITE(2,3)=0.0D0
-      SITE(3,1)=((-1.0D0 - Sqrt(5.0D0)))/4.0D0
-      SITE(3,2)=(Sqrt((5.0D0 - Sqrt(5.0D0))/2.0D0))/2.0D0
+      SITE(3,1)=((-1.0D0 - SQRT(5.0D0)))/4.0D0
+      SITE(3,2)=(SQRT((5.0D0 - SQRT(5.0D0))/2.0D0))/2.0D0
       SITE(3,3)=0.0D0
-      SITE(4,1)=((-1 - Sqrt(5.0D0)))/4.0D0
-      SITE(4,2)=-(Sqrt((5.0D0 - Sqrt(5.0D0))/2.))/2.0D0
+      SITE(4,1)=((-1 - SQRT(5.0D0)))/4.0D0
+      SITE(4,2)=-(SQRT((5.0D0 - SQRT(5.0D0))/2.))/2.0D0
       SITE(4,3)=0.0D0
-      SITE(5,1)=((-1 + Sqrt(5.0D0)))/4.0D0
-      SITE(5,2)=-(Sqrt((5.0D0 + Sqrt(5.0D0))/2.))/2.0D0
+      SITE(5,1)=((-1 + SQRT(5.0D0)))/4.0D0
+      SITE(5,2)=-(SQRT((5.0D0 + SQRT(5.0D0))/2.))/2.0D0
       SITE(5,3)=0.0D0
       SITE(6,1)=0.0D0
       SITE(6,2)=0.0D0
@@ -1731,7 +1731,7 @@ C     EPSEFF=EPS2*(1.0D0+RAD*SQRT((5.0D0+SQRT(5.0D0))/2.0D0))**12
       EPSEFF=EPS2
 C     WRITE(*,'(A,4G15.5)') 'RHO,RAD,EPS2,EPSEFF=',RHO,RAD,EPS2,EPSEFF
 C
-C  Potential energy first.
+C  POTENTIAL ENERGY FIRST.
 C
       DO J1=1,NAT2-1
          X1=X(3*(J1-1)+1)
@@ -1748,7 +1748,7 @@ C
          CA1=COS(ALPHA1)
          C2A1=CA1
          IF (ALPHA1.LT.0.0001D0) THEN
-C           C3A1=-ALPHA1/2+ALPHA1**3/24 ! bug spotted by Tim!
+C           C3A1=-ALPHA1/2+ALPHA1**3/24 ! BUG SPOTTED BY TIM!
             C3A1=-0.5D0+ALPHA1**2/24.0D0
             S1=1.0D0-ALPHA1**2/6
          ELSE
@@ -1771,15 +1771,15 @@ C        WRITE(*,'(A,6F15.5)') 'ALPHA1,RALPHA12,CA1,C2A1,C3A1,S1=',ALPHA1,RALPHA
             CA2=COS(ALPHA2)
             C2A2=CA2
             IF (ALPHA2.LT.0.0001D0) THEN
-C              C3A2=-ALPHA2/2+ALPHA2**3/24 ! bug spotted by Tim!
-               C3A2=-0.5D0+ALPHA2**2/24.0D0 ! bug spotted by Tim!
+C              C3A2=-ALPHA2/2+ALPHA2**3/24 ! BUG SPOTTED BY TIM!
+               C3A2=-0.5D0+ALPHA2**2/24.0D0 ! BUG SPOTTED BY TIM!
                S2=1.0D0-ALPHA2**2/6
             ELSE
                C3A2=(CA2-1.0D0)/ALPHA2**2
                S2=SIN(ALPHA2)/ALPHA2
             ENDIF
 C
-C  Repulsive site contribution.
+C  REPULSIVE SITE CONTRIBUTION.
 C
             P1X=SITE(6,1)*RAD
             P1Y=SITE(6,2)*RAD
@@ -1788,42 +1788,42 @@ C
             P2Y=SITE(6,2)*RAD
             P2Z=SITE(6,3)*RAD
             DIST= 
-     1  Sqrt((c2a1*p1x-c3a1*l1*(l1*p1x+m1*p1y+n1*p1z)-c2a2*p2x+c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)+ 
-     1      (n1*p1y - m1*p1z)*s1 - (n2*p2y - m2*p2z)*s2 + x1 - x2)**2 + 
-     1   (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y+c3a2*m2*(l2*p2x+m2*p2y+n2*p2z)+ 
-     1      (-(n1*p1x) + l1*p1z)*s1 - (-(n2*p2x) + l2*p2z)*s2 + y1-y2)**2 + 
-     1   (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z+c3a2*n2*(l2*p2x+m2*p2y+n2*p2z)+ 
-     1      (m1*p1x - l1*p1y)*s1 - (m2*p2x - l2*p2y)*s2 + z1 - z2)**2)
-C           PRINT*,'coordinates of pentamer pair:'
+     1  SQRT((C2A1*P1X-C3A1*L1*(L1*P1X+M1*P1Y+N1*P1Z)-C2A2*P2X+C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)+ 
+     1      (N1*P1Y - M1*P1Z)*S1 - (N2*P2Y - M2*P2Z)*S2 + X1 - X2)**2 + 
+     1   (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y+C3A2*M2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+     1      (-(N1*P1X) + L1*P1Z)*S1 - (-(N2*P2X) + L2*P2Z)*S2 + Y1-Y2)**2 + 
+     1   (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z+C3A2*N2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+     1      (M1*P1X - L1*P1Y)*S1 - (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)**2)
+C           PRINT*,'COORDINATES OF PENTAMER PAIR:'
 C           WRITE(*,'(3F20.10)') X1,Y1,Z1
 C           WRITE(*,'(3F20.10)') L1,M1,N1
 C           WRITE(*,'(3F20.10)') X2,Y2,Z2
 C           WRITE(*,'(3F20.10)') L2,M2,N2
-C           PRINT*,'epseff,distance=',EPSEFF,DIST
+C           PRINT*,'EPSEFF,DISTANCE=',EPSEFF,DIST
             DUMMY=EPSEFF*FREP(SIGMA,DIST)
             IF (GTEST.OR.SECT) THEN
                DUMMY2=EPSEFF*DFREP(SIGMA,DIST)
                RDIST=1.0D0/DIST
-               D1S=D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               D1S=D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-               D2S=D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               D2S=D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-               D3S=D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               D3S=D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-               D4S=D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               D4S=D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-               D5S=D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               D5S=D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-               D6S=D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               D6S=D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
                D7S=-D1S
                D8S=-D2S
                D9S=-D3S
-               DAS=DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               DAS=DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-               DBS=DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               DBS=DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-               DCS=DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               DCS=DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
                GX1=DUMMY2*D1S
                GY1=DUMMY2*D2S
@@ -1840,165 +1840,165 @@ C           PRINT*,'epseff,distance=',EPSEFF,DIST
                DUMMY3=EPSEFF*DDFREP(SIGMA,DIST)
                RDIST=1.0D0/DIST
 
-               S11=DUMMY2*DD11(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S11=DUMMY2*DD11(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D1S
-               S12=DUMMY2*DD12(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S12=DUMMY2*DD12(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D2S
-               S13=DUMMY2*DD13(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S13=DUMMY2*DD13(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D3S
-               S14=DUMMY2*DD14(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S14=DUMMY2*DD14(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D4S
-               S15=DUMMY2*DD15(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S15=DUMMY2*DD15(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D5S
-               S16=DUMMY2*DD16(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S16=DUMMY2*DD16(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D6S
-               S17=DUMMY2*DD17(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S17=DUMMY2*DD17(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D7S
-               S18=DUMMY2*DD18(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S18=DUMMY2*DD18(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D8S
-               S19=DUMMY2*DD19(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S19=DUMMY2*DD19(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D9S
-               S1A=DUMMY2*DD1A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S1A=DUMMY2*DD1A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*DAS
-               S1B=DUMMY2*DD1B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S1B=DUMMY2*DD1B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*DBS
-               S1C=DUMMY2*DD1C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S1C=DUMMY2*DD1C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*DCS
-               S22=DUMMY2*DD22(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S22=DUMMY2*DD22(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D2S
-               S23=DUMMY2*DD23(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S23=DUMMY2*DD23(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D3S
-               S24=DUMMY2*DD24(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S24=DUMMY2*DD24(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D4S
-               S25=DUMMY2*DD25(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S25=DUMMY2*DD25(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D5S
-               S26=DUMMY2*DD26(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S26=DUMMY2*DD26(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D6S
-               S27=DUMMY2*DD27(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S27=DUMMY2*DD27(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D7S
-               S28=DUMMY2*DD28(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S28=DUMMY2*DD28(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D8S
-               S29=DUMMY2*DD29(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S29=DUMMY2*DD29(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D9S
-               S2A=DUMMY2*DD2A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S2A=DUMMY2*DD2A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*DAS
-               S2B=DUMMY2*DD2B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S2B=DUMMY2*DD2B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*DBS
-               S2C=DUMMY2*DD2C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S2C=DUMMY2*DD2C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*DCS
-               S33=DUMMY2*DD33(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S33=DUMMY2*DD33(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D3S
-               S34=DUMMY2*DD34(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S34=DUMMY2*DD34(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D4S
-               S35=DUMMY2*DD35(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S35=DUMMY2*DD35(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D5S
-               S36=DUMMY2*DD36(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S36=DUMMY2*DD36(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D6S
-               S37=DUMMY2*DD37(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S37=DUMMY2*DD37(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D7S
-               S38=DUMMY2*DD38(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S38=DUMMY2*DD38(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D8S
-               S39=DUMMY2*DD39(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S39=DUMMY2*DD39(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D9S
-               S3A=DUMMY2*DD3A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S3A=DUMMY2*DD3A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*DAS
-               S3B=DUMMY2*DD3B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S3B=DUMMY2*DD3B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*DBS
-               S3C=DUMMY2*DD3C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S3C=DUMMY2*DD3C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*DCS
-               S44=DUMMY2*DD44(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S44=DUMMY2*DD44(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D4S
-               S45=DUMMY2*DD45(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S45=DUMMY2*DD45(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D5S
-               S46=DUMMY2*DD46(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S46=DUMMY2*DD46(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D6S
-               S47=DUMMY2*DD47(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S47=DUMMY2*DD47(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D7S
-               S48=DUMMY2*DD48(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S48=DUMMY2*DD48(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D8S
-               S49=DUMMY2*DD49(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S49=DUMMY2*DD49(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D9S
-               S4A=DUMMY2*DD4A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S4A=DUMMY2*DD4A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*DAS
-               S4B=DUMMY2*DD4B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S4B=DUMMY2*DD4B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*DBS
-               S4C=DUMMY2*DD4C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S4C=DUMMY2*DD4C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*DCS
-               S55=DUMMY2*DD55(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S55=DUMMY2*DD55(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*D5S
-               S56=DUMMY2*DD56(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S56=DUMMY2*DD56(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*D6S
-               S57=DUMMY2*DD57(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S57=DUMMY2*DD57(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*D7S
-               S58=DUMMY2*DD58(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S58=DUMMY2*DD58(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*D8S
-               S59=DUMMY2*DD59(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S59=DUMMY2*DD59(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*D9S
-               S5A=DUMMY2*DD5A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S5A=DUMMY2*DD5A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*DAS
-               S5B=DUMMY2*DD5B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S5B=DUMMY2*DD5B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*DBS
-               S5C=DUMMY2*DD5C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S5C=DUMMY2*DD5C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*DCS
-               S66=DUMMY2*DD66(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S66=DUMMY2*DD66(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*D6S
-               S67=DUMMY2*DD67(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S67=DUMMY2*DD67(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*D7S
-               S68=DUMMY2*DD68(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S68=DUMMY2*DD68(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*D8S
-               S69=DUMMY2*DD69(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S69=DUMMY2*DD69(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*D9S
-               S6A=DUMMY2*DD6A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S6A=DUMMY2*DD6A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*DAS
-               S6B=DUMMY2*DD6B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S6B=DUMMY2*DD6B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*DBS
-               S6C=DUMMY2*DD6C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S6C=DUMMY2*DD6C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*DCS
-               S77=DUMMY2*DD77(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S77=DUMMY2*DD77(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*D7S
-               S78=DUMMY2*DD78(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S78=DUMMY2*DD78(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*D8S
-               S79=DUMMY2*DD79(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S79=DUMMY2*DD79(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*D9S
-               S7A=DUMMY2*DD7A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S7A=DUMMY2*DD7A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*DAS
-               S7B=DUMMY2*DD7B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S7B=DUMMY2*DD7B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*DBS
-               S7C=DUMMY2*DD7C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S7C=DUMMY2*DD7C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*DCS
-               S88=DUMMY2*DD88(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S88=DUMMY2*DD88(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D8S*D8S
-               S89=DUMMY2*DD89(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S89=DUMMY2*DD89(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D8S*D9S
-               S8A=DUMMY2*DD8A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S8A=DUMMY2*DD8A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D8S*DAS
-               S8B=DUMMY2*DD8B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S8B=DUMMY2*DD8B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D8S*DBS
-               S8C=DUMMY2*DD8C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S8C=DUMMY2*DD8C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D8S*DCS
-               S99=DUMMY2*DD99(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S99=DUMMY2*DD99(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D9S*D9S
-               S9A=DUMMY2*DD9A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S9A=DUMMY2*DD9A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D9S*DAS
-               S9B=DUMMY2*DD9B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S9B=DUMMY2*DD9B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D9S*DBS
-               S9C=DUMMY2*DD9C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               S9C=DUMMY2*DD9C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D9S*DCS
-               SAA=DUMMY2*DDAA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               SAA=DUMMY2*DDAA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DAS*DAS
-               SAB=DUMMY2*DDAB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               SAB=DUMMY2*DDAB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DAS*DBS
-               SAC=DUMMY2*DDAC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               SAC=DUMMY2*DDAC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DAS*DCS
-               SBB=DUMMY2*DDBB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               SBB=DUMMY2*DDBB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DBS*DBS
-               SBC=DUMMY2*DDBC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               SBC=DUMMY2*DDBC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DBS*DCS
-               SCC=DUMMY2*DDCC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+               SCC=DUMMY2*DDCC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DCS*DCS
             ENDIF
 C
-C  Sum over Morse sites.
+C  SUM OVER MORSE SITES.
 C
             DO K1=1,5
                P1X=SITE(K1,1)*RAD
@@ -2009,219 +2009,219 @@ C
                   P2Y=SITE(K2,2)*RAD
                   P2Z=SITE(K2,3)*RAD
                   DIST=
-     1  Sqrt((c2a1*p1x-c3a1*l1*(l1*p1x+m1*p1y+n1*p1z)-c2a2*p2x+c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)+ 
-     1      (n1*p1y - m1*p1z)*s1 - (n2*p2y - m2*p2z)*s2 + x1 - x2)**2 + 
-     1   (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y+c3a2*m2*(l2*p2x+m2*p2y+n2*p2z)+ 
-     1      (-(n1*p1x) + l1*p1z)*s1 - (-(n2*p2x) + l2*p2z)*s2 + y1-y2)**2 + 
-     1   (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z+c3a2*n2*(l2*p2x+m2*p2y+n2*p2z)+ 
-     1      (m1*p1x - l1*p1y)*s1 - (m2*p2x - l2*p2y)*s2 + z1 - z2)**2)
+     1  SQRT((C2A1*P1X-C3A1*L1*(L1*P1X+M1*P1Y+N1*P1Z)-C2A2*P2X+C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)+ 
+     1      (N1*P1Y - M1*P1Z)*S1 - (N2*P2Y - M2*P2Z)*S2 + X1 - X2)**2 + 
+     1   (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y+C3A2*M2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+     1      (-(N1*P1X) + L1*P1Z)*S1 - (-(N2*P2X) + L2*P2Z)*S2 + Y1-Y2)**2 + 
+     1   (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z+C3A2*N2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+     1      (M1*P1X - L1*P1Y)*S1 - (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)**2)
                   DUMMY=DUMMY+FATT(RHO,DIST)
                   DUMMY2=DFATT(RHO,DIST)
                   IF (GTEST) THEN
                      RDIST=1.0D0/DIST
-                     GX1=GX1+DUMMY2*D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GX1=GX1+DUMMY2*D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GY1=GY1+DUMMY2*D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GY1=GY1+DUMMY2*D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GZ1=GZ1+DUMMY2*D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GZ1=GZ1+DUMMY2*D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GL1=GL1+DUMMY2*D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GL1=GL1+DUMMY2*D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GM1=GM1+DUMMY2*D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GM1=GM1+DUMMY2*D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GN1=GN1+DUMMY2*D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GN1=GN1+DUMMY2*D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GL2=GL2+DUMMY2*DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GL2=GL2+DUMMY2*DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GM2=GM2+DUMMY2*DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GM2=GM2+DUMMY2*DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GN2=GN2+DUMMY2*DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GN2=GN2+DUMMY2*DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
                   ENDIF
                   IF (SECT) THEN
                      DUMMY2=DFATT(RHO,DIST)
                      DUMMY3=DDFATT(RHO,DIST)
                      RDIST=1.0D0/DIST
-                     D1S=D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D1S=D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D2S=D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D2S=D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D3S=D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D3S=D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D4S=D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D4S=D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D5S=D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D5S=D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D6S=D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D6S=D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D7S=D7(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D7S=D7(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D8S=D8(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D8S=D8(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D9S=D9(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D9S=D9(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     DAS=DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     DAS=DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     DBS=DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     DBS=DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     DCS=DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     DCS=DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
 
-                     S11=S11+DUMMY2*DD11(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S11=S11+DUMMY2*DD11(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D1S
-                     S12=S12+DUMMY2*DD12(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S12=S12+DUMMY2*DD12(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D2S
-                     S13=S13+DUMMY2*DD13(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S13=S13+DUMMY2*DD13(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D3S
-                     S14=S14+DUMMY2*DD14(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S14=S14+DUMMY2*DD14(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D4S
-                     S15=S15+DUMMY2*DD15(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S15=S15+DUMMY2*DD15(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D5S
-                     S16=S16+DUMMY2*DD16(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S16=S16+DUMMY2*DD16(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D6S
-                     S17=S17+DUMMY2*DD17(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S17=S17+DUMMY2*DD17(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D7S
-                     S18=S18+DUMMY2*DD18(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S18=S18+DUMMY2*DD18(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D8S
-                     S19=S19+DUMMY2*DD19(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S19=S19+DUMMY2*DD19(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*D9S
-                     S1A=S1A+DUMMY2*DD1A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S1A=S1A+DUMMY2*DD1A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*DAS
-                     S1B=S1B+DUMMY2*DD1B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S1B=S1B+DUMMY2*DD1B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*DBS
-                     S1C=S1C+DUMMY2*DD1C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S1C=S1C+DUMMY2*DD1C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D1S*DCS
-                     S22=S22+DUMMY2*DD22(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S22=S22+DUMMY2*DD22(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D2S
-                     S23=S23+DUMMY2*DD23(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S23=S23+DUMMY2*DD23(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D3S
-                     S24=S24+DUMMY2*DD24(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S24=S24+DUMMY2*DD24(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D4S
-                     S25=S25+DUMMY2*DD25(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S25=S25+DUMMY2*DD25(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D5S
-                     S26=S26+DUMMY2*DD26(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S26=S26+DUMMY2*DD26(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D6S
-                     S27=S27+DUMMY2*DD27(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S27=S27+DUMMY2*DD27(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D7S
-                     S28=S28+DUMMY2*DD28(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S28=S28+DUMMY2*DD28(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D8S
-                     S29=S29+DUMMY2*DD29(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S29=S29+DUMMY2*DD29(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*D9S
-                     S2A=S2A+DUMMY2*DD2A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S2A=S2A+DUMMY2*DD2A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*DAS
-                     S2B=S2B+DUMMY2*DD2B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S2B=S2B+DUMMY2*DD2B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*DBS
-                     S2C=S2C+DUMMY2*DD2C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S2C=S2C+DUMMY2*DD2C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D2S*DCS
-                     S33=S33+DUMMY2*DD33(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S33=S33+DUMMY2*DD33(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D3S
-                     S34=S34+DUMMY2*DD34(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S34=S34+DUMMY2*DD34(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D4S
-                     S35=S35+DUMMY2*DD35(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S35=S35+DUMMY2*DD35(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D5S
-                     S36=S36+DUMMY2*DD36(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S36=S36+DUMMY2*DD36(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D6S
-                     S37=S37+DUMMY2*DD37(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S37=S37+DUMMY2*DD37(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D7S
-                     S38=S38+DUMMY2*DD38(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S38=S38+DUMMY2*DD38(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D8S
-                     S39=S39+DUMMY2*DD39(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S39=S39+DUMMY2*DD39(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*D9S
-                     S3A=S3A+DUMMY2*DD3A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S3A=S3A+DUMMY2*DD3A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*DAS
-                     S3B=S3B+DUMMY2*DD3B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S3B=S3B+DUMMY2*DD3B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*DBS
-                     S3C=S3C+DUMMY2*DD3C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S3C=S3C+DUMMY2*DD3C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D3S*DCS
-                     S44=S44+DUMMY2*DD44(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S44=S44+DUMMY2*DD44(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D4S
-                     S45=S45+DUMMY2*DD45(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S45=S45+DUMMY2*DD45(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D5S
-                     S46=S46+DUMMY2*DD46(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S46=S46+DUMMY2*DD46(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D6S
-                     S47=S47+DUMMY2*DD47(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S47=S47+DUMMY2*DD47(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D7S
-                     S48=S48+DUMMY2*DD48(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S48=S48+DUMMY2*DD48(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D8S
-                     S49=S49+DUMMY2*DD49(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S49=S49+DUMMY2*DD49(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*D9S
-                     S4A=S4A+DUMMY2*DD4A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S4A=S4A+DUMMY2*DD4A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*DAS
-                     S4B=S4B+DUMMY2*DD4B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S4B=S4B+DUMMY2*DD4B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*DBS
-                     S4C=S4C+DUMMY2*DD4C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S4C=S4C+DUMMY2*DD4C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D4S*DCS
-                     S55=S55+DUMMY2*DD55(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S55=S55+DUMMY2*DD55(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*D5S
-                     S56=S56+DUMMY2*DD56(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S56=S56+DUMMY2*DD56(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*D6S
-                     S57=S57+DUMMY2*DD57(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S57=S57+DUMMY2*DD57(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*D7S
-                     S58=S58+DUMMY2*DD58(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S58=S58+DUMMY2*DD58(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*D8S
-                     S59=S59+DUMMY2*DD59(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S59=S59+DUMMY2*DD59(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*D9S
-                     S5A=S5A+DUMMY2*DD5A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S5A=S5A+DUMMY2*DD5A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*DAS
-                     S5B=S5B+DUMMY2*DD5B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S5B=S5B+DUMMY2*DD5B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*DBS
-                     S5C=S5C+DUMMY2*DD5C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S5C=S5C+DUMMY2*DD5C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D5S*DCS
-                     S66=S66+DUMMY2*DD66(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S66=S66+DUMMY2*DD66(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*D6S
-                     S67=S67+DUMMY2*DD67(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S67=S67+DUMMY2*DD67(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*D7S
-                     S68=S68+DUMMY2*DD68(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S68=S68+DUMMY2*DD68(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*D8S
-                     S69=S69+DUMMY2*DD69(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S69=S69+DUMMY2*DD69(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*D9S
-                     S6A=S6A+DUMMY2*DD6A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S6A=S6A+DUMMY2*DD6A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*DAS
-                     S6B=S6B+DUMMY2*DD6B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S6B=S6B+DUMMY2*DD6B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*DBS
-                     S6C=S6C+DUMMY2*DD6C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S6C=S6C+DUMMY2*DD6C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D6S*DCS
-                     S77=S77+DUMMY2*DD77(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S77=S77+DUMMY2*DD77(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*D7S
-                     S78=S78+DUMMY2*DD78(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S78=S78+DUMMY2*DD78(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*D8S
-                     S79=S79+DUMMY2*DD79(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S79=S79+DUMMY2*DD79(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*D9S
-                     S7A=S7A+DUMMY2*DD7A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S7A=S7A+DUMMY2*DD7A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*DAS
-                     S7B=S7B+DUMMY2*DD7B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S7B=S7B+DUMMY2*DD7B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*DBS
-                     S7C=S7C+DUMMY2*DD7C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S7C=S7C+DUMMY2*DD7C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D7S*DCS
-                     S88=S88+DUMMY2*DD88(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S88=S88+DUMMY2*DD88(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D8S*D8S
-                     S89=S89+DUMMY2*DD89(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S89=S89+DUMMY2*DD89(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D8S*D9S
-                     S8A=S8A+DUMMY2*DD8A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S8A=S8A+DUMMY2*DD8A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D8S*DAS
-                     S8B=S8B+DUMMY2*DD8B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S8B=S8B+DUMMY2*DD8B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D8S*DBS
-                     S8C=S8C+DUMMY2*DD8C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S8C=S8C+DUMMY2*DD8C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D8S*DCS
-                     S99=S99+DUMMY2*DD99(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S99=S99+DUMMY2*DD99(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D9S*D9S
-                     S9A=S9A+DUMMY2*DD9A(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S9A=S9A+DUMMY2*DD9A(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D9S*DAS
-                     S9B=S9B+DUMMY2*DD9B(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S9B=S9B+DUMMY2*DD9B(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D9S*DBS
-                     S9C=S9C+DUMMY2*DD9C(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     S9C=S9C+DUMMY2*DD9C(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*D9S*DCS
-                     SAA=SAA+DUMMY2*DDAA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     SAA=SAA+DUMMY2*DDAA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DAS*DAS
-                     SAB=SAB+DUMMY2*DDAB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     SAB=SAB+DUMMY2*DDAB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DAS*DBS
-                     SAC=SAC+DUMMY2*DDAC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     SAC=SAC+DUMMY2*DDAC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DAS*DCS
-                     SBB=SBB+DUMMY2*DDBB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     SBB=SBB+DUMMY2*DDBB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DBS*DBS
-                     SBC=SBC+DUMMY2*DDBC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     SBC=SBC+DUMMY2*DDBC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DBS*DCS
-                     SCC=SCC+DUMMY2*DDCC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     SCC=SCC+DUMMY2*DDCC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1                  C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)+DUMMY3*DCS*DCS
                   ENDIF 
                ENDDO
@@ -2358,10 +2358,10 @@ C
          ENDDO
       ENDIF
 
-C     WRITE(*,'(A,G20.10)') 'energy=',ECAPSID
-C     PRINT*,'coords:'
+C     WRITE(*,'(A,G20.10)') 'ENERGY=',ECAPSID
+C     PRINT*,'COORDS:'
 C     WRITE(*,'(I6,G20.10)') (J1,X(J1),J1=1,3*NATOMS)
-C     PRINT*,'gradient:'
+C     PRINT*,'GRADIENT:'
 C     WRITE(*,'(I6,G20.10)') (J1,V(J1),J1=1,3*NATOMS)
 C     WRITE(*,'(A,2G20.10)') 'ALPHA1,ALPHA2=',ALPHA1,ALPHA2
 

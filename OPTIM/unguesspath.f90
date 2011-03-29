@@ -1,29 +1,29 @@
-!   OPTIM: A program for optimizing geometries and calculating reaction pathways
-!   Copyright (C) 1999-2006 David J. Wales
-!   This file is part of OPTIM.
+!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!   THIS FILE IS PART OF OPTIM.
 !   
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !   
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !   
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
-! linear interpolation for unres with iterative refinement of
-! longer or shorter route around each dihedral angle
+! LINEAR INTERPOLATION FOR UNRES WITH ITERATIVE REFINEMENT OF
+! LONGER OR SHORTER ROUTE AROUND EACH DIHEDRAL ANGLE
 SUBROUTINE UNGUESSPATH(START,FINISH,NCOORDS,EDIFFTOLLOCAL,NATOMS)
 USE KEY
 USE MODCHARMM
 USE MODGUESS
 USE MODUNRES
-use porfuncs
+USE PORFUNCS
 IMPLICIT NONE
 INTEGER, INTENT(IN) :: NCOORDS, NATOMS
 DOUBLE PRECISION, INTENT(IN) :: START(NCOORDS), FINISH(NCOORDS), EDIFFTOLLOCAL
@@ -38,13 +38,13 @@ CHARACTER(LEN=80) LFNAME
 INTEGER :: J1
 
 IF (.NOT.UNRST) THEN
-   WRITE(*,'(A)') 'ERROR - unguesspath is only for UNRES potential'
+   WRITE(*,'(A)') 'ERROR - UNGUESSPATH IS ONLY FOR UNRES POTENTIAL'
    STOP
 ENDIF
 IF (UNRST) ALLOCATE(PEPCOORDS(3*NATOMS),SMALLSTEP(NCOORDS),LARGESTEP(NCOORDS),DELTA(NCOORDS))
 ALLOCATE(SHORTER(NCOORDS))
-! define the angular step for the shortest and longest angular routes between start and
-! finish for UNRES.
+! DEFINE THE ANGULAR STEP FOR THE SHORTEST AND LONGEST ANGULAR ROUTES BETWEEN START AND
+! FINISH FOR UNRES.
 DO J1=1,NCOORDS
    IF (ABS(FINISH(J1)-START(J1)).LE.PI) THEN
       SMALLSTEP(J1)=FINISH(J1)-START(J1)
@@ -65,51 +65,51 @@ DO J1=1,NCOORDS
    SHORTER(J1)=.TRUE.
 ENDDO
 NINTERP=MAXGCYCLES
-WRITE(*,'(2(A,I6))') ' Number of interior points for interpolated path in UNGUESSPATH=',NINTERP
+WRITE(*,'(2(A,I6))') ' NUMBER OF INTERIOR POINTS FOR INTERPOLATED PATH IN UNGUESSPATH=',NINTERP
 ALLOCATE(INTERPENERGY(NINTERP+2),INTERPENERGYSAVE(NINTERP+2))
-! to optimise the order of the steps we need to recalculate INTERPENERGY for all configurations
-! The energy at steps 1 and NINTERP+2 are just the energies of the START and FINISH minima
+! TO OPTIMISE THE ORDER OF THE STEPS WE NEED TO RECALCULATE INTERPENERGY FOR ALL CONFIGURATIONS
+! THE ENERGY AT STEPS 1 AND NINTERP+2 ARE JUST THE ENERGIES OF THE START AND FINISH MINIMA
 
-CALL GENERGIES(1,NINTERP+2,.FALSE.) ! fill the initial INTERPENERGY vector with interpolated energies
+CALL GENERGIES(1,NINTERP+2,.FALSE.) ! FILL THE INITIAL INTERPENERGY VECTOR WITH INTERPOLATED ENERGIES
 INTERPENERGYSAVE(1:NINTERP+2)=INTERPENERGY(1:NINTERP+2)
 
 MAXE=MAXVAL(INTERPENERGY(2:NINTERP+1))
-JMAXE=MAXLOC(INTERPENERGY(2:NINTERP+1)) ! note that MAXLOC returns a vector of dimension one, not a scalar
+JMAXE=MAXLOC(INTERPENERGY(2:NINTERP+1)) ! NOTE THAT MAXLOC RETURNS A VECTOR OF DIMENSION ONE, NOT A SCALAR
 SUME=SUM(INTERPENERGY(2:NINTERP+1))
 
-WRITE(*,'(A,2G20.10)') 'maximum energy and mean of intervening points=',MAXE,SUME/(NINTERP)
-WRITE(*,'(A,I6)') 'maximum is at location ',JMAXE(1)
-PRINT*,'energies:'
+WRITE(*,'(A,2G20.10)') 'MAXIMUM ENERGY AND MEAN OF INTERVENING POINTS=',MAXE,SUME/(NINTERP)
+WRITE(*,'(A,I6)') 'MAXIMUM IS AT LOCATION ',JMAXE(1)
+PRINT*,'ENERGIES:'
 WRITE(*,'(I6,G20.10)') (J1,INTERPENERGY(J1),J1=1,NINTERP+2)
-! try changing the direction (SHORTER=true or false) for each degree of freedom in turn
-! until we get through them all with no improvement
+! TRY CHANGING THE DIRECTION (SHORTER=TRUE OR FALSE) FOR EACH DEGREE OF FREEDOM IN TURN
+! UNTIL WE GET THROUGH THEM ALL WITH NO IMPROVEMENT
 
-main: DO 
-   DO J1=1,NCOORDS ! try changing the interpolation direction for each coordinate in turn
+MAIN: DO 
+   DO J1=1,NCOORDS ! TRY CHANGING THE INTERPOLATION DIRECTION FOR EACH COORDINATE IN TURN
    
-! first try using LARGESTEP instead of SMALLSTEP for the degree of freedom
-! corresponding to JMAXE(1). Or try SMALLSTEP instead of LARGESTEP if we've changed this
-! an odd number of times already!
+! FIRST TRY USING LARGESTEP INSTEAD OF SMALLSTEP FOR THE DEGREE OF FREEDOM
+! CORRESPONDING TO JMAXE(1). OR TRY SMALLSTEP INSTEAD OF LARGESTEP IF WE'VE CHANGED THIS
+! AN ODD NUMBER OF TIMES ALREADY!
 
       IF (SHORTER(J1)) THEN
-!        WRITE(*,'(A,I5)') ' trying longer interpolation for coordinate ',J1
+!        WRITE(*,'(A,I5)') ' TRYING LONGER INTERPOLATION FOR COORDINATE ',J1
          DELTA(J1)=LARGESTEP(J1)
          SHORTER(J1)=.FALSE.
       ELSE
-!        WRITE(*,'(A,I5)') ' trying shorter interpolation for coordinate ',J1
+!        WRITE(*,'(A,I5)') ' TRYING SHORTER INTERPOLATION FOR COORDINATE ',J1
          DELTA(J1)=SMALLSTEP(J1)
          SHORTER(J1)=.TRUE.
       ENDIF
       CALL GENERGIES(2,NINTERP+1,.FALSE.) 
       NEWMAXE=MAXVAL(INTERPENERGY(2:NINTERP+1))
       NEWJMAXE=MAXLOC(INTERPENERGY(2:NINTERP+1))
-      IF (MAXE-NEWMAXE.GT.EDIFFTOLLOCAL) THEN ! accept change
-         WRITE(*,'(A,G20.10,A,I6)') ' maximum interior energy is now ',NEWMAXE,' at position ',NEWJMAXE(1)
+      IF (MAXE-NEWMAXE.GT.EDIFFTOLLOCAL) THEN ! ACCEPT CHANGE
+         WRITE(*,'(A,G20.10,A,I6)') ' MAXIMUM INTERIOR ENERGY IS NOW ',NEWMAXE,' AT POSITION ',NEWJMAXE(1)
          MAXE=NEWMAXE
          INTERPENERGYSAVE(2:NINTERP+1)=INTERPENERGY(2:NINTERP+1)
-         CYCLE main ! go back and start from the first coordinate again
+         CYCLE MAIN ! GO BACK AND START FROM THE FIRST COORDINATE AGAIN
       ELSE
-!        WRITE(*,'(A,G20.10,A,I6))') ' maximum interior energy is now ',NEWMAXE,' at position ',NEWJMAXE(1)
+!        WRITE(*,'(A,G20.10,A,I6))') ' MAXIMUM INTERIOR ENERGY IS NOW ',NEWMAXE,' AT POSITION ',NEWJMAXE(1)
          INTERPENERGY(2:NINTERP+1)=INTERPENERGYSAVE(2:NINTERP+1)
          IF (SHORTER(J1)) THEN
             DELTA(J1)=LARGESTEP(J1)
@@ -120,20 +120,20 @@ main: DO
          ENDIF
       ENDIF
    ENDDO
-   EXIT main
-ENDDO main
+   EXIT MAIN
+ENDDO MAIN
 
 SUME=SUM(INTERPENERGY(2:NINTERP+1))
-WRITE(*,'(A,2G20.10)') 'maximum energy and mean=',MAXE,SUME/(NINTERP)
-WRITE(*,'(A,I6)') 'maximum is at location ',JMAXE(1)
-PRINT*,' energies:'
+WRITE(*,'(A,2G20.10)') 'MAXIMUM ENERGY AND MEAN=',MAXE,SUME/(NINTERP)
+WRITE(*,'(A,I6)') 'MAXIMUM IS AT LOCATION ',JMAXE(1)
+PRINT*,' ENERGIES:'
 WRITE(*,'(I6,G20.10)') (J1,INTERPENERGY(J1),J1=1,NINTERP+2)
 NLONG=0
 DO J1=1,NCOORDS
    IF (.NOT.SHORTER(J1)) NLONG=NLONG+1
 ENDDO
-PRINT '(A,I5)',' number of longer interpolations=',NLONG
-! dump xyz path
+PRINT '(A,I5)',' NUMBER OF LONGER INTERPOLATIONS=',NLONG
+! DUMP XYZ PATH
 CALL GENERGIES(1,NINTERP+2,.TRUE.) 
 
 DEALLOCATE(INTERPENERGY,INTERPENERGYSAVE,SHORTER)
@@ -146,9 +146,9 @@ CONTAINS
    INTEGER :: K1, K2, LBOTTOM, LTOP, K3
    LOGICAL, INTENT(IN) :: DUMPPATH
    DOUBLE PRECISION :: X(3*NATOMS), RMS, GRAD(3*NATOMS)
-               ! there should be a way of not 
-               ! declaring the Hessian unless it is actually needed? Use (*,*) in potential
-               ! and routines called from it?
+               ! THERE SHOULD BE A WAY OF NOT 
+               ! DECLARING THE HESSIAN UNLESS IT IS ACTUALLY NEEDED? USE (*,*) IN POTENTIAL
+               ! AND ROUTINES CALLED FROM IT?
    DOUBLE PRECISION :: ENERGY
 
    LBOTTOM=BOTTOM
@@ -159,26 +159,26 @@ CONTAINS
    ENDIF
    IF (DUMPPATH) THEN
       IF (FILTH.EQ.0) THEN
-         OPEN(UNIT=7,FILE='guess.xyz',STATUS='UNKNOWN')
+         OPEN(UNIT=7,FILE='GUESS.XYZ',STATUS='UNKNOWN')
       ELSE
-         LFNAME='guess.xyz.'//TRIM(ADJUSTL(FILTHSTR))
+         LFNAME='GUESS.XYZ.'//TRIM(ADJUSTL(FILTHSTR))
          OPEN(UNIT=7,FILE=TRIM(ADJUSTL(LFNAME)),STATUS='UNKNOWN')
       ENDIF
       IF (FILTH.EQ.0) THEN
-         OPEN(UNIT=8,FILE='guess.unres.xyz',STATUS='UNKNOWN')
+         OPEN(UNIT=8,FILE='GUESS.UNRES.XYZ',STATUS='UNKNOWN')
       ELSE
-         LFNAME='guess.unres.xyz.'//TRIM(ADJUSTL(FILTHSTR))
+         LFNAME='GUESS.UNRES.XYZ.'//TRIM(ADJUSTL(FILTHSTR))
          OPEN(UNIT=8,FILE=TRIM(ADJUSTL(LFNAME)),STATUS='UNKNOWN')
       ENDIF
       IF (LBOTTOM.NE.1) THEN
-         PRINT*,'here'
-         CALL var_to_geom(NCOORDS,START)
-         CALL chainbuild
+         PRINT*,'HERE'
+         CALL VAR_TO_GEOM(NCOORDS,START)
+         CALL CHAINBUILD
          DO K2=1,NRES
-            WRITE(7,'(3G20.10)') C(1,K2),C(2,K2),C(3,K2) ! backbone
-            WRITE(7,'(3G20.10)') C(1,K2+NRES),C(2,K2+NRES),C(3,K2+NRES) ! side chains
+            WRITE(7,'(3G20.10)') C(1,K2),C(2,K2),C(3,K2) ! BACKBONE
+            WRITE(7,'(3G20.10)') C(1,K2+NRES),C(2,K2+NRES),C(3,K2+NRES) ! SIDE CHAINS
          ENDDO
-         DO K2=1,(NATOMS/2)-1 ! jmc add peptide atoms...
+         DO K2=1,(NATOMS/2)-1 ! JMC ADD PEPTIDE ATOMS...
             DO K3=1,3
                PEPCOORDS(6*(K2-1)+K3)=(2.0D0*C(K3,K2)+C(K3,K2+1))/3.0D0
                PEPCOORDS(6*(K2-1)+K3+3)=(C(K3,K2)+2.0D0*C(K3,K2+1))/3.0D0
@@ -194,19 +194,19 @@ CONTAINS
       ENDIF
    ENDIF
    X(1:NCOORDS)=START(1:NCOORDS)
-! Remove exact atom superpositions using some random numerical noise with DPRAND
+! REMOVE EXACT ATOM SUPERPOSITIONS USING SOME RANDOM NUMERICAL NOISE WITH DPRAND
    DO K1=LBOTTOM,LTOP
-      DO K2=1,NCOORDS ! linear interpolation
+      DO K2=1,NCOORDS ! LINEAR INTERPOLATION
          X(K2)=START(K2)+DELTA(K2)*(K1-1)/(NINTERP+1)
       ENDDO
-      CALL var_to_geom(NCOORDS,X)
-      CALL chainbuild
+      CALL VAR_TO_GEOM(NCOORDS,X)
+      CALL CHAINBUILD
       IF (DUMPPATH) THEN
          DO K2=1,NRES
-            WRITE(7,'(3G20.10)') C(1,K2),C(2,K2),C(3,K2) ! backbone
-            WRITE(7,'(3G20.10)') C(1,K2+NRES),C(2,K2+NRES),C(3,K2+NRES) ! side chains
+            WRITE(7,'(3G20.10)') C(1,K2),C(2,K2),C(3,K2) ! BACKBONE
+            WRITE(7,'(3G20.10)') C(1,K2+NRES),C(2,K2+NRES),C(3,K2+NRES) ! SIDE CHAINS
          ENDDO
-         DO K2=1,(NATOMS/2)-1 ! jmc add peptide atoms...
+         DO K2=1,(NATOMS/2)-1 ! JMC ADD PEPTIDE ATOMS...
             DO K3=1,3
                PEPCOORDS(6*(K2-1)+K3)=(2.0D0*C(K3,K2)+C(K3,K2+1))/3.0D0
                PEPCOORDS(6*(K2-1)+K3+3)=(C(K3,K2)+2.0D0*C(K3,K2+1))/3.0D0

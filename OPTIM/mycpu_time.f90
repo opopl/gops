@@ -1,23 +1,23 @@
-!   OPTIM: A program for optimizing geometries and calculating reaction pathways
-!   Copyright (C) 1999-2006 David J. Wales
-!   This file is part of OPTIM.
+!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!   THIS FILE IS PART OF OPTIM.
 !   
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !   
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !   
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 SUBROUTINE MYCPU_TIME(POO,CHECKLIMIT)
-use porfuncs
+USE PORFUNCS
 USE KEY
 IMPLICIT NONE
 DOUBLE PRECISION MYTIME
@@ -25,12 +25,12 @@ DOUBLE PRECISION, INTENT(OUT) :: POO
 LOGICAL, INTENT(IN) :: CHECKLIMIT
 
 CALL CPU_TIME(MYTIME)
-POO=MYTIME ! without this extra assignment NAG f95 returns a random number!
-           ! saving TSTART is necessary for PG compiler, where initial time is
-           ! not zero!
-IF (.NOT.CHECKLIMIT) RETURN ! we don;t want to stop half way through a path, for example
+POO=MYTIME ! WITHOUT THIS EXTRA ASSIGNMENT NAG F95 RETURNS A RANDOM NUMBER!
+           ! SAVING TSTART IS NECESSARY FOR PG COMPILER, WHERE INITIAL TIME IS
+           ! NOT ZERO!
+IF (.NOT.CHECKLIMIT) RETURN ! WE DON;T WANT TO STOP HALF WAY THROUGH A PATH, FOR EXAMPLE
 IF (MYTIME-TSTART.GT.TIMELIMIT) THEN
-   PRINT '(A,F12.1,A,F12.1)','CPU time limit exceeded: time=',MYTIME-TSTART,' limit=',TIMELIMIT
+   PRINT '(A,F12.1,A,F12.1)','CPU TIME LIMIT EXCEEDED: TIME=',MYTIME-TSTART,' LIMIT=',TIMELIMIT
    IF (DUMPSP) CALL DODUMPSP
    STOP
 ENDIF

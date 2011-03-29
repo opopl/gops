@@ -1,20 +1,20 @@
-!   CONNECT module is an implementation of a connection algorithm for finding rearrangement pathways.
-!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
-!   This file is part of CONNECT module. CONNECT module is part of OPTIM.
+!   CONNECT MODULE IS AN IMPLEMENTATION OF A CONNECTION ALGORITHM FOR FINDING REARRANGEMENT PATHWAYS.
+!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
+!   THIS FILE IS PART OF CONNECT MODULE. CONNECT MODULE IS PART OF OPTIM.
 !
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 MODULE DECIDEWHATTOCONNECT
      IMPLICIT NONE
@@ -28,23 +28,23 @@ MODULE DECIDEWHATTOCONNECT
           USE KEYDECIDE
           IMPLICIT NONE
 
-          ! use Dijkstra's algorithm to find the shortest path between the original two endpoints.
-          ! The edge weights are zero for minima connected by a single ts, infinity for pairs
-          ! where we have already tried the maximum allowed connections, and the minimum distance from
-          ! mind (possibly squared) otherwise.
-          ! DIJKSTRA should return the number of connections to try from this shortest path, and the
-          ! corresponding pairs of minima.
-          ! Implementation of Dijkstra's algorithm for finding shortest paths in an UNconnected database
-          ! Weights edges of graph according to mi(i)%data%D(j) or mi(i)%data%INTERP(j) (i>j)
-          ! Weight=0 if connected by a single ts
-          ! Weight=infinity if the maximum tryconnect attempts have been done for this pair
-          ! Weight=mind(i,j) otherwise
+          ! USE DIJKSTRA'S ALGORITHM TO FIND THE SHORTEST PATH BETWEEN THE ORIGINAL TWO ENDPOINTS.
+          ! THE EDGE WEIGHTS ARE ZERO FOR MINIMA CONNECTED BY A SINGLE TS, INFINITY FOR PAIRS
+          ! WHERE WE HAVE ALREADY TRIED THE MAXIMUM ALLOWED CONNECTIONS, AND THE MINIMUM DISTANCE FROM
+          ! MIND (POSSIBLY SQUARED) OTHERWISE.
+          ! DIJKSTRA SHOULD RETURN THE NUMBER OF CONNECTIONS TO TRY FROM THIS SHORTEST PATH, AND THE
+          ! CORRESPONDING PAIRS OF MINIMA.
+          ! IMPLEMENTATION OF DIJKSTRA'S ALGORITHM FOR FINDING SHORTEST PATHS IN AN UNCONNECTED DATABASE
+          ! WEIGHTS EDGES OF GRAPH ACCORDING TO MI(I)%DATA%D(J) OR MI(I)%DATA%INTERP(J) (I>J)
+          ! WEIGHT=0 IF CONNECTED BY A SINGLE TS
+          ! WEIGHT=INFINITY IF THE MAXIMUM TRYCONNECT ATTEMPTS HAVE BEEN DONE FOR THIS PAIR
+          ! WEIGHT=MIND(I,J) OTHERWISE
 INTEGER :: I, NDUMMY, BEGIN, END, NSTEP, J, ISTAT
 TYPE MINIMUM
    INTEGER :: PREVMIN                             ! PREVIOUS MIN/TS IN SHORTEST PATH
    DOUBLE PRECISION :: D                          ! DISTANCE FROM STARTING POINT
-   LOGICAL :: PERMANENT                           ! ONCE IN PERMANENT SET, THE MINIMUM's
-                                                  ! label cannot be changed
+   LOGICAL :: PERMANENT                           ! ONCE IN PERMANENT SET, THE MINIMUM'S
+                                                  ! LABEL CANNOT BE CHANGED
 END TYPE MINIMUM
 TYPE(MINIMUM), DIMENSION(:), ALLOCATABLE :: DIJMIN
 TYPE PATHWAY
@@ -52,13 +52,13 @@ TYPE PATHWAY
 END TYPE PATHWAY
 DOUBLE PRECISION :: WEIGHT, MINWEIGHT, DUMMYDJW, DIST
 
-! Initialise connections
+! INITIALISE CONNECTIONS
    ALLOCATE(DIJMIN(NMIN))
    DIJMIN(1:NMIN)%PREVMIN=0
    DIJMIN(1:NMIN)%D=HUGE(1.0D0)
    DIJMIN(1:NMIN)%PERMANENT=.FALSE.
 
-! Start algorithm at 'begin' minimum
+! START ALGORITHM AT 'BEGIN' MINIMUM
 
    I=1
    DIJMIN(I)%D=0.0D0
@@ -67,7 +67,7 @@ DOUBLE PRECISION :: WEIGHT, MINWEIGHT, DUMMYDJW, DIST
    MAIN: DO
       DO J=2, NMIN    ! LOOP OVER ALL MINIMA 
          IF (DIJMIN(J)%PERMANENT) CYCLE          ! ONLY CONSIDER TEMPORARY MINIMA
-         IF (GETDISTANCE(I,J)>HUGE(1.0D0)/2) THEN ! DON't raise a HUGE number to any power > 1!!
+         IF (GETDISTANCE(I,J)>HUGE(1.0D0)/2) THEN ! DON'T RAISE A HUGE NUMBER TO ANY POWER > 1!!
             WEIGHT=GETDISTANCE(I,J)
          ELSE
             IF (INDEXCOSTFUNCTION) THEN 
@@ -85,17 +85,17 @@ DOUBLE PRECISION :: WEIGHT, MINWEIGHT, DUMMYDJW, DIST
                  DIST=GETDISTANCE(I,J)
                  WEIGHT=DIST
                  IF (DIST.GT.DIJKSTRADMAX) WEIGHT=EXP(DIST)
-            ELSE ! Compare squares to favour more small jumps over big ones DJW
+            ELSE ! COMPARE SQUARES TO FAVOUR MORE SMALL JUMPS OVER BIG ONES DJW
                  DIST=GETDISTANCE(I,J)
                  WEIGHT=DIST
                  IF (DIST.GT.DIJKSTRADMAX) WEIGHT=DIST**COSTFUNCTIONPOWER
             ENDIF
          ENDIF
-!        PRINT '(A,2I6)','decide> I,J=',I,J
+!        PRINT '(A,2I6)','DECIDE> I,J=',I,J
 !        PRINT '(A,2G20.10)','        GETDISTANCE,GETINTERP=',GETDISTANCE(I,J),GETINTERP(I,J)
 
          IF ((DIJMIN(I)%D + WEIGHT) < DIJMIN(J)%D) THEN    ! UPDATE D FOR EACH CONNECTED MINIMUM
-!           PRINT '(A,2I8,3G20.10)','decide> I,J,DIJMIN(J)%D,DIJMIN(I)%D,WEIGHT=',I,J,DIJMIN(J)%D,DIJMIN(I)%D,WEIGHT
+!           PRINT '(A,2I8,3G20.10)','DECIDE> I,J,DIJMIN(J)%D,DIJMIN(I)%D,WEIGHT=',I,J,DIJMIN(J)%D,DIJMIN(I)%D,WEIGHT
             DIJMIN(J)%D=DIJMIN(I)%D + WEIGHT
             DIJMIN(J)%PREVMIN=I
          ENDIF
@@ -103,8 +103,8 @@ DOUBLE PRECISION :: WEIGHT, MINWEIGHT, DUMMYDJW, DIST
             
       MINWEIGHT=HUGE(MINWEIGHT)
       NDUMMY=I ! SAT: IF THIS IS THE FIRST CYCLE OF THE MAIN DO LOOP AND ALL MINIMA HAVE
-      ! HUGE weight ndummy will never be set which is a bit unfortunate given
-      ! that we use it immediately afterwards in the IF test ...
+      ! HUGE WEIGHT NDUMMY WILL NEVER BE SET WHICH IS A BIT UNFORTUNATE GIVEN
+      ! THAT WE USE IT IMMEDIATELY AFTERWARDS IN THE IF TEST ...
       DO J=2,NMIN                           ! FIND TEMPORARY MINIMUM WITH LOWEST D
          IF (DIJMIN(J)%PERMANENT) CYCLE     ! ONLY CONSIDER TEMPORARY MINIMA
          IF (DIJMIN(J)%D < MINWEIGHT) THEN  ! FIND MINIMUM WEIGHT 
@@ -113,9 +113,9 @@ DOUBLE PRECISION :: WEIGHT, MINWEIGHT, DUMMYDJW, DIST
          ENDIF
       ENDDO
 
-! If no temporary minima with total weight less than HUGE are present, we will never exit the outer do loop!
+! IF NO TEMPORARY MINIMA WITH TOTAL WEIGHT LESS THAN HUGE ARE PRESENT, WE WILL NEVER EXIT THE OUTER DO LOOP!
       IF (NDUMMY==I) THEN
-         WRITE(*,'(A)') ' There appear to be no connections left to try in DIJKSTRA - quit'
+         WRITE(*,'(A)') ' THERE APPEAR TO BE NO CONNECTIONS LEFT TO TRY IN DIJKSTRA - QUIT'
          CALL TSUMMARY
          CALL FLUSH(6,ISTAT)
          STOP
@@ -127,17 +127,17 @@ DOUBLE PRECISION :: WEIGHT, MINWEIGHT, DUMMYDJW, DIST
    ENDDO MAIN
 
    IF (MINWEIGHT.GT.HUGE(MINWEIGHT)/2) THEN
-      WRITE(*,'(A)') ' There appear to be no connections left to try in DIJKSTRA - quit'
+      WRITE(*,'(A)') ' THERE APPEAR TO BE NO CONNECTIONS LEFT TO TRY IN DIJKSTRA - QUIT'
       CALL TSUMMARY
       CALL FLUSH(6,ISTAT)
       STOP
    ENDIF
 
    IF (ABS(MINWEIGHT).LT.1.0D-100) THEN
-      WRITE(*,'(A)') ' WARNING - zero weight path already exists in DIJKSTRA'
+      WRITE(*,'(A)') ' WARNING - ZERO WEIGHT PATH ALREADY EXISTS IN DIJKSTRA'
    ENDIF
 
-! Should have found shortest path now. Get it, backwards from end
+! SHOULD HAVE FOUND SHORTEST PATH NOW. GET IT, BACKWARDS FROM END
 
   BEGIN=1
   END=2
@@ -164,9 +164,9 @@ DOUBLE PRECISION :: WEIGHT, MINWEIGHT, DUMMYDJW, DIST
 !    ELSE
 !         MINWEIGHT=MINWEIGHT**(1.0D0/COSTFUNCTIONPOWER)
 !    ENDIF
-     WRITE(*,'(A,I6,A,I6,A,G15.5)') ' decide> Shortest path in Dijkstra has ',nstep,' steps with ',NDIJPAIRS, &
-                                 ' missing connections, weight=',MINWEIGHT
-     WRITE(*,'(A)') ' decide> The unconnected minima in the chain and their distances are:'
+     WRITE(*,'(A,I6,A,I6,A,G15.5)') ' DECIDE> SHORTEST PATH IN DIJKSTRA HAS ',NSTEP,' STEPS WITH ',NDIJPAIRS, &
+                                 ' MISSING CONNECTIONS, WEIGHT=',MINWEIGHT
+     WRITE(*,'(A)') ' DECIDE> THE UNCONNECTED MINIMA IN THE CHAIN AND THEIR DISTANCES ARE:'
   I=END
   NSTEP=0
   NDIJPAIRS=0

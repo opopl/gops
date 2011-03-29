@@ -1,289 +1,289 @@
  
-c     --------------------- scltab ----------------------
+C     --------------------- SCLTAB ----------------------
 
-      subroutine scltab
+      SUBROUTINE SCLTAB
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     SCLTAB scales the potential energy according to
-c            the specified energy/residue for the
-c            target conformation
+C     SCLTAB SCALES THE POTENTIAL ENERGY ACCORDING TO
+C            THE SPECIFIED ENERGY/RESIDUE FOR THE
+C            TARGET CONFORMATION
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-      use amhglobals,  only:SO, maxtab,maxr,oarchv,i521,numcrd,i523,
-     *  prcord,zrcord,avep,vpotnt,forse,AMHmaxsiz,nmres,nummem,
-     *  iwork,pexcld,numlng,rinc,rincinv,iprolstscl,
-     *  rincsq,ilong,crdixn,idigns,ires,iprolst,
-     *  eqdist,hbond,oxexcldv,i1,numtab,srplr,eres,
-     *  i502,i507,maxs,i505,i511,i512,i2,i508,i509,i516,i515,
-     *  i525,target,igomb,ngomb,iclassweight,test_site,
-     *  ixn_from_site,i_V_test,minmr,maxmr,ovscltab
+      USE AMHGLOBALS,  ONLY:SO, MAXTAB,MAXR,OARCHV,I521,NUMCRD,I523,
+     *  PRCORD,ZRCORD,AVEP,VPOTNT,FORSE,AMHMAXSIZ,NMRES,NUMMEM,
+     *  IWORK,PEXCLD,NUMLNG,RINC,RINCINV,IPROLSTSCL,
+     *  RINCSQ,ILONG,CRDIXN,IDIGNS,IRES,IPROLST,
+     *  EQDIST,HBOND,OXEXCLDV,I1,NUMTAB,SRPLR,ERES,
+     *  I502,I507,MAXS,I505,I511,I512,I2,I508,I509,I516,I515,
+     *  I525,TARGET,IGOMB,NGOMB,ICLASSWEIGHT,TEST_SITE,
+     *  IXN_FROM_SITE,I_V_TEST,MINMR,MAXMR,OVSCLTAB
 
-      implicit none
+      IMPLICIT NONE
 
 
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-         logical tempav,scl_call
+         LOGICAL TEMPAV,SCL_CALL
 
-         integer i,i_test_tab,i_test_ixn,i_range
+         INTEGER I,I_TEST_TAB,I_TEST_IXN,I_RANGE
 
-         integer i_ixn, i_coord, i_mem, i_tab,count, k,j
+         INTEGER I_IXN, I_COORD, I_MEM, I_TAB,COUNT, K,J
 
-         double precision rnorm,rmax(maxtab),rmin(maxtab),trgeng(maxtab,3),trgscl(3),srplr_tot,
-     *        vpotint_test(0:maxr+1),trgengtot(3)
+         DOUBLE PRECISION RNORM,RMAX(MAXTAB),RMIN(MAXTAB),TRGENG(MAXTAB,3),TRGSCL(3),SRPLR_TOT,
+     *        VPOTINT_TEST(0:MAXR+1),TRGENGTOT(3)
 
-         character*10 ccount1,ccount2,ccount3
-         character*5 tarfl,memfl
+         CHARACTER*10 CCOUNT1,CCOUNT2,CCOUNT3
+         CHARACTER*5 TARFL,MEMFL
 
-        integer Nres,memires(AMHmaxsiz),memsurf(AMHmaxsiz),memSS(AMHmaxsiz),open_status
+        INTEGER NRES,MEMIRES(AMHMAXSIZ),MEMSURF(AMHMAXSIZ),MEMSS(AMHMAXSIZ),OPEN_STATUS
 
-        double precision memcord(AMHmaxsiz,3,3)
+        DOUBLE PRECISION MEMCORD(AMHMAXSIZ,3,3)
  
-c     required subroutines:
+C     REQUIRED SUBROUTINES:
 
-         external force,num_to_char
+         EXTERNAL FORCE,NUM_TO_CHAR
 
-c     --------------------- begin -----------------------
-c        write(SO,*) 'scltab'c     get target's raw table potential  energy
-c     find potential energy for each interaction type
+C     --------------------- BEGIN -----------------------
+C        WRITE(SO,*) 'SCLTAB'C     GET TARGET'S RAW TABLE POTENTIAL  ENERGY
+C     FIND POTENTIAL ENERGY FOR EACH INTERACTION TYPE
 
-         trgengtot(i_range)=0.0D0
-      tempav=.true.
-c ***************
+         TRGENGTOT(I_RANGE)=0.0D0
+      TEMPAV=.TRUE.
+C ***************
 
-c   read target (which is considered 0th memory)
+C   READ TARGET (WHICH IS CONSIDERED 0TH MEMORY)
 
-c          rewind iprolst
-          read (iprolst,1000)tarfl
-       do 609 i_mem=1,nummem
-1000     format(a5)
-          read (iprolst,1000)memfl
+C          REWIND IPROLST
+          READ (IPROLST,1000)TARFL
+       DO 609 I_MEM=1,NUMMEM
+1000     FORMAT(A5)
+          READ (IPROLST,1000)MEMFL
 
-          open(17,file='proteins/'//memfl,
-     *        status='old',iostat=open_status)
+          OPEN(17,FILE='PROTEINS/'//MEMFL,
+     *        STATUS='OLD',IOSTAT=OPEN_STATUS)
 
-         if (open_status.ne.0) then
-           write(SO,*) 'failure to open protein file ', memfl
-           write(SO,*) 'in scale tab'
-           write(SO,*) 'error number ',open_status
-           stop
-         endif
+         IF (OPEN_STATUS.NE.0) THEN
+           WRITE(SO,*) 'FAILURE TO OPEN PROTEIN FILE ', MEMFL
+           WRITE(SO,*) 'IN SCALE TAB'
+           WRITE(SO,*) 'ERROR NUMBER ',OPEN_STATUS
+           STOP
+         ENDIF
 
-           read(17,*)
-           read(17,*)Nres
-           read(17,201)(memires(j),j=1,Nres)
-201        format (25(i2,1x))
-           do j = 1,3
-              read(17,202)(memcord(k,j,1),k=1,Nres)
-202           format(8(f8.3,1x))
-           enddo
-           do j = 1,3
-              read(17,202)(memcord(k,j,2),k=1,Nres)
-           enddo
-           do j = 1,3
-              read(17,202)(memcord(k,j,3),k=1,Nres)
-           enddo
-           read(17,201)(memsurf(k),k=1,Nres)
-           read(17,201)(memSS(k),k=1,Nres)
-        close(17)
+           READ(17,*)
+           READ(17,*)NRES
+           READ(17,201)(MEMIRES(J),J=1,NRES)
+201        FORMAT (25(I2,1X))
+           DO J = 1,3
+              READ(17,202)(MEMCORD(K,J,1),K=1,NRES)
+202           FORMAT(8(F8.3,1X))
+           ENDDO
+           DO J = 1,3
+              READ(17,202)(MEMCORD(K,J,2),K=1,NRES)
+           ENDDO
+           DO J = 1,3
+              READ(17,202)(MEMCORD(K,J,3),K=1,NRES)
+           ENDDO
+           READ(17,201)(MEMSURF(K),K=1,NRES)
+           READ(17,201)(MEMSS(K),K=1,NRES)
+        CLOSE(17)
  
-      write(oarchv,*)
+      WRITE(OARCHV,*)
 
-        do 521 i521=1,3                ! set protein coords to native str
-          do 522 i_coord=1,numcrd
-            do 523 i523=1,nmres
-               prcord(i523,i521,1,i_coord)=target(i523,i521,i_coord)
-c              prcord(i523,i521,1,i_coord)=memcord(i523,i521,i_coord)
- 523            continue
- 522      continue
- 521    continue
+        DO 521 I521=1,3                ! SET PROTEIN COORDS TO NATIVE STR
+          DO 522 I_COORD=1,NUMCRD
+            DO 523 I523=1,NMRES
+               PRCORD(I523,I521,1,I_COORD)=TARGET(I523,I521,I_COORD)
+C              PRCORD(I523,I521,1,I_COORD)=MEMCORD(I523,I521,I_COORD)
+ 523            CONTINUE
+ 522      CONTINUE
+ 521    CONTINUE
 
-      scl_call=.true.
+      SCL_CALL=.TRUE.
 
-         call force(1,prcord,zrcord,avep,tempav,maxr,vpotnt,forse,trgeng,pexcld,
-     *     numlng,nmres,rincinv,rincsq,ilong,crdixn,ires,eqdist,hbond,oxexcldv,scl_call)
+         CALL FORCE(1,PRCORD,ZRCORD,AVEP,TEMPAV,MAXR,VPOTNT,FORSE,TRGENG,PEXCLD,
+     *     NUMLNG,NMRES,RINCINV,RINCSQ,ILONG,CRDIXN,IRES,EQDIST,HBOND,OXEXCLDV,SCL_CALL)
 
-         idigns=.false.
+         IDIGNS=.FALSE.
 
-       do i_range=1,3
-         do i_tab=1,numtab
-          trgengtot(i_range)=trgengtot(i_range)+trgeng(i_tab,i_range)
-           write(SO,*) i_tab,i_range,trgeng(i_tab,i_range),trgengtot(i_range)
-         enddo
-       enddo 
+       DO I_RANGE=1,3
+         DO I_TAB=1,NUMTAB
+          TRGENGTOT(I_RANGE)=TRGENGTOT(I_RANGE)+TRGENG(I_TAB,I_RANGE)
+           WRITE(SO,*) I_TAB,I_RANGE,TRGENG(I_TAB,I_RANGE),TRGENGTOT(I_RANGE)
+         ENDDO
+       ENDDO 
 
-609     continue
+609     CONTINUE
 
 
-       do i_range=1,3
-           write(SO,*)'before normalization ',trgengtot(i_range) 
-           trgengtot(i_range)=trgengtot(i_range)/nummem 
-           write(SO,*)'after normalization ',trgengtot(i_range)
-       enddo
+       DO I_RANGE=1,3
+           WRITE(SO,*)'BEFORE NORMALIZATION ',TRGENGTOT(I_RANGE) 
+           TRGENGTOT(I_RANGE)=TRGENGTOT(I_RANGE)/NUMMEM 
+           WRITE(SO,*)'AFTER NORMALIZATION ',TRGENGTOT(I_RANGE)
+       ENDDO
 
-       srplr_tot=srplr(1)+srplr(2)+srplr(3)
+       SRPLR_TOT=SRPLR(1)+SRPLR(2)+SRPLR(3)
  
-       if (iclassweight) then
-         do i_range=1,3
-           trgscl(i_range)= abs( (srplr(i_range)/srplr_tot)*4.0D0*
-     *                        eres*float(nmres)/trgengtot(i_range) )
-         enddo
-       else
-         do i_range=1,3
-           if (igomb) then
-            trgscl(i_range)=(abs( 4.0D0*eres*float(nmres)/avep(1,1,5)))**(1.0D0/ngomb)
-           else
-            trgscl(i_range)=(abs( 4.0D0*eres*float(nmres)/avep(1,1,5)))  
-           endif
-         enddo
-       endif
+       IF (ICLASSWEIGHT) THEN
+         DO I_RANGE=1,3
+           TRGSCL(I_RANGE)= ABS( (SRPLR(I_RANGE)/SRPLR_TOT)*4.0D0*
+     *                        ERES*FLOAT(NMRES)/TRGENGTOT(I_RANGE) )
+         ENDDO
+       ELSE
+         DO I_RANGE=1,3
+           IF (IGOMB) THEN
+            TRGSCL(I_RANGE)=(ABS( 4.0D0*ERES*FLOAT(NMRES)/AVEP(1,1,5)))**(1.0D0/NGOMB)
+           ELSE
+            TRGSCL(I_RANGE)=(ABS( 4.0D0*ERES*FLOAT(NMRES)/AVEP(1,1,5)))  
+           ENDIF
+         ENDDO
+       ENDIF
 
-         write(SO,*) 'short, med and long range conts to potential are'
-         write(SO,*) (trgeng(i1,1),i1=1,maxtab)
-         write(SO,*) (trgeng(i1,2),i1=1,maxtab)
-         write(SO,*) (trgeng(i1,3),i1=1,maxtab)
-         write(SO,*) 'totals per class:'
-         write(SO,*) (trgengtot(i_range),i_range=1,3)
-         write(SO,*) 'scaling factors' 
-         write(SO,*) (trgscl(i_range),i_range=1,3)
+         WRITE(SO,*) 'SHORT, MED AND LONG RANGE CONTS TO POTENTIAL ARE'
+         WRITE(SO,*) (TRGENG(I1,1),I1=1,MAXTAB)
+         WRITE(SO,*) (TRGENG(I1,2),I1=1,MAXTAB)
+         WRITE(SO,*) (TRGENG(I1,3),I1=1,MAXTAB)
+         WRITE(SO,*) 'TOTALS PER CLASS:'
+         WRITE(SO,*) (TRGENGTOT(I_RANGE),I_RANGE=1,3)
+         WRITE(SO,*) 'SCALING FACTORS' 
+         WRITE(SO,*) (TRGSCL(I_RANGE),I_RANGE=1,3)
 
-c     weight table energies for each coordinate type
+C     WEIGHT TABLE ENERGIES FOR EACH COORDINATE TYPE
 
-      do 504 i_tab=1,numtab
-         do 502 i502=1,numlng(nmres,i_tab)  ! set iwork=j-i
-            iwork(i502)=ilong(i502,2,i_tab) - ilong(i502,1,i_tab)
-502      continue
-
-
-c        loop over interaction pairs
-         do 506 i_ixn=1,numlng(nmres,i_tab)
-
-             if( iwork(i_ixn).lt.minmr )then
-
-c              short-range ixns
-
-             do 507 i507=0,maxs+1
-                 vpotnt(i507,i_ixn,i_tab)=trgscl(1)*vpotnt(i507,i_ixn,i_tab)
-                 forse(i507,i_ixn,i_tab)=trgscl(1)*forse(i507,i_ixn,i_tab)
-507          continue
-
-            elseif( iwork(i_ixn).gt.maxmr ) then
-
-c              long-range ixns
-
-               do 525 i525=0,maxs+1
-                  vpotnt(i525,i_ixn,i_tab)=trgscl(3)*vpotnt(i525,i_ixn,i_tab)
-                  forse(i525,i_ixn,i_tab)=trgscl(3)*forse(i525,i_ixn,i_tab)
-525            continue
-            else
-
-c              med-range ixns
-
-               do 505 i505=0,maxs+1
-                  vpotnt(i505,i_ixn,i_tab)=trgscl(2)*vpotnt(i505,i_ixn,i_tab) 
-                  forse(i505,i_ixn,i_tab)=trgscl(2)*forse(i505,i_ixn,i_tab)
-  505          continue
-            endif
-  506    continue
+      DO 504 I_TAB=1,NUMTAB
+         DO 502 I502=1,NUMLNG(NMRES,I_TAB)  ! SET IWORK=J-I
+            IWORK(I502)=ILONG(I502,2,I_TAB) - ILONG(I502,1,I_TAB)
+502      CONTINUE
 
 
-       if (i_V_test) then
+C        LOOP OVER INTERACTION PAIRS
+         DO 506 I_IXN=1,NUMLNG(NMRES,I_TAB)
 
-         i_test_tab=i_tab
-         i_test_ixn=ixn_from_site(test_site(1),
-     *                         test_site(2),i_test_tab)
-         if ( (test_site(1).ne.ilong(i_test_ixn,1,i_test_tab))
-     *    .or.(test_site(2).ne.ilong(i_test_ixn,2,i_test_tab)) )
-     *      then
-            write(SO,*) 'error in scltab'
-            write(SO,*) 'test sites for table',i_test_tab,'wrong'
-            write(SO,*) 'should be',test_site(1),test_site(2)
-            write(SO,*) 'find from looking up interaction they are'
-            write(SO,*) ilong(i_test_ixn,1,i_test_tab),
-     *                    ilong(i_test_ixn,1,i_test_tab)
-            goto 1111
-          endif
+             IF( IWORK(I_IXN).LT.MINMR )THEN
 
-         vpotint_test=0.0D0
+C              SHORT-RANGE IXNS
 
-         count=test_site(1)
-         call num_to_char(count,ccount1)
-         count=test_site(2)
-         call num_to_char(count,ccount2)
-         count=i_test_tab
-         call num_to_char(count,ccount3)
-         open(ovscltab,file='V_scltab_'//trim(ccount1)//'_'//
-     *    trim(ccount2)//'.'//trim(ccount3),status='unknown',action='write')
+             DO 507 I507=0,MAXS+1
+                 VPOTNT(I507,I_IXN,I_TAB)=TRGSCL(1)*VPOTNT(I507,I_IXN,I_TAB)
+                 FORSE(I507,I_IXN,I_TAB)=TRGSCL(1)*FORSE(I507,I_IXN,I_TAB)
+507          CONTINUE
 
-       write(ovscltab,*) 'r,vpotnt,forse and int force for ixn,table'
-     *                                 ,i_test_ixn,i_test_tab
-       write(ovscltab,*) 'sites',ilong(i_test_ixn,1,i_test_tab)
-     *                               ,ilong(i_test_ixn,2,i_test_tab)
-       do i=maxs,0,-1 
-         vpotint_test(i)=vpotint_test(i+1)+
-     *                         (1.0*rinc(i_test_ixn,i_test_tab))*0.5*
-     *                  (forse(i+1,i_test_ixn,i_test_tab)*float(i+1)+
-     *                    forse(i,i_test_ixn,i_test_tab)*
-     *                      float(i))*rinc(i_test_ixn,i_test_tab)
-       enddo
-       do i=0,maxs+1
-         write(ovscltab,*) float(i)*rinc(i_test_ixn,i_test_tab),
-     *                   vpotnt(i,i_test_ixn,i_test_tab),
-     *   (forse(i,i_test_ixn,i_test_tab)*rinc(i_test_ixn,i_test_tab))
-     *                          *float(i),vpotint_test(i) 
-       enddo
+            ELSEIF( IWORK(I_IXN).GT.MAXMR ) THEN
 
-1111  endif !end of writing out test potential
+C              LONG-RANGE IXNS
+
+               DO 525 I525=0,MAXS+1
+                  VPOTNT(I525,I_IXN,I_TAB)=TRGSCL(3)*VPOTNT(I525,I_IXN,I_TAB)
+                  FORSE(I525,I_IXN,I_TAB)=TRGSCL(3)*FORSE(I525,I_IXN,I_TAB)
+525            CONTINUE
+            ELSE
+
+C              MED-RANGE IXNS
+
+               DO 505 I505=0,MAXS+1
+                  VPOTNT(I505,I_IXN,I_TAB)=TRGSCL(2)*VPOTNT(I505,I_IXN,I_TAB) 
+                  FORSE(I505,I_IXN,I_TAB)=TRGSCL(2)*FORSE(I505,I_IXN,I_TAB)
+  505          CONTINUE
+            ENDIF
+  506    CONTINUE
+
+
+       IF (I_V_TEST) THEN
+
+         I_TEST_TAB=I_TAB
+         I_TEST_IXN=IXN_FROM_SITE(TEST_SITE(1),
+     *                         TEST_SITE(2),I_TEST_TAB)
+         IF ( (TEST_SITE(1).NE.ILONG(I_TEST_IXN,1,I_TEST_TAB))
+     *    .OR.(TEST_SITE(2).NE.ILONG(I_TEST_IXN,2,I_TEST_TAB)) )
+     *      THEN
+            WRITE(SO,*) 'ERROR IN SCLTAB'
+            WRITE(SO,*) 'TEST SITES FOR TABLE',I_TEST_TAB,'WRONG'
+            WRITE(SO,*) 'SHOULD BE',TEST_SITE(1),TEST_SITE(2)
+            WRITE(SO,*) 'FIND FROM LOOKING UP INTERACTION THEY ARE'
+            WRITE(SO,*) ILONG(I_TEST_IXN,1,I_TEST_TAB),
+     *                    ILONG(I_TEST_IXN,1,I_TEST_TAB)
+            GOTO 1111
+          ENDIF
+
+         VPOTINT_TEST=0.0D0
+
+         COUNT=TEST_SITE(1)
+         CALL NUM_TO_CHAR(COUNT,CCOUNT1)
+         COUNT=TEST_SITE(2)
+         CALL NUM_TO_CHAR(COUNT,CCOUNT2)
+         COUNT=I_TEST_TAB
+         CALL NUM_TO_CHAR(COUNT,CCOUNT3)
+         OPEN(OVSCLTAB,FILE='V_SCLTAB_'//TRIM(CCOUNT1)//'_'//
+     *    TRIM(CCOUNT2)//'.'//TRIM(CCOUNT3),STATUS='UNKNOWN',ACTION='WRITE')
+
+       WRITE(OVSCLTAB,*) 'R,VPOTNT,FORSE AND INT FORCE FOR IXN,TABLE'
+     *                                 ,I_TEST_IXN,I_TEST_TAB
+       WRITE(OVSCLTAB,*) 'SITES',ILONG(I_TEST_IXN,1,I_TEST_TAB)
+     *                               ,ILONG(I_TEST_IXN,2,I_TEST_TAB)
+       DO I=MAXS,0,-1 
+         VPOTINT_TEST(I)=VPOTINT_TEST(I+1)+
+     *                         (1.0*RINC(I_TEST_IXN,I_TEST_TAB))*0.5*
+     *                  (FORSE(I+1,I_TEST_IXN,I_TEST_TAB)*FLOAT(I+1)+
+     *                    FORSE(I,I_TEST_IXN,I_TEST_TAB)*
+     *                      FLOAT(I))*RINC(I_TEST_IXN,I_TEST_TAB)
+       ENDDO
+       DO I=0,MAXS+1
+         WRITE(OVSCLTAB,*) FLOAT(I)*RINC(I_TEST_IXN,I_TEST_TAB),
+     *                   VPOTNT(I,I_TEST_IXN,I_TEST_TAB),
+     *   (FORSE(I,I_TEST_IXN,I_TEST_TAB)*RINC(I_TEST_IXN,I_TEST_TAB))
+     *                          *FLOAT(I),VPOTINT_TEST(I) 
+       ENDDO
+
+1111  ENDIF !END OF WRITING OUT TEST POTENTIAL
        
        
-  504 continue
+  504 CONTINUE
 
-c     --- diagnostics --- 
+C     --- DIAGNOSTICS --- 
 
-      rnorm=0.0D0
-      do 511 i511=1,numtab
-         rnorm=rnorm + trgeng(i511,1) + trgeng(i511,2)
-  511 continue
-      write(oarchv,345)rnorm
-  345 format(/'Target Energies and Scaling Factors ',1pe10.3)
-      do 512 i512=1,numtab
-         write(oarchv,130)i512,(trgeng(i512,i2),i2=1,2),
-     *                    (trgscl(i2),i2=1,2)
-  130    format('Table ',i2,1x,4(1pe10.3,1x))
-  512 continue
+      RNORM=0.0D0
+      DO 511 I511=1,NUMTAB
+         RNORM=RNORM + TRGENG(I511,1) + TRGENG(I511,2)
+  511 CONTINUE
+      WRITE(OARCHV,345)RNORM
+  345 FORMAT(/'TARGET ENERGIES AND SCALING FACTORS ',1PE10.3)
+      DO 512 I512=1,NUMTAB
+         WRITE(OARCHV,130)I512,(TRGENG(I512,I2),I2=1,2),
+     *                    (TRGSCL(I2),I2=1,2)
+  130    FORMAT('TABLE ',I2,1X,4(1PE10.3,1X))
+  512 CONTINUE
 
-c     print sample of ixn pairs
+C     PRINT SAMPLE OF IXN PAIRS
 
-      write(oarchv,132)
-  132 format(/4(3x,'sites',9x,'V',2x))
-      do 508 i508=1,nmres,nmres-10
-         do 509 i509=numlng(i508-1,1)+1,
-     *               min( numlng(i508-1,1)+5,numlng(i508,1))
+      WRITE(OARCHV,132)
+  132 FORMAT(/4(3X,'SITES',9X,'V',2X))
+      DO 508 I508=1,NMRES,NMRES-10
+         DO 509 I509=NUMLNG(I508-1,1)+1,
+     *               MIN( NUMLNG(I508-1,1)+5,NUMLNG(I508,1))
 
-            do 516 i516=1,numtab
-               rmax(i516)=-100000.0D0
-               rmin(i516)=1000000.0D0
-               do 515 i515=1,maxs
-                  rmax(i516)=
-     *               max( rmax(i516),vpotnt(i515,i509,i516) )
-                  rmin(i516)=
-     *               min( rmin(i516),vpotnt(i515,i509,i516) )
-  515           continue
-  516       continue
-            write(oarchv,103)(ilong(i509,1,i1),ilong(i509,2,i1),
-     *                       vpotnt(1,i509,i1),i1=1,min(4,numtab))
-  103       format(/4(2(1x,i3),1x,1pe9.2,2x))
-            write(oarchv,106)(vpotnt(maxs,i509,i1),i1=1,4)
-            write(oarchv,106)(rmin(i1),i1=1,numtab)
-            write(oarchv,106)(rmax(i1),i1=1,numtab)
-  106       format(4(2(1x,3x),1x,1pe9.2,2x))
+            DO 516 I516=1,NUMTAB
+               RMAX(I516)=-100000.0D0
+               RMIN(I516)=1000000.0D0
+               DO 515 I515=1,MAXS
+                  RMAX(I516)=
+     *               MAX( RMAX(I516),VPOTNT(I515,I509,I516) )
+                  RMIN(I516)=
+     *               MIN( RMIN(I516),VPOTNT(I515,I509,I516) )
+  515           CONTINUE
+  516       CONTINUE
+            WRITE(OARCHV,103)(ILONG(I509,1,I1),ILONG(I509,2,I1),
+     *                       VPOTNT(1,I509,I1),I1=1,MIN(4,NUMTAB))
+  103       FORMAT(/4(2(1X,I3),1X,1PE9.2,2X))
+            WRITE(OARCHV,106)(VPOTNT(MAXS,I509,I1),I1=1,4)
+            WRITE(OARCHV,106)(RMIN(I1),I1=1,NUMTAB)
+            WRITE(OARCHV,106)(RMAX(I1),I1=1,NUMTAB)
+  106       FORMAT(4(2(1X,3X),1X,1PE9.2,2X))
 
-  509    continue
-  508 continue
+  509    CONTINUE
+  508 CONTINUE
  
-c     ---------------------- done -----------------------
+C     ---------------------- DONE -----------------------
 
-      return
-      end
+      RETURN
+      END

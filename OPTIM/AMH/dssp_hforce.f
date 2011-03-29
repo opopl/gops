@@ -1,85 +1,85 @@
 
-c     --------------------- hforce.f ----------------------
+C     --------------------- HFORCE.F ----------------------
 
-       subroutine dssp_hforce(h_cord,nitcord,idx1,idx2,r1,r2,pot,
-     * factor,lambda_hb,sigmaNO,sigmaH,pro_cord,f_cord)
+       SUBROUTINE DSSP_HFORCE(H_CORD,NITCORD,IDX1,IDX2,R1,R2,POT,
+     * FACTOR,LAMBDA_HB,SIGMANO,SIGMAH,PRO_CORD,F_CORD)
  
-c     --------------------------------------------------
+C     --------------------------------------------------
 
-c     hdrgn finds the  potential due to hydrogen bonds 
-c     between N and O     
+C     HDRGN FINDS THE  POTENTIAL DUE TO HYDROGEN BONDS 
+C     BETWEEN N AND O     
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-      use amhglobals,  only: AMHmaxsiz,maxcrd,ho_zero,NO_zero
+      USE AMHGLOBALS,  ONLY: AMHMAXSIZ,MAXCRD,HO_ZERO,NO_ZERO
 
-      implicit none
+      IMPLICIT NONE
 
-c     argument declarations:
+C     ARGUMENT DECLARATIONS:
           
-       double precision  h_cord(AMHmaxsiz,3),lambda_hb,sigmaNO,
-     *      sigmaH,f_cord(AMHmaxsiz,3,maxcrd),pro_cord(AMHmaxsiz,3,maxcrd)
+       DOUBLE PRECISION  H_CORD(AMHMAXSIZ,3),LAMBDA_HB,SIGMANO,
+     *      SIGMAH,F_CORD(AMHMAXSIZ,3,MAXCRD),PRO_CORD(AMHMAXSIZ,3,MAXCRD)
 
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-         integer idx1,idx2 
-c        --- do loop indices ---
+         INTEGER IDX1,IDX2 
+C        --- DO LOOP INDICES ---
 
-         integer i_axis 
-
-
-         double precision  r1,factor,pot,nitcord(AMHmaxsiz,3),r2,
-     *         dV_drNO,dV_drHO,drNO_dO(3),drNO_dN(3),drHO_dO(3),drHO_dH(3)
-
-c     --------------------- begin -----------------------
-
-c WARNING: do not zero f_cord (the force) here as dssp_hdrgn is compiling running total
+         INTEGER I_AXIS 
 
 
-c     find force due to hbonds
+         DOUBLE PRECISION  R1,FACTOR,POT,NITCORD(AMHMAXSIZ,3),R2,
+     *         DV_DRNO,DV_DRHO,DRNO_DO(3),DRNO_DN(3),DRHO_DO(3),DRHO_DH(3)
 
-        dV_drNO = -lambda_hb*pot*((r1 - NO_zero)/(sigmaNO**2))*factor
-        dV_drHO = -lambda_hb*pot*((r2 - ho_zero)/(sigmaH**2))*factor
+C     --------------------- BEGIN -----------------------
 
-        do i_axis = 1,3
+C WARNING: DO NOT ZERO F_CORD (THE FORCE) HERE AS DSSP_HDRGN IS COMPILING RUNNING TOTAL
+
+
+C     FIND FORCE DUE TO HBONDS
+
+        DV_DRNO = -LAMBDA_HB*POT*((R1 - NO_ZERO)/(SIGMANO**2))*FACTOR
+        DV_DRHO = -LAMBDA_HB*POT*((R2 - HO_ZERO)/(SIGMAH**2))*FACTOR
+
+        DO I_AXIS = 1,3
         
-        drNO_dO(i_axis) = 
-     *  (pro_cord(idx1,i_axis,3)-nitcord(idx2,i_axis)) /r1 
+        DRNO_DO(I_AXIS) = 
+     *  (PRO_CORD(IDX1,I_AXIS,3)-NITCORD(IDX2,I_AXIS)) /R1 
 
-        drNO_dN(i_axis) = 
-     *  -(pro_cord(idx1,i_axis,3)-nitcord(idx2,i_axis)) /r1 
+        DRNO_DN(I_AXIS) = 
+     *  -(PRO_CORD(IDX1,I_AXIS,3)-NITCORD(IDX2,I_AXIS)) /R1 
 
-        drHO_dO(i_axis) =
-     *  (pro_cord(idx1,i_axis,3)-h_cord(idx2,i_axis))/r2
+        DRHO_DO(I_AXIS) =
+     *  (PRO_CORD(IDX1,I_AXIS,3)-H_CORD(IDX2,I_AXIS))/R2
 
-        drHO_dH(i_axis) = 
-     *  -(pro_cord(idx1,i_axis,3)-h_cord(idx2,i_axis))/r2
+        DRHO_DH(I_AXIS) = 
+     *  -(PRO_CORD(IDX1,I_AXIS,3)-H_CORD(IDX2,I_AXIS))/R2
 
-c        apply force
+C        APPLY FORCE
 
-        f_cord(idx2,i_axis,1) = f_cord(idx2,i_axis,1) -
-     *  dV_drNO*drNO_dN(i_axis)*0.7032820D0
-        f_cord(idx2,i_axis,1) = f_cord(idx2,i_axis,1) -
-     *  dV_drHO*drHO_dH(i_axis)*0.8929599D0
+        F_CORD(IDX2,I_AXIS,1) = F_CORD(IDX2,I_AXIS,1) -
+     *  DV_DRNO*DRNO_DN(I_AXIS)*0.7032820D0
+        F_CORD(IDX2,I_AXIS,1) = F_CORD(IDX2,I_AXIS,1) -
+     *  DV_DRHO*DRHO_DH(I_AXIS)*0.8929599D0
 
-        f_cord(idx2-1,i_axis,1) = f_cord(idx2-1,i_axis,1) -     
-     *  dV_drNO*drNO_dN(i_axis)*0.4831806D0   
-        f_cord(idx2-1,i_axis,1) = f_cord(idx2-1,i_axis,1) -
-     *  dV_drHO*drHO_dH(i_axis)*0.8409657D0
+        F_CORD(IDX2-1,I_AXIS,1) = F_CORD(IDX2-1,I_AXIS,1) -     
+     *  DV_DRNO*DRNO_DN(I_AXIS)*0.4831806D0   
+        F_CORD(IDX2-1,I_AXIS,1) = F_CORD(IDX2-1,I_AXIS,1) -
+     *  DV_DRHO*DRHO_DH(I_AXIS)*0.8409657D0
 
-        f_cord(idx1,i_axis,3) = f_cord(idx1,i_axis,3) -     
-     *  dV_drNO*drNO_dO(i_axis)   
-        f_cord(idx1,i_axis,3) = f_cord(idx1,i_axis,3) -
-     *  dV_drHO*drHO_dO(i_axis)
+        F_CORD(IDX1,I_AXIS,3) = F_CORD(IDX1,I_AXIS,3) -     
+     *  DV_DRNO*DRNO_DO(I_AXIS)   
+        F_CORD(IDX1,I_AXIS,3) = F_CORD(IDX1,I_AXIS,3) -
+     *  DV_DRHO*DRHO_DO(I_AXIS)
 
-        f_cord(idx2-1,i_axis,3) = f_cord(idx2-1,i_axis,3) + 
-     *  dV_drNO*drNO_dN(i_axis)*0.1864626D0   
-        f_cord(idx2-1,i_axis,3) = f_cord(idx2-1,i_axis,3) +
-     *  dV_drHO*drHO_dH(i_axis)*0.7338894D0
+        F_CORD(IDX2-1,I_AXIS,3) = F_CORD(IDX2-1,I_AXIS,3) + 
+     *  DV_DRNO*DRNO_DN(I_AXIS)*0.1864626D0   
+        F_CORD(IDX2-1,I_AXIS,3) = F_CORD(IDX2-1,I_AXIS,3) +
+     *  DV_DRHO*DRHO_DH(I_AXIS)*0.7338894D0
 
-        enddo  ! i_axis        
+        ENDDO  ! I_AXIS        
 
-c     ----------------------- done -----------------------
+C     ----------------------- DONE -----------------------
 
-      return
-      end
+      RETURN
+      END

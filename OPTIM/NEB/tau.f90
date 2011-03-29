@@ -1,20 +1,20 @@
-!   NEB module is an implementation of the nudged elastic band method for performing double-ended pathway searches.
-!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
-!   This file is part of NEB module. NEB module is part of OPTIM.
+!   NEB MODULE IS AN IMPLEMENTATION OF THE NUDGED ELASTIC BAND METHOD FOR PERFORMING DOUBLE-ENDED PATHWAY SEARCHES.
+!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
+!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
 !
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 MODULE TANGENT
      IMPLICIT NONE
@@ -36,17 +36,17 @@ MODULE TANGENT
           DOUBLE PRECISION :: PI=3.141592653589793D0
 
           IF ((TANTYPE.NE.1).AND.(BULKT)) THEN
-             PRINT '(A)','meptangent> ERROR - minimum image distances only coded for TANTYPE 1'
+             PRINT '(A)','MEPTANGENT> ERROR - MINIMUM IMAGE DISTANCES ONLY CODED FOR TANTYPE 1'
              STOP
           ENDIF
 
           SELECT CASE (TANTYPE)
-             CASE(1) ! Henkelman and Jonsson's improved tangent from JCP, 113, 9978, 2000
+             CASE(1) ! HENKELMAN AND JONSSON'S IMPROVED TANGENT FROM JCP, 113, 9978, 2000
                DO J1=2,NIMAGE+1
                   CALL WS(EEE(J1-1),EEE(J1),EEE(J1+1),WMINUS,WPLUS)
                   TEMP1(1:NOPT)=0.0D0
                   TEMP2(1:NOPT)=0.0D0
-                  IF (BULKT) THEN ! minimum image convention for distances!
+                  IF (BULKT) THEN ! MINIMUM IMAGE CONVENTION FOR DISTANCES!
                      DO K=1,NATOMS
                         TEMP1(3*(K-1)+1)=XYZ(NOPT*(J1-1)+3*(K-1)+1) - XYZ(NOPT*(J1-2)+3*(K-1)+1 ) &
    &                       -PARAM1*NINT((XYZ(NOPT*(J1-1)+3*(K-1)+1) - XYZ(NOPT*(J1-2)+3*(K-1)+1))/PARAM1)
@@ -99,7 +99,7 @@ MODULE TANGENT
                ENDDO
           END SELECT
 
-          !  Normalise tangent vectors
+          !  NORMALISE TANGENT VECTORS
           DO J1=1,NIMAGE
                IF (TANTYPE==4) THEN
                   DUMMY = SQRT( SUM(TANVEC(:NINTS,J1)**2) )
@@ -108,8 +108,8 @@ MODULE TANGENT
                ENDIF
 
                IF (DUMMY==0.0D0) THEN
-                    PRINT '(1x,a)', 'Tau norm is zero! Probably image density is too big...'
-                    PRINT '(1x,a,i5)', ' This is image # ',j1
+                    PRINT '(1X,A)', 'TAU NORM IS ZERO! PROBABLY IMAGE DENSITY IS TOO BIG...'
+                    PRINT '(1X,A,I5)', ' THIS IS IMAGE # ',J1
                     BADTAU=.TRUE.
                     RETURN
                ENDIF
@@ -123,7 +123,7 @@ MODULE TANGENT
           DOUBLE PRECISION,INTENT(IN) :: EL,EM,ER
           DOUBLE PRECISION,INTENT(OUT) :: WM,WP
 
-          ! El -->><<-- Em -->><<-- Er
+          ! EL -->><<-- EM -->><<-- ER
           IF (EL < EM .AND. EM < ER) THEN
                WP=1.0D0;     WM=0.0D0
           ELSE IF (EL > EM .AND. EM > ER) THEN

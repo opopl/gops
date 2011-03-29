@@ -9,11 +9,11 @@ MODULE INTCUTILS
 
 CONTAINS
     SUBROUTINE INTINTERPOLATE(RS,RF,NIMI,NIMC, XINTERP, PTEST,OUTFAILED)
-    ! do a linear interpolation between start and end 
-    ! using internal coordinates, with NIMI images
-    ! then place NIMC images at equidistant cartesian
-    ! points along the resulting interpolated path    
-    ! results go in XCART
+    ! DO A LINEAR INTERPOLATION BETWEEN START AND END 
+    ! USING INTERNAL COORDINATES, WITH NIMI IMAGES
+    ! THEN PLACE NIMC IMAGES AT EQUIDISTANT CARTESIAN
+    ! POINTS ALONG THE RESULTING INTERPOLATED PATH    
+    ! RESULTS GO IN XCART
 
     USE KEY, ONLY : RIGIDBODY, TWOD, BULKT, AMBERT, NABT
 
@@ -39,14 +39,14 @@ CONTAINS
     LOGICAL :: FAILED
     DOUBLE PRECISION :: RFORIG(3*NATOMS)
 
-    ! alignment stuff
+    ! ALIGNMENT STUFF
     DOUBLE PRECISION :: DISTF, DIST, DIST2, RMAT(3,3)
     CHARACTER(LEN=5) :: ZSYMSAVE
     COMMON /SYS/ ZSYMSAVE
     DOUBLE PRECISION TEST(3*NATOMS)
 
     IF (.NOT.NATINT) THEN
-       print*, 'intinterpolate >> INTINTERPOLATE is not set up to work without NATINT'
+       PRINT*, 'INTINTERPOLATE >> INTINTERPOLATE IS NOT SET UP TO WORK WITHOUT NATINT'
        STOP
     ENDIF    
 
@@ -59,11 +59,11 @@ CONTAINS
 
     ALLOCATE(XCART(0:NIMI+1,3*NATOMS), DIFFS(0:NIMI+1,3*NATOMS), DISTS(0:NIMI+1), ARCS(0:NIMI+1))
     ALLOCATE(DIHINFO(NIMI+2,NDIH))
-    ALLOCATE(DIFFS2(0:600,NINTC)) !debug
+    ALLOCATE(DIFFS2(0:600,NINTC)) !DEBUG
     ALLOCATE(XHELP(0:600,NINTC))
     DIHINFO(:,:) = 0.0D0
 
-    IF (PTEST) print*, 'intinterpolate>> interpolating with internals: ', &
+    IF (PTEST) PRINT*, 'INTINTERPOLATE>> INTERPOLATING WITH INTERNALS: ', &
          & NIMI, NIMC
               
     NC = 3*NATOMS
@@ -84,7 +84,7 @@ CONTAINS
     ALIGNDIR = .FALSE.
     CALL CART2INT(RS,RSINT)
    
-    ! align individual dihedrals of all other images and endpoint to start
+    ! ALIGN INDIVIDUAL DIHEDRALS OF ALL OTHER IMAGES AND ENDPOINT TO START
     DO IM = 2,NIMI+2
        DIHINFO(IM,:) = DIHINFO(1,:)
     ENDDO
@@ -96,9 +96,9 @@ CONTAINS
     
     INTDIFF = RFINT(:) - RSINT(:)
 
-    ! place the images in internals and convert to cartesians
+    ! PLACE THE IMAGES IN INTERNALS AND CONVERT TO CARTESIANS
     IF (PTEST) THEN
-       print*, 'intinterpolate>> step size: ', SQRT(DOT_PRODUCT(INTDIFF,INTDIFF)) / (NIMI+1)
+       PRINT*, 'INTINTERPOLATE>> STEP SIZE: ', SQRT(DOT_PRODUCT(INTDIFF,INTDIFF)) / (NIMI+1)
 !      CALL FLUSH(6,ISTAT)
     ENDIF
 
@@ -107,7 +107,7 @@ CONTAINS
     ARCS(0) = 0.0D0
     DO IM = 1,NIMI
        PREVDIH => DIHINFO(IM+1,:)
-       IF (AMBERT.OR.NABT) THEN !msb50
+       IF (AMBERT.OR.NABT) THEN !MSB50
           CALL AMB_TRANSBACKDELTA(INTDIFF(:) * 1.0D0 / (NIMI+1),DIFFS(IM,:), &
    &         XCART(IM-1,:),NINTC,3*NATOMS,NNZ,KD,FAILED,.FALSE.,INTEPSILON)
        ELSE
@@ -116,7 +116,7 @@ CONTAINS
        ENDIF
        XCART(IM,:) = XCART(IM-1,:) + DIFFS(IM,:)                       
 
-       ! line up structure with start point
+       ! LINE UP STRUCTURE WITH START POINT
        CALL NEWMINDIST(RS(:),XCART(IM,:),NATOMS,DIST,.FALSE.,.FALSE.,ZSYM(1),.FALSE.,.FALSE.,.FALSE.,RMAT)
 
        DIFFS(IM,:) = XCART(IM,:) - XCART(IM-1,:)
@@ -132,21 +132,21 @@ CONTAINS
     ARCS(NIMI+1) = ARCS(NIMI) + DISTS(NIMI+1)        
     
     IF (PTEST) THEN
-       CALL DUMPCOORDS(XCART(0,:),'interp.xyz', .FALSE.)
+       CALL DUMPCOORDS(XCART(0,:),'INTERP.XYZ', .FALSE.)
        DO IM = 1,NIMI
-          CALL DUMPCOORDS(XCART(IM,:),'interp.xyz', .TRUE.)
+          CALL DUMPCOORDS(XCART(IM,:),'INTERP.XYZ', .TRUE.)
        ENDDO
-       CALL DUMPCOORDS(RF(:),'interp.xyz', .TRUE.)
+       CALL DUMPCOORDS(RF(:),'INTERP.XYZ', .TRUE.)
     ENDIF
 
     IF (DISTS(NIMI+1)/DISTS(NIMI).GT.10) THEN
-       print*, 'Something wrong! Interpolation discontinuous at end.'
-       print*, "nimi", nimi+1, nimi
-       print*, DISTS(NIMI-6:NIMI+1)
+       PRINT*, 'SOMETHING WRONG! INTERPOLATION DISCONTINUOUS AT END.'
+       PRINT*, "NIMI", NIMI+1, NIMI
+       PRINT*, DISTS(NIMI-6:NIMI+1)
        OUTFAILED = .TRUE.
 !       IF (PTEST) THEN
-          CALL DUMPCOORDS(RS,'badstart.xyz', .FALSE.)
-          CALL DUMPCOORDS(RF, 'badfin.xyz', .FALSE.)
+          CALL DUMPCOORDS(RS,'BADSTART.XYZ', .FALSE.)
+          CALL DUMPCOORDS(RF, 'BADFIN.XYZ', .FALSE.)
 !       ENDIF
     ENDIF
 
@@ -154,7 +154,7 @@ CONTAINS
 
     IF (INTERPSIMPLE) THEN
        DEALLOCATE(XCART, DIFFS, DISTS, ARCS)
-       print*, 'Finished simple initial interpolation'
+       PRINT*, 'FINISHED SIMPLE INITIAL INTERPOLATION'
        RETURN
     ENDIF
 
@@ -162,10 +162,10 @@ CONTAINS
 
     EMAX = -9999
 
-    ! get cartesians at equidistant intervals along interpolated path
+    ! GET CARTESIANS AT EQUIDISTANT INTERVALS ALONG INTERPOLATED PATH
     I2 = 0
     DO IM = 1,NIMC
-       WANTLEN = TOTLEN*DBLE(IM)/(NIMC+1) !desired total length from start
+       WANTLEN = TOTLEN*DBLE(IM)/(NIMC+1) !DESIRED TOTAL LENGTH FROM START
        DO WHILE (ARCS(I2).LE.WANTLEN)
           I2 = I2 + 1
        ENDDO
@@ -183,50 +183,50 @@ CONTAINS
     ENDDO
 
     IF (PTEST) THEN
-       CALL DUMPCOORDS(RS(:),'interpfin.xyz', .FALSE.)
+       CALL DUMPCOORDS(RS(:),'INTERPFIN.XYZ', .FALSE.)
        DO IM = 1,NIMC
-          CALL DUMPCOORDS(XINTERP(NC*(IM-1)+1:NC*IM),'interpfin.xyz', .TRUE.)
+          CALL DUMPCOORDS(XINTERP(NC*(IM-1)+1:NC*IM),'INTERPFIN.XYZ', .TRUE.)
        ENDDO
-       CALL DUMPCOORDS(RF(:),'interpfin.xyz', .TRUE.)
+       CALL DUMPCOORDS(RF(:),'INTERPFIN.XYZ', .TRUE.)
     ENDIF
 
     IF (INTERPCHOICE) THEN
        IF (EMAX.GT.EMAXC) THEN
-         IF (PTEST) print '(A,2G20.10)', 'intinterpolate>> using cartesian interpolation', EMAXC, EMAX
+         IF (PTEST) PRINT '(A,2G20.10)', 'INTINTERPOLATE>> USING CARTESIAN INTERPOLATION', EMAXC, EMAX
           XINTERP(:) = XCART2(:)
        ELSE
-          IF (PTEST) print '(A,2G20.10)', 'intinterpolate>> using internal interpolation', EMAXC, EMAX
+          IF (PTEST) PRINT '(A,2G20.10)', 'INTINTERPOLATE>> USING INTERNAL INTERPOLATION', EMAXC, EMAX
        ENDIF
     ENDIF
 !   CALL FLUSH(6,ISTAT)
 
-!    PRINT*, "intinterp> deall"
+!    PRINT*, "INTINTERP> DEALL"
     DEALLOCATE(XCART, DIFFS, DISTS, ARCS, DIHINFO)
     DEALLOCATE(DIFFS2,XHELP)
 
 
-    IF (PTEST) print*, 'Finished initial interpolation'
+    IF (PTEST) PRINT*, 'FINISHED INITIAL INTERPOLATION'
     RETURN
 
   END SUBROUTINE INTINTERPOLATE
 
   SUBROUTINE INTMINPERM(RS,RF,DISTANCE,RMAT,PTEST)
-    ! minimise Cartesian distance without permuting then
-    ! permute the permutable groups to minimize distance in single torsions
-    ! changes RF to resulting best alignment with RS
-    ! output distance is cartesian distance **squared**
-!msb50 - notes on intminperm:
-! still expect problems when dragging permutable atoms along in a swap, as 
-! technically to see whether this gives a smaller atoms the dragged atoms have
-! to be permuted at the same time (i.e. two CH_3 groups as in val, leu)
-! I currently don't do this - primarily because swaps for val, leu are re-checked
-! in intminperm, so should be fine - but then alignment cartesian
+    ! MINIMISE CARTESIAN DISTANCE WITHOUT PERMUTING THEN
+    ! PERMUTE THE PERMUTABLE GROUPS TO MINIMIZE DISTANCE IN SINGLE TORSIONS
+    ! CHANGES RF TO RESULTING BEST ALIGNMENT WITH RS
+    ! OUTPUT DISTANCE IS CARTESIAN DISTANCE **SQUARED**
+!MSB50 - NOTES ON INTMINPERM:
+! STILL EXPECT PROBLEMS WHEN DRAGGING PERMUTABLE ATOMS ALONG IN A SWAP, AS 
+! TECHNICALLY TO SEE WHETHER THIS GIVES A SMALLER ATOMS THE DRAGGED ATOMS HAVE
+! TO BE PERMUTED AT THE SAME TIME (I.E. TWO CH_3 GROUPS AS IN VAL, LEU)
+! I CURRENTLY DON'T DO THIS - PRIMARILY BECAUSE SWAPS FOR VAL, LEU ARE RE-CHECKED
+! IN INTMINPERM, SO SHOULD BE FINE - BUT THEN ALIGNMENT CARTESIAN
 
 
       USE KEY, ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP, NSETS, SETS, AMBERT, NABT
-      USE MODAMBER9, ONLY : ih, ix, NRES, i02,m04,m02
-      USE intcommons, only: NDIH, PERMNEIGHBOURS, PERMCHAIN, NGLYDIH, GLYDIH, GLYCART !msb50
-      USE commons, only: NATOMS !msb50
+      USE MODAMBER9, ONLY : IH, IX, NRES, I02,M04,M02
+      USE INTCOMMONS, ONLY: NDIH, PERMNEIGHBOURS, PERMCHAIN, NGLYDIH, GLYDIH, GLYCART !MSB50
+      USE COMMONS, ONLY: NATOMS !MSB50
       USE PORFUNCS
     
       IMPLICIT NONE
@@ -245,61 +245,61 @@ CONTAINS
       DOUBLE PRECISION :: RFTMP2(3*NATOMS), MININTDIST, RFTMP3(3*NATOMS)
       DOUBLE PRECISION :: TMP_AR(NATOMS,3)
       INTEGER          :: MINSWAP1(3), MINSWAP2(3)
-! al  ignment stuff
+! AL  IGNMENT STUFF
       CHARACTER(LEN=5) :: ZSYMSAVE
       COMMON /SYS/ ZSYMSAVE
 
       DOUBLE PRECISION :: DISTANCE2
-      CHARACTER(LEN=4) :: resname
+      CHARACTER(LEN=4) :: RESNAME
       INTEGER          :: III, ISTAT,JJJ
-      INTEGER          :: nglyc, nprol, glyc(NRES), prol(NRES)
-      LOGICAL          :: glyswap, prolswap, SKIPPG(NPERMGROUP)
+      INTEGER          :: NGLYC, NPROL, GLYC(NRES), PROL(NRES)
+      LOGICAL          :: GLYSWAP, PROLSWAP, SKIPPG(NPERMGROUP)
       INTEGER          :: DUMMYPG1(3), DUMMYST1(3)
       INTEGER          :: SWAPARRAY(12,6), SWAPARRAY3(24,8), SWAPARRAY5(96,12)
-      !contains all possibilities of having neighbouring groups of 
-      !permable atoms permuted (i.e. a, b, c, d; b, a, c, d; a, b, d, c etc)
+      !CONTAINS ALL POSSIBILITIES OF HAVING NEIGHBOURING GROUPS OF 
+      !PERMABLE ATOMS PERMUTED (I.E. A, B, C, D; B, A, C, D; A, B, D, C ETC)
       DOUBLE PRECISION :: SWAPDIST(12), SWAPDIST3(24), SWAPDIST5(96)
       DOUBLE PRECISION :: GLYSTART(4), GLYFIN(4), GLYDIFF(4), GLYDIST1, GLYDIST
-      DOUBLE PRECISION :: dihed1
+      DOUBLE PRECISION :: DIHED1
       DOUBLE PRECISION :: PI
-      INTEGER          :: i1, i2, i3, i4
+      INTEGER          :: I1, I2, I3, I4
       DOUBLE PRECISION :: ANGLES(NDIH)
-      data DUMMYPG1 /0,0,0/
-      data DUMMYST1 /0,0,0/ 
-      data PI /3.1415926535897931/    
+      DATA DUMMYPG1 /0,0,0/
+      DATA DUMMYST1 /0,0,0/ 
+      DATA PI /3.1415926535897931/    
 
       SKIPPG(:)=.FALSE.
       IF (.NOT.ALLOCATED(PERMNEIGHBOURS)) CALL FINDPERMDIH
      
-      print*, "msb50 just checking whether this is called in ambtransbackde" 
+      PRINT*, "MSB50 JUST CHECKING WHETHER THIS IS CALLED IN AMBTRANSBACKDE" 
 
-      prol(:) = 0;nprol=0
-      glyc(:) = 0;nglyc=0
-      glyswap = .FALSE.;prolswap=.FALSE.
-      IF (AMBERT.OR.NABT) THEN !msb50 - for amber9.ff03 and glycine this doesn't work
-          DO III = 1,NRES!as swapping the hydrogens makes no difference in natural internals in this case
-            IF (ih(m02+III-1).EQ.'GLY'.OR.ih(m02+III-1).EQ.'NGLY'.OR.ih(m02+III-1).EQ.'CGLY') THEN
-               nglyc = nglyc+1
-               glyc(nglyc) = III
+      PROL(:) = 0;NPROL=0
+      GLYC(:) = 0;NGLYC=0
+      GLYSWAP = .FALSE.;PROLSWAP=.FALSE.
+      IF (AMBERT.OR.NABT) THEN !MSB50 - FOR AMBER9.FF03 AND GLYCINE THIS DOESN'T WORK
+          DO III = 1,NRES!AS SWAPPING THE HYDROGENS MAKES NO DIFFERENCE IN NATURAL INTERNALS IN THIS CASE
+            IF (IH(M02+III-1).EQ.'GLY'.OR.IH(M02+III-1).EQ.'NGLY'.OR.IH(M02+III-1).EQ.'CGLY') THEN
+               NGLYC = NGLYC+1
+               GLYC(NGLYC) = III
             ENDIF       
-            IF (ih(m02+III-1).EQ.'PRO'.OR.ih(m02+III-1).EQ.'NPRO'.OR.ih(m02+III-1).EQ.'CPRO') THEN
-               nprol = nprol+1 
-               prol(nprol) =III
+            IF (IH(M02+III-1).EQ.'PRO'.OR.IH(M02+III-1).EQ.'NPRO'.OR.IH(M02+III-1).EQ.'CPRO') THEN
+               NPROL = NPROL+1 
+               PROL(NPROL) =III
             ENDIF
           ENDDO
       ENDIF
 
       DISTANCE2 = DOT_PRODUCT(RF-RS,RF-RS)
-      IF (PTEST) PRINT*, "intminperm> initial cart dist", DISTANCE2
+      IF (PTEST) PRINT*, "INTMINPERM> INITIAL CART DIST", DISTANCE2
 
-! align without permuting
-! msb50 - done at the end in minpermdist now!
+! ALIGN WITHOUT PERMUTING
+! MSB50 - DONE AT THE END IN MINPERMDIST NOW!
 !      CALL NEWMINDIST(RS(:),RF(:),NATOMS,DISTANCE,.FALSE.,.FALSE.,ZSYM(1),.FALSE.,.FALSE.,.FALSE.,RMAT)
 
       RFTMP3(:) = RF(:)
 
       DISTANCE2 = DOT_PRODUCT(RF-RS,RF-RS)
-      IF (PTEST) PRINT*, "intminperm> initial cart dist", DISTANCE2
+      IF (PTEST) PRINT*, "INTMINPERM> INITIAL CART DIST", DISTANCE2
 
       PREVDIH => DIHINFOSINGLE(:)
 
@@ -312,14 +312,14 @@ CONTAINS
      CALL GETDIHONLY(RF) 
 
     INTDIFF(:) = PREVDIH(:)-STARTDIH(:)
-! just for the moment
+! JUST FOR THE MOMENT
 
     INTDIFFMSB50(:) = INTDIFF(:)
     CURINTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
-    IF (PTEST) print*, 'Starting intdistance: ', CURINTDIST
+    IF (PTEST) PRINT*, 'STARTING INTDISTANCE: ', CURINTDIST
 
     RFTMP(:)=RF(:)
-    IF (nglyc.NE.0.AND..NOT.GLYCART) THEN
+    IF (NGLYC.NE.0.AND..NOT.GLYCART) THEN
         CALL GLYINTPERM(RS, RF, PTEST)
     ENDIF
 
@@ -329,105 +329,105 @@ CONTAINS
     IF (NPERMSIZE(PG).EQ.2) THEN
       RFTMP(:) = RF(:)
 
-      ! A1 and A2 are the atom numbers to permute
+      ! A1 AND A2 ARE THE ATOM NUMBERS TO PERMUTE
       A1 = PERMGROUP(START)
       A2 = PERMGROUP(START+1)
 
-      IF (PTEST) PRINT '(A,2I6)', "intminperm> which PERMGROUP", PG, START
-      IF (PTEST) PRINT '(A,2I6)','intminperm> Swapping atoms: ', A1, A2
+      IF (PTEST) PRINT '(A,2I6)', "INTMINPERM> WHICH PERMGROUP", PG, START
+      IF (PTEST) PRINT '(A,2I6)','INTMINPERM> SWAPPING ATOMS: ', A1, A2
 
-!glycine can't be done with Lena's natural internals as they internals don't 
-! change when the glycine H's are swapped
-      IF (nglyc.NE.0) THEN
-         DO III=1, nglyc
-         IF (ix(i02+glyc(III)-1).GT.A1) EXIT
-         glyswap = .FALSE.
-            IF (ix(i02+glyc(III)-1).LE.A1 .AND.(ix(i02+glyc(III)).GT.A1).AND.&
-       &          (ih(m04+A1-1).EQ.'HA2 '.OR.ih(m04+A1-1).EQ.'HA3 ')) THEN
-               IF (PTEST) PRINT*, "glyc", glyc(III)
+!GLYCINE CAN'T BE DONE WITH LENA'S NATURAL INTERNALS AS THEY INTERNALS DON'T 
+! CHANGE WHEN THE GLYCINE H'S ARE SWAPPED
+      IF (NGLYC.NE.0) THEN
+         DO III=1, NGLYC
+         IF (IX(I02+GLYC(III)-1).GT.A1) EXIT
+         GLYSWAP = .FALSE.
+            IF (IX(I02+GLYC(III)-1).LE.A1 .AND.(IX(I02+GLYC(III)).GT.A1).AND.&
+       &          (IH(M04+A1-1).EQ.'HA2 '.OR.IH(M04+A1-1).EQ.'HA3 ')) THEN
+               IF (PTEST) PRINT*, "GLYC", GLYC(III)
                IF (.NOT.GLYCART) THEN
-                  glyswap=.TRUE.
+                  GLYSWAP=.TRUE.
                   CYCLE
                ENDIF 
-              !the second atom has to be A2 in gly
-               IF (ih(m04+A2-1).EQ.'HA3 '.OR. ih(m04+A2-1).EQ.'HA2 ') THEN
-                  glyswap = .TRUE.
-                  IF (PTEST) PRINT*, "glycine"
+              !THE SECOND ATOM HAS TO BE A2 IN GLY
+               IF (IH(M04+A2-1).EQ.'HA3 '.OR. IH(M04+A2-1).EQ.'HA2 ') THEN
+                  GLYSWAP = .TRUE.
+                  IF (PTEST) PRINT*, "GLYCINE"
                   RF(3*(A1-1)+1:3*A1) = RFTMP(3*(A2-1)+1:3*A2)
                   RF(3*(A2-1)+1:3*A2) = RFTMP(3*(A1-1)+1:3*A1)
-              !move any other groups that must be dragged along
+              !MOVE ANY OTHER GROUPS THAT MUST BE DRAGGED ALONG
                   IF (NSETS(PG).NE.0) THEN
-                    PRINT*, "intminperm>this is not glycine. you DON'T know& 
-        &                        what you are doing"
+                    PRINT*, "INTMINPERM>THIS IS NOT GLYCINE. YOU DON'T KNOW& 
+        &                        WHAT YOU ARE DOING"
                     STOP
                   ENDIF
                   DISTANCE = DOT_PRODUCT(RFTMP-RS,RFTMP-RS)
                   DISTANCE2 = DOT_PRODUCT(RF-RS,RF-RS)
-                  !IF (PTEST) PRINT*, "dist old", DISTANCE, "dist new", DISTANCE2
+                  !IF (PTEST) PRINT*, "DIST OLD", DISTANCE, "DIST NEW", DISTANCE2
                   IF (DISTANCE2.LT.DISTANCE) THEN
-                    IF (PTEST) print '(a40, f17.5,a10,f17.5)',"keep permutation&
-        & aaccrding to cartesians (gly): dist1",DISTANCE, "dist_new", DISTANCE2
+                    IF (PTEST) PRINT '(A40, F17.5,A10,F17.5)',"KEEP PERMUTATION&
+        & AACCRDING TO CARTESIANS (GLY): DIST1",DISTANCE, "DIST_NEW", DISTANCE2
                   ELSE
-                     RF(:) = RFTMP(:) !unddo
+                     RF(:) = RFTMP(:) !UNDDO
                   ENDIF
                ELSE
-                  PRINT*, "intminperm> sth wrong with GLY"
+                  PRINT*, "INTMINPERM> STH WRONG WITH GLY"
                   STOP
                ENDIF
            ENDIF
-           IF (glyswap) EXIT
+           IF (GLYSWAP) EXIT
          ENDDO
-           IF (glyswap) THEN
-              IF (PTEST) PRINT*, "glyswap true", PG
+           IF (GLYSWAP) THEN
+              IF (PTEST) PRINT*, "GLYSWAP TRUE", PG
               START = START + NPERMSIZE(PG)
              CYCLE
            ENDIF
       ENDIF
 
-      IF (nprol.NE.0) THEN
-         prolswap=.FALSE.
-         DO III=1, nprol
+      IF (NPROL.NE.0) THEN
+         PROLSWAP=.FALSE.
+         DO III=1, NPROL
 
-            IF (ix(i02+prol(III)-1).LT.A1 .AND. ix(i02+prol(III)).GT.A1) THEN
-               IF (PTEST) PRINT*, "pro", prol(III)
+            IF (IX(I02+PROL(III)-1).LT.A1 .AND. IX(I02+PROL(III)).GT.A1) THEN
+               IF (PTEST) PRINT*, "PRO", PROL(III)
                CALL PROL_PERMUTE(A1,A2,PTEST, RS, RF, DISTANCE)
-               prolswap =.TRUE.
+               PROLSWAP =.TRUE.
                EXIT
             ENDIF
          ENDDO
-         IF (prolswap) THEN
+         IF (PROLSWAP) THEN
             START= START+NPERMSIZE(PG)
             CYCLE
          ENDIF
       ENDIF
 
-! now start the real thing:     
+! NOW START THE REAL THING:     
       IF (PERMNEIGHBOURS(PG,1).EQ.0) THEN
          RF(3*(A1-1)+1:3*A1) = RFTMP(3*(A2-1)+1:3*A2)
          RF(3*(A2-1)+1:3*A2) = RFTMP(3*(A1-1)+1:3*A1)
         
-         !move any other groups that must be dragged along
+         !MOVE ANY OTHER GROUPS THAT MUST BE DRAGGED ALONG
          DO SW = 1,NSETS(PG)
 !           A1 = SWAP1(PG,SW)
 !           A2 = SWAP2(PG,SW)
             A1 = SETS(PERMGROUP(START),SW)
             A2 = SETS(PERMGROUP(START+1),SW)
         
-            IF (PTEST) print*, 'Dragging swap: ', A1, A2
+            IF (PTEST) PRINT*, 'DRAGGING SWAP: ', A1, A2
         
             RF(3*(A1-1)+1:3*A1) = RFTMP(3*(A2-1)+1:3*A2)
             RF(3*(A2-1)+1:3*A2) = RFTMP(3*(A1-1)+1:3*A1)
          ENDDO
        
          PREVDIH(:) = STARTDIH(:)
-         CALL GETDIHONLY(RF) !msb50
+         CALL GETDIHONLY(RF) !MSB50
    
          INTDIFF(:) = PREVDIH(:) - STARTDIH(:)
 !!!!
          INTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
-         IF (PTEST) PRINT '(2i4,a6,2f15.10)', A1, A2,"dists", INTDIST, CURINTDIST
+         IF (PTEST) PRINT '(2I4,A6,2F15.10)', A1, A2,"DISTS", INTDIST, CURINTDIST
          
-         IF (PTEST) print*, 'torsion distance (not yet accepted!): ', INTDIST
+         IF (PTEST) PRINT*, 'TORSION DISTANCE (NOT YET ACCEPTED!): ', INTDIST
     
     
          PREVDIH(:)=STARTDIH(:)
@@ -438,16 +438,16 @@ CONTAINS
          A2 = PERMGROUP(START+1)
          CALL DISTANCEPAIRSWAP(STARTDIH, RFTMP,A1,A2, PG, INTDIST2,PTEST,RFNEW)
 
-         IF (ABS(INTDIST-INTDIST2).GT. 1e-6) THEN
-             PRINT*, "not equal"
+         IF (ABS(INTDIST-INTDIST2).GT. 1E-6) THEN
+             PRINT*, "NOT EQUAL"
              STOP
          ENDIF
 
          IF (INTDIST.GE.CURINTDIST) THEN
-            ! undo permutation
+            ! UNDO PERMUTATION
           RF(:) = RFTMP(:)
          ELSE
-             IF (PTEST) print*, 'keep permutation'
+             IF (PTEST) PRINT*, 'KEEP PERMUTATION'
    
              CURINTDIST = INTDIST
    
@@ -459,53 +459,53 @@ CONTAINS
                  START = START + NPERMSIZE(PG)
                 CYCLE
             ENDIF
-            IF (PTEST) PRINT*, "coupled pg's!"
+            IF (PTEST) PRINT*, "COUPLED PG'S!"
             CALL SWAP2ATONCE(STARTDIH,RF,PG,START,0,PTEST,SKIPPG,RFNEW,MINSWAP1,MINSWAP2,MININTDIST, SWAPARRAY, SWAPDIST)
             DO I =1, NATOMS
                CALL FLUSH(6,ISTAT)
                IF (RF(I).NE.RFNEW(I)) THEN
-                 PRINT*, I, "not eq after swap2atonce", RF(I), RFNEW(I);
+                 PRINT*, I, "NOT EQ AFTER SWAP2ATONCE", RF(I), RFNEW(I);
                !STOP
                ENDIF
             ENDDO
             RF(:)=RFNEW(:)
             IF (MININTDIST.LT.CURINTDIST) CURINTDIST=MININTDIST
-            IF (PTEST) PRINT*, "MININTDIST after swap2atonce", CURINTDIST
+            IF (PTEST) PRINT*, "MININTDIST AFTER SWAP2ATONCE", CURINTDIST
           ELSEIF (PERMCHAIN(PG,1).EQ.3) THEN
-            CALL GETRESID(A1,resname, I)
-            IF (resname.EQ.'ARG '.OR.resname.EQ.'NARG'.OR.resname.EQ.'CARG') THEN
+            CALL GETRESID(A1,RESNAME, I)
+            IF (RESNAME.EQ.'ARG '.OR.RESNAME.EQ.'NARG'.OR.RESNAME.EQ.'CARG') THEN
                IF (NSETS(PG)==2) THEN
-                  PRINT*, "call argswap"
+                  PRINT*, "CALL ARGSWAP"
                   CALL ARG_SWAP(STARTDIH, RF,PG,START,PTEST,SKIPPG,RFNEW,CURINTDIST)
                   DO I=1,3*NATOMS 
-                     IF (RFNEW(I).NE.RF(I)) THEN; PRINT*, "arg ne",I,RFNEW(I),RF(I); STOP;ENDIF
+                     IF (RFNEW(I).NE.RF(I)) THEN; PRINT*, "ARG NE",I,RFNEW(I),RF(I); STOP;ENDIF
                   ENDDO
                   START=START+NPERMSIZE(PG)
                CYCLE
                ENDIF
             ENDIF
-            IF (PTEST) PRINT*, "triple pg's"
+            IF (PTEST) PRINT*, "TRIPLE PG'S"
             CALL SWAP3ATONCE(STARTDIH,RF,PG,START,DUMMYPG1,DUMMYST1,PTEST,SKIPPG,RFNEW,MININTDIST, SWAPARRAY3, SWAPDIST3)
             !DO I =1, NATOMS
             !   CALL FLUSH(6,ISTAT)
             !   IF (RF(I).NE.RFNEW(I)) THEN
-            !     PRINT*, I, "not eq after swap3atonce", RF(I), RFNEW(I);
+            !     PRINT*, I, "NOT EQ AFTER SWAP3ATONCE", RF(I), RFNEW(I);
             !   !STOP
             !   ENDIF
             !ENDDO
             RF(:)=RFNEW(:)
             IF (MININTDIST.LT.CURINTDIST) CURINTDIST=MININTDIST
-            IF (PTEST) PRINT*, "minintdist after swap3atonce", MININTDIST
+            IF (PTEST) PRINT*, "MININTDIST AFTER SWAP3ATONCE", MININTDIST
           ELSEIF (PERMCHAIN(PG,1).EQ.4) THEN
-            PRINT*, "intminperm>currently no case known. Code this yourself"
+            PRINT*, "INTMINPERM>CURRENTLY NO CASE KNOWN. CODE THIS YOURSELF"
             STOP
           ELSEIF (PERMCHAIN(PG,1).EQ.5) THEN
-             IF (PTEST) PRINT*, "this is lysine - 5pg's"
+             IF (PTEST) PRINT*, "THIS IS LYSINE - 5PG'S"
              CALL SWAP5ATONCE(STARTDIH,RF,PG,START,PTEST,SKIPPG,RFNEW,MININTDIST,SWAPARRAY5,SWAPDIST5)
              DO I =1, NATOMS
                 CALL FLUSH(6,ISTAT)
                 IF (RF(I).NE.RFNEW(I)) THEN
-                  PRINT*, I, "not eq after swap5atonce"
+                  PRINT*, I, "NOT EQ AFTER SWAP5ATONCE"
                 !STOP
                 ENDIF
              ENDDO
@@ -515,7 +515,7 @@ CONTAINS
                 IF (PTEST) PRINT*, "MININTDIST", MININTDIST
              ENDIF
           ELSE
-            PRINT*, "this should never ever happen. Better go back to bed. "
+            PRINT*, "THIS SHOULD NEVER EVER HAPPEN. BETTER GO BACK TO BED. "
             STOP
           ENDIF
          !RF(:)=RFNEW(:)
@@ -523,18 +523,18 @@ CONTAINS
       
       
       ELSE IF (NPERMSIZE(PG).EQ.3) THEN
-       ! this is an inefficient way of listing permutations
-       ! and should be fixed and generalized at some point
+       ! THIS IS AN INEFFICIENT WAY OF LISTING PERMUTATIONS
+       ! AND SHOULD BE FIXED AND GENERALIZED AT SOME POINT
         IF (PERMNEIGHBOURS(PG,1).EQ.1) THEN
-           !next 5 lines to the bin once this is working 
+           !NEXT 5 LINES TO THE BIN ONCE THIS IS WORKING 
            IF (PERMCHAIN(PG,1).GT.3) THEN
-      !       PRINT*, "currently skipping", PG, PERMCHAIN(PG,1) 
+      !       PRINT*, "CURRENTLY SKIPPING", PG, PERMCHAIN(PG,1) 
              START = START + NPERMSIZE(PG)
              CYCLE
            ENDIF
              IF (SKIPPG(PG)) THEN
                START = START + NPERMSIZE(PG)
-      !         PRINT*, "cycling", PG
+      !         PRINT*, "CYCLING", PG
                 CYCLE
              ENDIF
              CALL SWAP2ATONCE(STARTDIH,RF,PG,START,0,PTEST,SKIPPG,RFNEW,MINSWAP1,MINSWAP2,MININTDIST,SWAPARRAY, SWAPDIST)
@@ -561,7 +561,7 @@ CONTAINS
          !         B2 = PERMGROUP(START+J)
          !         B3 = PERMGROUP(START+K)
          ! 
-         !         IF (PTEST) print*, 'permuting: ', B1, B2, B3
+         !         IF (PTEST) PRINT*, 'PERMUTING: ', B1, B2, B3
         ! 
         !          RF(3*(B1-1)+1:3*B1) = TMP(:)
         !          RF(3*(B2-1)+1:3*B2) = TMP2(:)
@@ -573,13 +573,13 @@ CONTAINS
          !         INTDIFF(:) = PREVDIH(:) - STARTDIH(:)
          !          INTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
          ! 
-         !          IF (PTEST) print*, 'dihedral distance: ', INTDIST
+         !          IF (PTEST) PRINT*, 'DIHEDRAL DISTANCE: ', INTDIST
          ! 
-         !          !PRINT*, "msb50 intdist", B1,B2,B3 ,intdist
+         !          !PRINT*, "MSB50 INTDIST", B1,B2,B3 ,INTDIST
          ! 
          !          IF (INTDIST.LT.CURINTDIST) THEN
          !             RFTMP(:) = RF(:)
-         !             IF (PTEST) print '(2i5,a20,2f12.7)',A1,A2, 'keep permutation',INTDIST, CURINTDIST
+         !             IF (PTEST) PRINT '(2I5,A20,2F12.7)',A1,A2, 'KEEP PERMUTATION',INTDIST, CURINTDIST
          !             CURINTDIST = INTDIST
          !          ENDIF
          !       ENDDO
@@ -596,11 +596,11 @@ CONTAINS
           DO I=0,2
              RFTMP(3*(A1-1)+1:3*A1)=TMP_AR(A1,:)
              RFTMP(3*(A2-1)+1:3*A2)=TMP_AR(A2,:)
-             RFTMP(3*(A3-1)+1:3*A3)=TMP_AR(A3,:)!initialise back to beginning
-             !swap first two atoms
+             RFTMP(3*(A3-1)+1:3*A3)=TMP_AR(A3,:)!INITIALISE BACK TO BEGINNING
+             !SWAP FIRST TWO ATOMS
              B1=PERMGROUP(START+I)
-             !find other two atoms
-             IF (I.EQ.0) THEN !i.e. B1 = A1
+             !FIND OTHER TWO ATOMS
+             IF (I.EQ.0) THEN !I.E. B1 = A1
                 B2=PERMGROUP(START+1); B3= PERMGROUP(START+2)
              ELSEIF (I.EQ.1) THEN 
                 B2=A1; B3= PERMGROUP(START+2) 
@@ -608,15 +608,15 @@ CONTAINS
                 B2=PERMGROUP(START+1); B3=A1
              ENDIF
          
-! msb50 - difference in the way Lena prints her permutation and I do 
-! when it prints here: B1, B2, B3 I mean the coordinates of original atom
-! B1 are now on the first place etc.
-! Lena means, the B1 has now the coordinates of whatever used to
-! be B1 originally. 
-! Therefore, I always swap A2 and A3 in DISTANCEPAIRSWAP, not B2 and B3
-! as whatever is printed as B2, even though on the second place here, could
-! be the first or third atoms
-! otherwise, the way the coordinates are written is wrong
+! MSB50 - DIFFERENCE IN THE WAY LENA PRINTS HER PERMUTATION AND I DO 
+! WHEN IT PRINTS HERE: B1, B2, B3 I MEAN THE COORDINATES OF ORIGINAL ATOM
+! B1 ARE NOW ON THE FIRST PLACE ETC.
+! LENA MEANS, THE B1 HAS NOW THE COORDINATES OF WHATEVER USED TO
+! BE B1 ORIGINALLY. 
+! THEREFORE, I ALWAYS SWAP A2 AND A3 IN DISTANCEPAIRSWAP, NOT B2 AND B3
+! AS WHATEVER IS PRINTED AS B2, EVEN THOUGH ON THE SECOND PLACE HERE, COULD
+! BE THE FIRST OR THIRD ATOMS
+! OTHERWISE, THE WAY THE COORDINATES ARE WRITTEN IS WRONG
 
              RFTMP(3*(A1-1)+1:3*A1)=TMP_AR(B1,:)
              RFTMP(3*(B1-1)+1:3*B1)=TMP_AR(A1,:)
@@ -625,12 +625,12 @@ CONTAINS
 
              INTDIFF= PREVDIH(:) - STARTDIH(:)
              INTDIST= SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
-             IF (PTEST) PRINT*,"swap", B1,B2,B3 ,"intdist", intdist
+             IF (PTEST) PRINT*,"SWAP", B1,B2,B3 ,"INTDIST", INTDIST
 
              PREVDIH(:) = STARTDIH(:) 
              CALL DISTANCEPAIRSWAP(STARTDIH, RFTMP, A2,A3,PG, INTDIST2,PTEST,RFNEW)
-             !PRINT*, "minintdist", MININTDIST
-             IF (PTEST) PRINT*, "swap",B1, B3,B2,"intdist2", intdist2
+             !PRINT*, "MININTDIST", MININTDIST
+             IF (PTEST) PRINT*, "SWAP",B1, B3,B2,"INTDIST2", INTDIST2
              
              IF (INTDIST.LT.MININTDIST) THEN 
                  MININTDIST=INTDIST; MINSWAP(1)=B1;MINSWAP(2)=B2;MINSWAP(3)=B3
@@ -641,7 +641,7 @@ CONTAINS
                  IF (PTEST) PRINT*, MINSWAP(:), MININTDIST
              ENDIF
           ENDDO
-          !PRINT*,A1,A2,A3, "minswap",MINSWAP(1), MINSWAP(2), MINSWAP(3)
+          !PRINT*,A1,A2,A3, "MINSWAP",MINSWAP(1), MINSWAP(2), MINSWAP(3)
           RFTMP(3*(A1-1)+1:3*A1)=RFTMP2(3*(MINSWAP(1)-1)+1:3*MINSWAP(1))
           RFTMP(3*(A2-1)+1:3*A2)=RFTMP2(3*(MINSWAP(2)-1)+1:3*MINSWAP(2))
           RFTMP(3*(A3-1)+1:3*A3)=RFTMP2(3*(MINSWAP(3)-1)+1:3*MINSWAP(3))
@@ -649,38 +649,38 @@ CONTAINS
           CURINTDIST = MININTDIST   
           !  DO I=1, 3*NATOMS
           !    IF (RF(I).NE.RFTMP(I)) THEN 
-          !     PRINT*, I, "coords not equal", RF(I), RFTMP(I)
+          !     PRINT*, I, "COORDS NOT EQUAL", RF(I), RFTMP(I)
           !     !STOP
           !    ENDIF
           !  ENDDO
           RF(:)=RFTMP(:)
-      ENDIF !line 460 (473 atm) IF (PERMCHAIN...)
+      ENDIF !LINE 460 (473 ATM) IF (PERMCHAIN...)
       
       ELSE
-        print*, 'Error! INTMINPERM is only set up for permutation groups &
-            &          of size 2 & 3 for now', PG, NPERMSIZE(PG)
+        PRINT*, 'ERROR! INTMINPERM IS ONLY SET UP FOR PERMUTATION GROUPS &
+            &          OF SIZE 2 & 3 FOR NOW', PG, NPERMSIZE(PG)
         STOP
       ENDIF
       
       START = START + NPERMSIZE(PG)
       END DO
       
-      IF (PTEST) print*, 'Final int distance: ', CURINTDIST    
+      IF (PTEST) PRINT*, 'FINAL INT DISTANCE: ', CURINTDIST    
       
-      !PRINT*, "msb50 test"
+      !PRINT*, "MSB50 TEST"
       !RF(3*28+1:3*29)=RFTMP(3*29+1:3*30)
       !RF(3*29+1:3*30)=RFTMP(3*28+1:3*29)
       DISTANCE = DOT_PRODUCT(RF-RS,RF-RS)
-      IF (PTEST) PRINT*, 'Final cart distance', DISTANCE    
+      IF (PTEST) PRINT*, 'FINAL CART DISTANCE', DISTANCE    
  
       !STOP
       RETURN
       END SUBROUTINE INTMINPERM
       
    SUBROUTINE CART2INT(XCART, XINT) 
-     ! converts cartesians to internals
-     ! using parameters from intcommons
-     ! no derivatives involved
+     ! CONVERTS CARTESIANS TO INTERNALS
+     ! USING PARAMETERS FROM INTCOMMONS
+     ! NO DERIVATIVES INVOLVED
      USE KEY, ONLY  : AMBERT, NABT
      
      IMPLICIT NONE
@@ -703,8 +703,8 @@ CONTAINS
          USE MODAMBER9
          USE KEY, ONLY : AMBERT, NABT, DEBUG
          IMPLICIT NONE
-         ! set up some of the initial global arrays and constants for working with internals
-         ! interface to CHARMM    
+         ! SET UP SOME OF THE INITIAL GLOBAL ARRAYS AND CONSTANTS FOR WORKING WITH INTERNALS
+         ! INTERFACE TO CHARMM    
          
          ALLOCATE(USECART(NATOMS))
          USECART(:) = .FALSE.
@@ -714,7 +714,7 @@ CONTAINS
             ALLOCATE(BACKBONE(NATOMS))
             CALL GETBACKBONE
          ENDIF
-         ! NINTS is the number of internals in commons file; NINTC should be same number in intcommons file
+         ! NINTS IS THE NUMBER OF INTERNALS IN COMMONS FILE; NINTC SHOULD BE SAME NUMBER IN INTCOMMONS FILE
          IF (NATINT) THEN
            IF (AMBERT.OR.NABT) THEN
              CALL AMB_NATINTSETUP 
@@ -728,7 +728,7 @@ CONTAINS
          ELSE
            IF (AMBERT.OR.NABT) THEN
               IF (.NOT.ALLOCATED(PERMNEIGHBOURS)) CALL AMBGETNATINTERN
-              IF (DEBUG) PRINT*, "intcoords> after ambgetnatintern"
+              IF (DEBUG) PRINT*, "INTCOORDS> AFTER AMBGETNATINTERN"
            ELSE
                CALL GETNATINTERN
            ENDIF
@@ -746,7 +746,7 @@ CONTAINS
               CALL AMBGETNNZNAT(NNZ)
               CALL AMB_GETKDNAT(KD)
             ELSE
-              PRINT*, "error in intcoords - natint not set for AMBER"
+              PRINT*, "ERROR IN INTCOORDS - NATINT NOT SET FOR AMBER"
               STOP
             ENDIF
          ELSE
@@ -759,8 +759,8 @@ CONTAINS
       END SUBROUTINE INTSETUP
          
       SUBROUTINE SETCARTATMS
-      ! pick out the atoms for which to use cartesian coordinates
-      ! make sure NATINTSETUP is done before this!
+      ! PICK OUT THE ATOMS FOR WHICH TO USE CARTESIAN COORDINATES
+      ! MAKE SURE NATINTSETUP IS DONE BEFORE THIS!
       
       IMPLICIT NONE
       INTEGER :: A
@@ -779,15 +779,15 @@ CONTAINS
      END SUBROUTINE SETCARTATMS
      
      SUBROUTINE NATINTSETUP
-     ! setup up various arrays necessary for natural internals
-     ! this is the routine that defines the natural internal coordinates in terms of angle and torsion coefficients
+     ! SETUP UP VARIOUS ARRAYS NECESSARY FOR NATURAL INTERNALS
+     ! THIS IS THE ROUTINE THAT DEFINES THE NATURAL INTERNAL COORDINATES IN TERMS OF ANGLE AND TORSION COEFFICIENTS
      
      IMPLICIT NONE
      INTEGER, PARAMETER :: LARGENEG = -99999999
      DOUBLE PRECISION :: S6R, S2R, S26R, S18R, S12R, A, B, SABR, SABR2
      
      
-     PRINT*, "natintsetup, NATOMS", NATOMS
+     PRINT*, "NATINTSETUP, NATOMS", NATOMS
      NBDS = 0; NCNT = 0; NRNG = 0; NFRG = 0; NLDH = 0; NIMP = 0
      NCRT = 0; NDIH = 0
      
@@ -800,7 +800,7 @@ CONTAINS
         CARTATMSTART = RESSTARTS(CARTRESSTART)+1
      ENDIF
  
-     !     Set up COEFF table
+     !     SET UP COEFF TABLE
      S6R = 1/SQRT(6.0)
      S2R = 1/SQRT(2.0)
      S26R = 1/SQRT(26.0)
@@ -856,43 +856,43 @@ CONTAINS
      COEFF(26,5,1:6) = (/1,0,-1,1,0,-1/)*0.5D0
      COEFF(26,6,1:6) = (/-1,2,-1,-1,2,-1/)*S12R
 
-!     Set up ATOMxPOSINC table
-!     large negative number listed for those atoms not involved
-     ATOMxPOSinC(1,1,1:5) = (/0,3,6,9,12/)
-     ATOMxPOSinC(1,2,1:5) = (/15,LARGENEG,18,21,24/)
-     ATOMxPOSinC(1,3,1:5) = (/27,LARGENEG,30,33,36/)
-     ATOMxPOSinC(1,4,1:5) = (/39,42,45,48,51/)
-     ATOMxPOSinC(1,5,1:5) = (/54,57,LARGENEG,60,63/)
+!     SET UP ATOMXPOSINC TABLE
+!     LARGE NEGATIVE NUMBER LISTED FOR THOSE ATOMS NOT INVOLVED
+     ATOMXPOSINC(1,1,1:5) = (/0,3,6,9,12/)
+     ATOMXPOSINC(1,2,1:5) = (/15,LARGENEG,18,21,24/)
+     ATOMXPOSINC(1,3,1:5) = (/27,LARGENEG,30,33,36/)
+     ATOMXPOSINC(1,4,1:5) = (/39,42,45,48,51/)
+     ATOMXPOSINC(1,5,1:5) = (/54,57,LARGENEG,60,63/)
      
-     ATOMxPOSinC(2,1,1:5) = (/0,3,6,9,12/)
-     ATOMxPOSinC(2,2,1:5) = (/15,18,21,24,27/)
-     ATOMxPOSinC(2,3,1:5) = (/30,33,36,39,42/)
-     ATOMxPOSinC(2,4,1:5) = (/45,48,51,54,57/)
-     ATOMxPOSinC(2,5,1:5) = (/60,63,66,69,72/)
+     ATOMXPOSINC(2,1,1:5) = (/0,3,6,9,12/)
+     ATOMXPOSINC(2,2,1:5) = (/15,18,21,24,27/)
+     ATOMXPOSINC(2,3,1:5) = (/30,33,36,39,42/)
+     ATOMXPOSINC(2,4,1:5) = (/45,48,51,54,57/)
+     ATOMXPOSINC(2,5,1:5) = (/60,63,66,69,72/)
      
-     ATOMxPOSinC(3,1,1:5) = (/0,3,6,9,12/)
-     ATOMxPOSinC(3,2,1:5) = (/15,LARGENEG,18,21,24/)
-     ATOMxPOSinC(3,3,1:5) = (/27,30,33,36,LARGENEG/)
-     ATOMxPOSinC(3,4,1:5) = (/39,42,45,48,LARGENEG/)
-     ATOmxPOSinC(3,5,1:5) = (/51,54,57,60,LARGENEG/)
+     ATOMXPOSINC(3,1,1:5) = (/0,3,6,9,12/)
+     ATOMXPOSINC(3,2,1:5) = (/15,LARGENEG,18,21,24/)
+     ATOMXPOSINC(3,3,1:5) = (/27,30,33,36,LARGENEG/)
+     ATOMXPOSINC(3,4,1:5) = (/39,42,45,48,LARGENEG/)
+     ATOMXPOSINC(3,5,1:5) = (/51,54,57,60,LARGENEG/)
      
-     ATOMxPOSinC(4,1,1:4)=(/0,3,6,9/)
-     ATOMxPOSinC(4,2,1:4)=(/12,15,18,21/)
+     ATOMXPOSINC(4,1,1:4)=(/0,3,6,9/)
+     ATOMXPOSINC(4,2,1:4)=(/12,15,18,21/)
      
-     ATOMxPOSinC(5,1,1:4)=(/0,3,6,9/)
-     ATOMxPOSinC(5,2,1:4)=(/12,15,18,21/)
+     ATOMXPOSINC(5,1,1:4)=(/0,3,6,9/)
+     ATOMXPOSINC(5,2,1:4)=(/12,15,18,21/)
      
-     ATOMxPOSinC(6,1,1:3) = (/0,3,6/)
+     ATOMXPOSINC(6,1,1:3) = (/0,3,6/)
      
-     ATOMxPOSinC(7,1,1:4) = (/0,3,6,9/)      
+     ATOMXPOSINC(7,1,1:4) = (/0,3,6,9/)      
 
-     ATOMxPOSinC(8,1,1:4)=(/0,3,6,9/)
-     ATOMxPOSinC(8,2,1:4)=(/12,15,18,21/)
-     ATOMxPOSinC(8,3,1:4)=(/24,27,30,33/)
+     ATOMXPOSINC(8,1,1:4)=(/0,3,6,9/)
+     ATOMXPOSINC(8,2,1:4)=(/12,15,18,21/)
+     ATOMXPOSINC(8,3,1:4)=(/24,27,30,33/)
     END SUBROUTINE NATINTSETUP
 
     SUBROUTINE GETBACKBONE
-    ! which of the atoms are part of the backbone?
+    ! WHICH OF THE ATOMS ARE PART OF THE BACKBONE?
     
     IMPLICIT NONE
     
@@ -903,7 +903,7 @@ CONTAINS
         IF (ATMTYPES(A).EQ.'C'.OR.ATMTYPES(A).EQ.'CA'.OR.ATMTYPES(A).EQ.'N') BACKBONE(A) = .TRUE.
       ENDDO
       
-      ! label all proline atoms (except O) as backbone
+      ! LABEL ALL PROLINE ATOMS (EXCEPT O) AS BACKBONE
       DO R = 1,TOTRES
         IF (RESLIST(R).EQ.'PRO') THEN
           DO A = RESSTARTS(R)+1,RESSTARTS(R+1)
@@ -916,7 +916,7 @@ CONTAINS
    END SUBROUTINE GETBACKBONE
     
    SUBROUTINE INTCLEANUP
-    ! cleanup global arrays for internals
+    ! CLEANUP GLOBAL ARRAYS FOR INTERNALS
    IMPLICIT NONE
 
     DEALLOCATE(USECART)
@@ -929,64 +929,64 @@ CONTAINS
    END SUBROUTINE INTCLEANUP
     
    SUBROUTINE KEYINTPRINT
-    ! print out key information related to internals
+    ! PRINT OUT KEY INFORMATION RELATED TO INTERNALS
     
    IMPLICIT NONE
     
     IF (NATINT) THEN
-      WRITE(*,'(1x,a,I10)') 'KeyInt>> Using natural internal coordinates. # of coords = ', NINTC
-      WRITE(*,'(1x,a,a)') 'KeyInt>> Parameter file for internal coordinates is ', INTPARFILE
-      WRITE(*,'(1x,a,2I10)') 'KeyInt>> KD, NNZ are ', KD, NNZ
+      WRITE(*,'(1X,A,I10)') 'KEYINT>> USING NATURAL INTERNAL COORDINATES. # OF COORDS = ', NINTC
+      WRITE(*,'(1X,A,A)') 'KEYINT>> PARAMETER FILE FOR INTERNAL COORDINATES IS ', INTPARFILE
+      WRITE(*,'(1X,A,2I10)') 'KEYINT>> KD, NNZ ARE ', KD, NNZ
     ELSE
-      WRITE(*,'(1x,a,I10)') 'KeyInt>> Using primitive internal coordinates. # of coords = ', NINTC
+      WRITE(*,'(1X,A,I10)') 'KEYINT>> USING PRIMITIVE INTERNAL COORDINATES. # OF COORDS = ', NINTC
     ENDIF
     
     IF (INTINTERPT.OR.DESMINT) THEN
-      WRITE(*,'(1x,a,G20.10)') 'KeyInt>> Back transform convergence (for interpolation) ', INTERPBACKTCUT
+      WRITE(*,'(1X,A,G20.10)') 'KEYINT>> BACK TRANSFORM CONVERGENCE (FOR INTERPOLATION) ', INTERPBACKTCUT
     ENDIF
-    WRITE(*,'(1x,a,G20.10)') &
-     & 'KeyInt>> Back transform convergence criterion (except for interpolation) ', MINBACKTCUT
+    WRITE(*,'(1X,A,G20.10)') &
+     & 'KEYINT>> BACK TRANSFORM CONVERGENCE CRITERION (EXCEPT FOR INTERPOLATION) ', MINBACKTCUT
     
-    IF (BBCART) WRITE(*,'(1x,a)') 'KeyInt>> Using cartesian coordinates for the backbone and prolines' 
+    IF (BBCART) WRITE(*,'(1X,A)') 'KEYINT>> USING CARTESIAN COORDINATES FOR THE BACKBONE AND PROLINES' 
     
     IF (CARTRESSTART.LE.TOTRES) &
-     &   WRITE(*,'(1x,a,I6)') 'KeyInt>> using Cartesian coords for all residues starting with ', CARTRESSTART
+     &   WRITE(*,'(1X,A,I6)') 'KEYINT>> USING CARTESIAN COORDS FOR ALL RESIDUES STARTING WITH ', CARTRESSTART
     
-    IF (.NOT.INTNEWT) WRITE(*,'(1x,a)') "KeyInt>> Linear back-transforms only. No Newton's iterations"
+    IF (.NOT.INTNEWT) WRITE(*,'(1X,A)') "KEYINT>> LINEAR BACK-TRANSFORMS ONLY. NO NEWTON'S ITERATIONS"
     
-    IF (DESMINT) WRITE(*,'(1x,a)') 'KeyInt>> Using internal coords for double-ended search methods'
+    IF (DESMINT) WRITE(*,'(1X,A)') 'KEYINT>> USING INTERNAL COORDS FOR DOUBLE-ENDED SEARCH METHODS'
     IF (INTINTERPT) THEN 
-       WRITE(*,'(1x,a)') 'KeyInt>> Using internal coordinates for interpolation.'
-       IF (INTERPCHOICE) WRITE(*,'(1x,a)') &
-     &   'KeyInt>> Choosing internal or Cartesian coordinates for interpolation, based on max energy.'
-       IF (INTERPSIMPLE) WRITE(*,'(1x,a)') &
-      &   'KeyInt>> using simple internal interpolation. &
-      &   Image points will not be evenly distributed in Cartesians'
+       WRITE(*,'(1X,A)') 'KEYINT>> USING INTERNAL COORDINATES FOR INTERPOLATION.'
+       IF (INTERPCHOICE) WRITE(*,'(1X,A)') &
+     &   'KEYINT>> CHOOSING INTERNAL OR CARTESIAN COORDINATES FOR INTERPOLATION, BASED ON MAX ENERGY.'
+       IF (INTERPSIMPLE) WRITE(*,'(1X,A)') &
+      &   'KEYINT>> USING SIMPLE INTERNAL INTERPOLATION. &
+      &   IMAGE POINTS WILL NOT BE EVENLY DISTRIBUTED IN CARTESIANS'
     ENDIF
     
-    IF (INTMINPERMT) WRITE(*,'(1x,a)') 'KeyInt>> Permuting endpoint atoms to minimise torsion distance'
+    IF (INTMINPERMT) WRITE(*,'(1X,A)') 'KEYINT>> PERMUTING ENDPOINT ATOMS TO MINIMISE TORSION DISTANCE'
     
-    IF (PRINTCOORDS) WRITE(*,'(1x,a)') 'KeyInt>> Printing coordinate information only.'
+    IF (PRINTCOORDS) WRITE(*,'(1X,A)') 'KEYINT>> PRINTING COORDINATE INFORMATION ONLY.'
 
     RETURN
     END SUBROUTINE KEYINTPRINT
 
 
 ! ********************************************************************************
-! msb50 to help with intminperm **************************************************
+! MSB50 TO HELP WITH INTMINPERM **************************************************
 
     SUBROUTINE DISTANCEPAIRSWAP(STARTDIH, RF, A1, A2, PG, INTDIST, PTEST,RFNEW)
-    !gives you internal distance after swapping two atoms
-    !NOTE - when swapping NPERMSIZE(PG).EQ.4 need to call this 6 times
-        use key, only: NSETS, SETS
-        use commons, only: NATOMS
-        use intcommons, only: NDIH
+    !GIVES YOU INTERNAL DISTANCE AFTER SWAPPING TWO ATOMS
+    !NOTE - WHEN SWAPPING NPERMSIZE(PG).EQ.4 NEED TO CALL THIS 6 TIMES
+        USE KEY, ONLY: NSETS, SETS
+        USE COMMONS, ONLY: NATOMS
+        USE INTCOMMONS, ONLY: NDIH
         IMPLICIT NONE
          
         DOUBLE PRECISION, INTENT(IN) :: STARTDIH(NDIH)
         DOUBLE PRECISION, INTENT(IN) :: RF(NATOMS*3)
-        INTEGER, INTENT(IN) :: PG !which permgroup (number)
-        INTEGER, INTENT(IN) :: A1, A2 ! which atoms
+        INTEGER, INTENT(IN) :: PG !WHICH PERMGROUP (NUMBER)
+        INTEGER, INTENT(IN) :: A1, A2 ! WHICH ATOMS
         LOGICAL, INTENT(IN) :: PTEST
         DOUBLE PRECISION, INTENT(OUT) :: INTDIST
         DOUBLE PRECISION, INTENT(OUT) ::RFNEW(NATOMS*3)
@@ -994,7 +994,7 @@ CONTAINS
         INTEGER :: SW
         DOUBLE PRECISION :: INTDIFF(NDIH), GD_PREVDIH(NDIH)
         DOUBLE PRECISION :: RFTMP(NATOMS*3)
-        !note rftmp and rf wrong way round as rf intent(in), cannot change
+        !NOTE RFTMP AND RF WRONG WAY ROUND AS RF INTENT(IN), CANNOT CHANGE
         
           RFTMP(:) = RF(:)
           RFTMP(3*(A1-1)+1:3*A1) = RF(3*(A2-1)+1:3*A2)
@@ -1005,13 +1005,13 @@ CONTAINS
              A3 = SETS(A1,SW)
              A4 = SETS(A2,SW)
         
-             IF (PTEST) print*, 'Dragging swap: ', A3, A4
+             IF (PTEST) PRINT*, 'DRAGGING SWAP: ', A3, A4
         
              RFTMP(3*(A3-1)+1:3*A3) = RF(3*(A4-1)+1:3*A4)
              RFTMP(3*(A4-1)+1:3*A4) = RF(3*(A3-1)+1:3*A3)
           ENDDO
           PREVDIH(:) = STARTDIH(:)
-          CALL GETDIHONLY(RFTMP) !msb50
+          CALL GETDIHONLY(RFTMP) !MSB50
           GD_PREVDIH(:) = PREVDIH(:)
           PREVDIH(:) = STARTDIH(:)
 
@@ -1023,23 +1023,23 @@ CONTAINS
        END SUBROUTINE DISTANCEPAIRSWAP
 
 !*************************************************************************
-!msb50 this subroutine is for intminperm, where we had the problem that if your metric
-! is based on dihedrals the dihedrals must be independent. In case of connected (neighboured)
-! permgroups, this is not the case. So here is the function if you have 2 neighbouring
-! permgroups
+!MSB50 THIS SUBROUTINE IS FOR INTMINPERM, WHERE WE HAD THE PROBLEM THAT IF YOUR METRIC
+! IS BASED ON DIHEDRALS THE DIHEDRALS MUST BE INDEPENDENT. IN CASE OF CONNECTED (NEIGHBOURED)
+! PERMGROUPS, THIS IS NOT THE CASE. SO HERE IS THE FUNCTION IF YOU HAVE 2 NEIGHBOURING
+! PERMGROUPS
       SUBROUTINE SWAP2ATONCE(STARTDIH,RFTMP,PERMG,START,PG2DUMMY,PTEST,&
      & SKIPPG,RFNEW,MINSWAP1,MINSWAP2,MININTDIST, SWAPARRAY, SWAPDIST)
 
          USE KEY, ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP,NSETS, SETS
-!         USE MODAMBER9, ONLY : ih, ix, NRES, i02,m04,m02
-         USE intcommons, only: NDIH, PERMNEIGHBOURS ,PREVDIH
-         USE commons, only: NATOMS !msb50
-         USE porfuncs
+!         USE MODAMBER9, ONLY : IH, IX, NRES, I02,M04,M02
+         USE INTCOMMONS, ONLY: NDIH, PERMNEIGHBOURS ,PREVDIH
+         USE COMMONS, ONLY: NATOMS !MSB50
+         USE PORFUNCS
          IMPLICIT NONE
 
          DOUBLE PRECISION, INTENT(IN) :: STARTDIH(NDIH)
          DOUBLE PRECISION, INTENT(IN) :: RFTMP(3*NATOMS)
-         INTEGER, INTENT(IN) ::PERMG, START !where atoms are in pg array
+         INTEGER, INTENT(IN) ::PERMG, START !WHERE ATOMS ARE IN PG ARRAY
          INTEGER, INTENT(IN) :: PG2DUMMY
          LOGICAL, INTENT(IN) :: PTEST
          LOGICAL, INTENT(INOUT) :: SKIPPG(NPERMGROUP)
@@ -1047,27 +1047,27 @@ CONTAINS
          INTEGER, INTENT(OUT) :: MINSWAP1(3), MINSWAP2(3)
          DOUBLE PRECISION, INTENT(OUT) :: MININTDIST
          
-         INTEGER, INTENT(OUT) :: SWAPARRAY(12,6) !this thing stores possible atom combinations
-         DOUBLE PRECISION, INTENT(OUT) :: SWAPDIST(12) !and their distances 
+         INTEGER, INTENT(OUT) :: SWAPARRAY(12,6) !THIS THING STORES POSSIBLE ATOM COMBINATIONS
+         DOUBLE PRECISION, INTENT(OUT) :: SWAPDIST(12) !AND THEIR DISTANCES 
 
-         INTEGER :: MINSWAP(2,3)!-order of permable atoms in which you want them
+         INTEGER :: MINSWAP(2,3)!-ORDER OF PERMABLE ATOMS IN WHICH YOU WANT THEM
          DOUBLE PRECISION :: RFNEW(3*NATOMS),  INTDIFF(NDIH)
          DOUBLE PRECISION :: RFNEW2(3*NATOMS),RF2(3*NATOMS)
          DOUBLE PRECISION :: INTDIST2, INTDIST
          DOUBLE PRECISION :: TMP_AR(NATOMS,3)
-         INTEGER:: A1, A2, A3, B1, B2, B3, START2,pg1,pg2, C1,C2,C3,ST,AN1,AN2
-         INTEGER :: PERMG2, JJ,I, indx, A4
-         INTEGER:: II, START_AR(2), swI, SW
+         INTEGER:: A1, A2, A3, B1, B2, B3, START2,PG1,PG2, C1,C2,C3,ST,AN1,AN2
+         INTEGER :: PERMG2, JJ,I, INDX, A4
+         INTEGER:: II, START_AR(2), SWI, SW
          
          
          A1=0;A2=0;A3=0;B1=0;B2=0;B3=0
-         IF (PG2DUMMY.EQ.0) THEN !we call it directly -only has 1neighbour
+         IF (PG2DUMMY.EQ.0) THEN !WE CALL IT DIRECTLY -ONLY HAS 1NEIGHBOUR
              PERMG2=PERMNEIGHBOURS(PERMG,2)
          ELSE
              PERMG2=PG2DUMMY
          ENDIF
          IF (SKIPPG(PERMG).AND.SKIPPG(PERMG2)) THEN
-           IF (PTEST) PRINT*, "swap2atonce: groups already done:", PERMG, PERMG2
+           IF (PTEST) PRINT*, "SWAP2ATONCE: GROUPS ALREADY DONE:", PERMG, PERMG2
            RETURN
          ENDIF
          START2= START
@@ -1076,12 +1076,12 @@ CONTAINS
          RFNEW2(:)=RFTMP(:)
          SWAPARRAY(:,:)=0
          SWAPDIST(:)=10000.0
-   !      PRINT*, "this was at the begininng"
+   !      PRINT*, "THIS WAS AT THE BEGININNG"
          IF (PERMG2.LT.PERMG) THEN
             PRINT*, "PERMG2 LT PERMG", PERMG2, "PERMG", PERMG
             STOP
          ENDIF
-   !      PRINT*, "swap2, pg, pg2", PERMG,PERMG2
+   !      PRINT*, "SWAP2, PG, PG2", PERMG,PERMG2
          DO II=PERMG,NPERMGROUP
           IF (II.EQ.PERMG2) EXIT
           START2 = START2 + NPERMSIZE(II)
@@ -1093,24 +1093,24 @@ CONTAINS
          INTDIFF(:)= PREVDIH(:)-STARTDIH(:)      
          MININTDIST=SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
          
-      !the idea of this is that you start with a pg that has size 2
-      !but you still want the swaparray in the initial order   
+      !THE IDEA OF THIS IS THAT YOU START WITH A PG THAT HAS SIZE 2
+      !BUT YOU STILL WANT THE SWAPARRAY IN THE INITIAL ORDER   
       DO II=1,2
        IF (II.EQ.1) THEN
-          pg1=PERMG; pg2=PERMG2
+          PG1=PERMG; PG2=PERMG2
        ELSE 
-          pg1=PERMG2;pg2=PERMG
-          IF (NPERMSIZE(pg2).EQ.2) CYCLE
+          PG1=PERMG2;PG2=PERMG
+          IF (NPERMSIZE(PG2).EQ.2) CYCLE
        ENDIF
-       IF (NPERMSIZE(pg1).EQ.3) THEN
-           CYCLE !IF both 3 go for sth else
+       IF (NPERMSIZE(PG1).EQ.3) THEN
+           CYCLE !IF BOTH 3 GO FOR STH ELSE
        ELSE
            A1 = PERMGROUP(START_AR(II))
            A2 = PERMGROUP(START_AR(II)+1)
-   !        print*, II, "pg",pg1,A1,a2
+   !        PRINT*, II, "PG",PG1,A1,A2
            MINSWAP(II,1)=A1;MINSWAP(II,2)=A2;MINSWAP(II,3)=0
            SWAPDIST(1)=MININTDIST
-           ! start with 1 if II==1, with 4 if II==2
+           ! START WITH 1 IF II==1, WITH 4 IF II==2
            SWAPARRAY(1,3*(II-1)+1:3*(II-1)+3)=MINSWAP(II,:)
            SWAPARRAY(2,3*(II-1)+1:3*(II-1)+3)=MINSWAP(II,:)
            SWAPARRAY(3,3*(II-1)+1:3*(II-1)+3)=MINSWAP(II,:)
@@ -1118,66 +1118,66 @@ CONTAINS
            SWAPARRAY(5,3*(II-1)+1:3*(II-1)+3)=MINSWAP(II,:)
            SWAPARRAY(6,3*(II-1)+1:3*(II-1)+3)=MINSWAP(II,:)
            DO JJ=1,2  
-              indx=MOD(II,2)+1
-              !indx: 2 if II=1 (i.e. pg2=PERMG2, want A first)
-              !      1 if II=2 (i.e. pg2=PERMG, want PERMG first still -so B first)
-              IF (NPERMSIZE(pg2).EQ.2) THEN
-                  C1=PERMGROUP(START_AR(indx))
-                  C2=PERMGROUP(START_AR(indx)+1)
+              INDX=MOD(II,2)+1
+              !INDX: 2 IF II=1 (I.E. PG2=PERMG2, WANT A FIRST)
+              !      1 IF II=2 (I.E. PG2=PERMG, WANT PERMG FIRST STILL -SO B FIRST)
+              IF (NPERMSIZE(PG2).EQ.2) THEN
+                  C1=PERMGROUP(START_AR(INDX))
+                  C2=PERMGROUP(START_AR(INDX)+1)
                   B1=C1
                   B2=C2
-   !               print*, II, "pg2", pg2, B1,B2
-                  IF (JJ.EQ.1) THEN !initialise minswap
-                      MINSWAP(indx,1)=B1
-                      MINSWAP(indx,2)=B2
-                      MINSWAP(indx,3)=0
-                  SWAPARRAY(1,3*(indx-1)+1:3*indx)=MINSWAP(indx,:)
+   !               PRINT*, II, "PG2", PG2, B1,B2
+                  IF (JJ.EQ.1) THEN !INITIALISE MINSWAP
+                      MINSWAP(INDX,1)=B1
+                      MINSWAP(INDX,2)=B2
+                      MINSWAP(INDX,3)=0
+                  SWAPARRAY(1,3*(INDX-1)+1:3*INDX)=MINSWAP(INDX,:)
                   ENDIF
                   PREVDIH(:) = STARTDIH(:) 
-                  CALL DISTANCEPAIRSWAP(STARTDIH, RF2, B1,B2,pg2, &
+                  CALL DISTANCEPAIRSWAP(STARTDIH, RF2, B1,B2,PG2, &
 &                          INTDIST,PTEST,RFNEW2)
-                 !RFNEW2 going to be overwritten, don't care
-                  SWAPARRAY(6*(JJ-1)+2,3*(indx-1)+1)=B2
-                  SWAPARRAY(6*(JJ-1)+2,3*(indx-1)+2)=B1
+                 !RFNEW2 GOING TO BE OVERWRITTEN, DON'T CARE
+                  SWAPARRAY(6*(JJ-1)+2,3*(INDX-1)+1)=B2
+                  SWAPARRAY(6*(JJ-1)+2,3*(INDX-1)+2)=B1
                   SWAPDIST(6*(JJ-1)+2)=INTDIST
                   IF (INTDIST.LT.MININTDIST) THEN
-                     MININTDIST=INTDIST; MINSWAP(indx,1)=B2
-                     MINSWAP(indx,2)=B1
-  !                   PRINT*, "swapping", indx, MINSWAP(indx,1)
+                     MININTDIST=INTDIST; MINSWAP(INDX,1)=B2
+                     MINSWAP(INDX,2)=B1
+  !                   PRINT*, "SWAPPING", INDX, MINSWAP(INDX,1)
                   ENDIF
-  !                PRINT*, "minswap indx", indx, MINSWAP(indx,:)
+  !                PRINT*, "MINSWAP INDX", INDX, MINSWAP(INDX,:)
                   IF (JJ.EQ.1) THEN
-                  ! as coords for next run are still for this arrangement
-                     SWAPARRAY(7,3*(indx-1)+1)=B1
-                     SWAPARRAY(7,3*(indx-1)+2)=B2
-                     SWAPARRAY(7,3*(indx-1)+3)=0
+                  ! AS COORDS FOR NEXT RUN ARE STILL FOR THIS ARRANGEMENT
+                     SWAPARRAY(7,3*(INDX-1)+1)=B1
+                     SWAPARRAY(7,3*(INDX-1)+2)=B2
+                     SWAPARRAY(7,3*(INDX-1)+3)=0
                   ELSE
                     CYCLE
                   ENDIF
                   
                   CALL FLUSH(6,ISTAT)         
-               ELSEIF (NPERMSIZE(pg2).EQ.3) THEN
-                  C1=PERMGROUP(START_AR(indx))
-                  C2= PERMGROUP(START_AR(indx)+1)
-                  C3=PERMGROUP(START_AR(indx)+2)
-                  IF (JJ.EQ.1) THEN !initialise minswap
-                         MINSWAP(indx,1)=C1
-                         MINSWAP(indx,2)=C2
-                         MINSWAP(indx,3)=C3
-                  SWAPARRAY(1,3*(indx-1)+1:3*indx)=MINSWAP(indx,:) 
+               ELSEIF (NPERMSIZE(PG2).EQ.3) THEN
+                  C1=PERMGROUP(START_AR(INDX))
+                  C2= PERMGROUP(START_AR(INDX)+1)
+                  C3=PERMGROUP(START_AR(INDX)+2)
+                  IF (JJ.EQ.1) THEN !INITIALISE MINSWAP
+                         MINSWAP(INDX,1)=C1
+                         MINSWAP(INDX,2)=C2
+                         MINSWAP(INDX,3)=C3
+                  SWAPARRAY(1,3*(INDX-1)+1:3*INDX)=MINSWAP(INDX,:) 
                   ENDIF
                   TMP_AR(C1,:)= RF2(3*(C1-1)+1:3*C1)
                   TMP_AR(C2,:)= RF2(3*(C2-1)+1:3*C2)
                   TMP_AR(C3,:)= RF2(3*(C3-1)+1:3*C3)
-                  ST=START_AR(indx)
+                  ST=START_AR(INDX)
                   DO I=0,2
                      RF2(3*(C1-1)+1:3*C1)=TMP_AR(C1,:)
                      RF2(3*(C2-1)+1:3*C2)=TMP_AR(C2,:)
-                     RF2(3*(C3-1)+1:3*C3)=TMP_AR(C3,:)!initialise back to beginning
-                     !swap first two atoms
+                     RF2(3*(C3-1)+1:3*C3)=TMP_AR(C3,:)!INITIALISE BACK TO BEGINNING
+                     !SWAP FIRST TWO ATOMS
                      B1=PERMGROUP(ST+I)
-                     !find other two atoms
-                     IF (I.EQ.0) THEN !i.e. B1 = A1
+                     !FIND OTHER TWO ATOMS
+                     IF (I.EQ.0) THEN !I.E. B1 = A1
                         B2=PERMGROUP(ST+1); B3= PERMGROUP(ST+2)
                      ELSEIF (I.EQ.1) THEN
                         B2=C1; B3= PERMGROUP(ST+2)
@@ -1191,52 +1191,52 @@ CONTAINS
                      CALL GETDIHONLY(RF2)
                      INTDIFF= PREVDIH(:) - STARTDIH(:)
                      INTDIST= SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
-                     swI=6*(JJ-1)+2*I
-                     SWAPARRAY(swI+1,3*(indx-1)+1)=B1
-                     SWAPARRAY(swI+1,3*(indx-1)+2)=B2
-                     SWAPARRAY(swI+1,3*(indx-1)+3)=B3
-                     SWAPDIST(swI+1)=INTDIST
+                     SWI=6*(JJ-1)+2*I
+                     SWAPARRAY(SWI+1,3*(INDX-1)+1)=B1
+                     SWAPARRAY(SWI+1,3*(INDX-1)+2)=B2
+                     SWAPARRAY(SWI+1,3*(INDX-1)+3)=B3
+                     SWAPDIST(SWI+1)=INTDIST
                      PREVDIH(:) = STARTDIH(:)
-!note always swap last two, not B2 and B3!!! check intminperm for comment
-                     CALL DISTANCEPAIRSWAP(STARTDIH,RF2, C2,C3,pg2, &
+!NOTE ALWAYS SWAP LAST TWO, NOT B2 AND B3!!! CHECK INTMINPERM FOR COMMENT
+                     CALL DISTANCEPAIRSWAP(STARTDIH,RF2, C2,C3,PG2, &
      &                      INTDIST2,PTEST,RFNEW2)
-                     !RFNEW2- going to be overwritten, don't care
+                     !RFNEW2- GOING TO BE OVERWRITTEN, DON'T CARE
                      RF2(:)=RFNEW(:) 
-                     !coordinates have to be same for next loop!
-!                     PRINT*, "swap",B1, B3,B2,"intdist2", intdist2
-                     SWAPARRAY(swI+2,3*(indx-1)+1)=B1
-                     SWAPARRAY(swI+2,3*(indx-1)+2)=B3
-                     SWAPARRAY(swI+2,3*(indx-1)+3)=B2
-                     SWAPDIST(swI+2)=INTDIST2
-    !                 PRINT*, "swI=2",swI+2
-    !                 PRINT '(a10,6i5,f11.7)',"swaparry",SWAPARRAY(swI+2,1),&
-    ! &SWAPARRAY(swI+2,2),SWAPARRAY(swI+2,3),SWAPARRAY(swI+2,4),&
-    ! &SWAPARRAY(swI+2,5),SWAPARRAY(swI+2,6), SWAPDIST(swI+2)
+                     !COORDINATES HAVE TO BE SAME FOR NEXT LOOP!
+!                     PRINT*, "SWAP",B1, B3,B2,"INTDIST2", INTDIST2
+                     SWAPARRAY(SWI+2,3*(INDX-1)+1)=B1
+                     SWAPARRAY(SWI+2,3*(INDX-1)+2)=B3
+                     SWAPARRAY(SWI+2,3*(INDX-1)+3)=B2
+                     SWAPDIST(SWI+2)=INTDIST2
+    !                 PRINT*, "SWI=2",SWI+2
+    !                 PRINT '(A10,6I5,F11.7)',"SWAPARRY",SWAPARRAY(SWI+2,1),&
+    ! &SWAPARRAY(SWI+2,2),SWAPARRAY(SWI+2,3),SWAPARRAY(SWI+2,4),&
+    ! &SWAPARRAY(SWI+2,5),SWAPARRAY(SWI+2,6), SWAPDIST(SWI+2)
                      IF (INTDIST.LT.MININTDIST) THEN
                          MININTDIST=INTDIST
-                         MINSWAP(indx,1)=B1
-                         MINSWAP(indx,2)=B2;MINSWAP(indx,3)=B3
+                         MINSWAP(INDX,1)=B1
+                         MINSWAP(INDX,2)=B2;MINSWAP(INDX,3)=B3
                      ENDIF
                      IF (INTDIST2.LT.MININTDIST) THEN
                          MININTDIST=INTDIST2
-                         MINSWAP(indx,1)=B1
-                         MINSWAP(indx,2)=B3;MINSWAP(indx,3)=B2
+                         MINSWAP(INDX,1)=B1
+                         MINSWAP(INDX,2)=B3;MINSWAP(INDX,3)=B2
                      ENDIF
                   ENDDO
-                  !because the coordinates were not changed, so we're back to this
+                  !BECAUSE THE COORDINATES WERE NOT CHANGED, SO WE'RE BACK TO THIS
                   IF (JJ.EQ.1) THEN 
-                    SWAPARRAY(7,3*(indx-1)+1)=C1
-                    SWAPARRAY(7,3*(indx-1)+2)=C2
-                    SWAPARRAY(7,3*(indx-1)+3)=C3
+                    SWAPARRAY(7,3*(INDX-1)+1)=C1
+                    SWAPARRAY(7,3*(INDX-1)+2)=C2
+                    SWAPARRAY(7,3*(INDX-1)+3)=C3
                   ELSE 
                     CYCLE
                   ENDIF
               ENDIF
               PREVDIH(:) = STARTDIH(:)
-              CALL DISTANCEPAIRSWAP(STARTDIH, RF2, A1,A2,pg1,INTDIST,&
+              CALL DISTANCEPAIRSWAP(STARTDIH, RF2, A1,A2,PG1,INTDIST,&
      &              PTEST,RFNEW)
-!              PRINT*, "swap", A1, A2, "dist", INTDIST
-    !          PRINT*, "end, swaparray"
+!              PRINT*, "SWAP", A1, A2, "DIST", INTDIST
+    !          PRINT*, "END, SWAPARRAY"
               SWAPARRAY(7,3*(II-1)+1)=A2;SWAPARRAY(7,3*(II-1)+2)=A1
               SWAPARRAY(8,3*(II-1)+1)=A2;SWAPARRAY(8,3*(II-1)+2)=A1
               SWAPARRAY(9,3*(II-1)+1)=A2;SWAPARRAY(9,3*(II-1)+2)=A1
@@ -1246,34 +1246,34 @@ CONTAINS
               SWAPDIST(7)=INTDIST
               RF2(:)=RFNEW(:)
      
-  !            PRINT*, "minswap", minswap(1,:)
-  !            PRINT*, "minswap", minswap(2,:)         
+  !            PRINT*, "MINSWAP", MINSWAP(1,:)
+  !            PRINT*, "MINSWAP", MINSWAP(2,:)         
               IF (INTDIST.LT.MININTDIST) THEN 
-                  IF (NPERMSIZE(pg2) == 2) THEN 
-                     MINSWAP(indx, 1) = B1; MINSWAP(indx,2) = B2
+                  IF (NPERMSIZE(PG2) == 2) THEN 
+                     MINSWAP(INDX, 1) = B1; MINSWAP(INDX,2) = B2
                   ELSE
-                     MINSWAP(indx,1) = C1; MINSWAP(indx,2)=C2; MINSWAP(indx,3)=C3
+                     MINSWAP(INDX,1) = C1; MINSWAP(INDX,2)=C2; MINSWAP(INDX,3)=C3
                   ENDIF
                   MININTDIST=INTDIST;MINSWAP(II,1)=A2; MINSWAP(II,2)=A1
               ENDIF
-           ENDDO !jj - now do with changed RF2   
+           ENDDO !JJ - NOW DO WITH CHANGED RF2   
          ENDIF 
       ENDDO     
 
       IF (NPERMSIZE(PERMG).EQ.3.AND.NPERMSIZE(PERMG2).EQ.3) THEN
-         PRINT*, "currently no case known where two permgroups&
-     &      are neighbours with NPERMSIZE3 - have fun coding this"
+         PRINT*, "CURRENTLY NO CASE KNOWN WHERE TWO PERMGROUPS&
+     &      ARE NEIGHBOURS WITH NPERMSIZE3 - HAVE FUN CODING THIS"
          STOP
       ENDIF   
      
-      !PRINT*, "in swap2atonce, final array"
+      !PRINT*, "IN SWAP2ATONCE, FINAL ARRAY"
       !DO I=1,12
-      !  PRINT*, "swaps"
+      !  PRINT*, "SWAPS"
       !  PRINT*, SWAPARRAY(I,:), SWAPDIST(I)
       !ENDDO
 
-      IF (PTEST) PRINT*, "minintdist in swap2atonce", minintdist
-      !bookkeeping
+      IF (PTEST) PRINT*, "MININTDIST IN SWAP2ATONCE", MININTDIST
+      !BOOKKEEPING
       SKIPPG(PERMG)=.TRUE.; SKIPPG(PERMG2)=.TRUE.
       IF (NPERMSIZE(PERMG).EQ.2) THEN
          MINSWAP1(:)=MINSWAP(1,:); MINSWAP1(3)=0
@@ -1282,43 +1282,43 @@ CONTAINS
          MINSWAP1(:)=MINSWAP(2,:)
          MINSWAP2(:)=MINSWAP(1,:); MINSWAP2(3)=0
       ENDIF
-      IF (PTEST) PRINT*, "minswap1", MINSWAP(1,:)
-      IF (PTEST) PRINT*, "minswap2", MINSWAP(2,:)
+      IF (PTEST) PRINT*, "MINSWAP1", MINSWAP(1,:)
+      IF (PTEST) PRINT*, "MINSWAP2", MINSWAP(2,:)
       AN1=MINSWAP(1,1); AN2=MINSWAP(1,2)
-!      PRINT*, "ans", an1, an2
+!      PRINT*, "ANS", AN1, AN2
       RFNEW(:)=RFTMP(:)
       RFNEW(3*(A1-1)+1:3*A1)= RFTMP(3*(AN1-1)+1:3*AN1)
       RFNEW(3*(A2-1)+1:3*A2)= RFTMP(3*(AN2-1)+1:3*AN2) 
       RFNEW(3*(C1-1)+1:3*C1)= RFTMP(3*(MINSWAP(2,1)-1)+1:3*MINSWAP(2,1))
       RFNEW(3*(C2-1)+1:3*C2)= RFTMP(3*(MINSWAP(2,2)-1)+1:3*MINSWAP(2,2))
-      IF (MINSWAP(2,3).NE.0) THEN !ie not both pgsizes where 2
+      IF (MINSWAP(2,3).NE.0) THEN !IE NOT BOTH PGSIZES WHERE 2
             RFNEW(3*(C3-1)+1:3*C3)= RFTMP(3*(MINSWAP(2,3)-1)+1:3*MINSWAP(2,3))
       ENDIF
-      !note that I never have a constellation where npermsize(1stPG)=3 
-      ! and nswap(2ndPG)!=0 as 3 and sth draggable are only coupled in 
-      ! val and leu for which there is an exception
-      ! Val and leu aren't even recognised as having permneighbouring atoms
-      ! (apart from the other case in leucine)
-      IF (NSETS(PERMG).NE.0) THEN!automatically npermsize(permg)=2 i.e.permg->A1
+      !NOTE THAT I NEVER HAVE A CONSTELLATION WHERE NPERMSIZE(1STPG)=3 
+      ! AND NSWAP(2NDPG)!=0 AS 3 AND STH DRAGGABLE ARE ONLY COUPLED IN 
+      ! VAL AND LEU FOR WHICH THERE IS AN EXCEPTION
+      ! VAL AND LEU AREN'T EVEN RECOGNISED AS HAVING PERMNEIGHBOURING ATOMS
+      ! (APART FROM THE OTHER CASE IN LEUCINE)
+      IF (NSETS(PERMG).NE.0) THEN!AUTOMATICALLY NPERMSIZE(PERMG)=2 I.E.PERMG->A1
          IF (A1.NE.AN1) THEN
            DO SW = 1,NSETS(PERMG)
 !              A3 = SWAP1(PERMG,SW)
 !              A4 = SWAP2(PERMG,SW)
-               A3 = SETS(AN1,SW) ! is AN1 the right argument under the new scheme? DJW
-               A4 = SETS(AN2,SW) ! is AN2 the right argument under the new scheme? DJW
-               IF (PTEST) PRINT*, "dragging swap in swap2atonce", A3, A4
+               A3 = SETS(AN1,SW) ! IS AN1 THE RIGHT ARGUMENT UNDER THE NEW SCHEME? DJW
+               A4 = SETS(AN2,SW) ! IS AN2 THE RIGHT ARGUMENT UNDER THE NEW SCHEME? DJW
+               IF (PTEST) PRINT*, "DRAGGING SWAP IN SWAP2ATONCE", A3, A4
                RFNEW(3*(A3-1)+1:3*A3) = RFTMP(3*(A4-1)+1:3*A4)
                RFNEW(3*(A4-1)+1:3*A4) = RFTMP(3*(A3-1)+1:3*A3)
             ENDDO
           ENDIF
-      ELSEIF (NSETS(PERMG2).NE.0) THEN !both is never the case
-          IF (C1.NE.MINSWAP(2,1)) THEN !C1 must correspond to 2nd pg then
+      ELSEIF (NSETS(PERMG2).NE.0) THEN !BOTH IS NEVER THE CASE
+          IF (C1.NE.MINSWAP(2,1)) THEN !C1 MUST CORRESPOND TO 2ND PG THEN
             DO SW = 1,NSETS(PERMG)
 !              A3 = SWAP1(PERMG,SW)
 !              A4 = SWAP2(PERMG,SW)
-               A3 = SETS(MINSWAP(2,1),SW) ! is MINSWAP(2,1) the right argument under the new scheme? DJW
-               A4 = SETS(MINSWAP(2,2),SW) ! is MINSWAP(2,2) the right argument under the new scheme? DJW
-               IF (PTEST) PRINT*, "dragging swap in swap2atonce", A3, A4
+               A3 = SETS(MINSWAP(2,1),SW) ! IS MINSWAP(2,1) THE RIGHT ARGUMENT UNDER THE NEW SCHEME? DJW
+               A4 = SETS(MINSWAP(2,2),SW) ! IS MINSWAP(2,2) THE RIGHT ARGUMENT UNDER THE NEW SCHEME? DJW
+               IF (PTEST) PRINT*, "DRAGGING SWAP IN SWAP2ATONCE", A3, A4
                RFNEW(3*(A3-1)+1:3*A3) = RFTMP(3*(A4-1)+1:3*A4)
                RFNEW(3*(A4-1)+1:3*A4) = RFTMP(3*(A3-1)+1:3*A3)
             ENDDO
@@ -1330,14 +1330,14 @@ CONTAINS
 !************************************************************************
       SUBROUTINE ARG_SWAP(STARTDIH, RF, PERMG, START,PTEST,SKIPPG,RFNEW,CURINTDIST)
       USE KEY, ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP
-!      USE MODAMBER9, ONLY : ih, ix, NRES, i02,m04
-      USE intcommons, only: NDIH, PERMNEIGHBOURS,PREVDIH
-      USE commons, only: NATOMS !msb50
-      USE porfuncs 
+!      USE MODAMBER9, ONLY : IH, IX, NRES, I02,M04
+      USE INTCOMMONS, ONLY: NDIH, PERMNEIGHBOURS,PREVDIH
+      USE COMMONS, ONLY: NATOMS !MSB50
+      USE PORFUNCS 
       IMPLICIT NONE
       DOUBLE PRECISION, INTENT(IN) :: STARTDIH(NDIH)
       DOUBLE PRECISION, INTENT(IN) :: RF(3*NATOMS)
-      INTEGER, INTENT(IN) ::PERMG, START !where atoms are in pg array
+      INTEGER, INTENT(IN) ::PERMG, START !WHERE ATOMS ARE IN PG ARRAY
       DOUBLE PRECISION, INTENT(INOUT) :: CURINTDIST
       LOGICAL, INTENT(IN) :: PTEST
       LOGICAL, INTENT(INOUT) :: SKIPPG(NPERMGROUP)
@@ -1354,7 +1354,7 @@ CONTAINS
       CURINTDIST2=CURINTDIST
       PERMG2=PERMNEIGHBOURS(PERMG,2); PG3=PERMNEIGHBOURS(PERMG,3)
       IF (NPERMSIZE(PERMG).NE.2.AND.NPERMSIZE(PERMG2).NE.2) THEN
-         PRINT*, "ARG_SWAP error - wrong permsize"
+         PRINT*, "ARG_SWAP ERROR - WRONG PERMSIZE"
          STOP
       ENDIF
       RF2(:)=RF(:)
@@ -1371,41 +1371,41 @@ CONTAINS
       A1=PERMGROUP(START); A2=PERMGROUP(START+1)
       B1=PERMGROUP(START2); B2=PERMGROUP(START2+1)
       C1=PERMGROUP(START3); C2=PERMGROUP(START3+1)
-      !swap nitrogens and H's along with them
+      !SWAP NITROGENS AND H'S ALONG WITH THEM
       CALL DISTANCEPAIRSWAP(STARTDIH,RF2,A1,A2,PERMG,INTDIST,PTEST,RFNEW)
       RF2(:)=RFNEW(:)
       CURINTDIST=INTDIST
-      IF (PTEST) PRINT*, "swap", a1,a2,intdist
-      !swap H's 
+      IF (PTEST) PRINT*, "SWAP", A1,A2,INTDIST
+      !SWAP H'S 
       CALL DISTANCEPAIRSWAP(STARTDIH,RF2,B1,B2,PERMG2,INTDIST,PTEST,RFNEW)
       IF (INTDIST.LT.CURINTDIST) THEN
          RF2(:)=RFNEW(:)
          CURINTDIST=INTDIST
       ENDIF
-      IF (PTEST) PRINT*, "swap",b1,b2,intdist
-      !swap H's
+      IF (PTEST) PRINT*, "SWAP",B1,B2,INTDIST
+      !SWAP H'S
       CALL DISTANCEPAIRSWAP(STARTDIH,RF2,C1,C2,PG3,INTDIST,PTEST,RFNEW)
       IF (INTDIST.LT.CURINTDIST) THEN
          RF2(:)=RFNEW(:)
          CURINTDIST=INTDIST
       ENDIF
-      IF (PTEST) PRINT*, "swap",c1,c2,intdist
+      IF (PTEST) PRINT*, "SWAP",C1,C2,INTDIST
 
-      !leave N's and swap H's
+      !LEAVE N'S AND SWAP H'S
       CALL DISTANCEPAIRSWAP(STARTDIH,RF3,B1,B2,PERMG2,INTDIST2,PTEST,RFNEW)
       IF (INTDIST2.LT.CURINTDIST2) THEN
          RF3(:)=RFNEW(:)
          CURINTDIST2=INTDIST2
       ENDIF
-      IF (PTEST) PRINT*, "swap",b1,b2,intdist2  
+      IF (PTEST) PRINT*, "SWAP",B1,B2,INTDIST2  
       CALL DISTANCEPAIRSWAP(STARTDIH,RF3,C1,C2,PG3,INTDIST2,PTEST,RFNEW)
       IF (INTDIST2.LT.CURINTDIST2) THEN
          RF3(:)=RFNEW(:)
          CURINTDIST2=INTDIST2
       ENDIF
-      IF (PTEST) PRINT*, "swap",c1,c2,intdist2
+      IF (PTEST) PRINT*, "SWAP",C1,C2,INTDIST2
       IF (CURINTDIST2.LT.CURINTDIST) THEN
-         RFNEW(:)=RF3(:) !which is still the same as the orig one if no changes were better
+         RFNEW(:)=RF3(:) !WHICH IS STILL THE SAME AS THE ORIG ONE IF NO CHANGES WERE BETTER
          CURINTDIST=CURINTDIST2
       ELSE
          RFNEW(:)=RF2(:)
@@ -1418,14 +1418,14 @@ CONTAINS
 ! *******************************************************************************
       SUBROUTINE LEU_SWAP(STARTDIH, RF, PERMG, START,PTEST,SKIPPG,RFNEW,CURINTDIST)
       USE KEY, ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP
-!      USE MODAMBER9, ONLY : ih, ix, NRES, i02,m04
-      USE intcommons, only: NDIH,PREVDIH
-      USE commons, only: NATOMS !msb50
-      USE porfuncs
+!      USE MODAMBER9, ONLY : IH, IX, NRES, I02,M04
+      USE INTCOMMONS, ONLY: NDIH,PREVDIH
+      USE COMMONS, ONLY: NATOMS !MSB50
+      USE PORFUNCS
       IMPLICIT NONE
       DOUBLE PRECISION, INTENT(IN) :: STARTDIH(NDIH)
       DOUBLE PRECISION, INTENT(IN) :: RF(3*NATOMS)
-      INTEGER, INTENT(IN) ::PERMG, START !where atoms are in pg array
+      INTEGER, INTENT(IN) ::PERMG, START !WHERE ATOMS ARE IN PG ARRAY
       DOUBLE PRECISION, INTENT(INOUT) :: CURINTDIST
       LOGICAL, INTENT(IN) :: PTEST
       LOGICAL, INTENT(INOUT) :: SKIPPG(NPERMGROUP)
@@ -1434,7 +1434,7 @@ CONTAINS
       DOUBLE PRECISION :: RF2(3*NATOMS), RF3(3*NATOMS)
       INTEGER:: PERMG2, PG3
       INTEGER:: II,START_AR(2),  START2, START3,ST
-      INTEGER:: A1, A2, C1, C2, C3,B1, B2, B3, JJ,I, pg2
+      INTEGER:: A1, A2, C1, C2, C3,B1, B2, B3, JJ,I, PG2
       DOUBLE PRECISION :: INTDIFF(NDIH)   
       
       INTEGER :: MINSWAP(2,3)
@@ -1448,7 +1448,7 @@ CONTAINS
       CURINTDIST2=CURINTDIST
 !      PERMG2=PERMNEIGHBOURS(PERMG,2); PG3=PERMNEIGHBOURS(PERMG,3)
       IF (NPERMSIZE(PERMG).NE.2.AND.NPERMSIZE(PERMG2).NE.2) THEN
-         PRINT*, "ARG_SWAP error - wrong permsize"
+         PRINT*, "ARG_SWAP ERROR - WRONG PERMSIZE"
          STOP
       ENDIF
       RFNEW(:)=RF(:)
@@ -1464,36 +1464,36 @@ CONTAINS
 !      ENDDO
       PERMG2=PERMG+1 
       PERM_AR(1)=PERMG2; PERM_AR(2)=PERMG+2
-      PRINT*, "permg", PERMG2, PERM_AR(2)
+      PRINT*, "PERMG", PERMG2, PERM_AR(2)
       START2=START+2; START3=START2+3
       START_AR(1)=START2;START_AR(2)=START3
       A1=PERMGROUP(START); A2=PERMGROUP(START+1)
-      PRINT*, "as", A1, A2
-      PRINT*, "curintidst", curintdist
+      PRINT*, "AS", A1, A2
+      PRINT*, "CURINTIDST", CURINTDIST
       MININTDIST=CURINTDIST
 
-      !find minimal hydrogen alignment first
+      !FIND MINIMAL HYDROGEN ALIGNMENT FIRST
 
       DO JJ =1,2
          PG2= PERM_AR(JJ)
          C1=PERMGROUP(START_AR(JJ))
          C2= PERMGROUP(START_AR(JJ)+1)
          C3=PERMGROUP(START_AR(JJ)+2)
-         IF (PTEST) PRINT*,pg2, "pg2", c1,c2, c3
+         IF (PTEST) PRINT*,PG2, "PG2", C1,C2, C3
          MINSWAP(JJ,1)=C1; MINSWAP(JJ,2)=C2; MINSWAP(JJ,3)=C3
          TMP_AR(C1,:)= RF2(3*(C1-1)+1:3*C1)
          TMP_AR(C2,:)= RF2(3*(C2-1)+1:3*C2)
          TMP_AR(C3,:)= RF2(3*(C3-1)+1:3*C3)
          ST=START_AR(JJ)
-!        PRINT*, "sec group3, start", st
+!        PRINT*, "SEC GROUP3, START", ST
          DO I=0,2
             RF2(3*(C1-1)+1:3*C1)=TMP_AR(C1,:)
             RF2(3*(C2-1)+1:3*C2)=TMP_AR(C2,:)
-            RF2(3*(C3-1)+1:3*C3)=TMP_AR(C3,:)!initialise back to beginning
-            !swap first two atoms
+            RF2(3*(C3-1)+1:3*C3)=TMP_AR(C3,:)!INITIALISE BACK TO BEGINNING
+            !SWAP FIRST TWO ATOMS
             B1=PERMGROUP(ST+I)
-            !find other two atoms
-            IF (I.EQ.0) THEN !i.e. B1 = A1
+            !FIND OTHER TWO ATOMS
+            IF (I.EQ.0) THEN !I.E. B1 = A1
                B2=PERMGROUP(ST+1); B3= PERMGROUP(ST+2)
             ELSEIF (I.EQ.1) THEN
                B2=C1; B3= PERMGROUP(ST+2)
@@ -1503,42 +1503,42 @@ CONTAINS
 
             RF2(3*(C1-1)+1:3*C1)=TMP_AR(B1,:)
             RF2(3*(B1-1)+1:3*B1)=TMP_AR(C1,:)
-!            PRINT*, "swap", B1, C1
+!            PRINT*, "SWAP", B1, C1
             PREVDIH(:) = STARTDIH(:)
             CALL GETDIHONLY(RF2)
             INTDIFF= PREVDIH(:) - STARTDIH(:)
             INTDIST= SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
-            IF (PTEST) PRINT*, B1, C1,"intdist",intdist
+            IF (PTEST) PRINT*, B1, C1,"INTDIST",INTDIST
 
             CALL DISTANCEPAIRSWAP(STARTDIH,RF2,B2,B3,PG2,INTDIST2,PTEST,RFNEW)
             RFNEW(:)=RF2(:)
-            !PRINT*, "swap",B1, B3,B2,"intdist2", intdist2
+            !PRINT*, "SWAP",B1, B3,B2,"INTDIST2", INTDIST2
 
             IF (INTDIST.LT.MININTDIST) THEN
-               MININTDIST=INTDIST; MINSWAP(JJ,1)=B1;MINSWAP(jj,2)=B2;MINSWAP(jj,3)=B3
+               MININTDIST=INTDIST; MINSWAP(JJ,1)=B1;MINSWAP(JJ,2)=B2;MINSWAP(JJ,3)=B3
                !PRINT*, MINSWAP(JJ,:), MININTDIST
             ENDIF
             IF (INTDIST2.LT.MININTDIST) THEN
-               MININTDIST=INTDIST2; MINSWAP(jj,1)=B1;MINSWAP(jj,2)=B3;MINSWAP(jj,3)=B2
+               MININTDIST=INTDIST2; MINSWAP(JJ,1)=B1;MINSWAP(JJ,2)=B3;MINSWAP(JJ,3)=B2
                !PRINT*, MINSWAP(JJ,:), MININTDIST
             ENDIF
          ENDDO
          RF2(:)=RF(:)
-         !PRINT*, "minswap",MINSWAP(JJ,:)
+         !PRINT*, "MINSWAP",MINSWAP(JJ,:)
          RF2(3*(C1-1)+1:3*C1)=RF(3*(MINSWAP(JJ,1)-1)+1:3*MINSWAP(JJ,1))
          RF2(3*(C2-1)+1:3*C2)=RF(3*(MINSWAP(JJ,2)-1)+1:3*MINSWAP(JJ,2))
          RF2(3*(C3-1)+1:3*C3)=RF(3*(MINSWAP(JJ,3)-1)+1:3*MINSWAP(JJ,3))
-         !PRINT*, "new curintdist", minintdist
+         !PRINT*, "NEW CURINTDIST", MININTDIST
          CURINTDIST = MININTDIST
       ENDDO
-      PRINT*, "Curintdist after 1st bit", curintdist     
+      PRINT*, "CURINTDIST AFTER 1ST BIT", CURINTDIST     
 
-      !swap nitrogens and H's along with them
+      !SWAP NITROGENS AND H'S ALONG WITH THEM
       CALL DISTANCEPAIRSWAP(STARTDIH,RF3,A1,A2,PERMG,INTDIST,PTEST,RFNEW)
       RF3(:)=RFNEW(:)
       CURINTDIST2=INTDIST
-      IF (PTEST) PRINT*, "swap", a1,a2,intdist
-      !swap H's
+      IF (PTEST) PRINT*, "SWAP", A1,A2,INTDIST
+      !SWAP H'S
       
       MININTDIST=CURINTDIST2
       DO JJ =1,2
@@ -1546,21 +1546,21 @@ CONTAINS
          C1=PERMGROUP(START_AR(JJ))
          C2=PERMGROUP(START_AR(JJ)+1)
          C3=PERMGROUP(START_AR(JJ)+2)
-         IF (PTEST) PRINT*,pg2, "pg2", c1,c2, c3
+         IF (PTEST) PRINT*,PG2, "PG2", C1,C2, C3
          MINSWAP(JJ,1)=C1; MINSWAP(JJ,2)=C2; MINSWAP(JJ,3)=C3
          TMP_AR(C1,:)= RF3(3*(C1-1)+1:3*C1)
          TMP_AR(C2,:)= RF3(3*(C2-1)+1:3*C2)
          TMP_AR(C3,:)= RF3(3*(C3-1)+1:3*C3)
          ST=START_AR(JJ)
-!        PRINT*, "sec group3, start", st
+!        PRINT*, "SEC GROUP3, START", ST
          DO I=0,2
             RF3(3*(C1-1)+1:3*C1)=TMP_AR(C1,:)
             RF3(3*(C2-1)+1:3*C2)=TMP_AR(C2,:)
-            RF3(3*(C3-1)+1:3*C3)=TMP_AR(C3,:)!initialise back to beginning
-            !swap first two atoms
+            RF3(3*(C3-1)+1:3*C3)=TMP_AR(C3,:)!INITIALISE BACK TO BEGINNING
+            !SWAP FIRST TWO ATOMS
             B1=PERMGROUP(ST+I)
-            !find other two atoms
-            IF (I.EQ.0) THEN !i.e. B1 = A1
+            !FIND OTHER TWO ATOMS
+            IF (I.EQ.0) THEN !I.E. B1 = A1
                B2=PERMGROUP(ST+1); B3= PERMGROUP(ST+2)
             ELSEIF (I.EQ.1) THEN
                B2=C1; B3= PERMGROUP(ST+2)
@@ -1570,26 +1570,26 @@ CONTAINS
 
             RF3(3*(C1-1)+1:3*C1)=TMP_AR(B1,:)
             RF3(3*(B1-1)+1:3*B1)=TMP_AR(C1,:)
-!            PRINT*, "swap", B1, C1
+!            PRINT*, "SWAP", B1, C1
             PREVDIH(:) = STARTDIH(:)
             CALL GETDIHONLY(RF3)
             INTDIFF= PREVDIH(:) - STARTDIH(:)
             INTDIST= SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
  
             CALL DISTANCEPAIRSWAP(STARTDIH,RF3,B2,B3,PERMG2,INTDIST2,PTEST,RFNEW)
-            IF (PTEST) PRINT*, "minintdist", MININTDIST
-            IF (PTEST) PRINT*, "swap",B1, B3,B2,"intdist2", intdist2
+            IF (PTEST) PRINT*, "MININTDIST", MININTDIST
+            IF (PTEST) PRINT*, "SWAP",B1, B3,B2,"INTDIST2", INTDIST2
 
             IF (INTDIST.LT.MININTDIST) THEN
                 MININTDIST=INTDIST; MINSWAP(JJ,1)=B1;MINSWAP(JJ,2)=B2;MINSWAP(JJ,3)=B3
-                IF (PTEST) PRINT*, "minswap",  MINSWAP(JJ,:), MININTDIST
+                IF (PTEST) PRINT*, "MINSWAP",  MINSWAP(JJ,:), MININTDIST
             ENDIF
             IF (INTDIST2.LT.MININTDIST) THEN
                 MININTDIST=INTDIST2; MINSWAP(JJ,1)=B1;MINSWAP(JJ,2)=B3;MINSWAP(JJ,3)=B2
-                IF (PTEST) PRINT*, "minswap", MINSWAP(JJ,:), MININTDIST
+                IF (PTEST) PRINT*, "MINSWAP", MINSWAP(JJ,:), MININTDIST
             ENDIF
          ENDDO
-         IF (PTEST) PRINT*, "minswap",MINSWAP(JJ,:) 
+         IF (PTEST) PRINT*, "MINSWAP",MINSWAP(JJ,:) 
          RF3(3*(C1-1)+1:3*C1)=RF(3*(MINSWAP(JJ,1)-1)+1:3*MINSWAP(JJ,1))
          RF3(3*(C2-1)+1:3*C2)=RF(3*(MINSWAP(JJ,2)-1)+1:3*MINSWAP(JJ,2))
          RF3(3*(C3-1)+1:3*C3)=RF(3*(MINSWAP(JJ,3)-1)+1:3*MINSWAP(JJ,3))
@@ -1598,7 +1598,7 @@ CONTAINS
 
 
       IF (CURINTDIST2.LT.CURINTDIST) THEN
-         RFNEW(:)=RF3(:) !which is still the same as the orig one if no changes were better
+         RFNEW(:)=RF3(:) !WHICH IS STILL THE SAME AS THE ORIG ONE IF NO CHANGES WERE BETTER
          CURINTDIST=CURINTDIST2
       ELSE
          RFNEW(:)=RF2(:)
@@ -1607,7 +1607,7 @@ CONTAINS
       SKIPPG(PERMG)=.TRUE.;SKIPPG(PERM_AR(1))=.TRUE.;SKIPPG(PERM_AR(2))=.TRUE.
 
       DO JJ=1,NATOMS
-         PRINT '(3f12.7)', RFNEW(3*(jj-1)+1:3*jj)
+         PRINT '(3F12.7)', RFNEW(3*(JJ-1)+1:3*JJ)
       ENDDO
 
       RETURN
@@ -1619,21 +1619,21 @@ CONTAINS
 
 SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIPPG,RFNEW,MININTDIST, SWAPARRAY, SWAPDIST)
       USE KEY, ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP,NSETS, SETS
-!         USE MODAMBER9, ONLY : ih, ix, NRES, i02,m04,m02
-      USE intcommons, only: NDIH, PERMNEIGHBOURS, PERMCHAIN,PREVDIH
-      USE commons, only: NATOMS !msb50
-      USE porfuncs
+!         USE MODAMBER9, ONLY : IH, IX, NRES, I02,M04,M02
+      USE INTCOMMONS, ONLY: NDIH, PERMNEIGHBOURS, PERMCHAIN,PREVDIH
+      USE COMMONS, ONLY: NATOMS !MSB50
+      USE PORFUNCS
       IMPLICIT NONE
       DOUBLE PRECISION, INTENT(IN) :: STARTDIH(NDIH)
       DOUBLE PRECISION, INTENT(IN) :: RF(3*NATOMS)
-      INTEGER, INTENT(IN) ::PERMG, START !where atoms are in pg array
+      INTEGER, INTENT(IN) ::PERMG, START !WHERE ATOMS ARE IN PG ARRAY
       INTEGER , INTENT(IN):: PERM_ARIN(3),START_ARIN(3)
       LOGICAL, INTENT(IN) :: PTEST
       LOGICAL, INTENT(INOUT) :: SKIPPG(NPERMGROUP)
        DOUBLE PRECISION, INTENT(OUT) :: RFNEW(3*NATOMS)
       DOUBLE PRECISION, INTENT(OUT) :: MININTDIST
-      INTEGER, INTENT(OUT) :: SWAPARRAY(24,8) !this thing stores possible atom combinations
-      DOUBLE PRECISION, INTENT(OUT) :: SWAPDIST(24) !and their distances
+      INTEGER, INTENT(OUT) :: SWAPARRAY(24,8) !THIS THING STORES POSSIBLE ATOM COMBINATIONS
+      DOUBLE PRECISION, INTENT(OUT) :: SWAPDIST(24) !AND THEIR DISTANCES
 
       INTEGER :: ISTAT
       INTEGER :: PG,PG1, PG2, PG3, START2, A1, A2,II, MINDISTLOC,JJ,SW,A3,A4
@@ -1644,23 +1644,23 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
 
       
       IF (SKIPPG(PERMG)) THEN
-         !PRINT*, "swap3atonce, cycle"
+         !PRINT*, "SWAP3ATONCE, CYCLE"
          RETURN
       ENDIF
       SWAPARRAY(:,:)=0; SWAPDIST1=100000.00
 
       IF (PERM_ARIN(1).NE.0) THEN
-         IF (PTEST) PRINT*, "PERM_AR coming in"
+         IF (PTEST) PRINT*, "PERM_AR COMING IN"
          PERM_AR(:)=PERM_ARIN(:)
          START_AR(:)= START_ARIN(:)
          PG1=PERM_AR(1); PG2=PERM_AR(2); PG3=PERM_AR(3)
          IF (PG2.GT.PG3) THEN
-            PRINT*, "swap3atonce ERROR: wrong incoming PERM_AR"
+            PRINT*, "SWAP3ATONCE ERROR: WRONG INCOMING PERM_AR"
             STOP
          ENDIF
       ELSE
          IF (NPERMSIZE(PERMCHAIN(PERMG,2))==3) THEN
-            PG1=PERMCHAIN(PERMG,4); PERM_AR(1)=PG1 !start backwards
+            PG1=PERMCHAIN(PERMG,4); PERM_AR(1)=PG1 !START BACKWARDS
             PG2=PERMCHAIN(PERMG,3); PERM_AR(2)=PG2
             PG3=PERMCHAIN(PERMG,2); PERM_AR(3)=PG3
          ELSE
@@ -1669,12 +1669,12 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
             PG3=PERMCHAIN(PERMG,4); PERM_AR(3)=PG3
          ENDIF
      
-     !   PRINT*, "pgs in swap3", PG1, PG2, PG3
+     !   PRINT*, "PGS IN SWAP3", PG1, PG2, PG3
          START_AR(:)=START
          DO JJ=1,3
             IF (PERM_AR(JJ)==PERMG) THEN
                START_AR(JJ)=START
-            ELSE !it has to be larger as otherwise SKIPPG(PERMG) would be true
+            ELSE !IT HAS TO BE LARGER AS OTHERWISE SKIPPG(PERMG) WOULD BE TRUE
                DO II=PERMG,NPERMGROUP
                   IF (II.EQ.PERM_AR(JJ)) EXIT
                   START_AR(JJ) = START_AR(JJ)+ NPERMSIZE(II)
@@ -1690,45 +1690,45 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
       ENDIF
       START2=START_AR(2)
       !PRINT*, "STARTAR", START_AR(:)
-      IF (PTEST) PRINT*, "swap3atonce PERMAR", PERM_AR(:)
+      IF (PTEST) PRINT*, "SWAP3ATONCE PERMAR", PERM_AR(:)
       !PRINT*, "STARTAR", START_AR(:)
-      !either PG2 or PG3 have to be in the middle, i.e. involve 2h only
+      !EITHER PG2 OR PG3 HAVE TO BE IN THE MIDDLE, I.E. INVOLVE 2H ONLY
       IF (NSETS(PG2).GT.0.AND.NSETS(PG3).GT.0) THEN
-         PRINT*, "swap3atonce died because of wrong nswap"
+         PRINT*, "SWAP3ATONCE DIED BECAUSE OF WRONG NSWAP"
          STOP
       ENDIF
  
-      !PRINT*, "npermsize(Pg1)", NPERMSIZE(PG1)
+      !PRINT*, "NPERMSIZE(PG1)", NPERMSIZE(PG1)
       IF (NPERMSIZE(PG1).NE.2) THEN
-         PRINT*, "swap3atonce died because of wrong npermsize"
+         PRINT*, "SWAP3ATONCE DIED BECAUSE OF WRONG NPERMSIZE"
          STOP
       ENDIF
        
       A1=PERMGROUP(START_AR(1))
       A2=PERMGROUP(START_AR(1)+1)
-      !PRINT*, "A1, a2", A1, A2
+      !PRINT*, "A1, A2", A1, A2
 
       SWAPARRAY(1:12,1)=A1; SWAPARRAY(1:12,2)=A2
       CALL SWAP2ATONCE(STARTDIH,RF,PG2,START2,PERM_AR(3),PTEST,SKIPPG,RFNEW,MINSWAP1,MINSWAP2,MININTDIST, SWAPARRAY1, SWAPDIST1)
       SWAPARRAY(1:12,3:8)=SWAPARRAY1(:,:)
       SWAPDIST(1:12)=SWAPDIST1(:)
    !   DO II=1,12
-   !      PRINT '(8i5,f12.7)', SWAPARRAY(II,:), SWAPDIST(II)
+   !      PRINT '(8I5,F12.7)', SWAPARRAY(II,:), SWAPDIST(II)
    !   ENDDO
 
       CALL DISTANCEPAIRSWAP(STARTDIH, RF, A1, A2, PG1, INTDIST, PTEST,RF2)
-      !PRINT*, "intdist", INTDIST
+      !PRINT*, "INTDIST", INTDIST
       SWAPARRAY(13:24,1)=A2; SWAPARRAY(13:,2)=A1
-   !   PRINT*, "swaparray test before second 2 at once"
+   !   PRINT*, "SWAPARRAY TEST BEFORE SECOND 2 AT ONCE"
 
-      SKIPPG(PG2)=.FALSE.; SKIPPG(PG3)=.FALSE.!otherwise it doesn't do it
+      SKIPPG(PG2)=.FALSE.; SKIPPG(PG3)=.FALSE.!OTHERWISE IT DOESN'T DO IT
       CALL  SWAP2ATONCE(STARTDIH,RF2,PG2,START2, PERM_AR(3),PTEST,SKIPPG,RFNEW,MINSWAP1,MINSWAP2,MININTDIST, SWAPARRAY1, SWAPDIST1)
       SWAPARRAY(13:,3:)=SWAPARRAY1(:,:)
       SWAPDIST(13:)=SWAPDIST1(:)
       IF (PTEST.AND.(PERM_ARIN(1).EQ.0)) THEN
-      PRINT*, "the array at the end"
+      PRINT*, "THE ARRAY AT THE END"
       DO II=1,24
-         PRINT '(8i5,f12.7)', SWAPARRAY(II,:), SWAPDIST(II)
+         PRINT '(8I5,F12.7)', SWAPARRAY(II,:), SWAPDIST(II)
       ENDDO
       ENDIF
 
@@ -1740,27 +1740,27 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
           MINDISTLOC=II
         ENDIF
       ENDDO
-      IF (PTEST) PRINT*, "minintdist", minintdist, "mindistloc", mindistloc
-      !PRINT*, "minswap", SWAPARRAY(MINDISTLOC,:)
+      IF (PTEST) PRINT*, "MININTDIST", MININTDIST, "MINDISTLOC", MINDISTLOC
+      !PRINT*, "MINSWAP", SWAPARRAY(MINDISTLOC,:)
 
       RFNEW(:)=RF(:)
 
-      !coordinate bookkeeping
+      !COORDINATE BOOKKEEPING
       DO II=1,8
         A1=SWAPARRAY(1,II)
         IF (A1.EQ.0) THEN 
-         !  PRINT*, II,"a1 is zero"
+         !  PRINT*, II,"A1 IS ZERO"
            CYCLE
         ENDIF
         A2=SWAPARRAY(MINDISTLOC,II)
-        IF (PTEST) PRINT*, "rewriting coords", A1, A2
+        IF (PTEST) PRINT*, "REWRITING COORDS", A1, A2
         RFNEW(3*(A1-1)+1:3*A1)=RF(3*(A2-1)+1:3*A2)
 
-        !rest for dragging groups - always when you're done with this group
-        IF (II.EQ.NPERMSIZE(PG1)) THEN !i.e. 2
+        !REST FOR DRAGGING GROUPS - ALWAYS WHEN YOU'RE DONE WITH THIS GROUP
+        IF (II.EQ.NPERMSIZE(PG1)) THEN !I.E. 2
            JJ=1; PG1=PERM_AR(JJ)
            IF (NSETS(PG1).EQ.0) CYCLE
-        !know npermsize(pg2)=2, nswap(pg2)=0
+        !KNOW NPERMSIZE(PG2)=2, NSWAP(PG2)=0
         ELSEIF (II.EQ.2+NPERMSIZE(PG2)) THEN
            JJ=2; PG2=PERM_AR(JJ)
            IF (NSETS(PG2).EQ.0) CYCLE
@@ -1776,9 +1776,9 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
                  DO SW = 1,NSETS(PERMG)
 !                   A3 = SWAP1(PERM_AR(JJ), SW)
 !                   A4 = SWAP2(PERM_AR(JJ),SW)
-                    A3 = SETS(A1,SW) ! check arguments DJW
-                    A4 = SETS(A2,SW) ! check arguments DJW
-                    IF (PTEST) PRINT*, "dragging swap in swap3tonce", A3, A4
+                    A3 = SETS(A1,SW) ! CHECK ARGUMENTS DJW
+                    A4 = SETS(A2,SW) ! CHECK ARGUMENTS DJW
+                    IF (PTEST) PRINT*, "DRAGGING SWAP IN SWAP3TONCE", A3, A4
                     RFNEW(3*(A3-1)+1:3*A3) = RF(3*(A4-1)+1:3*A4)
                     RFNEW(3*(A4-1)+1:3*A4) = RF(3*(A3-1)+1:3*A3)
                  ENDDO
@@ -1788,7 +1788,7 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
       ENDDO
      
 !      DO II=1, 3*NATOMS
-!        IF (RFNEW(II).NE.RF(II)) PRINT '(a13,i5,a7,2f12.7)', "have swapped", II, "coords", RFNEW(II), RF(II)
+!        IF (RFNEW(II).NE.RF(II)) PRINT '(A13,I5,A7,2F12.7)', "HAVE SWAPPED", II, "COORDS", RFNEW(II), RF(II)
 !      ENDDO
  
       SKIPPG(PG1)=.TRUE.;SKIPPG(PG2)=.TRUE.; SKIPPG(PG3)=.TRUE.
@@ -1798,13 +1798,13 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
 
 ! *********************************************************************************
     SUBROUTINE OLD_INTMINPERM(RS,RF,DISTANCE,RMAT,PTEST)
-    ! minimise Cartesian distance without permuting then
-    ! permute the permutable groups to minimize distance in single torsions
-    ! changes RF to resulting best alignment with RS
-    ! output distance is cartesian distance **squared**
+    ! MINIMISE CARTESIAN DISTANCE WITHOUT PERMUTING THEN
+    ! PERMUTE THE PERMUTABLE GROUPS TO MINIMIZE DISTANCE IN SINGLE TORSIONS
+    ! CHANGES RF TO RESULTING BEST ALIGNMENT WITH RS
+    ! OUTPUT DISTANCE IS CARTESIAN DISTANCE **SQUARED**
 
     USE KEY, ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP, NSETS, SETS, NABT, AMBERT
-    USE modamber9, only:nres, ih, m02,  ix, i02, m04
+    USE MODAMBER9, ONLY:NRES, IH, M02,  IX, I02, M04
 
     IMPLICIT NONE
     
@@ -1817,33 +1817,33 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
     DOUBLE PRECISION :: RSINT(NINTC), RFINT(NINTC), INTDIFF(NDIH), INTDIFF2(NDIH)
     DOUBLE PRECISION :: INTDIST, CURINTDIST, DISTANCE2
     DOUBLE PRECISION :: TMP(3), TMP2(3), TMP3(3), STARTDIH(NDIH), RFTMP(3*NATOMS)
-    INTEGER :: prol(NRES), glyc(NRES), nprol, nglyc,II
-    LOGICAL :: prolswap, glyswap
+    INTEGER :: PROL(NRES), GLYC(NRES), NPROL, NGLYC,II
+    LOGICAL :: PROLSWAP, GLYSWAP
 
-    ! alignment stuff
+    ! ALIGNMENT STUFF
     DOUBLE PRECISION :: DISTF
     CHARACTER(LEN=5) :: ZSYMSAVE
     COMMON /SYS/ ZSYMSAVE
     
 
-      prol(:) = 0;nprol=0
-      glyc(:) = 0;nglyc=0
-      glyswap = .FALSE.;prolswap=.FALSE.
-      IF (AMBERT.OR.NABT) THEN !msb50 - for amber9.ff03 and glycine this doesn't work
-          DO III = 1,NRES!as swapping the hydrogens makes no difference in natural internals in this case
-            IF (ih(m02+III-1).EQ.'GLY'.OR.ih(m02+III-1).EQ.'NGLY'.OR.ih(m02+III-1).EQ.'CGLY') THEN
-               nglyc = nglyc+1
-               glyc(nglyc) = III
+      PROL(:) = 0;NPROL=0
+      GLYC(:) = 0;NGLYC=0
+      GLYSWAP = .FALSE.;PROLSWAP=.FALSE.
+      IF (AMBERT.OR.NABT) THEN !MSB50 - FOR AMBER9.FF03 AND GLYCINE THIS DOESN'T WORK
+          DO III = 1,NRES!AS SWAPPING THE HYDROGENS MAKES NO DIFFERENCE IN NATURAL INTERNALS IN THIS CASE
+            IF (IH(M02+III-1).EQ.'GLY'.OR.IH(M02+III-1).EQ.'NGLY'.OR.IH(M02+III-1).EQ.'CGLY') THEN
+               NGLYC = NGLYC+1
+               GLYC(NGLYC) = III
             ENDIF
-            IF (ih(m02+III-1).EQ.'PRO'.OR.ih(m02+III-1).EQ.'NPRO'.OR.ih(m02+III-1).EQ.'CPRO') THEN
-               nprol = nprol+1
-               prol(nprol) =III
+            IF (IH(M02+III-1).EQ.'PRO'.OR.IH(M02+III-1).EQ.'NPRO'.OR.IH(M02+III-1).EQ.'CPRO') THEN
+               NPROL = NPROL+1
+               PROL(NPROL) =III
             ENDIF
           ENDDO
       ENDIF
 
-    ! align without permuting
-    !msb50 - do at the end in minpermdist now
+    ! ALIGN WITHOUT PERMUTING
+    !MSB50 - DO AT THE END IN MINPERMDIST NOW
    !CALL NEWMINDIST(RS(:),RF(:),NATOMS,DISTANCE,.FALSE.,.FALSE.,ZSYM(1),.FALSE.,.FALSE.,.FALSE.,RMAT)
 
 
@@ -1859,7 +1859,7 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
 
     INTDIFF(:) = PREVDIH(:)-STARTDIH(:)
     CURINTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
-    IF (PTEST) print*, 'Starting intdistance: ', CURINTDIST
+    IF (PTEST) PRINT*, 'STARTING INTDISTANCE: ', CURINTDIST
 
     START = 1
     DO PG = 1,NPERMGROUP
@@ -1867,25 +1867,25 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
        IF (NPERMSIZE(PG).EQ.2) THEN
           RFTMP(:) = RF(:)
 
-          ! A1 and A2 are the atom numbers to permute
+          ! A1 AND A2 ARE THE ATOM NUMBERS TO PERMUTE
           A1 = PERMGROUP(START)
           A2 = PERMGROUP(START+1)
 
-          IF (PTEST) PRINT '(A,2I6)','old_intminperm> Swapping atoms: ', A1, A2
+          IF (PTEST) PRINT '(A,2I6)','OLD_INTMINPERM> SWAPPING ATOMS: ', A1, A2
 
-           !could put in ngly bit too, but unnecessary for CHARMM 19
-           !and not set up for CHARMM 22
-            IF (nprol.NE.0) THEN
-              prolswap=.FALSE.
-              DO III=1, nprol
-                 IF (ix(i02+prol(III)-1).LT.A1 .AND. ix(i02+prol(III)).GT.A1) THEN
-                    IF (PTEST) PRINT*, "pro", prol(III)
+           !COULD PUT IN NGLY BIT TOO, BUT UNNECESSARY FOR CHARMM 19
+           !AND NOT SET UP FOR CHARMM 22
+            IF (NPROL.NE.0) THEN
+              PROLSWAP=.FALSE.
+              DO III=1, NPROL
+                 IF (IX(I02+PROL(III)-1).LT.A1 .AND. IX(I02+PROL(III)).GT.A1) THEN
+                    IF (PTEST) PRINT*, "PRO", PROL(III)
                     CALL PROL_PERMUTE(A1,A2,PTEST, RS, RF, DISTANCE)
-                    prolswap =.TRUE.
+                    PROLSWAP =.TRUE.
                     EXIT
                  ENDIF
               ENDDO
-              IF (prolswap) THEN
+              IF (PROLSWAP) THEN
                  START= START+NPERMSIZE(PG)
                  CYCLE
               ENDIF
@@ -1896,14 +1896,14 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
           RF(3*(A1-1)+1:3*A1) = RFTMP(3*(A2-1)+1:3*A2)
           RF(3*(A2-1)+1:3*A2) = RFTMP(3*(A1-1)+1:3*A1)
 
-          !move any other groups that must be dragged along
+          !MOVE ANY OTHER GROUPS THAT MUST BE DRAGGED ALONG
           DO SW = 1,NSETS(PG)
 !            A1 = SWAP1(PG,SW)
 !            A2 = SWAP2(PG,SW)
              A1 = SETS(PERMGROUP(START),SW)
              A2 = SETS(PERMGROUP(START+1),SW)
 
-             IF (PTEST) print*, 'Dragging swap: ', A1, A2
+             IF (PTEST) PRINT*, 'DRAGGING SWAP: ', A1, A2
 
              RF(3*(A1-1)+1:3*A1) = RFTMP(3*(A2-1)+1:3*A2)
              RF(3*(A2-1)+1:3*A2) = RFTMP(3*(A1-1)+1:3*A1)
@@ -1915,18 +1915,18 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
           INTDIFF(:) = PREVDIH(:) - STARTDIH(:)
           INTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
 
-          IF (PTEST) PRINT '(A,G20.10)','old_intminperm> torsion distance: ', INTDIST
+          IF (PTEST) PRINT '(A,G20.10)','OLD_INTMINPERM> TORSION DISTANCE: ', INTDIST
 
           IF (INTDIST.GT.CURINTDIST) THEN
-             ! undo permutation
+             ! UNDO PERMUTATION
              RF(:) = RFTMP(:)
           ELSE
-             IF (PTEST) print*, 'keep permutation'
+             IF (PTEST) PRINT*, 'KEEP PERMUTATION'
              CURINTDIST = INTDIST
           ENDIF
        ELSE IF (NPERMSIZE(PG).EQ.3) THEN
-          ! this is an inefficient way of listing permutations
-          ! and should be fixed and generalized at some point
+          ! THIS IS AN INEFFICIENT WAY OF LISTING PERMUTATIONS
+          ! AND SHOULD BE FIXED AND GENERALIZED AT SOME POINT
           A1 = PERMGROUP(START)
           A2 = PERMGROUP(START+1)
           A3 = PERMGROUP(START+2)
@@ -1946,7 +1946,7 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
                    B2 = PERMGROUP(START+J)
                    B3 = PERMGROUP(START+K)
 
-                   IF (PTEST) PRINT '(A,3I5)','old_intminperm> permuting: ', B1, B2, B3
+                   IF (PTEST) PRINT '(A,3I5)','OLD_INTMINPERM> PERMUTING: ', B1, B2, B3
 
                    RF(3*(B1-1)+1:3*B1) = TMP(:)
                    RF(3*(B2-1)+1:3*B2) = TMP2(:)
@@ -1959,54 +1959,54 @@ SUBROUTINE SWAP3ATONCE(STARTDIH,RF,PERMG,START, PERM_ARIN, START_ARIN,PTEST,SKIP
                    INTDIFF(:) = PREVDIH(:) - STARTDIH(:)
                    INTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
 
-                   IF (PTEST) PRINT '(A,G20.10)','old_intminperm> dihedral distance: ', INTDIST
+                   IF (PTEST) PRINT '(A,G20.10)','OLD_INTMINPERM> DIHEDRAL DISTANCE: ', INTDIST
 
                    IF (INTDIST.LT.CURINTDIST) THEN
                       RFTMP(:) = RF(:)
                       CURINTDIST = INTDIST
-                      IF (PTEST) print*, 'keep permutation'
+                      IF (PTEST) PRINT*, 'KEEP PERMUTATION'
                    ENDIF
                 ENDDO
              ENDDO
           ENDDO
           RF(:) = RFTMP(:)
        ELSE
-          print*, 'Error! INTMINPERM is only set up for permutation groups &
-               &          of size 2 & 3 for now', PG, NPERMSIZE(PG)
+          PRINT*, 'ERROR! INTMINPERM IS ONLY SET UP FOR PERMUTATION GROUPS &
+               &          OF SIZE 2 & 3 FOR NOW', PG, NPERMSIZE(PG)
           STOP
        ENDIF
 
        START = START + NPERMSIZE(PG)
     END DO
 
-    IF (PTEST) print '(A,G20.10)','old_intminperm> Final int distance: ', CURINTDIST
+    IF (PTEST) PRINT '(A,G20.10)','OLD_INTMINPERM> FINAL INT DISTANCE: ', CURINTDIST
 
-!msb50 consider calling my orient and check then
+!MSB50 CONSIDER CALLING MY ORIENT AND CHECK THEN
 
     DISTANCE = DOT_PRODUCT(RF-RS,RF-RS)
 
 !    CALL CART2INT(RF,RFINT)
-!    PRINT*, "finish rfint"
+!    PRINT*, "FINISH RFINT"
 !    PRINT*, RFINT(:)
     
-    IF (PTEST) PRINT '(A,G20.10)',"old_intminperm> dist in old_intminperm", distance
+    IF (PTEST) PRINT '(A,G20.10)',"OLD_INTMINPERM> DIST IN OLD_INTMINPERM", DISTANCE
     RETURN
   END SUBROUTINE OLD_INTMINPERM
 !**********************************************************************************
 SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, SWAPARRAY, SWAPDIST)
       USE KEY, ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP,NSETS, SETS
-!         USE MODAMBER9, ONLY : ih, ix, NRES, i02,m04,m02
-      USE intcommons, only: NDIH, PERMNEIGHBOURS, PERMCHAIN,PREVDIH
-      USE commons, only: NATOMS !msb50
-      USE porfuncs
+!         USE MODAMBER9, ONLY : IH, IX, NRES, I02,M04,M02
+      USE INTCOMMONS, ONLY: NDIH, PERMNEIGHBOURS, PERMCHAIN,PREVDIH
+      USE COMMONS, ONLY: NATOMS !MSB50
+      USE PORFUNCS
       IMPLICIT NONE
       DOUBLE PRECISION, INTENT(IN) :: STARTDIH(NDIH)
       DOUBLE PRECISION, INTENT(IN) :: RF(3*NATOMS)
-      INTEGER, INTENT(IN) ::PERMG, START !where atoms are in pg array
+      INTEGER, INTENT(IN) ::PERMG, START !WHERE ATOMS ARE IN PG ARRAY
       LOGICAL, INTENT(IN) :: PTEST
       LOGICAL, INTENT(INOUT) :: SKIPPG(NPERMGROUP)
-      INTEGER, INTENT(OUT) :: SWAPARRAY(48,10) !this thing stores possible atom combinations
-      DOUBLE PRECISION, INTENT(OUT) :: SWAPDIST(48) !and their distances
+      INTEGER, INTENT(OUT) :: SWAPARRAY(48,10) !THIS THING STORES POSSIBLE ATOM COMBINATIONS
+      DOUBLE PRECISION, INTENT(OUT) :: SWAPDIST(48) !AND THEIR DISTANCES
       INTEGER, INTENT(IN) :: PERM_AR(4),START_AR(4)
 
       INTEGER :: ISTAT
@@ -2017,14 +2017,14 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
       DOUBLE PRECISION :: SWAPDIST1(24), MININTDIST
 
       IF (SKIPPG(PERMG)) THEN
-         IF (PTEST) PRINT*, "swap4atonce, cycle"
+         IF (PTEST) PRINT*, "SWAP4ATONCE, CYCLE"
          RETURN
       ENDIF
       SWAPARRAY(:,:)=0; SWAPDIST1=100000.00
 
       PG1=PERM_AR(1);PG2=PERM_AR(2);PG3=PERM_AR(3);PG4=PERM_AR(4)
       IF (NPERMSIZE(PG1)==3) THEN
-         PRINT*, "wrong permsize of pg in swap4atonce"
+         PRINT*, "WRONG PERMSIZE OF PG IN SWAP4ATONCE"
          STOP
       ENDIF
 
@@ -2033,13 +2033,13 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
       !PRINT*, "4,PERMAR", PERM_AR(:)
 
       IF (NPERMSIZE(PG1).NE.2) THEN
-         PRINT*, "swap4atonce died because of wrong npermsize"
+         PRINT*, "SWAP4ATONCE DIED BECAUSE OF WRONG NPERMSIZE"
          STOP
       ENDIF
 
       A1=PERMGROUP(START_AR(1))
       A2=PERMGROUP(START_AR(1)+1)
-      IF (PTEST) PRINT*, "A1, a2", A1, A2
+      IF (PTEST) PRINT*, "A1, A2", A1, A2
 
       SWAPARRAY(1:24,1)=A1; SWAPARRAY(1:24,2)=A2
       CALL SWAP3ATONCE(STARTDIH,RF,PG2,START2,PERM_AR(2:), START_AR(2:),PTEST,SKIPPG,RFNEW,MININTDIST, SWAPARRAY1, SWAPDIST1)
@@ -2053,9 +2053,9 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
       CALL  SWAP3ATONCE(STARTDIH,RF2,PG2,START2,PERM_AR(2:), START_AR(2:),PTEST,SKIPPG,RFNEW,MININTDIST, SWAPARRAY1, SWAPDIST1)
       SWAPARRAY(25:,3:)=SWAPARRAY1(:,:)
       SWAPDIST(25:)=SWAPDIST1(:)
-      !PRINT*, "swap4atonce,the array at the end"
+      !PRINT*, "SWAP4ATONCE,THE ARRAY AT THE END"
       !DO II=1,48
-      !   PRINT '(10i5,f12.7)', SWAPARRAY(II,:), SWAPDIST(II)
+      !   PRINT '(10I5,F12.7)', SWAPARRAY(II,:), SWAPDIST(II)
       !ENDDO
 
       RETURN
@@ -2063,35 +2063,35 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
 
 ! ********************************************************************************
       SUBROUTINE SWAP5ATONCE(STARTDIH,RF,PERMG,START,PTEST,SKIPPG,RFNEW,MININTDIST, SWAPARRAY, SWAPDIST)
-! this is basically just for lysine - swap4atonce is never actually used as it doesn't exist
+! THIS IS BASICALLY JUST FOR LYSINE - SWAP4ATONCE IS NEVER ACTUALLY USED AS IT DOESN'T EXIST
       USE KEY, ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP,NSETS, SETS
-!         USE MODAMBER9, ONLY : ih, ix, NRES, i02,m04,m02
-      USE intcommons, only: NDIH, PERMNEIGHBOURS, PERMCHAIN,PREVDIH
-      USE commons, only: NATOMS !msb50
-      USE porfuncs
+!         USE MODAMBER9, ONLY : IH, IX, NRES, I02,M04,M02
+      USE INTCOMMONS, ONLY: NDIH, PERMNEIGHBOURS, PERMCHAIN,PREVDIH
+      USE COMMONS, ONLY: NATOMS !MSB50
+      USE PORFUNCS
       IMPLICIT NONE
       DOUBLE PRECISION, INTENT(IN) :: STARTDIH(NDIH)
       DOUBLE PRECISION, INTENT(IN) :: RF(3*NATOMS)
-      INTEGER, INTENT(IN) ::PERMG, START !where atoms are in pg array
+      INTEGER, INTENT(IN) ::PERMG, START !WHERE ATOMS ARE IN PG ARRAY
       LOGICAL, INTENT(IN) :: PTEST
       LOGICAL, INTENT(INOUT) :: SKIPPG(NPERMGROUP)
       DOUBLE PRECISION, INTENT(OUT) :: RFNEW(3*NATOMS)
       DOUBLE PRECISION, INTENT(OUT) :: MININTDIST
-      INTEGER, INTENT(OUT) :: SWAPARRAY(96,12) !this thing stores possible atom combinations
-      DOUBLE PRECISION, INTENT(OUT) :: SWAPDIST(96) !and their distances
+      INTEGER, INTENT(OUT) :: SWAPARRAY(96,12) !THIS THING STORES POSSIBLE ATOM COMBINATIONS
+      DOUBLE PRECISION, INTENT(OUT) :: SWAPDIST(96) !AND THEIR DISTANCES
 
       INTEGER :: ISTAT
       INTEGER :: PG4,PG1, PG2,PG3,PG5,START2, A1, A2,II, MINDISTLOC,JJ,SW,A3,A4,KK
       INTEGER :: START_AR(5), PERM_AR(5), SORT_PG(5), SORT_IND(5)
       INTEGER :: PERMCHSTARTS(2:6), START_SORT_AR(5)
       INTEGER :: THREEPG
-      LOGICAL :: already_in
+      LOGICAL :: ALREADY_IN
       DOUBLE PRECISION :: CURINTDIST, DIST, RF2(3*NATOMS), INTDIST
       INTEGER :: SWAPARRAY1(48,10)
       DOUBLE PRECISION :: SWAPDIST1(48)
 
       IF (SKIPPG(PERMG)) THEN
-         IF (PTEST) PRINT*, "swap4atonce, cycle"
+         IF (PTEST) PRINT*, "SWAP4ATONCE, CYCLE"
          RETURN
       ENDIF
       SWAPARRAY(:,:)=0; SWAPDIST1=100000.00
@@ -2102,27 +2102,27 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
         IF (PERMCHAIN(PERMG,JJ).LT. SORT_PG(1)) THEN
            SORT_PG(1)=PERMCHAIN(PERMG,JJ)
            SORT_IND(JJ-1)=1
-!           SORT_PG(2)=PERMCHAIN(PERMG, MOD(JJ-1,5)+2)!next one in the row
-!           PRINT*, JJ, MOD(JJ-1,5)+2, "sug pg", SORT_PG(2)
+!           SORT_PG(2)=PERMCHAIN(PERMG, MOD(JJ-1,5)+2)!NEXT ONE IN THE ROW
+!           PRINT*, JJ, MOD(JJ-1,5)+2, "SUG PG", SORT_PG(2)
         ENDIF
       ENDDO
       DO KK=2,5
         DO JJ=2,6
-           already_in=.FALSE.
+           ALREADY_IN=.FALSE.
            DO II=1,KK-1
               IF (PERMCHAIN(PERMG,JJ).EQ.SORT_PG(II)) THEN
-                 already_in=.TRUE. !i.e. the ones that are smaller already
+                 ALREADY_IN=.TRUE. !I.E. THE ONES THAT ARE SMALLER ALREADY
               ENDIF
            ENDDO
-           IF (already_in) CYCLE
+           IF (ALREADY_IN) CYCLE
            IF (PERMCHAIN(PERMG,JJ).LT.SORT_PG(KK)) THEN
               SORT_PG(KK)=PERMCHAIN(PERMG,JJ)
-              SORT_IND(JJ-1)=KK!where in sort_pg do i find PERMCHAIN(PERMG,JJ)
+              SORT_IND(JJ-1)=KK!WHERE IN SORT_PG DO I FIND PERMCHAIN(PERMG,JJ)
            ENDIF
          ENDDO
       ENDDO
-      !PRINT*, "sort pg", SORT_PG(:), SORT_IND(:)
-      !PRINT*, "sort ind", SORT_IND(:)
+      !PRINT*, "SORT PG", SORT_PG(:), SORT_IND(:)
+      !PRINT*, "SORT IND", SORT_IND(:)
 
       START_SORT_AR(:)=START
       DO JJ=1,5
@@ -2140,12 +2140,12 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
            ENDDO
         ENDIF
       ENDDO
-      IF (PTEST) PRINT*, "swap5@once: SORT_START", START_SORT_AR(:)
-      !in order of permgroups in permchain - starts
+      IF (PTEST) PRINT*, "SWAP5@ONCE: SORT_START", START_SORT_AR(:)
+      !IN ORDER OF PERMGROUPS IN PERMCHAIN - STARTS
       DO JJ=2,6
         PERMCHSTARTS(JJ)=START_SORT_AR(SORT_IND(JJ-1))
       ENDDO
-      IF (PTEST) PRINT*, "swap5@once: PERMCHSTARTS", PERMCHSTARTS(2:6)
+      IF (PTEST) PRINT*, "SWAP5@ONCE: PERMCHSTARTS", PERMCHSTARTS(2:6)
 
       THREEPG=0
       DO II=2,6
@@ -2154,13 +2154,13 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
         ENDIF
       ENDDO
       IF (THREEPG==0) THEN
-         PRINT*, "error in swap5atonce, no three permgroups, no lysine"
-         !setup should work for this too, just need to figure how to order the permgroups
+         PRINT*, "ERROR IN SWAP5ATONCE, NO THREE PERMGROUPS, NO LYSINE"
+         !SETUP SHOULD WORK FOR THIS TOO, JUST NEED TO FIGURE HOW TO ORDER THE PERMGROUPS
       ENDIF
 
-      !swap2atonce has to be called with the smallest of two neighbouring pg's
-      !pgs have to be in order according to their lineup, only
-      !threepg has to wait for swapatonce (i.e. be on place 4 or 5)
+      !SWAP2ATONCE HAS TO BE CALLED WITH THE SMALLEST OF TWO NEIGHBOURING PG'S
+      !PGS HAVE TO BE IN ORDER ACCORDING TO THEIR LINEUP, ONLY
+      !THREEPG HAS TO WAIT FOR SWAPATONCE (I.E. BE ON PLACE 4 OR 5)
       IF (THREEPG==SORT_PG(5)) THEN
          PG5=THREEPG; PERM_AR(5)=THREEPG
          IF (THREEPG.EQ.PERMCHAIN(PERMG,6)) THEN
@@ -2180,12 +2180,12 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
               START_AR(JJ-1)=PERMCHSTARTS(8-JJ)
             ENDDO
          ELSE
-            PRINT*, "ERROR in swap5atonce, npermsize 3 and not at end of permchain!"
+            PRINT*, "ERROR IN SWAP5ATONCE, NPERMSIZE 3 AND NOT AT END OF PERMCHAIN!"
            STOP
          ENDIF
       ELSE
          IF (THREEPG.EQ.PERMCHAIN(PERMG,6)) THEN
-         !swap2atonce has to be called with the smallest of two neighbouring pg's
+         !SWAP2ATONCE HAS TO BE CALLED WITH THE SMALLEST OF TWO NEIGHBOURING PG'S
             IF (PERMCHAIN(PERMG,5).LT.THREEPG) THEN
                PG5=THREEPG; PERM_AR(5)=THREEPG
                PG4=PERMCHAIN(PERMG,5); PERM_AR(4)=PG4
@@ -2198,7 +2198,7 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
                START_AR(5)=PERMCHSTARTS(5)
             ENDIF
             PG1=PERMCHAIN(PERMG,2); PERM_AR(1)=PG1
-            !sort according to neighbours, as START_AR will be given to the subsequent swapXatonce
+            !SORT ACCORDING TO NEIGHBOURS, AS START_AR WILL BE GIVEN TO THE SUBSEQUENT SWAPXATONCE
             PG2=PERMCHAIN(PERMG,3);PERM_AR(2)=PG2
             PG3=PERMCHAIN(PERMG,4); PERM_AR(3)=PG3
             DO JJ=2,4
@@ -2223,7 +2223,7 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
                START_AR(JJ-1)=PERMCHSTARTS(8-JJ)
             ENDDO
          ELSE
-           PRINT*, "ERROR in swap5atonce, npermsize 3 and not at end of permchain!"
+           PRINT*, "ERROR IN SWAP5ATONCE, NPERMSIZE 3 AND NOT AT END OF PERMCHAIN!"
            STOP
          ENDIF
       ENDIF
@@ -2234,18 +2234,18 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
 
       A1=PERMGROUP(START_AR(1))
       A2=PERMGROUP(START_AR(1)+1)
-      IF (PTEST) PRINT*, "swap A1, a2", A1, A2
+      IF (PTEST) PRINT*, "SWAP A1, A2", A1, A2
 
       SWAPARRAY(1:48,1)=A1; SWAPARRAY(1:48,2)=A2
-      !always call with smallest possible pg apart from pg1  as this is expected and
-      !the subroutine will reorder itself
+      !ALWAYS CALL WITH SMALLEST POSSIBLE PG APART FROM PG1  AS THIS IS EXPECTED AND
+      !THE SUBROUTINE WILL REORDER ITSELF
       CALL SWAP4ATONCE(STARTDIH,RF,PG2,START2,PERM_AR(2:), START_AR(2:),PTEST,SKIPPG, SWAPARRAY1, SWAPDIST1)
       SWAPARRAY(1:48,3:12)=SWAPARRAY1(:,:)
       SWAPDIST(1:48)=SWAPDIST1(:)
 
-      !now swap the two PG1 H's, and go on
+      !NOW SWAP THE TWO PG1 H'S, AND GO ON
       CALL DISTANCEPAIRSWAP(STARTDIH, RF, A1, A2, PG1, INTDIST, PTEST,RF2)
-      !PRINT*, "intdist", INTDIST
+      !PRINT*, "INTDIST", INTDIST
       SWAPARRAY(49:96,1)=A2; SWAPARRAY(49:96,2)=A1
 
       SKIPPG(PG2)=.FALSE.; SKIPPG(PG3)=.FALSE.; SKIPPG(PG3)=.FALSE.;SKIPPG(PG4)=.FALSE.
@@ -2253,9 +2253,9 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
       SWAPARRAY(49:96,3:12)=SWAPARRAY1(:,:)
       SWAPDIST(49:96)=SWAPDIST1(:)
       IF (PTEST) THEN
-        PRINT*, "swap5atonce, final array"
+        PRINT*, "SWAP5ATONCE, FINAL ARRAY"
         DO II=1,96
-           PRINT '(12i5,f12.7)', SWAPARRAY(II,:), SWAPDIST(II)
+           PRINT '(12I5,F12.7)', SWAPARRAY(II,:), SWAPDIST(II)
         ENDDO
       ENDIF
 
@@ -2266,27 +2266,27 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
           MINDISTLOC=II; MININTDIST=SWAPDIST(II)
         ENDIF
       ENDDO
-      IF (PTEST) PRINT*, "minintdist", minintdist
-      IF (PTEST) PRINT*, "minswap", SWAPARRAY(MINDISTLOC,:)
+      IF (PTEST) PRINT*, "MININTDIST", MININTDIST
+      IF (PTEST) PRINT*, "MINSWAP", SWAPARRAY(MINDISTLOC,:)
 
       SKIPPG(PG2)=.TRUE.;SKIPPG(PG3)=.TRUE.;SKIPPG(PG3)=.TRUE.;SKIPPG(PG4)=.TRUE.
-      !now the coordinates
+      !NOW THE COORDINATES
       RFNEW(:)=RF(:)
       DO II=1,12
         A1=SWAPARRAY(1,II)
         IF (A1.EQ.0) THEN
-         !  PRINT*, II,"a1 is zero"
+         !  PRINT*, II,"A1 IS ZERO"
            CYCLE
         ENDIF
         A2=SWAPARRAY(MINDISTLOC,II)
-        !PRINT*, "rewriting coords", A1, A2
+        !PRINT*, "REWRITING COORDS", A1, A2
         RFNEW(3*(A1-1)+1:3*A1)=RF(3*(A2-1)+1:3*A2)
 
-        !rest for dragging groups - always when you're done with this group
-        IF (II.EQ.NPERMSIZE(PG1)) THEN !i.e. 2
+        !REST FOR DRAGGING GROUPS - ALWAYS WHEN YOU'RE DONE WITH THIS GROUP
+        IF (II.EQ.NPERMSIZE(PG1)) THEN !I.E. 2
            JJ=1; PG1=PERM_AR(JJ)
            IF (NSETS(PG1).EQ.0) CYCLE
-        !know npermsize(pg2)=2, nswap(pg2)=0
+        !KNOW NPERMSIZE(PG2)=2, NSWAP(PG2)=0
         ELSEIF (II.EQ.2+NPERMSIZE(PG2)) THEN
            JJ=2; PG2=PERM_AR(JJ)
            IF (NSETS(PG2).EQ.0) CYCLE
@@ -2310,7 +2310,7 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
 !                   A4 = SWAP2(PERM_AR(JJ),SW)
                     A3 = SETS(A1,SW) ! ??? DJW
                     A4 = SETS(A2,SW) ! ??? DJW
-                    IF (PTEST) PRINT*, "dragging swap in swap3tonce", A3, A4
+                    IF (PTEST) PRINT*, "DRAGGING SWAP IN SWAP3TONCE", A3, A4
                     RFNEW(3*(A3-1)+1:3*A3) = RF(3*(A4-1)+1:3*A4)
                     RFNEW(3*(A4-1)+1:3*A4) = RF(3*(A3-1)+1:3*A3)
                  ENDDO
@@ -2324,10 +2324,10 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
 
       
       SUBROUTINE INTMINPERM_CHIRAL(RS,RF,DISTANCE,RMAT,PTEST)
-      !see intcoords.f90
-      use key, only:  NPERMGROUP, NPERMSIZE, PERMGROUP, NSETS, SETS, AMBERT, NABT
-      use modamber9, only: PROCHIRALH,ih, ix, NRES, i02,m04,m02
-      use commons, only: natoms
+      !SEE INTCOORDS.F90
+      USE KEY, ONLY:  NPERMGROUP, NPERMSIZE, PERMGROUP, NSETS, SETS, AMBERT, NABT
+      USE MODAMBER9, ONLY: PROCHIRALH,IH, IX, NRES, I02,M04,M02
+      USE COMMONS, ONLY: NATOMS
       IMPLICIT NONE
 
       DOUBLE PRECISION, INTENT(IN)    :: RS(3*NATOMS)
@@ -2342,28 +2342,28 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
       DOUBLE PRECISION :: STARTDIH(NDIH), GD_PREVDIH(NDIH)
       DOUBLE PRECISION :: TMP_AR(NATOMS,3)
       DOUBLE PRECISION :: MININTDIST, DISTANCE2
-      CHARACTER(LEN=4) :: resname
-      INTEGER          :: nglyc, nprol, glyc(NRES), prol(NRES)
-      LOGICAL          :: glyswap, prolswap
+      CHARACTER(LEN=4) :: RESNAME
+      INTEGER          :: NGLYC, NPROL, GLYC(NRES), PROL(NRES)
+      LOGICAL          :: GLYSWAP, PROLSWAP
       INTEGER          :: MINSWAP(3)
       DOUBLE PRECISION :: ANGLES(NDIH), INTDIFFMSB50(NDIH), INTDISTMSB50
 
       DISTANCE = DOT_PRODUCT(RF-RS,RF-RS)
-      IF (PTEST) PRINT*, "intminperm> initial cart dist", DISTANCE
+      IF (PTEST) PRINT*, "INTMINPERM> INITIAL CART DIST", DISTANCE
  
-!glycine and proline exceptions
-      prol(:) = 0;nprol=0
-      glyc(:) = 0;nglyc=0
-      glyswap = .FALSE.;prolswap=.FALSE.
-      IF (AMBERT.OR.NABT) THEN !msb50 - for amber9.ff03 and glycine this doesn't work
-          DO III = 1,NRES!as swapping the hydrogens makes no difference in natural internals in this case
-            IF (ih(m02+III-1).EQ.'GLY'.OR.ih(m02+III-1).EQ.'NGLY'.OR.ih(m02+III-1).EQ.'CGLY') THEN
-               nglyc = nglyc+1
-               glyc(nglyc) = III
+!GLYCINE AND PROLINE EXCEPTIONS
+      PROL(:) = 0;NPROL=0
+      GLYC(:) = 0;NGLYC=0
+      GLYSWAP = .FALSE.;PROLSWAP=.FALSE.
+      IF (AMBERT.OR.NABT) THEN !MSB50 - FOR AMBER9.FF03 AND GLYCINE THIS DOESN'T WORK
+          DO III = 1,NRES!AS SWAPPING THE HYDROGENS MAKES NO DIFFERENCE IN NATURAL INTERNALS IN THIS CASE
+            IF (IH(M02+III-1).EQ.'GLY'.OR.IH(M02+III-1).EQ.'NGLY'.OR.IH(M02+III-1).EQ.'CGLY') THEN
+               NGLYC = NGLYC+1
+               GLYC(NGLYC) = III
             ENDIF
-            IF (ih(m02+III-1).EQ.'PRO'.OR.ih(m02+III-1).EQ.'NPRO'.OR.ih(m02+III-1).EQ.'CPRO') THEN
-               nprol = nprol+1
-               prol(nprol) =III
+            IF (IH(M02+III-1).EQ.'PRO'.OR.IH(M02+III-1).EQ.'NPRO'.OR.IH(M02+III-1).EQ.'CPRO') THEN
+               NPROL = NPROL+1
+               PROL(NPROL) =III
             ENDIF
           ENDDO
       ENDIF
@@ -2379,10 +2379,10 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
       CALL GETDIHONLY(RF)  
       INTDIFF(:) = PREVDIH(:)-STARTDIH(:)
       CURINTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
-      IF (PTEST) print*, 'Starting intdistance: ', CURINTDIST
+      IF (PTEST) PRINT*, 'STARTING INTDISTANCE: ', CURINTDIST
 
       RFTMP(:) = RF(:)
-      IF (nglyc.NE.0.AND..NOT.GLYCART) THEN
+      IF (NGLYC.NE.0.AND..NOT.GLYCART) THEN
          CALL GLYINTPERM(RS, RF, PTEST)
       ENDIF
 
@@ -2390,7 +2390,7 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
       CALL GETDIHONLY(RF)
       INTDIFF(:) = PREVDIH(:)-STARTDIH(:)
       CURINTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
-      IF (PTEST) print*, 'after intgly intdistance: ', CURINTDIST   
+      IF (PTEST) PRINT*, 'AFTER INTGLY INTDISTANCE: ', CURINTDIST   
 
       START = 1
       DO PG = 1,NPERMGROUP
@@ -2398,89 +2398,89 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
       IF (NPERMSIZE(PG).EQ.2) THEN
         RFTMP(:) = RF(:)
        
-        ! A1 and A2 are the atom numbers to permute
+        ! A1 AND A2 ARE THE ATOM NUMBERS TO PERMUTE
         A1 = PERMGROUP(START)
         A2 = PERMGROUP(START+1)
        
-        IF (PTEST) PRINT '(A,2I5)',"intminperm_chiral> which PERMGROUP", PG, START
-        IF (PTEST) PRINT '(A,2I5)','intminperm_chiral> Swapping atoms: ', A1, A2
+        IF (PTEST) PRINT '(A,2I5)',"INTMINPERM_CHIRAL> WHICH PERMGROUP", PG, START
+        IF (PTEST) PRINT '(A,2I5)','INTMINPERM_CHIRAL> SWAPPING ATOMS: ', A1, A2
        
-        IF (nglyc.NE.0) THEN
-          DO III=1, nglyc
-          IF (ix(i02+glyc(III)-1).GT.A1) EXIT
-          glyswap = .FALSE.
-             IF (ix(i02+glyc(III)-1).LE.A1 .AND.(ix(i02+glyc(III)).GT.A1).AND.&
-        &          (ih(m04+A1-1).EQ.'HA2 '.OR.ih(m04+A1-1).EQ.'HA3 ')) THEN
-                IF (PTEST) PRINT*, "glyc", glyc(III)
+        IF (NGLYC.NE.0) THEN
+          DO III=1, NGLYC
+          IF (IX(I02+GLYC(III)-1).GT.A1) EXIT
+          GLYSWAP = .FALSE.
+             IF (IX(I02+GLYC(III)-1).LE.A1 .AND.(IX(I02+GLYC(III)).GT.A1).AND.&
+        &          (IH(M04+A1-1).EQ.'HA2 '.OR.IH(M04+A1-1).EQ.'HA3 ')) THEN
+                IF (PTEST) PRINT*, "GLYC", GLYC(III)
                 IF (.NOT.GLYCART) THEN
-                   glyswap=.TRUE.
+                   GLYSWAP=.TRUE.
                    CYCLE
                 ENDIF
-               !the second atom has to be A2 in gly
-                IF (ih(m04+A2-1).EQ.'HA3 '.OR. ih(m04+A2-1).EQ.'HA2 ') THEN
-                   glyswap = .TRUE.
-                   IF (PTEST) PRINT*, "glycine"
+               !THE SECOND ATOM HAS TO BE A2 IN GLY
+                IF (IH(M04+A2-1).EQ.'HA3 '.OR. IH(M04+A2-1).EQ.'HA2 ') THEN
+                   GLYSWAP = .TRUE.
+                   IF (PTEST) PRINT*, "GLYCINE"
                    RF(3*(A1-1)+1:3*A1) = RFTMP(3*(A2-1)+1:3*A2)
                    RF(3*(A2-1)+1:3*A2) = RFTMP(3*(A1-1)+1:3*A1)
-               !move any other groups that must be dragged along
+               !MOVE ANY OTHER GROUPS THAT MUST BE DRAGGED ALONG
                    IF (NSETS(PG).NE.0) THEN
-                     PRINT*, "intminperm>this is not glycine. you DON'T know& 
-         &                        what you are doing"
+                     PRINT*, "INTMINPERM>THIS IS NOT GLYCINE. YOU DON'T KNOW& 
+         &                        WHAT YOU ARE DOING"
                      STOP
                    ENDIF
                    DISTANCE = DOT_PRODUCT(RFTMP-RS,RFTMP-RS)
                    DISTANCE2 = DOT_PRODUCT(RF-RS,RF-RS)
-                   !IF (PTEST) PRINT*, "dist old", DISTANCE, "dist new", DISTANCE2
+                   !IF (PTEST) PRINT*, "DIST OLD", DISTANCE, "DIST NEW", DISTANCE2
                    IF (DISTANCE2.LT.DISTANCE) THEN
-                     IF (PTEST) print '(a40, f17.5,a10,f17.5)',"keep permutation&
-         & aaccrding to cartesians (gly): dist1",DISTANCE, "dist_new", DISTANCE2
+                     IF (PTEST) PRINT '(A40, F17.5,A10,F17.5)',"KEEP PERMUTATION&
+         & AACCRDING TO CARTESIANS (GLY): DIST1",DISTANCE, "DIST_NEW", DISTANCE2
                    ELSE
-                      RF(:) = RFTMP(:) !unddo
+                      RF(:) = RFTMP(:) !UNDDO
                    ENDIF
                 ELSE
-                   PRINT*, "intminperm> sth wrong with GLY"
+                   PRINT*, "INTMINPERM> STH WRONG WITH GLY"
                    STOP
                 ENDIF
             ENDIF
-            IF (glyswap) EXIT
+            IF (GLYSWAP) EXIT
            ENDDO
-             IF (glyswap) THEN
-                IF (PTEST) PRINT*, "glyswap true", PG
+             IF (GLYSWAP) THEN
+                IF (PTEST) PRINT*, "GLYSWAP TRUE", PG
                 START = START + NPERMSIZE(PG)
                CYCLE
              ENDIF
         ENDIF
        
-        IF (nprol.NE.0) THEN
-           prolswap=.FALSE.
-           DO III=1, nprol
+        IF (NPROL.NE.0) THEN
+           PROLSWAP=.FALSE.
+           DO III=1, NPROL
        
-              IF (ix(i02+prol(III)-1).LT.A1 .AND. ix(i02+prol(III)).GT.A1) THEN
-                 IF (PTEST) PRINT*, "pro", prol(III)
+              IF (IX(I02+PROL(III)-1).LT.A1 .AND. IX(I02+PROL(III)).GT.A1) THEN
+                 IF (PTEST) PRINT*, "PRO", PROL(III)
                  CALL PROL_PERMUTE(A1,A2,PTEST, RS, RF, DISTANCE)
-                 prolswap =.TRUE.
+                 PROLSWAP =.TRUE.
                  EXIT
               ENDIF
            ENDDO
-           IF (prolswap) THEN
+           IF (PROLSWAP) THEN
               START= START+NPERMSIZE(PG)
               CYCLE
            ENDIF
         ENDIF
        
-! now start the real thing:
+! NOW START THE REAL THING:
         IF (.NOT.PROCHIRALH(A1)) THEN
            RF(3*(A1-1)+1:3*A1) = RFTMP(3*(A2-1)+1:3*A2)
            RF(3*(A2-1)+1:3*A2) = RFTMP(3*(A1-1)+1:3*A1)
          
-           !move any other groups that must be dragged along
+           !MOVE ANY OTHER GROUPS THAT MUST BE DRAGGED ALONG
            DO SW = 1,NSETS(PG)
 !             A1 = SWAP1(PG,SW)
 !             A2 = SWAP2(PG,SW)
               A1 = SETS(PERMGROUP(START),SW)
               A2 = SETS(PERMGROUP(START+1),SW)
          
-              IF (PTEST) print*, 'Dragging swap: ', A1, A2
+              IF (PTEST) PRINT*, 'DRAGGING SWAP: ', A1, A2
          
               RF(3*(A1-1)+1:3*A1) = RFTMP(3*(A2-1)+1:3*A2)
               RF(3*(A2-1)+1:3*A2) = RFTMP(3*(A1-1)+1:3*A1)
@@ -2496,12 +2496,12 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
         INTDIFF(:) = PREVDIH(:) - STARTDIH(:)
         INTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
 
-        IF (PTEST) PRINT '(2i4,a6,2f15.10)', A1, A2,"dists", INTDIST, CURINTDIST
+        IF (PTEST) PRINT '(2I4,A6,2F15.10)', A1, A2,"DISTS", INTDIST, CURINTDIST
         IF (INTDIST.GE.CURINTDIST.AND..NOT.PROCHIRALH(A1)) THEN
-           ! undo permutation
+           ! UNDO PERMUTATION
            RF(:) = RFTMP(:)
         ELSEIF (INTDIST.LT.CURINTDIST) THEN
-           IF (PTEST) print*, 'keep permutation'
+           IF (PTEST) PRINT*, 'KEEP PERMUTATION'
            CURINTDIST = INTDIST
         ELSEIF (PROCHIRALH(A1)) THEN
            CURINTDIST = INTDIST
@@ -2522,11 +2522,11 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
          DO I=0,2
             RFTMP(3*(A1-1)+1:3*A1)=TMP_AR(A1,:)
             RFTMP(3*(A2-1)+1:3*A2)=TMP_AR(A2,:)
-            RFTMP(3*(A3-1)+1:3*A3)=TMP_AR(A3,:)!initialise back to beginning
-            !swap first two atoms
+            RFTMP(3*(A3-1)+1:3*A3)=TMP_AR(A3,:)!INITIALISE BACK TO BEGINNING
+            !SWAP FIRST TWO ATOMS
             B1=PERMGROUP(START+I)
-            !find other two atoms
-            IF (I.EQ.0) THEN !i.e. B1 = A1
+            !FIND OTHER TWO ATOMS
+            IF (I.EQ.0) THEN !I.E. B1 = A1
                B2=PERMGROUP(START+1); B3= PERMGROUP(START+2)
             ELSEIF (I.EQ.1) THEN
                B2=A1; B3= PERMGROUP(START+2)
@@ -2540,12 +2540,12 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
             
             INTDIFF= PREVDIH(:) - STARTDIH(:)
             INTDIST= SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
-            IF (PTEST) PRINT*,"swap", B1,B2,B3 ,"intdist", intdist
+            IF (PTEST) PRINT*,"SWAP", B1,B2,B3 ,"INTDIST", INTDIST
 
             PREVDIH(:) = STARTDIH(:)
             CALL DISTANCEPAIRSWAP(STARTDIH, RFTMP, A2,A3,PG, INTDIST2,PTEST,RFNEW)
-            !PRINT*, "minintdist", MININTDIST
-            IF (PTEST) PRINT*, "swap",B1, B3,B2,"intdist2", intdist2
+            !PRINT*, "MININTDIST", MININTDIST
+            IF (PTEST) PRINT*, "SWAP",B1, B3,B2,"INTDIST2", INTDIST2
 
             IF (INTDIST.LT.MININTDIST) THEN
                 MININTDIST=INTDIST; MINSWAP(1)=B1;MINSWAP(2)=B2;MINSWAP(3)=B3
@@ -2556,7 +2556,7 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
                 IF (PTEST) PRINT*, MINSWAP(:), MININTDIST
             ENDIF
           ENDDO
-          !PRINT*,A1,A2,A3, "minswap",MINSWAP(1), MINSWAP(2), MINSWAP(3)
+          !PRINT*,A1,A2,A3, "MINSWAP",MINSWAP(1), MINSWAP(2), MINSWAP(3)
           RFTMP(3*(A1-1)+1:3*A1)=RFTMP2(3*(MINSWAP(1)-1)+1:3*MINSWAP(1))
           RFTMP(3*(A2-1)+1:3*A2)=RFTMP2(3*(MINSWAP(2)-1)+1:3*MINSWAP(2))
           RFTMP(3*(A3-1)+1:3*A3)=RFTMP2(3*(MINSWAP(3)-1)+1:3*MINSWAP(3))
@@ -2566,26 +2566,26 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
           RF(:) = RFTMP(:)
 
       ELSE
-          print*, 'Error! INTMINPERM is only set up for permutation groups &
-            &          of size 2 & 3 for now', PG, NPERMSIZE(PG)
+          PRINT*, 'ERROR! INTMINPERM IS ONLY SET UP FOR PERMUTATION GROUPS &
+            &          OF SIZE 2 & 3 FOR NOW', PG, NPERMSIZE(PG)
           STOP
       ENDIF
 
       START = START + NPERMSIZE(PG)
       END DO
 
-      IF (PTEST) print*, 'Final int distance: ', CURINTDIST
+      IF (PTEST) PRINT*, 'FINAL INT DISTANCE: ', CURINTDIST
       DISTANCE = DOT_PRODUCT(RF-RS,RF-RS)
-      IF (PTEST) PRINT*, 'Final cart distance', DISTANCE
+      IF (PTEST) PRINT*, 'FINAL CART DISTANCE', DISTANCE
 
       RETURN
       END SUBROUTINE INTMINPERM_CHIRAL
 
 !****************************************************************************************
       SUBROUTINE INTDISTANCE(RS, RF, DISTANCE, PTEST)      
-! if INTDISTANCET - calculates distance for minpermdist in internals for dijkstra
-! this should be better when using internal coordinate interpolation
-      use commons, only: natoms
+! IF INTDISTANCET - CALCULATES DISTANCE FOR MINPERMDIST IN INTERNALS FOR DIJKSTRA
+! THIS SHOULD BE BETTER WHEN USING INTERNAL COORDINATE INTERPOLATION
+      USE COMMONS, ONLY: NATOMS
       IMPLICIT NONE
 
       DOUBLE PRECISION, INTENT(IN)    :: RS(3*NATOMS)
@@ -2606,7 +2606,7 @@ SUBROUTINE SWAP4ATONCE(STARTDIH,RF,PERMG,START,PERM_AR, START_AR,PTEST,SKIPPG, S
       CALL GETDIHONLY(RF)
       INTDIFF(:) = PREVDIH(:)-STARTDIH(:)
       DISTANCE = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
-      IF (PTEST) print*, 'intdistance: ', DISTANCE
+      IF (PTEST) PRINT*, 'INTDISTANCE: ', DISTANCE
 
       RETURN
       END SUBROUTINE INTDISTANCE
@@ -2616,68 +2616,68 @@ END MODULE INTCUTILS
      
 
 ! **********************************************************************************
-     SUBROUTINE INTH_ALIGN(COORDSB, COORDSA, centre, CURINTDIST)
-     use intcutils
-     USE intcommons, only:ndih
-     USE commons, only: NATOMS
-     USE key, only:DEBUG
+     SUBROUTINE INTH_ALIGN(COORDSB, COORDSA, CENTRE, CURINTDIST)
+     USE INTCUTILS
+     USE INTCOMMONS, ONLY:NDIH
+     USE COMMONS, ONLY: NATOMS
+     USE KEY, ONLY:DEBUG
      IMPLICIT NONE
-!aligns hydrogens in valine and leucine groups according to internals
+!ALIGNS HYDROGENS IN VALINE AND LEUCINE GROUPS ACCORDING TO INTERNALS
      DOUBLE PRECISION, INTENT(IN) :: COORDSB(3*NATOMS)
      DOUBLE PRECISION, INTENT(INOUT) :: COORDSA(3*NATOMS)
-     INTEGER, INTENT(IN) ::centre
+     INTEGER, INTENT(IN) ::CENTRE
      DOUBLE PRECISION, INTENT(OUT):: CURINTDIST
      DOUBLE PRECISION :: TMP(3), TMP2(3), TMP3(3), STARTDIH(NDIH), INTDIFF(NDIH)
-     DOUBLE PRECISION :: COORDS_copy(3*NATOMS)
+     DOUBLE PRECISION :: COORDS_COPY(3*NATOMS)
      DOUBLE PRECISION :: INTDIST
 
      !PREVDIH => DIHINFOSINGLE(:)
 
-!    PRINT*, "start"
+!    PRINT*, "START"
 !    PREVDIH(:) = 0.0D0
-!    CALL GETDIHONLY(RS) !msb50
+!    CALL GETDIHONLY(RS) !MSB50
 !    GD_PREVDIH(:) = PREVDIH
 
-     !PRINT*, "centre", centre, centre+1, centre+2, centre+3
-     COORDS_copy(:) = COORDSA(:)
+     !PRINT*, "CENTRE", CENTRE, CENTRE+1, CENTRE+2, CENTRE+3
+     COORDS_COPY(:) = COORDSA(:)
      PREVDIH(:) = 0.0D0
      CALL GETDIHONLY(COORDSB)
      STARTDIH(:)=PREVDIH(:)
      CALL GETDIHONLY(COORDSA)
      INTDIFF(:)=PREVDIH(:)-STARTDIH(:)
      CURINTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
-     IF (DEBUG) PRINT*, "curintdist", CURINTDIST
+     IF (DEBUG) PRINT*, "CURINTDIST", CURINTDIST
 
-     TMP(:)= COORDSA(3*(centre)+1:3*(centre+1)) !for centre+1
-     TMP2(:)= COORDSA(3*(centre+1)+1:3*(centre+2))
-     TMP3(:)= COORDSA(3*(centre+2)+1:3*(centre+3))
-     COORDSA(3*(centre)+1:3*(centre+1))=TMP2(:)
-     COORDSA(3*(centre+1)+1:3*(centre+2)) =TMP3(:)
-     COORDSA(3*(centre+2)+1:3*(centre+3)) =TMP(:)
+     TMP(:)= COORDSA(3*(CENTRE)+1:3*(CENTRE+1)) !FOR CENTRE+1
+     TMP2(:)= COORDSA(3*(CENTRE+1)+1:3*(CENTRE+2))
+     TMP3(:)= COORDSA(3*(CENTRE+2)+1:3*(CENTRE+3))
+     COORDSA(3*(CENTRE)+1:3*(CENTRE+1))=TMP2(:)
+     COORDSA(3*(CENTRE+1)+1:3*(CENTRE+2)) =TMP3(:)
+     COORDSA(3*(CENTRE+2)+1:3*(CENTRE+3)) =TMP(:)
      PREVDIH(:)=STARTDIH(:)
      CALL GETDIHONLY(COORDSA)
      INTDIFF(:)=PREVDIH(:)-STARTDIH(:)
      INTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
      IF (INTDIST.LT.CURINTDIST) THEN
         CURINTDIST=INTDIST
-        COORDS_copy(:)=COORDSA(:)
-        IF (DEBUG) PRINT*, "swap accepted", centre+2, centre+3, centre+1, curintdist
+        COORDS_COPY(:)=COORDSA(:)
+        IF (DEBUG) PRINT*, "SWAP ACCEPTED", CENTRE+2, CENTRE+3, CENTRE+1, CURINTDIST
      ELSE
-        COORDSA(:)=COORDS_copy(:)
+        COORDSA(:)=COORDS_COPY(:)
      ENDIF
-     COORDSA(3*(centre)+1:3*(centre+1))=TMP3(:)
-     COORDSA(3*(centre+1)+1:3*(centre+2)) =TMP(:)
-     COORDSA(3*(centre+2)+1:3*(centre+3)) =TMP2(:)
+     COORDSA(3*(CENTRE)+1:3*(CENTRE+1))=TMP3(:)
+     COORDSA(3*(CENTRE+1)+1:3*(CENTRE+2)) =TMP(:)
+     COORDSA(3*(CENTRE+2)+1:3*(CENTRE+3)) =TMP2(:)
      PREVDIH(:)=STARTDIH(:)
      CALL GETDIHONLY(COORDSA)
      INTDIFF(:)=PREVDIH(:)-STARTDIH(:)
      INTDIST = SQRT(DOT_PRODUCT(INTDIFF, INTDIFF))
      IF (INTDIST.LT.CURINTDIST) THEN
         CURINTDIST=INTDIST
-        COORDS_copy(:)=COORDSA(:)
-        IF (DEBUG) PRINT*, "swap accepted", centre+3, centre+1, centre+2, curintdist
+        COORDS_COPY(:)=COORDSA(:)
+        IF (DEBUG) PRINT*, "SWAP ACCEPTED", CENTRE+3, CENTRE+1, CENTRE+2, CURINTDIST
      ELSE
-        COORDSA(:)=COORDS_copy(:)
+        COORDSA(:)=COORDS_COPY(:)
      ENDIF
      RETURN
 END SUBROUTINE INTH_ALIGN

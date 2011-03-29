@@ -1,31 +1,31 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
-C  Uses two calls to potential per variable box length to make numerical first
-C  and second derivatives for box length optimisation by eigenvector-following.
-C  Zero second derivative results if the energy is linear in the box length if
-C  fractional coordinates are not used.
-C  This can occur if FIXIMAGE is turned off for a line minimisation and LBFGS
-C  takes a daft step, giving silly ANV, which does not get fixed.
+C  USES TWO CALLS TO POTENTIAL PER VARIABLE BOX LENGTH TO MAKE NUMERICAL FIRST
+C  AND SECOND DERIVATIVES FOR BOX LENGTH OPTIMISATION BY EIGENVECTOR-FOLLOWING.
+C  ZERO SECOND DERIVATIVE RESULTS IF THE ENERGY IS LINEAR IN THE BOX LENGTH IF
+C  FRACTIONAL COORDINATES ARE NOT USED.
+C  THIS CAN OCCUR IF FIXIMAGE IS TURNED OFF FOR A LINE MINIMISATION AND LBFGS
+C  TAKES A DAFT STEP, GIVING SILLY ANV, WHICH DOES NOT GET FIXED.
 C
-C  Analytic derivatives for normal and fractional coordinates added for 'LS' 
-C  atom type 26/6/01.
+C  ANALYTIC DERIVATIVES FOR NORMAL AND FRACTIONAL COORDINATES ADDED FOR 'LS' 
+C  ATOM TYPE 26/6/01.
 C
       SUBROUTINE PVOPT(COORDS,EZERO,VNEW)
       USE COMMONS
@@ -79,20 +79,20 @@ C     ENDIF
          ENDIF
 
          WRITE(*,'(A)') ' '
-         WRITE(*,'(A,T50,F20.10)') 'Enthalpy in lattice optimisation is ',EZERO
-         WRITE(*,'(A,T50,F20.10)') 'Gradient wrt box length=',GRAD
-         WRITE(*,'(A,T50,F20.10)') 'Second derivative wrt box length=',SECOND
-         WRITE(*,'(A,T50,F20.10)') 'Full step size=',-GRAD/SECOND
+         WRITE(*,'(A,T50,F20.10)') 'ENTHALPY IN LATTICE OPTIMISATION IS ',EZERO
+         WRITE(*,'(A,T50,F20.10)') 'GRADIENT WRT BOX LENGTH=',GRAD
+         WRITE(*,'(A,T50,F20.10)') 'SECOND DERIVATIVE WRT BOX LENGTH=',SECOND
+         WRITE(*,'(A,T50,F20.10)') 'FULL STEP SIZE=',-GRAD/SECOND
          IF (SECOND.LT.0.0D0) SECOND=-SECOND
          PPARAM1=PARAM1
          PPARAM2=PARAM2
          PPARAM3=PARAM3
          IF (DABS(GRAD/SECOND).GT.SMAX) THEN
             PARAM1=PARAM1-SMAX*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
-            WRITE(*,'(A,T50,F20.10,A,F15.10)') 'Scaled step=',-SMAX*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD)),' new box length=',PARAM1
+            WRITE(*,'(A,T50,F20.10,A,F15.10)') 'SCALED STEP=',-SMAX*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD)),' NEW BOX LENGTH=',PARAM1
          ELSE
             PARAM1=PARAM1-GRAD/SECOND
-            WRITE(*,'(A,T50,F20.10,A,F15.10)') 'Box length step=',-GRAD/SECOND,' new box length=',PARAM1
+            WRITE(*,'(A,T50,F20.10,A,F15.10)') 'BOX LENGTH STEP=',-GRAD/SECOND,' NEW BOX LENGTH=',PARAM1
          ENDIF
          PARAM2=PARAM1
          PARAM3=PARAM1
@@ -184,17 +184,17 @@ C              SMAX=SMAX*1.05D0
 C           ELSE
 C              SMAX=SMAX/1.1D0
 C           ENDIF
-C           WRITE(*,'(A,4F20.10)') 'delta E actual and predicted, ratio, SMAX: ',EZERO-EPREV,EEST-EPREV,
+C           WRITE(*,'(A,4F20.10)') 'DELTA E ACTUAL AND PREDICTED, RATIO, SMAX: ',EZERO-EPREV,EEST-EPREV,
 C    1                             ABS((EZERO-EEST)/(EZERO-EPREV)),SMAX
 C        ENDIF
 
          WRITE(*,'(A)') ' '
-         WRITE(*,'(A,T50,F20.10)') 'Enthalpy in lattice optimisation is ',EZERO
-         WRITE(*,'(A,T50,3F20.10)') 'Gradient wrt x,y,z box lengths=',GRADX,GRADY,GRADZ
-         WRITE(*,'(A,T50,3F20.10)') 'Second derivatives wrt x,y,z box lengths=',SECONDX,SECONDY,SECONDZ
+         WRITE(*,'(A,T50,F20.10)') 'ENTHALPY IN LATTICE OPTIMISATION IS ',EZERO
+         WRITE(*,'(A,T50,3F20.10)') 'GRADIENT WRT X,Y,Z BOX LENGTHS=',GRADX,GRADY,GRADZ
+         WRITE(*,'(A,T50,3F20.10)') 'SECOND DERIVATIVES WRT X,Y,Z BOX LENGTHS=',SECONDX,SECONDY,SECONDZ
          IF ((.NOT.PVTS).AND.((MIN(MIN(SECONDX,SECONDY),SECONDZ).LT.MAX(MAX(SECONDX,SECONDY),SECONDZ)/10.0D0).OR.
      1        (MAX(MAX(SECONDX,SECONDY),SECONDZ).LT.1.0D0))) THEN
-            PRINT*,'Small box length curvature detected - skipping box length optimisation'
+            PRINT*,'SMALL BOX LENGTH CURVATURE DETECTED - SKIPPING BOX LENGTH OPTIMISATION'
             RETURN
          ENDIF
 
@@ -202,7 +202,7 @@ C        ENDIF
          IF (SECONDY.EQ.0.0D0) SECONDY=1.0D0
          IF (SECONDZ.EQ.0.0D0) SECONDZ=1.0D0
 C
-C  Fractional coordinates - steps seem to need damping
+C  FRACTIONAL COORDINATES - STEPS SEEM TO NEED DAMPING
 C    
          IF (FRACTIONAL) THEN
             SECONDX=SECONDX*1.2D0
@@ -213,7 +213,7 @@ C
          STEPX=-2.0D0*GRADX/(DABS(SECONDX)*(1.0D0+DSQRT(1.0D0 + 4.0D0*(GRADX/SECONDX)**2)))
          STEPY=-2.0D0*GRADY/(DABS(SECONDY)*(1.0D0+DSQRT(1.0D0 + 4.0D0*(GRADY/SECONDY)**2)))
          STEPZ=-2.0D0*GRADZ/(DABS(SECONDZ)*(1.0D0+DSQRT(1.0D0 + 4.0D0*(GRADZ/SECONDZ)**2)))
-         WRITE(*,'(A,T50,3F20.10)') 'Full   step size for x,y,z =',STEPX,STEPY,STEPZ
+         WRITE(*,'(A,T50,3F20.10)') 'FULL   STEP SIZE FOR X,Y,Z =',STEPX,STEPY,STEPZ
 
          IF (PVTS) THEN
             IF (NBOXTS.EQ.1) THEN
@@ -251,8 +251,8 @@ C
          STEPX=PARAM1-PPARAM1
          STEPY=PARAM2-PPARAM2
          STEPZ=PARAM3-PPARAM3
-         WRITE(*,'(A,T50,3F20.10)') 'Actual step size for x,y,z =',PARAM1-PPARAM1,PARAM2-PPARAM2,PARAM3-PPARAM3
-         WRITE(*,'(A,T50,3F20.10)') 'New x,y,z box lengths:',PARAM1,PARAM2,PARAM3
+         WRITE(*,'(A,T50,3F20.10)') 'ACTUAL STEP SIZE FOR X,Y,Z =',PARAM1-PPARAM1,PARAM2-PPARAM2,PARAM3-PPARAM3
+         WRITE(*,'(A,T50,3F20.10)') 'NEW X,Y,Z BOX LENGTHS:',PARAM1,PARAM2,PARAM3
          IF ((ABS(GRADX).LT.PVCONV).AND.(ABS(GRADY).LT.PVCONV).AND.(ABS(GRADZ).LT.PVCONV)) PVFLAG=.TRUE.
          IF ((ABS(GRADX).GT.PVTOL).OR.(ABS(GRADY).GT.PVTOL).OR.(ABS(GRADZ).GT.PVTOL)) PVAGAIN=.TRUE.
       ENDIF
@@ -267,14 +267,14 @@ C
 
       IF (PVAGAIN) THEN
 C        FIXIMAGE=.FALSE.
-         PRINT*,'WARNING - NRLOCAL was unset - not tested!'
+         PRINT*,'WARNING - NRLOCAL WAS UNSET - NOT TESTED!'
 C        IF (NRLOCAL) NORESET=.TRUE.
          IF (.NOT.ANALYTIC) CALL POTENTIAL(COORDS,EZERO,VNEW,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
 C        FIXIMAGE=.TRUE.
 C        IF (NRLOCAL) NORESET=.FALSE.
          NCOUNT=NCOUNT+1
          IF (NCOUNT.LT.PVSTEPS) GOTO 10
-         WRITE(*,'(A)') 'Warning, maximum number of box length steps exceeded in PVopt'
+         WRITE(*,'(A)') 'WARNING, MAXIMUM NUMBER OF BOX LENGTH STEPS EXCEEDED IN PVOPT'
       ENDIF
 C     FIXIMAGE=.FALSE.
 C     IF (NRLOCAL) NORESET=.TRUE.

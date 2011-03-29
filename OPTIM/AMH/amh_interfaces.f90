@@ -1,183 +1,183 @@
-      module amh_interfaces
+      MODULE AMH_INTERFACES
 
 
-        interface
-           subroutine additive_ev(distne,f_cord,nmres,E,numlng,ilong,tempav,crdixn, &
-                xdiff,ydiff,zdiff,ccev_dist,pexcld)
-             use amhglobals,  only:SO, AMHmaxsiz,maxtab,maxcnt,maxcrd
-              double precision, intent(in):: distne(maxcnt,maxtab),xdiff(maxcnt,maxtab),ydiff(maxcnt,maxtab),&
-                  zdiff(maxcnt,maxtab),ccev_dist(maxcnt,maxtab),pexcld
-              double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd),E(:,:)
-             integer, intent(in):: nmres,numlng(0:AMHmaxsiz,maxtab),ilong(maxcnt,2,maxtab),crdixn(maxtab,2)
-             logical, intent(in):: tempav
-           end subroutine additive_ev
-        end interface
+        INTERFACE
+           SUBROUTINE ADDITIVE_EV(DISTNE,F_CORD,NMRES,E,NUMLNG,ILONG,TEMPAV,CRDIXN, &
+                XDIFF,YDIFF,ZDIFF,CCEV_DIST,PEXCLD)
+             USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXTAB,MAXCNT,MAXCRD
+              DOUBLE PRECISION, INTENT(IN):: DISTNE(MAXCNT,MAXTAB),XDIFF(MAXCNT,MAXTAB),YDIFF(MAXCNT,MAXTAB),&
+                  ZDIFF(MAXCNT,MAXTAB),CCEV_DIST(MAXCNT,MAXTAB),PEXCLD
+              DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD),E(:,:)
+             INTEGER, INTENT(IN):: NMRES,NUMLNG(0:AMHMAXSIZ,MAXTAB),ILONG(MAXCNT,2,MAXTAB),CRDIXN(MAXTAB,2)
+             LOGICAL, INTENT(IN):: TEMPAV
+           END SUBROUTINE ADDITIVE_EV
+        END INTERFACE
 
 
-        interface
-           subroutine  contact_P_AP(pro_cord,nmres,f_cord,lambda_P_AP)
-             use amhglobals,  only : AMHmaxsiz,maxcrd
-              double precision, intent(in):: pro_cord(AMHmaxsiz,3,maxcrd)
-             integer, intent(in):: nmres
-              double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd)
-              double precision, intent(out):: lambda_P_AP(3)
-           end subroutine contact_P_AP
-        end interface
+        INTERFACE
+           SUBROUTINE  CONTACT_P_AP(PRO_CORD,NMRES,F_CORD,LAMBDA_P_AP)
+             USE AMHGLOBALS,  ONLY : AMHMAXSIZ,MAXCRD
+              DOUBLE PRECISION, INTENT(IN):: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
+             INTEGER, INTENT(IN):: NMRES
+              DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD)
+              DOUBLE PRECISION, INTENT(OUT):: LAMBDA_P_AP(3)
+           END SUBROUTINE CONTACT_P_AP
+        END INTERFACE
 
-        interface
-           subroutine dssp_hdrgn_eastwood(pro_cord,f_cord,tempav,E)
-             use amhglobals,  only:SO, AMHmaxsiz,maxcrd
-              double precision, intent(in):: pro_cord(AMHmaxsiz,3,maxcrd)
-              double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd),E(:,:)
-             logical, intent(in)::  tempav
-           end subroutine dssp_hdrgn_eastwood
-        end interface
+        INTERFACE
+           SUBROUTINE DSSP_HDRGN_EASTWOOD(PRO_CORD,F_CORD,TEMPAV,E)
+             USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXCRD
+              DOUBLE PRECISION, INTENT(IN):: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
+              DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD),E(:,:)
+             LOGICAL, INTENT(IN)::  TEMPAV
+           END SUBROUTINE DSSP_HDRGN_EASTWOOD
+        END INTERFACE
 
-        interface
-           subroutine E_write(avep,totke,T,numpro,i_temp,incmov)
-             use amhglobals,  only:SO, maxpro
-             implicit none
-              double precision, intent(in):: avep(:,:,:),totke(maxpro),T
-             integer, intent(in):: numpro,i_temp,incmov 
-           end subroutine E_write
-        end interface
+        INTERFACE
+           SUBROUTINE E_WRITE(AVEP,TOTKE,T,NUMPRO,I_TEMP,INCMOV)
+             USE AMHGLOBALS,  ONLY:SO, MAXPRO
+             IMPLICIT NONE
+              DOUBLE PRECISION, INTENT(IN):: AVEP(:,:,:),TOTKE(MAXPRO),T
+             INTEGER, INTENT(IN):: NUMPRO,I_TEMP,INCMOV 
+           END SUBROUTINE E_WRITE
+        END INTERFACE
 
-        interface
-           subroutine ev_gamma(pro_cord,f_cord,E,tempav)
-             use amhglobals,  only:SO, AMHmaxsiz,maxcrd
-              double precision, intent(in):: pro_cord(AMHmaxsiz,3,maxcrd)
-              double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd),E(:,:)
-             logical, intent(in):: tempav
-           end subroutine ev_gamma
-        end interface
+        INTERFACE
+           SUBROUTINE EV_GAMMA(PRO_CORD,F_CORD,E,TEMPAV)
+             USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXCRD
+              DOUBLE PRECISION, INTENT(IN):: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
+              DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD),E(:,:)
+             LOGICAL, INTENT(IN):: TEMPAV
+           END SUBROUTINE EV_GAMMA
+        END INTERFACE
 
-        interface
-           subroutine gomb(  eta,index,tempav,ngomb,A_to_nmo,E,ibiasgauss,bias_av, &
-                bias_var,bias_prefactor,bias_F,ibiaspoly,nbiaspoly,biaspoly)
-             use amhglobals,  only:SO, maxcnt,AMHmaxsiz
-              double precision, intent(in):: eta(1:maxcnt,1:4),ngomb,bias_av,bias_var,bias_prefactor,biaspoly(1:100)
-              double precision, intent(out):: A_to_nmo(1:AMHmaxsiz,1:2),E(:,:),bias_F
-             integer, intent(in):: index(1:maxcnt,1:4),nbiaspoly
-             logical, intent(in):: tempav,ibiasgauss,ibiaspoly
-           end subroutine gomb
-        end interface
-
-
-        interface
-           subroutine hdrgn(pro_cord,f_cord,tempav,E)
-             use amhglobals,  only:SO, AMHmaxsiz,maxcrd
-              double precision, intent(in):: pro_cord(AMHmaxsiz,3,maxcrd)
-              double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd),E(:,:)
-             logical, intent(in)::  tempav
-           end subroutine hdrgn
-        end interface
+        INTERFACE
+           SUBROUTINE GOMB(  ETA,INDEX,TEMPAV,NGOMB,A_TO_NMO,E,IBIASGAUSS,BIAS_AV, &
+                BIAS_VAR,BIAS_PREFACTOR,BIAS_F,IBIASPOLY,NBIASPOLY,BIASPOLY)
+             USE AMHGLOBALS,  ONLY:SO, MAXCNT,AMHMAXSIZ
+              DOUBLE PRECISION, INTENT(IN):: ETA(1:MAXCNT,1:4),NGOMB,BIAS_AV,BIAS_VAR,BIAS_PREFACTOR,BIASPOLY(1:100)
+              DOUBLE PRECISION, INTENT(OUT):: A_TO_NMO(1:AMHMAXSIZ,1:2),E(:,:),BIAS_F
+             INTEGER, INTENT(IN):: INDEX(1:MAXCNT,1:4),NBIASPOLY
+             LOGICAL, INTENT(IN):: TEMPAV,IBIASGAUSS,IBIASPOLY
+           END SUBROUTINE GOMB
+        END INTERFACE
 
 
-        interface
-           subroutine lookup(maxr,crdixn,vpotnt,forse,pro_cord,f_cord, &
-                trgeng,numlng,nmres,rincinv,rincsq,       &
-                igomb,ngomb,tempav,maxtab,ilong,          &
-                E,ibiasgauss,bias_av,bias_var,            & 
-                bias_prefactor,ibiaspoly,nbiaspoly,       &
-                biaspoly,i_Qbias_a,i_Qbias_b,ccev_dist,pexcld)
-             use amhglobals,  only:SO,maxcnt,AMHmaxsiz,maxcrd
-             integer, intent(in):: maxr,maxtab 
-             integer, intent(in):: crdixn(maxtab,2),numlng(0:AMHmaxsiz,maxtab),nmres, &
-                  ilong(maxcnt,2,maxtab),nbiaspoly
-              double precision, intent(in):: vpotnt(0:maxr+1,maxcnt,maxtab),  &
-                  forse(0:maxr+1,maxcnt,maxtab),pro_cord(AMHmaxsiz,3,maxcrd),  &
-                  rincinv(maxcnt,maxtab),rincsq(maxcnt,maxtab),ngomb,bias_av,bias_var,bias_prefactor, &
-                  biaspoly(1:100),ccev_dist(maxcnt,maxtab),pexcld
-              double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd),E(:,:),trgeng(maxtab,3)
-             logical, intent(in):: igomb,tempav,ibiasgauss,ibiaspoly,i_Qbias_a,i_Qbias_b
-           end subroutine lookup
-        end interface
-
-        interface
-           subroutine  non_add_contact(pro_cord,nmres,tempav,f_cord,E)
-             use amhglobals,  only : AMHmaxsiz,maxcrd
-              double precision, intent(in):: pro_cord(AMHmaxsiz,3,maxcrd)
-             integer, intent(in):: nmres
-             logical, intent(in):: tempav
-              double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd)
-              double precision, intent(out):: E
-           end subroutine non_add_contact
-        end interface
-
-        interface
-           subroutine oxy(maxtab,ires, jstrt,jfins,pro_cord,f_cord, &
-                eqdist,oxscl,chrlscl,ramascl,             &  
-                oxexcldv,numlng,ilong,nmres,E)
-             use amhglobals,  only:SO, AMHmaxsiz,maxcrd,maxcnt
-              double precision, intent(in) :: pro_cord(AMHmaxsiz,3,maxcrd),eqdist(:),oxscl, &
-                  chrlscl,ramascl
-              double precision, intent(out) :: f_cord(AMHmaxsiz,3,maxcrd),E(:,:)
-             integer, intent(in):: maxtab,ires(AMHmaxsiz),jstrt,jfins, &
-                  numlng(0:AMHmaxsiz,maxtab),ilong(maxcnt,2,4),nmres
-             logical, intent(in):: oxexcldv
-           end subroutine oxy
-        end interface
+        INTERFACE
+           SUBROUTINE HDRGN(PRO_CORD,F_CORD,TEMPAV,E)
+             USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXCRD
+              DOUBLE PRECISION, INTENT(IN):: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
+              DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD),E(:,:)
+             LOGICAL, INTENT(IN)::  TEMPAV
+           END SUBROUTINE HDRGN
+        END INTERFACE
 
 
-        interface
-           subroutine Q_bias_seg_a(distne,f_cord,nmres,E,xdiff,ydiff,zdiff)
-             use amhglobals,  only:SO, AMHmaxsiz,maxtab,maxcnt,maxcrd
-              double precision, intent(in)::distne(maxcnt,maxtab), &
-                       xdiff(maxcnt,maxtab),ydiff(maxcnt,maxtab), &
-                       zdiff(maxcnt,maxtab)
-              double precision, intent(out)::f_cord(AMHmaxsiz,3,maxcrd),E(:,:)
-             integer, intent(in):: nmres
-           end subroutine Q_bias_seg_a
-        end interface
+        INTERFACE
+           SUBROUTINE LOOKUP(MAXR,CRDIXN,VPOTNT,FORSE,PRO_CORD,F_CORD, &
+                TRGENG,NUMLNG,NMRES,RINCINV,RINCSQ,       &
+                IGOMB,NGOMB,TEMPAV,MAXTAB,ILONG,          &
+                E,IBIASGAUSS,BIAS_AV,BIAS_VAR,            & 
+                BIAS_PREFACTOR,IBIASPOLY,NBIASPOLY,       &
+                BIASPOLY,I_QBIAS_A,I_QBIAS_B,CCEV_DIST,PEXCLD)
+             USE AMHGLOBALS,  ONLY:SO,MAXCNT,AMHMAXSIZ,MAXCRD
+             INTEGER, INTENT(IN):: MAXR,MAXTAB 
+             INTEGER, INTENT(IN):: CRDIXN(MAXTAB,2),NUMLNG(0:AMHMAXSIZ,MAXTAB),NMRES, &
+                  ILONG(MAXCNT,2,MAXTAB),NBIASPOLY
+              DOUBLE PRECISION, INTENT(IN):: VPOTNT(0:MAXR+1,MAXCNT,MAXTAB),  &
+                  FORSE(0:MAXR+1,MAXCNT,MAXTAB),PRO_CORD(AMHMAXSIZ,3,MAXCRD),  &
+                  RINCINV(MAXCNT,MAXTAB),RINCSQ(MAXCNT,MAXTAB),NGOMB,BIAS_AV,BIAS_VAR,BIAS_PREFACTOR, &
+                  BIASPOLY(1:100),CCEV_DIST(MAXCNT,MAXTAB),PEXCLD
+              DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD),E(:,:),TRGENG(MAXTAB,3)
+             LOGICAL, INTENT(IN):: IGOMB,TEMPAV,IBIASGAUSS,IBIASPOLY,I_QBIAS_A,I_QBIAS_B
+           END SUBROUTINE LOOKUP
+        END INTERFACE
 
-        interface
-           subroutine Q_bias_seg_b(distne,f_cord,nmres,E,xdiff,ydiff,zdiff)
-             use amhglobals,  only:SO, AMHmaxsiz,maxtab,maxcnt,maxcrd
-              double precision, intent(in)::distne(maxcnt,maxtab), &
-                       xdiff(maxcnt,maxtab),ydiff(maxcnt,maxtab), &
-                       zdiff(maxcnt,maxtab)
-              double precision, intent(out)::f_cord(AMHmaxsiz,3,maxcrd),E(:,:)
-             integer, intent(in):: nmres
-           end subroutine Q_bias_seg_b
-        end interface
+        INTERFACE
+           SUBROUTINE  NON_ADD_CONTACT(PRO_CORD,NMRES,TEMPAV,F_CORD,E)
+             USE AMHGLOBALS,  ONLY : AMHMAXSIZ,MAXCRD
+              DOUBLE PRECISION, INTENT(IN):: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
+             INTEGER, INTENT(IN):: NMRES
+             LOGICAL, INTENT(IN):: TEMPAV
+              DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD)
+              DOUBLE PRECISION, INTENT(OUT):: E
+           END SUBROUTINE NON_ADD_CONTACT
+        END INTERFACE
 
-        interface
-           subroutine rama(ires,jstrt,jfins,pro_cord,f_cord, &
-                ramascl,ramapot,nitcord,cprcord)
-             use amhglobals,  only:SO, AMHmaxsiz,maxcrd
-              double precision, intent(in) :: pro_cord(AMHmaxsiz,3,maxcrd),ramascl, &
-                  nitcord(AMHmaxsiz,3),cprcord(AMHmaxsiz,3)
-              double precision, intent(out) :: f_cord(AMHmaxsiz,3,maxcrd),ramapot(AMHmaxsiz)
-             integer, intent(in):: ires(AMHmaxsiz),jstrt,jfins
-           end subroutine rama
-        end interface
-
-        interface
-           subroutine rep_bias(prcord,frcord,E)
-             use amhglobals,  only:SO, AMHmaxsiz,maxcrd,maxpro
-              double precision, intent(in):: prcord(AMHmaxsiz,3,maxpro,maxcrd)
-              double precision, intent(out):: frcord(AMHmaxsiz,3,maxpro,maxcrd),E
-           end subroutine rep_bias
-        end interface
-
-        interface
-           subroutine rep_contact(xcord)
-             use amhglobals,  only:SO, AMHmaxsiz,maxcrd
-              double precision, intent(in):: xcord(AMHmaxsiz,3,maxcrd)
-           end subroutine rep_contact
-        end interface
+        INTERFACE
+           SUBROUTINE OXY(MAXTAB,IRES, JSTRT,JFINS,PRO_CORD,F_CORD, &
+                EQDIST,OXSCL,CHRLSCL,RAMASCL,             &  
+                OXEXCLDV,NUMLNG,ILONG,NMRES,E)
+             USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXCRD,MAXCNT
+              DOUBLE PRECISION, INTENT(IN) :: PRO_CORD(AMHMAXSIZ,3,MAXCRD),EQDIST(:),OXSCL, &
+                  CHRLSCL,RAMASCL
+              DOUBLE PRECISION, INTENT(OUT) :: F_CORD(AMHMAXSIZ,3,MAXCRD),E(:,:)
+             INTEGER, INTENT(IN):: MAXTAB,IRES(AMHMAXSIZ),JSTRT,JFINS, &
+                  NUMLNG(0:AMHMAXSIZ,MAXTAB),ILONG(MAXCNT,2,4),NMRES
+             LOGICAL, INTENT(IN):: OXEXCLDV
+           END SUBROUTINE OXY
+        END INTERFACE
 
 
-        interface
-           subroutine Rg_bias(pro_cord,f_cord,E,tempav)
-             use amhglobals,  only:SO, AMHmaxsiz,maxcrd
-             logical, intent(in):: tempav
-              double precision, intent(in), dimension(AMHmaxsiz,3,maxcrd)::  pro_cord
-              double precision, intent(out), dimension(AMHmaxsiz,3,maxcrd):: f_cord
-              double precision, intent(out):: E(:,:)
-           end subroutine Rg_bias
-        end interface
+        INTERFACE
+           SUBROUTINE Q_BIAS_SEG_A(DISTNE,F_CORD,NMRES,E,XDIFF,YDIFF,ZDIFF)
+             USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXTAB,MAXCNT,MAXCRD
+              DOUBLE PRECISION, INTENT(IN)::DISTNE(MAXCNT,MAXTAB), &
+                       XDIFF(MAXCNT,MAXTAB),YDIFF(MAXCNT,MAXTAB), &
+                       ZDIFF(MAXCNT,MAXTAB)
+              DOUBLE PRECISION, INTENT(OUT)::F_CORD(AMHMAXSIZ,3,MAXCRD),E(:,:)
+             INTEGER, INTENT(IN):: NMRES
+           END SUBROUTINE Q_BIAS_SEG_A
+        END INTERFACE
+
+        INTERFACE
+           SUBROUTINE Q_BIAS_SEG_B(DISTNE,F_CORD,NMRES,E,XDIFF,YDIFF,ZDIFF)
+             USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXTAB,MAXCNT,MAXCRD
+              DOUBLE PRECISION, INTENT(IN)::DISTNE(MAXCNT,MAXTAB), &
+                       XDIFF(MAXCNT,MAXTAB),YDIFF(MAXCNT,MAXTAB), &
+                       ZDIFF(MAXCNT,MAXTAB)
+              DOUBLE PRECISION, INTENT(OUT)::F_CORD(AMHMAXSIZ,3,MAXCRD),E(:,:)
+             INTEGER, INTENT(IN):: NMRES
+           END SUBROUTINE Q_BIAS_SEG_B
+        END INTERFACE
+
+        INTERFACE
+           SUBROUTINE RAMA(IRES,JSTRT,JFINS,PRO_CORD,F_CORD, &
+                RAMASCL,RAMAPOT,NITCORD,CPRCORD)
+             USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXCRD
+              DOUBLE PRECISION, INTENT(IN) :: PRO_CORD(AMHMAXSIZ,3,MAXCRD),RAMASCL, &
+                  NITCORD(AMHMAXSIZ,3),CPRCORD(AMHMAXSIZ,3)
+              DOUBLE PRECISION, INTENT(OUT) :: F_CORD(AMHMAXSIZ,3,MAXCRD),RAMAPOT(AMHMAXSIZ)
+             INTEGER, INTENT(IN):: IRES(AMHMAXSIZ),JSTRT,JFINS
+           END SUBROUTINE RAMA
+        END INTERFACE
+
+        INTERFACE
+           SUBROUTINE REP_BIAS(PRCORD,FRCORD,E)
+             USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXCRD,MAXPRO
+              DOUBLE PRECISION, INTENT(IN):: PRCORD(AMHMAXSIZ,3,MAXPRO,MAXCRD)
+              DOUBLE PRECISION, INTENT(OUT):: FRCORD(AMHMAXSIZ,3,MAXPRO,MAXCRD),E
+           END SUBROUTINE REP_BIAS
+        END INTERFACE
+
+        INTERFACE
+           SUBROUTINE REP_CONTACT(XCORD)
+             USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXCRD
+              DOUBLE PRECISION, INTENT(IN):: XCORD(AMHMAXSIZ,3,MAXCRD)
+           END SUBROUTINE REP_CONTACT
+        END INTERFACE
 
 
-      end module amh_interfaces
+        INTERFACE
+           SUBROUTINE RG_BIAS(PRO_CORD,F_CORD,E,TEMPAV)
+             USE AMHGLOBALS,  ONLY:SO, AMHMAXSIZ,MAXCRD
+             LOGICAL, INTENT(IN):: TEMPAV
+              DOUBLE PRECISION, INTENT(IN), DIMENSION(AMHMAXSIZ,3,MAXCRD)::  PRO_CORD
+              DOUBLE PRECISION, INTENT(OUT), DIMENSION(AMHMAXSIZ,3,MAXCRD):: F_CORD
+              DOUBLE PRECISION, INTENT(OUT):: E(:,:)
+           END SUBROUTINE RG_BIAS
+        END INTERFACE
+
+
+      END MODULE AMH_INTERFACES
 

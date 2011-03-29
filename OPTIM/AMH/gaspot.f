@@ -1,1024 +1,1024 @@
-c   --------------------- gaspot ----------------------
+C   --------------------- GASPOT ----------------------
 
-      subroutine gaspot(maxsd,target,bondln,curtab,nmcrd,cdtyp1,cdtyp2,passi,passf)
+      SUBROUTINE GASPOT(MAXSD,TARGET,BONDLN,CURTAB,NMCRD,CDTYP1,CDTYP2,PASSI,PASSF)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     GASPOT find ungeneralized potential
+C     GASPOT FIND UNGENERALIZED POTENTIAL
 
-ccccccccccccccccccccccccccccccccccccccccccccccc
-c
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C
 
-c     arguments:
+C     ARGUMENTS:
 
-c        maxsd - maximum protein length (i)
-c        target- target protein (i)
-c        bondln- target protein's bond lengths (o)
-c        curtab- index for current table to be
-c                constructed (i)
-c        nmcrd- number of coordinate types (i)
-c        cdtyp1- tpye id for coordinate set 1 (i)
-c        cdtyp2- tpye id for coordinate set 2 (i)
-c        passi - true on first pass through 
-c                subroutine; otherwise false (i)[
-c        passf - true on last pass through 
-c                subroutine; otherwise false(i)
-c
-c      Variable names lifted from gaussv.f
-c        gaussp- gaussian as a function of the r-grid
-c                in rgrid (o)
-c        rgrid - grid of r points for which the gaussian
-c                is to be computed (i)        
-c      -----------------------------------------------
-c
-c
-c
-c        dist_ij        distance i to j in the memory
-c        id1
-c     ---------------------------------------------------
-c
-c  NB:
-c      Part of the reason for the length, and confusion in this subroutine is
-c     historical in nature.  Before homology matching of residues, each 
-c     residue was compared to other residues in a sliding window,
-c     from -n11 to n11, and from -n33 to n33, were compared.
-c
-c
-c Program Logic
-c -------------
-c       rtlist = 0
-c
-c
-c509        Loop over memories (25%)
-c                Call getmem (29%)
-c               Call hprofl (hydscl
-c                Call hprofl (hydscl
-c
-c                If first memory (target)  -->
-c                       Call pttarg
-c                       Continue to next memory (35%)
-c
-c                If first memory protien;
-c                        Compare names protnm(1) and protnm(0)
-c
-c               Read in match file
-c
-c519                Loop over each interaction (43%)
-c
-c
-c                        Determine category of interaction (55%)
-c                        Call charge
-c                       If charge = 0, to to 519 (? next ixn)
-c                        Call gaussv to create gaussian curve around dist_ij
-c
-c                        Continue to next interaction (80%)
-c
-c      Continue to next memory (80%)
-c
-      use amhglobals,  only:SO, maxs,maxcnt,maxmem,numlng,nmres,
-     *      iprolst,vpotnt,icon,forse,dist_cut,
-     *      idigns,nummem,protnm,imemri,maxres,jres,numcrd,
-     *      mempre,oarchv,sa,iwork,aminoa,hydseq,
-     *      AMHmaxsiz,ires,shydro,tarpre,numtab,ran_force,
-     *      ran_file,iran,iseed_amh,s_ran,lambdaR,allow_neg,oran,ilong,
-     *      i_alt_prox,rinc,srcut,alt_prox_cut,ran_min_seq_dist,
-     *      qchrg,qchrg2,deltz,welscl,r_ran,
-     *      rincinv,rincsq,work2,four_plus,
-     *      ywork,work8,hydscl,min_seq_sep,i_3rd_is_contact,
-     *      n_letters,r_min,r_max,gly_con,i_V_test,test_site,
-     *      ixn_from_site,minmr,maxmr,max_well,alpha_c_of_n,
-     *      ab_c_of_n_old,ab_c_of_n_new,num_well,i_contact_order,
-     *      i_contact_order_min,i_contact_order_max,r_min_contact_order,
-     *      r_max_contact_order,gamma_contact_order,imat,
-     *      n_contact_order_terms,numseq,ave_seq,itarg_seq,
-     *      ave_seq_amc,numseq_amc,tgsequences_amc,
-     *      ovgaspot,maxseq,tgsequences,targ_cons,go_con,go_con_dist
+C        MAXSD - MAXIMUM PROTEIN LENGTH (I)
+C        TARGET- TARGET PROTEIN (I)
+C        BONDLN- TARGET PROTEIN'S BOND LENGTHS (O)
+C        CURTAB- INDEX FOR CURRENT TABLE TO BE
+C                CONSTRUCTED (I)
+C        NMCRD- NUMBER OF COORDINATE TYPES (I)
+C        CDTYP1- TPYE ID FOR COORDINATE SET 1 (I)
+C        CDTYP2- TPYE ID FOR COORDINATE SET 2 (I)
+C        PASSI - TRUE ON FIRST PASS THROUGH 
+C                SUBROUTINE; OTHERWISE FALSE (I)[
+C        PASSF - TRUE ON LAST PASS THROUGH 
+C                SUBROUTINE; OTHERWISE FALSE(I)
+C
+C      VARIABLE NAMES LIFTED FROM GAUSSV.F
+C        GAUSSP- GAUSSIAN AS A FUNCTION OF THE R-GRID
+C                IN RGRID (O)
+C        RGRID - GRID OF R POINTS FOR WHICH THE GAUSSIAN
+C                IS TO BE COMPUTED (I)        
+C      -----------------------------------------------
+C
+C
+C
+C        DIST_IJ        DISTANCE I TO J IN THE MEMORY
+C        ID1
+C     ---------------------------------------------------
+C
+C  NB:
+C      PART OF THE REASON FOR THE LENGTH, AND CONFUSION IN THIS SUBROUTINE IS
+C     HISTORICAL IN NATURE.  BEFORE HOMOLOGY MATCHING OF RESIDUES, EACH 
+C     RESIDUE WAS COMPARED TO OTHER RESIDUES IN A SLIDING WINDOW,
+C     FROM -N11 TO N11, AND FROM -N33 TO N33, WERE COMPARED.
+C
+C
+C PROGRAM LOGIC
+C -------------
+C       RTLIST = 0
+C
+C
+C509        LOOP OVER MEMORIES (25%)
+C                CALL GETMEM (29%)
+C               CALL HPROFL (HYDSCL
+C                CALL HPROFL (HYDSCL
+C
+C                IF FIRST MEMORY (TARGET)  -->
+C                       CALL PTTARG
+C                       CONTINUE TO NEXT MEMORY (35%)
+C
+C                IF FIRST MEMORY PROTIEN;
+C                        COMPARE NAMES PROTNM(1) AND PROTNM(0)
+C
+C               READ IN MATCH FILE
+C
+C519                LOOP OVER EACH INTERACTION (43%)
+C
+C
+C                        DETERMINE CATEGORY OF INTERACTION (55%)
+C                        CALL CHARGE
+C                       IF CHARGE = 0, TO TO 519 (? NEXT IXN)
+C                        CALL GAUSSV TO CREATE GAUSSIAN CURVE AROUND DIST_IJ
+C
+C                        CONTINUE TO NEXT INTERACTION (80%)
+C
+C      CONTINUE TO NEXT MEMORY (80%)
+C
+      USE AMHGLOBALS,  ONLY:SO, MAXS,MAXCNT,MAXMEM,NUMLNG,NMRES,
+     *      IPROLST,VPOTNT,ICON,FORSE,DIST_CUT,
+     *      IDIGNS,NUMMEM,PROTNM,IMEMRI,MAXRES,JRES,NUMCRD,
+     *      MEMPRE,OARCHV,SA,IWORK,AMINOA,HYDSEQ,
+     *      AMHMAXSIZ,IRES,SHYDRO,TARPRE,NUMTAB,RAN_FORCE,
+     *      RAN_FILE,IRAN,ISEED_AMH,S_RAN,LAMBDAR,ALLOW_NEG,ORAN,ILONG,
+     *      I_ALT_PROX,RINC,SRCUT,ALT_PROX_CUT,RAN_MIN_SEQ_DIST,
+     *      QCHRG,QCHRG2,DELTZ,WELSCL,R_RAN,
+     *      RINCINV,RINCSQ,WORK2,FOUR_PLUS,
+     *      YWORK,WORK8,HYDSCL,MIN_SEQ_SEP,I_3RD_IS_CONTACT,
+     *      N_LETTERS,R_MIN,R_MAX,GLY_CON,I_V_TEST,TEST_SITE,
+     *      IXN_FROM_SITE,MINMR,MAXMR,MAX_WELL,ALPHA_C_OF_N,
+     *      AB_C_OF_N_OLD,AB_C_OF_N_NEW,NUM_WELL,I_CONTACT_ORDER,
+     *      I_CONTACT_ORDER_MIN,I_CONTACT_ORDER_MAX,R_MIN_CONTACT_ORDER,
+     *      R_MAX_CONTACT_ORDER,GAMMA_CONTACT_ORDER,IMAT,
+     *      N_CONTACT_ORDER_TERMS,NUMSEQ,AVE_SEQ,ITARG_SEQ,
+     *      AVE_SEQ_AMC,NUMSEQ_AMC,TGSEQUENCES_AMC,
+     *      OVGASPOT,MAXSEQ,TGSEQUENCES,TARG_CONS,GO_CON,GO_CON_DIST
 
-      implicit none
+      IMPLICIT NONE
 
 
-c     argument declarations:
+C     ARGUMENT DECLARATIONS:
 
-         logical passi,passf,iprox_ran
+         LOGICAL PASSI,PASSF,IPROX_RAN
 
-         integer maxsd,curtab,cdtyp1,cdtyp2,nmcrd,iprox,helix,i_contact_term
+         INTEGER MAXSD,CURTAB,CDTYP1,CDTYP2,NMCRD,IPROX,HELIX,I_CONTACT_TERM
      
-         double precision target(maxsd,3,nmcrd),bondln(maxsd,nmcrd)
+         DOUBLE PRECISION TARGET(MAXSD,3,NMCRD),BONDLN(MAXSD,NMCRD)
 
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-         logical passt,helix_A,helix_B
-         double precision rgrid(maxs), gaussp(maxs),gaussq(maxs),ran_num(1:maxcnt),delt_safe,theta,rnmres,
-     *        theta_dot,force_term(6),vpotint_test(1:maxs+1),t_min,t_max,r_temp
+         LOGICAL PASST,HELIX_A,HELIX_B
+         DOUBLE PRECISION RGRID(MAXS), GAUSSP(MAXS),GAUSSQ(MAXS),RAN_NUM(1:MAXCNT),DELT_SAFE,THETA,RNMRES,
+     *        THETA_DOT,FORCE_TERM(6),VPOTINT_TEST(1:MAXS+1),T_MIN,T_MAX,R_TEMP
 
-         integer indxt,nmrss(0:maxmem),maxsz,maxs2, match(maxres),j,i_r,ii,
-     *           i,id1, id2, id3, id4,idummy,i_test_tab,
-     *           i_test_ixn,tab_for_contact,open_status,count,i_mem, i_ixn, i_res,i_well
+         INTEGER INDXT,NMRSS(0:MAXMEM),MAXSZ,MAXS2, MATCH(MAXRES),J,I_R,II,
+     *           I,ID1, ID2, ID3, ID4,IDUMMY,I_TEST_TAB,
+     *           I_TEST_IXN,TAB_FOR_CONTACT,OPEN_STATUS,COUNT,I_MEM, I_IXN, I_RES,I_WELL
 
-        integer i514,i515,i544,i1,i2,i516,i507,i522,i588,i504,i523,i589,i503,i532,i518
+        INTEGER I514,I515,I544,I1,I2,I516,I507,I522,I588,I504,I523,I589,I503,I532,I518
 
-         integer iseq,connmres
+         INTEGER ISEQ,CONNMRES
 
-         double precision rnorm,delt2,totchg(max_well),long_nfactor(max_well),dist_ij,m,c,dist_prox
+         DOUBLE PRECISION RNORM,DELT2,TOTCHG(MAX_WELL),LONG_NFACTOR(MAX_WELL),DIST_IJ,M,C,DIST_PROX
 
-         character*5 profl,tarfl
-         character*42 confile
-         character*33 profile
-         character*36 matfile
-         character*10 ccount1,ccount2,ccount3
-         character*30 blah
-c     required subroutines
+         CHARACTER*5 PROFL,TARFL
+         CHARACTER*42 CONFILE
+         CHARACTER*33 PROFILE
+         CHARACTER*36 MATFILE
+         CHARACTER*10 CCOUNT1,CCOUNT2,CCOUNT3
+         CHARACTER*30 BLAH
+C     REQUIRED SUBROUTINES
 
-         external getmem,gaussv,hprofl,pttarg,gaussw,num_to_char,SLARNV
+         EXTERNAL GETMEM,GAUSSV,HPROFL,PTTARG,GAUSSW,NUM_TO_CHAR,SLARNV
 
-c     --------------------- begin -----------------------
-c     set various variables
+C     --------------------- BEGIN -----------------------
+C     SET VARIOUS VARIABLES
 
-      indxt=numlng(nmres,curtab)
+      INDXT=NUMLNG(NMRES,CURTAB)
 
-c     rewind data base file
-      rewind iprolst
+C     REWIND DATA BASE FILE
+      REWIND IPROLST
 
-c     set number points to be analyzed or set the table size
+C     SET NUMBER POINTS TO BE ANALYZED OR SET THE TABLE SIZE
 
-       maxsz=maxs
-       maxs2=maxs
+       MAXSZ=MAXS
+       MAXS2=MAXS
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c   set long_nfactor which is some fudge factor for the
-c   contact potentials (it partially allows for the effect of 
-c   size -- which the fraction of contacts at a certain distance
-c   depends on). It should be the same as included in the
-c   optimisation. In corey's code it is in qchrgmk.f instead.
-c   Johan: added long_nfactor for 2-wells 
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C   SET LONG_NFACTOR WHICH IS SOME FUDGE FACTOR FOR THE
+C   CONTACT POTENTIALS (IT PARTIALLY ALLOWS FOR THE EFFECT OF 
+C   SIZE -- WHICH THE FRACTION OF CONTACTS AT A CERTAIN DISTANCE
+C   DEPENDS ON). IT SHOULD BE THE SAME AS INCLUDED IN THE
+C   OPTIMISATION. IN COREY'S CODE IT IS IN QCHRGMK.F INSTEAD.
+C   JOHAN: ADDED LONG_NFACTOR FOR 2-WELLS 
 
-        long_nfactor=1.0D0
+        LONG_NFACTOR=1.0D0
 
-c   start if alpha_c_of_n 
-        if ( alpha_c_of_n ) then
+C   START IF ALPHA_C_OF_N 
+        IF ( ALPHA_C_OF_N ) THEN
 
-       do ii=1,max_well,1
-         long_nfactor(ii)=1.0D0
-       enddo
-       rnmres=real(nmres)
+       DO II=1,MAX_WELL,1
+         LONG_NFACTOR(II)=1.0D0
+       ENDDO
+       RNMRES=REAL(NMRES)
 
-        if (num_well .eq. 2) then
-         long_nfactor(2)=1.0D0/(rnmres*0.012D0 + 0.87D0)
-        elseif (num_well .eq. 3) then
-         long_nfactor(2)=1.0D0/(rnmres*0.0065D0 + 0.87D0)
-         long_nfactor(3)=1.0D0/(rnmres*0.04187261D0 + 0.1256658D0)
-        elseif (num_well .eq. 10) then
-         long_nfactor(1)=1.0D0/(rnmres*0.0008D0 + 0.09D0)
-         long_nfactor(2)=1.0D0/(rnmres*0.0009D0 + 0.16D0)
-         long_nfactor(3)=1.0D0/(rnmres*0.001D0 + 0.20D0)
-         long_nfactor(4)=1.0D0/(rnmres*0.003D0 + 0.29D0)
-         long_nfactor(5)=1.0D0/(rnmres*0.004D0 + 0.53D0)
-         long_nfactor(6)=1.0D0/(rnmres*0.004D0 + 0.76D0)
-         long_nfactor(7)=1.0D0/(rnmres*0.005D0 + 0.77D0)
-         long_nfactor(8)=1.0D0/(rnmres*0.005D0 + 0.94D0)
-         long_nfactor(9)=1.0D0/(rnmres*0.006D0 + 1.18D0)
-         long_nfactor(10)=1.0D0/(rnmres*0.013D0 + 1.8D0)
-        else
-           write(SO,*) 'unsupported no of wells (alpha_c_of_n)',num_well
-           stop
-        endif
+        IF (NUM_WELL .EQ. 2) THEN
+         LONG_NFACTOR(2)=1.0D0/(RNMRES*0.012D0 + 0.87D0)
+        ELSEIF (NUM_WELL .EQ. 3) THEN
+         LONG_NFACTOR(2)=1.0D0/(RNMRES*0.0065D0 + 0.87D0)
+         LONG_NFACTOR(3)=1.0D0/(RNMRES*0.04187261D0 + 0.1256658D0)
+        ELSEIF (NUM_WELL .EQ. 10) THEN
+         LONG_NFACTOR(1)=1.0D0/(RNMRES*0.0008D0 + 0.09D0)
+         LONG_NFACTOR(2)=1.0D0/(RNMRES*0.0009D0 + 0.16D0)
+         LONG_NFACTOR(3)=1.0D0/(RNMRES*0.001D0 + 0.20D0)
+         LONG_NFACTOR(4)=1.0D0/(RNMRES*0.003D0 + 0.29D0)
+         LONG_NFACTOR(5)=1.0D0/(RNMRES*0.004D0 + 0.53D0)
+         LONG_NFACTOR(6)=1.0D0/(RNMRES*0.004D0 + 0.76D0)
+         LONG_NFACTOR(7)=1.0D0/(RNMRES*0.005D0 + 0.77D0)
+         LONG_NFACTOR(8)=1.0D0/(RNMRES*0.005D0 + 0.94D0)
+         LONG_NFACTOR(9)=1.0D0/(RNMRES*0.006D0 + 1.18D0)
+         LONG_NFACTOR(10)=1.0D0/(RNMRES*0.013D0 + 1.8D0)
+        ELSE
+           WRITE(SO,*) 'UNSUPPORTED NO OF WELLS (ALPHA_C_OF_N)',NUM_WELL
+           STOP
+        ENDIF
 
-       endif
-c   end if alpha_c_of_n 
+       ENDIF
+C   END IF ALPHA_C_OF_N 
 
-       if (ab_c_of_n_new) then
-       rnmres=real(nmres)
-        if (num_well .eq. 2) then
-          long_nfactor(1)= ( 0.035D0*rnmres)/(rnmres*0.043D0 + 1.0D0)
-          long_nfactor(2)=( 0.07D0*rnmres)/(rnmres*0.023D0 + 1.0D0)
-           long_nfactor(1)=1.0D0/(long_nfactor(1))
-           long_nfactor(2)=1.0D0/(long_nfactor(2))
-        elseif (num_well .eq. 3) then
-          long_nfactor(1)= ( 0.0843467D0*rnmres)/(rnmres*0.0453928D0 + 1.0D0)
-          long_nfactor(2)=( 0.0669808D0*rnmres)/(rnmres*0.025112D0 + 1.0D0)
-          long_nfactor(3)=( 0.18665D0*rnmres) /(rnmres*0.0107983D0 + 1.0D0)
-           long_nfactor(1)=1.0D0/(long_nfactor(1))
-           long_nfactor(2)=1.0D0/(long_nfactor(2))
-           long_nfactor(3)=1.0D0/(long_nfactor(3))
-        elseif (num_well .eq. 5) then
+       IF (AB_C_OF_N_NEW) THEN
+       RNMRES=REAL(NMRES)
+        IF (NUM_WELL .EQ. 2) THEN
+          LONG_NFACTOR(1)= ( 0.035D0*RNMRES)/(RNMRES*0.043D0 + 1.0D0)
+          LONG_NFACTOR(2)=( 0.07D0*RNMRES)/(RNMRES*0.023D0 + 1.0D0)
+           LONG_NFACTOR(1)=1.0D0/(LONG_NFACTOR(1))
+           LONG_NFACTOR(2)=1.0D0/(LONG_NFACTOR(2))
+        ELSEIF (NUM_WELL .EQ. 3) THEN
+          LONG_NFACTOR(1)= ( 0.0843467D0*RNMRES)/(RNMRES*0.0453928D0 + 1.0D0)
+          LONG_NFACTOR(2)=( 0.0669808D0*RNMRES)/(RNMRES*0.025112D0 + 1.0D0)
+          LONG_NFACTOR(3)=( 0.18665D0*RNMRES) /(RNMRES*0.0107983D0 + 1.0D0)
+           LONG_NFACTOR(1)=1.0D0/(LONG_NFACTOR(1))
+           LONG_NFACTOR(2)=1.0D0/(LONG_NFACTOR(2))
+           LONG_NFACTOR(3)=1.0D0/(LONG_NFACTOR(3))
+        ELSEIF (NUM_WELL .EQ. 5) THEN
 
-         long_nfactor(1)=( 0.0297375D0*rnmres) /(rnmres*0.02977935D0 + 1.0D0)
-         long_nfactor(2)=( 0.0389704D0*rnmres) /(rnmres*0.021101D0 + 1.0D0)
-         long_nfactor(3)=( 0.0596751D0*rnmres) /(rnmres*0.0133269D0  + 1.0D0)
-         long_nfactor(4)=( 0.0681322D0*rnmres) /(rnmres*0.0100256D0 + 1.0D0)
-         long_nfactor(5)=( 0.0729201D0*rnmres) /(rnmres*0.00347563D0 + 1.0D0)
+         LONG_NFACTOR(1)=( 0.0297375D0*RNMRES) /(RNMRES*0.02977935D0 + 1.0D0)
+         LONG_NFACTOR(2)=( 0.0389704D0*RNMRES) /(RNMRES*0.021101D0 + 1.0D0)
+         LONG_NFACTOR(3)=( 0.0596751D0*RNMRES) /(RNMRES*0.0133269D0  + 1.0D0)
+         LONG_NFACTOR(4)=( 0.0681322D0*RNMRES) /(RNMRES*0.0100256D0 + 1.0D0)
+         LONG_NFACTOR(5)=( 0.0729201D0*RNMRES) /(RNMRES*0.00347563D0 + 1.0D0)
 
-         long_nfactor(1)=1.0D0/(long_nfactor(1))
-         long_nfactor(2)=1.0D0/(long_nfactor(2))
-         long_nfactor(3)=1.0D0/(long_nfactor(3))
-         long_nfactor(4)=1.0D0/(long_nfactor(4))
-         long_nfactor(5)=1.0D0/(long_nfactor(5))
+         LONG_NFACTOR(1)=1.0D0/(LONG_NFACTOR(1))
+         LONG_NFACTOR(2)=1.0D0/(LONG_NFACTOR(2))
+         LONG_NFACTOR(3)=1.0D0/(LONG_NFACTOR(3))
+         LONG_NFACTOR(4)=1.0D0/(LONG_NFACTOR(4))
+         LONG_NFACTOR(5)=1.0D0/(LONG_NFACTOR(5))
 
-       elseif (num_well .eq. 10) then
+       ELSEIF (NUM_WELL .EQ. 10) THEN
 
-        long_nfactor(1)=( 0.0785047D0*rnmres) /(rnmres*0.245032D0 + 1.0D0)
-        long_nfactor(2)=( 0.0152761D0*rnmres) /(rnmres*0.0283803D0 + 1.0D0)
-        long_nfactor(3)=( 0.205481D0*rnmres) /(rnmres*0.385813D0  + 1.0D0)
-        long_nfactor(4)=( 0.0174765D0*rnmres) /(rnmres*0.0174638D0 + 1.0D0)
-        long_nfactor(5)=( 0.0352685D0*rnmres) /(rnmres*0.0269838D0 + 1.0D0)
-        long_nfactor(6)=( 0.0474026D0*rnmres) /(rnmres*0.0249249D0 + 1.0D0)
-        long_nfactor(7)=( 0.18665D0 *rnmres) /(rnmres*0.0107983D0 + 1.0D0)
-        long_nfactor(8)=( 0.0390303D0*rnmres) /(rnmres*0.0140943D0 + 1.0D0)
-        long_nfactor(9)=( 0.0327411D0*rnmres) /(rnmres*0.00812347D0 + 1.0D0)
-        long_nfactor(10)=( 0.0561461D0*rnmres) /(rnmres*0.00743991D0 + 1.0D0)
+        LONG_NFACTOR(1)=( 0.0785047D0*RNMRES) /(RNMRES*0.245032D0 + 1.0D0)
+        LONG_NFACTOR(2)=( 0.0152761D0*RNMRES) /(RNMRES*0.0283803D0 + 1.0D0)
+        LONG_NFACTOR(3)=( 0.205481D0*RNMRES) /(RNMRES*0.385813D0  + 1.0D0)
+        LONG_NFACTOR(4)=( 0.0174765D0*RNMRES) /(RNMRES*0.0174638D0 + 1.0D0)
+        LONG_NFACTOR(5)=( 0.0352685D0*RNMRES) /(RNMRES*0.0269838D0 + 1.0D0)
+        LONG_NFACTOR(6)=( 0.0474026D0*RNMRES) /(RNMRES*0.0249249D0 + 1.0D0)
+        LONG_NFACTOR(7)=( 0.18665D0 *RNMRES) /(RNMRES*0.0107983D0 + 1.0D0)
+        LONG_NFACTOR(8)=( 0.0390303D0*RNMRES) /(RNMRES*0.0140943D0 + 1.0D0)
+        LONG_NFACTOR(9)=( 0.0327411D0*RNMRES) /(RNMRES*0.00812347D0 + 1.0D0)
+        LONG_NFACTOR(10)=( 0.0561461D0*RNMRES) /(RNMRES*0.00743991D0 + 1.0D0)
 
-           long_nfactor(1)=1.0D0/(long_nfactor(1))
-           long_nfactor(2)=1.0D0/(long_nfactor(2))
-           long_nfactor(3)=1.0D0/(long_nfactor(3))
-           long_nfactor(4)=1.0D0/(long_nfactor(4))
-           long_nfactor(5)=1.0D0/(long_nfactor(5))
-           long_nfactor(6)=1.0D0/(long_nfactor(6))
-           long_nfactor(7)=1.0D0/(long_nfactor(7))
-           long_nfactor(8)=1.0D0/(long_nfactor(8))
-           long_nfactor(9)=1.0D0/(long_nfactor(9))
-           long_nfactor(10)=1.0D0/(long_nfactor(10))
+           LONG_NFACTOR(1)=1.0D0/(LONG_NFACTOR(1))
+           LONG_NFACTOR(2)=1.0D0/(LONG_NFACTOR(2))
+           LONG_NFACTOR(3)=1.0D0/(LONG_NFACTOR(3))
+           LONG_NFACTOR(4)=1.0D0/(LONG_NFACTOR(4))
+           LONG_NFACTOR(5)=1.0D0/(LONG_NFACTOR(5))
+           LONG_NFACTOR(6)=1.0D0/(LONG_NFACTOR(6))
+           LONG_NFACTOR(7)=1.0D0/(LONG_NFACTOR(7))
+           LONG_NFACTOR(8)=1.0D0/(LONG_NFACTOR(8))
+           LONG_NFACTOR(9)=1.0D0/(LONG_NFACTOR(9))
+           LONG_NFACTOR(10)=1.0D0/(LONG_NFACTOR(10))
 
-        else
-            write(SO,*) 'num_well problem for ab_c_of_n_new',num_well
-            stop 
-        endif
-       endif
+        ELSE
+            WRITE(SO,*) 'NUM_WELL PROBLEM FOR AB_C_OF_N_NEW',NUM_WELL
+            STOP 
+        ENDIF
+       ENDIF
 
-       if (ab_c_of_n_old) then
-       rnmres=real(nmres)
-       long_nfactor(1)=1.0D0/(rnmres*0.0015D0 + 1.94D0)
-       long_nfactor(2)=1.0D0/(rnmres*0.0032D0 + 1.83D0)
-       long_nfactor(3)=1.0D0/(rnmres*0.022D0 + 7.77D0)
+       IF (AB_C_OF_N_OLD) THEN
+       RNMRES=REAL(NMRES)
+       LONG_NFACTOR(1)=1.0D0/(RNMRES*0.0015D0 + 1.94D0)
+       LONG_NFACTOR(2)=1.0D0/(RNMRES*0.0032D0 + 1.83D0)
+       LONG_NFACTOR(3)=1.0D0/(RNMRES*0.022D0 + 7.77D0)
 
-       if (num_well.ne.3) then 
-         write(SO,*) 'numwell must be 3 for ab_c_of_n_*old*',num_well
-         stop
-       endif
+       IF (NUM_WELL.NE.3) THEN 
+         WRITE(SO,*) 'NUMWELL MUST BE 3 FOR AB_C_OF_N_*OLD*',NUM_WELL
+         STOP
+       ENDIF
 
-       endif
+       ENDIF
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     initialize potential and force table
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     INITIALIZE POTENTIAL AND FORCE TABLE
 
-        do 514 i514=1,indxt
-          do 515 i515=0,maxs2+1
-            vpotnt(i515,i514,curtab)=0.0D0
-            forse(i515,i514,curtab)=0.0D0
-  515     continue
-  514   continue
+        DO 514 I514=1,INDXT
+          DO 515 I515=0,MAXS2+1
+            VPOTNT(I515,I514,CURTAB)=0.0D0
+            FORSE(I515,I514,CURTAB)=0.0D0
+  515     CONTINUE
+  514   CONTINUE
 
-      idigns=.false.
-      if( passi )then
-         passt=.true.
-      else
-         passt=.false.
-      endif
+      IDIGNS=.FALSE.
+      IF( PASSI )THEN
+         PASST=.TRUE.
+      ELSE
+         PASST=.FALSE.
+      ENDIF
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c   read target (which is considered 0th memory)
-         read (iprolst,1000)tarfl
-1000     format(a5)
-c         profile='/home/mprentis/amh/proteins/'//tarfl
-           profile='/home/mprentis/amh/proteins/'//tarfl
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C   READ TARGET (WHICH IS CONSIDERED 0TH MEMORY)
+         READ (IPROLST,1000)TARFL
+1000     FORMAT(A5)
+C         PROFILE='/HOME/MPRENTIS/AMH/PROTEINS/'//TARFL
+           PROFILE='/HOME/MPRENTIS/AMH/PROTEINS/'//TARFL
 
-         protnm(0)=tarfl
-         matfile='match/'//trim(tarfl)//'/'//tarfl
+         PROTNM(0)=TARFL
+         MATFILE='MATCH/'//TRIM(TARFL)//'/'//TARFL
 
-          open(imemri,file='proteins/'//tarfl,
-     *                          status='old',iostat=open_status)
+          OPEN(IMEMRI,FILE='PROTEINS/'//TARFL,
+     *                          STATUS='OLD',IOSTAT=OPEN_STATUS)
 
-         if (open_status.ne.0) then
-           write(6,*) 'failure to open profile 0th mem file '
-           write(6,*) 'error number ',open_status
-           stop
-         endif
+         IF (OPEN_STATUS.NE.0) THEN
+           WRITE(6,*) 'FAILURE TO OPEN PROFILE 0TH MEM FILE '
+           WRITE(6,*) 'ERROR NUMBER ',OPEN_STATUS
+           STOP
+         ENDIF
 
-c        read in memory protein coordinates, and primary sequence and crystal
-c        secondary structure
+C        READ IN MEMORY PROTEIN COORDINATES, AND PRIMARY SEQUENCE AND CRYSTAL
+C        SECONDARY STRUCTURE
 
-c         write(6,*)'call getmem '
+C         WRITE(6,*)'CALL GETMEM '
 
-         call getmem(protnm(0),nmrss(0),maxres,jres,imemri,numcrd,ywork,
-     *               mempre(1,curtab),oarchv,sa,iwork,passt,0)
+         CALL GETMEM(PROTNM(0),NMRSS(0),MAXRES,JRES,IMEMRI,NUMCRD,YWORK,
+     *               MEMPRE(1,CURTAB),OARCHV,SA,IWORK,PASST,0)
 
-         close(imemri)
+         CLOSE(IMEMRI)
 
-         work8(1)=float(nmrss(0))
+         WORK8(1)=FLOAT(NMRSS(0))
 
-c        set hydrophobicity profile
+C        SET HYDROPHOBICITY PROFILE
 
-c         write(6,*)'call hprofl1 '
-         call hprofl(maxres,nmrss(0),jres,hydseq(1,1,curtab),hydscl(0,1))
+C         WRITE(6,*)'CALL HPROFL1 '
+         CALL HPROFL(MAXRES,NMRSS(0),JRES,HYDSEQ(1,1,CURTAB),HYDSCL(0,1))
 
-c         write(6,*)'call hprofl2 '
-         call hprofl(maxres,nmrss(0),jres,hydseq(1,2,curtab),hydscl(0,2))
+C         WRITE(6,*)'CALL HPROFL2 '
+         CALL HPROFL(MAXRES,NMRSS(0),JRES,HYDSEQ(1,2,CURTAB),HYDSCL(0,2))
 
-c   place coordinates in target
-c       and sequence profile in tres
+C   PLACE COORDINATES IN TARGET
+C       AND SEQUENCE PROFILE IN TRES
 
-c         write(6,*)'call pttarg '
-           call pttarg(AMHmaxsiz,nmrss(0),numcrd,target,maxres,ywork,ires,jres,
-     *                 shydro(1,1,curtab),hydseq(1,1,curtab),tarpre(1,curtab),
-     *                 mempre(1,curtab),bondln,oarchv,passi)
+C         WRITE(6,*)'CALL PTTARG '
+           CALL PTTARG(AMHMAXSIZ,NMRSS(0),NUMCRD,TARGET,MAXRES,YWORK,IRES,JRES,
+     *                 SHYDRO(1,1,CURTAB),HYDSEQ(1,1,CURTAB),TARPRE(1,CURTAB),
+     *                 MEMPRE(1,CURTAB),BONDLN,OARCHV,PASSI)
 
-c  end of reading target info
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-c     contact order term
+C  END OF READING TARGET INFO
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+C     CONTACT ORDER TERM
 
-c      write(6,*)'out of  pttarg '
+C      WRITE(6,*)'OUT OF  PTTARG '
 
-       if (i_contact_order.and.curtab.eq.4) then
-         do i_ixn=1,indxt
-           id3=ilong(i_ixn,1,curtab)
-           id4=ilong(i_ixn,2,curtab)
-           do i_contact_term=1,n_contact_order_terms
-           if (  (id4-id3.ge.i_contact_order_min(i_contact_term)) .and.
-     *        (id4-id3.le.i_contact_order_max(i_contact_term)) .and.
-     *                    ires(id3).ne.8 .and.
-     *                        ires(id4).ne.8 )  then
-              do i_r=1,maxsz
-                 r_temp=rinc(i_ixn,curtab)*real(i_r)
-          t_min=tanh(7.0D0*(r_temp-r_min_contact_order(i_contact_term)))
-          t_max=tanh(7.0D0*(r_max_contact_order(i_contact_term)-r_temp))
-                 theta = (gamma_contact_order(i_contact_term,1)
-     *              +gamma_contact_order(i_contact_term,2)*
-     *           ((id4-id3)**gamma_contact_order(i_contact_term,3)) )*
-     *              0.25D0*( 1.0D0+t_min )*( 1.0+t_max )
-                 theta_dot=7.0D0*theta*(t_max-t_min)
+       IF (I_CONTACT_ORDER.AND.CURTAB.EQ.4) THEN
+         DO I_IXN=1,INDXT
+           ID3=ILONG(I_IXN,1,CURTAB)
+           ID4=ILONG(I_IXN,2,CURTAB)
+           DO I_CONTACT_TERM=1,N_CONTACT_ORDER_TERMS
+           IF (  (ID4-ID3.GE.I_CONTACT_ORDER_MIN(I_CONTACT_TERM)) .AND.
+     *        (ID4-ID3.LE.I_CONTACT_ORDER_MAX(I_CONTACT_TERM)) .AND.
+     *                    IRES(ID3).NE.8 .AND.
+     *                        IRES(ID4).NE.8 )  THEN
+              DO I_R=1,MAXSZ
+                 R_TEMP=RINC(I_IXN,CURTAB)*REAL(I_R)
+          T_MIN=TANH(7.0D0*(R_TEMP-R_MIN_CONTACT_ORDER(I_CONTACT_TERM)))
+          T_MAX=TANH(7.0D0*(R_MAX_CONTACT_ORDER(I_CONTACT_TERM)-R_TEMP))
+                 THETA = (GAMMA_CONTACT_ORDER(I_CONTACT_TERM,1)
+     *              +GAMMA_CONTACT_ORDER(I_CONTACT_TERM,2)*
+     *           ((ID4-ID3)**GAMMA_CONTACT_ORDER(I_CONTACT_TERM,3)) )*
+     *              0.25D0*( 1.0D0+T_MIN )*( 1.0+T_MAX )
+                 THETA_DOT=7.0D0*THETA*(T_MAX-T_MIN)
 
-                 vpotnt(i_r,i_ixn,curtab)=vpotnt(i_r,i_ixn,curtab)+theta
-                 forse(i_r,i_ixn,curtab)=forse(i_r,i_ixn,curtab)-theta_dot/r_temp
-              enddo
+                 VPOTNT(I_R,I_IXN,CURTAB)=VPOTNT(I_R,I_IXN,CURTAB)+THETA
+                 FORSE(I_R,I_IXN,CURTAB)=FORSE(I_R,I_IXN,CURTAB)-THETA_DOT/R_TEMP
+              ENDDO
 
-           endif
-           enddo
-         enddo
-       endif
+           ENDIF
+           ENDDO
+         ENDDO
+       ENDIF
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     read in sequences to average force over, if avg_seq is on
-c      if (ave_seq) then
-c          write(6,*)'target_sequences'
-c        open(itarg_seq,file='target_sequences',status='old')
-c           read(itarg_seq,*)numseq
-c           write(6,*)'numseq'
-c        do iseq = 1,numseq
-c          read(itarg_seq,999)(tgsequences(id3,iseq),id3=1,nmres)
-c          write(6,999)(tgsequences(id3,iseq),id3=1,nmres)
-c999       format(25(i2,1x))
-c        enddo
-c        close(itarg_seq)
-c      else
-c        numseq = 1
-c!        tgsequences(1:nmres,1)=ires(1:nmres)
-c      endif
-c          if((ave_seq) .and. (numseq.gt.maxseq) ) then
-c            write(6,*) 'numseq greater than maxseq'
-c            stop
-c          endif
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     READ IN SEQUENCES TO AVERAGE FORCE OVER, IF AVG_SEQ IS ON
+C      IF (AVE_SEQ) THEN
+C          WRITE(6,*)'TARGET_SEQUENCES'
+C        OPEN(ITARG_SEQ,FILE='TARGET_SEQUENCES',STATUS='OLD')
+C           READ(ITARG_SEQ,*)NUMSEQ
+C           WRITE(6,*)'NUMSEQ'
+C        DO ISEQ = 1,NUMSEQ
+C          READ(ITARG_SEQ,999)(TGSEQUENCES(ID3,ISEQ),ID3=1,NMRES)
+C          WRITE(6,999)(TGSEQUENCES(ID3,ISEQ),ID3=1,NMRES)
+C999       FORMAT(25(I2,1X))
+C        ENDDO
+C        CLOSE(ITARG_SEQ)
+C      ELSE
+C        NUMSEQ = 1
+C!        TGSEQUENCES(1:NMRES,1)=IRES(1:NMRES)
+C      ENDIF
+C          IF((AVE_SEQ) .AND. (NUMSEQ.GT.MAXSEQ) ) THEN
+C            WRITE(6,*) 'NUMSEQ GREATER THAN MAXSEQ'
+C            STOP
+C          ENDIF
 
-         if (targ_cons) then
-       confile='/home/mprentis/amh/md_input/targcons/'//tarfl
-c               123456789012345678901234567890123456789012345678
-          write(6,*)'targ_cons directory = ' , confile
-          open(icon,file=confile,status='old',iostat=open_status)
-               if (open_status.ne.0) then
-                 write(6,*) 'failure to open file ',profile
-                 write(6,*) 'error number ',open_status
-                 stop
-               endif
-               read(icon,*)blah
-               read(icon,102)connmres
-               read(icon,999)(tgsequences(i1,numseq),i1=1,nmres)
-999            format(25(i2,1x))
-              write(6,*)'targ_cons sequence'
-               write(6,999)(tgsequences(i1,numseq),i1=1,nmres)
+         IF (TARG_CONS) THEN
+       CONFILE='/HOME/MPRENTIS/AMH/MD_INPUT/TARGCONS/'//TARFL
+C               123456789012345678901234567890123456789012345678
+          WRITE(6,*)'TARG_CONS DIRECTORY = ' , CONFILE
+          OPEN(ICON,FILE=CONFILE,STATUS='OLD',IOSTAT=OPEN_STATUS)
+               IF (OPEN_STATUS.NE.0) THEN
+                 WRITE(6,*) 'FAILURE TO OPEN FILE ',PROFILE
+                 WRITE(6,*) 'ERROR NUMBER ',OPEN_STATUS
+                 STOP
+               ENDIF
+               READ(ICON,*)BLAH
+               READ(ICON,102)CONNMRES
+               READ(ICON,999)(TGSEQUENCES(I1,NUMSEQ),I1=1,NMRES)
+999            FORMAT(25(I2,1X))
+              WRITE(6,*)'TARG_CONS SEQUENCE'
+               WRITE(6,999)(TGSEQUENCES(I1,NUMSEQ),I1=1,NMRES)
                                                                                 
-102            format (i5)
-                write(6,*)'connmres =',connmres
-                if( connmres .gt.maxres )then
-C                   write(oarchv,611)protnm,nmrss,maxres
-611                format('targ_cons ',a5,' too large ',i4,
-     *                   ' reserved space ',i4)
-                     write(6,611)protnm,nmrss,maxres
-                     PRINT '(A,2I8)',' AMH/gaspot> ERROR **** connmres > maxres, values ',connmres,maxres
-                     stop
-                endif
-                if (connmres .ne. nmres )then
-c                   write(oarchv,612)connmres,nmres
-612                format('connmres',i5,' .ne. nmres ',i5,' 612 gaspot')
-                   write(6,612)connmres,nmres
-                   PRINT '(A,2I8)',' AMH/gaspot> ERROR **** connmres not = nmres, values ',connmres,nmres
-                   stop
-                endif
-          close(icon)
-        endif ! if (targ_cons)
+102            FORMAT (I5)
+                WRITE(6,*)'CONNMRES =',CONNMRES
+                IF( CONNMRES .GT.MAXRES )THEN
+C                   WRITE(OARCHV,611)PROTNM,NMRSS,MAXRES
+611                FORMAT('TARG_CONS ',A5,' TOO LARGE ',I4,
+     *                   ' RESERVED SPACE ',I4)
+                     WRITE(6,611)PROTNM,NMRSS,MAXRES
+                     PRINT '(A,2I8)',' AMH/GASPOT> ERROR **** CONNMRES > MAXRES, VALUES ',CONNMRES,MAXRES
+                     STOP
+                ENDIF
+                IF (CONNMRES .NE. NMRES )THEN
+C                   WRITE(OARCHV,612)CONNMRES,NMRES
+612                FORMAT('CONNMRES',I5,' .NE. NMRES ',I5,' 612 GASPOT')
+                   WRITE(6,612)CONNMRES,NMRES
+                   PRINT '(A,2I8)',' AMH/GASPOT> ERROR **** CONNMRES NOT = NMRES, VALUES ',CONNMRES,NMRES
+                   STOP
+                ENDIF
+          CLOSE(ICON)
+        ENDIF ! IF (TARG_CONS)
 
-         if (curtab.eq.1) then
-c                   write(6,*)'target  sequence   ',targ_cons
-c               do 909 a2=1,numseq
-c                    write(6,999)(tgsequences(i1,a2),i1=1,nmres)
-c909            continue
-         endif  
+         IF (CURTAB.EQ.1) THEN
+C                   WRITE(6,*)'TARGET  SEQUENCE   ',TARG_CONS
+C               DO 909 A2=1,NUMSEQ
+C                    WRITE(6,999)(TGSEQUENCES(I1,A2),I1=1,NMRES)
+C909            CONTINUE
+         ENDIF  
                                                                           
-c!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-c     loop over each memory
+C!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+C     LOOP OVER EACH MEMORY
 
-      do 509 i_mem=1,nummem
-         read (iprolst,1000)profl
+      DO 509 I_MEM=1,NUMMEM
+         READ (IPROLST,1000)PROFL
                                                                                 
-         protnm(i_mem)=profl
-         matfile='/home/mprentis/amh/match/'//trim(tarfl)//'/'//profl
-c insert targ_cons seq part here for memories
-c  /home/mprentis/amh/consens_seq
+         PROTNM(I_MEM)=PROFL
+         MATFILE='/HOME/MPRENTIS/AMH/MATCH/'//TRIM(TARFL)//'/'//PROFL
+C INSERT TARG_CONS SEQ PART HERE FOR MEMORIES
+C  /HOME/MPRENTIS/AMH/CONSENS_SEQ
 
-c           write(6,*) 'matfile ',matfile
-c           write(6,*) 'profile ',profile 
+C           WRITE(6,*) 'MATFILE ',MATFILE
+C           WRITE(6,*) 'PROFILE ',PROFILE 
 
-          open(imemri,file='proteins/'//profl,status='old',iostat=open_status)
+          OPEN(IMEMRI,FILE='PROTEINS/'//PROFL,STATUS='OLD',IOSTAT=OPEN_STATUS)
 
-         if (open_status.ne.0) then
-           write(SO,*) 'failure to open protein 543 file '
-           write(SO,*) 'error number ',open_status
-           stop
-         endif
+         IF (OPEN_STATUS.NE.0) THEN
+           WRITE(SO,*) 'FAILURE TO OPEN PROTEIN 543 FILE '
+           WRITE(SO,*) 'ERROR NUMBER ',OPEN_STATUS
+           STOP
+         ENDIF
  
-c        read in memory protein coordinates, and primary sequence and crystal 
-c        secondary structure
+C        READ IN MEMORY PROTEIN COORDINATES, AND PRIMARY SEQUENCE AND CRYSTAL 
+C        SECONDARY STRUCTURE
 
-c         write (6,*)'call getmem '
-         call getmem(protnm(i_mem),nmrss(i_mem),maxres,jres,imemri,numcrd,ywork,
-     *               mempre(1,curtab),oarchv,sa,iwork,passt,i_mem)
+C         WRITE (6,*)'CALL GETMEM '
+         CALL GETMEM(PROTNM(I_MEM),NMRSS(I_MEM),MAXRES,JRES,IMEMRI,NUMCRD,YWORK,
+     *               MEMPRE(1,CURTAB),OARCHV,SA,IWORK,PASST,I_MEM)
 
-         close(imemri)
+         CLOSE(IMEMRI)
  
-         work8(i_mem+1)=float(nmrss(i_mem))
+         WORK8(I_MEM+1)=FLOAT(NMRSS(I_MEM))
 
-c        set hydrophobicity profile
+C        SET HYDROPHOBICITY PROFILE
 
-         call hprofl(maxres,nmrss(i_mem),jres,hydseq(1,1,curtab),hydscl(0,1))
-         call hprofl(maxres,nmrss(i_mem),jres,hydseq(1,2,curtab),hydscl(0,2))
+         CALL HPROFL(MAXRES,NMRSS(I_MEM),JRES,HYDSEQ(1,1,CURTAB),HYDSCL(0,1))
+         CALL HPROFL(MAXRES,NMRSS(I_MEM),JRES,HYDSEQ(1,2,CURTAB),HYDSCL(0,2))
 
-c        read in and label secondary structure based on data bank lables
+C        READ IN AND LABEL SECONDARY STRUCTURE BASED ON DATA BANK LABLES
 
-c000000000000000000000000000000000000000000000000000000000000000000
-
-
-         if( passf.and.(i_mem.eq.1) )then
-c            write(oarchv,905)protnm(0),protnm(i_mem)
-  905       format(/'2nd structures for ',a5,2x,a5)
-            do 544 i544=1,nmrss(i_mem)
-               write(oarchv,904)i544,aminoa(jres(i544)),
-     *                          (tarpre(i544,i1),
-     *                          (int(shydro(i544,i2,i1)),
-     *                           i2=1,2),i1=1,numtab)
-  904          format(i4,1x,a3,2x,4(3(i2,1x),1x))
-  544       continue
-         endif
-
-cMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
-c  Read in match file
-c
-c          read in alignments
-           do 670 i1=1,maxres
-             match(i1)=0
-670           continue
-         open(imat,file='match/'//trim(tarfl)//'/'//profl,
-     *                     status='old',iostat=open_status)
-
-         if (open_status.ne.0) then
-           write(SO,*) 'failure to open file match 594 '
-           write(SO,*) 'error number ',open_status
-           stop
-         endif
-
-           read (imat,*)
-           read (imat,1002)(match(i_res), i_res=1,nmres)
-1002       format(10(i4))
-          close (imat)
-
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-
-         if (ran_force .and. curtab.eq.1) then
-           if (ran_file) then
-             open(iran,file='random_in',status='old')
-             read(iran,*) idummy
-              if (idummy .ne. indxt) then
-                write(SO,*) 'wrong no of interactions in random_in'
-                write(SO,*) idummy,indxt
-                stop
-              endif
-              read(iran,*) (ran_num(i), i=1,indxt)
-           else
-             call SLARNV(3,iseed_amh(1),indxt,ran_num) !should be gaussian dist mean 0, sd 1  
-             do j=1,indxt
-               ran_num(j) = ran_num(j)*s_ran + lambdaR
-               if (ran_num(j).lt.0.0D0.and.(.not.allow_neg)) ran_num(j)=0.0D0
-             enddo
-           endif
-           open(oran,file='random_out',status='new')
-             write(oran,*) indxt
-             write(oran,*) (ran_num(i), i=1,indxt)
-           close(oran)
-         endif
+C000000000000000000000000000000000000000000000000000000000000000000
 
 
-c        loop over each constraint
+         IF( PASSF.AND.(I_MEM.EQ.1) )THEN
+C            WRITE(OARCHV,905)PROTNM(0),PROTNM(I_MEM)
+  905       FORMAT(/'2ND STRUCTURES FOR ',A5,2X,A5)
+            DO 544 I544=1,NMRSS(I_MEM)
+               WRITE(OARCHV,904)I544,AMINOA(JRES(I544)),
+     *                          (TARPRE(I544,I1),
+     *                          (INT(SHYDRO(I544,I2,I1)),
+     *                           I2=1,2),I1=1,NUMTAB)
+  904          FORMAT(I4,1X,A3,2X,4(3(I2,1X),1X))
+  544       CONTINUE
+         ENDIF
 
-         do 519 i_ixn=1,indxt
+CMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMMM
+C  READ IN MATCH FILE
+C
+C          READ IN ALIGNMENTS
+           DO 670 I1=1,MAXRES
+             MATCH(I1)=0
+670           CONTINUE
+         OPEN(IMAT,FILE='MATCH/'//TRIM(TARFL)//'/'//PROFL,
+     *                     STATUS='OLD',IOSTAT=OPEN_STATUS)
 
-c            set r-grid
+         IF (OPEN_STATUS.NE.0) THEN
+           WRITE(SO,*) 'FAILURE TO OPEN FILE MATCH 594 '
+           WRITE(SO,*) 'ERROR NUMBER ',OPEN_STATUS
+           STOP
+         ENDIF
+
+           READ (IMAT,*)
+           READ (IMAT,1002)(MATCH(I_RES), I_RES=1,NMRES)
+1002       FORMAT(10(I4))
+          CLOSE (IMAT)
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+         IF (RAN_FORCE .AND. CURTAB.EQ.1) THEN
+           IF (RAN_FILE) THEN
+             OPEN(IRAN,FILE='RANDOM_IN',STATUS='OLD')
+             READ(IRAN,*) IDUMMY
+              IF (IDUMMY .NE. INDXT) THEN
+                WRITE(SO,*) 'WRONG NO OF INTERACTIONS IN RANDOM_IN'
+                WRITE(SO,*) IDUMMY,INDXT
+                STOP
+              ENDIF
+              READ(IRAN,*) (RAN_NUM(I), I=1,INDXT)
+           ELSE
+             CALL SLARNV(3,ISEED_AMH(1),INDXT,RAN_NUM) !SHOULD BE GAUSSIAN DIST MEAN 0, SD 1  
+             DO J=1,INDXT
+               RAN_NUM(J) = RAN_NUM(J)*S_RAN + LAMBDAR
+               IF (RAN_NUM(J).LT.0.0D0.AND.(.NOT.ALLOW_NEG)) RAN_NUM(J)=0.0D0
+             ENDDO
+           ENDIF
+           OPEN(ORAN,FILE='RANDOM_OUT',STATUS='NEW')
+             WRITE(ORAN,*) INDXT
+             WRITE(ORAN,*) (RAN_NUM(I), I=1,INDXT)
+           CLOSE(ORAN)
+         ENDIF
+
+
+C        LOOP OVER EACH CONSTRAINT
+
+         DO 519 I_IXN=1,INDXT
+
+C            SET R-GRID
                
-             do 516 i516=1,maxsz
-               rgrid(i516)=rinc(i_ixn,curtab)*float(i516)
-516          continue
+             DO 516 I516=1,MAXSZ
+               RGRID(I516)=RINC(I_IXN,CURTAB)*FLOAT(I516)
+516          CONTINUE
 
-c      id3, id4 are the i and j indices (respectively) for the target protein
+C      ID3, ID4 ARE THE I AND J INDICES (RESPECTIVELY) FOR THE TARGET PROTEIN
 
-            id3=ilong(i_ixn,1,curtab)
-            id4=ilong(i_ixn,2,curtab)
+            ID3=ILONG(I_IXN,1,CURTAB)
+            ID4=ILONG(I_IXN,2,CURTAB)
 
-c      id1, id2 are the i and j indices (respectively) in the memory protein
-c      that id3 and id4 are aligned to
+C      ID1, ID2 ARE THE I AND J INDICES (RESPECTIVELY) IN THE MEMORY PROTEIN
+C      THAT ID3 AND ID4 ARE ALIGNED TO
 
-            id1=match(id3)
-            id2=match(id4)
+            ID1=MATCH(ID3)
+            ID2=MATCH(ID4)
 
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c use memory secondary structural info: currently in some encodings the interactions
-c are given a different weight (ie gamma value) if *either* one of the residues
-c involved is aligned to a helical residue in the memory
-c I made this bit of the code a bit more long-winded than before to avoid looking up
-c mempre(id1,curtab) when id1=0 (non-aligned) because this is outside the array.
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C USE MEMORY SECONDARY STRUCTURAL INFO: CURRENTLY IN SOME ENCODINGS THE INTERACTIONS
+C ARE GIVEN A DIFFERENT WEIGHT (IE GAMMA VALUE) IF *EITHER* ONE OF THE RESIDUES
+C INVOLVED IS ALIGNED TO A HELICAL RESIDUE IN THE MEMORY
+C I MADE THIS BIT OF THE CODE A BIT MORE LONG-WINDED THAN BEFORE TO AVOID LOOKING UP
+C MEMPRE(ID1,CURTAB) WHEN ID1=0 (NON-ALIGNED) BECAUSE THIS IS OUTSIDE THE ARRAY.
 
-              if (id1.eq.0) then  !first residue not aligned => not aligned to helix
-                helix_A=.false.
-              else
-                if (mempre(id1,curtab) .eq. 1) then 
-                   helix_A=.true.    !first residue aligned to helix
-                else
-                   helix_A=.false.    !first residue *NOT* aligned to helix
-                endif
-              endif
-              if (id2.eq.0) then  !second residue not aligned => not aligned to helix
-                helix_B=.false.
-              else
-                if (mempre(id2,curtab) .eq. 1) then 
-                   helix_B=.true.    !second residue aligned to helix
-                else
-                   helix_B=.false.    !second residue *NOT* aligned to helix
-                endif
-              endif
+              IF (ID1.EQ.0) THEN  !FIRST RESIDUE NOT ALIGNED => NOT ALIGNED TO HELIX
+                HELIX_A=.FALSE.
+              ELSE
+                IF (MEMPRE(ID1,CURTAB) .EQ. 1) THEN 
+                   HELIX_A=.TRUE.    !FIRST RESIDUE ALIGNED TO HELIX
+                ELSE
+                   HELIX_A=.FALSE.    !FIRST RESIDUE *NOT* ALIGNED TO HELIX
+                ENDIF
+              ENDIF
+              IF (ID2.EQ.0) THEN  !SECOND RESIDUE NOT ALIGNED => NOT ALIGNED TO HELIX
+                HELIX_B=.FALSE.
+              ELSE
+                IF (MEMPRE(ID2,CURTAB) .EQ. 1) THEN 
+                   HELIX_B=.TRUE.    !SECOND RESIDUE ALIGNED TO HELIX
+                ELSE
+                   HELIX_B=.FALSE.    !SECOND RESIDUE *NOT* ALIGNED TO HELIX
+                ENDIF
+              ENDIF
               
-              if (helix_A.or.helix_B) then
-                 helix = 1
-              else
-                 helix = 2
-              endif
+              IF (HELIX_A.OR.HELIX_B) THEN
+                 HELIX = 1
+              ELSE
+                 HELIX = 2
+              ENDIF
 
               
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-ccc             check if match file corrupted   ccccccccc
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+CCC             CHECK IF MATCH FILE CORRUPTED   CCCCCCCCC
 
-              if( (id1.gt.nmrss(i_mem)).or.(id1.lt.0) ) then
-                  write(SO,*) 'match file corrupted'
-                  write(SO,*) 'memory number',i_mem,'residue',id3
-                  write(SO,*) 'id1=',id1
-                  write(SO,*) 'id3=',id3
-                  write(SO,*) (match(i),i=1,nmres)
-                  stop
-              endif
-              if( (id2.gt.nmrss(i_mem)).or.(id2.lt.0).or.
-     *              ( (id2-id1.le.0) .and. (id2*id1.ne.0) ) )then
-                  write(SO,*) 'match file corrupted'
-                  write(SO,*) 'memory number',i_mem,'residue',id4
-                  write(SO,*) 'id2=',id2
-                  write(SO,*) 'id1=',id1
-                  stop
-              endif
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+              IF( (ID1.GT.NMRSS(I_MEM)).OR.(ID1.LT.0) ) THEN
+                  WRITE(SO,*) 'MATCH FILE CORRUPTED'
+                  WRITE(SO,*) 'MEMORY NUMBER',I_MEM,'RESIDUE',ID3
+                  WRITE(SO,*) 'ID1=',ID1
+                  WRITE(SO,*) 'ID3=',ID3
+                  WRITE(SO,*) (MATCH(I),I=1,NMRES)
+                  STOP
+              ENDIF
+              IF( (ID2.GT.NMRSS(I_MEM)).OR.(ID2.LT.0).OR.
+     *              ( (ID2-ID1.LE.0) .AND. (ID2*ID1.NE.0) ) )THEN
+                  WRITE(SO,*) 'MATCH FILE CORRUPTED'
+                  WRITE(SO,*) 'MEMORY NUMBER',I_MEM,'RESIDUE',ID4
+                  WRITE(SO,*) 'ID2=',ID2
+                  WRITE(SO,*) 'ID1=',ID1
+                  STOP
+              ENDIF
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 
-            if ( ires(id3).eq.8 .and. ires(id4).eq.8 ) then
-               tab_for_contact=1
-            elseif ( ires(id3).eq.8 .and. ires(id4).ne.8 ) then
-               tab_for_contact=2
-            elseif ( ires(id3).ne.8 .and. ires(id4).eq.8 ) then
-               tab_for_contact=3
-            else
-               tab_for_contact=4
-            endif                 !decide table for contact potential   
-                                  !--usually beta-beta (ie 4) but must
-                                  ! allow for glycines
+            IF ( IRES(ID3).EQ.8 .AND. IRES(ID4).EQ.8 ) THEN
+               TAB_FOR_CONTACT=1
+            ELSEIF ( IRES(ID3).EQ.8 .AND. IRES(ID4).NE.8 ) THEN
+               TAB_FOR_CONTACT=2
+            ELSEIF ( IRES(ID3).NE.8 .AND. IRES(ID4).EQ.8 ) THEN
+               TAB_FOR_CONTACT=3
+            ELSE
+               TAB_FOR_CONTACT=4
+            ENDIF                 !DECIDE TABLE FOR CONTACT POTENTIAL   
+                                  !--USUALLY BETA-BETA (IE 4) BUT MUST
+                                  ! ALLOW FOR GLYCINES
  
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-ccccccccccc reasons to exit loop over ints (consider first only if not contact-int)
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+CCCCCCCCCCC REASONS TO EXIT LOOP OVER INTS (CONSIDER FIRST ONLY IF NOT CONTACT-INT)
 
-            if ( .not. ( id4-id3.gt.12 .and. i_mem.eq.1 .and.
-     *                  curtab.eq.tab_for_contact .and. n_letters.eq.4
-     *                  .and. i_3rd_is_contact ) ) then
-
-
-!             only interactions between residues of certain separation
-              if ((id4-id3).lt.min_seq_sep) goto 519
-
-c             no potential for beta-carbon on glycine 
-               if( (cdtyp1.eq.2).and.(ires(id3).eq.8) )go to 519
-               if( (cdtyp2.eq.2).and.(ires(id4).eq.8) )go to 519
+            IF ( .NOT. ( ID4-ID3.GT.12 .AND. I_MEM.EQ.1 .AND.
+     *                  CURTAB.EQ.TAB_FOR_CONTACT .AND. N_LETTERS.EQ.4
+     *                  .AND. I_3RD_IS_CONTACT ) ) THEN
 
 
-!              if not aligned, go to next interaction
-              if ( (id1.eq.0) .or. (id2.eq.0) ) goto 519
+!             ONLY INTERACTIONS BETWEEN RESIDUES OF CERTAIN SEPARATION
+              IF ((ID4-ID3).LT.MIN_SEQ_SEP) GOTO 519
 
-!             if align to glycine and on beta carbon then skip
-              if( (cdtyp1.eq.2).and.(jres(id1).eq.8) )go to 519
-              if( (cdtyp2.eq.2).and.(jres(id2).eq.8) )go to 519
-
-! exit loop if contact interaction and have a glycine and gly_con is false
-            elseif (.not.gly_con) then 
-              if ( (ires(id3).eq.8).or.(ires(id4).eq.8) ) goto 519
-            endif
-
-ccccccccccc      end of reasons to exit loop over ints
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+C             NO POTENTIAL FOR BETA-CARBON ON GLYCINE 
+               IF( (CDTYP1.EQ.2).AND.(IRES(ID3).EQ.8) )GO TO 519
+               IF( (CDTYP2.EQ.2).AND.(IRES(ID4).EQ.8) )GO TO 519
 
 
-               dist_ij=sqrt((ywork(id1,1,cdtyp1) -
-     *                            ywork(id2,1,cdtyp2))**2 +
-     *                           (ywork(id1,2,cdtyp1) -
-     *                            ywork(id2,2,cdtyp2))**2 +
-     *                           (ywork(id1,3,cdtyp1) -
-     *                            ywork(id2,3,cdtyp2))**2 )
+!              IF NOT ALIGNED, GO TO NEXT INTERACTION
+              IF ( (ID1.EQ.0) .OR. (ID2.EQ.0) ) GOTO 519
 
-              dist_prox =sqrt((ywork(id1,1,1) -
-     *                            ywork(id2,1,1))**2 +
-     *                           (ywork(id1,2,1) -
-     *                            ywork(id2,2,1))**2 +
-     *                           (ywork(id1,3,1) -
-     *                            ywork(id2,3,1))**2 ) 
+!             IF ALIGN TO GLYCINE AND ON BETA CARBON THEN SKIP
+              IF( (CDTYP1.EQ.2).AND.(JRES(ID1).EQ.8) )GO TO 519
+              IF( (CDTYP2.EQ.2).AND.(JRES(ID2).EQ.8) )GO TO 519
 
-c              if ( (curtab.eq.4).and.(i_ixn.eq.101) ) then
-c                write(SO,*) 'distance is',dist_ij
-c                write(SO,*) 'cdtyp1 and 2 are',cdtyp1,cdtyp2
-c              endif
+! EXIT LOOP IF CONTACT INTERACTION AND HAVE A GLYCINE AND GLY_CON IS FALSE
+            ELSEIF (.NOT.GLY_CON) THEN 
+              IF ( (IRES(ID3).EQ.8).OR.(IRES(ID4).EQ.8) ) GOTO 519
+            ENDIF
+
+CCCCCCCCCCC      END OF REASONS TO EXIT LOOP OVER INTS
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c Set category of interaction based on distance in seq and in space.
+               DIST_IJ=SQRT((YWORK(ID1,1,CDTYP1) -
+     *                            YWORK(ID2,1,CDTYP2))**2 +
+     *                           (YWORK(ID1,2,CDTYP1) -
+     *                            YWORK(ID2,2,CDTYP2))**2 +
+     *                           (YWORK(ID1,3,CDTYP1) -
+     *                            YWORK(ID2,3,CDTYP2))**2 )
 
-              if (.not.i_alt_prox) then
+              DIST_PROX =SQRT((YWORK(ID1,1,1) -
+     *                            YWORK(ID2,1,1))**2 +
+     *                           (YWORK(ID1,2,1) -
+     *                            YWORK(ID2,2,1))**2 +
+     *                           (YWORK(ID1,3,1) -
+     *                            YWORK(ID2,3,1))**2 ) 
 
-                   if (dist_ij.lt.srcut) then
-                     if ((id4-id3).lt.minmr) then
-                       iprox=1
-                     else
-                       iprox=2
-                     endif
-                   else
-                     iprox=3
-                   endif
-
-c      Mike changed this so short range in seq pairs actually
-c      go into the long range in seq and space category if they
-c      are separated by more than srcut Angstroms
-c      note also, that I appear to set this for each table, while
-c      corey choses class based only on alpha-alpha dist (+prox)
-c      This is probably not a big deal, but when running using
-c      his gammas, switch i_alt_prox flag to true and will get 
-c      the following proximity classes
+C              IF ( (CURTAB.EQ.4).AND.(I_IXN.EQ.101) ) THEN
+C                WRITE(SO,*) 'DISTANCE IS',DIST_IJ
+C                WRITE(SO,*) 'CDTYP1 AND 2 ARE',CDTYP1,CDTYP2
+C              ENDIF
 
 
-              elseif (.not.i_3rd_is_contact) then
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C SET CATEGORY OF INTERACTION BASED ON DISTANCE IN SEQ AND IN SPACE.
+
+              IF (.NOT.I_ALT_PROX) THEN
+
+                   IF (DIST_IJ.LT.SRCUT) THEN
+                     IF ((ID4-ID3).LT.MINMR) THEN
+                       IPROX=1
+                     ELSE
+                       IPROX=2
+                     ENDIF
+                   ELSE
+                     IPROX=3
+                   ENDIF
+
+C      MIKE CHANGED THIS SO SHORT RANGE IN SEQ PAIRS ACTUALLY
+C      GO INTO THE LONG RANGE IN SEQ AND SPACE CATEGORY IF THEY
+C      ARE SEPARATED BY MORE THAN SRCUT ANGSTROMS
+C      NOTE ALSO, THAT I APPEAR TO SET THIS FOR EACH TABLE, WHILE
+C      COREY CHOSES CLASS BASED ONLY ON ALPHA-ALPHA DIST (+PROX)
+C      THIS IS PROBABLY NOT A BIG DEAL, BUT WHEN RUNNING USING
+C      HIS GAMMAS, SWITCH I_ALT_PROX FLAG TO TRUE AND WILL GET 
+C      THE FOLLOWING PROXIMITY CLASSES
+
+
+              ELSEIF (.NOT.I_3RD_IS_CONTACT) THEN
  
                    
-                   iprox = 4
-                   if ((id4-id3).lt.minmr) iprox=1
-                   if ( ((id4-id3).ge.minmr)
-     *             .and. ((id4-id3).le.maxmr)) iprox=2
-                   if ( ((id4-id3) .gt. maxmr) .and.
-     *             (dist_prox .lt. alt_prox_cut) ) iprox = 3
+                   IPROX = 4
+                   IF ((ID4-ID3).LT.MINMR) IPROX=1
+                   IF ( ((ID4-ID3).GE.MINMR)
+     *             .AND. ((ID4-ID3).LE.MAXMR)) IPROX=2
+                   IF ( ((ID4-ID3) .GT. MAXMR) .AND.
+     *             (DIST_PROX .LT. ALT_PROX_CUT) ) IPROX = 3
 
-              else
+              ELSE
 
-                   iprox = 4
-                   if ((id4-id3).lt.minmr) iprox=1
-                   if ( ((id4-id3).ge.minmr)
-     *             .and. ((id4-id3).le.maxmr)) iprox=2
-                   if ( ((id4-id3) .gt. maxmr).and.(i_mem.eq.1)
-     *               .and. curtab.eq.tab_for_contact ) iprox = 3
+                   IPROX = 4
+                   IF ((ID4-ID3).LT.MINMR) IPROX=1
+                   IF ( ((ID4-ID3).GE.MINMR)
+     *             .AND. ((ID4-ID3).LE.MAXMR)) IPROX=2
+                   IF ( ((ID4-ID3) .GT. MAXMR).AND.(I_MEM.EQ.1)
+     *               .AND. CURTAB.EQ.TAB_FOR_CONTACT ) IPROX = 3
 
-              endif
+              ENDIF
 
-c      random interactions are for sequence separations of
-c      ran_min_seq_dist and above
+C      RANDOM INTERACTIONS ARE FOR SEQUENCE SEPARATIONS OF
+C      RAN_MIN_SEQ_DIST AND ABOVE
 
-              if ((id4-id3).lt.ran_min_seq_dist) then
-                iprox_ran=.false.
-              else
-                iprox_ran=.true.
-              endif   
+              IF ((ID4-ID3).LT.RAN_MIN_SEQ_DIST) THEN
+                IPROX_RAN=.FALSE.
+              ELSE
+                IPROX_RAN=.TRUE.
+              ENDIF   
 
-              if ( i_alt_prox.and.(iprox.eq.4) ) goto 519
+              IF ( I_ALT_PROX.AND.(IPROX.EQ.4) ) GOTO 519
 
 
 
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c               find individual charges and total charge contribution
-c     used to be done in subroutine charge, but now done here
-c     because so short 
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C               FIND INDIVIDUAL CHARGES AND TOTAL CHARGE CONTRIBUTION
+C     USED TO BE DONE IN SUBROUTINE CHARGE, BUT NOW DONE HERE
+C     BECAUSE SO SHORT 
 
-               totchg=0.0D0
-          if (i_3rd_is_contact.and.iprox.eq.3) then
-           do i_well=1,num_well
-            do iseq=1,numseq_amc
-              totchg(i_well)= totchg(i_well)-
-     *        qchrg(tgsequences_amc(id3,iseq),tgsequences_amc(id4,iseq),
-     *        jres(id1),jres(id2),i_well+2)
-                   enddo
-              totchg(i_well)=totchg(i_well)*
-     *                          long_nfactor(i_well)
-                 enddo
-               else
-              if (four_plus .and. iprox .le. 2) then
-          do iseq=1,numseq_amc
-          totchg(1)=totchg(1)-
-     *     qchrg2(tgsequences_amc(id3,iseq),tgsequences_amc(id4,iseq),jres(id1),jres(id2),helix,iprox)
-          enddo
-                 else
-          do iseq=1,numseq_amc
-          totchg(1)=totchg(1)-
-     *     qchrg(tgsequences_amc(id3,iseq),tgsequences_amc(id4,iseq),jres(id1),jres(id2),iprox)
-          enddo
-                 endif
-                 do i_well=2,num_well
-                   totchg(i_well)=0.0D0
-                 enddo
-               endif
+               TOTCHG=0.0D0
+          IF (I_3RD_IS_CONTACT.AND.IPROX.EQ.3) THEN
+           DO I_WELL=1,NUM_WELL
+            DO ISEQ=1,NUMSEQ_AMC
+              TOTCHG(I_WELL)= TOTCHG(I_WELL)-
+     *        QCHRG(TGSEQUENCES_AMC(ID3,ISEQ),TGSEQUENCES_AMC(ID4,ISEQ),
+     *        JRES(ID1),JRES(ID2),I_WELL+2)
+                   ENDDO
+              TOTCHG(I_WELL)=TOTCHG(I_WELL)*
+     *                          LONG_NFACTOR(I_WELL)
+                 ENDDO
+               ELSE
+              IF (FOUR_PLUS .AND. IPROX .LE. 2) THEN
+          DO ISEQ=1,NUMSEQ_AMC
+          TOTCHG(1)=TOTCHG(1)-
+     *     QCHRG2(TGSEQUENCES_AMC(ID3,ISEQ),TGSEQUENCES_AMC(ID4,ISEQ),JRES(ID1),JRES(ID2),HELIX,IPROX)
+          ENDDO
+                 ELSE
+          DO ISEQ=1,NUMSEQ_AMC
+          TOTCHG(1)=TOTCHG(1)-
+     *     QCHRG(TGSEQUENCES_AMC(ID3,ISEQ),TGSEQUENCES_AMC(ID4,ISEQ),JRES(ID1),JRES(ID2),IPROX)
+          ENDDO
+                 ENDIF
+                 DO I_WELL=2,NUM_WELL
+                   TOTCHG(I_WELL)=0.0D0
+                 ENDDO
+               ENDIF
 
-	       if (dist_cut) then
-                if ( (iprox .eq. 2) .and.(dist_ij .gt. 6.5)) then
-                  totchg=0.0D0
-                endif
-                endif
+	       IF (DIST_CUT) THEN
+                IF ( (IPROX .EQ. 2) .AND.(DIST_IJ .GT. 6.5)) THEN
+                  TOTCHG=0.0D0
+                ENDIF
+                ENDIF
 
-               totchg=totchg/real(numseq_amc)
+               TOTCHG=TOTCHG/REAL(NUMSEQ_AMC)
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c              find r-dependence of gaussian potential
-               delt_safe=deltz(i_ixn,curtab)
-               if( welscl )then
-                  call gaussv(maxsz,dist_ij,deltz(i_ixn,curtab),gaussp,rgrid)
-         if ( (go_con) .and. (dist_ij .gt. go_con_dist)) then
-                   gaussp=0.0D0
-          endif
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C              FIND R-DEPENDENCE OF GAUSSIAN POTENTIAL
+               DELT_SAFE=DELTZ(I_IXN,CURTAB)
+               IF( WELSCL )THEN
+                  CALL GAUSSV(MAXSZ,DIST_IJ,DELTZ(I_IXN,CURTAB),GAUSSP,RGRID)
+         IF ( (GO_CON) .AND. (DIST_IJ .GT. GO_CON_DIST)) THEN
+                   GAUSSP=0.0D0
+          ENDIF
 
-               else
-                  call gaussw(maxsz,dist_ij,0.25D0*dist_ij,gaussp,rgrid)
-               endif
+               ELSE
+                  CALL GAUSSW(MAXSZ,DIST_IJ,0.25D0*DIST_IJ,GAUSSP,RGRID)
+               ENDIF
 
-               if (ran_force.and. (curtab.eq.1).and.(iprox_ran)) then
-                  call gaussv(maxsz,r_ran,delt_safe,gaussq,rgrid)
-               endif
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c              combine sequence-structure terms
+               IF (RAN_FORCE.AND. (CURTAB.EQ.1).AND.(IPROX_RAN)) THEN
+                  CALL GAUSSV(MAXSZ,R_RAN,DELT_SAFE,GAUSSQ,RGRID)
+               ENDIF
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C              COMBINE SEQUENCE-STRUCTURE TERMS
 
-               do 507 i507=1,maxsz
+               DO 507 I507=1,MAXSZ
 
-                 if ( i_3rd_is_contact .and.(iprox .eq. 3) ) then
-                   gaussp(i507) = 0.0D0
-                   do i_well=1,num_well
-                     gaussp(i507)= gaussp(i507)+totchg(i_well)*
-     *               0.25D0*((1.0D0 + tanh(7.0D0*(rgrid(i507)-r_min(i_well) )))
-     *               *(1.0D0+tanh(7.0D0*(r_max(i_well)-rgrid(i507)))))
-                   enddo
-                 else
-                   gaussp(i507)=totchg(1)*gaussp(i507)
-                 endif
+                 IF ( I_3RD_IS_CONTACT .AND.(IPROX .EQ. 3) ) THEN
+                   GAUSSP(I507) = 0.0D0
+                   DO I_WELL=1,NUM_WELL
+                     GAUSSP(I507)= GAUSSP(I507)+TOTCHG(I_WELL)*
+     *               0.25D0*((1.0D0 + TANH(7.0D0*(RGRID(I507)-R_MIN(I_WELL) )))
+     *               *(1.0D0+TANH(7.0D0*(R_MAX(I_WELL)-RGRID(I507)))))
+                   ENDDO
+                 ELSE
+                   GAUSSP(I507)=TOTCHG(1)*GAUSSP(I507)
+                 ENDIF
  
-  507          continue
+  507          CONTINUE
 
-c                 set up potential
+C                 SET UP POTENTIAL
      
-                    do 522 i522=1,maxsz
-                        vpotnt(i522,i_ixn,curtab)=vpotnt(i522,i_ixn,curtab) + gaussp(i522)
-  522               continue
+                    DO 522 I522=1,MAXSZ
+                        VPOTNT(I522,I_IXN,CURTAB)=VPOTNT(I522,I_IXN,CURTAB) + GAUSSP(I522)
+  522               CONTINUE
 
-                  if ((curtab.eq.1) .and. ran_force.and. 
-     *                                   (iprox_ran)) then
-                    do 588 i588=1,maxs
-                        gaussq(i588)=gaussq(i588)*ran_num(i_ixn)
-                        vpotnt(i588,i_ixn,1)=vpotnt(i588,i_ixn,1) +gaussq(i588)
- 588               enddo
-                  endif                       
+                  IF ((CURTAB.EQ.1) .AND. RAN_FORCE.AND. 
+     *                                   (IPROX_RAN)) THEN
+                    DO 588 I588=1,MAXS
+                        GAUSSQ(I588)=GAUSSQ(I588)*RAN_NUM(I_IXN)
+                        VPOTNT(I588,I_IXN,1)=VPOTNT(I588,I_IXN,1) +GAUSSQ(I588)
+ 588               ENDDO
+                  ENDIF                       
 
-c                 include r-dependent force term=
-c                 -(1/r)*dV(r)/dr
+C                 INCLUDE R-DEPENDENT FORCE TERM=
+C                 -(1/R)*DV(R)/DR
 
-                  delt2=2.0D0*deltz(i_ixn,curtab)
-                  do 504 i504=1,maxsz
+                  DELT2=2.0D0*DELTZ(I_IXN,CURTAB)
+                  DO 504 I504=1,MAXSZ
 
-                    if (i_3rd_is_contact.and.iprox .eq. 3) then
+                    IF (I_3RD_IS_CONTACT.AND.IPROX .EQ. 3) THEN
 
-                      gaussp(i504)=0.0D0
-                      do i_well=1,num_well
-                        force_term(1)=
-     *                    tanh(7.0D0*(r_max(i_well)-rgrid(i504)))**2  ! G
-                        force_term(2)=
-     *                    -tanh(7.0D0*(rgrid(i504)-r_min(i_well)))**2   ! U
-                        force_term(3)= 
-     *                    tanh(7.0D0*(r_max(i_well)-rgrid(i504)))    !G
-                        force_term(4)= 
-     *                    -tanh(7.0D0*(r_max(i_well)-rgrid(i504)))*    !GU^2
-     *                      tanh(7.0D0*(rgrid(i504)-r_min(i_well)))**2
-                        force_term(5)= 
-     *                    -tanh(7.0D0*(rgrid(i504)-r_min(i_well)))    !U
-                        force_term(6)= 
-     *                    tanh(7.0D0*(rgrid(i504)-r_min(i_well)))*  !UG^2
-     *                    tanh(7.0D0*(r_max(i_well)-rgrid(i504)))**2
+                      GAUSSP(I504)=0.0D0
+                      DO I_WELL=1,NUM_WELL
+                        FORCE_TERM(1)=
+     *                    TANH(7.0D0*(R_MAX(I_WELL)-RGRID(I504)))**2  ! G
+                        FORCE_TERM(2)=
+     *                    -TANH(7.0D0*(RGRID(I504)-R_MIN(I_WELL)))**2   ! U
+                        FORCE_TERM(3)= 
+     *                    TANH(7.0D0*(R_MAX(I_WELL)-RGRID(I504)))    !G
+                        FORCE_TERM(4)= 
+     *                    -TANH(7.0D0*(R_MAX(I_WELL)-RGRID(I504)))*    !GU^2
+     *                      TANH(7.0D0*(RGRID(I504)-R_MIN(I_WELL)))**2
+                        FORCE_TERM(5)= 
+     *                    -TANH(7.0D0*(RGRID(I504)-R_MIN(I_WELL)))    !U
+                        FORCE_TERM(6)= 
+     *                    TANH(7.0D0*(RGRID(I504)-R_MIN(I_WELL)))*  !UG^2
+     *                    TANH(7.0D0*(R_MAX(I_WELL)-RGRID(I504)))**2
 
 
-                       gaussp(i504)=gaussp(i504)
-     *                      -7.0D0*(totchg(i_well)/4.0)* (
-     *                      force_term(1) + force_term(2)
-     *                      + force_term(3) + force_term(4) +
-     *                      force_term(5) + force_term(6) )/rgrid(i504)
-                      enddo
+                       GAUSSP(I504)=GAUSSP(I504)
+     *                      -7.0D0*(TOTCHG(I_WELL)/4.0)* (
+     *                      FORCE_TERM(1) + FORCE_TERM(2)
+     *                      + FORCE_TERM(3) + FORCE_TERM(4) +
+     *                      FORCE_TERM(5) + FORCE_TERM(6) )/RGRID(I504)
+                      ENDDO
 
-                    else
-                      gaussp(i504)=delt2*gaussp(i504)*
-     *                         (1.0D0 - (dist_ij/
-     *                          rgrid(i504)) )
+                    ELSE
+                      GAUSSP(I504)=DELT2*GAUSSP(I504)*
+     *                         (1.0D0 - (DIST_IJ/
+     *                          RGRID(I504)) )
 
-                    endif
+                    ENDIF
 
-  504             continue
+  504             CONTINUE
 
-c                 set up force term
+C                 SET UP FORCE TERM
     
-                    do 523 i523=1,maxsz
-                      forse(i523,i_ixn,curtab)=forse(i523,i_ixn,curtab) + gaussp(i523)
-  523               continue
+                    DO 523 I523=1,MAXSZ
+                      FORSE(I523,I_IXN,CURTAB)=FORSE(I523,I_IXN,CURTAB) + GAUSSP(I523)
+  523               CONTINUE
 
-                  if (curtab.eq.1 .and. ran_force
-     *                          .and.(iprox_ran)) then
-                    do 589 i589=1,maxs
-                      gaussq(i589)=delt2*gaussq(i589)*
-     *                           (1.0D0 - (r_ran/rgrid(i589)) )
+                  IF (CURTAB.EQ.1 .AND. RAN_FORCE
+     *                          .AND.(IPROX_RAN)) THEN
+                    DO 589 I589=1,MAXS
+                      GAUSSQ(I589)=DELT2*GAUSSQ(I589)*
+     *                           (1.0D0 - (R_RAN/RGRID(I589)) )
 
-                        forse(i589,i_ixn,1)=forse(i589,i_ixn,1) + gaussq(i589)
+                        FORSE(I589,I_IXN,1)=FORSE(I589,I_IXN,1) + GAUSSQ(I589)
                       
- 589                enddo
-                  endif                       
+ 589                ENDDO
+                  ENDIF                       
 
-c            end loop over insertions and deletions
+C            END LOOP OVER INSERTIONS AND DELETIONS
 
-  519    continue                        ! End of loop over interactions
-  509 continue                                ! End of loop over memories
+  519    CONTINUE                        ! END OF LOOP OVER INTERACTIONS
+  509 CONTINUE                                ! END OF LOOP OVER MEMORIES
 
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c         prints test potential + force (+integrated force)
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C         PRINTS TEST POTENTIAL + FORCE (+INTEGRATED FORCE)
  
-       if (i_V_test) then
+       IF (I_V_TEST) THEN
 
-         i_test_tab=curtab
-         i_test_ixn=ixn_from_site(test_site(1),test_site(2),i_test_tab)
-         if ( (test_site(1).ne.ilong(i_test_ixn,1,i_test_tab))
-     *    .or.(test_site(2).ne.ilong(i_test_ixn,2,i_test_tab)) )
-     *      then
-            write(SO,*) 'error in gaspot'
-            write(SO,*) 'test sites for table',i_test_tab,'wrong'
-            write(SO,*) 'should be',test_site(1),test_site(2)
-            write(SO,*) 'find from looking up interaction they are'
-            write(SO,*) ilong(i_test_ixn,1,i_test_tab),
-     *                    ilong(i_test_ixn,1,i_test_tab)
-            goto 1111
-          endif
+         I_TEST_TAB=CURTAB
+         I_TEST_IXN=IXN_FROM_SITE(TEST_SITE(1),TEST_SITE(2),I_TEST_TAB)
+         IF ( (TEST_SITE(1).NE.ILONG(I_TEST_IXN,1,I_TEST_TAB))
+     *    .OR.(TEST_SITE(2).NE.ILONG(I_TEST_IXN,2,I_TEST_TAB)) )
+     *      THEN
+            WRITE(SO,*) 'ERROR IN GASPOT'
+            WRITE(SO,*) 'TEST SITES FOR TABLE',I_TEST_TAB,'WRONG'
+            WRITE(SO,*) 'SHOULD BE',TEST_SITE(1),TEST_SITE(2)
+            WRITE(SO,*) 'FIND FROM LOOKING UP INTERACTION THEY ARE'
+            WRITE(SO,*) ILONG(I_TEST_IXN,1,I_TEST_TAB),
+     *                    ILONG(I_TEST_IXN,1,I_TEST_TAB)
+            GOTO 1111
+          ENDIF
 
-         vpotint_test=0.0D0
+         VPOTINT_TEST=0.0D0
 
-         count=test_site(1)
-         call num_to_char(count,ccount1)
-         count=test_site(2)
-         call num_to_char(count,ccount2)
-         count=i_test_tab
-         call num_to_char(count,ccount3)
-         open(ovgaspot,file='V_gaspot_'//trim(ccount1)//'_'//
-     *    trim(ccount2)//'.'//trim(ccount3),status='unknown',
-     *    action='write')
+         COUNT=TEST_SITE(1)
+         CALL NUM_TO_CHAR(COUNT,CCOUNT1)
+         COUNT=TEST_SITE(2)
+         CALL NUM_TO_CHAR(COUNT,CCOUNT2)
+         COUNT=I_TEST_TAB
+         CALL NUM_TO_CHAR(COUNT,CCOUNT3)
+         OPEN(OVGASPOT,FILE='V_GASPOT_'//TRIM(CCOUNT1)//'_'//
+     *    TRIM(CCOUNT2)//'.'//TRIM(CCOUNT3),STATUS='UNKNOWN',
+     *    ACTION='WRITE')
 
-       write(ovgaspot,*) 'r,vpotnt,forse, int force for ixn num,table'
-     *                                  ,i_test_ixn,i_test_tab
-         write(ovgaspot,*) 'sites',ilong(i_test_ixn,1,i_test_tab)
-     *                               ,ilong(i_test_ixn,2,i_test_tab)
-         do i=maxs,1,-1
-           vpotint_test(i)=vpotint_test(i+1)+
-     *                         (1.0D0*rinc(i_test_ixn,i_test_tab))*0.5D0*
-     *                  (forse(i+1,i_test_ixn,i_test_tab)*float(i+1)+
-     *                    forse(i,i_test_ixn,i_test_tab)*
-     *                      float(i))*rinc(i_test_ixn,i_test_tab)
-         enddo
-         do i=1,maxs+1
-           write(ovgaspot,*) float(i)*rinc(i_test_ixn,i_test_tab),
-     *                   vpotnt(i,i_test_ixn,i_test_tab),
-     *     (forse(i,i_test_ixn,i_test_tab)*rinc(i_test_ixn,i_test_tab))
-     *                          *float(i),vpotint_test(i)
-         enddo    
-         close(ovgaspot)
-1111   endif
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-       do i_ixn=1,indxt
-         vpotnt(maxs+1,i_ixn,curtab)=0.0D0
-
-
-       do i=maxs,0,-1
-
-         m=(1.0D0/rinc(i_ixn,curtab))*(forse(i+1,i_ixn,curtab)-forse(i,i_ixn,curtab))
-
-         c=forse(i,i_ixn,curtab)*float(i+1)-forse(i+1,i_ixn,curtab)*float(i)
-
-         vpotnt(i,i_ixn,curtab)=vpotnt(i+1,i_ixn,curtab)+
-     *     m*rinc(i_ixn,curtab)*rinc(i_ixn,curtab)*rinc(i_ixn,curtab)*
-     *      (float( (i+1)*(i+1)-i)-2.0D0/3.0D0)  +
-     *     c*rinc(i_ixn,curtab)*rinc(i_ixn,curtab)*(float(i)+0.5D0)
-
-       enddo
-       enddo
-
-c     write out proteins used in generating potential
-
-      if( passi )then
-c         write(oarchv,177)protnm(0),int(work8(1))
-  177    format(/'target protein ',a5,1x,i5)
-c         write(oarchv,111)nummem
-  111    format('# proteins used in generating potential ',i3)
-c         write(oarchv,114)(protnm(i1),int(work8(i1+1)),i1=1,nummem)
-  114    format(5(a5,1x,i5,2x))
-      endif
-
-c     invert r-grid increment
-
-      do 518 i518=1,indxt
-         rincinv(i518,curtab)=1.0D0/rinc(i518,curtab)
-         rincsq(i518,curtab)=rinc(i518,curtab)*
-     *                              rinc(i518,curtab)
-  518 continue
-
-c     --- diagnostics ---
+       WRITE(OVGASPOT,*) 'R,VPOTNT,FORSE, INT FORCE FOR IXN NUM,TABLE'
+     *                                  ,I_TEST_IXN,I_TEST_TAB
+         WRITE(OVGASPOT,*) 'SITES',ILONG(I_TEST_IXN,1,I_TEST_TAB)
+     *                               ,ILONG(I_TEST_IXN,2,I_TEST_TAB)
+         DO I=MAXS,1,-1
+           VPOTINT_TEST(I)=VPOTINT_TEST(I+1)+
+     *                         (1.0D0*RINC(I_TEST_IXN,I_TEST_TAB))*0.5D0*
+     *                  (FORSE(I+1,I_TEST_IXN,I_TEST_TAB)*FLOAT(I+1)+
+     *                    FORSE(I,I_TEST_IXN,I_TEST_TAB)*
+     *                      FLOAT(I))*RINC(I_TEST_IXN,I_TEST_TAB)
+         ENDDO
+         DO I=1,MAXS+1
+           WRITE(OVGASPOT,*) FLOAT(I)*RINC(I_TEST_IXN,I_TEST_TAB),
+     *                   VPOTNT(I,I_TEST_IXN,I_TEST_TAB),
+     *     (FORSE(I,I_TEST_IXN,I_TEST_TAB)*RINC(I_TEST_IXN,I_TEST_TAB))
+     *                          *FLOAT(I),VPOTINT_TEST(I)
+         ENDDO    
+         CLOSE(OVGASPOT)
+1111   ENDIF
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+       DO I_IXN=1,INDXT
+         VPOTNT(MAXS+1,I_IXN,CURTAB)=0.0D0
 
 
-         do 534 i_ixn=1,indxt
+       DO I=MAXS,0,-1
 
-            id1=ilong(i_ixn,1,curtab)
-            id2=ilong(i_ixn,2,curtab)
+         M=(1.0D0/RINC(I_IXN,CURTAB))*(FORSE(I+1,I_IXN,CURTAB)-FORSE(I,I_IXN,CURTAB))
 
-c           check if endpoints of force small enough
+         C=FORSE(I,I_IXN,CURTAB)*FLOAT(I+1)-FORSE(I+1,I_IXN,CURTAB)*FLOAT(I)
 
-c            if( abs(forse(maxs,i_ixn,curtab)).gt.5.0e-5 )
-c     *         write(oarchv,121)curtab,i_ixn,id1,id2,
-c     *               forse(maxs,i_ixn,curtab)
-c  121          format('F > 5.0e-05:table ',i2,' ixn ',i5,
-c     *                ' between ',2(i3,1x),' F(maxs) ',
-c     *                1pe10.3)
+         VPOTNT(I,I_IXN,CURTAB)=VPOTNT(I+1,I_IXN,CURTAB)+
+     *     M*RINC(I_IXN,CURTAB)*RINC(I_IXN,CURTAB)*RINC(I_IXN,CURTAB)*
+     *      (FLOAT( (I+1)*(I+1)-I)-2.0D0/3.0D0)  +
+     *     C*RINC(I_IXN,CURTAB)*RINC(I_IXN,CURTAB)*(FLOAT(I)+0.5D0)
 
-            if( (id1.eq.0).and.(id2.le.12).and.(cdtyp1.eq.2)  )then
+       ENDDO
+       ENDDO
 
-c              check if potential has been correctly
-c              generated
+C     WRITE OUT PROTEINS USED IN GENERATING POTENTIAL
 
-c              generate r-grid
+      IF( PASSI )THEN
+C         WRITE(OARCHV,177)PROTNM(0),INT(WORK8(1))
+  177    FORMAT(/'TARGET PROTEIN ',A5,1X,I5)
+C         WRITE(OARCHV,111)NUMMEM
+  111    FORMAT('# PROTEINS USED IN GENERATING POTENTIAL ',I3)
+C         WRITE(OARCHV,114)(PROTNM(I1),INT(WORK8(I1+1)),I1=1,NUMMEM)
+  114    FORMAT(5(A5,1X,I5,2X))
+      ENDIF
 
-               do 503 i503=1,maxs
-                 rgrid(i503)=float(i503)*rinc(i_ixn,curtab)
-  503          continue
+C     INVERT R-GRID INCREMENT
 
-c               write(oarchv,110)curtab,cdtyp1,cdtyp2,id1,id2,
-c     *                          rincinv(i_ixn,curtab)
-  110          format(/'test force: table number ',i3,
-     *                ' coord1 ',i1,' coord2 ',i1,
-     *                ' sites',2(1x,i3),' rincinv ',1pe10.3)
-               do 532 i532=2,maxs-1
+      DO 518 I518=1,INDXT
+         RINCINV(I518,CURTAB)=1.0D0/RINC(I518,CURTAB)
+         RINCSQ(I518,CURTAB)=RINC(I518,CURTAB)*
+     *                              RINC(I518,CURTAB)
+  518 CONTINUE
 
-                  work2(i532)=0.5D0*(vpotnt(i532-1,i_ixn,curtab)-
-     *                             vpotnt(i532+1,i_ixn,curtab))/
-     *                            (rgrid(i532-1)-rgrid(i532))
+C     --- DIAGNOSTICS ---
 
-                  if( forse(i532,i_ixn,curtab)*rgrid(i532)
-     *                    .ne.0.0D0 )
-     *               rnorm=-work2(i532)/
-     *                  (forse(i532,i_ixn,curtab)*rgrid(i532))
 
-  112             format(i3,5(1x,1pe10.3))
-  532          continue
+         DO 534 I_IXN=1,INDXT
 
-            endif
+            ID1=ILONG(I_IXN,1,CURTAB)
+            ID2=ILONG(I_IXN,2,CURTAB)
 
-  534    continue
+C           CHECK IF ENDPOINTS OF FORCE SMALL ENOUGH
 
-c     --- end diagnostics ---
+C            IF( ABS(FORSE(MAXS,I_IXN,CURTAB)).GT.5.0E-5 )
+C     *         WRITE(OARCHV,121)CURTAB,I_IXN,ID1,ID2,
+C     *               FORSE(MAXS,I_IXN,CURTAB)
+C  121          FORMAT('F > 5.0E-05:TABLE ',I2,' IXN ',I5,
+C     *                ' BETWEEN ',2(I3,1X),' F(MAXS) ',
+C     *                1PE10.3)
 
-          write(SO,*) 'end of gaspot '
-c     ---------------------- done -----------------------
+            IF( (ID1.EQ.0).AND.(ID2.LE.12).AND.(CDTYP1.EQ.2)  )THEN
 
-      return
-      end
+C              CHECK IF POTENTIAL HAS BEEN CORRECTLY
+C              GENERATED
+
+C              GENERATE R-GRID
+
+               DO 503 I503=1,MAXS
+                 RGRID(I503)=FLOAT(I503)*RINC(I_IXN,CURTAB)
+  503          CONTINUE
+
+C               WRITE(OARCHV,110)CURTAB,CDTYP1,CDTYP2,ID1,ID2,
+C     *                          RINCINV(I_IXN,CURTAB)
+  110          FORMAT(/'TEST FORCE: TABLE NUMBER ',I3,
+     *                ' COORD1 ',I1,' COORD2 ',I1,
+     *                ' SITES',2(1X,I3),' RINCINV ',1PE10.3)
+               DO 532 I532=2,MAXS-1
+
+                  WORK2(I532)=0.5D0*(VPOTNT(I532-1,I_IXN,CURTAB)-
+     *                             VPOTNT(I532+1,I_IXN,CURTAB))/
+     *                            (RGRID(I532-1)-RGRID(I532))
+
+                  IF( FORSE(I532,I_IXN,CURTAB)*RGRID(I532)
+     *                    .NE.0.0D0 )
+     *               RNORM=-WORK2(I532)/
+     *                  (FORSE(I532,I_IXN,CURTAB)*RGRID(I532))
+
+  112             FORMAT(I3,5(1X,1PE10.3))
+  532          CONTINUE
+
+            ENDIF
+
+  534    CONTINUE
+
+C     --- END DIAGNOSTICS ---
+
+          WRITE(SO,*) 'END OF GASPOT '
+C     ---------------------- DONE -----------------------
+
+      RETURN
+      END

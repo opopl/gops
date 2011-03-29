@@ -1,41 +1,41 @@
-!   OPTIM: A program for optimizing geometries and calculating reaction pathways
-!   Copyright (C) 1999-2006 David J. Wales
-!   This file is part of OPTIM.
+!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!   THIS FILE IS PART OF OPTIM.
 !   
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !   
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !   
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
-subroutine drvmsevb(ncoord, Q, dQ, energy, computeGrad, computeHess)
-	use commons
-	use msevb_common
-	use msevb_interfaces
-        use MODHESS
+SUBROUTINE DRVMSEVB(NCOORD, Q, DQ, ENERGY, COMPUTEGRAD, COMPUTEHESS)
+	USE COMMONS
+	USE MSEVB_COMMON
+	USE MSEVB_INTERFACES
+        USE MODHESS
 
-	implicit none
+	IMPLICIT NONE
 
 !###################################################################
 
-	integer ncoord
+	INTEGER NCOORD
 	DOUBLE PRECISION :: Q(NCOORD), DQ(NCOORD)
 	DOUBLE PRECISION ENERGY
-	logical computeGrad, computeHess
+	LOGICAL COMPUTEGRAD, COMPUTEHESS
 
         DOUBLE PRECISION :: DELTA_COORD
 
-! Debugging variables
+! DEBUGGING VARIABLES
 
-	integer :: i,j
+	INTEGER :: I,J
         DOUBLE PRECISION RMS_DHESS
 
 !	DOUBLE PRECISION RMS_DQ, NUMERICAL_RMS_DQ
@@ -60,364 +60,364 @@ subroutine drvmsevb(ncoord, Q, dQ, energy, computeGrad, computeHess)
 
 !	DOUBLE PRECISION NUM_FORCE
 
-!	integer requiredCoordcount
-!	integer requiredCoord(3*MXATMS)
-!	integer newCoord
+!	INTEGER REQUIREDCOORDCOUNT
+!	INTEGER REQUIREDCOORD(3*MXATMS)
+!	INTEGER NEWCOORD
 
-! Calculate the energy
+! CALCULATE THE ENERGY
 
-	call msevb(ncoord, Q, .TRUE., energy, .FALSE.)
+	CALL MSEVB(NCOORD, Q, .TRUE., ENERGY, .FALSE.)
 
-        if (printCoefficients) then
-           print *, '#########################'
-           print *, 'MSEVB coefficients:'
-           do i = 1, reduced_num_eig
-              print *, i, grstwfu(i)
-           enddo
-           print *, '#########################'
-        end if
+        IF (PRINTCOEFFICIENTS) THEN
+           PRINT *, '#########################'
+           PRINT *, 'MSEVB COEFFICIENTS:'
+           DO I = 1, REDUCED_NUM_EIG
+              PRINT *, I, GRSTWFU(I)
+           ENDDO
+           PRINT *, '#########################'
+        END IF
 
-!	print *, 'Energy:', energy
+!	PRINT *, 'ENERGY:', ENERGY
 
-!	print *, 'Points:'
-!	j = 1
-!	do i = 1, natoms
+!	PRINT *, 'POINTS:'
+!	J = 1
+!	DO I = 1, NATOMS
 
-!	   if (MOD(i,3).eq.0) then
-!	      print *, 'O', Q(j), Q(j+1), Q(j+2)
-!	   else
-!	      print *, 'H', Q(j), Q(j+1), Q(j+2)
-!	   endif
+!	   IF (MOD(I,3).EQ.0) THEN
+!	      PRINT *, 'O', Q(J), Q(J+1), Q(J+2)
+!	   ELSE
+!	      PRINT *, 'H', Q(J), Q(J+1), Q(J+2)
+!	   ENDIF
 
-!	   j = j + 3
-!	enddo
+!	   J = J + 3
+!	ENDDO
 
-! 	print *, 'VB states:'
+! 	PRINT *, 'VB STATES:'
 
-! 	do i=1,reduced_num_eig
-! 	   print *, 'State:', i
+! 	DO I=1,REDUCED_NUM_EIG
+! 	   PRINT *, 'STATE:', I
 
-! 	   do j=1, natoms
-! 	      print *, j, atmpl(i,j)
-!  	   enddo
-!  	enddo
+! 	   DO J=1, NATOMS
+! 	      PRINT *, J, ATMPL(I,J)
+!  	   ENDDO
+!  	ENDDO
 
-! 	print *, 'Ground state coefficients and diagonal energies:'
-! 	do i=1, reduced_num_eig
-! 	   print *, i, grstwfu(i), ham(i,i)
-! 	enddo
+! 	PRINT *, 'GROUND STATE COEFFICIENTS AND DIAGONAL ENERGIES:'
+! 	DO I=1, REDUCED_NUM_EIG
+! 	   PRINT *, I, GRSTWFU(I), HAM(I,I)
+! 	ENDDO
 
-! 	print *, 'Hamiltonian:'
+! 	PRINT *, 'HAMILTONIAN:'
 
-! 	do i=1,reduced_num_eig
-! 	   do j=i, reduced_num_eig
-! 	      print *, i , j, ham(i,j)
-! 	   enddo
-! 	enddo
+! 	DO I=1,REDUCED_NUM_EIG
+! 	   DO J=I, REDUCED_NUM_EIG
+! 	      PRINT *, I , J, HAM(I,J)
+! 	   ENDDO
+! 	ENDDO
 
-!	print *, 'Zundel species:'
+!	PRINT *, 'ZUNDEL SPECIES:'
 
-! 	do i=1, reduced_num_eig-1
-! 	   do j=i+1, reduced_num_eig
+! 	DO I=1, REDUCED_NUM_EIG-1
+! 	   DO J=I+1, REDUCED_NUM_EIG
 
-!	      if (statesInteract(i,j)) then
-! 		 print *, 'State 1:', i, 'State 2:', j
+!	      IF (STATESINTERACT(I,J)) THEN
+! 		 PRINT *, 'STATE 1:', I, 'STATE 2:', J
 
-!		 do k=1,7
-!		    print *, k, zundel_species(i,j,k)
-!		 enddo
-!	      endif
-! 	   enddo
-!  	enddo
+!		 DO K=1,7
+!		    PRINT *, K, ZUNDEL_SPECIES(I,J,K)
+!		 ENDDO
+!	      ENDIF
+! 	   ENDDO
+!  	ENDDO
 
-!	do i=1,num_eig
-!	   print *, '*** VB state:', i, '***'
-!	   print *, 'H3O intra energy:', h3o_intra_energy(i)
-!	   print *, 'H2O intra energy:', h2o_intra_energy(i)
-!	   print *, 'H3O-H2O inter energy:', h3o_h2O_energy(i)
-!	   print *, 'H2O-H2O inter energy:', h2o_h2o_energy(i)
-!	   print *, ' '
-!	enddo
+!	DO I=1,NUM_EIG
+!	   PRINT *, '*** VB STATE:', I, '***'
+!	   PRINT *, 'H3O INTRA ENERGY:', H3O_INTRA_ENERGY(I)
+!	   PRINT *, 'H2O INTRA ENERGY:', H2O_INTRA_ENERGY(I)
+!	   PRINT *, 'H3O-H2O INTER ENERGY:', H3O_H2O_ENERGY(I)
+!	   PRINT *, 'H2O-H2O INTER ENERGY:', H2O_H2O_ENERGY(I)
+!	   PRINT *, ' '
+!	ENDDO
 
-!	print *, 'Exchange interactions:'
-!	do i=1, num_eig-1
-!	   do j=i+1, num_eig
-!	      print *, i, j, ham(i,j)
-!	   enddo
-!	enddo
+!	PRINT *, 'EXCHANGE INTERACTIONS:'
+!	DO I=1, NUM_EIG-1
+!	   DO J=I+1, NUM_EIG
+!	      PRINT *, I, J, HAM(I,J)
+!	   ENDDO
+!	ENDDO
 
-!	stop
+!	STOP
 
-	if (computeGrad) call fmsevb(ncoord, Q, dQ, .FALSE.)
+	IF (COMPUTEGRAD) CALL FMSEVB(NCOORD, Q, DQ, .FALSE.)
 
-        if (computeHess) then
-           delta_coord = 1.0d-6
-           call MSEVB_hess (ncoord, Q, delta_coord)
+        IF (COMPUTEHESS) THEN
+           DELTA_COORD = 1.0D-6
+           CALL MSEVB_HESS (NCOORD, Q, DELTA_COORD)
 
-!           rms_dHess=0.0d0
+!           RMS_DHESS=0.0D0
 
-!           do i=1, ncoord-1
-!              do j = i+1, ncoord
-!                 rms_dHess = rms_dHess + (HESS(i,j)-HESS(j,i))**2
-!              enddo
-!           enddo
+!           DO I=1, NCOORD-1
+!              DO J = I+1, NCOORD
+!                 RMS_DHESS = RMS_DHESS + (HESS(I,J)-HESS(J,I))**2
+!              ENDDO
+!           ENDDO
 
-!           rms_dHess = dsqrt(2.0d0*rms_dHess/(ncoord**2 - ncoord))
+!           RMS_DHESS = DSQRT(2.0D0*RMS_DHESS/(NCOORD**2 - NCOORD))
            
-!           print *, 'RMS dHess:', rms_dHess
+!           PRINT *, 'RMS DHESS:', RMS_DHESS
 
-!           stop
-        endif
+!           STOP
+        ENDIF
 
-! Deallocate memory
+! DEALLOCATE MEMORY
 
-	DEALLOCATE(vijexch, grstwfu)
+	DEALLOCATE(VIJEXCH, GRSTWFU)
 
-!	endif
+!	ENDIF
 
-!	print *, 'Forces:'
-!	j=1
-!	do i=1,ncoord,3
-!	   print *, j, dQ(i), dQ(i+1), dQ(i+2)
-!	   j = j + 1
-!	enddo
+!	PRINT *, 'FORCES:'
+!	J=1
+!	DO I=1,NCOORD,3
+!	   PRINT *, J, DQ(I), DQ(I+1), DQ(I+2)
+!	   J = J + 1
+!	ENDDO
 
-! Calculate the numerical gradients
+! CALCULATE THE NUMERICAL GRADIENTS
 
-!	delta_Q = 1D-7
-!	do i=1, ncoord
+!	DELTA_Q = 1D-7
+!	DO I=1, NCOORD
 
-!	   print *, '*** Coordinate:', i, '***'
+!	   PRINT *, '*** COORDINATE:', I, '***'
 
-!	   Q(i) = Q(i) + delta_Q
-! 	   call msevb(ncoord, Q, .FALSE., upper_energy)
+!	   Q(I) = Q(I) + DELTA_Q
+! 	   CALL MSEVB(NCOORD, Q, .FALSE., UPPER_ENERGY)
 
-!	   do j=1,reduced_num_eig
-!	      upper_Q_h3o_intra(j) = h3o_intra_energy(j)
-!	      upper_Q_h2o_intra(j) = h2o_intra_energy(j)
-!	      upper_Q_h3o_h2o(j) = h3o_h2o_energy(j)
-!	      upper_Q_h2o_h2o(j) = h2o_h2o_energy(j)
-!	   enddo
+!	   DO J=1,REDUCED_NUM_EIG
+!	      UPPER_Q_H3O_INTRA(J) = H3O_INTRA_ENERGY(J)
+!	      UPPER_Q_H2O_INTRA(J) = H2O_INTRA_ENERGY(J)
+!	      UPPER_Q_H3O_H2O(J) = H3O_H2O_ENERGY(J)
+!	      UPPER_Q_H2O_H2O(J) = H2O_H2O_ENERGY(J)
+!	   ENDDO
 
-!  	   Q(i) = Q(i) - 2*delta_Q
-! 	   call msevb(ncoord, Q, .FALSE., lower_energy)
-!  	   numerical_dQ(i) = (upper_energy-lower_energy)/(2*delta_Q)
+!  	   Q(I) = Q(I) - 2*DELTA_Q
+! 	   CALL MSEVB(NCOORD, Q, .FALSE., LOWER_ENERGY)
+!  	   NUMERICAL_DQ(I) = (UPPER_ENERGY-LOWER_ENERGY)/(2*DELTA_Q)
 
-!	   do j=1,reduced_num_eig
-!	      print *, 'VB state:', j
+!	   DO J=1,REDUCED_NUM_EIG
+!	      PRINT *, 'VB STATE:', J
 
-!	      num_force = (upper_Q_h3o_intra(j)-h3o_intra_energy(j))/(2*delta_Q)
-!	      print *, 'H3O intra forces:', h3o_intra_forces(j,i), num_force, (h3o_intra_forces(j,i)-num_force)
+!	      NUM_FORCE = (UPPER_Q_H3O_INTRA(J)-H3O_INTRA_ENERGY(J))/(2*DELTA_Q)
+!	      PRINT *, 'H3O INTRA FORCES:', H3O_INTRA_FORCES(J,I), NUM_FORCE, (H3O_INTRA_FORCES(J,I)-NUM_FORCE)
 
-!	      num_force = (upper_Q_h2o_intra(j)-h2o_intra_energy(j))/(2*delta_Q)
-!	      print *, 'H2O intra forces:', h2o_intra_forces(j,i), num_force, (h2o_intra_forces(j,i)-num_force)
+!	      NUM_FORCE = (UPPER_Q_H2O_INTRA(J)-H2O_INTRA_ENERGY(J))/(2*DELTA_Q)
+!	      PRINT *, 'H2O INTRA FORCES:', H2O_INTRA_FORCES(J,I), NUM_FORCE, (H2O_INTRA_FORCES(J,I)-NUM_FORCE)
 
-!	      num_force = (upper_Q_h3o_h2o(j)-h3o_h2o_energy(j))/(2*delta_Q)
-!	      print *, 'H3O-H2O forces:', h3o_h2o_forces(j,i), num_force, (h3o_h2o_forces(j,i)-num_force)
+!	      NUM_FORCE = (UPPER_Q_H3O_H2O(J)-H3O_H2O_ENERGY(J))/(2*DELTA_Q)
+!	      PRINT *, 'H3O-H2O FORCES:', H3O_H2O_FORCES(J,I), NUM_FORCE, (H3O_H2O_FORCES(J,I)-NUM_FORCE)
 
-!	      num_force = (upper_Q_h2o_h2o(j)-h2o_h2o_energy(j))/(2*delta_Q)
-!	      print *, 'H2O-H2O forces:', h2o_h2o_forces(j,i), num_force, (h2o_h2o_forces(j,i)-num_force)
+!	      NUM_FORCE = (UPPER_Q_H2O_H2O(J)-H2O_H2O_ENERGY(J))/(2*DELTA_Q)
+!	      PRINT *, 'H2O-H2O FORCES:', H2O_H2O_FORCES(J,I), NUM_FORCE, (H2O_H2O_FORCES(J,I)-NUM_FORCE)
 
-!	   enddo
+!	   ENDDO
 
-!  	   Q(i) = Q(i) + delta_Q
-!  	enddo
+!  	   Q(I) = Q(I) + DELTA_Q
+!  	ENDDO
 
-! Calculate the numerical gradients
+! CALCULATE THE NUMERICAL GRADIENTS
 
-!	delta_Q = 1D-7
+!	DELTA_Q = 1D-7
 
-!	requiredCoordcount = 6
-!	requiredCoord(1)=52
-!	requiredCoord(2)=53
-!	requiredCoord(3)=54
-!	requiredCoord(4)=61
-!	requiredCoord(5)=62
-!	requiredCoord(6)=63
+!	REQUIREDCOORDCOUNT = 6
+!	REQUIREDCOORD(1)=52
+!	REQUIREDCOORD(2)=53
+!	REQUIREDCOORD(3)=54
+!	REQUIREDCOORD(4)=61
+!	REQUIREDCOORD(5)=62
+!	REQUIREDCOORD(6)=63
 
-!	do i=1, requiredCoordCount
+!	DO I=1, REQUIREDCOORDCOUNT
 
-!	   newCoord = 3*new_order(int((requiredCoord(i)-1)/3)+1) - 2 + MOD(requiredCoord(i)-1, 3)
+!	   NEWCOORD = 3*NEW_ORDER(INT((REQUIREDCOORD(I)-1)/3)+1) - 2 + MOD(REQUIREDCOORD(I)-1, 3)
 
-!	   print *, ' '
-!	   print *, '*** Coordinate:', requiredCoord(i), newCoord, '***'
-!	   print *, ' '
+!	   PRINT *, ' '
+!	   PRINT *, '*** COORDINATE:', REQUIREDCOORD(I), NEWCOORD, '***'
+!	   PRINT *, ' '
 
-!	   print *, '*** Calculating upper energy bound ***'
-!	   Q(i) = Q(i) + delta_Q
-!	   call msevb_ind(ncoord, Q, upper_energy, wf_buffer)
+!	   PRINT *, '*** CALCULATING UPPER ENERGY BOUND ***'
+!	   Q(I) = Q(I) + DELTA_Q
+!	   CALL MSEVB_IND(NCOORD, Q, UPPER_ENERGY, WF_BUFFER)
 
-!	   do j=1, num_eig
-!	      upper_Q_LJ(j)=LJ_values(j)
-!	      upper_Q_coulomb(j)=coulomb_values(j)
-!	      upper_Q_rep(j)=rep_values(j)
-! 	   upper_Q_h3o_intra(j)=h3o_intra_energy(j)
-!	      upper_Q_h2o_intra(j)=h2o_intra_energy(j)
-!	      upper_Q_h3o_h2o(j)=h3o_h2o_energy(j)
-!	      upper_Q_h2o_h2o(j)=h2o_h2o_energy(j)
-! 	   enddo
+!	   DO J=1, NUM_EIG
+!	      UPPER_Q_LJ(J)=LJ_VALUES(J)
+!	      UPPER_Q_COULOMB(J)=COULOMB_VALUES(J)
+!	      UPPER_Q_REP(J)=REP_VALUES(J)
+! 	   UPPER_Q_H3O_INTRA(J)=H3O_INTRA_ENERGY(J)
+!	      UPPER_Q_H2O_INTRA(J)=H2O_INTRA_ENERGY(J)
+!	      UPPER_Q_H3O_H2O(J)=H3O_H2O_ENERGY(J)
+!	      UPPER_Q_H2O_H2O(J)=H2O_H2O_ENERGY(J)
+! 	   ENDDO
 
-! 	   do j=1,num_eig-1
-! 	      do k=j+1, num_eig
-! 		 upper_Q_off_diag(j,k)=off_diag_energies(j,k)
-! 	      enddo
-! 	   enddo
+! 	   DO J=1,NUM_EIG-1
+! 	      DO K=J+1, NUM_EIG
+! 		 UPPER_Q_OFF_DIAG(J,K)=OFF_DIAG_ENERGIES(J,K)
+! 	      ENDDO
+! 	   ENDDO
 
-! 	   print *, '*** Calculating lower energy bound ***'
-!	   Q(i) = Q(i) - 2*delta_Q
-!	   call msevb_ind(ncoord, Q, lower_energy, wf_buffer)
+! 	   PRINT *, '*** CALCULATING LOWER ENERGY BOUND ***'
+!	   Q(I) = Q(I) - 2*DELTA_Q
+!	   CALL MSEVB_IND(NCOORD, Q, LOWER_ENERGY, WF_BUFFER)
 
-!	   numerical_dQ(i) = (upper_energy-lower_energy)/(2*delta_Q)
+!	   NUMERICAL_DQ(I) = (UPPER_ENERGY-LOWER_ENERGY)/(2*DELTA_Q)
 
-!	   Q(i) = Q(i) + delta_Q
+!	   Q(I) = Q(I) + DELTA_Q
 
-! 	   print *, 'Diagonal components:'
+! 	   PRINT *, 'DIAGONAL COMPONENTS:'
 
-! 	   do j=1, num_eig
-!	      print *, ' '
-! 	      print *, 'VB state:', j
+! 	   DO J=1, NUM_EIG
+!	      PRINT *, ' '
+! 	      PRINT *, 'VB STATE:', J
 
-! 	      num_force=(upper_Q_h3o_intra(j)-h3o_intra_energy(j))/(2*delta_Q)
-! 	      print *, 'H3O+ intramolecular contribution:'
-! 	      print *, h3o_intra_forces(j,i), num_force, (h3o_intra_forces(j,i)-num_force)
-!	      print *, h3o_intra_forces(j,newCoord)
+! 	      NUM_FORCE=(UPPER_Q_H3O_INTRA(J)-H3O_INTRA_ENERGY(J))/(2*DELTA_Q)
+! 	      PRINT *, 'H3O+ INTRAMOLECULAR CONTRIBUTION:'
+! 	      PRINT *, H3O_INTRA_FORCES(J,I), NUM_FORCE, (H3O_INTRA_FORCES(J,I)-NUM_FORCE)
+!	      PRINT *, H3O_INTRA_FORCES(J,NEWCOORD)
 
 
-! 	      num_force=(upper_Q_h2o_intra(j)-h2o_intra_energy(j))/(2*delta_Q)
-! 	      print *, 'H2O intramolecular contribution:'
-! 	      print *, h2o_intra_forces(j,i), num_force, (h2o_intra_forces(j,i)-num_force)
-! 	      print *, h2o_intra_forces(j,newCoord)
+! 	      NUM_FORCE=(UPPER_Q_H2O_INTRA(J)-H2O_INTRA_ENERGY(J))/(2*DELTA_Q)
+! 	      PRINT *, 'H2O INTRAMOLECULAR CONTRIBUTION:'
+! 	      PRINT *, H2O_INTRA_FORCES(J,I), NUM_FORCE, (H2O_INTRA_FORCES(J,I)-NUM_FORCE)
+! 	      PRINT *, H2O_INTRA_FORCES(J,NEWCOORD)
 
-! 	      num_force=(upper_Q_h3o_h2o(j)-h3o_h2o_energy(j))/(2*delta_Q)
-! 	      print *, 'H3O+-H2O intermolecular contribution:'
-! 	      print *, h3o_h2O_forces(j,i), num_force, (h3o_h2O_forces(j,i)-num_force)
-! 	      print *, h3o_h2O_forces(j,newCoord)
+! 	      NUM_FORCE=(UPPER_Q_H3O_H2O(J)-H3O_H2O_ENERGY(J))/(2*DELTA_Q)
+! 	      PRINT *, 'H3O+-H2O INTERMOLECULAR CONTRIBUTION:'
+! 	      PRINT *, H3O_H2O_FORCES(J,I), NUM_FORCE, (H3O_H2O_FORCES(J,I)-NUM_FORCE)
+! 	      PRINT *, H3O_H2O_FORCES(J,NEWCOORD)
 
-! 	      num_force=(upper_Q_h2o_h2o(j)-h2o_h2o_energy(j))/(2*delta_Q)
-! 	      print *, 'H2O-H2O intermolecular contribution:'
-! 	      print *, h2o_h2o_forces(j,i), num_force, (h2o_h2o_forces(j,i)-num_force)
-! 	      print *, h2o_h2o_forces(j,newCoord)
+! 	      NUM_FORCE=(UPPER_Q_H2O_H2O(J)-H2O_H2O_ENERGY(J))/(2*DELTA_Q)
+! 	      PRINT *, 'H2O-H2O INTERMOLECULAR CONTRIBUTION:'
+! 	      PRINT *, H2O_H2O_FORCES(J,I), NUM_FORCE, (H2O_H2O_FORCES(J,I)-NUM_FORCE)
+! 	      PRINT *, H2O_H2O_FORCES(J,NEWCOORD)
 
-! 	      print *, 'H2O-H3O interaction:'
-! 	      print *, 'Component, Analytic, Numerical, Difference'
+! 	      PRINT *, 'H2O-H3O INTERACTION:'
+! 	      PRINT *, 'COMPONENT, ANALYTIC, NUMERICAL, DIFFERENCE'
 
-! 	      num_force=(upper_Q_LJ(j)-LJ_values(j))/(2*delta_Q)
-! 	      print *, 'LJ force:', LJ_forces(j,i), num_force, (LJ_forces(j,i)-num_force)
-! 	      print *, 'LJ force:', LJ_forces(j,newCoord)
+! 	      NUM_FORCE=(UPPER_Q_LJ(J)-LJ_VALUES(J))/(2*DELTA_Q)
+! 	      PRINT *, 'LJ FORCE:', LJ_FORCES(J,I), NUM_FORCE, (LJ_FORCES(J,I)-NUM_FORCE)
+! 	      PRINT *, 'LJ FORCE:', LJ_FORCES(J,NEWCOORD)
 
-! 	      num_force=(upper_Q_coulomb(j)-coulomb_values(j))/(2*delta_Q)
-! 	      print *, 'Coulomb force:', coulomb_forces(j,i), 
-!     &                 num_force, (coulomb_forces(j,i)-num_force)
-!	      print *, 'Coulomb force:', coulomb_forces(j,newCoord)
+! 	      NUM_FORCE=(UPPER_Q_COULOMB(J)-COULOMB_VALUES(J))/(2*DELTA_Q)
+! 	      PRINT *, 'COULOMB FORCE:', COULOMB_FORCES(J,I), 
+!     &                 NUM_FORCE, (COULOMB_FORCES(J,I)-NUM_FORCE)
+!	      PRINT *, 'COULOMB FORCE:', COULOMB_FORCES(J,NEWCOORD)
 
-! 	      num_force=(upper_Q_rep(j)-rep_values(j))/(2*delta_Q)
-! 	      print *, 'Repulsive force:', rep_forces(j,i), num_force, 
-!     &                 (rep_forces(j,i)-num_force) 
-! 	      print *, 'Repulsive force:', rep_forces(j,newCoord)
+! 	      NUM_FORCE=(UPPER_Q_REP(J)-REP_VALUES(J))/(2*DELTA_Q)
+! 	      PRINT *, 'REPULSIVE FORCE:', REP_FORCES(J,I), NUM_FORCE, 
+!     &                 (REP_FORCES(J,I)-NUM_FORCE) 
+! 	      PRINT *, 'REPULSIVE FORCE:', REP_FORCES(J,NEWCOORD)
 
-! 	   enddo
+! 	   ENDDO
 
-! 	   print *, ' '
-! 	   print *, 'Off-diagonal components:'
+! 	   PRINT *, ' '
+! 	   PRINT *, 'OFF-DIAGONAL COMPONENTS:'
 
-! 	   do j=1, num_eig-1
-! 	      do k=j+1,num_eig
-! 		 num_force=(upper_Q_off_diag(j,k)-off_diag_energies(j,k))/(2*delta_Q)
-! 		 print *, 'VB state 1, state 2, analytic force, numeric, difference'
-! 		 print *, j, k, off_diag_forces(j,k,i),num_force,(off_diag_forces(j,k,i)-num_force)
-! 		 print *, 'VB state 1, state 2, analytic force'
-!		 print *, j, k, off_diag_forces(j,k,newCoord)
+! 	   DO J=1, NUM_EIG-1
+! 	      DO K=J+1,NUM_EIG
+! 		 NUM_FORCE=(UPPER_Q_OFF_DIAG(J,K)-OFF_DIAG_ENERGIES(J,K))/(2*DELTA_Q)
+! 		 PRINT *, 'VB STATE 1, STATE 2, ANALYTIC FORCE, NUMERIC, DIFFERENCE'
+! 		 PRINT *, J, K, OFF_DIAG_FORCES(J,K,I),NUM_FORCE,(OFF_DIAG_FORCES(J,K,I)-NUM_FORCE)
+! 		 PRINT *, 'VB STATE 1, STATE 2, ANALYTIC FORCE'
+!		 PRINT *, J, K, OFF_DIAG_FORCES(J,K,NEWCOORD)
 
-! 		 print *, 'Numerical energy bounds:'
-! 		 print *, 'Upper:', upper_Q_off_diag(j,k), 'Lower:',off_diag_energies(j,k)
-! 	      enddo
-! 	   enddo
+! 		 PRINT *, 'NUMERICAL ENERGY BOUNDS:'
+! 		 PRINT *, 'UPPER:', UPPER_Q_OFF_DIAG(J,K), 'LOWER:',OFF_DIAG_ENERGIES(J,K)
+! 	      ENDDO
+! 	   ENDDO
 
-! 	   print *, ' '
+! 	   PRINT *, ' '
 
-!	enddo   
+!	ENDDO   
 
-!  	print *, 'Derivatives: '
-!  	print *, 'Coordinate Number'
-!  	print *, 'Analytical, Numerical, Difference'
+!  	PRINT *, 'DERIVATIVES: '
+!  	PRINT *, 'COORDINATE NUMBER'
+!  	PRINT *, 'ANALYTICAL, NUMERICAL, DIFFERENCE'
 
-!   	rms_dQ = 0.0D0
-!   	numerical_rms_dQ = 0.0D0
+!   	RMS_DQ = 0.0D0
+!   	NUMERICAL_RMS_DQ = 0.0D0
 
-!   	do i=1,ncoord
-!   	   rms_dQ = rms_dQ + (dQ(i)*dQ(i))
-!   	   numerical_rms_dQ = numerical_rms_dQ + (numerical_dQ(i)*numerical_dQ(i))
-!   	   print *, i, dQ(i), numerical_dQ(i), (dQ(i)-numerical_dQ(i))
-!   	enddo
+!   	DO I=1,NCOORD
+!   	   RMS_DQ = RMS_DQ + (DQ(I)*DQ(I))
+!   	   NUMERICAL_RMS_DQ = NUMERICAL_RMS_DQ + (NUMERICAL_DQ(I)*NUMERICAL_DQ(I))
+!   	   PRINT *, I, DQ(I), NUMERICAL_DQ(I), (DQ(I)-NUMERICAL_DQ(I))
+!   	ENDDO
 
-!   	rms_dQ = SQRT(rms_dQ/ncoord)
-!   	numerical_rms_dQ = SQRT(numerical_rms_dQ/ncoord)
+!   	RMS_DQ = SQRT(RMS_DQ/NCOORD)
+!   	NUMERICAL_RMS_DQ = SQRT(NUMERICAL_RMS_DQ/NCOORD)
 
-!   	print *, 'RMS derivatives: ', rms_dQ, ' ', numerical_rms_dQ, ' ', (rms_dQ-numerical_rms_dQ) 
-!   	print *, 'Delta_Q: ', delta_Q
+!   	PRINT *, 'RMS DERIVATIVES: ', RMS_DQ, ' ', NUMERICAL_RMS_DQ, ' ', (RMS_DQ-NUMERICAL_RMS_DQ) 
+!   	PRINT *, 'DELTA_Q: ', DELTA_Q
 
-!   	stop
+!   	STOP
 
-! End debugging
+! END DEBUGGING
 
-	return
-	end
+	RETURN
+	END
 
 ! ##################################################################################################
 	
-! Numerical Hessian routine for MSEVB potential
-! Do not call this directly, only via drvmsevb
+! NUMERICAL HESSIAN ROUTINE FOR MSEVB POTENTIAL
+! DO NOT CALL THIS DIRECTLY, ONLY VIA DRVMSEVB
 
-subroutine MSEVB_hess (ncoord, coords, delta_coord)
-  use msevb_interfaces
-  use MODHESS, hessian => HESS
+SUBROUTINE MSEVB_HESS (NCOORD, COORDS, DELTA_COORD)
+  USE MSEVB_INTERFACES
+  USE MODHESS, HESSIAN => HESS
 
-  implicit none
+  IMPLICIT NONE
 
-! Subroutine arguments
+! SUBROUTINE ARGUMENTS
 
-  integer, intent(IN) :: ncoord
+  INTEGER, INTENT(IN) :: NCOORD
   DOUBLE PRECISION, INTENT(IN) :: COORDS(NCOORD)
   DOUBLE PRECISION, INTENT(IN) :: DELTA_COORD
 
-! Local variables
+! LOCAL VARIABLES
 
-  integer :: currentCoord, currentChange
+  INTEGER :: CURRENTCOORD, CURRENTCHANGE
   DOUBLE PRECISION :: LOCALCOORDS(NCOORD)
   DOUBLE PRECISION :: PLUSSIDEGRAD(NCOORD), MINUSSIDEGRAD(NCOORD)
   DOUBLE PRECISION :: ENERGY
 
-! Try to avoid problems with arithmetic by referring always to the original copy of the coordinates
+! TRY TO AVOID PROBLEMS WITH ARITHMETIC BY REFERRING ALWAYS TO THE ORIGINAL COPY OF THE COORDINATES
 
-  localCoords = coords
+  LOCALCOORDS = COORDS
 
-  do currentCoord = 1, ncoord
+  DO CURRENTCOORD = 1, NCOORD
 
-     localCoords(currentCoord) = coords(currentCoord) + delta_coord
+     LOCALCOORDS(CURRENTCOORD) = COORDS(CURRENTCOORD) + DELTA_COORD
 
-! We do not want to recompute the VB states because we assume that they don`t change
+! WE DO NOT WANT TO RECOMPUTE THE VB STATES BECAUSE WE ASSUME THAT THEY DON`T CHANGE
 
-     call msevb(ncoord, localCoords, .FALSE., energy, .FALSE.)
-     call fmsevb(ncoord, localCoords, plusSideGrad, .FALSE.)
+     CALL MSEVB(NCOORD, LOCALCOORDS, .FALSE., ENERGY, .FALSE.)
+     CALL FMSEVB(NCOORD, LOCALCOORDS, PLUSSIDEGRAD, .FALSE.)
 
-     localCoords(currentCoord) = coords(currentCoord) - delta_coord     
+     LOCALCOORDS(CURRENTCOORD) = COORDS(CURRENTCOORD) - DELTA_COORD     
 
-     call msevb(ncoord, localCoords, .FALSE., energy, .FALSE.)
-     call fmsevb(ncoord, localCoords, minusSideGrad, .FALSE.)     
+     CALL MSEVB(NCOORD, LOCALCOORDS, .FALSE., ENERGY, .FALSE.)
+     CALL FMSEVB(NCOORD, LOCALCOORDS, MINUSSIDEGRAD, .FALSE.)     
 
-     do currentChange = currentCoord, ncoord
-        hessian(currentChange,currentCoord) = &
-        (plusSideGrad(currentChange)-minusSideGrad(currentChange))/(2.0d0*delta_coord)
+     DO CURRENTCHANGE = CURRENTCOORD, NCOORD
+        HESSIAN(CURRENTCHANGE,CURRENTCOORD) = &
+        (PLUSSIDEGRAD(CURRENTCHANGE)-MINUSSIDEGRAD(CURRENTCHANGE))/(2.0D0*DELTA_COORD)
 
-        if (currentChange.ne.currentCoord) then
-           hessian(currentCoord,currentChange) = hessian(currentChange,currentCoord)
-        endif
-     enddo
+        IF (CURRENTCHANGE.NE.CURRENTCOORD) THEN
+           HESSIAN(CURRENTCOORD,CURRENTCHANGE) = HESSIAN(CURRENTCHANGE,CURRENTCOORD)
+        ENDIF
+     ENDDO
      
-     localCoords(currentCoord) = coords(currentCoord)      
-  enddo
+     LOCALCOORDS(CURRENTCOORD) = COORDS(CURRENTCOORD)      
+  ENDDO
 
-end subroutine MSEVB_hess	
+END SUBROUTINE MSEVB_HESS	
 
 ! ##################################################################################################
 

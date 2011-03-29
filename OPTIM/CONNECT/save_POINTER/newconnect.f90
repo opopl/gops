@@ -1,20 +1,20 @@
-!   CONNECT module is an implementation of a connection algorithm for finding rearrangement pathways.
-!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
-!   This file is part of CONNECT module. CONNECT module is part of OPTIM.
+!   CONNECT MODULE IS AN IMPLEMENTATION OF A CONNECTION ALGORITHM FOR FINDING REARRANGEMENT PATHWAYS.
+!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
+!   THIS FILE IS PART OF CONNECT MODULE. CONNECT MODULE IS PART OF OPTIM.
 !
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 MODULE NEWCONNECTMODULE
      IMPLICIT NONE
@@ -57,39 +57,39 @@ MODULE NEWCONNECTMODULE
                PRINT*
           ENDIF
           CALL INITIALISE(NA,EI,Q,EF,FIN,ENDPOINTSEP)
-          INQUIRE(FILE='redopoints',EXIST=YESNO)
+          INQUIRE(FILE='REDOPOINTS',EXIST=YESNO)
           IF (YESNO) THEN
              IF (REDOPATH.AND.(.NOT.REDOPATHXYZ)) THEN
-                PRINT '(A)',' newconnect> Transition state coordinates will be read from file redopoints'
+                PRINT '(A)',' NEWCONNECT> TRANSITION STATE COORDINATES WILL BE READ FROM FILE REDOPOINTS'
 !            ELSE
-!               PRINT '(A)',' newconnect> WARNING - redopoints file present, but no REDOPATH keyword'
+!               PRINT '(A)',' NEWCONNECT> WARNING - REDOPOINTS FILE PRESENT, BUT NO REDOPATH KEYWORD'
              ENDIF
           ELSE
              IF (REDOPATH.AND.(.NOT.REDOPATHXYZ)) THEN
-                PRINT '(A)',' newconnect> WARNING - REDOPATH keyword was specified, but no redopoints file'
+                PRINT '(A)',' NEWCONNECT> WARNING - REDOPATH KEYWORD WAS SPECIFIED, BUT NO REDOPOINTS FILE'
                 REDOPATH=.FALSE.
              ENDIF
           ENDIF
 
-          IF (REDOPATHXYZ) PRINT '(A)',' newconnect> Redo run will use available path.<n>.xyz files'
-          IF (REDOPATH.AND.(.NOT.REDOPATHXYZ)) OPEN(99,FILE='redopoints',STATUS='OLD')
+          IF (REDOPATHXYZ) PRINT '(A)',' NEWCONNECT> REDO RUN WILL USE AVAILABLE PATH.<N>.XYZ FILES'
+          IF (REDOPATH.AND.(.NOT.REDOPATHXYZ)) OPEN(99,FILE='REDOPOINTS',STATUS='OLD')
 
           DO NCONDONE=1,NCONMAX
-               WRITE(CHR,'(i5)') NConDone
-               WRITE(STR,'(3a)') '>>>>>>>>>>>>>>>>>>>>> CONNECT CYCLE ',trim(adjustl(chr)),' >>>>>>>>>>>>>>>>>>>>>'
-               WRITE(CHR,'(i5)') Nmin
-               WRITE(STR,'(a)')  trim(str)//' '//trim(adjustl(chr))//' minima and'
-               WRITE(CHR,'(i5)') Nts
-               WRITE(STR,'(a)')  trim(str)//' '//trim(adjustl(chr))//' ts are known'
-               WRITE(*,'(1x,a)') trim(str)//' '//repeat('>',107-len_trim(str))
+               WRITE(CHR,'(I5)') NCONDONE
+               WRITE(STR,'(3A)') '>>>>>>>>>>>>>>>>>>>>> CONNECT CYCLE ',TRIM(ADJUSTL(CHR)),' >>>>>>>>>>>>>>>>>>>>>'
+               WRITE(CHR,'(I5)') NMIN
+               WRITE(STR,'(A)')  TRIM(STR)//' '//TRIM(ADJUSTL(CHR))//' MINIMA AND'
+               WRITE(CHR,'(I5)') NTS
+               WRITE(STR,'(A)')  TRIM(STR)//' '//TRIM(ADJUSTL(CHR))//' TS ARE KNOWN'
+               WRITE(*,'(1X,A)') TRIM(STR)//' '//REPEAT('>',107-LEN_TRIM(STR))
 !
-!  Read in transition state coordinates from redopoints if available.
+!  READ IN TRANSITION STATE COORDINATES FROM REDOPOINTS IF AVAILABLE.
 !
                IF (REDOPATH.AND.(.NOT.REDOPATHXYZ)) THEN
                   READ(99,*,END=32) (TSREDO(J1),J1=1,3*NA)
-                  WRITE(*,'(A)') ' newconnect> transition state coordinates read from file redopoints'
+                  WRITE(*,'(A)') ' NEWCONNECT> TRANSITION STATE COORDINATES READ FROM FILE REDOPOINTS'
                   GOTO 33
-32                WRITE(*,'(A)') ' newconnect> no more transition state coordinates in redopoints'
+32                WRITE(*,'(A)') ' NEWCONNECT> NO MORE TRANSITION STATE COORDINATES IN REDOPOINTS'
                   REDOPATH=.FALSE.
                   CLOSE(99)
 33                CONTINUE
@@ -100,38 +100,38 @@ MODULE NEWCONNECTMODULE
                ELSE
                   CALL DECIDE
 
-!    call tryconnect for each pair of minima specified in the shortest path returned by DIJKSTRA
-!    Call BHINTERP to fill in addtional minima if required.
+!    CALL TRYCONNECT FOR EACH PAIR OF MINIMA SPECIFIED IN THE SHORTEST PATH RETURNED BY DIJKSTRA
+!    CALL BHINTERP TO FILL IN ADDTIONAL MINIMA IF REQUIRED.
 
                   IF (BHINTERPT) THEN
                      NSTART=1
 34                   CONTINUE
                      DO J1=NSTART,NDIJPAIRS
-!                       PRINT '(A)',' newconnect> DIJPAIR distances and minima:'
+!                       PRINT '(A)',' NEWCONNECT> DIJPAIR DISTANCES AND MINIMA:'
 !                       PRINT '(I8,G20.10,2I8)',(J2,DIJPAIRDIST(J2),DIJPAIR(J2,1),DIJPAIR(J2,2),J2=1,NDIJPAIRS)
-                        PRINT '(A,I8,A,I8,A,I8,A,G20.10)',' newconnect> gap ',J1,' BH interpolation for minima   ',DIJPAIR(J1,1), &
-  &                                    ' and ',DIJPAIR(J1,2),' dist=',DIJPAIRDIST(J1)
+                        PRINT '(A,I8,A,I8,A,I8,A,G20.10)',' NEWCONNECT> GAP ',J1,' BH INTERPOLATION FOR MINIMA   ',DIJPAIR(J1,1), &
+  &                                    ' AND ',DIJPAIR(J1,2),' DIST=',DIJPAIRDIST(J1)
                         IF (DIJPAIRDIST(J1).GT.BHDISTTHRESH) THEN
                            CSTART(1:3*NA)=MI(DIJPAIR(J1,1))%DATA%X(1:3*NA)
                            CFINISH(1:3*NA)=MI(DIJPAIR(J1,2))%DATA%X(1:3*NA)
                            CALL BHINTERP(CSTART,CFINISH,3*NA,NA,INTERPCOORDS,SUCCESS,DSTART,DFINISH,ENERGY)
                            IF ((DSTART.GT.DIJPAIRDIST(J1)).OR.(DFINISH.GT.DIJPAIRDIST(J1))) THEN
-                              IF (SUCCESS.AND.BHDEBUG) PRINT '(A)',' newconnect> BH interpolated distance is larger - reject'
+                              IF (SUCCESS.AND.BHDEBUG) PRINT '(A)',' NEWCONNECT> BH INTERPOLATED DISTANCE IS LARGER - REJECT'
                               SUCCESS=.FALSE.
                            ENDIF
                            IF (SUCCESS) THEN
 !
-! If the extra minimum is new add it to the stack along with all its distances.
-! Must also add it to the DIJPAIR list.
+! IF THE EXTRA MINIMUM IS NEW ADD IT TO THE STACK ALONG WITH ALL ITS DISTANCES.
+! MUST ALSO ADD IT TO THE DIJPAIR LIST.
 !
                               NULLIFY(PINTERPCOORDS,PENERGY)
                               ALLOCATE(PINTERPCOORDS(3*NA),PENERGY)
 !
-! Here we are reading data into the pointers PENERGY and PINTERPCOORDS so that when
-! they are subsequently nullified the data in MI%DATA is preserved. 
-! This is a truly horrible hack caused by the inappropriate pointer attribute for static data.
+! HERE WE ARE READING DATA INTO THE POINTERS PENERGY AND PINTERPCOORDS SO THAT WHEN
+! THEY ARE SUBSEQUENTLY NULLIFIED THE DATA IN MI%DATA IS PRESERVED. 
+! THIS IS A TRULY HORRIBLE HACK CAUSED BY THE INAPPROPRIATE POINTER ATTRIBUTE FOR STATIC DATA.
 !
-                              OPEN(UNIT=781,FILE='BHscratch',STATUS='UNKNOWN')
+                              OPEN(UNIT=781,FILE='BHSCRATCH',STATUS='UNKNOWN')
                               WRITE(781,*) ENERGY,INTERPCOORDS
                               REWIND(781)
                               READ(781,*) PENERGY,PINTERPCOORDS
@@ -139,10 +139,10 @@ MODULE NEWCONNECTMODULE
 
                               CALL ISNEWMIN(PENERGY,PINTERPCOORDS,POSITION,MINNEW,REDOPATH,PERMUTE,INVERT,INDEX,IMATCH)
                               IF (MINNEW) THEN
-                                 WRITE(*,'(A,I7)') ' newconnect> Interpolated minimum is new minimum ',POSITION
+                                 WRITE(*,'(A,I7)') ' NEWCONNECT> INTERPOLATED MINIMUM IS NEW MINIMUM ',POSITION
                                  CALL ADDNEWMIN(PENERGY,PINTERPCOORDS)
                               ELSE
-                                 WRITE(*,'(A,I7)') ' newconnect> Interpolated minimum is old minimum ',POSITION
+                                 WRITE(*,'(A,I7)') ' NEWCONNECT> INTERPOLATED MINIMUM IS OLD MINIMUM ',POSITION
                               ENDIF
                               NULLIFY(PINTERPCOORDS,PENERGY) 
 
@@ -168,25 +168,25 @@ MODULE NEWCONNECTMODULE
                               ENDDO
                               NSTART=J1
                               DEALLOCATE(TEMPDIJPAIR,TEMPDIJPAIRDIST)
-                              GOTO 34 ! go back, since NDIJPAIRS has increased by one
+                              GOTO 34 ! GO BACK, SINCE NDIJPAIRS HAS INCREASED BY ONE
                            ELSE
-                              NSTART=J1+1 ! to avoid an infinite loop
+                              NSTART=J1+1 ! TO AVOID AN INFINITE LOOP
                            ENDIF
                         ENDIF
                      ENDDO
-                     WRITE(*,'(A)') ' newconnect> The unconnected minima in the chain and their distances are now:'
+                     WRITE(*,'(A)') ' NEWCONNECT> THE UNCONNECTED MINIMA IN THE CHAIN AND THEIR DISTANCES ARE NOW:'
                      DO J1=1,NDIJPAIRS
                         WRITE(*,'(I6,F12.2,I6)',ADVANCE="NO") DIJPAIR(J1,1),DIJPAIRDIST(J1),DIJPAIR(J1,2)
                      ENDDO
                   ENDIF
-                  WRITE(*,'(A)') ' ' ! to advance to the next line
+                  WRITE(*,'(A)') ' ' ! TO ADVANCE TO THE NEXT LINE
 
                   DO J1=1,NDIJPAIRS
                      JS=MAX(DIJPAIR(J1,1),DIJPAIR(J1,2))
                      JF=MIN(DIJPAIR(J1,1),DIJPAIR(J1,2))
-                     WRITE(*,'(A,I5,A,2I5)') ' newconnect> trying DIJKSTRA pair number ',J1,' minima ',js,jf
+                     WRITE(*,'(A,I5,A,2I5)') ' NEWCONNECT> TRYING DIJKSTRA PAIR NUMBER ',J1,' MINIMA ',JS,JF
                      MI(JS)%DATA%NTRIES(JF) = MI(JS)%DATA%NTRIES(JF) + 1
-!    Set edge weight to infinity if we have reached the maximum number of tries for this pair.
+!    SET EDGE WEIGHT TO INFINITY IF WE HAVE REACHED THE MAXIMUM NUMBER OF TRIES FOR THIS PAIR.
                      CALL TRYCONNECT(JF,JS,TSREDO,REDOPATH,REDOPATHXYZ)
                      IF ((MI(JS)%DATA%NTRIES(JF).GE.NTRIESMAX).AND.  &
                          (MI(JS)%DATA%D(JF).GT.1.0D-5)) MI(JS)%DATA%D(JF) = HUGE(MI(JS)%DATA%D(JF))

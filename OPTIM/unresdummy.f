@@ -1,38 +1,38 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       SUBROUTINE UNRSETZSYMATMASS
       IMPLICIT NONE
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
       END
  
-      SUBROUTINE UENERGY(X,GRAD,etot,GRADT,SECT)
+      SUBROUTINE UENERGY(X,GRAD,ETOT,GRADT,SECT)
       USE COMMONS
       IMPLICIT NONE
       DOUBLE PRECISION GRAD(*), X(*)
-      DOUBLE PRECISION etot
+      DOUBLE PRECISION ETOT
       LOGICAL GRADT,SECT
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -41,7 +41,7 @@ C
       SUBROUTINE UPDATEDC
       IMPLICIT NONE
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -50,7 +50,7 @@ C
       SUBROUTINE CHAINBUILD
       IMPLICIT NONE
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -60,7 +60,7 @@ C
       IMPLICIT NONE
       LOGICAL DUM1,DUM2
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -71,7 +71,7 @@ C
       INTEGER DUM1
       DOUBLE PRECISION DUM2(DUM1)
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -82,7 +82,7 @@ C
       INTEGER DUM1
       DOUBLE PRECISION DUM2(DUM1)
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -91,7 +91,7 @@ C
       SUBROUTINE UNRSETDIHE
       IMPLICIT NONE
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -103,7 +103,7 @@ C
       DOUBLE PRECISION X(NATOMS),Y(NATOMS),Z(NATOMS)
       CHARACTER(LEN=80) :: FILTHSTR
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -115,7 +115,7 @@ C
       INTEGER IUNIT
       DOUBLE PRECISION COORDS(*)
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -127,7 +127,7 @@ C
       CHARACTER(LEN=*)  FNAMEF 
       DOUBLE PRECISION COORDS(*)
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -139,7 +139,7 @@ C
       CHARACTER(LEN=*)  FNAMEF
       DOUBLE PRECISION COORDS(*)
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -149,7 +149,7 @@ C
       IMPLICIT NONE
       INTEGER KD,NINTB,NNZ
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -160,7 +160,7 @@ C
       INTEGER NNZ,NCART,KD,NINTB
       DOUBLE PRECISION COORDS(NCART),LAMBDA(NCART)
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -171,7 +171,7 @@ C
       IMPLICIT NONE
       DOUBLE PRECISION DIHE,ALLANG,QLOCAL(*),FIN(*)
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -182,7 +182,7 @@ C
       IMPLICIT NONE
       DOUBLE PRECISION DIHE,ALLANG,QLOCAL(*)
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -192,7 +192,7 @@ C
       IMPLICIT NONE
       INTEGER NATOMS
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -203,7 +203,7 @@ C
       IMPLICIT NONE
       DOUBLE PRECISION RGYR,QLOCAL(*)
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -215,7 +215,7 @@ C
       DOUBLE PRECISION X(*),Y(*),Z(*),DPERT
       INTEGER DMODE
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -227,7 +227,7 @@ C
       INTEGER ISEED
       DOUBLE PRECISION UNPMIN,UNPMAX,UNNMIN,UNNMAX,X(*),Y(*),Z(*)
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -239,7 +239,7 @@ C
       INTEGER DMODE
       DOUBLE PRECISION X(*),Y(*),Z(*),DPERT
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -253,7 +253,7 @@ C
       INTEGER TWISTTYPE
       LOGICAL PTEST,ITEST,GUESSFAIL
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -266,7 +266,7 @@ C
       LOGICAL PTEST
       INTEGER TWISTTYPE,NGUESS
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -280,7 +280,7 @@ C
       INTEGER TWISTTYPE
       LOGICAL PTEST,ITEST,GUESSFAIL
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -293,7 +293,7 @@ C
       DOUBLE PRECISION GRAD(*),ENERGY,COORDS(*),RMS,EVALMIN,EVALMAX,VECS(*)
       LOGICAL MFLAG,PTEST,POTCALL
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -305,7 +305,7 @@ C
       DOUBLE PRECISION DIHE,ALLANG,QLOCAL(*)
       LOGICAL ORDERSTOP
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -318,7 +318,7 @@ C
       INTEGER TWISTTYPE
       LOGICAL PTEST,ITEST,GUESSFAIL
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -327,7 +327,7 @@ C
       SUBROUTINE UNRESINIT
       IMPLICIT NONE
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN
@@ -337,7 +337,7 @@ C
       IMPLICIT NONE
       DOUBLE PRECISION Q(*), FINISH(*), POINTS(*)
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
 
@@ -350,7 +350,7 @@ C
       DOUBLE PRECISION QA(*),QB(*),QC(*)
       DOUBLE PRECISION DIHEDIST
 
-      PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
+      PRINT*,'ERROR - THIS DUMMY ROUTINE SHOULD NEVER BE CALLED - WRONG EXECUTABLE?'
       STOP
 
       RETURN

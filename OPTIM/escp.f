@@ -1,25 +1,25 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C********************************************************************
 C
-C Subroutine ENERGY calculates the SC energy:
+C SUBROUTINE ENERGY CALCULATES THE SC ENERGY:
 C
 C********************************************************************
 C
@@ -35,28 +35,28 @@ C
       DOUBLE PRECISION RM(N,N), RN(N,N),VEC(N,N,3)
       LOGICAL GTEST,STEST
 
-      INQUIRE(FILE='SCparams',EXIST=YESNO)
+      INQUIRE(FILE='SCPARAMS',EXIST=YESNO)
       IF (.NOT.YESNO) THEN
-C        PRINT*,'No SCparams file - 12,6 assumed'
+C        PRINT*,'NO SCPARAMS FILE - 12,6 ASSUMED'
          NN=12
          MM=6
          EPS=2.5415D-03
          C=144.41
          SIG=1.414
 C
-C traditional 10,8 params
+C TRADITIONAL 10,8 PARAMS
 C
 C        EPS=1.2793D-02
 C        C=34.408
 C        SIG=1.414
       ELSE
-         OPEN(UNIT=33,FILE='SCparams',STATUS='OLD')
+         OPEN(UNIT=33,FILE='SCPARAMS',STATUS='OLD')
          READ(33,*) NN,MM,EPS,C,SIG
-C        WRITE(*,'(A,I4,A,I4,A,F15.5,A,F15.5,A,F15.5)')  ' n=',NN,' m=',MM,' epsilon=',EPS,' c=',C,' sigma=',SIG
+C        WRITE(*,'(A,I4,A,I4,A,F15.5,A,F15.5,A,F15.5)')  ' N=',NN,' M=',MM,' EPSILON=',EPS,' C=',C,' SIGMA=',SIG
          CLOSE(33)
       ENDIF
 C
-C  Deal with atoms leaving the box:
+C  DEAL WITH ATOMS LEAVING THE BOX:
 C
       DO 21 J1=1,N
          X(3*(J1-1)+1)=X(3*(J1-1)+1) - BOXLX *
@@ -67,9 +67,9 @@ C
      1                  DNINT(X(3*(J1-1)+3)/BOXLZ)
 21    CONTINUE
 C
-C  Calculation of connecting vectors; to implement the periodic
-C  boundary conditions, the shortest vector between two atoms is
-C  used:
+C  CALCULATION OF CONNECTING VECTORS; TO IMPLEMENT THE PERIODIC
+C  BOUNDARY CONDITIONS, THE SHORTEST VECTOR BETWEEN TWO ATOMS IS
+C  USED:
 C
       DO 25 J1=1,N
          VEC(J1,J1,1)=0.0D0
@@ -91,7 +91,7 @@ C
 15       CONTINUE
 25    CONTINUE
 C
-C  Store distance matrices.
+C  STORE DISTANCE MATRICES.
 C
       DO 20 J1=1,N
          RM(J1,J1)=0.0D0
@@ -112,18 +112,18 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C Call scl.f for lattice constant optimisation if required:
+C CALL SCL.F FOR LATTICE CONSTANT OPTIMISATION IF REQUIRED:
 C
       IF (PRESSURE) THEN
          CALL SCL(N,X,EPS,C,SIG,BOXLX,BOXLY,BOXLZ,CUTOFF)
-         PRINT*,'Energy minimised with respect to lattice constants' 
+         PRINT*,'ENERGY MINIMISED WITH RESPECT TO LATTICE CONSTANTS' 
 C        CUTOFF=BOXLX/2.0D0
-         PRINT*,'New box length and cutoff=',BOXLX,CUTOFF
+         PRINT*,'NEW BOX LENGTH AND CUTOFF=',BOXLX,CUTOFF
       ENDIF
 C
-C Store density matrix: In the case of the perfect fcc lattice,
-C the infinitely extended crystal implies that every RHO(J) is
-C equal to RHO(1).
+C STORE DENSITY MATRIX: IN THE CASE OF THE PERFECT FCC LATTICE,
+C THE INFINITELY EXTENDED CRYSTAL IMPLIES THAT EVERY RHO(J) IS
+C EQUAL TO RHO(1).
 C
       DO 11 I=1,N
          RHO(I)=0.0D00
@@ -132,7 +132,7 @@ C
 122      CONTINUE
 11    CONTINUE
 C
-C calculate the potential energy:
+C CALCULATE THE POTENTIAL ENERGY:
 C
       POTA=0.0D0
       POTB=0.0D0
@@ -151,8 +151,8 @@ C
 C
 C********************************************************************
 C
-C Subroutine DSCP calculates first and second derivative 
-C analytically for periodic boundary conditions. 
+C SUBROUTINE DSCP CALCULATES FIRST AND SECOND DERIVATIVE 
+C ANALYTICALLY FOR PERIODIC BOUNDARY CONDITIONS. 
 C
 C********************************************************************
 C
@@ -176,7 +176,7 @@ C
       SIG2MM=SIG**(2*MM)
       SIGNN=SIG**NN
 C
-C  Store distance matrices.
+C  STORE DISTANCE MATRICES.
 C
       DO 20 J1=1,N
          RM2(J1,J1)=0.0D0
@@ -210,7 +210,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C Now calculate the gradient analytically.
+C NOW CALCULATE THE GRADIENT ANALYTICALLY.
 C
       DO 50 J1=1,N
          DO 40 J2=1,3
@@ -229,7 +229,7 @@ C           PRINT*,'V(',J3,')=',V(J3)
 
       IF (.NOT.SSTEST) RETURN
 C
-C  Now do the hessian. First are the entirely diagonal terms.
+C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
 C
       DO 80 J1=1,N
          DO 70 J2=1,3
@@ -258,8 +258,8 @@ C           PRINT*,'HESS(',J3,',',J3,')=',HESS(J3,J3)
 70       CONTINUE
 80    CONTINUE
 C
-C  Next are the terms where x_i and x_j are on the same atom
-C  but are different, e.g. y and z.
+C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
+C  BUT ARE DIFFERENT, E.G. Y AND Z.
 C
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -291,7 +291,7 @@ C              PRINT*,'HESS(',J3,',',3*(J1-1)+J4,')=',HESS(J3,3*(J1-1)+J4)
 110      CONTINUE
 120   CONTINUE
 C
-C  Case III, different atoms, same cartesian coordinate.
+C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
 C
       DO 150 J1=1,N
          DO 140 J2=1,3
@@ -329,7 +329,7 @@ C              PRINT*,'HESS(',J3,',',3*(J4-1)+J2,')=',HESS(J3,3*(J4-1)+J2)
 140      CONTINUE
 150   CONTINUE
 C
-C  Case IV: different atoms and different cartesian coordinates.
+C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3

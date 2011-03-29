@@ -1,27 +1,27 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  Two body term of Murrell Potential
-C  Subroutine V2DIFF calculates the cartesian gradient and second
-C  derivative matrix analytically. 
+C  TWO BODY TERM OF MURRELL POTENTIAL
+C  SUBROUTINE V2DIFF CALCULATES THE CARTESIAN GRADIENT AND SECOND
+C  DERIVATIVE MATRIX ANALYTICALLY. 
 C
 C*************************************************************************
 C
@@ -38,7 +38,7 @@ C
      2                 RAB(N,N), RRAB(N,N),
      3                 RHOAB(N,N)
 C
-C  Store distance matrices.
+C  STORE DISTANCE MATRICES.
 C
       DO 20 J1=1,N
          RRAB(J1,J1)=0.0D0
@@ -56,7 +56,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  First calculate the gradient analytically.
+C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
 C
       DO 50 J1=1,N
          DO 40 J2=1,3
@@ -72,7 +72,7 @@ C           PRINT*,'J3,V(J3)=',J3,V(J3)
 40       CONTINUE
 50    CONTINUE
 C
-C  Now do the hessian. First are the entirely diagonal terms.
+C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
 C
       DO 80 J1=1,N
          DO 70 J2=1,3
@@ -88,8 +88,8 @@ C
 70       CONTINUE
 80    CONTINUE
 C
-C  Next are the terms where x_i and x_j are on the same atom
-C  but are different, e.g. y and z.
+C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
+C  BUT ARE DIFFERENT, E.G. Y AND Z.
 C
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -108,7 +108,7 @@ C
 110      CONTINUE
 120   CONTINUE
 C
-C  Case III, different atoms, same cartesian coordinate.
+C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
 C
       DO 150 J1=1,N
          DO 140 J2=1,3
@@ -125,7 +125,7 @@ C
 150   CONTINUE
 
 C
-C  Case IV: different atoms and different cartesian coordinates.
+C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3
@@ -145,7 +145,7 @@ C
 170      CONTINUE
 180   CONTINUE
 C
-C  Symmetrise Hessian
+C  SYMMETRISE HESSIAN
 C
       DO 200 J1=1,3*N
          DO 190 J2=J1+1,3*N
@@ -157,8 +157,8 @@ C
 C
 C*************************************************************************
 C
-C  Two body term of Murrell Potential - analytic derivatives with
-C  periodic boundary conditions
+C  TWO BODY TERM OF MURRELL POTENTIAL - ANALYTIC DERIVATIVES WITH
+C  PERIODIC BOUNDARY CONDITIONS
 C
 C*************************************************************************
 C
@@ -178,7 +178,7 @@ C
      1                 V(3*N), ABY, ABX
 C 
 C
-C  Store distance matrices.
+C  STORE DISTANCE MATRICES.
 C
       DO 20 J1=1,N
          DO 10 J2=J1+1,N
@@ -191,7 +191,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  First calculate the gradient analytically.
+C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
 C
       DO 50 J1=1,N
          DO 40 J2=1,3
@@ -209,7 +209,7 @@ C           PRINT*,'J3,V(J3)=',J3,V(J3)
 50    CONTINUE
       IF (.NOT.STEST) RETURN
 C
-C  Now do the hessian. First are the entirely diagonal terms.
+C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
 C
       DO 80 J1=1,N
          DO 70 J2=1,3
@@ -226,8 +226,8 @@ C
 70       CONTINUE
 80    CONTINUE
 C
-C  Next are the terms where x_i and x_j are on the same atom
-C  but are different, e.g. y and z.
+C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
+C  BUT ARE DIFFERENT, E.G. Y AND Z.
 C
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -246,7 +246,7 @@ C
 110      CONTINUE
 120   CONTINUE
 C
-C  Case III, different atoms, same cartesian coordinate.
+C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
 C
       DO 150 J1=1,N
          DO 140 J2=1,3
@@ -263,7 +263,7 @@ C
 150   CONTINUE
 
 C
-C  Case IV: different atoms and different cartesian coordinates.
+C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3
@@ -286,7 +286,7 @@ C
 170      CONTINUE
 180   CONTINUE
 C
-C  Symmetrise Hessian
+C  SYMMETRISE HESSIAN
 C
       DO 200 J1=1,3*N
          DO 190 J2=J1+1,3*N
@@ -298,7 +298,7 @@ C
 C
 C*************************************************************************
 C
-C  Two body term of Murrell Potential - analytic derivatives
+C  TWO BODY TERM OF MURRELL POTENTIAL - ANALYTIC DERIVATIVES
 C
 C*************************************************************************
 C
@@ -323,7 +323,7 @@ C
 22       CONTINUE
 21    CONTINUE
 C
-C  First calculate the gradient analytically.
+C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
 C
       DO 50 J1=1,N
          DO 40 J2=1,3
@@ -340,7 +340,7 @@ C           PRINT*,'J3,V(J3)=',J3,V(J3)
 40       CONTINUE
 50    CONTINUE
 C
-C  Now do the hessian. First are the entirely diagonal terms.
+C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
 C
       DO 80 J1=1,N
          DO 70 J2=1,3
@@ -359,8 +359,8 @@ C
 70       CONTINUE
 80    CONTINUE
 C
-C  Next are the terms where x_i and x_j are on the same atom
-C  but are different, e.g. y and z.
+C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
+C  BUT ARE DIFFERENT, E.G. Y AND Z.
 C
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -383,7 +383,7 @@ C
 110      CONTINUE
 120   CONTINUE
 C
-C  Case III, different atoms, same cartesian coordinate.
+C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
 C
       DO 150 J1=1,N
          DO 140 J2=1,3
@@ -405,7 +405,7 @@ C
 150   CONTINUE
 
 C
-C  Case IV: different atoms and different cartesian coordinates.
+C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3
@@ -430,7 +430,7 @@ C
 170      CONTINUE
 180   CONTINUE
 C
-C  Symmetrise Hessian
+C  SYMMETRISE HESSIAN
 C
       DO 200 J1=1,3*N
          DO 190 J2=J1+1,3*N
@@ -442,8 +442,8 @@ C
 C
 C*************************************************************************
 C
-C  Two body term of Murrell Potential - analytic derivatives with
-C  periodic boundary conditions
+C  TWO BODY TERM OF MURRELL POTENTIAL - ANALYTIC DERIVATIVES WITH
+C  PERIODIC BOUNDARY CONDITIONS
 C
 C*************************************************************************
 C
@@ -461,7 +461,7 @@ C
      1                 C5, C6, C7, C8, C9, C10, RE, D, AN2, AN3
 C 
 C
-C  Store distance matrices.
+C  STORE DISTANCE MATRICES.
 C
       DO 20 J1=1,N
          DO 10 J2=J1+1,N
@@ -474,7 +474,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  First calculate the gradient analytically.
+C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
 C
       DO 50 J1=1,N
          DO 40 J2=1,3
@@ -491,7 +491,7 @@ C           PRINT*,'J3,V(J3)=',J3,V(J3)
 40       CONTINUE
 50    CONTINUE
 C
-C  Now do the hessian. First are the entirely diagonal terms.
+C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
 C
       DO 80 J1=1,N
          DO 70 J2=1,3
@@ -508,8 +508,8 @@ C           HESS(J3,J3)=0.0D0
 70       CONTINUE
 80    CONTINUE
 C
-C  Next are the terms where x_i and x_j are on the same atom
-C  but are different, e.g. y and z.
+C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
+C  BUT ARE DIFFERENT, E.G. Y AND Z.
 C
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -528,7 +528,7 @@ C               HESS(3*(J1-1)+J4,J3)=0.0D0
 110      CONTINUE
 120   CONTINUE
 C
-C  Case III, different atoms, same cartesian coordinate.
+C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
 C
       DO 150 J1=1,N
          DO 140 J2=1,3
@@ -545,7 +545,7 @@ C
 150   CONTINUE
 
 C
-C  Case IV: different atoms and different cartesian coordinates.
+C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3
@@ -568,7 +568,7 @@ C
 170      CONTINUE
 180   CONTINUE
 C
-C  Symmetrise Hessian
+C  SYMMETRISE HESSIAN
 C
       DO 200 J1=1,3*N
          DO 190 J2=J1+1,3*N
@@ -580,9 +580,9 @@ C
 C
 C*************************************************************************
 C
-C  Derivatives of the JM three-body terms - to save space these are
-C  added directly to the supplied gradient and second derivative
-C  matrix.
+C  DERIVATIVES OF THE JM THREE-BODY TERMS - TO SAVE SPACE THESE ARE
+C  ADDED DIRECTLY TO THE SUPPLIED GRADIENT AND SECOND DERIVATIVE
+C  MATRIX.
 C                                        
 C*************************************************************************
 C
@@ -638,7 +638,7 @@ C
 10       CONTINUE 
 20    CONTINUE 
 C
-C  First the gradient.
+C  FIRST THE GRADIENT.
  
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -668,11 +668,11 @@ C  First the gradient.
      1           D*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+
      2           C10*QC-AN*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
      3           QA**2*(C2+C8*QB)+C6*QC+QA*( C1+C5*QB+C10*QC)))*
-     4           (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
+     4           (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
      5           (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
-     6           (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     7           (C6+C10*QA)*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     8           (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6))/re)/
+     6           (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     7           (C6+C10*QA)*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     8           (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6))/RE)/
      9           DEXP(AN*QA)
                ENDIF
 95             CONTINUE
@@ -684,7 +684,7 @@ C           PRINT*,'K2,V=',3*(J1-1)+J2,V(3*(J1-1)+J2)
 110      CONTINUE
 120   CONTINUE
 C
-C  Diagonal bits of the Hessian.
+C  DIAGONAL BITS OF THE HESSIAN.
 C
       DO 160 J1=1,N
          DO 150 J2=1,3
@@ -711,48 +711,48 @@ C
                   QB=(QQ2**2)+(QQ3**2)
                   QC=(QQ3**3)-3*QQ3*(QQ2**2)
                   TEMP=TEMP+
-     1      D*((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     2      AN**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     3      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))*
-     4      (-(abx*RRAB/re)-acx*RRAC/re)**2/SR3**2+
-     5      ((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*(c2+c8*QB)+
-     6      c10*QC-AN*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     7      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))*
-     8      (RRAB-abx**2*RRAB**3+RRAC-acx**2*RRAC**3)/re+
-     9      (-(abx*RRAB/re)-acx*RRAC/re)*
-     a      (-2*AN*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     b      2*QA*(c2+c8*QB)+c10*QC)*
-     c      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     d      (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     e      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)
-     f      +(c6+c10*QA)*
-     g      (-6*acx*QQ2*QQ3*RRAC/SR2+
-     h      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     i      )/re)+2*
-     j      ((2*C5+4*c8*QA)*
-     k      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     l      c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     m      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6))/
-     n      re))/SR3+2*c9*
-     o      (QB*(-2*QQ2*RRAC/(re*SR2)+
-     p      2*(acx**2*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     q      (-2*abx*RRAB+acx*RRAC)**2/(re**2*SR6**2)+
-     r      QQ3*(2*RRAB-2*abx**2*RRAB**3-RRAC+acx**2*RRAC**3)/
-     s      (re*SR6)))+
-     t      4*(acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)**2/
-     u      re**2)+(C3+C5*QA+c8*QA**2)*
-     v      (-2*QQ2*RRAC/(re*SR2)+
-     w      2*(acx**2*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+ 
-     x      (-2*abx*RRAB+acx*RRAC)**2/(re**2*SR6**2)+
-     y      QQ3*(2*RRAB-2*abx**2*RRAB**3-RRAC+acx**2*RRAC**3)/
-     z      (re*SR6)))+(c6+c10*QA)*
-     A      (QQ3*(-6*acx**2*(1/(RAC**2*re**2*SR2**2)+
-     B      QQ2*RRAC**3/(re*SR2))+ 
-     C      6*(QQ2*RRAC/(re*SR2)+ 
-     D      (-2*abx*RRAB+acx*RRAC)**2/(re**2*SR6**2)))+
+     1      D*((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     2      AN**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     3      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))*
+     4      (-(ABX*RRAB/RE)-ACX*RRAC/RE)**2/SR3**2+
+     5      ((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+
+     6      C10*QC-AN*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     7      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))*
+     8      (RRAB-ABX**2*RRAB**3+RRAC-ACX**2*RRAC**3)/RE+
+     9      (-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     A      (-2*AN*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     B      2*QA*(C2+C8*QB)+C10*QC)*
+     C      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     D      (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     E      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     F      +(C6+C10*QA)*
+     G      (-6*ACX*QQ2*QQ3*RRAC/SR2+
+     H      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     I      )/RE)+2*
+     J      ((2*C5+4*C8*QA)*
+     K      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     L      C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     M      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6))/
+     N      RE))/SR3+2*C9*
+     O      (QB*(-2*QQ2*RRAC/(RE*SR2)+
+     P      2*(ACX**2*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     Q      (-2*ABX*RRAB+ACX*RRAC)**2/(RE**2*SR6**2)+
+     R      QQ3*(2*RRAB-2*ABX**2*RRAB**3-RRAC+ACX**2*RRAC**3)/
+     S      (RE*SR6)))+
+     T      4*(ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)**2/
+     U      RE**2)+(C3+C5*QA+C8*QA**2)*
+     V      (-2*QQ2*RRAC/(RE*SR2)+
+     W      2*(ACX**2*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+ 
+     X      (-2*ABX*RRAB+ACX*RRAC)**2/(RE**2*SR6**2)+
+     Y      QQ3*(2*RRAB-2*ABX**2*RRAB**3-RRAC+ACX**2*RRAC**3)/
+     Z      (RE*SR6)))+(C6+C10*QA)*
+     A      (QQ3*(-6*ACX**2*(1/(RAC**2*RE**2*SR2**2)+
+     B      QQ2*RRAC**3/(RE*SR2))+ 
+     C      6*(QQ2*RRAC/(RE*SR2)+ 
+     D      (-2*ABX*RRAB+ACX*RRAC)**2/(RE**2*SR6**2)))+
      E      ((-3*QQ2**2+3*QQ3**2)*
-     F      (2*RRAB-2*abx**2*RRAB**3-RRAC+acx**2*RRAC**3)/re-
-     G      12*acx*QQ2*RRAC*(-2*abx*RRAB+acx*RRAC)/(re**2*SR2))/SR6))/ 
+     F      (2*RRAB-2*ABX**2*RRAB**3-RRAC+ACX**2*RRAC**3)/RE-
+     G      12*ACX*QQ2*RRAC*(-2*ABX*RRAB+ACX*RRAC)/(RE**2*SR2))/SR6))/ 
      H      DEXP(AN*QA)
                ENDIF
 130            CONTINUE
@@ -764,7 +764,7 @@ C           PRINT*,'K2,A=',3*(J1-1)+J2,HESS(3*(J1-1)+J2,3*(J1-1)+J2)
 150      CONTINUE
 160   CONTINUE
 C
-C  Same atom, different component.
+C  SAME ATOM, DIFFERENT COMPONENT.
 C
       DO 210 J1=1,N
         DO 200 J2=1,3
@@ -795,65 +795,65 @@ C
                 QB=(QQ2**2)+(QQ3**2) 
                 QC=QQ3**3-3*QQ3*QQ2**2
                TEMP=TEMP+ 
-     1 D*(((c1+3*c4*QA**2+4*c7*QA**3+c5*QB+2*QA*(c2+c8*QB)+c10*QC- 
-     2           AN*(c0+c4*QA**3+c7*QA**4+c3*QB+c9*QB**2+
-     3     QA**2*(c2+c8*QB)+c6*QC+QA*(c1+c5*QB+c10*QC)))*
-     4         (-abx*aby*RRAB**3/re-acx*acy*RRAC**3/re)+
-     5        (-aby*RRAB/re-acy*RRAC/re)*
-     6         (-(AN*((c1+3*c4*QA**2+4*c7*QA**3+c5*QB+
-     7        2*QA*(c2+c8*QB)+c10*QC)*
-     8      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     9    (2*(c3+c5*QA+c8*QA**2+2*c9*QB)*
-     A     (acx*QQ2*RRAC/SR2+
-     B       QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     C       (c6+c10*QA)*
-     D     (-6*acx*QQ2*QQ3*RRAC/SR2+
-     E       (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/
-     F        SR6))/re))+
-     G     (2*(c5+2*c8*QA)*
-     H      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     I     c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     J     (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6))/
-     K      re))/SR3+(-(abx*RRAB/re)-acx*RRAC/re)*
-     L   ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     M      AN**2*(c0+c4*QA**3+c7*QA**4+c3*QB+c9*QB**2+
-     N      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+c5*QB+c10*QC)))* 
-     O    (-(aby*RRAB/re)-acy*RRAC/re)/SR3**2+
-     P     (-(AN*((c1+3*c4*QA**2+4*c7*QA**3+c5*QB+
-     Q     2*QA*(c2+c8*QB)+c10*QC)*
-     R   (-(aby*RRAB/re)-acy*RRAC/re)/SR3+
-     S    (2*(c3+c5*QA+c8*QA**2+2*c9*QB)*
-     T     (acy*QQ2*RRAC/SR2+
-     U    QQ3*(-2*aby*RRAB+acy*RRAC)/SR6)+
-     V    (c6+c10*QA)*
-     W     (-6*acy*QQ2*QQ3*RRAC/SR2+
-     X    (-3*QQ2**2+3*QQ3**2)*(-2*aby*RRAB+acy*RRAC)/
-     Y     SR6))/re))+
-     Z     (2*(c5+2*c8*QA)*
-     a   (acy*QQ2*RRAC/SR2+QQ3*(-2*aby*RRAB+acy*RRAC)/SR6)+
-     b  c10*(-6*acy*QQ2*QQ3*RRAC/SR2+
-     c  (-3*QQ2**2+3*QQ3**2)*(-2*aby*RRAB+acy*RRAC)/SR6))/
-     d      re)/SR3)+2*(c9*
-     e   (4*(acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     f    (acy*QQ2*RRAC/SR2+QQ3*(-2*aby*RRAB+acy*RRAC)/SR6)/re**2 
-     g   +2*QB*(acx*acy*
-     h   (1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     i  (-2*abx*RRAB+acx*RRAC)*(-2*aby*RRAB+acy*RRAC)/
-     j   (re**2*SR6**2)+
-     k  QQ3*(-2*abx*aby*RRAB**3+acx*acy*RRAC**3)/(re*SR6)))+
-     l  (c3+c5*QA+c8*QA**2)*
-     m   (acx*acy*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     n     (-2*abx*RRAB+acx*RRAC)*(-2*aby*RRAB+acy*RRAC)/
-     o   (re**2*SR6**2)+
-     p  QQ3*(-2*abx*aby*RRAB**3+acx*acy*RRAC**3)/(re*SR6)))+
-     q     (c6+c10*QA)*(-6*(acx*
-     r   (acy*QQ3*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     s  QQ2*RRAC*(-2*aby*RRAB+acy*RRAC)/(re**2*SR2*SR6))+
-     t  acy*QQ2*RRAC*(-2*abx*RRAB+acx*RRAC)/(re**2*SR2*SR6))+
-     u  6*QQ3*(-2*abx*RRAB+acx*RRAC)*(-2*aby*RRAB+acy*RRAC)/
-     v   (re**2*SR6**2)+
-     w  (-3*QQ2**2+3*QQ3**2)*(-2*abx*aby*RRAB**3+acx*acy*RRAC**3)/ 
-     x   (re*SR6)))*DEXP(-AN*QA)
+     1 D*(((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+C10*QC- 
+     2           AN*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     3     QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))*
+     4         (-ABX*ABY*RRAB**3/RE-ACX*ACY*RRAC**3/RE)+
+     5        (-ABY*RRAB/RE-ACY*RRAC/RE)*
+     6         (-(AN*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     7        2*QA*(C2+C8*QB)+C10*QC)*
+     8      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     9    (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     A     (ACX*QQ2*RRAC/SR2+
+     B       QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     C       (C6+C10*QA)*
+     D     (-6*ACX*QQ2*QQ3*RRAC/SR2+
+     E       (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/
+     F        SR6))/RE))+
+     G     (2*(C5+2*C8*QA)*
+     H      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     I     C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     J     (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6))/
+     K      RE))/SR3+(-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     L   ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     M      AN**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     N      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))* 
+     O    (-(ABY*RRAB/RE)-ACY*RRAC/RE)/SR3**2+
+     P     (-(AN*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     Q     2*QA*(C2+C8*QB)+C10*QC)*
+     R   (-(ABY*RRAB/RE)-ACY*RRAC/RE)/SR3+
+     S    (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     T     (ACY*QQ2*RRAC/SR2+
+     U    QQ3*(-2*ABY*RRAB+ACY*RRAC)/SR6)+
+     V    (C6+C10*QA)*
+     W     (-6*ACY*QQ2*QQ3*RRAC/SR2+
+     X    (-3*QQ2**2+3*QQ3**2)*(-2*ABY*RRAB+ACY*RRAC)/
+     Y     SR6))/RE))+
+     Z     (2*(C5+2*C8*QA)*
+     A   (ACY*QQ2*RRAC/SR2+QQ3*(-2*ABY*RRAB+ACY*RRAC)/SR6)+
+     B  C10*(-6*ACY*QQ2*QQ3*RRAC/SR2+
+     C  (-3*QQ2**2+3*QQ3**2)*(-2*ABY*RRAB+ACY*RRAC)/SR6))/
+     D      RE)/SR3)+2*(C9*
+     E   (4*(ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     F    (ACY*QQ2*RRAC/SR2+QQ3*(-2*ABY*RRAB+ACY*RRAC)/SR6)/RE**2 
+     G   +2*QB*(ACX*ACY*
+     H   (1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     I  (-2*ABX*RRAB+ACX*RRAC)*(-2*ABY*RRAB+ACY*RRAC)/
+     J   (RE**2*SR6**2)+
+     K  QQ3*(-2*ABX*ABY*RRAB**3+ACX*ACY*RRAC**3)/(RE*SR6)))+
+     L  (C3+C5*QA+C8*QA**2)*
+     M   (ACX*ACY*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     N     (-2*ABX*RRAB+ACX*RRAC)*(-2*ABY*RRAB+ACY*RRAC)/
+     O   (RE**2*SR6**2)+
+     P  QQ3*(-2*ABX*ABY*RRAB**3+ACX*ACY*RRAC**3)/(RE*SR6)))+
+     Q     (C6+C10*QA)*(-6*(ACX*
+     R   (ACY*QQ3*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     S  QQ2*RRAC*(-2*ABY*RRAB+ACY*RRAC)/(RE**2*SR2*SR6))+
+     T  ACY*QQ2*RRAC*(-2*ABX*RRAB+ACX*RRAC)/(RE**2*SR2*SR6))+
+     U  6*QQ3*(-2*ABX*RRAB+ACX*RRAC)*(-2*ABY*RRAB+ACY*RRAC)/
+     V   (RE**2*SR6**2)+
+     W  (-3*QQ2**2+3*QQ3**2)*(-2*ABX*ABY*RRAB**3+ACX*ACY*RRAC**3)/ 
+     X   (RE*SR6)))*DEXP(-AN*QA)
                ENDIF
 170            CONTINUE
             ENDIF
@@ -864,7 +864,7 @@ C
 200   CONTINUE
 210   CONTINUE
 C
-C  Different atoms, same component.
+C  DIFFERENT ATOMS, SAME COMPONENT.
 C
       DO 260 J1=1,N
         DO 250 J2=1,3
@@ -890,53 +890,53 @@ C
               QB=(QQ2**2)+(QQ3**2)
               QC=QQ3**3-3*QQ3*QQ2**2
               TEMP=TEMP+
-     1        D*((C3+C5*QA+c8*QA**2+2*c9*QB)*
-     2        (-2*acx*bcx*RRAC*RRBC/(re**2*SR2**2)+
-     3        2*((-2*abx*RRAB+acx*RRAC)*(2*abx*RRAB+bcx*RRBC)/
-     4        (re**2*SR6**2)+QQ3*(-2*RRAB+2*abx**2*RRAB**3)/(re*SR6)))
-     5        +(((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*(c2+c8*QB)+
-     6        c10*QC-AN*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     7        QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))
-     8        *(-RRAB+abx**2*RRAB**3)+
-     9        (abx*RRAB-bcx*RRBC)*
-     A        (-(AN*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     B        2*QA*(c2+c8*QB)+c10*QC)*
-     C        (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     D        (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     E        (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     F        (c6+c10*QA)*(-6*acx*QQ2*QQ3*RRAC/SR2+
+     1        D*((C3+C5*QA+C8*QA**2+2*C9*QB)*
+     2        (-2*ACX*BCX*RRAC*RRBC/(RE**2*SR2**2)+
+     3        2*((-2*ABX*RRAB+ACX*RRAC)*(2*ABX*RRAB+BCX*RRBC)/
+     4        (RE**2*SR6**2)+QQ3*(-2*RRAB+2*ABX**2*RRAB**3)/(RE*SR6)))
+     5        +(((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+
+     6        C10*QC-AN*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     7        QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))
+     8        *(-RRAB+ABX**2*RRAB**3)+
+     9        (ABX*RRAB-BCX*RRBC)*
+     A        (-(AN*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     B        2*QA*(C2+C8*QB)+C10*QC)*
+     C        (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     D        (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     E        (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     F        (C6+C10*QA)*(-6*ACX*QQ2*QQ3*RRAC/SR2+
      G        (-3*QQ2**2+3*QQ3**2)*
-     H        (-2*abx*RRAB+acx*RRAC)/SR6))/re))+
-     I        (2*(C5+2*c8*QA)*
-     J        (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     K        c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     L        (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     M        )/re))/SR3+(-(abx*RRAB/re)-acx*RRAC/re)*
-     N        ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     O        AN**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     P        QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC))
-     Q        )*(abx*RRAB-bcx*RRBC)/SR3**2+
-     R        (-(AN*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     S        2*QA*(c2+c8*QB)+c10*QC)*(abx*RRAB-bcx*RRBC)
-     T        /SR3+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     U        (-2*bcx*QQ2*RRBC/SR2+
-     V        2*QQ3*(2*abx*RRAB+bcx*RRBC)/SR6)+
-     W        (c6+c10*QA)*(6*bcx*QQ2*QQ3*RRBC/SR2+
-     X        (-3*QQ2**2+3*QQ3**2)*(2*abx*RRAB+bcx*RRBC)/SR6
-     Y        )))+(C5+2*c8*QA)*
-     Z        (-2*bcx*QQ2*RRBC/SR2+2*QQ3*(2*abx*RRAB+bcx*RRBC)/SR6)
-     a        +c10*(6*bcx*QQ2*QQ3*RRBC/SR2+
-     b        (-3*QQ2**2+3*QQ3**2)*(2*abx*RRAB+bcx*RRBC)/SR6))/
-     c        SR3)+4*c9*(acx*QQ2*RRAC/SR2+
-     d        QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     e        (-2*bcx*QQ2*RRBC/SR2+2*QQ3*(2*abx*RRAB+bcx*RRBC)/SR6)/re)/
-     f        re+(c6+c10*QA)*(6*
-     g        (QQ3*(acx*bcx*RRAC*RRBC/SR2**2+
-     h        (-2*abx*RRAB+acx*RRAC)*(2*abx*RRAB+bcx*RRBC)/SR6**2)
-     i        +bcx*QQ2*(-2*abx*RRAB+acx*RRAC)*RRBC/(SR2*SR6))/re**2
-     j        +((-3*QQ2**2+3*QQ3**2)*(-2*RRAB+2*abx**2*RRAB**3)/re-
-     k        6*acx*QQ2*RRAC*(2*abx*RRAB+bcx*RRBC)/(re**2*SR2))/SR6))/
-     l        DEXP(AN*QA)
+     H        (-2*ABX*RRAB+ACX*RRAC)/SR6))/RE))+
+     I        (2*(C5+2*C8*QA)*
+     J        (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     K        C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     L        (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     M        )/RE))/SR3+(-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     N        ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     O        AN**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     P        QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC))
+     Q        )*(ABX*RRAB-BCX*RRBC)/SR3**2+
+     R        (-(AN*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     S        2*QA*(C2+C8*QB)+C10*QC)*(ABX*RRAB-BCX*RRBC)
+     T        /SR3+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     U        (-2*BCX*QQ2*RRBC/SR2+
+     V        2*QQ3*(2*ABX*RRAB+BCX*RRBC)/SR6)+
+     W        (C6+C10*QA)*(6*BCX*QQ2*QQ3*RRBC/SR2+
+     X        (-3*QQ2**2+3*QQ3**2)*(2*ABX*RRAB+BCX*RRBC)/SR6
+     Y        )))+(C5+2*C8*QA)*
+     Z        (-2*BCX*QQ2*RRBC/SR2+2*QQ3*(2*ABX*RRAB+BCX*RRBC)/SR6)
+     A        +C10*(6*BCX*QQ2*QQ3*RRBC/SR2+
+     B        (-3*QQ2**2+3*QQ3**2)*(2*ABX*RRAB+BCX*RRBC)/SR6))/
+     C        SR3)+4*C9*(ACX*QQ2*RRAC/SR2+
+     D        QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     E        (-2*BCX*QQ2*RRBC/SR2+2*QQ3*(2*ABX*RRAB+BCX*RRBC)/SR6)/RE)/
+     F        RE+(C6+C10*QA)*(6*
+     G        (QQ3*(ACX*BCX*RRAC*RRBC/SR2**2+
+     H        (-2*ABX*RRAB+ACX*RRAC)*(2*ABX*RRAB+BCX*RRBC)/SR6**2)
+     I        +BCX*QQ2*(-2*ABX*RRAB+ACX*RRAC)*RRBC/(SR2*SR6))/RE**2
+     J        +((-3*QQ2**2+3*QQ3**2)*(-2*RRAB+2*ABX**2*RRAB**3)/RE-
+     K        6*ACX*QQ2*RRAC*(2*ABX*RRAB+BCX*RRBC)/(RE**2*SR2))/SR6))/
+     L        DEXP(AN*QA)
 
             ENDIF
 220         CONTINUE
@@ -946,7 +946,7 @@ C
 250     CONTINUE
 260   CONTINUE
 C
-C  Different atoms and different components
+C  DIFFERENT ATOMS AND DIFFERENT COMPONENTS
 C
       DO 310 J1=1,N
         DO 300 J2=1,3
@@ -976,56 +976,56 @@ C
                 QB=(QQ2**2)+(QQ3**2)
                 QC=QQ3**3-3*QQ3*QQ2**2
                 TEMP=TEMP+
-     1      D*(((abx*aby*(c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*
-     2      (c2+c8*QB)+
-     3      c10*QC-AN*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     4      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))
-     5      *RRAB**3+(aby*RRAB-bcy*RRBC)*
-     6      (-(AN*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     7      2*QA*(c2+c8*QB)+c10*QC)*
-     8      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     9      (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     A      (acx*QQ2*RRAC/SR2+
-     B      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     C      (c6+c10*QA)*(-6*acx*QQ2*QQ3*RRAC/SR2+
+     1      D*(((ABX*ABY*(C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*
+     2      (C2+C8*QB)+
+     3      C10*QC-AN*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     4      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))
+     5      *RRAB**3+(ABY*RRAB-BCY*RRBC)*
+     6      (-(AN*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     7      2*QA*(C2+C8*QB)+C10*QC)*
+     8      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     9      (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     A      (ACX*QQ2*RRAC/SR2+
+     B      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     C      (C6+C10*QA)*(-6*ACX*QQ2*QQ3*RRAC/SR2+
      D      (-3*QQ2**2+3*QQ3**2)*
-     E      (-2*abx*RRAB+acx*RRAC)/SR6))/re))+
-     F      (2*(C5+2*c8*QA)*
-     G      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)
-     H      +c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     I      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     J      )/re))/SR3+
-     K      (-(abx*RRAB/re)-acx*RRAC/re)*
-     L      ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     M      AN**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     N      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC))
-     O      )*(aby*RRAB-bcy*RRBC)/SR3**2+
-     P      (-(AN*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     Q      2*QA*(c2+c8*QB)+c10*QC)*(aby*RRAB-bcy*RRBC)
-     R      /SR3+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     S      (-2*bcy*QQ2*RRBC/SR2+
-     T      2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)+
-     U      (c6+c10*QA)*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     V      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6
-     W      )))+(C5+2*c8*QA)*
-     X      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)
-     Y      +c10*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     Z      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6))/
-     a      SR3)+4*c9*(acx*QQ2*RRAC/SR2+
-     b      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     c      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)/re)/ 
-     d      re+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     e      ((-2*acx*bcy*RRAC*RRBC/SR2**2+
-     f      2*(-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     g      re**2+4*abx*aby*QQ3*RRAB**3/(re*SR6))+
-     h      (c6+c10*QA)*(6*(QQ3*
-     i      (acx*bcy*RRAC*RRBC/SR2**2+
-     j      (-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     k      re**2+(abx*aby*QQ3**2*RRAB**3+
-     l      bcy*QQ2*(-2*abx*RRAB+acx*RRAC)*RRBC/(re*SR2))/(re*SR6))
-     m      -6*(abx*aby*QQ2**2*RRAB**3+
-     n      acx*QQ2*RRAC*(2*aby*RRAB+bcy*RRBC)/(re*SR2))/(re*SR6)))/ 
-     o      DEXP(AN*QA)
+     E      (-2*ABX*RRAB+ACX*RRAC)/SR6))/RE))+
+     F      (2*(C5+2*C8*QA)*
+     G      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     H      +C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     I      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     J      )/RE))/SR3+
+     K      (-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     L      ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     M      AN**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     N      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC))
+     O      )*(ABY*RRAB-BCY*RRBC)/SR3**2+
+     P      (-(AN*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     Q      2*QA*(C2+C8*QB)+C10*QC)*(ABY*RRAB-BCY*RRBC)
+     R      /SR3+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     S      (-2*BCY*QQ2*RRBC/SR2+
+     T      2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)+
+     U      (C6+C10*QA)*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     V      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6
+     W      )))+(C5+2*C8*QA)*
+     X      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)
+     Y      +C10*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     Z      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6))/
+     A      SR3)+4*C9*(ACX*QQ2*RRAC/SR2+
+     B      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     C      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)/RE)/ 
+     D      RE+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     E      ((-2*ACX*BCY*RRAC*RRBC/SR2**2+
+     F      2*(-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     G      RE**2+4*ABX*ABY*QQ3*RRAB**3/(RE*SR6))+
+     H      (C6+C10*QA)*(6*(QQ3*
+     I      (ACX*BCY*RRAC*RRBC/SR2**2+
+     J      (-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     K      RE**2+(ABX*ABY*QQ3**2*RRAB**3+
+     L      BCY*QQ2*(-2*ABX*RRAB+ACX*RRAC)*RRBC/(RE*SR2))/(RE*SR6))
+     M      -6*(ABX*ABY*QQ2**2*RRAB**3+
+     N      ACX*QQ2*RRAC*(2*ABY*RRAB+BCY*RRBC)/(RE*SR2))/(RE*SR6)))/ 
+     O      DEXP(AN*QA)
               ENDIF
 270           CONTINUE
               HESS(3*(J3-1)+J5,3*(J1-1)+J2)=TEMP
@@ -1056,57 +1056,57 @@ C
                 QB=(QQ2**2)+(QQ3**2)
                 QC=QQ3**3-3*QQ3*QQ2**2
                 TEMP=TEMP+
-     1      D*(((abx*aby*(c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*
-     2      (c2+c8*QB)+
-     3      c10*QC-AN*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     4      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))
-     5      *RRAB**3+(aby*RRAB-bcy*RRBC)*
-     6      (-(AN*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     7      2*QA*(c2+c8*QB)+c10*QC)*
-     8      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     9      (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     A      (acx*QQ2*RRAC/SR2+
-     B      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     C      (c6+c10*QA)*
-     D      (-6*acx*QQ2*QQ3*RRAC/SR2+
+     1      D*(((ABX*ABY*(C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*
+     2      (C2+C8*QB)+
+     3      C10*QC-AN*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     4      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))
+     5      *RRAB**3+(ABY*RRAB-BCY*RRBC)*
+     6      (-(AN*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     7      2*QA*(C2+C8*QB)+C10*QC)*
+     8      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     9      (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     A      (ACX*QQ2*RRAC/SR2+
+     B      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     C      (C6+C10*QA)*
+     D      (-6*ACX*QQ2*QQ3*RRAC/SR2+
      E      (-3*QQ2**2+3*QQ3**2)*
-     F      (-2*abx*RRAB+acx*RRAC)/SR6))/re))+
-     G      (2*(C5+2*c8*QA)*
-     H      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)
-     I      +c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     J      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     K      )/re))/SR3+
-     L      (-(abx*RRAB/re)-acx*RRAC/re)*
-     M      ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     O      AN**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     P      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC))
-     Q      )*(aby*RRAB-bcy*RRBC)/SR3**2+
-     R      (-(AN*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     S      2*QA*(c2+c8*QB)+c10*QC)*(aby*RRAB-bcy*RRBC)
-     T      /SR3+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     U      (-2*bcy*QQ2*RRBC/SR2+
-     V      2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)+
-     W      (c6+c10*QA)*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     X      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6
-     Y      )))+(C5+2*c8*QA)*
-     Z      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)
-     a      +c10*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     b      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6))/
-     c      SR3)+4*c9*(acx*QQ2*RRAC/SR2+
-     d      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     e      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)/re)/
-     f      re+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     g      ((-2*acx*bcy*RRAC*RRBC/SR2**2+
-     h      2*(-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     i      re**2+4*abx*aby*QQ3*RRAB**3/(re*SR6))+
-     j      (c6+c10*QA)*(6*(QQ3*
-     k      (acx*bcy*RRAC*RRBC/SR2**2+
-     l      (-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     m      re**2+(abx*aby*QQ3**2*RRAB**3+
-     n      bcy*QQ2*(-2*abx*RRAB+acx*RRAC)*RRBC/(re*SR2))/(re*SR6))
-     o      -6*(abx*aby*QQ2**2*RRAB**3+
-     p      acx*QQ2*RRAC*(2*aby*RRAB+bcy*RRBC)/(re*SR2))/(re*SR6)))/
-     q      DEXP(AN*QA)
+     F      (-2*ABX*RRAB+ACX*RRAC)/SR6))/RE))+
+     G      (2*(C5+2*C8*QA)*
+     H      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     I      +C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     J      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     K      )/RE))/SR3+
+     L      (-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     M      ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     O      AN**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     P      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC))
+     Q      )*(ABY*RRAB-BCY*RRBC)/SR3**2+
+     R      (-(AN*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     S      2*QA*(C2+C8*QB)+C10*QC)*(ABY*RRAB-BCY*RRBC)
+     T      /SR3+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     U      (-2*BCY*QQ2*RRBC/SR2+
+     V      2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)+
+     W      (C6+C10*QA)*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     X      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6
+     Y      )))+(C5+2*C8*QA)*
+     Z      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)
+     A      +C10*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     B      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6))/
+     C      SR3)+4*C9*(ACX*QQ2*RRAC/SR2+
+     D      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     E      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)/RE)/
+     F      RE+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     G      ((-2*ACX*BCY*RRAC*RRBC/SR2**2+
+     H      2*(-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     I      RE**2+4*ABX*ABY*QQ3*RRAB**3/(RE*SR6))+
+     J      (C6+C10*QA)*(6*(QQ3*
+     K      (ACX*BCY*RRAC*RRBC/SR2**2+
+     L      (-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     M      RE**2+(ABX*ABY*QQ3**2*RRAB**3+
+     N      BCY*QQ2*(-2*ABX*RRAB+ACX*RRAC)*RRBC/(RE*SR2))/(RE*SR6))
+     O      -6*(ABX*ABY*QQ2**2*RRAB**3+
+     P      ACX*QQ2*RRAC*(2*ABY*RRAB+BCY*RRBC)/(RE*SR2))/(RE*SR6)))/
+     Q      DEXP(AN*QA)
               ENDIF
 275           CONTINUE
               HESS(3*(J3-1)+J5,3*(J1-1)+J2)=TEMP
@@ -1116,7 +1116,7 @@ C
 300     CONTINUE
 310   CONTINUE
 C
-C  Symmetrise
+C  SYMMETRISE
 C
       DO 1000 J1=1,3*N
          DO 1010 J2=J1+1,3*N
@@ -1129,8 +1129,8 @@ C           PRINT*,'J1,J2,A=',J1,J2,HESS(J2,J1)
 C
 C*************************************************************************
 C
-C  Here we calculate the analytic gradient and second derivatives
-C  for the three-body term with periodic boundary conditions.
+C  HERE WE CALCULATE THE ANALYTIC GRADIENT AND SECOND DERIVATIVES
+C  FOR THE THREE-BODY TERM WITH PERIODIC BOUNDARY CONDITIONS.
 C                                        
 C*************************************************************************
 C
@@ -1154,7 +1154,7 @@ C
       DOUBLE PRECISION CUTOFF
 C
 C
-C  First the gradient.
+C  FIRST THE GRADIENT.
  
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -1185,11 +1185,11 @@ C  First the gradient.
      1           D*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+
      2           C10*QC-AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
      3           QA**2*(C2+C8*QB)+C6*QC+QA*( C1+C5*QB+C10*QC)))*
-     4           (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
+     4           (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
      5           (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
-     6           (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     7           (C6+C10*QA)*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     8           (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6))/re)/
+     6           (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     7           (C6+C10*QA)*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     8           (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6))/RE)/
      9           DEXP(AN3*QA)
                ENDIF
 95             CONTINUE
@@ -1201,7 +1201,7 @@ C           PRINT*,'K2,V=',3*(J1-1)+J2,V(3*(J1-1)+J2)
 120   CONTINUE
       IF (.NOT.STEST) RETURN
 C
-C  Diagonal bits of the Hessian.
+C  DIAGONAL BITS OF THE HESSIAN.
 C
       DO 160 J1=1,N
          DO 150 J2=1,3
@@ -1229,48 +1229,48 @@ C
                   QB=(QQ2**2)+(QQ3**2)
                   QC=(QQ3**3)-3*QQ3*(QQ2**2)
                   TEMP=TEMP+
-     1      D*((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     2      AN3**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     3      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))*
-     4      (-(abx*RRAB/re)-acx*RRAC/re)**2/SR3**2+
-     5      ((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*(c2+c8*QB)+
-     6      c10*QC-AN3*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     7      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))*
-     8      (RRAB-abx**2*RRAB**3+RRAC-acx**2*RRAC**3)/re+
-     9      (-(abx*RRAB/re)-acx*RRAC/re)*
-     a      (-2*AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     b      2*QA*(c2+c8*QB)+c10*QC)*
-     c      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     d      (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     e      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)
-     f      +(c6+c10*QA)*
-     g      (-6*acx*QQ2*QQ3*RRAC/SR2+
-     h      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     i      )/re)+2*
-     j      ((2*C5+4*c8*QA)*
-     k      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     l      c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     m      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6))/
-     n      re))/SR3+2*c9*
-     o      (QB*(-2*QQ2*RRAC/(re*SR2)+
-     p      2*(acx**2*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     q      (-2*abx*RRAB+acx*RRAC)**2/(re**2*SR6**2)+
-     r      QQ3*(2*RRAB-2*abx**2*RRAB**3-RRAC+acx**2*RRAC**3)/
-     s      (re*SR6)))+
-     t      4*(acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)**2/
-     u      re**2)+(C3+C5*QA+c8*QA**2)*
-     v      (-2*QQ2*RRAC/(re*SR2)+
-     w      2*(acx**2*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+ 
-     x      (-2*abx*RRAB+acx*RRAC)**2/(re**2*SR6**2)+
-     y      QQ3*(2*RRAB-2*abx**2*RRAB**3-RRAC+acx**2*RRAC**3)/
-     z      (re*SR6)))+(c6+c10*QA)*
-     A      (QQ3*(-6*acx**2*(1/(RAC**2*re**2*SR2**2)+
-     B      QQ2*RRAC**3/(re*SR2))+ 
-     C      6*(QQ2*RRAC/(re*SR2)+ 
-     D      (-2*abx*RRAB+acx*RRAC)**2/(re**2*SR6**2)))+
+     1      D*((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     2      AN3**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     3      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))*
+     4      (-(ABX*RRAB/RE)-ACX*RRAC/RE)**2/SR3**2+
+     5      ((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+
+     6      C10*QC-AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     7      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))*
+     8      (RRAB-ABX**2*RRAB**3+RRAC-ACX**2*RRAC**3)/RE+
+     9      (-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     A      (-2*AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     B      2*QA*(C2+C8*QB)+C10*QC)*
+     C      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     D      (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     E      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     F      +(C6+C10*QA)*
+     G      (-6*ACX*QQ2*QQ3*RRAC/SR2+
+     H      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     I      )/RE)+2*
+     J      ((2*C5+4*C8*QA)*
+     K      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     L      C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     M      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6))/
+     N      RE))/SR3+2*C9*
+     O      (QB*(-2*QQ2*RRAC/(RE*SR2)+
+     P      2*(ACX**2*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     Q      (-2*ABX*RRAB+ACX*RRAC)**2/(RE**2*SR6**2)+
+     R      QQ3*(2*RRAB-2*ABX**2*RRAB**3-RRAC+ACX**2*RRAC**3)/
+     S      (RE*SR6)))+
+     T      4*(ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)**2/
+     U      RE**2)+(C3+C5*QA+C8*QA**2)*
+     V      (-2*QQ2*RRAC/(RE*SR2)+
+     W      2*(ACX**2*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+ 
+     X      (-2*ABX*RRAB+ACX*RRAC)**2/(RE**2*SR6**2)+
+     Y      QQ3*(2*RRAB-2*ABX**2*RRAB**3-RRAC+ACX**2*RRAC**3)/
+     Z      (RE*SR6)))+(C6+C10*QA)*
+     A      (QQ3*(-6*ACX**2*(1/(RAC**2*RE**2*SR2**2)+
+     B      QQ2*RRAC**3/(RE*SR2))+ 
+     C      6*(QQ2*RRAC/(RE*SR2)+ 
+     D      (-2*ABX*RRAB+ACX*RRAC)**2/(RE**2*SR6**2)))+
      E      ((-3*QQ2**2+3*QQ3**2)*
-     F      (2*RRAB-2*abx**2*RRAB**3-RRAC+acx**2*RRAC**3)/re-
-     G      12*acx*QQ2*RRAC*(-2*abx*RRAB+acx*RRAC)/(re**2*SR2))/SR6))/ 
+     F      (2*RRAB-2*ABX**2*RRAB**3-RRAC+ACX**2*RRAC**3)/RE-
+     G      12*ACX*QQ2*RRAC*(-2*ABX*RRAB+ACX*RRAC)/(RE**2*SR2))/SR6))/ 
      H      DEXP(AN3*QA)
                ENDIF
 130            CONTINUE
@@ -1281,7 +1281,7 @@ C           PRINT*,'K2,A=',3*(J1-1)+J2,HESS(3*(J1-1)+J2,3*(J1-1)+J2)
 150      CONTINUE
 160   CONTINUE
 C
-C  Same atom, different component.
+C  SAME ATOM, DIFFERENT COMPONENT.
 C
       DO 210 J1=1,N
         DO 200 J2=1,3
@@ -1313,65 +1313,65 @@ C
                 QB=(QQ2**2)+(QQ3**2) 
                 QC=QQ3**3-3*QQ3*QQ2**2
                TEMP=TEMP+ 
-     1 D*(((c1+3*c4*QA**2+4*c7*QA**3+c5*QB+2*QA*(c2+c8*QB)+c10*QC- 
-     2           AN3*(c0+c4*QA**3+c7*QA**4+c3*QB+c9*QB**2+
-     3     QA**2*(c2+c8*QB)+c6*QC+QA*(c1+c5*QB+c10*QC)))*
-     4         (-abx*aby*RRAB**3/re-acx*acy*RRAC**3/re)+
-     5        (-aby*RRAB/re-acy*RRAC/re)*
-     6         (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+c5*QB+
-     7        2*QA*(c2+c8*QB)+c10*QC)*
-     8      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     9    (2*(c3+c5*QA+c8*QA**2+2*c9*QB)*
-     A     (acx*QQ2*RRAC/SR2+
-     B       QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     C       (c6+c10*QA)*
-     D     (-6*acx*QQ2*QQ3*RRAC/SR2+
-     E       (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/
-     F        SR6))/re))+
-     G     (2*(c5+2*c8*QA)*
-     H      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     I     c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     J     (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6))/
-     K      re))/SR3+(-(abx*RRAB/re)-acx*RRAC/re)*
-     L   ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     M      AN3**2*(c0+c4*QA**3+c7*QA**4+c3*QB+c9*QB**2+
-     N      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+c5*QB+c10*QC)))* 
-     O    (-(aby*RRAB/re)-acy*RRAC/re)/SR3**2+
-     P     (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+c5*QB+
-     Q     2*QA*(c2+c8*QB)+c10*QC)*
-     R   (-(aby*RRAB/re)-acy*RRAC/re)/SR3+
-     S    (2*(c3+c5*QA+c8*QA**2+2*c9*QB)*
-     T     (acy*QQ2*RRAC/SR2+
-     U    QQ3*(-2*aby*RRAB+acy*RRAC)/SR6)+
-     V    (c6+c10*QA)*
-     W     (-6*acy*QQ2*QQ3*RRAC/SR2+
-     X    (-3*QQ2**2+3*QQ3**2)*(-2*aby*RRAB+acy*RRAC)/
-     Y     SR6))/re))+
-     Z     (2*(c5+2*c8*QA)*
-     a   (acy*QQ2*RRAC/SR2+QQ3*(-2*aby*RRAB+acy*RRAC)/SR6)+
-     b  c10*(-6*acy*QQ2*QQ3*RRAC/SR2+
-     c  (-3*QQ2**2+3*QQ3**2)*(-2*aby*RRAB+acy*RRAC)/SR6))/
-     d      re)/SR3)+2*(c9*
-     e   (4*(acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     f    (acy*QQ2*RRAC/SR2+QQ3*(-2*aby*RRAB+acy*RRAC)/SR6)/re**2 
-     g   +2*QB*(acx*acy*
-     h   (1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     i  (-2*abx*RRAB+acx*RRAC)*(-2*aby*RRAB+acy*RRAC)/
-     j   (re**2*SR6**2)+
-     k  QQ3*(-2*abx*aby*RRAB**3+acx*acy*RRAC**3)/(re*SR6)))+
-     l  (c3+c5*QA+c8*QA**2)*
-     m   (acx*acy*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     n     (-2*abx*RRAB+acx*RRAC)*(-2*aby*RRAB+acy*RRAC)/
-     o   (re**2*SR6**2)+
-     p  QQ3*(-2*abx*aby*RRAB**3+acx*acy*RRAC**3)/(re*SR6)))+
-     q     (c6+c10*QA)*(-6*(acx*
-     r   (acy*QQ3*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     s  QQ2*RRAC*(-2*aby*RRAB+acy*RRAC)/(re**2*SR2*SR6))+
-     t  acy*QQ2*RRAC*(-2*abx*RRAB+acx*RRAC)/(re**2*SR2*SR6))+
-     u  6*QQ3*(-2*abx*RRAB+acx*RRAC)*(-2*aby*RRAB+acy*RRAC)/
-     v   (re**2*SR6**2)+
-     w  (-3*QQ2**2+3*QQ3**2)*(-2*abx*aby*RRAB**3+acx*acy*RRAC**3)/ 
-     x   (re*SR6)))*DEXP(-AN3*QA)
+     1 D*(((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+C10*QC- 
+     2           AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     3     QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))*
+     4         (-ABX*ABY*RRAB**3/RE-ACX*ACY*RRAC**3/RE)+
+     5        (-ABY*RRAB/RE-ACY*RRAC/RE)*
+     6         (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     7        2*QA*(C2+C8*QB)+C10*QC)*
+     8      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     9    (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     A     (ACX*QQ2*RRAC/SR2+
+     B       QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     C       (C6+C10*QA)*
+     D     (-6*ACX*QQ2*QQ3*RRAC/SR2+
+     E       (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/
+     F        SR6))/RE))+
+     G     (2*(C5+2*C8*QA)*
+     H      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     I     C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     J     (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6))/
+     K      RE))/SR3+(-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     L   ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     M      AN3**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     N      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))* 
+     O    (-(ABY*RRAB/RE)-ACY*RRAC/RE)/SR3**2+
+     P     (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     Q     2*QA*(C2+C8*QB)+C10*QC)*
+     R   (-(ABY*RRAB/RE)-ACY*RRAC/RE)/SR3+
+     S    (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     T     (ACY*QQ2*RRAC/SR2+
+     U    QQ3*(-2*ABY*RRAB+ACY*RRAC)/SR6)+
+     V    (C6+C10*QA)*
+     W     (-6*ACY*QQ2*QQ3*RRAC/SR2+
+     X    (-3*QQ2**2+3*QQ3**2)*(-2*ABY*RRAB+ACY*RRAC)/
+     Y     SR6))/RE))+
+     Z     (2*(C5+2*C8*QA)*
+     A   (ACY*QQ2*RRAC/SR2+QQ3*(-2*ABY*RRAB+ACY*RRAC)/SR6)+
+     B  C10*(-6*ACY*QQ2*QQ3*RRAC/SR2+
+     C  (-3*QQ2**2+3*QQ3**2)*(-2*ABY*RRAB+ACY*RRAC)/SR6))/
+     D      RE)/SR3)+2*(C9*
+     E   (4*(ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     F    (ACY*QQ2*RRAC/SR2+QQ3*(-2*ABY*RRAB+ACY*RRAC)/SR6)/RE**2 
+     G   +2*QB*(ACX*ACY*
+     H   (1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     I  (-2*ABX*RRAB+ACX*RRAC)*(-2*ABY*RRAB+ACY*RRAC)/
+     J   (RE**2*SR6**2)+
+     K  QQ3*(-2*ABX*ABY*RRAB**3+ACX*ACY*RRAC**3)/(RE*SR6)))+
+     L  (C3+C5*QA+C8*QA**2)*
+     M   (ACX*ACY*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     N     (-2*ABX*RRAB+ACX*RRAC)*(-2*ABY*RRAB+ACY*RRAC)/
+     O   (RE**2*SR6**2)+
+     P  QQ3*(-2*ABX*ABY*RRAB**3+ACX*ACY*RRAC**3)/(RE*SR6)))+
+     Q     (C6+C10*QA)*(-6*(ACX*
+     R   (ACY*QQ3*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     S  QQ2*RRAC*(-2*ABY*RRAB+ACY*RRAC)/(RE**2*SR2*SR6))+
+     T  ACY*QQ2*RRAC*(-2*ABX*RRAB+ACX*RRAC)/(RE**2*SR2*SR6))+
+     U  6*QQ3*(-2*ABX*RRAB+ACX*RRAC)*(-2*ABY*RRAB+ACY*RRAC)/
+     V   (RE**2*SR6**2)+
+     W  (-3*QQ2**2+3*QQ3**2)*(-2*ABX*ABY*RRAB**3+ACX*ACY*RRAC**3)/ 
+     X   (RE*SR6)))*DEXP(-AN3*QA)
                ENDIF
 170            CONTINUE
             ENDIF
@@ -1381,7 +1381,7 @@ C
 200   CONTINUE
 210   CONTINUE
 C
-C  Different atoms, same component.
+C  DIFFERENT ATOMS, SAME COMPONENT.
 C
       DO 260 J1=1,N
         DO 250 J2=1,3
@@ -1410,53 +1410,53 @@ C
               QB=(QQ2**2)+(QQ3**2)
               QC=QQ3**3-3*QQ3*QQ2**2
               TEMP=TEMP+
-     1        D*((C3+C5*QA+c8*QA**2+2*c9*QB)*
-     2        (-2*acx*bcx*RRAC*RRBC/(re**2*SR2**2)+
-     3        2*((-2*abx*RRAB+acx*RRAC)*(2*abx*RRAB+bcx*RRBC)/
-     4        (re**2*SR6**2)+QQ3*(-2*RRAB+2*abx**2*RRAB**3)/(re*SR6)))
-     5        +(((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*(c2+c8*QB)+
-     6        c10*QC-AN3*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     7        QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))
-     8        *(-RRAB+abx**2*RRAB**3)+
-     9        (abx*RRAB-bcx*RRBC)*
-     A        (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     B        2*QA*(c2+c8*QB)+c10*QC)*
-     C        (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     D        (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     E        (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     F        (c6+c10*QA)*(-6*acx*QQ2*QQ3*RRAC/SR2+
+     1        D*((C3+C5*QA+C8*QA**2+2*C9*QB)*
+     2        (-2*ACX*BCX*RRAC*RRBC/(RE**2*SR2**2)+
+     3        2*((-2*ABX*RRAB+ACX*RRAC)*(2*ABX*RRAB+BCX*RRBC)/
+     4        (RE**2*SR6**2)+QQ3*(-2*RRAB+2*ABX**2*RRAB**3)/(RE*SR6)))
+     5        +(((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+
+     6        C10*QC-AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     7        QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))
+     8        *(-RRAB+ABX**2*RRAB**3)+
+     9        (ABX*RRAB-BCX*RRBC)*
+     A        (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     B        2*QA*(C2+C8*QB)+C10*QC)*
+     C        (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     D        (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     E        (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     F        (C6+C10*QA)*(-6*ACX*QQ2*QQ3*RRAC/SR2+
      G        (-3*QQ2**2+3*QQ3**2)*
-     H        (-2*abx*RRAB+acx*RRAC)/SR6))/re))+
-     I        (2*(C5+2*c8*QA)*
-     J        (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     K        c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     L        (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     M        )/re))/SR3+(-(abx*RRAB/re)-acx*RRAC/re)*
-     N        ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     O        AN3**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     P        QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC))
-     Q        )*(abx*RRAB-bcx*RRBC)/SR3**2+
-     R        (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     S        2*QA*(c2+c8*QB)+c10*QC)*(abx*RRAB-bcx*RRBC)
-     T        /SR3+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     U        (-2*bcx*QQ2*RRBC/SR2+
-     V        2*QQ3*(2*abx*RRAB+bcx*RRBC)/SR6)+
-     W        (c6+c10*QA)*(6*bcx*QQ2*QQ3*RRBC/SR2+
-     X        (-3*QQ2**2+3*QQ3**2)*(2*abx*RRAB+bcx*RRBC)/SR6
-     Y        )))+(C5+2*c8*QA)*
-     Z        (-2*bcx*QQ2*RRBC/SR2+2*QQ3*(2*abx*RRAB+bcx*RRBC)/SR6)
-     a        +c10*(6*bcx*QQ2*QQ3*RRBC/SR2+
-     b        (-3*QQ2**2+3*QQ3**2)*(2*abx*RRAB+bcx*RRBC)/SR6))/
-     c        SR3)+4*c9*(acx*QQ2*RRAC/SR2+
-     d        QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     e        (-2*bcx*QQ2*RRBC/SR2+2*QQ3*(2*abx*RRAB+bcx*RRBC)/SR6)/re)/
-     f        re+(c6+c10*QA)*(6*
-     g        (QQ3*(acx*bcx*RRAC*RRBC/SR2**2+
-     h        (-2*abx*RRAB+acx*RRAC)*(2*abx*RRAB+bcx*RRBC)/SR6**2)
-     i        +bcx*QQ2*(-2*abx*RRAB+acx*RRAC)*RRBC/(SR2*SR6))/re**2
-     j        +((-3*QQ2**2+3*QQ3**2)*(-2*RRAB+2*abx**2*RRAB**3)/re-
-     k        6*acx*QQ2*RRAC*(2*abx*RRAB+bcx*RRBC)/(re**2*SR2))/SR6))/
-     l        DEXP(AN3*QA)
+     H        (-2*ABX*RRAB+ACX*RRAC)/SR6))/RE))+
+     I        (2*(C5+2*C8*QA)*
+     J        (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     K        C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     L        (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     M        )/RE))/SR3+(-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     N        ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     O        AN3**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     P        QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC))
+     Q        )*(ABX*RRAB-BCX*RRBC)/SR3**2+
+     R        (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     S        2*QA*(C2+C8*QB)+C10*QC)*(ABX*RRAB-BCX*RRBC)
+     T        /SR3+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     U        (-2*BCX*QQ2*RRBC/SR2+
+     V        2*QQ3*(2*ABX*RRAB+BCX*RRBC)/SR6)+
+     W        (C6+C10*QA)*(6*BCX*QQ2*QQ3*RRBC/SR2+
+     X        (-3*QQ2**2+3*QQ3**2)*(2*ABX*RRAB+BCX*RRBC)/SR6
+     Y        )))+(C5+2*C8*QA)*
+     Z        (-2*BCX*QQ2*RRBC/SR2+2*QQ3*(2*ABX*RRAB+BCX*RRBC)/SR6)
+     A        +C10*(6*BCX*QQ2*QQ3*RRBC/SR2+
+     B        (-3*QQ2**2+3*QQ3**2)*(2*ABX*RRAB+BCX*RRBC)/SR6))/
+     C        SR3)+4*C9*(ACX*QQ2*RRAC/SR2+
+     D        QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     E        (-2*BCX*QQ2*RRBC/SR2+2*QQ3*(2*ABX*RRAB+BCX*RRBC)/SR6)/RE)/
+     F        RE+(C6+C10*QA)*(6*
+     G        (QQ3*(ACX*BCX*RRAC*RRBC/SR2**2+
+     H        (-2*ABX*RRAB+ACX*RRAC)*(2*ABX*RRAB+BCX*RRBC)/SR6**2)
+     I        +BCX*QQ2*(-2*ABX*RRAB+ACX*RRAC)*RRBC/(SR2*SR6))/RE**2
+     J        +((-3*QQ2**2+3*QQ3**2)*(-2*RRAB+2*ABX**2*RRAB**3)/RE-
+     K        6*ACX*QQ2*RRAC*(2*ABX*RRAB+BCX*RRBC)/(RE**2*SR2))/SR6))/
+     L        DEXP(AN3*QA)
 
             ENDIF
 220         CONTINUE
@@ -1465,7 +1465,7 @@ C
 250     CONTINUE
 260   CONTINUE
 C
-C  Different atoms and different components
+C  DIFFERENT ATOMS AND DIFFERENT COMPONENTS
 C
       DO 310 J1=1,N
         DO 300 J2=1,3
@@ -1498,56 +1498,56 @@ C
                 QB=(QQ2**2)+(QQ3**2)
                 QC=QQ3**3-3*QQ3*QQ2**2
                 TEMP=TEMP+
-     1      D*(((abx*aby*(c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*
-     2      (c2+c8*QB)+
-     3      c10*QC-AN3*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     4      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))
-     5      *RRAB**3+(aby*RRAB-bcy*RRBC)*
-     6      (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     7      2*QA*(c2+c8*QB)+c10*QC)*
-     8      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     9      (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     A      (acx*QQ2*RRAC/SR2+
-     B      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     C      (c6+c10*QA)*(-6*acx*QQ2*QQ3*RRAC/SR2+
+     1      D*(((ABX*ABY*(C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*
+     2      (C2+C8*QB)+
+     3      C10*QC-AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     4      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))
+     5      *RRAB**3+(ABY*RRAB-BCY*RRBC)*
+     6      (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     7      2*QA*(C2+C8*QB)+C10*QC)*
+     8      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     9      (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     A      (ACX*QQ2*RRAC/SR2+
+     B      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     C      (C6+C10*QA)*(-6*ACX*QQ2*QQ3*RRAC/SR2+
      D      (-3*QQ2**2+3*QQ3**2)*
-     E      (-2*abx*RRAB+acx*RRAC)/SR6))/re))+
-     F      (2*(C5+2*c8*QA)*
-     G      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)
-     H      +c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     I      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     J      )/re))/SR3+
-     K      (-(abx*RRAB/re)-acx*RRAC/re)*
-     L      ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     M      AN3**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     N      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC))
-     O      )*(aby*RRAB-bcy*RRBC)/SR3**2+
-     P      (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     Q      2*QA*(c2+c8*QB)+c10*QC)*(aby*RRAB-bcy*RRBC)
-     R      /SR3+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     S      (-2*bcy*QQ2*RRBC/SR2+
-     T      2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)+
-     U      (c6+c10*QA)*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     V      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6
-     W      )))+(C5+2*c8*QA)*
-     X      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)
-     Y      +c10*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     Z      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6))/
-     a      SR3)+4*c9*(acx*QQ2*RRAC/SR2+
-     b      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     c      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)/re)/ 
-     d      re+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     e      ((-2*acx*bcy*RRAC*RRBC/SR2**2+
-     f      2*(-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     g      re**2+4*abx*aby*QQ3*RRAB**3/(re*SR6))+
-     h      (c6+c10*QA)*(6*(QQ3*
-     i      (acx*bcy*RRAC*RRBC/SR2**2+
-     j      (-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     k      re**2+(abx*aby*QQ3**2*RRAB**3+
-     l      bcy*QQ2*(-2*abx*RRAB+acx*RRAC)*RRBC/(re*SR2))/(re*SR6))
-     m      -6*(abx*aby*QQ2**2*RRAB**3+
-     n      acx*QQ2*RRAC*(2*aby*RRAB+bcy*RRBC)/(re*SR2))/(re*SR6)))/ 
-     o      DEXP(AN3*QA)
+     E      (-2*ABX*RRAB+ACX*RRAC)/SR6))/RE))+
+     F      (2*(C5+2*C8*QA)*
+     G      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     H      +C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     I      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     J      )/RE))/SR3+
+     K      (-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     L      ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     M      AN3**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     N      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC))
+     O      )*(ABY*RRAB-BCY*RRBC)/SR3**2+
+     P      (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     Q      2*QA*(C2+C8*QB)+C10*QC)*(ABY*RRAB-BCY*RRBC)
+     R      /SR3+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     S      (-2*BCY*QQ2*RRBC/SR2+
+     T      2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)+
+     U      (C6+C10*QA)*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     V      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6
+     W      )))+(C5+2*C8*QA)*
+     X      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)
+     Y      +C10*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     Z      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6))/
+     A      SR3)+4*C9*(ACX*QQ2*RRAC/SR2+
+     B      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     C      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)/RE)/ 
+     D      RE+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     E      ((-2*ACX*BCY*RRAC*RRBC/SR2**2+
+     F      2*(-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     G      RE**2+4*ABX*ABY*QQ3*RRAB**3/(RE*SR6))+
+     H      (C6+C10*QA)*(6*(QQ3*
+     I      (ACX*BCY*RRAC*RRBC/SR2**2+
+     J      (-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     K      RE**2+(ABX*ABY*QQ3**2*RRAB**3+
+     L      BCY*QQ2*(-2*ABX*RRAB+ACX*RRAC)*RRBC/(RE*SR2))/(RE*SR6))
+     M      -6*(ABX*ABY*QQ2**2*RRAB**3+
+     N      ACX*QQ2*RRAC*(2*ABY*RRAB+BCY*RRBC)/(RE*SR2))/(RE*SR6)))/ 
+     O      DEXP(AN3*QA)
               ENDIF
 270           CONTINUE
               HESS(3*(J3-1)+J5,3*(J1-1)+J2)=HESS(3*(J3-1)+J5,3*(J1-1)+J2)+TEMP
@@ -1580,57 +1580,57 @@ C
                 QB=(QQ2**2)+(QQ3**2)
                 QC=QQ3**3-3*QQ3*QQ2**2
                 TEMP=TEMP+
-     1      D*(((abx*aby*(c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*
-     2      (c2+c8*QB)+
-     3      c10*QC-AN3*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     4      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))
-     5      *RRAB**3+(aby*RRAB-bcy*RRBC)*
-     6      (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     7      2*QA*(c2+c8*QB)+c10*QC)*
-     8      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     9      (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     A      (acx*QQ2*RRAC/SR2+
-     B      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     C      (c6+c10*QA)*
-     D      (-6*acx*QQ2*QQ3*RRAC/SR2+
+     1      D*(((ABX*ABY*(C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*
+     2      (C2+C8*QB)+
+     3      C10*QC-AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     4      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))
+     5      *RRAB**3+(ABY*RRAB-BCY*RRBC)*
+     6      (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     7      2*QA*(C2+C8*QB)+C10*QC)*
+     8      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     9      (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     A      (ACX*QQ2*RRAC/SR2+
+     B      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     C      (C6+C10*QA)*
+     D      (-6*ACX*QQ2*QQ3*RRAC/SR2+
      E      (-3*QQ2**2+3*QQ3**2)*
-     F      (-2*abx*RRAB+acx*RRAC)/SR6))/re))+
-     G      (2*(C5+2*c8*QA)*
-     H      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)
-     I      +c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     J      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     K      )/re))/SR3+
-     L      (-(abx*RRAB/re)-acx*RRAC/re)*
-     M      ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     O      AN3**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     P      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC))
-     Q      )*(aby*RRAB-bcy*RRBC)/SR3**2+
-     R      (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     S      2*QA*(c2+c8*QB)+c10*QC)*(aby*RRAB-bcy*RRBC)
-     T      /SR3+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     U      (-2*bcy*QQ2*RRBC/SR2+
-     V      2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)+
-     W      (c6+c10*QA)*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     X      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6
-     Y      )))+(C5+2*c8*QA)*
-     Z      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)
-     a      +c10*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     b      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6))/
-     c      SR3)+4*c9*(acx*QQ2*RRAC/SR2+
-     d      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     e      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)/re)/
-     f      re+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     g      ((-2*acx*bcy*RRAC*RRBC/SR2**2+
-     h      2*(-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     i      re**2+4*abx*aby*QQ3*RRAB**3/(re*SR6))+
-     j      (c6+c10*QA)*(6*(QQ3*
-     k      (acx*bcy*RRAC*RRBC/SR2**2+
-     l      (-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     m      re**2+(abx*aby*QQ3**2*RRAB**3+
-     n      bcy*QQ2*(-2*abx*RRAB+acx*RRAC)*RRBC/(re*SR2))/(re*SR6))
-     o      -6*(abx*aby*QQ2**2*RRAB**3+
-     p      acx*QQ2*RRAC*(2*aby*RRAB+bcy*RRBC)/(re*SR2))/(re*SR6)))/
-     q      DEXP(AN3*QA)
+     F      (-2*ABX*RRAB+ACX*RRAC)/SR6))/RE))+
+     G      (2*(C5+2*C8*QA)*
+     H      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     I      +C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     J      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     K      )/RE))/SR3+
+     L      (-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     M      ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     O      AN3**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     P      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC))
+     Q      )*(ABY*RRAB-BCY*RRBC)/SR3**2+
+     R      (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     S      2*QA*(C2+C8*QB)+C10*QC)*(ABY*RRAB-BCY*RRBC)
+     T      /SR3+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     U      (-2*BCY*QQ2*RRBC/SR2+
+     V      2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)+
+     W      (C6+C10*QA)*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     X      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6
+     Y      )))+(C5+2*C8*QA)*
+     Z      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)
+     A      +C10*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     B      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6))/
+     C      SR3)+4*C9*(ACX*QQ2*RRAC/SR2+
+     D      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     E      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)/RE)/
+     F      RE+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     G      ((-2*ACX*BCY*RRAC*RRBC/SR2**2+
+     H      2*(-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     I      RE**2+4*ABX*ABY*QQ3*RRAB**3/(RE*SR6))+
+     J      (C6+C10*QA)*(6*(QQ3*
+     K      (ACX*BCY*RRAC*RRBC/SR2**2+
+     L      (-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     M      RE**2+(ABX*ABY*QQ3**2*RRAB**3+
+     N      BCY*QQ2*(-2*ABX*RRAB+ACX*RRAC)*RRBC/(RE*SR2))/(RE*SR6))
+     O      -6*(ABX*ABY*QQ2**2*RRAB**3+
+     P      ACX*QQ2*RRAC*(2*ABY*RRAB+BCY*RRBC)/(RE*SR2))/(RE*SR6)))/
+     Q      DEXP(AN3*QA)
               ENDIF
 275           CONTINUE
               HESS(3*(J3-1)+J5,3*(J1-1)+J2)=HESS(3*(J3-1)+J5,3*(J1-1)+J2)+TEMP
@@ -1639,7 +1639,7 @@ C
 300     CONTINUE
 310   CONTINUE
 C
-C  Symmetrise
+C  SYMMETRISE
 C
       DO 1000 J1=1,3*N
          DO 1010 J2=J1+1,3*N
@@ -1651,8 +1651,8 @@ C
 
 C*************************************************************************
 C
-C  Here we calculate the analytic gradient and second derivatives
-C  for the three-body term 
+C  HERE WE CALCULATE THE ANALYTIC GRADIENT AND SECOND DERIVATIVES
+C  FOR THE THREE-BODY TERM 
 C                                        
 C*************************************************************************
 C
@@ -1675,7 +1675,7 @@ C
      2           V0=60.0D0, LAMBDA=-4.0D0, CUTOFF=2.8D0)
 C
 C
-C  First the gradient.
+C  FIRST THE GRADIENT.
 C 
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -1715,7 +1715,7 @@ C           PRINT*,'K2,V=',3*(J1-1)+J2,V(3*(J1-1)+J2)
 110      CONTINUE
 120   CONTINUE
 C
-C  Diagonal bits of the Hessian.
+C  DIAGONAL BITS OF THE HESSIAN.
 C
       DO 160 J1=1,N
          DO 150 J2=1,3
@@ -1749,12 +1749,12 @@ C
      6  (-RRAC + ACX**2*RRAC**3)/RHOAC**2)) + 
      7  2*C*(ABX*RRAB/RHOAB**2 + ACX*RRAC/RHOAC**2)*
      8  (LAMBDA*(-6*ACX*QQ2*QQ3*RRAC/SR2 + 
-     a  (-3*QQ2**2 + 3*QQ3**2)*(-2*ABX*RRAB + ACX*RRAC)/SR6)) + 
-     f  LAMBDA*(QQ3*(-6*ACX**2*(1/(RAC**2*SR2**2) + QQ2*RRAC**3/SR2) +   
-     g  6*(QQ2*RRAC/SR2 + (-2*ABX*RRAB + ACX*RRAC)**2/SR6**2)) + 
-     h  ((-3*QQ2**2 + 3*QQ3**2)*
-     i  (2*RRAB - 2*ABX**2*RRAB**3 - RRAC + ACX**2*RRAC**3) - 
-     j  12*ACX*QQ2*RRAC*(-2*ABX*RRAB + ACX*RRAC)/SR2)/SR6))*V0
+     A  (-3*QQ2**2 + 3*QQ3**2)*(-2*ABX*RRAB + ACX*RRAC)/SR6)) + 
+     F  LAMBDA*(QQ3*(-6*ACX**2*(1/(RAC**2*SR2**2) + QQ2*RRAC**3/SR2) +   
+     G  6*(QQ2*RRAC/SR2 + (-2*ABX*RRAB + ACX*RRAC)**2/SR6**2)) + 
+     H  ((-3*QQ2**2 + 3*QQ3**2)*
+     I  (2*RRAB - 2*ABX**2*RRAB**3 - RRAC + ACX**2*RRAC**3) - 
+     J  12*ACX*QQ2*RRAC*(-2*ABX*RRAB + ACX*RRAC)/SR2)/SR6))*V0
                ENDIF
 130            CONTINUE
             ENDIF
@@ -1764,7 +1764,7 @@ C           PRINT*,'K2,A=',3*(J1-1)+J2,HESS(3*(J1-1)+J2,3*(J1-1)+J2)
 150      CONTINUE
 160   CONTINUE
 C
-C  Same atom, different component.
+C  SAME ATOM, DIFFERENT COMPONENT.
 C
       DO 210 J1=1,N
         DO 200 J2=1,3
@@ -1796,22 +1796,22 @@ C
                TEMP=TEMP+
      1  DEXP(C*(1/RHOAB + 1/RHOAC + 1/RHOBC))*
      2  ((1 + LAMBDA*QC)*
-     3  (c**2*(ABX*RRAB/RHOAB**2 + ACX*RRAC/RHOAC**2)*
+     3  (C**2*(ABX*RRAB/RHOAB**2 + ACX*RRAC/RHOAC**2)*
      4  (ABY*RRAB/RHOAB**2 + ACY*RRAC/RHOAC**2) + 
      5  C*(2*(ABX*ABY/(RAB**2*RHOAB**3) + ACX*ACY/(RAC**2*RHOAC**3)) + 
      6  ABX*ABY*RRAB**3/RHOAB**2 + ACX*ACY*RRAC**3/RHOAC**2)) + 
      7  C*((ABY*RRAB/RHOAB**2 + ACY*RRAC/RHOAC**2)*
      8  (  LAMBDA*(-6*ACX*QQ2*QQ3*RRAC/SR2 + 
-     a  (-3*QQ2**2 + 3*QQ3**2)*(-2*ABX*RRAB + ACX*RRAC)/SR6)) + 
-     b  (ABX*RRAB/RHOAB**2 + ACX*RRAC/RHOAC**2)*
-     d  (LAMBDA*(-6*ACY*QQ2*QQ3*RRAC/SR2 + 
-     e  (-3*QQ2**2 + 3*QQ3**2)*(-2*ABY*RRAB + ACY*RRAC)/SR6))) + 
-     i  LAMBDA*(-6*(ACX*(ACY*QQ3*(1/(RAC**2*SR2**2) + QQ2*RRAC**3/SR2)+ 
-     j  QQ2*RRAC*(-2*ABY*RRAB + ACY*RRAC)/(SR2*SR6)) + 
-     k  ACY*QQ2*RRAC*(-2*ABX*RRAB + ACX*RRAC)/(SR2*SR6)) + 
-     l  6*QQ3*(-2*ABX*RRAB + ACX*RRAC)*(-2*ABY*RRAB + ACY*RRAC)/SR6**2 + 
-     m  (-3*QQ2**2+3*QQ3**2)*(-2*ABX*ABY*RRAB**3 + ACX*ACY*RRAC**3)/SR6 
-     n  ))*V0
+     A  (-3*QQ2**2 + 3*QQ3**2)*(-2*ABX*RRAB + ACX*RRAC)/SR6)) + 
+     B  (ABX*RRAB/RHOAB**2 + ACX*RRAC/RHOAC**2)*
+     D  (LAMBDA*(-6*ACY*QQ2*QQ3*RRAC/SR2 + 
+     E  (-3*QQ2**2 + 3*QQ3**2)*(-2*ABY*RRAB + ACY*RRAC)/SR6))) + 
+     I  LAMBDA*(-6*(ACX*(ACY*QQ3*(1/(RAC**2*SR2**2) + QQ2*RRAC**3/SR2)+ 
+     J  QQ2*RRAC*(-2*ABY*RRAB + ACY*RRAC)/(SR2*SR6)) + 
+     K  ACY*QQ2*RRAC*(-2*ABX*RRAB + ACX*RRAC)/(SR2*SR6)) + 
+     L  6*QQ3*(-2*ABX*RRAB + ACX*RRAC)*(-2*ABY*RRAB + ACY*RRAC)/SR6**2 + 
+     M  (-3*QQ2**2+3*QQ3**2)*(-2*ABX*ABY*RRAB**3 + ACX*ACY*RRAC**3)/SR6 
+     N  ))*V0
                ENDIF
 170            CONTINUE
             ENDIF
@@ -1821,7 +1821,7 @@ C
 200   CONTINUE
 210   CONTINUE
 C
-C  Different atoms, same component.
+C  DIFFERENT ATOMS, SAME COMPONENT.
 C
       DO 260 J1=1,N
         DO 250 J2=1,3
@@ -1850,20 +1850,20 @@ C
               TEMP=TEMP+
      1  DEXP(C*(1/RHOAB + 1/RHOAC + 1/RHOBC))*
      2  ((1 + LAMBDA*QC)*
-     3  (C*(RRAB/RHOAB**2 + abx**2*
+     3  (C*(RRAB/RHOAB**2 + ABX**2*
      4  (-2/(RAB**2*RHOAB**3) - RRAB**3/RHOAB**2)) + 
      5  C**2*(ABX*RRAB/RHOAB**2 + ACX*RRAC/RHOAC**2)*
-     6  (-(abx*RRAB/RHOAB**2) + BCX*RRBC/RHOBC**2)) + 
-     7  C*((-(ABX*RRAB/RHOAB**2) + bcx*RRBC/RHOBC**2)*
-     8  (  LAMBDA*(-6*acx*QQ2*QQ3*RRAC/SR2 + 
+     6  (-(ABX*RRAB/RHOAB**2) + BCX*RRBC/RHOBC**2)) + 
+     7  C*((-(ABX*RRAB/RHOAB**2) + BCX*RRBC/RHOBC**2)*
+     8  (  LAMBDA*(-6*ACX*QQ2*QQ3*RRAC/SR2 + 
      A  (-3*QQ2**2 + 3*QQ3**2)*(-2*ABX*RRAB + ACX*RRAC)/SR6)) + 
      B  (ABX*RRAB/RHOAB**2 + ACX*RRAC/RHOAC**2)*
      D  (LAMBDA*(6*BCX*QQ2*QQ3*RRBC/SR2 + 
-     E  (-3*QQ2**2 + 3*QQ3**2)*(2*abx*RRAB + BCX*RRBC)/SR6))) + 
+     E  (-3*QQ2**2 + 3*QQ3**2)*(2*ABX*RRAB + BCX*RRBC)/SR6))) + 
      I  LAMBDA*(6*(QQ3*(ACX*BCX*RRAC*RRBC/SR2**2 + 
      J  (-2*ABX*RRAB + ACX*RRAC)*(2*ABX*RRAB + BCX*RRBC)/SR6**2) +  
-     K  BCX*QQ2*(-2*ABX*RRAB + acx*RRAC)*RRBC/(SR2*SR6)) + 
-     L  ((-3*QQ2**2 + 3*QQ3**2)*(-2*RRAB + 2*abx**2*RRAB**3) - 
+     K  BCX*QQ2*(-2*ABX*RRAB + ACX*RRAC)*RRBC/(SR2*SR6)) + 
+     L  ((-3*QQ2**2 + 3*QQ3**2)*(-2*RRAB + 2*ABX**2*RRAB**3) - 
      M  6*ACX*QQ2*RRAC*(2*ABX*RRAB + BCX*RRBC)/SR2)/SR6))*V0
             ENDIF
 220         CONTINUE
@@ -1872,7 +1872,7 @@ C
 250     CONTINUE
 260   CONTINUE
 C
-C  Different atoms and different components
+C  DIFFERENT ATOMS AND DIFFERENT COMPONENTS
 C
       DO 310 J1=1,N
         DO 300 J2=1,3
@@ -1911,15 +1911,15 @@ C
      6  C*((-(ABY*RRAB/RHOAB**2) + BCY*RRBC/RHOBC**2)*
      8  (LAMBDA*(-6*ACX*QQ2*QQ3*RRAC/SR2 + 
      9  (-3*QQ2**2 + 3*QQ3**2)*(-2*ABX*RRAB + ACX*RRAC)/SR6)) + 
-     a  (ABX*RRAB/RHOAB**2 + ACX*RRAC/RHOAC**2)*
-     c  (LAMBDA*(6*BCY*QQ2*QQ3*RRBC/SR2 + 
-     d  (-3*QQ2**2 + 3*QQ3**2)*(2*ABY*RRAB + BCY*RRBC)/SR6))) + 
-     h  LAMBDA*(6*(QQ3*(ACX*BCY*RRAC*RRBC/SR2**2 + 
-     i  (-2*ABX*RRAB + ACX*RRAC)*(2*ABY*RRAB + BCY*RRBC)/SR6**2) + 
-     j  (ABX*ABY*QQ3**2*RRAB**3 + 
-     k  BCY*QQ2*(-2*ABX*RRAB + ACX*RRAC)*RRBC/SR2)/SR6) - 
-     l  6*(ABX*ABY*QQ2**2*RRAB**3 + 
-     m  ACX*QQ2*RRAC*(2*ABY*RRAB + BCY*RRBC)/SR2)/SR6))*V0
+     A  (ABX*RRAB/RHOAB**2 + ACX*RRAC/RHOAC**2)*
+     C  (LAMBDA*(6*BCY*QQ2*QQ3*RRBC/SR2 + 
+     D  (-3*QQ2**2 + 3*QQ3**2)*(2*ABY*RRAB + BCY*RRBC)/SR6))) + 
+     H  LAMBDA*(6*(QQ3*(ACX*BCY*RRAC*RRBC/SR2**2 + 
+     I  (-2*ABX*RRAB + ACX*RRAC)*(2*ABY*RRAB + BCY*RRBC)/SR6**2) + 
+     J  (ABX*ABY*QQ3**2*RRAB**3 + 
+     K  BCY*QQ2*(-2*ABX*RRAB + ACX*RRAC)*RRBC/SR2)/SR6) - 
+     L  6*(ABX*ABY*QQ2**2*RRAB**3 + 
+     M  ACX*QQ2*RRAC*(2*ABY*RRAB + BCY*RRBC)/SR2)/SR6))*V0
               ENDIF
 270           CONTINUE
               HESS(3*(J3-1)+J5,3*(J1-1)+J2)=HESS(3*(J3-1)+J5,3*(J1-1)+J2)+TEMP 
@@ -1958,15 +1958,15 @@ C
      6  C*((-(ABY*RRAB/RHOAB**2) + BCY*RRBC/RHOBC**2)*
      8  (LAMBDA*(-6*ACX*QQ2*QQ3*RRAC/SR2 + 
      9  (-3*QQ2**2 + 3*QQ3**2)*(-2*ABX*RRAB + ACX*RRAC)/SR6)) + 
-     a  (ABX*RRAB/RHOAB**2 + ACX*RRAC/RHOAC**2)*
-     c  (LAMBDA*(6*BCY*QQ2*QQ3*RRBC/SR2 + 
-     d  (-3*QQ2**2 + 3*QQ3**2)*(2*ABY*RRAB + BCY*RRBC)/SR6))) + 
-     h  LAMBDA*(6*(QQ3*(ACX*BCY*RRAC*RRBC/SR2**2 + 
-     i  (-2*ABX*RRAB + ACX*RRAC)*(2*ABY*RRAB + BCY*RRBC)/SR6**2) + 
-     j  (ABX*ABY*QQ3**2*RRAB**3 + 
-     k  BCY*QQ2*(-2*ABX*RRAB + ACX*RRAC)*RRBC/SR2)/SR6) - 
-     l  6*(ABX*ABY*QQ2**2*RRAB**3 + 
-     m  ACX*QQ2*RRAC*(2*ABY*RRAB + BCY*RRBC)/SR2)/SR6))*V0
+     A  (ABX*RRAB/RHOAB**2 + ACX*RRAC/RHOAC**2)*
+     C  (LAMBDA*(6*BCY*QQ2*QQ3*RRBC/SR2 + 
+     D  (-3*QQ2**2 + 3*QQ3**2)*(2*ABY*RRAB + BCY*RRBC)/SR6))) + 
+     H  LAMBDA*(6*(QQ3*(ACX*BCY*RRAC*RRBC/SR2**2 + 
+     I  (-2*ABX*RRAB + ACX*RRAC)*(2*ABY*RRAB + BCY*RRBC)/SR6**2) + 
+     J  (ABX*ABY*QQ3**2*RRAB**3 + 
+     K  BCY*QQ2*(-2*ABX*RRAB + ACX*RRAC)*RRBC/SR2)/SR6) - 
+     L  6*(ABX*ABY*QQ2**2*RRAB**3 + 
+     M  ACX*QQ2*RRAC*(2*ABY*RRAB + BCY*RRBC)/SR2)/SR6))*V0
               ENDIF
 275           CONTINUE
               HESS(3*(J3-1)+J5,3*(J1-1)+J2)=HESS(3*(J3-1)+J5,3*(J1-1)+J2)+TEMP
@@ -1975,7 +1975,7 @@ C
 300     CONTINUE
 310   CONTINUE
 C
-C  Symmetrise
+C  SYMMETRISE
 C
       DO 1000 J1=1,3*N
          DO 1010 J2=J1+1,3*N
@@ -1988,8 +1988,8 @@ C           PRINT*,'J1,J2,A=',J1,J2,HESS(J2,J1)
 C
 C*************************************************************************
 C
-C  Here we calculate the analytic gradient and second derivatives
-C  for the three-body term with periodic boundary conditions.
+C  HERE WE CALCULATE THE ANALYTIC GRADIENT AND SECOND DERIVATIVES
+C  FOR THE THREE-BODY TERM WITH PERIODIC BOUNDARY CONDITIONS.
 C                                        
 C*************************************************************************
 C
@@ -2012,7 +2012,7 @@ C
       DOUBLE PRECISION CUTOFF
 C
 C
-C  First the gradient.
+C  FIRST THE GRADIENT.
  
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -2048,11 +2048,11 @@ C  First the gradient.
      1           D*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+
      2           C10*QC-AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
      3           QA**2*(C2+C8*QB)+C6*QC+QA*( C1+C5*QB+C10*QC)))*
-     4           (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
+     4           (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
      5           (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
-     6           (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     7           (C6+C10*QA)*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     8           (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6))/re)/
+     6           (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     7           (C6+C10*QA)*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     8           (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6))/RE)/
      9           DEXP(AN3*QA)
                ENDIF
 95             CONTINUE
@@ -2063,7 +2063,7 @@ C           PRINT*,'K2,V=',3*(J1-1)+J2,V(3*(J1-1)+J2)
 110      CONTINUE
 120   CONTINUE
 C
-C  Diagonal bits of the Hessian.
+C  DIAGONAL BITS OF THE HESSIAN.
 C
       DO 160 J1=1,N
          DO 150 J2=1,3
@@ -2096,48 +2096,48 @@ C
                   QB=(QQ2**2)+(QQ3**2)
                   QC=(QQ3**3)-3*QQ3*(QQ2**2)
                   TEMP=TEMP+
-     1      D*((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     2      AN3**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     3      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))*
-     4      (-(abx*RRAB/re)-acx*RRAC/re)**2/SR3**2+
-     5      ((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*(c2+c8*QB)+
-     6      c10*QC-AN3*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     7      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))*
-     8      (RRAB-abx**2*RRAB**3+RRAC-acx**2*RRAC**3)/re+
-     9      (-(abx*RRAB/re)-acx*RRAC/re)*
-     a      (-2*AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     b      2*QA*(c2+c8*QB)+c10*QC)*
-     c      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     d      (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     e      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)
-     f      +(c6+c10*QA)*
-     g      (-6*acx*QQ2*QQ3*RRAC/SR2+
-     h      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     i      )/re)+2*
-     j      ((2*C5+4*c8*QA)*
-     k      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     l      c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     m      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6))/
-     n      re))/SR3+2*c9*
-     o      (QB*(-2*QQ2*RRAC/(re*SR2)+
-     p      2*(acx**2*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     q      (-2*abx*RRAB+acx*RRAC)**2/(re**2*SR6**2)+
-     r      QQ3*(2*RRAB-2*abx**2*RRAB**3-RRAC+acx**2*RRAC**3)/
-     s      (re*SR6)))+
-     t      4*(acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)**2/
-     u      re**2)+(C3+C5*QA+c8*QA**2)*
-     v      (-2*QQ2*RRAC/(re*SR2)+
-     w      2*(acx**2*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+ 
-     x      (-2*abx*RRAB+acx*RRAC)**2/(re**2*SR6**2)+
-     y      QQ3*(2*RRAB-2*abx**2*RRAB**3-RRAC+acx**2*RRAC**3)/
-     z      (re*SR6)))+(c6+c10*QA)*
-     A      (QQ3*(-6*acx**2*(1/(RAC**2*re**2*SR2**2)+
-     B      QQ2*RRAC**3/(re*SR2))+ 
-     C      6*(QQ2*RRAC/(re*SR2)+ 
-     D      (-2*abx*RRAB+acx*RRAC)**2/(re**2*SR6**2)))+
+     1      D*((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     2      AN3**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     3      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))*
+     4      (-(ABX*RRAB/RE)-ACX*RRAC/RE)**2/SR3**2+
+     5      ((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+
+     6      C10*QC-AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     7      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))*
+     8      (RRAB-ABX**2*RRAB**3+RRAC-ACX**2*RRAC**3)/RE+
+     9      (-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     A      (-2*AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     B      2*QA*(C2+C8*QB)+C10*QC)*
+     C      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     D      (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     E      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     F      +(C6+C10*QA)*
+     G      (-6*ACX*QQ2*QQ3*RRAC/SR2+
+     H      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     I      )/RE)+2*
+     J      ((2*C5+4*C8*QA)*
+     K      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     L      C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     M      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6))/
+     N      RE))/SR3+2*C9*
+     O      (QB*(-2*QQ2*RRAC/(RE*SR2)+
+     P      2*(ACX**2*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     Q      (-2*ABX*RRAB+ACX*RRAC)**2/(RE**2*SR6**2)+
+     R      QQ3*(2*RRAB-2*ABX**2*RRAB**3-RRAC+ACX**2*RRAC**3)/
+     S      (RE*SR6)))+
+     T      4*(ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)**2/
+     U      RE**2)+(C3+C5*QA+C8*QA**2)*
+     V      (-2*QQ2*RRAC/(RE*SR2)+
+     W      2*(ACX**2*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+ 
+     X      (-2*ABX*RRAB+ACX*RRAC)**2/(RE**2*SR6**2)+
+     Y      QQ3*(2*RRAB-2*ABX**2*RRAB**3-RRAC+ACX**2*RRAC**3)/
+     Z      (RE*SR6)))+(C6+C10*QA)*
+     A      (QQ3*(-6*ACX**2*(1/(RAC**2*RE**2*SR2**2)+
+     B      QQ2*RRAC**3/(RE*SR2))+ 
+     C      6*(QQ2*RRAC/(RE*SR2)+ 
+     D      (-2*ABX*RRAB+ACX*RRAC)**2/(RE**2*SR6**2)))+
      E      ((-3*QQ2**2+3*QQ3**2)*
-     F      (2*RRAB-2*abx**2*RRAB**3-RRAC+acx**2*RRAC**3)/re-
-     G      12*acx*QQ2*RRAC*(-2*abx*RRAB+acx*RRAC)/(re**2*SR2))/SR6))/ 
+     F      (2*RRAB-2*ABX**2*RRAB**3-RRAC+ACX**2*RRAC**3)/RE-
+     G      12*ACX*QQ2*RRAC*(-2*ABX*RRAB+ACX*RRAC)/(RE**2*SR2))/SR6))/ 
      H      DEXP(AN3*QA)
                ENDIF
 130            CONTINUE
@@ -2148,7 +2148,7 @@ C           PRINT*,'K2,A=',3*(J1-1)+J2,HESS(3*(J1-1)+J2,3*(J1-1)+J2)
 150      CONTINUE
 160   CONTINUE
 C
-C  Same atom, different component.
+C  SAME ATOM, DIFFERENT COMPONENT.
 C
       DO 210 J1=1,N
         DO 200 J2=1,3
@@ -2185,65 +2185,65 @@ C
                 QB=(QQ2**2)+(QQ3**2) 
                 QC=QQ3**3-3*QQ3*QQ2**2
                TEMP=TEMP+ 
-     1 D*(((c1+3*c4*QA**2+4*c7*QA**3+c5*QB+2*QA*(c2+c8*QB)+c10*QC- 
-     2           AN3*(c0+c4*QA**3+c7*QA**4+c3*QB+c9*QB**2+
-     3     QA**2*(c2+c8*QB)+c6*QC+QA*(c1+c5*QB+c10*QC)))*
-     4         (-abx*aby*RRAB**3/re-acx*acy*RRAC**3/re)+
-     5        (-aby*RRAB/re-acy*RRAC/re)*
-     6         (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+c5*QB+
-     7        2*QA*(c2+c8*QB)+c10*QC)*
-     8      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     9    (2*(c3+c5*QA+c8*QA**2+2*c9*QB)*
-     A     (acx*QQ2*RRAC/SR2+
-     B       QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     C       (c6+c10*QA)*
-     D     (-6*acx*QQ2*QQ3*RRAC/SR2+
-     E       (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/
-     F        SR6))/re))+
-     G     (2*(c5+2*c8*QA)*
-     H      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     I     c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     J     (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6))/
-     K      re))/SR3+(-(abx*RRAB/re)-acx*RRAC/re)*
-     L   ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     M      AN3**2*(c0+c4*QA**3+c7*QA**4+c3*QB+c9*QB**2+
-     N      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+c5*QB+c10*QC)))* 
-     O    (-(aby*RRAB/re)-acy*RRAC/re)/SR3**2+
-     P     (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+c5*QB+
-     Q     2*QA*(c2+c8*QB)+c10*QC)*
-     R   (-(aby*RRAB/re)-acy*RRAC/re)/SR3+
-     S    (2*(c3+c5*QA+c8*QA**2+2*c9*QB)*
-     T     (acy*QQ2*RRAC/SR2+
-     U    QQ3*(-2*aby*RRAB+acy*RRAC)/SR6)+
-     V    (c6+c10*QA)*
-     W     (-6*acy*QQ2*QQ3*RRAC/SR2+
-     X    (-3*QQ2**2+3*QQ3**2)*(-2*aby*RRAB+acy*RRAC)/
-     Y     SR6))/re))+
-     Z     (2*(c5+2*c8*QA)*
-     a   (acy*QQ2*RRAC/SR2+QQ3*(-2*aby*RRAB+acy*RRAC)/SR6)+
-     b  c10*(-6*acy*QQ2*QQ3*RRAC/SR2+
-     c  (-3*QQ2**2+3*QQ3**2)*(-2*aby*RRAB+acy*RRAC)/SR6))/
-     d      re)/SR3)+2*(c9*
-     e   (4*(acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     f    (acy*QQ2*RRAC/SR2+QQ3*(-2*aby*RRAB+acy*RRAC)/SR6)/re**2 
-     g   +2*QB*(acx*acy*
-     h   (1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     i  (-2*abx*RRAB+acx*RRAC)*(-2*aby*RRAB+acy*RRAC)/
-     j   (re**2*SR6**2)+
-     k  QQ3*(-2*abx*aby*RRAB**3+acx*acy*RRAC**3)/(re*SR6)))+
-     l  (c3+c5*QA+c8*QA**2)*
-     m   (acx*acy*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     n     (-2*abx*RRAB+acx*RRAC)*(-2*aby*RRAB+acy*RRAC)/
-     o   (re**2*SR6**2)+
-     p  QQ3*(-2*abx*aby*RRAB**3+acx*acy*RRAC**3)/(re*SR6)))+
-     q     (c6+c10*QA)*(-6*(acx*
-     r   (acy*QQ3*(1/(RAC**2*re**2*SR2**2)+QQ2*RRAC**3/(re*SR2))+
-     s  QQ2*RRAC*(-2*aby*RRAB+acy*RRAC)/(re**2*SR2*SR6))+
-     t  acy*QQ2*RRAC*(-2*abx*RRAB+acx*RRAC)/(re**2*SR2*SR6))+
-     u  6*QQ3*(-2*abx*RRAB+acx*RRAC)*(-2*aby*RRAB+acy*RRAC)/
-     v   (re**2*SR6**2)+
-     w  (-3*QQ2**2+3*QQ3**2)*(-2*abx*aby*RRAB**3+acx*acy*RRAC**3)/ 
-     x   (re*SR6)))*DEXP(-AN3*QA)
+     1 D*(((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+C10*QC- 
+     2           AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     3     QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))*
+     4         (-ABX*ABY*RRAB**3/RE-ACX*ACY*RRAC**3/RE)+
+     5        (-ABY*RRAB/RE-ACY*RRAC/RE)*
+     6         (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     7        2*QA*(C2+C8*QB)+C10*QC)*
+     8      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     9    (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     A     (ACX*QQ2*RRAC/SR2+
+     B       QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     C       (C6+C10*QA)*
+     D     (-6*ACX*QQ2*QQ3*RRAC/SR2+
+     E       (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/
+     F        SR6))/RE))+
+     G     (2*(C5+2*C8*QA)*
+     H      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     I     C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     J     (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6))/
+     K      RE))/SR3+(-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     L   ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     M      AN3**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     N      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))* 
+     O    (-(ABY*RRAB/RE)-ACY*RRAC/RE)/SR3**2+
+     P     (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     Q     2*QA*(C2+C8*QB)+C10*QC)*
+     R   (-(ABY*RRAB/RE)-ACY*RRAC/RE)/SR3+
+     S    (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     T     (ACY*QQ2*RRAC/SR2+
+     U    QQ3*(-2*ABY*RRAB+ACY*RRAC)/SR6)+
+     V    (C6+C10*QA)*
+     W     (-6*ACY*QQ2*QQ3*RRAC/SR2+
+     X    (-3*QQ2**2+3*QQ3**2)*(-2*ABY*RRAB+ACY*RRAC)/
+     Y     SR6))/RE))+
+     Z     (2*(C5+2*C8*QA)*
+     A   (ACY*QQ2*RRAC/SR2+QQ3*(-2*ABY*RRAB+ACY*RRAC)/SR6)+
+     B  C10*(-6*ACY*QQ2*QQ3*RRAC/SR2+
+     C  (-3*QQ2**2+3*QQ3**2)*(-2*ABY*RRAB+ACY*RRAC)/SR6))/
+     D      RE)/SR3)+2*(C9*
+     E   (4*(ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     F    (ACY*QQ2*RRAC/SR2+QQ3*(-2*ABY*RRAB+ACY*RRAC)/SR6)/RE**2 
+     G   +2*QB*(ACX*ACY*
+     H   (1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     I  (-2*ABX*RRAB+ACX*RRAC)*(-2*ABY*RRAB+ACY*RRAC)/
+     J   (RE**2*SR6**2)+
+     K  QQ3*(-2*ABX*ABY*RRAB**3+ACX*ACY*RRAC**3)/(RE*SR6)))+
+     L  (C3+C5*QA+C8*QA**2)*
+     M   (ACX*ACY*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     N     (-2*ABX*RRAB+ACX*RRAC)*(-2*ABY*RRAB+ACY*RRAC)/
+     O   (RE**2*SR6**2)+
+     P  QQ3*(-2*ABX*ABY*RRAB**3+ACX*ACY*RRAC**3)/(RE*SR6)))+
+     Q     (C6+C10*QA)*(-6*(ACX*
+     R   (ACY*QQ3*(1/(RAC**2*RE**2*SR2**2)+QQ2*RRAC**3/(RE*SR2))+
+     S  QQ2*RRAC*(-2*ABY*RRAB+ACY*RRAC)/(RE**2*SR2*SR6))+
+     T  ACY*QQ2*RRAC*(-2*ABX*RRAB+ACX*RRAC)/(RE**2*SR2*SR6))+
+     U  6*QQ3*(-2*ABX*RRAB+ACX*RRAC)*(-2*ABY*RRAB+ACY*RRAC)/
+     V   (RE**2*SR6**2)+
+     W  (-3*QQ2**2+3*QQ3**2)*(-2*ABX*ABY*RRAB**3+ACX*ACY*RRAC**3)/ 
+     X   (RE*SR6)))*DEXP(-AN3*QA)
                ENDIF
 170            CONTINUE
             ENDIF
@@ -2253,7 +2253,7 @@ C
 200   CONTINUE
 210   CONTINUE
 C
-C  Different atoms, same component.
+C  DIFFERENT ATOMS, SAME COMPONENT.
 C
       DO 260 J1=1,N
         DO 250 J2=1,3
@@ -2287,53 +2287,53 @@ C
               QB=(QQ2**2)+(QQ3**2)
               QC=QQ3**3-3*QQ3*QQ2**2
               TEMP=TEMP+
-     1        D*((C3+C5*QA+c8*QA**2+2*c9*QB)*
-     2        (-2*acx*bcx*RRAC*RRBC/(re**2*SR2**2)+
-     3        2*((-2*abx*RRAB+acx*RRAC)*(2*abx*RRAB+bcx*RRBC)/
-     4        (re**2*SR6**2)+QQ3*(-2*RRAB+2*abx**2*RRAB**3)/(re*SR6)))
-     5        +(((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*(c2+c8*QB)+
-     6        c10*QC-AN3*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     7        QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))
-     8        *(-RRAB+abx**2*RRAB**3)+
-     9        (abx*RRAB-bcx*RRBC)*
-     A        (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     B        2*QA*(c2+c8*QB)+c10*QC)*
-     C        (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     D        (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     E        (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     F        (c6+c10*QA)*(-6*acx*QQ2*QQ3*RRAC/SR2+
+     1        D*((C3+C5*QA+C8*QA**2+2*C9*QB)*
+     2        (-2*ACX*BCX*RRAC*RRBC/(RE**2*SR2**2)+
+     3        2*((-2*ABX*RRAB+ACX*RRAC)*(2*ABX*RRAB+BCX*RRBC)/
+     4        (RE**2*SR6**2)+QQ3*(-2*RRAB+2*ABX**2*RRAB**3)/(RE*SR6)))
+     5        +(((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+
+     6        C10*QC-AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     7        QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))
+     8        *(-RRAB+ABX**2*RRAB**3)+
+     9        (ABX*RRAB-BCX*RRBC)*
+     A        (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     B        2*QA*(C2+C8*QB)+C10*QC)*
+     C        (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     D        (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     E        (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     F        (C6+C10*QA)*(-6*ACX*QQ2*QQ3*RRAC/SR2+
      G        (-3*QQ2**2+3*QQ3**2)*
-     H        (-2*abx*RRAB+acx*RRAC)/SR6))/re))+
-     I        (2*(C5+2*c8*QA)*
-     J        (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     K        c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     L        (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     M        )/re))/SR3+(-(abx*RRAB/re)-acx*RRAC/re)*
-     N        ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     O        AN3**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     P        QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC))
-     Q        )*(abx*RRAB-bcx*RRBC)/SR3**2+
-     R        (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     S        2*QA*(c2+c8*QB)+c10*QC)*(abx*RRAB-bcx*RRBC)
-     T        /SR3+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     U        (-2*bcx*QQ2*RRBC/SR2+
-     V        2*QQ3*(2*abx*RRAB+bcx*RRBC)/SR6)+
-     W        (c6+c10*QA)*(6*bcx*QQ2*QQ3*RRBC/SR2+
-     X        (-3*QQ2**2+3*QQ3**2)*(2*abx*RRAB+bcx*RRBC)/SR6
-     Y        )))+(C5+2*c8*QA)*
-     Z        (-2*bcx*QQ2*RRBC/SR2+2*QQ3*(2*abx*RRAB+bcx*RRBC)/SR6)
-     a        +c10*(6*bcx*QQ2*QQ3*RRBC/SR2+
-     b        (-3*QQ2**2+3*QQ3**2)*(2*abx*RRAB+bcx*RRBC)/SR6))/
-     c        SR3)+4*c9*(acx*QQ2*RRAC/SR2+
-     d        QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     e        (-2*bcx*QQ2*RRBC/SR2+2*QQ3*(2*abx*RRAB+bcx*RRBC)/SR6)/re)/
-     f        re+(c6+c10*QA)*(6*
-     g        (QQ3*(acx*bcx*RRAC*RRBC/SR2**2+
-     h        (-2*abx*RRAB+acx*RRAC)*(2*abx*RRAB+bcx*RRBC)/SR6**2)
-     i        +bcx*QQ2*(-2*abx*RRAB+acx*RRAC)*RRBC/(SR2*SR6))/re**2
-     j        +((-3*QQ2**2+3*QQ3**2)*(-2*RRAB+2*abx**2*RRAB**3)/re-
-     k        6*acx*QQ2*RRAC*(2*abx*RRAB+bcx*RRBC)/(re**2*SR2))/SR6))/
-     l        DEXP(AN3*QA)
+     H        (-2*ABX*RRAB+ACX*RRAC)/SR6))/RE))+
+     I        (2*(C5+2*C8*QA)*
+     J        (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     K        C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     L        (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     M        )/RE))/SR3+(-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     N        ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     O        AN3**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     P        QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC))
+     Q        )*(ABX*RRAB-BCX*RRBC)/SR3**2+
+     R        (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     S        2*QA*(C2+C8*QB)+C10*QC)*(ABX*RRAB-BCX*RRBC)
+     T        /SR3+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     U        (-2*BCX*QQ2*RRBC/SR2+
+     V        2*QQ3*(2*ABX*RRAB+BCX*RRBC)/SR6)+
+     W        (C6+C10*QA)*(6*BCX*QQ2*QQ3*RRBC/SR2+
+     X        (-3*QQ2**2+3*QQ3**2)*(2*ABX*RRAB+BCX*RRBC)/SR6
+     Y        )))+(C5+2*C8*QA)*
+     Z        (-2*BCX*QQ2*RRBC/SR2+2*QQ3*(2*ABX*RRAB+BCX*RRBC)/SR6)
+     A        +C10*(6*BCX*QQ2*QQ3*RRBC/SR2+
+     B        (-3*QQ2**2+3*QQ3**2)*(2*ABX*RRAB+BCX*RRBC)/SR6))/
+     C        SR3)+4*C9*(ACX*QQ2*RRAC/SR2+
+     D        QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     E        (-2*BCX*QQ2*RRBC/SR2+2*QQ3*(2*ABX*RRAB+BCX*RRBC)/SR6)/RE)/
+     F        RE+(C6+C10*QA)*(6*
+     G        (QQ3*(ACX*BCX*RRAC*RRBC/SR2**2+
+     H        (-2*ABX*RRAB+ACX*RRAC)*(2*ABX*RRAB+BCX*RRBC)/SR6**2)
+     I        +BCX*QQ2*(-2*ABX*RRAB+ACX*RRAC)*RRBC/(SR2*SR6))/RE**2
+     J        +((-3*QQ2**2+3*QQ3**2)*(-2*RRAB+2*ABX**2*RRAB**3)/RE-
+     K        6*ACX*QQ2*RRAC*(2*ABX*RRAB+BCX*RRBC)/(RE**2*SR2))/SR6))/
+     L        DEXP(AN3*QA)
 
             ENDIF
 220         CONTINUE
@@ -2342,7 +2342,7 @@ C
 250     CONTINUE
 260   CONTINUE
 C
-C  Different atoms and different components
+C  DIFFERENT ATOMS AND DIFFERENT COMPONENTS
 C
       DO 310 J1=1,N
         DO 300 J2=1,3
@@ -2380,56 +2380,56 @@ C
                 QB=(QQ2**2)+(QQ3**2)
                 QC=QQ3**3-3*QQ3*QQ2**2
                 TEMP=TEMP+
-     1      D*(((abx*aby*(c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*
-     2      (c2+c8*QB)+
-     3      c10*QC-AN3*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     4      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))
-     5      *RRAB**3+(aby*RRAB-bcy*RRBC)*
-     6      (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     7      2*QA*(c2+c8*QB)+c10*QC)*
-     8      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     9      (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     A      (acx*QQ2*RRAC/SR2+
-     B      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     C      (c6+c10*QA)*(-6*acx*QQ2*QQ3*RRAC/SR2+
+     1      D*(((ABX*ABY*(C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*
+     2      (C2+C8*QB)+
+     3      C10*QC-AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     4      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))
+     5      *RRAB**3+(ABY*RRAB-BCY*RRBC)*
+     6      (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     7      2*QA*(C2+C8*QB)+C10*QC)*
+     8      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     9      (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     A      (ACX*QQ2*RRAC/SR2+
+     B      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     C      (C6+C10*QA)*(-6*ACX*QQ2*QQ3*RRAC/SR2+
      D      (-3*QQ2**2+3*QQ3**2)*
-     E      (-2*abx*RRAB+acx*RRAC)/SR6))/re))+
-     F      (2*(C5+2*c8*QA)*
-     G      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)
-     H      +c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     I      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     J      )/re))/SR3+
-     K      (-(abx*RRAB/re)-acx*RRAC/re)*
-     L      ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     M      AN3**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     N      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC))
-     O      )*(aby*RRAB-bcy*RRBC)/SR3**2+
-     P      (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     Q      2*QA*(c2+c8*QB)+c10*QC)*(aby*RRAB-bcy*RRBC)
-     R      /SR3+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     S      (-2*bcy*QQ2*RRBC/SR2+
-     T      2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)+
-     U      (c6+c10*QA)*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     V      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6
-     W      )))+(C5+2*c8*QA)*
-     X      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)
-     Y      +c10*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     Z      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6))/
-     a      SR3)+4*c9*(acx*QQ2*RRAC/SR2+
-     b      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     c      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)/re)/ 
-     d      re+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     e      ((-2*acx*bcy*RRAC*RRBC/SR2**2+
-     f      2*(-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     g      re**2+4*abx*aby*QQ3*RRAB**3/(re*SR6))+
-     h      (c6+c10*QA)*(6*(QQ3*
-     i      (acx*bcy*RRAC*RRBC/SR2**2+
-     j      (-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     k      re**2+(abx*aby*QQ3**2*RRAB**3+
-     l      bcy*QQ2*(-2*abx*RRAB+acx*RRAC)*RRBC/(re*SR2))/(re*SR6))
-     m      -6*(abx*aby*QQ2**2*RRAB**3+
-     n      acx*QQ2*RRAC*(2*aby*RRAB+bcy*RRBC)/(re*SR2))/(re*SR6)))/ 
-     o      DEXP(AN3*QA)
+     E      (-2*ABX*RRAB+ACX*RRAC)/SR6))/RE))+
+     F      (2*(C5+2*C8*QA)*
+     G      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     H      +C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     I      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     J      )/RE))/SR3+
+     K      (-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     L      ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     M      AN3**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     N      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC))
+     O      )*(ABY*RRAB-BCY*RRBC)/SR3**2+
+     P      (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     Q      2*QA*(C2+C8*QB)+C10*QC)*(ABY*RRAB-BCY*RRBC)
+     R      /SR3+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     S      (-2*BCY*QQ2*RRBC/SR2+
+     T      2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)+
+     U      (C6+C10*QA)*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     V      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6
+     W      )))+(C5+2*C8*QA)*
+     X      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)
+     Y      +C10*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     Z      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6))/
+     A      SR3)+4*C9*(ACX*QQ2*RRAC/SR2+
+     B      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     C      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)/RE)/ 
+     D      RE+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     E      ((-2*ACX*BCY*RRAC*RRBC/SR2**2+
+     F      2*(-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     G      RE**2+4*ABX*ABY*QQ3*RRAB**3/(RE*SR6))+
+     H      (C6+C10*QA)*(6*(QQ3*
+     I      (ACX*BCY*RRAC*RRBC/SR2**2+
+     J      (-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     K      RE**2+(ABX*ABY*QQ3**2*RRAB**3+
+     L      BCY*QQ2*(-2*ABX*RRAB+ACX*RRAC)*RRBC/(RE*SR2))/(RE*SR6))
+     M      -6*(ABX*ABY*QQ2**2*RRAB**3+
+     N      ACX*QQ2*RRAC*(2*ABY*RRAB+BCY*RRBC)/(RE*SR2))/(RE*SR6)))/ 
+     O      DEXP(AN3*QA)
               ENDIF
 270           CONTINUE
               HESS(3*(J3-1)+J5,3*(J1-1)+J2)=HESS(3*(J3-1)+J5,3*(J1-1)+J2)+TEMP
@@ -2467,57 +2467,57 @@ C
                 QB=(QQ2**2)+(QQ3**2)
                 QC=QQ3**3-3*QQ3*QQ2**2
                 TEMP=TEMP+
-     1      D*(((abx*aby*(c1+3*c4*QA**2+4*c7*QA**3+C5*QB+2*QA*
-     2      (c2+c8*QB)+
-     3      c10*QC-AN3*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     4      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC)))
-     5      *RRAB**3+(aby*RRAB-bcy*RRBC)*
-     6      (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     7      2*QA*(c2+c8*QB)+c10*QC)*
-     8      (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
-     9      (2*(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     A      (acx*QQ2*RRAC/SR2+
-     B      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     C      (c6+c10*QA)*
-     D      (-6*acx*QQ2*QQ3*RRAC/SR2+
+     1      D*(((ABX*ABY*(C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*
+     2      (C2+C8*QB)+
+     3      C10*QC-AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     4      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC)))
+     5      *RRAB**3+(ABY*RRAB-BCY*RRBC)*
+     6      (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     7      2*QA*(C2+C8*QB)+C10*QC)*
+     8      (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
+     9      (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     A      (ACX*QQ2*RRAC/SR2+
+     B      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     C      (C6+C10*QA)*
+     D      (-6*ACX*QQ2*QQ3*RRAC/SR2+
      E      (-3*QQ2**2+3*QQ3**2)*
-     F      (-2*abx*RRAB+acx*RRAC)/SR6))/re))+
-     G      (2*(C5+2*c8*QA)*
-     H      (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)
-     I      +c10*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     J      (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6)
-     K      )/re))/SR3+
-     L      (-(abx*RRAB/re)-acx*RRAC/re)*
-     M      ((6*c4*QA+12*c7*QA**2+2*(c2+c8*QB)+
-     O      AN3**2*(c0+c4*QA**3+c7*QA**4+C3*QB+c9*QB**2+
-     P      QA**2*(c2+c8*QB)+c6*QC+QA*(c1+C5*QB+c10*QC))
-     Q      )*(aby*RRAB-bcy*RRBC)/SR3**2+
-     R      (-(AN3*((c1+3*c4*QA**2+4*c7*QA**3+C5*QB+
-     S      2*QA*(c2+c8*QB)+c10*QC)*(aby*RRAB-bcy*RRBC)
-     T      /SR3+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     U      (-2*bcy*QQ2*RRBC/SR2+
-     V      2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)+
-     W      (c6+c10*QA)*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     X      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6
-     Y      )))+(C5+2*c8*QA)*
-     Z      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)
-     a      +c10*(6*bcy*QQ2*QQ3*RRBC/SR2+
-     b      (-3*QQ2**2+3*QQ3**2)*(2*aby*RRAB+bcy*RRBC)/SR6))/
-     c      SR3)+4*c9*(acx*QQ2*RRAC/SR2+
-     d      QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)*
-     e      (-2*bcy*QQ2*RRBC/SR2+2*QQ3*(2*aby*RRAB+bcy*RRBC)/SR6)/re)/
-     f      re+(C3+C5*QA+c8*QA**2+2*c9*QB)*
-     g      ((-2*acx*bcy*RRAC*RRBC/SR2**2+
-     h      2*(-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     i      re**2+4*abx*aby*QQ3*RRAB**3/(re*SR6))+
-     j      (c6+c10*QA)*(6*(QQ3*
-     k      (acx*bcy*RRAC*RRBC/SR2**2+
-     l      (-2*abx*RRAB+acx*RRAC)*(2*aby*RRAB+bcy*RRBC)/SR6**2)/
-     m      re**2+(abx*aby*QQ3**2*RRAB**3+
-     n      bcy*QQ2*(-2*abx*RRAB+acx*RRAC)*RRBC/(re*SR2))/(re*SR6))
-     o      -6*(abx*aby*QQ2**2*RRAB**3+
-     p      acx*QQ2*RRAC*(2*aby*RRAB+bcy*RRBC)/(re*SR2))/(re*SR6)))/
-     q      DEXP(AN3*QA)
+     F      (-2*ABX*RRAB+ACX*RRAC)/SR6))/RE))+
+     G      (2*(C5+2*C8*QA)*
+     H      (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     I      +C10*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     J      (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6)
+     K      )/RE))/SR3+
+     L      (-(ABX*RRAB/RE)-ACX*RRAC/RE)*
+     M      ((6*C4*QA+12*C7*QA**2+2*(C2+C8*QB)+
+     O      AN3**2*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
+     P      QA**2*(C2+C8*QB)+C6*QC+QA*(C1+C5*QB+C10*QC))
+     Q      )*(ABY*RRAB-BCY*RRBC)/SR3**2+
+     R      (-(AN3*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+
+     S      2*QA*(C2+C8*QB)+C10*QC)*(ABY*RRAB-BCY*RRBC)
+     T      /SR3+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     U      (-2*BCY*QQ2*RRBC/SR2+
+     V      2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)+
+     W      (C6+C10*QA)*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     X      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6
+     Y      )))+(C5+2*C8*QA)*
+     Z      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)
+     A      +C10*(6*BCY*QQ2*QQ3*RRBC/SR2+
+     B      (-3*QQ2**2+3*QQ3**2)*(2*ABY*RRAB+BCY*RRBC)/SR6))/
+     C      SR3)+4*C9*(ACX*QQ2*RRAC/SR2+
+     D      QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)*
+     E      (-2*BCY*QQ2*RRBC/SR2+2*QQ3*(2*ABY*RRAB+BCY*RRBC)/SR6)/RE)/
+     F      RE+(C3+C5*QA+C8*QA**2+2*C9*QB)*
+     G      ((-2*ACX*BCY*RRAC*RRBC/SR2**2+
+     H      2*(-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     I      RE**2+4*ABX*ABY*QQ3*RRAB**3/(RE*SR6))+
+     J      (C6+C10*QA)*(6*(QQ3*
+     K      (ACX*BCY*RRAC*RRBC/SR2**2+
+     L      (-2*ABX*RRAB+ACX*RRAC)*(2*ABY*RRAB+BCY*RRBC)/SR6**2)/
+     M      RE**2+(ABX*ABY*QQ3**2*RRAB**3+
+     N      BCY*QQ2*(-2*ABX*RRAB+ACX*RRAC)*RRBC/(RE*SR2))/(RE*SR6))
+     O      -6*(ABX*ABY*QQ2**2*RRAB**3+
+     P      ACX*QQ2*RRAC*(2*ABY*RRAB+BCY*RRBC)/(RE*SR2))/(RE*SR6)))/
+     Q      DEXP(AN3*QA)
               ENDIF
 275           CONTINUE
               HESS(3*(J3-1)+J5,3*(J1-1)+J2)=HESS(3*(J3-1)+J5,3*(J1-1)+J2)+TEMP
@@ -2526,7 +2526,7 @@ C
 300     CONTINUE
 310   CONTINUE
 C
-C  Symmetrise
+C  SYMMETRISE
 C
       DO 1000 J1=1,3*N
          DO 1010 J2=J1+1,3*N
@@ -2539,8 +2539,8 @@ C           PRINT*,'J1,J2,A=',J1,J2,HESS(J2,J1)
 C
 C*************************************************************************
 C
-C  Here we calculate the potential using the two and three-body
-C  terms of the Murrell potential
+C  HERE WE CALCULATE THE POTENTIAL USING THE TWO AND THREE-BODY
+C  TERMS OF THE MURRELL POTENTIAL
 C                                        
 C*************************************************************************
 C
@@ -2573,8 +2573,8 @@ C
       P2=0.0D0
       P3=0.0D0
 C
-C  It is vital to take as much as possible out of the loops,
-C  especially the inner loop.
+C  IT IS VITAL TO TAKE AS MUCH AS POSSIBLE OUT OF THE LOOPS,
+C  ESPECIALLY THE INNER LOOP.
 C
       DO 20 J1=1,N
          DIST(J1,J1)=0.0D0
@@ -2589,7 +2589,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  Calculate the energy
+C  CALCULATE THE ENERGY
 C
       DO 22 I=1,N
          DO 23 J=1,N
@@ -2626,14 +2626,14 @@ C
 C
 C*************************************************************************
 C
-C  Two- and three-body terms in the energy of the JM potential with
-C  periodic boundary conditions. This must be called before jm2p
-C  or jm3p as it does some setting up for them.
+C  TWO- AND THREE-BODY TERMS IN THE ENERGY OF THE JM POTENTIAL WITH
+C  PERIODIC BOUNDARY CONDITIONS. THIS MUST BE CALLED BEFORE JM2P
+C  OR JM3P AS IT DOES SOME SETTING UP FOR THEM.
 C                                        
 C*************************************************************************
 C
       SUBROUTINE JMEC(N,X,P2,P3,VNEW,POTEL,CUTOFF,GTEST,STEST)
-      use porfuncs
+      USE PORFUNCS
       IMPLICIT NONE
       INTEGER N, J1, J2, I, J, IJ
       LOGICAL YESNO, GTEST,STEST
@@ -2653,12 +2653,12 @@ C
       P2=0.0D0
       P3=0.0D0
       CUTOFF=1.0D10
-      INQUIRE(FILE='JMparams',EXIST=YESNO)
+      INQUIRE(FILE='JMPARAMS',EXIST=YESNO)
       IF (.NOT.YESNO) THEN
-         PRINT*,'Data file JMparams not found - quit'
+         PRINT*,'DATA FILE JMPARAMS NOT FOUND - QUIT'
          STOP
       ELSE
-         OPEN(UNIT=33,FILE='JMparams',STATUS='OLD')
+         OPEN(UNIT=33,FILE='JMPARAMS',STATUS='OLD')
          READ(33,*) C0
          READ(33,*) C1
          READ(33,*) C2
@@ -2678,7 +2678,7 @@ C
 666      CLOSE(33)
       ENDIF
 C
-C  Calculation of connecting vectors
+C  CALCULATION OF CONNECTING VECTORS
 C
       DO 25 J1=1,N
          VEC(J1,J1,1)=0.0D0
@@ -2694,7 +2694,7 @@ C
 15       CONTINUE
 25    CONTINUE
 C
-C  Calculation of distances:
+C  CALCULATION OF DISTANCES:
 C
       DO 20 J1=1,N
          DIST(J1,J1)=0.0D0
@@ -2710,7 +2710,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  Calculate the energy
+C  CALCULATE THE ENERGY
 C
       DO 22 I=1,N
          DO 23 J=1,N
@@ -2753,9 +2753,9 @@ C
 C
 C*************************************************************************
 C
-C  Two- and three-body terms in the energy of the JM potential with
-C  periodic boundary conditions. This MUst be called before jm2p
-C  or jm3p as it does some setting up for them.
+C  TWO- AND THREE-BODY TERMS IN THE ENERGY OF THE JM POTENTIAL WITH
+C  PERIODIC BOUNDARY CONDITIONS. THIS MUST BE CALLED BEFORE JM2P
+C  OR JM3P AS IT DOES SOME SETTING UP FOR THEM.
 C                                        
 C*************************************************************************
 C
@@ -2775,7 +2775,7 @@ C
       P2=0.0D0
       P3=0.0D0
 C
-C  Calculation of connecting vectors
+C  CALCULATION OF CONNECTING VECTORS
 C
       DO 25 J1=1,N
          VEC(J1,J1,1)=0.0D0
@@ -2791,7 +2791,7 @@ C
 15       CONTINUE
 25    CONTINUE
 C
-C  Calculation of distances:
+C  CALCULATION OF DISTANCES:
 C
       DO 20 J1=1,N
          DIST(J1,J1)=0.0D0
@@ -2809,7 +2809,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  Calculate the energy
+C  CALCULATE THE ENERGY
 C
       DO 22 I=1,N
          DO 23 J=1,N
@@ -2846,15 +2846,15 @@ C
 C
 C*************************************************************************
 C
-C  Two- and three-body terms in the energy of the JM potential with
-C  periodic boundary conditions. This must be called before jm2p
-C  or jm3p as it does some setting up for them.
+C  TWO- AND THREE-BODY TERMS IN THE ENERGY OF THE JM POTENTIAL WITH
+C  PERIODIC BOUNDARY CONDITIONS. THIS MUST BE CALLED BEFORE JM2P
+C  OR JM3P AS IT DOES SOME SETTING UP FOR THEM.
 C                                        
 C*************************************************************************
 C
 
       SUBROUTINE JMEP(N,X,P2,P3,VNEW,POTEL,BOXLX,BOXLY,BOXLZ,CUTOFF)
-      use porfuncs
+      USE PORFUNCS
       IMPLICIT NONE
       INTEGER N, J1, J2, I, J, IJ, NMX, NMY, NMZ
       LOGICAL YESNO
@@ -2873,13 +2873,13 @@ C
       SR2=1.414213562D0
       SR3=1.732050808D0
       SR6=2.449489743D0
-      PRINT*,'WARNING - R2, RAB and RR2 were not set - not tested!'
-      INQUIRE(FILE='JMparams',EXIST=YESNO)
+      PRINT*,'WARNING - R2, RAB AND RR2 WERE NOT SET - NOT TESTED!'
+      INQUIRE(FILE='JMPARAMS',EXIST=YESNO)
       IF (.NOT.YESNO) THEN
-         PRINT*,'Data file JMparams not found - quit'
+         PRINT*,'DATA FILE JMPARAMS NOT FOUND - QUIT'
          STOP
       ELSE
-         OPEN(UNIT=33,FILE='JMparams',STATUS='OLD')
+         OPEN(UNIT=33,FILE='JMPARAMS',STATUS='OLD')
          READ(33,*) C0
          READ(33,*) C1
          READ(33,*) C2
@@ -2898,8 +2898,8 @@ C
          CLOSE(33)
       ENDIF
 C
-C  atoms leaving the box in x or y direction enter again on the
-C  other side.
+C  ATOMS LEAVING THE BOX IN X OR Y DIRECTION ENTER AGAIN ON THE
+C  OTHER SIDE.
 C
       DO 21 J1=1,N
          X(3*(J1-1)+1)=X(3*(J1-1)+1) - BOXLX *
@@ -2910,9 +2910,9 @@ C
      1                  DNINT(X(3*(J1-1)+3)/BOXLZ)
 21    CONTINUE
 C
-C  Calculation of connecting vectors; to implement the periodic
-C  boundary conditions, the shortest vector between two atoms is
-C  used:
+C  CALCULATION OF CONNECTING VECTORS; TO IMPLEMENT THE PERIODIC
+C  BOUNDARY CONDITIONS, THE SHORTEST VECTOR BETWEEN TWO ATOMS IS
+C  USED:
 C
       DO 25 J1=1,N
          R2(J1,J1)=0.0D0
@@ -2950,7 +2950,7 @@ C
 15       CONTINUE
 25    CONTINUE
 C
-C  Calculation of distances:
+C  CALCULATION OF DISTANCES:
 C
       DO 20 J1=1,N
          DIST(J1,J1)=0.0D0
@@ -2966,7 +2966,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  Calculate the energy
+C  CALCULATE THE ENERGY
 C
       DO 22 I=1,N
          DO 23 J=1,N

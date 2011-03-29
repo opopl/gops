@@ -1,238 +1,238 @@
 
-c     --------------------- initv  ----------------------
+C     --------------------- INITV  ----------------------
 
-      subroutine initv(prcord,qrcord,srcord,
-     *                 trcord,zrcord,velocp,bondln,temtur,
-     *                 jstrt,jfins,tolshk,maxshk,bdshak,
-     *                 timstp,numpro,ishkit,
-     *                 numcrd,oarchv,
-     *                 work1,work3,work4,iseed_amh,
-     *                 ires)
+      SUBROUTINE INITV(PRCORD,QRCORD,SRCORD,
+     *                 TRCORD,ZRCORD,VELOCP,BONDLN,TEMTUR,
+     *                 JSTRT,JFINS,TOLSHK,MAXSHK,BDSHAK,
+     *                 TIMSTP,NUMPRO,ISHKIT,
+     *                 NUMCRD,OARCHV,
+     *                 WORK1,WORK3,WORK4,ISEED_AMH,
+     *                 IRES)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     INITV  initializes the velocities and coordinates
-c            when the heat bath is turned off
+C     INITV  INITIALIZES THE VELOCITIES AND COORDINATES
+C            WHEN THE HEAT BATH IS TURNED OFF
 
-c     arguments:
+C     ARGUMENTS:
 
-c        maxsiz- maximum number of protein residues (i)
-c        prcord- new coordinates which satsify bond 
-c                lengths (o)
+C        MAXSIZ- MAXIMUM NUMBER OF PROTEIN RESIDUES (I)
+C        PRCORD- NEW COORDINATES WHICH SATSIFY BOND 
+C                LENGTHS (O)
 
-c     ---------------------------------------------------
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c       i_axis                  index over axis's
-c       i_cat                   # of possible kinds of residues used in
-c                               filtration
-c       i_coord                 index over coordinate types (CA, CB...)
-c       i_pro                   index over proteins in ensemble
-c       i_res                   index over residues
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+C     ---------------------------------------------------
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C       I_AXIS                  INDEX OVER AXIS'S
+C       I_CAT                   # OF POSSIBLE KINDS OF RESIDUES USED IN
+C                               FILTRATION
+C       I_COORD                 INDEX OVER COORDINATE TYPES (CA, CB...)
+C       I_PRO                   INDEX OVER PROTEINS IN ENSEMBLE
+C       I_RES                   INDEX OVER RESIDUES
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-      use globals, only: maxsiz,maxpro,maxcrd,maxcnt
+      USE GLOBALS, ONLY: MAXSIZ,MAXPRO,MAXCRD,MAXCNT
 
-      implicit none
+      IMPLICIT NONE
 
 
-c     passed argument declarations:
+C     PASSED ARGUMENT DECLARATIONS:
 
-         logical bdshak
+         LOGICAL BDSHAK
 
-         integer numpro,jstrt,jfins,
-     *           maxshk,ishkit,
-     *           numcrd,oarchv,ires(maxsiz)
+         INTEGER NUMPRO,JSTRT,JFINS,
+     *           MAXSHK,ISHKIT,
+     *           NUMCRD,OARCHV,IRES(MAXSIZ)
      
-         real prcord(maxsiz,3,maxpro,maxcrd),
-     *        qrcord(maxsiz,3,maxpro,maxcrd),tolshk,
-     *        srcord(maxsiz,3,maxpro,maxcrd),temtur,
-     *        trcord(maxsiz,3,maxpro,maxcrd),timstp,
-     *        zrcord(maxsiz,3,maxpro,maxcrd),
-     *        velocp(maxsiz,3,maxpro,maxcrd),
-     *        bondln(maxsiz,maxcrd),work1(maxcnt),
-     *        work3(maxcnt),work4(maxcnt)
+         REAL PRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
+     *        QRCORD(MAXSIZ,3,MAXPRO,MAXCRD),TOLSHK,
+     *        SRCORD(MAXSIZ,3,MAXPRO,MAXCRD),TEMTUR,
+     *        TRCORD(MAXSIZ,3,MAXPRO,MAXCRD),TIMSTP,
+     *        ZRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
+     *        VELOCP(MAXSIZ,3,MAXPRO,MAXCRD),
+     *        BONDLN(MAXSIZ,MAXCRD),WORK1(MAXCNT),
+     *        WORK3(MAXCNT),WORK4(MAXCNT)
 
-         integer iseed_amh(4)
+         INTEGER ISEED_AMH(4)
 
 
 
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-c        --- do loop indices ---
+C        --- DO LOOP INDICES ---
 
-         integer i507,i512,i517
+         INTEGER I507,I512,I517
 
-        integer i_axis, i_coord, i_pro, i_res
+        INTEGER I_AXIS, I_COORD, I_PRO, I_RES
  
-c        --- implied do loop indices ---
+C        --- IMPLIED DO LOOP INDICES ---
 
-         integer i1
+         INTEGER I1
 
-         integer numshk
+         INTEGER NUMSHK
 
-         real temph,diff(2,maxsiz),dist(2)
+         REAL TEMPH,DIFF(2,MAXSIZ),DIST(2)
 
-c     required subroutines
+C     REQUIRED SUBROUTINES
 
-        external gaussc,shake,shakab,shakox
-
-
-        temph = 0.0
-        do 600 i1=1,maxsiz
-          diff(1,i1)=0.0
-          diff(2,i1)=0.0
-600        continue
-        dist(1)=0.0
-        dist(2)=0.0
-
-c     --------------------- begin -----------------------
+        EXTERNAL GAUSSC,SHAKE,SHAKAB,SHAKOX
 
 
+        TEMPH = 0.0
+        DO 600 I1=1,MAXSIZ
+          DIFF(1,I1)=0.0
+          DIFF(2,I1)=0.0
+600        CONTINUE
+        DIST(1)=0.0
+        DIST(2)=0.0
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     find gaussianly distributed velocities 
-      call gaussc(maxsiz,numpro,velocp,
-     *            sqrt(temtur),jstrt,jfins,maxpro,
-     *            iseed_amh,work1,maxcrd,numcrd)
-c
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-
-
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     set initial postions according to velocites
-
-      do 502 i_pro=1,numpro                ! number of protiens in ensemble
-         do 500 i_coord=1,numcrd         ! number of coord. types (CA, CB, ...)
-            do 504 i_axis=1,3                  ! x,y,z
-
-               do 516 i_res=1,jstrt-1
-                  trcord(i_res,i_axis,i_pro,i_coord)=
-     *            prcord(i_res,i_axis,i_pro,i_coord)   
-  516          continue
-
-               do 515 i_res=jstrt,jfins
-                  trcord(i_res,i_axis,i_pro,i_coord)=
-     *            prcord(i_res,i_axis,i_pro,i_coord) - timstp*
-     *            velocp(i_res,i_axis,i_pro,i_coord)
-  515          continue
-
-               do 529 i_res=1,jfins
-                  qrcord(i_res,i_axis,i_pro,i_coord)=
-     *            prcord(i_res,i_axis,i_pro,i_coord)
-  529          continue
-
-  504       continue
-  500    continue
-  502 continue
-c
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+C     --------------------- BEGIN -----------------------
 
 
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     FIND GAUSSIANLY DISTRIBUTED VELOCITIES 
+      CALL GAUSSC(MAXSIZ,NUMPRO,VELOCP,
+     *            SQRT(TEMTUR),JSTRT,JFINS,MAXPRO,
+     *            ISEED_AMH,WORK1,MAXCRD,NUMCRD)
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     SET INITIAL POSTIONS ACCORDING TO VELOCITES
+
+      DO 502 I_PRO=1,NUMPRO                ! NUMBER OF PROTIENS IN ENSEMBLE
+         DO 500 I_COORD=1,NUMCRD         ! NUMBER OF COORD. TYPES (CA, CB, ...)
+            DO 504 I_AXIS=1,3                  ! X,Y,Z
+
+               DO 516 I_RES=1,JSTRT-1
+                  TRCORD(I_RES,I_AXIS,I_PRO,I_COORD)=
+     *            PRCORD(I_RES,I_AXIS,I_PRO,I_COORD)   
+  516          CONTINUE
+
+               DO 515 I_RES=JSTRT,JFINS
+                  TRCORD(I_RES,I_AXIS,I_PRO,I_COORD)=
+     *            PRCORD(I_RES,I_AXIS,I_PRO,I_COORD) - TIMSTP*
+     *            VELOCP(I_RES,I_AXIS,I_PRO,I_COORD)
+  515          CONTINUE
+
+               DO 529 I_RES=1,JFINS
+                  QRCORD(I_RES,I_AXIS,I_PRO,I_COORD)=
+     *            PRCORD(I_RES,I_AXIS,I_PRO,I_COORD)
+  529          CONTINUE
+
+  504       CONTINUE
+  500    CONTINUE
+  502 CONTINUE
+C
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 
 
 
 
-c     set bond constraints for each set of 
-c     coordinates
+C     SET BOND CONSTRAINTS FOR EACH SET OF 
+C     COORDINATES
 
-      numshk=0
+      NUMSHK=0
 
-  400 continue        ! coming back from 'goto 400' later in subroutine
+  400 CONTINUE        ! COMING BACK FROM 'GOTO 400' LATER IN SUBROUTINE
 
-      numshk=numshk + 1
-      if( numshk.gt.10 )then
-         write(oarchv,130)numshk
-  130    format(/'Shkdrv: convergence not obtained')
-         stop
-      endif
+      NUMSHK=NUMSHK + 1
+      IF( NUMSHK.GT.10 )THEN
+         WRITE(OARCHV,130)NUMSHK
+  130    FORMAT(/'SHKDRV: CONVERGENCE NOT OBTAINED')
+         STOP
+      ENDIF
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-      call shake(maxsiz,prcord,trcord,srcord,
-     *           bondln,numpro,jstrt+1,jfins,zrcord,
-     *           maxshk,tolshk,bdshak,ishkit,maxpro,
-     *           maxcrd,maxcnt,work1,work3,work4,oarchv)
-      if( bdshak )return
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-
-
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-      call shakab(maxsiz,prcord,trcord,srcord,
-     *            bondln,numpro,jstrt,jfins,zrcord,
-     *            maxshk,tolshk,bdshak,ishkit,maxpro,
-     *            maxcrd,maxcnt,work1,work3,work4,oarchv,
-     *            ires)
-      if( bdshak )return
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-        call shakox(trcord,prcord,srcord,
-     *              numpro,jstrt,jfins,
-     *              maxshk,tolshk,ishkit,
-     *              maxpro,maxcrd)
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      CALL SHAKE(MAXSIZ,PRCORD,TRCORD,SRCORD,
+     *           BONDLN,NUMPRO,JSTRT+1,JFINS,ZRCORD,
+     *           MAXSHK,TOLSHK,BDSHAK,ISHKIT,MAXPRO,
+     *           MAXCRD,MAXCNT,WORK1,WORK3,WORK4,OARCHV)
+      IF( BDSHAK )RETURN
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     determine which if any of the constraints
-c     are not satisfied
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      CALL SHAKAB(MAXSIZ,PRCORD,TRCORD,SRCORD,
+     *            BONDLN,NUMPRO,JSTRT,JFINS,ZRCORD,
+     *            MAXSHK,TOLSHK,BDSHAK,ISHKIT,MAXPRO,
+     *            MAXCRD,MAXCNT,WORK1,WORK3,WORK4,OARCHV,
+     *            IRES)
+      IF( BDSHAK )RETURN
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-      do 512 i512=1,numpro
-            do 507 i507=jstrt+1,jfins
-
-               dist(1)=sqrt
-     *       ( ( prcord(i507,1,i512,1) -
-     *           prcord(i507-1,1,i512,1) )**2
-     *       + ( prcord(i507,2,i512,1) -
-     *           prcord(i507-1,2,i512,1) )**2
-     *       + ( prcord(i507,3,i512,1) -
-     *           prcord(i507-1,3,i512,1) )**2 )
-
-               dist(2)=sqrt
-     *       ( ( prcord(i507,1,i512,2) -
-     *           prcord(i507,1,i512,1) )**2
-     *       + ( prcord(i507,2,i512,2) -
-     *           prcord(i507,2,i512,1) )**2
-     *       + ( prcord(i507,3,i512,2) -
-     *           prcord(i507,3,i512,1) )**2 )
-            diff(1,i507)=abs(dist(1) - bondln(i507,1))
-            diff(2,i507)=abs(dist(2) - bondln(i507,2))
-  507       continue
-
-      do 517 i517=jstrt+1,jfins
-
-            if (ires(i517).eq.8) diff(2,i517)=0.0   ! don't skake CB of glycine
-
-            if( max(diff(1,i517),diff(2,i517)).gt.tolshk )then
-               go to 400
-            endif
-  517       continue
-  512 continue
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+        CALL SHAKOX(TRCORD,PRCORD,SRCORD,
+     *              NUMPRO,JSTRT,JFINS,
+     *              MAXSHK,TOLSHK,ISHKIT,
+     *              MAXPRO,MAXCRD)
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     reset velocities in accord w/ new 
-c     coordinates
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     DETERMINE WHICH IF ANY OF THE CONSTRAINTS
+C     ARE NOT SATISFIED
 
-      temph=1.0/timstp
-      do 522 i_pro=1,numpro
-         do 503 i_coord=1,numcrd
-            do 523 i_axis=1,3
-               do 524 i_res=jstrt,jfins
-                  velocp(i_res,i_axis,i_pro,i_coord)=temph*(
-     *            prcord(i_res,i_axis,i_pro,i_coord) -
-     *            trcord(i_res,i_axis,i_pro,i_coord)) 
-  524          continue
-  523       continue
-  503    continue
-  522 continue
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+      DO 512 I512=1,NUMPRO
+            DO 507 I507=JSTRT+1,JFINS
+
+               DIST(1)=SQRT
+     *       ( ( PRCORD(I507,1,I512,1) -
+     *           PRCORD(I507-1,1,I512,1) )**2
+     *       + ( PRCORD(I507,2,I512,1) -
+     *           PRCORD(I507-1,2,I512,1) )**2
+     *       + ( PRCORD(I507,3,I512,1) -
+     *           PRCORD(I507-1,3,I512,1) )**2 )
+
+               DIST(2)=SQRT
+     *       ( ( PRCORD(I507,1,I512,2) -
+     *           PRCORD(I507,1,I512,1) )**2
+     *       + ( PRCORD(I507,2,I512,2) -
+     *           PRCORD(I507,2,I512,1) )**2
+     *       + ( PRCORD(I507,3,I512,2) -
+     *           PRCORD(I507,3,I512,1) )**2 )
+            DIFF(1,I507)=ABS(DIST(1) - BONDLN(I507,1))
+            DIFF(2,I507)=ABS(DIST(2) - BONDLN(I507,2))
+  507       CONTINUE
+
+      DO 517 I517=JSTRT+1,JFINS
+
+            IF (IRES(I517).EQ.8) DIFF(2,I517)=0.0   ! DON'T SKAKE CB OF GLYCINE
+
+            IF( MAX(DIFF(1,I517),DIFF(2,I517)).GT.TOLSHK )THEN
+               GO TO 400
+            ENDIF
+  517       CONTINUE
+  512 CONTINUE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 
-c     ---------------------- done -----------------------
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     RESET VELOCITIES IN ACCORD W/ NEW 
+C     COORDINATES
 
-      return
-      end
+      TEMPH=1.0/TIMSTP
+      DO 522 I_PRO=1,NUMPRO
+         DO 503 I_COORD=1,NUMCRD
+            DO 523 I_AXIS=1,3
+               DO 524 I_RES=JSTRT,JFINS
+                  VELOCP(I_RES,I_AXIS,I_PRO,I_COORD)=TEMPH*(
+     *            PRCORD(I_RES,I_AXIS,I_PRO,I_COORD) -
+     *            TRCORD(I_RES,I_AXIS,I_PRO,I_COORD)) 
+  524          CONTINUE
+  523       CONTINUE
+  503    CONTINUE
+  522 CONTINUE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+
+C     ---------------------- DONE -----------------------
+
+      RETURN
+      END

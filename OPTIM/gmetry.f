@@ -1,20 +1,20 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C     ROUTINE TO CALCULATE CARTESIAN COORDINATES FROM INTERNAL
@@ -33,10 +33,10 @@ C
       NUMAT=0
       NDIS=1
       SCALE=1.0D0
-      IF (IPRNT .GE. 20) then
-         WRITE (*, *) 'Cartesian coordinates before scaling.'
-         WRITE (*, '(I3,3f12.6)') (i,Q(3*i-2),Q(3*i-1),Q(3*i),
-     1      i=1,NATOMS)
+      IF (IPRNT .GE. 20) THEN
+         WRITE (*, *) 'CARTESIAN COORDINATES BEFORE SCALING.'
+         WRITE (*, '(I3,3F12.6)') (I,Q(3*I-2),Q(3*I-1),Q(3*I),
+     1      I=1,NATOMS)
       ENDIF
 C     IF (NDIS.NE.0) SCALE=0.5291772D0
       IF (NDIS.NE.0) SCALE=1.0D0
@@ -45,13 +45,13 @@ C     IF (NDIS.NE.0) SCALE=0.5291772D0
          Q(3*I-1)=Q(3*I-1)/SCALE
          Q(3*I)=Q(3*I)/SCALE
       ENDDO
-      IF (IPRNT .GE. 20) then
-         WRITE (*, *) 'Cartesian coordinates after scaling.'
-         WRITE (*, '(I3,3F12.6)') (I,Q(3*i-2),Q(3*i-1),Q(3*i),
-     1      i=1,NATOMS)
+      IF (IPRNT .GE. 20) THEN
+         WRITE (*, *) 'CARTESIAN COORDINATES AFTER SCALING.'
+         WRITE (*, '(I3,3F12.6)') (I,Q(3*I-2),Q(3*I-1),Q(3*I),
+     1      I=1,NATOMS)
       ENDIF
 C
-C Permute the coordinates if necessary - only for FH
+C PERMUTE THE COORDINATES IF NECESSARY - ONLY FOR FH
 C
       IF (ZSYM(NATOMS)(1:2).EQ.'FH') THEN
       NCOUNT=0
@@ -64,9 +64,9 @@ C
             NCOUNT=NCOUNT+1
             IF (NCOUNT.GT.2) THEN
                PRINT*,'*** WARNING ***'
-               PRINT*,'*** Cannot permute the coordinates in gmetry'
+               PRINT*,'*** CANNOT PERMUTE THE COORDINATES IN GMETRY'
                GOTO 160
-c              STOP
+C              STOP
             ENDIF
             DO 140 J2=1,NATOMS
                TX=Q(3*(J2-1)+1)
@@ -87,22 +87,22 @@ c              STOP
          IF (NR(I) .NE. 99) THEN
             J=J+1
 C
-C  Turn off the axis permutations -
-C  this is the only way I can find of preserving the
-C  original Cartesian coordinates.
+C  TURN OFF THE AXIS PERMUTATIONS -
+C  THIS IS THE ONLY WAY I CAN FIND OF PRESERVING THE
+C  ORIGINAL CARTESIAN COORDINATES.
 C
             Q(3*J-2)=Q(3*I-2)
             Q(3*J-1)=Q(3*I-1)
             Q(3*J)=Q(3*I)
          ENDIF
 170   CONTINUE
-      If (IPRNT .GE. 20) then
-         WRITE (*,*) 'Cartesian coordinates from GMETRY.'
+      IF (IPRNT .GE. 20) THEN
+         WRITE (*,*) 'CARTESIAN COORDINATES FROM GMETRY.'
 C
-         WRITE (*,'(I3,3F12.6)') (i,Q(3*i-2),Q(3*i-1),Q(3*i),i=1,NATOMS)
+         WRITE (*,'(I3,3F12.6)') (I,Q(3*I-2),Q(3*I-1),Q(3*I),I=1,NATOMS)
       ENDIF
 C
-C Check the theta angles if we are doing water.
+C CHECK THE THETA ANGLES IF WE ARE DOING WATER.
 C
       IF ((ZSYM(NATOMS)(1:1).EQ.'W').AND.(.NOT.ANGLEAXIS)) CALL TCHECK(VEC,Q)
       RETURN

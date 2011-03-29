@@ -1,22 +1,22 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales GNU General Public License
-C   This file is part of OPTIM. not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES GNU GENERAL PUBLIC LICENSE
+C   THIS FILE IS PART OF OPTIM. NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C     SUBROUTINE THOMSON(X,V,ETHOMSON,GTEST)
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C     DOUBLE PRECISION X(*), DIST, V(*), ETHOMSON, DUMMY, CT1, ST1, CT2, ST2, CPDIFF, SPDIFF
-C   You should have received a copy of the GNU General Public License(NATOMS)
-C   along with this program; if not, write to the Free Software0
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE(NATOMS)
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE0
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
-C  Energy, gradient and second derivatives for the Thomson problem in theta, phi coordinates.
+C  ENERGY, GRADIENT AND SECOND DERIVATIVES FOR THE THOMSON PROBLEM IN THETA, PHI COORDINATES.
 C
       SUBROUTINE THOMSON(NATOMS,X,V,ETHOMSON,GTEST,STEST)
       USE MODHESS
@@ -80,13 +80,13 @@ C
             DIST=SR2*SQRT(1.0D0-CT1*CT2-CPDIFF*ST1*ST2)
             DIST=DIST**5
             HESS(J3-1,J3-1)=HESS(J3-1,J3-1)+
-     &           (-(ct2*(4*ct1 + ct1**2*ct2 - ct2*(5 + st1**2))) - 4*cpdiff*(1 + ct1*ct2)*st1*st2 + 
-     &            cpdiff**2*(5 + ct1**2 - st1**2)*st2**2)/(2.*dist)
+     &           (-(CT2*(4*CT1 + CT1**2*CT2 - CT2*(5 + ST1**2))) - 4*CPDIFF*(1 + CT1*CT2)*ST1*ST2 + 
+     &            CPDIFF**2*(5 + CT1**2 - ST1**2)*ST2**2)/(2.*DIST)
             HESS(J3,J3)=HESS(J3,J3)+
-     &           (st1*st2*(4*cpdiff*(-1 + ct1*ct2) + (5 - (sp1*(-cp2 + sp2) + cp1*(cp2 + sp2))*(cp1*(cp2 - sp2) + 
-     &           sp1*(cp2 + sp2)))*st1*st2))/(2.*dist)
+     &           (ST1*ST2*(4*CPDIFF*(-1 + CT1*CT2) + (5 - (SP1*(-CP2 + SP2) + CP1*(CP2 + SP2))*(CP1*(CP2 - SP2) + 
+     &           SP1*(CP2 + SP2)))*ST1*ST2))/(2.*DIST)
             HESS(J3-1,J3)=HESS(J3-1,J3)+
-     &             (spdiff*st2*(2*ct1**2*ct2 + 3*ct2*st1**2 - ct1*(2 + cpdiff*st1*st2)))/dist
+     &             (SPDIFF*ST2*(2*CT1**2*CT2 + 3*CT2*ST1**2 - CT1*(2 + CPDIFF*ST1*ST2)))/DIST
          ENDDO
          DO J2=J1+1,LNATOMS
             J4=2*J2
@@ -99,19 +99,19 @@ C
             DIST=SR2*SQRT(1.0D0-CT1*CT2-CPDIFF*ST1*ST2)
             DIST=DIST**2
             HESS(J3-1,J3-1)=HESS(J3-1,J3-1)+
-     &           (-(ct2*(4*ct1 + ct1**2*ct2 - ct2*(5 + st1**2))) - 4*cpdiff*(1 + ct1*ct2)*st1*st2 + 
-     &            cpdiff**2*(5 + ct1**2 - st1**2)*st2**2)/(2.*dist)
+     &           (-(CT2*(4*CT1 + CT1**2*CT2 - CT2*(5 + ST1**2))) - 4*CPDIFF*(1 + CT1*CT2)*ST1*ST2 + 
+     &            CPDIFF**2*(5 + CT1**2 - ST1**2)*ST2**2)/(2.*DIST)
             HESS(J3,J3)=HESS(J3,J3)+
-     &           (st1*st2*(4*cpdiff*(-1 + ct1*ct2) + (5 - (sp1*(-cp2 + sp2) + cp1*(cp2 + sp2))*(cp1*(cp2 - sp2) + 
-     &           sp1*(cp2 + sp2)))*st1*st2))/(2.*dist)
+     &           (ST1*ST2*(4*CPDIFF*(-1 + CT1*CT2) + (5 - (SP1*(-CP2 + SP2) + CP1*(CP2 + SP2))*(CP1*(CP2 - SP2) + 
+     &           SP1*(CP2 + SP2)))*ST1*ST2))/(2.*DIST)
             HESS(J3-1,J3)=HESS(J3-1,J3)+
-     &             (spdiff*st2*(2*ct1**2*ct2 + 3*ct2*st1**2 - ct1*(2 + cpdiff*st1*st2)))/dist
-            HESS(J3-1,J4-1)=(cpdiff*(-5 + ct2*(ct1*(4 + ct1*ct2) - ct2*st1**2)) + 2*(2 + (1 + cpdiff**2)*ct1*ct2)*st1*st2 - 
-     &              cpdiff*(ct1 - st1)*(ct1 + st1)*st2**2)/(2.*dist)
-            HESS(J3-1,J4)=(spdiff*st2*(-2*ct1**2*ct2 - 3*ct2*st1**2 + ct1*(2 + cpdiff*st1*st2)))/dist
-            HESS(J3,J4-1)=(spdiff*st1*(2*ct1*ct2**2 + 3*ct1*st2**2 - ct2*(2 + cpdiff*st1*st2)))/dist
-            HESS(J3,J4)=(st1*st2*(cpdiff*(4 - 4*ct1*ct2) + (-5 + (sp1*(-cp2 + sp2) + cp1*(cp2 + sp2))*(cp1*(cp2 - sp2) + 
-     &                  sp1*(cp2 + sp2)))*st1*st2))/(2.*dist)
+     &             (SPDIFF*ST2*(2*CT1**2*CT2 + 3*CT2*ST1**2 - CT1*(2 + CPDIFF*ST1*ST2)))/DIST
+            HESS(J3-1,J4-1)=(CPDIFF*(-5 + CT2*(CT1*(4 + CT1*CT2) - CT2*ST1**2)) + 2*(2 + (1 + CPDIFF**2)*CT1*CT2)*ST1*ST2 - 
+     &              CPDIFF*(CT1 - ST1)*(CT1 + ST1)*ST2**2)/(2.*DIST)
+            HESS(J3-1,J4)=(SPDIFF*ST2*(-2*CT1**2*CT2 - 3*CT2*ST1**2 + CT1*(2 + CPDIFF*ST1*ST2)))/DIST
+            HESS(J3,J4-1)=(SPDIFF*ST1*(2*CT1*CT2**2 + 3*CT1*ST2**2 - CT2*(2 + CPDIFF*ST1*ST2)))/DIST
+            HESS(J3,J4)=(ST1*ST2*(CPDIFF*(4 - 4*CT1*CT2) + (-5 + (SP1*(-CP2 + SP2) + CP1*(CP2 + SP2))*(CP1*(CP2 - SP2) + 
+     &                  SP1*(CP2 + SP2)))*ST1*ST2))/(2.*DIST)
          ENDDO
       ENDDO
       DO J1=1,2*LNATOMS
@@ -124,7 +124,7 @@ C
       END
 
 C
-C  Orthogonalise VEC1 to overall rotations about the x, y, and z axes.
+C  ORTHOGONALISE VEC1 TO OVERALL ROTATIONS ABOUT THE X, Y, AND Z AXES.
 C
       SUBROUTINE ORTHOGTH(VEC1,Q,OTEST)
       USE COMMONS
@@ -179,7 +179,7 @@ C
       RETURN
       END
 C
-C  Eigenvalue shifting for the Thomson problem
+C  EIGENVALUE SHIFTING FOR THE THOMSON PROBLEM
 C
       SUBROUTINE SHIFTHTH(Q,NATOMS)
       USE KEY

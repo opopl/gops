@@ -1,25 +1,25 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2005 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2005 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C***********************************************************************
 C
-C  This subroutine is designed to morph an initial geometry into a final 
-C  endpoint avoiding clashes. 
+C  THIS SUBROUTINE IS DESIGNED TO MORPH AN INITIAL GEOMETRY INTO A FINAL 
+C  ENDPOINT AVOIDING CLASHES. 
 C
 C***********************************************************************
 C
@@ -45,14 +45,14 @@ C
       COMMON /KNOWN/ KNOWE, KNOWG, KNOWH
       COMMON /MORPHDATA/ PUSH, PULL
 
-      IF (DEBUG) OPEN(UNIT=995,FILE='morph.xyz',STATUS='UNKNOWN')
+      IF (DEBUG) OPEN(UNIT=995,FILE='MORPH.XYZ',STATUS='UNKNOWN')
       CALL MYCPU_TIME(STARTTIME,.TRUE.)
       IF (ZSYM(1)(1:1).EQ.'W') THEN
-         PRINT*,'MORPH procedures have not been programmed for TIP potentials'
+         PRINT*,'MORPH PROCEDURES HAVE NOT BEEN PROGRAMMED FOR TIP POTENTIALS'
          STOP
       ENDIF
-      PRINT '(A,F8.2,A,F12.2,A,F10.2)',' morph> Interpolation using maximum step ',MORPHMXSTP,' energy maximum ',
-     &                                   MORPHEMAX,' maximum rise ',MORPHERISE
+      PRINT '(A,F8.2,A,F12.2,A,F10.2)',' MORPH> INTERPOLATION USING MAXIMUM STEP ',MORPHMXSTP,' ENERGY MAXIMUM ',
+     &                                   MORPHEMAX,' MAXIMUM RISE ',MORPHERISE
       PULL=.TRUE.
       PUSH=.FALSE.
       NPU=0
@@ -60,12 +60,12 @@ C
       MNBFGSMAX1SAVE=MNBFGSMAX1
       MNBFGSMAX2SAVE=MNBFGSMAX2
 
-      OPEN(UNIT=44,FILE='morph.points',STATUS='UNKNOWN')
+      OPEN(UNIT=44,FILE='MORPH.POINTS',STATUS='UNKNOWN')
 
-      NUP=1 ! mylbfgs uses this for projection of the search direction
+      NUP=1 ! MYLBFGS USES THIS FOR PROJECTION OF THE SEARCH DIRECTION
       QSTART(1:3*NATOMS)=COORDS(1:3*NATOMS)
       CALL MINPERMDIST(QSTART,QFINISH,NATOMS,DEBUG,PARAM1,PARAM2,PARAM3,BULKT,TWOD,DISTF,DIST2,RIGIDBODY,RMAT)
-      IF (DEBUG) PRINT '(A,F20.10)',' morph> initial distance between start and finish=',DISTF
+      IF (DEBUG) PRINT '(A,F20.10)',' MORPH> INITIAL DISTANCE BETWEEN START AND FINISH=',DISTF
 !     QSTART(1:3*NATOMS)=COORDS(1:3*NATOMS)
       NREPEL=0
       PRINTPTS=.TRUE.
@@ -106,7 +106,7 @@ C
       ENDIF
       IF (NPU.GT.100) THEN
          IF (ABS(DSAVE(NPU-100)-DISTF).LT.0.1D0) THEN
-            PRINT '(A,2G20.10)',' morph> Attempting to unstick: distances=',DSAVE(NPU-100),DISTF
+            PRINT '(A,2G20.10)',' MORPH> ATTEMPTING TO UNSTICK: DISTANCES=',DSAVE(NPU-100),DISTF
             NPU=0
             MNBFGSMAX1=MAX(1,MNBFGSMAX1-1)
             MNBFGSMAX2=MAX(1,MNBFGSMAX2-1)
@@ -124,7 +124,7 @@ C
          ENDDO
       ENDIF
 C
-C  Regenerate full Q vector. 
+C  REGENERATE FULL Q VECTOR. 
 C
       DO J=1,NOPT
          COORDS(J)=COORDS(J)+PSTEP*SVEC(J)
@@ -136,7 +136,7 @@ C
       EOLD=ENERGY
 77    CALL POTENTIAL(COORDS,ENERGY,GRAD,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
       IF (ENERGY-EOLD.GT.MORPHERISE) THEN
-         IF (PTEST) PRINT '(2(A,G20.10))',' morph> Energy rose by ',ENERGY-EOLD,' reducing step size to ',PSTEP/2.0D0
+         IF (PTEST) PRINT '(2(A,G20.10))',' MORPH> ENERGY ROSE BY ',ENERGY-EOLD,' REDUCING STEP SIZE TO ',PSTEP/2.0D0
          DO J=1,NOPT
            COORDS(J)=COORDS(J)-PSTEP*SVEC(J)/2.0D0
          ENDDO
@@ -148,18 +148,18 @@ C
       ENDIF
       CALL FLUSH(6,ISTAT)
 C
-C Summarize
+C SUMMARIZE
 C
-      IF (PUSH.AND.DEBUG) PRINT '(A,I8,A,F15.6,6(A,F8.2))', 'PUSH ',ITER,' E=',ENERGY,' Step=',PSTEP,
+      IF (PUSH.AND.DEBUG) PRINT '(A,I8,A,F15.6,6(A,F8.2))', 'PUSH ',ITER,' E=',ENERGY,' STEP=',PSTEP,
      &     ' DS=',DISTS,' DF=',DISTF,' RMS=',RMS,' PF=',PROJF,' PS=',PROJS
-      IF (PULL.AND.DEBUG) PRINT '(A,I8,A,F15.6,6(A,F8.2))', 'PULL ',ITER,' E=',ENERGY,' Step=',PSTEP,
+      IF (PULL.AND.DEBUG) PRINT '(A,I8,A,F15.6,6(A,F8.2))', 'PULL ',ITER,' E=',ENERGY,' STEP=',PSTEP,
      &     ' DS=',DISTS,' DF=',DISTF,' RMS=',RMS,' PF=',PROJF,' PS=',PROJS
       NPU=NPU+1
       DSAVE(NPU)=DISTF
 C
-C  Tangent space minimization next.
-C  Step direction is projected out of the step in mylbfgs
-C  The next IF block allows for zero tangent space steps in the initial phase
+C  TANGENT SPACE MINIMIZATION NEXT.
+C  STEP DIRECTION IS PROJECTED OUT OF THE STEP IN MYLBFGS
+C  THE NEXT IF BLOCK ALLOWS FOR ZERO TANGENT SPACE STEPS IN THE INITIAL PHASE
 C
       IF (DISTF.GT.CONVU) THEN
           NBFGS=MNBFGSMAX1
@@ -169,10 +169,10 @@ C
 
       RESET=.FALSE.
       RESET=.TRUE.
-      RMS2=RMS ! needs to be set because MYLBFGS tests it for convergence !
+      RMS2=RMS ! NEEDS TO BE SET BECAUSE MYLBFGS TESTS IT FOR CONVERGENCE !
       IF (ITER.EQ.1) RESET=.TRUE.
-      ZWORK(1:3*NATOMS,1)=SVEC(1:3*NATOMS) ! used for the projection direction in mylbfgs
-      GMAXSAVE=GMAX; GMAX=CONVR ! mylbfgs now uses GMAX so that we can change this parameter via changep
+      ZWORK(1:3*NATOMS,1)=SVEC(1:3*NATOMS) ! USED FOR THE PROJECTION DIRECTION IN MYLBFGS
+      GMAXSAVE=GMAX; GMAX=CONVR ! MYLBFGS NOW USES GMAX SO THAT WE CAN CHANGE THIS PARAMETER VIA CHANGEP
       IF (CHRMMT.AND.INTMINT) THEN
          CALL MYLBFGS(NINTS,MUPDATE,COORDS,.FALSE.,MFLAG,ENERGY,RMS2,EREAL,RMS,NBFGS,
      1                RESET,ITDONE,PTEST,GRAD,.TRUE.,.TRUE.)
@@ -191,7 +191,7 @@ C
             MNBFGSMAX2=MNBFGSMAX2SAVE
             FINISHED=.TRUE.
             CALL MYCPU_TIME(FINISHTIME,.FALSE.)
-            PRINT '(A,I8,A,F12.2)',' morph> Interpolation succeeded in ',ITER,' steps, time=',FINISHTIME-STARTTIME
+            PRINT '(A,I8,A,F12.2)',' MORPH> INTERPOLATION SUCCEEDED IN ',ITER,' STEPS, TIME=',FINISHTIME-STARTTIME
             RETURN
          ENDIF
       ENDIF
@@ -203,7 +203,7 @@ C
          MNBFGSMAX2=MNBFGSMAX2SAVE
          FINISHED=.FALSE.
          CALL MYCPU_TIME(FINISHTIME,.FALSE.)
-         PRINT '(A,I8,A,F12.2)',' morph> Interpolation failed to converge in ',ITER,' steps, time taken=',FINISHTIME-STARTTIME
+         PRINT '(A,I8,A,F12.2)',' MORPH> INTERPOLATION FAILED TO CONVERGE IN ',ITER,' STEPS, TIME TAKEN=',FINISHTIME-STARTTIME
 !        STOP
          RETURN
       ENDIF

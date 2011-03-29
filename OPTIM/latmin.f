@@ -1,20 +1,20 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       SUBROUTINE LATMIN(N,XC,BOXLX,CUTOFF)
       IMPLICIT NONE
@@ -23,9 +23,9 @@ C
      1                 SECOND, XSAVE(3*N), BSAVE, CSAVE
 
 C
-C  Value of DIF is the order of magnitude to which the lattice
-C  constant can be optimised. Setting it smaller than 10^(-7)
-C  causes numerical problems on the DEC.
+C  VALUE OF DIF IS THE ORDER OF MAGNITUDE TO WHICH THE LATTICE
+C  CONSTANT CAN BE OPTIMISED. SETTING IT SMALLER THAN 10^(-7)
+C  CAUSES NUMERICAL PROBLEMS ON THE DEC.
 C
       DIF=1.0D-7
       BSAVE=BOXLX
@@ -71,17 +71,17 @@ C
       CALL C60PE(N,XC,F3,BOXLX,BOXLX,BOXLX,CUTOFF)
 
       SECOND=(F3+F2-2.0D0*F1)/(4.0D0*DIF*DIF)
-      PRINT*,'Energy for lattice cycle ',NCOUNT,' is ',F1
-      PRINT*,'Gradient wrt box length=',GRAD
-      PRINT*,'Second derivative wrt box length=',SECOND
+      PRINT*,'ENERGY FOR LATTICE CYCLE ',NCOUNT,' IS ',F1
+      PRINT*,'GRADIENT WRT BOX LENGTH=',GRAD
+      PRINT*,'SECOND DERIVATIVE WRT BOX LENGTH=',SECOND
       NCOUNT=NCOUNT+1
       IF (DABS(GRAD/SECOND).GT.1.0D-4) THEN
          BOXLX=BOXLX-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
-         PRINT*,'Step=',-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
+         PRINT*,'STEP=',-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
          GOTO 10
       ELSE
          BOXLX=BOXLX-GRAD/SECOND
-         PRINT*,'Step=',-GRAD/SECOND
+         PRINT*,'STEP=',-GRAD/SECOND
          IF (DABS(GRAD/SECOND).GT.1.0D-6) GOTO 10
       ENDIF
       CUTOFF=CSAVE*BOXLX/BSAVE
@@ -90,7 +90,7 @@ C
 C
 C********************************************************************
 C
-C Periodic bulk C60 energy only
+C PERIODIC BULK C60 ENERGY ONLY
 C
 C********************************************************************
 C
@@ -102,7 +102,7 @@ C
       DOUBLE PRECISION X(3*N), ENERGY, TEMP, R(N,N), VEC(N,N,3),
      1                 BOXLX,BOXLY,BOXLZ,CUTOFF,DIST
 C
-C  Deal with atoms leaving the box:
+C  DEAL WITH ATOMS LEAVING THE BOX:
 C
       DO 41 J1=1,N
          X(3*(J1-1)+1)=X(3*(J1-1)+1) - BOXLX*DNINT(X(3*(J1-1)+1)/BOXLX)  
@@ -110,9 +110,9 @@ C
          X(3*(J1-1)+3)=X(3*(J1-1)+3) - BOXLZ*DNINT(X(3*(J1-1)+3)/BOXLZ)
 41    CONTINUE
 C
-C  Calculation of connecting vectors; to implement the periodic
-C  boundary conditions, the shortest vector between two atoms is
-C  used:
+C  CALCULATION OF CONNECTING VECTORS; TO IMPLEMENT THE PERIODIC
+C  BOUNDARY CONDITIONS, THE SHORTEST VECTOR BETWEEN TWO ATOMS IS
+C  USED:
 C
       DO 25 J1=1,N
          VEC(J1,J1,1)=0.0D0
@@ -134,7 +134,7 @@ C
 15       CONTINUE
 25    CONTINUE
 C
-C  Store distance matrices.
+C  STORE DISTANCE MATRICES.
 C
       DO 20 J1=1,N
          R(J1,J1)=0.0D0
@@ -146,7 +146,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C calculate the potential energy:
+C CALCULATE THE POTENTIAL ENERGY:
 C
       ENERGY=0.0D0
       DO 12 J1=1,N
@@ -160,7 +160,7 @@ C
 11       CONTINUE
 12    CONTINUE
       ENERGY=ENERGY/96.794820624738D0
-C     PRINT*,'Energy for box length ',BOXLX,' is ',ENERGY
+C     PRINT*,'ENERGY FOR BOX LENGTH ',BOXLX,' IS ',ENERGY
 
       RETURN
       END

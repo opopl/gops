@@ -1,27 +1,27 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  Subroutine C60DIFF calculates the cartesian gradient and second
-C  derivative matrix analytically. Epsilon is set to unity and
-C  sigma = 1. Uses f and g tensors.
+C  SUBROUTINE C60DIFF CALCULATES THE CARTESIAN GRADIENT AND SECOND
+C  DERIVATIVE MATRIX ANALYTICALLY. EPSILON IS SET TO UNITY AND
+C  SIGMA = 1. USES F AND G TENSORS.
 C
 C*************************************************************************
 C
@@ -41,7 +41,7 @@ C
 C 
 C  SIGMA=EPSILON=1 
 C 
-C  Store distance matrices.  
+C  STORE DISTANCE MATRICES.  
 C
       OVERLP=.FALSE.
 10    CONTINUE
@@ -59,7 +59,7 @@ C
          ENDDO
 20    CONTINUE
 C
-C  Calculate the energy and the g and f tensors.
+C  CALCULATE THE ENERGY AND THE G AND F TENSORS.
 C
       ENERGY=0.0D0
       DO 21 J1=1,N
@@ -99,10 +99,10 @@ C
      5              +(120*(CM9+CP9)-900*(CM3+CP3))*T3)/DSQ
             F(J1,J2)=F(J2,J1)
 C
-C  For overlapping molecules make the interaction REPULSIVE!
+C  FOR OVERLAPPING MOLECULES MAKE THE INTERACTION REPULSIVE!
 C
             IF (TEMP.LT.D2+D2DELTA) THEN
-               WRITE(*,'(A,G20.10,A,2I5,A)') ' WARNING distance = ',1.0D0/D2M+D2,' for atoms ',J1,J2,' in c60diff, rescaling'
+               WRITE(*,'(A,G20.10,A,2I5,A)') ' WARNING DISTANCE = ',1.0D0/D2M+D2,' FOR ATOMS ',J1,J2,' IN C60DIFF, RESCALING'
                CALL RESCALEC6(X,N,D2+D2DELTA)
                OVERLP=.TRUE.
                GOTO 10
@@ -117,9 +117,9 @@ C              G(J1,J2)=-G(J1,J2)
       ENERGY=ENERGY*4.0D0/DSQ
       ENERGY=ENERGY/96.794820624738D0
 C
-C  From here on down the code is system-independent!
+C  FROM HERE ON DOWN THE CODE IS SYSTEM-INDEPENDENT!
 C
-C  First the gradient.
+C  FIRST THE GRADIENT.
 C
       IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
       DO 13 J1=1,N
@@ -133,7 +133,7 @@ C
 14       CONTINUE
 13    CONTINUE
 C
-C  Now do the hessian. First are the entirely diagonal terms.
+C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
 C
       IF (.NOT.STEST) RETURN
       DO 80 J1=1,N
@@ -148,8 +148,8 @@ C
 70       CONTINUE
 80    CONTINUE
 C
-C  Next are the terms where x_i and x_j are on the same atom
-C  but are different, e.g. y and z.
+C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
+C  BUT ARE DIFFERENT, E.G. Y AND Z.
 C
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -166,7 +166,7 @@ C
 110      CONTINUE
 120   CONTINUE
 C
-C  Case III, different atoms, same cartesian coordinate.
+C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
 C
       DO 150 J1=1,N
          DO 140 J2=1,3
@@ -178,7 +178,7 @@ C
 140      CONTINUE
 150   CONTINUE
 C
-C  Case IV: different atoms and different cartesian coordinates.
+C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3
@@ -195,7 +195,7 @@ C
 170      CONTINUE
 180   CONTINUE
 C
-C  Symmetrise Hessian
+C  SYMMETRISE HESSIAN
 C
       DO 200 J1=1,3*N
          DO 190 J2=J1+1,3*N
@@ -231,7 +231,7 @@ C
 C              DIST=SQRT((X(3*(J1-1)+1)-X(3*(J2-1)+1))**2
 C    1                  +(X(3*(J1-1)+2)-X(3*(J2-1)+2))**2
 C    2                  +(X(3*(J1-1)+3)-X(3*(J2-1)+3))**2)
-C              PRINT*,j1,j2,'separation reset to ',DIST
+C              PRINT*,J1,J2,'SEPARATION RESET TO ',DIST
                GOTO 10
             ENDIF
          ENDDO

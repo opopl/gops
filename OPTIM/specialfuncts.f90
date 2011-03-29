@@ -1,6 +1,6 @@
 MODULE SPFUNCTS
 ! EFK 11/01/07
-! This file contains subroutines for computing various special functions
+! THIS FILE CONTAINS SUBROUTINES FOR COMPUTING VARIOUS SPECIAL FUNCTIONS
 !
   IMPLICIT NONE
 
@@ -8,7 +8,7 @@ MODULE SPFUNCTS
 
 CONTAINS
   SUBROUTINE INITIATE_RANDOM(SEED)
-    ! initiate random number generator with the given seed
+    ! INITIATE RANDOM NUMBER GENERATOR WITH THE GIVEN SEED
 
     IMPLICIT NONE
 
@@ -29,18 +29,18 @@ CONTAINS
   END SUBROUTINE INITIATE_RANDOM
 
   SUBROUTINE BAND2SCS(BANDM,VAL,INDX,JNDX,KD,N,NNZ)
-    ! convert a band matrix of dimension 2*KD+1 where KD is the number
-    ! of superdiagonals
-    ! to a matrix in sparse coordinate storage format 
-    ! (such as required by NAG sparse Cholesky decomposition routine F11JAF)
-    ! the entries in the SCS matrix are ordered by increasing row and then
-    ! by increasing column within each row
-    ! only the upper triangle part of BANDM is used
-    ! SCS is transposed (so that row numbers are always greater than columns)
-    ! N by N is the dimension of the full matrix
-    ! returns NNZ - the number of nonzero elements
+    ! CONVERT A BAND MATRIX OF DIMENSION 2*KD+1 WHERE KD IS THE NUMBER
+    ! OF SUPERDIAGONALS
+    ! TO A MATRIX IN SPARSE COORDINATE STORAGE FORMAT 
+    ! (SUCH AS REQUIRED BY NAG SPARSE CHOLESKY DECOMPOSITION ROUTINE F11JAF)
+    ! THE ENTRIES IN THE SCS MATRIX ARE ORDERED BY INCREASING ROW AND THEN
+    ! BY INCREASING COLUMN WITHIN EACH ROW
+    ! ONLY THE UPPER TRIANGLE PART OF BANDM IS USED
+    ! SCS IS TRANSPOSED (SO THAT ROW NUMBERS ARE ALWAYS GREATER THAN COLUMNS)
+    ! N BY N IS THE DIMENSION OF THE FULL MATRIX
+    ! RETURNS NNZ - THE NUMBER OF NONZERO ELEMENTS
     ! NNZ <= (KD+1)*N
-    ! The VAL, INDX, JNDX arrays have dimension >= 2*NNZ
+    ! THE VAL, INDX, JNDX ARRAYS HAVE DIMENSION >= 2*NNZ
 
     IMPLICIT NONE
     INTEGER, INTENT(IN) :: N, KD
@@ -53,8 +53,8 @@ CONTAINS
     DOUBLE PRECISION, PARAMETER :: TINY=1.0D-10
 
     I = 0
-    DO C = 1,KD !column
-       DO R = 1,C !row
+    DO C = 1,KD !COLUMN
+       DO R = 1,C !ROW
           V = BANDM(KD+1+R-C,C)
           IF (ABS(V).GT.TINY) THEN
              I = I + 1
@@ -65,8 +65,8 @@ CONTAINS
        ENDDO
     ENDDO
 
-    DO C = KD+1,N !column
-       DO R = C-KD,C !row
+    DO C = KD+1,N !COLUMN
+       DO R = C-KD,C !ROW
           V = BANDM(KD+1+R-C,C)
           IF (ABS(V).GT.TINY) THEN
              I = I + 1
@@ -79,7 +79,7 @@ CONTAINS
 
     NNZ = I
     
-!    print*, 'Fraction nonsparse: ', DBLE(NNZ)/((KD+1)*N-KD*(KD+1)/2)
+!    PRINT*, 'FRACTION NONSPARSE: ', DBLE(NNZ)/((KD+1)*N-KD*(KD+1)/2)
   END SUBROUTINE BAND2SCS
 
   SUBROUTINE DUMPCOORDS(X, FNAME, APPEND)
@@ -90,7 +90,7 @@ CONTAINS
     DOUBLE PRECISION :: X(3*NATOMS)
     INTEGER :: A
 
-    ! given coordinate array X for a single molecule, dump into file FNAME
+    ! GIVEN COORDINATE ARRAY X FOR A SINGLE MOLECULE, DUMP INTO FILE FNAME
     IF (APPEND) THEN
        OPEN (UNIT = 55, FILE = FNAME, STATUS = 'UNKNOWN', POSITION = 'APPEND')
     ELSE
@@ -103,8 +103,8 @@ CONTAINS
   END SUBROUTINE DUMPCOORDS
 
   SUBROUTINE DUMPFRAMES(X, NFRAME,FNAME)
-    ! dump out the frames from a 1D coordinate array
-    ! NFRAME is the number of frames
+    ! DUMP OUT THE FRAMES FROM A 1D COORDINATE ARRAY
+    ! NFRAME IS THE NUMBER OF FRAMES
     USE COMMONS, ONLY : NATOMS
     IMPLICIT NONE
     INTEGER, INTENT(IN) :: NFRAME
@@ -112,11 +112,11 @@ CONTAINS
     DOUBLE PRECISION, INTENT(IN) :: X(3*NATOMS*NFRAME)
     INTEGER :: A, F
 
-    ! given coordinate array X for a single molecule, dump into file FNAME
+    ! GIVEN COORDINATE ARRAY X FOR A SINGLE MOLECULE, DUMP INTO FILE FNAME
     OPEN (UNIT = 55, FILE = FNAME, STATUS = 'UNKNOWN')
     DO F = 1,NFRAME
        WRITE(55,'(I6)') NATOMS
-       WRITE(55,'(A,I4)') ' frame ', F
+       WRITE(55,'(A,I4)') ' FRAME ', F
        WRITE(55,'(A3,3G25.15)') ('AX ',X(3*NATOMS*(F-1)+3*(A-1)+1:3*NATOMS*(F-1)+3*(A-1)+3),A=1,NATOMS)
     ENDDO
     CLOSE(55)
@@ -124,7 +124,7 @@ CONTAINS
   END SUBROUTINE DUMPFRAMES
 
     SUBROUTINE CROSS_PRODUCT(A, B, C)
-      ! take the cross product of 3D vectors A and B; return result in C
+      ! TAKE THE CROSS PRODUCT OF 3D VECTORS A AND B; RETURN RESULT IN C
 
       IMPLICIT NONE
 
@@ -139,7 +139,7 @@ CONTAINS
     END SUBROUTINE CROSS_PRODUCT
 
     SUBROUTINE NORMALIZE(X)
-      ! normalize a 3 dimensional vector
+      ! NORMALIZE A 3 DIMENSIONAL VECTOR
 
       IMPLICIT NONE
 
@@ -153,12 +153,12 @@ CONTAINS
     END SUBROUTINE NORMALIZE
 
     SUBROUTINE IRANDOMSELECT(CHOICES, PICKED, NC, NS, SEED)
-      ! From an array CHOICES of size NC, select NP elements randomly
-      ! and put results in PICKED
-      ! CHOICES and PICKED should be integer arrays
-      ! uses simple algorithm S from Vitter, 1984, Commun. ACM
-      ! at each step, if m elements remain to be selected from N possibilities
-      ! the probability of selecting the next element is m/N
+      ! FROM AN ARRAY CHOICES OF SIZE NC, SELECT NP ELEMENTS RANDOMLY
+      ! AND PUT RESULTS IN PICKED
+      ! CHOICES AND PICKED SHOULD BE INTEGER ARRAYS
+      ! USES SIMPLE ALGORITHM S FROM VITTER, 1984, COMMUN. ACM
+      ! AT EACH STEP, IF M ELEMENTS REMAIN TO BE SELECTED FROM N POSSIBILITIES
+      ! THE PROBABILITY OF SELECTING THE NEXT ELEMENT IS M/N
 
       IMPLICIT NONE
 
@@ -170,7 +170,7 @@ CONTAINS
       DOUBLE PRECISION :: RANSTART(1000), R
 
       IF (NS > NC) THEN
-         print*, 'ERROR: NS > NC in IRANDOMSELECT'
+         PRINT*, 'ERROR: NS > NC IN IRANDOMSELECT'
          STOP
       END IF
 
@@ -178,7 +178,7 @@ CONTAINS
       ALLOCATE(FULLSEED(SEEDSIZE))
       FULLSEED(:) = SEED
       CALL RANDOM_SEED(PUT=FULLSEED(:SEEDSIZE))
-      CALL RANDOM_NUMBER(RANSTART(1:1000)) ! get the generator started
+      CALL RANDOM_NUMBER(RANSTART(1:1000)) ! GET THE GENERATOR STARTED
 
       N = NC; S = NS
       DO 
@@ -197,8 +197,8 @@ CONTAINS
     END SUBROUTINE IRANDOMSELECT
 
     SUBROUTINE SHIFTZERO(COORDS,NATMS,ATM)
-      ! Shift entire molecule so that atom ATM is at the origin
-      ! NATMS is the total number of atoms
+      ! SHIFT ENTIRE MOLECULE SO THAT ATOM ATM IS AT THE ORIGIN
+      ! NATMS IS THE TOTAL NUMBER OF ATOMS
 
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: NATMS, ATM
@@ -215,11 +215,11 @@ CONTAINS
     END SUBROUTINE SHIFTZERO
 
     SUBROUTINE ROTATEZERO(COORDS, NATMS, ATM, RAXIS, ZAXIS)
-      ! Rotate the molecule around the RAXIS of 
-      ! atom number ATM so as to zero the ZAXIS dimension of ATM
-      ! RAXIS and ZAXIS must be 1,2, or 3 and not equal
-      ! NATMS is the total number of atoms
-      ! COORDP is a pointer to an array of dimension 3*NATMS
+      ! ROTATE THE MOLECULE AROUND THE RAXIS OF 
+      ! ATOM NUMBER ATM SO AS TO ZERO THE ZAXIS DIMENSION OF ATM
+      ! RAXIS AND ZAXIS MUST BE 1,2, OR 3 AND NOT EQUAL
+      ! NATMS IS THE TOTAL NUMBER OF ATOMS
+      ! COORDP IS A POINTER TO AN ARRAY OF DIMENSION 3*NATMS
 
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: NATMS, ATM, RAXIS, ZAXIS
@@ -230,8 +230,8 @@ CONTAINS
 
       IF (RAXIS.EQ.ZAXIS.OR.(RAXIS.LT.1.OR.RAXIS.GT.3) &
            & .OR.(ZAXIS.LT.1.OR.ZAXIS.GT.3)) THEN
-         print*, 'RAXIS and ZAXIS must be btwn 1 and 3 and &
-              & cannot be the same in ROTATETOZ!', RAXIS, ZAXIS
+         PRINT*, 'RAXIS AND ZAXIS MUST BE BTWN 1 AND 3 AND &
+              & CANNOT BE THE SAME IN ROTATETOZ!', RAXIS, ZAXIS
          STOP
       ENDIF
 
@@ -253,9 +253,9 @@ CONTAINS
     END SUBROUTINE ROTATEZERO
 
     SUBROUTINE ROTATE(COORDS, THETA, AXIS)
-      ! Rotate a given point in 3D space around a given axis (1,2,or 3)
-      ! By an angle theta (in radians)
-      ! Return result as outcoords
+      ! ROTATE A GIVEN POINT IN 3D SPACE AROUND A GIVEN AXIS (1,2,OR 3)
+      ! BY AN ANGLE THETA (IN RADIANS)
+      ! RETURN RESULT AS OUTCOORDS
 
       IMPLICIT NONE
       DOUBLE PRECISION, INTENT(INOUT) :: COORDS(3)
@@ -277,15 +277,15 @@ CONTAINS
          COORDS(1) = CT*X-ST*Y
          COORDS(2) = ST*X+CT*Y
       ELSE
-         print*, 'ERROR: in ROTATE, AXIS must be 1,2,or3', AXIS
+         PRINT*, 'ERROR: IN ROTATE, AXIS MUST BE 1,2,OR3', AXIS
          STOP
       ENDIF
       RETURN
     END SUBROUTINE ROTATE
 
     SUBROUTINE ROTATEANGLAXIS(X,THETA,V)
-      ! rotate 3d vector X by an angle theta around vector V
-      ! use Rodrigues' rotation formula
+      ! ROTATE 3D VECTOR X BY AN ANGLE THETA AROUND VECTOR V
+      ! USE RODRIGUES' ROTATION FORMULA
 
       IMPLICIT NONE
       DOUBLE PRECISION, INTENT(INOUT) :: V(3)
@@ -304,17 +304,17 @@ CONTAINS
     END SUBROUTINE ROTATEANGLAXIS
 
     SUBROUTINE LEGZO(N,X,W)
-      ! Copied from: http://jin.ece.uiuc.edu/, mlegzo.for
-      ! Written by Jian-Ming Jin
+      ! COPIED FROM: HTTP://JIN.ECE.UIUC.EDU/, MLEGZO.FOR
+      ! WRITTEN BY JIAN-MING JIN
       !
       !       =========================================================
-      !       Purpose : Compute the zeros of Legendre polynomial Pn(x)
-      !                 in the interval [-1,1], and the corresponding
-      !                 weighting coefficients for Gauss-Legendre
-      !                 integration
-      !       Input :   n    --- Order of the Legendre polynomial
-      !       Output:   X(n) --- Zeros of the Legendre polynomial
-      !                 W(n) --- Corresponding weighting coefficients
+      !       PURPOSE : COMPUTE THE ZEROS OF LEGENDRE POLYNOMIAL PN(X)
+      !                 IN THE INTERVAL [-1,1], AND THE CORRESPONDING
+      !                 WEIGHTING COEFFICIENTS FOR GAUSS-LEGENDRE
+      !                 INTEGRATION
+      !       INPUT :   N    --- ORDER OF THE LEGENDRE POLYNOMIAL
+      !       OUTPUT:   X(N) --- ZEROS OF THE LEGENDRE POLYNOMIAL
+      !                 W(N) --- CORRESPONDING WEIGHTING COEFFICIENTS
       !       =========================================================
       !
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)

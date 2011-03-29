@@ -1,19 +1,19 @@
-!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
-!   This file is part of NEB module. NEB module is part of OPTIM.
+!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
+!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
 !
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 MODULE MINIMISER1
      IMPLICIT NONE
@@ -42,10 +42,10 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
      IMPLICIT NONE 
 
      INTEGER,INTENT(IN) :: D,U  ! DIMENSIONALITY OF THE PROBLEM AND NUMBER OF UPDATES
-     INTEGER NPERSIST           ! number of persistent minima
-     INTEGER PERSISTTHRESH      ! persistence threshold
-     LOGICAL PERSISTENT(NIMAGE+2) ! logical array to identify persistent minima
-     INTEGER NTIMESMIN(NIMAGE+2)  ! number of consecutive steps this image is a local minimum
+     INTEGER NPERSIST           ! NUMBER OF PERSISTENT MINIMA
+     INTEGER PERSISTTHRESH      ! PERSISTENCE THRESHOLD
+     LOGICAL PERSISTENT(NIMAGE+2) ! LOGICAL ARRAY TO IDENTIFY PERSISTENT MINIMA
+     INTEGER NTIMESMIN(NIMAGE+2)  ! NUMBER OF CONSECUTIVE STEPS THIS IMAGE IS A LOCAL MINIMUM
      LOGICAL NOTNEW 
      DOUBLE PRECISION DIJ, DMAX, DS, DF, EWORST, EMAX
      DOUBLE PRECISION, ALLOCATABLE :: REPTEMP(:)
@@ -62,20 +62,20 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
      DOUBLE PRECISION,DIMENSION(U)     :: RHO1,ALPHA
      DOUBLE PRECISION,DIMENSION(0:U,D) :: SEARCHSTEP,GDIF
 
-     ! efk: for freezenodes
+     ! EFK: FOR FREEZENODES
      DOUBLE PRECISION :: TESTG, TOTGNORM
      INTEGER :: IM
 
-     ! efk: for internals
+     ! EFK: FOR INTERNALS
      LOGICAL :: FAILED, INTPTEST, SKIPPED, AMIDEFAIL
      DOUBLE PRECISION :: STEPCART(3*NATOMS), AVGE, COORDS(3*NATOMS)
      DOUBLE PRECISION :: TMPRMS, TESTE, LGDUMMY(3*NATOMS)
 
      CALL MYCPU_TIME(STIME,.FALSE.)
 
-     NTIMESMIN(1:NIMAGE)=0 ! number of consecutive steps the image is identified as a local minimum in the profile
-!    PERSISTTHRESH=50      ! persistence identification threshold
-     PERSISTTHRESH=HUGE(1)      ! persistence identification threshold
+     NTIMESMIN(1:NIMAGE)=0 ! NUMBER OF CONSECUTIVE STEPS THE IMAGE IS IDENTIFIED AS A LOCAL MINIMUM IN THE PROFILE
+!    PERSISTTHRESH=50      ! PERSISTENCE IDENTIFICATION THRESHOLD
+     PERSISTTHRESH=HUGE(1)      ! PERSISTENCE IDENTIFICATION THRESHOLD
      NPERSIST=0
      PREVGRAD=1.0D100
      INTPTEST = .FALSE.
@@ -85,9 +85,9 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
      IF (FREEZENODEST) IMGFREEZE(1:NIMAGE)=.FALSE.
 
      CALL CHECKINPUT
-     IF (DEBUG) CALL DUMPFILES("b")
+     IF (DEBUG) CALL DUMPFILES("B")
      IF (MOREPRINTING) THEN
-          WRITE(*,'(a6,a20,a20,a9,2a8,a9)') 'Iter','Energy per image','RMS Force','Av.Dev','Path','Step'
+          WRITE(*,'(A6,A20,A20,A9,2A8,A9)') 'ITER','ENERGY PER IMAGE','RMS FORCE','AV.DEV','PATH','STEP'
      ENDIF
      IF (PREVGRAD.LT.DNEBSWITCH) THEN
         CALL OLDNEBGRADIENT
@@ -95,14 +95,14 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
         CALL NEBGRADIENT
      ENDIF
      IF (ETOTAL/NIMAGE.LT.COLDFUSIONLIMIT) THEN
-        WRITE(*,'(A,2G20.10)') ' lbfgs> Cold fusion diagnosed - step discarded, energy, limit=',ETOTAL/NIMAGE,COLDFUSIONLIMIT
-        IF (DEBUG) CALL DUMPFILES("e")
+        WRITE(*,'(A,2G20.10)') ' LBFGS> COLD FUSION DIAGNOSED - STEP DISCARDED, ENERGY, LIMIT=',ETOTAL/NIMAGE,COLDFUSIONLIMIT
+        IF (DEBUG) CALL DUMPFILES("E")
         RETURN
      ENDIF
 
      NITERDONE=1
 !    DO NITERDONE=1,MAX(NITERMAX,NITERMIN)
-     DO ! main do loop with counter NITERDONE
+     DO ! MAIN DO LOOP WITH COUNTER NITERDONE
 !    IF (BADTAU) EXIT
 !
      MAIN: IF (NITERDONE==1) THEN
@@ -118,8 +118,8 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
           YS=DOT_PRODUCT( GDIF(NPT/D,:), SEARCHSTEP(NPT/D,:)  )
           IF (YS==0.0D0) YS=1.0D0
       
-          ! Update estimate of diagonal inverse Hessian elements.
-          ! We divide by both YS and YY at different points, so they had better not be zero!
+          ! UPDATE ESTIMATE OF DIAGONAL INVERSE HESSIAN ELEMENTS.
+          ! WE DIVIDE BY BOTH YS AND YY AT DIFFERENT POINTS, SO THEY HAD BETTER NOT BE ZERO!
           IF (.NOT.DIAGCO) THEN
                YY=DOT_PRODUCT( GDIF(NPT/D,:) , GDIF(NPT/D,:) )
                IF (YY==0.0D0) YY=1.0D0
@@ -129,8 +129,8 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
                CALL CHECKINPUT
           ENDIF
       
-          ! COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980, "Updating quasi-Newton matrices with limited storage",
-          ! Mathematics of Computation, Vol.35, No.151, pp. 773-782
+          ! COMPUTE -H*G USING THE FORMULA GIVEN IN: NOCEDAL, J. 1980, "UPDATING QUASI-NEWTON MATRICES WITH LIMITED STORAGE",
+          ! MATHEMATICS OF COMPUTATION, VOL.35, NO.151, PP. 773-782
           CP= POINT; IF (POINT==0) CP = NEBMUPDATE
           RHO1(CP)=1.0D0/YS
           GTMP = -G
@@ -159,27 +159,27 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
           STP(1:D) = 1.0D0
      ENDIF MAIN
 
-     !  Store the new search direction
+     !  STORE THE NEW SEARCH DIRECTION
      IF (NITERDONE.GT.1) SEARCHSTEP(POINT,:)=GTMP
       
 !
-! If the number of images has changed since G was declared then G is not the same
-! size as Gtmp and Dot_Product cannot be used.
+! IF THE NUMBER OF IMAGES HAS CHANGED SINCE G WAS DECLARED THEN G IS NOT THE SAME
+! SIZE AS GTMP AND DOT_PRODUCT CANNOT BE USED.
 !
-!    IF (Dot_Product(G,Gtmp)/SQRT( Dot_Product(G,G)*Dot_Product(Gtmp,Gtmp) ) > 0.0D0) THEN
+!    IF (DOT_PRODUCT(G,GTMP)/SQRT( DOT_PRODUCT(G,G)*DOT_PRODUCT(GTMP,GTMP) ) > 0.0D0) THEN
 !
-!  Separate sqrt;s to avoid overflow.
+!  SEPARATE SQRT;S TO AVOID OVERFLOW.
 !
      IF (DDOT(D,G,1,GTMP,1)/MAX(1.0D-100,SQRT( DDOT(D,G,1,G,1))*SQRT(DDOT(D,GTMP,1,GTMP,1)) ) > 0.0D0) THEN
-          IF (MOREPRINTING) PRINT*,'Search direction has positive projection onto gradient - reversing step'
+          IF (MOREPRINTING) PRINT*,'SEARCH DIRECTION HAS POSITIVE PROJECTION ONTO GRADIENT - REVERSING STEP'
           GTMP=-GTMP
           SEARCHSTEP(POINT,:)=GTMP
      ENDIF
      GTMP=G
 
-!  We should apply the maximum DNEB LBFGS step to each image separately.
-!  However, using different scale factors for different images leads to huge
-!  discontinuities! Now take the minimum scale factor for all images. DJW 26/11/07
+!  WE SHOULD APPLY THE MAXIMUM DNEB LBFGS STEP TO EACH IMAGE SEPARATELY.
+!  HOWEVER, USING DIFFERENT SCALE FACTORS FOR DIFFERENT IMAGES LEADS TO HUGE
+!  DISCONTINUITIES! NOW TAKE THE MINIMUM SCALE FACTOR FOR ALL IMAGES. DJW 26/11/07
 
      STPMIN=1.0D0
      DO J2=1,NIMAGE
@@ -189,17 +189,17 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
                STP(NOPT*(J2-1)+1:NOPT*J2) = MAXNEBBFGS/STEPIMAGE(J2)
                STPMIN=MIN(STPMIN,STP(NOPT*(J2-1)+1))
           ENDIF
-!         PRINT '(A,I8,3G20.10)','image,initial step size,STP,prod=',J2,DUMMY,STP(NOPT*(J2-1)+1),STEPIMAGE(J2)*STP(NOPT*(J2-1)+1)
+!         PRINT '(A,I8,3G20.10)','IMAGE,INITIAL STEP SIZE,STP,PROD=',J2,DUMMY,STP(NOPT*(J2-1)+1),STEPIMAGE(J2)*STP(NOPT*(J2-1)+1)
      ENDDO
      STP(1:D)=STPMIN
 
-! EFK: decide whether to freeze some nodes
+! EFK: DECIDE WHETHER TO FREEZE SOME NODES
      IF (FREEZENODEST.AND.(.NOT.NEBRESEEDT)) THEN
         TOTGNORM = SQRT(DOT_PRODUCT(G(1:NOPT*NIMAGE),G(1:NOPT*NIMAGE))/NIMAGE)
         DO IM = 1,NIMAGE
            TESTG = SQRT(DOT_PRODUCT(G(NOPT*(IM-1)+1:NOPT*IM),G(NOPT*(IM-1)+1:NOPT*IM)))
            IF(TESTG/TOTGNORM.LT.FREEZETOL) THEN
-              IF (MOREPRINTING) PRINT '(A,I6,2G20.10)', ' lbfgs> Freezing image: ', IM, TESTG, TOTGNORM
+              IF (MOREPRINTING) PRINT '(A,I6,2G20.10)', ' LBFGS> FREEZING IMAGE: ', IM, TESTG, TOTGNORM
               IMGFREEZE(IM)=.TRUE.
               STEPIMAGE(IM)=0.0D0
               STP(NOPT*(IM-1)+1:NOPT*IM)=0.0D0
@@ -211,7 +211,7 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
            IMGFREEZE(REDOTSIM)=.TRUE.
            STEPIMAGE(REDOTSIM)=0.0D0
            STP(NOPT*(REDOTSIM-1)+1:NOPT*REDOTSIM)=0.0D0
-           IF (MOREPRINTING) PRINT '(A,I6)',' lbfgs> Freezing variable image ',REDOTSIM ! REDOTSIM+1 if we count starting image!
+           IF (MOREPRINTING) PRINT '(A,I6)',' LBFGS> FREEZING VARIABLE IMAGE ',REDOTSIM ! REDOTSIM+1 IF WE COUNT STARTING IMAGE!
         ENDIF
      ELSEIF (FREEZENODEST.AND.NEBRESEEDT) THEN
         DO IM=1,NIMAGE
@@ -221,7 +221,7 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
            ENDIF
         ENDDO
      ENDIF
-     !  We now have the proposed step - update geometry and calculate new gradient
+     !  WE NOW HAVE THE PROPOSED STEP - UPDATE GEOMETRY AND CALCULATE NEW GRADIENT
      IF (DESMINT) THEN
         DO IM = 1,NIMAGE
            FAILED = .TRUE.
@@ -233,7 +233,7 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
               CALL POTENTIAL(XCART(3*NATOMS*(IM-1)+1:3*NATOMS*IM) +STEPCART,TESTE,LGDUMMY,.FALSE.,.FALSE.,TMPRMS,.FALSE.,.FALSE.)
 
               IF (TESTE-EEE(IM+1).GT.DESMAXEJUMP.AND.EEE(IM+1).LT.0) THEN
-                 IF (MOREPRINTING) print*, 'Too great an energy increase, skip image.', IM, TESTE, EEE(IM+1)
+                 IF (MOREPRINTING) PRINT*, 'TOO GREAT AN ENERGY INCREASE, SKIP IMAGE.', IM, TESTE, EEE(IM+1)
                  STP(NOPT*(IM-1)+1:NOPT*IM) = 0.0D0     
                  STEPIMAGE(IM) = 0.0D0
                  SKIPPED = .TRUE.
@@ -241,7 +241,7 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
               IF (FAILED) THEN
                  STP(NOPT*(IM-1)+1:NOPT*IM) = STP(NOPT*(IM-1)+1:NOPT*IM)*0.1D0        
                  STEPIMAGE(IM) = STEPIMAGE(IM)*0.1D0
-                 IF (MOREPRINTING) print*, 'neblbfgs>> Decreasing step to ', IM, STEPIMAGE(IM)                 
+                 IF (MOREPRINTING) PRINT*, 'NEBLBFGS>> DECREASING STEP TO ', IM, STEPIMAGE(IM)                 
               ENDIF
            ENDDO
            IF (.NOT.SKIPPED) XCART(3*NATOMS*(IM-1)+1:3*NATOMS*IM) = XCART(3*NATOMS*(IM-1)+1:3*NATOMS*IM) +STEPCART
@@ -257,26 +257,26 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
         CALL NEBGRADIENT
      ENDIF
      IF (ETOTAL/NIMAGE.LT.COLDFUSIONLIMIT) THEN
-        WRITE(*,'(A,2G20.10)') ' lbfgs> Cold fusion diagnosed - step discarded, energy, limit=',ETOTAL/NIMAGE,COLDFUSIONLIMIT
-        IF (DEBUG) CALL DUMPFILES("e")
+        WRITE(*,'(A,2G20.10)') ' LBFGS> COLD FUSION DIAGNOSED - STEP DISCARDED, ENERGY, LIMIT=',ETOTAL/NIMAGE,COLDFUSIONLIMIT
+        IF (DEBUG) CALL DUMPFILES("E")
         RETURN
      ENDIF
 
      CALL IMAGEDISTRIBUTION
 !
-!  Dynamic adjustment of NEWNEBK values. Local values are changed by KADJUSTFRAC if the
-!  corresponding separation is outside a fraction KADJUSTTOL of the average value.
-!  The adjustment is done every KADJUSTFRQ cycles.
+!  DYNAMIC ADJUSTMENT OF NEWNEBK VALUES. LOCAL VALUES ARE CHANGED BY KADJUSTFRAC IF THE
+!  CORRESPONDING SEPARATION IS OUTSIDE A FRACTION KADJUSTTOL OF THE AVERAGE VALUE.
+!  THE ADJUSTMENT IS DONE EVERY KADJUSTFRQ CYCLES.
 !
      IF (KADJUSTFRQ.GT.0) THEN
-        IF (MOD(NITERDONE,KADJUSTFRQ).EQ.0) THEN ! dynamic adjustment of K
+        IF (MOD(NITERDONE,KADJUSTFRQ).EQ.0) THEN ! DYNAMIC ADJUSTMENT OF K
            MEANSEP=SEPARATION/(NIMAGE+1)
            DO J1=1,NIMAGE+1
               IF (ABS((DVEC(J1)-MEANSEP)/MAX(MEANSEP,1.0D-100)).GT.KADJUSTTOL) THEN 
                  IF (DVEC(J1).GT.MEANSEP) THEN
                     NEWNEBK(J1)=MIN(1.0D2 ,NEWNEBK(J1)*(1.0D0+KADJUSTFRAC))
-                    PRINT '(A,F12.4,A,I8,A,F12.4,A,F12.4)',' lbfgs> adjusting NEB force constant to ',NEWNEBK(J1), &
-   &                                                    ' for gap ',J1,' value=',DVEC(J1),' mean value=',MEANSEP
+                    PRINT '(A,F12.4,A,I8,A,F12.4,A,F12.4)',' LBFGS> ADJUSTING NEB FORCE CONSTANT TO ',NEWNEBK(J1), &
+   &                                                    ' FOR GAP ',J1,' VALUE=',DVEC(J1),' MEAN VALUE=',MEANSEP
                  ENDIF
 !                IF (DVEC(J1).LT.MEANSEP) NEWNEBK(J1)=MAX(1.0D-2,NEWNEBK(J1)*(1.0D0-KADJUSTFRAC))
               ENDIF
@@ -284,33 +284,33 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
         ENDIF
      ELSE
 !
-!  Alternative turning on of NEWNEBK.
+!  ALTERNATIVE TURNING ON OF NEWNEBK.
 !
         DO J1=1,NIMAGE+1
            NEWNEBK(J1)=MIN(NEBKFINAL,NEWNEBK(J1)*NEBFACTOR)
         ENDDO
-!       IF (DEBUG) PRINT '(A,G20.10)','lbfgs> DNEB force constant for image 1 is ',NEWNEBK(1)
+!       IF (DEBUG) PRINT '(A,G20.10)','LBFGS> DNEB FORCE CONSTANT FOR IMAGE 1 IS ',NEWNEBK(1)
      ENDIF
 
      STEPTOT = SUM(STEPIMAGE)/NIMAGE
 
      IF (MOREPRINTING) THEN
         IF (PREVGRAD.LT.DNEBSWITCH) THEN
-           WRITE(*,'(A,I6,2G20.10,F8.2,A,F8.3,F9.3,A)') ' lbfgs> steps: ',NITERDONE,ETOTAL/NIMAGE,RMS,AVDEV,'%',SEPARATION, &
-  &                                                     STEPTOT, ' singly-nudged'
+           WRITE(*,'(A,I6,2G20.10,F8.2,A,F8.3,F9.3,A)') ' LBFGS> STEPS: ',NITERDONE,ETOTAL/NIMAGE,RMS,AVDEV,'%',SEPARATION, &
+  &                                                     STEPTOT, ' SINGLY-NUDGED'
         ELSE
-           WRITE(*,'(A,I6,2G20.10,F8.2,A,F8.3,F9.3)') ' lbfgs> steps: ',NITERDONE,ETOTAL/NIMAGE,RMS,AVDEV,'%',SEPARATION, STEPTOT
+           WRITE(*,'(A,I6,2G20.10,F8.2,A,F8.3,F9.3)') ' LBFGS> STEPS: ',NITERDONE,ETOTAL/NIMAGE,RMS,AVDEV,'%',SEPARATION, STEPTOT
         ENDIF
         CALL FLUSH(6,ISTAT)
      ENDIF
-     IF (DEBUG) CALL DUMPFILES("m")
+     IF (DEBUG) CALL DUMPFILES("M")
 
 
      CALL TERMINATERUN
 
 !
-!  Check to see if the profile actually has a maximum in it. If not try
-!  reducing the force constants by 10 per cent.
+!  CHECK TO SEE IF THE PROFILE ACTUALLY HAS A MAXIMUM IN IT. IF NOT TRY
+!  REDUCING THE FORCE CONSTANTS BY 10 PER CENT.
 !
 !    EMAX=-1.0D100
 !    DO J1=1,NIMAGE+2
@@ -319,12 +319,12 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
 !          MAXIM=J1
 !       ENDIF
 !    ENDDO
-!    PRINT '(A,I6,A,G20.10)',' lbfgs> MAXIM=',MAXIM,' energy=',EMAX
+!    PRINT '(A,I6,A,G20.10)',' LBFGS> MAXIM=',MAXIM,' ENERGY=',EMAX
 !    IF ((MAXIM.EQ.1).OR.(MAXIM.EQ.NIMAGE+2)) THEN
 !       DO J1=1,NIMAGE+1
 !          NEWNEBK(J1)=NEWNEBK(J1)*0.9D0
 !       ENDDO
-!       PRINT '(A,G20.10)',' lbfgs> No maximum in DNEB profile - reducing force constant to ',NEWNEBK(1)
+!       PRINT '(A,G20.10)',' LBFGS> NO MAXIMUM IN DNEB PROFILE - REDUCING FORCE CONSTANT TO ',NEWNEBK(1)
 !       EXITSTATUS=0
 !    ENDIF
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -334,39 +334,39 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
      ENDIF
      777 CONTINUE
 !
-! Compute the new step and gradient change
+! COMPUTE THE NEW STEP AND GRADIENT CHANGE
 !
      NPT=POINT*D
      SEARCHSTEP(POINT,:) = STP*SEARCHSTEP(POINT,:)
      GDIF(POINT,:)=G-GTMP
      POINT=POINT+1; IF (POINT==NEBMUPDATE) POINT=0
 !
-! Optional reseeding of bad images.
-! Note that the numbering from 1 to NIMAGE in X and EIMAGE is different
-! from XYZ and EEE, which go from 1 to NIMAGE+2.
+! OPTIONAL RESEEDING OF BAD IMAGES.
+! NOTE THAT THE NUMBERING FROM 1 TO NIMAGE IN X AND EIMAGE IS DIFFERENT
+! FROM XYZ AND EEE, WHICH GO FROM 1 TO NIMAGE+2.
 !
-! Should delete all this and tidy up if it simply doesn't work! DJW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! SHOULD DELETE ALL THIS AND TIDY UP IF IT SIMPLY DOESN'T WORK! DJW !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
      IF (NEBRESEEDT.AND.MOD(NITERDONE,NEBRESEEDINT)==0) THEN
         IF (BULKT) THEN
-           PRINT '(A)','lbfgs> ERROR - minimum image convention needs to be coded in NEB/lbfgs.f90'
+           PRINT '(A)','LBFGS> ERROR - MINIMUM IMAGE CONVENTION NEEDS TO BE CODED IN NEB/LBFGS.F90'
            STOP
         ENDIF
 !! DJW 
 !       IF (.NOT.ADDREPT) THEN
            ADDREPT=.TRUE.
-           PRINT '(A)','lbfgs> Turning on repulsive/constraint terms for bad images/cis peptide bonds'
+           PRINT '(A)','LBFGS> TURNING ON REPULSIVE/CONSTRAINT TERMS FOR BAD IMAGES/CIS PEPTIDE BONDS'
 !       ELSE
 !
-! Turn off repulsive terms for a thaw phase.
+! TURN OFF REPULSIVE TERMS FOR A THAW PHASE.
 !
-!! DJW try keeping them ??
+!! DJW TRY KEEPING THEM ??
 !
 !          ADDREPT=.FALSE.
-!          PRINT '(A)','lbfgs> Turning off repulsive/constraint terms for bad images/cis peptide bonds'
+!          PRINT '(A)','LBFGS> TURNING OFF REPULSIVE/CONSTRAINT TERMS FOR BAD IMAGES/CIS PEPTIDE BONDS'
 !          FREEZENODEST=.FALSE.
 !          IMGFREEZE(1:NIMAGE)=.FALSE.
-!          PRINT '(A,I6,A)','lbfgs> Unfreezing all images'
+!          PRINT '(A,I6,A)','LBFGS> UNFREEZING ALL IMAGES'
 !          GOTO 555
 !       ENDIF
         BADIMAGE(1:NIMAGE+2)=.FALSE.
@@ -380,7 +380,7 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
 !              CALL CHECKOMEGA(COORDS,AMIDEFAIL)
                CALL DJWCHECKOMEGA(COORDS,AMIDEFAIL,NPEPFAIL,AT1,AT2,AT3,AT4)
                IF (AMIDEFAIL) THEN
-                  PRINT '(2(A,I6))',' potential> WARNING *** cis peptide bond(s) detected for image ',J1,' total=',NPEPFAIL
+                  PRINT '(2(A,I6))',' POTENTIAL> WARNING *** CIS PEPTIDE BOND(S) DETECTED FOR IMAGE ',J1,' TOTAL=',NPEPFAIL
                   BADPEPTIDE(J1)=.TRUE.
               ENDIF
            ENDIF
@@ -388,10 +388,10 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
            IF ((EEE(J1)-EEE(1).GT.NEBRESEEDBMAX).AND.(EEE(J1)-EEE(NIMAGE+2).GT.NEBRESEEDBMAX)) BADIMAGE(J1)=.TRUE.
            IF (BADIMAGE(J1).OR.BADPEPTIDE(J1)) NBADTOTAL=NBADTOTAL+1
         ENDDO
-        IF (BADIMAGE(1).OR.BADPEPTIDE(1)) PRINT '(A)','lbfgs> WARNING - bad starting image will not be replaced'
-        IF (BADIMAGE(NIMAGE+2).OR.BADPEPTIDE(NIMAGE+2)) PRINT '(A)','lbfgs> WARNING - bad final image will not be replaced'
+        IF (BADIMAGE(1).OR.BADPEPTIDE(1)) PRINT '(A)','LBFGS> WARNING - BAD STARTING IMAGE WILL NOT BE REPLACED'
+        IF (BADIMAGE(NIMAGE+2).OR.BADPEPTIDE(NIMAGE+2)) PRINT '(A)','LBFGS> WARNING - BAD FINAL IMAGE WILL NOT BE REPLACED'
         J1=2
-        imageloop: DO 
+        IMAGELOOP: DO 
            IF (BADIMAGE(J1)) THEN
               DO J2=J1-1,1,-1
                  IF ((.NOT.BADIMAGE(J2)).OR.(J2.EQ.1)) THEN
@@ -407,10 +407,10 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
                     EXIT
                  ENDIF
               ENDDO
-              PRINT '(A,I6,A,G20.10,2(A,I6),A,2F20.10)','lbfgs> DNEB bad image ',J1,' energy=',EEE(J1),' bracketed by ', &
-  &                                    JMINUS,',',JPLUS,' energies ',EMINUS,EPLUS
+              PRINT '(A,I6,A,G20.10,2(A,I6),A,2F20.10)','LBFGS> DNEB BAD IMAGE ',J1,' ENERGY=',EEE(J1),' BRACKETED BY ', &
+  &                                    JMINUS,',',JPLUS,' ENERGIES ',EMINUS,EPLUS
 !
-!  Consider only the highest energy bad image to avoid duplication.
+!  CONSIDER ONLY THE HIGHEST ENERGY BAD IMAGE TO AVOID DUPLICATION.
 !
 !             JDO=J1
               EWORST=-1.0D100
@@ -420,12 +420,12 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
                     JDO=J2
                  ENDIF
               ENDDO
-              PRINT '(A,I6,A,G20.10)','lbfgs> highest bad image in this range is number ',JDO,' energy=',EEE(JDO)
+              PRINT '(A,I6,A,G20.10)','LBFGS> HIGHEST BAD IMAGE IN THIS RANGE IS NUMBER ',JDO,' ENERGY=',EEE(JDO)
               DMAX=-1.0D0
               DO J2=1,NATOMS
-                 J3loop: DO J3=J2+1,NATOMS
+                 J3LOOP: DO J3=J2+1,NATOMS
                     DO J4=1,NREPULSIVE
-                       IF ((ORDERI(J4).EQ.J2).AND.(ORDERJ(J4).EQ.J3)) CYCLE J3loop
+                       IF ((ORDERI(J4).EQ.J2).AND.(ORDERJ(J4).EQ.J3)) CYCLE J3LOOP
                     ENDDO
                     DIJ=SQRT((XYZ((JDO-1)*3*NATOMS+3*(J2-1)+1)-XYZ((JDO-1)*3*NATOMS+3*(J3-1)+1))**2 &
   &                         +(XYZ((JDO-1)*3*NATOMS+3*(J2-1)+2)-XYZ((JDO-1)*3*NATOMS+3*(J3-1)+2))**2 &
@@ -438,13 +438,13 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
   &                         +(XYZ((NIMAGE+1)*3*NATOMS+3*(J2-1)+3)-XYZ((NIMAGE+1)*3*NATOMS+3*(J3-1)+3))**2) 
                     DUMMY=MIN(ABS(DIJ-DF),ABS(DIJ-DS))/DIJ
 !
-!  We need DIJ to be less than both or greater than both distances in the end points.
+!  WE NEED DIJ TO BE LESS THAN BOTH OR GREATER THAN BOTH DISTANCES IN THE END POINTS.
 !
                     IF (((DIJ-DF)*(DIJ-DS).GT.0.0D0).AND.(DUMMY.GT.DMAX)) THEN
                        DMAX=DUMMY
-!                      PRINT '(A,2I6,5G20.10)','lbfgs> I,J,DIJ,DS,DF,DUMMY=',J2,J3,DIJ,DS,DF,DUMMY
+!                      PRINT '(A,2I6,5G20.10)','LBFGS> I,J,DIJ,DS,DF,DUMMY=',J2,J3,DIJ,DS,DF,DUMMY
                     ENDIF
-                 ENDDO J3loop
+                 ENDDO J3LOOP
               ENDDO
               DO J2=1,NATOMS
                  DO J3=J2+1,NATOMS
@@ -461,21 +461,21 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
                     IF ((DIJ-DF)*(DIJ-DS).GT.0.0D0) THEN
                        IF (DUMMY.GT.0.9D0*DMAX) THEN
                           NOTNEW=.FALSE.
-                          reploop: DO J4=1,NREPULSIVE
+                          REPLOOP: DO J4=1,NREPULSIVE
                              IF ((ORDERI(J4).EQ.J2).AND.(ORDERJ(J4).EQ.J3)) THEN
                                 NOTNEW=.TRUE.
-                                EXIT reploop 
+                                EXIT REPLOOP 
                              ENDIF
-                          ENDDO reploop
+                          ENDDO REPLOOP
                           IF (.NOT.NOTNEW) THEN
 !
-!  Add order parameter for bad image to current list.
+!  ADD ORDER PARAMETER FOR BAD IMAGE TO CURRENT LIST.
 !
-!! DJW debug maximum two repulsions
+!! DJW DEBUG MAXIMUM TWO REPULSIONS
 !
                              IF (NREPULSIVE.EQ.4) GOTO 888
                              NREPULSIVE=NREPULSIVE+1
-                             PRINT '(A,2I6,A,I6)','lbfgs> Adding repulsive order parameter for atoms ',J2,J3,'  total=',NREPULSIVE
+                             PRINT '(A,2I6,A,I6)','LBFGS> ADDING REPULSIVE ORDER PARAMETER FOR ATOMS ',J2,J3,'  TOTAL=',NREPULSIVE
                              IF (NREPULSIVE.GT.NREPMAX) THEN
                                 ALLOCATE(IREPTEMP(NREPMAX))
                
@@ -515,7 +515,7 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
                              EPSALPHA(NREPULSIVE)=NEBRESEEDDEL1
                              REPPOW(NREPULSIVE)=NEBRESEEDPOW1
                              DISTREF(NREPULSIVE)=DIJ
-                             PRINT '(A,2G20.10)','lbfgs> bond length and factor for bad image are   ', &
+                             PRINT '(A,2G20.10)','LBFGS> BOND LENGTH AND FACTOR FOR BAD IMAGE ARE   ', &
   &                                                DIJ,EPSALPHA(NREPULSIVE)
 888                          CONTINUE
                           ENDIF
@@ -529,13 +529,13 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
 
               X((JDO-2)*3*NATOMS+1:(JDO-1)*3*NATOMS)=XYZ((J2-1)*3*NATOMS+1:J2*3*NATOMS)
               EIMAGE(JDO-1)=EIMAGE(J2-1)
-              PRINT '(A,I6,A,G20.10)','lbfgs> image ',JDO,' reinterpolated energy=',EIMAGE(JDO-1)
+              PRINT '(A,I6,A,G20.10)','LBFGS> IMAGE ',JDO,' REINTERPOLATED ENERGY=',EIMAGE(JDO-1)
 !
-! Change all the other bad images in this range.
+! CHANGE ALL THE OTHER BAD IMAGES IN THIS RANGE.
 !
               DO J3=JMINUS+1,JDO-1
 !
-!  Reset to MINUS end point
+!  RESET TO MINUS END POINT
 !
                  LCOORDS(1:3*NATOMS)=XYZ((JMINUS-1)*3*NATOMS+1:JMINUS*3*NATOMS)
 !                XYZ((J3-1)*3*NATOMS+1:J3*3*NATOMS)=LCOORDS(1:3*NATOMS)
@@ -543,11 +543,11 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
                  CALL POTENTIAL(LCOORDS,ENERGY,LGDUMMY,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
 !                EEE(J3)=ENERGY
                  EIMAGE(J3-1)=ENERGY
-                 PRINT '(A,I6,A,G20.10)','lbfgs> image ',J3,' reinterpolated energy=',ENERGY
+                 PRINT '(A,I6,A,G20.10)','LBFGS> IMAGE ',J3,' REINTERPOLATED ENERGY=',ENERGY
               ENDDO
               DO J3=JDO+1,JPLUS-1
 !
-!  Reset to PLUS end point
+!  RESET TO PLUS END POINT
 !
                  LCOORDS(1:3*NATOMS)=XYZ((JPLUS-1)*3*NATOMS+1:JPLUS*3*NATOMS)
 !                XYZ((J3-1)*3*NATOMS+1:J3*3*NATOMS)=LCOORDS(1:3*NATOMS)
@@ -555,36 +555,36 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
                  CALL POTENTIAL(LCOORDS,ENERGY,LGDUMMY,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
 !                EEE(J3)=ENERGY
                  EIMAGE(J3-1)=ENERGY
-                 PRINT '(A,I6,A,G20.10)','lbfgs> image ',J3,' reinterpolated energy=',ENERGY
+                 PRINT '(A,I6,A,G20.10)','LBFGS> IMAGE ',J3,' REINTERPOLATED ENERGY=',ENERGY
               ENDDO
 !             NEWNEBK(JMINUS:JPLUS-1)=NEBKINITIAL
-!             PRINT '(A,G20.10)','lbfgs> for bad images DNEB force constants reset to ',NEBKINITIAL
+!             PRINT '(A,G20.10)','LBFGS> FOR BAD IMAGES DNEB FORCE CONSTANTS RESET TO ',NEBKINITIAL
               J1=JPLUS+1
            ELSE
               J1=J1+1
            ENDIF
-           IF (J1.GE.NIMAGE+2) EXIT imageloop
-        ENDDO imageloop
+           IF (J1.GE.NIMAGE+2) EXIT IMAGELOOP
+        ENDDO IMAGELOOP
 !
-!  Now add harmonic constraints for any cis peptide bonds in this range if we haven't covered them already.
+!  NOW ADD HARMONIC CONSTRAINTS FOR ANY CIS PEPTIDE BONDS IN THIS RANGE IF WE HAVEN'T COVERED THEM ALREADY.
 !
         DO J2=1,NPEPFAIL
-           PRINT '(A,I6,A,4I6)','lbfgs> checking for new constraint terms for cis peptide number ',J2,' atoms ', &
+           PRINT '(A,I6,A,4I6)','LBFGS> CHECKING FOR NEW CONSTRAINT TERMS FOR CIS PEPTIDE NUMBER ',J2,' ATOMS ', &
            &     AT1(J2),AT2(J2),AT3(J2),AT4(J2)
            NOTNEW=.FALSE.
-           reploop2: DO J4=1,NREPULSIVE
+           REPLOOP2: DO J4=1,NREPULSIVE
               IF ((ORDERI(J4).EQ.AT1(J2)).AND.(ORDERJ(J4).EQ.AT4(J2))) THEN
                  NOTNEW=.TRUE.
-                 EXIT reploop2
+                 EXIT REPLOOP2
               ENDIF
               IF ((ORDERI(J4).EQ.AT4(J2)).AND.(ORDERJ(J4).EQ.AT1(J2))) THEN
                  NOTNEW=.TRUE.
-                 EXIT reploop2
+                 EXIT REPLOOP2
               ENDIF
-           ENDDO reploop2
+           ENDDO REPLOOP2
            IF (.NOT.NOTNEW) THEN
 !
-!  Add order parameter for bad image to current list.
+!  ADD ORDER PARAMETER FOR BAD IMAGE TO CURRENT LIST.
 !
               NREPULSIVE=NREPULSIVE+3
               IF (NREPULSIVE.GT.NREPMAX) THEN
@@ -621,40 +621,40 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
                  NREPMAX=2*NREPMAX
                  DEALLOCATE(REPTEMP)
               ENDIF
-              PRINT '(A,2I6,A,I6)','lbfgs> cis Adding harmonic constraint for atoms ',AT1(J2),AT4(J2),'  total=',NREPULSIVE-2
+              PRINT '(A,2I6,A,I6)','LBFGS> CIS ADDING HARMONIC CONSTRAINT FOR ATOMS ',AT1(J2),AT4(J2),'  TOTAL=',NREPULSIVE-2
               ORDERI(NREPULSIVE-2)=AT1(J2)
               ORDERJ(NREPULSIVE-2)=AT4(J2)
               EPSALPHA(NREPULSIVE-2)=NEBRESEEDDEL2
               REPPOW(NREPULSIVE-2)=NEBRESEEDPOW2
               DIJ=3.8D0
               DISTREF(NREPULSIVE-2)=DIJ 
-              PRINT '(A,2G20.10)','lbfgs> bond length and factor for bad image are   ', &
+              PRINT '(A,2G20.10)','LBFGS> BOND LENGTH AND FACTOR FOR BAD IMAGE ARE   ', &
   &                                       DIJ,EPSALPHA(NREPULSIVE-2)
 
-              PRINT '(A,2I6,A,I6)','lbfgs> cis Adding harmonic constraint for atoms ',AT1(J2),AT3(J2),'  total=',NREPULSIVE-1
+              PRINT '(A,2I6,A,I6)','LBFGS> CIS ADDING HARMONIC CONSTRAINT FOR ATOMS ',AT1(J2),AT3(J2),'  TOTAL=',NREPULSIVE-1
               ORDERI(NREPULSIVE-1)=AT1(J2)
               ORDERJ(NREPULSIVE-1)=AT3(J2)
               EPSALPHA(NREPULSIVE-1)=NEBRESEEDDEL2
               REPPOW(NREPULSIVE-1)=NEBRESEEDPOW2
               DIJ=2.5D0
               DISTREF(NREPULSIVE-1)=DIJ 
-              PRINT '(A,2G20.10)','lbfgs> bond length and factor for bad image are   ', &
+              PRINT '(A,2G20.10)','LBFGS> BOND LENGTH AND FACTOR FOR BAD IMAGE ARE   ', &
   &                                       DIJ,EPSALPHA(NREPULSIVE-1)
 
-              PRINT '(A,2I6,A,I6)','lbfgs> cis Adding harmonic constraint for atoms ',AT2(J2),AT4(J2),'  total=',NREPULSIVE
+              PRINT '(A,2I6,A,I6)','LBFGS> CIS ADDING HARMONIC CONSTRAINT FOR ATOMS ',AT2(J2),AT4(J2),'  TOTAL=',NREPULSIVE
               ORDERI(NREPULSIVE)=AT2(J2)
               ORDERJ(NREPULSIVE)=AT4(J2)
               EPSALPHA(NREPULSIVE)=NEBRESEEDDEL2
               REPPOW(NREPULSIVE)=NEBRESEEDPOW2
               DIJ=2.4D0
               DISTREF(NREPULSIVE)=DIJ 
-              PRINT '(A,2G20.10)','lbfgs> bond length and factor for bad image are   ', &
+              PRINT '(A,2G20.10)','LBFGS> BOND LENGTH AND FACTOR FOR BAD IMAGE ARE   ', &
   &                                       DIJ,EPSALPHA(NREPULSIVE)
            ENDIF
         ENDDO
 
 !
-! debug comment DJW
+! DEBUG COMMENT DJW
 !
 !
           FREEZENODEST=.FALSE.
@@ -662,9 +662,9 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
 !         IF (NBADTOTAL.EQ.0) THEN
 !            FREEZENODEST=.FALSE.
 !            IMGFREEZE(1:NIMAGE)=.FALSE.
-!            PRINT '(A,I6,A)','lbfgs> No bad images - unfreezing everything and removing repulsive and constraint terms'
+!            PRINT '(A,I6,A)','LBFGS> NO BAD IMAGES - UNFREEZING EVERYTHING AND REMOVING REPULSIVE AND CONSTRAINT TERMS'
 !  
-! !  Could turn off the repulsive and constraint terms as well?
+! !  COULD TURN OFF THE REPULSIVE AND CONSTRAINT TERMS AS WELL?
 ! !
 !            ADDREPT=.FALSE.
 !         ELSE
@@ -682,17 +682,17 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
 !                  ENDIF
 !               ENDIF
 !             ENDDO
-!            PRINT '(A,I6,A)','lbfgs> Freezing ',NIMAGE-NBADTOTAL,' good images'
+!            PRINT '(A,I6,A)','LBFGS> FREEZING ',NIMAGE-NBADTOTAL,' GOOD IMAGES'
 !         ENDIF
 
 555     CONTINUE
      ENDIF
 
-     IF (DUMPNEBXYZ.AND.MOD(NITERDONE,DUMPNEBXYZFREQ)==0) CALL RWG("w",.False.,NITERDONE)
+     IF (DUMPNEBXYZ.AND.MOD(NITERDONE,DUMPNEBXYZFREQ)==0) CALL RWG("W",.FALSE.,NITERDONE)
      IF (DUMPNEBPTS.AND.MOD(NITERDONE,DUMPNEBPTSFREQ)==0) CALL SAVEBANDCOORD
      IF (DUMPNEBEOS.AND.MOD(NITERDONE,DUMPNEBEOSFREQ)==0) CALL WRITEPROFILE(NITERDONE)
 !
-!  Check for persistent minima
+!  CHECK FOR PERSISTENT MINIMA
 !
      DO J1=2,NIMAGE+1
         IF ((EEE(J1).LT.EEE(J1-1)).AND.(EEE(J1).LT.EEE(J1+1))) THEN
@@ -703,30 +703,30 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
      ENDDO
      NPERSIST=0
      PERSISTENT(1:NIMAGE+2)=.FALSE.
-!    IF (MOD(NITERDONE,PERSISTTHRESH)/2.EQ.0) THEN ! to give more than one image a chance to become persistent
+!    IF (MOD(NITERDONE,PERSISTTHRESH)/2.EQ.0) THEN ! TO GIVE MORE THAN ONE IMAGE A CHANCE TO BECOME PERSISTENT
 !       DO J1=2,NIMAGE+1
 !          IF (NTIMESMIN(J1).GE.PERSISTTHRESH) THEN
 !             NPERSIST=NPERSIST+1
 !             PERSISTENT(J1)=.TRUE.
-!             PRINT '(3(A,I8))',' nebbfgs> identified persistent minimum, image number ',J1,' minimum for ',NTIMESMIN(J1),' steps'
+!             PRINT '(3(A,I8))',' NEBBFGS> IDENTIFIED PERSISTENT MINIMUM, IMAGE NUMBER ',J1,' MINIMUM FOR ',NTIMESMIN(J1),' STEPS'
 !          ENDIF
 !       ENDDO
 !    ENDIF
      IF (NPERSIST.GT.0) THEN
-        IF (DEBUG) CALL DUMPFILES("e")
+        IF (DEBUG) CALL DUMPFILES("E")
         RETURN
      ENDIF
 !
-!  End of check for persistent minima
+!  END OF CHECK FOR PERSISTENT MINIMA
 !
      PREVGRAD=RMS
 
      NITERDONE=NITERDONE+1
      IF (NITERDONE.GT.MAX(NITERMAX,NITERMIN)) EXIT
 
-     ENDDO ! end of main do loop over variable NITERDONE
+     ENDDO ! END OF MAIN DO LOOP OVER VARIABLE NITERDONE
 
-     IF (DEBUG) CALL DUMPFILES("e")
+     IF (DEBUG) CALL DUMPFILES("E")
 
      CONTAINS
 
@@ -734,25 +734,25 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
           INTEGER :: I
 
           IF ( D<=0 ) THEN
-               PRINT *, 'd is not positive, d=',d
+               PRINT *, 'D IS NOT POSITIVE, D=',D
                CALL TSUMMARY
                STOP
           ENDIF
 
           IF ( U<=0 ) THEN
-               PRINT *, 'u is not positive, u=',u
+               PRINT *, 'U IS NOT POSITIVE, U=',U
                CALL TSUMMARY
                STOP
           ENDIF
           
           IF (NITERMAX < 0) THEN
-               PRINT '(1x,a)', 'Maximal number of iterations is less than zero! Stop.'
+               PRINT '(1X,A)', 'MAXIMAL NUMBER OF ITERATIONS IS LESS THAN ZERO! STOP.'
                CALL TSUMMARY
                STOP
           ENDIF
           
           IF (DIAGCO) THEN
-               PRINT*,'using estimate of the inverse diagonal elements'
+               PRINT*,'USING ESTIMATE OF THE INVERSE DIAGONAL ELEMENTS'
                DO I=1,D
                     IF (DIAG(I)<=0.0D0) THEN
                          WRITE(*,'(" THE",I5,"-TH DIAGONAL ELEMENT OF THE INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE")') I
@@ -765,7 +765,7 @@ SUBROUTINE NEBBFGS(D,U,NPERSIST,PERSISTENT)
 
      SUBROUTINE TERMINATERUN
           EXITSTATUS=0
-          NEBDGUESS=DIAG(1) ! should be ok for subsequent runs of the same system DJW
+          NEBDGUESS=DIAG(1) ! SHOULD BE OK FOR SUBSEQUENT RUNS OF THE SAME SYSTEM DJW
           IF ( RMS <= RMSTOL.AND. NITERDONE>1.AND. .NOT.NITERDONE < NITERMIN ) THEN
                EXITSTATUS=1
                RETURN

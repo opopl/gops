@@ -1,29 +1,29 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
-C   Copyright (C) 1992  N.M. Maclaren
-C   Copyright (C) 1992  The University of Cambridge
+C   COPYRIGHT (C) 1992  N.M. MACLAREN
+C   COPYRIGHT (C) 1992  THE UNIVERSITY OF CAMBRIDGE
 
-C   This software may be reproduced and used freely, provided that all
-C   users of it agree that the copyright holders are not liable for any
-C   damage or injury caused by use of this software and that this
-C   condition is passed onto all subsequent recipients of the software,
-C   whether modified or not.
+C   THIS SOFTWARE MAY BE REPRODUCED AND USED FREELY, PROVIDED THAT ALL
+C   USERS OF IT AGREE THAT THE COPYRIGHT HOLDERS ARE NOT LIABLE FOR ANY
+C   DAMAGE OR INJURY CAUSED BY USE OF THIS SOFTWARE AND THAT THIS
+C   CONDITION IS PASSED ONTO ALL SUBSEQUENT RECIPIENTS OF THE SOFTWARE,
+C   WHETHER MODIFIED OR NOT.
 
 
 
@@ -36,9 +36,9 @@ C   whether modified or not.
         COMMON /RANDDP/ POLY, OTHER, OFFSET, INDEX
         DATA INITAL/.TRUE./
 C
-C   ISEED should be set to an integer between 0 and 9999 inclusive;
-C   a value of 0 will initialise the generator only if it has not
-C   already been done.
+C   ISEED SHOULD BE SET TO AN INTEGER BETWEEN 0 AND 9999 INCLUSIVE;
+C   A VALUE OF 0 WILL INITIALISE THE GENERATOR ONLY IF IT HAS NOT
+C   ALREADY BEEN DONE.
 C
         IF (INITAL .OR. ISEED .NE. 0) THEN
             INITAL = .FALSE.
@@ -46,11 +46,11 @@ C
             RETURN
         END IF
 C
-C   INDEX must be initialised to an integer between 1 and 101
-C   inclusive, POLY(1...N) to integers between 0 and 1000009710
-C   inclusive (not all 0), and OTHER to a non-negative proper fraction
-C   with denominator 33554432.  It uses the Wichmann-Hill generator to
-C   do this.
+C   INDEX MUST BE INITIALISED TO AN INTEGER BETWEEN 1 AND 101
+C   INCLUSIVE, POLY(1...N) TO INTEGERS BETWEEN 0 AND 1000009710
+C   INCLUSIVE (NOT ALL 0), AND OTHER TO A NON-NEGATIVE PROPER FRACTION
+C   WITH DENOMINATOR 33554432.  IT USES THE WICHMANN-HILL GENERATOR TO
+C   DO THIS.
 C
         IX = MOD(ABS(ISEED),10000)+1
         IY = 2*IX+1
@@ -68,7 +68,7 @@ C
         INDEX = 1
         END
 
-        function dprand()
+        FUNCTION DPRAND()
         DOUBLE PRECISION XMOD, YMOD, XMOD2, XMOD4, TINY, POLY(101), DPRAND,
      1    OTHER, OFFSET, X, Y
         PARAMETER (XMOD = 1000009711.0D0, YMOD = 33554432.0D0,
@@ -80,19 +80,19 @@ C
         COMMON /RANDDP/ POLY, OTHER, OFFSET, INDEX
         DATA INITAL/.TRUE./
 C
-C   This returns a uniform (0,1) random number, with extremely good
+C   THIS RETURNS A UNIFORM (0,1) RANDOM NUMBER, WITH EXTREMELY GOOD
 C   UNIFORMITY PROPERTIES.  IT ASSUMES THAT DOUBLE PRECISION PROVIDES
-C   at least 33 bits of accuracy, and uses a power of two base.
+C   AT LEAST 33 BITS OF ACCURACY, AND USES A POWER OF TWO BASE.
 C
         IF (INITAL) THEN
             CALL SDPRND (0)
             INITAL = .FALSE.
         END IF
 C
-C   See [Knuth] for why this implements the algorithm described in
-C   the paper.  Note that this code is tuned for machines with fast
+C   SEE [KNUTH] FOR WHY THIS IMPLEMENTS THE ALGORITHM DESCRIBED IN
+C   THE PAPER.  NOTE THAT THIS CODE IS TUNED FOR MACHINES WITH FAST
 C   DOUBLE PRECISION, BUT SLOW MULTIPLY AND DIVIDE; MANY, MANY OTHER
-C   options are possible.
+C   OPTIONS ARE POSSIBLE.
 C
         N = INDEX-64
         IF (N .LE. 0) N = N+101
@@ -112,8 +112,8 @@ C
         INDEX = INDEX+1
         IF (INDEX .GT. 101) INDEX = INDEX-101
 C
-C   Add in the second generator modulo 1, and force to be non-zero.
-C   The restricted ranges largely cancel themselves out.
+C   ADD IN THE SECOND GENERATOR MODULO 1, AND FORCE TO BE NON-ZERO.
+C   THE RESTRICTED RANGES LARGELY CANCEL THEMSELVES OUT.
 C
    10   Y = 37.0D0*OTHER+OFFSET
         OTHER = Y-AINT(Y)

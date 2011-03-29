@@ -1,25 +1,25 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C********************************************************************
 C
-C Subroutine ENERGY calculates the SC energy:
+C SUBROUTINE ENERGY CALCULATES THE SC ENERGY:
 C
 C********************************************************************
 C
@@ -28,35 +28,35 @@ C
       IMPLICIT NONE
       INTEGER N, J1, J2, J, I, MZ, MY, MX 
       LOGICAL PRESSURE, YESNO
-      DOUBLE PRECISION X(3*N), POTA, POTB, DIST, CUTOFF, BOXLZ, BOXLY, BOXLX, PSC, VNEW(3*N),Rc
-      COMMON /param_cut_off/Rc	
+      DOUBLE PRECISION X(3*N), POTA, POTB, DIST, CUTOFF, BOXLZ, BOXLY, BOXLX, PSC, VNEW(3*N),RC
+      COMMON /PARAM_CUT_OFF/RC	
 
       DOUBLE PRECISION RHO(3*N)
-      DOUBLE PRECISION VEC(N,N,3),Rneigh(N,N,3),VSITE(N),force(3,N)
-      double precision rbuf,r,zero,norm,rho_temp,vpot_temp,Fembed_d_i
-      double precision Vpot,Vpot_d,rho_pot,rho_pot_d,Fembed,Fembed_d
-      integer ipot,icount,ja
-      integer ic(N),neigh_type(N,N),ndir(N)
+      DOUBLE PRECISION VEC(N,N,3),RNEIGH(N,N,3),VSITE(N),FORCE(3,N)
+      DOUBLE PRECISION RBUF,R,ZERO,NORM,RHO_TEMP,VPOT_TEMP,FEMBED_D_I
+      DOUBLE PRECISION VPOT,VPOT_D,RHO_POT,RHO_POT_D,FEMBED,FEMBED_D
+      INTEGER IPOT,ICOUNT,JA
+      INTEGER IC(N),NEIGH_TYPE(N,N),NDIR(N)
       LOGICAL GTEST,STEST
 
       
-      Rc=CUTOFF
-      ipot=ACKLANDID
-      zero=1.0D-12
+      RC=CUTOFF
+      IPOT=ACKLANDID
+      ZERO=1.0D-12
 C
-C  Calculation of connecting vectors; to implement the periodic
-C  boundary conditions, the shortest vector between two atoms is
-C  used:
+C  CALCULATION OF CONNECTING VECTORS; TO IMPLEMENT THE PERIODIC
+C  BOUNDARY CONDITIONS, THE SHORTEST VECTOR BETWEEN TWO ATOMS IS
+C  USED:
 C
-      icount=0
-      ic(:)=0
+      ICOUNT=0
+      IC(:)=0
       
       DO 25 J1=1,N
          VEC(J1,J1,1)=0.0D0
          VEC(J1,J1,2)=0.0D0
          VEC(J1,J1,3)=0.0D0
 	 
-	 icount=ic(J1)
+	 ICOUNT=IC(J1)
          
 	 DO 15 J2=J1+1,N
             VEC(J2,J1,1)=X(3*(J2-1)+1)-X(3*(J1-1)+1)
@@ -71,106 +71,106 @@ C
             VEC(J1,J2,1)=-VEC(J2,J1,1)
             VEC(J1,J2,2)=-VEC(J2,J1,2)
             VEC(J1,J2,3)=-VEC(J2,J1,3)
-	    norm=VEC(J1,J2,1)**2 + VEC(J1,J2,2)**2 + VEC(J1,J2,3)**2
-	    if (norm < Rc*Rc.and.norm>zero) then
-	    icount=icount+1
-	    ic(J2)=ic(J2)+1
-	    Rneigh(J2,ic(J2),1)=VEC(J1,J2,1)
-	    Rneigh(J2,ic(J2),2)=VEC(J1,J2,2)
-	    Rneigh(J2,ic(J2),3)=VEC(J1,J2,3)
+	    NORM=VEC(J1,J2,1)**2 + VEC(J1,J2,2)**2 + VEC(J1,J2,3)**2
+	    IF (NORM < RC*RC.AND.NORM>ZERO) THEN
+	    ICOUNT=ICOUNT+1
+	    IC(J2)=IC(J2)+1
+	    RNEIGH(J2,IC(J2),1)=VEC(J1,J2,1)
+	    RNEIGH(J2,IC(J2),2)=VEC(J1,J2,2)
+	    RNEIGH(J2,IC(J2),3)=VEC(J1,J2,3)
 	    
-	    Rneigh(J1,icount,1)=VEC(J2,J1,1)
-	    Rneigh(J1,icount,2)=VEC(J2,J1,2)
-	    Rneigh(J1,icount,3)=VEC(J2,J1,3)
+	    RNEIGH(J1,ICOUNT,1)=VEC(J2,J1,1)
+	    RNEIGH(J1,ICOUNT,2)=VEC(J2,J1,2)
+	    RNEIGH(J1,ICOUNT,3)=VEC(J2,J1,3)
 	    
-	    neigh_type(J1,icount)=J2
-	    neigh_type(J2,ic(J2))=J1
+	    NEIGH_TYPE(J1,ICOUNT)=J2
+	    NEIGH_TYPE(J2,IC(J2))=J1
 	    
-	    end if
+	    END IF
 15       CONTINUE
-      ndir(J1)=icount
+      NDIR(J1)=ICOUNT
 25    CONTINUE
 C
 C
-C Call scl.f for lattice constant optimisation if required:
+C CALL SCL.F FOR LATTICE CONSTANT OPTIMISATION IF REQUIRED:
 C
       IF (PRESSURE) THEN
-         write(*,*) 'NO PRESUURE IMPLEMENTATION FOR THIS POTENTIAL'
-	 stop
+         WRITE(*,*) 'NO PRESUURE IMPLEMENTATION FOR THIS POTENTIAL'
+	 STOP
 C         CALL SCL(N,X,EPS,C,SIG,BOXLX,BOXLY,BOXLZ,CUTOFF)
-C         PRINT*,'Energy minimised with respect to lattice constants' 
+C         PRINT*,'ENERGY MINIMISED WITH RESPECT TO LATTICE CONSTANTS' 
 C        CUTOFF=BOXLX/2.0D0
-         PRINT*,'New box length and cutoff=',BOXLX,CUTOFF
+         PRINT*,'NEW BOX LENGTH AND CUTOFF=',BOXLX,CUTOFF
       ENDIF
 C
-C Store density matrix: In the case of the perfect fcc lattice,
-C the infinitely extended crystal implies that every RHO(J) is
-C equal to RHO(1).
+C STORE DENSITY MATRIX: IN THE CASE OF THE PERFECT FCC LATTICE,
+C THE INFINITELY EXTENDED CRYSTAL IMPLIES THAT EVERY RHO(J) IS
+C EQUAL TO RHO(1).
 C
       DO 11 I=1,N
 	 
-	 rho_temp=0.d0
-         vpot_temp=0.d0
+	 RHO_TEMP=0.D0
+         VPOT_TEMP=0.D0
 	 
-	 DO 122 J=1,ndir(I)
+	 DO 122 J=1,NDIR(I)
 	     
-	     ja=neigh_type(I,J)
+	     JA=NEIGH_TYPE(I,J)
 	     
-	     rbuf=dsqrt(Rneigh(I,J,1)**2+Rneigh(I,J,2)**2+Rneigh(I,J,3)**2)
+	     RBUF=DSQRT(RNEIGH(I,J,1)**2+RNEIGH(I,J,2)**2+RNEIGH(I,J,3)**2)
 	     
-	     rho_temp  = rho_temp  +  rho_pot(ipot,rbuf)
-	     vpot_temp = vpot_temp +  Vpot(ipot,rbuf)
+	     RHO_TEMP  = RHO_TEMP  +  RHO_POT(IPOT,RBUF)
+	     VPOT_TEMP = VPOT_TEMP +  VPOT(IPOT,RBUF)
 	     
 122      CONTINUE
-       RHO(I)=rho_temp
-       VSITE(I)=vpot_temp
-!C        write(*,*) I, RHO(I)
+       RHO(I)=RHO_TEMP
+       VSITE(I)=VPOT_TEMP
+!C        WRITE(*,*) I, RHO(I)
 11    CONTINUE
 C
-C calculate the potential energy:
+C CALCULATE THE POTENTIAL ENERGY:
 C
       POTA=0.0D0
       POTB=0.0D0
       DO 13 I=1,N
         POTA=POTA+VSITE(I)
-        POTB=POTB - Fembed(ipot,RHO(I))
+        POTB=POTB - FEMBED(IPOT,RHO(I))
 13    CONTINUE
       PSC=POTA - POTB
 
-Cdebug      write(*,*) POTA, -POTB, PSC
-C      stop
+CDEBUG      WRITE(*,*) POTA, -POTB, PSC
+C      STOP
       
-      force(:,:)=0.d0
+      FORCE(:,:)=0.D0
       
-      IF (GTEST.OR.STEST) then
-          if (GTEST) then
-	     do I=1,N
-	        Fembed_d_i=Fembed_d(ipot,RHO(I))
-	        do J=1,ndir(I)
-	           ja=neigh_type(I,J)
-	           rbuf=dsqrt(Rneigh(I,J,1)**2+Rneigh(I,J,2)**2+Rneigh(I,J,3)**2)
+      IF (GTEST.OR.STEST) THEN
+          IF (GTEST) THEN
+	     DO I=1,N
+	        FEMBED_D_I=FEMBED_D(IPOT,RHO(I))
+	        DO J=1,NDIR(I)
+	           JA=NEIGH_TYPE(I,J)
+	           RBUF=DSQRT(RNEIGH(I,J,1)**2+RNEIGH(I,J,2)**2+RNEIGH(I,J,3)**2)
    
-                   force(1,I)= force(1,I)+Rneigh(I,J,1)*(2*Vpot_d(ipot,rbuf)+      !&
-     1              (Fembed_d_i+ Fembed_d(ipot,RHO(ja)) )*                 !&
-     1		     rho_pot_d(ipot,rbuf)  ) /rbuf
-                   force(2,I)= force(2,I)+Rneigh(I,J,2)*(2*Vpot_d(ipot,rbuf)+      !&
-     1               (Fembed_d_i+ Fembed_d(ipot,RHO(ja)) )*                !&
-     1		     rho_pot_d(ipot,rbuf)  ) /rbuf
-                   force(3,I)= force(3,I)+Rneigh(I,J,3)*(2*Vpot_d(ipot,rbuf)+      !&
-     1               (Fembed_d_i+ Fembed_d(ipot,RHO(ja)) )*                !&
-     1		     rho_pot_d(ipot,rbuf)  ) /rbuf
-                end do  
-	        Vnew(3*(I-1)+1)=-force(1,I)   
-	        Vnew(3*(I-1)+2)=-force(2,I)   
-	        Vnew(3*(I-1)+3)=-force(3,I) 
-	     end do    
-          end if
+                   FORCE(1,I)= FORCE(1,I)+RNEIGH(I,J,1)*(2*VPOT_D(IPOT,RBUF)+      !&
+     1              (FEMBED_D_I+ FEMBED_D(IPOT,RHO(JA)) )*                 !&
+     1		     RHO_POT_D(IPOT,RBUF)  ) /RBUF
+                   FORCE(2,I)= FORCE(2,I)+RNEIGH(I,J,2)*(2*VPOT_D(IPOT,RBUF)+      !&
+     1               (FEMBED_D_I+ FEMBED_D(IPOT,RHO(JA)) )*                !&
+     1		     RHO_POT_D(IPOT,RBUF)  ) /RBUF
+                   FORCE(3,I)= FORCE(3,I)+RNEIGH(I,J,3)*(2*VPOT_D(IPOT,RBUF)+      !&
+     1               (FEMBED_D_I+ FEMBED_D(IPOT,RHO(JA)) )*                !&
+     1		     RHO_POT_D(IPOT,RBUF)  ) /RBUF
+                END DO  
+	        VNEW(3*(I-1)+1)=-FORCE(1,I)   
+	        VNEW(3*(I-1)+2)=-FORCE(2,I)   
+	        VNEW(3*(I-1)+3)=-FORCE(3,I) 
+	     END DO    
+          END IF
 	  
-	  IF (STEST) then
-	     write(*,*) 'THERE is no impletantion for this case'
-	     write(*,*) 'GTEST', GTEST 
-	     write(*,*) 'STEST', STEST
-	     stop 
+	  IF (STEST) THEN
+	     WRITE(*,*) 'THERE IS NO IMPLETANTION FOR THIS CASE'
+	     WRITE(*,*) 'GTEST', GTEST 
+	     WRITE(*,*) 'STEST', STEST
+	     STOP 
           ENDIF
       ENDIF 
 

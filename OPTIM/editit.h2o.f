@@ -1,37 +1,37 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       PROGRAM EDIT
       LOGICAL TEST
 
-      PRINT*,'punch coordinates energy gradient secder transform'
-      PRINT*,'title'
-      PRINT*,'(H2O) minimum optimization - RHF/aug-ccpVTZ'
+      PRINT*,'PUNCH COORDINATES ENERGY GRADIENT SECDER TRANSFORM'
+      PRINT*,'TITLE'
+      PRINT*,'(H2O) MINIMUM OPTIMIZATION - RHF/AUG-CCPVTZ'
       
-      PRINT*,'geometry'
+      PRINT*,'GEOMETRY'
       READ(*,*) X,Y,Z
-      WRITE(*,'(3F20.10,A)') X,Y,Z,' 8.0 o'
+      WRITE(*,'(3F20.10,A)') X,Y,Z,' 8.0 O'
       READ(*,*) X,Y,Z
-      WRITE(*,'(3F20.10,A)') X,Y,Z,' 1.0 h1'
+      WRITE(*,'(3F20.10,A)') X,Y,Z,' 1.0 H1'
       READ(*,*) X,Y,Z
-      WRITE(*,'(3F20.10,A)') X,Y,Z,' 1.0 h2'
-      PRINT*,'end'
-      PRINT*,'basis'
+      WRITE(*,'(3F20.10,A)') X,Y,Z,' 1.0 H2'
+      PRINT*,'END'
+      PRINT*,'BASIS'
       PRINT*,'S   H1'
       PRINT*,'0.01968500        13.01000000'
       PRINT*,'0.13797700         1.96200000'
@@ -90,8 +90,8 @@ C
       PRINT*,'1.00000000         0.06856000'
       PRINT*,'D   O '
       PRINT*,'1.00000000         0.33200000'
-      PRINT*,'end'
-      PRINT*,'scftype mp2'
+      PRINT*,'END'
+      PRINT*,'SCFTYPE MP2'
 
       STOP
       END

@@ -1,20 +1,20 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       SUBROUTINE OLDNEB(ITEST,PTEST,EMAX,LGMAX,PERM,Q)
       USE COMMONS
@@ -22,7 +22,7 @@ C
       USE MODNEB
       USE KEY
       USE MODHESS
-      use porfuncs
+      USE PORFUNCS
       IMPLICIT NONE
       INTEGER J1, J2, ITDONE, JMAX, NMAGNIFY, NIMAGESAVE
       DOUBLE PRECISION RMS, EMAX, DVEC(NIMAGEMAX+1), TIME, TIME0, Q(3*NATOMS),
@@ -41,13 +41,13 @@ C
       COMMON /SYS/ ZSYMSAVE
 
 !
-! The declaration of POINTS provides more space than is actually needed for TIP potential.
-! 9*NATOMS*NIMAGEMAX/2 is needed in reality.
+! THE DECLARATION OF POINTS PROVIDES MORE SPACE THAN IS ACTUALLY NEEDED FOR TIP POTENTIAL.
+! 9*NATOMS*NIMAGEMAX/2 IS NEEDED IN REALITY.
 !
       IF (ZSYMSAVE(1:1).EQ.'W') THEN
          IADD=3*(NATOMS/2)
-         LNOPT=NOPT/2      ! we only want to optimise the angular degrees of freedom for TIP
-         LNATOMS=NATOMS/2  ! for TIP potentials both centre-of-mass and Euler angles are now in odata
+         LNOPT=NOPT/2      ! WE ONLY WANT TO OPTIMISE THE ANGULAR DEGREES OF FREEDOM FOR TIP
+         LNATOMS=NATOMS/2  ! FOR TIP POTENTIALS BOTH CENTRE-OF-MASS AND EULER ANGLES ARE NOW IN ODATA
       ELSE
          IADD=0
          LNOPT=NOPT
@@ -55,12 +55,12 @@ C
       ENDIF
       NMAGNIFY=0
       IF (NIMAGE.GT.NIMAGEMAX) THEN
-         PRINT*,' Too many images requested - quit'
+         PRINT*,' TOO MANY IMAGES REQUESTED - QUIT'
          STOP
       ENDIF
       CALL MYCPU_TIME(TIME0,.TRUE.)
 !
-!  End points should already be in optimal alignment
+!  END POINTS SHOULD ALREADY BE IN OPTIMAL ALIGNMENT
 !
 !     IF (ZSYM(1)(1:1).NE.'W') THEN
 !        CMX=0.0D0
@@ -105,29 +105,29 @@ C
       IF (ITEST) CALL POTENTIAL(Q,EINITIAL,GRAD,.TRUE.,.FALSE.,RMSINITIAL,.FALSE.,.FALSE.)
       IF (ITEST) CALL POTENTIAL(FIN,EFINAL,GRAD,.TRUE.,.FALSE.,RMSFINAL,.FALSE.,.FALSE.)
       IF (ITEST) WRITE(*,'(A,F20.10,A,F15.6,A,F20.10,A,F15.6)') 
-     1           ' Initial energy=',EINITIAL,' RMS force=',RMSINITIAL,' final energy=',EFINAL,' RMS=',RMSFINAL
+     1           ' INITIAL ENERGY=',EINITIAL,' RMS FORCE=',RMSINITIAL,' FINAL ENERGY=',EFINAL,' RMS=',RMSFINAL
       WRITE(*,'(A,F20.10,A,F15.6,A,F20.10,A,F15.6)') 
-     1           ' Initial energy=',EINITIAL,' RMS force=',RMSINITIAL,' final energy=',EFINAL,' RMS=',RMSFINAL
+     1           ' INITIAL ENERGY=',EINITIAL,' RMS FORCE=',RMSINITIAL,' FINAL ENERGY=',EFINAL,' RMS=',RMSFINAL
       EIORIG=EINITIAL
       EFORIG=EFINAL
       DO J1=1,LNOPT+IADD
          FINORIG(J1)=FIN(J1)
       ENDDO
 C
-C  Return to this point, possibly reinitialising EFINAL, EINITIAL, Q and
-C  FIN, to increase the resolution.
+C  RETURN TO THIS POINT, POSSIBLY REINITIALISING EFINAL, EINITIAL, Q AND
+C  FIN, TO INCREASE THE RESOLUTION.
 C
 10    IF (NMAGNIFY.EQ.0) THEN
          CALL MAKEIMAGE(POINTS,PERM,ITEST,0,Q)
       ELSE
 C
-C  Interpolate between image JMAX-1 and JMAX - we need (NIMAGE-1)/2
-C  images, so NIMAGE ought to be odd!
+C  INTERPOLATE BETWEEN IMAGE JMAX-1 AND JMAX - WE NEED (NIMAGE-1)/2
+C  IMAGES, SO NIMAGE OUGHT TO BE ODD!
 C
          DO J1=1,LNOPT+IADD
             MIDDLE(J1)=POINTS((LNOPT+IADD)*(JMAX-1)+J1)
          ENDDO
-         IF (JMAX.GT.1) THEN  ! if jmax is the first image, Q and EINITIAL stay the same
+         IF (JMAX.GT.1) THEN  ! IF JMAX IS THE FIRST IMAGE, Q AND EINITIAL STAY THE SAME
             DO J1=1,LNOPT+IADD
                Q(J1)=POINTS((LNOPT+IADD)*(JMAX-2)+J1)
             ENDDO
@@ -144,9 +144,9 @@ C
          CALL MAKEIMAGE(POINTS,PERM,ITEST,0,Q)
          EFINAL=EFSAVE
 C
-C  Interpolate between images JMAX and JMAX+1.
+C  INTERPOLATE BETWEEN IMAGES JMAX AND JMAX+1.
 C
-         IF (JMAX.LT.NIMAGESAVE) THEN  ! if jmax is the last image, FIN and EFINAL stay the same
+         IF (JMAX.LT.NIMAGESAVE) THEN  ! IF JMAX IS THE LAST IMAGE, FIN AND EFINAL STAY THE SAME
             DO J1=1,LNOPT+IADD
                FIN(J1)=POINTS((LNOPT+IADD)*(JMAX)+J1)
             ENDDO
@@ -163,17 +163,17 @@ C
          NIMAGE=NIMAGESAVE
          EINITIAL=EISAVE
       ENDIF
-C     PRINT*,'NIMAGE after MAKEIMAGE=',NIMAGE
+C     PRINT*,'NIMAGE AFTER MAKEIMAGE=',NIMAGE
 C     PRINT*,'EINITIAL,EFINAL=',EINITIAL,EFINAL
       NMAGNIFY=NMAGNIFY+1
 C
-C  Minimisation subject to spring constraints
+C  MINIMISATION SUBJECT TO SPRING CONSTRAINTS
 C
       RESET=.TRUE.
       IF (FILTH.EQ.0) THEN
-         WRITE(FNAME,'(A8)') 'EofS.neb'
+         WRITE(FNAME,'(A8)') 'EOFS.NEB'
       ELSE 
-         WRITE(FNAME,'(A)') 'EofS.neb.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(FNAME,'(A)') 'EOFS.NEB.'//TRIM(ADJUSTL(FILTHSTR))
       ENDIF
       OPEN(UNIT=4,FILE=FNAME,STATUS='UNKNOWN')
       CALL NEBBFGS((LNOPT+IADD)*NIMAGE,MUPDATE,POINTS,.FALSE.,DIAG,RMSNEB,LBWORK,MFLAG,EREAL,RMSREAL,
@@ -183,12 +183,12 @@ C
          WRITE(4,'(3F20.10)') DVEC(NIMAGE+1),EFINAL,RMSFINAL
       CLOSE(4)
 C
-C  Dump pathway as an xyz file
+C  DUMP PATHWAY AS AN XYZ FILE
 C
       IF (FILTH.EQ.0) THEN
-         WRITE(FNAME,'(A12)') 'neb.path.xyz'
+         WRITE(FNAME,'(A12)') 'NEB.PATH.XYZ'
       ELSE 
-         WRITE(FNAME,'(A)') 'neb.path.xyz.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(FNAME,'(A)') 'NEB.PATH.XYZ.'//TRIM(ADJUSTL(FILTHSTR))
       ENDIF
       OPEN(UNIT=3,FILE=FNAME,STATUS='UNKNOWN')
       IF (ZSYM(1)(1:1).EQ.'W') THEN
@@ -241,14 +241,14 @@ C
       ENDIF
       CLOSE(3)
 C
-C  Find the highest energy image.
+C  FIND THE HIGHEST ENERGY IMAGE.
 C
       JMAX=1
       EMAX=-1.0D100
       DO J1=1,NIMAGE
          IF (EREAL(J1).GT.EMAX) THEN
 C
-C  Don't choose a bad geometry for DFTB.
+C  DON'T CHOOSE A BAD GEOMETRY FOR DFTB.
 C
             IF ((.NOT.DFTBT).OR.(DFTBT.AND.EREAL(J1).LT.1.0D6)) THEN
                EMAX=EREAL(J1)
@@ -258,20 +258,20 @@ C
       ENDDO
 C     PRINT*,'JMAX=',JMAX
       CALL MYCPU_TIME(TIME,.FALSE.)
-      WRITE(*,'(A,I4,A,G15.5,A,I6,A,F12.4,A,I4,A,F11.2)') ' Image ',JMAX,' has highest energy=',EMAX,
-     1                   ' steps=',ITDONE,' RMS=',RMS,' images=',NIMAGE,'    time=',TIME-TIME0
+      WRITE(*,'(A,I4,A,G15.5,A,I6,A,F12.4,A,I4,A,F11.2)') ' IMAGE ',JMAX,' HAS HIGHEST ENERGY=',EMAX,
+     1                   ' STEPS=',ITDONE,' RMS=',RMS,' IMAGES=',NIMAGE,'    TIME=',TIME-TIME0
       TIME0=TIME
       IF ((.NOT.MFLAG).AND.(NEBMAG.GE.NMAGNIFY)) GOTO 10
 C
-C  Return highest energy point in Q as a candidate transition state
-C  We should also return the true gradient for this image
+C  RETURN HIGHEST ENERGY POINT IN Q AS A CANDIDATE TRANSITION STATE
+C  WE SHOULD ALSO RETURN THE TRUE GRADIENT FOR THIS IMAGE
 C
       DO J1=1,LNOPT+IADD
          Q(J1)=POINTS((LNOPT+IADD)*(JMAX-1)+J1)
       ENDDO
 C
-C  The following parameters can change if NEBMAG >0, but are assumed fixed in the rest of the 
-C  program.
+C  THE FOLLOWING PARAMETERS CAN CHANGE IF NEBMAG >0, BUT ARE ASSUMED FIXED IN THE REST OF THE 
+C  PROGRAM.
 C
       EINITIAL=EIORIG
       EFINAL=EFORIG
@@ -286,17 +286,17 @@ C
 C
 C        LIMITED MEMORY BFGS METHOD FOR LARGE SCALE OPTIMIZATION
 C                          JORGE NOCEDAL
-C                        *** July 1990 ***
+C                        *** JULY 1990 ***
 C
-C        Line search removed plus small modifications, DJW 2001
+C        LINE SEARCH REMOVED PLUS SMALL MODIFICATIONS, DJW 2001
 C
       SUBROUTINE NEBBFGS(N,M,X,DIAGCO,DIAG,EPS,W,MFLAG,EREAL,RMSREAL,ITMAX,RESET,ITDONE,PTEST,QSTART,LGMAX)
       USE COMMONS
       USE KEY
       USE MODTWOEND
       USE MODNEB
-      USE modcharmm
-      use porfuncs
+      USE MODCHARMM
+      USE PORFUNCS
       IMPLICIT NONE
       INTEGER N,M,J1,ITMAX,ITDONE,NFAIL, ITER
       DOUBLE PRECISION X(N),G(N),DIAG(N),W(N*(2*M+1)+2*M),SLENGTH(NIMAGEMAX),DDOT,OVERLAP,LGMAX,LLGMAX(3*NATOMS),
@@ -324,8 +324,8 @@ C
       ITDONE=0
       FIXIMAGE=.FALSE.
       FAILT=.FALSE.
-      IF (RESET.AND.PTEST) WRITE(*,'(A)') ' Resetting LBFGS minimiser in NEB module'
-      IF ((.NOT.RESET).AND.PTEST) WRITE(*,'(A)') ' Not resetting LBFGS minimiser in NEB module'
+      IF (RESET.AND.PTEST) WRITE(*,'(A)') ' RESETTING LBFGS MINIMISER IN NEB MODULE'
+      IF ((.NOT.RESET).AND.PTEST) WRITE(*,'(A)') ' NOT RESETTING LBFGS MINIMISER IN NEB MODULE'
 C     IF (PV.AND.(.NOT.BFGSTST)) THEN
 C        CALL POTENTIAL(X,EREAL(J1),G,.FALSE.,.FALSE.,RMSREAL(J1),.FALSE.,.FALSE.)
 C        PVFLAG=.FALSE.
@@ -346,7 +346,7 @@ C     ENDIF
       ENDDO
       RMS=SQRT(RMS/(NIMAGE*LNOPT))
 
-      IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A)') ' Energy and RMS force=',ETOTAL/NIMAGE,RMS,' after ',0,' LBFGS steps'
+      IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A)') ' ENERGY AND RMS FORCE=',ETOTAL/NIMAGE,RMS,' AFTER ',0,' LBFGS STEPS'
 C     WRITE(4,'(I6,2F20.10)') 0,EINITIAL,RMSINITIAL
 C     WRITE(4,'(I6,2F20.10)') (J1,EREAL(J1),RMSREAL(J1),J1=1,NIMAGE)
 C     WRITE(4,'(I6,2F20.10)') NIMAGE+1,EFINAL,RMSFINAL
@@ -360,7 +360,7 @@ C     WRITE(4,'(A)') ''
          IF (PV.AND.(.NOT.PVFLAG)) MFLAG=.FALSE.
          IF (MFLAG) THEN
             FIXIMAGE=.FALSE.
-C           WRITE(*,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
+C           WRITE(*,'(A,F20.10)') ' DIAGONAL INVERSE HESSIAN ELEMENTS ARE NOW ',DIAG(1)
             NEBDGUESS=DIAG(1)
             RETURN
          ENDIF
@@ -368,7 +368,7 @@ C           WRITE(*,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',
 
       IF (ITDONE.GE.ITMAX) THEN
          FIXIMAGE=.FALSE.
-C        WRITE(*,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
+C        WRITE(*,'(A,F20.10)') ' DIAGONAL INVERSE HESSIAN ELEMENTS ARE NOW ',DIAG(1)
          NEBDGUESS=DIAG(1)
          RETURN
       ENDIF
@@ -382,7 +382,7 @@ C        WRITE(*,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIA
          POINT=0
          MFLAG=.FALSE.
          IF (DIAGCO) THEN
-            PRINT*,'using estimate of the inverse diagonal elements'
+            PRINT*,'USING ESTIMATE OF THE INVERSE DIAGONAL ELEMENTS'
             DO I=1,N
                IF (DIAG(I).LE.0.0D0) THEN
                   WRITE(*,235) I
@@ -392,11 +392,11 @@ C        WRITE(*,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIA
                ENDIF
             ENDDO
          ELSE
-C           INQUIRE(FILE='diag',EXIST=YESNO)
+C           INQUIRE(FILE='DIAG',EXIST=YESNO)
 C           IF (YESNO) THEN
-C              OPEN(UNIT=34,FILE='diag',STATUS='OLD')
+C              OPEN(UNIT=34,FILE='DIAG',STATUS='OLD')
 C              READ(34,*) (DIAG(I),I=1,N)
-C              PRINT*,'diag read in LBFGS'
+C              PRINT*,'DIAG READ IN LBFGS'
 C              WRITE(*,'(6F15.5)') (DIAG(I),I=1,N)
 C           ELSE
             DO I=1,N
@@ -422,7 +422,7 @@ C
          ISPT= N+2*M
          IYPT= ISPT+N*M
 C
-C  NR step for diagonal inverse Hessian
+C  NR STEP FOR DIAGONAL INVERSE HESSIAN
 C
          DO I=1,N
             W(ISPT+I)= -G(I)*DIAG(I)
@@ -430,7 +430,7 @@ C
          ENDDO
          GNORM= DSQRT(DDOT(N,G,1,G,1))
 C
-C  Make the first guess for the step length cautious.
+C  MAKE THE FIRST GUESS FOR THE STEP LENGTH CAUTIOUS.
 C
          DO J1=1,NIMAGE
             STP(J1)=MIN(1.0D0/GNORM,GNORM)
@@ -442,9 +442,9 @@ C        STP=1.0D0
          YS= DDOT(N,W(IYPT+NPT+1),1,W(ISPT+NPT+1),1)
          IF (YS.EQ.0.0D0) YS=1.0D0
 C
-C  Update estimate of diagonal inverse Hessian elements
-C  We divide by both YS and YY at different points, so
-C  they had better not be zero!
+C  UPDATE ESTIMATE OF DIAGONAL INVERSE HESSIAN ELEMENTS
+C  WE DIVIDE BY BOTH YS AND YY AT DIFFERENT POINTS, SO
+C  THEY HAD BETTER NOT BE ZERO!
 C
          IF (.NOT.DIAGCO) THEN
             YY= DDOT(N,W(IYPT+NPT+1),1,W(IYPT+NPT+1),1)
@@ -454,7 +454,7 @@ C
 C              DIAG(I)= MAX(ABS(YS/YY),0.0001D0)
             ENDDO
          ELSE
-            PRINT*,'using estimate of the inverse diagonal elements'
+            PRINT*,'USING ESTIMATE OF THE INVERSE DIAGONAL ELEMENTS'
             DO I=1,N
                IF (DIAG(I).LE.0.0D0) THEN
                   WRITE(*,235) I
@@ -463,9 +463,9 @@ C              DIAG(I)= MAX(ABS(YS/YY),0.0001D0)
             ENDDO
          ENDIF
 C
-C     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980,
-C     "Updating quasi-Newton matrices with limited storage",
-C     Mathematics of Computation, Vol.24, No.151, pp. 773-782.
+C     COMPUTE -H*G USING THE FORMULA GIVEN IN: NOCEDAL, J. 1980,
+C     "UPDATING QUASI-NEWTON MATRICES WITH LIMITED STORAGE",
+C     MATHEMATICS OF COMPUTATION, VOL.24, NO.151, PP. 773-782.
 C     ---------------------------------------------------------
 C
          CP= POINT
@@ -504,7 +504,7 @@ C
          ENDDO
       ENDIF
 C
-C  Store the new search direction
+C  STORE THE NEW SEARCH DIRECTION
 C
       IF (ITER.GT.0) THEN
          DO I=1,N
@@ -522,7 +522,7 @@ C     PRINT*,'OVERLAP,DIAG(1)=',OVERLAP,DIAG(1)
 C     PRINT*,'G . G=',DDOT(N,G,1,G,1)
 C     PRINT*,'W . W=',DDOT(N,W,1,W,1)
       IF (OVERLAP.GT.0.0D0) THEN
-         IF (PTEST) PRINT*,'Search direction has positive projection onto gradient - reversing step'
+         IF (PTEST) PRINT*,'SEARCH DIRECTION HAS POSITIVE PROJECTION ONTO GRADIENT - REVERSING STEP'
          DO I=1,N
             W(ISPT+POINT*N+I)= -W(I)
          ENDDO
@@ -534,10 +534,10 @@ C        GOTO 10
          W(I)=G(I)
       ENDDO
 C
-C  We should apply the maximum NEB LBFGS step to each image separately.
+C  WE SHOULD APPLY THE MAXIMUM NEB LBFGS STEP TO EACH IMAGE SEPARATELY.
 C
-C  However, using different scale factors for different images leads to huge
-C  discontinuities! Now take the minimum scale factor for all images. DJW 18/12/07
+C  HOWEVER, USING DIFFERENT SCALE FACTORS FOR DIFFERENT IMAGES LEADS TO HUGE
+C  DISCONTINUITIES! NOW TAKE THE MINIMUM SCALE FACTOR FOR ALL IMAGES. DJW 18/12/07
 C
       STPMIN=1.0D0
       DO J2=1,NIMAGE
@@ -553,7 +553,7 @@ C
       ENDDO
       STP(1:NIMAGE)=STPMIN
 C
-C  We now have the proposed step.
+C  WE NOW HAVE THE PROPOSED STEP.
 C
       DO J2=1,NIMAGE
          DO J1=1,LNOPT+IADD
@@ -563,7 +563,7 @@ C
       CHANGENEBKP=.FALSE.
       CHANGENEBK=.FALSE.
 C
-C  For charmm internals must transform and back-transform!
+C  FOR CHARMM INTERNALS MUST TRANSFORM AND BACK-TRANSFORM!
 C
       NDECREASE=0
 20    CONTINUE
@@ -582,7 +582,7 @@ C     ENDIF
 !C        PRINT*,'J1,DVEC,SEPARATION=',J1,DVEC(J1)-DVEC(J1-1),SEPARATION
 !         ENDDO
 !         IF (CHANGENEBK) NEBK=NEBK*1.05D0
-!         IF (PTEST.AND.CHANGENEBKP) WRITE(*,'(A,F15.5)') 'Increasing force constant to ',NEBK
+!         IF (PTEST.AND.CHANGENEBKP) WRITE(*,'(A,F15.5)') 'INCREASING FORCE CONSTANT TO ',NEBK
 !      ENDIF
 
       NOBAD=.TRUE.
@@ -617,8 +617,8 @@ C     IF (.TRUE.) THEN
             RMS=RMS+G(J1)**2
          ENDDO
          RMS=SQRT(RMS/(NIMAGE*LNOPT))
-         IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A,G15.10)') ' Energy and RMS force=',ETOTAL/NIMAGE,RMS,' after ',ITDONE,
-     1           ' LBFGS steps, step:',SLENGTHTOT
+         IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A,G15.10)') ' ENERGY AND RMS FORCE=',ETOTAL/NIMAGE,RMS,' AFTER ',ITDONE,
+     1           ' LBFGS STEPS, STEP:',SLENGTHTOT
 
 C        WRITE(4,'(I6,2F20.10)') 0,EINITIAL,RMSINITIAL
 C        WRITE(4,'(I6,2F20.10)') (J1,EREAL(J1),RMSREAL(J1),J1=1,NIMAGE)
@@ -626,19 +626,19 @@ C        WRITE(4,'(I6,2F20.10)') NIMAGE+1,EFINAL,RMSFINAL
 C        WRITE(4,'(A)') ''
       ELSE 
 C
-C  Energy increased for one or more of the images - try again with a smaller step size
+C  ENERGY INCREASED FOR ONE OR MORE OF THE IMAGES - TRY AGAIN WITH A SMALLER STEP SIZE
 C
          IF (NDECREASE.GT.5) THEN
-            PRINT*,' in nebbfgs LBFGS step cannot find a lower energy try again'
+            PRINT*,' IN NEBBFGS LBFGS STEP CANNOT FIND A LOWER ENERGY TRY AGAIN'
             NFAIL=NFAIL+1
             DO J1=1,N
                G(J1)=GNEW(J1)
             ENDDO
             IF (NFAIL.GT.20) THEN
-               PRINT*,' Too many failures - give up'
+               PRINT*,' TOO MANY FAILURES - GIVE UP'
 C
-C DAE make this fail the subsequent ts search automatically (only detected for CHARMM)
-C we are in a region of configuration space with discontinuities in the potential.
+C DAE MAKE THIS FAIL THE SUBSEQUENT TS SEARCH AUTOMATICALLY (ONLY DETECTED FOR CHARMM)
+C WE ARE IN A REGION OF CONFIGURATION SPACE WITH DISCONTINUITIES IN THE POTENTIAL.
 C
                FAILT=.TRUE.
                FIXIMAGE=.FALSE.
@@ -655,7 +655,7 @@ C
             GOTO 30
          ENDIF
 C
-C  Should change this to decrease only the step for images whewre the energy has risen.
+C  SHOULD CHANGE THIS TO DECREASE ONLY THE STEP FOR IMAGES WHEWRE THE ENERGY HAS RISEN.
 C
          SLENGTHTOT=0.0D0
          DO J2=1,NIMAGE
@@ -666,22 +666,22 @@ C
                STP(J2)=STP(J2)/10.0D0
                SLENGTHTOT=SLENGTHTOT+STP(J2)*SLENGTH(J2)
                IF (PTEST) 
-     1             WRITE(*,'(A,I5,A,G16.10,A,G19.10,A,F15.8)') ' function for image ',J2,' increased from ',
-     2                                                     EREALOLD(J2),' to ',EREAL(J2),
-     2                                                    ' decreasing step to ',STP(J2)*SLENGTH(J2)
+     1             WRITE(*,'(A,I5,A,G16.10,A,G19.10,A,F15.8)') ' FUNCTION FOR IMAGE ',J2,' INCREASED FROM ',
+     2                                                     EREALOLD(J2),' TO ',EREAL(J2),
+     2                                                    ' DECREASING STEP TO ',STP(J2)*SLENGTH(J2)
             ENDIF
          ENDDO
          NDECREASE=NDECREASE+1
 C
-C  There is a big problem with FIXIMAGE - the ANV array could be different for all the
-C  images! Also, if we want to recover the previous geometry in the limit of zero step
-C  then ANV must return to the same array.
+C  THERE IS A BIG PROBLEM WITH FIXIMAGE - THE ANV ARRAY COULD BE DIFFERENT FOR ALL THE
+C  IMAGES! ALSO, IF WE WANT TO RECOVER THE PREVIOUS GEOMETRY IN THE LIMIT OF ZERO STEP
+C  THEN ANV MUST RETURN TO THE SAME ARRAY.
 C
 C        FIXIMAGE=.TRUE.
          GOTO 20
       ENDIF
 C
-C     Compute the new step and gradient change
+C     COMPUTE THE NEW STEP AND GRADIENT CHANGE
 C
 30    NPT=POINT*N
       DO J2=1,NIMAGE
@@ -692,7 +692,7 @@ C
       DO I=1,N
          W(IYPT+NPT+I)= G(I)-W(I)
       ENDDO
-C     PRINT*,'diag in MYLBFGS'
+C     PRINT*,'DIAG IN MYLBFGS'
 C     WRITE(*,'(6F15.5)') (DIAG(I),I=1,12)
       POINT=POINT+1
       IF (POINT.EQ.M) POINT=0
@@ -714,7 +714,7 @@ C
       USE MODNEB
       USE MODHESS
       USE KEY,ONLY : NEBK
-      use porfuncs
+      USE PORFUNCS
       IMPLICIT NONE
       INTEGER J1,J2
       DOUBLE PRECISION DUMMY1,EREAL(NIMAGEMAX),ETOTAL,DVEC(NIMAGEMAX+1),
@@ -741,7 +741,7 @@ C           IF (X(J2+(LNOPT+IADD)*(J1-1)).LT.0.0D0) X(J2+(LNOPT+IADD)*(J1-1))=X(
          CALL POTENTIAL(XX,EREAL(J1),GG,.TRUE.,.FALSE.,RMSREAL(J1),.FALSE.,.FALSE.)
          IF (RADMOVED) DISCONT=.TRUE.
 C
-C  The points can be changed for C60 in the potential.
+C  THE POINTS CAN BE CHANGED FOR C60 IN THE POTENTIAL.
 C
          IF (OVERLP) THEN
             DISCONT=.TRUE.
@@ -823,7 +823,7 @@ C
       USE MODNEB
       USE MODHESS
       USE KEY,ONLY : NEBK, FROZEN, FREEZE
-      use porfuncs
+      USE PORFUNCS
       IMPLICIT NONE
       INTEGER J1,J2
       DOUBLE PRECISION DUMMY1,DUMMY2,EREAL(NIMAGEMAX),ETOTAL,TANVEC(3*NATOMS,NIMAGEMAX),WPLUS,WMINUS,EMAX,
@@ -846,10 +846,10 @@ C
          ENDDO
 
          CALL POTENTIAL(XX,EREAL(J1),GG,.TRUE.,.FALSE.,RMSREAL(J1),.FALSE.,.FALSE.)
-         IF (EREAL(J1).GT.EMAX) LLGMAX(1:3*NATOMS)=G(1:3*NATOMS) ! save for use in bfgsts
+         IF (EREAL(J1).GT.EMAX) LLGMAX(1:3*NATOMS)=G(1:3*NATOMS) ! SAVE FOR USE IN BFGSTS
          IF (RADMOVED) DISCONT=.TRUE.
 C
-C  The points can be changed for C60 in the potential subroutine.
+C  THE POINTS CAN BE CHANGED FOR C60 IN THE POTENTIAL SUBROUTINE.
 C
          IF (OVERLP) THEN
             DISCONT=.TRUE.
@@ -870,7 +870,7 @@ C        WRITE(*,'(I6,2G20.10)') J1,EREAL(J1),RMSREAL(J1)
       ENDDO
       ETOTAL=ETOTAL
 C
-C  Define tangent vectors. This is the scheme from Henkelman and Jonsson JCP, 113, 9978, 2000
+C  DEFINE TANGENT VECTORS. THIS IS THE SCHEME FROM HENKELMAN AND JONSSON JCP, 113, 9978, 2000
 C
       IF ((EREAL(1).GT.EINITIAL).AND.(EREAL(1).LT.EREAL(2))) THEN
          WPLUS=1.0D0
@@ -962,7 +962,7 @@ C
       ENDIF
       DVEC(NIMAGE+1)= DVEC(NIMAGE+1)+DVEC(NIMAGE)
 C
-C  Normalise tangent vectors
+C  NORMALISE TANGENT VECTORS
 C
       DO J1=1,NIMAGE
          DUMMY1=0.0D0
@@ -975,7 +975,7 @@ C
          ENDDO
       ENDDO
 C
-C  Gradient of the potential perpendicular to the tangent vector.
+C  GRADIENT OF THE POTENTIAL PERPENDICULAR TO THE TANGENT VECTOR.
 C
       RMS=0.0D0
       DO J1=1,NIMAGE
@@ -990,7 +990,7 @@ C
       ENDDO
       RMS=SQRT(RMS/(NIMAGE*(LNOPT+IADD)*1.0D0))
 C
-C  Spring energy derivatives.
+C  SPRING ENERGY DERIVATIVES.
 C
       DUMMY1=0.0D0
       DUMMY2=0.0D0
@@ -1007,7 +1007,7 @@ C
       DUMMY1=0.0D0
       DUMMY2=0.0D0
       IF (NIMAGE.LT.1) THEN
-         PRINT '(A)',' oldneb> no images - quit'
+         PRINT '(A)',' OLDNEB> NO IMAGES - QUIT'
          STOP
       ENDIF
 
@@ -1056,7 +1056,7 @@ C     ENDDO
          ENDDO
       ENDDO
 !   
-! Set gradients on frozen atoms to zero.
+! SET GRADIENTS ON FROZEN ATOMS TO ZERO.
 !   
       IF (FREEZE) THEN
          DO J1=1,NIMAGE
@@ -1073,10 +1073,10 @@ C     ENDDO
       RETURN
       END
 C
-C  Put a specified number of images between specified starting and
-C  finishing points using suitable interpolation.
-C  OFFSET tells us how many images we already have saved in POINTS, so
-C  the next image goes at position OFFSET+1
+C  PUT A SPECIFIED NUMBER OF IMAGES BETWEEN SPECIFIED STARTING AND
+C  FINISHING POINTS USING SUITABLE INTERPOLATION.
+C  OFFSET TELLS US HOW MANY IMAGES WE ALREADY HAVE SAVED IN POINTS, SO
+C  THE NEXT IMAGE GOES AT POSITION OFFSET+1
 C  
       SUBROUTINE MAKEIMAGE(POINTS,PERM,ITEST,OFFSET,Q)
       USE COMMONS
@@ -1104,7 +1104,7 @@ C
       ENDIF
       IF (.NOT.ALLOCATED(LANV)) ALLOCATE(LANV(3*LNATOMS+IADD))
 C
-C  Bulk principal image code assumes that PARAM1, PARAM2 and PARAM3 are the box lengths.
+C  BULK PRINCIPAL IMAGE CODE ASSUMES THAT PARAM1, PARAM2 AND PARAM3 ARE THE BOX LENGTHS.
 C
       DO J1=1,LNATOMS+IADD/3
          J3=3*(J1-1)
@@ -1127,7 +1127,7 @@ C
          START(J3+3)=Q(J3+3)
       ENDDO
 C
-C  Initial distance
+C  INITIAL DISTANCE
 C
       DIST=0.0D0
       IF (ZSYM(1)(1:1).EQ.'W') THEN
@@ -1164,17 +1164,17 @@ C
          ENDDO
       ENDIF
       DIST=SQRT(DIST)
-C     PRINT *,'oldneb> DIST=',DIST
+C     PRINT *,'OLDNEB> DIST=',DIST
 C
-C  Assign initial image positions.
+C  ASSIGN INITIAL IMAGE POSITIONS.
 C
       SEPARATION=DIST/(NIMAGE+1)
 C     NEBK=(ABS(EFINAL)+ABS(EINITIAL))/(100*(NIMAGE+1)*SEPARATION**2)
       IF (ZSYM(1)(1:1).EQ.'W') NEBK=NEBK*0.0D0
       IF (ZSYM(1)(1:1).EQ.'W') THEN
 C
-C  Note that interpolating the Cartesian coordinates will generally break the geometry of the individual water molecules,
-C  so there won't be a perfect conversion back to centre-of-mass/Euler angle coordinates.
+C  NOTE THAT INTERPOLATING THE CARTESIAN COORDINATES WILL GENERALLY BREAK THE GEOMETRY OF THE INDIVIDUAL WATER MOLECULES,
+C  SO THERE WON'T BE A PERFECT CONVERSION BACK TO CENTRE-OF-MASS/EULER ANGLE COORDINATES.
 C
          DO J1=1,NIMAGE
             DO J2=1,LNATOMS
@@ -1244,15 +1244,15 @@ C    3            POINTS((J1-1+OFFSET)*(LNOPT+IADD)+3*(J2-1)+3),
 C    4            POINTS((J1-1+OFFSET)*(LNOPT+IADD)+3*LNATOMS+3*(J2-1)+1),
 C    5            POINTS((J1-1+OFFSET)*(LNOPT+IADD)+3*LNATOMS+3*(J2-1)+2),
 C    6            POINTS((J1-1+OFFSET)*(LNOPT+IADD)+3*LNATOMS+3*(J2-1)+3) 
-C              PRINT*,'points before:'
+C              PRINT*,'POINTS BEFORE:'
 C              WRITE(*,'(A6,3F20.10)') 'H     ',H1VEC1(1),H1VEC1(2),H1VEC1(3)
 C              WRITE(*,'(A6,3F20.10)') 'H     ',H2VEC1(1),H2VEC1(2),H2VEC1(3)
 C              WRITE(*,'(A6,3F20.10)') 'O     ',OVEC1(1),OVEC1(2),OVEC1(3)
 
             ENDDO
 C
-C  If any of the centre-of-mass distances are too small then move back towards the previous image.
-C  This can happen for permutational isomers where whole molecules are exchanged.
+C  IF ANY OF THE CENTRE-OF-MASS DISTANCES ARE TOO SMALL THEN MOVE BACK TOWARDS THE PREVIOUS IMAGE.
+C  THIS CAN HAPPEN FOR PERMUTATIONAL ISOMERS WHERE WHOLE MOLECULES ARE EXCHANGED.
 C
             IF (J1.GT.1) THEN
                DO J2=1,LNATOMS
@@ -1283,8 +1283,8 @@ C
          ENDDO
       ELSE IF (PERM) THEN
 C
-C  Not done for bulk. A little bit of noise is added because otherwise head-on collisions don't
-C  achieve much.
+C  NOT DONE FOR BULK. A LITTLE BIT OF NOISE IS ADDED BECAUSE OTHERWISE HEAD-ON COLLISIONS DON'T
+C  ACHIEVE MUCH.
 C
          DO J1=1,LNATOMS
             HSVEL(3*(J1-1)+1)=FIN(3*(J1-1)+1)-START(3*(J1-1)+1)
@@ -1354,7 +1354,7 @@ C
             DO J2=1,LNOPT
                POINTS(J2+LNOPT*(J1-1+OFFSET))=START(J2)+(FIN(J2)-START(J2))*J1*SEPARATION/DIST
             ENDDO
-C           PRINT*,'in neb image ',J1+OFFSET
+C           PRINT*,'IN NEB IMAGE ',J1+OFFSET
 C           IF (VARIABLES) THEN
 C              PRINT'(2G20.10)',POINTS(LNOPT*(J1-1+OFFSET)+1),POINTS(LNOPT*(J1-1+OFFSET)+2)
 C           ELSE

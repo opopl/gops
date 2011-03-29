@@ -1,20 +1,20 @@
-!   CONNECT module is an implementation of a connection algorithm for finding rearrangement pathways.
-!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
-!   This file is part of CONNECT module. CONNECT module is part of OPTIM.
+!   CONNECT MODULE IS AN IMPLEMENTATION OF A CONNECTION ALGORITHM FOR FINDING REARRANGEMENT PATHWAYS.
+!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
+!   THIS FILE IS PART OF CONNECT MODULE. CONNECT MODULE IS PART OF OPTIM.
 !
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 MODULE CONNECTUTILS
      USE CONNECTDATA
@@ -40,19 +40,19 @@ MODULE CONNECTUTILS
 
           DO I=1,NTS
                IF(ABS(TSTOCHECK%E-TS(I)%DATA%E) < EDIFFTOL) THEN
-                    !print *, "Energy of the TS found is the same as of the TS #",i,"; checking distance..."
+                    !PRINT *, "ENERGY OF THE TS FOUND IS THE SAME AS OF THE TS #",I,"; CHECKING DISTANCE..."
                     IF (PERMDIST) THEN
                        CALL MINPERMDIST(TSTOCHECK%COORD,TS(I)%DATA%X, NATOMS, &
   &                                DEBUG,PARAM1,PARAM2,PARAM3,BULKT,TWOD,D,DIST2,RIGIDBODY,RMAT)
                     ELSE
-                       CALL NEWMINDIST(TSTOCHECK%COORD,TS(I)%DATA%X,NATOMS,D,BULKT,TWOD,'AX   ',.True.,RIGIDBODY,DEBUG,RMAT)
+                       CALL NEWMINDIST(TSTOCHECK%COORD,TS(I)%DATA%X,NATOMS,D,BULKT,TWOD,'AX   ',.TRUE.,RIGIDBODY,DEBUG,RMAT)
                     ENDIF
-                    !print *, "The distance is",d
+                    !PRINT *, "THE DISTANCE IS",D
                     IF (D<GEOMDIFFTOL) THEN
-                         !print *, "This TS is already known."
+                         !PRINT *, "THIS TS IS ALREADY KNOWN."
                          ISNEWTS=.FALSE.
                          IF (I > NTSOLD) THEN ! TWO OR MORE TS RETURNED FROM _ONE_ NEB RUN ARE THE SAME
-                              PRINT *, 'Shortcut was found! - TS is same as already saved TS #',i 
+                              PRINT *, 'SHORTCUT WAS FOUND! - TS IS SAME AS ALREADY SAVED TS #',I 
                          ENDIF
                          RETURN
                     ENDIF
@@ -86,7 +86,7 @@ MODULE CONNECTUTILS
                        CALL MINPERMDIST(COORD,MI(I)%DATA%X(1:3*NATOMS), NATOMS, &
   &                                DEBUG,PARAM1,PARAM2,PARAM3,BULKT,TWOD,D,DIST2,RIGIDBODY,RMAT)
                     ELSE
-                       CALL NEWMINDIST(COORD,MI(I)%DATA%X(1:3*NATOMS),NATOMS,D,BULKT,TWOD,'AX   ',.True.,RIGIDBODY,DEBUG,RMAT)
+                       CALL NEWMINDIST(COORD,MI(I)%DATA%X(1:3*NATOMS),NATOMS,D,BULKT,TWOD,'AX   ',.TRUE.,RIGIDBODY,DEBUG,RMAT)
                     ENDIF
                     IF (D<GEOMDIFFTOL) THEN
                        NEW=.FALSE.
@@ -98,11 +98,11 @@ MODULE CONNECTUTILS
 
 !                 SUCCESS=.FALSE. 
 ! !
-! !  If they are the same minimum then GETPERM should be more reliable than mindist. DJW
-! !  Even if the permutation-inversion is the identity!
-! !  GETPERM changes the first argument, but not the second.
-! !  However! GETPERM will fail if the stationary points are within EDiffTol but
-! !  don;t line up sufficiently well. 
+! !  IF THEY ARE THE SAME MINIMUM THEN GETPERM SHOULD BE MORE RELIABLE THAN MINDIST. DJW
+! !  EVEN IF THE PERMUTATION-INVERSION IS THE IDENTITY!
+! !  GETPERM CHANGES THE FIRST ARGUMENT, BUT NOT THE SECOND.
+! !  HOWEVER! GETPERM WILL FAIL IF THE STATIONARY POINTS ARE WITHIN EDIFFTOL BUT
+! !  DON;T LINE UP SUFFICIENTLY WELL. 
 ! !
 !                 QTEMP(1:3*NATOMS)=MI(I)%DATA%X(1:3*NATOMS)
 !                 CALL GETPERM(QTEMP,COORD,INVERT,INDEX,SUCCESS)
@@ -119,13 +119,13 @@ MODULE CONNECTUTILS
 !                       MINPOS=I   ! SAME PERMUTATION-INVERSION ISOMER
 !                       NEW=.FALSE.
 !                       RETURN
-!                    ELSE ! don;t return unless PERMDIST is true - we may need to check the other minima for an exact match
+!                    ELSE ! DON;T RETURN UNLESS PERMDIST IS TRUE - WE MAY NEED TO CHECK THE OTHER MINIMA FOR AN EXACT MATCH
 !                       IF (INVERT.EQ.1) PRINT '(A,I6,A)',   &
-!                              ' isnewmin> Permutational isomer of minimum ',i,' identified'
+!                              ' ISNEWMIN> PERMUTATIONAL ISOMER OF MINIMUM ',I,' IDENTIFIED'
 !                       IF (INVERT.EQ.-1) PRINT '(A,I6,A)',  &
-!   &                          ' isnewmin> Permutation-inversion isomer of minimum ',i,' identified'
+!   &                          ' ISNEWMIN> PERMUTATION-INVERSION ISOMER OF MINIMUM ',I,' IDENTIFIED'
 !                       IF (PERMDIST) THEN
-!                          MINPOS=I   ! we should not need to save any permutation-inversion isomers if PERMDIST is true
+!                          MINPOS=I   ! WE SHOULD NOT NEED TO SAVE ANY PERMUTATION-INVERSION ISOMERS IF PERMDIST IS TRUE
 !                          NEW=.FALSE.
 !                          RETURN
 !                       ENDIF
@@ -135,7 +135,7 @@ MODULE CONNECTUTILS
 !           ENDDO
 ! 
 !           IF ((MINPOS.GT.0).AND.REDOPATH) THEN
-!              NEW=.FALSE. ! MINPOS was set in the last match
+!              NEW=.FALSE. ! MINPOS WAS SET IN THE LAST MATCH
 !              PERMUTE=.TRUE.
 !           ELSE
 !              MINPOS=NMIN+1
@@ -156,11 +156,11 @@ MODULE CONNECTUTILS
           SAME = .FALSE.
 
           IF (ABS(E-E2) < EDIFFTOL) THEN
-!                   print '(A)','calling mindist 3'
-              CALL NEWMINDIST(COORD,COORD2,NATOMS,D,BULKT,TWOD,'AX   ',.True.,RIGIDBODY,DEBUG,RMAT)
+!                   PRINT '(A)','CALLING MINDIST 3'
+              CALL NEWMINDIST(COORD,COORD2,NATOMS,D,BULKT,TWOD,'AX   ',.TRUE.,RIGIDBODY,DEBUG,RMAT)
               IF (D < GEOMDIFFTOL) THEN
                   SAME = .TRUE.
-                  WRITE(*,'(a)') ' Same minimum found on either side of the pathway - rejecting this min--sad--min triple'
+                  WRITE(*,'(A)') ' SAME MINIMUM FOUND ON EITHER SIDE OF THE PATHWAY - REJECTING THIS MIN--SAD--MIN TRIPLE'
               ENDIF
           ENDIF
      END SUBROUTINE TESTSAMEMIN
@@ -188,12 +188,12 @@ MODULE CONNECTUTILS
   &                                DEBUG,PARAM1,PARAM2,PARAM3,BULKT,TWOD,D,DIST2,RIGIDBODY,RMAT)
                   D=SQRT(D)
                ELSE
-                  CALL NEWMINDIST(MI(NMIN)%DATA%X(:), MI(I)%DATA%X(:), NATOMS, D,BULKT,TWOD,'AX   ',.True., &
+                  CALL NEWMINDIST(MI(NMIN)%DATA%X(:), MI(I)%DATA%X(:), NATOMS, D,BULKT,TWOD,'AX   ',.TRUE., &
   &                               RIGIDBODY,DEBUG,RMAT)
                ENDIF
-               IF (DEBUG) PRINT '(A,G20.10,2(A,I6))',' addnewmin> distance from MINPERMDIST/NEWMINDIST=',D,' for ',I,' and ',NMIN
+               IF (DEBUG) PRINT '(A,G20.10,2(A,I6))',' ADDNEWMIN> DISTANCE FROM MINPERMDIST/NEWMINDIST=',D,' FOR ',I,' AND ',NMIN
                MI(NMIN)%DATA%D(I)=D  !  PASSING MIN(NMIN)%DATA%D(I) INSTEAD OF D DOES NOT WORK
-                                     !  perhaps because min is an intrisic function!
+                                     !  PERHAPS BECAUSE MIN IS AN INTRISIC FUNCTION!
                IF (INTERPCOSTFUNCTION) MI(NMIN)%DATA%INTERP(I)=INTERPVALUE(MI(NMIN)%DATA%X(:), MI(I)%DATA%X(:),D)  
           ENDDO
 
@@ -210,12 +210,12 @@ MODULE CONNECTUTILS
           IMPLICIT NONE
 
           INTEGER :: I,J
-          OPEN(UNIT=11,FILE="ts.xyz")
+          OPEN(UNIT=11,FILE="TS.XYZ")
           DO I=1,NTS !FOUND 
-               WRITE(11,'(i3)') nopt/3 
-               WRITE(11,'(a,i3)') 'ts #', i
+               WRITE(11,'(I3)') NOPT/3 
+               WRITE(11,'(A,I3)') 'TS #', I
                DO J=1,NOPT,3
-                    WRITE(11,'(a5,1x,3f20.10)') ZSYM((j+2)/3),ts(i)%data%X(j),ts(i)%data%X(j+1),ts(i)%data%X(j+2)
+                    WRITE(11,'(A5,1X,3F20.10)') ZSYM((J+2)/3),TS(I)%DATA%X(J),TS(I)%DATA%X(J+1),TS(I)%DATA%X(J+2)
                ENDDO
            ENDDO
            CLOSE(11)
@@ -231,7 +231,7 @@ MODULE CONNECTUTILS
           IF ( ASSOCIATED(MI(I)%DATA%CTS) ) THEN
                EXTENT = MI(I)%DATA%C(1)
                
-               !connected ts
+               !CONNECTED TS
                P => MI(I)%DATA%CTS
                NULLIFY(MI(I)%DATA%CTS)
                ALLOCATE( MI(I)%DATA%CTS(EXTENT+1) )
@@ -239,7 +239,7 @@ MODULE CONNECTUTILS
                MI(I)%DATA%CTS(EXTENT+1)= T
                DEALLOCATE(P)
 
-               !connected minima
+               !CONNECTED MINIMA
                P => MI(I)%DATA%CMIN
                NULLIFY(MI(I)%DATA%CMIN)
                ALLOCATE( MI(I)%DATA%CMIN(EXTENT+1) )
@@ -262,65 +262,65 @@ MODULE CONNECTUTILS
           IMPLICIT NONE
           INTEGER,INTENT(IN) :: I,J,K
           
-          ! storing new connection for ts and minima involved
+          ! STORING NEW CONNECTION FOR TS AND MINIMA INVOLVED
           TS(K)%DATA%P=I
           TS(K)%DATA%M=J
           CALL ADDNEWCONNECTION(I,K,J)
           CALL ADDNEWCONNECTION(J,K,I)
 
-          ! setting flags:
+          ! SETTING FLAGS:
           IF (.NOT.MI(I)%DATA%S .AND. .NOT.MI(I)%DATA%F .AND. .NOT.MI(J)%DATA%S .AND. .NOT.MI(J)%DATA%F) THEN
-               PRINT *, 'Connection established between members of the U set.'
+               PRINT *, 'CONNECTION ESTABLISHED BETWEEN MEMBERS OF THE U SET.'
                RETURN 
           ELSEIF ( (MI(I)%DATA%S.AND.MI(J)%DATA%S).OR.(MI(I)%DATA%F.AND.MI(J)%DATA%F) ) THEN
                IF (MI(I)%DATA%S) THEN
-                    PRINT *, 'Alternative path found between members of the S set.'
+                    PRINT *, 'ALTERNATIVE PATH FOUND BETWEEN MEMBERS OF THE S SET.'
                ELSE
-                    PRINT *, 'Alternative path found between members of the F set.'
+                    PRINT *, 'ALTERNATIVE PATH FOUND BETWEEN MEMBERS OF THE F SET.'
                ENDIF
                RETURN
           ELSEIF ( (MI(I)%DATA%S.AND.MI(J)%DATA%F).OR.(MI(J)%DATA%S.AND.MI(I)%DATA%F) ) THEN
-               IF (FINISHED) RETURN ! Must not call GETPATHWAY twice - segmentation fault! DJW
+               IF (FINISHED) RETURN ! MUST NOT CALL GETPATHWAY TWICE - SEGMENTATION FAULT! DJW
                FINISHED     =.TRUE.
                CALL GETPATHWAY(I,J)
                RETURN
           ELSEIF ( (.NOT.MI(I)%DATA%S .AND. .NOT.MI(I)%DATA%F .AND. MI(J)%DATA%S) .OR. &
                  & (.NOT.MI(J)%DATA%S .AND. .NOT.MI(J)%DATA%F .AND. MI(I)%DATA%S) ) THEN
                IF (MI(J)%DATA%S) THEN
-                    WRITE(CHR,'(i7)') i
+                    WRITE(CHR,'(I7)') I
                     CALL UPDATELINK(I,J)
                ELSE
-                    WRITE(CHR,'(i7)') j
+                    WRITE(CHR,'(I7)') J
                     CALL UPDATELINK(J,I)
                ENDIF
-               WRITE(*,'(1x,a)') 'Unconnected minimum '//trim(adjustl(chr))//' found its way to S set.'
+               WRITE(*,'(1X,A)') 'UNCONNECTED MINIMUM '//TRIM(ADJUSTL(CHR))//' FOUND ITS WAY TO S SET.'
           ELSEIF ( (.NOT.MI(I)%DATA%S .AND. .NOT.MI(I)%DATA%F .AND. MI(J)%DATA%F) .OR. &
                  & (.NOT.MI(J)%DATA%S .AND. .NOT.MI(J)%DATA%F .AND. MI(I)%DATA%F) ) THEN
                IF (MI(J)%DATA%F) THEN
-                    WRITE(CHR,'(i7)') i
+                    WRITE(CHR,'(I7)') I
                     CALL UPDATELINK(I,J)
                ELSE
-                    WRITE(CHR,'(i7)') j
+                    WRITE(CHR,'(I7)') J
                     CALL UPDATELINK(J,I)
                ENDIF
-               WRITE(*,'(1x,a)') 'Unconnected minimum '//trim(adjustl(chr))//' found its way to F set.'
+               WRITE(*,'(1X,A)') 'UNCONNECTED MINIMUM '//TRIM(ADJUSTL(CHR))//' FOUND ITS WAY TO F SET.'
           ENDIF 
      END SUBROUTINE NEWCONNECTION
 
-     ! Semen Срд Лип 19 14:37:58 BST 2006: updatelink is a new version of updatelinkold;
-     ! should be faster, easier to maintain and debug; updatelinkold uses the same data structures
-     ! so should still work --- to enable swap updatelink and updatelinkold.
+     ! SEMEN Срд Лип 19 14:37:58 BST 2006: UPDATELINK IS A NEW VERSION OF UPDATELINKOLD;
+     ! SHOULD BE FASTER, EASIER TO MAINTAIN AND DEBUG; UPDATELINKOLD USES THE SAME DATA STRUCTURES
+     ! SO SHOULD STILL WORK --- TO ENABLE SWAP UPDATELINK AND UPDATELINKOLD.
      RECURSIVE SUBROUTINE UPDATELINK(I,J)
-          use ConnectData,only:listlength
+          USE CONNECTDATA,ONLY:LISTLENGTH
           IMPLICIT NONE
-          INTEGER,INTENT(IN) :: I,J ! minima i should be brought from u set to set to which belongs minimum j;
+          INTEGER,INTENT(IN) :: I,J ! MINIMA I SHOULD BE BROUGHT FROM U SET TO SET TO WHICH BELONGS MINIMUM J;
           INTEGER :: K,M
 
-          DEPTH = DEPTH+1 ! depth level of the recursion
+          DEPTH = DEPTH+1 ! DEPTH LEVEL OF THE RECURSION
 !         PRINT '(A,3I8)','UPDATELINK> I,J,DEPTH=',I,J,DEPTH
        
-          ! add j to the list of minima to be avoided
-          IF (listlength==0) THEN 
+          ! ADD J TO THE LIST OF MINIMA TO BE AVOIDED
+          IF (LISTLENGTH==0) THEN 
                ALLOCATE(START2)
                NULLIFY(START2%NEXT)
                DUMMY2 => START2
@@ -329,21 +329,21 @@ MODULE CONNECTUTILS
                DUMMY2 => DUMMY2%NEXT
                NULLIFY(DUMMY2%NEXT)
           ENDIF
-          listlength=listlength+1
+          LISTLENGTH=LISTLENGTH+1
           DUMMY2%I=J
 
-          ! update flags
+          ! UPDATE FLAGS
           MI(I)%DATA%S = MI(J)%DATA%S
           MI(I)%DATA%F = MI(J)%DATA%F
-          !write(*,'(a)',advance='no') '.'
+          !WRITE(*,'(A)',ADVANCE='NO') '.'
 
-          ! update all connections of minimum i
+          ! UPDATE ALL CONNECTIONS OF MINIMUM I
        U: DO K=1,MI(I)%DATA%C(1)
 
-               ! do not try connections to minima in the list
+               ! DO NOT TRY CONNECTIONS TO MINIMA IN THE LIST
                DUMMY2 => START2
                IF (MI(I)%DATA%CMIN(K)==DUMMY2%I) CYCLE U
-               DO M=2,listlength
+               DO M=2,LISTLENGTH
                     DUMMY2 => DUMMY2%NEXT
                     IF (MI(I)%DATA%CMIN(K)==DUMMY2%I) CYCLE U
                ENDDO
@@ -351,29 +351,29 @@ MODULE CONNECTUTILS
                CALL UPDATELINK(MI(I)%DATA%CMIN(K),I)
           ENDDO U
           
-          if (depth==1) then
-               do m=1,listlength
-                    dummy2=>start2%next
-                    nullify(start2%next)
-                    deallocate(start2)
-                    start2=>dummy2
-               enddo
-               listlength=0
-          endif
+          IF (DEPTH==1) THEN
+               DO M=1,LISTLENGTH
+                    DUMMY2=>START2%NEXT
+                    NULLIFY(START2%NEXT)
+                    DEALLOCATE(START2)
+                    START2=>DUMMY2
+               ENDDO
+               LISTLENGTH=0
+          ENDIF
 
-          depth = depth-1
+          DEPTH = DEPTH-1
      END SUBROUTINE UPDATELINK
 
      RECURSIVE SUBROUTINE UPDATELINKOLD(I,J)
           IMPLICIT NONE
           INTEGER,INTENT(IN)          :: I,J ! MINIMA I SHOULD BE BROUGHT FROM U SET TO SET TO WHICH BELONGS MINIMUM J;
-                                             ! all connections must be updated; connection to minimum j is ignored
+                                             ! ALL CONNECTIONS MUST BE UPDATED; CONNECTION TO MINIMUM J IS IGNORED
           INTEGER :: K,M
        
           DEPTH = DEPTH+1 ! DEPTH LEVEL OF THE RECURSION; EQUALS TO THE LENGTH OF THE LIST OF MINIMA TO BE IGNORED
 !         PRINT '(A,3I8)','UPDATELINK> I,J,DEPTH=',I,J,DEPTH
 
-          ! add j to the list of minima to be avoided
+          ! ADD J TO THE LIST OF MINIMA TO BE AVOIDED
           IF (DEPTH==1) THEN 
                ALLOCATE(START2)
                NULLIFY(START2%NEXT)
@@ -385,15 +385,15 @@ MODULE CONNECTUTILS
           ENDIF
           DUMMY2%I=J
 
-          ! update flags
+          ! UPDATE FLAGS
           MI(I)%DATA%S = MI(J)%DATA%S
           MI(I)%DATA%F = MI(J)%DATA%F
-          !write(*,'(a)',advance='no') '.'
+          !WRITE(*,'(A)',ADVANCE='NO') '.'
 
-          ! update all connections of minimum i
+          ! UPDATE ALL CONNECTIONS OF MINIMUM I
        U: DO K=1,MI(I)%DATA%C(1)
 
-               ! do not try connections to minima in the list
+               ! DO NOT TRY CONNECTIONS TO MINIMA IN THE LIST
                DUMMY2 => START2
                IF (MI(I)%DATA%CMIN(K)==DUMMY2%I) CYCLE
                DO M=2,DEPTH
@@ -404,7 +404,7 @@ MODULE CONNECTUTILS
                CALL UPDATELINK(MI(I)%DATA%CMIN(K),I)
           ENDDO U
           
-          ! remove last minimum from the list
+          ! REMOVE LAST MINIMUM FROM THE LIST
           IF (DEPTH==1) THEN
                NULLIFY(DUMMY2)
                DEALLOCATE(START2)
@@ -423,8 +423,8 @@ MODULE CONNECTUTILS
           IMPLICIT NONE
           
           INTEGER,INTENT(IN) :: I,J ! MINIMA I AND J ARE CONNECTED TOGETHER, AND EACH WITH ONE OF THE ENDPOINTS
-                                    ! yet i belongs to S, j - to F (or vice versa)
-          ! constructing the chain
+                                    ! YET I BELONGS TO S, J - TO F (OR VICE VERSA)
+          ! CONSTRUCTING THE CHAIN
           ENDREACHED = .FALSE.
           IF (MI(I)%DATA%S) THEN
                CALL EXTRACT(1,I,J)
@@ -521,12 +521,12 @@ MODULE CONNECTUTILS
           ENDDO
      END FUNCTION TSINDEX
 
-     SUBROUTINE MERGEXYZEOFS  ! merges path output files to produce full pathway for the rearrangement;
-          USE KEY, ONLY: FILTH,UNRST,FILTHSTR,DEBUG,RIGIDBODY,BULKT,TWOD ! frames in path files are reversed as needed;
-          USE KEYUTILS        ! frames in bits that are glued together are rotated accordingly;
-          IMPLICIT NONE       ! prerequisites: chain of min/ts constructed; assumes path is dumping plus side of the path
-                              ! first, and there are no blank lines after last frame (!)
-                              ! does somewhat similar with EofS.ts files as well..
+     SUBROUTINE MERGEXYZEOFS  ! MERGES PATH OUTPUT FILES TO PRODUCE FULL PATHWAY FOR THE REARRANGEMENT;
+          USE KEY, ONLY: FILTH,UNRST,FILTHSTR,DEBUG,RIGIDBODY,BULKT,TWOD ! FRAMES IN PATH FILES ARE REVERSED AS NEEDED;
+          USE KEYUTILS        ! FRAMES IN BITS THAT ARE GLUED TOGETHER ARE ROTATED ACCORDINGLY;
+          IMPLICIT NONE       ! PREREQUISITES: CHAIN OF MIN/TS CONSTRUCTED; ASSUMES PATH IS DUMPING PLUS SIDE OF THE PATH
+                              ! FIRST, AND THERE ARE NO BLANK LINES AFTER LAST FRAME (!)
+                              ! DOES SOMEWHAT SIMILAR WITH EOFS.TS FILES AS WELL..
           DOUBLE PRECISION RMAT(3,3)
           INTEGER :: I,J,K,EOF,J1,INDEXTS !,FL
           DOUBLE PRECISION :: S,E,SLAST,SFIRST
@@ -551,16 +551,16 @@ MODULE CONNECTUTILS
           NULLIFY(HEAD,TMP,TAIL,LASTFRAME)
           
           IF (FILTH.EQ.0) THEN
-             OPEN(UNIT=50,FILE='path.xyz',status='replace',action='write')
-             IF (UNRST) OPEN(UNIT=51,FILE='path.unr.xyz',status='replace',action='write')
-             OPEN(UNIT=41,FILE='EofS',status='replace',action='write')
+             OPEN(UNIT=50,FILE='PATH.XYZ',STATUS='REPLACE',ACTION='WRITE')
+             IF (UNRST) OPEN(UNIT=51,FILE='PATH.UNR.XYZ',STATUS='REPLACE',ACTION='WRITE')
+             OPEN(UNIT=41,FILE='EOFS',STATUS='REPLACE',ACTION='WRITE')
           ELSE
-             WRITE(PSTRING,'(A)') 'path.xyz.'//TRIM(ADJUSTL(FILTHSTR))
-             IF (UNRST) WRITE(PSTRING2,'(A)') 'path.unr.xyz.'//TRIM(ADJUSTL(FILTHSTR))
-             WRITE(ESTRING,'(A)') 'EofS.'//TRIM(ADJUSTL(FILTHSTR))
-             OPEN(UNIT=50,FILE=PSTRING,STATUS='replace',action='write')
-             IF (UNRST) OPEN(UNIT=51,FILE=PSTRING2,STATUS='replace',action='write')
-             OPEN(UNIT=41,FILE=ESTRING,STATUS='replace',action='write')
+             WRITE(PSTRING,'(A)') 'PATH.XYZ.'//TRIM(ADJUSTL(FILTHSTR))
+             IF (UNRST) WRITE(PSTRING2,'(A)') 'PATH.UNR.XYZ.'//TRIM(ADJUSTL(FILTHSTR))
+             WRITE(ESTRING,'(A)') 'EOFS.'//TRIM(ADJUSTL(FILTHSTR))
+             OPEN(UNIT=50,FILE=PSTRING,STATUS='REPLACE',ACTION='WRITE')
+             IF (UNRST) OPEN(UNIT=51,FILE=PSTRING2,STATUS='REPLACE',ACTION='WRITE')
+             OPEN(UNIT=41,FILE=ESTRING,STATUS='REPLACE',ACTION='WRITE')
           ENDIF
           
           DUMMY => START
@@ -572,16 +572,16 @@ MODULE CONNECTUTILS
              IF (TS( MI(DUMMY%I)%DATA%CTS(DUMMY%J) )%DATA%P == DUMMY%I) REVERSEORDER=.FALSE.
              CALL MKFNAMES(MI(DUMMY%I)%DATA%CTS(DUMMY%J),FILTH,FILTHSTR,ITSTRING,EOFSSTRING)
 !
-!  If READSP is true then the pathway coordinates and energy files may not be present.
-!  We could either ignore this and skip on, or attempt to recalculate the pathway.
-!  If we recalculate the pathway, there is a danger that it might not link the expected
-!  minima!
+!  IF READSP IS TRUE THEN THE PATHWAY COORDINATES AND ENERGY FILES MAY NOT BE PRESENT.
+!  WE COULD EITHER IGNORE THIS AND SKIP ON, OR ATTEMPT TO RECALCULATE THE PATHWAY.
+!  IF WE RECALCULATE THE PATHWAY, THERE IS A DANGER THAT IT MIGHT NOT LINK THE EXPECTED
+!  MINIMA!
 !
              INQUIRE(FILE=ITSTRING,EXIST=EXTEST)
              IF (.NOT.EXTEST) THEN
                 REVERSEORDER=.TRUE.
                 INDEXTS=MI(DUMMY%I)%DATA%CTS(DUMMY%J)
-                PRINT '(A,I6,A)',' pathway files for ts ',INDEXTS,' are missing, attempting to recreate them'
+                PRINT '(A,I6,A)',' PATHWAY FILES FOR TS ',INDEXTS,' ARE MISSING, ATTEMPTING TO RECREATE THEM'
                 TMPTS(1:NOPT)=TS(INDEXTS)%DATA%X(1:NOPT)
                 EDUMMY=TS(INDEXTS)%DATA%E
                 ALLOCATE(TS(INDEXTS)%DATA%VECS(NOPT))
@@ -597,86 +597,86 @@ MODULE CONNECTUTILS
                 IF (.NOT.PATHFAILT) THEN
                    PATHFAILT=.TRUE.
                    IF (ABS(EPLUS-MI(TS(INDEXTS)%DATA%P)%DATA%E).LE.EDIFFTOL) THEN
-                      PRINT '(A)',' energy from plus side of path matches expected plus minimum'
+                      PRINT '(A)',' ENERGY FROM PLUS SIDE OF PATH MATCHES EXPECTED PLUS MINIMUM'
                       CALL NEWMINDIST(MI(TS(INDEXTS)%DATA%P)%DATA%X,QPLUS,NATOMS,D,BULKT,TWOD,"AX   ", &
    &                                  .FALSE.,RIGIDBODY,DEBUG,RMAT)               
                       IF (D.LE.GEOMDIFFTOL) THEN
-                         PRINT '(A)',' geometry from plus side of path matches expected plus minimum'
+                         PRINT '(A)',' GEOMETRY FROM PLUS SIDE OF PATH MATCHES EXPECTED PLUS MINIMUM'
                          IF (ABS(EMINUS-MI(TS(INDEXTS)%DATA%M)%DATA%E).LE.EDIFFTOL) THEN
-                            PRINT '(A)',' energy from minus side of path matches expected minus minimum'
+                            PRINT '(A)',' ENERGY FROM MINUS SIDE OF PATH MATCHES EXPECTED MINUS MINIMUM'
                             CALL NEWMINDIST(MI(TS(INDEXTS)%DATA%M)%DATA%X,QMINUS,NATOMS,D,BULKT,TWOD,"AX   ",.FALSE., &
    &                                        RIGIDBODY,DEBUG,RMAT)
                             IF (D.LE.GEOMDIFFTOL) THEN
-                               PRINT '(A)',' geometry from minus side of path matches expected minus minimum'
+                               PRINT '(A)',' GEOMETRY FROM MINUS SIDE OF PATH MATCHES EXPECTED MINUS MINIMUM'
                                IF (TS(INDEXTS)%DATA%P == DUMMY%I) REVERSEORDER=.FALSE.
                                PATHFAILT=.FALSE.
                             ELSE
-                               PRINT '(A)',' geometry from minus side of path does not match expected minus minimum'
+                               PRINT '(A)',' GEOMETRY FROM MINUS SIDE OF PATH DOES NOT MATCH EXPECTED MINUS MINIMUM'
                             ENDIF
                          ELSE
-                            PRINT '(A)',' energy from minus side of path does not match expected minus minimum'
+                            PRINT '(A)',' ENERGY FROM MINUS SIDE OF PATH DOES NOT MATCH EXPECTED MINUS MINIMUM'
                          ENDIF
                       ELSE
-                         PRINT '(A)',' geometry from plus side of path does not match that expected for the plus minimum'
+                         PRINT '(A)',' GEOMETRY FROM PLUS SIDE OF PATH DOES NOT MATCH THAT EXPECTED FOR THE PLUS MINIMUM'
                       ENDIF
                    ENDIF
                    IF (PATHFAILT) THEN
                       IF (ABS(EPLUS-MI(TS(INDEXTS)%DATA%M)%DATA%E).LE.EDIFFTOL) THEN
-                         PRINT '(A)',' energy from plus side of path matches expected minus minimum'
+                         PRINT '(A)',' ENERGY FROM PLUS SIDE OF PATH MATCHES EXPECTED MINUS MINIMUM'
                          CALL NEWMINDIST(MI(TS(INDEXTS)%DATA%M)%DATA%X,QPLUS,NATOMS,D,BULKT,TWOD,"AX   ",.FALSE., &
    &                                     RIGIDBODY,DEBUG,RMAT)               
                          IF (D.LE.GEOMDIFFTOL) THEN
-                            PRINT '(A)',' geometry from plus side of path matches expected minus minimum'
+                            PRINT '(A)',' GEOMETRY FROM PLUS SIDE OF PATH MATCHES EXPECTED MINUS MINIMUM'
                             IF (ABS(EMINUS-MI(TS(INDEXTS)%DATA%P)%DATA%E).LE.EDIFFTOL) THEN
-                               PRINT '(A)',' energy from minus side of path matches expected plus minimum'
+                               PRINT '(A)',' ENERGY FROM MINUS SIDE OF PATH MATCHES EXPECTED PLUS MINIMUM'
                                CALL NEWMINDIST(MI(TS(INDEXTS)%DATA%P)%DATA%X,QMINUS,NATOMS,D,BULKT,TWOD,"AX   ",.FALSE., &
    &                                           RIGIDBODY,DEBUG,RMAT)
                                IF (D.LE.GEOMDIFFTOL) THEN
-                                  PRINT '(A)',' geometry from minus side of path matches expected plus minimum'
+                                  PRINT '(A)',' GEOMETRY FROM MINUS SIDE OF PATH MATCHES EXPECTED PLUS MINIMUM'
                                   PATHFAILT=.FALSE.
                                   IF (TS(INDEXTS)%DATA%M == DUMMY%I) REVERSEORDER=.FALSE.
                                ELSE
-                                  PRINT '(A)',' geometry from minus side of path does not match expected plus minimum'
+                                  PRINT '(A)',' GEOMETRY FROM MINUS SIDE OF PATH DOES NOT MATCH EXPECTED PLUS MINIMUM'
                                ENDIF
                             ELSE
-                               PRINT '(A)',' energy from minus side of path does not match expected plus minimum'
+                               PRINT '(A)',' ENERGY FROM MINUS SIDE OF PATH DOES NOT MATCH EXPECTED PLUS MINIMUM'
                             ENDIF
                          ELSE
-                            PRINT '(A)',' geometry from plus side of path does not match that expected for the minus minimum'
+                            PRINT '(A)',' GEOMETRY FROM PLUS SIDE OF PATH DOES NOT MATCH THAT EXPECTED FOR THE MINUS MINIMUM'
                          ENDIF
                       ENDIF
                    ENDIF
                 ENDIF
-                IF (PATHFAILT) PRINT '(A)',' ERROR - attempt to fill in pathway is not consistent with saved data'
+                IF (PATHFAILT) PRINT '(A)',' ERROR - ATTEMPT TO FILL IN PATHWAY IS NOT CONSISTENT WITH SAVED DATA'
              ENDIF
                
              !XYZ BIT
 
-             !reading part of the path that corresponds to ts dummy%j
-             OPEN(UNIT=40,FILE=ITSTRING,STATUS='old',action="read")
+             !READING PART OF THE PATH THAT CORRESPONDS TO TS DUMMY%J
+             OPEN(UNIT=40,FILE=ITSTRING,STATUS='OLD',ACTION="READ")
              K=1
              DO
-                  READ(40,*,IOSTAT=EOF) !NEVIDOMO SKIL'ky fraimiv
+                  READ(40,*,IOSTAT=EOF) !NEVIDOMO SKIL'KY FRAIMIV
                   IF (EOF==0) THEN
                        BACKSPACE 40
                   ELSE
                        EXIT
                   ENDIF
-                  IF (K<0) PRINT*,'k=',k ! stupid fix for stupid Sun compiler bug
-                                         ! need to access k to prevent SEGV       DJW
+                  IF (K<0) PRINT*,'K=',K ! STUPID FIX FOR STUPID SUN COMPILER BUG
+                                         ! NEED TO ACCESS K TO PREVENT SEGV       DJW
                     
-                  ! stvoryty novyi element
+                  ! STVORYTY NOVYI ELEMENT
                   ALLOCATE(TAIL); NULLIFY(TAIL%NEXT,TAIL%PREVIOUS,TAIL%Q,TAIL%SYM,TAIL%LINE)
                     
-                  ! i zapovnyty yogo danymy
+                  ! I ZAPOVNYTY YOGO DANYMY
                   ALLOCATE(TAIL%Q(3*NATOMS),TAIL%SYM(NATOMS))
-                  READ(40,'(a)')
-                  READ(40,'(a)') tail%comment
+                  READ(40,'(A)')
+                  READ(40,'(A)') TAIL%COMMENT
                   DO J=1,NATOMS
-                     READ(40,'(a5,1x,3f20.10)') tail%sym(j),tail%q(3*(j-1)+1),tail%q(3*(j-1)+2),tail%q(3*(j-1)+3)
+                     READ(40,'(A5,1X,3F20.10)') TAIL%SYM(J),TAIL%Q(3*(J-1)+1),TAIL%Q(3*(J-1)+2),TAIL%Q(3*(J-1)+3)
                   ENDDO
                   
-                  IF (ASSOCIATED(TMP)) THEN ! ODYN ABO DEKIL'ka lanok vge isnye; teper tmp mistyt' poperednu lanku
+                  IF (ASSOCIATED(TMP)) THEN ! ODYN ABO DEKIL'KA LANOK VGE ISNYE; TEPER TMP MISTYT' POPEREDNU LANKU
                        TMP%NEXT => TAIL
                        TAIL%PREVIOUS => TMP ! ZVOROTNIY ZVYAZOK
                   ENDIF
@@ -687,7 +687,7 @@ MODULE CONNECTUTILS
              ENDDO
              CLOSE(40)
                
-             ! writing frames to path.xyz file in correct order + rotated as needed
+             ! WRITING FRAMES TO PATH.XYZ FILE IN CORRECT ORDER + ROTATED AS NEEDED
              K=1
              IF (REVERSEORDER) THEN
                   TMP => TAIL; NULLIFY(TAIL)
@@ -759,11 +759,11 @@ MODULE CONNECTUTILS
 
              !ENERGY BIT
              IF (REVERSEORDER) THEN
-                  !open(unit=40,file=EofSString,status='old',action='read',position='append')
-                  ! PGI complains about read and append together ... hm...
-                  OPEN(UNIT=40,FILE=EOFSSTRING,STATUS='old',position='append')
+                  !OPEN(UNIT=40,FILE=EOFSSTRING,STATUS='OLD',ACTION='READ',POSITION='APPEND')
+                  ! PGI COMPLAINS ABOUT READ AND APPEND TOGETHER ... HM...
+                  OPEN(UNIT=40,FILE=EOFSSTRING,STATUS='OLD',POSITION='APPEND')
                   BACKSPACE 40
-                  READ(40,'(f20.10)') Sfirst
+                  READ(40,'(F20.10)') SFIRST
                   REWIND 40
                   SFIRST=SFIRST+SLAST
                   DO
@@ -778,13 +778,13 @@ MODULE CONNECTUTILS
                        NULLIFY(HEAD%NEXT)
                        IF (ASSOCIATED(TMP)) HEAD%NEXT => TMP
                        ALLOCATE(HEAD%LINE(1))
-                       READ(40,'(a)') head%line(1)
+                       READ(40,'(A)') HEAD%LINE(1)
                        TMP=>HEAD
                   ENDDO
                   DO
-                       READ(HEAD%LINE(1),'(2f20.10)') s,e
+                       READ(HEAD%LINE(1),'(2F20.10)') S,E
                        DEALLOCATE(HEAD%LINE)
-                       WRITE(UNIT=41,FMT='(2f20.10)') Sfirst - s,e
+                       WRITE(UNIT=41,FMT='(2F20.10)') SFIRST - S,E
                        SLAST = SFIRST - S
                        IF (.NOT.ASSOCIATED(HEAD%NEXT)) EXIT
                        TMP => HEAD%NEXT
@@ -796,13 +796,13 @@ MODULE CONNECTUTILS
                   DEALLOCATE(TMP)
                   NULLIFY(TMP)
              ELSE
-                  OPEN(UNIT=40,FILE=EOFSSTRING,STATUS='old',action='read')
+                  OPEN(UNIT=40,FILE=EOFSSTRING,STATUS='OLD',ACTION='READ')
                   J=1
                   DO
-                     READ(UNIT=40,FMT='(2f20.10)',iostat=eof) s,e
+                     READ(UNIT=40,FMT='(2F20.10)',IOSTAT=EOF) S,E
                      IF (.NOT.EOF==0) EXIT
                        IF (J==1) SFIRST=ABS(S) + SLAST
-                       WRITE(UNIT=41,FMT='(2f20.10)') Sfirst + s,e
+                       WRITE(UNIT=41,FMT='(2F20.10)') SFIRST + S,E
                        SLAST=SFIRST + S
                        J=0
                   ENDDO
@@ -827,10 +827,10 @@ MODULE CONNECTUTILS
 
           INTEGER :: J
 
-          WRITE(50,'(i6)') Natoms
-          WRITE(50,'(1x,a)') trim(adjustl(c))
+          WRITE(50,'(I6)') NATOMS
+          WRITE(50,'(1X,A)') TRIM(ADJUSTL(C))
           DO J=1,NATOMS
-               WRITE(50,'(a5,1x,3f20.10)') s(j),q(3*(j-1)+1),q(3*(j-1)+2),q(3*(j-1)+3)
+               WRITE(50,'(A5,1X,3F20.10)') S(J),Q(3*(J-1)+1),Q(3*(J-1)+2),Q(3*(J-1)+3)
           ENDDO
      END SUBROUTINE WRITEFRAME
 
@@ -844,10 +844,10 @@ MODULE CONNECTUTILS
 
           INTEGER :: J,K1,K2
 
-          WRITE(51,'(i6)') 2*Natoms-2 ! jmc for carbons plus dummy peptide atoms, want 2*Natoms-2...
-          WRITE(51,'(1x,a)') trim(adjustl(c))
+          WRITE(51,'(I6)') 2*NATOMS-2 ! JMC FOR CARBONS PLUS DUMMY PEPTIDE ATOMS, WANT 2*NATOMS-2...
+          WRITE(51,'(1X,A)') TRIM(ADJUSTL(C))
           DO J=1,NATOMS
-               WRITE(51,'(a5,1x,3f20.10)') s(j),q(3*(j-1)+1),q(3*(j-1)+2),q(3*(j-1)+3)
+               WRITE(51,'(A5,1X,3F20.10)') S(J),Q(3*(J-1)+1),Q(3*(J-1)+2),Q(3*(J-1)+3)
           ENDDO
           
           DO K1=1,(NATOMS/2)-1
@@ -856,9 +856,9 @@ MODULE CONNECTUTILS
                 PEPCOORDS(6*(K1-1)+K2+3)=(Q(6*(K1-1)+K2)+2.0D0*Q(6*K1+K2))/3.0D0
              ENDDO
           ENDDO
-          WRITE(51,'(A2,4X,3F20.10)') ('O ',pepcoords(6*(K1-1)+1),pepcoords(6*(K1-1)+2),pepcoords(6*(K1-1)+3) &
+          WRITE(51,'(A2,4X,3F20.10)') ('O ',PEPCOORDS(6*(K1-1)+1),PEPCOORDS(6*(K1-1)+2),PEPCOORDS(6*(K1-1)+3) &
                                        & ,K1=1,(NATOMS/2)-1)
-          WRITE(51,'(A2,4X,3F20.10)') ('N ',pepcoords(6*(K1-1)+4),pepcoords(6*(K1-1)+5),pepcoords(6*(K1-1)+6) &
+          WRITE(51,'(A2,4X,3F20.10)') ('N ',PEPCOORDS(6*(K1-1)+4),PEPCOORDS(6*(K1-1)+5),PEPCOORDS(6*(K1-1)+6) &
                                        & ,K1=1,(NATOMS/2)-1)
 
      END SUBROUTINE WRITEFRAMEUNRES
@@ -871,8 +871,8 @@ MODULE CONNECTUTILS
           
           TEMPTSRACK => TS
           TSRACKSIZE=TSRACKSIZE*INCR
-          WRITE(CHR,'(i5)') tsracksize
-          PRINT '(1x,a)', 'TS rack redimentioned to hold '//trim(adjustl(chr))//' ts.'
+          WRITE(CHR,'(I5)') TSRACKSIZE
+          PRINT '(1X,A)', 'TS RACK REDIMENTIONED TO HOLD '//TRIM(ADJUSTL(CHR))//' TS.'
           ALLOCATE(TS(TSRACKSIZE))
           DO I=1,TSRACKSIZE/INCR
                TS(I)=TEMPTSRACK(I)
@@ -888,8 +888,8 @@ MODULE CONNECTUTILS
 
           TEMPMINRACK => MI
           MINRACKSIZE=MINRACKSIZE*INCR
-          WRITE(CHR,'(i5)') minracksize
-          PRINT '(1x,a)', 'Minima rack redimentioned to hold '//trim(adjustl(chr))//' minima.'
+          WRITE(CHR,'(I5)') MINRACKSIZE
+          PRINT '(1X,A)', 'MINIMA RACK REDIMENTIONED TO HOLD '//TRIM(ADJUSTL(CHR))//' MINIMA.'
           ALLOCATE(MI(MINRACKSIZE))
           DO I=1,MINRACKSIZE/INCR
                MI(I)=TEMPMINRACK(I)
@@ -919,15 +919,15 @@ MODULE CONNECTUTILS
                DO
                     NSP=NSP+1
                     WRITE(MYSTR,*) NSP
-                    MYSTR='points'//trim(adjustl(mystr))//'.out'
-                    OPEN(UNIT=38,FILE=TRIM(ADJUSTL(MYSTR)),STATUS='unknown',form='unformatted',access='direct',recl=reclen)
+                    MYSTR='POINTS'//TRIM(ADJUSTL(MYSTR))//'.OUT'
+                    OPEN(UNIT=38,FILE=TRIM(ADJUSTL(MYSTR)),STATUS='UNKNOWN',FORM='UNFORMATTED',ACCESS='DIRECT',RECL=RECLEN)
                     WRITE(38,REC=1) (MI(DUMMY%I)%DATA%X(I),I=1,3*NATOMS)
                     CLOSE(38)
                     IF (ASSOCIATED(DUMMY%NEXT)) THEN
                          NSP=NSP+1
                          WRITE(MYSTR,*) NSP
-                         MYSTR='points'//trim(adjustl(mystr))//'.out'
-                         OPEN(UNIT=38,FILE=TRIM(ADJUSTL(MYSTR)),STATUS='unknown',form='unformatted',access='direct',recl=reclen)
+                         MYSTR='POINTS'//TRIM(ADJUSTL(MYSTR))//'.OUT'
+                         OPEN(UNIT=38,FILE=TRIM(ADJUSTL(MYSTR)),STATUS='UNKNOWN',FORM='UNFORMATTED',ACCESS='DIRECT',RECL=RECLEN)
                          WRITE(38,REC=1) (TS(MI(DUMMY%I)%DATA%CTS(DUMMY%J))%DATA%X(I),I=1,NOPT)
                          CLOSE(38)
                          DUMMY=>DUMMY%NEXT
@@ -940,9 +940,9 @@ MODULE CONNECTUTILS
           IF (ASSOCIATED(FINALPATHTS).AND.NTS==SIZE(FINALPATHTS)) THEN
                RETURN
           ELSE
-               OPEN(UNIT=38,FILE="POINTS.TS",STATUS='unknown',form='unformatted',access='direct',recl=reclen)
-               OPEN(UNIT=39,FILE="TS.DATA",STATUS='unknown',form='formatted')
-               OPEN(UNIT=40,FILE="POINTS.MIN",STATUS='unknown',form='unformatted',access='direct',recl=reclen)
+               OPEN(UNIT=38,FILE="POINTS.TS",STATUS='UNKNOWN',FORM='UNFORMATTED',ACCESS='DIRECT',RECL=RECLEN)
+               OPEN(UNIT=39,FILE="TS.DATA",STATUS='UNKNOWN',FORM='FORMATTED')
+               OPEN(UNIT=40,FILE="POINTS.MIN",STATUS='UNKNOWN',FORM='UNFORMATTED',ACCESS='DIRECT',RECL=RECLEN)
                NMINSAVED=0
                NTSSAVED=0
                MAIN: DO J=1,NTS
@@ -972,7 +972,7 @@ MODULE CONNECTUTILS
                          WRITE(40,REC=NMINSAVED) ( MI(TS(J)%DATA%M)%DATA%X(I),I=1,3*NATOMS )
                          REC2=NMINSAVED
                     ENDIF
-                    WRITE(39,'(2i10)') rec1,rec2
+                    WRITE(39,'(2I10)') REC1,REC2
                ENDDO MAIN
                CLOSE(39)
                CLOSE(38)
@@ -998,15 +998,15 @@ MODULE CONNECTUTILS
      LOGICAL :: BTEST,KD,NNZ,NINTB,TSFRQDONE,MINFRQDONE
 
 !   
-!  File path.info is now opened in keyword.f
+!  FILE PATH.INFO IS NOW OPENED IN KEYWORD.F
 !  
 !    IF (FILTH.EQ.0) THEN
-!       WRITE(PINFOSTRING,'(A9)') 'path.info'
+!       WRITE(PINFOSTRING,'(A9)') 'PATH.INFO'
 !    ELSE
-!       WRITE(PINFOSTRING,'(A)') 'path.info.'//TRIM(ADJUSTL(FILTHSTR))
+!       WRITE(PINFOSTRING,'(A)') 'PATH.INFO.'//TRIM(ADJUSTL(FILTHSTR))
 !    ENDIF
 !    IF (MACHINE) THEN
-!         OPEN(UNIT=88,FILE=PINFOSTRING,STATUS='UNKNOWN',form='unformatted')
+!         OPEN(UNIT=88,FILE=PINFOSTRING,STATUS='UNKNOWN',FORM='UNFORMATTED')
 !    ELSE
 !         OPEN(UNIT=88,FILE=PINFOSTRING,STATUS='UNKNOWN')
 !    ENDIF
@@ -1032,14 +1032,14 @@ MODULE CONNECTUTILS
            IF (MACHINE) THEN
                 WRITE(88) MI(DUMMY%I)%DATA%E, DIHE
            ELSE
-                WRITE(88,'(2F20.10)') mi(dummy%i)%data%E, DIHE
+                WRITE(88,'(2F20.10)') MI(DUMMY%I)%DATA%E, DIHE
            ENDIF
         ELSEIF (UNRST.AND.CALCDIHE) THEN
            CALL UNRESCALCDIHEREF(DIHE,ALLANG,MI(DUMMY%I)%DATA%X)
-!               WRITE(88,'(3F20.10)') mi(dummy%i)%data%E, DIHE, ALLANG
-           WRITE(88,'(3F20.10)') mi(dummy%i)%data%E, DIHE
+!               WRITE(88,'(3F20.10)') MI(DUMMY%I)%DATA%E, DIHE, ALLANG
+           WRITE(88,'(3F20.10)') MI(DUMMY%I)%DATA%E, DIHE
         ELSE
-           WRITE(88,'(F20.10)') mi(dummy%i)%data%E
+           WRITE(88,'(F20.10)') MI(DUMMY%I)%DATA%E
         ENDIF
         IF ((.NOT.MINFRQDONE).OR.(TWOD).OR.CHRMMT.OR.UNRST) THEN
            IF (UNRST) THEN ! JMC UPDATE COORDS
@@ -1111,7 +1111,7 @@ MODULE CONNECTUTILS
         ELSE
            CALL SYMMETRY(HORDER,.FALSE.,MI(DUMMY%I)%DATA%X,INERTIA)
            WRITE(88,'(I6,1X,A4)') HORDER,FPGRP
-! jmc           WRITE(88,'(3G20.10)') (FSAVEMIN(J2,J1),J2=1,3*NATOMS)
+! JMC           WRITE(88,'(3G20.10)') (FSAVEMIN(J2,J1),J2=1,3*NATOMS)
         ENDIF
         IF (I.GT.1) CALL NEWMINDIST(PREVIOUSTS,MI(DUMMY%I)%DATA%X,NATOMS,DISTPF,BULKT,TWOD,ZSYM(1),.FALSE.,RIGIDBODY,DEBUG,RMAT)
         IF (MACHINE) THEN
@@ -1178,7 +1178,7 @@ MODULE CONNECTUTILS
                        CALL POTENTIAL(TS(MI(DUMMY%I)%DATA%CTS(DUMMY%J))%DATA%X,DUMMY1,GRAD,.TRUE.,.TRUE.,RMS,.FALSE.,.FALSE.)
                     ENDIF
                     DO J2=1,NINTS-1
-                       IF (DIAG(J2).LT.0.0D0) PRINT *,'Higher order saddle found in pathway - ts ',i,'eigenvalue ',DIAG(J2)
+                       IF (DIAG(J2).LT.0.0D0) PRINT *,'HIGHER ORDER SADDLE FOUND IN PATHWAY - TS ',I,'EIGENVALUE ',DIAG(J2)
                     END DO
                     WRITE(88,'(3G20.10)') (DIAG(J2),J2=1,3*NATOMS)
                  ENDIF
@@ -1218,7 +1218,7 @@ MODULE CONNECTUTILS
      END SUBROUTINE MAKEPATHINFO
 
 !
-!  Dump the latest min-sad-min triple to path.info in the usual format
+!  DUMP THE LATEST MIN-SAD-MIN TRIPLE TO PATH.INFO IN THE USUAL FORMAT
 !  
      SUBROUTINE MAKEALLPATHINFO(QTS,QPLUS,QMINUS,ETS,EPLUS,EMINUS,FRQSTS,FRQSPLUS,FRQSMINUS)
      USE SYMINF 
@@ -1239,23 +1239,23 @@ MODULE CONNECTUTILS
       LOGICAL KNOWE, KNOWG, KNOWH
       COMMON /KNOWN/ KNOWE, KNOWG, KNOWH
 !   
-!  File path.info is now opened in keyword.f
+!  FILE PATH.INFO IS NOW OPENED IN KEYWORD.F
 !  
 !    IF (FILTH.EQ.0) THEN
-!       WRITE(PINFOSTRING,'(A9)') 'path.info'
+!       WRITE(PINFOSTRING,'(A9)') 'PATH.INFO'
 !    ELSE
-!       WRITE(PINFOSTRING,'(A)') 'path.info.'//TRIM(ADJUSTL(FILTHSTR))
+!       WRITE(PINFOSTRING,'(A)') 'PATH.INFO.'//TRIM(ADJUSTL(FILTHSTR))
 !    ENDIF
-!    if (machine) then
-!         OPEN(UNIT=88,FILE=PINFOSTRING,STATUS='UNKNOWN',form='unformatted',POSITION='APPEND')
-!    else
+!    IF (MACHINE) THEN
+!         OPEN(UNIT=88,FILE=PINFOSTRING,STATUS='UNKNOWN',FORM='UNFORMATTED',POSITION='APPEND')
+!    ELSE
 !         OPEN(UNIT=88,FILE=PINFOSTRING,STATUS='UNKNOWN',POSITION='APPEND')
-!    endif
+!    ENDIF
 
      TSFRQDONE=.FALSE.  ! ASSUME THAT WE NEVER KNOW THE FREQUENCIES
      MINFRQDONE=.FALSE. ! ASSUME THAT WE NEVER KNOW THE FREQUENCIES
 !
-!  First dump the + minimum.
+!  FIRST DUMP THE + MINIMUM.
 !  
      IF (CHRMMT) THEN
         IF (STOPBT) THEN
@@ -1351,7 +1351,7 @@ MODULE CONNECTUTILS
      ELSE
         CALL SYMMETRY(HORDER,.FALSE.,QPLUS,INERTIA)
         WRITE(88,'(I6,1X,A4)') HORDER,FPGRP
-! jmc   WRITE(88,'(3G20.10)') (FSAVEMIN(J2,J1),J2=1,3*NATOMS)
+! JMC   WRITE(88,'(3G20.10)') (FSAVEMIN(J2,J1),J2=1,3*NATOMS)
      ENDIF
      IF (MACHINE) THEN
           WRITE(88) (QPLUS,J2=1,3*NATOMS)
@@ -1359,7 +1359,7 @@ MODULE CONNECTUTILS
           WRITE(88,'(3F25.15)') (QPLUS(J2),J2=1,3*NATOMS)
      ENDIF
 !
-! now the transition state
+! NOW THE TRANSITION STATE
 !
      IF (MACHINE) THEN
           WRITE(88) ETS
@@ -1418,7 +1418,7 @@ MODULE CONNECTUTILS
                  CALL POTENTIAL(QTS,DUMMY1,GRAD,.TRUE.,.TRUE.,RMS,.FALSE.,.FALSE.)
               ENDIF
               DO J2=1,NINTS-1
-                 IF (DIAG(J2).LT.0.0D0) PRINT *,'Higher order saddle found in pathway - ts ',i,'eigenvalue ',DIAG(J2)
+                 IF (DIAG(J2).LT.0.0D0) PRINT *,'HIGHER ORDER SADDLE FOUND IN PATHWAY - TS ',I,'EIGENVALUE ',DIAG(J2)
               END DO
               WRITE(88,'(3G20.10)') (DIAG(J2),J2=1,3*NATOMS)
            ENDIF
@@ -1448,7 +1448,7 @@ MODULE CONNECTUTILS
           WRITE(88,'(3F25.15)') (QTS(J2),J2=1,NOPT)
      ENDIF
 !
-!  Finally dump the - minimum.
+!  FINALLY DUMP THE - MINIMUM.
 !
      IF (CHRMMT) THEN
         IF (STOPBT) THEN
@@ -1544,20 +1544,20 @@ MODULE CONNECTUTILS
      ELSE
         CALL SYMMETRY(HORDER,.FALSE.,QMINUS,INERTIA)
         WRITE(88,'(I6,1X,A4)') HORDER,FPGRP
-! jmc   WRITE(88,'(3G20.10)') (FSAVEMIN(J2,J1),J2=1,3*NATOMS)
+! JMC   WRITE(88,'(3G20.10)') (FSAVEMIN(J2,J1),J2=1,3*NATOMS)
      ENDIF
      IF (MACHINE) THEN
         WRITE(88) (QMINUS,J2=1,3*NATOMS)
      ELSE
-        WRITE(88,'(3F25.15)') (Qminus(J2),J2=1,3*NATOMS)
+        WRITE(88,'(3F25.15)') (QMINUS(J2),J2=1,3*NATOMS)
      ENDIF
 
-     KNOWH = .FALSE. ! needed otherwise the next TS search will use the wrong Hessian, if one is required.
+     KNOWH = .FALSE. ! NEEDED OTHERWISE THE NEXT TS SEARCH WILL USE THE WRONG HESSIAN, IF ONE IS REQUIRED.
      CALL FLUSH(88,ISTAT)
 
      END SUBROUTINE MAKEALLPATHINFO
 
-     SUBROUTINE CHECKPAIR(I,J) ! checks that minima I and J are different minima and puts them into the orientation with minimal D
+     SUBROUTINE CHECKPAIR(I,J) ! CHECKS THAT MINIMA I AND J ARE DIFFERENT MINIMA AND PUTS THEM INTO THE ORIENTATION WITH MINIMAL D
           USE PORFUNCS
           USE KEYUTILS
           USE KEY,ONLY : DEBUG, RIGIDBODY, PERMDIST,TWOD,BULKT
@@ -1568,10 +1568,10 @@ MODULE CONNECTUTILS
           INTEGER J1, J2
 
           IF (ABS(MI(I)%DATA%E-MI(J)%DATA%E) < EDIFFTOL) THEN
-             WRITE(*,'(/1x,a,2i5,a)') "Energies of the minima in the pair ",i,j," are the same - checking distance ..."
+             WRITE(*,'(/1X,A,2I5,A)') "ENERGIES OF THE MINIMA IN THE PAIR ",I,J," ARE THE SAME - CHECKING DISTANCE ..."
 
 !            IF (BULKT) THEN
-!               CALL NEWMINDIST(MI(I)%DATA%X,MI(J)%DATA%X,NATOMS,D,BULKT,TWOD,'AX   ',.True.,RIGIDBODY,DEBUG,RMAT)
+!               CALL NEWMINDIST(MI(I)%DATA%X,MI(J)%DATA%X,NATOMS,D,BULKT,TWOD,'AX   ',.TRUE.,RIGIDBODY,DEBUG,RMAT)
 !            ELSEIF (PERMDIST) THEN
 
              IF (PERMDIST) THEN
@@ -1579,23 +1579,23 @@ MODULE CONNECTUTILS
   &                              DEBUG,PARAM1,PARAM2,PARAM3,BULKT,TWOD,D,DIST2,RIGIDBODY,RMAT)
                 D=SQRT(D)
              ELSE
-                CALL NEWMINDIST(MI(I)%DATA%X,MI(J)%DATA%X,NATOMS,D,BULKT,TWOD,'AX   ',.True.,RIGIDBODY,DEBUG,RMAT)
+                CALL NEWMINDIST(MI(I)%DATA%X,MI(J)%DATA%X,NATOMS,D,BULKT,TWOD,'AX   ',.TRUE.,RIGIDBODY,DEBUG,RMAT)
              ENDIF
              IF (D < GEOMDIFFTOL) THEN
-                  WRITE(*,'(1x,a)') "Distance is zero: this should not happen"
+                  WRITE(*,'(1X,A)') "DISTANCE IS ZERO: THIS SHOULD NOT HAPPEN"
                   CALL TSUMMARY
                   CALL EXIT(10)
              ENDIF
           ELSE
 !            IF (BULKT) THEN
-!               CALL NEWMINDIST(MI(I)%DATA%X,MI(J)%DATA%X,NATOMS,D,BULKT,TWOD,"AX   ",.False.,RIGIDBODY,DEBUG,RMAT)
+!               CALL NEWMINDIST(MI(I)%DATA%X,MI(J)%DATA%X,NATOMS,D,BULKT,TWOD,"AX   ",.FALSE.,RIGIDBODY,DEBUG,RMAT)
 !            ELSEIF (PERMDIST) THEN
              IF (PERMDIST) THEN
                 CALL MINPERMDIST(MI(I)%DATA%X,MI(J)%DATA%X,NATOMS, &
   &                              DEBUG,PARAM1,PARAM2,PARAM3,BULKT,TWOD,D,DIST2,RIGIDBODY,RMAT)
                 D=SQRT(D)
              ELSE
-                CALL NEWMINDIST(MI(I)%DATA%X,MI(J)%DATA%X,NATOMS,D,BULKT,TWOD,"AX   ",.False.,RIGIDBODY,DEBUG,RMAT)
+                CALL NEWMINDIST(MI(I)%DATA%X,MI(J)%DATA%X,NATOMS,D,BULKT,TWOD,"AX   ",.FALSE.,RIGIDBODY,DEBUG,RMAT)
              ENDIF
           ENDIF
 
@@ -1613,7 +1613,7 @@ MODULE CONNECTUTILS
           ELSE IF (I>J) THEN
                GETDISTANCE=MI(I)%DATA%D(J)
           ELSE
-               IF (DEBUG) PRINT *, 'GetDistance> WARNING: i = j =',i
+               IF (DEBUG) PRINT *, 'GETDISTANCE> WARNING: I = J =',I
                GETDISTANCE=0.0D0
           ENDIF
      END FUNCTION GETDISTANCE
@@ -1630,7 +1630,7 @@ MODULE CONNECTUTILS
           ELSE IF (I>J) THEN
                GETINTERP=MI(I)%DATA%INTERP(J)
           ELSE
-               IF (DEBUG) PRINT *, 'getinterp> WARNING: i = j =',i
+               IF (DEBUG) PRINT *, 'GETINTERP> WARNING: I = J =',I
                GETINTERP=0.0D0
           ENDIF
      END FUNCTION GETINTERP
@@ -1646,7 +1646,7 @@ MODULE CONNECTUTILS
           ELSE IF (I>J) THEN
                MI(I)%DATA%D(J)=D
           ELSE
-               IF (DEBUG) PRINT *, 'SetDistance> WARNING: i = j =',i
+               IF (DEBUG) PRINT *, 'SETDISTANCE> WARNING: I = J =',I
           ENDIF
      END SUBROUTINE SETDISTANCE
 
@@ -1661,7 +1661,7 @@ MODULE CONNECTUTILS
           ELSE IF (I>J) THEN
                MI(I)%DATA%INTERP(J)=INTVALUE
           ELSE
-               IF (DEBUG) PRINT *, 'SetINTERP> WARNING: i = j =',i
+               IF (DEBUG) PRINT *, 'SETINTERP> WARNING: I = J =',I
           ENDIF
      END SUBROUTINE SETINTERP
 
@@ -1679,8 +1679,8 @@ MODULE CONNECTUTILS
              LOCALPOINTS(1:NOPT) = Q2(1:NOPT) + DELTAX*(I-1)
              CALL POTENTIAL(LOCALPOINTS,ENERGY,VNEW,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
              IF (ENERGY.GT.MAXE) MAXE=ENERGY
-!            PRINT '(A,3G20.10)',' interpvalue> i,energy,maxe=',i,energy,maxe
-             IF (DEBUG) PRINT '(A,3G20.10)',' interpvalue> i,energy,maxe=',i,energy,maxe
+!            PRINT '(A,3G20.10)',' INTERPVALUE> I,ENERGY,MAXE=',I,ENERGY,MAXE
+             IF (DEBUG) PRINT '(A,3G20.10)',' INTERPVALUE> I,ENERGY,MAXE=',I,ENERGY,MAXE
           ENDDO
           INTERPVALUE=MAXE
 

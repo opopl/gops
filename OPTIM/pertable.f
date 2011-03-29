@@ -1,20 +1,20 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C     GIVES ATOMIC NUMBER AND ATOMIC MASS INFORMATION
@@ -25,7 +25,7 @@ C
 
       IMPLICIT NONE
 C
-C     Setup the periodic table - we have entered MXTABL elements here
+C     SETUP THE PERIODIC TABLE - WE HAVE ENTERED MXTABL ELEMENTS HERE
 C
       INTEGER MXTABL,I,J
       PARAMETER (MXTABL = 105)
@@ -79,11 +79,11 @@ C
      &    106.42D0      ,  1.0D0       , 1.0D0         ,
      &      1.0D0       ,  1.D0        , 1.D0 /
 C
-C     For each entry in the Z-matrix, get a mass
+C     FOR EACH ENTRY IN THE Z-MATRIX, GET A MASS
 C
       IF (IPRNT .GE. 10) WRITE (*,9000)
- 9000 FORMAT ('PERTABLE: Mass and at. nr. lookup'/
-     1     'Line Symbol AtNr   At. Mass')
+ 9000 FORMAT ('PERTABLE: MASS AND AT. NR. LOOKUP'/
+     1     'LINE SYMBOL ATNR   AT. MASS')
       DO 10 I = 1, NATOMS
          IF (ZSYM(I) .EQ. 'X ') THEN
             IATNUM(I) = 0
@@ -91,9 +91,9 @@ C
          ELSE
             DO 20 J = 1, MXTABL
                IF (ZSYM(I) .EQ. ATSYM(J)) THEN
-                  IF (ZSYM(I)(1:1).EQ.'W') THEN ! to generalise this to other rigid 
+                  IF (ZSYM(I)(1:1).EQ.'W') THEN ! TO GENERALISE THIS TO OTHER RIGID 
                      IF (I.LE.NATOMS/2) THEN
-                        IATNUM(3*(I-1)+1)=8        ! bodies will require site/mass specification !
+                        IATNUM(3*(I-1)+1)=8        ! BODIES WILL REQUIRE SITE/MASS SPECIFICATION !
                         IATNUM(3*(I-1)+2)=1
                         IATNUM(3*(I-1)+3)=1
                         ATMASS(3*(I-1)+1)=16.0D0
@@ -111,17 +111,17 @@ C
  9010    FORMAT(I3,2X,A5,2X,I5,2X,F10.5)
  10   CONTINUE
 
-! RAC: very, very lazy..
+! RAC: VERY, VERY LAZY..
 
       IF (ZSYM(NATOMS).EQ.'SV') THEN
-         print *, " Assigning the atomic masses for MSEVB system "
-         do i = 1,NATOMS
-            if (MOD(i,3).eq.0) then
-               ATMASS(i) = 15.9994d0
-            else
-               ATMASS(i) = 1.00794
-            endif
-         enddo
+         PRINT *, " ASSIGNING THE ATOMIC MASSES FOR MSEVB SYSTEM "
+         DO I = 1,NATOMS
+            IF (MOD(I,3).EQ.0) THEN
+               ATMASS(I) = 15.9994D0
+            ELSE
+               ATMASS(I) = 1.00794
+            ENDIF
+         ENDDO
       ENDIF
 
       IF (NTIPT) THEN

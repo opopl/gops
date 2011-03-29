@@ -1,84 +1,84 @@
 
-c     --------------------- gaussv ----------------------
+C     --------------------- GAUSSV ----------------------
 
-      subroutine gaussv(maxs,dist,deltr,gaussp,rgrid)
+      SUBROUTINE GAUSSV(MAXS,DIST,DELTR,GAUSSP,RGRID)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     GAUSSV generates a guassian curve centered about 
-c            dist with a 'standard deviation' of deltr
+C     GAUSSV GENERATES A GUASSIAN CURVE CENTERED ABOUT 
+C            DIST WITH A 'STANDARD DEVIATION' OF DELTR
 
-c     arguments:
+C     ARGUMENTS:
 
-c        maxs  - number of points the grid is to be
-c                evaluated at (i)
-c        dist  - center or average of gaussian; 
-c                it is the distance between residues 
-c                i and j (i)
-c        deltr - is the width or standard deviation of
-c                the well (i)
-c        gaussp- gaussian as a function of the r-grid
-c                in rgrid (o)
-c        rgrid - grid of r points for which the gaussian
-c                is to be computed (i)        
+C        MAXS  - NUMBER OF POINTS THE GRID IS TO BE
+C                EVALUATED AT (I)
+C        DIST  - CENTER OR AVERAGE OF GAUSSIAN; 
+C                IT IS THE DISTANCE BETWEEN RESIDUES 
+C                I AND J (I)
+C        DELTR - IS THE WIDTH OR STANDARD DEVIATION OF
+C                THE WELL (I)
+C        GAUSSP- GAUSSIAN AS A FUNCTION OF THE R-GRID
+C                IN RGRID (O)
+C        RGRID - GRID OF R POINTS FOR WHICH THE GAUSSIAN
+C                IS TO BE COMPUTED (I)        
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-      implicit none
+      IMPLICIT NONE
 
-c     argument declarations:
+C     ARGUMENT DECLARATIONS:
 
-         integer maxs
+         INTEGER MAXS
 
-         double precision dist,deltr,gaussp(maxs),
-     *        rgrid(maxs)
+         DOUBLE PRECISION DIST,DELTR,GAUSSP(MAXS),
+     *        RGRID(MAXS)
 
 
-c     internal variables:
+C     INTERNAL VARIABLES:
  
-         integer i500,i501,i502,i503
+         INTEGER I500,I501,I502,I503
 
-c     --------------------- begin -----------------------
+C     --------------------- BEGIN -----------------------
 
-c     --- diagnostics ---
+C     --- DIAGNOSTICS ---
 
-c     echo input
+C     ECHO INPUT
  
-c      write(oarchv,100)maxs,dist,deltr
-c  100 format('gaussv:maxs ',i3,' dist and deltr',
-c    *        2(1x,1pe10.3))
+C      WRITE(OARCHV,100)MAXS,DIST,DELTR
+C  100 FORMAT('GAUSSV:MAXS ',I3,' DIST AND DELTR',
+C    *        2(1X,1PE10.3))
 
-c     --- end diagnostics ---
+C     --- END DIAGNOSTICS ---
 
 
-c     find (r - r(mem))**2
+C     FIND (R - R(MEM))**2
 
-      do 500 i500=1,maxs
-         gaussp(i500)=-( rgrid(i500) - dist )**2
-  500 continue
+      DO 500 I500=1,MAXS
+         GAUSSP(I500)=-( RGRID(I500) - DIST )**2
+  500 CONTINUE
 
-c     divide by 'variance' of well-width
+C     DIVIDE BY 'VARIANCE' OF WELL-WIDTH
             
-      do 501 i501=1,maxs
-         gaussp(i501)=gaussp(i501)*deltr
-  501 continue
+      DO 501 I501=1,MAXS
+         GAUSSP(I501)=GAUSSP(I501)*DELTR
+  501 CONTINUE
 
-c     make sure underflow doesn't occur
+C     MAKE SURE UNDERFLOW DOESN'T OCCUR
 
-      do 502 i502=1,maxs
-         gaussp(i502)=max( gaussp(i502),-60.0D0 )
-  502 continue
+      DO 502 I502=1,MAXS
+         GAUSSP(I502)=MAX( GAUSSP(I502),-60.0D0 )
+  502 CONTINUE
 
-c     compute gaussian
+C     COMPUTE GAUSSIAN
 
-      do 503 i503=1,maxs
-         gaussp(i503)=exp( gaussp(i503) )
-  503 continue
-
-
+      DO 503 I503=1,MAXS
+         GAUSSP(I503)=EXP( GAUSSP(I503) )
+  503 CONTINUE
 
 
-c     ---------------------- done -----------------------
+
+
+C     ---------------------- DONE -----------------------
  
-      return
-      end
+      RETURN
+      END

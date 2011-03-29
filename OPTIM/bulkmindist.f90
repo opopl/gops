@@ -1,20 +1,20 @@
-!   OPTIM: A program for optimizing geometries and calculating reaction pathways
-!   Copyright (C) 1999-2006 David J. Wales
-!   This file is part of OPTIM.
+!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!   THIS FILE IS PART OF OPTIM.
 !
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 SUBROUTINE BULKMINDIST(DUMMYB,DUMMYA,NATOMS,DISTANCE,TWOD,DEBUG,BOXLX,BOXLY,BOXLZ,PITEST,RESETA)
 USE KEY,ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP, GEOMDIFFTOL
@@ -26,20 +26,20 @@ DOUBLE PRECISION XBEST(3*NATOMS), DMIN, DTOTAL, DIST, GDSQ
 LOGICAL TWOD,DEBUG,PITEST,SAMEMIN,RESETA
 COMMON /BULKSHIFT/ XSHIFT,YSHIFT,ZSHIFT
 !
-! Find smallest group of permutable atoms.
-! Translate first atom of group to all positions and then find nearest atom within
-! the same group for every other atom.
-! Keep the best translation/permutation, which corresponds to the smallest
-! minimum image distance.
+! FIND SMALLEST GROUP OF PERMUTABLE ATOMS.
+! TRANSLATE FIRST ATOM OF GROUP TO ALL POSITIONS AND THEN FIND NEAREST ATOM WITHIN
+! THE SAME GROUP FOR EVERY OTHER ATOM.
+! KEEP THE BEST TRANSLATION/PERMUTATION, WHICH CORRESPONDS TO THE SMALLEST
+! MINIMUM IMAGE DISTANCE.
 !
 DISTANCE=1.0D100
 PITEST=.FALSE.
 SAMEMIN=.TRUE.
 GDSQ=GEOMDIFFTOL**2
 NPMIN=HUGE(1)
-! PRINT *,'DUMMYA in bulkmindist:'
+! PRINT *,'DUMMYA IN BULKMINDIST:'
 ! PRINT '(3G20.10)',DUMMYA(1:3*NATOMS)
-! PRINT *,'DUMMYB in bulkmindist:'
+! PRINT *,'DUMMYB IN BULKMINDIST:'
 ! PRINT '(3G20.10)',DUMMYB(1:3*NATOMS)
 DO J1=1,NPERMGROUP
    IF (NPERMSIZE(J1).LT.NPMIN) THEN
@@ -51,8 +51,8 @@ ND1=0
 DO J1=1,NGMIN-1
    ND1=ND1+NPERMSIZE(J1)
 ENDDO
-IF (DEBUG) PRINT '(3(A,I6))',' bulkmindist> Smallest group of permutable atoms is number ',NGMIN,' with ',NPMIN,' members'
-outer: DO J1=ND1+1,ND1+NPMIN
+IF (DEBUG) PRINT '(3(A,I6))',' BULKMINDIST> SMALLEST GROUP OF PERMUTABLE ATOMS IS NUMBER ',NGMIN,' WITH ',NPMIN,' MEMBERS'
+OUTER: DO J1=ND1+1,ND1+NPMIN
    J2=PERMGROUP(J1)
    XSHIFT=DUMMYA(3*(J2-1)+1)-DUMMYB(3*(ND1)+1)-BOXLX*NINT((DUMMYA(3*(J2-1)+1)-DUMMYB(3*(ND1)+1))/BOXLX)
    YSHIFT=DUMMYA(3*(J2-1)+2)-DUMMYB(3*(ND1)+2)-BOXLY*NINT((DUMMYA(3*(J2-1)+2)-DUMMYB(3*(ND1)+2))/BOXLY)
@@ -68,9 +68,9 @@ outer: DO J1=ND1+1,ND1+NPMIN
    DTOTAL=0.0D0
    DO J2=1,NPERMGROUP
       PATOMS=NPERMSIZE(J2)
-      loop1: DO J3=1,PATOMS    ! for each atom in fixed structure B in group J2
+      LOOP1: DO J3=1,PATOMS    ! FOR EACH ATOM IN FIXED STRUCTURE B IN GROUP J2
          DMIN=1.0D100
-         DO J4=1,PATOMS ! which is the closest atom in the same group for the structure in XTEMP (shifted A)?
+         DO J4=1,PATOMS ! WHICH IS THE CLOSEST ATOM IN THE SAME GROUP FOR THE STRUCTURE IN XTEMP (SHIFTED A)?
             DIST=(XTEMP(3*(PERMGROUP(NDUMMY+J4-1)-1)+1)-DUMMYB(3*(PERMGROUP(NDUMMY+J3-1)-1)+1) &
  &  - BOXLX*NINT((XTEMP(3*(PERMGROUP(NDUMMY+J4-1)-1)+1)-DUMMYB(3*(PERMGROUP(NDUMMY+J3-1)-1)+1))/BOXLX))**2 &
             &  + (XTEMP(3*(PERMGROUP(NDUMMY+J4-1)-1)+2)-DUMMYB(3*(PERMGROUP(NDUMMY+J3-1)-1)+2) &
@@ -81,26 +81,26 @@ outer: DO J1=ND1+1,ND1+NPMIN
                DMIN=DIST
                PERM(PERMGROUP(NDUMMY+J3-1))=PERMGROUP(NDUMMY+J4-1)
                IF (DIST.LT.GDSQ) THEN
-!                 PRINT '(A,I6,A,I6,A,G20.10)',' match found between atom ',PERMGROUP(NDUMMY+J3-1), &
-! &                                            ' and ',PERMGROUP(NDUMMY+J4-1),' DIST=',DIST
+!                 PRINT '(A,I6,A,I6,A,G20.10)',' MATCH FOUND BETWEEN ATOM ',PERMGROUP(NDUMMY+J3-1), &
+! &                                            ' AND ',PERMGROUP(NDUMMY+J4-1),' DIST=',DIST
                   NMATCHED=NMATCHED+1
                   DTOTAL=DTOTAL+DMIN
                   IF (PERM(PERMGROUP(NDUMMY+J3-1)).NE.PERMGROUP(NDUMMY+J3-1)) SAMEMIN=.FALSE.
-                  CYCLE loop1
+                  CYCLE LOOP1
                ENDIF
             ENDIF
          ENDDO
          DTOTAL=DTOTAL+DMIN
-!        PRINT '(A,I6,A,G20.10,A,I6)',' match failed for atom ',PERMGROUP(NDUMMY+J3-1),' DMIN=',DMIN,' J1=',J1
-         CYCLE outer ! If we reached here then we don't have a permutational isomer because
-                     ! the atom specified in the J3 loop does not have a partner.
-      ENDDO loop1
+!        PRINT '(A,I6,A,G20.10,A,I6)',' MATCH FAILED FOR ATOM ',PERMGROUP(NDUMMY+J3-1),' DMIN=',DMIN,' J1=',J1
+         CYCLE OUTER ! IF WE REACHED HERE THEN WE DON'T HAVE A PERMUTATIONAL ISOMER BECAUSE
+                     ! THE ATOM SPECIFIED IN THE J3 LOOP DOES NOT HAVE A PARTNER.
+      ENDDO LOOP1
       NDUMMY=NDUMMY+NPERMSIZE(J2)
    ENDDO
    IF (SAMEMIN) THEN
-      IF (DEBUG) PRINT '(A,G20.10)',' bulkmindist> identical isomers identified, distance=',SQRT(DTOTAL)
+      IF (DEBUG) PRINT '(A,G20.10)',' BULKMINDIST> IDENTICAL ISOMERS IDENTIFIED, DISTANCE=',SQRT(DTOTAL)
    ELSE
-      IF (DEBUG) PRINT '(A,G20.10)',' bulkmindist> permutational isomers identified, distance=',SQRT(DTOTAL)
+      IF (DEBUG) PRINT '(A,G20.10)',' BULKMINDIST> PERMUTATIONAL ISOMERS IDENTIFIED, DISTANCE=',SQRT(DTOTAL)
    ENDIF
    PITEST=.TRUE.
    DISTANCE=DTOTAL
@@ -113,9 +113,9 @@ outer: DO J1=ND1+1,ND1+NPMIN
    ENDIF
 
    RETURN
-ENDDO outer
+ENDDO OUTER
 
-IF (DEBUG) PRINT '(A)',' bulkmindist> structures are not permutational isomers'
+IF (DEBUG) PRINT '(A)',' BULKMINDIST> STRUCTURES ARE NOT PERMUTATIONAL ISOMERS'
 
 RETURN
 

@@ -1,27 +1,27 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       SUBROUTINE CONNECT(NCDONE,Q)
       USE COMMONS
       USE KEY
       USE MODTWOEND
       USE MODNEB
-      USE modcharmm
+      USE MODCHARMM
       USE MODUNRES
       IMPLICIT NONE
       INTEGER NMAXMIN, NMAXTS, MSTART, MFINISH, MSTEP
@@ -53,44 +53,44 @@ C     COMMON /CONREAL/ QSAVETS, QSAVE, FSAVETS, FSAVEMIN
       LOGICAL STOPDISPT
       COMMON /STOPD/ STOPDISP, STOPDISPT
       DOUBLE PRECISION ALLANG ! JMC
-      LOGICAL PATHFAILT, ORDERSTOP ! jmc
+      LOGICAL PATHFAILT, ORDERSTOP ! JMC
 
       ORDERSTOP=.FALSE.
       IF (UNRST) ALLOCATE(MYQMINSAVE(3*NATOMS,50))
 
-      INQUIRE(FILE='redopoints',EXIST=YESNO)
+      INQUIRE(FILE='REDOPOINTS',EXIST=YESNO)
       IF (YESNO) THEN
          IF (REDOPATH) THEN
-            PRINT '(A)','connect> Transition state coordinates will be read from file redopoints'
+            PRINT '(A)','CONNECT> TRANSITION STATE COORDINATES WILL BE READ FROM FILE REDOPOINTS'
 !        ELSE
-!           PRINT '(A)','connect> WARNING - redopoints file present, but no REDOPATH keyword'
+!           PRINT '(A)','CONNECT> WARNING - REDOPOINTS FILE PRESENT, BUT NO REDOPATH KEYWORD'
          ENDIF
       ELSE
          IF (REDOPATH) THEN
-            PRINT '(A)','connect> WARNING - REDOPATH keyword was specified, but no redopoints file'
+            PRINT '(A)','CONNECT> WARNING - REDOPATH KEYWORD WAS SPECIFIED, BUT NO REDOPOINTS FILE'
             REDOPATH=.FALSE.
          ENDIF
       ENDIF
 
 !
-!  Changed so that only transition state coordinates are read in.
-!  The points in finish must therefore be correct.
+!  CHANGED SO THAT ONLY TRANSITION STATE COORDINATES ARE READ IN.
+!  THE POINTS IN FINISH MUST THEREFORE BE CORRECT.
 !
       NTSREDO=1
       IF (REDOPATH) THEN
-         OPEN(UNIT=99,FILE='redopoints',STATUS='OLD')
-33       READ(99,*) (DUMMY(J1),J1=1,NOPT)    ! minimum
-         READ(99,*,END=32) (QSAVETS(J1,NTSREDO),J1=1,NOPT) ! ts
+         OPEN(UNIT=99,FILE='REDOPOINTS',STATUS='OLD')
+33       READ(99,*) (DUMMY(J1),J1=1,NOPT)    ! MINIMUM
+         READ(99,*,END=32) (QSAVETS(J1,NTSREDO),J1=1,NOPT) ! TS
          NTSREDO=NTSREDO+1
          GOTO 33
-32       WRITE(*,'(I5,A)') NTSREDO,' transition state coordinates read from file redopoints'
+32       WRITE(*,'(I5,A)') NTSREDO,' TRANSITION STATE COORDINATES READ FROM FILE REDOPOINTS'
          CLOSE(99)
       ENDIF
 C
-C IGUESS is used if GUESSTST is set (for CHARMM and UNRES)
+C IGUESS IS USED IF GUESSTST IS SET (FOR CHARMM AND UNRES)
 C
       IGUESS=1
-      IF (GUESSTST) TRYNEB=.FALSE. ! declared in modcharmm
+      IF (GUESSTST) TRYNEB=.FALSE. ! DECLARED IN MODCHARMM
 
       MXSTPSAVE=MXSTP
       NIMAGESAVE=NIMAGE
@@ -107,9 +107,9 @@ C
       ENDDO
 31    PTEST=.FALSE.
 C
-C  Even if a second derivative method was used the frequencies won;t have been
-C  done for the first and last minima, and the zeros may be shifted. Let;s just
-C  set the FRQDONE variables to false!
+C  EVEN IF A SECOND DERIVATIVE METHOD WAS USED THE FREQUENCIES WON;T HAVE BEEN
+C  DONE FOR THE FIRST AND LAST MINIMA, AND THE ZEROS MAY BE SHIFTED. LET;S JUST
+C  SET THE FRQDONE VARIABLES TO FALSE!
 C
       TSFRQDONE=.FALSE.
       MINFRQDONE=.FALSE.
@@ -122,45 +122,45 @@ C
       ENDDO
 
       IF (UNRST) THEN
-         DO J1=1,nres
-            c(1,J1)=FIN(6*(J1-1)+1)
-            c(2,J1)=FIN(6*(J1-1)+2)
-            c(3,J1)=FIN(6*(J1-1)+3)
-            c(1,J1+nres)=FIN(6*(J1-1)+4)
-            c(2,J1+nres)=FIN(6*(J1-1)+5)
-            c(3,J1+nres)=FIN(6*(J1-1)+6)
+         DO J1=1,NRES
+            C(1,J1)=FIN(6*(J1-1)+1)
+            C(2,J1)=FIN(6*(J1-1)+2)
+            C(3,J1)=FIN(6*(J1-1)+3)
+            C(1,J1+NRES)=FIN(6*(J1-1)+4)
+            C(2,J1+NRES)=FIN(6*(J1-1)+5)
+            C(3,J1+NRES)=FIN(6*(J1-1)+6)
          ENDDO
          CALL UPDATEDC
-         CALL int_from_cart(.true.,.false.)
-         CALL chainbuild
+         CALL INT_FROM_CART(.TRUE.,.FALSE.)
+         CALL CHAINBUILD
       ENDIF
 
-C jmc note can't use both calcdihe and stopdisp keywords, as using the refppsangle array here for finish's internal coordinates
+C JMC NOTE CAN'T USE BOTH CALCDIHE AND STOPDISP KEYWORDS, AS USING THE REFPPSANGLE ARRAY HERE FOR FINISH'S INTERNAL COORDINATES
 C COULD CAUSE PROBLEMS FOR PATHSAMPLE....
 C NEED TO RETURN TO THIS ISSUE!!!!!!!!!!!
-C Also note that refcoord and refppsangle don't correspond to the same structure!
+C ALSO NOTE THAT REFCOORD AND REFPPSANGLE DON'T CORRESPOND TO THE SAME STRUCTURE!
       IF (STOPDISPT.AND.UNRST) THEN
-         DO J1=1,nres-3
-            UREFPPSANGLE(J1)=phi(J1+3)
-            UREFPPSANGLE(J1+nres-3)=omeg(J1+1)
+         DO J1=1,NRES-3
+            UREFPPSANGLE(J1)=PHI(J1+3)
+            UREFPPSANGLE(J1+NRES-3)=OMEG(J1+1)
          END DO
-         UREFPPSANGLE(nres-2+nres-3)=omeg(nres-2+1)
+         UREFPPSANGLE(NRES-2+NRES-3)=OMEG(NRES-2+1)
       END IF
 
       CALL POTENTIAL(FIN,EFIN,  VNEW,.FALSE.,.FALSE.,RMSFIN,.FALSE.,.FALSE.)
 
       IF (UNRST) THEN
-         DO J1=1,nres
-            c(1,J1)=Q(6*(J1-1)+1)
-            c(2,J1)=Q(6*(J1-1)+2)
-            c(3,J1)=Q(6*(J1-1)+3)
-            c(1,J1+nres)=Q(6*(J1-1)+4)
-            c(2,J1+nres)=Q(6*(J1-1)+5)
-            c(3,J1+nres)=Q(6*(J1-1)+6)
+         DO J1=1,NRES
+            C(1,J1)=Q(6*(J1-1)+1)
+            C(2,J1)=Q(6*(J1-1)+2)
+            C(3,J1)=Q(6*(J1-1)+3)
+            C(1,J1+NRES)=Q(6*(J1-1)+4)
+            C(2,J1+NRES)=Q(6*(J1-1)+5)
+            C(3,J1+NRES)=Q(6*(J1-1)+6)
          ENDDO
          CALL UPDATEDC
-         CALL int_from_cart(.true.,.false.)
-         CALL chainbuild
+         CALL INT_FROM_CART(.TRUE.,.FALSE.)
+         CALL CHAINBUILD
       ENDIF
       CALL POTENTIAL(Q,  ESTART,VNEW,.FALSE.,.FALSE.,RMSSTART,.FALSE.,.FALSE.)
       EMIN(1)=ESTART
@@ -174,12 +174,12 @@ C Also note that refcoord and refppsangle don't correspond to the same structure
       REVERSET=.FALSE.
       IF (STOPDISP.LT.0.0D0) REVERSET=.TRUE.
 C
-C---------------------------------------start of main loop---------------------------------------------------
+C---------------------------------------START OF MAIN LOOP---------------------------------------------------
 C
 10    NCDONE=NCDONE+1
 C
-C  Print current state, check for completion and choose next pair of minima to connect, moving their
-C  coordinates into Q and FIN and energies into ESTART and EFIN
+C  PRINT CURRENT STATE, CHECK FOR COMPLETION AND CHOOSE NEXT PAIR OF MINIMA TO CONNECT, MOVING THEIR
+C  COORDINATES INTO Q AND FIN AND ENERGIES INTO ESTART AND EFIN
 C
       IF (REDOPATH.AND.(NTS.EQ.NTSREDO)) REDOPATH=.FALSE.
       CALL STARTUP(MFLAG,NMIN,NTS,CON,EMIN,WHICHTS,TSEN,NTSUSED,NMINCON,NCDONE,NCONNECT,MSTART,MFINISH,MSTEP,
@@ -192,7 +192,7 @@ C
       ENDIF
       IF (STOPDISPT) THEN
          IF (.NOT.TAGT) THEN
-            PRINT '(A)','connect> ERROR - STOPDISPT is true but TAGT is false'
+            PRINT '(A)','CONNECT> ERROR - STOPDISPT IS TRUE BUT TAGT IS FALSE'
             STOP
          ENDIF
          IF (STOPDISP.GT.0.0D0) THEN
@@ -227,7 +227,7 @@ C
                      DISTPF=SQRT((QSAVE(3*(TAGNUM(1)-1)+1,1)-CMX1+CMX2-QSAVE(3*(TAGNUM(1)-1)+1,J1))**2+
      1                           (QSAVE(3*(TAGNUM(1)-1)+2,1)-CMY1+CMY2-QSAVE(3*(TAGNUM(1)-1)+2,J1))**2+
      2                           (QSAVE(3*(TAGNUM(1)-1)+3,1)-CMZ1+CMZ2-QSAVE(3*(TAGNUM(1)-1)+3,J1))**2)
-C                    WRITE(*,'(A,I5,A,F12.5)') ' displacement between minimum 1 and minimum ',J1,' is ',DISTPF
+C                    WRITE(*,'(A,I5,A,F12.5)') ' DISPLACEMENT BETWEEN MINIMUM 1 AND MINIMUM ',J1,' IS ',DISTPF
                   ENDIF
 
                   IF (((DISTPF.GT.STOPDISP).AND.(.NOT.UNRST)).OR.ORDERSTOP) THEN
@@ -235,18 +235,18 @@ C                    WRITE(*,'(A,I5,A,F12.5)') ' displacement between minimum 1 
                      NTS=NMIN-1
                      MFLAG=.TRUE.
                      IF (ORDERSTOP) THEN
-                         WRITE(*,'(A,I5,A,F12.5,A)') ' order parameter condition satisfied for finish and minimum ',J1,
-     1                                           ' - stopping'
+                         WRITE(*,'(A,I5,A,F12.5,A)') ' ORDER PARAMETER CONDITION SATISFIED FOR FINISH AND MINIMUM ',J1,
+     1                                           ' - STOPPING'
                      ELSE
-                         WRITE(*,'(A,I5,A,F12.5,A)') ' order parameter condition satisfied for minimum 1 and minimum ',J1,
-     1                                           ' - stopping'
+                         WRITE(*,'(A,I5,A,F12.5,A)') ' ORDER PARAMETER CONDITION SATISFIED FOR MINIMUM 1 AND MINIMUM ',J1,
+     1                                           ' - STOPPING'
                      ENDIF
                      CALL CLEANUP(WHICHTS,TSEN,PLUSEN,MINUSEN,PATHLENGTH,DISP,GAMMA,NTILDE,EMIN,NMIN,DUMPPATH,QSAVE,QSAVETS,
      1                            FSAVETS,FSAVEMIN,MINFRQDONE,TSFRQDONE,BULKT,FILTH,FILTHSTR,TWOD,UNRST)
                      IF (UNRST) DEALLOCATE(MYQMINSAVE)
                      RETURN
                   ELSE
-                     GOTO 222  ! don't want to exit do loop until have tested all connected minima
+                     GOTO 222  ! DON'T WANT TO EXIT DO LOOP UNTIL HAVE TESTED ALL CONNECTED MINIMA
                   ENDIF
                ELSE
                   GOTO 111
@@ -283,7 +283,7 @@ C                 ENDDO
                   DISTPF=SQRT((QSAVE(3*(TAGNUM(1)-1)+1,NMIN)-CMX1+CMX2-QSAVE(3*(TAGNUM(1)-1)+1,J1))**2+
      1                        (QSAVE(3*(TAGNUM(1)-1)+2,NMIN)-CMY1+CMY2-QSAVE(3*(TAGNUM(1)-1)+2,J1))**2+
      2                        (QSAVE(3*(TAGNUM(1)-1)+3,NMIN)-CMZ1+CMZ2-QSAVE(3*(TAGNUM(1)-1)+3,J1))**2)
-C                 WRITE(*,'(A,I5,A,I5,A,F12.5)') ' displacement between minimum ',NMIN,' and minimum ',J1,' is ',DISTPF
+C                 WRITE(*,'(A,I5,A,I5,A,F12.5)') ' DISPLACEMENT BETWEEN MINIMUM ',NMIN,' AND MINIMUM ',J1,' IS ',DISTPF
                   IF (DISTPF.GT.-STOPDISP) THEN
                      DO J2=1,NMIN-(J1)+1
                         DO J3=1,NOPT
@@ -297,7 +297,7 @@ C                 WRITE(*,'(A,I5,A,I5,A,F12.5)') ' displacement between minimum 
                      NTS=NMIN-1
                      MFLAG=.TRUE.
                      WRITE(*,'(A,I5,A,I5,A,F12.5,A)') 
-     1                       ' displacement between minimum ',NMIN-J1,' and minimum ',(J1),' is ',DISTPF,' stopping'
+     1                       ' DISPLACEMENT BETWEEN MINIMUM ',NMIN-J1,' AND MINIMUM ',(J1),' IS ',DISTPF,' STOPPING'
                      CALL CLEANUP(WHICHTS,TSEN,PLUSEN,MINUSEN,PATHLENGTH,DISP,GAMMA,NTILDE,EMIN,NMIN,DUMPPATH,QSAVE,QSAVETS,
      1                            FSAVETS,FSAVEMIN,MINFRQDONE,TSFRQDONE,BULKT,FILTH,FILTHSTR,TWOD,UNRST)
                      IF (UNRST) DEALLOCATE(MYQMINSAVE)
@@ -314,14 +314,14 @@ C                 WRITE(*,'(A,I5,A,I5,A,F12.5)') ' displacement between minimum 
       ENDIF
 111   CONTINUE
 C
-C  Try to find a transition state between minima JDOING and JDOING+1
+C  TRY TO FIND A TRANSITION STATE BETWEEN MINIMA JDOING AND JDOING+1
 C
 22    CALL TSSEARCH(JDOING,JDOING+1,Q,FIN,BULKT,DTHRESH,FIXD,NATOMS,NIMAGESAVE,PTEST,NSTEPS,FILTH,FILTHSTR,MUPDATE,NSTEPMIN,
      1      MAXNEBBFGS,VNEW,NOSHIFT,NOPT,QSAVE,QSAVETS,CON,EMIN,WHICHTS,GT10,DIAG,STPMAX,MXSTPSAVE,NTS,
      2      NMIN,TSUSED,REVERSET,STOPFIRST,BFGSTST,INR,VECS,ENERGY,EVALMIN,RMS,JDOING,TWOD,REDOPATH,IGUESS,UNRST,NINTS)
       IF (GT10) GOTO 10
 C
-C  Is it a new transition state?
+C  IS IT A NEW TRANSITION STATE?
 C
       USEOLD=.FALSE.
       DO J1=1,NTS
@@ -332,10 +332,10 @@ C
             CALL NEWMINDIST(DUMMY,Q,NATOMS,DISTPF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
             IF (DISTPF.GT.GEOMDIFFTOL) GOTO 11
             IF (.NOT.TSUSED(J1)) THEN
-               WRITE(*,'(A,I4,A,I4,A,I4,A)') ' Same as transition state ',J1,' currently unused'
+               WRITE(*,'(A,I4,A,I4,A,I4,A)') ' SAME AS TRANSITION STATE ',J1,' CURRENTLY UNUSED'
 C
-C  Trying to reuse transition states seems to cause cycling. Could introduce a logical ALLOWREUSE
-C  and try reusing every other time...?
+C  TRYING TO REUSE TRANSITION STATES SEEMS TO CAUSE CYCLING. COULD INTRODUCE A LOGICAL ALLOWREUSE
+C  AND TRY REUSING EVERY OTHER TIME...?
 C
 C              IF (ZSYMSAVE(1:1).EQ.'W') THEN
 C              USEOLD=.TRUE.
@@ -346,10 +346,10 @@ C              ENDDO
 C              GOTO 30
 C              ELSE
                IF (GUESSTST.AND.(.NOT.TRYNEB)) THEN
-                  WRITE(*,'(A,I4,A,I4,A)') ' Same as transition state ',J1,' try again with a different twist'
+                  WRITE(*,'(A,I4,A,I4,A)') ' SAME AS TRANSITION STATE ',J1,' TRY AGAIN WITH A DIFFERENT TWIST'
                   IGUESS=IGUESS+1
                   IF (IGUESS.GT.ABS(NGUESS)) THEN
-                     WRITE(*,'(A,I5)') ' Too many ts guesses - try neb'
+                     WRITE(*,'(A,I5)') ' TOO MANY TS GUESSES - TRY NEB'
 C                    CALL REMMIN(JDOING,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,
 C 1                              REVERSET,STOPFIRST)
                      IGUESS=1
@@ -365,12 +365,12 @@ C 1                              REVERSET,STOPFIRST)
                   GOTO 22
                ELSE
                   IF (NIMAGE+4.GT.NIMAGEMAX) THEN
-                     WRITE(*,'(A,I5,A,I5)') ' Same as transition state ',J1,
-     1                                         ' too many neb images requested - remove minimum ',JDOING
+                     WRITE(*,'(A,I5,A,I5)') ' SAME AS TRANSITION STATE ',J1,
+     1                                         ' TOO MANY NEB IMAGES REQUESTED - REMOVE MINIMUM ',JDOING
                      CALL REMMIN(JDOING,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
                      NIMAGE=NIMAGESAVE
                   ELSE
-                     WRITE(*,'(A,I4,A,I4,A)') ' Same as transition state ',J1,' try again with ',NIMAGE+4,' images'
+                     WRITE(*,'(A,I4,A,I4,A)') ' SAME AS TRANSITION STATE ',J1,' TRY AGAIN WITH ',NIMAGE+4,' IMAGES'
                      NIMAGE=NIMAGE+4
                      DO J2=1,NOPT
                         Q(J2) =QSAVE(J2,JDOING)
@@ -386,15 +386,15 @@ C 1                              REVERSET,STOPFIRST)
                   STPMAX(J2)=MXSTPSAVE
                ENDDO
 C
-C  If JDOING is 1 or NMINMAX then we shouldn;t really try to
-C  access WHICHTS(JDOING-or+1). Seems OK with the additional
-C  tests added before accessing WHICHTS, but the tests should
-C  really be nested?
+C  IF JDOING IS 1 OR NMINMAX THEN WE SHOULDN;T REALLY TRY TO
+C  ACCESS WHICHTS(JDOING-OR+1). SEEMS OK WITH THE ADDITIONAL
+C  TESTS ADDED BEFORE ACCESSING WHICHTS, BUT THE TESTS SHOULD
+C  REALLY BE NESTED?
 C
                IF ((JDOING.GT.1).AND.(J1.EQ.WHICHTS(JDOING-1))) THEN
                   WRITE(*,'(A,I4,A,I4,A,I4)') 
-     1                    ' Same as transition state ',J1,' linking minima ',JDOING-1,' and ',JDOING
-                  WRITE(*,'(A,I4,A,I4,A)') ' Try linking minima ',JDOING-1,' and ',JDOING+1,' instead'
+     1                    ' SAME AS TRANSITION STATE ',J1,' LINKING MINIMA ',JDOING-1,' AND ',JDOING
+                  WRITE(*,'(A,I4,A,I4,A)') ' TRY LINKING MINIMA ',JDOING-1,' AND ',JDOING+1,' INSTEAD'
 20                ESTART=EMIN(JDOING-1)
                   EFIN=EMIN(JDOING+1)
                   DO J2=1,NOPT
@@ -403,7 +403,7 @@ C
                      FIN(J2)=QSAVE(J2,JDOING+1)
                   ENDDO
 C
-C  Try to find a transition state between minima JDOING-1 and JDOING+1 instead
+C  TRY TO FIND A TRANSITION STATE BETWEEN MINIMA JDOING-1 AND JDOING+1 INSTEAD
 C
                  CALL TSSEARCH(JDOING-1,JDOING+1,Q,FIN,BULKT,DTHRESH,FIXD,NATOMS,NIMAGESAVE,PTEST,NSTEPS,FILTH,FILTHSTR,
      1           MUPDATE,NSTEPMIN,
@@ -411,12 +411,12 @@ C
      3           NMIN,TSUSED,REVERSET,STOPFIRST,BFGSTST,INR,VECS,ENERGY,EVALMIN,RMS,JDOING,TWOD,REDOPATH,IGUESS,UNRST,NINTS)
                   IF (GT10) GOTO 10
 C
-C  Is it a new transition state?
+C  IS IT A NEW TRANSITION STATE?
 C
                   CALL ISNEWTS(ENERGY,TSEN,NOPT,QSAVETS,Q,NATOMS,BULKT,STPMAX,MXSTPSAVE,NIMAGE,NIMAGEMAX,JDOING,
      1            NMIN,QSAVE,CON,EMIN,WHICHTS,TSUSED,REVERSET,STOPFIRST,GT10,NIMAGESAVE,NTS,TWOD,IGUESS)
                   IF (GT10) THEN
-                     IF ((NIMAGE.GT.NIMAGESAVE).OR.(IGUESS.GT.ABS(NGUESS))) GOTO 20 ! jmc added abs for unres related purposes...
+                     IF ((NIMAGE.GT.NIMAGESAVE).OR.(IGUESS.GT.ABS(NGUESS))) GOTO 20 ! JMC ADDED ABS FOR UNRES RELATED PURPOSES...
                      GOTO 10
                   ENDIF
 
@@ -432,8 +432,8 @@ C
 
                   CALL PATH(Q,ENERGY,VNEW,RMS,EVALMIN,VECS,.FALSE.,QPLUS,QMINUS,PTEST,ETS,PLUSEN(NTS),MINUSEN(NTS),
      1         PATHLENGTH(NTS),DISP(NTS),GAMMA(NTS),NTILDE(NTS),FRQSTS,FRQSPLUS,FRQSMINUS,ITSTRING,EOFSSTRING,PATHFAILT)
-C jmc added logical PATHFAILT, which  is set to true if one side of the path fails to converge - try another ts guess 
-C rather than stopping the entire run
+C JMC ADDED LOGICAL PATHFAILT, WHICH  IS SET TO TRUE IF ONE SIDE OF THE PATH FAILS TO CONVERGE - TRY ANOTHER TS GUESS 
+C RATHER THAN STOPPING THE ENTIRE RUN
 
                   IF (TSFRQDONE) THEN
                      DO J2=1,NOPT
@@ -441,20 +441,20 @@ C rather than stopping the entire run
                      ENDDO
                   ENDIF
 C
-C  Insert the new minima into the existing set, or reject.
+C  INSERT THE NEW MINIMA INTO THE EXISTING SET, OR REJECT.
 C
                   CALL ADDMIN(JDOING-1,JDOING+1,FIN,QPLUS,QSTART,Q,NATOMS,BULKT,NTS,NOPT,STPMAX,MXSTPSAVE,REVERSET,
      1                        STOPFIRST,CON,WHICHTS,NMIN,QSAVE,MINFRQDONE,FSAVEMIN,GT10,TSUSED,EMIN,NIMAGE,NIMAGESAVE,
      2                        FRQSPLUS,FRQSMINUS,PLUSEN,MINUSEN,NIMAGEMAX,NTS,JDOING,TWOD,REDOPATH,QSAVETS,IGUESS,
      3                        UNRST,PATHFAILT,BFGSTST,ITSTRING)
                   IF (GT10) THEN
-                     IF ((NIMAGE.GT.NIMAGESAVE).OR.(IGUESS.GT.ABS(NGUESS))) GOTO 20 ! jmc abs
+                     IF ((NIMAGE.GT.NIMAGESAVE).OR.(IGUESS.GT.ABS(NGUESS))) GOTO 20 ! JMC ABS
                      GOTO 10
                   ENDIF
 
                ELSE IF ((JDOING.LT.NMAXMIN).AND.(J1.EQ.WHICHTS(JDOING+1))) THEN
-                  WRITE(*,'(A,I4,A,I4,A,I4)') ' Same as transition state ',J1,' linking minima ',JDOING+1,' and ',JDOING+2
-                  WRITE(*,'(A,I4,A,I4,A)') ' Try linking minima ',JDOING,' and ',JDOING+2,' instead'
+                  WRITE(*,'(A,I4,A,I4,A,I4)') ' SAME AS TRANSITION STATE ',J1,' LINKING MINIMA ',JDOING+1,' AND ',JDOING+2
+                  WRITE(*,'(A,I4,A,I4,A)') ' TRY LINKING MINIMA ',JDOING,' AND ',JDOING+2,' INSTEAD'
 21                ESTART=EMIN(JDOING)
                   EFIN=EMIN(JDOING+2)
                   DO J2=1,NOPT
@@ -463,19 +463,19 @@ C
                      FIN(J2)=QSAVE(J2,JDOING+2)
                   ENDDO
 C
-C  Try to find a transition state between minima JDOING and JDOING+2 instead
+C  TRY TO FIND A TRANSITION STATE BETWEEN MINIMA JDOING AND JDOING+2 INSTEAD
 C
              CALL TSSEARCH(JDOING,JDOING+2,Q,FIN,BULKT,DTHRESH,FIXD,NATOMS,NIMAGESAVE,PTEST,NSTEPS,FILTH,FILTHSTR,MUPDATE,NSTEPMIN,
      1                     MAXNEBBFGS,VNEW,NOSHIFT,NOPT,QSAVE,QSAVETS,CON,EMIN,WHICHTS,GT10,DIAG,STPMAX,MXSTPSAVE,NTS,
      2                  NMIN,TSUSED,REVERSET,STOPFIRST,BFGSTST,INR,VECS,ENERGY,EVALMIN,RMS,JDOING,TWOD,REDOPATH,IGUESS,UNRST,NINTS)
                   IF (GT10) GOTO 10
 C
-C  Is it a new transition state?
+C  IS IT A NEW TRANSITION STATE?
 C
                   CALL ISNEWTS(ENERGY,TSEN,NOPT,QSAVETS,Q,NATOMS,BULKT,STPMAX,MXSTPSAVE,NIMAGE,NIMAGEMAX,JDOING,
      1                         NMIN,QSAVE,CON,EMIN,WHICHTS,TSUSED,REVERSET,STOPFIRST,GT10,NIMAGESAVE,NTS,TWOD,IGUESS)
                   IF (GT10) THEN
-                     IF ((NIMAGE.GT.NIMAGESAVE).OR.(IGUESS.GT.ABS(NGUESS))) GOTO 21 ! jmc abs
+                     IF ((NIMAGE.GT.NIMAGESAVE).OR.(IGUESS.GT.ABS(NGUESS))) GOTO 21 ! JMC ABS
                      GOTO 10
                   ENDIF
 
@@ -497,24 +497,24 @@ C
                      ENDDO
                   ENDIF
 C
-C  Insert the new minima into the existing set, or reject.
+C  INSERT THE NEW MINIMA INTO THE EXISTING SET, OR REJECT.
 C
                   CALL ADDMIN(JDOING,JDOING+2,FIN,QPLUS,QSTART,Q,NATOMS,BULKT,NTS,NOPT,STPMAX,MXSTPSAVE,REVERSET,
      1           STOPFIRST,CON,WHICHTS,NMIN,QSAVE,MINFRQDONE,FSAVEMIN,GT10,TSUSED,EMIN,NIMAGE,NIMAGESAVE,
      2           FRQSPLUS,FRQSMINUS,PLUSEN,MINUSEN,NIMAGEMAX,NTS,JDOING,TWOD,REDOPATH,QSAVETS,IGUESS,
      3           UNRST,PATHFAILT,BFGSTST,ITSTRING)
                   IF (GT10) THEN
-                     IF ((NIMAGE.GT.NIMAGESAVE).OR.(IGUESS.GT.ABS(NGUESS))) GOTO 21 ! jmc abs
+                     IF ((NIMAGE.GT.NIMAGESAVE).OR.(IGUESS.GT.ABS(NGUESS))) GOTO 21 ! JMC ABS
                      GOTO 10
                   ENDIF
 
                ELSE
                   IF (GUESSTST.AND.(.NOT.TRYNEB)) THEN
-                     WRITE(*,'(A,I4,A,I4,A)') ' Same as transition state ',J1,' try again with a different twist'
+                     WRITE(*,'(A,I4,A,I4,A)') ' SAME AS TRANSITION STATE ',J1,' TRY AGAIN WITH A DIFFERENT TWIST'
                      IGUESS=IGUESS+1
-C jmc                     IF (IGUESS.GT.NGUESS) THEN
+C JMC                     IF (IGUESS.GT.NGUESS) THEN
                      IF (IGUESS.GT.ABS(NGUESS)) THEN
-                        WRITE(*,'(A,I5)') ' Too many ts guesses - try neb'
+                        WRITE(*,'(A,I5)') ' TOO MANY TS GUESSES - TRY NEB'
 C                       CALL REMMIN(JDOING,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,NATOMS,TSUSED,NMAXTS,
 C    1                              REVERSET,STOPFIRST)
                         IGUESS=1
@@ -530,12 +530,12 @@ C    1                              REVERSET,STOPFIRST)
                      GOTO 22
                   ELSE
                      IF (NIMAGE+4.GT.NIMAGEMAX) THEN
-                        WRITE(*,'(A,I5,A,I5)') ' Same as transition state ',J1,
-     1                                         ' too many neb images requested - remove minimum ',JDOING
+                        WRITE(*,'(A,I5,A,I5)') ' SAME AS TRANSITION STATE ',J1,
+     1                                         ' TOO MANY NEB IMAGES REQUESTED - REMOVE MINIMUM ',JDOING
                         CALL REMMIN(JDOING,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
                         NIMAGE=NIMAGESAVE
                      ELSE
-                        WRITE(*,'(A,I4,A,I4,A)') ' Same as transition state ',J1,' try again with ',NIMAGE+4,' images'
+                        WRITE(*,'(A,I4,A,I4,A)') ' SAME AS TRANSITION STATE ',J1,' TRY AGAIN WITH ',NIMAGE+4,' IMAGES'
                         NIMAGE=NIMAGE+4
                         DO J2=1,NOPT
                            Q(J2) =QSAVE(J2,JDOING)
@@ -558,7 +558,7 @@ C    1                              REVERSET,STOPFIRST)
          QSAVETS(J1,NTS+1)=Q(J1)
       ENDDO
 C
-C  The two ends of the path are returned in QPLUS and Q (in commons.h)
+C  THE TWO ENDS OF THE PATH ARE RETURNED IN QPLUS AND Q (IN COMMONS.H)
 C     
       NTS=NTS+1
       CALL MKFNAMES(NTS,FILTH,FILTHSTR,ITSTRING,EOFSSTRING)
@@ -574,7 +574,7 @@ C
    
       IF (USEOLD) THEN
 C
-C  For water the paths files are in xyz format. We could convert instead of rerunning the path.
+C  FOR WATER THE PATHS FILES ARE IN XYZ FORMAT. WE COULD CONVERT INSTEAD OF RERUNNING THE PATH.
 C
          IF (ZSYMSAVE(1:1).EQ.'W') THEN
             CALL MKFNAMES(JUSE,FILTH,FILTHSTR,ITSTRING,EOFSSTRING)
@@ -596,7 +596,7 @@ C    1                       QPLUS(3*(NATOMS+J1-1)+1),QPLUS(3*(NATOMS+J1-1)+2),Q
      1                       QPLUS(3*(NATOMS/2+J1-1)+1),QPLUS(3*(NATOMS/2+J1-1)+2),QPLUS(3*(NATOMS/2+J1-1)+3))
             ENDDO
 C
-C  Read coordinates of final minimum from end of path.
+C  READ COORDINATES OF FINAL MINIMUM FROM END OF PATH.
 C
 44          READ(45,*,END=45)
             READ(45,*)
@@ -614,7 +614,7 @@ C    1                       Q(3*(NATOMS+J1-1)+1),Q(3*(NATOMS+J1-1)+2),Q(3*(NATO
             CLOSE(45)
          ELSE
 C
-C  Put the old end points back in the right places.
+C  PUT THE OLD END POINTS BACK IN THE RIGHT PLACES.
 C
             CALL MKFNAMES(JUSE,FILTH,FILTHSTR,ITSTRING,EOFSSTRING)
             TSUSED(JUSE)=.TRUE.
@@ -624,7 +624,7 @@ C
             READ(45,*)
             READ(45,'(A2,4X,3F20.10)') (DSTRING,QPLUS(3*(J1-1)+1),QPLUS(3*(J1-1)+2),QPLUS(3*(J1-1)+3),J1=1,NATOMS)
 C
-C  Read coordinates of final minimum from end of path.
+C  READ COORDINATES OF FINAL MINIMUM FROM END OF PATH.
 C
 34          READ(45,*,END=35)
             READ(45,*)
@@ -637,14 +637,14 @@ C
          JUSE=NTS
       ENDIF
 C
-C  Insert the new minima into the existing set, or reject.
+C  INSERT THE NEW MINIMA INTO THE EXISTING SET, OR REJECT.
 C
       CALL ADDMIN(JDOING,JDOING+1,FIN,QPLUS,QSTART,Q,NATOMS,BULKT,NTS,NOPT,STPMAX,MXSTPSAVE,REVERSET,
      1           STOPFIRST,CON,WHICHTS,NMIN,QSAVE,MINFRQDONE,FSAVEMIN,GT10,TSUSED,EMIN,NIMAGE,NIMAGESAVE,
      2           FRQSPLUS,FRQSMINUS,PLUSEN,MINUSEN,NIMAGEMAX,JUSE,JDOING,TWOD,REDOPATH,QSAVETS,IGUESS,
      3           UNRST,PATHFAILT,BFGSTST,ITSTRING)
       IF (GT10) THEN
-         IF ((NIMAGE.GT.NIMAGESAVE).OR.(IGUESS.GT.ABS(NGUESS))) THEN ! jmc abs
+         IF ((NIMAGE.GT.NIMAGESAVE).OR.(IGUESS.GT.ABS(NGUESS))) THEN ! JMC ABS
             ESTART=EMIN(JDOING)
             EFIN=EMIN(JDOING+2)
             DO J2=1,NOPT
@@ -664,7 +664,7 @@ C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C  Reverse all the lines in a file.
+C  REVERSE ALL THE LINES IN A FILE.
 C
       SUBROUTINE REVERSE(IUNIT)
       IMPLICIT NONE
@@ -677,7 +677,7 @@ C
          READ(IUNIT,'(A100)',END=20) LSTRING(J)      
          N=N+1
       ENDDO
-      PRINT*,'WARNING: file on unit ',IUNIT,' too long for reverse'
+      PRINT*,'WARNING: FILE ON UNIT ',IUNIT,' TOO LONG FOR REVERSE'
 
 20    REWIND(IUNIT)
       DO J=1,N
@@ -696,11 +696,11 @@ C
       CHARACTER(LEN=100) LSTRING(MAX)
 
       IF (NBLOCK.GT.MAX) THEN
-         PRINT*,'WARNING: block size requested in REVERSEBLOCK, ',NBLOCK,' exceeds MAX=',MAX
+         PRINT*,'WARNING: BLOCK SIZE REQUESTED IN REVERSEBLOCK, ',NBLOCK,' EXCEEDS MAX=',MAX
          RETURN
       ENDIF
 C
-C  Move to end of file.
+C  MOVE TO END OF FILE.
 C
       N=0
 10    READ(IUNIT,'(A100)',END=20) LSTRING(1)
@@ -759,7 +759,7 @@ C        PRINT*,'J,LSTRING=',J,LSTRING(1)
       CHARACTER(LEN=5) ZSYMSAVE
       COMMON /SYS/ ZSYMSAVE
 C
-C  Check for any shortcuts in the list of minima.
+C  CHECK FOR ANY SHORTCUTS IN THE LIST OF MINIMA.
 C
       SHORT=.FALSE.
       DO J2=1,NMIN
@@ -772,7 +772,7 @@ C
          ENDDO
          CALL NEWMINDIST(Q1,Q2,NATOMS,DISTPF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
          IF (DISTPF.LT.GEOMDIFFTOL) THEN
-            WRITE(*,'(A,I5,A,I5,A,F15.5)')' Minima ',NTEST,' and ',J2,' are the same: minimum distance=',DISTPF
+            WRITE(*,'(A,I5,A,I5,A,F15.5)')' MINIMA ',NTEST,' AND ',J2,' ARE THE SAME: MINIMUM DISTANCE=',DISTPF
             SHORT=.TRUE.
             DO J3=J2,NTEST-1
                IF (CON(J3)) THEN
@@ -790,7 +790,7 @@ C           DO J3=J2+1,NMIN-(NTEST-J2)
             DO J3=J2,NMIN-(NTEST-J2)  
 C              MOVE(J3)=-1
                MOVE(J3+NTEST-J2)=J3
-               PRINT*,'moving minimum ',J3+NTEST-J2,' to minimum ',J3
+               PRINT*,'MOVING MINIMUM ',J3+NTEST-J2,' TO MINIMUM ',J3
                DO J4=1,NOPT
                   QSAVE(J4,J3)=QSAVE(J4,J3+NTEST-J2)
                ENDDO
@@ -810,7 +810,7 @@ C              MOVE(J3)=-1
          ENDDO
          CALL NEWMINDIST(Q1,Q2,NATOMS,DISTPF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
          IF (DISTPF.LT.GEOMDIFFTOL) THEN
-            WRITE(*,'(A,I5,A,I5,A,F15.5)')' Minima ',NTEST,' and ',J2,' are the same: minimum distance=',DISTPF
+            WRITE(*,'(A,I5,A,I5,A,F15.5)')' MINIMA ',NTEST,' AND ',J2,' ARE THE SAME: MINIMUM DISTANCE=',DISTPF
             DO J3=NTEST,J2-1
                IF (CON(J3)) TSUSED(WHICHTS(J3))=.FALSE.
             ENDDO
@@ -824,7 +824,7 @@ C           MOVE(NTEST)=-1
 C           DO J3=NTEST+1,NMIN-(J2-NTEST)  
             DO J3=NTEST,NMIN-(J2-NTEST)  
                MOVE(J3+J2-NTEST)=J3
-               PRINT*,'moving minimum ',J3+J2-NTEST,' to minimum ',J3
+               PRINT*,'MOVING MINIMUM ',J3+J2-NTEST,' TO MINIMUM ',J3
                DO J4=1,NOPT
                   QSAVE(J4,J3)=QSAVE(J4,J3+J2-NTEST)
                ENDDO
@@ -841,7 +841,7 @@ C           DO J3=NTEST+1,NMIN-(J2-NTEST)
       END
 
       SUBROUTINE REMMIN(MIN,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
-      use porfuncs
+      USE PORFUNCS
       IMPLICIT NONE
       INTEGER NMAXMIN, NMAXTS
       INTEGER MIN,NMIN,NOPT,WHICHTS(NMAXMIN), J2, J3
@@ -852,15 +852,15 @@ C           DO J3=NTEST+1,NMIN-(J2-NTEST)
       COMMON /STOPD/ STOPDISP, STOPDISPT
 
       IF (NMIN.EQ.2) THEN
-         PRINT*,'Cannot reduce minima below two - quit'
+         PRINT*,'CANNOT REDUCE MINIMA BELOW TWO - QUIT'
          STOP
       ENDIF
       IF (MIN.EQ.1) THEN
-         PRINT*,'Cannot remove first minimum - remove the second one instead'
+         PRINT*,'CANNOT REMOVE FIRST MINIMUM - REMOVE THE SECOND ONE INSTEAD'
          MIN=2
       ENDIF
       IF (MIN.EQ.NMIN) THEN
-         PRINT*,'Cannot remove last minimum - remove the penultimate one instead'
+         PRINT*,'CANNOT REMOVE LAST MINIMUM - REMOVE THE PENULTIMATE ONE INSTEAD'
          MIN=NMIN-1
       ENDIF
       IF (CON(MIN)) THEN
@@ -899,14 +899,14 @@ C           DO J3=NTEST+1,NMIN-(J2-NTEST)
       LOGICAL CON(NMAXMIN)
       DOUBLE PRECISION QSAVE(NOPT,NMAXMIN), EMIN(NMAXMIN)
 C
-C  If we have a minimum that is not connected to the one before it or the one after it, then
-C  remove it.
+C  IF WE HAVE A MINIMUM THAT IS NOT CONNECTED TO THE ONE BEFORE IT OR THE ONE AFTER IT, THEN
+C  REMOVE IT.
 C
 10    CONTINUE
       IF (NMIN.GT.3) THEN
          DO J2=2,NMIN-1
             IF ((.NOT.CON(J2-1)).AND.(.NOT.CON(J2))) THEN
-               WRITE(*,'(A,I5)') ' Removing isolated minimum ',J2
+               WRITE(*,'(A,I5)') ' REMOVING ISOLATED MINIMUM ',J2
                DO J3=J2,NMIN-1
                   DO J4=1,NOPT
                      QSAVE(J4,J3)=QSAVE(J4,J3+1)
@@ -926,7 +926,7 @@ C
 
       SUBROUTINE CLEANUP(WHICHTS,TSEN,PLUSEN,MINUSEN,PATHLENGTH,DISP,GAMMA,NTILDE,EMIN,NMIN,DUMPPATH,
      1   QSAVE,QSAVETS,FSAVETS,FSAVEMIN,MINFRQDONE,TSFRQDONE,BULKT,FILTH,FILTHSTR,TWOD,UNRST)
-      use porfuncs
+      USE PORFUNCS
       USE KEY,ONLY : DEBUG, RIGIDBODY, EDIFFTOL, GEOMDIFFTOL, NOFRQS, SDT
       USE COMMONS
       USE SYMINF
@@ -955,14 +955,14 @@ C
       CHARACTER(LEN=5) ZSYMSAVE
       CHARACTER(LEN=5), ALLOCATABLE, DIMENSION(:) :: ZSYML
       COMMON /SYS/ ZSYMSAVE
-      INTEGER K1,K2,KD,NNZ,NINTB ! jmc for unres
-      LOGICAL UNRST ! jmc for unres
+      INTEGER K1,K2,KD,NNZ,NINTB ! JMC FOR UNRES
+      LOGICAL UNRST ! JMC FOR UNRES
 
 C     ZSYMSAVE=ZSYM(1)
 C     IMUL=1   !  WCOMMENT
 C     IF (ZSYMSAVE(1:1).EQ.'W') IMUL=3   !  WCOMMENT
       IF (ZSYMSAVE(1:1).EQ.'W') THEN
-         NATOMSIMUL=(NATOMS/2)*3  !  number of atoms for water
+         NATOMSIMUL=(NATOMS/2)*3  !  NUMBER OF ATOMS FOR WATER
          ALLOCATE(COORDS(9*(NATOMS/2)),PCOORDS(9*(NATOMS/2)),QW(9*(NATOMS/2)),ZSYML(3*(NATOMS/2)))
       ELSE
          NATOMSIMUL=NATOMS
@@ -970,31 +970,31 @@ C     IF (ZSYMSAVE(1:1).EQ.'W') IMUL=3   !  WCOMMENT
          IF (UNRST) ALLOCATE(PEPCOORDS(3*NATOMS))
       ENDIF
 
-      WRITE(*,'(A)') 'Connected path found'
+      WRITE(*,'(A)') 'CONNECTED PATH FOUND'
       WRITE(*,'(A)')
-     1'  ts        E+         Ets - E+          Ets       Ets - E-          E-          S       D' //
-     2 '      gamma   ~N'
+     1'  TS        E+         ETS - E+          ETS       ETS - E-          E-          S       D' //
+     2 '      GAMMA   ~N'
       IF (FILTH.EQ.0) THEN 
-         WRITE(ITSTRING,  '(A8)') 'path.xyz'
-         IF (UNRST) WRITE(ITSTRING3,  '(A12)') 'path.unr.xyz'
-         WRITE(EOFSSTRING,'(A4)')    'EofS'
+         WRITE(ITSTRING,  '(A8)') 'PATH.XYZ'
+         IF (UNRST) WRITE(ITSTRING3,  '(A12)') 'PATH.UNR.XYZ'
+         WRITE(EOFSSTRING,'(A4)')    'EOFS'
       ELSE
-         WRITE(ITSTRING,  '(A)') 'path.xyz.' // TRIM(ADJUSTL(FILTHSTR))
-         WRITE(EOFSSTRING,'(A)') 'EofS.' // TRIM(ADJUSTL(FILTHSTR))
-         IF (UNRST) WRITE(ITSTRING3,  '(A)') 'path.unr.xyz.' // TRIM(ADJUSTL(FILTHSTR))
+         WRITE(ITSTRING,  '(A)') 'PATH.XYZ.' // TRIM(ADJUSTL(FILTHSTR))
+         WRITE(EOFSSTRING,'(A)') 'EOFS.' // TRIM(ADJUSTL(FILTHSTR))
+         IF (UNRST) WRITE(ITSTRING3,  '(A)') 'PATH.UNR.XYZ.' // TRIM(ADJUSTL(FILTHSTR))
       ENDIF
       OPEN(UNIT=82,FILE=EOFSSTRING,STATUS='UNKNOWN')
       OPEN(UNIT=83,FILE=ITSTRING,STATUS='UNKNOWN')
       IF (UNRST) OPEN(UNIT=86,FILE=ITSTRING3,STATUS='UNKNOWN')
       SSHIFT=0.0D0
 C
-C  Set PCOORDS to the coordinates of the starting minimum. This enables us
-C  to test if the first pathway needs to be reversed. Comparing the energy
-C  alone is insufficient for degenerate rearrangements.
+C  SET PCOORDS TO THE COORDINATES OF THE STARTING MINIMUM. THIS ENABLES US
+C  TO TEST IF THE FIRST PATHWAY NEEDS TO BE REVERSED. COMPARING THE ENERGY
+C  ALONE IS INSUFFICIENT FOR DEGENERATE REARRANGEMENTS.
 C
       IF (ZSYMSAVE(1:1).NE.'W') THEN
          PCOORDS(1:3*NATOMSIMUL)=QSAVE(1:3*NATOMSIMUL,1) 
-      ELSE ! must convert to Cartesians for TIP
+      ELSE ! MUST CONVERT TO CARTESIANS FOR TIP
          DO J2=1,NATOMS/2
             CALL CONVERT(QSAVE(3*(J2-1)+1,1),QSAVE(3*(J2-1)+2,1),QSAVE(3*(J2-1)+3,1),
      1                   QSAVE(3*(NATOMS/2+J2-1)+1,1),QSAVE(3*(NATOMS/2+J2-1)+2,1),QSAVE(3*(NATOMS/2+J2-1)+3,1),
@@ -1011,7 +1011,7 @@ C
          ENDDO
       ENDIF
 C
-C  Main loop over minima.
+C  MAIN LOOP OVER MINIMA.
 C
       DO J1=1,NMIN-1 
          J2=WHICHTS(J1)
@@ -1024,17 +1024,17 @@ C
             READ(85,'(A2,4X,3F20.10)') ZSYML(J4),COORDS(3*(J4-1)+1),COORDS(3*(J4-1)+2),COORDS(3*(J4-1)+3)
          ENDDO
 C
-C  Cannot just set PCOORDS = COORDS because we may need to reverse the path.
+C  CANNOT JUST SET PCOORDS = COORDS BECAUSE WE MAY NEED TO REVERSE THE PATH.
 C
-C  Call MIND to align the final minimum of the previous path with the first minimum of the next path; these
-C  two minima should be identical of course! To put the other frames in the path into the same orientation
-C  we need to save the overall rotation matrix from mind and apply the same rotation - this is done in
+C  CALL MIND TO ALIGN THE FINAL MINIMUM OF THE PREVIOUS PATH WITH THE FIRST MINIMUM OF THE NEXT PATH; THESE
+C  TWO MINIMA SHOULD BE IDENTICAL OF COURSE! TO PUT THE OTHER FRAMES IN THE PATH INTO THE SAME ORIENTATION
+C  WE NEED TO SAVE THE OVERALL ROTATION MATRIX FROM MIND AND APPLY THE SAME ROTATION - THIS IS DONE IN
 C  ROTGEOM. 
 C
-C  For W4/W3/W2/W1 COORDS contains the Cartesian coordinates, so we don;t want
-C  to convert them again in MIND. However, ZSYM(1) has been overwritten at this
-C  point, so it won;t contain W any more. Need to turn RIGIDBODY off in the call for 
-C  water.
+C  FOR W4/W3/W2/W1 COORDS CONTAINS THE CARTESIAN COORDINATES, SO WE DON;T WANT
+C  TO CONVERT THEM AGAIN IN MIND. HOWEVER, ZSYM(1) HAS BEEN OVERWRITTEN AT THIS
+C  POINT, SO IT WON;T CONTAIN W ANY MORE. NEED TO TURN RIGIDBODY OFF IN THE CALL FOR 
+C  WATER.
 C
          DOREVERSE=.TRUE.
          IF (ZSYMSAVE(1:1).EQ.'W') THEN
@@ -1044,14 +1044,14 @@ C
          ENDIF
 C        PRINT '(A,G20.10)','DISTPF=',DISTPF
 C        PRINT '(A,9F15.10)','RMAT=',RMAT(1:3,1:3)
-C        IF (DEBUG) PRINT '(A,G20.10)','Initial DISTPF=',DISTPF
-         IF (DISTPF.LE.GEOMDIFFTOL) THEN ! there should be no need to reverse the path!
-                                         ! unless both distances are less than DISTPF, sigh
+C        IF (DEBUG) PRINT '(A,G20.10)','INITIAL DISTPF=',DISTPF
+         IF (DISTPF.LE.GEOMDIFFTOL) THEN ! THERE SHOULD BE NO NEED TO REVERSE THE PATH!
+                                         ! UNLESS BOTH DISTANCES ARE LESS THAN DISTPF, SIGH
             DOREVERSE=.FALSE.
             IF (ABS(PLUSEN(J2)-EMIN(J1)).GT.EDIFFTOL) THEN
-               PRINT'(A)','ERROR - distance and energy tolerances are not consistent'
+               PRINT'(A)','ERROR - DISTANCE AND ENERGY TOLERANCES ARE NOT CONSISTENT'
                PRINT'(A,5G20.10)','DISTPF,GEOMDIFFTOL,PLUSEN,EMIN,EDIFFTOL=',DISTPF,GEOMDIFFTOL,PLUSEN(J2),EMIN(J1),EDIFFTOL
-               PRINT '(A)','try reversing the path anyway'
+               PRINT '(A)','TRY REVERSING THE PATH ANYWAY'
 C              STOP
                DOREVERSE=.TRUE.
                GOTO 22
@@ -1089,9 +1089,9 @@ C              STOP
 C           PRINT '(A,G20.10)','DISTPF=',DISTPF
 C           PRINT '(A,9F15.10)','RMAT=',RMAT(1:3,1:3)
 
-C           IF (DEBUG) PRINT '(A,G20.10,A)','DISTPF for reversed path=',DISTPF ! DJW
+C           IF (DEBUG) PRINT '(A,G20.10,A)','DISTPF FOR REVERSED PATH=',DISTPF ! DJW
             IF ((DISTPF.GT.GEOMDIFFTOL).OR.(ABS(MINUSEN(J2)-EMIN(J1)).GT.EDIFFTOL)) THEN
-               PRINT'(A)','ERROR - distance and energy tolerances are not consistent for reversed path'
+               PRINT'(A)','ERROR - DISTANCE AND ENERGY TOLERANCES ARE NOT CONSISTENT FOR REVERSED PATH'
                PRINT'(A,5G20.10)','DISTPF,GEOMDIFFTOL,MINUSEN,EMIN,EDIFFTOL=',DISTPF,GEOMDIFFTOL,MINUSEN(J2),EMIN(J1),EDIFFTOL
                STOP
             ENDIF
@@ -1110,7 +1110,7 @@ C           IF (DEBUG) PRINT '(A,G20.10,A)','DISTPF for reversed path=',DISTPF !
             ENDDO
 24          CONTINUE
          ENDIF
-         IF (J1.EQ.1) THEN ! jmc write coords of first minimum
+         IF (J1.EQ.1) THEN ! JMC WRITE COORDS OF FIRST MINIMUM
             WRITE(83,'(A100)') DUMMYST
             WRITE(83,'(A100)') DUMMYST2
 
@@ -1127,8 +1127,8 @@ C           IF (DEBUG) PRINT '(A,G20.10,A)','DISTPF for reversed path=',DISTPF !
                COORDS(3*(J2-1)+3)=COORDS(3*(J2-1)+3)-CMZA
             ENDDO
             IF (UNRST) THEN
-               WRITE(86,'(I4)') 2*NATOMS-2 ! jmc this should be the number of atoms, 
-                                           ! so for carbons plus dummy peptide atoms, want 2*N-2...
+               WRITE(86,'(I4)') 2*NATOMS-2 ! JMC THIS SHOULD BE THE NUMBER OF ATOMS, 
+                                           ! SO FOR CARBONS PLUS DUMMY PEPTIDE ATOMS, WANT 2*N-2...
                WRITE(86,'(A100)') DUMMYST2
             ENDIF
             DO J4=1,NATOMSIMUL
@@ -1137,7 +1137,7 @@ C           IF (DEBUG) PRINT '(A,G20.10,A)','DISTPF for reversed path=',DISTPF !
      &                                                COORDS(3*(J4-1)+3)
             ENDDO
             IF (UNRST) THEN
-               DO K1=1,(NATOMS/2)-1 ! jmc add peptide atoms...
+               DO K1=1,(NATOMS/2)-1 ! JMC ADD PEPTIDE ATOMS...
                   DO K2=1,3
                      PEPCOORDS(6*(K1-1)+K2)=(2.0D0*COORDS(6*(K1-1)+K2)+COORDS(6*K1+K2))/3.0D0
                      PEPCOORDS(6*(K1-1)+K2+3)=(COORDS(6*(K1-1)+K2)+2.0D0*COORDS(6*K1+K2))/3.0D0
@@ -1170,8 +1170,8 @@ C           IF (DEBUG) PRINT '(A,G20.10,A)','DISTPF for reversed path=',DISTPF !
             ENDDO
             CMXA=CMXA/NATOMSIMUL; CMYA=CMYA/NATOMSIMUL; CMZA=CMZA/NATOMSIMUL
 C
-C  Because PCOORDS could contain a rotated version of the first minimum the first
-C  RMAT might not be the identity. Must therefore call NEWROTGEOM.
+C  BECAUSE PCOORDS COULD CONTAIN A ROTATED VERSION OF THE FIRST MINIMUM THE FIRST
+C  RMAT MIGHT NOT BE THE IDENTITY. MUST THEREFORE CALL NEWROTGEOM.
 C
 C           IF ((J1.GT.1).AND.(.NOT.UNRST)) CALL NEWROTGEOM(NATOMSIMUL,COORDS,RMAT,CMXA,CMYA,CMZA)
             IF (.NOT.UNRST) CALL NEWROTGEOM(NATOMSIMUL,COORDS,RMAT,CMXA,CMYA,CMZA)
@@ -1186,7 +1186,7 @@ C           IF ((J1.GT.1).AND.(.NOT.UNRST)) CALL NEWROTGEOM(NATOMSIMUL,COORDS,RM
      &                                                COORDS(3*(J4-1)+3)
             ENDDO
             IF (UNRST) THEN
-               DO K1=1,(NATOMS/2)-1 ! jmc add peptide atoms...
+               DO K1=1,(NATOMS/2)-1 ! JMC ADD PEPTIDE ATOMS...
                   DO K2=1,3
                      PEPCOORDS(6*(K1-1)+K2)=(2.0D0*COORDS(6*(K1-1)+K2)+COORDS(6*K1+K2))/3.0D0
                      PEPCOORDS(6*(K1-1)+K2+3)=(COORDS(6*(K1-1)+K2)+2.0D0*COORDS(6*K1+K2))/3.0D0
@@ -1200,7 +1200,7 @@ C           IF ((J1.GT.1).AND.(.NOT.UNRST)) CALL NEWROTGEOM(NATOMSIMUL,COORDS,RM
          ENDDO
 23       CONTINUE
 C
-C  Save the last frame to align the next path.
+C  SAVE THE LAST FRAME TO ALIGN THE NEXT PATH.
 C
          CLOSE(84)
          CLOSE(85)
@@ -1211,16 +1211,16 @@ C
       CLOSE(82)
       CLOSE(83)
 C
-C  Finished writing path.xyz and EofS
+C  FINISHED WRITING PATH.XYZ AND EOFS
 C
       IF (UNRST) CLOSE(86)
 
       IF (DUMPPATH) THEN
-         CLOSE(88) ! path.info was opened on unit 88 in keywords.f for DUMPALLPATHS
+         CLOSE(88) ! PATH.INFO WAS OPENED ON UNIT 88 IN KEYWORDS.F FOR DUMPALLPATHS
          IF (FILTH.EQ.0) THEN
-            WRITE(PINFOSTRING,'(A9)') 'path.info'
+            WRITE(PINFOSTRING,'(A9)') 'PATH.INFO'
          ELSE
-            WRITE(PINFOSTRING,'(A)') 'path.info.'//TRIM(ADJUSTL(FILTHSTR))
+            WRITE(PINFOSTRING,'(A)') 'PATH.INFO.'//TRIM(ADJUSTL(FILTHSTR))
          ENDIF
          OPEN(UNIT=83,FILE=PINFOSTRING,STATUS='UNKNOWN')
          DO J1=1,NMIN
@@ -1280,18 +1280,18 @@ C              WRITE(83,'(3G20.10)') (DIAG(J2),J2=1,6*NATOMS)  !  WCOMMENT
                   Q(J2)=QSAVE(J2,J1)
                   QMIN(J2)=Q(J2)
                ENDDO
-               IF (UNRST) THEN ! jmc update coords
-                  DO K1=1,nres
-                      c(1,K1)=Q(6*(K1-1)+1)
-                      c(2,K1)=Q(6*(K1-1)+2)
-                      c(3,K1)=Q(6*(K1-1)+3)
-                      c(1,K1+nres)=Q(6*(K1-1)+4)
-                      c(2,K1+nres)=Q(6*(K1-1)+5)
-                      c(3,K1+nres)=Q(6*(K1-1)+6)
+               IF (UNRST) THEN ! JMC UPDATE COORDS
+                  DO K1=1,NRES
+                      C(1,K1)=Q(6*(K1-1)+1)
+                      C(2,K1)=Q(6*(K1-1)+2)
+                      C(3,K1)=Q(6*(K1-1)+3)
+                      C(1,K1+NRES)=Q(6*(K1-1)+4)
+                      C(2,K1+NRES)=Q(6*(K1-1)+5)
+                      C(3,K1+NRES)=Q(6*(K1-1)+6)
                    ENDDO
                    CALL UPDATEDC
-                   CALL int_from_cart(.true.,.false.)
-                   CALL chainbuild
+                   CALL INT_FROM_CART(.TRUE.,.FALSE.)
+                   CALL CHAINBUILD
                ENDIF
 !              CALL POTENTIAL(Q,DUMMY1,GRAD,.TRUE.,.TRUE.,RMS,.FALSE.,.FALSE.)
                IF (CHRMMT) THEN
@@ -1306,7 +1306,7 @@ C              WRITE(83,'(3G20.10)') (DIAG(J2),J2=1,6*NATOMS)  !  WCOMMENT
                      ENDIF
                      CALL MASSWT2(NATOMS,ATMASS,COORDS,GRAD,.TRUE.)
                      CALL DSYEV('N','U',3*NATOMS,HESS,SIZE(HESS,1),DIAG,TEMPA,9*NATOMS,INFO)
-                     if (diag(1).lt.diag(3*natoms)) call eigensort_val_asc(diag,hess,3*natoms,3*natoms)
+                     IF (DIAG(1).LT.DIAG(3*NATOMS)) CALL EIGENSORT_VAL_ASC(DIAG,HESS,3*NATOMS,3*NATOMS)
                      WRITE(83,'(3G20.10)') (DIAG(J2)*4.184D26,J2=1,3*NATOMS)
                   ENDIF
                ELSEIF (UNRST) THEN
@@ -1334,7 +1334,7 @@ C              WRITE(83,'(3G20.10)') (DIAG(J2),J2=1,6*NATOMS)  !  WCOMMENT
                      ENDIF
                      CALL MASSWT(NATOMS,ATMASS,COORDS,GRAD,.TRUE.)
                      CALL DSYEV('N','U',3*NATOMS,HESS,SIZE(HESS,1),DIAG,TEMPA,9*NATOMS,INFO)
-                     if (diag(1).lt.diag(3*natoms)) call eigensort_val_asc(diag,hess,3*natoms,3*natoms)
+                     IF (DIAG(1).LT.DIAG(3*NATOMS)) CALL EIGENSORT_VAL_ASC(DIAG,HESS,3*NATOMS,3*NATOMS)
                      IF (SDT) THEN
                         WRITE(83,'(3G20.10)') (DIAG(J2)*4.184D26,J2=1,3*NATOMS)
                      ELSE
@@ -1401,17 +1401,17 @@ C                 CALL H2OMODES(NATOMS,IPOT,Q,DIAG) ! WCOMMENT
                      QTS(J2)=Q(J2)
                   ENDDO
                   IF (UNRST) THEN
-                    DO K1=1,nres ! jmc update coords
-                        c(1,K1)=Q(6*(K1-1)+1)
-                        c(2,K1)=Q(6*(K1-1)+2)
-                        c(3,K1)=Q(6*(K1-1)+3)
-                        c(1,K1+nres)=Q(6*(K1-1)+4)
-                        c(2,K1+nres)=Q(6*(K1-1)+5)
-                        c(3,K1+nres)=Q(6*(K1-1)+6)
+                    DO K1=1,NRES ! JMC UPDATE COORDS
+                        C(1,K1)=Q(6*(K1-1)+1)
+                        C(2,K1)=Q(6*(K1-1)+2)
+                        C(3,K1)=Q(6*(K1-1)+3)
+                        C(1,K1+NRES)=Q(6*(K1-1)+4)
+                        C(2,K1+NRES)=Q(6*(K1-1)+5)
+                        C(3,K1+NRES)=Q(6*(K1-1)+6)
                      ENDDO
                      CALL UPDATEDC
-                     CALL int_from_cart(.true.,.false.)
-                     CALL chainbuild
+                     CALL INT_FROM_CART(.TRUE.,.FALSE.)
+                     CALL CHAINBUILD
                   ENDIF
 !                 CALL POTENTIAL(Q,DUMMY1,GRAD,.TRUE.,.TRUE.,RMS,.FALSE.,.FALSE.)
                   IF (CHRMMT) THEN
@@ -1426,7 +1426,7 @@ C                 CALL H2OMODES(NATOMS,IPOT,Q,DIAG) ! WCOMMENT
                         ENDIF
                         CALL MASSWT2(NATOMS,ATMASS,COORDS,GRAD,.TRUE.)
                         CALL DSYEV('N','U',3*NATOMS,HESS,SIZE(HESS,1),DIAG,TEMPA,9*NATOMS,INFO)
-                        if (diag(1).lt.diag(3*natoms)) call eigensort_val_asc(diag,hess,3*natoms,3*natoms)
+                        IF (DIAG(1).LT.DIAG(3*NATOMS)) CALL EIGENSORT_VAL_ASC(DIAG,HESS,3*NATOMS,3*NATOMS)
                         WRITE(83,'(3G20.10)') (DIAG(J2)*4.184D26,J2=1,3*NATOMS)
                      ENDIF
                   ELSEIF (UNRST) THEN
@@ -1442,7 +1442,7 @@ C                 CALL H2OMODES(NATOMS,IPOT,Q,DIAG) ! WCOMMENT
                            CALL POTENTIAL(Q,DUMMY1,GRAD,.TRUE.,.TRUE.,RMS,.FALSE.,.FALSE.)
                         ENDIF
                         DO J2=1,NINTS-1
-                           IF (DIAG(J2).LT.0.0D0) PRINT *,'Higher order saddle found in pathway - ts ',J3,'eigenvalue ',DIAG(J2)
+                           IF (DIAG(J2).LT.0.0D0) PRINT *,'HIGHER ORDER SADDLE FOUND IN PATHWAY - TS ',J3,'EIGENVALUE ',DIAG(J2)
                         END DO
                         WRITE(83,'(3G20.10)') (DIAG(J2),J2=1,3*NATOMS)
                      ENDIF
@@ -1457,7 +1457,7 @@ C                 CALL H2OMODES(NATOMS,IPOT,Q,DIAG) ! WCOMMENT
                         ENDIF
                         CALL MASSWT(NATOMS,ATMASS,COORDS,GRAD,.TRUE.)
                         CALL DSYEV('N','U',3*NATOMS,HESS,SIZE(HESS,1),DIAG,TEMPA,9*NATOMS,INFO)
-                        if (diag(1).lt.diag(3*natoms)) call eigensort_val_asc(diag,hess,3*natoms,3*natoms)
+                        IF (DIAG(1).LT.DIAG(3*NATOMS)) CALL EIGENSORT_VAL_ASC(DIAG,HESS,3*NATOMS,3*NATOMS)
                         IF (SDT) THEN
                            WRITE(83,'(3G20.10)') (DIAG(J2)*4.184D26,J2=1,3*NATOMS)
                         ELSE
@@ -1491,7 +1491,7 @@ C                 CALL H2OMODES(NATOMS,IPOT,Q,DIAG) ! WCOMMENT
       END
 
       SUBROUTINE RATES(NATOMS,NINTS)
-      use porfuncs
+      USE PORFUNCS
       USE KEY
       IMPLICIT NONE
       INTEGER J1, J2, NATOMS, NMAXMIN, NMAXTS, NMIN
@@ -1506,12 +1506,12 @@ C                 CALL H2OMODES(NATOMS,IPOT,Q,DIAG) ! WCOMMENT
       INTEGER NCONNECT, HMIN(NMAXMIN), HTS(NMAXTS)
       COMMON /CONN/ STOPFIRST, CONNECTT, NCONNECT, DUMPPATH, READPATH, CALCRATES, TEMPERATURE, HRED
 C     COMMON /CONREAL/ QSAVETS, QSAVE, FSAVETS, FSAVEMIN
-      INTEGER NINTS ! jmc
+      INTEGER NINTS ! JMC
 
       IF (FILTH.EQ.0) THEN
-         WRITE(PINFOSTRING,'(A9)') 'path.info'
+         WRITE(PINFOSTRING,'(A9)') 'PATH.INFO'
       ELSE
-         WRITE(PINFOSTRING,'(A)') 'path.info.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(PINFOSTRING,'(A)') 'PATH.INFO.'//TRIM(ADJUSTL(FILTHSTR))
       ENDIF
       OPEN(UNIT=83,FILE=PINFOSTRING,STATUS='OLD')
       NMIN=0
@@ -1526,15 +1526,15 @@ C     COMMON /CONREAL/ QSAVETS, QSAVE, FSAVETS, FSAVEMIN
          IF (.NOT.NOFRQS) READ(83,'(3F20.10)') (FSAVETS(J2,J1),J2=1,3*NATOMS)
          READ(83,'(3F25.15)') (QSAVETS(J2,J1),J2=1,3*NATOMS)
       ENDDO
-      WRITE(*,'(A)') ' ERROR - path contains too many minima '
+      WRITE(*,'(A)') ' ERROR - PATH CONTAINS TOO MANY MINIMA '
       STOP
 
 10    CLOSE(83)
-      WRITE(*,'(A,I3,A,I3,A)') ' path.info contains details of ',NMIN,' minima linked by ',NMIN-1,' transition states' 
-      WRITE(*,'(A,F15.5,A,F15.5)') ' Calculated classical canonical rates in reduced units at T*=',TEMPERATURE,' h*=',HRED
-      WRITE(*,'(A,F15.5)') ' Rotational degrees of freedom ignored'
+      WRITE(*,'(A,I3,A,I3,A)') ' PATH.INFO CONTAINS DETAILS OF ',NMIN,' MINIMA LINKED BY ',NMIN-1,' TRANSITION STATES' 
+      WRITE(*,'(A,F15.5,A,F15.5)') ' CALCULATED CLASSICAL CANONICAL RATES IN REDUCED UNITS AT T*=',TEMPERATURE,' H*=',HRED
+      WRITE(*,'(A,F15.5)') ' ROTATIONAL DEGREES OF FREEDOM IGNORED'
 C
-C  How many zero eigenvalues?
+C  HOW MANY ZERO EIGENVALUES?
 C
       IF (RTEST) THEN
          NZERO=2
@@ -1546,7 +1546,7 @@ C
          IF (TWOD) THEN
             NZERO=2
          ENDIF
-C     ELSE IF ((FPGRP.EQ.'DXh'.OR.FPGRP.EQ.'CXv').AND.(ZSYMSAVE(1:1).NE.'W')) THEN
+C     ELSE IF ((FPGRP.EQ.'DXH'.OR.FPGRP.EQ.'CXV').AND.(ZSYMSAVE(1:1).NE.'W')) THEN
 C        NZERO=5
       ELSE IF (VARIABLES) THEN
          DO J1=1,NZERO
@@ -1561,8 +1561,8 @@ C        NZERO=5
          NZERO=6
       ENDIF
 
-      WRITE(*,'(A,I3)') ' Number of zero eigenvalues=',NZERO
-C     WRITE(*,'(A)') ' Vibrational and Boltzmann contributions to k+ and k-:'
+      WRITE(*,'(A,I3)') ' NUMBER OF ZERO EIGENVALUES=',NZERO
+C     WRITE(*,'(A)') ' VIBRATIONAL AND BOLTZMANN CONTRIBUTIONS TO K+ AND K-:'
 
       DO J1=1,NMIN-1
          DUMMYF=0.0D0
@@ -1595,7 +1595,7 @@ C        WRITE(*,'(I4,4F20.10)') J1,LOG10(CLASSF),LOG10(DUMMYF),LOG10(CLASSB),LO
          LNKBQM(J1)=DUMMYB
       ENDDO
 C
-C  Mean first passage times according to Weiss, Adv. Chem. Phys., 13, 1, 1967
+C  MEAN FIRST PASSAGE TIMES ACCORDING TO WEISS, ADV. CHEM. PHYS., 13, 1, 1967
 C
       ETA(1)=0.0D0
       THETA(1)=1.0D0
@@ -1605,7 +1605,7 @@ C
       ENDDO
       DUMMYF=0.0D0
       DUMMYB=0.0D0
-      WRITE(*,'(A)') ' ts           log10(k+cl)         log10(k-cl)         log10(k+qm)         log10(k-qm)   mfp time(classical)'
+      WRITE(*,'(A)') ' TS           LOG10(K+CL)         LOG10(K-CL)         LOG10(K+QM)         LOG10(K-QM)   MFP TIME(CLASSICAL)'
       DO J1=2,NMIN
          DUMMYF=DUMMYF+THETA(J1-1)
          DUMMYB=DUMMYB+ETA(J1-1)
@@ -1626,11 +1626,11 @@ C
 
       WRITE(NTSSTR,'(I8)') NTS
       IF (FILTH.EQ.0) THEN
-         WRITE(ITSTRING,  '(A)') 'path.'//TRIM(ADJUSTL(NTSSTR))//'.xyz'
-         WRITE(EOFSSTRING,'(A)')    'EofS.'//TRIM(ADJUSTL(NTSSTR))
+         WRITE(ITSTRING,  '(A)') 'PATH.'//TRIM(ADJUSTL(NTSSTR))//'.XYZ'
+         WRITE(EOFSSTRING,'(A)')    'EOFS.'//TRIM(ADJUSTL(NTSSTR))
       ELSE
-         WRITE(ITSTRING,  '(A)') 'path.'//TRIM(ADJUSTL(NTSSTR))//'.xyz.'//TRIM(ADJUSTL(FILTHSTR))
-         WRITE(EOFSSTRING,'(A)')    'EofS.'//TRIM(ADJUSTL(NTSSTR))//'.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(ITSTRING,  '(A)') 'PATH.'//TRIM(ADJUSTL(NTSSTR))//'.XYZ.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(EOFSSTRING,'(A)')    'EOFS.'//TRIM(ADJUSTL(NTSSTR))//'.'//TRIM(ADJUSTL(FILTHSTR))
       ENDIF
 
       RETURN
@@ -1638,11 +1638,11 @@ C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C  Initial printing and termination check.
+C  INITIAL PRINTING AND TERMINATION CHECK.
 C
       SUBROUTINE STARTUP(MFLAG,NMIN,NTS,CON,EMIN,WHICHTS,TSEN,NTSUSED,NMINCON,NCDONE,NCONNECT,MSTART,MFINISH,MSTEP,
      1                   REVERSET,STOPFIRST,NOPT,Q,QSAVE,QSTART,FIN,JDOING,ESTART,EFIN,TSUSED)
-      use porfuncs
+      USE PORFUNCS
       IMPLICIT NONE
       INTEGER NMAXTS,NMAXMIN,NCDONE,NCONNECT,NOPT,JDOING,J2
       PARAMETER (NMAXTS=1000,NMAXMIN=1001)
@@ -1652,7 +1652,7 @@ C
      1                 ESTART,EFIN
 
       WRITE(*,'(A)') '**********************************************************************************************'
-      WRITE(*,'(A)') ' minimum      energy      forward connection?    which ts      ts         energy         used?'
+      WRITE(*,'(A)') ' MINIMUM      ENERGY      FORWARD CONNECTION?    WHICH TS      TS         ENERGY         USED?'
       DO J1=1,MAX(NMIN,NTS)
          IF ((J1.LE.NMIN-1).AND.(J1.LE.NTS)) THEN
             IF (CON(J1)) THEN
@@ -1686,31 +1686,31 @@ C
          IF (CON(J1)) THEN
             NMINCON=NMINCON+1
             IF (.NOT.TSUSED(WHICHTS(J1))) THEN
-               PRINT*,' Failed consistency check, minimum ',J1,' ts ',WHICHTS(J1),' is not true'
+               PRINT*,' FAILED CONSISTENCY CHECK, MINIMUM ',J1,' TS ',WHICHTS(J1),' IS NOT TRUE'
                STOP
             ENDIF
          ENDIF
       ENDDO
       IF (NMINCON.NE.NTSUSED) THEN
-         PRINT*,' Failed consistency check, NTSUSED, NMINCON=',NTSUSED, NMINCON
+         PRINT*,' FAILED CONSISTENCY CHECK, NTSUSED, NMINCON=',NTSUSED, NMINCON
          STOP
       ENDIF
       IF (NTS.EQ.NMAXTS) THEN
-         WRITE(*,'(A)') 'Maximum transition states found - exit connect'
+         WRITE(*,'(A)') 'MAXIMUM TRANSITION STATES FOUND - EXIT CONNECT'
          STOP
       ELSE IF (NCDONE.GT.NCONNECT) THEN
-         PRINT*,'Number of allowed connection steps reached'
+         PRINT*,'NUMBER OF ALLOWED CONNECTION STEPS REACHED'
 
 C        STOP
-c jmc stop program stopping here         STOP
-C jmc make a path.info file now for the sequence of connected minima (if it exists!)
+C JMC STOP PROGRAM STOPPING HERE         STOP
+C JMC MAKE A PATH.INFO FILE NOW FOR THE SEQUENCE OF CONNECTED MINIMA (IF IT EXISTS!)
 C
          DO J1=MSTART,MFINISH,MSTEP
             IF (.NOT.CON(J1)) STOP
          ENDDO   
          MFLAG=.TRUE.
          RETURN
-C jmc end new stuff
+C JMC END NEW STUFF
       ENDIF
 
       MSTART=1
@@ -1722,7 +1722,7 @@ C jmc end new stuff
          MSTEP=-1
       ENDIF
 C
-C  IF STOPFIRST is true then we want to stop as soon as the first minimum is connected.
+C  IF STOPFIRST IS TRUE THEN WE WANT TO STOP AS SOON AS THE FIRST MINIMUM IS CONNECTED.
 C
       MFLAG=.FALSE.
       IF (STOPFIRST.AND.CON(1)) THEN
@@ -1749,17 +1749,17 @@ C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C  Transition state search between minima JSTART and JFINISH
+C  TRANSITION STATE SEARCH BETWEEN MINIMA JSTART AND JFINISH
 C
       SUBROUTINE TSSEARCH(JSTART,JFINISH,Q,FIN,BULKT,DTHRESH,FIXD,NATOMS,NIMAGESAVE,PTEST,NSTEPS,FILTH,FILTHSTR,MUPDATE,NSTEPMIN,
      1     MAXNEBBFGS,VNEW,NOSHIFT,NOPT,QSAVE,QSAVETS,CON,EMIN,WHICHTS,GT10,DIAG,STPMAX,MXSTPSAVE,NTS,
      2                   NMIN,TSUSED,REVERSET,STOPFIRST,BFGSTST,INR,VECS,ENERGY,EVALMIN,RMS,JREMOVE,TWOD,REDOPATH,
      3                   IGUESS,UNRST,NINTS)
-      use porfuncs
+      USE PORFUNCS
       USE KEY,ONLY : DEBUG, RIGIDBODY, PERMDIST, EDIFFTOL, GEOMDIFFTOL
       USE COMMONS,ONLY : PARAM1,PARAM2,PARAM3
       USE MODNEB
-      use KEYNEB, ONLY: NNNIMAGE=>NIMAGE, OLDCONNECT
+      USE KEYNEB, ONLY: NNNIMAGE=>NIMAGE, OLDCONNECT
       USE NEWNEBMODULE
       USE MODCHARMM
       USE MODUNRES
@@ -1772,7 +1772,7 @@ C
       CHARACTER(LEN=*) FILTHSTR
       INTEGER JSTART,JFINISH,NSTEPS,WHICHTS(NMAXMIN),J3,NTS, IGUESS, ITMAX, NINTS
       LOGICAL BULKT,PERM,FIXD,PTEST,BFGSTST,NOSHIFT,CON(NMAXMIN),GT10,MFLAG,TSUSED(NMAXTS),REVERSET,STOPFIRST,FIXDSAVE,TWOD,
-     1        REDOPATH, MorePrinting2
+     1        REDOPATH, MOREPRINTING2
       LOGICAL GUESSFAIL, FAILCHECK, GT20
       DOUBLE PRECISION Q(3*NATOMS),FIN(3*NATOMS),DISTPF,EMIN(NMAXMIN),DTHRESH,FIXDIR(3*NATOMS),STEP,DPRAND,
      1                 VNEW(3*NATOMS),ENERGY,RMS,EVALMIN,EVALMAX,VECS(3*NATOMS),DIST2,EMAX,
@@ -1787,11 +1787,11 @@ C
       LOGICAL UNRST
       COMMON /OLDC/ EMAX
 
-      DO J1=1,NOPT ! in case VECS would otherwise be unset
+      DO J1=1,NOPT ! IN CASE VECS WOULD OTHERWISE BE UNSET
          VECS(J1)=DPRAND()*2-1.0D0
       ENDDO
 C 
-C The declared dimension of VECS is 3*NATOMS, so the above DO loop is OK but we need to get the dimension right below.
+C THE DECLARED DIMENSION OF VECS IS 3*NATOMS, SO THE ABOVE DO LOOP IS OK BUT WE NEED TO GET THE DIMENSION RIGHT BELOW.
 C
       IF (UNRST) THEN
          CALL VECNORM(VECS,NINTS)
@@ -1805,9 +1805,9 @@ C
       DO J1=1,NOPT
          QSTART(J1)=Q(J1)
       ENDDO
-      WRITE(*,'(A,I5,A,I5,A,F15.5)')' Minima ',JSTART,' and ',JFINISH,' unconnected: minimum distance=',DISTPF
+      WRITE(*,'(A,I5,A,I5,A,F15.5)')' MINIMA ',JSTART,' AND ',JFINISH,' UNCONNECTED: MINIMUM DISTANCE=',DISTPF
       IF (DISTPF.LT.GEOMDIFFTOL) THEN
-         WRITE(*,'(A,I6,A,I6,A)') ' Minima ',JSTART,' and ',JFINISH,' appear to be identical - quit'
+         WRITE(*,'(A,I6,A,I6,A)') ' MINIMA ',JSTART,' AND ',JFINISH,' APPEAR TO BE IDENTICAL - QUIT'
          STOP
       ENDIF
       IF (UNRST) THEN
@@ -1826,7 +1826,7 @@ C
          KNOWH=.FALSE.
       ELSE IF (FIXD.AND.(DISTPF.GT.DTHRESH)) THEN
 C        IF (.NOT.FIXD) THEN
-C           WRITE(*,'(A)') ' These minima appear to be permutational isomers - switching to hard sphere move guess'
+C           WRITE(*,'(A)') ' THESE MINIMA APPEAR TO BE PERMUTATIONAL ISOMERS - SWITCHING TO HARD SPHERE MOVE GUESS'
 C           T12FAC=1.1D0
 C        ENDIF
          DO J1=1,NOPT
@@ -1835,19 +1835,19 @@ C        ENDIF
          CALL HSMOVE(Q,Q,FIXDIR,STEP,.TRUE.)
       ELSE
          IF (PERM) THEN 
-C           WRITE(*,'(A)') ' These minima appear to be permutational isomers - using two neb images'
-            WRITE(*,'(A,I4,A)') ' These minima appear to be permutational isomers - using ',NIMAGE,'  neb images'
+C           WRITE(*,'(A)') ' THESE MINIMA APPEAR TO BE PERMUTATIONAL ISOMERS - USING TWO NEB IMAGES'
+            WRITE(*,'(A,I4,A)') ' THESE MINIMA APPEAR TO BE PERMUTATIONAL ISOMERS - USING ',NIMAGE,'  NEB IMAGES'
 C           NIMAGE=3
          ENDIF
          IF (CHRMMT) THEN
             IF (GUESSTST.AND.(.NOT.TRYNEB)) THEN
-C last guess is now midway around the long arc from start to finish; all others are equally spaced along shorter arc
+C LAST GUESS IS NOW MIDWAY AROUND THE LONG ARC FROM START TO FINISH; ALL OTHERS ARE EQUALLY SPACED ALONG SHORTER ARC
                IF (IGUESS.EQ.NGUESS) THEN
                   TWISTFRAC = -1.D0
                ELSE
                   TWISTFRAC=1.0D0*IGUESS/NGUESS
                ENDIF
-C              print *,'IGUESS TWISTFRAC',IGUESS,TWISTFRAC
+C              PRINT *,'IGUESS TWISTFRAC',IGUESS,TWISTFRAC
                GUESSFAIL=.FALSE.
                CALL CHGUESSTS(Q,.FALSE.,PTEST,TWISTFRAC,GUESSFAIL,DISTPF)
                FAILT=.FALSE.
@@ -1864,21 +1864,21 @@ C    1                     FILTH)
                   CALL OLDNEB(.FALSE.,PTEST,ENERGY,VNEW,PERM,Q)
                   CALL POTENTIAL(Q,ENERGY,VNEW,.TRUE.,.TRUE.,RMS,.FALSE.,.FALSE.)
                ELSEIF (NEWNEBT) THEN
-                  OldConnect=.TRUE. ! changes behaviour of NEWNEB, ts guess should come back in Q
-                  CALL NEWNEB(.FALSE.,DCOORDS,EINITIAL,Q,EFINAL,FIN,MorePrinting2)
+                  OLDCONNECT=.TRUE. ! CHANGES BEHAVIOUR OF NEWNEB, TS GUESS SHOULD COME BACK IN Q
+                  CALL NEWNEB(.FALSE.,DCOORDS,EINITIAL,Q,EFINAL,FIN,MOREPRINTING2)
                ENDIF
             ENDIF
          ELSEIF (UNRST) THEN
             IF (GUESSTST.AND.(.NOT.TRYNEB)) THEN
-C last guess is now midway around the long arc from start to finish; all others are equally spaced along shorter arc
+C LAST GUESS IS NOW MIDWAY AROUND THE LONG ARC FROM START TO FINISH; ALL OTHERS ARE EQUALLY SPACED ALONG SHORTER ARC
                IF (IGUESS.EQ.NGUESS) THEN
                   TWISTFRAC = -1.D0
                ELSE
                   TWISTFRAC=1.0D0*IGUESS/NGUESS
                ENDIF
-C Apply Hammond's postulate i.e. start nearest to highest energy minimum
+C APPLY HAMMOND'S POSTULATE I.E. START NEAREST TO HIGHEST ENERGY MINIMUM
 C              IF (EMIN(JSTART).LT.EMIN(JFINISH)) TWISTFRAC = 1.0D0 - TWISTFRAC
-               print *,'IGUESS TWISTFRAC',IGUESS,TWISTFRAC
+               PRINT *,'IGUESS TWISTFRAC',IGUESS,TWISTFRAC
                GUESSFAIL=.FALSE.
                IF (CONSECT) THEN
                   CALL UNRESGUESSTSSEC(Q,.FALSE.,PTEST,TWISTTYPE,TWISTFRAC,GUESSFAIL,DISTPF)
@@ -1887,45 +1887,45 @@ C              IF (EMIN(JSTART).LT.EMIN(JFINISH)) TWISTFRAC = 1.0D0 - TWISTFRAC
                END IF
                FAILT=.FALSE.
                IF (GUESSFAIL) THEN
-                  PRINT *,'guessfail true, calling newneb'
+                  PRINT *,'GUESSFAIL TRUE, CALLING NEWNEB'
                   IF (NEBT) THEN
                      CALL OLDNEB(.FALSE.,PTEST,ENERGY,VNEW,PERM,Q)
                   ELSEIF (NEWNEBT) THEN
-                     OldConnect=.TRUE. ! changes behaviour of NEWNEB, ts guess should come back in Q
-                     CALL NEWNEB(.FALSE.,DCOORDS,EINITIAL,Q,EFINAL,FIN,MorePrinting2)
+                     OLDCONNECT=.TRUE. ! CHANGES BEHAVIOUR OF NEWNEB, TS GUESS SHOULD COME BACK IN Q
+                     CALL NEWNEB(.FALSE.,DCOORDS,EINITIAL,Q,EFINAL,FIN,MOREPRINTING2)
                   ENDIF
                   TRYNEB=.TRUE.
                   IGUESS=1
                   WRITE(*,'(A,I4)') 'IGUESS=',IGUESS
                ELSE
-                  KNOWE=.FALSE. ! jmc testing, to fix rather large bug with intbfgsts.....
+                  KNOWE=.FALSE. ! JMC TESTING, TO FIX RATHER LARGE BUG WITH INTBFGSTS.....
                   KNOWG=.FALSE.
                ENDIF
             ELSE
                IF (NEBT) THEN
                   CALL OLDNEB(.FALSE.,PTEST,ENERGY,VNEW,PERM,Q)
                ELSEIF (NEWNEBT) THEN
-                  OldConnect=.TRUE. ! changes behaviour of NEWNEB, ts guess should come back in Q
-                  CALL NEWNEB(.FALSE.,DCOORDS,EINITIAL,Q,EFINAL,FIN,MorePrinting2)
+                  OLDCONNECT=.TRUE. ! CHANGES BEHAVIOUR OF NEWNEB, TS GUESS SHOULD COME BACK IN Q
+                  CALL NEWNEB(.FALSE.,DCOORDS,EINITIAL,Q,EFINAL,FIN,MOREPRINTING2)
                ENDIF
             ENDIF
          ELSE
             IF (NEBT) THEN
                CALL OLDNEB(.FALSE.,PTEST,ENERGY,VNEW,PERM,Q)
             ELSEIF (NEWNEBT) THEN
-               OldConnect=.TRUE. ! changes behaviour of NEWNEB, ts guess should come back in Q
-               CALL NEWNEB(.FALSE.,DCOORDS,EINITIAL,Q,EFINAL,FIN,MorePrinting2)
+               OLDCONNECT=.TRUE. ! CHANGES BEHAVIOUR OF NEWNEB, TS GUESS SHOULD COME BACK IN Q
+               CALL NEWNEB(.FALSE.,DCOORDS,EINITIAL,Q,EFINAL,FIN,MOREPRINTING2)
             ENDIF
          ENDIF
 C        IF (PERM) NIMAGE=NIMAGESAVE
       ENDIF
 !
-! Must set the energy of the highest image for use in secdiag routine with bfgsts.
+! MUST SET THE ENERGY OF THE HIGHEST IMAGE FOR USE IN SECDIAG ROUTINE WITH BFGSTS.
 !
       IF (NEWNEBT) ENERGY=EMAX
       FIXD=.FALSE.
 C
-C  Transition state search from points in Q.
+C  TRANSITION STATE SEARCH FROM POINTS IN Q.
 C
       CALL MYCPU_TIME(TIME0,.TRUE.)
       IF (BFGSTST) THEN
@@ -1933,7 +1933,7 @@ C
             CALL INTBFGSTS(NSTEPS,Q,ENERGY,VNEW,MFLAG,RMS,EVALMIN,EVALMAX,VECS,ITDONE,.TRUE.,PTEST)
          ELSE
 C
-C DAE Make number of ts state search steps allowed proportional to the distance between minima
+C DAE MAKE NUMBER OF TS STATE SEARCH STEPS ALLOWED PROPORTIONAL TO THE DISTANCE BETWEEN MINIMA
 C
             IF (CHRMMT) ITMAX=NSTEPS+NINT(DISTPF*EXTRASTEPS)
             CALL BFGSTS(NSTEPS,Q,ENERGY,VNEW,MFLAG,RMS,EVALMIN,EVALMAX,VECS,ITDONE,.TRUE.,PTEST)
@@ -1947,50 +1947,50 @@ C        NOSHIFT=.FALSE.
       ENDIF
       CALL MYCPU_TIME(TIME,.FALSE.)
 C
-C DAE If EVALMIN large in magnitude, this TS is likely to be bogus, and cause problems
-C when then the connected minima have to be found
+C DAE IF EVALMIN LARGE IN MAGNITUDE, THIS TS IS LIKELY TO BE BOGUS, AND CAUSE PROBLEMS
+C WHEN THEN THE CONNECTED MINIMA HAVE TO BE FOUND
 C
 C     IF ((CHRMMT.OR.UNRST).AND.(EVALMIN.LT.-100.D0)) THEN
 C        MFLAG=.FALSE.
-C        WRITE(*,'(A,F20.10,A)') 'Eigenvalue ',EVALMIN,' too negative, TS search failed'
+C        WRITE(*,'(A,F20.10,A)') 'EIGENVALUE ',EVALMIN,' TOO NEGATIVE, TS SEARCH FAILED'
 C     ENDIF
 C
-C DAE for CHARMM check this transition state to see if its geometry has become unfeasible
+C DAE FOR CHARMM CHECK THIS TRANSITION STATE TO SEE IF ITS GEOMETRY HAS BECOME UNFEASIBLE
 C
       IF (CHRMMT) THEN
          CALL CHECKPOINT(Q,FAILCHECK)
          IF (FAILCHECK) THEN
-            WRITE(*,'(A)') ' WARNING Transition state may have unphysical geometry'
+            WRITE(*,'(A)') ' WARNING TRANSITION STATE MAY HAVE UNPHYSICAL GEOMETRY'
 C           MFLAG=.FALSE.
          ENDIF
       ENDIF
 
       IF (MFLAG) THEN
          WRITE(*,'(A,I5,A,F19.10,A,F15.5,A,F11.2)')
-     1 ' ts search converged in ',ITDONE,' steps. Energy=',ENERGY,' eigenvalue=',EVALMIN,' time=',TIME-TIME0
+     1 ' TS SEARCH CONVERGED IN ',ITDONE,' STEPS. ENERGY=',ENERGY,' EIGENVALUE=',EVALMIN,' TIME=',TIME-TIME0
          GT10=.FALSE.
       ELSE
-         WRITE(*,'(A,I5,A)') ' Transition state search failed to converge in ',ITDONE,' steps'
+         WRITE(*,'(A,I5,A)') ' TRANSITION STATE SEARCH FAILED TO CONVERGE IN ',ITDONE,' STEPS'
          DO J3=1,NOPT
             STPMAX(J3)=MXSTPSAVE
          ENDDO
          FIXD=FIXDSAVE
 C
-C  Next block was introduced by DAE to replace the commented part.
+C  NEXT BLOCK WAS INTRODUCED BY DAE TO REPLACE THE COMMENTED PART.
 C
          CALL TRYAGAINRESET(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1        JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST,
      2        Q,QSTART,GT20)
          IF (GT20) GOTO 20
 !         IF (NIMAGE+4.GT.NIMAGEMAX) THEN
-!            WRITE(*,'(A,I5)') ' Too many neb images requested - remove minimum ',JREMOVE
+!            WRITE(*,'(A,I5)') ' TOO MANY NEB IMAGES REQUESTED - REMOVE MINIMUM ',JREMOVE
 !            CALL REMMIN(JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
 !            NIMAGE=NIMAGESAVE
 !         ELSE
-!            WRITE(*,'(A,I4,A)') ' Try again with ',NIMAGE+4,' images'
+!            WRITE(*,'(A,I4,A)') ' TRY AGAIN WITH ',NIMAGE+4,' IMAGES'
 !            NIMAGE=NIMAGE+4
 !C
-!C  We have to reset the starting geometry in Q!
+!C  WE HAVE TO RESET THE STARTING GEOMETRY IN Q!
 !C
 !            DO J3=1,NOPT
 !               Q(J3)=QSTART(J3)
@@ -2007,16 +2007,16 @@ C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C  Subroutine to incorporate new min-saddle-min triple into the path, or reject it.
+C  SUBROUTINE TO INCORPORATE NEW MIN-SADDLE-MIN TRIPLE INTO THE PATH, OR REJECT IT.
 C
       SUBROUTINE ADDMIN(JSTART,JFINISH,FIN,QPLUS,QSTART,Q,NATOMS,BULKT,NTS,NOPT,STPMAX,MXSTPSAVE,REVERSET,
      1                  STOPFIRST,CON,WHICHTS,NMIN,QSAVE,MINFRQDONE,FSAVEMIN,GT10,TSUSED,EMIN,NIMAGE,NIMAGESAVE,
      2                  FRQSPLUS,FRQSMINUS,PLUSEN,MINUSEN,NIMAGEMAX,JUSE,JREMOVE,TWOD,REDOPATH,QSAVETS,
      3                  IGUESS,UNRST,PATHFAILT,BFGSTST,ITSTRING)
-      use porfuncs
+      USE PORFUNCS
       USE MODCHARMM
-      use modamber9, only : NOCISTRANSRNA,NOCISTRANSDNA,GOODSTRUCTURE1,GOODSTRUCTURE2,CISARRAY1,CISARRAY2
-      use commons, only : ZSYM
+      USE MODAMBER9, ONLY : NOCISTRANSRNA,NOCISTRANSDNA,GOODSTRUCTURE1,GOODSTRUCTURE2,CISARRAY1,CISARRAY2
+      USE COMMONS, ONLY : ZSYM
       USE KEY,ONLY : DEBUG, RIGIDBODY, EDIFFTOL, GEOMDIFFTOL, AMBERT, NABT
       IMPLICIT NONE
       DOUBLE PRECISION RMAT(3,3)
@@ -2043,7 +2043,7 @@ C
          CISTRANST=.FALSE.
          CALL CHECKCISTRANS(Q,QPLUS,CISTRANST)
          IF (CISTRANST) THEN
-            WRITE(*,*) ' connect> Cis-trans isomerisation detected, rejecting this min-sad-min insertion'
+            WRITE(*,*) ' CONNECT> CIS-TRANS ISOMERISATION DETECTED, REJECTING THIS MIN-SAD-MIN INSERTION'
             NTS=NTS-1
             CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                   JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
@@ -2057,7 +2057,7 @@ C
             CALL CHECK_CISTRANS_RNA(QPLUS,NATOMS,ZSYM,GOODSTRUCTURE2)
             IF (.NOT.GOODSTRUCTURE1.OR..NOT.GOODSTRUCTURE2) THEN
                WRITE(*,*) 
-     &          ' connect> Cis-trans isomerisation detected in the RNA ring wrt. the original RNA ribose structure, rejecting'
+     &          ' CONNECT> CIS-TRANS ISOMERISATION DETECTED IN THE RNA RING WRT. THE ORIGINAL RNA RIBOSE STRUCTURE, REJECTING'
                NTS=NTS-1
                CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                       JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
@@ -2069,7 +2069,7 @@ C
             CALL CHECK_CISTRANS_DNA(QPLUS,NATOMS,ZSYM,GOODSTRUCTURE2)
             IF (.NOT.GOODSTRUCTURE1.OR..NOT.GOODSTRUCTURE2) THEN
                WRITE(*,*) 
-     &          ' connect> Cis-trans isomerisation detected in the DNA ring wrt. the original DNA ribose structure, rejecting'
+     &          ' CONNECT> CIS-TRANS ISOMERISATION DETECTED IN THE DNA RING WRT. THE ORIGINAL DNA RIBOSE STRUCTURE, REJECTING'
                NTS=NTS-1
                CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                       JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
@@ -2077,12 +2077,12 @@ C
                RETURN
             ENDIF
 C
-C      check cis peptide bonds for proteins
+C      CHECK CIS PEPTIDE BONDS FOR PROTEINS
 C
          ELSE
-C        instead of looking for cis-trans isomerisation processes, we now check if the new minima are in a different 
-C        cis/trans orientation than the STARTING point. In theory, if we start from a clean database, this should be
-C        enough.
+C        INSTEAD OF LOOKING FOR CIS-TRANS ISOMERISATION PROCESSES, WE NOW CHECK IF THE NEW MINIMA ARE IN A DIFFERENT 
+C        CIS/TRANS ORIENTATION THAN THE STARTING POINT. IN THEORY, IF WE START FROM A CLEAN DATABASE, THIS SHOULD BE
+C        ENOUGH.
             CALL CHECK_CISTRANS_PROTEIN(Q,NATOMS,GOODSTRUCTURE1,MINOMEGA,CISARRAY1)
             CALL CHECK_CISTRANS_PROTEIN(QSTART,NATOMS,GOODSTRUCTURE1,MINOMEGA,CISARRAY2)
             CISARRAY1=CISARRAY1-CISARRAY2
@@ -2090,12 +2090,12 @@ C        enough.
             DO J1=1,NATOMS
                IF (CISARRAY1(J1)/=0) THEN
                   GOODSTRUCTURE1=.FALSE.
-                  WRITE(*,'(A,I6)') ' connect> cis-trans isomerisation of a peptide bond detected involving atom ', J1 
+                  WRITE(*,'(A,I6)') ' CONNECT> CIS-TRANS ISOMERISATION OF A PEPTIDE BOND DETECTED INVOLVING ATOM ', J1 
                ENDIF
             ENDDO
 
             IF (.NOT.GOODSTRUCTURE1) THEN
-               WRITE(*,'(A)') ' connect> Cis-trans isomerisation of a peptide bond detected, rejecting'
+               WRITE(*,'(A)') ' CONNECT> CIS-TRANS ISOMERISATION OF A PEPTIDE BOND DETECTED, REJECTING'
                NTS=NTS-1
                CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                       JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
@@ -2110,12 +2110,12 @@ C        enough.
             DO J1=1,NATOMS
                IF (CISARRAY1(J1)/=0) THEN
                   GOODSTRUCTURE1=.FALSE.
-                  WRITE(*,'(A,I6)') ' connect> cis-trans isomerisation of a peptide bond detected involving atom ', J1 
+                  WRITE(*,'(A,I6)') ' CONNECT> CIS-TRANS ISOMERISATION OF A PEPTIDE BOND DETECTED INVOLVING ATOM ', J1 
                ENDIF
             ENDDO
 
             IF (.NOT.GOODSTRUCTURE1) THEN
-               WRITE(*,'(A)') ' connect> Cis-trans isomerisation of a peptide bond detected, rejecting'
+               WRITE(*,'(A)') ' CONNECT> CIS-TRANS ISOMERISATION OF A PEPTIDE BOND DETECTED, REJECTING'
                NTS=NTS-1
                CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                       JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
@@ -2125,12 +2125,12 @@ C        enough.
           ENDIF
       ENDIF
 
-C       Check chirality for AMBER aminoacid residues 
+C       CHECK CHIRALITY FOR AMBER AMINOACID RESIDUES 
       IF (CHECKCHIRALT.AND.(AMBERT.OR.NABT)) THEN
          CALL CHECK_CHIRALITY(Q,NATOMS,GOODSTRUCTURE1)
          CALL CHECK_CHIRALITY(QPLUS,NATOMS,GOODSTRUCTURE2)
          IF (.NOT.GOODSTRUCTURE1.OR..NOT.GOODSTRUCTURE2) THEN
-            WRITE(*,'(A)') ' connect> Chirality inversion detected in at least one of the carbon centres, rejecting'
+            WRITE(*,'(A)') ' CONNECT> CHIRALITY INVERSION DETECTED IN AT LEAST ONE OF THE CARBON CENTRES, REJECTING'
             NTS=NTS-1
             CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                   JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
@@ -2139,12 +2139,12 @@ C       Check chirality for AMBER aminoacid residues
          ENDIF
       ENDIF
 
-C jmc gets here in the case that one side of the path has failed to converge.  Want to try a different ts, rather than 
-C stopping completely...
+C JMC GETS HERE IN THE CASE THAT ONE SIDE OF THE PATH HAS FAILED TO CONVERGE.  WANT TO TRY A DIFFERENT TS, RATHER THAN 
+C STOPPING COMPLETELY...
       IF (PATHFAILT) THEN
          PATHFAILT=.FALSE.
 C        BFGSTST=.TRUE.
-         WRITE(*,*) 'One side of the path failed to converge, rejecting this min-sad-min insertion'
+         WRITE(*,*) 'ONE SIDE OF THE PATH FAILED TO CONVERGE, REJECTING THIS MIN-SAD-MIN INSERTION'
          NTS=NTS-1
          CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
@@ -2158,7 +2158,7 @@ C        BFGSTST=.TRUE.
       CALL NEWMINDIST(QSTART,Q,NATOMS,DISTMS,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
 
       PRINT*
-      WRITE(*,'(A,I6)') ' Minimum distances of Starting and Finishing geometries from +/- minima for ts ',JUSE
+      WRITE(*,'(A,I6)') ' MINIMUM DISTANCES OF STARTING AND FINISHING GEOMETRIES FROM +/- MINIMA FOR TS ',JUSE
       PRINT*
       WRITE(*,'(A)')  '            S              F'
       WRITE(*,'(A,2F15.6)')  ' + ',DISTPS,DISTPF
@@ -2173,10 +2173,10 @@ C        BFGSTST=.TRUE.
       IF (DISTPF.LT.GEOMDIFFTOL) PEQF=.TRUE.
       IF (DISTMS.LT.GEOMDIFFTOL) MEQS=.TRUE.
 C
-C  Allow redopath runs to do a permutation-inversion operation to put each new path into
-C  correspondence with the existing segment. This means that we don't have to have the right
-C  permutation-inversion isomers of the transition states, which is useful for comparison
-C  with old master equation results.
+C  ALLOW REDOPATH RUNS TO DO A PERMUTATION-INVERSION OPERATION TO PUT EACH NEW PATH INTO
+C  CORRESPONDENCE WITH THE EXISTING SEGMENT. THIS MEANS THAT WE DON'T HAVE TO HAVE THE RIGHT
+C  PERMUTATION-INVERSION ISOMERS OF THE TRANSITION STATES, WHICH IS USEFUL FOR COMPARISON
+C  WITH OLD MASTER EQUATION RESULTS.
 C
       IF (REDOPATH.AND.((.NOT.PEQS).AND.(.NOT.MEQS))) THEN
          DO J2=1,3*NATOMS
@@ -2187,13 +2187,13 @@ C
          ELSE IF (DABS(EMIN(NMIN-1)-MINUSEN(NTS)).LT.EDIFFTOL) THEN
             CALL GETPERM(QLOCAL,Q,INVERT,INDEX,SUCCESS)
          ELSE
-            PRINT '(A)',' Problem in redopath run, the last path cannot be properly linked'
+            PRINT '(A)',' PROBLEM IN REDOPATH RUN, THE LAST PATH CANNOT BE PROPERLY LINKED'
             PRINT*,'NMIN,NTS,EMIN(NMIN-1),PLUSEN(NTS),MINUSEN(NTS)=',NMIN,NTS,EMIN(NMIN-1),PLUSEN(NTS),MINUSEN(NTS)
-            PRINT '(A)',' Continuing anyway'
+            PRINT '(A)',' CONTINUING ANYWAY'
 !           STOP
             GOTO 999
          ENDIF
-         PRINT '(A)',' Trying a permutational isomerisation to fit this segment in'
+         PRINT '(A)',' TRYING A PERMUTATIONAL ISOMERISATION TO FIT THIS SEGMENT IN'
          DO J2=1,NATOMS
             QLOCAL(3*(J2-1)+1)=INVERT*QPLUS(3*(INDEX(J2)-1)+1)
             IF (TWOD) THEN
@@ -2234,11 +2234,11 @@ C
             QSAVETS(J2,NTS)=QLOCAL(J2)
          ENDDO
 C
-C  We need to fix all the points in the path.n.xyz file as well, or we will have
-C  problems when we try to reconstruct the full path.
+C  WE NEED TO FIX ALL THE POINTS IN THE PATH.N.XYZ FILE AS WELL, OR WE WILL HAVE
+C  PROBLEMS WHEN WE TRY TO RECONSTRUCT THE FULL PATH.
 C
          OPEN(UNIT=81,FILE=ITSTRING,STATUS='OLD')
-         TMPSTRING=TRIM(ADJUSTL("temp." // ITSTRING))
+         TMPSTRING=TRIM(ADJUSTL("TEMP." // ITSTRING))
          OPEN(UNIT=82,FILE=TMPSTRING,STATUS='UNKNOWN')
 222      READ(81,'(A80)',END=444) DSTRING
          WRITE(82,'(A80)') DSTRING
@@ -2261,9 +2261,9 @@ C
          GOTO 222
 444      CLOSE(81)
          CLOSE(82)
-         CALL SYSTEM('mv ' // TMPSTRING // ' ' // ITSTRING)
+         CALL SYSTEM('MV ' // TMPSTRING // ' ' // ITSTRING)
 C
-C  Can we finish the connection to the last minimum?
+C  CAN WE FINISH THE CONNECTION TO THE LAST MINIMUM?
 C
          IF ((DABS(EMIN(NMIN)-PLUSEN(NTS)).LT.EDIFFTOL).OR.(DABS(EMIN(NMIN)-MINUSEN(NTS)).LT.EDIFFTOL)) THEN
             DO J2=1,3*NATOMS
@@ -2292,13 +2292,13 @@ C
       ENDIF
 999   CONTINUE
 C
-C  End of redopath permutation stuff.
+C  END OF REDOPATH PERMUTATION STUFF.
 C
       DO J2=1,NOPT
          STPMAX(J2)=MXSTPSAVE
       ENDDO
       IF ((PEQS.AND.MEQF).OR.(PEQF.AND.MEQS)) THEN
-         WRITE(*,'(A,I5,A,I5)') ' Pathway links the required minima ',JSTART,' and ',JFINISH
+         WRITE(*,'(A,I5,A,I5)') ' PATHWAY LINKS THE REQUIRED MINIMA ',JSTART,' AND ',JFINISH
 C        IF (REVERSET) THEN
 C           REVERSET=.FALSE.
 C        ELSE
@@ -2334,27 +2334,27 @@ C        ENDIF
          GT10=.TRUE.
          RETURN
       ELSE IF (PEQS.OR.MEQS) THEN
-         WRITE(*,'(A,I5)') ' Pathway connected to first minimum ',JSTART
+         WRITE(*,'(A,I5)') ' PATHWAY CONNECTED TO FIRST MINIMUM ',JSTART
 C
-C  If it is an alternative transition state linking JSTART to the other neighbouring minimum
-C  that is already connected then we want to try the current connection again, otherwise we
-C  can go round in circles. JSTART is always < JFINISH, so we only need to compare with the
-C  minimum at JSTART-1.
+C  IF IT IS AN ALTERNATIVE TRANSITION STATE LINKING JSTART TO THE OTHER NEIGHBOURING MINIMUM
+C  THAT IS ALREADY CONNECTED THEN WE WANT TO TRY THE CURRENT CONNECTION AGAIN, OTHERWISE WE
+C  CAN GO ROUND IN CIRCLES. JSTART IS ALWAYS < JFINISH, SO WE ONLY NEED TO COMPARE WITH THE
+C  MINIMUM AT JSTART-1.
 C
          IF (JSTART.GT.1) THEN
-            IF (MEQS) THEN ! minus minimum of path corresponds to JSTART
+            IF (MEQS) THEN ! MINUS MINIMUM OF PATH CORRESPONDS TO JSTART
                IF (ABS(PLUSEN(JUSE)-EMIN(JSTART-1)).LT.EDIFFTOL) THEN
                   DO J3=1,NOPT
                      QLOCAL(J3)=QSAVE(J3,JSTART-1)
                   ENDDO
                   CALL NEWMINDIST(QPLUS,QLOCAL,NATOMS,DISTPF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
-                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! the other end of the path is the previous minimum
-                     IF (CON(JSTART-1)) THEN   ! if there was already a connection replace it with this ts
+                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! THE OTHER END OF THE PATH IS THE PREVIOUS MINIMUM
+                     IF (CON(JSTART-1)) THEN   ! IF THERE WAS ALREADY A CONNECTION REPLACE IT WITH THIS TS
                         TSUSED(WHICHTS(JSTART-1))=.FALSE.
                      ENDIF
                      WHICHTS(JSTART-1)=JUSE
                      CON(JSTART-1)=.TRUE.
-                     WRITE(*,'(A,I4,A,I4)') ' This transition state connects minimum ',JSTART,' to minimum ',JSTART-1
+                     WRITE(*,'(A,I4,A,I4)') ' THIS TRANSITION STATE CONNECTS MINIMUM ',JSTART,' TO MINIMUM ',JSTART-1
                      CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                      JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
                      GT10=.TRUE.
@@ -2362,19 +2362,19 @@ C
                   ENDIF
                ENDIF
             ENDIF
-            IF (PEQS) THEN ! plus minimum of path corresponds to JSTART
+            IF (PEQS) THEN ! PLUS MINIMUM OF PATH CORRESPONDS TO JSTART
                IF (ABS(MINUSEN(JUSE)-EMIN(JSTART-1)).LT.EDIFFTOL) THEN
                   DO J3=1,NOPT
                      QLOCAL(J3)=QSAVE(J3,JSTART-1)
                   ENDDO
                   CALL NEWMINDIST(Q,QLOCAL,NATOMS,DISTPF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
-                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! the other end of the path is the previous minimum
-                     IF (CON(JSTART-1)) THEN   ! if there was already a connection replace it with this ts
+                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! THE OTHER END OF THE PATH IS THE PREVIOUS MINIMUM
+                     IF (CON(JSTART-1)) THEN   ! IF THERE WAS ALREADY A CONNECTION REPLACE IT WITH THIS TS
                         TSUSED(WHICHTS(JSTART-1))=.FALSE.
                      ENDIF
                      WHICHTS(JSTART-1)=JUSE
                      CON(JSTART-1)=.TRUE.
-                     WRITE(*,'(A,I4,A,I4)') ' This transition state connects minimum ',JSTART,' to minimum ',JSTART-1
+                     WRITE(*,'(A,I4,A,I4)') ' THIS TRANSITION STATE CONNECTS MINIMUM ',JSTART,' TO MINIMUM ',JSTART-1
                      CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                      JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
                      GT10=.TRUE.
@@ -2385,7 +2385,7 @@ C
          ENDIF
 
          IF (NMIN.EQ.NMAXMIN) THEN
-            WRITE(*,'(A)') 'Too many minima - quit'
+            WRITE(*,'(A)') 'TOO MANY MINIMA - QUIT'
             STOP
          ENDIF
          DO J2=NMIN,JSTART+1,-1
@@ -2429,7 +2429,7 @@ C
          CON(JSTART+1)=.FALSE.
          NMIN=NMIN+1
 C
-C  Check for shortcuts to new minimum that now lies at at position JSTART+1
+C  CHECK FOR SHORTCUTS TO NEW MINIMUM THAT NOW LIES AT AT POSITION JSTART+1
 C
          CALL SHORTCUT(NMIN,QSAVE,JSTART+1,NOPT,NATOMS,NMAXMIN,CON,EMIN,WHICHTS,TSUSED,
      1                 NMAXTS,MOVE,BULKT,TWOD,SHORT)
@@ -2445,27 +2445,27 @@ C
          GT10=.TRUE.
          RETURN
       ELSE IF (PEQF.OR.MEQF) THEN
-         WRITE(*,'(A,I5)') ' Pathway connected to second minimum ',JFINISH
+         WRITE(*,'(A,I5)') ' PATHWAY CONNECTED TO SECOND MINIMUM ',JFINISH
 C
-C  If it is an alternative transition state linking JFINISH to the other neighbouring minimum
-C  that is already connected then we want to try the current connection again, otherwise we
-C  can go round in circles. JSTART is always < JFINISH, so we only need to compare with the
-C  minimum at JFINISH+1.
+C  IF IT IS AN ALTERNATIVE TRANSITION STATE LINKING JFINISH TO THE OTHER NEIGHBOURING MINIMUM
+C  THAT IS ALREADY CONNECTED THEN WE WANT TO TRY THE CURRENT CONNECTION AGAIN, OTHERWISE WE
+C  CAN GO ROUND IN CIRCLES. JSTART IS ALWAYS < JFINISH, SO WE ONLY NEED TO COMPARE WITH THE
+C  MINIMUM AT JFINISH+1.
 C
          IF (JFINISH.LT.NMIN) THEN
-            IF (MEQF) THEN ! minus minimum of path corresponds to JFINISH
+            IF (MEQF) THEN ! MINUS MINIMUM OF PATH CORRESPONDS TO JFINISH
                IF (ABS(PLUSEN(JUSE)-EMIN(JFINISH+1)).LT.EDIFFTOL) THEN
                   DO J3=1,NOPT
                      QLOCAL(J3)=QSAVE(J3,JFINISH+1)
                   ENDDO
                   CALL NEWMINDIST(QPLUS,QLOCAL,NATOMS,DISTPF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
-                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! the other end of the path is the next minimum
-                     IF (CON(JFINISH)) THEN  ! if there was already a connection replace it with this ts
+                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! THE OTHER END OF THE PATH IS THE NEXT MINIMUM
+                     IF (CON(JFINISH)) THEN  ! IF THERE WAS ALREADY A CONNECTION REPLACE IT WITH THIS TS
                         TSUSED(WHICHTS(JFINISH))=.FALSE.
                      ENDIF
                      WHICHTS(JFINISH)=JUSE
                      CON(JFINISH)=.TRUE.
-                     WRITE(*,'(A,I4,A,I4)') ' This transition state connects minimum ',JFINISH,' to minimum ',JFINISH+1
+                     WRITE(*,'(A,I4,A,I4)') ' THIS TRANSITION STATE CONNECTS MINIMUM ',JFINISH,' TO MINIMUM ',JFINISH+1
                      CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                      JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
                      GT10=.TRUE.
@@ -2473,19 +2473,19 @@ C
                   ENDIF
                ENDIF
             ENDIF
-            IF (PEQF) THEN ! plus minimum of path corresponds to JFINISH
+            IF (PEQF) THEN ! PLUS MINIMUM OF PATH CORRESPONDS TO JFINISH
                IF (ABS(MINUSEN(JUSE)-EMIN(JFINISH+1)).LT.EDIFFTOL) THEN
                   DO J3=1,NOPT
                      QLOCAL(J3)=QSAVE(J3,JFINISH+1)
                   ENDDO
                   CALL NEWMINDIST(Q,QLOCAL,NATOMS,DISTPF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
-                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! the other end of the path is the next minimum
-                     IF (CON(JFINISH)) THEN  ! if there was already a connection replace it with this ts
+                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! THE OTHER END OF THE PATH IS THE NEXT MINIMUM
+                     IF (CON(JFINISH)) THEN  ! IF THERE WAS ALREADY A CONNECTION REPLACE IT WITH THIS TS
                         TSUSED(WHICHTS(JFINISH))=.FALSE.
                      ENDIF
                      WHICHTS(JFINISH)=JUSE
                      CON(JFINISH)=.TRUE.
-                     WRITE(*,'(A,I4,A,I4)') ' This transition state connects minimum ',JFINISH,' to minimum ',JFINISH+1
+                     WRITE(*,'(A,I4,A,I4)') ' THIS TRANSITION STATE CONNECTS MINIMUM ',JFINISH,' TO MINIMUM ',JFINISH+1
                      CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                      JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
                      GT10=.TRUE.
@@ -2496,7 +2496,7 @@ C
          ENDIF
 
          IF (NMIN.EQ.NMAXMIN) THEN
-            WRITE(*,'(A)') 'Too many minima - quit'
+            WRITE(*,'(A)') 'TOO MANY MINIMA - QUIT'
             STOP
          ENDIF
          DO J2=NMIN,JFINISH,-1
@@ -2540,7 +2540,7 @@ C
          WHICHTS(JFINISH)=JUSE
          NMIN=NMIN+1
 C
-C  Check for shortcuts to first minimum at position JFINISH
+C  CHECK FOR SHORTCUTS TO FIRST MINIMUM AT POSITION JFINISH
 C
          CALL SHORTCUT(NMIN,QSAVE,JFINISH,NOPT,NATOMS,NMAXMIN,CON,EMIN,WHICHTS,TSUSED,
      1                 NMAXTS,MOVE,BULKT,TWOD,SHORT)
@@ -2557,13 +2557,13 @@ C
          RETURN
       ELSE
 C
-C  This is the block where we proceed differently if we were trying to connect adjacent versus
-C  non-adjacent minima. The new pair of minima are added (order depending upon distances from
-C  the minima we were trying to connect) if the search was for an adjacent pair, but not otherwise.
-C  For non-adjacent minima we try increasing the number of images and ultimately remove minimum
-C  JDOING if the upper limit for images has been reached.
+C  THIS IS THE BLOCK WHERE WE PROCEED DIFFERENTLY IF WE WERE TRYING TO CONNECT ADJACENT VERSUS
+C  NON-ADJACENT MINIMA. THE NEW PAIR OF MINIMA ARE ADDED (ORDER DEPENDING UPON DISTANCES FROM
+C  THE MINIMA WE WERE TRYING TO CONNECT) IF THE SEARCH WAS FOR AN ADJACENT PAIR, BUT NOT OTHERWISE.
+C  FOR NON-ADJACENT MINIMA WE TRY INCREASING THE NUMBER OF IMAGES AND ULTIMATELY REMOVE MINIMUM
+C  JDOING IF THE UPPER LIMIT FOR IMAGES HAS BEEN REACHED.
 C
-         WRITE(*,'(A,F20.10,A,I4,A)') ' Pathway is not connected to either minimum'
+         WRITE(*,'(A,F20.10,A,I4,A)') ' PATHWAY IS NOT CONNECTED TO EITHER MINIMUM'
          IF ((JFINISH-JSTART.GT.1).AND.(.NOT.REDOPATH)) THEN
             NTS=NTS-1
             CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
@@ -2572,7 +2572,7 @@ C
             RETURN
          ELSE
 C
-C  Does it link the same minima as an existing ts?
+C  DOES IT LINK THE SAME MINIMA AS AN EXISTING TS?
 C
             DO J1=1,NMIN-1
                IF (CON(J1)) THEN
@@ -2581,7 +2581,7 @@ C
                      DO J3=1,NOPT
                         STPMAX(J3)=MXSTPSAVE
                      ENDDO
-                     WRITE(*,'(A,I5,A,I5,A,I5,A)') ' Pathway links minima ',J1,' and ',J1+1
+                     WRITE(*,'(A,I5,A,I5,A,I5,A)') ' PATHWAY LINKS MINIMA ',J1,' AND ',J1+1
                      TSUSED(JUSE)=.FALSE.
                      CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1                     JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
@@ -2591,14 +2591,14 @@ C
                ENDIF
             ENDDO
 C
-C  If one of the minima corresponds to minimum JSTART-1 or JFINISH+1 then try replacing 
-C  JSTART or JFINISH, as appropriate, with the other one.
+C  IF ONE OF THE MINIMA CORRESPONDS TO MINIMUM JSTART-1 OR JFINISH+1 THEN TRY REPLACING 
+C  JSTART OR JFINISH, AS APPROPRIATE, WITH THE OTHER ONE.
 C
 C
-C  If it is an alternative transition state linking JSTART to the other neighbouring minimum
-C  that is already connected then we want to try the current connection again, otherwise we
-C  can go round in circles. JSTART is always < JFINISH, so we only need to compare with the
-C  minimum at JSTART-1 etc.
+C  IF IT IS AN ALTERNATIVE TRANSITION STATE LINKING JSTART TO THE OTHER NEIGHBOURING MINIMUM
+C  THAT IS ALREADY CONNECTED THEN WE WANT TO TRY THE CURRENT CONNECTION AGAIN, OTHERWISE WE
+C  CAN GO ROUND IN CIRCLES. JSTART IS ALWAYS < JFINISH, SO WE ONLY NEED TO COMPARE WITH THE
+C  MINIMUM AT JSTART-1 ETC.
 C
             IF (JSTART.GT.1) THEN
                IF (ABS(PLUSEN(JUSE)-EMIN(JSTART-1)).LT.EDIFFTOL) THEN
@@ -2606,8 +2606,8 @@ C
                      QLOCAL(J3)=QSAVE(J3,JSTART-1)
                   ENDDO
                   CALL NEWMINDIST(QPLUS,QLOCAL,NATOMS,DISTPF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
-                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! the plus end of the path is the previous minimum, replace JSTART by minus minimum
-                     IF (CON(JSTART-1)) THEN   ! if there was already a connection replace it with this ts
+                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! THE PLUS END OF THE PATH IS THE PREVIOUS MINIMUM, REPLACE JSTART BY MINUS MINIMUM
+                     IF (CON(JSTART-1)) THEN   ! IF THERE WAS ALREADY A CONNECTION REPLACE IT WITH THIS TS
                         TSUSED(WHICHTS(JSTART-1))=.FALSE.
                      ENDIF
                      WHICHTS(JSTART-1)=JUSE
@@ -2621,10 +2621,10 @@ C
                            FSAVEMIN(J2,JSTART)=FRQSMINUS(J2)
                         ENDDO
                      ENDIF
-                     WRITE(*,'(A,I4,A,I4)') ' This transition state connects minimum ',JSTART-1,' to new minimum ',JSTART
+                     WRITE(*,'(A,I4,A,I4)') ' THIS TRANSITION STATE CONNECTS MINIMUM ',JSTART-1,' TO NEW MINIMUM ',JSTART
 C
-C  Check for shortcuts to the new minimum at position JSTART. Since JSTART is being replaced we should
-C  probably go back to NIMAGESAVE images.
+C  CHECK FOR SHORTCUTS TO THE NEW MINIMUM AT POSITION JSTART. SINCE JSTART IS BEING REPLACED WE SHOULD
+C  PROBABLY GO BACK TO NIMAGESAVE IMAGES.
 C
                      CALL SHORTCUT(NMIN,QSAVE,JSTART,NOPT,NATOMS,NMAXMIN,CON,EMIN,WHICHTS,TSUSED,NMAXTS,
      1                             MOVE,BULKT,TWOD,SHORT)
@@ -2636,11 +2636,11 @@ C
 C                    IF (SHORT) THEN
 C                       NIMAGE=NIMAGESAVE
 C                    ELSE IF (NIMAGE+4.GT.NIMAGEMAX) THEN
-C                       WRITE(*,'(A,I5)') ' Too many neb images requested - remove minimum ',JREMOVE
+C                       WRITE(*,'(A,I5)') ' TOO MANY NEB IMAGES REQUESTED - REMOVE MINIMUM ',JREMOVE
 C                       CALL REMMIN(JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
 C                       NIMAGE=NIMAGESAVE
 C                    ELSE
-C                       WRITE(*,'(A,I4,A)') ' Try again with ',NIMAGE+4,' images'
+C                       WRITE(*,'(A,I4,A)') ' TRY AGAIN WITH ',NIMAGE+4,' IMAGES'
 C                       NIMAGE=NIMAGE+4
 C                    ENDIF
                      GT10=.TRUE.
@@ -2651,8 +2651,8 @@ C                    ENDIF
                      QLOCAL(J3)=QSAVE(J3,JSTART-1)
                   ENDDO
                   CALL NEWMINDIST(Q,QLOCAL,NATOMS,DISTPF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
-                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! the minus end of the path is the previous minimum, replace JSTART by minus minimum
-                     IF (CON(JSTART-1)) THEN   ! if there was already a connection replace it with this ts
+                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! THE MINUS END OF THE PATH IS THE PREVIOUS MINIMUM, REPLACE JSTART BY MINUS MINIMUM
+                     IF (CON(JSTART-1)) THEN   ! IF THERE WAS ALREADY A CONNECTION REPLACE IT WITH THIS TS
                         TSUSED(WHICHTS(JSTART-1))=.FALSE.
                      ENDIF
                      WHICHTS(JSTART-1)=JUSE
@@ -2666,9 +2666,9 @@ C                    ENDIF
                            FSAVEMIN(J2,JSTART)=FRQSPLUS(J2)
                         ENDDO
                      ENDIF
-                     WRITE(*,'(A,I4,A,I4)') ' This transition state connects minimum ',JSTART-1,' to new minimum ',JSTART
+                     WRITE(*,'(A,I4,A,I4)') ' THIS TRANSITION STATE CONNECTS MINIMUM ',JSTART-1,' TO NEW MINIMUM ',JSTART
 C
-C  Check for shortcuts to the new minimum at position JSTART.
+C  CHECK FOR SHORTCUTS TO THE NEW MINIMUM AT POSITION JSTART.
 C
                      CALL SHORTCUT(NMIN,QSAVE,JSTART,NOPT,NATOMS,NMAXMIN,CON,EMIN,WHICHTS,TSUSED,NMAXTS,
      1                             MOVE,BULKT,TWOD,SHORT)
@@ -2680,11 +2680,11 @@ C
 C                    IF (SHORT) THEN
 C                       NIMAGE=NIMAGESAVE
 C                    ELSE IF (NIMAGE+4.GT.NIMAGEMAX) THEN
-C                       WRITE(*,'(A,I5)') ' Too many neb images requested - remove minimum ',JREMOVE
+C                       WRITE(*,'(A,I5)') ' TOO MANY NEB IMAGES REQUESTED - REMOVE MINIMUM ',JREMOVE
 C                       CALL REMMIN(JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
 C                       NIMAGE=NIMAGESAVE
 C                    ELSE
-C                       WRITE(*,'(A,I4,A)') ' Try again with ',NIMAGE+4,' images'
+C                       WRITE(*,'(A,I4,A)') ' TRY AGAIN WITH ',NIMAGE+4,' IMAGES'
 C                       NIMAGE=NIMAGE+4
 C                    ENDIF
                      GT10=.TRUE.
@@ -2700,8 +2700,8 @@ C                    ENDIF
                      QLOCAL(J3)=QSAVE(J3,JFINISH+1)
                   ENDDO
                   CALL NEWMINDIST(QPLUS,QLOCAL,NATOMS,DISTPF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
-                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! the plus end of the path is the next minimum
-                     IF (CON(JFINISH)) THEN    ! if there was already a connection replace it with this ts
+                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! THE PLUS END OF THE PATH IS THE NEXT MINIMUM
+                     IF (CON(JFINISH)) THEN    ! IF THERE WAS ALREADY A CONNECTION REPLACE IT WITH THIS TS
                         TSUSED(WHICHTS(JFINISH))=.FALSE.
                      ENDIF
                      WHICHTS(JFINISH)=JUSE
@@ -2715,9 +2715,9 @@ C                    ENDIF
                            FSAVEMIN(J2,JFINISH)=FRQSMINUS(J2)
                         ENDDO
                      ENDIF
-                     WRITE(*,'(A,I4,A,I4)') ' This transition state connects minimum ',JFINISH+1,' to new minimum ',JFINISH
+                     WRITE(*,'(A,I4,A,I4)') ' THIS TRANSITION STATE CONNECTS MINIMUM ',JFINISH+1,' TO NEW MINIMUM ',JFINISH
 C
-C  Check for shortcuts to the new minimum at position JFINISH.
+C  CHECK FOR SHORTCUTS TO THE NEW MINIMUM AT POSITION JFINISH.
 C
                      CALL SHORTCUT(NMIN,QSAVE,JFINISH,NOPT,NATOMS,NMAXMIN,CON,EMIN,WHICHTS,TSUSED,NMAXTS,
      1                             MOVE,BULKT,TWOD,SHORT)
@@ -2729,11 +2729,11 @@ C
 C                    IF (SHORT) THEN
 C                       NIMAGE=NIMAGESAVE
 C                    ELSE IF (NIMAGE+4.GT.NIMAGEMAX) THEN
-C                       WRITE(*,'(A,I5)') ' Too many neb images requested - remove minimum ',JREMOVE
+C                       WRITE(*,'(A,I5)') ' TOO MANY NEB IMAGES REQUESTED - REMOVE MINIMUM ',JREMOVE
 C                       CALL REMMIN(JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
 C                       NIMAGE=NIMAGESAVE
 C                    ELSE
-C                       WRITE(*,'(A,I4,A)') ' Try again with ',NIMAGE+4,' images'
+C                       WRITE(*,'(A,I4,A)') ' TRY AGAIN WITH ',NIMAGE+4,' IMAGES'
 C                       NIMAGE=NIMAGE+4
 C                    ENDIF
                      GT10=.TRUE.
@@ -2745,8 +2745,8 @@ C                    ENDIF
                      QLOCAL(J3)=QSAVE(J3,JFINISH+1)
                   ENDDO
                   CALL NEWMINDIST(Q,QLOCAL,NATOMS,DISTPF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
-                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! the minus end of the path is the next minimum
-                     IF (CON(JFINISH)) THEN  ! if there was already a connection replace it with this ts
+                  IF (DISTPF.LT.GEOMDIFFTOL) THEN  ! THE MINUS END OF THE PATH IS THE NEXT MINIMUM
+                     IF (CON(JFINISH)) THEN  ! IF THERE WAS ALREADY A CONNECTION REPLACE IT WITH THIS TS
                         TSUSED(WHICHTS(JFINISH))=.FALSE.
                      ENDIF
                      WHICHTS(JFINISH)=JUSE
@@ -2760,9 +2760,9 @@ C                    ENDIF
                            FSAVEMIN(J2,JFINISH)=FRQSPLUS(J2)
                         ENDDO
                      ENDIF
-                     WRITE(*,'(A,I4,A,I4)') ' This transition state connects minimum ',JFINISH+1,' to new minimum ',JFINISH
+                     WRITE(*,'(A,I4,A,I4)') ' THIS TRANSITION STATE CONNECTS MINIMUM ',JFINISH+1,' TO NEW MINIMUM ',JFINISH
 C
-C  Check for shortcuts to the new minimum at position JFINISH.
+C  CHECK FOR SHORTCUTS TO THE NEW MINIMUM AT POSITION JFINISH.
 C
                      CALL SHORTCUT(NMIN,QSAVE,JFINISH,NOPT,NATOMS,NMAXMIN,CON,EMIN,WHICHTS,TSUSED,NMAXTS,
      1                             MOVE,BULKT,TWOD,SHORT)
@@ -2774,11 +2774,11 @@ C
 C                    IF (SHORT) THEN
 C                       NIMAGE=NIMAGESAVE
 C                    ELSE IF (NIMAGE+4.GT.NIMAGEMAX) THEN
-C                       WRITE(*,'(A,I5)') ' Too many neb images requested - remove minimum ',JREMOVE
+C                       WRITE(*,'(A,I5)') ' TOO MANY NEB IMAGES REQUESTED - REMOVE MINIMUM ',JREMOVE
 C                       CALL REMMIN(JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
 C                       NIMAGE=NIMAGESAVE
 C                    ELSE
-C                       WRITE(*,'(A,I4,A)') ' Try again with ',NIMAGE+4,' images'
+C                       WRITE(*,'(A,I4,A)') ' TRY AGAIN WITH ',NIMAGE+4,' IMAGES'
 C                       NIMAGE=NIMAGE+4
 C                    ENDIF
                      GT10=.TRUE.
@@ -2797,7 +2797,7 @@ C                    ENDIF
             ENDIF
 
             IF (NMIN.EQ.NMAXMIN-1) THEN
-               WRITE(*,'(A)') 'Too many minima - quit'
+               WRITE(*,'(A)') 'TOO MANY MINIMA - QUIT'
                STOP
             ENDIF
             DO J2=NMIN,JFINISH,-1
@@ -2877,8 +2877,8 @@ C                    ENDIF
             CON(JFINISH+1)=.FALSE.
             NMIN=NMIN+2
 C
-C  Check for shortcuts to new minima at positions JSTART+1 and JSTART+2. If the first call
-C  finds a shortcut then be careful on the second call!
+C  CHECK FOR SHORTCUTS TO NEW MINIMA AT POSITIONS JSTART+1 AND JSTART+2. IF THE FIRST CALL
+C  FINDS A SHORTCUT THEN BE CAREFUL ON THE SECOND CALL!
 C
             CALL SHORTCUT(NMIN,QSAVE,JSTART+1,NOPT,NATOMS,NMAXMIN,CON,EMIN,WHICHTS,TSUSED,NMAXTS,
      1                    MOVE,BULKT,TWOD,SHORT)
@@ -2892,7 +2892,7 @@ C
             ENDDO
             NIMAGE=NIMAGESAVE
             IF (UNRST) THEN
-               print *,'dae setting TRYNEB F' ! DAE If we have introduced two new minima, set TRYNEB to FALSE
+               PRINT *,'DAE SETTING TRYNEB F' ! DAE IF WE HAVE INTRODUCED TWO NEW MINIMA, SET TRYNEB TO FALSE
                TRYNEB=.FALSE.
                IGUESS=1
             ENDIF
@@ -2935,7 +2935,7 @@ C
             DO J3=1,NOPT
                STPMAX(J3)=MXSTPSAVE
             ENDDO
-            WRITE(*,'(A,I4)') ' Same as transition state ',J2
+            WRITE(*,'(A,I4)') ' SAME AS TRANSITION STATE ',J2
             CALL TRYAGAIN(NATOMS,GUESSTST,TRYNEB,IGUESS,NGUESS,NIMAGE,NIMAGEMAX,NIMAGESAVE,
      1           JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,REVERSET,STOPFIRST)
             GT10=.TRUE.
@@ -2949,17 +2949,17 @@ C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C  Subroutine to determine the PI operation that will map the coordinates in TPOINTS2
-C  onto those in TARGET, and check that tagged atoms are not permuted.
-C  Once we have INDEX and INVERT the initial coordinates in
-C  TARGET will be in correspondence with those in OLDPOINTSMIN(x,J1) after applying
-C  TARGET(3*(INDEX(b)-1)+a)*INVERT = TPOINTS2(3*(b-1)+a,J1)
-C  Note that TARGET coordinates are multiplied by -1 for inversion, so INVERT is only
-C  for use on other coordinates. The TARGET coordinates are uninverted for OPTIM!!!
+C  SUBROUTINE TO DETERMINE THE PI OPERATION THAT WILL MAP THE COORDINATES IN TPOINTS2
+C  ONTO THOSE IN TARGET, AND CHECK THAT TAGGED ATOMS ARE NOT PERMUTED.
+C  ONCE WE HAVE INDEX AND INVERT THE INITIAL COORDINATES IN
+C  TARGET WILL BE IN CORRESPONDENCE WITH THOSE IN OLDPOINTSMIN(X,J1) AFTER APPLYING
+C  TARGET(3*(INDEX(B)-1)+A)*INVERT = TPOINTS2(3*(B-1)+A,J1)
+C  NOTE THAT TARGET COORDINATES ARE MULTIPLIED BY -1 FOR INVERSION, SO INVERT IS ONLY
+C  FOR USE ON OTHER COORDINATES. THE TARGET COORDINATES ARE UNINVERTED FOR OPTIM!!!
 C
 C
       SUBROUTINE GETPERM(TPOINTS2,TARGET,INVERT,INDEX,SUCCESS)
-      use porfuncs
+      USE PORFUNCS
       USE COMMONS
       USE KEY
       IMPLICIT NONE
@@ -3001,7 +3001,7 @@ C
             IF (DIST.LT.DMIN) THEN
                DMIN=DIST
                INDEX(J4)=J5
-               IF ((TAGFAC(J4).NE.1.0D0).AND.(J4.NE.J5)) DMIN=1.0D0 ! must not permute different tagged atoms
+               IF ((TAGFAC(J4).NE.1.0D0).AND.(J4.NE.J5)) DMIN=1.0D0 ! MUST NOT PERMUTE DIFFERENT TAGGED ATOMS
             ENDIF
          ENDDO
          IF (DEBUG.AND.(J4.NE.INDEX(J4))) WRITE(*,'(A,6I5,F20.10)') 'J4,NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2,INDEX,DMIN=',
@@ -3022,8 +3022,8 @@ C
             NCHOOSE1=1
             IF (INVERT.EQ.1) THEN
                INVERT=-1
-               IF (DEBUG.AND.TWOD) WRITE(*,'(A)') 'trying to align reflected permutational isomer'
-               IF (DEBUG.AND.(.NOT.TWOD)) WRITE(*,'(A)') 'trying to align inverted permutational isomer'
+               IF (DEBUG.AND.TWOD) WRITE(*,'(A)') 'TRYING TO ALIGN REFLECTED PERMUTATIONAL ISOMER'
+               IF (DEBUG.AND.(.NOT.TWOD)) WRITE(*,'(A)') 'TRYING TO ALIGN INVERTED PERMUTATIONAL ISOMER'
                DO J5=1,NATOMS
                   TARGET(3*(J5-1)+1)=-TARGET(3*(J5-1)+1)
                   IF (.NOT.TWOD) THEN
@@ -3033,7 +3033,7 @@ C
                ENDDO
                GOTO 20
             ELSE
-               WRITE(*,'(A)') 'getperm> unable to align permutational isomers, giving up'
+               WRITE(*,'(A)') 'GETPERM> UNABLE TO ALIGN PERMUTATIONAL ISOMERS, GIVING UP'
                PRINT*,NATOMS
                PRINT*,'TARGET:'
                DO J4=1,NATOMS
@@ -3053,7 +3053,7 @@ C
 C              STOP
             ENDIF
          ELSE
-            WRITE(*,'(A)') 'getperm> unable to align permutational isomers, giving up'
+            WRITE(*,'(A)') 'GETPERM> UNABLE TO ALIGN PERMUTATIONAL ISOMERS, GIVING UP'
             PRINT*,NATOMS
             PRINT*,'TARGET:'
             DO J4=1,NATOMS
@@ -3076,8 +3076,8 @@ C           STOP
 
       SUCCESS=.TRUE.
       IF (DEBUG) THEN
-         WRITE(*,'(A,2I4)') 'alignment successful, INVERT=',INVERT
-!        PRINT*,'transformed points:'
+         WRITE(*,'(A,2I4)') 'ALIGNMENT SUCCESSFUL, INVERT=',INVERT
+!        PRINT*,'TRANSFORMED POINTS:'
 !        DO J5=1,NATOMS
 !           IF (TWOD) WRITE(*,'(3F20.10)') INVERT*TARGET(3*(INDEX(J5)-1)+1),TARGET(3*(INDEX(J5)-1)+2),TARGET(3*(INDEX(J5)-1)+3)
 !           IF (.NOT.TWOD) WRITE(*,'(3F20.10)') INVERT*TARGET(3*(INDEX(J5)-1)+1),INVERT*TARGET(3*(INDEX(J5)-1)+2),
@@ -3085,7 +3085,7 @@ C           STOP
 !        ENDDO
       ENDIF
 C
-C  Undo the inversion of the TARGET coordinates!
+C  UNDO THE INVERSION OF THE TARGET COORDINATES!
 C
 55    DO J5=1,NATOMS
          TARGET(3*(J5-1)+1)=INVERT*TARGET(3*(J5-1)+1)
@@ -3100,7 +3100,7 @@ C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C  Put permutational isomers into a standard orientation.
+C  PUT PERMUTATIONAL ISOMERS INTO A STANDARD ORIENTATION.
 C
       SUBROUTINE STD_ORIENT2D(Q1,T1,NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2)
       USE COMMONS
@@ -3109,7 +3109,7 @@ C
      1                 COST, SINT, RDOTN, TX, TY, TZ
       INTEGER J1, I, JMAX2, NORBIT1, NCHOOSE1, NORBIT2, NCHOOSE2
 C
-C  Move centre of mass to the origin.
+C  MOVE CENTRE OF MASS TO THE ORIGIN.
 C
       CMX=0.0D0
       CMY=0.0D0
@@ -3135,7 +3135,7 @@ C
       ENDDO
 
 C
-C  Find the atom with the largest distance from the z axis.
+C  FIND THE ATOM WITH THE LARGEST DISTANCE FROM THE Z AXIS.
 C
       DMAX=-1.0D0
       NORBIT2=1
@@ -3154,9 +3154,9 @@ C
       ENDDO
 C     IF (DEBUG) PRINT*,'NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2,JMAX2=',NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2,JMAX2
 C
-C  and rotate it into the xz plane.
+C  AND ROTATE IT INTO THE XZ PLANE.
 C
-C     IF (DEBUG) PRINT*,'atom ',JMAX2,' is now the furthest from the  z axis, distance=',DMAX,' rotate into xz plane'
+C     IF (DEBUG) PRINT*,'ATOM ',JMAX2,' IS NOW THE FURTHEST FROM THE  Z AXIS, DISTANCE=',DMAX,' ROTATE INTO XZ PLANE'
       IF (T1(3*(JMAX2-1)+2).EQ.0.0D0) GOTO 20
       COST=T1(3*(JMAX2-1)+1)/DMAX
       SINT=T1(3*(JMAX2-1)+2)/DMAX
@@ -3183,7 +3183,7 @@ C     PRINT*,'COST,SINT=',COST,SINT
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C  Put permutational isomers into a standard orientation.
+C  PUT PERMUTATIONAL ISOMERS INTO A STANDARD ORIENTATION.
 C
       SUBROUTINE STD_ORIENT(Q1,T1,NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2)
       USE COMMONS
@@ -3192,7 +3192,7 @@ C
      1                 COST, SINT, RDOTN, TX, TY, TZ
       INTEGER J1, I, JMAX1, JMAX2, NORBIT1, NCHOOSE1, NORBIT2, NCHOOSE2
 C
-C  Move centre of mass to the origin.
+C  MOVE CENTRE OF MASS TO THE ORIGIN.
 C
       CMX=0.0D0
       CMY=0.0D0
@@ -3227,9 +3227,9 @@ C
          ENDIF
       ENDDO
 C
-C  For tagged atoms the choice of the first atom matters if it belongs to an orbit of size > 1.
+C  FOR TAGGED ATOMS THE CHOICE OF THE FIRST ATOM MATTERS IF IT BELONGS TO AN ORBIT OF SIZE > 1.
 C
-C     PRINT*,'atom ',JMAX1,' will be moved onto the z axis, distance=',DMAX
+C     PRINT*,'ATOM ',JMAX1,' WILL BE MOVED ONTO THE Z AXIS, DISTANCE=',DMAX
       IF ((ABS(Q1(3*(JMAX1-1)+1)).LT.1.0D-8).AND.(ABS(Q1(3*(JMAX1-1)+2)).LT.1.0D-8)) THEN
          DO J1=1,3*NATOMS
             T1(J1)=Q1(J1)
@@ -3239,9 +3239,9 @@ C     PRINT*,'atom ',JMAX1,' will be moved onto the z axis, distance=',DMAX
       COST=Q1(3*(JMAX1-1)+3)/DMAX
       SINT=SQRT(Q1(3*(JMAX1-1)+1)**2+Q1(3*(JMAX1-1)+2)**2)/DMAX
 C
-C  Rotate atom JMAX1 onto the z axis.
-C  Rotate all the atoms through ANGLE about RVEC. Use rotation formula
-C  from Goldstein p. 165.
+C  ROTATE ATOM JMAX1 ONTO THE Z AXIS.
+C  ROTATE ALL THE ATOMS THROUGH ANGLE ABOUT RVEC. USE ROTATION FORMULA
+C  FROM GOLDSTEIN P. 165.
 C
       RVEC(1)= Q1(3*(JMAX1-1)+2)/SQRT(Q1(3*(JMAX1-1)+1)**2+Q1(3*(JMAX1-1)+2)**2)
       RVEC(2)=-Q1(3*(JMAX1-1)+1)/SQRT(Q1(3*(JMAX1-1)+1)**2+Q1(3*(JMAX1-1)+2)**2)
@@ -3257,13 +3257,13 @@ C        ENDIF
 
 10    CONTINUE
 C
-C  Find the atom with the largest distance from the z axis.
+C  FIND THE ATOM WITH THE LARGEST DISTANCE FROM THE Z AXIS.
 C
       DMAX=-1.0D0
       NORBIT2=1
       DO J1=1,NATOMS
          DIST(J1)=SQRT(T1(3*(J1-1)+1)**2+T1(3*(J1-1)+2)**2)
-C        WRITE(*,'(A,I5,5F20.10)') 'J1,DIST,DMAX,ABS(diff),X,Y=',J1,DIST(J1),DMAX,ABS(DIST(J1)-DMAX),T1(3*(J1-1)+1),T1(3*(J1-1)+2)
+C        WRITE(*,'(A,I5,5F20.10)') 'J1,DIST,DMAX,ABS(DIFF),X,Y=',J1,DIST(J1),DMAX,ABS(DIST(J1)-DMAX),T1(3*(J1-1)+1),T1(3*(J1-1)+2)
          IF (ABS(DIST(J1)-DMAX).LT.1.0D-3) THEN
             NORBIT2=NORBIT2+1
             IF (NORBIT2.EQ.NCHOOSE2) THEN
@@ -3277,9 +3277,9 @@ C        WRITE(*,'(A,I5,5F20.10)') 'J1,DIST,DMAX,ABS(diff),X,Y=',J1,DIST(J1),DMA
       ENDDO
 C     PRINT*,'NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2,JMAX1,JMAX2=',NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2,JMAX1,JMAX2
 C
-C  and rotate it into the xz plane.
+C  AND ROTATE IT INTO THE XZ PLANE.
 C
-C     PRINT*,'atom ',JMAX2,' is now the furthest from the  z axis, distance=',DMAX,' rotate into xz plane'
+C     PRINT*,'ATOM ',JMAX2,' IS NOW THE FURTHEST FROM THE  Z AXIS, DISTANCE=',DMAX,' ROTATE INTO XZ PLANE'
       IF (T1(3*(JMAX2-1)+2).EQ.0.0D0) GOTO 20
       COST=T1(3*(JMAX2-1)+1)/DMAX
       SINT=T1(3*(JMAX2-1)+2)/DMAX
@@ -3306,7 +3306,7 @@ C     PRINT*,'COST,SINT=',COST,SINT
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C  Move the centre of mass to the origin.
+C  MOVE THE CENTRE OF MASS TO THE ORIGIN.
 C
       SUBROUTINE CENTRE(T1)
       USE COMMONS
@@ -3314,7 +3314,7 @@ C
       DOUBLE PRECISION CMX, CMY, CMZ, T1(3*NATOMS)
       INTEGER I
 C
-C  Move centre of mass to the origin.
+C  MOVE CENTRE OF MASS TO THE ORIGIN.
 C
       CMX=0.0D0
       CMY=0.0D0
@@ -3348,17 +3348,17 @@ C
 
       IF (GUESSTST.AND.(.NOT.TRYNEB)) THEN
          IGUESS=IGUESS+1
-         WRITE(*,'(A)') ' Try again with next twist'
-         IF (IGUESS.GT.ABS(NGUESS)) THEN ! jmc
-            WRITE(*,'(A)') ' Too many ts guesses - try neb'
+         WRITE(*,'(A)') ' TRY AGAIN WITH NEXT TWIST'
+         IF (IGUESS.GT.ABS(NGUESS)) THEN ! JMC
+            WRITE(*,'(A)') ' TOO MANY TS GUESSES - TRY NEB'
             IGUESS=1
             WRITE(*,'(A,I4)') 'IGUESS=',IGUESS
             TRYNEB=.TRUE.
          ENDIF
       ELSE
-         WRITE(*,'(A,I4,A)') ' Try again with ',NIMAGE+4,' images'
+         WRITE(*,'(A,I4,A)') ' TRY AGAIN WITH ',NIMAGE+4,' IMAGES'
          IF (NIMAGE+4.GT.NIMAGELIMIT) THEN
-            WRITE(*,'(A,I5)') ' Too many neb images requested - remove minimum ',JREMOVE
+            WRITE(*,'(A,I5)') ' TOO MANY NEB IMAGES REQUESTED - REMOVE MINIMUM ',JREMOVE
             CALL REMMIN(JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,
      1                 REVERSET,STOPFIRST)
             NIMAGE=NIMAGESAVE
@@ -3384,24 +3384,24 @@ C
       GT20=.FALSE.
       IF (GUESSTST.AND.(.NOT.TRYNEB)) THEN
          IGUESS=IGUESS+1
-         WRITE(*,'(A)') ' Try again with next twist'
-         IF (IGUESS.GT.ABS(NGUESS)) THEN ! jmc
-            WRITE(*,'(A)') ' Too many ts guesses - try neb'
+         WRITE(*,'(A)') ' TRY AGAIN WITH NEXT TWIST'
+         IF (IGUESS.GT.ABS(NGUESS)) THEN ! JMC
+            WRITE(*,'(A)') ' TOO MANY TS GUESSES - TRY NEB'
             IGUESS=1
             WRITE(*,'(A,I4)') 'IGUESS=',IGUESS
             TRYNEB=.TRUE.
          ENDIF
 C
-C  We have to reset the starting geometry in Q!
+C  WE HAVE TO RESET THE STARTING GEOMETRY IN Q!
 C
          DO J3=1,NOPT
             Q(J3)=QSTART(J3)
          ENDDO
          GT20=.TRUE.
       ELSE
-         WRITE(*,'(A,I4,A)') ' Try again with ',NIMAGE+4,' images'
+         WRITE(*,'(A,I4,A)') ' TRY AGAIN WITH ',NIMAGE+4,' IMAGES'
          IF (NIMAGE+4.GT.NIMAGELIMIT) THEN
-            WRITE(*,'(A,I5)') ' Too many neb images requested - remove minimum ',JREMOVE
+            WRITE(*,'(A,I5)') ' TOO MANY NEB IMAGES REQUESTED - REMOVE MINIMUM ',JREMOVE
             CALL REMMIN(JREMOVE,NMIN,NOPT,QSAVE,CON,EMIN,WHICHTS,NMAXMIN,TSUSED,NMAXTS,
      1                 REVERSET,STOPFIRST)
             NIMAGE=NIMAGESAVE
@@ -3409,7 +3409,7 @@ C
          ELSE
             NIMAGE=NIMAGE+4
 C
-C  We have to reset the starting geometry in Q!
+C  WE HAVE TO RESET THE STARTING GEOMETRY IN Q!
 C
             DO J3=1,NOPT
                Q(J3)=QSTART(J3)

@@ -1,35 +1,35 @@
 !==================================================
-! Calculate the monomer and dimer potentials, using hbb only
+! CALCULATE THE MONOMER AND DIMER POTENTIALS, USING HBB ONLY
 !==================================================
-subroutine pot12bhbb(natm,xx,pot)
-  integer,intent(in)::natm
-  real,dimension(3,natm),intent(in)::xx
-  real,intent(inout)::pot
+SUBROUTINE POT12BHBB(NATM,XX,POT)
+  INTEGER,INTENT(IN)::NATM
+  REAL,DIMENSION(3,NATM),INTENT(IN)::XX
+  REAL,INTENT(INOUT)::POT
   !::::::::::::::::::::
-  real,dimension(6,3)::x1,x2
-  real::e1,e2,vect(3)
-  integer::i,j,fo
+  REAL,DIMENSION(6,3)::X1,X2
+  REAL::E1,E2,VECT(3)
+  INTEGER::I,J,FO
 
-  fo=natm/3*2
-  do i=1,natm/3-1
-     x2(1,:)=xx(:,fo+i)        ! O1
-     x2(2,:)=xx(:,i*2-1)       ! H1
-     x2(3,:)=xx(:,i*2)         ! H2
-     do j=i+1,natm/3
-        x2(4,:)=xx(:,fo+j)     ! O2
-        x2(5,:)=xx(:,j*2-1)    ! H1
-        x2(6,:)=xx(:,j*2)      ! H2
-        vect(:)=x2(4,:)-x2(1,:)
-        x1=x2
-        vect(:)=vect(:)*200.d0
-        x1(4,:)=x2(4,:)+vect(:)
-        x1(5,:)=x2(5,:)+vect(:)
-        x1(6,:)=x2(6,:)+vect(:)
-        call calcpot(e2,x2) 
-        call calcpot(e1,x1) 
-        pot=pot+e2-e1*(1.d0-1.d0/dble(natm/3-1))
-     end do
-  end do
+  FO=NATM/3*2
+  DO I=1,NATM/3-1
+     X2(1,:)=XX(:,FO+I)        ! O1
+     X2(2,:)=XX(:,I*2-1)       ! H1
+     X2(3,:)=XX(:,I*2)         ! H2
+     DO J=I+1,NATM/3
+        X2(4,:)=XX(:,FO+J)     ! O2
+        X2(5,:)=XX(:,J*2-1)    ! H1
+        X2(6,:)=XX(:,J*2)      ! H2
+        VECT(:)=X2(4,:)-X2(1,:)
+        X1=X2
+        VECT(:)=VECT(:)*200.D0
+        X1(4,:)=X2(4,:)+VECT(:)
+        X1(5,:)=X2(5,:)+VECT(:)
+        X1(6,:)=X2(6,:)+VECT(:)
+        CALL CALCPOT(E2,X2) 
+        CALL CALCPOT(E1,X1) 
+        POT=POT+E2-E1*(1.D0-1.D0/DBLE(NATM/3-1))
+     END DO
+  END DO
 
-  return
-end subroutine pot12bhbb
+  RETURN
+END SUBROUTINE POT12BHBB

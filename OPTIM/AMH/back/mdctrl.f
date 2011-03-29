@@ -1,193 +1,193 @@
  
-c     --------------------- mdctrl ----------------------
+C     --------------------- MDCTRL ----------------------
  
-      subroutine mdctrl(jstrt,jfins,tempav,ishkit,
-     *                  bdshak,tmpidx,
-     *                  totke
+      SUBROUTINE MDCTRL(JSTRT,JFINS,TEMPAV,ISHKIT,
+     *                  BDSHAK,TMPIDX,
+     *                  TOTKE
      *                  )
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     MDCTRL is the master subroutine for the molecular
-c            dynamics algorithm outlined in Ryckaert and 
-c            Ciccotti, Mol. Phys. 58, 1125-1136 (1986). 
+C     MDCTRL IS THE MASTER SUBROUTINE FOR THE MOLECULAR
+C            DYNAMICS ALGORITHM OUTLINED IN RYCKAERT AND 
+C            CICCOTTI, MOL. PHYS. 58, 1125-1136 (1986). 
 
-c     arguments:
+C     ARGUMENTS:
 
-c        jstrt - first nonfixed site (i)
-c        jfins - last nonfixed site (i)
-c        tempav- if tempav, then compute averages (i)
-c        maxshk- maximum number of shake iterations (i)
-c        tolshk- shake tolerance (i)
-c        ishkit- tracks the number of shake iterations (o)
-c        bdshk - true if shake doesn't converge within
-c                specified number of iterations (o)
-c        tmpidx- temperature index (i)
+C        JSTRT - FIRST NONFIXED SITE (I)
+C        JFINS - LAST NONFIXED SITE (I)
+C        TEMPAV- IF TEMPAV, THEN COMPUTE AVERAGES (I)
+C        MAXSHK- MAXIMUM NUMBER OF SHAKE ITERATIONS (I)
+C        TOLSHK- SHAKE TOLERANCE (I)
+C        ISHKIT- TRACKS THE NUMBER OF SHAKE ITERATIONS (O)
+C        BDSHK - TRUE IF SHAKE DOESN'T CONVERGE WITHIN
+C                SPECIFIED NUMBER OF ITERATIONS (O)
+C        TMPIDX- TEMPERATURE INDEX (I)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-      use globals, only: maxtab,numcrd,numpro,qrcord,work1,
-     *  velocp,prcord,zrcord,avepp,maxr,vpotnt,
-     *  forse,work4,pexcld,
-     *  numlng,nmres,rincinv,rincsq,oarchv,ilong,crdixn,
-     *  ires,work3,timstp,eqdist,hbond,oxexcldv,
-     *  i540,i1,
-     *  avep,movanal,trcord,srcord,bondln,tolshk,maxshk,maxpro,
-     *  maxcrd,i511,i518
+      USE GLOBALS, ONLY: MAXTAB,NUMCRD,NUMPRO,QRCORD,WORK1,
+     *  VELOCP,PRCORD,ZRCORD,AVEPP,MAXR,VPOTNT,
+     *  FORSE,WORK4,PEXCLD,
+     *  NUMLNG,NMRES,RINCINV,RINCSQ,OARCHV,ILONG,CRDIXN,
+     *  IRES,WORK3,TIMSTP,EQDIST,HBOND,OXEXCLDV,
+     *  I540,I1,
+     *  AVEP,MOVANAL,TRCORD,SRCORD,BONDLN,TOLSHK,MAXSHK,MAXPRO,
+     *  MAXCRD,I511,I518
 
 
-      implicit none
+      IMPLICIT NONE
 
-c     argument declarations:
+C     ARGUMENT DECLARATIONS:
 
-         logical tempav,bdshak
+         LOGICAL TEMPAV,BDSHAK
 
-         integer jstrt,jfins,ishkit,tmpidx
+         INTEGER JSTRT,JFINS,ISHKIT,TMPIDX
 
-         real totke(maxpro)
+         REAL TOTKE(MAXPRO)
          
 
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-         logical scl_call
+         LOGICAL SCL_CALL
 
-         integer i_axis, i_coord, i_pro, i_res
+         INTEGER I_AXIS, I_COORD, I_PRO, I_RES
 
-         real starhi,trgeng(maxtab,3)
+         REAL STARHI,TRGENG(MAXTAB,3)
 
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     --- Every Step Part 1 of 3 ---
-c  needed for printing out every step in a trajectory
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     --- EVERY STEP PART 1 OF 3 ---
+C  NEEDED FOR PRINTING OUT EVERY STEP IN A TRAJECTORY
 C
-c         character*10 name_a(10000)
-c         character*3 res_type(maxsiz)
-c         character*10 save_name
-c         integer name_length, nl
-c         integer pdb, pdb_num, pn
-c         external get_res_name
-c         DATA pdb_num /0/
-ccccccccccccccccccccccccccccccccccccccccccccccccc
+C         CHARACTER*10 NAME_A(10000)
+C         CHARACTER*3 RES_TYPE(MAXSIZ)
+C         CHARACTER*10 SAVE_NAME
+C         INTEGER NAME_LENGTH, NL
+C         INTEGER PDB, PDB_NUM, PN
+C         EXTERNAL GET_RES_NAME
+C         DATA PDB_NUM /0/
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
 
-c     required subroutines
+C     REQUIRED SUBROUTINES
 
-         external force,verlet,
-     *            shkdrv
+         EXTERNAL FORCE,VERLET,
+     *            SHKDRV
 
 
-c     --------------------- begin -----------------------
+C     --------------------- BEGIN -----------------------
 
-!         write(SO,*) 'in mdctrl'
+!         WRITE(SO,*) 'IN MDCTRL'
 
-c     save current coordinates
+C     SAVE CURRENT COORDINATES
 
-      do 500 i_coord=1, numcrd             ! CA, CA, O
-         do 524 i_pro=1,numpro
-            do 525 i_axis=1,3
-               do 526 i_res=1,jfins
-                  qrcord(i_res,i_axis,i_pro,i_coord)=
-     *            prcord(i_res,i_axis,i_pro,i_coord)
-  526          continue
-  525       continue
-  524    continue
-  500 continue
+      DO 500 I_COORD=1, NUMCRD             ! CA, CA, O
+         DO 524 I_PRO=1,NUMPRO
+            DO 525 I_AXIS=1,3
+               DO 526 I_RES=1,JFINS
+                  QRCORD(I_RES,I_AXIS,I_PRO,I_COORD)=
+     *            PRCORD(I_RES,I_AXIS,I_PRO,I_COORD)
+  526          CONTINUE
+  525       CONTINUE
+  524    CONTINUE
+  500 CONTINUE
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     find forces and potential energies 
-c       write(SO,*) 'force    '
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     FIND FORCES AND POTENTIAL ENERGIES 
+C       WRITE(SO,*) 'FORCE    '
 
-      scl_call=.false.
+      SCL_CALL=.FALSE.
 
-      call force(numpro,
-     *            prcord,
-     *            zrcord,avepp,tempav,
-     *            maxr,vpotnt,
-     *            forse,trgeng,
-     *            pexcld,
-     *            numlng,nmres,rincinv,rincsq,
-     *            ilong,
-     *            crdixn,
-     *            ires,
-     *            eqdist,
-     *            hbond,oxexcldv,
-     *            scl_call)
+      CALL FORCE(NUMPRO,
+     *            PRCORD,
+     *            ZRCORD,AVEPP,TEMPAV,
+     *            MAXR,VPOTNT,
+     *            FORSE,TRGENG,
+     *            PEXCLD,
+     *            NUMLNG,NMRES,RINCINV,RINCSQ,
+     *            ILONG,
+     *            CRDIXN,
+     *            IRES,
+     *            EQDIST,
+     *            HBOND,OXEXCLDV,
+     *            SCL_CALL)
 
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-         if( tempav ) then
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+         IF( TEMPAV ) THEN
 
-c           record total E for T average
+C           RECORD TOTAL E FOR T AVERAGE
 
-           do 540 i540=1,numpro
-             do 100 i1=1,50
-               avep(i540,1,i1)=avepp(i540,1,i1)
-100             continue
-  540      continue
+           DO 540 I540=1,NUMPRO
+             DO 100 I1=1,50
+               AVEP(I540,1,I1)=AVEPP(I540,1,I1)
+100             CONTINUE
+  540      CONTINUE
 
-         endif
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-c     update coordinates
+         ENDIF
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+C     UPDATE COORDINATES
 
-      if (.not.movanal) then
+      IF (.NOT.MOVANAL) THEN
 
-!       write(SO,*) 'in verlet'
+!       WRITE(SO,*) 'IN VERLET'
 
-      call verlet(numpro,prcord,zrcord,
-     *            timstp,jstrt,jfins,trcord)
+      CALL VERLET(NUMPRO,PRCORD,ZRCORD,
+     *            TIMSTP,JSTRT,JFINS,TRCORD)
 
-c     find set of final coordinates consistent with
-c     bond constraints
+C     FIND SET OF FINAL COORDINATES CONSISTENT WITH
+C     BOND CONSTRAINTS
 
-            call shkdrv(prcord,qrcord,srcord,
-     *            zrcord,bondln,jstrt,jfins,tolshk,
-     *            maxshk,bdshak,numpro,ishkit,
-     *            maxpro,maxcrd,numcrd,
-     *            oarchv,work1,work3,work4,ires)
+            CALL SHKDRV(PRCORD,QRCORD,SRCORD,
+     *            ZRCORD,BONDLN,JSTRT,JFINS,TOLSHK,
+     *            MAXSHK,BDSHAK,NUMPRO,ISHKIT,
+     *            MAXPRO,MAXCRD,NUMCRD,
+     *            OARCHV,WORK1,WORK3,WORK4,IRES)
 
-      endif
+      ENDIF
 
-c     if bdshak, then shake was ineffective; return
+C     IF BDSHAK, THEN SHAKE WAS INEFFECTIVE; RETURN
 
-      if( bdshak )then
-         write(oarchv,144)
-  144    format(/'bad shake post verlet')
-         return
-      endif
-c     set velocity 
+      IF( BDSHAK )THEN
+         WRITE(OARCHV,144)
+  144    FORMAT(/'BAD SHAKE POST VERLET')
+         RETURN
+      ENDIF
+C     SET VELOCITY 
 
-      starhi=0.5/timstp
+      STARHI=0.5/TIMSTP
 
-      do 514 i_coord=1,numcrd
-         do 509 i_pro=1,numpro
-            do 510 i_axis=1,3
-                  do 511 i511=jstrt,jfins
-                     velocp(i511,i_axis,i_pro,i_coord)=
-     *              (prcord(i511,i_axis,i_pro,i_coord) - 
-     *               trcord(i511,i_axis,i_pro,i_coord))*starhi
-  511             continue
-               do 518 i518=jstrt,jfins
-                  trcord(i518,i_axis,i_pro,i_coord)=
-     *            qrcord(i518,i_axis,i_pro,i_coord)
-  518          continue
-  510       continue
-  509    continue
-  514 continue
+      DO 514 I_COORD=1,NUMCRD
+         DO 509 I_PRO=1,NUMPRO
+            DO 510 I_AXIS=1,3
+                  DO 511 I511=JSTRT,JFINS
+                     VELOCP(I511,I_AXIS,I_PRO,I_COORD)=
+     *              (PRCORD(I511,I_AXIS,I_PRO,I_COORD) - 
+     *               TRCORD(I511,I_AXIS,I_PRO,I_COORD))*STARHI
+  511             CONTINUE
+               DO 518 I518=JSTRT,JFINS
+                  TRCORD(I518,I_AXIS,I_PRO,I_COORD)=
+     *            QRCORD(I518,I_AXIS,I_PRO,I_COORD)
+  518          CONTINUE
+  510       CONTINUE
+  509    CONTINUE
+  514 CONTINUE
 
-      if (tempav) then
-        totke=0.0
-        do i_coord=1,numcrd
-        do i_pro=1,numpro
-        do i_axis=1,3
-        do i511=jstrt,jfins
-          totke(i_pro)=totke(i_pro)+velocp(i511,i_axis,i_pro,i_coord)**2
-        enddo
-        enddo
-        enddo
-        enddo
-        totke=0.5*totke
-      endif
+      IF (TEMPAV) THEN
+        TOTKE=0.0
+        DO I_COORD=1,NUMCRD
+        DO I_PRO=1,NUMPRO
+        DO I_AXIS=1,3
+        DO I511=JSTRT,JFINS
+          TOTKE(I_PRO)=TOTKE(I_PRO)+VELOCP(I511,I_AXIS,I_PRO,I_COORD)**2
+        ENDDO
+        ENDDO
+        ENDDO
+        ENDDO
+        TOTKE=0.5*TOTKE
+      ENDIF
 
-c     ---------------------- done -----------------------
+C     ---------------------- DONE -----------------------
 
-      return
-      end
+      RETURN
+      END

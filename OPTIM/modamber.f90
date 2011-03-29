@@ -1,20 +1,20 @@
-!   OPTIM: A program for optimizing geometries and calculating reaction pathways
-!   Copyright (C) 1999-2006 David J. Wales
-!   This file is part of OPTIM.
+!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!   THIS FILE IS PART OF OPTIM.
 !   
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !   
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !   
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 
 MODULE MODAMBER
@@ -25,12 +25,12 @@ MODULE MODAMBER
       DOUBLE PRECISION  TOTENERGY,BENERGY,TENERGY,PENERGY,ANSWER,IMPENERGY,QENERGY,VDWENERGY
       
       INTEGER ATOMS,ANG,IMP,COUNT,T
-      INTEGER  a,b,ios,d,e,f,g,h,i,j,k,l,colin,fish,ans,rings
-      INTEGER  match,bean,bondnumber
+      INTEGER  A,B,IOS,D,E,F,G,H,I,J,K,L,COLIN,FISH,ANS,RINGS
+      INTEGER  MATCH,BEAN,BONDNUMBER
       INTEGER NDIHEDRALS
       INTEGER, ALLOCATABLE, DIMENSION(:) :: DATOM1, DATOM2
-      INTEGER loopatom(20)
-      INTEGER,ALLOCATABLE, DIMENSION (:,:) :: bondarray
+      INTEGER LOOPATOM(20)
+      INTEGER,ALLOCATABLE, DIMENSION (:,:) :: BONDARRAY
       DOUBLE PRECISION TINY
       PARAMETER  (TINY=1.0D-12)
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION (:) ::  X,Y,Z,PQ
@@ -40,31 +40,31 @@ MODULE MODAMBER
       DOUBLE PRECISION GENTORSPARAMS(100,6),SPECTORSPARAMS(100,14),SPECIMPPARAMS(15,7)
       DOUBLE PRECISION MIDIMPPARAMS(4,6),GENIMPPARAMS(15,5)
   
-      INTEGER, ALLOCATABLE, DIMENSION (:) :: aa1,aa2,aa3
+      INTEGER, ALLOCATABLE, DIMENSION (:) :: AA1,AA2,AA3
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION (:) ::  THETA
 
-      INTEGER, ALLOCATABLE, DIMENSION (:) :: da1,da2,da3,da4
+      INTEGER, ALLOCATABLE, DIMENSION (:) :: DA1,DA2,DA3,DA4
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION (:) :: DPHI,DID,DVN,DVN2
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION (:) :: DVN3,DDELTA,DDELTA2,DDELTA3
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION (:) :: DN,DN2,DN3
 
-      INTEGER, ALLOCATABLE, DIMENSION (:) :: ia1,ia2,ia3,ia4
+      INTEGER, ALLOCATABLE, DIMENSION (:) :: IA1,IA2,IA3,IA4
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION (:) :: IPHI,IVN,IDELTA,IN1
 
       DOUBLE PRECISION  QX(3),QY(3),QZ(3)
-      INTEGER, ALLOCATABLE, DIMENSION (:) :: atnum,bondedto,type
-      INTEGER, ALLOCATABLE, DIMENSION (:,:) :: bonds
-      INTEGER, ALLOCATABLE, DIMENSION (:,:) :: one_four,one_three
-      CHARACTER(LEN=2)  typechb,typechc,typechd,typeche
-      CHARACTER(LEN=20)  filename
-      CHARACTER, ALLOCATABLE, DIMENSION(:) ::  label
-      CHARACTER(LEN=2), ALLOCATABLE, DIMENSION(:) :: typech
+      INTEGER, ALLOCATABLE, DIMENSION (:) :: ATNUM,BONDEDTO,TYPE
+      INTEGER, ALLOCATABLE, DIMENSION (:,:) :: BONDS
+      INTEGER, ALLOCATABLE, DIMENSION (:,:) :: ONE_FOUR,ONE_THREE
+      CHARACTER(LEN=2)  TYPECHB,TYPECHC,TYPECHD,TYPECHE
+      CHARACTER(LEN=20)  FILENAME
+      CHARACTER, ALLOCATABLE, DIMENSION(:) ::  LABEL
+      CHARACTER(LEN=2), ALLOCATABLE, DIMENSION(:) :: TYPECH
 !
-! Variables for energy calculation
+! VARIABLES FOR ENERGY CALCULATION
 !
-      CHARACTER(LEN=10)  check
+      CHARACTER(LEN=10)  CHECK
       DOUBLE PRECISION DIELEC
-      PARAMETER  (dielec=1)
+      PARAMETER  (DIELEC=1)
       LOGICAL FAKEWATER
       DOUBLE PRECISION RSTAR,EPSILON
       DOUBLE PRECISION VDWR(42),VDWE(42)
@@ -75,22 +75,22 @@ MODULE MODAMBER
 
       INTEGER PN,IDIVF,PN2,PN3,IPN
 !
-! Variables for derivative calculation
+! VARIABLES FOR DERIVATIVE CALCULATION
 !
       DOUBLE PRECISION,ALLOCATABLE, DIMENSION(:) :: DBONDEBYDX,DBONDEBYDY,DBONDEBYDZ,DANGEBYDX, &
-     &                 dangEbydy,dangEbydz, &
-     &                 dtorsEbydx,dtorsEbydy,dtorsEbydz,dvdwEbydx, &
-     &                 dvdwEbydy,dvdwEbydz, &
-     &                 dEbydx,dEbydy,dEbydz,dimpEbydx, &
-     &                 dimpEbydy,dimpEbydz, &
-     &                 dqEbydx,dqEbydy,dqEbydz
+     &                 DANGEBYDY,DANGEBYDZ, &
+     &                 DTORSEBYDX,DTORSEBYDY,DTORSEBYDZ,DVDWEBYDX, &
+     &                 DVDWEBYDY,DVDWEBYDZ, &
+     &                 DEBYDX,DEBYDY,DEBYDZ,DIMPEBYDX, &
+     &                 DIMPEBYDY,DIMPEBYDZ, &
+     &                 DQEBYDX,DQEBYDY,DQEBYDZ
 !
-! Variables for second derivative calculation
+! VARIABLES FOR SECOND DERIVATIVE CALCULATION
 !
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: BONDHELL,ANGLEHELL,TORSHELL,  &
-     &                 imphell,qhell,vdwhell,hell
-      INTEGER hellcount
-      INTEGER,ALLOCATABLE,DIMENSION(:) :: chiral
-      INTEGER,ALLOCATABLE,DIMENSION(:,:) :: chiralarray
+     &                 IMPHELL,QHELL,VDWHELL,HELL
+      INTEGER HELLCOUNT
+      INTEGER,ALLOCATABLE,DIMENSION(:) :: CHIRAL
+      INTEGER,ALLOCATABLE,DIMENSION(:,:) :: CHIRALARRAY
 
 END MODULE MODAMBER

@@ -1,10 +1,10 @@
-C LBFGS method for optimizing image points on great circle
+C LBFGS METHOD FOR OPTIMIZING IMAGE POINTS ON GREAT CIRCLE
 C        LIMITED MEMORY BFGS METHOD FOR LARGE SCALE OPTIMIZATION
 C                          JORGE NOCEDAL
-C                        *** July 1990 ***
-C EFK: Copied from mylbfgs.f, 3/11/06
-C PROJECT, TWOEND, GRADSQ, INTMIN, CHARMM, DRAGT  options removed
-C PV option retained
+C                        *** JULY 1990 ***
+C EFK: COPIED FROM MYLBFGS.F, 3/11/06
+C PROJECT, TWOEND, GRADSQ, INTMIN, CHARMM, DRAGT  OPTIONS REMOVED
+C PV OPTION RETAINED
 C 
       SUBROUTINE GCLBFGS(RS,RF,XI,N,M,X,DIAGCO,EPS,MFLAG,ENERGY,RMS,ITMAX,RESET,ITDONE,PTEST)
       USE COMMONS
@@ -14,7 +14,7 @@ C
       USE ZWK
       USE MODUNRES
       USE MODCHARMM
-      use porfuncs
+      USE PORFUNCS
       IMPLICIT NONE
       INTEGER N,M,J1,ITMAX,ITDONE,NFAIL,NCOUNT,J2
 C     DOUBLE PRECISION X(*),G(3*NATOMS),DIAG(N),W(N*(2*M+1)+2*M),SLENGTH,DDOT,OVERLAP
@@ -45,32 +45,32 @@ C     DOUBLE PRECISION X(*),G(3*NATOMS),DIAG(N),W(N*(2*M+1)+2*M),SLENGTH,DDOT,OV
       CHARACTER(LEN=5) ZSYMSAVE
       COMMON /SYS/ ZSYMSAVE
 C
-C  SGI appears to need this SAVE statement!
+C  SGI APPEARS TO NEED THIS SAVE STATEMENT!
 C
       SAVE W, DIAG, ITER, POINT, ISPT, IYPT, NPT
 C
-C EFK: specifically for great circle stuff
+C EFK: SPECIFICALLY FOR GREAT CIRCLE STUFF
 C
       DOUBLE PRECISION RS(3*NATOMS), RF(3*NATOMS), XI(GCIMAGE,3*NATOMS)
-      DOUBLE PRECISION IMGE(GCIMAGE), STARTE, FINE, dEdX(N), RMST
+      DOUBLE PRECISION IMGE(GCIMAGE), STARTE, FINE, DEDX(N), RMST
 
-      CALL POTENTIAL(RS, STARTE, dEdX, .TRUE., .FALSE., RMSt, .FALSE., .FALSE.)
-      print*, 'START ENERGY:', STARTE
-      CALL POTENTIAL(RF, FINE, dEdX, .TRUE., .FALSE., RMSt, .FALSE., .FALSE.)
-      print*, 'FINISH ENERGY:', FINE
+      CALL POTENTIAL(RS, STARTE, DEDX, .TRUE., .FALSE., RMST, .FALSE., .FALSE.)
+      PRINT*, 'START ENERGY:', STARTE
+      CALL POTENTIAL(RF, FINE, DEDX, .TRUE., .FALSE., RMST, .FALSE., .FALSE.)
+      PRINT*, 'FINISH ENERGY:', FINE
 
       KNOWE = .FALSE.; KNOWG = .FALSE.
 
-      IF (.NOT.ALLOCATED(DIAG)) ALLOCATE(DIAG(N))       ! SAVE doesn't work otherwise for Sun
-      IF (.NOT.ALLOCATED(W)) ALLOCATE(W(N*(2*M+1)+2*M)) ! SAVE doesn't work otherwise for Sun
-      IF (SIZE(W,1).NE.N*(2*M+1)+2*M) THEN ! mustn't call mylbfgs with changing number of variables!!!
-         PRINT '(A,I10,A,I10,A)', 'ERROR, dimension of W=',SIZE(W,1),
-     $        ' but N*(2*M+1)+2*M=',N*(2*M+1)+2*M,' in mylbfgs'
+      IF (.NOT.ALLOCATED(DIAG)) ALLOCATE(DIAG(N))       ! SAVE DOESN'T WORK OTHERWISE FOR SUN
+      IF (.NOT.ALLOCATED(W)) ALLOCATE(W(N*(2*M+1)+2*M)) ! SAVE DOESN'T WORK OTHERWISE FOR SUN
+      IF (SIZE(W,1).NE.N*(2*M+1)+2*M) THEN ! MUSTN'T CALL MYLBFGS WITH CHANGING NUMBER OF VARIABLES!!!
+         PRINT '(A,I10,A,I10,A)', 'ERROR, DIMENSION OF W=',SIZE(W,1),
+     $        ' BUT N*(2*M+1)+2*M=',N*(2*M+1)+2*M,' IN MYLBFGS'
          STOP
       ENDIF
 
       IF (N.NE.3*NATOMS+1) THEN
-         PRINT*,'ERROR - N and 3*NATOMS are different in GCLBFGS: ',N,3*NATOMS
+         PRINT*,'ERROR - N AND 3*NATOMS ARE DIFFERENT IN GCLBFGS: ',N,3*NATOMS
          STOP
       ENDIF
 
@@ -81,22 +81,22 @@ C
       FRAME=1
       IF (RESET) ITER=0
       ITDONE=0
-      IF (RESET.AND.PTEST) WRITE(*,'(A)') ' Resetting LBFGS minimiser'
+      IF (RESET.AND.PTEST) WRITE(*,'(A)') ' RESETTING LBFGS MINIMISER'
       IF ((.NOT.RESET).AND.PTEST) WRITE(*,'(A)')
-     $     ' Not resetting LBFGS minimiser'
+     $     ' NOT RESETTING LBFGS MINIMISER'
 1     FIXIMAGE=.FALSE.
       IF (PV) THEN
          IF (.NOT.KNOWE) THEN 
             CALL GETENERG(RS, RF, X, 3*NATOMS, GCIMAGE, ENERGY,GSAVE,
      $           RMS, XI, IMGE, DEBUG)
 
-! Check for cold fusion
-            if (ENERGY.LT.coldFusionLimit) then
-               ENERGY=1.0d6
-               RMS=1.0d0
-               WRITE(*,'(A)') ' Cold fusion diagnosed - step discarded'
+! CHECK FOR COLD FUSION
+            IF (ENERGY.LT.COLDFUSIONLIMIT) THEN
+               ENERGY=1.0D6
+               RMS=1.0D0
+               WRITE(*,'(A)') ' COLD FUSION DIAGNOSED - STEP DISCARDED'
                RETURN
-            endif
+            ENDIF
          ENDIF
          PVFLAG=.FALSE.
          CALL PVOPT(X,ENERGY,GSAVE)
@@ -104,24 +104,24 @@ C
       IF ((.NOT.KNOWE).OR.(.NOT.KNOWG)) THEN
          CALL GETENERG(RS, RF, X, 3*NATOMS, GCIMAGE, ENERGY, GSAVE, RMS,
      $        XI, IMGE, DEBUG)
-         if (ENERGY.LT.coldFusionLimit) then
-            ENERGY=1.0d6
-            RMS=1.0d0
-            WRITE(*,'(A)') ' Cold fusion diagnosed - step discarded'
+         IF (ENERGY.LT.COLDFUSIONLIMIT) THEN
+            ENERGY=1.0D6
+            RMS=1.0D0
+            WRITE(*,'(A)') ' COLD FUSION DIAGNOSED - STEP DISCARDED'
             RETURN
-         endif
+         ENDIF
       ENDIF
 
       G(1:N)=GSAVE(1:N)
       GLAST(1:N)=GSAVE(1:N)
 C
       IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A)') 
-     1             ' Energy per image and RMS force=',ENERGY/GCIMAGE, RMS,
-     $     ' after ',ITDONE,' LBFGS steps'
+     1             ' ENERGY PER IMAGE AND RMS FORCE=',ENERGY/GCIMAGE, RMS,
+     $     ' AFTER ',ITDONE,' LBFGS STEPS'
 
 10    CALL FLUSH(6,ISTAT)
       IF (DEBUG) THEN
-         OPEN(UNIT=45,FILE='greatcircle.xyz',STATUS='UNKNOWN')
+         OPEN(UNIT=45,FILE='GREATCIRCLE.XYZ',STATUS='UNKNOWN')
          WRITE(45,'(I6)') NATOMS
          WRITE(45,'(A)') ' '
          WRITE(45,'(A3,3G20.10)') ('LA ',RS(3*(J1-1)+1),RS(3*(J1-1)+2),RS(3*(J1-1)+3),J1=1,NATOMS)
@@ -134,12 +134,12 @@ C
          WRITE(45,'(A)') ' '
          WRITE(45,'(A3,3G20.10)') ('LA ',RF(3*(J1-1)+1),RF(3*(J1-1)+2),RF(3*(J1-1)+3),J1=1,NATOMS)
          CLOSE(45)
-         OPEN(UNIT=46, FILE='imgenergies.out', STATUS='UNKNOWN')
-         WRITE(46, '(I3,1x,G20.10)') 0, STARTE
+         OPEN(UNIT=46, FILE='IMGENERGIES.OUT', STATUS='UNKNOWN')
+         WRITE(46, '(I3,1X,G20.10)') 0, STARTE
          DO J2=1,GCIMAGE
-            WRITE(46, '(I3,1x,G20.10)') J2, IMGE(J2)
+            WRITE(46, '(I3,1X,G20.10)') J2, IMGE(J2)
          ENDDO
-         WRITE(46, '(I3,1x,G20.10)') GCIMAGE+1, FINE
+         WRITE(46, '(I3,1X,G20.10)') GCIMAGE+1, FINE
          CLOSE(46)
       ENDIF
       MFLAG=.FALSE.
@@ -150,7 +150,7 @@ C        PRINT*,'RMS,EPS,ITDONE,NSTEPMIN=',RMS,EPS,ITDONE,NSTEPMIN
          IF (PV.AND.(.NOT.PVFLAG)) MFLAG=.FALSE.
          IF (MFLAG) THEN
             FIXIMAGE=.FALSE.
-            IF (PTEST) WRITE(*,'(1x,a,g25.17)') 'Final energy is ',ENERGY
+            IF (PTEST) WRITE(*,'(1X,A,G25.17)') 'FINAL ENERGY IS ',ENERGY
             RETURN
          ENDIF
       ENDIF
@@ -169,7 +169,7 @@ C        PRINT*,'RMS,EPS,ITDONE,NSTEPMIN=',RMS,EPS,ITDONE,NSTEPMIN
          POINT=0
          MFLAG=.FALSE.
          IF (DIAGCO) THEN
-            PRINT*,'using estimate of the inverse diagonal elements'
+            PRINT*,'USING ESTIMATE OF THE INVERSE DIAGONAL ELEMENTS'
             DO I=1,N
                IF (DIAG(I).LE.0.0D0) THEN
                   WRITE(*,235) I
@@ -202,7 +202,7 @@ C
          ISPT= N+2*M
          IYPT= ISPT+N*M
 C
-C  NR step for diagonal inverse Hessian
+C  NR STEP FOR DIAGONAL INVERSE HESSIAN
 C
          
          DO I=1,N
@@ -212,12 +212,12 @@ C
          GNORM= DSQRT(DDOT(N,G,1,G,1))
 
 C
-C  Make the first guess for the step length cautious.
+C  MAKE THE FIRST GUESS FOR THE STEP LENGTH CAUTIOUS.
 C
          IF (GNORM.EQ.0.0D0) THEN
-            GNORM=1.0D0 ! exact zero is presumably wrong!
-            PRINT '(A)','WARNING - GNORM was zero in mylbfgs,
-     $           resetting to one'
+            GNORM=1.0D0 ! EXACT ZERO IS PRESUMABLY WRONG!
+            PRINT '(A)','WARNING - GNORM WAS ZERO IN MYLBFGS,
+     $           RESETTING TO ONE'
          ENDIF
          STP=MIN(1.0D0/GNORM,GNORM)
       ELSE 
@@ -226,9 +226,9 @@ C
          YS= DDOT(N,W(IYPT+NPT+1),1,W(ISPT+NPT+1),1)
          IF (YS.EQ.0.0D0) YS=1.0D0
 C
-C  Update estimate of diagonal inverse Hessian elements
-C  We divide by both YS and YY at different points, so
-C  they had better not be zero!
+C  UPDATE ESTIMATE OF DIAGONAL INVERSE HESSIAN ELEMENTS
+C  WE DIVIDE BY BOTH YS AND YY AT DIFFERENT POINTS, SO
+C  THEY HAD BETTER NOT BE ZERO!
 C
          IF (.NOT.DIAGCO) THEN
             YY= DDOT(N,W(IYPT+NPT+1),1,W(IYPT+NPT+1),1)
@@ -238,7 +238,7 @@ C
                DIAG(I)=DUMMY1
             ENDDO
          ELSE
-            PRINT*,'using estimate of the inverse diagonal elements'
+            PRINT*,'USING ESTIMATE OF THE INVERSE DIAGONAL ELEMENTS'
             DO I=1,N
                IF (DIAG(I).LE.0.0D0) THEN
                   WRITE(*,235) I
@@ -247,9 +247,9 @@ C
             ENDDO
          ENDIF
 C
-C     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980,
-C     "Updating quasi-Newton matrices with limited storage",
-C     Mathematics of Computation, Vol.24, No.151, pp. 773-782.
+C     COMPUTE -H*G USING THE FORMULA GIVEN IN: NOCEDAL, J. 1980,
+C     "UPDATING QUASI-NEWTON MATRICES WITH LIMITED STORAGE",
+C     MATHEMATICS OF COMPUTATION, VOL.24, NO.151, PP. 773-782.
 C     ---------------------------------------------------------
 C
          CP= POINT
@@ -286,10 +286,10 @@ C
          STP=1.0D0
       ENDIF
 C
-C  If this is a BFGSTST or MORPHT  run project out the uphill direction.
+C  IF THIS IS A BFGSTST OR MORPHT  RUN PROJECT OUT THE UPHILL DIRECTION.
 C     PRINT '(A,6G20.10)','W=',W(1:6)
 C
-C  Store the new search direction
+C  STORE THE NEW SEARCH DIRECTION
       IF (ITER.GT.0) THEN
          DO I=1,N
             W(ISPT+POINT*N+I)= W(I)
@@ -303,10 +303,10 @@ C  Store the new search direction
       ENDIF
 C
       IF (OVERLAP.GT.0.0D0) THEN
-         IF (PTEST) PRINT*,'Search direction has positive
-     $        projection onto gradient - reversing step'
+         IF (PTEST) PRINT*,'SEARCH DIRECTION HAS POSITIVE
+     $        PROJECTION ONTO GRADIENT - REVERSING STEP'
          DO I=1,N
-            W(ISPT+POINT*N+I)= -W(I)  ! if we reverse the step it is important not to take the ABS value of YS/YY!
+            W(ISPT+POINT*N+I)= -W(I)  ! IF WE REVERSE THE STEP IT IS IMPORTANT NOT TO TAKE THE ABS VALUE OF YS/YY!
          ENDDO
 C        ITER=0
 C        GOTO 10
@@ -321,7 +321,7 @@ C        GOTO 10
       SLENGTH=SQRT(SLENGTH)
       IF (STP*SLENGTH.GT.GCMXSTP) STP=GCMXSTP/SLENGTH
 C
-C  We now have the proposed step.
+C  WE NOW HAVE THE PROPOSED STEP.
 C      
       GNORM= DSQRT(DDOT(N,G,1,G,1))      
 C SOMETHING@S WRONG W/ STP!
@@ -333,8 +333,8 @@ C
       KNOWG=.FALSE.
       KNOWH=.FALSE.
 C
-C At this point we have new Cartesian or internal coordinates after taking a full
-C or decreased step. The gradient is not known at this geometry.
+C AT THIS POINT WE HAVE NEW CARTESIAN OR INTERNAL COORDINATES AFTER TAKING A FULL
+C OR DECREASED STEP. THE GRADIENT IS NOT KNOWN AT THIS GEOMETRY.
 C
       NDECREASE=0
       NCOUNT=0
@@ -348,18 +348,18 @@ C         CALL POTENTIAL(X,ENEW,GSAVE,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
       ENDIF
       CALL GETENERG(RS, RF, X, 3*NATOMS, GCIMAGE, ENEW, GSAVE, RMS, XI, IMGE, DEBUG)
       
-      if (ENERGY.LT.coldFusionLimit) then
-         ENERGY=1.0d6
-         RMS=1.0d0
-         WRITE(*,'(A)') ' Cold fusion diagnosed - step discarded'
+      IF (ENERGY.LT.COLDFUSIONLIMIT) THEN
+         ENERGY=1.0D6
+         RMS=1.0D0
+         WRITE(*,'(A)') ' COLD FUSION DIAGNOSED - STEP DISCARDED'
          RETURN
-      endif
+      ENDIF
 
       G(1:N)=GSAVE(1:N)
 
 C
-C  Must allow the energy to rise during a minimisation to allow for numerical noise or
-C  systematic errors due to discontinuities or SCF convergence problems.
+C  MUST ALLOW THE ENERGY TO RISE DURING A MINIMISATION TO ALLOW FOR NUMERICAL NOISE OR
+C  SYSTEMATIC ERRORS DUE TO DISCONTINUITIES OR SCF CONVERGENCE PROBLEMS.
 C
       IF ((ENEW-ENERGY.LE.MAXERISE).OR.PVTS.OR.DRAGT.OR.TWOENDS.OR.RADMOVED) THEN
          ITER=ITER+1
@@ -367,26 +367,26 @@ C
          ENERGY=ENEW
 
          IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A,G13.5)')
-     $        ' Energy per image and RMS force=',ENERGY/GCIMAGE,RMS,' after ',ITDONE,
-     1           ' LBFGS steps, step:',STP*SLENGTH
+     $        ' ENERGY PER IMAGE AND RMS FORCE=',ENERGY/GCIMAGE,RMS,' AFTER ',ITDONE,
+     1           ' LBFGS STEPS, STEP:',STP*SLENGTH
 C
-C  Step finished so can reset OLDQ to new XINT, OLDCART to new CART,
-C  as well as the Cartesian and internal gradients.
+C  STEP FINISHED SO CAN RESET OLDQ TO NEW XINT, OLDCART TO NEW CART,
+C  AS WELL AS THE CARTESIAN AND INTERNAL GRADIENTS.
 C         
          GLAST(1:N)=GSAVE(1:N) 
       ELSE 
 C
-C  Energy increased - try again with a smaller step size. Must cater for possible enormous
-C  values of SLENGTH. Decreasing the step size doesn;t seem to help for CASTEP.
+C  ENERGY INCREASED - TRY AGAIN WITH A SMALLER STEP SIZE. MUST CATER FOR POSSIBLE ENORMOUS
+C  VALUES OF SLENGTH. DECREASING THE STEP SIZE DOESN;T SEEM TO HELP FOR CASTEP.
 C
          IF (((ITER.GT.1).AND.(NDECREASE.GT.2)).OR.((ITER.LE.1).AND.(NDECREASE.GT.10)).OR.
      1              ((CASTEP.OR.ONETEP.OR.CP2K).AND.(NDECREASE.GT.1))) THEN 
             NFAIL=NFAIL+1
-            IF (PTEST) PRINT*,' in mylbfgs LBFGS step
-     $           cannot find a lower energy, NFAIL=',NFAIL
+            IF (PTEST) PRINT*,' IN MYLBFGS LBFGS STEP
+     $           CANNOT FIND A LOWER ENERGY, NFAIL=',NFAIL
 C
-C  try resetting - go back to previous coordinates, ENERGY is not set to ENEW
-C  we need to save the gradient corresponding to the last successful step
+C  TRY RESETTING - GO BACK TO PREVIOUS COORDINATES, ENERGY IS NOT SET TO ENEW
+C  WE NEED TO SAVE THE GRADIENT CORRESPONDING TO THE LAST SUCCESSFUL STEP
 C              
             ITER=0            
             DO J1=1,N
@@ -394,14 +394,14 @@ C
                G(J1)=GLAST(J1)
             ENDDO
             IF (NFAIL.GT.NFAILMAX) THEN
-               PRINT*,' Too many failures - give up'
+               PRINT*,' TOO MANY FAILURES - GIVE UP'
                FIXIMAGE=.FALSE.
                RETURN
             ENDIF
             GOTO 30
          ENDIF
 C
-C  Try a smaller step.
+C  TRY A SMALLER STEP.
 C         
          DO J1=1,N
             X(J1)=X(J1)-0.9*STP*W(ISPT+POINT*N+J1)
@@ -413,13 +413,13 @@ C
          NDECREASE=NDECREASE+1
          IF (PTEST) 
      1    WRITE(*,'(A,G19.10,A,G16.10,A,G15.8)')
-     $        ' energy increased from ',ENERGY,' to ',ENEW,
-     2            ' decreasing step to ',STP*SLENGTH
+     $        ' ENERGY INCREASED FROM ',ENERGY,' TO ',ENEW,
+     2            ' DECREASING STEP TO ',STP*SLENGTH
          GOTO 20
       ENDIF
 C
-C     Compute the new step and gradient change. Note that the step
-C     length is accounted for when the step taken is saved.
+C     COMPUTE THE NEW STEP AND GRADIENT CHANGE. NOTE THAT THE STEP
+C     LENGTH IS ACCOUNTED FOR WHEN THE STEP TAKEN IS SAVED.
 C
 30    NPT=POINT*N
       
@@ -436,71 +436,71 @@ C
       RETURN
       END
 
-      SUBROUTINE GETENERG(RS, RF, V, NC, NI, TOTENERG, dTEdV, RMS, XI, ENERGS, VERBOSE)
+      SUBROUTINE GETENERG(RS, RF, V, NC, NI, TOTENERG, DTEDV, RMS, XI, ENERGS, VERBOSE)
 C
-C Subroutine to get the total energy of the image points on a particular 
-C great circle and the derivatives of the energy wrt hypersphere center
-C RS and RF are start and finish geometries
-C V is the displacement of the hypersphere center from the linear center
-C NC is the number of coordinates
-C NI is the number of image points
-C TOTENERG is the output total energy of the image points
-C dTEdV is the gradient of the total energy wrt to hypersphere center
-C RMS is the norm of dTEdV
+C SUBROUTINE TO GET THE TOTAL ENERGY OF THE IMAGE POINTS ON A PARTICULAR 
+C GREAT CIRCLE AND THE DERIVATIVES OF THE ENERGY WRT HYPERSPHERE CENTER
+C RS AND RF ARE START AND FINISH GEOMETRIES
+C V IS THE DISPLACEMENT OF THE HYPERSPHERE CENTER FROM THE LINEAR CENTER
+C NC IS THE NUMBER OF COORDINATES
+C NI IS THE NUMBER OF IMAGE POINTS
+C TOTENERG IS THE OUTPUT TOTAL ENERGY OF THE IMAGE POINTS
+C DTEDV IS THE GRADIENT OF THE TOTAL ENERGY WRT TO HYPERSPHERE CENTER
+C RMS IS THE NORM OF DTEDV
 C
       IMPLICIT NONE
       INTEGER NC, NI
-      DOUBLE PRECISION RS(NC), RF(NC), V(NC), TOTENERG, dTEdV(NC+1)
+      DOUBLE PRECISION RS(NC), RF(NC), V(NC), TOTENERG, DTEDV(NC+1)
       DOUBLE PRECISION ENERGS(NI)
-      DOUBLE PRECISION XI(NI,NC), dXIdV(NI,NC,NC+1)
-      DOUBLE PRECISION ENERG, dEdX(NC)
+      DOUBLE PRECISION XI(NI,NC), DXIDV(NI,NC,NC+1)
+      DOUBLE PRECISION ENERG, DEDX(NC)
       DOUBLE PRECISION RMS
       INTEGER I, A, B
       LOGICAL VERBOSE
-C ---- for testing ----
-      DOUBLE PRECISION TOTENERG2, dTEdV2(NC+1)
-      DOUBLE PRECISION XI2(NI,NC), dXIdV2(NI,NC,NC+1)
-C      DOUBLE PRECISION T(NC), dTdV(NC, NC+1), T2(NC), dTdV2(NC, NC+1)
-      DOUBLE PRECISION T, dTdV(NC+1), T2, dTdV2(NC+1)
+C ---- FOR TESTING ----
+      DOUBLE PRECISION TOTENERG2, DTEDV2(NC+1)
+      DOUBLE PRECISION XI2(NI,NC), DXIDV2(NI,NC,NC+1)
+C      DOUBLE PRECISION T(NC), DTDV(NC, NC+1), T2(NC), DTDV2(NC, NC+1)
+      DOUBLE PRECISION T, DTDV(NC+1), T2, DTDV2(NC+1)
       INTEGER J
-      DOUBLE PRECISION TINY, testsum, RMSt
+      DOUBLE PRECISION TINY, TESTSUM, RMST
 C
       TOTENERG = 0.0D0
-      dTEdV = 0.0D0
+      DTEDV = 0.0D0
 
-C     Get each image point and derivatives
-      CALL GETIMGDERVS(RS, RF, V, NC, NI, XI, dXIdV, VERBOSE)
-C     Calculate energies and energy derivatives
+C     GET EACH IMAGE POINT AND DERIVATIVES
+      CALL GETIMGDERVS(RS, RF, V, NC, NI, XI, DXIDV, VERBOSE)
+C     CALCULATE ENERGIES AND ENERGY DERIVATIVES
       DO I=1,NI
-         CALL POTENTIAL(XI(I,:), ENERGS(I), dEdX, .TRUE., .FALSE., RMS,
+         CALL POTENTIAL(XI(I,:), ENERGS(I), DEDX, .TRUE., .FALSE., RMS,
      $        .FALSE., .FALSE.)
          TOTENERG = TOTENERG+ENERGS(I)
          DO B = 1,NC+1
             DO A = 1,NC            
-               dTEdV(B) = dTEdV(B) + dEdX(A)*dXIdV(I,A,B)
+               DTEDV(B) = DTEDV(B) + DEDX(A)*DXIDV(I,A,B)
             ENDDO
          ENDDO
       ENDDO
       RMS = 0.0D0      
       DO A=1,NC+1
-         RMS = RMS + dTEdV(A)**2
+         RMS = RMS + DTEDV(A)**2
       ENDDO
       RMS = SQRT(RMS)
 C ----TESTING ----
-C Test image point derivatives
+C TEST IMAGE POINT DERIVATIVES
 C      TINY = 0.000001
 C      DO J = 1,NC+1
 C         V(J) = V(J) + TINY
-C     Get each image point and derivatives
-C         CALL GETIMGDERVS(RS, RF, V, NC, NI, XI2, dXIdV2,T2, dTdV2)
+C     GET EACH IMAGE POINT AND DERIVATIVES
+C         CALL GETIMGDERVS(RS, RF, V, NC, NI, XI2, DXIDV2,T2, DTDV2)
 C
 C         DO I=1,NI
-C            print*, J, (T2-T)/TINY, dTdV(J)
+C            PRINT*, J, (T2-T)/TINY, DTDV(J)
 C            DO A=1,NC
-C               print*, A, J, (T2(A)-T(A))/TINY, dTdV(A,J)
+C               PRINT*, A, J, (T2(A)-T(A))/TINY, DTDV(A,J)
 C            ENDDO
 C            DO A = 1,NC
-C               print*, A, J, (XI2(I,A)-XI(I,A))/TINY, dXIdV(I,A,J)
+C               PRINT*, A, J, (XI2(I,A)-XI(I,A))/TINY, DXIDV(I,A,J)
 C            ENDDO
 C         ENDDO
 C                  
@@ -508,74 +508,74 @@ C         V(J) = V(J) - TINY
 C      ENDDO
 C      STOP
 C ------------
-C test energy derivatives wrt V
+C TEST ENERGY DERIVATIVES WRT V
 C      TINY = 0.0001
 C      DO J = 1,NC
 C         V(J) = V(J) + TINY
 C         TOTENERG2=0.0D0
-C     Get each image point and derivatives
-C         CALL GETIMGDERVS(RS, RF, V, NC, NI, XI2, dXIdV2)
+C     GET EACH IMAGE POINT AND DERIVATIVES
+C         CALL GETIMGDERVS(RS, RF, V, NC, NI, XI2, DXIDV2)
 C         DO I=1,NI
-C     Calculate energy and energy derivatives at this point
-C            CALL POTENTIAL(XI(I:), ENERG, dEdX, .TRUE., .FALSE., RMS,
+C     CALCULATE ENERGY AND ENERGY DERIVATIVES AT THIS POINT
+C            CALL POTENTIAL(XI(I:), ENERG, DEDX, .TRUE., .FALSE., RMS,
 C     $           .FALSE., .FALSE.)
-C            print*, 'ENERGY:', ENERG
+C            PRINT*, 'ENERGY:', ENERG
 C            TOTENERG2 = TOTENERG2+ENERG
 C         ENDDO
-C         print*, 'TOTE2, TOTE', TOTENERG2, TOTENERG
-C         print*, J, (TOTENERG2-TOTENERG)/TINY, dTEdV(J)
+C         PRINT*, 'TOTE2, TOTE', TOTENERG2, TOTENERG
+C         PRINT*, J, (TOTENERG2-TOTENERG)/TINY, DTEDV(J)
 C         V(J) = V(J) - TINY
 C      ENDDO
 C      STOP
 C -------------
-C compare to linear interpolation
+C COMPARE TO LINEAR INTERPOLATION
 C      DO I=1,NC
-C         testc(I) = (rs(I)+rf(I))/2
+C         TESTC(I) = (RS(I)+RF(I))/2
 C      ENDDO
 C      
 C      DO I=1,NC
-C         print*, testc(I), XI(I)
+C         PRINT*, TESTC(I), XI(I)
 C      ENDDO
 C
       END SUBROUTINE GETENERG
 C
 
-      SUBROUTINE GETIMGDERVS(RS, RF, V, NC, NI, XI, dXIdV, VERBOSE)
-C Subroutine to get the interpolation points Xi on a particular 
-C great circle, and the derivatives dXia/dCb
-C with respect to the hypersphere center.
-C RS and RF are the start and finish geometries
-C V is a particular shift of the hypersphere center 
-C I gives the index of the interpolation point
-C NC is the number of coordinates
-C N is the number of interpolation points
-C DXDC is the ouput matrix of derivatives
+      SUBROUTINE GETIMGDERVS(RS, RF, V, NC, NI, XI, DXIDV, VERBOSE)
+C SUBROUTINE TO GET THE INTERPOLATION POINTS XI ON A PARTICULAR 
+C GREAT CIRCLE, AND THE DERIVATIVES DXIA/DCB
+C WITH RESPECT TO THE HYPERSPHERE CENTER.
+C RS AND RF ARE THE START AND FINISH GEOMETRIES
+C V IS A PARTICULAR SHIFT OF THE HYPERSPHERE CENTER 
+C I GIVES THE INDEX OF THE INTERPOLATION POINT
+C NC IS THE NUMBER OF COORDINATES
+C N IS THE NUMBER OF INTERPOLATION POINTS
+C DXDC IS THE OUPUT MATRIX OF DERIVATIVES
 
       IMPLICIT NONE
       LOGICAL VERBOSE
       INTEGER I, NC, NI
       DOUBLE PRECISION RS(NC), RF(NC), V(NC+1)
-      DOUBLE PRECISION dXIdV(NI,NC,NC+1), XI(NI,NC)
+      DOUBLE PRECISION DXIDV(NI,NC,NC+1), XI(NI,NC)
       DOUBLE PRECISION TINY, S
       PARAMETER(TINY = 0.000001)
       DOUBLE PRECISION PI, TWOPI
       PARAMETER(PI=3.141592653589793D0,TWOPI=2.0D0*PI)
       DOUBLE PRECISION RSF(NC), RSF2, RSFR, VRSF, VV
-      DOUBLE PRECISION dCdV(NC,NC+1), dROdV(NC+1), dV1dV(NC,NC+1)
-      DOUBLE PRECISION dTFdV(NC+1), dV2dV(NC,NC+1), FV1, V22, V2R
-      DOUBLE PRECISION dV2RdV(NC+1)
+      DOUBLE PRECISION DCDV(NC,NC+1), DRODV(NC+1), DV1DV(NC,NC+1)
+      DOUBLE PRECISION DTFDV(NC+1), DV2DV(NC,NC+1), FV1, V22, V2R
+      DOUBLE PRECISION DV2RDV(NC+1)
       DOUBLE PRECISION C(NC), F(NC), RO, RO2, ROR, V1(NC), TF, V2(NC)
-      DOUBLE PRECISION dFdV(NC, NC+1)
+      DOUBLE PRECISION DFDV(NC, NC+1)
       DOUBLE PRECISION DUMMY, CTF, STF
-      DOUBLE PRECISION STI, CTI, X, Y, dX(NC+1), dY(NC+1)
+      DOUBLE PRECISION STI, CTI, X, Y, DX(NC+1), DY(NC+1)
       INTEGER A,B,J
       DOUBLE PRECISION COFFSET
-C for testing ----
-      DOUBLE PRECISION testsum, testsum2, DDOT
+C FOR TESTING ----
+      DOUBLE PRECISION TESTSUM, TESTSUM2, DDOT
       
-      S = V(NC+1) ! the scalar by which center offset is scaled
+      S = V(NC+1) ! THE SCALAR BY WHICH CENTER OFFSET IS SCALED
 
-C Get difference vector RSF, RSF^2, V^2, and V*RSF
+C GET DIFFERENCE VECTOR RSF, RSF^2, V^2, AND V*RSF
       RSF2 = 0.0D0
       VV = 0.0D0
       VRSF = 0.0D0
@@ -587,27 +587,27 @@ C Get difference vector RSF, RSF^2, V^2, and V*RSF
       ENDDO
       RSFR = 1/SQRT(RSF2)
 
-C Get hypersphere center and its derivatives
+C GET HYPERSPHERE CENTER AND ITS DERIVATIVES
       COFFSET = 0.0D0
       DO A=1,NC         
          F(A) = V(A) - VRSF*RSF(A)/RSF2
          C(A) = (RS(A)+RF(A))/2 + S*F(A)
          COFFSET=COFFSET+(F(A))**2
       ENDDO
-      IF(COFFSET.LT.1.0D-6) print*, 'SMALL CENTER OFFSET, w/o S:', COFFSET
+      IF(COFFSET.LT.1.0D-6) PRINT*, 'SMALL CENTER OFFSET, W/O S:', COFFSET
       DO A=1,NC
          DO B= 1,NC
-            dFdV(A,B) = -RSF(A)*RSF(B)/RSF2            
+            DFDV(A,B) = -RSF(A)*RSF(B)/RSF2            
          ENDDO
-         dFdV(A,A) = dFdV(A,A) + 1
+         DFDV(A,A) = DFDV(A,A) + 1
       ENDDO
-      dCdV(1:NC,1:NC) = S*dFdV(1:NC,1:NC)
+      DCDV(1:NC,1:NC) = S*DFDV(1:NC,1:NC)
       DO A = 1,NC
-         dFdV(A, NC+1) = 0.0D0
-         dCdV(A, NC+1) = V(A) - RSF(A)/RSF2*VRSF
+         DFDV(A, NC+1) = 0.0D0
+         DCDV(A, NC+1) = V(A) - RSF(A)/RSF2*VRSF
       ENDDO
 
-C Get radius of circle & its derivatives
+C GET RADIUS OF CIRCLE & ITS DERIVATIVES
       RO2 = 0.0D0
       DO A=1,NC
          RO2 = RO2 + (RS(A)-C(A))**2
@@ -615,25 +615,25 @@ C Get radius of circle & its derivatives
       RO = SQRT(RO2)
       ROR = 1/RO
 
-      dROdV = 0.0D0
+      DRODV = 0.0D0
       DO B = 1, NC+1
          DO A=1,NC
-            dROdV(B) = dROdV(B) + ROR*(C(A)-RS(A))*dCdV(A,B)
+            DRODV(B) = DRODV(B) + ROR*(C(A)-RS(A))*DCDV(A,B)
          ENDDO
       ENDDO
 
-C Get V1 & its derivatives
+C GET V1 & ITS DERIVATIVES
       DO A=1,NC
          V1(A) = (RS(A)-C(A))*ROR
       ENDDO
       DO A=1,NC
          DUMMY = (RS(A)-C(A))/RO2
          DO B=1,NC+1
-            dV1dV(A,B) = -ROR*dCdV(A,B) - DUMMY*dROdV(B)
+            DV1DV(A,B) = -ROR*DCDV(A,B) - DUMMY*DRODV(B)
          ENDDO
       ENDDO
 
-C Get V2 and its derivatives
+C GET V2 AND ITS DERIVATIVES
       FV1 = 0.0D0 ! F*V1
       DO A=1,NC
          FV1 = FV1 + F(A)*V1(A)
@@ -644,33 +644,33 @@ C Get V2 and its derivatives
          V2(A) = F(A) - FV1*V1(A)
          V22 = V22 + V2(A)**2
          DO B = 1,NC+1
-            dV2dV(A,B) = dFdV(A,B)-FV1*dV1dV(A,B)
+            DV2DV(A,B) = DFDV(A,B)-FV1*DV1DV(A,B)
             DO J = 1,NC
-               dV2dV(A,B) = dV2dV(A,B) -
-     $              (F(J)*dV1dV(J,B)+dFdV(J,B)*V1(J))*V1(A)
+               DV2DV(A,B) = DV2DV(A,B) -
+     $              (F(J)*DV1DV(J,B)+DFDV(J,B)*V1(J))*V1(A)
             ENDDO
          ENDDO
       ENDDO
 
       V2R = 1/SQRT(V22)
 
-C get derivatives of V2R
+C GET DERIVATIVES OF V2R
       DO B=1,NC+1
-         dV2RdV(B) = 0.0D0
+         DV2RDV(B) = 0.0D0
          DO A = 1,NC
-            dV2RdV(B) = dV2RdV(B) + V2(A)*dV2dV(A,B)*V2R
+            DV2RDV(B) = DV2RDV(B) + V2(A)*DV2DV(A,B)*V2R
          ENDDO
-         dV2RdV(B) = - dV2RdV(B) * V2R * V2R
+         DV2RDV(B) = - DV2RDV(B) * V2R * V2R
       ENDDO
 
-C      testsum = 0.0D0
-C      testsum2 = 0.0D0
+C      TESTSUM = 0.0D0
+C      TESTSUM2 = 0.0D0
 C      DO A=1,NC
-C         testsum = testsum + (RF(A)-C(A))**2
-C         testsum2 = testsum2 + (V1(A))**2
+C         TESTSUM = TESTSUM + (RF(A)-C(A))**2
+C         TESTSUM2 = TESTSUM2 + (V1(A))**2
 C      ENDDO
 
-C Get TF and its derivatives
+C GET TF AND ITS DERIVATIVES
       X = 0.0D0
       Y = 0.0D0
       DO A = 1,NC
@@ -678,10 +678,10 @@ C Get TF and its derivatives
          Y = Y + (RF(A)-C(A))*V2(A)*V2R
       ENDDO
  
-      CTF = X*ROR ! cos(T_N+1)
-      STF = Y*ROR ! sin(T_N+1)
+      CTF = X*ROR ! COS(T_N+1)
+      STF = Y*ROR ! SIN(T_N+1)
 
-C Deal with numerical errors which make abs(CTF) > 1
+C DEAL WITH NUMERICAL ERRORS WHICH MAKE ABS(CTF) > 1
       IF (CTF.GT.1) THEN
          CTF = 1.0D0
       ELSE IF (CTF.LT.-1) THEN
@@ -694,22 +694,22 @@ C Deal with numerical errors which make abs(CTF) > 1
          TF = TWOPI-ACOS(CTF)
       ENDIF
      
-      IF (VERBOSE) print '(A,1x,F10.5,1x,F10.5,1x,F10.5)',' greatcircle> Angle, Radius:', TF, RO
+      IF (VERBOSE) PRINT '(A,1X,F10.5,1X,F10.5,1X,F10.5)',' GREATCIRCLE> ANGLE, RADIUS:', TF, RO
 
       DO B = 1,NC+1
-         dX(B) = 0.0D0
-         dY(B) = 0.0D0
+         DX(B) = 0.0D0
+         DY(B) = 0.0D0
          DO A = 1,NC
-            dX(B) = dX(B)   -dCdV(A,B)*V1(A) + (RF(A)-C(A))*dV1dV(A,B)
-            dY(B) = dY(B) + (-dCdV(A,B)*V2(A) + (RF(A)-C(A))*dV2dV(A,B)) * V2R
-     &           + (RF(A)-C(A))*V2(A)*dV2RdV(B)
+            DX(B) = DX(B)   -DCDV(A,B)*V1(A) + (RF(A)-C(A))*DV1DV(A,B)
+            DY(B) = DY(B) + (-DCDV(A,B)*V2(A) + (RF(A)-C(A))*DV2DV(A,B)) * V2R
+     &           + (RF(A)-C(A))*V2(A)*DV2RDV(B)
          ENDDO
 
-         dTFdV(B) = (X*dY(B)-Y*dX(B))/RO2
+         DTFDV(B) = (X*DY(B)-Y*DX(B))/RO2
       ENDDO
 
       DO I=1,NI
-C Get image points Xi      
+C GET IMAGE POINTS XI      
          STI = SIN(I*TF / (NI+1))
          CTI = COS(I*TF / (NI+1))
 
@@ -717,14 +717,14 @@ C Get image points Xi
             XI(I,A) = C(A) + V1(A)*CTI*RO + V2(A)*STI*RO*V2R
          ENDDO
 
-C Get derivatives of Xi
+C GET DERIVATIVES OF XI
          DO A = 1,NC
             DO B= 1, NC+1
-               dXIdV(I,A,B) = dCdV(A,B) - I*V1(A)/(NI+1)*STI*dTFdV(B)*RO +
-     $              I*V2(A)/(NI+1)*CTI*dTFdV(B)*RO*V2R + 
-     $              dV1dV(A,B)*CTI*RO + dV2dV(A,B)*STI*RO*V2R +
-     $              V1(A)*CTI*dROdV(B)+V2(A)*STI*dROdV(B)*V2R +
-     $              V2(A)*RO*STI*dV2RdV(B)
+               DXIDV(I,A,B) = DCDV(A,B) - I*V1(A)/(NI+1)*STI*DTFDV(B)*RO +
+     $              I*V2(A)/(NI+1)*CTI*DTFDV(B)*RO*V2R + 
+     $              DV1DV(A,B)*CTI*RO + DV2DV(A,B)*STI*RO*V2R +
+     $              V1(A)*CTI*DRODV(B)+V2(A)*STI*DRODV(B)*V2R +
+     $              V2(A)*RO*STI*DV2RDV(B)
             ENDDO
          ENDDO
       ENDDO

@@ -1,39 +1,39 @@
-!   OPTIM: A program for optimizing geometries and calculating reaction pathways
-!   Copyright (C) 1999-2006 David J. Wales
-!   This file is part of OPTIM.
+!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!   THIS FILE IS PART OF OPTIM.
 !   
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !   
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !   
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 SUBROUTINE MECCANO(ITEST,PTEST,EMAX,PERM,Q,FINAL,E1,E2,RMSINITIAL,RMSFINAL)
 USE COMMONS
-use porfuncs
+USE PORFUNCS
 USE KEY
 USE MODNEB
 USE MODTWOEND
 USE MODMEC
-use KeyNEB, only: nitermax
+USE KEYNEB, ONLY: NITERMAX
 IMPLICIT NONE
 INTEGER :: J1, J2, ITDONE, JMAX, NVARS, NFROZEN, NPASS
 DOUBLE PRECISION, ALLOCATABLE :: XVAR(:), LEVEC(:), LRMSVEC(:)
 DOUBLE PRECISION :: RMS, EMAX, TIME, TIME0, Q(3*NATOMS), FINAL(3*NATOMS), &
-     &              RMSVEC(0:Nimage+1), EVEC(0:Nimage+1), E1, E2, &
-     &              POINTS(3*NATOMS*Nimage+1), SEPARATION, EINITIAL, EFINAL, RMSINITIAL, RMSFINAL, &
+     &              RMSVEC(0:NIMAGE+1), EVEC(0:NIMAGE+1), E1, E2, &
+     &              POINTS(3*NATOMS*NIMAGE+1), SEPARATION, EINITIAL, EFINAL, RMSINITIAL, RMSFINAL, &
      &              QSTART(3*NATOMS), QFINISH(3*NATOMS), &
      &              GRAD(3*NATOMS), &
      &              EFORIG, EIORIG, FINORIG(3*NATOMS)
-LOGICAL :: MFLAG, ITEST, PTEST, PERM, REOPTIM(Nimage)
+LOGICAL :: MFLAG, ITEST, PTEST, PERM, REOPTIM(NIMAGE)
 COMMON /NEBRMS/ RMS,EINITIAL,EFINAL,SEPARATION
 CHARACTER FNAME*19
 INTEGER IADD, LNOPT, LNATOMS
@@ -50,15 +50,15 @@ ELSE
    CALL POTENTIAL(FINAL,EFINAL,GRAD,.TRUE.,.FALSE.,RMSFINAL,.FALSE.,.FALSE.)
 ENDIF
 IF (ITEST.AND.PTEST) WRITE(*,'(A,F20.10,A,F15.6,A,F20.10,A,F15.6)') &
-     &           ' Initial energy=',EINITIAL,' RMS force=',RMSINITIAL,' final energy=',EFINAL,' RMS=',RMSFINAL
+     &           ' INITIAL ENERGY=',EINITIAL,' RMS FORCE=',RMSINITIAL,' FINAL ENERGY=',EFINAL,' RMS=',RMSFINAL
 
 
 IF (ZSYMSAVE(1:1).EQ.'W') THEN
-   PRINT '(A)','MECCANO not adapted for rigid bodies'
+   PRINT '(A)','MECCANO NOT ADAPTED FOR RIGID BODIES'
    STOP
 !  IADD=3*(NATOMS/2)
-!  LNOPT=NOPT/2      ! we only want to optimise the angular degrees of freedom for TIP
-!  LNATOMS=NATOMS/2  ! for TIP potentials both centre-of-mass and Euler angles are now in odata
+!  LNOPT=NOPT/2      ! WE ONLY WANT TO OPTIMISE THE ANGULAR DEGREES OF FREEDOM FOR TIP
+!  LNATOMS=NATOMS/2  ! FOR TIP POTENTIALS BOTH CENTRE-OF-MASS AND EULER ANGLES ARE NOW IN ODATA
 ELSE
    IADD=0
    LNOPT=NOPT
@@ -72,35 +72,35 @@ EVEC(0)=EINITIAL
 EVEC(NIMAGE+1)=EFINAL
 RMSVEC(0)=RMSINITIAL
 RMSVEC(NIMAGE+1)=RMSFINAL
-FIN(1:LNOPT+IADD)=FINAL(1:LNOPT+IADD) ! needed by makeimage in oldneb
-CALL MAKEIMAGE(POINTS,PERM,ITEST,0,Q) ! linear interpolation
-! final variable for Lagrangian minimisation is the distance d.
+FIN(1:LNOPT+IADD)=FINAL(1:LNOPT+IADD) ! NEEDED BY MAKEIMAGE IN OLDNEB
+CALL MAKEIMAGE(POINTS,PERM,ITEST,0,Q) ! LINEAR INTERPOLATION
+! FINAL VARIABLE FOR LAGRANGIAN MINIMISATION IS THE DISTANCE D.
 IF (VARIABLES) THEN
    POINTS(LNOPT*NIMAGE+1)=MECDIST
 ELSE
    POINTS(3*NATOMS*NIMAGE+1)=MECDIST
 ENDIF
 !
-!  Minimisation of Lagrangian
+!  MINIMISATION OF LAGRANGIAN
 !
 IF (FILTH.EQ.0) THEN
-   WRITE(FNAME,'(A8)') 'EofS.neb'
+   WRITE(FNAME,'(A8)') 'EOFS.NEB'
 ELSE 
-   WRITE(FNAME,'(A)') 'EofS.neb.'//TRIM(ADJUSTL(FILTHSTR))
+   WRITE(FNAME,'(A)') 'EOFS.NEB.'//TRIM(ADJUSTL(FILTHSTR))
 ENDIF
 NVARS=(LNOPT+IADD)*NIMAGE+1
 ALLOCATE(LEVEC(NIMAGE),LRMSVEC(NIMAGE))
 
-! first pass - nothing frozen
+! FIRST PASS - NOTHING FROZEN
 
 CALL MECBFGS(NVARS,MECUPDATE,POINTS,.FALSE.,MECRMSTOL,MFLAG,LEVEC,LRMSVEC, &
- &             NIterMax,ITDONE,PTEST,Q,FINAL)
+ &             NITERMAX,ITDONE,PTEST,Q,FINAL)
 EVEC(1:NIMAGE)=LEVEC(1:NIMAGE)
 RMSVEC(1:NIMAGE)=LRMSVEC(1:NIMAGE)
 DEALLOCATE(LEVEC,LRMSVEC)
 ! GOTO 12
-! optimise images corresponding to TS candidates further 
-! while freezing all others 
+! OPTIMISE IMAGES CORRESPONDING TO TS CANDIDATES FURTHER 
+! WHILE FREEZING ALL OTHERS 
 
 NVARS=LNOPT+IADD+1
 ALLOCATE(XVAR(LNOPT+IADD+1),LEVEC(1),LRMSVEC(1))
@@ -119,8 +119,8 @@ DO J1=1,NIMAGE+NFROZEN
       IF (PTEST) PRINT*,'EVEC(J1-1)=',J1-1,EVEC(J1-1)
       IF (PTEST) PRINT*,'EVEC(J1)  =',J1,EVEC(J1)
       IF (PTEST) PRINT*,'EVEC(J1+1)=',J1+1,EVEC(J1+1)
-      IF (PTEST) PRINT '(A,I5)',' reoptimising image ',J1
-      IF (.NOT.PTEST) PRINT '(A,I5)',' reoptimising image ',J1
+      IF (PTEST) PRINT '(A,I5)',' REOPTIMISING IMAGE ',J1
+      IF (.NOT.PTEST) PRINT '(A,I5)',' REOPTIMISING IMAGE ',J1
       IF (J1.EQ.1) THEN
          QSTART(1:LNOPT+IADD)=Q(1:LNOPT+IADD)
       ELSE
@@ -134,7 +134,7 @@ DO J1=1,NIMAGE+NFROZEN
          QFINISH(1:LNOPT+IADD)=POINTS(J1*(LNOPT+IADD)+1:(J1+1)*(LNOPT+IADD))
       ENDIF
       CALL MECBFGS(NVARS,MECUPDATE,XVAR,.FALSE.,MECRMSTOL,MFLAG,LEVEC,LRMSVEC, &
-  &             NIterMax,ITDONE,PTEST,QSTART,QFINISH)
+  &             NITERMAX,ITDONE,PTEST,QSTART,QFINISH)
       POINTS((J1-1)*(LNOPT+IADD)+1:J1*(LNOPT+IADD))=XVAR(1:LNOPT+IADD)
       POINTS((NIMAGE+NFROZEN)*(LNOPT+IADD)+1)=XVAR(LNOPT+IADD+1)
       EVEC(J1)=LEVEC(1)
@@ -145,14 +145,14 @@ IF (NPASS.LE.0) GOTO 11
 NIMAGE=NIMAGE+NFROZEN
 ! 12 CONTINUE
 !
-!  Find the highest energy image.
+!  FIND THE HIGHEST ENERGY IMAGE.
 !
 JMAX=1
 EMAX=-1.0D100
 DO J1=1,NIMAGE
    IF (EVEC(J1).GT.EMAX) THEN
 !
-!  Don;t choose a bad geometry for DFTB.
+!  DON;T CHOOSE A BAD GEOMETRY FOR DFTB.
 !
       IF ((.NOT.DFTBT).OR.(DFTBT.AND.EVEC(J1).LT.1.0D6)) THEN
          EMAX=EVEC(J1)
@@ -161,12 +161,12 @@ DO J1=1,NIMAGE
    ENDIF
 ENDDO
 !
-!  Dump pathway as an xyz file
+!  DUMP PATHWAY AS AN XYZ FILE
 !
 IF (FILTH.EQ.0) THEN
-   WRITE(FNAME,'(A12)') 'neb.path.xyz'
+   WRITE(FNAME,'(A12)') 'NEB.PATH.XYZ'
 ELSE 
-   WRITE(FNAME,'(A)') 'neb.path.xyz.'//TRIM(ADJUSTL(FILTHSTR))
+   WRITE(FNAME,'(A)') 'NEB.PATH.XYZ.'//TRIM(ADJUSTL(FILTHSTR))
 ENDIF
 OPEN(UNIT=3,FILE=FNAME,STATUS='UNKNOWN')
 WRITE(3,'(I6)') LNATOMS
@@ -183,16 +183,16 @@ WRITE(3,'(F20.10)') EFINAL
 WRITE(3,'(A2,4X,3F20.10)') (ZSYM(J1),FINAL(3*(J1-1)+1),FINAL(3*(J1-1)+2),FINAL(3*(J1-1)+3),J1=1,LNATOMS)
 CLOSE(3)
 CALL MYCPU_TIME(TIME,.FALSE.)
-WRITE(*,'(A,I4,A,G15.5,A,I6,A,F12.4,A,I4,A,F11.2)') ' image ',JMAX,' has highest energy=',EMAX, &
-     &                   ' steps=',ITDONE,' RMS=',RMS,' images=',NIMAGE,'    time=',TIME-TIME0
+WRITE(*,'(A,I4,A,G15.5,A,I6,A,F12.4,A,I4,A,F11.2)') ' IMAGE ',JMAX,' HAS HIGHEST ENERGY=',EMAX, &
+     &                   ' STEPS=',ITDONE,' RMS=',RMS,' IMAGES=',NIMAGE,'    TIME=',TIME-TIME0
 TIME0=TIME
 !
-!  Write images to guess.xyz as candidate transition states
+!  WRITE IMAGES TO GUESS.XYZ AS CANDIDATE TRANSITION STATES
 !
 IF (FILTH.EQ.0) THEN
-   OPEN(UNIT=7,FILE='guess.xyz',STATUS='UNKNOWN')
+   OPEN(UNIT=7,FILE='GUESS.XYZ',STATUS='UNKNOWN')
 ELSE
-   LFNAME='guess.xyz.'//TRIM(ADJUSTL(FILTHSTR)) ! Sun compiler fails without this intermediate step
+   LFNAME='GUESS.XYZ.'//TRIM(ADJUSTL(FILTHSTR)) ! SUN COMPILER FAILS WITHOUT THIS INTERMEDIATE STEP
    OPEN(UNIT=7,FILE=TRIM(ADJUSTL(LFNAME)),STATUS='UNKNOWN')
 ENDIF
 DO J1=0,NIMAGE+1
@@ -206,7 +206,7 @@ DO J1=0,NIMAGE+1
 ENDDO
 CLOSE(7)
 IF (VARIABLES) THEN
-    OPEN(UNIT=7,FILE='variables.images',STATUS='UNKNOWN')   
+    OPEN(UNIT=7,FILE='VARIABLES.IMAGES',STATUS='UNKNOWN')   
     WRITE(7,'(3G20.10)') (Q(J2),J2=1,LNOPT)
     DO J1=1,NIMAGE
        WRITE(7,'(3G20.10)') (POINTS((J1-1)*(LNOPT+IADD)+J2),J2=1,LNOPT)
@@ -220,17 +220,17 @@ END SUBROUTINE MECCANO
 !
 !        LIMITED MEMORY BFGS METHOD FOR LARGE SCALE OPTIMIZATION
 !                          JORGE NOCEDAL
-!                        *** July 1990 ***
+!                        *** JULY 1990 ***
 !
-!        Line search removed plus small modifications, DJW 2001
-!        If INTMINT is true, then N is NINTS, 
-!        otherwise N = NOPT JMC
-!        changed declaration of X(N) to X(3*NATOMS) 30/4/04
-!        X is passed in and out in Cartesians.
+!        LINE SEARCH REMOVED PLUS SMALL MODIFICATIONS, DJW 2001
+!        IF INTMINT IS TRUE, THEN N IS NINTS, 
+!        OTHERWISE N = NOPT JMC
+!        CHANGED DECLARATION OF X(N) TO X(3*NATOMS) 30/4/04
+!        X IS PASSED IN AND OUT IN CARTESIANS.
 !
-!  Cartesian coordinate and gradient vectors are declared 3*NATOMS - the complication
-!  is that for internal coordinate optimisations we can have a number of degrees of
-!  freedom that is more or less than 3*NATOMS. N should specify this dimension.
+!  CARTESIAN COORDINATE AND GRADIENT VECTORS ARE DECLARED 3*NATOMS - THE COMPLICATION
+!  IS THAT FOR INTERNAL COORDINATE OPTIMISATIONS WE CAN HAVE A NUMBER OF DEGREES OF
+!  FREEDOM THAT IS MORE OR LESS THAN 3*NATOMS. N SHOULD SPECIFY THIS DIMENSION.
 !
 SUBROUTINE MECBFGS(N,M,X,DIAGCO,EPS,MFLAG,EVEC,RMSVEC,ITMAX,ITDONE,PTEST, &
      &    QSTART,QFINISH)
@@ -241,7 +241,7 @@ USE MODUNRES
 USE MODCHARMM
 USE MODNEB
 USE MODMEC
-use porfuncs
+USE PORFUNCS
 IMPLICIT NONE
 INTEGER N,M,J1,ITMAX,ITDONE,NFAIL,NCOUNT
 DOUBLE PRECISION X(*),G(N),SLENGTH,DDOT,OVERLAP,QSTART(*),QFINISH(*)
@@ -286,7 +286,7 @@ GLAST(1:N)=GSAVE(1:N)
    ! X(J1)=X(J1)-2.0D-3
    ! CALL MAKEGRADMEC(X,G,EMINUS,EVEC,RMSVEC,QSTART,QFINISH)
    ! X(J1)=X(J1)+1.0D-3
-   ! PRINT '(A,I5,3G20.10)', 'J1,anal,num,%error=', &
+   ! PRINT '(A,I5,3G20.10)', 'J1,ANAL,NUM,%ERROR=', &
        ! &   J1,GLAST(J1),(EPLUS-EMINUS)/(2.0D-3),ABS(100*(GLAST(J1)-(EPLUS-EMINUS)/(2.0D-3))/GLAST(J1))
 ! ENDDO
 ! STOP
@@ -295,8 +295,8 @@ EREAL=ENERGY
 REALRMS=RMS
 
 IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A)') &
-     &             ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
-      WRITE(ESTRING,16) ' Energy for last cycle=',ENERGY,' '
+     &             ' ENERGY AND RMS FORCE=',ENERGY,RMS,' AFTER ',ITDONE,' LBFGS STEPS'
+      WRITE(ESTRING,16) ' ENERGY FOR LAST CYCLE=',ENERGY,' '
 16 FORMAT(A,27X,F20.10,A)
 
 10 CALL FLUSH(6,ISTAT)
@@ -315,7 +315,7 @@ ENDIF
 
 IF (ITDONE.EQ.ITMAX) THEN
    FIXIMAGE=.FALSE.
-!  WRITE(*,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',MECDGUESS
+!  WRITE(*,'(A,F20.10)') ' DIAGONAL INVERSE HESSIAN ELEMENTS ARE NOW ',MECDGUESS
    DEALLOCATE(W)
    RETURN
 ENDIF
@@ -329,7 +329,7 @@ IF (ITER.EQ.0) THEN
    POINT=0
    MFLAG=.FALSE.
    IF (DIAGCO) THEN
-      PRINT*,'using estimate of the inverse diagonal elements'
+      PRINT*,'USING ESTIMATE OF THE INVERSE DIAGONAL ELEMENTS'
       DO I=1,N
          IF (MECDGUESS.LE.0.0D0) THEN
             WRITE(*,235) I
@@ -342,7 +342,7 @@ IF (ITER.EQ.0) THEN
    ISPT= N+2*M
    IYPT= ISPT+N*M
 !
-!  NR step for diagonal inverse Hessian
+!  NR STEP FOR DIAGONAL INVERSE HESSIAN
 !
    DO I=1,N
       W(ISPT+I)= -G(I)*MECDGUESS
@@ -351,22 +351,22 @@ IF (ITER.EQ.0) THEN
 !  PRINT*,'I,W,W=',I,W(1),W(ISPT+1)
    GNORM= DSQRT(DDOT(N,G,1,G,1))
 !
-!  Make the first guess for the step length cautious.
+!  MAKE THE FIRST GUESS FOR THE STEP LENGTH CAUTIOUS.
 !
    STP=MIN(1.0D0/GNORM,GNORM)
 !  STP=1.0D0
 ELSE 
    BOUND=ITER
    IF (ITER.GT.M) BOUND=M
-!  PRINT*,'before overlap W, W: ITER,M,ISPT,IYPT,NPT=',ITER,M,ISPT,IYPT,NPT
+!  PRINT*,'BEFORE OVERLAP W, W: ITER,M,ISPT,IYPT,NPT=',ITER,M,ISPT,IYPT,NPT
 !  WRITE(*,'(I5,2E20.10)') (J1,W(ISPT+NPT+J1),W(IYPT+NPT+J1),J1=1,10)
    YS= DDOT(N,W(IYPT+NPT+1),1,W(ISPT+NPT+1),1)
 !  WRITE(*,'(A,E20.10)') 'YS=',YS
    IF (YS.EQ.0.0D0) YS=1.0D0
 !
-!  Update estimate of diagonal inverse Hessian elements
-!  We divide by both YS and YY at different points, so
-!  they had better not be zero!
+!  UPDATE ESTIMATE OF DIAGONAL INVERSE HESSIAN ELEMENTS
+!  WE DIVIDE BY BOTH YS AND YY AT DIFFERENT POINTS, SO
+!  THEY HAD BETTER NOT BE ZERO!
 !
    IF (.NOT.DIAGCO) THEN
       YY= DDOT(N,W(IYPT+NPT+1),1,W(IYPT+NPT+1),1)
@@ -377,7 +377,7 @@ ELSE
 !     WRITE(*,'(A,E20.10)') 'DUMMY1=',DUMMY1
       MECDGUESS=DUMMY1
    ELSE
-      PRINT*,'using estimate of the inverse diagonal elements'
+      PRINT*,'USING ESTIMATE OF THE INVERSE DIAGONAL ELEMENTS'
       DO I=1,N
          IF (MECDGUESS.LE.0.0D0) THEN
             WRITE(*,235) I
@@ -386,15 +386,15 @@ ELSE
       ENDDO
    ENDIF
 !
-!     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980,
-!     "Updating quasi-Newton matrices with limited storage",
-!     Mathematics of Computation, Vol.24, No.151, pp. 773-782.
+!     COMPUTE -H*G USING THE FORMULA GIVEN IN: NOCEDAL, J. 1980,
+!     "UPDATING QUASI-NEWTON MATRICES WITH LIMITED STORAGE",
+!     MATHEMATICS OF COMPUTATION, VOL.24, NO.151, PP. 773-782.
 !     ---------------------------------------------------------
 !
    CP= POINT
    IF (POINT.EQ.0) CP=M
    W(N+CP)= 1.0D0/YS
-!  PRINT*,'W(I) gets set to -G(I):'
+!  PRINT*,'W(I) GETS SET TO -G(I):'
 !  WRITE(*,'(I5,2E20.10)') (J1,W(J1),G(J1),J1=1,10)
    IF (CHRMMT.AND.INTMINT) THEN
       DO I=1,N
@@ -433,7 +433,7 @@ ELSE
    STP=1.0D0
 ENDIF
 !
-!  Store the new search direction
+!  STORE THE NEW SEARCH DIRECTION
 !
 !     PRINT*,'W(I):'
 !     WRITE(*,'(I5,E20.10)') (J1,W(J1),J1=1,10)
@@ -458,7 +458,7 @@ ENDIF
 !     PRINT*,'G . G=',DDOT(N,G,1,G,1)
 !     PRINT*,'W . W=',DDOT(N,W,1,W,1)
 IF (OVERLAP.GT.0.0D0) THEN
-   IF (PTEST) PRINT*,'Search direction has positive projection onto gradient - reversing step'
+   IF (PTEST) PRINT*,'SEARCH DIRECTION HAS POSITIVE PROJECTION ONTO GRADIENT - REVERSING STEP'
    DO I=1,N
       W(ISPT+POINT*N+I)= -W(I)
    ENDDO
@@ -476,7 +476,7 @@ ENDDO
 SLENGTH=SQRT(SLENGTH)
 IF (STP*SLENGTH.GT.MECSTEP) STP=MECSTEP/SLENGTH
 !
-!  We now have the proposed step.
+!  WE NOW HAVE THE PROPOSED STEP.
 !
 DO J1=1,N
    X(J1)=X(J1)+STP*W(ISPT+POINT*N+J1)
@@ -486,9 +486,9 @@ KNOWE=.FALSE.
 KNOWG=.FALSE.
 KNOWH=.FALSE.
 !
-! At this point we have new Cartesian or internal coordinates after taking a full
-! or decreased step. The gradient is not known at this geometry.
-! If INTMIN must transform to Cartesians here.
+! AT THIS POINT WE HAVE NEW CARTESIAN OR INTERNAL COORDINATES AFTER TAKING A FULL
+! OR DECREASED STEP. THE GRADIENT IS NOT KNOWN AT THIS GEOMETRY.
+! IF INTMIN MUST TRANSFORM TO CARTESIANS HERE.
 !
 NDECREASE=0
 EPSILON=1.0D-6
@@ -502,34 +502,34 @@ G(1:N)=GSAVE(1:N)
 EREAL=ENEW
 REALRMS=RMS
 !
-!  Must allow the energy to rise during a minimisation to allow for numerical noise or
-!  systematic errors due to discontinuities or SCF convergence problems.
+!  MUST ALLOW THE ENERGY TO RISE DURING A MINIMISATION TO ALLOW FOR NUMERICAL NOISE OR
+!  SYSTEMATIC ERRORS DUE TO DISCONTINUITIES OR SCF CONVERGENCE PROBLEMS.
 !
 IF (ENEW-ENERGY.LE.MAXERISE) THEN
    ITER=ITER+1
    ITDONE=ITDONE+1
    ENERGY=ENEW
-   IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A,G13.5)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE, &
-     &     ' LBFGS steps, step:',STP*SLENGTH
-   WRITE(ESTRING,16) ' Energy for last cycle=',ENERGY,' '
+   IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A,G13.5)') ' ENERGY AND RMS FORCE=',ENERGY,RMS,' AFTER ',ITDONE, &
+     &     ' LBFGS STEPS, STEP:',STP*SLENGTH
+   WRITE(ESTRING,16) ' ENERGY FOR LAST CYCLE=',ENERGY,' '
 !
-!  Step finished so can reset OLDQ to new XINT, 
-!  as well as the Cartesian and internal gradients.
+!  STEP FINISHED SO CAN RESET OLDQ TO NEW XINT, 
+!  AS WELL AS THE CARTESIAN AND INTERNAL GRADIENTS.
 !
    GLAST(1:N)=GSAVE(1:N)
 !  IF (.NOT.BFGSTST) CALL DUMPP(X,ENERGY)
 ELSE 
 !
-!  Energy increased - try again with a smaller step size. Must cater for possible enormous
-!  values of SLENGTH. Decreasing the step size doesn;t seem to help for CASTEP.
+!  ENERGY INCREASED - TRY AGAIN WITH A SMALLER STEP SIZE. MUST CATER FOR POSSIBLE ENORMOUS
+!  VALUES OF SLENGTH. DECREASING THE STEP SIZE DOESN;T SEEM TO HELP FOR CASTEP.
 !
    IF (((ITER.GT.1).AND.(NDECREASE.GT.2)).OR.((ITER.LE.1).AND.(NDECREASE.GT.10)).OR. &
      &        ((CASTEP.OR.ONETEP.OR.CP2K).AND.(NDECREASE.GT.1))) THEN 
       NFAIL=NFAIL+1
-      IF (PTEST) PRINT*,' in mecbfgs LBFGS step cannot find a lower energy, NFAIL=',NFAIL
+      IF (PTEST) PRINT*,' IN MECBFGS LBFGS STEP CANNOT FIND A LOWER ENERGY, NFAIL=',NFAIL
 !
-!  try resetting - go back to previous coordinates, ENERGY is not set to ENEW
-!  we need to save the gradient corresponding to the last successful step
+!  TRY RESETTING - GO BACK TO PREVIOUS COORDINATES, ENERGY IS NOT SET TO ENEW
+!  WE NEED TO SAVE THE GRADIENT CORRESPONDING TO THE LAST SUCCESSFUL STEP
 !              
       ITER=0
       DO J1=1,N
@@ -538,8 +538,8 @@ ELSE
 !        G(J1)=GSAVE(J1) ! DJW 6/5/04
       ENDDO
       IF (NFAIL.GT.20) THEN
-         PRINT*,' Too many failures - give up'
-! check numerical derivatives
+         PRINT*,' TOO MANY FAILURES - GIVE UP'
+! CHECK NUMERICAL DERIVATIVES
 !        DO J1=1,N
 !           X(J1)=X(J1)+1.0D-5
 !           CALL MAKEGRADMEC(X,G,EPLUS,EVEC,RMSVEC,QSTART,QFINISH)
@@ -547,7 +547,7 @@ ELSE
 !           CALL MAKEGRADMEC(X,G,EMINUS,EVEC,RMSVEC,QSTART,QFINISH)
 !           X(J1)=X(J1)+1.0D-5
 !           IF (ABS(100*(GSAVE(J1)-(EPLUS-EMINUS)/(2.0D-5))/GSAVE(J1)).GT.0.01D0) THEN
-!              PRINT '(A,I5,4G20.10)', 'J1,X,anal,num,%error=', &
+!              PRINT '(A,I5,4G20.10)', 'J1,X,ANAL,NUM,%ERROR=', &
 !         &      J1,X(J1),GSAVE(J1),(EPLUS-EMINUS)/(2.0D-5),ABS(100*(GLAST(J1)-(EPLUS-EMINUS)/(2.0D-5))/GLAST(J1))
 !              PRINT '(A,2G20.10)', 'EPLUS,EMINUS=',EPLUS,EMINUS
 !           ENDIF
@@ -561,7 +561,7 @@ ELSE
       GOTO 30
    ENDIF
 !
-!  Try a smaller step.
+!  TRY A SMALLER STEP.
 !
    IF (CHRMMT.AND.INTMINT) THEN
       DO J1=1,N
@@ -579,14 +579,14 @@ ELSE
    STP=STP/10.0D0
    NDECREASE=NDECREASE+1
    IF (PTEST) &
-     &    WRITE(*,'(A,G19.10,A,G16.10,A,G15.8)') ' energy increased from ',ENERGY,' to ',ENEW, &
-     &            ' decreasing step to ',STP*SLENGTH
+     &    WRITE(*,'(A,G19.10,A,G16.10,A,G15.8)') ' ENERGY INCREASED FROM ',ENERGY,' TO ',ENEW, &
+     &            ' DECREASING STEP TO ',STP*SLENGTH
    FIXIMAGE=.TRUE.
    GOTO 20
 ENDIF
 !
-!     Compute the new step and gradient change. Note that the step
-!     length is accounted for when the step taken is saved.
+!     COMPUTE THE NEW STEP AND GRADIENT CHANGE. NOTE THAT THE STEP
+!     LENGTH IS ACCOUNTED FOR WHEN THE STEP TAKEN IS SAVED.
 !
 30    NPT=POINT*N
 
@@ -633,7 +633,7 @@ DO J1=1,NIMAGE
    ENDDO
    CALL POTENTIAL(XX,EVEC(J1),GG,.TRUE.,.FALSE.,RMSVEC(J1),.FALSE.,.FALSE.)
 !
-!  The points can be changed for C60 in the potential. See oldneb routine.
+!  THE POINTS CAN BE CHANGED FOR C60 IN THE POTENTIAL. SEE OLDNEB ROUTINE.
 !
 !  PRINT'(A,I5,G20.10)','J1,E=',J1,EVEC(J1)
    DO J2=1,LNOPT+IADD
@@ -674,8 +674,8 @@ DO J2=1,NIMAGE
 ENDDO
 
 RMS=0.0D0
-DO J1=1,LNOPT+IADD ! k
-   DO J2=1,NIMAGE ! gamma
+DO J1=1,LNOPT+IADD ! K
+   DO J2=1,NIMAGE ! GAMMA
       DUMMY1=LARG(NIMAGE+1,J2)*(X(J1+(LNOPT+IADD)*(J2-1))-FINAL(J1))/REAL(J2-NIMAGE-1)**(2+LNP)
       DUMMY1=DUMMY1+LARG(J2,0)*(X(J1+(LNOPT+IADD)*(J2-1))-QSTART(J1))/REAL(J2)**(2+LNP)
       DO J3=1,J2-1

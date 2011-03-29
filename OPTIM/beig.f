@@ -1,26 +1,26 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 ***********************************************************************
 C
-C  This subroutine performs LBFGS minimization to estimate the
-C  smallest eigenvalue and eigenvector of the Hessian without second
-C  derivatives.
+C  THIS SUBROUTINE PERFORMS LBFGS MINIMIZATION TO ESTIMATE THE
+C  SMALLEST EIGENVALUE AND EIGENVECTOR OF THE HESSIAN WITHOUT SECOND
+C  DERIVATIVES.
 C
 C***********************************************************************
 C
@@ -29,7 +29,7 @@ C
       USE KEY
       USE MODNEB
       USE MODTWOEND
-      use porfuncs
+      USE PORFUNCS
       IMPLICIT NONE
 
       INTEGER J1, ISEED, NS, NITS
@@ -63,11 +63,11 @@ C        VEC(1)=1.0D0
       ENDIF
 
 C     CALL VECNORM(VEC,NOPT)
-      IF (CPMD) CALL SYSTEM(' mv RESTART.1 RESTART.1.save ')
-      IF (CASTEP) CALL SYSTEM(' mv ' // SYS(1:LSYS) // '.check ' // SYS(1:LSYS) // '.check.save ')
-      IF (CASTEP) CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.cell ' // SYS(1:LSYS) // '.cell.save ')
-      IF (ONETEP) CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.dat ' // SYS(1:LSYS) // '.dat.save ')
-      IF (CP2K) CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.inp ' // SYS(1:LSYS) // '.inp.save ') 
+      IF (CPMD) CALL SYSTEM(' MV RESTART.1 RESTART.1.SAVE ')
+      IF (CASTEP) CALL SYSTEM(' MV ' // SYS(1:LSYS) // '.CHECK ' // SYS(1:LSYS) // '.CHECK.SAVE ')
+      IF (CASTEP) CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.CELL ' // SYS(1:LSYS) // '.CELL.SAVE ')
+      IF (ONETEP) CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.DAT ' // SYS(1:LSYS) // '.DAT.SAVE ')
+      IF (CP2K) CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.INP ' // SYS(1:LSYS) // '.INP.SAVE ') 
       CALL XMYLBFGS(NOPT,XMUPDATE,VEC,.FALSE.,DIAG,CEIG,WORK,ENERGY,COORDS,NITS,NEVS,FRET,PTEST,CONVERGED)
       CALL VECNORM(VEC,NOPT) 
 
@@ -78,12 +78,12 @@ C     CALL VECNORM(VEC,NOPT)
          SOVER=SOVER+VECS(J1)*VEC(J1)
          VECS(J1)=VEC(J1)
       ENDDO
-      IF (PTEST) WRITE(*,'(A,F15.7)') 'beig> Overlap with previous vector=',SOVER
+      IF (PTEST) WRITE(*,'(A,F15.7)') 'BEIG> OVERLAP WITH PREVIOUS VECTOR=',SOVER
 
-      IF (CPMD) CALL SYSTEM(' rm RESTART.1.plus ; rm RESTART.1.minus ; mv RESTART.1.save RESTART.1 ')
-C     IF (CASTEP) CALL SYSTEM(' rm ' // SYS(1:LSYS) // '.check.plus  ; rm ' 
-C    1                               // SYS(1:LSYS) // '.check.minus ; mv ' 
-C    2                               // SYS(1:LSYS) // '.check.save ' // SYS(1:LSYS) // '.check ')
+      IF (CPMD) CALL SYSTEM(' RM RESTART.1.PLUS ; RM RESTART.1.MINUS ; MV RESTART.1.SAVE RESTART.1 ')
+C     IF (CASTEP) CALL SYSTEM(' RM ' // SYS(1:LSYS) // '.CHECK.PLUS  ; RM ' 
+C    1                               // SYS(1:LSYS) // '.CHECK.MINUS ; MV ' 
+C    2                               // SYS(1:LSYS) // '.CHECK.SAVE ' // SYS(1:LSYS) // '.CHECK ')
 
       FIXIMAGE=.FALSE.
 

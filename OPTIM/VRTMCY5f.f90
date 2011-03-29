@@ -1,102 +1,102 @@
-! Leforestier 2002 VRT(MCY-5f)
-! x(i,j) = ith dimension of jth atom
-! O is 1, H is 2 and 3
-! distances in a.u., energies in a.u.
+! LEFORESTIER 2002 VRT(MCY-5F)
+! X(I,J) = ITH DIMENSION OF JTH ATOM
+! O IS 1, H IS 2 AND 3
+! DISTANCES IN A.U., ENERGIES IN A.U.
 
-module MCY
+MODULE MCY
 
-implicit none
+IMPLICIT NONE
 
-! parameters in a.u.
-real*8, parameter :: Q2 = 0.583599d0,&
-							AOO = 2376.94d0,&
-							bOO = 2.71770d0,&
-							AHH = 0.98642d0,&
-							bHH = 1.56704d0,&
-							AOH = 2.91318d0,&
-							bOH = 1.50467d0,&
-							AVH = 0.475543d0,&
-							bVH = 1.18216d0,&
-							dVC = 0.517424d0,&
-							dVS = 0.03857d0
+! PARAMETERS IN A.U.
+REAL*8, PARAMETER :: Q2 = 0.583599D0,&
+							AOO = 2376.94D0,&
+							BOO = 2.71770D0,&
+							AHH = 0.98642D0,&
+							BHH = 1.56704D0,&
+							AOH = 2.91318D0,&
+							BOH = 1.50467D0,&
+							AVH = 0.475543D0,&
+							BVH = 1.18216D0,&
+							DVC = 0.517424D0,&
+							DVS = 0.03857D0
 
-contains
-
-!#####################################
-
-real*8 function potential(coords)
-real*8, intent(in) :: coords(:)
-integer :: i
-real*8 :: x(3,6), R1(3), R2(3), q1, q2, theta, pot
-x = reshape(coords,(/3,6/))
-potential = inter(x)
-do i = 0, 1
-	R1 = x(:,2+i*3) - x(:,1+i*3)
-	R2 = x(:,3+i*3) - x(:,1+i*3)
-	q1 = sqrt(sum(R1**2))
-	q2 = sqrt(sum(R2**2))
-	theta = acos(dot_product(R1, R2) / (q1*q2))
-	call POTS(pot, q1, q2, theta)
-	potential = potential + pot
-end do
-end function potential
+CONTAINS
 
 !#####################################
 
-real*8 function inter(x)
-real*8, intent(in) :: x(3,6)
-integer :: i, j
-real*8 :: xn(3,2), xv(3,2), r, R1(3), R2(3)
-
-inter = 0.0d0
-
-!calculate position of negative/virtual sites
-
-R1 = x(:,2) + x(:,3) - 2.0d0*x(:,1)
-R1 = R1 / sqrt(sum(R1**2))
-R2 = x(:,5) + x(:,6) - 2.0d0*x(:,4)
-R2 = R2 / sqrt(sum(R2**2))
-
-xn(:,1) = x(:,1) + dVC*R1
-xn(:,2) = x(:,4) + dVC*R2
-xv(:,1) = x(:,1) + dVS*R1
-xv(:,2) = x(:,4) + dVS*R2
-
-!sum over interatomic Coulombic interactions and dispersion terms
-
-!between negative sites
-r = sqrt(sum((xn(:,1) - xn(:,2))**2))
-inter = inter + 4*Q2/r
-
-!between oxygen atoms
-r = sqrt(sum((x(:,1) - x(:,4))**2))
-inter = inter + AOO * exp(-bOO*r)
-
-do i = 2, 3 ! hydrogens on molecule 1
-	do j = 5, 6 ! hydrogens on molecule 2
-		r = sqrt(sum((x(:,i) - x(:,j))**2))
-		inter = inter + Q2/r + AHH*exp(-bHH*r)
-	end do
-end do
-
-do i = 1, 2 ! negative/virtual sites
-	do j = 2, 3 ! hydrogens
-		r = sqrt(sum((xn(:,i) - x(:,j+6-i*3))**2))
-		inter = inter - 2*Q2/r
-		r = sqrt(sum((xv(:,i) - x(:,j+6-i*3))**2))
-		inter = inter - AVH*exp(-bVH*r)
-	end do
-end do
-
-do i = 1, 4, 3 ! oxygen atoms
-	do j = 2, 3 ! hydrogens
-		r = sqrt(sum((x(:,i) - x(:,j+4-i))**2))
-		inter = inter + AOH*exp(-bOH*r)
-	end do
-end do
-
-end function inter
+REAL*8 FUNCTION POTENTIAL(COORDS)
+REAL*8, INTENT(IN) :: COORDS(:)
+INTEGER :: I
+REAL*8 :: X(3,6), R1(3), R2(3), Q1, Q2, THETA, POT
+X = RESHAPE(COORDS,(/3,6/))
+POTENTIAL = INTER(X)
+DO I = 0, 1
+	R1 = X(:,2+I*3) - X(:,1+I*3)
+	R2 = X(:,3+I*3) - X(:,1+I*3)
+	Q1 = SQRT(SUM(R1**2))
+	Q2 = SQRT(SUM(R2**2))
+	THETA = ACOS(DOT_PRODUCT(R1, R2) / (Q1*Q2))
+	CALL POTS(POT, Q1, Q2, THETA)
+	POTENTIAL = POTENTIAL + POT
+END DO
+END FUNCTION POTENTIAL
 
 !#####################################
 
-end module MCY
+REAL*8 FUNCTION INTER(X)
+REAL*8, INTENT(IN) :: X(3,6)
+INTEGER :: I, J
+REAL*8 :: XN(3,2), XV(3,2), R, R1(3), R2(3)
+
+INTER = 0.0D0
+
+!CALCULATE POSITION OF NEGATIVE/VIRTUAL SITES
+
+R1 = X(:,2) + X(:,3) - 2.0D0*X(:,1)
+R1 = R1 / SQRT(SUM(R1**2))
+R2 = X(:,5) + X(:,6) - 2.0D0*X(:,4)
+R2 = R2 / SQRT(SUM(R2**2))
+
+XN(:,1) = X(:,1) + DVC*R1
+XN(:,2) = X(:,4) + DVC*R2
+XV(:,1) = X(:,1) + DVS*R1
+XV(:,2) = X(:,4) + DVS*R2
+
+!SUM OVER INTERATOMIC COULOMBIC INTERACTIONS AND DISPERSION TERMS
+
+!BETWEEN NEGATIVE SITES
+R = SQRT(SUM((XN(:,1) - XN(:,2))**2))
+INTER = INTER + 4*Q2/R
+
+!BETWEEN OXYGEN ATOMS
+R = SQRT(SUM((X(:,1) - X(:,4))**2))
+INTER = INTER + AOO * EXP(-BOO*R)
+
+DO I = 2, 3 ! HYDROGENS ON MOLECULE 1
+	DO J = 5, 6 ! HYDROGENS ON MOLECULE 2
+		R = SQRT(SUM((X(:,I) - X(:,J))**2))
+		INTER = INTER + Q2/R + AHH*EXP(-BHH*R)
+	END DO
+END DO
+
+DO I = 1, 2 ! NEGATIVE/VIRTUAL SITES
+	DO J = 2, 3 ! HYDROGENS
+		R = SQRT(SUM((XN(:,I) - X(:,J+6-I*3))**2))
+		INTER = INTER - 2*Q2/R
+		R = SQRT(SUM((XV(:,I) - X(:,J+6-I*3))**2))
+		INTER = INTER - AVH*EXP(-BVH*R)
+	END DO
+END DO
+
+DO I = 1, 4, 3 ! OXYGEN ATOMS
+	DO J = 2, 3 ! HYDROGENS
+		R = SQRT(SUM((X(:,I) - X(:,J+4-I))**2))
+		INTER = INTER + AOH*EXP(-BOH*R)
+	END DO
+END DO
+
+END FUNCTION INTER
+
+!#####################################
+
+END MODULE MCY

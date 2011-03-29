@@ -1,23 +1,23 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
-C  Produce a new input deck at the end of the run.
+C  PRODUCE A NEW INPUT DECK AT THE END OF THE RUN.
 C
       SUBROUTINE DUMPIT(Q,FNAMEF)
       USE COMMONS
@@ -33,15 +33,15 @@ C
       COMMON /CAPS/ CAPSRHO, EPS2, RAD, HEIGHT
 
       IF (FILTH.EQ.0) THEN
-         FNAME='odata.new'
+         FNAME='ODATA.NEW'
       ELSE
-         WRITE(FNAME,'(A)') 'odata.new.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(FNAME,'(A)') 'ODATA.NEW.'//TRIM(ADJUSTL(FILTHSTR))
       ENDIF
 
       OPEN (3,FILE=FNAME,STATUS='UNKNOWN')
 
       WRITE(3,'(A,A87)') 'COMMENT  ',ESTRING
-      IF (GPSTRING(1:5).EQ.' The ') WRITE(3,'(A,T15,A80)') 'COMMENT',GPSTRING
+      IF (GPSTRING(1:5).EQ.' THE ') WRITE(3,'(A,T15,A80)') 'COMMENT',GPSTRING
 C     WRITE(3,'(A,T15,A80)') 'COMMENT',NSTRING
 C     WRITE(3,'(A,T15,A80)') 'COMMENT',FSTRING
       IF ((.NOT.BFGSTST).AND.(.NOT.BFGSMINT).AND.(.NOT.(BSMIN.OR.RKMIN))) WRITE(3,'(A,T15,I5)') 'SEARCH',INR
@@ -98,9 +98,9 @@ C     IF (RESIZE.NE.1.0D0) WRITE(3,'(A,T15,F20.10)') 'RESIZE',RESIZE
          ENDIF
       ENDIF
       IF (CPMD) THEN
-         if (TRIM(CPMD_COMMAND).ne.'/home/trj25/bin/cpmd.x') then
-            write(3, '(A,A)') 'CPMD_COMMAND ', TRIM(CPMD_COMMAND)
-         endif
+         IF (TRIM(CPMD_COMMAND).NE.'/HOME/TRJ25/BIN/CPMD.X') THEN
+            WRITE(3, '(A,A)') 'CPMD_COMMAND ', TRIM(CPMD_COMMAND)
+         ENDIF
          IF (CPMDC) THEN
             WRITE(3,'(A,A,A)') 'CPMDC ',SYS
          ELSE
@@ -175,15 +175,15 @@ C     IF (RESIZE.NE.1.0D0) WRITE(3,'(A,T15,F20.10)') 'RESIZE',RESIZE
       IF (NHCHECK.NE.6) WRITE(3,'(A,I4)') 'AXIS      ',NHCHECK
       S=1.0D0
       IF ((ZSYM(NATOMS).EQ.'AR').AND.(ZSYM(1).NE.'CA')) S=3.4D0
-      IF ((ZSYM(NATOMS).EQ.'CD'))  then
+      IF ((ZSYM(NATOMS).EQ.'CD'))  THEN
          WRITE(3,'(A,3G20.10)') 'CAPSID  ', CAPSRHO, EPS2, RAD
-      else if (ANGLEAXIS) then
-         write(3, '(A)') 'ANGLEAXIS'    ! Superfluous for CAPSID potential
-      endif
-      if (efield.ne.0.0d0) WRITE(3,'(A,G20.10)') 'EFIELD ', efield
+      ELSE IF (ANGLEAXIS) THEN
+         WRITE(3, '(A)') 'ANGLEAXIS'    ! SUPERFLUOUS FOR CAPSID POTENTIAL
+      ENDIF
+      IF (EFIELD.NE.0.0D0) WRITE(3,'(A,G20.10)') 'EFIELD ', EFIELD
       IF (NFAILMAX.NE.2) WRITE(3, '(A,I6)') 'MAXFAIL ', NFAILMAX
-      if (SCORE_QUEUE) write(3,'(A)') 'SCORE_QUEUE'
-      if (coldFusionLimit.ne.-1.0D6) WRITE(3,'(A,G20.10)') 'COLDFUSION ', coldFusionLimit
+      IF (SCORE_QUEUE) WRITE(3,'(A)') 'SCORE_QUEUE'
+      IF (COLDFUSIONLIMIT.NE.-1.0D6) WRITE(3,'(A,G20.10)') 'COLDFUSION ', COLDFUSIONLIMIT
       IF (STOCKT) WRITE(3,'(A,2G20.10)') 'STOCK ', STOCKMU, STOCKLAMBDA
       IF (SIO2C6T) WRITE(3,'(A,3G20.10)') 'SIO2C6 ', C6PP,C6MM,C6PM
       IF (VARIABLES) THEN
@@ -193,10 +193,10 @@ C     IF (RESIZE.NE.1.0D0) WRITE(3,'(A,T15,F20.10)') 'RESIZE',RESIZE
       ELSE IF (AMBER) THEN
          WRITE(3,'(A)') 'AMBER'
 C       
-C       sf344> AMBER 9 interface
+C       SF344> AMBER 9 INTERFACE
 C
       ELSE IF ((AMBERT.OR.NABT).AND.DUMPSTRUCTURES) THEN
-        CALL AMBERFINALIO(1,20,1,filthstr,filth,Q)
+        CALL AMBERFINALIO(1,20,1,FILTHSTR,FILTH,Q)
       ELSE IF (VARIABLES) THEN
          WRITE(3,'(A)') 'VARIABLES'
          WRITE(3,'(G20.10)') (Q(J1),J1=1,NATOMS)
@@ -218,7 +218,7 @@ C
       ENDIF
       CLOSE(3)
       IF (ZSYM(NATOMS).EQ.'CD') THEN
-         OPEN(UNIT=26,FILE='capsid.xyz',STATUS='UNKNOWN')
+         OPEN(UNIT=26,FILE='CAPSID.XYZ',STATUS='UNKNOWN')
          WRITE(26,'(I6)') (NATOMS/2)*6
          WRITE(26,'(I5)') J1
          DO J2=1,NATOMS/2 
@@ -234,11 +234,11 @@ C
       ENDIF
       IF (STOCKT) THEN
          DSHIFT=0.5D0
-         OPEN(UNIT=26,FILE='Stock.xyz',STATUS='UNKNOWN')
+         OPEN(UNIT=26,FILE='STOCK.XYZ',STATUS='UNKNOWN')
          WRITE(26,'(I6)') (NATOMS/2)
          WRITE(26,'(A)') ' '
          DO J2=1,(NATOMS/2) 
-            WRITE(26,'(A,3G20.10,A,3G20.10)') 'LA  ',Q(3*J2-2),Q(3*J2-1),Q(3*J2), ' atom_vector ',
+            WRITE(26,'(A,3G20.10,A,3G20.10)') 'LA  ',Q(3*J2-2),Q(3*J2-1),Q(3*J2), ' ATOM_VECTOR ',
      &                                     SIN(Q(3*((NATOMS/2)+J2-1)+1))*COS(Q(3*((NATOMS/2)+J2-1)+2)),
      &                                     SIN(Q(3*((NATOMS/2)+J2-1)+1))*SIN(Q(3*((NATOMS/2)+J2-1)+2)),
      &                                     COS(Q(3*((NATOMS/2)+J2-1)+1))
@@ -249,7 +249,7 @@ C
       RETURN
       END
 C
-C  SUBROUTINE to convert capsid CofM and DV coordinates to penatgons.
+C  SUBROUTINE TO CONVERT CAPSID COFM AND DV COORDINATES TO PENATGONS.
 C
       SUBROUTINE CAPSIDIO(X1, Y1, Z1, L1, M1, N1,COORDS,RAD,HEIGHT)
       IMPLICIT NONE
@@ -271,7 +271,7 @@ C     HEIGHT=RAD/2.0D0
       CA1=COS(ALPHA1)
       C2A1=RAD*CA1
       IF (ALPHA1.LT.0.0001D0) THEN
-C        C3A1=RAD*(-ALPHA1/2+ALPHA1**3/24) ! bug
+C        C3A1=RAD*(-ALPHA1/2+ALPHA1**3/24) ! BUG
          C3A1=RAD*(-0.5D0+ALPHA1**2/24.0D0)
          S1=RAD*(1.0D0-ALPHA1**2/6)
       ELSE
@@ -279,24 +279,24 @@ C        C3A1=RAD*(-ALPHA1/2+ALPHA1**3/24) ! bug
          S1=RAD*SIN(ALPHA1)/ALPHA1
       ENDIF
 
-      COORDS(1) =     c2a1 - c3a1*l12 + x1
-      COORDS(2) =     -(c3a1*l1*m1) - n1*s1 + y1
-      COORDS(3) =     -(c3a1*l1*n1) + m1*s1 + z1
-      COORDS(4) =     c2a1*num4 - c3a1*l1*(m1*num3 + l1*num4) + n1*num3*s1 + x1
-      COORDS(5) =     c2a1*num3 - c3a1*m1*(m1*num3 + l1*num4) - n1*num4*s1 + y1
-      COORDS(6) =     -(c3a1*n1*(m1*num3 + l1*num4)) - l1*num3*s1 + m1*num4*s1 + z1
-      COORDS(7) =     c2a1*num1 - c3a1*l1*(l1*num1 + m1*num2) + n1*num2*s1 + x1
-      COORDS(8) = c2a1*num2 - c3a1*m1*(l1*num1 + m1*num2) - n1*num5*s1 + y1
-      COORDS(9) = -(c3a1*n1*(l1*num1 + m1*num2)) + m1*num1*s1 - l1*num2*s1 + z1
-      COORDS(10) = c2a1*num1 + c3a1*l1*(-(l1*num1) + m1*num2) - n1*num2*s1 + x1
-      COORDS(11) = -(c2a1*num2) + c3a1*m1*(-(l1*num1) + m1*num2) - n1*num5*s1 + y1
-      COORDS(12) = -(c3a1*l1*n1*num1) + c3a1*m1*n1*num2 + m1*num1*s1 + l1*num2*s1 + z1
-      COORDS(13) = c2a1*num4 + c3a1*l1*(m1*num3 - l1*num4) - n1*num3*s1 + x1
-      COORDS(14) = -(c2a1*num3) + c3a1*m1*(m1*num3 - l1*num4) - n1*num4*s1 + y1
-      COORDS(15) = c3a1*n1*(m1*num3 - l1*num4) + l1*num3*s1 + m1*num4*s1 + z1
-      COORDS(16)= (-(c3a1*l1*n1) - m1*s1 + 2*x1)/2.
-      COORDS(17)= -(c3a1*m1*n1)/2. + (l1*s1)/2. + y1
-      COORDS(18)= (c2a1 - c3a1*n12 + 2*z1)/2.
+      COORDS(1) =     C2A1 - C3A1*L12 + X1
+      COORDS(2) =     -(C3A1*L1*M1) - N1*S1 + Y1
+      COORDS(3) =     -(C3A1*L1*N1) + M1*S1 + Z1
+      COORDS(4) =     C2A1*NUM4 - C3A1*L1*(M1*NUM3 + L1*NUM4) + N1*NUM3*S1 + X1
+      COORDS(5) =     C2A1*NUM3 - C3A1*M1*(M1*NUM3 + L1*NUM4) - N1*NUM4*S1 + Y1
+      COORDS(6) =     -(C3A1*N1*(M1*NUM3 + L1*NUM4)) - L1*NUM3*S1 + M1*NUM4*S1 + Z1
+      COORDS(7) =     C2A1*NUM1 - C3A1*L1*(L1*NUM1 + M1*NUM2) + N1*NUM2*S1 + X1
+      COORDS(8) = C2A1*NUM2 - C3A1*M1*(L1*NUM1 + M1*NUM2) - N1*NUM5*S1 + Y1
+      COORDS(9) = -(C3A1*N1*(L1*NUM1 + M1*NUM2)) + M1*NUM1*S1 - L1*NUM2*S1 + Z1
+      COORDS(10) = C2A1*NUM1 + C3A1*L1*(-(L1*NUM1) + M1*NUM2) - N1*NUM2*S1 + X1
+      COORDS(11) = -(C2A1*NUM2) + C3A1*M1*(-(L1*NUM1) + M1*NUM2) - N1*NUM5*S1 + Y1
+      COORDS(12) = -(C3A1*L1*N1*NUM1) + C3A1*M1*N1*NUM2 + M1*NUM1*S1 + L1*NUM2*S1 + Z1
+      COORDS(13) = C2A1*NUM4 + C3A1*L1*(M1*NUM3 - L1*NUM4) - N1*NUM3*S1 + X1
+      COORDS(14) = -(C2A1*NUM3) + C3A1*M1*(M1*NUM3 - L1*NUM4) - N1*NUM4*S1 + Y1
+      COORDS(15) = C3A1*N1*(M1*NUM3 - L1*NUM4) + L1*NUM3*S1 + M1*NUM4*S1 + Z1
+      COORDS(16)= (-(C3A1*L1*N1) - M1*S1 + 2*X1)/2.
+      COORDS(17)= -(C3A1*M1*N1)/2. + (L1*S1)/2. + Y1
+      COORDS(18)= (C2A1 - C3A1*N12 + 2*Z1)/2.
                 
       RETURN
       END

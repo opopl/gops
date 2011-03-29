@@ -1,27 +1,27 @@
-module bowmanwater
+MODULE BOWMANWATER
 
-implicit none
+IMPLICIT NONE
 
-contains
+CONTAINS
 
-subroutine bowmaninit(nw, pes, dname)
-use pes_shell, only : iwaterfcn, pes_init
-integer, intent(in) :: nw, pes
-character (len=*), intent(in) :: dname
-call pes_init(nw, dname)
-iwaterfcn = pes
-end subroutine bowmaninit
+SUBROUTINE BOWMANINIT(NW, PES, DNAME)
+USE PES_SHELL, ONLY : IWATERFCN, PES_INIT
+INTEGER, INTENT(IN) :: NW, PES
+CHARACTER (LEN=*), INTENT(IN) :: DNAME
+CALL PES_INIT(NW, DNAME)
+IWATERFCN = PES
+END SUBROUTINE BOWMANINIT
 
-double precision function bowmanpot(x)
-use pes_shell, only : f, auang
-double precision, dimension(:), intent(in) :: x
-real, dimension(:,:), allocatable :: xx
-integer :: natom, i
-natom = size(x) / 3
-allocate(xx(3,natom))
-forall(i=1:natom) xx(:,i) = x(3*i-2:3*i) / auang
-bowmanpot = f(xx)
-deallocate(xx)
-end function bowmanpot
+DOUBLE PRECISION FUNCTION BOWMANPOT(X)
+USE PES_SHELL, ONLY : F, AUANG
+DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: X
+REAL, DIMENSION(:,:), ALLOCATABLE :: XX
+INTEGER :: NATOM, I
+NATOM = SIZE(X) / 3
+ALLOCATE(XX(3,NATOM))
+FORALL(I=1:NATOM) XX(:,I) = X(3*I-2:3*I) / AUANG
+BOWMANPOT = F(XX)
+DEALLOCATE(XX)
+END FUNCTION BOWMANPOT
 
-end module  bowmanwater
+END MODULE  BOWMANWATER

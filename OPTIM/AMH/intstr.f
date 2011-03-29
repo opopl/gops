@@ -1,57 +1,57 @@
 
-c     --------------------- intstr ----------------------
+C     --------------------- INTSTR ----------------------
 
-      subroutine intstr
+      SUBROUTINE INTSTR
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     INTSTR generates initial structures and performs
-c            a quick analysis on the Rg and lr/sr
+C     INTSTR GENERATES INITIAL STRUCTURES AND PERFORMS
+C            A QUICK ANALYSIS ON THE RG AND LR/SR
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-      use amhglobals,  only: iresrt,movanal,AMHmaxsiz,nmres,maxpro,
-     *  numpro,maxcrd,numcrd,prcord,oarchv,ires,iseed_amh,quench
+      USE AMHGLOBALS,  ONLY: IRESRT,MOVANAL,AMHMAXSIZ,NMRES,MAXPRO,
+     *  NUMPRO,MAXCRD,NUMCRD,PRCORD,OARCHV,IRES,ISEED_AMH,QUENCH
 
-      implicit none
+      IMPLICIT NONE
 
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-         integer procnt
+         INTEGER PROCNT
 
-c     required subroutines
+C     REQUIRED SUBROUTINES
 
-         external rndcol,restrt    !   restrt
+         EXTERNAL RNDCOL,RESTRT    !   RESTRT
 
-c     --------------------- begin -----------------------
+C     --------------------- BEGIN -----------------------
 
-c     procnt tracks the number of initial structures
-c     generated
+C     PROCNT TRACKS THE NUMBER OF INITIAL STRUCTURES
+C     GENERATED
 
-      procnt=0
+      PROCNT=0
 
-      if( ( iresrt.and.(.not.movanal) ) .or. quench )then
+      IF( ( IRESRT.AND.(.NOT.MOVANAL) ) .OR. QUENCH )THEN
 
-         call restrt(procnt,AMHmaxsiz,nmres,maxpro,
-     *               numpro,maxcrd,numcrd,prcord,
-     *               oarchv)
+         CALL RESTRT(PROCNT,AMHMAXSIZ,NMRES,MAXPRO,
+     *               NUMPRO,MAXCRD,NUMCRD,PRCORD,
+     *               OARCHV)
 
-      endif
+      ENDIF
 
-      if( procnt.lt.numpro )then
+      IF( PROCNT.LT.NUMPRO )THEN
 
-c        if number of initial configurations found
-c        up to this point is less than the required
-c        number, then find random coils for
-c        the remainder
-         call rndcol(nmres,maxpro,numpro,
-     *                ires,procnt,numcrd,prcord,
-     *                iseed_amh)
+C        IF NUMBER OF INITIAL CONFIGURATIONS FOUND
+C        UP TO THIS POINT IS LESS THAN THE REQUIRED
+C        NUMBER, THEN FIND RANDOM COILS FOR
+C        THE REMAINDER
+         CALL RNDCOL(NMRES,MAXPRO,NUMPRO,
+     *                IRES,PROCNT,NUMCRD,PRCORD,
+     *                ISEED_AMH)
 
-      endif
+      ENDIF
 
 
-c     ---------------------- done -----------------------
+C     ---------------------- DONE -----------------------
 
-      return
-      end
+      RETURN
+      END

@@ -1,16 +1,16 @@
 MODULE INTCOMMONS
-  USE modamber9, only : INTMINPERMT
-  ! some global variables for internals
+  USE MODAMBER9, ONLY : INTMINPERMT
+  ! SOME GLOBAL VARIABLES FOR INTERNALS
   IMPLICIT NONE  
 
-  ! keywords
+  ! KEYWORDS
   LOGICAL :: NATINT = .FALSE., INTNEWT = .TRUE.
-  LOGICAL :: OLDINTMINPERMT=.FALSE. !this is BAD for amber
+  LOGICAL :: OLDINTMINPERMT=.FALSE. !THIS IS BAD FOR AMBER
   LOGICAL :: BBCART = .FALSE., INTINTERPT = .FALSE., INTERPSIMPLE = .FALSE.
   LOGICAL :: INTERPCHOICE = .FALSE.
-  INTEGER :: NINTIM = 100 ! number of images to define path in internals interpolation
-  ! starting from this residue use cartesians
-  ! if cartresstart is less than zero, it will be set to NRES+1
+  INTEGER :: NINTIM = 100 ! NUMBER OF IMAGES TO DEFINE PATH IN INTERNALS INTERPOLATION
+  ! STARTING FROM THIS RESIDUE USE CARTESIANS
+  ! IF CARTRESSTART IS LESS THAN ZERO, IT WILL BE SET TO NRES+1
   INTEGER :: CARTRESSTART = -1, CARTATMSTART = -1
   DOUBLE PRECISION :: MINBACKTCUT = 1.0D-4, INTERPBACKTCUT = 1.0D-8
   LOGICAL :: PRINTCOORDS
@@ -19,33 +19,33 @@ MODULE INTCOMMONS
   INTEGER :: NURINGS=0, URINGS(100,0:6)
   INTEGER :: NUBONDS=0, UBONDS(100,2)
   LOGICAL :: USEPARFILE = .FALSE.
-  CHARACTER*100 :: INTPARFILE = 'naturals-noH.par'
+  CHARACTER*100 :: INTPARFILE = 'NATURALS-NOH.PAR'
 
   DOUBLE PRECISION, PARAMETER :: PI=3.141592653589793D0, TWOPI = 2*PI
 
   ! -----------------------
-  ! Natural internals stuff
+  ! NATURAL INTERNALS STUFF
   ! -----------------------
-  ! number of bonds, centers, rings, fused rings, linear dihedrals, 
-  ! improper dihedrals, cartesian atoms, and individual dihedral angles
+  ! NUMBER OF BONDS, CENTERS, RINGS, FUSED RINGS, LINEAR DIHEDRALS, 
+  ! IMPROPER DIHEDRALS, CARTESIAN ATOMS, AND INDIVIDUAL DIHEDRAL ANGLES
   INTEGER :: NBDS, NCNT, NRNG, NFRG, NLDH, NIMP, NCRT, NDIH
-  ! angle and torsion coefficients defining the natural coordinates
+  ! ANGLE AND TORSION COEFFICIENTS DEFINING THE NATURAL COORDINATES
   DOUBLE PRECISION :: COEFF(30,6,6) 
-  !     CENTERS lists type of center, then center atom followed by nonterminal atoms
-  !     followed by terminal atoms; RINGS lists atoms in ring in order; 
-  !     FRINGS lists atoms involved in a 
-  !     fused ring, the two bridge atoms first; LINDIH lists m, n, A, B, 
-  !     X_i, Y_j for X_m -- A -- B -- Y_n; IMPDIH lists atoms in an improper dihedral 
-  !     ('wag') coordinate; starting with central atom and ending with the wagging
-  !     atom.
-  !     ATOMxPOSINC gives, for a given center type, the position of the x coordinate 
-  !     of an atom when for each natural angle-sum coordinate all the atoms involved 
-  !     are listed in order with triplets for the x,y,z coordinates
+  !     CENTERS LISTS TYPE OF CENTER, THEN CENTER ATOM FOLLOWED BY NONTERMINAL ATOMS
+  !     FOLLOWED BY TERMINAL ATOMS; RINGS LISTS ATOMS IN RING IN ORDER; 
+  !     FRINGS LISTS ATOMS INVOLVED IN A 
+  !     FUSED RING, THE TWO BRIDGE ATOMS FIRST; LINDIH LISTS M, N, A, B, 
+  !     X_I, Y_J FOR X_M -- A -- B -- Y_N; IMPDIH LISTS ATOMS IN AN IMPROPER DIHEDRAL 
+  !     ('WAG') COORDINATE; STARTING WITH CENTRAL ATOM AND ENDING WITH THE WAGGING
+  !     ATOM.
+  !     ATOMXPOSINC GIVES, FOR A GIVEN CENTER TYPE, THE POSITION OF THE X COORDINATE 
+  !     OF AN ATOM WHEN FOR EACH NATURAL ANGLE-SUM COORDINATE ALL THE ATOMS INVOLVED 
+  !     ARE LISTED IN ORDER WITH TRIPLETS FOR THE X,Y,Z COORDINATES
   INTEGER, ALLOCATABLE :: CENTERS(:,:), RINGS(:,:), FRINGS(:,:), LINDIH(:,:), &
        & IMPDIH(:,:), CARTATMS(:)
-  INTEGER, ALLOCATABLE :: CENTER2(:) !msb50 - lists center nos if centertyp is 2
+  INTEGER, ALLOCATABLE :: CENTER2(:) !MSB50 - LISTS CENTER NOS IF CENTERTYP IS 2
   INTEGER :: NCNT2 
-  INTEGER :: ATOMxPOSINC(10,5,5)
+  INTEGER :: ATOMXPOSINC(10,5,5)
 
   ! -------------------
   DOUBLE PRECISION, ALLOCATABLE, TARGET :: DIHINFOSINGLE(:), DIHINFO(:,:)
@@ -56,11 +56,11 @@ MODULE INTCOMMONS
   INTEGER :: KD, NNZ
   DOUBLE PRECISION :: BACKTCUTOFF
 
-  ! copied from charmm common blocks
-  INTEGER :: TOTBOND, TOTANG, TOTDIH, TOTRES! total bonds, angles, dihedrals, residues in molecule
-  INTEGER, ALLOCATABLE :: RESSTARTS(:) ! starting atoms (n-1) for each residue
-  CHARACTER*8, ALLOCATABLE :: ATMTYPES(:) ! list of atom types
-  CHARACTER*8, ALLOCATABLE :: RESLIST(:) ! list of residues
+  ! COPIED FROM CHARMM COMMON BLOCKS
+  INTEGER :: TOTBOND, TOTANG, TOTDIH, TOTRES! TOTAL BONDS, ANGLES, DIHEDRALS, RESIDUES IN MOLECULE
+  INTEGER, ALLOCATABLE :: RESSTARTS(:) ! STARTING ATOMS (N-1) FOR EACH RESIDUE
+  CHARACTER*8, ALLOCATABLE :: ATMTYPES(:) ! LIST OF ATOM TYPES
+  CHARACTER*8, ALLOCATABLE :: RESLIST(:) ! LIST OF RESIDUES
   INTEGER:: STARTLINDH
   INTEGER, ALLOCATABLE :: MBBONDNUM(:), MBADJACENT(:,:)
   INTEGER, ALLOCATABLE :: BONDNUM(:), ADJACENT(:,:)
@@ -69,6 +69,6 @@ MODULE INTCOMMONS
   INTEGER, ALLOCATABLE :: GLYDIH(:,:)
   INTEGER ::NGLYDIH
   LOGICAL :: GLYCART = .FALSE.
-  LOGICAL :: INTDISTANCET = .FALSE. !distances from minpermdist in dihedral angle metric
+  LOGICAL :: INTDISTANCET = .FALSE. !DISTANCES FROM MINPERMDIST IN DIHEDRAL ANGLE METRIC
 
 END MODULE INTCOMMONS

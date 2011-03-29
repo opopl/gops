@@ -1,17 +1,17 @@
 !
-!     OPTIM is free software; you can redistribute it and/or modify
-!     it under the terms of the GNU General Public License as published by
-!     the Free Software Foundation; either version 2 of the License, or
-!     (at your option) any later version.
+!     OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!     IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!     THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!     (AT YOUR OPTION) ANY LATER VERSION.
 !
-!     OPTIM is distributed in the hope that it will be useful,
-!     but WITHOUT ANY WARRANTY; without even the implied warranty of
-!     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!     GNU General Public License for more details.
+!     OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!     BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!     MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!     GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!     You should have received a copy of the GNU General Public License
-!     along with this program; if not, write to the Free Software
-!     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!     YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!     ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!     FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !     ----------------------------------------------------------------------------------------------
 
       SUBROUTINE ROTMAT(P, RM)
@@ -828,7 +828,7 @@
 
       CALL DSYEV('V','U',4,QMAT,4,DIAG,TEMPA,9*NATOMS,INFO)
 
-      IF (INFO /= 0) PRINT '(A,I6,A)','newmindist> WARNING - INFO=',INFO,' in DSYEV'
+      IF (INFO /= 0) PRINT '(A,I6,A)','NEWMINDIST> WARNING - INFO=',INFO,' IN DSYEV'
 
       MINV = 1.0D100
       DO J1 = 1,4
@@ -841,13 +841,13 @@
          IF (ABS(MINV)< 1.0D-6) THEN
             MINV = 0.0D0
          ELSE
-            PRINT '(A,G20.10,A)','newmindist> WARNING MINV is ',MINV,' change to absolute value'
+            PRINT '(A,G20.10,A)','NEWMINDIST> WARNING MINV IS ',MINV,' CHANGE TO ABSOLUTE VALUE'
             MINV = -MINV
          ENDIF
       ENDIF
       DIST = SQRT(MINV)
 
-!     IF (DEBUG) PRINT '(A,G20.10,A,I6)',' rbmindist2> minimum residual is ',DIAG(JMIN),' for eigenvector ',JMIN
+!     IF (DEBUG) PRINT '(A,G20.10,A,I6)',' RBMINDIST2> MINIMUM RESIDUAL IS ',DIAG(JMIN),' FOR EIGENVECTOR ',JMIN
 
       Q2(1) = QMAT(1,JMIN); Q2(2) = QMAT(2,JMIN); Q2(3) = QMAT(3,JMIN); Q2(4) = QMAT(4,JMIN)
 
@@ -989,7 +989,7 @@
       MINV = 0.5D0*(QMAT(1,1) + QMAT(2,2) - SQRT(4.D0*QMAT(1,2)*QMAT(1,2) + (QMAT(1,1) - QMAT(2,2))**2.D0))
 
 !      IF (MINV < 0.0D0) THEN
-!          PRINT '(A,G20.10,A)','fldmindist> MINV is negative'
+!          PRINT '(A,G20.10,A)','FLDMINDIST> MINV IS NEGATIVE'
 !          PRINT *, MINV
 !          STOP
 !      ENDIF
@@ -1007,7 +1007,7 @@
          IF (ABS(MINV)< 1.0D-6) THEN
             MINV = 0.0D0
          ELSE
-            PRINT '(A,G20.10,A)','newmindist> WARNING MINV is ',MINV,' change to absolute value'
+            PRINT '(A,G20.10,A)','NEWMINDIST> WARNING MINV IS ',MINV,' CHANGE TO ABSOLUTE VALUE'
             MINV = -MINV
          ENDIF
       ENDIF
@@ -1116,7 +1116,7 @@
 
       CALL DSYEV('V','U',4,BMAT,4,DIAG,TEMPA,9*NATOMS,INFO)
 
-      IF (INFO /= 0) PRINT '(A,I6,A)','newmindist> WARNING - INFO=',INFO,' in DSYEV'
+      IF (INFO /= 0) PRINT '(A,I6,A)','NEWMINDIST> WARNING - INFO=',INFO,' IN DSYEV'
 
       DO J1 = 1,4
          IF (DIAG(J1).LT.DIST) THEN
@@ -1147,7 +1147,7 @@
 
       IF (DISTI < DIST) THEN
          
-         IF (DEBUG) PRINT '(A,G20.10,A)','rbmindist> superposition of the inverted configuration is better'
+         IF (DEBUG) PRINT '(A,G20.10,A)','RBMINDIST> SUPERPOSITION OF THE INVERTED CONFIGURATION IS BETTER'
          DIST = DISTI
          Q2(1) = BMAT(1,JMAX); Q2(2) = BMAT(2,JMAX); Q2(3) = BMAT(3,JMAX); Q2(4) = BMAT(4,JMAX)
          INVERTT = .TRUE.
@@ -1164,7 +1164,7 @@
          IF (ABS(DIST)< 1.0D-6) THEN
             DIST = 0.0D0
          ELSE
-            PRINT '(A,G20.10,A)','rbmindist> distance is negative'
+            PRINT '(A,G20.10,A)','RBMINDIST> DISTANCE IS NEGATIVE'
 !            STOP
          ENDIF
       ENDIF
@@ -1227,7 +1227,7 @@
 
       ENDIF
 
-      CALL RBNEWROTGEOM(NATOMS,RB,Q2,RM,CMXA,CMYA,CMZA)    ! to check for inversion comment this call out
+      CALL RBNEWROTGEOM(NATOMS,RB,Q2,RM,CMXA,CMYA,CMZA)    ! TO CHECK FOR INVERSION COMMENT THIS CALL OUT
 
       DEALLOCATE(XA,XB)
 
@@ -1245,12 +1245,12 @@
       DOUBLE PRECISION :: COORDS(3*NATOMS), RM(3,3), CX, CY, CZ, R(3), P(3), Q1(4), Q2(4), Q(4)
       DOUBLE PRECISION :: THETA, THETAH, ST, FCT
 
-      DOUBLE PRECISION :: r1, diag1, diag2, diag3
-      INTEGER          :: u,v,w
+      DOUBLE PRECISION :: R1, DIAG1, DIAG2, DIAG3
+      INTEGER          :: U,V,W
 !     RMAT CONTAINS THE MATRIX THAT MAPS RB ONTO THE BEST CORRESPONDENCE WITH RA
-!     sf344> when called from minpermdist, RM is already given from putting the centres of rigid bodies 
-!            into standard orientation, so this subroutine simply rotates all coordinates with that rotation
-!            matrix
+!     SF344> WHEN CALLED FROM MINPERMDIST, RM IS ALREADY GIVEN FROM PUTTING THE CENTRES OF RIGID BODIES 
+!            INTO STANDARD ORIENTATION, SO THIS SUBROUTINE SIMPLY ROTATES ALL COORDINATES WITH THAT ROTATION
+!            MATRIX
 
 !      RM(1,1) = Q2(1)**2 + Q2(2)**2 - Q2(3)**2 - Q2(4)**2
 !      RM(1,2) = 2.D0*(Q2(2)*Q2(3) - Q2(1)*Q2(4))
@@ -1262,46 +1262,46 @@
 !      RM(3,2) = 2.D0*(Q2(3)*Q2(4) + Q2(1)*Q2(2))
 !      RM(3,3) = Q2(1)**2 +Q2(4)**2 -Q2(2)**2 - Q2(3)**2
 
-      diag1=RM(1,1)
-      diag2=RM(2,2)
-      diag3=RM(3,3)
+      DIAG1=RM(1,1)
+      DIAG2=RM(2,2)
+      DIAG3=RM(3,3)
 
        
-!     if the rotation matrix is the identity matrix, then return
-      IF(abs(diag1-1.0D0)<1.0D-8.AND.abs(diag2-1.0D0)<1.0D-8.AND.abs(diag3-1.0D0)<1.0D-8) THEN
+!     IF THE ROTATION MATRIX IS THE IDENTITY MATRIX, THEN RETURN
+      IF(ABS(DIAG1-1.0D0)<1.0D-8.AND.ABS(DIAG2-1.0D0)<1.0D-8.AND.ABS(DIAG3-1.0D0)<1.0D-8) THEN
         RETURN
       END IF
-!     otherwise figure out the quaternion from the rotation matrix
-!      WRITE(*,'(A)') 'coords before rotation'
+!     OTHERWISE FIGURE OUT THE QUATERNION FROM THE ROTATION MATRIX
+!      WRITE(*,'(A)') 'COORDS BEFORE ROTATION'
 !      WRITE(*,'(3F13.8)') COORDS(:)
 
       IF(ABS(RM(1,1))>=ABS(RM(2,2)).AND.ABS(RM(1,1))>=ABS(RM(3,3))) THEN
-          diag1=RM(1,1)
-          u=1
-          v=2
-          w=3
+          DIAG1=RM(1,1)
+          U=1
+          V=2
+          W=3
       ELSE IF (ABS(RM(2,2))>=ABS(RM(1,1)).AND.ABS(RM(2,2))>=ABS(RM(3,3))) THEN
-          diag1=RM(2,2)
-          diag2=RM(3,3)
-          diag3=RM(1,1)
-          u=2
-          v=3
-          w=1
+          DIAG1=RM(2,2)
+          DIAG2=RM(3,3)
+          DIAG3=RM(1,1)
+          U=2
+          V=3
+          W=1
       ELSE IF (ABS(RM(3,3))>=ABS(RM(1,1)).AND.ABS(RM(3,3))>=ABS(RM(2,2))) THEN
-          diag1=RM(3,3)
-          diag2=RM(1,1)
-          diag3=RM(2,2)
-          u=3
-          v=1
-          w=2
+          DIAG1=RM(3,3)
+          DIAG2=RM(1,1)
+          DIAG3=RM(2,2)
+          U=3
+          V=1
+          W=2
       END IF
 
-      r1=SQRT(1+RM(u,u)-RM(v,v)-RM(w,w))
+      R1=SQRT(1+RM(U,U)-RM(V,V)-RM(W,W))
       
-      Q2(1)=(RM(w,v)-RM(v,w))/(2.0D0*r1)
-      Q2(u+1)=r1/2.0D0
-      Q2(v+1)=(RM(u,v)+RM(v,u))/(2.0D0*r1)
-      Q2(w+1)=(RM(w,u)+RM(u,w))/(2.0D0*r1)
+      Q2(1)=(RM(W,V)-RM(V,W))/(2.0D0*R1)
+      Q2(U+1)=R1/2.0D0
+      Q2(V+1)=(RM(U,V)+RM(V,U))/(2.0D0*R1)
+      Q2(W+1)=(RM(W,U)+RM(U,W))/(2.0D0*R1)
 
       DO I = 1, NATOMS/2
   
@@ -1319,7 +1319,7 @@
          THETA  = DSQRT(DOT_PRODUCT(P,P))
          THETAH = 0.5D0*THETA
          ST     = SIN(THETAH)
-!        WRITE(*,*) 'st=', THETAH, ST, P(:)
+!        WRITE(*,*) 'ST=', THETAH, ST, P(:)
          Q1(1)  = COS(THETAH)
          Q1(2)  = P(1)*ST/THETA
          Q1(3)  = P(2)*ST/THETA
@@ -1342,7 +1342,7 @@
          ENDIF
 
       ENDDO
-!      WRITE(*,'(A)') 'coords after rotation'
+!      WRITE(*,'(A)') 'COORDS AFTER ROTATION'
 !      WRITE(*,'(3F13.8)') COORDS(:)
 
       END SUBROUTINE RBNEWROTGEOMMYORIENT
@@ -1351,13 +1351,13 @@
 
 
 SUBROUTINE UNIAXGETPATHLENGTH(RA,RB,TEMP)
-use key, only : PYA1
-use commons, only : NATOMS
-implicit none
+USE KEY, ONLY : PYA1
+USE COMMONS, ONLY : NATOMS
+IMPLICIT NONE
 
-integer          :: NSIZE, J1, J2, J3, J4, NRBSITES
-double precision :: XA(9*NATOMS/2), XB(9*NATOMS/2), RA(3*NATOMS), RB(3*NATOMS), P(3), RM(3,3), RBSITE(3,3), TEMP
-double precision :: R(3)
+INTEGER          :: NSIZE, J1, J2, J3, J4, NRBSITES
+DOUBLE PRECISION :: XA(9*NATOMS/2), XB(9*NATOMS/2), RA(3*NATOMS), RB(3*NATOMS), P(3), RM(3,3), RBSITE(3,3), TEMP
+DOUBLE PRECISION :: R(3)
 
       NRBSITES = 3
       NSIZE = NRBSITES*NATOMS/2
@@ -1374,8 +1374,8 @@ double precision :: R(3)
 
 !      ALLOCATE(XA(3*NSIZE),XB(3*NSIZE))
 
-!      write(*,*) 'ra'
-!      write(*,*) ra(:)
+!      WRITE(*,*) 'RA'
+!      WRITE(*,*) RA(:)
 !     ----------------------------------------------------------------------------------------------
 !      CALL LWOTPGH(RB,VNEW,ENERGY,.TRUE.,.FALSE.)
 !      WRITE(*,*) ENERGY, SQRT(DOT_PRODUCT(VNEW(:),VNEW(:)))
@@ -1453,8 +1453,8 @@ END SUBROUTINE UNIAXGETPATHLENGTH
       ALLOCATE(XA(3*NSIZE),XB(3*NSIZE))
       ALLOCATE(XA1(3*NSIZE1),XB1(3*NSIZE1))
 
-!      write(*,*) 'ra'
-!      write(*,*) ra(:)
+!      WRITE(*,*) 'RA'
+!      WRITE(*,*) RA(:)
 !     ----------------------------------------------------------------------------------------------
 !      CALL LWOTPGH(RB,VNEW,ENERGY,.TRUE.,.FALSE.)
 !      WRITE(*,*) ENERGY, SQRT(DOT_PRODUCT(VNEW(:),VNEW(:)))
@@ -1589,7 +1589,7 @@ END SUBROUTINE UNIAXGETPATHLENGTH
 
       CALL DSYEV('V','U',4,QMAT,4,DIAG,TEMPA,9*NSIZE1,INFO)
 
-      IF (INFO /= 0) PRINT '(A,I6,A)','newmindist> WARNING - INFO=',INFO,' in DSYEV'
+      IF (INFO /= 0) PRINT '(A,I6,A)','NEWMINDIST> WARNING - INFO=',INFO,' IN DSYEV'
 
       MINV = 1.0D100
       DO J1 = 1,4
@@ -1602,13 +1602,13 @@ END SUBROUTINE UNIAXGETPATHLENGTH
          IF (ABS(MINV)< 1.0D-6) THEN
             MINV = 0.0D0
          ELSE
-            PRINT '(A,G20.10,A)','newmindist> WARNING MINV is ',MINV,' change to absolute value'
+            PRINT '(A,G20.10,A)','NEWMINDIST> WARNING MINV IS ',MINV,' CHANGE TO ABSOLUTE VALUE'
             MINV = -MINV
          ENDIF
       ENDIF
       DIST = SQRT(MINV)
 
-      PRINT '(A,G20.10,A,I6)','newmindist> minimum residual is ',DIAG(JMIN),' for eigenvector ',JMIN
+      PRINT '(A,G20.10,A,I6)','NEWMINDIST> MINIMUM RESIDUAL IS ',DIAG(JMIN),' FOR EIGENVECTOR ',JMIN
 
       Q2(1) = QMAT(1,JMIN); Q2(2) = QMAT(2,JMIN); Q2(3) = QMAT(3,JMIN); Q2(4) = QMAT(4,JMIN)
 
@@ -1688,7 +1688,7 @@ END SUBROUTINE UNIAXGETPATHLENGTH
 
       SUBROUTINE RBCOMMINDIST(RA,RB,NATOMS,DIST,RM,DEBUG)
 
-!     returns squared distance DIST
+!     RETURNS SQUARED DISTANCE DIST
 
       IMPLICIT NONE
 
@@ -1762,7 +1762,7 @@ END SUBROUTINE UNIAXGETPATHLENGTH
       QMAT(4,2) = QMAT(2,4); QMAT(4,3) = QMAT(3,4)
       CALL DSYEV('V','U',4,QMAT,4,DIAG,TEMPA,9*NATOMS,INFO)
 
-      IF (INFO /= 0) PRINT '(A,I6,A)','newmindist> WARNING - INFO=',INFO,' in DSYEV'
+      IF (INFO /= 0) PRINT '(A,I6,A)','NEWMINDIST> WARNING - INFO=',INFO,' IN DSYEV'
 
       MINV = 1.0D100
       DO J1 = 1,4
@@ -1775,13 +1775,13 @@ END SUBROUTINE UNIAXGETPATHLENGTH
          IF (ABS(MINV)< 1.0D-6) THEN
             MINV = 0.0D0
          ELSE
-            PRINT '(A,G20.10,A)','newmindist> WARNING MINV is ',MINV,' change to absolute value'
+            PRINT '(A,G20.10,A)','NEWMINDIST> WARNING MINV IS ',MINV,' CHANGE TO ABSOLUTE VALUE'
             MINV = -MINV
          ENDIF
       ENDIF
       DIST = MINV
 
-      IF (DEBUG) PRINT '(A,G20.10,A,I6)',' rbmindist2> minimum residual is ',DIAG(JMIN),' for eigenvector ',JMIN
+      IF (DEBUG) PRINT '(A,G20.10,A,I6)',' RBMINDIST2> MINIMUM RESIDUAL IS ',DIAG(JMIN),' FOR EIGENVECTOR ',JMIN
 
       Q2(1) = QMAT(1,JMIN); Q2(2) = QMAT(2,JMIN); Q2(3) = QMAT(3,JMIN); Q2(4) = QMAT(4,JMIN)
 

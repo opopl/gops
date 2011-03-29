@@ -1,22 +1,22 @@
 C
-C GPL License Info {{{
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C GPL LICENSE INFO {{{
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C }}}
 C
@@ -24,34 +24,34 @@ C     SORTS VECTOR OF NUCLEAR COORDINATES - TO CHECK FOR EQUIVALENCE
 C     OF TWO ORIENTATIONS - NEEDS Q VECTOR AND ATOMIC MASS VECTOR (ATMAS
 C
       SUBROUTINE SORTXYZ(XX,Y,NORD,TOL)
-! Doxygen {{{
-!> \name SORTXYZ
-!> \brief Sort vector of nuclear coordinates 
-!> \param[in] XX DP(3*NATOMS)  - input vector to be sorted
-!> \param Y  DP(3*NATOMS)      - output sorted vector
-!> \param NORD INT(2*NATOMS+1) - vector containing permutations 
-!> \param TOL DP - tolerance factor
+! DOXYGEN {{{
+!> \NAME SORTXYZ
+!> \BRIEF SORT VECTOR OF NUCLEAR COORDINATES 
+!> \PARAM[IN] XX DP(3*NATOMS)  - INPUT VECTOR TO BE SORTED
+!> \PARAM Y  DP(3*NATOMS)      - OUTPUT SORTED VECTOR
+!> \PARAM NORD INT(2*NATOMS+1) - VECTOR CONTAINING PERMUTATIONS 
+!> \PARAM TOL DP - TOLERANCE FACTOR
 ! }}}
-! Declarations {{{ 
+! DECLARATIONS {{{ 
       USE COMMONS
       IMPLICIT NONE
-! subroutine parameters  
+! SUBROUTINE PARAMETERS  
       DOUBLE PRECISION XX(3*NATOMS),Y(3*NATOMS),TOL
       INTEGER NORD(2*NATOMS+1)
-! local parameters 
+! LOCAL PARAMETERS 
 !      DOUBLE PRECISION X(3*NATOMS),XX(*),Y(*),TOL
 !      INTEGER I, J, JK, NORD(NATOMS), ILINE
       DOUBLE PRECISION X(3*NATOMS)
       INTEGER I, J, JK, ILINE
 ! }}}
-! Subroutine body {{{
+! SUBROUTINE BODY {{{
 C
       ILINE(J)=1+J/3
 C
-C     Sort on the X - if two X's are equivalent, sort on Y and so on.
-C     If the coordinate < the tolerance we should ignore it! However,
-C     if the tolerance is sloppy that can lead to the sorting ignoring
-C     genuine small differences between coordinates. Sigh. 
+C     SORT ON THE X - IF TWO X'S ARE EQUIVALENT, SORT ON Y AND SO ON.
+C     IF THE COORDINATE < THE TOLERANCE WE SHOULD IGNORE IT! HOWEVER,
+C     IF THE TOLERANCE IS SLOPPY THAT CAN LEAD TO THE SORTING IGNORING
+C     GENUINE SMALL DIFFERENCES BETWEEN COORDINATES. SIGH. 
 C
       DO I=1,3*NATOMS
          X(I)=XX(I)

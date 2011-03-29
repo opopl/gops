@@ -1,19 +1,19 @@
-!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
-!   This file is part of NEB module. NEB module is part of OPTIM.
+!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
+!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
 !
-!   OPTIM is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
+!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!   (AT YOUR OPTION) ANY LATER VERSION.
 !
-!   OPTIM is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
+!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 SUBROUTINE INTGRADLJ(ETOTAL,XYZ,GGG,IMGFREEZE,RMS,PEDGE)
 USE KEY, ONLY: FROZEN, FREEZE, DEBUG, FREEZENODEST, INTIMAGE, INTLJDEL, INTLJEPS
@@ -32,25 +32,25 @@ DOUBLE PRECISION VEC1(3), VEC2(3), VEC1M2(3), E1, E2, EINT, VDUM(3)
 LOGICAL IMGFREEZE(INTIMAGE), PEDGE
 DOUBLE PRECISION R1APR2BMR2AMR1BSQ, R1AMR1BSQ, R2AMR2BSQ, R1AMR1BDR2AMR2B, R1AMR1BDR2AMR2BSQ
 
-NLJINT(1:INTIMAGE+2)=0     ! number of energy contributions from internal minima
-! LJEINT(1:INTIMAGE+2)=0.0D0 ! energy contributions from internal minima
+NLJINT(1:INTIMAGE+2)=0     ! NUMBER OF ENERGY CONTRIBUTIONS FROM INTERNAL MINIMA
+! LJEINT(1:INTIMAGE+2)=0.0D0 ! ENERGY CONTRIBUTIONS FROM INTERNAL MINIMA
 GGG(1:NOPT*(INTIMAGE+2))=0.0D0
-ETOTAL=0.0D0 ! normal LJ energy summed over images
+ETOTAL=0.0D0 ! NORMAL LJ ENERGY SUMMED OVER IMAGES
 LPRINT=.FALSE.
 DCUT=0.1D0
 !
-! Energy and forces.
+! ENERGY AND FORCES.
 !
-! For J1 we consider the line segment between image J1-1 and J1.
-! There are INTIMAGE+1 line segments in total, with an energy contribution
-! and corresponding gradient terms for each. 
-! A and B refer to atoms, 1 and 2 to images J1-1 and J1 (or J1-2 and J1-1 below).
+! FOR J1 WE CONSIDER THE LINE SEGMENT BETWEEN IMAGE J1-1 AND J1.
+! THERE ARE INTIMAGE+1 LINE SEGMENTS IN TOTAL, WITH AN ENERGY CONTRIBUTION
+! AND CORRESPONDING GRADIENT TERMS FOR EACH. 
+! A AND B REFER TO ATOMS, 1 AND 2 TO IMAGES J1-1 AND J1 (OR J1-2 AND J1-1 BELOW).
 !
-! IMGFREEZE(1:INTIMAGE) refers to the images excluding end points!
+! IMGFREEZE(1:INTIMAGE) REFERS TO THE IMAGES EXCLUDING END POINTS!
 !
 DO J1=2,INTIMAGE+2
    GLOCAL(1:2*NOPT)=0.0D0
-   IF (FREEZENODEST) THEN ! IMGFREEZE is not allocated otherwise!
+   IF (FREEZENODEST) THEN ! IMGFREEZE IS NOT ALLOCATED OTHERWISE!
       IF (J1.EQ.2) THEN
          IF (IMGFREEZE(1)) CYCLE
       ELSE IF (J1.EQ.INTIMAGE+2) THEN
@@ -77,8 +77,8 @@ DO J1=2,INTIMAGE+2
          R1APR2BMR2AMR1BSQ=VEC1M2(1)**2+VEC1M2(2)**2+VEC1M2(3)**2
          NOINT=.TRUE.
          D1SQ=R1AX**2+R1AY**2+R1AZ**2+R1BX**2+R1BY**2+R1BZ**2-2*(R1AX*R1BX+R1AY*R1BY+R1AZ*R1BZ)
-         G1(1:3)=VEC1(1:3)/D1SQ ! this is actually derivative of D1 divided by an extra D1
-         IF (J1.GT.2) THEN ! images 1 and 2 correspond to J1-1 and J1
+         G1(1:3)=VEC1(1:3)/D1SQ ! THIS IS ACTUALLY DERIVATIVE OF D1 DIVIDED BY AN EXTRA D1
+         IF (J1.GT.2) THEN ! IMAGES 1 AND 2 CORRESPOND TO J1-1 AND J1
             R6=1.0D0/D1SQ**3
             GRAD(1:3)=-24.0D0*R6*(2.0D0*R6-1.0D0)*G1(1:3)
             ETOTAL=ETOTAL+4*R6*(R6-1.0D0)
@@ -87,7 +87,7 @@ DO J1=2,INTIMAGE+2
          ENDIF
          IF (R1APR2BMR2AMR1BSQ.NE.0.0D0) THEN
             COS2=(VEC1(1)*VEC1M2(1)+VEC1(2)*VEC1M2(2)+VEC1(3)*VEC1M2(3))/R1APR2BMR2AMR1BSQ
-            IF ((COS2.GT.0.0D0).AND.(COS2.LT.1.0D0)) THEN ! internal minimum
+            IF ((COS2.GT.0.0D0).AND.(COS2.LT.1.0D0)) THEN ! INTERNAL MINIMUM
                NOINT=.FALSE.
                R1AMR1BDR2AMR2B=VEC1(1)*VEC2(1)+VEC1(2)*VEC2(2)+VEC1(3)*VEC2(3)
                R1AMR1BDR2AMR2BSQ=R1AMR1BDR2AMR2B**2
@@ -115,10 +115,10 @@ DO J1=2,INTIMAGE+2
             ENDIF
          ENDIF
 !
-! terms for image J1
-! D1 is the distance for image 1 (R1..) J1-1
-! D2 is the distance for image 2 (R2..) J1
-! There are two terms for each image 2 <= J1 <= INTIMAGE+1
+! TERMS FOR IMAGE J1
+! D1 IS THE DISTANCE FOR IMAGE 1 (R1..) J1-1
+! D2 IS THE DISTANCE FOR IMAGE 2 (R2..) J1
+! THERE ARE TWO TERMS FOR EACH IMAGE 2 <= J1 <= INTIMAGE+1
 !
          IF (.NOT.NOINT) THEN
             DUMMY=INTLJEPS*((-D1+DI+INTLJDEL)*(-D2+DI+INTLJDEL)/DISQ**2)**2
@@ -139,14 +139,14 @@ DO J1=2,INTIMAGE+2
 !           NLJINT(J1-1)=NLJINT(J1-1)+1
 !           NLJINT(J1)=NLJINT(J1)+1
 !           IF (PEDGE.AND.(.NOT.EDGEINT(J1-1,J2,J3))) THEN
-!              PRINT '(A,I6,A,2I6,A)','edge ',J1-1,' atoms ',J2,J3,' changed from false to true'
-!              PRINT '(A,4G20.10)','D1,D2,DI,c2=',D1,D2,DI,COS2
+!              PRINT '(A,I6,A,2I6,A)','EDGE ',J1-1,' ATOMS ',J2,J3,' CHANGED FROM FALSE TO TRUE'
+!              PRINT '(A,4G20.10)','D1,D2,DI,C2=',D1,D2,DI,COS2
 !           ENDIF
 !           EDGEINT(J1-1,J2,J3)=.TRUE.
 !        ELSE
 !           IF (PEDGE.AND.EDGEINT(J1-1,J2,J3)) THEN
-!              PRINT '(A,I6,A,2I6,A)','edge ',J1-1,' atoms ',J2,J3,' changed from true to false'
-!              PRINT '(A,3G20.10)','D1SQ,DISQ,c2=',D1,DI,COS2
+!              PRINT '(A,I6,A,2I6,A)','EDGE ',J1-1,' ATOMS ',J2,J3,' CHANGED FROM TRUE TO FALSE'
+!              PRINT '(A,3G20.10)','D1SQ,DISQ,C2=',D1,DI,COS2
 !           ENDIF
 !           EDGEINT(J1-1,J2,J3)=.FALSE.
          ENDIF
@@ -155,7 +155,7 @@ DO J1=2,INTIMAGE+2
    GGG(NSHIFT+1:NSHIFT+2*NOPT)=GGG(NSHIFT+1:NSHIFT+2*NOPT)+GLOCAL(1:2*NOPT)
 ENDDO
 !
-! Set gradients on frozen atoms to zero.
+! SET GRADIENTS ON FROZEN ATOMS TO ZERO.
 !
 IF (FREEZE) THEN
    DO J1=2,INTIMAGE+1  
@@ -169,7 +169,7 @@ IF (FREEZE) THEN
    ENDDO
 ENDIF
 !
-! Set gradients to zero for start and finish images.
+! SET GRADIENTS TO ZERO FOR START AND FINISH IMAGES.
 !
 RMS=0.0D0
 RMSIMAGE(1:INTIMAGE+2)=0.0D0
@@ -178,7 +178,7 @@ DO J1=2,INTIMAGE+1
       RMSIMAGE(J1)=RMSIMAGE(J1)+GGG(NOPT*(J1-1)+J2)**2
    ENDDO
    RMS=RMS+RMSIMAGE(J1)
-!  PRINT '(A,I6,G20.10,I6)',' intgradlj> J1,square grad,int terms=',J1,RMSIMAGE(J1),NLJINT(J1)
+!  PRINT '(A,I6,G20.10,I6)',' INTGRADLJ> J1,SQUARE GRAD,INT TERMS=',J1,RMSIMAGE(J1),NLJINT(J1)
 ENDDO
 IF (INTIMAGE.GT.0) THEN
    GGG(1:NOPT)=0.0D0

@@ -1,17 +1,17 @@
-module hb3b_coef
-  implicit none
+MODULE HB3B_COEF
+  IMPLICIT NONE
 
-  ! global variable
-  integer,dimension(:,:),allocatable::conn
+  ! GLOBAL VARIABLE
+  INTEGER,DIMENSION(:,:),ALLOCATABLE::CONN
 
-  real,parameter::aukj=3.808798e-4
+  REAL,PARAMETER::AUKJ=3.808798E-4
 
-  ! Bowman's parameters, unpublished results.
-  real,parameter::para_a1=  578.1989081946 !kJ/mol
-  real,parameter::para_a2=  1.220088616116 !angstrom^-1
-  real,parameter::para_b1= -827.9746906000 !kJ/mol
-  real,parameter::para_b2=  1.363990629068 !angstrom^-1
-  real,parameter::para_c1=  1000.066749653 !kJ/mol
-  real,parameter::para_c2=  1.381253121492 !angstrom^-1
+  ! BOWMAN'S PARAMETERS, UNPUBLISHED RESULTS.
+  REAL,PARAMETER::PARA_A1=  578.1989081946 !KJ/MOL
+  REAL,PARAMETER::PARA_A2=  1.220088616116 !ANGSTROM^-1
+  REAL,PARAMETER::PARA_B1= -827.9746906000 !KJ/MOL
+  REAL,PARAMETER::PARA_B2=  1.363990629068 !ANGSTROM^-1
+  REAL,PARAMETER::PARA_C1=  1000.066749653 !KJ/MOL
+  REAL,PARAMETER::PARA_C2=  1.381253121492 !ANGSTROM^-1
 
-end module hb3b_coef
+END MODULE HB3B_COEF
