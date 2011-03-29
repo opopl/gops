@@ -20,7 +20,7 @@ C
 C***********************************************************************
 C
       SUBROUTINE ADM(Q)
-      use porfuncs
+      USE PORFUNCS
       USE COMMONS
       USE KEY
       IMPLICIT NONE

@@ -50,8 +50,8 @@
 #
 
 FC=$(FC90)
-KEYOBJS = key_output.o key_sqvv.o key_grad.o key_tau.o key_minimizer.o key_lbfgs.o 
-OBJS = nndata.o grad.o oldnebgradient.o lbfgs.o newneb.o output.o sqvv.o nnutils.o ntc.o key_neb.o tau.o unresnebbfgs.o \
+KEYOBJS = keyoutput.o keysqvv.o keygrad.o keytau.o keyminimizer.o keylbfgs.o 
+OBJS = nndata.o grad.o oldnebgradient.o lbfgs.o newneb.o output.o sqvv.o nnutils.o ntc.o keyneb.o tau.o unresnebbfgs.o \
 charutils.o linkedlist.o ${KEYOBJS}
 VPATH = ../:../CHARMM/
 LIBNAME = ../libnn.a
@@ -68,20 +68,20 @@ LIBNAME = ../libnn.a
 clean:
 	rm -f ${LIBNAME} ${OBJS} *.mod ifc?????? *.il *.stb *.o
 
-grad.o: key_grad.o key_tau.o nndata.o key_neb.o tau.o specialfuncts.o nnutils.o modunres.o key.o commons.o nndata.o key.o porfuncs.o nndata.o key_neb.o modunres.o key.o intcommons.o modcharmm.o
-key_grad.o: charutils.o
-key_lbfgs.o: charutils.o key.o
-key_minimizer.o:          charutils.o key_lbfgs.o key_sqvv.o
-key_neb.o: key.o key_grad.o key_output.o key_minimizer.o key_sqvv.o key_lbfgs.o key_tau.o charutils.o key.o
-key_sqvv.o: charutils.o
-lbfgs.o: key_minimizer.o key_lbfgs.o nndata.o key_neb.o nnutils.o grad.o output.o porfuncs.o modcharmm.o \
+grad.o: keygrad.o keytau.o nndata.o keyneb.o tau.o specialfuncts.o nnutils.o modunres.o key.o commons.o nndata.o key.o porfuncs.o nndata.o keyneb.o modunres.o key.o intcommons.o modcharmm.o
+keygrad.o: charutils.o
+keylbfgs.o: charutils.o key.o
+keyminimizer.o:          charutils.o keylbfgs.o keysqvv.o
+keyneb.o: key.o keygrad.o keyoutput.o keyminimizer.o keysqvv.o keylbfgs.o keytau.o charutils.o key.o
+keysqvv.o: charutils.o
+lbfgs.o: keyminimizer.o keylbfgs.o nndata.o keyneb.o nnutils.o grad.o output.o porfuncs.o modcharmm.o \
          key.o intcommons.o intcoords.o specialfuncts.o commons.o
-newneb.o: porfuncs.o nndata.o key_neb.o lbfgs.o output.o nnutils.o key.o growstring.o gsdata.o modguess.o modmec.o intcommons.o intcoords.o specialfuncts.o ntc.o amhglobals.o sqvv.o unresnebbfgs.o
-nnutils.o: nndata.o key_neb.o key.o nndata.o key_neb.o commons.o key.o nndata.o key_neb.o nndata.o \
-           specialfuncts.o key_neb.o key.o intcommons.o modcharmm.o modamber9.o porfuncs.o charutils.o amhglobals.o 
-oldnebgradient.o: key_grad.o nndata.o key_neb.o tau.o nnutils.o key.o commons.o 
-output.o: key.o gsdata.o key_output.o modcharmm.o nndata.o key_neb.o ntc.o charutils.o modguess.o modmec.o \
+newneb.o: porfuncs.o nndata.o keyneb.o lbfgs.o output.o nnutils.o key.o growstring.o gsdata.o modguess.o modmec.o intcommons.o intcoords.o specialfuncts.o ntc.o amhglobals.o sqvv.o unresnebbfgs.o
+nnutils.o: nndata.o keyneb.o key.o nndata.o keyneb.o commons.o key.o nndata.o keyneb.o nndata.o \
+           specialfuncts.o keyneb.o key.o intcommons.o modcharmm.o modamber9.o porfuncs.o charutils.o amhglobals.o 
+oldnebgradient.o: keygrad.o nndata.o keyneb.o tau.o nnutils.o key.o commons.o 
+output.o: key.o gsdata.o keyoutput.o modcharmm.o nndata.o keyneb.o ntc.o charutils.o modguess.o modmec.o \
           linkedlist.o efol.o intcommons.o commons.o nndata.o linkedlist.o
-sqvv.o: key_minimizer.o nndata.o key_sqvv.o key_neb.o grad.o nnutils.o charutils.o
-tau.o: nndata.o key_neb.o modunres.o key_tau.o key.o commons.o
-unresnebbfgs.o: key_minimizer.o key_lbfgs.o key_neb.o nndata.o nnutils.o grad.o output.o modunres.o porfuncs.o key.o
+sqvv.o: keyminimizer.o nndata.o keysqvv.o keyneb.o grad.o nnutils.o charutils.o
+tau.o: nndata.o keyneb.o modunres.o keytau.o key.o commons.o
+unresnebbfgs.o: keyminimizer.o keylbfgs.o keyneb.o nndata.o nnutils.o grad.o output.o modunres.o porfuncs.o key.o
