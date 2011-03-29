@@ -186,6 +186,5 @@ ljpshift.o: key.o modhess.o
 c60p.o: modhess.o
 intlbfgslj.o: commons.o efol.o key.o porfuncs.o
 g2special.o: key.o modhess.o porfuncs.o
-main.o: commons.o key.o modamber9.o porfuncs.o
 guesspath.o: key.o modcharmm.o modguess.o modunres.o porfuncs.o
 pyg.o: commons.o key.o modhess.o
