@@ -18,8 +18,8 @@
         DOUBLE PRECISION FUNCTION RHO_POT(IPOT,R)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
 	DOUBLE PRECISION RC
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H' 
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h' 
         COMMON /PARAM_CUT_OFF/RC	
 	INTEGER IPOT		
 	DOUBLE PRECISION  R
@@ -57,8 +57,8 @@
        DOUBLE PRECISION FUNCTION RHO_POT_D(IPOT,R)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)  
         DOUBLE PRECISION RC     
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H' 
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h' 
 	COMMON /PARAM_CUT_OFF/RC
 	DOUBLE PRECISION R		
 	INTEGER IPOT	      
@@ -103,8 +103,8 @@
         DOUBLE PRECISION  FUNCTION RHO_POT_DD(IPOT,R)
 	IMPLICIT  DOUBLE PRECISION(A-H,O-Z)  
 	DOUBLE PRECISION RC      
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H' 
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h' 
 	COMMON /PARAM_CUT_OFF/RC	
 	DOUBLE PRECISION R		
 	INTEGER IPOT	      
@@ -151,8 +151,8 @@
         DOUBLE PRECISION FUNCTION VPOT(IPOT,R)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
 	DOUBLE PRECISION RC
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H' 
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h' 
 	COMMON /PARAM_CUT_OFF/RC	
 	INTEGER IPOT
 	DOUBLE PRECISION MFUNC,R	
@@ -237,8 +237,8 @@
 !****|******************************************************************|
         DOUBLE PRECISION FUNCTION VPOT_D(IPOT,R)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H'	
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h'	
 	DOUBLE PRECISION RC
 	COMMON /PARAM_CUT_OFF/RC	 
 	DOUBLE PRECISION MFUNC,MFUNC_D,R		
@@ -332,8 +332,8 @@
 !****|******************************************************************|
         DOUBLE PRECISION FUNCTION VPOT_DD(IPOT,R)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H' 
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h' 
 	DOUBLE PRECISION RC
 	COMMON /PARAM_CUT_OFF/RC	
 	DOUBLE PRECISION MFUNC,MFUNC_D,MFUNC_DD,R		
@@ -483,9 +483,9 @@
 	INTEGER IPOT
 	DOUBLE PRECISION RC
 	COMMON /PARAM_CUT_OFF/RC	
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H'
-	INCLUDE 'ACKLAND_MENDELEV_FE.H'	
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h'
+	include 'ackland_mendelev_fe.h'	
 
 		
 	  IF(IPOT.EQ.1.OR.IPOT.EQ.2.OR.IPOT.EQ.3) THEN	
@@ -537,9 +537,9 @@
 	DOUBLE PRECISION X
 	DOUBLE PRECISION RC
 	COMMON /PARAM_CUT_OFF/RC	
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H'
-	INCLUDE 'ACKLAND_MENDELEV_FE.H'
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h'
+	include 'ackland_mendelev_fe.h'
 	
           
 	  IF(IPOT.EQ.1.OR.IPOT.EQ.2.OR.IPOT.EQ.3) THEN	
@@ -600,12 +600,12 @@
 !****|******************************************************************|	
         DOUBLE PRECISION FUNCTION FEMBED_DD(IPOT,X)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H'
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h'
 	DOUBLE PRECISION RC
 	COMMON /PARAM_CUT_OFF/RC	
 	DOUBLE PRECISION X,DENOM
-	INCLUDE 'ACKLAND_MENDELEV_FE.H'
+	include 'ackland_mendelev_fe.h'
           
 	  IF(IPOT.EQ.1.OR.IPOT.EQ.2.OR.IPOT.EQ.3) THEN	
              FEMBED_DD=ALPHA*(ALPHA-1)*X**(ALPHA-2.0D0)
@@ -734,7 +734,7 @@
 !****|******************************************************************|
        DOUBLE PRECISION FUNCTION FPSI(X)
        IMPLICIT DOUBLE PRECISION (A-H,O-Z) 
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
+       include 'ackland_mendelev_fe.h'
        
        TEMP = 0.D0
        DO I=1,NPSI
@@ -746,7 +746,7 @@
 !****|******************************************************************|
        DOUBLE PRECISION FUNCTION FPSI_D(X)
        IMPLICIT DOUBLE PRECISION (A-H,O-Z) 
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
+       include 'ackland_mendelev_fe.h'
        
        TEMP = 0.D0
        DO I=1,NPSI
@@ -758,7 +758,7 @@
 !****|******************************************************************|
        DOUBLE PRECISION FUNCTION FPSI_DD(X)
        IMPLICIT DOUBLE PRECISION (A-H,O-Z) 
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
+       include 'ackland_mendelev_fe.h'
        
        TEMP = 0.D0
        DO I=1,NPSI
@@ -771,7 +771,7 @@
 !****|******************************************************************|
        DOUBLE PRECISION FUNCTION FVARPHI (X)
        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
+       include 'ackland_mendelev_fe.h'
         
 	 THREEI   =1.D0/3.D0      
         ZNFE2   = ZNFE*ZNFE
@@ -798,7 +798,7 @@
 !****|******************************************************************|
        DOUBLE PRECISION FUNCTION FVARPHI_D (X)
        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
+       include 'ackland_mendelev_fe.h'
          THREEI   = 1.D0/3.D0
         ZNFE2   = ZNFE*ZNFE
        AU_TO_EV = HART
@@ -826,7 +826,7 @@
 !****|******************************************************************|
        DOUBLE PRECISION FUNCTION FVARPHI_DD (X)
        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
+       include 'ackland_mendelev_fe.h'
          THREEI   = 1.D0/3.D0
         ZNFE2   = ZNFE*ZNFE
        AU_TO_EV = HART
