@@ -29,8 +29,8 @@ include $(PPATH)/make.inc
 
 # object files from source files generated during compilation
 
-OBJSrt := porfuncs.o display_version.o
-OBJS+= $(OBJSrt)
+#OBJSrt := porfuncs.o display_version.o
+#OBJS+= $(OBJSrt)
 
 VPATH = .:AMH:NEB:CONNECT:.
 

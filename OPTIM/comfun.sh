@@ -16,6 +16,6 @@ files=( diis.f intbfgsts.f unresoptim.f )
 for file in ${files[@]}; do
 for func in ${funcs[@]}; do
 	echo $file $func
-	cat $file | sed "s/^[ \t]*\(CALL\)[ \t]*\($func\)/!\1 \2/" > n; mv n $file
+	cat $file | sed "s/^.*[ ]+\(CALL\)[ \t]*\($func\)/!\1 \2/" > n; mv n $file
 done
 done
