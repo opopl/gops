@@ -16,4 +16,9 @@ include $(INCPATH)/mkf
 
 $(PROG): $(LIBS)
 
+libamh.a: SAT-Ghost
+	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" 
+
+libamh.a: amhglobals.o
+
 include deps

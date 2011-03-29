@@ -28,4 +28,4 @@ RANLIB = ranlib
 #  machine-specific, optimized BLAS library should be used whenever
 #  possible.)
 #
-AMHLIB = ~/svn/GMIN/source/libamh.a
+AMHLIB = ../libamh.a
