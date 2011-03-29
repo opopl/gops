@@ -41,14 +41,14 @@ LIBS = -lnn  -lnc $(LLIBS) -lnc
 include $(INCPATH)/targets
 include $(INCPATH)/mkf
 
+$(PROG): libnn.a libnc.a $(LLIBS)
+
 libnn.a: SAT-Ghost
 	cd NEB; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}"
 libnc.a: SAT-Ghost
 	cd CONNECT; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}"
 libamh.a: SAT-Ghost
 	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" 
-
-$(PROG): libnn.a libnc.a $(LLIBS)
 
 libnn.a: modcharmm.o key.o commons.o modunres.o porfuncs.o modmec.o modguess.o efol.o growstring.o gsdata.o intcommons.o intcoords.o amhglobals.o 
 libnc.a: libnn.a key.o syminf.o modhess.o amhglobals.o

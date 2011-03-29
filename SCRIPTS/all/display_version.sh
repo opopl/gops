@@ -70,7 +70,7 @@ $w0 "Compiled by $USER@$HOSTNAME on ` uname -o` ` uname -m`"
 $w0
 $w0 "Compiler name:  $fc_full_name"
 $w0 "Compiler executable:  $fc_exec"
-$w0 "Compiler flags: $fflags"
+!$w0 "Compiler flags: $fflags"
 $w0 "Command-line options passed to makefile: $make_opts "
 EOF
 

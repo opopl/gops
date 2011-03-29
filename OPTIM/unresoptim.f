@@ -24,85 +24,85 @@ C
       INTEGER I1
 
       ALLOCATE(ATMASS(NATOMS))
-      DO I1=1,nres
+      DO I1=1,NRES
          ZSYM(2*I1-1)='C'
          ZSYM(2*I1)='C'
          ATMASS(2*I1-1)=MASSES(1)
-         ATMASS(2*I1)=MASSES(itype(I1)+1)
+         ATMASS(2*I1)=MASSES(ITYPE(I1)+1)
       ENDDO
-C jmc make a masses file for pathsample...
-c     OPEN (UNIT=78,FILE='mass',STATUS='UNKNOWN')
-c     DO I1=1,nres
-c        WRITE(78,'(A3,F5.1)') ZSYM(2*I1-1),ATMASS(2*I1-1)
-c        WRITE(78,'(A3,F5.1)') ZSYM(2*I1),ATMASS(2*I1)
-c     END DO
-c     CLOSE (UNIT=78)
+C JMC MAKE A MASSES FILE FOR PATHSAMPLE...
+C     OPEN (UNIT=78,FILE='MASS',STATUS='UNKNOWN')
+C     DO I1=1,NRES
+C        WRITE(78,'(A3,F5.1)') ZSYM(2*I1-1),ATMASS(2*I1-1)
+C        WRITE(78,'(A3,F5.1)') ZSYM(2*I1),ATMASS(2*I1)
+C     END DO
+C     CLOSE (UNIT=78)
  
       RETURN
       END
 
 
-      SUBROUTINE UENERGY(X,GRAD,etot,GRADT,SECT)
+      SUBROUTINE UENERGY(X,GRAD,ETOT,GRADT,SECT)
       USE COMMONS
       USE MODUNRES
       IMPLICIT NONE
 
       DOUBLE PRECISION GRAD(3*NATOMS), X(3*NATOMS)
-      REAL*8 evdw,evdw1,evdw2,ees,ebe,esc,etors,ehpb,edihcnstr,ecorr,etot
+      REAL*8 EVDW,EVDW1,EVDW2,EES,EBE,ESC,ETORS,EHPB,EDIHCNSTR,ECORR,ETOT
       LOGICAL GRADT,SECT
-      INTEGER icall
-      common /srutu/ icall
+      INTEGER ICALL
+      COMMON /SRUTU/ ICALL
 
-      nfl=0
-      icg=1
-      icall=1
+      NFL=0
+      ICG=1
+      ICALL=1
 
-      CALL zerograd
-      CALL etotal(evdw,evdw1,evdw2,ees,ebe,esc,etors,ehpb,edihcnstr,ecorr,etot)
+      CALL ZEROGRAD
+      CALL ETOTAL(EVDW,EVDW1,EVDW2,EES,EBE,ESC,ETORS,EHPB,EDIHCNSTR,ECORR,ETOT)
 
       CALL INTGRAD(GRAD)
-C jmc INTGRAD takes grad in 'carts' (i.e. in DC,DX: Ca-Ca and sc-sc vectors) and converts 
-C it to a gradient in internals, which is passed back to POTENTIAL etc.
+C JMC INTGRAD TAKES GRAD IN 'CARTS' (I.E. IN DC,DX: CA-CA AND SC-SC VECTORS) AND CONVERTS 
+C IT TO A GRADIENT IN INTERNALS, WHICH IS PASSED BACK TO POTENTIAL ETC.
 
-C jmc testing stuff!!!
-C     CALL zerograd
-C     CALL check_cartgrad
-C     CALL check_ecart
-C     CALL check_eint
+C JMC TESTING STUFF!!!
+C     CALL ZEROGRAD
+C     CALL CHECK_CARTGRAD
+C     CALL CHECK_ECART
+C     CALL CHECK_EINT
 
-C     PRINT *,'UNRES energy :'
-C     PRINT *,etot
+C     PRINT *,'UNRES ENERGY :'
+C     PRINT *,ETOT
 
-C     CALL cartprint
-C     CALL int_from_cart(.true.,.true.)
+C     CALL CARTPRINT
+C     CALL INT_FROM_CART(.TRUE.,.TRUE.)
 
       RETURN
       END SUBROUTINE UENERGY
 
-      SUBROUTINE INTGRAD(gint)
+      SUBROUTINE INTGRAD(GINT)
       USE COMMONS
       USE MODUNRES
-      IMPLICIT NONE ! note not present in UNOPTIM.2.3
+      IMPLICIT NONE ! NOTE NOT PRESENT IN UNOPTIM.2.3
 
       DOUBLE PRECISION X(NINTS),G(NINTS)
-      INTEGER uiparm(1),icall,nf
+      INTEGER UIPARM(1),ICALL,NF
       DOUBLE PRECISION URPARM(1)
-      EXTERNAL fdum
+      EXTERNAL FDUM
       DOUBLE PRECISION GINT(3*NATOMS)
       INTEGER J1
-      COMMON /srutu/ icall
+      COMMON /SRUTU/ ICALL
 
-      call geom_to_var(nvaru,x)
-C     call var_to_geom(nvaru,x)
-C     call chainbuild
+      CALL GEOM_TO_VAR(NVARU,X)
+C     CALL VAR_TO_GEOM(NVARU,X)
+C     CALL CHAINBUILD
 
-      nf=1
-      nfl=3
-      call gradient(nvaru,x,nf,g,uiparm,urparm,fdum)
+      NF=1
+      NFL=3
+      CALL GRADIENT(NVARU,X,NF,G,UIPARM,URPARM,FDUM)
 
-      gint=0.0D0
+      GINT=0.0D0
 
-      gint(1:nvaru)=g(1:nvaru)
+      GINT(1:NVARU)=G(1:NVARU)
 
       RETURN
       END SUBROUTINE INTGRAD
@@ -117,32 +117,32 @@ C     call chainbuild
       DC=0.0D0
       DC_NORM=0.0D0
 
-      DO J1=1,nres-1
-         DC(1,J1)=c(1,J1+1)-c(1,J1)
-         DC(2,J1)=c(2,J1+1)-c(2,J1)
-         DC(3,J1)=c(3,J1+1)-c(3,J1)
-         DC_NORM(1,J1)=DC(1,J1)/vbl
-         DC_NORM(2,J1)=DC(2,J1)/vbl
-         DC_NORM(3,J1)=DC(3,J1)/vbl
+      DO J1=1,NRES-1
+         DC(1,J1)=C(1,J1+1)-C(1,J1)
+         DC(2,J1)=C(2,J1+1)-C(2,J1)
+         DC(3,J1)=C(3,J1+1)-C(3,J1)
+         DC_NORM(1,J1)=DC(1,J1)/VBL
+         DC_NORM(2,J1)=DC(2,J1)/VBL
+         DC_NORM(3,J1)=DC(3,J1)/VBL
 C        PRINT *,MYDC(1,J1)/DC(1,J1),MYDC(2,J1)/DC(2,J1),MYDC(3,J1)/DC(3,J1)
-C        PRINT *,MYDCNORM(1,J1)/dc_norm(1,J1),MYDCNORM(2,J1)/dc_norm(2,J1),MYDCNORM(3,J1)/dc_norm(3,J1)
+C        PRINT *,MYDCNORM(1,J1)/DC_NORM(1,J1),MYDCNORM(2,J1)/DC_NORM(2,J1),MYDCNORM(3,J1)/DC_NORM(3,J1)
       END DO
 
-      DO J1=nres+1,2*nres
-         DC(1,J1)=c(1,J1)-c(1,J1-nres)
-         DC(2,J1)=c(2,J1)-c(2,J1-nres)
-         DC(3,J1)=c(3,J1)-c(3,J1-nres)
-         IF (itype(J1-nres).EQ.10) THEN   ! i.e. glycine
+      DO J1=NRES+1,2*NRES
+         DC(1,J1)=C(1,J1)-C(1,J1-NRES)
+         DC(2,J1)=C(2,J1)-C(2,J1-NRES)
+         DC(3,J1)=C(3,J1)-C(3,J1-NRES)
+         IF (ITYPE(J1-NRES).EQ.10) THEN   ! I.E. GLYCINE
             DC_NORM(1,J1)=DC(1,J1)
             DC_NORM(2,J1)=DC(2,J1)
             DC_NORM(3,J1)=DC(3,J1)
          ELSE
-            DC_NORM(1,J1)=DC(1,J1)/dsc(itype(J1-nres))
-            DC_NORM(2,J1)=DC(2,J1)/dsc(itype(J1-nres))
-            DC_NORM(3,J1)=DC(3,J1)/dsc(itype(J1-nres))
+            DC_NORM(1,J1)=DC(1,J1)/DSC(ITYPE(J1-NRES))
+            DC_NORM(2,J1)=DC(2,J1)/DSC(ITYPE(J1-NRES))
+            DC_NORM(3,J1)=DC(3,J1)/DSC(ITYPE(J1-NRES))
          ENDIF
 C        PRINT *,MYDC(1,J1)/DC(1,J1),MYDC(2,J1)/DC(2,J1),MYDC(3,J1)/DC(3,J1)
-C        PRINT *,MYDCNORM(1,J1)/dc_norm(1,J1),MYDCNORM(2,J1)/dc_norm(2,J1),MYDCNORM(3,J1)/dc_norm(3,J1)
+C        PRINT *,MYDCNORM(1,J1)/DC_NORM(1,J1),MYDCNORM(2,J1)/DC_NORM(2,J1),MYDCNORM(3,J1)/DC_NORM(3,J1)
       END DO
  
       RETURN

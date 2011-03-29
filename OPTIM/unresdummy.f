@@ -47,7 +47,7 @@ C
       RETURN
       END SUBROUTINE UPDATEDC
 
-      SUBROUTINE chainbuild
+      SUBROUTINE CHAINBUILD
       IMPLICIT NONE
 
       PRINT*,'ERROR - this dummy routine should never be called - wrong executable?'
@@ -56,7 +56,7 @@ C
       RETURN
       END
 
-      SUBROUTINE int_from_cart(DUM1,DUM2)
+      SUBROUTINE INT_FROM_CART(DUM1,DUM2)
       IMPLICIT NONE
       LOGICAL DUM1,DUM2
 
@@ -66,7 +66,7 @@ C
       RETURN
       END
 
-      SUBROUTINE geom_to_var(DUM1,DUM2)
+      SUBROUTINE GEOM_TO_VAR(DUM1,DUM2)
       IMPLICIT NONE
       INTEGER DUM1
       DOUBLE PRECISION DUM2(DUM1)
@@ -77,7 +77,7 @@ C
       RETURN
       END
 
-      SUBROUTINE var_to_geom(DUM1,DUM2)
+      SUBROUTINE VAR_TO_GEOM(DUM1,DUM2)
       IMPLICIT NONE
       INTEGER DUM1
       DOUBLE PRECISION DUM2(DUM1)

@@ -545,6 +545,7 @@ C
 C jmc I don't really use this - haven't tested it yet...
       SUBROUTINE UNRESGUESSMINSEC(Q,PTEST,TWISTTYPE,NGUESS)
       USE VARS
+      USE COMMONS
       USE KEY
       USE MODTWOEND
       USE MODUNRES

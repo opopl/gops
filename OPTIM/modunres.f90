@@ -20,78 +20,78 @@ MODULE MODUNRES
    IMPLICIT NONE
    SAVE
 
-! jmc unres related keywords
+! JMC UNRES RELATED KEYWORDS
 
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: UREFCOORD,UREFPPSANGLE ! STORE REFERENCE CARTESIANS AND INTERNALS
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: INTSTEP ! INTERNAL COORDINATE STEP VECTOR OFF TS
-! these 2 lines are for use with CONSEC (surprisingly enough) keyword to interpolate internal coords over a section of the 
-! molecule only (selected a/c to residue numbers and stored in [start/end]res() as appropriate.)
+! THESE 2 LINES ARE FOR USE WITH CONSEC (SURPRISINGLY ENOUGH) KEYWORD TO INTERPOLATE INTERNAL COORDS OVER A SECTION OF THE 
+! MOLECULE ONLY (SELECTED A/C TO RESIDUE NUMBERS AND STORED IN [START/END]RES() AS APPROPRIATE.)
       LOGICAL :: CONSECT
       INTEGER :: STARTRES(10),ENDRES(10),NUMSEC
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: MYQMINSAVE
       INTEGER COUNTER
 
-! jmc unres.h
-! added COMMON /interact/ to know itype()
+! JMC UNRES.H
+! ADDED COMMON /INTERACT/ TO KNOW ITYPE()
 
-      INTEGER :: UNmaxres, UNmaxres2, maxdim, maxvar, ntyp, ntyp1
-      PARAMETER (UNmaxres=100,UNmaxres2=2*UNmaxres,maxdim=(UNmaxres-1)*(UNmaxres-2)/2,maxvar=4*UNmaxres)
-      PARAMETER (ntyp=20,ntyp1=ntyp+1)
+      INTEGER :: UNMAXRES, UNMAXRES2, MAXDIM, MAXVAR, NTYP, NTYP1
+      PARAMETER (UNMAXRES=100,UNMAXRES2=2*UNMAXRES,MAXDIM=(UNMAXRES-1)*(UNMAXRES-2)/2,MAXVAR=4*UNMAXRES)
+      PARAMETER (NTYP=20,NTYP1=NTYP+1)
 
-      INTEGER :: nres,nres0,ialph,ivar,ntheta,nphi,nside,nvaru,nfl,icg
+      INTEGER :: NRES,NRES0,IALPH,IVAR,NTHETA,NPHI,NSIDE,NVARU,NFL,ICG
       DOUBLE PRECISION :: THETA,PHI,ALPH,OMEG
       DOUBLE PRECISION :: C,DC,XLOC,XROT,DC_NORM, &
-     &                    dcdv,dxdv,dxds,gradx,gradc,gvdwc,gelc,gradx_scp, &
-     &                    gvdwc_scp,ghpbx,ghpbc,gloc,gradcorr,gradxorr,gvdwx
+     &                    DCDV,DXDV,DXDS,GRADX,GRADC,GVDWC,GELC,GRADX_SCP, &
+     &                    GVDWC_SCP,GHPBX,GHPBC,GLOC,GRADCORR,GRADXORR,GVDWX
 
-      COMMON /chain/ c(3,UNmaxres2+2),dc(3,UNmaxres2),xloc(3,UNmaxres), &
-     & xrot(3,UNmaxres),dc_norm(3,UNmaxres2),nres,nres0
+      COMMON /CHAIN/ C(3,UNMAXRES2+2),DC(3,UNMAXRES2),XLOC(3,UNMAXRES), &
+     & XROT(3,UNMAXRES),DC_NORM(3,UNMAXRES2),NRES,NRES0
 
       DOUBLE PRECISION :: DSC,VBL,VBLINV,VBLINV2,VBL_CIS,VBL0
-      COMMON /sclocal/ dsc(ntyp1)
-      COMMON /peptbond/ vbl,vblinv,vblinv2,vbl_cis,vbl0
+      COMMON /SCLOCAL/ DSC(NTYP1)
+      COMMON /PEPTBOND/ VBL,VBLINV,VBLINV2,VBL_CIS,VBL0
 
-      COMMON /var/ theta(UNmaxres),phi(UNmaxres),alph(UNmaxres),omeg(UNmaxres), &
-     &          ialph(UNmaxres,2),ivar(4*UNmaxres2),ntheta,nphi,nside,nvaru
+      COMMON /VAR/ THETA(UNMAXRES),PHI(UNMAXRES),ALPH(UNMAXRES),OMEG(UNMAXRES), &
+     &          IALPH(UNMAXRES,2),IVAR(4*UNMAXRES2),NTHETA,NPHI,NSIDE,NVARU
 
-      COMMON /derivat/ dcdv(6,maxdim),dxdv(6,maxdim),dxds(6,UNmaxres), &
-     &                 gradx(3,UNmaxres,2),gradc(3,UNmaxres,2),gvdwx(3,UNmaxres), &
-     &                 gvdwc(3,UNmaxres),gelc(3,UNmaxres),gradx_scp(3,UNmaxres), &
-     &                 gvdwc_scp(3,UNmaxres),ghpbx(3,UNmaxres),ghpbc(3,UNmaxres), &
-     &                 gloc(maxvar,2),gradcorr(3,UNmaxres),gradxorr(3,UNmaxres),nfl,icg
+      COMMON /DERIVAT/ DCDV(6,MAXDIM),DXDV(6,MAXDIM),DXDS(6,UNMAXRES), &
+     &                 GRADX(3,UNMAXRES,2),GRADC(3,UNMAXRES,2),GVDWX(3,UNMAXRES), &
+     &                 GVDWC(3,UNMAXRES),GELC(3,UNMAXRES),GRADX_SCP(3,UNMAXRES), &
+     &                 GVDWC_SCP(3,UNMAXRES),GHPBX(3,UNMAXRES),GHPBC(3,UNMAXRES), &
+     &                 GLOC(MAXVAR,2),GRADCORR(3,UNMAXRES),GRADXORR(3,UNMAXRES),NFL,ICG
 
-      CHARACTER(LEN=3) :: restyp
-      CHARACTER(LEN=1) :: onelet
-      COMMON /names/ restyp(ntyp+1),onelet(ntyp+1)
+      CHARACTER(LEN=3) :: RESTYP
+      CHARACTER(LEN=1) :: ONELET
+      COMMON /NAMES/ RESTYP(NTYP+1),ONELET(NTYP+1)
 
-      INTEGER :: nnt,nct,nint_gr,istart,iend,itype,maxint_gr,expon,expon2, &
-     &           itel,itypro,ielstart,ielend,nscp_gr,iscpstart,iscpend,iatsc_s, &
-     &           iatsc_e,iatel_s,iatel_e,iatscp_s,iatscp_e,ispp,iscp
-      PARAMETER (maxint_gr=2)
+      INTEGER :: NNT,NCT,NINT_GR,ISTART,IEND,ITYPE,MAXINT_GR,EXPON,EXPON2, &
+     &           ITEL,ITYPRO,IELSTART,IELEND,NSCP_GR,ISCPSTART,ISCPEND,IATSC_S, &
+     &           IATSC_E,IATEL_S,IATEL_E,IATSCP_S,IATSCP_E,ISPP,ISCP
+      PARAMETER (MAXINT_GR=2)
       DOUBLE PRECISION :: AA,BB,AUGM,AAD,BAD,APPU,BPP,AEL6,AEL3
 
-      COMMON /interact/aa(ntyp,ntyp),bb(ntyp,ntyp),augm(ntyp,ntyp), &
-     & aad(ntyp,2),bad(ntyp,2),appu(2,2),bpp(2,2),ael6(2,2),ael3(2,2), &
-     & expon,expon2,nnt,nct,nint_gr(UNmaxres),istart(UNmaxres,maxint_gr), &
-     & iend(UNmaxres,maxint_gr),itype(UNmaxres),itel(UNmaxres),itypro, &
-     & ielstart(UNmaxres),ielend(UNmaxres),nscp_gr(UNmaxres), &
-     & iscpstart(UNmaxres,maxint_gr),iscpend(UNmaxres,maxint_gr), &
-     & iatsc_s,iatsc_e,iatel_s,iatel_e,iatscp_s,iatscp_e,ispp,iscp
+      COMMON /INTERACT/AA(NTYP,NTYP),BB(NTYP,NTYP),AUGM(NTYP,NTYP), &
+     & AAD(NTYP,2),BAD(NTYP,2),APPU(2,2),BPP(2,2),AEL6(2,2),AEL3(2,2), &
+     & EXPON,EXPON2,NNT,NCT,NINT_GR(UNMAXRES),ISTART(UNMAXRES,MAXINT_GR), &
+     & IEND(UNMAXRES,MAXINT_GR),ITYPE(UNMAXRES),ITEL(UNMAXRES),ITYPRO, &
+     & IELSTART(UNMAXRES),IELEND(UNMAXRES),NSCP_GR(UNMAXRES), &
+     & ISCPSTART(UNMAXRES,MAXINT_GR),ISCPEND(UNMAXRES,MAXINT_GR), &
+     & IATSC_S,IATSC_E,IATEL_S,IATEL_E,IATSCP_S,IATSCP_E,ISPP,ISCP
 
 !     INTEGER LTM(UNMAXRES,200)
 !     COMMON /RESIDINFO/ LTM
 
-! mass info for Calpha, 'D' capping group (gly) and for the side chains.
-! Side chain masses are the sums of the atomic masses.
+! MASS INFO FOR CALPHA, 'D' CAPPING GROUP (GLY) AND FOR THE SIDE CHAINS.
+! SIDE CHAIN MASSES ARE THE SUMS OF THE ATOMIC MASSES.
       DOUBLE PRECISION :: MASSES(NTYP+2)
-      COMMON /unresmass/ MASSES
+      COMMON /UNRESMASS/ MASSES
 
-! Values set in initialize_p.F via block data.
-! order is (following unres' restyp (in initialize_p.F):
+! VALUES SET IN INITIALIZE_P.F VIA BLOCK DATA.
+! ORDER IS (FOLLOWING UNRES' RESTYP (IN INITIALIZE_P.F):
 ! C, CYS, MET , PHE , ILE , LEU , VAL , TRP , TYR , ALA , GLY , THR ,
 ! SER , GLN , ASN , GLU , ASP , HIS , ARG , LYS , PRO , D 
-! Data from http://www.pharmacy.purdue.edu/~mcmp304/AATutorial/
-! all at physiological pH, therefore arg,asp,glu,lys are charged.
+! DATA FROM HTTP://WWW.PHARMACY.PURDUE.EDU/~MCMP304/AATUTORIAL/
+! ALL AT PHYSIOLOGICAL PH, THEREFORE ARG,ASP,GLU,LYS ARE CHARGED.
 !     MASSES(1)=12.01
 !     MASSES(2)=47.1
 !     MASSES(3)=75.1
