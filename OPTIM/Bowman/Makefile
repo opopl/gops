@@ -4,14 +4,7 @@
 
 vpath %.f90 src
 
-OBJ := \
-bowman3b.o\
-hb3b_coef.o\
-hb3b.o\
-p12body.o\
-pes_shell.o\
-bowmanwater.o\
-
+OBJ := bowman3b.o hb3b_coef.o hb3b.o p12body.o pes_shell.o bowmanwater.o 
 
 # Targets:
 .PHONY : clean 

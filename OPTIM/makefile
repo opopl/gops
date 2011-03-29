@@ -20,44 +20,26 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # }}}
 
-# Definitions {{{
 #
 
-ROOT_PATH=$(PWD)/../
-INC_PATH=$(ROOT_PATH)/INCLUDE/
+#ROOTPATH=$(PWD)/../
 
-PROGNAME=OPTIM
-GENFFILES = porfuncs.f90 header.f90
-
-include $(INC_PATH)/def
-
-# }}}
-
-# Object files {{{
-
-ALLSOURCE := $(wildcard *.f) $(wildcard *.f90) $(wildcard *.F)
-NOTUSEDSOURCE=
-
-SOURCE=$(filter-out $(NOTUSEDSOURCE),$(ALLSOURCE))
-OBJS := $(patsubst %.F,%.o,$(patsubst %.f,%.o,$(patsubst %.f90,%.o,$(SOURCE))))
+PPATH=$(PWD)
+include $(PPATH)/make.inc
 
 # object files from source files generated during compilation
 
 OBJSrt := porfuncs.o display_version.o
 OBJS+= $(OBJSrt)
 
-AMHDUM = amhdummy.o
 VPATH = .:AMH:NEB:CONNECT:.
-
-# }}}
 
 LDFLAGS = -L.
 
-#LIBS = -lnn  -lnc libmyblas.a libmylapack.a libmyblas.a libmyblas.a -lnc
 LIBS = -lnn  -lnc $(LLIBS) -lnc
 
-include $(INC_PATH)/targets
-include $(INC_PATH)/mkf
+include $(INCPATH)/targets
+include $(INCPATH)/mkf
 
 libnn.a: SAT-Ghost
 	cd NEB; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}"

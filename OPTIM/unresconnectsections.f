@@ -21,6 +21,7 @@ C and a stored reference array (fin) based on some angle tolerance (see below)
 C
       SUBROUTINE UNRESCALCDIHESEC(DIHE,ALLANG,QLOCAL,ORDERSTOP)
       USE COMMONS
+      USE KEY, ONLY: DEBUG
       USE MODUNRES
       IMPLICIT NONE
 
@@ -543,7 +544,8 @@ C
 
 C jmc I don't really use this - haven't tested it yet...
       SUBROUTINE UNRESGUESSMINSEC(Q,PTEST,TWISTTYPE,NGUESS)
-      USE COMMONS
+      USE VARS
+      USE KEY
       USE MODTWOEND
       USE MODUNRES
       IMPLICIT NONE

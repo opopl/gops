@@ -38,7 +38,7 @@ C
       use PORFUNCS
       use SDWATER, ONLY : SDPOTENTIAL, SDGRAD, SDHESS
       USE MCY, ONLY : MCYPOT=>POTENTIAL
-      USE BOWMANWATER, ONLY : BOWMANPOT
+      !USE BOWMANWATER, ONLY : BOWMANPOT
       USE FINITE_DIFFERENCES
       USE MODAMBER9,only : ifswitch,goodstructure1,irespa,cisarray1,checkcistransalways,checkcistransalwaysdna,
      1                     checkcistransalwaysrna
@@ -322,14 +322,14 @@ C
                   IF (STEST) HESS(RPDOF*(J1-1)+1:RPDOF*J1,RPDOF*(J1-1)+1:RPDOF*J1) =
      &                  FINDIFHESS_POT(COORDS(RPDOF*(J1-1)+1:RPDOF*J1),MCYPOT,1.0D-3)
                ENDDO
-            ELSEIF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'JB') THEN ! James Bowman's water potential
-               DUMMY2=1.0D0/(RPBETA/RPIMAGES)**2 ! atomic units (hbar = 1)
-               DO J1=1,RPIMAGES
-                  ENERGY=ENERGY+BOWMANPOT(COORDS(RPDOF*(J1-1)+1:RPDOF*J1)) ! Hartrees
-                  IF (GTEST) VNEW(RPDOF*(J1-1)+1:RPDOF*J1)=FINDIFGRAD(COORDS(RPDOF*(J1-1)+1:RPDOF*J1), BOWMANPOT, 1.0D-3, GRAD4T)
-                  IF (STEST) HESS(RPDOF*(J1-1)+1:RPDOF*J1,RPDOF*(J1-1)+1:RPDOF*J1) =
-     &                  FINDIFHESS_POT(COORDS(RPDOF*(J1-1)+1:RPDOF*J1),BOWMANPOT,1.0D-3)
-               ENDDO
+!            ELSEIF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'JB') THEN ! James Bowman's water potential
+               !DUMMY2=1.0D0/(RPBETA/RPIMAGES)**2 ! atomic units (hbar = 1)
+               !DO J1=1,RPIMAGES
+                  !!ENERGY=ENERGY+BOWMANPOT(COORDS(RPDOF*(J1-1)+1:RPDOF*J1)) ! Hartrees
+                  !IF (GTEST) VNEW(RPDOF*(J1-1)+1:RPDOF*J1)=FINDIFGRAD(COORDS(RPDOF*(J1-1)+1:RPDOF*J1), BOWMANPOT, 1.0D-3, GRAD4T)
+                  !!IF (STEST) HESS(RPDOF*(J1-1)+1:RPDOF*J1,RPDOF*(J1-1)+1:RPDOF*J1) =
+     !!&                  FINDIFHESS_POT(COORDS(RPDOF*(J1-1)+1:RPDOF*J1),BOWMANPOT,1.0D-3)
+               !ENDDO
             ELSE
                PRINT '(A)',' potential> ERROR *** unrecognised RP system type ',TRIM(ADJUSTL(RPSYSTEM))
                STOP
@@ -556,16 +556,16 @@ C
 C
 C Yimin Wang and Joel Bowman's water potential
 C
-      ELSE IF (BOWMANT) THEN
-         ENERGY=BOWMANPOT(COORDS(1:NOPT)) ! Hartrees
-         IF (GTEST) VNEW(1:NOPT)=FINDIFGRAD(COORDS(1:NOPT), BOWMANPOT, 1.0D-3, GRAD4T)
-         IF (STEST) THEN
-            HESS(1:NOPT,1:NOPT)=FINDIFHESS_POT(COORDS(1:NOPT),BOWMANPOT,1.0D-3)
-         END IF
-         IF (PTEST) THEN
-            WRITE(*,'(A,27X,F20.10,A)') ' potential> Energy for last cycle=',ENERGY,' hartree'
-            WRITE(ESTRING,10) ' Energy for last cycle=',ENERGY,' hartree'
-         ENDIF
+!!    ELSE IF (BOWMANT) THEN
+         !ENERGY=BOWMANPOT(COORDS(1:NOPT)) ! Hartrees
+         !IF (GTEST) VNEW(1:NOPT)=FINDIFGRAD(COORDS(1:NOPT), BOWMANPOT, 1.0D-3, GRAD4T)
+         !IF (STEST) THEN
+            !HESS(1:NOPT,1:NOPT)=FINDIFHESS_POT(COORDS(1:NOPT),BOWMANPOT,1.0D-3)
+         !END IF
+         !IF (PTEST) THEN
+            !WRITE(*,'(A,27X,F20.10,A)') ' potential> Energy for last cycle=',ENERGY,' hartree'
+            !WRITE(ESTRING,10) ' Energy for last cycle=',ENERGY,' hartree'
+         !ENDIF
       ELSE IF (NATBT) THEN
          CALL NATB(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST)
          IF (PTEST) THEN

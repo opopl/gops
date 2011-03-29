@@ -32,7 +32,7 @@ C
       USE msevb_common
       use BINARYIO
       USE SDWATER, ONLY : SDINIT
-      USE BOWMANWATER, ONLY : BOWMANINIT
+      !USE BOWMANWATER, ONLY : BOWMANINIT
       USE AMHGLOBALS
 
       IMPLICIT NONE
@@ -259,7 +259,7 @@ C              WRITE(*,*) CD1, CD2, IDUM1, IDUM2, FIN(3*(J1-1)+1),FIN(3*(J1-1)+2
             NOXYGEN=RPDOF/9
             WRITE(*,'(A,G20.10,A)')  '              1/kT (a.u.)=',RPBETA,' potential type=' // TRIM(ADJUSTL(RPSYSTEM))
             WRITE(*,'(A,I1,A,I0,A)') '              Bowman''s PES#',BOWMANPES,' for a cluster of ',NOXYGEN,' water molecules'
-            CALL BOWMANINIT(NOXYGEN, BOWMANPES, trim(BOWMANDIR))
+            !CALL BOWMANINIT(NOXYGEN, BOWMANPES, trim(BOWMANDIR))
             NATOMS=NOPT/3
          ELSE
             PRINT *, ' fetchz> unknown RPSYSTEM: ', RPSYSTEM
@@ -841,16 +841,16 @@ C
                ZSYM(J1)='H '
             ENDDO
          ENDIF
-         IF (BOWMANT) THEN
-            WRITE(*,'(A,I1,A,I0,A)') ' SYSTEM Bowman''s PES#',BOWMANPES,' for a cluster of ',NATOMS/3,' water molecules'
-            CALL BOWMANINIT(NATOMS/3, BOWMANPES, trim(BOWMANDIR))
-            DO J1=1,2*NATOMS/3
-               ZSYM(J1)='H '
-            ENDDO
-            DO J1=2*NATOMS/3+1,NATOMS
-               ZSYM(J1)='O '
-            ENDDO
-         ENDIF
+       !  IF (BOWMANT) THEN
+            !WRITE(*,'(A,I1,A,I0,A)') ' SYSTEM Bowman''s PES#',BOWMANPES,' for a cluster of ',NATOMS/3,' water molecules'
+            !CALL BOWMANINIT(NATOMS/3, BOWMANPES, trim(BOWMANDIR))
+            !DO J1=1,2*NATOMS/3
+               !ZSYM(J1)='H '
+            !ENDDO
+            !DO J1=2*NATOMS/3+1,NATOMS
+               !ZSYM(J1)='O '
+            !ENDDO
+         !ENDIF
 C 
 C  Dirty trick to try and run Thomson problem as NATOMS/3 *2 effective atoms
 C  using angular coordinates instead of xyz.

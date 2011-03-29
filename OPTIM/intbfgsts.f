@@ -33,6 +33,7 @@ C
       USE ZWK
       USE MODUNRES
       USE MODHESS
+      USE PORFUNCS
       IMPLICIT NONE
 
 C     INCLUDE 'lparams.h'

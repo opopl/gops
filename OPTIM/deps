@@ -65,9 +65,9 @@ ectrap.o: key.o
 efol.o: commons.o key.o modcharmm.o modhess.o porfuncs.o syminf.o zwk.o
 escp.o: modhess.o
 fd.o: key.o modhess.o
-fetchz.o: Bowman/src/bowmanwater.o SD.o amhglobals.o binaryio.o commons.o \
-	key.o libnc.a modamber9.o modcharmm.o modguess.o modmec.o modneb.o \
-	modtwoend.o modunres.o msevb_common.o porfuncs.o syminf.o
+fetchz.o: SD.o amhglobals.o binaryio.o commons.o key.o libnc.a modamber9.o \
+	modcharmm.o modguess.o modmec.o modneb.o modtwoend.o modunres.o \
+	msevb_common.o porfuncs.o syminf.o
 fmsevb.o: commons.o msevb_common.o msevb_interfaces.o
 g2special.o: key.o modhess.o porfuncs.o
 g46merdiff.o: modhess.o
@@ -90,7 +90,7 @@ hybridmin.o: commons.o key.o modcharmm.o modhess.o porfuncs.o vecck.o zwk.o
 inertia.o: commons.o key.o
 input.o: porfuncs.o
 intbeig.o: commons.o key.o modneb.o modtwoend.o
-intbfgsts.o: commons.o key.o modhess.o modunres.o vecck.o zwk.o
+intbfgsts.o: commons.o key.o modhess.o modunres.o porfuncs.o vecck.o zwk.o
 intcommons.o: modamber9.o
 intcoords.o: commons.o intcommons.o intcoords.o key.o modamber9.o modcharmm.o \
 	porfuncs.o specialfuncts.o
@@ -98,7 +98,7 @@ intgradlj.o: commons.o key.o
 intlbfgs.o: amhglobals.o commons.o efol.o key.o porfuncs.o
 intlbfgslj.o: commons.o efol.o key.o porfuncs.o
 intsecdiag.o: commons.o key.o
-intxmylbfgs.o: commons.o key.o modtwoend.o
+intxmylbfgs.o: commons.o key.o modtwoend.o porfuncs.o
 ions.o: modhess.o
 keyword.o: amhglobals.o binaryio.o commons.o cubsplstring.o gsdata.o \
 	intcommons.o key.o libnc.a libnn.a modamber.o modamber9.o modcharmm.o \
@@ -148,9 +148,8 @@ patchyd.o: commons.o modhess.o
 path.o: amhglobals.o commons.o efol.o key.o modcharmm.o modhess.o modunres.o \
 	porfuncs.o syminf.o
 pertable.o: commons.o key.o
-potential.o: Bowman/src/bowmanwater.o SD.o VRTMCY5f.o commons.o \
-	finite_differences.o key.o modamber9.o modcharmm.o modhess.o \
-	porfuncs.o
+potential.o: SD.o VRTMCY5f.o commons.o finite_differences.o key.o modamber9.o \
+	modcharmm.o modhess.o porfuncs.o
 projh.o: modhess.o
 pyg.o: commons.o key.o modhess.o
 rad.o: commons.o key.o
@@ -177,7 +176,7 @@ unguesspath.o: key.o modcharmm.o modguess.o modunres.o porfuncs.o
 unmeccano.o: commons.o key.o libnn.a modcharmm.o modhess.o modmec.o modneb.o \
 	modtwoend.o modunres.o porfuncs.o zwk.o
 unrescalcdihe.o: commons.o modunres.o
-unresconnectsections.o: commons.o key.o modtwoend.o modunres.o
+unresconnectsections.o: commons.o key.o modtwoend.o modunres.o vars.o
 unresdummy.o: commons.o
 unresdump.o: commons.o
 unresguessts.o: commons.o key.o modtwoend.o modunres.o
