@@ -1,179 +1,179 @@
 
-c     --------------------- pttarg ----------------------
+C     --------------------- PTTARG ----------------------
  
-      subroutine pttarg(maxsiz,nmres,numcrd,target,
-     *                  maxres,ywork,ires,jres,shydro,
-     *                  hydseq,tarpre,mempre,bondln,
-     *                  oarchv,passi)
+      SUBROUTINE PTTARG(MAXSIZ,NMRES,NUMCRD,TARGET,
+     *                  MAXRES,YWORK,IRES,JRES,SHYDRO,
+     *                  HYDSEQ,TARPRE,MEMPRE,BONDLN,
+     *                  OARCHV,PASSI)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     PTTARG copies the target coordinates, coded 
-c            sequence, hydrophobicity profile
-c            secondary structure predictions into
-c            arrays reserved for target; the nearest-
-c            neighbor distances between alpha-carbons
-c            and the distance between the alpha- and
-c            beta-carbon of the same residue are 
-c            also computed
+C     PTTARG COPIES THE TARGET COORDINATES, CODED 
+C            SEQUENCE, HYDROPHOBICITY PROFILE
+C            SECONDARY STRUCTURE PREDICTIONS INTO
+C            ARRAYS RESERVED FOR TARGET; THE NEAREST-
+C            NEIGHBOR DISTANCES BETWEEN ALPHA-CARBONS
+C            AND THE DISTANCE BETWEEN THE ALPHA- AND
+C            BETA-CARBON OF THE SAME RESIDUE ARE 
+C            ALSO COMPUTED
 
-c     arguments:
+C     ARGUMENTS:
 
-c        maxsiz- maximum number of protein residues (i)
-c        nmres - actual number of residues (i)
-c        numcrd- number of coordinate types (i)
-c        target- target protein coordinates (o)
-c        maxres- maximum protein database length (i)
-c        ywork - target coordinates (i)
-c        ires  - target coded sequence (o)
-c        jres  - target coded sequence (i)
-c        shydro- target hydrophobicity profile (o)
-c        hydseq- target hydrophobicity profile (i)
-c        tarpre- target secondary structure profile (o)
-c        mempre- target secondary structure profile (i)
-c        bondln- bond lenghts for target coordinates;
-c                bond i is the bond between residues i-1
-c                and i (o)
-c        oarchv- archive/diagnostic output file (i)
-c        passi - true on first call to pttarg (i)
+C        MAXSIZ- MAXIMUM NUMBER OF PROTEIN RESIDUES (I)
+C        NMRES - ACTUAL NUMBER OF RESIDUES (I)
+C        NUMCRD- NUMBER OF COORDINATE TYPES (I)
+C        TARGET- TARGET PROTEIN COORDINATES (O)
+C        MAXRES- MAXIMUM PROTEIN DATABASE LENGTH (I)
+C        YWORK - TARGET COORDINATES (I)
+C        IRES  - TARGET CODED SEQUENCE (O)
+C        JRES  - TARGET CODED SEQUENCE (I)
+C        SHYDRO- TARGET HYDROPHOBICITY PROFILE (O)
+C        HYDSEQ- TARGET HYDROPHOBICITY PROFILE (I)
+C        TARPRE- TARGET SECONDARY STRUCTURE PROFILE (O)
+C        MEMPRE- TARGET SECONDARY STRUCTURE PROFILE (I)
+C        BONDLN- BOND LENGHTS FOR TARGET COORDINATES;
+C                BOND I IS THE BOND BETWEEN RESIDUES I-1
+C                AND I (O)
+C        OARCHV- ARCHIVE/DIAGNOSTIC OUTPUT FILE (I)
+C        PASSI - TRUE ON FIRST CALL TO PTTARG (I)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     set required parameters
+C     SET REQUIRED PARAMETERS
 
-      implicit none
+      IMPLICIT NONE
 
-c     argument declarations:
+C     ARGUMENT DECLARATIONS:
 
-         logical passi
+         LOGICAL PASSI
 
-         integer maxsiz,nmres,ires(maxsiz),jres(maxsiz),
-     *           tarpre(maxsiz),mempre(maxsiz),oarchv,numcrd,maxres
+         INTEGER MAXSIZ,NMRES,IRES(MAXSIZ),JRES(MAXSIZ),
+     *           TARPRE(MAXSIZ),MEMPRE(MAXSIZ),OARCHV,NUMCRD,MAXRES
 
-         double precision target(maxsiz,3,numcrd),hydseq(maxres,2),
-     *      ywork(maxres,3,numcrd),shydro(maxsiz,2),bondln(maxsiz,numcrd)
+         DOUBLE PRECISION TARGET(MAXSIZ,3,NUMCRD),HYDSEQ(MAXRES,2),
+     *      YWORK(MAXRES,3,NUMCRD),SHYDRO(MAXSIZ,2),BONDLN(MAXSIZ,NUMCRD)
 
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-         integer indx1,indx2,indx3,indx4,isum,iisum
+         INTEGER INDX1,INDX2,INDX3,INDX4,ISUM,IISUM
 
-c        --- do loop indices ---
+C        --- DO LOOP INDICES ---
 
-         integer i1,i500,i_coord,i_axis,i_res,i505,i510,i511
+         INTEGER I1,I500,I_COORD,I_AXIS,I_RES,I505,I510,I511
 
-c     --------------------- begin -----------------------
+C     --------------------- BEGIN -----------------------
 
-c     --- diagnostics ---
+C     --- DIAGNOSTICS ---
 
-c     echo scalar input arguments
+C     ECHO SCALAR INPUT ARGUMENTS
 
-c      write(oarchv,100)maxsiz,nmres
-c  100 format('Pttarg:maxsiz ',i3,' nmres ',i3)
+C      WRITE(OARCHV,100)MAXSIZ,NMRES
+C  100 FORMAT('PTTARG:MAXSIZ ',I3,' NMRES ',I3)
 
-c     --- end diagnostics ---
+C     --- END DIAGNOSTICS ---
 
-c     copy coordinates,
+C     COPY COORDINATES,
 
-      do 502 i_coord=1,numcrd
-         do 503 i_axis=1,3
-            do 504 i_res=1,nmres
-               target(i_res,i_axis,i_coord)=ywork(i_res,i_axis,i_coord)
-  504       continue
-  503    continue
-  502 continue
+      DO 502 I_COORD=1,NUMCRD
+         DO 503 I_AXIS=1,3
+            DO 504 I_RES=1,NMRES
+               TARGET(I_RES,I_AXIS,I_COORD)=YWORK(I_RES,I_AXIS,I_COORD)
+  504       CONTINUE
+  503    CONTINUE
+  502 CONTINUE
 
-c     copy coded sequence, h profile and
-c     secondary structure profile
+C     COPY CODED SEQUENCE, H PROFILE AND
+C     SECONDARY STRUCTURE PROFILE
 
-      do 500 i500=1,nmres
+      DO 500 I500=1,NMRES
 
-         ires(i500)=jres(i500)
-         shydro(i500,1)=hydseq(i500,1)
-         shydro(i500,2)=hydseq(i500,2)
-         tarpre(i500)=mempre(i500)
+         IRES(I500)=JRES(I500)
+         SHYDRO(I500,1)=HYDSEQ(I500,1)
+         SHYDRO(I500,2)=HYDSEQ(I500,2)
+         TARPRE(I500)=MEMPRE(I500)
 
-  500 continue
+  500 CONTINUE
 
-c     print target h profile
+C     PRINT TARGET H PROFILE
 
-      if( passi )then
-         indx2=10
-         indx1=int( float(nmres)/float(indx2) ) + 1
-c         write(oarchv,712)
-c  712    format(/'Hydrophobicity profile and row sum ')
-         iisum=0
-         do 510 i510=1,indx1
-            indx4=(i510-1)*indx2 + 1
-            if( indx1.eq.i510 )then
-               indx3=nmres
-            else
-               indx3=indx4 + indx2 - 1
-            endif
-            isum=0
-            do 511 i511=indx4,indx3
-               isum=isum + int(shydro(i511,1))
-  511       continue
-            iisum=iisum + isum
-c            write(oarchv,711)(int(shydro(i1,1)),i1=indx4,indx3),
-c     *                        isum
-  711       format(11(i3,1x))
-  510    continue
-c         write(oarchv,713)iisum
-c  713    format('net h ',i3)
-      endif
+      IF( PASSI )THEN
+         INDX2=10
+         INDX1=INT( FLOAT(NMRES)/FLOAT(INDX2) ) + 1
+C         WRITE(OARCHV,712)
+C  712    FORMAT(/'HYDROPHOBICITY PROFILE AND ROW SUM ')
+         IISUM=0
+         DO 510 I510=1,INDX1
+            INDX4=(I510-1)*INDX2 + 1
+            IF( INDX1.EQ.I510 )THEN
+               INDX3=NMRES
+            ELSE
+               INDX3=INDX4 + INDX2 - 1
+            ENDIF
+            ISUM=0
+            DO 511 I511=INDX4,INDX3
+               ISUM=ISUM + INT(SHYDRO(I511,1))
+  511       CONTINUE
+            IISUM=IISUM + ISUM
+C            WRITE(OARCHV,711)(INT(SHYDRO(I1,1)),I1=INDX4,INDX3),
+C     *                        ISUM
+  711       FORMAT(11(I3,1X))
+  510    CONTINUE
+C         WRITE(OARCHV,713)IISUM
+C  713    FORMAT('NET H ',I3)
+      ENDIF
 
-c     --- diagnostics ---
+C     --- DIAGNOSTICS ---
 
-c     echo h profile and coded primary sequence
+C     ECHO H PROFILE AND CODED PRIMARY SEQUENCE
 
-c      write(oarchv,107)prot,nmres
-c  107 format(/'target ',a4,' residues ',i3)
-c      do 504 i_res=1,nmrs
-c         write(oarchv,108)i_res,hydscl(ires(i_res)),
-c     *                    (shydro(i_res,i1),i1=1,2)
-c  108    format(i3,3(1x,f7.2))
-c  504 continue
+C      WRITE(OARCHV,107)PROT,NMRES
+C  107 FORMAT(/'TARGET ',A4,' RESIDUES ',I3)
+C      DO 504 I_RES=1,NMRS
+C         WRITE(OARCHV,108)I_RES,HYDSCL(IRES(I_RES)),
+C     *                    (SHYDRO(I_RES,I1),I1=1,2)
+C  108    FORMAT(I3,3(1X,F7.2))
+C  504 CONTINUE
 
-c     --- end diagnostics ---
+C     --- END DIAGNOSTICS ---
 
-c      set bond lengths for alpha(i+1)-alpha(i) and
-c      alpha(i)-beta(i)
+C      SET BOND LENGTHS FOR ALPHA(I+1)-ALPHA(I) AND
+C      ALPHA(I)-BETA(I)
 
-      do 505 i505=1,nmres
-             bondln(i505,1)=3.8004D0
-             bondln(i505,2)=1.54D0
-             bondln(i505,3)=2.42677D0
-  505 continue
-      bondln(1,1)=0.0D0
+      DO 505 I505=1,NMRES
+             BONDLN(I505,1)=3.8004D0
+             BONDLN(I505,2)=1.54D0
+             BONDLN(I505,3)=2.42677D0
+  505 CONTINUE
+      BONDLN(1,1)=0.0D0
 
-c     set glycine alpha-beta bond
+C     SET GLYCINE ALPHA-BETA BOND
 
-      do 512 i_res=1,nmres
-         if( jres(i_res).eq.8 )
-     *      bondln(i_res,2)=0.0D0
-  512 continue
+      DO 512 I_RES=1,NMRES
+         IF( JRES(I_RES).EQ.8 )
+     *      BONDLN(I_RES,2)=0.0D0
+  512 CONTINUE
 
-c     --- diagnostics ---
-c
-c      if( passi )then
-c         write(oarchv,110)
-c  110    format(/'Pttarg:site      bondln',22x,
-c     *           'coordinates')
-c         do 509 i509=1,min(nmres,109)
-c
-c            write(oarchv,109)i509,bondln(i509,1),
-c     *                       (target(i509,i1,1),i1=1,3)
-c  109       format(/8x,i3,1x,4(1x,1pe10.3))
-c
-c            write(oarchv,111)bondln(i509,2),
-c     *                       (target(i509,i1,2),i1=1,3)
-c  111       format(12x,4(1x,1pe10.3))
-c  509    continue
-c      endif
-c
-c     --- end diagnostics ---
+C     --- DIAGNOSTICS ---
+C
+C      IF( PASSI )THEN
+C         WRITE(OARCHV,110)
+C  110    FORMAT(/'PTTARG:SITE      BONDLN',22X,
+C     *           'COORDINATES')
+C         DO 509 I509=1,MIN(NMRES,109)
+C
+C            WRITE(OARCHV,109)I509,BONDLN(I509,1),
+C     *                       (TARGET(I509,I1,1),I1=1,3)
+C  109       FORMAT(/8X,I3,1X,4(1X,1PE10.3))
+C
+C            WRITE(OARCHV,111)BONDLN(I509,2),
+C     *                       (TARGET(I509,I1,2),I1=1,3)
+C  111       FORMAT(12X,4(1X,1PE10.3))
+C  509    CONTINUE
+C      ENDIF
+C
+C     --- END DIAGNOSTICS ---
 
-c     ---------------------- done -----------------------
+C     ---------------------- DONE -----------------------
 
-      return
-      end
+      RETURN
+      END

@@ -1,20 +1,20 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       SUBROUTINE KEGEN
       USE COMMONS, ONLY: GAUSSKK, GAUSSEE, GMODES, NATOMS, GKSMALL
@@ -25,7 +25,7 @@ C
       IDUM = 1313417
       PI = ATAN(1.0D0)*4.0D0
       DO J=1,GMODES
-!        EE(J) = 2*PI*ran1(idum)  
+!        EE(J) = 2*PI*RAN1(IDUM)  
          GAUSSEE(J) = 2.0D0*PI*DPRAND()  
          DO I=1,3*NATOMS
             GAUSSKK(I,J)=GASDEV(IDUM)
@@ -36,10 +36,10 @@ C
          DO J=1,GMODES
             IF (DABS(GAUSSKK(I,J)).LT.SMALLEST) SMALLEST=GAUSSKK(I,J)
          ENDDO
-         PRINT '(A,I8,G20.10)','I,smallest kk=',I,SMALLEST
+         PRINT '(A,I8,G20.10)','I,SMALLEST KK=',I,SMALLEST
 !
-!   GKSMALL(I) sets the length scale for the corresponding variable.
-!   The efective range is 2*Pi/GKSMALL(I)
+!   GKSMALL(I) SETS THE LENGTH SCALE FOR THE CORRESPONDING VARIABLE.
+!   THE EFECTIVE RANGE IS 2*PI/GKSMALL(I)
 !
          GKSMALL(I)=SMALLEST
       ENDDO
@@ -47,30 +47,30 @@ C
       RETURN
       END
 
-      FUNCTION gasdev(idum)
+      FUNCTION GASDEV(IDUM)
       IMPLICIT NONE
-      INTEGER idum
-      DOUBLE PRECISION gasdev, DPRAND
-      INTEGER iset
-      REAL fac,gset,rsq,v1,v2,ran1
-      SAVE iset,gset
-      DATA iset/0/
-      if (iset.eq.0) then
-! 1       v1=2.*ran1(idum)-1.
-!         v2=2.*ran1(idum)-1.
-1       v1=2.*DPRAND()-1.
-        v2=2.*DPRAND()-1.
-        rsq=v1**2+v2**2
-        if(rsq.ge.1..or.rsq.eq.0.)goto 1
-        fac=sqrt(-2.*log(rsq)/rsq)
-        gset=v1*fac
-        gasdev=v2*fac
-        iset=1
-      else
-        gasdev=gset
-        iset=0
-      endif
-      return
+      INTEGER IDUM
+      DOUBLE PRECISION GASDEV, DPRAND
+      INTEGER ISET
+      REAL FAC,GSET,RSQ,V1,V2,RAN1
+      SAVE ISET,GSET
+      DATA ISET/0/
+      IF (ISET.EQ.0) THEN
+! 1       V1=2.*RAN1(IDUM)-1.
+!         V2=2.*RAN1(IDUM)-1.
+1       V1=2.*DPRAND()-1.
+        V2=2.*DPRAND()-1.
+        RSQ=V1**2+V2**2
+        IF(RSQ.GE.1..OR.RSQ.EQ.0.)GOTO 1
+        FAC=SQRT(-2.*LOG(RSQ)/RSQ)
+        GSET=V1*FAC
+        GASDEV=V2*FAC
+        ISET=1
+      ELSE
+        GASDEV=GSET
+        ISET=0
+      ENDIF
+      RETURN
       END
 
       SUBROUTINE GFIELD(X,V,FUNCVALUE,GTEST)

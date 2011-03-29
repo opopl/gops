@@ -31,9 +31,9 @@
          J2     = 3*J1
          DUMMY2 = COORDS(J2-2,NP)**2 + COORDS(J2-1,NP)**2 + COORDS(J2,NP)**2
          IF (DUMMY2 .GT. RADIUS) THEN
-            WRITE(*,'(A,I5,5F20.10)') 'J1,RAD,R**2,x,y,z:', J1, RADIUS, DUMMY2, COORDS(J2-2,NP), &
+            WRITE(*,'(A,I5,5F20.10)') 'J1,RAD,R**2,X,Y,Z:', J1, RADIUS, DUMMY2, COORDS(J2-2,NP), &
                                        COORDS(J2-1,NP), COORDS(J2,NP)
-            PRINT*, 'initial coordinate outside container -- increase container radius'
+            PRINT*, 'INITIAL COORDINATE OUTSIDE CONTAINER -- INCREASE CONTAINER RADIUS'
             STOP
          END IF
 
@@ -65,10 +65,10 @@
       YMASS = YMASS/(REALNATOMS)
       ZMASS = ZMASS/(REALNATOMS)
 
-!     Find the most weakly bound atom, JMAX, the second most weakly bound atom, JMAX2,
-!     and the pair energy of the most tightly bound atom, VMIN. An angular step is
-!     taken for JMAX if its pair energy is > ASTEP*VMIN putting the atom at a radius of
-!     DMAX (or CMMAX from CM of the cluster).
+!     FIND THE MOST WEAKLY BOUND ATOM, JMAX, THE SECOND MOST WEAKLY BOUND ATOM, JMAX2,
+!     AND THE PAIR ENERGY OF THE MOST TIGHTLY BOUND ATOM, VMIN. AN ANGULAR STEP IS
+!     TAKEN FOR JMAX IF ITS PAIR ENERGY IS > ASTEP*VMIN PUTTING THE ATOM AT A RADIUS OF
+!     DMAX (OR CMMAX FROM CM OF THE CLUSTER).
 
       DMAX  =  1.0D0
       VMAX  = -1.0D3
@@ -421,34 +421,34 @@
 
             IF (ABS(P) .GE. ABS(0.5D0*Q*ETMP) .OR. P .LE. Q*(A-X) .OR. P .GE. Q*(B-X)) GOTO 1
 !     %         .OR. P .GE. Q*(B-X)) GOTO 1
-!     The above conditions determine the acceptability of the parabolic fit. Here it is o.k.
-            D = P / Q ! Take the parabolic step.
+!     THE ABOVE CONDITIONS DETERMINE THE ACCEPTABILITY OF THE PARABOLIC FIT. HERE IT IS O.K.
+            D = P / Q ! TAKE THE PARABOLIC STEP.
             U = X + D
-            IF(U-A .lt. TOL2 .OR. B-U .lt. TOL2) D=SIGN(TOL1,XM-X)
-            GOTO 2 !Skip over the golden section step.
+            IF(U-A .LT. TOL2 .OR. B-U .LT. TOL2) D=SIGN(TOL1,XM-X)
+            GOTO 2 !SKIP OVER THE GOLDEN SECTION STEP.
 
          ENDIF
 
 1        IF (X .GE. XM) THEN
-!      We arrive here for a golden section step, which we take
-            E = A - X !into the larger of the two segments.
+!      WE ARRIVE HERE FOR A GOLDEN SECTION STEP, WHICH WE TAKE
+            E = A - X !INTO THE LARGER OF THE TWO SEGMENTS.
          ELSE
             E = B - X
          ENDIF
 
-         D = CGOLD * E !Take the golden section step.
-2        IF (ABS(D) .GE. TOL1) THEN ! Arrive here with d computed either from parabolic fit, or
-            U = X + D !else from golden section.
+         D = CGOLD * E !TAKE THE GOLDEN SECTION STEP.
+2        IF (ABS(D) .GE. TOL1) THEN ! ARRIVE HERE WITH D COMPUTED EITHER FROM PARABOLIC FIT, OR
+            U = X + D !ELSE FROM GOLDEN SECTION.
          ELSE
             U = X + SIGN(TOL1,D)
          ENDIF
 
-!         FU = F(U) !This is the one function evaluation per iteration,
+!         FU = F(U) !THIS IS THE ONE FUNCTION EVALUATION PER ITERATION,
 
          CALL OBJCTFGB (AE, BE, RIJ, U, FU)
 
-         IF (FU .LE. FX) THEN !and now we have to decide what to do with our function
-            IF (U .GE. X) THEN !evaluation. Housekeeping follows:
+         IF (FU .LE. FX) THEN !AND NOW WE HAVE TO DECIDE WHAT TO DO WITH OUR FUNCTION
+            IF (U .GE. X) THEN !EVALUATION. HOUSEKEEPING FOLLOWS:
                A = X
             ELSE
                B = X
@@ -476,11 +476,11 @@
                FV = FU
             ENDIF
 
-         ENDIF ! Done with housekeeping. Back for another iteration.
+         ENDIF ! DONE WITH HOUSEKEEPING. BACK FOR ANOTHER ITERATION.
 
 10    CONTINUE
-      PAUSE 'brent exceed maximum iterations'
-3     XMIN = X ! Arrive here ready to exit with best values.
+      PAUSE 'BRENT EXCEED MAXIMUM ITERATIONS'
+3     XMIN = X ! ARRIVE HERE READY TO EXIT WITH BEST VALUES.
       FMIN = FX
      
       RETURN

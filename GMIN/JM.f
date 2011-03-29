@@ -1,28 +1,28 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 C
 C*************************************************************************
 C
-C  Two- and three-body terms in the energy of the JM potential with
-C  cutoff - not periodic. This must be called before jm2c
-C  or jm3c as it does some setting up for them.
+C  TWO- AND THREE-BODY TERMS IN THE ENERGY OF THE JM POTENTIAL WITH
+C  CUTOFF - NOT PERIODIC. THIS MUST BE CALLED BEFORE JM2C
+C  OR JM3C AS IT DOES SOME SETTING UP FOR THEM.
 C                                        
 C*************************************************************************
 C
@@ -50,12 +50,12 @@ C
       P3=0.0D0
       IF (.NOT.CALLED) THEN
          CUTOFF=1.0D10
-         INQUIRE(FILE='JMparams',EXIST=YESNO)
+         INQUIRE(FILE='JMPARAMS',EXIST=YESNO)
          IF (.NOT.YESNO) THEN
-            PRINT*,'Data file JMparams not found - quit'
+            PRINT*,'DATA FILE JMPARAMS NOT FOUND - QUIT'
             STOP
          ELSE
-            OPEN(UNIT=33,FILE='JMparams',STATUS='OLD')
+            OPEN(UNIT=33,FILE='JMPARAMS',STATUS='OLD')
             READ(33,*) C0
             READ(33,*) C1
             READ(33,*) C2
@@ -77,7 +77,7 @@ C
          ENDIF
       ENDIF
 C
-C  Calculation of connecting vectors
+C  CALCULATION OF CONNECTING VECTORS
 C
       DO 25 J1=1,N
          VEC(J1,J1,1)=0.0D0
@@ -93,7 +93,7 @@ C
 15       CONTINUE
 25    CONTINUE
 C
-C  Calculation of distances:
+C  CALCULATION OF DISTANCES:
 C
       DO 20 J1=1,N
          DIST(J1,J1)=0.0D0
@@ -109,7 +109,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  Calculate the energy
+C  CALCULATE THE ENERGY
 C
       DO 22 I=1,N
          DO 23 J=1,N
@@ -152,8 +152,8 @@ C
 C
 C*************************************************************************
 C
-C  Two body term of Murrell Potential - analytic derivatives with
-C  periodic boundary conditions
+C  TWO BODY TERM OF MURRELL POTENTIAL - ANALYTIC DERIVATIVES WITH
+C  PERIODIC BOUNDARY CONDITIONS
 C
 C*************************************************************************
 C
@@ -173,7 +173,7 @@ C
      1                 V(3*N), ABY, ABX
 C 
 C
-C  Store distance matrices.
+C  STORE DISTANCE MATRICES.
 C
       DO 20 J1=1,N
          DO 10 J2=J1+1,N
@@ -186,7 +186,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  First calculate the gradient analytically.
+C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
 C
       DO 50 J1=1,N
          DO 40 J2=1,3
@@ -207,8 +207,8 @@ C           PRINT*,'J3,V(J3)=',J3,V(J3)
 C
 C*************************************************************************
 C
-C  Here we calculate the analytic gradient and second derivatives
-C  for the three-body term with periodic boundary conditions.
+C  HERE WE CALCULATE THE ANALYTIC GRADIENT AND SECOND DERIVATIVES
+C  FOR THE THREE-BODY TERM WITH PERIODIC BOUNDARY CONDITIONS.
 C                                        
 C*************************************************************************
 C
@@ -231,7 +231,7 @@ C
       DOUBLE PRECISION CUTOFF
 C
 C
-C  First the gradient.
+C  FIRST THE GRADIENT.
  
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -262,11 +262,11 @@ C  First the gradient.
      1           D*((C1+3*C4*QA**2+4*C7*QA**3+C5*QB+2*QA*(C2+C8*QB)+
      2           C10*QC-AN3*(C0+C4*QA**3+C7*QA**4+C3*QB+C9*QB**2+
      3           QA**2*(C2+C8*QB)+C6*QC+QA*( C1+C5*QB+C10*QC)))*
-     4           (-(abx*RRAB/re)-acx*RRAC/re)/SR3+
+     4           (-(ABX*RRAB/RE)-ACX*RRAC/RE)/SR3+
      5           (2*(C3+C5*QA+C8*QA**2+2*C9*QB)*
-     6           (acx*QQ2*RRAC/SR2+QQ3*(-2*abx*RRAB+acx*RRAC)/SR6)+
-     7           (C6+C10*QA)*(-6*acx*QQ2*QQ3*RRAC/SR2+
-     8           (-3*QQ2**2+3*QQ3**2)*(-2*abx*RRAB+acx*RRAC)/SR6))/re)/
+     6           (ACX*QQ2*RRAC/SR2+QQ3*(-2*ABX*RRAB+ACX*RRAC)/SR6)+
+     7           (C6+C10*QA)*(-6*ACX*QQ2*QQ3*RRAC/SR2+
+     8           (-3*QQ2**2+3*QQ3**2)*(-2*ABX*RRAB+ACX*RRAC)/SR6))/RE)/
      9           DEXP(AN3*QA)
                ENDIF
 95             CONTINUE

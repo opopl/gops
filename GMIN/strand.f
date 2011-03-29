@@ -1,27 +1,27 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
-C  Energy and gradient for rigid body molecule - 6-site virus pentamer.
-C  Variables have been reordered to the OPTIM convention.
+C  ENERGY AND GRADIENT FOR RIGID BODY MOLECULE - 6-SITE VIRUS PENTAMER.
+C  VARIABLES HAVE BEEN REORDERED TO THE OPTIM CONVENTION.
 C
       SUBROUTINE STRAND(X,V,ESTRAND,GTEST,SECT)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE
       LOGICAL GTEST,SECT
       INTEGER J1, J2, K1, K2, NAT2
@@ -32,10 +32,10 @@ C
      4                 GX1, GY1, GZ1, GL1, GM1, GN1, GL2, GM2, GN2, C2A2, C2A1,
      5                 D1, D2, D3, D4, D5, D6, DA, DB, DC, DIST, DUMMY2, DIST6,
      6                 P1X, P1Y, P1Z, P2X, P2Y, P2Z
-      LOGICAL EVAP, evapreject
-      COMMON /EV/ EVAP, evapreject
+      LOGICAL EVAP, EVAPREJECT
+      COMMON /EV/ EVAP, EVAPREJECT
 C
-C  All the site-site interactions are LJ. RM6 is 1/r**6 and RM1 is 1/r.
+C  ALL THE SITE-SITE INTERACTIONS ARE LJ. RM6 IS 1/R**6 AND RM1 IS 1/R.
 C
       FLJ(RM6)=4.0D0*(RM6-1.0D0)*RM6
       DFLJ(RM1,RM6)=24.0D0*RM6*RM1*(1.0D0-2.0D0*RM6)
@@ -50,7 +50,7 @@ C
          V(J1)=0.0D0
       ENDDO
 C
-C  Potential energy first.
+C  POTENTIAL ENERGY FIRST.
 C
       DO J1=1,NAT2-1
          X1=X(3*(J1-1)+1)
@@ -98,7 +98,7 @@ C              C3A2=-ALPHA2/2+ALPHA2**3/24
                S2=SIN(ALPHA2)/ALPHA2
             ENDIF
 C
-C  Sum over LJ sites.
+C  SUM OVER LJ SITES.
 C
             DUMMY=0.0D0
             GX1=0.0D0
@@ -119,34 +119,34 @@ C
                   P2Y=SITE(K2,2)
                   P2Z=SITE(K2,3)
                   DIST=
-     @  1.0D0/Sqrt((c2a1*p1x-c3a1*l1*(l1*p1x+m1*p1y+n1*p1z)-c2a2*p2x+c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)+ 
-     @      (n1*p1y - m1*p1z)*s1 - (n2*p2y - m2*p2z)*s2 + x1 - x2)**2 + 
-     @   (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y+c3a2*m2*(l2*p2x+m2*p2y+n2*p2z)+ 
-     @      (-(n1*p1x) + l1*p1z)*s1 - (-(n2*p2x) + l2*p2z)*s2 + y1-y2)**2 + 
-     @   (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z+c3a2*n2*(l2*p2x+m2*p2y+n2*p2z)+ 
-     @      (m1*p1x - l1*p1y)*s1 - (m2*p2x - l2*p2y)*s2 + z1 - z2)**2)
+     @  1.0D0/SQRT((C2A1*P1X-C3A1*L1*(L1*P1X+M1*P1Y+N1*P1Z)-C2A2*P2X+C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)+ 
+     @      (N1*P1Y - M1*P1Z)*S1 - (N2*P2Y - M2*P2Z)*S2 + X1 - X2)**2 + 
+     @   (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y+C3A2*M2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+     @      (-(N1*P1X) + L1*P1Z)*S1 - (-(N2*P2X) + L2*P2Z)*S2 + Y1-Y2)**2 + 
+     @   (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z+C3A2*N2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+     @      (M1*P1X - L1*P1Y)*S1 - (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)**2)
                   DIST6=DIST**6
                   DUMMY=DUMMY+FLJ(DIST6)
                   DUMMY2=DFLJ(DIST,DIST6)
                   IF (GTEST) THEN
                      RDIST=DIST
-                     GX1=GX1+DUMMY2*D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GX1=GX1+DUMMY2*D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GY1=GY1+DUMMY2*D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GY1=GY1+DUMMY2*D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GZ1=GZ1+DUMMY2*D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GZ1=GZ1+DUMMY2*D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GL1=GL1+DUMMY2*D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GL1=GL1+DUMMY2*D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GM1=GM1+DUMMY2*D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GM1=GM1+DUMMY2*D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GN1=GN1+DUMMY2*D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GN1=GN1+DUMMY2*D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GL2=GL2+DUMMY2*DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GL2=GL2+DUMMY2*DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GM2=GM2+DUMMY2*DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GM2=GM2+DUMMY2*DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GN2=GN2+DUMMY2*DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GN2=GN2+DUMMY2*DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
                   ENDIF
                ENDDO
@@ -173,10 +173,10 @@ C
          ENDDO
       ENDDO
 
-C     WRITE(*,'(A,G20.10)') 'energy=',ESTRAND
-C     PRINT*,'coords:'
+C     WRITE(*,'(A,G20.10)') 'ENERGY=',ESTRAND
+C     PRINT*,'COORDS:'
 C     WRITE(*,'(I6,G20.10)') (J1,X(J1),J1=1,3*NATOMS)
-C     PRINT*,'gradient:'
+C     PRINT*,'GRADIENT:'
 C     WRITE(*,'(I6,G20.10)') (J1,V(J1),J1=1,3*NATOMS)
 
       RETURN

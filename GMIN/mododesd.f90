@@ -1,24 +1,24 @@
-!  GMIN: A program for finding global minima
-!  Copyright (C) 1999-2006 David J. Wales
-!  This file is part of GMIN.
+!  GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+!  COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!  THIS FILE IS PART OF GMIN.
 !
-!  GMIN is free software; you can redistribute it and/or modify
-!  it under the terms of the GNU General Public License as published by
-!  the Free Software Foundation; either version 2 of the License, or
-!  (at your option) any later version.
+!  GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!  (AT YOUR OPTION) ANY LATER VERSION.
 !
-!  GMIN is distributed in the hope that it will be useful,
-!  but WITHOUT ANY WARRANTY; without even the implied warranty of
-!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!  GNU General Public License for more details.
+!  GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!  You should have received a copy of the GNU General Public License
-!  along with this program; if not, write to the Free Software
-!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
-MODULE odesdsavear
-    implicit none
-    save
+MODULE ODESDSAVEAR
+    IMPLICIT NONE
+    SAVE
     
-    double precision, allocatable :: qcol(:,:), d(:,:) 
-END MODULE odesdsavear
+    DOUBLE PRECISION, ALLOCATABLE :: QCOL(:,:), D(:,:) 
+END MODULE ODESDSAVEAR

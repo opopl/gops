@@ -1,186 +1,186 @@
-      subroutine Rg_bias(pro_cord,f_cord,E,tempav)
+      SUBROUTINE RG_BIAS(PRO_CORD,F_CORD,E,TEMPAV)
 
 
-!     calculates the contribution to forces (ie f_cord) 
-!     and energies due to
-!     a potential that is polynomial in radius of gyration
-!     (note Rg calc from C-alpha carbons only)
+!     CALCULATES THE CONTRIBUTION TO FORCES (IE F_CORD) 
+!     AND ENERGIES DUE TO
+!     A POTENTIAL THAT IS POLYNOMIAL IN RADIUS OF GYRATION
+!     (NOTE RG CALC FROM C-ALPHA CARBONS ONLY)
 
 
-      use amhglobals,  only:SO, maxsiz,maxcrd,n_Rg_bias,Rg_biaspoly,nmres,rg_bounds,&
-           i_rg_corey, rg_shift, rg_scl,&
-           i_rg_garyk, i_rg_first, D_rg, T_rg, delR_rg, M_rg, kappa_rg, &
-           oarchv
+      USE AMHGLOBALS,  ONLY:SO, MAXSIZ,MAXCRD,N_RG_BIAS,RG_BIASPOLY,NMRES,RG_BOUNDS,&
+           I_RG_COREY, RG_SHIFT, RG_SCL,&
+           I_RG_GARYK, I_RG_FIRST, D_RG, T_RG, DELR_RG, M_RG, KAPPA_RG, &
+           OARCHV
 
      
-!     argument declarations
+!     ARGUMENT DECLARATIONS
 
-      implicit none
+      IMPLICIT NONE
       
-      logical, intent(in):: tempav
-       double precision, intent(in), dimension(maxsiz,3,maxcrd)::  pro_cord
-       double precision, intent(out), dimension(maxsiz,3,maxcrd):: f_cord
-       double precision, intent(out):: E(:,:)
+      LOGICAL, INTENT(IN):: TEMPAV
+       DOUBLE PRECISION, INTENT(IN), DIMENSION(MAXSIZ,3,MAXCRD)::  PRO_CORD
+       DOUBLE PRECISION, INTENT(OUT), DIMENSION(MAXSIZ,3,MAXCRD):: F_CORD
+       DOUBLE PRECISION, INTENT(OUT):: E(:,:)
 
-!     internal variables
+!     INTERNAL VARIABLES
       
-      integer :: i_axis,i_res,i
-      double precision, dimension(3):: r_cm=0.0D0
-      double precision :: Rg,V,dV_dRg,factor,rg_predicted
-      double precision :: alpha, beta, D, D_critical, M_rg_critical
-      double precision ::  Rg_max, delR_rg_critical,  V_max
+      INTEGER :: I_AXIS,I_RES,I
+      DOUBLE PRECISION, DIMENSION(3):: R_CM=0.0D0
+      DOUBLE PRECISION :: RG,V,DV_DRG,FACTOR,RG_PREDICTED
+      DOUBLE PRECISION :: ALPHA, BETA, D, D_CRITICAL, M_RG_CRITICAL
+      DOUBLE PRECISION ::  RG_MAX, DELR_RG_CRITICAL,  V_MAX
 
-!cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-!     zero force and energy
+!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+!     ZERO FORCE AND ENERGY
 
-      f_cord=0.0D0
+      F_CORD=0.0D0
       E=0.0D0
       D=0.0D0
      
-!           Calculate centre of mass and radius of gyration
+!           CALCULATE CENTRE OF MASS AND RADIUS OF GYRATION
 
 
       
-      do i_axis=1,3
-        r_cm(i_axis)=0.0D0
-        do i_res=1,nmres
-          r_cm(i_axis)=r_cm(i_axis)+pro_cord(i_res,i_axis,1)
-!         write(SO,*) i_res,pro_cord(i_res,i_axis,1),r_cm(i_axis)
-        enddo
-        r_cm(i_axis)=r_cm(i_axis)/dble(nmres)
-!        write(SO,*) 'final c of m',i_axis,r_cm(i_axis)
-      enddo
-!       write(SO,*) 'final c of m',(r_cm(i_axis),i_axis=1,3)
+      DO I_AXIS=1,3
+        R_CM(I_AXIS)=0.0D0
+        DO I_RES=1,NMRES
+          R_CM(I_AXIS)=R_CM(I_AXIS)+PRO_CORD(I_RES,I_AXIS,1)
+!         WRITE(SO,*) I_RES,PRO_CORD(I_RES,I_AXIS,1),R_CM(I_AXIS)
+        ENDDO
+        R_CM(I_AXIS)=R_CM(I_AXIS)/DBLE(NMRES)
+!        WRITE(SO,*) 'FINAL C OF M',I_AXIS,R_CM(I_AXIS)
+      ENDDO
+!       WRITE(SO,*) 'FINAL C OF M',(R_CM(I_AXIS),I_AXIS=1,3)
 
-      Rg=0.0D0
-      do i_axis=1,3
-      do i_res=1,nmres
-        Rg=Rg+(pro_cord(i_res,i_axis,1)-r_cm(i_axis))**2
-      enddo
-      enddo
-      Rg=dsqrt(Rg/dble(nmres))
+      RG=0.0D0
+      DO I_AXIS=1,3
+      DO I_RES=1,NMRES
+        RG=RG+(PRO_CORD(I_RES,I_AXIS,1)-R_CM(I_AXIS))**2
+      ENDDO
+      ENDDO
+      RG=DSQRT(RG/DBLE(NMRES))
 
-      rg_predicted = rg_shift*2.2D0*(dble(nmres)**0.38D0)
+      RG_PREDICTED = RG_SHIFT*2.2D0*(DBLE(NMRES)**0.38D0)
       
-      if(i_rg_garyk) then
-         ! to request a Maple worksheet for this potential, send an email to gpapoian@unc.edu 
-         ! V=(D+alpha*(R-R_0)^2)/(1+beta*(R-R_0)^4), minimum at R_0, goes to 0 at large R
-         !i_rg_garyk, D_rg, T_rg, delR_rg, M_rg, kappa_rg
-         D=D_rg*dble(nmres)
-         ! Two strategies to deal for the pole which develop for shallow D values: 
-         ! 1. to increase delR_rg, i.e. allowing larger Rg fluctuations, or  
-         ! 2. to decrease M_rg, i.e. decreasing the capture radius of the potential
-         ! An unphysically large value of M_rg (>100 instead of ~3) in the input file 
-         ! indicates that it needs to be calculated here, otherwise delR_rg is adjusted
-         if(M_rg.lt.100) then ! Physical M_rg, the user wants to adjust delR_rg, if necessary
-            delR_rg_critical=dsqrt((T_rg*(1+M_rg**2-2*M_rg))/(2*D*(kappa_rg-1)))
-            if(delR_rg.lt.delR_rg_critical) delR_rg=delR_rg_critical+0.01D0
-         endif
-         M_rg_critical=1+dsqrt((2.0D0*kappa_rg*delR_rg**2*D-2.0D0*D*delR_rg**2)/(T_rg))
-         if ((M_rg+0.1D0).gt.M_rg_critical) M_rg=M_rg_critical-0.1D0
-         alpha=T_rg/(2.0D0*(delR_rg**2)*(rg_predicted**2))
-         beta=-1.0D0*(2.0D0*kappa_rg*delR_rg**2*D-2.0D0*D*delR_rg**2-T_rg*M_rg**2+2.0D0*T_rg*M_rg-T_rg)&
-              /(2.0D0*kappa_rg*delR_rg**2*D*rg_predicted**4 &
-                *(M_rg**4-4.0D0*M_rg**3+6.0D0*M_rg**2-4.0D0*M_rg+1))
-         Rg_max=(2.0D0*alpha*beta*rg_predicted+2* &
-                 dsqrt(-1.0D0*alpha*beta**2*D+alpha*beta*dsqrt(beta**2*D**2+alpha**2*beta)))&
-                 /(2.0D0*alpha*beta)
-         D_critical=-1.0D0*(T_rg*(1+M_rg**2-2.0D0*M_rg))/(2.0D0*(1-kappa_rg)*delR_rg**2)
-         V_max=(D+alpha*(Rg_max-rg_predicted)**2)/(1+beta*(Rg_max-rg_predicted)**4)
-         if(i_rg_first) then
-            write(oarchv,99) 'Rg_bias: D_rg, delR_rg, alpha, beta, M_rg, Rg_min, Rg_max', & 
-                              D_rg, delR_rg, alpha, beta, M_rg, rg_predicted, Rg_max
-            write(oarchv,98) 'Rg_bias: V_min-V_max=', D-V_max
-98          format(a,2x,f16.8)
-            if(Rg_max<3.0D0*rg_predicted) then 
-               write (oarchv,99)'Rg_bias Warning: Capture radius may be too short, Rg_max/Rg_min=',Rg_max/rg_predicted
-               write (oarchv,99) 'Rg_bias Warning: Consider setting M_rg above 100'
-            endif
-99          format(a,2x,f12.8,2x,f12.8,2x,f12.8,2x,f12.8,2x,f12.8,2x,f12.8,2x,f12.8)
-            i_rg_first=.false.
-         endif
-         if(D.gt.D_critical) then
-            write(SO,100) 'Serious Bug: by design D_rg can not be less than D_rg_critical', D/real(nmres), D_critical/real(nmres)
-100         format(a,2x,f12.8,f12.8)
-            stop
-         endif
-      endif
+      IF(I_RG_GARYK) THEN
+         ! TO REQUEST A MAPLE WORKSHEET FOR THIS POTENTIAL, SEND AN EMAIL TO GPAPOIAN@UNC.EDU 
+         ! V=(D+ALPHA*(R-R_0)^2)/(1+BETA*(R-R_0)^4), MINIMUM AT R_0, GOES TO 0 AT LARGE R
+         !I_RG_GARYK, D_RG, T_RG, DELR_RG, M_RG, KAPPA_RG
+         D=D_RG*DBLE(NMRES)
+         ! TWO STRATEGIES TO DEAL FOR THE POLE WHICH DEVELOP FOR SHALLOW D VALUES: 
+         ! 1. TO INCREASE DELR_RG, I.E. ALLOWING LARGER RG FLUCTUATIONS, OR  
+         ! 2. TO DECREASE M_RG, I.E. DECREASING THE CAPTURE RADIUS OF THE POTENTIAL
+         ! AN UNPHYSICALLY LARGE VALUE OF M_RG (>100 INSTEAD OF ~3) IN THE INPUT FILE 
+         ! INDICATES THAT IT NEEDS TO BE CALCULATED HERE, OTHERWISE DELR_RG IS ADJUSTED
+         IF(M_RG.LT.100) THEN ! PHYSICAL M_RG, THE USER WANTS TO ADJUST DELR_RG, IF NECESSARY
+            DELR_RG_CRITICAL=DSQRT((T_RG*(1+M_RG**2-2*M_RG))/(2*D*(KAPPA_RG-1)))
+            IF(DELR_RG.LT.DELR_RG_CRITICAL) DELR_RG=DELR_RG_CRITICAL+0.01D0
+         ENDIF
+         M_RG_CRITICAL=1+DSQRT((2.0D0*KAPPA_RG*DELR_RG**2*D-2.0D0*D*DELR_RG**2)/(T_RG))
+         IF ((M_RG+0.1D0).GT.M_RG_CRITICAL) M_RG=M_RG_CRITICAL-0.1D0
+         ALPHA=T_RG/(2.0D0*(DELR_RG**2)*(RG_PREDICTED**2))
+         BETA=-1.0D0*(2.0D0*KAPPA_RG*DELR_RG**2*D-2.0D0*D*DELR_RG**2-T_RG*M_RG**2+2.0D0*T_RG*M_RG-T_RG)&
+              /(2.0D0*KAPPA_RG*DELR_RG**2*D*RG_PREDICTED**4 &
+                *(M_RG**4-4.0D0*M_RG**3+6.0D0*M_RG**2-4.0D0*M_RG+1))
+         RG_MAX=(2.0D0*ALPHA*BETA*RG_PREDICTED+2* &
+                 DSQRT(-1.0D0*ALPHA*BETA**2*D+ALPHA*BETA*DSQRT(BETA**2*D**2+ALPHA**2*BETA)))&
+                 /(2.0D0*ALPHA*BETA)
+         D_CRITICAL=-1.0D0*(T_RG*(1+M_RG**2-2.0D0*M_RG))/(2.0D0*(1-KAPPA_RG)*DELR_RG**2)
+         V_MAX=(D+ALPHA*(RG_MAX-RG_PREDICTED)**2)/(1+BETA*(RG_MAX-RG_PREDICTED)**4)
+         IF(I_RG_FIRST) THEN
+            WRITE(OARCHV,99) 'RG_BIAS: D_RG, DELR_RG, ALPHA, BETA, M_RG, RG_MIN, RG_MAX', & 
+                              D_RG, DELR_RG, ALPHA, BETA, M_RG, RG_PREDICTED, RG_MAX
+            WRITE(OARCHV,98) 'RG_BIAS: V_MIN-V_MAX=', D-V_MAX
+98          FORMAT(A,2X,F16.8)
+            IF(RG_MAX<3.0D0*RG_PREDICTED) THEN 
+               WRITE (OARCHV,99)'RG_BIAS WARNING: CAPTURE RADIUS MAY BE TOO SHORT, RG_MAX/RG_MIN=',RG_MAX/RG_PREDICTED
+               WRITE (OARCHV,99) 'RG_BIAS WARNING: CONSIDER SETTING M_RG ABOVE 100'
+            ENDIF
+99          FORMAT(A,2X,F12.8,2X,F12.8,2X,F12.8,2X,F12.8,2X,F12.8,2X,F12.8,2X,F12.8)
+            I_RG_FIRST=.FALSE.
+         ENDIF
+         IF(D.GT.D_CRITICAL) THEN
+            WRITE(SO,100) 'SERIOUS BUG: BY DESIGN D_RG CAN NOT BE LESS THAN D_RG_CRITICAL', D/REAL(NMRES), D_CRITICAL/REAL(NMRES)
+100         FORMAT(A,2X,F12.8,F12.8)
+            STOP
+         ENDIF
+      ENDIF
          
-!cccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-!           Calculate V(Rg) (if needed) 
+!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+!           CALCULATE V(RG) (IF NEEDED) 
 
-      if (tempav) then
+      IF (TEMPAV) THEN
          V=0.0D0
-         if (i_rg_corey) then
-            if (Rg/rg_predicted .lt. rg_bounds(1)) then
-               V=rg_scl*10.0D0*(rg_bounds(1)*rg_predicted - rg_predicted)**2
-               dV_dRg=0.0D0      
-            elseif (Rg/rg_predicted .gt. rg_bounds(2)) then
-               V=rg_scl*10.0D0*(rg_bounds(2)*rg_predicted - rg_predicted)**2
-               dV_dRg=0.0D0      
-            else
-               V=rg_scl*10.0D0*(Rg - rg_predicted)**2
-               dV_dRg= rg_scl*20.0D0*(Rg - rg_predicted)
-            endif
-         elseif(i_rg_garyk) then
-            if(Rg.lt.Rg_max) then
-               V=(D+alpha*(Rg-rg_predicted)**2)/(1+beta*(Rg-rg_predicted)**4)
-               dV_dRg=(2*alpha*(Rg-rg_predicted))/(1+beta*(Rg-rg_predicted)**4)-&
-                    (4*beta*(D+alpha*(Rg-rg_predicted)**2)*(Rg-rg_predicted)**3)/ &
-                                      (1+beta*(Rg-rg_predicted)**4)**2
-            else
-               V=(D+alpha*(Rg_max-rg_predicted)**2)/ &
-                         (1+beta*(Rg_max-rg_predicted)**4)
-               dV_dRg=0.0D0
-            endif
-            write(SO,1000) 'Rg, rg_predicted, Rg_max, V, dV_dRg', &
-                          Rg, rg_predicted, Rg_max, V, dV_dRg
-1000   format(a,2x,f9.3,2x,f9.3,2x,f9.3,2x,f9.3,2x,f9.3)
-         else
-            do i=1,n_Rg_bias
-               V=V+Rg_biaspoly(i)*Rg**i
-            enddo
-            dV_dRg=0.0D0      
-            do i=1,n_Rg_bias
-               dV_dRg=dV_dRg+dble(i)*Rg_biaspoly(i)*Rg**(i-1)
-            enddo
-         endif
+         IF (I_RG_COREY) THEN
+            IF (RG/RG_PREDICTED .LT. RG_BOUNDS(1)) THEN
+               V=RG_SCL*10.0D0*(RG_BOUNDS(1)*RG_PREDICTED - RG_PREDICTED)**2
+               DV_DRG=0.0D0      
+            ELSEIF (RG/RG_PREDICTED .GT. RG_BOUNDS(2)) THEN
+               V=RG_SCL*10.0D0*(RG_BOUNDS(2)*RG_PREDICTED - RG_PREDICTED)**2
+               DV_DRG=0.0D0      
+            ELSE
+               V=RG_SCL*10.0D0*(RG - RG_PREDICTED)**2
+               DV_DRG= RG_SCL*20.0D0*(RG - RG_PREDICTED)
+            ENDIF
+         ELSEIF(I_RG_GARYK) THEN
+            IF(RG.LT.RG_MAX) THEN
+               V=(D+ALPHA*(RG-RG_PREDICTED)**2)/(1+BETA*(RG-RG_PREDICTED)**4)
+               DV_DRG=(2*ALPHA*(RG-RG_PREDICTED))/(1+BETA*(RG-RG_PREDICTED)**4)-&
+                    (4*BETA*(D+ALPHA*(RG-RG_PREDICTED)**2)*(RG-RG_PREDICTED)**3)/ &
+                                      (1+BETA*(RG-RG_PREDICTED)**4)**2
+            ELSE
+               V=(D+ALPHA*(RG_MAX-RG_PREDICTED)**2)/ &
+                         (1+BETA*(RG_MAX-RG_PREDICTED)**4)
+               DV_DRG=0.0D0
+            ENDIF
+            WRITE(SO,1000) 'RG, RG_PREDICTED, RG_MAX, V, DV_DRG', &
+                          RG, RG_PREDICTED, RG_MAX, V, DV_DRG
+1000   FORMAT(A,2X,F9.3,2X,F9.3,2X,F9.3,2X,F9.3,2X,F9.3)
+         ELSE
+            DO I=1,N_RG_BIAS
+               V=V+RG_BIASPOLY(I)*RG**I
+            ENDDO
+            DV_DRG=0.0D0      
+            DO I=1,N_RG_BIAS
+               DV_DRG=DV_DRG+DBLE(I)*RG_BIASPOLY(I)*RG**(I-1)
+            ENDDO
+         ENDIF
          E(1,12)=E(1,12)+V
-      endif
+      ENDIF
 
-!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-! calculate dV(Rg)/dRg  
-
-
-      dV_dRg=0.0D0      
-      if (i_rg_corey) then
-         if ( (Rg/rg_predicted .gt. rg_bounds(1)) .and.&
-              (Rg/rg_predicted .lt. rg_bounds(2)) ) then
-            dV_dRg= rg_scl*20.0D0*(Rg - rg_predicted)
-         endif
-      elseif(i_rg_garyk) then
-         if(Rg.lt.Rg_max) then
-            dV_dRg=(2*alpha*(Rg-rg_predicted))/(1+beta*(Rg-rg_predicted)**4)-&
-                 (4*beta*(D+alpha*(Rg-rg_predicted)**2)*&
-                    (Rg-rg_predicted)**3)/(1+beta*(Rg-rg_predicted)**4)**2
-         endif
-      else
-         do i=1,n_Rg_bias
-            dV_dRg=dV_dRg+dble(i)*Rg_biaspoly(i)*Rg**(i-1)
-         enddo
-      endif
-
-!cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-!        calculate contribution to force, and add to f_cord
-
-      factor=-dV_dRg/(dble(nmres)*Rg)
-!     write(SO,*) (f_cord(50,i_axis,1),i_axis=1,3)
-      do i_axis=1,3
-      do i_res=1,nmres
-        f_cord(i_res,i_axis,1)=f_cord(i_res,i_axis,1)+          &
-                 (pro_cord(i_res,i_axis,1)-r_cm(i_axis))*factor
-      enddo
-      enddo
+!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+! CALCULATE DV(RG)/DRG  
 
 
-      end
+      DV_DRG=0.0D0      
+      IF (I_RG_COREY) THEN
+         IF ( (RG/RG_PREDICTED .GT. RG_BOUNDS(1)) .AND.&
+              (RG/RG_PREDICTED .LT. RG_BOUNDS(2)) ) THEN
+            DV_DRG= RG_SCL*20.0D0*(RG - RG_PREDICTED)
+         ENDIF
+      ELSEIF(I_RG_GARYK) THEN
+         IF(RG.LT.RG_MAX) THEN
+            DV_DRG=(2*ALPHA*(RG-RG_PREDICTED))/(1+BETA*(RG-RG_PREDICTED)**4)-&
+                 (4*BETA*(D+ALPHA*(RG-RG_PREDICTED)**2)*&
+                    (RG-RG_PREDICTED)**3)/(1+BETA*(RG-RG_PREDICTED)**4)**2
+         ENDIF
+      ELSE
+         DO I=1,N_RG_BIAS
+            DV_DRG=DV_DRG+DBLE(I)*RG_BIASPOLY(I)*RG**(I-1)
+         ENDDO
+      ENDIF
+
+!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+!        CALCULATE CONTRIBUTION TO FORCE, AND ADD TO F_CORD
+
+      FACTOR=-DV_DRG/(DBLE(NMRES)*RG)
+!     WRITE(SO,*) (F_CORD(50,I_AXIS,1),I_AXIS=1,3)
+      DO I_AXIS=1,3
+      DO I_RES=1,NMRES
+        F_CORD(I_RES,I_AXIS,1)=F_CORD(I_RES,I_AXIS,1)+          &
+                 (PRO_CORD(I_RES,I_AXIS,1)-R_CM(I_AXIS))*FACTOR
+      ENDDO
+      ENDDO
+
+
+      END

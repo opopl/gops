@@ -1,97 +1,97 @@
 
-c     --------------------- hforce.f ----------------------
+C     --------------------- HFORCE.F ----------------------
 
-      subroutine hforce(h_cord,nitcord,idx1,idx2,r1,r2,pot,factor,
-     *  i_class,f_cord)
+      SUBROUTINE HFORCE(H_CORD,NITCORD,IDX1,IDX2,R1,R2,POT,FACTOR,
+     *  I_CLASS,F_CORD)
  
-c     --------------------------------------------------
+C     --------------------------------------------------
 
-c     hdrgn finds the  potential due to hydrogen bonds between N and O     
+C     HDRGN FINDS THE  POTENTIAL DUE TO HYDROGEN BONDS BETWEEN N AND O     
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-      use amhglobals,  only:maxsiz,maxcrd, prcord,ho_zero,NO_zero,sigma_NO,sigma_h,hbscl
+      USE AMHGLOBALS,  ONLY:MAXSIZ,MAXCRD, PRCORD,HO_ZERO,NO_ZERO,SIGMA_NO,SIGMA_H,HBSCL
 
-      implicit none
+      IMPLICIT NONE
 
 
-c     argument declarations:
+C     ARGUMENT DECLARATIONS:
 
           
-              double precision  h_cord(maxsiz,3),f_cord(maxsiz,3,maxcrd)
+              DOUBLE PRECISION  H_CORD(MAXSIZ,3),F_CORD(MAXSIZ,3,MAXCRD)
 
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-         integer idx1,idx2 
-c        --- do loop indices ---
+         INTEGER IDX1,IDX2 
+C        --- DO LOOP INDICES ---
 
-         integer i_axis,i_class 
-
-
-         double precision  r1,factor,
-     *         pot,
-     *         nitcord(maxsiz,3),
-     *         r2,
-     *         dV_drNO,dV_drHO,drNO_dO(3),
-     *         drNO_dN(3),drHO_dO(3),drHO_dH(3)
-
-c     --------------------- begin -----------------------
+         INTEGER I_AXIS,I_CLASS 
 
 
-c     find force due to hbonds
+         DOUBLE PRECISION  R1,FACTOR,
+     *         POT,
+     *         NITCORD(MAXSIZ,3),
+     *         R2,
+     *         DV_DRNO,DV_DRHO,DRNO_DO(3),
+     *         DRNO_DN(3),DRHO_DO(3),DRHO_DH(3)
 
-c do *NOT* zero f_cord here because the caller (hdrgn) is working out running total
+C     --------------------- BEGIN -----------------------
 
-        dV_drNO = -hbscl(i_class)*pot*((r1 - NO_zero)/
-     *                                    (sigma_NO**2))*factor
-        dV_drHO = -hbscl(i_class)*pot*((r2 - ho_zero)/
-     *                                    (sigma_h**2))*factor
 
-        do i_axis = 1,3
+C     FIND FORCE DUE TO HBONDS
+
+C DO *NOT* ZERO F_CORD HERE BECAUSE THE CALLER (HDRGN) IS WORKING OUT RUNNING TOTAL
+
+        DV_DRNO = -HBSCL(I_CLASS)*POT*((R1 - NO_ZERO)/
+     *                                    (SIGMA_NO**2))*FACTOR
+        DV_DRHO = -HBSCL(I_CLASS)*POT*((R2 - HO_ZERO)/
+     *                                    (SIGMA_H**2))*FACTOR
+
+        DO I_AXIS = 1,3
         
-        drNO_dO(i_axis) = 
-     *  (prcord(idx1,i_axis,1,3)-nitcord(idx2,i_axis)) /r1 
+        DRNO_DO(I_AXIS) = 
+     *  (PRCORD(IDX1,I_AXIS,1,3)-NITCORD(IDX2,I_AXIS)) /R1 
 
-        drNO_dN(i_axis) = 
-     *  -(prcord(idx1,i_axis,1,3)-nitcord(idx2,i_axis)) /r1 
+        DRNO_DN(I_AXIS) = 
+     *  -(PRCORD(IDX1,I_AXIS,1,3)-NITCORD(IDX2,I_AXIS)) /R1 
 
-        drHO_dO(i_axis) =
-     *  (prcord(idx1,i_axis,1,3)-h_cord(idx2,i_axis))/r2
+        DRHO_DO(I_AXIS) =
+     *  (PRCORD(IDX1,I_AXIS,1,3)-H_CORD(IDX2,I_AXIS))/R2
 
-        drHO_dH(i_axis) = 
-     *  -(prcord(idx1,i_axis,1,3)-h_cord(idx2,i_axis))/r2
+        DRHO_DH(I_AXIS) = 
+     *  -(PRCORD(IDX1,I_AXIS,1,3)-H_CORD(IDX2,I_AXIS))/R2
 
-c        vec1 is the force vector acting on N
+C        VEC1 IS THE FORCE VECTOR ACTING ON N
 
-c        vec1(i_axis) = -1.0*drNO_dN(i_axis)*dV_drNO
-c        vec2(i_axis) = -1.0*dV_drHO*drHO_dH(i_axis)
-c        vec3(i_axis)=
-c    *  prcord(idx1,i_axis,1,3)-nitcord(idx2,i_axis)
+C        VEC1(I_AXIS) = -1.0*DRNO_DN(I_AXIS)*DV_DRNO
+C        VEC2(I_AXIS) = -1.0*DV_DRHO*DRHO_DH(I_AXIS)
+C        VEC3(I_AXIS)=
+C    *  PRCORD(IDX1,I_AXIS,1,3)-NITCORD(IDX2,I_AXIS)
 
-        f_cord(idx2,i_axis,1) = f_cord(idx2,i_axis,1) -
-     *  dV_drNO*drNO_dN(i_axis)*0.7032820        
-        f_cord(idx2,i_axis,1) = f_cord(idx2,i_axis,1) -
-     *  dV_drHO*drHO_dH(i_axis)*0.8929599
+        F_CORD(IDX2,I_AXIS,1) = F_CORD(IDX2,I_AXIS,1) -
+     *  DV_DRNO*DRNO_DN(I_AXIS)*0.7032820        
+        F_CORD(IDX2,I_AXIS,1) = F_CORD(IDX2,I_AXIS,1) -
+     *  DV_DRHO*DRHO_DH(I_AXIS)*0.8929599
 
-        f_cord(idx2-1,i_axis,1) = f_cord(idx2-1,i_axis,1) -     
-     *  dV_drNO*drNO_dN(i_axis)*0.4831806   
-        f_cord(idx2-1,i_axis,1) = f_cord(idx2-1,i_axis,1) -
-     *  dV_drHO*drHO_dH(i_axis)*0.8409657
+        F_CORD(IDX2-1,I_AXIS,1) = F_CORD(IDX2-1,I_AXIS,1) -     
+     *  DV_DRNO*DRNO_DN(I_AXIS)*0.4831806   
+        F_CORD(IDX2-1,I_AXIS,1) = F_CORD(IDX2-1,I_AXIS,1) -
+     *  DV_DRHO*DRHO_DH(I_AXIS)*0.8409657
 
-        f_cord(idx1,i_axis,3) = f_cord(idx1,i_axis,3) -     
-     *  dV_drNO*drNO_dO(i_axis)   
-        f_cord(idx1,i_axis,3) = f_cord(idx1,i_axis,3) -
-     *  dV_drHO*drHO_dO(i_axis)
+        F_CORD(IDX1,I_AXIS,3) = F_CORD(IDX1,I_AXIS,3) -     
+     *  DV_DRNO*DRNO_DO(I_AXIS)   
+        F_CORD(IDX1,I_AXIS,3) = F_CORD(IDX1,I_AXIS,3) -
+     *  DV_DRHO*DRHO_DO(I_AXIS)
 
-        f_cord(idx2-1,i_axis,3) = f_cord(idx2-1,i_axis,3) + 
-     *  dV_drNO*drNO_dN(i_axis)*0.1864626   
-        f_cord(idx2-1,i_axis,3) = f_cord(idx2-1,i_axis,3) +
-     *  dV_drHO*drHO_dH(i_axis)*0.7338894
+        F_CORD(IDX2-1,I_AXIS,3) = F_CORD(IDX2-1,I_AXIS,3) + 
+     *  DV_DRNO*DRNO_DN(I_AXIS)*0.1864626   
+        F_CORD(IDX2-1,I_AXIS,3) = F_CORD(IDX2-1,I_AXIS,3) +
+     *  DV_DRHO*DRHO_DH(I_AXIS)*0.7338894
 
-        enddo  ! i_axis        
+        ENDDO  ! I_AXIS        
 
 
-c     ----------------------- done -----------------------
+C     ----------------------- DONE -----------------------
 
-      return
-      end
+      RETURN
+      END

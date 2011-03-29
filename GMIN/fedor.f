@@ -1,47 +1,47 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 
-           SUBROUTINE ASAR1(R,Ex,Ex1)
-c          REAL*8  FUNCTION UTN(R,I,IP)
+           SUBROUTINE ASAR1(R,EX,EX1)
+C          REAL*8  FUNCTION UTN(R,I,IP)
 C  TERM X0G+ AR2 (AZIZ - JCP 99 (1993) 4518)
-      implicit DOUBLE PRECISION (a-h,o-z)
-      save
-      DATA E/143.235d0/,Rm/3.757d0/, A/9.03228328d0/,B/-2.37132823d0/,
-     * C6,C8,C10/1.09309955d0,.51568309d0,.32521242d0/,AA/8.73933927D4/
-     *,C12,C14/.27818156d0,.31111959d0/,ro/1.107d0/
-     *,NCALL/1/,Ekau/3.1668d-6/,Rau/0.52918d0/
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      SAVE
+      DATA E/143.235D0/,RM/3.757D0/, A/9.03228328D0/,B/-2.37132823D0/,
+     * C6,C8,C10/1.09309955D0,.51568309D0,.32521242D0/,AA/8.73933927D4/
+     *,C12,C14/.27818156D0,.31111959D0/,RO/1.107D0/
+     *,NCALL/1/,EKAU/3.1668D-6/,RAU/0.52918D0/
       IF(NCALL.EQ.1) THEN
-      Rm=Rm/Rau
-      E=E*Ekau
-      g61=2.1d0/6.d0
-      g62=0.109d0/sqrt(6.d0)
-      g81=2.1d0/8.d0
-      g82=0.109d0/sqrt(8.d0)
-      g101=2.1d-1
-      g102=0.109d0/sqrt(10.d0)
-      g121=2.1d0/12.d0
-      g122=0.109d0/sqrt(12.d0)
-      g141=0.15d0
-      g142=0.109d0/sqrt(14.d0)
+      RM=RM/RAU
+      E=E*EKAU
+      G61=2.1D0/6.D0
+      G62=0.109D0/SQRT(6.D0)
+      G81=2.1D0/8.D0
+      G82=0.109D0/SQRT(8.D0)
+      G101=2.1D-1
+      G102=0.109D0/SQRT(10.D0)
+      G121=2.1D0/12.D0
+      G122=0.109D0/SQRT(12.D0)
+      G141=0.15D0
+      G142=0.109D0/SQRT(14.D0)
       NCALL=2
                      END IF
-      X=R/Rm
+      X=R/RM
       X2=X*X
       X4=X2*X2
       X6=X4*X2
@@ -54,84 +54,84 @@ C  TERM X0G+ AR2 (AZIZ - JCP 99 (1993) 4518)
       C10X10=C10/X10
       C12X12=C12/X12
       C14X14=C14/X14
-      rr=ro*R
-      F=1.d0-rr**1.68*exp(-0.78d0*rr)
-      g6s=1.d0-exp(-g61*rr-g62*rr*rr)
-      g6d=g6s*g6s
-      g6t=g6d*g6d
-      g6=g6t*g6d
-      g8s=1.d0-exp(-g81*rr-g82*rr*rr)
-      g8d=g8s*g8s
-      g8t=g8d*g8d
-      g8=g8t*g8t
-      g10s=1.d0-exp(-g101*rr-g102*rr*rr)
-      g10d=g10s*g10s
-      g10t=g10d*g10d
-      g10=g10t*g10t*g10d
-      g12s=1.d0-exp(-g121*rr-g122*rr*rr)
-      g12d=g12s*g12s
-      g12t=g12d*g12d
-      g12=g12t*g12t*g12t
-      g14s=1.d0-exp(-g141*rr-g142*rr*rr)
-      g14d=g14s*g14s
-      g14t=g14d*g14d
-      g14o=g14t*g14t
-      g14=g14o*g14t*g14d
-      Vscf=AA*EXP((-A+B*X)*X)
-      Vdisp=-F*(C6X6*g6+C8X8*g8+C10X10*g10+C12X12*g12+C14X14*g14)
+      RR=RO*R
+      F=1.D0-RR**1.68*EXP(-0.78D0*RR)
+      G6S=1.D0-EXP(-G61*RR-G62*RR*RR)
+      G6D=G6S*G6S
+      G6T=G6D*G6D
+      G6=G6T*G6D
+      G8S=1.D0-EXP(-G81*RR-G82*RR*RR)
+      G8D=G8S*G8S
+      G8T=G8D*G8D
+      G8=G8T*G8T
+      G10S=1.D0-EXP(-G101*RR-G102*RR*RR)
+      G10D=G10S*G10S
+      G10T=G10D*G10D
+      G10=G10T*G10T*G10D
+      G12S=1.D0-EXP(-G121*RR-G122*RR*RR)
+      G12D=G12S*G12S
+      G12T=G12D*G12D
+      G12=G12T*G12T*G12T
+      G14S=1.D0-EXP(-G141*RR-G142*RR*RR)
+      G14D=G14S*G14S
+      G14T=G14D*G14D
+      G14O=G14T*G14T
+      G14=G14O*G14T*G14D
+      VSCF=AA*EXP((-A+B*X)*X)
+      VDISP=-F*(C6X6*G6+C8X8*G8+C10X10*G10+C12X12*G12+C14X14*G14)
 
-        Ex=(Vscf+Vdisp)*E
+        EX=(VSCF+VDISP)*E
 
-      Vscf1=Vscf*(-A+2.d0*B*X)
-      F1=(F-1.d0)*(1.68d0/rr-0.78d0)
-      g6p=6.d0*g6/g6s*(1.d0-g6s)*(g61+2.d0*g62*rr)
-      g8p=8.d0*g8/g8s*(1.d0-g8s)*(g81+2.d0*g82*rr)
-      g10p=10.d0*g10/g10s*(1.d0-g10s)*(g101+2.d0*g102*rr)
-      g12p=12.d0*g12/g12s*(1.d0-g12s)*(g121+2.d0*g122*rr)
-      g14p=14.d0*g14/g14s*(1.d0-g14s)*(g141+2.d0*g142*rr)
-      Vdisp1=ro*Rm*(F1*Vdisp/F
-     &-F*(C6X6*g6p+C8X8*g8p+C10X10*g10p+C12X12*g12p+C14X14*g14p))
-     &+F*(6.d0*C6X6*g6+8.d0*C8X8*g8+10.d0*C10X10*g10
-     &+12.d0*C12X12*g12+14.d0*C14X14*g14)/X
+      VSCF1=VSCF*(-A+2.D0*B*X)
+      F1=(F-1.D0)*(1.68D0/RR-0.78D0)
+      G6P=6.D0*G6/G6S*(1.D0-G6S)*(G61+2.D0*G62*RR)
+      G8P=8.D0*G8/G8S*(1.D0-G8S)*(G81+2.D0*G82*RR)
+      G10P=10.D0*G10/G10S*(1.D0-G10S)*(G101+2.D0*G102*RR)
+      G12P=12.D0*G12/G12S*(1.D0-G12S)*(G121+2.D0*G122*RR)
+      G14P=14.D0*G14/G14S*(1.D0-G14S)*(G141+2.D0*G142*RR)
+      VDISP1=RO*RM*(F1*VDISP/F
+     &-F*(C6X6*G6P+C8X8*G8P+C10X10*G10P+C12X12*G12P+C14X14*G14P))
+     &+F*(6.D0*C6X6*G6+8.D0*C8X8*G8+10.D0*C10X10*G10
+     &+12.D0*C12X12*G12+14.D0*C14X14*G14)/X
 
-        Ex1=(Vscf1+Vdisp1)*E/Rm
+        EX1=(VSCF1+VDISP1)*E/RM
 
       RETURN
       END
 
 
 
-      subroutine energyar(r,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
-      implicit NONE
-      DOUBLE PRECISION r,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1
-      DOUBLE PRECISION r0,ut1,ar2ut0
-      save
+      SUBROUTINE ENERGYAR(R,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
+      IMPLICIT NONE
+      DOUBLE PRECISION R,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1
+      DOUBLE PRECISION R0,UT1,AR2UT0
+      SAVE
 
-      r0=r
-      Esu=ar2ut0(r0,1,ut1)
-      Esu1=ut1
-        Esg=ar2ut0(r0,2,ut1)  
-      Esg1=ut1
-        Epu=ar2ut0(r0,3,ut1)  
-      Epu1=ut1
-        Epg=ar2ut0(r0,4,ut1)  
-      Epg1=ut1
-      call asar1(r,Ex,Ex1)
-      return
-      end
+      R0=R
+      ESU=AR2UT0(R0,1,UT1)
+      ESU1=UT1
+        ESG=AR2UT0(R0,2,UT1)  
+      ESG1=UT1
+        EPU=AR2UT0(R0,3,UT1)  
+      EPU1=UT1
+        EPG=AR2UT0(R0,4,UT1)  
+      EPG1=UT1
+      CALL ASAR1(R,EX,EX1)
+      RETURN
+      END
 
-          DOUBLE PRECISION  FUNCTION ar2UT0(RR,I,UT1)
-      implicit NONE
+          DOUBLE PRECISION  FUNCTION AR2UT0(RR,I,UT1)
+      IMPLICIT NONE
       INTEGER NB(8)
       INTEGER, DIMENSION(8) :: NB0=(/ 17,17,17,17,17,17,17,17 /)
       INTEGER :: NF=8
       INTEGER :: NCALL=1
-      INTEGER nend(8)
+      INTEGER NEND(8)
 C    * ,L(8)
       DOUBLE PRECISION COEF(4,33,8),RR,UT1,SOAT,EAS,RMIN,RFNBI,AAE,AE,PPVALU
       INTEGER I,NF1,J,J1,JN,JJ,N1,NN,IBCBEG,K,NENDI,NBI,NB0I
 C    * ,BREAK(33,8),S(17,6)
-CCC  AR2* (Spiegelmann,1984)
+CCC  AR2* (SPIEGELMANN,1984)
       DOUBLE PRECISION, DIMENSION(136) ::  RF= (/
      * 4.,4.5,4.6,4.7,4.8,5.,5.25,5.5,6.,6.5,7.,7.5,8.,9.,10.,12.,15.,
      * 4.,4.5,4.6,4.7,4.8,5.,5.25,5.5,6.,6.5,7.,7.5,8.,9.,10.,12.,15.,
@@ -166,31 +166,31 @@ CCC  AR2* (Spiegelmann,1984)
      *-.50591,-.52605,-.52647,-.52620,-.52543,-.52757,-.53254,-.53525,    
      *-.53755,-.53869,-.53888,-.53900,-.53912,-.53931,-.53937,-.53924,
      *-.53889 /)
-        save
+        SAVE
 
-      ar2ut0=0.0
-      ut1=0.0
-      IF(I.GT.NF) return
+      AR2UT0=0.0
+      UT1=0.0
+      IF(I.GT.NF) RETURN
       IF(NCALL.GT.1) GO TO 5
 
       NCALL=2
-      soat=soat/8065/27.212
+      SOAT=SOAT/8065/27.212
       NB(1)=1
       NF1=NF-1
       DO 3 J=1,NF1
     3 NB(J+1)=NB(J)+NB0(J)
-c     EAS=0.
+C     EAS=0.
       EAS=ENF(NB0(1))
       RMIN=0.
       DO 2 J=1,NF
       J1=NB(J)
       JN=J1+NB0(J)-1
-      nend(j)=jn
+      NEND(J)=JN
       RMIN=MAX(RMIN,RF(J1))
 C     EAS=ENF(JN)
       DO 1 JJ=J1,JN
       ENF(JJ)=ENF(JJ)-EAS 
-    1 continue
+    1 CONTINUE
     2 CONTINUE
 
       DO 4 J=1,NF
@@ -210,1043 +210,1043 @@ C     CALL TAUTSP(RF(NB(J)),ENF(NB(J)),NB0(J),GAM,S,BREAK(1,J),
 C    *                                  COEF(1,1,J),L(J),K,IFLAG)
     4 CONTINUE
 
-    5 continue
+    5 CONTINUE
         NENDI=NEND(I)
-      IF(RR.LT.RF(NENDI)) then
-        nbi=nb(i)
-        nb0i=nb0(i)
-        rfnbi=rf(nbi)
-      if(rr.lt.rfnbi) then
-      AAe=enf(nbi) +0.1
-      ae=-PPVALU(RF(NBI),COEF(1,1,I),NB0I,4,rfnbi,1)/AAe
-      ar2ut0=AAe*exp(-ae*(rr-rfnbi)) -0.1
-      ut1=-ae*(ar2ut0 +0.1)
-                  else
+      IF(RR.LT.RF(NENDI)) THEN
+        NBI=NB(I)
+        NB0I=NB0(I)
+        RFNBI=RF(NBI)
+      IF(RR.LT.RFNBI) THEN
+      AAE=ENF(NBI) +0.1
+      AE=-PPVALU(RF(NBI),COEF(1,1,I),NB0I,4,RFNBI,1)/AAE
+      AR2UT0=AAE*EXP(-AE*(RR-RFNBI)) -0.1
+      UT1=-AE*(AR2UT0 +0.1)
+                  ELSE
 C     UT0=PPVALU(BREAK(1,I),COEF(1,1,I),L(I),4,RR,0)
-      ar2UT0=PPVALU(RF(NBI),COEF(1,1,I),NB0I,4,RR,0)
+      AR2UT0=PPVALU(RF(NBI),COEF(1,1,I),NB0I,4,RR,0)
       UT1=PPVALU(RF(NBI),COEF(1,1,I),NB0I,4,RR,1) 
-                  end if
-                      else
-      ar2UT0=ENF(NENDI)
+                  END IF
+                      ELSE
+      AR2UT0=ENF(NENDI)
       UT1=0.0
-                      end if
+                      END IF
       RETURN
         END
 
 
-      subroutine rgnii(n,x,grad,ereal,gradt) !  ,h0,h1,ee,ev,w,natoms))
-      implicit DOUBLE PRECISION (a-h,o-z)
-      save
-        DOUBLE PRECISION x(3,n),h0(9*n*(n-1)/2,9*n*(n-1)/2)
-     &        ,h1(9*n*(n-1)/2,9*n*(n-1)/2)
-     &        ,grad(n*3),ee(9*n*(n-1)/2),ev(9*n*(n-1)/2,9*n*(n-1)/2)
-     &        ,w(9*n*(n-1)/2,1)
-      logical gradt
+      SUBROUTINE RGNII(N,X,GRAD,EREAL,GRADT) !  ,H0,H1,EE,EV,W,NATOMS))
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      SAVE
+        DOUBLE PRECISION X(3,N),H0(9*N*(N-1)/2,9*N*(N-1)/2)
+     &        ,H1(9*N*(N-1)/2,9*N*(N-1)/2)
+     &        ,GRAD(N*3),EE(9*N*(N-1)/2),EV(9*N*(N-1)/2,9*N*(N-1)/2)
+     &        ,W(9*N*(N-1)/2,1)
+      LOGICAL GRADT
         INTEGER INFO
         DOUBLE PRECISION TEMPA(9*N)
-      data iev/1/, ncall/1/, shift/10.0d0/
-      n3=9*n*(n-1)/2
+      DATA IEV/1/, NCALL/1/, SHIFT/10.0D0/
+      N3=9*N*(N-1)/2
 
-        id=1
-        it=0
-      call hmatd(x,n,n3,h0,h1,h2,0)
-      if(ncall.eq.1.or.it.eq.0) then
-         if(id.eq.0) then
-C            call jacob2(h0,ev,w(1,1),ee,w(1,2),n3,iev)
-                     else
-C       call tred2(h0,n3,n3,ee,w(1,1),iev)
-C       call tqli(ee,w(1,1),n3,n3,h0,iev)
+        ID=1
+        IT=0
+      CALL HMATD(X,N,N3,H0,H1,H2,0)
+      IF(NCALL.EQ.1.OR.IT.EQ.0) THEN
+         IF(ID.EQ.0) THEN
+C            CALL JACOB2(H0,EV,W(1,1),EE,W(1,2),N3,IEV)
+                     ELSE
+C       CALL TRED2(H0,N3,N3,EE,W(1,1),IEV)
+C       CALL TQLI(EE,W(1,1),N3,N3,H0,IEV)
 
         CALL DSYEV('V','U',N3,H0,N3,EE,TEMPA,9*N,INFO)
         IF (INFO.NE.0) THEN
-           PRINT*,'WARNING - INFO=',INFO,' in DSYEV'
+           PRINT*,'WARNING - INFO=',INFO,' IN DSYEV'
         ENDIF
 
-      do i=1,n3
-      do j=1,n3
-      ev(i,j)=h0(i,j)
-      enddo
-      enddo
-                     end if
-      call sortv(ee,ev,n3,iev)
-      ereal=ee(n3)
-      ncall=2
-                                else
-      do i=1,n3
-      h0(i,i)=h0(i,i)-shift
-      enddo
-C       call iteig(h0,ev(1,n3),ereal,w(1,1),w(1,2),n3)
-      ereal=ereal+shift
-                                end if
+      DO I=1,N3
+      DO J=1,N3
+      EV(I,J)=H0(I,J)
+      ENDDO
+      ENDDO
+                     END IF
+      CALL SORTV(EE,EV,N3,IEV)
+      EREAL=EE(N3)
+      NCALL=2
+                                ELSE
+      DO I=1,N3
+      H0(I,I)=H0(I,I)-SHIFT
+      ENDDO
+C       CALL ITEIG(H0,EV(1,N3),EREAL,W(1,1),W(1,2),N3)
+      EREAL=EREAL+SHIFT
+                                END IF
 
-      if(gradt) then
+      IF(GRADT) THEN
 
-      do i=1,n*3
-      call hmatd(x,n,n3,h0,h1,h2,i)
-      vhvi=0.0d0
-      do j=1,n3
-      vh=0.0d0
-      do k=1,n3
-      vh=vh+ev(k,n3)*h1(k,j)
-      enddo
-      vhvi=vhvi+vh*ev(j,n3)
-      enddo
-      grad(i)=vhvi
-      enddo
+      DO I=1,N*3
+      CALL HMATD(X,N,N3,H0,H1,H2,I)
+      VHVI=0.0D0
+      DO J=1,N3
+      VH=0.0D0
+      DO K=1,N3
+      VH=VH+EV(K,N3)*H1(K,J)
+      ENDDO
+      VHVI=VHVI+VH*EV(J,N3)
+      ENDDO
+      GRAD(I)=VHVI
+      ENDDO
 
-              end if
-      return
-      end
-c ------------------------------------------------------------
-c      real*8 function energy(r0,i,ip)
-c      real*8 r0
-c      r=r0
-c      energy=ut(r,i,ip)
-c      return
-c      end
-      subroutine hmatd(x,n,n3,h0,h1,h2,igrad)
-      USE commons
-      implicit DOUBLE PRECISION (a-h,o-z)
-      save
-C        common/test/itest
-      DOUBLE PRECISION x(3,n),h0(9*n*(n-1)/2,9*n*(n-1)/2)
-     1               ,h1(9*n*(n-1)/2,9*n*(n-1)/2)
+              END IF
+      RETURN
+      END
+C ------------------------------------------------------------
+C      REAL*8 FUNCTION ENERGY(R0,I,IP)
+C      REAL*8 R0
+C      R=R0
+C      ENERGY=UT(R,I,IP)
+C      RETURN
+C      END
+      SUBROUTINE HMATD(X,N,N3,H0,H1,H2,IGRAD)
+      USE COMMONS
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      SAVE
+C        COMMON/TEST/ITEST
+      DOUBLE PRECISION X(3,N),H0(9*N*(N-1)/2,9*N*(N-1)/2)
+     1               ,H1(9*N*(N-1)/2,9*N*(N-1)/2)
 
-      data RauA/0.52918d0/ ,Runit/1.d0/
-c           isu/1/,isg/2/,ipu/3/,ipg/4/,ix/5/
+      DATA RAUA/0.52918D0/ ,RUNIT/1.D0/
+C           ISU/1/,ISG/2/,IPU/3/,IPG/4/,IX/5/
 
 
-C       IF (9*n*(n-1)/2.GT.3*MXATMS) THEN
-C          PRINT*,'Increase MXATMS for hmatd'
+C       IF (9*N*(N-1)/2.GT.3*MXATMS) THEN
+C          PRINT*,'INCREASE MXATMS FOR HMATD'
 C          STOP
 C       ENDIF
-        IF (NEON) Runit=RauA
+        IF (NEON) RUNIT=RAUA
       
-      if(igrad.ne.0) go to 10
+      IF(IGRAD.NE.0) GO TO 10
 
-      nn9=9*n*(n-1)/2
-      do i=1,nn9
-      do j=1,nn9
-      h0(i,j)=0.0d0
-      enddo
-      enddo
+      NN9=9*N*(N-1)/2
+      DO I=1,NN9
+      DO J=1,NN9
+      H0(I,J)=0.0D0
+      ENDDO
+      ENDDO
 
-      ExS=0.0d0
-      do k=1,n-1
-      do l=k+1,n
-      rkl=
-     1      sqrt((x(1,l)-x(1,k))**2+(x(2,l)-x(2,k))**2+(x(3,l)-x(3,k))**2)
-cc      Ex=energy(rkl,ix,0)
+      EXS=0.0D0
+      DO K=1,N-1
+      DO L=K+1,N
+      RKL=
+     1      SQRT((X(1,L)-X(1,K))**2+(X(2,L)-X(2,K))**2+(X(3,L)-X(3,K))**2)
+CC      EX=ENERGY(RKL,IX,0)
         IF (NEON) THEN
-           Ex=utn(rkl/RauA,5,0)
+           EX=UTN(RKL/RAUA,5,0)
         ELSE
-           CALL ASAR1(rkl,Ex,Ex1)
+           CALL ASAR1(RKL,EX,EX1)
         ENDIF
-      ExS=ExS+Ex
-      enddo
-      enddo
+      EXS=EXS+EX
+      ENDDO
+      ENDDO
 
-      do i=1,n-1
-      do j=i+1,n
+      DO I=1,N-1
+      DO J=I+1,N
 
-      ij = (2*n-i)*(i-1)/2 +j-i
-      rij=
-     1      sqrt((x(1,i)-x(1,j))**2+(x(2,i)-x(2,j))**2+(x(3,i)-x(3,j))**2)
-cc      Exij=energy(rij,ix,0)
+      IJ = (2*N-I)*(I-1)/2 +J-I
+      RIJ=
+     1      SQRT((X(1,I)-X(1,J))**2+(X(2,I)-X(2,J))**2+(X(3,I)-X(3,J))**2)
+CC      EXIJ=ENERGY(RIJ,IX,0)
         IF (NEON) THEN
-           Exij=utn(rij/RauA,5,0)
+           EXIJ=UTN(RIJ/RAUA,5,0)
         ELSE
-           CALL ASAR1(rij,Exij,Exij1)
+           CALL ASAR1(RIJ,EXIJ,EXIJ1)
         ENDIF
 
-      do ki=1,3
-      do kj=1,3
+      DO KI=1,3
+      DO KJ=1,3
 
-      ijk = 9*(ij-1) +3*(ki-1) +kj
-      h0(ijk,ijk) = h0(ijk,ijk) +ExS -Exij +Runit/rij
+      IJK = 9*(IJ-1) +3*(KI-1) +KJ
+      H0(IJK,IJK) = H0(IJK,IJK) +EXS -EXIJ +RUNIT/RIJ
 
-      if(j.eq.n) go to 2
-      do j0=j+1,n
+      IF(J.EQ.N) GO TO 2
+      DO J0=J+1,N
 
-      dx=x(1,j0)-x(1,j)
-      dy=x(2,j0)-x(2,j)
-      dz=x(3,j0)-x(3,j)
-      dxy=sqrt(dx*dx+dy*dy)
-      rjj0=sqrt(dxy*dxy+dz*dz)
-      ct=dz/rjj0
-      st=dxy/rjj0
-      cf=1.0d0
-      sf=0.0d0
-      if(dxy.gt.0.0d0) then
-      cf=dx/dxy
-      sf=dy/dxy
-                   end if
+      DX=X(1,J0)-X(1,J)
+      DY=X(2,J0)-X(2,J)
+      DZ=X(3,J0)-X(3,J)
+      DXY=SQRT(DX*DX+DY*DY)
+      RJJ0=SQRT(DXY*DXY+DZ*DZ)
+      CT=DZ/RJJ0
+      ST=DXY/RJJ0
+      CF=1.0D0
+      SF=0.0D0
+      IF(DXY.GT.0.0D0) THEN
+      CF=DX/DXY
+      SF=DY/DXY
+                   END IF
         IF (NEON) THEN
-           call fenergy(rjj0,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+           CALL FENERGY(RJJ0,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ELSE
-         call energyar(rjj0,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+         CALL ENERGYAR(RJJ0,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ENDIF
-cc      Esu=energy(rjj0,isu,0)
-cc      Esg=energy(rjj0,isg,0)
-cc      Epu=energy(rjj0,ipu,0)
-cc      Epg=energy(rjj0,ipg,0)
-      Ess=0.5*(Esu+Esg)
-      Esd=0.5*(Esu-Esg)
-      Eps=0.5*(Epu+Epg)
-      Epd=0.5*(Epu-Epg)
-cc      Ex=energy(rjj0,ix,0)
+CC      ESU=ENERGY(RJJ0,ISU,0)
+CC      ESG=ENERGY(RJJ0,ISG,0)
+CC      EPU=ENERGY(RJJ0,IPU,0)
+CC      EPG=ENERGY(RJJ0,IPG,0)
+      ESS=0.5*(ESU+ESG)
+      ESD=0.5*(ESU-ESG)
+      EPS=0.5*(EPU+EPG)
+      EPD=0.5*(EPU-EPG)
+CC      EX=ENERGY(RJJ0,IX,0)
       
-      ij0 = (2*n-i)*(i-1)/2 +j0-i
+      IJ0 = (2*N-I)*(I-1)/2 +J0-I
 
-      do kj0=1,3
+      DO KJ0=1,3
 
-      ijk0 = 9*(ij0-1) +3*(ki-1) +kj0
+      IJK0 = 9*(IJ0-1) +3*(KI-1) +KJ0
 
-      if(kj.eq.1) then
-      if(kj0.eq.1) then
-      hs=Ess*(st*cf)**2+Eps*((ct*cf)**2+sf**2)
-      h0(ijk,ijk)=h0(ijk,ijk)+hs-Ex
-      h0(ijk0,ijk0)=h0(ijk0,ijk0)+hs-Ex
-      hd=Esd*(st*cf)**2+Epd*((ct*cf)**2+sf**2)      
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(kj0.eq.2) then
-        hs=(Ess-Eps)*st**2*sf*cf
-        h0(ijk,ijk+1)=h0(ijk,ijk+1)+hs
-        h0(ijk+1,ijk)=h0(ijk+1,ijk)+hs
-      hd=(Esd-Epd)*st**2*sf*cf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(kj0.eq.3) then
-        hs=(Ess-Eps)*st*ct*cf
-        h0(ijk,ijk+2)=h0(ijk,ijk+2)+hs
-        h0(ijk+2,ijk)=h0(ijk+2,ijk)+hs
-      hd=(Esd-Epd)*st*ct*cf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-                    end if
-      if(kj.eq.2) then
-      if(kj0.eq.2) then
-      hs=Ess*(st*sf)**2+Eps*((ct*sf)**2+cf**2)
-      h0(ijk,ijk)=h0(ijk,ijk)+hs-Ex
-      h0(ijk0,ijk0)=h0(ijk0,ijk0)+hs-Ex
-      hd=Esd*(st*sf)**2+Epd*((ct*sf)**2+cf**2)
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(kj0.eq.1) then
-        hs=(Ess-Eps)*st**2*sf*cf
-        h0(ijk0,ijk0+1)=h0(ijk0,ijk0+1)+hs
-        h0(ijk0+1,ijk0)=h0(ijk0+1,ijk0)+hs
-      hd=(Esd-Epd)*st**2*sf*cf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(kj0.eq.3) then
-        hs=(Ess-Eps)*st*ct*sf
-        h0(ijk,ijk+1)=h0(ijk,ijk+1)+hs
-        h0(ijk+1,ijk)=h0(ijk+1,ijk)+hs
-      hd=(Esd-Epd)*st*ct*sf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-                    end if
-      if(kj.eq.3) then
-      if(kj0.eq.3) then
-      hs=Ess*(ct)**2   +Eps*(st)**2
-      h0(ijk,ijk)=h0(ijk,ijk)+hs-Ex
-      h0(ijk0,ijk0)=h0(ijk0,ijk0)+hs-Ex
-      hd=Esd*(ct)**2   +Epd*(st)**2
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(kj0.eq.1) then
-        hs=(Ess-Eps)*st*ct*cf
-        h0(ijk0,ijk0+2)=h0(ijk0,ijk0+2)+hs
-        h0(ijk0+2,ijk0)=h0(ijk0+2,ijk0)+hs
-      hd=(Esd-Epd)*st*ct*cf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(kj0.eq.2) then
-        hs=(Ess-Eps)*st*ct*sf
-        h0(ijk0,ijk0+1)=h0(ijk0,ijk0+1)+hs
-        h0(ijk0+1,ijk0)=h0(ijk0+1,ijk0)+hs
-      hd=(Esd-Epd)*st*ct*sf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-                    end if
-      enddo
-      enddo
+      IF(KJ.EQ.1) THEN
+      IF(KJ0.EQ.1) THEN
+      HS=ESS*(ST*CF)**2+EPS*((CT*CF)**2+SF**2)
+      H0(IJK,IJK)=H0(IJK,IJK)+HS-EX
+      H0(IJK0,IJK0)=H0(IJK0,IJK0)+HS-EX
+      HD=ESD*(ST*CF)**2+EPD*((CT*CF)**2+SF**2)      
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KJ0.EQ.2) THEN
+        HS=(ESS-EPS)*ST**2*SF*CF
+        H0(IJK,IJK+1)=H0(IJK,IJK+1)+HS
+        H0(IJK+1,IJK)=H0(IJK+1,IJK)+HS
+      HD=(ESD-EPD)*ST**2*SF*CF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KJ0.EQ.3) THEN
+        HS=(ESS-EPS)*ST*CT*CF
+        H0(IJK,IJK+2)=H0(IJK,IJK+2)+HS
+        H0(IJK+2,IJK)=H0(IJK+2,IJK)+HS
+      HD=(ESD-EPD)*ST*CT*CF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+                    END IF
+      IF(KJ.EQ.2) THEN
+      IF(KJ0.EQ.2) THEN
+      HS=ESS*(ST*SF)**2+EPS*((CT*SF)**2+CF**2)
+      H0(IJK,IJK)=H0(IJK,IJK)+HS-EX
+      H0(IJK0,IJK0)=H0(IJK0,IJK0)+HS-EX
+      HD=ESD*(ST*SF)**2+EPD*((CT*SF)**2+CF**2)
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KJ0.EQ.1) THEN
+        HS=(ESS-EPS)*ST**2*SF*CF
+        H0(IJK0,IJK0+1)=H0(IJK0,IJK0+1)+HS
+        H0(IJK0+1,IJK0)=H0(IJK0+1,IJK0)+HS
+      HD=(ESD-EPD)*ST**2*SF*CF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KJ0.EQ.3) THEN
+        HS=(ESS-EPS)*ST*CT*SF
+        H0(IJK,IJK+1)=H0(IJK,IJK+1)+HS
+        H0(IJK+1,IJK)=H0(IJK+1,IJK)+HS
+      HD=(ESD-EPD)*ST*CT*SF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+                    END IF
+      IF(KJ.EQ.3) THEN
+      IF(KJ0.EQ.3) THEN
+      HS=ESS*(CT)**2   +EPS*(ST)**2
+      H0(IJK,IJK)=H0(IJK,IJK)+HS-EX
+      H0(IJK0,IJK0)=H0(IJK0,IJK0)+HS-EX
+      HD=ESD*(CT)**2   +EPD*(ST)**2
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KJ0.EQ.1) THEN
+        HS=(ESS-EPS)*ST*CT*CF
+        H0(IJK0,IJK0+2)=H0(IJK0,IJK0+2)+HS
+        H0(IJK0+2,IJK0)=H0(IJK0+2,IJK0)+HS
+      HD=(ESD-EPD)*ST*CT*CF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KJ0.EQ.2) THEN
+        HS=(ESS-EPS)*ST*CT*SF
+        H0(IJK0,IJK0+1)=H0(IJK0,IJK0+1)+HS
+        H0(IJK0+1,IJK0)=H0(IJK0+1,IJK0)+HS
+      HD=(ESD-EPD)*ST*CT*SF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+                    END IF
+      ENDDO
+      ENDDO
 
-   2      continue
-      do i0=i+1,n
-      if(i0.eq.j) go to 1
+   2      CONTINUE
+      DO I0=I+1,N
+      IF(I0.EQ.J) GO TO 1
 
-      dx=x(1,i0)-x(1,i)
-      dy=x(2,i0)-x(2,i)
-      dz=x(3,i0)-x(3,i)
-      dxy=sqrt(dx*dx+dy*dy)
-      rii0=sqrt(dxy*dxy+dz*dz)
-      ct=dz/rii0
-      st=dxy/rii0
-      cf=1.0d0
-      sf=0.0d0
-      if(dxy.gt.0.0d0) then
-      cf=dx/dxy
-      sf=dy/dxy
-                   end if
+      DX=X(1,I0)-X(1,I)
+      DY=X(2,I0)-X(2,I)
+      DZ=X(3,I0)-X(3,I)
+      DXY=SQRT(DX*DX+DY*DY)
+      RII0=SQRT(DXY*DXY+DZ*DZ)
+      CT=DZ/RII0
+      ST=DXY/RII0
+      CF=1.0D0
+      SF=0.0D0
+      IF(DXY.GT.0.0D0) THEN
+      CF=DX/DXY
+      SF=DY/DXY
+                   END IF
         IF (NEON) THEN
-           call fenergy(rii0,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+           CALL FENERGY(RII0,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ELSE
-         call energyar(rii0,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+         CALL ENERGYAR(RII0,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ENDIF
-cc      Esu=energy(rii0,isu,0)
-cc      Esg=energy(rii0,isg,0)
-cc      Epu=energy(rii0,ipu,0)
-cc      Epg=energy(rii0,ipg,0)
-      Ess=0.5*(Esu+Esg)
-      Esd=0.5*(Esu-Esg)
-      Eps=0.5*(Epu+Epg)
-      Epd=0.5*(Epu-Epg)
-cc      Ex=energy(rii0,ix,0)
+CC      ESU=ENERGY(RII0,ISU,0)
+CC      ESG=ENERGY(RII0,ISG,0)
+CC      EPU=ENERGY(RII0,IPU,0)
+CC      EPG=ENERGY(RII0,IPG,0)
+      ESS=0.5*(ESU+ESG)
+      ESD=0.5*(ESU-ESG)
+      EPS=0.5*(EPU+EPG)
+      EPD=0.5*(EPU-EPG)
+CC      EX=ENERGY(RII0,IX,0)
       
-      if(i0.lt.j) ij0 = (2*n-i0)*(i0-1)/2 +j-i0
-      if(i0.gt.j) ij0 = (2*n-j)*(j-1)/2 +i0-j
+      IF(I0.LT.J) IJ0 = (2*N-I0)*(I0-1)/2 +J-I0
+      IF(I0.GT.J) IJ0 = (2*N-J)*(J-1)/2 +I0-J
 
-      do ki0=1,3
+      DO KI0=1,3
 
-      if(i0.lt.j) ijk0 = 9*(ij0-1) +3*(ki0-1) +kj
-      if(i0.gt.j) ijk0 = 9*(ij0-1) +3*(kj-1) +ki0
+      IF(I0.LT.J) IJK0 = 9*(IJ0-1) +3*(KI0-1) +KJ
+      IF(I0.GT.J) IJK0 = 9*(IJ0-1) +3*(KJ-1) +KI0
 
-      if(ki.eq.1) then
-      if(ki0.eq.1) then
-      hs=Ess*(st*cf)**2+Eps*((ct*cf)**2+sf**2)
-      h0(ijk,ijk)=h0(ijk,ijk)+hs-Ex
-      h0(ijk0,ijk0)=h0(ijk0,ijk0)+hs-Ex
-      hd=Esd*(st*cf)**2+Epd*((ct*cf)**2+sf**2)      
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(ki0.eq.2) then
-        hs=(Ess-Eps)*st**2*sf*cf
-        h0(ijk,ijk+3)=h0(ijk,ijk+3)+hs
-        h0(ijk+3,ijk)=h0(ijk+3,ijk)+hs
-      hd=(Esd-Epd)*st**2*sf*cf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(ki0.eq.3) then
-        hs=(Ess-Eps)*st*ct*cf
-        h0(ijk,ijk+6)=h0(ijk,ijk+6)+hs
-        h0(ijk+6,ijk)=h0(ijk+6,ijk)+hs
-      hd=(Esd-Epd)*st*ct*cf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-                    end if
-      if(ki.eq.2) then
-      if(ki0.eq.2) then
-      hs=Ess*(st*sf)**2+Eps*((ct*sf)**2+cf**2)
-      h0(ijk,ijk)=h0(ijk,ijk)+hs-Ex
-      h0(ijk0,ijk0)=h0(ijk0,ijk0)+hs-Ex
-      hd=Esd*(st*sf)**2+Epd*((ct*sf)**2+cf**2)
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(ki0.eq.1) then
-        hs=(Ess-Eps)*st**2*sf*cf
-      ijkd=1
-      if(i0.lt.j) ijkd=3
-        h0(ijk0,ijk0+ijkd)=h0(ijk0,ijk0+ijkd)+hs
-        h0(ijk0+ijkd,ijk0)=h0(ijk0+ijkd,ijk0)+hs
-      hd=(Esd-Epd)*st**2*sf*cf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(ki0.eq.3) then
-        hs=(Ess-Eps)*st*ct*sf
-        h0(ijk,ijk+3)=h0(ijk,ijk+3)+hs
-        h0(ijk+3,ijk)=h0(ijk+3,ijk)+hs
-      hd=(Esd-Epd)*st*ct*sf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-                    end if
-      if(ki.eq.3) then
-      if(ki0.eq.3) then
-      hs=Ess*(ct)**2   +Eps*(st)**2
-      h0(ijk,ijk)=h0(ijk,ijk)+hs-Ex
-      h0(ijk0,ijk0)=h0(ijk0,ijk0)+hs-Ex
-      hd=Esd*(ct)**2   +Epd*(st)**2
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(ki0.eq.1) then
-        hs=(Ess-Eps)*st*ct*cf
-      ijkd=2
-      if(i0.lt.j) ijkd=6
-        h0(ijk0,ijk0+ijkd)=h0(ijk0,ijk0+ijkd)+hs
-        h0(ijk0+ijkd,ijk0)=h0(ijk0+ijkd,ijk0)+hs
-      hd=(Esd-Epd)*st*ct*cf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-      if(ki0.eq.2) then
-        hs=(Ess-Eps)*st*ct*sf
-      ijkd=1
-      if(i0.lt.j) ijkd=3
-        h0(ijk0,ijk0+ijkd)=h0(ijk0,ijk0+ijkd)+hs
-        h0(ijk0+ijkd,ijk0)=h0(ijk0+ijkd,ijk0)+hs
-      hd=(Esd-Epd)*st*ct*sf
-      h0(ijk,ijk0)=hd
-      h0(ijk0,ijk)=hd
-                    end if
-                    end if
-      enddo
-   1      continue
-      enddo
+      IF(KI.EQ.1) THEN
+      IF(KI0.EQ.1) THEN
+      HS=ESS*(ST*CF)**2+EPS*((CT*CF)**2+SF**2)
+      H0(IJK,IJK)=H0(IJK,IJK)+HS-EX
+      H0(IJK0,IJK0)=H0(IJK0,IJK0)+HS-EX
+      HD=ESD*(ST*CF)**2+EPD*((CT*CF)**2+SF**2)      
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KI0.EQ.2) THEN
+        HS=(ESS-EPS)*ST**2*SF*CF
+        H0(IJK,IJK+3)=H0(IJK,IJK+3)+HS
+        H0(IJK+3,IJK)=H0(IJK+3,IJK)+HS
+      HD=(ESD-EPD)*ST**2*SF*CF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KI0.EQ.3) THEN
+        HS=(ESS-EPS)*ST*CT*CF
+        H0(IJK,IJK+6)=H0(IJK,IJK+6)+HS
+        H0(IJK+6,IJK)=H0(IJK+6,IJK)+HS
+      HD=(ESD-EPD)*ST*CT*CF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+                    END IF
+      IF(KI.EQ.2) THEN
+      IF(KI0.EQ.2) THEN
+      HS=ESS*(ST*SF)**2+EPS*((CT*SF)**2+CF**2)
+      H0(IJK,IJK)=H0(IJK,IJK)+HS-EX
+      H0(IJK0,IJK0)=H0(IJK0,IJK0)+HS-EX
+      HD=ESD*(ST*SF)**2+EPD*((CT*SF)**2+CF**2)
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KI0.EQ.1) THEN
+        HS=(ESS-EPS)*ST**2*SF*CF
+      IJKD=1
+      IF(I0.LT.J) IJKD=3
+        H0(IJK0,IJK0+IJKD)=H0(IJK0,IJK0+IJKD)+HS
+        H0(IJK0+IJKD,IJK0)=H0(IJK0+IJKD,IJK0)+HS
+      HD=(ESD-EPD)*ST**2*SF*CF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KI0.EQ.3) THEN
+        HS=(ESS-EPS)*ST*CT*SF
+        H0(IJK,IJK+3)=H0(IJK,IJK+3)+HS
+        H0(IJK+3,IJK)=H0(IJK+3,IJK)+HS
+      HD=(ESD-EPD)*ST*CT*SF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+                    END IF
+      IF(KI.EQ.3) THEN
+      IF(KI0.EQ.3) THEN
+      HS=ESS*(CT)**2   +EPS*(ST)**2
+      H0(IJK,IJK)=H0(IJK,IJK)+HS-EX
+      H0(IJK0,IJK0)=H0(IJK0,IJK0)+HS-EX
+      HD=ESD*(CT)**2   +EPD*(ST)**2
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KI0.EQ.1) THEN
+        HS=(ESS-EPS)*ST*CT*CF
+      IJKD=2
+      IF(I0.LT.J) IJKD=6
+        H0(IJK0,IJK0+IJKD)=H0(IJK0,IJK0+IJKD)+HS
+        H0(IJK0+IJKD,IJK0)=H0(IJK0+IJKD,IJK0)+HS
+      HD=(ESD-EPD)*ST*CT*CF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+      IF(KI0.EQ.2) THEN
+        HS=(ESS-EPS)*ST*CT*SF
+      IJKD=1
+      IF(I0.LT.J) IJKD=3
+        H0(IJK0,IJK0+IJKD)=H0(IJK0,IJK0+IJKD)+HS
+        H0(IJK0+IJKD,IJK0)=H0(IJK0+IJKD,IJK0)+HS
+      HD=(ESD-EPD)*ST*CT*SF
+      H0(IJK,IJK0)=HD
+      H0(IJK0,IJK)=HD
+                    END IF
+                    END IF
+      ENDDO
+   1      CONTINUE
+      ENDDO
 
-      enddo
-      enddo
+      ENDDO
+      ENDDO
 
-      enddo
-      enddo
+      ENDDO
+      ENDDO
 
-c ---------------------------------------------------------------------
+C ---------------------------------------------------------------------
 
-  10      continue
-      if(igrad.le.0) go to 20
+  10      CONTINUE
+      IF(IGRAD.LE.0) GO TO 20
 
-      nn9=9*n*(n-1)/2
-      do i=1,nn9
-      do j=1,nn9
-      h1(i,j)=0.0d0
-      enddo
-      enddo
+      NN9=9*N*(N-1)/2
+      DO I=1,NN9
+      DO J=1,NN9
+      H1(I,J)=0.0D0
+      ENDDO
+      ENDDO
 
-      m=int(igrad/3)+1
-      ir=mod(igrad,3)
-      if(ir.eq.0) then
-      ir=3
-      m=m-1
-                  end if
+      M=INT(IGRAD/3)+1
+      IR=MOD(IGRAD,3)
+      IF(IR.EQ.0) THEN
+      IR=3
+      M=M-1
+                  END IF
 
-      ExS1=0.0d0
-      do k=1,n-1
-      do l=k+1,n
-      if(l.eq.m.or.k.eq.m) then
-      rkl=
-     1      sqrt((x(1,l)-x(1,k))**2+(x(2,l)-x(2,k))**2+(x(3,l)-x(3,k))**2)
-cc      Ex1= energy(rkl,ix,1)*(x(ir,l)-x(ir,k))/rkl
+      EXS1=0.0D0
+      DO K=1,N-1
+      DO L=K+1,N
+      IF(L.EQ.M.OR.K.EQ.M) THEN
+      RKL=
+     1      SQRT((X(1,L)-X(1,K))**2+(X(2,L)-X(2,K))**2+(X(3,L)-X(3,K))**2)
+CC      EX1= ENERGY(RKL,IX,1)*(X(IR,L)-X(IR,K))/RKL
         IF (NEON) THEN
-        Ex1= utn(rkl/RauA,5,1)/RauA*(x(ir,l)-x(ir,k))/rkl
+        EX1= UTN(RKL/RAUA,5,1)/RAUA*(X(IR,L)-X(IR,K))/RKL
         ELSE
-           CALL ASAR1(rkl,Ex,Ex1)
-        Ex1= Ex1*(x(ir,l)-x(ir,k))/rkl
+           CALL ASAR1(RKL,EX,EX1)
+        EX1= EX1*(X(IR,L)-X(IR,K))/RKL
         ENDIF
-      if(k.eq.m) Ex1=-Ex1
-      ExS1=ExS1+Ex1
-                       end if
-      enddo
-      enddo
+      IF(K.EQ.M) EX1=-EX1
+      EXS1=EXS1+EX1
+                       END IF
+      ENDDO
+      ENDDO
 
-      do i=1,n-1
-      do j=i+1,n
+      DO I=1,N-1
+      DO J=I+1,N
 
-      ij = (2*n-i)*(i-1)/2 +j-i
+      IJ = (2*N-I)*(I-1)/2 +J-I
 
-      if(i.eq.m.or.j.eq.m) then
+      IF(I.EQ.M.OR.J.EQ.M) THEN
 
-      rij=
-     1      sqrt((x(1,i)-x(1,j))**2+(x(2,i)-x(2,j))**2+(x(3,i)-x(3,j))**2)
-      drijdx=(x(ir,i)-x(ir,j))/rij
-      if(j.eq.m) drijdx=-drijdx
-cc      Exij1= energy(rij,ix,1)*drijdx
+      RIJ=
+     1      SQRT((X(1,I)-X(1,J))**2+(X(2,I)-X(2,J))**2+(X(3,I)-X(3,J))**2)
+      DRIJDX=(X(IR,I)-X(IR,J))/RIJ
+      IF(J.EQ.M) DRIJDX=-DRIJDX
+CC      EXIJ1= ENERGY(RIJ,IX,1)*DRIJDX
         IF (NEON) THEN
-        Exij1= utn(rij/RauA,5,1)/RauA*drijdx
+        EXIJ1= UTN(RIJ/RAUA,5,1)/RAUA*DRIJDX
         ELSE
-           CALL ASAR1(rij,Exij,Exij1)
-        Exij1= Exij1*drijdx
+           CALL ASAR1(RIJ,EXIJ,EXIJ1)
+        EXIJ1= EXIJ1*DRIJDX
         ENDIF
 
-                           end if
+                           END IF
 
-      do ki=1,3
-      do kj=1,3
+      DO KI=1,3
+      DO KJ=1,3
 
-      ijk = 9*(ij-1) +3*(ki-1) +kj
-      h1(ijk,ijk) = h1(ijk,ijk) +ExS1
+      IJK = 9*(IJ-1) +3*(KI-1) +KJ
+      H1(IJK,IJK) = H1(IJK,IJK) +EXS1
 
-      if(i.eq.m.or.j.eq.m) then
+      IF(I.EQ.M.OR.J.EQ.M) THEN
 
-      h1(ijk,ijk) = h1(ijk,ijk) -Exij1 -Runit/(rij*rij)*drijdx
+      H1(IJK,IJK) = H1(IJK,IJK) -EXIJ1 -RUNIT/(RIJ*RIJ)*DRIJDX
 
-                           end if
+                           END IF
 
-      if(j.eq.n) go to 22
-      do j0=j+1,n
+      IF(J.EQ.N) GO TO 22
+      DO J0=J+1,N
 
-      if(j.eq.m.or.j0.eq.m) then
+      IF(J.EQ.M.OR.J0.EQ.M) THEN
 
-      dx=x(1,j0)-x(1,j)
-      dy=x(2,j0)-x(2,j)
-      dz=x(3,j0)-x(3,j)
-      dxy=sqrt(dx*dx+dy*dy)
-      rjj0=sqrt(dxy*dxy+dz*dz)
-      ct=dz/rjj0
-      st=dxy/rjj0
-      cf=1.0d0
-      sf=0.0d0
-      if(dxy.gt.0.0d0) then
-      cf=dx/dxy
-      sf=dy/dxy
-                   end if
+      DX=X(1,J0)-X(1,J)
+      DY=X(2,J0)-X(2,J)
+      DZ=X(3,J0)-X(3,J)
+      DXY=SQRT(DX*DX+DY*DY)
+      RJJ0=SQRT(DXY*DXY+DZ*DZ)
+      CT=DZ/RJJ0
+      ST=DXY/RJJ0
+      CF=1.0D0
+      SF=0.0D0
+      IF(DXY.GT.0.0D0) THEN
+      CF=DX/DXY
+      SF=DY/DXY
+                   END IF
 
-      drdx= (x(ir,j0)-x(ir,j))/rjj0
-      if(j.eq.m) drdx=-drdx
+      DRDX= (X(IR,J0)-X(IR,J))/RJJ0
+      IF(J.EQ.M) DRDX=-DRDX
 
-      ct1=-ct/rjj0*drdx
-      if(ir.eq.3) then
-      if(m.eq.j0) ct1=ct1+1.0d0/rjj0
-      if(m.eq.j) ct1=ct1-1.0d0/rjj0
-                end if
-      st1=-st/rjj0*drdx
-      dxydx=0.0d0
-      if(ir.eq.1.or.ir.eq.2) then
-c      dxydx=1.0d0
-      if(dxy.gt.0.0d0) then
-      dxydx= (x(ir,j0)-x(ir,j))/dxy
-      if(j.eq.m) dxydx=-dxydx
-                   end if
-      st1=st1+dxydx/rjj0
-                             end if
-      cf1=0.0d0
-      sf1=0.0d0
-      if(dxy.gt.0.0d0) then
-      if(ir.eq.1.or.ir.eq.2) then
-      cf1=-cf/dxy*dxydx
-      if(ir.eq.1) then
-      if(m.eq.j0) cf1=cf1+1.0d0/dxy
-      if(m.eq.j) cf1=cf1-1.0d0/dxy
-                    end if
-      sf1=-sf/dxy*dxydx
-      if(ir.eq.2) then
-      if(m.eq.j0) sf1=sf1+1.0d0/dxy
-      if(m.eq.j) sf1=sf1-1.0d0/dxy
-                    end if
-                             end if
-                   end if
+      CT1=-CT/RJJ0*DRDX
+      IF(IR.EQ.3) THEN
+      IF(M.EQ.J0) CT1=CT1+1.0D0/RJJ0
+      IF(M.EQ.J) CT1=CT1-1.0D0/RJJ0
+                END IF
+      ST1=-ST/RJJ0*DRDX
+      DXYDX=0.0D0
+      IF(IR.EQ.1.OR.IR.EQ.2) THEN
+C      DXYDX=1.0D0
+      IF(DXY.GT.0.0D0) THEN
+      DXYDX= (X(IR,J0)-X(IR,J))/DXY
+      IF(J.EQ.M) DXYDX=-DXYDX
+                   END IF
+      ST1=ST1+DXYDX/RJJ0
+                             END IF
+      CF1=0.0D0
+      SF1=0.0D0
+      IF(DXY.GT.0.0D0) THEN
+      IF(IR.EQ.1.OR.IR.EQ.2) THEN
+      CF1=-CF/DXY*DXYDX
+      IF(IR.EQ.1) THEN
+      IF(M.EQ.J0) CF1=CF1+1.0D0/DXY
+      IF(M.EQ.J) CF1=CF1-1.0D0/DXY
+                    END IF
+      SF1=-SF/DXY*DXYDX
+      IF(IR.EQ.2) THEN
+      IF(M.EQ.J0) SF1=SF1+1.0D0/DXY
+      IF(M.EQ.J) SF1=SF1-1.0D0/DXY
+                    END IF
+                             END IF
+                   END IF
 
         IF (NEON) THEN
-           call fenergy(rjj0,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+           CALL FENERGY(RJJ0,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ELSE
-         call energyar(rjj0,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+         CALL ENERGYAR(RJJ0,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ENDIF
-cc      Esu=energy(rjj0,isu,0)
-cc      Esg=energy(rjj0,isg,0)
-cc      Epu=energy(rjj0,ipu,0)
-cc      Epg=energy(rjj0,ipg,0)
-      Ess=0.5*(Esu+Esg)
-      Esd=0.5*(Esu-Esg)
-      Eps=0.5*(Epu+Epg)
-      Epd=0.5*(Epu-Epg)
-cc      Ex=energy(rjj0,ix,0)
+CC      ESU=ENERGY(RJJ0,ISU,0)
+CC      ESG=ENERGY(RJJ0,ISG,0)
+CC      EPU=ENERGY(RJJ0,IPU,0)
+CC      EPG=ENERGY(RJJ0,IPG,0)
+      ESS=0.5*(ESU+ESG)
+      ESD=0.5*(ESU-ESG)
+      EPS=0.5*(EPU+EPG)
+      EPD=0.5*(EPU-EPG)
+CC      EX=ENERGY(RJJ0,IX,0)
 
-cc      Esu1=energy(rjj0,isu,1)*drdx
-cc      Esg1=energy(rjj0,isg,1)*drdx
-cc      Epu1=energy(rjj0,ipu,1)*drdx
-cc      Epg1=energy(rjj0,ipg,1)*drdx
-        Esu1=Esu1*drdx
-        Esg1=Esg1*drdx
-        Epu1=Epu1*drdx
-        Epg1=Epg1*drdx
-      Ess1=0.5*(Esu1+Esg1)
-      Esd1=0.5*(Esu1-Esg1)
-      Eps1=0.5*(Epu1+Epg1)
-      Epd1=0.5*(Epu1-Epg1)
-cc      Ex1=energy(rjj0,ix,1)*drdx
-      Ex1=Ex1*drdx
+CC      ESU1=ENERGY(RJJ0,ISU,1)*DRDX
+CC      ESG1=ENERGY(RJJ0,ISG,1)*DRDX
+CC      EPU1=ENERGY(RJJ0,IPU,1)*DRDX
+CC      EPG1=ENERGY(RJJ0,IPG,1)*DRDX
+        ESU1=ESU1*DRDX
+        ESG1=ESG1*DRDX
+        EPU1=EPU1*DRDX
+        EPG1=EPG1*DRDX
+      ESS1=0.5*(ESU1+ESG1)
+      ESD1=0.5*(ESU1-ESG1)
+      EPS1=0.5*(EPU1+EPG1)
+      EPD1=0.5*(EPU1-EPG1)
+CC      EX1=ENERGY(RJJ0,IX,1)*DRDX
+      EX1=EX1*DRDX
       
-      ij0 = (2*n-i)*(i-1)/2 +j0-i
+      IJ0 = (2*N-I)*(I-1)/2 +J0-I
 
-      do kj0=1,3
+      DO KJ0=1,3
 
-      ijk0 = 9*(ij0-1) +3*(ki-1) +kj0
+      IJK0 = 9*(IJ0-1) +3*(KI-1) +KJ0
 
-      if(kj.eq.1) then
-      if(kj0.eq.1) then
-           trig1=(st*cf)**2
-           trig2=(ct*cf)**2+sf**2
-           trig3=2.0d0*st*cf*(cf*st1+st*cf1)
-           trig4=(2.0d0*ct*cf*(cf*ct1+ct*cf1)+2.0d0*sf*sf1)
-cc      hs1=Ess1*(st*cf)**2+Eps1*((ct*cf)**2+sf**2) +
-cc     1          Ess*2.0d0*st*cf*(cf*st1+st*cf1)+
-cc     1      Eps*(2.0d0*ct*cf*(cf*ct1+ct*cf1)+2.0d0*sf*sf1)
-        hs1= Ess1*trig1+Eps1*trig2+Ess*trig3+Eps*trig4
-      h1(ijk,ijk)=h1(ijk,ijk)+hs1-Ex1
-      h1(ijk0,ijk0)=h1(ijk0,ijk0)+hs1-Ex1
-cc      hd1=Esd1*(st*cf)**2+Epd1*((ct*cf)**2+sf**2) +
-cc     1          Esd*2.0d0*st*cf*(cf*st1+st*cf1)+
-cc     1      Epd*(2.0d0*ct*cf*(cf*ct1+ct*cf1)+2.0d0*sf*sf1)
-        hd1= Esd1*trig1 + Epd1*trig2 + Esd*trig3 + Epd*trig4
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(kj0.eq.2) then
-           trig1=st**2*sf*cf
-           trig2=2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1)
-cc        hs1=(Ess1-Eps1)*st**2*sf*cf +
-cc     1      (Ess-Eps)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1)) 
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(ijk,ijk+1)=h1(ijk,ijk+1)+hs1
-        h1(ijk+1,ijk)=h1(ijk+1,ijk)+hs1
-cc      hd1=(Esd1-Epd1)*st**2*sf*cf + 
-cc     1      (Esd-Epd)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1))
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(kj0.eq.3) then
-           trig1=st*ct*cf
-           trig2=st1*ct*cf+st*ct1*cf+st*ct*cf1
-cc        hs1=(Ess1-Eps1)*st*ct*cf + 
-cc     1      (Ess-Eps)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(ijk,ijk+2)=h1(ijk,ijk+2)+hs1
-        h1(ijk+2,ijk)=h1(ijk+2,ijk)+hs1
-cc      hd1=(Esd1-Epd1)*st*ct*cf + 
-cc     1      (Esd-Epd)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-                    end if
+      IF(KJ.EQ.1) THEN
+      IF(KJ0.EQ.1) THEN
+           TRIG1=(ST*CF)**2
+           TRIG2=(CT*CF)**2+SF**2
+           TRIG3=2.0D0*ST*CF*(CF*ST1+ST*CF1)
+           TRIG4=(2.0D0*CT*CF*(CF*CT1+CT*CF1)+2.0D0*SF*SF1)
+CC      HS1=ESS1*(ST*CF)**2+EPS1*((CT*CF)**2+SF**2) +
+CC     1          ESS*2.0D0*ST*CF*(CF*ST1+ST*CF1)+
+CC     1      EPS*(2.0D0*CT*CF*(CF*CT1+CT*CF1)+2.0D0*SF*SF1)
+        HS1= ESS1*TRIG1+EPS1*TRIG2+ESS*TRIG3+EPS*TRIG4
+      H1(IJK,IJK)=H1(IJK,IJK)+HS1-EX1
+      H1(IJK0,IJK0)=H1(IJK0,IJK0)+HS1-EX1
+CC      HD1=ESD1*(ST*CF)**2+EPD1*((CT*CF)**2+SF**2) +
+CC     1          ESD*2.0D0*ST*CF*(CF*ST1+ST*CF1)+
+CC     1      EPD*(2.0D0*CT*CF*(CF*CT1+CT*CF1)+2.0D0*SF*SF1)
+        HD1= ESD1*TRIG1 + EPD1*TRIG2 + ESD*TRIG3 + EPD*TRIG4
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KJ0.EQ.2) THEN
+           TRIG1=ST**2*SF*CF
+           TRIG2=2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1)
+CC        HS1=(ESS1-EPS1)*ST**2*SF*CF +
+CC     1      (ESS-EPS)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1)) 
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(IJK,IJK+1)=H1(IJK,IJK+1)+HS1
+        H1(IJK+1,IJK)=H1(IJK+1,IJK)+HS1
+CC      HD1=(ESD1-EPD1)*ST**2*SF*CF + 
+CC     1      (ESD-EPD)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1))
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KJ0.EQ.3) THEN
+           TRIG1=ST*CT*CF
+           TRIG2=ST1*CT*CF+ST*CT1*CF+ST*CT*CF1
+CC        HS1=(ESS1-EPS1)*ST*CT*CF + 
+CC     1      (ESS-EPS)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(IJK,IJK+2)=H1(IJK,IJK+2)+HS1
+        H1(IJK+2,IJK)=H1(IJK+2,IJK)+HS1
+CC      HD1=(ESD1-EPD1)*ST*CT*CF + 
+CC     1      (ESD-EPD)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+                    END IF
 
-      if(kj.eq.2) then
-      if(kj0.eq.2) then
-           trig1=(st*sf)**2
-           trig2=(ct*sf)**2+cf**2
-           trig3=2.0d0*st*sf*(sf*st1+st*sf1)
-           trig4=2.0d0*ct*sf*(sf*ct1+ct*sf1)+2.0d0*cf*cf1
-cc      hs1=Ess1*(st*sf)**2+Eps1*((ct*sf)**2+cf**2) +
-cc     1          Ess*2.0d0*st*sf*(sf*st1+st*sf1)+
-cc     1      Eps*(2.0d0*ct*sf*(sf*ct1+ct*sf1)+2.0d0*cf*cf1)
-        hs1=Ess1*trig1+Eps1*trig2+Ess*trig3+Eps*trig4
-      h1(ijk,ijk)=h1(ijk,ijk)+hs1-Ex1
-      h1(ijk0,ijk0)=h1(ijk0,ijk0)+hs1-Ex1
-cc      hd1=Esd1*(st*sf)**2+Epd1*((ct*sf)**2+cf**2) +
-cc     1          Esd*2.0d0*st*sf*(sf*st1+st*sf1)+
-cc     1      Epd*(2.0d0*ct*sf*(sf*ct1+ct*sf1)+2.0d0*cf*cf1)
-        hd1=Esd1*trig1+Epd1*trig2+Esd*trig3+Epd*trig4
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(kj0.eq.1) then
-           trig1=st**2*sf*cf
-           trig2=2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1)
-cc        hs1=(Ess1-Eps1)*st**2*sf*cf +
-cc     1      (Ess-Eps)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1))
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(ijk0,ijk0+1)=h1(ijk0,ijk0+1)+hs1
-        h1(ijk0+1,ijk0)=h1(ijk0+1,ijk0)+hs1
-cc      hd1=(Esd1-Epd1)*st**2*sf*cf + 
-cc     1      (Esd-Epd)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1))
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(kj0.eq.3) then
-           trig1=st*ct*sf
-           trig2=st1*ct*sf+st*ct1*sf+st*ct*sf1
-cc        hs1=(Ess1-Eps1)*st*ct*sf +
-cc     1      (Ess-Eps)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(ijk,ijk+1)=h1(ijk,ijk+1)+hs1
-        h1(ijk+1,ijk)=h1(ijk+1,ijk)+hs1
-cc      hd1=(Esd1-Epd1)*st*ct*sf + 
-cc     1      (Esd-Epd)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-                    end if
+      IF(KJ.EQ.2) THEN
+      IF(KJ0.EQ.2) THEN
+           TRIG1=(ST*SF)**2
+           TRIG2=(CT*SF)**2+CF**2
+           TRIG3=2.0D0*ST*SF*(SF*ST1+ST*SF1)
+           TRIG4=2.0D0*CT*SF*(SF*CT1+CT*SF1)+2.0D0*CF*CF1
+CC      HS1=ESS1*(ST*SF)**2+EPS1*((CT*SF)**2+CF**2) +
+CC     1          ESS*2.0D0*ST*SF*(SF*ST1+ST*SF1)+
+CC     1      EPS*(2.0D0*CT*SF*(SF*CT1+CT*SF1)+2.0D0*CF*CF1)
+        HS1=ESS1*TRIG1+EPS1*TRIG2+ESS*TRIG3+EPS*TRIG4
+      H1(IJK,IJK)=H1(IJK,IJK)+HS1-EX1
+      H1(IJK0,IJK0)=H1(IJK0,IJK0)+HS1-EX1
+CC      HD1=ESD1*(ST*SF)**2+EPD1*((CT*SF)**2+CF**2) +
+CC     1          ESD*2.0D0*ST*SF*(SF*ST1+ST*SF1)+
+CC     1      EPD*(2.0D0*CT*SF*(SF*CT1+CT*SF1)+2.0D0*CF*CF1)
+        HD1=ESD1*TRIG1+EPD1*TRIG2+ESD*TRIG3+EPD*TRIG4
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KJ0.EQ.1) THEN
+           TRIG1=ST**2*SF*CF
+           TRIG2=2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1)
+CC        HS1=(ESS1-EPS1)*ST**2*SF*CF +
+CC     1      (ESS-EPS)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1))
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(IJK0,IJK0+1)=H1(IJK0,IJK0+1)+HS1
+        H1(IJK0+1,IJK0)=H1(IJK0+1,IJK0)+HS1
+CC      HD1=(ESD1-EPD1)*ST**2*SF*CF + 
+CC     1      (ESD-EPD)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1))
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KJ0.EQ.3) THEN
+           TRIG1=ST*CT*SF
+           TRIG2=ST1*CT*SF+ST*CT1*SF+ST*CT*SF1
+CC        HS1=(ESS1-EPS1)*ST*CT*SF +
+CC     1      (ESS-EPS)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(IJK,IJK+1)=H1(IJK,IJK+1)+HS1
+        H1(IJK+1,IJK)=H1(IJK+1,IJK)+HS1
+CC      HD1=(ESD1-EPD1)*ST*CT*SF + 
+CC     1      (ESD-EPD)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+                    END IF
 
-      if(kj.eq.3) then
-      if(kj0.eq.3) then
-           trig1=(ct)**2
-           trig2=(st)**2
-           trig3=2.0d0*ct*ct1
-           trig4=2.0d0*st*st1
-cc      hs1=Ess1*(ct)**2   +Eps1*(st)**2 +
-cc     1      Ess*2.0d0*ct*ct1   +Eps*2.0d0*st*st1
-        hs1=Ess1*trig1 + Eps1*trig2 + Ess*trig3 + Eps*trig4
-      h1(ijk,ijk)=h1(ijk,ijk)+hs1-Ex1
-      h1(ijk0,ijk0)=h1(ijk0,ijk0)+hs1-Ex1
-cc      hd1=Esd1*(ct)**2   +Epd1*(st)**2 +
-cc     1      Esd*2.0d0*ct*ct1   +Epd*2.0d0*st*st1
-        hd1=Esd1*trig1 + Epd1*trig2 + Esd*trig3 + Epd*trig4
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(kj0.eq.1) then
-           trig1=st*ct*cf
-           trig2=st1*ct*cf+st*ct1*cf+st*ct*cf1
-cc        hs1=(Ess1-Eps1)*st*ct*cf + 
-cc     1      (Ess-Eps)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(ijk0,ijk0+2)=h1(ijk0,ijk0+2)+hs1
-        h1(ijk0+2,ijk0)=h1(ijk0+2,ijk0)+hs1
-cc      hd1=(Esd1-Epd1)*st*ct*cf + 
-cc     1      (Esd-Epd)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(kj0.eq.2) then
-           trig1=st*ct*sf
-           trig2=st1*ct*sf+st*ct1*sf+st*ct*sf1
-cc        hs1=(Ess1-Eps1)*st*ct*sf + 
-cc     1      (Ess-Eps)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(ijk0,ijk0+1)=h1(ijk0,ijk0+1)+hs1
-        h1(ijk0+1,ijk0)=h1(ijk0+1,ijk0)+hs1
-cc      hd1=(Esd1-Epd1)*st*ct*sf + 
-cc     1      (Esd-Epd)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-                    end if
+      IF(KJ.EQ.3) THEN
+      IF(KJ0.EQ.3) THEN
+           TRIG1=(CT)**2
+           TRIG2=(ST)**2
+           TRIG3=2.0D0*CT*CT1
+           TRIG4=2.0D0*ST*ST1
+CC      HS1=ESS1*(CT)**2   +EPS1*(ST)**2 +
+CC     1      ESS*2.0D0*CT*CT1   +EPS*2.0D0*ST*ST1
+        HS1=ESS1*TRIG1 + EPS1*TRIG2 + ESS*TRIG3 + EPS*TRIG4
+      H1(IJK,IJK)=H1(IJK,IJK)+HS1-EX1
+      H1(IJK0,IJK0)=H1(IJK0,IJK0)+HS1-EX1
+CC      HD1=ESD1*(CT)**2   +EPD1*(ST)**2 +
+CC     1      ESD*2.0D0*CT*CT1   +EPD*2.0D0*ST*ST1
+        HD1=ESD1*TRIG1 + EPD1*TRIG2 + ESD*TRIG3 + EPD*TRIG4
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KJ0.EQ.1) THEN
+           TRIG1=ST*CT*CF
+           TRIG2=ST1*CT*CF+ST*CT1*CF+ST*CT*CF1
+CC        HS1=(ESS1-EPS1)*ST*CT*CF + 
+CC     1      (ESS-EPS)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(IJK0,IJK0+2)=H1(IJK0,IJK0+2)+HS1
+        H1(IJK0+2,IJK0)=H1(IJK0+2,IJK0)+HS1
+CC      HD1=(ESD1-EPD1)*ST*CT*CF + 
+CC     1      (ESD-EPD)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KJ0.EQ.2) THEN
+           TRIG1=ST*CT*SF
+           TRIG2=ST1*CT*SF+ST*CT1*SF+ST*CT*SF1
+CC        HS1=(ESS1-EPS1)*ST*CT*SF + 
+CC     1      (ESS-EPS)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(IJK0,IJK0+1)=H1(IJK0,IJK0+1)+HS1
+        H1(IJK0+1,IJK0)=H1(IJK0+1,IJK0)+HS1
+CC      HD1=(ESD1-EPD1)*ST*CT*SF + 
+CC     1      (ESD-EPD)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+                    END IF
 
-      enddo
-                       end if
-      enddo
+      ENDDO
+                       END IF
+      ENDDO
 
-  22      continue
-      do i0=i+1,n
-      if(i0.eq.j) go to 11
+  22      CONTINUE
+      DO I0=I+1,N
+      IF(I0.EQ.J) GO TO 11
 
-      if(i.eq.m.or.i0.eq.m) then
+      IF(I.EQ.M.OR.I0.EQ.M) THEN
 
-      dx=x(1,i0)-x(1,i)
-      dy=x(2,i0)-x(2,i)
-      dz=x(3,i0)-x(3,i)
-      dxy=sqrt(dx*dx+dy*dy)
-      rii0=sqrt(dxy*dxy+dz*dz)
-      ct=dz/rii0
-      st=dxy/rii0
-      cf=1.0d0
-      sf=0.0d0
-      if(dxy.gt.0.0d0) then
-      cf=dx/dxy
-      sf=dy/dxy
-                   end if
+      DX=X(1,I0)-X(1,I)
+      DY=X(2,I0)-X(2,I)
+      DZ=X(3,I0)-X(3,I)
+      DXY=SQRT(DX*DX+DY*DY)
+      RII0=SQRT(DXY*DXY+DZ*DZ)
+      CT=DZ/RII0
+      ST=DXY/RII0
+      CF=1.0D0
+      SF=0.0D0
+      IF(DXY.GT.0.0D0) THEN
+      CF=DX/DXY
+      SF=DY/DXY
+                   END IF
 
-      drdx= (x(ir,i0)-x(ir,i))/rii0
-      if(i.eq.m) drdx=-drdx
+      DRDX= (X(IR,I0)-X(IR,I))/RII0
+      IF(I.EQ.M) DRDX=-DRDX
 
-      ct1=-ct/rii0*drdx
-      if(ir.eq.3) then
-      if(m.eq.i0) ct1=ct1+1.0d0/rii0
-      if(m.eq.i) ct1=ct1-1.0d0/rii0
-                end if
-      st1=-st/rii0*drdx
-      dxydx=0.0d0
-      if(ir.eq.1.or.ir.eq.2) then
-c      dxydx=1.0d0
-      if(dxy.gt.0.0d0) then
-      dxydx= (x(ir,i0)-x(ir,i))/dxy
-      if(i.eq.m) dxydx=-dxydx
-                   end if
-      st1=st1+dxydx/rii0
-                             end if
-      cf1=0.0d0
-      sf1=0.0d0
-      if(dxy.gt.0.0d0) then
-      if(ir.eq.1.or.ir.eq.2) then
-      cf1=-cf/dxy*dxydx
-      if(ir.eq.1) then
-      if(m.eq.i0) cf1=cf1+1.0d0/dxy
-      if(m.eq.i) cf1=cf1-1.0d0/dxy
-                    end if
-      sf1=-sf/dxy*dxydx
-      if(ir.eq.2) then
-      if(m.eq.i0) sf1=sf1+1.0d0/dxy
-      if(m.eq.i) sf1=sf1-1.0d0/dxy
-                    end if
-                             end if
-                   end if
+      CT1=-CT/RII0*DRDX
+      IF(IR.EQ.3) THEN
+      IF(M.EQ.I0) CT1=CT1+1.0D0/RII0
+      IF(M.EQ.I) CT1=CT1-1.0D0/RII0
+                END IF
+      ST1=-ST/RII0*DRDX
+      DXYDX=0.0D0
+      IF(IR.EQ.1.OR.IR.EQ.2) THEN
+C      DXYDX=1.0D0
+      IF(DXY.GT.0.0D0) THEN
+      DXYDX= (X(IR,I0)-X(IR,I))/DXY
+      IF(I.EQ.M) DXYDX=-DXYDX
+                   END IF
+      ST1=ST1+DXYDX/RII0
+                             END IF
+      CF1=0.0D0
+      SF1=0.0D0
+      IF(DXY.GT.0.0D0) THEN
+      IF(IR.EQ.1.OR.IR.EQ.2) THEN
+      CF1=-CF/DXY*DXYDX
+      IF(IR.EQ.1) THEN
+      IF(M.EQ.I0) CF1=CF1+1.0D0/DXY
+      IF(M.EQ.I) CF1=CF1-1.0D0/DXY
+                    END IF
+      SF1=-SF/DXY*DXYDX
+      IF(IR.EQ.2) THEN
+      IF(M.EQ.I0) SF1=SF1+1.0D0/DXY
+      IF(M.EQ.I) SF1=SF1-1.0D0/DXY
+                    END IF
+                             END IF
+                   END IF
 
         IF (NEON) THEN
-           call fenergy(rii0,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+           CALL FENERGY(RII0,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ELSE
-         call energyar(rii0,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+         CALL ENERGYAR(RII0,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ENDIF
-cc      Esu=energy(rii0,isu,0)
-cc      Esg=energy(rii0,isg,0)
-cc      Epu=energy(rii0,ipu,0)
-cc      Epg=energy(rii0,ipg,0)
-      Ess=0.5*(Esu+Esg)
-      Esd=0.5*(Esu-Esg)
-      Eps=0.5*(Epu+Epg)
-      Epd=0.5*(Epu-Epg)
-cc      Ex=energy(rii0,ix,0)
+CC      ESU=ENERGY(RII0,ISU,0)
+CC      ESG=ENERGY(RII0,ISG,0)
+CC      EPU=ENERGY(RII0,IPU,0)
+CC      EPG=ENERGY(RII0,IPG,0)
+      ESS=0.5*(ESU+ESG)
+      ESD=0.5*(ESU-ESG)
+      EPS=0.5*(EPU+EPG)
+      EPD=0.5*(EPU-EPG)
+CC      EX=ENERGY(RII0,IX,0)
 
-cc      Esu1=energy(rii0,isu,1)*drdx
-cc      Esg1=energy(rii0,isg,1)*drdx
-cc      Epu1=energy(rii0,ipu,1)*drdx
-cc      Epg1=energy(rii0,ipg,1)*drdx
-        Esu1=Esu1*drdx
-        Esg1=Esg1*drdx
-        Epu1=Epu1*drdx
-        Epg1=Epg1*drdx
-      Ess1=0.5*(Esu1+Esg1)
-      Esd1=0.5*(Esu1-Esg1)
-      Eps1=0.5*(Epu1+Epg1)
-      Epd1=0.5*(Epu1-Epg1)
-cc      Ex1=energy(rii0,ix,1)*drdx
-      Ex1=Ex1*drdx      
+CC      ESU1=ENERGY(RII0,ISU,1)*DRDX
+CC      ESG1=ENERGY(RII0,ISG,1)*DRDX
+CC      EPU1=ENERGY(RII0,IPU,1)*DRDX
+CC      EPG1=ENERGY(RII0,IPG,1)*DRDX
+        ESU1=ESU1*DRDX
+        ESG1=ESG1*DRDX
+        EPU1=EPU1*DRDX
+        EPG1=EPG1*DRDX
+      ESS1=0.5*(ESU1+ESG1)
+      ESD1=0.5*(ESU1-ESG1)
+      EPS1=0.5*(EPU1+EPG1)
+      EPD1=0.5*(EPU1-EPG1)
+CC      EX1=ENERGY(RII0,IX,1)*DRDX
+      EX1=EX1*DRDX      
 
-      if(i0.lt.j) ij0 = (2*n-i0)*(i0-1)/2 +j-i0
-      if(i0.gt.j) ij0 = (2*n-j)*(j-1)/2 +i0-j
+      IF(I0.LT.J) IJ0 = (2*N-I0)*(I0-1)/2 +J-I0
+      IF(I0.GT.J) IJ0 = (2*N-J)*(J-1)/2 +I0-J
 
-      do ki0=1,3
+      DO KI0=1,3
 
-      if(i0.lt.j) ijk0 = 9*(ij0-1) +3*(ki0-1) +kj
-      if(i0.gt.j) ijk0 = 9*(ij0-1) +3*(kj-1) +ki0
+      IF(I0.LT.J) IJK0 = 9*(IJ0-1) +3*(KI0-1) +KJ
+      IF(I0.GT.J) IJK0 = 9*(IJ0-1) +3*(KJ-1) +KI0
 
-      if(ki.eq.1) then
-      if(ki0.eq.1) then
-           trig1=(st*cf)**2
-           trig2=(ct*cf)**2+sf**2
-           trig3=2.0d0*st*cf*(cf*st1+st*cf1)
-           trig4=(2.0d0*ct*cf*(cf*ct1+ct*cf1)+2.0d0*sf*sf1)
-cc      hs1=Ess1*(st*cf)**2+Eps1*((ct*cf)**2+sf**2) +
-cc     1          Ess*2.0d0*st*cf*(cf*st1+st*cf1)+
-cc     1      Eps*(2.0d0*ct*cf*(cf*ct1+ct*cf1)+2.0d0*sf*sf1)
-        hs1= Ess1*trig1+Eps1*trig2+Ess*trig3+Eps*trig4
-      h1(ijk,ijk)=h1(ijk,ijk)+hs1-Ex1
-      h1(ijk0,ijk0)=h1(ijk0,ijk0)+hs1-Ex1
-cc      hd1=Esd1*(st*cf)**2+Epd1*((ct*cf)**2+sf**2) +
-cc     1          Esd*2.0d0*st*cf*(cf*st1+st*cf1)+
-cc     1      Epd*(2.0d0*ct*cf*(cf*ct1+ct*cf1)+2.0d0*sf*sf1)
-        hd1= Esd1*trig1 + Epd1*trig2 + Esd*trig3 + Epd*trig4
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(ki0.eq.2) then
-           trig1=st**2*sf*cf
-           trig2=2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1)
-cc        hs1=(Ess1-Eps1)*st**2*sf*cf +
-cc     1      (Ess-Eps)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1)) 
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(ijk,ijk+3)=h1(ijk,ijk+3)+hs1
-        h1(ijk+3,ijk)=h1(ijk+3,ijk)+hs1
-cc      hd1=(Esd1-Epd1)*st**2*sf*cf + 
-cc     1      (Esd-Epd)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1))
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(ki0.eq.3) then
-           trig1=st*ct*cf
-           trig2=st1*ct*cf+st*ct1*cf+st*ct*cf1
-cc        hs1=(Ess1-Eps1)*st*ct*cf + 
-cc     1      (Ess-Eps)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(ijk,ijk+6)=h1(ijk,ijk+6)+hs1
-        h1(ijk+6,ijk)=h1(ijk+6,ijk)+hs1
-cc      hd1=(Esd1-Epd1)*st*ct*cf + 
-cc     1      (Esd-Epd)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-                    end if
+      IF(KI.EQ.1) THEN
+      IF(KI0.EQ.1) THEN
+           TRIG1=(ST*CF)**2
+           TRIG2=(CT*CF)**2+SF**2
+           TRIG3=2.0D0*ST*CF*(CF*ST1+ST*CF1)
+           TRIG4=(2.0D0*CT*CF*(CF*CT1+CT*CF1)+2.0D0*SF*SF1)
+CC      HS1=ESS1*(ST*CF)**2+EPS1*((CT*CF)**2+SF**2) +
+CC     1          ESS*2.0D0*ST*CF*(CF*ST1+ST*CF1)+
+CC     1      EPS*(2.0D0*CT*CF*(CF*CT1+CT*CF1)+2.0D0*SF*SF1)
+        HS1= ESS1*TRIG1+EPS1*TRIG2+ESS*TRIG3+EPS*TRIG4
+      H1(IJK,IJK)=H1(IJK,IJK)+HS1-EX1
+      H1(IJK0,IJK0)=H1(IJK0,IJK0)+HS1-EX1
+CC      HD1=ESD1*(ST*CF)**2+EPD1*((CT*CF)**2+SF**2) +
+CC     1          ESD*2.0D0*ST*CF*(CF*ST1+ST*CF1)+
+CC     1      EPD*(2.0D0*CT*CF*(CF*CT1+CT*CF1)+2.0D0*SF*SF1)
+        HD1= ESD1*TRIG1 + EPD1*TRIG2 + ESD*TRIG3 + EPD*TRIG4
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KI0.EQ.2) THEN
+           TRIG1=ST**2*SF*CF
+           TRIG2=2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1)
+CC        HS1=(ESS1-EPS1)*ST**2*SF*CF +
+CC     1      (ESS-EPS)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1)) 
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(IJK,IJK+3)=H1(IJK,IJK+3)+HS1
+        H1(IJK+3,IJK)=H1(IJK+3,IJK)+HS1
+CC      HD1=(ESD1-EPD1)*ST**2*SF*CF + 
+CC     1      (ESD-EPD)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1))
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KI0.EQ.3) THEN
+           TRIG1=ST*CT*CF
+           TRIG2=ST1*CT*CF+ST*CT1*CF+ST*CT*CF1
+CC        HS1=(ESS1-EPS1)*ST*CT*CF + 
+CC     1      (ESS-EPS)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(IJK,IJK+6)=H1(IJK,IJK+6)+HS1
+        H1(IJK+6,IJK)=H1(IJK+6,IJK)+HS1
+CC      HD1=(ESD1-EPD1)*ST*CT*CF + 
+CC     1      (ESD-EPD)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+                    END IF
 
-      if(ki.eq.2) then
-      if(ki0.eq.2) then
-           trig1=(st*sf)**2
-           trig2=(ct*sf)**2+cf**2
-           trig3=2.0d0*st*sf*(sf*st1+st*sf1)
-           trig4=2.0d0*ct*sf*(sf*ct1+ct*sf1)+2.0d0*cf*cf1
-cc      hs1=Ess1*(st*sf)**2+Eps1*((ct*sf)**2+cf**2) +
-cc     1          Ess*2.0d0*st*sf*(sf*st1+st*sf1)+
-cc     1      Eps*(2.0d0*ct*sf*(sf*ct1+ct*sf1)+2.0d0*cf*cf1)
-        hs1=Ess1*trig1+Eps1*trig2+Ess*trig3+Eps*trig4
-      h1(ijk,ijk)=h1(ijk,ijk)+hs1-Ex1
-      h1(ijk0,ijk0)=h1(ijk0,ijk0)+hs1-Ex1
-cc      hd1=Esd1*(st*sf)**2+Epd1*((ct*sf)**2+cf**2) +
-cc     1          Esd*2.0d0*st*sf*(sf*st1+st*sf1)+
-cc     1      Epd*(2.0d0*ct*sf*(sf*ct1+ct*sf1)+2.0d0*cf*cf1)
-        hd1=Esd1*trig1+Epd1*trig2+Esd*trig3+Epd*trig4
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(ki0.eq.1) then
-           trig1=st**2*sf*cf
-           trig2=2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1)
-cc        hs1=(Ess1-Eps1)*st**2*sf*cf +
-cc     1      (Ess-Eps)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1))
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-      ijkd=1
-      if(i0.lt.j) ijkd=3
-        h1(ijk0,ijk0+ijkd)=h1(ijk0,ijk0+ijkd)+hs1
-        h1(ijk0+ijkd,ijk0)=h1(ijk0+ijkd,ijk0)+hs1
-cc      hd1=(Esd1-Epd1)*st**2*sf*cf + 
-cc     1      (Esd-Epd)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1))
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(ki0.eq.3) then
-           trig1=st*ct*sf
-           trig2=st1*ct*sf+st*ct1*sf+st*ct*sf1
-cc        hs1=(Ess1-Eps1)*st*ct*sf +
-cc     1      (Ess-Eps)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(ijk,ijk+3)=h1(ijk,ijk+3)+hs1
-        h1(ijk+3,ijk)=h1(ijk+3,ijk)+hs1
-cc      hd1=(Esd1-Epd1)*st*ct*sf + 
-cc     1      (Esd-Epd)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-                    end if
+      IF(KI.EQ.2) THEN
+      IF(KI0.EQ.2) THEN
+           TRIG1=(ST*SF)**2
+           TRIG2=(CT*SF)**2+CF**2
+           TRIG3=2.0D0*ST*SF*(SF*ST1+ST*SF1)
+           TRIG4=2.0D0*CT*SF*(SF*CT1+CT*SF1)+2.0D0*CF*CF1
+CC      HS1=ESS1*(ST*SF)**2+EPS1*((CT*SF)**2+CF**2) +
+CC     1          ESS*2.0D0*ST*SF*(SF*ST1+ST*SF1)+
+CC     1      EPS*(2.0D0*CT*SF*(SF*CT1+CT*SF1)+2.0D0*CF*CF1)
+        HS1=ESS1*TRIG1+EPS1*TRIG2+ESS*TRIG3+EPS*TRIG4
+      H1(IJK,IJK)=H1(IJK,IJK)+HS1-EX1
+      H1(IJK0,IJK0)=H1(IJK0,IJK0)+HS1-EX1
+CC      HD1=ESD1*(ST*SF)**2+EPD1*((CT*SF)**2+CF**2) +
+CC     1          ESD*2.0D0*ST*SF*(SF*ST1+ST*SF1)+
+CC     1      EPD*(2.0D0*CT*SF*(SF*CT1+CT*SF1)+2.0D0*CF*CF1)
+        HD1=ESD1*TRIG1+EPD1*TRIG2+ESD*TRIG3+EPD*TRIG4
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KI0.EQ.1) THEN
+           TRIG1=ST**2*SF*CF
+           TRIG2=2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1)
+CC        HS1=(ESS1-EPS1)*ST**2*SF*CF +
+CC     1      (ESS-EPS)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1))
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+      IJKD=1
+      IF(I0.LT.J) IJKD=3
+        H1(IJK0,IJK0+IJKD)=H1(IJK0,IJK0+IJKD)+HS1
+        H1(IJK0+IJKD,IJK0)=H1(IJK0+IJKD,IJK0)+HS1
+CC      HD1=(ESD1-EPD1)*ST**2*SF*CF + 
+CC     1      (ESD-EPD)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1))
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KI0.EQ.3) THEN
+           TRIG1=ST*CT*SF
+           TRIG2=ST1*CT*SF+ST*CT1*SF+ST*CT*SF1
+CC        HS1=(ESS1-EPS1)*ST*CT*SF +
+CC     1      (ESS-EPS)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(IJK,IJK+3)=H1(IJK,IJK+3)+HS1
+        H1(IJK+3,IJK)=H1(IJK+3,IJK)+HS1
+CC      HD1=(ESD1-EPD1)*ST*CT*SF + 
+CC     1      (ESD-EPD)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+                    END IF
 
-      if(ki.eq.3) then
-      if(ki0.eq.3) then
-           trig1=(ct)**2
-           trig2=(st)**2
-           trig3=2.0d0*ct*ct1
-           trig4=2.0d0*st*st1
-cc      hs1=Ess1*(ct)**2   +Eps1*(st)**2 +
-cc     1      Ess*2.0d0*ct*ct1   +Eps*2.0d0*st*st1
-        hs1=Ess1*trig1 + Eps1*trig2 + Ess*trig3 + Eps*trig4
-      h1(ijk,ijk)=h1(ijk,ijk)+hs1-Ex1
-      h1(ijk0,ijk0)=h1(ijk0,ijk0)+hs1-Ex1
-cc      hd1=Esd1*(ct)**2   +Epd1*(st)**2 +
-cc     1      Esd*2.0d0*ct*ct1   +Epd*2.0d0*st*st1
-        hd1=Esd1*trig1 + Epd1*trig2 + Esd*trig3 + Epd*trig4
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(ki0.eq.1) then
-           trig1=st*ct*cf
-           trig2=st1*ct*cf+st*ct1*cf+st*ct*cf1
-cc        hs1=(Ess1-Eps1)*st*ct*cf + 
-cc     1      (Ess-Eps)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-      ijkd=2
-      if(i0.lt.j) ijkd=6
-        h1(ijk0,ijk0+ijkd)=h1(ijk0,ijk0+ijkd)+hs1
-        h1(ijk0+ijkd,ijk0)=h1(ijk0+ijkd,ijk0)+hs1
-cc      hd1=(Esd1-Epd1)*st*ct*cf + 
-cc     1      (Esd-Epd)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-      if(ki0.eq.2) then
-           trig1=st*ct*sf
-           trig2=st1*ct*sf+st*ct1*sf+st*ct*sf1
-cc        hs1=(Ess1-Eps1)*st*ct*sf + 
-cc     1      (Ess-Eps)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-      ijkd=1
-      if(i0.lt.j) ijkd=3
-        h1(ijk0,ijk0+ijkd)=h1(ijk0,ijk0+ijkd)+hs1
-        h1(ijk0+ijkd,ijk0)=h1(ijk0+ijkd,ijk0)+hs1
-cc      hd1=(Esd1-Epd1)*st*ct*sf + 
-cc     1      (Esd-Epd)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-        hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(ijk,ijk0)=hd1
-      h1(ijk0,ijk)=hd1
-                    end if
-                    end if
+      IF(KI.EQ.3) THEN
+      IF(KI0.EQ.3) THEN
+           TRIG1=(CT)**2
+           TRIG2=(ST)**2
+           TRIG3=2.0D0*CT*CT1
+           TRIG4=2.0D0*ST*ST1
+CC      HS1=ESS1*(CT)**2   +EPS1*(ST)**2 +
+CC     1      ESS*2.0D0*CT*CT1   +EPS*2.0D0*ST*ST1
+        HS1=ESS1*TRIG1 + EPS1*TRIG2 + ESS*TRIG3 + EPS*TRIG4
+      H1(IJK,IJK)=H1(IJK,IJK)+HS1-EX1
+      H1(IJK0,IJK0)=H1(IJK0,IJK0)+HS1-EX1
+CC      HD1=ESD1*(CT)**2   +EPD1*(ST)**2 +
+CC     1      ESD*2.0D0*CT*CT1   +EPD*2.0D0*ST*ST1
+        HD1=ESD1*TRIG1 + EPD1*TRIG2 + ESD*TRIG3 + EPD*TRIG4
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KI0.EQ.1) THEN
+           TRIG1=ST*CT*CF
+           TRIG2=ST1*CT*CF+ST*CT1*CF+ST*CT*CF1
+CC        HS1=(ESS1-EPS1)*ST*CT*CF + 
+CC     1      (ESS-EPS)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+      IJKD=2
+      IF(I0.LT.J) IJKD=6
+        H1(IJK0,IJK0+IJKD)=H1(IJK0,IJK0+IJKD)+HS1
+        H1(IJK0+IJKD,IJK0)=H1(IJK0+IJKD,IJK0)+HS1
+CC      HD1=(ESD1-EPD1)*ST*CT*CF + 
+CC     1      (ESD-EPD)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+      IF(KI0.EQ.2) THEN
+           TRIG1=ST*CT*SF
+           TRIG2=ST1*CT*SF+ST*CT1*SF+ST*CT*SF1
+CC        HS1=(ESS1-EPS1)*ST*CT*SF + 
+CC     1      (ESS-EPS)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+      IJKD=1
+      IF(I0.LT.J) IJKD=3
+        H1(IJK0,IJK0+IJKD)=H1(IJK0,IJK0+IJKD)+HS1
+        H1(IJK0+IJKD,IJK0)=H1(IJK0+IJKD,IJK0)+HS1
+CC      HD1=(ESD1-EPD1)*ST*CT*SF + 
+CC     1      (ESD-EPD)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+        HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(IJK,IJK0)=HD1
+      H1(IJK0,IJK)=HD1
+                    END IF
+                    END IF
 
-      enddo
-                       end if
-  11      continue
-      enddo
+      ENDDO
+                       END IF
+  11      CONTINUE
+      ENDDO
 
-      enddo
-      enddo
+      ENDDO
+      ENDDO
 
-      enddo
-      enddo
+      ENDDO
+      ENDDO
 
-  20      continue
+  20      CONTINUE
 
-      return
-      end
-      subroutine grnd(n,x,grad,ereal,gradt)
-      USE commons
-      implicit DOUBLE PRECISION (a-h,o-z)
-      DOUBLE PRECISION x(3,n),grad(n*3)
-      logical gradt
+      RETURN
+      END
+      SUBROUTINE GRND(N,X,GRAD,EREAL,GRADT)
+      USE COMMONS
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      DOUBLE PRECISION X(3,N),GRAD(N*3)
+      LOGICAL GRADT
 
-      save
-      data RauA/0.52918d0/
+      SAVE
+      DATA RAUA/0.52918D0/
 
-      ExS=0.0d0
-      do k=1,n-1
-      do l=k+1,n
-      rkl=
-     1      sqrt((x(1,l)-x(1,k))**2+(x(2,l)-x(2,k))**2+(x(3,l)-x(3,k))**2)
+      EXS=0.0D0
+      DO K=1,N-1
+      DO L=K+1,N
+      RKL=
+     1      SQRT((X(1,L)-X(1,K))**2+(X(2,L)-X(2,K))**2+(X(3,L)-X(3,K))**2)
         IF (NEON) THEN
-           Ex=utn(rkl/RauA,5,0)
+           EX=UTN(RKL/RAUA,5,0)
         ELSE
-           CALL ASAR1(rkl,Ex,Ex1)
+           CALL ASAR1(RKL,EX,EX1)
         ENDIF
-      ExS=ExS+Ex
-      enddo
-      enddo
-      ereal=ExS
+      EXS=EXS+EX
+      ENDDO
+      ENDDO
+      EREAL=EXS
 
 
-      if(gradt) then
+      IF(GRADT) THEN
 
-      do m=1,n
-      do ir=1,3
-      ic=(m-1)*3+ir
+      DO M=1,N
+      DO IR=1,3
+      IC=(M-1)*3+IR
 
-      ExS1=0.0d0
-      do k=1,n-1
-      do l=k+1,n
-      if(l.eq.m.or.k.eq.m) then
-      rkl=
-     1      sqrt((x(1,l)-x(1,k))**2+(x(2,l)-x(2,k))**2+(x(3,l)-x(3,k))**2)
+      EXS1=0.0D0
+      DO K=1,N-1
+      DO L=K+1,N
+      IF(L.EQ.M.OR.K.EQ.M) THEN
+      RKL=
+     1      SQRT((X(1,L)-X(1,K))**2+(X(2,L)-X(2,K))**2+(X(3,L)-X(3,K))**2)
         IF (NEON) THEN
-      Ex1= utn(rkl/RauA,5,1)/RauA*(x(ir,l)-x(ir,k))/rkl
-      if(k.eq.m) Ex1=-Ex1
+      EX1= UTN(RKL/RAUA,5,1)/RAUA*(X(IR,L)-X(IR,K))/RKL
+      IF(K.EQ.M) EX1=-EX1
         ELSE
-           CALL ASAR1(rkl,Ex,Ex1)
-        Ex1= Ex1*(x(ir,l)-x(ir,k))/rkl
-        if(k.eq.m) Ex1=-Ex1
+           CALL ASAR1(RKL,EX,EX1)
+        EX1= EX1*(X(IR,L)-X(IR,K))/RKL
+        IF(K.EQ.M) EX1=-EX1
         ENDIF
-      ExS1=ExS1+Ex1
-                       end if
-      enddo
-      enddo
+      EXS1=EXS1+EX1
+                       END IF
+      ENDDO
+      ENDDO
 
-      grad(ic)=ExS1
+      GRAD(IC)=EXS1
 
-      enddo
-      enddo
+      ENDDO
+      ENDDO
 
-                  end if
+                  END IF
 
-      return
-      end
+      RETURN
+      END
              SUBROUTINE CUBSPL(TAU,C,N,IBCBEG,IBCEND)
-      implicit double precision (a-h,o-z)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INTEGER IBCBEG,IBCEND,N,I,J,L,M
       DOUBLE PRECISION C(4,N),TAU(N),DIVDF1,DIVDF3,DTAU,G
       L=N-1
@@ -1255,45 +1255,45 @@ cc     1      (Esd-Epd)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
    10 C(4,M)=(C(1,M)-C(1,M-1))/C(3,M)
       IF(IBCBEG-1) 11,15,16
    11 IF(N.GT.2) GO TO 12
-      C(4,1)=1.d0
-      C(3,1)=1.d0
-      C(2,1)=2.d0*C(4,2)
+      C(4,1)=1.D0
+      C(3,1)=1.D0
+      C(2,1)=2.D0*C(4,2)
       GO TO 25
    12 C(4,1)=C(3,3)
       C(3,1)=C(3,2)+C(3,3)
-      C(2,1)=((C(3,2)+2.d0*C(3,1))*C(4,2)*C(3,3)+C(3,2)**2*C(4,3))
+      C(2,1)=((C(3,2)+2.D0*C(3,1))*C(4,2)*C(3,3)+C(3,2)**2*C(4,3))
      1      /C(3,1)
       GO TO 19
-   15 C(4,1)=1.d0
-      C(3,1)=0.d0
+   15 C(4,1)=1.D0
+      C(3,1)=0.D0
       GO TO 18
-   16 C(4,1)=2.d0
-      C(3,1)=1.d0
-      C(2,1)=3.d0*C(4,2)-C(3,2)/2.d0*C(2,1)
+   16 C(4,1)=2.D0
+      C(3,1)=1.D0
+      C(2,1)=3.D0*C(4,2)-C(3,2)/2.D0*C(2,1)
    18 IF(N.EQ.2) GO TO 25
    19 DO 20 M=2,L
       G=-C(3,M+1)/C(4,M-1)
-      C(2,M)=G*C(2,M-1)+3.d0*(C(3,M)*C(4,M+1)+C(3,M+1)*C(4,M))
-   20 C(4,M)=G*C(3,M-1)+2.d0*(C(3,M)+C(3,M+1))
+      C(2,M)=G*C(2,M-1)+3.D0*(C(3,M)*C(4,M+1)+C(3,M+1)*C(4,M))
+   20 C(4,M)=G*C(3,M-1)+2.D0*(C(3,M)+C(3,M+1))
       IF(IBCEND-1) 21,30,24
    21 IF(N.EQ.3.AND.IBCBEG.EQ.0) GO TO 22
       G=C(3,N-1)+C(3,N)
-      C(2,N)=( (C(3,N)+2.d0*G)*C(4,N)*C(3,N-1)+C(3,N)**2*
+      C(2,N)=( (C(3,N)+2.D0*G)*C(4,N)*C(3,N-1)+C(3,N)**2*
      1         (C(1,N-1)-C(1,N-2))/C(3,N-1) )/G
       G=-G/C(4,N-1)
       C(4,N)=C(3,N-1)
       GO TO 29
-   22 C(2,N)=2.d0*C(4,N)
-      C(4,N)=1.d0
+   22 C(2,N)=2.D0*C(4,N)
+      C(4,N)=1.D0
       GO TO 28
-   24 C(2,N)=3.d0*C(4,N)+C(3,N)/2.d0*C(2,N)
-      C(4,N)=2.d0
+   24 C(2,N)=3.D0*C(4,N)+C(3,N)/2.D0*C(2,N)
+      C(4,N)=2.D0
       GO TO 28
    25 IF(IBCEND-1) 26,30,24
    26 IF(IBCBEG.GT.0) GO TO 22
       C(2,N)=C(4,N)
       GO TO 30
-   28 G=-1.d0/C(4,N-1)
+   28 G=-1.D0/C(4,N-1)
    29 C(4,N)=G*C(3,N-1)+C(4,N)
       C(2,N)=(G*C(2,N-1)+C(2,N))/C(4,N)
    30 DO 40 J1=1,L
@@ -1302,9 +1302,9 @@ cc     1      (Esd-Epd)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
       DO 50 I=2,N
       DTAU=C(3,I)
       DIVDF1=(C(1,I)-C(1,I-1))/DTAU
-      DIVDF3=C(2,I-1)+C(2,I)-2.d0*DIVDF1
-      C(3,I-1)=2.d0*(DIVDF1-C(2,I-1)-DIVDF3)/DTAU
-   50 C(4,I-1)=(DIVDF3/DTAU)*(6.d0/DTAU)
+      DIVDF3=C(2,I-1)+C(2,I)-2.D0*DIVDF1
+      C(3,I-1)=2.D0*(DIVDF1-C(2,I-1)-DIVDF3)/DTAU
+   50 C(4,I-1)=(DIVDF3/DTAU)*(6.D0/DTAU)
       RETURN
       END
       SUBROUTINE INTERV( XT, LXT, X, LEFT, MFLAG)
@@ -1348,7 +1348,7 @@ C  LEFT = ILO IS THEN RETURNED.
       INTEGER LEFT,LXT,MFLAG,
      *        IHI,ILO,ISTEP,MIDDLE
       DOUBLE PRECISION  X,XT(LXT)
-      save
+      SAVE
       DATA ILO /1/
 C     SAVE ILO  (A VALID FORTRAN STATEMENT IN THE NEW 1977 STANDARD)
       IHI = ILO + 1
@@ -1382,7 +1382,7 @@ C     **** NOW X .GE. XT(IHI) . INCREASE  IHI TO CAPTURE  X .
    45 IF (X .GE. XT(LXT))              GO TO 110
         IHI = LXT
 C
-C       **** NOW XT(ILO) .LE. x .LT. XT(IHI) . NPRROW THE INTERVAL.
+C       **** NOW XT(ILO) .LE. X .LT. XT(IHI) . NPRROW THE INTERVAL.
    50 MIDDLE = (ILO + IHI)/2
       IF (MIDDLE .EQ. ILO)             GO TO 100
 C     NOTE. IT IS ASSUMED THAT MIDDLE = ILO IN CASE IHI = ILO + 1 .
@@ -1434,7 +1434,7 @@ C  OF  F  IS THEN EVALUATED (BY NESTED MULTIPLICATION).
       INTEGER JDERIV,K,L,
      *        I,M,NDUMMY,JDRP1
       DOUBLE PRECISION    BREAK(L),COEF(K,L)
-c      DOUBLE PRECISION  FMMJDR,H,PPSUM,FDBLE,YD,X,FSNGL,YS
+C      DOUBLE PRECISION  FMMJDR,H,PPSUM,FDBLE,YD,X,FSNGL,YS
       PPSUM = 0.0
       FMMJDR = (FLOAT(K - JDERIV))
 C     DERIVATIVES OF ORDER  K  OR HIGHER ARE IDENTICALLY ZERO.
@@ -1453,633 +1453,633 @@ C     EVALUATE JDERIV-TH DERIVATIVE OF  I-TH  POLYNOMIAL PIECE AT  X.
                                        RETURN
       END
 
-        subroutine dipoles(x,n,h0,h1,igrad)
-        implicit DOUBLE PRECISION (a-h,o-z)
-cc      save
-      COMMON/DIPOL/ adip,Runit,ReX
+        SUBROUTINE DIPOLES(X,N,H0,H1,IGRAD)
+        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+CC      SAVE
+      COMMON/DIPOL/ ADIP,RUNIT,REX
 
-        DOUBLE PRECISION x(3,n),h0(n*3,n*3)
-     &               ,h1(n*3,n*3)
+        DOUBLE PRECISION X(3,N),H0(N*3,N*3)
+     &               ,H1(N*3,N*3)
 
-      if(igrad.gt.0) go to 10
+      IF(IGRAD.GT.0) GO TO 10
 
-      do i=1,n
+      DO I=1,N
 
-        x1i=x(1,i)/Runit
-        x2i=x(2,i)/Runit
-        x3i=x(3,i)/Runit
-      Eddi=0.d0
+        X1I=X(1,I)/RUNIT
+        X2I=X(2,I)/RUNIT
+        X3I=X(3,I)/RUNIT
+      EDDI=0.D0
 
-      do j=1,n-1
-      if(j.eq.i) go to 1
+      DO J=1,N-1
+      IF(J.EQ.I) GO TO 1
 
-      x1j=x(1,j)/Runit
-        x2j=x(2,j)/Runit
-        x3j=x(3,j)/Runit
-      x1ij=x1j-x1i
-      x2ij=x2j-x2i
-      x3ij=x3j-x3i
-      rij2= x1ij*x1ij + x2ij*x2ij + x3ij*x3ij
-      rij=sqrt(rij2)
-      Dij=adip/rij2
+      X1J=X(1,J)/RUNIT
+        X2J=X(2,J)/RUNIT
+        X3J=X(3,J)/RUNIT
+      X1IJ=X1J-X1I
+      X2IJ=X2J-X2I
+      X3IJ=X3J-X3I
+      RIJ2= X1IJ*X1IJ + X2IJ*X2IJ + X3IJ*X3IJ
+      RIJ=SQRT(RIJ2)
+      DIJ=ADIP/RIJ2
 
-      do k=j+1,n
-      if(k.eq.i.or.k.eq.j) go to 2 
+      DO K=J+1,N
+      IF(K.EQ.I.OR.K.EQ.J) GO TO 2 
 
-        x1k=x(1,k)/Runit
-        x2k=x(2,k)/Runit
-        x3k=x(3,k)/Runit
-        x1ik=x1k-x1i
-        x2ik=x2k-x2i
-        x3ik=x3k-x3i
-        rik2= x1ik*x1ik + x2ik*x2ik + x3ik*x3ik        
-        rik=sqrt(rik2) 
-        Dik=adip/rik2
+        X1K=X(1,K)/RUNIT
+        X2K=X(2,K)/RUNIT
+        X3K=X(3,K)/RUNIT
+        X1IK=X1K-X1I
+        X2IK=X2K-X2I
+        X3IK=X3K-X3I
+        RIK2= X1IK*X1IK + X2IK*X2IK + X3IK*X3IK        
+        RIK=SQRT(RIK2) 
+        DIK=ADIP/RIK2
 
-        x1jk=x1k-x1j                                                   
-        x2jk=x2k-x2j                                                   
-        x3jk=x3k-x3j                                                   
-        rjk2= x1jk*x1jk + x2jk*x2jk + x3jk*x3jk                                 
-      rjk=sqrt(rjk2)
+        X1JK=X1K-X1J                                                   
+        X2JK=X2K-X2J                                                   
+        X3JK=X3K-X3J                                                   
+        RJK2= X1JK*X1JK + X2JK*X2JK + X3JK*X3JK                                 
+      RJK=SQRT(RJK2)
 
-      if(rjk.lt.0.5*ReX) go to 2
+      IF(RJK.LT.0.5*REX) GO TO 2
 
-      DijDik=Dij*Dik*(x1ij*x1ik + x2ij*x2ik + x3ij*x3ik)/(rij*rik)
-        Dijrjk=Dij*(x1ij*x1jk + x2ij*x2jk + x3ij*x3jk)/rij
-        Dikrjk=Dik*(x1ik*x1jk + x2ik*x2jk + x3ik*x3jk)/rik          
+      DIJDIK=DIJ*DIK*(X1IJ*X1IK + X2IJ*X2IK + X3IJ*X3IK)/(RIJ*RIK)
+        DIJRJK=DIJ*(X1IJ*X1JK + X2IJ*X2JK + X3IJ*X3JK)/RIJ
+        DIKRJK=DIK*(X1IK*X1JK + X2IK*X2JK + X3IK*X3JK)/RIK          
 
-      Eddjki=(rjk2*DijDik -3.d0*Dijrjk*Dikrjk)/(rjk2*rjk2*rjk)
-      Eddi=Eddi+Eddjki
+      EDDJKI=(RJK2*DIJDIK -3.D0*DIJRJK*DIKRJK)/(RJK2*RJK2*RJK)
+      EDDI=EDDI+EDDJKI
 
-  2     continue
-        enddo
+  2     CONTINUE
+        ENDDO
 
-  1      continue
-        enddo
+  1      CONTINUE
+        ENDDO
 
-        i3=3*(i-1)
-        do l=1,3
-        i3l=i3+l
-        h0(i3l,i3l)=h0(i3l,i3l)+Eddi
-        enddo
+        I3=3*(I-1)
+        DO L=1,3
+        I3L=I3+L
+        H0(I3L,I3L)=H0(I3L,I3L)+EDDI
+        ENDDO
 
-      enddo
+      ENDDO
 
-  10      continue
-c----------------------------------------------------------------------
-      if(igrad.le.0) go to 20
+  10      CONTINUE
+C----------------------------------------------------------------------
+      IF(IGRAD.LE.0) GO TO 20
 
-        m=int(igrad/3)+1
-        ir=mod(igrad,3)
-        if(ir.eq.0) then
-        ir=3
-        m=m-1
-                    end if
+        M=INT(IGRAD/3)+1
+        IR=MOD(IGRAD,3)
+        IF(IR.EQ.0) THEN
+        IR=3
+        M=M-1
+                    END IF
 
-        do i=1,n
+        DO I=1,N
 
-        x1i=x(1,i)/Runit
-        x2i=x(2,i)/Runit
-        x3i=x(3,i)/Runit
-        Eddi1=0.d0
+        X1I=X(1,I)/RUNIT
+        X2I=X(2,I)/RUNIT
+        X3I=X(3,I)/RUNIT
+        EDDI1=0.D0
 
-        do j=1,n-1
-        if(j.eq.i) go to 11
+        DO J=1,N-1
+        IF(J.EQ.I) GO TO 11
 
-        x1j=x(1,j)/Runit
-        x2j=x(2,j)/Runit
-        x3j=x(3,j)/Runit
-        x1ij=x1j-x1i
-        x2ij=x2j-x2i
-        x3ij=x3j-x3i
-        rij2= x1ij*x1ij + x2ij*x2ij + x3ij*x3ij
-        rij=sqrt(rij2)
-        Dij=adip/rij2
+        X1J=X(1,J)/RUNIT
+        X2J=X(2,J)/RUNIT
+        X3J=X(3,J)/RUNIT
+        X1IJ=X1J-X1I
+        X2IJ=X2J-X2I
+        X3IJ=X3J-X3I
+        RIJ2= X1IJ*X1IJ + X2IJ*X2IJ + X3IJ*X3IJ
+        RIJ=SQRT(RIJ2)
+        DIJ=ADIP/RIJ2
 
-      rij1=0.d0
-      Dij1=0.d0
-      if(i.eq.m.or.j.eq.m) then
-      rij1=(x(ir,j)-x(ir,i))/rij/Runit
-      if(i.eq.m) rij1=-rij1
-      Dij1=-2.d0*Dij/rij*rij1
-                       end if
+      RIJ1=0.D0
+      DIJ1=0.D0
+      IF(I.EQ.M.OR.J.EQ.M) THEN
+      RIJ1=(X(IR,J)-X(IR,I))/RIJ/RUNIT
+      IF(I.EQ.M) RIJ1=-RIJ1
+      DIJ1=-2.D0*DIJ/RIJ*RIJ1
+                       END IF
 
-        do k=j+1,n
-        if(k.eq.i.or.k.eq.j) go to 22
+        DO K=J+1,N
+        IF(K.EQ.I.OR.K.EQ.J) GO TO 22
 
-        x1k=x(1,k)/Runit
-        x2k=x(2,k)/Runit
-        x3k=x(3,k)/Runit
-        x1ik=x1k-x1i
-        x2ik=x2k-x2i
-        x3ik=x3k-x3i
-        rik2= x1ik*x1ik + x2ik*x2ik + x3ik*x3ik
-        rik=sqrt(rik2)
-        Dik=adip/rik2
+        X1K=X(1,K)/RUNIT
+        X2K=X(2,K)/RUNIT
+        X3K=X(3,K)/RUNIT
+        X1IK=X1K-X1I
+        X2IK=X2K-X2I
+        X3IK=X3K-X3I
+        RIK2= X1IK*X1IK + X2IK*X2IK + X3IK*X3IK
+        RIK=SQRT(RIK2)
+        DIK=ADIP/RIK2
 
-      rik1=0.d0
-      Dik1=0.d0
-        if(i.eq.m.or.k.eq.m) then
-        rik1=(x(ir,k)-x(ir,i))/rik/Runit
-        if(i.eq.m) rik1=-rik1      
-        Dik1=-2.d0*Dik/rik*rik1
-                             end if
+      RIK1=0.D0
+      DIK1=0.D0
+        IF(I.EQ.M.OR.K.EQ.M) THEN
+        RIK1=(X(IR,K)-X(IR,I))/RIK/RUNIT
+        IF(I.EQ.M) RIK1=-RIK1      
+        DIK1=-2.D0*DIK/RIK*RIK1
+                             END IF
 
-        x1jk=x1k-x1j
-        x2jk=x2k-x2j
-        x3jk=x3k-x3j
-        rjk2= x1jk*x1jk + x2jk*x2jk + x3jk*x3jk
-        rjk=sqrt(rjk2)
+        X1JK=X1K-X1J
+        X2JK=X2K-X2J
+        X3JK=X3K-X3J
+        RJK2= X1JK*X1JK + X2JK*X2JK + X3JK*X3JK
+        RJK=SQRT(RJK2)
 
-      if (rjk.lt.0.5*ReX) go to 22
+      IF (RJK.LT.0.5*REX) GO TO 22
 
-      xxjki=x1ij*x1ik + x2ij*x2ik + x3ij*x3ik
-        DijDik=Dij*Dik*xxjki/(rij*rik)
-      xxikj=x1ij*x1jk + x2ij*x2jk + x3ij*x3jk
-        Dijrjk=Dij*xxikj/rij
-      xxijk=x1ik*x1jk + x2ik*x2jk + x3ik*x3jk
-        Dikrjk=Dik*xxijk/rik
+      XXJKI=X1IJ*X1IK + X2IJ*X2IK + X3IJ*X3IK
+        DIJDIK=DIJ*DIK*XXJKI/(RIJ*RIK)
+      XXIKJ=X1IJ*X1JK + X2IJ*X2JK + X3IJ*X3JK
+        DIJRJK=DIJ*XXIKJ/RIJ
+      XXIJK=X1IK*X1JK + X2IK*X2JK + X3IK*X3JK
+        DIKRJK=DIK*XXIJK/RIK
 
-      rjk1=0.d0
-      if(j.eq.m.or.k.eq.m) then
-        rjk1=(x(ir,k)-x(ir,j))/rjk/Runit
-        if(j.eq.m) rjk1=-rjk1
-                       end if
+      RJK1=0.D0
+      IF(J.EQ.M.OR.K.EQ.M) THEN
+        RJK1=(X(IR,K)-X(IR,J))/RJK/RUNIT
+        IF(J.EQ.M) RJK1=-RJK1
+                       END IF
 
-      xxjki1=0.d0
-      DijDik1=0.d0
-        if(i.eq.m.or.j.eq.m.or.k.eq.m) then
-      if(j.eq.m) xxjki1=(x(ir,k)-x(ir,i))/Runit
-        if(k.eq.m) xxjki1=(x(ir,j)-x(ir,i))/Runit
-      if(i.eq.m) xxjki1=-(x(ir,k)-x(ir,i)+x(ir,j)-x(ir,i))/Runit
-      DijDik1=(Dij1*Dik*xxjki+Dij*Dik1*xxjki+Dij*Dik*xxjki1)/(rij*rik)
-     &             -DijDik*(rij1/rij+rik1/rik)
-                                          end if
-        xxikj1=0.d0
-        Dijrjk1=0.d0
-        if(i.eq.m.or.j.eq.m.or.k.eq.m) then
-        if(i.eq.m) xxikj1=-(x(ir,k)-x(ir,j))/Runit
-        if(k.eq.m) xxikj1=(x(ir,j)-x(ir,i))/Runit
-        if(j.eq.m) xxikj1=(x(ir,k)-x(ir,j)-(x(ir,j)-x(ir,i)))/Runit
-        Dijrjk1=(Dij1*xxikj+Dij*xxikj1)/rij
-     &         -Dijrjk*rij1/rij
-                                       end if
-        xxijk1=0.d0  
-        Dikrjk1=0.d0
-        if(i.eq.m.or.j.eq.m.or.k.eq.m) then
-        if(i.eq.m) xxijk1=-(x(ir,k)-x(ir,j))/Runit
-        if(j.eq.m) xxijk1=-(x(ir,k)-x(ir,i))/Runit
-        if(k.eq.m) xxijk1=(x(ir,k)-x(ir,j)+x(ir,k)-x(ir,i))/Runit 
-        Dikrjk1=(Dik1*xxijk+Dik*xxijk1)/rik                             
-     &         -Dikrjk*rik1/rik                            
-                                       end if
-
-
-        Eddjki=(rjk2*DijDik -3.d0*Dijrjk*Dikrjk)/(rjk2*rjk2*rjk)
-        Eddjki1=(rjk2*DijDik1 -3.d0*(Dijrjk1*Dikrjk+Dijrjk*Dikrjk1)
-     &             +2.d0*rjk*rjk1*DijDik)/(rjk2*rjk2*rjk)
-     &             - 5.d0*Eddjki/rjk*rjk1
-        Eddi1=Eddi1+Eddjki1
-
-  22    continue
-        enddo
-
-  11    continue
-        enddo
-
-        i3=3*(i-1)
-        do l=1,3
-        i3l=i3+l
-        h1(i3l,i3l)=h1(i3l,i3l)+Eddi1/Runit
-        enddo
-
-        enddo
-
-  20    continue
-
-      return
-      end
+      XXJKI1=0.D0
+      DIJDIK1=0.D0
+        IF(I.EQ.M.OR.J.EQ.M.OR.K.EQ.M) THEN
+      IF(J.EQ.M) XXJKI1=(X(IR,K)-X(IR,I))/RUNIT
+        IF(K.EQ.M) XXJKI1=(X(IR,J)-X(IR,I))/RUNIT
+      IF(I.EQ.M) XXJKI1=-(X(IR,K)-X(IR,I)+X(IR,J)-X(IR,I))/RUNIT
+      DIJDIK1=(DIJ1*DIK*XXJKI+DIJ*DIK1*XXJKI+DIJ*DIK*XXJKI1)/(RIJ*RIK)
+     &             -DIJDIK*(RIJ1/RIJ+RIK1/RIK)
+                                          END IF
+        XXIKJ1=0.D0
+        DIJRJK1=0.D0
+        IF(I.EQ.M.OR.J.EQ.M.OR.K.EQ.M) THEN
+        IF(I.EQ.M) XXIKJ1=-(X(IR,K)-X(IR,J))/RUNIT
+        IF(K.EQ.M) XXIKJ1=(X(IR,J)-X(IR,I))/RUNIT
+        IF(J.EQ.M) XXIKJ1=(X(IR,K)-X(IR,J)-(X(IR,J)-X(IR,I)))/RUNIT
+        DIJRJK1=(DIJ1*XXIKJ+DIJ*XXIKJ1)/RIJ
+     &         -DIJRJK*RIJ1/RIJ
+                                       END IF
+        XXIJK1=0.D0  
+        DIKRJK1=0.D0
+        IF(I.EQ.M.OR.J.EQ.M.OR.K.EQ.M) THEN
+        IF(I.EQ.M) XXIJK1=-(X(IR,K)-X(IR,J))/RUNIT
+        IF(J.EQ.M) XXIJK1=-(X(IR,K)-X(IR,I))/RUNIT
+        IF(K.EQ.M) XXIJK1=(X(IR,K)-X(IR,J)+X(IR,K)-X(IR,I))/RUNIT 
+        DIKRJK1=(DIK1*XXIJK+DIK*XXIJK1)/RIK                             
+     &         -DIKRJK*RIK1/RIK                            
+                                       END IF
 
 
-c   2  2  2  2  2
-c ne2+su.dat_qne2+sg.dat_qne2+pu.dat_qne2+pg.dat_qne2x.dat_q
-c ne2+su.dat  ne2+sg.dat  ne2+pu.dat  ne2+pg.dat  ne2x.dat   
+        EDDJKI=(RJK2*DIJDIK -3.D0*DIJRJK*DIKRJK)/(RJK2*RJK2*RJK)
+        EDDJKI1=(RJK2*DIJDIK1 -3.D0*(DIJRJK1*DIKRJK+DIJRJK*DIKRJK1)
+     &             +2.D0*RJK*RJK1*DIJDIK)/(RJK2*RJK2*RJK)
+     &             - 5.D0*EDDJKI/RJK*RJK1
+        EDDI1=EDDI1+EDDJKI1
 
-      subroutine fenergy(r,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
-      implicit DOUBLE PRECISION (a-h,o-z)
+  22    CONTINUE
+        ENDDO
 
-      COMMON/DIPOL/ adip,Runit,rex
+  11    CONTINUE
+        ENDDO
 
-cc        real r0,ut,ut1
-      save
-      data RauA/0.52918d0/
+        I3=3*(I-1)
+        DO L=1,3
+        I3L=I3+L
+        H1(I3L,I3L)=H1(I3L,I3L)+EDDI1/RUNIT
+        ENDDO
 
-      Runit=RauA
-      adip=2.68d0
+        ENDDO
 
-        r0=r
-        Esu=ut(r0,1,ut1)
-        Esu1=ut1
-        Esg=ut(r0,2,ut1)
-        Esg1=ut1
-        Epu=ut(r0,3,ut1)
-        Epu1=ut1
-        Epg=ut(r0,4,ut1)
-        Epg1=ut1
-      Ex =utn(r/RauA,5,0)
-      Ex1=utn(r/RauA,5,1)/RauA
-        return
-        end
+  20    CONTINUE
 
-      DOUBLE PRECISION function ut(rr,i0,ut1)
-      implicit DOUBLE PRECISION (a-h,o-z)
-      save
-      common/points/ru,Eu, rg,Eg, rpu,Epu, rpg,Epg, rx,Ex,
-     1              coefu,coefg,coefpu,coefpg,coefx, ir1,ir2,ir3,ir4,ir5
-      character(LEN=12) name1,name2,name3,name4,name5
-      DOUBLE PRECISION ru(50),Eu(50), rg(50),Eg(50), 
-     1     rpu(50),Epu(50), rpg(50),Epg(50), rx(50),Ex(50),
-     1     coefu(4,50), coefg(4,50), coefpu(4,50), coefpg(4,50), 
-     1     coefx(4,50)
-      data nc/1/,nc1/1/,nc2/1/,nc3/1/,nc4/1/,nc5/1/, rauA/0.52918d0/
-      if(nc.eq.1) then
-      nc=2
-C     open(110,file='rg2+_3+n1.f')
-!     open(110,file='energy.f')
-      ind1=2  
-      ind2=2  
-      ind3=2  
-      ind4=2  
-      ind5=2
-!     read(110,'(2x,5i3)') ind1,ind2,ind3,ind4,ind5
-cc      print '(2x,5i3)', ind1,ind2,ind3,ind4,ind5
-!     read(110,'(2x,5a12)') name1,name2,name3,name4,name5
-cc      print '(2x,5a12)', name1,name2,name3,name4,name5
-!      name1='ne2+su.dat'  
-!      name2='ne2+sg.dat'
-!      name3='ne2+pu.dat'
-!      name4='ne2+pg.dat'
-       name1='ne2+su.dat_q'  
-       name2='ne2+sg.dat_q'
-       name3='ne2+pu.dat_q'
-       name4='ne2+pg.dat_q'
-       name5='ne2x.dat'
-                  end if
-      ut=0.0
-c
-      if(i0.eq.1) then
-      if(ind1.eq.0.or.ind1.eq.2) then
-      if(nc1.eq.1) then
-      nc1=2
-      open(11,file=name1,STATUS='OLD')
-      ir1=0
-   10 continue
-      ir1=ir1+1
-      read(11,*,end=11) ru(ir1), Eu(ir1)
-cc      print *, ru(ir1), Eu(ir1)
-      go to 10
-   11 continue
-      ir1=ir1-1
-      if(ind1.eq.2) then
-      Easu=Eu(ir1)
-      do i=1,ir1
-      coefu(1,i)=Eu(i) -Easu
-      enddo
-      coefu(2,ir1)=0.0
-      call cubspl(ru,coefu,ir1,0,1)
-                    end if
-                   end if
-      if(rr.lt.ru(ir1)) then
-      if(ind1.eq.0) then
-      do 1 i=1,ir1-1
-      if(.not.( ru(i).le.rr.and.rr.le.ru(i+1) )) go to 1
-      ut = Eu(i) + (Eu(i+1)-Eu(i))/(ru(i+1)-ru(i))*(rr-ru(i)) -Easu
-    1 continue
-                    end if
-      if(ind1.eq.2) then
-      ut=ppvalu(ru,coefu,ir1,4,rr,0)
-        ut1=ppvalu(ru,coefu,ir1,4,rr,1) 
-                end if
-                        else
-      ut=Eu(ir1) -Easu
-      ut1=0.0
-                        end if
-                    end if
-      if(ind1.eq.1) ut=utn(rr/rauA,i0,0)
-      return
-                 end if
-c
-      if(i0.eq.2) then
-      if(ind2.eq.0.or.ind2.eq.2) then
-      if(nc2.eq.1) then
-      nc2=2
-      open(22,file=name2,STATUS='OLD')
-      ir2=0
-   20 continue
-      ir2=ir2+1
-      read(22,*,end=22) rg(ir2), Eg(ir2)
-cc      print *, rg(ir2), Eg(ir2)
-      go to 20
-   22 continue
-      ir2=ir2-1
-      if(ind2.eq.2) then
-      Easg=Eg(ir2)
-      do i=1,ir2
-      coefg(1,i)=Eg(i) -Easg
-      enddo
-      coefg(2,ir2)=0.0
-      call cubspl(rg,coefg,ir2,0,1)
-                    end if
-                   end if
-      if(rr.lt.rg(ir2)) then
-      if(ind2.eq.0) then
-      do 2 i=1,ir2-1
-      if(.not.( rg(i).le.rr.and.rr.le.rg(i+1) )) go to 2
-      ut = Eg(i) + (Eg(i+1)-Eg(i))/(rg(i+1)-rg(i))*(rr-rg(i)) -Easg
-    2 continue
-                    end if
-      if(ind2.eq.2) then
-      ut=ppvalu(rg,coefg,ir2,4,rr,0)
-        ut1=ppvalu(rg,coefg,ir2,4,rr,1) 
-                end if
-                        else
-      ut=Eg(ir2) -Easg
-      ut1=0.0
-                        end if
-                    end if 
-      if(ind2.eq.1) ut=utn(rr/rauA,i0,0)
-      return
-                 end if
-c
-      if(i0.eq.3) then
-      if(ind3.eq.0.or.ind3.eq.2) then
-      if(nc3.eq.1) then
-      nc3=2
-      open(33,file=name3,STATUS='OLD')
-      ir3=0
-   30 continue
-      ir3=ir3+1
-      read(33,*,end=33) rpu(ir3), Epu(ir3)
-cc      print *, rpu(ir3), Epu(ir3)
-      go to 30
-   33 continue
-      ir3=ir3-1
-      if(ind3.eq.2) then
-      Easpu=Epu(ir3)
-      do i=1,ir3
-      coefpu(1,i)=Epu(i) -Easpu
-      enddo
-      coefpu(2,ir3)=0.0
-      call cubspl(rpu,coefpu,ir3,0,1)
-                    end if
-                   end if
-      if(rr.lt.rpu(ir3)) then
-      if(ind3.eq.0) then  
-      do 3 i=1,ir3-1
-      if(.not.( rpu(i).le.rr.and.rr.le.rpu(i+1) )) go to 3
-      ut = Epu(i) + (Epu(i+1)-Epu(i))/(rpu(i+1)-rpu(i))*(rr-rpu(i))
-     1     -Easpu
-    3 continue
-                    end if
-      if(ind3.eq.2) then
-      ut=ppvalu(rpu,coefpu,ir3,4,rr,0) 
-        ut1=ppvalu(rpu,coefpu,ir3,4,rr,1) 
-                end if
-                        else
-      ut=Epu(ir3) -Easpu
-      ut1=0.0
-                        end if
-                    end if
-      if(ind3.eq.1) ut=utn(rr/rauA,i0,0)
-      return
-               end if
-c
-      if(i0.eq.4) then
-      if(ind4.eq.0.or.ind4.eq.2) then
-      if(nc4.eq.1) then
-      nc4=2
-      open(44,file=name4,STATUS='OLD')
-      ir4=0
-   40 continue
-      ir4=ir4+1
-      read(44,*,end=44) rpg(ir4), Epg(ir4)
-cc      print *, rpg(ir4), Epg(ir4)
-      go to 40
-   44 continue
-      ir4=ir4-1
-      if(ind4.eq.2) then
-      Easpg=Epg(ir4)
-      do i=1,ir4
-      coefpg(1,i)=Epg(i) -Easpg
-      enddo
-      coefpg(2,ir4)=0.0
-      call cubspl(rpg,coefpg,ir4,0,1)
-                    end if
-                   end if
-      if(rr.lt.rpg(ir4)) then
-      if(ind4.eq.0) then
-      do 4 i=1,ir4-1
-      if(.not.( rpg(i).le.rr.and.rr.le.rpg(i+1) )) go to 4
-      ut = Epg(i) + (Epg(i+1)-Epg(i))/(rpg(i+1)-rpg(i))*(rr-rpg(i))
-     1     -Easpg
-    4 continue
-                    end if
-      if(ind4.eq.2) then
-      ut=ppvalu(rpg,coefpg,ir4,4,rr,0)
-        ut1=ppvalu(rpg,coefpg,ir4,4,rr,1)
-                end if
-                        else
-      ut=Epg(ir4) -Easpg
-      ut1=0.0
-                        end if
-                    end if 
-      if(ind4.eq.1) ut=utn(rr/rauA,i0,0)
-      return
-                 end if
-c
-      if(i0.eq.5) then
-      if(ind5.eq.0.or.ind5.eq.2) then
-      if(nc5.eq.1) then
-      nc5=2
-      open(55,file=name5,STATUS='OLD')
-      ir5=0
-   50 continue
-      ir5=ir5+1
-      read(55,*,end=55) rx(ir5), Ex(ir5)
-cc      print *, rx(ir5), Ex(ir5)
-      go to 50
-   55 continue
-      ir5=ir5-1
-      if(ind5.eq.2) then
-      Easx=Ex(ir5)
-      do i=1,ir5
-      coefx(1,i)=Ex(i) -Easx
-      enddo
-      coefx(2,ir5)=0.0
-      call cubspl(rx,coefx,ir5,0,1)
-                    end if
-                   end if
-      if(rr.lt.rx(ir5)) then
-      if(ind5.eq.0) then
-      do 5 i=1,ir5-1
-      if(.not.( rx(i).le.rr.and.rr.le.rx(i+1) )) go to 5
-      ut = Ex(i) + (Ex(i+1)-Ex(i))/(rx(i+1)-rx(i))*(rr-rx(i)) -Easx
-    5 continue
-                    end if
-      if(ind5.eq.2) then
-      ut=ppvalu(rx,coefx,ir5,4,rr,0)
-      ut1=ppvalu(rx,coefx,ir5,4,rr,1)
-                end if
-                        else 
-      ut=Ex(ir5) -Easx
-      ut1=0.0
-                        end if
-                    end if
-      if(ind5.eq.1) ut=utn(rr/rauA,i0,0)
-      return
-                 end if
-      return 
-      end
+      RETURN
+      END
 
 
-      subroutine rgni(n,x,grad,ereal,gradt) !  ,h0,h1,ee,ev,w,natoms)
-        implicit DOUBLE PRECISION (a-h,o-z)
+C   2  2  2  2  2
+C NE2+SU.DAT_QNE2+SG.DAT_QNE2+PU.DAT_QNE2+PG.DAT_QNE2X.DAT_Q
+C NE2+SU.DAT  NE2+SG.DAT  NE2+PU.DAT  NE2+PG.DAT  NE2X.DAT   
+
+      SUBROUTINE FENERGY(R,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+
+      COMMON/DIPOL/ ADIP,RUNIT,REX
+
+CC        REAL R0,UT,UT1
+      SAVE
+      DATA RAUA/0.52918D0/
+
+      RUNIT=RAUA
+      ADIP=2.68D0
+
+        R0=R
+        ESU=UT(R0,1,UT1)
+        ESU1=UT1
+        ESG=UT(R0,2,UT1)
+        ESG1=UT1
+        EPU=UT(R0,3,UT1)
+        EPU1=UT1
+        EPG=UT(R0,4,UT1)
+        EPG1=UT1
+      EX =UTN(R/RAUA,5,0)
+      EX1=UTN(R/RAUA,5,1)/RAUA
+        RETURN
+        END
+
+      DOUBLE PRECISION FUNCTION UT(RR,I0,UT1)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      SAVE
+      COMMON/POINTS/RU,EU, RG,EG, RPU,EPU, RPG,EPG, RX,EX,
+     1              COEFU,COEFG,COEFPU,COEFPG,COEFX, IR1,IR2,IR3,IR4,IR5
+      CHARACTER(LEN=12) NAME1,NAME2,NAME3,NAME4,NAME5
+      DOUBLE PRECISION RU(50),EU(50), RG(50),EG(50), 
+     1     RPU(50),EPU(50), RPG(50),EPG(50), RX(50),EX(50),
+     1     COEFU(4,50), COEFG(4,50), COEFPU(4,50), COEFPG(4,50), 
+     1     COEFX(4,50)
+      DATA NC/1/,NC1/1/,NC2/1/,NC3/1/,NC4/1/,NC5/1/, RAUA/0.52918D0/
+      IF(NC.EQ.1) THEN
+      NC=2
+C     OPEN(110,FILE='RG2+_3+N1.F')
+!     OPEN(110,FILE='ENERGY.F')
+      IND1=2  
+      IND2=2  
+      IND3=2  
+      IND4=2  
+      IND5=2
+!     READ(110,'(2X,5I3)') IND1,IND2,IND3,IND4,IND5
+CC      PRINT '(2X,5I3)', IND1,IND2,IND3,IND4,IND5
+!     READ(110,'(2X,5A12)') NAME1,NAME2,NAME3,NAME4,NAME5
+CC      PRINT '(2X,5A12)', NAME1,NAME2,NAME3,NAME4,NAME5
+!      NAME1='NE2+SU.DAT'  
+!      NAME2='NE2+SG.DAT'
+!      NAME3='NE2+PU.DAT'
+!      NAME4='NE2+PG.DAT'
+       NAME1='NE2+SU.DAT_Q'  
+       NAME2='NE2+SG.DAT_Q'
+       NAME3='NE2+PU.DAT_Q'
+       NAME4='NE2+PG.DAT_Q'
+       NAME5='NE2X.DAT'
+                  END IF
+      UT=0.0
+C
+      IF(I0.EQ.1) THEN
+      IF(IND1.EQ.0.OR.IND1.EQ.2) THEN
+      IF(NC1.EQ.1) THEN
+      NC1=2
+      OPEN(11,FILE=NAME1,STATUS='OLD')
+      IR1=0
+   10 CONTINUE
+      IR1=IR1+1
+      READ(11,*,END=11) RU(IR1), EU(IR1)
+CC      PRINT *, RU(IR1), EU(IR1)
+      GO TO 10
+   11 CONTINUE
+      IR1=IR1-1
+      IF(IND1.EQ.2) THEN
+      EASU=EU(IR1)
+      DO I=1,IR1
+      COEFU(1,I)=EU(I) -EASU
+      ENDDO
+      COEFU(2,IR1)=0.0
+      CALL CUBSPL(RU,COEFU,IR1,0,1)
+                    END IF
+                   END IF
+      IF(RR.LT.RU(IR1)) THEN
+      IF(IND1.EQ.0) THEN
+      DO 1 I=1,IR1-1
+      IF(.NOT.( RU(I).LE.RR.AND.RR.LE.RU(I+1) )) GO TO 1
+      UT = EU(I) + (EU(I+1)-EU(I))/(RU(I+1)-RU(I))*(RR-RU(I)) -EASU
+    1 CONTINUE
+                    END IF
+      IF(IND1.EQ.2) THEN
+      UT=PPVALU(RU,COEFU,IR1,4,RR,0)
+        UT1=PPVALU(RU,COEFU,IR1,4,RR,1) 
+                END IF
+                        ELSE
+      UT=EU(IR1) -EASU
+      UT1=0.0
+                        END IF
+                    END IF
+      IF(IND1.EQ.1) UT=UTN(RR/RAUA,I0,0)
+      RETURN
+                 END IF
+C
+      IF(I0.EQ.2) THEN
+      IF(IND2.EQ.0.OR.IND2.EQ.2) THEN
+      IF(NC2.EQ.1) THEN
+      NC2=2
+      OPEN(22,FILE=NAME2,STATUS='OLD')
+      IR2=0
+   20 CONTINUE
+      IR2=IR2+1
+      READ(22,*,END=22) RG(IR2), EG(IR2)
+CC      PRINT *, RG(IR2), EG(IR2)
+      GO TO 20
+   22 CONTINUE
+      IR2=IR2-1
+      IF(IND2.EQ.2) THEN
+      EASG=EG(IR2)
+      DO I=1,IR2
+      COEFG(1,I)=EG(I) -EASG
+      ENDDO
+      COEFG(2,IR2)=0.0
+      CALL CUBSPL(RG,COEFG,IR2,0,1)
+                    END IF
+                   END IF
+      IF(RR.LT.RG(IR2)) THEN
+      IF(IND2.EQ.0) THEN
+      DO 2 I=1,IR2-1
+      IF(.NOT.( RG(I).LE.RR.AND.RR.LE.RG(I+1) )) GO TO 2
+      UT = EG(I) + (EG(I+1)-EG(I))/(RG(I+1)-RG(I))*(RR-RG(I)) -EASG
+    2 CONTINUE
+                    END IF
+      IF(IND2.EQ.2) THEN
+      UT=PPVALU(RG,COEFG,IR2,4,RR,0)
+        UT1=PPVALU(RG,COEFG,IR2,4,RR,1) 
+                END IF
+                        ELSE
+      UT=EG(IR2) -EASG
+      UT1=0.0
+                        END IF
+                    END IF 
+      IF(IND2.EQ.1) UT=UTN(RR/RAUA,I0,0)
+      RETURN
+                 END IF
+C
+      IF(I0.EQ.3) THEN
+      IF(IND3.EQ.0.OR.IND3.EQ.2) THEN
+      IF(NC3.EQ.1) THEN
+      NC3=2
+      OPEN(33,FILE=NAME3,STATUS='OLD')
+      IR3=0
+   30 CONTINUE
+      IR3=IR3+1
+      READ(33,*,END=33) RPU(IR3), EPU(IR3)
+CC      PRINT *, RPU(IR3), EPU(IR3)
+      GO TO 30
+   33 CONTINUE
+      IR3=IR3-1
+      IF(IND3.EQ.2) THEN
+      EASPU=EPU(IR3)
+      DO I=1,IR3
+      COEFPU(1,I)=EPU(I) -EASPU
+      ENDDO
+      COEFPU(2,IR3)=0.0
+      CALL CUBSPL(RPU,COEFPU,IR3,0,1)
+                    END IF
+                   END IF
+      IF(RR.LT.RPU(IR3)) THEN
+      IF(IND3.EQ.0) THEN  
+      DO 3 I=1,IR3-1
+      IF(.NOT.( RPU(I).LE.RR.AND.RR.LE.RPU(I+1) )) GO TO 3
+      UT = EPU(I) + (EPU(I+1)-EPU(I))/(RPU(I+1)-RPU(I))*(RR-RPU(I))
+     1     -EASPU
+    3 CONTINUE
+                    END IF
+      IF(IND3.EQ.2) THEN
+      UT=PPVALU(RPU,COEFPU,IR3,4,RR,0) 
+        UT1=PPVALU(RPU,COEFPU,IR3,4,RR,1) 
+                END IF
+                        ELSE
+      UT=EPU(IR3) -EASPU
+      UT1=0.0
+                        END IF
+                    END IF
+      IF(IND3.EQ.1) UT=UTN(RR/RAUA,I0,0)
+      RETURN
+               END IF
+C
+      IF(I0.EQ.4) THEN
+      IF(IND4.EQ.0.OR.IND4.EQ.2) THEN
+      IF(NC4.EQ.1) THEN
+      NC4=2
+      OPEN(44,FILE=NAME4,STATUS='OLD')
+      IR4=0
+   40 CONTINUE
+      IR4=IR4+1
+      READ(44,*,END=44) RPG(IR4), EPG(IR4)
+CC      PRINT *, RPG(IR4), EPG(IR4)
+      GO TO 40
+   44 CONTINUE
+      IR4=IR4-1
+      IF(IND4.EQ.2) THEN
+      EASPG=EPG(IR4)
+      DO I=1,IR4
+      COEFPG(1,I)=EPG(I) -EASPG
+      ENDDO
+      COEFPG(2,IR4)=0.0
+      CALL CUBSPL(RPG,COEFPG,IR4,0,1)
+                    END IF
+                   END IF
+      IF(RR.LT.RPG(IR4)) THEN
+      IF(IND4.EQ.0) THEN
+      DO 4 I=1,IR4-1
+      IF(.NOT.( RPG(I).LE.RR.AND.RR.LE.RPG(I+1) )) GO TO 4
+      UT = EPG(I) + (EPG(I+1)-EPG(I))/(RPG(I+1)-RPG(I))*(RR-RPG(I))
+     1     -EASPG
+    4 CONTINUE
+                    END IF
+      IF(IND4.EQ.2) THEN
+      UT=PPVALU(RPG,COEFPG,IR4,4,RR,0)
+        UT1=PPVALU(RPG,COEFPG,IR4,4,RR,1)
+                END IF
+                        ELSE
+      UT=EPG(IR4) -EASPG
+      UT1=0.0
+                        END IF
+                    END IF 
+      IF(IND4.EQ.1) UT=UTN(RR/RAUA,I0,0)
+      RETURN
+                 END IF
+C
+      IF(I0.EQ.5) THEN
+      IF(IND5.EQ.0.OR.IND5.EQ.2) THEN
+      IF(NC5.EQ.1) THEN
+      NC5=2
+      OPEN(55,FILE=NAME5,STATUS='OLD')
+      IR5=0
+   50 CONTINUE
+      IR5=IR5+1
+      READ(55,*,END=55) RX(IR5), EX(IR5)
+CC      PRINT *, RX(IR5), EX(IR5)
+      GO TO 50
+   55 CONTINUE
+      IR5=IR5-1
+      IF(IND5.EQ.2) THEN
+      EASX=EX(IR5)
+      DO I=1,IR5
+      COEFX(1,I)=EX(I) -EASX
+      ENDDO
+      COEFX(2,IR5)=0.0
+      CALL CUBSPL(RX,COEFX,IR5,0,1)
+                    END IF
+                   END IF
+      IF(RR.LT.RX(IR5)) THEN
+      IF(IND5.EQ.0) THEN
+      DO 5 I=1,IR5-1
+      IF(.NOT.( RX(I).LE.RR.AND.RR.LE.RX(I+1) )) GO TO 5
+      UT = EX(I) + (EX(I+1)-EX(I))/(RX(I+1)-RX(I))*(RR-RX(I)) -EASX
+    5 CONTINUE
+                    END IF
+      IF(IND5.EQ.2) THEN
+      UT=PPVALU(RX,COEFX,IR5,4,RR,0)
+      UT1=PPVALU(RX,COEFX,IR5,4,RR,1)
+                END IF
+                        ELSE 
+      UT=EX(IR5) -EASX
+      UT1=0.0
+                        END IF
+                    END IF
+      IF(IND5.EQ.1) UT=UTN(RR/RAUA,I0,0)
+      RETURN
+                 END IF
+      RETURN 
+      END
+
+
+      SUBROUTINE RGNI(N,X,GRAD,EREAL,GRADT) !  ,H0,H1,EE,EV,W,NATOMS)
+        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
         INTEGER INFO
         DOUBLE PRECISION TEMPA(9*N)
 
-      parameter (nemax=100)
-        integer iw(nemax,3),  IWORK(3*5*N), IFAIL(3*N)
+      PARAMETER (NEMAX=100)
+        INTEGER IW(NEMAX,3),  IWORK(3*5*N), IFAIL(3*N)
 
-        DOUBLE PRECISION x(3,n),h0(n*3,n*3)
-     &        ,h1(n*3,n*3)
-     &        ,grad(n*3),ee(n*3),ev(n*3,n*3),w(n*3,n*3),WORK(3*8*N)
-      logical gradt
-      data iev/1/, ncall/1/, shift/10.0d0/
-     &  , Elow/-1.d3/,eps/1.d-6/,nstep/1000/,message/6/,nwork/777/
-     &  , iflag/-2/ 
-      save
+        DOUBLE PRECISION X(3,N),H0(N*3,N*3)
+     &        ,H1(N*3,N*3)
+     &        ,GRAD(N*3),EE(N*3),EV(N*3,N*3),W(N*3,N*3),WORK(3*8*N)
+      LOGICAL GRADT
+      DATA IEV/1/, NCALL/1/, SHIFT/10.0D0/
+     &  , ELOW/-1.D3/,EPS/1.D-6/,NSTEP/1000/,MESSAGE/6/,NWORK/777/
+     &  , IFLAG/-2/ 
+      SAVE
 
-      n3=n*3
-cc      if(gradt) igrad=1
+      N3=N*3
+CC      IF(GRADT) IGRAD=1
 
-        id=1
-        it=0
-c       it=1
-C       it=2
-      call hmat(x,n,n3,h0,h1,h2,0)
-      if(ncall.eq.1.or.it.eq.0) then
-         if(id.eq.0) then
-C            call jacob2(h0,ev,w(1,1),ee,w(1,2),n3,iev)
-                     else
-C       call tred2(h0,n3,n3,ee,w(1,1),iev)
-C       call tqli(ee,w(1,1),n3,n3,h0,iev)
+        ID=1
+        IT=0
+C       IT=1
+C       IT=2
+      CALL HMAT(X,N,N3,H0,H1,H2,0)
+      IF(NCALL.EQ.1.OR.IT.EQ.0) THEN
+         IF(ID.EQ.0) THEN
+C            CALL JACOB2(H0,EV,W(1,1),EE,W(1,2),N3,IEV)
+                     ELSE
+C       CALL TRED2(H0,N3,N3,EE,W(1,1),IEV)
+C       CALL TQLI(EE,W(1,1),N3,N3,H0,IEV)
 
         CALL DSYEV('V','U',N3,H0,N3,EE,TEMPA,9*N,INFO)
         IF (INFO.NE.0) THEN
-           PRINT*,'WARNING - INFO=',INFO,' in DSYEV'
+           PRINT*,'WARNING - INFO=',INFO,' IN DSYEV'
         ENDIF
 
 C       ABSTOL=0.0D0
 C
-C  This is loop is only needed for DSYEVX when only one eigenvalue is found.
-C  The ev=h0 loop should be commented is DSYEVX is used.
+C  THIS IS LOOP IS ONLY NEEDED FOR DSYEVX WHEN ONLY ONE EIGENVALUE IS FOUND.
+C  THE EV=H0 LOOP SHOULD BE COMMENTED IS DSYEVX IS USED.
 C
 C       DO J1=1,N3
 C          EE(J1)=1.0D6
 C       ENDDO
 C       CALL DSYEVX('V','I','U',N3,H0,N3,DUMMY1,DUMMY2,1,1,ABSTOL,M,EE,EV,N3,WORK,3*8*N,IWORK,IFAIL,INFO)
 
-        do i=1,n3
-        do j=1,n3
-        ev(i,j)=h0(i,j)
-        enddo
-        enddo
-                     end if
-        call sortv(ee,ev,n3,iev)
-        ereal=ee(n3)
+        DO I=1,N3
+        DO J=1,N3
+        EV(I,J)=H0(I,J)
+        ENDDO
+        ENDDO
+                     END IF
+        CALL SORTV(EE,EV,N3,IEV)
+        EREAL=EE(N3)
 
-c      if(it.eq.2) open(nwork,file='itlan.tmp')
+C      IF(IT.EQ.2) OPEN(NWORK,FILE='ITLAN.TMP')
 
-      ncall=2
-                                else
-      if(it.eq.1) then
-      do i=1,n3
-      h0(i,i)=h0(i,i)-shift
-      enddo
-C        call iteig(h0,ev(1,n3),ereal,w(1,1),w(1,2),n3)
-      ereal=ereal+shift
-                end if
+      NCALL=2
+                                ELSE
+      IF(IT.EQ.1) THEN
+      DO I=1,N3
+      H0(I,I)=H0(I,I)-SHIFT
+      ENDDO
+C        CALL ITEIG(H0,EV(1,N3),EREAL,W(1,1),W(1,2),N3)
+      EREAL=EREAL+SHIFT
+                END IF
 
-      if(it.eq.2) then
+      IF(IT.EQ.2) THEN
 
-        Ehigh=dmax1(0.d0,2.d0*ereal)
-      do istep=1,nstep
-c      call itlane(n3,Elow,Ehigh,eps,n,n3,nstep,message,nwork
-c     &      ,iflag,ev,ev(1,n3),ee,iw,ne,w,w(1,2),iw(1,3),h1,h1(1,2))
-      if(iflag.eq.0) go to 1
-      if(iflag.eq.1) then
-      do i=1,n3
-      hvi=0.d0
-      do j=1,n3
-      hvi=hvi+h0(i,j)*ev(j,n3)
-      enddo
-      ev(i,1)=ev(i,1) +hvi
-      enddo
-                          end if
-        if(iflag.eq.2) then
-        print *,' itlane: iflag=', iflag
-        stop
-                       end if
-      enddo
-  1     ereal=ee(1)
-      if(iev.ne.0) then
-      nw=0
-      PRINT '(A)','error, ne has not been set!'
+        EHIGH=DMAX1(0.D0,2.D0*EREAL)
+      DO ISTEP=1,NSTEP
+C      CALL ITLANE(N3,ELOW,EHIGH,EPS,N,N3,NSTEP,MESSAGE,NWORK
+C     &      ,IFLAG,EV,EV(1,N3),EE,IW,NE,W,W(1,2),IW(1,3),H1,H1(1,2))
+      IF(IFLAG.EQ.0) GO TO 1
+      IF(IFLAG.EQ.1) THEN
+      DO I=1,N3
+      HVI=0.D0
+      DO J=1,N3
+      HVI=HVI+H0(I,J)*EV(J,N3)
+      ENDDO
+      EV(I,1)=EV(I,1) +HVI
+      ENDDO
+                          END IF
+        IF(IFLAG.EQ.2) THEN
+        PRINT *,' ITLANE: IFLAG=', IFLAG
+        STOP
+                       END IF
+      ENDDO
+  1     EREAL=EE(1)
+      IF(IEV.NE.0) THEN
+      NW=0
+      PRINT '(A)','ERROR, NE HAS NOT BEEN SET!'
       STOP
-      do i=1,ne
-         nw=max0(nw,iw(1,i))
-      enddo
-c        call itlanv(n3,nstep,message,nwork
-c     &      ,ee,iw,1,w,w(1,2),n3,nw,jflag,ev(1,n3),h1,h1(1,2))
-                 end if
-C     if(jflag.gt.0) then
-C        print *,' itlanv: jflag= ',jflag
-C        stop
-C     end if
+      DO I=1,NE
+         NW=MAX0(NW,IW(1,I))
+      ENDDO
+C        CALL ITLANV(N3,NSTEP,MESSAGE,NWORK
+C     &      ,EE,IW,1,W,W(1,2),N3,NW,JFLAG,EV(1,N3),H1,H1(1,2))
+                 END IF
+C     IF(JFLAG.GT.0) THEN
+C        PRINT *,' ITLANV: JFLAG= ',JFLAG
+C        STOP
+C     END IF
 
-                end if
+                END IF
 
-                                end if
+                                END IF
 
-      if(gradt) then
+      IF(GRADT) THEN
 
-      do i=1,n3
-      call hmat(x,n,n3,h0,h1,h2,i)
-      vhvi=0.0d0
-      do j=1,n3
-      vh=0.0d0
-      do k=1,n3
-cc      vh=vh+ev(k,n3)*h1(k,j,i)
-      vh=vh+ev(k,n3)*h1(k,j)
-      enddo
-      vhvi=vhvi+vh*ev(j,n3)
-      enddo
-      grad(i)=vhvi
-      enddo
+      DO I=1,N3
+      CALL HMAT(X,N,N3,H0,H1,H2,I)
+      VHVI=0.0D0
+      DO J=1,N3
+      VH=0.0D0
+      DO K=1,N3
+CC      VH=VH+EV(K,N3)*H1(K,J,I)
+      VH=VH+EV(K,N3)*H1(K,J)
+      ENDDO
+      VHVI=VHVI+VH*EV(J,N3)
+      ENDDO
+      GRAD(I)=VHVI
+      ENDDO
 
-              end if
-      return
-      end
-c ------------------------------------------------------------
-c      DOUBLE PRECISION function energy(r0,i,ip)
-c      DOUBLE PRECISION r0
-c      r=r0
-c      energy=ut(r,i,ip)
-c      return
-c      end
+              END IF
+      RETURN
+      END
+C ------------------------------------------------------------
+C      DOUBLE PRECISION FUNCTION ENERGY(R0,I,IP)
+C      DOUBLE PRECISION R0
+C      R=R0
+C      ENERGY=UT(R,I,IP)
+C      RETURN
+C      END
 
-              subroutine sortv(ee,ev,n,iev)
-      DOUBLE PRECISION ee(n),ev(n,n),em,evnn
+              SUBROUTINE SORTV(EE,EV,N,IEV)
+      DOUBLE PRECISION EE(N),EV(N,N),EM,EVNN
       DO 17 M=1,N-1
       NN=N+1-M
       EM=EE(1)
@@ -2092,682 +2092,682 @@ c      end
       IF(IND.EQ.NN) GO TO 17
       EE(IND)=EE(NN)
       EE(NN)=EM
-      if(iev.gt.0) then
-      do 16 k=1,n
-      evnn=ev(k,nn)
-      ev(k,nn)=ev(k,ind)
-      ev(k,ind)=evnn
-   16 continue
-                   end if
+      IF(IEV.GT.0) THEN
+      DO 16 K=1,N
+      EVNN=EV(K,NN)
+      EV(K,NN)=EV(K,IND)
+      EV(K,IND)=EVNN
+   16 CONTINUE
+                   END IF
    17 CONTINUE
       RETURN
       END
 
-      subroutine hmat(x,n,n3,h0,h1,h2,igrad)
-      USE commons
-      implicit DOUBLE PRECISION (a-h,o-z)
-C       common/test/itest
+      SUBROUTINE HMAT(X,N,N3,H0,H1,H2,IGRAD)
+      USE COMMONS
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+C       COMMON/TEST/ITEST
 
-      DOUBLE PRECISION x(3,n),h0(n*3,n*3)
-     &               ,h1(n*3,n*3)
+      DOUBLE PRECISION X(3,N),H0(N*3,N*3)
+     &               ,H1(N*3,N*3)
 
-      save
-      data RauA/0.52918d0/
-cc     &      ,isu/1/,isg/2/,ipu/3/,ipg/4/,ix/5/
+      SAVE
+      DATA RAUA/0.52918D0/
+CC     &      ,ISU/1/,ISG/2/,IPU/3/,IPG/4/,IX/5/
 
-      if(igrad.ne.0) go to 10
+      IF(IGRAD.NE.0) GO TO 10
 
-      do i=1,n3
-      do j=1,n3
-      h0(i,j)=0.0d0
-      enddo
-      enddo
+      DO I=1,N3
+      DO J=1,N3
+      H0(I,J)=0.0D0
+      ENDDO
+      ENDDO
 
-      ExS=0.0d0
-      do k=1,n-1
-      do l=k+1,n
-      rkl=
-     &      sqrt((x(1,l)-x(1,k))**2+(x(2,l)-x(2,k))**2+(x(3,l)-x(3,k))**2)
-cc      Ex=energy(rkl,ix,0)
+      EXS=0.0D0
+      DO K=1,N-1
+      DO L=K+1,N
+      RKL=
+     &      SQRT((X(1,L)-X(1,K))**2+(X(2,L)-X(2,K))**2+(X(3,L)-X(3,K))**2)
+CC      EX=ENERGY(RKL,IX,0)
         IF (NEON) THEN
-           Ex=utn(rkl/RauA,5,0)
+           EX=UTN(RKL/RAUA,5,0)
         ELSE
-           CALL ASAR1(rkl,Ex,Ex1)
+           CALL ASAR1(RKL,EX,EX1)
         ENDIF
-      ExS=ExS+Ex
-      enddo
-      enddo
+      EXS=EXS+EX
+      ENDDO
+      ENDDO
 
-      do i=1,n3-1
-      h0(i,i)=h0(i,i)+ExS
-      do j=i+1,n3
+      DO I=1,N3-1
+      H0(I,I)=H0(I,I)+EXS
+      DO J=I+1,N3
 
-      kk=int(i/3)
-      if(mod(i,3).gt.0) kk=kk+1
-      ll=int(j/3)
-      if(mod(j,3).gt.0) ll=ll+1
-      if(ll.eq.kk) go to 1
+      KK=INT(I/3)
+      IF(MOD(I,3).GT.0) KK=KK+1
+      LL=INT(J/3)
+      IF(MOD(J,3).GT.0) LL=LL+1
+      IF(LL.EQ.KK) GO TO 1
 
-      dx=x(1,ll)-x(1,kk)
-      dy=x(2,ll)-x(2,kk)
-      dz=x(3,ll)-x(3,kk)
-      dxy=sqrt(dx*dx+dy*dy)
-      rkl=sqrt(dxy*dxy+dz*dz)
-      ct=dz/rkl
-      st=dxy/rkl
-      cf=1.0d0
-      sf=0.0d0
-      if(dxy.gt.0.0d0) then
-      cf=dx/dxy
-      sf=dy/dxy
-                   end if
+      DX=X(1,LL)-X(1,KK)
+      DY=X(2,LL)-X(2,KK)
+      DZ=X(3,LL)-X(3,KK)
+      DXY=SQRT(DX*DX+DY*DY)
+      RKL=SQRT(DXY*DXY+DZ*DZ)
+      CT=DZ/RKL
+      ST=DXY/RKL
+      CF=1.0D0
+      SF=0.0D0
+      IF(DXY.GT.0.0D0) THEN
+      CF=DX/DXY
+      SF=DY/DXY
+                   END IF
         IF (NEON) THEN
-           call fenergy(rkl,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+           CALL FENERGY(RKL,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ELSE
-         call energyar(rkl,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+         CALL ENERGYAR(RKL,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ENDIF
-cc      Esu=energy(rkl,isu,0)
-cc      Esg=energy(rkl,isg,0)
-cc      Epu=energy(rkl,ipu,0)
-cc      Epg=energy(rkl,ipg,0)
-      Ess=0.5d0*(Esu+Esg)
-      Esd=0.5d0*(Esu-Esg)
-      Eps=0.5d0*(Epu+Epg)
-      Epd=0.5d0*(Epu-Epg)
-cc      Ex=energy(rkl,ix,0)
+CC      ESU=ENERGY(RKL,ISU,0)
+CC      ESG=ENERGY(RKL,ISG,0)
+CC      EPU=ENERGY(RKL,IPU,0)
+CC      EPG=ENERGY(RKL,IPG,0)
+      ESS=0.5D0*(ESU+ESG)
+      ESD=0.5D0*(ESU-ESG)
+      EPS=0.5D0*(EPU+EPG)
+      EPD=0.5D0*(EPU-EPG)
+CC      EX=ENERGY(RKL,IX,0)
       
-      if(mod(i,3).eq.1) then
-      if(mod(j,3).eq.1) then
-         trig1=(st*cf)**2
-         trig2=(ct*cf)**2+sf**2
-cc      hs=Ess*(st*cf)**2+Eps*((ct*cf)**2+sf**2)
-      hs=Ess*trig1+Eps*trig2
-      h0(i,i)=h0(i,i)+hs-Ex
-      h0(j,j)=h0(j,j)+hs-Ex
-cc      hd=Esd*(st*cf)**2+Epd*((ct*cf)**2+sf**2)      
-      hd=Esd*trig1+Epd*trig2
-      h0(i,j)=hd
-      h0(j,i)=hd
-                    end if
-      if(mod(j,3).eq.2) then
-         trig=st**2*sf*cf
-cc        hs=(Ess-Eps)*st**2*sf*cf
-        hs=(Ess-Eps)*trig
-        h0(i,i+1)=h0(i,i+1)+hs
-        h0(i+1,i)=h0(i+1,i)+hs
-cc      hd=(Esd-Epd)*st**2*sf*cf
-      hd=(Esd-Epd)*trig
-      h0(i,j)=hd
-      h0(j,i)=hd
-                    end if
-      if(mod(j,3).eq.0) then
-         trig=st*ct*cf
-cc        hs=(Ess-Eps)*st*ct*cf
-        hs=(Ess-Eps)*trig
-        h0(i,i+2)=h0(i,i+2)+hs
-        h0(i+2,i)=h0(i+2,i)+hs
-cc      hd=(Esd-Epd)*st*ct*cf
-      hd=(Esd-Epd)*trig
-      h0(i,j)=hd
-      h0(j,i)=hd
-                    end if
-                    end if
+      IF(MOD(I,3).EQ.1) THEN
+      IF(MOD(J,3).EQ.1) THEN
+         TRIG1=(ST*CF)**2
+         TRIG2=(CT*CF)**2+SF**2
+CC      HS=ESS*(ST*CF)**2+EPS*((CT*CF)**2+SF**2)
+      HS=ESS*TRIG1+EPS*TRIG2
+      H0(I,I)=H0(I,I)+HS-EX
+      H0(J,J)=H0(J,J)+HS-EX
+CC      HD=ESD*(ST*CF)**2+EPD*((CT*CF)**2+SF**2)      
+      HD=ESD*TRIG1+EPD*TRIG2
+      H0(I,J)=HD
+      H0(J,I)=HD
+                    END IF
+      IF(MOD(J,3).EQ.2) THEN
+         TRIG=ST**2*SF*CF
+CC        HS=(ESS-EPS)*ST**2*SF*CF
+        HS=(ESS-EPS)*TRIG
+        H0(I,I+1)=H0(I,I+1)+HS
+        H0(I+1,I)=H0(I+1,I)+HS
+CC      HD=(ESD-EPD)*ST**2*SF*CF
+      HD=(ESD-EPD)*TRIG
+      H0(I,J)=HD
+      H0(J,I)=HD
+                    END IF
+      IF(MOD(J,3).EQ.0) THEN
+         TRIG=ST*CT*CF
+CC        HS=(ESS-EPS)*ST*CT*CF
+        HS=(ESS-EPS)*TRIG
+        H0(I,I+2)=H0(I,I+2)+HS
+        H0(I+2,I)=H0(I+2,I)+HS
+CC      HD=(ESD-EPD)*ST*CT*CF
+      HD=(ESD-EPD)*TRIG
+      H0(I,J)=HD
+      H0(J,I)=HD
+                    END IF
+                    END IF
 
-      if(mod(i,3).eq.2) then
-      if(mod(j,3).eq.2) then
-         trig1=(st*sf)**2
-         trig2=(ct*sf)**2+cf**2
-cc      hs=Ess*(st*sf)**2+Eps*((ct*sf)**2+cf**2)
-      hs=Ess*trig1+Eps*trig2
-      h0(i,i)=h0(i,i)+hs-Ex
-      h0(j,j)=h0(j,j)+hs-Ex
-cc      hd=Esd*(st*sf)**2+Epd*((ct*sf)**2+cf**2)
-      hd=Esd*trig1+Epd*trig2
-      h0(i,j)=hd
-      h0(j,i)=hd
-                    end if
-      if(mod(j,3).eq.1) then
-         trig=st**2*sf*cf
-cc        hs=(Ess-Eps)*st**2*sf*cf
-        hs=(Ess-Eps)*trig
-        h0(j,j+1)=h0(j,j+1)+hs
-        h0(j+1,j)=h0(j+1,j)+hs
-cc      hd=(Esd-Epd)*st**2*sf*cf
-      hd=(Esd-Epd)*trig
-      h0(i,j)=hd
-      h0(j,i)=hd
-                    end if
-      if(mod(j,3).eq.0) then
-         trig=st*ct*sf
-cc        hs=(Ess-Eps)*st*ct*sf
-        hs=(Ess-Eps)*trig
-        h0(i,i+1)=h0(i,i+1)+hs
-        h0(i+1,i)=h0(i+1,i)+hs
-cc      hd=(Esd-Epd)*st*ct*sf
-      hd=(Esd-Epd)*trig
-      h0(i,j)=hd
-      h0(j,i)=hd
-                    end if
-                    end if
+      IF(MOD(I,3).EQ.2) THEN
+      IF(MOD(J,3).EQ.2) THEN
+         TRIG1=(ST*SF)**2
+         TRIG2=(CT*SF)**2+CF**2
+CC      HS=ESS*(ST*SF)**2+EPS*((CT*SF)**2+CF**2)
+      HS=ESS*TRIG1+EPS*TRIG2
+      H0(I,I)=H0(I,I)+HS-EX
+      H0(J,J)=H0(J,J)+HS-EX
+CC      HD=ESD*(ST*SF)**2+EPD*((CT*SF)**2+CF**2)
+      HD=ESD*TRIG1+EPD*TRIG2
+      H0(I,J)=HD
+      H0(J,I)=HD
+                    END IF
+      IF(MOD(J,3).EQ.1) THEN
+         TRIG=ST**2*SF*CF
+CC        HS=(ESS-EPS)*ST**2*SF*CF
+        HS=(ESS-EPS)*TRIG
+        H0(J,J+1)=H0(J,J+1)+HS
+        H0(J+1,J)=H0(J+1,J)+HS
+CC      HD=(ESD-EPD)*ST**2*SF*CF
+      HD=(ESD-EPD)*TRIG
+      H0(I,J)=HD
+      H0(J,I)=HD
+                    END IF
+      IF(MOD(J,3).EQ.0) THEN
+         TRIG=ST*CT*SF
+CC        HS=(ESS-EPS)*ST*CT*SF
+        HS=(ESS-EPS)*TRIG
+        H0(I,I+1)=H0(I,I+1)+HS
+        H0(I+1,I)=H0(I+1,I)+HS
+CC      HD=(ESD-EPD)*ST*CT*SF
+      HD=(ESD-EPD)*TRIG
+      H0(I,J)=HD
+      H0(J,I)=HD
+                    END IF
+                    END IF
 
-      if(mod(i,3).eq.0) then
-      if(mod(j,3).eq.0) then
-         trig1=(ct)**2
-         trig2=(st)**2
-cc      hs=Ess*(ct)**2   +Eps*(st)**2
-      hs=Ess*trig1   +Eps*trig2
-      h0(i,i)=h0(i,i)+hs-Ex
-      h0(j,j)=h0(j,j)+hs-Ex
-cc      hd=Esd*(ct)**2   +Epd*(st)**2
-      hd=Esd*trig1   +Epd*trig2
-      h0(i,j)=hd
-      h0(j,i)=hd
-                    end if
-      if(mod(j,3).eq.1) then
-         trig=st*ct*cf
-cc        hs=(Ess-Eps)*st*ct*cf
-        hs=(Ess-Eps)*trig
-        h0(j,j+2)=h0(j,j+2)+hs
-        h0(j+2,j)=h0(j+2,j)+hs
-cc      hd=(Esd-Epd)*st*ct*cf
-      hd=(Esd-Epd)*trig
-      h0(i,j)=hd
-      h0(j,i)=hd
-                    end if
-      if(mod(j,3).eq.2) then
-         trig=st*ct*sf
-cc        hs=(Ess-Eps)*st*ct*sf
-        hs=(Ess-Eps)*trig
-        h0(j,j+1)=h0(j,j+1)+hs
-        h0(j+1,j)=h0(j+1,j)+hs
-cc      hd=(Esd-Epd)*st*ct*sf
-      hd=(Esd-Epd)*trig
-      h0(i,j)=hd
-      h0(j,i)=hd
-                    end if
-                    end if
+      IF(MOD(I,3).EQ.0) THEN
+      IF(MOD(J,3).EQ.0) THEN
+         TRIG1=(CT)**2
+         TRIG2=(ST)**2
+CC      HS=ESS*(CT)**2   +EPS*(ST)**2
+      HS=ESS*TRIG1   +EPS*TRIG2
+      H0(I,I)=H0(I,I)+HS-EX
+      H0(J,J)=H0(J,J)+HS-EX
+CC      HD=ESD*(CT)**2   +EPD*(ST)**2
+      HD=ESD*TRIG1   +EPD*TRIG2
+      H0(I,J)=HD
+      H0(J,I)=HD
+                    END IF
+      IF(MOD(J,3).EQ.1) THEN
+         TRIG=ST*CT*CF
+CC        HS=(ESS-EPS)*ST*CT*CF
+        HS=(ESS-EPS)*TRIG
+        H0(J,J+2)=H0(J,J+2)+HS
+        H0(J+2,J)=H0(J+2,J)+HS
+CC      HD=(ESD-EPD)*ST*CT*CF
+      HD=(ESD-EPD)*TRIG
+      H0(I,J)=HD
+      H0(J,I)=HD
+                    END IF
+      IF(MOD(J,3).EQ.2) THEN
+         TRIG=ST*CT*SF
+CC        HS=(ESS-EPS)*ST*CT*SF
+        HS=(ESS-EPS)*TRIG
+        H0(J,J+1)=H0(J,J+1)+HS
+        H0(J+1,J)=H0(J+1,J)+HS
+CC      HD=(ESD-EPD)*ST*CT*SF
+      HD=(ESD-EPD)*TRIG
+      H0(I,J)=HD
+      H0(J,I)=HD
+                    END IF
+                    END IF
 
-   1      continue
-      enddo
-      enddo
-      h0(n3,n3)=h0(n3,n3)+ExS
+   1      CONTINUE
+      ENDDO
+      ENDDO
+      H0(N3,N3)=H0(N3,N3)+EXS
 
-      IF(DIPOLE) CALL dipoles(x,n,h0,h1,igrad)
+      IF(DIPOLE) CALL DIPOLES(X,N,H0,H1,IGRAD)
 
-c ---------------------------------------------------------------------
+C ---------------------------------------------------------------------
 
-  10      continue
-      if(igrad.le.0) go to 2
+  10      CONTINUE
+      IF(IGRAD.LE.0) GO TO 2
 
-      do i=1,n3
-      do j=1,n3
-cc      do k=1,n3
-cc      h1(i,j,k)=0.0d0
-cc      enddo
-      h1(i,j)=0.0d0
-      enddo
-      enddo
+      DO I=1,N3
+      DO J=1,N3
+CC      DO K=1,N3
+CC      H1(I,J,K)=0.0D0
+CC      ENDDO
+      H1(I,J)=0.0D0
+      ENDDO
+      ENDDO
 
-cc      do m=1,n
-cc      do ir=1,3
-cc      ic=(m-1)*3+ir
+CC      DO M=1,N
+CC      DO IR=1,3
+CC      IC=(M-1)*3+IR
 
-      m=int(igrad/3)+1
-      ir=mod(igrad,3)
-      if(ir.eq.0) then
-      ir=3
-      m=m-1
-                  end if
+      M=INT(IGRAD/3)+1
+      IR=MOD(IGRAD,3)
+      IF(IR.EQ.0) THEN
+      IR=3
+      M=M-1
+                  END IF
 
-      ExS1=0.0d0
-      do k=1,n-1
-      do l=k+1,n
-      if(l.eq.m.or.k.eq.m) then
-      rkl=
-     &      sqrt((x(1,l)-x(1,k))**2+(x(2,l)-x(2,k))**2+(x(3,l)-x(3,k))**2)
-cc      if(l.eq.m) Ex1= energy(rkl,ix,1)*(x(ir,l)-x(ir,k))/rkl
-cc      if(k.eq.m) Ex1=-energy(rkl,ix,1)*(x(ir,l)-x(ir,k))/rkl
+      EXS1=0.0D0
+      DO K=1,N-1
+      DO L=K+1,N
+      IF(L.EQ.M.OR.K.EQ.M) THEN
+      RKL=
+     &      SQRT((X(1,L)-X(1,K))**2+(X(2,L)-X(2,K))**2+(X(3,L)-X(3,K))**2)
+CC      IF(L.EQ.M) EX1= ENERGY(RKL,IX,1)*(X(IR,L)-X(IR,K))/RKL
+CC      IF(K.EQ.M) EX1=-ENERGY(RKL,IX,1)*(X(IR,L)-X(IR,K))/RKL
         IF (NEON) THEN
-      if(l.eq.m) Ex1= utn(rkl/RauA,5,1)/RauA*(x(ir,l)-x(ir,k))/rkl
-      if(k.eq.m) Ex1=-utn(rkl/RauA,5,1)/RauA*(x(ir,l)-x(ir,k))/rkl
+      IF(L.EQ.M) EX1= UTN(RKL/RAUA,5,1)/RAUA*(X(IR,L)-X(IR,K))/RKL
+      IF(K.EQ.M) EX1=-UTN(RKL/RAUA,5,1)/RAUA*(X(IR,L)-X(IR,K))/RKL
         ELSE
-           CALL ASAR1(rkl,Ex,Ex1)
-        if(l.eq.m) Ex1= Ex1*(x(ir,l)-x(ir,k))/rkl
-        if(k.eq.m) Ex1=-Ex1*(x(ir,l)-x(ir,k))/rkl
+           CALL ASAR1(RKL,EX,EX1)
+        IF(L.EQ.M) EX1= EX1*(X(IR,L)-X(IR,K))/RKL
+        IF(K.EQ.M) EX1=-EX1*(X(IR,L)-X(IR,K))/RKL
         ENDIF
-      ExS1=ExS1+Ex1
-                       end if
-      enddo
-      enddo
+      EXS1=EXS1+EX1
+                       END IF
+      ENDDO
+      ENDDO
 
-      do i=1,n3-1
-      h1(i,i)=h1(i,i)+ExS1
-      do j=i+1,n3
+      DO I=1,N3-1
+      H1(I,I)=H1(I,I)+EXS1
+      DO J=I+1,N3
 
-      kk=int(i/3)
-      if(mod(i,3).gt.0) kk=kk+1
-      ll=int(j/3)
-      if(mod(j,3).gt.0) ll=ll+1
-      if(ll.eq.kk) go to 11
+      KK=INT(I/3)
+      IF(MOD(I,3).GT.0) KK=KK+1
+      LL=INT(J/3)
+      IF(MOD(J,3).GT.0) LL=LL+1
+      IF(LL.EQ.KK) GO TO 11
 
-      if(ll.eq.m.or.kk.eq.m) then
+      IF(LL.EQ.M.OR.KK.EQ.M) THEN
 
-      dx=x(1,ll)-x(1,kk)
-      dy=x(2,ll)-x(2,kk)
-      dz=x(3,ll)-x(3,kk)
-      dxy=sqrt(dx*dx+dy*dy)
-      rkl=sqrt(dxy*dxy+dz*dz)
-      ct=dz/rkl
-      st=dxy/rkl
-      cf=1.0d0
-      sf=0.0d0
-      if(dxy.gt.0.0d0) then
-      cf=dx/dxy
-      sf=dy/dxy
-                   end if
+      DX=X(1,LL)-X(1,KK)
+      DY=X(2,LL)-X(2,KK)
+      DZ=X(3,LL)-X(3,KK)
+      DXY=SQRT(DX*DX+DY*DY)
+      RKL=SQRT(DXY*DXY+DZ*DZ)
+      CT=DZ/RKL
+      ST=DXY/RKL
+      CF=1.0D0
+      SF=0.0D0
+      IF(DXY.GT.0.0D0) THEN
+      CF=DX/DXY
+      SF=DY/DXY
+                   END IF
 
-      if(ll.eq.m) drdx= (x(ir,ll)-x(ir,kk))/rkl
-      if(kk.eq.m) drdx=-(x(ir,ll)-x(ir,kk))/rkl
+      IF(LL.EQ.M) DRDX= (X(IR,LL)-X(IR,KK))/RKL
+      IF(KK.EQ.M) DRDX=-(X(IR,LL)-X(IR,KK))/RKL
 
-      ct1=-ct/rkl*drdx
-      if(ir.eq.3) then
-      if(m.eq.ll) ct1=ct1+1.0d0/rkl
-      if(m.eq.kk) ct1=ct1-1.0d0/rkl
-                end if
-      st1=-st/rkl*drdx
-      dxydx=0.0d0
-      if(ir.eq.1.or.ir.eq.2) then
-c      dxydx=1.0d0
-      if(dxy.gt.0.0d0) then
-      if(ll.eq.m) dxydx= (x(ir,ll)-x(ir,kk))/dxy
-      if(kk.eq.m) dxydx=-(x(ir,ll)-x(ir,kk))/dxy
-                   end if
-      st1=st1+dxydx/rkl
-                             end if
-      cf1=0.0d0
-      sf1=0.0d0
-      if(dxy.gt.0.0d0) then
-      if(ir.eq.1.or.ir.eq.2) then
-      cf1=-cf/dxy*dxydx
-      if(ir.eq.1) then
-      if(m.eq.ll) cf1=cf1+1.0d0/dxy
-      if(m.eq.kk) cf1=cf1-1.0d0/dxy
-                    end if
-      sf1=-sf/dxy*dxydx
-      if(ir.eq.2) then
-      if(m.eq.ll) sf1=sf1+1.0d0/dxy
-      if(m.eq.kk) sf1=sf1-1.0d0/dxy
-                    end if
-                             end if
-                   end if
+      CT1=-CT/RKL*DRDX
+      IF(IR.EQ.3) THEN
+      IF(M.EQ.LL) CT1=CT1+1.0D0/RKL
+      IF(M.EQ.KK) CT1=CT1-1.0D0/RKL
+                END IF
+      ST1=-ST/RKL*DRDX
+      DXYDX=0.0D0
+      IF(IR.EQ.1.OR.IR.EQ.2) THEN
+C      DXYDX=1.0D0
+      IF(DXY.GT.0.0D0) THEN
+      IF(LL.EQ.M) DXYDX= (X(IR,LL)-X(IR,KK))/DXY
+      IF(KK.EQ.M) DXYDX=-(X(IR,LL)-X(IR,KK))/DXY
+                   END IF
+      ST1=ST1+DXYDX/RKL
+                             END IF
+      CF1=0.0D0
+      SF1=0.0D0
+      IF(DXY.GT.0.0D0) THEN
+      IF(IR.EQ.1.OR.IR.EQ.2) THEN
+      CF1=-CF/DXY*DXYDX
+      IF(IR.EQ.1) THEN
+      IF(M.EQ.LL) CF1=CF1+1.0D0/DXY
+      IF(M.EQ.KK) CF1=CF1-1.0D0/DXY
+                    END IF
+      SF1=-SF/DXY*DXYDX
+      IF(IR.EQ.2) THEN
+      IF(M.EQ.LL) SF1=SF1+1.0D0/DXY
+      IF(M.EQ.KK) SF1=SF1-1.0D0/DXY
+                    END IF
+                             END IF
+                   END IF
 
         IF (NEON) THEN
-           call fenergy(rkl,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+           CALL FENERGY(RKL,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ELSE
-         call energyar(rkl,Esu,Esg,Epu,Epg,Ex,Esu1,Esg1,Epu1,Epg1,Ex1)
+         CALL ENERGYAR(RKL,ESU,ESG,EPU,EPG,EX,ESU1,ESG1,EPU1,EPG1,EX1)
         ENDIF
-cc      Esu=energy(rkl,isu,0)
-cc      Esg=energy(rkl,isg,0)
-cc      Epu=energy(rkl,ipu,0)
-cc      Epg=energy(rkl,ipg,0)
-      Ess=0.5d0*(Esu+Esg)
-      Esd=0.5d0*(Esu-Esg)
-      Eps=0.5d0*(Epu+Epg)
-      Epd=0.5d0*(Epu-Epg)
-cc      Ex=energy(rkl,ix,0)
+CC      ESU=ENERGY(RKL,ISU,0)
+CC      ESG=ENERGY(RKL,ISG,0)
+CC      EPU=ENERGY(RKL,IPU,0)
+CC      EPG=ENERGY(RKL,IPG,0)
+      ESS=0.5D0*(ESU+ESG)
+      ESD=0.5D0*(ESU-ESG)
+      EPS=0.5D0*(EPU+EPG)
+      EPD=0.5D0*(EPU-EPG)
+CC      EX=ENERGY(RKL,IX,0)
 
-cc      Esu1=energy(rkl,isu,1)*drdx
-cc      Esg1=energy(rkl,isg,1)*drdx
-cc      Epu1=energy(rkl,ipu,1)*drdx
-cc      Epg1=energy(rkl,ipg,1)*drdx
-      Esu1=Esu1*drdx
-      Esg1=Esg1*drdx
-      Epu1=Epu1*drdx
-      Epg1=Epg1*drdx
-      Ess1=0.5d0*(Esu1+Esg1)
-      Esd1=0.5d0*(Esu1-Esg1)
-      Eps1=0.5d0*(Epu1+Epg1)
-      Epd1=0.5d0*(Epu1-Epg1)
-cc      Ex1=energy(rkl,ix,1)*drdx
-      Ex1=Ex1*drdx
+CC      ESU1=ENERGY(RKL,ISU,1)*DRDX
+CC      ESG1=ENERGY(RKL,ISG,1)*DRDX
+CC      EPU1=ENERGY(RKL,IPU,1)*DRDX
+CC      EPG1=ENERGY(RKL,IPG,1)*DRDX
+      ESU1=ESU1*DRDX
+      ESG1=ESG1*DRDX
+      EPU1=EPU1*DRDX
+      EPG1=EPG1*DRDX
+      ESS1=0.5D0*(ESU1+ESG1)
+      ESD1=0.5D0*(ESU1-ESG1)
+      EPS1=0.5D0*(EPU1+EPG1)
+      EPD1=0.5D0*(EPU1-EPG1)
+CC      EX1=ENERGY(RKL,IX,1)*DRDX
+      EX1=EX1*DRDX
       
-      if(mod(i,3).eq.1) then
-      if(mod(j,3).eq.1) then
-         trig1=(st*cf)**2
-         trig2=(ct*cf)**2+sf**2
-         trig3=2.0d0*st*cf*(cf*st1+st*cf1)
-         trig4=(2.0d0*ct*cf*(cf*ct1+ct*cf1)+2.0d0*sf*sf1)
-c      hs=Ess*(st*cf)**2+Eps*((ct*cf)**2+sf**2)
-cc      hs1=Ess1*(st*cf)**2+Eps1*((ct*cf)**2+sf**2) +
-cc     &          Ess*2.0d0*st*cf*(cf*st1+st*cf1)+
-cc     &      Eps*(2.0d0*ct*cf*(cf*ct1+ct*cf1)+2.0d0*sf*sf1)
-      hs1= Ess1*trig1+Eps1*trig2+Ess*trig3+Eps*trig4
-      h1(i,i)=h1(i,i)+hs1-Ex1
-      h1(j,j)=h1(j,j)+hs1-Ex1
-c      hd=Esd*(st*cf)**2+Epd*((ct*cf)**2+sf**2)      
-cc      hd1=Esd1*(st*cf)**2+Epd1*((ct*cf)**2+sf**2) +
-cc     &          Esd*2.0d0*st*cf*(cf*st1+st*cf1)+
-cc     &      Epd*(2.0d0*ct*cf*(cf*ct1+ct*cf1)+2.0d0*sf*sf1)
-      hd1= Esd1*trig1 + Epd1*trig2 + Esd*trig3 + Epd*trig4
-      h1(i,j)=hd1
-      h1(j,i)=hd1
-                    end if
-      if(mod(j,3).eq.2) then
-         trig1=st**2*sf*cf
-         trig2=2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1)
-c        hs=(Ess-Eps)*st**2*sf*cf
-cc        hs1=(Ess1-Eps1)*st**2*sf*cf +
-cc     &      (Ess-Eps)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1)) 
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(i,i+1)=h1(i,i+1)+hs1
-        h1(i+1,i)=h1(i+1,i)+hs1
-c      hd=(Esd-Epd)*st**2*sf*cf
-cc      hd1=(Esd1-Epd1)*st**2*sf*cf + 
-cc     &      (Esd-Epd)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1))
-      hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(i,j)=hd1
-      h1(j,i)=hd1
-                    end if
-      if(mod(j,3).eq.0) then
-         trig1=st*ct*cf
-         trig2=st1*ct*cf+st*ct1*cf+st*ct*cf1
-c        hs=(Ess-Eps)*st*ct*cf
-cc        hs1=(Ess1-Eps1)*st*ct*cf + 
-cc     &      (Ess-Eps)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(i,i+2)=h1(i,i+2)+hs1
-        h1(i+2,i)=h1(i+2,i)+hs1
-c      hd=(Esd-Epd)*st*ct*cf
-cc      hd1=(Esd1-Epd1)*st*ct*cf + 
-cc     &      (Esd-Epd)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-      hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(i,j)=hd1
-      h1(j,i)=hd1
-                    end if
-                    end if
+      IF(MOD(I,3).EQ.1) THEN
+      IF(MOD(J,3).EQ.1) THEN
+         TRIG1=(ST*CF)**2
+         TRIG2=(CT*CF)**2+SF**2
+         TRIG3=2.0D0*ST*CF*(CF*ST1+ST*CF1)
+         TRIG4=(2.0D0*CT*CF*(CF*CT1+CT*CF1)+2.0D0*SF*SF1)
+C      HS=ESS*(ST*CF)**2+EPS*((CT*CF)**2+SF**2)
+CC      HS1=ESS1*(ST*CF)**2+EPS1*((CT*CF)**2+SF**2) +
+CC     &          ESS*2.0D0*ST*CF*(CF*ST1+ST*CF1)+
+CC     &      EPS*(2.0D0*CT*CF*(CF*CT1+CT*CF1)+2.0D0*SF*SF1)
+      HS1= ESS1*TRIG1+EPS1*TRIG2+ESS*TRIG3+EPS*TRIG4
+      H1(I,I)=H1(I,I)+HS1-EX1
+      H1(J,J)=H1(J,J)+HS1-EX1
+C      HD=ESD*(ST*CF)**2+EPD*((CT*CF)**2+SF**2)      
+CC      HD1=ESD1*(ST*CF)**2+EPD1*((CT*CF)**2+SF**2) +
+CC     &          ESD*2.0D0*ST*CF*(CF*ST1+ST*CF1)+
+CC     &      EPD*(2.0D0*CT*CF*(CF*CT1+CT*CF1)+2.0D0*SF*SF1)
+      HD1= ESD1*TRIG1 + EPD1*TRIG2 + ESD*TRIG3 + EPD*TRIG4
+      H1(I,J)=HD1
+      H1(J,I)=HD1
+                    END IF
+      IF(MOD(J,3).EQ.2) THEN
+         TRIG1=ST**2*SF*CF
+         TRIG2=2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1)
+C        HS=(ESS-EPS)*ST**2*SF*CF
+CC        HS1=(ESS1-EPS1)*ST**2*SF*CF +
+CC     &      (ESS-EPS)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1)) 
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(I,I+1)=H1(I,I+1)+HS1
+        H1(I+1,I)=H1(I+1,I)+HS1
+C      HD=(ESD-EPD)*ST**2*SF*CF
+CC      HD1=(ESD1-EPD1)*ST**2*SF*CF + 
+CC     &      (ESD-EPD)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1))
+      HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(I,J)=HD1
+      H1(J,I)=HD1
+                    END IF
+      IF(MOD(J,3).EQ.0) THEN
+         TRIG1=ST*CT*CF
+         TRIG2=ST1*CT*CF+ST*CT1*CF+ST*CT*CF1
+C        HS=(ESS-EPS)*ST*CT*CF
+CC        HS1=(ESS1-EPS1)*ST*CT*CF + 
+CC     &      (ESS-EPS)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(I,I+2)=H1(I,I+2)+HS1
+        H1(I+2,I)=H1(I+2,I)+HS1
+C      HD=(ESD-EPD)*ST*CT*CF
+CC      HD1=(ESD1-EPD1)*ST*CT*CF + 
+CC     &      (ESD-EPD)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+      HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(I,J)=HD1
+      H1(J,I)=HD1
+                    END IF
+                    END IF
 
-      if(mod(i,3).eq.2) then
-      if(mod(j,3).eq.2) then
-         trig1=(st*sf)**2
-         trig2=(ct*sf)**2+cf**2
-         trig3=2.0d0*st*sf*(sf*st1+st*sf1)
-         trig4=2.0d0*ct*sf*(sf*ct1+ct*sf1)+2.0d0*cf*cf1
-c      hs=Ess*(st*sf)**2+Eps*((ct*sf)**2+cf**2)
-cc      hs1=Ess1*(st*sf)**2+Eps1*((ct*sf)**2+cf**2) +
-cc     &          Ess*2.0d0*st*sf*(sf*st1+st*sf1)+
-cc     &      Eps*(2.0d0*ct*sf*(sf*ct1+ct*sf1)+2.0d0*cf*cf1)
-      hs1=Ess1*trig1+Eps1*trig2+Ess*trig3+Eps*trig4
-      h1(i,i)=h1(i,i)+hs1-Ex1
-      h1(j,j)=h1(j,j)+hs1-Ex1
-c      hd=Esd*(st*sf)**2+Epd*((ct*sf)**2+cf**2)
-cc      hd1=Esd1*(st*sf)**2+Epd1*((ct*sf)**2+cf**2) +
-cc     &          Esd*2.0d0*st*sf*(sf*st1+st*sf1)+
-cc     &      Epd*(2.0d0*ct*sf*(sf*ct1+ct*sf1)+2.0d0*cf*cf1)
-      hd1=Esd1*trig1+Epd1*trig2+Esd*trig3+Epd*trig4
-      h1(i,j)=hd1
-      h1(j,i)=hd1
-                    end if
-      if(mod(j,3).eq.1) then
-         trig1=st**2*sf*cf
-         trig2=2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1)
-c        hs=(Ess-Eps)*st**2*sf*cf
-cc        hs1=(Ess1-Eps1)*st**2*sf*cf +
-cc     &      (Ess-Eps)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1))
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(j,j+1)=h1(j,j+1)+hs1
-        h1(j+1,j)=h1(j+1,j)+hs1
-c      hd=(Esd-Epd)*st**2*sf*cf
-cc      hd1=(Esd1-Epd1)*st**2*sf*cf + 
-cc     &      (Esd-Epd)*(2.0d0*st*st1*sf*cf+st**2*(sf1*cf+sf*cf1))
-      hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(i,j)=hd1
-      h1(j,i)=hd1
-                    end if
-      if(mod(j,3).eq.0) then
-         trig1=st*ct*sf
-         trig2=st1*ct*sf+st*ct1*sf+st*ct*sf1
-c        hs=(Ess-Eps)*st*ct*sf
-cc        hs1=(Ess1-Eps1)*st*ct*sf +
-cc     &      (Ess-Eps)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(i,i+1)=h1(i,i+1)+hs1
-        h1(i+1,i)=h1(i+1,i)+hs1
-c      hd=(Esd-Epd)*st*ct*sf
-cc      hd1=(Esd1-Epd1)*st*ct*sf + 
-cc     &      (Esd-Epd)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-      hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(i,j)=hd1
-      h1(j,i)=hd1
-                    end if
-                    end if
+      IF(MOD(I,3).EQ.2) THEN
+      IF(MOD(J,3).EQ.2) THEN
+         TRIG1=(ST*SF)**2
+         TRIG2=(CT*SF)**2+CF**2
+         TRIG3=2.0D0*ST*SF*(SF*ST1+ST*SF1)
+         TRIG4=2.0D0*CT*SF*(SF*CT1+CT*SF1)+2.0D0*CF*CF1
+C      HS=ESS*(ST*SF)**2+EPS*((CT*SF)**2+CF**2)
+CC      HS1=ESS1*(ST*SF)**2+EPS1*((CT*SF)**2+CF**2) +
+CC     &          ESS*2.0D0*ST*SF*(SF*ST1+ST*SF1)+
+CC     &      EPS*(2.0D0*CT*SF*(SF*CT1+CT*SF1)+2.0D0*CF*CF1)
+      HS1=ESS1*TRIG1+EPS1*TRIG2+ESS*TRIG3+EPS*TRIG4
+      H1(I,I)=H1(I,I)+HS1-EX1
+      H1(J,J)=H1(J,J)+HS1-EX1
+C      HD=ESD*(ST*SF)**2+EPD*((CT*SF)**2+CF**2)
+CC      HD1=ESD1*(ST*SF)**2+EPD1*((CT*SF)**2+CF**2) +
+CC     &          ESD*2.0D0*ST*SF*(SF*ST1+ST*SF1)+
+CC     &      EPD*(2.0D0*CT*SF*(SF*CT1+CT*SF1)+2.0D0*CF*CF1)
+      HD1=ESD1*TRIG1+EPD1*TRIG2+ESD*TRIG3+EPD*TRIG4
+      H1(I,J)=HD1
+      H1(J,I)=HD1
+                    END IF
+      IF(MOD(J,3).EQ.1) THEN
+         TRIG1=ST**2*SF*CF
+         TRIG2=2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1)
+C        HS=(ESS-EPS)*ST**2*SF*CF
+CC        HS1=(ESS1-EPS1)*ST**2*SF*CF +
+CC     &      (ESS-EPS)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1))
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(J,J+1)=H1(J,J+1)+HS1
+        H1(J+1,J)=H1(J+1,J)+HS1
+C      HD=(ESD-EPD)*ST**2*SF*CF
+CC      HD1=(ESD1-EPD1)*ST**2*SF*CF + 
+CC     &      (ESD-EPD)*(2.0D0*ST*ST1*SF*CF+ST**2*(SF1*CF+SF*CF1))
+      HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(I,J)=HD1
+      H1(J,I)=HD1
+                    END IF
+      IF(MOD(J,3).EQ.0) THEN
+         TRIG1=ST*CT*SF
+         TRIG2=ST1*CT*SF+ST*CT1*SF+ST*CT*SF1
+C        HS=(ESS-EPS)*ST*CT*SF
+CC        HS1=(ESS1-EPS1)*ST*CT*SF +
+CC     &      (ESS-EPS)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(I,I+1)=H1(I,I+1)+HS1
+        H1(I+1,I)=H1(I+1,I)+HS1
+C      HD=(ESD-EPD)*ST*CT*SF
+CC      HD1=(ESD1-EPD1)*ST*CT*SF + 
+CC     &      (ESD-EPD)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+      HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(I,J)=HD1
+      H1(J,I)=HD1
+                    END IF
+                    END IF
 
-      if(mod(i,3).eq.0) then
-      if(mod(j,3).eq.0) then
-         trig1=(ct)**2
-         trig2=(st)**2
-         trig3=2.0d0*ct*ct1
-         trig4=2.0d0*st*st1
-c      hs=Ess*(ct)**2   +Eps*(st)**2
-cc      hs1=Ess1*(ct)**2   +Eps1*(st)**2 +
-cc     &      Ess*2.0d0*ct*ct1   +Eps*2.0d0*st*st1
-      hs1=Ess1*trig1 + Eps1*trig2 + Ess*trig3 + Eps*trig4
-      h1(i,i)=h1(i,i)+hs1-Ex1
-      h1(j,j)=h1(j,j)+hs1-Ex1
-c      hd=Esd*(ct)**2   +Epd*(st)**2
-cc      hd1=Esd1*(ct)**2   +Epd1*(st)**2 +
-cc     &      Esd*2.0d0*ct*ct1   +Epd*2.0d0*st*st1
-      hd1=Esd1*trig1 + Epd1*trig2 + Esd*trig3 + Epd*trig4
-      h1(i,j)=hd1
-      h1(j,i)=hd1
-                    end if
-      if(mod(j,3).eq.1) then
-         trig1=st*ct*cf
-         trig2=st1*ct*cf+st*ct1*cf+st*ct*cf1
-c        hs=(Ess-Eps)*st*ct*cf
-cc        hs1=(Ess1-Eps1)*st*ct*cf + 
-cc     &      (Ess-Eps)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(j,j+2)=h1(j,j+2)+hs1
-        h1(j+2,j)=h1(j+2,j)+hs1
-c      hd=(Esd-Epd)*st*ct*cf
-cc      hd1=(Esd1-Epd1)*st*ct*cf + 
-cc     &      (Esd-Epd)*(st1*ct*cf+st*ct1*cf+st*ct*cf1)
-      hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(i,j)=hd1
-      h1(j,i)=hd1
-                    end if
-      if(mod(j,3).eq.2) then
-         trig1=st*ct*sf
-         trig2=st1*ct*sf+st*ct1*sf+st*ct*sf1
-c        hs=(Ess-Eps)*st*ct*sf
-cc        hs1=(Ess1-Eps1)*st*ct*sf + 
-cc     &      (Ess-Eps)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-        hs1=(Ess1-Eps1)*trig1 + (Ess-Eps)*trig2
-        h1(j,j+1)=h1(j,j+1)+hs1
-        h1(j+1,j)=h1(j+1,j)+hs1
-c      hd=(Esd-Epd)*st*ct*sf
-cc      hd1=(Esd1-Epd1)*st*ct*sf + 
-cc     &      (Esd-Epd)*(st1*ct*sf+st*ct1*sf+st*ct*sf1)
-      hd1=(Esd1-Epd1)*trig1 + (Esd-Epd)*trig2
-      h1(i,j)=hd1
-      h1(j,i)=hd1
-                    end if
-                    end if
+      IF(MOD(I,3).EQ.0) THEN
+      IF(MOD(J,3).EQ.0) THEN
+         TRIG1=(CT)**2
+         TRIG2=(ST)**2
+         TRIG3=2.0D0*CT*CT1
+         TRIG4=2.0D0*ST*ST1
+C      HS=ESS*(CT)**2   +EPS*(ST)**2
+CC      HS1=ESS1*(CT)**2   +EPS1*(ST)**2 +
+CC     &      ESS*2.0D0*CT*CT1   +EPS*2.0D0*ST*ST1
+      HS1=ESS1*TRIG1 + EPS1*TRIG2 + ESS*TRIG3 + EPS*TRIG4
+      H1(I,I)=H1(I,I)+HS1-EX1
+      H1(J,J)=H1(J,J)+HS1-EX1
+C      HD=ESD*(CT)**2   +EPD*(ST)**2
+CC      HD1=ESD1*(CT)**2   +EPD1*(ST)**2 +
+CC     &      ESD*2.0D0*CT*CT1   +EPD*2.0D0*ST*ST1
+      HD1=ESD1*TRIG1 + EPD1*TRIG2 + ESD*TRIG3 + EPD*TRIG4
+      H1(I,J)=HD1
+      H1(J,I)=HD1
+                    END IF
+      IF(MOD(J,3).EQ.1) THEN
+         TRIG1=ST*CT*CF
+         TRIG2=ST1*CT*CF+ST*CT1*CF+ST*CT*CF1
+C        HS=(ESS-EPS)*ST*CT*CF
+CC        HS1=(ESS1-EPS1)*ST*CT*CF + 
+CC     &      (ESS-EPS)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(J,J+2)=H1(J,J+2)+HS1
+        H1(J+2,J)=H1(J+2,J)+HS1
+C      HD=(ESD-EPD)*ST*CT*CF
+CC      HD1=(ESD1-EPD1)*ST*CT*CF + 
+CC     &      (ESD-EPD)*(ST1*CT*CF+ST*CT1*CF+ST*CT*CF1)
+      HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(I,J)=HD1
+      H1(J,I)=HD1
+                    END IF
+      IF(MOD(J,3).EQ.2) THEN
+         TRIG1=ST*CT*SF
+         TRIG2=ST1*CT*SF+ST*CT1*SF+ST*CT*SF1
+C        HS=(ESS-EPS)*ST*CT*SF
+CC        HS1=(ESS1-EPS1)*ST*CT*SF + 
+CC     &      (ESS-EPS)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+        HS1=(ESS1-EPS1)*TRIG1 + (ESS-EPS)*TRIG2
+        H1(J,J+1)=H1(J,J+1)+HS1
+        H1(J+1,J)=H1(J+1,J)+HS1
+C      HD=(ESD-EPD)*ST*CT*SF
+CC      HD1=(ESD1-EPD1)*ST*CT*SF + 
+CC     &      (ESD-EPD)*(ST1*CT*SF+ST*CT1*SF+ST*CT*SF1)
+      HD1=(ESD1-EPD1)*TRIG1 + (ESD-EPD)*TRIG2
+      H1(I,J)=HD1
+      H1(J,I)=HD1
+                    END IF
+                    END IF
 
-                       end if
+                       END IF
 
-  11      continue
-      enddo
-      enddo
-      h1(n3,n3)=h1(n3,n3)+ExS1
+  11      CONTINUE
+      ENDDO
+      ENDDO
+      H1(N3,N3)=H1(N3,N3)+EXS1
 
-cc      enddo
-cc      enddo
+CC      ENDDO
+CC      ENDDO
 
-        IF(DIPOLE) CALL dipoles(x,n,h0,h1,igrad)
+        IF(DIPOLE) CALL DIPOLES(X,N,H0,H1,IGRAD)
 
-   2      continue
+   2      CONTINUE
 
-      return
-      end
+      RETURN
+      END
 
-cc           real*4 function utn(r,i,ip)
-cc           utn=0.0d0
-cc           if(i.ne.5) return
-cc           utn=asne1(r,i,ip)
-cc           return
-cc           end
-cc                 FUNCTION ASNE1(R,I,IP)
+CC           REAL*4 FUNCTION UTN(R,I,IP)
+CC           UTN=0.0D0
+CC           IF(I.NE.5) RETURN
+CC           UTN=ASNE1(R,I,IP)
+CC           RETURN
+CC           END
+CC                 FUNCTION ASNE1(R,I,IP)
                  DOUBLE PRECISION FUNCTION UTN(R,I,IP)
-           implicit DOUBLE PRECISION (a-h,o-z)
-           save
-             COMMON/DIPOL/ adip,Runit,ReX                                            
-           DATA E/1.34d-4/,RM/5.841d0/, A/13.86434671d0/,B/-.12993822d0/, 
-     & D/1.36d0/,
-     * C6,C8,C10/1.21317545d0,.53222749d0,.24570703d0/, AA/8.9571795d5/
-      ReX=RM
+           IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+           SAVE
+             COMMON/DIPOL/ ADIP,RUNIT,REX                                            
+           DATA E/1.34D-4/,RM/5.841D0/, A/13.86434671D0/,B/-.12993822D0/, 
+     & D/1.36D0/,
+     * C6,C8,C10/1.21317545D0,.53222749D0,.24570703D0/, AA/8.9571795D5/
+      REX=RM
            X=R/RM
-           F=1.d0
-           IF(X.LT.D) F=EXP(-(D/X-1.d0)**2)
+           F=1.D0
+           IF(X.LT.D) F=EXP(-(D/X-1.D0)**2)
 
            X2=X*X
            X4=X2*X2
            X6=X4*X2
            X8=X4*X4
            X10=X6*X4
-           if(ip.eq.0) then
+           IF(IP.EQ.0) THEN
            V=AA*EXP((-A+B*X)*X)-F*(C6/X6+C8/X8+C10/X10)
-cc           ASNE1=V*E
+CC           ASNE1=V*E
            UTN=V*E
            RETURN
-                       end if
-           if(ip.eq.1) then
-           F1=0.d0
-           IF(X.LT.D) F1=F*2.d0*(D/X-1.d0)*D/X2
-           V=AA*EXP((-A+B*X)*X) *(-A+2.d0*B*X)
-     * +F*(6.d0*C6/X6+8.d0*C8/X8+10.d0*C10/X10)/X
+                       END IF
+           IF(IP.EQ.1) THEN
+           F1=0.D0
+           IF(X.LT.D) F1=F*2.D0*(D/X-1.D0)*D/X2
+           V=AA*EXP((-A+B*X)*X) *(-A+2.D0*B*X)
+     * +F*(6.D0*C6/X6+8.D0*C8/X8+10.D0*C10/X10)/X
            IF(X.LT.D) V=V-F1*(C6/X6+C8/X8+C10/X10)
-cc           ASNE1=V*E/RM
+CC           ASNE1=V*E/RM
            UTN=V*E/RM
-                       end if
+                       END IF
            RETURN
            END
 
-        subroutine rgnx2(n,x,grad,ereal,gradt)
-        implicit DOUBLE PRECISION (a-h,o-z)
-        DOUBLE PRECISION x(3,n),grad(n*3)
-        logical gradt
-        save
+        SUBROUTINE RGNX2(N,X,GRAD,EREAL,GRADT)
+        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+        DOUBLE PRECISION X(3,N),GRAD(N*3)
+        LOGICAL GRADT
+        SAVE
 
-      data hrx2/0.995D0/, EaueV/27.212D0/, RauA/0.52918D0/
+      DATA HRX2/0.995D0/, EAUEV/27.212D0/, RAUA/0.52918D0/
 
-      Ereal=0.d0
-        if(n.le.0) return
-      do i=1,n*3
-      grad(i)=0.d0
-      enddo
+      EREAL=0.D0
+        IF(N.LE.0) RETURN
+      DO I=1,N*3
+      GRAD(I)=0.D0
+      ENDDO
 
-        if(n.gt.1) then
-        do k=1,n-1
-        do l=k+1,n
-        rkl=
-     1  sqrt((x(1,l)-x(1,k))**2+(x(2,l)-x(2,k))**2+(x(3,l)-x(3,k))**2)
-        call ashe1(rkl/RauA,Err,Err1)
-        Ereal=Ereal+Err*EaueV
+        IF(N.GT.1) THEN
+        DO K=1,N-1
+        DO L=K+1,N
+        RKL=
+     1  SQRT((X(1,L)-X(1,K))**2+(X(2,L)-X(2,K))**2+(X(3,L)-X(3,K))**2)
+        CALL ASHE1(RKL/RAUA,ERR,ERR1)
+        EREAL=EREAL+ERR*EAUEV
 
-      if(gradt) then
-      do m=1,3
-      dEdxm=Err1*EaueV/RauA*(x(m,l)-x(m,k))/rkl
-      lgrad=3*(l-1)+m
-      grad(lgrad)=grad(lgrad)+dEdxm
-        kgrad=3*(k-1)+m
-        grad(kgrad)=grad(kgrad)-dEdxm
-      enddo
-              end if
-        enddo
-        enddo
-                   end if
+      IF(GRADT) THEN
+      DO M=1,3
+      DEDXM=ERR1*EAUEV/RAUA*(X(M,L)-X(M,K))/RKL
+      LGRAD=3*(L-1)+M
+      GRAD(LGRAD)=GRAD(LGRAD)+DEDXM
+        KGRAD=3*(K-1)+M
+        GRAD(KGRAD)=GRAD(KGRAD)-DEDXM
+      ENDDO
+              END IF
+        ENDDO
+        ENDDO
+                   END IF
 
-      do i=1,n
-      d2xy=x(1,i)**2+x(2,i)**2
-      Rxa=sqrt(d2xy + (x(3,i)-hrx2)**2)
-        Rxb=sqrt(d2xy + (x(3,i)+hrx2)**2)                
-      cxa=(x(3,i)-hrx2)/Rxa
-      cxb=(x(3,i)+hrx2)/Rxb
-      call ehecl2(Rxa,cxa,Erxa,Erxa1,Erxa1c)
-        call ehecl2(Rxb,-cxb,Erxb,Erxb1,Erxb1c)
-      Ereal=Ereal+Erxa+Erxb
+      DO I=1,N
+      D2XY=X(1,I)**2+X(2,I)**2
+      RXA=SQRT(D2XY + (X(3,I)-HRX2)**2)
+        RXB=SQRT(D2XY + (X(3,I)+HRX2)**2)                
+      CXA=(X(3,I)-HRX2)/RXA
+      CXB=(X(3,I)+HRX2)/RXB
+      CALL EHECL2(RXA,CXA,ERXA,ERXA1,ERXA1C)
+        CALL EHECL2(RXB,-CXB,ERXB,ERXB1,ERXB1C)
+      EREAL=EREAL+ERXA+ERXB
 
-      if(gradt) then
-      do m=1,3
-      if(m.le.2) then
-      dEadxm=(Erxa1 - Erxa1c*cxa/Rxa)*x(m,i)/Rxa
-        dEbdxm=(Erxb1 + Erxb1c*cxb/Rxb)*x(m,i)/Rxb
-               else
-        dEadxm=(Erxa1 - Erxa1c*cxa/Rxa)*(x(m,i)-hrx2)/Rxa + Erxa1c/Rxa
-        dEbdxm=(Erxb1 + Erxb1c*cxb/Rxb)*(x(m,i)+hrx2)/Rxb - Erxb1c/Rxb
-               end if
-      igrad=3*(i-1)+m
-        grad(igrad)=grad(igrad)+dEadxm+dEbdxm
-      enddo
-              end if
-      enddo
+      IF(GRADT) THEN
+      DO M=1,3
+      IF(M.LE.2) THEN
+      DEADXM=(ERXA1 - ERXA1C*CXA/RXA)*X(M,I)/RXA
+        DEBDXM=(ERXB1 + ERXB1C*CXB/RXB)*X(M,I)/RXB
+               ELSE
+        DEADXM=(ERXA1 - ERXA1C*CXA/RXA)*(X(M,I)-HRX2)/RXA + ERXA1C/RXA
+        DEBDXM=(ERXB1 + ERXB1C*CXB/RXB)*(X(M,I)+HRX2)/RXB - ERXB1C/RXB
+               END IF
+      IGRAD=3*(I-1)+M
+        GRAD(IGRAD)=GRAD(IGRAD)+DEADXM+DEBDXM
+      ENDDO
+              END IF
+      ENDDO
 
-      return
-      end
+      RETURN
+      END
 
 
-      subroutine ehecl2(r,c,e,e1,e1c)
-        implicit DOUBLE PRECISION (a-h,o-z)
-      common/init/Es,Ep,Epb
-      data hre/0.995D0/, nc/1/
-      save
+      SUBROUTINE EHECL2(R,C,E,E1,E1C)
+        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      COMMON/INIT/ES,EP,EPB
+      DATA HRE/0.995D0/, NC/1/
+      SAVE
 
-      Es = hecl2ut0(r,1,Es1)
-      Ep = hecl2ut0(r,2,Ep1)
-        Epb= hecl2ut0(r,3,Epb1)
+      ES = HECL2UT0(R,1,ES1)
+      EP = HECL2UT0(R,2,EP1)
+        EPB= HECL2UT0(R,3,EPB1)
 
-        ratio=hre/r
-        A= 1.d0 + ratio*ratio
-        B= 2.*ratio
-        A1= -2.d0*(A-1.d0)/r
-        B1=-B/r
+        RATIO=HRE/R
+        A= 1.D0 + RATIO*RATIO
+        B= 2.*RATIO
+        A1= -2.D0*(A-1.D0)/R
+        B1=-B/R
 
-        c2= c*c
-      s2= 1.d0 - c2
-      ABc= A + B*c
-      s02= s2/ABc
-      s021= -s02/ABc*(A1 + B1*c)
-      s021c= -(2.d0*c + s02*B)/ABc
-      Ept=Epb
-      Ept1=Epb1
-      if(s02.gt.0.5d0) then
-      factor= 4.d0*s02*(1.d0 - s02)
-        factor1= 4.d0*s021*(1.d0 - 2.d0*s02)
-      factor1c= 4.d0*s021c*(1.d0 - 2.d0*s02)
-      Ept= Ep + (Epb - Ep)*factor
-      Ept1= Ep1 + (Epb1 - Ep1)*factor + (Epb - Ep)*factor1
-        Ept1c= (Epb - Ep)*factor1c 
-                   end if
+        C2= C*C
+      S2= 1.D0 - C2
+      ABC= A + B*C
+      S02= S2/ABC
+      S021= -S02/ABC*(A1 + B1*C)
+      S021C= -(2.D0*C + S02*B)/ABC
+      EPT=EPB
+      EPT1=EPB1
+      IF(S02.GT.0.5D0) THEN
+      FACTOR= 4.D0*S02*(1.D0 - S02)
+        FACTOR1= 4.D0*S021*(1.D0 - 2.D0*S02)
+      FACTOR1C= 4.D0*S021C*(1.D0 - 2.D0*S02)
+      EPT= EP + (EPB - EP)*FACTOR
+      EPT1= EP1 + (EPB1 - EP1)*FACTOR + (EPB - EP)*FACTOR1
+        EPT1C= (EPB - EP)*FACTOR1C 
+                   END IF
 
-      e = Es*c2 + Ept*s2 
-      e1= Es1*c2 + Ept1*s2
-      e1c= 2.d0*c*(Es - Ept) + Ept1c*s2
+      E = ES*C2 + EPT*S2 
+      E1= ES1*C2 + EPT1*S2
+      E1C= 2.D0*C*(ES - EPT) + EPT1C*S2
 
-      return
-      end
+      RETURN
+      END
 
-      DOUBLE PRECISION function hecl2ut0(rr,i0,ut1)
-        implicit DOUBLE PRECISION (a-h,o-z)
+      DOUBLE PRECISION FUNCTION HECL2UT0(RR,I0,UT1)
+        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INTEGER IR
-      parameter(ir=41)
-      DOUBLE PRECISION, DIMENSION(41) :: ru=(/
+      PARAMETER(IR=41)
+      DOUBLE PRECISION, DIMENSION(41) :: RU=(/
      1      2.00, 2.10, 2.20, 2.30, 2.40, 2.50, 2.60, 2.70, 2.80, 2.90,     
      1      3.00, 3.10, 3.20, 3.30, 3.40, 3.50, 3.60, 3.70, 3.80, 3.90,
      1      4.00, 4.10, 4.20, 4.30, 4.40, 4.50, 4.60, 4.70, 4.80, 4.90,
      1      5.00, 5.10, 5.20, 5.30, 5.40, 5.50, 5.60, 5.70, 5.80, 5.90,
      1      6.00 /)
-      DOUBLE PRECISION, DIMENSION(41) :: Eu=(/
+      DOUBLE PRECISION, DIMENSION(41) :: EU=(/
      1       0.3609288,  0.2394266,  0.1526561,  0.0937677,  0.0559396,
      1        0.0322421,  0.0168441,  0.0070019,  0.0010727, -0.0022567,
      1      -0.0039128, -0.0046519, -0.0048347, -0.0046815, -0.0043490,
@@ -2777,7 +2777,7 @@ cc           ASNE1=V*E/RM
      1      -0.0005304, -0.0004683, -0.0004153, -0.0003680, -0.0003261,
      1      -0.0002896, -0.0002588, -0.0002309, -0.0002080, -0.0001890,
      1      -0.0001690/)
-      DOUBLE PRECISION, DIMENSION(41) :: Eg=(/
+      DOUBLE PRECISION, DIMENSION(41) :: EG=(/
      1       0.6226088,  0.4446164,  0.3092623,  0.2090408,  0.1372434,
      1       0.0879939,  0.0557593,  0.0348669,  0.0208967,  0.0116730,
      1       0.0057593,  0.0021143, -0.0000627, -0.0013357, -0.0020061,
@@ -2787,7 +2787,7 @@ cc           ASNE1=V*E/RM
      1      -0.0004941, -0.0004352, -0.0003848, -0.0003403, -0.0003010,
      1      -0.0002675, -0.0002369, -0.0002114, -0.0001892, -0.0001696,
      1      -0.0001528/)
-      DOUBLE PRECISION, DIMENSION(41) :: Epu=(/
+      DOUBLE PRECISION, DIMENSION(41) :: EPU=(/
      1       0.8823669,  0.6168400,  0.4294591,  0.2970549,  0.2044612,
      1       0.1390856,  0.0935656,  0.0623482,  0.0408527,  0.0261192,
      1       0.0161569,  0.0095486,  0.0051923,  0.0023638,  0.0005976,
@@ -2797,320 +2797,320 @@ cc           ASNE1=V*E/RM
      1      -0.0005115, -0.0004544, -0.0004049, -0.0003628, -0.0003226,
      1      -0.0002862, -0.0002551, -0.0002274, -0.0001998, -0.0001736,
      1      -0.0001570/)
-      DOUBLE PRECISION coefu(4,ir), coefg(4,ir), coefpu(4,ir)
-      data nc1/1/,nc2/1/,nc3/1/
-      save
+      DOUBLE PRECISION COEFU(4,IR), COEFG(4,IR), COEFPU(4,IR)
+      DATA NC1/1/,NC2/1/,NC3/1/
+      SAVE
 
-      hecl2ut0=0.d0
-      ut1=0.d0
+      HECL2UT0=0.D0
+      UT1=0.D0
 
-      if(i0.eq.1) then
-      if(nc1.eq.1) then
-      nc1=2
-      do i=1,ir
-      coefu(1,i)=Eu(i) 
-      enddo
-      coefu(2,ir)=-6.d0*Eu(ir)/ru(ir)
-      call cubspl(ru,coefu,ir,0,1)
-        r0u=ru(1)
-        AAu=Eu(1)
-        alphau=-coefu(2,1)/AAu
-                   end if
-        if(rr.lt.ru(ir)) then
-        if(rr.lt.r0u) then
-        hecl2ut0=AAu*exp(-alphau*(rr-r0u))
-      ut1=-alphau*hecl2ut0
-                        else
-      ind=int(10.d0*(rr-r0u)) +1
-      dr=rr-ru(ind)
-      hecl2ut0=coefu(1,ind)+dr*(coefu(2,ind)
-     1      +0.5d0*dr*(coefu(3,ind)+dr*coefu(4,ind)/3.d0))
-        ut1=coefu(2,ind) + dr*(coefu(3,ind) + 0.5d0*dr*coefu(4,ind))
-                        end if
-                         else
-            hecl2ut0=Eu(ir)*(ru(ir)/rr)**6
-      ut1=-6.d0*hecl2ut0/rr
-                         end if
-      return
-                  end if
+      IF(I0.EQ.1) THEN
+      IF(NC1.EQ.1) THEN
+      NC1=2
+      DO I=1,IR
+      COEFU(1,I)=EU(I) 
+      ENDDO
+      COEFU(2,IR)=-6.D0*EU(IR)/RU(IR)
+      CALL CUBSPL(RU,COEFU,IR,0,1)
+        R0U=RU(1)
+        AAU=EU(1)
+        ALPHAU=-COEFU(2,1)/AAU
+                   END IF
+        IF(RR.LT.RU(IR)) THEN
+        IF(RR.LT.R0U) THEN
+        HECL2UT0=AAU*EXP(-ALPHAU*(RR-R0U))
+      UT1=-ALPHAU*HECL2UT0
+                        ELSE
+      IND=INT(10.D0*(RR-R0U)) +1
+      DR=RR-RU(IND)
+      HECL2UT0=COEFU(1,IND)+DR*(COEFU(2,IND)
+     1      +0.5D0*DR*(COEFU(3,IND)+DR*COEFU(4,IND)/3.D0))
+        UT1=COEFU(2,IND) + DR*(COEFU(3,IND) + 0.5D0*DR*COEFU(4,IND))
+                        END IF
+                         ELSE
+            HECL2UT0=EU(IR)*(RU(IR)/RR)**6
+      UT1=-6.D0*HECL2UT0/RR
+                         END IF
+      RETURN
+                  END IF
 
-      if(i0.eq.2) then
-      if(nc2.eq.1) then
-      nc2=2
-      do i=1,ir
-      coefg(1,i)=Eg(i)
-      enddo
-      coefg(2,ir)=-6.d0*Eg(ir)/ru(ir)
-      call cubspl(ru,coefg,ir,0,1)
-        r0g=ru(1)
-        AAg=Eg(1)
-        alphag=-coefg(2,1)/AAg
-                   end if
-        if(rr.lt.ru(ir)) then
-        if(rr.lt.r0g) then
-        hecl2ut0=AAg*exp(-alphag*(rr-r0g))
-        ut1=-alphag*hecl2ut0
-                        else
-        ind=int(10.d0*(rr-r0g)) +1
-        dr=rr-ru(ind)
-        hecl2ut0=coefg(1,ind)+dr*(coefg(2,ind)
-     1      +0.5d0*dr*(coefg(3,ind)+dr*coefg(4,ind)/3.d0))        
-        ut1=coefg(2,ind) + dr*(coefg(3,ind) + 0.5d0*dr*coefg(4,ind))
-                        end if
-                         else
-        hecl2ut0=Eg(ir)*(ru(ir)/rr)**6
-        ut1=-6.d0*hecl2ut0/rr
-                         end if
-      return
-                  end if
+      IF(I0.EQ.2) THEN
+      IF(NC2.EQ.1) THEN
+      NC2=2
+      DO I=1,IR
+      COEFG(1,I)=EG(I)
+      ENDDO
+      COEFG(2,IR)=-6.D0*EG(IR)/RU(IR)
+      CALL CUBSPL(RU,COEFG,IR,0,1)
+        R0G=RU(1)
+        AAG=EG(1)
+        ALPHAG=-COEFG(2,1)/AAG
+                   END IF
+        IF(RR.LT.RU(IR)) THEN
+        IF(RR.LT.R0G) THEN
+        HECL2UT0=AAG*EXP(-ALPHAG*(RR-R0G))
+        UT1=-ALPHAG*HECL2UT0
+                        ELSE
+        IND=INT(10.D0*(RR-R0G)) +1
+        DR=RR-RU(IND)
+        HECL2UT0=COEFG(1,IND)+DR*(COEFG(2,IND)
+     1      +0.5D0*DR*(COEFG(3,IND)+DR*COEFG(4,IND)/3.D0))        
+        UT1=COEFG(2,IND) + DR*(COEFG(3,IND) + 0.5D0*DR*COEFG(4,IND))
+                        END IF
+                         ELSE
+        HECL2UT0=EG(IR)*(RU(IR)/RR)**6
+        UT1=-6.D0*HECL2UT0/RR
+                         END IF
+      RETURN
+                  END IF
 
-      if(i0.eq.3) then
-      if(nc3.eq.1) then
-      nc3=2
-      do i=1,ir
-      coefpu(1,i)=Epu(i)
-      enddo
-      coefpu(2,ir)=-6.d0*Epu(ir)/ru(ir)
-      call cubspl(ru,coefpu,ir,0,1)
-        r0pu=ru(1)
-        AApu=Epu(1)
-        alphapu=-coefpu(2,1)/AApu
-                   end if
-       if(rr.lt.ru(ir)) then
-       if(rr.lt.r0pu) then
-        hecl2ut0=AApu*exp(-alphapu*(rr-r0pu))
-        ut1=-alphapu*hecl2ut0
-                        else
-        ind=int(10.d0*(rr-r0pu)) +1
-        dr=rr-ru(ind)
-        hecl2ut0=coefpu(1,ind)+dr*(coefpu(2,ind)
-     1      +0.5d0*dr*(coefpu(3,ind)+dr*coefpu(4,ind)/3.d0))
-        ut1=coefpu(2,ind) + dr*(coefpu(3,ind) + 0.5d0*dr*coefpu(4,ind))
-                        end if
-                         else
-        hecl2ut0=Epu(ir)*(ru(ir)/rr)**6
-        ut1=-6.d0*hecl2ut0/rr                               
-                         end if
-      return
-                  end if
-      return 
-      end
+      IF(I0.EQ.3) THEN
+      IF(NC3.EQ.1) THEN
+      NC3=2
+      DO I=1,IR
+      COEFPU(1,I)=EPU(I)
+      ENDDO
+      COEFPU(2,IR)=-6.D0*EPU(IR)/RU(IR)
+      CALL CUBSPL(RU,COEFPU,IR,0,1)
+        R0PU=RU(1)
+        AAPU=EPU(1)
+        ALPHAPU=-COEFPU(2,1)/AAPU
+                   END IF
+       IF(RR.LT.RU(IR)) THEN
+       IF(RR.LT.R0PU) THEN
+        HECL2UT0=AAPU*EXP(-ALPHAPU*(RR-R0PU))
+        UT1=-ALPHAPU*HECL2UT0
+                        ELSE
+        IND=INT(10.D0*(RR-R0PU)) +1
+        DR=RR-RU(IND)
+        HECL2UT0=COEFPU(1,IND)+DR*(COEFPU(2,IND)
+     1      +0.5D0*DR*(COEFPU(3,IND)+DR*COEFPU(4,IND)/3.D0))
+        UT1=COEFPU(2,IND) + DR*(COEFPU(3,IND) + 0.5D0*DR*COEFPU(4,IND))
+                        END IF
+                         ELSE
+        HECL2UT0=EPU(IR)*(RU(IR)/RR)**6
+        UT1=-6.D0*HECL2UT0/RR                               
+                         END IF
+      RETURN
+                  END IF
+      RETURN 
+      END
 
-           SUBROUTINE ASHE1(R,Ex,Ex1)
-C  Potential of He2 (Aziz et al, 1987)
-      implicit DOUBLE PRECISION (a-h,o-z)
-      save
+           SUBROUTINE ASHE1(R,EX,EX1)
+C  POTENTIAL OF HE2 (AZIZ ET AL, 1987)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      SAVE
       DATA E/10.948D0/,RM/2.963D0/, A/10.43329537D0/,B/-2.27965105D0/, D/1.4826D0/
      *    ,C6,C8,C10/1.36745214D0,0.42123807D0,0.17473318D0/, AA/1.8443101D5/
-     *    ,NCALL/1/,Ekau/3.1668D-6/,Rau/0.52918D0/
+     *    ,NCALL/1/,EKAU/3.1668D-6/,RAU/0.52918D0/
       IF(NCALL.EQ.1) THEN
-      RM=RM/Rau
-      E=E*Ekau
+      RM=RM/RAU
+      E=E*EKAU
       NCALL=2
                      END IF
       X=R/RM
         X2=X*X
-      F=1.d0
-      F1=0.d0
-      IF(X.LT.D) then
-      dx1=D/X-1.d0
-      F=EXP(-dx1*dx1)
-      F1=F*2.d0*dx1*D/X2
-             end if
+      F=1.D0
+      F1=0.D0
+      IF(X.LT.D) THEN
+      DX1=D/X-1.D0
+      F=EXP(-DX1*DX1)
+      F1=F*2.D0*DX1*D/X2
+             END IF
       X6=X2*X2*X2
-      VdW=(C6+(C8+C10/X2)/X2)/X6
-      Aexabx=AA*EXP((-A+B*X)*X)
-      V=Aexabx - F*VdW
-      V1=(-A+2.d0*B*X)*Aexabx - F1*VdW + 
-     1            F*(6.d0*C6+(8.d0*C8+10.d0*C10/X2)/X2)/X6/X
-      Ex=V*E
-      Ex1=V1*E/RM
+      VDW=(C6+(C8+C10/X2)/X2)/X6
+      AEXABX=AA*EXP((-A+B*X)*X)
+      V=AEXABX - F*VDW
+      V1=(-A+2.D0*B*X)*AEXABX - F1*VDW + 
+     1            F*(6.D0*C6+(8.D0*C8+10.D0*C10/X2)/X2)/X6/X
+      EX=V*E
+      EX1=V1*E/RM
       RETURN
       END
-        subroutine rgnxy(n,x,grad,ereal,gradt,socouple)
-      implicit DOUBLE PRECISION (a-h,o-z)
-        save
-        DOUBLE PRECISION x(3,n),grad(n*3)
-        logical gradt,socouple
+        SUBROUTINE RGNXY(N,X,GRAD,EREAL,GRADT,SOCOUPLE)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+        SAVE
+        DOUBLE PRECISION X(3,N),GRAD(N*3)
+        LOGICAL GRADT,SOCOUPLE
 
-      data EaueV/27.212D0/, RauA/0.52918D0/
-     1      hsplit/0.0074267D0/
+      DATA EAUEV/27.212D0/, RAUA/0.52918D0/
+     1      HSPLIT/0.0074267D0/
 
-      Ereal=0.d0
-        if(n.le.0) return
-      do i=1,n*3
-      grad(i)=0.d0
-      enddo
+      EREAL=0.D0
+        IF(N.LE.0) RETURN
+      DO I=1,N*3
+      GRAD(I)=0.D0
+      ENDDO
 
-        if(n.gt.1) then
-        do k=1,n-1
-        do l=k+1,n
-        rkl=
-     1  sqrt((x(1,l)-x(1,k))**2+(x(2,l)-x(2,k))**2+(x(3,l)-x(3,k))**2)
-        call asar1(rkl/RauA,Err,Err1)
-        Ereal=Ereal+Err*EaueV
+        IF(N.GT.1) THEN
+        DO K=1,N-1
+        DO L=K+1,N
+        RKL=
+     1  SQRT((X(1,L)-X(1,K))**2+(X(2,L)-X(2,K))**2+(X(3,L)-X(3,K))**2)
+        CALL ASAR1(RKL/RAUA,ERR,ERR1)
+        EREAL=EREAL+ERR*EAUEV
 
-      if(gradt) then
-      do m=1,3
-      dEdxm=Err1*EaueV/RauA*(x(m,l)-x(m,k))/rkl
-      lgrad=3*(l-1)+m
-      grad(lgrad)=grad(lgrad)+dEdxm
-        kgrad=3*(k-1)+m
-        grad(kgrad)=grad(kgrad)-dEdxm
-      enddo
-              end if
-        enddo
-        enddo
-                   end if
+      IF(GRADT) THEN
+      DO M=1,3
+      DEDXM=ERR1*EAUEV/RAUA*(X(M,L)-X(M,K))/RKL
+      LGRAD=3*(L-1)+M
+      GRAD(LGRAD)=GRAD(LGRAD)+DEDXM
+        KGRAD=3*(K-1)+M
+        GRAD(KGRAD)=GRAD(KGRAD)-DEDXM
+      ENDDO
+              END IF
+        ENDDO
+        ENDDO
+                   END IF
 
-      E1r=0.d0
-      E2r=0.d0
-      E12r=0.d0
-      do i=1,n
+      E1R=0.D0
+      E2R=0.D0
+      E12R=0.D0
+      DO I=1,N
 
-      x1i=x(1,i)
-      x2i=x(2,i)
-      x3i=x(3,i)
-      dxy2=x1i*x1i+x2i*x2i
-      ri=sqrt(dxy2+x3i*x3i)
-      ci=x3i/ri
-      call arnoenergy(ri,ci,E1ri,E1ri1,E1ri1c,E2ri,E2ri1,E2ri1c)
-      dxy=sqrt(dxy2)
-      cai=1.d0
-      sai=0.d0
-      if(dxy.gt.0.d0) then
-      cai=x1i/dxy
-      sai=x2i/dxy
-                  end if
-      dEri=E1ri-E2ri
-      cai2=cai*cai
-      E1r=E1r +dEri*cai2 +E2ri
-      E2r=E2r -dEri*cai2 +E1ri
-      E12r=E12r +cai*sai*dEri
+      X1I=X(1,I)
+      X2I=X(2,I)
+      X3I=X(3,I)
+      DXY2=X1I*X1I+X2I*X2I
+      RI=SQRT(DXY2+X3I*X3I)
+      CI=X3I/RI
+      CALL ARNOENERGY(RI,CI,E1RI,E1RI1,E1RI1C,E2RI,E2RI1,E2RI1C)
+      DXY=SQRT(DXY2)
+      CAI=1.D0
+      SAI=0.D0
+      IF(DXY.GT.0.D0) THEN
+      CAI=X1I/DXY
+      SAI=X2I/DXY
+                  END IF
+      DERI=E1RI-E2RI
+      CAI2=CAI*CAI
+      E1R=E1R +DERI*CAI2 +E2RI
+      E2R=E2R -DERI*CAI2 +E1RI
+      E12R=E12R +CAI*SAI*DERI
 
-        enddo
+        ENDDO
 
-        E12r2=E12r*E12r
-      if(socouple) E12r2=E12r2 + hsplit*hsplit
+        E12R2=E12R*E12R
+      IF(SOCOUPLE) E12R2=E12R2 + HSPLIT*HSPLIT
 
-      D = sqrt((E1r-E2r)**2 + 4.d0*E12r2)
-      Ereal= Ereal + 0.5d0*(E1r+E2r + D)
-      if(socouple) Ereal= Ereal - hsplit
+      D = SQRT((E1R-E2R)**2 + 4.D0*E12R2)
+      EREAL= EREAL + 0.5D0*(E1R+E2R + D)
+      IF(SOCOUPLE) EREAL= EREAL - HSPLIT
 
-      if(gradt) then
+      IF(GRADT) THEN
 
-        do i=1,n
+        DO I=1,N
 
-      x1i=x(1,i)
-      x2i=x(2,i)
-      x3i=x(3,i)
-      dxy2=x1i*x1i+x2i*x2i
-      ri=sqrt(dxy2+x3i*x3i)
-      ci=x3i/ri
-        call arnoenergy(ri,ci,E1ri,E1ri1,E1ri1c,E2ri,E2ri1,E2ri1c)
-      dxy=sqrt(dxy2)
-      cai=1.d0
-      sai=0.d0
-        if(dxy.gt.0.d0) then
-      cai=x1i/dxy
-      sai=x2i/dxy
-                  end if
+      X1I=X(1,I)
+      X2I=X(2,I)
+      X3I=X(3,I)
+      DXY2=X1I*X1I+X2I*X2I
+      RI=SQRT(DXY2+X3I*X3I)
+      CI=X3I/RI
+        CALL ARNOENERGY(RI,CI,E1RI,E1RI1,E1RI1C,E2RI,E2RI1,E2RI1C)
+      DXY=SQRT(DXY2)
+      CAI=1.D0
+      SAI=0.D0
+        IF(DXY.GT.0.D0) THEN
+      CAI=X1I/DXY
+      SAI=X2I/DXY
+                  END IF
 
-      dEri1=E1ri1-E2ri1
-      cai2=cai*cai
-      E1r1= dEri1*cai2 + E2ri1
-      E2r1=-dEri1*cai2 + E1ri1
-      E12r1= cai*sai*dEri1
-      dEdri=0.5d0*( E1r1 + E2r1 + 
-     1            ((E1r-E2r)*(E1r1-E2r1) + 4.d0*E12r*E12r1)/D )
+      DERI1=E1RI1-E2RI1
+      CAI2=CAI*CAI
+      E1R1= DERI1*CAI2 + E2RI1
+      E2R1=-DERI1*CAI2 + E1RI1
+      E12R1= CAI*SAI*DERI1
+      DEDRI=0.5D0*( E1R1 + E2R1 + 
+     1            ((E1R-E2R)*(E1R1-E2R1) + 4.D0*E12R*E12R1)/D )
 
-      dEri1c=E1ri1c-E2ri1c
-      E1r1c= dEri1c*cai2 + E2ri1c
-      E2r1c=-dEri1c*cai2 + E1ri1c
-      E12r1c= cai*sai*dEri1c
-        dEdci=0.5d0*( E1r1c + E2r1c +
-     1          ((E1r-E2r)*(E1r1c-E2r1c) + 4.d0*E12r*E12r1c)/D )
+      DERI1C=E1RI1C-E2RI1C
+      E1R1C= DERI1C*CAI2 + E2RI1C
+      E2R1C=-DERI1C*CAI2 + E1RI1C
+      E12R1C= CAI*SAI*DERI1C
+        DEDCI=0.5D0*( E1R1C + E2R1C +
+     1          ((E1R-E2R)*(E1R1C-E2R1C) + 4.D0*E12R*E12R1C)/D )
 
-        dEri=E1ri-E2ri
-      E1r1ca= 2.d0*cai*dEri
-cc      E2r1ca= -E1r1ca
-      E12r1ca= 0.d0
-      if(sai.ne.0.d0) E12r1ca= (sai - cai2/sai)*dEri
-        dEdcai= ((E1r-E2r)*E1r1ca + 2.d0*E12r*E12r1ca)/D 
+        DERI=E1RI-E2RI
+      E1R1CA= 2.D0*CAI*DERI
+CC      E2R1CA= -E1R1CA
+      E12R1CA= 0.D0
+      IF(SAI.NE.0.D0) E12R1CA= (SAI - CAI2/SAI)*DERI
+        DEDCAI= ((E1R-E2R)*E1R1CA + 2.D0*E12R*E12R1CA)/D 
 
-      do m=1,3
-      dridxm= x(m,i)/ri
-      dcidxm= -ci/ri*dridxm
-      if(m.eq.3) dcidxm= dcidxm +1.d0/ri
-      dcaidxm= 0.d0
-      if(m.le.2.and.dxy.gt.0.d0) then
-      dcaidxm= -cai*x(m,i)/dxy2
-      if(m.eq.1) dcaidxm= dcaidxm +1.d0/dxy
-               end if
-        dEdxm= dEdri*dridxm + dEdci*dcidxm + dEdcai*dcaidxm
-      igrad=3*(i-1)+m
-        grad(igrad)=grad(igrad)+dEdxm
-      enddo
+      DO M=1,3
+      DRIDXM= X(M,I)/RI
+      DCIDXM= -CI/RI*DRIDXM
+      IF(M.EQ.3) DCIDXM= DCIDXM +1.D0/RI
+      DCAIDXM= 0.D0
+      IF(M.LE.2.AND.DXY.GT.0.D0) THEN
+      DCAIDXM= -CAI*X(M,I)/DXY2
+      IF(M.EQ.1) DCAIDXM= DCAIDXM +1.D0/DXY
+               END IF
+        DEDXM= DEDRI*DRIDXM + DEDCI*DCIDXM + DEDCAI*DCAIDXM
+      IGRAD=3*(I-1)+M
+        GRAD(IGRAD)=GRAD(IGRAD)+DEDXM
+      ENDDO
 
-        enddo
+        ENDDO
 
-              end if
+              END IF
 
 
-      return
-      end
+      RETURN
+      END
 
-      subroutine arnoenergy(r,c1,V,Vd,Vdc,V1,V1d,V1dc)
-      implicit DOUBLE PRECISION (a-h,o-z)
-      parameter (n=9)
-      save
-      DOUBLE PRECISION P(n),Vi(n),Vid(n),P1(n)
+      SUBROUTINE ARNOENERGY(R,C1,V,VD,VDC,V1,V1D,V1DC)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      PARAMETER (N=9)
+      SAVE
+      DOUBLE PRECISION P(N),VI(N),VID(N),P1(N)
 
-      if(abs(c1).gt.1.d0) c1=c1/abs(c1)
+      IF(ABS(C1).GT.1.D0) C1=C1/ABS(C1)
 
-      V0 = ut0(r,1,V0d)
-      n1=n-1
-      do i=1,n1
-        Vi(i) = ut0(r,i+1,Vdi)
-      Vid(i)=Vdi
-      enddo
+      V0 = UT0(R,1,V0D)
+      N1=N-1
+      DO I=1,N1
+        VI(I) = UT0(R,I+1,VDI)
+      VID(I)=VDI
+      ENDDO
 
-        call polegn(n1,c1,P,P1)
+        CALL POLEGN(N1,C1,P,P1)
 
         V = V0 
-      Vd = V0d
-      Vdc = 0.d0
-      do i=1,n1
-      V = V + Vi(i)*P(i)
-      Vd = Vd + Vid(i)*P(i)
-      Vdc = Vdc + Vi(i)*P1(i)
-      enddo
+      VD = V0D
+      VDC = 0.D0
+      DO I=1,N1
+      V = V + VI(I)*P(I)
+      VD = VD + VID(I)*P(I)
+      VDC = VDC + VI(I)*P1(I)
+      ENDDO
 
-        V0 = ut01(r,1,V0d)
-      do i=1,n1
-      Vi(i) = ut01(r,i+1,Vdi)
-      Vid(i) = Vdi
-      enddo
+        V0 = UT01(R,1,V0D)
+      DO I=1,N1
+      VI(I) = UT01(R,I+1,VDI)
+      VID(I) = VDI
+      ENDDO
 
       V1 = V0
-      V1d = V0d
-      V1dc = 0.d0
-      do i=1,n1
-      V1 = V1 + Vi(i)*P(i)
-      V1d = V1d + Vid(i)*P(i)
-      V1dc = V1dc + Vi(i)*P1(i)
-      enddo
+      V1D = V0D
+      V1DC = 0.D0
+      DO I=1,N1
+      V1 = V1 + VI(I)*P(I)
+      V1D = V1D + VID(I)*P(I)
+      V1DC = V1DC + VI(I)*P1(I)
+      ENDDO
 
-      return
-      end
+      RETURN
+      END
 
 
-      DOUBLE PRECISION function ut0(rr,i0,ut0d)
-      implicit DOUBLE PRECISION (a-h,o-z)
-      save
-      parameter(n0=24,n1=24,n2=24,n3=20,n4=20,n5=20,n6=20,n7=17,n8=18)
+      DOUBLE PRECISION FUNCTION UT0(RR,I0,UT0D)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      SAVE
+      PARAMETER(N0=24,N1=24,N2=24,N3=20,N4=20,N5=20,N6=20,N7=17,N8=18)
 
-      DOUBLE PRECISION, DIMENSION(n0) :: ru=(/ 
+      DOUBLE PRECISION, DIMENSION(N0) :: RU=(/ 
      1 0.00, 0.25, 0.50, 0.75, 1.00,
      1 1.25, 1.50, 1.75, 2.00, 2.25,
      1 2.50, 2.75,
@@ -3118,817 +3118,817 @@ cc      E2r1ca= -E1r1ca
      1 4.25, 4.50, 5.00, 5.50, 6.00, 
      1 7.00, 8.00/)
 
-      DOUBLE PRECISION, DIMENSION(n0) :: Eu=(/
+      DOUBLE PRECISION, DIMENSION(N0) :: EU=(/
      123.5757810,19.0536413,15.1520331,11.8249968, 9.0265728,
      1 6.7107999, 4.8317169, 3.3433641, 2.1997803, 1.3550050,
      1  .7630777,  .3780378,
      1  .1539246,  .0447773,  .0045563, -.0075913, -.0095564,
      1 -.0083419, -.0064951, -.0035558, -.0019332, -.0010942,
      1 -.0004037, -.0001733/)
-      DOUBLE PRECISION, DIMENSION(n1) :: Eg=(/
+      DOUBLE PRECISION, DIMENSION(N1) :: EG=(/
      1 2.9072499, 2.4029129, 1.9608503, 1.5769362, 1.2470459,
      1  .9670573,  .7328453,  .5402856,  .3852534,  .2636248,
      1  .1712753,  .1040805,
      1  .0579161,  .0286581,  .0122599,  .0046522,  .0013999, 
      1  .0001305, -.0002864, -.0003208, -.0001932, -.0001146,
      1 -.0000367, -.0000163/)
-      DOUBLE PRECISION, DIMENSION(n2) :: Epu=(/
+      DOUBLE PRECISION, DIMENSION(N2) :: EPU=(/
      136.1544630,29.2137453,23.2280250,18.1262749,13.8374705,
      110.2905828, 7.4145843, 5.1384474, 3.3911439, 2.1016460,
      1 1.1989267,  .6119579,
      1  .2697118,  .1011612,  .0353422,  .0104119,  .0016621,
      1 -.0009844, -.0014811, -.0010339, -.0005530, -.0002932,
      1 -.0000931, -.0000396/)
-      DOUBLE PRECISION, DIMENSION(n3) :: E3=(/  
+      DOUBLE PRECISION, DIMENSION(N3) :: E3=(/  
      1 5.7704509, 4.6198981, 3.6335576, 2.7987752, 2.1029035,
      1 1.5332943, 1.0772957,  .7222591,  .4555346,  .2644726,
      1  .1364226,  .0587354,
      1  .0187612,  .0038494,  .0012187,  .0002678, -.0000507,
      1 -.0001010, -.0000828, -.0000240/)
-      DOUBLE PRECISION, DIMENSION(n4) :: E4=(/  
+      DOUBLE PRECISION, DIMENSION(N4) :: E4=(/  
      1 6.4428066, 5.1725998, 4.0815667, 3.1560647, 2.3824570,
      1 1.7471023, 1.2363623,  .8365934,  .5341561,  .3154102,
      1  .1667152,  .0744307,
      1  .0249163,  .0045315, -.0003323, -.0010465, -.0007592,
      1 -.0004024, -.0001781, -.0000020/)
-      DOUBLE PRECISION, DIMENSION(n5) :: E5=(/  
+      DOUBLE PRECISION, DIMENSION(N5) :: E5=(/  
      1-4.6869956,-3.7386937,-2.9276822,-2.2432417,-1.6746429,
      1-1.2111622, -.8420752, -.5566573, -.3441831, -.1939286,
      1 -.0951689, -.0371794,
      1 -.0092352, -.0006112, -.0004883, -.0002925, -.0001497,
      1 -.0000855, -.0000426, -.0000077/)
-      DOUBLE PRECISION, DIMENSION(n6) :: E6=(/ 
+      DOUBLE PRECISION, DIMENSION(N6) :: E6=(/ 
      1-4.1197525,-3.2840736,-2.5697842,-1.9673653,-1.4672967,
      1-1.0600520, -.7361093, -.4859449, -.3000351, -.1688565,
      1 -.0828862, -.0326009,
      1 -.0084771, -.0009921, -.0007325, -.0004486, -.0002404,
      1 -.0001257, -.0000563, -.0000099/)
-      DOUBLE PRECISION, DIMENSION(n7) :: E7=(/  
+      DOUBLE PRECISION, DIMENSION(N7) :: E7=(/  
      1 2.0150222, 1.6081385, 1.2600261,  .9661046,  .7217950,
      1  .5225175,  .3636947,  .2407501,  .1491035,  .0841764,
      1  .0413916,  .0161697,
      1  .0039326,  .0001014,  .0000209, -.0000055, -.0000049/)
-      DOUBLE PRECISION, DIMENSION(n8) :: E8=(/
+      DOUBLE PRECISION, DIMENSION(N8) :: E8=(/
      1 2.8090209, 2.2393604, 1.7523957, 1.3416469, 1.0006275,
      1  .7228596,  .5018594,  .3311493,  .2042477,  .1146736,
      1  .0559460,  .0215842,
      1  .0051075,  .0000354, -.0000178, -.0000116, -.0000069,
      1 -.0000047/)
 
-      DOUBLE PRECISION coefu(4,n0), coefg(4,n1), coefpu(4,n2), coef3(4,n3),
-     1coef4(4,n4), coef5(4,n5), coef6(4,n6), coef7(4,n7), coef8(4,n8)
-      data 
-     1 nc0/1/,nc1/1/,nc2/1/,nc3/1/,nc4/1/,nc5/1/,nc6/1/,nc7/1/,nc8/1/
+      DOUBLE PRECISION COEFU(4,N0), COEFG(4,N1), COEFPU(4,N2), COEF3(4,N3),
+     1COEF4(4,N4), COEF5(4,N5), COEF6(4,N6), COEF7(4,N7), COEF8(4,N8)
+      DATA 
+     1 NC0/1/,NC1/1/,NC2/1/,NC3/1/,NC4/1/,NC5/1/,NC6/1/,NC7/1/,NC8/1/
 
-      ut0=0.d0
+      UT0=0.D0
 
-      if(i0.eq.1) then
-      if(nc0.eq.1) then
-      nc0=2
-      do i=1,n0
-      coefu(1,i)=Eu(i) 
-      enddo
-      coefu(2,n0)=-6.d0*Eu(n0)/ru(n0)
-      call cubspl(ru,coefu,n0,0,1)
-        r0u=ru(1)
-        AAu=Eu(1)
-        alphau=-coefu(2,1)/AAu
-                   end if
+      IF(I0.EQ.1) THEN
+      IF(NC0.EQ.1) THEN
+      NC0=2
+      DO I=1,N0
+      COEFU(1,I)=EU(I) 
+      ENDDO
+      COEFU(2,N0)=-6.D0*EU(N0)/RU(N0)
+      CALL CUBSPL(RU,COEFU,N0,0,1)
+        R0U=RU(1)
+        AAU=EU(1)
+        ALPHAU=-COEFU(2,1)/AAU
+                   END IF
 
-cc      rr=dmax1(rr0,r0u)
-        if(rr.lt.ru(n0)) then
-        if(rr.lt.r0u) then
-        ut0=AAu*exp(-alphau*(rr-r0u))
-      ut0d=-alphau*ut0
-                        else
-      do i=1,n0-1
-      ind=i
-      if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 10
-      enddo
-   10      continue
-      dr=rr-ru(ind)
-      ut0=coefu(1,ind)+dr*(coefu(2,ind)
-     1      +0.5d0*dr*(coefu(3,ind)+dr*coefu(4,ind)/3.d0))
-      ut0d=coefu(2,ind) + dr*(coefu(3,ind) + 0.5d0*dr*coefu(4,ind))
-                        end if
-                         else
-            ut0=Eu(n0)*(ru(n0)/rr)**6
-        ut0d=-6.d0*ut0/rr
-                   end if
-      return
-                  end if
+CC      RR=DMAX1(RR0,R0U)
+        IF(RR.LT.RU(N0)) THEN
+        IF(RR.LT.R0U) THEN
+        UT0=AAU*EXP(-ALPHAU*(RR-R0U))
+      UT0D=-ALPHAU*UT0
+                        ELSE
+      DO I=1,N0-1
+      IND=I
+      IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 10
+      ENDDO
+   10      CONTINUE
+      DR=RR-RU(IND)
+      UT0=COEFU(1,IND)+DR*(COEFU(2,IND)
+     1      +0.5D0*DR*(COEFU(3,IND)+DR*COEFU(4,IND)/3.D0))
+      UT0D=COEFU(2,IND) + DR*(COEFU(3,IND) + 0.5D0*DR*COEFU(4,IND))
+                        END IF
+                         ELSE
+            UT0=EU(N0)*(RU(N0)/RR)**6
+        UT0D=-6.D0*UT0/RR
+                   END IF
+      RETURN
+                  END IF
 
-      if(i0.eq.2) then
-      if(nc1.eq.1) then
-      nc1=2
-      do i=1,n1
-      coefg(1,i)=Eg(i)
-      enddo
-      coefg(2,n1)=-6.d0*Eg(n1)/ru(n1)
-      call cubspl(ru,coefg,n1,0,1)
-        r0g=ru(1)
-        AAg=Eg(1)
-        alphag=-coefg(2,1)/AAg
-                   end if
+      IF(I0.EQ.2) THEN
+      IF(NC1.EQ.1) THEN
+      NC1=2
+      DO I=1,N1
+      COEFG(1,I)=EG(I)
+      ENDDO
+      COEFG(2,N1)=-6.D0*EG(N1)/RU(N1)
+      CALL CUBSPL(RU,COEFG,N1,0,1)
+        R0G=RU(1)
+        AAG=EG(1)
+        ALPHAG=-COEFG(2,1)/AAG
+                   END IF
 
-cc        rr=dmax1(rr0,r0g)
-        if(rr.lt.ru(n1)) then
-        if(rr.lt.r0g) then
-        ut0=AAg*exp(-alphag*(rr-r0g))
-      ut0d=-alphag*ut0
-                        else
-        do i=1,n1-1
-        ind=i
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 11
-        enddo
-   11   continue
-        dr=rr-ru(ind)
-        ut0=coefg(1,ind)+dr*(coefg(2,ind)
-     1      +0.5d0*dr*(coefg(3,ind)+dr*coefg(4,ind)/3.d0))        
-      ut0d=coefg(2,ind) + dr*(coefg(3,ind) + 0.5d0*dr*coefg(4,ind))
-                        end if
-                         else
-        ut0=Eg(n1)*(ru(n1)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-      return
-                  end if
+CC        RR=DMAX1(RR0,R0G)
+        IF(RR.LT.RU(N1)) THEN
+        IF(RR.LT.R0G) THEN
+        UT0=AAG*EXP(-ALPHAG*(RR-R0G))
+      UT0D=-ALPHAG*UT0
+                        ELSE
+        DO I=1,N1-1
+        IND=I
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 11
+        ENDDO
+   11   CONTINUE
+        DR=RR-RU(IND)
+        UT0=COEFG(1,IND)+DR*(COEFG(2,IND)
+     1      +0.5D0*DR*(COEFG(3,IND)+DR*COEFG(4,IND)/3.D0))        
+      UT0D=COEFG(2,IND) + DR*(COEFG(3,IND) + 0.5D0*DR*COEFG(4,IND))
+                        END IF
+                         ELSE
+        UT0=EG(N1)*(RU(N1)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+      RETURN
+                  END IF
 
-      if(i0.eq.3) then
-      if(nc2.eq.1) then
-      nc2=2
-      do i=1,n2
-      coefpu(1,i)=Epu(i)
-      enddo
-      coefpu(2,n2)=-6.d0*Epu(n2)/ru(n2)
-      call cubspl(ru,coefpu,n2,0,1)
-        r0pu=ru(1)
-        AApu=Epu(1)
-        alphapu=-coefpu(2,1)/AApu
-                   end if
-cc        rr=dmax1(rr0,r0pu)
-      if(rr.lt.ru(n2)) then
-       if(rr.lt.r0pu) then
-        ut0=AApu*exp(-alphapu*(rr-r0pu))
-      ut0d=-alphapu*ut0
-                        else
-        do i=1,n2-1                     
-        ind=i                     
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 12
-        enddo                     
-   12    continue                     
-        dr=rr-ru(ind)
-        ut0=coefpu(1,ind)+dr*(coefpu(2,ind)
-     1      +0.5d0*dr*(coefpu(3,ind)+dr*coefpu(4,ind)/3.d0))
-      ut0d=coefpu(2,ind) + dr*(coefpu(3,ind) + 0.5d0*dr*coefpu(4,ind))
-                        end if
-                         else
-        ut0=Epu(n2)*(ru(n2)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-      return
-                  end if
+      IF(I0.EQ.3) THEN
+      IF(NC2.EQ.1) THEN
+      NC2=2
+      DO I=1,N2
+      COEFPU(1,I)=EPU(I)
+      ENDDO
+      COEFPU(2,N2)=-6.D0*EPU(N2)/RU(N2)
+      CALL CUBSPL(RU,COEFPU,N2,0,1)
+        R0PU=RU(1)
+        AAPU=EPU(1)
+        ALPHAPU=-COEFPU(2,1)/AAPU
+                   END IF
+CC        RR=DMAX1(RR0,R0PU)
+      IF(RR.LT.RU(N2)) THEN
+       IF(RR.LT.R0PU) THEN
+        UT0=AAPU*EXP(-ALPHAPU*(RR-R0PU))
+      UT0D=-ALPHAPU*UT0
+                        ELSE
+        DO I=1,N2-1                     
+        IND=I                     
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 12
+        ENDDO                     
+   12    CONTINUE                     
+        DR=RR-RU(IND)
+        UT0=COEFPU(1,IND)+DR*(COEFPU(2,IND)
+     1      +0.5D0*DR*(COEFPU(3,IND)+DR*COEFPU(4,IND)/3.D0))
+      UT0D=COEFPU(2,IND) + DR*(COEFPU(3,IND) + 0.5D0*DR*COEFPU(4,IND))
+                        END IF
+                         ELSE
+        UT0=EPU(N2)*(RU(N2)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+      RETURN
+                  END IF
 
-      if(i0.eq.4) then
-      if(nc3.eq.1) then
-      nc3=2
-      do i=1,n3
-      coef3(1,i)=E3(i)
-      enddo
-      coef3(2,n3)=-6.d0*E3(n3)/ru(n3)
-      call cubspl(ru,coef3,n3,0,1)
-        r03=ru(1)
+      IF(I0.EQ.4) THEN
+      IF(NC3.EQ.1) THEN
+      NC3=2
+      DO I=1,N3
+      COEF3(1,I)=E3(I)
+      ENDDO
+      COEF3(2,N3)=-6.D0*E3(N3)/RU(N3)
+      CALL CUBSPL(RU,COEF3,N3,0,1)
+        R03=RU(1)
         AA3=E3(1)
-        alpha3=-coef3(2,1)/AA3
-                   end if
+        ALPHA3=-COEF3(2,1)/AA3
+                   END IF
 
-cc        rr=dmax1(rr0,r03)
-        if(rr.lt.ru(n3)) then
-        if(rr.lt.r03) then
-        ut0=AA3*exp(-alpha3*(rr-r03))
-      ut0d=-alpha3*ut0
-                        else
-        do i=1,n3-1                     
-        ind=i                     
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 13
-        enddo                     
-   13   continue                     
-        dr=rr-ru(ind)
-        ut0=coef3(1,ind)+dr*(coef3(2,ind)
-     1  +0.5d0*dr*(coef3(3,ind)+dr*coef3(4,ind)/3.d0))
-      ut0d=coef3(2,ind) + dr*(coef3(3,ind) + 0.5d0*dr*coef3(4,ind))
-                        end if
-                         else
-        ut0=E3(n3)*(ru(n3)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-      return
-                  end if
+CC        RR=DMAX1(RR0,R03)
+        IF(RR.LT.RU(N3)) THEN
+        IF(RR.LT.R03) THEN
+        UT0=AA3*EXP(-ALPHA3*(RR-R03))
+      UT0D=-ALPHA3*UT0
+                        ELSE
+        DO I=1,N3-1                     
+        IND=I                     
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 13
+        ENDDO                     
+   13   CONTINUE                     
+        DR=RR-RU(IND)
+        UT0=COEF3(1,IND)+DR*(COEF3(2,IND)
+     1  +0.5D0*DR*(COEF3(3,IND)+DR*COEF3(4,IND)/3.D0))
+      UT0D=COEF3(2,IND) + DR*(COEF3(3,IND) + 0.5D0*DR*COEF3(4,IND))
+                        END IF
+                         ELSE
+        UT0=E3(N3)*(RU(N3)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+      RETURN
+                  END IF
 
-      if(i0.eq.5) then
-      if(nc4.eq.1) then
-      nc4=2
-      do i=1,n4
-      coef4(1,i)=E4(i)
-      enddo
-      coef4(2,n4)=-6.d0*E4(n4)/ru(n4)
-      call cubspl(ru,coef4,n4,0,1)
-        r04=ru(1)
+      IF(I0.EQ.5) THEN
+      IF(NC4.EQ.1) THEN
+      NC4=2
+      DO I=1,N4
+      COEF4(1,I)=E4(I)
+      ENDDO
+      COEF4(2,N4)=-6.D0*E4(N4)/RU(N4)
+      CALL CUBSPL(RU,COEF4,N4,0,1)
+        R04=RU(1)
         AA4=E4(1)
-        alpha4=-coef4(2,1)/AA4
-                   end if
+        ALPHA4=-COEF4(2,1)/AA4
+                   END IF
 
-cc        rr=dmax1(rr0,r04)
-        if(rr.lt.ru(n4)) then
-        if(rr.lt.r04) then
-        ut0=AA4*exp(-alpha4*(rr-r04))
-      ut0d=-alpha4*ut0
-                        else
-        do i=1,n4-1
-        ind=i
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 14
-        enddo
-   14   continue 
-        dr=rr-ru(ind)
-        ut0=coef4(1,ind)+dr*(coef4(2,ind)
-     1  +0.5d0*dr*(coef4(3,ind)+dr*coef4(4,ind)/3.d0))
-      ut0d=coef4(2,ind) + dr*(coef4(3,ind) + 0.5d0*dr*coef4(4,ind))
-                        end if
-                         else
-        ut0=E4(n4)*(ru(n4)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-      return
-                  end if
+CC        RR=DMAX1(RR0,R04)
+        IF(RR.LT.RU(N4)) THEN
+        IF(RR.LT.R04) THEN
+        UT0=AA4*EXP(-ALPHA4*(RR-R04))
+      UT0D=-ALPHA4*UT0
+                        ELSE
+        DO I=1,N4-1
+        IND=I
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 14
+        ENDDO
+   14   CONTINUE 
+        DR=RR-RU(IND)
+        UT0=COEF4(1,IND)+DR*(COEF4(2,IND)
+     1  +0.5D0*DR*(COEF4(3,IND)+DR*COEF4(4,IND)/3.D0))
+      UT0D=COEF4(2,IND) + DR*(COEF4(3,IND) + 0.5D0*DR*COEF4(4,IND))
+                        END IF
+                         ELSE
+        UT0=E4(N4)*(RU(N4)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+      RETURN
+                  END IF
 
-      if(i0.eq.6) then
-      if(nc5.eq.1) then
-      nc5=2
-      do i=1,n5
-      coef5(1,i)=E5(i)
-      enddo
-      coef5(2,n5)=-6.d0*E5(n5)/ru(n5)
-      call cubspl(ru,coef5,n5,0,1)
-        r05=ru(1)
+      IF(I0.EQ.6) THEN
+      IF(NC5.EQ.1) THEN
+      NC5=2
+      DO I=1,N5
+      COEF5(1,I)=E5(I)
+      ENDDO
+      COEF5(2,N5)=-6.D0*E5(N5)/RU(N5)
+      CALL CUBSPL(RU,COEF5,N5,0,1)
+        R05=RU(1)
         AA5=E5(1)
-        alpha5=-coef5(2,1)/AA5
-                   end if
+        ALPHA5=-COEF5(2,1)/AA5
+                   END IF
 
-cc        rr=dmax1(rr0,r05)
-        if(rr.lt.ru(n5)) then
-        if(rr.lt.r05) then
-        ut0=AA5*exp(-alpha5*(rr-r05))
-      ut0d=-alpha5*ut0
-                        else
-        do i=1,n5-1                     
-        ind=i                     
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 15                      
-        enddo                     
-   15   continue                      
-        dr=rr-ru(ind)
-        ut0=coef5(1,ind)+dr*(coef5(2,ind)
-     1  +0.5d0*dr*(coef5(3,ind)+dr*coef5(4,ind)/3.d0))
-      ut0d=coef5(2,ind) + dr*(coef5(3,ind) + 0.5d0*dr*coef5(4,ind))
-                        end if
-                         else
-        ut0=E5(n5)*(ru(n5)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-      return
-                  end if
+CC        RR=DMAX1(RR0,R05)
+        IF(RR.LT.RU(N5)) THEN
+        IF(RR.LT.R05) THEN
+        UT0=AA5*EXP(-ALPHA5*(RR-R05))
+      UT0D=-ALPHA5*UT0
+                        ELSE
+        DO I=1,N5-1                     
+        IND=I                     
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 15                      
+        ENDDO                     
+   15   CONTINUE                      
+        DR=RR-RU(IND)
+        UT0=COEF5(1,IND)+DR*(COEF5(2,IND)
+     1  +0.5D0*DR*(COEF5(3,IND)+DR*COEF5(4,IND)/3.D0))
+      UT0D=COEF5(2,IND) + DR*(COEF5(3,IND) + 0.5D0*DR*COEF5(4,IND))
+                        END IF
+                         ELSE
+        UT0=E5(N5)*(RU(N5)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+      RETURN
+                  END IF
 
-      if(i0.eq.7) then
-      if(nc6.eq.1) then
-      nc6=2
-      do i=1,n6
-      coef6(1,i)=E6(i)
-      enddo
-      coef6(2,n6)=-6.d0*E6(n6)/ru(n6)
-      call cubspl(ru,coef6,n6,0,1)
-        r06=ru(1)
+      IF(I0.EQ.7) THEN
+      IF(NC6.EQ.1) THEN
+      NC6=2
+      DO I=1,N6
+      COEF6(1,I)=E6(I)
+      ENDDO
+      COEF6(2,N6)=-6.D0*E6(N6)/RU(N6)
+      CALL CUBSPL(RU,COEF6,N6,0,1)
+        R06=RU(1)
         AA6=E6(1)
-        alpha6=-coef6(2,1)/AA6
-                   end if
+        ALPHA6=-COEF6(2,1)/AA6
+                   END IF
 
-cc        rr=dmax1(rr0,r06)
-      if(rr.lt.ru(n6)) then
-        if(rr.lt.r06) then
-        ut0=AA6*exp(-alpha6*(rr-r06))
-      ut0d=-alpha6*ut0
-                        else
-        do i=1,n6-1                                          
-        ind=i                                          
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 16
-        enddo                                          
-   16   continue                                           
-        dr=rr-ru(ind)
-        ut0=coef6(1,ind)+dr*(coef6(2,ind)
-     1  +0.5d0*dr*(coef6(3,ind)+dr*coef6(4,ind)/3.d0))
-      ut0d=coef6(2,ind) + dr*(coef6(3,ind) + 0.5d0*dr*coef6(4,ind))
-                        end if
-                         else
-        ut0=E6(n6)*(ru(n6)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-      return
-                  end if
+CC        RR=DMAX1(RR0,R06)
+      IF(RR.LT.RU(N6)) THEN
+        IF(RR.LT.R06) THEN
+        UT0=AA6*EXP(-ALPHA6*(RR-R06))
+      UT0D=-ALPHA6*UT0
+                        ELSE
+        DO I=1,N6-1                                          
+        IND=I                                          
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 16
+        ENDDO                                          
+   16   CONTINUE                                           
+        DR=RR-RU(IND)
+        UT0=COEF6(1,IND)+DR*(COEF6(2,IND)
+     1  +0.5D0*DR*(COEF6(3,IND)+DR*COEF6(4,IND)/3.D0))
+      UT0D=COEF6(2,IND) + DR*(COEF6(3,IND) + 0.5D0*DR*COEF6(4,IND))
+                        END IF
+                         ELSE
+        UT0=E6(N6)*(RU(N6)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+      RETURN
+                  END IF
 
-      if(i0.eq.8) then
-      if(nc7.eq.1) then
-      nc7=2
-      do i=1,n7
-      coef7(1,i)=E7(i)
-      enddo
-      coef7(2,n7)=-6.d0*E7(n7)/ru(n7)
-      call cubspl(ru,coef7,n7,0,1)
-        r07=ru(1)
+      IF(I0.EQ.8) THEN
+      IF(NC7.EQ.1) THEN
+      NC7=2
+      DO I=1,N7
+      COEF7(1,I)=E7(I)
+      ENDDO
+      COEF7(2,N7)=-6.D0*E7(N7)/RU(N7)
+      CALL CUBSPL(RU,COEF7,N7,0,1)
+        R07=RU(1)
         AA7=E7(1)
-        alpha7=-coef7(2,1)/AA7
-                   end if
+        ALPHA7=-COEF7(2,1)/AA7
+                   END IF
 
-cc      rr=dmax1(rr0,r07)
-      if(rr.lt.ru(n7)) then
-        if(rr.lt.r07) then
-        ut0=AA7*exp(-alpha7*(rr-r07))
-      ut0d=-alpha7*ut0
-                        else
-        do i=1,n7-1                                                             
-        ind=i                                                               
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 17                     
-        enddo                                                               
-   17   continue                                                                
-        dr=rr-ru(ind)
-        ut0=coef7(1,ind)+dr*(coef7(2,ind)
-     1  +0.5d0*dr*(coef7(3,ind)+dr*coef7(4,ind)/3.d0))
-      ut0d=coef7(2,ind) + dr*(coef7(3,ind) + 0.5d0*dr*coef7(4,ind))
-                        end if
-                         else
-        ut0=E7(n7)*(ru(n7)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-      return
-                  end if
+CC      RR=DMAX1(RR0,R07)
+      IF(RR.LT.RU(N7)) THEN
+        IF(RR.LT.R07) THEN
+        UT0=AA7*EXP(-ALPHA7*(RR-R07))
+      UT0D=-ALPHA7*UT0
+                        ELSE
+        DO I=1,N7-1                                                             
+        IND=I                                                               
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 17                     
+        ENDDO                                                               
+   17   CONTINUE                                                                
+        DR=RR-RU(IND)
+        UT0=COEF7(1,IND)+DR*(COEF7(2,IND)
+     1  +0.5D0*DR*(COEF7(3,IND)+DR*COEF7(4,IND)/3.D0))
+      UT0D=COEF7(2,IND) + DR*(COEF7(3,IND) + 0.5D0*DR*COEF7(4,IND))
+                        END IF
+                         ELSE
+        UT0=E7(N7)*(RU(N7)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+      RETURN
+                  END IF
 
-      if(i0.eq.9) then
-      if(nc8.eq.1) then
-      nc8=2
-      do i=1,n8
-      coef8(1,i)=E8(i)
-      enddo
-      coef8(2,n8)=-6.d0*E8(n8)/ru(n8)
-      call cubspl(ru,coef8,n8,0,1)
-        r08=ru(1)
+      IF(I0.EQ.9) THEN
+      IF(NC8.EQ.1) THEN
+      NC8=2
+      DO I=1,N8
+      COEF8(1,I)=E8(I)
+      ENDDO
+      COEF8(2,N8)=-6.D0*E8(N8)/RU(N8)
+      CALL CUBSPL(RU,COEF8,N8,0,1)
+        R08=RU(1)
         AA8=E8(1)
-        alpha8=-coef8(2,1)/AA8
-                   end if
+        ALPHA8=-COEF8(2,1)/AA8
+                   END IF
 
-cc      rr=dmax1(rr0,r08)
-      if(rr.lt.ru(n8)) then
-        if(rr.lt.r08) then
-        ut0=AA8*exp(-alpha8*(rr-r08))
-      ut0d=-alpha8*ut0
-                        else
-        do i=1,n8-1  
-        ind=i        
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 18                              
-        enddo        
-   18   continue     
-        dr=rr-ru(ind)
-        ut0=coef8(1,ind)+dr*(coef8(2,ind)
-     1  +0.5d0*dr*(coef8(3,ind)+dr*coef8(4,ind)/3.d0))
-      ut0d=coef8(2,ind) + dr*(coef8(3,ind) + 0.5d0*dr*coef8(4,ind))
-                        end if
-                         else
-        ut0=E8(n8)*(ru(n8)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-      return
-                  end if
+CC      RR=DMAX1(RR0,R08)
+      IF(RR.LT.RU(N8)) THEN
+        IF(RR.LT.R08) THEN
+        UT0=AA8*EXP(-ALPHA8*(RR-R08))
+      UT0D=-ALPHA8*UT0
+                        ELSE
+        DO I=1,N8-1  
+        IND=I        
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 18                              
+        ENDDO        
+   18   CONTINUE     
+        DR=RR-RU(IND)
+        UT0=COEF8(1,IND)+DR*(COEF8(2,IND)
+     1  +0.5D0*DR*(COEF8(3,IND)+DR*COEF8(4,IND)/3.D0))
+      UT0D=COEF8(2,IND) + DR*(COEF8(3,IND) + 0.5D0*DR*COEF8(4,IND))
+                        END IF
+                         ELSE
+        UT0=E8(N8)*(RU(N8)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+      RETURN
+                  END IF
 
-      return 
-      end
+      RETURN 
+      END
 
-      subroutine polegn(n,x,P,P1)
-      implicit DOUBLE PRECISION (a-h,o-z)
-      DOUBLE PRECISION P(n),P1(n)
-      P(1)=x
-      P1(1)=1.d0
-      if(n.gt.1) then
-      Pn0=1.d0
-      Pn=x
-      Pn0d=0.d0
-      Pnd=1.d0
-      n1=n-1
-      do i=1,n1
-      ri=1.0D0*i
-      Pn1=((2.d0*ri+1.d0)*x*Pn - ri*Pn0)/(ri+1.d0)
-      Pn1d=((2.d0*ri+1.d0)*(Pn+x*Pnd) - ri*Pn0d)/(ri+1.d0)
-      Pn0=Pn
-      Pn=Pn1
-      P(i+1)=Pn1
-      Pn0d=Pnd
-      Pnd=Pn1d
-      P1(i+1)=Pn1d
-      enddo
-               end if
-      return
-      end
+      SUBROUTINE POLEGN(N,X,P,P1)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      DOUBLE PRECISION P(N),P1(N)
+      P(1)=X
+      P1(1)=1.D0
+      IF(N.GT.1) THEN
+      PN0=1.D0
+      PN=X
+      PN0D=0.D0
+      PND=1.D0
+      N1=N-1
+      DO I=1,N1
+      RI=1.0D0*I
+      PN1=((2.D0*RI+1.D0)*X*PN - RI*PN0)/(RI+1.D0)
+      PN1D=((2.D0*RI+1.D0)*(PN+X*PND) - RI*PN0D)/(RI+1.D0)
+      PN0=PN
+      PN=PN1
+      P(I+1)=PN1
+      PN0D=PND
+      PND=PN1D
+      P1(I+1)=PN1D
+      ENDDO
+               END IF
+      RETURN
+      END
 
-c------------------------------------------------------------------------
+C------------------------------------------------------------------------
 
-      DOUBLE PRECISION function ut01(rr,i0,ut01d)
-      implicit DOUBLE PRECISION (a-h,o-z)
-      save
-      parameter(n0=13,n1=12,n2=12,n3=10,n4=10,n5=8,n6=8,n7=6,n8=6)
+      DOUBLE PRECISION FUNCTION UT01(RR,I0,UT01D)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      SAVE
+      PARAMETER(N0=13,N1=12,N2=12,N3=10,N4=10,N5=8,N6=8,N7=6,N8=6)
 
-      DOUBLE PRECISION, DIMENSION(n0) :: ru=(/ 
+      DOUBLE PRECISION, DIMENSION(N0) :: RU=(/ 
      1 3.00, 3.25, 3.50, 3.75, 4.00, 
      1 4.25, 4.50, 5.00, 5.50, 6.00, 
      1 7.00, 8.00, 10.0/)
 
-      DOUBLE PRECISION, DIMENSION(n0) :: Eu=(/
+      DOUBLE PRECISION, DIMENSION(N0) :: EU=(/
      1  .1220345,  .0289952, -.0023568, -.0104175, -.0105767,
      1 -.0086238, -.0065077, -.0034779, -.0018770, -.0010615,
      1 -.0003881, -.0001650, -.0000238/)
-      DOUBLE PRECISION, DIMENSION(n1) :: Eg=(/
+      DOUBLE PRECISION, DIMENSION(N1) :: EG=(/
      1  .0275582,  .0126120,  .0047627,  .0012348, -.0001393,
      1 -.0005516, -.0005758, -.0003482, -.0001767, -.0000959,
      1 -.0000267, -.0000039/)
-      DOUBLE PRECISION, DIMENSION(n2) :: Epu=(/
+      DOUBLE PRECISION, DIMENSION(N2) :: EPU=(/
      1  .2295942,  .0839463,  .0271378,  .0064960, -.0002063,
      1 -.0018637, -.0018941, -.0011290, -.0005799, -.0003031,
      1 -.0000955, -.0000272/)
-      DOUBLE PRECISION, DIMENSION(n3) :: E3=(/  
+      DOUBLE PRECISION, DIMENSION(N3) :: E3=(/  
      1  .0347188,  .0157193,  .0067817,  .0027936,  .0010881,
      1  .0004036,  .0001308, -.0000088, -.0000128, -.0000039/)
-      DOUBLE PRECISION, DIMENSION(n4) :: E4=(/  
+      DOUBLE PRECISION, DIMENSION(N4) :: E4=(/  
      1  .0799795,  .0316737,  .0122230,  .0045691,  .0016355,
      1  .0005520,  .0001638,  .0000002, -.0000114, -.0000065/)
-      DOUBLE PRECISION, DIMENSION(n5) :: E5=(/  
+      DOUBLE PRECISION, DIMENSION(N5) :: E5=(/  
      1  .0078080,  .0032611,  .0013291,  .0005546,  .0002360,
      1  .0000854,  .0000302,  .0000003/)
-      DOUBLE PRECISION, DIMENSION(n6) :: E6=(/  
+      DOUBLE PRECISION, DIMENSION(N6) :: E6=(/  
      1  .0121196,  .0044330,  .0016626,  .0006155,  .0002380,
      1  .0000723,  .0000263,  .0000035/)
-      DOUBLE PRECISION, DIMENSION(n7) :: E7=(/  
+      DOUBLE PRECISION, DIMENSION(N7) :: E7=(/  
      1  .0012897,  .0004052,  .0001378,  .0000390,  .0000099,
      1  .0000014/)
-      DOUBLE PRECISION, DIMENSION(n8) :: E8=(/
+      DOUBLE PRECISION, DIMENSION(N8) :: E8=(/
      1  .0014554,  .0004653,  .0001494,  .0000507,  .0000087,
      1  .0000041/)
 
-      DOUBLE PRECISION coefu(4,n0), coefg(4,n1), coefpu(4,n2), coef3(4,n3),
-     1coef4(4,n4), coef5(4,n5), coef6(4,n6), coef7(4,n7), coef8(4,n8)
-      data 
-     1 nc0/1/,nc1/1/,nc2/1/,nc3/1/,nc4/1/,nc5/1/,nc6/1/,nc7/1/,nc8/1/
+      DOUBLE PRECISION COEFU(4,N0), COEFG(4,N1), COEFPU(4,N2), COEF3(4,N3),
+     1COEF4(4,N4), COEF5(4,N5), COEF6(4,N6), COEF7(4,N7), COEF8(4,N8)
+      DATA 
+     1 NC0/1/,NC1/1/,NC2/1/,NC3/1/,NC4/1/,NC5/1/,NC6/1/,NC7/1/,NC8/1/
 
-      ut0=0.d0
-      ut0d=0.d0
+      UT0=0.D0
+      UT0D=0.D0
 
-      if(i0.eq.1) then
-      if(nc0.eq.1) then
-      nc0=2
-      do i=1,n0
-      coefu(1,i)=Eu(i) 
-      enddo
-      coefu(2,n0)=-6.d0*Eu(n0)/ru(n0)
-      call cubspl(ru,coefu,n0,0,1)
-        r0u=ru(1)
-        AAu=Eu(1)
-        alphau=-coefu(2,1)/AAu
-                   end if
+      IF(I0.EQ.1) THEN
+      IF(NC0.EQ.1) THEN
+      NC0=2
+      DO I=1,N0
+      COEFU(1,I)=EU(I) 
+      ENDDO
+      COEFU(2,N0)=-6.D0*EU(N0)/RU(N0)
+      CALL CUBSPL(RU,COEFU,N0,0,1)
+        R0U=RU(1)
+        AAU=EU(1)
+        ALPHAU=-COEFU(2,1)/AAU
+                   END IF
 
-cc      rr=dmax1(rr0,r0u)
-        if(rr.lt.ru(n0)) then
-        if(rr.lt.r0u) then
-        ut0=AAu*exp(-alphau*(rr-r0u))
-      ut0d=-alphau*ut0
-                        else
-      do i=1,n0-1
-      ind=i
-      if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 10
-      enddo
-   10      continue
-      dr=rr-ru(ind)
-      ut0=coefu(1,ind)+dr*(coefu(2,ind)
-     1      +0.5d0*dr*(coefu(3,ind)+dr*coefu(4,ind)/3.d0))
-      ut0d=coefu(2,ind) + dr*(coefu(3,ind) + 0.5d0*dr*coefu(4,ind))
-                        end if
-                         else
-            ut0=Eu(n0)*(ru(n0)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-      ut01=ut0
-      ut01d=ut0d
-      return
-                  end if
+CC      RR=DMAX1(RR0,R0U)
+        IF(RR.LT.RU(N0)) THEN
+        IF(RR.LT.R0U) THEN
+        UT0=AAU*EXP(-ALPHAU*(RR-R0U))
+      UT0D=-ALPHAU*UT0
+                        ELSE
+      DO I=1,N0-1
+      IND=I
+      IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 10
+      ENDDO
+   10      CONTINUE
+      DR=RR-RU(IND)
+      UT0=COEFU(1,IND)+DR*(COEFU(2,IND)
+     1      +0.5D0*DR*(COEFU(3,IND)+DR*COEFU(4,IND)/3.D0))
+      UT0D=COEFU(2,IND) + DR*(COEFU(3,IND) + 0.5D0*DR*COEFU(4,IND))
+                        END IF
+                         ELSE
+            UT0=EU(N0)*(RU(N0)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+      UT01=UT0
+      UT01D=UT0D
+      RETURN
+                  END IF
 
-      if(i0.eq.2) then
-      if(nc1.eq.1) then
-      nc1=2
-      do i=1,n1
-      coefg(1,i)=Eg(i)
-      enddo
-      coefg(2,n1)=-6.d0*Eg(n1)/ru(n1)
-      call cubspl(ru,coefg,n1,0,1)
-        r0g=ru(1)
-        AAg=Eg(1)
-        alphag=-coefg(2,1)/AAg
-                   end if
+      IF(I0.EQ.2) THEN
+      IF(NC1.EQ.1) THEN
+      NC1=2
+      DO I=1,N1
+      COEFG(1,I)=EG(I)
+      ENDDO
+      COEFG(2,N1)=-6.D0*EG(N1)/RU(N1)
+      CALL CUBSPL(RU,COEFG,N1,0,1)
+        R0G=RU(1)
+        AAG=EG(1)
+        ALPHAG=-COEFG(2,1)/AAG
+                   END IF
 
-cc        rr=dmax1(rr0,r0g)
-        if(rr.lt.ru(n1)) then
-        if(rr.lt.r0g) then
-        ut0=AAg*exp(-alphag*(rr-r0g))
-      ut0d=-alphag*ut0
-                        else
-        do i=1,n1-1
-        ind=i
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 11
-        enddo
-   11   continue
-        dr=rr-ru(ind)
-        ut0=coefg(1,ind)+dr*(coefg(2,ind)
-     1      +0.5d0*dr*(coefg(3,ind)+dr*coefg(4,ind)/3.d0))        
-      ut0d=coefg(2,ind) + dr*(coefg(3,ind) + 0.5d0*dr*coefg(4,ind))
-                        end if
-                         else
-        ut0=Eg(n1)*(ru(n1)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-        ut01=ut0
-      ut01d=ut0d
-      return
-                  end if
+CC        RR=DMAX1(RR0,R0G)
+        IF(RR.LT.RU(N1)) THEN
+        IF(RR.LT.R0G) THEN
+        UT0=AAG*EXP(-ALPHAG*(RR-R0G))
+      UT0D=-ALPHAG*UT0
+                        ELSE
+        DO I=1,N1-1
+        IND=I
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 11
+        ENDDO
+   11   CONTINUE
+        DR=RR-RU(IND)
+        UT0=COEFG(1,IND)+DR*(COEFG(2,IND)
+     1      +0.5D0*DR*(COEFG(3,IND)+DR*COEFG(4,IND)/3.D0))        
+      UT0D=COEFG(2,IND) + DR*(COEFG(3,IND) + 0.5D0*DR*COEFG(4,IND))
+                        END IF
+                         ELSE
+        UT0=EG(N1)*(RU(N1)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+        UT01=UT0
+      UT01D=UT0D
+      RETURN
+                  END IF
 
-      if(i0.eq.3) then
-      if(nc2.eq.1) then
-      nc2=2
-      do i=1,n2
-      coefpu(1,i)=Epu(i)
-      enddo
-      coefpu(2,n2)=-6.d0*Epu(n2)/ru(n2)
-      call cubspl(ru,coefpu,n2,0,1)
-        r0pu=ru(1)
-        AApu=Epu(1)
-        alphapu=-coefpu(2,1)/AApu
-                   end if
-cc        rr=dmax1(rr0,r0pu)
-      if(rr.lt.ru(n2)) then
-       if(rr.lt.r0pu) then
-        ut0=AApu*exp(-alphapu*(rr-r0pu))
-      ut0d=-alphapu*ut0
-                        else
-        do i=1,n2-1                     
-        ind=i                     
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 12
-        enddo                     
-   12    continue                     
-        dr=rr-ru(ind)
-        ut0=coefpu(1,ind)+dr*(coefpu(2,ind)
-     1      +0.5d0*dr*(coefpu(3,ind)+dr*coefpu(4,ind)/3.d0))
-      ut0d=coefpu(2,ind) + dr*(coefpu(3,ind) + 0.5d0*dr*coefpu(4,ind))
-                        end if
-                         else
-        ut0=Epu(n2)*(ru(n2)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-        ut01=ut0
-      ut01d=ut0d
-      return
-                  end if
+      IF(I0.EQ.3) THEN
+      IF(NC2.EQ.1) THEN
+      NC2=2
+      DO I=1,N2
+      COEFPU(1,I)=EPU(I)
+      ENDDO
+      COEFPU(2,N2)=-6.D0*EPU(N2)/RU(N2)
+      CALL CUBSPL(RU,COEFPU,N2,0,1)
+        R0PU=RU(1)
+        AAPU=EPU(1)
+        ALPHAPU=-COEFPU(2,1)/AAPU
+                   END IF
+CC        RR=DMAX1(RR0,R0PU)
+      IF(RR.LT.RU(N2)) THEN
+       IF(RR.LT.R0PU) THEN
+        UT0=AAPU*EXP(-ALPHAPU*(RR-R0PU))
+      UT0D=-ALPHAPU*UT0
+                        ELSE
+        DO I=1,N2-1                     
+        IND=I                     
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 12
+        ENDDO                     
+   12    CONTINUE                     
+        DR=RR-RU(IND)
+        UT0=COEFPU(1,IND)+DR*(COEFPU(2,IND)
+     1      +0.5D0*DR*(COEFPU(3,IND)+DR*COEFPU(4,IND)/3.D0))
+      UT0D=COEFPU(2,IND) + DR*(COEFPU(3,IND) + 0.5D0*DR*COEFPU(4,IND))
+                        END IF
+                         ELSE
+        UT0=EPU(N2)*(RU(N2)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+        UT01=UT0
+      UT01D=UT0D
+      RETURN
+                  END IF
 
-      if(i0.eq.4) then
-      if(nc3.eq.1) then
-      nc3=2
-      do i=1,n3
-      coef3(1,i)=E3(i)
-      enddo
-      coef3(2,n3)=-6.d0*E3(n3)/ru(n3)
-      call cubspl(ru,coef3,n3,0,1)
-        r03=ru(1)
+      IF(I0.EQ.4) THEN
+      IF(NC3.EQ.1) THEN
+      NC3=2
+      DO I=1,N3
+      COEF3(1,I)=E3(I)
+      ENDDO
+      COEF3(2,N3)=-6.D0*E3(N3)/RU(N3)
+      CALL CUBSPL(RU,COEF3,N3,0,1)
+        R03=RU(1)
         AA3=E3(1)
-        alpha3=-coef3(2,1)/AA3
-                   end if
+        ALPHA3=-COEF3(2,1)/AA3
+                   END IF
 
-cc        rr=dmax1(rr0,r03)
-        if(rr.lt.ru(n3)) then
-        if(rr.lt.r03) then
-        ut0=AA3*exp(-alpha3*(rr-r03))
-      ut0d=-alpha3*ut0
-                        else
-        do i=1,n3-1                     
-        ind=i                     
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 13
-        enddo                     
-   13   continue                     
-        dr=rr-ru(ind)
-        ut0=coef3(1,ind)+dr*(coef3(2,ind)
-     1  +0.5d0*dr*(coef3(3,ind)+dr*coef3(4,ind)/3.d0))
-      ut0d=coef3(2,ind) + dr*(coef3(3,ind) + 0.5d0*dr*coef3(4,ind))
-                        end if
-                         else
-        ut0=E3(n3)*(ru(n3)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-        ut01=ut0
-      ut01d=ut0d
-      return
-                  end if
+CC        RR=DMAX1(RR0,R03)
+        IF(RR.LT.RU(N3)) THEN
+        IF(RR.LT.R03) THEN
+        UT0=AA3*EXP(-ALPHA3*(RR-R03))
+      UT0D=-ALPHA3*UT0
+                        ELSE
+        DO I=1,N3-1                     
+        IND=I                     
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 13
+        ENDDO                     
+   13   CONTINUE                     
+        DR=RR-RU(IND)
+        UT0=COEF3(1,IND)+DR*(COEF3(2,IND)
+     1  +0.5D0*DR*(COEF3(3,IND)+DR*COEF3(4,IND)/3.D0))
+      UT0D=COEF3(2,IND) + DR*(COEF3(3,IND) + 0.5D0*DR*COEF3(4,IND))
+                        END IF
+                         ELSE
+        UT0=E3(N3)*(RU(N3)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+        UT01=UT0
+      UT01D=UT0D
+      RETURN
+                  END IF
 
-      if(i0.eq.5) then
-      if(nc4.eq.1) then
-      nc4=2
-      do i=1,n4
-      coef4(1,i)=E4(i)
-      enddo
-      coef4(2,n4)=-6.d0*E4(n4)/ru(n4)
-      call cubspl(ru,coef4,n4,0,1)
-        r04=ru(1)
+      IF(I0.EQ.5) THEN
+      IF(NC4.EQ.1) THEN
+      NC4=2
+      DO I=1,N4
+      COEF4(1,I)=E4(I)
+      ENDDO
+      COEF4(2,N4)=-6.D0*E4(N4)/RU(N4)
+      CALL CUBSPL(RU,COEF4,N4,0,1)
+        R04=RU(1)
         AA4=E4(1)
-        alpha4=-coef4(2,1)/AA4
-                   end if
+        ALPHA4=-COEF4(2,1)/AA4
+                   END IF
 
-cc        rr=dmax1(rr0,r04)
-        if(rr.lt.ru(n4)) then
-        if(rr.lt.r04) then
-        ut0=AA4*exp(-alpha4*(rr-r04))
-      ut0d=-alpha4*ut0
-                        else
-        do i=1,n4-1
-        ind=i
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 14
-        enddo
-   14   continue 
-        dr=rr-ru(ind)
-        ut0=coef4(1,ind)+dr*(coef4(2,ind)
-     1  +0.5d0*dr*(coef4(3,ind)+dr*coef4(4,ind)/3.d0))
-      ut0d=coef4(2,ind) + dr*(coef4(3,ind) + 0.5d0*dr*coef4(4,ind))
-                        end if
-                         else
-        ut0=E4(n4)*(ru(n4)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-        ut01=ut0
-      ut01d=ut0d
-      return
-                  end if
+CC        RR=DMAX1(RR0,R04)
+        IF(RR.LT.RU(N4)) THEN
+        IF(RR.LT.R04) THEN
+        UT0=AA4*EXP(-ALPHA4*(RR-R04))
+      UT0D=-ALPHA4*UT0
+                        ELSE
+        DO I=1,N4-1
+        IND=I
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 14
+        ENDDO
+   14   CONTINUE 
+        DR=RR-RU(IND)
+        UT0=COEF4(1,IND)+DR*(COEF4(2,IND)
+     1  +0.5D0*DR*(COEF4(3,IND)+DR*COEF4(4,IND)/3.D0))
+      UT0D=COEF4(2,IND) + DR*(COEF4(3,IND) + 0.5D0*DR*COEF4(4,IND))
+                        END IF
+                         ELSE
+        UT0=E4(N4)*(RU(N4)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+        UT01=UT0
+      UT01D=UT0D
+      RETURN
+                  END IF
 
-      if(i0.eq.6) then
-      if(nc5.eq.1) then
-      nc5=2
-      do i=1,n5
-      coef5(1,i)=E5(i)
-      enddo
-      coef5(2,n5)=-6.d0*E5(n5)/ru(n5)
-      call cubspl(ru,coef5,n5,0,1)
-        r05=ru(1)
+      IF(I0.EQ.6) THEN
+      IF(NC5.EQ.1) THEN
+      NC5=2
+      DO I=1,N5
+      COEF5(1,I)=E5(I)
+      ENDDO
+      COEF5(2,N5)=-6.D0*E5(N5)/RU(N5)
+      CALL CUBSPL(RU,COEF5,N5,0,1)
+        R05=RU(1)
         AA5=E5(1)
-        alpha5=-coef5(2,1)/AA5
-                   end if
+        ALPHA5=-COEF5(2,1)/AA5
+                   END IF
 
-cc        rr=dmax1(rr0,r05)
-        if(rr.lt.ru(n5)) then
-        if(rr.lt.r05) then
-        ut0=AA5*exp(-alpha5*(rr-r05))
-      ut0d=-alpha5*ut0
-                        else
-        do i=1,n5-1                     
-        ind=i                     
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 15                      
-        enddo                     
-   15   continue                      
-        dr=rr-ru(ind)
-        ut0=coef5(1,ind)+dr*(coef5(2,ind)
-     1  +0.5d0*dr*(coef5(3,ind)+dr*coef5(4,ind)/3.d0))
-      ut0d=coef5(2,ind) + dr*(coef5(3,ind) + 0.5d0*dr*coef5(4,ind))
-                        end if
-                         else
-        ut0=E5(n5)*(ru(n5)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-        ut01=ut0
-      ut01d=ut0d
-      return
-                  end if
+CC        RR=DMAX1(RR0,R05)
+        IF(RR.LT.RU(N5)) THEN
+        IF(RR.LT.R05) THEN
+        UT0=AA5*EXP(-ALPHA5*(RR-R05))
+      UT0D=-ALPHA5*UT0
+                        ELSE
+        DO I=1,N5-1                     
+        IND=I                     
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 15                      
+        ENDDO                     
+   15   CONTINUE                      
+        DR=RR-RU(IND)
+        UT0=COEF5(1,IND)+DR*(COEF5(2,IND)
+     1  +0.5D0*DR*(COEF5(3,IND)+DR*COEF5(4,IND)/3.D0))
+      UT0D=COEF5(2,IND) + DR*(COEF5(3,IND) + 0.5D0*DR*COEF5(4,IND))
+                        END IF
+                         ELSE
+        UT0=E5(N5)*(RU(N5)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+        UT01=UT0
+      UT01D=UT0D
+      RETURN
+                  END IF
 
-      if(i0.eq.7) then
-      if(nc6.eq.1) then
-      nc6=2
-      do i=1,n6
-      coef6(1,i)=E6(i)
-      enddo
-      coef6(2,n6)=-6.d0*E6(n6)/ru(n6)
-      call cubspl(ru,coef6,n6,0,1)
-        r06=ru(1)
+      IF(I0.EQ.7) THEN
+      IF(NC6.EQ.1) THEN
+      NC6=2
+      DO I=1,N6
+      COEF6(1,I)=E6(I)
+      ENDDO
+      COEF6(2,N6)=-6.D0*E6(N6)/RU(N6)
+      CALL CUBSPL(RU,COEF6,N6,0,1)
+        R06=RU(1)
         AA6=E6(1)
-        alpha6=-coef6(2,1)/AA6
-                   end if
+        ALPHA6=-COEF6(2,1)/AA6
+                   END IF
 
-cc        rr=dmax1(rr0,r06)
-      if(rr.lt.ru(n6)) then
-        if(rr.lt.r06) then
-        ut0=AA6*exp(-alpha6*(rr-r06))
-      ut0d=-alpha6*ut0
-                        else
-        do i=1,n6-1                                          
-        ind=i                                          
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 16
-        enddo                                          
-   16   continue                                           
-        dr=rr-ru(ind)
-        ut0=coef6(1,ind)+dr*(coef6(2,ind)
-     1  +0.5d0*dr*(coef6(3,ind)+dr*coef6(4,ind)/3.d0))
-      ut0d=coef6(2,ind) + dr*(coef6(3,ind) + 0.5d0*dr*coef6(4,ind))
-                        end if
-                         else
-        ut0=E6(n6)*(ru(n6)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-        ut01=ut0
-      ut01d=ut0d
-      return
-                  end if
+CC        RR=DMAX1(RR0,R06)
+      IF(RR.LT.RU(N6)) THEN
+        IF(RR.LT.R06) THEN
+        UT0=AA6*EXP(-ALPHA6*(RR-R06))
+      UT0D=-ALPHA6*UT0
+                        ELSE
+        DO I=1,N6-1                                          
+        IND=I                                          
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 16
+        ENDDO                                          
+   16   CONTINUE                                           
+        DR=RR-RU(IND)
+        UT0=COEF6(1,IND)+DR*(COEF6(2,IND)
+     1  +0.5D0*DR*(COEF6(3,IND)+DR*COEF6(4,IND)/3.D0))
+      UT0D=COEF6(2,IND) + DR*(COEF6(3,IND) + 0.5D0*DR*COEF6(4,IND))
+                        END IF
+                         ELSE
+        UT0=E6(N6)*(RU(N6)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+        UT01=UT0
+      UT01D=UT0D
+      RETURN
+                  END IF
 
-      if(i0.eq.8) then
-      if(nc7.eq.1) then
-      nc7=2
-      do i=1,n7
-      coef7(1,i)=E7(i)
-      enddo
-      coef7(2,n7)=-6.d0*E7(n7)/ru(n7)
-      call cubspl(ru,coef7,n7,0,1)
-        r07=ru(1)
+      IF(I0.EQ.8) THEN
+      IF(NC7.EQ.1) THEN
+      NC7=2
+      DO I=1,N7
+      COEF7(1,I)=E7(I)
+      ENDDO
+      COEF7(2,N7)=-6.D0*E7(N7)/RU(N7)
+      CALL CUBSPL(RU,COEF7,N7,0,1)
+        R07=RU(1)
         AA7=E7(1)
-        alpha7=-coef7(2,1)/AA7
-                   end if
+        ALPHA7=-COEF7(2,1)/AA7
+                   END IF
 
-cc      rr=dmax1(rr0,r07)
-      if(rr.lt.ru(n7)) then
-        if(rr.lt.r07) then
-        ut0=AA7*exp(-alpha7*(rr-r07))
-      ut0d=-alpha7*ut0
-                        else
-        do i=1,n7-1                                                             
-        ind=i                                                               
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 17                     
-        enddo                                                               
-   17   continue                                                                
-        dr=rr-ru(ind)
-        ut0=coef7(1,ind)+dr*(coef7(2,ind)
-     1  +0.5d0*dr*(coef7(3,ind)+dr*coef7(4,ind)/3.d0))
-      ut0d=coef7(2,ind) + dr*(coef7(3,ind) + 0.5d0*dr*coef7(4,ind))
-                        end if
-                         else
-        ut0=E7(n7)*(ru(n7)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-        ut01=ut0
-      ut01d=ut0d
-      return
-                  end if
+CC      RR=DMAX1(RR0,R07)
+      IF(RR.LT.RU(N7)) THEN
+        IF(RR.LT.R07) THEN
+        UT0=AA7*EXP(-ALPHA7*(RR-R07))
+      UT0D=-ALPHA7*UT0
+                        ELSE
+        DO I=1,N7-1                                                             
+        IND=I                                                               
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 17                     
+        ENDDO                                                               
+   17   CONTINUE                                                                
+        DR=RR-RU(IND)
+        UT0=COEF7(1,IND)+DR*(COEF7(2,IND)
+     1  +0.5D0*DR*(COEF7(3,IND)+DR*COEF7(4,IND)/3.D0))
+      UT0D=COEF7(2,IND) + DR*(COEF7(3,IND) + 0.5D0*DR*COEF7(4,IND))
+                        END IF
+                         ELSE
+        UT0=E7(N7)*(RU(N7)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+        UT01=UT0
+      UT01D=UT0D
+      RETURN
+                  END IF
 
-      if(i0.eq.9) then
-      if(nc8.eq.1) then
-      nc8=2
-      do i=1,n8
-      coef8(1,i)=E8(i)
-      enddo
-      coef8(2,n8)=-6.d0*E8(n8)/ru(n8)
-      call cubspl(ru,coef8,n8,0,1)
-        r08=ru(1)
+      IF(I0.EQ.9) THEN
+      IF(NC8.EQ.1) THEN
+      NC8=2
+      DO I=1,N8
+      COEF8(1,I)=E8(I)
+      ENDDO
+      COEF8(2,N8)=-6.D0*E8(N8)/RU(N8)
+      CALL CUBSPL(RU,COEF8,N8,0,1)
+        R08=RU(1)
         AA8=E8(1)
-        alpha8=-coef8(2,1)/AA8
-                   end if
+        ALPHA8=-COEF8(2,1)/AA8
+                   END IF
 
-cc      rr=dmax1(rr0,r08)
-      if(rr.lt.ru(n8)) then
-        if(rr.lt.r08) then
-        ut0=AA8*exp(-alpha8*(rr-r08))
-      ut0d=-alpha8*ut0
-                        else
-        do i=1,n8-1  
-        ind=i        
-        if(ru(i).le.rr.and.rr.lt.ru(i+1)) go to 18                              
-        enddo        
-   18   continue     
-        dr=rr-ru(ind)
-        ut0=coef8(1,ind)+dr*(coef8(2,ind)
-     1  +0.5d0*dr*(coef8(3,ind)+dr*coef8(4,ind)/3.d0))
-      ut0d=coef8(2,ind) + dr*(coef8(3,ind) + 0.5d0*dr*coef8(4,ind))
-                        end if
-                         else
-        ut0=E8(n8)*(ru(n8)/rr)**6
-      ut0d=-6.d0*ut0/rr
-                         end if
-        ut01=ut0
-      ut01d=ut0d
-      return
-                  end if
+CC      RR=DMAX1(RR0,R08)
+      IF(RR.LT.RU(N8)) THEN
+        IF(RR.LT.R08) THEN
+        UT0=AA8*EXP(-ALPHA8*(RR-R08))
+      UT0D=-ALPHA8*UT0
+                        ELSE
+        DO I=1,N8-1  
+        IND=I        
+        IF(RU(I).LE.RR.AND.RR.LT.RU(I+1)) GO TO 18                              
+        ENDDO        
+   18   CONTINUE     
+        DR=RR-RU(IND)
+        UT0=COEF8(1,IND)+DR*(COEF8(2,IND)
+     1  +0.5D0*DR*(COEF8(3,IND)+DR*COEF8(4,IND)/3.D0))
+      UT0D=COEF8(2,IND) + DR*(COEF8(3,IND) + 0.5D0*DR*COEF8(4,IND))
+                        END IF
+                         ELSE
+        UT0=E8(N8)*(RU(N8)/RR)**6
+      UT0D=-6.D0*UT0/RR
+                         END IF
+        UT01=UT0
+      UT01D=UT0D
+      RETURN
+                  END IF
 
-        ut01=ut0
-      ut01d=ut0d
-      return 
-      end
+        UT01=UT0
+      UT01D=UT0D
+      RETURN 
+      END
 
 

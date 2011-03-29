@@ -1,456 +1,456 @@
-      subroutine default_alt()
+      SUBROUTINE DEFAULT_ALT()
 
-        use globals_alt, only : altpotflag,kappa_alt,treshold_alt,kappa_well,kappa_OB, & 
-             debug_numer_forces,outfile1_alt, output_step_alt, output_stepsize_alt, & 
-             do_send_output,onebodyflag, onebody_type , timings_file_alt, accumulated_time
+        USE GLOBALS_ALT, ONLY : ALTPOTFLAG,KAPPA_ALT,TRESHOLD_ALT,KAPPA_WELL,KAPPA_OB, & 
+             DEBUG_NUMER_FORCES,OUTFILE1_ALT, OUTPUT_STEP_ALT, OUTPUT_STEPSIZE_ALT, & 
+             DO_SEND_OUTPUT,ONEBODYFLAG, ONEBODY_TYPE , TIMINGS_FILE_ALT, ACCUMULATED_TIME
 
-        use altpot_interfaces, only: init_onebody
+        USE ALTPOT_INTERFACES, ONLY: INIT_ONEBODY
 
-        implicit none
-        integer i
+        IMPLICIT NONE
+        INTEGER I
 
-        treshold_alt=0.70D0
-        kappa_alt=7.00D0
-        kappa_well=7.00D0
-        kappa_OB=7.00D0
-        debug_numer_forces=.false.
-        altpotflag=0
-        output_step_alt=0
-        output_stepsize_alt=10
-        do_send_output=.false.
-        onebodyflag=0
-        onebody_type=1
-        accumulated_time=0.00D0
+        TRESHOLD_ALT=0.70D0
+        KAPPA_ALT=7.00D0
+        KAPPA_WELL=7.00D0
+        KAPPA_OB=7.00D0
+        DEBUG_NUMER_FORCES=.FALSE.
+        ALTPOTFLAG=0
+        OUTPUT_STEP_ALT=0
+        OUTPUT_STEPSIZE_ALT=10
+        DO_SEND_OUTPUT=.FALSE.
+        ONEBODYFLAG=0
+        ONEBODY_TYPE=1
+        ACCUMULATED_TIME=0.00D0
 
 
-        call init_onebody()
+        CALL INIT_ONEBODY()
 
-        do i=1,10,1
-           outfile1_alt(i)=102+i
-        enddo
+        DO I=1,10,1
+           OUTFILE1_ALT(I)=102+I
+        ENDDO
 
-!        open(unit=outfile1_alt(1),file='check_alt_file_1',status='unknown')
-!        open(unit=outfile1_alt(2),file='check_alt_file_2',status='unknown')
-!        open(unit=outfile1_alt(3),file='check_alt_file_3',status='unknown')
-!        open(unit=outfile1_alt(4),file='check_alt_file_4',status='unknown')
-!        open(unit=outfile1_alt(5),file='OB_density',status='unknown')
-!        open(unit=outfile1_alt(6),file='OB_Energy',status='unknown')
-!        open(unit=outfile1_alt(7),file='residue_density',status='unknown')
-!        open(unit=timings_file_alt,file='alt_timings',status='unknown')
+!        OPEN(UNIT=OUTFILE1_ALT(1),FILE='CHECK_ALT_FILE_1',STATUS='UNKNOWN')
+!        OPEN(UNIT=OUTFILE1_ALT(2),FILE='CHECK_ALT_FILE_2',STATUS='UNKNOWN')
+!        OPEN(UNIT=OUTFILE1_ALT(3),FILE='CHECK_ALT_FILE_3',STATUS='UNKNOWN')
+!        OPEN(UNIT=OUTFILE1_ALT(4),FILE='CHECK_ALT_FILE_4',STATUS='UNKNOWN')
+!        OPEN(UNIT=OUTFILE1_ALT(5),FILE='OB_DENSITY',STATUS='UNKNOWN')
+!        OPEN(UNIT=OUTFILE1_ALT(6),FILE='OB_ENERGY',STATUS='UNKNOWN')
+!        OPEN(UNIT=OUTFILE1_ALT(7),FILE='RESIDUE_DENSITY',STATUS='UNKNOWN')
+!        OPEN(UNIT=TIMINGS_FILE_ALT,FILE='ALT_TIMINGS',STATUS='UNKNOWN')
 
-        return
-      end subroutine default_alt
+        RETURN
+      END SUBROUTINE DEFAULT_ALT
 
-      ! read_input calls default_alt and read_altgamma and reads input, 
-      ! Should be called after initil
-      subroutine read_input_alt()
+      ! READ_INPUT CALLS DEFAULT_ALT AND READ_ALTGAMMA AND READS INPUT, 
+      ! SHOULD BE CALLED AFTER INITIL
+      SUBROUTINE READ_INPUT_ALT()
 
-        use globals_alt, only : altpotflag,kappa_alt,treshold_alt,kappa_well,onebodyflag &
-             , onebody_type,kappa_OB,Alimits_OB, debug_numer_forces
+        USE GLOBALS_ALT, ONLY : ALTPOTFLAG,KAPPA_ALT,TRESHOLD_ALT,KAPPA_WELL,ONEBODYFLAG &
+             , ONEBODY_TYPE,KAPPA_OB,ALIMITS_OB, DEBUG_NUMER_FORCES
 
-        use altpot_interfaces, only: default_alt
-        use amhglobals,  only : SO
+        USE ALTPOT_INTERFACES, ONLY: DEFAULT_ALT
+        USE AMHGLOBALS,  ONLY : SO
 
-        implicit none
-        integer ninput,ioer,n_output,dumi
-        parameter(ninput=130)
-        parameter(n_output=131)
-        character str200*200,inputfile*200,paramcheckfile*200
-        inputfile='input_amh'
-        paramcheckfile='AMW_output'
-        open(unit=ninput,file=inputfile,status='old')
-!        open(unit=n_output,file=paramcheckfile,status='unknown')
+        IMPLICIT NONE
+        INTEGER NINPUT,IOER,N_OUTPUT,DUMI
+        PARAMETER(NINPUT=130)
+        PARAMETER(N_OUTPUT=131)
+        CHARACTER STR200*200,INPUTFILE*200,PARAMCHECKFILE*200
+        INPUTFILE='INPUT_AMH'
+        PARAMCHECKFILE='AMW_OUTPUT'
+        OPEN(UNIT=NINPUT,FILE=INPUTFILE,STATUS='OLD')
+!        OPEN(UNIT=N_OUTPUT,FILE=PARAMCHECKFILE,STATUS='UNKNOWN')
 
-        ! Initialize altpot values
-        call default_alt()
+        ! INITIALIZE ALTPOT VALUES
+        CALL DEFAULT_ALT()
 
 
         !++++++ START INPUTLOOP
-!        write(6,*) 'start default alt'
-100     read(ninput,'(a)',end=999)str200
+!        WRITE(6,*) 'START DEFAULT ALT'
+100     READ(NINPUT,'(A)',END=999)STR200
 
-        if(index(str200,'altpotflag').gt.0)then
-           backspace(ninput)
-           read(ninput,*,iostat=ioer,err=900) altpotflag(1),altpotflag(2)
-        elseif(index(str200,'kappa_alt').gt.0)then
-           backspace(ninput)
-           read(ninput,*,iostat=ioer,err=900) kappa_alt
-        elseif(index(str200,'treshold_alt').gt.0)then
-           backspace(ninput)
-           read(ninput,*,iostat=ioer,err=900) treshold_alt
-        elseif(index(str200,'kappa_well').gt.0)then
-           backspace(ninput)
-           read(ninput,*,iostat=ioer,err=900) kappa_well
-        elseif(index(str200,'onebodyflag').gt.0)then
-           backspace(ninput)
-           read(ninput,*,iostat=ioer,err=900) onebodyflag,onebody_type
-        elseif(index(str200,'kappa_OB').gt.0)then
-           backspace(ninput)
-           read(ninput,*,iostat=ioer,err=900) kappa_OB
-        elseif(index(str200,'densitylimits_OB').gt.0)then
-           backspace(ninput)
-           read(ninput,*,iostat=ioer,err=900)Alimits_OB
-        elseif(index(str200,'debug_numer_forces').gt.0)then
-           backspace(ninput)
-           read(ninput,*,iostat=ioer,err=900)dumi
-           if(dumi.gt.0)debug_numer_forces=.true.
-        endif
-        goto 100
+        IF(INDEX(STR200,'ALTPOTFLAG').GT.0)THEN
+           BACKSPACE(NINPUT)
+           READ(NINPUT,*,IOSTAT=IOER,ERR=900) ALTPOTFLAG(1),ALTPOTFLAG(2)
+        ELSEIF(INDEX(STR200,'KAPPA_ALT').GT.0)THEN
+           BACKSPACE(NINPUT)
+           READ(NINPUT,*,IOSTAT=IOER,ERR=900) KAPPA_ALT
+        ELSEIF(INDEX(STR200,'TRESHOLD_ALT').GT.0)THEN
+           BACKSPACE(NINPUT)
+           READ(NINPUT,*,IOSTAT=IOER,ERR=900) TRESHOLD_ALT
+        ELSEIF(INDEX(STR200,'KAPPA_WELL').GT.0)THEN
+           BACKSPACE(NINPUT)
+           READ(NINPUT,*,IOSTAT=IOER,ERR=900) KAPPA_WELL
+        ELSEIF(INDEX(STR200,'ONEBODYFLAG').GT.0)THEN
+           BACKSPACE(NINPUT)
+           READ(NINPUT,*,IOSTAT=IOER,ERR=900) ONEBODYFLAG,ONEBODY_TYPE
+        ELSEIF(INDEX(STR200,'KAPPA_OB').GT.0)THEN
+           BACKSPACE(NINPUT)
+           READ(NINPUT,*,IOSTAT=IOER,ERR=900) KAPPA_OB
+        ELSEIF(INDEX(STR200,'DENSITYLIMITS_OB').GT.0)THEN
+           BACKSPACE(NINPUT)
+           READ(NINPUT,*,IOSTAT=IOER,ERR=900)ALIMITS_OB
+        ELSEIF(INDEX(STR200,'DEBUG_NUMER_FORCES').GT.0)THEN
+           BACKSPACE(NINPUT)
+           READ(NINPUT,*,IOSTAT=IOER,ERR=900)DUMI
+           IF(DUMI.GT.0)DEBUG_NUMER_FORCES=.TRUE.
+        ENDIF
+        GOTO 100
         !------ END INPUTLOOP
-!        return
+!        RETURN
 
-        !  REPORT VALUES to file PARAMCHECK_alt:
-999      write(6,*)
-!999     write(n_output,*)'altpotflags are : ',altpotflag(1),altpotflag(2)
-!        write(n_output,*)'kappa_alt is : ',kappa_alt
-!        write(n_output,*)'treshold_alt is : ',treshold_alt
-!        write(n_output,*)'kappa_well is : ',kappa_well
-!1        write(n_output,*)'onebodyflag,onebody_type is : ',onebodyflag,onebody_type
-!        write(n_output,*)'kappa_OB is : ',kappa_OB
-!        write(n_output,*)'Alimits are : ',Alimits_OB
+        !  REPORT VALUES TO FILE PARAMCHECK_ALT:
+999      WRITE(6,*)
+!999     WRITE(N_OUTPUT,*)'ALTPOTFLAGS ARE : ',ALTPOTFLAG(1),ALTPOTFLAG(2)
+!        WRITE(N_OUTPUT,*)'KAPPA_ALT IS : ',KAPPA_ALT
+!        WRITE(N_OUTPUT,*)'TRESHOLD_ALT IS : ',TRESHOLD_ALT
+!        WRITE(N_OUTPUT,*)'KAPPA_WELL IS : ',KAPPA_WELL
+!1        WRITE(N_OUTPUT,*)'ONEBODYFLAG,ONEBODY_TYPE IS : ',ONEBODYFLAG,ONEBODY_TYPE
+!        WRITE(N_OUTPUT,*)'KAPPA_OB IS : ',KAPPA_OB
+!        WRITE(N_OUTPUT,*)'ALIMITS ARE : ',ALIMITS_OB
 
-900     if(ioer.ne.0)then
-           write(*,'(a)')'problem with reading input subroutine: read_input_alt'
-        endif
+900     IF(IOER.NE.0)THEN
+           WRITE(*,'(A)')'PROBLEM WITH READING INPUT SUBROUTINE: READ_INPUT_ALT'
+        ENDIF
 
-        close(ninput)
-!        close(n_output)
+        CLOSE(NINPUT)
+!        CLOSE(N_OUTPUT)
 
-        return
+        RETURN
 
 
-      end subroutine read_input_alt
+      END SUBROUTINE READ_INPUT_ALT
 
       !------------------------------------------------
 
       !------------------------------------
 
-      subroutine read_altgamma()
+      SUBROUTINE READ_ALTGAMMA()
 
-        ! reads in altgamma and onebody_gamma from gamma.dat
-        ! Format in gamma.dat is expected to be 
-        ! gamma1   gamma2  well  keyword=altpot
-        ! altpot is to be used for anisotropic potential
-        !      use amhglobals,  only : maxsiz,maxcrd,ires,r_min,r_max,sort_non_add,
-        !            gamma_non_add,class_of_res_2
+        ! READS IN ALTGAMMA AND ONEBODY_GAMMA FROM GAMMA.DAT
+        ! FORMAT IN GAMMA.DAT IS EXPECTED TO BE 
+        ! GAMMA1   GAMMA2  WELL  KEYWORD=ALTPOT
+        ! ALTPOT IS TO BE USED FOR ANISOTROPIC POTENTIAL
+        !      USE AMHGLOBALS,  ONLY : MAXSIZ,MAXCRD,IRES,R_MIN,R_MAX,SORT_NON_ADD,
+        !            GAMMA_NON_ADD,CLASS_OF_RES_2
 
-        use amhglobals,  only : SO,n_letters_con
-        use globals_alt, only : altgamma,altpotflag,max_well_alt,onebody_gamma,&
-               onebodyflag
+        USE AMHGLOBALS,  ONLY : SO,N_LETTERS_CON
+        USE GLOBALS_ALT, ONLY : ALTGAMMA,ALTPOTFLAG,MAX_WELL_ALT,ONEBODY_GAMMA,&
+               ONEBODYFLAG
 
-        use altpot_interfaces, only: longscale
+        USE ALTPOT_INTERFACES, ONLY: LONGSCALE
 
-        implicit none 
+        IMPLICIT NONE 
 
-        integer i,j,iwell,altpot_index,did_read_gamma(max_well_alt)
-        integer read_status,did_read_onebody_gamma,onebody_index
-            double precision x1,x2,x3
-        character  str200*200,gammafil*200
+        INTEGER I,J,IWELL,ALTPOT_INDEX,DID_READ_GAMMA(MAX_WELL_ALT)
+        INTEGER READ_STATUS,DID_READ_ONEBODY_GAMMA,ONEBODY_INDEX
+            DOUBLE PRECISION X1,X2,X3
+        CHARACTER  STR200*200,GAMMAFIL*200
 
 
-        did_read_gamma=0
-        did_read_onebody_gamma=0
+        DID_READ_GAMMA=0
+        DID_READ_ONEBODY_GAMMA=0
 
-        gammafil='gamma.dat'
-        open(unit=130,file=gammafil,iostat=read_status,status='old')
-!        open(unit=131,file='alt_gammacheck',iostat=read_status,status='unknown')
-!        open(unit=132,file='onebody_gammacheck',iostat=read_status,status='unknown')
+        GAMMAFIL='GAMMA.DAT'
+        OPEN(UNIT=130,FILE=GAMMAFIL,IOSTAT=READ_STATUS,STATUS='OLD')
+!        OPEN(UNIT=131,FILE='ALT_GAMMACHECK',IOSTAT=READ_STATUS,STATUS='UNKNOWN')
+!        OPEN(UNIT=132,FILE='ONEBODY_GAMMACHECK',IOSTAT=READ_STATUS,STATUS='UNKNOWN')
 
-        !  Loop and search for keyword altpot in gamma.dat 
+        !  LOOP AND SEARCH FOR KEYWORD ALTPOT IN GAMMA.DAT 
         !                                              !!!!!!!!!!!!!!!!!!! ! START READING LOOP
-100     read (130,'(a)',err=99,end=999)str200                
-        altpot_index=index(str200,'altpot')
-        onebody_index=index(str200,'onebody')
-        if(altpot_index.gt.0)then                   ! ALTPOT
-           backspace(130)
-           do i=1,n_letters_con,1
-              do j=i,n_letters_con,1
-                read (130,*)x1,x2,iwell
-                altgamma(i,j,1,iwell)=x1
-                altgamma(i,j,2,iwell)=x2
-                altgamma(j,i,1,iwell)=altgamma(i,j,1,iwell)
-                altgamma(j,i,2,iwell)=altgamma(i,j,2,iwell)
-!                write(131,*)altgamma(i,j,1,iwell),altgamma(i,j,2,iwell), &
-!                iwell
-              enddo
-           enddo
-           did_read_gamma(iwell)=1
-        endif
+100     READ (130,'(A)',ERR=99,END=999)STR200                
+        ALTPOT_INDEX=INDEX(STR200,'ALTPOT')
+        ONEBODY_INDEX=INDEX(STR200,'ONEBODY')
+        IF(ALTPOT_INDEX.GT.0)THEN                   ! ALTPOT
+           BACKSPACE(130)
+           DO I=1,N_LETTERS_CON,1
+              DO J=I,N_LETTERS_CON,1
+                READ (130,*)X1,X2,IWELL
+                ALTGAMMA(I,J,1,IWELL)=X1
+                ALTGAMMA(I,J,2,IWELL)=X2
+                ALTGAMMA(J,I,1,IWELL)=ALTGAMMA(I,J,1,IWELL)
+                ALTGAMMA(J,I,2,IWELL)=ALTGAMMA(I,J,2,IWELL)
+!                WRITE(131,*)ALTGAMMA(I,J,1,IWELL),ALTGAMMA(I,J,2,IWELL), &
+!                IWELL
+              ENDDO
+           ENDDO
+           DID_READ_GAMMA(IWELL)=1
+        ENDIF
 
-        if(onebody_index.gt.0)then                   ! ONEBODY
-           backspace(130)
-           do i=1,n_letters_con,1
-              read (130,*)x1,x2,x3
-              onebody_gamma(i,1)=x1
-              onebody_gamma(i,2)=x2
-              onebody_gamma(i,3)=x3
-!              write(132,*)onebody_gamma(i,1),onebody_gamma(i,2), & 
-!                          onebody_gamma(i,3),i
-           enddo
-           did_read_onebody_gamma=1
-        endif
+        IF(ONEBODY_INDEX.GT.0)THEN                   ! ONEBODY
+           BACKSPACE(130)
+           DO I=1,N_LETTERS_CON,1
+              READ (130,*)X1,X2,X3
+              ONEBODY_GAMMA(I,1)=X1
+              ONEBODY_GAMMA(I,2)=X2
+              ONEBODY_GAMMA(I,3)=X3
+!              WRITE(132,*)ONEBODY_GAMMA(I,1),ONEBODY_GAMMA(I,2), & 
+!                          ONEBODY_GAMMA(I,3),I
+           ENDDO
+           DID_READ_ONEBODY_GAMMA=1
+        ENDIF
 
-        goto 100                                            
+        GOTO 100                                            
         !                                            !!!!!!!!!!!!!!!!!! ! END READING LOOP
 
-999     close (130)
-!        close (131)
-!        close (132)
+999     CLOSE (130)
+!        CLOSE (131)
+!        CLOSE (132)
 
-        do i=1,max_well_alt    ! ERRORCHECK INPUT
-           if((altpotflag(i).gt.0).and.(did_read_gamma(i).eq.0))then
-              write(*,*)'ALTPOTFLAG  ',i,' SET BUT NOT PRESENT IN gamma.dat'
-              stop
-           endif
-        enddo
+        DO I=1,MAX_WELL_ALT    ! ERRORCHECK INPUT
+           IF((ALTPOTFLAG(I).GT.0).AND.(DID_READ_GAMMA(I).EQ.0))THEN
+              WRITE(*,*)'ALTPOTFLAG  ',I,' SET BUT NOT PRESENT IN GAMMA.DAT'
+              STOP
+           ENDIF
+        ENDDO
 
-        if((onebodyflag.gt.0) .and. (did_read_onebody_gamma.eq.0))then
-         write(SO,*)'ONEBODYFLAG SET BUT NOT PRESENT IN gamma.dat will use HP_scale as ONEBODYGAMMAS'
-           do i=1,n_letters_con,1
-              write(132,*)onebody_gamma(i,1),onebody_gamma(i,2),onebody_gamma(i,3),i
-           enddo
-        endif
+        IF((ONEBODYFLAG.GT.0) .AND. (DID_READ_ONEBODY_GAMMA.EQ.0))THEN
+         WRITE(SO,*)'ONEBODYFLAG SET BUT NOT PRESENT IN GAMMA.DAT WILL USE HP_SCALE AS ONEBODYGAMMAS'
+           DO I=1,N_LETTERS_CON,1
+              WRITE(132,*)ONEBODY_GAMMA(I,1),ONEBODY_GAMMA(I,2),ONEBODY_GAMMA(I,3),I
+           ENDDO
+        ENDIF
 
-        call longscale()          ! The large N fudgefactor
+        CALL LONGSCALE()          ! THE LARGE N FUDGEFACTOR
 
         !                               ! ERROR 
 
-99      if(read_status.ne.0)then   
-           write(SO,*)'something wrong with input alternative potential'
-           stop
-        endif
+99      IF(READ_STATUS.NE.0)THEN   
+           WRITE(SO,*)'SOMETHING WRONG WITH INPUT ALTERNATIVE POTENTIAL'
+           STOP
+        ENDIF
 
-        return
+        RETURN
 
-      end subroutine read_altgamma
+      END SUBROUTINE READ_ALTGAMMA
 
       !--------------------------------------------- 
       
-        subroutine finalize_alt()
+        SUBROUTINE FINALIZE_ALT()
 
-        use globals_alt, only : outfile1_alt,timings_file_alt
+        USE GLOBALS_ALT, ONLY : OUTFILE1_ALT,TIMINGS_FILE_ALT
 
-        implicit none
+        IMPLICIT NONE
 
-!        close (outfile1_alt(1))
-!        close (outfile1_alt(2))
-!        close (outfile1_alt(3))
-!        close (outfile1_alt(4))
-!        close (outfile1_alt(5))
-!        close (outfile1_alt(6))
-!        close (outfile1_alt(7))
-!        close (timings_file_alt)
+!        CLOSE (OUTFILE1_ALT(1))
+!        CLOSE (OUTFILE1_ALT(2))
+!        CLOSE (OUTFILE1_ALT(3))
+!        CLOSE (OUTFILE1_ALT(4))
+!        CLOSE (OUTFILE1_ALT(5))
+!        CLOSE (OUTFILE1_ALT(6))
+!        CLOSE (OUTFILE1_ALT(7))
+!        CLOSE (TIMINGS_FILE_ALT)
 
-        return
-      end subroutine finalize_alt
+        RETURN
+      END SUBROUTINE FINALIZE_ALT
 
 
       !....
 
 
-      subroutine send_output_alt(A,E_alt,nmres,E_OB)
+      SUBROUTINE SEND_OUTPUT_ALT(A,E_ALT,NMRES,E_OB)
 
-        use amhglobals,  only: maxsiz
-        use globals_alt, only : output_step_alt, output_stepsize_alt,outfile1_alt,do_send_output &
-             ,count_alt,T_alt,max_well_alt,treshold_alt,OB_density,OB_dns_count &
-             , max_letters,aminoacids,timings_file_alt,accumulated_time
-        implicit none
-        double precision, intent(in) :: A(maxsiz),E_alt(2,max_well_alt),E_OB(3)
-        integer, intent(in) ::  nmres
-        integer n_in,i
+        USE AMHGLOBALS,  ONLY: MAXSIZ
+        USE GLOBALS_ALT, ONLY : OUTPUT_STEP_ALT, OUTPUT_STEPSIZE_ALT,OUTFILE1_ALT,DO_SEND_OUTPUT &
+             ,COUNT_ALT,T_ALT,MAX_WELL_ALT,TRESHOLD_ALT,OB_DENSITY,OB_DNS_COUNT &
+             , MAX_LETTERS,AMINOACIDS,TIMINGS_FILE_ALT,ACCUMULATED_TIME
+        IMPLICIT NONE
+        DOUBLE PRECISION, INTENT(IN) :: A(MAXSIZ),E_ALT(2,MAX_WELL_ALT),E_OB(3)
+        INTEGER, INTENT(IN) ::  NMRES
+        INTEGER N_IN,I
    
-       double precision rnmres,E_alt_sum
+       DOUBLE PRECISION RNMRES,E_ALT_SUM
 
 
-        output_step_alt=output_step_alt+1
-        n_in=0
-        rnmres=dble(nmres)
+        OUTPUT_STEP_ALT=OUTPUT_STEP_ALT+1
+        N_IN=0
+        RNMRES=DBLE(NMRES)
 
-        !      str200="# step T  n_in/nmres  E_alt[ 11   12    21   22] end"
-        !      if(output_step_alt.eq.1)write(outfile1_alt(1),'(a)')str200
-        !      if(output_step_alt.eq.1)write(outfile1_alt(1),'(a)')str200(1:min(200,index('end',str200)))
-!        if(output_step_alt.eq.1)then
-!           open(unit=120,file='OUTPUT_GUIDE',status='unknown')
-!           write(120,*)'Guide for check_alt_files'
-!1           write(120,*)'check_alt_file_1: step   T  n_in/nmres  E_alt[ 11   21    12   22]  E_alt_tot'
-!           !           write(120,*)'check_alt_file_2: step   T  n_in/nmres  A[i]  '
-!           close(120)
-!        endif
+        !      STR200="# STEP T  N_IN/NMRES  E_ALT[ 11   12    21   22] END"
+        !      IF(OUTPUT_STEP_ALT.EQ.1)WRITE(OUTFILE1_ALT(1),'(A)')STR200
+        !      IF(OUTPUT_STEP_ALT.EQ.1)WRITE(OUTFILE1_ALT(1),'(A)')STR200(1:MIN(200,INDEX('END',STR200)))
+!        IF(OUTPUT_STEP_ALT.EQ.1)THEN
+!           OPEN(UNIT=120,FILE='OUTPUT_GUIDE',STATUS='UNKNOWN')
+!           WRITE(120,*)'GUIDE FOR CHECK_ALT_FILES'
+!1           WRITE(120,*)'CHECK_ALT_FILE_1: STEP   T  N_IN/NMRES  E_ALT[ 11   21    12   22]  E_ALT_TOT'
+!           !           WRITE(120,*)'CHECK_ALT_FILE_2: STEP   T  N_IN/NMRES  A[I]  '
+!           CLOSE(120)
+!        ENDIF
 
-        if(do_send_output)then
-           do i=1,nmres,1
-              if(A(i).gt.treshold_alt)n_in=n_in+1
-           enddo
-           E_alt_sum=E_alt(1,1)+E_alt(1,2)+E_alt(2,1)+E_alt(2,2)
-!           write(outfile1_alt(1),1000)count_alt,T_alt,dble(n_in)/rnmres,E_alt(1,1),E_alt(2,1) &
-!                ,E_alt(1,2),E_alt(2,2),E_alt_sum
-           !         rewind(outfile1_alt(2))
-!           write(outfile1_alt(2),1000)count_alt,T_alt,(A(i),i=1,nmres)
-!           write(timings_file_alt,800) count_alt,T_alt,(accumulated_time(i),i=1,4),(accumulated_time(i),i=10,13)
-!800        format("Count T  Timings:[altpot][pp][ob][num] [altpot_util][pp1][pp2][pp3]", & 
-!                                       i8,1x,f8.3,4x,4(f8.3,1x),2x,4(f8.3,1x))
+        IF(DO_SEND_OUTPUT)THEN
+           DO I=1,NMRES,1
+              IF(A(I).GT.TRESHOLD_ALT)N_IN=N_IN+1
+           ENDDO
+           E_ALT_SUM=E_ALT(1,1)+E_ALT(1,2)+E_ALT(2,1)+E_ALT(2,2)
+!           WRITE(OUTFILE1_ALT(1),1000)COUNT_ALT,T_ALT,DBLE(N_IN)/RNMRES,E_ALT(1,1),E_ALT(2,1) &
+!                ,E_ALT(1,2),E_ALT(2,2),E_ALT_SUM
+           !         REWIND(OUTFILE1_ALT(2))
+!           WRITE(OUTFILE1_ALT(2),1000)COUNT_ALT,T_ALT,(A(I),I=1,NMRES)
+!           WRITE(TIMINGS_FILE_ALT,800) COUNT_ALT,T_ALT,(ACCUMULATED_TIME(I),I=1,4),(ACCUMULATED_TIME(I),I=10,13)
+!800        FORMAT("COUNT T  TIMINGS:[ALTPOT][PP][OB][NUM] [ALTPOT_UTIL][PP1][PP2][PP3]", & 
+!                                       I8,1X,F8.3,4X,4(F8.3,1X),2X,4(F8.3,1X))
 
-        endif
+        ENDIF
 
-        !      if((OB_dns_count.gt.1.0) .and. do_send_output)write(outfile1_alt(5),1000)count_alt,T_alt,OB_density/OB_dns_count
-!        if((OB_dns_count.gt.1.0) .and. do_send_output)then
-!           rewind(outfile1_alt(5))
-!           do i=1,max_letters,1
-!              write(outfile1_alt(5),*)1.0,OB_density(i,1),aminoacids(i)
-!              write(outfile1_alt(5),*)2.0,OB_density(i,2),aminoacids(i)
-!              write(outfile1_alt(5),*)3.0,OB_density(i,3),aminoacids(i)
-!              write(outfile1_alt(5),2000)
-!           enddo
-!        endif
-!        if(do_send_output)write(outfile1_alt(6),1000)count_alt,T_alt,E_OB
-
-
-        if(mod(output_step_alt,output_stepsize_alt).ne.0)return
-
-        !      write(outfile1_alt(1),60)
-
-        !60    format(20(1x,e12.5))
-1000    format(i8,2x,200(f8.3,2x))
-2000    format()
-
-        return
-
-      end subroutine send_output_alt
-
-      subroutine longscale()
-
-        use amhglobals,  only:SO,  ab_c_of_n_old,ab_c_of_n_new,max_well, & 
-              alpha_c_of_n,num_well,nmres,n_letters_con
-        use globals_alt, only : altgamma
-
-        implicit none
-        integer i,j
-            double precision long_nfactor(max_well),rnmres
+        !      IF((OB_DNS_COUNT.GT.1.0) .AND. DO_SEND_OUTPUT)WRITE(OUTFILE1_ALT(5),1000)COUNT_ALT,T_ALT,OB_DENSITY/OB_DNS_COUNT
+!        IF((OB_DNS_COUNT.GT.1.0) .AND. DO_SEND_OUTPUT)THEN
+!           REWIND(OUTFILE1_ALT(5))
+!           DO I=1,MAX_LETTERS,1
+!              WRITE(OUTFILE1_ALT(5),*)1.0,OB_DENSITY(I,1),AMINOACIDS(I)
+!              WRITE(OUTFILE1_ALT(5),*)2.0,OB_DENSITY(I,2),AMINOACIDS(I)
+!              WRITE(OUTFILE1_ALT(5),*)3.0,OB_DENSITY(I,3),AMINOACIDS(I)
+!              WRITE(OUTFILE1_ALT(5),2000)
+!           ENDDO
+!        ENDIF
+!        IF(DO_SEND_OUTPUT)WRITE(OUTFILE1_ALT(6),1000)COUNT_ALT,T_ALT,E_OB
 
 
-        !cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-        !c   set long_nfactor which is some fudge factor for the
-        !c   contact potentials (it partially allows for the effect of 
-        !c   size -- which the fraction of contacts at a certain distance
-        !c   depends on). It should be the same as included in the
-        !c   optimisation. In corey's code it is in qchrgmk.f instead.
-        !c   Johan: added long_nfactor for 2-wells 
+        IF(MOD(OUTPUT_STEP_ALT,OUTPUT_STEPSIZE_ALT).NE.0)RETURN
 
-        long_nfactor=1.0D0
-        rnmres=dble(nmres)
+        !      WRITE(OUTFILE1_ALT(1),60)
 
-        !c   start if alpha_c_of_n 
-        if ( alpha_c_of_n ) then
+        !60    FORMAT(20(1X,E12.5))
+1000    FORMAT(I8,2X,200(F8.3,2X))
+2000    FORMAT()
 
-           if (num_well .eq. 2) then
-              long_nfactor(2)=1.0D0/(rnmres*0.012D0 + 0.87D0)
-           elseif (num_well .eq. 3) then
-              long_nfactor(2)=1.0D0/(rnmres*0.0065D0 + 0.87D0)
-              long_nfactor(3)=1.0D0/(rnmres*0.04187261D0 + 0.1256658D0)
-           elseif (num_well .eq. 10) then
-              long_nfactor(1)=1.0D0/(rnmres*0.0008D0 + 0.09D0)
-              long_nfactor(2)=1.0D0/(rnmres*0.0009D0 + 0.16D0)
-              long_nfactor(3)=1.0D0/(rnmres*0.001D0 + 0.20D0)
-              long_nfactor(4)=1.0D0/(rnmres*0.003D0 + 0.29D0)
-              long_nfactor(5)=1.0D0/(rnmres*0.004D0 + 0.53D0)
-              long_nfactor(6)=1.0D0/(rnmres*0.004D0 + 0.76D0)
-              long_nfactor(7)=1.0D0/(rnmres*0.005D0 + 0.77D0)
-              long_nfactor(8)=1.0D0/(rnmres*0.005D0 + 0.94D0)
-              long_nfactor(9)=1.0D0/(rnmres*0.006D0 + 1.18D0)
-              long_nfactor(10)=1.0D0/(rnmres*0.013D0 + 1.8D0)
-           else
-              write(SO,*) 'unsupported no of wells (alpha_c_of_n)',num_well
-              stop
-           endif
+        RETURN
 
-        endif
-        !c   end if alpha_c_of_n 
+      END SUBROUTINE SEND_OUTPUT_ALT
 
-        if (ab_c_of_n_new) then
-           rnmres=dble(nmres)
-           if (num_well .eq. 2) then
-            long_nfactor(1)= ( 0.035D0*rnmres)/(rnmres*0.043D0 + 1.0D0)
-            long_nfactor(2)=( 0.07D0*rnmres)/(rnmres*0.023D0 + 1.0D0)
-            long_nfactor(1)=1.0D0/(long_nfactor(1))
-            long_nfactor(2)=1.0D0/(long_nfactor(2))
-           elseif (num_well .eq. 3) then
-             long_nfactor(1)= ( 0.0843467D0*rnmres)/(rnmres*0.0453928D0 + 1.0D0)
-             long_nfactor(2)=( 0.0669808D0*rnmres)/(rnmres*0.025112D0 + 1.0D0)
-             long_nfactor(3)=( 0.18665D0*rnmres) /(rnmres*0.0107983D0 + 1.0D0)
-             long_nfactor(1)=1.0D0/(long_nfactor(1))
-             long_nfactor(2)=1.0D0/(long_nfactor(2))
-             long_nfactor(3)=1.0D0/(long_nfactor(3))
-           elseif (num_well .eq. 5) then
+      SUBROUTINE LONGSCALE()
 
-            long_nfactor(1)=( 0.0297375D0*rnmres) /(rnmres*0.02977935D0 + 1.0D0)
-            long_nfactor(2)=( 0.0389704D0*rnmres) /(rnmres*0.021101D0 + 1.0D0)
-            long_nfactor(3)=( 0.0596751D0*rnmres) /(rnmres*0.0133269D0  + 1.0D0)
-            long_nfactor(4)=( 0.0681322D0*rnmres) /(rnmres*0.0100256D0 + 1.0D0)
-            long_nfactor(5)=( 0.0729201D0*rnmres) /(rnmres*0.00347563D0 + 1.0D0)
+        USE AMHGLOBALS,  ONLY:SO,  AB_C_OF_N_OLD,AB_C_OF_N_NEW,MAX_WELL, & 
+              ALPHA_C_OF_N,NUM_WELL,NMRES,N_LETTERS_CON
+        USE GLOBALS_ALT, ONLY : ALTGAMMA
 
-              long_nfactor(1)=1.0D0/(long_nfactor(1))
-              long_nfactor(2)=1.0D0/(long_nfactor(2))
-              long_nfactor(3)=1.0D0/(long_nfactor(3))
-              long_nfactor(4)=1.0D0/(long_nfactor(4))
-              long_nfactor(5)=1.0D0/(long_nfactor(5))
-
-           elseif (num_well .eq. 10) then
-
-            long_nfactor(1)=( 0.0785047D0*rnmres) /(rnmres*0.245032D0 + 1.0D0)
-            long_nfactor(2)=( 0.0152761D0*rnmres) /(rnmres*0.0283803D0 + 1.0D0)
-            long_nfactor(3)=( 0.205481D0*rnmres) /(rnmres*0.385813D0  + 1.0D0)
-            long_nfactor(4)=( 0.0174765D0*rnmres) /(rnmres*0.0174638D0 + 1.0D0)
-            long_nfactor(5)=( 0.0352685D0*rnmres) /(rnmres*0.0269838D0 + 1.0D0)
-            long_nfactor(6)=( 0.0474026D0*rnmres) /(rnmres*0.0249249D0 + 1.0D0)
-            long_nfactor(7)=( 0.18665D0*rnmres) /(rnmres*0.0107983D0 + 1.0D0)
-            long_nfactor(8)=( 0.0390303D0*rnmres) /(rnmres*0.0140943D0 + 1.0D0)
-            long_nfactor(9)=( 0.0327411D0*rnmres) /(rnmres*0.00812347D0 + 1.0D0)
-            long_nfactor(10)=( 0.0561461D0*rnmres) /(rnmres*0.00743991D0 + 1.0D0)
-
-              long_nfactor(1)=1.0D0/(long_nfactor(1))
-              long_nfactor(2)=1.0D0/(long_nfactor(2))
-              long_nfactor(3)=1.0D0/(long_nfactor(3))
-              long_nfactor(4)=1.0D0/(long_nfactor(4))
-              long_nfactor(5)=1.0D0/(long_nfactor(5))
-              long_nfactor(6)=1.0D0/(long_nfactor(6))
-              long_nfactor(7)=1.0D0/(long_nfactor(7))
-              long_nfactor(8)=1.0D0/(long_nfactor(8))
-              long_nfactor(9)=1.0D0/(long_nfactor(9))
-              long_nfactor(10)=1.0D0/(long_nfactor(10))
+        IMPLICIT NONE
+        INTEGER I,J
+            DOUBLE PRECISION LONG_NFACTOR(MAX_WELL),RNMRES
 
 
-           else
-              write(SO,*) 'num_well problem for ab_c_of_n_new',num_well
-              stop 
-           endif
-        endif
+        !CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+        !C   SET LONG_NFACTOR WHICH IS SOME FUDGE FACTOR FOR THE
+        !C   CONTACT POTENTIALS (IT PARTIALLY ALLOWS FOR THE EFFECT OF 
+        !C   SIZE -- WHICH THE FRACTION OF CONTACTS AT A CERTAIN DISTANCE
+        !C   DEPENDS ON). IT SHOULD BE THE SAME AS INCLUDED IN THE
+        !C   OPTIMISATION. IN COREY'S CODE IT IS IN QCHRGMK.F INSTEAD.
+        !C   JOHAN: ADDED LONG_NFACTOR FOR 2-WELLS 
+
+        LONG_NFACTOR=1.0D0
+        RNMRES=DBLE(NMRES)
+
+        !C   START IF ALPHA_C_OF_N 
+        IF ( ALPHA_C_OF_N ) THEN
+
+           IF (NUM_WELL .EQ. 2) THEN
+              LONG_NFACTOR(2)=1.0D0/(RNMRES*0.012D0 + 0.87D0)
+           ELSEIF (NUM_WELL .EQ. 3) THEN
+              LONG_NFACTOR(2)=1.0D0/(RNMRES*0.0065D0 + 0.87D0)
+              LONG_NFACTOR(3)=1.0D0/(RNMRES*0.04187261D0 + 0.1256658D0)
+           ELSEIF (NUM_WELL .EQ. 10) THEN
+              LONG_NFACTOR(1)=1.0D0/(RNMRES*0.0008D0 + 0.09D0)
+              LONG_NFACTOR(2)=1.0D0/(RNMRES*0.0009D0 + 0.16D0)
+              LONG_NFACTOR(3)=1.0D0/(RNMRES*0.001D0 + 0.20D0)
+              LONG_NFACTOR(4)=1.0D0/(RNMRES*0.003D0 + 0.29D0)
+              LONG_NFACTOR(5)=1.0D0/(RNMRES*0.004D0 + 0.53D0)
+              LONG_NFACTOR(6)=1.0D0/(RNMRES*0.004D0 + 0.76D0)
+              LONG_NFACTOR(7)=1.0D0/(RNMRES*0.005D0 + 0.77D0)
+              LONG_NFACTOR(8)=1.0D0/(RNMRES*0.005D0 + 0.94D0)
+              LONG_NFACTOR(9)=1.0D0/(RNMRES*0.006D0 + 1.18D0)
+              LONG_NFACTOR(10)=1.0D0/(RNMRES*0.013D0 + 1.8D0)
+           ELSE
+              WRITE(SO,*) 'UNSUPPORTED NO OF WELLS (ALPHA_C_OF_N)',NUM_WELL
+              STOP
+           ENDIF
+
+        ENDIF
+        !C   END IF ALPHA_C_OF_N 
+
+        IF (AB_C_OF_N_NEW) THEN
+           RNMRES=DBLE(NMRES)
+           IF (NUM_WELL .EQ. 2) THEN
+            LONG_NFACTOR(1)= ( 0.035D0*RNMRES)/(RNMRES*0.043D0 + 1.0D0)
+            LONG_NFACTOR(2)=( 0.07D0*RNMRES)/(RNMRES*0.023D0 + 1.0D0)
+            LONG_NFACTOR(1)=1.0D0/(LONG_NFACTOR(1))
+            LONG_NFACTOR(2)=1.0D0/(LONG_NFACTOR(2))
+           ELSEIF (NUM_WELL .EQ. 3) THEN
+             LONG_NFACTOR(1)= ( 0.0843467D0*RNMRES)/(RNMRES*0.0453928D0 + 1.0D0)
+             LONG_NFACTOR(2)=( 0.0669808D0*RNMRES)/(RNMRES*0.025112D0 + 1.0D0)
+             LONG_NFACTOR(3)=( 0.18665D0*RNMRES) /(RNMRES*0.0107983D0 + 1.0D0)
+             LONG_NFACTOR(1)=1.0D0/(LONG_NFACTOR(1))
+             LONG_NFACTOR(2)=1.0D0/(LONG_NFACTOR(2))
+             LONG_NFACTOR(3)=1.0D0/(LONG_NFACTOR(3))
+           ELSEIF (NUM_WELL .EQ. 5) THEN
+
+            LONG_NFACTOR(1)=( 0.0297375D0*RNMRES) /(RNMRES*0.02977935D0 + 1.0D0)
+            LONG_NFACTOR(2)=( 0.0389704D0*RNMRES) /(RNMRES*0.021101D0 + 1.0D0)
+            LONG_NFACTOR(3)=( 0.0596751D0*RNMRES) /(RNMRES*0.0133269D0  + 1.0D0)
+            LONG_NFACTOR(4)=( 0.0681322D0*RNMRES) /(RNMRES*0.0100256D0 + 1.0D0)
+            LONG_NFACTOR(5)=( 0.0729201D0*RNMRES) /(RNMRES*0.00347563D0 + 1.0D0)
+
+              LONG_NFACTOR(1)=1.0D0/(LONG_NFACTOR(1))
+              LONG_NFACTOR(2)=1.0D0/(LONG_NFACTOR(2))
+              LONG_NFACTOR(3)=1.0D0/(LONG_NFACTOR(3))
+              LONG_NFACTOR(4)=1.0D0/(LONG_NFACTOR(4))
+              LONG_NFACTOR(5)=1.0D0/(LONG_NFACTOR(5))
+
+           ELSEIF (NUM_WELL .EQ. 10) THEN
+
+            LONG_NFACTOR(1)=( 0.0785047D0*RNMRES) /(RNMRES*0.245032D0 + 1.0D0)
+            LONG_NFACTOR(2)=( 0.0152761D0*RNMRES) /(RNMRES*0.0283803D0 + 1.0D0)
+            LONG_NFACTOR(3)=( 0.205481D0*RNMRES) /(RNMRES*0.385813D0  + 1.0D0)
+            LONG_NFACTOR(4)=( 0.0174765D0*RNMRES) /(RNMRES*0.0174638D0 + 1.0D0)
+            LONG_NFACTOR(5)=( 0.0352685D0*RNMRES) /(RNMRES*0.0269838D0 + 1.0D0)
+            LONG_NFACTOR(6)=( 0.0474026D0*RNMRES) /(RNMRES*0.0249249D0 + 1.0D0)
+            LONG_NFACTOR(7)=( 0.18665D0*RNMRES) /(RNMRES*0.0107983D0 + 1.0D0)
+            LONG_NFACTOR(8)=( 0.0390303D0*RNMRES) /(RNMRES*0.0140943D0 + 1.0D0)
+            LONG_NFACTOR(9)=( 0.0327411D0*RNMRES) /(RNMRES*0.00812347D0 + 1.0D0)
+            LONG_NFACTOR(10)=( 0.0561461D0*RNMRES) /(RNMRES*0.00743991D0 + 1.0D0)
+
+              LONG_NFACTOR(1)=1.0D0/(LONG_NFACTOR(1))
+              LONG_NFACTOR(2)=1.0D0/(LONG_NFACTOR(2))
+              LONG_NFACTOR(3)=1.0D0/(LONG_NFACTOR(3))
+              LONG_NFACTOR(4)=1.0D0/(LONG_NFACTOR(4))
+              LONG_NFACTOR(5)=1.0D0/(LONG_NFACTOR(5))
+              LONG_NFACTOR(6)=1.0D0/(LONG_NFACTOR(6))
+              LONG_NFACTOR(7)=1.0D0/(LONG_NFACTOR(7))
+              LONG_NFACTOR(8)=1.0D0/(LONG_NFACTOR(8))
+              LONG_NFACTOR(9)=1.0D0/(LONG_NFACTOR(9))
+              LONG_NFACTOR(10)=1.0D0/(LONG_NFACTOR(10))
 
 
-        if (ab_c_of_n_old) then
-           rnmres=dble(nmres)
-           long_nfactor(1)=1.0D0/(rnmres*0.0015D0 + 1.94D0)
-           long_nfactor(2)=1.0D0/(rnmres*0.0032D0 + 1.83D0)
-           long_nfactor(3)=1.0D0/(rnmres*0.022D0 + 7.77D0)
+           ELSE
+              WRITE(SO,*) 'NUM_WELL PROBLEM FOR AB_C_OF_N_NEW',NUM_WELL
+              STOP 
+           ENDIF
+        ENDIF
 
-           if (num_well.ne.3) then 
-              write(SO,*) 'numwell must be 3 for ab_c_of_n_*old*',num_well
-              stop
-           endif
 
-        endif
+        IF (AB_C_OF_N_OLD) THEN
+           RNMRES=DBLE(NMRES)
+           LONG_NFACTOR(1)=1.0D0/(RNMRES*0.0015D0 + 1.94D0)
+           LONG_NFACTOR(2)=1.0D0/(RNMRES*0.0032D0 + 1.83D0)
+           LONG_NFACTOR(3)=1.0D0/(RNMRES*0.022D0 + 7.77D0)
 
-        do i=1,n_letters_con,1
-           do j=i,n_letters_con,1
-              altgamma(i,j,1,1)=altgamma(i,j,1,1)*long_nfactor(1)
-              altgamma(i,j,2,1)=altgamma(i,j,2,1)*long_nfactor(1)
-              altgamma(i,j,1,2)=altgamma(i,j,1,2)*long_nfactor(2)
-              altgamma(i,j,2,2)=altgamma(i,j,2,2)*long_nfactor(2)
-              altgamma(j,i,1,1)=altgamma(i,j,1,1)
-              altgamma(j,i,2,1)=altgamma(i,j,2,1)
-              altgamma(j,i,1,2)=altgamma(i,j,1,2)
-              altgamma(j,i,2,2)=altgamma(i,j,2,2)
-           enddo
-        enddo
+           IF (NUM_WELL.NE.3) THEN 
+              WRITE(SO,*) 'NUMWELL MUST BE 3 FOR AB_C_OF_N_*OLD*',NUM_WELL
+              STOP
+           ENDIF
 
-        return
-      end subroutine longscale
+        ENDIF
+
+        DO I=1,N_LETTERS_CON,1
+           DO J=I,N_LETTERS_CON,1
+              ALTGAMMA(I,J,1,1)=ALTGAMMA(I,J,1,1)*LONG_NFACTOR(1)
+              ALTGAMMA(I,J,2,1)=ALTGAMMA(I,J,2,1)*LONG_NFACTOR(1)
+              ALTGAMMA(I,J,1,2)=ALTGAMMA(I,J,1,2)*LONG_NFACTOR(2)
+              ALTGAMMA(I,J,2,2)=ALTGAMMA(I,J,2,2)*LONG_NFACTOR(2)
+              ALTGAMMA(J,I,1,1)=ALTGAMMA(I,J,1,1)
+              ALTGAMMA(J,I,2,1)=ALTGAMMA(I,J,2,1)
+              ALTGAMMA(J,I,1,2)=ALTGAMMA(I,J,1,2)
+              ALTGAMMA(J,I,2,2)=ALTGAMMA(I,J,2,2)
+           ENDDO
+        ENDDO
+
+        RETURN
+      END SUBROUTINE LONGSCALE

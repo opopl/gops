@@ -1,167 +1,167 @@
-C   GPL License info {{{
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
+C   GPL LICENSE INFO {{{
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF OPTIM.
 C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C }}}
 C
-C Doxygen: g46merdiff {{{
+C DOXYGEN: G46MERDIFF {{{
 C
-C> \mainpage 
-C> \name g46merdiff
+C> \MAINPAGE 
+C> \NAME G46MERDIFF
 
 C
-C> \brief Calculate the energy, gradient, and second derivatives matrix for the Go-like BLN model \n
-C> \author John Rose
+C> \BRIEF CALCULATE THE ENERGY, GRADIENT, AND SECOND DERIVATIVES MATRIX FOR THE GO-LIKE BLN MODEL \N
+C> \AUTHOR JOHN ROSE
 C>
-C> A particle configuration and number of particles is passed to the subroutine and
-C> the energy, gradient, and matrix of second derivatives is returned.
+C> A PARTICLE CONFIGURATION AND NUMBER OF PARTICLES IS PASSED TO THE SUBROUTINE AND
+C> THE ENERGY, GRADIENT, AND MATRIX OF SECOND DERIVATIVES IS RETURNED.
 C>
-C> \param N          number of particles
-C> \param QO         array of cartesian particle coordinates
-C> \param GRAD       array of gradients
-C> \param ENERGY     energy
+C> \PARAM N          NUMBER OF PARTICLES
+C> \PARAM QO         ARRAY OF CARTESIAN PARTICLE COORDINATES
+C> \PARAM GRAD       ARRAY OF GRADIENTS
+C> \PARAM ENERGY     ENERGY
 C }}}
-        subroutine g46merdiff(qo, n, grad, energy, gtest)
+        SUBROUTINE G46MERDIFF(QO, N, GRAD, ENERGY, GTEST)
 C {{{ 
-C declarations {{{
+C DECLARATIONS {{{
         USE MODHESS
         IMPLICIT NONE
-        logical gtest, stest
-        INTEGER ntype(46), N
+        LOGICAL GTEST, STEST
+        INTEGER NTYPE(46), N
         DOUBLE PRECISION QO(3*N), GRAD(3*N), ENERGY
         DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N),D_PARAM(N),
-     1                   c_param(n), rk_theta, rk_r, epsilon, sigma, theta_0, delta, rmass
-        parameter (rmass = 40.0, epsilon = 0.0100570)
-        parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
-        parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
+     1                   C_PARAM(N), RK_THETA, RK_R, EPSILON, SIGMA, THETA_0, DELTA, RMASS
+        PARAMETER (RMASS = 40.0, EPSILON = 0.0100570)
+        PARAMETER (SIGMA=3.4, DELTA=1.0D-6, THETA_0 = 1.8326)
+        PARAMETER (RK_R = 20.0*0.0100570, RK_THETA = 20.0*0.0100570)
         DOUBLE PRECISION X(N), Y(N), Z(N), XR(N,N), YR(N,N), ZR(N,N),
-     2                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
+     2                  DOT_PROD(N,3), X_PROD(N), BOND_ANGLE(N), TOR_ANGLE(N), RADII(N,N)
 C }}}
-C       common/work/a_param(n,n),
-C    1  b_param(n,n),ntype(46),
-C    1  d_param(n),c_param(n)
+C       COMMON/WORK/A_PARAM(N,N),
+C    1  B_PARAM(N,N),NTYPE(46),
+C    1  D_PARAM(N),C_PARAM(N)
 
         STEST=.FALSE.
 
-        call gparam_array(a_param,b_param,c_param,d_param,n)
-        call calc_int_coords(qo,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
-     1                            radii,ntype)
-        call calc_energy(qo,energy,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
-     1                            radii,ntype)
+        CALL GPARAM_ARRAY(A_PARAM,B_PARAM,C_PARAM,D_PARAM,N)
+        CALL CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+     1                            RADII,NTYPE)
+        CALL CALC_ENERGY(QO,ENERGY,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+     1                            RADII,NTYPE)
         IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
-        call calc_gradient(qo,grad,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
-     1                            radii,ntype)
+        CALL CALC_GRADIENT(QO,GRAD,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+     1                            RADII,NTYPE)
 
-C commented section {{{
+C COMMENTED SECTION {{{
 C        DIF=1.0D-4
 C        DO J1=1,3*N
 C           TEMP1=QO(J1)
 C           QO(J1)=QO(J1)+DIF
-C           call calc_int_coords(qo,n)
-C           call calc_energy(qo,V1,n)
+C           CALL CALC_INT_COORDS(QO,N)
+C           CALL CALC_ENERGY(QO,V1,N)
 C           QO(J1)=QO(J1)-2.0D0*DIF
-C           call calc_int_coords(qo,n)
-C           call calc_energy(qo,V2,n)
-C           tgrad(J1)=(V1-V2)/(2.0D0*DIF)
+C           CALL CALC_INT_COORDS(QO,N)
+C           CALL CALC_ENERGY(QO,V2,N)
+C           TGRAD(J1)=(V1-V2)/(2.0D0*DIF)
 C           QO(J1)=TEMP1
 C        ENDDO
-C        call calc_int_coords(qo,n)
+C        CALL CALC_INT_COORDS(QO,N)
 
-C       PRINT*,'Analytical/Numerical first derivatives:'
+C       PRINT*,'ANALYTICAL/NUMERICAL FIRST DERIVATIVES:'
 C       WRITE(*,'(3G20.10)') (GRAD(J1)/TGRAD(J1),J1=1,3*N)
 C }}}
 
         IF (.NOT.STEST) RETURN
-        call calc_dyn(qo,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
-     1                            radii,ntype)
+        CALL CALC_DYN(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+     1                            RADII,NTYPE)
 
-        return
-        end
+        RETURN
+        END
 C }}}
 C
-C Doxygen: gparam_array {{{
+C DOXYGEN: GPARAM_ARRAY {{{
 C>
-C> \brief Fill the parameter arrays which specify interaction potentials
-C> \param N INTEGER  - number of particles
-C> \param a_param \param b_param - LJ interaction between non-bonded particles 
-C> \param c_param \param d_param - dihedral angle potential
+C> \BRIEF FILL THE PARAMETER ARRAYS WHICH SPECIFY INTERACTION POTENTIALS
+C> \PARAM N INTEGER  - NUMBER OF PARTICLES
+C> \PARAM A_PARAM \PARAM B_PARAM - LJ INTERACTION BETWEEN NON-BONDED PARTICLES 
+C> \PARAM C_PARAM \PARAM D_PARAM - DIHEDRAL ANGLE POTENTIAL
 C>
 C}}}
-        subroutine gparam_array(a_param,b_param,c_param,d_param,n)
+        SUBROUTINE GPARAM_ARRAY(A_PARAM,B_PARAM,C_PARAM,D_PARAM,N)
 C {{{
-C Declarations {{{
+C DECLARATIONS {{{
         IMPLICIT NONE
-        logical connect(46,46)
+        LOGICAL CONNECT(46,46)
         INTEGER J, ICOUNT, I, J2, J1, N
         DOUBLE PRECISION NTYPE(46), A_PARAM(N,N), B_PARAM(N,N)
         DOUBLE PRECISION C_PARAM(N), D_PARAM(N), EPSILON
-        parameter (epsilon = 0.0100570)
+        PARAMETER (EPSILON = 0.0100570)
 C }}}
-C Specify amino acid types by filling in the array ntype(:) {{{
+C SPECIFY AMINO ACID TYPES BY FILLING IN THE ARRAY NTYPE(:) {{{
 
-        ntype(1) = 1
-        ntype(2) = 1
-        ntype(3) = 1
-        ntype(4) = 1
-        ntype(5) = 1
-        ntype(6) = 1
-        ntype(7) = 1
-        ntype(8) = 1
-        ntype(9) = 1
-        ntype(10) = 3
-        ntype(11) = 3
-        ntype(12) = 3
-        ntype(13) = 2
-        ntype(14) = 1
-        ntype(15) = 2
-        ntype(16) = 1
-        ntype(17) = 2
-        ntype(18) = 1
-        ntype(19) = 2
-        ntype(20) = 1
-        ntype(21) = 3
-        ntype(22) = 3
-        ntype(23) = 3
-        ntype(24) = 1
-        ntype(25) = 1
-        ntype(26) = 1
-        ntype(27) = 1
-        ntype(28) = 1
-        ntype(29) = 1
-        ntype(30) = 1
-        ntype(31) = 1
-        ntype(32) = 1
-        ntype(33) = 3
-        ntype(34) = 3
-        ntype(35) = 3
-        ntype(36) = 2
-        ntype(37) = 1
-        ntype(38) = 2
-        ntype(39) = 1
-        ntype(40) = 2
-        ntype(41) = 1
-        ntype(42) = 2
-        ntype(43) = 1
-        ntype(44) = 2
-        ntype(45) = 1
-        ntype(46) = 2
+        NTYPE(1) = 1
+        NTYPE(2) = 1
+        NTYPE(3) = 1
+        NTYPE(4) = 1
+        NTYPE(5) = 1
+        NTYPE(6) = 1
+        NTYPE(7) = 1
+        NTYPE(8) = 1
+        NTYPE(9) = 1
+        NTYPE(10) = 3
+        NTYPE(11) = 3
+        NTYPE(12) = 3
+        NTYPE(13) = 2
+        NTYPE(14) = 1
+        NTYPE(15) = 2
+        NTYPE(16) = 1
+        NTYPE(17) = 2
+        NTYPE(18) = 1
+        NTYPE(19) = 2
+        NTYPE(20) = 1
+        NTYPE(21) = 3
+        NTYPE(22) = 3
+        NTYPE(23) = 3
+        NTYPE(24) = 1
+        NTYPE(25) = 1
+        NTYPE(26) = 1
+        NTYPE(27) = 1
+        NTYPE(28) = 1
+        NTYPE(29) = 1
+        NTYPE(30) = 1
+        NTYPE(31) = 1
+        NTYPE(32) = 1
+        NTYPE(33) = 3
+        NTYPE(34) = 3
+        NTYPE(35) = 3
+        NTYPE(36) = 2
+        NTYPE(37) = 1
+        NTYPE(38) = 2
+        NTYPE(39) = 1
+        NTYPE(40) = 2
+        NTYPE(41) = 1
+        NTYPE(42) = 2
+        NTYPE(43) = 1
+        NTYPE(44) = 2
+        NTYPE(45) = 1
+        NTYPE(46) = 2
      
 C }}}
-C Go-like model connectivities: fill in array CONNECT(:,:) {{{
+C GO-LIKE MODEL CONNECTIVITIES: FILL IN ARRAY CONNECT(:,:) {{{
 C
         DO J1=1,46
            DO J2=J1,46
@@ -264,61 +264,61 @@ C
         CONNECT(32, 37)=.TRUE.
 
 C }}}
-C Parameters for the dihedral angle potential: fill in arrays c_param(:,:), d_param(:,:) {{{
+C PARAMETERS FOR THE DIHEDRAL ANGLE POTENTIAL: FILL IN ARRAYS C_PARAM(:,:), D_PARAM(:,:) {{{
 
-        do i = 1, n-3
-        icount = 0
+        DO I = 1, N-3
+        ICOUNT = 0
 
-        do j = 0,3
-        if(ntype(i+j) .eq. 3)then
-        icount = icount + 1
-        endif
-        enddo
+        DO J = 0,3
+        IF(NTYPE(I+J) .EQ. 3)THEN
+        ICOUNT = ICOUNT + 1
+        ENDIF
+        ENDDO
 
-        if(icount .ge. 2)then
-        c_param(i+1) = 0.0
-        d_param(i+1) = 0.2*epsilon
-        else
-        c_param(i+1) = 1.2*epsilon
-        d_param(i+1) = 1.2*epsilon
-        endif
+        IF(ICOUNT .GE. 2)THEN
+        C_PARAM(I+1) = 0.0
+        D_PARAM(I+1) = 0.2*EPSILON
+        ELSE
+        C_PARAM(I+1) = 1.2*EPSILON
+        D_PARAM(I+1) = 1.2*EPSILON
+        ENDIF
 
-        icount = 0
+        ICOUNT = 0
 
-        enddo
+        ENDDO
 C }}}
-C Parameters for the L-J interaction between non-bonded particles:
-C arrays a_param(:,:), b_param(:,:)
+C PARAMETERS FOR THE L-J INTERACTION BETWEEN NON-BONDED PARTICLES:
+C ARRAYS A_PARAM(:,:), B_PARAM(:,:)
 C {{{
 
-        do i = 1, n-1
-           do j = i+1, n
+        DO I = 1, N-1
+           DO J = I+1, N
 
-           if (ntype(i) .eq. 3 .or. ntype(j) .eq. 3) then
-             a_param(i,j) = 1.0*epsilon 
-             b_param(i,j) = 0.0 
-             a_param(j,i) = 1.0*epsilon 
-             b_param(j,i) = 0.0
-           elseif (ntype(i) .eq. 1 .and. ntype(j) .eq. 1)then
-             a_param(i,j) =  epsilon
-             a_param(j,i) =  epsilon
+           IF (NTYPE(I) .EQ. 3 .OR. NTYPE(J) .EQ. 3) THEN
+             A_PARAM(I,J) = 1.0*EPSILON 
+             B_PARAM(I,J) = 0.0 
+             A_PARAM(J,I) = 1.0*EPSILON 
+             B_PARAM(J,I) = 0.0
+           ELSEIF (NTYPE(I) .EQ. 1 .AND. NTYPE(J) .EQ. 1)THEN
+             A_PARAM(I,J) =  EPSILON
+             A_PARAM(J,I) =  EPSILON
              IF (CONNECT(I,J)) THEN
-                b_param(i,j) = -epsilon 
-                b_param(j,i) = -epsilon
+                B_PARAM(I,J) = -EPSILON 
+                B_PARAM(J,I) = -EPSILON
              ELSE
-                b_param(i,j) = 0.0D0
-                b_param(j,i) = 0.0D0
+                B_PARAM(I,J) = 0.0D0
+                B_PARAM(J,I) = 0.0D0
              ENDIF
-           else
-             a_param(i,j) = epsilon*2.0/3.0 
-             b_param(i,j) = epsilon*2.0/3.0 
-             a_param(j,i) = epsilon*2.0/3.0 
-             b_param(j,i) = epsilon*2.0/3.0 
-           endif
+           ELSE
+             A_PARAM(I,J) = EPSILON*2.0/3.0 
+             B_PARAM(I,J) = EPSILON*2.0/3.0 
+             A_PARAM(J,I) = EPSILON*2.0/3.0 
+             B_PARAM(J,I) = EPSILON*2.0/3.0 
+           ENDIF
    
-           enddo
-        enddo
+           ENDDO
+        ENDDO
 C }}}
-        return
-        end
+        RETURN
+        END
 C }}}

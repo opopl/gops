@@ -1,183 +1,183 @@
-!  GMIN: A program for finding global minima
-!  Copyright (C) 1999-2006 David J. Wales
-!  This file is part of GMIN.
+!  GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+!  COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!  THIS FILE IS PART OF GMIN.
 !
-!  GMIN is free software; you can redistribute it and/or modify
-!  it under the terms of the GNU General Public License as published by
-!  the Free Software Foundation; either version 2 of the License, or
-!  (at your option) any later version.
+!  GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!  (AT YOUR OPTION) ANY LATER VERSION.
 !
-!  GMIN is distributed in the hope that it will be useful,
-!  but WITHOUT ANY WARRANTY; without even the implied warranty of
-!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!  GNU General Public License for more details.
+!  GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!  You should have received a copy of the GNU General Public License
-!  along with this program; if not, write to the Free Software
-!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 
 
-! Functions module to serve tethered WL subroutine (Tetyana Bogdan)
+! FUNCTIONS MODULE TO SERVE TETHERED WL SUBROUTINE (TETYANA BOGDAN)
 !---======================================---
-      module tetherfunc 
-         implicit none
-      contains
+      MODULE TETHERFUNC 
+         IMPLICIT NONE
+      CONTAINS
 
 !---======================================---`
-      function Energy2Index(CurrentPointEnergy, BinLabelBottom)
-      use Commons
-      implicit none
+      FUNCTION ENERGY2INDEX(CURRENTPOINTENERGY, BINLABELBOTTOM)
+      USE COMMONS
+      IMPLICIT NONE
 
-      integer Energy2Index 
+      INTEGER ENERGY2INDEX 
 
-      real(8) CurrentPointEnergy, BinLabelBottom, HISTINT
+      REAL(8) CURRENTPOINTENERGY, BINLABELBOTTOM, HISTINT
 
       HISTINT=(HISTMAX-HISTMIN)/HBINS
-      if (nint((CurrentPointEnergy-(BinLabelBottom-histint/2.0d0))/HistInt)<0) then
-         Energy2Index=-1
-      else
-         Energy2Index=nint((CurrentPointEnergy-(BinLabelBottom-histint/2.0d0))/HistInt)+1
-      endif
-!     WRITE(MYUNIT,'(A,3G20.10,I6)') 'Energy2Index> CurrentPointEnergy,BinLabelBottom,histint,Energy2Index=', &
-!    &                                              CurrentPointEnergy,BinLabelBottom,histint,Energy2Index
+      IF (NINT((CURRENTPOINTENERGY-(BINLABELBOTTOM-HISTINT/2.0D0))/HISTINT)<0) THEN
+         ENERGY2INDEX=-1
+      ELSE
+         ENERGY2INDEX=NINT((CURRENTPOINTENERGY-(BINLABELBOTTOM-HISTINT/2.0D0))/HISTINT)+1
+      ENDIF
+!     WRITE(MYUNIT,'(A,3G20.10,I6)') 'ENERGY2INDEX> CURRENTPOINTENERGY,BINLABELBOTTOM,HISTINT,ENERGY2INDEX=', &
+!    &                                              CURRENTPOINTENERGY,BINLABELBOTTOM,HISTINT,ENERGY2INDEX
 
-      end function Energy2Index
+      END FUNCTION ENERGY2INDEX
 
 
 !---======================================---`
-      real(8) function GetDisplacement(step)
-           implicit none
-           real(8),intent(in) :: step
-           real(8) :: harvest
-           call random_number(harvest)
-           GetDisplacement=2.0d0*harvest*step-step
-      end function GetDisplacement
+      REAL(8) FUNCTION GETDISPLACEMENT(STEP)
+           IMPLICIT NONE
+           REAL(8),INTENT(IN) :: STEP
+           REAL(8) :: HARVEST
+           CALL RANDOM_NUMBER(HARVEST)
+           GETDISPLACEMENT=2.0D0*HARVEST*STEP-STEP
+      END FUNCTION GETDISPLACEMENT
 
 !---======================================---`
-      function PerturbGeometry(CurrentPointCoordinates)
-           use Commons, only: Radius,Natoms,step
-           implicit none
+      FUNCTION PERTURBGEOMETRY(CURRENTPOINTCOORDINATES)
+           USE COMMONS, ONLY: RADIUS,NATOMS,STEP
+           IMPLICIT NONE
 
-           real(8),dimension(3*Natoms,1) :: PerturbGeometry
+           REAL(8),DIMENSION(3*NATOMS,1) :: PERTURBGEOMETRY
 
-           real(8),intent(in) :: CurrentPointCoordinates(3*Natoms,1)
-           !real(8) GetDisplacement
-           integer i, j
+           REAL(8),INTENT(IN) :: CURRENTPOINTCOORDINATES(3*NATOMS,1)
+           !REAL(8) GETDISPLACEMENT
+           INTEGER I, J
 
-           PerturbGeometry=CurrentPointCoordinates
+           PERTURBGEOMETRY=CURRENTPOINTCOORDINATES
 
-           do j=1, Natoms
-                do
-                 print *, 'pert'
-                     PerturbGeometry(3*(j-1)+1,1) = PerturbGeometry(3*(j-1)+1,1) + GetDisplacement(step(1))
-                     PerturbGeometry(3*(j-1)+2,1) = PerturbGeometry(3*(j-1)+2,1) + GetDisplacement(step(1))
-                     PerturbGeometry(3*(j-1)+3,1) = PerturbGeometry(3*(j-1)+3,1) + GetDisplacement(step(1))
-                     if ( PerturbGeometry(3*(j-1)+1, 1)**2 &
-                      & + PerturbGeometry(3*(j-1)+2, 1)**2 &
-                      & + PerturbGeometry(3*(j-1)+3, 1)**2 < Radius ) then
-                          exit
-                     else
-                          PerturbGeometry(3*(j-1)+1,1) = CurrentPointCoordinates(3*(j-1)+1,1)
-                          PerturbGeometry(3*(j-1)+2,1) = CurrentPointCoordinates(3*(j-1)+2,1)
-                          PerturbGeometry(3*(j-1)+3,1) = CurrentPointCoordinates(3*(j-1)+3,1)
-                     endif
-		enddo
-           enddo
-      end function PerturbGeometry
-
-!---======================================---`
-
-      function CalculatedDistance(CurrentPointCoordinates, PerturbedCoordinates)
-      use Commons
-      implicit none
-
-      integer i
-      real(8) CalculatedDistance, CurrentPointCoordinates(3*Natoms,1), PerturbedCoordinates(3*Natoms,1), &
-              & x1(Natoms, 1), y1(Natoms, 1), z1(Natoms, 1), x2(Natoms, 1), y2(Natoms, 1), z2(Natoms, 1)
-
-
-      do i=1,Natoms
-         x1(i,1)=CurrentPointCoordinates(3*(i-1)+1,1)
-         y1(i,1)=CurrentPointCoordinates(3*(i-1)+2,1)
-         z1(i,1)=CurrentPointCoordinates(3*(i-1)+3,1)
-         x2(i,1)=PerturbedCoordinates(3*(i-1)+1,1)
-         y2(i,1)=PerturbedCoordinates(3*(i-1)+2,1)
-         z2(i,1)=PerturbedCoordinates(3*(i-1)+3,1)
-      enddo
-
-      CalculatedDistance=dsqrt(sum ( (x1(:,1)-x2(:,1))**2 + (y1(:,1)-y2(:,1))**2 + (z1(:,1)-z2(:,1))**2 ) )
-
-      !print *, 'Distance' , CalculatedDistance
-
-      !if (CalculatedDistance>0.8) then
-      !    call PrintXyz(Natoms,PerturbedCoordinates(:,1))
-      !    call PrintXyz(Natoms,CurrentPointCoordinates(:,1))
-      !endif
-      end function CalculatedDistance
+           DO J=1, NATOMS
+                DO
+                 PRINT *, 'PERT'
+                     PERTURBGEOMETRY(3*(J-1)+1,1) = PERTURBGEOMETRY(3*(J-1)+1,1) + GETDISPLACEMENT(STEP(1))
+                     PERTURBGEOMETRY(3*(J-1)+2,1) = PERTURBGEOMETRY(3*(J-1)+2,1) + GETDISPLACEMENT(STEP(1))
+                     PERTURBGEOMETRY(3*(J-1)+3,1) = PERTURBGEOMETRY(3*(J-1)+3,1) + GETDISPLACEMENT(STEP(1))
+                     IF ( PERTURBGEOMETRY(3*(J-1)+1, 1)**2 &
+                      & + PERTURBGEOMETRY(3*(J-1)+2, 1)**2 &
+                      & + PERTURBGEOMETRY(3*(J-1)+3, 1)**2 < RADIUS ) THEN
+                          EXIT
+                     ELSE
+                          PERTURBGEOMETRY(3*(J-1)+1,1) = CURRENTPOINTCOORDINATES(3*(J-1)+1,1)
+                          PERTURBGEOMETRY(3*(J-1)+2,1) = CURRENTPOINTCOORDINATES(3*(J-1)+2,1)
+                          PERTURBGEOMETRY(3*(J-1)+3,1) = CURRENTPOINTCOORDINATES(3*(J-1)+3,1)
+                     ENDIF
+		ENDDO
+           ENDDO
+      END FUNCTION PERTURBGEOMETRY
 
 !---======================================---`
-      subroutine PrintXyz(Natoms,X)
-          implicit none
 
-          integer,intent(in) :: Natoms
-          real(8),intent(in) :: X(3*Natoms)
+      FUNCTION CALCULATEDDISTANCE(CURRENTPOINTCOORDINATES, PERTURBEDCOORDINATES)
+      USE COMMONS
+      IMPLICIT NONE
 
-          integer :: i
+      INTEGER I
+      REAL(8) CALCULATEDDISTANCE, CURRENTPOINTCOORDINATES(3*NATOMS,1), PERTURBEDCOORDINATES(3*NATOMS,1), &
+              & X1(NATOMS, 1), Y1(NATOMS, 1), Z1(NATOMS, 1), X2(NATOMS, 1), Y2(NATOMS, 1), Z2(NATOMS, 1)
 
-          print *, Natoms
-          print *
-          do i=1,Natoms
-             write(*,'(a4,3f20.10)') 'C   ',X(3*(i-1)+1),X(3*(i-1)+2),X(3*(i-1)+3)
-          enddo
-      end subroutine PrintXyz
+
+      DO I=1,NATOMS
+         X1(I,1)=CURRENTPOINTCOORDINATES(3*(I-1)+1,1)
+         Y1(I,1)=CURRENTPOINTCOORDINATES(3*(I-1)+2,1)
+         Z1(I,1)=CURRENTPOINTCOORDINATES(3*(I-1)+3,1)
+         X2(I,1)=PERTURBEDCOORDINATES(3*(I-1)+1,1)
+         Y2(I,1)=PERTURBEDCOORDINATES(3*(I-1)+2,1)
+         Z2(I,1)=PERTURBEDCOORDINATES(3*(I-1)+3,1)
+      ENDDO
+
+      CALCULATEDDISTANCE=DSQRT(SUM ( (X1(:,1)-X2(:,1))**2 + (Y1(:,1)-Y2(:,1))**2 + (Z1(:,1)-Z2(:,1))**2 ) )
+
+      !PRINT *, 'DISTANCE' , CALCULATEDDISTANCE
+
+      !IF (CALCULATEDDISTANCE>0.8) THEN
+      !    CALL PRINTXYZ(NATOMS,PERTURBEDCOORDINATES(:,1))
+      !    CALL PRINTXYZ(NATOMS,CURRENTPOINTCOORDINATES(:,1))
+      !ENDIF
+      END FUNCTION CALCULATEDDISTANCE
+
 !---======================================---`
-      function CheckFlatness(lVisits_S,lnModFac,nWL)
-      use Commons, only: Natoms, hbins, hwindows, hpercent, debug, lhbins, sampledbins
-      implicit none
+      SUBROUTINE PRINTXYZ(NATOMS,X)
+          IMPLICIT NONE
 
-      integer lVisits(lhbins), n, i, VisitsNonzero(lhbins),Hmin, Hmax, deltaHk, nWL, lVisits_S(sampledbins)
-      logical CheckFlatness, FlatBin(lhbins), FlatBin_S(sampledbins)
-      real(8) HDev, lnModFac
-      character (len =256) filename
-      character (len= 10)  istr
+          INTEGER,INTENT(IN) :: NATOMS
+          REAL(8),INTENT(IN) :: X(3*NATOMS)
+
+          INTEGER :: I
+
+          PRINT *, NATOMS
+          PRINT *
+          DO I=1,NATOMS
+             WRITE(*,'(A4,3F20.10)') 'C   ',X(3*(I-1)+1),X(3*(I-1)+2),X(3*(I-1)+3)
+          ENDDO
+      END SUBROUTINE PRINTXYZ
+!---======================================---`
+      FUNCTION CHECKFLATNESS(LVISITS_S,LNMODFAC,NWL)
+      USE COMMONS, ONLY: NATOMS, HBINS, HWINDOWS, HPERCENT, DEBUG, LHBINS, SAMPLEDBINS
+      IMPLICIT NONE
+
+      INTEGER LVISITS(LHBINS), N, I, VISITSNONZERO(LHBINS),HMIN, HMAX, DELTAHK, NWL, LVISITS_S(SAMPLEDBINS)
+      LOGICAL CHECKFLATNESS, FLATBIN(LHBINS), FLATBIN_S(SAMPLEDBINS)
+      REAL(8) HDEV, LNMODFAC
+      CHARACTER (LEN =256) FILENAME
+      CHARACTER (LEN= 10)  ISTR
 
 
-      CheckFlatness=.false.
+      CHECKFLATNESS=.FALSE.
 
 
-!      Hmax=maxval(lVisits)
-!      do i=1, lHbins
-!         if (lVisits(i).ne.0) then
-!            VisitsNonzero(i)=lVisits(i)
-!         else
-!            VisitsNonzero(i)=huge(lhbins)
-!         endif
-!      enddo
-!      Hmin=minval(VisitsNonzero)
-!      if (debug) print *, 'Min and max', Hmin, Hmax
+!      HMAX=MAXVAL(LVISITS)
+!      DO I=1, LHBINS
+!         IF (LVISITS(I).NE.0) THEN
+!            VISITSNONZERO(I)=LVISITS(I)
+!         ELSE
+!            VISITSNONZERO(I)=HUGE(LHBINS)
+!         ENDIF
+!      ENDDO
+!      HMIN=MINVAL(VISITSNONZERO)
+!      IF (DEBUG) PRINT *, 'MIN AND MAX', HMIN, HMAX
 !
-!      HDev=(1.0d0*Hmax-Hmin)/(Hmax+Hmin)
+!      HDEV=(1.0D0*HMAX-HMIN)/(HMAX+HMIN)
     
 !  
-!     (abs(Hmin-Hmax)>HPercent)) needed to prevent the run from exiting right after the equilibration
+!     (ABS(HMIN-HMAX)>HPERCENT)) NEEDED TO PREVENT THE RUN FROM EXITING RIGHT AFTER THE EQUILIBRATION
 
 !     FLATNESS CONDITION
-!     if ((HDev<HPercent).and.(abs(1.0d0*Hmin-Hmax)>HPercent)) CheckFlatness=.true.
+!     IF ((HDEV<HPERCENT).AND.(ABS(1.0D0*HMIN-HMAX)>HPERCENT)) CHECKFLATNESS=.TRUE.
 
 
-!     VisitProp:minimal number of visits should be proportional to 1/sqrt(ln(f))
+!     VISITPROP:MINIMAL NUMBER OF VISITS SHOULD BE PROPORTIONAL TO 1/SQRT(LN(F))
 
-         CheckFlatness=.false.
-         FlatBin_S=.false.
+         CHECKFLATNESS=.FALSE.
+         FLATBIN_S=.FALSE.
  
-         do i=1, sampledbins
-            if (lVisits_S(i) > 1.0d0/sqrt(lnModFac)) FlatBin_S(i)=.True.
-         enddo
+         DO I=1, SAMPLEDBINS
+            IF (LVISITS_S(I) > 1.0D0/SQRT(LNMODFAC)) FLATBIN_S(I)=.TRUE.
+         ENDDO
  
-         if (All(FlatBin_S)) CheckFlatness=.true.
+         IF (ALL(FLATBIN_S)) CHECKFLATNESS=.TRUE.
 
-      end function CheckFlatness
+      END FUNCTION CHECKFLATNESS
 
 !---======================================---
     SUBROUTINE SAVEBINSTRUCTURES(CURRENTPOINTENERGY, CURRENTPOINTCOORDINATES, BININDEX, MINIMANUMBER, WRITESTRUCT)
@@ -206,7 +206,7 @@
             RETURN
          ENDIF
 
-         INQUIRE(FILE='binenergies', exist=yesno)
+         INQUIRE(FILE='BINENERGIES', EXIST=YESNO)
 
          NEWBINENERGY=.TRUE.
          DO JB=1, BINENSAVED
@@ -217,40 +217,40 @@
 
          IF (NEWBINENERGY) THEN
             BINENSAVED=BINENSAVED+1
-            !call ORDERQ4(Natoms, CurrentPointCoordinates, Q4orderparam)
+            !CALL ORDERQ4(NATOMS, CURRENTPOINTCOORDINATES, Q4ORDERPARAM)
             IF (ODIHET) CALL CHCALCDIHE(DIHEORDERPARAM,CURRENTPOINTCOORDINATES(1:3*NATOMS,1))
             IF (OSASAT) CALL ORDER_SASA(SASAORDERPARAM,RPRO,CURRENTPOINTCOORDINATES(1:3*NATOMS:3,1), &
                       & CURRENTPOINTCOORDINATES(2:3*NATOMS:3,1),CURRENTPOINTCOORDINATES(3:3*NATOMS:3,1))
             BINENERGIES(BINENSAVED)=CURRENTPOINTENERGY
             IF (WRITESTRUCT)  THEN
                 IF ((BINENSAVED.EQ.1).AND.(YESNO)) THEN
-                   OPEN(UNIT=1979,FILE='binenergies',status='old')
+                   OPEN(UNIT=1979,FILE='BINENERGIES',STATUS='OLD')
                 ELSE
-                   OPEN(UNIT=1979,FILE='binenergies',status='unknown',position='append')
+                   OPEN(UNIT=1979,FILE='BINENERGIES',STATUS='UNKNOWN',POSITION='APPEND')
                 ENDIF
-! jmc                write(1979,'(2G20.10)') CurrentPointEnergy, Q4orderparam
+! JMC                WRITE(1979,'(2G20.10)') CURRENTPOINTENERGY, Q4ORDERPARAM
                 IF (ODIHET.AND.OSASAT) THEN
-                   WRITE(1979,'(3G20.10)') CurrentPointEnergy, diheorderparam, SASAorderparam
+                   WRITE(1979,'(3G20.10)') CURRENTPOINTENERGY, DIHEORDERPARAM, SASAORDERPARAM
                 ELSEIF (OSASAT) THEN
-                   WRITE(1979,'(2G20.10)') CurrentPointEnergy, SASAorderparam
+                   WRITE(1979,'(2G20.10)') CURRENTPOINTENERGY, SASAORDERPARAM
                 ELSEIF (ODIHET) THEN
-                   WRITE(1979,'(2G20.10)') CurrentPointEnergy, diheorderparam
+                   WRITE(1979,'(2G20.10)') CURRENTPOINTENERGY, DIHEORDERPARAM
                 ELSE
-                   WRITE(1979,'(G20.10)') CurrentPointEnergy
+                   WRITE(1979,'(G20.10)') CURRENTPOINTENERGY
                 ENDIF
                 CLOSE (1979)
-                WRITE (ISTR, '(i10)') binindex
-                BINNAME="binstructures."//trim(adjustl(istr))
+                WRITE (ISTR, '(I10)') BININDEX
+                BINNAME="BINSTRUCTURES."//TRIM(ADJUSTL(ISTR))
                 IF ((BINENSAVED.EQ.1).AND.(YESNO)) THEN
-                   OPEN(UNIT=1979,FILE=BINNAME, STATUS="old", form="formatted")
+                   OPEN(UNIT=1979,FILE=BINNAME, STATUS="OLD", FORM="FORMATTED")
                 ELSE
-                   OPEN(UNIT=1979,FILE=BINNAME, STATUS="unknown", form="formatted", position="append")
+                   OPEN(UNIT=1979,FILE=BINNAME, STATUS="UNKNOWN", FORM="FORMATTED", POSITION="APPEND")
                 ENDIF
-                WRITE(1979,'(I10)') natoms
-                WRITE(1979,'(A,1G20.10)') '     Structure with energy ', CurrentPointEnergy
+                WRITE(1979,'(I10)') NATOMS
+                WRITE(1979,'(A,1G20.10)') '     STRUCTURE WITH ENERGY ', CURRENTPOINTENERGY
                 IF (CHRMMT) THEN
                    DO JB=1,NATOMS
-                      WRITE(1979,'(A,1X,3F20.10)') ZSYM(JB)(1:1),(CurrentPointCoordinates(3*(JB-1)+JC,1),JC=1,3)
+                      WRITE(1979,'(A,1X,3F20.10)') ZSYM(JB)(1:1),(CURRENTPOINTCOORDINATES(3*(JB-1)+JC,1),JC=1,3)
                    ENDDO
                 ELSE
                    WRITE(1979,30) (CURRENTPOINTCOORDINATES(JB,1),JB=1,3*NATOMS)
@@ -261,17 +261,17 @@
              MINIMANUMBER(BININDEX)=MINIMANUMBER(BININDEX)+1
          ENDIF
 
-! Importance Index 
+! IMPORTANCE INDEX 
 
  	 IF ((.NOT.NEWBINENERGY).AND.(WRITESTRUCT)) THEN 
-		OPEN(UNIT=1979,FILE="BinEnImportanceIndex", status="unknown", form="formatted")
+		OPEN(UNIT=1979,FILE="BINENIMPORTANCEINDEX", STATUS="UNKNOWN", FORM="FORMATTED")
 		DO JB=1, BINENSAVED
 	             IF (ABS(BINENERGIES(JB)-CURRENTPOINTENERGY).LE.BQMAX) THEN
 		     BINENIMPORTANCEINDEX(JB)=BINENIMPORTANCEINDEX(JB)+1
              	     ENDIF
          	ENDDO
 		DO JB=1, BINENSAVED
-		WRITE(1979,'(1G20.10, I10)') binenergies(jb), binenImportanceIndex(jb)
+		WRITE(1979,'(1G20.10, I10)') BINENERGIES(JB), BINENIMPORTANCEINDEX(JB)
 		ENDDO
 		CLOSE (1979)
 	 ENDIF
@@ -311,9 +311,9 @@
             RETURN
          ENDIF
 
-         WRITE (ISTR, '(i10)') NODE
-         FILENAME="binenergies."//trim(adjustl(istr))
-         INQUIRE(FILE='binenergies', exist=yesno)
+         WRITE (ISTR, '(I10)') NODE
+         FILENAME="BINENERGIES."//TRIM(ADJUSTL(ISTR))
+         INQUIRE(FILE='BINENERGIES', EXIST=YESNO)
 
          NEWBINENERGY=.TRUE.
          DO JB=1, BINENSAVED
@@ -324,40 +324,40 @@
 
          IF (NEWBINENERGY) THEN
             BINENSAVED=BINENSAVED+1
-            !call ORDERQ4(Natoms, CurrentPointCoordinates, Q4orderparam)
+            !CALL ORDERQ4(NATOMS, CURRENTPOINTCOORDINATES, Q4ORDERPARAM)
             IF (ODIHET) CALL CHCALCDIHE(DIHEORDERPARAM,CURRENTPOINTCOORDINATES(1:3*NATOMS,1))
             IF (OSASAT) CALL ORDER_SASA(SASAORDERPARAM,RPRO,CURRENTPOINTCOORDINATES(1:3*NATOMS:3,1), &
                       & CURRENTPOINTCOORDINATES(2:3*NATOMS:3,1),CURRENTPOINTCOORDINATES(3:3*NATOMS:3,1))
             BINENERGIES(BINENSAVED)=CURRENTPOINTENERGY
             IF (WRITESTRUCT)  THEN
                 IF ((BINENSAVED.EQ.1).AND.(YESNO)) THEN
-                   OPEN(UNIT=1979,FILE=FILENAME, STATUS="old", form="formatted")
+                   OPEN(UNIT=1979,FILE=FILENAME, STATUS="OLD", FORM="FORMATTED")
                 ELSE
-                   OPEN(UNIT=1979,FILE=FILENAME,form="formatted",status='unknown',position='append')
+                   OPEN(UNIT=1979,FILE=FILENAME,FORM="FORMATTED",STATUS='UNKNOWN',POSITION='APPEND')
                 ENDIF
-! jmc                write(1979,'(2G20.10)') CurrentPointEnergy, Q4orderparam
+! JMC                WRITE(1979,'(2G20.10)') CURRENTPOINTENERGY, Q4ORDERPARAM
                 IF (ODIHET.AND.OSASAT) THEN
-                   WRITE(1979,'(3G20.10)') CurrentPointEnergy, diheorderparam, SASAorderparam
+                   WRITE(1979,'(3G20.10)') CURRENTPOINTENERGY, DIHEORDERPARAM, SASAORDERPARAM
                 ELSEIF (OSASAT) THEN
-                   WRITE(1979,'(2G20.10)') CurrentPointEnergy, SASAorderparam
+                   WRITE(1979,'(2G20.10)') CURRENTPOINTENERGY, SASAORDERPARAM
                 ELSEIF (ODIHET) THEN
-                   WRITE(1979,'(2G20.10)') CurrentPointEnergy, diheorderparam
+                   WRITE(1979,'(2G20.10)') CURRENTPOINTENERGY, DIHEORDERPARAM
                 ELSE
-                   WRITE(1979,'(G20.6)') CurrentPointEnergy
+                   WRITE(1979,'(G20.6)') CURRENTPOINTENERGY
                 ENDIF
                 CLOSE (1979)
-                WRITE (JSTR, '(i10)') binindex
-                BINNAME="binstructures."//trim(adjustl(istr))//"T."//trim(adjustl(jstr))
+                WRITE (JSTR, '(I10)') BININDEX
+                BINNAME="BINSTRUCTURES."//TRIM(ADJUSTL(ISTR))//"T."//TRIM(ADJUSTL(JSTR))
                 IF ((BINENSAVED.EQ.1).AND.(YESNO)) THEN
-                   OPEN(UNIT=1979+NODE,FILE=BINNAME, STATUS="old", form="formatted")
+                   OPEN(UNIT=1979+NODE,FILE=BINNAME, STATUS="OLD", FORM="FORMATTED")
                 ELSE
-                   OPEN(UNIT=1979+NODE,FILE=BINNAME, STATUS="unknown", form="formatted", position="append")
+                   OPEN(UNIT=1979+NODE,FILE=BINNAME, STATUS="UNKNOWN", FORM="FORMATTED", POSITION="APPEND")
                 ENDIF
-                WRITE(1979+NODE,'(I10)') natoms
-                WRITE(1979+NODE,'(A,1G20.10)') '     Structure with energy ', CurrentPointEnergy
+                WRITE(1979+NODE,'(I10)') NATOMS
+                WRITE(1979+NODE,'(A,1G20.10)') '     STRUCTURE WITH ENERGY ', CURRENTPOINTENERGY
                 IF (CHRMMT) THEN
                    DO JB=1,NATOMS
-                      WRITE(1979+NODE,'(A,1X,3F20.10)') ZSYM(JB)(1:1),(CurrentPointCoordinates(3*(JB-1)+JC,1),JC=1,3)
+                      WRITE(1979+NODE,'(A,1X,3F20.10)') ZSYM(JB)(1:1),(CURRENTPOINTCOORDINATES(3*(JB-1)+JC,1),JC=1,3)
                    ENDDO
                 ELSE
                    WRITE(1979+NODE,30) (CURRENTPOINTCOORDINATES(JB,1),JB=1,3*NATOMS)
@@ -370,20 +370,20 @@
 
 
 
-! Importance Index 
+! IMPORTANCE INDEX 
 
  	 IF ((.NOT.NEWBINENERGY).AND.(WRITESTRUCT)) THEN 
-                BINNAME="BinEnImportanceIndex."//trim(adjustl(istr))
-		OPEN(UNIT=1980+node,FILE=binname, status="unknown", form="formatted")
+                BINNAME="BINENIMPORTANCEINDEX."//TRIM(ADJUSTL(ISTR))
+		OPEN(UNIT=1980+NODE,FILE=BINNAME, STATUS="UNKNOWN", FORM="FORMATTED")
 		DO JB=1, BINENSAVED
 	             IF (ABS(BINENERGIES(JB)-CURRENTPOINTENERGY).LE.BQMAX) THEN
-		     BINENIMPORTANCEINDEX(JB,node)=BINENIMPORTANCEINDEX(JB,node)+1
+		     BINENIMPORTANCEINDEX(JB,NODE)=BINENIMPORTANCEINDEX(JB,NODE)+1
              	     ENDIF
          	ENDDO
 		DO JB=1, BINENSAVED
-		WRITE(1980+node,'(1G20.10, I10)') binenergies(jb), binenImportanceIndex(jb,node)
+		WRITE(1980+NODE,'(1G20.10, I10)') BINENERGIES(JB), BINENIMPORTANCEINDEX(JB,NODE)
 		ENDDO
-		CLOSE (1980+node)
+		CLOSE (1980+NODE)
 	 ENDIF
  
          IF (BINENSAVED.EQ.SIZE(BINENERGIES)) THEN
@@ -392,4 +392,4 @@
 
          END SUBROUTINE SAVEBINSTRUCTURESMPI
    
-    end module tetherfunc
+    END MODULE TETHERFUNC

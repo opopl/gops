@@ -1,33 +1,33 @@
-!op226>=================================== 
-!op226> GPL License info {{{
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999- David J. Wales
-C   This file is part of GMIN.
+!OP226>=================================== 
+!OP226> GPL LICENSE INFO {{{
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999- DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
-!op226>}}} 
+!OP226>}}} 
       
-!> \name GMIN
-!> \brief Main program file for GMIN
-!> \param SCREENC
-!op226>=================================== 
+!> \NAME GMIN
+!> \BRIEF MAIN PROGRAM FILE FOR GMIN
+!> \PARAM SCREENC
+!OP226>=================================== 
       PROGRAM GMIN
-!op226>=================================== 
-!op226> Declarations {{{ 
-      !op226> Modules {{{ 
+!OP226>=================================== 
+!OP226> DECLARATIONS {{{ 
+      !OP226> MODULES {{{ 
       USE MODMXATMS
       USE NOA
       USE COMMONS
@@ -35,16 +35,16 @@ C
       USE PERMU
       USE F1COM
       USE MODAMBER
-      USE MODAMBER9, only : AMBFINALIO_NODE,MDCRD_UNIT,MDINFO_UNIT,AMBPDB_UNIT
+      USE MODAMBER9, ONLY : AMBFINALIO_NODE,MDCRD_UNIT,MDINFO_UNIT,AMBPDB_UNIT
       USE MODCHARMM
       USE PORFUNCS
-      !op226>  }}}
-      !op226> Other {{{
+      !OP226>  }}}
+      !OP226> OTHER {{{
       IMPLICIT NONE
       !EXTERNAL READ_CMD_ARGS
-#ifdef MPI
-      INCLUDE 'mpif.h'
-#endif
+#IFDEF MPI
+      INCLUDE 'MPIF.H'
+#ENDIF
       INTEGER J1,J2, JP, MPIERR, NDUMMY3,NPTOTAL,VERSIONTEMP
       DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:)
       DOUBLE PRECISION POTEL
@@ -53,17 +53,17 @@ C
       LOGICAL LOPEN
 
       CHARACTER(LEN=130) ISTR
-      CHARACTER(LEN=40) :: atom1,atom2,atompair
+      CHARACTER(LEN=40) :: ATOM1,ATOM2,ATOMPAIR
 
       COMMON /MYPOT/ POTEL
-!op226>  }}}
-!op226> End declarations }}}
-!op226>=================================== 
+!OP226>  }}}
+!OP226> END DECLARATIONS }}}
+!OP226>=================================== 
 
       CALL CPU_TIME(TSTART)
       CALL READ_CMD_ARGS
-#ifdef MPI
-!op226> MPI section {{{ 
+#IFDEF MPI
+!OP226> MPI SECTION {{{ 
       CALL MPI_INIT(MPIERR)
       CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NPAR,MPIERR)
       CALL MPI_COMM_RANK(MPI_COMM_WORLD,MYNODE,MPIERR)
@@ -73,17 +73,17 @@ C
       AMBPDB_UNIT=18000+MYNODE
       AMBFINALIO_NODE=200+MYNODE
       WRITE (ISTR, '(I10)') MYNODE+1
-      IF (TRIM(ADJUSTL(INFILE)).EQ.'') INFILE='GMIN_out'
+      IF (TRIM(ADJUSTL(INFILE)).EQ.'') INFILE='GMIN_OUT'
       IF (NPAR.GT.1) THEN 
          MYFILENAME=TRIM(ADJUSTL(INFILE))//"."//TRIM(ADJUSTL(ISTR))
       ELSE
          MYFILENAME=TRIM(ADJUSTL(INFILE))
       ENDIF
-      OPEN(MYUNIT,FILE=MYFILENAME, STATUS="unknown", form="formatted")
-      WRITE(MYUNIT, '(A,I10,A,I10)') "Starting parallel execution: Processor", mynode+1, " of ",NPAR
-!op226>}}} 
-#else
-!op226> Non-MPI section {{{ 
+      OPEN(MYUNIT,FILE=MYFILENAME, STATUS="UNKNOWN", FORM="FORMATTED")
+      WRITE(MYUNIT, '(A,I10,A,I10)') "STARTING PARALLEL EXECUTION: PROCESSOR", MYNODE+1, " OF ",NPAR
+!OP226>}}} 
+#ELSE
+!OP226> NON-MPI SECTION {{{ 
       NPAR=1
       MYNODE=0
       MYUNIT=22979+1
@@ -92,20 +92,20 @@ C
       AMBPDB_UNIT=18000
       AMBFINALIO_NODE=1
       IF (TRIM(ADJUSTL(INFILE)).EQ.'') THEN
-         MYFILENAME="GMIN_out"
+         MYFILENAME="GMIN_OUT"
       ELSE
          MYFILENAME=TRIM(ADJUSTL(INFILE))
       ENDIF
-      OPEN(MYUNIT,FILE=MYFILENAME, STATUS="unknown", form="formatted")
-      WRITE(MYUNIT, '(A,I10,A,I10,A)') "Starting serial execution" 
-!op226>}}} 
-#endif
-!op226> Allocate memory; open files; initialize different things  {{{ 
-! Add the GMIN version to the output - helps bug hunting :)
-      !WRITE(MYUNIT, '(A,I5)') 'GMIN version r',VERSIONTEMP
+      OPEN(MYUNIT,FILE=MYFILENAME, STATUS="UNKNOWN", FORM="FORMATTED")
+      WRITE(MYUNIT, '(A,I10,A,I10,A)') "STARTING SERIAL EXECUTION" 
+!OP226>}}} 
+#ENDIF
+!OP226> ALLOCATE MEMORY; OPEN FILES; INITIALIZE DIFFERENT THINGS  {{{ 
+! ADD THE GMIN VERSION TO THE OUTPUT - HELPS BUG HUNTING :)
+      !WRITE(MYUNIT, '(A,I5)') 'GMIN VERSION R',VERSIONTEMP
 !     CALL DISPLAY_VERSION(MYUNIT)
       CALL COUNTATOMS(MYUNIT)
-      IF (CHRMMT) WRITE(MYUNIT,'(A,I8)') 'main> MAXAIM parameter for CHARMM MXATMS=',MXATMS
+      IF (CHRMMT) WRITE(MYUNIT,'(A,I8)') 'MAIN> MAXAIM PARAMETER FOR CHARMM MXATMS=',MXATMS
       CALL MODCOMMONINIT
  
       ALLOCATE(FIN(3*NATOMS))
@@ -117,7 +117,7 @@ C
 
       INQUIRE(UNIT=1,OPENED=LOPEN)
       IF (LOPEN) THEN
-         WRITE(*,'(A,I2,A)') 'main> A ERROR *** Unit ', 1, ' is not free '
+         WRITE(*,'(A,I2,A)') 'MAIN> A ERROR *** UNIT ', 1, ' IS NOT FREE '
          STOP
       ENDIF
 
@@ -125,13 +125,13 @@ C
 
       INQUIRE(UNIT=1,OPENED=LOPEN)
       IF (LOPEN) THEN
-         WRITE(*,'(A,I2,A)') 'main> B ERROR *** Unit ', 1, ' is not free '
+         WRITE(*,'(A,I2,A)') 'MAIN> B ERROR *** UNIT ', 1, ' IS NOT FREE '
          STOP
       ENDIF
 
       IF (CHRIGIDTRANST.OR.CHRIGIDROTT) CALL CHSETSEG
 
-!op226> RMST {{{ 
+!OP226> RMST {{{ 
       IF (RMST) THEN
          ALLOCATE(RMSBEST(RMSSAVE,2),RMSCOOR(RMSSAVE,3*NATOMS))
          RMSBEST(1:RMSSAVE,1)=RMSLIMIT+RMSTOL
@@ -139,33 +139,33 @@ C
          RMSCOOR(1:RMSSAVE,1:3*NATOMS)=0.D0
          ALLOCATE(COORCOMP(1:3*NATOMS))
 !
-!        csw34> Need to add the read in for other file formats
-!        (crd,pdb). Still not sure how GMIN reads in the input.crd file
-!        for CHARMM. It appears to be reading into unit 7 in io1.f
-!        though - but only from xyz format! Is there a hidden
-!        conversion?
+!        CSW34> NEED TO ADD THE READ IN FOR OTHER FILE FORMATS
+!        (CRD,PDB). STILL NOT SURE HOW GMIN READS IN THE INPUT.CRD FILE
+!        FOR CHARMM. IT APPEARS TO BE READING INTO UNIT 7 IN IO1.F
+!        THOUGH - BUT ONLY FROM XYZ FORMAT! IS THERE A HIDDEN
+!        CONVERSION?
 !         
-         OPEN(UNIT=1,FILE='compare',STATUS='OLD')
+         OPEN(UNIT=1,FILE='COMPARE',STATUS='OLD')
          READ(1,*) (COORCOMP(J1),J1=1,3*NATOMS)
          CLOSE(1)
       ENDIF
-!op226>}}} 
+!OP226>}}} 
 
       ALLOCATE(FF(NSAVE),QMIN(NSAVE))
       ALLOCATE(QMINP(NSAVE,3*NATOMS))
 
-!        csw34> ALLOCATE the interaction energy tracking arrays if A9INTE in data
-!op226> IF (A9INTET.AND.AMBERT) THEN  {{{
+!        CSW34> ALLOCATE THE INTERACTION ENERGY TRACKING ARRAYS IF A9INTE IN DATA
+!OP226> IF (A9INTET.AND.AMBERT) THEN  {{{
       IF (A9INTET.AND.AMBERT) THEN 
          ALLOCATE(INTEFF(NSAVEINTE),INTEQMIN(NSAVEINTE))
          ALLOCATE(INTEQMINP(NSAVEINTE,3*NATOMS))
          INTEQMIN(:)=1.0D10 
-         INTEQMINP(1:NSAVEINTE,1:3*NATOMS)=0.0D0 ! to prevent reading from uninitialised memory
-         INTEFF(1:NSAVEINTE)=0 ! to prevent reading from uninitialised memory
+         INTEQMINP(1:NSAVEINTE,1:3*NATOMS)=0.0D0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
+         INTEFF(1:NSAVEINTE)=0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
       ENDIF  
-!op226>}}} 
+!OP226>}}} 
 
-!op226> GAUSST {{{ 
+!OP226> GAUSST {{{ 
       IF (GAUSST) THEN
          ALLOCATE(GAUSSKK(3*NATOMS,GMODES),GAUSSEE(GMODES),GKSMALL(3*NATOMS))
          CALL KEGEN ! INITIAL SETUP 
@@ -173,61 +173,61 @@ C
              PRINT *,J1,GAUSSEE(J1)
          ENDDO
       ENDIF
-!op226>}}} 
+!OP226>}}} 
 
-      QMINP(1:NSAVE,1:3*NATOMS)=0.0D0 ! to prevent reading from uninitialised memory
-      COORDSO(1:3*NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
-      FF(1:NSAVE)=0 ! to prevent reading from uninitialised memorY
-      VATO(1:NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
+      QMINP(1:NSAVE,1:3*NATOMS)=0.0D0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
+      COORDSO(1:3*NATOMS,1:NPAR)=0.0D0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
+      FF(1:NSAVE)=0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
+      VATO(1:NATOMS,1:NPAR)=0.0D0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
       ALLOCATE(ESAVE(NTAB,NPAR),XINSAVE(NTAB,NPAR))
       ALLOCATE(VEC(NVEC))
 
 !     IF (SYMMETRIZE.AND.(.NOT.CENT)) THEN
-!        PRINT '(A)','Probable input error - SYMMETRIZE true but CENT false'
+!        PRINT '(A)','PROBABLE INPUT ERROR - SYMMETRIZE TRUE BUT CENT FALSE'
 !        STOP
 !     ENDIF
 
-!op226> DUMPT {{{ 
+!OP226> DUMPT {{{ 
       IF (DUMPT) THEN
          IF (CHRMMT) THEN
-            OPEN(UNIT=719,FILE='dump.crd',STATUS='UNKNOWN')
-            OPEN(UNIT=720,FILE='dump.pdb',STATUS='UNKNOWN')
+            OPEN(UNIT=719,FILE='DUMP.CRD',STATUS='UNKNOWN')
+            OPEN(UNIT=720,FILE='DUMP.PDB',STATUS='UNKNOWN')
          ENDIF
          DUMPXYZUNIT=40
          DUMPVUNIT=39
          DO J1=1,NPAR
-            WRITE (ISTR,'(A5,I1,A4)') 'dump.',J1,'.xyz'
+            WRITE (ISTR,'(A5,I1,A4)') 'DUMP.',J1,'.XYZ'
             J2=DUMPXYZUNIT+J1
             OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
-            WRITE (ISTR,'(A5,I1,A2)') 'dump.',J1,'.V'
+            WRITE (ISTR,'(A5,I1,A2)') 'DUMP.',J1,'.V'
             J2=DUMPVUNIT-J1
             OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
          ENDDO
       ENDIF
-!op226>}}} 
+!OP226>}}} 
 
       IF (PAIRDISTT) THEN
          MYPUNIT=3000+MYNODE
          IF (NPAR.GT.1) THEN
-            OPEN(MYPUNIT,FILE="pairdists."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            OPEN(MYPUNIT,FILE="PAIRDISTS."//TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
          ELSE
-            OPEN(MYPUNIT,FILE="pairdists",STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            OPEN(MYPUNIT,FILE="PAIRDISTS",STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
          ENDIF
-         WRITE(MYPUNIT,'(A10)',ADVANCE="NO") "Quench  "
+         WRITE(MYPUNIT,'(A10)',ADVANCE="NO") "QUENCH  "
          DO J1=1,NPAIRS
-            WRITE(atom1,*) PAIRDIST(J1,1)
-            WRITE(atom2,*) PAIRDIST(J1,2)
-            WRITE(atompair,*) TRIM(ADJUSTL(atom1))//"-"//TRIM(ADJUSTL(atom2))
-            WRITE(MYPUNIT,'(A10)',ADVANCE="NO") TRIM(ADJUSTL(atompair))//"  " 
+            WRITE(ATOM1,*) PAIRDIST(J1,1)
+            WRITE(ATOM2,*) PAIRDIST(J1,2)
+            WRITE(ATOMPAIR,*) TRIM(ADJUSTL(ATOM1))//"-"//TRIM(ADJUSTL(ATOM2))
+            WRITE(MYPUNIT,'(A10)',ADVANCE="NO") TRIM(ADJUSTL(ATOMPAIR))//"  " 
          ENDDO
          WRITE(MYUNIT,'(A)') ""
       ENDIF
 
-!op226> TRACKDATAT {{{ 
+!OP226> TRACKDATAT {{{ 
 !
-!     csw34> TRACKDATA keyword prints the energy and markov energy 
-!     to files for viewing during a run. If RMS is also specified it
-!     prints the rmsd from the comparison structure into a file.
+!     CSW34> TRACKDATA KEYWORD PRINTS THE ENERGY AND MARKOV ENERGY 
+!     TO FILES FOR VIEWING DURING A RUN. IF RMS IS ALSO SPECIFIED IT
+!     PRINTS THE RMSD FROM THE COMPARISON STRUCTURE INTO A FILE.
 !
       IF (TRACKDATAT) THEN
          MYEUNIT=4000+MYNODE
@@ -235,27 +235,27 @@ C
          MYRUNIT=8000+MYNODE
          MYBUNIT=10000+MYNODE
          IF (NPAR.GT.1) THEN
-            OPEN(MYEUNIT,FILE="energy."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYMUNIT,FILE="markov."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYBUNIT,FILE="best."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            OPEN(MYEUNIT,FILE="ENERGY."//TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            OPEN(MYMUNIT,FILE="MARKOV."//TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            OPEN(MYBUNIT,FILE="BEST."//TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
          ELSE
-            OPEN(MYEUNIT,FILE='energy',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYMUNIT,FILE='markov',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            IF (RMST) OPEN(MYRUNIT,FILE='rmsd',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYBUNIT,FILE='best',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            OPEN(MYEUNIT,FILE='ENERGY',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            OPEN(MYMUNIT,FILE='MARKOV',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            IF (RMST) OPEN(MYRUNIT,FILE='RMSD',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            OPEN(MYBUNIT,FILE='BEST',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
             IF (A9INTET) THEN
-               OPEN(UNIT=3998,FILE='intE.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-               OPEN(UNIT=3999,FILE='bestintE.dat',STATUS='UNKNOWN',FORM='FORMATTED')
+               OPEN(UNIT=3998,FILE='INTE.DAT',STATUS='UNKNOWN',FORM='FORMATTED')
+               OPEN(UNIT=3999,FILE='BESTINTE.DAT',STATUS='UNKNOWN',FORM='FORMATTED')
             ENDIF            
          ENDIF
       ENDIF
-!op226>}}} 
+!OP226>}}} 
       CALL FLUSH(6)
       CALL IO1
-!op226> CSMT {{{ 
+!OP226> CSMT {{{ 
 !
-! If this is a CSM optimisation we now have to multiply the number of atoms by the number of
-! group operations and replicate some coordinates and allowed permutations.
+! IF THIS IS A CSM OPTIMISATION WE NOW HAVE TO MULTIPLY THE NUMBER OF ATOMS BY THE NUMBER OF
+! GROUP OPERATIONS AND REPLICATE SOME COORDINATES AND ALLOWED PERMUTATIONS.
 !
       IF (CSMT) THEN
          CALL CSMINIT
@@ -265,20 +265,20 @@ C
             CSMMAXIT=MAXIT
          ENDIF
       ENDIF
-!op226>}}} 
+!OP226>}}} 
 
       CALL FLUSH(6)
 
-!op226> PROJIT {{{ 
+!OP226> PROJIT {{{ 
       IF (PROJIT) THEN
          ALLOCATE(TMPCOORDS(3*NATOMS))
          TMPCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,1)
          CALL PROJIINIT(TMPCOORDS,NATOMS)
          DEALLOCATE(TMPCOORDS)
       ENDIF
-!op226>}}} 
+!OP226>}}} 
 
-!op226> VGW SEEDT {{{ 
+!OP226> VGW SEEDT {{{ 
       IF(VGW) THEN
         CALL INITIALIZE_VGWSP(NATOMS,LJSIGMA,LJEPSILON,TAUMAX,CPFACTORSG,CPS,VGWTOL)
         CALL INITIALIZE_VGW(NATOMS,LJSIGMA,LJEPSILON,TAUMAXFULL,CPFACTORFG,CPF)
@@ -297,7 +297,7 @@ C
             ENDDO
          ENDIF
       ENDIF
-!op226>}}} 
+!OP226>}}} 
 
       IF (SUPERSTEP) NSUPERSTEP=0
       
@@ -307,19 +307,19 @@ C
       DO J1=1,NSAVE
          QMIN(J1)=1.0D10
       ENDDO
-!op226> End initializations and allocations }}} 
+!OP226> END INITIALIZATIONS AND ALLOCATIONS }}} 
 
-!op226> Main program run
+!OP226> MAIN PROGRAM RUN
       IF ((NRUNS.GT.0).OR.PTMC.OR.BSPT) CALL MCRUNS(SCREENC)
 
-C     CALL SYSTEM('rm ssdump ssave >& /dev/null')
+C     CALL SYSTEM('RM SSDUMP SSAVE >& /DEV/NULL')
 
-!op226> Deallocate memory; close files {{{ 
+!OP226> DEALLOCATE MEMORY; CLOSE FILES {{{ 
       IF (ALLOCATED(FIN)) DEALLOCATE(FIN)
       IF (ALLOCATED(XICOM)) DEALLOCATE(XICOM)
       IF (ALLOCATED(PCOM)) DEALLOCATE(PCOM)
       IF (ALLOCATED(GAUSSKK)) DEALLOCATE(GAUSSKK,GAUSSEE)
-C     deallocate dynamic memory for AMBER
+C     DEALLOCATE DYNAMIC MEMORY FOR AMBER
       IF (AMBERT) CALL AMBER_DEALLOCATE_STACKS
       CALL MODCOMMONDEINIT
       CALL FLUSH(MYUNIT)
@@ -330,9 +330,9 @@ C     deallocate dynamic memory for AMBER
       ENDIF
 
       CLOSE(MYUNIT)
-! csw34> close pairdists.* files
+! CSW34> CLOSE PAIRDISTS.* FILES
       IF (PAIRDISTT) CLOSE(MYPUNIT)
-!op226> closing files for: TRACKDATAT RMST A9INTET {{{ 
+!OP226> CLOSING FILES FOR: TRACKDATAT RMST A9INTET {{{ 
       IF (TRACKDATAT) THEN
          CLOSE(MYEUNIT)
          CLOSE(MYMUNIT)
@@ -343,12 +343,12 @@ C     deallocate dynamic memory for AMBER
             CLOSE(3999)
          ENDIF
       ENDIF
-!op226>}}} 
-#ifdef MPI
+!OP226>}}} 
+#IFDEF MPI
       CALL MPI_FINALIZE(MPIERR)
-#endif
+#ENDIF
 
-!op226>}}} 
+!OP226>}}} 
       STOP
 
       END

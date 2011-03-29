@@ -1,550 +1,550 @@
-      Module amhglobals
+      MODULE AMHGLOBALS
       
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-cc             old arraysize.inc include file
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+CC             OLD ARRAYSIZE.INC INCLUDE FILE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-        implicit none
-        save
+        IMPLICIT NONE
+        SAVE
 
-c     maxsiz is the maximum number of amino acid residues
+C     MAXSIZ IS THE MAXIMUM NUMBER OF AMINO ACID RESIDUES
 
-         integer maxsiz
-         parameter (maxsiz=80)
+         INTEGER MAXSIZ
+         PARAMETER (MAXSIZ=80)
 
-c     maxcnt is the maximum number of (i,j)
-c     interactions
+C     MAXCNT IS THE MAXIMUM NUMBER OF (I,J)
+C     INTERACTIONS
 
-        integer maxcnt
-        parameter(maxcnt=(maxsiz**2-maxsiz)/2)
-c       parameter(maxcnt=31250)
-c       parameter(maxcnt=7022)
-        integer max_well
-        parameter(max_well=10)
+        INTEGER MAXCNT
+        PARAMETER(MAXCNT=(MAXSIZ**2-MAXSIZ)/2)
+C       PARAMETER(MAXCNT=31250)
+C       PARAMETER(MAXCNT=7022)
+        INTEGER MAX_WELL
+        PARAMETER(MAX_WELL=10)
 
-      integer max_letters
-      parameter (max_letters=21)
+      INTEGER MAX_LETTERS
+      PARAMETER (MAX_LETTERS=21)
 
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-cc             old head include file
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+CC             OLD HEAD INCLUDE FILE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-      integer maxmem
-      parameter(maxmem=40)
+      INTEGER MAXMEM
+      PARAMETER(MAXMEM=40)
 
-      integer maxpro
-      parameter(maxpro=1)
+      INTEGER MAXPRO
+      PARAMETER(MAXPRO=1)
 
-c     maxres is the maximum number of amino acid residues
-c     for a database protein
+C     MAXRES IS THE MAXIMUM NUMBER OF AMINO ACID RESIDUES
+C     FOR A DATABASE PROTEIN
 
-      integer maxres
-      parameter(maxres=650)
+      INTEGER MAXRES
+      PARAMETER(MAXRES=650)
 
-c     maxcrd is the maximum number of coordinate types;
+C     MAXCRD IS THE MAXIMUM NUMBER OF COORDINATE TYPES;
 
-      integer maxcrd
-      parameter(maxcrd=3)
+      INTEGER MAXCRD
+      PARAMETER(MAXCRD=3)
 
-c     maxtab is the maximum number of tables, i.e.,
-c     the number of pairwise ixns;
+C     MAXTAB IS THE MAXIMUM NUMBER OF TABLES, I.E.,
+C     THE NUMBER OF PAIRWISE IXNS;
 
-      integer maxtab
-      parameter(maxtab=4)
+      INTEGER MAXTAB
+      PARAMETER(MAXTAB=4)
 
-c     multiple seq  + partial constraining
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+C     MULTIPLE SEQ  + PARTIAL CONSTRAINING
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-      logical cyclic,ss_a,ss_b
-      integer num_foldon_a,num_foldon_b,const_mode, totalssnorm
-      integer foldstrt_min_a(maxres),foldstrt_max_a(maxres)
-      integer foldstrt_min_b(maxres),foldstrt_max_b(maxres)
-      integer ss_pattern_a(maxres), ss_pattern_b(maxres)
-!         integer ss_alpha(maxres), ss_beta(maxres)
-!         integer sa_alpha(maxres), sa_beta(maxres)
+      LOGICAL CYCLIC,SS_A,SS_B
+      INTEGER NUM_FOLDON_A,NUM_FOLDON_B,CONST_MODE, TOTALSSNORM
+      INTEGER FOLDSTRT_MIN_A(MAXRES),FOLDSTRT_MAX_A(MAXRES)
+      INTEGER FOLDSTRT_MIN_B(MAXRES),FOLDSTRT_MAX_B(MAXRES)
+      INTEGER SS_PATTERN_A(MAXRES), SS_PATTERN_B(MAXRES)
+!         INTEGER SS_ALPHA(MAXRES), SS_BETA(MAXRES)
+!         INTEGER SA_ALPHA(MAXRES), SA_BETA(MAXRES)
  
-      double precision ss_dist(500,500,maxtab)
+      DOUBLE PRECISION SS_DIST(500,500,MAXTAB)
 
-c     switch for averaging force table over sequences
+C     SWITCH FOR AVERAGING FORCE TABLE OVER SEQUENCES
 
-      logical ave_seq,targ_cons, mem_cons,ave_seq_hb
-      logical ssweight,ave_seq_amw, ave_seq_amc
-      integer maxseq,numseq,numseq_hb,numseq_amw
-      integer numseq_amc
-      parameter (maxseq=2)
+      LOGICAL AVE_SEQ,TARG_CONS, MEM_CONS,AVE_SEQ_HB
+      LOGICAL SSWEIGHT,AVE_SEQ_AMW, AVE_SEQ_AMC
+      INTEGER MAXSEQ,NUMSEQ,NUMSEQ_HB,NUMSEQ_AMW
+      INTEGER NUMSEQ_AMC
+      PARAMETER (MAXSEQ=2)
       
-      integer tgsequences(maxres,maxseq)
-      integer tgsequences_hb(maxres,maxseq)
-      integer tgsequences_amw(maxres,maxseq)
-      integer tgsequences_amc(maxres,maxseq)
+      INTEGER TGSEQUENCES(MAXRES,MAXSEQ)
+      INTEGER TGSEQUENCES_HB(MAXRES,MAXSEQ)
+      INTEGER TGSEQUENCES_AMW(MAXRES,MAXSEQ)
+      INTEGER TGSEQUENCES_AMC(MAXRES,MAXSEQ)
 
-      double precision aps(maxres,maxres)
+      DOUBLE PRECISION APS(MAXRES,MAXRES)
 
-       character homlfl(maxseq)*5
-cccc  MCP
+       CHARACTER HOMLFL(MAXSEQ)*5
+CCCC  MCP
 
-      DOUBLE PRECISION x_int(maxres*3*3)
-      DOUBLE PRECISION x_mcp(maxres*3*3) 
-      double precision E_temp, E_harm_springs
+      DOUBLE PRECISION X_INT(MAXRES*3*3)
+      DOUBLE PRECISION X_MCP(MAXRES*3*3) 
+      DOUBLE PRECISION E_TEMP, E_HARM_SPRINGS
 
-cccc   go contact
+CCCC   GO CONTACT
 
-      logical go_con
-      double precision    go_con_dist
+      LOGICAL GO_CON
+      DOUBLE PRECISION    GO_CON_DIST
 
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-cc             old additions include file
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+CC             OLD ADDITIONS INCLUDE FILE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-      logical alpha_c_of_n,ab_c_of_n_old,ab_c_of_n_new,quench
-      logical beta_c_of_n,dist_cut
-      integer nquench
+      LOGICAL ALPHA_C_OF_N,AB_C_OF_N_OLD,AB_C_OF_N_NEW,QUENCH
+      LOGICAL BETA_C_OF_N,DIST_CUT
+      INTEGER NQUENCH
 
-c     oxscl is scaling constant for oxygen potential
+C     OXSCL IS SCALING CONSTANT FOR OXYGEN POTENTIAL
 
-      double precision oxscl
+      DOUBLE PRECISION OXSCL
 
-c     hbscl is the scale factor for hbonds
+C     HBSCL IS THE SCALE FACTOR FOR HBONDS
 
-        double precision hbscl(17)
-        double precision sigma_h,sigma_NO,ho_zero,NO_zero
-        double precision :: anti_NHB(20,20,2),anti_HB(20,20,2),
-     *                  para_HB(20,20,2),para_one(20),anti_one(20)
+        DOUBLE PRECISION HBSCL(17)
+        DOUBLE PRECISION SIGMA_H,SIGMA_NO,HO_ZERO,NO_ZERO
+        DOUBLE PRECISION :: ANTI_NHB(20,20,2),ANTI_HB(20,20,2),
+     *                  PARA_HB(20,20,2),PARA_ONE(20),ANTI_ONE(20)
 
-c     lamdaR is a scale factor for incorrect 
-c     memories
+C     LAMDAR IS A SCALE FACTOR FOR INCORRECT 
+C     MEMORIES
 
-        double precision lambdaR
+        DOUBLE PRECISION LAMBDAR
 
-c     chrlscl is the scaling parameter for chiral forces
+C     CHRLSCL IS THE SCALING PARAMETER FOR CHIRAL FORCES
 
-      double precision chrlscl
+      DOUBLE PRECISION CHRLSCL
 
-c     scaling parameters for ramachondrian plots
+C     SCALING PARAMETERS FOR RAMACHONDRIAN PLOTS
 
-      double precision ramascl
+      DOUBLE PRECISION RAMASCL
 
-c     scaling parameters for oxygen excluded volume
+C     SCALING PARAMETERS FOR OXYGEN EXCLUDED VOLUME
 
-      double precision oexcldscl
+      DOUBLE PRECISION OEXCLDSCL
 
-c     C-C excluded volume distance array
+C     C-C EXCLUDED VOLUME DISTANCE ARRAY
 
-      double precision ccev_dist(1:maxcnt,1:maxtab),ooev_dist(1:maxcnt)
+      DOUBLE PRECISION CCEV_DIST(1:MAXCNT,1:MAXTAB),OOEV_DIST(1:MAXCNT)
 
-c       flag for sec-setruc dependendent gamma is ss class
+C       FLAG FOR SEC-SETRUC DEPENDENDENT GAMMA IS SS CLASS
 
-        logical four_plus
-c     other flags controlling encoding used
-c     i_ignore_chain_dirn says encoding doesn't depend on chain direction 
-c     mismatch says encoding doesn't depend on what memory protein pair
-c     is if the identities are not identical to the target pair (ie they are mismatched)
+        LOGICAL FOUR_PLUS
+C     OTHER FLAGS CONTROLLING ENCODING USED
+C     I_IGNORE_CHAIN_DIRN SAYS ENCODING DOESN'T DEPEND ON CHAIN DIRECTION 
+C     MISMATCH SAYS ENCODING DOESN'T DEPEND ON WHAT MEMORY PROTEIN PAIR
+C     IS IF THE IDENTITIES ARE NOT IDENTICAL TO THE TARGET PAIR (IE THEY ARE MISMATCHED)
 
-        logical i_ignore_chain_dirn,mismatch
+        LOGICAL I_IGNORE_CHAIN_DIRN,MISMATCH
 
-c     flag and scle factor for biasing the  funnel
-c temp old 
-!      logical i_Qbias,i_bias_native
-!      integer n_Qbias,i_Q_format
-!      double precision Qbiaspoly(1:100),
-!      double precision          width_Qexp,Q0,Q_weight,Q_clip
-!      integer n_Q_anneal
-
-
-      integer n_divs_max
-      parameter (n_divs_max=1000)
-      logical ibiasgauss,ibiaspoly,i_Qbias_a,i_bias_native_a
-      logical con_local_a, con_local_b
-      integer con_local_a_cut, con_local_b_cut
-      integer nbiaspoly,n_Qbias_a,i_Q_format_a
-      double precision bias_weight,bias_av,bias_var,bias_prefactor,
-     *           biaspoly(1:100),Qbiaspoly_a(1:100),
-     *           width_Qexp_a,Q0_a,Q_weight_a,Q_clip_a,
-     *           Q0_safe_a, Q0_safe_b,
-     *           Q0_inc_a,Q0_inc_b,Qvalue_a,Qvalue_b
-      integer n_Q_anneal_a,n_Q_anneal_b
-
-       double precision del_r_a(1:maxsiz),
-     *           Q_ij_a(0:n_divs_max,maxsiz),
-     *          dQ_dr_ij_a(1:n_divs_max,1:maxsiz)
-
-      logical i_Qbias_b,i_bias_native_b
-      integer n_Qbias_b,i_Q_format_b
-      double precision   Qbiaspoly_b(1:100)
-      double precision        width_Qexp_b, Q0_b,Q_weight_b,Q_clip_b
-
-      integer seglist_a(maxres), seglist_b(maxres),
-     *        numconst_a,i_ixn_Qbias_b(maxres,maxres),
-     *        numconst_b,i_ixn_Qbias_a(maxres,maxres)
-
-       double precision del_r_b(1:maxsiz),
-     *           Q_ij_b(0:n_divs_max,maxsiz),
-     *          dQ_dr_ij_b(1:n_divs_max,1:maxsiz)
-
-c     flag and parameters for |i-j| dependent 'contact order' interaction
-      logical i_contact_order
-      integer n_contact_order_terms
-      integer, parameter:: max_contact_order_terms=5
-      integer i_contact_order_min(max_contact_order_terms),
-     *        i_contact_order_max(max_contact_order_terms)
-      double precision r_min_contact_order(max_contact_order_terms),
-     *     r_max_contact_order(max_contact_order_terms)
-      double precision gamma_contact_order(max_contact_order_terms,3)
-c     GAP, 03/23/04, The minimum separation + 1 for the interactions in the contact class
-      integer, parameter:: CUTOFF_CONT_LOW=13
-
-c     flag and parameters for radius of gyration force
-
-      logical i_rg_corey
-      double precision rg_bounds(2)
-      logical i_Rg_bias
-      integer n_Rg_bias
-      double precision Rg_biaspoly(1:100)
-      double precision rg_shift
-      double precision rg_scl
-
-      logical i_rg_garyk, i_rg_first
-      double precision D_rg, T_rg, delR_rg, M_rg, kappa_rg
-
-      double precision targ_dist(maxcnt,maxtab)
-!      double precision dQ_dr_ij(1:n_divs_max,1:maxsiz)
-!    e double precision del_r(1:maxsiz), Q_ij(0:n_divs_max,maxsiz)
-
-      double precision ngomb
-      logical igomb
-
-c iscltab is switch for scltab subroutine
-      logical iscltab
-c iclassweight allows (rather sneaky) scaling of gammas by class
-      logical iclassweight
-
-c some variables for non-additive contact potential
-
-      logical :: i_non_add_contact
-      integer, parameter:: ngamma_non_add=32
-      integer class_of_res_2(maxsiz),sort_non_add(2,2,2,2,2),
-     *   class_2(20)
-      double precision :: gamma_non_add(ngamma_non_add)
-
-c variables for Parallel/Anti-Parallel contact potential
-
-      logical:: i_con_P_AP
-      integer:: i_diff_P_AP,i_atom_P_AP
-       double precision :: weight_P_AP(3),r_cut_P_AP
-
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-cc             old potent include file
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+C     FLAG AND SCLE FACTOR FOR BIASING THE  FUNNEL
+C TEMP OLD 
+!      LOGICAL I_QBIAS,I_BIAS_NATIVE
+!      INTEGER N_QBIAS,I_Q_FORMAT
+!      DOUBLE PRECISION QBIASPOLY(1:100),
+!      DOUBLE PRECISION          WIDTH_QEXP,Q0,Q_WEIGHT,Q_CLIP
+!      INTEGER N_Q_ANNEAL
 
 
-c     parameter file for potential
+      INTEGER N_DIVS_MAX
+      PARAMETER (N_DIVS_MAX=1000)
+      LOGICAL IBIASGAUSS,IBIASPOLY,I_QBIAS_A,I_BIAS_NATIVE_A
+      LOGICAL CON_LOCAL_A, CON_LOCAL_B
+      INTEGER CON_LOCAL_A_CUT, CON_LOCAL_B_CUT
+      INTEGER NBIASPOLY,N_QBIAS_A,I_Q_FORMAT_A
+      DOUBLE PRECISION BIAS_WEIGHT,BIAS_AV,BIAS_VAR,BIAS_PREFACTOR,
+     *           BIASPOLY(1:100),QBIASPOLY_A(1:100),
+     *           WIDTH_QEXP_A,Q0_A,Q_WEIGHT_A,Q_CLIP_A,
+     *           Q0_SAFE_A, Q0_SAFE_B,
+     *           Q0_INC_A,Q0_INC_B,QVALUE_A,QVALUE_B
+      INTEGER N_Q_ANNEAL_A,N_Q_ANNEAL_B
 
-c     nummem is the number of protein memories 
-c     used in the potential
+       DOUBLE PRECISION DEL_R_A(1:MAXSIZ),
+     *           Q_IJ_A(0:N_DIVS_MAX,MAXSIZ),
+     *          DQ_DR_IJ_A(1:N_DIVS_MAX,1:MAXSIZ)
 
-      integer nummem
+      LOGICAL I_QBIAS_B,I_BIAS_NATIVE_B
+      INTEGER N_QBIAS_B,I_Q_FORMAT_B
+      DOUBLE PRECISION   QBIASPOLY_B(1:100)
+      DOUBLE PRECISION        WIDTH_QEXP_B, Q0_B,Q_WEIGHT_B,Q_CLIP_B
 
-c     numpro is the number of ensemble proteins 
+      INTEGER SEGLIST_A(MAXRES), SEGLIST_B(MAXRES),
+     *        NUMCONST_A,I_IXN_QBIAS_B(MAXRES,MAXRES),
+     *        NUMCONST_B,I_IXN_QBIAS_A(MAXRES,MAXRES)
+
+       DOUBLE PRECISION DEL_R_B(1:MAXSIZ),
+     *           Q_IJ_B(0:N_DIVS_MAX,MAXSIZ),
+     *          DQ_DR_IJ_B(1:N_DIVS_MAX,1:MAXSIZ)
+
+C     FLAG AND PARAMETERS FOR |I-J| DEPENDENT 'CONTACT ORDER' INTERACTION
+      LOGICAL I_CONTACT_ORDER
+      INTEGER N_CONTACT_ORDER_TERMS
+      INTEGER, PARAMETER:: MAX_CONTACT_ORDER_TERMS=5
+      INTEGER I_CONTACT_ORDER_MIN(MAX_CONTACT_ORDER_TERMS),
+     *        I_CONTACT_ORDER_MAX(MAX_CONTACT_ORDER_TERMS)
+      DOUBLE PRECISION R_MIN_CONTACT_ORDER(MAX_CONTACT_ORDER_TERMS),
+     *     R_MAX_CONTACT_ORDER(MAX_CONTACT_ORDER_TERMS)
+      DOUBLE PRECISION GAMMA_CONTACT_ORDER(MAX_CONTACT_ORDER_TERMS,3)
+C     GAP, 03/23/04, THE MINIMUM SEPARATION + 1 FOR THE INTERACTIONS IN THE CONTACT CLASS
+      INTEGER, PARAMETER:: CUTOFF_CONT_LOW=13
+
+C     FLAG AND PARAMETERS FOR RADIUS OF GYRATION FORCE
+
+      LOGICAL I_RG_COREY
+      DOUBLE PRECISION RG_BOUNDS(2)
+      LOGICAL I_RG_BIAS
+      INTEGER N_RG_BIAS
+      DOUBLE PRECISION RG_BIASPOLY(1:100)
+      DOUBLE PRECISION RG_SHIFT
+      DOUBLE PRECISION RG_SCL
+
+      LOGICAL I_RG_GARYK, I_RG_FIRST
+      DOUBLE PRECISION D_RG, T_RG, DELR_RG, M_RG, KAPPA_RG
+
+      DOUBLE PRECISION TARG_DIST(MAXCNT,MAXTAB)
+!      DOUBLE PRECISION DQ_DR_IJ(1:N_DIVS_MAX,1:MAXSIZ)
+!    E DOUBLE PRECISION DEL_R(1:MAXSIZ), Q_IJ(0:N_DIVS_MAX,MAXSIZ)
+
+      DOUBLE PRECISION NGOMB
+      LOGICAL IGOMB
+
+C ISCLTAB IS SWITCH FOR SCLTAB SUBROUTINE
+      LOGICAL ISCLTAB
+C ICLASSWEIGHT ALLOWS (RATHER SNEAKY) SCALING OF GAMMAS BY CLASS
+      LOGICAL ICLASSWEIGHT
+
+C SOME VARIABLES FOR NON-ADDITIVE CONTACT POTENTIAL
+
+      LOGICAL :: I_NON_ADD_CONTACT
+      INTEGER, PARAMETER:: NGAMMA_NON_ADD=32
+      INTEGER CLASS_OF_RES_2(MAXSIZ),SORT_NON_ADD(2,2,2,2,2),
+     *   CLASS_2(20)
+      DOUBLE PRECISION :: GAMMA_NON_ADD(NGAMMA_NON_ADD)
+
+C VARIABLES FOR PARALLEL/ANTI-PARALLEL CONTACT POTENTIAL
+
+      LOGICAL:: I_CON_P_AP
+      INTEGER:: I_DIFF_P_AP,I_ATOM_P_AP
+       DOUBLE PRECISION :: WEIGHT_P_AP(3),R_CUT_P_AP
+
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+CC             OLD POTENT INCLUDE FILE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+
+C     PARAMETER FILE FOR POTENTIAL
+
+C     NUMMEM IS THE NUMBER OF PROTEIN MEMORIES 
+C     USED IN THE POTENTIAL
+
+      INTEGER NUMMEM
+
+C     NUMPRO IS THE NUMBER OF ENSEMBLE PROTEINS 
  
-      integer numpro
-c     nmres is the actual protein size used
+      INTEGER NUMPRO
+C     NMRES IS THE ACTUAL PROTEIN SIZE USED
 
-      integer nmres
+      INTEGER NMRES
 
-c     i_rama is the flag for rama potential
-c     (0=off 1=on (new) 2=on (old)
+C     I_RAMA IS THE FLAG FOR RAMA POTENTIAL
+C     (0=OFF 1=ON (NEW) 2=ON (OLD)
 
-       integer i_rama
+       INTEGER I_RAMA
 
-c     hbond is the hbond flag for hbonds
+C     HBOND IS THE HBOND FLAG FOR HBONDS
 
-        logical hbond,i_hbond_eastwood,i_hbond_czong
+        LOGICAL HBOND,I_HBOND_EASTWOOD,I_HBOND_CZONG
 
-c     oxexcldv is the flag for oxygen-oxygen excluded volume
+C     OXEXCLDV IS THE FLAG FOR OXYGEN-OXYGEN EXCLUDED VOLUME
 
-        logical oxexcldv
-        double precision o_exvmin,o_exvminS(1:4)   !sep where O-O ev comes on
+        LOGICAL OXEXCLDV
+        DOUBLE PRECISION O_EXVMIN,O_EXVMINS(1:4)   !SEP WHERE O-O EV COMES ON
 
-c     numcrd is the number of coordinate types
+C     NUMCRD IS THE NUMBER OF COORDINATE TYPES
 
-      integer numcrd,numtab
+      INTEGER NUMCRD,NUMTAB
 
-c     charge switches
+C     CHARGE SWITCHES
 
-      logical i_alt_prox,i_3rd_is_contact,gly_con
-      integer n_letters,min_seq_sep,num_well,n_letters_con
-      double precision alt_prox_cut
+      LOGICAL I_ALT_PROX,I_3RD_IS_CONTACT,GLY_CON
+      INTEGER N_LETTERS,MIN_SEQ_SEP,NUM_WELL,N_LETTERS_CON
+      DOUBLE PRECISION ALT_PROX_CUT
 
-c     maxr is the grid resolution of the force lookup table
+C     MAXR IS THE GRID RESOLUTION OF THE FORCE LOOKUP TABLE
 
-      integer maxr,maxs
-      parameter(maxr=400)
+      INTEGER MAXR,MAXS
+      PARAMETER(MAXR=400)
 
-c     srplr is  rel weights of short-med-long range energy if iclassweight=true
+C     SRPLR IS  REL WEIGHTS OF SHORT-MED-LONG RANGE ENERGY IF ICLASSWEIGHT=TRUE
 
-      double precision srplr(3)
+      DOUBLE PRECISION SRPLR(3)
 
-c     eres is the target energy/residue
+C     ERES IS THE TARGET ENERGY/RESIDUE
 
-      double precision eres
+      DOUBLE PRECISION ERES
 
-c     minmr and maxmr partition the protein
-c     into short- med- and long-range ixns
-c     the medium range class goes from minmr--maxmr inclusive
+C     MINMR AND MAXMR PARTITION THE PROTEIN
+C     INTO SHORT- MED- AND LONG-RANGE IXNS
+C     THE MEDIUM RANGE CLASS GOES FROM MINMR--MAXMR INCLUSIVE
 
-      integer minmr,maxmr
+      INTEGER MINMR,MAXMR
 
-c     delta is used in determining the range
-c     of the upper and lower bounds for the memory
-c     distances (the square-well half width)
+C     DELTA IS USED IN DETERMINING THE RANGE
+C     OF THE UPPER AND LOWER BOUNDS FOR THE MEMORY
+C     DISTANCES (THE SQUARE-WELL HALF WIDTH)
 
-      double precision delta,delte
+      DOUBLE PRECISION DELTA,DELTE
 
-c     rcut is the maximum ixn distance
-c     sr cut is division between sr/lr ints (in space) 
+C     RCUT IS THE MAXIMUM IXN DISTANCE
+C     SR CUT IS DIVISION BETWEEN SR/LR INTS (IN SPACE) 
 
-      double precision rcut,rcutAMH,srcut
+      DOUBLE PRECISION RCUT,RCUTAMH,SRCUT
 
-c     if iexcld, then turn on excluded-volume penalty
+C     IF IEXCLD, THEN TURN ON EXCLUDED-VOLUME PENALTY
 
-      logical iexcld
+      LOGICAL IEXCLD
 
-      logical iexcld_gamma,iexcld_beta
-      integer i_type_ev_gamma
-      double precision pexcld_gamma
-      double precision exvmin_gamma(maxsiz,maxsiz)
-      double precision c_of_m_dist(maxsiz)
+      LOGICAL IEXCLD_GAMMA,IEXCLD_BETA
+      INTEGER I_TYPE_EV_GAMMA
+      DOUBLE PRECISION PEXCLD_GAMMA
+      DOUBLE PRECISION EXVMIN_GAMMA(MAXSIZ,MAXSIZ)
+      DOUBLE PRECISION C_OF_M_DIST(MAXSIZ)
 
-c     rexcld is the minimum allowed distance 
-c     between residues
-c     pexcld is the penalty associated w/ violating the self-
-c     avoiding cutoff, rexcld
+C     REXCLD IS THE MINIMUM ALLOWED DISTANCE 
+C     BETWEEN RESIDUES
+C     PEXCLD IS THE PENALTY ASSOCIATED W/ VIOLATING THE SELF-
+C     AVOIDING CUTOFF, REXCLD
 
-      double precision pexcld
+      DOUBLE PRECISION PEXCLD
 
-c     exvmin is where C-C excluded vol starts (in Angstroms)
-c     and exvminS is where C-C excluded vol starts (in Angstroms) for |i-j|<5
+C     EXVMIN IS WHERE C-C EXCLUDED VOL STARTS (IN ANGSTROMS)
+C     AND EXVMINS IS WHERE C-C EXCLUDED VOL STARTS (IN ANGSTROMS) FOR |I-J|<5
 
-      double precision exvmin,exvminS,exvminS_beta(1:4)
+      DOUBLE PRECISION EXVMIN,EXVMINS,EXVMINS_BETA(1:4)
 
-c     if welscl, then scale well-widths by |i-j|;
-c     otherwise, scale by rij
+C     IF WELSCL, THEN SCALE WELL-WIDTHS BY |I-J|;
+C     OTHERWISE, SCALE BY RIJ
 
-      logical welscl
+      LOGICAL WELSCL
 
-c     maxsec is the maximum number of secondary
-c     structures of any given type for a given protein
+C     MAXSEC IS THE MAXIMUM NUMBER OF SECONDARY
+C     STRUCTURES OF ANY GIVEN TYPE FOR A GIVEN PROTEIN
 
-      integer maxsec
-      parameter(maxsec=30)
+      INTEGER MAXSEC
+      PARAMETER(MAXSEC=30)
 
-c     maxmov is the maximum number of quench structures
+C     MAXMOV IS THE MAXIMUM NUMBER OF QUENCH STRUCTURES
 
-      integer maxmov
-      parameter(maxmov=1)
+      INTEGER MAXMOV
+      PARAMETER(MAXMOV=1)
 
-c     timstp is the timestep for the verlet algorithm
+C     TIMSTP IS THE TIMESTEP FOR THE VERLET ALGORITHM
 
-      double precision timstp
+      DOUBLE PRECISION TIMSTP
 
-c     tolshk is the maximum deviation allowed for each constraint
+C     TOLSHK IS THE MAXIMUM DEVIATION ALLOWED FOR EACH CONSTRAINT
 
-      double precision tolshk
+      DOUBLE PRECISION TOLSHK
 
-c Protein name  protnm
-      character protnm(0:maxmem)*6
+C PROTEIN NAME  PROTNM
+      CHARACTER PROTNM(0:MAXMEM)*6
 
-c     flags for random interactions
+C     FLAGS FOR RANDOM INTERACTIONS
 
-      logical ran_force,ran_file,allow_neg
-      double precision  r_ran,s_ran
-      integer ran_min_seq_dist
+      LOGICAL RAN_FORCE,RAN_FILE,ALLOW_NEG
+      DOUBLE PRECISION  R_RAN,S_RAN
+      INTEGER RAN_MIN_SEQ_DIST
 
-      integer ilong(maxcnt,2,maxtab),
-     *        numlng(0:maxsiz,maxtab),ires(maxsiz),
-     *        sa(maxres),
-     *        tarpre(maxres,maxtab),mempre(maxres,maxtab),
-     *        jres(maxres),
-     *        crdixn(maxtab,2)
+      INTEGER ILONG(MAXCNT,2,MAXTAB),
+     *        NUMLNG(0:MAXSIZ,MAXTAB),IRES(MAXSIZ),
+     *        SA(MAXRES),
+     *        TARPRE(MAXRES,MAXTAB),MEMPRE(MAXRES,MAXTAB),
+     *        JRES(MAXRES),
+     *        CRDIXN(MAXTAB,2)
 
-      integer ixn_from_site(maxsiz,maxsiz,maxtab)
+      INTEGER IXN_FROM_SITE(MAXSIZ,MAXSIZ,MAXTAB)
 
  
-      double precision vpotnt(0:maxr+1,maxcnt,maxtab),
-     *     amh_gse,
-     *     rinc(maxcnt,maxtab),
-     *     rincinv(maxcnt,maxtab),
-     *     rincsq(maxcnt,maxtab),
-     *     forse(0:maxr+1,maxcnt,maxtab),
-     *     deltz(maxcnt,maxtab),shydro(maxres,2,maxtab),
-     *     ywork(maxres,3,maxcrd),
-     *     hydseq(maxres,2,maxtab),
-     *     qchrg(21,21,20,20,max_well+2),
-     *     qchrg2(21,21,20,20,2,2)
+      DOUBLE PRECISION VPOTNT(0:MAXR+1,MAXCNT,MAXTAB),
+     *     AMH_GSE,
+     *     RINC(MAXCNT,MAXTAB),
+     *     RINCINV(MAXCNT,MAXTAB),
+     *     RINCSQ(MAXCNT,MAXTAB),
+     *     FORSE(0:MAXR+1,MAXCNT,MAXTAB),
+     *     DELTZ(MAXCNT,MAXTAB),SHYDRO(MAXRES,2,MAXTAB),
+     *     YWORK(MAXRES,3,MAXCRD),
+     *     HYDSEQ(MAXRES,2,MAXTAB),
+     *     QCHRG(21,21,20,20,MAX_WELL+2),
+     *     QCHRG2(21,21,20,20,2,2)
 
-c++ Johan
-!          double precision altgamma(20,20,max_well)
-c-- Johan
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-cc             old utility include file
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+C++ JOHAN
+!          DOUBLE PRECISION ALTGAMMA(20,20,MAX_WELL)
+C-- JOHAN
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+CC             OLD UTILITY INCLUDE FILE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-c        character*10 name_a(100000)
+C        CHARACTER*10 NAME_A(100000)
 
-c     include file for seeds,
-c     input_amh-output files, do loop
+C     INCLUDE FILE FOR SEEDS,
+C     INPUT_AMH-OUTPUT FILES, DO LOOP
 
-c     --- work space ---
+C     --- WORK SPACE ---
 
-      integer iwork(maxcnt)
+      INTEGER IWORK(MAXCNT)
 
-      double precision work1(maxcnt),work2(maxcnt),work3(maxcnt),
-     *     work4(maxcnt),work6(maxcnt),work8(maxcnt)
+      DOUBLE PRECISION WORK1(MAXCNT),WORK2(MAXCNT),WORK3(MAXCNT),
+     *     WORK4(MAXCNT),WORK6(MAXCNT),WORK8(MAXCNT)
 
-c     --- i/o tapes ---
+C     --- I/O TAPES ---
 
-      integer imemri,iprolst,iprolstscl,iran,oarchv,oconv,oecorr,imat,
-     *        iss_bias,ihbond,imoviein,igamma,itargseqs,ihomol,
-     *        omovi,omoviseg,SO,input_amh,ievgamma,ievbeta,icon,imem_cons,
-     *        ohdrgn,orama,ooxy,ochiral,oamh,orep,
-     *        oamhsr,oamhlr,oran,occev,ooev,oamhmr,
-     *        obias_Rg,oKE,ibiasfile,ohdrgn_s,
-     *        ohdrgn_m,ohdrgn_l,ohdrgn_seq,ononadd,ocon_P_AP,pdb,
-     *        oPE_plus_KE,oPE_no_bias,oPE_with_bias,oPE_backbone,oPE_backbone_norama,
-     *        oobiassega,oobiassegb,oharmspring,
-     *        ovgaspot,ovscltab,iphi,icontacts,
-     *        iss_struct,itarg_seq
+      INTEGER IMEMRI,IPROLST,IPROLSTSCL,IRAN,OARCHV,OCONV,OECORR,IMAT,
+     *        ISS_BIAS,IHBOND,IMOVIEIN,IGAMMA,ITARGSEQS,IHOMOL,
+     *        OMOVI,OMOVISEG,SO,INPUT_AMH,IEVGAMMA,IEVBETA,ICON,IMEM_CONS,
+     *        OHDRGN,ORAMA,OOXY,OCHIRAL,OAMH,OREP,
+     *        OAMHSR,OAMHLR,ORAN,OCCEV,OOEV,OAMHMR,
+     *        OBIAS_RG,OKE,IBIASFILE,OHDRGN_S,
+     *        OHDRGN_M,OHDRGN_L,OHDRGN_SEQ,ONONADD,OCON_P_AP,PDB,
+     *        OPE_PLUS_KE,OPE_NO_BIAS,OPE_WITH_BIAS,OPE_BACKBONE,OPE_BACKBONE_NORAMA,
+     *        OOBIASSEGA,OOBIASSEGB,OHARMSPRING,
+     *        OVGASPOT,OVSCLTAB,IPHI,ICONTACTS,
+     *        ISS_STRUCT,ITARG_SEQ
 
-c     --- seeds ---
+C     --- SEEDS ---
 
-c     iseed_amh(4) are the seeds used for the random number generators
+C     ISEED_AMH(4) ARE THE SEEDS USED FOR THE RANDOM NUMBER GENERATORS
 
-      integer iseed_amh(4)
+      INTEGER ISEED_AMH(4)
 
-c     --- do loop indicies ---
+C     --- DO LOOP INDICIES ---
 
-      integer i502,i503,i505,i507,
-     *        i508,i509,i511,i512,i513,i514,i515,
-     *        i516,i518,i521,i523,i525,i526,i527,i528,
-     *        i540
-c     --- implied do loop indicies ---
+      INTEGER I502,I503,I505,I507,
+     *        I508,I509,I511,I512,I513,I514,I515,
+     *        I516,I518,I521,I523,I525,I526,I527,I528,
+     *        I540
+C     --- IMPLIED DO LOOP INDICIES ---
 
-      integer i1,i2
+      INTEGER I1,I2
 
-c     --- diagnostic flags ---
+C     --- DIAGNOSTIC FLAGS ---
 
-      logical idigns
+      LOGICAL IDIGNS
 
-c     --- amino acid abbreviations --
+C     --- AMINO ACID ABBREVIATIONS --
 
-      character aminoa(21)*3
+      CHARACTER AMINOA(21)*3
 
-      double precision hydscl(0:21,2),hrdrad(0:21,2),eqdist(5)
+      DOUBLE PRECISION HYDSCL(0:21,2),HRDRAD(0:21,2),EQDIST(5)
 
-c     set up mapping from sequence id to amino acid residue
+C     SET UP MAPPING FROM SEQUENCE ID TO AMINO ACID RESIDUE
 
-      data (aminoa(i1),i1=1,21)/'ALA','ARG','ASN','ASP',
+      DATA (AMINOA(I1),I1=1,21)/'ALA','ARG','ASN','ASP',
      *                          'CYS','GLN','GLU','GLY',
      *                          'HIS','ILE','LEU','LYS',
      *                          'MET','PHE','PRO','SER',
      *                          'THR','TRP','TYR','VAL',
      *                          'INI'/
 
-ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
-cc             old param.s include file
-cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+CC             OLD PARAM.S INCLUDE FILE
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-c     incmov is the increment for the number of 
-c     structures to be saved fixed T
+C     INCMOV IS THE INCREMENT FOR THE NUMBER OF 
+C     STRUCTURES TO BE SAVED FIXED T
 
-      integer incmov
+      INTEGER INCMOV
 
-c     nmdif is greater than mxtemp/incmov
+C     NMDIF IS GREATER THAN MXTEMP/INCMOV
 
-      integer nmdif
-      parameter(nmdif=2001)
+      INTEGER NMDIF
+      PARAMETER(NMDIF=2001)
 
-c     t1-t5 are the cutoff points in the temperature-annealing
-c     schedule
+C     T1-T5 ARE THE CUTOFF POINTS IN THE TEMPERATURE-ANNEALING
+C     SCHEDULE
 
-      double precision t1,t2,t3,t4,t5
+      DOUBLE PRECISION T1,T2,T3,T4,T5
  
-c     it1-it5 are then number of T grid points allocated to each
-c     of the intervals [t1,t2], [t2,t3],...
+C     IT1-IT5 ARE THEN NUMBER OF T GRID POINTS ALLOCATED TO EACH
+C     OF THE INTERVALS [T1,T2], [T2,T3],...
 
-      integer it1,it2,it3,it4,it5
+      INTEGER IT1,IT2,IT3,IT4,IT5
 
-c     mxtemp is the number of temperature grid points
+C     MXTEMP IS THE NUMBER OF TEMPERATURE GRID POINTS
 
-      integer mxtemp,nmtemp
-      parameter(mxtemp=12001)
+      INTEGER MXTEMP,NMTEMP
+      PARAMETER(MXTEMP=12001)
 
-      integer nmstep
+      INTEGER NMSTEP
 
-c     set hierarchy parameters:
+C     SET HIERARCHY PARAMETERS:
 
-c     mxlevl is the maximum number of hierarchy levels
-c     mxsct is the maximum number of divisions per level       
+C     MXLEVL IS THE MAXIMUM NUMBER OF HIERARCHY LEVELS
+C     MXSCT IS THE MAXIMUM NUMBER OF DIVISIONS PER LEVEL       
 
-      integer mxlevl,mxsct
-      parameter(mxlevl=5,mxsct=5)
+      INTEGER MXLEVL,MXSCT
+      PARAMETER(MXLEVL=5,MXSCT=5)
 
-c     lenfun is the maximum protein segment length 
-c     considered per level
+C     LENFUN IS THE MAXIMUM PROTEIN SEGMENT LENGTH 
+C     CONSIDERED PER LEVEL
 
-      integer lenfun
-      parameter(lenfun=155)
+      INTEGER LENFUN
+      PARAMETER(LENFUN=155)
 
-c     if ictemp, then the minimization is performed at a 
-c     constant temperature, ctemp
+C     IF ICTEMP, THEN THE MINIMIZATION IS PERFORMED AT A 
+C     CONSTANT TEMPERATURE, CTEMP
 
-      logical ictemp
-      double precision ctemp
+      LOGICAL ICTEMP
+      DOUBLE PRECISION CTEMP
 
-!     if i_V_test print out test potentials between 2 sites
-!     in gaspot, and again in scltab
+!     IF I_V_TEST PRINT OUT TEST POTENTIALS BETWEEN 2 SITES
+!     IN GASPOT, AND AGAIN IN SCLTAB
 
-      logical i_V_test
-      integer test_site(2)
+      LOGICAL I_V_TEST
+      INTEGER TEST_SITE(2)
 
-c     if iresrt, then read in previously generated
-c     proteins used for restarting program or analysis
+C     IF IRESRT, THEN READ IN PREVIOUSLY GENERATED
+C     PROTEINS USED FOR RESTARTING PROGRAM OR ANALYSIS
 
-      logical iresrt
-
-
-
-c     if movanal, then analyse movie structures only
-
-      logical movanal
-
-      logical known
-
-c     i_Etim=T if want to output energies every i_Etim_step timesteps
-      logical i_Etim
-      integer i_Etim_step
+      LOGICAL IRESRT
 
 
-      integer itgrd(4)
+
+C     IF MOVANAL, THEN ANALYSE MOVIE STRUCTURES ONLY
+
+      LOGICAL MOVANAL
+
+      LOGICAL KNOWN
+
+C     I_ETIM=T IF WANT TO OUTPUT ENERGIES EVERY I_ETIM_STEP TIMESTEPS
+      LOGICAL I_ETIM
+      INTEGER I_ETIM_STEP
+
+
+      INTEGER ITGRD(4)
  
-      double precision temtur(mxtemp),temtur_quench(maxmov,maxmov),temgrd(5),
-     *     bondln(maxsiz,maxcrd),target(maxsiz,3,maxcrd),
-     *     prcord(maxsiz,3,maxpro,maxcrd),
-     *     zrcord(maxsiz,3,maxpro,maxcrd),
-     *     avep(maxpro,2,50),
-     *     quench_crd(maxsiz,3,maxpro,maxcrd,maxmov)
+      DOUBLE PRECISION TEMTUR(MXTEMP),TEMTUR_QUENCH(MAXMOV,MAXMOV),TEMGRD(5),
+     *     BONDLN(MAXSIZ,MAXCRD),TARGET(MAXSIZ,3,MAXCRD),
+     *     PRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
+     *     ZRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
+     *     AVEP(MAXPRO,2,50),
+     *     QUENCH_CRD(MAXSIZ,3,MAXPRO,MAXCRD,MAXMOV)
 
-      double precision avepp(maxpro,2,50)
+      DOUBLE PRECISION AVEPP(MAXPRO,2,50)
 
-! distance cut-offs for contact potential
-! r(1) is closest range well
-      double precision r_min(1:max_well),r_max(1:max_well)
+! DISTANCE CUT-OFFS FOR CONTACT POTENTIAL
+! R(1) IS CLOSEST RANGE WELL
+      DOUBLE PRECISION R_MIN(1:MAX_WELL),R_MAX(1:MAX_WELL)
 
-! variables for replica force
+! VARIABLES FOR REPLICA FORCE
 
-      logical i_rep,i_rep_lambda_uniform
-      double precision rep_phi_exp(maxsiz),rep_lambda(maxsiz),
-     *   rep_cut_off,rep_tol
-      integer n_rep_con(maxsiz),rep_con_2_res(maxsiz,maxsiz)
+      LOGICAL I_REP,I_REP_LAMBDA_UNIFORM
+      DOUBLE PRECISION REP_PHI_EXP(MAXSIZ),REP_LAMBDA(MAXSIZ),
+     *   REP_CUT_OFF,REP_TOL
+      INTEGER N_REP_CON(MAXSIZ),REP_CON_2_RES(MAXSIZ,MAXSIZ)
 
-      end module amhglobals
+      END MODULE AMHGLOBALS

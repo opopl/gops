@@ -1,106 +1,106 @@
-C GPL License Info {{{
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C GPL LICENSE INFO {{{
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
-C  INPUT  E3   ( 11:41:40 Tuesday 7 September 1993 )
+C  INPUT  E3   ( 11:41:40 TUESDAY 7 SEPTEMBER 1993 )
 C }}}
  
-C  Doxygen Comments {{{
-C> \name SUBROUTINE INPUT(LOGICAL END)
+C  DOXYGEN COMMENTS {{{
+C> \NAME SUBROUTINE INPUT(LOGICAL END)
 C>
-C>  Read next input record from unit IR into buffer, and analyse for data
-C>  items, null items (enclosed by commas), and comment (enclosed in
-C>  parentheses, which may be nested, and occurring where spaces may
-C>  occur).
+C>  READ NEXT INPUT RECORD FROM UNIT IR INTO BUFFER, AND ANALYSE FOR DATA
+C>  ITEMS, NULL ITEMS (ENCLOSED BY COMMAS), AND COMMENT (ENCLOSED IN
+C>  PARENTHESES, WHICH MAY BE NESTED, AND OCCURRING WHERE SPACES MAY
+C>  OCCUR).
 C>
-C>  E1  Attempts to handle stream-switching commands in the data.
-C>      #include file-name
-C>         switches input to be from the file specified;
-C>      #revert
-C>         (or end-of-file) reverts to the previous file.
-C>    Also
-C>      #concat "string"
-C>         sets the concatenation string; e.g.
-C>         #concat "\"
-C> \param ITEM    is the number of the last item read from the buffer
-C> \param NITEM   is the number of items in the buffer
-C> \param CHAR(I) is the Ith character in the buffer
-C> \param LOC(I)  is the starting position of the Ith item
-C> \param LINE    is the number of lines (records) read
+C>  E1  ATTEMPTS TO HANDLE STREAM-SWITCHING COMMANDS IN THE DATA.
+C>      #INCLUDE FILE-NAME
+C>         SWITCHES INPUT TO BE FROM THE FILE SPECIFIED;
+C>      #REVERT
+C>         (OR END-OF-FILE) REVERTS TO THE PREVIOUS FILE.
+C>    ALSO
+C>      #CONCAT "STRING"
+C>         SETS THE CONCATENATION STRING; E.G.
+C>         #CONCAT "\"
+C> \PARAM ITEM    IS THE NUMBER OF THE LAST ITEM READ FROM THE BUFFER
+C> \PARAM NITEM   IS THE NUMBER OF ITEMS IN THE BUFFER
+C> \PARAM CHAR(I) IS THE ITH CHARACTER IN THE BUFFER
+C> \PARAM LOC(I)  IS THE STARTING POSITION OF THE ITH ITEM
+C> \PARAM LINE    IS THE NUMBER OF LINES (RECORDS) READ
 C>
-C>  If \b SKIPBL is set to \b TRUE, lines containing no items other than
-C>  comment are skipped automatically, so that INPUT will always return
-C>  a line with at least one item (possibly null).  If SKIPBL is FALSE
-C>  (default) no skipping occurs and the next data line is returned
-C>  regardless of what it contains.
+C>  IF \B SKIPBL IS SET TO \B TRUE, LINES CONTAINING NO ITEMS OTHER THAN
+C>  COMMENT ARE SKIPPED AUTOMATICALLY, SO THAT INPUT WILL ALWAYS RETURN
+C>  A LINE WITH AT LEAST ONE ITEM (POSSIBLY NULL).  IF SKIPBL IS FALSE
+C>  (DEFAULT) NO SKIPPING OCCURS AND THE NEXT DATA LINE IS RETURNED
+C>  REGARDLESS OF WHAT IT CONTAINS.
 C>
-C>  If \b CLEAR is set to \b TRUE (default) then an attempt to read more than
-C>  NITEM items from a line will cause zeros or blanks to be returned. If
-C>  CLEAR is FALSE, the variables in question are left unaltered.
+C>  IF \B CLEAR IS SET TO \B TRUE (DEFAULT) THEN AN ATTEMPT TO READ MORE THAN
+C>  NITEM ITEMS FROM A LINE WILL CAUSE ZEROS OR BLANKS TO BE RETURNED. IF
+C>  CLEAR IS FALSE, THE VARIABLES IN QUESTION ARE LEFT UNALTERED.
 C>
-C>  NCR is the number of single characters which have been read from the
-C>  current item.  It is always zero unless READCH has been used; if non-
-C>  zero, ITEM refers to the current item from which characters are being
-C>  read.
+C>  NCR IS THE NUMBER OF SINGLE CHARACTERS WHICH HAVE BEEN READ FROM THE
+C>  CURRENT ITEM.  IT IS ALWAYS ZERO UNLESS READCH HAS BEEN USED; IF NON-
+C>  ZERO, ITEM REFERS TO THE CURRENT ITEM FROM WHICH CHARACTERS ARE BEING
+C>  READ.
 C>
-C>  NERROR specifies the treatment of errors found while reading numbers:
-C>    0  Hard error - print message and stop (default).
-C>    1  Soft error - print message and return zero.
-C>    2  Soft error - no message, return zero, set NERROR to -1.
-C>  If NERROR is set to 2 it is important to test and reset it after reading
-C>  a number.
+C>  NERROR SPECIFIES THE TREATMENT OF ERRORS FOUND WHILE READING NUMBERS:
+C>    0  HARD ERROR - PRINT MESSAGE AND STOP (DEFAULT).
+C>    1  SOFT ERROR - PRINT MESSAGE AND RETURN ZERO.
+C>    2  SOFT ERROR - NO MESSAGE, RETURN ZERO, SET NERROR TO -1.
+C>  IF NERROR IS SET TO 2 IT IS IMPORTANT TO TEST AND RESET IT AFTER READING
+C>  A NUMBER.
 C>
-C>  IR is the input stream from which the data are to be read (default 5).
+C>  IR IS THE INPUT STREAM FROM WHICH THE DATA ARE TO BE READ (DEFAULT 5).
 C>
-C>  If ECHO is TRUE, the input line will be reflected to the system output
-C>  stream.
-C>  LAST gives the position of the last non-blank character in the line.
+C>  IF ECHO IS TRUE, THE INPUT LINE WILL BE REFLECTED TO THE SYSTEM OUTPUT
+C>  STREAM.
+C>  LAST GIVES THE POSITION OF THE LAST NON-BLANK CHARACTER IN THE LINE.
 C>
-C>  CONCAT is the line concatenation string: if it is found as the last
-C>  non-blank character string on a line, the following line is read and
-C>  appended to the current line, overwriting the concatenation string.
-C>  This procedure is repeated if necessary until a line is found that does
-C>  not end with the concatenation string.
+C>  CONCAT IS THE LINE CONCATENATION STRING: IF IT IS FOUND AS THE LAST
+C>  NON-BLANK CHARACTER STRING ON A LINE, THE FOLLOWING LINE IS READ AND
+C>  APPENDED TO THE CURRENT LINE, OVERWRITING THE CONCATENATION STRING.
+C>  THIS PROCEDURE IS REPEATED IF NECESSARY UNTIL A LINE IS FOUND THAT DOES
+C>  NOT END WITH THE CONCATENATION STRING.
 C> 
-C>  The concatenation string may be modified by changing the DATA statement
-C>  above. The integer LC must be set to the number of non-blank characters
-C>  in the concatenation string. If it is set to zero, no concatenation
-C>  occurs. The concatenation string may also be changed by the #concat
-C>  directive in the data file.
+C>  THE CONCATENATION STRING MAY BE MODIFIED BY CHANGING THE DATA STATEMENT
+C>  ABOVE. THE INTEGER LC MUST BE SET TO THE NUMBER OF NON-BLANK CHARACTERS
+C>  IN THE CONCATENATION STRING. IF IT IS SET TO ZERO, NO CONCATENATION
+C>  OCCURS. THE CONCATENATION STRING MAY ALSO BE CHANGED BY THE #CONCAT
+C>  DIRECTIVE IN THE DATA FILE.
 C> 
 C }}}
       SUBROUTINE INPUT(END)
-C  Comments, Declarations {{{
+C  COMMENTS, DECLARATIONS {{{
 C
-C  Read next input record from unit IR into buffer, and analyse for data
-C  items, null items (enclosed by commas), and comment (enclosed in
-C  parentheses, which may be nested, and occurring where spaces may
-C  occur).
+C  READ NEXT INPUT RECORD FROM UNIT IR INTO BUFFER, AND ANALYSE FOR DATA
+C  ITEMS, NULL ITEMS (ENCLOSED BY COMMAS), AND COMMENT (ENCLOSED IN
+C  PARENTHESES, WHICH MAY BE NESTED, AND OCCURRING WHERE SPACES MAY
+C  OCCUR).
 C
-C  E1  Attempts to handle stream-switching commands in the data.
-C      #include file-name
-C         switches input to be from the file specified;
-C      #revert
-C         (or end-of-file) reverts to the previous file.
-C    Also
-C      #concat "string"
-C         sets the concatenation string; e.g.
-C         #concat "\"
+C  E1  ATTEMPTS TO HANDLE STREAM-SWITCHING COMMANDS IN THE DATA.
+C      #INCLUDE FILE-NAME
+C         SWITCHES INPUT TO BE FROM THE FILE SPECIFIED;
+C      #REVERT
+C         (OR END-OF-FILE) REVERTS TO THE PREVIOUS FILE.
+C    ALSO
+C      #CONCAT "STRING"
+C         SETS THE CONCATENATION STRING; E.G.
+C         #CONCAT "\"
       CHARACTER CHAR
       COMMON /BUFFER/ CHAR(800)
       LOGICAL SKIPBL, CLEAR, ECHO, CAT
@@ -112,53 +112,53 @@ C         #concat "\"
       DATA CONCAT /'+++'/, LC /3/
       SAVE CONCAT, LC
  
-C     ITEM    is the number of the last item read from the buffer
-C     NITEM   is the number of items in the buffer
-C     CHAR(I) is the Ith character in the buffer
-C     LOC(I)  is the starting position of the Ith item
-C     LINE    is the number of lines (records) read
+C     ITEM    IS THE NUMBER OF THE LAST ITEM READ FROM THE BUFFER
+C     NITEM   IS THE NUMBER OF ITEMS IN THE BUFFER
+C     CHAR(I) IS THE ITH CHARACTER IN THE BUFFER
+C     LOC(I)  IS THE STARTING POSITION OF THE ITH ITEM
+C     LINE    IS THE NUMBER OF LINES (RECORDS) READ
 C
-C  If SKIPBL is set to TRUE, lines containing no items other than
+C  IF SKIPBL IS SET TO TRUE, LINES CONTAINING NO ITEMS OTHER THAN
 C
-C  comment are skipped automatically, so that INPUT will always return
-C  a line with at least one item (possibly null).  If SKIPBL is FALSE
-C  (default) no skipping occurs and the next data line is returned
-C  regardless of what it contains.
+C  COMMENT ARE SKIPPED AUTOMATICALLY, SO THAT INPUT WILL ALWAYS RETURN
+C  A LINE WITH AT LEAST ONE ITEM (POSSIBLY NULL).  IF SKIPBL IS FALSE
+C  (DEFAULT) NO SKIPPING OCCURS AND THE NEXT DATA LINE IS RETURNED
+C  REGARDLESS OF WHAT IT CONTAINS.
 C
-C  If CLEAR is set to TRUE (default) then an attempt to read more than
-C  NITEM items from a line will cause zeros or blanks to be returned. If
-C  CLEAR is FALSE, the variables in question are left unaltered.
+C  IF CLEAR IS SET TO TRUE (DEFAULT) THEN AN ATTEMPT TO READ MORE THAN
+C  NITEM ITEMS FROM A LINE WILL CAUSE ZEROS OR BLANKS TO BE RETURNED. IF
+C  CLEAR IS FALSE, THE VARIABLES IN QUESTION ARE LEFT UNALTERED.
 C
-C  NCR is the number of single characters which have been read from the
-C  current item.  It is always zero unless READCH has been used; if non-
-C  zero, ITEM refers to the current item from which characters are being
-C  read.
+C  NCR IS THE NUMBER OF SINGLE CHARACTERS WHICH HAVE BEEN READ FROM THE
+C  CURRENT ITEM.  IT IS ALWAYS ZERO UNLESS READCH HAS BEEN USED; IF NON-
+C  ZERO, ITEM REFERS TO THE CURRENT ITEM FROM WHICH CHARACTERS ARE BEING
+C  READ.
 C
-C  NERROR specifies the treatment of errors found while reading numbers:
-C    0  Hard error - print message and stop (default).
-C    1  Soft error - print message and return zero.
-C    2  Soft error - no message, return zero, set NERROR to -1.
-C  If NERROR is set to 2 it is important to test and reset it after reading
-C  a number.
+C  NERROR SPECIFIES THE TREATMENT OF ERRORS FOUND WHILE READING NUMBERS:
+C    0  HARD ERROR - PRINT MESSAGE AND STOP (DEFAULT).
+C    1  SOFT ERROR - PRINT MESSAGE AND RETURN ZERO.
+C    2  SOFT ERROR - NO MESSAGE, RETURN ZERO, SET NERROR TO -1.
+C  IF NERROR IS SET TO 2 IT IS IMPORTANT TO TEST AND RESET IT AFTER READING
+C  A NUMBER.
  
-C  IR is the input stream from which the data are to be read (default 5).
+C  IR IS THE INPUT STREAM FROM WHICH THE DATA ARE TO BE READ (DEFAULT 5).
  
-C  If ECHO is TRUE, the input line will be reflected to the system output
-C  stream.
+C  IF ECHO IS TRUE, THE INPUT LINE WILL BE REFLECTED TO THE SYSTEM OUTPUT
+C  STREAM.
  
-C  LAST gives the position of the last non-blank character in the line.
+C  LAST GIVES THE POSITION OF THE LAST NON-BLANK CHARACTER IN THE LINE.
  
-C  CONCAT is the line concatenation string: if it is found as the last
-C  non-blank character string on a line, the following line is read and
-C  appended to the current line, overwriting the concatenation string.
-C  This procedure is repeated if necessary until a line is found that does
-C  not end with the concatenation string.
+C  CONCAT IS THE LINE CONCATENATION STRING: IF IT IS FOUND AS THE LAST
+C  NON-BLANK CHARACTER STRING ON A LINE, THE FOLLOWING LINE IS READ AND
+C  APPENDED TO THE CURRENT LINE, OVERWRITING THE CONCATENATION STRING.
+C  THIS PROCEDURE IS REPEATED IF NECESSARY UNTIL A LINE IS FOUND THAT DOES
+C  NOT END WITH THE CONCATENATION STRING.
  
-C  The concatenation string may be modified by changing the DATA statement
-C  above. The integer LC must be set to the number of non-blank characters
-C  in the concatenation string. If it is set to zero, no concatenation
-C  occurs. The concatenation string may also be changed by the #concat
-C  directive in the data file.
+C  THE CONCATENATION STRING MAY BE MODIFIED BY CHANGING THE DATA STATEMENT
+C  ABOVE. THE INTEGER LC MUST BE SET TO THE NUMBER OF NON-BLANK CHARACTERS
+C  IN THE CONCATENATION STRING. IF IT IS SET TO ZERO, NO CONCATENATION
+C  OCCURS. THE CONCATENATION STRING MAY ALSO BE CHANGED BY THE #CONCAT
+C  DIRECTIVE IN THE DATA FILE.
  
       INTEGER LEVEL
       SAVE LEVEL, IR0
@@ -182,12 +182,12 @@ C {{{
 1001  FORMAT (80A1)
       CAT=.FALSE.
       LINE=LINE+1
-C  Find last non-blank character
+C  FIND LAST NON-BLANK CHARACTER
 30    IF (CHAR(LAST) .EQ. SPACE) THEN
         LAST=LAST-1
         IF (LAST .GT. 1) GO TO 30
       ENDIF
-C  Look for concatenation string
+C  LOOK FOR CONCATENATION STRING
       IF (LC .GT. 0 .AND. LAST .GE. LC) THEN
         L=LC
         M=LAST
@@ -203,7 +203,7 @@ C  Look for concatenation string
       ENDIF
       CAT=.FALSE.
 
-C  Logical line assembled. First look for input directives
+C  LOGICAL LINE ASSEMBLED. FIRST LOOK FOR INPUT DIRECTIVES
       L=0
 50    L=L+1
       IF (CHAR(L) .EQ. SPACE .AND. L .LT. LAST) GO TO 50
@@ -233,7 +233,7 @@ C  Logical line assembled. First look for input directives
       GO TO 65
 67    IF (W .EQ. '#INCLUDE') THEN
         IF (F .EQ. ' ') THEN
-           PRINT '(/A)', 'No filename given in #include directive'
+           PRINT '(/A)', 'NO FILENAME GIVEN IN #INCLUDE DIRECTIVE'
            STOP
          ENDIF
         IF (LEVEL .EQ. 0) IR0=IR
@@ -259,7 +259,7 @@ C  Logical line assembled. First look for input directives
       ENDIF
       GO TO 10
 
-C  Analyse input 
+C  ANALYSE INPUT 
 70    ITEM=0
       NITEM=0
       NCR=0
@@ -273,32 +273,32 @@ C  Analyse input
       IF (L .GT. LAST) GO TO 800
       IF (BLANK) GO TO 200
  
-C  Reading through an item, seeking terminator.
-C  (Next line of code suppressed: comment not allowed within an item)
+C  READING THROUGH AN ITEM, SEEKING TERMINATOR.
+C  (NEXT LINE OF CODE SUPPRESSED: COMMENT NOT ALLOWED WITHIN AN ITEM)
 C     IF (CHAR(L) .EQ. BRA) GO TO 400
       TCOMMA=CHAR(L) .EQ. COMMA .AND. TERM .EQ. SPACE
       BLANK=TCOMMA .OR. CHAR(L) .EQ. TERM
       GO TO 100
  
-C  Looking for next item
+C  LOOKING FOR NEXT ITEM
 200   TERM=SPACE
       BLANK=CHAR(L) .EQ. SPACE
       IF (BLANK) GO TO 100
       IF (CHAR(L) .EQ. BRA) GO TO 400
  
-C  Item found
+C  ITEM FOUND
       NITEM=NITEM+1
       LOC(NITEM)=L
  
-C  Quoted string?
+C  QUOTED STRING?
       IF (CHAR(L) .EQ. SQUOTE .OR. CHAR(L) .EQ. DQUOTE) TERM=CHAR(L)
  
-C  Null item?
+C  NULL ITEM?
       IF (CHAR(L) .NE. COMMA) GO TO 100
       IF (TCOMMA) LOC(NITEM)=0
       GO TO 80
  
-C  Comment (enclosed in parentheses, possibly nested)
+C  COMMENT (ENCLOSED IN PARENTHESES, POSSIBLY NESTED)
 400   NEST=1
 410   L=L+1
       IF (L .GT. LAST) GO TO 800
@@ -307,17 +307,17 @@ C  Comment (enclosed in parentheses, possibly nested)
       IF (NEST .GT. 0) GO TO 410
       GO TO 90
  
-C  End of card -- was it blank?
+C  END OF CARD -- WAS IT BLANK?
 800   IF (SKIPBL .AND. NITEM .EQ. 0) GO TO 10
       RETURN
  
-C  End of data
+C  END OF DATA
 900   IF (CAT) THEN
-        PRINT '(A)', 'Apparently concatenating at end-of-file'
-        CALL REPORT('Unexpected end of data file',.TRUE.)
+        PRINT '(A)', 'APPARENTLY CONCATENATING AT END-OF-FILE'
+        CALL REPORT('UNEXPECTED END OF DATA FILE',.TRUE.)
       ENDIF
       IF (LEVEL .GT. 0) THEN
-C  Revert to previous input
+C  REVERT TO PREVIOUS INPUT
         CLOSE(IR)
         LEVEL=LEVEL-1
         IF (LEVEL .EQ. 0) THEN
@@ -337,7 +337,7 @@ C }}}
       END
  
 C-----------------------------------------------------------------------
-C> \name BLOCK DATA INBLK 
+C> \NAME BLOCK DATA INBLK 
       BLOCK DATA INBLK
 
       CHARACTER CHAR
@@ -355,7 +355,7 @@ C-----------------------------------------------------------------------
  
 C     SUBROUTINE STREAM(N)
  
-C  Set the input stream for subsequent data to be N.
+C  SET THE INPUT STREAM FOR SUBSEQUENT DATA TO BE N.
  
 C     LOGICAL SKIPBL, CLEAR, ECHO, CAT
 C     COMMON /BUFINF/ ITEM, NITEM, LOC(80), LINE, SKIPBL, CLEAR, NCR,
@@ -368,11 +368,11 @@ C     END
 C-----------------------------------------------------------------------
  
       SUBROUTINE READF(A)
-C> \name READF
-C> \brief Read the next item from the buffer as a real number
-C> \param A (DP)
+C> \NAME READF
+C> \BRIEF READ THE NEXT ITEM FROM THE BUFFER AS A REAL NUMBER
+C> \PARAM A (DP)
 C>
-C Declarations {{{ 
+C DECLARATIONS {{{ 
       INTEGER P, STATE
       LOGICAL NULL, XNULL
       DOUBLE PRECISION A, AD, B, TEN, SIGN
@@ -390,10 +390,10 @@ C Declarations {{{
       DATA TEN /10D0/
 C }}}
 
-C Subroutine body {{{ 
+C SUBROUTINE BODY {{{ 
       IF (CLEAR) A=0D0
  
-C  If the item is null, or if no item remains, A is unchanged
+C  IF THE ITEM IS NULL, OR IF NO ITEM REMAINS, A IS UNCHANGED
       IF (ITEM .GE. NITEM) GO TO 110
       ITEM=ITEM+1
       NCR=0
@@ -413,32 +413,32 @@ C  If the item is null, or if no item remains, A is unchanged
 10    P=P+1
       IF (P .GT. LAST) GO TO 100
  
-C  Terminators
+C  TERMINATORS
 12    C=CHAR(P)
       IF (C .EQ. SPACE .OR. C .EQ. COMMA) GO TO 100
  
-C  Digits
+C  DIGITS
       DO 20 I=1,10
       IF (C .EQ. DIGIT(I)) GO TO (70,72,71,80,81), STATE
 20    CONTINUE
  
-C  State numbers:  1  nothing read yet
-C                  2  reading digits of integral part
-C                  3  reading decimal fraction
-C                  4  expecting exponent
-C                  5  reading digits of exponent
+C  STATE NUMBERS:  1  NOTHING READ YET
+C                  2  READING DIGITS OF INTEGRAL PART
+C                  3  READING DECIMAL FRACTION
+C                  4  EXPECTING EXPONENT
+C                  5  READING DIGITS OF EXPONENT
  
-C  Number control characters -- branch on state
+C  NUMBER CONTROL CHARACTERS -- BRANCH ON STATE
  
       IF (C .EQ. DOT) GO TO (30,30,99,99,99), STATE
       IF (C .EQ. PLUS) GO TO (42,52,52,52,99), STATE
       IF (C .EQ. MINUS) GO TO (41,51,51,51,99), STATE
       IF (C .EQ. D .OR. C .EQ. E) GO TO (99,60,60,99,99), STATE
  
-C  Error
+C  ERROR
 99    IF (NERROR .LE. 1) THEN
-        WRITE (6,'(1X,A,A,A)') 'Invalid character "', C,
-     &                             '" while reading number.         '
+        WRITE (6,'(1X,A,A,A)') 'INVALID CHARACTER "', C,
+     &                             '" WHILE READING NUMBER.         '
         I2=MIN(LAST,P+20)
         I1=MAX(1,I2-70)
         S1=' '
@@ -446,13 +446,13 @@ C  Error
         S2=' '
         IF (I2 .LT. LAST) S2='...'
         PRINT '(1X,A/1X,A,1X,80A,1X,A)',
-     &           'Current input line is:', S1, (CHAR(I), I=I1,I2), S2
+     &           'CURRENT INPUT LINE IS:', S1, (CHAR(I), I=I1,I2), S2
         PRINT '(5X,80A1)', (' ', I=I1,P), '*'
       ENDIF
       IF (NERROR .LE. 0) THEN
         STOP
       ELSE IF (NERROR .EQ. 1) THEN
-        WRITE (6,'(1X,A)') 'Item replaced by zero.'
+        WRITE (6,'(1X,A)') 'ITEM REPLACED BY ZERO.'
         A=0D0
         RETURN
       ELSE
@@ -516,28 +516,28 @@ C-----------------------------------------------------------------------
  
 C-----------------------------------------------------------------------
  
-C Doxygen comments {{{ 
-C> \name READK
+C DOXYGEN COMMENTS {{{ 
+C> \NAME READK
 C> 
-C>  The arrays C, M and N comprise a tree, each node of which consists of
-C>  a character C(I) and two integers M(I) and N(I). Initially I=1. The
-C>  character C(I) is tested against the current character in the input.
-C>  If it matches, the next input character is selected and M(I) is
-C>  examined; otherwise N(I) is examined. If a positive value is found,
-C>  it is a pointer to the next node to be tested; if negative or zero,
-C>  it is minus the key value to be returned in K. If a keyword is
-C>  present in the input but does not match a keyword in the tree, then
-C>  zero is returned; if a null item is present or if there are no more
-C>  items on the line, then -1 is returned. Note that this arrangement
-C>  allows the code in the tree to be set up in many ways to suit the
-C>  requirements of the problem. Abbreviations may be defined
-C>  economically, and the keyword can be required to terminate with a
-C>  space or other symbol, or it can be self-terminating.
+C>  THE ARRAYS C, M AND N COMPRISE A TREE, EACH NODE OF WHICH CONSISTS OF
+C>  A CHARACTER C(I) AND TWO INTEGERS M(I) AND N(I). INITIALLY I=1. THE
+C>  CHARACTER C(I) IS TESTED AGAINST THE CURRENT CHARACTER IN THE INPUT.
+C>  IF IT MATCHES, THE NEXT INPUT CHARACTER IS SELECTED AND M(I) IS
+C>  EXAMINED; OTHERWISE N(I) IS EXAMINED. IF A POSITIVE VALUE IS FOUND,
+C>  IT IS A POINTER TO THE NEXT NODE TO BE TESTED; IF NEGATIVE OR ZERO,
+C>  IT IS MINUS THE KEY VALUE TO BE RETURNED IN K. IF A KEYWORD IS
+C>  PRESENT IN THE INPUT BUT DOES NOT MATCH A KEYWORD IN THE TREE, THEN
+C>  ZERO IS RETURNED; IF A NULL ITEM IS PRESENT OR IF THERE ARE NO MORE
+C>  ITEMS ON THE LINE, THEN -1 IS RETURNED. NOTE THAT THIS ARRANGEMENT
+C>  ALLOWS THE CODE IN THE TREE TO BE SET UP IN MANY WAYS TO SUIT THE
+C>  REQUIREMENTS OF THE PROBLEM. ABBREVIATIONS MAY BE DEFINED
+C>  ECONOMICALLY, AND THE KEYWORD CAN BE REQUIRED TO TERMINATE WITH A
+C>  SPACE OR OTHER SYMBOL, OR IT CAN BE SELF-TERMINATING.
  
-C>  Example:  PRINT and PRT are to return key 19, and must be terminated
-C>  by space.  P alone (i.e. not present as the first letter of PRINT or
-C>  PRT) is to return 7.  Initial spaces are to be ignored.  The code
-C>  table might begin
+C>  EXAMPLE:  PRINT AND PRT ARE TO RETURN KEY 19, AND MUST BE TERMINATED
+C>  BY SPACE.  P ALONE (I.E. NOT PRESENT AS THE FIRST LETTER OF PRINT OR
+C>  PRT) IS TO RETURN 7.  INITIAL SPACES ARE TO BE IGNORED.  THE CODE
+C>  TABLE MIGHT BEGIN
  
 C>        1   2   3   4   5   6   7   8
  
@@ -545,31 +545,31 @@ C>   C   ' '  P   R   I   N   T  ' '  ...
 C>   M    1   3   4   5   6   7  -19  ...
 C>   N    2   8  -7   6   0   0   0   ...
  
-C>  Such code tables can be created automatically by the procedure
-C>  ENCODE, which produces the DATA statements required to initialize
-C>  the array.
+C>  SUCH CODE TABLES CAN BE CREATED AUTOMATICALLY BY THE PROCEDURE
+C>  ENCODE, WHICH PRODUCES THE DATA STATEMENTS REQUIRED TO INITIALIZE
+C>  THE ARRAY.
 C }}}
       SUBROUTINE READK(C,M,N,K)
-C Original comments {{{ 
-C  The arrays C, M and N comprise a tree, each node of which consists of
-C  a character C(I) and two integers M(I) and N(I). Initially I=1. The
-C  character C(I) is tested against the current character in the input.
-C  If it matches, the next input character is selected and M(I) is
-C  examined; otherwise N(I) is examined. If a positive value is found,
-C  it is a pointer to the next node to be tested; if negative or zero,
-C  it is minus the key value to be returned in K. If a keyword is
-C  present in the input but does not match a keyword in the tree, then
-C  zero is returned; if a null item is present or if there are no more
-C  items on the line, then -1 is returned. Note that this arrangement
-C  allows the code in the tree to be set up in many ways to suit the
-C  requirements of the problem. Abbreviations may be defined
-C  economically, and the keyword can be required to terminate with a
-C  space or other symbol, or it can be self-terminating.
+C ORIGINAL COMMENTS {{{ 
+C  THE ARRAYS C, M AND N COMPRISE A TREE, EACH NODE OF WHICH CONSISTS OF
+C  A CHARACTER C(I) AND TWO INTEGERS M(I) AND N(I). INITIALLY I=1. THE
+C  CHARACTER C(I) IS TESTED AGAINST THE CURRENT CHARACTER IN THE INPUT.
+C  IF IT MATCHES, THE NEXT INPUT CHARACTER IS SELECTED AND M(I) IS
+C  EXAMINED; OTHERWISE N(I) IS EXAMINED. IF A POSITIVE VALUE IS FOUND,
+C  IT IS A POINTER TO THE NEXT NODE TO BE TESTED; IF NEGATIVE OR ZERO,
+C  IT IS MINUS THE KEY VALUE TO BE RETURNED IN K. IF A KEYWORD IS
+C  PRESENT IN THE INPUT BUT DOES NOT MATCH A KEYWORD IN THE TREE, THEN
+C  ZERO IS RETURNED; IF A NULL ITEM IS PRESENT OR IF THERE ARE NO MORE
+C  ITEMS ON THE LINE, THEN -1 IS RETURNED. NOTE THAT THIS ARRANGEMENT
+C  ALLOWS THE CODE IN THE TREE TO BE SET UP IN MANY WAYS TO SUIT THE
+C  REQUIREMENTS OF THE PROBLEM. ABBREVIATIONS MAY BE DEFINED
+C  ECONOMICALLY, AND THE KEYWORD CAN BE REQUIRED TO TERMINATE WITH A
+C  SPACE OR OTHER SYMBOL, OR IT CAN BE SELF-TERMINATING.
  
-C  Example:  PRINT and PRT are to return key 19, and must be terminated
-C  by space.  P alone (i.e. not present as the first letter of PRINT or
-C  PRT) is to return 7.  Initial spaces are to be ignored.  The code
-C  table might begin
+C  EXAMPLE:  PRINT AND PRT ARE TO RETURN KEY 19, AND MUST BE TERMINATED
+C  BY SPACE.  P ALONE (I.E. NOT PRESENT AS THE FIRST LETTER OF PRINT OR
+C  PRT) IS TO RETURN 7.  INITIAL SPACES ARE TO BE IGNORED.  THE CODE
+C  TABLE MIGHT BEGIN
  
 C        1   2   3   4   5   6   7   8
  
@@ -577,12 +577,12 @@ C   C   ' '  P   R   I   N   T  ' '  ...
 C   M    1   3   4   5   6   7  -19  ...
 C   N    2   8  -7   6   0   0   0   ...
  
-C  Such code tables can be created automatically by the procedure
-C  ENCODE, which produces the DATA statements required to initialize
-C  the array.
+C  SUCH CODE TABLES CAN BE CREATED AUTOMATICALLY BY THE PROCEDURE
+C  ENCODE, WHICH PRODUCES THE DATA STATEMENTS REQUIRED TO INITIALIZE
+C  THE ARRAY.
 C }}}
  
-C Declarations {{{ 
+C DECLARATIONS {{{ 
       INTEGER M(*), N(*), TP, P
       CHARACTER C(*), SPACE
       CHARACTER CHAR
@@ -593,7 +593,7 @@ C Declarations {{{
       DATA SPACE /' '/
 C }}} 
 
-C Subroutine body {{{
+C SUBROUTINE BODY {{{
       K=-1
       IF (ITEM .GE. NITEM) RETURN
       ITEM=ITEM+1
@@ -604,30 +604,30 @@ C Subroutine body {{{
       TP=1
       GO TO 20
  
-C  Advance character pointer
+C  ADVANCE CHARACTER POINTER
 10    P=P+1
 20    IF (P .LE. LAST) GO TO 30
-C  End of line
+C  END OF LINE
       IF (TP .EQ. 1) K=-1
       RETURN
  
 30    CALL MYUPCASE(CHAR(P))
 40    IF(CHAR(P) .EQ. C(TP)) GO TO 50
-C  No match -- advance tree pointer
+C  NO MATCH -- ADVANCE TREE POINTER
       TP=N(TP)
-C  Zero pointer -- undecodeable
+C  ZERO POINTER -- UNDECODEABLE
       IF (TP .EQ. 0) RETURN
-C  Positive value -- test same input character again
+C  POSITIVE VALUE -- TEST SAME INPUT CHARACTER AGAIN
       IF (TP .GT. 0) GO TO 40
-C  Negative fail pointer: the input contains a keyword which is an initial
-C  substring of some other keyword.
+C  NEGATIVE FAIL POINTER: THE INPUT CONTAINS A KEYWORD WHICH IS AN INITIAL
+C  SUBSTRING OF SOME OTHER KEYWORD.
       GO TO 70
  
-C  Matched -- advance tree pointer to next character of command
+C  MATCHED -- ADVANCE TREE POINTER TO NEXT CHARACTER OF COMMAND
 50    TP=M(TP)
       IF (TP .GT. 0) GO TO 10
  
-C  Last character of keyword found.
+C  LAST CHARACTER OF KEYWORD FOUND.
 70    K=-TP
 C }}}
       RETURN
@@ -638,12 +638,12 @@ C-----------------------------------------------------------------------
       SUBROUTINE READA(M)
       IMPLICIT NONE
  
-C  Read characters and pack them into the character variable M.
-C  If the first character is a single or double quote, the string is
-C  terminated by a matching quote and the quotes are removed; otherwise
-C  it is terminated by space or comma.  If necessary, M is filled
-C  out with spaces.
-C Declarations {{{ 
+C  READ CHARACTERS AND PACK THEM INTO THE CHARACTER VARIABLE M.
+C  IF THE FIRST CHARACTER IS A SINGLE OR DOUBLE QUOTE, THE STRING IS
+C  TERMINATED BY A MATCHING QUOTE AND THE QUOTES ARE REMOVED; OTHERWISE
+C  IT IS TERMINATED BY SPACE OR COMMA.  IF NECESSARY, M IS FILLED
+C  OUT WITH SPACES.
+C DECLARATIONS {{{ 
       CHARACTER SPACE, BLANK, COMMA, SQUOTE, DQUOTE, TERM
       CHARACTER*(*) M
       CHARACTER CHAR
@@ -656,7 +656,7 @@ C Declarations {{{
       DATA SPACE /' '/, COMMA /','/, SQUOTE /''''/, DQUOTE /'"'/
 C }}}
 
-C Subroutine body {{{ 
+C SUBROUTINE BODY {{{ 
 
       IF (ITEM .GE. NITEM .AND. .NOT. CLEAR) RETURN
       K=0
@@ -678,7 +678,7 @@ C Subroutine body {{{
  
 10    CONTINUE
 C
-C  The new Sun compiler refuses to execute the following line - hence rewritten
+C  THE NEW SUN COMPILER REFUSES TO EXECUTE THE FOLLOWING LINE - HENCE REWRITTEN
 C
 C     K=K+1
 C
@@ -724,10 +724,10 @@ C-----------------------------------------------------------------------
  
       SUBROUTINE READCH(M)
  
-C  Read a single character from the next (or the current) data item.
-C  No account is taken of special characters.
+C  READ A SINGLE CHARACTER FROM THE NEXT (OR THE CURRENT) DATA ITEM.
+C  NO ACCOUNT IS TAKEN OF SPECIAL CHARACTERS.
 
-C Declarations {{{ 
+C DECLARATIONS {{{ 
       CHARACTER CHAR
       COMMON /BUFFER/ CHAR(800)
       LOGICAL SKIPBL, CLEAR, ECHO, CAT
@@ -747,9 +747,9 @@ C }}}
 C-----------------------------------------------------------------------
  
       SUBROUTINE GETF(A)
-C  Read the next item as a double-precision number, reading new data
-C  records if necessary
-C Declarations  {{{
+C  READ THE NEXT ITEM AS A DOUBLE-PRECISION NUMBER, READING NEW DATA
+C  RECORDS IF NECESSARY
+C DECLARATIONS  {{{
       DOUBLE PRECISION A
 
       CHARACTER CHAR
@@ -768,7 +768,7 @@ C }}}
       CALL INPUT(END)
       IF (END) THEN
         WRITE (6,1001)
-1001    FORMAT ('0End of file while attempting to read a number')
+1001    FORMAT ('0END OF FILE WHILE ATTEMPTING TO READ A NUMBER')
         STOP
       ENDIF
       GO TO 10
@@ -778,7 +778,7 @@ C }}}
 C-----------------------------------------------------------------------
  
       SUBROUTINE GETS(S)
-C  Get a single-precision number
+C  GET A SINGLE-PRECISION NUMBER
       DOUBLE PRECISION A
       REAL S
       A=S
@@ -790,7 +790,7 @@ C  Get a single-precision number
 C-----------------------------------------------------------------------
  
       SUBROUTINE GETI(I)
-C  Get an integer
+C  GET AN INTEGER
       DOUBLE PRECISION A
       A=I
       CALL GETF(A)
@@ -799,11 +799,11 @@ C  Get an integer
       END
  
 C-----------------------------------------------------------------------
-C> \name GETA
-C> \brief Get a character string 
+C> \NAME GETA
+C> \BRIEF GET A CHARACTER STRING 
       SUBROUTINE GETA(M)
-C  Get a character string
-C Declarations {{{
+C  GET A CHARACTER STRING
+C DECLARATIONS {{{
       CHARACTER*(*) M
 
       CHARACTER CHAR
@@ -823,7 +823,7 @@ C }}}
       IF (END) THEN
         WRITE (6,1001)
 1001    FORMAT
-     &    ('0End of file while attempting to read a character string')
+     &    ('0END OF FILE WHILE ATTEMPTING TO READ A CHARACTER STRING')
         STOP
       ENDIF
       GO TO 10
@@ -833,11 +833,11 @@ C }}}
 C-----------------------------------------------------------------------
  
       SUBROUTINE READSNGL(S)
-C>  \name READSNGL
-C>  \brief Read a number from the current record into the single-precision
-C>  \brief variable S
-C  Read a number from the current record into the single-precision
-C  variable S
+C>  \NAME READSNGL
+C>  \BRIEF READ A NUMBER FROM THE CURRENT RECORD INTO THE SINGLE-PRECISION
+C>  \BRIEF VARIABLE S
+C  READ A NUMBER FROM THE CURRENT RECORD INTO THE SINGLE-PRECISION
+C  VARIABLE S
       DOUBLE PRECISION A
       REAL S
       A=S
@@ -849,8 +849,8 @@ C  variable S
 C-----------------------------------------------------------------------
  
       SUBROUTINE READI(I)
-C> \name READI
-C> \brief Read an integer from the current record
+C> \NAME READI
+C> \BRIEF READ AN INTEGER FROM THE CURRENT RECORD
       DOUBLE PRECISION A
       A=I
       CALL READF(A)
@@ -861,11 +861,11 @@ C> \brief Read an integer from the current record
 C-----------------------------------------------------------------------
  
       SUBROUTINE REREAD(K)
-C> \name REREAD 
+C> \NAME REREAD 
 C>
-C>  K>0  Reread from item K
-C>  K<0  Go back |K| items
-C>  K=0  Same as K=-1, i.e. reread last item.
+C>  K>0  REREAD FROM ITEM K
+C>  K<0  GO BACK |K| ITEMS
+C>  K=0  SAME AS K=-1, I.E. REREAD LAST ITEM.
  
       CHARACTER CHAR
       COMMON /BUFFER/ CHAR(800)
@@ -888,7 +888,7 @@ C-----------------------------------------------------------------------
  
       CHARACTER UC*26, LC*26
       DATA UC /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
-      DATA LC /'abcdefghijklmnopqrstuvwxyz'/
+      DATA LC /'ABCDEFGHIJKLMNOPQRSTUVWXYZ'/
  
       DO 10 I=1,LEN(WORD)
       K=INDEX(LC,WORD(I:I))
@@ -905,10 +905,10 @@ C-----------------------------------------------------------------------
       RETURN
  
       END
-C  REPORT  B1  ( 16:10:41 Thursday 30 April 1992 )
+C  REPORT  B1  ( 16:10:41 THURSDAY 30 APRIL 1992 )
 
       SUBROUTINE REPORT(C,REFLCT)
-C Declarations {{{
+C DECLARATIONS {{{
       CHARACTER C*(*)
       LOGICAL REFLCT
 
@@ -938,7 +938,7 @@ C  }}}
 C       PRINT '(1X,4(A,I3))',
 C    &      'L =', L, '   LAST =', LAST, '   I1 =', I1, '   I2 =', I2
         PRINT '(1X,A/1X,A,1X,80A,1X,A)',
-     &           'Current input line is:', S1, (BUFF(I), I=I1,I2), S2
+     &           'CURRENT INPUT LINE IS:', S1, (BUFF(I), I=I1,I2), S2
         PRINT '(4X,80A1)', (' ', I=I1,L), '*'
       ENDIF
 C     IF (.NOT. ONLINE) STOP

@@ -1,30 +1,30 @@
-!op226>=================================== 
-!op226> GPL License Info {{{ 
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+!OP226>=================================== 
+!OP226> GPL LICENSE INFO {{{ 
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
-!op226>}}} 
-!op226>=================================== 
+!OP226>}}} 
+!OP226>=================================== 
       SUBROUTINE FINALQ
-!op226>=================================== 
-!op226> Declarations {{{ 
+!OP226>=================================== 
+!OP226> DECLARATIONS {{{ 
       USE COMMONS
-      use QMODULE
+      USE QMODULE
       USE MODCHARMM, ONLY: ACESOLV,NCHENCALLS,ACEUPSTEP
       IMPLICIT NONE
 
@@ -35,12 +35,12 @@ C
       DOUBLE PRECISION DUMMY(3*NATOMS), AA(3)
 
       COMMON /MYPOT/ POTEL
-!op226> End declarations }}} 
-!op226>=================================== 
+!OP226> END DECLARATIONS }}} 
+!OP226>=================================== 
  
 C
-C  Make sure the lowest minima are tightly converged and then sort
-C  them just to be on the safe side.
+C  MAKE SURE THE LOWEST MINIMA ARE TIGHTLY CONVERGED AND THEN SORT
+C  THEM JUST TO BE ON THE SAFE SIDE.
 C
       CSMGUIDET=.FALSE.
       SHELLMOVES(1:NPAR)=.FALSE.
@@ -62,21 +62,21 @@ C
             NQ(1)=NQ(1)+1
             IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
             CALL QUENCH(.TRUE.,1,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
-            WRITE(MYUNIT,'(A,I6,A,F20.10,A,I5,A,F15.7,A,F12.2)') 'Final Quench ',NQ(1),' energy=',
-     1                POTEL,' steps=',ITERATIONS,' RMS force=',RMS,' time=',TIME-TSTART
+            WRITE(MYUNIT,'(A,I6,A,F20.10,A,I5,A,F15.7,A,F12.2)') 'FINAL QUENCH ',NQ(1),' ENERGY=',
+     1                POTEL,' STEPS=',ITERATIONS,' RMS FORCE=',RMS,' TIME=',TIME-TSTART
 
             QMIN(J1)=POTEL
             DO J2=1,3*NATOMS
                QMINP(J1,J2)=COORDS(J2,1)
             ENDDO
 
-!op226> IF (CSMT) THEN {{{ 
+!OP226> IF (CSMT) THEN {{{ 
             IF (CSMT) THEN
                CSMAV(1:3*NATOMS)=0.0D0
                DO J2=1,CSMGPINDEX
 !
-! rotate permuted image to best orientation with CSMPMAT
-! apply point group operation J2
+! ROTATE PERMUTED IMAGE TO BEST ORIENTATION WITH CSMPMAT
+! APPLY POINT GROUP OPERATION J2
 ! 
                   DO J3=1,NATOMS
                      XTEMP(3*(J3-1)+1)=CSMPMAT(1,1)*CSMIMAGES(3*NATOMS*(J2-1)+3*(J3-1)+1)
@@ -94,15 +94,15 @@ C
                ENDDO
                CSMAV(1:3*NATOMS)=CSMAV(1:3*NATOMS)/CSMGPINDEX
 !
-!  Check the CSM for the averaged structure. It should be zero if this structure has the
-!  right point group. Need to reset CSMIMAGES and CSMNORM temporarily. 
+!  CHECK THE CSM FOR THE AVERAGED STRUCTURE. IT SHOULD BE ZERO IF THIS STRUCTURE HAS THE
+!  RIGHT POINT GROUP. NEED TO RESET CSMIMAGES AND CSMNORM TEMPORARILY. 
 !  
                IF (PERMDIST) THEN
                   DO J2=1,CSMGPINDEX
                      XTEMP(1:3*NATOMS)=CSMAV(1:3*NATOMS)
                      CALL CSMROT(XTEMP,DUMMY,1,J2)
                      CALL MINPERMDIST(XTEMP,DUMMY,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,PERIODIC,TWOD,DUMMY2,DIST2,RIGID,RMAT)
-                     CALL CSMROT(DUMMY,XTEMP,-1,J2) ! need to rotate the permuted rotated images back to the reference orientation
+                     CALL CSMROT(DUMMY,XTEMP,-1,J2) ! NEED TO ROTATE THE PERMUTED ROTATED IMAGES BACK TO THE REFERENCE ORIENTATION
                      CSMIMAGES(1+3*NATOMS*(J2-1):3*NATOMS*J2)=XTEMP(1:3*NATOMS)
                   ENDDO
                ELSE
@@ -110,7 +110,7 @@ C
                      CSMIMAGES(1+3*NATOMS*(J2-1):3*NATOMS*J2)=CSMAV(1:3*NATOMS)
                   ENDDO
                ENDIF
-               AA(1)=0.0D0; AA(2)=0.0D0; AA(3)=6.283185307D0 ! should give an identity matrix
+               AA(1)=0.0D0; AA(2)=0.0D0; AA(3)=6.283185307D0 ! SHOULD GIVE AN IDENTITY MATRIX
                SAVECSMNORM=CSMNORM
                CSMNORM=0.0D0
                DO J2=1,NATOMS
@@ -119,26 +119,26 @@ C
                CSMNORM=2*CSMGPINDEX*CSMNORM
                CALL CSMPOTGRAD(CSMAV,AA,AVVAL,.TRUE.,CSMGRAD)
                CSMNORM=SAVECSMNORM
-               IF (DEBUG) WRITE(MYUNIT,'(A,G20.10)') 'finalq> CSM for averaged structure=',AVVAL
+               IF (DEBUG) WRITE(MYUNIT,'(A,G20.10)') 'FINALQ> CSM FOR AVERAGED STRUCTURE=',AVVAL
                QMINAV(J1)=AVVAL
-               IF (DEBUG) WRITE(MYUNIT,'(A,I6,2G20.10)') 'finalq> J1,QMIN,QMINAV=',J1,QMIN(J1),QMINAV(J1)
+               IF (DEBUG) WRITE(MYUNIT,'(A,I6,2G20.10)') 'FINALQ> J1,QMIN,QMINAV=',J1,QMIN(J1),QMINAV(J1)
                QMINPCSMAV(J1,1:3*NATOMS)=CSMAV(1:3*NATOMS)
             ENDIF
-!op226>}}} 
+!OP226>}}} 
          ENDIF
       ENDDO
 C
-C       sf344> sometimes we can have a lower number of minima found than NSAVE. Resetting
-C              NSAVE to the number of minima found should get rid of entries with null 
-C              coordinates in the file 'lowest' (and other final output files)
+C       SF344> SOMETIMES WE CAN HAVE A LOWER NUMBER OF MINIMA FOUND THAN NSAVE. RESETTING
+C              NSAVE TO THE NUMBER OF MINIMA FOUND SHOULD GET RID OF ENTRIES WITH NULL 
+C              COORDINATES IN THE FILE 'LOWEST' (AND OTHER FINAL OUTPUT FILES)
 C
-C  DJW - this may not work because we may not have found enough minima considered 
-C        different according to the EDIFF criterion.
+C  DJW - THIS MAY NOT WORK BECAUSE WE MAY NOT HAVE FOUND ENOUGH MINIMA CONSIDERED 
+C        DIFFERENT ACCORDING TO THE EDIFF CRITERION.
 C
       NSAVE=NQ(1)
       CALL GSORT2(NSAVE,NATOMS)
 C
-C  Optionally sort the atoms from most bound to least bound according to VAT. {{{
+C  OPTIONALLY SORT THE ATOMS FROM MOST BOUND TO LEAST BOUND ACCORDING TO VAT. {{{
 C
        
       IF (SORTT) THEN
@@ -160,18 +160,18 @@ C
          ENDDO
       ENDIF
 
-!op226>}}} 
+!OP226>}}} 
 
 C     IF (DEBUG) THEN
          IF (TABOOT) THEN
             IF (NPAR.GT.1) THEN
-               WRITE(MYUNIT,'(A)') 'Taboo lists:'
+               WRITE(MYUNIT,'(A)') 'TABOO LISTS:'
                DO J1=1,NPAR
-                  WRITE(MYUNIT,'(A,G20.10)') 'Parallel run ',J1
+                  WRITE(MYUNIT,'(A,G20.10)') 'PARALLEL RUN ',J1
                   WRITE(MYUNIT,'(6F15.7)') (ESAVE(J2,J1),J2=1,NT(J1))
                ENDDO
             ELSE
-               WRITE(MYUNIT,'(A)') 'Taboo list:'
+               WRITE(MYUNIT,'(A)') 'TABOO LIST:'
                WRITE(MYUNIT,'(6F15.7)') (ESAVE(J2,1),J2=1,NT(1))
             ENDIF
          ENDIF

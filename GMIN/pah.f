@@ -1,50 +1,50 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
-C  Energy and gradient for rigid body PAH molecule using new rigid body
-C  derivative functions etc.
+C  ENERGY AND GRADIENT FOR RIGID BODY PAH MOLECULE USING NEW RIGID BODY
+C  DERIVATIVE FUNCTIONS ETC.
 C
       SUBROUTINE PAH(X,V,EPAH,GTEST,SECT)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE
       LOGICAL GTEST,SECT
       INTEGER J1, J2, K1, K2, NAT2
       DOUBLE PRECISION X(3*NATOMS), V(3*NATOMS), X1, X2, Y1, Y2, Z1, Z2, FC, DFC,
      1                 EPAH, DUMMY, RALPHA12, RALPHA22, RDIST, RM6, RM1,
      2                 M1, L1, N1, M2, L2, N2, ALPHA1, CA1, CA2, ALPHA2, S1, S2, C3A1, C3A2,
-     3                 L12, M12, N12, L22, M22, N22, C6cc, C12cc, C6hh, C12hh,
+     3                 L12, M12, N12, L22, M22, N22, C6CC, C12CC, C6HH, C12HH,
      4                 GX1, GY1, GZ1, GL1, GM1, GN1, GL2, GM2, GN2, C2A2, C2A1,
      5                 D1, D2, D3, D4, D5, D6, DA, DB, DC, DIST, DUMMY2,
      6                 P1X, P1Y, P1Z, P2X, P2Y, P2Z, Q1, Q2, RDIST6,
      7           D1S, D2S, D3S, D4S, D5S, D6S, DAS, DBS, DCS, CHARGE(36), HTOKJ
-      PARAMETER (HTOKJ=1389.354848D0) ! conversion factor for coulomb energy and gradients
-      DOUBLE PRECISION FLJcc, FLJhh, FLJch, DFLJcc, DFLJhh, DFLJch, C6ch, C12ch
+      PARAMETER (HTOKJ=1389.354848D0) ! CONVERSION FACTOR FOR COULOMB ENERGY AND GRADIENTS
+      DOUBLE PRECISION FLJCC, FLJHH, FLJCH, DFLJCC, DFLJHH, DFLJCH, C6CH, C12CH
 C
-C  Statement functions.
-C  Site-site energy terms - Coulombic and LJ. 
+C  STATEMENT FUNCTIONS.
+C  SITE-SITE ENERGY TERMS - COULOMBIC AND LJ. 
 C
-      FLJcc(RM6)=(C12cc*RM6-C6cc)*RM6
-      DFLJcc(RM1,RM6)=-6.0D0*(-C6cc+2.0D0*C12cc*RM6)*RM6*RM1
-      FLJhh(RM6)=(C12hh*RM6-C6hh)*RM6
-      DFLJhh(RM1,RM6)=-6.0D0*(-C6hh+2.0D0*C12hh*RM6)*RM6*RM1
-      FLJch(RM6)=(C12ch*RM6-C6ch)*RM6
-      DFLJch(RM1,RM6)=-6.0D0*(-C6ch+2.0D0*C12ch*RM6)*RM1*RM6
+      FLJCC(RM6)=(C12CC*RM6-C6CC)*RM6
+      DFLJCC(RM1,RM6)=-6.0D0*(-C6CC+2.0D0*C12CC*RM6)*RM6*RM1
+      FLJHH(RM6)=(C12HH*RM6-C6HH)*RM6
+      DFLJHH(RM1,RM6)=-6.0D0*(-C6HH+2.0D0*C12HH*RM6)*RM6*RM1
+      FLJCH(RM6)=(C12CH*RM6-C6CH)*RM6
+      DFLJCH(RM1,RM6)=-6.0D0*(-C6CH+2.0D0*C12CH*RM6)*RM1*RM6
 
       FC(Q1,Q2,RM1)=Q1*Q2*RM1
       DFC(Q1,Q2,RM1)=-Q1*Q2*RM1**2
@@ -53,56 +53,56 @@ C
          SITE(J1,3)=0.0D0
       ENDDO
 
-      SITE( 1,1)=1.42d0
-      SITE( 1,2)=0.0d0
-      CHARGE( 1)=-0.0066d0
-      SITE( 2,1)=0.71d0
-      SITE( 2,2)=1.229755d0
-      CHARGE( 2)=-0.0066d0
-      SITE( 3,1)=-0.71d0
-      SITE( 3,2)=1.229755d0
-      CHARGE( 3)=-0.0066d0
-      SITE( 4,1)=-1.42d0
-      SITE( 4,2)=0.0d0
+      SITE( 1,1)=1.42D0
+      SITE( 1,2)=0.0D0
+      CHARGE( 1)=-0.0066D0
+      SITE( 2,1)=0.71D0
+      SITE( 2,2)=1.229755D0
+      CHARGE( 2)=-0.0066D0
+      SITE( 3,1)=-0.71D0
+      SITE( 3,2)=1.229755D0
+      CHARGE( 3)=-0.0066D0
+      SITE( 4,1)=-1.42D0
+      SITE( 4,2)=0.0D0
       CHARGE( 4)=-0.0066D0
-      SITE( 5,1)=-0.71d0
-      SITE( 5,2)=-1.229755d0
+      SITE( 5,1)=-0.71D0
+      SITE( 5,2)=-1.229755D0
       CHARGE( 5)=-0.0066D0
-      SITE( 6,1)=0.71d0
-      SITE( 6,2)=-1.229755d0
+      SITE( 6,1)=0.71D0
+      SITE( 6,2)=-1.229755D0
       CHARGE( 6)=-0.0066D0
-      SITE( 7,1)=2.838d0
-      SITE( 7,2)=0.0d0
-      CHARGE( 7)=0.0158d0
-      SITE( 8,1)=1.419d0
-      SITE( 8,2)=2.457779d0
-      CHARGE( 8)=0.0158d0
-      SITE( 9,1)=-1.419d0
-      SITE( 9,2)=2.457779d0
-      CHARGE( 9)=0.0158d0
-      SITE(10,1)=-2.838d0
-      SITE(10,2)=0.0d0
-      CHARGE(10)=0.0158d0
-      SITE(11,1)=-1.419d0
-      SITE(11,2)=-2.45779d0
-      CHARGE(11)=0.0158d0
-      SITE(12,1)=1.419d0
-      SITE(12,2)=-2.45779d0
-      CHARGE(12)=0.0158d0
-      SITE(13,1)=3.523366d0
-      SITE(13,2)=1.248219d0
-      CHARGE(13)=-0.0986d0
-      SITE(14,1)=2.842673d0
-      SITE(14,2)=2.427211d0
-      CHARGE(14)=-0.0986d0
-      SITE(15,1)=0.680706d0
-      SITE(15,2)=3.675430d0
-      CHARGE(15)=-0.0986d0
-      SITE(16,1)=-0.680677d0
-      SITE(16,2)=3.675437d0
-      CHARGE(16)=-0.0986d0
-      SITE(17,1)=-2.842673d0
-      SITE(17,2)=2.427211d0
+      SITE( 7,1)=2.838D0
+      SITE( 7,2)=0.0D0
+      CHARGE( 7)=0.0158D0
+      SITE( 8,1)=1.419D0
+      SITE( 8,2)=2.457779D0
+      CHARGE( 8)=0.0158D0
+      SITE( 9,1)=-1.419D0
+      SITE( 9,2)=2.457779D0
+      CHARGE( 9)=0.0158D0
+      SITE(10,1)=-2.838D0
+      SITE(10,2)=0.0D0
+      CHARGE(10)=0.0158D0
+      SITE(11,1)=-1.419D0
+      SITE(11,2)=-2.45779D0
+      CHARGE(11)=0.0158D0
+      SITE(12,1)=1.419D0
+      SITE(12,2)=-2.45779D0
+      CHARGE(12)=0.0158D0
+      SITE(13,1)=3.523366D0
+      SITE(13,2)=1.248219D0
+      CHARGE(13)=-0.0986D0
+      SITE(14,1)=2.842673D0
+      SITE(14,2)=2.427211D0
+      CHARGE(14)=-0.0986D0
+      SITE(15,1)=0.680706D0
+      SITE(15,2)=3.675430D0
+      CHARGE(15)=-0.0986D0
+      SITE(16,1)=-0.680677D0
+      SITE(16,2)=3.675437D0
+      CHARGE(16)=-0.0986D0
+      SITE(17,1)=-2.842673D0
+      SITE(17,2)=2.427211D0
       CHARGE(17)=-0.0986D0
       SITE(18,1)=-3.523366D0
       SITE(18,2)=1.248219D0
@@ -162,12 +162,12 @@ C
       SITE(36,2)=-1.274393D0
       CHARGE(36)=0.094D0
 
-      C6cc=0.3926*12.075625**3 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
-      C12cc=0.3926*12.075625**6
-      C6hh=0.0543*8.625969**3
-      C12hh=0.0543*8.625969**6
-      C6ch=0.1435*10.291264**3
-      C12ch=0.1435*10.291264**6
+      C6CC=0.3926*12.075625**3 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
+      C12CC=0.3926*12.075625**6
+      C6HH=0.0543*8.625969**3
+      C12HH=0.0543*8.625969**6
+      C6CH=0.1435*10.291264**3
+      C12CH=0.1435*10.291264**6
 
       NAT2=NATOMS/2
       EPAH=0.0D0
@@ -179,7 +179,7 @@ C
       ENDDO
 
 C
-C  Potential energy first.
+C  POTENTIAL ENERGY FIRST.
 C
       DO J1=1,NAT2-1
          X1=X(3*(J1-1)+1)
@@ -204,7 +204,7 @@ C           C3A1=-ALPHA1/2+ALPHA1**3/24
             S1=SIN(ALPHA1)/ALPHA1
          ENDIF
 
-c        WRITE(*,'(A,6F15.5)') 'ALPHA1,RALPHA12,CA1,C2A1,C3A1,S1=',ALPHA1,RALPHA12,CA1,C2A1,C3A1,S1
+C        WRITE(*,'(A,6F15.5)') 'ALPHA1,RALPHA12,CA1,C2A1,C3A1,S1=',ALPHA1,RALPHA12,CA1,C2A1,C3A1,S1
          DO J2=J1+1,NAT2
             X2=X(3*(J2-1)+1)
             Y2=X(3*(J2-1)+2)
@@ -228,7 +228,7 @@ C              C3A2=-ALPHA2/2+ALPHA2**3/24
                S2=SIN(ALPHA2)/ALPHA2
             ENDIF
 C
-C  LJ and Coulomb contributions.
+C  LJ AND COULOMB CONTRIBUTIONS.
 C
             DO K1=1,36
                P1X=SITE(K1,1)
@@ -239,13 +239,13 @@ C
                   P2Y=SITE(K2,2)
                   P2Z=SITE(K2,3)
                   DIST= 
-     1  Sqrt((c2a1*p1x-c3a1*l1*(l1*p1x+m1*p1y+n1*p1z)-c2a2*p2x+c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)+ 
-     1      (n1*p1y - m1*p1z)*s1 - (n2*p2y - m2*p2z)*s2 + x1 - x2)**2 + 
-     1   (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y+c3a2*m2*(l2*p2x+m2*p2y+n2*p2z)+ 
-     1      (-(n1*p1x) + l1*p1z)*s1 - (-(n2*p2x) + l2*p2z)*s2 + y1-y2)**2 + 
-     1   (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z+c3a2*n2*(l2*p2x+m2*p2y+n2*p2z)+ 
-     1      (m1*p1x - l1*p1y)*s1 - (m2*p2x - l2*p2y)*s2 + z1 - z2)**2)
-C           PRINT*,'coordinates of molecule pair:'
+     1  SQRT((C2A1*P1X-C3A1*L1*(L1*P1X+M1*P1Y+N1*P1Z)-C2A2*P2X+C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)+ 
+     1      (N1*P1Y - M1*P1Z)*S1 - (N2*P2Y - M2*P2Z)*S2 + X1 - X2)**2 + 
+     1   (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y+C3A2*M2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+     1      (-(N1*P1X) + L1*P1Z)*S1 - (-(N2*P2X) + L2*P2Z)*S2 + Y1-Y2)**2 + 
+     1   (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z+C3A2*N2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+     1      (M1*P1X - L1*P1Y)*S1 - (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)**2)
+C           PRINT*,'COORDINATES OF MOLECULE PAIR:'
 C           WRITE(*,'(3F20.10)') X1,Y1,Z1
 C           WRITE(*,'(3F20.10)') L1,M1,N1
 C           WRITE(*,'(3F20.10)') X2,Y2,Z2
@@ -253,48 +253,48 @@ C           WRITE(*,'(3F20.10)') L2,M2,N2
                   RDIST=1.0D0/DIST
                   RDIST6=RDIST**6
 C
-C  LJ term
+C  LJ TERM
 C
                   IF (K1.LE.24.AND.K2.LE.24) THEN     ! C-C
-                     DUMMY=FLJcc(RDIST6)
+                     DUMMY=FLJCC(RDIST6)
                   ELSEIF (K1.GT.24.AND.K2.GT.24) THEN ! H-H
-                     DUMMY=FLJhh(RDIST6)
+                     DUMMY=FLJHH(RDIST6)
                   ELSE                                ! C-H
-                     DUMMY=FLJch(RDIST6)
+                     DUMMY=FLJCH(RDIST6)
                   ENDIF
-C                 PRINT*,'distance,DUMMY=',DIST,DUMMY
+C                 PRINT*,'DISTANCE,DUMMY=',DIST,DUMMY
 C
-C  Coulomb term
+C  COULOMB TERM
 C
                   DUMMY=DUMMY+HTOKJ*FC(CHARGE(K1),CHARGE(K2),RDIST)
                   IF (GTEST.OR.SECT) THEN
                      IF (K1.LE.24.AND.K2.LE.24) THEN     ! C-C
-                        DUMMY2=DFLJcc(RDIST,RDIST6)
+                        DUMMY2=DFLJCC(RDIST,RDIST6)
                      ELSEIF (K1.GT.24.AND.K2.GT.24) THEN ! H-H
-                        DUMMY2=DFLJhh(RDIST,RDIST6)
+                        DUMMY2=DFLJHH(RDIST,RDIST6)
                      ELSE                                ! C-H
-                        DUMMY2=DFLJch(RDIST,RDIST6)
+                        DUMMY2=DFLJCH(RDIST,RDIST6)
                      ENDIF
-                     D1S=D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D1S=D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D2S=D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D2S=D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D3S=D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D3S=D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D4S=D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D4S=D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D5S=D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D5S=D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     D6S=D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     D6S=D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     DAS=DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     DAS=DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     DBS=DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     DBS=DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     DCS=DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     DCS=DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
 C
-C  Add Coul;omb contribution
+C  ADD COUL;OMB CONTRIBUTION
 C
                      DUMMY2=DUMMY2+HTOKJ*DFC(CHARGE(K1),CHARGE(K2),RDIST)
                      GX1=DUMMY2*D1S
@@ -331,10 +331,10 @@ C
          ENDDO
       ENDDO
 
-C     WRITE(*,'(A,G20.10)') 'energy=',EPAH
-C     PRINT*,'coords:'
+C     WRITE(*,'(A,G20.10)') 'ENERGY=',EPAH
+C     PRINT*,'COORDS:'
 C     WRITE(*,'(I6,G20.10)') (J1,X(J1),J1=1,3*NATOMS)
-C     PRINT*,'gradient:'
+C     PRINT*,'GRADIENT:'
 C     WRITE(*,'(I6,G20.10)') (J1,V(J1),J1=1,3*NATOMS)
 
       RETURN

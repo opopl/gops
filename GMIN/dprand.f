@@ -1,11 +1,11 @@
-C   Copyright (C) 1992  N.M. Maclaren
-C   Copyright (C) 1992  The University of Cambridge
+C   COPYRIGHT (C) 1992  N.M. MACLAREN
+C   COPYRIGHT (C) 1992  THE UNIVERSITY OF CAMBRIDGE
 
-C   This software may be reproduced and used freely, provided that all
-C   users of it agree that the copyright holders are not liable for any
-C   damage or injury caused by use of this software and that this
-C   condition is passed onto all subsequent recipients of the software,
-C   whether modified or not.
+C   THIS SOFTWARE MAY BE REPRODUCED AND USED FREELY, PROVIDED THAT ALL
+C   USERS OF IT AGREE THAT THE COPYRIGHT HOLDERS ARE NOT LIABLE FOR ANY
+C   DAMAGE OR INJURY CAUSED BY USE OF THIS SOFTWARE AND THAT THIS
+C   CONDITION IS PASSED ONTO ALL SUBSEQUENT RECIPIENTS OF THE SOFTWARE,
+C   WHETHER MODIFIED OR NOT.
 
 
 
@@ -18,9 +18,9 @@ C   whether modified or not.
         COMMON /RANDDP/ POLY, OTHER, OFFSET, INDEX
         DATA INITAL/.TRUE./
 C
-C   ISEED should be set to an integer between 0 and 9999 inclusive;
-C   a value of 0 will initialise the generator only if it has not
-C   already been done.
+C   ISEED SHOULD BE SET TO AN INTEGER BETWEEN 0 AND 9999 INCLUSIVE;
+C   A VALUE OF 0 WILL INITIALISE THE GENERATOR ONLY IF IT HAS NOT
+C   ALREADY BEEN DONE.
 C
         IF (INITAL .OR. ISEED .NE. 0) THEN
             INITAL = .FALSE.
@@ -28,11 +28,11 @@ C
             RETURN
         END IF
 C
-C   INDEX must be initialised to an integer between 1 and 101
-C   inclusive, POLY(1...N) to integers between 0 and 1000009710
-C   inclusive (not all 0), and OTHER to a non-negative proper fraction
-C   with denominator 33554432.  It uses the Wichmann-Hill generator to
-C   do this.
+C   INDEX MUST BE INITIALISED TO AN INTEGER BETWEEN 1 AND 101
+C   INCLUSIVE, POLY(1...N) TO INTEGERS BETWEEN 0 AND 1000009710
+C   INCLUSIVE (NOT ALL 0), AND OTHER TO A NON-NEGATIVE PROPER FRACTION
+C   WITH DENOMINATOR 33554432.  IT USES THE WICHMANN-HILL GENERATOR TO
+C   DO THIS.
 C
         IX = MOD(ABS(ISEED),10000)+1
         IY = 2*IX+1
@@ -62,19 +62,19 @@ C
         COMMON /RANDDP/ POLY, OTHER, OFFSET, INDEX
         DATA INITAL/.TRUE./
 C
-C   This returns a uniform (0,1) random number, with extremely good
-C   uniformity properties.  It assumes that double precision provides
-C   at least 33 bits of accuracy, and uses a power of two base.
+C   THIS RETURNS A UNIFORM (0,1) RANDOM NUMBER, WITH EXTREMELY GOOD
+C   UNIFORMITY PROPERTIES.  IT ASSUMES THAT DOUBLE PRECISION PROVIDES
+C   AT LEAST 33 BITS OF ACCURACY, AND USES A POWER OF TWO BASE.
 C
         IF (INITAL) THEN
             CALL SDPRND (0)
             INITAL = .FALSE.
         END IF
 C
-C   See [Knuth] for why this implements the algorithm described in
-C   the paper.  Note that this code is tuned for machines with fast
-C   double precision, but slow multiply and divide; many, many other
-C   options are possible.
+C   SEE [KNUTH] FOR WHY THIS IMPLEMENTS THE ALGORITHM DESCRIBED IN
+C   THE PAPER.  NOTE THAT THIS CODE IS TUNED FOR MACHINES WITH FAST
+C   DOUBLE PRECISION, BUT SLOW MULTIPLY AND DIVIDE; MANY, MANY OTHER
+C   OPTIONS ARE POSSIBLE.
 C
         N = INDEX-64
         IF (N .LE. 0) N = N+101
@@ -94,8 +94,8 @@ C
         INDEX = INDEX+1
         IF (INDEX .GT. 101) INDEX = INDEX-101
 C
-C   Add in the second generator modulo 1, and force to be non-zero.
-C   The restricted ranges largely cancel themselves out.
+C   ADD IN THE SECOND GENERATOR MODULO 1, AND FORCE TO BE NON-ZERO.
+C   THE RESTRICTED RANGES LARGELY CANCEL THEMSELVES OUT.
 C
    10   Y = 37.0D0*OTHER+OFFSET
         OTHER = Y-AINT(Y)

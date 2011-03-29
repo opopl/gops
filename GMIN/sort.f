@@ -1,132 +1,132 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
-      SUBROUTINE Gsort(n,arr,arr2,np,NPAR,NTAB)
-      INTEGER n,M,NSTACK,np,NPAR,NTAB,a2
-      DOUBLE PRECISION arr(NTAB,NPAR), arr2(NTAB,NPAR)
+      SUBROUTINE GSORT(N,ARR,ARR2,NP,NPAR,NTAB)
+      INTEGER N,M,NSTACK,NP,NPAR,NTAB,A2
+      DOUBLE PRECISION ARR(NTAB,NPAR), ARR2(NTAB,NPAR)
       PARAMETER (M=7,NSTACK=50)
-      INTEGER i,ir,j,jstack,k,l,istack(NSTACK)
-      DOUBLE PRECISION a,temp,temp2
-      jstack=0
-      l=1
-      ir=n
-1     if(ir-l.lt.M)then
-        do 12 j=l+1,ir
-          a=arr(j,np)
+      INTEGER I,IR,J,JSTACK,K,L,ISTACK(NSTACK)
+      DOUBLE PRECISION A,TEMP,TEMP2
+      JSTACK=0
+      L=1
+      IR=N
+1     IF(IR-L.LT.M)THEN
+        DO 12 J=L+1,IR
+          A=ARR(J,NP)
 C******************************
-          a2=arr2(j,np)
+          A2=ARR2(J,NP)
 C******************************
-          do 11 i=j-1,1,-1
-            if(arr(i,np).le.a)goto 2
-            arr(i+1,np)=arr(i,np)
+          DO 11 I=J-1,1,-1
+            IF(ARR(I,NP).LE.A)GOTO 2
+            ARR(I+1,NP)=ARR(I,NP)
 C******************************
-            arr2(i+1,np)=arr2(i,np)
+            ARR2(I+1,NP)=ARR2(I,NP)
 C******************************
-11        continue
-          i=0
-2         arr(i+1,np)=a
+11        CONTINUE
+          I=0
+2         ARR(I+1,NP)=A
 C******************************
-          arr2(i+1,np)=a2
+          ARR2(I+1,NP)=A2
 C******************************
-12      continue
-        if(jstack.eq.0)return
-        ir=istack(jstack)
-        l=istack(jstack-1)
-        jstack=jstack-2
-      else
-        k=(l+ir)/2
-        temp=arr(k,np)
-        arr(k,np)=arr(l+1,np)
-        arr(l+1,np)=temp
+12      CONTINUE
+        IF(JSTACK.EQ.0)RETURN
+        IR=ISTACK(JSTACK)
+        L=ISTACK(JSTACK-1)
+        JSTACK=JSTACK-2
+      ELSE
+        K=(L+IR)/2
+        TEMP=ARR(K,NP)
+        ARR(K,NP)=ARR(L+1,NP)
+        ARR(L+1,NP)=TEMP
 C******************************
-        temp2=arr2(k,np)
-        arr2(k,np)=arr2(l+1,np)
-        arr2(l+1,np)=temp2
+        TEMP2=ARR2(K,NP)
+        ARR2(K,NP)=ARR2(L+1,NP)
+        ARR2(L+1,NP)=TEMP2
 C******************************
-        if(arr(l+1,np).gt.arr(ir,np))then
-          temp=arr(l+1,np)
-          arr(l+1,np)=arr(ir,np)
-          arr(ir,np)=temp
+        IF(ARR(L+1,NP).GT.ARR(IR,NP))THEN
+          TEMP=ARR(L+1,NP)
+          ARR(L+1,NP)=ARR(IR,NP)
+          ARR(IR,NP)=TEMP
 C******************************
-          temp2=arr2(l+1,np)
-          arr2(l+1,np)=arr2(ir,np)
-          arr2(ir,np)=temp2
+          TEMP2=ARR2(L+1,NP)
+          ARR2(L+1,NP)=ARR2(IR,NP)
+          ARR2(IR,NP)=TEMP2
 C******************************
-        endif
-        if(arr(l,np).gt.arr(ir,np))then
-          temp=arr(l,np)
-          arr(l,np)=arr(ir,np)
-          arr(ir,np)=temp
+        ENDIF
+        IF(ARR(L,NP).GT.ARR(IR,NP))THEN
+          TEMP=ARR(L,NP)
+          ARR(L,NP)=ARR(IR,NP)
+          ARR(IR,NP)=TEMP
 C******************************
-          temp2=arr2(l,np)
-          arr2(l,np)=arr2(ir,np)
-          arr2(ir,np)=temp2
+          TEMP2=ARR2(L,NP)
+          ARR2(L,NP)=ARR2(IR,NP)
+          ARR2(IR,NP)=TEMP2
 C******************************
-        endif
-        if(arr(l+1,np).gt.arr(l,np))then
-          temp=arr(l+1,np)
-          arr(l+1,np)=arr(l,np)
-          arr(l,np)=temp
+        ENDIF
+        IF(ARR(L+1,NP).GT.ARR(L,NP))THEN
+          TEMP=ARR(L+1,NP)
+          ARR(L+1,NP)=ARR(L,NP)
+          ARR(L,NP)=TEMP
 C******************************
-          temp2=arr2(l+1,np)
-          arr2(l+1,np)=arr2(l,np)
-          arr2(l,np)=temp2
+          TEMP2=ARR2(L+1,NP)
+          ARR2(L+1,NP)=ARR2(L,NP)
+          ARR2(L,NP)=TEMP2
 C******************************
-        endif
-        i=l+1
-        j=ir
-        a=arr(l,np)
+        ENDIF
+        I=L+1
+        J=IR
+        A=ARR(L,NP)
 C******************************
-        a2=arr2(l,np)
+        A2=ARR2(L,NP)
 C******************************
-3       continue
-          i=i+1
-        if(arr(i,np).lt.a)goto 3
-4       continue
-          j=j-1
-        if(arr(j,np).gt.a)goto 4
-        if(j.lt.i)goto 5
-        temp=arr(i,np)
-        arr(i,np)=arr(j,np)
-        arr(j,np)=temp
+3       CONTINUE
+          I=I+1
+        IF(ARR(I,NP).LT.A)GOTO 3
+4       CONTINUE
+          J=J-1
+        IF(ARR(J,NP).GT.A)GOTO 4
+        IF(J.LT.I)GOTO 5
+        TEMP=ARR(I,NP)
+        ARR(I,NP)=ARR(J,NP)
+        ARR(J,NP)=TEMP
 C******************************
-        temp2=arr2(i,np)
-        arr2(i,np)=arr2(j,np)
-        arr2(j,np)=temp2
+        TEMP2=ARR2(I,NP)
+        ARR2(I,NP)=ARR2(J,NP)
+        ARR2(J,NP)=TEMP2
 C******************************
-        goto 3
-5       arr(l,np)=arr(j,np)
-        arr(j,np)=a
+        GOTO 3
+5       ARR(L,NP)=ARR(J,NP)
+        ARR(J,NP)=A
 C******************************
-        arr2(l,np)=arr2(j,np)
-        arr2(j,np)=a2
+        ARR2(L,NP)=ARR2(J,NP)
+        ARR2(J,NP)=A2
 C******************************
-        jstack=jstack+2
-        if(jstack.gt.NSTACK) print*,'NSTACK too small in sort'
-        if(ir-i+1.ge.j-l)then
-          istack(jstack)=ir
-          istack(jstack-1)=i
-          ir=j-1
-        else
-          istack(jstack)=j-1
-          istack(jstack-1)=l
-          l=i
-        endif
-      endif
-      goto 1
+        JSTACK=JSTACK+2
+        IF(JSTACK.GT.NSTACK) PRINT*,'NSTACK TOO SMALL IN SORT'
+        IF(IR-I+1.GE.J-L)THEN
+          ISTACK(JSTACK)=IR
+          ISTACK(JSTACK-1)=I
+          IR=J-1
+        ELSE
+          ISTACK(JSTACK)=J-1
+          ISTACK(JSTACK-1)=L
+          L=I
+        ENDIF
+      ENDIF
+      GOTO 1
       END

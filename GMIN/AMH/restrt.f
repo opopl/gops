@@ -1,218 +1,218 @@
 
-c     --------------------- intstr ----------------------
+C     --------------------- INTSTR ----------------------
 
-      subroutine restrt(procnt,maxsiz,nmres,maxpro,
-     *                  numpro,maxcrd,numcrd,prcord,
-     *                  oarchv)
+      SUBROUTINE RESTRT(PROCNT,MAXSIZ,NMRES,MAXPRO,
+     *                  NUMPRO,MAXCRD,NUMCRD,PRCORD,
+     *                  OARCHV)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     RESTRT reads in previously calculated structures
+C     RESTRT READS IN PREVIOUSLY CALCULATED STRUCTURES
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-      use amhglobals,  only:SO, quench,nquench,quench_crd,maxmov,temtur,
-     *               temtur_quench,itgrd,x_mcp,ires
+      USE AMHGLOBALS,  ONLY:SO, QUENCH,NQUENCH,QUENCH_CRD,MAXMOV,TEMTUR,
+     *               TEMTUR_QUENCH,ITGRD,X_MCP,IRES
 
-      implicit none
+      IMPLICIT NONE
 
-c     argument declarations:
+C     ARGUMENT DECLARATIONS:
 
-       integer procnt,maxsiz,nmres,maxpro,maxcrd,numcrd,oarchv,numpro,i602
+       INTEGER PROCNT,MAXSIZ,NMRES,MAXPRO,MAXCRD,NUMCRD,OARCHV,NUMPRO,I602
        CHARACTER(LEN=20) :: OTEMP 
        CHARACTER(LEN=20) :: OSTRING
        CHARACTER(LEN=2) :: SDUMMY
        
 
-       double precision prcord(maxsiz,3,maxpro,maxcrd),x,y,z
+       DOUBLE PRECISION PRCORD(MAXSIZ,3,MAXPRO,MAXCRD),X,Y,Z
 
-c     internal variables:
+C     INTERNAL VARIABLES:
 
-       integer numprr,nmrss,numcrr,idummy,gly_c
+       INTEGER NUMPRR,NMRSS,NUMCRR,IDUMMY,GLY_C
 
-c        --- do loop indices ---
+C        --- DO LOOP INDICES ---
 
-       integer i500,i502,i503
+       INTEGER I500,I502,I503
  
-c        --- implied do loop indices ---
+C        --- IMPLIED DO LOOP INDICES ---
 
-         integer i2,iii
+         INTEGER I2,III
 
-c        ----  new annsch struff
-         integer grid_num,inc,i501,i504
+C        ----  NEW ANNSCH STRUFF
+         INTEGER GRID_NUM,INC,I501,I504
 
-         double precision rinc,q_temp(maxmov)
+         DOUBLE PRECISION RINC,Q_TEMP(MAXMOV)
 
-         rinc = 0.0D0
-         numprr = 1 
+         RINC = 0.0D0
+         NUMPRR = 1 
 
-c     --------------------- begin -----------------------
+C     --------------------- BEGIN -----------------------
 
-c     read in previous proteins 
-c     q_temp records quenching temperature
-c     open file containing coordinates
+C     READ IN PREVIOUS PROTEINS 
+C     Q_TEMP RECORDS QUENCHING TEMPERATURE
+C     OPEN FILE CONTAINING COORDINATES
 
-c     the structure file used to be t.dat 
-c     I've changed so that format is compatible
-c     with a segment of a movie file
+C     THE STRUCTURE FILE USED TO BE T.DAT 
+C     I'VE CHANGED SO THAT FORMAT IS COMPATIBLE
+C     WITH A SEGMENT OF A MOVIE FILE
 
-      open(unit=80,file='movieseg',status='old',form='formatted')
+      OPEN(UNIT=80,FILE='MOVIESEG',STATUS='OLD',FORM='FORMATTED')
 
-c     read in previous structures
+C     READ IN PREVIOUS STRUCTURES
 
-c      read(80,67)nmrss,numcrr,numprr,nquench
-      write(SO,*) 'quench, nquench=',quench,nquench
-cc   67 format(3(i3,1x))
-   67 format(4(i8,1x))
+C      READ(80,67)NMRSS,NUMCRR,NUMPRR,NQUENCH
+      WRITE(SO,*) 'QUENCH, NQUENCH=',QUENCH,NQUENCH
+CC   67 FORMAT(3(I3,1X))
+   67 FORMAT(4(I8,1X))
 
-       if (numprr.gt.numpro) then
-          write(SO,*) 'too many structures in movieseg file'
-          write(SO,*) numprr,numpro
-          stop
-       endif
+       IF (NUMPRR.GT.NUMPRO) THEN
+          WRITE(SO,*) 'TOO MANY STRUCTURES IN MOVIESEG FILE'
+          WRITE(SO,*) NUMPRR,NUMPRO
+          STOP
+       ENDIF
 
-       if (nquench.gt.maxmov .and. quench) then
-          write(SO,*) 'too many structures to quench',maxmov,quench
-          stop
-       endif
+       IF (NQUENCH.GT.MAXMOV .AND. QUENCH) THEN
+          WRITE(SO,*) 'TOO MANY STRUCTURES TO QUENCH',MAXMOV,QUENCH
+          STOP
+       ENDIF
   
-        if (.not. quench) nquench = 1
+        IF (.NOT. QUENCH) NQUENCH = 1
 
-c      if( nmrss.ne.nmres )then
-c         write(oarchv,455)nmrss,nmres
-c455      format(/'Restrt: restart -- # residues not consistent ',2(i4,1x))
-c         stop
-c      endif
+C      IF( NMRSS.NE.NMRES )THEN
+C         WRITE(OARCHV,455)NMRSS,NMRES
+C455      FORMAT(/'RESTRT: RESTART -- # RESIDUES NOT CONSISTENT ',2(I4,1X))
+C         STOP
+C      ENDIF
 
-c     read in trial structures for non-quench run
+C     READ IN TRIAL STRUCTURES FOR NON-QUENCH RUN
 
-      if (.not. quench) then
+      IF (.NOT. QUENCH) THEN
 
-      do 502 i502=1,numprr
+      DO 502 I502=1,NUMPRR
 
-          read(80,*)
-          read(80,*)
-            do 500 i500=1,nmres
-                  read(80,76)
-     *            (prcord(i500,i2,i502,1),i2=1,3),
-     *            (prcord(i500,i2,i502,2),i2=1,3),
-     *            (prcord(i500,i2,i502,3),i2=1,3)
+          READ(80,*)
+          READ(80,*)
+            DO 500 I500=1,NMRES
+                  READ(80,76)
+     *            (PRCORD(I500,I2,I502,1),I2=1,3),
+     *            (PRCORD(I500,I2,I502,2),I2=1,3),
+     *            (PRCORD(I500,I2,I502,3),I2=1,3)
 
-                  write(6,76)
-     *            (prcord(i500,i2,i502,1),i2=1,3),
-     *            (prcord(i500,i2,i502,2),i2=1,3),
-     *            (prcord(i500,i2,i502,3),i2=1,3)
-76     format(4x,3(f8.3,1x),4x,3(f8.3,1x),4x, 3(f8.3,1x))    
-500       continue
-c             i602=1
+                  WRITE(6,76)
+     *            (PRCORD(I500,I2,I502,1),I2=1,3),
+     *            (PRCORD(I500,I2,I502,2),I2=1,3),
+     *            (PRCORD(I500,I2,I502,3),I2=1,3)
+76     FORMAT(4X,3(F8.3,1X),4X,3(F8.3,1X),4X, 3(F8.3,1X))    
+500       CONTINUE
+C             I602=1
 
-c            do 500 i500=1,nmres
-c                  WRITE(6,*) 'i500',i500,nmres
-c                  READ(80,*) SDUMMY,X,Y,Z
-c                  WRITE(6,*) SDUMMY,X,Y,Z
-cc                  prcord(i500,1,i602,1)=x
-c                  prcord(i500,2,i602,1)=y
-c                  prcord(i500,3,i602,1)=z
-c
-c                  READ(80,*) SDUMMY,X,Y,Z
-c                  WRITE(6,*) SDUMMY,X,Y,Z
-c                  prcord(i500,1,i602,2)=x
-c                  prcord(i500,2,i602,2)=y
-c                  prcord(i500,3,i602,2)=z
+C            DO 500 I500=1,NMRES
+C                  WRITE(6,*) 'I500',I500,NMRES
+C                  READ(80,*) SDUMMY,X,Y,Z
+C                  WRITE(6,*) SDUMMY,X,Y,Z
+CC                  PRCORD(I500,1,I602,1)=X
+C                  PRCORD(I500,2,I602,1)=Y
+C                  PRCORD(I500,3,I602,1)=Z
+C
+C                  READ(80,*) SDUMMY,X,Y,Z
+C                  WRITE(6,*) SDUMMY,X,Y,Z
+C                  PRCORD(I500,1,I602,2)=X
+C                  PRCORD(I500,2,I602,2)=Y
+C                  PRCORD(I500,3,I602,2)=Z
 
-c                  READ(80,*) SDUMMY,X,Y,Z
-c                  WRITE(6,*) SDUMMY,X,Y,Z
-c                  prcord(i500,1,i602,3)=x
-c                  prcord(i500,2,i602,3)=y
-c                  prcord(i500,3,i602,3)=z
+C                  READ(80,*) SDUMMY,X,Y,Z
+C                  WRITE(6,*) SDUMMY,X,Y,Z
+C                  PRCORD(I500,1,I602,3)=X
+C                  PRCORD(I500,2,I602,3)=Y
+C                  PRCORD(I500,3,I602,3)=Z
 
-c76                format(A2,4X,3(F20.10))
-c500              continue
+C76                FORMAT(A2,4X,3(F20.10))
+C500              CONTINUE
 
-502     continue ! do 502 i502=1,numprr
+502     CONTINUE ! DO 502 I502=1,NUMPRR
  
-       gly_c = 0
+       GLY_C = 0
 
-       do iii = 1,nmres
+       DO III = 1,NMRES
 
-       if (ires(iii).eq.8) then
-        x_mcp(9*(iii-1)+1-(gly_c)*3) = dble(prcord(iii, 1, 1, 1))   !  CA X
-        x_mcp(9*(iii-1)+2-(gly_c)*3) = dble(prcord(iii, 2, 1, 1))   !  CA Y
-        x_mcp(9*(iii-1)+3-(gly_c)*3) = dble(prcord(iii, 3, 1, 1))   !  CA Z
-c       x_mcp(9*(iii-1)+4) = (prcord(iii, 1, 1, 2))   !  CB X
-c       x_mcp(9*(iii-1)+5) = (prcord(iii, 2, 1, 2))   !  CB Y
-c       x_mcp(9*(iii-1)+6) = (prcord(iii, 3, 1, 2))   !  CB Z
-        x_mcp(9*(iii-1)+4-(gly_c)*3) = dble(prcord(iii, 1, 1, 3))   !   O X
-        x_mcp(9*(iii-1)+5-(gly_c)*3) = dble(prcord(iii, 2, 1, 3))   !   O Y
-        x_mcp(9*(iii-1)+6-(gly_c)*3) = dble(prcord(iii, 3, 1, 3))   !   O Z
-        gly_c = gly_c +1
-      else
-        x_mcp(9*(iii-1)+1-gly_c*3) = dble(prcord(iii, 1, 1, 1))   !  CA X
-        x_mcp(9*(iii-1)+2-gly_c*3) = dble(prcord(iii, 2, 1, 1))   !  CA Y
-        x_mcp(9*(iii-1)+3-gly_c*3) = dble(prcord(iii, 3, 1, 1))   !  CA Z
-        x_mcp(9*(iii-1)+4-gly_c*3) = dble(prcord(iii, 1, 1, 2))   !  CB X
-        x_mcp(9*(iii-1)+5-gly_c*3) = dble(prcord(iii, 2, 1, 2))   !  CB Y
-        x_mcp(9*(iii-1)+6-gly_c*3) = dble(prcord(iii, 3, 1, 2))   !  CB Z
-        x_mcp(9*(iii-1)+7-gly_c*3) = dble(prcord(iii, 1, 1, 3))   !   O X
-        x_mcp(9*(iii-1)+8-gly_c*3) = dble(prcord(iii, 2, 1, 3))   !   O Y
-        x_mcp(9*(iii-1)+9-gly_c*3) = dble(prcord(iii, 3, 1, 3))   !   O Z
-      endif
+       IF (IRES(III).EQ.8) THEN
+        X_MCP(9*(III-1)+1-(GLY_C)*3) = DBLE(PRCORD(III, 1, 1, 1))   !  CA X
+        X_MCP(9*(III-1)+2-(GLY_C)*3) = DBLE(PRCORD(III, 2, 1, 1))   !  CA Y
+        X_MCP(9*(III-1)+3-(GLY_C)*3) = DBLE(PRCORD(III, 3, 1, 1))   !  CA Z
+C       X_MCP(9*(III-1)+4) = (PRCORD(III, 1, 1, 2))   !  CB X
+C       X_MCP(9*(III-1)+5) = (PRCORD(III, 2, 1, 2))   !  CB Y
+C       X_MCP(9*(III-1)+6) = (PRCORD(III, 3, 1, 2))   !  CB Z
+        X_MCP(9*(III-1)+4-(GLY_C)*3) = DBLE(PRCORD(III, 1, 1, 3))   !   O X
+        X_MCP(9*(III-1)+5-(GLY_C)*3) = DBLE(PRCORD(III, 2, 1, 3))   !   O Y
+        X_MCP(9*(III-1)+6-(GLY_C)*3) = DBLE(PRCORD(III, 3, 1, 3))   !   O Z
+        GLY_C = GLY_C +1
+      ELSE
+        X_MCP(9*(III-1)+1-GLY_C*3) = DBLE(PRCORD(III, 1, 1, 1))   !  CA X
+        X_MCP(9*(III-1)+2-GLY_C*3) = DBLE(PRCORD(III, 2, 1, 1))   !  CA Y
+        X_MCP(9*(III-1)+3-GLY_C*3) = DBLE(PRCORD(III, 3, 1, 1))   !  CA Z
+        X_MCP(9*(III-1)+4-GLY_C*3) = DBLE(PRCORD(III, 1, 1, 2))   !  CB X
+        X_MCP(9*(III-1)+5-GLY_C*3) = DBLE(PRCORD(III, 2, 1, 2))   !  CB Y
+        X_MCP(9*(III-1)+6-GLY_C*3) = DBLE(PRCORD(III, 3, 1, 2))   !  CB Z
+        X_MCP(9*(III-1)+7-GLY_C*3) = DBLE(PRCORD(III, 1, 1, 3))   !   O X
+        X_MCP(9*(III-1)+8-GLY_C*3) = DBLE(PRCORD(III, 2, 1, 3))   !   O Y
+        X_MCP(9*(III-1)+9-GLY_C*3) = DBLE(PRCORD(III, 3, 1, 3))   !   O Z
+      ENDIF
 
-      enddo
+      ENDDO
 
-        quench_crd(:,:,:,:,1)=prcord
+        QUENCH_CRD(:,:,:,:,1)=PRCORD
       
-        else
-          do i503=1, nquench
-           do i502=1,numprr
-             read(80,683)idummy,idummy,idummy,q_temp(i503),idummy
-683          format(3(i6,1x),f8.4,1x,i5,' stuct snap t T Tid')
-c             write(6,*)'quench_t  temtur i503' , q_temp(i503)
+        ELSE
+          DO I503=1, NQUENCH
+           DO I502=1,NUMPRR
+             READ(80,683)IDUMMY,IDUMMY,IDUMMY,Q_TEMP(I503),IDUMMY
+683          FORMAT(3(I6,1X),F8.4,1X,I5,' STUCT SNAP T T TID')
+C             WRITE(6,*)'QUENCH_T  TEMTUR I503' , Q_TEMP(I503)
 
-               do i500=1,nmrss
-c             write(SO,*) i500,nmrss,numprr,nquench,i503,temtur(i503)
+               DO I500=1,NMRSS
+C             WRITE(SO,*) I500,NMRSS,NUMPRR,NQUENCH,I503,TEMTUR(I503)
 
-                  read(80,76)
-     *            (quench_crd(i500,i2,i502,1,i503),i2=1,3),
-     *            (quench_crd(i500,i2,i502,2,i503),i2=1,3),
-     *            (quench_crd(i500,i2,i502,3,i503),i2=1,3)
-              enddo
-            enddo
-       enddo  ! i503 (loop over quench)
-         do  i504=1, nquench
-c        set up new annealling schedule  
-         inc=0
-         do 540 grid_num=1,4
-            if( itgrd(grid_num).gt.0 )then
-               rinc=q_temp(i504)
-               rinc=rinc/dble(itgrd(grid_num))
-                do 501 i501=1,itgrd(grid_num)
-                  temtur_quench(inc+i501,i504)=q_temp(i504) -
-     *                             rinc*dble(i501-1)
-c                  write(6,*)'temtur_quench steps structure',
-c     *                 temtur_quench(inc+i501,i504),inc+i501,i504
-  501          continue
-               inc=inc + itgrd(grid_num)
-               endif  !  itgrd(grid_num)
-540          continue  !   do 540 grid_num=1,4
-             enddo   !  do i504=1, nquench
-        endif ! quench
+                  READ(80,76)
+     *            (QUENCH_CRD(I500,I2,I502,1,I503),I2=1,3),
+     *            (QUENCH_CRD(I500,I2,I502,2,I503),I2=1,3),
+     *            (QUENCH_CRD(I500,I2,I502,3,I503),I2=1,3)
+              ENDDO
+            ENDDO
+       ENDDO  ! I503 (LOOP OVER QUENCH)
+         DO  I504=1, NQUENCH
+C        SET UP NEW ANNEALLING SCHEDULE  
+         INC=0
+         DO 540 GRID_NUM=1,4
+            IF( ITGRD(GRID_NUM).GT.0 )THEN
+               RINC=Q_TEMP(I504)
+               RINC=RINC/DBLE(ITGRD(GRID_NUM))
+                DO 501 I501=1,ITGRD(GRID_NUM)
+                  TEMTUR_QUENCH(INC+I501,I504)=Q_TEMP(I504) -
+     *                             RINC*DBLE(I501-1)
+C                  WRITE(6,*)'TEMTUR_QUENCH STEPS STRUCTURE',
+C     *                 TEMTUR_QUENCH(INC+I501,I504),INC+I501,I504
+  501          CONTINUE
+               INC=INC + ITGRD(GRID_NUM)
+               ENDIF  !  ITGRD(GRID_NUM)
+540          CONTINUE  !   DO 540 GRID_NUM=1,4
+             ENDDO   !  DO I504=1, NQUENCH
+        ENDIF ! QUENCH
 
-c     set number if initial structures to number of
-c     structures just read in
+C     SET NUMBER IF INITIAL STRUCTURES TO NUMBER OF
+C     STRUCTURES JUST READ IN
 
-      procnt=numprr
+      PROCNT=NUMPRR
 
-c     send message acknowledging that 'old' structures
-c     are being used as starting structures
+C     SEND MESSAGE ACKNOWLEDGING THAT 'OLD' STRUCTURES
+C     ARE BEING USED AS STARTING STRUCTURES
 
-ctemphack
-c      write(oarchv,450)numprr
-c  450 format(/'restart with ',i3,' proteins')
+CTEMPHACK
+C      WRITE(OARCHV,450)NUMPRR
+C  450 FORMAT(/'RESTART WITH ',I3,' PROTEINS')
 
-       close(80)
+       CLOSE(80)
 
-c     ---------------------- done -----------------------
+C     ---------------------- DONE -----------------------
 
-      return
-      end
+      RETURN
+      END

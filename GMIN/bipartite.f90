@@ -1,28 +1,28 @@
-!  GMIN: A program for finding global minima
-!  Copyright (C) 1999-2006 David J. Wales
-!  This file is part of GMIN.
+!  GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+!  COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!  THIS FILE IS PART OF GMIN.
 !
-!  GMIN is free software; you can redistribute it and/or modify
-!  it under the terms of the GNU General Public License as published by
-!  the Free Software Foundation; either version 2 of the License, or
-!  (at your option) any later version.
+!  GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!  (AT YOUR OPTION) ANY LATER VERSION.
 !
-!  GMIN is distributed in the hope that it will be useful,
-!  but WITHOUT ANY WARRANTY; without even the implied warranty of
-!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!  GNU General Public License for more details.
+!  GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!  You should have received a copy of the GNU General Public License
-!  along with this program; if not, write to the Free Software
-!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 !
-!  Bipartite matching routine to find the closest permutational isomer
-!  of one structure from another.
-!  The matching is p(i) <--> q(perm(i))
-!  Check for "obvious" solution where the minimum distance for each
-!  atom defines a matching as well - this will find the answer
-!  immediately for aligned permutational isomers.  NOT DONE YET!
+!  BIPARTITE MATCHING ROUTINE TO FIND THE CLOSEST PERMUTATIONAL ISOMER
+!  OF ONE STRUCTURE FROM ANOTHER.
+!  THE MATCHING IS P(I) <--> Q(PERM(I))
+!  CHECK FOR "OBVIOUS" SOLUTION WHERE THE MINIMUM DISTANCE FOR EACH
+!  ATOM DEFINES A MATCHING AS WELL - THIS WILL FIND THE ANSWER
+!  IMMEDIATELY FOR ALIGNED PERMUTATIONAL ISOMERS.  NOT DONE YET!
 !
 
 SUBROUTINE BIPARTITE(N,P,Q,PERM,DIST,WORSTDIST,WORSTRADIUS)
@@ -33,22 +33,22 @@ DOUBLE PRECISION P(3*N), Q(3*N), DIST, WORSTDIST, WORSTRADIUS, WEIGHT(2*N+2,2*N+
                  DUMMY
 LOGICAL PERMANENT(2*N+2), SIMPLESOL, CHANGE
 !
-!  Set up initial adjacency lists for the underlying network,
-!  which has dimension 2*N+2.
-!  Vertex 1 is the source, vertex 2*N+2 is the sink, and the
-!  N atoms of structures P and Q occupy vertices 2 to N+1 and
-!  N+2 to 2*N+1, respectively.
+!  SET UP INITIAL ADJACENCY LISTS FOR THE UNDERLYING NETWORK,
+!  WHICH HAS DIMENSION 2*N+2.
+!  VERTEX 1 IS THE SOURCE, VERTEX 2*N+2 IS THE SINK, AND THE
+!  N ATOMS OF STRUCTURES P AND Q OCCUPY VERTICES 2 TO N+1 AND
+!  N+2 TO 2*N+1, RESPECTIVELY.
 !
 NVERTEX=2*N+2
 
-NCONN(1)=N ! source
+NCONN(1)=N ! SOURCE
 DO J1=1,N
    NEIGHBOUR(1,J1)=J1+1
    WEIGHT(1,J1)=0.0D0
 ENDDO
 
 SIMPLESOL=.TRUE.
-DO J1=1,N  ! structure P
+DO J1=1,N  ! STRUCTURE P
    NCONN(J1+1)=N
    MINDIST=HUGE(MINDIST)
    DO J2=1,N
@@ -71,30 +71,30 @@ DO J1=1,N  ! structure P
 ENDDO
 
 IF (SIMPLESOL) THEN
-   ! PRINT '(A)','simple solution found in bipartite'
+   ! PRINT '(A)','SIMPLE SOLUTION FOUND IN BIPARTITE'
    GOTO 100
 ENDIF
 
-DO J1=1,N  ! structure Q
+DO J1=1,N  ! STRUCTURE Q
    NCONN(J1+N+1)=1
    NEIGHBOUR(J1+N+1,1)=NVERTEX
    WEIGHT(J1+N+1,1)=0.0D0
 ENDDO
 
-NCONN(2*N+2)=0 ! sink vertex
+NCONN(2*N+2)=0 ! SINK VERTEX
 !
-!  Now run Dijkstra's algorithm to find the shortest path lengths from the source to the
-!  other vertices.
+!  NOW RUN DIJKSTRA'S ALGORITHM TO FIND THE SHORTEST PATH LENGTHS FROM THE SOURCE TO THE
+!  OTHER VERTICES.
 !
 NDIJ=0
-outer: DO
+OUTER: DO
    NDIJ=NDIJ+1
    PATHLENGTH(2:NVERTEX)=HUGE(1.0D0)
    PERMANENT(1:NVERTEX)=.FALSE.
    PARENT(1)=0 
    PATHLENGTH(1)=0.0D0
    NCOUNT=0
-   dijkstraloop: DO
+   DIJKSTRALOOP: DO
       MINLENGTH=HUGE(MINLENGTH)
       DO J1=1,NVERTEX
          IF (PERMANENT(J1)) CYCLE
@@ -105,7 +105,7 @@ outer: DO
       ENDDO
       PERMANENT(NDUMMY)=.TRUE.
 !     CHANGE=.FALSE.
-      DO J2=1,NCONN(NDUMMY) ! neighbours of vertex with minimum pathlength
+      DO J2=1,NCONN(NDUMMY) ! NEIGHBOURS OF VERTEX WITH MINIMUM PATHLENGTH
          IF (PATHLENGTH(NEIGHBOUR(NDUMMY,J2)).GT.PATHLENGTH(NDUMMY)+WEIGHT(NDUMMY,J2)) THEN
             PATHLENGTH(NEIGHBOUR(NDUMMY,J2))=PATHLENGTH(NDUMMY)+WEIGHT(NDUMMY,J2)
             PARENT(NEIGHBOUR(NDUMMY,J2))=NDUMMY
@@ -113,11 +113,11 @@ outer: DO
          ENDIF
       ENDDO
       NCOUNT=NCOUNT+1
-!     PRINT '(A,I6,A,L5)','Dijkstra iteration ',NCOUNT,' change=',CHANGE
+!     PRINT '(A,I6,A,L5)','DIJKSTRA ITERATION ',NCOUNT,' CHANGE=',CHANGE
       IF (NCOUNT.GE.NVERTEX) EXIT
-   ENDDO dijkstraloop
+   ENDDO DIJKSTRALOOP
 !
-! Adjust edge weights
+! ADJUST EDGE WEIGHTS
 !
    DO J1=1,NVERTEX
       DO J2=1,NCONN(J1)
@@ -125,8 +125,8 @@ outer: DO
       ENDDO
    ENDDO
 !
-! Reverse shortest path. NCONN should stay the same for vertices 2 to 2*N+1,
-! and change to NATOMS-NDIJ and NDIJ for the source and sink on cycle NDIJ.
+! REVERSE SHORTEST PATH. NCONN SHOULD STAY THE SAME FOR VERTICES 2 TO 2*N+1,
+! AND CHANGE TO NATOMS-NDIJ AND NDIJ FOR THE SOURCE AND SINK ON CYCLE NDIJ.
 !
    CURRENTMIN=NVERTEX
    PARENTMIN=PARENT(CURRENTMIN)
@@ -157,8 +157,8 @@ outer: DO
       NEIGHBOUR(1,J2)=NEIGHBOUR(1,J2+1)
    ENDDO
    NCONN(1)=NCONN(1)-1
-   IF (NCONN(1).EQ.0) EXIT outer
-ENDDO outer
+   IF (NCONN(1).EQ.0) EXIT OUTER
+ENDDO OUTER
 
 DO J1=1,N
    PERM(NEIGHBOUR(N+1+J1,1)-1)=J1
@@ -168,11 +168,11 @@ ENDDO
 WORSTDIST=-1.0D0
 DIST=0.0D0
 DO I=1,N
-   DUMMY=(p(3*(i-1)+1)-q(3*(perm(i)-1)+1))**2+(p(3*(i-1)+2)-q(3*(perm(i)-1)+2))**2+(p(3*(i-1)+3)-q(3*(perm(i)-1)+3))**2
+   DUMMY=(P(3*(I-1)+1)-Q(3*(PERM(I)-1)+1))**2+(P(3*(I-1)+2)-Q(3*(PERM(I)-1)+2))**2+(P(3*(I-1)+3)-Q(3*(PERM(I)-1)+3))**2
    DIST=DIST+DUMMY
    IF (DUMMY.GT.WORSTDIST) THEN
       WORSTDIST=DUMMY
-      WORSTRADIUS=p(3*(i-1)+1)**2+p(3*(i-1)+2)**2+p(3*(i-1)+3)**2
+      WORSTRADIUS=P(3*(I-1)+1)**2+P(3*(I-1)+2)**2+P(3*(I-1)+3)**2
    ENDIF
 ENDDO
 WORSTDIST=SQRT(WORSTDIST)

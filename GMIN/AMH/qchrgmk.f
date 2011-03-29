@@ -1,557 +1,557 @@
-c     --------------------- qchrgmk ----------------------
+C     --------------------- QCHRGMK ----------------------
 
-      subroutine qchrgmk(qchrg,qchrg2,oarchv,n_letters)
+      SUBROUTINE QCHRGMK(QCHRG,QCHRG2,OARCHV,N_LETTERS)
 
-c     ---------------------------------------------------
-c     QCHRGMK makes table qchrg
-c     ---------------------------------------------------
+C     ---------------------------------------------------
+C     QCHRGMK MAKES TABLE QCHRG
+C     ---------------------------------------------------
 
-      use amhglobals,  only: SO,max_letters,i_3rd_is_contact,four_plus,
-     *  i_non_add_contact,sort_non_add,
-     *  gamma_non_add,ngamma_non_add,class_2,max_well,num_well,
-     *  para_HB,anti_HB,anti_NHB,i_ignore_chain_dirn,mismatch,
-     *  para_one,anti_one,n_letters_con, srplr,igamma,ihbond
+      USE AMHGLOBALS,  ONLY: SO,MAX_LETTERS,I_3RD_IS_CONTACT,FOUR_PLUS,
+     *  I_NON_ADD_CONTACT,SORT_NON_ADD,
+     *  GAMMA_NON_ADD,NGAMMA_NON_ADD,CLASS_2,MAX_WELL,NUM_WELL,
+     *  PARA_HB,ANTI_HB,ANTI_NHB,I_IGNORE_CHAIN_DIRN,MISMATCH,
+     *  PARA_ONE,ANTI_ONE,N_LETTERS_CON, SRPLR,IGAMMA,IHBOND
 
-      use globals_alt, only:altpotflag ! For alternative potential
+      USE GLOBALS_ALT, ONLY:ALTPOTFLAG ! FOR ALTERNATIVE POTENTIAL
 
-      implicit none
+      IMPLICIT NONE
 
-c
-c	i_ranges	3; near in seq.   -->     near in space
-c                          far  in seq.   and     near in space
-c                          far  in seq.   and     far  in space
+C
+C	I_RANGES	3; NEAR IN SEQ.   -->     NEAR IN SPACE
+C                          FAR  IN SEQ.   AND     NEAR IN SPACE
+C                          FAR  IN SEQ.   AND     FAR  IN SPACE
 
-         integer n_letters
+         INTEGER N_LETTERS
 
-c     internal variables:
+C     INTERNAL VARIABLES:
                                                                                                      
-         double precision qchrg(21,21,20,20,max_well+2),optgamma(512),qchrg2(21,21,20,20,2,2),gamma_temp
+         DOUBLE PRECISION QCHRG(21,21,20,20,MAX_WELL+2),OPTGAMMA(512),QCHRG2(21,21,20,20,2,2),GAMMA_TEMP
 
-         integer i500,i501,i502,i503,i504,i_ranges,ngamma,ngamma_check,open_status,
-     *           read_status,isit1,isit2,n_gammas_per_con_well,ic1,oarchv                               
+         INTEGER I500,I501,I502,I503,I504,I_RANGES,NGAMMA,NGAMMA_CHECK,OPEN_STATUS,
+     *           READ_STATUS,ISIT1,ISIT2,N_GAMMAS_PER_CON_WELL,IC1,OARCHV                               
 
-c     tshen
-      integer myj,myip,myjp,myk,mykp,mywel
-      double precision mychch, mychpo
+C     TSHEN
+      INTEGER MYJ,MYIP,MYJP,MYK,MYKP,MYWEL
+      DOUBLE PRECISION MYCHCH, MYCHPO
 
-        integer class(20),class_con(20),icl,jcl,ipcl,jpcl,
-     *       gammapt,sort_2(2,2,2,2),class_4(20),class_20(20),
-     *       sort(max_letters,max_letters,max_letters,max_letters),
-     *       gammapt_contact,sort_contact(max_letters,max_letters),
-     *       n_ranges,n_gammas_in_range(max_well+2),i_well,i_well2,
-     *       i_type,icl_con,jcl_con,
-     *  sort_sym(max_letters,max_letters,max_letters,max_letters),
-     *  sort_plus(max_letters,max_letters,max_letters,max_letters,2)
+        INTEGER CLASS(20),CLASS_CON(20),ICL,JCL,IPCL,JPCL,
+     *       GAMMAPT,SORT_2(2,2,2,2),CLASS_4(20),CLASS_20(20),
+     *       SORT(MAX_LETTERS,MAX_LETTERS,MAX_LETTERS,MAX_LETTERS),
+     *       GAMMAPT_CONTACT,SORT_CONTACT(MAX_LETTERS,MAX_LETTERS),
+     *       N_RANGES,N_GAMMAS_IN_RANGE(MAX_WELL+2),I_WELL,I_WELL2,
+     *       I_TYPE,ICL_CON,JCL_CON,
+     *  SORT_SYM(MAX_LETTERS,MAX_LETTERS,MAX_LETTERS,MAX_LETTERS),
+     *  SORT_PLUS(MAX_LETTERS,MAX_LETTERS,MAX_LETTERS,MAX_LETTERS,2)
 
-         integer i, j, ip, jp,count
+         INTEGER I, J, IP, JP,COUNT
 
-        data class_4  /1,3,2,2,4,2,2,1,3,4,4,3,4,4,1,1,1,4,4,4/
-        data class_20 /1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20/
-        data sort_2 /1,5,6,16,7,3,14,12,8,15,2,11,13,10,9,4/
-        class_2=(/2,1,1,1,2,1,1,2,1,2,2,1,2,2,1,1,1,2,2,2/)
+        DATA CLASS_4  /1,3,2,2,4,2,2,1,3,4,4,3,4,4,1,1,1,4,4,4/
+        DATA CLASS_20 /1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20/
+        DATA SORT_2 /1,5,6,16,7,3,14,12,8,15,2,11,13,10,9,4/
+        CLASS_2=(/2,1,1,1,2,1,1,2,1,2,2,1,2,2,1,1,1,2,2,2/)
 
-c  set classes for different types of code
-c  due to history, gammas are grouped differently
-c  for the two-letter code compared to multi-letter
-c  codes. The two-letter code is thus treated on a
-c  slightly different footing.
+C  SET CLASSES FOR DIFFERENT TYPES OF CODE
+C  DUE TO HISTORY, GAMMAS ARE GROUPED DIFFERENTLY
+C  FOR THE TWO-LETTER CODE COMPARED TO MULTI-LETTER
+C  CODES. THE TWO-LETTER CODE IS THUS TREATED ON A
+C  SLIGHTLY DIFFERENT FOOTING.
 
-c          write(6,*)'n_letters ',n_letters 
+C          WRITE(6,*)'N_LETTERS ',N_LETTERS 
 
-          if (n_letters.eq.2) then
-            do i=1,20                  !two-letter code
-              class(i)=class_2(i)
-            enddo
-          elseif (n_letters.eq.4) then
-            do i=1,20                  !four-letter code
-              class(i)=class_4(i)
-            enddo
-          endif
+          IF (N_LETTERS.EQ.2) THEN
+            DO I=1,20                  !TWO-LETTER CODE
+              CLASS(I)=CLASS_2(I)
+            ENDDO
+          ELSEIF (N_LETTERS.EQ.4) THEN
+            DO I=1,20                  !FOUR-LETTER CODE
+              CLASS(I)=CLASS_4(I)
+            ENDDO
+          ENDIF
                                                                                                      
-         if (n_letters_con.eq.2) then  !classes may be different for contact interactions
-             class_con(1:20)=class_2(1:20)
-          elseif (n_letters_con.eq.4) then
-             class_con(1:20)=class_4(1:20)
-          elseif (n_letters_con.eq.20) then
-             class_con(1:20)=class_20(1:20)
-          endif
-        if (n_letters.eq.2) then
+         IF (N_LETTERS_CON.EQ.2) THEN  !CLASSES MAY BE DIFFERENT FOR CONTACT INTERACTIONS
+             CLASS_CON(1:20)=CLASS_2(1:20)
+          ELSEIF (N_LETTERS_CON.EQ.4) THEN
+             CLASS_CON(1:20)=CLASS_4(1:20)
+          ELSEIF (N_LETTERS_CON.EQ.20) THEN
+             CLASS_CON(1:20)=CLASS_20(1:20)
+          ENDIF
+        IF (N_LETTERS.EQ.2) THEN
 
-          do i=1,2                  ! two-letter code
-          do j=1,2
-          do ip=1,2
-          do jp=1,2
-          sort(i,j,ip,jp)=sort_2(i,j,ip,jp)
-          enddo
-          enddo
-          enddo
-          enddo
+          DO I=1,2                  ! TWO-LETTER CODE
+          DO J=1,2
+          DO IP=1,2
+          DO JP=1,2
+          SORT(I,J,IP,JP)=SORT_2(I,J,IP,JP)
+          ENDDO
+          ENDDO
+          ENDDO
+          ENDDO
  
-        else
+        ELSE
 
-c        sort_sym is for the case where four_plus is false and chain direction is ignored
+C        SORT_SYM IS FOR THE CASE WHERE FOUR_PLUS IS FALSE AND CHAIN DIRECTION IS IGNORED
                                                                                                      
-          count = 1
-             do i = 1,n_letters
-             do j = i,n_letters   ! note j starts at i (and jp at ip) so looping over all
-             do ip = 1,n_letters  ! distinguishable pairs in both target and memory
-             do jp = ip,n_letters  !(a total of n_letters+(n_letters -choose-2) in each
-               sort_sym(i,j,ip,jp) = count
-               sort_sym(j,i,jp,ip) = count  ! swapping both pairs (ie (ij-i'j' -> ji-j'i')
-                                            ! gives same gamma if chain direction considered irrelevant
-               if ( (i.ne.j) .and. (ip.ne.jp) ) count=count+1 !if both pairs different then swapping identities in just
-               sort_sym(j,i,ip,jp) = count            !one pair will give a new gamma, so increment
-               sort_sym(i,j,jp,ip) = count
-               count = count +1
-             enddo
-             enddo
-             enddo
-             enddo
+          COUNT = 1
+             DO I = 1,N_LETTERS
+             DO J = I,N_LETTERS   ! NOTE J STARTS AT I (AND JP AT IP) SO LOOPING OVER ALL
+             DO IP = 1,N_LETTERS  ! DISTINGUISHABLE PAIRS IN BOTH TARGET AND MEMORY
+             DO JP = IP,N_LETTERS  !(A TOTAL OF N_LETTERS+(N_LETTERS -CHOOSE-2) IN EACH
+               SORT_SYM(I,J,IP,JP) = COUNT
+               SORT_SYM(J,I,JP,IP) = COUNT  ! SWAPPING BOTH PAIRS (IE (IJ-I'J' -> JI-J'I')
+                                            ! GIVES SAME GAMMA IF CHAIN DIRECTION CONSIDERED IRRELEVANT
+               IF ( (I.NE.J) .AND. (IP.NE.JP) ) COUNT=COUNT+1 !IF BOTH PAIRS DIFFERENT THEN SWAPPING IDENTITIES IN JUST
+               SORT_SYM(J,I,IP,JP) = COUNT            !ONE PAIR WILL GIVE A NEW GAMMA, SO INCREMENT
+               SORT_SYM(I,J,JP,IP) = COUNT
+               COUNT = COUNT +1
+             ENDDO
+             ENDDO
+             ENDDO
+             ENDDO
 
 
-          count = 1                 !multi-letter code
-          do 2 i = 1,n_letters
-          do 4 j = 1,n_letters
-          do 6 ip = 1,n_letters
-          do 8 jp = 1,n_letters
+          COUNT = 1                 !MULTI-LETTER CODE
+          DO 2 I = 1,N_LETTERS
+          DO 4 J = 1,N_LETTERS
+          DO 6 IP = 1,N_LETTERS
+          DO 8 JP = 1,N_LETTERS
 
-          sort(i,j,ip,jp) = count
-          count = count +1
-8         continue
-6         continue
-4         continue
-2         continue
+          SORT(I,J,IP,JP) = COUNT
+          COUNT = COUNT +1
+8         CONTINUE
+6         CONTINUE
+4         CONTINUE
+2         CONTINUE
 
-           if (four_plus) then           !include secondary structural information
+           IF (FOUR_PLUS) THEN           !INCLUDE SECONDARY STRUCTURAL INFORMATION
 
-           if (i_ignore_chain_dirn.and.(.not.mismatch)) then  ! here consider the order of residues in chain
-                                                              !  not to effect their interaction energy
-             count = 1      
-             do i = 1,n_letters
-             do j = i,n_letters   ! note j starts at i (and jp at ip) so looping over all 
-             do ip = 1,n_letters  ! distinguishable pairs in both target and memory
-             do jp = ip,n_letters  !(a total of n_letters+(n_letters -choose-2) in each 
-             do ic1  = 1,2
-               sort_plus(i,j,ip,jp,ic1) = count
-               sort_plus(j,i,jp,ip,ic1) = count  ! swapping both pairs (ie (ij-i'j' -> ji-j'i') 
-                                                    ! gives same gamma if chain direction considered irrelevant
-               if ( (i.ne.j) .and. (ip.ne.jp) ) count=count+1 !if both pairs different then swapping identities in just
-               sort_plus(j,i,ip,jp,ic1) = count            !one pair will give a new gamma, so increment
-               sort_plus(i,j,jp,ip,ic1) = count
-               count = count +1
-             enddo
-             enddo
-             enddo
-             enddo
-             enddo
+           IF (I_IGNORE_CHAIN_DIRN.AND.(.NOT.MISMATCH)) THEN  ! HERE CONSIDER THE ORDER OF RESIDUES IN CHAIN
+                                                              !  NOT TO EFFECT THEIR INTERACTION ENERGY
+             COUNT = 1      
+             DO I = 1,N_LETTERS
+             DO J = I,N_LETTERS   ! NOTE J STARTS AT I (AND JP AT IP) SO LOOPING OVER ALL 
+             DO IP = 1,N_LETTERS  ! DISTINGUISHABLE PAIRS IN BOTH TARGET AND MEMORY
+             DO JP = IP,N_LETTERS  !(A TOTAL OF N_LETTERS+(N_LETTERS -CHOOSE-2) IN EACH 
+             DO IC1  = 1,2
+               SORT_PLUS(I,J,IP,JP,IC1) = COUNT
+               SORT_PLUS(J,I,JP,IP,IC1) = COUNT  ! SWAPPING BOTH PAIRS (IE (IJ-I'J' -> JI-J'I') 
+                                                    ! GIVES SAME GAMMA IF CHAIN DIRECTION CONSIDERED IRRELEVANT
+               IF ( (I.NE.J) .AND. (IP.NE.JP) ) COUNT=COUNT+1 !IF BOTH PAIRS DIFFERENT THEN SWAPPING IDENTITIES IN JUST
+               SORT_PLUS(J,I,IP,JP,IC1) = COUNT            !ONE PAIR WILL GIVE A NEW GAMMA, SO INCREMENT
+               SORT_PLUS(I,J,JP,IP,IC1) = COUNT
+               COUNT = COUNT +1
+             ENDDO
+             ENDDO
+             ENDDO
+             ENDDO
+             ENDDO
 
 
-           elseif (mismatch.and.i_ignore_chain_dirn) then !here ignore not only chain direction but also
-                                                          !assume pairs that for each kind of target pair have only two
-                                                          !kinds of alignment: exactly right and not exactly right (ie mismatched)
-                 sort_plus=0
-                 count = 1
-                 do i = 1,n_letters
-                 do j = i,n_letters
-                 do ic1 = 1,2
-                 sort_plus(i,j,i,j,ic1)=count
-                 sort_plus(j,i,j,i,ic1)=count
-                 count = count + 1
-                 enddo
-                 enddo
-                 enddo
+           ELSEIF (MISMATCH.AND.I_IGNORE_CHAIN_DIRN) THEN !HERE IGNORE NOT ONLY CHAIN DIRECTION BUT ALSO
+                                                          !ASSUME PAIRS THAT FOR EACH KIND OF TARGET PAIR HAVE ONLY TWO
+                                                          !KINDS OF ALIGNMENT: EXACTLY RIGHT AND NOT EXACTLY RIGHT (IE MISMATCHED)
+                 SORT_PLUS=0
+                 COUNT = 1
+                 DO I = 1,N_LETTERS
+                 DO J = I,N_LETTERS
+                 DO IC1 = 1,2
+                 SORT_PLUS(I,J,I,J,IC1)=COUNT
+                 SORT_PLUS(J,I,J,I,IC1)=COUNT
+                 COUNT = COUNT + 1
+                 ENDDO
+                 ENDDO
+                 ENDDO
 
-                 count = 21
+                 COUNT = 21
 
-                 do i = 1,n_letters
-                 do j = i,n_letters
-                 do ic1 = 1,2
-                        do ip = 1,4
-                        do jp = 1,4
-                        if (ip .ne. i .or. jp .ne. j) then
-                         sort_plus(i,j,ip,jp,ic1)=count
-                         sort_plus(j,i,jp,ip,ic1)=count
-                        endif
-                        enddo
-                        enddo
-                  count = count + 1
-                  enddo
-                  enddo
-                  enddo
+                 DO I = 1,N_LETTERS
+                 DO J = I,N_LETTERS
+                 DO IC1 = 1,2
+                        DO IP = 1,4
+                        DO JP = 1,4
+                        IF (IP .NE. I .OR. JP .NE. J) THEN
+                         SORT_PLUS(I,J,IP,JP,IC1)=COUNT
+                         SORT_PLUS(J,I,JP,IP,IC1)=COUNT
+                        ENDIF
+                        ENDDO
+                        ENDDO
+                  COUNT = COUNT + 1
+                  ENDDO
+                  ENDDO
+                  ENDDO
 
-           else
+           ELSE
 
-          count = 1                 !multi-letter code
-          do i = 1,n_letters
-          do j = 1,n_letters
-          do ip = 1,n_letters
-          do jp = 1,n_letters
-          do ic1  = 1,2
-          sort_plus(i,j,ip,jp,ic1) = count
-          count = count +1
-          enddo
-          enddo
-          enddo
-          enddo
-          enddo
+          COUNT = 1                 !MULTI-LETTER CODE
+          DO I = 1,N_LETTERS
+          DO J = 1,N_LETTERS
+          DO IP = 1,N_LETTERS
+          DO JP = 1,N_LETTERS
+          DO IC1  = 1,2
+          SORT_PLUS(I,J,IP,JP,IC1) = COUNT
+          COUNT = COUNT +1
+          ENDDO
+          ENDDO
+          ENDDO
+          ENDDO
+          ENDDO
 
-           endif
-           endif  ! four_plus
+           ENDIF
+           ENDIF  ! FOUR_PLUS
 
-          if (i_3rd_is_contact) then
-            count = 1
-            do i=1,n_letters_con
-            do j=i,n_letters_con
-            sort_contact(i,j)=count 
-            sort_contact(j,i)=count
-            count=count+1
-            enddo
-            enddo
-          endif
+          IF (I_3RD_IS_CONTACT) THEN
+            COUNT = 1
+            DO I=1,N_LETTERS_CON
+            DO J=I,N_LETTERS_CON
+            SORT_CONTACT(I,J)=COUNT 
+            SORT_CONTACT(J,I)=COUNT
+            COUNT=COUNT+1
+            ENDDO
+            ENDDO
+          ENDIF
 
-        endif
+        ENDIF
         
-        if (i_non_add_contact) then
-          count=1
-          do i=1,2
-          do j=1,2
-          do i_well=1,2
-          do i_type=1,2
-          do i_well2=1,2
-            sort_non_add(i,j,i_well,i_type,i_well2)= count
-            count=count+1
-          enddo
-          enddo
-          enddo
-          enddo
-          enddo
-        endif
+        IF (I_NON_ADD_CONTACT) THEN
+          COUNT=1
+          DO I=1,2
+          DO J=1,2
+          DO I_WELL=1,2
+          DO I_TYPE=1,2
+          DO I_WELL2=1,2
+            SORT_NON_ADD(I,J,I_WELL,I_TYPE,I_WELL2)= COUNT
+            COUNT=COUNT+1
+          ENDDO
+          ENDDO
+          ENDDO
+          ENDDO
+          ENDDO
+        ENDIF
  
-       n_gammas_per_con_well=n_letters_con*(n_letters_con+1)/2
+       N_GAMMAS_PER_CON_WELL=N_LETTERS_CON*(N_LETTERS_CON+1)/2
 
-        if (n_letters.eq.2) then
-          ngamma=48
-        elseif ((n_letters.eq.4).and.i_3rd_is_contact) then
-          if (four_plus) then
-            if (i_ignore_chain_dirn.and.(.not.mismatch)) then
-              ngamma=544+num_well*n_gammas_per_con_well
-            elseif (i_ignore_chain_dirn.and.mismatch) then
-              ngamma=80+num_well*n_gammas_per_con_well
-            else
-              ngamma=1024+num_well*n_gammas_per_con_well
-            endif
-          else
-            if (i_ignore_chain_dirn.and.(.not.mismatch)) then
-            ngamma=272+num_well*n_gammas_per_con_well
-            else
-            ngamma=512+num_well*n_gammas_per_con_well
-            endif
-          endif
-        elseif ((n_letters.eq.4).and.(.not.i_3rd_is_contact)) then
-          ngamma=768
-        endif
+        IF (N_LETTERS.EQ.2) THEN
+          NGAMMA=48
+        ELSEIF ((N_LETTERS.EQ.4).AND.I_3RD_IS_CONTACT) THEN
+          IF (FOUR_PLUS) THEN
+            IF (I_IGNORE_CHAIN_DIRN.AND.(.NOT.MISMATCH)) THEN
+              NGAMMA=544+NUM_WELL*N_GAMMAS_PER_CON_WELL
+            ELSEIF (I_IGNORE_CHAIN_DIRN.AND.MISMATCH) THEN
+              NGAMMA=80+NUM_WELL*N_GAMMAS_PER_CON_WELL
+            ELSE
+              NGAMMA=1024+NUM_WELL*N_GAMMAS_PER_CON_WELL
+            ENDIF
+          ELSE
+            IF (I_IGNORE_CHAIN_DIRN.AND.(.NOT.MISMATCH)) THEN
+            NGAMMA=272+NUM_WELL*N_GAMMAS_PER_CON_WELL
+            ELSE
+            NGAMMA=512+NUM_WELL*N_GAMMAS_PER_CON_WELL
+            ENDIF
+          ENDIF
+        ELSEIF ((N_LETTERS.EQ.4).AND.(.NOT.I_3RD_IS_CONTACT)) THEN
+          NGAMMA=768
+        ENDIF
 
-        if (i_non_add_contact) ngamma=ngamma+ngamma_non_add
+        IF (I_NON_ADD_CONTACT) NGAMMA=NGAMMA+NGAMMA_NON_ADD
     
-        open(igamma,file='gamma.dat',action='read',status='old',iostat=open_status)
-        if (open_status.ne.0) then
-          write(SO,*) 'failure to open gamma file'
-          write(SO,*) 'error number ',open_status
-          stop
-        endif
+        OPEN(IGAMMA,FILE='GAMMA.DAT',ACTION='READ',STATUS='OLD',IOSTAT=OPEN_STATUS)
+        IF (OPEN_STATUS.NE.0) THEN
+          WRITE(SO,*) 'FAILURE TO OPEN GAMMA FILE'
+          WRITE(SO,*) 'ERROR NUMBER ',OPEN_STATUS
+          STOP
+        ENDIF
 
-        read(igamma,*) ngamma_check
-        if (ngamma_check.ne.ngamma) then
-          write(SO,*) 'gamma cock-up',ngamma_check,ngamma
-          stop
-        endif
+        READ(IGAMMA,*) NGAMMA_CHECK
+        IF (NGAMMA_CHECK.NE.NGAMMA) THEN
+          WRITE(SO,*) 'GAMMA COCK-UP',NGAMMA_CHECK,NGAMMA
+          STOP
+        ENDIF
 
-           write (oarchv,*)
-           write (oarchv,*) 'Gammas Used'
-           write (oarchv,*) '-----------'
-
-
-        if (i_3rd_is_contact.and.(n_letters.eq.4)) then
-           n_ranges=2+num_well
-           if (four_plus) then
-             if (i_ignore_chain_dirn.and.(.not.mismatch)) then
-               n_gammas_in_range(1)=272
-               n_gammas_in_range(2)=272
-             elseif (i_ignore_chain_dirn.and.mismatch) then
-               n_gammas_in_range(1)=40
-               n_gammas_in_range(2)=40
-             else
-               n_gammas_in_range(1)=512
-               n_gammas_in_range(2)=512
-             endif
-           else
-
-             if (i_ignore_chain_dirn) then
-               n_gammas_in_range(1)= 136
-               n_gammas_in_range(2)= 136
-             else
-               n_gammas_in_range(1)= 256
-               n_gammas_in_range(2)= 256
-             endif
-
-           endif
-
-          do i = 1,num_well
-             n_gammas_in_range(2+i)=n_gammas_per_con_well
-           enddo
-
-        else 
-           n_ranges=3
-           do i=1,n_ranges
-             n_gammas_in_range(i)=4**n_letters ! eg 1 to 16 for 2-letter code
-           enddo
-        endif
+           WRITE (OARCHV,*)
+           WRITE (OARCHV,*) 'GAMMAS USED'
+           WRITE (OARCHV,*) '-----------'
 
 
-        do 510 i_ranges=1,n_ranges
+        IF (I_3RD_IS_CONTACT.AND.(N_LETTERS.EQ.4)) THEN
+           N_RANGES=2+NUM_WELL
+           IF (FOUR_PLUS) THEN
+             IF (I_IGNORE_CHAIN_DIRN.AND.(.NOT.MISMATCH)) THEN
+               N_GAMMAS_IN_RANGE(1)=272
+               N_GAMMAS_IN_RANGE(2)=272
+             ELSEIF (I_IGNORE_CHAIN_DIRN.AND.MISMATCH) THEN
+               N_GAMMAS_IN_RANGE(1)=40
+               N_GAMMAS_IN_RANGE(2)=40
+             ELSE
+               N_GAMMAS_IN_RANGE(1)=512
+               N_GAMMAS_IN_RANGE(2)=512
+             ENDIF
+           ELSE
 
-        do 504 i504=1,n_gammas_in_range(i_ranges)  
-           read (igamma,*,iostat=read_status,err=99) optgamma(i504)
-99         if (read_status.ne.0) then
-             write(SO,*)  'failure reading from gamma file (1st read)'
-             write(SO,*) 'error number ',read_status
-             write(SO,*) optgamma(i504)
-             stop
-           endif
-           write (oarchv,444) optgamma(i504)
-444        format(f8.4)
+             IF (I_IGNORE_CHAIN_DIRN) THEN
+               N_GAMMAS_IN_RANGE(1)= 136
+               N_GAMMAS_IN_RANGE(2)= 136
+             ELSE
+               N_GAMMAS_IN_RANGE(1)= 256
+               N_GAMMAS_IN_RANGE(2)= 256
+             ENDIF
 
-504    continue
+           ENDIF
 
-        do 500 i500=1,20
-           icl=class(i500)
-           icl_con=class_con(i500)
+          DO I = 1,NUM_WELL
+             N_GAMMAS_IN_RANGE(2+I)=N_GAMMAS_PER_CON_WELL
+           ENDDO
 
-           do 501 i501=1,20
-             jcl=class(i501)
-             jcl_con=class_con(i501)
-              gammapt_contact=sort_contact(icl_con,jcl_con)
+        ELSE 
+           N_RANGES=3
+           DO I=1,N_RANGES
+             N_GAMMAS_IN_RANGE(I)=4**N_LETTERS ! EG 1 TO 16 FOR 2-LETTER CODE
+           ENDDO
+        ENDIF
 
-              do 502 i502=1,20
-                 ipcl=class(i502)
-                 do 503 i503=1,20
-                   jpcl=class(i503)
 
-              if ( i_ranges .le. 2) then
-                 if (four_plus) then
-                   do ic1 = 1,2
-                   gammapt=sort_plus(icl,jcl,ipcl,jpcl,ic1)
-                   qchrg2(i500,i501,i502,i503,ic1,i_ranges)=optgamma(gammapt)
-                   enddo
-                 else ! four_plus false
-                      if (i_ignore_chain_dirn) then
-                       gammapt=sort_sym(icl,jcl,ipcl,jpcl)
-                       gamma_temp=optgamma(gammapt)
-                      else
-                       gammapt=sort(icl,jcl,ipcl,jpcl)
-                       gamma_temp=optgamma(gammapt)
-                      endif
-                 endif ! four_plus
-               endif ! i_ranges 2
+        DO 510 I_RANGES=1,N_RANGES
+
+        DO 504 I504=1,N_GAMMAS_IN_RANGE(I_RANGES)  
+           READ (IGAMMA,*,IOSTAT=READ_STATUS,ERR=99) OPTGAMMA(I504)
+99         IF (READ_STATUS.NE.0) THEN
+             WRITE(SO,*)  'FAILURE READING FROM GAMMA FILE (1ST READ)'
+             WRITE(SO,*) 'ERROR NUMBER ',READ_STATUS
+             WRITE(SO,*) OPTGAMMA(I504)
+             STOP
+           ENDIF
+           WRITE (OARCHV,444) OPTGAMMA(I504)
+444        FORMAT(F8.4)
+
+504    CONTINUE
+
+        DO 500 I500=1,20
+           ICL=CLASS(I500)
+           ICL_CON=CLASS_CON(I500)
+
+           DO 501 I501=1,20
+             JCL=CLASS(I501)
+             JCL_CON=CLASS_CON(I501)
+              GAMMAPT_CONTACT=SORT_CONTACT(ICL_CON,JCL_CON)
+
+              DO 502 I502=1,20
+                 IPCL=CLASS(I502)
+                 DO 503 I503=1,20
+                   JPCL=CLASS(I503)
+
+              IF ( I_RANGES .LE. 2) THEN
+                 IF (FOUR_PLUS) THEN
+                   DO IC1 = 1,2
+                   GAMMAPT=SORT_PLUS(ICL,JCL,IPCL,JPCL,IC1)
+                   QCHRG2(I500,I501,I502,I503,IC1,I_RANGES)=OPTGAMMA(GAMMAPT)
+                   ENDDO
+                 ELSE ! FOUR_PLUS FALSE
+                      IF (I_IGNORE_CHAIN_DIRN) THEN
+                       GAMMAPT=SORT_SYM(ICL,JCL,IPCL,JPCL)
+                       GAMMA_TEMP=OPTGAMMA(GAMMAPT)
+                      ELSE
+                       GAMMAPT=SORT(ICL,JCL,IPCL,JPCL)
+                       GAMMA_TEMP=OPTGAMMA(GAMMAPT)
+                      ENDIF
+                 ENDIF ! FOUR_PLUS
+               ENDIF ! I_RANGES 2
                                                                                                      
-                   if (i_3rd_is_contact.and.(n_letters.eq.4))then
-                    if(i_ranges.gt.2) then
-                       gamma_temp=optgamma(gammapt_contact)
-                    endif
-                   endif
-c                  third distance class Go contacts
-              if ((.not.i_3rd_is_contact).and.(n_letters.eq.4))then
-                 if(i_ranges.gt.2) then
-                     gamma_temp=optgamma(gammapt)
-                 endif
+                   IF (I_3RD_IS_CONTACT.AND.(N_LETTERS.EQ.4))THEN
+                    IF(I_RANGES.GT.2) THEN
+                       GAMMA_TEMP=OPTGAMMA(GAMMAPT_CONTACT)
+                    ENDIF
+                   ENDIF
+C                  THIRD DISTANCE CLASS GO CONTACTS
+              IF ((.NOT.I_3RD_IS_CONTACT).AND.(N_LETTERS.EQ.4))THEN
+                 IF(I_RANGES.GT.2) THEN
+                     GAMMA_TEMP=OPTGAMMA(GAMMAPT)
+                 ENDIF
 
-              endif
+              ENDIF
                                                                                   
-c   If alternative potential qchrg for the corresponding well
-c   should be set to 0
-                  if((altpotflag(1).gt.0).and.(i_ranges.eq.3))then
-                      qchrg(i500,i501,i502,i503,i_ranges)=0.0D0
-                  elseif((altpotflag(2).gt.0).and.(i_ranges.eq.4))then
-                      qchrg(i500,i501,i502,i503,i_ranges)=0.0D0
-c   these are added by Garegin Papoian, 4/8/04
-c   Modifying medium-range AMH interactions
-                  elseif((altpotflag(2).gt.0).and.(i_ranges.eq.2))then
-                      qchrg(i500,i501,i502,i503,i_ranges)=gamma_temp*srplr(2)
-c   Modifying short-range AMH interactions
-                  elseif((altpotflag(2).gt.0).and.(i_ranges.eq.1))then
-                      qchrg(i500,i501,i502,i503,i_ranges)=gamma_temp*srplr(1)
-c   end of GAP
-                  else
-                   qchrg(i500,i501,i502,i503,i_ranges)=gamma_temp
+C   IF ALTERNATIVE POTENTIAL QCHRG FOR THE CORRESPONDING WELL
+C   SHOULD BE SET TO 0
+                  IF((ALTPOTFLAG(1).GT.0).AND.(I_RANGES.EQ.3))THEN
+                      QCHRG(I500,I501,I502,I503,I_RANGES)=0.0D0
+                  ELSEIF((ALTPOTFLAG(2).GT.0).AND.(I_RANGES.EQ.4))THEN
+                      QCHRG(I500,I501,I502,I503,I_RANGES)=0.0D0
+C   THESE ARE ADDED BY GAREGIN PAPOIAN, 4/8/04
+C   MODIFYING MEDIUM-RANGE AMH INTERACTIONS
+                  ELSEIF((ALTPOTFLAG(2).GT.0).AND.(I_RANGES.EQ.2))THEN
+                      QCHRG(I500,I501,I502,I503,I_RANGES)=GAMMA_TEMP*SRPLR(2)
+C   MODIFYING SHORT-RANGE AMH INTERACTIONS
+                  ELSEIF((ALTPOTFLAG(2).GT.0).AND.(I_RANGES.EQ.1))THEN
+                      QCHRG(I500,I501,I502,I503,I_RANGES)=GAMMA_TEMP*SRPLR(1)
+C   END OF GAP
+                  ELSE
+                   QCHRG(I500,I501,I502,I503,I_RANGES)=GAMMA_TEMP
 
 
-                  endif
+                  ENDIF
                                                                                        
-503              continue
-502            continue
+503              CONTINUE
+502            CONTINUE
 
-501      continue
-500     continue
+501      CONTINUE
+500     CONTINUE
 
-510     continue
+510     CONTINUE
 
-c----------tshen add the 21th one, just rely on the relations
-c need to gamma(21,"1 - 20","1 - 20","1 - 20","1 - max_well+2")  and its oppo
-c and gamma2 but what in gamma2??
-c first try mychch=1.2 and mychpo=1.1
-      mychch=1.2D0*1.2D0
-      mychpo=1.2D0
+C----------TSHEN ADD THE 21TH ONE, JUST RELY ON THE RELATIONS
+C NEED TO GAMMA(21,"1 - 20","1 - 20","1 - 20","1 - MAX_WELL+2")  AND ITS OPPO
+C AND GAMMA2 BUT WHAT IN GAMMA2??
+C FIRST TRY MYCHCH=1.2 AND MYCHPO=1.1
+      MYCHCH=1.2D0*1.2D0
+      MYCHPO=1.2D0
                 
-      do myj=1,20
-         do myip=1,20
-            do myjp=1,20
-               do mywel=1, max_well+2
-                  if((class(myj).eq.4).or.(class(myip).eq.4).or.(class(myjp).eq.4)) then
-                     qchrg(21,myj,myip,myjp,mywel)=qchrg(7,myj,myip,myjp,mywel)
-                     qchrg(myj,21,myip,myjp,mywel)=qchrg(myj,7,myip,myjp,mywel)
-                  elseif ((class(myj).eq.1).or.(class(myip).eq.1).or.(class(myjp).eq.1)) then
-                     qchrg(21,myj,myip,myjp,mywel)=mychpo*qchrg(7,myj,myip,myjp,mywel)
-                     qchrg(myj,21,myip,myjp,mywel)=mychpo*qchrg(myj,7,myip,myjp,mywel)
-                  else
-                     qchrg(21,myj,myip,myjp,mywel)=mychch*qchrg(7,myj,myip,myjp,mywel)
-                     qchrg(myj,21,myip,myjp,mywel)=mychch*qchrg(myj,7,myip,myjp,mywel)
-                  endif
-               enddo
-            enddo
-         enddo
-      enddo
+      DO MYJ=1,20
+         DO MYIP=1,20
+            DO MYJP=1,20
+               DO MYWEL=1, MAX_WELL+2
+                  IF((CLASS(MYJ).EQ.4).OR.(CLASS(MYIP).EQ.4).OR.(CLASS(MYJP).EQ.4)) THEN
+                     QCHRG(21,MYJ,MYIP,MYJP,MYWEL)=QCHRG(7,MYJ,MYIP,MYJP,MYWEL)
+                     QCHRG(MYJ,21,MYIP,MYJP,MYWEL)=QCHRG(MYJ,7,MYIP,MYJP,MYWEL)
+                  ELSEIF ((CLASS(MYJ).EQ.1).OR.(CLASS(MYIP).EQ.1).OR.(CLASS(MYJP).EQ.1)) THEN
+                     QCHRG(21,MYJ,MYIP,MYJP,MYWEL)=MYCHPO*QCHRG(7,MYJ,MYIP,MYJP,MYWEL)
+                     QCHRG(MYJ,21,MYIP,MYJP,MYWEL)=MYCHPO*QCHRG(MYJ,7,MYIP,MYJP,MYWEL)
+                  ELSE
+                     QCHRG(21,MYJ,MYIP,MYJP,MYWEL)=MYCHCH*QCHRG(7,MYJ,MYIP,MYJP,MYWEL)
+                     QCHRG(MYJ,21,MYIP,MYJP,MYWEL)=MYCHCH*QCHRG(MYJ,7,MYIP,MYJP,MYWEL)
+                  ENDIF
+               ENDDO
+            ENDDO
+         ENDDO
+      ENDDO
 
 
-      do myj=1,20
-         do myip=1,20
-            do myjp=1,20
-               do myk=1, 2
-                  do mykp=1,2
-                     if((class(myj).eq.4).or.(class(myip).eq.4).or.(class(myjp).eq.4)) then
-                        qchrg2(21,myj,myip,myjp,myk,mykp)=qchrg2(7,myj,myip,myjp,myk,mykp)
-                        qchrg2(myj,21,myip,myjp,myk,mykp)=qchrg2(myj,7,myip,myjp,myk,mykp)
-                     elseif ((class(myj).eq.1).or.(class(myip).eq.1).or.(class(myjp).eq.1)) then
-                        qchrg2(21,myj,myip,myjp,myk,mykp)=mychpo*qchrg2(7,myj,myip,myjp,myk,mykp)
-                        qchrg2(myj,21,myip,myjp,myk,mykp)=mychpo*qchrg2(myj,7,myip,myjp,myk,mykp)
-                     else
-                        qchrg2(21,myj,myip,myjp,myk,mykp)=mychch*qchrg2(7,myj,myip,myjp,myk,mykp)
-                        qchrg2(myj,21,myip,myjp,myk,mykp)=mychch*qchrg2(myj,7,myip,myjp,myk,mykp)
-                     endif
-                  enddo
-               enddo
-            enddo
-         enddo
-      enddo
+      DO MYJ=1,20
+         DO MYIP=1,20
+            DO MYJP=1,20
+               DO MYK=1, 2
+                  DO MYKP=1,2
+                     IF((CLASS(MYJ).EQ.4).OR.(CLASS(MYIP).EQ.4).OR.(CLASS(MYJP).EQ.4)) THEN
+                        QCHRG2(21,MYJ,MYIP,MYJP,MYK,MYKP)=QCHRG2(7,MYJ,MYIP,MYJP,MYK,MYKP)
+                        QCHRG2(MYJ,21,MYIP,MYJP,MYK,MYKP)=QCHRG2(MYJ,7,MYIP,MYJP,MYK,MYKP)
+                     ELSEIF ((CLASS(MYJ).EQ.1).OR.(CLASS(MYIP).EQ.1).OR.(CLASS(MYJP).EQ.1)) THEN
+                        QCHRG2(21,MYJ,MYIP,MYJP,MYK,MYKP)=MYCHPO*QCHRG2(7,MYJ,MYIP,MYJP,MYK,MYKP)
+                        QCHRG2(MYJ,21,MYIP,MYJP,MYK,MYKP)=MYCHPO*QCHRG2(MYJ,7,MYIP,MYJP,MYK,MYKP)
+                     ELSE
+                        QCHRG2(21,MYJ,MYIP,MYJP,MYK,MYKP)=MYCHCH*QCHRG2(7,MYJ,MYIP,MYJP,MYK,MYKP)
+                        QCHRG2(MYJ,21,MYIP,MYJP,MYK,MYKP)=MYCHCH*QCHRG2(MYJ,7,MYIP,MYJP,MYK,MYKP)
+                     ENDIF
+                  ENDDO
+               ENDDO
+            ENDDO
+         ENDDO
+      ENDDO
 
-      do myip=1,20
-            do myjp=1,20
-               do mywel=1, max_well+2
-                  if((class(myip).eq.4).or.(class(myjp).eq.4)) then
-                     qchrg(21,21,myip,myjp,mywel)=qchrg(7,21,myip,myjp,mywel)
-                     qchrg(21,21,myip,myjp,mywel)=qchrg(21,7,myip,myjp,mywel)
-                  elseif ((class(myip).eq.1).or.(class(myjp).eq.1)) then
-                     qchrg(21,21,myip,myjp,mywel)=mychpo*qchrg(7,21,myip,myjp,mywel)
-                     qchrg(21,21,myip,myjp,mywel)=mychpo*qchrg(21,7,myip,myjp,mywel)
-                  else
-                     qchrg(21,21,myip,myjp,mywel)=mychch*qchrg(7,21,myip,myjp,mywel)
-                     qchrg(21,21,myip,myjp,mywel)=mychch*qchrg(21,7,myip,myjp,mywel)
-                  endif
-               enddo
+      DO MYIP=1,20
+            DO MYJP=1,20
+               DO MYWEL=1, MAX_WELL+2
+                  IF((CLASS(MYIP).EQ.4).OR.(CLASS(MYJP).EQ.4)) THEN
+                     QCHRG(21,21,MYIP,MYJP,MYWEL)=QCHRG(7,21,MYIP,MYJP,MYWEL)
+                     QCHRG(21,21,MYIP,MYJP,MYWEL)=QCHRG(21,7,MYIP,MYJP,MYWEL)
+                  ELSEIF ((CLASS(MYIP).EQ.1).OR.(CLASS(MYJP).EQ.1)) THEN
+                     QCHRG(21,21,MYIP,MYJP,MYWEL)=MYCHPO*QCHRG(7,21,MYIP,MYJP,MYWEL)
+                     QCHRG(21,21,MYIP,MYJP,MYWEL)=MYCHPO*QCHRG(21,7,MYIP,MYJP,MYWEL)
+                  ELSE
+                     QCHRG(21,21,MYIP,MYJP,MYWEL)=MYCHCH*QCHRG(7,21,MYIP,MYJP,MYWEL)
+                     QCHRG(21,21,MYIP,MYJP,MYWEL)=MYCHCH*QCHRG(21,7,MYIP,MYJP,MYWEL)
+                  ENDIF
+               ENDDO
 
-               do myk=1, 2
-                  do mykp=1,2
-                     if((class(myip).eq.4).or.(class(myjp).eq.4)) then
-                        qchrg2(21,21,myip,myjp,myk,mykp)=qchrg2(7,21,myip,myjp,myk,mykp)
-                        qchrg2(21,21,myip,myjp,myk,mykp)=qchrg2(21,7,myip,myjp,myk,mykp)
-                     elseif ((class(myip).eq.1).or.(class(myjp).eq.1)) then
-                        qchrg2(21,21,myip,myjp,myk,mykp)=mychpo*qchrg2(7,21,myip,myjp,myk,mykp)
-                        qchrg2(21,21,myip,myjp,myk,mykp)=mychpo*qchrg2(21,7,myip,myjp,myk,mykp)
-                     else
-                        qchrg2(21,21,myip,myjp,myk,mykp)=mychch*qchrg2(7,21,myip,myjp,myk,mykp)
-                        qchrg2(21,21,myip,myjp,myk,mykp)=mychch*qchrg2(21,7,myip,myjp,myk,mykp)
-                     endif
-                  enddo
-               enddo
-            enddo
-         enddo
+               DO MYK=1, 2
+                  DO MYKP=1,2
+                     IF((CLASS(MYIP).EQ.4).OR.(CLASS(MYJP).EQ.4)) THEN
+                        QCHRG2(21,21,MYIP,MYJP,MYK,MYKP)=QCHRG2(7,21,MYIP,MYJP,MYK,MYKP)
+                        QCHRG2(21,21,MYIP,MYJP,MYK,MYKP)=QCHRG2(21,7,MYIP,MYJP,MYK,MYKP)
+                     ELSEIF ((CLASS(MYIP).EQ.1).OR.(CLASS(MYJP).EQ.1)) THEN
+                        QCHRG2(21,21,MYIP,MYJP,MYK,MYKP)=MYCHPO*QCHRG2(7,21,MYIP,MYJP,MYK,MYKP)
+                        QCHRG2(21,21,MYIP,MYJP,MYK,MYKP)=MYCHPO*QCHRG2(21,7,MYIP,MYJP,MYK,MYKP)
+                     ELSE
+                        QCHRG2(21,21,MYIP,MYJP,MYK,MYKP)=MYCHCH*QCHRG2(7,21,MYIP,MYJP,MYK,MYKP)
+                        QCHRG2(21,21,MYIP,MYJP,MYK,MYKP)=MYCHCH*QCHRG2(21,7,MYIP,MYJP,MYK,MYKP)
+                     ENDIF
+                  ENDDO
+               ENDDO
+            ENDDO
+         ENDDO
 
-c-------end of tshen modi-----------
+C-------END OF TSHEN MODI-----------
 
-        if (i_non_add_contact) then
-          do i=1,ngamma_non_add
-            read (igamma,*,iostat=read_status,err=199) gamma_non_add(i)
-199            if (read_status.ne.0) then
-              write(SO,*) 'iailure reading from gamma file (2nd read)'
-              write(SO,*)'error number ',read_status
-              stop
-            endif
-          enddo
-        endif
+        IF (I_NON_ADD_CONTACT) THEN
+          DO I=1,NGAMMA_NON_ADD
+            READ (IGAMMA,*,IOSTAT=READ_STATUS,ERR=199) GAMMA_NON_ADD(I)
+199            IF (READ_STATUS.NE.0) THEN
+              WRITE(SO,*) 'IAILURE READING FROM GAMMA FILE (2ND READ)'
+              WRITE(SO,*)'ERROR NUMBER ',READ_STATUS
+              STOP
+            ENDIF
+          ENDDO
+        ENDIF
 
-        close (igamma)
+        CLOSE (IGAMMA)
 
-        open(ihbond,file='params/anti_HB',status='old',iostat=open_status)
-        if (open_status.ne.0) then
-          write(SO,*)'failure to open anti_HB file'
-          write(SO,*) 'error number ',open_status
-          stop
-        endif
+        OPEN(IHBOND,FILE='PARAMS/ANTI_HB',STATUS='OLD',IOSTAT=OPEN_STATUS)
+        IF (OPEN_STATUS.NE.0) THEN
+          WRITE(SO,*)'FAILURE TO OPEN ANTI_HB FILE'
+          WRITE(SO,*) 'ERROR NUMBER ',OPEN_STATUS
+          STOP
+        ENDIF
 
-        do isit1 = 1,20
-        read(ihbond,77)(anti_HB(isit1,isit2,1),isit2=1,20)
-        enddo
-        read(ihbond,*)
-        do isit1 = 1,20
-        read(ihbond,77)(anti_HB(isit1,isit2,2),isit2=1,20)
-        enddo
-        close(ihbond)
+        DO ISIT1 = 1,20
+        READ(IHBOND,77)(ANTI_HB(ISIT1,ISIT2,1),ISIT2=1,20)
+        ENDDO
+        READ(IHBOND,*)
+        DO ISIT1 = 1,20
+        READ(IHBOND,77)(ANTI_HB(ISIT1,ISIT2,2),ISIT2=1,20)
+        ENDDO
+        CLOSE(IHBOND)
 
-        open(ihbond,file='params/anti_NHB',status='old',iostat=open_status)
-        if (open_status.ne.0) then
-          write(SO,*)'failure to open anti_NHB file'
-          write(SO,*) 'error number ',open_status
-          stop
-        endif
+        OPEN(IHBOND,FILE='PARAMS/ANTI_NHB',STATUS='OLD',IOSTAT=OPEN_STATUS)
+        IF (OPEN_STATUS.NE.0) THEN
+          WRITE(SO,*)'FAILURE TO OPEN ANTI_NHB FILE'
+          WRITE(SO,*) 'ERROR NUMBER ',OPEN_STATUS
+          STOP
+        ENDIF
 
-        do isit1 = 1,20
-        read(ihbond,77)(anti_NHB(isit1,isit2,1),isit2=1,20)
-        enddo
-        read(ihbond,*)
-        do isit1 = 1,20
-        read(ihbond,77)(anti_NHB(isit1,isit2,2),isit2=1,20)
-        enddo
-        close(ihbond)
+        DO ISIT1 = 1,20
+        READ(IHBOND,77)(ANTI_NHB(ISIT1,ISIT2,1),ISIT2=1,20)
+        ENDDO
+        READ(IHBOND,*)
+        DO ISIT1 = 1,20
+        READ(IHBOND,77)(ANTI_NHB(ISIT1,ISIT2,2),ISIT2=1,20)
+        ENDDO
+        CLOSE(IHBOND)
 
-        open(ihbond,file='params/para_one',status='old')
-        do isit1 = 1,20
-        read(ihbond,*)para_one(isit1)
-        enddo
-        close(ihbond)
+        OPEN(IHBOND,FILE='PARAMS/PARA_ONE',STATUS='OLD')
+        DO ISIT1 = 1,20
+        READ(IHBOND,*)PARA_ONE(ISIT1)
+        ENDDO
+        CLOSE(IHBOND)
 
-        open(ihbond,file='params/anti_one',status='old')
-        do isit1 = 1,20
-        read(ihbond,*)anti_one(isit1)
-        enddo
-        close(ihbond)
+        OPEN(IHBOND,FILE='PARAMS/ANTI_ONE',STATUS='OLD')
+        DO ISIT1 = 1,20
+        READ(IHBOND,*)ANTI_ONE(ISIT1)
+        ENDDO
+        CLOSE(IHBOND)
 
-        open(ihbond,file='params/para_HB',
-     *  status='old',iostat=open_status)
-        if (open_status.ne.0) then
-          write(SO,*) 'failure to open para_HB file'
-          write(SO,*) 'error number ',open_status
-          stop
-        endif
+        OPEN(IHBOND,FILE='PARAMS/PARA_HB',
+     *  STATUS='OLD',IOSTAT=OPEN_STATUS)
+        IF (OPEN_STATUS.NE.0) THEN
+          WRITE(SO,*) 'FAILURE TO OPEN PARA_HB FILE'
+          WRITE(SO,*) 'ERROR NUMBER ',OPEN_STATUS
+          STOP
+        ENDIF
 
-        do isit1 = 1,20
-        read(ihbond,77)(para_HB(isit1,isit2,1),isit2=1,20)
-        enddo
-        read(ihbond,*)
-        do isit1 = 1,20
-        read(ihbond,77)(para_HB(isit1,isit2,2),isit2=1,20)
-        enddo
-        close(ihbond)
+        DO ISIT1 = 1,20
+        READ(IHBOND,77)(PARA_HB(ISIT1,ISIT2,1),ISIT2=1,20)
+        ENDDO
+        READ(IHBOND,*)
+        DO ISIT1 = 1,20
+        READ(IHBOND,77)(PARA_HB(ISIT1,ISIT2,2),ISIT2=1,20)
+        ENDDO
+        CLOSE(IHBOND)
 
-77        format(20(f8.5,1x))
+77        FORMAT(20(F8.5,1X))
 
-        return
-      end
+        RETURN
+      END

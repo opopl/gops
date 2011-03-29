@@ -1,25 +1,25 @@
 
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C  Put permutational isomers into a standard orientation.
+C  PUT PERMUTATIONAL ISOMERS INTO A STANDARD ORIENTATION.
 C
       SUBROUTINE MYORIENT(Q1,T1,NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2,NATOMS,DEBUG,ROT,ROTINV,STOCKT)
       IMPLICIT NONE
@@ -43,7 +43,7 @@ C
       YVEC(1)=0.0D0; YVEC(2)=1.0D0; YVEC(3)=0.0D0
       ZVEC(1)=0.0D0; ZVEC(2)=0.0D0; ZVEC(3)=1.0D0
 C
-C  Move centre of mass to the origin.
+C  MOVE CENTRE OF MASS TO THE ORIGIN.
 C
       CMX=0.0D0
       CMY=0.0D0
@@ -73,7 +73,7 @@ C     PRINT*,'CMX,CMY,CMZ=',CMX,CMY,CMZ
             IF (NORBIT1.EQ.NCHOOSE1) THEN
                JMAX1=J1
             ENDIF
-!           IF (DIST(J1).GT.DMAX) THEN ! try to catch the case where 0.001 isn;t small enough!
+!           IF (DIST(J1).GT.DMAX) THEN ! TRY TO CATCH THE CASE WHERE 0.001 ISN;T SMALL ENOUGH!
 !              DMAX=DIST(J1)
 !              JMAX1=J1
 !           ENDIF
@@ -85,13 +85,13 @@ C     PRINT*,'CMX,CMY,CMZ=',CMX,CMY,CMZ
 !        PRINT '(A,I8,2G20.10,3I8)','J1,DIST,DMAX,JMAX1,NCHOOSE1,NORBIT1=',J1,DIST(J1),DMAX,JMAX1,NCHOOSE1,NORBIT1
       ENDDO
 C
-C  For tagged atoms the choice of the first atom matters if it belongs to an orbit of size > 1.
+C  FOR TAGGED ATOMS THE CHOICE OF THE FIRST ATOM MATTERS IF IT BELONGS TO AN ORBIT OF SIZE > 1.
 C
-!     WRITE(*,'(A,G20.10,A,G20.10)') 'atom ',JMAX1,' will be moved onto the z axis, distance=',DIST(JMAX1) 
+!     WRITE(*,'(A,G20.10,A,G20.10)') 'ATOM ',JMAX1,' WILL BE MOVED ONTO THE Z AXIS, DISTANCE=',DIST(JMAX1) 
       IF ((ABS(Q1(3*(JMAX1-1)+1)).LT.1.0D-8).AND.(ABS(Q1(3*(JMAX1-1)+2)).LT.1.0D-8)) THEN
          IF (Q1(3*(JMAX1-1)+3).GT.0.0D0) THEN
             T1(1:3*NATOMS)=Q1(1:3*NATOMS)
-         ELSE  ! rotate about the x axis DO NOT INVERT!!
+         ELSE  ! ROTATE ABOUT THE X AXIS DO NOT INVERT!!
             DO J1=1,NATOMS
                T1(3*(J1-1)+1)=Q1(3*(J1-1)+1)
                T1(3*(J1-1)+2)=-Q1(3*(J1-1)+2)
@@ -103,7 +103,7 @@ C
          GOTO 10
       ENDIF
 !
-! For sloppy cutoffs we cannot assume that DMAX is exactly the same for members of the same orbit!!
+! FOR SLOPPY CUTOFFS WE CANNOT ASSUME THAT DMAX IS EXACTLY THE SAME FOR MEMBERS OF THE SAME ORBIT!!
 !
 !     COST=Q1(3*(JMAX1-1)+3)/DMAX
 !     SINT=SQRT(Q1(3*(JMAX1-1)+1)**2+Q1(3*(JMAX1-1)+2)**2)/DMAX
@@ -111,9 +111,9 @@ C
       COST=Q1(3*(JMAX1-1)+3)/DIST(JMAX1)
       SINT=SQRT(Q1(3*(JMAX1-1)+1)**2+Q1(3*(JMAX1-1)+2)**2)/DIST(JMAX1)
 C
-C  Rotate atom JMAX1 onto the z axis.
-C  Rotate all the atoms through ANGLE about RVEC. Use rotation formula
-C  from Goldstein p. 165.
+C  ROTATE ATOM JMAX1 ONTO THE Z AXIS.
+C  ROTATE ALL THE ATOMS THROUGH ANGLE ABOUT RVEC. USE ROTATION FORMULA
+C  FROM GOLDSTEIN P. 165.
 C
       RVEC(1)= Q1(3*(JMAX1-1)+2)/SQRT(Q1(3*(JMAX1-1)+1)**2+Q1(3*(JMAX1-1)+2)**2)
       RVEC(2)=-Q1(3*(JMAX1-1)+1)/SQRT(Q1(3*(JMAX1-1)+1)**2+Q1(3*(JMAX1-1)+2)**2)
@@ -129,7 +129,7 @@ C        ENDIF
       ENDDO
 C
 C
-C  Track transformation of unit vectors.
+C  TRACK TRANSFORMATION OF UNIT VECTORS.
 C
       RDOTN=RVEC(1)
       XVEC(1)=COST + RVEC(1)*RDOTN*(1-COST)
@@ -153,14 +153,14 @@ C     ENDDO
 10    CONTINUE
 C     IF (DEBUG) THEN
 C        WRITE(4,'(I5)') NATOMS
-C        WRITE(4,'(A)') 'after first myorient rotation:'
+C        WRITE(4,'(A)') 'AFTER FIRST MYORIENT ROTATION:'
 C        WRITE(4,'(A5,3F20.10)') 'LA   ',T1(1),T1(2),T1(3)
 C        DO J1=2,NATOMS
 C           WRITE(4,'(A5,3F20.10)') 'LB   ',T1(3*(J1-1)+1),T1(3*(J1-1)+2),T1(3*(J1-1)+3)
 C        ENDDO
 C     ENDIF
 C
-C  Find the atom with the largest distance from the z axis.
+C  FIND THE ATOM WITH THE LARGEST DISTANCE FROM THE Z AXIS.
 C
       DMAX=-1.0D0
       DO J1=1,NATOMS
@@ -169,14 +169,14 @@ C
       ENDDO
       DMAX2=-1.0D100
 
-C  PROJ is the sum of the x components. TVEC arguments are dummys here.
-C  Use T2 as a dummy in order not to change T1 until we have decided which 
-C  atom to put in the xz plane.
+C  PROJ IS THE SUM OF THE X COMPONENTS. TVEC ARGUMENTS ARE DUMMYS HERE.
+C  USE T2 AS A DUMMY IN ORDER NOT TO CHANGE T1 UNTIL WE HAVE DECIDED WHICH 
+C  ATOM TO PUT IN THE XZ PLANE.
 C
       TXVEC(1:3)=0.0D0; TYVEC(1:3)=0.0D0;TZVEC(1:3)=0.0D0
       DO J1=1,NATOMS
-!        PRINT '(A,I8,3F20.10)','z J1,DMAX,DIST(J1),ABS(DIST(J1)-DMAX)=',J1,DMAX,DIST(J1),ABS(DIST(J1)-DMAX)
-!        PRINT '(A,2F20.10,L5)','ABS(DIST(J1)-DMAX),CUTOFF1,test=',ABS(DIST(J1)-DMAX),CUTOFF1,ABS(DIST(J1)-DMAX).LT.CUTOFF1
+!        PRINT '(A,I8,3F20.10)','Z J1,DMAX,DIST(J1),ABS(DIST(J1)-DMAX)=',J1,DMAX,DIST(J1),ABS(DIST(J1)-DMAX)
+!        PRINT '(A,2F20.10,L5)','ABS(DIST(J1)-DMAX),CUTOFF1,TEST=',ABS(DIST(J1)-DMAX),CUTOFF1,ABS(DIST(J1)-DMAX).LT.CUTOFF1
          IF (ABS(DIST(J1)-DMAX).LT.CUTOFF1) THEN
             T2(1:3*NATOMS)=T1(1:3*NATOMS)
             CALL ROTXZ(NATOMS,J1,T2,PROJ,DIST,TXVEC,TYVEC,TZVEC,CUTOFF1)
@@ -194,26 +194,26 @@ C
 !           PRINT '(A,2G20.10)','PROJ,DMAX2=',PROJ,DMAX2
          ENDIF
       ENDDO
-!     IF (DEBUG) PRINT '(A,6I6)','myorient> NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2,JMAX1,JMAX2=',
+!     IF (DEBUG) PRINT '(A,6I6)','MYORIENT> NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2,JMAX1,JMAX2=',
 !    &                            NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2,JMAX1,JMAX2
 C
-C  and rotate it into the xz plane.
+C  AND ROTATE IT INTO THE XZ PLANE.
 C
-!     IF (DEBUG) PRINT '(A,I6,A,G20.10,A)','atom ',JMAX2,' is now the furthest from the  z axis, distance=', 
-!    &                                        DIST(JMAX2),' rotate into xz plane'
+!     IF (DEBUG) PRINT '(A,I6,A,G20.10,A)','ATOM ',JMAX2,' IS NOW THE FURTHEST FROM THE  Z AXIS, DISTANCE=', 
+!    &                                        DIST(JMAX2),' ROTATE INTO XZ PLANE'
 !
-! The correct distance from the z axis is used for each atom - they are saved in the vector DIST
-! DMAX2 is a dummy here.
+! THE CORRECT DISTANCE FROM THE Z AXIS IS USED FOR EACH ATOM - THEY ARE SAVED IN THE VECTOR DIST
+! DMAX2 IS A DUMMY HERE.
 !
       CALL ROTXZ(NATOMS,JMAX2,T1,DMAX2,DIST,XVEC,YVEC,ZVEC,CUTOFF1)
 
-!     IF (DEBUG) PRINT*,'after myorient'
+!     IF (DEBUG) PRINT*,'AFTER MYORIENT'
 !     IF (DEBUG) WRITE(*,'(3F20.10)') (T1(J1),J1=1,3*NATOMS)
 
       ROT(1:3,1)=XVEC(1:3); ROT(1:3,2)=YVEC(1:3); ROT(1:3,3)=ZVEC(1:3)
       ROTINV(1,1:3)=XVEC(1:3); ROTINV(2,1:3)=YVEC(1:3); ROTINV(3,1:3)=ZVEC(1:3)
 C
-C  Check orthogonality:
+C  CHECK ORTHOGONALITY:
 C
       DO J1=1,3
          DO J2=1,3
@@ -224,12 +224,12 @@ C
             TEMP(J1,J2)=DUMMY
          ENDDO
       ENDDO
-C     PRINT '(A)','myorient> transformation product:'
+C     PRINT '(A)','MYORIENT> TRANSFORMATION PRODUCT:'
 C     PRINT '(3F20.10)',TEMP(1:3,1:3)
 C
-C  Compare Q1, ROT * T1, ROTINV * T1
+C  COMPARE Q1, ROT * T1, ROTINV * T1
 C
-C     PRINT '(A)','myorient> original coordinates:'
+C     PRINT '(A)','MYORIENT> ORIGINAL COORDINATES:'
 C     PRINT '(6F20.10)',Q1(1:12)
 C     DO J1=1,NATOMS
 C        DO J2=1,3
@@ -240,7 +240,7 @@ C           ENDDO
 C           TVEC(3*(J1-1)+J2)=DUMMY
 C        ENDDO
 C     ENDDO
-C     PRINT '(A)','myorient> ROT * T1:'
+C     PRINT '(A)','MYORIENT> ROT * T1:'
 C     PRINT '(6F20.10)',TVEC(1:12)
 C     DO J1=1,NATOMS
 C        DO J2=1,3
@@ -251,7 +251,7 @@ C           ENDDO
 C           TVEC(3*(J1-1)+J2)=DUMMY
 C        ENDDO
 C     ENDDO
-C     PRINT '(A)','myorient> ROTINV * T1:'
+C     PRINT '(A)','MYORIENT> ROTINV * T1:'
 C     PRINT '(6F20.10)',TVEC(1:12)
 
       RETURN
@@ -264,11 +264,11 @@ C     PRINT '(6F20.10)',TVEC(1:12)
       DOUBLE PRECISION XVEC(3), YVEC(3), ZVEC(3)
 
 C     PRINT '(I6)',NATOMS
-C     PRINT '(A,I6,G20.10)','before rotation'
+C     PRINT '(A,I6,G20.10)','BEFORE ROTATION'
 C     WRITE(*,'(A2,2X,3G20.10)') ('LA',T1(3*(J3-1)+1),T1(3*(J3-1)+2),T1(3*(J3-1)+3),J3=1,NATOMS)
 
       IF (ABS(T1(3*(JDO-1)+2)).LT.1.0D-8) THEN
-         IF (T1(3*(JDO-1)+1).LT.0.0D0) THEN ! rotate about the z axis DO NOT INVERT!!
+         IF (T1(3*(JDO-1)+1).LT.0.0D0) THEN ! ROTATE ABOUT THE Z AXIS DO NOT INVERT!!
             DO J1=1,NATOMS
                T1(3*(J1-1)+1)=-T1(3*(J1-1)+1)
                T1(3*(J1-1)+2)=-T1(3*(J1-1)+2)
@@ -284,7 +284,7 @@ C     WRITE(*,'(A2,2X,3G20.10)') ('LA',T1(3*(J3-1)+1),T1(3*(J3-1)+2),T1(3*(J3-1)
       SINT=T1(3*(JDO-1)+2)/DIST(JDO)
 C     PRINT '(A,4G20.10)','T1(3*(JDO-1)+2),COST,SINT,1=',T1(3*(JDO-1)+2),COST,SINT,COST**2+SINT**2
       IF (ABS(COST**2+SINT**2-1.0D0).GT.2.0D-3) THEN
-         WRITE(*, '(A,G20.10)') 'ERROR - in ROTXZ cos**2+sin**2=',COST**2+SINT**2
+         WRITE(*, '(A,G20.10)') 'ERROR - IN ROTXZ COS**2+SIN**2=',COST**2+SINT**2
          STOP
       ENDIF
       RVEC(1)=0.0D0
@@ -321,15 +321,15 @@ C     PRINT '(A,4G20.10)','T1(3*(JDO-1)+2),COST,SINT,1=',T1(3*(JDO-1)+2),COST,SI
 
       PROJ=0.0D0
 !
-! For possibly sloppy alignments with LOCALPERMDIST it may be important to
-! increase the cutoff and use CUTOFF1 ! DJW 27/8/09
+! FOR POSSIBLY SLOPPY ALIGNMENTS WITH LOCALPERMDIST IT MAY BE IMPORTANT TO
+! INCREASE THE CUTOFF AND USE CUTOFF1 ! DJW 27/8/09
 !
       DO J1=1,NATOMS
 C        IF (T1(3*(J1-1)+3).GT.1.0D-2) PROJ=PROJ+T1(3*(J1-1)+1)
          IF (T1(3*(J1-1)+3).GT.CUTOFF1) PROJ=PROJ+T1(3*(J1-1)+1)
       ENDDO
 C     PRINT '(I6)',NATOMS
-C     PRINT '(A,I6,G20.10)','after rotation atom,PROJ=',JDO,PROJ
+C     PRINT '(A,I6,G20.10)','AFTER ROTATION ATOM,PROJ=',JDO,PROJ
 C     WRITE(*,'(A2,2X,3G20.10)') ('LA',T1(3*(J3-1)+1),T1(3*(J3-1)+2),T1(3*(J3-1)+3),J3=1,NATOMS)
 
       RETURN

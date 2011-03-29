@@ -1,24 +1,24 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C******************************************************************************
 C
-C  Subroutine order calculates Q4 only
+C  SUBROUTINE ORDER CALCULATES Q4 ONLY
 C
 C******************************************************************************
 
@@ -29,11 +29,11 @@ C******************************************************************************
       DOUBLE PRECISION DX,DY,DZ,DIST,POINTS(3*NATOMS),
      1                 Q40,Q4R(4),Q4I(4), CURQ4
 
-      Q40=0.0d0
-      do 10 j=1,4
-        Q4R(j)=0.0d0
-        Q4I(j)=0.0d0
-10    continue
+      Q40=0.0D0
+      DO 10 J=1,4
+        Q4R(J)=0.0D0
+        Q4I(J)=0.0D0
+10    CONTINUE
 
       NB=0
       DO 30 J=1,NATOMS
@@ -42,7 +42,7 @@ C******************************************************************************
             DY=POINTS(3*(J-1)+2)-POINTS(3*(K-1)+2)
             DZ=POINTS(3*(J-1)+3)-POINTS(3*(K-1)+3)
             DIST=DSQRT(DX*DX+DY*DY+DZ*DZ)
-            IF (DIST.LT.1.3909d0) THEN
+            IF (DIST.LT.1.3909D0) THEN
                NB=NB+1
                CALL EVASH4(DX/DIST,DY/DIST,DZ/DIST,Q40,Q4R,Q4I)
             ENDIF
@@ -61,8 +61,8 @@ C**************************************************************
 C     
       SUBROUTINE SHINIT
  
-C *** Calculate coefficients for Q4, Q6, W4 and W6
-C     Notebook JvD A92
+C *** CALCULATE COEFFICIENTS FOR Q4, Q6, W4 AND W6
+C     NOTEBOOK JVD A92
  
       COMMON/Q4COEF/ Q4COEF
  
@@ -71,7 +71,7 @@ C     Notebook JvD A92
  
       DOUBLE PRECISION      Q4COEF(3,0:4)
  
-C *** It would be nice indeed to know the exact formula!
+C *** IT WOULD BE NICE INDEED TO KNOW THE EXACT FORMULA!
  
 C     DATA      Q4COEF /   4.375,  -3.75,  0.375,
 C    :                   -17.5,     7.5,   0.0,
@@ -79,7 +79,7 @@ C    :                   -52.5,    60.0,  -7.5,
 C    :                  -105.0,     0.0,   0.0,
 C    :                   105.0,     0.0,   0.0 /
  
-C *** Now multiply the coefficients with sqrt(2.0* (l-m)!/(l+m)! )
+C *** NOW MULTIPLY THE COEFFICIENTS WITH SQRT(2.0* (L-M)!/(L+M)! )
 
       Q4COEF(1,0)=4.375D0
       Q4COEF(2,0)=-3.75D0
@@ -117,26 +117,26 @@ C           Q6COEF(I,M)=Q6COEF(I,M)*FACS
  
       SUBROUTINE EVASH4(X, Y, Z, Q0, QR, QI)
  
-C *** Evaluate the spherical harmonics of degree 4 ********************
+C *** EVALUATE THE SPHERICAL HARMONICS OF DEGREE 4 ********************
 C
-C     REAL*8   X,Y,Z    A vector on the unit-sphere to be processed
+C     REAL*8   X,Y,Z    A VECTOR ON THE UNIT-SPHERE TO BE PROCESSED
 C     DOUBLE PRECISION
-C            Q0       Accumulator of P40(cos(THETA))
-C            QR(4)    Accumulator of P4m(cos(THETA))*cos(PHI)
-C            QI(4)    Accumulator of P4m(cos(THETA))*sin(PHI)
+C            Q0       ACCUMULATOR OF P40(COS(THETA))
+C            QR(4)    ACCUMULATOR OF P4M(COS(THETA))*COS(PHI)
+C            QI(4)    ACCUMULATOR OF P4M(COS(THETA))*SIN(PHI)
 C
-C     Note that the actual spherical harmonics Y4m differ from Q0
-C     and Q (= QR + i*QI) by a factor
-C                     sqrt((9/8*pi)
-C     This will be taken care of in FUNCTION Q4
+C     NOTE THAT THE ACTUAL SPHERICAL HARMONICS Y4M DIFFER FROM Q0
+C     AND Q (= QR + I*QI) BY A FACTOR
+C                     SQRT((9/8*PI)
+C     THIS WILL BE TAKEN CARE OF IN FUNCTION Q4
 C
-C     Angles THETA and PHI are defined in the regular way:
+C     ANGLES THETA AND PHI ARE DEFINED IN THE REGULAR WAY:
 C
-C         X = cos(PHI)sin(THETA)
-C         Y = sin(PHI)sin(THETA)
-C         Z = cos(THETA)
+C         X = COS(PHI)SIN(THETA)
+C         Y = SIN(PHI)SIN(THETA)
+C         Z = COS(THETA)
 C
-C     Notebook JvD A38 and A85
+C     NOTEBOOK JVD A38 AND A85
 C
 C *********************************************************************
  
@@ -157,7 +157,7 @@ C *********************************************************************
       SCTH   = SINTH  * COSTH
  
  
-C *** Is THETA = 0 ? Then PHI is irrelevant *****************
+C *** IS THETA = 0 ? THEN PHI IS IRRELEVANT *****************
  
       IF (SINTH .EQ. 0.) THEN
          COSPHI(1) = 1.
@@ -174,11 +174,11 @@ C *** Is THETA = 0 ? Then PHI is irrelevant *****************
       COSPHI(4) = TWOCPH*COSPHI(3)-COSPHI(2)
       SINPHI(4) = TWOCPH*SINPHI(3)-SINPHI(2)
  
-C *** Now the spherical harmonics are calculated and summed with Q
+C *** NOW THE SPHERICAL HARMONICS ARE CALCULATED AND SUMMED WITH Q
 C
-C     This part of the subroutine would have been easier to understand
-C     when complex numbers would have been used. However, COMPLEX*16
-C     variables are not included in the FORTRAN 77 standard.
+C     THIS PART OF THE SUBROUTINE WOULD HAVE BEEN EASIER TO UNDERSTAND
+C     WHEN COMPLEX NUMBERS WOULD HAVE BEEN USED. HOWEVER, COMPLEX*16
+C     VARIABLES ARE NOT INCLUDED IN THE FORTRAN 77 STANDARD.
  
       Q0    = Q0 + Q4COEF(1,0)*COSTH4+Q4COEF(2,0)*COSTH2
      :             +Q4COEF(3,0)
@@ -205,19 +205,19 @@ C     variables are not included in the FORTRAN 77 standard.
  
       DOUBLE PRECISION FUNCTION Q4(NB, Q0, QR, QI)
  
-C *** The order parameter Q4 is calculated from Q0 and Q *************
+C *** THE ORDER PARAMETER Q4 IS CALCULATED FROM Q0 AND Q *************
 C
-C     INTEGER  NB      Number of bonds accumulated
+C     INTEGER  NB      NUMBER OF BONDS ACCUMULATED
 C     DOUBLE PRECISION
-C              Q0      Accumulator of P40(cos(THETA))
-C              QR(4)   Accumulator of P4m(cos(THETA))*cos(PHI)
-C              QI(4)   Accumulator of P4m(cos(THETA))*sin(PHI)
+C              Q0      ACCUMULATOR OF P40(COS(THETA))
+C              QR(4)   ACCUMULATOR OF P4M(COS(THETA))*COS(PHI)
+C              QI(4)   ACCUMULATOR OF P4M(COS(THETA))*SIN(PHI)
 C
-C     In the expression for Q4, the factor pi*9/4 disappears
-C     The summation has to be performed over the squares of Q4m, with
-C     m running from -4 to +4. However, Q4m and Q4-m are equal when
-C     squared. So the summation is done for positive m and a factor
-C     2 is introduced.
+C     IN THE EXPRESSION FOR Q4, THE FACTOR PI*9/4 DISAPPEARS
+C     THE SUMMATION HAS TO BE PERFORMED OVER THE SQUARES OF Q4M, WITH
+C     M RUNNING FROM -4 TO +4. HOWEVER, Q4M AND Q4-M ARE EQUAL WHEN
+C     SQUARED. SO THE SUMMATION IS DONE FOR POSITIVE M AND A FACTOR
+C     2 IS INTRODUCED.
 C
 C ********************************************************************
  

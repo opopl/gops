@@ -13,7 +13,7 @@
             D(K)=D(I)
             D(I)=P
 C
-C  Interchanges columns of V
+C  INTERCHANGES COLUMNS OF V
 C
             DO 20 J=1,N
                P=V(J,I)

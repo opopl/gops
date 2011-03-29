@@ -7,300 +7,300 @@
       DOUBLE PRECISION Y, T, TOUT, RTOL, ATOL, RWORK
       DIMENSION NEQ(*), Y(*), RTOL(*), ATOL(*), RWORK(LRW), IWORK(LIW)
 C***BEGIN PROLOGUE  DLSODE
-C***PURPOSE  Livermore Solver for Ordinary Differential Equations.
-C            DLSODE solves the initial-value problem for stiff or
-C            nonstiff systems of first-order ODE's,
-C               dy/dt = f(t,y),   or, in component form,
-C               dy(i)/dt = f(i) = f(i,t,y(1),y(2),...,y(N)),  i=1,...,N.
+C***PURPOSE  LIVERMORE SOLVER FOR ORDINARY DIFFERENTIAL EQUATIONS.
+C            DLSODE SOLVES THE INITIAL-VALUE PROBLEM FOR STIFF OR
+C            NONSTIFF SYSTEMS OF FIRST-ORDER ODE'S,
+C               DY/DT = F(T,Y),   OR, IN COMPONENT FORM,
+C               DY(I)/DT = F(I) = F(I,T,Y(1),Y(2),...,Y(N)),  I=1,...,N.
 C***CATEGORY  I1A
 C***TYPE      DOUBLE PRECISION (SLSODE-S, DLSODE-D)
 C***KEYWORDS  ORDINARY DIFFERENTIAL EQUATIONS, INITIAL VALUE PROBLEM,
 C             STIFF, NONSTIFF
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
-C             Center for Applied Scientific Computing, L-561
-C             Lawrence Livermore National Laboratory
-C             Livermore, CA 94551.
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
+C             CENTER FOR APPLIED SCIENTIFIC COMPUTING, L-561
+C             LAWRENCE LIVERMORE NATIONAL LABORATORY
+C             LIVERMORE, CA 94551.
 C***DESCRIPTION
 C
-C     NOTE: The "Usage" and "Arguments" sections treat only a subset of
-C           available options, in condensed fashion.  The options
-C           covered and the information supplied will support most
-C           standard uses of DLSODE.
+C     NOTE: THE "USAGE" AND "ARGUMENTS" SECTIONS TREAT ONLY A SUBSET OF
+C           AVAILABLE OPTIONS, IN CONDENSED FASHION.  THE OPTIONS
+C           COVERED AND THE INFORMATION SUPPLIED WILL SUPPORT MOST
+C           STANDARD USES OF DLSODE.
 C
-C           For more sophisticated uses, full details on all options are
-C           given in the concluding section, headed "Long Description."
-C           A synopsis of the DLSODE Long Description is provided at the
-C           beginning of that section; general topics covered are:
-C           - Elements of the call sequence; optional input and output
-C           - Optional supplemental routines in the DLSODE package
-C           - internal COMMON block
+C           FOR MORE SOPHISTICATED USES, FULL DETAILS ON ALL OPTIONS ARE
+C           GIVEN IN THE CONCLUDING SECTION, HEADED "LONG DESCRIPTION."
+C           A SYNOPSIS OF THE DLSODE LONG DESCRIPTION IS PROVIDED AT THE
+C           BEGINNING OF THAT SECTION; GENERAL TOPICS COVERED ARE:
+C           - ELEMENTS OF THE CALL SEQUENCE; OPTIONAL INPUT AND OUTPUT
+C           - OPTIONAL SUPPLEMENTAL ROUTINES IN THE DLSODE PACKAGE
+C           - INTERNAL COMMON BLOCK
 C
-C *Usage:
-C     Communication between the user and the DLSODE package, for normal
-C     situations, is summarized here.  This summary describes a subset
-C     of the available options.  See "Long Description" for complete
-C     details, including optional communication, nonstandard options,
-C     and instructions for special situations.
+C *USAGE:
+C     COMMUNICATION BETWEEN THE USER AND THE DLSODE PACKAGE, FOR NORMAL
+C     SITUATIONS, IS SUMMARIZED HERE.  THIS SUMMARY DESCRIBES A SUBSET
+C     OF THE AVAILABLE OPTIONS.  SEE "LONG DESCRIPTION" FOR COMPLETE
+C     DETAILS, INCLUDING OPTIONAL COMMUNICATION, NONSTANDARD OPTIONS,
+C     AND INSTRUCTIONS FOR SPECIAL SITUATIONS.
 C
-C     A sample program is given in the "Examples" section.
+C     A SAMPLE PROGRAM IS GIVEN IN THE "EXAMPLES" SECTION.
 C
-C     Refer to the argument descriptions for the definitions of the
-C     quantities that appear in the following sample declarations.
+C     REFER TO THE ARGUMENT DESCRIPTIONS FOR THE DEFINITIONS OF THE
+C     QUANTITIES THAT APPEAR IN THE FOLLOWING SAMPLE DECLARATIONS.
 C
-C     For MF = 10,
+C     FOR MF = 10,
 C        PARAMETER  (LRW = 20 + 16*NEQ,           LIW = 20)
-C     For MF = 21 or 22,
+C     FOR MF = 21 OR 22,
 C        PARAMETER  (LRW = 22 +  9*NEQ + NEQ**2,  LIW = 20 + NEQ)
-C     For MF = 24 or 25,
+C     FOR MF = 24 OR 25,
 C        PARAMETER  (LRW = 22 + 10*NEQ + (2*ML+MU)*NEQ,
 C       *                                         LIW = 20 + NEQ)
 C
 C        EXTERNAL F, JAC
 C        INTEGER  NEQ, ITOL, ITASK, ISTATE, IOPT, LRW, IWORK(LIW),
 C       *         LIW, MF
-C        DOUBLE PRECISION Y(NEQ), T, TOUT, RTOL, ATOL(ntol), RWORK(LRW)
+C        DOUBLE PRECISION Y(NEQ), T, TOUT, RTOL, ATOL(NTOL), RWORK(LRW)
 C
 C        CALL DLSODE (F, NEQ, Y, T, TOUT, ITOL, RTOL, ATOL, ITASK,
 C       *            ISTATE, IOPT, RWORK, LRW, IWORK, LIW, JAC, MF)
 C
-C *Arguments:
-C     F     :EXT    Name of subroutine for right-hand-side vector f.
-C                   This name must be declared EXTERNAL in calling
-C                   program.  The form of F must be:
+C *ARGUMENTS:
+C     F     :EXT    NAME OF SUBROUTINE FOR RIGHT-HAND-SIDE VECTOR F.
+C                   THIS NAME MUST BE DECLARED EXTERNAL IN CALLING
+C                   PROGRAM.  THE FORM OF F MUST BE:
 C
 C                   SUBROUTINE  F (NEQ, T, Y, YDOT)
 C                   INTEGER  NEQ
 C                   DOUBLE PRECISION  T, Y(*), YDOT(*)
 C
-C                   The inputs are NEQ, T, Y.  F is to set
+C                   THE INPUTS ARE NEQ, T, Y.  F IS TO SET
 C
-C                   YDOT(i) = f(i,T,Y(1),Y(2),...,Y(NEQ)),
-C                                                     i = 1, ..., NEQ .
+C                   YDOT(I) = F(I,T,Y(1),Y(2),...,Y(NEQ)),
+C                                                     I = 1, ..., NEQ .
 C
-C     NEQ   :IN     Number of first-order ODE's.
+C     NEQ   :IN     NUMBER OF FIRST-ORDER ODE'S.
 C
-C     Y     :INOUT  Array of values of the y(t) vector, of length NEQ.
-C                   Input:  For the first call, Y should contain the
-C                           values of y(t) at t = T. (Y is an input
-C                           variable only if ISTATE = 1.)
-C                   Output: On return, Y will contain the values at the
-C                           new t-value.
+C     Y     :INOUT  ARRAY OF VALUES OF THE Y(T) VECTOR, OF LENGTH NEQ.
+C                   INPUT:  FOR THE FIRST CALL, Y SHOULD CONTAIN THE
+C                           VALUES OF Y(T) AT T = T. (Y IS AN INPUT
+C                           VARIABLE ONLY IF ISTATE = 1.)
+C                   OUTPUT: ON RETURN, Y WILL CONTAIN THE VALUES AT THE
+C                           NEW T-VALUE.
 C
-C     T     :INOUT  Value of the independent variable.  On return it
-C                   will be the current value of t (normally TOUT).
+C     T     :INOUT  VALUE OF THE INDEPENDENT VARIABLE.  ON RETURN IT
+C                   WILL BE THE CURRENT VALUE OF T (NORMALLY TOUT).
 C
-C     TOUT  :IN     Next point where output is desired (.NE. T).
+C     TOUT  :IN     NEXT POINT WHERE OUTPUT IS DESIRED (.NE. T).
 C
-C     ITOL  :IN     1 or 2 according as ATOL (below) is a scalar or
-C                   an array.
+C     ITOL  :IN     1 OR 2 ACCORDING AS ATOL (BELOW) IS A SCALAR OR
+C                   AN ARRAY.
 C
-C     RTOL  :IN     Relative tolerance parameter (scalar).
+C     RTOL  :IN     RELATIVE TOLERANCE PARAMETER (SCALAR).
 C
-C     ATOL  :IN     Absolute tolerance parameter (scalar or array).
-C                   If ITOL = 1, ATOL need not be dimensioned.
-C                   If ITOL = 2, ATOL must be dimensioned at least NEQ.
+C     ATOL  :IN     ABSOLUTE TOLERANCE PARAMETER (SCALAR OR ARRAY).
+C                   IF ITOL = 1, ATOL NEED NOT BE DIMENSIONED.
+C                   IF ITOL = 2, ATOL MUST BE DIMENSIONED AT LEAST NEQ.
 C
-C                   The estimated local error in Y(i) will be controlled
-C                   so as to be roughly less (in magnitude) than
+C                   THE ESTIMATED LOCAL ERROR IN Y(I) WILL BE CONTROLLED
+C                   SO AS TO BE ROUGHLY LESS (IN MAGNITUDE) THAN
 C
-C                   EWT(i) = RTOL*ABS(Y(i)) + ATOL     if ITOL = 1, or
-C                   EWT(i) = RTOL*ABS(Y(i)) + ATOL(i)  if ITOL = 2.
+C                   EWT(I) = RTOL*ABS(Y(I)) + ATOL     IF ITOL = 1, OR
+C                   EWT(I) = RTOL*ABS(Y(I)) + ATOL(I)  IF ITOL = 2.
 C
-C                   Thus the local error test passes if, in each
-C                   component, either the absolute error is less than
-C                   ATOL (or ATOL(i)), or the relative error is less
-C                   than RTOL.
+C                   THUS THE LOCAL ERROR TEST PASSES IF, IN EACH
+C                   COMPONENT, EITHER THE ABSOLUTE ERROR IS LESS THAN
+C                   ATOL (OR ATOL(I)), OR THE RELATIVE ERROR IS LESS
+C                   THAN RTOL.
 C
-C                   Use RTOL = 0.0 for pure absolute error control, and
-C                   use ATOL = 0.0 (or ATOL(i) = 0.0) for pure relative
-C                   error control.  Caution:  Actual (global) errors may
-C                   exceed these local tolerances, so choose them
-C                   conservatively.
+C                   USE RTOL = 0.0 FOR PURE ABSOLUTE ERROR CONTROL, AND
+C                   USE ATOL = 0.0 (OR ATOL(I) = 0.0) FOR PURE RELATIVE
+C                   ERROR CONTROL.  CAUTION:  ACTUAL (GLOBAL) ERRORS MAY
+C                   EXCEED THESE LOCAL TOLERANCES, SO CHOOSE THEM
+C                   CONSERVATIVELY.
 C
-C     ITASK :IN     Flag indicating the task DLSODE is to perform.
-C                   Use ITASK = 1 for normal computation of output
-C                   values of y at t = TOUT.
+C     ITASK :IN     FLAG INDICATING THE TASK DLSODE IS TO PERFORM.
+C                   USE ITASK = 1 FOR NORMAL COMPUTATION OF OUTPUT
+C                   VALUES OF Y AT T = TOUT.
 C
-C     ISTATE:INOUT  Index used for input and output to specify the state
-C                   of the calculation.
-C                   Input:
-C                    1   This is the first call for a problem.
-C                    2   This is a subsequent call.
-C                   Output:
-C                    1   Nothing was done, because TOUT was equal to T.
-C                    2   DLSODE was successful (otherwise, negative).
-C                        Note that ISTATE need not be modified after a
-C                        successful return.
-C                   -1   Excess work done on this call (perhaps wrong
+C     ISTATE:INOUT  INDEX USED FOR INPUT AND OUTPUT TO SPECIFY THE STATE
+C                   OF THE CALCULATION.
+C                   INPUT:
+C                    1   THIS IS THE FIRST CALL FOR A PROBLEM.
+C                    2   THIS IS A SUBSEQUENT CALL.
+C                   OUTPUT:
+C                    1   NOTHING WAS DONE, BECAUSE TOUT WAS EQUAL TO T.
+C                    2   DLSODE WAS SUCCESSFUL (OTHERWISE, NEGATIVE).
+C                        NOTE THAT ISTATE NEED NOT BE MODIFIED AFTER A
+C                        SUCCESSFUL RETURN.
+C                   -1   EXCESS WORK DONE ON THIS CALL (PERHAPS WRONG
 C                        MF).
-C                   -2   Excess accuracy requested (tolerances too
-C                        small).
-C                   -3   Illegal input detected (see printed message).
-C                   -4   Repeated error test failures (check all
-C                        inputs).
-C                   -5   Repeated convergence failures (perhaps bad
-C                        Jacobian supplied or wrong choice of MF or
-C                        tolerances).
-C                   -6   Error weight became zero during problem
-C                        (solution component i vanished, and ATOL or
-C                        ATOL(i) = 0.).
+C                   -2   EXCESS ACCURACY REQUESTED (TOLERANCES TOO
+C                        SMALL).
+C                   -3   ILLEGAL INPUT DETECTED (SEE PRINTED MESSAGE).
+C                   -4   REPEATED ERROR TEST FAILURES (CHECK ALL
+C                        INPUTS).
+C                   -5   REPEATED CONVERGENCE FAILURES (PERHAPS BAD
+C                        JACOBIAN SUPPLIED OR WRONG CHOICE OF MF OR
+C                        TOLERANCES).
+C                   -6   ERROR WEIGHT BECAME ZERO DURING PROBLEM
+C                        (SOLUTION COMPONENT I VANISHED, AND ATOL OR
+C                        ATOL(I) = 0.).
 C
-C     IOPT  :IN     Flag indicating whether optional inputs are used:
-C                   0   No.
-C                   1   Yes.  (See "Optional inputs" under "Long
-C                       Description," Part 1.)
+C     IOPT  :IN     FLAG INDICATING WHETHER OPTIONAL INPUTS ARE USED:
+C                   0   NO.
+C                   1   YES.  (SEE "OPTIONAL INPUTS" UNDER "LONG
+C                       DESCRIPTION," PART 1.)
 C
-C     RWORK :WORK   Real work array of length at least:
-C                   20 + 16*NEQ                    for MF = 10,
-C                   22 +  9*NEQ + NEQ**2           for MF = 21 or 22,
-C                   22 + 10*NEQ + (2*ML + MU)*NEQ  for MF = 24 or 25.
+C     RWORK :WORK   REAL WORK ARRAY OF LENGTH AT LEAST:
+C                   20 + 16*NEQ                    FOR MF = 10,
+C                   22 +  9*NEQ + NEQ**2           FOR MF = 21 OR 22,
+C                   22 + 10*NEQ + (2*ML + MU)*NEQ  FOR MF = 24 OR 25.
 C
-C     LRW   :IN     Declared length of RWORK (in user's DIMENSION
-C                   statement).
+C     LRW   :IN     DECLARED LENGTH OF RWORK (IN USER'S DIMENSION
+C                   STATEMENT).
 C
-C     IWORK :WORK   Integer work array of length at least:
-C                   20        for MF = 10,
-C                   20 + NEQ  for MF = 21, 22, 24, or 25.
+C     IWORK :WORK   INTEGER WORK ARRAY OF LENGTH AT LEAST:
+C                   20        FOR MF = 10,
+C                   20 + NEQ  FOR MF = 21, 22, 24, OR 25.
 C
-C                   If MF = 24 or 25, input in IWORK(1),IWORK(2) the
-C                   lower and upper Jacobian half-bandwidths ML,MU.
+C                   IF MF = 24 OR 25, INPUT IN IWORK(1),IWORK(2) THE
+C                   LOWER AND UPPER JACOBIAN HALF-BANDWIDTHS ML,MU.
 C
-C                   On return, IWORK contains information that may be
-C                   of interest to the user:
+C                   ON RETURN, IWORK CONTAINS INFORMATION THAT MAY BE
+C                   OF INTEREST TO THE USER:
 C
-C            Name   Location   Meaning
+C            NAME   LOCATION   MEANING
 C            -----  ---------  -----------------------------------------
-C            NST    IWORK(11)  Number of steps taken for the problem so
-C                              far.
-C            NFE    IWORK(12)  Number of f evaluations for the problem
-C                              so far.
-C            NJE    IWORK(13)  Number of Jacobian evaluations (and of
-C                              matrix LU decompositions) for the problem
-C                              so far.
-C            NQU    IWORK(14)  Method order last used (successfully).
-C            LENRW  IWORK(17)  Length of RWORK actually required.  This
-C                              is defined on normal returns and on an
-C                              illegal input return for insufficient
-C                              storage.
-C            LENIW  IWORK(18)  Length of IWORK actually required.  This
-C                              is defined on normal returns and on an
-C                              illegal input return for insufficient
-C                              storage.
+C            NST    IWORK(11)  NUMBER OF STEPS TAKEN FOR THE PROBLEM SO
+C                              FAR.
+C            NFE    IWORK(12)  NUMBER OF F EVALUATIONS FOR THE PROBLEM
+C                              SO FAR.
+C            NJE    IWORK(13)  NUMBER OF JACOBIAN EVALUATIONS (AND OF
+C                              MATRIX LU DECOMPOSITIONS) FOR THE PROBLEM
+C                              SO FAR.
+C            NQU    IWORK(14)  METHOD ORDER LAST USED (SUCCESSFULLY).
+C            LENRW  IWORK(17)  LENGTH OF RWORK ACTUALLY REQUIRED.  THIS
+C                              IS DEFINED ON NORMAL RETURNS AND ON AN
+C                              ILLEGAL INPUT RETURN FOR INSUFFICIENT
+C                              STORAGE.
+C            LENIW  IWORK(18)  LENGTH OF IWORK ACTUALLY REQUIRED.  THIS
+C                              IS DEFINED ON NORMAL RETURNS AND ON AN
+C                              ILLEGAL INPUT RETURN FOR INSUFFICIENT
+C                              STORAGE.
 C
-C     LIW   :IN     Declared length of IWORK (in user's DIMENSION
-C                   statement).
+C     LIW   :IN     DECLARED LENGTH OF IWORK (IN USER'S DIMENSION
+C                   STATEMENT).
 C
-C     JAC   :EXT    Name of subroutine for Jacobian matrix (MF =
-C                   21 or 24).  If used, this name must be declared
-C                   EXTERNAL in calling program.  If not used, pass a
-C                   dummy name.  The form of JAC must be:
+C     JAC   :EXT    NAME OF SUBROUTINE FOR JACOBIAN MATRIX (MF =
+C                   21 OR 24).  IF USED, THIS NAME MUST BE DECLARED
+C                   EXTERNAL IN CALLING PROGRAM.  IF NOT USED, PASS A
+C                   DUMMY NAME.  THE FORM OF JAC MUST BE:
 C
 C                   SUBROUTINE JAC (NEQ, T, Y, ML, MU, PD, NROWPD)
 C                   INTEGER  NEQ, ML, MU, NROWPD
 C                   DOUBLE PRECISION  T, Y(*), PD(NROWPD,*)
 C
-C                   See item c, under "Description" below for more
-C                   information about JAC.
+C                   SEE ITEM C, UNDER "DESCRIPTION" BELOW FOR MORE
+C                   INFORMATION ABOUT JAC.
 C
-C     MF    :IN     Method flag.  Standard values are:
-C                   10  Nonstiff (Adams) method, no Jacobian used.
-C                   21  Stiff (BDF) method, user-supplied full Jacobian.
-C                   22  Stiff method, internally generated full
-C                       Jacobian.
-C                   24  Stiff method, user-supplied banded Jacobian.
-C                   25  Stiff method, internally generated banded
-C                       Jacobian.
+C     MF    :IN     METHOD FLAG.  STANDARD VALUES ARE:
+C                   10  NONSTIFF (ADAMS) METHOD, NO JACOBIAN USED.
+C                   21  STIFF (BDF) METHOD, USER-SUPPLIED FULL JACOBIAN.
+C                   22  STIFF METHOD, INTERNALLY GENERATED FULL
+C                       JACOBIAN.
+C                   24  STIFF METHOD, USER-SUPPLIED BANDED JACOBIAN.
+C                   25  STIFF METHOD, INTERNALLY GENERATED BANDED
+C                       JACOBIAN.
 C
-C *Description:
-C     DLSODE solves the initial value problem for stiff or nonstiff
-C     systems of first-order ODE's,
+C *DESCRIPTION:
+C     DLSODE SOLVES THE INITIAL VALUE PROBLEM FOR STIFF OR NONSTIFF
+C     SYSTEMS OF FIRST-ORDER ODE'S,
 C
-C        dy/dt = f(t,y) ,
+C        DY/DT = F(T,Y) ,
 C
-C     or, in component form,
+C     OR, IN COMPONENT FORM,
 C
-C        dy(i)/dt = f(i) = f(i,t,y(1),y(2),...,y(NEQ))
-C                                                  (i = 1, ..., NEQ) .
+C        DY(I)/DT = F(I) = F(I,T,Y(1),Y(2),...,Y(NEQ))
+C                                                  (I = 1, ..., NEQ) .
 C
-C     DLSODE is a package based on the GEAR and GEARB packages, and on
-C     the October 23, 1978, version of the tentative ODEPACK user
-C     interface standard, with minor modifications.
+C     DLSODE IS A PACKAGE BASED ON THE GEAR AND GEARB PACKAGES, AND ON
+C     THE OCTOBER 23, 1978, VERSION OF THE TENTATIVE ODEPACK USER
+C     INTERFACE STANDARD, WITH MINOR MODIFICATIONS.
 C
-C     The steps in solving such a problem are as follows.
+C     THE STEPS IN SOLVING SUCH A PROBLEM ARE AS FOLLOWS.
 C
-C     a. First write a subroutine of the form
+C     A. FIRST WRITE A SUBROUTINE OF THE FORM
 C
 C           SUBROUTINE  F (NEQ, T, Y, YDOT)
 C           INTEGER  NEQ
 C           DOUBLE PRECISION  T, Y(*), YDOT(*)
 C
-C        which supplies the vector function f by loading YDOT(i) with
-C        f(i).
+C        WHICH SUPPLIES THE VECTOR FUNCTION F BY LOADING YDOT(I) WITH
+C        F(I).
 C
-C     b. Next determine (or guess) whether or not the problem is stiff.
-C        Stiffness occurs when the Jacobian matrix df/dy has an
-C        eigenvalue whose real part is negative and large in magnitude
-C        compared to the reciprocal of the t span of interest.  If the
-C        problem is nonstiff, use method flag MF = 10.  If it is stiff,
-C        there are four standard choices for MF, and DLSODE requires the
-C        Jacobian matrix in some form.  This matrix is regarded either
-C        as full (MF = 21 or 22), or banded (MF = 24 or 25).  In the
-C        banded case, DLSODE requires two half-bandwidth parameters ML
-C        and MU. These are, respectively, the widths of the lower and
-C        upper parts of the band, excluding the main diagonal.  Thus the
-C        band consists of the locations (i,j) with
+C     B. NEXT DETERMINE (OR GUESS) WHETHER OR NOT THE PROBLEM IS STIFF.
+C        STIFFNESS OCCURS WHEN THE JACOBIAN MATRIX DF/DY HAS AN
+C        EIGENVALUE WHOSE REAL PART IS NEGATIVE AND LARGE IN MAGNITUDE
+C        COMPARED TO THE RECIPROCAL OF THE T SPAN OF INTEREST.  IF THE
+C        PROBLEM IS NONSTIFF, USE METHOD FLAG MF = 10.  IF IT IS STIFF,
+C        THERE ARE FOUR STANDARD CHOICES FOR MF, AND DLSODE REQUIRES THE
+C        JACOBIAN MATRIX IN SOME FORM.  THIS MATRIX IS REGARDED EITHER
+C        AS FULL (MF = 21 OR 22), OR BANDED (MF = 24 OR 25).  IN THE
+C        BANDED CASE, DLSODE REQUIRES TWO HALF-BANDWIDTH PARAMETERS ML
+C        AND MU. THESE ARE, RESPECTIVELY, THE WIDTHS OF THE LOWER AND
+C        UPPER PARTS OF THE BAND, EXCLUDING THE MAIN DIAGONAL.  THUS THE
+C        BAND CONSISTS OF THE LOCATIONS (I,J) WITH
 C
-C           i - ML <= j <= i + MU ,
+C           I - ML <= J <= I + MU ,
 C
-C        and the full bandwidth is ML + MU + 1 .
+C        AND THE FULL BANDWIDTH IS ML + MU + 1 .
 C
-C     c. If the problem is stiff, you are encouraged to supply the
-C        Jacobian directly (MF = 21 or 24), but if this is not feasible,
-C        DLSODE will compute it internally by difference quotients (MF =
-C        22 or 25).  If you are supplying the Jacobian, write a
-C        subroutine of the form
+C     C. IF THE PROBLEM IS STIFF, YOU ARE ENCOURAGED TO SUPPLY THE
+C        JACOBIAN DIRECTLY (MF = 21 OR 24), BUT IF THIS IS NOT FEASIBLE,
+C        DLSODE WILL COMPUTE IT INTERNALLY BY DIFFERENCE QUOTIENTS (MF =
+C        22 OR 25).  IF YOU ARE SUPPLYING THE JACOBIAN, WRITE A
+C        SUBROUTINE OF THE FORM
 C
 C           SUBROUTINE  JAC (NEQ, T, Y, ML, MU, PD, NROWPD)
 C           INTEGER  NEQ, ML, MU, NRWOPD
 C           DOUBLE PRECISION  T, Y(*), PD(NROWPD,*)
 C
-C        which provides df/dy by loading PD as follows:
-C        - For a full Jacobian (MF = 21), load PD(i,j) with df(i)/dy(j),
-C          the partial derivative of f(i) with respect to y(j).  (Ignore
-C          the ML and MU arguments in this case.)
-C        - For a banded Jacobian (MF = 24), load PD(i-j+MU+1,j) with
-C          df(i)/dy(j); i.e., load the diagonal lines of df/dy into the
-C          rows of PD from the top down.
-C        - In either case, only nonzero elements need be loaded.
+C        WHICH PROVIDES DF/DY BY LOADING PD AS FOLLOWS:
+C        - FOR A FULL JACOBIAN (MF = 21), LOAD PD(I,J) WITH DF(I)/DY(J),
+C          THE PARTIAL DERIVATIVE OF F(I) WITH RESPECT TO Y(J).  (IGNORE
+C          THE ML AND MU ARGUMENTS IN THIS CASE.)
+C        - FOR A BANDED JACOBIAN (MF = 24), LOAD PD(I-J+MU+1,J) WITH
+C          DF(I)/DY(J); I.E., LOAD THE DIAGONAL LINES OF DF/DY INTO THE
+C          ROWS OF PD FROM THE TOP DOWN.
+C        - IN EITHER CASE, ONLY NONZERO ELEMENTS NEED BE LOADED.
 C
-C     d. Write a main program that calls subroutine DLSODE once for each
-C        point at which answers are desired.  This should also provide
-C        for possible use of logical unit 6 for output of error messages
-C        by DLSODE.
+C     D. WRITE A MAIN PROGRAM THAT CALLS SUBROUTINE DLSODE ONCE FOR EACH
+C        POINT AT WHICH ANSWERS ARE DESIRED.  THIS SHOULD ALSO PROVIDE
+C        FOR POSSIBLE USE OF LOGICAL UNIT 6 FOR OUTPUT OF ERROR MESSAGES
+C        BY DLSODE.
 C
-C        Before the first call to DLSODE, set ISTATE = 1, set Y and T to
-C        the initial values, and set TOUT to the first output point.  To
-C        continue the integration after a successful return, simply
-C        reset TOUT and call DLSODE again.  No other parameters need be
-C        reset.
+C        BEFORE THE FIRST CALL TO DLSODE, SET ISTATE = 1, SET Y AND T TO
+C        THE INITIAL VALUES, AND SET TOUT TO THE FIRST OUTPUT POINT.  TO
+C        CONTINUE THE INTEGRATION AFTER A SUCCESSFUL RETURN, SIMPLY
+C        RESET TOUT AND CALL DLSODE AGAIN.  NO OTHER PARAMETERS NEED BE
+C        RESET.
 C
-C *Examples:
-C     The following is a simple example problem, with the coding needed
-C     for its solution by DLSODE. The problem is from chemical kinetics,
-C     and consists of the following three rate equations:
+C *EXAMPLES:
+C     THE FOLLOWING IS A SIMPLE EXAMPLE PROBLEM, WITH THE CODING NEEDED
+C     FOR ITS SOLUTION BY DLSODE. THE PROBLEM IS FROM CHEMICAL KINETICS,
+C     AND CONSISTS OF THE FOLLOWING THREE RATE EQUATIONS:
 C
-C        dy1/dt = -.04*y1 + 1.E4*y2*y3
-C        dy2/dt = .04*y1 - 1.E4*y2*y3 - 3.E7*y2**2
-C        dy3/dt = 3.E7*y2**2
+C        DY1/DT = -.04*Y1 + 1.E4*Y2*Y3
+C        DY2/DT = .04*Y1 - 1.E4*Y2*Y3 - 3.E7*Y2**2
+C        DY3/DT = 3.E7*Y2**2
 C
-C     on the interval from t = 0.0 to t = 4.E10, with initial conditions
-C     y1 = 1.0, y2 = y3 = 0. The problem is stiff.
+C     ON THE INTERVAL FROM T = 0.0 TO T = 4.E10, WITH INITIAL CONDITIONS
+C     Y1 = 1.0, Y2 = Y3 = 0. THE PROBLEM IS STIFF.
 C
-C     The following coding solves this problem with DLSODE, using 
-C     MF = 21 and printing results at t = .4, 4., ..., 4.E10.  It uses 
-C     ITOL = 2 and ATOL much smaller for y2 than for y1 or y3 because y2 
-C     has much smaller values.  At the end of the run, statistical 
-C     quantities of interest are printed.
+C     THE FOLLOWING CODING SOLVES THIS PROBLEM WITH DLSODE, USING 
+C     MF = 21 AND PRINTING RESULTS AT T = .4, 4., ..., 4.E10.  IT USES 
+C     ITOL = 2 AND ATOL MUCH SMALLER FOR Y2 THAN FOR Y1 OR Y3 BECAUSE Y2 
+C     HAS MUCH SMALLER VALUES.  AT THE END OF THE RUN, STATISTICAL 
+C     QUANTITIES OF INTEREST ARE PRINTED.
 C
 C        EXTERNAL  FEX, JEX
 C        INTEGER  IOPT, IOUT, ISTATE, ITASK, ITOL, IWORK(23), LIW, LRW,
@@ -327,14 +327,14 @@ C        DO 40 IOUT = 1,12
 C          CALL DLSODE (FEX, NEQ, Y, T, TOUT, ITOL, RTOL, ATOL, ITASK,
 C       *               ISTATE, IOPT, RWORK, LRW, IWORK, LIW, JEX, MF)
 C          WRITE(6,20)  T, Y(1), Y(2), Y(3)
-C    20    FORMAT(' At t =',D12.4,'   y =',3D14.6)
+C    20    FORMAT(' AT T =',D12.4,'   Y =',3D14.6)
 C          IF (ISTATE .LT. 0)  GO TO 80
 C    40    TOUT = TOUT*10.D0
 C        WRITE(6,60)  IWORK(11), IWORK(12), IWORK(13)
-C    60  FORMAT(/' No. steps =',i4,',  No. f-s =',i4,',  No. J-s =',i4)
+C    60  FORMAT(/' NO. STEPS =',I4,',  NO. F-S =',I4,',  NO. J-S =',I4)
 C        STOP
 C    80  WRITE(6,90)  ISTATE
-C    90  FORMAT(///' Error halt.. ISTATE =',I3)
+C    90  FORMAT(///' ERROR HALT.. ISTATE =',I3)
 C        STOP
 C        END
 C
@@ -360,854 +360,854 @@ C        PD(2,2) = -PD(1,2) - PD(3,2)
 C        RETURN
 C        END
 C
-C     The output from this program (on a Cray-1 in single precision)
-C     is as follows.
+C     THE OUTPUT FROM THIS PROGRAM (ON A CRAY-1 IN SINGLE PRECISION)
+C     IS AS FOLLOWS.
 C
-C     At t =  4.0000e-01   y =  9.851726e-01  3.386406e-05  1.479357e-02
-C     At t =  4.0000e+00   y =  9.055142e-01  2.240418e-05  9.446344e-02
-C     At t =  4.0000e+01   y =  7.158050e-01  9.184616e-06  2.841858e-01
-C     At t =  4.0000e+02   y =  4.504846e-01  3.222434e-06  5.495122e-01
-C     At t =  4.0000e+03   y =  1.831701e-01  8.940379e-07  8.168290e-01
-C     At t =  4.0000e+04   y =  3.897016e-02  1.621193e-07  9.610297e-01
-C     At t =  4.0000e+05   y =  4.935213e-03  1.983756e-08  9.950648e-01
-C     At t =  4.0000e+06   y =  5.159269e-04  2.064759e-09  9.994841e-01
-C     At t =  4.0000e+07   y =  5.306413e-05  2.122677e-10  9.999469e-01
-C     At t =  4.0000e+08   y =  5.494530e-06  2.197825e-11  9.999945e-01
-C     At t =  4.0000e+09   y =  5.129458e-07  2.051784e-12  9.999995e-01
-C     At t =  4.0000e+10   y = -7.170603e-08 -2.868241e-13  1.000000e+00
+C     AT T =  4.0000E-01   Y =  9.851726E-01  3.386406E-05  1.479357E-02
+C     AT T =  4.0000E+00   Y =  9.055142E-01  2.240418E-05  9.446344E-02
+C     AT T =  4.0000E+01   Y =  7.158050E-01  9.184616E-06  2.841858E-01
+C     AT T =  4.0000E+02   Y =  4.504846E-01  3.222434E-06  5.495122E-01
+C     AT T =  4.0000E+03   Y =  1.831701E-01  8.940379E-07  8.168290E-01
+C     AT T =  4.0000E+04   Y =  3.897016E-02  1.621193E-07  9.610297E-01
+C     AT T =  4.0000E+05   Y =  4.935213E-03  1.983756E-08  9.950648E-01
+C     AT T =  4.0000E+06   Y =  5.159269E-04  2.064759E-09  9.994841E-01
+C     AT T =  4.0000E+07   Y =  5.306413E-05  2.122677E-10  9.999469E-01
+C     AT T =  4.0000E+08   Y =  5.494530E-06  2.197825E-11  9.999945E-01
+C     AT T =  4.0000E+09   Y =  5.129458E-07  2.051784E-12  9.999995E-01
+C     AT T =  4.0000E+10   Y = -7.170603E-08 -2.868241E-13  1.000000E+00
 C
-C     No. steps = 330,  No. f-s = 405,  No. J-s = 69
+C     NO. STEPS = 330,  NO. F-S = 405,  NO. J-S = 69
 C
-C *Accuracy:
-C     The accuracy of the solution depends on the choice of tolerances
-C     RTOL and ATOL.  Actual (global) errors may exceed these local
-C     tolerances, so choose them conservatively.
+C *ACCURACY:
+C     THE ACCURACY OF THE SOLUTION DEPENDS ON THE CHOICE OF TOLERANCES
+C     RTOL AND ATOL.  ACTUAL (GLOBAL) ERRORS MAY EXCEED THESE LOCAL
+C     TOLERANCES, SO CHOOSE THEM CONSERVATIVELY.
 C
-C *Cautions:
-C     The work arrays should not be altered between calls to DLSODE for
-C     the same problem, except possibly for the conditional and optional
-C     inputs.
+C *CAUTIONS:
+C     THE WORK ARRAYS SHOULD NOT BE ALTERED BETWEEN CALLS TO DLSODE FOR
+C     THE SAME PROBLEM, EXCEPT POSSIBLY FOR THE CONDITIONAL AND OPTIONAL
+C     INPUTS.
 C
-C *Portability:
-C     Since NEQ is dimensioned inside DLSODE, some compilers may object
-C     to a call to DLSODE with NEQ a scalar variable.  In this event, 
-C     use DIMENSION NEQ(1).  Similar remarks apply to RTOL and ATOL.
+C *PORTABILITY:
+C     SINCE NEQ IS DIMENSIONED INSIDE DLSODE, SOME COMPILERS MAY OBJECT
+C     TO A CALL TO DLSODE WITH NEQ A SCALAR VARIABLE.  IN THIS EVENT, 
+C     USE DIMENSION NEQ(1).  SIMILAR REMARKS APPLY TO RTOL AND ATOL.
 C
-C     Note to Cray users:
-C     For maximum efficiency, use the CFT77 compiler.  Appropriate
-C     compiler optimization directives have been inserted for CFT77.
+C     NOTE TO CRAY USERS:
+C     FOR MAXIMUM EFFICIENCY, USE THE CFT77 COMPILER.  APPROPRIATE
+C     COMPILER OPTIMIZATION DIRECTIVES HAVE BEEN INSERTED FOR CFT77.
 C
-C *Reference:
-C     Alan C. Hindmarsh, "ODEPACK, A Systematized Collection of ODE
-C     Solvers," in Scientific Computing, R. S. Stepleman, et al., Eds.
-C     (North-Holland, Amsterdam, 1983), pp. 55-64.
+C *REFERENCE:
+C     ALAN C. HINDMARSH, "ODEPACK, A SYSTEMATIZED COLLECTION OF ODE
+C     SOLVERS," IN SCIENTIFIC COMPUTING, R. S. STEPLEMAN, ET AL., EDS.
+C     (NORTH-HOLLAND, AMSTERDAM, 1983), PP. 55-64.
 C
-C *Long Description:
-C     The following complete description of the user interface to
-C     DLSODE consists of four parts:
+C *LONG DESCRIPTION:
+C     THE FOLLOWING COMPLETE DESCRIPTION OF THE USER INTERFACE TO
+C     DLSODE CONSISTS OF FOUR PARTS:
 C
-C     1.  The call sequence to subroutine DLSODE, which is a driver
-C         routine for the solver.  This includes descriptions of both
-C         the call sequence arguments and user-supplied routines.
-C         Following these descriptions is a description of optional
-C         inputs available through the call sequence, and then a
-C         description of optional outputs in the work arrays.
+C     1.  THE CALL SEQUENCE TO SUBROUTINE DLSODE, WHICH IS A DRIVER
+C         ROUTINE FOR THE SOLVER.  THIS INCLUDES DESCRIPTIONS OF BOTH
+C         THE CALL SEQUENCE ARGUMENTS AND USER-SUPPLIED ROUTINES.
+C         FOLLOWING THESE DESCRIPTIONS IS A DESCRIPTION OF OPTIONAL
+C         INPUTS AVAILABLE THROUGH THE CALL SEQUENCE, AND THEN A
+C         DESCRIPTION OF OPTIONAL OUTPUTS IN THE WORK ARRAYS.
 C
-C     2.  Descriptions of other routines in the DLSODE package that may
-C         be (optionally) called by the user.  These provide the ability
-C         to alter error message handling, save and restore the internal
-C         COMMON, and obtain specified derivatives of the solution y(t).
+C     2.  DESCRIPTIONS OF OTHER ROUTINES IN THE DLSODE PACKAGE THAT MAY
+C         BE (OPTIONALLY) CALLED BY THE USER.  THESE PROVIDE THE ABILITY
+C         TO ALTER ERROR MESSAGE HANDLING, SAVE AND RESTORE THE INTERNAL
+C         COMMON, AND OBTAIN SPECIFIED DERIVATIVES OF THE SOLUTION Y(T).
 C
-C     3.  Descriptions of COMMON block to be declared in overlay or
-C         similar environments, or to be saved when doing an interrupt
-C         of the problem and continued solution later.
+C     3.  DESCRIPTIONS OF COMMON BLOCK TO BE DECLARED IN OVERLAY OR
+C         SIMILAR ENVIRONMENTS, OR TO BE SAVED WHEN DOING AN INTERRUPT
+C         OF THE PROBLEM AND CONTINUED SOLUTION LATER.
 C
-C     4.  Description of two routines in the DLSODE package, either of
-C         which the user may replace with his own version, if desired.
-C         These relate to the measurement of errors.
+C     4.  DESCRIPTION OF TWO ROUTINES IN THE DLSODE PACKAGE, EITHER OF
+C         WHICH THE USER MAY REPLACE WITH HIS OWN VERSION, IF DESIRED.
+C         THESE RELATE TO THE MEASUREMENT OF ERRORS.
 C
 C
-C                         Part 1.  Call Sequence
+C                         PART 1.  CALL SEQUENCE
 C                         ----------------------
 C
-C     Arguments
+C     ARGUMENTS
 C     ---------
-C     The call sequence parameters used for input only are
+C     THE CALL SEQUENCE PARAMETERS USED FOR INPUT ONLY ARE
 C
 C        F, NEQ, TOUT, ITOL, RTOL, ATOL, ITASK, IOPT, LRW, LIW, JAC, MF,
 C
-C     and those used for both input and output are
+C     AND THOSE USED FOR BOTH INPUT AND OUTPUT ARE
 C
 C        Y, T, ISTATE.
 C
-C     The work arrays RWORK and IWORK are also used for conditional and
-C     optional inputs and optional outputs.  (The term output here
-C     refers to the return from subroutine DLSODE to the user's calling
-C     program.)
+C     THE WORK ARRAYS RWORK AND IWORK ARE ALSO USED FOR CONDITIONAL AND
+C     OPTIONAL INPUTS AND OPTIONAL OUTPUTS.  (THE TERM OUTPUT HERE
+C     REFERS TO THE RETURN FROM SUBROUTINE DLSODE TO THE USER'S CALLING
+C     PROGRAM.)
 C
-C     The legality of input parameters will be thoroughly checked on the
-C     initial call for the problem, but not checked thereafter unless a
-C     change in input parameters is flagged by ISTATE = 3 on input.
+C     THE LEGALITY OF INPUT PARAMETERS WILL BE THOROUGHLY CHECKED ON THE
+C     INITIAL CALL FOR THE PROBLEM, BUT NOT CHECKED THEREAFTER UNLESS A
+C     CHANGE IN INPUT PARAMETERS IS FLAGGED BY ISTATE = 3 ON INPUT.
 C
-C     The descriptions of the call arguments are as follows.
+C     THE DESCRIPTIONS OF THE CALL ARGUMENTS ARE AS FOLLOWS.
 C
-C     F        The name of the user-supplied subroutine defining the ODE
-C              system.  The system must be put in the first-order form
-C              dy/dt = f(t,y), where f is a vector-valued function of
-C              the scalar t and the vector y. Subroutine F is to compute
-C              the function f. It is to have the form
+C     F        THE NAME OF THE USER-SUPPLIED SUBROUTINE DEFINING THE ODE
+C              SYSTEM.  THE SYSTEM MUST BE PUT IN THE FIRST-ORDER FORM
+C              DY/DT = F(T,Y), WHERE F IS A VECTOR-VALUED FUNCTION OF
+C              THE SCALAR T AND THE VECTOR Y. SUBROUTINE F IS TO COMPUTE
+C              THE FUNCTION F. IT IS TO HAVE THE FORM
 C
 C                 SUBROUTINE F (NEQ, T, Y, YDOT)
 C                 DOUBLE PRECISION  T, Y(*), YDOT(*)
 C
-C              where NEQ, T, and Y are input, and the array YDOT =
-C              f(T,Y) is output.  Y and YDOT are arrays of length NEQ.
-C              Subroutine F should not alter Y(1),...,Y(NEQ).  F must be
-C              declared EXTERNAL in the calling program.
+C              WHERE NEQ, T, AND Y ARE INPUT, AND THE ARRAY YDOT =
+C              F(T,Y) IS OUTPUT.  Y AND YDOT ARE ARRAYS OF LENGTH NEQ.
+C              SUBROUTINE F SHOULD NOT ALTER Y(1),...,Y(NEQ).  F MUST BE
+C              DECLARED EXTERNAL IN THE CALLING PROGRAM.
 C
-C              Subroutine F may access user-defined quantities in
-C              NEQ(2),... and/or in Y(NEQ(1)+1),..., if NEQ is an array
-C              (dimensioned in F) and/or Y has length exceeding NEQ(1).
-C              See the descriptions of NEQ and Y below.
+C              SUBROUTINE F MAY ACCESS USER-DEFINED QUANTITIES IN
+C              NEQ(2),... AND/OR IN Y(NEQ(1)+1),..., IF NEQ IS AN ARRAY
+C              (DIMENSIONED IN F) AND/OR Y HAS LENGTH EXCEEDING NEQ(1).
+C              SEE THE DESCRIPTIONS OF NEQ AND Y BELOW.
 C
-C              If quantities computed in the F routine are needed
-C              externally to DLSODE, an extra call to F should be made
-C              for this purpose, for consistent and accurate results.
-C              If only the derivative dy/dt is needed, use DINTDY
-C              instead.
+C              IF QUANTITIES COMPUTED IN THE F ROUTINE ARE NEEDED
+C              EXTERNALLY TO DLSODE, AN EXTRA CALL TO F SHOULD BE MADE
+C              FOR THIS PURPOSE, FOR CONSISTENT AND ACCURATE RESULTS.
+C              IF ONLY THE DERIVATIVE DY/DT IS NEEDED, USE DINTDY
+C              INSTEAD.
 C
-C     NEQ      The size of the ODE system (number of first-order
-C              ordinary differential equations).  Used only for input.
-C              NEQ may be decreased, but not increased, during the
-C              problem.  If NEQ is decreased (with ISTATE = 3 on input),
-C              the remaining components of Y should be left undisturbed,
-C              if these are to be accessed in F and/or JAC.
+C     NEQ      THE SIZE OF THE ODE SYSTEM (NUMBER OF FIRST-ORDER
+C              ORDINARY DIFFERENTIAL EQUATIONS).  USED ONLY FOR INPUT.
+C              NEQ MAY BE DECREASED, BUT NOT INCREASED, DURING THE
+C              PROBLEM.  IF NEQ IS DECREASED (WITH ISTATE = 3 ON INPUT),
+C              THE REMAINING COMPONENTS OF Y SHOULD BE LEFT UNDISTURBED,
+C              IF THESE ARE TO BE ACCESSED IN F AND/OR JAC.
 C
-C              Normally, NEQ is a scalar, and it is generally referred
-C              to as a scalar in this user interface description.
-C              However, NEQ may be an array, with NEQ(1) set to the
-C              system size.  (The DLSODE package accesses only NEQ(1).)
-C              In either case, this parameter is passed as the NEQ
-C              argument in all calls to F and JAC.  Hence, if it is an
-C              array, locations NEQ(2),... may be used to store other
-C              integer data and pass it to F and/or JAC.  Subroutines
-C              F and/or JAC must include NEQ in a DIMENSION statement
-C              in that case.
+C              NORMALLY, NEQ IS A SCALAR, AND IT IS GENERALLY REFERRED
+C              TO AS A SCALAR IN THIS USER INTERFACE DESCRIPTION.
+C              HOWEVER, NEQ MAY BE AN ARRAY, WITH NEQ(1) SET TO THE
+C              SYSTEM SIZE.  (THE DLSODE PACKAGE ACCESSES ONLY NEQ(1).)
+C              IN EITHER CASE, THIS PARAMETER IS PASSED AS THE NEQ
+C              ARGUMENT IN ALL CALLS TO F AND JAC.  HENCE, IF IT IS AN
+C              ARRAY, LOCATIONS NEQ(2),... MAY BE USED TO STORE OTHER
+C              INTEGER DATA AND PASS IT TO F AND/OR JAC.  SUBROUTINES
+C              F AND/OR JAC MUST INCLUDE NEQ IN A DIMENSION STATEMENT
+C              IN THAT CASE.
 C
-C     Y        A real array for the vector of dependent variables, of
-C              length NEQ or more.  Used for both input and output on
-C              the first call (ISTATE = 1), and only for output on
-C              other calls.  On the first call, Y must contain the
-C              vector of initial values.  On output, Y contains the
-C              computed solution vector, evaluated at T. If desired,
-C              the Y array may be used for other purposes between
-C              calls to the solver.
+C     Y        A REAL ARRAY FOR THE VECTOR OF DEPENDENT VARIABLES, OF
+C              LENGTH NEQ OR MORE.  USED FOR BOTH INPUT AND OUTPUT ON
+C              THE FIRST CALL (ISTATE = 1), AND ONLY FOR OUTPUT ON
+C              OTHER CALLS.  ON THE FIRST CALL, Y MUST CONTAIN THE
+C              VECTOR OF INITIAL VALUES.  ON OUTPUT, Y CONTAINS THE
+C              COMPUTED SOLUTION VECTOR, EVALUATED AT T. IF DESIRED,
+C              THE Y ARRAY MAY BE USED FOR OTHER PURPOSES BETWEEN
+C              CALLS TO THE SOLVER.
 C
-C              This array is passed as the Y argument in all calls to F
-C              and JAC.  Hence its length may exceed NEQ, and locations
-C              Y(NEQ+1),... may be used to store other real data and
-C              pass it to F and/or JAC.  (The DLSODE package accesses
-C              only Y(1),...,Y(NEQ).)
+C              THIS ARRAY IS PASSED AS THE Y ARGUMENT IN ALL CALLS TO F
+C              AND JAC.  HENCE ITS LENGTH MAY EXCEED NEQ, AND LOCATIONS
+C              Y(NEQ+1),... MAY BE USED TO STORE OTHER REAL DATA AND
+C              PASS IT TO F AND/OR JAC.  (THE DLSODE PACKAGE ACCESSES
+C              ONLY Y(1),...,Y(NEQ).)
 C
-C     T        The independent variable.  On input, T is used only on
-C              the first call, as the initial point of the integration.
-C              On output, after each call, T is the value at which a
-C              computed solution Y is evaluated (usually the same as
-C              TOUT).  On an error return, T is the farthest point
-C              reached.
+C     T        THE INDEPENDENT VARIABLE.  ON INPUT, T IS USED ONLY ON
+C              THE FIRST CALL, AS THE INITIAL POINT OF THE INTEGRATION.
+C              ON OUTPUT, AFTER EACH CALL, T IS THE VALUE AT WHICH A
+C              COMPUTED SOLUTION Y IS EVALUATED (USUALLY THE SAME AS
+C              TOUT).  ON AN ERROR RETURN, T IS THE FARTHEST POINT
+C              REACHED.
 C
-C     TOUT     The next value of T at which a computed solution is
-C              desired.  Used only for input.
+C     TOUT     THE NEXT VALUE OF T AT WHICH A COMPUTED SOLUTION IS
+C              DESIRED.  USED ONLY FOR INPUT.
 C
-C              When starting the problem (ISTATE = 1), TOUT may be equal
-C              to T for one call, then should not equal T for the next
-C              call.  For the initial T, an input value of TOUT .NE. T
-C              is used in order to determine the direction of the
-C              integration (i.e., the algebraic sign of the step sizes)
-C              and the rough scale of the problem.  Integration in
-C              either direction (forward or backward in T) is permitted.
+C              WHEN STARTING THE PROBLEM (ISTATE = 1), TOUT MAY BE EQUAL
+C              TO T FOR ONE CALL, THEN SHOULD NOT EQUAL T FOR THE NEXT
+C              CALL.  FOR THE INITIAL T, AN INPUT VALUE OF TOUT .NE. T
+C              IS USED IN ORDER TO DETERMINE THE DIRECTION OF THE
+C              INTEGRATION (I.E., THE ALGEBRAIC SIGN OF THE STEP SIZES)
+C              AND THE ROUGH SCALE OF THE PROBLEM.  INTEGRATION IN
+C              EITHER DIRECTION (FORWARD OR BACKWARD IN T) IS PERMITTED.
 C
-C              If ITASK = 2 or 5 (one-step modes), TOUT is ignored
-C              after the first call (i.e., the first call with
-C              TOUT .NE. T).  Otherwise, TOUT is required on every call.
+C              IF ITASK = 2 OR 5 (ONE-STEP MODES), TOUT IS IGNORED
+C              AFTER THE FIRST CALL (I.E., THE FIRST CALL WITH
+C              TOUT .NE. T).  OTHERWISE, TOUT IS REQUIRED ON EVERY CALL.
 C
-C              If ITASK = 1, 3, or 4, the values of TOUT need not be
-C              monotone, but a value of TOUT which backs up is limited
-C              to the current internal T interval, whose endpoints are
-C              TCUR - HU and TCUR.  (See "Optional Outputs" below for
-C              TCUR and HU.)
+C              IF ITASK = 1, 3, OR 4, THE VALUES OF TOUT NEED NOT BE
+C              MONOTONE, BUT A VALUE OF TOUT WHICH BACKS UP IS LIMITED
+C              TO THE CURRENT INTERNAL T INTERVAL, WHOSE ENDPOINTS ARE
+C              TCUR - HU AND TCUR.  (SEE "OPTIONAL OUTPUTS" BELOW FOR
+C              TCUR AND HU.)
 C
 C
-C     ITOL     An indicator for the type of error control.  See
-C              description below under ATOL.  Used only for input.
+C     ITOL     AN INDICATOR FOR THE TYPE OF ERROR CONTROL.  SEE
+C              DESCRIPTION BELOW UNDER ATOL.  USED ONLY FOR INPUT.
 C
-C     RTOL     A relative error tolerance parameter, either a scalar or
-C              an array of length NEQ.  See description below under
-C              ATOL.  Input only.
+C     RTOL     A RELATIVE ERROR TOLERANCE PARAMETER, EITHER A SCALAR OR
+C              AN ARRAY OF LENGTH NEQ.  SEE DESCRIPTION BELOW UNDER
+C              ATOL.  INPUT ONLY.
 C
-C     ATOL     An absolute error tolerance parameter, either a scalar or
-C              an array of length NEQ.  Input only.
+C     ATOL     AN ABSOLUTE ERROR TOLERANCE PARAMETER, EITHER A SCALAR OR
+C              AN ARRAY OF LENGTH NEQ.  INPUT ONLY.
 C
-C              The input parameters ITOL, RTOL, and ATOL determine the
-C              error control performed by the solver.  The solver will
-C              control the vector e = (e(i)) of estimated local errors
-C              in Y, according to an inequality of the form
+C              THE INPUT PARAMETERS ITOL, RTOL, AND ATOL DETERMINE THE
+C              ERROR CONTROL PERFORMED BY THE SOLVER.  THE SOLVER WILL
+C              CONTROL THE VECTOR E = (E(I)) OF ESTIMATED LOCAL ERRORS
+C              IN Y, ACCORDING TO AN INEQUALITY OF THE FORM
 C
-C                 rms-norm of ( e(i)/EWT(i) ) <= 1,
+C                 RMS-NORM OF ( E(I)/EWT(I) ) <= 1,
 C
-C              where
+C              WHERE
 C
-C                 EWT(i) = RTOL(i)*ABS(Y(i)) + ATOL(i),
+C                 EWT(I) = RTOL(I)*ABS(Y(I)) + ATOL(I),
 C
-C              and the rms-norm (root-mean-square norm) here is
+C              AND THE RMS-NORM (ROOT-MEAN-SQUARE NORM) HERE IS
 C
-C                 rms-norm(v) = SQRT(sum v(i)**2 / NEQ).
+C                 RMS-NORM(V) = SQRT(SUM V(I)**2 / NEQ).
 C
-C              Here EWT = (EWT(i)) is a vector of weights which must
-C              always be positive, and the values of RTOL and ATOL
-C              should all be nonnegative.  The following table gives the
-C              types (scalar/array) of RTOL and ATOL, and the
-C              corresponding form of EWT(i).
+C              HERE EWT = (EWT(I)) IS A VECTOR OF WEIGHTS WHICH MUST
+C              ALWAYS BE POSITIVE, AND THE VALUES OF RTOL AND ATOL
+C              SHOULD ALL BE NONNEGATIVE.  THE FOLLOWING TABLE GIVES THE
+C              TYPES (SCALAR/ARRAY) OF RTOL AND ATOL, AND THE
+C              CORRESPONDING FORM OF EWT(I).
 C
-C              ITOL    RTOL      ATOL      EWT(i)
+C              ITOL    RTOL      ATOL      EWT(I)
 C              ----    ------    ------    -----------------------------
-C              1       scalar    scalar    RTOL*ABS(Y(i)) + ATOL
-C              2       scalar    array     RTOL*ABS(Y(i)) + ATOL(i)
-C              3       array     scalar    RTOL(i)*ABS(Y(i)) + ATOL
-C              4       array     array     RTOL(i)*ABS(Y(i)) + ATOL(i)
+C              1       SCALAR    SCALAR    RTOL*ABS(Y(I)) + ATOL
+C              2       SCALAR    ARRAY     RTOL*ABS(Y(I)) + ATOL(I)
+C              3       ARRAY     SCALAR    RTOL(I)*ABS(Y(I)) + ATOL
+C              4       ARRAY     ARRAY     RTOL(I)*ABS(Y(I)) + ATOL(I)
 C
-C              When either of these parameters is a scalar, it need not
-C              be dimensioned in the user's calling program.
+C              WHEN EITHER OF THESE PARAMETERS IS A SCALAR, IT NEED NOT
+C              BE DIMENSIONED IN THE USER'S CALLING PROGRAM.
 C
-C              If none of the above choices (with ITOL, RTOL, and ATOL
-C              fixed throughout the problem) is suitable, more general
-C              error controls can be obtained by substituting
-C              user-supplied routines for the setting of EWT and/or for
-C              the norm calculation.  See Part 4 below.
+C              IF NONE OF THE ABOVE CHOICES (WITH ITOL, RTOL, AND ATOL
+C              FIXED THROUGHOUT THE PROBLEM) IS SUITABLE, MORE GENERAL
+C              ERROR CONTROLS CAN BE OBTAINED BY SUBSTITUTING
+C              USER-SUPPLIED ROUTINES FOR THE SETTING OF EWT AND/OR FOR
+C              THE NORM CALCULATION.  SEE PART 4 BELOW.
 C
-C              If global errors are to be estimated by making a repeated
-C              run on the same problem with smaller tolerances, then all
-C              components of RTOL and ATOL (i.e., of EWT) should be
-C              scaled down uniformly.
+C              IF GLOBAL ERRORS ARE TO BE ESTIMATED BY MAKING A REPEATED
+C              RUN ON THE SAME PROBLEM WITH SMALLER TOLERANCES, THEN ALL
+C              COMPONENTS OF RTOL AND ATOL (I.E., OF EWT) SHOULD BE
+C              SCALED DOWN UNIFORMLY.
 C
-C     ITASK    An index specifying the task to be performed.  Input
-C              only.  ITASK has the following values and meanings:
-C              1   Normal computation of output values of y(t) at
-C                  t = TOUT (by overshooting and interpolating).
-C              2   Take one step only and return.
-C              3   Stop at the first internal mesh point at or beyond
-C                  t = TOUT and return.
-C              4   Normal computation of output values of y(t) at
-C                  t = TOUT but without overshooting t = TCRIT.  TCRIT
-C                  must be input as RWORK(1).  TCRIT may be equal to or
-C                  beyond TOUT, but not behind it in the direction of
-C                  integration.  This option is useful if the problem
-C                  has a singularity at or beyond t = TCRIT.
-C              5   Take one step, without passing TCRIT, and return.
-C                  TCRIT must be input as RWORK(1).
+C     ITASK    AN INDEX SPECIFYING THE TASK TO BE PERFORMED.  INPUT
+C              ONLY.  ITASK HAS THE FOLLOWING VALUES AND MEANINGS:
+C              1   NORMAL COMPUTATION OF OUTPUT VALUES OF Y(T) AT
+C                  T = TOUT (BY OVERSHOOTING AND INTERPOLATING).
+C              2   TAKE ONE STEP ONLY AND RETURN.
+C              3   STOP AT THE FIRST INTERNAL MESH POINT AT OR BEYOND
+C                  T = TOUT AND RETURN.
+C              4   NORMAL COMPUTATION OF OUTPUT VALUES OF Y(T) AT
+C                  T = TOUT BUT WITHOUT OVERSHOOTING T = TCRIT.  TCRIT
+C                  MUST BE INPUT AS RWORK(1).  TCRIT MAY BE EQUAL TO OR
+C                  BEYOND TOUT, BUT NOT BEHIND IT IN THE DIRECTION OF
+C                  INTEGRATION.  THIS OPTION IS USEFUL IF THE PROBLEM
+C                  HAS A SINGULARITY AT OR BEYOND T = TCRIT.
+C              5   TAKE ONE STEP, WITHOUT PASSING TCRIT, AND RETURN.
+C                  TCRIT MUST BE INPUT AS RWORK(1).
 C
-C              Note:  If ITASK = 4 or 5 and the solver reaches TCRIT
-C              (within roundoff), it will return T = TCRIT (exactly) to
-C              indicate this (unless ITASK = 4 and TOUT comes before
-C              TCRIT, in which case answers at T = TOUT are returned
-C              first).
+C              NOTE:  IF ITASK = 4 OR 5 AND THE SOLVER REACHES TCRIT
+C              (WITHIN ROUNDOFF), IT WILL RETURN T = TCRIT (EXACTLY) TO
+C              INDICATE THIS (UNLESS ITASK = 4 AND TOUT COMES BEFORE
+C              TCRIT, IN WHICH CASE ANSWERS AT T = TOUT ARE RETURNED
+C              FIRST).
 C
-C     ISTATE   An index used for input and output to specify the state
-C              of the calculation.
+C     ISTATE   AN INDEX USED FOR INPUT AND OUTPUT TO SPECIFY THE STATE
+C              OF THE CALCULATION.
 C
-C              On input, the values of ISTATE are as follows:
-C              1   This is the first call for the problem
-C                  (initializations will be done).  See "Note" below.
-C              2   This is not the first call, and the calculation is to
-C                  continue normally, with no change in any input
-C                  parameters except possibly TOUT and ITASK.  (If ITOL,
-C                  RTOL, and/or ATOL are changed between calls with
-C                  ISTATE = 2, the new values will be used but not
-C                  tested for legality.)
-C              3   This is not the first call, and the calculation is to
-C                  continue normally, but with a change in input
-C                  parameters other than TOUT and ITASK.  Changes are
-C                  allowed in NEQ, ITOL, RTOL, ATOL, IOPT, LRW, LIW, MF,
-C                  ML, MU, and any of the optional inputs except H0.
-C                  (See IWORK description for ML and MU.)
+C              ON INPUT, THE VALUES OF ISTATE ARE AS FOLLOWS:
+C              1   THIS IS THE FIRST CALL FOR THE PROBLEM
+C                  (INITIALIZATIONS WILL BE DONE).  SEE "NOTE" BELOW.
+C              2   THIS IS NOT THE FIRST CALL, AND THE CALCULATION IS TO
+C                  CONTINUE NORMALLY, WITH NO CHANGE IN ANY INPUT
+C                  PARAMETERS EXCEPT POSSIBLY TOUT AND ITASK.  (IF ITOL,
+C                  RTOL, AND/OR ATOL ARE CHANGED BETWEEN CALLS WITH
+C                  ISTATE = 2, THE NEW VALUES WILL BE USED BUT NOT
+C                  TESTED FOR LEGALITY.)
+C              3   THIS IS NOT THE FIRST CALL, AND THE CALCULATION IS TO
+C                  CONTINUE NORMALLY, BUT WITH A CHANGE IN INPUT
+C                  PARAMETERS OTHER THAN TOUT AND ITASK.  CHANGES ARE
+C                  ALLOWED IN NEQ, ITOL, RTOL, ATOL, IOPT, LRW, LIW, MF,
+C                  ML, MU, AND ANY OF THE OPTIONAL INPUTS EXCEPT H0.
+C                  (SEE IWORK DESCRIPTION FOR ML AND MU.)
 C
-C              Note:  A preliminary call with TOUT = T is not counted as
-C              a first call here, as no initialization or checking of
-C              input is done.  (Such a call is sometimes useful for the
-C              purpose of outputting the initial conditions.)  Thus the
-C              first call for which TOUT .NE. T requires ISTATE = 1 on
-C              input.
+C              NOTE:  A PRELIMINARY CALL WITH TOUT = T IS NOT COUNTED AS
+C              A FIRST CALL HERE, AS NO INITIALIZATION OR CHECKING OF
+C              INPUT IS DONE.  (SUCH A CALL IS SOMETIMES USEFUL FOR THE
+C              PURPOSE OF OUTPUTTING THE INITIAL CONDITIONS.)  THUS THE
+C              FIRST CALL FOR WHICH TOUT .NE. T REQUIRES ISTATE = 1 ON
+C              INPUT.
 C
-C              On output, ISTATE has the following values and meanings:
-C               1  Nothing was done, as TOUT was equal to T with
-C                  ISTATE = 1 on input.
-C               2  The integration was performed successfully.
-C              -1  An excessive amount of work (more than MXSTEP steps)
-C                  was done on this call, before completing the
-C                  requested task, but the integration was otherwise
-C                  successful as far as T. (MXSTEP is an optional input
-C                  and is normally 500.)  To continue, the user may
-C                  simply reset ISTATE to a value >1 and call again (the
-C                  excess work step counter will be reset to 0).  In
-C                  addition, the user may increase MXSTEP to avoid this
-C                  error return; see "Optional Inputs" below.
-C              -2  Too much accuracy was requested for the precision of
-C                  the machine being used.  This was detected before
-C                  completing the requested task, but the integration
-C                  was successful as far as T. To continue, the
-C                  tolerance parameters must be reset, and ISTATE must
-C                  be set to 3. The optional output TOLSF may be used
-C                  for this purpose.  (Note:  If this condition is
-C                  detected before taking any steps, then an illegal
-C                  input return (ISTATE = -3) occurs instead.)
-C              -3  Illegal input was detected, before taking any
-C                  integration steps.  See written message for details.
-C                  (Note:  If the solver detects an infinite loop of
-C                  calls to the solver with illegal input, it will cause
-C                  the run to stop.)
-C              -4  There were repeated error-test failures on one
-C                  attempted step, before completing the requested task,
-C                  but the integration was successful as far as T.  The
-C                  problem may have a singularity, or the input may be
-C                  inappropriate.
-C              -5  There were repeated convergence-test failures on one
-C                  attempted step, before completing the requested task,
-C                  but the integration was successful as far as T. This
-C                  may be caused by an inaccurate Jacobian matrix, if
-C                  one is being used.
-C              -6  EWT(i) became zero for some i during the integration.
-C                  Pure relative error control (ATOL(i)=0.0) was
-C                  requested on a variable which has now vanished.  The
-C                  integration was successful as far as T.
+C              ON OUTPUT, ISTATE HAS THE FOLLOWING VALUES AND MEANINGS:
+C               1  NOTHING WAS DONE, AS TOUT WAS EQUAL TO T WITH
+C                  ISTATE = 1 ON INPUT.
+C               2  THE INTEGRATION WAS PERFORMED SUCCESSFULLY.
+C              -1  AN EXCESSIVE AMOUNT OF WORK (MORE THAN MXSTEP STEPS)
+C                  WAS DONE ON THIS CALL, BEFORE COMPLETING THE
+C                  REQUESTED TASK, BUT THE INTEGRATION WAS OTHERWISE
+C                  SUCCESSFUL AS FAR AS T. (MXSTEP IS AN OPTIONAL INPUT
+C                  AND IS NORMALLY 500.)  TO CONTINUE, THE USER MAY
+C                  SIMPLY RESET ISTATE TO A VALUE >1 AND CALL AGAIN (THE
+C                  EXCESS WORK STEP COUNTER WILL BE RESET TO 0).  IN
+C                  ADDITION, THE USER MAY INCREASE MXSTEP TO AVOID THIS
+C                  ERROR RETURN; SEE "OPTIONAL INPUTS" BELOW.
+C              -2  TOO MUCH ACCURACY WAS REQUESTED FOR THE PRECISION OF
+C                  THE MACHINE BEING USED.  THIS WAS DETECTED BEFORE
+C                  COMPLETING THE REQUESTED TASK, BUT THE INTEGRATION
+C                  WAS SUCCESSFUL AS FAR AS T. TO CONTINUE, THE
+C                  TOLERANCE PARAMETERS MUST BE RESET, AND ISTATE MUST
+C                  BE SET TO 3. THE OPTIONAL OUTPUT TOLSF MAY BE USED
+C                  FOR THIS PURPOSE.  (NOTE:  IF THIS CONDITION IS
+C                  DETECTED BEFORE TAKING ANY STEPS, THEN AN ILLEGAL
+C                  INPUT RETURN (ISTATE = -3) OCCURS INSTEAD.)
+C              -3  ILLEGAL INPUT WAS DETECTED, BEFORE TAKING ANY
+C                  INTEGRATION STEPS.  SEE WRITTEN MESSAGE FOR DETAILS.
+C                  (NOTE:  IF THE SOLVER DETECTS AN INFINITE LOOP OF
+C                  CALLS TO THE SOLVER WITH ILLEGAL INPUT, IT WILL CAUSE
+C                  THE RUN TO STOP.)
+C              -4  THERE WERE REPEATED ERROR-TEST FAILURES ON ONE
+C                  ATTEMPTED STEP, BEFORE COMPLETING THE REQUESTED TASK,
+C                  BUT THE INTEGRATION WAS SUCCESSFUL AS FAR AS T.  THE
+C                  PROBLEM MAY HAVE A SINGULARITY, OR THE INPUT MAY BE
+C                  INAPPROPRIATE.
+C              -5  THERE WERE REPEATED CONVERGENCE-TEST FAILURES ON ONE
+C                  ATTEMPTED STEP, BEFORE COMPLETING THE REQUESTED TASK,
+C                  BUT THE INTEGRATION WAS SUCCESSFUL AS FAR AS T. THIS
+C                  MAY BE CAUSED BY AN INACCURATE JACOBIAN MATRIX, IF
+C                  ONE IS BEING USED.
+C              -6  EWT(I) BECAME ZERO FOR SOME I DURING THE INTEGRATION.
+C                  PURE RELATIVE ERROR CONTROL (ATOL(I)=0.0) WAS
+C                  REQUESTED ON A VARIABLE WHICH HAS NOW VANISHED.  THE
+C                  INTEGRATION WAS SUCCESSFUL AS FAR AS T.
 C
-C              Note:  Since the normal output value of ISTATE is 2, it
-C              does not need to be reset for normal continuation.  Also,
-C              since a negative input value of ISTATE will be regarded
-C              as illegal, a negative output value requires the user to
-C              change it, and possibly other inputs, before calling the
-C              solver again.
+C              NOTE:  SINCE THE NORMAL OUTPUT VALUE OF ISTATE IS 2, IT
+C              DOES NOT NEED TO BE RESET FOR NORMAL CONTINUATION.  ALSO,
+C              SINCE A NEGATIVE INPUT VALUE OF ISTATE WILL BE REGARDED
+C              AS ILLEGAL, A NEGATIVE OUTPUT VALUE REQUIRES THE USER TO
+C              CHANGE IT, AND POSSIBLY OTHER INPUTS, BEFORE CALLING THE
+C              SOLVER AGAIN.
 C
-C     IOPT     An integer flag to specify whether any optional inputs
-C              are being used on this call.  Input only.  The optional
-C              inputs are listed under a separate heading below.
-C              0   No optional inputs are being used.  Default values
-C                  will be used in all cases.
-C              1   One or more optional inputs are being used.
+C     IOPT     AN INTEGER FLAG TO SPECIFY WHETHER ANY OPTIONAL INPUTS
+C              ARE BEING USED ON THIS CALL.  INPUT ONLY.  THE OPTIONAL
+C              INPUTS ARE LISTED UNDER A SEPARATE HEADING BELOW.
+C              0   NO OPTIONAL INPUTS ARE BEING USED.  DEFAULT VALUES
+C                  WILL BE USED IN ALL CASES.
+C              1   ONE OR MORE OPTIONAL INPUTS ARE BEING USED.
 C
-C     RWORK    A real working array (double precision).  The length of
-C              RWORK must be at least
+C     RWORK    A REAL WORKING ARRAY (DOUBLE PRECISION).  THE LENGTH OF
+C              RWORK MUST BE AT LEAST
 C
 C                 20 + NYH*(MAXORD + 1) + 3*NEQ + LWM
 C
-C              where
-C                 NYH = the initial value of NEQ,
-C              MAXORD = 12 (if METH = 1) or 5 (if METH = 2) (unless a
-C                       smaller value is given as an optional input),
-C                 LWM = 0           if MITER = 0,
-C                 LWM = NEQ**2 + 2  if MITER = 1 or 2,
-C                 LWM = NEQ + 2     if MITER = 3, and
+C              WHERE
+C                 NYH = THE INITIAL VALUE OF NEQ,
+C              MAXORD = 12 (IF METH = 1) OR 5 (IF METH = 2) (UNLESS A
+C                       SMALLER VALUE IS GIVEN AS AN OPTIONAL INPUT),
+C                 LWM = 0           IF MITER = 0,
+C                 LWM = NEQ**2 + 2  IF MITER = 1 OR 2,
+C                 LWM = NEQ + 2     IF MITER = 3, AND
 C                 LWM = (2*ML + MU + 1)*NEQ + 2
-C                                   if MITER = 4 or 5.
-C              (See the MF description below for METH and MITER.)
+C                                   IF MITER = 4 OR 5.
+C              (SEE THE MF DESCRIPTION BELOW FOR METH AND MITER.)
 C
-C              Thus if MAXORD has its default value and NEQ is constant,
-C              this length is:
-C              20 + 16*NEQ                    for MF = 10,
-C              22 + 16*NEQ + NEQ**2           for MF = 11 or 12,
-C              22 + 17*NEQ                    for MF = 13,
-C              22 + 17*NEQ + (2*ML + MU)*NEQ  for MF = 14 or 15,
-C              20 +  9*NEQ                    for MF = 20,
-C              22 +  9*NEQ + NEQ**2           for MF = 21 or 22,
-C              22 + 10*NEQ                    for MF = 23,
-C              22 + 10*NEQ + (2*ML + MU)*NEQ  for MF = 24 or 25.
+C              THUS IF MAXORD HAS ITS DEFAULT VALUE AND NEQ IS CONSTANT,
+C              THIS LENGTH IS:
+C              20 + 16*NEQ                    FOR MF = 10,
+C              22 + 16*NEQ + NEQ**2           FOR MF = 11 OR 12,
+C              22 + 17*NEQ                    FOR MF = 13,
+C              22 + 17*NEQ + (2*ML + MU)*NEQ  FOR MF = 14 OR 15,
+C              20 +  9*NEQ                    FOR MF = 20,
+C              22 +  9*NEQ + NEQ**2           FOR MF = 21 OR 22,
+C              22 + 10*NEQ                    FOR MF = 23,
+C              22 + 10*NEQ + (2*ML + MU)*NEQ  FOR MF = 24 OR 25.
 C
-C              The first 20 words of RWORK are reserved for conditional
-C              and optional inputs and optional outputs.
+C              THE FIRST 20 WORDS OF RWORK ARE RESERVED FOR CONDITIONAL
+C              AND OPTIONAL INPUTS AND OPTIONAL OUTPUTS.
 C
-C              The following word in RWORK is a conditional input:
-C              RWORK(1) = TCRIT, the critical value of t which the
-C                         solver is not to overshoot.  Required if ITASK
-C                         is 4 or 5, and ignored otherwise.  See ITASK.
+C              THE FOLLOWING WORD IN RWORK IS A CONDITIONAL INPUT:
+C              RWORK(1) = TCRIT, THE CRITICAL VALUE OF T WHICH THE
+C                         SOLVER IS NOT TO OVERSHOOT.  REQUIRED IF ITASK
+C                         IS 4 OR 5, AND IGNORED OTHERWISE.  SEE ITASK.
 C
-C     LRW      The length of the array RWORK, as declared by the user.
-C              (This will be checked by the solver.)
+C     LRW      THE LENGTH OF THE ARRAY RWORK, AS DECLARED BY THE USER.
+C              (THIS WILL BE CHECKED BY THE SOLVER.)
 C
-C     IWORK    An integer work array.  Its length must be at least
-C              20       if MITER = 0 or 3 (MF = 10, 13, 20, 23), or
-C              20 + NEQ otherwise (MF = 11, 12, 14, 15, 21, 22, 24, 25).
-C              (See the MF description below for MITER.)  The first few
-C              words of IWORK are used for conditional and optional
-C              inputs and optional outputs.
+C     IWORK    AN INTEGER WORK ARRAY.  ITS LENGTH MUST BE AT LEAST
+C              20       IF MITER = 0 OR 3 (MF = 10, 13, 20, 23), OR
+C              20 + NEQ OTHERWISE (MF = 11, 12, 14, 15, 21, 22, 24, 25).
+C              (SEE THE MF DESCRIPTION BELOW FOR MITER.)  THE FIRST FEW
+C              WORDS OF IWORK ARE USED FOR CONDITIONAL AND OPTIONAL
+C              INPUTS AND OPTIONAL OUTPUTS.
 C
-C              The following two words in IWORK are conditional inputs:
-C              IWORK(1) = ML   These are the lower and upper half-
-C              IWORK(2) = MU   bandwidths, respectively, of the banded
-C                              Jacobian, excluding the main diagonal.
-C                         The band is defined by the matrix locations
-C                         (i,j) with i - ML <= j <= i + MU. ML and MU
-C                         must satisfy 0 <= ML,MU <= NEQ - 1. These are
-C                         required if MITER is 4 or 5, and ignored
-C                         otherwise.  ML and MU may in fact be the band
-C                         parameters for a matrix to which df/dy is only
-C                         approximately equal.
+C              THE FOLLOWING TWO WORDS IN IWORK ARE CONDITIONAL INPUTS:
+C              IWORK(1) = ML   THESE ARE THE LOWER AND UPPER HALF-
+C              IWORK(2) = MU   BANDWIDTHS, RESPECTIVELY, OF THE BANDED
+C                              JACOBIAN, EXCLUDING THE MAIN DIAGONAL.
+C                         THE BAND IS DEFINED BY THE MATRIX LOCATIONS
+C                         (I,J) WITH I - ML <= J <= I + MU. ML AND MU
+C                         MUST SATISFY 0 <= ML,MU <= NEQ - 1. THESE ARE
+C                         REQUIRED IF MITER IS 4 OR 5, AND IGNORED
+C                         OTHERWISE.  ML AND MU MAY IN FACT BE THE BAND
+C                         PARAMETERS FOR A MATRIX TO WHICH DF/DY IS ONLY
+C                         APPROXIMATELY EQUAL.
 C
-C     LIW      The length of the array IWORK, as declared by the user.
-C              (This will be checked by the solver.)
+C     LIW      THE LENGTH OF THE ARRAY IWORK, AS DECLARED BY THE USER.
+C              (THIS WILL BE CHECKED BY THE SOLVER.)
 C
-C     Note:  The work arrays must not be altered between calls to DLSODE
-C     for the same problem, except possibly for the conditional and
-C     optional inputs, and except for the last 3*NEQ words of RWORK.
-C     The latter space is used for internal scratch space, and so is
-C     available for use by the user outside DLSODE between calls, if
-C     desired (but not for use by F or JAC).
+C     NOTE:  THE WORK ARRAYS MUST NOT BE ALTERED BETWEEN CALLS TO DLSODE
+C     FOR THE SAME PROBLEM, EXCEPT POSSIBLY FOR THE CONDITIONAL AND
+C     OPTIONAL INPUTS, AND EXCEPT FOR THE LAST 3*NEQ WORDS OF RWORK.
+C     THE LATTER SPACE IS USED FOR INTERNAL SCRATCH SPACE, AND SO IS
+C     AVAILABLE FOR USE BY THE USER OUTSIDE DLSODE BETWEEN CALLS, IF
+C     DESIRED (BUT NOT FOR USE BY F OR JAC).
 C
-C     JAC      The name of the user-supplied routine (MITER = 1 or 4) to
-C              compute the Jacobian matrix, df/dy, as a function of the
-C              scalar t and the vector y.  (See the MF description below
-C              for MITER.)  It is to have the form
+C     JAC      THE NAME OF THE USER-SUPPLIED ROUTINE (MITER = 1 OR 4) TO
+C              COMPUTE THE JACOBIAN MATRIX, DF/DY, AS A FUNCTION OF THE
+C              SCALAR T AND THE VECTOR Y.  (SEE THE MF DESCRIPTION BELOW
+C              FOR MITER.)  IT IS TO HAVE THE FORM
 C
 C                 SUBROUTINE JAC (NEQ, T, Y, ML, MU, PD, NROWPD)
 C                 DOUBLE PRECISION T, Y(*), PD(NROWPD,*)
 C
-C              where NEQ, T, Y, ML, MU, and NROWPD are input and the
-C              array PD is to be loaded with partial derivatives
-C              (elements of the Jacobian matrix) on output.  PD must be
-C              given a first dimension of NROWPD.  T and Y have the same
-C              meaning as in subroutine F.
+C              WHERE NEQ, T, Y, ML, MU, AND NROWPD ARE INPUT AND THE
+C              ARRAY PD IS TO BE LOADED WITH PARTIAL DERIVATIVES
+C              (ELEMENTS OF THE JACOBIAN MATRIX) ON OUTPUT.  PD MUST BE
+C              GIVEN A FIRST DIMENSION OF NROWPD.  T AND Y HAVE THE SAME
+C              MEANING AS IN SUBROUTINE F.
 C
-C              In the full matrix case (MITER = 1), ML and MU are
-C              ignored, and the Jacobian is to be loaded into PD in
-C              columnwise manner, with df(i)/dy(j) loaded into PD(i,j).
+C              IN THE FULL MATRIX CASE (MITER = 1), ML AND MU ARE
+C              IGNORED, AND THE JACOBIAN IS TO BE LOADED INTO PD IN
+C              COLUMNWISE MANNER, WITH DF(I)/DY(J) LOADED INTO PD(I,J).
 C
-C              In the band matrix case (MITER = 4), the elements within
-C              the band are to be loaded into PD in columnwise manner,
-C              with diagonal lines of df/dy loaded into the rows of PD.
-C              Thus df(i)/dy(j) is to be loaded into PD(i-j+MU+1,j).  ML
-C              and MU are the half-bandwidth parameters (see IWORK).
-C              The locations in PD in the two triangular areas which
-C              correspond to nonexistent matrix elements can be ignored
-C              or loaded arbitrarily, as they are overwritten by DLSODE.
+C              IN THE BAND MATRIX CASE (MITER = 4), THE ELEMENTS WITHIN
+C              THE BAND ARE TO BE LOADED INTO PD IN COLUMNWISE MANNER,
+C              WITH DIAGONAL LINES OF DF/DY LOADED INTO THE ROWS OF PD.
+C              THUS DF(I)/DY(J) IS TO BE LOADED INTO PD(I-J+MU+1,J).  ML
+C              AND MU ARE THE HALF-BANDWIDTH PARAMETERS (SEE IWORK).
+C              THE LOCATIONS IN PD IN THE TWO TRIANGULAR AREAS WHICH
+C              CORRESPOND TO NONEXISTENT MATRIX ELEMENTS CAN BE IGNORED
+C              OR LOADED ARBITRARILY, AS THEY ARE OVERWRITTEN BY DLSODE.
 C
-C              JAC need not provide df/dy exactly. A crude approximation
-C              (possibly with a smaller bandwidth) will do.
+C              JAC NEED NOT PROVIDE DF/DY EXACTLY. A CRUDE APPROXIMATION
+C              (POSSIBLY WITH A SMALLER BANDWIDTH) WILL DO.
 C
-C              In either case, PD is preset to zero by the solver, so
-C              that only the nonzero elements need be loaded by JAC.
-C              Each call to JAC is preceded by a call to F with the same
-C              arguments NEQ, T, and Y. Thus to gain some efficiency,
-C              intermediate quantities shared by both calculations may
-C              be saved in a user COMMON block by F and not recomputed
-C              by JAC, if desired.  Also, JAC may alter the Y array, if
-C              desired.  JAC must be declared EXTERNAL in the calling
-C              program.
+C              IN EITHER CASE, PD IS PRESET TO ZERO BY THE SOLVER, SO
+C              THAT ONLY THE NONZERO ELEMENTS NEED BE LOADED BY JAC.
+C              EACH CALL TO JAC IS PRECEDED BY A CALL TO F WITH THE SAME
+C              ARGUMENTS NEQ, T, AND Y. THUS TO GAIN SOME EFFICIENCY,
+C              INTERMEDIATE QUANTITIES SHARED BY BOTH CALCULATIONS MAY
+C              BE SAVED IN A USER COMMON BLOCK BY F AND NOT RECOMPUTED
+C              BY JAC, IF DESIRED.  ALSO, JAC MAY ALTER THE Y ARRAY, IF
+C              DESIRED.  JAC MUST BE DECLARED EXTERNAL IN THE CALLING
+C              PROGRAM.
 C
-C              Subroutine JAC may access user-defined quantities in
-C              NEQ(2),... and/or in Y(NEQ(1)+1),... if NEQ is an array
-C              (dimensioned in JAC) and/or Y has length exceeding
-C              NEQ(1).  See the descriptions of NEQ and Y above.
+C              SUBROUTINE JAC MAY ACCESS USER-DEFINED QUANTITIES IN
+C              NEQ(2),... AND/OR IN Y(NEQ(1)+1),... IF NEQ IS AN ARRAY
+C              (DIMENSIONED IN JAC) AND/OR Y HAS LENGTH EXCEEDING
+C              NEQ(1).  SEE THE DESCRIPTIONS OF NEQ AND Y ABOVE.
 C
-C     MF       The method flag.  Used only for input.  The legal values
-C              of MF are 10, 11, 12, 13, 14, 15, 20, 21, 22, 23, 24,
-C              and 25.  MF has decimal digits METH and MITER:
+C     MF       THE METHOD FLAG.  USED ONLY FOR INPUT.  THE LEGAL VALUES
+C              OF MF ARE 10, 11, 12, 13, 14, 15, 20, 21, 22, 23, 24,
+C              AND 25.  MF HAS DECIMAL DIGITS METH AND MITER:
 C                 MF = 10*METH + MITER .
 C
-C              METH indicates the basic linear multistep method:
-C              1   Implicit Adams method.
-C              2   Method based on backward differentiation formulas
-C                  (BDF's).
+C              METH INDICATES THE BASIC LINEAR MULTISTEP METHOD:
+C              1   IMPLICIT ADAMS METHOD.
+C              2   METHOD BASED ON BACKWARD DIFFERENTIATION FORMULAS
+C                  (BDF'S).
 C
-C              MITER indicates the corrector iteration method:
-C              0   Functional iteration (no Jacobian matrix is
-C                  involved).
-C              1   Chord iteration with a user-supplied full (NEQ by
-C                  NEQ) Jacobian.
-C              2   Chord iteration with an internally generated
-C                  (difference quotient) full Jacobian (using NEQ
-C                  extra calls to F per df/dy value).
-C              3   Chord iteration with an internally generated
-C                  diagonal Jacobian approximation (using one extra call
-C                  to F per df/dy evaluation).
-C              4   Chord iteration with a user-supplied banded Jacobian.
-C              5   Chord iteration with an internally generated banded
-C                  Jacobian (using ML + MU + 1 extra calls to F per
-C                  df/dy evaluation).
+C              MITER INDICATES THE CORRECTOR ITERATION METHOD:
+C              0   FUNCTIONAL ITERATION (NO JACOBIAN MATRIX IS
+C                  INVOLVED).
+C              1   CHORD ITERATION WITH A USER-SUPPLIED FULL (NEQ BY
+C                  NEQ) JACOBIAN.
+C              2   CHORD ITERATION WITH AN INTERNALLY GENERATED
+C                  (DIFFERENCE QUOTIENT) FULL JACOBIAN (USING NEQ
+C                  EXTRA CALLS TO F PER DF/DY VALUE).
+C              3   CHORD ITERATION WITH AN INTERNALLY GENERATED
+C                  DIAGONAL JACOBIAN APPROXIMATION (USING ONE EXTRA CALL
+C                  TO F PER DF/DY EVALUATION).
+C              4   CHORD ITERATION WITH A USER-SUPPLIED BANDED JACOBIAN.
+C              5   CHORD ITERATION WITH AN INTERNALLY GENERATED BANDED
+C                  JACOBIAN (USING ML + MU + 1 EXTRA CALLS TO F PER
+C                  DF/DY EVALUATION).
 C
-C              If MITER = 1 or 4, the user must supply a subroutine JAC
-C              (the name is arbitrary) as described above under JAC.
-C              For other values of MITER, a dummy argument can be used.
+C              IF MITER = 1 OR 4, THE USER MUST SUPPLY A SUBROUTINE JAC
+C              (THE NAME IS ARBITRARY) AS DESCRIBED ABOVE UNDER JAC.
+C              FOR OTHER VALUES OF MITER, A DUMMY ARGUMENT CAN BE USED.
 C
-C     Optional Inputs
+C     OPTIONAL INPUTS
 C     ---------------
-C     The following is a list of the optional inputs provided for in the
-C     call sequence.  (See also Part 2.)  For each such input variable,
-C     this table lists its name as used in this documentation, its
-C     location in the call sequence, its meaning, and the default value.
-C     The use of any of these inputs requires IOPT = 1, and in that case
-C     all of these inputs are examined.  A value of zero for any of
-C     these optional inputs will cause the default value to be used.
-C     Thus to use a subset of the optional inputs, simply preload
-C     locations 5 to 10 in RWORK and IWORK to 0.0 and 0 respectively,
-C     and then set those of interest to nonzero values.
+C     THE FOLLOWING IS A LIST OF THE OPTIONAL INPUTS PROVIDED FOR IN THE
+C     CALL SEQUENCE.  (SEE ALSO PART 2.)  FOR EACH SUCH INPUT VARIABLE,
+C     THIS TABLE LISTS ITS NAME AS USED IN THIS DOCUMENTATION, ITS
+C     LOCATION IN THE CALL SEQUENCE, ITS MEANING, AND THE DEFAULT VALUE.
+C     THE USE OF ANY OF THESE INPUTS REQUIRES IOPT = 1, AND IN THAT CASE
+C     ALL OF THESE INPUTS ARE EXAMINED.  A VALUE OF ZERO FOR ANY OF
+C     THESE OPTIONAL INPUTS WILL CAUSE THE DEFAULT VALUE TO BE USED.
+C     THUS TO USE A SUBSET OF THE OPTIONAL INPUTS, SIMPLY PRELOAD
+C     LOCATIONS 5 TO 10 IN RWORK AND IWORK TO 0.0 AND 0 RESPECTIVELY,
+C     AND THEN SET THOSE OF INTEREST TO NONZERO VALUES.
 C
-C     Name    Location   Meaning and default value
+C     NAME    LOCATION   MEANING AND DEFAULT VALUE
 C     ------  ---------  -----------------------------------------------
-C     H0      RWORK(5)   Step size to be attempted on the first step.
-C                        The default value is determined by the solver.
-C     HMAX    RWORK(6)   Maximum absolute step size allowed.  The
-C                        default value is infinite.
-C     HMIN    RWORK(7)   Minimum absolute step size allowed.  The
-C                        default value is 0.  (This lower bound is not
-C                        enforced on the final step before reaching
-C                        TCRIT when ITASK = 4 or 5.)
-C     MAXORD  IWORK(5)   Maximum order to be allowed.  The default value
-C                        is 12 if METH = 1, and 5 if METH = 2. (See the
-C                        MF description above for METH.)  If MAXORD
-C                        exceeds the default value, it will be reduced
-C                        to the default value.  If MAXORD is changed
-C                        during the problem, it may cause the current
-C                        order to be reduced.
-C     MXSTEP  IWORK(6)   Maximum number of (internally defined) steps
-C                        allowed during one call to the solver.  The
-C                        default value is 500.
-C     MXHNIL  IWORK(7)   Maximum number of messages printed (per
-C                        problem) warning that T + H = T on a step
-C                        (H = step size).  This must be positive to
-C                        result in a nondefault value.  The default
-C                        value is 10.
+C     H0      RWORK(5)   STEP SIZE TO BE ATTEMPTED ON THE FIRST STEP.
+C                        THE DEFAULT VALUE IS DETERMINED BY THE SOLVER.
+C     HMAX    RWORK(6)   MAXIMUM ABSOLUTE STEP SIZE ALLOWED.  THE
+C                        DEFAULT VALUE IS INFINITE.
+C     HMIN    RWORK(7)   MINIMUM ABSOLUTE STEP SIZE ALLOWED.  THE
+C                        DEFAULT VALUE IS 0.  (THIS LOWER BOUND IS NOT
+C                        ENFORCED ON THE FINAL STEP BEFORE REACHING
+C                        TCRIT WHEN ITASK = 4 OR 5.)
+C     MAXORD  IWORK(5)   MAXIMUM ORDER TO BE ALLOWED.  THE DEFAULT VALUE
+C                        IS 12 IF METH = 1, AND 5 IF METH = 2. (SEE THE
+C                        MF DESCRIPTION ABOVE FOR METH.)  IF MAXORD
+C                        EXCEEDS THE DEFAULT VALUE, IT WILL BE REDUCED
+C                        TO THE DEFAULT VALUE.  IF MAXORD IS CHANGED
+C                        DURING THE PROBLEM, IT MAY CAUSE THE CURRENT
+C                        ORDER TO BE REDUCED.
+C     MXSTEP  IWORK(6)   MAXIMUM NUMBER OF (INTERNALLY DEFINED) STEPS
+C                        ALLOWED DURING ONE CALL TO THE SOLVER.  THE
+C                        DEFAULT VALUE IS 500.
+C     MXHNIL  IWORK(7)   MAXIMUM NUMBER OF MESSAGES PRINTED (PER
+C                        PROBLEM) WARNING THAT T + H = T ON A STEP
+C                        (H = STEP SIZE).  THIS MUST BE POSITIVE TO
+C                        RESULT IN A NONDEFAULT VALUE.  THE DEFAULT
+C                        VALUE IS 10.
 C
-C     Optional Outputs
+C     OPTIONAL OUTPUTS
 C     ----------------
-C     As optional additional output from DLSODE, the variables listed
-C     below are quantities related to the performance of DLSODE which 
-C     are available to the user.  These are communicated by way of the
-C     work arrays, but also have internal mnemonic names as shown. 
-C     Except where stated otherwise, all of these outputs are defined on
-C     any successful return from DLSODE, and on any return with ISTATE =
-C     -1, -2, -4, -5, or -6.  On an illegal input return (ISTATE = -3),
-C     they will be unchanged from their existing values (if any), except
-C     possibly for TOLSF, LENRW, and LENIW.  On any error return,
-C     outputs relevant to the error will be defined, as noted below.
+C     AS OPTIONAL ADDITIONAL OUTPUT FROM DLSODE, THE VARIABLES LISTED
+C     BELOW ARE QUANTITIES RELATED TO THE PERFORMANCE OF DLSODE WHICH 
+C     ARE AVAILABLE TO THE USER.  THESE ARE COMMUNICATED BY WAY OF THE
+C     WORK ARRAYS, BUT ALSO HAVE INTERNAL MNEMONIC NAMES AS SHOWN. 
+C     EXCEPT WHERE STATED OTHERWISE, ALL OF THESE OUTPUTS ARE DEFINED ON
+C     ANY SUCCESSFUL RETURN FROM DLSODE, AND ON ANY RETURN WITH ISTATE =
+C     -1, -2, -4, -5, OR -6.  ON AN ILLEGAL INPUT RETURN (ISTATE = -3),
+C     THEY WILL BE UNCHANGED FROM THEIR EXISTING VALUES (IF ANY), EXCEPT
+C     POSSIBLY FOR TOLSF, LENRW, AND LENIW.  ON ANY ERROR RETURN,
+C     OUTPUTS RELEVANT TO THE ERROR WILL BE DEFINED, AS NOTED BELOW.
 C
-C     Name   Location   Meaning
+C     NAME   LOCATION   MEANING
 C     -----  ---------  ------------------------------------------------
-C     HU     RWORK(11)  Step size in t last used (successfully).
-C     HCUR   RWORK(12)  Step size to be attempted on the next step.
-C     TCUR   RWORK(13)  Current value of the independent variable which
-C                       the solver has actually reached, i.e., the
-C                       current internal mesh point in t. On output,
-C                       TCUR will always be at least as far as the
-C                       argument T, but may be farther (if interpolation
-C                       was done).
-C     TOLSF  RWORK(14)  Tolerance scale factor, greater than 1.0,
-C                       computed when a request for too much accuracy
-C                       was detected (ISTATE = -3 if detected at the
-C                       start of the problem, ISTATE = -2 otherwise).
-C                       If ITOL is left unaltered but RTOL and ATOL are
-C                       uniformly scaled up by a factor of TOLSF for the
-C                       next call, then the solver is deemed likely to
-C                       succeed.  (The user may also ignore TOLSF and
-C                       alter the tolerance parameters in any other way
-C                       appropriate.)
-C     NST    IWORK(11)  Number of steps taken for the problem so far.
-C     NFE    IWORK(12)  Number of F evaluations for the problem so far.
-C     NJE    IWORK(13)  Number of Jacobian evaluations (and of matrix LU
-C                       decompositions) for the problem so far.
-C     NQU    IWORK(14)  Method order last used (successfully).
-C     NQCUR  IWORK(15)  Order to be attempted on the next step.
-C     IMXER  IWORK(16)  Index of the component of largest magnitude in
-C                       the weighted local error vector ( e(i)/EWT(i) ),
-C                       on an error return with ISTATE = -4 or -5.
-C     LENRW  IWORK(17)  Length of RWORK actually required.  This is
-C                       defined on normal returns and on an illegal
-C                       input return for insufficient storage.
-C     LENIW  IWORK(18)  Length of IWORK actually required.  This is
-C                       defined on normal returns and on an illegal
-C                       input return for insufficient storage.
+C     HU     RWORK(11)  STEP SIZE IN T LAST USED (SUCCESSFULLY).
+C     HCUR   RWORK(12)  STEP SIZE TO BE ATTEMPTED ON THE NEXT STEP.
+C     TCUR   RWORK(13)  CURRENT VALUE OF THE INDEPENDENT VARIABLE WHICH
+C                       THE SOLVER HAS ACTUALLY REACHED, I.E., THE
+C                       CURRENT INTERNAL MESH POINT IN T. ON OUTPUT,
+C                       TCUR WILL ALWAYS BE AT LEAST AS FAR AS THE
+C                       ARGUMENT T, BUT MAY BE FARTHER (IF INTERPOLATION
+C                       WAS DONE).
+C     TOLSF  RWORK(14)  TOLERANCE SCALE FACTOR, GREATER THAN 1.0,
+C                       COMPUTED WHEN A REQUEST FOR TOO MUCH ACCURACY
+C                       WAS DETECTED (ISTATE = -3 IF DETECTED AT THE
+C                       START OF THE PROBLEM, ISTATE = -2 OTHERWISE).
+C                       IF ITOL IS LEFT UNALTERED BUT RTOL AND ATOL ARE
+C                       UNIFORMLY SCALED UP BY A FACTOR OF TOLSF FOR THE
+C                       NEXT CALL, THEN THE SOLVER IS DEEMED LIKELY TO
+C                       SUCCEED.  (THE USER MAY ALSO IGNORE TOLSF AND
+C                       ALTER THE TOLERANCE PARAMETERS IN ANY OTHER WAY
+C                       APPROPRIATE.)
+C     NST    IWORK(11)  NUMBER OF STEPS TAKEN FOR THE PROBLEM SO FAR.
+C     NFE    IWORK(12)  NUMBER OF F EVALUATIONS FOR THE PROBLEM SO FAR.
+C     NJE    IWORK(13)  NUMBER OF JACOBIAN EVALUATIONS (AND OF MATRIX LU
+C                       DECOMPOSITIONS) FOR THE PROBLEM SO FAR.
+C     NQU    IWORK(14)  METHOD ORDER LAST USED (SUCCESSFULLY).
+C     NQCUR  IWORK(15)  ORDER TO BE ATTEMPTED ON THE NEXT STEP.
+C     IMXER  IWORK(16)  INDEX OF THE COMPONENT OF LARGEST MAGNITUDE IN
+C                       THE WEIGHTED LOCAL ERROR VECTOR ( E(I)/EWT(I) ),
+C                       ON AN ERROR RETURN WITH ISTATE = -4 OR -5.
+C     LENRW  IWORK(17)  LENGTH OF RWORK ACTUALLY REQUIRED.  THIS IS
+C                       DEFINED ON NORMAL RETURNS AND ON AN ILLEGAL
+C                       INPUT RETURN FOR INSUFFICIENT STORAGE.
+C     LENIW  IWORK(18)  LENGTH OF IWORK ACTUALLY REQUIRED.  THIS IS
+C                       DEFINED ON NORMAL RETURNS AND ON AN ILLEGAL
+C                       INPUT RETURN FOR INSUFFICIENT STORAGE.
 C
-C     The following two arrays are segments of the RWORK array which may
-C     also be of interest to the user as optional outputs.  For each
-C     array, the table below gives its internal name, its base address
-C     in RWORK, and its description.
+C     THE FOLLOWING TWO ARRAYS ARE SEGMENTS OF THE RWORK ARRAY WHICH MAY
+C     ALSO BE OF INTEREST TO THE USER AS OPTIONAL OUTPUTS.  FOR EACH
+C     ARRAY, THE TABLE BELOW GIVES ITS INTERNAL NAME, ITS BASE ADDRESS
+C     IN RWORK, AND ITS DESCRIPTION.
 C
-C     Name  Base address  Description
+C     NAME  BASE ADDRESS  DESCRIPTION
 C     ----  ------------  ----------------------------------------------
-C     YH    21            The Nordsieck history array, of size NYH by
-C                         (NQCUR + 1), where NYH is the initial value of
-C                         NEQ.  For j = 0,1,...,NQCUR, column j + 1 of
-C                         YH contains HCUR**j/factorial(j) times the jth
-C                         derivative of the interpolating polynomial
-C                         currently representing the solution, evaluated
-C                         at t = TCUR.
-C     ACOR  LENRW-NEQ+1   Array of size NEQ used for the accumulated
-C                         corrections on each step, scaled on output to
-C                         represent the estimated local error in Y on
-C                         the last step.  This is the vector e in the
-C                         description of the error control.  It is
-C                         defined only on successful return from DLSODE.
+C     YH    21            THE NORDSIECK HISTORY ARRAY, OF SIZE NYH BY
+C                         (NQCUR + 1), WHERE NYH IS THE INITIAL VALUE OF
+C                         NEQ.  FOR J = 0,1,...,NQCUR, COLUMN J + 1 OF
+C                         YH CONTAINS HCUR**J/FACTORIAL(J) TIMES THE JTH
+C                         DERIVATIVE OF THE INTERPOLATING POLYNOMIAL
+C                         CURRENTLY REPRESENTING THE SOLUTION, EVALUATED
+C                         AT T = TCUR.
+C     ACOR  LENRW-NEQ+1   ARRAY OF SIZE NEQ USED FOR THE ACCUMULATED
+C                         CORRECTIONS ON EACH STEP, SCALED ON OUTPUT TO
+C                         REPRESENT THE ESTIMATED LOCAL ERROR IN Y ON
+C                         THE LAST STEP.  THIS IS THE VECTOR E IN THE
+C                         DESCRIPTION OF THE ERROR CONTROL.  IT IS
+C                         DEFINED ONLY ON SUCCESSFUL RETURN FROM DLSODE.
 C
 C
-C                    Part 2.  Other Callable Routines
+C                    PART 2.  OTHER CALLABLE ROUTINES
 C                    --------------------------------
 C
-C     The following are optional calls which the user may make to gain
-C     additional capabilities in conjunction with DLSODE.
+C     THE FOLLOWING ARE OPTIONAL CALLS WHICH THE USER MAY MAKE TO GAIN
+C     ADDITIONAL CAPABILITIES IN CONJUNCTION WITH DLSODE.
 C
-C     Form of call              Function
+C     FORM OF CALL              FUNCTION
 C     ------------------------  ----------------------------------------
-C     CALL XSETUN(LUN)          Set the logical unit number, LUN, for
-C                               output of messages from DLSODE, if the
-C                               default is not desired.  The default
-C                               value of LUN is 6. This call may be made
-C                               at any time and will take effect
-C                               immediately.
-C     CALL XSETF(MFLAG)         Set a flag to control the printing of
-C                               messages by DLSODE.  MFLAG = 0 means do
-C                               not print.  (Danger:  this risks losing
-C                               valuable information.)  MFLAG = 1 means
-C                               print (the default).  This call may be
-C                               made at any time and will take effect
-C                               immediately.
-C     CALL DSRCOM(RSAV,ISAV,JOB)  Saves and restores the contents of the
-C                               internal COMMON blocks used by DLSODE
-C                               (see Part 3 below).  RSAV must be a
-C                               real array of length 218 or more, and
-C                               ISAV must be an integer array of length
-C                               37 or more.  JOB = 1 means save COMMON
-C                               into RSAV/ISAV.  JOB = 2 means restore
-C                               COMMON from same.  DSRCOM is useful if
-C                               one is interrupting a run and restarting
-C                               later, or alternating between two or
-C                               more problems solved with DLSODE.
-C     CALL DINTDY(,,,,,)        Provide derivatives of y, of various
-C     (see below)               orders, at a specified point t, if
-C                               desired.  It may be called only after a
-C                               successful return from DLSODE.  Detailed
-C                               instructions follow.
+C     CALL XSETUN(LUN)          SET THE LOGICAL UNIT NUMBER, LUN, FOR
+C                               OUTPUT OF MESSAGES FROM DLSODE, IF THE
+C                               DEFAULT IS NOT DESIRED.  THE DEFAULT
+C                               VALUE OF LUN IS 6. THIS CALL MAY BE MADE
+C                               AT ANY TIME AND WILL TAKE EFFECT
+C                               IMMEDIATELY.
+C     CALL XSETF(MFLAG)         SET A FLAG TO CONTROL THE PRINTING OF
+C                               MESSAGES BY DLSODE.  MFLAG = 0 MEANS DO
+C                               NOT PRINT.  (DANGER:  THIS RISKS LOSING
+C                               VALUABLE INFORMATION.)  MFLAG = 1 MEANS
+C                               PRINT (THE DEFAULT).  THIS CALL MAY BE
+C                               MADE AT ANY TIME AND WILL TAKE EFFECT
+C                               IMMEDIATELY.
+C     CALL DSRCOM(RSAV,ISAV,JOB)  SAVES AND RESTORES THE CONTENTS OF THE
+C                               INTERNAL COMMON BLOCKS USED BY DLSODE
+C                               (SEE PART 3 BELOW).  RSAV MUST BE A
+C                               REAL ARRAY OF LENGTH 218 OR MORE, AND
+C                               ISAV MUST BE AN INTEGER ARRAY OF LENGTH
+C                               37 OR MORE.  JOB = 1 MEANS SAVE COMMON
+C                               INTO RSAV/ISAV.  JOB = 2 MEANS RESTORE
+C                               COMMON FROM SAME.  DSRCOM IS USEFUL IF
+C                               ONE IS INTERRUPTING A RUN AND RESTARTING
+C                               LATER, OR ALTERNATING BETWEEN TWO OR
+C                               MORE PROBLEMS SOLVED WITH DLSODE.
+C     CALL DINTDY(,,,,,)        PROVIDE DERIVATIVES OF Y, OF VARIOUS
+C     (SEE BELOW)               ORDERS, AT A SPECIFIED POINT T, IF
+C                               DESIRED.  IT MAY BE CALLED ONLY AFTER A
+C                               SUCCESSFUL RETURN FROM DLSODE.  DETAILED
+C                               INSTRUCTIONS FOLLOW.
 C
-C     Detailed instructions for using DINTDY
+C     DETAILED INSTRUCTIONS FOR USING DINTDY
 C     --------------------------------------
-C     The form of the CALL is:
+C     THE FORM OF THE CALL IS:
 C
 C           CALL DINTDY (T, K, RWORK(21), NYH, DKY, IFLAG)
 C
-C     The input parameters are:
+C     THE INPUT PARAMETERS ARE:
 C
-C     T          Value of independent variable where answers are
-C                desired (normally the same as the T last returned by
-C                DLSODE).  For valid results, T must lie between
-C                TCUR - HU and TCUR.  (See "Optional Outputs" above
-C                for TCUR and HU.)
-C     K          Integer order of the derivative desired.  K must
-C                satisfy 0 <= K <= NQCUR, where NQCUR is the current
-C                order (see "Optional Outputs").  The capability
-C                corresponding to K = 0, i.e., computing y(t), is
-C                already provided by DLSODE directly.  Since
-C                NQCUR >= 1, the first derivative dy/dt is always
-C                available with DINTDY.
-C     RWORK(21)  The base address of the history array YH.
-C     NYH        Column length of YH, equal to the initial value of NEQ.
+C     T          VALUE OF INDEPENDENT VARIABLE WHERE ANSWERS ARE
+C                DESIRED (NORMALLY THE SAME AS THE T LAST RETURNED BY
+C                DLSODE).  FOR VALID RESULTS, T MUST LIE BETWEEN
+C                TCUR - HU AND TCUR.  (SEE "OPTIONAL OUTPUTS" ABOVE
+C                FOR TCUR AND HU.)
+C     K          INTEGER ORDER OF THE DERIVATIVE DESIRED.  K MUST
+C                SATISFY 0 <= K <= NQCUR, WHERE NQCUR IS THE CURRENT
+C                ORDER (SEE "OPTIONAL OUTPUTS").  THE CAPABILITY
+C                CORRESPONDING TO K = 0, I.E., COMPUTING Y(T), IS
+C                ALREADY PROVIDED BY DLSODE DIRECTLY.  SINCE
+C                NQCUR >= 1, THE FIRST DERIVATIVE DY/DT IS ALWAYS
+C                AVAILABLE WITH DINTDY.
+C     RWORK(21)  THE BASE ADDRESS OF THE HISTORY ARRAY YH.
+C     NYH        COLUMN LENGTH OF YH, EQUAL TO THE INITIAL VALUE OF NEQ.
 C
-C     The output parameters are:
+C     THE OUTPUT PARAMETERS ARE:
 C
-C     DKY        Real array of length NEQ containing the computed value
-C                of the Kth derivative of y(t).
-C     IFLAG      Integer flag, returned as 0 if K and T were legal,
-C                -1 if K was illegal, and -2 if T was illegal.
-C                On an error return, a message is also written.
+C     DKY        REAL ARRAY OF LENGTH NEQ CONTAINING THE COMPUTED VALUE
+C                OF THE KTH DERIVATIVE OF Y(T).
+C     IFLAG      INTEGER FLAG, RETURNED AS 0 IF K AND T WERE LEGAL,
+C                -1 IF K WAS ILLEGAL, AND -2 IF T WAS ILLEGAL.
+C                ON AN ERROR RETURN, A MESSAGE IS ALSO WRITTEN.
 C
 C
-C                          Part 3.  Common Blocks
+C                          PART 3.  COMMON BLOCKS
 C                          ----------------------
 C
-C     If DLSODE is to be used in an overlay situation, the user must
-C     declare, in the primary overlay, the variables in:
-C     (1) the call sequence to DLSODE,
-C     (2) the internal COMMON block /DLS001/, of length 255 
-C         (218 double precision words followed by 37 integer words).
+C     IF DLSODE IS TO BE USED IN AN OVERLAY SITUATION, THE USER MUST
+C     DECLARE, IN THE PRIMARY OVERLAY, THE VARIABLES IN:
+C     (1) THE CALL SEQUENCE TO DLSODE,
+C     (2) THE INTERNAL COMMON BLOCK /DLS001/, OF LENGTH 255 
+C         (218 DOUBLE PRECISION WORDS FOLLOWED BY 37 INTEGER WORDS).
 C
-C     If DLSODE is used on a system in which the contents of internal
-C     COMMON blocks are not preserved between calls, the user should
-C     declare the above COMMON block in his main program to insure that
-C     its contents are preserved.
+C     IF DLSODE IS USED ON A SYSTEM IN WHICH THE CONTENTS OF INTERNAL
+C     COMMON BLOCKS ARE NOT PRESERVED BETWEEN CALLS, THE USER SHOULD
+C     DECLARE THE ABOVE COMMON BLOCK IN HIS MAIN PROGRAM TO INSURE THAT
+C     ITS CONTENTS ARE PRESERVED.
 C
-C     If the solution of a given problem by DLSODE is to be interrupted
-C     and then later continued, as when restarting an interrupted run or
-C     alternating between two or more problems, the user should save,
-C     following the return from the last DLSODE call prior to the
-C     interruption, the contents of the call sequence variables and the
-C     internal COMMON block, and later restore these values before the
-C     next DLSODE call for that problem.   In addition, if XSETUN and/or
-C     XSETF was called for non-default handling of error messages, then
-C     these calls must be repeated.  To save and restore the COMMON
-C     block, use subroutine DSRCOM (see Part 2 above).
+C     IF THE SOLUTION OF A GIVEN PROBLEM BY DLSODE IS TO BE INTERRUPTED
+C     AND THEN LATER CONTINUED, AS WHEN RESTARTING AN INTERRUPTED RUN OR
+C     ALTERNATING BETWEEN TWO OR MORE PROBLEMS, THE USER SHOULD SAVE,
+C     FOLLOWING THE RETURN FROM THE LAST DLSODE CALL PRIOR TO THE
+C     INTERRUPTION, THE CONTENTS OF THE CALL SEQUENCE VARIABLES AND THE
+C     INTERNAL COMMON BLOCK, AND LATER RESTORE THESE VALUES BEFORE THE
+C     NEXT DLSODE CALL FOR THAT PROBLEM.   IN ADDITION, IF XSETUN AND/OR
+C     XSETF WAS CALLED FOR NON-DEFAULT HANDLING OF ERROR MESSAGES, THEN
+C     THESE CALLS MUST BE REPEATED.  TO SAVE AND RESTORE THE COMMON
+C     BLOCK, USE SUBROUTINE DSRCOM (SEE PART 2 ABOVE).
 C
 C
-C              Part 4.  Optionally Replaceable Solver Routines
+C              PART 4.  OPTIONALLY REPLACEABLE SOLVER ROUTINES
 C              -----------------------------------------------
 C
-C     Below are descriptions of two routines in the DLSODE package which
-C     relate to the measurement of errors.  Either routine can be
-C     replaced by a user-supplied version, if desired.  However, since
-C     such a replacement may have a major impact on performance, it
-C     should be done only when absolutely necessary, and only with great
-C     caution.  (Note:  The means by which the package version of a
-C     routine is superseded by the user's version may be system-
-C     dependent.)
+C     BELOW ARE DESCRIPTIONS OF TWO ROUTINES IN THE DLSODE PACKAGE WHICH
+C     RELATE TO THE MEASUREMENT OF ERRORS.  EITHER ROUTINE CAN BE
+C     REPLACED BY A USER-SUPPLIED VERSION, IF DESIRED.  HOWEVER, SINCE
+C     SUCH A REPLACEMENT MAY HAVE A MAJOR IMPACT ON PERFORMANCE, IT
+C     SHOULD BE DONE ONLY WHEN ABSOLUTELY NECESSARY, AND ONLY WITH GREAT
+C     CAUTION.  (NOTE:  THE MEANS BY WHICH THE PACKAGE VERSION OF A
+C     ROUTINE IS SUPERSEDED BY THE USER'S VERSION MAY BE SYSTEM-
+C     DEPENDENT.)
 C
 C     DEWSET
 C     ------
-C     The following subroutine is called just before each internal
-C     integration step, and sets the array of error weights, EWT, as
-C     described under ITOL/RTOL/ATOL above:
+C     THE FOLLOWING SUBROUTINE IS CALLED JUST BEFORE EACH INTERNAL
+C     INTEGRATION STEP, AND SETS THE ARRAY OF ERROR WEIGHTS, EWT, AS
+C     DESCRIBED UNDER ITOL/RTOL/ATOL ABOVE:
 C
 C           SUBROUTINE DEWSET (NEQ, ITOL, RTOL, ATOL, YCUR, EWT)
 C
-C     where NEQ, ITOL, RTOL, and ATOL are as in the DLSODE call
-C     sequence, YCUR contains the current dependent variable vector,
-C     and EWT is the array of weights set by DEWSET.
+C     WHERE NEQ, ITOL, RTOL, AND ATOL ARE AS IN THE DLSODE CALL
+C     SEQUENCE, YCUR CONTAINS THE CURRENT DEPENDENT VARIABLE VECTOR,
+C     AND EWT IS THE ARRAY OF WEIGHTS SET BY DEWSET.
 C
-C     If the user supplies this subroutine, it must return in EWT(i)
-C     (i = 1,...,NEQ) a positive quantity suitable for comparing errors
-C     in Y(i) to.  The EWT array returned by DEWSET is passed to the
-C     DVNORM routine (see below), and also used by DLSODE in the
-C     computation of the optional output IMXER, the diagonal Jacobian
-C     approximation, and the increments for difference quotient
-C     Jacobians.
+C     IF THE USER SUPPLIES THIS SUBROUTINE, IT MUST RETURN IN EWT(I)
+C     (I = 1,...,NEQ) A POSITIVE QUANTITY SUITABLE FOR COMPARING ERRORS
+C     IN Y(I) TO.  THE EWT ARRAY RETURNED BY DEWSET IS PASSED TO THE
+C     DVNORM ROUTINE (SEE BELOW), AND ALSO USED BY DLSODE IN THE
+C     COMPUTATION OF THE OPTIONAL OUTPUT IMXER, THE DIAGONAL JACOBIAN
+C     APPROXIMATION, AND THE INCREMENTS FOR DIFFERENCE QUOTIENT
+C     JACOBIANS.
 C
-C     In the user-supplied version of DEWSET, it may be desirable to use
-C     the current values of derivatives of y. Derivatives up to order NQ
-C     are available from the history array YH, described above under
-C     optional outputs.  In DEWSET, YH is identical to the YCUR array,
-C     extended to NQ + 1 columns with a column length of NYH and scale
-C     factors of H**j/factorial(j).  On the first call for the problem,
-C     given by NST = 0, NQ is 1 and H is temporarily set to 1.0.
-C     NYH is the initial value of NEQ.  The quantities NQ, H, and NST
-C     can be obtained by including in SEWSET the statements:
+C     IN THE USER-SUPPLIED VERSION OF DEWSET, IT MAY BE DESIRABLE TO USE
+C     THE CURRENT VALUES OF DERIVATIVES OF Y. DERIVATIVES UP TO ORDER NQ
+C     ARE AVAILABLE FROM THE HISTORY ARRAY YH, DESCRIBED ABOVE UNDER
+C     OPTIONAL OUTPUTS.  IN DEWSET, YH IS IDENTICAL TO THE YCUR ARRAY,
+C     EXTENDED TO NQ + 1 COLUMNS WITH A COLUMN LENGTH OF NYH AND SCALE
+C     FACTORS OF H**J/FACTORIAL(J).  ON THE FIRST CALL FOR THE PROBLEM,
+C     GIVEN BY NST = 0, NQ IS 1 AND H IS TEMPORARILY SET TO 1.0.
+C     NYH IS THE INITIAL VALUE OF NEQ.  THE QUANTITIES NQ, H, AND NST
+C     CAN BE OBTAINED BY INCLUDING IN SEWSET THE STATEMENTS:
 C           DOUBLE PRECISION RLS
 C           COMMON /DLS001/ RLS(218),ILS(37)
 C           NQ = ILS(33)
 C           NST = ILS(34)
 C           H = RLS(212)
-C     Thus, for example, the current value of dy/dt can be obtained as
-C     YCUR(NYH+i)/H (i=1,...,NEQ) (and the division by H is unnecessary
-C     when NST = 0).
+C     THUS, FOR EXAMPLE, THE CURRENT VALUE OF DY/DT CAN BE OBTAINED AS
+C     YCUR(NYH+I)/H (I=1,...,NEQ) (AND THE DIVISION BY H IS UNNECESSARY
+C     WHEN NST = 0).
 C
 C     DVNORM
 C     ------
-C     DVNORM is a real function routine which computes the weighted
-C     root-mean-square norm of a vector v:
+C     DVNORM IS A REAL FUNCTION ROUTINE WHICH COMPUTES THE WEIGHTED
+C     ROOT-MEAN-SQUARE NORM OF A VECTOR V:
 C
-C        d = DVNORM (n, v, w)
+C        D = DVNORM (N, V, W)
 C
-C     where:
-C     n = the length of the vector,
-C     v = real array of length n containing the vector,
-C     w = real array of length n containing weights,
-C     d = SQRT( (1/n) * sum(v(i)*w(i))**2 ).
+C     WHERE:
+C     N = THE LENGTH OF THE VECTOR,
+C     V = REAL ARRAY OF LENGTH N CONTAINING THE VECTOR,
+C     W = REAL ARRAY OF LENGTH N CONTAINING WEIGHTS,
+C     D = SQRT( (1/N) * SUM(V(I)*W(I))**2 ).
 C
-C     DVNORM is called with n = NEQ and with w(i) = 1.0/EWT(i), where
-C     EWT is as set by subroutine DEWSET.
+C     DVNORM IS CALLED WITH N = NEQ AND WITH W(I) = 1.0/EWT(I), WHERE
+C     EWT IS AS SET BY SUBROUTINE DEWSET.
 C
-C     If the user supplies this function, it should return a nonnegative
-C     value of DVNORM suitable for use in the error control in DLSODE.
-C     None of the arguments should be altered by DVNORM.  For example, a
-C     user-supplied DVNORM routine might:
-C     - Substitute a max-norm of (v(i)*w(i)) for the rms-norm, or
-C     - Ignore some components of v in the norm, with the effect of
-C       suppressing the error control on those components of Y.
+C     IF THE USER SUPPLIES THIS FUNCTION, IT SHOULD RETURN A NONNEGATIVE
+C     VALUE OF DVNORM SUITABLE FOR USE IN THE ERROR CONTROL IN DLSODE.
+C     NONE OF THE ARGUMENTS SHOULD BE ALTERED BY DVNORM.  FOR EXAMPLE, A
+C     USER-SUPPLIED DVNORM ROUTINE MIGHT:
+C     - SUBSTITUTE A MAX-NORM OF (V(I)*W(I)) FOR THE RMS-NORM, OR
+C     - IGNORE SOME COMPONENTS OF V IN THE NORM, WITH THE EFFECT OF
+C       SUPPRESSING THE ERROR CONTROL ON THOSE COMPONENTS OF Y.
 C  ---------------------------------------------------------------------
 C***ROUTINES CALLED  DEWSET, DINTDY, DUMACH, DSTODE, DVNORM, XERRWD
 C***COMMON BLOCKS    DLS001
 C***REVISION HISTORY  (YYYYMMDD)
 C 19791129  DATE WRITTEN
-C 19791213  Minor changes to declarations; DELP init. in STODE.
-C 19800118  Treat NEQ as array; integer declarations added throughout;
-C           minor changes to prologue.
-C 19800306  Corrected TESCO(1,NQP1) setting in CFODE.
-C 19800519  Corrected access of YH on forced order reduction;
-C           numerous corrections to prologues and other comments.
-C 19800617  In main driver, added loading of SQRT(UROUND) in RWORK;
-C           minor corrections to main prologue.
-C 19800923  Added zero initialization of HU and NQU.
-C 19801218  Revised XERRWD routine; minor corrections to main prologue.
-C 19810401  Minor changes to comments and an error message.
-C 19810814  Numerous revisions: replaced EWT by 1/EWT; used flags
-C           JCUR, ICF, IERPJ, IERSL between STODE and subordinates;
-C           added tuning parameters CCMAX, MAXCOR, MSBP, MXNCF;
-C           reorganized returns from STODE; reorganized type decls.;
-C           fixed message length in XERRWD; changed default LUNIT to 6;
-C           changed Common lengths; changed comments throughout.
-C 19870330  Major update by ACH: corrected comments throughout;
-C           removed TRET from Common; rewrote EWSET with 4 loops;
-C           fixed t test in INTDY; added Cray directives in STODE;
-C           in STODE, fixed DELP init. and logic around PJAC call;
-C           combined routines to save/restore Common;
-C           passed LEVEL = 0 in error message calls (except run abort).
-C 19890426  Modified prologue to SLATEC/LDOC format.  (FNF)
-C 19890501  Many improvements to prologue.  (FNF)
-C 19890503  A few final corrections to prologue.  (FNF)
-C 19890504  Minor cosmetic changes.  (FNF)
-C 19890510  Corrected description of Y in Arguments section.  (FNF)
-C 19890517  Minor corrections to prologue.  (FNF)
-C 19920514  Updated with prologue edited 891025 by G. Shaw for manual.
-C 19920515  Converted source lines to upper case.  (FNF)
-C 19920603  Revised XERRWD calls using mixed upper-lower case.  (ACH)
-C 19920616  Revised prologue comment regarding CFT.  (ACH)
-C 19921116  Revised prologue comments regarding Common.  (ACH).
-C 19930326  Added comment about non-reentrancy.  (FNF)
-C 19930723  Changed D1MACH to DUMACH. (FNF)
-C 19930801  Removed ILLIN and NTREP from Common (affects driver logic);
-C           minor changes to prologue and internal comments;
-C           changed Hollerith strings to quoted strings; 
-C           changed internal comments to mixed case;
-C           replaced XERRWD with new version using character type;
-C           changed dummy dimensions from 1 to *. (ACH)
-C 19930809  Changed to generic intrinsic names; changed names of
-C           subprograms and Common blocks to DLSODE etc. (ACH)
-C 19930929  Eliminated use of REAL intrinsic; other minor changes. (ACH)
-C 20010412  Removed all 'own' variables from Common block /DLS001/
-C           (affects declarations in 6 routines). (ACH)
-C 20010509  Minor corrections to prologue. (ACH)
-C 20031105  Restored 'own' variables to Common block /DLS001/, to
-C           enable interrupt/restart feature. (ACH)
-C 20031112  Added SAVE statements for data-loaded constants.
+C 19791213  MINOR CHANGES TO DECLARATIONS; DELP INIT. IN STODE.
+C 19800118  TREAT NEQ AS ARRAY; INTEGER DECLARATIONS ADDED THROUGHOUT;
+C           MINOR CHANGES TO PROLOGUE.
+C 19800306  CORRECTED TESCO(1,NQP1) SETTING IN CFODE.
+C 19800519  CORRECTED ACCESS OF YH ON FORCED ORDER REDUCTION;
+C           NUMEROUS CORRECTIONS TO PROLOGUES AND OTHER COMMENTS.
+C 19800617  IN MAIN DRIVER, ADDED LOADING OF SQRT(UROUND) IN RWORK;
+C           MINOR CORRECTIONS TO MAIN PROLOGUE.
+C 19800923  ADDED ZERO INITIALIZATION OF HU AND NQU.
+C 19801218  REVISED XERRWD ROUTINE; MINOR CORRECTIONS TO MAIN PROLOGUE.
+C 19810401  MINOR CHANGES TO COMMENTS AND AN ERROR MESSAGE.
+C 19810814  NUMEROUS REVISIONS: REPLACED EWT BY 1/EWT; USED FLAGS
+C           JCUR, ICF, IERPJ, IERSL BETWEEN STODE AND SUBORDINATES;
+C           ADDED TUNING PARAMETERS CCMAX, MAXCOR, MSBP, MXNCF;
+C           REORGANIZED RETURNS FROM STODE; REORGANIZED TYPE DECLS.;
+C           FIXED MESSAGE LENGTH IN XERRWD; CHANGED DEFAULT LUNIT TO 6;
+C           CHANGED COMMON LENGTHS; CHANGED COMMENTS THROUGHOUT.
+C 19870330  MAJOR UPDATE BY ACH: CORRECTED COMMENTS THROUGHOUT;
+C           REMOVED TRET FROM COMMON; REWROTE EWSET WITH 4 LOOPS;
+C           FIXED T TEST IN INTDY; ADDED CRAY DIRECTIVES IN STODE;
+C           IN STODE, FIXED DELP INIT. AND LOGIC AROUND PJAC CALL;
+C           COMBINED ROUTINES TO SAVE/RESTORE COMMON;
+C           PASSED LEVEL = 0 IN ERROR MESSAGE CALLS (EXCEPT RUN ABORT).
+C 19890426  MODIFIED PROLOGUE TO SLATEC/LDOC FORMAT.  (FNF)
+C 19890501  MANY IMPROVEMENTS TO PROLOGUE.  (FNF)
+C 19890503  A FEW FINAL CORRECTIONS TO PROLOGUE.  (FNF)
+C 19890504  MINOR COSMETIC CHANGES.  (FNF)
+C 19890510  CORRECTED DESCRIPTION OF Y IN ARGUMENTS SECTION.  (FNF)
+C 19890517  MINOR CORRECTIONS TO PROLOGUE.  (FNF)
+C 19920514  UPDATED WITH PROLOGUE EDITED 891025 BY G. SHAW FOR MANUAL.
+C 19920515  CONVERTED SOURCE LINES TO UPPER CASE.  (FNF)
+C 19920603  REVISED XERRWD CALLS USING MIXED UPPER-LOWER CASE.  (ACH)
+C 19920616  REVISED PROLOGUE COMMENT REGARDING CFT.  (ACH)
+C 19921116  REVISED PROLOGUE COMMENTS REGARDING COMMON.  (ACH).
+C 19930326  ADDED COMMENT ABOUT NON-REENTRANCY.  (FNF)
+C 19930723  CHANGED D1MACH TO DUMACH. (FNF)
+C 19930801  REMOVED ILLIN AND NTREP FROM COMMON (AFFECTS DRIVER LOGIC);
+C           MINOR CHANGES TO PROLOGUE AND INTERNAL COMMENTS;
+C           CHANGED HOLLERITH STRINGS TO QUOTED STRINGS; 
+C           CHANGED INTERNAL COMMENTS TO MIXED CASE;
+C           REPLACED XERRWD WITH NEW VERSION USING CHARACTER TYPE;
+C           CHANGED DUMMY DIMENSIONS FROM 1 TO *. (ACH)
+C 19930809  CHANGED TO GENERIC INTRINSIC NAMES; CHANGED NAMES OF
+C           SUBPROGRAMS AND COMMON BLOCKS TO DLSODE ETC. (ACH)
+C 19930929  ELIMINATED USE OF REAL INTRINSIC; OTHER MINOR CHANGES. (ACH)
+C 20010412  REMOVED ALL 'OWN' VARIABLES FROM COMMON BLOCK /DLS001/
+C           (AFFECTS DECLARATIONS IN 6 ROUTINES). (ACH)
+C 20010509  MINOR CORRECTIONS TO PROLOGUE. (ACH)
+C 20031105  RESTORED 'OWN' VARIABLES TO COMMON BLOCK /DLS001/, TO
+C           ENABLE INTERRUPT/RESTART FEATURE. (ACH)
+C 20031112  ADDED SAVE STATEMENTS FOR DATA-LOADED CONSTANTS.
 C
 C***END PROLOGUE  DLSODE
 C
-C*Internal Notes:
+C*INTERNAL NOTES:
 C
-C Other Routines in the DLSODE Package.
+C OTHER ROUTINES IN THE DLSODE PACKAGE.
 C
-C In addition to Subroutine DLSODE, the DLSODE package includes the
-C following subroutines and function routines:
-C  DINTDY   computes an interpolated value of the y vector at t = TOUT.
-C  DSTODE   is the core integrator, which does one step of the
-C           integration and the associated error control.
-C  DCFODE   sets all method coefficients and test constants.
-C  DPREPJ   computes and preprocesses the Jacobian matrix J = df/dy
-C           and the Newton iteration matrix P = I - h*l0*J.
-C  DSOLSY   manages solution of linear system in chord iteration.
-C  DEWSET   sets the error weight vector EWT before each step.
-C  DVNORM   computes the weighted R.M.S. norm of a vector.
-C  DSRCOM   is a user-callable routine to save and restore
-C           the contents of the internal Common block.
-C  DGEFA and DGESL   are routines from LINPACK for solving full
-C           systems of linear algebraic equations.
-C  DGBFA and DGBSL   are routines from LINPACK for solving banded
-C           linear systems.
-C  DUMACH   computes the unit roundoff in a machine-independent manner.
-C  XERRWD, XSETUN, XSETF, IXSAV, IUMACH   handle the printing of all
-C           error messages and warnings.  XERRWD is machine-dependent.
-C Note: DVNORM, DUMACH, IXSAV, and IUMACH are function routines.
-C All the others are subroutines.
+C IN ADDITION TO SUBROUTINE DLSODE, THE DLSODE PACKAGE INCLUDES THE
+C FOLLOWING SUBROUTINES AND FUNCTION ROUTINES:
+C  DINTDY   COMPUTES AN INTERPOLATED VALUE OF THE Y VECTOR AT T = TOUT.
+C  DSTODE   IS THE CORE INTEGRATOR, WHICH DOES ONE STEP OF THE
+C           INTEGRATION AND THE ASSOCIATED ERROR CONTROL.
+C  DCFODE   SETS ALL METHOD COEFFICIENTS AND TEST CONSTANTS.
+C  DPREPJ   COMPUTES AND PREPROCESSES THE JACOBIAN MATRIX J = DF/DY
+C           AND THE NEWTON ITERATION MATRIX P = I - H*L0*J.
+C  DSOLSY   MANAGES SOLUTION OF LINEAR SYSTEM IN CHORD ITERATION.
+C  DEWSET   SETS THE ERROR WEIGHT VECTOR EWT BEFORE EACH STEP.
+C  DVNORM   COMPUTES THE WEIGHTED R.M.S. NORM OF A VECTOR.
+C  DSRCOM   IS A USER-CALLABLE ROUTINE TO SAVE AND RESTORE
+C           THE CONTENTS OF THE INTERNAL COMMON BLOCK.
+C  DGEFA AND DGESL   ARE ROUTINES FROM LINPACK FOR SOLVING FULL
+C           SYSTEMS OF LINEAR ALGEBRAIC EQUATIONS.
+C  DGBFA AND DGBSL   ARE ROUTINES FROM LINPACK FOR SOLVING BANDED
+C           LINEAR SYSTEMS.
+C  DUMACH   COMPUTES THE UNIT ROUNDOFF IN A MACHINE-INDEPENDENT MANNER.
+C  XERRWD, XSETUN, XSETF, IXSAV, IUMACH   HANDLE THE PRINTING OF ALL
+C           ERROR MESSAGES AND WARNINGS.  XERRWD IS MACHINE-DEPENDENT.
+C NOTE: DVNORM, DUMACH, IXSAV, AND IUMACH ARE FUNCTION ROUTINES.
+C ALL THE OTHERS ARE SUBROUTINES.
 C
-C**End
+C**END
 C
-C  Declare externals.
+C  DECLARE EXTERNALS.
       EXTERNAL DPREPJ, DSOLSY
       DOUBLE PRECISION DUMACH, DVNORM
 C
-C  Declare all other variables.
+C  DECLARE ALL OTHER VARIABLES.
       INTEGER INIT, MXSTEP, MXHNIL, NHNIL, NSLAST, NYH, IOWNS,
      1   ICF, IERPJ, IERSL, JCUR, JSTART, KFLAG, L,
      2   LYH, LEWT, LACOR, LSAVF, LWM, LIWM, METH, MITER,
@@ -1223,14 +1223,14 @@ C  Declare all other variables.
       CHARACTER*80 MSG
       SAVE MORD, MXSTP0, MXHNL0
 C-----------------------------------------------------------------------
-C The following internal Common block contains
-C (a) variables which are local to any subroutine but whose values must
-C     be preserved between calls to the routine ("own" variables), and
-C (b) variables which are communicated between subroutines.
-C The block DLS001 is declared in subroutines DLSODE, DINTDY, DSTODE,
-C DPREPJ, and DSOLSY.
-C Groups of variables are replaced by dummy arrays in the Common
-C declarations in routines where those variables are not used.
+C THE FOLLOWING INTERNAL COMMON BLOCK CONTAINS
+C (A) VARIABLES WHICH ARE LOCAL TO ANY SUBROUTINE BUT WHOSE VALUES MUST
+C     BE PRESERVED BETWEEN CALLS TO THE ROUTINE ("OWN" VARIABLES), AND
+C (B) VARIABLES WHICH ARE COMMUNICATED BETWEEN SUBROUTINES.
+C THE BLOCK DLS001 IS DECLARED IN SUBROUTINES DLSODE, DINTDY, DSTODE,
+C DPREPJ, AND DSOLSY.
+C GROUPS OF VARIABLES ARE REPLACED BY DUMMY ARRAYS IN THE COMMON
+C DECLARATIONS IN ROUTINES WHERE THOSE VARIABLES ARE NOT USED.
 C-----------------------------------------------------------------------
       COMMON /DLS001/ ROWNS(209),
      1   CCMAX, EL0, H, HMIN, HMXI, HU, RC, TN, UROUND,
@@ -1241,12 +1241,12 @@ C-----------------------------------------------------------------------
 C
       DATA  MORD(1),MORD(2)/12,5/, MXSTP0/500/, MXHNL0/10/
 C-----------------------------------------------------------------------
-C Block A.
-C This code block is executed on every call.
-C It tests ISTATE and ITASK for legality and branches appropriately.
-C If ISTATE .GT. 1 but the flag INIT shows that initialization has
-C not yet been done, an error return occurs.
-C If ISTATE = 1 and TOUT = T, return immediately.
+C BLOCK A.
+C THIS CODE BLOCK IS EXECUTED ON EVERY CALL.
+C IT TESTS ISTATE AND ITASK FOR LEGALITY AND BRANCHES APPROPRIATELY.
+C IF ISTATE .GT. 1 BUT THE FLAG INIT SHOWS THAT INITIALIZATION HAS
+C NOT YET BEEN DONE, AN ERROR RETURN OCCURS.
+C IF ISTATE = 1 AND TOUT = T, RETURN IMMEDIATELY.
 C-----------------------------------------------------------------------
 C
 C***FIRST EXECUTABLE STATEMENT  DLSODE
@@ -1259,13 +1259,13 @@ C***FIRST EXECUTABLE STATEMENT  DLSODE
  10   INIT = 0
       IF (TOUT .EQ. T) RETURN
 C-----------------------------------------------------------------------
-C Block B.
-C The next code block is executed for the initial call (ISTATE = 1),
-C or for a continuation call with parameter changes (ISTATE = 3).
-C It contains checking of all inputs and various initializations.
+C BLOCK B.
+C THE NEXT CODE BLOCK IS EXECUTED FOR THE INITIAL CALL (ISTATE = 1),
+C OR FOR A CONTINUATION CALL WITH PARAMETER CHANGES (ISTATE = 3).
+C IT CONTAINS CHECKING OF ALL INPUTS AND VARIOUS INITIALIZATIONS.
 C
-C First check legality of the non-optional inputs NEQ, ITOL, IOPT,
-C MF, ML, and MU.
+C FIRST CHECK LEGALITY OF THE NON-OPTIONAL INPUTS NEQ, ITOL, IOPT,
+C MF, ML, AND MU.
 C-----------------------------------------------------------------------
  20   IF (NEQ(1) .LE. 0) GO TO 604
       IF (ISTATE .EQ. 1) GO TO 25
@@ -1283,7 +1283,7 @@ C-----------------------------------------------------------------------
       IF (ML .LT. 0 .OR. ML .GE. N) GO TO 609
       IF (MU .LT. 0 .OR. MU .GE. N) GO TO 610
  30   CONTINUE
-C Next process and check the optional inputs. --------------------------
+C NEXT PROCESS AND CHECK THE OPTIONAL INPUTS. --------------------------
       IF (IOPT .EQ. 1) GO TO 40
       MAXORD = MORD(METH)
       MXSTEP = MXSTP0
@@ -1312,10 +1312,10 @@ C Next process and check the optional inputs. --------------------------
       HMIN = RWORK(7)
       IF (HMIN .LT. 0.0D0) GO TO 616
 C-----------------------------------------------------------------------
-C Set work array pointers and check lengths LRW and LIW.
-C Pointers to segments of RWORK and IWORK are named by prefixing L to
-C the name of the segment.  E.g., the segment YH starts at RWORK(LYH).
-C Segments of RWORK (in order) are denoted  YH, WM, EWT, SAVF, ACOR.
+C SET WORK ARRAY POINTERS AND CHECK LENGTHS LRW AND LIW.
+C POINTERS TO SEGMENTS OF RWORK AND IWORK ARE NAMED BY PREFIXING L TO
+C THE NAME OF THE SEGMENT.  E.G., THE SEGMENT YH STARTS AT RWORK(LYH).
+C SEGMENTS OF RWORK (IN ORDER) ARE DENOTED  YH, WM, EWT, SAVF, ACOR.
 C-----------------------------------------------------------------------
  60   LYH = 21
       IF (ISTATE .EQ. 1) NYH = N
@@ -1335,7 +1335,7 @@ C-----------------------------------------------------------------------
       IWORK(18) = LENIW
       IF (LENRW .GT. LRW) GO TO 617
       IF (LENIW .GT. LIW) GO TO 618
-C Check RTOL and ATOL for legality. ------------------------------------
+C CHECK RTOL AND ATOL FOR LEGALITY. ------------------------------------
       RTOLI = RTOL(1)
       ATOLI = ATOL(1)
       DO 70 I = 1,N
@@ -1345,16 +1345,16 @@ C Check RTOL and ATOL for legality. ------------------------------------
         IF (ATOLI .LT. 0.0D0) GO TO 620
  70     CONTINUE
       IF (ISTATE .EQ. 1) GO TO 100
-C If ISTATE = 3, set flag to signal parameter changes to DSTODE. -------
+C IF ISTATE = 3, SET FLAG TO SIGNAL PARAMETER CHANGES TO DSTODE. -------
       JSTART = -1
       IF (NQ .LE. MAXORD) GO TO 90
-C MAXORD was reduced below NQ.  Copy YH(*,MAXORD+2) into SAVF. ---------
+C MAXORD WAS REDUCED BELOW NQ.  COPY YH(*,MAXORD+2) INTO SAVF. ---------
       DO 80 I = 1,N
  80     RWORK(I+LSAVF-1) = RWORK(I+LWM-1)
-C Reload WM(1) = RWORK(LWM), since LWM may have changed. ---------------
+C RELOAD WM(1) = RWORK(LWM), SINCE LWM MAY HAVE CHANGED. ---------------
  90   IF (MITER .GT. 0) RWORK(LWM) = SQRT(UROUND)
       IF (N .EQ. NYH) GO TO 200
-C NEQ was reduced.  Zero part of YH to avoid undefined references. -----
+C NEQ WAS REDUCED.  ZERO PART OF YH TO AVOID UNDEFINED REFERENCES. -----
       I1 = LYH + L*NYH
       I2 = LYH + (MAXORD + 1)*NYH - 1
       IF (I1 .GT. I2) GO TO 200
@@ -1362,11 +1362,11 @@ C NEQ was reduced.  Zero part of YH to avoid undefined references. -----
  95     RWORK(I) = 0.0D0
       GO TO 200
 C-----------------------------------------------------------------------
-C Block C.
-C The next block is for the initial call only (ISTATE = 1).
-C It contains all remaining initializations, the initial call to F,
-C and the calculation of the initial step size.
-C The error weights in EWT are inverted after being loaded.
+C BLOCK C.
+C THE NEXT BLOCK IS FOR THE INITIAL CALL ONLY (ISTATE = 1).
+C IT CONTAINS ALL REMAINING INITIALIZATIONS, THE INITIAL CALL TO F,
+C AND THE CALCULATION OF THE INITIAL STEP SIZE.
+C THE ERROR WEIGHTS IN EWT ARE INVERTED AFTER BEING LOADED.
 C-----------------------------------------------------------------------
  100  UROUND = DUMACH()
       TN = T
@@ -1387,14 +1387,14 @@ C-----------------------------------------------------------------------
       MAXCOR = 3
       MSBP = 20
       MXNCF = 10
-C Initial call to F.  (LF0 points to YH(*,2).) -------------------------
+C INITIAL CALL TO F.  (LF0 POINTS TO YH(*,2).) -------------------------
       LF0 = LYH + NYH
       CALL F (NEQ, T, Y, RWORK(LF0))
       NFE = 1
-C Load the initial value vector in YH. ---------------------------------
+C LOAD THE INITIAL VALUE VECTOR IN YH. ---------------------------------
       DO 115 I = 1,N
  115    RWORK(I+LYH-1) = Y(I)
-C Load and invert the EWT array.  (H is temporarily set to 1.0.) -------
+C LOAD AND INVERT THE EWT ARRAY.  (H IS TEMPORARILY SET TO 1.0.) -------
       NQ = 1
       H = 1.0D0
       CALL DEWSET (N, ITOL, RTOL, ATOL, RWORK(LYH), RWORK(LEWT))
@@ -1402,20 +1402,20 @@ C Load and invert the EWT array.  (H is temporarily set to 1.0.) -------
         IF (RWORK(I+LEWT-1) .LE. 0.0D0) GO TO 621
  120    RWORK(I+LEWT-1) = 1.0D0/RWORK(I+LEWT-1)
 C-----------------------------------------------------------------------
-C The coding below computes the step size, H0, to be attempted on the
-C first step, unless the user has supplied a value for this.
-C First check that TOUT - T differs significantly from zero.
-C A scalar tolerance quantity TOL is computed, as MAX(RTOL(I))
-C if this is positive, or MAX(ATOL(I)/ABS(Y(I))) otherwise, adjusted
-C so as to be between 100*UROUND and 1.0E-3.
-C Then the computed value H0 is given by..
+C THE CODING BELOW COMPUTES THE STEP SIZE, H0, TO BE ATTEMPTED ON THE
+C FIRST STEP, UNLESS THE USER HAS SUPPLIED A VALUE FOR THIS.
+C FIRST CHECK THAT TOUT - T DIFFERS SIGNIFICANTLY FROM ZERO.
+C A SCALAR TOLERANCE QUANTITY TOL IS COMPUTED, AS MAX(RTOL(I))
+C IF THIS IS POSITIVE, OR MAX(ATOL(I)/ABS(Y(I))) OTHERWISE, ADJUSTED
+C SO AS TO BE BETWEEN 100*UROUND AND 1.0E-3.
+C THEN THE COMPUTED VALUE H0 IS GIVEN BY..
 C                                      NEQ
-C   H0**2 = TOL / ( w0**-2 + (1/NEQ) * SUM ( f(i)/ywt(i) )**2  )
+C   H0**2 = TOL / ( W0**-2 + (1/NEQ) * SUM ( F(I)/YWT(I) )**2  )
 C                                       1
-C where   w0     = MAX ( ABS(T), ABS(TOUT) ),
-C         f(i)   = i-th component of initial value of f,
-C         ywt(i) = EWT(i)/TOL  (a weight for y(i)).
-C The sign of H0 is inferred from the initial values of TOUT and T.
+C WHERE   W0     = MAX ( ABS(T), ABS(TOUT) ),
+C         F(I)   = I-TH COMPONENT OF INITIAL VALUE OF F,
+C         YWT(I) = EWT(I)/TOL  (A WEIGHT FOR Y(I)).
+C THE SIGN OF H0 IS INFERRED FROM THE INITIAL VALUES OF TOUT AND T.
 C-----------------------------------------------------------------------
       IF (H0 .NE. 0.0D0) GO TO 180
       TDIST = ABS(TOUT - T)
@@ -1439,18 +1439,18 @@ C-----------------------------------------------------------------------
       H0 = 1.0D0/SQRT(SUM)
       H0 = MIN(H0,TDIST)
       H0 = SIGN(H0,TOUT-T)
-C Adjust H0 if necessary to meet HMAX bound. ---------------------------
+C ADJUST H0 IF NECESSARY TO MEET HMAX BOUND. ---------------------------
  180  RH = ABS(H0)*HMXI
       IF (RH .GT. 1.0D0) H0 = H0/RH
-C Load H with H0 and scale YH(*,2) by H0. ------------------------------
+C LOAD H WITH H0 AND SCALE YH(*,2) BY H0. ------------------------------
       H = H0
       DO 190 I = 1,N
  190    RWORK(I+LF0-1) = H0*RWORK(I+LF0-1)
       GO TO 270
 C-----------------------------------------------------------------------
-C Block D.
-C The next code block is for continuation calls only (ISTATE = 2 or 3)
-C and is to check stop conditions before taking a step.
+C BLOCK D.
+C THE NEXT CODE BLOCK IS FOR CONTINUATION CALLS ONLY (ISTATE = 2 OR 3)
+C AND IS TO CHECK STOP CONDITIONS BEFORE TAKING A STEP.
 C-----------------------------------------------------------------------
  200  NSLAST = NST
       GO TO (210, 250, 220, 230, 240), ITASK
@@ -1481,15 +1481,15 @@ C-----------------------------------------------------------------------
       H = (TCRIT - TN)*(1.0D0 - 4.0D0*UROUND)
       IF (ISTATE .EQ. 2) JSTART = -2
 C-----------------------------------------------------------------------
-C Block E.
-C The next block is normally executed for all calls and contains
-C the call to the one-step core integrator DSTODE.
+C BLOCK E.
+C THE NEXT BLOCK IS NORMALLY EXECUTED FOR ALL CALLS AND CONTAINS
+C THE CALL TO THE ONE-STEP CORE INTEGRATOR DSTODE.
 C
-C This is a looping point for the integration steps.
+C THIS IS A LOOPING POINT FOR THE INTEGRATION STEPS.
 C
-C First check for too many steps being taken, update EWT (if not at
-C start of problem), check for too much accuracy being requested, and
-C check for H below the roundoff level in T.
+C FIRST CHECK FOR TOO MANY STEPS BEING TAKEN, UPDATE EWT (IF NOT AT
+C START OF PROBLEM), CHECK FOR TOO MUCH ACCURACY BEING REQUESTED, AND
+C CHECK FOR H BELOW THE ROUNDOFF LEVEL IN T.
 C-----------------------------------------------------------------------
  250  CONTINUE
       IF ((NST-NSLAST) .GE. MXSTEP) GO TO 500
@@ -1505,16 +1505,16 @@ C-----------------------------------------------------------------------
  280  IF ((TN + H) .NE. TN) GO TO 290
       NHNIL = NHNIL + 1
       IF (NHNIL .GT. MXHNIL) GO TO 290
-      MSG = 'DLSODE-  Warning..internal T (=R1) and H (=R2) are'
+      MSG = 'DLSODE-  WARNING..INTERNAL T (=R1) AND H (=R2) ARE'
       CALL XERRWD (MSG, 50, 101, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      MSG='      such that in the machine, T + H = T on the next step  '
+      MSG='      SUCH THAT IN THE MACHINE, T + H = T ON THE NEXT STEP  '
       CALL XERRWD (MSG, 60, 101, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      MSG = '      (H = step size). Solver will continue anyway'
+      MSG = '      (H = STEP SIZE). SOLVER WILL CONTINUE ANYWAY'
       CALL XERRWD (MSG, 50, 101, 0, 0, 0, 0, 2, TN, H)
       IF (NHNIL .LT. MXHNIL) GO TO 290
-      MSG = 'DLSODE-  Above warning has been issued I1 times.  '
+      MSG = 'DLSODE-  ABOVE WARNING HAS BEEN ISSUED I1 TIMES.  '
       CALL XERRWD (MSG, 50, 102, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      MSG = '      It will not be issued again for this problem'
+      MSG = '      IT WILL NOT BE ISSUED AGAIN FOR THIS PROBLEM'
       CALL XERRWD (MSG, 50, 102, 0, 1, MXHNIL, 0, 0, 0.0D0, 0.0D0)
  290  CONTINUE
 C-----------------------------------------------------------------------
@@ -1526,21 +1526,21 @@ C-----------------------------------------------------------------------
       KGO = 1 - KFLAG
       GO TO (300, 530, 540), KGO
 C-----------------------------------------------------------------------
-C Block F.
-C The following block handles the case of a successful return from the
-C core integrator (KFLAG = 0).  Test for stop conditions.
+C BLOCK F.
+C THE FOLLOWING BLOCK HANDLES THE CASE OF A SUCCESSFUL RETURN FROM THE
+C CORE INTEGRATOR (KFLAG = 0).  TEST FOR STOP CONDITIONS.
 C-----------------------------------------------------------------------
  300  INIT = 1
       GO TO (310, 400, 330, 340, 350), ITASK
-C ITASK = 1.  If TOUT has been reached, interpolate. -------------------
+C ITASK = 1.  IF TOUT HAS BEEN REACHED, INTERPOLATE. -------------------
  310  IF ((TN - TOUT)*H .LT. 0.0D0) GO TO 250
       CALL DINTDY (TOUT, 0, RWORK(LYH), NYH, Y, IFLAG)
       T = TOUT
       GO TO 420
-C ITASK = 3.  Jump to exit if TOUT was reached. ------------------------
+C ITASK = 3.  JUMP TO EXIT IF TOUT WAS REACHED. ------------------------
  330  IF ((TN - TOUT)*H .GE. 0.0D0) GO TO 400
       GO TO 250
-C ITASK = 4.  See if TOUT or TCRIT was reached.  Adjust H if necessary.
+C ITASK = 4.  SEE IF TOUT OR TCRIT WAS REACHED.  ADJUST H IF NECESSARY.
  340  IF ((TN - TOUT)*H .LT. 0.0D0) GO TO 345
       CALL DINTDY (TOUT, 0, RWORK(LYH), NYH, Y, IFLAG)
       T = TOUT
@@ -1553,15 +1553,15 @@ C ITASK = 4.  See if TOUT or TCRIT was reached.  Adjust H if necessary.
       H = (TCRIT - TN)*(1.0D0 - 4.0D0*UROUND)
       JSTART = -2
       GO TO 250
-C ITASK = 5.  See if TCRIT was reached and jump to exit. ---------------
+C ITASK = 5.  SEE IF TCRIT WAS REACHED AND JUMP TO EXIT. ---------------
  350  HMX = ABS(TN) + ABS(H)
       IHIT = ABS(TN - TCRIT) .LE. 100.0D0*UROUND*HMX
 C-----------------------------------------------------------------------
-C Block G.
-C The following block handles all successful returns from DLSODE.
-C If ITASK .NE. 1, Y is loaded from YH and T is set accordingly.
-C ISTATE is set to 2, and the optional outputs are loaded into the
-C work arrays before returning.
+C BLOCK G.
+C THE FOLLOWING BLOCK HANDLES ALL SUCCESSFUL RETURNS FROM DLSODE.
+C IF ITASK .NE. 1, Y IS LOADED FROM YH AND T IS SET ACCORDINGLY.
+C ISTATE IS SET TO 2, AND THE OPTIONAL OUTPUTS ARE LOADED INTO THE
+C WORK ARRAYS BEFORE RETURNING.
 C-----------------------------------------------------------------------
  400  DO 410 I = 1,N
  410    Y(I) = RWORK(I+LYH-1)
@@ -1579,50 +1579,50 @@ C-----------------------------------------------------------------------
       IWORK(15) = NQ
       RETURN
 C-----------------------------------------------------------------------
-C Block H.
-C The following block handles all unsuccessful returns other than
-C those for illegal input.  First the error message routine is called.
-C If there was an error test or convergence test failure, IMXER is set.
-C Then Y is loaded from YH and T is set to TN.  The optional outputs
-C are loaded into the work arrays before returning.
+C BLOCK H.
+C THE FOLLOWING BLOCK HANDLES ALL UNSUCCESSFUL RETURNS OTHER THAN
+C THOSE FOR ILLEGAL INPUT.  FIRST THE ERROR MESSAGE ROUTINE IS CALLED.
+C IF THERE WAS AN ERROR TEST OR CONVERGENCE TEST FAILURE, IMXER IS SET.
+C THEN Y IS LOADED FROM YH AND T IS SET TO TN.  THE OPTIONAL OUTPUTS
+C ARE LOADED INTO THE WORK ARRAYS BEFORE RETURNING.
 C-----------------------------------------------------------------------
-C The maximum number of steps was taken before reaching TOUT. ----------
- 500  MSG = 'DLSODE-  At current T (=R1), MXSTEP (=I1) steps   '
+C THE MAXIMUM NUMBER OF STEPS WAS TAKEN BEFORE REACHING TOUT. ----------
+ 500  MSG = 'DLSODE-  AT CURRENT T (=R1), MXSTEP (=I1) STEPS   '
       CALL XERRWD (MSG, 50, 201, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      MSG = '      taken on this call before reaching TOUT     '
+      MSG = '      TAKEN ON THIS CALL BEFORE REACHING TOUT     '
       CALL XERRWD (MSG, 50, 201, 0, 1, MXSTEP, 0, 1, TN, 0.0D0)
       ISTATE = -1
       GO TO 580
-C EWT(I) .LE. 0.0 for some I (not at start of problem). ----------------
+C EWT(I) .LE. 0.0 FOR SOME I (NOT AT START OF PROBLEM). ----------------
  510  EWTI = RWORK(LEWT+I-1)
-      MSG = 'DLSODE-  At T (=R1), EWT(I1) has become R2 .LE. 0.'
+      MSG = 'DLSODE-  AT T (=R1), EWT(I1) HAS BECOME R2 .LE. 0.'
       CALL XERRWD (MSG, 50, 202, 0, 1, I, 0, 2, TN, EWTI)
       ISTATE = -6
       GO TO 580
-C Too much accuracy requested for machine precision. -------------------
- 520  MSG = 'DLSODE-  At T (=R1), too much accuracy requested  '
+C TOO MUCH ACCURACY REQUESTED FOR MACHINE PRECISION. -------------------
+ 520  MSG = 'DLSODE-  AT T (=R1), TOO MUCH ACCURACY REQUESTED  '
       CALL XERRWD (MSG, 50, 203, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      MSG = '      for precision of machine..  see TOLSF (=R2) '
+      MSG = '      FOR PRECISION OF MACHINE..  SEE TOLSF (=R2) '
       CALL XERRWD (MSG, 50, 203, 0, 0, 0, 0, 2, TN, TOLSF)
       RWORK(14) = TOLSF
       ISTATE = -2
       GO TO 580
-C KFLAG = -1.  Error test failed repeatedly or with ABS(H) = HMIN. -----
- 530  MSG = 'DLSODE-  At T(=R1) and step size H(=R2), the error'
+C KFLAG = -1.  ERROR TEST FAILED REPEATEDLY OR WITH ABS(H) = HMIN. -----
+ 530  MSG = 'DLSODE-  AT T(=R1) AND STEP SIZE H(=R2), THE ERROR'
       CALL XERRWD (MSG, 50, 204, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      MSG = '      test failed repeatedly or with ABS(H) = HMIN'
+      MSG = '      TEST FAILED REPEATEDLY OR WITH ABS(H) = HMIN'
       CALL XERRWD (MSG, 50, 204, 0, 0, 0, 0, 2, TN, H)
       ISTATE = -4
       GO TO 560
-C KFLAG = -2.  Convergence failed repeatedly or with ABS(H) = HMIN. ----
- 540  MSG = 'DLSODE-  At T (=R1) and step size H (=R2), the    '
+C KFLAG = -2.  CONVERGENCE FAILED REPEATEDLY OR WITH ABS(H) = HMIN. ----
+ 540  MSG = 'DLSODE-  AT T (=R1) AND STEP SIZE H (=R2), THE    '
       CALL XERRWD (MSG, 50, 205, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      MSG = '      corrector convergence failed repeatedly     '
+      MSG = '      CORRECTOR CONVERGENCE FAILED REPEATEDLY     '
       CALL XERRWD (MSG, 50, 205, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      MSG = '      or with ABS(H) = HMIN   '
+      MSG = '      OR WITH ABS(H) = HMIN   '
       CALL XERRWD (MSG, 30, 205, 0, 0, 0, 0, 2, TN, H)
       ISTATE = -5
-C Compute IMXER if relevant. -------------------------------------------
+C COMPUTE IMXER IF RELEVANT. -------------------------------------------
  560  BIG = 0.0D0
       IMXER = 1
       DO 570 I = 1,N
@@ -1632,7 +1632,7 @@ C Compute IMXER if relevant. -------------------------------------------
         IMXER = I
  570    CONTINUE
       IWORK(16) = IMXER
-C Set Y vector, T, and optional outputs. -------------------------------
+C SET Y VECTOR, T, AND OPTIONAL OUTPUTS. -------------------------------
  580  DO 590 I = 1,N
  590    Y(I) = RWORK(I+LYH-1)
       T = TN
@@ -1646,41 +1646,41 @@ C Set Y vector, T, and optional outputs. -------------------------------
       IWORK(15) = NQ
       RETURN
 C-----------------------------------------------------------------------
-C Block I.
-C The following block handles all error returns due to illegal input
-C (ISTATE = -3), as detected before calling the core integrator.
-C First the error message routine is called.  If the illegal input 
-C is a negative ISTATE, the run is aborted (apparent infinite loop).
+C BLOCK I.
+C THE FOLLOWING BLOCK HANDLES ALL ERROR RETURNS DUE TO ILLEGAL INPUT
+C (ISTATE = -3), AS DETECTED BEFORE CALLING THE CORE INTEGRATOR.
+C FIRST THE ERROR MESSAGE ROUTINE IS CALLED.  IF THE ILLEGAL INPUT 
+C IS A NEGATIVE ISTATE, THE RUN IS ABORTED (APPARENT INFINITE LOOP).
 C-----------------------------------------------------------------------
- 601  MSG = 'DLSODE-  ISTATE (=I1) illegal '
+ 601  MSG = 'DLSODE-  ISTATE (=I1) ILLEGAL '
       CALL XERRWD (MSG, 30, 1, 0, 1, ISTATE, 0, 0, 0.0D0, 0.0D0)
       IF (ISTATE .LT. 0) GO TO 800
       GO TO 700
- 602  MSG = 'DLSODE-  ITASK (=I1) illegal  '
+ 602  MSG = 'DLSODE-  ITASK (=I1) ILLEGAL  '
       CALL XERRWD (MSG, 30, 2, 0, 1, ITASK, 0, 0, 0.0D0, 0.0D0)
       GO TO 700
- 603  MSG = 'DLSODE-  ISTATE .GT. 1 but DLSODE not initialized '
+ 603  MSG = 'DLSODE-  ISTATE .GT. 1 BUT DLSODE NOT INITIALIZED '
       CALL XERRWD (MSG, 50, 3, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
       GO TO 700
  604  MSG = 'DLSODE-  NEQ (=I1) .LT. 1     '
       CALL XERRWD (MSG, 30, 4, 0, 1, NEQ(1), 0, 0, 0.0D0, 0.0D0)
       GO TO 700
- 605  MSG = 'DLSODE-  ISTATE = 3 and NEQ increased (I1 to I2)  '
+ 605  MSG = 'DLSODE-  ISTATE = 3 AND NEQ INCREASED (I1 TO I2)  '
       CALL XERRWD (MSG, 50, 5, 0, 2, N, NEQ(1), 0, 0.0D0, 0.0D0)
       GO TO 700
- 606  MSG = 'DLSODE-  ITOL (=I1) illegal   '
+ 606  MSG = 'DLSODE-  ITOL (=I1) ILLEGAL   '
       CALL XERRWD (MSG, 30, 6, 0, 1, ITOL, 0, 0, 0.0D0, 0.0D0)
       GO TO 700
- 607  MSG = 'DLSODE-  IOPT (=I1) illegal   '
+ 607  MSG = 'DLSODE-  IOPT (=I1) ILLEGAL   '
       CALL XERRWD (MSG, 30, 7, 0, 1, IOPT, 0, 0, 0.0D0, 0.0D0)
       GO TO 700
- 608  MSG = 'DLSODE-  MF (=I1) illegal     '
+ 608  MSG = 'DLSODE-  MF (=I1) ILLEGAL     '
       CALL XERRWD (MSG, 30, 8, 0, 1, MF, 0, 0, 0.0D0, 0.0D0)
       GO TO 700
- 609  MSG = 'DLSODE-  ML (=I1) illegal.. .LT.0 or .GE.NEQ (=I2)'
+ 609  MSG = 'DLSODE-  ML (=I1) ILLEGAL.. .LT.0 OR .GE.NEQ (=I2)'
       CALL XERRWD (MSG, 50, 9, 0, 2, ML, NEQ(1), 0, 0.0D0, 0.0D0)
       GO TO 700
- 610  MSG = 'DLSODE-  MU (=I1) illegal.. .LT.0 or .GE.NEQ (=I2)'
+ 610  MSG = 'DLSODE-  MU (=I1) ILLEGAL.. .LT.0 OR .GE.NEQ (=I2)'
       CALL XERRWD (MSG, 50, 10, 0, 2, MU, NEQ(1), 0, 0.0D0, 0.0D0)
       GO TO 700
  611  MSG = 'DLSODE-  MAXORD (=I1) .LT. 0  '
@@ -1692,9 +1692,9 @@ C-----------------------------------------------------------------------
  613  MSG = 'DLSODE-  MXHNIL (=I1) .LT. 0  '
       CALL XERRWD (MSG, 30, 13, 0, 1, MXHNIL, 0, 0, 0.0D0, 0.0D0)
       GO TO 700
- 614  MSG = 'DLSODE-  TOUT (=R1) behind T (=R2)      '
+ 614  MSG = 'DLSODE-  TOUT (=R1) BEHIND T (=R2)      '
       CALL XERRWD (MSG, 40, 14, 0, 0, 0, 0, 2, TOUT, T)
-      MSG = '      Integration direction is given by H0 (=R1)  '
+      MSG = '      INTEGRATION DIRECTION IS GIVEN BY H0 (=R1)  '
       CALL XERRWD (MSG, 50, 14, 0, 0, 0, 0, 1, H0, 0.0D0)
       GO TO 700
  615  MSG = 'DLSODE-  HMAX (=R1) .LT. 0.0  '
@@ -1704,52 +1704,52 @@ C-----------------------------------------------------------------------
       CALL XERRWD (MSG, 30, 16, 0, 0, 0, 0, 1, HMIN, 0.0D0)
       GO TO 700
  617  CONTINUE
-      MSG='DLSODE-  RWORK length needed, LENRW (=I1), exceeds LRW (=I2)'
+      MSG='DLSODE-  RWORK LENGTH NEEDED, LENRW (=I1), EXCEEDS LRW (=I2)'
       CALL XERRWD (MSG, 60, 17, 0, 2, LENRW, LRW, 0, 0.0D0, 0.0D0)
       GO TO 700
  618  CONTINUE
-      MSG='DLSODE-  IWORK length needed, LENIW (=I1), exceeds LIW (=I2)'
+      MSG='DLSODE-  IWORK LENGTH NEEDED, LENIW (=I1), EXCEEDS LIW (=I2)'
       CALL XERRWD (MSG, 60, 18, 0, 2, LENIW, LIW, 0, 0.0D0, 0.0D0)
       GO TO 700
- 619  MSG = 'DLSODE-  RTOL(I1) is R1 .LT. 0.0        '
+ 619  MSG = 'DLSODE-  RTOL(I1) IS R1 .LT. 0.0        '
       CALL XERRWD (MSG, 40, 19, 0, 1, I, 0, 1, RTOLI, 0.0D0)
       GO TO 700
- 620  MSG = 'DLSODE-  ATOL(I1) is R1 .LT. 0.0        '
+ 620  MSG = 'DLSODE-  ATOL(I1) IS R1 .LT. 0.0        '
       CALL XERRWD (MSG, 40, 20, 0, 1, I, 0, 1, ATOLI, 0.0D0)
       GO TO 700
  621  EWTI = RWORK(LEWT+I-1)
-      MSG = 'DLSODE-  EWT(I1) is R1 .LE. 0.0         '
+      MSG = 'DLSODE-  EWT(I1) IS R1 .LE. 0.0         '
       CALL XERRWD (MSG, 40, 21, 0, 1, I, 0, 1, EWTI, 0.0D0)
       GO TO 700
  622  CONTINUE
-      MSG='DLSODE-  TOUT (=R1) too close to T(=R2) to start integration'
+      MSG='DLSODE-  TOUT (=R1) TOO CLOSE TO T(=R2) TO START INTEGRATION'
       CALL XERRWD (MSG, 60, 22, 0, 0, 0, 0, 2, TOUT, T)
       GO TO 700
  623  CONTINUE
-      MSG='DLSODE-  ITASK = I1 and TOUT (=R1) behind TCUR - HU (= R2)  '
+      MSG='DLSODE-  ITASK = I1 AND TOUT (=R1) BEHIND TCUR - HU (= R2)  '
       CALL XERRWD (MSG, 60, 23, 0, 1, ITASK, 0, 2, TOUT, TP)
       GO TO 700
  624  CONTINUE
-      MSG='DLSODE-  ITASK = 4 OR 5 and TCRIT (=R1) behind TCUR (=R2)   '
+      MSG='DLSODE-  ITASK = 4 OR 5 AND TCRIT (=R1) BEHIND TCUR (=R2)   '
       CALL XERRWD (MSG, 60, 24, 0, 0, 0, 0, 2, TCRIT, TN)
       GO TO 700
  625  CONTINUE
-      MSG='DLSODE-  ITASK = 4 or 5 and TCRIT (=R1) behind TOUT (=R2)   '
+      MSG='DLSODE-  ITASK = 4 OR 5 AND TCRIT (=R1) BEHIND TOUT (=R2)   '
       CALL XERRWD (MSG, 60, 25, 0, 0, 0, 0, 2, TCRIT, TOUT)
       GO TO 700
- 626  MSG = 'DLSODE-  At start of problem, too much accuracy   '
+ 626  MSG = 'DLSODE-  AT START OF PROBLEM, TOO MUCH ACCURACY   '
       CALL XERRWD (MSG, 50, 26, 0, 0, 0, 0, 0, 0.0D0, 0.0D0)
-      MSG='      requested for precision of machine..  See TOLSF (=R1) '
+      MSG='      REQUESTED FOR PRECISION OF MACHINE..  SEE TOLSF (=R1) '
       CALL XERRWD (MSG, 60, 26, 0, 0, 0, 0, 1, TOLSF, 0.0D0)
       RWORK(14) = TOLSF
       GO TO 700
- 627  MSG = 'DLSODE-  Trouble in DINTDY.  ITASK = I1, TOUT = R1'
+ 627  MSG = 'DLSODE-  TROUBLE IN DINTDY.  ITASK = I1, TOUT = R1'
       CALL XERRWD (MSG, 50, 27, 0, 1, ITASK, 0, 1, TOUT, 0.0D0)
 C
  700  ISTATE = -3
       RETURN
 C
- 800  MSG = 'DLSODE-  Run aborted.. apparent infinite loop     '
+ 800  MSG = 'DLSODE-  RUN ABORTED.. APPARENT INFINITE LOOP     '
       CALL XERRWD (MSG, 50, 303, 2, 0, 0, 0, 0, 0.0D0, 0.0D0)
       RETURN
 C----------------------- END OF SUBROUTINE DLSODE ----------------------
@@ -1758,30 +1758,30 @@ C----------------------- END OF SUBROUTINE DLSODE ----------------------
       DOUBLE PRECISION FUNCTION DUMACH ()
       IMPLICIT NONE
 C***BEGIN PROLOGUE  DUMACH
-C***PURPOSE  Compute the unit roundoff of the machine.
+C***PURPOSE  COMPUTE THE UNIT ROUNDOFF OF THE MACHINE.
 C***CATEGORY  R1
 C***TYPE      DOUBLE PRECISION (RUMACH-S, DUMACH-D)
 C***KEYWORDS  MACHINE CONSTANTS
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
-C *Usage:
+C *USAGE:
 C        DOUBLE PRECISION  A, DUMACH
 C        A = DUMACH()
 C
-C *Function Return Values:
-C     A : the unit roundoff of the machine.
+C *FUNCTION RETURN VALUES:
+C     A : THE UNIT ROUNDOFF OF THE MACHINE.
 C
-C *Description:
-C     The unit roundoff is defined as the smallest positive machine
-C     number u such that  1.0 + u .ne. 1.0.  This is computed by DUMACH
-C     in a machine-independent manner.
+C *DESCRIPTION:
+C     THE UNIT ROUNDOFF IS DEFINED AS THE SMALLEST POSITIVE MACHINE
+C     NUMBER U SUCH THAT  1.0 + U .NE. 1.0.  THIS IS COMPUTED BY DUMACH
+C     IN A MACHINE-INDEPENDENT MANNER.
 C
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  DUMSUM
 C***REVISION HISTORY  (YYYYMMDD)
 C   19930216  DATE WRITTEN
-C   19930818  Added SLATEC-format prologue.  (FNF)
-C   20030707  Added DUMSUM to force normal storage of COMP.  (ACH)
+C   19930818  ADDED SLATEC-FORMAT PROLOGUE.  (FNF)
+C   20030707  ADDED DUMSUM TO FORCE NORMAL STORAGE OF COMP.  (ACH)
 C***END PROLOGUE  DUMACH
 C
       DOUBLE PRECISION U, COMP
@@ -1792,10 +1792,10 @@ C***FIRST EXECUTABLE STATEMENT  DUMACH
       IF (COMP .NE. 1.0D0) GO TO 10
       DUMACH = U*2.0D0
       RETURN
-C----------------------- End of Function DUMACH ------------------------
+C----------------------- END OF FUNCTION DUMACH ------------------------
       END
       SUBROUTINE DUMSUM(A,B,C)
-C     Routine to force normal storing of A + B, for DUMACH.
+C     ROUTINE TO FORCE NORMAL STORING OF A + B, FOR DUMACH.
       DOUBLE PRECISION A, B, C
       C = A + B
       RETURN
@@ -1804,45 +1804,45 @@ C     Routine to force normal storing of A + B, for DUMACH.
       SUBROUTINE DCFODE (METH, ELCO, TESCO)
 C***BEGIN PROLOGUE  DCFODE
 C***SUBSIDIARY
-C***PURPOSE  Set ODE integrator coefficients.
+C***PURPOSE  SET ODE INTEGRATOR COEFFICIENTS.
 C***TYPE      DOUBLE PRECISION (SCFODE-S, DCFODE-D)
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
 C
-C  DCFODE is called by the integrator routine to set coefficients
-C  needed there.  The coefficients for the current method, as
-C  given by the value of METH, are set for all orders and saved.
-C  The maximum order assumed here is 12 if METH = 1 and 5 if METH = 2.
-C  (A smaller value of the maximum order is also allowed.)
-C  DCFODE is called once at the beginning of the problem,
-C  and is not called again unless and until METH is changed.
+C  DCFODE IS CALLED BY THE INTEGRATOR ROUTINE TO SET COEFFICIENTS
+C  NEEDED THERE.  THE COEFFICIENTS FOR THE CURRENT METHOD, AS
+C  GIVEN BY THE VALUE OF METH, ARE SET FOR ALL ORDERS AND SAVED.
+C  THE MAXIMUM ORDER ASSUMED HERE IS 12 IF METH = 1 AND 5 IF METH = 2.
+C  (A SMALLER VALUE OF THE MAXIMUM ORDER IS ALSO ALLOWED.)
+C  DCFODE IS CALLED ONCE AT THE BEGINNING OF THE PROBLEM,
+C  AND IS NOT CALLED AGAIN UNLESS AND UNTIL METH IS CHANGED.
 C
-C  The ELCO array contains the basic method coefficients.
-C  The coefficients el(i), 1 .le. i .le. nq+1, for the method of
-C  order nq are stored in ELCO(i,nq).  They are given by a genetrating
-C  polynomial, i.e.,
-C      l(x) = el(1) + el(2)*x + ... + el(nq+1)*x**nq.
-C  For the implicit Adams methods, l(x) is given by
-C      dl/dx = (x+1)*(x+2)*...*(x+nq-1)/factorial(nq-1),    l(-1) = 0.
-C  For the BDF methods, l(x) is given by
-C      l(x) = (x+1)*(x+2)* ... *(x+nq)/K,
-C  where         K = factorial(nq)*(1 + 1/2 + ... + 1/nq).
+C  THE ELCO ARRAY CONTAINS THE BASIC METHOD COEFFICIENTS.
+C  THE COEFFICIENTS EL(I), 1 .LE. I .LE. NQ+1, FOR THE METHOD OF
+C  ORDER NQ ARE STORED IN ELCO(I,NQ).  THEY ARE GIVEN BY A GENETRATING
+C  POLYNOMIAL, I.E.,
+C      L(X) = EL(1) + EL(2)*X + ... + EL(NQ+1)*X**NQ.
+C  FOR THE IMPLICIT ADAMS METHODS, L(X) IS GIVEN BY
+C      DL/DX = (X+1)*(X+2)*...*(X+NQ-1)/FACTORIAL(NQ-1),    L(-1) = 0.
+C  FOR THE BDF METHODS, L(X) IS GIVEN BY
+C      L(X) = (X+1)*(X+2)* ... *(X+NQ)/K,
+C  WHERE         K = FACTORIAL(NQ)*(1 + 1/2 + ... + 1/NQ).
 C
-C  The TESCO array contains test constants used for the
-C  local error test and the selection of step size and/or order.
-C  At order nq, TESCO(k,nq) is used for the selection of step
-C  size at order nq - 1 if k = 1, at order nq if k = 2, and at order
-C  nq + 1 if k = 3.
+C  THE TESCO ARRAY CONTAINS TEST CONSTANTS USED FOR THE
+C  LOCAL ERROR TEST AND THE SELECTION OF STEP SIZE AND/OR ORDER.
+C  AT ORDER NQ, TESCO(K,NQ) IS USED FOR THE SELECTION OF STEP
+C  SIZE AT ORDER NQ - 1 IF K = 1, AT ORDER NQ IF K = 2, AND AT ORDER
+C  NQ + 1 IF K = 3.
 C
 C***SEE ALSO  DLSODE
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   791129  DATE WRITTEN
-C   890501  Modified prologue to SLATEC/LDOC format.  (FNF)
-C   890503  Minor cosmetic changes.  (FNF)
-C   930809  Renamed to allow single/double precision versions. (ACH)
+C   890501  MODIFIED PROLOGUE TO SLATEC/LDOC FORMAT.  (FNF)
+C   890503  MINOR COSMETIC CHANGES.  (FNF)
+C   930809  RENAMED TO ALLOW SINGLE/DOUBLE PRECISION VERSIONS. (ACH)
 C***END PROLOGUE  DCFODE
-C**End
+C**END
       INTEGER METH
       INTEGER I, IB, NQ, NQM1, NQP1
       DOUBLE PRECISION ELCO, TESCO
@@ -1864,22 +1864,22 @@ C
       RQFAC = 1.0D0
       DO 140 NQ = 2,12
 C-----------------------------------------------------------------------
-C The PC array will contain the coefficients of the polynomial
-C     p(x) = (x+1)*(x+2)*...*(x+nq-1).
-C Initially, p(x) = 1.
+C THE PC ARRAY WILL CONTAIN THE COEFFICIENTS OF THE POLYNOMIAL
+C     P(X) = (X+1)*(X+2)*...*(X+NQ-1).
+C INITIALLY, P(X) = 1.
 C-----------------------------------------------------------------------
         RQ1FAC = RQFAC
         RQFAC = RQFAC/NQ
         NQM1 = NQ - 1
         FNQM1 = NQM1
         NQP1 = NQ + 1
-C Form coefficients of p(x)*(x+nq-1). ----------------------------------
+C FORM COEFFICIENTS OF P(X)*(X+NQ-1). ----------------------------------
         PC(NQ) = 0.0D0
         DO 110 IB = 1,NQM1
           I = NQP1 - IB
  110      PC(I) = PC(I-1) + FNQM1*PC(I)
         PC(1) = FNQM1*PC(1)
-C Compute integral, -1 to 0, of p(x) and x*p(x). -----------------------
+C COMPUTE INTEGRAL, -1 TO 0, OF P(X) AND X*P(X). -----------------------
         PINT = PC(1)
         XPIN = PC(1)/2.0D0
         TSIGN = 1.0D0
@@ -1887,7 +1887,7 @@ C Compute integral, -1 to 0, of p(x) and x*p(x). -----------------------
           TSIGN = -TSIGN
           PINT = PINT + TSIGN*PC(I)/I
  120      XPIN = XPIN + TSIGN*PC(I)/(I+1)
-C Store coefficients in ELCO and TESCO. --------------------------------
+C STORE COEFFICIENTS IN ELCO AND TESCO. --------------------------------
         ELCO(1,NQ) = PINT*RQ1FAC
         ELCO(2,NQ) = 1.0D0
         DO 130 I = 2,NQ
@@ -1904,19 +1904,19 @@ C
       RQ1FAC = 1.0D0
       DO 230 NQ = 1,5
 C-----------------------------------------------------------------------
-C The PC array will contain the coefficients of the polynomial
-C     p(x) = (x+1)*(x+2)*...*(x+nq).
-C Initially, p(x) = 1.
+C THE PC ARRAY WILL CONTAIN THE COEFFICIENTS OF THE POLYNOMIAL
+C     P(X) = (X+1)*(X+2)*...*(X+NQ).
+C INITIALLY, P(X) = 1.
 C-----------------------------------------------------------------------
         FNQ = NQ
         NQP1 = NQ + 1
-C Form coefficients of p(x)*(x+nq). ------------------------------------
+C FORM COEFFICIENTS OF P(X)*(X+NQ). ------------------------------------
         PC(NQP1) = 0.0D0
         DO 210 IB = 1,NQ
           I = NQ + 2 - IB
  210      PC(I) = PC(I-1) + FNQ*PC(I)
         PC(1) = FNQ*PC(1)
-C Store coefficients in ELCO and TESCO. --------------------------------
+C STORE COEFFICIENTS IN ELCO AND TESCO. --------------------------------
         DO 220 I = 1,NQP1
  220      ELCO(I,NQ) = PC(I)/PC(2)
         ELCO(2,NQ) = 1.0D0
@@ -1933,43 +1933,43 @@ C----------------------- END OF SUBROUTINE DCFODE ----------------------
       IMPLICIT NONE
 C***BEGIN PROLOGUE  DINTDY
 C***SUBSIDIARY
-C***PURPOSE  Interpolate solution derivatives.
+C***PURPOSE  INTERPOLATE SOLUTION DERIVATIVES.
 C***TYPE      DOUBLE PRECISION (SINTDY-S, DINTDY-D)
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
 C
-C  DINTDY computes interpolated values of the K-th derivative of the
-C  dependent variable vector y, and stores it in DKY.  This routine
-C  is called within the package with K = 0 and T = TOUT, but may
-C  also be called by the user for any K up to the current order.
-C  (See detailed instructions in the usage documentation.)
+C  DINTDY COMPUTES INTERPOLATED VALUES OF THE K-TH DERIVATIVE OF THE
+C  DEPENDENT VARIABLE VECTOR Y, AND STORES IT IN DKY.  THIS ROUTINE
+C  IS CALLED WITHIN THE PACKAGE WITH K = 0 AND T = TOUT, BUT MAY
+C  ALSO BE CALLED BY THE USER FOR ANY K UP TO THE CURRENT ORDER.
+C  (SEE DETAILED INSTRUCTIONS IN THE USAGE DOCUMENTATION.)
 C
-C  The computed values in DKY are gotten by interpolation using the
-C  Nordsieck history array YH.  This array corresponds uniquely to a
-C  vector-valued polynomial of degree NQCUR or less, and DKY is set
-C  to the K-th derivative of this polynomial at T.
-C  The formula for DKY is:
-C               q
-C   DKY(i)  =  sum  c(j,K) * (T - tn)**(j-K) * h**(-j) * YH(i,j+1)
-C              j=K
-C  where  c(j,K) = j*(j-1)*...*(j-K+1), q = NQCUR, tn = TCUR, h = HCUR.
-C  The quantities  nq = NQCUR, l = nq+1, N = NEQ, tn, and h are
-C  communicated by COMMON.  The above sum is done in reverse order.
-C  IFLAG is returned negative if either K or T is out of bounds.
+C  THE COMPUTED VALUES IN DKY ARE GOTTEN BY INTERPOLATION USING THE
+C  NORDSIECK HISTORY ARRAY YH.  THIS ARRAY CORRESPONDS UNIQUELY TO A
+C  VECTOR-VALUED POLYNOMIAL OF DEGREE NQCUR OR LESS, AND DKY IS SET
+C  TO THE K-TH DERIVATIVE OF THIS POLYNOMIAL AT T.
+C  THE FORMULA FOR DKY IS:
+C               Q
+C   DKY(I)  =  SUM  C(J,K) * (T - TN)**(J-K) * H**(-J) * YH(I,J+1)
+C              J=K
+C  WHERE  C(J,K) = J*(J-1)*...*(J-K+1), Q = NQCUR, TN = TCUR, H = HCUR.
+C  THE QUANTITIES  NQ = NQCUR, L = NQ+1, N = NEQ, TN, AND H ARE
+C  COMMUNICATED BY COMMON.  THE ABOVE SUM IS DONE IN REVERSE ORDER.
+C  IFLAG IS RETURNED NEGATIVE IF EITHER K OR T IS OUT OF BOUNDS.
 C
 C***SEE ALSO  DLSODE
 C***ROUTINES CALLED  XERRWD
 C***COMMON BLOCKS    DLS001
 C***REVISION HISTORY  (YYMMDD)
 C   791129  DATE WRITTEN
-C   890501  Modified prologue to SLATEC/LDOC format.  (FNF)
-C   890503  Minor cosmetic changes.  (FNF)
-C   930809  Renamed to allow single/double precision versions. (ACH)
-C   010418  Reduced size of Common block /DLS001/. (ACH)
-C   031105  Restored 'own' variables to Common block /DLS001/, to
-C           enable interrupt/restart feature. (ACH)
+C   890501  MODIFIED PROLOGUE TO SLATEC/LDOC FORMAT.  (FNF)
+C   890503  MINOR COSMETIC CHANGES.  (FNF)
+C   930809  RENAMED TO ALLOW SINGLE/DOUBLE PRECISION VERSIONS. (ACH)
+C   010418  REDUCED SIZE OF COMMON BLOCK /DLS001/. (ACH)
+C   031105  RESTORED 'OWN' VARIABLES TO COMMON BLOCK /DLS001/, TO
+C           ENABLE INTERRUPT/RESTART FEATURE. (ACH)
 C***END PROLOGUE  DINTDY
-C**End
+C**END
       INTEGER K, NYH, IFLAG
       DOUBLE PRECISION T, YH, DKY
       DIMENSION YH(NYH,*), DKY(*)
@@ -2024,13 +2024,13 @@ C
  60     DKY(I) = R*DKY(I)
       RETURN
 C
- 80   MSG = 'DINTDY-  K (=I1) illegal      '
+ 80   MSG = 'DINTDY-  K (=I1) ILLEGAL      '
       CALL XERRWD (MSG, 30, 51, 0, 1, K, 0, 0, 0.0D0, 0.0D0)
       IFLAG = -1
       RETURN
- 90   MSG = 'DINTDY-  T (=R1) illegal      '
+ 90   MSG = 'DINTDY-  T (=R1) ILLEGAL      '
       CALL XERRWD (MSG, 30, 52, 0, 0, 0, 0, 1, T, 0.0D0)
-      MSG='      T not in interval TCUR - HU (= R1) to TCUR (=R2)      '
+      MSG='      T NOT IN INTERVAL TCUR - HU (= R1) TO TCUR (=R2)      '
       CALL XERRWD (MSG, 60, 52, 0, 0, 0, 0, 2, TP, TN)
       IFLAG = -2
       RETURN
@@ -2042,57 +2042,57 @@ C----------------------- END OF SUBROUTINE DINTDY ----------------------
       IMPLICIT NONE
 C***BEGIN PROLOGUE  DPREPJ
 C***SUBSIDIARY
-C***PURPOSE  Compute and process Newton iteration matrix.
+C***PURPOSE  COMPUTE AND PROCESS NEWTON ITERATION MATRIX.
 C***TYPE      DOUBLE PRECISION (SPREPJ-S, DPREPJ-D)
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
 C
-C  DPREPJ is called by DSTODE to compute and process the matrix
-C  P = I - h*el(1)*J , where J is an approximation to the Jacobian.
-C  Here J is computed by the user-supplied routine JAC if
-C  MITER = 1 or 4, or by finite differencing if MITER = 2, 3, or 5.
-C  If MITER = 3, a diagonal approximation to J is used.
-C  J is stored in WM and replaced by P.  If MITER .ne. 3, P is then
-C  subjected to LU decomposition in preparation for later solution
-C  of linear systems with P as coefficient matrix.  This is done
-C  by DGEFA if MITER = 1 or 2, and by DGBFA if MITER = 4 or 5.
+C  DPREPJ IS CALLED BY DSTODE TO COMPUTE AND PROCESS THE MATRIX
+C  P = I - H*EL(1)*J , WHERE J IS AN APPROXIMATION TO THE JACOBIAN.
+C  HERE J IS COMPUTED BY THE USER-SUPPLIED ROUTINE JAC IF
+C  MITER = 1 OR 4, OR BY FINITE DIFFERENCING IF MITER = 2, 3, OR 5.
+C  IF MITER = 3, A DIAGONAL APPROXIMATION TO J IS USED.
+C  J IS STORED IN WM AND REPLACED BY P.  IF MITER .NE. 3, P IS THEN
+C  SUBJECTED TO LU DECOMPOSITION IN PREPARATION FOR LATER SOLUTION
+C  OF LINEAR SYSTEMS WITH P AS COEFFICIENT MATRIX.  THIS IS DONE
+C  BY DGEFA IF MITER = 1 OR 2, AND BY DGBFA IF MITER = 4 OR 5.
 C
-C  In addition to variables described in DSTODE and DLSODE prologues,
-C  communication with DPREPJ uses the following:
-C  Y     = array containing predicted values on entry.
-C  FTEM  = work array of length N (ACOR in DSTODE).
-C  SAVF  = array containing f evaluated at predicted y.
-C  WM    = real work space for matrices.  On output it contains the
-C          inverse diagonal matrix if MITER = 3 and the LU decomposition
-C          of P if MITER is 1, 2 , 4, or 5.
-C          Storage of matrix elements starts at WM(3).
-C          WM also contains the following matrix-related data:
-C          WM(1) = SQRT(UROUND), used in numerical Jacobian increments.
-C          WM(2) = H*EL0, saved for later use if MITER = 3.
-C  IWM   = integer work space containing pivot information, starting at
-C          IWM(21), if MITER is 1, 2, 4, or 5.  IWM also contains band
-C          parameters ML = IWM(1) and MU = IWM(2) if MITER is 4 or 5.
-C  EL0   = EL(1) (input).
-C  IERPJ = output error flag,  = 0 if no trouble, .gt. 0 if
-C          P matrix found to be singular.
-C  JCUR  = output flag = 1 to indicate that the Jacobian matrix
-C          (or approximation) is now current.
-C  This routine also uses the COMMON variables EL0, H, TN, UROUND,
-C  MITER, N, NFE, and NJE.
+C  IN ADDITION TO VARIABLES DESCRIBED IN DSTODE AND DLSODE PROLOGUES,
+C  COMMUNICATION WITH DPREPJ USES THE FOLLOWING:
+C  Y     = ARRAY CONTAINING PREDICTED VALUES ON ENTRY.
+C  FTEM  = WORK ARRAY OF LENGTH N (ACOR IN DSTODE).
+C  SAVF  = ARRAY CONTAINING F EVALUATED AT PREDICTED Y.
+C  WM    = REAL WORK SPACE FOR MATRICES.  ON OUTPUT IT CONTAINS THE
+C          INVERSE DIAGONAL MATRIX IF MITER = 3 AND THE LU DECOMPOSITION
+C          OF P IF MITER IS 1, 2 , 4, OR 5.
+C          STORAGE OF MATRIX ELEMENTS STARTS AT WM(3).
+C          WM ALSO CONTAINS THE FOLLOWING MATRIX-RELATED DATA:
+C          WM(1) = SQRT(UROUND), USED IN NUMERICAL JACOBIAN INCREMENTS.
+C          WM(2) = H*EL0, SAVED FOR LATER USE IF MITER = 3.
+C  IWM   = INTEGER WORK SPACE CONTAINING PIVOT INFORMATION, STARTING AT
+C          IWM(21), IF MITER IS 1, 2, 4, OR 5.  IWM ALSO CONTAINS BAND
+C          PARAMETERS ML = IWM(1) AND MU = IWM(2) IF MITER IS 4 OR 5.
+C  EL0   = EL(1) (INPUT).
+C  IERPJ = OUTPUT ERROR FLAG,  = 0 IF NO TROUBLE, .GT. 0 IF
+C          P MATRIX FOUND TO BE SINGULAR.
+C  JCUR  = OUTPUT FLAG = 1 TO INDICATE THAT THE JACOBIAN MATRIX
+C          (OR APPROXIMATION) IS NOW CURRENT.
+C  THIS ROUTINE ALSO USES THE COMMON VARIABLES EL0, H, TN, UROUND,
+C  MITER, N, NFE, AND NJE.
 C
 C***SEE ALSO  DLSODE
 C***ROUTINES CALLED  DGBFA, DGEFA, DVNORM
 C***COMMON BLOCKS    DLS001
 C***REVISION HISTORY  (YYMMDD)
 C   791129  DATE WRITTEN
-C   890501  Modified prologue to SLATEC/LDOC format.  (FNF)
-C   890504  Minor cosmetic changes.  (FNF)
-C   930809  Renamed to allow single/double precision versions. (ACH)
-C   010418  Reduced size of Common block /DLS001/. (ACH)
-C   031105  Restored 'own' variables to Common block /DLS001/, to
-C           enable interrupt/restart feature. (ACH)
+C   890501  MODIFIED PROLOGUE TO SLATEC/LDOC FORMAT.  (FNF)
+C   890504  MINOR COSMETIC CHANGES.  (FNF)
+C   930809  RENAMED TO ALLOW SINGLE/DOUBLE PRECISION VERSIONS. (ACH)
+C   010418  REDUCED SIZE OF COMMON BLOCK /DLS001/. (ACH)
+C   031105  RESTORED 'OWN' VARIABLES TO COMMON BLOCK /DLS001/, TO
+C           ENABLE INTERRUPT/RESTART FEATURE. (ACH)
 C***END PROLOGUE  DPREPJ
-C**End
+C**END
       EXTERNAL F, JAC
       INTEGER NEQ, NYH, IWM
       DOUBLE PRECISION Y, YH, EWT, FTEM, SAVF, WM
@@ -2121,7 +2121,7 @@ C***FIRST EXECUTABLE STATEMENT  DPREPJ
       JCUR = 1
       HL0 = H*EL0
       GO TO (100, 200, 300, 400, 500), MITER
-C If MITER = 1, call JAC and multiply by scalar. -----------------------
+C IF MITER = 1, CALL JAC AND MULTIPLY BY SCALAR. -----------------------
  100  LENP = N*N
       DO 110 I = 1,LENP
  110    WM(I+2) = 0.0D0
@@ -2130,7 +2130,7 @@ C If MITER = 1, call JAC and multiply by scalar. -----------------------
       DO 120 I = 1,LENP
  120    WM(I+2) = WM(I+2)*CON
       GO TO 240
-C If MITER = 2, make N calls to F to approximate J. --------------------
+C IF MITER = 2, MAKE N CALLS TO F TO APPROXIMATE J. --------------------
  200  FAC = DVNORM (N, SAVF, EWT)
       R0 = 1000.0D0*ABS(H)*UROUND*N*FAC
       IF (R0 .EQ. 0.0D0) R0 = 1.0D0
@@ -2148,17 +2148,17 @@ C If MITER = 2, make N calls to F to approximate J. --------------------
         J1 = J1 + N
  230    CONTINUE
       NFE = NFE + N
-C Add identity matrix. -------------------------------------------------
+C ADD IDENTITY MATRIX. -------------------------------------------------
  240  J = 3
       NP1 = N + 1
       DO 250 I = 1,N
         WM(J) = WM(J) + 1.0D0
  250    J = J + NP1
-C Do LU decomposition on P. --------------------------------------------
+C DO LU DECOMPOSITION ON P. --------------------------------------------
       CALL DGEFA (WM(3), N, N, IWM(21), IER)
       IF (IER .NE. 0) IERPJ = 1
       RETURN
-C If MITER = 3, construct a diagonal approximation to J and P. ---------
+C IF MITER = 3, CONSTRUCT A DIAGONAL APPROXIMATION TO J AND P. ---------
  300  WM(2) = HL0
       R = EL0*0.1D0
       DO 310 I = 1,N
@@ -2176,7 +2176,7 @@ C If MITER = 3, construct a diagonal approximation to J and P. ---------
       RETURN
  330  IERPJ = 1
       RETURN
-C If MITER = 4, call JAC and multiply by scalar. -----------------------
+C IF MITER = 4, CALL JAC AND MULTIPLY BY SCALAR. -----------------------
  400  ML = IWM(1)
       MU = IWM(2)
       ML3 = ML + 3
@@ -2190,7 +2190,7 @@ C If MITER = 4, call JAC and multiply by scalar. -----------------------
       DO 420 I = 1,LENP
  420    WM(I+2) = WM(I+2)*CON
       GO TO 570
-C If MITER = 5, make MBAND calls to F to approximate J. ----------------
+C IF MITER = 5, MAKE MBAND CALLS TO F TO APPROXIMATE J. ----------------
  500  ML = IWM(1)
       MU = IWM(2)
       MBAND = ML + MU + 1
@@ -2220,12 +2220,12 @@ C If MITER = 5, make MBAND calls to F to approximate J. ----------------
  550      CONTINUE
  560    CONTINUE
       NFE = NFE + MBA
-C Add identity matrix. -------------------------------------------------
+C ADD IDENTITY MATRIX. -------------------------------------------------
  570  II = MBAND + 2
       DO 580 I = 1,N
         WM(II) = WM(II) + 1.0D0
  580    II = II + MEBAND
-C Do LU decomposition of P. --------------------------------------------
+C DO LU DECOMPOSITION OF P. --------------------------------------------
       CALL DGBFA (WM(3), MEBAND, N, ML, MU, IWM(21), IER)
       IF (IER .NE. 0) IERPJ = 1
       RETURN
@@ -2236,47 +2236,47 @@ C----------------------- END OF SUBROUTINE DPREPJ ----------------------
       IMPLICIT NONE
 C***BEGIN PROLOGUE  DSOLSY
 C***SUBSIDIARY
-C***PURPOSE  ODEPACK linear system solver.
+C***PURPOSE  ODEPACK LINEAR SYSTEM SOLVER.
 C***TYPE      DOUBLE PRECISION (SSOLSY-S, DSOLSY-D)
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
 C
-C  This routine manages the solution of the linear system arising from
-C  a chord iteration.  It is called if MITER .ne. 0.
-C  If MITER is 1 or 2, it calls DGESL to accomplish this.
-C  If MITER = 3 it updates the coefficient h*EL0 in the diagonal
-C  matrix, and then computes the solution.
-C  If MITER is 4 or 5, it calls DGBSL.
-C  Communication with DSOLSY uses the following variables:
-C  WM    = real work space containing the inverse diagonal matrix if
-C          MITER = 3 and the LU decomposition of the matrix otherwise.
-C          Storage of matrix elements starts at WM(3).
-C          WM also contains the following matrix-related data:
-C          WM(1) = SQRT(UROUND) (not used here),
-C          WM(2) = HL0, the previous value of h*EL0, used if MITER = 3.
-C  IWM   = integer work space containing pivot information, starting at
-C          IWM(21), if MITER is 1, 2, 4, or 5.  IWM also contains band
-C          parameters ML = IWM(1) and MU = IWM(2) if MITER is 4 or 5.
-C  X     = the right-hand side vector on input, and the solution vector
-C          on output, of length N.
-C  TEM   = vector of work space of length N, not used in this version.
-C  IERSL = output flag (in COMMON).  IERSL = 0 if no trouble occurred.
-C          IERSL = 1 if a singular matrix arose with MITER = 3.
-C  This routine also uses the COMMON variables EL0, H, MITER, and N.
+C  THIS ROUTINE MANAGES THE SOLUTION OF THE LINEAR SYSTEM ARISING FROM
+C  A CHORD ITERATION.  IT IS CALLED IF MITER .NE. 0.
+C  IF MITER IS 1 OR 2, IT CALLS DGESL TO ACCOMPLISH THIS.
+C  IF MITER = 3 IT UPDATES THE COEFFICIENT H*EL0 IN THE DIAGONAL
+C  MATRIX, AND THEN COMPUTES THE SOLUTION.
+C  IF MITER IS 4 OR 5, IT CALLS DGBSL.
+C  COMMUNICATION WITH DSOLSY USES THE FOLLOWING VARIABLES:
+C  WM    = REAL WORK SPACE CONTAINING THE INVERSE DIAGONAL MATRIX IF
+C          MITER = 3 AND THE LU DECOMPOSITION OF THE MATRIX OTHERWISE.
+C          STORAGE OF MATRIX ELEMENTS STARTS AT WM(3).
+C          WM ALSO CONTAINS THE FOLLOWING MATRIX-RELATED DATA:
+C          WM(1) = SQRT(UROUND) (NOT USED HERE),
+C          WM(2) = HL0, THE PREVIOUS VALUE OF H*EL0, USED IF MITER = 3.
+C  IWM   = INTEGER WORK SPACE CONTAINING PIVOT INFORMATION, STARTING AT
+C          IWM(21), IF MITER IS 1, 2, 4, OR 5.  IWM ALSO CONTAINS BAND
+C          PARAMETERS ML = IWM(1) AND MU = IWM(2) IF MITER IS 4 OR 5.
+C  X     = THE RIGHT-HAND SIDE VECTOR ON INPUT, AND THE SOLUTION VECTOR
+C          ON OUTPUT, OF LENGTH N.
+C  TEM   = VECTOR OF WORK SPACE OF LENGTH N, NOT USED IN THIS VERSION.
+C  IERSL = OUTPUT FLAG (IN COMMON).  IERSL = 0 IF NO TROUBLE OCCURRED.
+C          IERSL = 1 IF A SINGULAR MATRIX AROSE WITH MITER = 3.
+C  THIS ROUTINE ALSO USES THE COMMON VARIABLES EL0, H, MITER, AND N.
 C
 C***SEE ALSO  DLSODE
 C***ROUTINES CALLED  DGBSL, DGESL
 C***COMMON BLOCKS    DLS001
 C***REVISION HISTORY  (YYMMDD)
 C   791129  DATE WRITTEN
-C   890501  Modified prologue to SLATEC/LDOC format.  (FNF)
-C   890503  Minor cosmetic changes.  (FNF)
-C   930809  Renamed to allow single/double precision versions. (ACH)
-C   010418  Reduced size of Common block /DLS001/. (ACH)
-C   031105  Restored 'own' variables to Common block /DLS001/, to
-C           enable interrupt/restart feature. (ACH)
+C   890501  MODIFIED PROLOGUE TO SLATEC/LDOC FORMAT.  (FNF)
+C   890503  MINOR COSMETIC CHANGES.  (FNF)
+C   930809  RENAMED TO ALLOW SINGLE/DOUBLE PRECISION VERSIONS. (ACH)
+C   010418  REDUCED SIZE OF COMMON BLOCK /DLS001/. (ACH)
+C   031105  RESTORED 'OWN' VARIABLES TO COMMON BLOCK /DLS001/, TO
+C           ENABLE INTERRUPT/RESTART FEATURE. (ACH)
 C***END PROLOGUE  DSOLSY
-C**End
+C**END
       INTEGER IWM
       DOUBLE PRECISION WM, X, TEM
       DIMENSION WM(*), IWM(*), X(*), TEM(*)
@@ -2328,38 +2328,38 @@ C----------------------- END OF SUBROUTINE DSOLSY ----------------------
       IMPLICIT NONE
 C***BEGIN PROLOGUE  DSRCOM
 C***SUBSIDIARY
-C***PURPOSE  Save/restore ODEPACK COMMON blocks.
+C***PURPOSE  SAVE/RESTORE ODEPACK COMMON BLOCKS.
 C***TYPE      DOUBLE PRECISION (SSRCOM-S, DSRCOM-D)
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
 C
-C  This routine saves or restores (depending on JOB) the contents of
-C  the COMMON block DLS001, which is used internally
-C  by one or more ODEPACK solvers.
+C  THIS ROUTINE SAVES OR RESTORES (DEPENDING ON JOB) THE CONTENTS OF
+C  THE COMMON BLOCK DLS001, WHICH IS USED INTERNALLY
+C  BY ONE OR MORE ODEPACK SOLVERS.
 C
-C  RSAV = real array of length 218 or more.
-C  ISAV = integer array of length 37 or more.
-C  JOB  = flag indicating to save or restore the COMMON blocks:
-C         JOB  = 1 if COMMON is to be saved (written to RSAV/ISAV)
-C         JOB  = 2 if COMMON is to be restored (read from RSAV/ISAV)
-C         A call with JOB = 2 presumes a prior call with JOB = 1.
+C  RSAV = REAL ARRAY OF LENGTH 218 OR MORE.
+C  ISAV = INTEGER ARRAY OF LENGTH 37 OR MORE.
+C  JOB  = FLAG INDICATING TO SAVE OR RESTORE THE COMMON BLOCKS:
+C         JOB  = 1 IF COMMON IS TO BE SAVED (WRITTEN TO RSAV/ISAV)
+C         JOB  = 2 IF COMMON IS TO BE RESTORED (READ FROM RSAV/ISAV)
+C         A CALL WITH JOB = 2 PRESUMES A PRIOR CALL WITH JOB = 1.
 C
 C***SEE ALSO  DLSODE
 C***ROUTINES CALLED  (NONE)
 C***COMMON BLOCKS    DLS001
 C***REVISION HISTORY  (YYMMDD)
 C   791129  DATE WRITTEN
-C   890501  Modified prologue to SLATEC/LDOC format.  (FNF)
-C   890503  Minor cosmetic changes.  (FNF)
-C   921116  Deleted treatment of block /EH0001/.  (ACH)
-C   930801  Reduced Common block length by 2.  (ACH)
-C   930809  Renamed to allow single/double precision versions. (ACH)
-C   010418  Reduced Common block length by 209+12. (ACH)
-C   031105  Restored 'own' variables to Common block /DLS001/, to
-C           enable interrupt/restart feature. (ACH)
-C   031112  Added SAVE statement for data-loaded constants.
+C   890501  MODIFIED PROLOGUE TO SLATEC/LDOC FORMAT.  (FNF)
+C   890503  MINOR COSMETIC CHANGES.  (FNF)
+C   921116  DELETED TREATMENT OF BLOCK /EH0001/.  (ACH)
+C   930801  REDUCED COMMON BLOCK LENGTH BY 2.  (ACH)
+C   930809  RENAMED TO ALLOW SINGLE/DOUBLE PRECISION VERSIONS. (ACH)
+C   010418  REDUCED COMMON BLOCK LENGTH BY 209+12. (ACH)
+C   031105  RESTORED 'OWN' VARIABLES TO COMMON BLOCK /DLS001/, TO
+C           ENABLE INTERRUPT/RESTART FEATURE. (ACH)
+C   031112  ADDED SAVE STATEMENT FOR DATA-LOADED CONSTANTS.
 C***END PROLOGUE  DSRCOM
-C**End
+C**END
       INTEGER ISAV, JOB
       INTEGER ILS
       INTEGER I, LENILS, LENRLS
@@ -2392,96 +2392,96 @@ C----------------------- END OF SUBROUTINE DSRCOM ----------------------
       IMPLICIT NONE
 C***BEGIN PROLOGUE  DSTODE
 C***SUBSIDIARY
-C***PURPOSE  Performs one step of an ODEPACK integration.
+C***PURPOSE  PERFORMS ONE STEP OF AN ODEPACK INTEGRATION.
 C***TYPE      DOUBLE PRECISION (SSTODE-S, DSTODE-D)
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
 C
-C  DSTODE performs one step of the integration of an initial value
-C  problem for a system of ordinary differential equations.
-C  Note:  DSTODE is independent of the value of the iteration method
-C  indicator MITER, when this is .ne. 0, and hence is independent
-C  of the type of chord method used, or the Jacobian structure.
-C  Communication with DSTODE is done with the following variables:
+C  DSTODE PERFORMS ONE STEP OF THE INTEGRATION OF AN INITIAL VALUE
+C  PROBLEM FOR A SYSTEM OF ORDINARY DIFFERENTIAL EQUATIONS.
+C  NOTE:  DSTODE IS INDEPENDENT OF THE VALUE OF THE ITERATION METHOD
+C  INDICATOR MITER, WHEN THIS IS .NE. 0, AND HENCE IS INDEPENDENT
+C  OF THE TYPE OF CHORD METHOD USED, OR THE JACOBIAN STRUCTURE.
+C  COMMUNICATION WITH DSTODE IS DONE WITH THE FOLLOWING VARIABLES:
 C
-C  NEQ    = integer array containing problem size in NEQ(1), and
-C           passed as the NEQ argument in all calls to F and JAC.
-C  Y      = an array of length .ge. N used as the Y argument in
-C           all calls to F and JAC.
-C  YH     = an NYH by LMAX array containing the dependent variables
-C           and their approximate scaled derivatives, where
-C           LMAX = MAXORD + 1.  YH(i,j+1) contains the approximate
-C           j-th derivative of y(i), scaled by h**j/factorial(j)
-C           (j = 0,1,...,NQ).  on entry for the first step, the first
-C           two columns of YH must be set from the initial values.
-C  NYH    = a constant integer .ge. N, the first dimension of YH.
-C  YH1    = a one-dimensional array occupying the same space as YH.
-C  EWT    = an array of length N containing multiplicative weights
-C           for local error measurements.  Local errors in Y(i) are
-C           compared to 1.0/EWT(i) in various error tests.
-C  SAVF   = an array of working storage, of length N.
-C           Also used for input of YH(*,MAXORD+2) when JSTART = -1
-C           and MAXORD .lt. the current order NQ.
-C  ACOR   = a work array of length N, used for the accumulated
-C           corrections.  On a successful return, ACOR(i) contains
-C           the estimated one-step local error in Y(i).
-C  WM,IWM = real and integer work arrays associated with matrix
-C           operations in chord iteration (MITER .ne. 0).
-C  PJAC   = name of routine to evaluate and preprocess Jacobian matrix
-C           and P = I - h*el0*JAC, if a chord method is being used.
-C  SLVS   = name of routine to solve linear system in chord iteration.
-C  CCMAX  = maximum relative change in h*el0 before PJAC is called.
-C  H      = the step size to be attempted on the next step.
-C           H is altered by the error control algorithm during the
-C           problem.  H can be either positive or negative, but its
-C           sign must remain constant throughout the problem.
-C  HMIN   = the minimum absolute value of the step size h to be used.
-C  HMXI   = inverse of the maximum absolute value of h to be used.
-C           HMXI = 0.0 is allowed and corresponds to an infinite hmax.
-C           HMIN and HMXI may be changed at any time, but will not
-C           take effect until the next change of h is considered.
-C  TN     = the independent variable. TN is updated on each step taken.
-C  JSTART = an integer used for input only, with the following
-C           values and meanings:
-C                0  perform the first step.
-C            .gt.0  take a new step continuing from the last.
-C               -1  take the next step with a new value of H, MAXORD,
-C                     N, METH, MITER, and/or matrix parameters.
-C               -2  take the next step with a new value of H,
-C                     but with other inputs unchanged.
-C           On return, JSTART is set to 1 to facilitate continuation.
-C  KFLAG  = a completion code with the following meanings:
-C                0  the step was succesful.
-C               -1  the requested error could not be achieved.
-C               -2  corrector convergence could not be achieved.
-C               -3  fatal error in PJAC or SLVS.
-C           A return with KFLAG = -1 or -2 means either
-C           abs(H) = HMIN or 10 consecutive failures occurred.
-C           On a return with KFLAG negative, the values of TN and
-C           the YH array are as of the beginning of the last
-C           step, and H is the last step size attempted.
-C  MAXORD = the maximum order of integration method to be allowed.
-C  MAXCOR = the maximum number of corrector iterations allowed.
-C  MSBP   = maximum number of steps between PJAC calls (MITER .gt. 0).
-C  MXNCF  = maximum number of convergence failures allowed.
-C  METH/MITER = the method flags.  See description in driver.
-C  N      = the number of first-order differential equations.
-C  The values of CCMAX, H, HMIN, HMXI, TN, JSTART, KFLAG, MAXORD,
-C  MAXCOR, MSBP, MXNCF, METH, MITER, and N are communicated via COMMON.
+C  NEQ    = INTEGER ARRAY CONTAINING PROBLEM SIZE IN NEQ(1), AND
+C           PASSED AS THE NEQ ARGUMENT IN ALL CALLS TO F AND JAC.
+C  Y      = AN ARRAY OF LENGTH .GE. N USED AS THE Y ARGUMENT IN
+C           ALL CALLS TO F AND JAC.
+C  YH     = AN NYH BY LMAX ARRAY CONTAINING THE DEPENDENT VARIABLES
+C           AND THEIR APPROXIMATE SCALED DERIVATIVES, WHERE
+C           LMAX = MAXORD + 1.  YH(I,J+1) CONTAINS THE APPROXIMATE
+C           J-TH DERIVATIVE OF Y(I), SCALED BY H**J/FACTORIAL(J)
+C           (J = 0,1,...,NQ).  ON ENTRY FOR THE FIRST STEP, THE FIRST
+C           TWO COLUMNS OF YH MUST BE SET FROM THE INITIAL VALUES.
+C  NYH    = A CONSTANT INTEGER .GE. N, THE FIRST DIMENSION OF YH.
+C  YH1    = A ONE-DIMENSIONAL ARRAY OCCUPYING THE SAME SPACE AS YH.
+C  EWT    = AN ARRAY OF LENGTH N CONTAINING MULTIPLICATIVE WEIGHTS
+C           FOR LOCAL ERROR MEASUREMENTS.  LOCAL ERRORS IN Y(I) ARE
+C           COMPARED TO 1.0/EWT(I) IN VARIOUS ERROR TESTS.
+C  SAVF   = AN ARRAY OF WORKING STORAGE, OF LENGTH N.
+C           ALSO USED FOR INPUT OF YH(*,MAXORD+2) WHEN JSTART = -1
+C           AND MAXORD .LT. THE CURRENT ORDER NQ.
+C  ACOR   = A WORK ARRAY OF LENGTH N, USED FOR THE ACCUMULATED
+C           CORRECTIONS.  ON A SUCCESSFUL RETURN, ACOR(I) CONTAINS
+C           THE ESTIMATED ONE-STEP LOCAL ERROR IN Y(I).
+C  WM,IWM = REAL AND INTEGER WORK ARRAYS ASSOCIATED WITH MATRIX
+C           OPERATIONS IN CHORD ITERATION (MITER .NE. 0).
+C  PJAC   = NAME OF ROUTINE TO EVALUATE AND PREPROCESS JACOBIAN MATRIX
+C           AND P = I - H*EL0*JAC, IF A CHORD METHOD IS BEING USED.
+C  SLVS   = NAME OF ROUTINE TO SOLVE LINEAR SYSTEM IN CHORD ITERATION.
+C  CCMAX  = MAXIMUM RELATIVE CHANGE IN H*EL0 BEFORE PJAC IS CALLED.
+C  H      = THE STEP SIZE TO BE ATTEMPTED ON THE NEXT STEP.
+C           H IS ALTERED BY THE ERROR CONTROL ALGORITHM DURING THE
+C           PROBLEM.  H CAN BE EITHER POSITIVE OR NEGATIVE, BUT ITS
+C           SIGN MUST REMAIN CONSTANT THROUGHOUT THE PROBLEM.
+C  HMIN   = THE MINIMUM ABSOLUTE VALUE OF THE STEP SIZE H TO BE USED.
+C  HMXI   = INVERSE OF THE MAXIMUM ABSOLUTE VALUE OF H TO BE USED.
+C           HMXI = 0.0 IS ALLOWED AND CORRESPONDS TO AN INFINITE HMAX.
+C           HMIN AND HMXI MAY BE CHANGED AT ANY TIME, BUT WILL NOT
+C           TAKE EFFECT UNTIL THE NEXT CHANGE OF H IS CONSIDERED.
+C  TN     = THE INDEPENDENT VARIABLE. TN IS UPDATED ON EACH STEP TAKEN.
+C  JSTART = AN INTEGER USED FOR INPUT ONLY, WITH THE FOLLOWING
+C           VALUES AND MEANINGS:
+C                0  PERFORM THE FIRST STEP.
+C            .GT.0  TAKE A NEW STEP CONTINUING FROM THE LAST.
+C               -1  TAKE THE NEXT STEP WITH A NEW VALUE OF H, MAXORD,
+C                     N, METH, MITER, AND/OR MATRIX PARAMETERS.
+C               -2  TAKE THE NEXT STEP WITH A NEW VALUE OF H,
+C                     BUT WITH OTHER INPUTS UNCHANGED.
+C           ON RETURN, JSTART IS SET TO 1 TO FACILITATE CONTINUATION.
+C  KFLAG  = A COMPLETION CODE WITH THE FOLLOWING MEANINGS:
+C                0  THE STEP WAS SUCCESFUL.
+C               -1  THE REQUESTED ERROR COULD NOT BE ACHIEVED.
+C               -2  CORRECTOR CONVERGENCE COULD NOT BE ACHIEVED.
+C               -3  FATAL ERROR IN PJAC OR SLVS.
+C           A RETURN WITH KFLAG = -1 OR -2 MEANS EITHER
+C           ABS(H) = HMIN OR 10 CONSECUTIVE FAILURES OCCURRED.
+C           ON A RETURN WITH KFLAG NEGATIVE, THE VALUES OF TN AND
+C           THE YH ARRAY ARE AS OF THE BEGINNING OF THE LAST
+C           STEP, AND H IS THE LAST STEP SIZE ATTEMPTED.
+C  MAXORD = THE MAXIMUM ORDER OF INTEGRATION METHOD TO BE ALLOWED.
+C  MAXCOR = THE MAXIMUM NUMBER OF CORRECTOR ITERATIONS ALLOWED.
+C  MSBP   = MAXIMUM NUMBER OF STEPS BETWEEN PJAC CALLS (MITER .GT. 0).
+C  MXNCF  = MAXIMUM NUMBER OF CONVERGENCE FAILURES ALLOWED.
+C  METH/MITER = THE METHOD FLAGS.  SEE DESCRIPTION IN DRIVER.
+C  N      = THE NUMBER OF FIRST-ORDER DIFFERENTIAL EQUATIONS.
+C  THE VALUES OF CCMAX, H, HMIN, HMXI, TN, JSTART, KFLAG, MAXORD,
+C  MAXCOR, MSBP, MXNCF, METH, MITER, AND N ARE COMMUNICATED VIA COMMON.
 C
 C***SEE ALSO  DLSODE
 C***ROUTINES CALLED  DCFODE, DVNORM
 C***COMMON BLOCKS    DLS001
 C***REVISION HISTORY  (YYMMDD)
 C   791129  DATE WRITTEN
-C   890501  Modified prologue to SLATEC/LDOC format.  (FNF)
-C   890503  Minor cosmetic changes.  (FNF)
-C   930809  Renamed to allow single/double precision versions. (ACH)
-C   010418  Reduced size of Common block /DLS001/. (ACH)
-C   031105  Restored 'own' variables to Common block /DLS001/, to
-C           enable interrupt/restart feature. (ACH)
+C   890501  MODIFIED PROLOGUE TO SLATEC/LDOC FORMAT.  (FNF)
+C   890503  MINOR COSMETIC CHANGES.  (FNF)
+C   930809  RENAMED TO ALLOW SINGLE/DOUBLE PRECISION VERSIONS. (ACH)
+C   010418  REDUCED SIZE OF COMMON BLOCK /DLS001/. (ACH)
+C   031105  RESTORED 'OWN' VARIABLES TO COMMON BLOCK /DLS001/, TO
+C           ENABLE INTERRUPT/RESTART FEATURE. (ACH)
 C***END PROLOGUE  DSTODE
-C**End
+C**END
       EXTERNAL F, JAC, PJAC, SLVS
       INTEGER NEQ, NYH, IWM
       DOUBLE PRECISION Y, YH, YH1, EWT, SAVF, ACOR, WM
@@ -2517,12 +2517,12 @@ C***FIRST EXECUTABLE STATEMENT  DSTODE
       IF (JSTART .EQ. -1) GO TO 100
       IF (JSTART .EQ. -2) GO TO 160
 C-----------------------------------------------------------------------
-C On the first call, the order is set to 1, and other variables are
-C initialized.  RMAX is the maximum ratio by which H can be increased
-C in a single step.  It is initially 1.E4 to compensate for the small
-C initial H, but then is normally equal to 10.  If a failure
-C occurs (in corrector convergence or error test), RMAX is set to 2
-C for the next increase.
+C ON THE FIRST CALL, THE ORDER IS SET TO 1, AND OTHER VARIABLES ARE
+C INITIALIZED.  RMAX IS THE MAXIMUM RATIO BY WHICH H CAN BE INCREASED
+C IN A SINGLE STEP.  IT IS INITIALLY 1.E4 TO COMPENSATE FOR THE SMALL
+C INITIAL H, BUT THEN IS NORMALLY EQUAL TO 10.  IF A FAILURE
+C OCCURS (IN CORRECTOR CONVERGENCE OR ERROR TEST), RMAX IS SET TO 2
+C FOR THE NEXT INCREASE.
 C-----------------------------------------------------------------------
       LMAX = MAXORD + 1
       NQ = 1
@@ -2539,17 +2539,17 @@ C-----------------------------------------------------------------------
       IRET = 3
       GO TO 140
 C-----------------------------------------------------------------------
-C The following block handles preliminaries needed when JSTART = -1.
-C IPUP is set to MITER to force a matrix update.
-C If an order increase is about to be considered (IALTH = 1),
-C IALTH is reset to 2 to postpone consideration one more step.
-C If the caller has changed METH, DCFODE is called to reset
-C the coefficients of the method.
-C If the caller has changed MAXORD to a value less than the current
-C order NQ, NQ is reduced to MAXORD, and a new H chosen accordingly.
-C If H is to be changed, YH must be rescaled.
-C If H or METH is being changed, IALTH is reset to L = NQ + 1
-C to prevent further changes in H for that many steps.
+C THE FOLLOWING BLOCK HANDLES PRELIMINARIES NEEDED WHEN JSTART = -1.
+C IPUP IS SET TO MITER TO FORCE A MATRIX UPDATE.
+C IF AN ORDER INCREASE IS ABOUT TO BE CONSIDERED (IALTH = 1),
+C IALTH IS RESET TO 2 TO POSTPONE CONSIDERATION ONE MORE STEP.
+C IF THE CALLER HAS CHANGED METH, DCFODE IS CALLED TO RESET
+C THE COEFFICIENTS OF THE METHOD.
+C IF THE CALLER HAS CHANGED MAXORD TO A VALUE LESS THAN THE CURRENT
+C ORDER NQ, NQ IS REDUCED TO MAXORD, AND A NEW H CHOSEN ACCORDINGLY.
+C IF H IS TO BE CHANGED, YH MUST BE RESCALED.
+C IF H OR METH IS BEING CHANGED, IALTH IS RESET TO L = NQ + 1
+C TO PREVENT FURTHER CHANGES IN H FOR THAT MANY STEPS.
 C-----------------------------------------------------------------------
  100  IPUP = MITER
       LMAX = MAXORD + 1
@@ -2580,9 +2580,9 @@ C-----------------------------------------------------------------------
       H = HOLD
       GO TO 175
 C-----------------------------------------------------------------------
-C DCFODE is called to get all the integration coefficients for the
-C current METH.  Then the EL vector and related constants are reset
-C whenever the order NQ is changed, or at the start of the problem.
+C DCFODE IS CALLED TO GET ALL THE INTEGRATION COEFFICIENTS FOR THE
+C CURRENT METH.  THEN THE EL VECTOR AND RELATED CONSTANTS ARE RESET
+C WHENEVER THE ORDER NQ IS CHANGED, OR AT THE START OF THE PROBLEM.
 C-----------------------------------------------------------------------
  140  CALL DCFODE (METH, ELCO, TESCO)
  150  DO 155 I = 1,L
@@ -2593,10 +2593,10 @@ C-----------------------------------------------------------------------
       CONIT = 0.5D0/(NQ+2)
       GO TO (160, 170, 200), IRET
 C-----------------------------------------------------------------------
-C If H is being changed, the H ratio RH is checked against
-C RMAX, HMIN, and HMXI, and the YH array rescaled.  IALTH is set to
-C L = NQ + 1 to prevent a change of H for that many steps, unless
-C forced by a convergence or error test failure.
+C IF H IS BEING CHANGED, THE H RATIO RH IS CHECKED AGAINST
+C RMAX, HMIN, AND HMXI, AND THE YH ARRAY RESCALED.  IALTH IS SET TO
+C L = NQ + 1 TO PREVENT A CHANGE OF H FOR THAT MANY STEPS, UNLESS
+C FORCED BY A CONVERGENCE OR ERROR TEST FAILURE.
 C-----------------------------------------------------------------------
  160  IF (H .EQ. HOLD) GO TO 200
       RH = H/HOLD
@@ -2616,12 +2616,12 @@ C-----------------------------------------------------------------------
       IALTH = L
       IF (IREDO .EQ. 0) GO TO 690
 C-----------------------------------------------------------------------
-C This section computes the predicted values by effectively
-C multiplying the YH array by the Pascal Triangle matrix.
-C RC is the ratio of new to old values of the coefficient  H*EL(1).
-C When RC differs from 1 by more than CCMAX, IPUP is set to MITER
-C to force PJAC to be called, if a Jacobian is involved.
-C In any case, PJAC is called at least every MSBP steps.
+C THIS SECTION COMPUTES THE PREDICTED VALUES BY EFFECTIVELY
+C MULTIPLYING THE YH ARRAY BY THE PASCAL TRIANGLE MATRIX.
+C RC IS THE RATIO OF NEW TO OLD VALUES OF THE COEFFICIENT  H*EL(1).
+C WHEN RC DIFFERS FROM 1 BY MORE THAN CCMAX, IPUP IS SET TO MITER
+C TO FORCE PJAC TO BE CALLED, IF A JACOBIAN IS INVOLVED.
+C IN ANY CASE, PJAC IS CALLED AT LEAST EVERY MSBP STEPS.
 C-----------------------------------------------------------------------
  200  IF (ABS(RC-1.0D0) .GT. CCMAX) IPUP = MITER
       IF (NST .GE. NSLP+MSBP) IPUP = MITER
@@ -2629,15 +2629,15 @@ C-----------------------------------------------------------------------
       I1 = NQNYH + 1
       DO 215 JB = 1,NQ
         I1 = I1 - NYH
-Cdir$ ivdep
+CDIR$ IVDEP
         DO 210 I = I1,NQNYH
  210      YH1(I) = YH1(I) + YH1(I+NYH)
  215    CONTINUE
 C-----------------------------------------------------------------------
-C Up to MAXCOR corrector iterations are taken.  A convergence test is
-C made on the R.M.S. norm of each correction, weighted by the error
-C weight vector EWT.  The sum of the corrections is accumulated in the
-C vector ACOR(i).  The YH array is not altered in the corrector loop.
+C UP TO MAXCOR CORRECTOR ITERATIONS ARE TAKEN.  A CONVERGENCE TEST IS
+C MADE ON THE R.M.S. NORM OF EACH CORRECTION, WEIGHTED BY THE ERROR
+C WEIGHT VECTOR EWT.  THE SUM OF THE CORRECTIONS IS ACCUMULATED IN THE
+C VECTOR ACOR(I).  THE YH ARRAY IS NOT ALTERED IN THE CORRECTOR LOOP.
 C-----------------------------------------------------------------------
  220  M = 0
       DO 230 I = 1,N
@@ -2646,9 +2646,9 @@ C-----------------------------------------------------------------------
       NFE = NFE + 1
       IF (IPUP .LE. 0) GO TO 250
 C-----------------------------------------------------------------------
-C If indicated, the matrix P = I - h*el(1)*J is reevaluated and
-C preprocessed before starting the corrector iteration.  IPUP is set
-C to 0 as an indicator that this has been done.
+C IF INDICATED, THE MATRIX P = I - H*EL(1)*J IS REEVALUATED AND
+C PREPROCESSED BEFORE STARTING THE CORRECTOR ITERATION.  IPUP IS SET
+C TO 0 AS AN INDICATOR THAT THIS HAS BEEN DONE.
 C-----------------------------------------------------------------------
       CALL PJAC (NEQ, Y, YH, NYH, EWT, ACOR, SAVF, WM, IWM, F, JAC)
       IPUP = 0
@@ -2660,8 +2660,8 @@ C-----------------------------------------------------------------------
  260    ACOR(I) = 0.0D0
  270  IF (MITER .NE. 0) GO TO 350
 C-----------------------------------------------------------------------
-C In the case of functional iteration, update Y directly from
-C the result of the last function evaluation.
+C IN THE CASE OF FUNCTIONAL ITERATION, UPDATE Y DIRECTLY FROM
+C THE RESULT OF THE LAST FUNCTION EVALUATION.
 C-----------------------------------------------------------------------
       DO 290 I = 1,N
         SAVF(I) = H*SAVF(I) - YH(I,2)
@@ -2672,9 +2672,9 @@ C-----------------------------------------------------------------------
  300    ACOR(I) = SAVF(I)
       GO TO 400
 C-----------------------------------------------------------------------
-C In the case of the chord method, compute the corrector error,
-C and solve the linear system with that as right-hand side and
-C P as coefficient matrix.
+C IN THE CASE OF THE CHORD METHOD, COMPUTE THE CORRECTOR ERROR,
+C AND SOLVE THE LINEAR SYSTEM WITH THAT AS RIGHT-HAND SIDE AND
+C P AS COEFFICIENT MATRIX.
 C-----------------------------------------------------------------------
  350  DO 360 I = 1,N
  360    Y(I) = H*SAVF(I) - (YH(I,2) + ACOR(I))
@@ -2686,8 +2686,8 @@ C-----------------------------------------------------------------------
         ACOR(I) = ACOR(I) + Y(I)
  380    Y(I) = YH(I,1) + EL(1)*ACOR(I)
 C-----------------------------------------------------------------------
-C Test for convergence.  If M.gt.0, an estimate of the convergence
-C rate constant is stored in CRATE, and this is used in the test.
+C TEST FOR CONVERGENCE.  IF M.GT.0, AN ESTIMATE OF THE CONVERGENCE
+C RATE CONSTANT IS STORED IN CRATE, AND THIS IS USED IN THE TEST.
 C-----------------------------------------------------------------------
  400  IF (M .NE. 0) CRATE = MAX(0.2D0*CRATE,DEL/DELP)
       DCON = DEL*MIN(1.0D0,1.5D0*CRATE)/(TESCO(2,NQ)*CONIT)
@@ -2700,11 +2700,11 @@ C-----------------------------------------------------------------------
       NFE = NFE + 1
       GO TO 270
 C-----------------------------------------------------------------------
-C The corrector iteration failed to converge.
-C If MITER .ne. 0 and the Jacobian is out of date, PJAC is called for
-C the next try.  Otherwise the YH array is retracted to its values
-C before prediction, and H is reduced, if possible.  If H cannot be
-C reduced or MXNCF failures have occurred, exit with KFLAG = -2.
+C THE CORRECTOR ITERATION FAILED TO CONVERGE.
+C IF MITER .NE. 0 AND THE JACOBIAN IS OUT OF DATE, PJAC IS CALLED FOR
+C THE NEXT TRY.  OTHERWISE THE YH ARRAY IS RETRACTED TO ITS VALUES
+C BEFORE PREDICTION, AND H IS REDUCED, IF POSSIBLE.  IF H CANNOT BE
+C REDUCED OR MXNCF FAILURES HAVE OCCURRED, EXIT WITH KFLAG = -2.
 C-----------------------------------------------------------------------
  410  IF (MITER .EQ. 0 .OR. JCUR .EQ. 1) GO TO 430
       ICF = 1
@@ -2717,7 +2717,7 @@ C-----------------------------------------------------------------------
       I1 = NQNYH + 1
       DO 445 JB = 1,NQ
         I1 = I1 - NYH
-Cdir$ ivdep
+CDIR$ IVDEP
         DO 440 I = I1,NQNYH
  440      YH1(I) = YH1(I) - YH1(I+NYH)
  445    CONTINUE
@@ -2729,24 +2729,24 @@ Cdir$ ivdep
       IREDO = 1
       GO TO 170
 C-----------------------------------------------------------------------
-C The corrector has converged.  JCUR is set to 0
-C to signal that the Jacobian involved may need updating later.
-C The local error test is made and control passes to statement 500
-C if it fails.
+C THE CORRECTOR HAS CONVERGED.  JCUR IS SET TO 0
+C TO SIGNAL THAT THE JACOBIAN INVOLVED MAY NEED UPDATING LATER.
+C THE LOCAL ERROR TEST IS MADE AND CONTROL PASSES TO STATEMENT 500
+C IF IT FAILS.
 C-----------------------------------------------------------------------
  450  JCUR = 0
       IF (M .EQ. 0) DSM = DEL/TESCO(2,NQ)
       IF (M .GT. 0) DSM = DVNORM (N, ACOR, EWT)/TESCO(2,NQ)
       IF (DSM .GT. 1.0D0) GO TO 500
 C-----------------------------------------------------------------------
-C After a successful step, update the YH array.
-C Consider changing H if IALTH = 1.  Otherwise decrease IALTH by 1.
-C If IALTH is then 1 and NQ .lt. MAXORD, then ACOR is saved for
-C use in a possible order increase on the next step.
-C If a change in H is considered, an increase or decrease in order
-C by one is considered also.  A change in H is made only if it is by a
-C factor of at least 1.1.  If not, IALTH is set to 3 to prevent
-C testing for that many steps.
+C AFTER A SUCCESSFUL STEP, UPDATE THE YH ARRAY.
+C CONSIDER CHANGING H IF IALTH = 1.  OTHERWISE DECREASE IALTH BY 1.
+C IF IALTH IS THEN 1 AND NQ .LT. MAXORD, THEN ACOR IS SAVED FOR
+C USE IN A POSSIBLE ORDER INCREASE ON THE NEXT STEP.
+C IF A CHANGE IN H IS CONSIDERED, AN INCREASE OR DECREASE IN ORDER
+C BY ONE IS CONSIDERED ALSO.  A CHANGE IN H IS MADE ONLY IF IT IS BY A
+C FACTOR OF AT LEAST 1.1.  IF NOT, IALTH IS SET TO 3 TO PREVENT
+C TESTING FOR THAT MANY STEPS.
 C-----------------------------------------------------------------------
       KFLAG = 0
       IREDO = 0
@@ -2764,18 +2764,18 @@ C-----------------------------------------------------------------------
  490    YH(I,LMAX) = ACOR(I)
       GO TO 700
 C-----------------------------------------------------------------------
-C The error test failed.  KFLAG keeps track of multiple failures.
-C Restore TN and the YH array to their previous values, and prepare
-C to try the step again.  Compute the optimum step size for this or
-C one lower order.  After 2 or more failures, H is forced to decrease
-C by a factor of 0.2 or less.
+C THE ERROR TEST FAILED.  KFLAG KEEPS TRACK OF MULTIPLE FAILURES.
+C RESTORE TN AND THE YH ARRAY TO THEIR PREVIOUS VALUES, AND PREPARE
+C TO TRY THE STEP AGAIN.  COMPUTE THE OPTIMUM STEP SIZE FOR THIS OR
+C ONE LOWER ORDER.  AFTER 2 OR MORE FAILURES, H IS FORCED TO DECREASE
+C BY A FACTOR OF 0.2 OR LESS.
 C-----------------------------------------------------------------------
  500  KFLAG = KFLAG - 1
       TN = TOLD
       I1 = NQNYH + 1
       DO 515 JB = 1,NQ
         I1 = I1 - NYH
-Cdir$ ivdep
+CDIR$ IVDEP
         DO 510 I = I1,NQNYH
  510      YH1(I) = YH1(I) - YH1(I+NYH)
  515    CONTINUE
@@ -2786,13 +2786,13 @@ Cdir$ ivdep
       RHUP = 0.0D0
       GO TO 540
 C-----------------------------------------------------------------------
-C Regardless of the success or failure of the step, factors
-C RHDN, RHSM, and RHUP are computed, by which H could be multiplied
-C at order NQ - 1, order NQ, or order NQ + 1, respectively.
-C In the case of failure, RHUP = 0.0 to avoid an order increase.
-C The largest of these is determined and the new order chosen
-C accordingly.  If the order is to be increased, we compute one
-C additional scaled derivative.
+C REGARDLESS OF THE SUCCESS OR FAILURE OF THE STEP, FACTORS
+C RHDN, RHSM, AND RHUP ARE COMPUTED, BY WHICH H COULD BE MULTIPLIED
+C AT ORDER NQ - 1, ORDER NQ, OR ORDER NQ + 1, RESPECTIVELY.
+C IN THE CASE OF FAILURE, RHUP = 0.0 TO AVOID AN ORDER INCREASE.
+C THE LARGEST OF THESE IS DETERMINED AND THE NEW ORDER CHOSEN
+C ACCORDINGLY.  IF THE ORDER IS TO BE INCREASED, WE COMPUTE ONE
+C ADDITIONAL SCALED DERIVATIVE.
 C-----------------------------------------------------------------------
  520  RHUP = 0.0D0
       IF (L .EQ. LMAX) GO TO 540
@@ -2831,9 +2831,9 @@ C-----------------------------------------------------------------------
  620  IF ((KFLAG .EQ. 0) .AND. (RH .LT. 1.1D0)) GO TO 610
       IF (KFLAG .LE. -2) RH = MIN(RH,0.2D0)
 C-----------------------------------------------------------------------
-C If there is a change of order, reset NQ, l, and the coefficients.
-C In any case H is reset according to RH and the YH array is rescaled.
-C Then exit from 690 if the step was OK, or redo the step otherwise.
+C IF THERE IS A CHANGE OF ORDER, RESET NQ, L, AND THE COEFFICIENTS.
+C IN ANY CASE H IS RESET ACCORDING TO RH AND THE YH ARRAY IS RESCALED.
+C THEN EXIT FROM 690 IF THE STEP WAS OK, OR REDO THE STEP OTHERWISE.
 C-----------------------------------------------------------------------
       IF (NEWQ .EQ. NQ) GO TO 170
  630  NQ = NEWQ
@@ -2841,13 +2841,13 @@ C-----------------------------------------------------------------------
       IRET = 2
       GO TO 150
 C-----------------------------------------------------------------------
-C Control reaches this section if 3 or more failures have occured.
-C If 10 failures have occurred, exit with KFLAG = -1.
-C It is assumed that the derivatives that have accumulated in the
-C YH array have errors of the wrong order.  Hence the first
-C derivative is recomputed, and the order is set to 1.  Then
-C H is reduced by a factor of 10, and the step is retried,
-C until it succeeds or H reaches HMIN.
+C CONTROL REACHES THIS SECTION IF 3 OR MORE FAILURES HAVE OCCURED.
+C IF 10 FAILURES HAVE OCCURRED, EXIT WITH KFLAG = -1.
+C IT IS ASSUMED THAT THE DERIVATIVES THAT HAVE ACCUMULATED IN THE
+C YH ARRAY HAVE ERRORS OF THE WRONG ORDER.  HENCE THE FIRST
+C DERIVATIVE IS RECOMPUTED, AND THE ORDER IS SET TO 1.  THEN
+C H IS REDUCED BY A FACTOR OF 10, AND THE STEP IS RETRIED,
+C UNTIL IT SUCCEEDS OR H REACHES HMIN.
 C-----------------------------------------------------------------------
  640  IF (KFLAG .EQ. -10) GO TO 660
       RH = 0.1D0
@@ -2867,8 +2867,8 @@ C-----------------------------------------------------------------------
       IRET = 3
       GO TO 150
 C-----------------------------------------------------------------------
-C All returns are made through this section.  H is saved in HOLD
-C to allow the caller to change H on the next step.
+C ALL RETURNS ARE MADE THROUGH THIS SECTION.  H IS SAVED IN HOLD
+C TO ALLOW THE CALLER TO CHANGE H ON THE NEXT STEP.
 C-----------------------------------------------------------------------
  660  KFLAG = -1
       GO TO 720
@@ -2890,25 +2890,25 @@ C----------------------- END OF SUBROUTINE DSTODE ----------------------
       IMPLICIT NONE
 C***BEGIN PROLOGUE  DEWSET
 C***SUBSIDIARY
-C***PURPOSE  Set error weight vector.
+C***PURPOSE  SET ERROR WEIGHT VECTOR.
 C***TYPE      DOUBLE PRECISION (SEWSET-S, DEWSET-D)
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
 C
-C  This subroutine sets the error weight vector EWT according to
-C      EWT(i) = RTOL(i)*ABS(YCUR(i)) + ATOL(i),  i = 1,...,N,
-C  with the subscript on RTOL and/or ATOL possibly replaced by 1 above,
-C  depending on the value of ITOL.
+C  THIS SUBROUTINE SETS THE ERROR WEIGHT VECTOR EWT ACCORDING TO
+C      EWT(I) = RTOL(I)*ABS(YCUR(I)) + ATOL(I),  I = 1,...,N,
+C  WITH THE SUBSCRIPT ON RTOL AND/OR ATOL POSSIBLY REPLACED BY 1 ABOVE,
+C  DEPENDING ON THE VALUE OF ITOL.
 C
 C***SEE ALSO  DLSODE
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   791129  DATE WRITTEN
-C   890501  Modified prologue to SLATEC/LDOC format.  (FNF)
-C   890503  Minor cosmetic changes.  (FNF)
-C   930809  Renamed to allow single/double precision versions. (ACH)
+C   890501  MODIFIED PROLOGUE TO SLATEC/LDOC FORMAT.  (FNF)
+C   890503  MINOR COSMETIC CHANGES.  (FNF)
+C   930809  RENAMED TO ALLOW SINGLE/DOUBLE PRECISION VERSIONS. (ACH)
 C***END PROLOGUE  DEWSET
-C**End
+C**END
       INTEGER N, ITOL
       INTEGER I
       DOUBLE PRECISION RTOL, ATOL, YCUR, EWT
@@ -2939,25 +2939,25 @@ C----------------------- END OF SUBROUTINE DEWSET ----------------------
       IMPLICIT NONE
 C***BEGIN PROLOGUE  DVNORM
 C***SUBSIDIARY
-C***PURPOSE  Weighted root-mean-square vector norm.
+C***PURPOSE  WEIGHTED ROOT-MEAN-SQUARE VECTOR NORM.
 C***TYPE      DOUBLE PRECISION (SVNORM-S, DVNORM-D)
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
 C
-C  This function routine computes the weighted root-mean-square norm
-C  of the vector of length N contained in the array V, with weights
-C  contained in the array W of length N:
-C    DVNORM = SQRT( (1/N) * SUM( V(i)*W(i) )**2 )
+C  THIS FUNCTION ROUTINE COMPUTES THE WEIGHTED ROOT-MEAN-SQUARE NORM
+C  OF THE VECTOR OF LENGTH N CONTAINED IN THE ARRAY V, WITH WEIGHTS
+C  CONTAINED IN THE ARRAY W OF LENGTH N:
+C    DVNORM = SQRT( (1/N) * SUM( V(I)*W(I) )**2 )
 C
 C***SEE ALSO  DLSODE
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   791129  DATE WRITTEN
-C   890501  Modified prologue to SLATEC/LDOC format.  (FNF)
-C   890503  Minor cosmetic changes.  (FNF)
-C   930809  Renamed to allow single/double precision versions. (ACH)
+C   890501  MODIFIED PROLOGUE TO SLATEC/LDOC FORMAT.  (FNF)
+C   890503  MINOR COSMETIC CHANGES.  (FNF)
+C   930809  RENAMED TO ALLOW SINGLE/DOUBLE PRECISION VERSIONS. (ACH)
 C***END PROLOGUE  DVNORM
-C**End
+C**END
       INTEGER N,   I
       DOUBLE PRECISION V, W,   SUM
       DIMENSION V(N), W(N)
@@ -2974,72 +2974,72 @@ C----------------------- END OF FUNCTION DVNORM ------------------------
       SUBROUTINE DGESL (A, LDA, N, IPVT, B, JOB)
       IMPLICIT NONE
 C***BEGIN PROLOGUE  DGESL
-C***PURPOSE  Solve the real system A*X=B or TRANS(A)*X=B using the
-C            factors computed by DGECO or DGEFA.
+C***PURPOSE  SOLVE THE REAL SYSTEM A*X=B OR TRANS(A)*X=B USING THE
+C            FACTORS COMPUTED BY DGECO OR DGEFA.
 C***CATEGORY  D2A1
 C***TYPE      DOUBLE PRECISION (SGESL-S, DGESL-D, CGESL-C)
 C***KEYWORDS  LINEAR ALGEBRA, LINPACK, MATRIX, SOLVE
-C***AUTHOR  Moler, C. B., (U. of New Mexico)
+C***AUTHOR  MOLER, C. B., (U. OF NEW MEXICO)
 C***DESCRIPTION
 C
-C     DGESL solves the double precision system
-C     A * X = B  or  TRANS(A) * X = B
-C     using the factors computed by DGECO or DGEFA.
+C     DGESL SOLVES THE DOUBLE PRECISION SYSTEM
+C     A * X = B  OR  TRANS(A) * X = B
+C     USING THE FACTORS COMPUTED BY DGECO OR DGEFA.
 C
-C     On Entry
+C     ON ENTRY
 C
 C        A       DOUBLE PRECISION(LDA, N)
-C                the output from DGECO or DGEFA.
+C                THE OUTPUT FROM DGECO OR DGEFA.
 C
 C        LDA     INTEGER
-C                the leading dimension of the array  A .
+C                THE LEADING DIMENSION OF THE ARRAY  A .
 C
 C        N       INTEGER
-C                the order of the matrix  A .
+C                THE ORDER OF THE MATRIX  A .
 C
 C        IPVT    INTEGER(N)
-C                the pivot vector from DGECO or DGEFA.
+C                THE PIVOT VECTOR FROM DGECO OR DGEFA.
 C
 C        B       DOUBLE PRECISION(N)
-C                the right hand side vector.
+C                THE RIGHT HAND SIDE VECTOR.
 C
 C        JOB     INTEGER
-C                = 0         to solve  A*X = B ,
-C                = nonzero   to solve  TRANS(A)*X = B  where
-C                            TRANS(A)  is the transpose.
+C                = 0         TO SOLVE  A*X = B ,
+C                = NONZERO   TO SOLVE  TRANS(A)*X = B  WHERE
+C                            TRANS(A)  IS THE TRANSPOSE.
 C
-C     On Return
+C     ON RETURN
 C
-C        B       the solution vector  X .
+C        B       THE SOLUTION VECTOR  X .
 C
-C     Error Condition
+C     ERROR CONDITION
 C
-C        A division by zero will occur if the input factor contains a
-C        zero on the diagonal.  Technically this indicates singularity
-C        but it is often caused by improper arguments or improper
-C        setting of LDA .  It will not occur if the subroutines are
-C        called correctly and if DGECO has set RCOND .GT. 0.0
-C        or DGEFA has set INFO .EQ. 0 .
+C        A DIVISION BY ZERO WILL OCCUR IF THE INPUT FACTOR CONTAINS A
+C        ZERO ON THE DIAGONAL.  TECHNICALLY THIS INDICATES SINGULARITY
+C        BUT IT IS OFTEN CAUSED BY IMPROPER ARGUMENTS OR IMPROPER
+C        SETTING OF LDA .  IT WILL NOT OCCUR IF THE SUBROUTINES ARE
+C        CALLED CORRECTLY AND IF DGECO HAS SET RCOND .GT. 0.0
+C        OR DGEFA HAS SET INFO .EQ. 0 .
 C
-C     To compute  INVERSE(A) * C  where  C  is a matrix
-C     with  P  columns
+C     TO COMPUTE  INVERSE(A) * C  WHERE  C  IS A MATRIX
+C     WITH  P  COLUMNS
 C           CALL DGECO(A,LDA,N,IPVT,RCOND,Z)
-C           IF (RCOND is too small) GO TO ...
+C           IF (RCOND IS TOO SMALL) GO TO ...
 C           DO 10 J = 1, P
 C              CALL DGESL(A,LDA,N,IPVT,C(1,J),0)
 C        10 CONTINUE
 C
-C***REFERENCES  J. J. Dongarra, J. R. Bunch, C. B. Moler, and G. W.
-C                 Stewart, LINPACK Users' Guide, SIAM, 1979.
+C***REFERENCES  J. J. DONGARRA, J. R. BUNCH, C. B. MOLER, AND G. W.
+C                 STEWART, LINPACK USERS' GUIDE, SIAM, 1979.
 C***ROUTINES CALLED  DAXPY, DDOT
 C***REVISION HISTORY  (YYMMDD)
 C   780814  DATE WRITTEN
-C   890831  Modified array declarations.  (WRB)
-C   890831  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900326  Removed duplicate information from DESCRIPTION section.
+C   890831  MODIFIED ARRAY DECLARATIONS.  (WRB)
+C   890831  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900326  REMOVED DUPLICATE INFORMATION FROM DESCRIPTION SECTION.
 C           (WRB)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  DGESL
       INTEGER LDA,N,IPVT(*),JOB
       DOUBLE PRECISION A(LDA,*),B(*)
@@ -3105,68 +3105,68 @@ C
       SUBROUTINE DGBFA (ABD, LDA, N, ML, MU, IPVT, INFO)
       IMPLICIT NONE
 C***BEGIN PROLOGUE  DGBFA
-C***PURPOSE  Factor a band matrix using Gaussian elimination.
+C***PURPOSE  FACTOR A BAND MATRIX USING GAUSSIAN ELIMINATION.
 C***CATEGORY  D2A2
 C***TYPE      DOUBLE PRECISION (SGBFA-S, DGBFA-D, CGBFA-C)
 C***KEYWORDS  BANDED, LINEAR ALGEBRA, LINPACK, MATRIX FACTORIZATION
-C***AUTHOR  Moler, C. B., (U. of New Mexico)
+C***AUTHOR  MOLER, C. B., (U. OF NEW MEXICO)
 C***DESCRIPTION
 C
-C     DGBFA factors a double precision band matrix by elimination.
+C     DGBFA FACTORS A DOUBLE PRECISION BAND MATRIX BY ELIMINATION.
 C
-C     DGBFA is usually called by DGBCO, but it can be called
-C     directly with a saving in time if  RCOND  is not needed.
+C     DGBFA IS USUALLY CALLED BY DGBCO, BUT IT CAN BE CALLED
+C     DIRECTLY WITH A SAVING IN TIME IF  RCOND  IS NOT NEEDED.
 C
-C     On Entry
+C     ON ENTRY
 C
 C        ABD     DOUBLE PRECISION(LDA, N)
-C                contains the matrix in band storage.  The columns
-C                of the matrix are stored in the columns of  ABD  and
-C                the diagonals of the matrix are stored in rows
-C                ML+1 through 2*ML+MU+1 of  ABD .
-C                See the comments below for details.
+C                CONTAINS THE MATRIX IN BAND STORAGE.  THE COLUMNS
+C                OF THE MATRIX ARE STORED IN THE COLUMNS OF  ABD  AND
+C                THE DIAGONALS OF THE MATRIX ARE STORED IN ROWS
+C                ML+1 THROUGH 2*ML+MU+1 OF  ABD .
+C                SEE THE COMMENTS BELOW FOR DETAILS.
 C
 C        LDA     INTEGER
-C                the leading dimension of the array  ABD .
-C                LDA must be .GE. 2*ML + MU + 1 .
+C                THE LEADING DIMENSION OF THE ARRAY  ABD .
+C                LDA MUST BE .GE. 2*ML + MU + 1 .
 C
 C        N       INTEGER
-C                the order of the original matrix.
+C                THE ORDER OF THE ORIGINAL MATRIX.
 C
 C        ML      INTEGER
-C                number of diagonals below the main diagonal.
+C                NUMBER OF DIAGONALS BELOW THE MAIN DIAGONAL.
 C                0 .LE. ML .LT.  N .
 C
 C        MU      INTEGER
-C                number of diagonals above the main diagonal.
+C                NUMBER OF DIAGONALS ABOVE THE MAIN DIAGONAL.
 C                0 .LE. MU .LT.  N .
-C                More efficient if  ML .LE. MU .
-C     On Return
+C                MORE EFFICIENT IF  ML .LE. MU .
+C     ON RETURN
 C
-C        ABD     an upper triangular matrix in band storage and
-C                the multipliers which were used to obtain it.
-C                The factorization can be written  A = L*U  where
-C                L  is a product of permutation and unit lower
-C                triangular matrices and  U  is upper triangular.
+C        ABD     AN UPPER TRIANGULAR MATRIX IN BAND STORAGE AND
+C                THE MULTIPLIERS WHICH WERE USED TO OBTAIN IT.
+C                THE FACTORIZATION CAN BE WRITTEN  A = L*U  WHERE
+C                L  IS A PRODUCT OF PERMUTATION AND UNIT LOWER
+C                TRIANGULAR MATRICES AND  U  IS UPPER TRIANGULAR.
 C
 C        IPVT    INTEGER(N)
-C                an integer vector of pivot indices.
+C                AN INTEGER VECTOR OF PIVOT INDICES.
 C
 C        INFO    INTEGER
-C                = 0  normal value.
-C                = K  if  U(K,K) .EQ. 0.0 .  This is not an error
-C                     condition for this subroutine, but it does
-C                     indicate that DGBSL will divide by zero if
-C                     called.  Use  RCOND  in DGBCO for a reliable
-C                     indication of singularity.
+C                = 0  NORMAL VALUE.
+C                = K  IF  U(K,K) .EQ. 0.0 .  THIS IS NOT AN ERROR
+C                     CONDITION FOR THIS SUBROUTINE, BUT IT DOES
+C                     INDICATE THAT DGBSL WILL DIVIDE BY ZERO IF
+C                     CALLED.  USE  RCOND  IN DGBCO FOR A RELIABLE
+C                     INDICATION OF SINGULARITY.
 C
-C     Band Storage
+C     BAND STORAGE
 C
-C           If  A  is a band matrix, the following program segment
-C           will set up the input.
+C           IF  A  IS A BAND MATRIX, THE FOLLOWING PROGRAM SEGMENT
+C           WILL SET UP THE INPUT.
 C
-C                   ML = (band width below the diagonal)
-C                   MU = (band width above the diagonal)
+C                   ML = (BAND WIDTH BELOW THE DIAGONAL)
+C                   MU = (BAND WIDTH ABOVE THE DIAGONAL)
 C                   M = ML + MU + 1
 C                   DO 20 J = 1, N
 C                      I1 = MAX(1, J-MU)
@@ -3177,25 +3177,25 @@ C                         ABD(K,J) = A(I,J)
 C                10    CONTINUE
 C                20 CONTINUE
 C
-C           This uses rows  ML+1  through  2*ML+MU+1  of  ABD .
-C           In addition, the first  ML  rows in  ABD  are used for
-C           elements generated during the triangularization.
-C           The total number of rows needed in  ABD  is  2*ML+MU+1 .
-C           The  ML+MU by ML+MU  upper left triangle and the
-C           ML by ML  lower right triangle are not referenced.
+C           THIS USES ROWS  ML+1  THROUGH  2*ML+MU+1  OF  ABD .
+C           IN ADDITION, THE FIRST  ML  ROWS IN  ABD  ARE USED FOR
+C           ELEMENTS GENERATED DURING THE TRIANGULARIZATION.
+C           THE TOTAL NUMBER OF ROWS NEEDED IN  ABD  IS  2*ML+MU+1 .
+C           THE  ML+MU BY ML+MU  UPPER LEFT TRIANGLE AND THE
+C           ML BY ML  LOWER RIGHT TRIANGLE ARE NOT REFERENCED.
 C
-C***REFERENCES  J. J. Dongarra, J. R. Bunch, C. B. Moler, and G. W.
-C                 Stewart, LINPACK Users' Guide, SIAM, 1979.
+C***REFERENCES  J. J. DONGARRA, J. R. BUNCH, C. B. MOLER, AND G. W.
+C                 STEWART, LINPACK USERS' GUIDE, SIAM, 1979.
 C***ROUTINES CALLED  DAXPY, DSCAL, IDAMAX
 C***REVISION HISTORY  (YYMMDD)
 C   780814  DATE WRITTEN
-C   890531  Changed all specific intrinsics to generic.  (WRB)
-C   890831  Modified array declarations.  (WRB)
-C   890831  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900326  Removed duplicate information from DESCRIPTION section.
+C   890531  CHANGED ALL SPECIFIC INTRINSICS TO GENERIC.  (WRB)
+C   890831  MODIFIED ARRAY DECLARATIONS.  (WRB)
+C   890831  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900326  REMOVED DUPLICATE INFORMATION FROM DESCRIPTION SECTION.
 C           (WRB)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  DGBFA
       INTEGER LDA,N,ML,MU,IPVT(*),INFO
       DOUBLE PRECISION ABD(LDA,*)
@@ -3292,79 +3292,79 @@ C
       SUBROUTINE DGBSL (ABD, LDA, N, ML, MU, IPVT, B, JOB)
       IMPLICIT NONE
 C***BEGIN PROLOGUE  DGBSL
-C***PURPOSE  Solve the real band system A*X=B or TRANS(A)*X=B using
-C            the factors computed by DGBCO or DGBFA.
+C***PURPOSE  SOLVE THE REAL BAND SYSTEM A*X=B OR TRANS(A)*X=B USING
+C            THE FACTORS COMPUTED BY DGBCO OR DGBFA.
 C***CATEGORY  D2A2
 C***TYPE      DOUBLE PRECISION (SGBSL-S, DGBSL-D, CGBSL-C)
 C***KEYWORDS  BANDED, LINEAR ALGEBRA, LINPACK, MATRIX, SOLVE
-C***AUTHOR  Moler, C. B., (U. of New Mexico)
+C***AUTHOR  MOLER, C. B., (U. OF NEW MEXICO)
 C***DESCRIPTION
 C
-C     DGBSL solves the double precision band system
-C     A * X = B  or  TRANS(A) * X = B
-C     using the factors computed by DGBCO or DGBFA.
+C     DGBSL SOLVES THE DOUBLE PRECISION BAND SYSTEM
+C     A * X = B  OR  TRANS(A) * X = B
+C     USING THE FACTORS COMPUTED BY DGBCO OR DGBFA.
 C
-C     On Entry
+C     ON ENTRY
 C
 C        ABD     DOUBLE PRECISION(LDA, N)
-C                the output from DGBCO or DGBFA.
+C                THE OUTPUT FROM DGBCO OR DGBFA.
 C
 C        LDA     INTEGER
-C                the leading dimension of the array  ABD .
+C                THE LEADING DIMENSION OF THE ARRAY  ABD .
 C
 C        N       INTEGER
-C                the order of the original matrix.
+C                THE ORDER OF THE ORIGINAL MATRIX.
 C
 C        ML      INTEGER
-C                number of diagonals below the main diagonal.
+C                NUMBER OF DIAGONALS BELOW THE MAIN DIAGONAL.
 C
 C        MU      INTEGER
-C                number of diagonals above the main diagonal.
+C                NUMBER OF DIAGONALS ABOVE THE MAIN DIAGONAL.
 C
 C        IPVT    INTEGER(N)
-C                the pivot vector from DGBCO or DGBFA.
+C                THE PIVOT VECTOR FROM DGBCO OR DGBFA.
 C
 C        B       DOUBLE PRECISION(N)
-C                the right hand side vector.
+C                THE RIGHT HAND SIDE VECTOR.
 C
 C        JOB     INTEGER
-C                = 0         to solve  A*X = B ,
-C                = nonzero   to solve  TRANS(A)*X = B , where
-C                            TRANS(A)  is the transpose.
+C                = 0         TO SOLVE  A*X = B ,
+C                = NONZERO   TO SOLVE  TRANS(A)*X = B , WHERE
+C                            TRANS(A)  IS THE TRANSPOSE.
 C
-C     On Return
+C     ON RETURN
 C
-C        B       the solution vector  X .
+C        B       THE SOLUTION VECTOR  X .
 C
-C     Error Condition
+C     ERROR CONDITION
 C
-C        A division by zero will occur if the input factor contains a
-C        zero on the diagonal.  Technically this indicates singularity
-C        but it is often caused by improper arguments or improper
-C        setting of LDA .  It will not occur if the subroutines are
-C        called correctly and if DGBCO has set RCOND .GT. 0.0
-C        or DGBFA has set INFO .EQ. 0 .
+C        A DIVISION BY ZERO WILL OCCUR IF THE INPUT FACTOR CONTAINS A
+C        ZERO ON THE DIAGONAL.  TECHNICALLY THIS INDICATES SINGULARITY
+C        BUT IT IS OFTEN CAUSED BY IMPROPER ARGUMENTS OR IMPROPER
+C        SETTING OF LDA .  IT WILL NOT OCCUR IF THE SUBROUTINES ARE
+C        CALLED CORRECTLY AND IF DGBCO HAS SET RCOND .GT. 0.0
+C        OR DGBFA HAS SET INFO .EQ. 0 .
 C
-C     To compute  INVERSE(A) * C  where  C  is a matrix
-C     with  P  columns
+C     TO COMPUTE  INVERSE(A) * C  WHERE  C  IS A MATRIX
+C     WITH  P  COLUMNS
 C           CALL DGBCO(ABD,LDA,N,ML,MU,IPVT,RCOND,Z)
-C           IF (RCOND is too small) GO TO ...
+C           IF (RCOND IS TOO SMALL) GO TO ...
 C           DO 10 J = 1, P
 C              CALL DGBSL(ABD,LDA,N,ML,MU,IPVT,C(1,J),0)
 C        10 CONTINUE
 C
-C***REFERENCES  J. J. Dongarra, J. R. Bunch, C. B. Moler, and G. W.
-C                 Stewart, LINPACK Users' Guide, SIAM, 1979.
+C***REFERENCES  J. J. DONGARRA, J. R. BUNCH, C. B. MOLER, AND G. W.
+C                 STEWART, LINPACK USERS' GUIDE, SIAM, 1979.
 C***ROUTINES CALLED  DAXPY, DDOT
 C***REVISION HISTORY  (YYMMDD)
 C   780814  DATE WRITTEN
-C   890531  Changed all specific intrinsics to generic.  (WRB)
-C   890831  Modified array declarations.  (WRB)
-C   890831  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900326  Removed duplicate information from DESCRIPTION section.
+C   890531  CHANGED ALL SPECIFIC INTRINSICS TO GENERIC.  (WRB)
+C   890831  MODIFIED ARRAY DECLARATIONS.  (WRB)
+C   890831  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900326  REMOVED DUPLICATE INFORMATION FROM DESCRIPTION SECTION.
 C           (WRB)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  DGBSL
       INTEGER LDA,N,ML,MU,IPVT(*),JOB
       DOUBLE PRECISION ABD(LDA,*),B(*)
@@ -3440,55 +3440,55 @@ C
 *DECK MYDAXPY
       SUBROUTINE MYDAXPY (N, DA, DX, INCX, DY, INCY)
 C***BEGIN PROLOGUE  DAXPY
-C***PURPOSE  Compute a constant times a vector plus a vector.
+C***PURPOSE  COMPUTE A CONSTANT TIMES A VECTOR PLUS A VECTOR.
 C***CATEGORY  D1A7
 C***TYPE      DOUBLE PRECISION (SAXPY-S, DAXPY-D, CAXPY-C)
 C***KEYWORDS  BLAS, LINEAR ALGEBRA, TRIAD, VECTOR
-C***AUTHOR  Lawson, C. L., (JPL)
-C           Hanson, R. J., (SNLA)
-C           Kincaid, D. R., (U. of Texas)
-C           Krogh, F. T., (JPL)
+C***AUTHOR  LAWSON, C. L., (JPL)
+C           HANSON, R. J., (SNLA)
+C           KINCAID, D. R., (U. OF TEXAS)
+C           KROGH, F. T., (JPL)
 C***DESCRIPTION
 C
-C                B L A S  Subprogram
-C    Description of Parameters
+C                B L A S  SUBPROGRAM
+C    DESCRIPTION OF PARAMETERS
 C
-C     --Input--
-C        N  number of elements in input vector(s)
-C       DA  double precision scalar multiplier
-C       DX  double precision vector with N elements
-C     INCX  storage spacing between elements of DX
-C       DY  double precision vector with N elements
-C     INCY  storage spacing between elements of DY
+C     --INPUT--
+C        N  NUMBER OF ELEMENTS IN INPUT VECTOR(S)
+C       DA  DOUBLE PRECISION SCALAR MULTIPLIER
+C       DX  DOUBLE PRECISION VECTOR WITH N ELEMENTS
+C     INCX  STORAGE SPACING BETWEEN ELEMENTS OF DX
+C       DY  DOUBLE PRECISION VECTOR WITH N ELEMENTS
+C     INCY  STORAGE SPACING BETWEEN ELEMENTS OF DY
 C
-C     --Output--
-C       DY  double precision result (unchanged if N .LE. 0)
+C     --OUTPUT--
+C       DY  DOUBLE PRECISION RESULT (UNCHANGED IF N .LE. 0)
 C
-C     Overwrite double precision DY with double precision DA*DX + DY.
-C     For I = 0 to N-1, replace  DY(LY+I*INCY) with DA*DX(LX+I*INCX) +
+C     OVERWRITE DOUBLE PRECISION DY WITH DOUBLE PRECISION DA*DX + DY.
+C     FOR I = 0 TO N-1, REPLACE  DY(LY+I*INCY) WITH DA*DX(LX+I*INCX) +
 C       DY(LY+I*INCY),
-C     where LX = 1 if INCX .GE. 0, else LX = 1+(1-N)*INCX, and LY is
-C     defined in a similar way using INCY.
+C     WHERE LX = 1 IF INCX .GE. 0, ELSE LX = 1+(1-N)*INCX, AND LY IS
+C     DEFINED IN A SIMILAR WAY USING INCY.
 C
-C***REFERENCES  C. L. Lawson, R. J. Hanson, D. R. Kincaid and F. T.
-C                 Krogh, Basic linear algebra subprograms for Fortran
-C                 usage, Algorithm No. 539, Transactions on Mathematical
-C                 Software 5, 3 (September 1979), pp. 308-323.
+C***REFERENCES  C. L. LAWSON, R. J. HANSON, D. R. KINCAID AND F. T.
+C                 KROGH, BASIC LINEAR ALGEBRA SUBPROGRAMS FOR FORTRAN
+C                 USAGE, ALGORITHM NO. 539, TRANSACTIONS ON MATHEMATICAL
+C                 SOFTWARE 5, 3 (SEPTEMBER 1979), PP. 308-323.
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   791001  DATE WRITTEN
-C   890831  Modified array declarations.  (WRB)
-C   890831  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   920310  Corrected definition of LX in DESCRIPTION.  (WRB)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   890831  MODIFIED ARRAY DECLARATIONS.  (WRB)
+C   890831  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   920310  CORRECTED DEFINITION OF LX IN DESCRIPTION.  (WRB)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  DAXPY
       DOUBLE PRECISION DX(*), DY(*), DA
 C***FIRST EXECUTABLE STATEMENT  DAXPY
       IF (N.LE.0 .OR. DA.EQ.0.0D0) RETURN
       IF (INCX .EQ. INCY) IF (INCX-1) 5,20,60
 C
-C     Code for unequal or nonpositive increments.
+C     CODE FOR UNEQUAL OR NONPOSITIVE INCREMENTS.
 C
     5 IX = 1
       IY = 1
@@ -3501,9 +3501,9 @@ C
    10 CONTINUE
       RETURN
 C
-C     Code for both increments equal to 1.
+C     CODE FOR BOTH INCREMENTS EQUAL TO 1.
 C
-C     Clean-up loop so remaining vector length is a multiple of 4.
+C     CLEAN-UP LOOP SO REMAINING VECTOR LENGTH IS A MULTIPLE OF 4.
 C
    20 M = MOD(N,4)
       IF (M .EQ. 0) GO TO 40
@@ -3520,7 +3520,7 @@ C
    50 CONTINUE
       RETURN
 C
-C     Code for equal, positive, non-unit increments.
+C     CODE FOR EQUAL, POSITIVE, NON-UNIT INCREMENTS.
 C
    60 NS = N*INCX
       DO 70 I = 1,NS,INCX
@@ -3531,46 +3531,46 @@ C
 *DECK MYDDOT
       DOUBLE PRECISION FUNCTION MYDDOT (N, DX, INCX, DY, INCY)
 C***BEGIN PROLOGUE  DDOT
-C***PURPOSE  Compute the inner product of two vectors.
+C***PURPOSE  COMPUTE THE INNER PRODUCT OF TWO VECTORS.
 C***CATEGORY  D1A4
 C***TYPE      DOUBLE PRECISION (SDOT-S, DDOT-D, CDOTU-C)
 C***KEYWORDS  BLAS, INNER PRODUCT, LINEAR ALGEBRA, VECTOR
-C***AUTHOR  Lawson, C. L., (JPL)
-C           Hanson, R. J., (SNLA)
-C           Kincaid, D. R., (U. of Texas)
-C           Krogh, F. T., (JPL)
+C***AUTHOR  LAWSON, C. L., (JPL)
+C           HANSON, R. J., (SNLA)
+C           KINCAID, D. R., (U. OF TEXAS)
+C           KROGH, F. T., (JPL)
 C***DESCRIPTION
 C
-C                B L A S  Subprogram
-C    Description of Parameters
+C                B L A S  SUBPROGRAM
+C    DESCRIPTION OF PARAMETERS
 C
-C     --Input--
-C        N  number of elements in input vector(s)
-C       DX  double precision vector with N elements
-C     INCX  storage spacing between elements of DX
-C       DY  double precision vector with N elements
-C     INCY  storage spacing between elements of DY
+C     --INPUT--
+C        N  NUMBER OF ELEMENTS IN INPUT VECTOR(S)
+C       DX  DOUBLE PRECISION VECTOR WITH N ELEMENTS
+C     INCX  STORAGE SPACING BETWEEN ELEMENTS OF DX
+C       DY  DOUBLE PRECISION VECTOR WITH N ELEMENTS
+C     INCY  STORAGE SPACING BETWEEN ELEMENTS OF DY
 C
-C     --Output--
-C     DDOT  double precision dot product (zero if N .LE. 0)
+C     --OUTPUT--
+C     DDOT  DOUBLE PRECISION DOT PRODUCT (ZERO IF N .LE. 0)
 C
-C     Returns the dot product of double precision DX and DY.
-C     DDOT = sum for I = 0 to N-1 of  DX(LX+I*INCX) * DY(LY+I*INCY),
-C     where LX = 1 if INCX .GE. 0, else LX = 1+(1-N)*INCX, and LY is
-C     defined in a similar way using INCY.
+C     RETURNS THE DOT PRODUCT OF DOUBLE PRECISION DX AND DY.
+C     DDOT = SUM FOR I = 0 TO N-1 OF  DX(LX+I*INCX) * DY(LY+I*INCY),
+C     WHERE LX = 1 IF INCX .GE. 0, ELSE LX = 1+(1-N)*INCX, AND LY IS
+C     DEFINED IN A SIMILAR WAY USING INCY.
 C
-C***REFERENCES  C. L. Lawson, R. J. Hanson, D. R. Kincaid and F. T.
-C                 Krogh, Basic linear algebra subprograms for Fortran
-C                 usage, Algorithm No. 539, Transactions on Mathematical
-C                 Software 5, 3 (September 1979), pp. 308-323.
+C***REFERENCES  C. L. LAWSON, R. J. HANSON, D. R. KINCAID AND F. T.
+C                 KROGH, BASIC LINEAR ALGEBRA SUBPROGRAMS FOR FORTRAN
+C                 USAGE, ALGORITHM NO. 539, TRANSACTIONS ON MATHEMATICAL
+C                 SOFTWARE 5, 3 (SEPTEMBER 1979), PP. 308-323.
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   791001  DATE WRITTEN
-C   890831  Modified array declarations.  (WRB)
-C   890831  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   920310  Corrected definition of LX in DESCRIPTION.  (WRB)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   890831  MODIFIED ARRAY DECLARATIONS.  (WRB)
+C   890831  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   920310  CORRECTED DEFINITION OF LX IN DESCRIPTION.  (WRB)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  DDOT
       DOUBLE PRECISION DX(*), DY(*)
 C***FIRST EXECUTABLE STATEMENT  DDOT
@@ -3578,7 +3578,7 @@ C***FIRST EXECUTABLE STATEMENT  DDOT
       IF (N .LE. 0) RETURN
       IF (INCX .EQ. INCY) IF (INCX-1) 5,20,60
 C
-C     Code for unequal or nonpositive increments.
+C     CODE FOR UNEQUAL OR NONPOSITIVE INCREMENTS.
 C
     5 IX = 1
       IY = 1
@@ -3591,9 +3591,9 @@ C
    10 CONTINUE
       RETURN
 C
-C     Code for both increments equal to 1.
+C     CODE FOR BOTH INCREMENTS EQUAL TO 1.
 C
-C     Clean-up loop so remaining vector length is a multiple of 5.
+C     CLEAN-UP LOOP SO REMAINING VECTOR LENGTH IS A MULTIPLE OF 5.
 C
    20 M = MOD(N,5)
       IF (M .EQ. 0) GO TO 40
@@ -3608,7 +3608,7 @@ C
    50 CONTINUE
       RETURN
 C
-C     Code for equal, positive, non-unit increments.
+C     CODE FOR EQUAL, POSITIVE, NON-UNIT INCREMENTS.
 C
    60 NS = N*INCX
       DO 70 I = 1,NS,INCX
@@ -3619,45 +3619,45 @@ C
 *DECK DSCAL
       SUBROUTINE DSCAL (N, DA, DX, INCX)
 C***BEGIN PROLOGUE  DSCAL
-C***PURPOSE  Multiply a vector by a constant.
+C***PURPOSE  MULTIPLY A VECTOR BY A CONSTANT.
 C***CATEGORY  D1A6
 C***TYPE      DOUBLE PRECISION (SSCAL-S, DSCAL-D, CSCAL-C)
 C***KEYWORDS  BLAS, LINEAR ALGEBRA, SCALE, VECTOR
-C***AUTHOR  Lawson, C. L., (JPL)
-C           Hanson, R. J., (SNLA)
-C           Kincaid, D. R., (U. of Texas)
-C           Krogh, F. T., (JPL)
+C***AUTHOR  LAWSON, C. L., (JPL)
+C           HANSON, R. J., (SNLA)
+C           KINCAID, D. R., (U. OF TEXAS)
+C           KROGH, F. T., (JPL)
 C***DESCRIPTION
 C
-C                B L A S  Subprogram
-C    Description of Parameters
+C                B L A S  SUBPROGRAM
+C    DESCRIPTION OF PARAMETERS
 C
-C     --Input--
-C        N  number of elements in input vector(s)
-C       DA  double precision scale factor
-C       DX  double precision vector with N elements
-C     INCX  storage spacing between elements of DX
+C     --INPUT--
+C        N  NUMBER OF ELEMENTS IN INPUT VECTOR(S)
+C       DA  DOUBLE PRECISION SCALE FACTOR
+C       DX  DOUBLE PRECISION VECTOR WITH N ELEMENTS
+C     INCX  STORAGE SPACING BETWEEN ELEMENTS OF DX
 C
-C     --Output--
-C       DX  double precision result (unchanged if N.LE.0)
+C     --OUTPUT--
+C       DX  DOUBLE PRECISION RESULT (UNCHANGED IF N.LE.0)
 C
-C     Replace double precision DX by double precision DA*DX.
-C     For I = 0 to N-1, replace DX(IX+I*INCX) with  DA * DX(IX+I*INCX),
-C     where IX = 1 if INCX .GE. 0, else IX = 1+(1-N)*INCX.
+C     REPLACE DOUBLE PRECISION DX BY DOUBLE PRECISION DA*DX.
+C     FOR I = 0 TO N-1, REPLACE DX(IX+I*INCX) WITH  DA * DX(IX+I*INCX),
+C     WHERE IX = 1 IF INCX .GE. 0, ELSE IX = 1+(1-N)*INCX.
 C
-C***REFERENCES  C. L. Lawson, R. J. Hanson, D. R. Kincaid and F. T.
-C                 Krogh, Basic linear algebra subprograms for Fortran
-C                 usage, Algorithm No. 539, Transactions on Mathematical
-C                 Software 5, 3 (September 1979), pp. 308-323.
+C***REFERENCES  C. L. LAWSON, R. J. HANSON, D. R. KINCAID AND F. T.
+C                 KROGH, BASIC LINEAR ALGEBRA SUBPROGRAMS FOR FORTRAN
+C                 USAGE, ALGORITHM NO. 539, TRANSACTIONS ON MATHEMATICAL
+C                 SOFTWARE 5, 3 (SEPTEMBER 1979), PP. 308-323.
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   791001  DATE WRITTEN
-C   890831  Modified array declarations.  (WRB)
-C   890831  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900821  Modified to correct problem with a negative increment.
+C   890831  MODIFIED ARRAY DECLARATIONS.  (WRB)
+C   890831  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900821  MODIFIED TO CORRECT PROBLEM WITH A NEGATIVE INCREMENT.
 C           (WRB)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  DSCAL
       DOUBLE PRECISION DA, DX(*)
       INTEGER I, INCX, IX, M, MP1, N
@@ -3665,7 +3665,7 @@ C***FIRST EXECUTABLE STATEMENT  DSCAL
       IF (N .LE. 0) RETURN
       IF (INCX .EQ. 1) GOTO 20
 C
-C     Code for increment not equal to 1.
+C     CODE FOR INCREMENT NOT EQUAL TO 1.
 C
       IX = 1
       IF (INCX .LT. 0) IX = (-N+1)*INCX + 1
@@ -3675,9 +3675,9 @@ C
    10 CONTINUE
       RETURN
 C
-C     Code for increment equal to 1.
+C     CODE FOR INCREMENT EQUAL TO 1.
 C
-C     Clean-up loop so remaining vector length is a multiple of 5.
+C     CLEAN-UP LOOP SO REMAINING VECTOR LENGTH IS A MULTIPLE OF 5.
 C
    20 M = MOD(N,5)
       IF (M .EQ. 0) GOTO 40
@@ -3698,45 +3698,45 @@ C
 *DECK IDAMAX
       INTEGER FUNCTION IDAMAX (N, DX, INCX)
 C***BEGIN PROLOGUE  IDAMAX
-C***PURPOSE  Find the smallest index of that component of a vector
-C            having the maximum magnitude.
+C***PURPOSE  FIND THE SMALLEST INDEX OF THAT COMPONENT OF A VECTOR
+C            HAVING THE MAXIMUM MAGNITUDE.
 C***CATEGORY  D1A2
 C***TYPE      DOUBLE PRECISION (ISAMAX-S, IDAMAX-D, ICAMAX-C)
 C***KEYWORDS  BLAS, LINEAR ALGEBRA, MAXIMUM COMPONENT, VECTOR
-C***AUTHOR  Lawson, C. L., (JPL)
-C           Hanson, R. J., (SNLA)
-C           Kincaid, D. R., (U. of Texas)
-C           Krogh, F. T., (JPL)
+C***AUTHOR  LAWSON, C. L., (JPL)
+C           HANSON, R. J., (SNLA)
+C           KINCAID, D. R., (U. OF TEXAS)
+C           KROGH, F. T., (JPL)
 C***DESCRIPTION
 C
-C                B L A S  Subprogram
-C    Description of Parameters
+C                B L A S  SUBPROGRAM
+C    DESCRIPTION OF PARAMETERS
 C
-C     --Input--
-C        N  number of elements in input vector(s)
-C       DX  double precision vector with N elements
-C     INCX  storage spacing between elements of DX
+C     --INPUT--
+C        N  NUMBER OF ELEMENTS IN INPUT VECTOR(S)
+C       DX  DOUBLE PRECISION VECTOR WITH N ELEMENTS
+C     INCX  STORAGE SPACING BETWEEN ELEMENTS OF DX
 C
-C     --Output--
-C   IDAMAX  smallest index (zero if N .LE. 0)
+C     --OUTPUT--
+C   IDAMAX  SMALLEST INDEX (ZERO IF N .LE. 0)
 C
-C     Find smallest index of maximum magnitude of double precision DX.
-C     IDAMAX = first I, I = 1 to N, to maximize ABS(DX(IX+(I-1)*INCX)),
-C     where IX = 1 if INCX .GE. 0, else IX = 1+(1-N)*INCX.
+C     FIND SMALLEST INDEX OF MAXIMUM MAGNITUDE OF DOUBLE PRECISION DX.
+C     IDAMAX = FIRST I, I = 1 TO N, TO MAXIMIZE ABS(DX(IX+(I-1)*INCX)),
+C     WHERE IX = 1 IF INCX .GE. 0, ELSE IX = 1+(1-N)*INCX.
 C
-C***REFERENCES  C. L. Lawson, R. J. Hanson, D. R. Kincaid and F. T.
-C                 Krogh, Basic linear algebra subprograms for Fortran
-C                 usage, Algorithm No. 539, Transactions on Mathematical
-C                 Software 5, 3 (September 1979), pp. 308-323.
+C***REFERENCES  C. L. LAWSON, R. J. HANSON, D. R. KINCAID AND F. T.
+C                 KROGH, BASIC LINEAR ALGEBRA SUBPROGRAMS FOR FORTRAN
+C                 USAGE, ALGORITHM NO. 539, TRANSACTIONS ON MATHEMATICAL
+C                 SOFTWARE 5, 3 (SEPTEMBER 1979), PP. 308-323.
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   791001  DATE WRITTEN
-C   890531  Changed all specific intrinsics to generic.  (WRB)
-C   890531  REVISION DATE from Version 3.2
-C   891214  Prologue converted to Version 4.0 format.  (BAB)
-C   900821  Modified to correct problem with a negative increment.
+C   890531  CHANGED ALL SPECIFIC INTRINSICS TO GENERIC.  (WRB)
+C   890531  REVISION DATE FROM VERSION 3.2
+C   891214  PROLOGUE CONVERTED TO VERSION 4.0 FORMAT.  (BAB)
+C   900821  MODIFIED TO CORRECT PROBLEM WITH A NEGATIVE INCREMENT.
 C           (WRB)
-C   920501  Reformatted the REFERENCES section.  (WRB)
+C   920501  REFORMATTED THE REFERENCES SECTION.  (WRB)
 C***END PROLOGUE  IDAMAX
       DOUBLE PRECISION DX(*), DMAX, XMAG
       INTEGER I, INCX, IX, N
@@ -3748,7 +3748,7 @@ C***FIRST EXECUTABLE STATEMENT  IDAMAX
 C
       IF (INCX .EQ. 1) GOTO 20
 C
-C     Code for increments not equal to 1.
+C     CODE FOR INCREMENTS NOT EQUAL TO 1.
 C
       IX = 1
       IF (INCX .LT. 0) IX = (-N+1)*INCX + 1
@@ -3764,7 +3764,7 @@ C
    10 CONTINUE
       RETURN
 C
-C     Code for increments equal to 1.
+C     CODE FOR INCREMENTS EQUAL TO 1.
 C
    20 DMAX = ABS(DX(1))
       DO 30 I = 2,N
@@ -3780,219 +3780,219 @@ C
       SUBROUTINE XERRWD (MSG, NMES, NERR, LEVEL, NI, I1, I2, NR, R1, R2)
 C***BEGIN PROLOGUE  XERRWD
 C***SUBSIDIARY
-C***PURPOSE  Write error message with values.
+C***PURPOSE  WRITE ERROR MESSAGE WITH VALUES.
 C***CATEGORY  R3C
 C***TYPE      DOUBLE PRECISION (XERRWV-S, XERRWD-D)
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
 C
-C  Subroutines XERRWD, XSETF, XSETUN, and the function routine IXSAV,
-C  as given here, constitute a simplified version of the SLATEC error
-C  handling package.
+C  SUBROUTINES XERRWD, XSETF, XSETUN, AND THE FUNCTION ROUTINE IXSAV,
+C  AS GIVEN HERE, CONSTITUTE A SIMPLIFIED VERSION OF THE SLATEC ERROR
+C  HANDLING PACKAGE.
 C
-C  All arguments are input arguments.
+C  ALL ARGUMENTS ARE INPUT ARGUMENTS.
 C
-C  MSG    = The message (character array).
-C  NMES   = The length of MSG (number of characters).
-C  NERR   = The error number (not used).
-C  LEVEL  = The error level..
-C           0 or 1 means recoverable (control returns to caller).
-C           2 means fatal (run is aborted--see note below).
-C  NI     = Number of integers (0, 1, or 2) to be printed with message.
-C  I1,I2  = Integers to be printed, depending on NI.
-C  NR     = Number of reals (0, 1, or 2) to be printed with message.
-C  R1,R2  = Reals to be printed, depending on NR.
+C  MSG    = THE MESSAGE (CHARACTER ARRAY).
+C  NMES   = THE LENGTH OF MSG (NUMBER OF CHARACTERS).
+C  NERR   = THE ERROR NUMBER (NOT USED).
+C  LEVEL  = THE ERROR LEVEL..
+C           0 OR 1 MEANS RECOVERABLE (CONTROL RETURNS TO CALLER).
+C           2 MEANS FATAL (RUN IS ABORTED--SEE NOTE BELOW).
+C  NI     = NUMBER OF INTEGERS (0, 1, OR 2) TO BE PRINTED WITH MESSAGE.
+C  I1,I2  = INTEGERS TO BE PRINTED, DEPENDING ON NI.
+C  NR     = NUMBER OF REALS (0, 1, OR 2) TO BE PRINTED WITH MESSAGE.
+C  R1,R2  = REALS TO BE PRINTED, DEPENDING ON NR.
 C
-C  Note..  this routine is machine-dependent and specialized for use
-C  in limited context, in the following ways..
-C  1. The argument MSG is assumed to be of type CHARACTER, and
-C     the message is printed with a format of (1X,A).
-C  2. The message is assumed to take only one line.
-C     Multi-line messages are generated by repeated calls.
-C  3. If LEVEL = 2, control passes to the statement   STOP
-C     to abort the run.  This statement may be machine-dependent.
-C  4. R1 and R2 are assumed to be in double precision and are printed
-C     in D21.13 format.
+C  NOTE..  THIS ROUTINE IS MACHINE-DEPENDENT AND SPECIALIZED FOR USE
+C  IN LIMITED CONTEXT, IN THE FOLLOWING WAYS..
+C  1. THE ARGUMENT MSG IS ASSUMED TO BE OF TYPE CHARACTER, AND
+C     THE MESSAGE IS PRINTED WITH A FORMAT OF (1X,A).
+C  2. THE MESSAGE IS ASSUMED TO TAKE ONLY ONE LINE.
+C     MULTI-LINE MESSAGES ARE GENERATED BY REPEATED CALLS.
+C  3. IF LEVEL = 2, CONTROL PASSES TO THE STATEMENT   STOP
+C     TO ABORT THE RUN.  THIS STATEMENT MAY BE MACHINE-DEPENDENT.
+C  4. R1 AND R2 ARE ASSUMED TO BE IN DOUBLE PRECISION AND ARE PRINTED
+C     IN D21.13 FORMAT.
 C
 C***ROUTINES CALLED  IXSAV
 C***REVISION HISTORY  (YYMMDD)
 C   920831  DATE WRITTEN
-C   921118  Replaced MFLGSV/LUNSAV by IXSAV. (ACH)
-C   930329  Modified prologue to SLATEC format. (FNF)
-C   930407  Changed MSG from CHARACTER*1 array to variable. (FNF)
-C   930922  Minor cosmetic change. (FNF)
+C   921118  REPLACED MFLGSV/LUNSAV BY IXSAV. (ACH)
+C   930329  MODIFIED PROLOGUE TO SLATEC FORMAT. (FNF)
+C   930407  CHANGED MSG FROM CHARACTER*1 ARRAY TO VARIABLE. (FNF)
+C   930922  MINOR COSMETIC CHANGE. (FNF)
 C***END PROLOGUE  XERRWD
 C
-C*Internal Notes:
+C*INTERNAL NOTES:
 C
-C For a different default logical unit number, IXSAV (or a subsidiary
-C routine that it calls) will need to be modified.
-C For a different run-abort command, change the statement following
-C statement 100 at the end.
+C FOR A DIFFERENT DEFAULT LOGICAL UNIT NUMBER, IXSAV (OR A SUBSIDIARY
+C ROUTINE THAT IT CALLS) WILL NEED TO BE MODIFIED.
+C FOR A DIFFERENT RUN-ABORT COMMAND, CHANGE THE STATEMENT FOLLOWING
+C STATEMENT 100 AT THE END.
 C-----------------------------------------------------------------------
-C Subroutines called by XERRWD.. None
-C Function routine called by XERRWD.. IXSAV
+C SUBROUTINES CALLED BY XERRWD.. NONE
+C FUNCTION ROUTINE CALLED BY XERRWD.. IXSAV
 C-----------------------------------------------------------------------
-C**End
+C**END
 C
-C  Declare arguments.
+C  DECLARE ARGUMENTS.
 C
       DOUBLE PRECISION R1, R2
       INTEGER NMES, NERR, LEVEL, NI, I1, I2, NR
       CHARACTER*(*) MSG
 C
-C  Declare local variables.
+C  DECLARE LOCAL VARIABLES.
 C
       INTEGER LUNIT, IXSAV, MESFLG
 C
-C  Get logical unit number and message print flag.
+C  GET LOGICAL UNIT NUMBER AND MESSAGE PRINT FLAG.
 C
 C***FIRST EXECUTABLE STATEMENT  XERRWD
       LUNIT = IXSAV (1, 0, .FALSE.)
       MESFLG = IXSAV (2, 0, .FALSE.)
       IF (MESFLG .EQ. 0) GO TO 100
 C
-C  Write the message.
+C  WRITE THE MESSAGE.
 C
       WRITE (LUNIT,10)  MSG
  10   FORMAT(1X,A)
       IF (NI .EQ. 1) WRITE (LUNIT, 20) I1
- 20   FORMAT(6X,'In above message,  I1 =',I10)
+ 20   FORMAT(6X,'IN ABOVE MESSAGE,  I1 =',I10)
       IF (NI .EQ. 2) WRITE (LUNIT, 30) I1,I2
- 30   FORMAT(6X,'In above message,  I1 =',I10,3X,'I2 =',I10)
+ 30   FORMAT(6X,'IN ABOVE MESSAGE,  I1 =',I10,3X,'I2 =',I10)
       IF (NR .EQ. 1) WRITE (LUNIT, 40) R1
- 40   FORMAT(6X,'In above message,  R1 =',D21.13)
+ 40   FORMAT(6X,'IN ABOVE MESSAGE,  R1 =',D21.13)
       IF (NR .EQ. 2) WRITE (LUNIT, 50) R1,R2
- 50   FORMAT(6X,'In above,  R1 =',D21.13,3X,'R2 =',D21.13)
+ 50   FORMAT(6X,'IN ABOVE,  R1 =',D21.13,3X,'R2 =',D21.13)
 C
-C  Abort the run if LEVEL = 2.
+C  ABORT THE RUN IF LEVEL = 2.
 C
  100  IF (LEVEL .NE. 2) RETURN
       STOP
-C----------------------- End of Subroutine XERRWD ----------------------
+C----------------------- END OF SUBROUTINE XERRWD ----------------------
       END
 *DECK XSETF
       SUBROUTINE XSETF (MFLAG)
 C***BEGIN PROLOGUE  XSETF
-C***PURPOSE  Reset the error print control flag.
+C***PURPOSE  RESET THE ERROR PRINT CONTROL FLAG.
 C***CATEGORY  R3A
 C***TYPE      ALL (XSETF-A)
 C***KEYWORDS  ERROR CONTROL
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
 C
-C   XSETF sets the error print control flag to MFLAG:
-C      MFLAG=1 means print all messages (the default).
-C      MFLAG=0 means no printing.
+C   XSETF SETS THE ERROR PRINT CONTROL FLAG TO MFLAG:
+C      MFLAG=1 MEANS PRINT ALL MESSAGES (THE DEFAULT).
+C      MFLAG=0 MEANS NO PRINTING.
 C
 C***SEE ALSO  XERRWD, XERRWV
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  IXSAV
 C***REVISION HISTORY  (YYMMDD)
 C   921118  DATE WRITTEN
-C   930329  Added SLATEC format prologue. (FNF)
-C   930407  Corrected SEE ALSO section. (FNF)
-C   930922  Made user-callable, and other cosmetic changes. (FNF)
+C   930329  ADDED SLATEC FORMAT PROLOGUE. (FNF)
+C   930407  CORRECTED SEE ALSO SECTION. (FNF)
+C   930922  MADE USER-CALLABLE, AND OTHER COSMETIC CHANGES. (FNF)
 C***END PROLOGUE  XSETF
 C
-C Subroutines called by XSETF.. None
-C Function routine called by XSETF.. IXSAV
+C SUBROUTINES CALLED BY XSETF.. NONE
+C FUNCTION ROUTINE CALLED BY XSETF.. IXSAV
 C-----------------------------------------------------------------------
-C**End
+C**END
       INTEGER MFLAG, JUNK, IXSAV
 C
 C***FIRST EXECUTABLE STATEMENT  XSETF
       IF (MFLAG .EQ. 0 .OR. MFLAG .EQ. 1) JUNK = IXSAV (2,MFLAG,.TRUE.)
       RETURN
-C----------------------- End of Subroutine XSETF -----------------------
+C----------------------- END OF SUBROUTINE XSETF -----------------------
       END
 *DECK XSETUN
       SUBROUTINE XSETUN (LUN)
 C***BEGIN PROLOGUE  XSETUN
-C***PURPOSE  Reset the logical unit number for error messages.
+C***PURPOSE  RESET THE LOGICAL UNIT NUMBER FOR ERROR MESSAGES.
 C***CATEGORY  R3B
 C***TYPE      ALL (XSETUN-A)
 C***KEYWORDS  ERROR CONTROL
 C***DESCRIPTION
 C
-C   XSETUN sets the logical unit number for error messages to LUN.
+C   XSETUN SETS THE LOGICAL UNIT NUMBER FOR ERROR MESSAGES TO LUN.
 C
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***SEE ALSO  XERRWD, XERRWV
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  IXSAV
 C***REVISION HISTORY  (YYMMDD)
 C   921118  DATE WRITTEN
-C   930329  Added SLATEC format prologue. (FNF)
-C   930407  Corrected SEE ALSO section. (FNF)
-C   930922  Made user-callable, and other cosmetic changes. (FNF)
+C   930329  ADDED SLATEC FORMAT PROLOGUE. (FNF)
+C   930407  CORRECTED SEE ALSO SECTION. (FNF)
+C   930922  MADE USER-CALLABLE, AND OTHER COSMETIC CHANGES. (FNF)
 C***END PROLOGUE  XSETUN
 C
-C Subroutines called by XSETUN.. None
-C Function routine called by XSETUN.. IXSAV
+C SUBROUTINES CALLED BY XSETUN.. NONE
+C FUNCTION ROUTINE CALLED BY XSETUN.. IXSAV
 C-----------------------------------------------------------------------
-C**End
+C**END
       INTEGER LUN, JUNK, IXSAV
 C
 C***FIRST EXECUTABLE STATEMENT  XSETUN
       IF (LUN .GT. 0) JUNK = IXSAV (1,LUN,.TRUE.)
       RETURN
-C----------------------- End of Subroutine XSETUN ----------------------
+C----------------------- END OF SUBROUTINE XSETUN ----------------------
       END
 *DECK IXSAV
       INTEGER FUNCTION IXSAV (IPAR, IVALUE, ISET)
 C***BEGIN PROLOGUE  IXSAV
 C***SUBSIDIARY
-C***PURPOSE  Save and recall error message control parameters.
+C***PURPOSE  SAVE AND RECALL ERROR MESSAGE CONTROL PARAMETERS.
 C***CATEGORY  R3C
 C***TYPE      ALL (IXSAV-A)
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
 C
-C  IXSAV saves and recalls one of two error message parameters:
-C    LUNIT, the logical unit number to which messages are printed, and
-C    MESFLG, the message print flag.
-C  This is a modification of the SLATEC library routine J4SAVE.
+C  IXSAV SAVES AND RECALLS ONE OF TWO ERROR MESSAGE PARAMETERS:
+C    LUNIT, THE LOGICAL UNIT NUMBER TO WHICH MESSAGES ARE PRINTED, AND
+C    MESFLG, THE MESSAGE PRINT FLAG.
+C  THIS IS A MODIFICATION OF THE SLATEC LIBRARY ROUTINE J4SAVE.
 C
-C  Saved local variables..
-C   LUNIT  = Logical unit number for messages.  The default is obtained
-C            by a call to IUMACH (may be machine-dependent).
-C   MESFLG = Print control flag..
-C            1 means print all messages (the default).
-C            0 means no printing.
+C  SAVED LOCAL VARIABLES..
+C   LUNIT  = LOGICAL UNIT NUMBER FOR MESSAGES.  THE DEFAULT IS OBTAINED
+C            BY A CALL TO IUMACH (MAY BE MACHINE-DEPENDENT).
+C   MESFLG = PRINT CONTROL FLAG..
+C            1 MEANS PRINT ALL MESSAGES (THE DEFAULT).
+C            0 MEANS NO PRINTING.
 C
-C  On input..
-C    IPAR   = Parameter indicator (1 for LUNIT, 2 for MESFLG).
-C    IVALUE = The value to be set for the parameter, if ISET = .TRUE.
-C    ISET   = Logical flag to indicate whether to read or write.
-C             If ISET = .TRUE., the parameter will be given
-C             the value IVALUE.  If ISET = .FALSE., the parameter
-C             will be unchanged, and IVALUE is a dummy argument.
+C  ON INPUT..
+C    IPAR   = PARAMETER INDICATOR (1 FOR LUNIT, 2 FOR MESFLG).
+C    IVALUE = THE VALUE TO BE SET FOR THE PARAMETER, IF ISET = .TRUE.
+C    ISET   = LOGICAL FLAG TO INDICATE WHETHER TO READ OR WRITE.
+C             IF ISET = .TRUE., THE PARAMETER WILL BE GIVEN
+C             THE VALUE IVALUE.  IF ISET = .FALSE., THE PARAMETER
+C             WILL BE UNCHANGED, AND IVALUE IS A DUMMY ARGUMENT.
 C
-C  On return..
-C    IXSAV = The (old) value of the parameter.
+C  ON RETURN..
+C    IXSAV = THE (OLD) VALUE OF THE PARAMETER.
 C
 C***SEE ALSO  XERRWD, XERRWV
 C***ROUTINES CALLED  IUMACH
 C***REVISION HISTORY  (YYMMDD)
 C   921118  DATE WRITTEN
-C   930329  Modified prologue to SLATEC format. (FNF)
-C   930915  Added IUMACH call to get default output unit.  (ACH)
-C   930922  Minor cosmetic changes. (FNF)
-C   010425  Type declaration for IUMACH added. (ACH)
+C   930329  MODIFIED PROLOGUE TO SLATEC FORMAT. (FNF)
+C   930915  ADDED IUMACH CALL TO GET DEFAULT OUTPUT UNIT.  (ACH)
+C   930922  MINOR COSMETIC CHANGES. (FNF)
+C   010425  TYPE DECLARATION FOR IUMACH ADDED. (ACH)
 C***END PROLOGUE  IXSAV
 C
-C Subroutines called by IXSAV.. None
-C Function routine called by IXSAV.. IUMACH
+C SUBROUTINES CALLED BY IXSAV.. NONE
+C FUNCTION ROUTINE CALLED BY IXSAV.. IUMACH
 C-----------------------------------------------------------------------
-C**End
+C**END
       LOGICAL ISET
       INTEGER IPAR, IVALUE
 C-----------------------------------------------------------------------
       INTEGER IUMACH, LUNIT, MESFLG
 C-----------------------------------------------------------------------
-C The following Fortran-77 declaration is to cause the values of the
-C listed (local) variables to be saved between calls to this routine.
+C THE FOLLOWING FORTRAN-77 DECLARATION IS TO CAUSE THE VALUES OF THE
+C LISTED (LOCAL) VARIABLES TO BE SAVED BETWEEN CALLS TO THIS ROUTINE.
 C-----------------------------------------------------------------------
       SAVE LUNIT, MESFLG
       DATA LUNIT/-1/, MESFLG/1/
@@ -4010,38 +4010,38 @@ C
         ENDIF
 C
       RETURN
-C----------------------- End of Function IXSAV -------------------------
+C----------------------- END OF FUNCTION IXSAV -------------------------
       END
 *DECK IUMACH
       INTEGER FUNCTION IUMACH()
 C***BEGIN PROLOGUE  IUMACH
-C***PURPOSE  Provide standard output unit number.
+C***PURPOSE  PROVIDE STANDARD OUTPUT UNIT NUMBER.
 C***CATEGORY  R1
 C***TYPE      INTEGER (IUMACH-I)
 C***KEYWORDS  MACHINE CONSTANTS
-C***AUTHOR  Hindmarsh, Alan C., (LLNL)
+C***AUTHOR  HINDMARSH, ALAN C., (LLNL)
 C***DESCRIPTION
-C *Usage:
+C *USAGE:
 C        INTEGER  LOUT, IUMACH
 C        LOUT = IUMACH()
 C
-C *Function Return Values:
-C     LOUT : the standard logical unit for Fortran output.
+C *FUNCTION RETURN VALUES:
+C     LOUT : THE STANDARD LOGICAL UNIT FOR FORTRAN OUTPUT.
 C
 C***REFERENCES  (NONE)
 C***ROUTINES CALLED  (NONE)
 C***REVISION HISTORY  (YYMMDD)
 C   930915  DATE WRITTEN
-C   930922  Made user-callable, and other cosmetic changes. (FNF)
+C   930922  MADE USER-CALLABLE, AND OTHER COSMETIC CHANGES. (FNF)
 C***END PROLOGUE  IUMACH
 C
-C*Internal Notes:
-C  The built-in value of 6 is standard on a wide range of Fortran
-C  systems.  This may be machine-dependent.
-C**End
+C*INTERNAL NOTES:
+C  THE BUILT-IN VALUE OF 6 IS STANDARD ON A WIDE RANGE OF FORTRAN
+C  SYSTEMS.  THIS MAY BE MACHINE-DEPENDENT.
+C**END
 C***FIRST EXECUTABLE STATEMENT  IUMACH
       IUMACH = 6
 C
       RETURN
-C----------------------- End of Function IUMACH ------------------------
+C----------------------- END OF FUNCTION IUMACH ------------------------
       END

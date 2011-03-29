@@ -1,169 +1,169 @@
-SUBROUTINE SETUPAMB(filename)
-implicit none
-        CHARACTER(*) :: filename
-        WRITE(*,*) 'sf344> shouldn`t be in this routine!  Compiled correctly?'
+SUBROUTINE SETUPAMB(FILENAME)
+IMPLICIT NONE
+        CHARACTER(*) :: FILENAME
+        WRITE(*,*) 'SF344> SHOULDN`T BE IN THIS ROUTINE!  COMPILED CORRECTLY?'
 END SUBROUTINE SETUPAMB
 
-SUBROUTINE AMBERINTERFACE(dummy1,dummy2)
-implicit none
-        INTEGER         :: dummy1, dummy2
+SUBROUTINE AMBERINTERFACE(DUMMY1,DUMMY2)
+IMPLICIT NONE
+        INTEGER         :: DUMMY1, DUMMY2
 
 END SUBROUTINE AMBERINTERFACE
 
-subroutine amber_readcoords(ostring)
-implicit none
-character(len=20) ostring
+SUBROUTINE AMBER_READCOORDS(OSTRING)
+IMPLICIT NONE
+CHARACTER(LEN=20) OSTRING
 
-end subroutine amber_readcoords
+END SUBROUTINE AMBER_READCOORDS
 
-SUBROUTINE A9RESTOATOM(frozenres,frozen,nfreeze,unfreeze)
-implicit none
-logical frozenres(*), frozen(*), unfreeze
-integer nfreeze
+SUBROUTINE A9RESTOATOM(FROZENRES,FROZEN,NFREEZE,UNFREEZE)
+IMPLICIT NONE
+LOGICAL FROZENRES(*), FROZEN(*), UNFREEZE
+INTEGER NFREEZE
 END SUBROUTINE A9RESTOATOM
 
-SUBROUTINE AMBERFINALIO(nsave,nunit,ostring,filth,coords2)
-implicit none
+SUBROUTINE AMBERFINALIO(NSAVE,NUNIT,OSTRING,FILTH,COORDS2)
+IMPLICIT NONE
 
-integer nsave,nunit,filth
-character(len=80) ostring
-double precision coords2(*)
+INTEGER NSAVE,NUNIT,FILTH
+CHARACTER(LEN=80) OSTRING
+DOUBLE PRECISION COORDS2(*)
 
 END SUBROUTINE AMBERFINALIO
 
 SUBROUTINE AMBERSECDER(OLDX,STEST)
-implicit none
+IMPLICIT NONE
 DOUBLE PRECISION  :: OLDX(*)
 LOGICAL    :: STEST
 END SUBROUTINE AMBERSECDER
 
-SUBROUTINE AMBERENERGIES(y,grad,ereal,gradt,stest)
-implicit none
-double precision :: y(*),grad(*),ereal
-logical          :: gradt,stest
+SUBROUTINE AMBERENERGIES(Y,GRAD,EREAL,GRADT,STEST)
+IMPLICIT NONE
+DOUBLE PRECISION :: Y(*),GRAD(*),EREAL
+LOGICAL          :: GRADT,STEST
 
 END SUBROUTINE AMBERENERGIES
 
-subroutine check_cistrans_rna(coords,natoms,atomlabels,goodstructure)
-implicit none
+SUBROUTINE CHECK_CISTRANS_RNA(COORDS,NATOMS,ATOMLABELS,GOODSTRUCTURE)
+IMPLICIT NONE
 
-integer,intent(in) :: natoms
-character(len=5),intent(in) :: atomlabels(natoms)
-double precision,intent(in) :: coords(3*natoms)
-logical,intent(out) :: goodstructure
+INTEGER,INTENT(IN) :: NATOMS
+CHARACTER(LEN=5),INTENT(IN) :: ATOMLABELS(NATOMS)
+DOUBLE PRECISION,INTENT(IN) :: COORDS(3*NATOMS)
+LOGICAL,INTENT(OUT) :: GOODSTRUCTURE
 
-goodstructure=.false.
+GOODSTRUCTURE=.FALSE.
 
-end subroutine check_cistrans_rna
+END SUBROUTINE CHECK_CISTRANS_RNA
 
-subroutine check_cistrans_dna(coords,natoms,atomlabels,goodstructure)
-implicit none
+SUBROUTINE CHECK_CISTRANS_DNA(COORDS,NATOMS,ATOMLABELS,GOODSTRUCTURE)
+IMPLICIT NONE
 
-integer,intent(in) :: natoms
-character(len=5),intent(in) :: atomlabels(natoms)
-double precision,intent(in) :: coords(3*natoms)
-logical,intent(out) :: goodstructure
+INTEGER,INTENT(IN) :: NATOMS
+CHARACTER(LEN=5),INTENT(IN) :: ATOMLABELS(NATOMS)
+DOUBLE PRECISION,INTENT(IN) :: COORDS(3*NATOMS)
+LOGICAL,INTENT(OUT) :: GOODSTRUCTURE
 
-goodstructure=.false.
+GOODSTRUCTURE=.FALSE.
 
-end subroutine check_cistrans_dna
+END SUBROUTINE CHECK_CISTRANS_DNA
 
 SUBROUTINE MME2WRAPPER(COORDS,ENERGY,VNEW,TEMPHESS,ATMASS,GRAD1)
-implicit none
+IMPLICIT NONE
 
-double precision coords(*),energy,vnew(*),temphess(*),atmass(*),grad1(*)
+DOUBLE PRECISION COORDS(*),ENERGY,VNEW(*),TEMPHESS(*),ATMASS(*),GRAD1(*)
 
 END SUBROUTINE MME2WRAPPER
 
-SUBROUTINE MMEINITWRAPPER(prmtop,igb,saltcon,rgbmax,cut)
-implicit none
+SUBROUTINE MMEINITWRAPPER(PRMTOP,IGB,SALTCON,RGBMAX,CUT)
+IMPLICIT NONE
 
-character       :: prmtop
-integer         :: igb
-double precision :: saltcon,rgbmax,cut
+CHARACTER       :: PRMTOP
+INTEGER         :: IGB
+DOUBLE PRECISION :: SALTCON,RGBMAX,CUT
 
 END SUBROUTINE MMEINITWRAPPER
 
-SUBROUTINE CHECK_CISTRANS_PROTEIN(coords,natoms,goodstructure,minomega,cisarray)
-implicit none
+SUBROUTINE CHECK_CISTRANS_PROTEIN(COORDS,NATOMS,GOODSTRUCTURE,MINOMEGA,CISARRAY)
+IMPLICIT NONE
 
-! stuff for detecting cis-trans isomerisation of omega angles in peptide bonds
-logical,intent(out) :: goodstructure
-integer,intent(in) :: natoms
-double precision,intent(in) :: coords(3*natoms),minomega
-integer :: cisarray(natoms)
+! STUFF FOR DETECTING CIS-TRANS ISOMERISATION OF OMEGA ANGLES IN PEPTIDE BONDS
+LOGICAL,INTENT(OUT) :: GOODSTRUCTURE
+INTEGER,INTENT(IN) :: NATOMS
+DOUBLE PRECISION,INTENT(IN) :: COORDS(3*NATOMS),MINOMEGA
+INTEGER :: CISARRAY(NATOMS)
 
-goodstructure=.false.
+GOODSTRUCTURE=.FALSE.
 
 END SUBROUTINE CHECK_CISTRANS_PROTEIN
 
-SUBROUTINE SET_CHECK_CHIRAL(coords,natoms,goodstructure,chiarray)
-implicit none
+SUBROUTINE SET_CHECK_CHIRAL(COORDS,NATOMS,GOODSTRUCTURE,CHIARRAY)
+IMPLICIT NONE
 
-! stuff for detecting cis-trans isomerisation of omega angles in peptide bonds
-logical,intent(out) :: goodstructure
-integer,intent(in) :: natoms
-double precision,intent(in) :: coords(3*natoms)
-integer :: chiarray(natoms)
+! STUFF FOR DETECTING CIS-TRANS ISOMERISATION OF OMEGA ANGLES IN PEPTIDE BONDS
+LOGICAL,INTENT(OUT) :: GOODSTRUCTURE
+INTEGER,INTENT(IN) :: NATOMS
+DOUBLE PRECISION,INTENT(IN) :: COORDS(3*NATOMS)
+INTEGER :: CHIARRAY(NATOMS)
 
-goodstructure=.false.
+GOODSTRUCTURE=.FALSE.
 
 END SUBROUTINE SET_CHECK_CHIRAL
 
-subroutine check_chirality(coords,natoms,goodstructure)
-implicit none
+SUBROUTINE CHECK_CHIRALITY(COORDS,NATOMS,GOODSTRUCTURE)
+IMPLICIT NONE
 
-integer,intent(in) :: natoms
-double precision,intent(in) :: coords(3*natoms)
-logical :: goodstructure
-end subroutine check_chirality
+INTEGER,INTENT(IN) :: NATOMS
+DOUBLE PRECISION,INTENT(IN) :: COORDS(3*NATOMS)
+LOGICAL :: GOODSTRUCTURE
+END SUBROUTINE CHECK_CHIRALITY
 
-subroutine amber_deallocate_stacks()
+SUBROUTINE AMBER_DEALLOCATE_STACKS()
 
-end subroutine amber_deallocate_stacks
+END SUBROUTINE AMBER_DEALLOCATE_STACKS
 
-subroutine takestepamber(np)
-implicit none
-integer np
-end subroutine takestepamber
+SUBROUTINE TAKESTEPAMBER(NP)
+IMPLICIT NONE
+INTEGER NP
+END SUBROUTINE TAKESTEPAMBER
 
-subroutine takestepamm(q, debug, bhstepsize)
-implicit none
-double precision :: q(3*5000)
-logical :: debug
-double precision :: bhstepsize
-end subroutine takestepamm
+SUBROUTINE TAKESTEPAMM(Q, DEBUG, BHSTEPSIZE)
+IMPLICIT NONE
+DOUBLE PRECISION :: Q(3*5000)
+LOGICAL :: DEBUG
+DOUBLE PRECISION :: BHSTEPSIZE
+END SUBROUTINE TAKESTEPAMM
 
-subroutine  GETSEEDATM(dummy1,dummy2,dummy3,at1,at2,at3,IRES)
+SUBROUTINE  GETSEEDATM(DUMMY1,DUMMY2,DUMMY3,AT1,AT2,AT3,IRES)
 
-character :: dummy1, dummy2, dummy3
-integer :: at1, at2, at3, IRES
+CHARACTER :: DUMMY1, DUMMY2, DUMMY3
+INTEGER :: AT1, AT2, AT3, IRES
 
-end subroutine GETSEEDATM
+END SUBROUTINE GETSEEDATM
 
-subroutine GETICCOORDS()
+SUBROUTINE GETICCOORDS()
 
-end subroutine GETICCOORDS
+END SUBROUTINE GETICCOORDS
 
-subroutine CHECK_SIDECHAIN(i3,j3,k3,l3,IICD,IS_SIDECHAIN)
-integer :: i3,j3,k3,l3,IICD
-logical :: IS_SIDECHAIN(100)
+SUBROUTINE CHECK_SIDECHAIN(I3,J3,K3,L3,IICD,IS_SIDECHAIN)
+INTEGER :: I3,J3,K3,L3,IICD
+LOGICAL :: IS_SIDECHAIN(100)
 
-end subroutine CHECK_SIDECHAIN
+END SUBROUTINE CHECK_SIDECHAIN
 
-subroutine CHGETICVAL(Q,BOND1, BOND2, THET1, THET2, PHI)
-double precision :: Q(3*1000), BOND1(1000), BOND2(1000), THET1(1000)
-double precision :: THET2(1000), PHI(1000)
-end subroutine CHGETICVAL 
+SUBROUTINE CHGETICVAL(Q,BOND1, BOND2, THET1, THET2, PHI)
+DOUBLE PRECISION :: Q(3*1000), BOND1(1000), BOND2(1000), THET1(1000)
+DOUBLE PRECISION :: THET2(1000), PHI(1000)
+END SUBROUTINE CHGETICVAL 
 
 SUBROUTINE A9DUMPPDB(DUMPCOORDS,FNAMEF)
 CHARACTER :: FNAMEF
 DOUBLE PRECISION :: DUMPCOORDS
 END SUBROUTINE A9DUMPPDB
 
-SUBROUTINE INTEFINALIO(nsave,nunit,ostring,filth,coords2)
-implicit none
-integer nsave,nunit,filth
-character(len=80) ostring
-double precision coords2(*)
+SUBROUTINE INTEFINALIO(NSAVE,NUNIT,OSTRING,FILTH,COORDS2)
+IMPLICIT NONE
+INTEGER NSAVE,NUNIT,FILTH
+CHARACTER(LEN=80) OSTRING
+DOUBLE PRECISION COORDS2(*)
 END SUBROUTINE INTEFINALIO

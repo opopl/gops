@@ -1,73 +1,73 @@
       SUBROUTINE SLARUV( ISEED, N, X )
 *
-*  -- LAPACK auxiliary routine (version 3.0) --
-*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
-*     Courant Institute, Argonne National Lab, and Rice University
-*     October 31, 1992
+*  -- LAPACK AUXILIARY ROUTINE (VERSION 3.0) --
+*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
+*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
+*     OCTOBER 31, 1992
 *
-*     .. Scalar Arguments ..
+*     .. SCALAR ARGUMENTS ..
       INTEGER            N
 *     ..
-*     .. Array Arguments ..
+*     .. ARRAY ARGUMENTS ..
       INTEGER            ISEED( 4 )
       REAL               X( N )
 *     ..
 *
-*  Purpose
+*  PURPOSE
 *  =======
 *
-*  SLARUV returns a vector of n random double precision numbers from a uniform (0,1)
-*  distribution (n <= 128).
+*  SLARUV RETURNS A VECTOR OF N RANDOM DOUBLE PRECISION NUMBERS FROM A UNIFORM (0,1)
+*  DISTRIBUTION (N <= 128).
 *
-*  This is an auxiliary routine called by SLARNV and CLARNV.
+*  THIS IS AN AUXILIARY ROUTINE CALLED BY SLARNV AND CLARNV.
 *
-*  Arguments
+*  ARGUMENTS
 *  =========
 *
-*  ISEED   (input/output) INTEGER array, dimension (4)
-*          On entry, the seed of the random number generator; the array
-*          elements must be between 0 and 4095, and ISEED(4) must be
-*          odd.
-*          On exit, the seed is updated.
+*  ISEED   (INPUT/OUTPUT) INTEGER ARRAY, DIMENSION (4)
+*          ON ENTRY, THE SEED OF THE RANDOM NUMBER GENERATOR; THE ARRAY
+*          ELEMENTS MUST BE BETWEEN 0 AND 4095, AND ISEED(4) MUST BE
+*          ODD.
+*          ON EXIT, THE SEED IS UPDATED.
 *
-*  N       (input) INTEGER
-*          The number of random numbers to be generated. N <= 128.
+*  N       (INPUT) INTEGER
+*          THE NUMBER OF RANDOM NUMBERS TO BE GENERATED. N <= 128.
 *
-*  X       (output) REAL array, dimension (N)
-*          The generated random numbers.
+*  X       (OUTPUT) REAL ARRAY, DIMENSION (N)
+*          THE GENERATED RANDOM NUMBERS.
 *
-*  Further Details
+*  FURTHER DETAILS
 *  ===============
 *
-*  This routine uses a multiplicative congruential method with modulus
-*  2**48 and multiplier 33952834046453 (see G.S.Fishman,
-*  'Multiplicative congruential random number generators with modulus
-*  2**b: an exhaustive analysis for b = 32 and a partial analysis for
-*  b = 48', Math. Comp. 189, pp 331-344, 1990).
+*  THIS ROUTINE USES A MULTIPLICATIVE CONGRUENTIAL METHOD WITH MODULUS
+*  2**48 AND MULTIPLIER 33952834046453 (SEE G.S.FISHMAN,
+*  'MULTIPLICATIVE CONGRUENTIAL RANDOM NUMBER GENERATORS WITH MODULUS
+*  2**B: AN EXHAUSTIVE ANALYSIS FOR B = 32 AND A PARTIAL ANALYSIS FOR
+*  B = 48', MATH. COMP. 189, PP 331-344, 1990).
 *
-*  48-bit integers are stored in 4 integer array elements with 12 bits
-*  per element. Hence the routine is portable across machines with
-*  integers of 32 bits or more.
+*  48-BIT INTEGERS ARE STORED IN 4 INTEGER ARRAY ELEMENTS WITH 12 BITS
+*  PER ELEMENT. HENCE THE ROUTINE IS PORTABLE ACROSS MACHINES WITH
+*  INTEGERS OF 32 BITS OR MORE.
 *
 *  =====================================================================
 *
-*     .. Parameters ..
+*     .. PARAMETERS ..
       REAL               ONE
       PARAMETER          ( ONE = 1.0E0 )
       INTEGER            LV, IPW2
       REAL               R
       PARAMETER          ( LV = 128, IPW2 = 4096, R = ONE / IPW2 )
 *     ..
-*     .. Local Scalars ..
+*     .. LOCAL SCALARS ..
       INTEGER            I, I1, I2, I3, I4, IT1, IT2, IT3, IT4, J
 *     ..
-*     .. Local Arrays ..
+*     .. LOCAL ARRAYS ..
       INTEGER            MM( LV, 4 )
 *     ..
-*     .. Intrinsic Functions ..
+*     .. INTRINSIC FUNCTIONS ..
       INTRINSIC          MIN, MOD, REAL
 *     ..
-*     .. Data statements ..
+*     .. DATA STATEMENTS ..
       DATA               ( MM( 1, J ), J = 1, 4 ) / 494, 322, 2508,
      $                   2549 /
       DATA               ( MM( 2, J ), J = 1, 4 ) / 2637, 789, 3754,
@@ -325,7 +325,7 @@
       DATA               ( MM( 128, J ), J = 1, 4 ) / 545, 2366, 3801,
      $                   1537 /
 *     ..
-*     .. Executable Statements ..
+*     .. EXECUTABLE STATEMENTS ..
 *
       I1 = ISEED( 1 )
       I2 = ISEED( 2 )
@@ -334,7 +334,7 @@
 *
       DO 10 I = 1, MIN( N, LV )
 *
-*        Multiply the seed by i-th power of the multiplier modulo 2**48
+*        MULTIPLY THE SEED BY I-TH POWER OF THE MULTIPLIER MODULO 2**48
 *
          IT4 = I4*MM( I, 4 )
          IT3 = IT4 / IPW2
@@ -349,13 +349,13 @@
      $         I4*MM( I, 1 )
          IT1 = MOD( IT1, IPW2 )
 *
-*        Convert 48-bit integer to a double precision number in the interval (0,1)
+*        CONVERT 48-BIT INTEGER TO A DOUBLE PRECISION NUMBER IN THE INTERVAL (0,1)
 *
          X( I ) = R*( REAL( IT1 )+R*( REAL( IT2 )+R*( REAL( IT3 )+R*
      $            REAL( IT4 ) ) ) )
    10 CONTINUE
 *
-*     Return final value of seed
+*     RETURN FINAL VALUE OF SEED
 *
       ISEED( 1 ) = IT1
       ISEED( 2 ) = IT2
@@ -363,6 +363,6 @@
       ISEED( 4 ) = IT4
       RETURN
 *
-*     End of SLARUV
+*     END OF SLARUV
 *
       END

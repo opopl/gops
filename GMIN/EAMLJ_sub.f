@@ -1,129 +1,129 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C*************************************************************************
 C
-C  Here we calculate the EAMLJ potential and gradient
-C  (Baskes, PRL 27, 2592 (1999)). It has three parameters A0, beta and Z0. 
+C  HERE WE CALCULATE THE EAMLJ POTENTIAL AND GRADIENT
+C  (BASKES, PRL 27, 2592 (1999)). IT HAS THREE PARAMETERS A0, BETA AND Z0. 
 C                                        
 C*************************************************************************
 
-      SUBROUTINE EAMLJ(XALL,V,energy,GRADT)
-      USE commons
+      SUBROUTINE EAMLJ(XALL,V,ENERGY,GRADT)
+      USE COMMONS
       IMPLICIT NONE 
-      INTEGER NSIZE, i, J
-      DOUBLE PRECISION XALL(3*NATOMS), energy, x(NATOMS), y(NATOMS), z(NATOMS),
-     +                 A0, beta, Z0, rhol(NATOMS), r(NATOMS,NATOMS), ww, v1, v2, 
-     +                 V(3*NATOMS), fx(NATOMS), fy(NATOMS), fz(NATOMS), br, func, 
-     +                 rij, r6, wexp, wLJ, wtot 
+      INTEGER NSIZE, I, J
+      DOUBLE PRECISION XALL(3*NATOMS), ENERGY, X(NATOMS), Y(NATOMS), Z(NATOMS),
+     +                 A0, BETA, Z0, RHOL(NATOMS), R(NATOMS,NATOMS), WW, V1, V2, 
+     +                 V(3*NATOMS), FX(NATOMS), FY(NATOMS), FZ(NATOMS), BR, FUNC, 
+     +                 RIJ, R6, WEXP, WLJ, WTOT 
       LOGICAL GRADT
-      common /EAMLJCOMM/ A0,beta,Z0
+      COMMON /EAMLJCOMM/ A0,BETA,Z0
 
       NSIZE=NATOMS
 
-      do i=1,nsize
-        x(i)=xall(3*(i-1)+1)
-        y(i)=xall(3*(i-1)+2)
-        z(i)=xall(3*(i-1)+3)
-      enddo
+      DO I=1,NSIZE
+        X(I)=XALL(3*(I-1)+1)
+        Y(I)=XALL(3*(I-1)+2)
+        Z(I)=XALL(3*(I-1)+3)
+      ENDDO
 
-c       CALCULATE ENERGY
+C       CALCULATE ENERGY
 
-      do i=1,Nsize
-         do j=i+1,Nsize
-            ww=(x(i)-x(j))**2+(y(i)-y(j))**2+(z(i)-z(j))**2
-            ww=dsqrt(ww)
-            r(i,j)=ww
-            r(j,i)=r(i,j)
-         enddo
-      enddo
+      DO I=1,NSIZE
+         DO J=I+1,NSIZE
+            WW=(X(I)-X(J))**2+(Y(I)-Y(J))**2+(Z(I)-Z(J))**2
+            WW=DSQRT(WW)
+            R(I,J)=WW
+            R(J,I)=R(I,J)
+         ENDDO
+      ENDDO
       
-      v1=0.D0
-      v2=0.D0
+      V1=0.D0
+      V2=0.D0
 
-      do i=1,nsize
-         fx(i)=0.D0
-         fy(i)=0.D0
-         fz(i)=0.D0
-         rhol(i)=0.D0
-         do j=1,Nsize
-            if (i.ne.j) then
-             rhol(i)=rhol(i)+dexp(-beta*(r(i,j)-1.D0))
-            endif
-         enddo
-         rhol(i)=rhol(i)/Z0
-         v1=v1+func(rhol(i))
+      DO I=1,NSIZE
+         FX(I)=0.D0
+         FY(I)=0.D0
+         FZ(I)=0.D0
+         RHOL(I)=0.D0
+         DO J=1,NSIZE
+            IF (I.NE.J) THEN
+             RHOL(I)=RHOL(I)+DEXP(-BETA*(R(I,J)-1.D0))
+            ENDIF
+         ENDDO
+         RHOL(I)=RHOL(I)/Z0
+         V1=V1+FUNC(RHOL(I))
 
-         do j=i+1,Nsize
-            r6=1.D0/r(i,j)**6
-            v2=v2+r6*(r6-2.D0)
-            ww=dexp(-beta*(r(i,j)-1.D0))
-            v2=v2-2.D0*func(ww)/Z0
-         enddo
+         DO J=I+1,NSIZE
+            R6=1.D0/R(I,J)**6
+            V2=V2+R6*(R6-2.D0)
+            WW=DEXP(-BETA*(R(I,J)-1.D0))
+            V2=V2-2.D0*FUNC(WW)/Z0
+         ENDDO
 
-      enddo
+      ENDDO
 
-      energy=v1+v2
+      ENERGY=V1+V2
 
-C        print*,energy
+C        PRINT*,ENERGY
  
         IF (.NOT.GRADT) RETURN
 
-      do i=1,Nsize
-         do j=1,Nsize
-            if (j.ne.i) then
-             rij=r(j,i)
+      DO I=1,NSIZE
+         DO J=1,NSIZE
+            IF (J.NE.I) THEN
+             RIJ=R(J,I)
 
-             br=beta*(rij-1.D0)
-             wexp=dexp(-br)
+             BR=BETA*(RIJ-1.D0)
+             WEXP=DEXP(-BR)
 
-             wtot=-0.5D0*(dlog(rhol(j)*rhol(i)))
-             wtot=wtot-br
-             wtot=A0*beta*wexp*wtot
-             wlj=12.D0/(rij**7)
-             wlj=wlj*(1.D0-1.D0/rij**6)
-             wtot=wtot+wlj
-C             wtot=-wtot
-             fx(i)=fx(i)+(x(i)-x(j))*wtot/rij
-             fy(i)=fy(i)+(y(i)-y(j))*wtot/rij
-             fz(i)=fz(i)+(z(i)-z(j))*wtot/rij
-            endif
-         enddo
-      enddo
+             WTOT=-0.5D0*(DLOG(RHOL(J)*RHOL(I)))
+             WTOT=WTOT-BR
+             WTOT=A0*BETA*WEXP*WTOT
+             WLJ=12.D0/(RIJ**7)
+             WLJ=WLJ*(1.D0-1.D0/RIJ**6)
+             WTOT=WTOT+WLJ
+C             WTOT=-WTOT
+             FX(I)=FX(I)+(X(I)-X(J))*WTOT/RIJ
+             FY(I)=FY(I)+(Y(I)-Y(J))*WTOT/RIJ
+             FZ(I)=FZ(I)+(Z(I)-Z(J))*WTOT/RIJ
+            ENDIF
+         ENDDO
+      ENDDO
 
-        do i=1,nsize
-c          write(*,'(3F20.10)') fx(i), fy(i), fz(i)
-          v(3*(i-1)+1)=fx(i)
-          v(3*(i-1)+2)=fy(i)
-          v(3*(i-1)+3)=fz(i)
-        enddo 
+        DO I=1,NSIZE
+C          WRITE(*,'(3F20.10)') FX(I), FY(I), FZ(I)
+          V(3*(I-1)+1)=FX(I)
+          V(3*(I-1)+2)=FY(I)
+          V(3*(I-1)+3)=FZ(I)
+        ENDDO 
 
-      return
-      end
+      RETURN
+      END
 
-c__________________________________________________________________________
+C__________________________________________________________________________
 
-      function func(x)
-        implicit none
-        double precision a0, beta, z0, x, func
-      common/EAMLJCOMM/A0,beta,Z0
-      func=A0*Z0*x
-      func=func*(dlog(x)-1.D0)
-      func=0.5D0*func
-      return
-      end
+      FUNCTION FUNC(X)
+        IMPLICIT NONE
+        DOUBLE PRECISION A0, BETA, Z0, X, FUNC
+      COMMON/EAMLJCOMM/A0,BETA,Z0
+      FUNC=A0*Z0*X
+      FUNC=FUNC*(DLOG(X)-1.D0)
+      FUNC=0.5D0*FUNC
+      RETURN
+      END

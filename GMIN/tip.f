@@ -1,27 +1,27 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
-C  Energy and gradient for rigid body TIP4P using new rigid body
-C  derivative functions etc.
+C  ENERGY AND GRADIENT FOR RIGID BODY TIP4P USING NEW RIGID BODY
+C  DERIVATIVE FUNCTIONS ETC.
 C
       SUBROUTINE TIP4P(X,V,ETIP,GTEST,SECT)
-      USE commons
+      USE COMMONS
 
       IMPLICIT NONE
       LOGICAL GTEST,SECT
@@ -34,20 +34,20 @@ C
      5                 D1, D2, D3, D4, D5, D6, DA, DB, DC, DIST, DUMMY2,
      6                 P1X, P1Y, P1Z, P2X, P2Y, P2Z, XDUMM, Q1, Q2,
      7           D1S, D2S, D3S, D4S, D5S, D6S, DAS, DBS, DCS, CHARGE(5), HTOKJ
-      PARAMETER (HTOKJ=1389.354848D0) ! conversion factor for coulomb energy and gradients
+      PARAMETER (HTOKJ=1389.354848D0) ! CONVERSION FACTOR FOR COULOMB ENERGY AND GRADIENTS
 C
-C  Statement functions.
-C  Site-site energy terms - Coulombic and LJ. XDUMM is the site-site distance.
+C  STATEMENT FUNCTIONS.
+C  SITE-SITE ENERGY TERMS - COULOMBIC AND LJ. XDUMM IS THE SITE-SITE DISTANCE.
 C
       FLJ(XDUMM)=(C12/XDUMM**6-C6)/XDUMM**6
       DFLJ(XDUMM)=-6.0D0*(-C6+2.0D0*C12/XDUMM**6)/XDUMM**7
       FC(Q1,Q2,XDUMM)=Q1*Q2/XDUMM
       DFC(Q1,Q2,XDUMM)=-Q1*Q2/XDUMM**2
 
-C     PRINT*,'coords in TIP:'
+C     PRINT*,'COORDS IN TIP:'
 C     WRITE(*,'(3F20.10)') (X(J1),J1=1,3*NATOMS)
 C
-C Distinguish TIP1P, TIP2P, TIP3P, TIP4P
+C DISTINGUISH TIP1P, TIP2P, TIP3P, TIP4P
 C
       SITE(1,1)=0.0D0
       SITE(1,2)=0.0D0
@@ -67,7 +67,7 @@ C     SITE(3,3)=-0.5207842760D0
       NSITE=4
 
       IF (TIPID.EQ.1) THEN
-         C6=2510.4D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+         C6=2510.4D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
          C12=2426720.0D0
          SITE(4,3)=0.0D0
 C        SITE(4,3)=0.065098D0
@@ -75,7 +75,7 @@ C        SITE(4,3)=0.065098D0
          CHARGE(3)=0.4D0
          CHARGE(4)=-0.8D0
       ELSE IF (TIPID.EQ.2) THEN
-         C6=2510.4D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+         C6=2510.4D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
          C12=2907880.0D0
          SITE(4,3)=-0.15D0
 C        SITE(4,3)=-0.084902D0
@@ -83,7 +83,7 @@ C        SITE(4,3)=-0.084902D0
          CHARGE(3)=0.535D0
          CHARGE(4)=-1.07D0
       ELSE IF (TIPID.EQ.3) THEN
-         C6=2489.48D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+         C6=2489.48D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
          C12=2435088.0D0
          SITE(4,3)=0.0D0
 C        SITE(4,3)=0.065098D0
@@ -91,7 +91,7 @@ C        SITE(4,3)=0.065098D0
          CHARGE(3)=0.417D0
          CHARGE(4)=-0.834D0
       ELSE IF (TIPID.EQ.4) THEN
-         C6=2552.24D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+         C6=2552.24D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
          C12=2510.4D3
          SITE(4,3)=-0.15D0
 C        SITE(4,3)=-0.084902D0
@@ -99,9 +99,9 @@ C        SITE(4,3)=-0.084902D0
          CHARGE(3)=0.52D0
          CHARGE(4)=-1.04D0
       ELSE IF (TIPID.EQ.5) THEN
-! C6  = 590.3472412D0 kcal/mol Angstrom**6
-! C12 = 544546.6644D0 kcal/mol Angstrom**12 
-         C6=2470.012857D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+! C6  = 590.3472412D0 KCAL/MOL ANGSTROM**6
+! C12 = 544546.6644D0 KCAL/MOL ANGSTROM**12 
+         C6=2470.012857D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
          C12=2278383.244D0
          NSITE=5
          SITE(4,1)=0.0D0; SITE(4,2)= 0.571543301D0; SITE(4,3)=0.404151276D0
@@ -121,13 +121,13 @@ C        SITE(4,3)=-0.084902D0
          V(J1)=0.0D0
       ENDDO
 
-C     PRINT*,'site 1', site(1,1),site(1,2),site(1,3)
-C     PRINT*,'site 2', site(2,1),site(2,2),site(2,3)
-C     PRINT*,'site 3', site(3,1),site(3,2),site(3,3)
-C     PRINT*,'site 4', site(4,1),site(4,2),site(4,3)
+C     PRINT*,'SITE 1', SITE(1,1),SITE(1,2),SITE(1,3)
+C     PRINT*,'SITE 2', SITE(2,1),SITE(2,2),SITE(2,3)
+C     PRINT*,'SITE 3', SITE(3,1),SITE(3,2),SITE(3,3)
+C     PRINT*,'SITE 4', SITE(4,1),SITE(4,2),SITE(4,3)
 
 C
-C  Potential energy first.
+C  POTENTIAL ENERGY FIRST.
 C
       DO J1=1,NAT2-1
          X1=X(3*(J1-1)+1)
@@ -144,7 +144,7 @@ C
          CA1=COS(ALPHA1)
          C2A1=CA1
          IF (ALPHA1.LT.0.0001D0) THEN
-C           C3A1=-ALPHA1/2+ALPHA1**3/24 ! bug spotted by Tim!
+C           C3A1=-ALPHA1/2+ALPHA1**3/24 ! BUG SPOTTED BY TIM!
             C3A1=-0.5D0+ALPHA1**2/24.0D0
             S1=1.0D0-ALPHA1**2/6
          ELSE
@@ -167,7 +167,7 @@ C        WRITE(*,'(A,6F15.5)') 'ALPHA1,RALPHA12,CA1,C2A1,C3A1,S1=',ALPHA1,RALPHA
             CA2=COS(ALPHA2)
             C2A2=CA2
             IF (ALPHA2.LT.0.00001D0) THEN
-C              C3A2=-ALPHA2/2+ALPHA2**3/24 ! bug spotted by Tim!
+C              C3A2=-ALPHA2/2+ALPHA2**3/24 ! BUG SPOTTED BY TIM!
                C3A2=-0.5D0+ALPHA2**2/24.0D0
                S2=1.0D0-ALPHA2**2/6
             ELSE
@@ -175,11 +175,11 @@ C              C3A2=-ALPHA2/2+ALPHA2**3/24 ! bug spotted by Tim!
                S2=SIN(ALPHA2)/ALPHA2
             ENDIF
 C
-C  O-O LJ contribution.
+C  O-O LJ CONTRIBUTION.
 C
 !
-!  Since site 1 (O) is at the origin we don't need to rotate it, so the LJ term
-!  can be done much faster.
+!  SINCE SITE 1 (O) IS AT THE ORIGIN WE DON'T NEED TO ROTATE IT, SO THE LJ TERM
+!  CAN BE DONE MUCH FASTER.
 !
             DIST=SQRT((X1-X(3*(J2-1)+1))**2+(Y1-X(3*(J2-1)+2))**2+(Z1-X(3*(J2-1)+3))**2)
             DUMMY=FLJ(DIST)
@@ -201,39 +201,39 @@ C
 !             P2Y=SITE(1,2)
 !             P2Z=SITE(1,3)
 !             DIST= 
-!      1  Sqrt((c2a1*p1x-c3a1*l1*(l1*p1x+m1*p1y+n1*p1z)-c2a2*p2x+c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)+ 
-!      1      (n1*p1y - m1*p1z)*s1 - (n2*p2y - m2*p2z)*s2 + x1 - x2)**2 + 
-!      1   (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y+c3a2*m2*(l2*p2x+m2*p2y+n2*p2z)+ 
-!      1      (-(n1*p1x) + l1*p1z)*s1 - (-(n2*p2x) + l2*p2z)*s2 + y1-y2)**2 + 
-!      1   (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z+c3a2*n2*(l2*p2x+m2*p2y+n2*p2z)+ 
-!      1      (m1*p1x - l1*p1y)*s1 - (m2*p2x - l2*p2y)*s2 + z1 - z2)**2)
-! C           PRINT*,'coordinates of molecule pair:'
+!      1  SQRT((C2A1*P1X-C3A1*L1*(L1*P1X+M1*P1Y+N1*P1Z)-C2A2*P2X+C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)+ 
+!      1      (N1*P1Y - M1*P1Z)*S1 - (N2*P2Y - M2*P2Z)*S2 + X1 - X2)**2 + 
+!      1   (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y+C3A2*M2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+!      1      (-(N1*P1X) + L1*P1Z)*S1 - (-(N2*P2X) + L2*P2Z)*S2 + Y1-Y2)**2 + 
+!      1   (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z+C3A2*N2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+!      1      (M1*P1X - L1*P1Y)*S1 - (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)**2)
+! C           PRINT*,'COORDINATES OF MOLECULE PAIR:'
 ! C           WRITE(*,'(3F20.10)') X1,Y1,Z1
 ! C           WRITE(*,'(3F20.10)') L1,M1,N1
 ! C           WRITE(*,'(3F20.10)') X2,Y2,Z2
 ! C           WRITE(*,'(3F20.10)') L2,M2,N2
-! C           PRINT*,'distance=',DIST
+! C           PRINT*,'DISTANCE=',DIST
 !             DUMMY=FLJ(DIST)
 !             IF (GTEST.OR.SECT) THEN
 !                DUMMY2=DFLJ(DIST)
 !                RDIST=1.0D0/DIST
-!                D1S=D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+!                D1S=D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
 !      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-!                D2S=D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+!                D2S=D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
 !      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-!                D3S=D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+!                D3S=D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
 !      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-!                D4S=D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+!                D4S=D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
 !      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-!                D5S=D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+!                D5S=D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
 !      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-!                D6S=D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+!                D6S=D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
 !      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-!                DAS=DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+!                DAS=DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
 !      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-!                DBS=DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+!                DBS=DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
 !      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-!                DCS=DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+!                DCS=DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
 !      1             C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
 !                GX1=DUMMY2*D1S
 !                GY1=DUMMY2*D2S
@@ -246,8 +246,8 @@ C
 !                GN2=DUMMY2*DCS
 !             ENDIF
 C
-C  Sum over charged sites. This could also be faster if we didn't use the general
-C  rigid body formulation.
+C  SUM OVER CHARGED SITES. THIS COULD ALSO BE FASTER IF WE DIDN'T USE THE GENERAL
+C  RIGID BODY FORMULATION.
 C
             DO K1=2,NSITE
                P1X=SITE(K1,1)
@@ -258,33 +258,33 @@ C
                   P2Y=SITE(K2,2)
                   P2Z=SITE(K2,3)
                   DIST=
-     1  Sqrt((c2a1*p1x-c3a1*l1*(l1*p1x+m1*p1y+n1*p1z)-c2a2*p2x+c3a2*l2*(l2*p2x + m2*p2y + n2*p2z)+ 
-     1      (n1*p1y - m1*p1z)*s1 - (n2*p2y - m2*p2z)*s2 + x1 - x2)**2 + 
-     1   (c2a1*p1y - c3a1*m1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2y+c3a2*m2*(l2*p2x+m2*p2y+n2*p2z)+ 
-     1      (-(n1*p1x) + l1*p1z)*s1 - (-(n2*p2x) + l2*p2z)*s2 + y1-y2)**2 + 
-     1   (c2a1*p1z - c3a1*n1*(l1*p1x + m1*p1y + n1*p1z) - c2a2*p2z+c3a2*n2*(l2*p2x+m2*p2y+n2*p2z)+ 
-     1      (m1*p1x - l1*p1y)*s1 - (m2*p2x - l2*p2y)*s2 + z1 - z2)**2)
+     1  SQRT((C2A1*P1X-C3A1*L1*(L1*P1X+M1*P1Y+N1*P1Z)-C2A2*P2X+C3A2*L2*(L2*P2X + M2*P2Y + N2*P2Z)+ 
+     1      (N1*P1Y - M1*P1Z)*S1 - (N2*P2Y - M2*P2Z)*S2 + X1 - X2)**2 + 
+     1   (C2A1*P1Y - C3A1*M1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Y+C3A2*M2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+     1      (-(N1*P1X) + L1*P1Z)*S1 - (-(N2*P2X) + L2*P2Z)*S2 + Y1-Y2)**2 + 
+     1   (C2A1*P1Z - C3A1*N1*(L1*P1X + M1*P1Y + N1*P1Z) - C2A2*P2Z+C3A2*N2*(L2*P2X+M2*P2Y+N2*P2Z)+ 
+     1      (M1*P1X - L1*P1Y)*S1 - (M2*P2X - L2*P2Y)*S2 + Z1 - Z2)**2)
                   DUMMY=DUMMY+HTOKJ*FC(CHARGE(K1),CHARGE(K2),DIST)
                   DUMMY2=HTOKJ*DFC(CHARGE(K1),CHARGE(K2),DIST)
                   IF (GTEST) THEN
                      RDIST=1.0D0/DIST
-                     GX1=GX1+DUMMY2*D1(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GX1=GX1+DUMMY2*D1(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GY1=GY1+DUMMY2*D2(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GY1=GY1+DUMMY2*D2(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GZ1=GZ1+DUMMY2*D3(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GZ1=GZ1+DUMMY2*D3(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GL1=GL1+DUMMY2*D4(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GL1=GL1+DUMMY2*D4(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GM1=GM1+DUMMY2*D5(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GM1=GM1+DUMMY2*D5(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GN1=GN1+DUMMY2*D6(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GN1=GN1+DUMMY2*D6(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GL2=GL2+DUMMY2*DA(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GL2=GL2+DUMMY2*DA(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GM2=GM2+DUMMY2*DB(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GM2=GM2+DUMMY2*DB(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
-                     GN2=GN2+DUMMY2*DC(p1x,p1y,p1z,p2x,p2y,p2z,x1,y1,z1,n1,l1,m1,x2,y2,z2,l2,m2,n2,rdist,
+                     GN2=GN2+DUMMY2*DC(P1X,P1Y,P1Z,P2X,P2Y,P2Z,X1,Y1,Z1,N1,L1,M1,X2,Y2,Z2,L2,M2,N2,RDIST,
      1 C2A2,RALPHA12,RALPHA22,C3A2,S2,C2A1,C3A1,S1,N12,L12,M12,L22,M22,N22)
                   ENDIF
                ENDDO
@@ -311,10 +311,10 @@ C
          ENDDO
       ENDDO
 
-C     WRITE(*,'(A,G20.10)') 'energy=',ETIP
-C     PRINT*,'coords:'
+C     WRITE(*,'(A,G20.10)') 'ENERGY=',ETIP
+C     PRINT*,'COORDS:'
 C     WRITE(*,'(I6,G20.10)') (J1,X(J1),J1=1,3*NATOMS)
-C     PRINT*,'gradient:'
+C     PRINT*,'GRADIENT:'
 C     WRITE(*,'(I6,G20.10)') (J1,V(J1),J1=1,3*NATOMS)
 
       RETURN

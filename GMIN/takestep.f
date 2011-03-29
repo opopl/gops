@@ -1,23 +1,23 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       SUBROUTINE TAKESTEP(NP)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE
 
       DOUBLE PRECISION DPRAND, RANDOM, XMASS, YMASS, ZMASS, LOCALSTEP, DUMMY2, CDIST(NATOMS), RDOTN, XL, YL, ZL,
@@ -32,18 +32,18 @@ C     INTEGER NQTOT
 C     COMMON /TOT/ NQTOT
 
 C
-C  This call can be used to keep the random numbers the same for parallel
-C  runs - only for testing!
+C  THIS CALL CAN BE USED TO KEEP THE RANDOM NUMBERS THE SAME FOR PARALLEL
+C  RUNS - ONLY FOR TESTING!
 C
 C     CALL SDPRND(NQTOT)
 
-C        OPEN(UNIT=177,FILE='coords.latest.xyz',STATUS='UNKNOWN')
+C        OPEN(UNIT=177,FILE='COORDS.LATEST.XYZ',STATUS='UNKNOWN')
 C        WRITE(177,'(I6)') NATOMS
-C        WRITE(MYUNIT,'(A)') ' start of takestep coords '
+C        WRITE(MYUNIT,'(A)') ' START OF TAKESTEP COORDS '
 C        WRITE(MYUNIT,'(A2,2X,3G20.10)') ('LA',COORDS(3*(J2-1)+1,NP),COORDS(3*(J2-1)+2,NP),
 C    &                                 COORDS(3*(J2-1)+3,NP),J2=1,NATOMS)
 C        WRITE(177,'(I6)') NATOMS
-C        WRITE(MYUNIT,'(A)') ' start of takestep coordso'
+C        WRITE(MYUNIT,'(A)') ' START OF TAKESTEP COORDSO'
 C        WRITE(MYUNIT,'(A2,2X,3G20.10)') ('LA',COORDSO(3*(J2-1)+1,NP),COORDSO(3*(J2-1)+2,NP),
 C    &                                 COORDSO(3*(J2-1)+3,NP),J2=1,NATOMS)
 C        CLOSE(177)
@@ -54,40 +54,40 @@ C        CLOSE(177)
          RETURN
       ENDIF
 C
-C  Calling CENTRE if NORESET is .TRUE. can lead to problems with COORDSO containing an atom
-C  outside the permitted radius. Then it may be impossible to take a step that keeps all the
-C  atoms inside.
+C  CALLING CENTRE IF NORESET IS .TRUE. CAN LEAD TO PROBLEMS WITH COORDSO CONTAINING AN ATOM
+C  OUTSIDE THE PERMITTED RADIUS. THEN IT MAY BE IMPOSSIBLE TO TAKE A STEP THAT KEEPS ALL THE
+C  ATOMS INSIDE.
 C
       FRPISQ = 4.D0*PI*PI
       NTRIESMAX=100
 
-C     IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS,NP)) ! COORDS might have been shifted by symmetry
+C     IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS,NP)) ! COORDS MIGHT HAVE BEEN SHIFTED BY SYMMETRY
       IF ((.NOT.NORESET).AND.(.NOT.PERMOPT).AND.(.NOT.DIFFRACTT).AND.(.NOT.BLNT).AND.(.NOT.PERIODIC)
      &     .AND.(.NOT.GAUSST).AND.(.NOT.(CSMT.AND.(.NOT.SYMMETRIZECSM)))) THEN
 C
-C	csw34> CHECK NOTHING HAS MOVED OUTSIDE THE CONTAINER RADIUS 
+C	CSW34> CHECK NOTHING HAS MOVED OUTSIDE THE CONTAINER RADIUS 
 C
          DO J1=1,NATOMS
             IF ((.NOT.RIGID).OR.(J1.LE.NATOMS/2)) THEN
                J2=3*J1
                DUMMY2=COORDS(J2-2,NP)**2+COORDS(J2-1,NP)**2+COORDS(J2,NP)**2
                IF (DUMMY2.GT.RADIUS) THEN
-                  IF (AMBERT) THEN ! jmc49 We don't really want a container at all in amber9, but this bit of code is being used 
-                                   ! to warn about drift in, for instance, the amber-md.
-                     WRITE(MYUNIT,'(A,I5,5F20.10)')'J1,RAD,D2,x,y,z=',J1,RADIUS,DUMMY2,COORDS(J2-2,NP),COORDS(J2-1,NP),COORDS(J2,NP)
-                     WRITE(MYUNIT,'(A,I6)') 'WARNING initial coordinate outside container for particle ',J1
-                     WRITE(MYUNIT,'(A)') 'NOT repositioning particle for AMBER9'
-                     CYCLE ! the 1, natoms do loop.
+                  IF (AMBERT) THEN ! JMC49 WE DON'T REALLY WANT A CONTAINER AT ALL IN AMBER9, BUT THIS BIT OF CODE IS BEING USED 
+                                   ! TO WARN ABOUT DRIFT IN, FOR INSTANCE, THE AMBER-MD.
+                     WRITE(MYUNIT,'(A,I5,5F20.10)')'J1,RAD,D2,X,Y,Z=',J1,RADIUS,DUMMY2,COORDS(J2-2,NP),COORDS(J2-1,NP),COORDS(J2,NP)
+                     WRITE(MYUNIT,'(A,I6)') 'WARNING INITIAL COORDINATE OUTSIDE CONTAINER FOR PARTICLE ',J1
+                     WRITE(MYUNIT,'(A)') 'NOT REPOSITIONING PARTICLE FOR AMBER9'
+                     CYCLE ! THE 1, NATOMS DO LOOP.
                   END IF
-                  WRITE(MYUNIT,'(A,I5,5F20.10)') 'J1,RAD,D2,x,y,z=',J1,RADIUS,DUMMY2,COORDS(J2-2,NP),COORDS(J2-1,NP),COORDS(J2,NP)
-                  WRITE(MYUNIT,'(A,I6)') 'WARNING initial coordinate outside container - reposition particle ',J1
+                  WRITE(MYUNIT,'(A,I5,5F20.10)') 'J1,RAD,D2,X,Y,Z=',J1,RADIUS,DUMMY2,COORDS(J2-2,NP),COORDS(J2-1,NP),COORDS(J2,NP)
+                  WRITE(MYUNIT,'(A,I6)') 'WARNING INITIAL COORDINATE OUTSIDE CONTAINER - REPOSITION PARTICLE ',J1
                   IF (DEBUG) THEN
                      WRITE(77,*) NATOMS
                      WRITE(77,*) ' '
                      WRITE(77,'(A3,3F20.10)') ('LA ',COORDS(3*(J3-1)+1,NP),COORDS(3*(J3-1)+2,NP),COORDS(3*(J3-1)+3,NP),J3=1,NATOMS)
                   ENDIF
 C
-C  Put it back in at the opposite end of a diameter
+C  PUT IT BACK IN AT THE OPPOSITE END OF A DIAMETER
 C
                   COORDS(J2-2,NP)=-COORDS(J2-2,NP)*0.8D0
                   COORDS(J2-1,NP)=-COORDS(J2-1,NP)*0.8D0
@@ -97,16 +97,16 @@ C
             ENDIF
          ENDDO
 C
-C	csw34> END OF RADIUS CHECK
+C	CSW34> END OF RADIUS CHECK
 C
       ENDIF
 !
-! COORDSO and VATO should now contain the correct COORDS and VAT even if
-! these entries are changed by SYMMETRIZE or NEWRESET.
+! COORDSO AND VATO SHOULD NOW CONTAIN THE CORRECT COORDS AND VAT EVEN IF
+! THESE ENTRIES ARE CHANGED BY SYMMETRIZE OR NEWRESET.
 !
 !     IF (.NOT.AMBERT) THEN
 !        IF (ABS(COORDSO(1,NP)-COORDS(1,NP)).GT.1.0D-3) THEN
-!           WRITE(MYUNIT,'(A,2G20.10)'),'takestep> WARNING - coordso will be changed: ',COORDSO(1,NP),COORDS(1,NP)
+!           WRITE(MYUNIT,'(A,2G20.10)'),'TAKESTEP> WARNING - COORDSO WILL BE CHANGED: ',COORDSO(1,NP),COORDS(1,NP)
 !        ENDIF
 !        DO J1=1,3*(NATOMS-NSEED)
 !           COORDSO(J1,NP)=COORDS(J1,NP)
@@ -126,11 +126,11 @@ C
          RETURN
       ELSE IF (PERMOPT.OR.(CSMT.AND.(.NOT.SYMMETRIZECSM))) THEN
          RANDOM=(DPRAND()-0.5D0)*2.0D0
-         ANGLE=RANDOM*STEP(NP) ! in radians
+         ANGLE=RANDOM*STEP(NP) ! IN RADIANS
          COST=COS(ANGLE)
          SINT=SIN(ANGLE)
 !
-! Random rotation about the x axis.
+! RANDOM ROTATION ABOUT THE X AXIS.
 !
          DO J1=1,NATOMS
             TY= COST*COORDS(3*(J1-1)+2,NP)+SINT*COORDS(3*(J1-1)+3,NP)
@@ -139,11 +139,11 @@ C
             COORDS(3*(J1-1)+3,NP)=TZ
          ENDDO
          RANDOM=(DPRAND()-0.5D0)*2.0D0
-         ANGLE=RANDOM*STEP(NP) ! in radians
+         ANGLE=RANDOM*STEP(NP) ! IN RADIANS
          COST=COS(ANGLE)
          SINT=SIN(ANGLE)
 !
-! Random rotation about the y axis.
+! RANDOM ROTATION ABOUT THE Y AXIS.
 !
          DO J1=1,NATOMS
             TX= COST*COORDS(3*(J1-1)+1,NP)+SINT*COORDS(3*(J1-1)+3,NP)
@@ -152,10 +152,10 @@ C
             COORDS(3*(J1-1)+3,NP)=TZ
          ENDDO
 !
-! Random rotation about the z axis.
+! RANDOM ROTATION ABOUT THE Z AXIS.
 !
          RANDOM=(DPRAND()-0.5D0)*2.0D0
-         ANGLE=RANDOM*STEP(NP) ! in radians
+         ANGLE=RANDOM*STEP(NP) ! IN RADIANS
          COST=COS(ANGLE)
          SINT=SIN(ANGLE)
          DO J1=1,NATOMS
@@ -164,9 +164,9 @@ C
             COORDS(3*(J1-1)+1,NP)=TX
             COORDS(3*(J1-1)+2,NP)=TY
          ENDDO
-!        WRITE(MYUNIT,'(A,I6)') 'takestep> coordinates rotated randomly as a rigid body for replica ',NP
+!        WRITE(MYUNIT,'(A,I6)') 'TAKESTEP> COORDINATES ROTATED RANDOMLY AS A RIGID BODY FOR REPLICA ',NP
 !        IF (DEBUG) THEN
-!           OPEN(UNIT=765,FILE='after_takestep.xyz',STATUS='UNKNOWN')
+!           OPEN(UNIT=765,FILE='AFTER_TAKESTEP.XYZ',STATUS='UNKNOWN')
 !           WRITE(765,'(I6)') NATOMS
 !           WRITE(765,'(A,I6)') ' '
 !           WRITE(765,'(A,3G20.10)') ('LA ',COORDS(3*(J2-1)+1,NP),COORDS(3*(J2-1)+2,NP),COORDS(3*(J2-1)+3,NP),J2=1,NATOMS)
@@ -176,7 +176,7 @@ C
          RETURN
       ENDIF
 C
-C	csw34> FIND CENTRE OF COORDINATES (should be made a function!)
+C	CSW34> FIND CENTRE OF COORDINATES (SHOULD BE MADE A FUNCTION!)
 C
       XMASS=0.0D0; YMASS=0.0D0; ZMASS=0.0D0
       DO J1=1,NATOMS
@@ -186,10 +186,10 @@ C
       ENDDO
       XMASS=XMASS/NATOMS; YMASS=YMASS/NATOMS; ZMASS=ZMASS/NATOMS
 C
-C  Find the most weakly bound atom, JMAX, the second most weakly bound atom, JMAX2,
-C  and the pair energy of the most tightly bound atom, VMIN. An angular step is
-C  taken for JMAX if its pair energy is > ASTEP*VMIN putting the atom at a radius of
-C  DMAX (or CMMAX from CM of the cluster).
+C  FIND THE MOST WEAKLY BOUND ATOM, JMAX, THE SECOND MOST WEAKLY BOUND ATOM, JMAX2,
+C  AND THE PAIR ENERGY OF THE MOST TIGHTLY BOUND ATOM, VMIN. AN ANGULAR STEP IS
+C  TAKEN FOR JMAX IF ITS PAIR ENERGY IS > ASTEP*VMIN PUTTING THE ATOM AT A RADIUS OF
+C  DMAX (OR CMMAX FROM CM OF THE CLUSTER).
 C
 
       DMAX=-1.0D0
@@ -216,15 +216,15 @@ C
          IF (VAT(J1,NP).LT.VMIN) VMIN=VAT(J1,NP)
       ENDDO
 C
-C  If DECAY is true then select an atom at random, move this one randomly
-C  by the maximum allowed amount, and move the others in random directions
-C  of decaying magnitude, depending on how far they are from the chosen atom.
+C  IF DECAY IS TRUE THEN SELECT AN ATOM AT RANDOM, MOVE THIS ONE RANDOMLY
+C  BY THE MAXIMUM ALLOWED AMOUNT, AND MOVE THE OTHERS IN RANDOM DIRECTIONS
+C  OF DECAYING MAGNITUDE, DEPENDING ON HOW FAR THEY ARE FROM THE CHOSEN ATOM.
 C
   
       IF (DECAY) THEN
 9        RANATOM=NINT(0.5D0+NATOMS*DPRAND())
-         IF (RANATOM.EQ.JMAX) GOTO 9 ! don't choose the atom that might undergo a surface move
-         WRITE(MYUNIT,'(A,I6)') 'atom undergoing maximum displacement is number ',RANATOM
+         IF (RANATOM.EQ.JMAX) GOTO 9 ! DON'T CHOOSE THE ATOM THAT MIGHT UNDERGO A SURFACE MOVE
+         WRITE(MYUNIT,'(A,I6)') 'ATOM UNDERGOING MAXIMUM DISPLACEMENT IS NUMBER ',RANATOM
          DO J1=1,NATOMS-NSEED
             DUMMY=((COORDS(3*J1-2,NP)-COORDS(3*RANATOM-2,NP))**2+
      1             (COORDS(3*J1-1,NP)-COORDS(3*RANATOM-1,NP))**2+
@@ -233,8 +233,8 @@ C
          ENDDO
       ENDIF
 C
-C  If MOVESHELL is true then we try a random angular move for all the frozen atoms 
-C  about the centre of coordinates of the frozen set with probability SHELLPROB.
+C  IF MOVESHELL IS TRUE THEN WE TRY A RANDOM ANGULAR MOVE FOR ALL THE FROZEN ATOMS 
+C  ABOUT THE CENTRE OF COORDINATES OF THE FROZEN SET WITH PROBABILITY SHELLPROB.
 C
 !     IF (SHELLMOVES(NP)) THEN
       IF (NCORE(NP).GT.0) THEN
@@ -246,9 +246,9 @@ C
             ZC=ZC+COORDS(3*(J1-1)+3,NP)
          ENDDO
          XC=XC/NCORE(NP); YC=YC/NCORE(NP); ZC=ZC/NCORE(NP)
-         IF (DEBUG) WRITE(MYUNIT,'(A,3F12.4)') 'takestep> centre of coordinates for frozen atoms: ',XC, YC, ZC
+         IF (DEBUG) WRITE(MYUNIT,'(A,3F12.4)') 'TAKESTEP> CENTRE OF COORDINATES FOR FROZEN ATOMS: ',XC, YC, ZC
          IF (MOVESHELLT.AND.(DPRAND().GT.(1.0D0-SHELLPROB))) THEN 
-            WRITE(MYUNIT,'(A,I1,A,I8)') '[',NP,']takestep> shell move number ',NSURFMOVES(NP)
+            WRITE(MYUNIT,'(A,I1,A,I8)') '[',NP,']TAKESTEP> SHELL MOVE NUMBER ',NSURFMOVES(NP)
 
             RVEC(1)=(DPRAND()-0.5D0)*2.0D0
             RVEC(2)=(DPRAND()-0.5D0)*2.0D0
@@ -259,10 +259,10 @@ C
             COST=COS(ANGLE)
             SINT=SIN(ANGLE)
 
-            IF (DEBUG) WRITE(MYUNIT,'(A,I1,A,F10.2,A,3F12.4)') '[',NP,']takestep> angle=',ANGLE,' axis: ',RVEC(1:3)
+            IF (DEBUG) WRITE(MYUNIT,'(A,I1,A,F10.2,A,3F12.4)') '[',NP,']TAKESTEP> ANGLE=',ANGLE,' AXIS: ',RVEC(1:3)
 C
-C  Rotate all the non-core atoms through ANGLE about RVEC. Use rotation formula
-C  from Goldstein p. 165.
+C  ROTATE ALL THE NON-CORE ATOMS THROUGH ANGLE ABOUT RVEC. USE ROTATION FORMULA
+C  FROM GOLDSTEIN P. 165.
 C  
 C           DO J1=NCORE(NP)+1,NATOMS
             DO J1=1,NATOMS-NCORE(NP)
@@ -304,10 +304,10 @@ C           NSURFMOVES(NP)=0
 C        ENDIF
 C     ENDIF
 C
-C  If COOP is true then select an atom at random, move this one randomly
-C  by the maximum allowed amount, and move its NCOOP nearest neighbours by
-C  the same displacement.
-C  Note that the core atoms are ordered LAST, not FIRST !!
+C  IF COOP IS TRUE THEN SELECT AN ATOM AT RANDOM, MOVE THIS ONE RANDOMLY
+C  BY THE MAXIMUM ALLOWED AMOUNT, AND MOVE ITS NCOOP NEAREST NEIGHBOURS BY
+C  THE SAME DISPLACEMENT.
+C  NOTE THAT THE CORE ATOMS ARE ORDERED LAST, NOT FIRST !!
 C
 !     IF (COOP.AND.(NATOMS-NCORE(NP).GE.MAX(2,NCOOP))) THEN
       IF (COOP.AND.(NCORE(NP).GE.MAX(2,NCOOP))) THEN
@@ -319,8 +319,8 @@ C
          ELSE
             RANATOM=NINT(0.5D0+(NATOMS-NSEED)*DPRAND())
          ENDIF
-         IF (RANATOM.EQ.JMAX) GOTO 8 ! don't choose the atom that might undergo a surface move
-         IF (DEBUG) WRITE(MYUNIT,'(A,I6)') 'takestep> randomly selected atom for coop move is number ',RANATOM
+         IF (RANATOM.EQ.JMAX) GOTO 8 ! DON'T CHOOSE THE ATOM THAT MIGHT UNDERGO A SURFACE MOVE
+         IF (DEBUG) WRITE(MYUNIT,'(A,I6)') 'TAKESTEP> RANDOMLY SELECTED ATOM FOR COOP MOVE IS NUMBER ',RANATOM
          DO J1=1,NATOMS-NSEED
 
             CDIST(J1)=((COORDS(3*J1-2,NP)-COORDS(3*RANATOM-2,NP))**2+
@@ -345,8 +345,8 @@ C           IF (SHELLMOVES(NP).AND.(J1.GT.NATOMS-NCORE(NP))) CDIST(J1)=1.0D100
          NCOOPDONE=0
       ENDIF
 C
-C	csw34> For the below loop, J1 is the atom number, and J2 is set to point to 3*J1, meaning
-C	the z-coordinate of that atom. The y coordinate is then J2-1 and x is J2-2. 
+C	CSW34> FOR THE BELOW LOOP, J1 IS THE ATOM NUMBER, AND J2 IS SET TO POINT TO 3*J1, MEANING
+C	THE Z-COORDINATE OF THAT ATOM. THE Y COORDINATE IS THEN J2-1 AND X IS J2-2. 
 C
       DO J1=1,NATOMS-NSEED
          IF (FROZEN(J1)) CYCLE
@@ -355,11 +355,11 @@ C        IF ((NCORE(NP).GT.0).AND.(J1.GT.NATOMS-NCORE(NP))) CYCLE
 C        IF (NMOVE.GT.0) THEN
 C           IF (1.0D0*NMOVE/1.0D0*NATOMS.LT.DPRAND()) GOTO 13
 C        ENDIF
-         IF ((COREFRAC.EQ.0.0D0).AND.(J1.GT.NATOMS-NCORE(NP))) CYCLE ! no point taking a zero step
+         IF ((COREFRAC.EQ.0.0D0).AND.(J1.GT.NATOMS-NCORE(NP))) CYCLE ! NO POINT TAKING A ZERO STEP
          NTRIES=0
 10       J2=3*J1
          IF ((NCORE(NP).GT.0).AND.(J1.GT.NATOMS-NCORE(NP))) THEN
-            LOCALSTEP=STEP(NP)*COREFRAC ! smaller step for core
+            LOCALSTEP=STEP(NP)*COREFRAC ! SMALLER STEP FOR CORE
          ELSE
             LOCALSTEP=STEP(NP)
          ENDIF
@@ -371,27 +371,27 @@ C        ENDIF
             IF (TMOVE(NP)) LOCALSTEP=STEP(NP)
          ENDIF
 C
-C  Angular move block.
-C  If NORESET is .TRUE. then VAT won;t be set, so we should skip this block.
+C  ANGULAR MOVE BLOCK.
+C  IF NORESET IS .TRUE. THEN VAT WON;T BE SET, SO WE SHOULD SKIP THIS BLOCK.
 C
-!        IF (J1.EQ.JMAX) WRITE(MYUNIT,'(A,I6,4F15.5)') 'JMAX,VAT,ASTEP(NP),VMIN,prod=',JMAX,VAT(J1,NP), 
+!        IF (J1.EQ.JMAX) WRITE(MYUNIT,'(A,I6,4F15.5)') 'JMAX,VAT,ASTEP(NP),VMIN,PROD=',JMAX,VAT(J1,NP), 
 !    &                                    ASTEP(NP),VMIN,ASTEP(NP)*VMIN
          IF (((VAT(J1,NP).GT.ASTEP(NP)*VMIN).AND.(J1.EQ.JMAX)).AND.(.NOT.RIGID).AND.(.NOT.BLNT).AND. 
      &         (.NOT.DIFFRACTT).AND.(.NOT.GAUSST) 
      &        .AND.(.NOT.NORESET).AND.(.NOT.PERIODIC).AND.(.NOT.THOMSONT)
      &        .AND.(.NOT.((NCORE(NP).GT.0).AND.(J1.GT.NATOMS-NCORE(NP))))) THEN
 
-            IF (DEBUG) WRITE(MYUNIT,'(A,I4,A,F12.4,A,F12.4,A,I4,A,F12.4)') 'angular move for atom ',J1, 
-     &           ' V=',VMAX,' Vmin=',VMIN,' next most weakly bound atom is ',JMAX2,' V=',VMAX2
+            IF (DEBUG) WRITE(MYUNIT,'(A,I4,A,F12.4,A,F12.4,A,I4,A,F12.4)') 'ANGULAR MOVE FOR ATOM ',J1, 
+     &           ' V=',VMAX,' VMIN=',VMIN,' NEXT MOST WEAKLY BOUND ATOM IS ',JMAX2,' V=',VMAX2
 
            THETA=DPRAND()*PI
            PHI=DPRAND()*PI*2.0D0
 C
-C  Evaporation is judged from the origin, not the centre of mass. We don't want the
-C  angular move to cause evaporation. Obviously this will cause problems if we have a cluster that drifts
-C  away from the origin up to the container radius.  
+C  EVAPORATION IS JUDGED FROM THE ORIGIN, NOT THE CENTRE OF MASS. WE DON'T WANT THE
+C  ANGULAR MOVE TO CAUSE EVAPORATION. OBVIOUSLY THIS WILL CAUSE PROBLEMS IF WE HAVE A CLUSTER THAT DRIFTS
+C  AWAY FROM THE ORIGIN UP TO THE CONTAINER RADIUS.  
 C
-!          IF (SHELLMOVES(NP)) THEN ! different origin - significantly worse
+!          IF (SHELLMOVES(NP)) THEN ! DIFFERENT ORIGIN - SIGNIFICANTLY WORSE
 !             COORDS(J2-2,NP)=XC+(CMMAX+1.0D0)*DSIN(THETA)*DCOS(PHI)
 !             COORDS(J2-1,NP)=YC+(CMMAX+1.0D0)*DSIN(THETA)*DSIN(PHI)
 !             COORDS(J2,NP)=  ZC+(CMMAX+1.0D0)*DCOS(THETA)
@@ -408,11 +408,11 @@ C
               COORDS(J2,NP)=COORDS(J2,NP)*DUMMY
            ENDIF
 C
-C  Angular move for the next most weakly bound atom doesn;t seem to help
+C  ANGULAR MOVE FOR THE NEXT MOST WEAKLY BOUND ATOM DOESN;T SEEM TO HELP
 C
 C          ELSE IF ((.NOT.ROUND).AND.(((VAT(J1,NP).GT.ASTEP(NP)*VMIN).AND.(J1.EQ.JMAX2)).AND.(DZTEST))) THEN
 C            IF (DEBUG) WRITE(MYUNIT,'(A,I4,A,F12.4,A,F12.4,A,I4,A,F12.4)') 
-C     1                'angular move for atom ',J1,' V=',VMAX,' Vmin=',VMIN,' this is the next most weakly bound atom'
+C     1                'ANGULAR MOVE FOR ATOM ',J1,' V=',VMAX,' VMIN=',VMIN,' THIS IS THE NEXT MOST WEAKLY BOUND ATOM'
 C            THETA=DPRAND()*PI
 C            PHI=DPRAND()*PI*2.0D0
 C
@@ -420,11 +420,11 @@ C            COORDS(J2-2,NP)=XMASS+(CMMAX+1.0D0)*DSIN(THETA)*DCOS(PHI)
 C            COORDS(J2-1,NP)=YMASS+(CMMAX+1.0D0)*DSIN(THETA)*DSIN(PHI)
 C            COORDS(J2,NP)=  ZMASS+(CMMAX+1.0D0)*DCOS(THETA)
 C
-C  End of angular move block.
+C  END OF ANGULAR MOVE BLOCK.
 C
          ELSE IF ((NATOMS-NSEED.EQ.1).AND.(NATOMS.GT.1)) THEN 
            IF (DEBUG) WRITE(MYUNIT,'(A,I4,A,F12.4,A,2F12.4)') 
-     1                'angular move for atom ',J1,' V=',VAT(J1,NP),' Vmin, Vmax=',VMIN,VMAX
+     1                'ANGULAR MOVE FOR ATOM ',J1,' V=',VAT(J1,NP),' VMIN, VMAX=',VMIN,VMAX
            THETA=DPRAND()*PI
            PHI=DPRAND()*PI*2.0D0
            COORDS(J2-2,NP)=XMASS+(CMMAX+1.0D0)*DSIN(THETA)*DCOS(PHI)
@@ -454,15 +454,15 @@ C
                J2=3*INDEXD(J1)
                DUMMY=CDIST(J1)
             ENDIF
-!           WRITE(MYUNIT,'(A,2I6,F15.5,I6)') 'takestep> J1,J2/3,dist,NCOOPDONE=',J1,J2/3,DUMMY,NCOOPDONE
+!           WRITE(MYUNIT,'(A,2I6,F15.5,I6)') 'TAKESTEP> J1,J2/3,DIST,NCOOPDONE=',J1,J2/3,DUMMY,NCOOPDONE
             IF ((NCOOPDONE.LE.NCOOP+1).AND.(DUMMY.LT.COOPCUT)) THEN
                NCOOPDONE=NCOOPDONE+1
-               WRITE(MYUNIT,'(A,I6,A,F12.4)') 'takestep> coop move for atom ',J2/3,' cdist=',DUMMY
+               WRITE(MYUNIT,'(A,I6,A,F12.4)') 'TAKESTEP> COOP MOVE FOR ATOM ',J2/3,' CDIST=',DUMMY
                COORDS(J2-2,NP)=COORDS(J2-2,NP)+LOCALSTEP*RANDOMX
                COORDS(J2-1,NP)=COORDS(J2-1,NP)+LOCALSTEP*RANDOMY
                COORDS(J2,NP)=  COORDS(J2,NP)+  LOCALSTEP*RANDOMZ
 !
-! Then a random move as well!
+! THEN A RANDOM MOVE AS WELL!
 !
 !              COORDS(J2-2,NP)=COORDS(J2-2,NP)+LOCALSTEP*(DPRAND()-0.5D0)*2.0D0
 !              COORDS(J2-1,NP)=COORDS(J2-1,NP)+LOCALSTEP*(DPRAND()-0.5D0)*2.0D0
@@ -474,17 +474,17 @@ C
             ENDIF
          ELSE IF (.NOT.FIXD) THEN
 C
-C  Tried changing to scale steps according to distance from CM. Maximum
-C  allowed shift is linear with this distance. Worse.
-C  Now try moving atoms according to how strongly bound they are.
+C  TRIED CHANGING TO SCALE STEPS ACCORDING TO DISTANCE FROM CM. MAXIMUM
+C  ALLOWED SHIFT IS LINEAR WITH THIS DISTANCE. WORSE.
+C  NOW TRY MOVING ATOMS ACCORDING TO HOW STRONGLY BOUND THEY ARE.
 C
            RANDOM=DPRAND()
 C          WRITE(MYUNIT,'(A,3F20.10)') 'EFAC,RANDOM,EXP=',EFAC,RANDOM,EXP(-EFAC*(VAT(J1,NP)-VMAX)/(VMIN-VMAX))
 C          PRINT*,'VMIN,VMAX,EFAC=',VMIN,VMAX,EFAC
            IF ((VMIN-VMAX.EQ.0.0D0).OR.(EFAC.EQ.0.0D0)) THEN
-C             IF (.FALSE..AND.SHELLMOVES(NP)) THEN ! project out radial component and rescale to same length
-                 IF (NCORE(NP).GT.0) THEN ! project out radial component and rescale to same length
-                                          ! Only for shell atoms, not core, if they are moved at all.
+C             IF (.FALSE..AND.SHELLMOVES(NP)) THEN ! PROJECT OUT RADIAL COMPONENT AND RESCALE TO SAME LENGTH
+                 IF (NCORE(NP).GT.0) THEN ! PROJECT OUT RADIAL COMPONENT AND RESCALE TO SAME LENGTH
+                                          ! ONLY FOR SHELL ATOMS, NOT CORE, IF THEY ARE MOVED AT ALL.
                     DELX=(DPRAND()-0.5D0)*2.0D0*LOCALSTEP
                     DELY=(DPRAND()-0.5D0)*2.0D0*LOCALSTEP
                     DELZ=(DPRAND()-0.5D0)*2.0D0*LOCALSTEP
@@ -510,17 +510,17 @@ C             IF (.FALSE..AND.SHELLMOVES(NP)) THEN ! project out radial componen
                     COORDS(J2,NP)=COORDS(J2,NP)+DELZ
                  ELSE
 C
-C	csw34> MAKE BASIC RANDOM CARTESIAN DISPLACEMENT MOVE
-C              I've added the below IF line so that when MOVABLEATOMS is specified, cartesian displacements
-C              specified by STEP will only be applied to atoms in that the 'movableatoms' file. It could be
-C              that this needs changing into a new keyword to allow you to rotate bits and apply cartesian
-C              moves to the whole system - something to keep in mind
+C	CSW34> MAKE BASIC RANDOM CARTESIAN DISPLACEMENT MOVE
+C              I'VE ADDED THE BELOW IF LINE SO THAT WHEN MOVABLEATOMS IS SPECIFIED, CARTESIAN DISPLACEMENTS
+C              SPECIFIED BY STEP WILL ONLY BE APPLIED TO ATOMS IN THAT THE 'MOVABLEATOMS' FILE. IT COULD BE
+C              THAT THIS NEEDS CHANGING INTO A NEW KEYWORD TO ALLOW YOU TO ROTATE BITS AND APPLY CARTESIAN
+C              MOVES TO THE WHOLE SYSTEM - SOMETHING TO KEEP IN MIND
 C
-C                if(.not.allocated(movableatomlist)) ALLOCATE(movableatomlist(1))
-C                if(.not.allocated(movableatomlistlogical)) ALLOCATE(movableatomlistlogical(1))
+C                IF(.NOT.ALLOCATED(MOVABLEATOMLIST)) ALLOCATE(MOVABLEATOMLIST(1))
+C                IF(.NOT.ALLOCATED(MOVABLEATOMLISTLOGICAL)) ALLOCATE(MOVABLEATOMLISTLOGICAL(1))
 C                IF (MOVABLEATOMST.AND.(.NOT.MOVABLEATOMLISTLOGICAL(J1))) CYCLE 
                  RANDOM=(DPRAND()-0.5D0)*2.0D0
-                 IF (GAUSST) RANDOM=RANDOM/GKSMALL(J2-2) ! scale gauss steps by 1/GKSMALL
+                 IF (GAUSST) RANDOM=RANDOM/GKSMALL(J2-2) ! SCALE GAUSS STEPS BY 1/GKSMALL
                  COORDS(J2-2,NP)=COORDS(J2-2,NP)+LOCALSTEP*RANDOM
                  RANDOM=(DPRAND()-0.5D0)*2.0D0
                  IF (GAUSST) RANDOM=RANDOM/GKSMALL(J2-1)
@@ -529,7 +529,7 @@ C                IF (MOVABLEATOMST.AND.(.NOT.MOVABLEATOMLISTLOGICAL(J1))) CYCLE
                  IF (GAUSST) RANDOM=RANDOM/GKSMALL(J2)
                  COORDS(J2,NP)=COORDS(J2,NP)+LOCALSTEP*RANDOM
 C
-C	csw34> END OF BASIC RANDOM CARTESIAN DISPLACEMENT MOVE
+C	CSW34> END OF BASIC RANDOM CARTESIAN DISPLACEMENT MOVE
 C
               ENDIF
            ELSE 
@@ -545,16 +545,16 @@ C             COORDS(J2,NP)=COORDS(J2,NP)+LOCALSTEP*RANDOM*CMDIST(J1)/CMMAX
               COORDS(J2,NP)=COORDS(J2,NP)+LOCALSTEP*RANDOM*DUMMY
            ENDIF
 C
-C Stop atoms leaving the container in this step
+C STOP ATOMS LEAVING THE CONTAINER IN THIS STEP
 C
            IF ((.NOT.PERIODIC).AND.(.NOT.AMBERT).AND.(.NOT.(RIGID.AND.((J1.GT.NATOMS/2)))).AND.(.NOT.BLNT)
      1                        .AND.(.NOT.DIFFRACTT).AND.(.NOT.THOMSONT).AND.(.NOT.GAUSST)) THEN
 C          IF ((.NOT.PERIODIC).AND.(.NOT.AMBER).AND.(.NOT.(RIGID.AND.(LOCALSTEP.EQ.0.0D0))).AND.(.NOT.BLNT)) THEN
               DUMMY=COORDS(J2-2,NP)**2+COORDS(J2-1,NP)**2+COORDS(J2,NP)**2
 C
-C  Simply rescaling the radius of an atom that leaves the container will bias the sampling
-C  of configuration space. However, we are not using takestep for bspt thermodynamic sampling!
-C  So, put the atom back in the container on the other side!
+C  SIMPLY RESCALING THE RADIUS OF AN ATOM THAT LEAVES THE CONTAINER WILL BIAS THE SAMPLING
+C  OF CONFIGURATION SPACE. HOWEVER, WE ARE NOT USING TAKESTEP FOR BSPT THERMODYNAMIC SAMPLING!
+C  SO, PUT THE ATOM BACK IN THE CONTAINER ON THE OTHER SIDE!
 C
               IF (DUMMY.GT.RADIUS) THEN
                  COORDS(J2-2,NP)=(SQRT(RADIUS)-0.5D0)*COORDS(J2-2,NP)/SQRT(DUMMY)
@@ -562,9 +562,9 @@ C
                  COORDS(J2,NP)=(SQRT(RADIUS)-0.5D0)*COORDS(J2,NP)/SQRT(DUMMY)
                  NTRIES=NTRIES+1
                  IF (NTRIES.GT.NTRIESMAX) THEN
-                    WRITE(MYUNIT,'(A,I6,A)') 'takestep> WARNING atom ',J1,' persistently outside container'
+                    WRITE(MYUNIT,'(A,I6,A)') 'TAKESTEP> WARNING ATOM ',J1,' PERSISTENTLY OUTSIDE CONTAINER'
                  ELSE
-                    IF (DEBUG) WRITE(MYUNIT,'(A,I6,A,I6)') 'takestep> WARNING atom ',J1,' outside container, NTRIES=',NTRIES
+                    IF (DEBUG) WRITE(MYUNIT,'(A,I6,A,I6)') 'TAKESTEP> WARNING ATOM ',J1,' OUTSIDE CONTAINER, NTRIES=',NTRIES
                     GOTO 10
                  ENDIF
               ENDIF
@@ -583,15 +583,15 @@ C13       CONTINUE
 
       IF (FIXD) CALL HSMOVE(COORDS(1:3*NATOMS,1:NPAR),NP,NHSMOVE)
 C
-C  Preserve centre of mass if required.
+C  PRESERVE CENTRE OF MASS IF REQUIRED.
 C
       IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS,NP))
       IF (FIXCOM.AND.(.NOT.SEEDT)) CALL CENTRECOM(COORDS(:3*NATOMS,NP))
 
-C     PRINT*,'NSYMREM in takestep=',NSYMREM
+C     PRINT*,'NSYMREM IN TAKESTEP=',NSYMREM
       IF (NSYMREM.GT.0) THEN
          CALL KEEPSYM(NP)
-C        OPEN(UNIT=77,FILE='coords.latest.xyz',STATUS='OLD',POSITION='APPEND')
+C        OPEN(UNIT=77,FILE='COORDS.LATEST.XYZ',STATUS='OLD',POSITION='APPEND')
 C        WRITE(77,'(I6)') NATOMS
 C        WRITE(77,'(A)') ' '
 C        WRITE(77,'(A2,2X,3G20.10)') ('LA',COORDS(3*(J2-1)+1,NP),COORDS(3*(J2-1)+2,NP),COORDS(3*(J2-1)+3,NP),J2=1,NATOMS)
@@ -602,13 +602,13 @@ C        CLOSE(77)
 !           DUMMY=SQRT((COORDS(3*(J1-1)+1,NP)-COORDS(3*(J2-1)+1,NP))**2+
 !    &              (COORDS(3*(J1-1)+2,NP)-COORDS(3*(J2-1)+2,NP))**2+
 !    &              (COORDS(3*(J1-1)+3,NP)-COORDS(3*(J2-1)+3,NP))**2)
-!           IF (DUMMY.LT.0.1D0) WRITE(MYUNIT,'(A,I6,A,I6,A,G20.10)') 'takestepC> WARNING, distance between atoms ',J1,' and ',
-!    &                       J2,' is only ',DUMMY
+!           IF (DUMMY.LT.0.1D0) WRITE(MYUNIT,'(A,I6,A,I6,A,G20.10)') 'TAKESTEPC> WARNING, DISTANCE BETWEEN ATOMS ',J1,' AND ',
+!    &                       J2,' IS ONLY ',DUMMY
 !        ENDDO
 !     ENDDO
 
 !     DC430 >  
-!     |gd351> added patchy 
+!     |GD351> ADDED PATCHY 
       IF (DBPT.OR.DBPTDT.OR.DMBLMT.OR.LWOTPT.OR.MSSTOCKT.OR.MSTBINT.OR.NPAHT.OR.NTIPT.OR.MULTPAHAT.OR.PAHAT.OR.STOCKAAT
      &    .OR.PAHW99T.OR.TDHDT.OR.PATCHY) THEN
 
@@ -628,7 +628,7 @@ C        CLOSE(77)
       END
 C
       SUBROUTINE KEEPSYM(NP)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE
       INTEGER NP, J2, SYMINDEX(NATOMS), J3, J4
       DOUBLE PRECISION LCOORDS(3*NATOMS), NEWQ(3*NATOMS), SYMDELTA(3*NATOMS), DELTA(3*NATOMS),  SYMOP1(3,3)
@@ -640,22 +640,22 @@ C
 C     STEPLENGTH=SUM(DELTA(1:3*NATOMS)**2)
       SYMDELTA(1:3*NATOMS)=DELTA(1:3*NATOMS)
 
-!     OPEN(UNIT=789,FILE='symstep.xyz',STATUS='UNKNOWN')
+!     OPEN(UNIT=789,FILE='SYMSTEP.XYZ',STATUS='UNKNOWN')
 !     WRITE(789,'(I6)') NATOMS
-!     WRITE(789,'(A)') 'coordso before symmetrising step'
+!     WRITE(789,'(A)') 'COORDSO BEFORE SYMMETRISING STEP'
 !     WRITE(789,'(A3,3G20.10)') ('LA ',COORDSO(3*(J2-1)+1,NP),COORDSO(3*(J2-1)+2,NP),
 !    &                                 COORDSO(3*(J2-1)+3,NP),J2=1,NATOMS-NCORE(NP))
 !     WRITE(789,'(A3,3G20.10)') ('LB ',COORDSO(3*(J2-1)+1,NP),COORDSO(3*(J2-1)+2,NP),
 !    &                                 COORDSO(3*(J2-1)+3,NP),J2=NATOMS-NCORE(NP)+1,NATOMS)
 !     WRITE(789,'(I6)') NATOMS
-!     WRITE(789,'(A)') 'coords before symmetrising step'
+!     WRITE(789,'(A)') 'COORDS BEFORE SYMMETRISING STEP'
 !     WRITE(789,'(A3,3G20.10)') ('LA ',COORDS(3*(J2-1)+1,NP),COORDS(3*(J2-1)+2,NP),
 !    &                                 COORDS(3*(J2-1)+3,NP),J2=1,NATOMS-NCORE(NP))
 !     WRITE(789,'(A3,3G20.10)') ('LA ',COORDS(3*(J2-1)+1,NP),COORDS(3*(J2-1)+2,NP),
 !    &                                 COORDS(3*(J2-1)+3,NP),J2=NATOMS-NCORE(NP)+1,NATOMS)
 C
-C  New algorithm - choose the closest unclaimed atom in each case, so that
-C  no tolerances are involved. 
+C  NEW ALGORITHM - CHOOSE THE CLOSEST UNCLAIMED ATOM IN EACH CASE, SO THAT
+C  NO TOLERANCES ARE INVOLVED. 
 C
       DO J2=1,NSYMREM
          BAD=.FALSE.
@@ -672,8 +672,8 @@ C
 C              PRINT '(A,2I5,2G15.5)','J3,J4,DUMMY,DMIN=',J3,J4,DUMMY,DMIN
                IF (DUMMY.LT.DMIN) THEN
                   IF (ASSIGNED(J4)) THEN
-C                    WRITE(MYUNIT,'(2(A,I5),A,F12.3)') 'WARNING closest atom ',J4,' to image atom ',J3,
-C    &                                       ' already assigned, dist=',SQRT(DUMMY)
+C                    WRITE(MYUNIT,'(2(A,I5),A,F12.3)') 'WARNING CLOSEST ATOM ',J4,' TO IMAGE ATOM ',J3,
+C    &                                       ' ALREADY ASSIGNED, DIST=',SQRT(DUMMY)
                   ELSE
                      IF (SYMINDEX(J3).GT.0) ASSIGNED(SYMINDEX(J3))=.FALSE.
                      SYMINDEX(J3)=J4
@@ -683,13 +683,13 @@ C    &                                       ' already assigned, dist=',SQRT(DUM
                ENDIF
             ENDDO
             IF (DEBUG.AND.(SQRT(DMIN).GT.SYMTOL5)) THEN
-               WRITE(MYUNIT, '(2(A,I5),A,F12.3)') 'WARNING closest image to atom ',J3,' is ',SYMINDEX(J3), 
-     &                                         ' distance=',SQRT(DMIN)
+               WRITE(MYUNIT, '(2(A,I5),A,F12.3)') 'WARNING CLOSEST IMAGE TO ATOM ',J3,' IS ',SYMINDEX(J3), 
+     &                                         ' DISTANCE=',SQRT(DMIN)
                BAD=.TRUE.
             ENDIF
          ENDDO
 !        IF (BAD) THEN
-!           OPEN(UNIT=1,FILE='keepsym.xyz',STATUS='UNKNOWN')
+!           OPEN(UNIT=1,FILE='KEEPSYM.XYZ',STATUS='UNKNOWN')
 !           WRITE(1,*) NATOMS
 !           WRITE(1,'(A)') 'LCOORDS'
 !           DO J4=1,NATOMS
@@ -705,9 +705,9 @@ C    &                                       ' already assigned, dist=',SQRT(DUM
 
          CALL MATMULV(NEWQ,DELTA,SYMOP1,NATOMS,3,3)
 C
-C  For each symmetry operation we average over the steps for the atoms
-C  that are mapped on to after acting with the symmetry operation on the
-C  original step vector.
+C  FOR EACH SYMMETRY OPERATION WE AVERAGE OVER THE STEPS FOR THE ATOMS
+C  THAT ARE MAPPED ON TO AFTER ACTING WITH THE SYMMETRY OPERATION ON THE
+C  ORIGINAL STEP VECTOR.
 C
          DO J3=1,NATOMS
             SYMDELTA(3*(J3-1)+1)=SYMDELTA(3*(J3-1)+1)+NEWQ(3*(SYMINDEX(J3)-1)+1)
@@ -719,7 +719,7 @@ C
 C     NEWSTEPLENGTH=SUM(SYMDELTA(1:3*NATOMS)**2)
 C     SYMDELTA(1:3*NATOMS)=SYMDELTA(1:3*NATOMS)*SQRT(STEPLENGTH/NEWSTEPLENGTH)
 C
-C  Maintain CofM distance in symmetry adapted step.
+C  MAINTAIN COFM DISTANCE IN SYMMETRY ADAPTED STEP.
 C
       SYMDELTA(1:3*NATOMS)=SYMDELTA(1:3*NATOMS)/(1+NSYMREM)
 
@@ -735,13 +735,13 @@ C
 !           DUMMY=SQRT((COORDS(3*(J3-1)+1,NP)-COORDS(3*(J2-1)+1,NP))**2+
 !    &                 (COORDS(3*(J3-1)+2,NP)-COORDS(3*(J2-1)+2,NP))**2+
 !    &                 (COORDS(3*(J3-1)+3,NP)-COORDS(3*(J2-1)+3,NP))**2)
-!           IF (DUMMY.LT.0.1D0) WRITE(MYUNIT,'(A,I6,A,I6,A,G20.10)') 'WARNING *** atoms ',J3,' and ',J2,
-!    &             ' distance=',DUMMY
+!           IF (DUMMY.LT.0.1D0) WRITE(MYUNIT,'(A,I6,A,I6,A,G20.10)') 'WARNING *** ATOMS ',J3,' AND ',J2,
+!    &             ' DISTANCE=',DUMMY
 !        ENDDO
 !     ENDDO
 
 !     WRITE(789,'(I6)') NATOMS
-!     WRITE(789,'(A)') 'after symmetrising step'
+!     WRITE(789,'(A)') 'AFTER SYMMETRISING STEP'
 !     WRITE(789,'(A3,3G20.10)') ('LA ',COORDS(3*(J2-1)+1,NP),COORDS(3*(J2-1)+2,NP),
 !    &                                 COORDS(3*(J2-1)+3,NP),J2=1,NATOMS-NCORE(NP))
 !     WRITE(789,'(A3,3G20.10)') ('LA ',COORDS(3*(J2-1)+1,NP),COORDS(3*(J2-1)+2,NP),

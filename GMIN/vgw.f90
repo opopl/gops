@@ -1,21 +1,21 @@
 
-!  GMIN: A program for finding global minima
-!  CopyrIGht (C) 1999-2006 David J. Wales
-!  This file is part of GMIN.
+!  GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+!  COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!  THIS FILE IS PART OF GMIN.
 !
-!  GMIN is free software; you can redistribute it and/or modify
-!  it under the terms of the GNU General Public License as published by
-!  the Free Software Foundation; either version 2 of the License, or
-!  (at your option) any later version.
+!  GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!  (AT YOUR OPTION) ANY LATER VERSION.
 !
-!  GMIN is distributed in the hope that it will be useful,
-!  but WITHOUT ANY WARRANTY; without even the implied warranty of
-!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!  GNU General Public License for more details.
+!  GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!  You should have received a copy of the GNU General Public License
-!  along with this program; if not, write to the Free Software
-!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 
 MODULE VGWSP
@@ -77,7 +77,7 @@ SUBROUTINE INITIALIZE_VGW(N, LJS, LJE, TMAX, CPSIGMA, CP)
 
   ALLOCATE(MASSARRY(3*N_ATOM))
 
-  OPEN(UNIT=7,FILE='vgwdata',STATUS='OLD')
+  OPEN(UNIT=7,FILE='VGWDATA',STATUS='OLD')
     DO I=0,N_ATOM-1
       READ(7,*) MASSARRY(3*I+1)
       MASSARRY(3*I+1)=1/(ATOMICMASS*MASSARRY(3*I+1))
@@ -159,7 +159,7 @@ SUBROUTINE INITIALIZE_VGWSP(N,SIG,EPS,TMAX,CPSIGMA,CP,AT)
   ATOL=AT
   ALLOCATE(MASSARRY(3*N_ATOM))
 
-  OPEN(UNIT=7,FILE='vgwdata',STATUS='OLD')
+  OPEN(UNIT=7,FILE='VGWDATA',STATUS='OLD')
     DO I=0,N_ATOM-1
       READ(7,*) MASSARRY(3*I+1)
       MASSARRY(3*I+1)=1/(ATOMICMASS*MASSARRY(3*I+1))
@@ -332,7 +332,7 @@ SUBROUTINE VGWQUENCH(QCNFG, ENRG, CFLAG)
   LNZ(1,2)=2*TOUT
   LNZ(2,2)=LOGZ+1.5*LOG(TOUT)         
       
-  ENRG=(E_ZERO-(LNZ(2,2)-LNZ(2,1))/(LNZ(1,2)-LNZ(1,1)))         ! E = -d/dB*lnZ  (CALCULATE ENERGY)
+  ENRG=(E_ZERO-(LNZ(2,2)-LNZ(2,1))/(LNZ(1,2)-LNZ(1,1)))         ! E = -D/DB*LNZ  (CALCULATE ENERGY)
 
   DO I=1,N3_ATOM
     QCNFG(I) = Y(I+1)/SIGMA
@@ -549,7 +549,7 @@ SUBROUTINE RHSS(NEQ, T, Y, YPRIME)
   INTEGER :: I, J, K, I1, I2, IG, NEQ, CNT
   DOUBLE PRECISION :: COE, FACTOR, U, UX, UXX, QZQ, EXPAV, GG, GG2, TRMG, DETS, DETI
   DOUBLE PRECISION :: M(N_DIM,N_DIM), A(N_DIM,N_DIM), R(N_DIM), Z(N_DIM,N_DIM)
-  DOUBLE PRECISION :: DETA, DETAG, GUG, QP, Q(3*N_ATOM), BLKC(N3_ATOM,N_DIM)      ! ARRAY of N 3x3 BLOCKS (BLOCK DIAGONAL OF C)
+  DOUBLE PRECISION :: DETA, DETAG, GUG, QP, Q(3*N_ATOM), BLKC(N3_ATOM,N_DIM)      ! ARRAY OF N 3X3 BLOCKS (BLOCK DIAGONAL OF C)
   DOUBLE PRECISION :: UPV(N3_ATOM), UPM(N3_ATOM, N_DIM), Q2, Q12(N_DIM), TRUXXGI
   DOUBLE PRECISION :: T, AG(N_DIM,N_DIM), GU(N_DIM,N_DIM), Y(NEQ), YPRIME(NEQ)
 
@@ -564,7 +564,7 @@ SUBROUTINE RHSS(NEQ, T, Y, YPRIME)
   DO I=0,N_ATOM-1  
     DO J=1,N_DIM
       DO K=J,N_DIM
-        BLKC(3*I+J,k)= Y(CNT)
+        BLKC(3*I+J,K)= Y(CNT)
         BLKC(3*I+K,J)= Y(CNT) 
         CNT=CNT+1
       ENDDO
@@ -640,7 +640,7 @@ SUBROUTINE RHSS(NEQ, T, Y, YPRIME)
           UPV(3*I2+I)=UPV(3*I2+I)-UX
           DO J=I,N_DIM
             UXX=(R(I)*R(J)-2*Z(I,J))*EXPAV*COE                ! HESSIAN MATRIX (BLOCK OF I,JTH PARTICLE)
-            UPM(3*I1+I,J)=UPM(3*I1+I,J)+UXX                   ! UPM = BLOCK DIAGONAL OF 3Nx3N HESSIAN
+            UPM(3*I1+I,J)=UPM(3*I1+I,J)+UXX                   ! UPM = BLOCK DIAGONAL OF 3NX3N HESSIAN
             UPM(3*I2+I,J)=UPM(3*I2+I,J)+UXX
             IF(I.NE.J) THEN                                   ! FILL LOWER HALF OF MATRIX
               UPM(3*I1+J,I)=UPM(3*I1+J,I)+UXX
@@ -716,7 +716,7 @@ SUBROUTINE RHSS(NEQ, T, Y, YPRIME)
           UPV(3*I1+I)=UPV(3*I1+I)+UX                          ! COMPUTE GRADIENT (UPV = GRADIENT VECTOR)
           DO J=I,3
             UXX=(R(I)*R(J)-2*Z(I,J))*EXPAV*COE                ! HESSIAN MATRIX (BLOCK OF I,JTH PARTICLE)
-            UPM(3*I1+I,J)=UPM(3*I1+I,J)+UXX                   ! UPM = BLOCK DIAGONAL OF 3Nx3N HESSIAN
+            UPM(3*I1+I,J)=UPM(3*I1+I,J)+UXX                   ! UPM = BLOCK DIAGONAL OF 3NX3N HESSIAN
             IF(I.NE.J) THEN                                   ! FILL LOWER HALF OF MATRIX
               UPM(3*I1+J,I)=UPM(3*I1+J,I)+UXX
             ENDIF
@@ -739,7 +739,7 @@ SUBROUTINE RHSS(NEQ, T, Y, YPRIME)
 
   CNT=1
 
-  YPRIME(CNT)=-0.25D0*TRUXXGI-U+E_ZERO                 ! *(pnt++)=0.25*TrUxxGI-0.5*TrMG-U+E_zero+1.5*N_atom/(*T);
+  YPRIME(CNT)=-0.25D0*TRUXXGI-U+E_ZERO                 ! *(PNT++)=0.25*TRUXXGI-0.5*TRMG-U+E_ZERO+1.5*N_ATOM/(*T);
   CNT=CNT+1  
 
   DO I1=0,N_ATOM-1
@@ -807,12 +807,12 @@ SUBROUTINE RHS(NEQ, T, Y, YPRIME)
   UX=0.0D0                                          ! INITITALIZE GRADIENT VECTOR
   UXX=0.0D0                                         ! INITIALIZE HESSIAN MATRIX
 
-  DO I1=0,N_ATOM-1                                  ! CALCULATE ALL Rij
+  DO I1=0,N_ATOM-1                                  ! CALCULATE ALL RIJ
     X1=3*I1
     DO I2=I1+1,N_ATOM-1
       X2=3*I2
       DO I=1,3
-        Q12(I)=Q(X1+I)-Q(X2+I)                      ! ALL Rij VECTOR
+        Q12(I)=Q(X1+I)-Q(X2+I)                      ! ALL RIJ VECTOR
       ENDDO
 
       DO I=1,3
@@ -831,8 +831,8 @@ SUBROUTINE RHS(NEQ, T, Y, YPRIME)
       ENDDO
                                                     ! ******* BEGIN SUMMATION OVER GUASSIANS *******
       DO IG=1,NUM_G
-        COE=LJK(IG)                                 ! GET COEFFICIENT Ci OF iTH GAUSSIAN TERM IN POTENTIAL
-        GG=LJG(IG)                                  ! GET EXPONENT COEFFICIENT (WIDTH) ALPHA OF iTH GAUSSIAN
+        COE=LJK(IG)                                 ! GET COEFFICIENT CI OF ITH GAUSSIAN TERM IN POTENTIAL
+        GG=LJG(IG)                                  ! GET EXPONENT COEFFICIENT (WIDTH) ALPHA OF ITH GAUSSIAN
         GG2=LJG2(IG)                                ! COMPUTE ALPHA SQUARED
         DO I=1,3
           AG(I,I)=GG+A(I,I)                         ! MATRIX "A" PLUS GAUSSIAN COEFFICEINT ALPHA
@@ -845,7 +845,7 @@ SUBROUTINE RHS(NEQ, T, Y, YPRIME)
         FACTOR=GG2/DETAG
 
         DO I=1,3
-          Z(I,I)=GG-FACTOR*M(I,I)                   ! CONSTRUCT MATRIX Z (Zij = ALPHA - ALPHA^2(ALPHA + Aij)^-1)
+          Z(I,I)=GG-FACTOR*M(I,I)                   ! CONSTRUCT MATRIX Z (ZIJ = ALPHA - ALPHA^2(ALPHA + AIJ)^-1)
           DO J=I+1,3
             Z(I,J)=-(FACTOR*M(I,J))
             Z(J,I)=Z(I,J)
@@ -859,7 +859,7 @@ SUBROUTINE RHS(NEQ, T, Y, YPRIME)
           DO J=1,3
             R(I)=R(I)+Z(I,J)*Q12(J)
           ENDDO
-          QZQ=QZQ+R(I)*Q12(I)                       ! CALCULATE ENTIRE GAUSSIAN ARGUMENT (-Qij(T)*Zij*Qij)
+          QZQ=QZQ+R(I)*Q12(I)                       ! CALCULATE ENTIRE GAUSSIAN ARGUMENT (-QIJ(T)*ZIJ*QIJ)
           R(I)=-(2*R(I))
         ENDDO
 
@@ -867,7 +867,7 @@ SUBROUTINE RHS(NEQ, T, Y, YPRIME)
         U=U+(EXPAV*COE);
       
         DO I=1,3
-          UXP=EXPAV*R(I)*COE;                              ! COMPUTE GRADIENT (FORCES) FOR ijTH PARTICLE        
+          UXP=EXPAV*R(I)*COE;                              ! COMPUTE GRADIENT (FORCES) FOR IJTH PARTICLE        
           UX(X1+I)=UX(X1+I)+UXP
           UX(X2+I)=UX(X2+I)-UXP
           DO J=I,3
@@ -881,9 +881,9 @@ SUBROUTINE RHS(NEQ, T, Y, YPRIME)
           ENDDO
         ENDDO
       ENDDO                                                ! END OF SUMMATION OVER GAUSSIANS
-    ENDDO                                                  ! END OF I2 LOOP (jTH PARTICLE)
+    ENDDO                                                  ! END OF I2 LOOP (JTH PARTICLE)
   ENDDO  
-                                                  ! END OF I1 LOOP (iTH PARTICLE)
+                                                  ! END OF I1 LOOP (ITH PARTICLE)
   IF(CONPOT.EQ.1) THEN
   DO I1=0,N_ATOM-1                                  ! CONSTRAINING POTENTIAL
     X1=3*I1
@@ -907,8 +907,8 @@ SUBROUTINE RHS(NEQ, T, Y, YPRIME)
       ENDDO
                                                     ! ******* BEGIN SUMMATION OVER CP GAUSSIANS *******
       DO IG=1,3
-        COE=CGK(IG)                                 ! GET COEFFICIENT Ci OF iTH GAUSSIAN TERM IN POTENTIAL
-        GG=CGG(IG)                                  ! GET EXPONENT COEFFICIENT (WIDTH) ALPHA OF iTH GAUSSIAN
+        COE=CGK(IG)                                 ! GET COEFFICIENT CI OF ITH GAUSSIAN TERM IN POTENTIAL
+        GG=CGG(IG)                                  ! GET EXPONENT COEFFICIENT (WIDTH) ALPHA OF ITH GAUSSIAN
         GG2=CGG2(IG)                                ! COMPUTE ALPHA SQUARED
         DO I=1,3
           AG(I,I)=GG+A(I,I)                         ! MATRIX "A" PLUS GAUSSIAN COEFFICEINT ALPHA
@@ -921,7 +921,7 @@ SUBROUTINE RHS(NEQ, T, Y, YPRIME)
         FACTOR=GG2/DETAG
 
         DO I=1,3
-          Z(I,I)=GG-FACTOR*M(I,I)                   ! CONSTRUCT MATRIX Z (Zij = ALPHA - ALPHA^2(ALPHA + Aij)^-1)
+          Z(I,I)=GG-FACTOR*M(I,I)                   ! CONSTRUCT MATRIX Z (ZIJ = ALPHA - ALPHA^2(ALPHA + AIJ)^-1)
           DO J=I+1,3
             Z(I,J)=-(FACTOR*M(I,J))
             Z(J,I)=Z(I,J)
@@ -935,7 +935,7 @@ SUBROUTINE RHS(NEQ, T, Y, YPRIME)
           DO J=1,3
             R(I)=R(I)+Z(I,J)*Q12(J)
           ENDDO
-          QZQ=QZQ+R(I)*Q12(I)                       ! CALCULATE ENTIRE GAUSSIAN ARGUMENT (-Qij(T)*Zij*Qij)
+          QZQ=QZQ+R(I)*Q12(I)                       ! CALCULATE ENTIRE GAUSSIAN ARGUMENT (-QIJ(T)*ZIJ*QIJ)
           R(I)=-(2*R(I))
         ENDDO
 
@@ -943,7 +943,7 @@ SUBROUTINE RHS(NEQ, T, Y, YPRIME)
         U=U+(EXPAV*COE);
       
         DO I=1,3
-          UXP=EXPAV*R(I)*COE;                              ! COMPUTE GRADIENT (FORCES) FOR ijTH PARTICLE        
+          UXP=EXPAV*R(I)*COE;                              ! COMPUTE GRADIENT (FORCES) FOR IJTH PARTICLE        
           UX(X1+I)=UX(X1+I)+UXP
           DO J=I,3
             UXXP=(R(I)*R(J)-2*Z(I,J))*EXPAV*COE;
@@ -956,7 +956,7 @@ SUBROUTINE RHS(NEQ, T, Y, YPRIME)
     ENDIF
   
   TRCUXX=0.0D0                                             ! ******* BEGIN CALCULATION OF RIGHT HAND SIDE OF DIFF. EQ. *******
-  CNT=2                                                    ! C'(TAU) = -C<Del*Del U>C + HBAR^2*M^-1
+  CNT=2                                                    ! C'(TAU) = -C<DEL*DEL U>C + HBAR^2*M^-1
   
   DO I=1,N3_ATOM
     QP=0.0D0

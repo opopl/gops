@@ -1,105 +1,105 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C*************************************************************************
 C
-C  Here we calculate the Lead glue potential and gradient
+C  HERE WE CALCULATE THE LEAD GLUE POTENTIAL AND GRADIENT
 C                                        
 C*************************************************************************
 
       SUBROUTINE PBGLUE (X,V,EPB,GRADT)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE 
       INTEGER J1, J2
       DOUBLE PRECISION X(3*NATOMS), EPB, DIST, ETEMP, ETEMP2, 
-     1                 V(3*NATOMS), rho1, RTEMP, dutemp(NATOMS),
-     2                 drtemp, dvtemp, vtemp, vtemp1, vtemp2, vtemp3, 
-     3                 rrc, rrcsq
-      logical GRADT
+     1                 V(3*NATOMS), RHO1, RTEMP, DUTEMP(NATOMS),
+     2                 DRTEMP, DVTEMP, VTEMP, VTEMP1, VTEMP2, VTEMP3, 
+     3                 RRC, RRCSQ
+      LOGICAL GRADT
 
       EPB=0.0D0
-      RRC=5.503d0
+      RRC=5.503D0
       RRCSQ=RRC**2
 
-      ETEMP=0.0d0
+      ETEMP=0.0D0
       DO 22 J1=1,NATOMS
-         RTEMP=0.0d0
+         RTEMP=0.0D0
          DO 23 J2=1,NATOMS
-           if (j1.ne.j2) then
+           IF (J1.NE.J2) THEN
              DIST=( X(3*(J2-1)+1)-X(3*(J1-1)+1) )**2 +
      1             ( X(3*(J2-1)+2)-X(3*(J1-1)+2) )**2 +
      2             ( X(3*(J2-1)+3)-X(3*(J1-1)+3) )**2
-             if (dist.lt.rrcsq) then
-               dist=dsqrt(dist)
-               call rh(dist,rho1)
-               RTEMP=RTEMP+rho1
-               if (j1.lt.j2) then
-                 call v2(dist,Etemp2)
-                 ETEMP=ETEMP+Etemp2
-               endif
-             endif
-           endif
+             IF (DIST.LT.RRCSQ) THEN
+               DIST=DSQRT(DIST)
+               CALL RH(DIST,RHO1)
+               RTEMP=RTEMP+RHO1
+               IF (J1.LT.J2) THEN
+                 CALL V2(DIST,ETEMP2)
+                 ETEMP=ETEMP+ETEMP2
+               ENDIF
+             ENDIF
+           ENDIF
 23       CONTINUE
-         call uu(RTEMP,Etemp2)
+         CALL UU(RTEMP,ETEMP2)
          EPB=EPB+ETEMP2
-         call duu(RTEMP,dutemp(J1))
+         CALL DUU(RTEMP,DUTEMP(J1))
 22    CONTINUE
       EPB=EPB+ETEMP
 
 C
-C Now calculate the gradient analytically.
+C NOW CALCULATE THE GRADIENT ANALYTICALLY.
 C
-      if (gradt) then 
+      IF (GRADT) THEN 
 
       DO J1=1,NATOMS
          VTEMP1=0.0D0
          VTEMP2=0.0D0
          VTEMP3=0.0D0
          DO J2=1,NATOMS
-           if (j1.ne.j2) then
+           IF (J1.NE.J2) THEN
              DIST=( X(3*(J2-1)+1)-X(3*(J1-1)+1) )**2 +
      1              ( X(3*(J2-1)+2)-X(3*(J1-1)+2) )**2 +
      2              ( X(3*(J2-1)+3)-X(3*(J1-1)+3) )**2
-             if (dist.lt.rrcsq) then
-               dist=dsqrt(dist)
-               call dv2(dist,dvtemp)
-               call drh (dist,drtemp)
-               VTEMP=(dvtemp+(dutemp(j1)+dutemp(j2))*drtemp)/dist
+             IF (DIST.LT.RRCSQ) THEN
+               DIST=DSQRT(DIST)
+               CALL DV2(DIST,DVTEMP)
+               CALL DRH (DIST,DRTEMP)
+               VTEMP=(DVTEMP+(DUTEMP(J1)+DUTEMP(J2))*DRTEMP)/DIST
                VTEMP1=VTEMP1+VTEMP*(X(3*(J1-1)+1)-X(3*(J2-1)+1))
                VTEMP2=VTEMP2+VTEMP*(X(3*(J1-1)+2)-X(3*(J2-1)+2))
                VTEMP3=VTEMP3+VTEMP*(X(3*(J1-1)+3)-X(3*(J2-1)+3))
-             endif
-           endif
+             ENDIF
+           ENDIF
          ENDDO
          V(3*(J1-1)+1)=VTEMP1
          V(3*(J1-1)+2)=VTEMP2
          V(3*(J1-1)+3)=VTEMP3
       ENDDO
 
-      endif
+      ENDIF
 
       RETURN
       END
 
-*     Ong-Ercolessi glue potential for Pb.
-*     Ref.: H. S. Lim, C. K. Ong and F. Ercolessi, 
-*           Surf. Sci. 269/270, 1109 (1992).
-*     Potential home page: http://www.sissa.it/furio/potentials/Pb/
+*     ONG-ERCOLESSI GLUE POTENTIAL FOR PB.
+*     REF.: H. S. LIM, C. K. ONG AND F. ERCOLESSI, 
+*           SURF. SCI. 269/270, 1109 (1992).
+*     POTENTIAL HOME PAGE: HTTP://WWW.SISSA.IT/FURIO/POTENTIALS/PB/
 
       BLOCK DATA PB
  
@@ -178,7 +178,7 @@ C
      $    0.0000000000000000E+00 /
       END
 
-      SUBROUTINE rh (R,RHO)
+      SUBROUTINE RH (R,RHO)
      
 *     RETURNS THE DENSITY FUNCTION RHO(R) AND ITS FIRST TWO DERIVATIVES
 *     AT DISTANCE R.
@@ -208,7 +208,7 @@ C
       END
      
      
-      SUBROUTINE drh (R,DRHO)
+      SUBROUTINE DRH (R,DRHO)
      
 *     RETURNS THE DENSITY FUNCTION RHO(R) AND ITS FIRST TWO DERIVATIVES
 *     AT DISTANCE R.
@@ -238,7 +238,7 @@ C
       END
      
      
-      SUBROUTINE uu (DENS,U)
+      SUBROUTINE UU (DENS,U)
      
 *     RETURNS THE FUNCTION U(N) AND ITS TWO FIRST DERIVATIVES AT N=DENS
      
@@ -262,7 +262,7 @@ C
       RETURN
       END
      
-      SUBROUTINE duu (DENS,U1)
+      SUBROUTINE DUU (DENS,U1)
      
 *     RETURNS THE FUNCTION U(N) AND ITS TWO FIRST DERIVATIVES AT N=DENS
      
@@ -286,7 +286,7 @@ C
       RETURN
       END
      
-      SUBROUTINE v2 (R,PHI)
+      SUBROUTINE V2 (R,PHI)
      
 *     RETURNS THE POTENTIAL AND ITS FIRST TWO DERIVATIVES AT DISTANCE R
      
@@ -317,7 +317,7 @@ C
       RETURN
       END
      
-      SUBROUTINE dv2 (R,DPHI)
+      SUBROUTINE DV2 (R,DPHI)
      
 *     RETURNS THE POTENTIAL AND ITS FIRST TWO DERIVATIVES AT DISTANCE R
      

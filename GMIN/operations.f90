@@ -1,21 +1,21 @@
-! operations.f90 is intended to contain simple transforms and operations that
-! are often done elsewhere in the code. It is to be gradually expanded to reduce
-! the number of times we are repeating outselves.
+! OPERATIONS.F90 IS INTENDED TO CONTAIN SIMPLE TRANSFORMS AND OPERATIONS THAT
+! ARE OFTEN DONE ELSEWHERE IN THE CODE. IT IS TO BE GRADUALLY EXPANDED TO REDUCE
+! THE NUMBER OF TIMES WE ARE REPEATING OUTSELVES.
 
 ! CONTENTS
 
-! FUNCTION PAIRDISTANCE(ATOM1,ATOM2) - returns the distance between atoms given
-! their coordinates
+! FUNCTION PAIRDISTANCE(ATOM1,ATOM2) - RETURNS THE DISTANCE BETWEEN ATOMS GIVEN
+! THEIR COORDINATES
 
 
 !
-!> \brief Function to determine the distance between two points in 3D space 
-!> \author Chris Whittleston, csw34@cam.ac.uk
+!> \BRIEF FUNCTION TO DETERMINE THE DISTANCE BETWEEN TWO POINTS IN 3D SPACE 
+!> \AUTHOR CHRIS WHITTLESTON, CSW34@CAM.AC.UK
 !
 FUNCTION PAIRDISTANCE(ATOM1,ATOM2)
 IMPLICIT NONE
-! PAIRDISTANCE is defined as it is the function name and hence the returned
-! value
+! PAIRDISTANCE IS DEFINED AS IT IS THE FUNCTION NAME AND HENCE THE RETURNED
+! VALUE
 DOUBLE PRECISION :: PAIRDISTANCE 
 DOUBLE PRECISION, INTENT(IN) :: ATOM1(3),ATOM2(3)
    

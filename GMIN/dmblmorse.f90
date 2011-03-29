@@ -1,6 +1,6 @@
       SUBROUTINE DMBLMORSE(X, G, ENERGY, GTEST)
 
-!     each rigidbody is a dumbbell consisting of 2 Morse sites
+!     EACH RIGIDBODY IS A DUMBBELL CONSISTING OF 2 MORSE SITES
 
       USE COMMONS, ONLY: NATOMS, NRBSITES, SITE, EPS11, EPS22, EPS12, MRHO11, MRHO22, MRHO12, REQ11, REQ22, REQ12,      &
                          RBUV, DBPMU, EFIELDT, EFIELD
@@ -228,7 +228,7 @@
       DOUBLE PRECISION :: RMI(3,3), DRMI(3,3), P(3), RBCOORDS(3)
       LOGICAL          :: GTEST
 
-      OPEN(UNIT=26, FILE='dmbl.xyz', STATUS='UNKNOWN')
+      OPEN(UNIT=26, FILE='DMBL.XYZ', STATUS='UNKNOWN')
 
       GTEST = .FALSE. 
 
@@ -236,7 +236,7 @@
 
          WRITE(26,'(I6)') (NATOMS/2)*NRBSITES
          WRITE(26,10) J1, QMIN(J1), FF(J1)
-10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)
+10       FORMAT('ENERGY OF MINIMUM ',I6,'=',F20.10,' FIRST FOUND AT STEP ',I8)
 
          DO J3 = 1, NATOMS/2
 

@@ -1,28 +1,28 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
       SUBROUTINE DFPMIN(ITMAX,P,N,GTOL,ITER,FRET,BFSUCCESS)
-      USE commons
-C      use modamber
+      USE COMMONS
+C      USE MODAMBER
       IMPLICIT NONE
       INTEGER ITER,N,ITMAX,ICRAP
-      DOUBLE PRECISION FRET,GTOL,P(N),EPS,STPMX,TOLX,prms
-      PARAMETER (STPMX=1.d1,EPS=3.0D-8,TOLX=4.0D0*EPS)
+      DOUBLE PRECISION FRET,GTOL,P(N),EPS,STPMX,TOLX,PRMS
+      PARAMETER (STPMX=1.D1,EPS=3.0D-8,TOLX=4.0D0*EPS)
       LOGICAL BFSUCCESS,BSTUCK,CRAP,CTEST,NOTCALLED,DFLAG
       INTEGER I,ITS,J
       LOGICAL CHECK
@@ -37,19 +37,19 @@ C     FP=F1DIM(P)
       CTEST=.FALSE.
       DFLAG=DEBUG
 C
-C  Get initial gradient and energy.
+C  GET INITIAL GRADIENT AND ENERGY.
 C
       CALL POTENTIAL(P,G,FP,.TRUE.,.FALSE.)
       SUM=0.0D0
 C
-C  Initialize Hessian to unit matrix. Initial search direction, XI,
-C  is antiparallel to the gradient.
+C  INITIALIZE HESSIAN TO UNIT MATRIX. INITIAL SEARCH DIRECTION, XI,
+C  IS ANTIPARALLEL TO THE GRADIENT.
 C
       DO I=1,N
          DO J=1,N
             HESSIN(J,I)=0.0D0
          ENDDO
-         HESSIN(I,I)=1.d0
+         HESSIN(I,I)=1.D0
          XI(I)=-G(I)
          SUM=SUM+P(I)**2
       ENDDO
@@ -57,7 +57,7 @@ C     STPMAX=STPMX*MAX(SQRT(SUM), DBLE(N))
       STPMAX=MAXBFGS
 
       DO ITS=1,ITMAX
-!        IF (MOD(ITS,20).EQ.0) CALL MAKELIST ! Paul Mortenson's amber specific!
+!        IF (MOD(ITS,20).EQ.0) CALL MAKELIST ! PAUL MORTENSON'S AMBER SPECIFIC!
          ITER=ITS
          CALL LNSRCH(N,P,FP,G,XI,PNEW,FRET,STPMAX,CHECK,BSTUCK)
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
@@ -67,7 +67,7 @@ C        ENDDO
 C        CALL LINMIN(ITS,PNEW,G,NATOMS,FRET)
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
          IF (BSTUCK) THEN
-            WRITE (*,*) ' *** Stuck in lnsrch - taking 5 CG steps'
+            WRITE (*,*) ' *** STUCK IN LNSRCH - TAKING 5 CG STEPS'
             DEBUG=.TRUE.
             CALL CGMIN(5,P,CRAP,ICRAP,FRET,1)
             IF (.NOT.(DFLAG)) DEBUG=.FALSE.
@@ -79,7 +79,7 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
            DG(I)=G(I)
          ENDDO
 C
-C  Get new gradient and Hessian.
+C  GET NEW GRADIENT AND HESSIAN.
 C
          CALL POTENTIAL(P,G,FP,.TRUE.,.FALSE.)
          PRMS=0.0D0
@@ -87,30 +87,30 @@ C
             PRMS=PRMS+G(I)**2
          ENDDO
          PRMS=SQRT(PRMS/N)
-         IF (DEBUG) WRITE (*,*) ' Iteration ',ITS,' energy= ',FP,' RMS force= ',PRMS
+         IF (DEBUG) WRITE (*,*) ' ITERATION ',ITS,' ENERGY= ',FP,' RMS FORCE= ',PRMS
 C        IF (DEBUG) CALL FLUSH(6)
          IF (PRMS.LT.GTOL) THEN
             BFSUCCESS=.TRUE.
             RETURN
          ENDIF
 C
-C  Catch cold fusion for ionic potentials and discard.
+C  CATCH COLD FUSION FOR IONIC POTENTIALS AND DISCARD.
 C
-C  Changed EREAL for cold fusion to 1.0D6 rather than 0.0D0, which could result in steps being accepted
-C  for systems with positive energies. - khs26 26/11/09
+C  CHANGED EREAL FOR COLD FUSION TO 1.0D6 RATHER THAN 0.0D0, WHICH COULD RESULT IN STEPS BEING ACCEPTED
+C  FOR SYSTEMS WITH POSITIVE ENERGIES. - KHS26 26/11/09
 C
          IF ((TOSI.OR.WELCH.OR.RGCL2.OR.AMBER.OR.PACHECO).AND.(FRET.LT.-1.0D4)) THEN
             FRET=1.0D4
             RMS=1.0D0
-            WRITE(*,'(A)') ' Cold fusion diagnosed - step discarded'
-!     csw34> set COLDFUSION=.TRUE. so that ATEST=.FALSE. in MC
+            WRITE(*,'(A)') ' COLD FUSION DIAGNOSED - STEP DISCARDED'
+!     CSW34> SET COLDFUSION=.TRUE. SO THAT ATEST=.FALSE. IN MC
             COLDFUSION=.TRUE.
             RETURN
          ENDIF
 !        IF ((AMBER.AND.NOTCALLED).AND.(PRMS.LT.1.0D0).AND.(.NOT.(FIX))) THEN
 !           CALL CHIRALTEST(CTEST,P)
 !           IF (CTEST) THEN
-!              WRITE(*,'(A)') ' Change in chirality detected - step rejected'
+!              WRITE(*,'(A)') ' CHANGE IN CHIRALITY DETECTED - STEP REJECTED'
 !              FRET=1.0D6
 !              RMS=1.0D0
 !              RETURN
@@ -128,7 +128,7 @@ C
             ENDDO
          ENDDO
 C
-C  Hessian update.
+C  HESSIAN UPDATE.
 C
          FAC=0.0D0
          FAE=0.0D0
@@ -154,7 +154,7 @@ C
             ENDDO
          ENDIF
 C
-C  Search direction update.
+C  SEARCH DIRECTION UPDATE.
 C
          DO I=1,N
             XI(I)=0.0D0

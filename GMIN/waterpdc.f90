@@ -468,7 +468,7 @@
       CHARGE(2) = 0.519D0
       CHARGE(3) = 0.519D0
       CHARGE(4) =-1.038D0
-      C6        = 835.147D0 ! LJ coefficients in kcal/mol Angstrom**6 or Angstrom**12
+      C6        = 835.147D0 ! LJ COEFFICIENTS IN KCAL/MOL ANGSTROM**6 OR ANGSTROM**12
       C12       = 955439.18D0
       CC        = 332.06378D0
       POLAR     = 1.444D0

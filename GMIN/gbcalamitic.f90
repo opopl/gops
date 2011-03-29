@@ -74,7 +74,7 @@
             INVR   = 1.D0/ABSRIJ
             R2     = 1.D0/RIJSQ
 
-!     CALCULATE $\alpha$, $\beta$ AND $\gamma$
+!     CALCULATE $\ALPHA$, $\BETA$ AND $\GAMMA$
 
             EI  = E(J1,:) 
             EJ  = E(J2,:)
@@ -100,15 +100,15 @@
             FCT7P8 = FCT7+FCT8
             FCT7M8 = FCT7-FCT8
 
-!     CALCULATE $\epsilon$
+!     CALCULATE $\EPSILON$
 
             EPS1   = DSQRT(FCT1*FCT2)
             EPS2   = 1.D0-0.5D0*GBCHIPRM*(APB*FCT7+AMB*FCT8)
             EPS    = GBEPSNOT*EPS1**GBNU*EPS2**GBMU
 
-!     CALCULATE $(\sigma/\sigma_{0})^3$
+!     CALCULATE $(\SIGMA/\SIGMA_{0})^3$
 
-            SCSIG  = 1.d0/DSQRT(1.D0-0.5D0*GBCHI*(APB*FCT3+AMB*FCT4))
+            SCSIG  = 1.D0/DSQRT(1.D0-0.5D0*GBCHI*(APB*FCT3+AMB*FCT4))
             SCSIG3 = SCSIG*SCSIG*SCSIG
 
 !     CALCULATE DEL(V)/DEL(R)
@@ -237,16 +237,16 @@
       REALNATOMS = NATOMS/2
       OFFSET     = 3 * REALNATOMS
 
-      IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS,NP)) ! COORDS might have been shifted by symmetry
+      IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS,NP)) ! COORDS MIGHT HAVE BEEN SHIFTED BY SYMMETRY
 
       DO J1 = 1,REALNATOMS
 
          J2     = 3*J1
          DUMMY2 = COORDS(J2-2,NP)**2 + COORDS(J2-1,NP)**2 + COORDS(J2,NP)**2
          IF (DUMMY2 .GT. RADIUS) THEN
-            WRITE(*,'(A,I5,5F20.10)') 'J1,RAD,R**2,x,y,z:', J1, RADIUS, DUMMY2, COORDS(J2-2,NP), &
+            WRITE(*,'(A,I5,5F20.10)') 'J1,RAD,R**2,X,Y,Z:', J1, RADIUS, DUMMY2, COORDS(J2-2,NP), &
                                        COORDS(J2-1,NP), COORDS(J2,NP)
-            PRINT*, 'initial coordinate outside container -- increase container radius'
+            PRINT*, 'INITIAL COORDINATE OUTSIDE CONTAINER -- INCREASE CONTAINER RADIUS'
             STOP
          END IF
 
@@ -278,10 +278,10 @@
       YMASS = YMASS/(REALNATOMS)
       ZMASS = ZMASS/(REALNATOMS)
 
-!     Find the most weakly bound atom, JMAX, the second most weakly bound atom, JMAX2,
-!     and the pair energy of the most tightly bound atom, VMIN. An angular step is
-!     taken for JMAX if its pair energy is > ASTEP*VMIN putting the atom at a radius of
-!     DMAX (or CMMAX from CM of the cluster).
+!     FIND THE MOST WEAKLY BOUND ATOM, JMAX, THE SECOND MOST WEAKLY BOUND ATOM, JMAX2,
+!     AND THE PAIR ENERGY OF THE MOST TIGHTLY BOUND ATOM, VMIN. AN ANGULAR STEP IS
+!     TAKEN FOR JMAX IF ITS PAIR ENERGY IS > ASTEP*VMIN PUTTING THE ATOM AT A RADIUS OF
+!     DMAX (OR CMMAX FROM CM OF THE CLUSTER).
 
       DMAX  =  1.0D0
       VMAX  = -1.0D3

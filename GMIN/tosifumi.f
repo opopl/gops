@@ -1,28 +1,28 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 
-C  Energy and derivatives of a general Born-Mayer potential with
-C  Tosi-Fumi parameters specified after the keyword TOSI in the
-C  odata file. Energy is in hartree, length in Bohr.
+C  ENERGY AND DERIVATIVES OF A GENERAL BORN-MAYER POTENTIAL WITH
+C  TOSI-FUMI PARAMETERS SPECIFIED AFTER THE KEYWORD TOSI IN THE
+C  ODATA FILE. ENERGY IS IN HARTREE, LENGTH IN BOHR.
 C
       SUBROUTINE TOSIFUMI(X, V, POTEL, GTEST, STEST)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE 
       INTEGER N, I, J, J1, J2, K, L, J3, J4
       DOUBLE PRECISION X(3*NATOMS), V(3*NATOMS), POTEL, 
@@ -36,7 +36,7 @@ C
          ELSE IF (ZSYM(I).EQ.'PL') THEN
             Q(I)=1.0D0
          ELSE
-            WRITE(*,'(A)') ' All atoms must be type PL or MI for Tosi-Fumi'
+            WRITE(*,'(A)') ' ALL ATOMS MUST BE TYPE PL OR MI FOR TOSI-FUMI'
             STOP
          ENDIF
       ENDDO
@@ -63,7 +63,7 @@ C
          ENDDO
       ENDDO
 C
-C  Calculate the interparticle distances.
+C  CALCULATE THE INTERPARTICLE DISTANCES.
 C 
       DO I=1,N
          K=1+3*(I-1)         
@@ -89,7 +89,7 @@ C
 
       IF (.NOT.GTEST) RETURN
 C
-C  Gradient.
+C  GRADIENT.
 C
       DO J1=1,N
          DO J2=1,3
@@ -104,7 +104,7 @@ C
 
       IF (.NOT.STEST) RETURN
 C
-C  Hessian.
+C  HESSIAN.
 C
       DO I=1,3*N
          DO J=1,3*N
@@ -114,14 +114,14 @@ C
       DO I=1,3*N
          DO J=I,3*N
 C 
-C  Determine the cartesian coordinate of X(I) and X(J).
+C  DETERMINE THE CARTESIAN COORDINATE OF X(I) AND X(J).
 C
             K=MOD((I-1),3)
             L=MOD((J-1),3)
 C 
-C  This IF statement calls SHESS if I and J are the same
-C  Cartesian coordinate and calls DHESS if the are different
-C  Cartesian coordinates
+C  THIS IF STATEMENT CALLS SHESS IF I AND J ARE THE SAME
+C  CARTESIAN COORDINATE AND CALLS DHESS IF THE ARE DIFFERENT
+C  CARTESIAN COORDINATES
 C
             IF(K .EQ. L)THEN
                CALL NSHESS(I,J,K,L,X,N,AC,Q,RD)
@@ -136,7 +136,7 @@ C....................................................
 C.....THIS SUBROUTINE IF THE COORDINATES ARE THE SAME
  
       SUBROUTINE NSHESS(I,J,K,L,CFG,NUM,AC,Q,RD)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE
       INTEGER I,J,K,L,I1,J1,M,N,NUM
       DOUBLE PRECISION CFG(3*NATOMS), RW, R, QQ, AB,
@@ -144,14 +144,14 @@ C.....THIS SUBROUTINE IF THE COORDINATES ARE THE SAME
 
       RW=RHO
  
-c.....I1 and J1 are the particle numbers for X(I) and X(J)
+C.....I1 AND J1 ARE THE PARTICLE NUMBERS FOR X(I) AND X(J)
 
       I1 = ((I-1)/3) + 1
       J1 = ((J-1)/3) + 1
  
-c.....if the particles are the same do the next two loops
-c.....there are two loops so that we can skip particle I1
-c.....without resorting to an IF statement
+C.....IF THE PARTICLES ARE THE SAME DO THE NEXT TWO LOOPS
+C.....THERE ARE TWO LOOPS SO THAT WE CAN SKIP PARTICLE I1
+C.....WITHOUT RESORTING TO AN IF STATEMENT
 
       IF(I1 .EQ. J1)THEN
       
@@ -193,7 +193,7 @@ c.....without resorting to an IF statement
  
       ELSE
  
-c.....do this if the particles are not the same
+C.....DO THIS IF THE PARTICLES ARE NOT THE SAME
       R = RD(I1,J1)
       QQ = Q(I1)*Q(J1)
       AB = AC(I1,J1)
@@ -214,7 +214,7 @@ C..........................................................
 C.....THIS SUBROUTINE IF THE COORDINATES ARE NOT THE SAME
  
       SUBROUTINE NDHESS(I,J,K,L,CFG,NUM,AC,Q,RD)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE
       INTEGER I,J,K,L,I1,J1,M,N,NUM,N1
       DOUBLE PRECISION CFG(3*NATOMS),RW,R,QQ,AB,
@@ -224,7 +224,7 @@ C.....THIS SUBROUTINE IF THE COORDINATES ARE NOT THE SAME
       I1 = ((I-1)/3) + 1
       J1 = ((J-1)/3) + 1
  
-c.....do the next to loops if the particles are the same
+C.....DO THE NEXT TO LOOPS IF THE PARTICLES ARE THE SAME
 
       IF(I1 .EQ. J1)THEN
  
@@ -265,7 +265,7 @@ c.....do the next to loops if the particles are the same
  
       ELSE
  
-c.....do this if the particles are not the same
+C.....DO THIS IF THE PARTICLES ARE NOT THE SAME
       N = K + 3*(J1-1) + 1
       N1 = L + 3*(I1-1) + 1
  

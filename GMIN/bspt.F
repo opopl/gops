@@ -1,20 +1,20 @@
-!  GMIN: A program for finding global minima
-!  Copyright (C) 1999-2006 David J. Wales
-!  This file is part of GMIN.
+!  GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+!  COPYRIGHT (C) 1999-2006 DAVID J. WALES
+!  THIS FILE IS PART OF GMIN.
 !
-!  GMIN is free software; you can redistribute it and/or modify
-!  it under the terms of the GNU General Public License as published by
-!  the Free Software Foundation; either version 2 of the License, or
-!  (at your option) any later version.
+!  GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+!  (AT YOUR OPTION) ANY LATER VERSION.
 !
-!  GMIN is distributed in the hope that it will be useful,
-!  but WITHOUT ANY WARRANTY; without even the implied warranty of
-!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!  GNU General Public License for more details.
+!  GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 !
-!  You should have received a copy of the GNU General Public License
-!  along with this program; if not, write to the Free Software
-!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 !
 ! 
 !---======================================---
@@ -22,14 +22,14 @@
 
       USE MODCHARMM
       USE COMMONS
-      USE tetherfunc
+      USE TETHERFUNC
 
       IMPLICIT NONE
 
-#ifdef MPI
-!op226> MPI section {{{ 
-      INCLUDE 'mpif.h'
-!op226 Variable declarations      {{{
+#IFDEF MPI
+!OP226> MPI SECTION {{{ 
+      INCLUDE 'MPIF.H'
+!OP226 VARIABLE DECLARATIONS      {{{
       INTEGER, PARAMETER :: NHIST=100, NHISTE=1000
       INTEGER :: IACCEPT(0:NPAR-1), MPIERR, J,K, IS(MPI_STATUS_SIZE)
       INTEGER NHISTQ4(NHIST,0:NPAR-1), NDUMMY, NTYPEA, NTOT, NH, IMESG, IQE, IQ4, IQ6, J1, J2, J3, J4,
@@ -81,23 +81,23 @@
       NOUTQBIN=0
       NOUTPEBIN=0
 
-      WRITE(MYUNIT, '(A,I10,A,I10)') "bspt> This is processor", mynode+1, " of", NPAR
-      WRITE(MYUNIT, '(A,I10)') 'bspt> Number of atoms', natoms
+      WRITE(MYUNIT, '(A,I10,A,I10)') "BSPT> THIS IS PROCESSOR", MYNODE+1, " OF", NPAR
+      WRITE(MYUNIT, '(A,I10)') 'BSPT> NUMBER OF ATOMS', NATOMS
       IF (FIXSTEP(1)) FIXSTEP(2:NPAR)=.TRUE.
       IF (FIXTEMP(1)) FIXTEMP(2:NPAR)=.TRUE.
       IF (PERIODIC) THEN
-         WRITE(MYUNIT, '(A,6G20.10)') 'bspt> Binary data', ntypea, epsab, epsbb, sigab, sigbb, cutoff
-         WRITE(MYUNIT, '(A,3G20.10)') 'bspt> Box data', boxlx, boxly, boxlz
+         WRITE(MYUNIT, '(A,6G20.10)') 'BSPT> BINARY DATA', NTYPEA, EPSAB, EPSBB, SIGAB, SIGBB, CUTOFF
+         WRITE(MYUNIT, '(A,3G20.10)') 'BSPT> BOX DATA', BOXLX, BOXLY, BOXLZ
       ELSEIF(CHRMMT) THEN
-         WRITE(MYUNIT, '(A)') 'bspt> CHARMM job'
+         WRITE(MYUNIT, '(A)') 'BSPT> CHARMM JOB'
          IF (FIXSTEP(MYNODE+1).OR.FIXBOTH(MYNODE+1)) THEN
-            WRITE(MYUNIT, '(A,G20.10,A)') 'bspt> Starting stepsize ', STEP(MYNODE+1),' (fixed)'
+            WRITE(MYUNIT, '(A,G20.10,A)') 'BSPT> STARTING STEPSIZE ', STEP(MYNODE+1),' (FIXED)'
          ELSE
-            WRITE(MYUNIT, '(A,G20.10,A)') 'bspt> Starting stepsize ', STEP(MYNODE+1),
-     &                            ' (will be dynamically adjusted during equilibration)'
+            WRITE(MYUNIT, '(A,G20.10,A)') 'BSPT> STARTING STEPSIZE ', STEP(MYNODE+1),
+     &                            ' (WILL BE DYNAMICALLY ADJUSTED DURING EQUILIBRATION)'
          ENDIF
       ELSEIF (.NOT.MODEL1T) THEN
-         WRITE(MYUNIT, '(A,2G20.10)') 'bspt> Radius and Radius**2: ',SQRT(RADIUS),radius
+         WRITE(MYUNIT, '(A,2G20.10)') 'BSPT> RADIUS AND RADIUS**2: ',SQRT(RADIUS),RADIUS
       ENDIF
 
       ITRAJ=MYNODE
@@ -108,17 +108,17 @@
       MAXEFALL=-1.0D100
       HISTINT=(HISTMAX-HISTMIN)/HBINS
 !
-! Limit for quench energy above which steps will be rejected.
+! LIMIT FOR QUENCH ENERGY ABOVE WHICH STEPS WILL BE REJECTED.
 !
       HBINMAX=(MIN(BSPTQMAX,HISTMAX)-HISTMIN)/HISTINT+1
       HBINMIN=(MAX(BSPTQMIN,HISTMIN)-HISTMIN)/HISTINT
-      WRITE(MYUNIT, '(A,2I8)') 'bspt> Minimum and maximum quench bin limits: ',HBINMIN,HBINMAX
+      WRITE(MYUNIT, '(A,2I8)') 'BSPT> MINIMUM AND MAXIMUM QUENCH BIN LIMITS: ',HBINMIN,HBINMAX
       DO J1=1, HBINS
-!        BINLABEL(J1)=HISTMIN + HISTINT*(J1-0.5D0) ! these energies point to the middle of the quench bin
-         BINLABEL(J1)=HISTMIN + HISTINT*(J1-1.0D0) ! these energies point to the bottom of the quench bin
+!        BINLABEL(J1)=HISTMIN + HISTINT*(J1-0.5D0) ! THESE ENERGIES POINT TO THE MIDDLE OF THE QUENCH BIN
+         BINLABEL(J1)=HISTMIN + HISTINT*(J1-1.0D0) ! THESE ENERGIES POINT TO THE BOTTOM OF THE QUENCH BIN
       ENDDO
 
-! Initialisation
+! INITIALISATION
 
       DO J1=1,NATOMS
          X(J1)=COORDS(3*(J1-1)+1,MYNODE+1)
@@ -140,28 +140,28 @@
          BETA(J1)=1.0D0/T
       ENDDO
       IF (MYNODE.EQ.0) THEN
-         OPEN(UNIT=10, FILE='temperatures',STATUS='UNKNOWN')
+         OPEN(UNIT=10, FILE='TEMPERATURES',STATUS='UNKNOWN')
          WRITE(10,'(G20.10)') TEMPTRAJ(0:NPAR-1)
          CLOSE(10)
       ENDIF
 !
-! For restart we need to get the current configuration, its pe, the pe of the minimum it quenched to,
-! if applicable, the number of steps already done, the maximum step size, and the Visits and Visits2
-! histograms. If we dump using BSPTDUMPFRQ then we can restore from the last such file. We can work
-! out what the last dump was once we know how many steps have been done!
+! FOR RESTART WE NEED TO GET THE CURRENT CONFIGURATION, ITS PE, THE PE OF THE MINIMUM IT QUENCHED TO,
+! IF APPLICABLE, THE NUMBER OF STEPS ALREADY DONE, THE MAXIMUM STEP SIZE, AND THE VISITS AND VISITS2
+! HISTOGRAMS. IF WE DUMP USING BSPTDUMPFRQ THEN WE CAN RESTORE FROM THE LAST SUCH FILE. WE CAN WORK
+! OUT WHAT THE LAST DUMP WAS ONCE WE KNOW HOW MANY STEPS HAVE BEEN DONE!
 !
       IF (BSPTRESTART) THEN
          WRITE (ISTR, '(I10)') MYNODE
-         FILENAME12="bsptrestart."//TRIM(ADJUSTL(ISTR))
-         OPEN(UNIT=1986+MYNODE,FILE=FILENAME12, STATUS="old", form="formatted")
+         FILENAME12="BSPTRESTART."//TRIM(ADJUSTL(ISTR))
+         OPEN(UNIT=1986+MYNODE,FILE=FILENAME12, STATUS="OLD", FORM="FORMATTED")
          READ(1986+MYNODE,*) PREVSTEPS,VOLD,VMINOLD,STEP(MYNODE+1),
      &                       NACCEPTPT(MYNODE),NEACCEPT,NTOT,NOUTQBIN,NOUTPEBIN,NQ(MYNODE+1)
-         WRITE (MYUNIT,'(A,F20.1)') 'bspt> Number of previous steps=     ',PREVSTEPS
-         WRITE (MYUNIT,'(A,2F20.10)') 'bspt> Quench and instantaneous PE=',VMINOLD,VOLD
-         WRITE (MYUNIT,'(A,F20.10)') 'bspt> Step size=',STEP(MYNODE+1)
-         WRITE (MYUNIT,'(A,F15.1,2I10)') 'bspt> Accepted MC steps, PT steps and total PT steps=',NACCEPTPT(MYNODE),NEACCEPT,NTOT
-         WRITE (MYUNIT,'(A,3I10)') 'bspt> Quenches and instantaneous energies outside range=',NOUTQBIN,NOUTPEBIN
-         WRITE (MYUNIT,'(A,I10)') 'bspt> Total quenches=',NQ(MYNODE+1)
+         WRITE (MYUNIT,'(A,F20.1)') 'BSPT> NUMBER OF PREVIOUS STEPS=     ',PREVSTEPS
+         WRITE (MYUNIT,'(A,2F20.10)') 'BSPT> QUENCH AND INSTANTANEOUS PE=',VMINOLD,VOLD
+         WRITE (MYUNIT,'(A,F20.10)') 'BSPT> STEP SIZE=',STEP(MYNODE+1)
+         WRITE (MYUNIT,'(A,F15.1,2I10)') 'BSPT> ACCEPTED MC STEPS, PT STEPS AND TOTAL PT STEPS=',NACCEPTPT(MYNODE),NEACCEPT,NTOT
+         WRITE (MYUNIT,'(A,3I10)') 'BSPT> QUENCHES AND INSTANTANEOUS ENERGIES OUTSIDE RANGE=',NOUTQBIN,NOUTPEBIN
+         WRITE (MYUNIT,'(A,I10)') 'BSPT> TOTAL QUENCHES=',NQ(MYNODE+1)
          DO J1=1,NATOMS
             J2=3*(J1-1)
             READ(1986+MYNODE,*) COORDS(J2+1,MYNODE+1), COORDS(J2+2,MYNODE+1), COORDS(J2+3,MYNODE+1)
@@ -170,23 +170,23 @@
          IF (BSPTDUMPFRQ.GT.0) THEN
             DUMMY=INT(PREVSTEPS/(1.0D0*BSPTDUMPFRQ))*1.0D0
 !
-!  Miscompiles unless we split up the calculation of DUMMY !!!
+!  MISCOMPILES UNLESS WE SPLIT UP THE CALCULATION OF DUMMY !!!
 !
-!           WRITE(MYUNIT,*) 'bspt> PREVSTEPS,BSPTDUMPFRQ,DUMMY=',PREVSTEPS,BSPTDUMPFRQ,DUMMY
-!           WRITE(MYUNIT,*) 'bspt> INT,arg=',INT(PREVSTEPS/(1.0D0*BSPTDUMPFRQ)),PREVSTEPS/(1.0D0*BSPTDUMPFRQ)
+!           WRITE(MYUNIT,*) 'BSPT> PREVSTEPS,BSPTDUMPFRQ,DUMMY=',PREVSTEPS,BSPTDUMPFRQ,DUMMY
+!           WRITE(MYUNIT,*) 'BSPT> INT,ARG=',INT(PREVSTEPS/(1.0D0*BSPTDUMPFRQ)),PREVSTEPS/(1.0D0*BSPTDUMPFRQ)
             DUMMY=DUMMY*BSPTDUMPFRQ
-!           WRITE(MYUNIT,*) 'bspt> DUMMY=',DUMMY
+!           WRITE(MYUNIT,*) 'BSPT> DUMMY=',DUMMY
             CALL FLUSH(MYUNIT)
             WRITE (SDUMMY, '(F15.1)') DUMMY
             ISTR=TRIM(ADJUSTL(ISTR)) // '.' // TRIM(ADJUSTL(SDUMMY))
          ELSE
-            ISTR=TRIM(ADJUSTL(ISTR)) ! this should be the final and only Visits file
+            ISTR=TRIM(ADJUSTL(ISTR)) ! THIS SHOULD BE THE FINAL AND ONLY VISITS FILE
          ENDIF
          IF (PREVSTEPS.GT.NEQUIL) THEN
-            FILENAME101="Visits.his."//TRIM(ADJUSTL(ISTR))
-            WRITE(MYUNIT,'(A,A)') 'bspt> Reading restart information from ',TRIM(ADJUSTL(FILENAME101))
+            FILENAME101="VISITS.HIS."//TRIM(ADJUSTL(ISTR))
+            WRITE(MYUNIT,'(A,A)') 'BSPT> READING RESTART INFORMATION FROM ',TRIM(ADJUSTL(FILENAME101))
             CALL FLUSH(MYUNIT)
-            OPEN(UNIT=1986+MYNODE,FILE=FILENAME101, STATUS="unknown", form="formatted")
+            OPEN(UNIT=1986+MYNODE,FILE=FILENAME101, STATUS="UNKNOWN", FORM="FORMATTED")
             READ(1986+MYNODE, '(G20.10)') DUMMY
             READ(1986+MYNODE, '(A)') SDUMMY
             DO K=1, NENRPER
@@ -199,9 +199,9 @@
             CLOSE(1986+MYNODE)
          ENDIF
          IF (BSPT.AND.(PREVSTEPS.GT.NEQUIL+PTSTEPS)) THEN
-            FILENAME101="Visits2.his."//TRIM(ADJUSTL(ISTR))
-            WRITE(MYUNIT,'(A,A)') 'bspt> Reading restart information from ',TRIM(ADJUSTL(FILENAME101))
-            OPEN(UNIT=1986+MYNODE,FILE=FILENAME101,STATUS="unknown",FORM="UNFORMATTED")
+            FILENAME101="VISITS2.HIS."//TRIM(ADJUSTL(ISTR))
+            WRITE(MYUNIT,'(A,A)') 'BSPT> READING RESTART INFORMATION FROM ',TRIM(ADJUSTL(FILENAME101))
+            OPEN(UNIT=1986+MYNODE,FILE=FILENAME101,STATUS="UNKNOWN",FORM="UNFORMATTED")
             READ(1986+MYNODE) PEVISITS2(1:NENRPER,1:HBINS,MYNODE)
             CLOSE(1986+MYNODE) 
          ENDIF
@@ -209,19 +209,19 @@
       ELSE
 12       CALL POTENTIAL(COORDS(:,MYNODE+1),GRAD, POTEL, .TRUE., .FALSE.)
          VOLD=POTEL
-         WRITE(MYUNIT,'(2(A,G20.10))') 'bspt> Initial configuration energy is ',VOLD
-!        WRITE(MYUNIT,'(2(A,G20.10))') 'bspt> NOT QUENCHING initial config'
+         WRITE(MYUNIT,'(2(A,G20.10))') 'BSPT> INITIAL CONFIGURATION ENERGY IS ',VOLD
+!        WRITE(MYUNIT,'(2(A,G20.10))') 'BSPT> NOT QUENCHING INITIAL CONFIG'
          CALL QUENCH(.FALSE.,MYNODE+1,LBFGS_ITERATIONS,DUMMY,NDUMMY,CONVERGED,COORDS(:,MYNODE+1),DOSSTATS)
-         WRITE(MYUNIT,'(A,G20.10)') 'bspt> Initial configuration has been quenched to energy ',POTEL
+         WRITE(MYUNIT,'(A,G20.10)') 'BSPT> INITIAL CONFIGURATION HAS BEEN QUENCHED TO ENERGY ',POTEL
 !
-!  If we start with an invalid configuration we may never recover!
+!  IF WE START WITH AN INVALID CONFIGURATION WE MAY NEVER RECOVER!
 !
          IF (.NOT.(CHRMMT.OR.MODEL1T)) THEN
             DO K=1,NATOMS
                DIST=COORDS(3*(K-1)+1,MYNODE+1)**2+COORDS(3*(K-1)+2,MYNODE+1)**2+COORDS(3*(K-1)+3,MYNODE+1)**2
                IF (DIST.GT.RADIUS) THEN
-                  IF (MOD(I-1.0D0,1.0D0*PRTFRQ).EQ.0) WRITE(MYUNIT,'(A,I6,A)') 'bspt> Atom ',K,
-     &                       ' outside container, reseed and try again'
+                  IF (MOD(I-1.0D0,1.0D0*PRTFRQ).EQ.0) WRITE(MYUNIT,'(A,I6,A)') 'BSPT> ATOM ',K,
+     &                       ' OUTSIDE CONTAINER, RESEED AND TRY AGAIN'
                   SR3=DSQRT(3.0D0)
                   DO J1=1,NATOMS
                      RANDOM=(DPRAND()-0.5D0)*2.0D0
@@ -238,7 +238,7 @@
       ENDIF
 
       LBFGS_ITERATIONS=0
-      LBFGS_ITERATIONSO=0 ! so that we don't use quench DoS statistics from arbitrary high energy
+      LBFGS_ITERATIONSO=0 ! SO THAT WE DON'T USE QUENCH DOS STATISTICS FROM ARBITRARY HIGH ENERGY
       VOLD=POTEL
       DO J1=1,NATOMS
          X(J1)=COORDS(3*(J1-1)+1,MYNODE+1)
@@ -265,33 +265,33 @@
          CALL QORDER_LJ(Q,Q4,Q6)
       ENDIF
 
-      WRITE(MYUNIT, '(A,2G20.10)') 'bspt> Temperature range', TEMPTRAJ(0), TEMPTRAJ(NPAR-1)
-      WRITE(MYUNIT, '(A,G20.10)') 'bspt> This temperature trajectory=', TEMPTRAJ(MYNODE)
+      WRITE(MYUNIT, '(A,2G20.10)') 'BSPT> TEMPERATURE RANGE', TEMPTRAJ(0), TEMPTRAJ(NPAR-1)
+      WRITE(MYUNIT, '(A,G20.10)') 'BSPT> THIS TEMPERATURE TRAJECTORY=', TEMPTRAJ(MYNODE)
       IF (.NOT.BSPTRESTART) VMINOLD=VOLD
       IF ((.NOT.BSPTRESTART).AND.(NEQUIL+PTSTEPS.GT.0)) VMINOLD=0.0D0 
-      WRITE (MYUNIT,'(A,F20.1)') 'bspt> Number of equilibration steps=',NEQUIL
-      WRITE (MYUNIT,'(A,F20.1)') 'bspt> Number of PT steps=           ',PTSTEPS
-      WRITE (MYUNIT,'(A,F20.1)') 'bspt> Number of BSPT steps=         ',NQUENCH
-      IF (PERIODIC) WRITE(MYUNIT, '(A, 2G20.10)') 'bspt> Starting Q4, Q6=', Q4, Q6
+      WRITE (MYUNIT,'(A,F20.1)') 'BSPT> NUMBER OF EQUILIBRATION STEPS=',NEQUIL
+      WRITE (MYUNIT,'(A,F20.1)') 'BSPT> NUMBER OF PT STEPS=           ',PTSTEPS
+      WRITE (MYUNIT,'(A,F20.1)') 'BSPT> NUMBER OF BSPT STEPS=         ',NQUENCH
+      IF (PERIODIC) WRITE(MYUNIT, '(A, 2G20.10)') 'BSPT> STARTING Q4, Q6=', Q4, Q6
       IF (CHRMMT) THEN
-        IF (OSASAT)  WRITE(MYUNIT, '(A, 2G20.10)') 'bspt> Starting Met-enk order params=', 
+        IF (OSASAT)  WRITE(MYUNIT, '(A, 2G20.10)') 'BSPT> STARTING MET-ENK ORDER PARAMS=', 
      1                                         DIHEORDERPARAM, SASAORDERPARAM 
-        IF (ORGYT)  WRITE(MYUNIT, '(A, G20.10)') 'bspt> Starting Rgyr order params=', 
+        IF (ORGYT)  WRITE(MYUNIT, '(A, G20.10)') 'BSPT> STARTING RGYR ORDER PARAMS=', 
      1                                          RGYR 
-        IF (OEINTT) WRITE(MYUNIT, '(A, G20.10)') 'bspt> Starting Eint order params=',
+        IF (OEINTT) WRITE(MYUNIT, '(A, G20.10)') 'BSPT> STARTING EINT ORDER PARAMS=',
      1                                          EINT
       ENDIF
 
-! Initialisation complete
+! INITIALISATION COMPLETE
 
       RNDSEED=2002+MYNODE
       CALL SDPRND(RNDSEED)
       RANDOM=DPRAND()
-      WRITE(MYUNIT, '(A, G20.10)') 'bspt> Starting random number=', RANDOM
+      WRITE(MYUNIT, '(A, G20.10)') 'BSPT> STARTING RANDOM NUMBER=', RANDOM
       IF (FIXSTEP(MYNODE+1).OR.FIXBOTH(MYNODE+1)) THEN
-         WRITE(MYUNIT, '(A,G20.10,A)') 'bspt> Starting stepsize ', STEP(MYNODE+1),' (fixed)'
+         WRITE(MYUNIT, '(A,G20.10,A)') 'BSPT> STARTING STEPSIZE ', STEP(MYNODE+1),' (FIXED)'
       ELSE
-         WRITE(MYUNIT, '(A,G20.10,A)') 'bspt> Starting stepsize ', STEP(MYNODE+1),' (will be dynamically adjusted)'
+         WRITE(MYUNIT, '(A,G20.10,A)') 'BSPT> STARTING STEPSIZE ', STEP(MYNODE+1),' (WILL BE DYNAMICALLY ADJUSTED)'
       ENDIF
       CALL FLUSH(MYUNIT)
 
@@ -351,19 +351,19 @@
 
       IF (MYNODE.EQ.0) THEN
 
-         OPEN(UNIT=10, FILE='distributions.header', FORM='formatted')
+         OPEN(UNIT=10, FILE='DISTRIBUTIONS.HEADER', FORM='FORMATTED')
          WRITE(10,*) NATOMS
          WRITE(10,*) NPAR, PTSTEPS/NENRPER, NENRPER
          WRITE(10,*) ENUL
          CLOSE(10)
       ENDIF 
 !
-! NUPDATE specifies the interval for dynamically altering the maximum step size.
-! Only used if step size isn't fixed.
+! NUPDATE SPECIFIES THE INTERVAL FOR DYNAMICALLY ALTERING THE MAXIMUM STEP SIZE.
+! ONLY USED IF STEP SIZE ISN'T FIXED.
 !
       NUPDATE=100
 !
-! Main loop over steps.
+! MAIN LOOP OVER STEPS.
 !
 !     DO I=1.0D0,NEQUIL+PTSTEPS+NQUENCH
 
@@ -379,10 +379,10 @@
             ZO(K)=Z(K)
          ENDDO
 !
-! If a move is rejected, the result for the current configuration
-! should be recounted. This allows for the unsymmetrical forward
-! and backward move probabilities for an atom near the surface of
-! the constraining sphere.
+! IF A MOVE IS REJECTED, THE RESULT FOR THE CURRENT CONFIGURATION
+! SHOULD BE RECOUNTED. THIS ALLOWS FOR THE UNSYMMETRICAL FORWARD
+! AND BACKWARD MOVE PROBABILITIES FOR AN ATOM NEAR THE SURFACE OF
+! THE CONSTRAINING SPHERE.
 !             
          IF (CHRMMT) THEN
 !           CALL TAKESTEPCH(MYNODE+1)
@@ -410,8 +410,8 @@
             ENDDO
          ENDIF
 !
-! Should probably worry about centre of coordinates versus centre of mass
-! for heteroatomic systems.
+! SHOULD PROBABLY WORRY ABOUT CENTRE OF COORDINATES VERSUS CENTRE OF MASS
+! FOR HETEROATOMIC SYSTEMS.
 !
          IF (CENT) THEN
             CX=0.0D0; CY=0.0D0; CZ=0.0D0
@@ -424,15 +424,15 @@
             ENDDO
          ENDIF 
          IF (.NOT.(CHRMMT.OR.MODEL1T)) THEN
-            cloop: DO K=1,NATOMS
+            CLOOP: DO K=1,NATOMS
                DIST=X(K)**2+Y(K)**2+Z(K)**2
                IF (DIST.GT.RADIUS) THEN
-                  IF (MOD(I-1.0D0,PRTFRQ*1.0D0).EQ.0.0D0) WRITE(MYUNIT,'(A,I6,A)') 'bspt> Perturbed atom ',K,
-     &                       ' outside container, recount previous configuration results'
-                  RECOUNT=.TRUE. ! The right way to deal with rejected steps!
-                  EXIT cloop
+                  IF (MOD(I-1.0D0,PRTFRQ*1.0D0).EQ.0.0D0) WRITE(MYUNIT,'(A,I6,A)') 'BSPT> PERTURBED ATOM ',K,
+     &                       ' OUTSIDE CONTAINER, RECOUNT PREVIOUS CONFIGURATION RESULTS'
+                  RECOUNT=.TRUE. ! THE RIGHT WAY TO DEAL WITH REJECTED STEPS!
+                  EXIT CLOOP
                ENDIF
-            ENDDO cloop
+            ENDDO CLOOP
          ENDIF
                 
          DO K=1,NATOMS
@@ -441,22 +441,22 @@
             COORDS(3*(K-1)+3,MYNODE+1)=Z(K)
          ENDDO
 !
-! At this point all we have done is take a step. The perturbed coordinates are in both
-! COORDS and X, Y, Z. The old coordinates are in XO, YO, ZO.
+! AT THIS POINT ALL WE HAVE DONE IS TAKE A STEP. THE PERTURBED COORDINATES ARE IN BOTH
+! COORDS AND X, Y, Z. THE OLD COORDINATES ARE IN XO, YO, ZO.
 !
-! New and old quench energies will be in        VMINNEW VMINOLD
-! New and old instantaneous energies will be in    VNEW    VOLD
+! NEW AND OLD QUENCH ENERGIES WILL BE IN        VMINNEW VMINOLD
+! NEW AND OLD INSTANTANEOUS ENERGIES WILL BE IN    VNEW    VOLD
 !
          CALL POTENTIAL(COORDS(:,MYNODE+1),GRAD, POTEL, .TRUE., .FALSE.)
          VNEW=POTEL
-         WCOMP=(VNEW-VOLD)*BETA(MYNODE) ! use difference in instantaneous energies
+         WCOMP=(VNEW-VOLD)*BETA(MYNODE) ! USE DIFFERENCE IN INSTANTANEOUS ENERGIES
          W=MIN(1.0D0,EXP(-WCOMP))
          RANDOM=DPRAND()
-         IF (RANDOM.GT.W) RECOUNT=.TRUE. ! RECOUNT is initialised to .FALSE. at the top of the loop
+         IF (RANDOM.GT.W) RECOUNT=.TRUE. ! RECOUNT IS INITIALISED TO .FALSE. AT THE TOP OF THE LOOP
 !
-! Quenching part if required.
-! COORDSO saves the perturbed coordinates before the quench in order to calculate
-! a quench distance. Should no longer be needed. COORDS are used as scratch for quenches.
+! QUENCHING PART IF REQUIRED.
+! COORDSO SAVES THE PERTURBED COORDINATES BEFORE THE QUENCH IN ORDER TO CALCULATE
+! A QUENCH DISTANCE. SHOULD NO LONGER BE NEEDED. COORDS ARE USED AS SCRATCH FOR QUENCHES.
 !
          COORDSO(:,MYNODE+1)=COORDS(:,MYNODE+1) 
          IF ((RECOUNT.AND.BSPT).OR.(I.LE.NEQUIL+PTSTEPS)) THEN
@@ -466,13 +466,13 @@
          IF (I.GT.NEQUIL+PTSTEPS) THEN
             IF ((.NOT.RECOUNT).AND.BSPT) THEN 
                IF (MOD(I,1.0D0*QUENCHFRQ).EQ.1.0D0*0) THEN 
-!                 WRITE(MYUNIT, '(A)') 'bspt> calling quench'
+!                 WRITE(MYUNIT, '(A)') 'BSPT> CALLING QUENCH'
                   IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
                   CALL QUENCH(.FALSE.,MYNODE+1,LBFGS_ITERATIONS,DUMMY,NDUMMY,CONVERGED,COORDS(:,MYNODE+1),DOSSTATS)
-                  IF (CONVERGED.NE.1) WRITE(MYUNIT, '(A)') 'bspt> WARNING - quench did not converge' 
+                  IF (CONVERGED.NE.1) WRITE(MYUNIT, '(A)') 'BSPT> WARNING - QUENCH DID NOT CONVERGE' 
                   VMINNEW=POTEL
                   NQ(MYNODE+1)=NQ(MYNODE+1)+1
-                  MINCOORDS(:,MYNODE+1)=COORDS(:,MYNODE+1) ! MINCOORDS contains quench coords
+                  MINCOORDS(:,MYNODE+1)=COORDS(:,MYNODE+1) ! MINCOORDS CONTAINS QUENCH COORDS
                ELSE
                   VMINNEW=0.0D0
                   LBFGS_ITERATIONS=0
@@ -482,28 +482,28 @@
                ENDIF
             ELSEIF (RECOUNT.AND.BSPT.AND.(VMINOLD.EQ.0.0D0).AND.(MOD(I,1.0D0*QUENCHFRQ).EQ.1.0D0*0)) THEN
 !
-! We might not have quenched at the step to be recounted, so we have to do so here.
+! WE MIGHT NOT HAVE QUENCHED AT THE STEP TO BE RECOUNTED, SO WE HAVE TO DO SO HERE.
 !
-               IF (DEBUG) WRITE(MYUNIT, '(A,G20.10,A)') 'bspt> recounting step for previous configuration with VMINOLD=',
-     &                                     VMINOLD,' need to call quench'
+               IF (DEBUG) WRITE(MYUNIT, '(A,G20.10,A)') 'BSPT> RECOUNTING STEP FOR PREVIOUS CONFIGURATION WITH VMINOLD=',
+     &                                     VMINOLD,' NEED TO CALL QUENCH'
                DO K=1,NATOMS
                  COORDS(3*(K-1)+1,MYNODE+1)=XO(K)
                  COORDS(3*(K-1)+2,MYNODE+1)=YO(K)
                  COORDS(3*(K-1)+3,MYNODE+1)=ZO(K)
                ENDDO
-!              WRITE(MYUNIT, '(A)') 'bspt> calling quench for recount'
+!              WRITE(MYUNIT, '(A)') 'BSPT> CALLING QUENCH FOR RECOUNT'
                IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
                CALL QUENCH(.FALSE.,MYNODE+1,LBFGS_ITERATIONS,DUMMY,NDUMMY,CONVERGED,COORDS(:,MYNODE+1),DOSSTATS)
                NQ(MYNODE+1)=NQ(MYNODE+1)+1
-               MINCOORDS(:,MYNODE+1)=COORDS(:,MYNODE+1) ! MINCOORDS contains quench coords
+               MINCOORDS(:,MYNODE+1)=COORDS(:,MYNODE+1) ! MINCOORDS CONTAINS QUENCH COORDS
                VMINOLD=POTEL
-               IF (CONVERGED.NE.1) WRITE(MYUNIT, '(A)') 'bspt> WARNING - quench did not converge' 
-               IF (DEBUG) WRITE(MYUNIT, '(A,G20.10)') 'bspt> VMINOLD set to ',VMINOLD
+               IF (CONVERGED.NE.1) WRITE(MYUNIT, '(A)') 'BSPT> WARNING - QUENCH DID NOT CONVERGE' 
+               IF (DEBUG) WRITE(MYUNIT, '(A,G20.10)') 'BSPT> VMINOLD SET TO ',VMINOLD
             ENDIF
          ENDIF
 !
-! If either the PE (VNEW) or quench energy (VMINNEW) is out of range of the histogram
-! then we reject the step and recount the previous one.
+! IF EITHER THE PE (VNEW) OR QUENCH ENERGY (VMINNEW) IS OUT OF RANGE OF THE HISTOGRAM
+! THEN WE REJECT THE STEP AND RECOUNT THE PREVIOUS ONE.
 !
          IF (BSPT.AND.(I.GT.NEQUIL+PTSTEPS).AND.(MOD(I,1.0D0*QUENCHFRQ).EQ.1.0D0*0)) THEN
             BININDEX=INT((VMINNEW-HISTMIN)/HISTINT)+1
@@ -520,9 +520,9 @@
 
          VMINNEWSAVE=VMINNEW
          LBFGS_ITERATIONSSAVE=LBFGS_ITERATIONS
-         VNEWSAVE=VNEW        ! this value is saved so it can be printed if the step is rejected
-         IF ((CONVERGED.NE.1).OR.EVAPREJECT) RECOUNT=.TRUE. ! reject and recount
-         IF (RECOUNT) THEN ! reject move
+         VNEWSAVE=VNEW        ! THIS VALUE IS SAVED SO IT CAN BE PRINTED IF THE STEP IS REJECTED
+         IF ((CONVERGED.NE.1).OR.EVAPREJECT) RECOUNT=.TRUE. ! REJECT AND RECOUNT
+         IF (RECOUNT) THEN ! REJECT MOVE
             DO K=1, NATOMS
                X(K)=XO(K)
                Y(K)=YO(K)
@@ -533,39 +533,39 @@
               COORDS(3*(K-1)+2,MYNODE+1)=Y(K)
               COORDS(3*(K-1)+3,MYNODE+1)=Z(K)
             ENDDO
-!           WRITE(MYUNIT,'(A,2G20.10)') 'bspt> recounting VOLD,VNEW=',VOLD,VNEW                
-!           WRITE(MYUNIT,'(A,2G20.10)') 'bspt> recounting VMINOLD,VMINNEW=',VMINOLD,VMINNEW
+!           WRITE(MYUNIT,'(A,2G20.10)') 'BSPT> RECOUNTING VOLD,VNEW=',VOLD,VNEW                
+!           WRITE(MYUNIT,'(A,2G20.10)') 'BSPT> RECOUNTING VMINOLD,VMINNEW=',VMINOLD,VMINNEW
             VMINNEW=VMINOLD
             VNEW=VOLD
             DOSSTATS(1:MAXIT,1:2)=DOSSTATSO(1:MAXIT,1:2)
             LBFGS_ITERATIONS=LBFGS_ITERATIONSO
             IF (.NOT.FITS) NOUT(MYNODE)=NOUT(MYNODE)+1
-         ELSE ! accept move
+         ELSE ! ACCEPT MOVE
             NACCEPTPT(MYNODE)=NACCEPTPT(MYNODE)+1.0D0
             IACCEPT(MYNODE)=IACCEPT(MYNODE)+1
          ENDIF
          IF (.NOT.RECOUNT) THEN
             IF (MOD(I-1.0D0*1,1.0D0*PRTFRQ).EQ.1.0D0*0) WRITE(MYUNIT, '(F15.1,A,G16.6,A,G16.6,A,G16.6,A,G16.6,A,I6,A)') 
-     &        I,' En= ', VMINNEWSAVE, ' Eo= ',VMINOLD, ' Vn=', VNEWSAVE,' Vo=',VOLD,' iter ',LBFGS_ITERATIONSSAVE,' ACC'
+     &        I,' EN= ', VMINNEWSAVE, ' EO= ',VMINOLD, ' VN=', VNEWSAVE,' VO=',VOLD,' ITER ',LBFGS_ITERATIONSSAVE,' ACC'
          ELSE
             IF (MOD(I-1.0D0*1,1.0D0*PRTFRQ).EQ.1.0D0*0) WRITE(MYUNIT, '(F15.1,A,G16.6,A,G16.6,A,G16.6,A,G16.6,A,I6,A)') 
-     &        I,' En= ', VMINNEWSAVE, ' Eo= ',VMINOLD, ' Vn=', VNEWSAVE,' Vo=',VOLD,' iter ',LBFGS_ITERATIONSSAVE,' REJ'
+     &        I,' EN= ', VMINNEWSAVE, ' EO= ',VMINOLD, ' VN=', VNEWSAVE,' VO=',VOLD,' ITER ',LBFGS_ITERATIONSSAVE,' REJ'
          ENDIF
          IF (DEBUG) THEN
             CALL POTENTIAL(COORDS(:,MYNODE+1),GRAD, POTEL, .TRUE., .FALSE.)
-            WRITE(MYUNIT,'(A,G20.10)') 'bspt> potential energy after acc/rej=',POTEL
+            WRITE(MYUNIT,'(A,G20.10)') 'BSPT> POTENTIAL ENERGY AFTER ACC/REJ=',POTEL
          ENDIF
          CALL FLUSH(MYUNIT)
 !
-!  At this point the quench and instantaneous energies for the current
-!  configuration in the Markov chain are VMINNEW and VNEW.
+!  AT THIS POINT THE QUENCH AND INSTANTANEOUS ENERGIES FOR THE CURRENT
+!  CONFIGURATION IN THE MARKOV CHAIN ARE VMINNEW AND VNEW.
 !
-!  QUENCHFRQ must be initialised to one for PTMC to avoid division by zero!
+!  QUENCHFRQ MUST BE INITIALISED TO ONE FOR PTMC TO AVOID DIVISION BY ZERO!
 !
          IF (MOD(I,1.0D0*QUENCHFRQ).EQ.1.0D0*0) BININDEX=INT((VMINNEW-HISTMIN)/HISTINT)+1
          IBININDEX=INT((VNEW-PTEMIN)/PEINT)+1
 !
-!  Must not accumulate statistics until we have equilibrated for NEQUIL steps.
+!  MUST NOT ACCUMULATE STATISTICS UNTIL WE HAVE EQUILIBRATED FOR NEQUIL STEPS.
 !
          IF (I.GT.NEQUIL) THEN
             IF (BSPT.AND.(MOD(I,1.0D0*QUENCHFRQ).EQ.1.0D0*0).AND.(I.GT.NEQUIL+PTSTEPS)) THEN 
@@ -576,21 +576,21 @@
                   ENDIF
                ENDIF
 !
-!  Now detected above.
+!  NOW DETECTED ABOVE.
 !
 !              IF ((BININDEX.GT.HBINMAX).OR.(BININDEX.LT.HBINMIN)) THEN
-!                 WRITE(MYUNIT,'(A,I6,A,G20.10,A,I8)') 'bspt> WARNING in node ',MYNODE,
-!    &                ' quench energy is out of range, energy=',VMINNEW,' would be bin ',BININDEX
+!                 WRITE(MYUNIT,'(A,I6,A,G20.10,A,I8)') 'BSPT> WARNING IN NODE ',MYNODE,
+!    &                ' QUENCH ENERGY IS OUT OF RANGE, ENERGY=',VMINNEW,' WOULD BE BIN ',BININDEX
 !                 NOUTQBIN=NOUTQBIN+1
 !              ENDIF
             ENDIF
 !
-!  Now detected above.
+!  NOW DETECTED ABOVE.
 !
 !           IF ((IBININDEX.GT.NENRPER).OR.(IBININDEX.LT.1)) THEN
-!              WRITE(MYUNIT,'(A,I6,A,G20.10,A,I8)') 'bspt> WARNING in node ',MYNODE,
-!    &                ' potential energy is out of range, energy=',VNEW,' would be bin ',IBININDEX
-!              WRITE(MYUNIT,'(A,I6,A,G20.10,A,I8)') 'bspt> NENRPER=',NENRPER
+!              WRITE(MYUNIT,'(A,I6,A,G20.10,A,I8)') 'BSPT> WARNING IN NODE ',MYNODE,
+!    &                ' POTENTIAL ENERGY IS OUT OF RANGE, ENERGY=',VNEW,' WOULD BE BIN ',IBININDEX
+!              WRITE(MYUNIT,'(A,I6,A,G20.10,A,I8)') 'BSPT> NENRPER=',NENRPER
 !              NOUTPEBIN=NOUTPEBIN+1
 !           ENDIF
             IF (BSPT.AND.(MOD(I,1.0D0*QUENCHFRQ).EQ.1.0D0*0).AND.(I.GT.NEQUIL+PTSTEPS)) THEN
@@ -599,7 +599,7 @@
             IF ((IBININDEX.GT.NENRPER).OR.(IBININDEX.LT.1)) GOTO 888
 
             PEVISITS(IBININDEX,MYNODE)=PEVISITS(IBININDEX,MYNODE)+1.0D0
-            IF (BSPT.AND.(MOD(I,1.0D0*QUENCHFRQ).EQ.1.0D0*0).AND.(I.GT.NEQUIL+PTSTEPS)) THEN ! otherwise BININDEX could be out of range
+            IF (BSPT.AND.(MOD(I,1.0D0*QUENCHFRQ).EQ.1.0D0*0).AND.(I.GT.NEQUIL+PTSTEPS)) THEN ! OTHERWISE BININDEX COULD BE OUT OF RANGE
                QVISITS(BININDEX,MYNODE)=QVISITS(BININDEX,MYNODE)+1.0D0
                PEVISITS2(IBININDEX,BININDEX,MYNODE)=PEVISITS2(IBININDEX,BININDEX,MYNODE)+1
             ENDIF
@@ -609,15 +609,15 @@
             ENDIF
          ENDIF
 !
-! If we are not calculating distances then the following lines may be unnecessary.
+! IF WE ARE NOT CALCULATING DISTANCES THEN THE FOLLOWING LINES MAY BE UNNECESSARY.
 !
-888      DO K=1,NATOMS ! COORDS have to be resaved because we have to use noreset to be able to calc distance 
+888      DO K=1,NATOMS ! COORDS HAVE TO BE RESAVED BECAUSE WE HAVE TO USE NORESET TO BE ABLE TO CALC DISTANCE 
             COORDS(3*(K-1)+1,MYNODE+1)=X(K)
             COORDS(3*(K-1)+2,MYNODE+1)=Y(K)
             COORDS(3*(K-1)+3,MYNODE+1)=Z(K)
          ENDDO
 !
-!  VMINOLD is now set to VMINNEW and VOLD to VNEW.
+!  VMINOLD IS NOW SET TO VMINNEW AND VOLD TO VNEW.
 !
          VOLD=VNEW
          VMINOLD=VMINNEW 
@@ -625,7 +625,7 @@
          DOSSTATSO(1:MAXIT,1:2)=DOSSTATS(1:MAXIT,1:2)
          LBFGS_ITERATIONSO=LBFGS_ITERATIONS
 
-         IF ((I.LE.NEQUIL).AND.(MOD(I,1.0D0*NUPDATE).EQ.1.0D0*0)) THEN ! update MC step size if not fixed
+         IF ((I.LE.NEQUIL).AND.(MOD(I,1.0D0*NUPDATE).EQ.1.0D0*0)) THEN ! UPDATE MC STEP SIZE IF NOT FIXED
             WAC=1.0*IACCEPT(MYNODE)/NUPDATE
             IF (.NOT.(FIXSTEP(MYNODE+1).OR.FIXBOTH(MYNODE+1))) THEN
 !              IF (WAC.LT.0.4) THEN
@@ -638,10 +638,10 @@
                ENDIF
             ENDIF
             IACCEPT(MYNODE)=0
-            WRITE(MYUNIT,'(A,G20.10)') 'bspt> maximum step size is now ',STEP(MYNODE+1)
+            WRITE(MYUNIT,'(A,G20.10)') 'BSPT> MAXIMUM STEP SIZE IS NOW ',STEP(MYNODE+1)
          ENDIF
 !
-!  Replica exchange part follows. 
+!  REPLICA EXCHANGE PART FOLLOWS. 
 
          E=VNEW
          IF (MYNODE.EQ.0) THEN
@@ -657,8 +657,8 @@
          ENDIF
          CALL MPI_BCAST(J,1,MPI_INTEGER,0,MPI_COMM_WORLD,MPIERR)
 !
-! J is set to -2 for no exchange. Should really just skip the next part?!
-! We try to exchange with trajectory J+1. J starts from 0.
+! J IS SET TO -2 FOR NO EXCHANGE. SHOULD REALLY JUST SKIP THE NEXT PART?!
+! WE TRY TO EXCHANGE WITH TRAJECTORY J+1. J STARTS FROM 0.
 !
          IF (MYNODE.EQ.(J+1)) THEN
             CALL MPI_SEND(E,1,MPI_DOUBLE_PRECISION,J,0,MPI_COMM_WORLD,MPIERR)
@@ -695,7 +695,7 @@
                NEACCEPT=NEACCEPT+1
                DOSSTATSO(1:MAXIT,1:2)=DOSSTATS(1:MAXIT,1:2)
                LBFGS_ITERATIONSO=LBFGS_ITERATIONS
-               VMINOLD=VMINNEW ! these variables are the same at this point in the program
+               VMINOLD=VMINNEW ! THESE VARIABLES ARE THE SAME AT THIS POINT IN THE PROGRAM
                VOLD=VNEW
             ELSE
                EXCHANGEACCEPT=.FALSE.
@@ -704,10 +704,10 @@
             ENDIF
             IF (EXCHANGEACCEPT) THEN
                IF (MOD(I-1.0D0,1.0D0*PRTFRQ).EQ.0) WRITE(MYUNIT,'(A,I5,A,G16.6,A,I5,A,G16.6,A)') 
-     &                        'bspt> Exchange from this replica ',J,' energy ',LESAVE,
-     &                                                         ' to replica ',J+1,' energy ',ER,' ACC'
+     &                        'BSPT> EXCHANGE FROM THIS REPLICA ',J,' ENERGY ',LESAVE,
+     &                                                         ' TO REPLICA ',J+1,' ENERGY ',ER,' ACC'
                IF (DEBUG) THEN
-                  WRITE(MYUNIT,'(A,G20.10)') 'bspt> Instantaneous PE is now ',VOLD
+                  WRITE(MYUNIT,'(A,G20.10)') 'BSPT> INSTANTANEOUS PE IS NOW ',VOLD
 
                   DO K=1,NATOMS
                      COORDS(3*(K-1)+1,MYNODE+1)=X(K)
@@ -715,13 +715,13 @@
                      COORDS(3*(K-1)+3,MYNODE+1)=Z(K)
                   ENDDO
                   CALL POTENTIAL(COORDS(:,MYNODE+1),GRAD, POTEL, .TRUE., .FALSE.)
-                  WRITE(MYUNIT,'(A,G20.10)') 'bspt> Recalculated PE is ',POTEL,' VNEW=',VNEW
+                  WRITE(MYUNIT,'(A,G20.10)') 'BSPT> RECALCULATED PE IS ',POTEL,' VNEW=',VNEW
                ENDIF
 
             ELSE
                IF (MOD(I-1.0D0,1.0D0*PRTFRQ).EQ.0.0D0) WRITE(MYUNIT,'(A,I5,A,G16.6,A,I5,A,G16.6,A)') 
-     &                    'bspt> Exchange from this replica ',J,' energy ',E,' to replica ',
-     &                           J+1,' energy ',ER,' REJ'
+     &                    'BSPT> EXCHANGE FROM THIS REPLICA ',J,' ENERGY ',E,' TO REPLICA ',
+     &                           J+1,' ENERGY ',ER,' REJ'
             ENDIF
          ENDIF
          CALL FLUSH(MYUNIT)
@@ -731,8 +731,8 @@
             ER=E
             IF (IMESG.EQ.1) THEN
 !
-!  Here we receive first, so we need to save variables that would otherwise be overwritten
-!  before they are sent to the other replica. Or use XO, YO, ZO in the case of X, Y, Z.
+!  HERE WE RECEIVE FIRST, SO WE NEED TO SAVE VARIABLES THAT WOULD OTHERWISE BE OVERWRITTEN
+!  BEFORE THEY ARE SENT TO THE OTHER REPLICA. OR USE XO, YO, ZO IN THE CASE OF X, Y, Z.
 !
                VOLDSAVE=VOLD
                DOSSTATSO(1:MAXIT,1:2)=DOSSTATS(1:MAXIT,1:2)
@@ -763,12 +763,12 @@
                DOSSTATSO(1:MAXIT,1:2)=DOSSTATS(1:MAXIT,1:2)
                LBFGS_ITERATIONSO=LBFGS_ITERATIONS
                IF (MOD(I-1.0D0,1.0D0*PRTFRQ).EQ.0) WRITE(MYUNIT,'(A,I5,A,G16.6,A,I5,A,G16.6,A)') 
-     &                     'bspt> Exchange from replica ',MYNODE-1,' energy ',VOLD,
-     &                                                         ' to this replica ',MYNODE,' energy ',VNEW,' ACC'
-               VMINNEW=VMINOLD ! these variables are the same at this point in the program
+     &                     'BSPT> EXCHANGE FROM REPLICA ',MYNODE-1,' ENERGY ',VOLD,
+     &                                                         ' TO THIS REPLICA ',MYNODE,' ENERGY ',VNEW,' ACC'
+               VMINNEW=VMINOLD ! THESE VARIABLES ARE THE SAME AT THIS POINT IN THE PROGRAM
                VNEW=VOLD
                IF (DEBUG) THEN
-                  WRITE(MYUNIT,'(2(A,G20.10))') 'bspt> Instantaneous PE is now ',VOLD,' and VNEW=',VNEW
+                  WRITE(MYUNIT,'(2(A,G20.10))') 'BSPT> INSTANTANEOUS PE IS NOW ',VOLD,' AND VNEW=',VNEW
 
                   DO K=1,NATOMS
                      COORDS(3*(K-1)+1,MYNODE+1)=X(K)
@@ -776,13 +776,13 @@
                      COORDS(3*(K-1)+3,MYNODE+1)=Z(K)
                   ENDDO
                   CALL POTENTIAL(COORDS(:,MYNODE+1),GRAD, POTEL, .TRUE., .FALSE.)
-                  WRITE(MYUNIT,'(A,G20.10)') 'bspt> Recalculated PE is ',POTEL
+                  WRITE(MYUNIT,'(A,G20.10)') 'BSPT> RECALCULATED PE IS ',POTEL
                ENDIF
 
             ELSE
                IF (MOD(I-1.0D0,1.0D0*PRTFRQ).EQ.0.0D0) WRITE(MYUNIT,'(A,I5,A,I5,A,G16.6,A)') 
-     &                   'bspt> Exchange from      replica ',MYNODE-1,
-     &                   ' energy not available to this replica ',MYNODE,' energy ',VOLD,' REJ'
+     &                   'BSPT> EXCHANGE FROM      REPLICA ',MYNODE-1,
+     &                   ' ENERGY NOT AVAILABLE TO THIS REPLICA ',MYNODE,' ENERGY ',VOLD,' REJ'
             ENDIF
          ENDIF
 
@@ -859,7 +859,7 @@
                ENDIF
             ENDIF
 
-! Free energy statistic
+! FREE ENERGY STATISTIC
 
             IF (IQ4.GT.0.AND.IQ4.LT.NHIST.AND.IQ6.GT.0.AND.IQ6.LT.NHIST) THEN
                NHISTALLQ(IQ4,IQ6,MYNODE)=NHISTALLQ(IQ4,IQ6,MYNODE)+1
@@ -871,7 +871,7 @@
               
             IENR=IENR+1
 !
-! Dump visits histograms. 
+! DUMP VISITS HISTOGRAMS. 
 ! 
             IF (BSPTDUMPFRQ.GT.0) THEN
                IF (MOD(I,1.0D0*BSPTDUMPFRQ).EQ.1.0D0*0) THEN
@@ -879,14 +879,14 @@
                   WRITE (SDUMMY, '(F15.1)') I
                   ISTR=TRIM(ADJUSTL(ISTR)) // TRIM(ADJUSTL(SDUMMY))
                   IF (I.GT.NEQUIL) THEN
-                     FILENAME101="Visits.his."//TRIM(ADJUSTL(ISTR))
-                     OPEN(UNIT=1986+MYNODE,FILE=FILENAME101, STATUS="unknown", form="formatted")
+                     FILENAME101="VISITS.HIS."//TRIM(ADJUSTL(ISTR))
+                     OPEN(UNIT=1986+MYNODE,FILE=FILENAME101, STATUS="UNKNOWN", FORM="FORMATTED")
                      WRITE(1986+MYNODE, '(G20.10)') TEMPTRAJ(MYNODE)
-                     WRITE(1986+MYNODE, '(A)') 'Visits to instantaneous PE bins without quench contributions'
+                     WRITE(1986+MYNODE, '(A)') 'VISITS TO INSTANTANEOUS PE BINS WITHOUT QUENCH CONTRIBUTIONS'
                      DO K=1, NENRPER
                         WRITE(1986+MYNODE, '(G20.10,F20.1)') PTEMIN+(K-1)*PEINT,PEVISITS(K,MYNODE)
                      ENDDO
-                     WRITE(1986+MYNODE, '(A)') 'Visits to quench bins'
+                     WRITE(1986+MYNODE, '(A)') 'VISITS TO QUENCH BINS'
                      DO K=1, HBINS
                           WRITE(1986+MYNODE, '(G20.10,F20.1)') BINLABEL(K), QVISITS(K,MYNODE)
                      ENDDO
@@ -894,17 +894,17 @@
                   ENDIF
 
                   IF (BSPT.AND.(I.GT.NEQUIL+PTSTEPS)) THEN
-                     FILENAME101="Visits2.his."//TRIM(ADJUSTL(ISTR))
-                     OPEN(UNIT=1986+MYNODE,FILE=FILENAME101,STATUS="unknown",FORM="UNFORMATTED")
+                     FILENAME101="VISITS2.HIS."//TRIM(ADJUSTL(ISTR))
+                     OPEN(UNIT=1986+MYNODE,FILE=FILENAME101,STATUS="UNKNOWN",FORM="UNFORMATTED")
                      WRITE(1986+MYNODE) PEVISITS2(1:NENRPER,1:HBINS,MYNODE)
                      CLOSE(1986+MYNODE)
                   ENDIF
 !
-!  Restart information
+!  RESTART INFORMATION
 !
                   WRITE (ISTR,'(I2)') MYNODE
-                  FILENAME9="bsptrestart."//TRIM(ADJUSTL(ISTR))
-                  OPEN(UNIT=1985+MYNODE,FILE=FILENAME9, STATUS="unknown", form="formatted")
+                  FILENAME9="BSPTRESTART."//TRIM(ADJUSTL(ISTR))
+                  OPEN(UNIT=1985+MYNODE,FILE=FILENAME9, STATUS="UNKNOWN", FORM="FORMATTED")
                   WRITE(1985+MYNODE,'(F20.1,3G20.10,F15.1,5I15)') I,VOLD,VMINOLD,STEP(MYNODE+1),
      &                                                NACCEPTPT(MYNODE),NEACCEPT,NTOT,NOUTQBIN,NOUTPEBIN,NQ(MYNODE+1)
                   DO J1=1,NATOMS
@@ -916,17 +916,17 @@
          ENDIF
       ENDDO 
  
-! End of main loop over BSPT or PT steps.
+! END OF MAIN LOOP OVER BSPT OR PT STEPS.
  
-! compute the averages
+! COMPUTE THE AVERAGES
 
       EAV(MYNODE)=EAV(MYNODE)/PTSTEPS
       EAV2(MYNODE)=EAV2(MYNODE)/PTSTEPS
       CV=(EAV2(MYNODE)-EAV(MYNODE)**2)*BETA(MYNODE)**2
 
-      WRITE (ISTR, '(i10)') MYNODE+1
-      FILENAME3="T.Ev.Cv.Ev2.Steps."//trim(adjustl(istr))
-      OPEN(UNIT=41+MYNODE,FILE=FILENAME3, STATUS="unknown", form="formatted")
+      WRITE (ISTR, '(I10)') MYNODE+1
+      FILENAME3="T.EV.CV.EV2.STEPS."//TRIM(ADJUSTL(ISTR))
+      OPEN(UNIT=41+MYNODE,FILE=FILENAME3, STATUS="UNKNOWN", FORM="FORMATTED")
       IF (CHRMMT) THEN
          WRITE(41+MYNODE,'(6G20.10)') TEMPTRAJ(MYNODE),TEMPTRAJ(MYNODE)/0.001987, 
      &                                EAV(MYNODE), CV, EAV2(MYNODE),PTSTEPS
@@ -951,39 +951,39 @@
       FQ4=SQRT(Q4AV2(MYNODE)-Q4AV(MYNODE)**2)
       FQ6=SQRT(Q6AV2(MYNODE)-Q6AV(MYNODE)**2)
       IF (BINARY) THEN  
-         FILENAME4="T.Q4Av.Q6Av.Q4Av2.Q6Av2.Steps."//trim(adjustl(istr))
-         OPEN(UNIT=1980,FILE=FILENAME4, STATUS="unknown", form="formatted")
+         FILENAME4="T.Q4AV.Q6AV.Q4AV2.Q6AV2.STEPS."//TRIM(ADJUSTL(ISTR))
+         OPEN(UNIT=1980,FILE=FILENAME4, STATUS="UNKNOWN", FORM="FORMATTED")
          WRITE(1980,'(6G20.10)') TEMPTRAJ(MYNODE), Q4AV(MYNODE), Q6AV(MYNODE), Q4AV2(MYNODE),Q6AV2(MYNODE), PTSTEPS
          CLOSE(1980)
       ENDIF
       IF (CHRMMT) THEN 
          IF (ODIHET) THEN 
-            FILENAME4="T.DiheAv.SasaAv.DiheAv2.SasaAv2.Steps."//trim(adjustl(istr))
-            OPEN(UNIT=1980,FILE=FILENAME4, STATUS="unknown", form="formatted")
+            FILENAME4="T.DIHEAV.SASAAV.DIHEAV2.SASAAV2.STEPS."//TRIM(ADJUSTL(ISTR))
+            OPEN(UNIT=1980,FILE=FILENAME4, STATUS="UNKNOWN", FORM="FORMATTED")
             WRITE(1980,'(6G20.10)') TEMPTRAJ(MYNODE), DIHEORDERPARAM_AV(MYNODE), 
      &              SASAORDERPARAM_AV(MYNODE), DIHEORDERPARAM_AV2(MYNODE),SASAORDERPARAM_AV2(MYNODE), PTSTEPS
             CLOSE(1980)
             ELSE IF (ORGYT) THEN
-            FILENAME4="T.RgyrAv.EintAv.RgyrAv2.Eint2.Steps."//trim(adjustl(istr))
-            OPEN(UNIT=1980,FILE=FILENAME4, STATUS="unknown", form="formatted")
+            FILENAME4="T.RGYRAV.EINTAV.RGYRAV2.EINT2.STEPS."//TRIM(ADJUSTL(ISTR))
+            OPEN(UNIT=1980,FILE=FILENAME4, STATUS="UNKNOWN", FORM="FORMATTED")
             WRITE(1980,'(6G20.10)') TEMPTRAJ(MYNODE), RGYR_AV(MYNODE),EINT_AV(MYNODE), RGYR_AV2(MYNODE),  
      &              EINT_AV2(MYNODE), PTSTEPS
             CLOSE(1980)
          ENDIF
       ENDIF
 
-      FILENAME5="profile_E."//trim(adjustl(istr)) 
-      OPEN(UNIT=1981,FILE=FILENAME5, STATUS="unknown", form="formatted")
+      FILENAME5="PROFILE_E."//TRIM(ADJUSTL(ISTR)) 
+      OPEN(UNIT=1981,FILE=FILENAME5, STATUS="UNKNOWN", FORM="FORMATTED")
       DO K=1,NHISTE
          WRITE(1981,'(2G20.10)') PTEMIN+(K-1)*DHISTE,NHISTQE(K,MYNODE)
       ENDDO
       CLOSE(1981)
 
       IF (BINARY) THEN
-         FILENAME6="profile_Q4."//trim(adjustl(istr))
-         FILENAME7="profile_Q6."//trim(adjustl(istr))
-         OPEN(UNIT=1982,FILE=FILENAME6, STATUS="unknown", form="formatted")
-         OPEN(UNIT=1983,FILE=FILENAME7, STATUS="unknown", form="formatted")
+         FILENAME6="PROFILE_Q4."//TRIM(ADJUSTL(ISTR))
+         FILENAME7="PROFILE_Q6."//TRIM(ADJUSTL(ISTR))
+         OPEN(UNIT=1982,FILE=FILENAME6, STATUS="UNKNOWN", FORM="FORMATTED")
+         OPEN(UNIT=1983,FILE=FILENAME7, STATUS="UNKNOWN", FORM="FORMATTED")
          DO K=1,NHIST
             WRITE(1982,'(2G20.10)') (K-1)*DQ4,NHISTQ4(K,MYNODE)
             WRITE(1983,'(2G20.10)') (K-1)*DQ6,NHISTQ6(K,MYNODE)
@@ -992,39 +992,39 @@
          CLOSE(1983)
       ELSE IF (CHRMMT) THEN
          IF (ODIHET) THEN
-            FILENAME6="profile_dihe."//trim(adjustl(istr))
-            FILENAME7="profile_sasa."//trim(adjustl(istr))
-            OPEN(UNIT=1982,FILE=FILENAME6, STATUS="unknown", form="formatted")
-            OPEN(UNIT=1983,FILE=FILENAME7, STATUS="unknown", form="formatted")
+            FILENAME6="PROFILE_DIHE."//TRIM(ADJUSTL(ISTR))
+            FILENAME7="PROFILE_SASA."//TRIM(ADJUSTL(ISTR))
+            OPEN(UNIT=1982,FILE=FILENAME6, STATUS="UNKNOWN", FORM="FORMATTED")
+            OPEN(UNIT=1983,FILE=FILENAME7, STATUS="UNKNOWN", FORM="FORMATTED")
             DO K=1,NHIST
-               WRITE(1982,'(2G20.10)') diheorderparam_min+(K-1)*Ddihe,NHISTQ4(K,MYNODE)
-               WRITE(1983,'(2G20.10)') SASAorderparam_min+(K-1)*Dsasa,NHISTQ6(K,MYNODE)
+               WRITE(1982,'(2G20.10)') DIHEORDERPARAM_MIN+(K-1)*DDIHE,NHISTQ4(K,MYNODE)
+               WRITE(1983,'(2G20.10)') SASAORDERPARAM_MIN+(K-1)*DSASA,NHISTQ6(K,MYNODE)
             ENDDO
             CLOSE(1982)
             CLOSE(1983)
          ELSE IF (ORGYT) THEN
-            FILENAME6="profile_rgyr."//trim(adjustl(istr))
-            FILENAME7="profile_eint."//trim(adjustl(istr))
-            OPEN(UNIT=1982,FILE=FILENAME6, STATUS="unknown", form="formatted")
-            OPEN(UNIT=1983,FILE=FILENAME7, STATUS="unknown", form="formatted")
+            FILENAME6="PROFILE_RGYR."//TRIM(ADJUSTL(ISTR))
+            FILENAME7="PROFILE_EINT."//TRIM(ADJUSTL(ISTR))
+            OPEN(UNIT=1982,FILE=FILENAME6, STATUS="UNKNOWN", FORM="FORMATTED")
+            OPEN(UNIT=1983,FILE=FILENAME7, STATUS="UNKNOWN", FORM="FORMATTED")
             DO K=1,NHIST
-               WRITE(1982,'(2G20.10)') rgyr_min+(K-1)*Drgyr,NHISTQ4(K,MYNODE)
-               WRITE(1983,'(2G20.10)') eint_min+(K-1)*Deint,NHISTQ6(K,MYNODE)
+               WRITE(1982,'(2G20.10)') RGYR_MIN+(K-1)*DRGYR,NHISTQ4(K,MYNODE)
+               WRITE(1983,'(2G20.10)') EINT_MIN+(K-1)*DEINT,NHISTQ6(K,MYNODE)
             ENDDO
             CLOSE(1982)
             CLOSE(1983)
          ENDIF
       ENDIF
 
-      WRITE(MYUNIT, '(A,F15.1,A,G15.1,A,F15.5,A)') 'bspt> ',NACCEPTPT(MYNODE), ' steps accepted out of ', 
-     &            PTSTEPS+NEQUIL+NQUENCH, ' i.e. ',NACCEPTPT(MYNODE)*100.0D0/(PTSTEPS+NEQUIL+NQUENCH),'%'
-      WRITE(MYUNIT, '(A,G20.10)') 'bspt> Final stepsize ', STEP(MYNODE+1)
-      WRITE(MYUNIT, '(A,G20.10,A,G20.10)') 'bspt> ',NEACCEPT, ' PT exchanges accepted out of ', NTOT
-      IF (BSPT) WRITE(MYUNIT, '(A,G20.10,A,G20.10,A)') 'bspt> ',NOUTQBIN, ' quenches outside quench bin range: ',
+      WRITE(MYUNIT, '(A,F15.1,A,G15.1,A,F15.5,A)') 'BSPT> ',NACCEPTPT(MYNODE), ' STEPS ACCEPTED OUT OF ', 
+     &            PTSTEPS+NEQUIL+NQUENCH, ' I.E. ',NACCEPTPT(MYNODE)*100.0D0/(PTSTEPS+NEQUIL+NQUENCH),'%'
+      WRITE(MYUNIT, '(A,G20.10)') 'BSPT> FINAL STEPSIZE ', STEP(MYNODE+1)
+      WRITE(MYUNIT, '(A,G20.10,A,G20.10)') 'BSPT> ',NEACCEPT, ' PT EXCHANGES ACCEPTED OUT OF ', NTOT
+      IF (BSPT) WRITE(MYUNIT, '(A,G20.10,A,G20.10,A)') 'BSPT> ',NOUTQBIN, ' QUENCHES OUTSIDE QUENCH BIN RANGE: ',
      &                                      NOUTQBIN*100.0D0/(NQUENCH),' %'
-      WRITE(MYUNIT, '(A,I8,A,G20.10,A)') 'bspt> ',NOUTPEBIN, ' potential energies outside bin range: ',
+      WRITE(MYUNIT, '(A,I8,A,G20.10,A)') 'BSPT> ',NOUTPEBIN, ' POTENTIAL ENERGIES OUTSIDE BIN RANGE: ',
      &                                      NOUTPEBIN*100.0D0/(PTSTEPS+NEQUIL+NQUENCH),' %'
-      WRITE(MYUNIT, '(A,I8)') 'bspt> total number of quenches ctually required=',NQ(MYNODE+1)
+      WRITE(MYUNIT, '(A,I8)') 'BSPT> TOTAL NUMBER OF QUENCHES CTUALLY REQUIRED=',NQ(MYNODE+1)
 
       DO K=1,NATOMS
          Q(1,K)=X(K)
@@ -1038,23 +1038,23 @@
       ENDIF
 
 !     IF (PTMC) THEN
-!        WRITE (ISTR, '(i10)') MYNODE+1
-!        FILENAME5="FreeEnStatHistO1.HistO2."//trim(adjustl(istr)) 
-!        OPEN(UNIT=747+MYNODE,FILE=FILENAME5, STATUS="unknown", form="formatted")
+!        WRITE (ISTR, '(I10)') MYNODE+1
+!        FILENAME5="FREEENSTATHISTO1.HISTO2."//TRIM(ADJUSTL(ISTR)) 
+!        OPEN(UNIT=747+MYNODE,FILE=FILENAME5, STATUS="UNKNOWN", FORM="FORMATTED")
 !           DO J=1,NHIST
 !              DO I=1,NHIST
-!                  WRITE(747+MYNODE,'(G20.10)') NHISTALLQ(i,j,MYNODE)
+!                  WRITE(747+MYNODE,'(G20.10)') NHISTALLQ(I,J,MYNODE)
 !              ENDDO
 !           ENDDO
 !        CLOSE(747+MYNODE)
-!        WRITE (ISTR, '(i10)') MYNODE+1
-!        FILENAME12="FreeEnStatHistE.HistO1.HistO2."//trim(adjustl(istr))
-!        OPEN(UNIT=447+MYNODE,FILE=FILENAME12, STATUS="unknown", form="formatted")
+!        WRITE (ISTR, '(I10)') MYNODE+1
+!        FILENAME12="FREEENSTATHISTE.HISTO1.HISTO2."//TRIM(ADJUSTL(ISTR))
+!        OPEN(UNIT=447+MYNODE,FILE=FILENAME12, STATUS="UNKNOWN", FORM="FORMATTED")
 !        DO K=1,NHISTE
 !           DO J=1,NHIST
 !              DO I=1,NHIST
 !                 IF (NHISTGRAND(K,I,J,MYNODE).NE.0) THEN
-!                 WRITE(447+MYNODE,'(4I10)') k,i,j,NHISTGRAND(k,i,j,MYNODE)
+!                 WRITE(447+MYNODE,'(4I10)') K,I,J,NHISTGRAND(K,I,J,MYNODE)
 !                 ENDIF
 !              ENDDO
 !           ENDDO
@@ -1062,35 +1062,35 @@
 !        CLOSE(447+MYNODE)
 !     ENDIF
 !
-! Dump visits histograms. Energies are written for the middle of the bins.
-! This is the really important part!
+! DUMP VISITS HISTOGRAMS. ENERGIES ARE WRITTEN FOR THE MIDDLE OF THE BINS.
+! THIS IS THE REALLY IMPORTANT PART!
 !
-      WRITE (ISTR, '(i10)') MYNODE 
-      FILENAME101="Visits.his."//trim(adjustl(istr))
-      OPEN(UNIT=1986+MYNODE,FILE=FILENAME101, STATUS="unknown", form="formatted")
+      WRITE (ISTR, '(I10)') MYNODE 
+      FILENAME101="VISITS.HIS."//TRIM(ADJUSTL(ISTR))
+      OPEN(UNIT=1986+MYNODE,FILE=FILENAME101, STATUS="UNKNOWN", FORM="FORMATTED")
       WRITE(1986+MYNODE, '(G20.10)') TEMPTRAJ(MYNODE)
-      WRITE(1986+MYNODE, '(A)') 'Visits to instantaneous PE bins without quench contributions'
+      WRITE(1986+MYNODE, '(A)') 'VISITS TO INSTANTANEOUS PE BINS WITHOUT QUENCH CONTRIBUTIONS'
       DO K=1, NENRPER
          WRITE(1986+MYNODE, '(G20.10,F20.1)') PTEMIN+(K-1)*PEINT,PEVISITS(K,MYNODE)
       ENDDO
-      WRITE(1986+MYNODE, '(A)') 'Visits to quench bins'
+      WRITE(1986+MYNODE, '(A)') 'VISITS TO QUENCH BINS'
       DO K=1, HBINS
            WRITE(1986+MYNODE, '(G20.10,F20.1)') BINLABEL(K), QVISITS(K,MYNODE)
       ENDDO
       CLOSE(1986+MYNODE)
 
       IF (BSPT) THEN
-         FILENAME101="Visits2.his."//trim(adjustl(istr))
-         OPEN(UNIT=1986+MYNODE,FILE=FILENAME101,STATUS="unknown",FORM="UNFORMATTED")
+         FILENAME101="VISITS2.HIS."//TRIM(ADJUSTL(ISTR))
+         OPEN(UNIT=1986+MYNODE,FILE=FILENAME101,STATUS="UNKNOWN",FORM="UNFORMATTED")
          WRITE(1986+MYNODE) PEVISITS2(1:NENRPER,1:HBINS,MYNODE)
          CLOSE(1986+MYNODE)
       ENDIF
 !
-! Dump final restart information.
+! DUMP FINAL RESTART INFORMATION.
 !
       WRITE (ISTR,'(I2)') MYNODE
-      FILENAME9="bsptrestart."//TRIM(ADJUSTL(ISTR))
-      OPEN(UNIT=1985+MYNODE,FILE=FILENAME9, STATUS="unknown", form="formatted")
+      FILENAME9="BSPTRESTART."//TRIM(ADJUSTL(ISTR))
+      OPEN(UNIT=1985+MYNODE,FILE=FILENAME9, STATUS="UNKNOWN", FORM="FORMATTED")
       WRITE(1985+MYNODE,'(F20.1,3G20.10,F15.1,5I10)') I,VOLD,VMINOLD,STEP(MYNODE+1),
      &                                          NACCEPTPT(MYNODE),NEACCEPT,NTOT,NOUTQBIN,NOUTPEBIN,NQ(MYNODE+1)
       DO J1=1,NATOMS
@@ -1099,8 +1099,8 @@
       CLOSE(1985+MYNODE)
 
       RETURN
-!op226 End MPI section }}}
-#else
+!OP226 END MPI SECTION }}}
+#ELSE
       RETURN
-#endif
+#ENDIF
       END SUBROUTINE PTBASINSAMPLING

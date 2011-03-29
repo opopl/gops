@@ -1,51 +1,51 @@
-!op226>=================================== 
-!op226> GPL License Info {{{ 
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+!OP226>=================================== 
+!OP226> GPL LICENSE INFO {{{ 
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
-!op226>}}} 
-!op226>=================================== 
-! Doxygen {{{
-!> \name MC
-!> \brief This subroutine ...
-!> \param NSTEPS
-!> \param SCALEFAC
-!> \param SCREENC
+!OP226>}}} 
+!OP226>=================================== 
+! DOXYGEN {{{
+!> \NAME MC
+!> \BRIEF THIS SUBROUTINE ...
+!> \PARAM NSTEPS
+!> \PARAM SCALEFAC
+!> \PARAM SCREENC
 ! }}}
-!op226>=================================== 
+!OP226>=================================== 
       SUBROUTINE MC(NSTEPS,SCALEFAC,SCREENC)
-!op226> Declarations {{{ 
+!OP226> DECLARATIONS {{{ 
       USE COMMONS
-      USE qmodule , only : qmin, INTEQMIN
-      USE modcharmm
-      USE modamber9, only : mdstept,cisarray1,cisarray2,chiarray1,chiarray2,nocistransdna,nocistransrna,
-     &                      setchiral,amchpmax,doligmove,ligmovefreq, grouprott, grouprotfreq, dogrouprot,
-     &                      amchnmax
-      USE porfuncs
+      USE QMODULE , ONLY : QMIN, INTEQMIN
+      USE MODCHARMM
+      USE MODAMBER9, ONLY : MDSTEPT,CISARRAY1,CISARRAY2,CHIARRAY1,CHIARRAY2,NOCISTRANSDNA,NOCISTRANSRNA,
+     &                      SETCHIRAL,AMCHPMAX,DOLIGMOVE,LIGMOVEFREQ, GROUPROTT, GROUPROTFREQ, DOGROUPROT,
+     &                      AMCHNMAX
+      USE PORFUNCS
       USE AMHGLOBALS, ONLY: NMRES,OMOVI,AVEP,NUMPRO,IRES
       USE AMH_INTERFACES, ONLY:E_WRITE
 
       IMPLICIT NONE
-#ifdef MPI
+#IFDEF MPI
       INTEGER  MPIERR
-      INCLUDE 'mpif.h'
+      INCLUDE 'MPIF.H'
       INTEGER IS(MPI_STATUS_SIZE)
-#endif
+#ENDIF
 
       INTEGER J1, NSUCCESS(NPAR), NFAIL(NPAR), NFAILT(NPAR), NSUCCESST(NPAR), J2, NSTEPS, JP, J5, 
      1        UNT, ITERATIONS, NSUPERCOUNT, NQTOT, JACCPREV, NREN, NLAST, NSTEPREN, BRUN,QDONE,JBEST(NPAR),
@@ -55,7 +55,7 @@ C
      1                 TIME, SPOTEL(NSUPER), SCOORDS(3*NATOMS,NSUPER), SCREENC(3*NATOMS),
      2                 EPPREV(NPAR), QSTART, QFINISH, RANNJ, RMIN, RMINO, RCOORDS(3*NATOMS),ELASTSYM(NPAR),
      3                 RCOORDSO(3*NATOMS), RVAT(NATOMS), RVATO(NATOMS), EPSSAVE, EBEST(NPAR),
-     4                 BESTCOORDS(3*NATOMS,NPAR), endtime, RMSD, VINIT, CTE, TEMPTRAJ(0:NPAR-1),
+     4                 BESTCOORDS(3*NATOMS,NPAR), ENDTIME, RMSD, VINIT, CTE, TEMPTRAJ(0:NPAR-1),
      5                 T, BETA(0:NPAR-1), GRAD(3*NATOMS), E, ER, W, DELTA, DBETA, A9ANGLE, 
      &                 DUMMY1, DUMMY2, DUMMY3, INTE, OPOTEL
       LOGICAL CHANGEDE, EXCHANGEACCEPT, EXCHANGE, FLAG 
@@ -63,46 +63,46 @@ C
       CHARACTER FNAME*9
       CHARACTER (LEN= 3)  ISTR
       CHARACTER (LEN=20) QUENCHNUM, QUNAME, DUMMYCHAR
-c  AMH 
-      INTEGER :: gly_count,iii,i2,i500,snapcount, DUMMYINT
-      DOUBLE PRECISION prcord(NATOMS,3,3,3)
-      DOUBLE PRECISION :: mctemp
-!  csw34> PAIRDIST variables
+C  AMH 
+      INTEGER :: GLY_COUNT,III,I2,I500,SNAPCOUNT, DUMMYINT
+      DOUBLE PRECISION PRCORD(NATOMS,3,3,3)
+      DOUBLE PRECISION :: MCTEMP
+!  CSW34> PAIRDIST VARIABLES
       INTEGER :: PAIRCOUNTER
       DOUBLE PRECISION, EXTERNAL :: PAIRDISTANCE
       DOUBLE PRECISION :: ATOM1(3),ATOM2(3)
 
-      LOGICAL EVAP, ATEST, STAY, evapreject, LOPEN
-      COMMON /EV/ EVAP, evapreject
+      LOGICAL EVAP, ATEST, STAY, EVAPREJECT, LOPEN
+      COMMON /EV/ EVAP, EVAPREJECT
       COMMON /MYPOT/ POTEL
       COMMON /TOT/ NQTOT
       COMMON /Q4C/ QSTART, QFINISH
 
-      character(len=10)       :: datechar,timechar,zonechar
-      integer                 :: values(8),itime1
-      double precision :: DISTGROUPX2,DISTGROUPY2,DISTGROUPZ2,DISTGROUPCENTRE,TESTANGLE
-      integer :: J6
-!op226>}}} 
-!op226> Subroutine body {{{ 
+      CHARACTER(LEN=10)       :: DATECHAR,TIMECHAR,ZONECHAR
+      INTEGER                 :: VALUES(8),ITIME1
+      DOUBLE PRECISION :: DISTGROUPX2,DISTGROUPY2,DISTGROUPZ2,DISTGROUPCENTRE,TESTANGLE
+      INTEGER :: J6
+!OP226>}}} 
+!OP226> SUBROUTINE BODY {{{ 
 
-! Write a list of FROZEN atoms for use in an (o)data file
-!op226> IF (FREEZEGROUPT) THEN {{{
+! WRITE A LIST OF FROZEN ATOMS FOR USE IN AN (O)DATA FILE
+!OP226> IF (FREEZEGROUPT) THEN {{{
       IF (FREEZEGROUPT) THEN
-         OPEN(UNIT=4431,FILE='frozen.dat',STATUS='UNKNOWN',FORM='FORMATTED')
+         OPEN(UNIT=4431,FILE='FROZEN.DAT',STATUS='UNKNOWN',FORM='FORMATTED')
          DO J6=1,NATOMS
 !
-! Work out the distance from GROUPCENTRE to the current atom J1
+! WORK OUT THE DISTANCE FROM GROUPCENTRE TO THE CURRENT ATOM J1
 ! 
             DISTGROUPX2=(COORDS(3*GROUPCENTRE-2,1)-COORDS(3*J6-2,1))**2
             DISTGROUPY2=(COORDS(3*GROUPCENTRE-1,1)-COORDS(3*J6-1,1))**2
             DISTGROUPZ2=(COORDS(3*GROUPCENTRE  ,1)-COORDS(3*J6  ,1))**2
             DISTGROUPCENTRE=SQRT(DISTGROUPX2+DISTGROUPY2+DISTGROUPZ2)
-! If working in GT mode (default), FREEZE all atoms >GROUPRADIUS from the GROUPCENTRE atom
+! IF WORKING IN GT MODE (DEFAULT), FREEZE ALL ATOMS >GROUPRADIUS FROM THE GROUPCENTRE ATOM
             IF((FREEZEGROUPTYPE=="GT").AND.(DISTGROUPCENTRE.GT.GROUPRADIUS)) THEN
                NFREEZE=NFREEZE+1
                FROZEN(J6)=.TRUE.
                WRITE(4431,'(A,I6)') 'FREEZE ',J6
-! If working in LT mode, FREEZE all atoms <GROUPRADIUS from the GROUPCENTRE atom
+! IF WORKING IN LT MODE, FREEZE ALL ATOMS <GROUPRADIUS FROM THE GROUPCENTRE ATOM
             ELSE IF((FREEZEGROUPTYPE=="LT").AND.(DISTGROUPCENTRE.LT.GROUPRADIUS)) THEN
                NFREEZE=NFREEZE+1
                FROZEN(J6)=.TRUE.
@@ -110,29 +110,29 @@ c  AMH
             END IF
          END DO
          CLOSE(4431)
-! Prevent it doing this again
+! PREVENT IT DOING THIS AGAIN
          FREEZEGROUPT=.FALSE.     
       ENDIF
-!op226>}}} 
+!OP226>}}} 
 
-! Write a list of DONTMOVE atoms for use in an (o)data file
-!op226> IF (DONTMOVEGROUPT) THEN {{{
+! WRITE A LIST OF DONTMOVE ATOMS FOR USE IN AN (O)DATA FILE
+!OP226> IF (DONTMOVEGROUPT) THEN {{{
       IF (DONTMOVEGROUPT) THEN
-              OPEN(UNIT=4431,FILE='dontmove.dat',STATUS='UNKNOWN',FORM='FORMATTED')
+              OPEN(UNIT=4431,FILE='DONTMOVE.DAT',STATUS='UNKNOWN',FORM='FORMATTED')
          DO J6=1,NATOMS
 !
-! Work out the distance from DONTMOVECENTRE to the current atom J1
+! WORK OUT THE DISTANCE FROM DONTMOVECENTRE TO THE CURRENT ATOM J1
 ! 
             DISTGROUPX2=(COORDS(3*DONTMOVECENTRE-2,1)-COORDS(3*J6-2,1))**2
             DISTGROUPY2=(COORDS(3*DONTMOVECENTRE-1,1)-COORDS(3*J6-1,1))**2
             DISTGROUPZ2=(COORDS(3*DONTMOVECENTRE  ,1)-COORDS(3*J6  ,1))**2
             DISTGROUPCENTRE=SQRT(DISTGROUPX2+DISTGROUPY2+DISTGROUPZ2)
-! If working in GT mode (default), DONTMOVE all atoms >GROUPRADIUS from the DONTMOVECENTRE atom
+! IF WORKING IN GT MODE (DEFAULT), DONTMOVE ALL ATOMS >GROUPRADIUS FROM THE DONTMOVECENTRE ATOM
             IF((DONTMOVEGROUPTYPE=="GT").AND.(DISTGROUPCENTRE.GT.GROUPRADIUS)) THEN
                NDONTMOVE=NDONTMOVE+1
                DONTMOVE(J6)=.TRUE.
                WRITE(4431,'(A,I6)') 'DONTMOVE ',J6
-! IF working in LT mode, DONTMOVE all atoms <GROUPRADIUS from the DONTMOVECENTRE atom
+! IF WORKING IN LT MODE, DONTMOVE ALL ATOMS <GROUPRADIUS FROM THE DONTMOVECENTRE ATOM
        ELSE IF((DONTMOVEGROUPTYPE=="LT").AND.(DISTGROUPCENTRE.LT.GROUPRADIUS)) THEN
                NDONTMOVE=NDONTMOVE+1
                DONTMOVE(J6)=.TRUE.
@@ -140,33 +140,33 @@ c  AMH
             END IF
          END DO
          CLOSE(4431)
-! Prevent it doing this again
+! PREVENT IT DOING THIS AGAIN
          DONTMOVEGROUPT=.FALSE.     
       ENDIF
-!op226>}}} 
+!OP226>}}} 
       
-!     csw34> Added defaults to prevent accidentaly discarding
-!     structures for AMH      
+!     CSW34> ADDED DEFAULTS TO PREVENT ACCIDENTALY DISCARDING
+!     STRUCTURES FOR AMH      
 
       CHIRALFAIL=.FALSE.
       AMIDEFAIL=.FALSE.
       INQUIRE(UNIT=1,OPENED=LOPEN)
       IF (LOPEN) THEN
-         WRITE(*,'(A,I2,A)') 'mc> A ERROR *** Unit ', 1, ' is not free '
+         WRITE(*,'(A,I2,A)') 'MC> A ERROR *** UNIT ', 1, ' IS NOT FREE '
          STOP
       ENDIF
 
       ALLOCATE(TMOVE(NPAR), OMOVE(NPAR))
-      snapcount=0
+      SNAPCOUNT=0
       NSTEPREN=0
       EVAPREJECT=.FALSE.
       INQUIRE(UNIT=1,OPENED=LOPEN)
       IF (LOPEN) THEN
-         WRITE(*,'(A,I2,A)') 'mc> B ERROR *** Unit ', 1, ' is not free '
+         WRITE(*,'(A,I2,A)') 'MC> B ERROR *** UNIT ', 1, ' IS NOT FREE '
          STOP
       ENDIF
 
-#ifdef MPI
+#IFDEF MPI
       IF (MPIT) THEN 
          IF (DEBUG) WRITE(MYUNIT,'(A,I6)') 'MPIERR=',MPIERR
          CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NPAR,MPIERR)
@@ -174,41 +174,41 @@ c  AMH
          CALL MPI_COMM_RANK(MPI_COMM_WORLD,MYNODE,MPIERR)
          JP=MYNODE+1
          ITRAJ=MYNODE
-         IF (DEBUG) WRITE(MYUNIT, '(A,3I6)') 'In mc after MPI_MPI_COMM_RANK MPIERR,MYNODE,JP=',MPIERR,MYNODE,JP
+         IF (DEBUG) WRITE(MYUNIT, '(A,3I6)') 'IN MC AFTER MPI_MPI_COMM_RANK MPIERR,MYNODE,JP=',MPIERR,MYNODE,JP
       ENDIF
       NEACCEPT=0
-#endif
+#ENDIF
 
       NDONE=0
       IF (RESTORET) THEN
-#ifdef MPI
+#IFDEF MPI
          CALL RESTORESTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
-#else
+#ELSE
          DO JP=1,NPAR
             CALL RESTORESTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
          ENDDO
-#endif
-         WRITE(MYUNIT, '(A,I10)') 'MC> restore NDONE=',NDONE
-!     csw34> Sets the quench counter so that the GMIN_out file makes sense after using RESTORE!
+#ENDIF
+         WRITE(MYUNIT, '(A,I10)') 'MC> RESTORE NDONE=',NDONE
+!     CSW34> SETS THE QUENCH COUNTER SO THAT THE GMIN_OUT FILE MAKES SENSE AFTER USING RESTORE!
 !         NQ(:)=NDONE
       ENDIF
       NQ(:)=NDONE
 
-C tvb requesting a basin-sampling MC run: {{{
+C TVB REQUESTING A BASIN-SAMPLING MC RUN: {{{
       
-      IF (BSWL.and.(.not.TETHER)) then
-         CALL BasinSampling
+      IF (BSWL.AND.(.NOT.TETHER)) THEN
+         CALL BASINSAMPLING
          RETURN
       ELSEIF (TETHER) THEN
-         CALL TetheredWL
+         CALL TETHEREDWL
          RETURN
       ENDIF
 C }}}
 
-#ifdef MPI
-      WRITE(MYUNIT, '(A,I10,A,I10,A)') "Processor", mynode+1, " of", NPAR, " speaking:"
-      WRITE(MYUNIT, '(A,I10)') 'Number of atoms', natoms
-#endif
+#IFDEF MPI
+      WRITE(MYUNIT, '(A,I10,A,I10,A)') "PROCESSOR", MYNODE+1, " OF", NPAR, " SPEAKING:"
+      WRITE(MYUNIT, '(A,I10)') 'NUMBER OF ATOMS', NATOMS
+#ENDIF
 
       IF (NACCEPT.EQ.0) NACCEPT=NSTEPS+1
       NRMS=0
@@ -219,10 +219,10 @@ C }}}
       RMINO=1.0D100
       RMIN=1.0D100
       NREN=NRENORM
-#ifdef MPI
-#else
+#IFDEF MPI
+#ELSE
       DO JP=1,NPAR 
-#endif
+#ENDIF
          TMOVE(JP)=.TRUE.
          OMOVE(JP)=.TRUE.
          NSUCCESS(JP)=0
@@ -230,64 +230,64 @@ C }}}
          NSUCCESST(JP)=0
          NFAILT(JP)=0
          IF (JDUMP(JP).AND.(.NOT.NEWJUMP)) THEN
-            WRITE(FNAME,'(A,I1)') 'ebuffer.',JP
+            WRITE(FNAME,'(A,I1)') 'EBUFFER.',JP
             UNT=70+JP
             OPEN(UNIT=UNT,FILE=FNAME,STATUS='UNKNOWN')
-            WRITE(FNAME,'(A,I1)') 'cbuffer.',JP
+            WRITE(FNAME,'(A,I1)') 'CBUFFER.',JP
             UNT=70+NPAR+JP
             OPEN(UNIT=UNT,FILE=FNAME,STATUS='UNKNOWN')
          ENDIF
-#ifdef MPI
-#else
+#IFDEF MPI
+#ELSE
       ENDDO
-#endif
+#ENDIF
 
       IF (AMHT) THEN
-         write(omovi,1334)nmres,3,1,INT(real(NSTEPS)/real(NINT_AMH))
-1334     format(4(i8,1x),' nmres nmcrd numpro nmsnap')
+         WRITE(OMOVI,1334)NMRES,3,1,INT(REAL(NSTEPS)/REAL(NINT_AMH))
+1334     FORMAT(4(I8,1X),' NMRES NMCRD NUMPRO NMSNAP')
       ENDIF
     
       IF (.NOT.RESTORET) THEN
-!       csw34> Set the centre of mass to be at the specified location
-!       contained in the SETCENTRE X Y Z keyword
+!       CSW34> SET THE CENTRE OF MASS TO BE AT THE SPECIFIED LOCATION
+!       CONTAINED IN THE SETCENTRE X Y Z KEYWORD
          IF (SETCENT) CALL SETCENTRE(COORDS)
 C
-C For MAKEOLIGOT and MAKEOLIGOSTART=TRUE: generate oligomers by placing new segments.
+C FOR MAKEOLIGOT AND MAKEOLIGOSTART=TRUE: GENERATE OLIGOMERS BY PLACING NEW SEGMENTS.
          IF (CHRMMT.AND.MAKEOLIGOT.AND.MAKEOLIGOSTART) THEN
-#ifdef MPI
-C        seed the random number generator with system time  + MYNODE (for MPI runs)
+#IFDEF MPI
+C        SEED THE RANDOM NUMBER GENERATOR WITH SYSTEM TIME  + MYNODE (FOR MPI RUNS)
              IF (RANDOMSEEDT) THEN
-                CALL DATE_AND_TIME(datechar,timechar,zonechar,values)
-                itime1= values(6)*60 + values(7)
-                CALL SDPRND(itime1+MYNODE)
+                CALL DATE_AND_TIME(DATECHAR,TIMECHAR,ZONECHAR,VALUES)
+                ITIME1= VALUES(6)*60 + VALUES(7)
+                CALL SDPRND(ITIME1+MYNODE)
              ENDIF
              CALL CHMAKEOLIGOMER(JP)
-             call flush(6)
-#else
+             CALL FLUSH(6)
+#ELSE
              DO JP=1,NPAR
                 CALL CHMAKEOLIGOMER(JP)
              ENDDO
-#endif
+#ENDIF
          ENDIF
       ENDIF
 
-C  Calculate the initial energy and save in EPREV
-!op226>{{{ 
-#ifdef MPI
-!op226> MPI section {{{ 
-      WRITE(MYUNIT, '(A)')  'Calculating initial energy'
+C  CALCULATE THE INITIAL ENERGY AND SAVE IN EPREV
+!OP226>{{{ 
+#IFDEF MPI
+!OP226> MPI SECTION {{{ 
+      WRITE(MYUNIT, '(A)')  'CALCULATING INITIAL ENERGY'
       EPSSAVE=EPSSPHERE
       EPSSPHERE=0.0D0
       CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
       NQTOT=NQTOT+1
-      WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'Qu ',NQ(JP),' E=',
-     1           POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',POTEL,' t=',TIME-TSTART
+      WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'QU ',NQ(JP),' E=',
+     1           POTEL,' STEPS=',ITERATIONS,' RMS=',RMS,' MARKOV E=',POTEL,' T=',TIME-TSTART
       CALL FLUSH(MYUNIT,ISTAT)
 
  
-C  EPREV saves the previous energy in the Markov chain.
-C  EBEST and JBEST record the lowest energy since the last reseeding and the
-C  step it was attained at. BESTCOORDS contains the corresponding coordinates.
+C  EPREV SAVES THE PREVIOUS ENERGY IN THE MARKOV CHAIN.
+C  EBEST AND JBEST RECORD THE LOWEST ENERGY SINCE THE LAST RESEEDING AND THE
+C  STEP IT WAS ATTAINED AT. BESTCOORDS CONTAINS THE CORRESPONDING COORDINATES.
  
       EPREV(JP)=POTEL
       EPPREV(JP)=0.0D0
@@ -301,9 +301,9 @@ C  step it was attained at. BESTCOORDS contains the corresponding coordinates.
       VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
       EPSSPHERE=EPSSAVE
 
-! Initialisation 
+! INITIALISATION 
 
-      IF (PTTMIN < 0.000001D0 ) PTTMIN = 0.000001D0 ! to avoid devision by zero
+      IF (PTTMIN < 0.000001D0 ) PTTMIN = 0.000001D0 ! TO AVOID DEVISION BY ZERO
       CTE=(LOG(PTTMAX/PTTMIN))/(NPAR-1)
       CTE=EXP(CTE)
 
@@ -318,51 +318,51 @@ C  step it was attained at. BESTCOORDS contains the corresponding coordinates.
       CALL POTENTIAL(COORDS(:,MYNODE+1),GRAD, POTEL, .TRUE., .FALSE.)
       VINIT=POTEL
 
-      WRITE(MYUNIT, '(A, 2G20.10)') 'Temperature range', TEMPTRAJ(0), TEMPTRAJ(NPAR-1)
-      WRITE(MYUNIT, '(A, G20.10)') 'For this replica T=', TEMPTRAJ(MYNODE)
-      WRITE(MYUNIT, '(A, G20.10)') 'Starting potential energy=', VINIT
+      WRITE(MYUNIT, '(A, 2G20.10)') 'TEMPERATURE RANGE', TEMPTRAJ(0), TEMPTRAJ(NPAR-1)
+      WRITE(MYUNIT, '(A, G20.10)') 'FOR THIS REPLICA T=', TEMPTRAJ(MYNODE)
+      WRITE(MYUNIT, '(A, G20.10)') 'STARTING POTENTIAL ENERGY=', VINIT
 
       RNDSEED=2002+MYNODE
       CALL SDPRND(RNDSEED)
       RANDOM=DPRAND()
-      WRITE(MYUNIT, '(A, G20.10)') 'Starting random number=', RANDOM
+      WRITE(MYUNIT, '(A, G20.10)') 'STARTING RANDOM NUMBER=', RANDOM
       WRITE(ISTR,'(I3)') JP
       TEMPCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
-      IF ((CHRMMT).AND.(.NOT.RESTORET)) CALL CHARMMDUMP(TEMPCOORDS,'initialmin.'//TRIM(ADJUSTL(ISTR)))
+      IF ((CHRMMT).AND.(.NOT.RESTORET)) CALL CHARMMDUMP(TEMPCOORDS,'INITIALMIN.'//TRIM(ADJUSTL(ISTR)))
 
-!op226>}}} 
-#else
-      WRITE(MYUNIT,'(A)') 'Calculating initial energy'
+!OP226>}}} 
+#ELSE
+      WRITE(MYUNIT,'(A)') 'CALCULATING INITIAL ENERGY'
       EPSSAVE=EPSSPHERE
       EPSSPHERE=0.0D0
       DO JP=1,NPAR
          CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
          NQTOT=NQTOT+1
          IF (NPAR.GT.1) THEN
-            WRITE(MYUNIT,'(A,I2,A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') '[',JP,']Qu ',NQ(JP),' E=',
-     1           POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',POTEL,' t=',TIME-TSTART
+            WRITE(MYUNIT,'(A,I2,A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') '[',JP,']QU ',NQ(JP),' E=',
+     1           POTEL,' STEPS=',ITERATIONS,' RMS=',RMS,' MARKOV E=',POTEL,' T=',TIME-TSTART
          ELSE
-            WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'Qu ',NQ(JP),' E=',
-     1           POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',POTEL,' t=',TIME-TSTART
+            WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'QU ',NQ(JP),' E=',
+     1           POTEL,' STEPS=',ITERATIONS,' RMS=',RMS,' MARKOV E=',POTEL,' T=',TIME-TSTART
          ENDIF
 
 
-C Added dump of the initial structure, this is very useful for flu! csw34
-      IF (CHRMMT) CALL CHARMMDUMP(COORDS,'initialmin')
+C ADDED DUMP OF THE INITIAL STRUCTURE, THIS IS VERY USEFUL FOR FLU! CSW34
+      IF (CHRMMT) CALL CHARMMDUMP(COORDS,'INITIALMIN')
 
-C     csw34> Added initial call to check_cistrans_protein to store cis/trans info for initial structure
+C     CSW34> ADDED INITIAL CALL TO CHECK_CISTRANS_PROTEIN TO STORE CIS/TRANS INFO FOR INITIAL STRUCTURE
          IF (AMBERT.AND.NOCISTRANS.AND.(.NOT.NOCISTRANSDNA).AND.(.NOT.NOCISTRANSRNA)) THEN
-            WRITE(MYUNIT,'(A)') ' mc> Storing cis/trans information for initial structure'
-            CALL check_cistrans_protein(COORDS(:,1),NATOMS,LOGDUMMY,MINOMEGA,cisarray1)
+            WRITE(MYUNIT,'(A)') ' MC> STORING CIS/TRANS INFORMATION FOR INITIAL STRUCTURE'
+            CALL CHECK_CISTRANS_PROTEIN(COORDS(:,1),NATOMS,LOGDUMMY,MINOMEGA,CISARRAY1)
          ENDIF
-C     abc> Added initial call to set_check_chiral for L/D info for initial structure
+C     ABC> ADDED INITIAL CALL TO SET_CHECK_CHIRAL FOR L/D INFO FOR INITIAL STRUCTURE
          IF (AMBERT.AND.SETCHIRAL.AND.NOCISTRANS.AND.(.NOT.NOCISTRANSDNA).AND.(.NOT.NOCISTRANSRNA)) THEN
-            WRITE(MYUNIT,'(A)') ' mc> Storing chiral information for initial structure'
-            CALL set_check_chiral(COORDS(:,1),NATOMS,LOGDUMMY,chiarray1)
+            WRITE(MYUNIT,'(A)') ' MC> STORING CHIRAL INFORMATION FOR INITIAL STRUCTURE'
+            CALL SET_CHECK_CHIRAL(COORDS(:,1),NATOMS,LOGDUMMY,CHIARRAY1)
          ENDIF 
-C  EPREV saves the previous energy in the Markov chain.
-C  EBEST and JBEST record the lowest energy since the last reseeding and the
-C  step it was attained at. BESTCOORDS contains the corresponding coordinates.
+C  EPREV SAVES THE PREVIOUS ENERGY IN THE MARKOV CHAIN.
+C  EBEST AND JBEST RECORD THE LOWEST ENERGY SINCE THE LAST RESEEDING AND THE
+C  STEP IT WAS ATTAINED AT. BESTCOORDS CONTAINS THE CORRESPONDING COORDINATES.
  
          EPREV(JP)=POTEL
          EPPREV(JP)=0.0D0
@@ -376,14 +376,14 @@ C  step it was attained at. BESTCOORDS contains the corresponding coordinates.
          VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
       ENDDO
       EPSSPHERE=EPSSAVE
-#endif
-!op226>}}} 
+#ENDIF
+!OP226>}}} 
 
-!op226> IF (THOMSONT) THEN - Thomson problem {{{
+!OP226> IF (THOMSONT) THEN - THOMSON PROBLEM {{{
       IF (THOMSONT) THEN
 !
-! Scale maximum step size for the Thomson problem according to the mean nearest-neighbour 
-! distance after the first quench.
+! SCALE MAXIMUM STEP SIZE FOR THE THOMSON PROBLEM ACCORDING TO THE MEAN NEAREST-NEIGHBOUR 
+! DISTANCE AFTER THE FIRST QUENCH.
 !
          DUMMY1=0.0D0
          DO J1=1,NATOMS
@@ -401,41 +401,41 @@ C  step it was attained at. BESTCOORDS contains the corresponding coordinates.
          DO J1=1,NPAR
             STEP(J1)=STEP(J1)*DUMMY1
          ENDDO
-         WRITE(MYUNIT, '(2(A,G20.10))') 'Maximum step size scaled by mean nearest neighbour distance of ',DUMMY1,' to ',STEP(1)
+         WRITE(MYUNIT, '(2(A,G20.10))') 'MAXIMUM STEP SIZE SCALED BY MEAN NEAREST NEIGHBOUR DISTANCE OF ',DUMMY1,' TO ',STEP(1)
       ENDIF
-!op226>}}} 
+!OP226>}}} 
 
-!op226> GMIN_out: Starting MC run ...; Temperature will ... {{{ 
+!OP226> GMIN_OUT: STARTING MC RUN ...; TEMPERATURE WILL ... {{{ 
       IF (NPAR.EQ.1) THEN
-         WRITE(MYUNIT,'(A,I10,A)') 'Starting MC run of ',NSTEPS,' steps'
+         WRITE(MYUNIT,'(A,I10,A)') 'STARTING MC RUN OF ',NSTEPS,' STEPS'
       ELSE
-         WRITE(MYUNIT,'(A,I3,A,I10,A)') 'Starting ',NPAR,' parallel MC runs of ',NSTEPS,' steps'
+         WRITE(MYUNIT,'(A,I3,A,I10,A)') 'STARTING ',NPAR,' PARALLEL MC RUNS OF ',NSTEPS,' STEPS'
       ENDIF
-      WRITE(MYUNIT,'(A,F15.8,A)') 'Temperature will be multiplied by ',SCALEFAC,' at every step'
-!op226>}}} 
+      WRITE(MYUNIT,'(A,F15.8,A)') 'TEMPERATURE WILL BE MULTIPLIED BY ',SCALEFAC,' AT EVERY STEP'
+!OP226>}}} 
 
-!op226> csw34> IF (LOCALSAMPLET.AND.AMBERT) THEN  {{{
-! csw34> Before we start BH steps, 
-! check the structure satisfies the conditions in LOCALSAMPLE if specified
-!        This is important to prevent an infinite loop occuring!
-!        Also, make sure that the ligand has been specified in movableatoms
+!OP226> CSW34> IF (LOCALSAMPLET.AND.AMBERT) THEN  {{{
+! CSW34> BEFORE WE START BH STEPS, 
+! CHECK THE STRUCTURE SATISFIES THE CONDITIONS IN LOCALSAMPLE IF SPECIFIED
+!        THIS IS IMPORTANT TO PREVENT AN INFINITE LOOP OCCURING!
+!        ALSO, MAKE SURE THAT THE LIGAND HAS BEEN SPECIFIED IN MOVABLEATOMS
       IF (LOCALSAMPLET.AND.AMBERT) THEN
          IF(NMOVABLEATOMS==0) THEN
-            WRITE(MYUNIT,*) 'must have MOVABLEATOMS specified when using LOCALSAMPLE' 
+            WRITE(MYUNIT,*) 'MUST HAVE MOVABLEATOMS SPECIFIED WHEN USING LOCALSAMPLE' 
             STOP
          ENDIF
          DISTOK=.FALSE.
          CALL A9DISTCHECK(COORDS(:,JP),DISTOK)
          IF (.NOT.DISTOK) THEN
-            WRITE(MYUNIT,*) 'initial structure violates LOCALSAMPLE conditions - exiting!'
+            WRITE(MYUNIT,*) 'INITIAL STRUCTURE VIOLATES LOCALSAMPLE CONDITIONS - EXITING!'
             STOP
          ENDIF
          DISTOK=.FALSE.
       ENDIF   
-!op226>}}} 
+!OP226>}}} 
       NSUPERCOUNT=NSUPER
 
-C  Main basin-hopping loop 
+C  MAIN BASIN-HOPPING LOOP 
 ! {{{
       DO J1=NDONE+1,NSTEPS 
          ISTEP = J1
@@ -443,19 +443,19 @@ C  Main basin-hopping loop
          CALL FLUSH(MYUNIT)
          IF (NEWJUMP) RANNJ=DPRAND()
 C
-C  ********************************* Loop over NPAR parallel runs ******************************
+C  ********************************* LOOP OVER NPAR PARALLEL RUNS ******************************
 C
-#ifdef MPI
-#else
+#IFDEF MPI
+#ELSE
          DO JP=1,NPAR 
-#endif
-!       csw34> If QUCENTRE is specified, move the centre of coordinates
-!       to (0,0,0) before taking the next step (improve this so that you
-!       can specify where to move the centre like SETCENTRE?
+#ENDIF
+!       CSW34> IF QUCENTRE IS SPECIFIED, MOVE THE CENTRE OF COORDINATES
+!       TO (0,0,0) BEFORE TAKING THE NEXT STEP (IMPROVE THIS SO THAT YOU
+!       CAN SPECIFY WHERE TO MOVE THE CENTRE LIKE SETCENTRE?
             IF (QUCENTRE) THEN 
-!       csw34> David mentioned a possible compiler bug causing problems
-!       when you just pass a part of the COORDS array so reading the
-!       right bit into TEMPCOORDS first and then back out.
+!       CSW34> DAVID MENTIONED A POSSIBLE COMPILER BUG CAUSING PROBLEMS
+!       WHEN YOU JUST PASS A PART OF THE COORDS ARRAY SO READING THE
+!       RIGHT BIT INTO TEMPCOORDS FIRST AND THEN BACK OUT.
                TEMPCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
                CALL CENTRE2(TEMPCOORDS)
                COORDS(1:3*NATOMS,JP)=TEMPCOORDS(1:3*NATOMS)
@@ -463,37 +463,37 @@ C
             IF (RIGID.AND.(BLOCK(JP).GT.0)) THEN
                IF (MOD(J1-1,BLOCK(JP)).EQ.0) THEN
                   IF (MOD((J1-1)/BLOCK(JP),2).EQ.0) THEN
-                     WRITE(MYUNIT,'(A,I6,A)') 'Starting a block of ',BLOCK(JP),' rigid body translational moves'
+                     WRITE(MYUNIT,'(A,I6,A)') 'STARTING A BLOCK OF ',BLOCK(JP),' RIGID BODY TRANSLATIONAL MOVES'
                      TMOVE(JP)=.TRUE.
                      OMOVE(JP)=.FALSE.
                   ELSE 
-                     WRITE(MYUNIT,'(A,I6,A)') 'Starting a block of ',BLOCK(JP),' rigid body angular moves'
+                     WRITE(MYUNIT,'(A,I6,A)') 'STARTING A BLOCK OF ',BLOCK(JP),' RIGID BODY ANGULAR MOVES'
                      OMOVE(JP)=.TRUE.
                      TMOVE(JP)=.FALSE.
                   ENDIF
                ENDIF
             ENDIF
 C
-C  MAM1000> The default temperature used for the MC acceptance criterion is the one derived in
-C           the initialisation section above.  MCTEMP is passed to the subroutine TRANSITION, where
-C           the acceptance/rejection decision is made.  However, individual MC moves can override
-C           this temperature by setting MCTEMP to a different value for the current step.
+C  MAM1000> THE DEFAULT TEMPERATURE USED FOR THE MC ACCEPTANCE CRITERION IS THE ONE DERIVED IN
+C           THE INITIALISATION SECTION ABOVE.  MCTEMP IS PASSED TO THE SUBROUTINE TRANSITION, WHERE
+C           THE ACCEPTANCE/REJECTION DECISION IS MADE.  HOWEVER, INDIVIDUAL MC MOVES CAN OVERRIDE
+C           THIS TEMPERATURE BY SETTING MCTEMP TO A DIFFERENT VALUE FOR THE CURRENT STEP.
             MCTEMP = TEMP(JP)
 C 
-C  Jump-moves.
+C  JUMP-MOVES.
 C 
             IF (JUMPMOVE(JP).AND.(MOD(J1,JUMPINT(JP)).EQ.0)) CALL JUMPM(RANNJ,J1,JP,EPPREV)
 C 
-C  Ordinary steps.
+C  ORDINARY STEPS.
 C 
 23          CONTINUE
 C
-C Don;t call symmetry unless the minimum in the Markov chain has changed.
-C We should really check if the minimum has changed since the last call to SYMMETRY,
-C which can be done with ABS(ELASTSYM(JP)-EPREV(JP)) if NSYMINTERVAL=1.
+C DON;T CALL SYMMETRY UNLESS THE MINIMUM IN THE MARKOV CHAIN HAS CHANGED.
+C WE SHOULD REALLY CHECK IF THE MINIMUM HAS CHANGED SINCE THE LAST CALL TO SYMMETRY,
+C WHICH CAN BE DONE WITH ABS(ELASTSYM(JP)-EPREV(JP)) IF NSYMINTERVAL=1.
 C
 C           IF (SYMMETRIZE.AND.(MOD(J1-1,NSYMINTERVAL).EQ.0).AND.(ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV)) THEN
-C           WRITE(MYUNIT,'(A,3G20.10)') 'ELASTSYM,EPREV,diff=',ELASTSYM(JP),EPREV(JP),ABS(ELASTSYM(JP)-EPREV(JP))
+C           WRITE(MYUNIT,'(A,3G20.10)') 'ELASTSYM,EPREV,DIFF=',ELASTSYM(JP),EPREV(JP),ABS(ELASTSYM(JP)-EPREV(JP))
             IF (SYMMETRIZE.AND.(MOD(NQ(JP),NSYMINTERVAL).EQ.0).AND.
      &               ((SYMMETRIZECSM).OR.(ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV))) THEN
                IF ((ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV)) NSYMCALL=0
@@ -510,30 +510,30 @@ C              IF ((.NOT.MOVESHELLT).OR.(NSURFMOVES(JP).LT.0)) THEN
 !              ELSE
 !                 CALL SYMMETRY2(JP,SCREENC,QDONE,BRUN,ITERATIONS,TIME,CHANGEDE,NSYMCALL)
 !              ENDIF
-!              WRITE(MYUNIT,'(A,I2,A,2I6)') '[',JP,']mc> NCORE: ',NCORE(1:NPAR)
-!              IF (HIT) GOTO 37 ! hit cannot change in symmetry2 
+!              WRITE(MYUNIT,'(A,I2,A,2I6)') '[',JP,']MC> NCORE: ',NCORE(1:NPAR)
+!              IF (HIT) GOTO 37 ! HIT CANNOT CHANGE IN SYMMETRY2 
 C
-C  Check for reseeding.
+C  CHECK FOR RESEEDING.
 C 
-               POTEL=EPREV(JP) ! NEWRES assumes POTEL is the energy of the current structure in COORDS
+               POTEL=EPREV(JP) ! NEWRES ASSUMES POTEL IS THE ENERGY OF THE CURRENT STRUCTURE IN COORDS
                IF (CHANGEDE.AND.NEWRESTART) THEN
                   CALL NEWRES(J1,JP,JBEST,EBEST,BESTCOORDS,EPPREV,POTEL,ITERATIONS,TIME,RCOORDS,
      1                  RMIN,RVAT,BRUN,SCREENC,QDONE,JACCPREV,NSUCCESS,NFAIL,NFAILT,NSUCCESST)
                ENDIF
-            ELSEIF (ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV) THEN ! Markov minimum has changed, but SYMMETRY not called
-               NSYMREM=0                                       ! Should therefore reset NSYMREM.
+            ELSEIF (ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV) THEN ! MARKOV MINIMUM HAS CHANGED, BUT SYMMETRY NOT CALLED
+               NSYMREM=0                                       ! SHOULD THEREFORE RESET NSYMREM.
             ENDIF
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! START OF STEP TAKING CALLS!                                                                            
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-! csw34> Coordinates are saved so that moves can be undone
+! CSW34> COORDINATES ARE SAVED SO THAT MOVES CAN BE UNDONE
 !
                   SAVECOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
-! csw34> If you want to look at the effect of moves, you can dump out
-! the structure BEFORE the move here.
-!                 CALL A9DUMPPDB(COORDS(:,JP),"beforemove")
-!                 CALL CHARMMDUMP(COORDS(:,JP),'beforemove')
+! CSW34> IF YOU WANT TO LOOK AT THE EFFECT OF MOVES, YOU CAN DUMP OUT
+! THE STRUCTURE BEFORE THE MOVE HERE.
+!                 CALL A9DUMPPDB(COORDS(:,JP),"BEFOREMOVE")
+!                 CALL CHARMMDUMP(COORDS(:,JP),'BEFOREMOVE')
 
 !
 ! CHARMM STEP TAKING
@@ -542,26 +542,26 @@ C
                   IF (CHMDT.AND.MOD(J1,CHMDFREQ).EQ.0) THEN
                      CALL CHMD(JP)
                   ELSE
-!                    CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'beforestep')
+!                    CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'BEFORESTEP')
                      IF (CHRIGIDTRANST.AND.MOD(J1,FTRANS).EQ.0) CALL MKRIGIDTRANS(JP)
                      IF (CHRIGIDROTT.AND.MOD(J1,FROT).EQ.0) CALL MKRIGIDROT(JP)
                      IF (MOD(J1,CHFREQ).EQ.0) CALL TAKESTEPCH(JP)
-! bs360: check the perturbed structure prior minimization (for debugging reasons)
-!#ifdef MPI
-!                     CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'afterstep.'//TRIM(ADJUSTL(ISTR)))
-!#else
-!                     CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'afterstep')
-!#endif
-C               seed the random number generator with system time  + MYNODE (for MPI runs)
+! BS360: CHECK THE PERTURBED STRUCTURE PRIOR MINIMIZATION (FOR DEBUGGING REASONS)
+!#IFDEF MPI
+!                     CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'AFTERSTEP.'//TRIM(ADJUSTL(ISTR)))
+!#ELSE
+!                     CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'AFTERSTEP')
+!#ENDIF
+C               SEED THE RANDOM NUMBER GENERATOR WITH SYSTEM TIME  + MYNODE (FOR MPI RUNS)
                      IF (RANDOMSEEDT) THEN
-                         CALL DATE_AND_TIME(datechar,timechar,zonechar,values)
-                         itime1= values(6)*60 + values(7)
-                         CALL SDPRND(itime1+MYNODE)
+                         CALL DATE_AND_TIME(DATECHAR,TIMECHAR,ZONECHAR,VALUES)
+                         ITIME1= VALUES(6)*60 + VALUES(7)
+                         CALL SDPRND(ITIME1+MYNODE)
                      END IF
                               
-! jmc49> only do this undoing if the steps are in Cartesians (i.e. CHNMAX <= 0.0D0), not internals, 
-!        in order to allow rigid-body movements of the frozen parts relative to each other when the moves 
-!        are in internals
+! JMC49> ONLY DO THIS UNDOING IF THE STEPS ARE IN CARTESIANS (I.E. CHNMAX <= 0.0D0), NOT INTERNALS, 
+!        IN ORDER TO ALLOW RIGID-BODY MOVEMENTS OF THE FROZEN PARTS RELATIVE TO EACH OTHER WHEN THE MOVES 
+!        ARE IN INTERNALS
                   ENDIF
 !
 ! ANISOTROPIC STEP TAKING
@@ -573,20 +573,20 @@ C               seed the random number generator with system time  + MYNODE (for
                 CALL TAKESTEPGB(JP)
 
                ELSE IF (MULTISITEPYT) THEN
-C               seed the random number generator with system time + MYNODE (for MPI runs)
+C               SEED THE RANDOM NUMBER GENERATOR WITH SYSTEM TIME + MYNODE (FOR MPI RUNS)
                   IF(RANDOMSEEDT) THEN
-                     CALL DATE_AND_TIME(datechar,timechar,zonechar,values)
-                     itime1= values(6)*60 + values(7)
-                     CALL SDPRND(itime1+MYNODE)
+                     CALL DATE_AND_TIME(DATECHAR,TIMECHAR,ZONECHAR,VALUES)
+                     ITIME1= VALUES(6)*60 + VALUES(7)
+                     CALL SDPRND(ITIME1+MYNODE)
                   END IF
                 CALL TAKESTEPMULTISITEPY(JP)
 
                ELSE IF (PYGPERIODICT.OR.PYBINARYT.OR.LJCAPSIDT) THEN
-C               seed the random number generator with system time + MYNODE (for MPI runs)
+C               SEED THE RANDOM NUMBER GENERATOR WITH SYSTEM TIME + MYNODE (FOR MPI RUNS)
                   IF(RANDOMSEEDT) THEN
-                     CALL DATE_AND_TIME(datechar,timechar,zonechar,values)
-                     itime1= values(6)*60 + values(7)
-                     CALL SDPRND(itime1+MYNODE)
+                     CALL DATE_AND_TIME(DATECHAR,TIMECHAR,ZONECHAR,VALUES)
+                     ITIME1= VALUES(6)*60 + VALUES(7)
+                     CALL SDPRND(ITIME1+MYNODE)
                   END IF
                   IF(SWAPMOVEST) THEN
                      CALL TAKESTEPSWAPMOVES(JP)
@@ -601,7 +601,7 @@ C               seed the random number generator with system time + MYNODE (for 
 !
 ! MARK'S MIXED CLUSTER STEP TAKING
 !
-C     MAM1000 >  Charged/neutral particle swaps for LJ+Coulomb mixed clusters
+C     MAM1000 >  CHARGED/NEUTRAL PARTICLE SWAPS FOR LJ+COULOMB MIXED CLUSTERS
                ELSE IF (LJCOULT) THEN
                   RANDOM=DPRAND()
                   IF (RANDOM < COULSWAP) THEN
@@ -634,17 +634,17 @@ C     MAM1000 >  Charged/neutral particle swaps for LJ+Coulomb mixed clusters
                   LOCALCOUNT=0
                   DO WHILE (.NOT.DISTOK)
                      LOCALCOUNT=LOCALCOUNT+1
-                     IF (LIGMOVET.AND.MOD(J1,ligmovefreq).EQ.0) THEN
-                        doligmove=.TRUE.
+                     IF (LIGMOVET.AND.MOD(J1,LIGMOVEFREQ).EQ.0) THEN
+                        DOLIGMOVE=.TRUE.
                      ENDIF
-                     IF(GROUPROTT.AND.MOD(J1,grouprotfreq).EQ.0) THEN
-                        dogrouprot=.TRUE.
+                     IF(GROUPROTT.AND.MOD(J1,GROUPROTFREQ).EQ.0) THEN
+                        DOGROUPROT=.TRUE.
                      ENDIF
                      CALL TAKESTEPAMBER(JP,COORDS(:,JP),MOVABLEATOMLIST,NMOVABLEATOMS,LIGMOVET,MDSTEPT,RANDOMSEEDT)
-                     doligmove=.FALSE.
-                     dogrouprot=.FALSE.
+                     DOLIGMOVE=.FALSE.
+                     DOGROUPROT=.FALSE.
 C
-C  seed the random number generator with system time + MYNODE (for MPI runs)
+C  SEED THE RANDOM NUMBER GENERATOR WITH SYSTEM TIME + MYNODE (FOR MPI RUNS)
 C
                      IF (RANDOMSEEDT) THEN
                         CALL DATE_AND_TIME(DATECHAR,TIMECHAR,ZONECHAR,VALUES)
@@ -654,11 +654,11 @@ C
                      IF (AMCHPMAX.EQ.0) THEN
                         CALL TAKESTEP(JP)
                      ELSE
-C     msb50> New AMBER dihedral move routine
+C     MSB50> NEW AMBER DIHEDRAL MOVE ROUTINE
                         CALL TAKESTEPAMM(COORDS(:,JP), DEBUG, STEP(JP))
                      ENDIF
-C     csw34> Check distances for groups defined in movableatoms file
-C            If A->B > ABTHRESH or A->C > ACTHRESH, the step is discarded and we try again 
+C     CSW34> CHECK DISTANCES FOR GROUPS DEFINED IN MOVABLEATOMS FILE
+C            IF A->B > ABTHRESH OR A->C > ACTHRESH, THE STEP IS DISCARDED AND WE TRY AGAIN 
                      IF (LOCALSAMPLET) THEN
                         CALL A9DISTCHECK(COORDS(:,JP),DISTOK)
                         IF (.NOT.DISTOK) COORDS(:,JP)=SAVECOORDS(:)
@@ -671,15 +671,15 @@ C            If A->B > ABTHRESH or A->C > ACTHRESH, the step is discarded and we
 !
                ELSE
  
-C  These coordinates are overwritten if we try to call MPI_IPROBE
+C  THESE COORDINATES ARE OVERWRITTEN IF WE TRY TO CALL MPI_IPROBE
 C
 C                 WRITE(MYUNIT,'(I6)') NATOMS
-C                 WRITE(MYUNIT,'(A,G20.10)') 'eprev=',EPREV
+C                 WRITE(MYUNIT,'(A,G20.10)') 'EPREV=',EPREV
 C                 WRITE(MYUNIT,'(A,3G20.10)') ('LA ',COORDS(3*(J3-1)+1:3*(J3-1)+3,JP),J3=1,NATOMS)
                   CALL TAKESTEP(JP)
                ENDIF
-! Restore atom coordinates if atom is FROZEN or DONTMOVE as long as
-! we're not taking internal coordinate moves in CHARMM or AMBER
+! RESTORE ATOM COORDINATES IF ATOM IS FROZEN OR DONTMOVE AS LONG AS
+! WE'RE NOT TAKING INTERNAL COORDINATE MOVES IN CHARMM OR AMBER
                IF ((CHNMAX.LE.0.0D0).AND.(AMCHNMAX.LE.0.0D0)) THEN
                   IF(FREEZE) THEN
                      DO J2=1,NATOMS
@@ -689,7 +689,7 @@ C                 WRITE(MYUNIT,'(A,3G20.10)') ('LA ',COORDS(3*(J3-1)+1:3*(J3-1)+
                      ENDDO
                   ENDIF
 !
-! Same for DONTMOVE atoms
+! SAME FOR DONTMOVE ATOMS
 ! 
                   IF(DONTMOVET) THEN
                      DO J2=1,NATOMS
@@ -704,23 +704,23 @@ C                 WRITE(MYUNIT,'(A,3G20.10)') ('LA ',COORDS(3*(J3-1)+1:3*(J3-1)+
 ! END OF STEP TAKING CALLS!
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-! csw34> If you want to look at the effect of moves, you can dump out
-! the structure AFTER the move here.
-!              CALL A9DUMPPDB(COORDS(:,JP),"aftermove")
-!              CALL CHARMMDUMP(COORDS(:,JP),"aftermove")
+! CSW34> IF YOU WANT TO LOOK AT THE EFFECT OF MOVES, YOU CAN DUMP OUT
+! THE STRUCTURE AFTER THE MOVE HERE.
+!              CALL A9DUMPPDB(COORDS(:,JP),"AFTERMOVE")
+!              CALL CHARMMDUMP(COORDS(:,JP),"AFTERMOVE")
             
 ! KEYWORD <DUMPSTEPS> BLOCK            
-! csw34> Dump the coordinates after every step in AMBER pdb and rst format 
+! CSW34> DUMP THE COORDINATES AFTER EVERY STEP IN AMBER PDB AND RST FORMAT 
                   IF (DUMPSTEPST) THEN
                       WRITE(QUENCHNUM,*) NQ(JP)
-                      QUNAME='afterstep'//TRIM(ADJUSTL(QUENCHNUM))//'.rst'
+                      QUNAME='AFTERSTEP'//TRIM(ADJUSTL(QUENCHNUM))//'.RST'
                       OPEN(UNIT=20,FILE=QUNAME,STATUS='UNKNOWN')  
-                      WRITE(20,'(a20)') QUNAME
-                      WRITE(20,'(i5)') NATOMS
-                      WRITE(20,'(6f12.7)') COORDS(:,JP) 
+                      WRITE(20,'(A20)') QUNAME
+                      WRITE(20,'(I5)') NATOMS
+                      WRITE(20,'(6F12.7)') COORDS(:,JP) 
                       CLOSE(20)
-! csw34> Dump to PDB using routine in amberinterface.f
-                      QUNAME='afterstep'//TRIM(ADJUSTL(QUENCHNUM))
+! CSW34> DUMP TO PDB USING ROUTINE IN AMBERINTERFACE.F
+                      QUNAME='AFTERSTEP'//TRIM(ADJUSTL(QUENCHNUM))
                       CALL A9DUMPPDB(COORDS(:,JP),QUNAME)
                   ENDIF
 ! END OF KEYWORD <DUMPSTEPS> BLOCK
@@ -730,12 +730,12 @@ C                 WRITE(MYUNIT,'(A,3G20.10)') ('LA ',COORDS(3*(J3-1)+1:3*(J3-1)+
                CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)  
                NQTOT=NQTOT+1
  
-C  Check for results of taboo list. SELFT is set in taboo.
+C  CHECK FOR RESULTS OF TABOO LIST. SELFT IS SET IN TABOO.
  
                IF (SELFT) THEN
                   CALL MYRESET(JP,NATOMS,NPAR,NSEED)
                   IF (DEBUG) THEN
-                     WRITE(MYUNIT,'(A)') 'Taboo list:'
+                     WRITE(MYUNIT,'(A)') 'TABOO LIST:'
                      WRITE(MYUNIT,'(6F20.10)') (ESAVE(J2,1),J2=1,NT(1))
                      WRITE(MYUNIT,73) JP,J1,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
 73                   FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' TABOO')
@@ -744,17 +744,17 @@ C  Check for results of taboo list. SELFT is set in taboo.
                ENDIF
    
 C
-C  Output
+C  OUTPUT
 C
                IF (NPAR.GT.1) THEN
-                  WRITE(MYUNIT,'(A,I2,A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') '[',JP,']Qu ',NQ(JP),' E=',
-     1                 POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',EPREV(JP),' t=',TIME-TSTART
+                  WRITE(MYUNIT,'(A,I2,A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') '[',JP,']QU ',NQ(JP),' E=',
+     1                 POTEL,' STEPS=',ITERATIONS,' RMS=',RMS,' MARKOV E=',EPREV(JP),' T=',TIME-TSTART
                ELSE
-                  WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'Qu ',NQ(JP),' E=',
-     1                 POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',EPREV(JP),' t=',TIME-TSTART
+                  WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'QU ',NQ(JP),' E=',
+     1                 POTEL,' STEPS=',ITERATIONS,' RMS=',RMS,' MARKOV E=',EPREV(JP),' T=',TIME-TSTART
 
-!     mp466>  writes structure and energetic data at regular increments
-!             to *plot and movie files for AMH potential
+!     MP466>  WRITES STRUCTURE AND ENERGETIC DATA AT REGULAR INCREMENTS
+!             TO *PLOT AND MOVIE FILES FOR AMH POTENTIAL
 !
                   IF ((MOD(J1,NINT_AMH).EQ.0).AND.AMHT) THEN
 
@@ -766,7 +766,7 @@ C
                            PRCORD(III,1,1,1) = COORDS(9*(III-1)+1- GLY_COUNT*3,JP) !  CA X
                            PRCORD(III,2,1,1) = COORDS(9*(III-1)+2- GLY_COUNT*3,JP) !  CA Y
                            PRCORD(III,3,1,1) = COORDS(9*(III-1)+3- GLY_COUNT*3,JP) !  CA Z
-!    SWAP  CA for CB
+!    SWAP  CA FOR CB
                            PRCORD(III,1,1,2) = COORDS(9*(III-1)+1- GLY_COUNT*3,JP) !  CB X
                            PRCORD(III,2,1,2) = COORDS(9*(III-1)+2- GLY_COUNT*3,JP) !  CB Y
                            PRCORD(III,3,1,2) = COORDS(9*(III-1)+3- GLY_COUNT*3,JP) !  CB Z
@@ -788,54 +788,54 @@ C
                      ENDDO
 
                      WRITE(OMOVI,683)1,SNAPCOUNT,1,TEMP(JP),1
-683                  FORMAT(3(i6,1x),f8.4,1x,i5,' stuct snap t T Tid')
+683                  FORMAT(3(I6,1X),F8.4,1X,I5,' STUCT SNAP T T TID')
 
                      DO  I500=1,NMRES
                          WRITE(OMOVI,332)(PRCORD(I500,I2,1,1),I2=1,3),(PRCORD(I500,I2,1,2),I2=1,3),(PRCORD(I500,I2,1,3),I2=1,3)
                      ENDDO
-332                  FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1x))
+332                  FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1X))
 
                      CALL E_WRITE(AVEP(:,:,:),TEMP(JP),NUMPRO,SNAPCOUNT)
                   ENDIF  !                  IF (MOD(J1,NINT_AMH).EQ.0)
                ENDIF     !                  IF (NPAR.GT.1)
                CALL FLUSH(MYUNIT)
 
-C  RMS compared to reference structure 'compare'
+C  RMS COMPARED TO REFERENCE STRUCTURE 'COMPARE'
           IF (RMST.AND.CHRMMT) THEN
              CALL CHRMS(JP,RMSD)
              IF (DEBUG) WRITE(MYUNIT,'(A,F15.5)')'RMSD = ',RMSD
              IF (RMSD.LE.RMSLIMIT) CALL SAVERMS(JP,POTEL,RMSD)
 C                NRMS=NRMS+1
 C                WRITE(CNRMS,'(I6)') NRMS
-C                CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'rms.'//TRIM(ADJUSTL(CNRMS)))
-C                OPEN(UNIT=20,FILE='rms.'//TRIM(ADJUSTL(CNRMS)),POSITION='APPEND',STATUS='OLD')
-C                WRITE(20,'(A,I6,A,F15.5,A,F15.5)') '*   Qu ',NQ(JP),' E=',POTEL,' RMSD=',RMSD
+C                CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'RMS.'//TRIM(ADJUSTL(CNRMS)))
+C                OPEN(UNIT=20,FILE='RMS.'//TRIM(ADJUSTL(CNRMS)),POSITION='APPEND',STATUS='OLD')
+C                WRITE(20,'(A,I6,A,F15.5,A,F15.5)') '*   QU ',NQ(JP),' E=',POTEL,' RMSD=',RMSD
 C                CLOSE(20)
 C            ENDIF
           ENDIF
 
 !
-!     csw34> PAIRDIST prints the distance between specified atom pairs
-!     after each quench. 
+!     CSW34> PAIRDIST PRINTS THE DISTANCE BETWEEN SPECIFIED ATOM PAIRS
+!     AFTER EACH QUENCH. 
 !
           IF (PAIRDISTT) THEN
-!     Write end of previous line as using ADVANCE="NO"
+!     WRITE END OF PREVIOUS LINE AS USING ADVANCE="NO"
                 WRITE(MYPUNIT,*) " "
-!     Write current quench number
+!     WRITE CURRENT QUENCH NUMBER
                 WRITE(MYPUNIT,'(I10)',ADVANCE="NO") NQ(JP)
-!     For each pair, assign ATOM1 and ATOM2 arrays containing coordinates
+!     FOR EACH PAIR, ASSIGN ATOM1 AND ATOM2 ARRAYS CONTAINING COORDINATES
              DO PAIRCOUNTER=1,NPAIRS
                 ATOM1(:)=COORDS(3*PAIRDIST(PAIRCOUNTER,1)-2:3*PAIRDIST(PAIRCOUNTER,1),JP)
                 ATOM2(:)=COORDS(3*PAIRDIST(PAIRCOUNTER,2)-2:3*PAIRDIST(PAIRCOUNTER,2),JP)
-!     Call PAIRDISTANCE with (x,y,z) for each atom
+!     CALL PAIRDISTANCE WITH (X,Y,Z) FOR EACH ATOM
                 WRITE(MYPUNIT,'(F10.4)',ADVANCE="NO") PAIRDISTANCE(ATOM1,ATOM2) 
              ENDDO
              FLUSH(MYPUNIT)
           ENDIF
           
 !
-!     csw34> TRACKDATA keyword prints the quench energy, markov energy
-!     and energy of the current lowest minimum to files for viewing during a run. 
+!     CSW34> TRACKDATA KEYWORD PRINTS THE QUENCH ENERGY, MARKOV ENERGY
+!     AND ENERGY OF THE CURRENT LOWEST MINIMUM TO FILES FOR VIEWING DURING A RUN. 
 !
           IF (TRACKDATAT) THEN
              WRITE(MYEUNIT,'(I10,F20.10)') J1,POTEL
@@ -849,9 +849,9 @@ C            ENDIF
                 CALL FLUSH(3999)
              ENDIF
 !
-!     csw34> if RMS is also specified, prints the RMSD from the
-!     comparison structure to the file 'rmsd'. Which RMSD depends on the
-!     final arguement of the RMS keyword - see documentation!
+!     CSW34> IF RMS IS ALSO SPECIFIED, PRINTS THE RMSD FROM THE
+!     COMPARISON STRUCTURE TO THE FILE 'RMSD'. WHICH RMSD DEPENDS ON THE
+!     FINAL ARGUEMENT OF THE RMS KEYWORD - SEE DOCUMENTATION!
 !
              IF (RMST.AND.CHRMMT) THEN
                 WRITE(4428,'(I10,F15.5)') NQ(JP),RMSD
@@ -859,13 +859,13 @@ C            ENDIF
              ENDIF
           ENDIF
 
-C DAESTAT keyword prints two files :
-C stat.all which contains all quenches and their energies
-C stat.acc which contains only accepted quenches and their energies
-C used to analyse how many new minima are being found
+C DAESTAT KEYWORD PRINTS TWO FILES :
+C STAT.ALL WHICH CONTAINS ALL QUENCHES AND THEIR ENERGIES
+C STAT.ACC WHICH CONTAINS ONLY ACCEPTED QUENCHES AND THEIR ENERGIES
+C USED TO ANALYSE HOW MANY NEW MINIMA ARE BEING FOUND
  
             IF (DAESTAT) THEN
-               PRINT*,'DAESTAT block in mc.f not implemented'
+               PRINT*,'DAESTAT BLOCK IN MC.F NOT IMPLEMENTED'
                STOP
 C              CALL CALCMIND(JP,MIND)
 C              CALL CALCDIHE(DIHE)
@@ -873,7 +873,7 @@ C              WRITE(MYUNIT,'(A,I6,3F20.10)') 'NQALL POTEL',NQ(JP),POTEL,MIND,DI
 C              WRITE(36,'(I6,3F20.10)') NQ(JP),POTEL,MIND,DIHE
             ENDIF
  
-C  Check for reseeding.
+C  CHECK FOR RESEEDING.
  
             IF (NEWRESTART.AND.(.NOT.SEEDT)) THEN 
               CALL NEWRES(J1,JP,JBEST,EBEST,BESTCOORDS,EPPREV,POTEL,ITERATIONS,TIME,RCOORDS,RMIN,RVAT,BRUN,SCREENC,QDONE,
@@ -881,12 +881,12 @@ C  Check for reseeding.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DJW
 !             IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS,JP))
 !             COORDSO(1:3*(NATOMS-NSEED),JP)=COORDS(1:3*(NATOMS-NSEED),JP)
-!             WRITE(MYUNIT,'(A,2G20.10)'),'mc> coordso changed: ',COORDSO(1,JP),COORDS(1,JP)     
+!             WRITE(MYUNIT,'(A,2G20.10)'),'MC> COORDSO CHANGED: ',COORDSO(1,JP),COORDS(1,JP)     
 !             VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DJW
             ENDIF
             IF (STAY) THEN
-            ELSE IF (EVAP .and. .not.evapreject) THEN
+            ELSE IF (EVAP .AND. .NOT.EVAPREJECT) THEN
                NFAIL(JP)=NFAIL(JP)+1
                CALL MYRESET(JP,NATOMS,NPAR,NSEED)
                IF (DEBUG) THEN
@@ -896,58 +896,58 @@ C  Check for reseeding.
             ELSE
                ATEST=.TRUE. 
 
-C       csw34> Test for cold fusion in mylbfgs.f - if so, set ATEST to .FALSE.
+C       CSW34> TEST FOR COLD FUSION IN MYLBFGS.F - IF SO, SET ATEST TO .FALSE.
                IF (COLDFUSION) THEN
                   ATEST=.FALSE.
                ENDIF
                COLDFUSION=.FALSE.
-C       csw34> New chirality and peptide bond cis/trans checking block
-C              These checks are turned ON my default for both AMBER and
-C              CHARMM and can be disabled with ALLOWCISTRANS and 
-C              NOCHIRALCHECKS in data. IF using DNA or RNA in AMBER,
-C              you should use NOCISTRANSDNA or NOCISTRANSRNA.
+C       CSW34> NEW CHIRALITY AND PEPTIDE BOND CIS/TRANS CHECKING BLOCK
+C              THESE CHECKS ARE TURNED ON MY DEFAULT FOR BOTH AMBER AND
+C              CHARMM AND CAN BE DISABLED WITH ALLOWCISTRANS AND 
+C              NOCHIRALCHECKS IN DATA. IF USING DNA OR RNA IN AMBER,
+C              YOU SHOULD USE NOCISTRANSDNA OR NOCISTRANSRNA.
 
-C       csw34> First check is for inverted CA or sidechain (CB) centres
+C       CSW34> FIRST CHECK IS FOR INVERTED CA OR SIDECHAIN (CB) CENTRES
                IF (CHECKCHIRALITY.AND.ATEST) THEN
                   IF (CHRMMT) THEN
                      TEMPCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
                      CALL CHECKCHIRAL(TEMPCOORDS,CHIRALFAIL)
                   ENDIF
                   IF (AMBERT) THEN 
-C       csw34> CHIRALFAIL must be reset, it is not in the AMBER routine
+C       CSW34> CHIRALFAIL MUST BE RESET, IT IS NOT IN THE AMBER ROUTINE
                      CHIRALFAIL=.FALSE.
-C       csw34> Call Szilard's routine in amberinterface.f
-C       abc> Edit for set_check_chiral, check current chiral indicies against initial
+C       CSW34> CALL SZILARD'S ROUTINE IN AMBERINTERFACE.F
+C       ABC> EDIT FOR SET_CHECK_CHIRAL, CHECK CURRENT CHIRAL INDICIES AGAINST INITIAL
                      IF(SETCHIRAL) THEN
-                       CALL set_check_chiral(COORDS(:,JP),NATOMS,GOODSTRUCTURE,chiarray2)               
+                       CALL SET_CHECK_CHIRAL(COORDS(:,JP),NATOMS,GOODSTRUCTURE,CHIARRAY2)               
                        DO J5=1,NATOMS
                          IF ((CHIARRAY1(J5)-CHIARRAY2(J5))/=0) THEN
-                           WRITE(MYUNIT,*) ' mc> inverted chirality with respect to initial structure'
+                           WRITE(MYUNIT,*) ' MC> INVERTED CHIRALITY WITH RESPECT TO INITIAL STRUCTURE'
                            CHIRALFAIL=.TRUE.
                          ENDIF
                        ENDDO
                      ELSE
-                       CALL check_chirality(COORDS(:,JP),NATOMS,GOODSTRUCTURE) 
+                       CALL CHECK_CHIRALITY(COORDS(:,JP),NATOMS,GOODSTRUCTURE) 
                        IF (.NOT.(GOODSTRUCTURE)) CHIRALFAIL=.TRUE.
                      ENDIF
                   ENDIF
-C       csw34> ATEST is the acceptance test variable. If a centre has
-C              been inverted, the step is rejected.
+C       CSW34> ATEST IS THE ACCEPTANCE TEST VARIABLE. IF A CENTRE HAS
+C              BEEN INVERTED, THE STEP IS REJECTED.
                   IF (CHIRALFAIL) THEN
                      ATEST=.FALSE.
-                     WRITE(MYUNIT,*) ' mc> CHIRALITY CHECK FAILED - discarding structure'
+                     WRITE(MYUNIT,*) ' MC> CHIRALITY CHECK FAILED - DISCARDING STRUCTURE'
                   ENDIF
                ENDIF
-C       csw34> As before, but this time checking for trans->cis peptide
-C              bonds. The deformation threshold defaults to 150 degrees
-C              but can be set with NOCISTRANS
+C       CSW34> AS BEFORE, BUT THIS TIME CHECKING FOR TRANS->CIS PEPTIDE
+C              BONDS. THE DEFORMATION THRESHOLD DEFAULTS TO 150 DEGREES
+C              BUT CAN BE SET WITH NOCISTRANS
                IF (NOCISTRANS.AND.ATEST) THEN
                   IF (CHRMMT) THEN
                      TEMPCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
                      CALL CHECKOMEGA(TEMPCOORDS,AMIDEFAIL)
                   ENDIF
                   IF (AMBERT) THEN
-C       csw34> As with CHIRALFAIL, AMIDEFAIL needs resetting
+C       CSW34> AS WITH CHIRALFAIL, AMIDEFAIL NEEDS RESETTING
                      AMIDEFAIL=.FALSE.
                      IF (NOCISTRANSDNA) THEN
                         CALL CHECK_CISTRANS_DNA(COORDS(:,JP),NATOMS,ZSYM,GOODSTRUCTURE)
@@ -956,10 +956,10 @@ C       csw34> As with CHIRALFAIL, AMIDEFAIL needs resetting
                         CALL CHECK_CISTRANS_RNA(COORDS(:,JP),NATOMS,ZSYM,GOODSTRUCTURE)
                         IF (.NOT.(GOODSTRUCTURE)) AMIDEFAIL=.TRUE.
                      ELSE
-                        CALL check_cistrans_protein(COORDS(:,JP),NATOMS,GOODSTRUCTURE,MINOMEGA,cisarray2)
+                        CALL CHECK_CISTRANS_PROTEIN(COORDS(:,JP),NATOMS,GOODSTRUCTURE,MINOMEGA,CISARRAY2)
                         DO J5=1,NATOMS
                           IF ((CISARRAY1(J5)-CISARRAY2(J5))/=0) THEN
-                             WRITE(*,'(A,I6)') 'cis-trans isomerisation of a peptide bond detected involving atom ', J5
+                             WRITE(*,'(A,I6)') 'CIS-TRANS ISOMERISATION OF A PEPTIDE BOND DETECTED INVOLVING ATOM ', J5
                              AMIDEFAIL=.TRUE.
                           ENDIF
                         ENDDO
@@ -967,40 +967,40 @@ C       csw34> As with CHIRALFAIL, AMIDEFAIL needs resetting
                   ENDIF
                   IF (AMIDEFAIL) THEN
                      ATEST=.FALSE.
-                     WRITE(MYUNIT,*) 'AMIDE BOND CHECK FAILED - discarding structure'
+                     WRITE(MYUNIT,*) 'AMIDE BOND CHECK FAILED - DISCARDING STRUCTURE'
                   ENDIF
                ENDIF
-C     csw34> Dumping every quench in AMBER9 format - only dumps if no chiral problems found 
-C  Only for AMBER! DJW Otherwise we get the cis-trans message for every other potential!
+C     CSW34> DUMPING EVERY QUENCH IN AMBER9 FORMAT - ONLY DUMPS IF NO CHIRAL PROBLEMS FOUND 
+C  ONLY FOR AMBER! DJW OTHERWISE WE GET THE CIS-TRANS MESSAGE FOR EVERY OTHER POTENTIAL!
                IF (AMBERT) THEN
-C     csw34> Calculate interaction energy to residue specified in the AMBGMINintE.sh script
+C     CSW34> CALCULATE INTERACTION ENERGY TO RESIDUE SPECIFIED IN THE AMBGMININTE.SH SCRIPT
                   IF (A9INTET.AND.ATEST) THEN
                      CALL A9INTE(COORDS(:,JP),INTE)
                      CALL A9INTESAVEIT(INTE,COORDS(:,JP),JP)
                      CALL A9INTEDUMPLOWEST()
-                     IF (DEBUG) WRITE(MYUNIT,*) 'intE=',INTE
+                     IF (DEBUG) WRITE(MYUNIT,*) 'INTE=',INTE
                      IF (TRACKDATAT) THEN
                         WRITE(3998,'(I10,G20.10)') NQ(JP),INTE
                         CALL FLUSH(3998)
                      ENDIF
                   ENDIF
-C     csw34> Dump the quench coordinates in AMBER pdb and rst format if DUMPQ is present and chirality checks satisfied
+C     CSW34> DUMP THE QUENCH COORDINATES IN AMBER PDB AND RST FORMAT IF DUMPQ IS PRESENT AND CHIRALITY CHECKS SATISFIED
                   IF (DUMPQUT.AND.ATEST) THEN
                       WRITE(QUENCHNUM,*) NQ(JP)
-                      QUNAME='quench'//TRIM(ADJUSTL(QUENCHNUM))//'.rst'
+                      QUNAME='QUENCH'//TRIM(ADJUSTL(QUENCHNUM))//'.RST'
                       OPEN(UNIT=20,FILE=QUNAME,STATUS='UNKNOWN')  
-                      WRITE(20,'(a20)') QUNAME
-                      WRITE(20,'(i5)') NATOMS
-                      WRITE(20,'(6f12.7)') COORDS(:,JP) 
+                      WRITE(20,'(A20)') QUNAME
+                      WRITE(20,'(I5)') NATOMS
+                      WRITE(20,'(6F12.7)') COORDS(:,JP) 
                       CLOSE(20)
-C     csw34> Dump to PDB using routine in amberinterface.f
-                     QUNAME='quench'//TRIM(ADJUSTL(QUENCHNUM))
+C     CSW34> DUMP TO PDB USING ROUTINE IN AMBERINTERFACE.F
+                     QUNAME='QUENCH'//TRIM(ADJUSTL(QUENCHNUM))
                      CALL A9DUMPPDB(COORDS(:,JP),QUNAME)
                   ELSEIF (DUMPQUT) THEN
-                      WRITE(*,'(A,I6)') 'DUMPQU> chirality/cis-trans problem detected, not dumping quench ',NQ(JP)
+                      WRITE(*,'(A,I6)') 'DUMPQU> CHIRALITY/CIS-TRANS PROBLEM DETECTED, NOT DUMPING QUENCH ',NQ(JP)
                   ENDIF
                ENDIF
-C     csw34> Check to see if LOCALSAMPLE constraints have been violated - if they have, reject the step
+C     CSW34> CHECK TO SEE IF LOCALSAMPLE CONSTRAINTS HAVE BEEN VIOLATED - IF THEY HAVE, REJECT THE STEP
                IF (LOCALSAMPLET) THEN
                   DISTOK=.FALSE.
                   CALL A9DISTCHECK(COORDS(:,JP),DISTOK)
@@ -1012,42 +1012,42 @@ C     csw34> Check to see if LOCALSAMPLE constraints have been violated - if the
                   CALL TRANSITION(POTEL,EPREV(JP),ATEST,JP,RANDOM,MCTEMP)
                ENDIF
 !
-!  Sanity check to make sure the Markov energy agrees with COORDSO. 
-!  Stop if not true.
+!  SANITY CHECK TO MAKE SURE THE MARKOV ENERGY AGREES WITH COORDSO. 
+!  STOP IF NOT TRUE.
 !
                IF (DEBUG.OR.CHECKMARKOVT) THEN
                   CALL POTENTIAL(COORDSO(:,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
                   IF (ABS(OPOTEL-EPREV(JP)).GT.ECONV) THEN
                      IF (EVAP) THEN
-                        WRITE(MYUNIT,'(3(A,G20.10))') 'mc> WARNING - energy for saved coordinates ',OPOTEL,
-     &                     ' differs from Markov energy ',EPREV(JP),' because an atom moved outside the container'
+                        WRITE(MYUNIT,'(3(A,G20.10))') 'MC> WARNING - ENERGY FOR SAVED COORDINATES ',OPOTEL,
+     &                     ' DIFFERS FROM MARKOV ENERGY ',EPREV(JP),' BECAUSE AN ATOM MOVED OUTSIDE THE CONTAINER'
                      ELSE
-                        WRITE(MYUNIT,'(2(A,G20.10))') 'mc> ERROR - energy for coordinates in COORDSO=',OPOTEL,
-     &                                                 ' but Markov energy=',EPREV(JP)
+                        WRITE(MYUNIT,'(2(A,G20.10))') 'MC> ERROR - ENERGY FOR COORDINATES IN COORDSO=',OPOTEL,
+     &                                                 ' BUT MARKOV ENERGY=',EPREV(JP)
                         STOP
                      ENDIF
                   ENDIF
                ENDIF
-C Accept or reject step. If the quench did not converge then allow a
-C potenial move, but count it as a rejection in terms of NSUCCESS and
-C NFAIL. This way we will accept a lower minimum if found, but the steps won;t become so big.
-C However, for TIP5P some cold fusion events that had not actually reached the threshold for
-C rejection were actually accepted. Must prevent this!
+C ACCEPT OR REJECT STEP. IF THE QUENCH DID NOT CONVERGE THEN ALLOW A
+C POTENIAL MOVE, BUT COUNT IT AS A REJECTION IN TERMS OF NSUCCESS AND
+C NFAIL. THIS WAY WE WILL ACCEPT A LOWER MINIMUM IF FOUND, BUT THE STEPS WON;T BECOME SO BIG.
+C HOWEVER, FOR TIP5P SOME COLD FUSION EVENTS THAT HAD NOT ACTUALLY REACHED THE THRESHOLD FOR
+C REJECTION WERE ACTUALLY ACCEPTED. MUST PREVENT THIS!
                IF (ATEST) THEN
-#ifdef MPI
+#IFDEF MPI
 		  IF (DEBUG) THEN
                      WRITE(MYUNIT,334) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
 334                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')
                   ENDIF
-#else
+#ELSE
                   IF (DEBUG) THEN
                      WRITE(MYUNIT,34) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
 34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')
                   ENDIF
-#endif
+#ENDIF
                   IF ((J1-JACCPREV.GT.NRELAX).AND.ABS(POTEL-EPREV(JP)).GT.ECONV) THEN
 C                    NRELAX=J1-JACCPREV
-C                    IF (RESTART) WRITE(MYUNIT,'(A,I6,A)') ' relaxation time set to ',NRELAX,' steps'
+C                    IF (RESTART) WRITE(MYUNIT,'(A,I6,A)') ' RELAXATION TIME SET TO ',NRELAX,' STEPS'
                      JACCPREV=J1
                   ENDIF
                   IF (QDONE.EQ.1) THEN
@@ -1068,64 +1068,64 @@ C                    IF (RESTART) WRITE(MYUNIT,'(A,I6,A)') ' relaxation time set
                   ENDIF
                ENDIF
             ENDIF
-C           WRITE(MYUNIT,'(A,4F20.10)') 'Q4 values ',QS,QF,QSTART,QFINISH
+C           WRITE(MYUNIT,'(A,4F20.10)') 'Q4 VALUES ',QS,QF,QSTART,QFINISH
 C
-C  Dump coordinates and energy if another run is attempting to jump to this one.
+C  DUMP COORDINATES AND ENERGY IF ANOTHER RUN IS ATTEMPTING TO JUMP TO THIS ONE.
 C
             IF ((NPAR.GT.1).AND.(.NOT.NEWJUMP)) CALL DUMPJ(JP,JUMPTO,NPAR,COORDS(1:3*NATOMS,1:NPAR),NATOMS,EPREV)
 C
-C  If RESTART then reseed if we haven t accepted a step in twice the relaxation time.
+C  IF RESTART THEN RESEED IF WE HAVEN T ACCEPTED A STEP IN TWICE THE RELAXATION TIME.
 C
             IF (RESTART.AND.(J1-JACCPREV.GT.1.1D0*NRELAX)) CALL REST(ITERATIONS,TIME,J1,RCOORDS,RMIN,RVAT,JACCPREV)
 C
-C  Check the acceptance ratio.
+C  CHECK THE ACCEPTANCE RATIO.
 C 
             IF ((MOD(J1,NACCEPT).EQ.0).AND.(NSEED.EQ.0).AND.(.NOT.STAY)) CALL ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
 
             TEMP(JP)=TEMP(JP)*SCALEFAC
-#ifdef MPI
+#IFDEF MPI
 !           CALL MPI_REDUCE(HIT,HITANY,1,MPI_LOGICAL,0,MPI_COMM_WORLD, MPIERR)
-!           WRITE(MYUNIT,'(A,I6,2L5)') 'mc> JP,HIT,HITANY=',JP,HIT,HITANY
+!           WRITE(MYUNIT,'(A,I6,2L5)') 'MC> JP,HIT,HITANY=',JP,HIT,HITANY
 !           HIT=HITANY
 !           IF (HIT) THEN
 !              DO J3=0,NPAR-1
 !                 IF (J3.EQ.MYNODE) CYCLE
 !                 CALL MPI_SEND(HIT,1,MPI_LOGICAL,J3,999,MPI_COMM_WORLD,MPIERR)
 !              ENDDO
-!              CALL SYSTEM_SUBR('echo hit > hit',ISTAT)
+!              CALL SYSTEM_SUBR('ECHO HIT > HIT',ISTAT)
 !              GOTO 37
 !           ELSE
 !
-! Calling this MPI routine overwrites memory in both LAM and MPICH. No idea why.
+! CALLING THIS MPI ROUTINE OVERWRITES MEMORY IN BOTH LAM AND MPICH. NO IDEA WHY.
 !
 !              CALL MPI_IPROBE(MPI_ANY_SOURCE,999,MPI_COMM_WORLD,FLAG,MPIERR)
 !              IF (FLAG) THEN
-!                 WRITE(MYUNIT,'(A)') 'mc> Target located in some other run'
+!                 WRITE(MYUNIT,'(A)') 'MC> TARGET LOCATED IN SOME OTHER RUN'
 !                 HIT=.TRUE.
 !                 GOTO 37
 !              ENDIF
-!              INQUIRE(FILE='hit',EXIST=HIT)
+!              INQUIRE(FILE='HIT',EXIST=HIT)
 !              IF (HIT) THEN
-!                 WRITE(MYUNIT,'(A)') 'mc> Target located in some other run'
+!                 WRITE(MYUNIT,'(A)') 'MC> TARGET LOCATED IN SOME OTHER RUN'
 !                 CALL FLUSH(MYUNIT)
 !                 GOTO 37
 !              ENDIF
 !           ENDIF
-#else
+#ELSE
             IF (HIT) GOTO 37
-#endif
+#ENDIF
             IF (DUMPINT.GT.0) THEN
                IF (MOD(J1,DUMPINT).EQ.0) THEN
                   CALL DUMPSTATE(J1,EBEST,BESTCOORDS,JBEST,JP)
                ENDIF
             ENDIF
-#ifdef MPI
+#IFDEF MPI
          E=POTEL
          IF(MYNODE.EQ.0) THEN
             RANDOM=DPRAND()
             J=(NPAR-1)*RANDOM
             RANDOM=DPRAND()
-            IF (RANDOM.GT.EXCHPROB) THEN ! 0.1 probability of exchange 
+            IF (RANDOM.GT.EXCHPROB) THEN ! 0.1 PROBABILITY OF EXCHANGE 
                J=-2
                EXCHANGE=.FALSE.
             ELSE
@@ -1177,110 +1177,110 @@ C
               ENDIF
            ENDIF
 C
-C  When SYMMETRISE is turned on we can have multiple quenches on each pass through the main
-C  basin-hopping loop. If we really want to limit the number of quenches to NSTEPS then we
-C  need to test NQ(JP) as well.
+C  WHEN SYMMETRISE IS TURNED ON WE CAN HAVE MULTIPLE QUENCHES ON EACH PASS THROUGH THE MAIN
+C  BASIN-HOPPING LOOP. IF WE REALLY WANT TO LIMIT THE NUMBER OF QUENCHES TO NSTEPS THEN WE
+C  NEED TO TEST NQ(JP) AS WELL.
 C
   
            IF (NQ(1).GT.NSTEPS) EXIT
-#else
+#ELSE
            IF (NQ(JP).GT.NSTEPS) GOTO 37
 
          ENDDO
-#endif
+#ENDIF
 C
-C  ****************************** End of loop over NPAR parallel runs *****************************
+C  ****************************** END OF LOOP OVER NPAR PARALLEL RUNS *****************************
 C
-C  Supersteps
+C  SUPERSTEPS
 C
 C        IF (SUPERSTEP) CALL SUPERMC(SPOTEL,SCOORDS,NSUPERCOUNT,POTEL)
 C
-C  Renormalised type steps
+C  RENORMALISED TYPE STEPS
 C
 C        IF (RENORM) CALL REN(J1,RMIN,RCOORDS,RVAT,NREN,RMINO,RCOORDSO,RVATO,ITERATIONS,TIME,NLAST,JACCPREV,NSTEPREN)
 C        IF (STAY) CALL MYRESET(1,NATOMS,NPAR,NSEED)
   
          CALL FLUSH(MYUNIT)
       ENDDO
-#ifdef MPI
-      WRITE(MYUNIT, '(G20.10,A,G20.10)') NEACCEPT, ' exchanges accepted out of ', NTOT
+#IFDEF MPI
+      WRITE(MYUNIT, '(G20.10,A,G20.10)') NEACCEPT, ' EXCHANGES ACCEPTED OUT OF ', NTOT
       IF (MPIT) THEN
-! sf344> Apparently MPI_FINALIZE can only be called once during a run, so we call it at the end of main.F
+! SF344> APPARENTLY MPI_FINALIZE CAN ONLY BE CALLED ONCE DURING A RUN, SO WE CALL IT AT THE END OF MAIN.F
 !         CALL MPI_FINALIZE(MPIERR)
-!         IF (DEBUG) WRITE(MYUNIT, '(A,I6)') 'In mc after MPI_FINALIZE MPIERR=',MPIERR
+!         IF (DEBUG) WRITE(MYUNIT, '(A,I6)') 'IN MC AFTER MPI_FINALIZE MPIERR=',MPIERR
       ENDIF
-#endif
+#ENDIF
 ! }}}
 
 37    CONTINUE
-#ifdef MPI
+#IFDEF MPI
       WRITE(MYUNIT,10) NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),STEP(JP),ASTEP(JP),TEMP(JP)
-10    FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)
-      IF (RIGID) WRITE(MYUNIT,'(A,F12.5)') 'Rigid body orientational step=',OSTEP(JP)
-#else
+10    FORMAT('ACCEPTANCE RATIO FOR RUN=',F12.5,' STEP=',F12.5,' ANGULAR STEP FACTOR=',F12.5,' T=',F12.5)
+      IF (RIGID) WRITE(MYUNIT,'(A,F12.5)') 'RIGID BODY ORIENTATIONAL STEP=',OSTEP(JP)
+#ELSE
       DO JP=1,NPAR
          IF (NPAR.GT.1) THEN
             WRITE(MYUNIT,20) JP,NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),
      1               STEP(JP),ASTEP(JP),TEMP(JP)
-20          FORMAT('[',I2,']Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)
+20          FORMAT('[',I2,']ACCEPTANCE RATIO FOR RUN=',F12.5,' STEP=',F12.5,' ANGULAR STEP FACTOR=',F12.5,' T=',F12.5)
          ELSE
             WRITE(MYUNIT,21) NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),
      1               STEP(JP),ASTEP(JP),TEMP(JP)
-21          FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)
+21          FORMAT('ACCEPTANCE RATIO FOR RUN=',F12.5,' STEP=',F12.5,' ANGULAR STEP FACTOR=',F12.5,' T=',F12.5)
          ENDIF
-         IF (RIGID) WRITE(MYUNIT,'(A,F12.5)') 'Rigid body orientational step=',OSTEP(JP)
+         IF (RIGID) WRITE(MYUNIT,'(A,F12.5)') 'RIGID BODY ORIENTATIONAL STEP=',OSTEP(JP)
       ENDDO
-#endif
+#ENDIF
      
       RETURN
-!op226>}}} 
+!OP226>}}} 
       END
 C
 C
-! csw34> Subroutine to dump the current lowest interaction energy structure 
-!> \brief Subroutine to dump the current lowest interaction energy structure 
-!> \author Chris Whittleston, csw34@cam.ac.uk
+! CSW34> SUBROUTINE TO DUMP THE CURRENT LOWEST INTERACTION ENERGY STRUCTURE 
+!> \BRIEF SUBROUTINE TO DUMP THE CURRENT LOWEST INTERACTION ENERGY STRUCTURE 
+!> \AUTHOR CHRIS WHITTLESTON, CSW34@CAM.AC.UK
 !
       SUBROUTINE A9INTEDUMPLOWEST()
       USE COMMONS
       USE QMODULE
       IMPLICIT NONE
-      OPEN(UNIT=20,FILE="bestintE.rst",STATUS='UNKNOWN')  
-      WRITE(20,'(g20.10,i5)') INTEQMIN(1), INTEFF(1)
-      WRITE(20,'(i5)') NATOMS
-      WRITE(20,'(6f12.7)') INTEQMINP(1,:) 
+      OPEN(UNIT=20,FILE="BESTINTE.RST",STATUS='UNKNOWN')  
+      WRITE(20,'(G20.10,I5)') INTEQMIN(1), INTEFF(1)
+      WRITE(20,'(I5)') NATOMS
+      WRITE(20,'(6F12.7)') INTEQMINP(1,:) 
       CLOSE(20)
-C     csw34> Dump to PDB using routine in amberinterface.f
-      CALL A9DUMPPDB(INTEQMINP(1,:),"bestintE")
+C     CSW34> DUMP TO PDB USING ROUTINE IN AMBERINTERFACE.F
+      CALL A9DUMPPDB(INTEQMINP(1,:),"BESTINTE")
       END SUBROUTINE A9INTEDUMPLOWEST
-! csw34> Subroutine to work out the interaction energy INTE between residue RESLIG for geometry INTECOORDS
+! CSW34> SUBROUTINE TO WORK OUT THE INTERACTION ENERGY INTE BETWEEN RESIDUE RESLIG FOR GEOMETRY INTECOORDS
       SUBROUTINE A9INTE(INTECOORDS,INTE)
       USE PORFUNCS
       USE COMMONS, ONLY : NATOMS
       IMPLICIT NONE
       DOUBLE PRECISION :: INTECOORDS(3*NATOMS), INTE
       INTEGER ISTAT
-! Dump current coordinates to file for SANDER to read in
-      OPEN(UNIT=20,FILE='coords.intres',STATUS='UNKNOWN')
-      WRITE(20,'(a20)') 'intE coordinates'
-      WRITE(20,'(i5)') NATOMS
-      WRITE(20,'(6f12.7)') INTECOORDS(:)
+! DUMP CURRENT COORDINATES TO FILE FOR SANDER TO READ IN
+      OPEN(UNIT=20,FILE='COORDS.INTRES',STATUS='UNKNOWN')
+      WRITE(20,'(A20)') 'INTE COORDINATES'
+      WRITE(20,'(I5)') NATOMS
+      WRITE(20,'(6F12.7)') INTECOORDS(:)
       CLOSE(20)
-! Run the script that does the interaction energy calculation (downloadable from the group website)
-      CALL SYSTEM_SUBR('bash AMBGMINintE.sh',ISTAT)
-! Read interaction energy in from the file called intE
-      OPEN(UNIT=20,FILE="intE",STATUS='OLD')
+! RUN THE SCRIPT THAT DOES THE INTERACTION ENERGY CALCULATION (DOWNLOADABLE FROM THE GROUP WEBSITE)
+      CALL SYSTEM_SUBR('BASH AMBGMININTE.SH',ISTAT)
+! READ INTERACTION ENERGY IN FROM THE FILE CALLED INTE
+      OPEN(UNIT=20,FILE="INTE",STATUS='OLD')
       READ(20,*) INTE
       CLOSE(20)
       END SUBROUTINE A9INTE
 
 !
-!> \brief Subroutine to check the  distance 
-!> \brief between groups of atoms defined in the movableatoms file.
-!> Checks the A->B and A->C distances,
-!> and if they are greater than the A(B/C)THRESH values defined
-!> in the data file, the routine returns DISTOK=.FALSE.
-!> \author Chris Whittleston, csw34@cam.ac.uk
+!> \BRIEF SUBROUTINE TO CHECK THE  DISTANCE 
+!> \BRIEF BETWEEN GROUPS OF ATOMS DEFINED IN THE MOVABLEATOMS FILE.
+!> CHECKS THE A->B AND A->C DISTANCES,
+!> AND IF THEY ARE GREATER THAN THE A(B/C)THRESH VALUES DEFINED
+!> IN THE DATA FILE, THE ROUTINE RETURNS DISTOK=.FALSE.
+!> \AUTHOR CHRIS WHITTLESTON, CSW34@CAM.AC.UK
 !
       SUBROUTINE A9DISTCHECK(COORDS,DISTOK)
       USE MODAMBER9, ONLY : NATOMSINA,NATOMSINB,NATOMSINC,ATOMSINALIST,ATOMSINBLIST,ATOMSINCLIST
@@ -1291,13 +1291,13 @@ C     csw34> Dump to PDB using routine in amberinterface.f
       DOUBLE PRECISION :: COORDS(3*NATOMS)
       DOUBLE PRECISION :: CENTREOFA(3),CENTREOFB(3),CENTREOFC(3)  
       DOUBLE PRECISION :: ABDIST,ACDIST 
-! initialise variables
+! INITIALISE VARIABLES
       CENTREOFA(:)=0.0D0
       CENTREOFB(:)=0.0D0
       CENTREOFC(:)=0.0D0
       ABDIST=0.0D0
       ACDIST=0.0D0
-! find centre of ligand (group A)
+! FIND CENTRE OF LIGAND (GROUP A)
       DO I=1,NATOMSINA
          J=ATOMSINALIST(I)
          CENTREOFA(1)=CENTREOFA(1)+COORDS(3*J-2)
@@ -1305,7 +1305,7 @@ C     csw34> Dump to PDB using routine in amberinterface.f
          CENTREOFA(3)=CENTREOFA(3)+COORDS(3*J  )
       END DO
       CENTREOFA(:) = CENTREOFA(:)/NATOMSINA
-! find centre of group B 
+! FIND CENTRE OF GROUP B 
       DO I=1,NATOMSINB
          J=ATOMSINBLIST(I)
          CENTREOFB(1)=CENTREOFB(1)+COORDS(3*J-2)
@@ -1313,7 +1313,7 @@ C     csw34> Dump to PDB using routine in amberinterface.f
          CENTREOFB(3)=CENTREOFB(3)+COORDS(3*J  )
       END DO
       CENTREOFB(:) = CENTREOFB(:)/NATOMSINB
-! find centre of group B 
+! FIND CENTRE OF GROUP B 
       DO I=1,NATOMSINC
          J=ATOMSINCLIST(I)
          CENTREOFC(1)=CENTREOFC(1)+COORDS(3*J-2)
@@ -1321,28 +1321,28 @@ C     csw34> Dump to PDB using routine in amberinterface.f
          CENTREOFC(3)=CENTREOFC(3)+COORDS(3*J  )
       END DO
       CENTREOFC(:) = CENTREOFC(:)/NATOMSINC
-! calculate A->B distance
+! CALCULATE A->B DISTANCE
       ABDIST=SQRT((CENTREOFA(1)-CENTREOFB(1))**2+(CENTREOFA(2)-CENTREOFB(2))**2+(CENTREOFA(3)-CENTREOFB(3))**2)
-! calculate A->C distance
+! CALCULATE A->C DISTANCE
       ACDIST=SQRT((CENTREOFA(1)-CENTREOFC(1))**2+(CENTREOFA(2)-CENTREOFC(2))**2+(CENTREOFA(3)-CENTREOFC(3))**2)
-! some DEBUG printing
+! SOME DEBUG PRINTING
       IF (DEBUG) THEN
-         WRITE(*,*) 'AB distance=',ABDIST
-         WRITE(*,*) 'AC distance=',ACDIST
+         WRITE(*,*) 'AB DISTANCE=',ABDIST
+         WRITE(*,*) 'AC DISTANCE=',ACDIST
          IF (ABDIST.LT.ABTHRESH) THEN
-            WRITE(*,*) 'A->B condition met! :)'
+            WRITE(*,*) 'A->B CONDITION MET! :)'
          ELSE 
-            WRITE(*,*) 'A->B condition broken :('
+            WRITE(*,*) 'A->B CONDITION BROKEN :('
          ENDIF   
          IF (ACDIST.LT.ACTHRESH) THEN
-            WRITE(*,*) 'A->C condition met! :)'
+            WRITE(*,*) 'A->C CONDITION MET! :)'
          ELSE 
-            WRITE(*,*) 'A->C condition broken :('
+            WRITE(*,*) 'A->C CONDITION BROKEN :('
          ENDIF   
       ENDIF
-! do the check for both conditions
+! DO THE CHECK FOR BOTH CONDITIONS
       IF ((ABDIST.LT.ABTHRESH).AND.(ACDIST.LT.ACTHRESH)) DISTOK=.TRUE.
-! more debug printing
+! MORE DEBUG PRINTING
       IF (DEBUG) WRITE(*,*) 'DISTOK=',DISTOK
  
       END SUBROUTINE A9DISTCHECK
@@ -1354,14 +1354,14 @@ C     csw34> Dump to PDB using routine in amberinterface.f
       IMPLICIT NONE
       DOUBLE PRECISION ENEW, EOLD, DUMMY, DPRAND, RANDOM, EREF, TEOLD, TENEW, RATIO,MCTEMP
       DOUBLE PRECISION TRANS, DISTMIN, DISTMINOLD
-      LOGICAL ATEST, FLAT, evap, evapreject
+      LOGICAL ATEST, FLAT, EVAP, EVAPREJECT
       INTEGER NP,INDEXOLD, INDEXNEW, J1, NDUMMY
       DATA DISTMINOLD /0.0D0/
       COMMON /DMIN/ DISTMIN
 C     COMMON /IG/ IGNOREBIN, FIXBIN
-      common /ev/ evap, evapreject
+      COMMON /EV/ EVAP, EVAPREJECT
 
-      IF (DISTMINOLD.EQ.0.0D0) DISTMINOLD=DISTMIN  ! this should allow for the first step
+      IF (DISTMINOLD.EQ.0.0D0) DISTMINOLD=DISTMIN  ! THIS SHOULD ALLOW FOR THE FIRST STEP
       IF (TUNNELT) THEN
          TEOLD=TRANS(EOLD,QMIN(1),GAMMA)
          TENEW=TRANS(ENEW,QMIN(1),GAMMA)
@@ -1389,7 +1389,7 @@ C        WRITE(MYUNIT,'(A,4F20.10)') 'TENEW,TEOLD,EREF,DUMMY=',TENEW,TEOLD,EREF,
          ENDIF
       ELSE
 C
-C  Standard canonical sampling.
+C  STANDARD CANONICAL SAMPLING.
 C
          IF (TENEW.LT.TEOLD) THEN
             RANDOM=0.0D0
@@ -1408,7 +1408,7 @@ C
       END 
 
       SUBROUTINE JUMPM(RANNJ,J1,JP,EPPREV)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE
       INTEGER J1, JP, J2, UNT, NDUM, ITERATIONS, BRUN, QDONE
       DOUBLE PRECISION RANNJ, RANDOM, DPRAND, EPPREV(NPAR), DUMMY, TIME, EJ, SCREENC(3*NATOMS)
@@ -1419,8 +1419,8 @@ C
             IF (DEXP((EPREV(JP)-EPREV(JUMPTO(JP)))*(1.0D0/TEMP(JP)-1.0D0/TEMP(JUMPTO(JP)))).GT.RANDOM) THEN
 C           IF (DEXP((EPREV(JP)-EPREV(JUMPTO(JP)))/TEMP(JP)).GT.RANDOM) THEN
 C           IF (DEXP((EPREV(JP)-EPREV(JUMPTO(JP)))*(1.0D0/TEMP(JP)-1.0D0/TEMP(JUMPTO(JP)))).GT.RANDOM) THEN
-               WRITE(MYUNIT,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'Jump move from parallel run ',JP,
-     1                ' energy ',EPREV(JP),' to run ',JUMPTO(JP),' energy ',EPREV(JUMPTO(JP)),' accepted before quench ',J1
+               WRITE(MYUNIT,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'JUMP MOVE FROM PARALLEL RUN ',JP,
+     1                ' ENERGY ',EPREV(JP),' TO RUN ',JUMPTO(JP),' ENERGY ',EPREV(JUMPTO(JP)),' ACCEPTED BEFORE QUENCH ',J1
                DUMMY=EPREV(JP)
                EPREV(JP)=EPREV(JUMPTO(JP))
                EPREV(JUMPTO(JP))=DUMMY
@@ -1444,15 +1444,15 @@ C           IF (DEXP((EPREV(JP)-EPREV(JUMPTO(JP)))*(1.0D0/TEMP(JP)-1.0D0/TEMP(JU
                   COORDSO(J2,JUMPTO(JP))=DUMMY
                ENDDO
             ELSE
-               WRITE(MYUNIT,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'Jump move from parallel run ',JP,
-     1                  ' energy ',EPREV(JP),' to run ',JUMPTO(JP),' energy ',EPREV(JUMPTO(JP)),' rejected before quench ',J1
+               WRITE(MYUNIT,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'JUMP MOVE FROM PARALLEL RUN ',JP,
+     1                  ' ENERGY ',EPREV(JP),' TO RUN ',JUMPTO(JP),' ENERGY ',EPREV(JUMPTO(JP)),' REJECTED BEFORE QUENCH ',J1
             ENDIF
          ENDIF
       ELSE
          UNT=70+JUMPTO(JP)
          REWIND(UNT)           
          NDUM=INT(DPRAND()*(NQ(JUMPTO(JP))-1))
-         IF (DEBUG) WRITE(MYUNIT,'(A, G20.10)') 'Should be choosing buffer energy number ',NDUM
+         IF (DEBUG) WRITE(MYUNIT,'(A, G20.10)') 'SHOULD BE CHOOSING BUFFER ENERGY NUMBER ',NDUM
          DO J2=1,NDUM
             READ(UNT,*) EJ
          ENDDO
@@ -1461,11 +1461,11 @@ C           IF (DEXP((EPREV(JP)-EPREV(JUMPTO(JP)))*(1.0D0/TEMP(JP)-1.0D0/TEMP(JU
          ENDDO
          RANDOM=DPRAND()
 C
-C  Coordinates are only read if the jump is successful.
+C  COORDINATES ARE ONLY READ IF THE JUMP IS SUCCESSFUL.
 C
          IF (DEXP((EPREV(JP)-EJ)*(1.0D0/TEMP(JP)-1.0D0/TEMP(JUMPTO(JP)))).GT.RANDOM) THEN
-            WRITE(MYUNIT,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'Jump move from parallel run ',JP,
-     1              ' energy ',EPREV(JP),' to run ',JUMPTO(JP),' energy ',EJ,' accepted before quench ',NQ(JP)
+            WRITE(MYUNIT,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'JUMP MOVE FROM PARALLEL RUN ',JP,
+     1              ' ENERGY ',EPREV(JP),' TO RUN ',JUMPTO(JP),' ENERGY ',EJ,' ACCEPTED BEFORE QUENCH ',NQ(JP)
             EPREV(JP)=EJ
             UNT=70+NPAR+JUMPTO(JP)
             REWIND(UNT)           
@@ -1474,9 +1474,9 @@ C
             ENDDO
             READ(UNT,*) (COORDS(J2,JP),J2=1,3*NATOMS)
 C
-C  Coordinates should be converged already, but we need to reset VAT and VATO.
+C  COORDINATES SHOULD BE CONVERGED ALREADY, BUT WE NEED TO RESET VAT AND VATO.
 C
-C  next line should be uncommented if routine is made availabe to use with CHARMM
+C  NEXT LINE SHOULD BE UNCOMMENTED IF ROUTINE IS MADE AVAILABE TO USE WITH CHARMM
 C            IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
             CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
             DO J2=1,NATOMS
@@ -1486,15 +1486,15 @@ C            IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
                COORDSO(J2,JP)=COORDS(J2,JP)
             ENDDO
             IF (DEBUG) THEN
-               WRITE(MYUNIT,'(A)') 'Jump coordinates:'
+               WRITE(MYUNIT,'(A)') 'JUMP COORDINATES:'
                WRITE(MYUNIT,'(3F20.10)') (COORDS(J2,JP),J2=1,3*NATOMS)
             ENDIF
             DO J2=1,NATOMS*(NQ(JUMPTO(JP))-1)-NDUM*NATOMS
                READ(UNT,*) DUMMY
             ENDDO
          ELSE
-            WRITE(MYUNIT,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'Jump move from parallel run ',JP,
-     1              ' energy ',EPREV(JP),' to run ',JUMPTO(JP),' energy ',EJ,' rejected before quench ',NQ(JP)
+            WRITE(MYUNIT,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'JUMP MOVE FROM PARALLEL RUN ',JP,
+     1              ' ENERGY ',EPREV(JP),' TO RUN ',JUMPTO(JP),' ENERGY ',EJ,' REJECTED BEFORE QUENCH ',NQ(JP)
          ENDIF
       ENDIF
 
@@ -1539,7 +1539,7 @@ C     ENDIF
  
  
       SUBROUTINE REST(ITERATIONS,TIME,J1,RCOORDS,RMIN,RVAT,JACCPREV)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE
       INTEGER ITERATIONS, J2, JACCPREV, J1, NQTOT, BRUN, QDONE
       DOUBLE PRECISION TIME, POTEL, RCOORDS(3*NATOMS), RMIN, RVAT(NATOMS), SCREENC(3*NATOMS)
@@ -1547,11 +1547,11 @@ C     ENDIF
       COMMON /TOT/ NQTOT
 
 10    CALL HSMOVE(COORDS(1:3*NATOMS,1:NPAR),1,NHSRESTART)
-C  next line should be uncommented if routine is made availabe to use with CHARMM
+C  NEXT LINE SHOULD BE UNCOMMENTED IF ROUTINE IS MADE AVAILABE TO USE WITH CHARMM
 C      IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
       CALL QUENCH(.FALSE.,1,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
 C
-C  Bad idea to accept this quench configuration unconditionally - it could be unconvergeable.
+C  BAD IDEA TO ACCEPT THIS QUENCH CONFIGURATION UNCONDITIONALLY - IT COULD BE UNCONVERGEABLE.
 C
       IF (POTEL-EPREV(1).GT.10.0D0*ABS(EPREV(1))) THEN
          DO J2=1,3*NATOMS
@@ -1561,9 +1561,9 @@ C
       ENDIF
       JACCPREV=J1
       NQTOT=NQTOT+1
-      WRITE(MYUNIT,'(A,I6,A)') ' Restarting using ',NHSRESTART,' hard sphere moves'
-      WRITE(MYUNIT,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'Restart Qu ',NQ(1),' E=',
-     1              POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME-TSTART
+      WRITE(MYUNIT,'(A,I6,A)') ' RESTARTING USING ',NHSRESTART,' HARD SPHERE MOVES'
+      WRITE(MYUNIT,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'RESTART QU ',NQ(1),' E=',
+     1              POTEL,' STEPS=',ITERATIONS,' RMS=',RMS,' T=',TIME-TSTART
       DO J2=1,3*NATOMS
          COORDSO(J2,1)=COORDS(J2,1)
          RCOORDS(J2)=COORDS(J2,1)
@@ -1581,15 +1581,15 @@ C
  
  
       SUBROUTINE ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
-      USE commons
-      USE modcharmm
+      USE COMMONS
+      USE MODCHARMM
       IMPLICIT NONE
       INTEGER NSUCCESS(NPAR), NFAIL(NPAR), JP, NFAILT(NPAR), NSUCCESST(NPAR), J1, J2, NDUMMY
-      LOGICAL evap, evapreject
+      LOGICAL EVAP, EVAPREJECT
       DOUBLE PRECISION DUMMY, DUMMY2, DUMMY3, DUMMY4, HWMAX,P0,FAC
 C     COMMON /IG/ IGNOREBIN, FIXBIN
 C     COMMON /MOVE/ TMOVE, OMOVE
-      common /ev/ evap, evapreject
+      COMMON /EV/ EVAP, EVAPREJECT
 
       P0=1.D0*NSUCCESS(JP)/(1.D0*(NSUCCESS(JP)+NFAIL(JP)))
       
@@ -1643,35 +1643,35 @@ C     COMMON /MOVE/ TMOVE, OMOVE
          ENDIF
       ENDIF
 C
-C Prevent steps from growing out of bounds. The value of 1000 seems sensible, until
-C we do something with such huge dimensions?!
-c
+C PREVENT STEPS FROM GROWING OUT OF BOUNDS. THE VALUE OF 1000 SEEMS SENSIBLE, UNTIL
+C WE DO SOMETHING WITH SUCH HUGE DIMENSIONS?!
+C
       STEP(JP)=MIN(STEP(JP),1.0D3)
       OSTEP(JP)=MIN(OSTEP(JP),1.0D3)
       ASTEP(JP)=MIN(ASTEP(JP),1.0D3)
 C
       IF (NPAR.GT.1) THEN
-         WRITE(MYUNIT,'(A,I2,A,I6,A,F8.4,A,F8.4)') '[',JP,']Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
+         WRITE(MYUNIT,'(A,I2,A,I6,A,F8.4,A,F8.4)') '[',JP,']ACCEPTANCE RATIO FOR PREVIOUS ',NACCEPT,' STEPS=',P0,'  FAC=',FAC
       ELSE
-         WRITE(MYUNIT,'(A,I6,A,F8.4,A,F8.4)') 'Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
+         WRITE(MYUNIT,'(A,I6,A,F8.4,A,F8.4)') 'ACCEPTANCE RATIO FOR PREVIOUS ',NACCEPT,' STEPS=',P0,'  FAC=',FAC
       ENDIF
       IF (FIXBOTH(JP)) THEN
       ELSE IF (FIXSTEP(JP)) THEN
-         IF(.NOT.FIXTEMP(JP)) WRITE(MYUNIT,'(A,F12.4)') 'Temperature is now:',TEMP(JP)
+         IF(.NOT.FIXTEMP(JP)) WRITE(MYUNIT,'(A,F12.4)') 'TEMPERATURE IS NOW:',TEMP(JP)
       ELSE
          IF (NPAR.GT.1) THEN
-            WRITE(MYUNIT,'(A,I2,A)',ADVANCE='NO') '[',JP,']Steps are now:'
+            WRITE(MYUNIT,'(A,I2,A)',ADVANCE='NO') '[',JP,']STEPS ARE NOW:'
          ELSE
-            WRITE(MYUNIT,'(A)',ADVANCE='NO') 'Steps are now:'
+            WRITE(MYUNIT,'(A)',ADVANCE='NO') 'STEPS ARE NOW:'
          ENDIF
          WRITE(MYUNIT,'(A,F10.4)',ADVANCE='NO') '  STEP=',STEP(JP)    
          IF(ASTEP(JP).GT.0.D0) WRITE(MYUNIT,'(A,F10.4)',ADVANCE='NO')'  ASTEP=',ASTEP(JP) 
          IF(CHRIGIDTRANST.AND.CHRMMT) WRITE(MYUNIT,'(A,F10.4)',ADVANCE='NO')'  TRANSMAX=',TRANSMAX
          IF(CHRIGIDROTT.AND.CHRMMT) WRITE(MYUNIT,'(A,F10.4)')'  ROTMAX=',ROTMAX
-         IF(.NOT.FIXTEMP(JP)) WRITE(MYUNIT,'(A,F10.4)') ' Temperature is now:',TEMP(JP)
-         IF (RIGID) WRITE(MYUNIT,'(A,F12.6,A,F12.6)') 'Maximum rigid body rotational move is now ',OSTEP(JP)
+         IF(.NOT.FIXTEMP(JP)) WRITE(MYUNIT,'(A,F10.4)') ' TEMPERATURE IS NOW:',TEMP(JP)
+         IF (RIGID) WRITE(MYUNIT,'(A,F12.6,A,F12.6)') 'MAXIMUM RIGID BODY ROTATIONAL MOVE IS NOW ',OSTEP(JP)
       ENDIF
-      IF (FIXD) WRITE(MYUNIT,'(A,I4)') 'hard sphere collision moves=',NHSMOVE
+      IF (FIXD) WRITE(MYUNIT,'(A,I4)') 'HARD SPHERE COLLISION MOVES=',NHSMOVE
 C
       NSUCCESST(JP)=NSUCCESST(JP)+NSUCCESS(JP)
       NFAILT(JP)=NFAILT(JP)+NFAIL(JP)
@@ -1684,7 +1684,7 @@ C
 C
 C
       SUBROUTINE REN(J1,RMIN,RCOORDS,RVAT,NREN,RMINO,RCOORDSO,RVATO,ITERATIONS,TIME,NLAST,JACCPREV,NSTEPREN)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE
       LOGICAL STAY, REJECT, METROPOLIS
       INTEGER J1, J2, NREN, ITERATIONS, NQTOT, NLAST, JACCPREV, NSTEPREN, J3, BRUN, QDONE
@@ -1712,8 +1712,8 @@ C     PRINT*,'J1,JACCPREV+NRENSTUCK,NLAST+NREN=',J1,JACCPREV+NRENSTUCK,NLAST+NRE
          METROPOLIS=DEXP(-(RMIN-RMINO)/TRENORM).GT.RANDOM
          REJECT=.FALSE.
 C
-C  Taboo list for renormalised energies. Skip if the step is going to be rejected by
-C  the Metropolis condition.
+C  TABOO LIST FOR RENORMALISED ENERGIES. SKIP IF THE STEP IS GOING TO BE REJECTED BY
+C  THE METROPOLIS CONDITION.
 C
          IF (TABOOT.AND.METROPOLIS) THEN
             IF (NSTEPREN.EQ.0) NT(1)=0
@@ -1724,8 +1724,8 @@ C
                      REJECT=.TRUE.
                      GOTO 20
                   ELSE
-                     WRITE(MYUNIT,'(A, 2G20.10)') 'Energies nearly degenerate:',RMIN,ESAVE(J1,1)
-                     WRITE(MYUNIT,'(A, 2G20.10)') 'But  different  structures:',XIP,XINSAVE(J1,1)
+                     WRITE(MYUNIT,'(A, 2G20.10)') 'ENERGIES NEARLY DEGENERATE:',RMIN,ESAVE(J1,1)
+                     WRITE(MYUNIT,'(A, 2G20.10)') 'BUT  DIFFERENT  STRUCTURES:',XIP,XINSAVE(J1,1)
                   ENDIF
                ENDIF
                IF (RMIN.LT.ESAVE(J1,1)) THEN
@@ -1746,16 +1746,16 @@ C
 
 20          CONTINUE
 
-            WRITE(MYUNIT,'(A,I10)') ' Number of entries in taboo list=',NT(1)
+            WRITE(MYUNIT,'(A,I10)') ' NUMBER OF ENTRIES IN TABOO LIST=',NT(1)
             IF (DEBUG) THEN
                WRITE(MYUNIT,'(6F20.10)') (ESAVE(J2,1),J2=1,NT(1))
             ENDIF
          ENDIF
 C
-C  Accept/reject for renormalised step
+C  ACCEPT/REJECT FOR RENORMALISED STEP
 C
          IF (METROPOLIS.AND.(.NOT.REJECT)) THEN
-            IF (NSTEPREN.GT.0) WRITE(MYUNIT,'(A,G20.10,A,G20.10,A)') ' renorm step from ',RMINO,' to ',RMIN,' accepted'
+            IF (NSTEPREN.GT.0) WRITE(MYUNIT,'(A,G20.10,A,G20.10,A)') ' RENORM STEP FROM ',RMINO,' TO ',RMIN,' ACCEPTED'
             NREN=MAX(NREN/1.1D0,NRENORM/2.0D0)
             RMINO=RMIN
             IF (.NOT.STAY) THEN
@@ -1774,9 +1774,9 @@ C
             ENDIF
          ELSE
             IF (REJECT) THEN
-               WRITE(MYUNIT,'(A,G20.10,A,G20.10,A)') ' renorm step from ',RMINO,' to ',RMIN,' rejected by taboo criterion'
+               WRITE(MYUNIT,'(A,G20.10,A,G20.10,A)') ' RENORM STEP FROM ',RMINO,' TO ',RMIN,' REJECTED BY TABOO CRITERION'
             ELSE
-               WRITE(MYUNIT,'(A,G20.10,A,G20.10,A)') ' renorm step from ',RMINO,' to ',RMIN,' rejected'
+               WRITE(MYUNIT,'(A,G20.10,A,G20.10,A)') ' RENORM STEP FROM ',RMINO,' TO ',RMIN,' REJECTED'
             ENDIF
             DO J2=1,3*NATOMS
                COORDS(J2,1)=RCOORDSO(J2)
@@ -1787,10 +1787,10 @@ C
             NREN=NREN*1.1D0
          ENDIF
          NSTEPREN=NSTEPREN+1
-         IF (NSTEPREN.EQ.1) WRITE(MYUNIT,'(A,G20.10)') ' first renorm energy is ',RMIN
-         WRITE(MYUNIT,'(A,I6)') ' renormalisation interval is now ',NREN
+         IF (NSTEPREN.EQ.1) WRITE(MYUNIT,'(A,G20.10)') ' FIRST RENORM ENERGY IS ',RMIN
+         WRITE(MYUNIT,'(A,I6)') ' RENORMALISATION INTERVAL IS NOW ',NREN
 C
-C  Longer renorm step
+C  LONGER RENORM STEP
 C
 10       IF ((XMOVERENORM.GT.3.0D0).OR.FIXD) THEN
             CALL HSMOVE(COORDS(1:3*NATOMS,1:NPAR),1,INT(XMOVERENORM))
@@ -1800,11 +1800,11 @@ C
             CALL TAKESTEP(1)
             STEP(1)=DUMMY
          ENDIF
-C  next line should be uncommented if routine is made availabe to use with CHARMM
+C  NEXT LINE SHOULD BE UNCOMMENTED IF ROUTINE IS MADE AVAILABE TO USE WITH CHARMM
 C         IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
          CALL QUENCH(.FALSE.,1,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
 C
-C  Bad idea to accept this quench configuration unconditionally - it could be unconvergeable.
+C  BAD IDEA TO ACCEPT THIS QUENCH CONFIGURATION UNCONDITIONALLY - IT COULD BE UNCONVERGEABLE.
 C
          IF (POTEL-EPREV(1).GT.10.0D0*ABS(EPREV(1))) THEN
             DO J2=1,3*NATOMS
@@ -1813,8 +1813,8 @@ C
             GOTO 10
          ENDIF
          NQTOT=NQTOT+1
-         WRITE(MYUNIT,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'Renorm Qu ',NQ(1),' E=',
-     1        POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME-TSTART
+         WRITE(MYUNIT,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'RENORM QU ',NQ(1),' E=',
+     1        POTEL,' STEPS=',ITERATIONS,' RMS=',RMS,' T=',TIME-TSTART
          DO J2=1,3*NATOMS
             COORDSO(J2,1)=COORDS(J2,1)
             RCOORDS(J2)=COORDS(J2,1)
@@ -1830,24 +1830,24 @@ C
       RETURN
       END
 C
-C  Reseed if the energy has not improved by more than ECONV over the
-C  last NRELAX mc steps.
-C  If AVOID is true then save the energy and coordinates of the lowest
-C  minimum achieved before each restart and restart if we get too close
-C  to any one of them using bipartite matching and mind. Note that bipartite
-C  matching and mind can give a local minimum of distance if the optimal 
-C  permutation-inversion isn;t found. Using ORIENT to effect a standard
-C  orientation first seems to help. It should at least ensure that permutation-inversion
-C  isomers are always found. 
-C  Would it be possible to just use the energy and inertia components to identify
-C  permutation-inversion isomers instead of MINPERM and MIND?
-C  This would be like using a small value of AVOIDDIST, which doesn;t seem to be
-C  as good.
+C  RESEED IF THE ENERGY HAS NOT IMPROVED BY MORE THAN ECONV OVER THE
+C  LAST NRELAX MC STEPS.
+C  IF AVOID IS TRUE THEN SAVE THE ENERGY AND COORDINATES OF THE LOWEST
+C  MINIMUM ACHIEVED BEFORE EACH RESTART AND RESTART IF WE GET TOO CLOSE
+C  TO ANY ONE OF THEM USING BIPARTITE MATCHING AND MIND. NOTE THAT BIPARTITE
+C  MATCHING AND MIND CAN GIVE A LOCAL MINIMUM OF DISTANCE IF THE OPTIMAL 
+C  PERMUTATION-INVERSION ISN;T FOUND. USING ORIENT TO EFFECT A STANDARD
+C  ORIENTATION FIRST SEEMS TO HELP. IT SHOULD AT LEAST ENSURE THAT PERMUTATION-INVERSION
+C  ISOMERS ARE ALWAYS FOUND. 
+C  WOULD IT BE POSSIBLE TO JUST USE THE ENERGY AND INERTIA COMPONENTS TO IDENTIFY
+C  PERMUTATION-INVERSION ISOMERS INSTEAD OF MINPERM AND MIND?
+C  THIS WOULD BE LIKE USING A SMALL VALUE OF AVOIDDIST, WHICH DOESN;T SEEM TO BE
+C  AS GOOD.
 C
       SUBROUTINE NEWRES(J1,JP,JBEST,EBEST,BESTCOORDS,EPPREV,POTEL,ITERATIONS,TIME,RCOORDS,
      1                  RMIN,RVAT,BRUN,SCREENC,QDONE,JACCPREV,NSUCCESS,NFAIL,NFAILT,NSUCCESST)
-      USE commons
-      USE modamber9, only : mdstept 
+      USE COMMONS
+      USE MODAMBER9, ONLY : MDSTEPT 
       
       IMPLICIT NONE
       INTEGER J1, JP, JBEST(NPAR), ITERATIONS, J2, JACCPREV, BRUN, QDONE, J3, PERM(NATOMS), NPERM, NTRIES
@@ -1864,18 +1864,18 @@ C
       IF (POTEL.LT.EBEST(JP)) THEN
          IF (EBEST(JP)-POTEL.GT.ECONV) JBEST(JP)=J1
          EBESTP=EBEST(JP)
-         BESTCOORDSP(1:3*NATOMS)=BESTCOORDS(1:3*NATOMS,JP) ! save previous BESTCOORDS for possible use
-         EBEST(JP)=POTEL ! reset ebest, but not necessarily jbest
+         BESTCOORDSP(1:3*NATOMS)=BESTCOORDS(1:3*NATOMS,JP) ! SAVE PREVIOUS BESTCOORDS FOR POSSIBLE USE
+         EBEST(JP)=POTEL ! RESET EBEST, BUT NOT NECESSARILY JBEST
          BESTCOORDS(1:3*NATOMS,JP)=COORDS(1:3*NATOMS,JP)
       ENDIF
 C
-C  Reseed if the energy has not improved in the last NRELAX mc cycles,
-C  or if the current minimum is too close to one of the NMSBSAVE structures
-C  saved in MSBCOORDS.
+C  RESEED IF THE ENERGY HAS NOT IMPROVED IN THE LAST NRELAX MC CYCLES,
+C  OR IF THE CURRENT MINIMUM IS TOO CLOSE TO ONE OF THE NMSBSAVE STRUCTURES
+C  SAVED IN MSBCOORDS.
 C
-C  Instead of using the current minimum, employ the current minimum in 
-C  BESTCOORDS for the AVOID check. Then we need only do the AVOID check when we have
-C  a new minimum in BESTCOORDS, i.e. J1.EQ.JBEST(JP).
+C  INSTEAD OF USING THE CURRENT MINIMUM, EMPLOY THE CURRENT MINIMUM IN 
+C  BESTCOORDS FOR THE AVOID CHECK. THEN WE NEED ONLY DO THE AVOID CHECK WHEN WE HAVE
+C  A NEW MINIMUM IN BESTCOORDS, I.E. J1.EQ.JBEST(JP).
 C
       RES1=.FALSE.
       IF (J1-JBEST(JP).GT.NRELAX) RES1=.TRUE.
@@ -1884,50 +1884,50 @@ C
       RES2=.FALSE.
 C     IF ((.NOT.RES1).AND.AVOID) THEN
 !     PRINT*,'RES1,AVOID,J1,JBEST(JP)=',RES1,AVOID,J1,JBEST(JP)
-      IF ((.NOT.RES1).AND.AVOID.AND.(J1.EQ.JBEST(JP)).AND.(NMSBSAVE.GT.0)) THEN ! best minimum has just changed.
+      IF ((.NOT.RES1).AND.AVOID.AND.(J1.EQ.JBEST(JP)).AND.(NMSBSAVE.GT.0)) THEN ! BEST MINIMUM HAS JUST CHANGED.
          FCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
-         savedloop: DO J2=1,MIN(NMSBSAVE,MAXSAVE)
+         SAVEDLOOP: DO J2=1,MIN(NMSBSAVE,MAXSAVE)
 C
-C  Bipartite matching routine for permutations. Coordinates in FCOORDS do not change
-C  but the coordinates in XMSB do. DISTANCE is the distance in this case.
+C  BIPARTITE MATCHING ROUTINE FOR PERMUTATIONS. COORDINATES IN FCOORDS DO NOT CHANGE
+C  BUT THE COORDINATES IN XMSB DO. DISTANCE IS THE DISTANCE IN THIS CASE.
 C
-! If the energy is lower no reseeding regardless of separation ? DJW
+! IF THE ENERGY IS LOWER NO RESEEDING REGARDLESS OF SEPARATION ? DJW
 !           PRINT '(A,2G20.10,L8)','POTEL,MSBE(J2)-ECONV,POTEL.LT.MSBE(J2)-ECONV=',
 !    1                              POTEL,MSBE(J2)-ECONV,POTEL.LT.MSBE(J2)-ECONV
-            IF (POTEL.LT.MSBE(J2)-ECONV) CYCLE savedloop
+            IF (POTEL.LT.MSBE(J2)-ECONV) CYCLE SAVEDLOOP
             XMSB(1:3*NATOMS)=MSBCOORDS(1:3*NATOMS,J2)
             CALL MINPERMDIST(FCOORDS,XMSB,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,PERIODIC,TWOD,DISTANCE,DIST2,RIGID,RMAT)
             IF (DISTANCE.LT.AVOIDDIST) THEN
                RES2=.TRUE.
-               WRITE(MYUNIT,'(A,I6,A,G20.10,A,F10.3)') 'newres> Current minimum is too close to saved structure ',
-     1                                 J2,' with energy ',MSBE(J2),' dist=',DISTANCE
+               WRITE(MYUNIT,'(A,I6,A,G20.10,A,F10.3)') 'NEWRES> CURRENT MINIMUM IS TOO CLOSE TO SAVED STRUCTURE ',
+     1                                 J2,' WITH ENERGY ',MSBE(J2),' DIST=',DISTANCE
                GOTO 20
             ENDIF
-         ENDDO savedloop
+         ENDDO SAVEDLOOP
       ENDIF
 
 20    CONTINUE 
 
 
       IF (RES1.OR.RES2) THEN
-          !  Does not seem necessary to save MSB data for restarts.
-          !  If we are reseeding because RES2 is true then:
-          !  (1) If the AVOID test is based on the distance for BESTCOORDS, add
-          !      these to the  MSB list if the distance is > 0.01D0, i.e. a different structure.
-          !      Otherwise, add the coordinates of the previous lowest energy minimum to
-          !      the MSB list; these have been saved in BESTCOORDSP and the energy in EBESTP.
-          !  (2) Alternatively, if the AVOID test is based on the coordinates of the current
-          !      structure, we should add these to the MSB list instead. Testing
-          !      every step involves an overhead, which grows with the number of saved taboo
-          !      structures. We could make the taboo list cyclic, so that new structures to be
-          !      avoided replace old ones at the beginning of the list when the length of the
-          !      list is exceeded. We are currently only doing the bipartite matching test if
-          !      the energy of the lowest minimum since the last reseeding has changed, which
-          !      saves time.
+          !  DOES NOT SEEM NECESSARY TO SAVE MSB DATA FOR RESTARTS.
+          !  IF WE ARE RESEEDING BECAUSE RES2 IS TRUE THEN:
+          !  (1) IF THE AVOID TEST IS BASED ON THE DISTANCE FOR BESTCOORDS, ADD
+          !      THESE TO THE  MSB LIST IF THE DISTANCE IS > 0.01D0, I.E. A DIFFERENT STRUCTURE.
+          !      OTHERWISE, ADD THE COORDINATES OF THE PREVIOUS LOWEST ENERGY MINIMUM TO
+          !      THE MSB LIST; THESE HAVE BEEN SAVED IN BESTCOORDSP AND THE ENERGY IN EBESTP.
+          !  (2) ALTERNATIVELY, IF THE AVOID TEST IS BASED ON THE COORDINATES OF THE CURRENT
+          !      STRUCTURE, WE SHOULD ADD THESE TO THE MSB LIST INSTEAD. TESTING
+          !      EVERY STEP INVOLVES AN OVERHEAD, WHICH GROWS WITH THE NUMBER OF SAVED TABOO
+          !      STRUCTURES. WE COULD MAKE THE TABOO LIST CYCLIC, SO THAT NEW STRUCTURES TO BE
+          !      AVOIDED REPLACE OLD ONES AT THE BEGINNING OF THE LIST WHEN THE LENGTH OF THE
+          !      LIST IS EXCEEDED. WE ARE CURRENTLY ONLY DOING THE BIPARTITE MATCHING TEST IF
+          !      THE ENERGY OF THE LOWEST MINIMUM SINCE THE LAST RESEEDING HAS CHANGED, WHICH
+          !      SAVES TIME.
           !
-          !  Change to a cyclic AVOID list 30/12/04.
+          !  CHANGE TO A CYCLIC AVOID LIST 30/12/04.
 
-         IF (RES1.OR.(RES2.AND.(DISTANCE.GT.0.01D0))) THEN ! new condition
+         IF (RES1.OR.(RES2.AND.(DISTANCE.GT.0.01D0))) THEN ! NEW CONDITION
             NMSBSAVE=NMSBSAVE+1
             NPOSITION=MOD(NMSBSAVE,MAXSAVE)
             IF (NPOSITION.EQ.0) NPOSITION=MAXSAVE
@@ -1938,9 +1938,9 @@ C
 
             MSBCOORDS(1:3*NATOMS,NPOSITION)=DUMMY(1:3*NATOMS)
 
-            WRITE(MYUNIT,'(A,I6,A,G20.10)') 'newres> Moving current best minimum to position ',NPOSITION,
-     &                         ' in the AVOID list E=',EBEST(JP)
-C           OPEN(UNIT=34,FILE='MSBdata',POSITION='APPEND')
+            WRITE(MYUNIT,'(A,I6,A,G20.10)') 'NEWRES> MOVING CURRENT BEST MINIMUM TO POSITION ',NPOSITION,
+     &                         ' IN THE AVOID LIST E=',EBEST(JP)
+C           OPEN(UNIT=34,FILE='MSBDATA',POSITION='APPEND')
 C           WRITE(34,'(G20.10)') MSBE(NPOSITION) 
 C           WRITE(34,'(3G20.10)') BESTCOORDS(1:3*NATOMS,JP)
 C           CLOSE(34)
@@ -1953,40 +1953,40 @@ C           IF (NMSBSAVE.LT.MAXSAVE) THEN
                FCOORDS(1:3*NATOMS)=BESTCOORDSP(1:3*NATOMS)
                CALL MYORIENT(FCOORDS,DUMMY,NORBIT1,1,NORBIT2,1,NATOMS,DEBUG,ROTA,ROTINVA,STOCKT)
                MSBCOORDS(1:3*NATOMS,NPOSITION)=DUMMY(1:3*NATOMS)
-               WRITE(MYUNIT,'(A,I6,A,G20.10)') 'newres> Moving previous best minimum to position ',NPOSITION,
-     1                             ' in the AVOID list E=',EBESTP
+               WRITE(MYUNIT,'(A,I6,A,G20.10)') 'NEWRES> MOVING PREVIOUS BEST MINIMUM TO POSITION ',NPOSITION,
+     1                             ' IN THE AVOID LIST E=',EBESTP
 !           ENDIF
-         ENDIF ! end new condition
+         ENDIF ! END NEW CONDITION
 
-         IF (NEWRESTART_MD) THEN ! lb415
-            IF (RES1) WRITE(MYUNIT,'(A,I8,A)') 'newres> Energy has not improved since step ',JBEST(JP),' - perturbing'
-            WRITE(MYUNIT,'(A,I8,A)') 'newres> Reseeding due to a short high temperature MD run'
-            CHANGE_TEMP = .true.
+         IF (NEWRESTART_MD) THEN ! LB415
+            IF (RES1) WRITE(MYUNIT,'(A,I8,A)') 'NEWRES> ENERGY HAS NOT IMPROVED SINCE STEP ',JBEST(JP),' - PERTURBING'
+            WRITE(MYUNIT,'(A,I8,A)') 'NEWRES> RESEEDING DUE TO A SHORT HIGH TEMPERATURE MD RUN'
+            CHANGE_TEMP = .TRUE.
 
-! th368: 20-10-2009 Extending MD-Reseeding to the CHARMM interface
-! terminate if neither AMBER nor CHARMM was requested in the data file
+! TH368: 20-10-2009 EXTENDING MD-RESEEDING TO THE CHARMM INTERFACE
+! TERMINATE IF NEITHER AMBER NOR CHARMM WAS REQUESTED IN THE DATA FILE
 
              IF (AMBERT) THEN
-               CALL TAKESTEPAMBER(JP,COORDS(:,JP),movableatomlist,nmovableatoms,ligmovet,mdstept,randomseedt)
+               CALL TAKESTEPAMBER(JP,COORDS(:,JP),MOVABLEATOMLIST,NMOVABLEATOMS,LIGMOVET,MDSTEPT,RANDOMSEEDT)
              ELSEIF (CHRMMT) THEN
                CALL CHMD(JP)
              ELSE
-               WRITE(MYUNIT,'(A,I8,A)') 'newres> Molecular Dynamics reseeding is available for AMBER or CHARMM runs only.'
+               WRITE(MYUNIT,'(A,I8,A)') 'NEWRES> MOLECULAR DYNAMICS RESEEDING IS AVAILABLE FOR AMBER OR CHARMM RUNS ONLY.'
                STOP
              ENDIF
-! end th368: 20-10-2009
+! END TH368: 20-10-2009
 
-            CHANGE_TEMP = .false.
+            CHANGE_TEMP = .FALSE.
          ELSE
             IF (NHSRESTART.GT.0) THEN
-               IF (RES1) WRITE(MYUNIT,'(A,I8,A)') 'newres> Energy has not improved since step ',JBEST(JP),' - perturbing'
-               IF (RES2) WRITE(MYUNIT,'(A,I8,A)') 'newres> Reseeding due to taboo condition'
-               IF (SHELLMOVES(JP)) WRITE(MYUNIT,'(A)') 'newres> Turning off shell moves'
+               IF (RES1) WRITE(MYUNIT,'(A,I8,A)') 'NEWRES> ENERGY HAS NOT IMPROVED SINCE STEP ',JBEST(JP),' - PERTURBING'
+               IF (RES2) WRITE(MYUNIT,'(A,I8,A)') 'NEWRES> RESEEDING DUE TO TABOO CONDITION'
+               IF (SHELLMOVES(JP)) WRITE(MYUNIT,'(A)') 'NEWRES> TURNING OFF SHELL MOVES'
                SHELLMOVES(JP)=.FALSE.
                CALL REST(ITERATIONS,TIME,J1,RCOORDS,RMIN,RVAT,JACCPREV)
             ELSE
-               IF (RES1) WRITE(MYUNIT,'(A,I8,A)') 'newres> Energy has not improved since step ',JBEST(JP),' - reseeding'
-               IF (RES2) WRITE(MYUNIT,'(A,I8,A)') 'newres> Reseeding due to taboo condition'
+               IF (RES1) WRITE(MYUNIT,'(A,I8,A)') 'NEWRES> ENERGY HAS NOT IMPROVED SINCE STEP ',JBEST(JP),' - RESEEDING'
+               IF (RES2) WRITE(MYUNIT,'(A,I8,A)') 'NEWRES> RESEEDING DUE TO TABOO CONDITION'
                HIGHEST=.TRUE.
                DO J2=1,NPAR
                   IF (J2.EQ.JP) CYCLE
@@ -1996,9 +1996,9 @@ C           IF (NMSBSAVE.LT.MAXSAVE) THEN
                   ENDIF
                ENDDO
                IF (HIGHEST) THEN
-                  WRITE(MYUNIT,'(A,I6,A,F20.10)') 'newres> Parallel run ',JP,' has the highest energy ',EBEST(JP)
+                  WRITE(MYUNIT,'(A,I6,A,F20.10)') 'NEWRES> PARALLEL RUN ',JP,' HAS THE HIGHEST ENERGY ',EBEST(JP)
                   IF (NPAR.GT.1) WRITE(MYUNIT,'(6F20.10)') EBEST(1:NPAR)
-                  WRITE(MYUNIT,'(A)') 'newres> Full reseeding'
+                  WRITE(MYUNIT,'(A)') 'NEWRES> FULL RESEEDING'
                   DO J2=1,3*NATOMS
                      RANDOM=(DPRAND()-0.5D0)*2.0D0
                      COORDS(J2,JP)=RANDOM*DSQRT(RADIUS)/SR3
@@ -2007,17 +2007,17 @@ C           IF (NMSBSAVE.LT.MAXSAVE) THEN
                   PTGROUP(JP)='   '
                ELSEIF (NCORE(JP).GT.0) THEN
 C         
-C  Reseed everything if this is the lowest of a set of parallel runs, otherwise
-C  just reseed the surface.
+C  RESEED EVERYTHING IF THIS IS THE LOWEST OF A SET OF PARALLEL RUNS, OTHERWISE
+C  JUST RESEED THE SURFACE.
 C         
-                  WRITE(MYUNIT,'(A)') 'newres> Accepting an enforced surface reseeding'
+                  WRITE(MYUNIT,'(A)') 'NEWRES> ACCEPTING AN ENFORCED SURFACE RESEEDING'
                   DUMMY2=-1.0D0
                   DO J2=NATOMS-NCORE(JP)+1, NATOMS
                      DISTANCE=COORDS(3*(J2-1)+1,JP)**2+COORDS(3*(J2-1)+2,JP)**2+COORDS(3*(J2-1)+3,JP)**2
                      IF (DISTANCE.GT.DUMMY2) DUMMY2=DISTANCE
                   ENDDO
                   DISTANCE=SQRT(DISTANCE)
-                  WRITE(MYUNIT,'(A,F15.5)') 'newres> largest core radius=',DISTANCE
+                  WRITE(MYUNIT,'(A,F15.5)') 'NEWRES> LARGEST CORE RADIUS=',DISTANCE
                   DO J2=1,NATOMS-NCORE(JP)
                      COORDS(3*(J2-1)+1,JP)=(DPRAND()-0.5D0)*2.0D0
                      COORDS(3*(J2-1)+2,JP)=(DPRAND()-0.5D0)*2.0D0
@@ -2032,15 +2032,15 @@ C
             ENDIF
          ENDIF
 C
-C  This step will be accepted because EPREV(JP)=POTEL. However, there
-C  could be additional steps, so we need
-C  to change COORDSO and VATO. Should reset EBEST and BESTCOORDS as well.
+C  THIS STEP WILL BE ACCEPTED BECAUSE EPREV(JP)=POTEL. HOWEVER, THERE
+C  COULD BE ADDITIONAL STEPS, SO WE NEED
+C  TO CHANGE COORDSO AND VATO. SHOULD RESET EBEST AND BESTCOORDS AS WELL.
 C
-C  next line should be uncommented if routine is made availabe to use with CHARMM
+C  NEXT LINE SHOULD BE UNCOMMENTED IF ROUTINE IS MADE AVAILABE TO USE WITH CHARMM
 C         IF (CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
 654      CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
          IF (RMS.GT.BQMAX) THEN
-            WRITE(MYUNIT,'(A)') 'newres> Quench from reseeded geometry failed - try again'
+            WRITE(MYUNIT,'(A)') 'NEWRES> QUENCH FROM RESEEDED GEOMETRY FAILED - TRY AGAIN'
             DO J2=1,3*NATOMS
                RANDOM=(DPRAND()-0.5D0)*2.0D0
                COORDS(J2,JP)=RANDOM*DSQRT(RADIUS)/SR3
@@ -2050,21 +2050,21 @@ C         IF (CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
          NSUCCESS(JP)=0
          NFAIL(JP)=0
          POTEL=QENERGY
-         EBEST(JP)=POTEL ! this is communicated via common block MYPOT, which is in quench.f
+         EBEST(JP)=POTEL ! THIS IS COMMUNICATED VIA COMMON BLOCK MYPOT, WHICH IS IN QUENCH.F
          BESTCOORDS(1:3*NATOMS,JP)=COORDS(1:3*NATOMS,JP)
          JBEST(JP)=J1
          EPREV(JP)=POTEL !
          EPPREV(JP)=0.0D0
          NSYMREM=0
-! th368: 20.10.2009 updates should only take place in case
-! reseeding took place - transfered from subroutine MC lines 363 to 367
+! TH368: 20.10.2009 UPDATES SHOULD ONLY TAKE PLACE IN CASE
+! RESEEDING TOOK PLACE - TRANSFERED FROM SUBROUTINE MC LINES 363 TO 367
 
          IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS,JP))
          COORDSO(1:3*(NATOMS-NSEED),JP)=COORDS(1:3*(NATOMS-NSEED),JP)
-!        WRITE(MYUNIT,'(A,2G20.10)') 'newres> coordso changed: ',COORDSO(1,JP),COORDS(1,JP)
+!        WRITE(MYUNIT,'(A,2G20.10)') 'NEWRES> COORDSO CHANGED: ',COORDSO(1,JP),COORDS(1,JP)
          VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
 
-! end th368 20.10.2009
+! END TH368 20.10.2009
       ENDIF
 
       RETURN

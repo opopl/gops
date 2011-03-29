@@ -139,7 +139,7 @@
 !     ----------------------------------------------------------------------------------------------
 
       SUBROUTINE DEFTIP1(CHARGE, C12, C6, CH2O)
-!     TIPS water    
+!     TIPS WATER    
 
       USE COMMONS, ONLY: NATOMS, NRBSITES, SITE  
       
@@ -169,9 +169,9 @@
       SITE(3,3) = COS(0.5D0*THETA)*ROH
   
       CHARGE(:) = (/-0.8D0, 0.4D0, 0.4D0/)
-      C6        = 2510.4D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+      C6        = 2510.4D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
       C12       = 2426720.D0
-      CH2O      = 1389.354848D0 ! Conversion factor for coulomb energy
+      CH2O      = 1389.354848D0 ! CONVERSION FACTOR FOR COULOMB ENERGY
 
       M(:)  = (/16.D0, 1.D0, 1.D0/)
       CM(:) = 0.D0; MASS = 0.D0
@@ -189,7 +189,7 @@
 !     ----------------------------------------------------------------------------------------------
 
       SUBROUTINE DEFTIP2(CHARGE, C12, C6, CH2O)
-!     TIPS2 water    
+!     TIPS2 WATER    
     
       USE COMMONS, ONLY: NATOMS, NRBSITES, SITE  
       
@@ -224,9 +224,9 @@
       SITE(4,3) = ROM
 
       CHARGE(:) = (/0.D0, 0.535D0, 0.535D0, -1.07D0/)
-      C6        = 2510.4D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+      C6        = 2510.4D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
       C12       = 2907880.D0
-      CH2O      = 1389.354848D0 ! Conversion factor for coulomb energy
+      CH2O      = 1389.354848D0 ! CONVERSION FACTOR FOR COULOMB ENERGY
 
       M(:)  = (/16.D0, 1.D0, 1.D0, 0.D0/)
       CM(:) = 0.D0; MASS = 0.D0
@@ -244,7 +244,7 @@
 !     ----------------------------------------------------------------------------------------------
 
       SUBROUTINE DEFTIP3(CHARGE, C12, C6, CH2O)
-!     TIP3P water    
+!     TIP3P WATER    
     
       USE COMMONS, ONLY: NATOMS, NRBSITES, SITE  
       
@@ -274,9 +274,9 @@
       SITE(3,3) = COS(0.5D0*THETA)*ROH
   
       CHARGE(:) = (/-0.834D0, 0.417D0, 0.417D0/)
-      C6        = 2489.48D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+      C6        = 2489.48D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
       C12       = 2435088.D0
-      CH2O      = 1389.354848D0 ! Conversion factor for coulomb energy
+      CH2O      = 1389.354848D0 ! CONVERSION FACTOR FOR COULOMB ENERGY
 
       M(:)  = (/16.D0, 1.D0, 1.D0/)
       CM(:) = 0.D0; MASS = 0.D0
@@ -294,7 +294,7 @@
 !     ----------------------------------------------------------------------------------------------
 
       SUBROUTINE DEFTIP4(CHARGE, C12, C6, CH2O)
-!     TIP4P water    
+!     TIP4P WATER    
     
       USE COMMONS, ONLY: NATOMS, NRBSITES, SITE  
       
@@ -329,9 +329,9 @@
       SITE(4,3) = ROM
 
       CHARGE(:) = (/0.D0, 0.52D0, 0.52D0, -1.04D0/)
-      C6        = 2552.24D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+      C6        = 2552.24D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
       C12       = 2510.4D3
-      CH2O      = 1389.354848D0 ! Conversion factor for coulomb energy
+      CH2O      = 1389.354848D0 ! CONVERSION FACTOR FOR COULOMB ENERGY
 
       M(:)  = (/16.D0, 1.D0, 1.D0, 0.D0/)
       CM(:) = 0.D0; MASS = 0.D0
@@ -349,7 +349,7 @@
 !     ----------------------------------------------------------------------------------------------
 
       SUBROUTINE DEFTIP5(CHARGE, C12, C6, CH2O)
-!     TIP5P water    
+!     TIP5P WATER    
     
       USE COMMONS, ONLY: NATOMS, NRBSITES, SITE  
       
@@ -390,9 +390,9 @@
       SITE(5,3) =-COS(0.5D0*THETAM)*ROM
  
      CHARGE(:) = (/0.D0, 0.241D0, 0.241D0, -0.241D0, -0.241D0/)
-      C6        = 2470.012857D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+      C6        = 2470.012857D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
       C12       = 2278383.244D0
-      CH2O      = 1389.354848D0 ! Conversion factor for coulomb energy
+      CH2O      = 1389.354848D0 ! CONVERSION FACTOR FOR COULOMB ENERGY
 
       M(:)  = (/16.D0, 1.D0, 1.D0, 0.D0, 0.D0/)
       CM(:) = 0.D0; MASS = 0.D0
@@ -420,7 +420,7 @@
       DOUBLE PRECISION :: RMI(3,3), DRMI(3,3), P(3), RBCOORDS(3)
       LOGICAL          :: GTEST
 
-      OPEN(UNIT=26, FILE='newtip.xyz', STATUS='UNKNOWN')
+      OPEN(UNIT=26, FILE='NEWTIP.XYZ', STATUS='UNKNOWN')
 
       GTEST = .FALSE. 
 
@@ -428,7 +428,7 @@
 
          WRITE(26,'(I6)') (NATOMS/2)*3
          WRITE(26,10) J1, QMIN(J1), FF(J1)
-10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)
+10       FORMAT('ENERGY OF MINIMUM ',I6,'=',F20.10,' FIRST FOUND AT STEP ',I8)
 
          DO J3 = 1, NATOMS/2
 

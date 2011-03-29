@@ -1,40 +1,40 @@
-Cop226> GPL License info {{{
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+COP226> GPL LICENSE INFO {{{
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
-Cop226> End GPL License info }}}
-!op226>=================================== <begin>
+COP226> END GPL LICENSE INFO }}}
+!OP226>=================================== <BEGIN>
       SUBROUTINE KEYWORD
-!op226>=================================== 
-Cop226> Declarations {{{
-      !USE commons
-      use COMMONS
-      use MODMXATMS   ! NEEDED FOR charmm
-      USE modcharmm
-C       sf344> AMBER additions
-      USE modamber9, only : coords1,amberstr,amberstr1,mdstept,inpcrd,amberenergiest, nocistransdna, nocistransrna,
-     &                      uachiral, ligrotscale, setchiral, STEEREDMINT, SMINATOMA, SMINATOMB, SMINK, SMINKINC,
-     &                      SMINDISTSTART, SMINDISTFINISH, natomsina, natomsinb, natomsinc, atomsinalist, atomsinblist,
-     &                      atomsinclist, atomsinalistlogical, atomsinblistlogical, atomsinclistlogical, ligcartstep,
-     &                      ligtransstep, ligmovefreq, amchnmax, amchnmin, amchpmax, amchpmin, rotamert, rotmaxchange, 
-     &                      rotpselect, rotoccuw, rotcentre, rotcutoff, grouprott, grouprotfreq, 
-     &                      atomgroupnames, atomgroupaxis, atomgroupscaling, atomgroups, atomgrouppselect, ngroups
-      USE modamber
+!OP226>=================================== 
+COP226> DECLARATIONS {{{
+      !USE COMMONS
+      USE COMMONS
+      USE MODMXATMS   ! NEEDED FOR CHARMM
+      USE MODCHARMM
+C       SF344> AMBER ADDITIONS
+      USE MODAMBER9, ONLY : COORDS1,AMBERSTR,AMBERSTR1,MDSTEPT,INPCRD,AMBERENERGIEST, NOCISTRANSDNA, NOCISTRANSRNA,
+     &                      UACHIRAL, LIGROTSCALE, SETCHIRAL, STEEREDMINT, SMINATOMA, SMINATOMB, SMINK, SMINKINC,
+     &                      SMINDISTSTART, SMINDISTFINISH, NATOMSINA, NATOMSINB, NATOMSINC, ATOMSINALIST, ATOMSINBLIST,
+     &                      ATOMSINCLIST, ATOMSINALISTLOGICAL, ATOMSINBLISTLOGICAL, ATOMSINCLISTLOGICAL, LIGCARTSTEP,
+     &                      LIGTRANSSTEP, LIGMOVEFREQ, AMCHNMAX, AMCHNMIN, AMCHPMAX, AMCHPMIN, ROTAMERT, ROTMAXCHANGE, 
+     &                      ROTPSELECT, ROTOCCUW, ROTCENTRE, ROTCUTOFF, GROUPROTT, GROUPROTFREQ, 
+     &                      ATOMGROUPNAMES, ATOMGROUPAXIS, ATOMGROUPSCALING, ATOMGROUPS, ATOMGROUPPSELECT, NGROUPS
+      USE MODAMBER
       USE PORFUNCS
       IMPLICIT NONE
 
@@ -62,7 +62,7 @@ C     COMMON /IG/ IGNOREBIN, FIXBIN
 
       INTEGER NATOM, DMODE, NDUM
 C
-C These arrays should have dimension MXATMS
+C THESE ARRAYS SHOULD HAVE DIMENSION MXATMS
 C
       DOUBLE PRECISION, ALLOCATABLE :: CHX(:), CHY(:), CHZ(:), CHMASS(:)
       CHARACTER(LEN=1) DUMMYCH
@@ -75,14 +75,14 @@ C
       DOUBLE PRECISION :: LPL, LPR
 
 C
-C       sf344> added stuff
+C       SF344> ADDED STUFF
 C
-      CHARACTER(LEN=10) check1
-      CHARACTER(LEN=1) readswitch
-      INTEGER iostatus, groupsize, groupatom,groupoffset,axis1,axis2
-Cop226> End declarations </begin> }}}
-!op226>=================================== 
-Cop226> Initializations <init> {{{
+      CHARACTER(LEN=10) CHECK1
+      CHARACTER(LEN=1) READSWITCH
+      INTEGER IOSTATUS, GROUPSIZE, GROUPATOM,GROUPOFFSET,AXIS1,AXIS2
+COP226> END DECLARATIONS </BEGIN> }}}
+!OP226>=================================== 
+COP226> INITIALIZATIONS <INIT> {{{
       NPCOUNT=0
       NPCALL=0
       NSEED=0
@@ -185,7 +185,7 @@ C     SQUEEZED=0.95D0
       UNFREEZERES =.FALSE.
       NFREEZE=0
       ALLOCATE(FROZEN(NATOMS))
-C csw34> The FROZENRES array is bigger than needed
+C CSW34> THE FROZENRES ARRAY IS BIGGER THAN NEEDED
       ALLOCATE(FROZENRES(NATOMS))
       DO J1=1,NATOMS
          FROZEN(J1)=.FALSE.
@@ -193,7 +193,7 @@ C csw34> The FROZENRES array is bigger than needed
       ENDDO
       FREEZEGROUPTYPE='GT'
       FREEZEGROUPT=.FALSE.
-C csw34> DONTMOVE defaults
+C CSW34> DONTMOVE DEFAULTS
       DONTMOVET=.FALSE.
       NDONTMOVE=0
       DONTMOVEREST=.FALSE.
@@ -207,7 +207,7 @@ C csw34> DONTMOVE defaults
          DONTMOVE(J1)=.FALSE.
          DONTMOVERES(J1)=.FALSE.
       ENDDO
-C END of DONTMOVE defaults
+C END OF DONTMOVE DEFAULTS
       CHECKCHIRALITY=.TRUE.
       NOCISTRANS=.TRUE.
       NOCISTRANSRNA=.FALSE.
@@ -284,7 +284,7 @@ C END of DONTMOVE defaults
       RINGROTSCALE=0.0D0
       TRACKDATAT=.FALSE.
       PROGRESS=.FALSE.
-      listupdate=20
+      LISTUPDATE=20
 
       BLJCLUSTER=.FALSE.
 
@@ -310,29 +310,29 @@ C END of DONTMOVE defaults
       NREPEAT=0
       NFIXSEG=0
 
-C  sf344> AMBER stuff
+C  SF344> AMBER STUFF
       AMBERT=.FALSE.
       AMCHNMAX=0.0D0
       AMCHPMAX=0.0D0
       MDSTEPT=.FALSE.
       DUMPSTRUCTURES=.FALSE.
-C csw34> RANDOMSEED now works for CHARMM also!
+C CSW34> RANDOMSEED NOW WORKS FOR CHARMM ALSO!
       RANDOMSEEDT=.FALSE.
-C csw34> Dumping structures after every quench
+C CSW34> DUMPING STRUCTURES AFTER EVERY QUENCH
       DUMPQUT=.FALSE.
-C csw34> Dumping structures after every step (before quenching)
+C CSW34> DUMPING STRUCTURES AFTER EVERY STEP (BEFORE QUENCHING)
       DUMPSTEPST=.FALSE.
-C csw34> Local sampling within distance constraints 
+C CSW34> LOCAL SAMPLING WITHIN DISTANCE CONSTRAINTS 
       LOCALSAMPLET=.FALSE. 
       ABTHRESH=999.99
       ACTHRESH=999.99
-C csw34> AMBER interaction energy logical
+C CSW34> AMBER INTERACTION ENERGY LOGICAL
       A9INTET=.FALSE.
       INTERESTORE=.FALSE.
-C csw34> set COLDFUSION flag to .FALSE.
+C CSW34> SET COLDFUSION FLAG TO .FALSE.
       COLDFUSION=.FALSE.
 C
-C  sf344> for specifying movable atoms and ligand rotating steptaking moves
+C  SF344> FOR SPECIFYING MOVABLE ATOMS AND LIGAND ROTATING STEPTAKING MOVES
 C
       MOVABLEATOMST=.FALSE.
       LIGMOVET=.FALSE.
@@ -342,11 +342,11 @@ C
       LIGMOVEFREQ=1
 
 C
-C  csw34> rotamer move stuff
+C  CSW34> ROTAMER MOVE STUFF
 C
       ROTAMERT=.FALSE.
 C
-C  csw34> some defaults (just in case)
+C  CSW34> SOME DEFAULTS (JUST IN CASE)
 C
       ROTMAXCHANGE=1
       ROTPSELECT=0.2
@@ -354,7 +354,7 @@ C
       ROTCENTRE=1
       ROTCUTOFF=999.99
 C
-C  csw34> atom group rotation moves
+C  CSW34> ATOM GROUP ROTATION MOVES
 C
       GROUPROTT=.FALSE.
       NGROUPS=0
@@ -480,10 +480,10 @@ C
       TDHDT       = .FALSE.
       WATERDCT    = .FALSE.
       WATERKZT    = .FALSE.
-!|gd351>
+!|GD351>
       PATCHY = .FALSE.
       ASAOOS = .FALSE.
-!<gd351|
+!<GD351|
 
 
        
@@ -494,7 +494,7 @@ C
       BSPTQMIN=-1.0D100
       BSPTRESTART=.FALSE.
       HISTSMOOTH=.FALSE.
-      NSpline=1
+      NSPLINE=1
       EPSSPHERE=0.0D0
       FIXBIN=.FALSE.
       QUENCHFRQ=1
@@ -534,7 +534,7 @@ C
       VISITPROP=.FALSE.
       HWINDOWS=1
 
-      FixedEndMoveT=.FALSE.
+      FIXEDENDMOVET=.FALSE.
       PIVOTP=0.0D0
       SIDECHAINP=0.0D0
 
@@ -542,7 +542,7 @@ C
       THOMSONT=.FALSE.
       GAUSST=.FALSE.
       MPIT=.FALSE.
-      DUMPINT=1000 ! default is to dump a restart file every 1000 cycles of mc.f
+      DUMPINT=1000 ! DEFAULT IS TO DUMP A RESTART FILE EVERY 1000 CYCLES OF MC.F
       RESTORET=.FALSE.
       DUMPFILE=''
       INTEDUMPFILE=''
@@ -589,15 +589,15 @@ C
       CSMQUENCHES=1
       CSMMAXIT=0
       CHECKMARKOVT=.FALSE.
-Cop226> End initializations </init>  }}}
-!op226>=================================== 
-!op226> 1) Open file 'data' => unit number 5
-!op226> 2) Read in a single WORD from this file
-!op226> 3) Check whether WORD equals any of keywords in the below ELSEIF
-!op226>         loop
-!op226>=================================== 
-!op226> <read> {{{ 
-      OPEN (5,FILE='data',STATUS='OLD')
+COP226> END INITIALIZATIONS </INIT>  }}}
+!OP226>=================================== 
+!OP226> 1) OPEN FILE 'DATA' => UNIT NUMBER 5
+!OP226> 2) READ IN A SINGLE WORD FROM THIS FILE
+!OP226> 3) CHECK WHETHER WORD EQUALS ANY OF KEYWORDS IN THE BELOW ELSEIF
+!OP226>         LOOP
+!OP226>=================================== 
+!OP226> <READ> {{{ 
+      OPEN (5,FILE='DATA',STATUS='OLD')
 
 C190   CALL INPUT(END,5)
 190   CALL INPUT(END)
@@ -605,7 +605,7 @@ C190   CALL INPUT(END,5)
         CALL READU(WORD)
       ENDIF
 
-!op226> IF (END .OR. WORD .EQ. 'STOP') THEN {{{
+!OP226> IF (END .OR. WORD .EQ. 'STOP') THEN {{{
       IF (END .OR. WORD .EQ. 'STOP') THEN
 
          IF (NPCOUNT.LT.NPAR) THEN
@@ -616,55 +616,55 @@ C190   CALL INPUT(END,5)
                BLOCK(J1)=BLOCK(1)
             ENDDO
          ENDIF
-!op226> read in chmd.par{{{
-! th368: 20-10-2009 Read parameter file containing CHARMM DYNAmics 
-! parameters if either CHARMM/MD or CHARMM/NEWRESTART_MD was
-! requested terminate if file is not found
+!OP226> READ IN CHMD.PAR{{{
+! TH368: 20-10-2009 READ PARAMETER FILE CONTAINING CHARMM DYNAMICS 
+! PARAMETERS IF EITHER CHARMM/MD OR CHARMM/NEWRESTART_MD WAS
+! REQUESTED TERMINATE IF FILE IS NOT FOUND
 
          IF(CHMDT .OR. ( CHRMMT .AND. NEWRESTART_MD)) THEN
 
-           INQUIRE(FILE='chmd.par',EXIST=YESNO)
+           INQUIRE(FILE='CHMD.PAR',EXIST=YESNO)
 
            IF (YESNO) THEN
-              OPEN(99,file='chmd.par')
+              OPEN(99,FILE='CHMD.PAR')
               READ(99,'(A)') CHMDPAR
               CLOSE(99)
            ELSE
-              WRITE(*,*) 'keywords> File chmd.par has to be provided.'
+              WRITE(*,*) 'KEYWORDS> FILE CHMD.PAR HAS TO BE PROVIDED.'
               STOP
            ENDIF
          ENDIF
-! end th368: 20-10-2009
-!op226> }}}
+! END TH368: 20-10-2009
+!OP226> }}}
 
         RETURN
       ENDIF
-!op226>}}} 
+!OP226>}}} 
 
       IF (WORD.EQ.'    '.OR.WORD.EQ.'NOTE'.OR.WORD.EQ.'COMMENT'
      &                          .OR. WORD .EQ. '\\') THEN 
          GOTO 190
 
-!op226> </read> }}}
-!op226>=================================== 
+!OP226> </READ> }}}
+!OP226>=================================== 
 C
-C  Remaining documented keywords should be in alphabetical order.
+C  REMAINING DOCUMENTED KEYWORDS SHOULD BE IN ALPHABETICAL ORDER.
 C
-Cop226> ============================================== 
-!op226> Starting to check whether WORD fits any keyword from a 
-!op226> really looong list below {{{ 
-Cop226> ============================================== 
-Cop226> Keywords: 2D ACCEPTRATIO ACE ACKLAND ALGLUE ...
-Cop226> AMBER (Commented)
-Cop226> ============================================== 
-Cop226> {{{
-!op226> <kwd>
+COP226> ============================================== 
+!OP226> STARTING TO CHECK WHETHER WORD FITS ANY KEYWORD FROM A 
+!OP226> REALLY LOOONG LIST BELOW {{{ 
+COP226> ============================================== 
+COP226> KEYWORDS: 2D ACCEPTRATIO ACE ACKLAND ALGLUE ...
+COP226> AMBER (COMMENTED)
+COP226> ============================================== 
+COP226> {{{
+!OP226> <KWD>
       ELSE IF (WORD.EQ.'2D') THEN
          TWOD=.TRUE.
 
       ELSE IF (WORD.EQ.'ACCEPTRATIO') THEN
          IF (NITEMS-1.GT.NPAR) THEN
-            WRITE(MYUNIT,'(A)') 'Number of acceptance ratios exceeds NPAR - quit'
+            WRITE(MYUNIT,'(A)') 'NUMBER OF ACCEPTANCE RATIOS EXCEEDS NPAR - QUIT'
             STOP
          ENDIF
          DO J1=1,NITEMS-1
@@ -676,18 +676,18 @@ Cop226> {{{
             ENDDO
          ENDIF
 C
-C  bs360: ACE is to be used together with CHARMM and the ACE solvent model,
-C  it makes sure that the Born radii are regularly updated
+C  BS360: ACE IS TO BE USED TOGETHER WITH CHARMM AND THE ACE SOLVENT MODEL,
+C  IT MAKES SURE THAT THE BORN RADII ARE REGULARLY UPDATED
 C
       ELSE IF (WORD.EQ.'ACE') THEN
           ACESOLV=.TRUE.
           IF (NITEMS.GT.1) CALL READI(ACEUPSTEP)
 C
-C  Ackland embedded atom metal potentials.
+C  ACKLAND EMBEDDED ATOM METAL POTENTIALS.
 C
       ELSE IF (WORD.EQ.'ACKLAND') THEN
          ACKLANDT=.TRUE.
-         CALL READI(ACKLANDID) ! default is 5 = Fe
+         CALL READI(ACKLANDID) ! DEFAULT IS 5 = FE
 
       ELSE IF (WORD.EQ.'ALGLUE') THEN
           ALGLUET=.TRUE.
@@ -701,16 +701,16 @@ C
 !        CALL AREAD
 !        NATOMS=ATOMS
 !        DO J1=1,NATOMS
-!           COORDS(3*(J1-1)+1,1)=x(J1)
-!           COORDS(3*(J1-1)+2,1)=y(J1)
-!           COORDS(3*(J1-1)+3,1)=z(J1)
+!           COORDS(3*(J1-1)+1,1)=X(J1)
+!           COORDS(3*(J1-1)+2,1)=Y(J1)
+!           COORDS(3*(J1-1)+3,1)=Z(J1)
 !        ENDDO
-!        t=0
-!        ang=0
-!        imp=0
-!        count=0
+!        T=0
+!        ANG=0
+!        IMP=0
+!        COUNT=0
 C
-C Dump Amber9 energy components at every step
+C DUMP AMBER9 ENERGY COMPONENTS AT EVERY STEP
 C
       ELSE IF (WORD.EQ.'AMBERENERGIES') THEN
          AMBERENERGIEST=.TRUE.
@@ -756,9 +756,9 @@ C
       ELSE IF (WORD.EQ.'ARNO') THEN
          ARNO=.TRUE.
 C
-C  Specify resetting if the latest structure gets too close to minima saved
-C  in MSBCOORDS. Use bipartite matching and closest approach distance AVOIDDIST.
-C  Maximum number of saved structures is specified by MAXSAVE.
+C  SPECIFY RESETTING IF THE LATEST STRUCTURE GETS TOO CLOSE TO MINIMA SAVED
+C  IN MSBCOORDS. USE BIPARTITE MATCHING AND CLOSEST APPROACH DISTANCE AVOIDDIST.
+C  MAXIMUM NUMBER OF SAVED STRUCTURES IS SPECIFIED BY MAXSAVE.
 C 
       ELSE IF (WORD.EQ.'AVOID') THEN
          AVOID=.TRUE.
@@ -767,14 +767,14 @@ C
          IF (.NOT.ALLOCATED(MSBCOORDS)) THEN
             ALLOCATE(MSBCOORDS(3*NATOMS,MAXSAVE))
          ELSE
-            WRITE(MYUNIT,*) 'reallocating MSBCOORDS'
+            WRITE(MYUNIT,*) 'REALLOCATING MSBCOORDS'
             DEALLOCATE(MSBCOORDS)
             ALLOCATE(MSBCOORDS(3*NATOMS,MAXSAVE))
          ENDIF
          IF (.NOT.ALLOCATED(MSBE)) THEN
             ALLOCATE(MSBE(MAXSAVE))
          ELSE
-            WRITE(MYUNIT,*) 'reallocating MSBE'
+            WRITE(MYUNIT,*) 'REALLOCATING MSBE'
             DEALLOCATE(MSBE)
             ALLOCATE(MSBE(MAXSAVE))
          ENDIF
@@ -783,17 +783,17 @@ C
          AXTELL=.TRUE.
          CALL READF(ZSTAR)
 C }}}
-Cop226 ============================================== 
-Cop226 BASIN, BFGS, BHPT, BINARY, BINSTRUCTURES
-Cop226 ==============================================
-Cop226> {{{
+COP226 ============================================== 
+COP226 BASIN, BFGS, BHPT, BINARY, BINSTRUCTURES
+COP226 ==============================================
+COP226> {{{
       ELSE IF ((WORD.EQ.'BASIN').OR.(WORD.EQ.'SLOPPYCONV')) THEN
          IF (NITEMS.GT.1) CALL READF(BQMAX)
 
       ELSE IF (WORD.EQ.'BFGS') THEN
          BFGS=.TRUE.
 C
-C PT basin-hopping.
+C PT BASIN-HOPPING.
 C
       ELSE IF (WORD.EQ.'BHPT') THEN
          CALL READF(PTTMIN)
@@ -808,7 +808,7 @@ C
          CALL READF(SIGAB)
          CALL READF(SIGBB)
 C
-C Saves every n'th structure to the file with corresponding bin label
+C SAVES EVERY N'TH STRUCTURE TO THE FILE WITH CORRESPONDING BIN LABEL
 C
       ELSE IF (WORD.EQ.'BINSTRUCTURES') THEN
          BINSTRUCTURES=.TRUE.
@@ -830,7 +830,7 @@ C BLN {{{
          CALL READF(RK_THETA)
          ALLOCATE(BEADLETTER(NATOMS),BLNSSTRUCT(NATOMS),
      &            LJREP_BLN(NATOMS,NATOMS),LJATT_BLN(NATOMS,NATOMS),A_BLN(NATOMS),B_BLN(NATOMS),C_BLN(NATOMS),D_BLN(NATOMS))
-         OPEN(UNIT=1,FILE='BLNsequence',STATUS='OLD')
+         OPEN(UNIT=1,FILE='BLNSEQUENCE',STATUS='OLD')
          READ(1,*) DUMMYCH
          READ(1,*) LJREPBB, LJATTBB
          READ(1,*) LJREPLL, LJATTLL
@@ -843,36 +843,36 @@ C BLN {{{
          DO J1=1,NATOMS-1
             READ(1,'(A1)',ADVANCE='NO') BEADLETTER(J1)
          ENDDO
-         READ(1,'(A1)') BEADLETTER(NATOMS) ! this line is needed to advance the input line for the next read
+         READ(1,'(A1)') BEADLETTER(NATOMS) ! THIS LINE IS NEEDED TO ADVANCE THE INPUT LINE FOR THE NEXT READ
          DO J1=1,NATOMS-3
             READ(1,'(A1)',ADVANCE='NO') BLNSSTRUCT(J1)
          ENDDO
          CLOSE(1)
-         WRITE(MYUNIT,'(A,I8,A)') 'BLN sequence of ',NATOMS,' beads read:'
+         WRITE(MYUNIT,'(A,I8,A)') 'BLN SEQUENCE OF ',NATOMS,' BEADS READ:'
          WRITE(MYUNIT,'(A1)',ADVANCE='NO') BEADLETTER(1:NATOMS)
          WRITE(MYUNIT,'(A)') ' '
-         WRITE(MYUNIT,'(A,I8,A)') 'BLN dihedral types:'
+         WRITE(MYUNIT,'(A,I8,A)') 'BLN DIHEDRAL TYPES:'
          WRITE(MYUNIT,'(A1)',ADVANCE='NO') BLNSSTRUCT(1:NATOMS-3)
          WRITE(MYUNIT,'(A)') ' '
-         WRITE(MYUNIT,'(A,2F15.5)') 'B-B LJ coefficients: ',LJREPBB, LJATTBB
-         WRITE(MYUNIT,'(A,2F15.5)') 'L-L LJ coefficients: ',LJREPLL, LJATTLL
-         WRITE(MYUNIT,'(A,2F15.5)') 'N-N LJ coefficients: ',LJREPNN, LJATTNN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Helix    dihedral coefficients: ',HABLN,HBBLN,HCBLN,HDBLN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Extended dihedral coefficients: ',EABLN,EBBLN,ECBLN,EDBLN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Turn     dihedral coefficients: ',TABLN,TBBLN,TCBLN,TDBLN
-         call param_arrayBLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
+         WRITE(MYUNIT,'(A,2F15.5)') 'B-B LJ COEFFICIENTS: ',LJREPBB, LJATTBB
+         WRITE(MYUNIT,'(A,2F15.5)') 'L-L LJ COEFFICIENTS: ',LJREPLL, LJATTLL
+         WRITE(MYUNIT,'(A,2F15.5)') 'N-N LJ COEFFICIENTS: ',LJREPNN, LJATTNN
+         WRITE(MYUNIT,'(A,4F15.5)') 'HELIX    DIHEDRAL COEFFICIENTS: ',HABLN,HBBLN,HCBLN,HDBLN
+         WRITE(MYUNIT,'(A,4F15.5)') 'EXTENDED DIHEDRAL COEFFICIENTS: ',EABLN,EBBLN,ECBLN,EDBLN
+         WRITE(MYUNIT,'(A,4F15.5)') 'TURN     DIHEDRAL COEFFICIENTS: ',TABLN,TBBLN,TCBLN,TDBLN
+         CALL PARAM_ARRAYBLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
      &                       LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, 
      &                       HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN, NATOMS)
-C        call param_arrayBLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
+C        CALL PARAM_ARRAYBLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
 C    &                       LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, NATOMS) 
-C End BLN }}}
+C END BLN }}}
       ELSE IF (WORD.EQ.'BSMIN') THEN
          BSMIN=.TRUE.
          IF (NITEMS.GT.1) CALL READF(GMAX)
          IF (NITEMS.GT.2) CALL READF(EPS)
-         WRITE(MYUNIT,'(A,2L5)') 'BSMIN branch RKMIN,BSMIN=',RKMIN,BSMIN
+         WRITE(MYUNIT,'(A,2L5)') 'BSMIN BRANCH RKMIN,BSMIN=',RKMIN,BSMIN
 C
-C Basin-sampling. {{{
+C BASIN-SAMPLING. {{{
 C
       ELSE IF (WORD.EQ.'BSPT') THEN
          BSPT=.TRUE.
@@ -883,31 +883,31 @@ C
          CALL READF(PTTMIN)
          CALL READF(PTTMAX)
          CALL READF(EXCHPROB)
-         CALL READF(NEQUIL)  ! equilibration only
-         CALL READF(PTSTEPS) ! PT following equilibration
-         CALL READF(NQUENCH) ! combined PT and quench steps
+         CALL READF(NEQUIL)  ! EQUILIBRATION ONLY
+         CALL READF(PTSTEPS) ! PT FOLLOWING EQUILIBRATION
+         CALL READF(NQUENCH) ! COMBINED PT AND QUENCH STEPS
          CALL READI(NENRPER)
          CALL READI(HBINS)
          CALL READI(QUENCHFRQ)
 C }}}
 C
-C Frequency of dumping the Visits.his.n files
+C FREQUENCY OF DUMPING THE VISITS.HIS.N FILES
 C 
       ELSE IF (WORD.EQ.'BSPTDUMPFRQ') THEN
          CALL READI(BSPTDUMPFRQ)
 C
-C BSPT restriction on quench energy.
+C BSPT RESTRICTION ON QUENCH ENERGY.
 C
       ELSE IF (WORD.EQ.'BSPTQRANGE') THEN
          CALL READF(BSPTQMIN)
          CALL READF(BSPTQMAX)
 C
-C Restart from Visits and bsptrestart files.
+C RESTART FROM VISITS AND BSPTRESTART FILES.
 C
       ELSE IF (WORD.EQ.'BSPTRESTART') THEN
          BSPTRESTART=.TRUE.
 C
-C WL Basin-sampling. {{{
+C WL BASIN-SAMPLING. {{{
 C
       ELSE IF (WORD.EQ.'BSWL') THEN
          BSWL=.TRUE.
@@ -916,7 +916,7 @@ C
          CALL READF(HISTFAC)
          CALL READI(HBINS)
          CALL READF(HISTFACMUL)
-         CALL READI(TargetWL)
+         CALL READI(TARGETWL)
          CALL READF(HPERCENT)
          ALLOCATE(HDIST(HBINS),HWEIGHT(HBINS),HISTVALS(HBINS),LHISTVALS(HBINS),IGNOREBIN(HBINS))
          DO J1=1,HBINS
@@ -925,12 +925,12 @@ C
             HWEIGHT(J1)=1.0D0
             HDIST(J1)=0.0D0
 C           DO J2=1,HBINS
-C              HTRANS(J1,J2)=1.0D0 ! transition matrix
+C              HTRANS(J1,J2)=1.0D0 ! TRANSITION MATRIX
 C           ENDDO
          ENDDO
 C
-C  During the BSWL run HDIST contains the sum of the distances found for minima in each bin. The
-C  average is saved in hist.new.
+C  DURING THE BSWL RUN HDIST CONTAINS THE SUM OF THE DISTANCES FOUND FOR MINIMA IN EACH BIN. THE
+C  AVERAGE IS SAVED IN HIST.NEW.
 C
          DO J1=1,HBINS
             HDIST(J1)=HDIST(J1)*HISTVALS(J1)
@@ -944,47 +944,47 @@ C }}}
          CALL READF(RAD)
          IF (NITEMS.GT.4) CALL READF(HEIGHT)
 C
-C  The six reference site positions per capped pentagon. These need to
-C  be multiplied by RAD, including the repulsive site!
+C  THE SIX REFERENCE SITE POSITIONS PER CAPPED PENTAGON. THESE NEED TO
+C  BE MULTIPLIED BY RAD, INCLUDING THE REPULSIVE SITE!
 C
          NRBSITES=6
          ALLOCATE(SITE(NRBSITES,3))
          SITE(1,1)=1.0D0
          SITE(1,2)=0.0D0
          SITE(1,3)=0.0D0
-         SITE(2,1)=((-1.0D0 + Sqrt(5.0D0)))/4.0D0
-         SITE(2,2)=(Sqrt((5.0D0 + Sqrt(5.0D0))/2.0D0))/2.0D0
+         SITE(2,1)=((-1.0D0 + SQRT(5.0D0)))/4.0D0
+         SITE(2,2)=(SQRT((5.0D0 + SQRT(5.0D0))/2.0D0))/2.0D0
          SITE(2,3)=0.0D0
-         SITE(3,1)=((-1.0D0 - Sqrt(5.0D0)))/4.0D0
-         SITE(3,2)=(Sqrt((5.0D0 - Sqrt(5.0D0))/2.0D0))/2.0D0
+         SITE(3,1)=((-1.0D0 - SQRT(5.0D0)))/4.0D0
+         SITE(3,2)=(SQRT((5.0D0 - SQRT(5.0D0))/2.0D0))/2.0D0
          SITE(3,3)=0.0D0
-         SITE(4,1)=((-1 - Sqrt(5.0D0)))/4.0D0
-         SITE(4,2)=-(Sqrt((5.0D0 - Sqrt(5.0D0))/2.))/2.0D0
+         SITE(4,1)=((-1 - SQRT(5.0D0)))/4.0D0
+         SITE(4,2)=-(SQRT((5.0D0 - SQRT(5.0D0))/2.))/2.0D0
          SITE(4,3)=0.0D0
-         SITE(5,1)=((-1 + Sqrt(5.0D0)))/4.0D0
-         SITE(5,2)=-(Sqrt((5.0D0 + Sqrt(5.0D0))/2.))/2.0D0
+         SITE(5,1)=((-1 + SQRT(5.0D0)))/4.0D0
+         SITE(5,2)=-(SQRT((5.0D0 + SQRT(5.0D0))/2.))/2.0D0
          SITE(5,3)=0.0D0
          SITE(6,1)=0.0D0
          SITE(6,2)=0.0D0
          SITE(6,3)=HEIGHT
-Cop226> }}}
-Cop226> ============================================== 
-Cop226> CENTRE CENTREXY SETCENTRE QUCENTRE CG
-Cop226> ============================================== 
-Cop226> {{{
+COP226> }}}
+COP226> ============================================== 
+COP226> CENTRE CENTREXY SETCENTRE QUCENTRE CG
+COP226> ============================================== 
+COP226> {{{
       ELSE IF (WORD.EQ.'CENTRE') THEN
          CENT=.TRUE.
        
-C csw34> When using the implicit membrane potential IMM1, we want to let
-C the molecule move in and out of the membrane (z direction), but fix it
-C in x and y.
+C CSW34> WHEN USING THE IMPLICIT MEMBRANE POTENTIAL IMM1, WE WANT TO LET
+C THE MOLECULE MOVE IN AND OUT OF THE MEMBRANE (Z DIRECTION), BUT FIX IT
+C IN X AND Y.
        
       ELSE IF (WORD.EQ.'CENTREXY') THEN
          CENT=.TRUE.
          CENTXY=.TRUE.
 
-C csw34> SETCENTRE moves the centre of coordinates to the specified
-C location before the initial quench is done.
+C CSW34> SETCENTRE MOVES THE CENTRE OF COORDINATES TO THE SPECIFIED
+C LOCATION BEFORE THE INITIAL QUENCH IS DONE.
 
       ELSE IF (WORD.EQ.'SETCENTRE') THEN
          SETCENT=.TRUE.
@@ -999,65 +999,65 @@ C location before the initial quench is done.
             CALL READF(CENTZ)
          ENDIF
 
-C       csw34> QUCENTRE moves the centre of coordinates to (0,0,0)
-C       before each step is taken. 
+C       CSW34> QUCENTRE MOVES THE CENTRE OF COORDINATES TO (0,0,0)
+C       BEFORE EACH STEP IS TAKEN. 
       ELSE IF (WORD.EQ.'QUCENTRE') THEN
          QUCENTRE=.TRUE.
 C
-C  Conjugate gradient optimisation instead of default LBFGS
+C  CONJUGATE GRADIENT OPTIMISATION INSTEAD OF DEFAULT LBFGS
 C
       ELSE IF (WORD.EQ.'CG') THEN
          LBFGST=.FALSE.
          CONJG=.TRUE.
-Cop226> }}}
-Cop226> ============================================== 
+COP226> }}}
+COP226> ============================================== 
 C 
-C sf344> Start of AMBER-related keywords 
+C SF344> START OF AMBER-RELATED KEYWORDS 
 C
-Cop226> ============================================== 
-Cop226> AMBERMDSTEPS AMBER9 MODEL1 MOVABLEATOMS
-Cop226> ============================================== 
-Cop226> {{{ 
+COP226> ============================================== 
+COP226> AMBERMDSTEPS AMBER9 MODEL1 MOVABLEATOMS
+COP226> ============================================== 
+COP226> {{{ 
       ELSE IF (WORD.EQ.'AMBERMDSTEPS') THEN
         MDSTEPT = .TRUE.
-!op226>=================================== 
-!op226> AMBER 9
-!op226>=================================== 
-!op226>{{{ 
+!OP226>=================================== 
+!OP226> AMBER 9
+!OP226>=================================== 
+!OP226>{{{ 
       ELSE IF (WORD.EQ.'AMBER9') THEN
         AMBERT=.TRUE.
 C
-C csw34> if residues are frozen with FREEZERES, call the amber routine
-C to fill the FROZEN array correctly (in amberinterface.f) 
+C CSW34> IF RESIDUES ARE FROZEN WITH FREEZERES, CALL THE AMBER ROUTINE
+C TO FILL THE FROZEN ARRAY CORRECTLY (IN AMBERINTERFACE.F) 
 C
         IF (PERMDIST) THEN
           IF(NPERMSIZE(1).EQ.NATOMS) THEN
-           PRINT '(A)','keyword> ERROR - PERMDIST is specfied for AMBER, but there is no perm.allow file present'
+           PRINT '(A)','KEYWORD> ERROR - PERMDIST IS SPECFIED FOR AMBER, BUT THERE IS NO PERM.ALLOW FILE PRESENT'
            STOP
           ENDIF
         ENDIF
 
-! sf344> file open unit used to conflict with AMBER's IO units (mdin opened with unit = 5),
+! SF344> FILE OPEN UNIT USED TO CONFLICT WITH AMBER'S IO UNITS (MDIN OPENED WITH UNIT = 5),
 
-!               call amberinterface(natom,1,trim(adjustl(inpcrd)),MYUNIT)
-        IF(NITEMS==2) then
-         inpcrd='coords.inpcrd'
-         CALL READA(amberstr)
-         WRITE(MYUNIT,'(A)') 'keywords> input coordinates for AMBER9 system will be read from ', trim(adjustl(amberstr))
-               call amberinterface(natom,2,inpcrd,MYUNIT)
-               CALL amber_readcoords(amberstr)
+!               CALL AMBERINTERFACE(NATOM,1,TRIM(ADJUSTL(INPCRD)),MYUNIT)
+        IF(NITEMS==2) THEN
+         INPCRD='COORDS.INPCRD'
+         CALL READA(AMBERSTR)
+         WRITE(MYUNIT,'(A)') 'KEYWORDS> INPUT COORDINATES FOR AMBER9 SYSTEM WILL BE READ FROM ', TRIM(ADJUSTL(AMBERSTR))
+               CALL AMBERINTERFACE(NATOM,2,INPCRD,MYUNIT)
+               CALL AMBER_READCOORDS(AMBERSTR)
 
-        ELSE IF(NITEMS==3) then
-         CALL READA(amberstr)
-         CALL READA(amberstr1)
-         WRITE(MYUNIT,'(A)') 'keywords> input coordinates for AMBER9 system will be read from ', trim(adjustl(amberstr)),
-     &                              'type: ', trim(adjustl(amberstr1))
-          IF(trim(adjustl(amberstr1)).EQ.'inpcrd') then
-               inpcrd=amberstr
-               call amberinterface(natom,2,inpcrd,MYUNIT)
-           WRITE(MYUNIT,'(A)') 'keywords> reading AMBER inpcrd coordinate format'
+        ELSE IF(NITEMS==3) THEN
+         CALL READA(AMBERSTR)
+         CALL READA(AMBERSTR1)
+         WRITE(MYUNIT,'(A)') 'KEYWORDS> INPUT COORDINATES FOR AMBER9 SYSTEM WILL BE READ FROM ', TRIM(ADJUSTL(AMBERSTR)),
+     &                              'TYPE: ', TRIM(ADJUSTL(AMBERSTR1))
+          IF(TRIM(ADJUSTL(AMBERSTR1)).EQ.'INPCRD') THEN
+               INPCRD=AMBERSTR
+               CALL AMBERINTERFACE(NATOM,2,INPCRD,MYUNIT)
+           WRITE(MYUNIT,'(A)') 'KEYWORDS> READING AMBER INPCRD COORDINATE FORMAT'
           ELSE
-           WRITE(MYUNIT,'(A)') 'keywords> ERROR - no other types defined currently than inpcrd'
+           WRITE(MYUNIT,'(A)') 'KEYWORDS> ERROR - NO OTHER TYPES DEFINED CURRENTLY THAN INPCRD'
            STOP
           END IF
         END IF
@@ -1069,10 +1069,10 @@ C
              DO J1=1,NPAR
                COORDS(:,J1) = COORDS1(:)
              END DO
-!                natoms = natom
+!                NATOMS = NATOM
 
-!                WRITE(*,*) 'sf344> keywords.f, natoms = ', natoms
-!        call amopen(9,AMBERPRMTOP,'O','F','R')
+!                WRITE(*,*) 'SF344> KEYWORDS.F, NATOMS = ', NATOMS
+!        CALL AMOPEN(9,AMBERPRMTOP,'O','F','R')
         IF (FREEZERES) THEN 
            IF (UNFREEZERES) THEN
               CALL A9RESTOATOM(FROZENRES,FROZEN,NFREEZE,.TRUE.)
@@ -1089,11 +1089,11 @@ C
            ENDIF
         ENDIF
 
-Cop226 }}}
-!op226>=================================== 
-!op226> MODEL1
-!op226>=================================== 
-!op226>{{{ 
+COP226 }}}
+!OP226>=================================== 
+!OP226> MODEL1
+!OP226>=================================== 
+!OP226>{{{ 
       ELSE IF(WORD.EQ.'MODEL1') THEN
          MODEL1T=.TRUE.
          CALL READF(ME1)
@@ -1108,186 +1108,186 @@ Cop226 }}}
          CALL READF(MBHEIGHT1)
          CALL READF(MBHEIGHT2)
 
-! sf344> keyword for taking constrained random steps of just one part of the molecule between quenches
-!        should be useful for systems with ligands docked in a protein, this would be correspond to some
-!        partially flexible docking scheme
-!op226>}}}
-Cop226> ============================================== 
-Cop226> MOVABLEATOMS
-Cop226> ============================================== 
-!op226>{{{ 
+! SF344> KEYWORD FOR TAKING CONSTRAINED RANDOM STEPS OF JUST ONE PART OF THE MOLECULE BETWEEN QUENCHES
+!        SHOULD BE USEFUL FOR SYSTEMS WITH LIGANDS DOCKED IN A PROTEIN, THIS WOULD BE CORRESPOND TO SOME
+!        PARTIALLY FLEXIBLE DOCKING SCHEME
+!OP226>}}}
+COP226> ============================================== 
+COP226> MOVABLEATOMS
+COP226> ============================================== 
+!OP226>{{{ 
       ELSE IF(WORD.EQ.'MOVABLEATOMS') THEN
          MOVABLEATOMST=.TRUE.
-         nmovableatoms=0
-! csw34> for steered minimisation, need to read in the atoms used to define the points force acts on/from
-!        group A is the ligand, group B is the protein. They start at -1 as groups delimited by A and B
-! csw34> also, for LOCALSAMPLEing, need to define a group of atoms in the ligand (A) and two groups of atoms (B and C) 
-!        that are used to calculate distances to the ligand
-         natomsina=-1
-         natomsinb=-1
-         natomsinc=-1
-!        readswitch controls which part of movableatoms we're reading in i.e. 
-!        M=whole ligand, A=group A, B=group B, C=group C
-         readswitch='M'
-           WRITE(MYUNIT,'(A)') ' keyword> list of movable atoms will be read from file <movableatoms>'
-           OPEN(unit=222,file='movableatoms',status='old')
-                 do
-                   read (unit=222,iostat=iostatus,fmt='(A6)') check1
-                     if (iostatus<0) then
-                        close(222)
-                        exit
-                     else if (TRIM(ADJUSTL(check1)).EQ.'A') then
-                        readswitch='A'
-                     else if (TRIM(ADJUSTL(check1)).EQ.'B') then
-                        readswitch='B'
-                     else if (TRIM(ADJUSTL(check1)).EQ.'C') then
-                        readswitch='C'
-                     end if
-                     if (readswitch.EQ.'M') then 
-                        nmovableatoms = nmovableatoms + 1
-                     else if (readswitch.EQ.'A') then
-                        natomsina = natomsina + 1
-                     else if (readswitch.EQ.'B') then
-                        natomsinb = natomsinb + 1
-                     else if (readswitch.EQ.'C') then
-                        natomsinc = natomsinc + 1
-                     endif
-                 end do
-! setup arrays for movableatoms
-           if(.not.allocated(movableatomlist)) ALLOCATE(movableatomlist(nmovableatoms))
-           if(.not.allocated(movableatomlistlogical)) ALLOCATE(movableatomlistlogical(natoms))
-           movableatomlistlogical(:)=.false.
-! setup arrays for steered minimisation groups
-           if (natomsina.gt.0) then 
-              if(.not.allocated(atomsinalist)) ALLOCATE(atomsinalist(natomsina))
-              if(.not.allocated(atomsinalistlogical)) ALLOCATE(atomsinalistlogical(natoms))
-              atomsinalistlogical(:)=.false.
-           endif
-           if (natomsinb.gt.0) then 
-              if(.not.allocated(atomsinblist)) ALLOCATE(atomsinblist(natomsinb))
-              if(.not.allocated(atomsinblistlogical)) ALLOCATE(atomsinblistlogical(natoms))
-              atomsinblistlogical(:)=.false.
-           endif
-           if (natomsinc.gt.0) then 
-              if(.not.allocated(atomsinclist)) ALLOCATE(atomsinclist(natomsinc))
-              if(.not.allocated(atomsinclistlogical)) ALLOCATE(atomsinclistlogical(natoms))
-              atomsinclistlogical(:)=.false.
-           endif
-! now open movableatoms for the second time to actually read in the atom indicies
-           OPEN(unit=222,file='movableatoms',status='old')
-              do i=1,nmovableatoms
-                 read (unit=222,iostat=iostatus,fmt='(I6)') movableatomlist(i) 
-              end do
-! if groups for steered minimisation are specified, read them in
-           if (natomsina.gt.0) then 
-              read (unit=222,iostat=iostatus,fmt='(A6)') check1
-                 do i=1,natomsina
-                    read (unit=222,iostat=iostatus,fmt='(I6)') atomsinalist(i) 
-                 end do
-           endif
-           if (natomsinb.gt.0) then 
-              read (unit=222,iostat=iostatus,fmt='(A6)') check1
-                 do i=1,natomsinb
-                    read (unit=222,iostat=iostatus,fmt='(I6)') atomsinblist(i) 
-                 end do
-           endif
-           if (natomsinc.gt.0) then 
-              read (unit=222,iostat=iostatus,fmt='(A6)') check1
-                 do i=1,natomsinc
-                    read (unit=222,iostat=iostatus,fmt='(I6)') atomsinclist(i) 
-                 end do
-           endif
-! now need to set the logicals to .true. for all atoms in movableatom groups
-              do i=1,nmovableatoms
-                 movableatomlistlogical(movableatomlist(i))=.true.
-              end do
-           if (natomsina.gt.0) then
-              do i=1,natomsina
-              end do
-           endif
-           if (natomsinb.gt.0) then
-              do i=1,natomsinb
-                 atomsinblistlogical(atomsinblist(i))=.true.
-              end do
-           endif
-           if (natomsinb.gt.0) then
-              do i=1,natomsinc
-                 atomsinclistlogical(atomsinclist(i))=.true.
-              end do
-           endif
-! write some output for the user
-           WRITE(MYUNIT,'(A15,I6,A46)') ' keyword> ligand defined with ',nmovableatoms,' atoms'
-           IF(natomsina.GT.0) WRITE(MYUNIT,'(A10,I6,A64)') ' keyword> ',natomsina,' atoms in group A'
-           IF(natomsinb.GT.0) WRITE(MYUNIT,'(A10,I6,A63)') ' keyword> ',natomsinb,' atoms in group B'
-           IF(natomsinc.GT.0) WRITE(MYUNIT,'(A10,I6,A63)') ' keyword> ',natomsinc,' atoms in group C'
-! sf344> keyword for taking moves between quenches in which one part of the molecule is moved
-! csw34> updated on 29th September 2009 to allow local cartesian moves 
-!op226>}}} 
-!op226>=================================== 
-!op226> LIGMOVE
-!op226>=================================== 
-!op226>{{{ 
+         NMOVABLEATOMS=0
+! CSW34> FOR STEERED MINIMISATION, NEED TO READ IN THE ATOMS USED TO DEFINE THE POINTS FORCE ACTS ON/FROM
+!        GROUP A IS THE LIGAND, GROUP B IS THE PROTEIN. THEY START AT -1 AS GROUPS DELIMITED BY A AND B
+! CSW34> ALSO, FOR LOCALSAMPLEING, NEED TO DEFINE A GROUP OF ATOMS IN THE LIGAND (A) AND TWO GROUPS OF ATOMS (B AND C) 
+!        THAT ARE USED TO CALCULATE DISTANCES TO THE LIGAND
+         NATOMSINA=-1
+         NATOMSINB=-1
+         NATOMSINC=-1
+!        READSWITCH CONTROLS WHICH PART OF MOVABLEATOMS WE'RE READING IN I.E. 
+!        M=WHOLE LIGAND, A=GROUP A, B=GROUP B, C=GROUP C
+         READSWITCH='M'
+           WRITE(MYUNIT,'(A)') ' KEYWORD> LIST OF MOVABLE ATOMS WILL BE READ FROM FILE <MOVABLEATOMS>'
+           OPEN(UNIT=222,FILE='MOVABLEATOMS',STATUS='OLD')
+                 DO
+                   READ (UNIT=222,IOSTAT=IOSTATUS,FMT='(A6)') CHECK1
+                     IF (IOSTATUS<0) THEN
+                        CLOSE(222)
+                        EXIT
+                     ELSE IF (TRIM(ADJUSTL(CHECK1)).EQ.'A') THEN
+                        READSWITCH='A'
+                     ELSE IF (TRIM(ADJUSTL(CHECK1)).EQ.'B') THEN
+                        READSWITCH='B'
+                     ELSE IF (TRIM(ADJUSTL(CHECK1)).EQ.'C') THEN
+                        READSWITCH='C'
+                     END IF
+                     IF (READSWITCH.EQ.'M') THEN 
+                        NMOVABLEATOMS = NMOVABLEATOMS + 1
+                     ELSE IF (READSWITCH.EQ.'A') THEN
+                        NATOMSINA = NATOMSINA + 1
+                     ELSE IF (READSWITCH.EQ.'B') THEN
+                        NATOMSINB = NATOMSINB + 1
+                     ELSE IF (READSWITCH.EQ.'C') THEN
+                        NATOMSINC = NATOMSINC + 1
+                     ENDIF
+                 END DO
+! SETUP ARRAYS FOR MOVABLEATOMS
+           IF(.NOT.ALLOCATED(MOVABLEATOMLIST)) ALLOCATE(MOVABLEATOMLIST(NMOVABLEATOMS))
+           IF(.NOT.ALLOCATED(MOVABLEATOMLISTLOGICAL)) ALLOCATE(MOVABLEATOMLISTLOGICAL(NATOMS))
+           MOVABLEATOMLISTLOGICAL(:)=.FALSE.
+! SETUP ARRAYS FOR STEERED MINIMISATION GROUPS
+           IF (NATOMSINA.GT.0) THEN 
+              IF(.NOT.ALLOCATED(ATOMSINALIST)) ALLOCATE(ATOMSINALIST(NATOMSINA))
+              IF(.NOT.ALLOCATED(ATOMSINALISTLOGICAL)) ALLOCATE(ATOMSINALISTLOGICAL(NATOMS))
+              ATOMSINALISTLOGICAL(:)=.FALSE.
+           ENDIF
+           IF (NATOMSINB.GT.0) THEN 
+              IF(.NOT.ALLOCATED(ATOMSINBLIST)) ALLOCATE(ATOMSINBLIST(NATOMSINB))
+              IF(.NOT.ALLOCATED(ATOMSINBLISTLOGICAL)) ALLOCATE(ATOMSINBLISTLOGICAL(NATOMS))
+              ATOMSINBLISTLOGICAL(:)=.FALSE.
+           ENDIF
+           IF (NATOMSINC.GT.0) THEN 
+              IF(.NOT.ALLOCATED(ATOMSINCLIST)) ALLOCATE(ATOMSINCLIST(NATOMSINC))
+              IF(.NOT.ALLOCATED(ATOMSINCLISTLOGICAL)) ALLOCATE(ATOMSINCLISTLOGICAL(NATOMS))
+              ATOMSINCLISTLOGICAL(:)=.FALSE.
+           ENDIF
+! NOW OPEN MOVABLEATOMS FOR THE SECOND TIME TO ACTUALLY READ IN THE ATOM INDICIES
+           OPEN(UNIT=222,FILE='MOVABLEATOMS',STATUS='OLD')
+              DO I=1,NMOVABLEATOMS
+                 READ (UNIT=222,IOSTAT=IOSTATUS,FMT='(I6)') MOVABLEATOMLIST(I) 
+              END DO
+! IF GROUPS FOR STEERED MINIMISATION ARE SPECIFIED, READ THEM IN
+           IF (NATOMSINA.GT.0) THEN 
+              READ (UNIT=222,IOSTAT=IOSTATUS,FMT='(A6)') CHECK1
+                 DO I=1,NATOMSINA
+                    READ (UNIT=222,IOSTAT=IOSTATUS,FMT='(I6)') ATOMSINALIST(I) 
+                 END DO
+           ENDIF
+           IF (NATOMSINB.GT.0) THEN 
+              READ (UNIT=222,IOSTAT=IOSTATUS,FMT='(A6)') CHECK1
+                 DO I=1,NATOMSINB
+                    READ (UNIT=222,IOSTAT=IOSTATUS,FMT='(I6)') ATOMSINBLIST(I) 
+                 END DO
+           ENDIF
+           IF (NATOMSINC.GT.0) THEN 
+              READ (UNIT=222,IOSTAT=IOSTATUS,FMT='(A6)') CHECK1
+                 DO I=1,NATOMSINC
+                    READ (UNIT=222,IOSTAT=IOSTATUS,FMT='(I6)') ATOMSINCLIST(I) 
+                 END DO
+           ENDIF
+! NOW NEED TO SET THE LOGICALS TO .TRUE. FOR ALL ATOMS IN MOVABLEATOM GROUPS
+              DO I=1,NMOVABLEATOMS
+                 MOVABLEATOMLISTLOGICAL(MOVABLEATOMLIST(I))=.TRUE.
+              END DO
+           IF (NATOMSINA.GT.0) THEN
+              DO I=1,NATOMSINA
+              END DO
+           ENDIF
+           IF (NATOMSINB.GT.0) THEN
+              DO I=1,NATOMSINB
+                 ATOMSINBLISTLOGICAL(ATOMSINBLIST(I))=.TRUE.
+              END DO
+           ENDIF
+           IF (NATOMSINB.GT.0) THEN
+              DO I=1,NATOMSINC
+                 ATOMSINCLISTLOGICAL(ATOMSINCLIST(I))=.TRUE.
+              END DO
+           ENDIF
+! WRITE SOME OUTPUT FOR THE USER
+           WRITE(MYUNIT,'(A15,I6,A46)') ' KEYWORD> LIGAND DEFINED WITH ',NMOVABLEATOMS,' ATOMS'
+           IF(NATOMSINA.GT.0) WRITE(MYUNIT,'(A10,I6,A64)') ' KEYWORD> ',NATOMSINA,' ATOMS IN GROUP A'
+           IF(NATOMSINB.GT.0) WRITE(MYUNIT,'(A10,I6,A63)') ' KEYWORD> ',NATOMSINB,' ATOMS IN GROUP B'
+           IF(NATOMSINC.GT.0) WRITE(MYUNIT,'(A10,I6,A63)') ' KEYWORD> ',NATOMSINC,' ATOMS IN GROUP C'
+! SF344> KEYWORD FOR TAKING MOVES BETWEEN QUENCHES IN WHICH ONE PART OF THE MOLECULE IS MOVED
+! CSW34> UPDATED ON 29TH SEPTEMBER 2009 TO ALLOW LOCAL CARTESIAN MOVES 
+!OP226>}}} 
+!OP226>=================================== 
+!OP226> LIGMOVE
+!OP226>=================================== 
+!OP226>{{{ 
       ELSE IF(WORD.EQ.'LIGMOVE') THEN
         LIGMOVET=.TRUE.
         IF (NITEMS.GT.1) THEN
-           CALL READF(ligrotscale)
+           CALL READF(LIGROTSCALE)
         ENDIF
         IF (NITEMS.GT.2) THEN
-           CALL READF(ligcartstep)
+           CALL READF(LIGCARTSTEP)
         ENDIF
         IF (NITEMS.GT.3) THEN
-           CALL READF(ligtransstep)
+           CALL READF(LIGTRANSSTEP)
         ENDIF
         IF (NITEMS.GT.4) THEN
-           CALL READI(ligmovefreq)
-! csw34> to prevent an arithmetic exception (divide by 0), we need to
-! check that the frequency of ligand moves is > 0. Otherwise, disable
-! the moves.
-           IF(ligmovefreq.EQ.0) THEN 
+           CALL READI(LIGMOVEFREQ)
+! CSW34> TO PREVENT AN ARITHMETIC EXCEPTION (DIVIDE BY 0), WE NEED TO
+! CHECK THAT THE FREQUENCY OF LIGAND MOVES IS > 0. OTHERWISE, DISABLE
+! THE MOVES.
+           IF(LIGMOVEFREQ.EQ.0) THEN 
               LIGMOVET=.FALSE.
-              WRITE(MYUNIT,'(A)') ' keyword> WARNING: frequency of LIGMOVE moves set to 0 - moves DISABLED!'
+              WRITE(MYUNIT,'(A)') ' KEYWORD> WARNING: FREQUENCY OF LIGMOVE MOVES SET TO 0 - MOVES DISABLED!'
            ENDIF
         ENDIF
 
-! csw34> some user info about ligand moves 
-        IF (ligrotscale.gt.0) THEN
-           WRITE(MYUNIT,'(A)') ' keyword> one part of the molecule (ligand) will be randomly rotated during MC steptaking moves'
-           WRITE(MYUNIT,'(A,G8.3)') ' keyword> ligand rotations scaled will be scaled by ',ligrotscale 
+! CSW34> SOME USER INFO ABOUT LIGAND MOVES 
+        IF (LIGROTSCALE.GT.0) THEN
+           WRITE(MYUNIT,'(A)') ' KEYWORD> ONE PART OF THE MOLECULE (LIGAND) WILL BE RANDOMLY ROTATED DURING MC STEPTAKING MOVES'
+           WRITE(MYUNIT,'(A,G8.3)') ' KEYWORD> LIGAND ROTATIONS SCALED WILL BE SCALED BY ',LIGROTSCALE 
         ENDIF
-        IF (ligcartstep.gt.0) THEN 
-           WRITE(MYUNIT,'(A,G8.3,A)') ' keyword> cartesian perturbations of up to ',ligcartstep,' will be applied to the ligand' 
+        IF (LIGCARTSTEP.GT.0) THEN 
+           WRITE(MYUNIT,'(A,G8.3,A)') ' KEYWORD> CARTESIAN PERTURBATIONS OF UP TO ',LIGCARTSTEP,' WILL BE APPLIED TO THE LIGAND' 
         ENDIF 
 
-      ELSE IF (WORD.eq.'DUMPSTRUCTURES') THEN
+      ELSE IF (WORD.EQ.'DUMPSTRUCTURES') THEN
         DUMPSTRUCTURES=.TRUE.
-        WRITE(MYUNIT,'(A)') ' keywords> Final structures will be dumped in different formats (.rst, .xyz, .pdb)'
-      ELSE IF (WORD.eq.'RANDOMSEED') THEN
-        WRITE(MYUNIT,'(A)') ' keywords> The random number generator for the random steptaking moves will be seeded with system time'
+        WRITE(MYUNIT,'(A)') ' KEYWORDS> FINAL STRUCTURES WILL BE DUMPED IN DIFFERENT FORMATS (.RST, .XYZ, .PDB)'
+      ELSE IF (WORD.EQ.'RANDOMSEED') THEN
+        WRITE(MYUNIT,'(A)') ' KEYWORDS> THE RANDOM NUMBER GENERATOR FOR THE RANDOM STEPTAKING MOVES WILL BE SEEDED WITH SYSTEM TIME'
         RANDOMSEEDT=.TRUE.
       ELSE IF (WORD.EQ.'CHANGEACCEPT') THEN
          CALL READI(IX)
          NACCEPT=IX
 
-! csw34> Dumping after every quench in AMBER rst and pdb format
-      ELSE IF (WORD.eq.'DUMPQU') THEN
+! CSW34> DUMPING AFTER EVERY QUENCH IN AMBER RST AND PDB FORMAT
+      ELSE IF (WORD.EQ.'DUMPQU') THEN
          DUMPQUT=.TRUE.
-! csw34> Dumping after every step (before quenching) in AMBER rst and pdb format
-      ELSE IF (WORD.eq.'DUMPSTEPS') THEN
+! CSW34> DUMPING AFTER EVERY STEP (BEFORE QUENCHING) IN AMBER RST AND PDB FORMAT
+      ELSE IF (WORD.EQ.'DUMPSTEPS') THEN
          DUMPSTEPST=.TRUE.
-! csw34> AMBER interaction energy using script AMBGMINintE.sh
-      ELSE IF (WORD.eq.'A9INTE') THEN
+! CSW34> AMBER INTERACTION ENERGY USING SCRIPT AMBGMININTE.SH
+      ELSE IF (WORD.EQ.'A9INTE') THEN
          YESNO=.FALSE.
-         INQUIRE(FILE='AMBGMINintE.sh',EXIST=YESNO)
+         INQUIRE(FILE='AMBGMININTE.SH',EXIST=YESNO)
          IF (YESNO) THEN
             A9INTET=.TRUE.
-            WRITE(MYUNIT,'(A)') ' keyword> The interaction enthalpy to the specified residue will be calculated after each quench'
+            WRITE(MYUNIT,'(A)') ' KEYWORD> THE INTERACTION ENTHALPY TO THE SPECIFIED RESIDUE WILL BE CALCULATED AFTER EACH QUENCH'
          ELSE
-            WRITE(MYUNIT,'(A)') ' keyword> ERROR: NEED AMBGMINintE.sh SCRIPT TO USE A9INTE - see www-wales.ch.cam.ac.uk/software'
+            WRITE(MYUNIT,'(A)') ' KEYWORD> ERROR: NEED AMBGMININTE.SH SCRIPT TO USE A9INTE - SEE WWW-WALES.CH.CAM.AC.UK/SOFTWARE'
             STOP
          ENDIF
 
-! csw34> FREEZEGROUP 
-C FREEZEGROUP lets you freeze all atoms within or beyond a radius
+! CSW34> FREEZEGROUP 
+C FREEZEGROUP LETS YOU FREEZE ALL ATOMS WITHIN OR BEYOND A RADIUS
       ELSE IF (WORD.EQ.'FREEZEGROUP') THEN
          FREEZE=.TRUE.
          FREEZEGROUPT=.TRUE.
@@ -1295,15 +1295,15 @@ C FREEZEGROUP lets you freeze all atoms within or beyond a radius
          CALL READF(GROUPRADIUS)
          IF(NITEMS.GT.3) CALL READA(FREEZEGROUPTYPE)
 
-! csw34> Rotamer moves 
+! CSW34> ROTAMER MOVES 
       ELSE IF (WORD.EQ.'ROTAMER') THEN
          YESNO=.FALSE.
-         INQUIRE(FILE='PdbRotamerSearch',EXIST=YESNO)
+         INQUIRE(FILE='PDBROTAMERSEARCH',EXIST=YESNO)
          IF (YESNO) THEN
             ROTAMERT=.TRUE.
-            WRITE(MYUNIT,'(A)') ' keyword> AMBER rotamer moves enabled'
+            WRITE(MYUNIT,'(A)') ' KEYWORD> AMBER ROTAMER MOVES ENABLED'
          ELSE
-            WRITE(MYUNIT,'(A)') ' keyword> ERROR: NEED PdbRotamerSearch TO USE ROTAMER - see www-wales.ch.cam.ac.uk/software'
+            WRITE(MYUNIT,'(A)') ' KEYWORD> ERROR: NEED PDBROTAMERSEARCH TO USE ROTAMER - SEE WWW-WALES.CH.CAM.AC.UK/SOFTWARE'
             STOP
          ENDIF
          CALL READI(ROTMAXCHANGE)
@@ -1312,64 +1312,64 @@ C FREEZEGROUP lets you freeze all atoms within or beyond a radius
          IF (NITEMS.GT.4) CALL READI(ROTCENTRE)
          IF (NITEMS.GT.5) CALL READF(ROTCUTOFF)
 
-! csw34> Group rotation moves 
+! CSW34> GROUP ROTATION MOVES 
       ELSE IF (WORD.EQ.'GROUPROTATION') THEN
-! csw34> Check the group file is present
+! CSW34> CHECK THE GROUP FILE IS PRESENT
          YESNO=.FALSE.
-         INQUIRE(FILE='atomgroups',EXIST=YESNO)
+         INQUIRE(FILE='ATOMGROUPS',EXIST=YESNO)
          IF (YESNO) THEN
             GROUPROTT=.TRUE.
-            WRITE(MYUNIT,'(A)') ' keyword> AMBER group rotation moves enabled'
+            WRITE(MYUNIT,'(A)') ' KEYWORD> AMBER GROUP ROTATION MOVES ENABLED'
          ELSE
-            WRITE(MYUNIT,'(A)') ' keyword> ERROR: atom groups must be defined in atomgroups file'
+            WRITE(MYUNIT,'(A)') ' KEYWORD> ERROR: ATOM GROUPS MUST BE DEFINED IN ATOMGROUPS FILE'
             STOP
          ENDIF
          IF (NITEMS.GT.1) CALL READI(GROUPROTFREQ)
-! csw34> if the frequency is 0, we need to disable the moves to present
-! a divide by 0!
+! CSW34> IF THE FREQUENCY IS 0, WE NEED TO DISABLE THE MOVES TO PRESENT
+! A DIVIDE BY 0!
          IF(GROUPROTFREQ.EQ.0) THEN 
             GROUPROTT=.FALSE.
-            WRITE(MYUNIT,'(A)') ' keyword> WARNING: frequency of GROUPROTATION moves set to 0 - moves DISABLED!'
+            WRITE(MYUNIT,'(A)') ' KEYWORD> WARNING: FREQUENCY OF GROUPROTATION MOVES SET TO 0 - MOVES DISABLED!'
          ENDIF
          IF (NITEMS.GT.2) CALL READI(GROUPOFFSET)
-! csw34> Figure out how many atom groups have been defined
+! CSW34> FIGURE OUT HOW MANY ATOM GROUPS HAVE BEEN DEFINED
          NGROUPS=0
-         OPEN(UNIT=222,FILE='atomgroups',status='old')
+         OPEN(UNIT=222,FILE='ATOMGROUPS',STATUS='OLD')
          DO
-            READ(222,*,IOSTAT=iostatus) CHECK1
-            IF (iostatus<0) THEN
+            READ(222,*,IOSTAT=IOSTATUS) CHECK1
+            IF (IOSTATUS<0) THEN
             CLOSE(222)
             EXIT
-            ELSE IF (TRIM(ADJUSTL(check1)).EQ.'GROUP') then
+            ELSE IF (TRIM(ADJUSTL(CHECK1)).EQ.'GROUP') THEN
                NGROUPS=NGROUPS+1
             ENDIF
          END DO        
          CLOSE(222)
-! csw34> Allocate atom group info arrays appropriately
+! CSW34> ALLOCATE ATOM GROUP INFO ARRAYS APPROPRIATELY
          ALLOCATE(ATOMGROUPNAMES(NGROUPS))
          ALLOCATE(ATOMGROUPAXIS(NGROUPS,2))
          ALLOCATE(ATOMGROUPPSELECT(NGROUPS))
          ALLOCATE(ATOMGROUPSCALING(NGROUPS))
          ALLOCATE(ATOMGROUPS(NGROUPS,NATOMS))
-! csw34> Set safe defaults
+! CSW34> SET SAFE DEFAULTS
          ATOMGROUPS(:,:)=.FALSE.
          ATOMGROUPNAMES(:)='EMPTY'
          ATOMGROUPAXIS(:,:)=0
          ATOMGROUPSCALING(:)=1.0D0
          ATOMGROUPPSELECT(:)=1.0D0
-! csw34> Read in group info
-! Here is an example entry:
+! CSW34> READ IN GROUP INFO
+! HERE IS AN EXAMPLE ENTRY:
 ! GROUP OME 6 5 4 1.0
 ! 1
 ! 2
 ! 3
 ! 4
-! This says that group OME is to be rotated about the bond from atom 6->5.
-! There are 4 atoms in the OME group. Rotations of -pi->+pi are to be scaled by 1.0. 
-! Finally, the group members are specified one per line
-         OPEN(UNIT=222,FILE='atomgroups',status='unknown')
-         WRITE(MYUNIT,*) 'keyword> Reading in atom groups for GROUPROTATION'
-         IF(GROUPOFFSET.NE.0) WRITE(MYUNIT,*) 'keyword> Group atom numbering offset by ',GROUPOFFSET
+! THIS SAYS THAT GROUP OME IS TO BE ROTATED ABOUT THE BOND FROM ATOM 6->5.
+! THERE ARE 4 ATOMS IN THE OME GROUP. ROTATIONS OF -PI->+PI ARE TO BE SCALED BY 1.0. 
+! FINALLY, THE GROUP MEMBERS ARE SPECIFIED ONE PER LINE
+         OPEN(UNIT=222,FILE='ATOMGROUPS',STATUS='UNKNOWN')
+         WRITE(MYUNIT,*) 'KEYWORD> READING IN ATOM GROUPS FOR GROUPROTATION'
+         IF(GROUPOFFSET.NE.0) WRITE(MYUNIT,*) 'KEYWORD> GROUP ATOM NUMBERING OFFSET BY ',GROUPOFFSET
          DO J1=1,NGROUPS
             READ(222,*) CHECK1,ATOMGROUPNAMES(J1),AXIS1,AXIS2,GROUPSIZE,ATOMGROUPSCALING(J1),
      &                       ATOMGROUPPSELECT(J1) 
@@ -1383,62 +1383,62 @@ C FREEZEGROUP lets you freeze all atoms within or beyond a radius
                   ATOMGROUPS(J1,GROUPATOM)=.TRUE. 
                END DO 
             ELSE
-               WRITE(MYUNIT,'(A)') ' keyword: ERROR! Group file not formatted correctly!'
+               WRITE(MYUNIT,'(A)') ' KEYWORD: ERROR! GROUP FILE NOT FORMATTED CORRECTLY!'
                STOP
             ENDIF
             WRITE(MYUNIT,'(3A)') '<GROUP ',TRIM(ADJUSTL(ATOMGROUPNAMES(J1))),'>'
-            WRITE(MYUNIT,'(A,I3)') 'Index: ',J1
-            WRITE(MYUNIT,'(A,I4)') 'Size: ',GROUPSIZE
-            WRITE(MYUNIT,'(A,2I5)') 'Atoms defining axis: ',ATOMGROUPAXIS(J1,1),ATOMGROUPAXIS(J1,2)
-            WRITE(MYUNIT,'(A,F4.2)') 'Rotation scaling: ',ATOMGROUPSCALING(J1)
-            WRITE(MYUNIT,'(A,F4.2)') 'Selection probablity: ',ATOMGROUPPSELECT(J1)
-            WRITE(MYUNIT,'(A)') 'Members:'
+            WRITE(MYUNIT,'(A,I3)') 'INDEX: ',J1
+            WRITE(MYUNIT,'(A,I4)') 'SIZE: ',GROUPSIZE
+            WRITE(MYUNIT,'(A,2I5)') 'ATOMS DEFINING AXIS: ',ATOMGROUPAXIS(J1,1),ATOMGROUPAXIS(J1,2)
+            WRITE(MYUNIT,'(A,F4.2)') 'ROTATION SCALING: ',ATOMGROUPSCALING(J1)
+            WRITE(MYUNIT,'(A,F4.2)') 'SELECTION PROBABLITY: ',ATOMGROUPPSELECT(J1)
+            WRITE(MYUNIT,'(A)') 'MEMBERS:'
             DO J2=1,NATOMS
                IF(ATOMGROUPS(J1,J2)) WRITE(MYUNIT,*) J2
             ENDDO
          ENDDO
          CLOSE(222)
 C }}}
-!op226>}}} 
-!op226>=================================== 
+!OP226>}}} 
+!OP226>=================================== 
 C
-C Start of CHARMM-related keywords, including options for MC moves and order parameter specifications.
+C START OF CHARMM-RELATED KEYWORDS, INCLUDING OPTIONS FOR MC MOVES AND ORDER PARAMETER SPECIFICATIONS.
 C
-!op226>=================================== 
-!op226>{{{ 
-!op226>=================================== 
-!op226> CHARMM 
-!op226>=================================== 
-!op226>{{{ 
+!OP226>=================================== 
+!OP226>{{{ 
+!OP226>=================================== 
+!OP226> CHARMM 
+!OP226>=================================== 
+!OP226>{{{ 
       ELSE IF (WORD.EQ.'CHARMM') THEN
          CHRMMT=.TRUE.
          IF (MXATMS.EQ.0) THEN
-            WRITE(MYUNIT,'(A)') 'keyword> ERROR *** MXATMS is zero'
+            WRITE(MYUNIT,'(A)') 'KEYWORD> ERROR *** MXATMS IS ZERO'
             STOP
          ENDIF
 
          IF (PERMDIST) THEN
             IF(NPERMSIZE(1).EQ.NATOMS) THEN
-            WRITE(MYUNIT,'(A)') 'keyword> ERROR - PERMDIST is specfied for CHARMM, but there is no perm.allow file present'
+            WRITE(MYUNIT,'(A)') 'KEYWORD> ERROR - PERMDIST IS SPECFIED FOR CHARMM, BUT THERE IS NO PERM.ALLOW FILE PRESENT'
             STOP
             ENDIF
          ENDIF
 
          ALLOCATE(CHX(MXATMS),CHY(MXATMS),CHZ(MXATMS),CHMASS(MXATMS))
 
-         CHX(1)=13.13d13 ! this way we will tell CHARMM to save it's coords into CH. arrays; otherwise it will
-                         ! use input.crd only which is the default now
+         CHX(1)=13.13D13 ! THIS WAY WE WILL TELL CHARMM TO SAVE IT'S COORDS INTO CH. ARRAYS; OTHERWISE IT WILL
+                         ! USE INPUT.CRD ONLY WHICH IS THE DEFAULT NOW
          CALL CHSETUP(CHX,CHY,CHZ,CHMASS,NATOM,TOPFILE,PARFILE)
          CALL CHSETZSYMATMASS
          CALL CHALLOCATE(NATOMS)
-C jmc49>         CALL CHSETDIHE
-C Moved the above call to CHSETDIHE to below the "IF (FREEZERES) CALL CHRESTOATOM(FROZENRES,FROZEN)" below.
-C Necessary for the case of freezing residues when the MC moves are made in internal coordinates, and 
-C inconsequential otherwise.
+C JMC49>         CALL CHSETDIHE
+C MOVED THE ABOVE CALL TO CHSETDIHE TO BELOW THE "IF (FREEZERES) CALL CHRESTOATOM(FROZENRES,FROZEN)" BELOW.
+C NECESSARY FOR THE CASE OF FREEZING RESIDUES WHEN THE MC MOVES ARE MADE IN INTERNAL COORDINATES, AND 
+C INCONSEQUENTIAL OTHERWISE.
 
-C csw34> If we're freezing RESIDUES, fill the FROZEN array with atoms that are
-C within the frozen residues. This requires info from a CHARMM routine
-C and so will be done in charmmgmin.src
+C CSW34> IF WE'RE FREEZING RESIDUES, FILL THE FROZEN ARRAY WITH ATOMS THAT ARE
+C WITHIN THE FROZEN RESIDUES. THIS REQUIRES INFO FROM A CHARMM ROUTINE
+C AND SO WILL BE DONE IN CHARMMGMIN.SRC
 
          IF (FREEZERES) THEN 
             IF (UNFREEZERES) THEN
@@ -1458,7 +1458,7 @@ C and so will be done in charmmgmin.src
          CALL CHSETDIHE
          
          IF (NATOM /= NATOMS) THEN
-            WRITE(MYUNIT,'(A)') 'No. of atoms in "input.crd" and file specified in CHARMM part of data conflict'
+            WRITE(MYUNIT,'(A)') 'NO. OF ATOMS IN "INPUT.CRD" AND FILE SPECIFIED IN CHARMM PART OF DATA CONFLICT'
             WRITE(MYUNIT,'(A,2I8)') 'NATOM,NATOMS=',NATOM, NATOMS
             CALL EXIT(10)
          ENDIF
@@ -1476,23 +1476,23 @@ C and so will be done in charmmgmin.src
             ENDDO
          ENDIF
          DEALLOCATE(CHX,CHY,CHZ,CHMASS)
-         IF (INTMINT) CALL GETNINT(NINTS)  ! DJW - this is OK because CHARMM is the last keyword!
-         IF (ODIHET) CALL READREF ! likewise, this is OK and in fact essential because CHARMM is the last keyword!
+         IF (INTMINT) CALL GETNINT(NINTS)  ! DJW - THIS IS OK BECAUSE CHARMM IS THE LAST KEYWORD!
+         IF (ODIHET) CALL READREF ! LIKEWISE, THIS IS OK AND IN FACT ESSENTIAL BECAUSE CHARMM IS THE LAST KEYWORD!
 C }}}
-!op226>=================================== 
-!op226> CHARMMENERGIES
-!op226>=================================== 
-!op226>{{{ 
+!OP226>=================================== 
+!OP226> CHARMMENERGIES
+!OP226>=================================== 
+!OP226>{{{ 
 C
-C Dump charmm energy components at every step
+C DUMP CHARMM ENERGY COMPONENTS AT EVERY STEP
 C
       ELSE IF (WORD.EQ.'CHARMMENERGIES') THEN
          CHARMMENERGIES=.TRUE.
-!op226>}}}
-!op226>=================================== 
-!op226> CHARMMTYPE
-!op226>=================================== 
-!op226>{{{ 
+!OP226>}}}
+!OP226>=================================== 
+!OP226> CHARMMTYPE
+!OP226>=================================== 
+!OP226>{{{ 
 C
       ELSE IF (WORD.EQ.'CHARMMTYPE') THEN
          IF (NITEMS.GT.1) THEN
@@ -1503,51 +1503,51 @@ C
             CALL READA(PARFILE)
             PARFILE=TRIM(ADJUSTL(PARFILE))
          ELSE
-            WRITE(*,*) 'keywords> TOPFILE and PARFILE have to be defined for CHARMMTYPE'
+            WRITE(*,*) 'KEYWORDS> TOPFILE AND PARFILE HAVE TO BE DEFINED FOR CHARMMTYPE'
             STOP
          ENDIF
-         IF (TOPFILE(1:6).EQ."toph19") THEN
+         IF (TOPFILE(1:6).EQ."TOPH19") THEN
             CHARMMTYPE=2
-         ELSEIF (TOPFILE(1:9).EQ."top_all22") THEN
+         ELSEIF (TOPFILE(1:9).EQ."TOP_ALL22") THEN
             CHARMMTYPE = 1
          ELSE
-             WRITE(*,*) 'keywords> TOPFILE ', TRIM(ADJUSTL(TOPFILE)),' is not recognised by OPTIM'
+             WRITE(*,*) 'KEYWORDS> TOPFILE ', TRIM(ADJUSTL(TOPFILE)),' IS NOT RECOGNISED BY OPTIM'
              STOP
          ENDIF
-         WRITE(*,'(A,I2)') 'CHARMMTYPE set to ',CHARMMTYPE
+         WRITE(*,'(A,I2)') 'CHARMMTYPE SET TO ',CHARMMTYPE
 C
-C Sanity check for the energy in COORDSO.
+C SANITY CHECK FOR THE ENERGY IN COORDSO.
 C
-!op226>}}} 
-!op226>=================================== 
-!op226> CHECKMARKOV
-!op226>=================================== 
-!op226>{{{ 
+!OP226>}}} 
+!OP226>=================================== 
+!OP226> CHECKMARKOV
+!OP226>=================================== 
+!OP226>{{{ 
       ELSE IF (WORD.EQ.'CHECKMARKOV') THEN
          CHECKMARKOVT=.TRUE.
 C
-C MD for CHARMM for the generation of new structures.
+C MD FOR CHARMM FOR THE GENERATION OF NEW STRUCTURES.
 C
-!op226>}}} 
-!op226>=================================== 
-!op226> CHMD
-!op226>=================================== 
-!op226>{{{ 
+!OP226>}}} 
+!OP226>=================================== 
+!OP226> CHMD
+!OP226>=================================== 
+!OP226>{{{ 
       ELSE IF (WORD.EQ.'CHMD') THEN
          CHMDT=.TRUE.
-         INQUIRE(FILE='chmd.par',EXIST=YESNO)
+         INQUIRE(FILE='CHMD.PAR',EXIST=YESNO)
          IF (YESNO) THEN
-            OPEN(99,file='chmd.par')
+            OPEN(99,FILE='CHMD.PAR')
             READ(99,'(A)') CHMDPAR
             CLOSE(99)
          ENDIF
          CALL READI(CHMDFREQ) 
 C
-!op226>}}} 
-!op226>=================================== 
-!op226> CHPMAX CHPMIN CHNMAX CHNMIN NOPHIPSI TOMEGA CHFREQ
-!op226>=================================== 
-!op226>{{{ 
+!OP226>}}} 
+!OP226>=================================== 
+!OP226> CHPMAX CHPMIN CHNMAX CHNMIN NOPHIPSI TOMEGA CHFREQ
+!OP226>=================================== 
+!OP226>{{{ 
       ELSE IF (WORD.EQ.'CHPMAX') THEN
          CALL READF(CHPMAX)
          WRITE(MYUNIT,'(A,F14.10)') 'CHPMAX=  ',CHPMAX
@@ -1566,20 +1566,20 @@ C
 
       ELSE IF (WORD.EQ.'NOPHIPSI') THEN
          NOPHIPSIT=.TRUE.
-         WRITE(MYUNIT,'(A)') 'NOPHIPSIT set : only sidechain dihedrals will be twisted'
+         WRITE(MYUNIT,'(A)') 'NOPHIPSIT SET : ONLY SIDECHAIN DIHEDRALS WILL BE TWISTED'
 
       ELSE IF (WORD.EQ.'TOMEGA') THEN
          OMEGAT=.TRUE.
-         WRITE(MYUNIT,'(A)') 'TOMEGA set : peptide bonds will be twisted along with all other dihedrals'
+         WRITE(MYUNIT,'(A)') 'TOMEGA SET : PEPTIDE BONDS WILL BE TWISTED ALONG WITH ALL OTHER DIHEDRALS'
 
       ELSE IF (WORD.EQ.'CHFREQ') THEN
          CALL READI(CHFREQ)
-         WRITE(MYUNIT,'(A,I4,A)') 'Every ',CHFREQ,' steps TAKESTEPCH is called'
-!op226>}}} 
-!op226>=================================== 
-!op226> CHRIGIDTRANS CHRIGIDROT FIXEDEND OSASA ODIHE OEINT
-!op226>=================================== 
-!op226>{{{ 
+         WRITE(MYUNIT,'(A,I4,A)') 'EVERY ',CHFREQ,' STEPS TAKESTEPCH IS CALLED'
+!OP226>}}} 
+!OP226>=================================== 
+!OP226> CHRIGIDTRANS CHRIGIDROT FIXEDEND OSASA ODIHE OEINT
+!OP226>=================================== 
+!OP226>{{{ 
 
       ELSE IF (WORD.EQ.'CHRIGIDTRANS') THEN
          CHRIGIDTRANST=.TRUE.
@@ -1599,20 +1599,20 @@ C
          CALL READI(FROT)
 
       ELSE IF (WORD.EQ.'FIXEDEND') THEN
-         FixedEndMoveT = .TRUE.
+         FIXEDENDMOVET = .TRUE.
          IF (NITEMS.GT.1) CALL READF(PIVOTP)
          IF (NITEMS.GT.2) CALL READF(SIDECHAINP)
 
       ELSE IF (WORD.EQ.'OSASA') THEN
          OSASAT=.TRUE.
          CALL READF(RPRO)
-         WRITE(MYUNIT,'(A)') 'OSASA set: solvent accessible surface area order parameter will be calculated'
-         WRITE(MYUNIT,'(A,F3.1)') 'using probe radius ',RPRO
+         WRITE(MYUNIT,'(A)') 'OSASA SET: SOLVENT ACCESSIBLE SURFACE AREA ORDER PARAMETER WILL BE CALCULATED'
+         WRITE(MYUNIT,'(A,F3.1)') 'USING PROBE RADIUS ',RPRO
 
       ELSE IF (WORD.EQ.'ODIHE') THEN
          ODIHET=.TRUE.
-         WRITE(MYUNIT,'(A)') 'ODIHE set: dihedral-angle order parameter will be calculated'
-         WRITE(MYUNIT,'(A)') 'using the reference structure supplied in ref.crd'
+         WRITE(MYUNIT,'(A)') 'ODIHE SET: DIHEDRAL-ANGLE ORDER PARAMETER WILL BE CALCULATED'
+         WRITE(MYUNIT,'(A)') 'USING THE REFERENCE STRUCTURE SUPPLIED IN REF.CRD'
  
       ELSE IF (WORD.EQ.'OEINT') THEN
          OEINTT=.TRUE.
@@ -1620,16 +1620,16 @@ C
          CALL READI(MON1(2))
          CALL READI(MON2(1))
          CALL READI(MON2(2))
-         WRITE(MYUNIT,'(A)') 'OEINTT set: interaction energy between 2 peptides will be used as an order parameter'
-!op226>}}} 
-!op226>=================================== 
-!op226> ORGYR NORANDOM PERMDIHE 
-!op226>=================================== 
-!op226>{{{ 
+         WRITE(MYUNIT,'(A)') 'OEINTT SET: INTERACTION ENERGY BETWEEN 2 PEPTIDES WILL BE USED AS AN ORDER PARAMETER'
+!OP226>}}} 
+!OP226>=================================== 
+!OP226> ORGYR NORANDOM PERMDIHE 
+!OP226>=================================== 
+!OP226>{{{ 
 
       ELSE IF (WORD.EQ.'ORGYR') THEN
          ORGYT=.TRUE.
-         WRITE(MYUNIT,'(A)') 'ORGYT set: radius of gyration will be calculated as an order parameter'
+         WRITE(MYUNIT,'(A)') 'ORGYT SET: RADIUS OF GYRATION WILL BE CALCULATED AS AN ORDER PARAMETER'
 
 C     ELSE IF (WORD.EQ.'NORANDOM') THEN
 C        NORANDOM=.TRUE.
@@ -1643,15 +1643,15 @@ C           PERMDIHE(J1)=NDUM
 C        ENDDO
 C        NPERMDIHE=NITEMS-1
 C        DO J1=1,NITEMS-1
-C           print *,'PERMDIHE',PERMDIHE(J1)
+C           PRINT *,'PERMDIHE',PERMDIHE(J1)
 C        ENDDO
 C
-!op226>}}} 
-C  End of CHARMM block.  CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!op226>}}} 
+!OP226>}}} 
+C  END OF CHARMM BLOCK.  CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+!OP226>}}} 
 C
 C
-C  Sometimes have to modify the cold fusion limit when using high electric fields
+C  SOMETIMES HAVE TO MODIFY THE COLD FUSION LIMIT WHEN USING HIGH ELECTRIC FIELDS
 C
       ELSE IF (WORD.EQ.'COLDFUSION') THEN
          CALL READF(COLDFUSIONLIMIT)
@@ -1660,8 +1660,8 @@ C
          COMPRESST=.TRUE.
          CALL READF(COMP)
 C
-C  Alternative correlated moves: NCOOP nearest neighbours of a randomly selected atom
-C  all move by the same amount. NCOOP default is 5.
+C  ALTERNATIVE CORRELATED MOVES: NCOOP NEAREST NEIGHBOURS OF A RANDOMLY SELECTED ATOM
+C  ALL MOVE BY THE SAME AMOUNT. NCOOP DEFAULT IS 5.
 C
       ELSE IF (WORD.EQ.'COOPMOVE') THEN
          COOP=.TRUE.
@@ -1673,7 +1673,7 @@ C
          IF (NITEMS.GT.1) THEN
             CALL READA(SYS)
          ELSE
-            WRITE(MYUNIT,'(A)') ' ERROR - no CPMD system specified'
+            WRITE(MYUNIT,'(A)') ' ERROR - NO CPMD SYSTEM SPECIFIED'
             STOP
          ENDIF
          DO J1=1,80
@@ -1684,8 +1684,8 @@ C
          ENDDO
 12       CONTINUE
 C
-C  Calculate the continuous symmetry measure from Pinsky, Dryzun, Casanova, Alemany and Avnir,
-C  J. Comp. Chem., 29, 2712, 2008.
+C  CALCULATE THE CONTINUOUS SYMMETRY MEASURE FROM PINSKY, DRYZUN, CASANOVA, ALEMANY AND AVNIR,
+C  J. COMP. CHEM., 29, 2712, 2008.
 C
       ELSE IF (WORD.EQ.'CSM') THEN
          CSMT=.TRUE.
@@ -1693,7 +1693,7 @@ C
             CALL READA(CSMGP)
             CALL MYUPCASE(CSMGP)
          ELSE
-            PRINT '(A)','keyword> ERROR - point group must be specified for CMS keyword'
+            PRINT '(A)','KEYWORD> ERROR - POINT GROUP MUST BE SPECIFIED FOR CMS KEYWORD'
             STOP
          ENDIF
          IF (NITEMS.GT.2) CALL READF(CSMEPS)
@@ -1703,26 +1703,26 @@ C
             CALL MYUPCASE(CSMGUIDEGP)
          ENDIF
 
-         IF (.NOT.PERMDIST) THEN ! set permdist if not done already
+         IF (.NOT.PERMDIST) THEN ! SET PERMDIST IF NOT DONE ALREADY
          PERMDIST=.TRUE.
-         INQUIRE(FILE='perm.allow',EXIST=PERMFILE)
+         INQUIRE(FILE='PERM.ALLOW',EXIST=PERMFILE)
 !        ALLOCATE(NPERMSIZE(NATOMS),PERMGROUP(NATOMS),NSWAP(NATOMS),SWAP1(NATOMS,2),SWAP2(NATOMS,2))
          ALLOCATE(NPERMSIZE(3*NATOMS),PERMGROUP(3*NATOMS),NSETS(3*NATOMS),SETS(NATOMS,3))
          IF (PERMFILE) THEN
-            OPEN(UNIT=1,FILE='perm.allow',STATUS='OLD')
+            OPEN(UNIT=1,FILE='PERM.ALLOW',STATUS='OLD')
             READ(1,*) NPERMGROUP
             NDUMMY=1
             DO J1=1,NPERMGROUP
                READ(1,*) NPERMSIZE(J1),NSETS(J1)
 !
-!  Sanity checks!
+!  SANITY CHECKS!
 !
                IF (NSETS(J1).GT.3) THEN
-                  PRINT '(2(A,I8))','keyword> ERROR - number of secondary sets ',NSETS(J1),' is > 3'
+                  PRINT '(2(A,I8))','KEYWORD> ERROR - NUMBER OF SECONDARY SETS ',NSETS(J1),' IS > 3'
                   STOP
                ENDIF
                IF (NDUMMY+NPERMSIZE(J1).GT.3*NATOMS) THEN
-                  PRINT '(2(A,I8))','keyword> ERROR - number of atoms to be permuted in all groups is > 3*number of atoms'
+                  PRINT '(2(A,I8))','KEYWORD> ERROR - NUMBER OF ATOMS TO BE PERMUTED IN ALL GROUPS IS > 3*NUMBER OF ATOMS'
                   STOP
                ENDIF
 !              READ(1,*) PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1),((SWAP1(PERMGROUP(J3),J2),J2=1,NSWAP(J1)),
@@ -1732,26 +1732,26 @@ C
                NDUMMY=NDUMMY+NPERMSIZE(J1)
             ENDDO
 !
-!  And another sanity check! This condition is now allowed.
+!  AND ANOTHER SANITY CHECK! THIS CONDITION IS NOW ALLOWED.
 !  
 !           DO J1=1,NDUMMY
 !              DO J2=J1+1,NDUMMY
 !                 IF (PERMGROUP(J2).EQ.PERMGROUP(J1)) THEN
-!                    PRINT '(2(A,I8))','keyword> ERROR - atom ',PERMGROUP(J1),' appears more than once'
+!                    PRINT '(2(A,I8))','KEYWORD> ERROR - ATOM ',PERMGROUP(J1),' APPEARS MORE THAN ONCE'
 !                    STOP
 !                 ENDIF
 !              ENDDO
 !           ENDDO
             CLOSE(1)
 !
-!  And yet another!
+!  AND YET ANOTHER!
 !  
             IF (NFREEZE.GT.0) THEN
                NDUMMY=0
                DO J1=1,NPERMGROUP
                   DO J2=1,NPERMSIZE(J1)
                      IF (FROZEN(PERMGROUP(NDUMMY+J2))) THEN
-                        PRINT '(A,I8,A)',' keyword> ERROR atom ',PERMGROUP(NDUMMY+J2),' cannot be frozen and permuted'
+                        PRINT '(A,I8,A)',' KEYWORD> ERROR ATOM ',PERMGROUP(NDUMMY+J2),' CANNOT BE FROZEN AND PERMUTED'
                         STOP
                      ENDIF
                   ENDDO
@@ -1761,20 +1761,20 @@ C
             ENDIF
          ELSE
             NSETS(1:NATOMS)=0
-            NPERMGROUP=1 ! all atoms can be permuted - default
-            NPERMSIZE(1)=NATOMS ! all atoms can be permuted - default
+            NPERMGROUP=1 ! ALL ATOMS CAN BE PERMUTED - DEFAULT
+            NPERMSIZE(1)=NATOMS ! ALL ATOMS CAN BE PERMUTED - DEFAULT
             DO J1=1,NATOMS
                PERMGROUP(J1)=J1
             ENDDO
          ENDIF
-         WRITE(MYUNIT,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
+         WRITE(MYUNIT,'(A,I6)') ' KEYWORD> NUMBER OF GROUPS OF PERMUTABLE ATOMS=',NPERMGROUP
          NDUMMY=1
          DO J1=1,NPERMGROUP
-            PRINT '(A,3(I6,A))',' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
-     &                                                 NSETS(J1),' additional atom sets:'
+            PRINT '(A,3(I6,A))',' KEYWORD> GROUP ',J1,' CONTAINS ',NPERMSIZE(J1),' ATOMS WITH ',
+     &                                                 NSETS(J1),' ADDITIONAL ATOM SETS:'
             WRITE(*,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
             IF (NSETS(J1).GT.0) THEN
-               WRITE(*,'(A)',ADVANCE='NO') ' with '
+               WRITE(*,'(A)',ADVANCE='NO') ' WITH '
                DO J2=1,NSETS(J1)
                   DO J3=NDUMMY,NDUMMY+NPERMSIZE(J1)-1
                      WRITE(*,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
@@ -1814,23 +1814,23 @@ C
       ELSE IF (WORD.EQ.'DEBUG') THEN
          DEBUG=.TRUE.
 C
-C  Correlated random moves, in the sense that the magnitude of the step
-C  decays exponentially as DECAYPARAM from a randomly chosen atom.
+C  CORRELATED RANDOM MOVES, IN THE SENSE THAT THE MAGNITUDE OF THE STEP
+C  DECAYS EXPONENTIALLY AS DECAYPARAM FROM A RANDOMLY CHOSEN ATOM.
 C
       ELSE IF (WORD.EQ.'DECAY') THEN
          DECAY=.TRUE.
          CALL READF(DECAYPARAM)
 C
-C  2D binary potential - Daan Frenkel #1
+C  2D BINARY POTENTIAL - DAAN FRENKEL #1
 C
 
-      ELSE IF (WORD.eq.'DF1') THEN
+      ELSE IF (WORD.EQ.'DF1') THEN
          DF1T=.TRUE.
 
       ELSE IF (WORD.EQ.'DFTB') THEN
          DFTBT=.TRUE.
 C
-C  Initial guess for diagonal matrix elements in LBFGS.
+C  INITIAL GUESS FOR DIAGONAL MATRIX ELEMENTS IN LBFGS.
 C
       ELSE IF (WORD.EQ.'DGUESS') THEN
          CALL READF(DGUESS)
@@ -1838,7 +1838,7 @@ C
       ELSE IF (WORD.EQ.'DIELEC') THEN
          CALL READF(XX)
          DPARAM=XX
-         WRITE(MYUNIT,'(A,F9.5)') ' Dielectric constant = ',DPARAM
+         WRITE(MYUNIT,'(A,F9.5)') ' DIELECTRIC CONSTANT = ',DPARAM
 C
 C  NOT DOCUMENTED - INTENTIONAL
 C
@@ -1854,9 +1854,9 @@ C
          DL_POLY=.TRUE.
          CALL READI(NATOMS)
 !
-! csw34> DONTMOVE is an extension of the FREEZE idea. Atoms are replaced
-! after the STEP, but their gradients are NOT set to 0, hence they may
-! move during minimisation.
+! CSW34> DONTMOVE IS AN EXTENSION OF THE FREEZE IDEA. ATOMS ARE REPLACED
+! AFTER THE STEP, BUT THEIR GRADIENTS ARE NOT SET TO 0, HENCE THEY MAY
+! MOVE DURING MINIMISATION.
 !
       ELSE IF (WORD.EQ.'DONTMOVE') THEN
          DONTMOVET=.TRUE.
@@ -1866,7 +1866,7 @@ C
             DONTMOVE(NDUMMY)=.TRUE.
          ENDDO
          
-! csw34> DONTMOVEGROUP is analagous to FREEZEGROUP 
+! CSW34> DONTMOVEGROUP IS ANALAGOUS TO FREEZEGROUP 
       ELSE IF (WORD.EQ.'DONTMOVEGROUP') THEN
          DONTMOVET=.TRUE.
          DONTMOVEGROUPT=.TRUE.
@@ -1882,9 +1882,9 @@ C
             DONTMOVE(J1)=.TRUE.
             DONTMOVERES(J1)=.TRUE.
          ENDDO
-C csw34
-C Things are then moved using the DOMOVE and DOMOVERES keywords
-C This is only a valid keyword if DONTMOVEALL is also specified
+C CSW34
+C THINGS ARE THEN MOVED USING THE DOMOVE AND DOMOVERES KEYWORDS
+C THIS IS ONLY A VALID KEYWORD IF DONTMOVEALL IS ALSO SPECIFIED
       ELSE IF ((WORD.EQ.'DOMOVE').AND.DONTMOVEALL) THEN
          DO J1=1,NITEMS-1
             CALL READI(NDUMMY)
@@ -1895,8 +1895,8 @@ C This is only a valid keyword if DONTMOVEALL is also specified
       ELSE IF (WORD.EQ.'DONTMOVERES') THEN
          DONTMOVET=.TRUE.
          DONTMOVEREST=.TRUE.
-C The FROZENRES array is then filled with the residue number from the
-C data file
+C THE FROZENRES ARRAY IS THEN FILLED WITH THE RESIDUE NUMBER FROM THE
+C DATA FILE
          DO J1=1,NITEMS-1
             CALL READI(NDUMMY)
             DONTMOVERES(NDUMMY)=.TRUE.
@@ -1904,7 +1904,7 @@ C data file
          
          ELSEIF ((WORD.EQ.'DOMOVERES').AND.DONTMOVEALL) THEN
          DOMOVEREST=.TRUE.
-C Set the right parts of the DONTMOVERES array to FALSE
+C SET THE RIGHT PARTS OF THE DONTMOVERES ARRAY TO FALSE
          DO J1=1,NITEMS-1 
             CALL READI(NDUMMY)
             DONTMOVERES(NDUMMY)=.FALSE.
@@ -1939,14 +1939,14 @@ C Set the right parts of the DONTMOVERES array to FALSE
       ELSE IF (WORD.EQ.'EDIFF') THEN
          CALL READF(ECONV)
 C
-C Accumulation of thermodynamic statistics starting after Equil steps, 
-C calculated thermodynamic properties is dumped every DumpEveryNthQuench quench.
+C ACCUMULATION OF THERMODYNAMIC STATISTICS STARTING AFTER EQUIL STEPS, 
+C CALCULATED THERMODYNAMIC PROPERTIES IS DUMPED EVERY DUMPEVERYNTHQUENCH QUENCH.
 C
       ELSE IF (WORD.EQ.'EQUILIBRATION') THEN
          CALL READI(EQUIL)
-         CALL READI(DumpEveryNthQuench)
+         CALL READI(DUMPEVERYNTHQUENCH)
 C
-C  Steps using transition state search-type moves. Obsolete.
+C  STEPS USING TRANSITION STATE SEARCH-TYPE MOVES. OBSOLETE.
 C  NOT DOCUMENTED
 C
       ELSE IF (WORD.EQ.'EVSTEP') THEN
@@ -1990,8 +1990,8 @@ C
          FIXCOM=.TRUE.
          ALLOCATE(MASSES(NATOMS))
 C
-C  Take hard sphere type moves.
-C  T12FAC is the fraction of the first collision time to be used in HSMOVE
+C  TAKE HARD SPHERE TYPE MOVES.
+C  T12FAC IS THE FRACTION OF THE FIRST COLLISION TIME TO BE USED IN HSMOVE
 C
       ELSE IF (WORD.EQ.'FIXD') THEN
          FIXD=.TRUE.
@@ -2028,7 +2028,7 @@ C
       ELSE IF (WORD.EQ.'FRAUSI') THEN
          FRAUSIT=.TRUE.
 C
-C  Frozen atoms.
+C  FROZEN ATOMS.
 C
       ELSE IF (WORD.EQ.'FREEZE') THEN
          FREEZE=.TRUE.
@@ -2038,25 +2038,25 @@ C
             FROZEN(NDUMMY)=.TRUE.
          ENDDO
 
-C csw34
-C Frozen residues (to be converted to frozen atoms)
+C CSW34
+C FROZEN RESIDUES (TO BE CONVERTED TO FROZEN ATOMS)
 C
       ELSE IF (WORD.EQ.'FREEZERES') THEN
          FREEZE=.TRUE.
          FREEZERES=.TRUE.
-C The FROZENRES array is then filled with the residue number from the
-C data file
+C THE FROZENRES ARRAY IS THEN FILLED WITH THE RESIDUE NUMBER FROM THE
+C DATA FILE
          DO J1=1,NITEMS-1
             CALL READI(NDUMMY)
             FROZENRES(NDUMMY)=.TRUE.
          ENDDO
-C Finally, the frozen residue numbers are converted into frozen atom
-C numbers. This is also forcefield dependant and must be done when we
-C know which forcefield to use (i.e. in the CHARMM block above)
+C FINALLY, THE FROZEN RESIDUE NUMBERS ARE CONVERTED INTO FROZEN ATOM
+C NUMBERS. THIS IS ALSO FORCEFIELD DEPENDANT AND MUST BE DONE WHEN WE
+C KNOW WHICH FORCEFIELD TO USE (I.E. IN THE CHARMM BLOCK ABOVE)
 
-C csw34
-C Freezing EVERYTHING and then permitting small parts to move
-C This is useful for large system to prevent the data file getting silly
+C CSW34
+C FREEZING EVERYTHING AND THEN PERMITTING SMALL PARTS TO MOVE
+C THIS IS USEFUL FOR LARGE SYSTEM TO PREVENT THE DATA FILE GETTING SILLY
       ELSEIF (WORD.EQ.'FREEZEALL') THEN
          FREEZE=.TRUE.
          FREEZEALL=.TRUE.
@@ -2065,9 +2065,9 @@ C This is useful for large system to prevent the data file getting silly
             FROZEN(J1)=.TRUE.
             FROZENRES(J1)=.TRUE.
          ENDDO
-C csw34
-C Things are then UNFROZEN using the UNFREEZE and UNFREEZERES keywords
-C This is only a valid keyword if FREEZEALL is also specified
+C CSW34
+C THINGS ARE THEN UNFROZEN USING THE UNFREEZE AND UNFREEZERES KEYWORDS
+C THIS IS ONLY A VALID KEYWORD IF FREEZEALL IS ALSO SPECIFIED
       ELSEIF ((WORD.EQ.'UNFREEZE').AND.FREEZEALL) THEN
          DO J1=1,NITEMS-1
             CALL READI(NDUMMY)
@@ -2077,16 +2077,16 @@ C This is only a valid keyword if FREEZEALL is also specified
 
       ELSEIF ((WORD.EQ.'UNFREEZERES').AND.FREEZEALL) THEN
          UNFREEZERES=.TRUE.
-C Set the right parts of the FROZENRES array to FALSE
+C SET THE RIGHT PARTS OF THE FROZENRES ARRAY TO FALSE
          DO J1=1,NITEMS-1 
             CALL READI(NDUMMY)
             FROZENRES(NDUMMY)=.FALSE.
          ENDDO
          FREEZERES=.TRUE.
-C The FREEZERES routines for AMBER and CHARMM do the rest :)
+C THE FREEZERES ROUTINES FOR AMBER AND CHARMM DO THE REST :)
       
       
-C Finnis-Sinclair potential coded by James Elliott
+C FINNIS-SINCLAIR POTENTIAL CODED BY JAMES ELLIOTT
 C
       ELSE IF (WORD.EQ.'FS') THEN
          FST=.TRUE.
@@ -2106,7 +2106,7 @@ C NOT DOCUMENTED
 C
       ELSE IF (WORD.EQ.'GAUSS') THEN
          GAUSST=.TRUE.
-         CALL READI(GMODES) ! number of nodes
+         CALL READI(GMODES) ! NUMBER OF NODES
 
       ELSE IF (WORD.EQ.'GROUND') THEN
          GROUND=.TRUE.
@@ -2121,15 +2121,15 @@ C
 C NOT DOCUMENTED
 C
       ELSE IF (WORD.EQ.'HISTSMOOTH') THEN
-         CALL READI(NSpline)
+         CALL READI(NSPLINE)
 C
-C Parameters of the temperature range on which to calculate thermodynamic properties in Basin Sampling
+C PARAMETERS OF THE TEMPERATURE RANGE ON WHICH TO CALCULATE THERMODYNAMIC PROPERTIES IN BASIN SAMPLING
 C NOT DOCUMENTED
 C
       ELSE IF (WORD.EQ.'HISTTEMP') THEN
-         CALL READF(MinimalTemperature)
-         CALL READF(MaximalTemperature)
-         CALL READI(NTempPoints)
+         CALL READF(MINIMALTEMPERATURE)
+         CALL READF(MAXIMALTEMPERATURE)
+         CALL READI(NTEMPPOINTS)
 C
 C NOT DOCUMENTED
 C
@@ -2180,14 +2180,14 @@ C
       ELSE IF (WORD.EQ.'LJMF') THEN
          LJMFT=.TRUE.
 C        CALL LJPARAMMF
-         WRITE(MYUNIT,'(A)') 'LJMF not currently maintained'
+         WRITE(MYUNIT,'(A)') 'LJMF NOT CURRENTLY MAINTAINED'
          STOP
 
-C start = an N-oligomer is constructed by relocating NREPEAT units and placing them
-C at random distance R with Rmin <= R <= Rmax and angle alpha in the xy-plane
-C transxy: rigid body translation only in the xy-plane
-C rotz:  rigid body rotation only around the z-axis
-C dihesc: only perturbation to the side chains
+C START = AN N-OLIGOMER IS CONSTRUCTED BY RELOCATING NREPEAT UNITS AND PLACING THEM
+C AT RANDOM DISTANCE R WITH RMIN <= R <= RMAX AND ANGLE ALPHA IN THE XY-PLANE
+C TRANSXY: RIGID BODY TRANSLATION ONLY IN THE XY-PLANE
+C ROTZ:  RIGID BODY ROTATION ONLY AROUND THE Z-AXIS
+C DIHESC: ONLY PERTURBATION TO THE SIDE CHAINS
 C
       ELSE IF (WORD.EQ.'MAKEOLIGO') THEN
          MAKEOLIGOT=.TRUE.
@@ -2259,7 +2259,7 @@ C
             IF (TRIM(ADJUSTL(UNSTRING)).EQ.'ROTZ') ROTZT=.TRUE.
             IF (TRIM(ADJUSTL(UNSTRING)).EQ.'SCONLY') NOPHIPSIT=.TRUE.
          ELSE
-            WRITE(MYUNIT,'(A)') 'The first argument to MAKEOLIGO has to be START, INITROT or REFINE - quit.'
+            WRITE(MYUNIT,'(A)') 'THE FIRST ARGUMENT TO MAKEOLIGO HAS TO BE START, INITROT OR REFINE - QUIT.'
             STOP
          ENDIF
 
@@ -2287,7 +2287,7 @@ C
             RHO=XX
          ENDIF
 C
-C  MPI keyword
+C  MPI KEYWORD
 C
       ELSE IF (WORD.EQ.'MPI') THEN
          MPIT=.TRUE.
@@ -2296,7 +2296,7 @@ C
          ALLOCATE(FIXSTEP(NPAR),FIXTEMP(NPAR),FIXBOTH(NPAR),TEMP(NPAR),ACCRAT(NPAR),STEP(NPAR),ASTEP(NPAR),OSTEP(NPAR),
      @         BLOCK(NPAR),NT(NPAR),JUMPMOVE(NPAR),JUMPINT(NPAR),JDUMP(NPAR),COORDS(3*NATOMS,NPAR),NQ(NPAR),
      @         JUMPTO(NPAR),EPREV(NPAR),
-     @         COORDSO(3*NATOMS,NPAR),VAT(NATOMS,NPAR),VATO(natoms,NPAR))
+     @         COORDSO(3*NATOMS,NPAR),VAT(NATOMS,NPAR),VATO(NATOMS,NPAR))
          ALLOCATE(SHELLMOVES(NPAR))
          ALLOCATE(PTGROUP(NPAR))
          ALLOCATE(NSURFMOVES(NPAR))
@@ -2356,24 +2356,24 @@ C
          NEWJUMP=.TRUE.
          IF (NITEMS.GT.1) CALL READF(PNEWJUMP)
 C
-C  Reseed runs if the energy does not decrease within NRELAX mc steps.
-C  NHSRESTART defines the number of hard sphere moves used to produce the new starting
-C  configuration. If NHSRESTART=0 then the geometry is changed using RESEED.
+C  RESEED RUNS IF THE ENERGY DOES NOT DECREASE WITHIN NRELAX MC STEPS.
+C  NHSRESTART DEFINES THE NUMBER OF HARD SPHERE MOVES USED TO PRODUCE THE NEW STARTING
+C  CONFIGURATION. IF NHSRESTART=0 THEN THE GEOMETRY IS CHANGED USING RESEED.
 C
       ELSE IF (WORD.EQ.'NEWRESTART') THEN
          NEWRESTART=.TRUE.
-         NEWRESTART_MD = .FALSE.                   ! lb415
+         NEWRESTART_MD = .FALSE.                   ! LB415
          NEWRES_TEMP = 0.0D0
          IF (NITEMS.GT.1) CALL READI(NRELAX)
          IF (NITEMS.GT.2) CALL READI(NHSRESTART)
-         IF (NITEMS.GT.3) CALL READA(WORD2)        ! lb415
-         IF (WORD2.EQ.'MD') NEWRESTART_MD = .TRUE. ! lb415
-         IF (NITEMS.GT.4) THEN                     ! lb415
+         IF (NITEMS.GT.3) CALL READA(WORD2)        ! LB415
+         IF (WORD2.EQ.'MD') NEWRESTART_MD = .TRUE. ! LB415
+         IF (NITEMS.GT.4) THEN                     ! LB415
             CALL READF(NEWRES_TEMP)
          ELSE
             NEWRES_TEMP = 1000.0D0
-            WRITE(MYUNIT,'(A)') 'keyword> WARNING - temperature unspecified for NEWRESTART. Default for high T MD is 1000K'
-         ENDIF                                     ! lb415
+            WRITE(MYUNIT,'(A)') 'KEYWORD> WARNING - TEMPERATURE UNSPECIFIED FOR NEWRESTART. DEFAULT FOR HIGH T MD IS 1000K'
+         ENDIF                                     ! LB415
          IF (.NOT.ALLOCATED(MSBE)) ALLOCATE(MSBE(MAXSAVE))
          IF (.NOT.ALLOCATED(MSBCOORDS)) ALLOCATE(MSBCOORDS(3*NATOMS,MAXSAVE))
 
@@ -2442,45 +2442,45 @@ C        CALL OTPPARAMMF
          ALLOCATE(SITE(NRBSITES,3))
 
       ELSE IF (WORD.EQ.'PAIRDIST') THEN
-! csw34> PAIRDIST allows the monitoring of the distance between pairs of
-! atoms during a BH run. The atom pairs are read from either as
-! arguements to the PAIRDIST keyword, or from the pairdist file
+! CSW34> PAIRDIST ALLOWS THE MONITORING OF THE DISTANCE BETWEEN PAIRS OF
+! ATOMS DURING A BH RUN. THE ATOM PAIRS ARE READ FROM EITHER AS
+! ARGUEMENTS TO THE PAIRDIST KEYWORD, OR FROM THE PAIRDIST FILE
          NPAIRS=0
          IF (NITEMS.GT.1) THEN
-! If arguements are specified, assume NITEMS/2 pairs on the line 
+! IF ARGUEMENTS ARE SPECIFIED, ASSUME NITEMS/2 PAIRS ON THE LINE 
             PAIRDISTT=.TRUE.
-            WRITE(MYUNIT,'(A)') ' keyword> Pairwise atom distances will be output to pairdists*'
+            WRITE(MYUNIT,'(A)') ' KEYWORD> PAIRWISE ATOM DISTANCES WILL BE OUTPUT TO PAIRDISTS*'
             NPAIRS=(NITEMS-1)/2
             ALLOCATE(PAIRDIST(NPAIRS,2))
             DO J1=1,NPAIRS
                CALL READI(PAIRDIST(J1,1))
                CALL READI(PAIRDIST(J1,2))
                IF (PAIRDIST(J1,1).GT.NATOMS) THEN
-                  WRITE(MYUNIT,'(A)') ' keyword> ERROR: PAIRDIST atom index larger than system specified!'
+                  WRITE(MYUNIT,'(A)') ' KEYWORD> ERROR: PAIRDIST ATOM INDEX LARGER THAN SYSTEM SPECIFIED!'
                   STOP
                ELSEIF (PAIRDIST(J1,2).GT.NATOMS) THEN
-                  WRITE(MYUNIT,'(A)') ' keyword> ERROR: PAIRDIST atom index larger than system specified!'
+                  WRITE(MYUNIT,'(A)') ' KEYWORD> ERROR: PAIRDIST ATOM INDEX LARGER THAN SYSTEM SPECIFIED!'
                   STOP
                ENDIF
             ENDDO
          ELSE
-! If there are no atoms specified on the PAIRDIST line, assume reading them from the 'pairdist' file
-! First step - check the pairdist file is present
+! IF THERE ARE NO ATOMS SPECIFIED ON THE PAIRDIST LINE, ASSUME READING THEM FROM THE 'PAIRDIST' FILE
+! FIRST STEP - CHECK THE PAIRDIST FILE IS PRESENT
             YESNO=.FALSE.
-            INQUIRE(FILE='pairdist',EXIST=YESNO)
+            INQUIRE(FILE='PAIRDIST',EXIST=YESNO)
             IF (YESNO) THEN
                PAIRDISTT=.TRUE.
-               WRITE(MYUNIT,'(A)') ' keyword> Pairwise atom distances will be output to pairdists*'
+               WRITE(MYUNIT,'(A)') ' KEYWORD> PAIRWISE ATOM DISTANCES WILL BE OUTPUT TO PAIRDISTS*'
             ELSE
-               WRITE(MYUNIT,'(A)') ' keyword> ERROR: pairdist input file missing for PAIRDIST'
+               WRITE(MYUNIT,'(A)') ' KEYWORD> ERROR: PAIRDIST INPUT FILE MISSING FOR PAIRDIST'
                FLUSH(MYUNIT)
                STOP
             ENDIF
-! Determine NPAIRS to allow allocation of the PAIRDIST array 
-            OPEN(UNIT=222,FILE='pairdist',status='old')
+! DETERMINE NPAIRS TO ALLOW ALLOCATION OF THE PAIRDIST ARRAY 
+            OPEN(UNIT=222,FILE='PAIRDIST',STATUS='OLD')
             DO
-               READ(222,*,IOSTAT=iostatus) CHECK1
-               IF (iostatus<0) THEN
+               READ(222,*,IOSTAT=IOSTATUS) CHECK1
+               IF (IOSTATUS<0) THEN
                   CLOSE(222)
                   EXIT
                ELSE 
@@ -2488,23 +2488,23 @@ C        CALL OTPPARAMMF
                ENDIF
             END DO        
             CLOSE(222)
-! Allocate the PAIRDIST array and read the pairs in
+! ALLOCATE THE PAIRDIST ARRAY AND READ THE PAIRS IN
             ALLOCATE(PAIRDIST(NPAIRS,2))
-            OPEN(UNIT=222,FILE='pairdist',status='old')
+            OPEN(UNIT=222,FILE='PAIRDIST',STATUS='OLD')
             DO J1=1,NPAIRS
                READ(222,*) PAIRDIST(J1,1),PAIRDIST(J1,2)
             ENDDO
             CLOSE(222)
          ENDIF
-! Print list of pairs to GMIN output for checking
-         WRITE(MYUNIT,'(A)') ' keyword> Atom pair distances to monitor:'
+! PRINT LIST OF PAIRS TO GMIN OUTPUT FOR CHECKING
+         WRITE(MYUNIT,'(A)') ' KEYWORD> ATOM PAIR DISTANCES TO MONITOR:'
          DO J1=1,NPAIRS
             WRITE(MYUNIT,*) PAIRDIST(J1,:)
          ENDDO
 
 C
-C  PARALLEL must come before STEP and ACCRAT
-C  This keyword is for the serial parallel implementation - now obsolete.
+C  PARALLEL MUST COME BEFORE STEP AND ACCRAT
+C  THIS KEYWORD IS FOR THE SERIAL PARALLEL IMPLEMENTATION - NOW OBSOLETE.
 C
       ELSE IF (WORD.EQ.'PARALLEL') THEN
          PARALLELT=.TRUE.
@@ -2554,30 +2554,30 @@ C
             BOXLZ=BOXLX
          ENDIF
 !
-! If permdist is set then distance calculations are performed with minperdist instead
-! of newmindist in procedures such as AVOID and CSM. This keyword is now independent
-! from PERMOPT
+! IF PERMDIST IS SET THEN DISTANCE CALCULATIONS ARE PERFORMED WITH MINPERDIST INSTEAD
+! OF NEWMINDIST IN PROCEDURES SUCH AS AVOID AND CSM. THIS KEYWORD IS NOW INDEPENDENT
+! FROM PERMOPT
 !
       ELSE IF (WORD.EQ.'PERMDIST') THEN
          PERMDIST=.TRUE.
-         INQUIRE(FILE='perm.allow',EXIST=PERMFILE)
+         INQUIRE(FILE='PERM.ALLOW',EXIST=PERMFILE)
          ALLOCATE(NPERMSIZE(NATOMS),PERMGROUP(NATOMS),NSETS(NATOMS),SETS(NATOMS,2))
          IF (PERMFILE) THEN
-            OPEN(UNIT=1,FILE='perm.allow',STATUS='OLD')
+            OPEN(UNIT=1,FILE='PERM.ALLOW',STATUS='OLD')
             READ(1,*) NPERMGROUP
             NDUMMY=1
             DO J1=1,NPERMGROUP
                READ(1,*) NPERMSIZE(J1),NSETS(J1)
 !
-!  Sanity checks!
+!  SANITY CHECKS!
 !
                IF (NSETS(J1).GT.3) THEN
-                  PRINT '(2(A,I8))','keyword> ERROR - number of secondary sets ',NSETS(J1),' is > 3'
+                  PRINT '(2(A,I8))','KEYWORD> ERROR - NUMBER OF SECONDARY SETS ',NSETS(J1),' IS > 3'
                   STOP
                ENDIF
 !              IF (NDUMMY+NPERMSIZE(J1).GT.NATOMS) THEN
                IF (NDUMMY+NPERMSIZE(J1).GT.3*NATOMS) THEN
-                  PRINT '(2(A,I8))','keyword> ERROR - number of atoms to be permuted in all groups is > 3*number of atoms'
+                  PRINT '(2(A,I8))','KEYWORD> ERROR - NUMBER OF ATOMS TO BE PERMUTED IN ALL GROUPS IS > 3*NUMBER OF ATOMS'
                   STOP
                ENDIF
 !              READ(1,*) PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1),((SWAP1(PERMGROUP(J3),J2),J2=1,NSWAP(J1)),
@@ -2587,26 +2587,26 @@ C
                NDUMMY=NDUMMY+NPERMSIZE(J1)
             ENDDO
 !
-!  And another sanity check!
+!  AND ANOTHER SANITY CHECK!
 !  
 !           DO J1=1,NDUMMY
 !              DO J2=J1+1,NDUMMY
 !                 IF (PERMGROUP(J2).EQ.PERMGROUP(J1)) THEN
-!                    PRINT '(2(A,I8))','keyword> ERROR - atom ',PERMGROUP(J1),' appears more than once'
+!                    PRINT '(2(A,I8))','KEYWORD> ERROR - ATOM ',PERMGROUP(J1),' APPEARS MORE THAN ONCE'
 !                    STOP
 !                 ENDIF
 !              ENDDO
 !           ENDDO
             CLOSE(1)
 !
-!  And yet another!
+!  AND YET ANOTHER!
 !  
             IF (NFREEZE.GT.0) THEN
                NDUMMY=0
                DO J1=1,NPERMGROUP
                   DO J2=1,NPERMSIZE(J1)
                      IF (FROZEN(PERMGROUP(NDUMMY+J2))) THEN
-                        PRINT '(A,I8,A)',' keyword> ERROR atom ',PERMGROUP(NDUMMY+J2),' cannot be frozen and permuted'
+                        PRINT '(A,I8,A)',' KEYWORD> ERROR ATOM ',PERMGROUP(NDUMMY+J2),' CANNOT BE FROZEN AND PERMUTED'
                         STOP
                      ENDIF
                   ENDDO
@@ -2615,20 +2615,20 @@ C
             ENDIF
          ELSE
             NSETS(1:NATOMS)=0
-            NPERMGROUP=1 ! all atoms can be permuted - default
-            NPERMSIZE(1)=NATOMS ! all atoms can be permuted - default
+            NPERMGROUP=1 ! ALL ATOMS CAN BE PERMUTED - DEFAULT
+            NPERMSIZE(1)=NATOMS ! ALL ATOMS CAN BE PERMUTED - DEFAULT
             DO J1=1,NATOMS
                PERMGROUP(J1)=J1
             ENDDO
          ENDIF
-         WRITE(MYUNIT,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
+         WRITE(MYUNIT,'(A,I6)') ' KEYWORD> NUMBER OF GROUPS OF PERMUTABLE ATOMS=',NPERMGROUP
          NDUMMY=1
          DO J1=1,NPERMGROUP
-            PRINT '(A,3(I6,A))',' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
-     &                                                 NSETS(J1),' additional atom sets:'
+            PRINT '(A,3(I6,A))',' KEYWORD> GROUP ',J1,' CONTAINS ',NPERMSIZE(J1),' ATOMS WITH ',
+     &                                                 NSETS(J1),' ADDITIONAL ATOM SETS:'
             WRITE(*,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
             IF (NSETS(J1).GT.0) THEN
-               WRITE(*,'(A)',ADVANCE='NO') ' with '
+               WRITE(*,'(A)',ADVANCE='NO') ' WITH '
                DO J2=1,NSETS(J1)
                   DO J3=NDUMMY,NDUMMY+NPERMSIZE(J1)-1
                      WRITE(*,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
@@ -2641,28 +2641,28 @@ C
             NDUMMY=NDUMMY+NPERMSIZE(J1)
          ENDDO
 !
-!  This keyword is for optimising the distance between permutational isomers.
+!  THIS KEYWORD IS FOR OPTIMISING THE DISTANCE BETWEEN PERMUTATIONAL ISOMERS.
 !
       ELSE IF (WORD.EQ.'PERMOPT') THEN
          PERMOPT=.TRUE.
          PERMDIST=.TRUE.
-         INQUIRE(FILE='perm.allow',EXIST=PERMFILE)
+         INQUIRE(FILE='PERM.ALLOW',EXIST=PERMFILE)
          ALLOCATE(NPERMSIZE(NATOMS),PERMGROUP(NATOMS),NSETS(NATOMS),SETS(NATOMS,2))
          IF (PERMFILE) THEN
-            OPEN(UNIT=1,FILE='perm.allow',STATUS='OLD')
+            OPEN(UNIT=1,FILE='PERM.ALLOW',STATUS='OLD')
             READ(1,*) NPERMGROUP
             NDUMMY=1
             DO J1=1,NPERMGROUP
                READ(1,*) NPERMSIZE(J1),NSETS(J1)
 !
-!  Sanity checks!
+!  SANITY CHECKS!
 !
                IF (NSETS(J1).GT.3) THEN
-                  PRINT '(2(A,I8))','keyword> ERROR - number of secondary sets ',NSETS(J1),' is > 3'
+                  PRINT '(2(A,I8))','KEYWORD> ERROR - NUMBER OF SECONDARY SETS ',NSETS(J1),' IS > 3'
                   STOP
                ENDIF
                IF (NDUMMY+NPERMSIZE(J1).GT.3*NATOMS) THEN
-                  PRINT '(2(A,I8))','keyword> ERROR - number of atoms to be permuted in all groups is > 3*number of atoms'
+                  PRINT '(2(A,I8))','KEYWORD> ERROR - NUMBER OF ATOMS TO BE PERMUTED IN ALL GROUPS IS > 3*NUMBER OF ATOMS'
                   STOP
                ENDIF
 !              READ(1,*) PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1),
@@ -2673,26 +2673,26 @@ C
                NDUMMY=NDUMMY+NPERMSIZE(J1)
             ENDDO
 !
-!  And another sanity check!
+!  AND ANOTHER SANITY CHECK!
 !  
 !           DO J1=1,NDUMMY
 !              DO J2=J1+1,NDUMMY
 !                 IF (PERMGROUP(J2).EQ.PERMGROUP(J1)) THEN
-!                    PRINT '(2(A,I8))','keyword> ERROR - atom ',PERMGROUP(J1),' appears more than once'
+!                    PRINT '(2(A,I8))','KEYWORD> ERROR - ATOM ',PERMGROUP(J1),' APPEARS MORE THAN ONCE'
 !                    STOP
 !                 ENDIF
 !              ENDDO
 !           ENDDO
             CLOSE(1)
 !
-!  And yet another!
+!  AND YET ANOTHER!
 !  
             IF (NFREEZE.GT.0) THEN
                NDUMMY=0
                DO J1=1,NPERMGROUP
                   DO J2=1,NPERMSIZE(J1)
                      IF (FROZEN(PERMGROUP(NDUMMY+J2))) THEN
-                        PRINT '(A,I8,A)',' keyword> ERROR atom ',PERMGROUP(NDUMMY+J2),' cannot be frozen and permuted'
+                        PRINT '(A,I8,A)',' KEYWORD> ERROR ATOM ',PERMGROUP(NDUMMY+J2),' CANNOT BE FROZEN AND PERMUTED'
                         STOP
                      ENDIF
                   ENDDO
@@ -2701,20 +2701,20 @@ C
             ENDIF
          ELSE
             NSETS(1:NATOMS)=0
-            NPERMGROUP=1 ! all atoms can be permuted - default
-            NPERMSIZE(1)=NATOMS ! all atoms can be permuted - default
+            NPERMGROUP=1 ! ALL ATOMS CAN BE PERMUTED - DEFAULT
+            NPERMSIZE(1)=NATOMS ! ALL ATOMS CAN BE PERMUTED - DEFAULT
             DO J1=1,NATOMS
                PERMGROUP(J1)=J1
             ENDDO
          ENDIF
-         WRITE(MYUNIT,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
+         WRITE(MYUNIT,'(A,I6)') ' KEYWORD> NUMBER OF GROUPS OF PERMUTABLE ATOMS=',NPERMGROUP
          NDUMMY=1
          DO J1=1,NPERMGROUP
-            PRINT '(A,3(I6,A))',' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
-     &                                                 NSETS(J1),' additional atom sets:'
+            PRINT '(A,3(I6,A))',' KEYWORD> GROUP ',J1,' CONTAINS ',NPERMSIZE(J1),' ATOMS WITH ',
+     &                                                 NSETS(J1),' ADDITIONAL ATOM SETS:'
             WRITE(*,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
             IF (NSETS(J1).GT.0) THEN
-               WRITE(*,'(A)',ADVANCE='NO') ' with '
+               WRITE(*,'(A)',ADVANCE='NO') ' WITH '
                DO J2=1,NSETS(J1)
                   DO J3=NDUMMY,NDUMMY+NPERMSIZE(J1)-1
                      WRITE(*,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
@@ -2736,32 +2736,32 @@ C
       ELSE IF (WORD.EQ.'PMIN') THEN
          CALL READF(PMIN)
 C
-C  POWER provides a means to set the initial premultiplication factor for the
-C  gradient in MYLINMIN
+C  POWER PROVIDES A MEANS TO SET THE INITIAL PREMULTIPLICATION FACTOR FOR THE
+C  GRADIENT IN MYLINMIN
 C
       ELSE IF (WORD.EQ.'POWER') THEN
          CALL READI(IX)
          MYPOWER=IX
 C
-C  Purify the geometry in mylbfgs to preserve icosahedral (I)
-C  symmetry.
+C  PURIFY THE GEOMETRY IN MYLBFGS TO PRESERVE ICOSAHEDRAL (I)
+C  SYMMETRY.
 C
       ELSE IF (WORD.EQ.'PROJI') THEN
          PROJIT=.TRUE.
 C
-C  Purify the geometry in mylbfgs to preserve icosahedral (Ih)
-C  symmetry.
+C  PURIFY THE GEOMETRY IN MYLBFGS TO PRESERVE ICOSAHEDRAL (IH)
+C  SYMMETRY.
 C
       ELSE IF (WORD.EQ.'PROJIH') THEN
          PROJIHT=.TRUE.
 C
-C  Frequency of printing in lbfgs to reduce size of output files
+C  FREQUENCY OF PRINTING IN LBFGS TO REDUCE SIZE OF OUTPUT FILES
 C  NOT DOCUMENTED
 C
       ELSE IF (WORD.EQ.'PRTFRQ') THEN
          CALL READI(PRTFRQ)
 C
-C  Plain parallel tempering. Same as BSPT but without quenches.
+C  PLAIN PARALLEL TEMPERING. SAME AS BSPT BUT WITHOUT QUENCHES.
 C
       ELSE IF (WORD.EQ.'PTMC') THEN
          PTMC=.TRUE.
@@ -2777,25 +2777,25 @@ C
          NQUENCH=0.0D0
          CALL READI(NENRPER)
          CALL READI(HBINS)
-         QUENCHFRQ=1 ! must be set to avoid division by zero in bspt.F
+         QUENCHFRQ=1 ! MUST BE SET TO AVOID DIVISION BY ZERO IN BSPT.F
 !        CALL READI(QUENCHFRQ)
 C
-C  Keyword for applied static force.
+C  KEYWORD FOR APPLIED STATIC FORCE.
 C
       ELSE IF (WORD.EQ.'PULL') THEN
          PULLT=.TRUE.
          CALL READI(PATOM1)
          CALL READI(PATOM2)
          CALL READF(PFORCE)
-         WRITE(MYUNIT,'(A,I6,A,I6,A,G20.10)') ' keyword> Pulling atoms ',PATOM1,' and ',PATOM2,' force=',PFORCE
+         WRITE(MYUNIT,'(A,I6,A,I6,A,G20.10)') ' KEYWORD> PULLING ATOMS ',PATOM1,' AND ',PATOM2,' FORCE=',PFORCE
 C
-C Request calculation of structural order parameter Q4 on the fly 
+C REQUEST CALCULATION OF STRUCTURAL ORDER PARAMETER Q4 ON THE FLY 
 C NOT DOCUMENTED.
 C
       ELSE IF (WORD.EQ.'Q4') THEN
          Q4T=.TRUE.
 C
-C Distance cut-off for Coulomb interactions in AMBER.
+C DISTANCE CUT-OFF FOR COULOMB INTERACTIONS IN AMBER.
 C
       ELSE IF (WORD.EQ.'QCUTOFF') THEN
          AMCUT=.TRUE.
@@ -2821,8 +2821,8 @@ C
          NRBSITES=5
          ALLOCATE(SITE(NRBSITES,3))
 C
-C Collect data from quenches for hopeful conversion into relative density of states.
-C Requires saved lowestdirect and firstfit files to be present.
+C COLLECT DATA FROM QUENCHES FOR HOPEFUL CONVERSION INTO RELATIVE DENSITY OF STATES.
+C REQUIRES SAVED LOWESTDIRECT AND FIRSTFIT FILES TO BE PRESENT.
 C NOT DOCUMENTED.
 C
       ELSE IF (WORD.EQ.'QUENCHDOS') THEN
@@ -2833,7 +2833,7 @@ C
          CALL READF(XX)
          RADIUS=XX
 C
-C  integer seed for random number generator.
+C  INTEGER SEED FOR RANDOM NUMBER GENERATOR.
 C
       ELSE IF (WORD.EQ.'RANSEED') THEN
          CALL READI(NDUMMY)
@@ -2844,35 +2844,35 @@ C
          CALL READF(REALRCUTOFF)
          RCUTOFF=1.1D0*REALRCUTOFF
 C
-C  Read data for previous geometries that lead to reseeding, which
-C  probably approximate MSB bottoms.
+C  READ DATA FOR PREVIOUS GEOMETRIES THAT LEAD TO RESEEDING, WHICH
+C  PROBABLY APPROXIMATE MSB BOTTOMS.
 C  NOT DOCUMENTED
 C
       ELSE IF (WORD.EQ.'READMSB') THEN
-         INQUIRE(FILE='MSBdata',EXIST=YESNO)
+         INQUIRE(FILE='MSBDATA',EXIST=YESNO)
          IF (.NOT.YESNO) THEN
-            WRITE(MYUNIT,'(A)') 'ERROR - READMSB specified, but no MSBdata data file found'
+            WRITE(MYUNIT,'(A)') 'ERROR - READMSB SPECIFIED, BUT NO MSBDATA DATA FILE FOUND'
             STOP
          ELSE
             IF (.NOT.ALLOCATED(MSBCOORDS)) ALLOCATE(MSBCOORDS(3*NATOMS,MAXSAVE))
             IF (.NOT.ALLOCATED(MSBE)) ALLOCATE(MSBE(MAXSAVE))
-            OPEN(UNIT=34,FILE='MSBdata',STATUS='OLD')
+            OPEN(UNIT=34,FILE='MSBDATA',STATUS='OLD')
 57          READ(34,*,END=56) DUMMY
             NMSBSAVE=NMSBSAVE+1
             MSBE(NMSBSAVE)=DUMMY
             READ(34,*) (MSBCOORDS(J1,NMSBSAVE),J1=1,3*NATOMS)
             IF (NMSBSAVE.LT.MAXSAVE) GOTO 57
 56          WRITE(MYUNIT,'(A,I6,A)') 
-     1         'Energies and coordinates read for ',NMSBSAVE,' previous structures from MSBdata'
+     1         'ENERGIES AND COORDINATES READ FOR ',NMSBSAVE,' PREVIOUS STRUCTURES FROM MSBDATA'
             CLOSE(34)
          ENDIF
 C
-C  Renormalisation attempt
+C  RENORMALISATION ATTEMPT
 C
-C  TRENORM is the temperature for the Metropolis accept/reject comparison
-C          of lowest energies calculated over NRENORM steps having moved
-C          XMOVERENORM atoms. NRENORM is dynamically adjusted with a
-C          minimum value equal to half the original NRENORM.
+C  TRENORM IS THE TEMPERATURE FOR THE METROPOLIS ACCEPT/REJECT COMPARISON
+C          OF LOWEST ENERGIES CALCULATED OVER NRENORM STEPS HAVING MOVED
+C          XMOVERENORM ATOMS. NRENORM IS DYNAMICALLY ADJUSTED WITH A
+C          MINIMUM VALUE EQUAL TO HALF THE ORIGINAL NRENORM.
 C  NOT DOCUMENTED
 C
       ELSE IF (WORD.EQ.'RENORM') THEN
@@ -2887,17 +2887,17 @@ C
          CALL READF(XX)
          RESIZE=XX
 C
-C  Reseed runs if a step is not accepted in twice the relaxation time,
-C  defined in terms of a number of mc steps NRELAX. NHSRESTART defines
-C  the number of hard sphere moves used to produce the new starting
-C  configuration. 
+C  RESEED RUNS IF A STEP IS NOT ACCEPTED IN TWICE THE RELAXATION TIME,
+C  DEFINED IN TERMS OF A NUMBER OF MC STEPS NRELAX. NHSRESTART DEFINES
+C  THE NUMBER OF HARD SPHERE MOVES USED TO PRODUCE THE NEW STARTING
+C  CONFIGURATION. 
 C
       ELSE IF (WORD.EQ.'RESTART') THEN
          RESTART=.TRUE.
          IF (NITEMS.GT.1) CALL READI(NRELAX)
          IF (NITEMS.GT.2) CALL READI(NHSRESTART)
 C
-C  Restore the state of a previous GMIN run from dumpfile.
+C  RESTORE THE STATE OF A PREVIOUS GMIN RUN FROM DUMPFILE.
 C
       ELSE IF (WORD.EQ.'RESTORE') THEN
          RESTORET=.TRUE.
@@ -2917,7 +2917,7 @@ C
          RKMIN=.TRUE.
          IF (NITEMS.GT.1) CALL READF(GMAX)
          IF (NITEMS.GT.2) CALL READF(EPS)
-         WRITE(MYUNIT,'(A,2L5)') 'RKMIN branch RKMIN,BSMIN=',RKMIN,BSMIN
+         WRITE(MYUNIT,'(A,2L5)') 'RKMIN BRANCH RKMIN,BSMIN=',RKMIN,BSMIN
 
       ELSE IF (WORD.EQ.'RMS') THEN
          RMST=.TRUE.
@@ -2932,7 +2932,7 @@ C
            SELECTT=.FALSE.
          ENDIF
          IF (J2.EQ.1) PROGRESS=.TRUE.
-         WRITE(MYUNIT,'(A)') 'RMST set'
+         WRITE(MYUNIT,'(A)') 'RMST SET'
 
       ELSE IF (WORD.EQ.'SAVE') THEN
          CALL READI(NSAVE)
@@ -2996,19 +2996,19 @@ C        ENDIF
       ELSE IF (WORD.EQ.'STAR') THEN
          STAR=.TRUE.
 C
-C Read in the maximum initial step size, factor for determining angular
-C moves, and for rigid bodies the angular step size and the size of the
-C blocks for Cartesian and angular moves.
+C READ IN THE MAXIMUM INITIAL STEP SIZE, FACTOR FOR DETERMINING ANGULAR
+C MOVES, AND FOR RIGID BODIES THE ANGULAR STEP SIZE AND THE SIZE OF THE
+C BLOCKS FOR CARTESIAN AND ANGULAR MOVES.
 C
-C For parallel runs different values can be used for different runs by
-C adding additional "STEP" lines to the data file. Otherwise the
-C parameters for subsequent parallel runs are set to the values for the
-C first one.
+C FOR PARALLEL RUNS DIFFERENT VALUES CAN BE USED FOR DIFFERENT RUNS BY
+C ADDING ADDITIONAL "STEP" LINES TO THE DATA FILE. OTHERWISE THE
+C PARAMETERS FOR SUBSEQUENT PARALLEL RUNS ARE SET TO THE VALUES FOR THE
+C FIRST ONE.
 C
       ELSE IF (WORD.EQ.'STEP') THEN
          NPCOUNT=NPCOUNT+1
          IF (NPCOUNT.GT.NPAR) THEN
-            WRITE(MYUNIT,'(A)') 'Number of STEP lines exceeds NPAR - quit'
+            WRITE(MYUNIT,'(A)') 'NUMBER OF STEP LINES EXCEEDS NPAR - QUIT'
             STOP
          ENDIF
          CALL READF(STEP(NPCOUNT))
@@ -3016,17 +3016,17 @@ C
          IF (NITEMS.GT.3) CALL READF(OSTEP(NPCOUNT))
          IF (NITEMS.GT.4) CALL READI(BLOCK(NPCOUNT))
 C
-C  Steered minimisation. This is for basin-hopping steps involving two well-defined
-C  objects, e.g. a ligand and a protein.
+C  STEERED MINIMISATION. THIS IS FOR BASIN-HOPPING STEPS INVOLVING TWO WELL-DEFINED
+C  OBJECTS, E.G. A LIGAND AND A PROTEIN.
 C
       ELSE IF (WORD.EQ.'STEEREDMIN') THEN
          STEEREDMINT=.TRUE.
-         CALL READF(SMINK)          ! final value of force constant
-         CALL READF(SMINKINC)        ! increment of force constant per LBFGS step
-         CALL READF(SMINDISTSTART)  ! initial distance for atoms SMINATOMA and SMINATOMB
-         CALL READF(SMINDISTFINISH) ! final distance for atoms SMINATOMA and SMINATOMB (force turned off)
-         CALL READI(SMINATOMA)      ! Atom A in the body to be rotated
-         CALL READI(SMINATOMB)      ! Atom B in the other body (fixed for step)
+         CALL READF(SMINK)          ! FINAL VALUE OF FORCE CONSTANT
+         CALL READF(SMINKINC)        ! INCREMENT OF FORCE CONSTANT PER LBFGS STEP
+         CALL READF(SMINDISTSTART)  ! INITIAL DISTANCE FOR ATOMS SMINATOMA AND SMINATOMB
+         CALL READF(SMINDISTFINISH) ! FINAL DISTANCE FOR ATOMS SMINATOMA AND SMINATOMB (FORCE TURNED OFF)
+         CALL READI(SMINATOMA)      ! ATOM A IN THE BODY TO BE ROTATED
+         CALL READI(SMINATOMB)      ! ATOM B IN THE OTHER BODY (FIXED FOR STEP)
 
       ELSE IF (WORD.EQ.'TRACKDATA') THEN
          TRACKDATAT=.TRUE.     
@@ -3072,7 +3072,7 @@ C
 C           CALL READF(SITE(J1,1))
 C           CALL READF(SITE(J1,2))
 C           CALL READF(SITE(J1,3))
-!           WRITE(MYUNIT,'(A,I5,3G20.10)') 'J1,site: ',J1,SITE(J1,1:3)
+!           WRITE(MYUNIT,'(A,I5,3G20.10)') 'J1,SITE: ',J1,SITE(J1,1:3)
          ENDDO
 
       ELSE IF (WORD.EQ.'LJCOUL') THEN
@@ -3083,7 +3083,7 @@ C           CALL READF(SITE(J1,3))
          CALL READF(COULTEMP)
          NRBSITES=1
          ALLOCATE(SITE(NRBSITES,3))
-C        Maybe the above two lines are not necessary!
+C        MAYBE THE ABOVE TWO LINES ARE NOT NECESSARY!
 
       ELSE IF (WORD.EQ.'STOCK') THEN
          STOCKT=.TRUE.
@@ -3093,7 +3093,7 @@ C        Maybe the above two lines are not necessary!
          CALL READF(STOCKLAMBDA)
          ALLOCATE(SITE(NRBSITES,3))
 
-C       Anisotropic potentials:
+C       ANISOTROPIC POTENTIALS:
 
 !     DC430 >
 
@@ -3226,7 +3226,7 @@ C       Anisotropic potentials:
          IF (NITEMS > 1) THEN 
             CALL READI(TIPID)
          ELSE
-            PRINT *, 'ERROR, TIPID is missing'
+            PRINT *, 'ERROR, TIPID IS MISSING'
             STOP
          ENDIF 
          IF (TIPID == 1) NRBSITES = 3
@@ -3237,7 +3237,7 @@ C       Anisotropic potentials:
 
          ALLOCATE(SITE(NRBSITES,3))
 
-!|gd351>
+!|GD351>
 
       ELSE IF (WORD .EQ. 'PATCHY') THEN
  
@@ -3246,7 +3246,7 @@ C       Anisotropic potentials:
          IF (NITEMS > 1) THEN 
             CALL READI(NRBSITES)
          ELSE
-            PRINT *, 'ERROR, NRBSITES is missing'
+            PRINT *, 'ERROR, NRBSITES IS MISSING'
             STOP
          ENDIF 
 
@@ -3262,7 +3262,7 @@ C       Anisotropic potentials:
  
          ASAOOS =.TRUE.
  
-!<gd351|
+!<GD351|
 
       ELSE IF (WORD .EQ. 'STOCKAA') THEN
 
@@ -3499,7 +3499,7 @@ C       Anisotropic potentials:
      
          ESA = PYA1
 
-         NRBSITES = 1 ! required for finalio.f
+         NRBSITES = 1 ! REQUIRED FOR FINALIO.F
 
        ELSE IF (WORD .EQ.'PYGDP') THEN
 
@@ -3531,7 +3531,7 @@ C       Anisotropic potentials:
 
          ESA = PYA1
 
-         NRBSITES = 1 ! required for finalio.f
+         NRBSITES = 1 ! REQUIRED FOR FINALIO.F
 
        ELSE IF (WORD .EQ.'MSGB') THEN
 
@@ -3597,12 +3597,12 @@ C       Anisotropic potentials:
          ELLIPSOIDT=.TRUE.
          RIGID=.TRUE.
          NRBSITES=1
-         CALL READF(PARAMa1)
-         CALL READF(PARAMb1)
-         CALL READF(PARAMc1)
-         CALL READF(PARAMa2)
-         CALL READF(PARAMb2)
-         CALL READF(PARAMc2)
+         CALL READF(PARAMA1)
+         CALL READF(PARAMB1)
+         CALL READF(PARAMC1)
+         CALL READF(PARAMA2)
+         CALL READF(PARAMB2)
+         CALL READF(PARAMC2)
          CALL READF(PSIGMA0(1))
          CALL READF(PSIGMA0(2))
          CALL READF(PEPSILON0)
@@ -3610,39 +3610,39 @@ C       Anisotropic potentials:
             CALL READF(PCUTOFF)
             PARAMONOVCUTOFF=.TRUE.
             PCUTOFF=PCUTOFF*MAX(PSIGMA0(1),PSIGMA0(2))
-            write (MYUNIT,*) "PY Potential. PCutoff ON:",PCUTOFF
+            WRITE (MYUNIT,*) "PY POTENTIAL. PCUTOFF ON:",PCUTOFF
          ENDIF
          IF (NITEMS.GT.11) THEN
-! control which dimensions have periodic boundaries with a string 'XYZ', always put x before y before z.            
-! eg ...  Xz 20 30  specifies PBC on X and Z directions.  The X box size will be 20, the Z box size 30
+! CONTROL WHICH DIMENSIONS HAVE PERIODIC BOUNDARIES WITH A STRING 'XYZ', ALWAYS PUT X BEFORE Y BEFORE Z.            
+! EG ...  XZ 20 30  SPECIFIES PBC ON X AND Z DIRECTIONS.  THE X BOX SIZE WILL BE 20, THE Z BOX SIZE 30
             CALL READA(PBC)
-            write (*,*) "PBCs are: ",PBC
+            WRITE (*,*) "PBCS ARE: ",PBC
             BOXLX=0
             BOXLY=0
             BOXLZ=0
-            IF (SCAN(PBC,'Xx').NE.0) THEN
+            IF (SCAN(PBC,'XX').NE.0) THEN
                 PARAMONOVPBCX=.TRUE.
-                CALL READF(BOXLX)       ! BOXLX is a scaling factor, not the actual box length!
-                BOXLX=BOXLX*PCUTOFF     ! now BOXLX is the actual box length
-                write(*,*) "Paramonov Periodic Boundary Condition X active. BOXLX:",BOXLX
+                CALL READF(BOXLX)       ! BOXLX IS A SCALING FACTOR, NOT THE ACTUAL BOX LENGTH!
+                BOXLX=BOXLX*PCUTOFF     ! NOW BOXLX IS THE ACTUAL BOX LENGTH
+                WRITE(*,*) "PARAMONOV PERIODIC BOUNDARY CONDITION X ACTIVE. BOXLX:",BOXLX
             ENDIF
-            IF (SCAN(PBC,'Yy').NE.0) THEN
+            IF (SCAN(PBC,'YY').NE.0) THEN
                 PARAMONOVPBCY=.TRUE.
                 CALL READF(BOXLY)
                 BOXLY=BOXLY*PCUTOFF
-                write(*,*) "Paramonov Periodic Boundary Condition Y active. BOXLY:",BOXLY
+                WRITE(*,*) "PARAMONOV PERIODIC BOUNDARY CONDITION Y ACTIVE. BOXLY:",BOXLY
             ENDIF
-            IF (SCAN(PBC,'Zz').NE.0) THEN
+            IF (SCAN(PBC,'ZZ').NE.0) THEN
                 PARAMONOVPBCZ=.TRUE.
                 CALL READF(BOXLZ)
                 BOXLZ=BOXLZ*PCUTOFF
-                write(*,*) "Paramonov Periodic Boundary Condition Z active. BOXLZ",BOXLZ
+                WRITE(*,*) "PARAMONOV PERIODIC BOUNDARY CONDITION Z ACTIVE. BOXLZ",BOXLZ
             ENDIF
          ENDIF 
          ALLOCATE(SITE(NRBSITES,3))
       ELSE IF (WORD.EQ.'PYOVERLAPTHRESH') THEN
          CALL READF(PYOVERLAPTHRESH)
-         WRITE(MYUNIT,'(A,F8.3)') 'keyword> ellipsoids considered to overlap for an ECF value of ', PYOVERLAPTHRESH
+         WRITE(MYUNIT,'(A,F8.3)') 'KEYWORD> ELLIPSOIDS CONSIDERED TO OVERLAP FOR AN ECF VALUE OF ', PYOVERLAPTHRESH
       ELSE IF (WORD .EQ.'PYGPERIODIC') THEN
 
          PYGPERIODICT = .TRUE.
@@ -3656,15 +3656,15 @@ C       Anisotropic potentials:
          CALL READF(PYA2(3))
          CALL READF(PYSIGNOT)
          CALL READF(PYEPSNOT)
-         PARAMa1=PYA1(1)
-         PARAMb1=PYA1(2)
-         PARAMc1=PYA1(3)
+         PARAMA1=PYA1(1)
+         PARAMB1=PYA1(2)
+         PARAMC1=PYA1(3)
 
-         IF(.NOT.ALLOCATED(PYA1bin)) ALLOCATE(PYA1bin(NATOMS/2,3))
-         IF(.NOT.ALLOCATED(PYA2bin)) ALLOCATE(PYA2bin(NATOMS/2,3))
+         IF(.NOT.ALLOCATED(PYA1BIN)) ALLOCATE(PYA1BIN(NATOMS/2,3))
+         IF(.NOT.ALLOCATED(PYA2BIN)) ALLOCATE(PYA2BIN(NATOMS/2,3))
          DO J1=1,NATOMS/2
-           PYA1bin(J1,:)=PYA1(:)
-           PYA2bin(J1,:)=PYA2(:)
+           PYA1BIN(J1,:)=PYA1(:)
+           PYA2BIN(J1,:)=PYA2(:)
          END DO
          IF (PYA1(1) == PYA2(1) .AND. PYA1(2) == PYA2(2) .AND. PYA1(3) == PYA2(3)) THEN
             RADIFT = .FALSE.
@@ -3676,40 +3676,40 @@ C       Anisotropic potentials:
             CALL READF(PCUTOFF)
             PARAMONOVCUTOFF=.TRUE.
             PCUTOFF=PCUTOFF*PYSIGNOT
-            write (MYUNIT,*) "PY Potential. PCutoff ON:",PCUTOFF
+            WRITE (MYUNIT,*) "PY POTENTIAL. PCUTOFF ON:",PCUTOFF
          ENDIF
          IF (NITEMS.GT.10) THEN
-! control which dimensions have periodic boundaries with a string 'XYZ', always put x before y before z.
-! eg ...  Xz 20 30  specifies PBC on X and Z directions.  The X box size will be 20, the Z box size 30
+! CONTROL WHICH DIMENSIONS HAVE PERIODIC BOUNDARIES WITH A STRING 'XYZ', ALWAYS PUT X BEFORE Y BEFORE Z.
+! EG ...  XZ 20 30  SPECIFIES PBC ON X AND Z DIRECTIONS.  THE X BOX SIZE WILL BE 20, THE Z BOX SIZE 30
             CALL READA(PBC)
-            write (*,*) "PBCs are: ",PBC
+            WRITE (*,*) "PBCS ARE: ",PBC
             BOXLX=0
             BOXLY=0
             BOXLZ=0
-            IF (SCAN(PBC,'Xx').NE.0) THEN
+            IF (SCAN(PBC,'XX').NE.0) THEN
                 PARAMONOVPBCX=.TRUE.
-                CALL READF(BOXLX)       ! BOXLX is a scaling factor, not the actual box length!
-                BOXLX=BOXLX*PCUTOFF     ! now BOXLX is the actual box length
-                write(*,*) "Paramonov Periodic Boundary Condition X active. BOXLX:",BOXLX
+                CALL READF(BOXLX)       ! BOXLX IS A SCALING FACTOR, NOT THE ACTUAL BOX LENGTH!
+                BOXLX=BOXLX*PCUTOFF     ! NOW BOXLX IS THE ACTUAL BOX LENGTH
+                WRITE(*,*) "PARAMONOV PERIODIC BOUNDARY CONDITION X ACTIVE. BOXLX:",BOXLX
             ENDIF
-            IF (SCAN(PBC,'Yy').NE.0) THEN
+            IF (SCAN(PBC,'YY').NE.0) THEN
                 PARAMONOVPBCY=.TRUE.
                 CALL READF(BOXLY)
                 BOXLY=BOXLY*PCUTOFF
-                write(*,*) "Paramonov Periodic Boundary Condition Y active. BOXLY:",BOXLY
+                WRITE(*,*) "PARAMONOV PERIODIC BOUNDARY CONDITION Y ACTIVE. BOXLY:",BOXLY
             ENDIF
-            IF (SCAN(PBC,'Zz').NE.0) THEN
+            IF (SCAN(PBC,'ZZ').NE.0) THEN
                 PARAMONOVPBCZ=.TRUE.
                 CALL READF(BOXLZ)
                 BOXLZ=BOXLZ*PCUTOFF
-                write(*,*) "Paramonov Periodic Boundary Condition Z active. BOXLZ",BOXLZ
+                WRITE(*,*) "PARAMONOV PERIODIC BOUNDARY CONDITION Z ACTIVE. BOXLZ",BOXLZ
             ENDIF
          ENDIF
          ALLOCATE(SITE(NRBSITES,3))
       ELSE IF (WORD .EQ.'LJCAPSID') THEN
-!         Three-site Lennard-Jones based capsid model. Sites at the origin are standard LJ sites, the two apex sites 
-!         are repulsive LJ sites, polarised. The site in the middle only interacts with sites in the middle of other 
-!         molecules.
+!         THREE-SITE LENNARD-JONES BASED CAPSID MODEL. SITES AT THE ORIGIN ARE STANDARD LJ SITES, THE TWO APEX SITES 
+!         ARE REPULSIVE LJ SITES, POLARISED. THE SITE IN THE MIDDLE ONLY INTERACTS WITH SITES IN THE MIDDLE OF OTHER 
+!         MOLECULES.
          LJCAPSIDT = .TRUE.
          CALL READF(PYSIGNOT)
          CALL READF(PYEPSNOT)
@@ -3727,7 +3727,7 @@ C       Anisotropic potentials:
           MAXINTERACTIONS=1
          IF(NITEMS.GT.3) THEN
           CALL READF(PSCALEFAC2(1))
-          WRITE(MYUNIT,'(A,3F8.3)') 'keyword> primary and secondary apex sites will be used, epsilon and heights: ', 
+          WRITE(MYUNIT,'(A,3F8.3)') 'KEYWORD> PRIMARY AND SECONDARY APEX SITES WILL BE USED, EPSILON AND HEIGHTS: ', 
      &                              PEPSILON1(1), PSCALEFAC1(1), PSCALEFAC2(1)
           IF(.NOT.LJSITEATTR) THEN
                 MAXINTERACTIONS=3
@@ -3735,18 +3735,18 @@ C       Anisotropic potentials:
                 MAXINTERACTIONS=4
           END IF
          ELSE
-          WRITE(MYUNIT,'(A,2F8.3)') 'keyword> primary apex sites will be used, epsilon and height: ', PEPSILON1(1), PSCALEFAC1(1)
+          WRITE(MYUNIT,'(A,2F8.3)') 'KEYWORD> PRIMARY APEX SITES WILL BE USED, EPSILON AND HEIGHT: ', PEPSILON1(1), PSCALEFAC1(1)
          END IF
-         IF(NITEMS.GT.4) THEN           ! binary ellipsoidal clusters will be set up only for two apex sites, not one
-           BLJSITE=.TRUE.               ! we also won't use the sigma parameter from now on, epsilon is enough for repulsive sites
-           WRITE(MYUNIT,'(A,3F8.3)') 'keyword> binary system with primary and secondary apex sites, ' //  
-     &  'epsilon and heights for 2nd type particle: ', PEPSILON1(1), PSCALEFAC1(1), PSCALEFAC2(1)
+         IF(NITEMS.GT.4) THEN           ! BINARY ELLIPSOIDAL CLUSTERS WILL BE SET UP ONLY FOR TWO APEX SITES, NOT ONE
+           BLJSITE=.TRUE.               ! WE ALSO WON'T USE THE SIGMA PARAMETER FROM NOW ON, EPSILON IS ENOUGH FOR REPULSIVE SITES
+           WRITE(MYUNIT,'(A,3F8.3)') 'KEYWORD> BINARY SYSTEM WITH PRIMARY AND SECONDARY APEX SITES, ' //  
+     &  'EPSILON AND HEIGHTS FOR 2ND TYPE PARTICLE: ', PEPSILON1(1), PSCALEFAC1(1), PSCALEFAC2(1)
 
            CALL READF(PEPSILON1(2))
            CALL READF(PSCALEFAC1(2))
            CALL READF(PSCALEFAC2(2))
-           CALL READF(PEPSILON1(3))     ! this is epsilon for the interaction between A and B type ellipsoids
-           MAXINTERACTIONS=3 ! attractive secondary apex sites not incorporated for binary systems
+           CALL READF(PEPSILON1(3))     ! THIS IS EPSILON FOR THE INTERACTION BETWEEN A AND B TYPE ELLIPSOIDS
+           MAXINTERACTIONS=3 ! ATTRACTIVE SECONDARY APEX SITES NOT INCORPORATED FOR BINARY SYSTEMS
          END IF
       ELSE IF (WORD.EQ.'EXTRALJSITEATTR') THEN
          LJSITE=.TRUE.
@@ -3756,8 +3756,8 @@ C       Anisotropic potentials:
          CALL READF(PSIGMAATTR(2))
          CALL READF(PEPSILONATTR(2))
 
-         WRITE(MYUNIT,'(A,4F8.3)') 'keyword> primary and secondary apex sites '//
-     &                             'with normal LJ attraction, sigmas and epsilons: ', 
+         WRITE(MYUNIT,'(A,4F8.3)') 'KEYWORD> PRIMARY AND SECONDARY APEX SITES '//
+     &                             'WITH NORMAL LJ ATTRACTION, SIGMAS AND EPSILONS: ', 
      &                             PSIGMAATTR(1), PEPSILONATTR(1), PSIGMAATTR(2), PEPSILONATTR(2)
          MAXINTERACTIONS=4
       ELSE IF (WORD.EQ.'LJSITECOORDS') THEN
@@ -3772,7 +3772,7 @@ C       Anisotropic potentials:
                 PYSWAP(2) = PYBINARYTYPE1 + 1
                 PYSWAP(3) = 1
                 IF(NITEMS.GT.1) CALL READI(PYSWAP(3))
-                WRITE(MYUNIT,'(A,I5,A)') 'keyword> ',PYSWAP(3), ' pairs of atoms will be swapped at once'
+                WRITE(MYUNIT,'(A,I5,A)') 'KEYWORD> ',PYSWAP(3), ' PAIRS OF ATOMS WILL BE SWAPPED AT ONCE'
          END IF
       ELSE IF (WORD.EQ.'PYBINARY') THEN
          PYBINARYT=.TRUE.
@@ -3797,22 +3797,22 @@ C       Anisotropic potentials:
             CALL READF(PCUTOFF)
             PARAMONOVCUTOFF=.TRUE.
             PCUTOFF=PCUTOFF*PYSIGNOT
-            write (MYUNIT,*) "PY Potential. PCutoff ON:",PCUTOFF
+            WRITE (MYUNIT,*) "PY POTENTIAL. PCUTOFF ON:",PCUTOFF
          END IF
          IF(SWAPMOVEST) THEN
                 PYSWAP(1) = 1
                 PYSWAP(2) = PYBINARYTYPE1 + 1
          END IF
 
-         IF(.NOT.ALLOCATED(PYA1bin)) ALLOCATE(PYA1bin(NATOMS/2,3))
-         IF(.NOT.ALLOCATED(PYA2bin)) ALLOCATE(PYA2bin(NATOMS/2,3))
+         IF(.NOT.ALLOCATED(PYA1BIN)) ALLOCATE(PYA1BIN(NATOMS/2,3))
+         IF(.NOT.ALLOCATED(PYA2BIN)) ALLOCATE(PYA2BIN(NATOMS/2,3))
          DO J1=1,NATOMS/2
           IF(J1<=PYBINARYTYPE1) THEN
-           PYA1bin(J1,:)=PYA11(:)
-           PYA2bin(J1,:)=PYA21(:)
+           PYA1BIN(J1,:)=PYA11(:)
+           PYA2BIN(J1,:)=PYA21(:)
           ELSE
-           PYA1bin(J1,:)=PYA12(:)
-           PYA2bin(J1,:)=PYA22(:)
+           PYA1BIN(J1,:)=PYA12(:)
+           PYA2BIN(J1,:)=PYA22(:)
           END IF
          END DO
 
@@ -3833,7 +3833,7 @@ C         ELLIPSOIDT=.TRUE.
          STRANDT=.TRUE.
          RIGID=.TRUE.
 C
-C  The nine reference site positions per strand.
+C  THE NINE REFERENCE SITE POSITIONS PER STRAND.
 C
          NRBSITES=9
          ALLOCATE(SITE(NRBSITES,3))
@@ -3880,7 +3880,7 @@ C
       ELSE IF (WORD.EQ.'SETCHIRAL') THEN
          SETCHIRAL=.TRUE.
 C
-C  Keyword and parameters for symmetrisation.
+C  KEYWORD AND PARAMETERS FOR SYMMETRISATION.
 C
       ELSE IF (WORD.EQ.'SYMMETRISE') THEN
          SYMMETRIZE=.TRUE.
@@ -3892,10 +3892,10 @@ C
          IF (NITEMS.GT.5) CALL READF(SYMTOL4)
          IF (NITEMS.GT.6) CALL READF(SYMTOL5)
          IF (NITEMS.GT.7) CALL READI(NSYMQMAX)
-         IF (NITEMS.GT.8) CALL READF(MATDIFF) ! appears to have little effect now
+         IF (NITEMS.GT.8) CALL READF(MATDIFF) ! APPEARS TO HAVE LITTLE EFFECT NOW
          IF (NITEMS.GT.9) CALL READF(DISTFAC)
 C
-C  Keyword and parameters for symmetrisation according to a continuous symmetry measure.
+C  KEYWORD AND PARAMETERS FOR SYMMETRISATION ACCORDING TO A CONTINUOUS SYMMETRY MEASURE.
 C
       ELSE IF (WORD.EQ.'SYMMETRISECSM') THEN
          SYMMETRIZE=.TRUE.
@@ -3906,7 +3906,7 @@ C
             CALL READA(CSMGP)
             CALL MYUPCASE(CSMGP)
          ELSE
-            PRINT '(A)','keyword> ERROR - point group must be specified for SYMMETRIZECMS keyword'
+            PRINT '(A)','KEYWORD> ERROR - POINT GROUP MUST BE SPECIFIED FOR SYMMETRIZECMS KEYWORD'
             STOP
          ENDIF
          IF (NITEMS.GT.3) CALL READF(CSMEPS)
@@ -3915,25 +3915,25 @@ C
          IF (NITEMS.GT.6) CALL READI(CSMMAXIT)
          IF (.NOT.PERMDIST) THEN
          PERMDIST=.TRUE.
-         INQUIRE(FILE='perm.allow',EXIST=PERMFILE)
+         INQUIRE(FILE='PERM.ALLOW',EXIST=PERMFILE)
 !        ALLOCATE(NPERMSIZE(NATOMS),PERMGROUP(NATOMS),NSWAP(NATOMS),SWAP1(NATOMS,2),SWAP2(NATOMS,2))
          ALLOCATE(NPERMSIZE(3*NATOMS),PERMGROUP(3*NATOMS),NSETS(3*NATOMS),SETS(NATOMS,3))
          IF (PERMFILE) THEN
-            OPEN(UNIT=1,FILE='perm.allow',STATUS='OLD')
+            OPEN(UNIT=1,FILE='PERM.ALLOW',STATUS='OLD')
             READ(1,*) NPERMGROUP
             NDUMMY=1
             DO J1=1,NPERMGROUP
                READ(1,*) NPERMSIZE(J1),NSETS(J1)
 !
-!  Sanity checks!
+!  SANITY CHECKS!
 !
                IF (NSETS(J1).GT.3) THEN
-                  PRINT '(2(A,I8))','keyword> ERROR - number of secondary sets ',NSETS(J1),' is > 3'
+                  PRINT '(2(A,I8))','KEYWORD> ERROR - NUMBER OF SECONDARY SETS ',NSETS(J1),' IS > 3'
                   STOP
                ENDIF
 !              IF (NDUMMY+NPERMSIZE(J1).GT.NATOMS) THEN
                IF (NDUMMY+NPERMSIZE(J1).GT.3*NATOMS) THEN
-                  PRINT '(2(A,I8))','keyword> ERROR - number of atoms to be permuted in all groups is > 3*number of atoms'
+                  PRINT '(2(A,I8))','KEYWORD> ERROR - NUMBER OF ATOMS TO BE PERMUTED IN ALL GROUPS IS > 3*NUMBER OF ATOMS'
                   STOP
                ENDIF
 !              READ(1,*) PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1),((SWAP1(PERMGROUP(J3),J2),J2=1,NSWAP(J1)),
@@ -3945,14 +3945,14 @@ C
             ENDDO
             CLOSE(1)
 !
-!  And yet another!
+!  AND YET ANOTHER!
 !  
             IF (NFREEZE.GT.0) THEN
                NDUMMY=0
                DO J1=1,NPERMGROUP
                   DO J2=1,NPERMSIZE(J1)
                      IF (FROZEN(PERMGROUP(NDUMMY+J2))) THEN
-                        PRINT '(A,I8,A)',' keyword> ERROR atom ',PERMGROUP(NDUMMY+J2),' cannot be frozen and permuted'
+                        PRINT '(A,I8,A)',' KEYWORD> ERROR ATOM ',PERMGROUP(NDUMMY+J2),' CANNOT BE FROZEN AND PERMUTED'
                         STOP
                      ENDIF
                   ENDDO
@@ -3961,20 +3961,20 @@ C
             ENDIF
          ELSE
             NSETS(1:NATOMS)=0
-            NPERMGROUP=1 ! all atoms can be permuted - default
-            NPERMSIZE(1)=NATOMS ! all atoms can be permuted - default
+            NPERMGROUP=1 ! ALL ATOMS CAN BE PERMUTED - DEFAULT
+            NPERMSIZE(1)=NATOMS ! ALL ATOMS CAN BE PERMUTED - DEFAULT
             DO J1=1,NATOMS
                PERMGROUP(J1)=J1
             ENDDO
          ENDIF
-         WRITE(MYUNIT,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
+         WRITE(MYUNIT,'(A,I6)') ' KEYWORD> NUMBER OF GROUPS OF PERMUTABLE ATOMS=',NPERMGROUP
          NDUMMY=1
          DO J1=1,NPERMGROUP
-            PRINT '(A,3(I6,A))',' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
-     &                                                 NSETS(J1),' additional atom sets:'
+            PRINT '(A,3(I6,A))',' KEYWORD> GROUP ',J1,' CONTAINS ',NPERMSIZE(J1),' ATOMS WITH ',
+     &                                                 NSETS(J1),' ADDITIONAL ATOM SETS:'
             WRITE(*,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
             IF (NSETS(J1).GT.0) THEN
-               WRITE(*,'(A)',ADVANCE='NO') ' with '
+               WRITE(*,'(A)',ADVANCE='NO') ' WITH '
                DO J2=1,NSETS(J1)
                   DO J3=NDUMMY,NDUMMY+NPERMSIZE(J1)-1
                      WRITE(*,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
@@ -3996,10 +3996,10 @@ C
          TARGET=.TRUE.
          NTARGETS=NITEMS-1
          ALLOCATE(TARGETS(NTARGETS))
-         INQUIRE(FILE='coords.target',EXIST=YESNO)
+         INQUIRE(FILE='COORDS.TARGET',EXIST=YESNO)
          IF (YESNO) THEN
             ALLOCATE(TCOORDS(NTARGETS,3*NATOMS))
-            OPEN(UNIT=1,FILE='coords.target',STATUS='OLD')
+            OPEN(UNIT=1,FILE='COORDS.TARGET',STATUS='OLD')
             READ(1,*) ((TCOORDS(J1,J2),J2=1,3*NATOMS),J1=1,NTARGETS)
             CLOSE(1)
          ENDIF
@@ -4034,29 +4034,29 @@ C
             ENDDO
          ENDIF
 C
-C Tethered WL walk to determine anharmonic vibrational density of states
+C TETHERED WL WALK TO DETERMINE ANHARMONIC VIBRATIONAL DENSITY OF STATES
 C
       ELSE IF (WORD.EQ.'TETHER') THEN
          TETHER=.TRUE.
-         CALL READF(hdistconstraint)
-         CALL READI(hwindows)
-         lhbins=int(hbins/hwindows)
-         CALL READF(ExtrapolationPercent)
-         lhbins=int(hbins/hwindows)
-         sampledbins=int((1.0d0-ExtrapolationPercent)*hbins/hwindows)
-         CALL READF(lnHarmFreq)
+         CALL READF(HDISTCONSTRAINT)
+         CALL READI(HWINDOWS)
+         LHBINS=INT(HBINS/HWINDOWS)
+         CALL READF(EXTRAPOLATIONPERCENT)
+         LHBINS=INT(HBINS/HWINDOWS)
+         SAMPLEDBINS=INT((1.0D0-EXTRAPOLATIONPERCENT)*HBINS/HWINDOWS)
+         CALL READF(LNHARMFREQ)
       ELSE IF (WORD.EQ.'THOMSON') THEN
          THOMSONT=.TRUE.
          ODDCHARGE=1.0D0
          IF (NITEMS.GT.1) CALL READF(ODDCHARGE)
 C
-C  Threshold acceptance rather than Metropolis, i.e. the energy change
-C  can;t increase by more than a certain amount.
+C  THRESHOLD ACCEPTANCE RATHER THAN METROPOLIS, I.E. THE ENERGY CHANGE
+C  CAN;T INCREASE BY MORE THAN A CERTAIN AMOUNT.
 C  NOT DOCUMENTED
 C
       ELSE IF (WORD.EQ.'THRESHOLD') THEN
          THRESHOLDT=.TRUE.
-!        WRITE(MYUNIT,*) 'keyword THRESHOLD doesnt appear to do anything at the moment'
+!        WRITE(MYUNIT,*) 'KEYWORD THRESHOLD DOESNT APPEAR TO DO ANYTHING AT THE MOMENT'
          STOP
 
       ELSE IF (WORD.EQ.'TIP') THEN
@@ -4071,7 +4071,7 @@ C
          ALLOCATE(SITE(NRBSITES,3))
 C     ELSE IF (WORD.EQ.'TN') THEN
 C        TNT=.TRUE.
-C        WRITE(MYUNIT,'(A)') 'optimisation with tn no longer supported'
+C        WRITE(MYUNIT,'(A)') 'OPTIMISATION WITH TN NO LONGER SUPPORTED'
 C        STOP
 
       ELSE IF (WORD.EQ.'TOLBRENT') THEN
@@ -4096,7 +4096,7 @@ C
          CALL READF(APM)
          CALL READF(RHO)
 C
-C  Set Tsallis statistics with some q value.
+C  SET TSALLIS STATISTICS WITH SOME Q VALUE.
 C
       ELSE IF (WORD.EQ.'TSALLIS') THEN
          TSALLIST=.TRUE.
@@ -4108,13 +4108,13 @@ C
          TWOPLUS=.TRUE.
          WRITE(MYUNIT,'(A,F14.10)') 'PMIN=  ',PMIN
 C
-C  Number of BFGS updates before resetting, default=4
+C  NUMBER OF BFGS UPDATES BEFORE RESETTING, DEFAULT=4
 C
       ELSE IF (WORD.EQ.'UPDATES') THEN
          CALL READI(MUPDATE)
 
 C
-C  Use VGW (Variational Gaussian Wavepacket) Minimization (Quantum Quenching)
+C  USE VGW (VARIATIONAL GAUSSIAN WAVEPACKET) MINIMIZATION (QUANTUM QUENCHING)
 C
       ELSE IF (WORD.EQ.'VGW') THEN
          VGW=.TRUE.
@@ -4136,13 +4136,13 @@ C
          CALL READF(VGWTOL)
 
 C
-C Choice of convergence regime for Wang-Landau runs: histogram flatness (default), 
-C VisitProp - minimal number of visits proportional to 1/sqrt(ln(f))
+C CHOICE OF CONVERGENCE REGIME FOR WANG-LANDAU RUNS: HISTOGRAM FLATNESS (DEFAULT), 
+C VISITPROP - MINIMAL NUMBER OF VISITS PROPORTIONAL TO 1/SQRT(LN(F))
 C
       ELSE IF (WORD.EQ.'VISITPROP') THEN
          VISITPROP=.TRUE.
 C
-C Maximum PE for an instantaneous configuration above a basin bottom in BSPT
+C MAXIMUM PE FOR AN INSTANTANEOUS CONFIGURATION ABOVE A BASIN BOTTOM IN BSPT
 C
       ELSE IF (WORD.EQ.'TSTAR') THEN
          CALL READF(TSTAR)
@@ -4167,13 +4167,13 @@ C
 
       ELSE IF (WORD.EQ.'ZETT2') THEN
          ZETT2=.TRUE.
-!op226> </kwd>
-         !op226>}}} 
-         !op226> <end>
-         !op226> Uhh! Went through all the available keywords; now the final
-         !op226> ELSE... 
+!OP226> </KWD>
+         !OP226>}}} 
+         !OP226> <END>
+         !OP226> UHH! WENT THROUGH ALL THE AVAILABLE KEYWORDS; NOW THE FINAL
+         !OP226> ELSE... 
       ELSE
-         CALL REPORT('Unrecognized command '//WORD,.TRUE.)
+         CALL REPORT('UNRECOGNIZED COMMAND '//WORD,.TRUE.)
          STOP
       ENDIF
       CALL FLUSH(MYUNIT)
@@ -4181,4 +4181,4 @@ C
 
       RETURN
       END
-      !</end>
+      !</END>

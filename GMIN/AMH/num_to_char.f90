@@ -1,29 +1,29 @@
-      subroutine num_to_char(count,ccount)
+      SUBROUTINE NUM_TO_CHAR(COUNT,CCOUNT)
 
-      use amhglobals,  only:SO
-      implicit none
-      integer count,i,j,k
-      character ccount*1,c(1)
+      USE AMHGLOBALS,  ONLY:SO
+      IMPLICIT NONE
+      INTEGER COUNT,I,J,K
+      CHARACTER CCOUNT*1,C(1)
 
-      ccount=' '
+      CCOUNT=' '
 
-      if (iabs(count).gt.99999999) then
-        write(SO,*) 'number too large to convert',count
-        stop
-      endif
+      IF (IABS(COUNT).GT.99999999) THEN
+        WRITE(SO,*) 'NUMBER TOO LARGE TO CONVERT',COUNT
+        STOP
+      ENDIF
 
-      j=0
-      do while(count.ne.0)
-        j=j+1
-        i=mod(count,10)
-        c(j)=char(i+48)
-        count=(count-i)/10
-      enddo
+      J=0
+      DO WHILE(COUNT.NE.0)
+        J=J+1
+        I=MOD(COUNT,10)
+        C(J)=CHAR(I+48)
+        COUNT=(COUNT-I)/10
+      ENDDO
 
-      do k=1,j
-        ccount(j-k+1:j-k+1)=c(k)
-      enddo
+      DO K=1,J
+        CCOUNT(J-K+1:J-K+1)=C(K)
+      ENDDO
 
-      return
-      end
+      RETURN
+      END
 

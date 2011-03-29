@@ -226,7 +226,7 @@
       DU(:) = (/0.D0, 1.D0, 0.D0/)
       DPFCT = 3.D0*DBPMU*DBPMU*DBSIGAA**3.D0
 
-      CLJ6BB  = 4.D0*DBEPSAA*DBSIGAA**6 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
+      CLJ6BB  = 4.D0*DBEPSAA*DBSIGAA**6 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
       CLJ12BB = 4.D0*DBEPSAA*DBSIGAA**12
       CLJ6SS  = 4.D0*DBEPSBB*DBSIGBB**6
       CLJ12SS = 4.D0*DBEPSBB*DBSIGBB**12
@@ -269,9 +269,9 @@
          J2     = 3*J1
          DUMMY2 = COORDS(J2-2,NP)**2 + COORDS(J2-1,NP)**2 + COORDS(J2,NP)**2
          IF (DUMMY2 .GT. RADIUS) THEN
-            WRITE(*,'(A,I5,5F20.10)') 'J1,RAD,R**2,x,y,z:', J1, RADIUS, DUMMY2, COORDS(J2-2,NP), &
+            WRITE(*,'(A,I5,5F20.10)') 'J1,RAD,R**2,X,Y,Z:', J1, RADIUS, DUMMY2, COORDS(J2-2,NP), &
                                        COORDS(J2-1,NP), COORDS(J2,NP)
-            PRINT*, 'initial coordinate outside container -- increase container radius'
+            PRINT*, 'INITIAL COORDINATE OUTSIDE CONTAINER -- INCREASE CONTAINER RADIUS'
             STOP
          END IF
 
@@ -303,10 +303,10 @@
       YMASS = YMASS/(REALNATOMS)
       ZMASS = ZMASS/(REALNATOMS)
 
-!     Find the most weakly bound atom, JMAX, the second most weakly bound atom, JMAX2,
-!     and the pair energy of the most tightly bound atom, VMIN. An angular step is
-!     taken for JMAX if its pair energy is > ASTEP*VMIN putting the atom at a radius of
-!     DMAX (or CMMAX from CM of the cluster).
+!     FIND THE MOST WEAKLY BOUND ATOM, JMAX, THE SECOND MOST WEAKLY BOUND ATOM, JMAX2,
+!     AND THE PAIR ENERGY OF THE MOST TIGHTLY BOUND ATOM, VMIN. AN ANGULAR STEP IS
+!     TAKEN FOR JMAX IF ITS PAIR ENERGY IS > ASTEP*VMIN PUTTING THE ATOM AT A RADIUS OF
+!     DMAX (OR CMMAX FROM CM OF THE CLUSTER).
 
       DMAX  =  1.0D0
       VMAX  = -1.0D3
@@ -361,7 +361,7 @@
 !     CHECK FOR OVERLAP
 
          OVRLPT = .TRUE.
-!         write(*,*) j1, ovrlpt
+!         WRITE(*,*) J1, OVRLPT
 
 95       DO WHILE (OVRLPT)
 

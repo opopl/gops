@@ -1,46 +1,46 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C       POTENTIAL ENERGY OF A (C60)N SYSTEM
 C       PACHECO-PRATES-RAMALHO POTENTIAL (PRL 1997)
 C
-C      X,Y,Z: vectors
+C      X,Y,Z: VECTORS
 
       SUBROUTINE PRC60(LCOORDS,V,EPPR,GTEST)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE
 C       PARAMETER(CAT=4752000.D0)
         INTEGER J1, J2, I, J
-      DOUBLE PRECISION x(NATOMS),y(NATOMS),z(NATOMS),LCOORDS(3*NATOMS),V2B,EPPR,V(3*NATOMS)
-      DOUBLE PRECISION mij,fij,wij,xij,yij,zij,rij,rij2,vij,pmorse,wtot,rij23,
-     1                   fx(NATOMS),fy(NATOMS),fZ(NATOMS),ermi,dwij,dfij,dmij
-        double precision dmu, delta
-      parameter(dmu=10.05D0)
-      parameter(delta=1.04D0)
-        double precision dM0, tau, D0
-      parameter(dM0=0.3D0)
-      parameter(tau=9.75D0)
-      parameter(D0=10.3D0)
-        double precision C6, C8, C10, C12
-      parameter(C6=75600.D0)
-      parameter(C8=9122400.D0)
-      parameter(C10=2.09D8)
-      parameter(C12=7.78D10)
+      DOUBLE PRECISION X(NATOMS),Y(NATOMS),Z(NATOMS),LCOORDS(3*NATOMS),V2B,EPPR,V(3*NATOMS)
+      DOUBLE PRECISION MIJ,FIJ,WIJ,XIJ,YIJ,ZIJ,RIJ,RIJ2,VIJ,PMORSE,WTOT,RIJ23,
+     1                   FX(NATOMS),FY(NATOMS),FZ(NATOMS),ERMI,DWIJ,DFIJ,DMIJ
+        DOUBLE PRECISION DMU, DELTA
+      PARAMETER(DMU=10.05D0)
+      PARAMETER(DELTA=1.04D0)
+        DOUBLE PRECISION DM0, TAU, D0
+      PARAMETER(DM0=0.3D0)
+      PARAMETER(TAU=9.75D0)
+      PARAMETER(D0=10.3D0)
+        DOUBLE PRECISION C6, C8, C10, C12
+      PARAMETER(C6=75600.D0)
+      PARAMETER(C8=9122400.D0)
+      PARAMETER(C10=2.09D8)
+      PARAMETER(C12=7.78D10)
         LOGICAL GTEST
 
         DO J1=1,NATOMS
@@ -54,82 +54,82 @@ C       PARAMETER(CAT=4752000.D0)
       V2B=0.D0
 
         IF (.NOT.GTEST) THEN
-      do i=1,NATOMS
-         do j=i+1,NATOMS
+      DO I=1,NATOMS
+         DO J=I+1,NATOMS
 C
-C       2-body interaction
+C       2-BODY INTERACTION
 C
-            xij=x(j)-x(i)
-            yij=y(j)-y(i)
-            zij=z(j)-z(i)
-            rij2=xij*xij+yij*yij+zij*zij
-            rij=sqrt(rij2)
+            XIJ=X(J)-X(I)
+            YIJ=Y(J)-Y(I)
+            ZIJ=Z(J)-Z(I)
+            RIJ2=XIJ*XIJ+YIJ*YIJ+ZIJ*ZIJ
+            RIJ=SQRT(RIJ2)
             
-            fij=1.0D0/(1.D0+exp((rij-dmu)/delta))
-              pmorse=exp(tau*(1.D0-rij/d0))
-            mij=dM0*pmorse*(pmorse-2.D0)
-            wij=-(C6+(C8+(C10+C12/rij2)/rij2)/rij2)/rij2**3
+            FIJ=1.0D0/(1.D0+EXP((RIJ-DMU)/DELTA))
+              PMORSE=EXP(TAU*(1.D0-RIJ/D0))
+            MIJ=DM0*PMORSE*(PMORSE-2.D0)
+            WIJ=-(C6+(C8+(C10+C12/RIJ2)/RIJ2)/RIJ2)/RIJ2**3
             
-            vij=fij*mij+(1.D0-fij)*wij
+            VIJ=FIJ*MIJ+(1.D0-FIJ)*WIJ
             
-            v2b=v2b+vij
-              VT(i)=VT(i)+vij
-              VT(j)=VT(j)+vij
-         enddo
-      enddo
+            V2B=V2B+VIJ
+              VT(I)=VT(I)+VIJ
+              VT(J)=VT(J)+VIJ
+         ENDDO
+      ENDDO
 
         ELSE
 
-      do i=1,NATOMS
-           fx(i)=0.D0
-           fy(i)=0.D0
-           fz(i)=0.D0
-        enddo
-      do i=1,NATOMS
-         do j=i+1,NATOMS
+      DO I=1,NATOMS
+           FX(I)=0.D0
+           FY(I)=0.D0
+           FZ(I)=0.D0
+        ENDDO
+      DO I=1,NATOMS
+         DO J=I+1,NATOMS
 C
-C       2-body interaction
+C       2-BODY INTERACTION
 C
-            xij=x(j)-x(i)
-            yij=y(j)-y(i)
-            zij=z(j)-z(i)
-            rij2=xij*xij+yij*yij+zij*zij
-            rij=sqrt(rij2)
+            XIJ=X(J)-X(I)
+            YIJ=Y(J)-Y(I)
+            ZIJ=Z(J)-Z(I)
+            RIJ2=XIJ*XIJ+YIJ*YIJ+ZIJ*ZIJ
+            RIJ=SQRT(RIJ2)
             
-              ermi=exp((rij-dmu)/delta)
-              fij=1.0D0/(1.D0+ermi)
-              dfij=-ermi/(delta*(1.D0+ermi)**2)
+              ERMI=EXP((RIJ-DMU)/DELTA)
+              FIJ=1.0D0/(1.D0+ERMI)
+              DFIJ=-ERMI/(DELTA*(1.D0+ERMI)**2)
 
-              pmorse=exp(tau*(1.D0-rij/d0))
-            mij=dM0*pmorse*(pmorse-2.D0)
-              dmij=(2.D0*tau*dM0*pmorse*(1.D0-pmorse))/d0
+              PMORSE=EXP(TAU*(1.D0-RIJ/D0))
+            MIJ=DM0*PMORSE*(PMORSE-2.D0)
+              DMIJ=(2.D0*TAU*DM0*PMORSE*(1.D0-PMORSE))/D0
 
-              rij23=rij2**3
-            wij=-(C6+(C8+(C10+C12/rij2)/rij2)/rij2)/rij23
-              dwij=(6*C6+(8*C8+(10*C10+12*C12/rij2)/rij2)/rij2)/(rij*rij23)
+              RIJ23=RIJ2**3
+            WIJ=-(C6+(C8+(C10+C12/RIJ2)/RIJ2)/RIJ2)/RIJ23
+              DWIJ=(6*C6+(8*C8+(10*C10+12*C12/RIJ2)/RIJ2)/RIJ2)/(RIJ*RIJ23)
             
-            vij=fij*mij+(1.D0-fij)*wij
+            VIJ=FIJ*MIJ+(1.D0-FIJ)*WIJ
             
-            v2b=v2b+vij
-              VT(i)=VT(i)+vij
-              VT(j)=VT(j)+vij
+            V2B=V2B+VIJ
+              VT(I)=VT(I)+VIJ
+              VT(J)=VT(J)+VIJ
 
-              wtot=mij*dfij+fij*dmij+(1.D0-fij)*dwij-dfij*wij
-              wtot=-wtot
+              WTOT=MIJ*DFIJ+FIJ*DMIJ+(1.D0-FIJ)*DWIJ-DFIJ*WIJ
+              WTOT=-WTOT
 
-              fx(i)=fx(i)+(x(i)-x(j))*wtot/rij
-              fy(i)=fy(i)+(y(i)-y(j))*wtot/rij
-              fz(i)=fz(i)+(z(i)-z(j))*wtot/rij
+              FX(I)=FX(I)+(X(I)-X(J))*WTOT/RIJ
+              FY(I)=FY(I)+(Y(I)-Y(J))*WTOT/RIJ
+              FZ(I)=FZ(I)+(Z(I)-Z(J))*WTOT/RIJ
 
-              fx(j)=fx(j)+(x(j)-x(i))*wtot/rij
-              fy(j)=fy(j)+(y(j)-y(i))*wtot/rij
-              fz(j)=fz(j)+(z(j)-z(i))*wtot/rij
+              FX(J)=FX(J)+(X(J)-X(I))*WTOT/RIJ
+              FY(J)=FY(J)+(Y(J)-Y(I))*WTOT/RIJ
+              FZ(J)=FZ(J)+(Z(J)-Z(I))*WTOT/RIJ
        
-         enddo
-      enddo
+         ENDDO
+      ENDDO
         ENDIF
       
-      EPPR=v2b
+      EPPR=V2B
 
         IF (GTEST) THEN
            DO J1=1,NATOMS
@@ -141,5 +141,5 @@ C             WRITE(*,'(A,I3,3F20.10)') 'J1,FX,FY,FZ=',J1,FX(J1),FY(J1),FZ(J1)
            ENDDO
         ENDIF
       
-      return
-      end
+      RETURN
+      END

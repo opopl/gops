@@ -1,34 +1,34 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
 C
-C      Sutton-Chen potentials
+C      SUTTON-CHEN POTENTIALS
 C
       SUBROUTINE SC(X,V,PSC,GRADT)
-      USE commons
+      USE COMMONS
       IMPLICIT NONE
       INTEGER J1, J2, J3, J4, I, J
       LOGICAL GRADT
       DOUBLE PRECISION X(3*NATOMS), DMM(NATOMS,NATOMS), POTA, POTB, SIGMM, DNN(NATOMS,NATOMS),
      1                 V(3*NATOMS), SCRHO(NATOMS), DUMMY, PSC, TPOTA, TPOTB, SIGNN, D2(NATOMS,NATOMS),
      2                 DUMMY2, CPMDFAC
-      LOGICAL EVAP, evapreject
-      COMMON /EV/ EVAP, evapreject
+      LOGICAL EVAP, EVAPREJECT
+      COMMON /EV/ EVAP, EVAPREJECT
 
       EVAP=.FALSE.
       SIGMM=SIG**MM
@@ -71,7 +71,7 @@ C        ENDIF
          ENDDO
       ENDDO
 C
-C Store density matrix.
+C STORE DENSITY MATRIX.
 C
       DO I=1,NATOMS
          DUMMY=0.0D00
@@ -81,18 +81,18 @@ C
          SCRHO(I)=DSQRT(DUMMY)
       ENDDO
 C
-C First calculate the potential energy. Choosing SIG=sqrt(2) makes the
-C unit of length the bulk nearest-neighbour distance. Choosing SIG to 
-C be the bulk lattice constant (=sqrt(2)x nn-distance) gives the original
-C SC form. Can also choose sigma=eps=1 and then scale the energies by eps
-C and the distances by sig.
-C metal  NN  MM   SCEPS/eV    SCC   SIG
-C  Cu     9   6   0.012382  39.432
-C  Ni     9   6   0.015707  39.432
-C  Ag    12   6   0.002542  144.41
-C  Au    10   8   0.012793  34.408
-C  Pt    10   8   0.019833  34.408
-C  Pd    12   7   0.004179  108.27
+C FIRST CALCULATE THE POTENTIAL ENERGY. CHOOSING SIG=SQRT(2) MAKES THE
+C UNIT OF LENGTH THE BULK NEAREST-NEIGHBOUR DISTANCE. CHOOSING SIG TO 
+C BE THE BULK LATTICE CONSTANT (=SQRT(2)X NN-DISTANCE) GIVES THE ORIGINAL
+C SC FORM. CAN ALSO CHOOSE SIGMA=EPS=1 AND THEN SCALE THE ENERGIES BY EPS
+C AND THE DISTANCES BY SIG.
+C METAL  NN  MM   SCEPS/EV    SCC   SIG
+C  CU     9   6   0.012382  39.432
+C  NI     9   6   0.015707  39.432
+C  AG    12   6   0.002542  144.41
+C  AU    10   8   0.012793  34.408
+C  PT    10   8   0.019833  34.408
+C  PD    12   7   0.004179  108.27
 C
       POTA=0.0D0
       POTB=0.0D0
@@ -109,14 +109,14 @@ C
       ENDDO
       PSC=PSC + SCEPS*(POTA/2.0D0 - POTB*SCC)
 C
-C     PRINT*,'Sutton-Chen n=', NN,' m=', MM
-C     PRINT*,'Two-body contribution=',POTA,' eV'
-C     PRINT*,'Many-body contribution=',-POTB,' eV'
-C     PRINT*,'Total Energy for last step=', PSC,' eV'
+C     PRINT*,'SUTTON-CHEN N=', NN,' M=', MM
+C     PRINT*,'TWO-BODY CONTRIBUTION=',POTA,' EV'
+C     PRINT*,'MANY-BODY CONTRIBUTION=',-POTB,' EV'
+C     PRINT*,'TOTAL ENERGY FOR LAST STEP=', PSC,' EV'
 C
       IF (.NOT.GRADT) RETURN
 C
-C Now calculate the gradient analytically.
+C NOW CALCULATE THE GRADIENT ANALYTICALLY.
 C
       DO J1=1,NATOMS
          DUMMY2=1.0D0/SCRHO(J1)
@@ -130,7 +130,7 @@ C
             V(J3)=V(J3)+SCEPS*DUMMY
          ENDDO
       ENDDO
-C     PRINT*,'energy=',PSC
+C     PRINT*,'ENERGY=',PSC
 
       RETURN
       END

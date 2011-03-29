@@ -3,7 +3,7 @@ SUBROUTINE READ_CMD_ARGS
 
 USE PORFUNCS
 !USE COMMONS,ONLY : INFILE
-use commons, only: infile,pforce
+USE COMMONS, ONLY: INFILE,PFORCE
 
 IMPLICIT NONE
 
@@ -18,13 +18,13 @@ I=0
 IF (NARGS.GT.0) THEN 
   DO WHILE(I.LT.NARGS) ; I=I+1 ; CALL GETARG_SUBR(I,BFF)
      SELECTCASE(BFF)
-       CASE('-v') 
+       CASE('-V') 
          CALL DISPLAY_VERSION(0)
          STOP
-       case default
-         CALL GETARG_SUBR(i+1,var)
+       CASE DEFAULT
+         CALL GETARG_SUBR(I+1,VAR)
          SELECTCASE(BFF)
-                CASE('-f')
+                CASE('-F')
                         READ(VAR,*) PFORCE
                         WRITE(*,*) 'FORCE:',PFORCE
                 CASE DEFAULT

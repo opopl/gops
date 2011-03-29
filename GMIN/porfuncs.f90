@@ -1,59 +1,59 @@
 MODULE PORFUNCS
-implicit none
-contains
-subroutine flush(UNIT,ISTAT) ! flushes the output buffer of logical unit UNIT which must be
+IMPLICIT NONE
+CONTAINS
+SUBROUTINE FLUSH(UNIT,ISTAT) ! FLUSHES THE OUTPUT BUFFER OF LOGICAL UNIT UNIT WHICH MUST BE
 
-implicit none ! connected for formatted sequential output; ISTAT is ignored
+IMPLICIT NONE ! CONNECTED FOR FORMATTED SEQUENTIAL OUTPUT; ISTAT IS IGNORED
 
-integer,intent(in) :: UNIT
-integer,intent(out),optional :: ISTAT
-!              call flush(UNIT)
+INTEGER,INTENT(IN) :: UNIT
+INTEGER,INTENT(OUT),OPTIONAL :: ISTAT
+!              CALL FLUSH(UNIT)
 
-end subroutine flush
-          subroutine getarg_subr(position,value) ! wraps getarg function so it can be use-associated
+END SUBROUTINE FLUSH
+          SUBROUTINE GETARG_SUBR(POSITION,VALUE) ! WRAPS GETARG FUNCTION SO IT CAN BE USE-ASSOCIATED
 
-implicit none
+IMPLICIT NONE
 
-integer,intent(in) :: position
-character(len=*),intent(out) :: value
+INTEGER,INTENT(IN) :: POSITION
+CHARACTER(LEN=*),INTENT(OUT) :: VALUE
 
-call getarg(position,value)
+CALL GETARG(POSITION,VALUE)
 
-end subroutine getarg_subr
+END SUBROUTINE GETARG_SUBR
 
-subroutine iargc_subr(n) ! wraps iargc function so it can be use-associated
+SUBROUTINE IARGC_SUBR(N) ! WRAPS IARGC FUNCTION SO IT CAN BE USE-ASSOCIATED
 
 
-implicit none
-integer,intent(out) :: n
+IMPLICIT NONE
+INTEGER,INTENT(OUT) :: N
 
-integer iargc
-n = iargc()
-end subroutine iargc_subr
+INTEGER IARGC
+N = IARGC()
+END SUBROUTINE IARGC_SUBR
 
-          subroutine fork_subr(pid) ! returns zero in the child process, PID of child in parent process
-               implicit none
-               integer, intent(inout) :: pid
+          SUBROUTINE FORK_SUBR(PID) ! RETURNS ZERO IN THE CHILD PROCESS, PID OF CHILD IN PARENT PROCESS
+               IMPLICIT NONE
+               INTEGER, INTENT(INOUT) :: PID
  
  
-          end subroutine fork_subr
+          END SUBROUTINE FORK_SUBR
  
-          subroutine system_subr(JobString,ExitStatus)
-               implicit none
+          SUBROUTINE SYSTEM_SUBR(JOBSTRING,EXITSTATUS)
+               IMPLICIT NONE
  
-               character(len=*),intent(in) :: JobString
-               integer,intent(out) :: ExitStatus
-          end subroutine system_subr
+               CHARACTER(LEN=*),INTENT(IN) :: JOBSTRING
+               INTEGER,INTENT(OUT) :: EXITSTATUS
+          END SUBROUTINE SYSTEM_SUBR
  
-          subroutine wait_subr(pid,ExitStatus)
-               implicit none
+          SUBROUTINE WAIT_SUBR(PID,EXITSTATUS)
+               IMPLICIT NONE
  
-               integer,intent(inout) :: pid,ExitStatus
-end subroutine wait_subr
-          subroutine getpid_subr(pid)
-               implicit none
+               INTEGER,INTENT(INOUT) :: PID,EXITSTATUS
+END SUBROUTINE WAIT_SUBR
+          SUBROUTINE GETPID_SUBR(PID)
+               IMPLICIT NONE
  
-               integer,intent(out) :: pid
-               pid=getpid()
-          end subroutine getpid_subr
+               INTEGER,INTENT(OUT) :: PID
+               PID=GETPID()
+          END SUBROUTINE GETPID_SUBR
 END MODULE PORFUNCS

@@ -1,178 +1,178 @@
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
+C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
+C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
+C   THIS FILE IS PART OF GMIN.
 C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
+C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
+C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
+C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
+C   (AT YOUR OPTION) ANY LATER VERSION.
 C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
+C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
+C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
+C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
+C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
 C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
+C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
+C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
 C
-c     Interface to spjv.f for calculating minimum distance
-c     of two atomic configurations with respect to
-c     particle permutations.
-c     The function permdist determines the distance or weight function,
-c     minperm is the main routine.
-c
-c         Tomas Oppelstrup, Jul 10, 2003
-c         tomaso@nada.kth.se
-c
+C     INTERFACE TO SPJV.F FOR CALCULATING MINIMUM DISTANCE
+C     OF TWO ATOMIC CONFIGURATIONS WITH RESPECT TO
+C     PARTICLE PERMUTATIONS.
+C     THE FUNCTION PERMDIST DETERMINES THE DISTANCE OR WEIGHT FUNCTION,
+C     MINPERM IS THE MAIN ROUTINE.
+C
+C         TOMAS OPPELSTRUP, JUL 10, 2003
+C         TOMASO@NADA.KTH.SE
+C
 
-c     This is the main routine for minimum distance calculation.
-c     Given two coordinate vectors p,q of particles each, return
-c     the minimum distance in dist, and the permutation in perm.
-c     perm is an integer vector such that
-c       p(i) <--> q(perm(i))
-c     i.e.
-c       sum(i=1,n) permdist(p(i), q(perm(i))) == dist
-c
-      subroutine minperm(n, p, q, sx, sy, sz, pbc, perm, dist, worstdist, worstradius)
-      implicit none
+C     THIS IS THE MAIN ROUTINE FOR MINIMUM DISTANCE CALCULATION.
+C     GIVEN TWO COORDINATE VECTORS P,Q OF PARTICLES EACH, RETURN
+C     THE MINIMUM DISTANCE IN DIST, AND THE PERMUTATION IN PERM.
+C     PERM IS AN INTEGER VECTOR SUCH THAT
+C       P(I) <--> Q(PERM(I))
+C     I.E.
+C       SUM(I=1,N) PERMDIST(P(I), Q(PERM(I))) == DIST
+C
+      SUBROUTINE MINPERM(N, P, Q, SX, SY, SZ, PBC, PERM, DIST, WORSTDIST, WORSTRADIUS)
+      IMPLICIT NONE
 
-c     Input
-c       n  : System size
-c       p,q: Coordinate vectors (n particles)
-c       s  : Box lengths (or dummy if open B.C.)
-c       pbc: Periodic boundary conditions?
-      integer n
-      double precision p(3*n), q(3*n), s(3), sx, sy, sz, worstdist, worstradius
-      logical pbc
+C     INPUT
+C       N  : SYSTEM SIZE
+C       P,Q: COORDINATE VECTORS (N PARTICLES)
+C       S  : BOX LENGTHS (OR DUMMY IF OPEN B.C.)
+C       PBC: PERIODIC BOUNDARY CONDITIONS?
+      INTEGER N
+      DOUBLE PRECISION P(3*N), Q(3*N), S(3), SX, SY, SZ, WORSTDIST, WORSTRADIUS
+      LOGICAL PBC
 
-c     Output
-c       perm: Permutation so that p(i) <--> q(perm(i))
-c       dist: Minimum attainable distance
-c     We have
-      integer perm(n)
-      double precision dist, DUMMY
+C     OUTPUT
+C       PERM: PERMUTATION SO THAT P(I) <--> Q(PERM(I))
+C       DIST: MINIMUM ATTAINABLE DISTANCE
+C     WE HAVE
+      INTEGER PERM(N)
+      DOUBLE PRECISION DIST, DUMMY
       
-c     Parameters
-c       scale : Precision
-c       maxnei: Maximum number of closest neighbours
-      double precision scale
-      integer maxnei
+C     PARAMETERS
+C       SCALE : PRECISION
+C       MAXNEI: MAXIMUM NUMBER OF CLOSEST NEIGHBOURS
+      DOUBLE PRECISION SCALE
+      INTEGER MAXNEI
 
-      parameter (scale = 1.0d6   )
-      parameter (maxnei = 15     )
+      PARAMETER (SCALE = 1.0D6   )
+      PARAMETER (MAXNEI = 15     )
 
-c     Internal variables
-c     cc, kk, first:
-c       Sparse matrix of distances
-c     first(i):
-c       Beginning of row i in data,index vectors
-c     kk(first(i)..first(i+1)-1):
-c       Column indexes of existing elements in row i
-c     cc(first(i)..first(i+1)-1):
-c       Matrix elements of row i
-      integer*8 kk(n*maxnei), first(n+1), x(n), y(n)
-      integer*8 cc(n*maxnei), u(n), v(n), h
-      integer   m, i, j, k, l, l2, t, a, i3, j3
-      integer*8 n8, sz8, d
+C     INTERNAL VARIABLES
+C     CC, KK, FIRST:
+C       SPARSE MATRIX OF DISTANCES
+C     FIRST(I):
+C       BEGINNING OF ROW I IN DATA,INDEX VECTORS
+C     KK(FIRST(I)..FIRST(I+1)-1):
+C       COLUMN INDEXES OF EXISTING ELEMENTS IN ROW I
+C     CC(FIRST(I)..FIRST(I+1)-1):
+C       MATRIX ELEMENTS OF ROW I
+      INTEGER*8 KK(N*MAXNEI), FIRST(N+1), X(N), Y(N)
+      INTEGER*8 CC(N*MAXNEI), U(N), V(N), H
+      INTEGER   M, I, J, K, L, L2, T, A, I3, J3
+      INTEGER*8 N8, SZ8, D
       INTEGER NDONE, J1, J2
 
-c     Distance function
-      double precision permdist
+C     DISTANCE FUNCTION
+      DOUBLE PRECISION PERMDIST
 
-      s(1)=sx
-      s(2)=sy
-      s(3)=sz
-      m = maxnei
-      if(n .le. maxnei) m = n
-      sz8 = m*n
-      n8 = n
+      S(1)=SX
+      S(2)=SY
+      S(3)=SZ
+      M = MAXNEI
+      IF(N .LE. MAXNEI) M = N
+      SZ8 = M*N
+      N8 = N
 
-      do i=0,n
-         first(i+1) = i*m + 1
-      enddo
+      DO I=0,N
+         FIRST(I+1) = I*M + 1
+      ENDDO
    
-      if(m .eq. n) then
-c     Compute the full matrix...
+      IF(M .EQ. N) THEN
+C     COMPUTE THE FULL MATRIX...
 
-         do i=1,n
-            k = first(i)-1
-            do j=1,n
-               cc(k+j) = permdist(p(3*i-2), q(3*j-2), s, pbc)*scale
-               kk(k+j) = j
-C              write(*,*) i, j, '-->', cc(k+j)
-            enddo
-         enddo
-      else
-c     We need to store the distances of the maxnei closeest neighbors
-c     of each particle. The following builds a heap to keep track of
-c     the maxnei closest neighbours seen so far. It might be more
-c     efficient to use quick-select instead... (This is definately
-c     true in the limit of infinite systems.)
-        do i=1,n
-           k = first(i)-1
-           do j=1,m
-              cc(k+j) = permdist(p(3*i-2), q(3*j-2), s, pbc)*scale
-              kk(k+j) = j
-              l = j
-10            if(l .le. 1) goto 11
-              l2 = l/2
-              if(cc(k+l2) .lt. cc(k+l)) then
-                 h = cc(k+l2)
-                 cc(k+l2) = cc(k+l)
-                 cc(k+l) = h
-                 t = kk(k+l2)
-                 kk(k+l2) = kk(k+l)
-                 kk(k+l) = t
-                 l = l2
-                 goto 10
-              endif
-11         enddo
+         DO I=1,N
+            K = FIRST(I)-1
+            DO J=1,N
+               CC(K+J) = PERMDIST(P(3*I-2), Q(3*J-2), S, PBC)*SCALE
+               KK(K+J) = J
+C              WRITE(*,*) I, J, '-->', CC(K+J)
+            ENDDO
+         ENDDO
+      ELSE
+C     WE NEED TO STORE THE DISTANCES OF THE MAXNEI CLOSEEST NEIGHBORS
+C     OF EACH PARTICLE. THE FOLLOWING BUILDS A HEAP TO KEEP TRACK OF
+C     THE MAXNEI CLOSEST NEIGHBOURS SEEN SO FAR. IT MIGHT BE MORE
+C     EFFICIENT TO USE QUICK-SELECT INSTEAD... (THIS IS DEFINATELY
+C     TRUE IN THE LIMIT OF INFINITE SYSTEMS.)
+        DO I=1,N
+           K = FIRST(I)-1
+           DO J=1,M
+              CC(K+J) = PERMDIST(P(3*I-2), Q(3*J-2), S, PBC)*SCALE
+              KK(K+J) = J
+              L = J
+10            IF(L .LE. 1) GOTO 11
+              L2 = L/2
+              IF(CC(K+L2) .LT. CC(K+L)) THEN
+                 H = CC(K+L2)
+                 CC(K+L2) = CC(K+L)
+                 CC(K+L) = H
+                 T = KK(K+L2)
+                 KK(K+L2) = KK(K+L)
+                 KK(K+L) = T
+                 L = L2
+                 GOTO 10
+              ENDIF
+11         ENDDO
            
-           do j=m+1,n
-              d = permdist(p(3*i-2), q(3*j-2), s, pbc)*scale
-              if(d .lt. cc(k+1)) then
-                 cc(k+1) = d
-                 kk(k+1) = j
-                 l = 1
-20               l2 = 2*l
-                 if(l2+1 .gt. m) goto 21
-                 if(cc(k+l2+1) .gt. cc(k+l2)) then
-                    a = k+l2+1
-                 else
-                    a = k+l2
-                 endif
-                 if(cc(a) .gt. cc(k+l)) then
-                    h = cc(a)
-                    cc(a) = cc(k+l)
-                    cc(k+l) = h
-                    t = kk(a)
-                    kk(a) = kk(k+l)
-                    kk(k+l) = t
-                    l = a-k
-                    goto 20
-                 endif
-21               if (l2 .le. m) THEN ! split IF statements to avoid a segmentation fault
-                    IF (cc(k+l2) .gt. cc(k+l)) then
-                       h = cc(k+l2)
-                       cc(k+l2) = cc(k+l)
-                       cc(k+l) = h
-                       t = kk(k+l2)
-                       kk(k+l2) = kk(k+l)
-                       kk(k+l) = t
+           DO J=M+1,N
+              D = PERMDIST(P(3*I-2), Q(3*J-2), S, PBC)*SCALE
+              IF(D .LT. CC(K+1)) THEN
+                 CC(K+1) = D
+                 KK(K+1) = J
+                 L = 1
+20               L2 = 2*L
+                 IF(L2+1 .GT. M) GOTO 21
+                 IF(CC(K+L2+1) .GT. CC(K+L2)) THEN
+                    A = K+L2+1
+                 ELSE
+                    A = K+L2
+                 ENDIF
+                 IF(CC(A) .GT. CC(K+L)) THEN
+                    H = CC(A)
+                    CC(A) = CC(K+L)
+                    CC(K+L) = H
+                    T = KK(A)
+                    KK(A) = KK(K+L)
+                    KK(K+L) = T
+                    L = A-K
+                    GOTO 20
+                 ENDIF
+21               IF (L2 .LE. M) THEN ! SPLIT IF STATEMENTS TO AVOID A SEGMENTATION FAULT
+                    IF (CC(K+L2) .GT. CC(K+L)) THEN
+                       H = CC(K+L2)
+                       CC(K+L2) = CC(K+L)
+                       CC(K+L) = H
+                       T = KK(K+L2)
+                       KK(K+L2) = KK(K+L)
+                       KK(K+L) = T
                     ENDIF
-                 endif
-              endif
-           enddo
-!       PRINT '(A,I6,A)','atom ',i,' nearest neighbours and distances:'
-!       PRINT '(20I6)',kk(m*(i-1)+1:m*i)
-!       PRINT '(12I15)',cc(m*(i-1)+1:m*i)
+                 ENDIF
+              ENDIF
+           ENDDO
+!       PRINT '(A,I6,A)','ATOM ',I,' NEAREST NEIGHBOURS AND DISTANCES:'
+!       PRINT '(20I6)',KK(M*(I-1)+1:M*I)
+!       PRINT '(12I15)',CC(M*(I-1)+1:M*I)
            
-        enddo    
+        ENDDO    
 !
-! Create and maintain an ordered list, smallest to largest from kk(m*(i-1)+1:m*i) for atom i.
-! NOTE that there is no symmetry with respect to exchange of I and J!
-! This runs slower than the above heap algorithm.
+! CREATE AND MAINTAIN AN ORDERED LIST, SMALLEST TO LARGEST FROM KK(M*(I-1)+1:M*I) FOR ATOM I.
+! NOTE THAT THERE IS NO SYMMETRY WITH RESPECT TO EXCHANGE OF I AND J!
+! THIS RUNS SLOWER THAN THE ABOVE HEAP ALGORITHM.
 !
 !          CC(1:N*M)=HUGE(1)
 !           DO I=1,N
@@ -191,7 +191,7 @@ c     true in the limit of infinite systems.)
 !                    ENDIF
 !                 ENDDO
 ! !
-! !  If we reach this point then we need to insert at the beginning.
+! !  IF WE REACH THIS POINT THEN WE NEED TO INSERT AT THE BEGINNING.
 ! !
 !                 CC(K+1)=D
 !                 KK(K+1)=J
@@ -200,89 +200,89 @@ c     true in the limit of infinite systems.)
 !           ENDDO
       ENDIF
 
-c     Call bipartite matching routine
-      call jovosap(n8, sz8, cc, kk, first, x, y, u, v, h)
+C     CALL BIPARTITE MATCHING ROUTINE
+      CALL JOVOSAP(N8, SZ8, CC, KK, FIRST, X, Y, U, V, H)
 
-      if(h .lt. 0) then
-c     If initial guess correct, deduce solution distance
-c     which is not done in jovosap
-         h = 0
-         do i=1,n
-            j = first(i)
+      IF(H .LT. 0) THEN
+C     IF INITIAL GUESS CORRECT, DEDUCE SOLUTION DISTANCE
+C     WHICH IS NOT DONE IN JOVOSAP
+         H = 0
+         DO I=1,N
+            J = FIRST(I)
  30         IF (J.GT.N*MAXNEI) THEN
-!              PRINT '(A,I6,A)','minperm> WARNING A - matching failed'
-               do J1=1,n
-                  perm(J1)=J1
-               enddo
+!              PRINT '(A,I6,A)','MINPERM> WARNING A - MATCHING FAILED'
+               DO J1=1,N
+                  PERM(J1)=J1
+               ENDDO
                RETURN
             ENDIF
-            if(kk(j) .ne. x(i)) then
-               j = j + 1
-               goto 30
-            endif
-            h = h + cc(j)
-         enddo
-      endif
+            IF(KK(J) .NE. X(I)) THEN
+               J = J + 1
+               GOTO 30
+            ENDIF
+            H = H + CC(J)
+         ENDDO
+      ENDIF
 
-      do i=1,n
-         perm(i) = x(i)
+      DO I=1,N
+         PERM(I) = X(I)
          IF (PERM(I).GT.N) PERM(I)=N
          IF (PERM(I).LT.1) PERM(I)=1
-      enddo
+      ENDDO
 
-      dist = dble(h) / scale
+      DIST = DBLE(H) / SCALE
 
       WORSTDIST=-1.0D0
       DO I=1,N
-        DUMMY=(p(3*(i-1)+1)-q(3*(perm(i)-1)+1))**2+(p(3*(i-1)+2)-q(3*(perm(i)-1)+2))**2+(p(3*(i-1)+3)-q(3*(perm(i)-1)+3))**2
+        DUMMY=(P(3*(I-1)+1)-Q(3*(PERM(I)-1)+1))**2+(P(3*(I-1)+2)-Q(3*(PERM(I)-1)+2))**2+(P(3*(I-1)+3)-Q(3*(PERM(I)-1)+3))**2
          IF (DUMMY.GT.WORSTDIST) THEN
             WORSTDIST=DUMMY 
-            WORSTRADIUS=p(3*(i-1)+1)**2+p(3*(i-1)+2)**2+p(3*(i-1)+3)**2
+            WORSTRADIUS=P(3*(I-1)+1)**2+P(3*(I-1)+2)**2+P(3*(I-1)+3)**2
          ENDIF
       ENDDO
       WORSTDIST=SQRT(WORSTDIST)
       WORSTRADIUS=MAX(SQRT(WORSTRADIUS),1.0D0)
 
-      end
+      END
       
-c     permdist is the distance or weight function. It is coded
-c     separately for clarity. Just hope that the compiler
-c     knows how to to do proper inlining!
-c     Input
-c       p,q: Coordinates
-c       s  : Boxlengths (or dummy if open B.C.)
-c       pbc: Periodic boundary conditions?
+C     PERMDIST IS THE DISTANCE OR WEIGHT FUNCTION. IT IS CODED
+C     SEPARATELY FOR CLARITY. JUST HOPE THAT THE COMPILER
+C     KNOWS HOW TO TO DO PROPER INLINING!
+C     INPUT
+C       P,Q: COORDINATES
+C       S  : BOXLENGTHS (OR DUMMY IF OPEN B.C.)
+C       PBC: PERIODIC BOUNDARY CONDITIONS?
 
-      double precision function permdist(p, q, s, pbc)
-      implicit none
-      double precision p(3), q(3), s(3)
-      logical pbc
+      DOUBLE PRECISION FUNCTION PERMDIST(P, Q, S, PBC)
+      IMPLICIT NONE
+      DOUBLE PRECISION P(3), Q(3), S(3)
+      LOGICAL PBC
 
-      double precision t, d
-      integer i
+      DOUBLE PRECISION T, D
+      INTEGER I
 
-      d = 0.0d0
+      D = 0.0D0
       IF (PBC) THEN
-         do i=1,3
+         DO I=1,3
             IF (S(I).NE.0.0D0) THEN
-               t = q(i) - p(i)
-               t = t - s(i)*anint(t/s(i))
-               d = d + t*t
+               T = Q(I) - P(I)
+               T = T - S(I)*ANINT(T/S(I))
+               D = D + T*T
             ENDIF
-         enddo
+         ENDDO
       ELSE
-         d= (q(1) - p(1))**2+(q(2) - p(2))**2+(q(3) - p(3))**2
+         D= (Q(1) - P(1))**2+(Q(2) - P(2))**2+(Q(3) - P(3))**2
       ENDIF
-      permdist = d
-      end
+      PERMDIST = D
+      END
 
-c     The following routine performs weighted bipartite matching for
-c     for a sparse non-negative integer weight matrix.
-c     The original source is
-c         http://www.magiclogic.com/assignment.html
-c     A publication reference can be found on the above homepage and
-c     in a comment below
-c     
+C     THE FOLLOWING ROUTINE PERFORMS WEIGHTED BIPARTITE MATCHING FOR
+C     FOR A SPARSE NON-NEGATIVE INTEGER WEIGHT MATRIX.
+C     THE ORIGINAL SOURCE IS
+C         HTTP://WWW.MAGICLOGIC.COM/ASSIGNMENT.HTML
+C     A PUBLICATION REFERENCE CAN BE FOUND ON THE ABOVE HOMEPAGE AND
+C     IN A COMMENT BELOW
+C     
 
       SUBROUTINE JOVOSAP(N,SZ,CC,KK,FIRST,X,Y,U,V,H)
       IMPLICIT NONE
@@ -294,11 +294,11 @@ c
       INTEGER*8 J, I, J0, L, J1, MIN, K, I0
       INTEGER*8 BIGINT
 
-c     I don't know how to make g77 read integer*8 constants/parameters.
-c       PARAMETER (BIGINT = 10**12) does not work(!)
-c     nor does
-c       PARAMETER (BIGINT = 1000000000000)
-c     but this seems to be ok:
+C     I DON'T KNOW HOW TO MAKE G77 READ INTEGER*8 CONSTANTS/PARAMETERS.
+C       PARAMETER (BIGINT = 10**12) DOES NOT WORK(!)
+C     NOR DOES
+C       PARAMETER (BIGINT = 1000000000000)
+C     BUT THIS SEEMS TO BE OK:
       BIGINT = 10**9
       BIGINT = BIGINT * 1000
 
@@ -306,12 +306,12 @@ C
 C THIS SUBROUTINE SOLVES THE SPARSE LINEAR ASSIGNMENT PROBLEM
 C ACCORDING 
 C
-C   "A Shortest Augmenting Path Algorithm for Dense and Sparse Linear   
-C    Assignment Problems," Computing 38, 325-340, 1987
+C   "A SHORTEST AUGMENTING PATH ALGORITHM FOR DENSE AND SPARSE LINEAR   
+C    ASSIGNMENT PROBLEMS," COMPUTING 38, 325-340, 1987
 C   
-C   by
+C   BY
 C   
-C   R. Jonker and A. Volgenant, University of Amsterdam.
+C   R. JONKER AND A. VOLGENANT, UNIVERSITY OF AMSTERDAM.
 C
 C
 C INPUT PARAMETERS :
@@ -327,18 +327,18 @@ C H = VALUE OF OPTIMAL SOLUTION
 C
 C INITIALIZATION
 
-c     Next line added by tomaso@nada.kth.se, to enable detection
-c     of solutions being equivalent to the initial guess
+C     NEXT LINE ADDED BY TOMASO@NADA.KTH.SE, TO ENABLE DETECTION
+C     OF SOLUTIONS BEING EQUIVALENT TO THE INITIAL GUESS
 
 C
-C  If Y(:) is initialised to zero then we see segmentation faults if 
-C  a Y element is unset, etc.
+C  IF Y(:) IS INITIALISED TO ZERO THEN WE SEE SEGMENTATION FAULTS IF 
+C  A Y ELEMENT IS UNSET, ETC.
 C
 
       Y(1:N) = 0
       X(1:N) = 0
       TODO(1:N)=0
-      h = -1
+      H = -1
       DO 10 J=1,N
          V(J)=BIGINT
    10 CONTINUE
@@ -356,7 +356,7 @@ C
          J0=N-J+1
          I=Y(J0)
          IF (I.EQ.0) THEN
-!           PRINT '(A,I6,A)','minperm> WARNING B - matching failed'
+!           PRINT '(A,I6,A)','MINPERM> WARNING B - MATCHING FAILED'
             RETURN
          ENDIF
          IF (X(I).NE.0) THEN
@@ -461,7 +461,7 @@ C AUGMENTATION PART
          DO 53 H=1,K
             J=TODO(H)
             IF (J.EQ.0) THEN
-!              PRINT '(A,I6,A)','minperm> WARNING C - matching failed'
+!              PRINT '(A,I6,A)','MINPERM> WARNING C - MATCHING FAILED'
                RETURN
             ENDIF
             IF (Y(J).EQ.0) GOTO 80
@@ -469,7 +469,7 @@ C AUGMENTATION PART
    53    CONTINUE
 C REPEAT UNTIL A FREE ROW HAS BEEN FOUND
    60    IF (K.EQ.0) THEN
-!           PRINT '(A,I6,A)','minperm> WARNING D - matching failed'
+!           PRINT '(A,I6,A)','MINPERM> WARNING D - MATCHING FAILED'
             RETURN
          ENDIF
          J0=TODO(K)
@@ -538,7 +538,7 @@ C REPEAT UNTIL A FREE ROW HAS BEEN FOUND
          T=FIRST(I)-1
   101    T=T+1
          IF (T.GT.SZ) THEN
-            PRINT '(A,I6,A)','minperm> WARNING D - atom ',I,' not matched - maximum number of neighbours too small?'
+            PRINT '(A,I6,A)','MINPERM> WARNING D - ATOM ',I,' NOT MATCHED - MAXIMUM NUMBER OF NEIGHBOURS TOO SMALL?'
             RETURN
          ENDIF
          IF (KK(T).NE.J) GOTO 101

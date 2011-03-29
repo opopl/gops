@@ -1,45 +1,45 @@
 
-c     ---------------------  ynorm ----------------------
+C     ---------------------  YNORM ----------------------
 
-      subroutine ynorm(maxsiz,jstrt,jfins,observ,rnorm)
+      SUBROUTINE YNORM(MAXSIZ,JSTRT,JFINS,OBSERV,RNORM)
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-c     YNORM  normalizes the array observ by rnorm
+C     YNORM  NORMALIZES THE ARRAY OBSERV BY RNORM
 
-c     arguments:
+C     ARGUMENTS:
 
-c        maxsiz- maximum array length
-c        jstrt - first site to be included
-c        jfins - last site to be included
-c        observ- set of observables to be normalized
-c        rnorm - normalizing factor
+C        MAXSIZ- MAXIMUM ARRAY LENGTH
+C        JSTRT - FIRST SITE TO BE INCLUDED
+C        JFINS - LAST SITE TO BE INCLUDED
+C        OBSERV- SET OF OBSERVABLES TO BE NORMALIZED
+C        RNORM - NORMALIZING FACTOR
 
-c     ---------------------------------------------------
+C     ---------------------------------------------------
 
-      implicit none
+      IMPLICIT NONE
 
-c      include 'utility'  ! utility file
+C      INCLUDE 'UTILITY'  ! UTILITY FILE
 
-c     argument declarations:
+C     ARGUMENT DECLARATIONS:
 
-         integer maxsiz,jstrt,jfins
+         INTEGER MAXSIZ,JSTRT,JFINS
      
-         double precision observ(maxsiz),rnorm
+         DOUBLE PRECISION OBSERV(MAXSIZ),RNORM
 
-c     internal variables:
-          integer i_res
+C     INTERNAL VARIABLES:
+          INTEGER I_RES
 
 
-c     --------------------- begin -----------------------
+C     --------------------- BEGIN -----------------------
 
-c     normalize observ by rnorm
+C     NORMALIZE OBSERV BY RNORM
 
-      do 515 i_res=jstrt,jfins
-         observ(i_res)=rnorm*observ(i_res)
-  515 continue
+      DO 515 I_RES=JSTRT,JFINS
+         OBSERV(I_RES)=RNORM*OBSERV(I_RES)
+  515 CONTINUE
 
-c     --------------------- done  -----------------------
+C     --------------------- DONE  -----------------------
       
-      return
-      end
+      RETURN
+      END
