@@ -2,8 +2,14 @@
 
 #func=`echo $2 | tr '[a-z]' '[A-Z]'`
 
-files=( geopt.f ) 
-funcs=( "GEOM_TO_VAR" "VAR_TO_GEOM" "CHAINBUILD" ) 
+#files=( geopt.f ) 
+funcs=( "GEOM_TO_VAR" "VAR_TO_GEOM" "CHAINBUILD" "UNRESINIT" "INT_FROM_CART" \
+"zerograd" "ETOTAL" "GRADIENT" ) 
+#files=( intbfgsts.f intsecdiag.f )
+#files=( keyword.f mylbfgs.f )
+#files=( intbfgsts.f )
+#files=( path.f unrescalcdihe.f unresconnectsections.f ) 
+files=( ` find . \( -name "*.f" -o -name "*.f90" \)` )
 
 for file in ${files[@]}; do
 for func in ${funcs[@]}; do
