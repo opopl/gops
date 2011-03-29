@@ -2,9 +2,6 @@
 ROOTPATH=$(PPATH)/../
 INCPATH = $(ROOTPATH)/INCLUDE/
 
-PROGNAME=OPTIM
-GENFFILES = porfuncs.f90 header.f90
-
 include $(INCPATH)/def
 
 ALLSOURCE := $(wildcard *.f) $(wildcard *.f90) $(wildcard *.F)
@@ -17,5 +14,4 @@ FFLAGS+= -I $(PPATH)/NEB
 FFLAGS+= -I $(PPATH)/CONNECT 
 FFLAGS+= -I $(PPATH)/AMH  
 
-
-
+LDFLAGS = -L.

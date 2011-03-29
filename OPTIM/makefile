@@ -25,6 +25,8 @@
 #ROOTPATH=$(PWD)/../
 
 PPATH=$(PWD)
+PROGNAME=OPTIM
+GENFFILES = porfuncs.f90 header.f90
 include $(PPATH)/make.inc
 
 # object files from source files generated during compilation
@@ -33,8 +35,6 @@ include $(PPATH)/make.inc
 #OBJS+= $(OBJSrt)
 
 VPATH = .:AMH:NEB:CONNECT:.
-
-LDFLAGS = -L.
 
 LIBS = -lnn  -lnc $(LLIBS) -lnc
 
