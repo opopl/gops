@@ -4,13 +4,14 @@
 
 #files=( geopt.f ) 
 funcs=( "GEOM_TO_VAR" "VAR_TO_GEOM" "CHAINBUILD" "UNRESINIT" "INT_FROM_CART" \
-"zerograd" "ETOTAL" "GRADIENT" ) 
+"ZEROGRAD" "ETOTAL" "GRADIENT" "LUDCMP" "LUBKSB" ) 
 #files=( intbfgsts.f intsecdiag.f )
 #files=( keyword.f mylbfgs.f )
 #files=( intbfgsts.f )
 #files=( path.f unrescalcdihe.f unresconnectsections.f ) 
-files=( ` find . \( -name "*.f" -o -name "*.f90" \)` )
-files=( OPTIM.F )
+#files=( ` find . \( -name "*.f" -o -name "*.f90" \)` )
+#files=( OPTIM.F )
+files=( diis.f intbfgsts.f unresoptim.f )
 
 for file in ${files[@]}; do
 for func in ${funcs[@]}; do
