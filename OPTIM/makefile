@@ -20,21 +20,17 @@
 #   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 # }}}
 
-#
-
-#ROOTPATH=$(PWD)/../
-
-PPATH=$(PWD)
 PROGNAME=OPTIM
 GENFFILES = porfuncs.f90 header.f90
-include $(PPATH)/make.inc
-
-# object files from source files generated during compilation
-
-#OBJSrt := porfuncs.o display_version.o
-#OBJS+= $(OBJSrt)
-
 VPATH = .:AMH:NEB:CONNECT:.
+
+PPATH=$(PWD)
+INCPATH = $(PPATH)/../INCLUDE/
+include $(INCPATH)/make.inc
+
+FFLAGS+= -I $(PPATH)/NEB
+FFLAGS+= -I $(PPATH)/CONNECT 
+FFLAGS+= -I $(PPATH)/AMH  
 
 LIBS = -lnn  -lnc $(LLIBS) -lnc
 
