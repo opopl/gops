@@ -439,11 +439,11 @@ C
             C(3,J1+NRES)=QINIT(6*(J1-1)+6)
          END DO
          CALL UPDATEDC
-         CALL INT_FROM_CART(.TRUE.,.FALSE.)
-         CALL GEOM_TO_VAR(NINTS,TSINT)
+!CALL INT_FROM_CART(.TRUE.,.FALSE.)
+!CALL GEOM_TO_VAR(NINTS,TSINT)
          NEWINT=TSINT-INTSTEP
-         CALL VAR_TO_GEOM(NINTS,NEWINT)
-         CALL CHAINBUILD
+!CALL VAR_TO_GEOM(NINTS,NEWINT)
+!CALL CHAINBUILD
          DO J1=1,NRES
             Q(6*(J1-1)+1)=C(1,J1)
             Q(6*(J1-1)+2)=C(2,J1)
@@ -1701,8 +1701,8 @@ C           WRITE(88,'(3G20.10)') (DIAG(J2),J2=1,6*NATOMS) ! WCOMMENT
                   C(3,J2+NRES)=Q(6*(J2-1)+6)
                ENDDO
                CALL UPDATEDC
-               CALL INT_FROM_CART(.TRUE.,.FALSE.)
-               CALL CHAINBUILD
+!CALL INT_FROM_CART(.TRUE.,.FALSE.)
+!CALL CHAINBUILD
                HORDER=1
                FPGRP='C1'
                IF (ENDNUMHESS) THEN
@@ -1850,8 +1850,8 @@ C           WRITE(88,'(3G20.10)') (DIAG(J2),J2=1,6*NATOMS) ! WCOMMENT
                   C(3,J2+NRES)=Q(6*(J2-1)+6)
                ENDDO
                CALL UPDATEDC
-               CALL INT_FROM_CART(.TRUE.,.FALSE.)
-               CALL CHAINBUILD
+!CALL INT_FROM_CART(.TRUE.,.FALSE.)
+!CALL CHAINBUILD
                HORDER=1
                FPGRP='C1'
                IF (ENDNUMHESS) THEN
@@ -2007,8 +2007,8 @@ C           WRITE(88,'(3G20.10)') (DIAG(J2),J2=1,6*NATOMS) ! WCOMMENT
                   C(3,J2+NRES)=Q(6*(J2-1)+6)
                ENDDO
                CALL UPDATEDC
-               CALL INT_FROM_CART(.TRUE.,.FALSE.)
-               CALL CHAINBUILD
+!CALL INT_FROM_CART(.TRUE.,.FALSE.)
+!CALL CHAINBUILD
                HORDER=1
                FPGRP='C1'
                IF (ENDNUMHESS) THEN

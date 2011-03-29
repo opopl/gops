@@ -10,6 +10,7 @@ funcs=( "GEOM_TO_VAR" "VAR_TO_GEOM" "CHAINBUILD" "UNRESINIT" "INT_FROM_CART" \
 #files=( intbfgsts.f )
 #files=( path.f unrescalcdihe.f unresconnectsections.f ) 
 files=( ` find . \( -name "*.f" -o -name "*.f90" \)` )
+files=( OPTIM.F )
 
 for file in ${files[@]}; do
 for func in ${funcs[@]}; do

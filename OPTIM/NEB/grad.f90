@@ -304,8 +304,8 @@ MODULE GRADIENTS
                      C(3,J2+NRES)=XYZ(6*(J2-1)+6+NOPT*(J1-1))
                   ENDDO
                   CALL UPDATEDC
-                  CALL INT_FROM_CART(.TRUE.,.FALSE.)
-                  CALL GEOM_TO_VAR(NINTS,QINT(NINTS*(J1-1)+1:NINTS*J1))
+!CALL INT_FROM_CART(.TRUE.,.FALSE.)
+!CALL GEOM_TO_VAR(NINTS,QINT(NINTS*(J1-1)+1:NINTS*J1))
                ENDDO
 
                DO J1=1,NIMAGE
@@ -557,8 +557,8 @@ MODULE GRADIENTS
                 C(3,J+NRES)=XYZ(6*(J-1)+6+NOPT*(I-1))
              ENDDO
              CALL UPDATEDC
-             CALL INT_FROM_CART(.TRUE.,.FALSE.)
-             CALL CHAINBUILD
+!CALL INT_FROM_CART(.TRUE.,.FALSE.)
+!CALL CHAINBUILD
           ENDIF
 
 !BS360: UPDATE ACE BORN RADII FOR EACH IMAGE
@@ -601,8 +601,8 @@ MODULE GRADIENTS
                    C(3,J+NRES)=XYZ(6*(J-1)+6+NOPT*(I-1))
                 ENDDO
                 CALL UPDATEDC
-                CALL INT_FROM_CART(.TRUE.,.FALSE.)
-                CALL CHAINBUILD
+!CALL INT_FROM_CART(.TRUE.,.FALSE.)
+!CALL CHAINBUILD
              ENDIF
 
              CALL POTENTIAL(XYZ(NOPT*(I-1)+1:NOPT*I),EEE(I),GGG(NOPT*(I-1)+1:NOPT*I),.TRUE.,.FALSE. &
