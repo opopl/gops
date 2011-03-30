@@ -795,7 +795,7 @@ C
                      ENDDO
 332                  FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1x))
 
-                     CALL E_WRITE(AVEP(:,:,:),TEMP(JP),NUMPRO,SNAPCOUNT)
+                     !CALL E_WRITE(AVEP(:,:,:),TEMP(JP),NUMPRO,SNAPCOUNT)
                   ENDIF  !                  IF (MOD(J1,NINT_AMH).EQ.0)
                ENDIF     !                  IF (NPAR.GT.1)
                CALL FLUSH(MYUNIT)
