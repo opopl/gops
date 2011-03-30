@@ -1,25 +1,25 @@
-!  GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-!  COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!  THIS FILE IS PART OF GMIN.
+!  GMIN: A program for finding global minima
+!  Copyright (C) 1999-2006 David J. Wales
+!  This file is part of GMIN.
 !
-!  GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!  (AT YOUR OPTION) ANY LATER VERSION.
+!  GMIN is free software; you can redistribute it and/or modify
+!  it under the terms of the GNU General Public License as published by
+!  the Free Software Foundation; either version 2 of the License, or
+!  (at your option) any later version.
 !
-!  GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!  GMIN is distributed in the hope that it will be useful,
+!  but WITHOUT ANY WARRANTY; without even the implied warranty of
+!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!  GNU General Public License for more details.
 !
-!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!  You should have received a copy of the GNU General Public License
+!  along with this program; if not, write to the Free Software
+!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 !
-!  THIS ROUTINE FINDS THE MATRIX R THAT MAPS A REFERENCE STRUCTURE
-!  Q0 INTO A STRUCTURE Q, I.E.
-!  Q = R Q0 FOR ALL N 3-DIMENSIONAL ATOMIC POSITION VECTORS OF Q AND Q0
+!  This routine finds the matrix r that maps a reference structure
+!  q0 into a structure q, i.e.
+!  q = r q0 for all N 3-dimensional atomic position vectors of q and q0
 !
 SUBROUTINE REORIENT(NATOMS,Q,Q0,RMAT)
 IMPLICIT NONE
@@ -31,8 +31,8 @@ INTEGER IPIVOT(3), INFO
 AMAT(1:3,1:3)=0.0D0
 CMAT(1:3,1:3)=0.0D0
 DO J1=1,NATOMS
-   AMAT(1,1)=AMAT(1,1)+Q0(3*(J1-1)+1)*Q0(3*(J1-1)+1)+EPS ! EPS IS DESIGNED TO AVOID A SINGULAR MATRIX
-   AMAT(1,2)=AMAT(1,2)+Q0(3*(J1-1)+1)*Q0(3*(J1-1)+2)+EPS ! FOR PLANAR SYSTEMS
+   AMAT(1,1)=AMAT(1,1)+Q0(3*(J1-1)+1)*Q0(3*(J1-1)+1)+EPS ! EPS is designed to avoid a singular matrix
+   AMAT(1,2)=AMAT(1,2)+Q0(3*(J1-1)+1)*Q0(3*(J1-1)+2)+EPS ! for planar systems
    AMAT(1,3)=AMAT(1,3)+Q0(3*(J1-1)+1)*Q0(3*(J1-1)+3)+EPS
    AMAT(2,2)=AMAT(2,2)+Q0(3*(J1-1)+2)*Q0(3*(J1-1)+2)+EPS
    AMAT(2,3)=AMAT(2,3)+Q0(3*(J1-1)+2)*Q0(3*(J1-1)+3)+EPS
@@ -48,13 +48,13 @@ DO J1=1,NATOMS
    CMAT(3,2)=CMAT(3,2)+Q(3*(J1-1)+3)*Q0(3*(J1-1)+2)
    CMAT(3,3)=CMAT(3,3)+Q(3*(J1-1)+3)*Q0(3*(J1-1)+3)
 ENDDO
-! SYMMETRISE AMAT
+! symmetrise AMAT
 AMAT(2,1)=AMAT(1,2); AMAT(3,1)=AMAT(1,3); AMAT(3,2)=AMAT(2,3)
-! INVERT AMAT
-CALL DGETRF(3,3,AMAT,3,IPIVOT,INFO) ! AMAT IS MODIFIED!
+! invert AMAT
+CALL DGETRF(3,3,AMAT,3,IPIVOT,INFO) ! AMAT is modified!
 CALL DGETRI(3,AMAT,3,IPIVOT,WORK,3,INFO)
 IF (INFO.NE.0) THEN
-   PRINT '(A,I6)','ERROR - INFO AFTER DGETRI IN REORIENT=',INFO
+   PRINT '(A,I6)','ERROR - INFO after DGETRI in reorient=',INFO
    PRINT '(A)','Q:'
    PRINT '(3G20.10)',Q
    PRINT '(A)','Q0:'
@@ -78,7 +78,7 @@ RMAT(3,3)=CMAT(3,1)*AMAT(1,3)+CMAT(3,2)*AMAT(2,3)+CMAT(3,3)*AMAT(3,3)
 
 RETURN 
 !
-!  CHECK SQUARED ERROR - DEBUGGING ONLY.
+!  Check squared error - debugging only.
 !
 SERROR=0.0D0
 DO J1=1,NATOMS
@@ -87,7 +87,7 @@ DO J1=1,NATOMS
    RQ0(3)=RMAT(3,1)*Q0(3*(J1-1)+1)+RMAT(3,2)*Q0(3*(J1-1)+2)+RMAT(3,3)*Q0(3*(J1-1)+3)
    SERROR=SERROR+(Q(3*(J1-1)+1)-RQ0(1))**2+(Q(3*(J1-1)+2)-RQ0(2))**2+(Q(3*(J1-1)+3)-RQ0(3))**2
 ENDDO
-PRINT '(A,G20.10)','ERROR IN REORIENT=',SERROR
+PRINT '(A,G20.10)','error in reorient=',SERROR
 IF (SERROR.GT.0.5D0) THEN
    RMAT(1:3,1:3)=-RMAT(1:3,1:3)
    SERROR=0.0D0
@@ -98,7 +98,7 @@ IF (SERROR.GT.0.5D0) THEN
       SERROR=SERROR+(Q(3*(J1-1)+1)-RQ0(1))**2+(Q(3*(J1-1)+2)-RQ0(2))**2+(Q(3*(J1-1)+3)-RQ0(3))**2
    ENDDO
    IF (SERROR.GT.0.5D0) THEN
-      PRINT '(A,G20.10)','ERROR IN REORIENT FOR INVERSION=',SERROR
+      PRINT '(A,G20.10)','error in reorient for inversion=',SERROR
       STOP
    ENDIF
 ENDIF

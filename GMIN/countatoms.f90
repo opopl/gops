@@ -1,23 +1,23 @@
-!OP226> GPL LICENSE INFO {{{
-!  GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-!  COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!  THIS FILE IS PART OF GMIN.
+!op226> GPL License Info {{{
+!  GMIN: A program for finding global minima
+!  Copyright (C) 1999-2006 David J. Wales
+!  This file is part of GMIN.
 !
-!  GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!  (AT YOUR OPTION) ANY LATER VERSION.
+!  GMIN is free software; you can redistribute it and/or modify
+!  it under the terms of the GNU General Public License as published by
+!  the Free Software Foundation; either version 2 of the License, or
+!  (at your option) any later version.
 !
-!  GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!  GMIN is distributed in the hope that it will be useful,
+!  but WITHOUT ANY WARRANTY; without even the implied warranty of
+!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!  GNU General Public License for more details.
 !
-!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!  You should have received a copy of the GNU General Public License
+!  along with this program; if not, write to the Free Software
+!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
-!OP226>}}}
+!op226>}}}
 
 MODULE NOA
       USE MODAMBER9 , ONLY : INPCRD
@@ -28,35 +28,35 @@ MODULE NOA
       CONTAINS
 
       SUBROUTINE COUNTATOMS(MYUNIT)
-!OP226> DECLARATIONS {{{ 
+!op226> Declarations {{{ 
       IMPLICIT NONE
       INTEGER :: EOF,NRES,SEQ(500),I_RES,NOGLY,GLY, MYUNIT
       LOGICAL :: YESNO, YESNOA, YESNOC, YESNOAMH, YESNOA9
       CHARACTER(LEN=5) TARFL
       CHARACTER(LEN=10)  CHECK
       CHARACTER(LEN=80) MYLINE,INPCRD1
-!OP226>}}} 
+!op226>}}} 
 
       YESNO=.FALSE.
       YESNOA=.FALSE.
       YESNOAMH=.FALSE.
       YESNOA9=.FALSE.
 !
-!  IF THE CURRENT WORKING DIRECTORY CONTAINS MORE THAN ONE OF THESE FILES
-!  THEN THE PRECEDENCE IS COORDS, THEN INPUT.CRD, THEN COORDS.AMBER
-!  OPTIM DOES THIS A BIT BETTER BY CALLING GETPARAMS FIRST TO SEE IF
-!  WE ARE ACTUALLY DOING AMBER OR CHARMM. 
+!  If the current working directory contains more than one of these files
+!  then the precedence is coords, then input.crd, then coords.amber
+!  OPTIM does this a bit better by calling getparams first to see if
+!  we are actually doing AMBER or CHARMM. 
 !
-      INQUIRE(FILE='PRO.LIST',EXIST=YESNOAMH)
-      INQUIRE(FILE='COORDS',EXIST=YESNO)
-      INQUIRE(FILE='COORDS.AMBER',EXIST=YESNOA)
-      INQUIRE(FILE='INPUT.CRD',EXIST=YESNOC)
-      INQUIRE(FILE='COORDS.INPCRD',EXIST=YESNOA9)
+      INQUIRE(FILE='pro.list',EXIST=YESNOAMH)
+      INQUIRE(FILE='coords',EXIST=YESNO)
+      INQUIRE(FILE='coords.amber',EXIST=YESNOA)
+      INQUIRE(FILE='input.crd',EXIST=YESNOC)
+      INQUIRE(FILE='coords.inpcrd',EXIST=YESNOA9)
 
       NUMBER_OF_ATOMS=0
 
       IF (YESNO) THEN
-         OPEN(UNIT=7,FILE='COORDS',STATUS='OLD')
+         OPEN(UNIT=7,FILE='coords',STATUS='OLD')
          DO
             READ(7,*,IOSTAT=EOF)
             IF (EOF==0) THEN
@@ -66,79 +66,79 @@ MODULE NOA
             ENDIF
          ENDDO
         ELSEIF (YESNOAMH) THEN
-         OPEN(UNIT=30,FILE='PRO.LIST',STATUS='OLD',FORM='FORMATTED')
-         READ (30,1000)TARFL
-1000     FORMAT(A5)
-         CLOSE(30)
+         open(unit=30,file='pro.list',status='old',form='formatted')
+         read (30,1000)tarfl
+1000     format(a5)
+         close(30)
 
-          OPEN(30,FILE='PROTEINS/'//TARFL,STATUS='OLD')
-            READ(30,*)
-            READ(30,*)NRES
-            IF (NRES.GT.500) THEN
-                WRITE(6,*) 'FAILURE NRES GR THAN 500 COUNTATOMS'
-                STOP
-            ENDIF
-            READ (30,25)(SEQ(I_RES),I_RES=1,NRES)
-!            WRITE(6,25)(SEQ(I_RES),I_RES=1,NRES)
-25         FORMAT(25(I2,1X))
-          CLOSE(30)
+          open(30,file='proteins/'//tarfl,status='old')
+            read(30,*)
+            read(30,*)nres
+            if (nres.gt.500) then
+                write(6,*) 'failure nres gr than 500 countatoms'
+                stop
+            endif
+            read (30,25)(seq(i_res),i_res=1,nres)
+!            write(6,25)(seq(i_res),i_res=1,nres)
+25         format(25(i2,1x))
+          close(30)
 
           NOGLY = 0
           GLY = 0
 
-           DO I_RES=1,NRES
-             IF (SEQ(I_RES).NE.8) NOGLY = NOGLY +1
-             IF (SEQ(I_RES).EQ.8) GLY = GLY +1
-           ENDDO
+           do i_res=1,nres
+             if (seq(i_res).ne.8) NOGLY = NOGLY +1
+             if (seq(i_res).eq.8) GLY = GLY +1
+           enddo
 
-            NUMBER_OF_ATOMS = NOGLY*3 + GLY*2
+            Number_of_Atoms = NOGLY*3 + GLY*2
       ELSE IF (YESNOA9) THEN
-!         OPEN(UNIT=7,FILE='COORDS.GAYBERNE',STATUS='OLD')
-!         PRINT '(A)','READING COORDINATES FROM FILE COORDS.GAYBERNE'
+!         OPEN(UNIT=7,FILE='coords.gayberne',STATUS='OLD')
+!         PRINT '(A)','reading coordinates from file coords.gayberne'
 
-         INPCRD1='COORDS.INPCRD'
-!         INPCRD1=TRIM(ADJUSTL(INPCRD1))
-         CALL AMBERINTERFACE(NUMBER_OF_ATOMS,1,INPCRD1,MYUNIT)
+         inpcrd1='coords.inpcrd'
+!         inpcrd1=trim(adjustl(inpcrd1))
+         call amberinterface(Number_of_Atoms,1,inpcrd1,MYUNIT)
 
       ELSEIF (YESNOC) THEN
-         OPEN(UNIT=7,FILE='INPUT.CRD',STATUS='OLD')
-         DO
-           READ(7,*) MYLINE
-           IF (MYLINE(1:1)=='*') THEN ! SAT THIS IS THE GODDAMN CHARMM COMMENT LINE
-              CYCLE
-           ELSE
-              READ(MYLINE,*) NUMBER_OF_ATOMS
-              EXIT
-           ENDIF
-         ENDDO
+         OPEN(UNIT=7,FILE='input.crd',STATUS='OLD')
+         do
+           read(7,*) myline
+           if (myline(1:1)=='*') then ! SAT This is the goddamn CHARMM comment line
+              cycle
+           else
+              read(myline,*) Number_of_Atoms
+              exit
+           endif
+         enddo
 
-! DAE WE ALSO NEED TO FIND OUT WHAT MAXAIM IS IN CHARMM, AND SET MXATMS IN OPTIM TO BE THE SAME, SO THAT THOSE ARRAYS WHICH
-! ARE PASSED BETWEEN THE TWO CAN BE DECLARED CORRECTLY. MXATMS IS NOW STORED IN MODMXATMS.
+! DAE We also need to find out what MAXAIM is in CHARMM, and set MXATMS in OPTIM to be the same, so that those arrays which
+! are passed between the two can be declared correctly. MXATMS is now stored in modmxatms.
 
          CALL GETMAXAIM
-         WRITE(MYUNIT,'(A,I8)') 'COUNTATOMS> NUMBER_OF_ATOMS=',NUMBER_OF_ATOMS
+         WRITE(MYUNIT,'(A,I8)') 'countatoms> Number_of_Atoms=',Number_of_Atoms
       ELSEIF (YESNOA) THEN
-         OPEN(UNIT=7,FILE='COORDS.AMBER',STATUS='OLD')
-         DO
-            READ(7,'(A3)',IOSTAT=EOF) CHECK
-            IF (EOF.LT.0) THEN
-               PRINT *,'END OF FILE BEFORE ALL INFORMATION SPECIFIED'
+         OPEN(UNIT=7,FILE='coords.amber',STATUS='OLD')
+         do
+            read(7,'(A3)',iostat=eof) check
+            if (eof.LT.0) then
+               PRINT *,'End of file before all information specified'
                STOP
             ENDIF
-            IF (CHECK.EQ.'END' .OR. CHECK.EQ.'END' .OR. CHECK.EQ.'END') THEN
+            IF (check.EQ.'end' .OR. check.EQ.'END' .OR. check.EQ.'End') THEN
                CLOSE(7)
                EXIT
             ENDIF
-            NUMBER_OF_ATOMS = NUMBER_OF_ATOMS + 1
-         ENDDO
+            Number_of_Atoms = Number_of_Atoms + 1
+         enddo
       ELSE
-         PRINT '(A)','ERROR - NO COORDS, INPUT.CRD, COORDS.INPCRD OR COORDS.AMBER FILE'
+         PRINT '(A)','ERROR - no coords, input.crd, coords.inpcrd or coords.amber file'
          STOP
       ENDIF
 
       CLOSE(7)
 
-!     PRINT *, NUMBER_OF_ATOMS, ' ATOMS IN THE SYSTEM'
+!     print *, Number_of_Atoms, ' atoms in the system'
       
       END SUBROUTINE COUNTATOMS
 

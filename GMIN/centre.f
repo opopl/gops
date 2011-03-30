@@ -1,30 +1,30 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C**************************************************************************
 C
-C  SUBROUTINE CENTRE MOVES THE CENTRE OF MASS TO THE ORIGIN.
+C  Subroutine CENTRE moves the centre of mass to the origin.
 C
 C*********************************************************************
 C
       SUBROUTINE CENTRE2(X)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       DOUBLE PRECISION XMASS, YMASS, ZMASS, DIST, DISTMAX, X(3*NATOMS)
       INTEGER I, J1
@@ -41,7 +41,7 @@ C
          XMASS=2*XMASS/NATOMS
          YMASS=2*YMASS/NATOMS
          ZMASS=2*ZMASS/NATOMS
-C        PRINT*,'INITIAL COORDINATES IN CENTRE:'
+C        PRINT*,'initial coordinates in centre:'
 C        WRITE(*,'(I5,3F15.5)') (I,X(3*(I-1)+1),X(3*(I-1)+2),X(3*(I-1)+3),I=1,NATOMS)
          DO I=1,NATOMS/2
             X(3*(I-1)+1)=X(3*(I-1)+1)-XMASS
@@ -67,15 +67,15 @@ C        WRITE(*,'(I5,3F15.5)') (I,X(3*(I-1)+1),X(3*(I-1)+2),X(3*(I-1)+3),I=1,NA
             ENDDO
          ENDIF
       ENDIF
-      IF (DEBUG.AND.(.NOT.CENTXY)) WRITE(MYUNIT,'(A,3G20.10)') 'CENTRE2> CENTRE OF MASS RESET TO THE ORIGIN FROM ',
+      IF (DEBUG.AND.(.NOT.CENTXY)) WRITE(MYUNIT,'(A,3G20.10)') 'centre2> centre of mass reset to the origin from ',
      &                                                   XMASS,YMASS,ZMASS
-      IF (DEBUG.AND.CENTXY) WRITE(MYUNIT,'(A,3G20.10)') 'CENTRE2> CENTRE OF MASS RESET TO CENTRE OF XY PLANE FROM ',
+      IF (DEBUG.AND.CENTXY) WRITE(MYUNIT,'(A,3G20.10)') 'centre2> centre of mass reset to centre of xy plane from ',
      &                                                   XMASS,YMASS,ZMASS
-C     PRINT*,'FINAL COORDINATES IN CENTRE:'
+C     PRINT*,'final coordinates in centre:'
 C     WRITE(*,'(I5,3F15.5)') (I,X(3*(I-1)+1),X(3*(I-1)+2),X(3*(I-1)+3),I=1,NATOMS)
 C
-C  CHECK THAT ALL THE ATOMS ARE IN THE CONTAINER. IF NOT THEN RESCALE.
-C  MUST NOT DO THIS - IT COULD CHANGE THE SYSTEM FROM A MINIMUM!
+C  Check that all the atoms are in the container. If not then rescale.
+C  Must not do this - it could change the system from a minimum!
 C
 C     IF (RIGID) RETURN
 C     DISTMAX=0.0D0
@@ -95,18 +95,18 @@ C     ENDIF
       END
 
       SUBROUTINE SETCENTRE(X)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       DOUBLE PRECISION XMASS, YMASS, ZMASS, X(3*NATOMS)
       INTEGER I, J1
 
-C CSW34> XMASS, YMASS AND ZMASS ARE THE COMPONENTS OF THE COM POSITION
-C VECTOR
+C csw34> XMASS, YMASS and ZMASS are the components of the COM position
+C vector
       XMASS=0.0D0
       YMASS=0.0D0
       ZMASS=0.0D0
       IF (RIGID) THEN
-C CSW34> FIRST NEED TO CALCULATE THE POSITION OF THE COM
+C csw34> First need to calculate the position of the COM
          DO I=1,NATOMS/2
             XMASS=XMASS+X(3*(I-1)+1)
             YMASS=YMASS+X(3*(I-1)+2)
@@ -115,7 +115,7 @@ C CSW34> FIRST NEED TO CALCULATE THE POSITION OF THE COM
          XMASS=2*XMASS/NATOMS
          YMASS=2*YMASS/NATOMS
          ZMASS=2*ZMASS/NATOMS
-C CSW34> THEN NEED TO MOVE THE COM TO THE NEW CENTRE VIA THE ORIGIN
+C csw34> Then need to move the COM to the new centre via the origin
          DO I=1,NATOMS/2
             X(3*(I-1)+1)=X(3*(I-1)+1)-XMASS+CENTX
             X(3*(I-1)+2)=X(3*(I-1)+2)-YMASS+CENTY
@@ -136,7 +136,7 @@ C CSW34> THEN NEED TO MOVE THE COM TO THE NEW CENTRE VIA THE ORIGIN
             X(3*(I-1)+3)=X(3*(I-1)+3)-ZMASS+CENTZ
          ENDDO
       ENDIF
-      IF (DEBUG) WRITE(MYUNIT,'(A,3F12.4)') 'CENTRE OF MASS MOVED TO ',CENTX,CENTY,CENTZ
+      IF (DEBUG) WRITE(MYUNIT,'(A,3F12.4)') 'centre of mass moved to ',CENTX,CENTY,CENTZ
       RETURN
       END
 

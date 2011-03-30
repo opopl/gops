@@ -1,29 +1,29 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C  ENERGY AND DERIVATIVES OF THE BINARY SALT POTENTIAL DESCRIBED
-C  BY WELCH ET AL, JCP, 94, 4980, 1976 AND PHILLIPS ET AL, JCP,
+C  Energy and derivatives of the binary salt potential described
+C  by Welch et al, JCP, 94, 4980, 1976 and Phillips et al, JCP,
 C  94, 4980, 1991.
-C  ENERGY IS IN HARTREE, LENGTH IN BOHR.
+C  Energy is in hartree, length in Bohr.
 C
       SUBROUTINE WEL(X, V, POTEL, GTEST, STEST)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE 
       INTEGER N, I, J
 C             , J1, K, L, J2, J3
@@ -41,7 +41,7 @@ C                      , DIF, TEMP1, V1, V2, XMU1(3*NATOMS), XMU2(3*NATOMS)
          ELSE IF (ZSYM(I).EQ.'PL') THEN
             Q(I)=1.0D0
          ELSE
-            WRITE(*,'(A)') ' ALL ATOMS MUST BE TYPE PL OR MI FOR WELCH'
+            WRITE(*,'(A)') ' All atoms must be type PL or MI for Welch'
             STOP
          ENDIF
       ENDDO
@@ -75,17 +75,17 @@ C                      , DIF, TEMP1, V1, V2, XMU1(3*NATOMS), XMU2(3*NATOMS)
          ENDDO
       ENDDO
 C
-C  CALCULATE THE ENERGY.
+C  Calculate the energy.
 C
       CALL WENERGY(XMU,ALPHA,Q,RRD,RRD3,RRD5,X,XQ,POTEL,AC,XMAT,XMINV)
 
       IF (.NOT.GTEST) RETURN
 C
-C  GRADIENT.
+C  Gradient.
 C
       CALL WGRAD(XMU,ALPHA,Q,RRD,RRD3,RRD5,X,XQ,AC,V,XMAT,XMINV)
 
-C     PRINT*,'NUMERICAL DERIVATIVES:'
+C     PRINT*,'Numerical derivatives:'
 C     DIF=1.0D-4
 C     DO J1=1,3*N
 C        TEMP1=X(J1)
@@ -100,17 +100,17 @@ C     ENDDO
 
       IF (.NOT.STEST) RETURN
 C
-C  HESSIAN.
+C  Hessian.
 C
       RETURN
       END
 C
 C*******************************************************************************
 C
-C  ENERGY FOR THE WELCH POTENTIAL
+C  Energy for the Welch potential
 C
       SUBROUTINE WENERGY(XMU,ALPHA,Q,RRD,RRD3,RRD5,X,XQ,POTEL,AC,XMAT,XMINV)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       DOUBLE PRECISION ESELF, ECC, EREP, ECID, EIDID, POTEL, XMU(3*NATOMS), ALPHA(NATOMS), Q(NATOMS),
      1                 RRD(NATOMS,NATOMS), X(3*NATOMS), XQ(NATOMS), DUMMY, AC(NATOMS,NATOMS),
@@ -121,7 +121,7 @@ C
       N=NATOMS
       RHOL=1.0D0/RHO
 C
-C  CALCULATE THE INTERPARTICLE DISTANCES.
+C  Calculate the interparticle distances.
 C 
       DO I=1,N
          K=1+3*(I-1)         
@@ -142,7 +142,7 @@ C
          ENDDO
       ENDDO
 C
-C  CALCULATE THE INDUCED DIPOLES.
+C  Calculate the induced dipoles.
 C
       CALL DIP(X,ALPHA,RRD,RRD3,RRD5,XMU,Q,XMAT,XMINV)
 
@@ -154,16 +154,16 @@ C
 
       DO I=1,N
 C
-C  INDUCED DIPOLE SELF-ENERGY
+C  Induced dipole self-energy
 C
          ESELF=ESELF+(XMU(3*(I-1)+1)**2+XMU(3*(I-1)+2)**2+XMU(3*(I-1)+3)**2)/(2.0D0*ALPHA(I))
          DO J=I+1,N
 C
-C  CHARGE-CHARGE.
+C  Charge-charge.
 C
             ECC=ECC+Q(I)*Q(J)*RRD(J,I)
 C
-C  EXPONENTIAL REPULSION.
+C  Exponential repulsion.
 C
             DUMMY=(X(3*(J-1)+1)-X(3*(I-1)+1)+XMU(3*(I-1)+1)/XQ(I)-XMU(3*(J-1)+1)/XQ(J))**2
      1           +(X(3*(J-1)+2)-X(3*(I-1)+2)+XMU(3*(I-1)+2)/XQ(I)-XMU(3*(J-1)+2)/XQ(J))**2
@@ -171,7 +171,7 @@ C
             DUMMY=SQRT(DUMMY)
             EREP=EREP+AC(J,I)*DEXP(-RHOL*DUMMY)
 C
-C  CHARGE-INDUCED DIPOLE TERM. INCLUDE I,J AND J,I.
+C  Charge-induced dipole term. Include I,J and J,I.
 C
             DUMMY=(((X(3*(J-1)+1)-X(3*(I-1)+1))*XMU(3*(I-1)+1)+
      1              (X(3*(J-1)+2)-X(3*(I-1)+2))*XMU(3*(I-1)+2)+
@@ -181,7 +181,7 @@ C
      2              (X(3*(I-1)+3)-X(3*(J-1)+3))*XMU(3*(J-1)+3))*Q(I))*RRD3(J,I)
             ECID=ECID+DUMMY
 C
-C  INDUCED DIPOLE-INDUCED DIPOLE TERM.
+C  Induced dipole-induced dipole term.
 C
             EIDID=EIDID+(XMU(3*(I-1)+1)*XMU(3*(J-1)+1)
      1                  +XMU(3*(I-1)+2)*XMU(3*(J-1)+2)
@@ -208,10 +208,10 @@ C     WRITE(*,'(A,F20.10)') 'EIDID=',EIDID
 C
 C***************************************************************
 C
-C  CALCULATE THE INDUCED DIPOLES BY MATRIX INVERSION.
+C  Calculate the induced dipoles by matrix inversion.
 C
       SUBROUTINE DIP(X,ALPHA,RRD,RRD3,RRD5,XMU,Q,XMAT,XMINV)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       DOUBLE PRECISION ALPHA(NATOMS), RRD(NATOMS,NATOMS), RRD3(NATOMS,NATOMS), XMU(3*NATOMS),
      1                 XMAT(3*NATOMS,3*NATOMS), XMINV(3*NATOMS,3*NATOMS), DUMMY1, XVEC(3*NATOMS),
@@ -220,7 +220,7 @@ C
       INTEGER IPVT(3*NATOMS), J1, J2, J3, J4, NTEMP
       LOGICAL SFLAG
 C
-C  SET UP THE MATRIX AND VECTOR.
+C  Set up the matrix and vector.
 C
       DO J1=1,NATOMS
          J3=3*(J1-1)
@@ -295,7 +295,7 @@ C        WRITE(*,'(I3,F12.8)') J1,XVEC(J1)
 C     ENDDO
 
 C
-C  SET XMINV TO XMAT.
+C  Set XMINV to XMAT.
 C
       DO J1=1,3*NATOMS
          XMINV(J1,J1)=1.0D0
@@ -322,10 +322,10 @@ C
 C
 C***************************************************************
 C
-C  CALCULATE THE ANALYTIC DERIVATIVES OF THE INDUCED DIPOLES.
+C  Calculate the analytic derivatives of the induced dipoles.
 C
       SUBROUTINE DIPGRAD(X,ALPHA,RRD,RRD3,RRD5,XMU,Q,XMAT,XMINV,XMUGRAD)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       DOUBLE PRECISION ALPHA(NATOMS), RRD(NATOMS,NATOMS), RRD3(NATOMS,NATOMS), XMU(3*NATOMS),
      1                 XMAT(3*NATOMS,3*NATOMS), XMINV(3*NATOMS,3*NATOMS), DUMMY, 
@@ -334,17 +334,17 @@ C
       INTEGER J1, J2, J3, J4, J5, J6, J7
       
 C
-C  SET UP THE DERIVATIVE MATRIX AND VECTOR FOR ATOM J5 COMPONENT J6.
+C  Set up the derivative matrix and vector for atom J5 component J6.
 C
-C     PRINT*,'ANALYTIC DERIVATIVES OF MU'
-      DO J5=1,NATOMS           ! J5 = I (CAN BE A OR B)
+C     PRINT*,'Analytic derivatives of mu'
+      DO J5=1,NATOMS           ! J5 = i (can be A or B)
          J4=3*(J5-1)
-         DO J6=1,3             ! J6 = GAMMA
+         DO J6=1,3             ! J6 = gamma
             DO J1=1,3*NATOMS
                VEC2(J1)=0.0D0
             ENDDO
-            DO J7=1,3          ! FIRST INDEX OF T TENSOR = ALPHA
-               DO J1=1,NATOMS  ! ATOM B
+            DO J7=1,3          ! first index of T tensor = alpha
+               DO J1=1,NATOMS  ! atom B
                   J3=3*(J1-1)
                   DUM=-15.0D0*RRD5(J1,J5)*ALPHA(J5)*(X(J4+J7)-X(J3+J7))*(X(J4+J6)-X(J3+J6))*RRD(J1,J5)**2
                   DO J2=1,3
@@ -360,7 +360,7 @@ C     PRINT*,'ANALYTIC DERIVATIVES OF MU'
                ENDDO
                VEC2(J4+J7)=DUMMY
             ENDDO
-            DO J1=1,NATOMS  ! ATOM B
+            DO J1=1,NATOMS  ! atom B
                J3=3*(J1-1)
                DUM=RRD5(J1,J5)
                VEC1(J3+1)=(X(J4+1)-X(J3+1))*DUM
@@ -373,8 +373,8 @@ C     PRINT*,'ANALYTIC DERIVATIVES OF MU'
             ENDDO
             VEC2(J4+J6)=VEC2(J4+J6)+DUMMY*3.0D0*ALPHA(J5)
    
-            DO J7=1,3          ! FIRST INDEX OF T TENSOR = ALPHA
-               DO J1=1,NATOMS  ! ATOM A THIS TIME
+            DO J7=1,3          ! first index of T tensor = alpha
+               DO J1=1,NATOMS  ! atom A this time
                   J3=3*(J1-1)
                   DUM=RRD5(J1,J5)*ALPHA(J1)
                   DUMMY=(X(J4+1)-X(J3+1))*XMU(J4+1)+(X(J4+2)-X(J3+2))*XMU(J4+2)+(X(J4+3)-X(J3+3))*XMU(J4+3)
@@ -383,36 +383,36 @@ C     PRINT*,'ANALYTIC DERIVATIVES OF MU'
      2                                  -5.0D0*DUMMY*(X(J4+J6)-X(J3+J6))*RRD(J1,J5)**2))
                ENDDO
             ENDDO
-            DO J1=1,NATOMS  ! ATOM A THIS TIME
+            DO J1=1,NATOMS  ! atom A this time
                J3=3*(J1-1)
                DUM=RRD5(J1,J5)*ALPHA(J1)
-               DO J2=1,3    ! BETA INDEX OF T(AI)(2) WHERE B OR I=J1
+               DO J2=1,3    ! beta index of T(Ai)(2) where B or i=J1
                   DUMMY=3.0D0*(X(J4+J2)-X(J3+J2))*DUM
                   VEC2(J3+J6)=VEC2(J3+J6)+DUMMY*XMU(J4+J2)
                ENDDO
             ENDDO
 C
-C  NOW VEC2 SHOULD CONTAIN (D M/D X) MU APART FROM THE FACTOR OF -1/2.
+C  Now VEC2 should contain (d M/d X) mu apart from the factor of -1/2.
 C
-            DO J1=1,NATOMS   ! SECOND ATOM B
+            DO J1=1,NATOMS   ! second atom B
                J3=3*(J1-1)
                DUM=RRD3(J1,J5)*ALPHA(J1)*Q(J5)
-               DO J2=1,3     ! ALPHA INDEX OF T(IB)(1)
+               DO J2=1,3     ! alpha index of T(iB)(1)
                   VEC3(J3+J2)=-3.0D0*(X(J4+J2)-X(J3+J2))*(X(J4+J6)-X(J3+J6))*RRD(J1,J5)**2*DUM
                ENDDO
                VEC3(J3+J6)=VEC3(J3+J6)+DUM
             ENDDO
 
-            DO J1=1,NATOMS   ! FIRST ATOM A
+            DO J1=1,NATOMS   ! first atom A
                J3=3*(J1-1)
                DUM=RRD3(J1,J5)*ALPHA(J5)*Q(J1)
-               DO J2=1,3     ! ALPHA INDEX OF T(AI)(1)
+               DO J2=1,3     ! alpha index of T(Ai)(1)
                   VEC3(J4+J2)= VEC3(J4+J2)+3.0D0*(X(J4+J2)-X(J3+J2))*(X(J4+J6)-X(J3+J6))*RRD(J1,J5)**2*DUM
                ENDDO
                VEC3(J4+J6)=VEC3(J4+J6)-DUM
             ENDDO
 C
-C  NOW VEC3 - VEC2 SHOULD CONTAIN (D Y/D X) - (D M/D X) MU APART FROM A FACTOR OF -1/2.
+C  Now VEC3 - VEC2 should contain (d Y/d X) - (d M/d X) mu apart from a factor of -1/2.
 C
             DO J1=1,3*NATOMS
                DUMMY=0.0D0
@@ -432,10 +432,10 @@ C              WRITE(*,'(2I3,F20.10)') J1,J4+J6,XMUGRAD(J1,J4+J6)
 C
 C*******************************************************************************
 C
-C  ANALYTIC GRADIENT FOR THE WELCH POTENTIAL
+C  Analytic gradient for the Welch potential
 C
       SUBROUTINE WGRAD(XMU,ALPHA,Q,RRD,RRD3,RRD5,X,XQ,AC,GRAD,XMAT,XMINV)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       DOUBLE PRECISION VSELF(3*NATOMS), VCC(3*NATOMS), VREP(3*NATOMS), VCID(3*NATOMS), VIDID(3*NATOMS), 
      1                 GRAD(3*NATOMS), XMU(3*NATOMS), ALPHA(NATOMS), Q(NATOMS),
@@ -448,11 +448,11 @@ C
       N=NATOMS
       RHOL=1.0D0/RHO
 C
-C  CALCULATE INDUCED DIPOLE DERIVATIVES.
+C  Calculate induced dipole derivatives.
 C
       CALL DIPGRAD(X,ALPHA,RRD,RRD3,RRD5,XMU,Q,XMAT,XMINV,XMUGRAD)
 C
-C  CHARGE-CHARGE.
+C  Charge-charge.
 C
       DO J1=1,N
          DO J2=1,3
@@ -465,10 +465,10 @@ C
          ENDDO
       ENDDO
 C
-C  SELF-ENERGY.
+C  Self-energy.
 C
-      DO J1=1,N       ! THIS IS I
-         DO J3=1,3    ! THIS IS ALPHA
+      DO J1=1,N       ! this is i
+         DO J3=1,3    ! this is alpha
             J2=3*(J1-1)+J3
             DUMMY=0.0D0
             DO J4=1,N
@@ -481,11 +481,11 @@ C
          ENDDO
       ENDDO
 C
-C  CHARGE-INDUCED DIPOLE
+C  Charge-induced dipole
 C
-      DO J1=1,N         ! ATOM I
+      DO J1=1,N         ! atom i
          J2=3*(J1-1)
-         DO J3=1,3      ! INDEX GAMMA
+         DO J3=1,3      ! index gamma
             DUMMY=0.0D0
             DO J4=1,N   ! A
                DUMMY=DUMMY+XMU(3*(J4-1)+J3)*RRD3(J4,J1)
@@ -531,7 +531,7 @@ C
          ENDDO
       ENDDO
 C
-C  INDUCED DIPOLE-INDUCED DIPOLE.
+C  Induced dipole-induced dipole.
 C 
       DO J1=1,N
          J2=3*(J1-1)
@@ -608,7 +608,7 @@ C
          ENDDO
       ENDDO
 C
-C  EXPONENTIAL REPULSION.
+C  Exponential repulsion.
 C
       DO J1=1,N
          J2=3*(J1-1)
@@ -645,436 +645,436 @@ C
       DO J1=1,3*N
          GRAD(J1)=VCC(J1)+VSELF(J1)+VREP(J1)+VCID(J1)+VIDID(J1)
       ENDDO
-C     PRINT*,'ANALYTIC GRADIENT:'
+C     PRINT*,'Analytic gradient:'
 C     WRITE(*,'(I3,F20.10)') (J1,GRAD(J1),J1=1,3*NATOMS)
 
       RETURN
       END
 
-      SUBROUTINE DGEDI(A,LDA,N,IPVT,DET,WORK,JOB)
-      INTEGER LDA,N,IPVT(*),JOB
-      DOUBLE PRECISION A(LDA,*),DET(2),WORK(*)
-C
-C     DGEDI COMPUTES THE DETERMINANT AND INVERSE OF A MATRIX
-C     USING THE FACTORS COMPUTED BY DGECO OR DGEFA.
-C
-C     ON ENTRY
-C
-C        A       DOUBLE PRECISION(LDA, N)
-C                THE OUTPUT FROM DGECO OR DGEFA.
-C
-C        LDA     INTEGER
-C                THE LEADING DIMENSION OF THE ARRAY  A .
-C
-C        N       INTEGER
-C                THE ORDER OF THE MATRIX  A .
-C
-C        IPVT    INTEGER(N)
-C                THE PIVOT VECTOR FROM DGECO OR DGEFA.
-C
-C        WORK    DOUBLE PRECISION(N)
-C                WORK VECTOR.  CONTENTS DESTROYED.
-C
-C        JOB     INTEGER
-C                = 11   BOTH DETERMINANT AND INVERSE.
-C                = 01   INVERSE ONLY.
-C                = 10   DETERMINANT ONLY.
-C
-C     ON RETURN
-C
-C        A       INVERSE OF ORIGINAL MATRIX IF REQUESTED.
-C                OTHERWISE UNCHANGED.
-C
-C        DET     DOUBLE PRECISION(2)
-C                DETERMINANT OF ORIGINAL MATRIX IF REQUESTED.
-C                OTHERWISE NOT REFERENCED.
-C                DETERMINANT = DET(1) * 10.0**DET(2)
-C                WITH  1.0 .LE. DABS(DET(1)) .LT. 10.0
-C                OR  DET(1) .EQ. 0.0 .
-C
-C     ERROR CONDITION
-C
-C        A DIVISION BY ZERO WILL OCCUR IF THE INPUT FACTOR CONTAINS
-C        A ZERO ON THE DIAGONAL AND THE INVERSE IS REQUESTED.
-C        IT WILL NOT OCCUR IF THE SUBROUTINES ARE CALLED CORRECTLY
-C        AND IF DGECO HAS SET RCOND .GT. 0.0 OR DGEFA HAS SET
-C        INFO .EQ. 0 .
-C
-C     LINPACK. THIS VERSION DATED 08/14/78 .
-C     CLEVE MOLER, UNIVERSITY OF NEW MEXICO, ARGONNE NATIONAL LAB.
-C
-C     SUBROUTINES AND FUNCTIONS
-C
-C     BLAS DAXPY,DSCAL,DSWAP
-C     FORTRAN DABS,MOD
-C
-C     INTERNAL VARIABLES
-C
-      DOUBLE PRECISION T
-      DOUBLE PRECISION TEN
-      INTEGER I,J,K,KB,KP1,L,NM1
-C
-C
-C     COMPUTE DETERMINANT
-C
-      IF (JOB/10 .EQ. 0) GO TO 70
-         DET(1) = 1.0D0
-         DET(2) = 0.0D0
-         TEN = 10.0D0
-         DO 50 I = 1, N
-            IF (IPVT(I) .NE. I) DET(1) = -DET(1)
-            DET(1) = A(I,I)*DET(1)
-C        ...EXIT
-            IF (DET(1) .EQ. 0.0D0) GO TO 60
-   10       IF (DABS(DET(1)) .GE. 1.0D0) GO TO 20
-               DET(1) = TEN*DET(1)
-               DET(2) = DET(2) - 1.0D0
-            GO TO 10
-   20       CONTINUE
-   30       IF (DABS(DET(1)) .LT. TEN) GO TO 40
-               DET(1) = DET(1)/TEN
-               DET(2) = DET(2) + 1.0D0
-            GO TO 30
-   40       CONTINUE
-   50    CONTINUE
-   60    CONTINUE
-   70 CONTINUE
-C
-C     COMPUTE INVERSE(U)
-C
-      IF (MOD(JOB,10) .EQ. 0) GO TO 150
-         DO 100 K = 1, N
-            A(K,K) = 1.0D0/A(K,K)
-            T = -A(K,K)
-            CALL DSCAL(K-1,T,A(1,K),1)
-            KP1 = K + 1
-            IF (N .LT. KP1) GO TO 90
-            DO 80 J = KP1, N
-               T = A(K,J)
-               A(K,J) = 0.0D0
-               CALL DAXPY(K,T,A(1,K),1,A(1,J),1)
-   80       CONTINUE
-   90       CONTINUE
-  100    CONTINUE
-C
-C        FORM INVERSE(U)*INVERSE(L)
-C
-         NM1 = N - 1
-         IF (NM1 .LT. 1) GO TO 140
-         DO 130 KB = 1, NM1
-            K = N - KB
-            KP1 = K + 1
-            DO 110 I = KP1, N
-               WORK(I) = A(I,K)
-               A(I,K) = 0.0D0
-  110       CONTINUE
-            DO 120 J = KP1, N
-               T = WORK(J)
-               CALL DAXPY(N,T,A(1,J),1,A(1,K),1)
-  120       CONTINUE
-            L = IPVT(K)
-            IF (L .NE. K) CALL DSWAP(N,A(1,K),1,A(1,L),1)
-  130    CONTINUE
-  140    CONTINUE
-  150 CONTINUE
-      RETURN
-      END
+      subroutine dgedi(a,lda,n,ipvt,det,work,job)
+      integer lda,n,ipvt(*),job
+      double precision a(lda,*),det(2),work(*)
+c
+c     dgedi computes the determinant and inverse of a matrix
+c     using the factors computed by dgeco or dgefa.
+c
+c     on entry
+c
+c        a       double precision(lda, n)
+c                the output from dgeco or dgefa.
+c
+c        lda     integer
+c                the leading dimension of the array  a .
+c
+c        n       integer
+c                the order of the matrix  a .
+c
+c        ipvt    integer(n)
+c                the pivot vector from dgeco or dgefa.
+c
+c        work    double precision(n)
+c                work vector.  contents destroyed.
+c
+c        job     integer
+c                = 11   both determinant and inverse.
+c                = 01   inverse only.
+c                = 10   determinant only.
+c
+c     on return
+c
+c        a       inverse of original matrix if requested.
+c                otherwise unchanged.
+c
+c        det     double precision(2)
+c                determinant of original matrix if requested.
+c                otherwise not referenced.
+c                determinant = det(1) * 10.0**det(2)
+c                with  1.0 .le. dabs(det(1)) .lt. 10.0
+c                or  det(1) .eq. 0.0 .
+c
+c     error condition
+c
+c        a division by zero will occur if the input factor contains
+c        a zero on the diagonal and the inverse is requested.
+c        it will not occur if the subroutines are called correctly
+c        and if dgeco has set rcond .gt. 0.0 or dgefa has set
+c        info .eq. 0 .
+c
+c     linpack. this version dated 08/14/78 .
+c     cleve moler, university of new mexico, argonne national lab.
+c
+c     subroutines and functions
+c
+c     blas daxpy,dscal,dswap
+c     fortran dabs,mod
+c
+c     internal variables
+c
+      double precision t
+      double precision ten
+      integer i,j,k,kb,kp1,l,nm1
+c
+c
+c     compute determinant
+c
+      if (job/10 .eq. 0) go to 70
+         det(1) = 1.0d0
+         det(2) = 0.0d0
+         ten = 10.0d0
+         do 50 i = 1, n
+            if (ipvt(i) .ne. i) det(1) = -det(1)
+            det(1) = a(i,i)*det(1)
+c        ...exit
+            if (det(1) .eq. 0.0d0) go to 60
+   10       if (dabs(det(1)) .ge. 1.0d0) go to 20
+               det(1) = ten*det(1)
+               det(2) = det(2) - 1.0d0
+            go to 10
+   20       continue
+   30       if (dabs(det(1)) .lt. ten) go to 40
+               det(1) = det(1)/ten
+               det(2) = det(2) + 1.0d0
+            go to 30
+   40       continue
+   50    continue
+   60    continue
+   70 continue
+c
+c     compute inverse(u)
+c
+      if (mod(job,10) .eq. 0) go to 150
+         do 100 k = 1, n
+            a(k,k) = 1.0d0/a(k,k)
+            t = -a(k,k)
+            call dscal(k-1,t,a(1,k),1)
+            kp1 = k + 1
+            if (n .lt. kp1) go to 90
+            do 80 j = kp1, n
+               t = a(k,j)
+               a(k,j) = 0.0d0
+               call daxpy(k,t,a(1,k),1,a(1,j),1)
+   80       continue
+   90       continue
+  100    continue
+c
+c        form inverse(u)*inverse(l)
+c
+         nm1 = n - 1
+         if (nm1 .lt. 1) go to 140
+         do 130 kb = 1, nm1
+            k = n - kb
+            kp1 = k + 1
+            do 110 i = kp1, n
+               work(i) = a(i,k)
+               a(i,k) = 0.0d0
+  110       continue
+            do 120 j = kp1, n
+               t = work(j)
+               call daxpy(n,t,a(1,j),1,a(1,k),1)
+  120       continue
+            l = ipvt(k)
+            if (l .ne. k) call dswap(n,a(1,k),1,a(1,l),1)
+  130    continue
+  140    continue
+  150 continue
+      return
+      end
 
-      SUBROUTINE DGECO(A,LDA,N,IPVT,RCOND,Z)
-      INTEGER LDA,N,IPVT(*)
-      DOUBLE PRECISION A(LDA,*),Z(*)
-      DOUBLE PRECISION RCOND
-C
-C     DGECO FACTORS A DOUBLE PRECISION MATRIX BY GAUSSIAN ELIMINATION
-C     AND ESTIMATES THE CONDITION OF THE MATRIX.
-C
-C     IF  RCOND  IS NOT NEEDED, DGEFA IS SLIGHTLY FASTER.
-C     TO SOLVE  A*X = B , FOLLOW DGECO BY DGESL.
-C     TO COMPUTE  INVERSE(A)*C , FOLLOW DGECO BY DGESL.
-C     TO COMPUTE  DETERMINANT(A) , FOLLOW DGECO BY DGEDI.
-C     TO COMPUTE  INVERSE(A) , FOLLOW DGECO BY DGEDI.
-C
-C     ON ENTRY
-C
-C        A       DOUBLE PRECISION(LDA, N)
-C                THE MATRIX TO BE FACTORED.
-C
-C        LDA     INTEGER
-C                THE LEADING DIMENSION OF THE ARRAY  A .
-C
-C        N       INTEGER
-C                THE ORDER OF THE MATRIX  A .
-C
-C     ON RETURN
-C
-C        A       AN UPPER TRIANGULAR MATRIX AND THE MULTIPLIERS
-C                WHICH WERE USED TO OBTAIN IT.
-C                THE FACTORIZATION CAN BE WRITTEN  A = L*U  WHERE
-C                L  IS A PRODUCT OF PERMUTATION AND UNIT LOWER
-C                TRIANGULAR MATRICES AND  U  IS UPPER TRIANGULAR.
-C
-C        IPVT    INTEGER(N)
-C                AN INTEGER VECTOR OF PIVOT INDICES.
-C
-C        RCOND   DOUBLE PRECISION
-C                AN ESTIMATE OF THE RECIPROCAL CONDITION OF  A .
-C                FOR THE SYSTEM  A*X = B , RELATIVE PERTURBATIONS
-C                IN  A  AND  B  OF SIZE  EPSILON  MAY CAUSE
-C                RELATIVE PERTURBATIONS IN  X  OF SIZE  EPSILON/RCOND .
-C                IF  RCOND  IS SO SMALL THAT THE LOGICAL EXPRESSION
-C                           1.0 + RCOND .EQ. 1.0
-C                IS TRUE, THEN  A  MAY BE SINGULAR TO WORKING
-C                PRECISION.  IN PARTICULAR,  RCOND  IS ZERO  IF
-C                EXACT SINGULARITY IS DETECTED OR THE ESTIMATE
-C                UNDERFLOWS.
-C
-C        Z       DOUBLE PRECISION(N)
-C                A WORK VECTOR WHOSE CONTENTS ARE USUALLY UNIMPORTANT.
-C                IF  A  IS CLOSE TO A SINGULAR MATRIX, THEN  Z  IS
-C                AN APPROXIMATE NULL VECTOR IN THE SENSE THAT
-C                NORM(A*Z) = RCOND*NORM(A)*NORM(Z) .
-C
-C     LINPACK. THIS VERSION DATED 08/14/78 .
-C     CLEVE MOLER, UNIVERSITY OF NEW MEXICO, ARGONNE NATIONAL LAB.
-C
-C     SUBROUTINES AND FUNCTIONS
-C
-C     LINPACK DGEFA
-C     BLAS DAXPY,DDOT,DSCAL,DASUM
-C     FORTRAN DABS,DMAX1,DSIGN
-C
-C     INTERNAL VARIABLES
-C
-      DOUBLE PRECISION DDOT,EK,T,WK,WKM
-      DOUBLE PRECISION ANORM,S,DASUM,SM,YNORM
-      INTEGER INFO,J,K,KB,KP1,L
-C
-C
-C     COMPUTE 1-NORM OF A
-C
-      ANORM = 0.0D0
-      DO 10 J = 1, N
-         ANORM = DMAX1(ANORM,DASUM(N,A(1,J),1))
-   10 CONTINUE
-C
-C     FACTOR
-C
-      CALL DGEFA(A,LDA,N,IPVT,INFO)
-C
-C     RCOND = 1/(NORM(A)*(ESTIMATE OF NORM(INVERSE(A)))) .
-C     ESTIMATE = NORM(Z)/NORM(Y) WHERE  A*Z = Y  AND  TRANS(A)*Y = E .
-C     TRANS(A)  IS THE TRANSPOSE OF A .  THE COMPONENTS OF  E  ARE
-C     CHOSEN TO CAUSE MAXIMUM LOCAL GROWTH IN THE ELEMENTS OF W  WHERE
-C     TRANS(U)*W = E .  THE VECTORS ARE FREQUENTLY RESCALED TO AVOID
-C     OVERFLOW.
-C
-C     SOLVE TRANS(U)*W = E
-C
-      EK = 1.0D0
-      DO 20 J = 1, N
-         Z(J) = 0.0D0
-   20 CONTINUE
-      DO 100 K = 1, N
-         IF (Z(K) .NE. 0.0D0) EK = DSIGN(EK,-Z(K))
-         IF (DABS(EK-Z(K)) .LE. DABS(A(K,K))) GO TO 30
-            S = DABS(A(K,K))/DABS(EK-Z(K))
-            CALL DSCAL(N,S,Z,1)
-            EK = S*EK
-   30    CONTINUE
-         WK = EK - Z(K)
-         WKM = -EK - Z(K)
-         S = DABS(WK)
-         SM = DABS(WKM)
-         IF (A(K,K) .EQ. 0.0D0) GO TO 40
-            WK = WK/A(K,K)
-            WKM = WKM/A(K,K)
-         GO TO 50
-   40    CONTINUE
-            WK = 1.0D0
-            WKM = 1.0D0
-   50    CONTINUE
-         KP1 = K + 1
-         IF (KP1 .GT. N) GO TO 90
-            DO 60 J = KP1, N
-               SM = SM + DABS(Z(J)+WKM*A(K,J))
-               Z(J) = Z(J) + WK*A(K,J)
-               S = S + DABS(Z(J))
-   60       CONTINUE
-            IF (S .GE. SM) GO TO 80
-               T = WKM - WK
-               WK = WKM
-               DO 70 J = KP1, N
-                  Z(J) = Z(J) + T*A(K,J)
-   70          CONTINUE
-   80       CONTINUE
-   90    CONTINUE
-         Z(K) = WK
-  100 CONTINUE
-      S = 1.0D0/DASUM(N,Z,1)
-      CALL DSCAL(N,S,Z,1)
-C
-C     SOLVE TRANS(L)*Y = W
-C
-      DO 120 KB = 1, N
-         K = N + 1 - KB
-         IF (K .LT. N) Z(K) = Z(K) + DDOT(N-K,A(K+1,K),1,Z(K+1),1)
-         IF (DABS(Z(K)) .LE. 1.0D0) GO TO 110
-            S = 1.0D0/DABS(Z(K))
-            CALL DSCAL(N,S,Z,1)
-  110    CONTINUE
-         L = IPVT(K)
-         T = Z(L)
-         Z(L) = Z(K)
-         Z(K) = T
-  120 CONTINUE
-      S = 1.0D0/DASUM(N,Z,1)
-      CALL DSCAL(N,S,Z,1)
-C
-      YNORM = 1.0D0
-C
-C     SOLVE L*V = Y
-C
-      DO 140 K = 1, N
-         L = IPVT(K)
-         T = Z(L)
-         Z(L) = Z(K)
-         Z(K) = T
-         IF (K .LT. N) CALL DAXPY(N-K,T,A(K+1,K),1,Z(K+1),1)
-         IF (DABS(Z(K)) .LE. 1.0D0) GO TO 130
-            S = 1.0D0/DABS(Z(K))
-            CALL DSCAL(N,S,Z,1)
-            YNORM = S*YNORM
-  130    CONTINUE
-  140 CONTINUE
-      S = 1.0D0/DASUM(N,Z,1)
-      CALL DSCAL(N,S,Z,1)
-      YNORM = S*YNORM
-C
-C     SOLVE  U*Z = V
-C
-      DO 160 KB = 1, N
-         K = N + 1 - KB
-         IF (DABS(Z(K)) .LE. DABS(A(K,K))) GO TO 150
-            S = DABS(A(K,K))/DABS(Z(K))
-            CALL DSCAL(N,S,Z,1)
-            YNORM = S*YNORM
-  150    CONTINUE
-         IF (A(K,K) .NE. 0.0D0) Z(K) = Z(K)/A(K,K)
-         IF (A(K,K) .EQ. 0.0D0) Z(K) = 1.0D0
-         T = -Z(K)
-         CALL DAXPY(K-1,T,A(1,K),1,Z(1),1)
-  160 CONTINUE
-C     MAKE ZNORM = 1.0
-      S = 1.0D0/DASUM(N,Z,1)
-      CALL DSCAL(N,S,Z,1)
-      YNORM = S*YNORM
-C
-      IF (ANORM .NE. 0.0D0) RCOND = YNORM/ANORM
-      IF (ANORM .EQ. 0.0D0) RCOND = 0.0D0
-      RETURN
-      END
+      subroutine dgeco(a,lda,n,ipvt,rcond,z)
+      integer lda,n,ipvt(*)
+      double precision a(lda,*),z(*)
+      double precision rcond
+c
+c     dgeco factors a double precision matrix by gaussian elimination
+c     and estimates the condition of the matrix.
+c
+c     if  rcond  is not needed, dgefa is slightly faster.
+c     to solve  a*x = b , follow dgeco by dgesl.
+c     to compute  inverse(a)*c , follow dgeco by dgesl.
+c     to compute  determinant(a) , follow dgeco by dgedi.
+c     to compute  inverse(a) , follow dgeco by dgedi.
+c
+c     on entry
+c
+c        a       double precision(lda, n)
+c                the matrix to be factored.
+c
+c        lda     integer
+c                the leading dimension of the array  a .
+c
+c        n       integer
+c                the order of the matrix  a .
+c
+c     on return
+c
+c        a       an upper triangular matrix and the multipliers
+c                which were used to obtain it.
+c                the factorization can be written  a = l*u  where
+c                l  is a product of permutation and unit lower
+c                triangular matrices and  u  is upper triangular.
+c
+c        ipvt    integer(n)
+c                an integer vector of pivot indices.
+c
+c        rcond   double precision
+c                an estimate of the reciprocal condition of  a .
+c                for the system  a*x = b , relative perturbations
+c                in  a  and  b  of size  epsilon  may cause
+c                relative perturbations in  x  of size  epsilon/rcond .
+c                if  rcond  is so small that the logical expression
+c                           1.0 + rcond .eq. 1.0
+c                is true, then  a  may be singular to working
+c                precision.  in particular,  rcond  is zero  if
+c                exact singularity is detected or the estimate
+c                underflows.
+c
+c        z       double precision(n)
+c                a work vector whose contents are usually unimportant.
+c                if  a  is close to a singular matrix, then  z  is
+c                an approximate null vector in the sense that
+c                norm(a*z) = rcond*norm(a)*norm(z) .
+c
+c     linpack. this version dated 08/14/78 .
+c     cleve moler, university of new mexico, argonne national lab.
+c
+c     subroutines and functions
+c
+c     linpack dgefa
+c     blas daxpy,ddot,dscal,dasum
+c     fortran dabs,dmax1,dsign
+c
+c     internal variables
+c
+      double precision ddot,ek,t,wk,wkm
+      double precision anorm,s,dasum,sm,ynorm
+      integer info,j,k,kb,kp1,l
+c
+c
+c     compute 1-norm of a
+c
+      anorm = 0.0d0
+      do 10 j = 1, n
+         anorm = dmax1(anorm,dasum(n,a(1,j),1))
+   10 continue
+c
+c     factor
+c
+      call dgefa(a,lda,n,ipvt,info)
+c
+c     rcond = 1/(norm(a)*(estimate of norm(inverse(a)))) .
+c     estimate = norm(z)/norm(y) where  a*z = y  and  trans(a)*y = e .
+c     trans(a)  is the transpose of a .  the components of  e  are
+c     chosen to cause maximum local growth in the elements of w  where
+c     trans(u)*w = e .  the vectors are frequently rescaled to avoid
+c     overflow.
+c
+c     solve trans(u)*w = e
+c
+      ek = 1.0d0
+      do 20 j = 1, n
+         z(j) = 0.0d0
+   20 continue
+      do 100 k = 1, n
+         if (z(k) .ne. 0.0d0) ek = dsign(ek,-z(k))
+         if (dabs(ek-z(k)) .le. dabs(a(k,k))) go to 30
+            s = dabs(a(k,k))/dabs(ek-z(k))
+            call dscal(n,s,z,1)
+            ek = s*ek
+   30    continue
+         wk = ek - z(k)
+         wkm = -ek - z(k)
+         s = dabs(wk)
+         sm = dabs(wkm)
+         if (a(k,k) .eq. 0.0d0) go to 40
+            wk = wk/a(k,k)
+            wkm = wkm/a(k,k)
+         go to 50
+   40    continue
+            wk = 1.0d0
+            wkm = 1.0d0
+   50    continue
+         kp1 = k + 1
+         if (kp1 .gt. n) go to 90
+            do 60 j = kp1, n
+               sm = sm + dabs(z(j)+wkm*a(k,j))
+               z(j) = z(j) + wk*a(k,j)
+               s = s + dabs(z(j))
+   60       continue
+            if (s .ge. sm) go to 80
+               t = wkm - wk
+               wk = wkm
+               do 70 j = kp1, n
+                  z(j) = z(j) + t*a(k,j)
+   70          continue
+   80       continue
+   90    continue
+         z(k) = wk
+  100 continue
+      s = 1.0d0/dasum(n,z,1)
+      call dscal(n,s,z,1)
+c
+c     solve trans(l)*y = w
+c
+      do 120 kb = 1, n
+         k = n + 1 - kb
+         if (k .lt. n) z(k) = z(k) + ddot(n-k,a(k+1,k),1,z(k+1),1)
+         if (dabs(z(k)) .le. 1.0d0) go to 110
+            s = 1.0d0/dabs(z(k))
+            call dscal(n,s,z,1)
+  110    continue
+         l = ipvt(k)
+         t = z(l)
+         z(l) = z(k)
+         z(k) = t
+  120 continue
+      s = 1.0d0/dasum(n,z,1)
+      call dscal(n,s,z,1)
+c
+      ynorm = 1.0d0
+c
+c     solve l*v = y
+c
+      do 140 k = 1, n
+         l = ipvt(k)
+         t = z(l)
+         z(l) = z(k)
+         z(k) = t
+         if (k .lt. n) call daxpy(n-k,t,a(k+1,k),1,z(k+1),1)
+         if (dabs(z(k)) .le. 1.0d0) go to 130
+            s = 1.0d0/dabs(z(k))
+            call dscal(n,s,z,1)
+            ynorm = s*ynorm
+  130    continue
+  140 continue
+      s = 1.0d0/dasum(n,z,1)
+      call dscal(n,s,z,1)
+      ynorm = s*ynorm
+c
+c     solve  u*z = v
+c
+      do 160 kb = 1, n
+         k = n + 1 - kb
+         if (dabs(z(k)) .le. dabs(a(k,k))) go to 150
+            s = dabs(a(k,k))/dabs(z(k))
+            call dscal(n,s,z,1)
+            ynorm = s*ynorm
+  150    continue
+         if (a(k,k) .ne. 0.0d0) z(k) = z(k)/a(k,k)
+         if (a(k,k) .eq. 0.0d0) z(k) = 1.0d0
+         t = -z(k)
+         call daxpy(k-1,t,a(1,k),1,z(1),1)
+  160 continue
+c     make znorm = 1.0
+      s = 1.0d0/dasum(n,z,1)
+      call dscal(n,s,z,1)
+      ynorm = s*ynorm
+c
+      if (anorm .ne. 0.0d0) rcond = ynorm/anorm
+      if (anorm .eq. 0.0d0) rcond = 0.0d0
+      return
+      end
 
-      SUBROUTINE DGEFA(A,LDA,N,IPVT,INFO)
-      INTEGER LDA,N,IPVT(*),INFO
-      DOUBLE PRECISION A(LDA,*)
-C
-C     DGEFA FACTORS A DOUBLE PRECISION MATRIX BY GAUSSIAN ELIMINATION.
-C
-C     DGEFA IS USUALLY CALLED BY DGECO, BUT IT CAN BE CALLED
-C     DIRECTLY WITH A SAVING IN TIME IF  RCOND  IS NOT NEEDED.
-C     (TIME FOR DGECO) = (1 + 9/N)*(TIME FOR DGEFA) .
-C
-C     ON ENTRY
-C
-C        A       DOUBLE PRECISION(LDA, N)
-C                THE MATRIX TO BE FACTORED.
-C
-C        LDA     INTEGER
-C                THE LEADING DIMENSION OF THE ARRAY  A .
-C
-C        N       INTEGER
-C                THE ORDER OF THE MATRIX  A .
-C
-C     ON RETURN
-C
-C        A       AN UPPER TRIANGULAR MATRIX AND THE MULTIPLIERS
-C                WHICH WERE USED TO OBTAIN IT.
-C                THE FACTORIZATION CAN BE WRITTEN  A = L*U  WHERE
-C                L  IS A PRODUCT OF PERMUTATION AND UNIT LOWER
-C                TRIANGULAR MATRICES AND  U  IS UPPER TRIANGULAR.
-C
-C        IPVT    INTEGER(N)
-C                AN INTEGER VECTOR OF PIVOT INDICES.
-C
-C        INFO    INTEGER
-C                = 0  NORMAL VALUE.
-C                = K  IF  U(K,K) .EQ. 0.0 .  THIS IS NOT AN ERROR
-C                     CONDITION FOR THIS SUBROUTINE, BUT IT DOES
-C                     INDICATE THAT DGESL OR DGEDI WILL DIVIDE BY ZERO
-C                     IF CALLED.  USE  RCOND  IN DGECO FOR A RELIABLE
-C                     INDICATION OF SINGULARITY.
-C
-C     LINPACK. THIS VERSION DATED 08/14/78 .
-C     CLEVE MOLER, UNIVERSITY OF NEW MEXICO, ARGONNE NATIONAL LAB.
-C
-C     SUBROUTINES AND FUNCTIONS
-C
-C     BLAS DAXPY,DSCAL,IDAMAX
-C
-C     INTERNAL VARIABLES
-C
-      DOUBLE PRECISION T
-      INTEGER IDAMAX,J,K,KP1,L,NM1
-C
-C
-C     GAUSSIAN ELIMINATION WITH PARTIAL PIVOTING
-C
-      INFO = 0
-      NM1 = N - 1
-      IF (NM1 .LT. 1) GO TO 70
-      DO 60 K = 1, NM1
-         KP1 = K + 1
-C
-C        FIND L = PIVOT INDEX
-C
-         L = IDAMAX(N-K+1,A(K,K),1) + K - 1
-         IPVT(K) = L
-C
-C        ZERO PIVOT IMPLIES THIS COLUMN ALREADY TRIANGULARIZED
-C
-         IF (A(L,K) .EQ. 0.0D0) GO TO 40
-C
-C           INTERCHANGE IF NECESSARY
-C
-            IF (L .EQ. K) GO TO 10
-               T = A(L,K)
-               A(L,K) = A(K,K)
-               A(K,K) = T
-   10       CONTINUE
-C
-C           COMPUTE MULTIPLIERS
-C
-            T = -1.0D0/A(K,K)
-            CALL DSCAL(N-K,T,A(K+1,K),1)
-C
-C           ROW ELIMINATION WITH COLUMN INDEXING
-C
-            DO 30 J = KP1, N
-               T = A(L,J)
-               IF (L .EQ. K) GO TO 20
-                  A(L,J) = A(K,J)
-                  A(K,J) = T
-   20          CONTINUE
-               CALL DAXPY(N-K,T,A(K+1,K),1,A(K+1,J),1)
-   30       CONTINUE
-         GO TO 50
-   40    CONTINUE
-            INFO = K
-   50    CONTINUE
-   60 CONTINUE
-   70 CONTINUE
-      IPVT(N) = N
-      IF (A(N,N) .EQ. 0.0D0) INFO = N
-      RETURN
-      END
+      subroutine dgefa(a,lda,n,ipvt,info)
+      integer lda,n,ipvt(*),info
+      double precision a(lda,*)
+c
+c     dgefa factors a double precision matrix by gaussian elimination.
+c
+c     dgefa is usually called by dgeco, but it can be called
+c     directly with a saving in time if  rcond  is not needed.
+c     (time for dgeco) = (1 + 9/n)*(time for dgefa) .
+c
+c     on entry
+c
+c        a       double precision(lda, n)
+c                the matrix to be factored.
+c
+c        lda     integer
+c                the leading dimension of the array  a .
+c
+c        n       integer
+c                the order of the matrix  a .
+c
+c     on return
+c
+c        a       an upper triangular matrix and the multipliers
+c                which were used to obtain it.
+c                the factorization can be written  a = l*u  where
+c                l  is a product of permutation and unit lower
+c                triangular matrices and  u  is upper triangular.
+c
+c        ipvt    integer(n)
+c                an integer vector of pivot indices.
+c
+c        info    integer
+c                = 0  normal value.
+c                = k  if  u(k,k) .eq. 0.0 .  this is not an error
+c                     condition for this subroutine, but it does
+c                     indicate that dgesl or dgedi will divide by zero
+c                     if called.  use  rcond  in dgeco for a reliable
+c                     indication of singularity.
+c
+c     linpack. this version dated 08/14/78 .
+c     cleve moler, university of new mexico, argonne national lab.
+c
+c     subroutines and functions
+c
+c     blas daxpy,dscal,idamax
+c
+c     internal variables
+c
+      double precision t
+      integer idamax,j,k,kp1,l,nm1
+c
+c
+c     gaussian elimination with partial pivoting
+c
+      info = 0
+      nm1 = n - 1
+      if (nm1 .lt. 1) go to 70
+      do 60 k = 1, nm1
+         kp1 = k + 1
+c
+c        find l = pivot index
+c
+         l = idamax(n-k+1,a(k,k),1) + k - 1
+         ipvt(k) = l
+c
+c        zero pivot implies this column already triangularized
+c
+         if (a(l,k) .eq. 0.0d0) go to 40
+c
+c           interchange if necessary
+c
+            if (l .eq. k) go to 10
+               t = a(l,k)
+               a(l,k) = a(k,k)
+               a(k,k) = t
+   10       continue
+c
+c           compute multipliers
+c
+            t = -1.0d0/a(k,k)
+            call dscal(n-k,t,a(k+1,k),1)
+c
+c           row elimination with column indexing
+c
+            do 30 j = kp1, n
+               t = a(l,j)
+               if (l .eq. k) go to 20
+                  a(l,j) = a(k,j)
+                  a(k,j) = t
+   20          continue
+               call daxpy(n-k,t,a(k+1,k),1,a(k+1,j),1)
+   30       continue
+         go to 50
+   40    continue
+            info = k
+   50    continue
+   60 continue
+   70 continue
+      ipvt(n) = n
+      if (a(n,n) .eq. 0.0d0) info = n
+      return
+      end
 

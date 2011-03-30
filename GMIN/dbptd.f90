@@ -303,7 +303,7 @@
       DOUBLE PRECISION :: RMI(3,3), DRMI(3,3), P(3), RBCOORDS(3), SITETD(4,3), FCTR
       LOGICAL          :: GTEST
 
-      OPEN(UNIT=26, FILE='DMBLTD.XYZ', STATUS='UNKNOWN')
+      OPEN(UNIT=26, FILE='dmbltd.xyz', STATUS='UNKNOWN')
 
       FCTR        = 1.D0/DSQRT(8.D0)
       SITETD(1,:) = FCTR*(/ 1.D0, 1.D0, 1.D0/)
@@ -317,7 +317,7 @@
 
          WRITE(26,'(I6)') (NATOMS/2)*NRBSITES
          WRITE(26,10) J1, QMIN(J1), FF(J1)
-10       FORMAT('ENERGY OF MINIMUM ',I6,'=',F20.10,' FIRST FOUND AT STEP ',I8)
+10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)
 
          DO J3 = 1, NATOMS/2
 

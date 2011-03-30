@@ -355,34 +355,34 @@
             ETMP = E
             E    = D
             IF (ABS(P) >= ABS(0.5D0*Q*ETMP) .OR. P <= Q*(A-X) .OR. P >= Q*(B-X)) GOTO 1
-!     THE ABOVE CONDITIONS DETERMINE THE ACCEPTABILITY OF THE PARABOLIC FIT. HERE IT IS O.K.
-            D = P / Q ! TAKE THE PARABOLIC STEP.
+!     The above conditions determine the acceptability of the parabolic fit. Here it is o.k.
+            D = P / Q ! Take the parabolic step.
             U = X + D
             IF(U-A < TOL2 .OR. B-U < TOL2) D=SIGN(TOL1,XM-X)
-            GOTO 2 !SKIP OVER THE GOLDEN SECTION STEP.
+            GOTO 2 !Skip over the golden section step.
 
          ENDIF
 
 1        IF (X >= XM) THEN
-!      WE ARRIVE HERE FOR A GOLDEN SECTION STEP, WHICH WE TAKE
-            E = A - X !INTO THE LARGER OF THE TWO SEGMENTS.
+!      We arrive here for a golden section step, which we take
+            E = A - X !into the larger of the two segments.
          ELSE
             E = B - X
          ENDIF
 
-         D = CGOLD * E !TAKE THE GOLDEN SECTION STEP.
-2        IF (ABS(D) >= TOL1) THEN ! ARRIVE HERE WITH D COMPUTED EITHER FROM PARABOLIC FIT, OR
-            U = X + D !ELSE FROM GOLDEN SECTION.
+         D = CGOLD * E !Take the golden section step.
+2        IF (ABS(D) >= TOL1) THEN ! Arrive here with d computed either from parabolic fit, or
+            U = X + D !else from golden section.
          ELSE
             U = X + SIGN(TOL1,D)
          ENDIF
 
-!         FU = F(U) !THIS IS THE ONE FUNCTION EVALUATION PER ITERATION,
+!         FU = F(U) !This is the one function evaluation per iteration,
 
          CALL OBJCTF (AE, BE, RIJ, U, FU)
 
-         IF (FU <= FX) THEN !AND NOW WE HAVE TO DECIDE WHAT TO DO WITH OUR FUNCTION
-            IF (U >= X) THEN !EVALUATION. HOUSEKEEPING FOLLOWS:
+         IF (FU <= FX) THEN !and now we have to decide what to do with our function
+            IF (U >= X) THEN !evaluation. Housekeeping follows:
                A = X
             ELSE
                B = X
@@ -410,11 +410,11 @@
                FV = FU
             ENDIF
 
-         ENDIF ! DONE WITH HOUSEKEEPING. BACK FOR ANOTHER ITERATION.
+         ENDIF ! Done with housekeeping. Back for another iteration.
 
 10    CONTINUE
-      PAUSE 'BRENT EXCEED MAXIMUM ITERATIONS'
-3     XMIN = X ! ARRIVE HERE READY TO EXIT WITH BEST VALUES.
+      PAUSE 'brent exceed maximum iterations'
+3     XMIN = X ! Arrive here ready to exit with best values.
       FMIN = FX
 
       RETURN

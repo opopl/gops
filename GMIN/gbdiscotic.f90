@@ -71,7 +71,7 @@
             INVR    = 1.D0/ABSRIJ
             R2      = 1.D0/RIJSQ
 
-!     CALCULATE $\ALPHA$, $\BETA$ AND $\GAMMA$
+!     CALCULATE $\alpha$, $\beta$ AND $\gamma$
 
             EI  = E(J1,:)
             EJ  = E(J2,:)
@@ -98,13 +98,13 @@
             FCT7P8 = FCT7+FCT8
             FCT7M8 = FCT7-FCT8
 
-!     CALCULATE $\EPSILON$
+!     CALCULATE $\epsilon$
 
             EPS1   = DSQRT(FCT1*FCT2)
             EPS2   = 1.D0-0.5D0*GBCHIPRM*(APB*FCT7+AMB*FCT8)
             EPS    = GBEPSNOT*EPS1**GBNU*EPS2**GBMU
 
-!     CALCULATE $(\SIGMA/\SIGMA_{0})^3$
+!     CALCULATE $(\sigma/\sigma_{0})^3$
 
             SCSIG  = 1.D0/DSQRT(1.D0-0.5D0*GBCHI*(APB*FCT3+AMB*FCT4))
             SCSIG3 = SCSIG*SCSIG*SCSIG

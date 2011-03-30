@@ -1,300 +1,300 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C**********************************************************************
 C
-C   SUBROUTINES FOR CALCULATING THE FORCE (MINUS THE GRADIENT) AND THE
-C   ENERGY OF A STILLINGER-WEBER SYSTEM.
+C   Subroutines for calculating the force (minus the gradient) and the
+C   energy of a Stillinger-Weber system.
 C
-C   AS MENTIONED IN BARKEMA+MOUSSEAU (PRL 77, 4358 (1996)) THE 3-BODY
-C   STRENGTH OF THE SW POTENTIAL IS TOO WEAK TO LEAD TO GOOD AMORPHOUS
-C   STRUCTURES. IT IS STRENGTHED HERE BY A FACTOR 1.5 (SEE LAMBDA).
+C   as mentioned in Barkema+Mousseau (PRL 77, 4358 (1996)) the 3-body
+C   strength of the SW potential is too weak to lead to good amorphous
+C   structures. It is strengthed here by a factor 1.5 (see LAMBDA).
 C
-C   THE SUBROUTINE PRESUPPOSES PERIODIC BOUNDARY COUNDITION IN A BOX
-C   CENTERED AROUND -0.5*BOX AND +0.5*BOX (THE SAME FOR THE Y AND Z
-C   DIRECTION)
+C   The subroutine presupposes periodic boundary coundition in a box
+C   centered around -0.5*box and +0.5*box (the same for the y and z
+C   direction)
 C
-C   IN INPUT:  POS: POSITIONS IN ANGSTROEMS (AS A 3*NATOMS VECTOR)
-C              NEI: LIST OF NEIGHBOURS 
-C              NUMNEI: NUMBER OF NEIGHBOURS FOR ATOM I
-C              BOX,BOY,BOZ: SIZE OF THE BOX ALONG X,Y AND Z
-C                           DIRECTIONS. 
+C   In input:  pos: positions in angstroems (as a 3*NATOMS vector)
+C              nei: list of neighbours 
+C              numnei: number of neighbours for atom i
+C              box,boy,boz: size of the box along x,y and z
+C                           directions. 
 C
-C  AS OUTPUT:  THE TOTAL ENERGY (IN BOTH CALCFORCE AND CALCENERGY
-C              FORCE:  A 3*NATOMS VECTOR OF THE FORCE ON THE ATOMS.
+C  As output:  the total energy (in both calcforce and calcenergy
+C              force:  a 3*NATOMS vector of the force on the atoms.
 C
-C   WRITTEN BY NORMAND MOUSSEAU 
-C              13 OCT. 1997
+C   Written by Normand Mousseau 
+C              13 Oct. 1997
 C
 C********************************************************************
 
-      SUBROUTINE SISW(POS,GRAD,TOTENERGY,GTEST)
-      USE COMMONS
-      IMPLICIT NONE
+      subroutine SISW(pos,GRAD,totenergy,GTEST)
+      USE commons
+      implicit none
       LOGICAL GTEST
-      INTEGER MAXNEI,N
-      DOUBLE PRECISION SIGMA,A,ALPHA,BETA,EPSILON,SWGAMMA,LAMBDA,ONE_THIRD,A_EPS,P,RCUT,
-     1                 BOX, BOY, BOZ
-      PARAMETER (MAXNEI=36)
-      PARAMETER (SIGMA=2.0951,A=7.049556277,ALPHA=1.8)
-      PARAMETER (BETA=0.6022245584,EPSILON=2.16823,P=4)
-      PARAMETER (SWGAMMA=1.2,LAMBDA=(21.0*1.5),RCUT= (ALPHA*SIGMA))
-      PARAMETER (ONE_THIRD=(1.0/3.0),A_EPS=(A*EPSILON))
-      INTEGER NUMNEI(NATOMS),NEI(NATOMS,MAXNEI)
-      DOUBLE PRECISION POS(3*NATOMS),GRAD(3*NATOMS),TOTENERGY
+      integer MAXNEI,N
+      double precision SIGMA,A,ALPHA,BETA,EPSILON,SWGAMMA,LAMBDA,ONE_THIRD,A_EPS,P,RCUT,
+     1                 box, boy, boz
+      parameter (MAXNEI=36)
+      parameter (SIGMA=2.0951,A=7.049556277,ALPHA=1.8)
+      parameter (BETA=0.6022245584,EPSILON=2.16823,P=4)
+      parameter (SWGAMMA=1.2,LAMBDA=(21.0*1.5),RCUT= (ALPHA*SIGMA))
+      parameter (ONE_THIRD=(1.0/3.0),A_EPS=(A*EPSILON))
+      integer numnei(NATOMS),nei(NATOMS,MAXNEI)
+      double precision pos(3*NATOMS),GRAD(3*NATOMS),totenergy
  
-      INTEGER  I,J,K,INDJ,INDK
-      DOUBLE PRECISION  XI,YI,ZI,XIJ,YIJ,ZIJ,RIJ,RIJ2
-      DOUBLE PRECISION  RHOIJ,COS_X_IJ,COS_Y_IJ,COS_Z_IJ,
-     +     ONE_O_A_IJ,EXPO,GAM_O_A_IJ,EXP_GAM_IJ,GAM_O_A_IK,
-     +     COS_JIK,COS_X_IK,COS_Y_IK,COS_Z_IK,COS_P_1O3,
-     +     XIK,YIK,ZIK,RIK,RIK2,RHOIK,FFX,FFY,FFZ,
-     +     R_TO_MINUSP,ONE_O_A_IK,TERM_IK,FACT,
-     +     TERM1,TERM2,FACT3_IJ,TERM_IJ,DHDCOS_IK,
-     +     DHDCOS_IJ, ONE_O_A2,TWOBODY,THREEBODY
+      integer  i,j,k,indj,indk
+      double precision  xi,yi,zi,xij,yij,zij,rij,rij2
+      double precision  rhoij,cos_x_ij,cos_y_ij,cos_z_ij,
+     +     one_o_a_ij,expo,gam_o_a_ij,exp_gam_ij,gam_o_a_ik,
+     +     cos_jik,cos_x_ik,cos_y_ik,cos_z_ik,cos_p_1o3,
+     +     xik,yik,zik,rik,rik2,rhoik,ffx,ffy,ffz,
+     +     r_to_minusp,one_o_a_ik,term_ik,fact,
+     +     term1,term2,fact3_ij,term_ij,dhdcos_ik,
+     +     dhdcos_ij, one_o_a2,twobody,threebody
  
-      DOUBLE PRECISION DCOSDXJ,DCOSDYJ,DCOSDZJ,DCOSDXK,DCOSDYK,DCOSDZK
-      DOUBLE PRECISION INVSIG,INVRIJ,INVRIK
-      DOUBLE PRECISION RCUT2
-      DOUBLE PRECISION X(NATOMS),Y(NATOMS),Z(NATOMS),
-     +                 FX(NATOMS),FY(NATOMS),FZ(NATOMS)
+      double precision dcosdxj,dcosdyj,dcosdzj,dcosdxk,dcosdyk,dcosdzk
+      double precision invsig,invrij,invrik
+      double precision rcut2
+      double precision x(NATOMS),y(NATOMS),z(NATOMS),
+     +                 fx(NATOMS),fy(NATOMS),fz(NATOMS)
 
       N=3*NATOMS
-      RCUT2=RCUT*RCUT
+      rcut2=RCUT*RCUT
 
-      BOX=2.0D0*BOXLX
-      BOZ=2.0D0*BOXLX
-      BOY=2.0D0*BOXLX
-      DO I=1,NATOMS
-        X(I)= POS(3*(I-1)+1)
-        Y(I)= POS(3*(I-1)+2)
-        Z(I)= POS(3*(I-1)+3)
-      END DO
+      box=2.0D0*boxlx
+      boz=2.0D0*boxlx
+      boy=2.0D0*boxlx
+      do i=1,NATOMS
+        x(i)= pos(3*(I-1)+1)
+        y(i)= pos(3*(I-1)+2)
+        z(i)= pos(3*(I-1)+3)
+      end do
 
-      CALL NEIGHBOUR(NATOMS,N,POS,NUMNEI,NEI,BOX,BOY,BOZ,X,Y,Z)
+      call neighbour(NATOMS,N,pos,numnei,nei,box,boy,boz,x,y,z)
 
       IF (GTEST) THEN
-         DO I=1,NATOMS
-           FX(I)= 0.0D0
-           FY(I)= 0.0D0
-           FZ(I)= 0.0D0
-         END DO
+         do i=1,NATOMS
+           fx(i)= 0.0d0
+           fy(i)= 0.0d0
+           fz(i)= 0.0d0
+         end do
       ENDIF
 
-      TWOBODY=0.0D0
-      THREEBODY=0.0D0
-      TOTENERGY=0.0D0
-      INVSIG=1.0/SIGMA
+      twobody=0.0d0
+      threebody=0.0d0
+      totenergy=0.0d0
+      invsig=1.0/SIGMA
 
-      DO I=1,NATOMS
-        XI=X(I)
-        YI=Y(I)
-        ZI=Z(I)
-        DO INDJ=1,NUMNEI(I)
-          J=NEI(I,INDJ)
+      do i=1,NATOMS
+        xi=x(i)
+        yi=y(i)
+        zi=z(i)
+        do indj=1,numnei(i)
+          j=nei(i,indj)
 
-C  PAIR INTERACTIONS OF I AND J  WITH PERIODIC BOUNDARY COUNDITIONS
-C  DISTANCE 
-          XIJ=X(J)-XI
-          YIJ=Y(J)-YI
-          ZIJ=Z(J)-ZI
-          XIJ=XIJ-BOXLX*ANINT(XIJ/BOXLX)
-          YIJ=YIJ-BOXLY*ANINT(YIJ/BOXLY)
-          ZIJ=ZIJ-BOXLZ*ANINT(ZIJ/BOXLZ)
-          RIJ2=XIJ*XIJ+YIJ*YIJ+ZIJ*ZIJ
+C  Pair interactions of i and j  with periodic boundary counditions
+C  Distance 
+          xij=x(j)-xi
+          yij=y(j)-yi
+          zij=z(j)-zi
+          xij=xij-boxlx*anint(xij/boxlx)
+          yij=yij-boxly*anint(yij/boxly)
+          zij=zij-boxlz*anint(zij/boxlz)
+          rij2=xij*xij+yij*yij+zij*zij
 
-C   CHECK WHETHER THE DISTANCE IS TOO LARGE 
-          IF (RIJ2.LT.RCUT2) THEN
-            RIJ=DSQRT(RIJ2)
-            INVRIJ = 1.0/RIJ
-            RHOIJ=RIJ*INVSIG
-            COS_X_IJ=XIJ*INVRIJ
-            COS_Y_IJ=YIJ*INVRIJ
-            COS_Z_IJ=ZIJ*INVRIJ
+C   Check whether the distance is too large 
+          if (rij2.lt.rcut2) then
+            rij=dsqrt(rij2)
+            invrij = 1.0/rij
+            rhoij=rij*invsig
+            cos_x_ij=xij*invrij
+            cos_y_ij=yij*invrij
+            cos_z_ij=zij*invrij
     
-C  SOME USEFUL QUANTITIES 
-            ONE_O_A_IJ =1.0D0/(RHOIJ-ALPHA)
-            EXPO=DEXP(ONE_O_A_IJ)
-            GAM_O_A_IJ=SWGAMMA*ONE_O_A_IJ
-            EXP_GAM_IJ=DEXP(GAM_O_A_IJ)
-            R_TO_MINUSP=RHOIJ**(-1.0*P)
+C  Some useful quantities 
+            one_o_a_ij =1.0d0/(rhoij-ALPHA)
+            expo=dexp(one_o_a_ij)
+            gam_o_a_ij=SWGAMMA*one_o_a_ij
+            exp_gam_ij=dexp(gam_o_a_ij)
+            r_to_minusp=rhoij**(-1.0*P)
     
-C  TWO BODY ENERGY AND FORCE 
-            TERM1=A_EPS*(BETA*R_TO_MINUSP-1.0)*EXPO
-            ONE_O_A2 = ONE_O_A_IJ*ONE_O_A_IJ
-            TERM2=(ONE_O_A2*TERM1
-     +            +A_EPS*P*BETA*R_TO_MINUSP*EXPO/RHOIJ)*INVSIG
+C  Two body energy and force 
+            term1=A_EPS*(BETA*r_to_minusp-1.0)*expo
+            one_o_a2 = one_o_a_ij*one_o_a_ij
+            term2=(one_o_a2*term1
+     +            +A_EPS*P*BETA*r_to_minusp*expo/rhoij)*invsig
     
-            TWOBODY=TWOBODY+0.5*TERM1
-            TOTENERGY=TOTENERGY+0.5*TERM1
+            twobody=twobody+0.5*term1
+            totenergy=totenergy+0.5*term1
     
             IF (GTEST) THEN
-               FX(I)=FX(I)-TERM2*COS_X_IJ
-               FY(I)=FY(I)-TERM2*COS_Y_IJ
-               FZ(I)=FZ(I)-TERM2*COS_Z_IJ
+               fx(i)=fx(i)-term2*cos_x_ij
+               fy(i)=fy(i)-term2*cos_y_ij
+               fz(i)=fz(i)-term2*cos_z_ij
             ENDIF
 
-C  PREPARE FOR THE THREE BODY TERM  
-            FACT3_IJ=GAM_O_A_IJ*ONE_O_A_IJ*INVSIG
+C  Prepare for the three body term  
+            fact3_ij=gam_o_a_ij*one_o_a_ij*invsig
     
-            DO INDK=INDJ+1,NUMNEI(I)
-              K=NEI(I,INDK)
-C  DISTANCE  AND PRB
-              XIK=X(K)-XI
-              YIK=Y(K)-YI
-              ZIK=Z(K)-ZI
-              XIK=XIK-BOXLX*ANINT(XIK/BOXLX)
-              YIK=YIK-BOXLY*ANINT(YIK/BOXLY)
-              ZIK=ZIK-BOXLZ*ANINT(ZIK/BOXLZ)
-              RIK2=XIK*XIK+YIK*YIK+ZIK*ZIK
+            do indk=indj+1,numnei(i)
+              k=nei(i,indk)
+C  Distance  and PRB
+              xik=x(k)-xi
+              yik=y(k)-yi
+              zik=z(k)-zi
+              xik=xik-boxlx*anint(xik/boxlx)
+              yik=yik-boxly*anint(yik/boxly)
+              zik=zik-boxlz*anint(zik/boxlz)
+              rik2=xik*xik+yik*yik+zik*zik
     
-              IF (RIK2.LE.RCUT2) THEN
-                RIK=DSQRT(RIK2)
-                INVRIK=1.0/RIK
-                RHOIK=RIK*INVSIG
-                COS_X_IK=XIK*INVRIK
-                COS_Y_IK=YIK*INVRIK
-                COS_Z_IK=ZIK*INVRIK
+              if (rik2.le.rcut2) then
+                rik=dsqrt(rik2)
+                invrik=1.0/rik
+                rhoik=rik*invsig
+                cos_x_ik=xik*invrik
+                cos_y_ik=yik*invrik
+                cos_z_ik=zik*invrik
     
-C          SOME USEFUL QUANTITIES 
-                ONE_O_A_IK=1.0/(RHOIK-ALPHA)
-                GAM_O_A_IK=SWGAMMA*ONE_O_A_IK
-                FACT     =EPSILON*LAMBDA*EXP(GAM_O_A_IK)*EXP_GAM_IJ
-                COS_JIK=COS_X_IJ*COS_X_IK+COS_Y_IJ*COS_Y_IK+ 
-     +                  COS_Z_IJ*COS_Z_IK
-                COS_P_1O3=COS_JIK+ONE_THIRD
+C          Some useful quantities 
+                one_o_a_ik=1.0/(rhoik-ALPHA)
+                gam_o_a_ik=SWGAMMA*one_o_a_ik
+                fact     =EPSILON*LAMBDA*exp(gam_o_a_ik)*exp_gam_ij
+                cos_jik=cos_x_ij*cos_x_ik+cos_y_ij*cos_y_ik+ 
+     +                  cos_z_ij*cos_z_ik
+                cos_p_1o3=cos_jik+ONE_THIRD
     
-C          ENERGY (ADDED ONLY TO CENTRAL ATOM)  
-                TOTENERGY=TOTENERGY+FACT*COS_P_1O3*COS_P_1O3
-                THREEBODY=THREEBODY+FACT*COS_P_1O3*COS_P_1O3
+C          Energy (added only to central atom)  
+                totenergy=totenergy+fact*cos_p_1o3*cos_p_1o3
+                threebody=threebody+fact*cos_p_1o3*cos_p_1o3
     
     
-C          FORCE 
+C          Force 
                 IF (GTEST) THEN
-                   TERM_IJ=FACT*FACT3_IJ*COS_P_1O3*COS_P_1O3
-                   DHDCOS_IJ=2*FACT*COS_P_1O3
-                   TERM_IK=FACT*GAM_O_A_IK*ONE_O_A_IK*COS_P_1O3*COS_P_1O3/SIGMA
-                   DHDCOS_IK=2*FACT*COS_P_1O3
+                   term_ij=fact*fact3_ij*cos_p_1o3*cos_p_1o3
+                   dhdcos_ij=2*fact*cos_p_1o3
+                   term_ik=fact*gam_o_a_ik*one_o_a_ik*cos_p_1o3*cos_p_1o3/SIGMA
+                   dhdcos_ik=2*fact*cos_p_1o3
     
-                   DCOSDXJ=(COS_X_IK-COS_JIK*COS_X_IJ)*INVRIJ
-                   DCOSDYJ=(COS_Y_IK-COS_JIK*COS_Y_IJ)*INVRIJ
-                   DCOSDZJ=(COS_Z_IK-COS_JIK*COS_Z_IJ)*INVRIJ
+                   dcosdxj=(cos_x_ik-cos_jik*cos_x_ij)*invrij
+                   dcosdyj=(cos_y_ik-cos_jik*cos_y_ij)*invrij
+                   dcosdzj=(cos_z_ik-cos_jik*cos_z_ij)*invrij
     
-                   DCOSDXK=(COS_X_IJ-COS_JIK*COS_X_IK)*INVRIK
-                   DCOSDYK=(COS_Y_IJ-COS_JIK*COS_Y_IK)*INVRIK
-                   DCOSDZK=(COS_Z_IJ-COS_JIK*COS_Z_IK)*INVRIK
+                   dcosdxk=(cos_x_ij-cos_jik*cos_x_ik)*invrik
+                   dcosdyk=(cos_y_ij-cos_jik*cos_y_ik)*invrik
+                   dcosdzk=(cos_z_ij-cos_jik*cos_z_ik)*invrik
     
-                   FFX=TERM_IJ*COS_X_IJ-DHDCOS_IJ*DCOSDXJ
-                   FFY=TERM_IJ*COS_Y_IJ-DHDCOS_IJ*DCOSDYJ
-                   FFZ=TERM_IJ*COS_Z_IJ-DHDCOS_IJ*DCOSDZJ
-                   FX(J)=FX(J)+FFX
-                   FY(J)=FY(J)+FFY
-                   FZ(J)=FZ(J)+FFZ
-                   FX(I)=FX(I)-FFX
-                   FY(I)=FY(I)-FFY
-                   FZ(I)=FZ(I)-FFZ
-                   FFX=TERM_IK*COS_X_IK-DHDCOS_IK*DCOSDXK
-                   FFY=TERM_IK*COS_Y_IK-DHDCOS_IK*DCOSDYK
-                   FFZ=TERM_IK*COS_Z_IK-DHDCOS_IK*DCOSDZK
-                   FX(K)=FX(K)+FFX
-                   FY(K)=FY(K)+FFY
-                   FZ(K)=FZ(K)+FFZ
-                   FX(I)=FX(I)-FFX
-                   FY(I)=FY(I)-FFY
-                   FZ(I)=FZ(I)-FFZ
+                   ffx=term_ij*cos_x_ij-dhdcos_ij*dcosdxj
+                   ffy=term_ij*cos_y_ij-dhdcos_ij*dcosdyj
+                   ffz=term_ij*cos_z_ij-dhdcos_ij*dcosdzj
+                   fx(j)=fx(j)+ffx
+                   fy(j)=fy(j)+ffy
+                   fz(j)=fz(j)+ffz
+                   fx(i)=fx(i)-ffx
+                   fy(i)=fy(i)-ffy
+                   fz(i)=fz(i)-ffz
+                   ffx=term_ik*cos_x_ik-dhdcos_ik*dcosdxk
+                   ffy=term_ik*cos_y_ik-dhdcos_ik*dcosdyk
+                   ffz=term_ik*cos_z_ik-dhdcos_ik*dcosdzk
+                   fx(k)=fx(k)+ffx
+                   fy(k)=fy(k)+ffy
+                   fz(k)=fz(k)+ffz
+                   fx(i)=fx(i)-ffx
+                   fy(i)=fy(i)-ffy
+                   fz(i)=fz(i)-ffz
                  ENDIF
-              ENDIF
-            ENDDO
-          ENDIF
-        ENDDO
-      ENDDO
+              endif
+            enddo
+          endif
+        enddo
+      enddo
 
       IF (GTEST) THEN
-         DO I=1,NATOMS
-C          FORCE(I)=FX(I)
-C          FORCE(I+NATOMS)=FY(I)
-C          FORCE(I+2*NATOMS)=FZ(I)
+         do i=1,NATOMS
+C          force(i)=fx(i)
+C          force(i+NATOMS)=fy(i)
+C          force(i+2*NATOMS)=fz(i)
 
-           GRAD(3*(I-1)+1)=-FX(I)
-           GRAD(3*(I-1)+2)=-FY(I)
-           GRAD(3*(I-1)+3)=-FZ(I)
+           GRAD(3*(I-1)+1)=-fx(i)
+           GRAD(3*(I-1)+2)=-fy(i)
+           GRAD(3*(I-1)+3)=-fz(i)
 
-         END DO
+         end do
       ENDIF
 
-C     PRINT *,'TWOBODY: ',TWOBODY,'  THREEBODY',THREEBODY
-      RETURN
-      END
+C     print *,'twobody: ',twobody,'  threebody',threebody
+      return
+      end
     
-      SUBROUTINE NEIGHBOUR(NATOMS,N,POS,NUMNEI,NEI,BOX,BOY,BOZ,X,Y,Z)
-      IMPLICIT NONE
-      INTEGER NATOMS,MAXNEI,N
-      DOUBLE PRECISION SIGMA,ALPHA,RCUT
-      PARAMETER (MAXNEI=36)
-      PARAMETER (SIGMA=2.0951,ALPHA=1.8,RCUT= (ALPHA*SIGMA))
-      INTEGER NUMNEI(NATOMS),NEI(NATOMS,MAXNEI)
-      DOUBLE PRECISION POS(N),BOX,BOY,BOZ
-      INTEGER I,J
-      DOUBLE PRECISION XI,YI,ZI,XIJ,YIJ,ZIJ,RCUT2,RIJ2
-      DOUBLE PRECISION X(NATOMS),Y(NATOMS),Z(NATOMS)
+      subroutine neighbour(NATOMS,N,pos,numnei,nei,box,boy,boz,x,y,z)
+      implicit none
+      integer NATOMS,MAXNEI,N
+      double precision SIGMA,ALPHA,RCUT
+      parameter (MAXNEI=36)
+      parameter (SIGMA=2.0951,ALPHA=1.8,RCUT= (ALPHA*SIGMA))
+      integer numnei(NATOMS),nei(NATOMS,MAXNEI)
+      double precision pos(N),box,boy,boz
+      integer i,j
+      double precision xi,yi,zi,xij,yij,zij,rcut2,rij2
+      double precision x(NATOMS),y(NATOMS),z(NATOMS)
 
-C  NOTE THAT THE NEIGHBOUR LIST USES A SLIGHTLY ENLARGED CUT-OFF
-C  SO THAT ONE DOES NOT NEED TO RECOMPUTE THE NEIGHBOUR LIST AT
-C  EACH ITERATION
+C  Note that the neighbour list uses a slightly enlarged cut-off
+C  so that one does not need to recompute the neighbour list at
+C  each iteration
 
-      RCUT2=1.4*RCUT*RCUT
+      rcut2=1.4*RCUT*RCUT
 
-      DO I=1,NATOMS
-        NUMNEI(I)=0
-        DO J=1,MAXNEI
-          NEI(I,J)=0
-        END DO
-      END DO 
+      do i=1,NATOMS
+        numnei(i)=0
+        do j=1,MAXNEI
+          nei(i,j)=0
+        end do
+      end do 
 
-      DO I=1,NATOMS
-        XI=X(I)
-        YI=Y(I)
-        ZI=Z(I)
-        DO J=I+1,NATOMS
+      do i=1,NATOMS
+        xi=x(i)
+        yi=y(i)
+        zi=z(i)
+        do j=i+1,NATOMS
 
-C  PAIR INTERACTIONS OF I AND J  WITH PERIODIC BOUNDARY COUNDITIONS
-C  DISTANCE
-          XIJ=X(J)-XI
-          YIJ=Y(J)-YI
-          ZIJ=Z(J)-ZI
-          XIJ=XIJ-BOX*ANINT(XIJ/BOX)
-          YIJ=YIJ-BOY*ANINT(YIJ/BOY)
-          ZIJ=ZIJ-BOZ*ANINT(ZIJ/BOZ)
-          RIJ2=XIJ*XIJ+YIJ*YIJ+ZIJ*ZIJ
+C  Pair interactions of i and j  with periodic boundary counditions
+C  Distance
+          xij=x(j)-xi
+          yij=y(j)-yi
+          zij=z(j)-zi
+          xij=xij-box*anint(xij/box)
+          yij=yij-boy*anint(yij/boy)
+          zij=zij-boz*anint(zij/boz)
+          rij2=xij*xij+yij*yij+zij*zij
 
-C   CHECK WHETHER THE DISTANCE IS TOO LARGE
-          IF (RIJ2.LT.RCUT2) THEN
-            NUMNEI(I)=NUMNEI(I)+1
-            NUMNEI(J)=NUMNEI(J)+1
-            IF ((NUMNEI(I).GT.MAXNEI).OR.(NUMNEI(J).GT.MAXNEI))  THEN
-               PRINT *, 'WARNING - TOO MANY NEIGHBOURS'
+C   Check whether the distance is too large
+          if (rij2.lt.rcut2) then
+            numnei(i)=numnei(i)+1
+            numnei(j)=numnei(j)+1
+            if ((numnei(i).gt.MAXNEI).OR.(numnei(j).gt.MAXNEI))  then
+               print *, 'WARNING - Too many neighbours'
             ELSE
-               NEI(I,NUMNEI(I))=J
-               NEI(J,NUMNEI(J))=I
-            ENDIF
-          ENDIF
-        END DO
-      END DO
+               nei(i,numnei(i))=j
+               nei(j,numnei(j))=i
+            endif
+          endif
+        end do
+      end do
 
-      RETURN
-      END
+      return
+      end

@@ -1,36 +1,36 @@
-!OP226>=================================== 
-!OP226> GPL LICENSE INFO {{{ 
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+!op226>=================================== 
+!op226> GPL License Info {{{ 
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
-!OP226>}}} 
-!OP226>=================================== 
+!op226>}}} 
+!op226>=================================== 
       SUBROUTINE FINALIO
-!OP226>=================================== 
-!> \BRIEF PRODUCE FINAL QUENCHES  
-!OP226>=================================== 
-!OP226> DECLARATIONS {{{ 
-      USE COMMONS
-      USE MODAMBER
-      USE MODAMBER9, ONLY : COORDS1,LCRD,IH,M04,NATOM,AMBFINALIO_NODE
-      USE PYMODULE, ONLY : SITECOORDS,ELLST1,ELLMAT
-      USE QMODULE
-      USE MODCHARMM
+!op226>=================================== 
+!> \brief Produce final quenches  
+!op226>=================================== 
+!op226> Declarations {{{ 
+      USE commons
+      use modamber
+      use modamber9, only : coords1,lcrd,ih,m04,natom,ambfinalio_node
+      use pymodule, only : SITECOORDS,ELLST1,ELLMAT
+      use qmodule
+      USE modcharmm
       USE AMHGLOBALS, ONLY:NMRES,IRES
 
       IMPLICIT NONE
@@ -42,10 +42,10 @@ C   MCP
       DOUBLE PRECISION P3(3,3), P(3), DU(3), RMI(3,3), DRMI(3,3), PI, PHI, THT, CHI
       DOUBLE PRECISION, ALLOCATABLE :: XCOORDS(:), YCOORDS(:)
       COMMON /BIN/ EPSAB, EPSBB, SIGAB, SIGBB, NTYPEA
-      CHARACTER(LEN=13) J1CHAR,J1CHAR2                  !FOR GAY-BERNE OUTPUT FILES
-      DOUBLE PRECISION EULERPHI,EULERPSI,EULERTHETA,EULERTHETADEG,EULERPHIDEG,EULERPSIDEG  ! EULER ANGLES FOR ELLIPSOIDS OF REVOLUTION
+      CHARACTER(LEN=13) J1CHAR,J1CHAR2                  !for gay-berne output files
+      DOUBLE PRECISION EulerPhi,EulerPsi,EulerTheta,EulerThetadeg,EulerPhiDeg,EulerPsiDeg  ! Euler angles for ellipsoids of revolution
 
-      DOUBLE PRECISION EPS2, RAD, HEIGHT,SUMX,SUMY,SUMZ
+      DOUBLE PRECISION EPS2, RAD, HEIGHT,sumx,sumy,sumz
       LOGICAL :: GTEST
       COMMON /CAPS/ EPS2, RAD, HEIGHT
 
@@ -60,7 +60,7 @@ C  AMH
       INTEGER COUNTT
       DOUBLE PRECISION  PPPCORD(NMRES*3*3,3,3,5)
       EXTERNAL NUM_TO_CHAR
-!OP226> END DECLARATIONS }}} 
+!op226> End declarations }}} 
 
       PI = 4.D0*DATAN(1.D0)
 
@@ -72,7 +72,7 @@ C  AMH
      
       DO J1=1,NSAVE
          WRITE(DBNUM,*) J1
-         DBNAME(J1)='DBASE.'//TRIM(ADJUSTL(DBNUM))
+         DBNAME(J1)='dbase.'//TRIM(ADJUSTL(DBNUM))
       ENDDO
       DCOORDS(1:3*NATOMS)=0.0D0
 !      IF (AMH) THEN
@@ -81,7 +81,7 @@ C  AMH
 !      ENDIF
 
        IF (AMHT) THEN
-         OPEN(UNIT=26,FILE='MOVIE_GMIN',STATUS='UNKNOWN')
+         OPEN(UNIT=26,FILE='movie_gmin',STATUS='UNKNOWN')
          WRITE(26,334)NMRES,NUMCRD,NUMPRO,NSAVE
 334      FORMAT(4(I8,1X),' NMRES NMCRD NUMPRO NMSNAP')
        ENDIF
@@ -90,24 +90,24 @@ C  AMH
       IF (MPIT) THEN
          WRITE (ISTR, '(I10)') MYUNIT-22980+1 
          MYUNIT2=(MYUNIT-22980+1)+100
-         MYFILENAME2="LOWEST."//TRIM(ADJUSTL(ISTR))
-         OPEN(MYUNIT2,FILE=TRIM(ADJUSTL(MYFILENAME2)), STATUS="UNKNOWN", FORM="FORMATTED")
+         MYFILENAME2="lowest."//trim(adjustl(istr))
+         OPEN(MYUNIT2,FILE=trim(adjustl(MYFILENAME2)), STATUS="unknown", form="formatted")
          IF (CHRMMT) THEN
             DO J1=1,NSAVE
                WRITE(DBNUM,*) J1
-               DBNAME(J1)='DBASE.'//TRIM(ADJUSTL(ISTR))//'.'//TRIM(ADJUSTL(DBNUM))             
+               DBNAME(J1)='dbase.'//TRIM(ADJUSTL(ISTR))//'.'//TRIM(ADJUSTL(DBNUM))             
             ENDDO
          ENDIF
          IF (CSMT.AND.(.NOT.SYMMETRIZECSM)) THEN
             MYUNIT3=(MYUNIT+22980+2)+111
-            MYFILENAME3="CSMAV."//TRIM(ADJUSTL(ISTR))
+            MYFILENAME3="CSMav."//trim(adjustl(istr))
          ENDIF
       ELSE
          MYUNIT2=25 
-         OPEN(MYUNIT2,FILE='LOWEST',STATUS='UNKNOWN')
+         OPEN(MYUNIT2,FILE='lowest',STATUS='UNKNOWN')
          IF (CSMT.AND.(.NOT.SYMMETRIZECSM)) THEN
             MYUNIT3=26 
-            OPEN(MYUNIT3,FILE='CSMAV.XYZ',STATUS='UNKNOWN')
+            OPEN(MYUNIT3,FILE='CSMav.xyz',STATUS='UNKNOWN')
          ENDIF
       ENDIF
 
@@ -115,7 +115,7 @@ C  AMH
          IF (AMHT) THEN
             COUNTT=J1
             CALL NUM_TO_CHAR(COUNTT,COUNTTT)
-            OPEN(UNIT=27,FILE='MOVIE_GMIN.'//COUNTTT//'.PDB',STATUS='UNKNOWN')
+            OPEN(UNIT=27,FILE='movie_gmin.'//COUNTTT//'.pdb',STATUS='UNKNOWN')
          ENDIF
 
          IF (RGCL2.OR.ARNO) THEN 
@@ -127,17 +127,17 @@ C  AMH
          ELSE
             WRITE(MYUNIT2,*) NATOMS
          ENDIF
-!        IF (CSMT.AND.DEBUG) WRITE(MYUNIT,'(A,I6,2G20.10)') 'FINALIO> J1,QMIN,QMINAV=',J1,QMIN(J1),QMINAV(J1)
+!        IF (CSMT.AND.DEBUG) WRITE(MYUNIT,'(A,I6,2G20.10)') 'finalio> J1,QMIN,QMINAV=',J1,QMIN(J1),QMINAV(J1)
          WRITE(MYUNIT2,10) J1, QMIN(J1), FF(J1)
-10       FORMAT('ENERGY OF MINIMUM ',I6,'=',F20.10,' FIRST FOUND AT STEP ',I8)
+10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)
          IF (MSORIGT.OR.FRAUSIT) THEN
             WRITE(MYUNIT2,20) (QMINP(J1,J2),J2=1,3*(NATOMS-NS))
-20          FORMAT('SI',3F20.10)
+20          FORMAT('Si',3F20.10)
          ELSE IF (MSTRANST) THEN
             WRITE(MYUNIT2,20) (QMINP(J1,J2),J2=1,3*(NATOMS-NS))
          ELSE IF (RGCL2) THEN
-            WRITE(MYUNIT2,'(A,F20.10)') 'CL 0.0 0.0 ', 0.995D0
-            WRITE(MYUNIT2,'(A,F20.10)') 'CL 0.0 0.0 ',-0.995D0
+            WRITE(MYUNIT2,'(A,F20.10)') 'Cl 0.0 0.0 ', 0.995D0
+            WRITE(MYUNIT2,'(A,F20.10)') 'Cl 0.0 0.0 ',-0.995D0
             WRITE(MYUNIT2,60) (QMINP(J1,J2),J2=1,3*(NATOMS-NS))
 60          FORMAT('AR ',3F20.10)
          ELSE IF (AMHT) THEN
@@ -145,19 +145,19 @@ C
 C   OUTPUT CORDS FOR LOWEST IN X,Y,Z FORMAT
 C   OUTPUT CORDS FOR MOVIE_GMIN IN MOVIESEG FORMAT
 C
-            WRITE(26,683)NUMCRD,J1,NUMCRD,REAL(NUMCRD),NUMCRD
+            WRITE(26,683)NUMCRD,j1,NUMCRD,REAL(NUMCRD),NUMCRD
 683         FORMAT(3(I6,1X),F8.4,1X,I5,' STUCT SNAP T T TID')
 
             GLY_COUNT = 0
 
             DO 1964 III = 1,NMRES
                IF (IRES(III).EQ.8) THEN
-!!                PPPCORD(RESIDUE, XYZ, NUMPRO, ATOM TYPES
+!!                pppcord(residue, xyz, numpro, atom types
                   PPPCORD(III, 1, 1, 1) = REAL(QMINP(J1,9*(III-1)+1- GLY_COUNT*3)) !  CA X
                   PPPCORD(III, 2, 1, 1) = REAL(QMINP(J1,9*(III-1)+2- GLY_COUNT*3)) !  CA Y
                   PPPCORD(III, 3, 1, 1) = REAL(QMINP(J1,9*(III-1)+3- GLY_COUNT*3)) !  CA Z
-!    SWAP  CA FOR CB 
-                  PPPCORD(III, 1, 1, 2) = REAL(QMINP(J1,9*(III-1)+1- GLY_COUNT*3)) !  CB X
+!    SWAP  CA for CB 
+                  PPPCORD(III, 1, 1, 2) = REAL(QMINP(j1,9*(III-1)+1- GLY_COUNT*3)) !  CB X
                   PPPCORD(III, 2, 1, 2) = REAL(QMINP(J1,9*(III-1)+2- GLY_COUNT*3)) !  CB Y
                   PPPCORD(III, 3, 1, 2) = REAL(QMINP(J1,9*(III-1)+3- GLY_COUNT*3)) !  CB Z
                   PPPCORD(III, 1, 1, 3) = REAL(QMINP(J1,9*(III-1)+4- GLY_COUNT*3)) !  O X
@@ -174,7 +174,7 @@ C
 
                   GLY_COUNT = GLY_COUNT +1
                ELSE
-                  PPPCORD(III, 1, 1, 1) = REAL(QMINP(J1,9*(III-1)+1- GLY_COUNT*3)) !  CA X
+                  PPPCORD(III, 1, 1, 1) = REAL(QMINP(J1,9*(iii-1)+1- GLY_COUNT*3)) !  CA X
                   PPPCORD(III, 2, 1, 1) = REAL(QMINP(J1,9*(III-1)+2- GLY_COUNT*3)) !  CA Y
                   PPPCORD(III, 3, 1, 1) = REAL(QMINP(J1,9*(III-1)+3- GLY_COUNT*3)) !  CA Z
                   PPPCORD(III, 1, 1, 2) = REAL(QMINP(J1,9*(III-1)+4- GLY_COUNT*3)) !  CB X
@@ -196,7 +196,7 @@ C
             DO 526 III=1,NMRES
                WRITE(26,632)(PPPCORD(III,I3,1,1),I3=1,3),(PPPCORD(III,I3,1,2),I3=1,3),(PPPCORD(III,I3,1,3),I3=1,3)
 632            FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1X))
-!632           FORMAT('CA: ',3(F25.15,1X),'CB: ',3(F25.15,1X),'OX: ', 3(F25.15,1X))
+!632           FORMAT('CA: ',3(f25.15,1x),'CB: ',3(f25.15,1x),'Ox: ', 3(f25.15,1x))
 526         CONTINUE
 
             DO III = 1+1, NMRES
@@ -205,16 +205,16 @@ C
                PPPCORD(III,2,1,4) =
      &          0.4831806D0*PPPCORD(III-1,2,1,1) + 0.7032820D0*PPPCORD(III,2,1,1) - 0.1864626D0*PPPCORD(III-1,2,1,3)
                PPPCORD(III,3,1,4) =
-     &          0.4831806D0*PPPCORD(III-1,3,1,1) + 0.7032820D0*PPPCORD(III,3,1,1) - 0.1864626D0*PPPCORD(III-1,3,1,3)
+     &          0.4831806D0*PPPCORD(III-1,3,1,1) + 0.7032820d0*PPPCORD(III,3,1,1) - 0.1864626D0*PPPCORD(III-1,3,1,3)
             ENDDO
 
             DO III = 1, NMRES-1
                PPPCORD(III,1,1,5) =
-     &          0.4436538D0*PPPCORD(III,1,1,1)+0.2352006D0*PPPCORD(III+1,1,1,1)+0.3211455D0*PPPCORD(III,1,1,3)
+     &          0.4436538d0*PPPCORD(III,1,1,1)+0.2352006D0*PPPCORD(III+1,1,1,1)+0.3211455D0*PPPCORD(III,1,1,3)
                PPPCORD(III,2,1,5) =
      &          0.4436538D0*PPPCORD(III,2,1,1)+0.2352006D0*PPPCORD(III+1,2,1,1)+0.3211455D0*PPPCORD(III,2,1,3)
                PPPCORD(III,3,1,5) =
-     &          0.4436538D0*PPPCORD(III,3,1,1)+0.2352006D0*PPPCORD(III+1,3,1,1)+0.3211455D0*PPPCORD(III,3,1,3)
+     &          0.4436538d0*PPPCORD(III,3,1,1)+0.2352006D0*PPPCORD(III+1,3,1,1)+0.3211455D0*PPPCORD(III,3,1,3)
             ENDDO
 
             DO III = 1, NMRES
@@ -224,7 +224,7 @@ C
                   ATOM_TYPE='N '
                   ID = 4
                   WRITE(27,61)III,ATOM_TYPE,RES_TYPE,III,PPPCORD(III,1,1,ID),PPPCORD(III,2,1,ID),PPPCORD(III,3,1,ID),III
-61      FORMAT('ATOM',4X,I3,2X,A2,2X,A3,3X,I3,4X,F8.3,F8.3,F8.3,2X,'1.00',2X,'0.00',6X,'TPDB',1X,I3)
+61      FORMAT('ATOM',4X,i3,2X,A2,2X,A3,3X,i3,4X,F8.3,F8.3,F8.3,2X,'1.00',2X,'0.00',6X,'TPDB',1x,I3)
 
                ENDIF
 
@@ -232,7 +232,7 @@ C
                ID = 1
                WRITE(27,61)III,ATOM_TYPE,RES_TYPE,III,PPPCORD(III,1,1,ID),PPPCORD(III,2,1,ID),PPPCORD(III,3,1,ID),III
 
-               IF (RES_TYPE .NE. 'GLY') THEN
+               IF (RES_TYPE .NE. 'gly') THEN
                   ATOM_TYPE='CB'
                   ID = 2
                   WRITE(27,61)III,ATOM_TYPE,RES_TYPE,III,PPPCORD(III,1,1,ID),PPPCORD(III,2,1,ID),PPPCORD(III,3,1,ID),III
@@ -258,8 +258,8 @@ C
 65          FORMAT('AR ',3F20.10)
          ELSE IF (TOSI.OR.WELCH) THEN
             DO J2=1,NATOMS
-               IF (ZSYM(J2).EQ.'PL') WRITE(MYUNIT2,'(A,3F20.10)') 'NA  ',(QMINP(J1,3*(J2-1)+J3),J3=1,3)
-               IF (ZSYM(J2).EQ.'MI') WRITE(MYUNIT2,'(A,3F20.10)') 'CL  ',(QMINP(J1,3*(J2-1)+J3),J3=1,3)
+               IF (ZSYM(J2).EQ.'PL') WRITE(MYUNIT2,'(A,3F20.10)') 'Na  ',(QMINP(J1,3*(J2-1)+J3),J3=1,3)
+               IF (ZSYM(J2).EQ.'MI') WRITE(MYUNIT2,'(A,3F20.10)') 'Cl  ',(QMINP(J1,3*(J2-1)+J3),J3=1,3)
             ENDDO
          ELSE IF (BLJCLUSTER) THEN
             DO J2=1,NATOMS
@@ -272,24 +272,24 @@ C
 
          ELSE IF (AMBER) THEN
             DO J2=1,NATOMS
-               WRITE(MYUNIT2,'(A,3F20.10)') TYPECH(J2)(1:1),(QMINP(J1,3*(J2-1)+J3),J3=1,3)
+               WRITE(MYUNIT2,'(A,3F20.10)') typech(J2)(1:1),(QMINP(J1,3*(J2-1)+J3),J3=1,3)
             ENDDO
          ELSE IF (AMBERT) THEN
-          ! SF344> WRITE OUT COORDINATES
+          ! sf344> write out coordinates
             COORDS1(1:3*NATOMS) = QMINP(J1,1:3*NATOMS)
             IF (DUMPSTRUCTURES) THEN
-              CALL AMBERFINALIO(J1,25,AMBFINALIO_NODE,'0',0,COORDS1(1:3*NATOMS))         
+              CALL AMBERFINALIO(j1,25,AMBFINALIO_NODE,'0',0,COORDS1(1:3*NATOMS))         
               WRITE(J1CHAR2,'(I3)') J1
-              WRITE(J1CHAR,'(A,A)') 'COORDS.',TRIM(ADJUSTL(J1CHAR2))
-              OPEN(UNIT=226,FILE=TRIM(ADJUSTL(J1CHAR)),STATUS='UNKNOWN')
+              WRITE(J1CHAR,'(A,A)') 'coords.',TRIM(ADJUSTL(J1CHAR2))
+              OPEN(UNIT=226,FILE=trim(adjustl(J1CHAR)),STATUS='UNKNOWN')
 
               DO J2=1,NATOMS
                  WRITE(226,'(3F28.20)') QMINP(J1,3*(J2-1)+1),QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3)
               ENDDO
               CLOSE(226)
                WRITE(J1CHAR2,'(I3)') J1
-               WRITE(J1CHAR,'(A,A)') 'COORDS.',TRIM(ADJUSTL(J1CHAR2))
-               OPEN(UNIT=226,FILE=TRIM(ADJUSTL(J1CHAR)),STATUS='UNKNOWN')
+               WRITE(J1CHAR,'(A,A)') 'coords.',TRIM(ADJUSTL(J1CHAR2))
+               OPEN(UNIT=226,FILE=trim(adjustl(J1CHAR)),STATUS='UNKNOWN')
               
                DO J2=1,NATOMS
                   WRITE(226,'(3F28.20)') QMINP(J1,3*(J2-1)+1),QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3)
@@ -298,17 +298,17 @@ C
 
             ELSE
                DO I1=1,NATOMS
-                  WRITE(MYUNIT2,'(A2,3F20.10)') IH(M04+I1-1),COORDS1(3*I1-2),COORDS1(3*I1-1),COORDS1(3*I1)
+                  WRITE(MYUNIT2,'(A2,3F20.10)') ih(m04+I1-1),COORDS1(3*I1-2),COORDS1(3*I1-1),COORDS1(3*I1)
                ENDDO
             ENDIF
 
          ELSE IF (ELLIPSOIDT.OR.LJCAPSIDT.OR.GBT.OR.GBDT) THEN
 C
-C DETERMINE THE CENTRE OF COORDINATES, THEN CENTRE THEM
+C determine the centre of coordinates, then centre them
 C
               SUMX=0.0D0
-              SUMY=0.0D0
-              SUMZ=0.0D0
+              SUMY=0.0d0
+              SUMZ=0.0d0
 
               DO J2=1,NATOMS/2
                  SUMX=SUMX+QMINP(J1,3*(J2-1)+1)
@@ -324,28 +324,28 @@ C
                  QMINP(J1,3*(J2-1)+3)=QMINP(J1,3*(J2-1)+3)-SUMZ
               ENDDO
 
-              DO J2=1,NATOMS/2
+              DO j2=1,NATOMS/2
                  IF (PARAMONOVPBCX) THEN
-                        ! ENSURE Y COMPONENT OF PARTICLE 1 VECTOR IS WITHIN BOXLY/2 OF ZERO. 
-                        ! IF IT ISN'T THEN SUBTRACT INTEGER NUMBER OF BOXLY'S SUCH THAT IT IS.
+                        ! ensure y component of particle 1 vector is within BoxLy/2 of zero. 
+                        ! If it isn't then subtract integer number of boxly's such that it is.
                     QMINP(J1,3*J2-2)=QMINP(J1,3*J2-2)-BOXLX*NINT(QMINP(J1,3*J2-2)/BOXLX)
                  ENDIF
                  IF (PARAMONOVPBCY) THEN
-                        ! ENSURE Y COMPONENT OF PARTICLE 1 VECTOR IS WITHIN BOXLY/2 OF ZERO. 
-                        ! IF IT ISN'T THEN SUBTRACT INTEGER NUMBER OF BOXLY'S SUCH THAT IT IS.
+                        ! ensure y component of particle 1 vector is within BoxLy/2 of zero. 
+                        ! If it isn't then subtract integer number of boxly's such that it is.
                     QMINP(J1,3*J2-1)=QMINP(J1,3*J2-1)-BOXLY*NINT(QMINP(J1,3*J2-1)/BOXLY)
                  ENDIF
                  IF (PARAMONOVPBCZ) THEN
-                        ! ENSURE Y COMPONENT OF PARTICLE 1 VECTOR IS WITHIN BOXLY/2 OF ZERO. 
-                        ! IF IT ISN'T THEN SUBTRACT INTEGER NUMBER OF BOXLY'S SUCH THAT IT IS.
+                        ! ensure y component of particle 1 vector is within BoxLy/2 of zero. 
+                        ! If it isn't then subtract integer number of boxly's such that it is.
                     QMINP(J1,3*J2  )=QMINP(J1,3*J2  )-BOXLZ*NINT(QMINP(J1,3*J2  )/BOXLZ)
                  ENDIF
               ENDDO
 
               DO J2=1,NATOMS/2
-                 WRITE(MYUNIT2,'(A5,2X,3F20.10,2X,A11,3F20.10)') 'H',QMINP(J1,3*(J2-1)+1), 
+                 WRITE(MYUNIT2,'(a5,2x,3f20.10,2x,a11,3f20.10)') 'H',QMINP(J1,3*(J2-1)+1), 
      &             QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3),
-     &             'ATOM_VECTOR',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
+     &             'atom_vector',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
      &             QMINP(J1,3*NATOMS/2+3*(J2-1)+2),QMINP(J1,3*NATOMS/2+3*(J2-1)+3)
              ENDDO
 
@@ -353,8 +353,8 @@ C
             DO J2=1,NATOMS
                WRITE(MYUNIT2,'(A,1X,3F20.10)') ZSYM(J2)(1:1),(QMINP(J1,3*(J2-1)+J3),J3=1,3)
             ENDDO
-!       CSW34> THIS DO LOOP APPEARED TO BE BE MISSING ON 30/9/08 WHICH WOULD EASILY
-!       EXPLAIN THE OUTPUT PROBLEMS! 
+!       csw34> This DO loop appeared to be be missing on 30/9/08 which would easily
+!       explain the output problems! 
             DO J2=1,NATOMS
                DCOORDS(3*(J2-1)+1)=QMINP(J1,3*(J2-1)+1)
                DCOORDS(3*(J2-1)+2)=QMINP(J1,3*(J2-1)+2)
@@ -363,33 +363,33 @@ C
             CALL CHARMMDUMP(DCOORDS,DBNAME(J1))
 
 !    DC430 >
-!    |GD351> ADDED PATCHY
+!    |gd351> added patchy
 
          ELSE IF (DBPT .OR. DBPTDT .OR. DMBLMT .OR. LINRODT .OR. LWOTPT .OR. MSTBINT .OR. MSSTOCKT .OR. NCAPT .OR. NPAHT  
      &           .OR. NTIPT .OR. STOCKAAT .OR. PAHAT .OR. PAHW99T .OR. TDHDT .OR. WATERDCT .OR. WATERKZT .OR. PATCHY) THEN
             DO J2 = 1, NATOMS/2
-               WRITE(MYUNIT2,'(3F20.10)') (QMINP(J1,3*(J2-1)+J3),J3=1,3)
+               WRITE(MYUNIT2,'(3f20.10)') (QMINP(J1,3*(J2-1)+J3),J3=1,3)
             ENDDO
             DO J2 = 1, NATOMS/2
-               WRITE(MYUNIT2,'(3F20.10)') (QMINP(J1,3*NATOMS/2+3*(J2-1)+J3),J3=1,3)
+               WRITE(MYUNIT2,'(3f20.10)') (QMINP(J1,3*NATOMS/2+3*(J2-1)+J3),J3=1,3)
             ENDDO
 
          ELSE IF (GBT.OR.GBDT.OR.GBDPT.OR.PYGT.OR.PYGDPT.OR.MSGBT.OR.MSPYGT) THEN
             DO J2 = 1, NATOMS/2
-               WRITE(MYUNIT2,'(3F20.10)') (QMINP(J1,3*(J2-1)+J3),J3=1,3)    
+               WRITE(MYUNIT2,'(3f20.10)') (QMINP(J1,3*(J2-1)+J3),J3=1,3)    
             ENDDO
             DO J2 = 1, NATOMS/2
-               WRITE(MYUNIT2,'(3F20.10)') (QMINP(J1,3*NATOMS/2+3*(J2-1)+J3),J3=1,3)
+               WRITE(MYUNIT2,'(3f20.10)') (QMINP(J1,3*NATOMS/2+3*(J2-1)+J3),J3=1,3)
             ENDDO
 
          ELSE IF (GEMT) THEN
             DO J2 = 1, NATOMS
-               WRITE(MYUNIT2,'(3F20.10)') (QMINP(J1,3*(J2-1)+J3),J3=1,3)
+               WRITE(MYUNIT2,'(3f20.10)') (QMINP(J1,3*(J2-1)+J3),J3=1,3)
             ENDDO
 
          ELSE IF (BLNT.AND.(.NOT.P46).AND.(.NOT.G46)) THEN
 C
-C THIS WRITES 'LOWEST' IN XYZ (XMAKEMOL) FORMAT
+C this writes 'lowest' in xyz (Xmakemol) format
 C
             DO J2=1,NATOMS
                WRITE(MYUNIT2,'(2A1,1X,3F20.10)') BEADLETTER(J2),'L',(QMINP(J1,3*(J2-1)+J3),J3=1,3)
@@ -397,17 +397,17 @@ C
          ELSE
             IF (CSMT.AND.(.NOT.SYMMETRIZECSM)) THEN
                WRITE(MYUNIT3,'(I6)') NATOMS
-               WRITE(MYUNIT3,'(A,I6,2(A,G20.10))') 'AVERAGED STRUCTURE FOR FINAL SOLUTION ',J1,
-     &                                          ' CSM=',QMINAV(J1),' CSM FOR REFERENCE STRUCTURE=',QMIN(J1)
+               WRITE(MYUNIT3,'(A,I6,2(A,G20.10))') 'averaged structure for final solution ',J1,
+     &                                          ' CSM=',QMINAV(J1),' CSM for reference structure=',QMIN(J1)
                WRITE(MYUNIT3,30) (QMINPCSMAV(J1,J2),J2=1,3*(NATOMS-NS))
             ENDIF
             WRITE(MYUNIT2,30) (QMINP(J1,J2),J2=1,3*(NATOMS-NS))
 30          FORMAT('LA ',3F20.10)
          ENDIF
 
-!|GD351>
+!|gd351>
          IF (ASAOOS) THEN
-            OPEN(31,FILE='PARTICLES.XYZ')
+            OPEN(31,file='particles.xyz')
             WRITE(31,*) NATOMS
             WRITE(31,*) ' '
             DO J2=1,NATOMS
@@ -415,12 +415,12 @@ C
             ENDDO
             CLOSE(31)
          END IF
-!<GD351|
+!<gd351|
 
          IF ((NS.GT.0).AND.(.NOT.(WELCH.OR.TOSI))) THEN
             IF (MSORIGT.OR.FRAUSIT) THEN
                WRITE(MYUNIT2,40) (QMINP(J1,J2),J2=3*(NATOMS-NS)+1,3*NATOMS)
-40             FORMAT('SI',3F20.10)
+40             FORMAT('Si',3F20.10)
             ELSE IF (MSTRANST) THEN
                WRITE(MYUNIT2,40) (QMINP(J1,J2),J2=3*(NATOMS-NS)+1,3*NATOMS)
             ELSE
@@ -432,48 +432,48 @@ C
       ENDDO
 
 C
-C  END OF LOOP OVER DUMP TO FILE LOWEST OR EQUIVALENT.
+C  End of loop over dump to file lowest or equivalent.
 C
       CLOSE(MYUNIT2)
       IF (CSMT.AND.(.NOT.SYMMETRIZECSM)) CLOSE(MYUNIT3)
 C
-C     CSW34> NEW LOOP FOR DUMPING INTERACTION ENERGY FILES IF A9INTE IS SPECIFIED
-C     ADDED THE MISSING IF BLOCK TO TEST FOR A9INTE 9/12/09 DJW
+C     csw34> New loop for dumping interaction energy files if A9INTE is specified
+C     Added the missing IF block to test for A9INTE 9/12/09 DJW
 C
       IF (A9INTET) THEN
          IF (MPIT) THEN
             WRITE (ISTR, '(I10)') MYUNIT-22980+1
             MYUNIT2=(MYUNIT-22980+1)+100
-            MYFILENAME2="INTELOWEST."//TRIM(ADJUSTL(ISTR))
-            OPEN(MYUNIT2,FILE=TRIM(ADJUSTL(MYFILENAME2)), STATUS="UNKNOWN", FORM="FORMATTED")
+            MYFILENAME2="intelowest."//trim(adjustl(istr))
+            OPEN(MYUNIT2,FILE=trim(adjustl(MYFILENAME2)), STATUS="unknown", form="formatted")
          ELSE
             MYUNIT2=25
-            OPEN(MYUNIT2,FILE='INTELOWEST',STATUS='UNKNOWN')
+            OPEN(MYUNIT2,FILE='intelowest',STATUS='UNKNOWN')
          ENDIF
       ENDIF
 C
-C     CSW34> LOOP STRUCTURE COPIED FROM THE ELSEIF(AMBERT) BLOCK ABOVE
+C     csw34> loop structure copied from the ELSEIF(AMBERT) block above
 C
       IF (A9INTET.AND.AMBERT) THEN
          DO J1=1,NSAVEINTE
             WRITE(MYUNIT2,*) NATOMS
-!     CSW34> WRITE HEADER TO INTELOWEST FOR CURRENT MINIMUM
+!     csw34> write header to intelowest for current minimum
             WRITE(MYUNIT2,10) J1, INTEQMIN(J1), INTEFF(J1)
-!     SF344> WRITE OUT COORDINATES
+!     sf344> write out coordinates
             COORDS1(1:3*NATOMS) = INTEQMINP(J1,1:3*NATOMS)
             IF (DUMPSTRUCTURES) THEN
-              CALL INTEFINALIO(J1,MYUNIT2,AMBFINALIO_NODE,'0',0,COORDS1(1:3*NATOMS))         
+              CALL INTEFINALIO(j1,MYUNIT2,AMBFINALIO_NODE,'0',0,COORDS1(1:3*NATOMS))         
               WRITE(J1CHAR2,'(I3)') J1
-              WRITE(J1CHAR,'(A,A)') 'INTECOORDS.',TRIM(ADJUSTL(J1CHAR2))
-              OPEN(UNIT=226,FILE=TRIM(ADJUSTL(J1CHAR)),STATUS='UNKNOWN')
+              WRITE(J1CHAR,'(A,A)') 'intecoords.',TRIM(ADJUSTL(J1CHAR2))
+              OPEN(UNIT=226,FILE=trim(adjustl(J1CHAR)),STATUS='UNKNOWN')
 
               DO J2=1,NATOMS
                  WRITE(226,'(3F28.20)') INTEQMINP(J1,3*(J2-1)+1),INTEQMINP(J1,3*(J2-1)+2),INTEQMINP(J1,3*(J2-1)+3)
               ENDDO
               CLOSE(226)
                WRITE(J1CHAR2,'(I3)') J1
-               WRITE(J1CHAR,'(A,A)') 'INTECOORDS.',TRIM(ADJUSTL(J1CHAR2))
-               OPEN(UNIT=226,FILE=TRIM(ADJUSTL(J1CHAR)),STATUS='UNKNOWN')
+               WRITE(J1CHAR,'(A,A)') 'intecoords.',TRIM(ADJUSTL(J1CHAR2))
+               OPEN(UNIT=226,FILE=trim(adjustl(J1CHAR)),STATUS='UNKNOWN')
               
                DO J2=1,NATOMS
                   WRITE(226,'(3F28.20)') INTEQMINP(J1,3*(J2-1)+1),INTEQMINP(J1,3*(J2-1)+2),INTEQMINP(J1,3*(J2-1)+3)
@@ -482,42 +482,42 @@ C
 
             ELSE
                DO I1=1,NATOMS
-                  WRITE(MYUNIT2,'(A2,3F20.10)') IH(M04+I1-1),COORDS1(3*I1-2),COORDS1(3*I1-1),COORDS1(3*I1)
+                  WRITE(MYUNIT2,'(A2,3F20.10)') ih(m04+I1-1),COORDS1(3*I1-2),COORDS1(3*I1-1),COORDS1(3*I1)
                ENDDO
             ENDIF
          ENDDO
       ENDIF
 C
-C  END OF LOOP OVER DUMP TO FILE INTELOWEST 
+C  End of loop over dump to file intelowest 
 C
       CLOSE(MYUNIT2)
 
-!     CSW34> EDITS TO THE RMS KEYWORD          
+!     csw34> Edits to the RMS keyword          
       IF (CHRMMT.AND.RMST) THEN
 !        IF (PROGRESS) THEN
 !           DCOORDS(1:3*NATOMS)=RMSCOOR(1,1:3*NATOMS)
-!           IF(RMSBEST(1,2)<0.D0) CALL CHARMMDUMP(DCOORDS,'CLOSESTRMS')
-!           WRITE(MYUNIT,'(A9,F8.5)') 'RMSDMIN= ',RMSBEST(1,1)
+!           IF(RMSBEST(1,2)<0.D0) CALL CHARMMDUMP(DCOORDS,'closestrms')
+!           WRITE(MYUNIT,'(A9,F8.5)') 'RMSDmin= ',RMSBEST(1,1)
 !        ELSE      
 ! REMEMBER TO RE-INDENT THE BELOW IF UNCOMMENTING ABOVE!
-         OPEN(UNIT=MYUNIT2,FILE='RMSBEST',STATUS='UNKNOWN')
+         OPEN(UNIT=MYUNIT2,FILE='rmsbest',STATUS='UNKNOWN')
          DO J2=1,RMSSAVE
             WRITE(MYUNIT2,'(I6,F6.3,F15.5)')J2,RMSBEST(J2,1),RMSBEST(J2,2)
             WRITE(CRMS,'(I6)') J2
             DCOORDS(1:3*NATOMS)=RMSCOOR(J2,1:3*NATOMS)
-            IF(RMSBEST(J2,2)<0.D0) CALL CHARMMDUMP(DCOORDS,'RMS.'//TRIM(ADJUSTL(CRMS)))
+            IF(RMSBEST(J2,2)<0.D0) CALL CHARMMDUMP(DCOORDS,'rms.'//TRIM(ADJUSTL(CRMS)))
          ENDDO
          CLOSE(MYUNIT2)
 !        ENDIF
       ENDIF
 
       IF (LJCOULT) THEN
-         OPEN(UNIT=26,FILE='LJCOUL.XYZ',STATUS='UNKNOWN')
+         OPEN(UNIT=26,FILE='ljcoul.xyz',STATUS='UNKNOWN')
          DO J1=1,NSAVE
             WRITE(26,'(I6)') NATOMS
             WRITE(26,10) J1, QMIN(J1), FF(J1)
             DO J2=1,NATOMS
-C              USE "O" ATOM TYPE TO HIGHLIGHT CHARGED PARTICLES AND "N" FOR THE NEUTRAL ONES.
+C              Use "O" atom type to highlight charged particles and "N" for the neutral ones.
                IF (J2.LE.COULN) THEN
                   WRITE(26,'(A4,3F18.10,A12,3F18.10)') 'O ',
      &                    QMINP(J1,3*(J2-1)+1),QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3)
@@ -531,14 +531,14 @@ C              USE "O" ATOM TYPE TO HIGHLIGHT CHARGED PARTICLES AND "N" FOR THE 
 
 
       ELSE IF (STOCKT) THEN
-         OPEN(UNIT=26,FILE='STOCK.XYZ',STATUS='UNKNOWN')
+         OPEN(UNIT=26,FILE='stock.xyz',STATUS='UNKNOWN')
          DO J1=1,NSAVE
             WRITE(26,'(I6)') NATOMS/2
             WRITE(26,10) J1, QMIN(J1), FF(J1)
             DO J2=1,NATOMS/2
                WRITE (26,'(A4,3F18.10,A12,3F18.10)') 'LA ',
      &            QMINP(J1,3*(J2-1)+1),QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3),
-     &            'ATOM_VECTOR',
+     &            'atom_vector',
      &            SIN(QMINP(J1,3*(NATOMS/2)+3*(J2-1)+1))*COS(QMINP(J1,3*(NATOMS/2)+3*(J2-1)+2)),
      &            SIN(QMINP(J1,3*(NATOMS/2)+3*(J2-1)+1))*SIN(QMINP(J1,3*(NATOMS/2)+3*(J2-1)+2)),
      &                    COS(QMINP(J1,3*(NATOMS/2)+3*(J2-1)+1))
@@ -549,8 +549,8 @@ C              USE "O" ATOM TYPE TO HIGHLIGHT CHARGED PARTICLES AND "N" FOR THE 
       ELSE IF (ELLIPSOIDT.OR.LJCAPSIDT.OR.GBT.OR.GBDT.OR.MULTISITEPYT) THEN
          DO J1=1,NSAVE
             WRITE(J1CHAR2,'(I3)') J1
-!            WRITE(J1CHAR,'(A5,A,A4)') 'GBMIN',TRIM(ADJUSTL(J1CHAR2)),'.XYZ'
-!            OPEN(UNIT=26,FILE=TRIM(ADJUSTL(J1CHAR)),STATUS='UNKNOWN')
+!            WRITE(J1CHAR,'(A5,A,A4)') 'gbmin',TRIM(ADJUSTL(J1CHAR2)),'.xyz'
+!            OPEN(UNIT=26,FILE=trim(adjustl(J1CHAR)),STATUS='UNKNOWN')
 !
 !            DO J2=1,NATOMS/2
 !               WRITE(26,'(3F18.10)') QMINP(J1,3*(J2-1)+1),QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3)
@@ -558,12 +558,12 @@ C              USE "O" ATOM TYPE TO HIGHLIGHT CHARGED PARTICLES AND "N" FOR THE 
           IF (MPIT) THEN
               WRITE (ISTR, '(I10)') MYUNIT-22980+1
               MYUNIT2=(MYUNIT-22980+1)+100
-              MYFILENAME2='COORDS.'//TRIM(ADJUSTL(J1CHAR2))//'.'//TRIM(ADJUSTL(ISTR))
-              OPEN(MYUNIT2,FILE=TRIM(ADJUSTL(MYFILENAME2)), STATUS="UNKNOWN", FORM="FORMATTED")
+              MYFILENAME2='coords.'//TRIM(ADJUSTL(J1CHAR2))//'.'//trim(adjustl(istr))
+              OPEN(MYUNIT2,FILE=trim(adjustl(MYFILENAME2)), STATUS="unknown", form="formatted")
           ELSE 
               MYUNIT2=226
-              MYFILENAME2='COORDS.'//TRIM(ADJUSTL(J1CHAR2))
-              OPEN(MYUNIT2,FILE=TRIM(ADJUSTL(MYFILENAME2)), STATUS="UNKNOWN", FORM="FORMATTED")
+              MYFILENAME2='coords.'//TRIM(ADJUSTL(J1CHAR2))
+              OPEN(MYUNIT2,FILE=trim(adjustl(MYFILENAME2)), STATUS="unknown", form="formatted")
           END IF
 
             DO J2=1,NATOMS
@@ -574,21 +574,21 @@ C              USE "O" ATOM TYPE TO HIGHLIGHT CHARGED PARTICLES AND "N" FOR THE 
 
          ENDDO
 C
-C  WRITE OUT LOWEST NSAVE STRUCTURES TO XMAKEMOL ELLIPSOID FORMAT FOR 
-C  CLUSTERS OF ELLIPSOIDS OF REVOLUTION 
+C  Write out lowest NSAVE structures to xmakemol ellipsoid format for 
+C  clusters of ellipsoids of revolution 
 C
-C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
+C         OPEN(UNIT=26,FILE="ellipsoid.xyz",STATUS='UNKNOWN')
       IF (MPIT) THEN
          WRITE (ISTR, '(I10)') MYUNIT-22980+1
          MYUNIT2=(MYUNIT-22980+1)+300
-         MYFILENAME2="ELLIPSOID."//TRIM(ADJUSTL(ISTR))//".XYZ"
-         OPEN(MYUNIT2,FILE=TRIM(ADJUSTL(MYFILENAME2)), STATUS="UNKNOWN", FORM="FORMATTED")
+         MYFILENAME2="ellipsoid."//trim(adjustl(istr))//".xyz"
+         OPEN(MYUNIT2,FILE=trim(adjustl(MYFILENAME2)), STATUS="unknown", form="formatted")
       ELSE
          MYUNIT2=26
-         OPEN(MYUNIT2,FILE='ELLIPSOID.XYZ',STATUS='UNKNOWN')
+         OPEN(MYUNIT2,FILE='ellipsoid.xyz',STATUS='UNKNOWN')
       ENDIF
 
-        DO J1=1,NSAVE
+        do J1=1,NSAVE
         IF(.NOT.MULTISITEPYT) THEN
          WRITE(MYUNIT2,*) NATOMS/2
         ELSE
@@ -599,67 +599,67 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
             DO J2=1,NATOMS/2
                
                IF (GAYBERNET) THEN
-                  CALL ELLIPSOIDSAATOPOLAR(QMINP(J1,3*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NATOMS/2+3*(J2-1)+2),
-     &                    QMINP(J1,3*NATOMS/2+3*(J2-1)+3),EULERPHI,EULERPSI,EULERTHETA,EULERPHIDEG,EULERPSIDEG,EULERTHETADEG)
-!                 EULERPHIDEG = 90-EULERPHIDEG    ! EULERPHIDEG RETURNED FROM ELLIPSOIDSAATOPOLAR IS IN FACT THE ALPHA ANGLE
-!                                                ! DEFINED BY ME (ANGLE OF VECTOR WITH THE XY PLANE)
-                  WRITE(MYUNIT2,'(A5,2X,3F20.10,2X,A8,6F15.8,2X,A11,3F15.8)') '0',QMINP(J1,3*(J2-1)+1),
+                  CALL EllipsoidsAAtoPolar(QMINP(J1,3*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NATOMS/2+3*(J2-1)+2),
+     &                    QMINP(J1,3*NATOMS/2+3*(J2-1)+3),EulerPhi,EulerPsi,EulerTheta,EulerPhiDeg,EulerPsiDeg,EulerThetaDeg)
+!                 EulerPhiDeg = 90-EulerPhiDeg    ! EulerPhiDeg returned from EllipsoidsAAtoPolar is in fact the alpha angle
+!                                                ! defined by me (angle of vector with the xy plane)
+                  WRITE(MYUNIT2,'(a5,2x,3f20.10,2x,a8,6f15.8,2x,a11,3f15.8)') '0',QMINP(J1,3*(J2-1)+1),
      &                  QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3),
-     &                  'ELLIPSE ',1.0D0,1.0D0,GBANISOTROPYR,
-     &                                                 EULERPSIDEG,EULERPHIDEG,0.0D0, ! THIS IS IN DEGREES
-     &                  'ATOM_VECTOR',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
+     &                  'ellipse ',1.0D0,1.0D0,GBANISOTROPYR,
+     &                                                 EulerPsiDeg,EulerPhiDeg,0.0D0, ! this is in degrees
+     &                  'atom_vector',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
      &                  QMINP(J1,3*NATOMS/2+3*(J2-1)+2),QMINP(J1,3*NATOMS/2+3*(J2-1)+3)
                ELSE IF (PARAMONOVT) THEN
-                  CALL ELLIPSOIDSAATOPOLAR(QMINP(J1,3*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NATOMS/2+3*(J2-1)+2),
-     &                    QMINP(J1,3*NATOMS/2+3*(J2-1)+3),EULERPHI,EULERPSI,EULERTHETA,EULERPHIDEG,EULERPSIDEG,EULERTHETADEG)
-                  WRITE(MYUNIT2,'(A5,2X,3F20.10,2X,A8,6F15.8,2X,A11,3F15.8)') 'O',QMINP(J1,3*(J2-1)+1),
+                  CALL EllipsoidsAAtoPolar(QMINP(J1,3*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NATOMS/2+3*(J2-1)+2),
+     &                    QMINP(J1,3*NATOMS/2+3*(J2-1)+3),EulerPhi,EulerPsi,EulerTheta,EulerPhiDeg,EulerPsiDeg,EulerThetaDeg)
+                  WRITE(MYUNIT2,'(a5,2x,3f20.10,2x,a8,6f15.8,2x,a11,3f15.8)') 'O',QMINP(J1,3*(J2-1)+1),
      &             QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3),
-     &             'ELLIPSE ',PARAMC1*2.0D0,PARAMB1*2.0D0,PARAMA1*2.0D0,EULERPHIDEG,EULERPSIDEG,EULERTHETADEG,
-     &             'ATOM_VECTOR',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
+     &             'ellipse ',PARAMc1*2.0D0,PARAMb1*2.0D0,PARAMa1*2.0D0,EulerPhiDeg,EulerPsiDeg,EulerThetaDeg,
+     &             'atom_vector',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
      &             QMINP(J1,3*NATOMS/2+3*(J2-1)+2),QMINP(J1,3*NATOMS/2+3*(J2-1)+3)
                ELSE IF (PYGPERIODICT.OR.PYBINARYT) THEN
-                  CALL AATOEULER(QMINP(J1,3*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NATOMS/2+3*(J2-1)+2),
-     &                           QMINP(J1,3*NATOMS/2+3*(J2-1)+3),EULERPHIDEG,EULERPSIDEG,EULERTHETADEG)
+                  CALL AAtoEuler(QMINP(J1,3*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NATOMS/2+3*(J2-1)+2),
+     &                           QMINP(J1,3*NATOMS/2+3*(J2-1)+3),EulerPhiDeg,EulerPsiDeg,EulerThetaDeg)
 
-                  WRITE(MYUNIT2,'(A5,2X,3F20.10,2X,A8,6F15.8,2X,A11,3F15.8)') 'O',QMINP(J1,3*(J2-1)+1),
+                  WRITE(MYUNIT2,'(a5,2x,3f20.10,2x,a8,6f15.8,2x,a11,3f15.8)') 'O',QMINP(J1,3*(J2-1)+1),
      &                  QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3),
-     &            'ELLIPSE ',PYA1BIN(J2,1)*2.0D0,PYA1BIN(J2,2)*2.0D0,PYA1BIN(J2,3)*2.0D0,EULERPHIDEG,EULERPSIDEG,EULERTHETADEG,
-     &            'ATOM_VECTOR',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
+     &            'ellipse ',PYA1BIN(J2,1)*2.0D0,PYA1BIN(J2,2)*2.0D0,PYA1BIN(J2,3)*2.0D0,EulerPhiDeg,EulerPsiDeg,EulerThetaDeg,
+     &            'atom_vector',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
      &            QMINP(J1,3*NATOMS/2+3*(J2-1)+2),QMINP(J1,3*NATOMS/2+3*(J2-1)+3)
                ELSE IF (MULTISITEPYT) THEN
-                 CALL AATOSITES(QMINP(J1,3*(J2-1)+1:3*(J2-1)+3),QMINP(J1,3*NATOMS/2+3*(J2-1)+1:3*NATOMS/2+3*(J2-1)+3),SITECOORDS)
+                 CALL AAtoSites(QMINP(J1,3*(J2-1)+1:3*(J2-1)+3),QMINP(J1,3*NATOMS/2+3*(J2-1)+1:3*NATOMS/2+3*(J2-1)+3),SITECOORDS)
 
-!                  CALL AATOEULER(QMINPS(J1,3*NPYSITE*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NPYSITE*NATOMS/2+3*(J2-1)+2),
-!     &                           QMINP(J1,3*NPYSITE*NATOMS/2+3*(J2-1)+3),EULERPHIDEG,EULERPSIDEG,EULERTHETADEG)
+!                  CALL AAtoEuler(QMINPS(J1,3*NPYSITE*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NPYSITE*NATOMS/2+3*(J2-1)+2),
+!     &                           QMINP(J1,3*NPYSITE*NATOMS/2+3*(J2-1)+3),EulerPhiDeg,EulerPsiDeg,EulerThetaDeg)
                 DO J3=1,NPYSITE
-!                   CALL AATOEULER(ELLST3(J3,1),ELLST3(J3,2),ELLST3(J3,3),EULERPHIDEG,EULERTHETADEG,EULERPSIDEG)
+!                   Call AAtoEuler(ELLST3(J3,1),ELLST3(J3,2),ELLST3(J3,3),EulerPhiDeg,EulerThetaDeg,EulerPsiDeg)
 
-!                  WRITE(MYUNIT2,'(A5,2X,3F20.10)') 'LA',SITECOORDS(J3,1), SITECOORDS(J3,2), SITECOORDS(J3,3)
-                  WRITE(MYUNIT2,'(A5,2X,3F20.10,2X,A8,12F15.8,2X,A11,3F15.8)') 'O',
+!                  WRITE(MYUNIT2,'(a5,2x,3f20.10)') 'LA',SITECOORDS(J3,1), SITECOORDS(J3,2), SITECOORDS(J3,3)
+                  WRITE(MYUNIT2,'(a5,2x,3f20.10,2x,a8,12f15.8,2x,a11,3f15.8)') 'O',
      &                                          SITECOORDS(J3,1),SITECOORDS(J3,2),SITECOORDS(J3,3),
-     &            'ELLIPSE ',ELLST1(J3,1)*2.0D0,ELLST1(J3,2)*2.0D0,ELLST1(J3,3)*2.0D0,
+     &            'ellipse ',ELLST1(J3,1)*2.0D0,ELLST1(J3,2)*2.0D0,ELLST1(J3,3)*2.0D0,
      &                       ELLMAT(J3,1,1),ELLMAT(J3,1,2),ELLMAT(J3,1,3),ELLMAT(J3,2,1),ELLMAT(J3,2,2),ELLMAT(J3,2,3),
      &                       ELLMAT(J3,3,1),ELLMAT(J3,3,2),ELLMAT(J3,3,3),
-     &            'ATOM_VECTOR',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
+     &            'atom_vector',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
      &            QMINP(J1,3*NATOMS/2+3*(J2-1)+2),QMINP(J1,3*NATOMS/2+3*(J2-1)+3)
                 END DO
                ELSE IF (GBT.OR.GBDT) THEN
-                  CALL AATOEULER(QMINP(J1,3*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NATOMS/2+3*(J2-1)+2),
-     &                           QMINP(J1,3*NATOMS/2+3*(J2-1)+3),EULERPHIDEG,EULERPSIDEG,EULERTHETADEG)
+                  CALL AAtoEuler(QMINP(J1,3*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NATOMS/2+3*(J2-1)+2),
+     &                           QMINP(J1,3*NATOMS/2+3*(J2-1)+3),EulerPhiDeg,EulerPsiDeg,EulerThetaDeg)
 
-                  WRITE(MYUNIT2,'(A5,2X,3F20.10,2X,A8,6F15.8,2X,A11,3F15.8)') 'O',QMINP(J1,3*(J2-1)+1),
+                  WRITE(MYUNIT2,'(a5,2x,3f20.10,2x,a8,6f15.8,2x,a11,3f15.8)') 'O',QMINP(J1,3*(J2-1)+1),
      &                  QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3),
-     &            'ELLIPSE ',GBKAPPA,1.0D0,1.0D0,EULERPHIDEG,EULERPSIDEG,EULERTHETADEG,
-     &            'ATOM_VECTOR',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
+     &            'ellipse ',GBKAPPA,1.0D0,1.0D0,EulerPhiDeg,EulerPsiDeg,EulerThetaDeg,
+     &            'atom_vector',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
      &            QMINP(J1,3*NATOMS/2+3*(J2-1)+2),QMINP(J1,3*NATOMS/2+3*(J2-1)+3)
                ELSE IF (LJCAPSIDT) THEN
-                  CALL AATOEULER(QMINP(J1,3*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NATOMS/2+3*(J2-1)+2),
-     &                           QMINP(J1,3*NATOMS/2+3*(J2-1)+3),EULERPHIDEG,EULERPSIDEG,EULERTHETADEG)
+                  CALL AAtoEuler(QMINP(J1,3*NATOMS/2+3*(J2-1)+1),QMINP(J1,3*NATOMS/2+3*(J2-1)+2),
+     &                           QMINP(J1,3*NATOMS/2+3*(J2-1)+3),EulerPhiDeg,EulerPsiDeg,EulerThetaDeg)
 
-                  WRITE(MYUNIT2,'(A5,2X,3F20.10,2X,A8,6F15.8,2X,A11,3F15.8)') 'O',QMINP(J1,3*(J2-1)+1),
+                  WRITE(MYUNIT2,'(a5,2x,3f20.10,2x,a8,6f15.8,2x,a11,3f15.8)') 'O',QMINP(J1,3*(J2-1)+1),
      &                  QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3),
-     &            'ELLIPSE ',1.0D0,1.0D0,1.0D0,EULERPHIDEG,EULERPSIDEG,EULERTHETADEG,
-     &            'ATOM_VECTOR',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
+     &            'ellipse ',1.0D0,1.0D0,1.0D0,EulerPhiDeg,EulerPsiDeg,EulerThetaDeg,
+     &            'atom_vector',QMINP(J1,3*NATOMS/2+3*(J2-1)+1),
      &            QMINP(J1,3*NATOMS/2+3*(J2-1)+2),QMINP(J1,3*NATOMS/2+3*(J2-1)+3)
                ENDIF
             ENDDO
@@ -667,7 +667,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
          CLOSE(MYUNIT2)
 
       ELSE IF (TIP) THEN
-         OPEN(UNIT=26,FILE='TIP.XYZ',STATUS='UNKNOWN')
+         OPEN(UNIT=26,FILE='tip.xyz',STATUS='UNKNOWN')
          DO J1=1,NSAVE
             WRITE(26,'(I6)') (NATOMS/2)*3
             WRITE(26,10) J1, QMIN(J1), FF(J1)
@@ -682,7 +682,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
          ENDDO
          CLOSE(26)
       ELSE IF (CAPSID) THEN
-         OPEN(UNIT=26,FILE='CAPSID.XYZ',STATUS='UNKNOWN')
+         OPEN(UNIT=26,FILE='capsid.xyz',STATUS='UNKNOWN')
          DO J1=1,NSAVE
             WRITE(26,'(I6)') (NATOMS/2)*6
             WRITE(26,10) J1, QMIN(J1), FF(J1)
@@ -700,7 +700,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 
       ELSE IF (DBPT) THEN
 
-         OPEN(UNIT=26, FILE='DBP.XYZ', STATUS='UNKNOWN')
+         OPEN(UNIT=26, FILE='dbp.xyz', STATUS='UNKNOWN')
          GTEST = .FALSE.
          DU    = (/0.D0, 1.D0, 0.D0/) 
          DO J1 = 1, NSAVE
@@ -728,7 +728,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
                      RBCOORDS(1:3) = MATMUL(RMI(:,:),DU)
                   WRITE(26,'(A4,3F20.10,2X,A12,2X,3F20.10)')  
      &             'H', QMINP(J1,J3-2), QMINP(J1,J3-1), QMINP(J1,J3),  
-     &             'ATOM_VECTOR', RBCOORDS(1), RBCOORDS(2), RBCOORDS(3) 
+     &             'atom_vector', RBCOORDS(1), RBCOORDS(2), RBCOORDS(3) 
                   ENDIF
 
                ENDDO
@@ -751,7 +751,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 
       ELSE IF (GBT .OR. GBDT) THEN
 
-         OPEN(UNIT=26, FILE='GBE.XYZ', STATUS='UNKNOWN')
+         OPEN(UNIT=26, FILE='gbe.xyz', STATUS='UNKNOWN')
          GTEST = .FALSE.
          DO J1 = 1, NSAVE
 
@@ -775,9 +775,9 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
                PHI   = PHI*180.D0/PI
                THT   = THT*180.D0/PI
 
-               WRITE(26,'(A5,2X,3F20.10,2X,A8,6F20.10)')
+               WRITE(26,'(a5,2x,3f20.10,2x,a8,6f20.10)')
      &         'O', RBCOORDS(1), RBCOORDS(2), RBCOORDS(3),
-     &         'ELLIPSE', 2.D0*ESA(1), 2.D0*ESA(2), 2.D0*ESA(3), PHI, THT, 0.D0
+     &         'ellipse', 2.D0*ESA(1), 2.D0*ESA(2), 2.D0*ESA(3), PHI, THT, 0.D0
 
             ENDDO
 
@@ -787,7 +787,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 
       ELSE IF (LINRODT) THEN
 
-         OPEN(UNIT=26, FILE='LINROD.XYZ', STATUS='UNKNOWN')
+         OPEN(UNIT=26, FILE='linrod.xyz', STATUS='UNKNOWN')
          GTEST = .FALSE.
 
          DO J1 = 1, NSAVE
@@ -816,7 +816,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
                   IF (J4 == NRBSITES) J3 = 1
                   P(:) = RBCOORDS(3*J3-2:3*J3) - RBCOORDS(3*J4-2:3*J4)
                   WRITE(26,'(A4,3F20.10,2X,A12,2X,3F20.10)')
-     &            'O', RBCOORDS(3*J4-2), RBCOORDS(3*J4-1), RBCOORDS(3*J4), 'ATOM_VECTOR', P(1), P(2), P(3)
+     &            'O', RBCOORDS(3*J4-2), RBCOORDS(3*J4-1), RBCOORDS(3*J4), 'atom_vector', P(1), P(2), P(3)
 
                ENDDO
 
@@ -830,7 +830,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 
       ELSE IF (LWOTPT) THEN
 
-         OPEN(UNIT=26, FILE='LWOTP.XYZ', STATUS='UNKNOWN')
+         OPEN(UNIT=26, FILE='lwotp.xyz', STATUS='UNKNOWN')
          GTEST = .FALSE.
          
          DO J1 = 1, NSAVE
@@ -859,7 +859,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
                   IF (J4 == NRBSITES) J3 = 1
                   P(:) = RBCOORDS(3*J3-2:3*J3) - RBCOORDS(3*J4-2:3*J4)
                   WRITE(26,'(A4,3F20.10,2X,A12,2X,3F20.10)')                 
-     &            'O', RBCOORDS(3*J4-2), RBCOORDS(3*J4-1), RBCOORDS(3*J4), 'ATOM_VECTOR', P(1), P(2), P(3)
+     &            'O', RBCOORDS(3*J4-2), RBCOORDS(3*J4-1), RBCOORDS(3*J4), 'atom_vector', P(1), P(2), P(3)
 
                ENDDO
 
@@ -873,7 +873,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 
       ELSE IF (MSTBINT) THEN
 
-         OPEN(UNIT=26, FILE='MSTBIN.XYZ', STATUS='UNKNOWN')
+         OPEN(UNIT=26, FILE='mstbin.xyz', STATUS='UNKNOWN')
          GTEST = .FALSE.
 
          DO J1 = 1, NSAVE
@@ -916,10 +916,10 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
                   P(:) = RBCOORDS(3*J3-2:3*J3) - RBCOORDS(3*J4-2:3*J4)
                   IF (J2 <= NPS) THEN
                      WRITE(26,'(A4,3F20.10,2X,A12,2X,3F20.10)')
-     &               'O', RBCOORDS(3*J4-2), RBCOORDS(3*J4-1), RBCOORDS(3*J4), 'ATOM_VECTOR', P(1), P(2), P(3)
+     &               'O', RBCOORDS(3*J4-2), RBCOORDS(3*J4-1), RBCOORDS(3*J4), 'atom_vector', P(1), P(2), P(3)
                   ELSE
                      WRITE(26,'(A4,3F20.10,2X,A12,2X,3F20.10)')
-     &               'N', RBCOORDS(3*J4-2), RBCOORDS(3*J4-1), RBCOORDS(3*J4), 'ATOM_VECTOR', P(1), P(2), P(3)
+     &               'N', RBCOORDS(3*J4-2), RBCOORDS(3*J4-1), RBCOORDS(3*J4), 'atom_vector', P(1), P(2), P(3)
                   ENDIF
 
                ENDDO
@@ -934,7 +934,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 
       ELSE IF (MSSTOCKT) THEN
 
-         OPEN(UNIT=26, FILE='MSSTOCK.XYZ', STATUS='UNKNOWN')
+         OPEN(UNIT=26, FILE='msstock.xyz', STATUS='UNKNOWN')
          GTEST = .FALSE.
          
          DO J1 = 1, NSAVE
@@ -955,7 +955,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
                   RBCOORDS(1:3) = QMINP(J1,J3-2:J3) + MATMUL(RMI(:,:),SITE(J4,:))
                   P(:)          = MATMUL(RMI(:,:),RBUV(J4,:))
                   WRITE(26,'(A4,3F20.10,2X,A12,2X,3F20.10)')                          
-     &            'O', RBCOORDS(1), RBCOORDS(2), RBCOORDS(3), 'ATOM_VECTOR', P(1), P(2), P(3)
+     &            'O', RBCOORDS(1), RBCOORDS(2), RBCOORDS(3), 'atom_vector', P(1), P(2), P(3)
 
                ENDDO
 
@@ -965,7 +965,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 
          CLOSE(UNIT=26)
 
-         OPEN(UNIT=28, FILE='MSSTKTR.XYZ', STATUS='UNKNOWN')
+         OPEN(UNIT=28, FILE='msstktr.xyz', STATUS='UNKNOWN')
          GTEST = .FALSE.
 
          DO J1 = 1, NSAVE
@@ -994,7 +994,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 !                  IF (J4 == NRBSITES - 1) J3 = 1
                   P(:) = RBCOORDS(3*J3-2:3*J3) - RBCOORDS(3*J4-2:3*J4)
                   WRITE(28,'(A4,3F20.10,2X,A12,2X,3F20.10)')                 
-     &            'O', RBCOORDS(3*J4-2), RBCOORDS(3*J4-1), RBCOORDS(3*J4), 'ATOM_VECTOR', P(1), P(2), P(3)
+     &            'O', RBCOORDS(3*J4-2), RBCOORDS(3*J4-1), RBCOORDS(3*J4), 'atom_vector', P(1), P(2), P(3)
 
                ENDDO
 
@@ -1013,7 +1013,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 
       ELSE IF (NPAHT .OR. PAHAT .OR. PAHW99T) THEN
 
-         OPEN(UNIT=26, FILE='RIGID.XYZ', STATUS='UNKNOWN')
+         OPEN(UNIT=26, FILE='rigid.xyz', STATUS='UNKNOWN')
          GTEST = .FALSE.
 
          IF (PAHW99T) THEN
@@ -1060,18 +1060,18 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
          CALL VIEWNEWTIP()
          RETURN
 
-!|GD351>
+!|gd351>
 
       ELSE IF (PATCHY) THEN
 
          CALL VIEWPATCHY()
          RETURN
 
-!<GD351|
+!<gd351|
 
       ELSE IF (PYGT .OR. PYGDPT) THEN
 
-         OPEN(UNIT=26, FILE='ELLIPSOIDS.XYZ', STATUS='UNKNOWN')
+         OPEN(UNIT=26, FILE='ellipsoids.xyz', STATUS='UNKNOWN')
          GTEST = .FALSE.
 
          DO J1 = 1, NSAVE
@@ -1101,9 +1101,9 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
                THT = THT*180.D0/PI
                CHI = CHI*180.D0/PI
 
-               WRITE(26,'(A5,2X,3F20.10,2X,A8,6F20.10)')                 
+               WRITE(26,'(a5,2x,3f20.10,2x,a8,6f20.10)')                 
      &              'O', RBCOORDS(1), RBCOORDS(2), RBCOORDS(3),         
-     &              'ELLIPSE', 2.D0*PYA1(1), 2.D0*PYA1(2), 2.D0*PYA1(3), PHI, THT, CHI 
+     &              'ellipse', 2.D0*PYA1(1), 2.D0*PYA1(2), 2.D0*PYA1(3), PHI, THT, CHI 
 
             ENDDO
 
@@ -1115,7 +1115,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 
       ELSE IF (STOCKAAT) THEN
 
-         OPEN(UNIT=26, FILE='STOCKAA.XYZ', STATUS='UNKNOWN')
+         OPEN(UNIT=26, FILE='stockaa.xyz', STATUS='UNKNOWN')
          GTEST = .FALSE.
          DU    = (/0.D0, 0.D0, 1.D0/)
 
@@ -1134,7 +1134,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 
                RBCOORDS(1:3) = MATMUL(RMI(:,:),DU(:))
                WRITE(26,'(A4,3F20.10,2X,A12,2X,3F20.10)') 'O', QMINP(J1,J3-2), QMINP(J1,J3-1), QMINP(J1,J3), 
-     &         'ATOM_VECTOR', RBCOORDS(1), RBCOORDS(2), RBCOORDS(3)
+     &         'atom_vector', RBCOORDS(1), RBCOORDS(2), RBCOORDS(3)
 
 
             ENDDO
@@ -1152,7 +1152,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
 
       ELSE IF (WATERDCT .OR. WATERKZT) THEN
 
-         OPEN(UNIT=26, FILE='RIGID.XYZ', STATUS='UNKNOWN')
+         OPEN(UNIT=26, FILE='rigid.xyz', STATUS='UNKNOWN')
          GTEST = .FALSE.
 
          DO J1 = 1, NSAVE
@@ -1186,7 +1186,7 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
          RETURN
 
       ELSE IF (RIGID) THEN
-         OPEN(UNIT=26,FILE='RIGID.XYZ',STATUS='UNKNOWN')
+         OPEN(UNIT=26,FILE='rigid.xyz',STATUS='UNKNOWN')
          DO J1=1,NSAVE
             WRITE(26,'(I6)') (NATOMS/2)*NRBSITES
             WRITE(26,10) J1, QMIN(J1), FF(J1)
@@ -1208,13 +1208,13 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
       RETURN
       END
 
-      SUBROUTINE AMBERDUMP(J1,QMINP)
-      USE COMMONS
-      USE MODAMBER
+      SUBROUTINE amberdump(J1,QMINP)
+      USE commons
+      USE modamber
       IMPLICIT NONE
 
 
-      CHARACTER(LEN=25) COORDFILE
+      CHARACTER(LEN=25) coordfile
       CHARACTER(LEN=2) FNAME
       INTEGER J1
       DOUBLE PRECISION QMINP(NSAVE,3*NATOMS)
@@ -1225,44 +1225,44 @@ C         OPEN(UNIT=26,FILE="ELLIPSOID.XYZ",STATUS='UNKNOWN')
          WRITE (FNAME,'(I2)') J1
       ENDIF
 
-      DO A=1,ATOMS
-        X(A)=QMINP(J1,3*A-2)
-        Y(A)=QMINP(J1,3*A-1)
-        Z(A)=QMINP(J1,3*A)
+      DO a=1,atoms
+        x(a)=QMINP(J1,3*a-2)
+        y(a)=QMINP(J1,3*a-1)
+        z(a)=QMINP(J1,3*a)
       END DO
 
-      COORDFILE='ACOORDS.DUMP.'//FNAME
+      coordfile='acoords.dump.'//FNAME
 
-      OPEN (UNIT=4,IOSTAT=IOS,FILE=COORDFILE,STATUS='UNKNOWN')
+      OPEN (UNIT=4,IOSTAT=ios,FILE=coordfile,STATUS='UNKNOWN')
 
-      DO A=1,ATOMS
-        WRITE (UNIT=4,FMT='(A1,2X,A2,2X,I3,2X,I3,2X,F7.3,3X,F7.3,3X,F7.3)') LABEL(A),TYPECH(A),
-     1        A,BONDEDTO(A),X(A),Y(A),Z(A)
+      DO a=1,atoms
+        WRITE (UNIT=4,FMT='(A1,2X,A2,2X,I3,2X,I3,2X,F7.3,3X,F7.3,3X,F7.3)') label(a),typech(a),
+     1        a,bondedto(a),x(a),y(a),z(a)
       ENDDO
 
-      WRITE (UNIT=4,FMT='(A3)') 'END'
+      WRITE (UNIT=4,FMT='(A3)') 'end'
       WRITE (UNIT=4,FMT='(A)') ' '
-      WRITE (UNIT=4,FMT='(A4,7X,I2)') 'LOOP',RINGS
+      WRITE (UNIT=4,FMT='(A4,7X,I2)') 'loop',rings
 
-      DO A=1,RINGS
-        WRITE (UNIT=4,FMT='(I3,4X,I3)') LOOPATOM(2*A-1),LOOPATOM(2*A)
+      DO a=1,rings
+        WRITE (UNIT=4,FMT='(I3,4X,I3)') loopatom(2*a-1),loopatom(2*a)
       END DO
 
       WRITE (UNIT=4,FMT='(A)') ' '
-      WRITE (UNIT=4,FMT='(A7)') 'CHARGES'
+      WRITE (UNIT=4,FMT='(A7)') 'charges'
 
-      DO A=1,ATOMS
-        Q(A)=Q(A)/18.2223
-        WRITE (UNIT=4,FMT='(I3,2X,F7.4)') A,Q(A)
+      DO a=1,atoms
+        q(a)=q(a)/18.2223
+        WRITE (UNIT=4,FMT='(I3,2X,F7.4)') a,q(a)
       END DO
 
-      WRITE (UNIT=4,FMT='(A3)') 'END'
+      WRITE (UNIT=4,FMT='(A3)') 'end'
 
       RETURN
 
       END
 C
-C  SUBROUTINE TO CONVERT CAPSID COFM AND DV COORDINATES TO PENATGONS.
+C  SUBROUTINE to convert capsid CofM and DV coordinates to penatgons.
 C
       SUBROUTINE CAPSIDIO(X1, Y1, Z1, L1, M1, N1,COORDS,RAD,HEIGHT)
       IMPLICIT NONE
@@ -1291,32 +1291,32 @@ C        C3A1=RAD*(-ALPHA1/2+ALPHA1**3/24)
          S1=RAD*SIN(ALPHA1)/ALPHA1
       ENDIF
 
-      COORDS(1) =     C2A1 - C3A1*L12 + X1
-      COORDS(2) =     -(C3A1*L1*M1) - N1*S1 + Y1
-      COORDS(3) =     -(C3A1*L1*N1) + M1*S1 + Z1
-      COORDS(4) =     C2A1*NUM4 - C3A1*L1*(M1*NUM3 + L1*NUM4) + N1*NUM3*S1 + X1
-      COORDS(5) =     C2A1*NUM3 - C3A1*M1*(M1*NUM3 + L1*NUM4) - N1*NUM4*S1 + Y1
-      COORDS(6) =     -(C3A1*N1*(M1*NUM3 + L1*NUM4)) - L1*NUM3*S1 + M1*NUM4*S1 + Z1
-      COORDS(7) =     C2A1*NUM1 - C3A1*L1*(L1*NUM1 + M1*NUM2) + N1*NUM2*S1 + X1
-      COORDS(8) = C2A1*NUM2 - C3A1*M1*(L1*NUM1 + M1*NUM2) - N1*NUM5*S1 + Y1
-      COORDS(9) = -(C3A1*N1*(L1*NUM1 + M1*NUM2)) + M1*NUM1*S1 - L1*NUM2*S1 + Z1
-      COORDS(10) = C2A1*NUM1 + C3A1*L1*(-(L1*NUM1) + M1*NUM2) - N1*NUM2*S1 + X1
-      COORDS(11) = -(C2A1*NUM2) + C3A1*M1*(-(L1*NUM1) + M1*NUM2) - N1*NUM5*S1 + Y1
-      COORDS(12) = -(C3A1*L1*N1*NUM1) + C3A1*M1*N1*NUM2 + M1*NUM1*S1 + L1*NUM2*S1 + Z1
-      COORDS(13) = C2A1*NUM4 + C3A1*L1*(M1*NUM3 - L1*NUM4) - N1*NUM3*S1 + X1
-      COORDS(14) = -(C2A1*NUM3) + C3A1*M1*(M1*NUM3 - L1*NUM4) - N1*NUM4*S1 + Y1
-      COORDS(15) = C3A1*N1*(M1*NUM3 - L1*NUM4) + L1*NUM3*S1 + M1*NUM4*S1 + Z1
-C     COORDS(16)= (-(C3A1*L1*N1) - M1*S1 + 2*X1)/2.
-C     COORDS(17)= -(C3A1*M1*N1)/2. + (L1*S1)/2. + Y1
-C     COORDS(18)= (C2A1 - C3A1*N12 + 2*Z1)/2.
-      COORDS(16)= -(C3A1*HEIGHT*L1*N1) - HEIGHT*M1*S1 + X1
-      COORDS(17)= -(C3A1*HEIGHT*M1*N1) + HEIGHT*L1*S1 + Y1
-      COORDS(18)= C2A1*HEIGHT - C3A1*HEIGHT*N12 + Z1
+      COORDS(1) =     c2a1 - c3a1*l12 + x1
+      COORDS(2) =     -(c3a1*l1*m1) - n1*s1 + y1
+      COORDS(3) =     -(c3a1*l1*n1) + m1*s1 + z1
+      COORDS(4) =     c2a1*num4 - c3a1*l1*(m1*num3 + l1*num4) + n1*num3*s1 + x1
+      COORDS(5) =     c2a1*num3 - c3a1*m1*(m1*num3 + l1*num4) - n1*num4*s1 + y1
+      COORDS(6) =     -(c3a1*n1*(m1*num3 + l1*num4)) - l1*num3*s1 + m1*num4*s1 + z1
+      COORDS(7) =     c2a1*num1 - c3a1*l1*(l1*num1 + m1*num2) + n1*num2*s1 + x1
+      COORDS(8) = c2a1*num2 - c3a1*m1*(l1*num1 + m1*num2) - n1*num5*s1 + y1
+      COORDS(9) = -(c3a1*n1*(l1*num1 + m1*num2)) + m1*num1*s1 - l1*num2*s1 + z1
+      COORDS(10) = c2a1*num1 + c3a1*l1*(-(l1*num1) + m1*num2) - n1*num2*s1 + x1
+      COORDS(11) = -(c2a1*num2) + c3a1*m1*(-(l1*num1) + m1*num2) - n1*num5*s1 + y1
+      COORDS(12) = -(c3a1*l1*n1*num1) + c3a1*m1*n1*num2 + m1*num1*s1 + l1*num2*s1 + z1
+      COORDS(13) = c2a1*num4 + c3a1*l1*(m1*num3 - l1*num4) - n1*num3*s1 + x1
+      COORDS(14) = -(c2a1*num3) + c3a1*m1*(m1*num3 - l1*num4) - n1*num4*s1 + y1
+      COORDS(15) = c3a1*n1*(m1*num3 - l1*num4) + l1*num3*s1 + m1*num4*s1 + z1
+C     COORDS(16)= (-(c3a1*l1*n1) - m1*s1 + 2*x1)/2.
+C     COORDS(17)= -(c3a1*m1*n1)/2. + (l1*s1)/2. + y1
+C     COORDS(18)= (c2a1 - c3a1*n12 + 2*z1)/2.
+      COORDS(16)= -(c3a1*height*l1*n1) - height*m1*s1 + x1
+      COORDS(17)= -(c3a1*height*m1*n1) + height*l1*s1 + y1
+      COORDS(18)= c2a1*height - c3a1*height*n12 + z1
 
       RETURN
       END
 C
-C  SUBROUTINE TO CONVERT RIGID BODY COFM AND DV COORDINATES TO MOLECULAR SITES.
+C  Subroutine to convert rigid body CofM and DV coordinates to molecular sites.
 C
       SUBROUTINE RBIO(X1, Y1, Z1, L1, M1, N1, COORDS, NRBSITES, SITE)
       IMPLICIT NONE
@@ -1341,18 +1341,18 @@ C        C3A1=(-ALPHA1/2+ALPHA1**3/24)
       ENDIF
    
       DO J1=1,NRBSITES
-         COORDS(3*(J1-1)+1)=C2A1*SITE(J1,1) + S1*(N1*SITE(J1,2) - M1*SITE(J1,3)) - 
-     1                      C3A1*L1*(L1*SITE(J1,1) + M1*SITE(J1,2) + N1*SITE(J1,3)) + X1
-         COORDS(3*(J1-1)+2)=C2A1*SITE(J1,2) + S1*(-(N1*SITE(J1,1)) + L1*SITE(J1,3)) 
-     1                    - C3A1*M1*(L1*SITE(J1,1) + M1*SITE(J1,2) + N1*SITE(J1,3)) + Y1
-         COORDS(3*(J1-1)+3)=S1*(M1*SITE(J1,1) - L1*SITE(J1,2)) + C2A1*SITE(J1,3) 
-     1                    - C3A1*N1*(L1*SITE(J1,1) + M1*SITE(J1,2) + N1*SITE(J1,3)) + Z1
+         COORDS(3*(J1-1)+1)=c2a1*SITE(J1,1) + s1*(n1*SITE(J1,2) - m1*SITE(J1,3)) - 
+     1                      c3a1*l1*(l1*SITE(J1,1) + m1*SITE(J1,2) + n1*SITE(J1,3)) + X1
+         COORDS(3*(J1-1)+2)=c2a1*SITE(J1,2) + s1*(-(n1*SITE(J1,1)) + l1*SITE(J1,3)) 
+     1                    - c3a1*m1*(l1*SITE(J1,1) + m1*SITE(J1,2) + n1*SITE(J1,3)) + Y1
+         COORDS(3*(J1-1)+3)=s1*(m1*SITE(J1,1) - l1*SITE(J1,2)) + c2a1*SITE(J1,3) 
+     1                    - c3a1*n1*(l1*SITE(J1,1) + m1*SITE(J1,2) + n1*SITE(J1,3)) + Z1
       ENDDO 
 
       RETURN
       END
 C
-C  SUBROUTINE TO CONVERT TIP OXYGEN AND DV COORDINATES TO CARTESIANS.
+C  SUBROUTINE to convert TIP oxygen and DV coordinates to Cartesians.
 C
       SUBROUTINE TIPIO(X1, Y1, Z1, L1, M1, N1, COORDS)
       IMPLICIT NONE
@@ -1376,12 +1376,12 @@ C        C3A1=(-ALPHA1/2+ALPHA1**3/24)
       COORDS(1) = X1
       COORDS(2) = Y1
       COORDS(3) = Z1    
-      COORDS(4) = 0.756950327*C2A1 - C3A1*L1*(0.756950327*L1 - 0.585882276*N1) + 0.585882276*M1*S1 + X1
-      COORDS(5) = -(C3A1*M1*(0.756950327*L1 - 0.585882276*N1)) + (-0.585882276*L1 - 0.756950327*N1)*S1 + Y1
-      COORDS(6) = -0.585882276*C2A1 - C3A1*(0.756950327*L1 - 0.585882276*N1)*N1 + 0.756950327*M1*S1 + Z1
-      COORDS(7) = -0.756950327*C2A1 + C3A1*L1*(0.756950327*L1 + 0.585882276*N1) + 0.585882276*M1*S1 + X1
-      COORDS(8) = C3A1*M1*(0.756950327*L1 + 0.585882276*N1) + (-0.585882276*L1 + 0.756950327*N1)*S1 + Y1
-      COORDS(9) = -0.585882276*C2A1 + C3A1*(0.756950327*L1 + 0.585882276*N1)*N1 - 0.756950327*M1*S1 + Z1
+      COORDS(4) = 0.756950327*c2a1 - c3a1*l1*(0.756950327*l1 - 0.585882276*n1) + 0.585882276*m1*s1 + X1
+      COORDS(5) = -(c3a1*m1*(0.756950327*l1 - 0.585882276*n1)) + (-0.585882276*l1 - 0.756950327*n1)*s1 + Y1
+      COORDS(6) = -0.585882276*c2a1 - c3a1*(0.756950327*l1 - 0.585882276*n1)*n1 + 0.756950327*m1*s1 + Z1
+      COORDS(7) = -0.756950327*c2a1 + c3a1*l1*(0.756950327*l1 + 0.585882276*n1) + 0.585882276*m1*s1 + X1
+      COORDS(8) = c3a1*m1*(0.756950327*l1 + 0.585882276*n1) + (-0.585882276*l1 + 0.756950327*n1)*s1 + Y1
+      COORDS(9) = -0.585882276*c2a1 + c3a1*(0.756950327*l1 + 0.585882276*n1)*n1 - 0.756950327*m1*s1 + Z1
 
       RETURN
       END

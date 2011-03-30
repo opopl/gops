@@ -2,17 +2,17 @@ MODULE MOLINFO
     IMPLICIT NONE
 
     TYPE ATOM
-        INTEGER            :: ATOM_ID    ! ATOM NUMBER
-        CHARACTER (LEN=10) :: ATOM_NAME  ! ATOM NAME
-        INTEGER            :: RES_ID     ! RESIDUE NUMBER
-        CHARACTER (LEN=10) :: RES_NAME   ! RESIDUE NAME
-        INTEGER            :: CHAIN_ID   ! CHAIN ID
-        CHARACTER (LEN=10) :: SEG_NAME   ! SEGMENT NAME
-        CHARACTER (LEN=5)  :: ELEMENT    ! ELEMENT NAME
-        DOUBLE PRECISION   :: OCCUPANCY  ! SITE OCCUPANCY
-        DOUBLE PRECISION   :: B_FACTOR   ! CRYSTALLOGRAPHIC TEMP.
-        DOUBLE PRECISION   :: CHARGE     ! ATOMIC CHARGE
-        DOUBLE PRECISION   :: WEIGHT     ! CHARMM WEIGHT
+        INTEGER            :: ATOM_ID    ! Atom number
+        CHARACTER (LEN=10) :: ATOM_NAME  ! Atom name
+        INTEGER            :: RES_ID     ! Residue number
+        CHARACTER (LEN=10) :: RES_NAME   ! Residue name
+        INTEGER            :: CHAIN_ID   ! Chain id
+        CHARACTER (LEN=10) :: SEG_NAME   ! Segment name
+        CHARACTER (LEN=5)  :: ELEMENT    ! Element name
+        DOUBLE PRECISION   :: OCCUPANCY  ! Site occupancy
+        DOUBLE PRECISION   :: B_FACTOR   ! Crystallographic temp.
+        DOUBLE PRECISION   :: CHARGE     ! Atomic charge
+        DOUBLE PRECISION   :: WEIGHT     ! CHARMM weight
     END TYPE ATOM
 
     TYPE(ATOM), DIMENSION(:), PRIVATE, SAVE :: MOL_INFO

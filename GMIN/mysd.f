@@ -1,20 +1,20 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE MYSD(ITMAX,VARS,MFLAG,NSTP,ENERGY)
       USE COMMONS,ONLY : NATOMS, MYUNIT, GMAX, FIXIMAGE, RMS, SDTOL, DEBUG
@@ -31,7 +31,7 @@ C
 
 10    GNORM=DSQRT(DDOT(NOPT,GRAD,1,GRAD,1))
       IF (GNORM.LE.0.0D0) THEN
-         WRITE(MYUNIT,'(A)') 'MYSD> ERROR - GNORM IS ZERO'
+         WRITE(MYUNIT,'(A)') 'mysd> ERROR - GNORM is zero'
          STOP
       ENDIF
       IF (NSTP.EQ.1) THEN
@@ -40,7 +40,7 @@ C
 
       FIXIMAGE=.TRUE.
 !
-!  CHECK FOR CONVERGENCE ON RMS FORCE.
+!  Check for convergence on RMS force.
 !
       IF (RMS.LT.GMAX) THEN
          MFLAG=.TRUE.
@@ -50,7 +50,7 @@ C
          ENDIF
       ENDIF
 !
-!  CHECK IF WE HAVE EXCEEDED MAXIMUM ALLOWED ITERATIONS.
+!  Check if we have exceeded maximum allowed iterations.
 !
       IF (NSTP.EQ.ITMAX) THEN
          MFLAG=.FALSE.
@@ -66,34 +66,34 @@ C
  
       CALL POTENTIAL(NEWVARS,NEWGRAD,ENEW,.TRUE.,.FALSE.)
       IF (ENEW-ENERGY.EQ.0.0D0) THEN
-         WRITE(MYUNIT,'(A,G20.10)') 'MYSD> WARNING - ENEW=ENERGY=',ENERGY
+         WRITE(MYUNIT,'(A,G20.10)') 'mysd> WARNING - ENEW=ENERGY=',ENERGY
          PERROR=0.0D0
       ELSE 
          PERROR=(EPRED-(ENEW-ENERGY))*100.0D0/(ENEW-ENERGY)
       ENDIF
       IF (PERROR.GT.SDTOL) THEN
          SLENGTH=SLENGTH/SFAC
-         IF (DEBUG) WRITE(MYUNIT,'(A,G20.10,A,G20.10)') 'MYSD> % ERROR=',PERROR,
-     &     ' EXCEEDS TOLERANCE, DECREASING STEP LENGTH TO',SLENGTH
+         IF (DEBUG) WRITE(MYUNIT,'(A,G20.10,A,G20.10)') 'mysd> % error=',PERROR,
+     &     ' exceeds tolerance, decreasing step length to',SLENGTH
          GOTO 11
       ELSEIF (PERROR.GT.SDTOL*0.66D0) THEN
          SLENGTH=SLENGTH/SFAC
-         IF (DEBUG) WRITE(MYUNIT,'(A,G20.10,A,G20.10)') 'MYSD> % ERROR=',PERROR,
-     &     ' DECREASING STEP LENGTH TO',SLENGTH
+         IF (DEBUG) WRITE(MYUNIT,'(A,G20.10,A,G20.10)') 'mysd> % error=',PERROR,
+     &     ' decreasing step length to',SLENGTH
       ELSE
          SLENGTH=SLENGTH*SFAC
-         IF (DEBUG) WRITE(MYUNIT,'(A,G20.10,A,G20.10)') 'MYSD> % ERROR=',PERROR,
-     &     ' INCREASING STEP LENGTH TO',SLENGTH
+         IF (DEBUG) WRITE(MYUNIT,'(A,G20.10,A,G20.10)') 'mysd> % error=',PERROR,
+     &     ' increasing step length to',SLENGTH
       ENDIF
       ENERGY=ENEW
       GRAD(1:NOPT)=NEWGRAD(1:NOPT)
       VARS(1:NOPT)=NEWVARS(1:NOPT)
 
-      IF (DEBUG) WRITE(MYUNIT,'(A,2F20.10,A,I6,A,G15.5)') 'MYSD> E AND RMS=',ENERGY,RMS,' AFTER ',
-     &        NSTP,' SD CYCLES, STEP=',SLENGTH
+      IF (DEBUG) WRITE(MYUNIT,'(A,2F20.10,A,I6,A,G15.5)') 'mysd> E and RMS=',ENERGY,RMS,' after ',
+     &        NSTP,' SD cycles, step=',SLENGTH
 
       IF (SLENGTH.LT.1.0D-200) THEN
-         WRITE(MYUNIT,'(A)') 'MYSD> STEP SIZE UNDERFLOW - QUIT'
+         WRITE(MYUNIT,'(A)') 'mysd> Step size underflow - quit'
          STOP
       ENDIF
       MFLAG=.FALSE.

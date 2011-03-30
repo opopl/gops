@@ -1,26 +1,26 @@
 
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C***********************************************************************
 C
-C SUBROUTINE FOR ACKLAND METAL POTENTIALS. PERIODIC BOUNDARY CONDITIONS!
+C Subroutine for Ackland metal potentials. Periodic boundary conditions!
 C
 C***********************************************************************
 C
@@ -28,31 +28,31 @@ C
       USE COMMONS, ONLY : ACKLANDID, NATOMS, BOXLX, BOXLY, BOXLZ, CUTOFF, VT
       IMPLICIT NONE
       INTEGER N, J1, J2, J, I, MZ, MY, MX 
-      DOUBLE PRECISION X(3*NATOMS), POTA, POTB, DIST, PSC, VNEW(3*NATOMS),RC
-      COMMON /PARAM_CUT_OFF/RC	
+      DOUBLE PRECISION X(3*NATOMS), POTA, POTB, DIST, PSC, VNEW(3*NATOMS),Rc
+      COMMON /param_cut_off/Rc	
 
       DOUBLE PRECISION RHO(3*NATOMS)
-      DOUBLE PRECISION VEC(NATOMS,NATOMS,3),RNEIGH(NATOMS,NATOMS,3),FORCE(3,NATOMS)
-      DOUBLE PRECISION RBUF,R,ZERO,NORM,RHO_TEMP,VPOT_TEMP,FEMBED_D_I
-      DOUBLE PRECISION VPOT,VPOT_D,RHO_POT,RHO_POT_D,FEMBED,FEMBED_D
-      INTEGER IPOT,ICOUNT,JA
-      INTEGER IC(NATOMS),NEIGH_TYPE(NATOMS,NATOMS),NDIR(NATOMS)
+      DOUBLE PRECISION VEC(NATOMS,NATOMS,3),Rneigh(NATOMS,NATOMS,3),force(3,NATOMS)
+      double precision rbuf,r,zero,norm,rho_temp,vpot_temp,Fembed_d_i
+      double precision Vpot,Vpot_d,rho_pot,rho_pot_d,Fembed,Fembed_d
+      integer ipot,icount,ja
+      integer ic(NATOMS),neigh_type(NATOMS,NATOMS),ndir(NATOMS)
       LOGICAL GTEST
 
       N=NATOMS 
-      RC=CUTOFF
+      Rc=CUTOFF
 !
-! IF ACKLANDID IS NEGATIVE WE USE CLUSTER BOUNDARY CONDITIONS!
+! IF ACKLANDID is negative we use cluster boundary conditions!
 !
-      IPOT=ABS(ACKLANDID)
-      ZERO=1.0D-12
+      ipot=ABS(ACKLANDID)
+      zero=1.0D-12
 C
-C  CALCULATION OF CONNECTING VECTORS; TO IMPLEMENT THE PERIODIC
-C  BOUNDARY CONDITIONS, THE SHORTEST VECTOR BETWEEN TWO ATOMS IS
-C  USED:
+C  Calculation of connecting vectors; to implement the periodic
+C  boundary conditions, the shortest vector between two atoms is
+C  used:
 C
-      ICOUNT=0
-      IC(:)=0
+      icount=0
+      ic(:)=0
       
       IF (ACKLANDID.GT.0) THEN
          DO 25 J1=1,N
@@ -60,7 +60,7 @@ C
             VEC(J1,J1,2)=0.0D0
             VEC(J1,J1,3)=0.0D0
 	    
-	    ICOUNT=IC(J1)
+	    icount=ic(J1)
             
 	    DO 15 J2=J1+1,N
                VEC(J2,J1,1)=X(3*(J2-1)+1)-X(3*(J1-1)+1)
@@ -75,32 +75,32 @@ C
                VEC(J1,J2,1)=-VEC(J2,J1,1)
                VEC(J1,J2,2)=-VEC(J2,J1,2)
                VEC(J1,J2,3)=-VEC(J2,J1,3)
-	       NORM=VEC(J1,J2,1)**2 + VEC(J1,J2,2)**2 + VEC(J1,J2,3)**2
-	       IF (NORM < RC*RC.AND.NORM>ZERO) THEN
-	       ICOUNT=ICOUNT+1
-	       IC(J2)=IC(J2)+1
-	       RNEIGH(J2,IC(J2),1)=VEC(J1,J2,1)
-	       RNEIGH(J2,IC(J2),2)=VEC(J1,J2,2)
-	       RNEIGH(J2,IC(J2),3)=VEC(J1,J2,3)
+	       norm=VEC(J1,J2,1)**2 + VEC(J1,J2,2)**2 + VEC(J1,J2,3)**2
+	       if (norm < Rc*Rc.and.norm>zero) then
+	       icount=icount+1
+	       ic(J2)=ic(J2)+1
+	       Rneigh(J2,ic(J2),1)=VEC(J1,J2,1)
+	       Rneigh(J2,ic(J2),2)=VEC(J1,J2,2)
+	       Rneigh(J2,ic(J2),3)=VEC(J1,J2,3)
 	       
-	       RNEIGH(J1,ICOUNT,1)=VEC(J2,J1,1)
-	       RNEIGH(J1,ICOUNT,2)=VEC(J2,J1,2)
-	       RNEIGH(J1,ICOUNT,3)=VEC(J2,J1,3)
+	       Rneigh(J1,icount,1)=VEC(J2,J1,1)
+	       Rneigh(J1,icount,2)=VEC(J2,J1,2)
+	       Rneigh(J1,icount,3)=VEC(J2,J1,3)
 	       
-	       NEIGH_TYPE(J1,ICOUNT)=J2
-	       NEIGH_TYPE(J2,IC(J2))=J1
+	       neigh_type(J1,icount)=J2
+	       neigh_type(J2,ic(J2))=J1
 	       
-	       END IF
+	       end if
 15          CONTINUE
-         NDIR(J1)=ICOUNT
+         ndir(J1)=icount
 25       CONTINUE
-      ELSE ! CLUSTER CASE !   
+      ELSE ! cluster case !   
          DO J1=1,N
             VEC(J1,J1,1)=0.0D0
             VEC(J1,J1,2)=0.0D0
             VEC(J1,J1,3)=0.0D0
 	    
-	    ICOUNT=IC(J1)
+	    icount=ic(J1)
             
 	    DO J2=J1+1,N
                VEC(J2,J1,1)=X(3*(J2-1)+1)-X(3*(J1-1)+1)
@@ -109,88 +109,88 @@ C
                VEC(J1,J2,1)=-VEC(J2,J1,1)
                VEC(J1,J2,2)=-VEC(J2,J1,2)
                VEC(J1,J2,3)=-VEC(J2,J1,3)
-	       NORM=VEC(J1,J2,1)**2 + VEC(J1,J2,2)**2 + VEC(J1,J2,3)**2
-	       IF (NORM < RC*RC.AND.NORM>ZERO) THEN
+	       norm=VEC(J1,J2,1)**2 + VEC(J1,J2,2)**2 + VEC(J1,J2,3)**2
+	       IF (NORM < Rc*Rc.AND.NORM>ZERO) THEN
 	          ICOUNT=ICOUNT+1
 	          IC(J2)=IC(J2)+1
-	          RNEIGH(J2,IC(J2),1)=VEC(J1,J2,1)
-	          RNEIGH(J2,IC(J2),2)=VEC(J1,J2,2)
-	          RNEIGH(J2,IC(J2),3)=VEC(J1,J2,3)
+	          Rneigh(J2,ic(J2),1)=VEC(J1,J2,1)
+	          Rneigh(J2,ic(J2),2)=VEC(J1,J2,2)
+	          Rneigh(J2,ic(J2),3)=VEC(J1,J2,3)
 	       
-	          RNEIGH(J1,ICOUNT,1)=VEC(J2,J1,1)
-	          RNEIGH(J1,ICOUNT,2)=VEC(J2,J1,2)
-	          RNEIGH(J1,ICOUNT,3)=VEC(J2,J1,3)
+	          Rneigh(J1,icount,1)=VEC(J2,J1,1)
+	          Rneigh(J1,icount,2)=VEC(J2,J1,2)
+	          Rneigh(J1,icount,3)=VEC(J2,J1,3)
 	       
-	          NEIGH_TYPE(J1,ICOUNT)=J2
-	          NEIGH_TYPE(J2,IC(J2))=J1
+	          neigh_type(J1,icount)=J2
+	          neigh_type(J2,ic(J2))=J1
 	       
-	       END IF
+	       end if
             ENDDO
-            NDIR(J1)=ICOUNT
+            ndir(J1)=icount
          ENDDO
 
       ENDIF
 C
-C STORE DENSITY MATRIX: IN THE CASE OF THE PERFECT FCC LATTICE,
-C THE INFINITELY EXTENDED CRYSTAL IMPLIES THAT EVERY RHO(J) IS
-C EQUAL TO RHO(1).
+C Store density matrix: In the case of the perfect fcc lattice,
+C the infinitely extended crystal implies that every RHO(J) is
+C equal to RHO(1).
 C
       DO 11 I=1,N
 	 
-	 RHO_TEMP=0.D0
-         VPOT_TEMP=0.D0
+	 rho_temp=0.d0
+         vpot_temp=0.d0
 	 
-	 DO 122 J=1,NDIR(I)
+	 DO 122 J=1,ndir(I)
 	     
-	     JA=NEIGH_TYPE(I,J)
+	     ja=neigh_type(I,J)
 	     
-	     RBUF=DSQRT(RNEIGH(I,J,1)**2+RNEIGH(I,J,2)**2+RNEIGH(I,J,3)**2)
+	     rbuf=dsqrt(Rneigh(I,J,1)**2+Rneigh(I,J,2)**2+Rneigh(I,J,3)**2)
 	     
-	     RHO_TEMP  = RHO_TEMP  +  RHO_POT(IPOT,RBUF)
-	     VPOT_TEMP = VPOT_TEMP +  VPOT(IPOT,RBUF)
+	     rho_temp  = rho_temp  +  rho_pot(ipot,rbuf)
+	     vpot_temp = vpot_temp +  Vpot(ipot,rbuf)
 	     
 122      CONTINUE
-       RHO(I)=RHO_TEMP
-       VT(I)=VPOT_TEMP
-!C        WRITE(*,*) I, RHO(I)
+       RHO(I)=rho_temp
+       VT(I)=vpot_temp
+!C        write(*,*) I, RHO(I)
 11    CONTINUE
 C
-C CALCULATE THE POTENTIAL ENERGY:
+C calculate the potential energy:
 C
       POTA=0.0D0
       POTB=0.0D0
       DO 13 I=1,N
         POTA=POTA+VT(I)
-        POTB=POTB - FEMBED(IPOT,RHO(I))
+        POTB=POTB - Fembed(ipot,RHO(I))
 13    CONTINUE
       PSC=POTA - POTB
 
-CDEBUG      WRITE(*,*) POTA, -POTB, PSC
-C      STOP
+Cdebug      write(*,*) POTA, -POTB, PSC
+C      stop
       
-      FORCE(:,:)=0.D0
+      force(:,:)=0.d0
       
-      IF (GTEST) THEN
-         DO I=1,N
-	    FEMBED_D_I=FEMBED_D(IPOT,RHO(I))
-	    DO J=1,NDIR(I)
-	       JA=NEIGH_TYPE(I,J)
-	       RBUF=DSQRT(RNEIGH(I,J,1)**2+RNEIGH(I,J,2)**2+RNEIGH(I,J,3)**2)
+      if (GTEST) then
+         do I=1,N
+	    Fembed_d_i=Fembed_d(ipot,RHO(I))
+	    do J=1,ndir(I)
+	       ja=neigh_type(I,J)
+	       rbuf=dsqrt(Rneigh(I,J,1)**2+Rneigh(I,J,2)**2+Rneigh(I,J,3)**2)
    
-               FORCE(1,I)= FORCE(1,I)+RNEIGH(I,J,1)*(2*VPOT_D(IPOT,RBUF)+      !&
-     1              (FEMBED_D_I+ FEMBED_D(IPOT,RHO(JA)) )*                 !&
-     1		     RHO_POT_D(IPOT,RBUF)  ) /RBUF
-               FORCE(2,I)= FORCE(2,I)+RNEIGH(I,J,2)*(2*VPOT_D(IPOT,RBUF)+      !&
-     1               (FEMBED_D_I+ FEMBED_D(IPOT,RHO(JA)) )*                !&
-     1		     RHO_POT_D(IPOT,RBUF)  ) /RBUF
-               FORCE(3,I)= FORCE(3,I)+RNEIGH(I,J,3)*(2*VPOT_D(IPOT,RBUF)+      !&
-     1               (FEMBED_D_I+ FEMBED_D(IPOT,RHO(JA)) )*                !&
-     1		     RHO_POT_D(IPOT,RBUF)  ) /RBUF
-            END DO  
-	    VNEW(3*(I-1)+1)=-FORCE(1,I)   
-	    VNEW(3*(I-1)+2)=-FORCE(2,I)   
-	    VNEW(3*(I-1)+3)=-FORCE(3,I) 
-	 END DO    
+               force(1,I)= force(1,I)+Rneigh(I,J,1)*(2*Vpot_d(ipot,rbuf)+      !&
+     1              (Fembed_d_i+ Fembed_d(ipot,RHO(ja)) )*                 !&
+     1		     rho_pot_d(ipot,rbuf)  ) /rbuf
+               force(2,I)= force(2,I)+Rneigh(I,J,2)*(2*Vpot_d(ipot,rbuf)+      !&
+     1               (Fembed_d_i+ Fembed_d(ipot,RHO(ja)) )*                !&
+     1		     rho_pot_d(ipot,rbuf)  ) /rbuf
+               force(3,I)= force(3,I)+Rneigh(I,J,3)*(2*Vpot_d(ipot,rbuf)+      !&
+     1               (Fembed_d_i+ Fembed_d(ipot,RHO(ja)) )*                !&
+     1		     rho_pot_d(ipot,rbuf)  ) /rbuf
+            end do  
+	    Vnew(3*(I-1)+1)=-force(1,I)   
+	    Vnew(3*(I-1)+2)=-force(2,I)   
+	    Vnew(3*(I-1)+3)=-force(3,I) 
+	 end do    
       ENDIF
 	  
 

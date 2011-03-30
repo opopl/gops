@@ -1,5 +1,5 @@
       SUBROUTINE CENTRECOM(X)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
 
       INTEGER I
@@ -27,8 +27,8 @@
          X(3*(I-1)+3)=X(3*(I-1)+3)-ZMASS
       ENDDO
 
-      IF (DEBUG) WRITE(MYUNIT,'(A,3F15.10)') 'CENTRE OF MASS RESET TO THE ORIGIN FROM ',XMASS,YMASS,ZMASS
-C     PRINT*,'FINAL COORDINATES IN CENTRECOM:'
+      IF (DEBUG) WRITE(MYUNIT,'(A,3F15.10)') 'centre of mass reset to the origin from ',XMASS,YMASS,ZMASS
+C     PRINT*,'final coordinates in centrecom:'
 C     WRITE(*,'(I5,3F15.5)') (I,X(3*(I-1)+1),X(3*(I-1)+2),X(3*(I-1)+3),I=1,NATOMS)
 
       RETURN

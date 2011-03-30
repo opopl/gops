@@ -1,88 +1,88 @@
       SUBROUTINE DGETRI( N, A, LDA, IPIV, WORK, LWORK, INFO )
 *
-*  -- LAPACK ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     JUNE 30, 1999
+*  -- LAPACK routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     June 30, 1999
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       INTEGER            INFO, LDA, LWORK, N
 *     ..
-*     .. ARRAY ARGUMENTS ..
+*     .. Array Arguments ..
       INTEGER            IPIV( * )
       DOUBLE PRECISION   A( LDA, * ), WORK( * )
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  DGETRI COMPUTES THE INVERSE OF A MATRIX USING THE LU FACTORIZATION
-*  COMPUTED BY DGETRF.
+*  DGETRI computes the inverse of a matrix using the LU factorization
+*  computed by DGETRF.
 *
-*  THIS METHOD INVERTS U AND THEN COMPUTES INV(A) BY SOLVING THE SYSTEM
-*  INV(A)*L = INV(U) FOR INV(A).
+*  This method inverts U and then computes inv(A) by solving the system
+*  inv(A)*L = inv(U) for inv(A).
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  N       (INPUT) INTEGER
-*          THE ORDER OF THE MATRIX A.  N >= 0.
+*  N       (input) INTEGER
+*          The order of the matrix A.  N >= 0.
 *
-*  A       (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDA,N)
-*          ON ENTRY, THE FACTORS L AND U FROM THE FACTORIZATION
-*          A = P*L*U AS COMPUTED BY DGETRF.
-*          ON EXIT, IF INFO = 0, THE INVERSE OF THE ORIGINAL MATRIX A.
+*  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+*          On entry, the factors L and U from the factorization
+*          A = P*L*U as computed by DGETRF.
+*          On exit, if INFO = 0, the inverse of the original matrix A.
 *
-*  LDA     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY A.  LDA >= MAX(1,N).
+*  LDA     (input) INTEGER
+*          The leading dimension of the array A.  LDA >= max(1,N).
 *
-*  IPIV    (INPUT) INTEGER ARRAY, DIMENSION (N)
-*          THE PIVOT INDICES FROM DGETRF; FOR 1<=I<=N, ROW I OF THE
-*          MATRIX WAS INTERCHANGED WITH ROW IPIV(I).
+*  IPIV    (input) INTEGER array, dimension (N)
+*          The pivot indices from DGETRF; for 1<=i<=N, row i of the
+*          matrix was interchanged with row IPIV(i).
 *
-*  WORK    (WORKSPACE/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LWORK)
-*          ON EXIT, IF INFO=0, THEN WORK(1) RETURNS THE OPTIMAL LWORK.
+*  WORK    (workspace/output) DOUBLE PRECISION array, dimension (LWORK)
+*          On exit, if INFO=0, then WORK(1) returns the optimal LWORK.
 *
-*  LWORK   (INPUT) INTEGER
-*          THE DIMENSION OF THE ARRAY WORK.  LWORK >= MAX(1,N).
-*          FOR OPTIMAL PERFORMANCE LWORK >= N*NB, WHERE NB IS
-*          THE OPTIMAL BLOCKSIZE RETURNED BY ILAENV.
+*  LWORK   (input) INTEGER
+*          The dimension of the array WORK.  LWORK >= max(1,N).
+*          For optimal performance LWORK >= N*NB, where NB is
+*          the optimal blocksize returned by ILAENV.
 *
-*          IF LWORK = -1, THEN A WORKSPACE QUERY IS ASSUMED; THE ROUTINE
-*          ONLY CALCULATES THE OPTIMAL SIZE OF THE WORK ARRAY, RETURNS
-*          THIS VALUE AS THE FIRST ENTRY OF THE WORK ARRAY, AND NO ERROR
-*          MESSAGE RELATED TO LWORK IS ISSUED BY XERBLA.
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
 *
-*  INFO    (OUTPUT) INTEGER
-*          = 0:  SUCCESSFUL EXIT
-*          < 0:  IF INFO = -I, THE I-TH ARGUMENT HAD AN ILLEGAL VALUE
-*          > 0:  IF INFO = I, U(I,I) IS EXACTLY ZERO; THE MATRIX IS
-*                SINGULAR AND ITS INVERSE COULD NOT BE COMPUTED.
+*  INFO    (output) INTEGER
+*          = 0:  successful exit
+*          < 0:  if INFO = -i, the i-th argument had an illegal value
+*          > 0:  if INFO = i, U(i,i) is exactly zero; the matrix is
+*                singular and its inverse could not be computed.
 *
 *  =====================================================================
 *
-*     .. PARAMETERS ..
+*     .. Parameters ..
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       LOGICAL            LQUERY
       INTEGER            I, IWS, J, JB, JJ, JP, LDWORK, LWKOPT, NB,
      $                   NBMIN, NN
 *     ..
-*     .. EXTERNAL FUNCTIONS ..
+*     .. External Functions ..
       INTEGER            ILAENV
       EXTERNAL           ILAENV
 *     ..
-*     .. EXTERNAL SUBROUTINES ..
+*     .. External Subroutines ..
       EXTERNAL           DGEMM, DGEMV, DSWAP, DTRSM, DTRTRI, XERBLA
 *     ..
-*     .. INTRINSIC FUNCTIONS ..
+*     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
-*     TEST THE INPUT PARAMETERS.
+*     Test the input parameters.
 *
       INFO = 0
       NB = ILAENV( 1, 'DGETRI', ' ', N, -1, -1, -1 )
@@ -103,15 +103,15 @@
          RETURN
       END IF
 *
-*     QUICK RETURN IF POSSIBLE
+*     Quick return if possible
 *
       IF( N.EQ.0 )
      $   RETURN
 *
-*     FORM INV(U).  IF INFO > 0 FROM DTRTRI, THEN U IS SINGULAR,
-*     AND THE INVERSE IS NOT COMPUTED.
+*     Form inv(U).  If INFO > 0 from DTRTRI, then U is singular,
+*     and the inverse is not computed.
 *
-      CALL DTRTRI( 'UPPER', 'NON-UNIT', N, A, LDA, INFO )
+      CALL DTRTRI( 'Upper', 'Non-unit', N, A, LDA, INFO )
       IF( INFO.GT.0 )
      $   RETURN
 *
@@ -127,37 +127,37 @@
          IWS = N
       END IF
 *
-*     SOLVE THE EQUATION INV(A)*L = INV(U) FOR INV(A).
+*     Solve the equation inv(A)*L = inv(U) for inv(A).
 *
       IF( NB.LT.NBMIN .OR. NB.GE.N ) THEN
 *
-*        USE UNBLOCKED CODE.
+*        Use unblocked code.
 *
          DO 20 J = N, 1, -1
 *
-*           COPY CURRENT COLUMN OF L TO WORK AND REPLACE WITH ZEROS.
+*           Copy current column of L to WORK and replace with zeros.
 *
             DO 10 I = J + 1, N
                WORK( I ) = A( I, J )
                A( I, J ) = ZERO
    10       CONTINUE
 *
-*           COMPUTE CURRENT COLUMN OF INV(A).
+*           Compute current column of inv(A).
 *
             IF( J.LT.N )
-     $         CALL DGEMV( 'NO TRANSPOSE', N, N-J, -ONE, A( 1, J+1 ),
+     $         CALL DGEMV( 'No transpose', N, N-J, -ONE, A( 1, J+1 ),
      $                     LDA, WORK( J+1 ), 1, ONE, A( 1, J ), 1 )
    20    CONTINUE
       ELSE
 *
-*        USE BLOCKED CODE.
+*        Use blocked code.
 *
          NN = ( ( N-1 ) / NB )*NB + 1
          DO 50 J = NN, 1, -NB
             JB = MIN( NB, N-J+1 )
 *
-*           COPY CURRENT BLOCK COLUMN OF L TO WORK AND REPLACE WITH
-*           ZEROS.
+*           Copy current block column of L to WORK and replace with
+*           zeros.
 *
             DO 40 JJ = J, J + JB - 1
                DO 30 I = JJ + 1, N
@@ -166,18 +166,18 @@
    30          CONTINUE
    40       CONTINUE
 *
-*           COMPUTE CURRENT BLOCK COLUMN OF INV(A).
+*           Compute current block column of inv(A).
 *
             IF( J+JB.LE.N )
-     $         CALL DGEMM( 'NO TRANSPOSE', 'NO TRANSPOSE', N, JB,
+     $         CALL DGEMM( 'No transpose', 'No transpose', N, JB,
      $                     N-J-JB+1, -ONE, A( 1, J+JB ), LDA,
      $                     WORK( J+JB ), LDWORK, ONE, A( 1, J ), LDA )
-            CALL DTRSM( 'RIGHT', 'LOWER', 'NO TRANSPOSE', 'UNIT', N, JB,
+            CALL DTRSM( 'Right', 'Lower', 'No transpose', 'Unit', N, JB,
      $                  ONE, WORK( J ), LDWORK, A( 1, J ), LDA )
    50    CONTINUE
       END IF
 *
-*     APPLY COLUMN INTERCHANGES.
+*     Apply column interchanges.
 *
       DO 60 J = N - 1, 1, -1
          JP = IPIV( J )
@@ -188,93 +188,93 @@
       WORK( 1 ) = IWS
       RETURN
 *
-*     END OF DGETRI
+*     End of DGETRI
 *
       END
       SUBROUTINE DTRTI2( UPLO, DIAG, N, A, LDA, INFO )
 *
-*  -- LAPACK ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     FEBRUARY 29, 1992
+*  -- LAPACK routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     February 29, 1992
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       CHARACTER          DIAG, UPLO
       INTEGER            INFO, LDA, N
 *     ..
-*     .. ARRAY ARGUMENTS ..
+*     .. Array Arguments ..
       DOUBLE PRECISION   A( LDA, * )
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  DTRTI2 COMPUTES THE INVERSE OF A REAL UPPER OR LOWER TRIANGULAR
-*  MATRIX.
+*  DTRTI2 computes the inverse of a real upper or lower triangular
+*  matrix.
 *
-*  THIS IS THE LEVEL 2 BLAS VERSION OF THE ALGORITHM.
+*  This is the Level 2 BLAS version of the algorithm.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  UPLO    (INPUT) CHARACTER*1
-*          SPECIFIES WHETHER THE MATRIX A IS UPPER OR LOWER TRIANGULAR.
-*          = 'U':  UPPER TRIANGULAR
-*          = 'L':  LOWER TRIANGULAR
+*  UPLO    (input) CHARACTER*1
+*          Specifies whether the matrix A is upper or lower triangular.
+*          = 'U':  Upper triangular
+*          = 'L':  Lower triangular
 *
-*  DIAG    (INPUT) CHARACTER*1
-*          SPECIFIES WHETHER OR NOT THE MATRIX A IS UNIT TRIANGULAR.
-*          = 'N':  NON-UNIT TRIANGULAR
-*          = 'U':  UNIT TRIANGULAR
+*  DIAG    (input) CHARACTER*1
+*          Specifies whether or not the matrix A is unit triangular.
+*          = 'N':  Non-unit triangular
+*          = 'U':  Unit triangular
 *
-*  N       (INPUT) INTEGER
-*          THE ORDER OF THE MATRIX A.  N >= 0.
+*  N       (input) INTEGER
+*          The order of the matrix A.  N >= 0.
 *
-*  A       (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDA,N)
-*          ON ENTRY, THE TRIANGULAR MATRIX A.  IF UPLO = 'U', THE
-*          LEADING N BY N UPPER TRIANGULAR PART OF THE ARRAY A CONTAINS
-*          THE UPPER TRIANGULAR MATRIX, AND THE STRICTLY LOWER
-*          TRIANGULAR PART OF A IS NOT REFERENCED.  IF UPLO = 'L', THE
-*          LEADING N BY N LOWER TRIANGULAR PART OF THE ARRAY A CONTAINS
-*          THE LOWER TRIANGULAR MATRIX, AND THE STRICTLY UPPER
-*          TRIANGULAR PART OF A IS NOT REFERENCED.  IF DIAG = 'U', THE
-*          DIAGONAL ELEMENTS OF A ARE ALSO NOT REFERENCED AND ARE
-*          ASSUMED TO BE 1.
+*  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+*          On entry, the triangular matrix A.  If UPLO = 'U', the
+*          leading n by n upper triangular part of the array A contains
+*          the upper triangular matrix, and the strictly lower
+*          triangular part of A is not referenced.  If UPLO = 'L', the
+*          leading n by n lower triangular part of the array A contains
+*          the lower triangular matrix, and the strictly upper
+*          triangular part of A is not referenced.  If DIAG = 'U', the
+*          diagonal elements of A are also not referenced and are
+*          assumed to be 1.
 *
-*          ON EXIT, THE (TRIANGULAR) INVERSE OF THE ORIGINAL MATRIX, IN
-*          THE SAME STORAGE FORMAT.
+*          On exit, the (triangular) inverse of the original matrix, in
+*          the same storage format.
 *
-*  LDA     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY A.  LDA >= MAX(1,N).
+*  LDA     (input) INTEGER
+*          The leading dimension of the array A.  LDA >= max(1,N).
 *
-*  INFO    (OUTPUT) INTEGER
-*          = 0: SUCCESSFUL EXIT
-*          < 0: IF INFO = -K, THE K-TH ARGUMENT HAD AN ILLEGAL VALUE
+*  INFO    (output) INTEGER
+*          = 0: successful exit
+*          < 0: if INFO = -k, the k-th argument had an illegal value
 *
 *  =====================================================================
 *
-*     .. PARAMETERS ..
+*     .. Parameters ..
       DOUBLE PRECISION   ONE
       PARAMETER          ( ONE = 1.0D+0 )
 *     ..
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       LOGICAL            NOUNIT, UPPER
       INTEGER            J
       DOUBLE PRECISION   AJJ
 *     ..
-*     .. EXTERNAL FUNCTIONS ..
+*     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
-*     .. EXTERNAL SUBROUTINES ..
+*     .. External Subroutines ..
       EXTERNAL           DSCAL, DTRMV, XERBLA
 *     ..
-*     .. INTRINSIC FUNCTIONS ..
+*     .. Intrinsic Functions ..
       INTRINSIC          MAX
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
-*     TEST THE INPUT PARAMETERS.
+*     Test the input parameters.
 *
       INFO = 0
       UPPER = LSAME( UPLO, 'U' )
@@ -295,7 +295,7 @@
 *
       IF( UPPER ) THEN
 *
-*        COMPUTE INVERSE OF UPPER TRIANGULAR MATRIX.
+*        Compute inverse of upper triangular matrix.
 *
          DO 10 J = 1, N
             IF( NOUNIT ) THEN
@@ -305,15 +305,15 @@
                AJJ = -ONE
             END IF
 *
-*           COMPUTE ELEMENTS 1:J-1 OF J-TH COLUMN.
+*           Compute elements 1:j-1 of j-th column.
 *
-            CALL DTRMV( 'UPPER', 'NO TRANSPOSE', DIAG, J-1, A, LDA,
+            CALL DTRMV( 'Upper', 'No transpose', DIAG, J-1, A, LDA,
      $                  A( 1, J ), 1 )
             CALL DSCAL( J-1, AJJ, A( 1, J ), 1 )
    10    CONTINUE
       ELSE
 *
-*        COMPUTE INVERSE OF LOWER TRIANGULAR MATRIX.
+*        Compute inverse of lower triangular matrix.
 *
          DO 20 J = N, 1, -1
             IF( NOUNIT ) THEN
@@ -324,9 +324,9 @@
             END IF
             IF( J.LT.N ) THEN
 *
-*              COMPUTE ELEMENTS J+1:N OF J-TH COLUMN.
+*              Compute elements j+1:n of j-th column.
 *
-               CALL DTRMV( 'LOWER', 'NO TRANSPOSE', DIAG, N-J,
+               CALL DTRMV( 'Lower', 'No transpose', DIAG, N-J,
      $                     A( J+1, J+1 ), LDA, A( J+1, J ), 1 )
                CALL DSCAL( N-J, AJJ, A( J+1, J ), 1 )
             END IF
@@ -335,92 +335,92 @@
 *
       RETURN
 *
-*     END OF DTRTI2
+*     End of DTRTI2
 *
       END
       SUBROUTINE DTRTRI( UPLO, DIAG, N, A, LDA, INFO )
 *
-*  -- LAPACK ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     MARCH 31, 1993
+*  -- LAPACK routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     March 31, 1993
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       CHARACTER          DIAG, UPLO
       INTEGER            INFO, LDA, N
 *     ..
-*     .. ARRAY ARGUMENTS ..
+*     .. Array Arguments ..
       DOUBLE PRECISION   A( LDA, * )
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  DTRTRI COMPUTES THE INVERSE OF A REAL UPPER OR LOWER TRIANGULAR
-*  MATRIX A.
+*  DTRTRI computes the inverse of a real upper or lower triangular
+*  matrix A.
 *
-*  THIS IS THE LEVEL 3 BLAS VERSION OF THE ALGORITHM.
+*  This is the Level 3 BLAS version of the algorithm.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  UPLO    (INPUT) CHARACTER*1
-*          = 'U':  A IS UPPER TRIANGULAR;
-*          = 'L':  A IS LOWER TRIANGULAR.
+*  UPLO    (input) CHARACTER*1
+*          = 'U':  A is upper triangular;
+*          = 'L':  A is lower triangular.
 *
-*  DIAG    (INPUT) CHARACTER*1
-*          = 'N':  A IS NON-UNIT TRIANGULAR;
-*          = 'U':  A IS UNIT TRIANGULAR.
+*  DIAG    (input) CHARACTER*1
+*          = 'N':  A is non-unit triangular;
+*          = 'U':  A is unit triangular.
 *
-*  N       (INPUT) INTEGER
-*          THE ORDER OF THE MATRIX A.  N >= 0.
+*  N       (input) INTEGER
+*          The order of the matrix A.  N >= 0.
 *
-*  A       (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDA,N)
-*          ON ENTRY, THE TRIANGULAR MATRIX A.  IF UPLO = 'U', THE
-*          LEADING N-BY-N UPPER TRIANGULAR PART OF THE ARRAY A CONTAINS
-*          THE UPPER TRIANGULAR MATRIX, AND THE STRICTLY LOWER
-*          TRIANGULAR PART OF A IS NOT REFERENCED.  IF UPLO = 'L', THE
-*          LEADING N-BY-N LOWER TRIANGULAR PART OF THE ARRAY A CONTAINS
-*          THE LOWER TRIANGULAR MATRIX, AND THE STRICTLY UPPER
-*          TRIANGULAR PART OF A IS NOT REFERENCED.  IF DIAG = 'U', THE
-*          DIAGONAL ELEMENTS OF A ARE ALSO NOT REFERENCED AND ARE
-*          ASSUMED TO BE 1.
-*          ON EXIT, THE (TRIANGULAR) INVERSE OF THE ORIGINAL MATRIX, IN
-*          THE SAME STORAGE FORMAT.
+*  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+*          On entry, the triangular matrix A.  If UPLO = 'U', the
+*          leading N-by-N upper triangular part of the array A contains
+*          the upper triangular matrix, and the strictly lower
+*          triangular part of A is not referenced.  If UPLO = 'L', the
+*          leading N-by-N lower triangular part of the array A contains
+*          the lower triangular matrix, and the strictly upper
+*          triangular part of A is not referenced.  If DIAG = 'U', the
+*          diagonal elements of A are also not referenced and are
+*          assumed to be 1.
+*          On exit, the (triangular) inverse of the original matrix, in
+*          the same storage format.
 *
-*  LDA     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY A.  LDA >= MAX(1,N).
+*  LDA     (input) INTEGER
+*          The leading dimension of the array A.  LDA >= max(1,N).
 *
-*  INFO    (OUTPUT) INTEGER
-*          = 0: SUCCESSFUL EXIT
-*          < 0: IF INFO = -I, THE I-TH ARGUMENT HAD AN ILLEGAL VALUE
-*          > 0: IF INFO = I, A(I,I) IS EXACTLY ZERO.  THE TRIANGULAR
-*               MATRIX IS SINGULAR AND ITS INVERSE CAN NOT BE COMPUTED.
+*  INFO    (output) INTEGER
+*          = 0: successful exit
+*          < 0: if INFO = -i, the i-th argument had an illegal value
+*          > 0: if INFO = i, A(i,i) is exactly zero.  The triangular
+*               matrix is singular and its inverse can not be computed.
 *
 *  =====================================================================
 *
-*     .. PARAMETERS ..
+*     .. Parameters ..
       DOUBLE PRECISION   ONE, ZERO
       PARAMETER          ( ONE = 1.0D+0, ZERO = 0.0D+0 )
 *     ..
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       LOGICAL            NOUNIT, UPPER
       INTEGER            J, JB, NB, NN
 *     ..
-*     .. EXTERNAL FUNCTIONS ..
+*     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
       EXTERNAL           LSAME, ILAENV
 *     ..
-*     .. EXTERNAL SUBROUTINES ..
+*     .. External Subroutines ..
       EXTERNAL           DTRMM, DTRSM, DTRTI2, XERBLA
 *     ..
-*     .. INTRINSIC FUNCTIONS ..
+*     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
-*     TEST THE INPUT PARAMETERS.
+*     Test the input parameters.
 *
       INFO = 0
       UPPER = LSAME( UPLO, 'U' )
@@ -439,12 +439,12 @@
          RETURN
       END IF
 *
-*     QUICK RETURN IF POSSIBLE
+*     Quick return if possible
 *
       IF( N.EQ.0 )
      $   RETURN
 *
-*     CHECK FOR SINGULARITY IF NON-UNIT.
+*     Check for singularity if non-unit.
 *
       IF( NOUNIT ) THEN
          DO 10 INFO = 1, N
@@ -454,131 +454,131 @@
          INFO = 0
       END IF
 *
-*     DETERMINE THE BLOCK SIZE FOR THIS ENVIRONMENT.
+*     Determine the block size for this environment.
 *
       NB = ILAENV( 1, 'DTRTRI', UPLO // DIAG, N, -1, -1, -1 )
       IF( NB.LE.1 .OR. NB.GE.N ) THEN
 *
-*        USE UNBLOCKED CODE
+*        Use unblocked code
 *
          CALL DTRTI2( UPLO, DIAG, N, A, LDA, INFO )
       ELSE
 *
-*        USE BLOCKED CODE
+*        Use blocked code
 *
          IF( UPPER ) THEN
 *
-*           COMPUTE INVERSE OF UPPER TRIANGULAR MATRIX
+*           Compute inverse of upper triangular matrix
 *
             DO 20 J = 1, N, NB
                JB = MIN( NB, N-J+1 )
 *
-*              COMPUTE ROWS 1:J-1 OF CURRENT BLOCK COLUMN
+*              Compute rows 1:j-1 of current block column
 *
-               CALL DTRMM( 'LEFT', 'UPPER', 'NO TRANSPOSE', DIAG, J-1,
+               CALL DTRMM( 'Left', 'Upper', 'No transpose', DIAG, J-1,
      $                     JB, ONE, A, LDA, A( 1, J ), LDA )
-               CALL DTRSM( 'RIGHT', 'UPPER', 'NO TRANSPOSE', DIAG, J-1,
+               CALL DTRSM( 'Right', 'Upper', 'No transpose', DIAG, J-1,
      $                     JB, -ONE, A( J, J ), LDA, A( 1, J ), LDA )
 *
-*              COMPUTE INVERSE OF CURRENT DIAGONAL BLOCK
+*              Compute inverse of current diagonal block
 *
-               CALL DTRTI2( 'UPPER', DIAG, JB, A( J, J ), LDA, INFO )
+               CALL DTRTI2( 'Upper', DIAG, JB, A( J, J ), LDA, INFO )
    20       CONTINUE
          ELSE
 *
-*           COMPUTE INVERSE OF LOWER TRIANGULAR MATRIX
+*           Compute inverse of lower triangular matrix
 *
             NN = ( ( N-1 ) / NB )*NB + 1
             DO 30 J = NN, 1, -NB
                JB = MIN( NB, N-J+1 )
                IF( J+JB.LE.N ) THEN
 *
-*                 COMPUTE ROWS J+JB:N OF CURRENT BLOCK COLUMN
+*                 Compute rows j+jb:n of current block column
 *
-                  CALL DTRMM( 'LEFT', 'LOWER', 'NO TRANSPOSE', DIAG,
+                  CALL DTRMM( 'Left', 'Lower', 'No transpose', DIAG,
      $                        N-J-JB+1, JB, ONE, A( J+JB, J+JB ), LDA,
      $                        A( J+JB, J ), LDA )
-                  CALL DTRSM( 'RIGHT', 'LOWER', 'NO TRANSPOSE', DIAG,
+                  CALL DTRSM( 'Right', 'Lower', 'No transpose', DIAG,
      $                        N-J-JB+1, JB, -ONE, A( J, J ), LDA,
      $                        A( J+JB, J ), LDA )
                END IF
 *
-*              COMPUTE INVERSE OF CURRENT DIAGONAL BLOCK
+*              Compute inverse of current diagonal block
 *
-               CALL DTRTI2( 'LOWER', DIAG, JB, A( J, J ), LDA, INFO )
+               CALL DTRTI2( 'Lower', DIAG, JB, A( J, J ), LDA, INFO )
    30       CONTINUE
          END IF
       END IF
 *
       RETURN
 *
-*     END OF DTRTRI
+*     End of DTRTRI
 *
       END
       LOGICAL          FUNCTION LSAME( CA, CB )
 *
-*  -- LAPACK AUXILIARY ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     SEPTEMBER 30, 1994
+*  -- LAPACK auxiliary routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     September 30, 1994
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       CHARACTER          CA, CB
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  LSAME RETURNS .TRUE. IF CA IS THE SAME LETTER AS CB REGARDLESS OF
-*  CASE.
+*  LSAME returns .TRUE. if CA is the same letter as CB regardless of
+*  case.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  CA      (INPUT) CHARACTER*1
-*  CB      (INPUT) CHARACTER*1
-*          CA AND CB SPECIFY THE SINGLE CHARACTERS TO BE COMPARED.
+*  CA      (input) CHARACTER*1
+*  CB      (input) CHARACTER*1
+*          CA and CB specify the single characters to be compared.
 *
 * =====================================================================
 *
-*     .. INTRINSIC FUNCTIONS ..
+*     .. Intrinsic Functions ..
       INTRINSIC          ICHAR
 *     ..
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       INTEGER            INTA, INTB, ZCODE
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
-*     TEST IF THE CHARACTERS ARE EQUAL
+*     Test if the characters are equal
 *
       LSAME = CA.EQ.CB
       IF( LSAME )
      $   RETURN
 *
-*     NOW TEST FOR EQUIVALENCE IF BOTH CHARACTERS ARE ALPHABETIC.
+*     Now test for equivalence if both characters are alphabetic.
 *
       ZCODE = ICHAR( 'Z' )
 *
-*     USE 'Z' RATHER THAN 'A' SO THAT ASCII CAN BE DETECTED ON PRIME
-*     MACHINES, ON WHICH ICHAR RETURNS A VALUE WITH BIT 8 SET.
-*     ICHAR('A') ON PRIME MACHINES RETURNS 193 WHICH IS THE SAME AS
-*     ICHAR('A') ON AN EBCDIC MACHINE.
+*     Use 'Z' rather than 'A' so that ASCII can be detected on Prime
+*     machines, on which ICHAR returns a value with bit 8 set.
+*     ICHAR('A') on Prime machines returns 193 which is the same as
+*     ICHAR('A') on an EBCDIC machine.
 *
       INTA = ICHAR( CA )
       INTB = ICHAR( CB )
 *
       IF( ZCODE.EQ.90 .OR. ZCODE.EQ.122 ) THEN
 *
-*        ASCII IS ASSUMED - ZCODE IS THE ASCII CODE OF EITHER LOWER OR
-*        UPPER CASE 'Z'.
+*        ASCII is assumed - ZCODE is the ASCII code of either lower or
+*        upper case 'Z'.
 *
          IF( INTA.GE.97 .AND. INTA.LE.122 ) INTA = INTA - 32
          IF( INTB.GE.97 .AND. INTB.LE.122 ) INTB = INTB - 32
 *
       ELSE IF( ZCODE.EQ.233 .OR. ZCODE.EQ.169 ) THEN
 *
-*        EBCDIC IS ASSUMED - ZCODE IS THE EBCDIC CODE OF EITHER LOWER OR
-*        UPPER CASE 'Z'.
+*        EBCDIC is assumed - ZCODE is the EBCDIC code of either lower or
+*        upper case 'Z'.
 *
          IF( INTA.GE.129 .AND. INTA.LE.137 .OR.
      $       INTA.GE.145 .AND. INTA.LE.153 .OR.
@@ -589,8 +589,8 @@
 *
       ELSE IF( ZCODE.EQ.218 .OR. ZCODE.EQ.250 ) THEN
 *
-*        ASCII IS ASSUMED, ON PRIME MACHINES - ZCODE IS THE ASCII CODE
-*        PLUS 128 OF EITHER LOWER OR UPPER CASE 'Z'.
+*        ASCII is assumed, on Prime machines - ZCODE is the ASCII code
+*        plus 128 of either lower or upper case 'Z'.
 *
          IF( INTA.GE.225 .AND. INTA.LE.250 ) INTA = INTA - 32
          IF( INTB.GE.225 .AND. INTB.LE.250 ) INTB = INTB - 32
@@ -599,6 +599,6 @@
 *
 *     RETURN
 *
-*     END OF LSAME
+*     End of LSAME
 *
       END

@@ -1,148 +1,148 @@
 
-C     --------------------- OPNFIL ----------------------
+c     --------------------- opnfil ----------------------
 
-      SUBROUTINE OPNFIL(IPROLST,IPROLSTSCL,INPUT_AMH,OARCHV,
-     *          OMOVI,OHDRGN,OHDRGN_S,OHDRGN_M,OHDRGN_L,OHDRGN_SEQ,
-     *          ORAMA,OOXY,OCHIRAL,OAMH,OAMHSR,OREP,
-     *          OPE_NO_BIAS,OPE_WITH_BIAS,OPE_BACKBONE,
-     *          OPE_BACKBONE_NORAMA,OAMHLR,OAMHMR,ONONADD,
-     *          OCON_P_AP,OCCEV,OOEV,OBIAS_RG,OMOVISEG,
-     *          OOBIASSEGA,OOBIASSEGB,OHARMSPRING)
+      subroutine opnfil(iprolst,iprolstscl,input_amh,oarchv,
+     *          omovi,ohdrgn,ohdrgn_s,ohdrgn_m,ohdrgn_l,ohdrgn_seq,
+     *          orama,ooxy,ochiral,oamh,oamhsr,orep,
+     *          oPE_no_bias,oPE_with_bias,oPE_backbone,
+     *          oPE_backbone_norama,oamhlr,oamhmr,ononadd,
+     *          ocon_P_AP,occev,ooev,obias_Rg,omoviseg,
+     *          oobiassega,oobiassegb,oharmspring)
 
-      USE AMHGLOBALS,  ONLY:SO
+      use amhglobals,  only:SO
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-C     OPNFIL OPENS THE REQUIRED I/O FILES
+c     OPNFIL opens the required i/o files
 
-C     INPUT_AMH:
+c     input_amh:
 
-C        IPROLST  - PROTEIN LIST (INPUT_AMH) (I)
-C        INPUT_AMH - INPUT_AMH PARAMETERS (INPUT_AMH) (I)
-C        OARCHV- OUTPUT/DIAGNOSTIC FILE (OUTPUT) (I)
-C        OMOVI - INTERMEDIATE STRUCTURES 
-C                THROUGHOUT RUN (OUTPUT) (I)
+c        iprolst  - protein list (input_amh) (i)
+c        input_amh - input_amh parameters (input_amh) (i)
+c        oarchv- output/diagnostic file (output) (i)
+c        omovi - intermediate structures 
+c                throughout run (output) (i)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-      IMPLICIT NONE
+      implicit none
 
-C     ARGUMENT DECLARATIONS:
+c     argument declarations:
 
-       INTEGER IPROLST,IPROLSTSCL,INPUT_AMH,OARCHV,OMOVI,
-     *           OHDRGN,ORAMA,OOXY,OCHIRAL,OAMH,OAMHSR,OREP,
-     *           OKE,OAMHLR,OCCEV,OOEV,OAMHMR,OBIAS_RG,OMOVISEG,OHDRGN_S,
-     *           OHDRGN_M,OHDRGN_L,OHDRGN_SEQ,ONONADD,OCON_P_AP,
-     *           OPE_NO_BIAS,OPE_WITH_BIAS,OPE_PLUS_KE,OPE_BACKBONE,
-     *           OPE_BACKBONE_NORAMA,OOBIASSEGA,OOBIASSEGB,OHARMSPRING
-C     --------------------- BEGIN -----------------------
+       integer iprolst,iprolstscl,input_amh,oarchv,omovi,
+     *           ohdrgn,orama,ooxy,ochiral,oamh,oamhsr,orep,
+     *           oKE,oamhlr,occev,ooev,oamhmr,obias_Rg,omoviseg,ohdrgn_s,
+     *           ohdrgn_m,ohdrgn_l,ohdrgn_seq,ononadd,ocon_P_AP,
+     *           oPE_no_bias,oPE_with_bias,oPE_plus_KE,oPE_backbone,
+     *           oPE_backbone_norama,oobiassega,oobiassegb,oharmspring
+c     --------------------- begin -----------------------
 
-C     OPEN SPECIFIED FILES
+c     open specified files
 
-C     INPUT_AMH FILES:
+c     input_amh files:
 
-C        TARGET PROTEINS AND MEMORIES
+c        target proteins and memories
 
-       OPEN(UNIT=IPROLST,FILE='PRO.LIST',STATUS='UNKNOWN',FORM='FORMATTED')
-C      OPEN(UNIT=IPROLSTSCL,FILE='PRO.LIST.SCL',STATUS='UNKNOWN',FORM='FORMATTED')
+       open(unit=iprolst,file='pro.list',status='unknown',form='formatted')
+c      open(unit=iprolstscl,file='pro.list.scl',status='unknown',form='formatted')
 
-C        INPUT_AMH PARAMETERS
+c        input_amh parameters
 
-       OPEN(UNIT=INPUT_AMH,FILE='INPUT_AMH',STATUS='UNKNOWN',FORM='FORMATTED')
+       open(unit=input_amh,file='input_amh',status='unknown',form='formatted')
 
-C     OUTPUT FILES:
+c     output files:
 
-C        ARCHIVE FILE
+c        archive file
 
-       OPEN(UNIT=OARCHV,FILE='ARCHIVE_AMH',STATUS='UNKNOWN',FORM='FORMATTED')
+       open(unit=oarchv,file='archive_amh',status='unknown',form='formatted')
 
-C        HYDROGEN BOND POTENTIAL PLOT FILE
+c        hydrogen bond potential plot file
 
-       OPEN(UNIT=OHDRGN,FILE='HDRGN.PLOT',STATUS='UNKNOWN')
-       OPEN(UNIT=OHDRGN_S,FILE='HDRGN_S.PLOT',STATUS='UNKNOWN')
-       OPEN(UNIT=OHDRGN_M,FILE='HDRGN_M.PLOT',STATUS='UNKNOWN')
-       OPEN(UNIT=OHDRGN_L,FILE='HDRGN_L.PLOT',STATUS='UNKNOWN')
-       OPEN(UNIT=OHDRGN_SEQ,FILE='HDRGN_SEQ.PLOT',STATUS='UNKNOWN')
+       open(unit=ohdrgn,file='hdrgn.plot',status='unknown')
+       open(unit=ohdrgn_s,file='hdrgn_s.plot',status='unknown')
+       open(unit=ohdrgn_m,file='hdrgn_m.plot',status='unknown')
+       open(unit=ohdrgn_l,file='hdrgn_l.plot',status='unknown')
+       open(unit=ohdrgn_seq,file='hdrgn_seq.plot',status='unknown')
 
-C        RAMA POTENTIAL PLOT FILE
+c        rama potential plot file
 
-       OPEN(UNIT=ORAMA,FILE='RAMA.PLOT',STATUS='UNKNOWN')
+       open(unit=orama,file='rama.plot',status='unknown')
         
-C        OXY POTENTIAL PLOT FILE
+c        oxy potential plot file
 
-       OPEN(UNIT=OOXY,FILE='OXY.PLOT',STATUS='UNKNOWN')
+       open(unit=ooxy,file='oxy.plot',status='unknown')
 
-C        CHIRAL POTENTIAL PLOT FILE
+c        chiral potential plot file
 
-       OPEN(UNIT=OCHIRAL,FILE='CHIRAL.PLOT',STATUS='UNKNOWN')
+       open(unit=ochiral,file='chiral.plot',status='unknown')
 
-C        AMH POTENTIAL PLOT FILE
+c        amh potential plot file
 
-       OPEN(UNIT=OAMH,FILE='AMH.PLOT',STATUS='UNKNOWN')
+       open(unit=oamh,file='amh.plot',status='unknown')
 
-       OPEN(UNIT=OAMHSR,FILE='AMHSR.PLOT',STATUS='UNKNOWN')
+       open(unit=oamhsr,file='amhsr.plot',status='unknown')
 
-C   REPLICA INTERACTION ENERGY 
-C        OPEN(UNIT=OREP,FILE='REP_BIAS.PLOT',STATUS='UNKNOWN')
+c   replica interaction energy 
+c        open(unit=orep,file='rep_bias.plot',status='unknown')
  
-C        TOTAL POTENTIAL AT EVERY TIME STEP
+c        total potential at every time step
 
-        OPEN(UNIT=OPE_NO_BIAS,FILE='PE_NO_BIAS.PLOT',STATUS='UNKNOWN')
-        OPEN(UNIT=OPE_WITH_BIAS,FILE='PE_WITH_BIAS.PLOT',STATUS='UNKNOWN')
-C        OPEN(UNIT=OPE_PLUS_KE,FILE='PE_AND_KE.PLOT',STATUS='UNKNOWN')
-        OPEN(UNIT=OPE_BACKBONE,FILE='BACKBONE.PLOT',STATUS='UNKNOWN')
-         OPEN(UNIT=OPE_BACKBONE_NORAMA,FILE='BACKBONE_NORAMA.PLOT',STATUS='UNKNOWN')
-
-
-        OPEN(UNIT=OAMHLR,FILE='AMHLR.PLOT',STATUS='UNKNOWN')
-        OPEN(UNIT=OAMHMR,FILE='AMHMR.PLOT',STATUS='UNKNOWN')
-
-C       NON-ADDITIVE CONTACT POTENTIAL 
-        OPEN(UNIT=ONONADD,FILE='NONADD.PLOT',STATUS='UNKNOWN')
-
-C       P-AP CONTACT POTENTIAL 
-        OPEN(UNIT=OCON_P_AP,FILE='CON_P_AP.PLOT',STATUS='UNKNOWN')
-
-C       POTENTIAL DUE TO CARBON (A/B) EXCLUDED VOLUME
-
-        OPEN(UNIT=OCCEV,FILE='CCEV.PLOT',STATUS='UNKNOWN')
-
-C       POTENTIAL DUE TO OXY EXCLUDED VOLUME
-
-        OPEN(UNIT=OOEV,FILE='OOEV.PLOT',STATUS='UNKNOWN')
-
-C       POTENTIAL DUE TO BIASING POTENTIAL
-
-C               OPEN(UNIT=OBIAS,FILE='BIAS.PLOT',STATUS='UNKNOWN')
-
-C       POTENTIAL DUE TO RG-DEPENDENT BIASING POTENTIAL
-
-        OPEN(UNIT=OBIAS_RG,FILE='RG_BIAS.PLOT',STATUS='UNKNOWN')
-
-C       PARTIAL BIASING POTENTIAL
-        OPEN(UNIT=OOBIASSEGA,FILE='BIASSEG_A.PLOT',STATUS='UNKNOWN')
-        OPEN(UNIT=OOBIASSEGB,FILE='BIASSEG_B.PLOT',STATUS='UNKNOWN')
-
-        OPEN(UNIT=OHARMSPRING,FILE='HARM_SPRING.PLOT',STATUS='UNKNOWN')
+        open(unit=oPE_no_bias,file='PE_no_bias.plot',status='unknown')
+        open(unit=oPE_with_bias,file='PE_with_bias.plot',status='unknown')
+c        open(unit=oPE_plus_KE,file='PE_and_KE.plot',status='unknown')
+        open(unit=oPE_backbone,file='backbone.plot',status='unknown')
+         open(unit=oPE_backbone_norama,file='backbone_norama.plot',status='unknown')
 
 
-C        MOVIE CONFIGURATIONS
+        open(unit=oamhlr,file='amhlr.plot',status='unknown')
+        open(unit=oamhmr,file='amhmr.plot',status='unknown')
+
+c       non-additive contact potential 
+        open(unit=ononadd,file='nonadd.plot',status='unknown')
+
+c       P-AP contact potential 
+        open(unit=ocon_P_AP,file='con_P_AP.plot',status='unknown')
+
+c       potential due to carbon (a/b) excluded volume
+
+        open(unit=occev,file='ccev.plot',status='unknown')
+
+c       potential due to oxy excluded volume
+
+        open(unit=ooev,file='ooev.plot',status='unknown')
+
+c       potential due to biasing potential
+
+c               open(unit=obias,file='bias.plot',status='unknown')
+
+c       potential due to Rg-dependent biasing potential
+
+        open(unit=obias_Rg,file='Rg_bias.plot',status='unknown')
+
+c       partial biasing potential
+        open(unit=oobiassega,file='biasseg_a.plot',status='unknown')
+        open(unit=oobiassegb,file='biasseg_b.plot',status='unknown')
+
+        open(unit=oharmspring,file='harm_spring.plot',status='unknown')
+
+
+c        movie configurations
  
-           OPEN(UNIT=OMOVI,FILE='MOVIE',STATUS='UNKNOWN',
-     *        FORM='FORMATTED')
+           open(unit=omovi,file='movie',status='unknown',
+     *        form='formatted')
  
-C        FINAL MOVIE CONFIGURATION
+c        final movie configuration
  
-C           OPEN(UNIT=OMOVISEG,FILE='MOVIESEG_FINAL',STATUS='UNKNOWN',
-C     *        FORM='FORMATTED')
+c           open(unit=omoviseg,file='movieseg_final',status='unknown',
+c     *        form='formatted')
 
-C    
-C          WRITE(6,*)'SO', SO 
-           OPEN(UNIT=SO,FILE='OUTPUT_AMH',STATUS='UNKNOWN')
+c    
+c          write(6,*)'SO', SO 
+           open(unit=SO,file='output_amh',status='unknown')
 
-C     END I/O TAPE OPENINGS
+c     end i/o tape openings
 
-C     ---------------------- DONE -----------------------
+c     ---------------------- done -----------------------
 
-      RETURN
-      END
+      return
+      end

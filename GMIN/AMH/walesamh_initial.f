@@ -1,122 +1,122 @@
-      SUBROUTINE WALESAMH_INITIAL()
+      subroutine walesamh_initial()
 
-      USE AMHGLOBALS, ONLY: SO, NMTEMP,ITGRD,TEMGRD,TEMTUR,ICTEMP,CTEMP,
-     *  ISCLTAB,NMRES,OARCHV,NMSTEP,NUMPRO,IDIGNS,MAXPRO,MAXCRD,PRCORD,IRES,OCONV,
-     *  OMOVI,OMOVISEG,QUENCH,NQUENCH,QUENCH_CRD
+      use amhglobals, only: SO, nmtemp,itgrd,temgrd,temtur,ictemp,ctemp,
+     *  iscltab,nmres,oarchv,nmstep,numpro,idigns,maxpro,maxcrd,prcord,ires,oconv,
+     *  omovi,omoviseg,quench,nquench,quench_crd
 
-      USE COMMONS, ONLY: COORDS
+      use commons, only: coords
 
-      IMPLICIT NONE
+      implicit none
 
-C     SUBROUTINES REQUIRED BY MAIN PROGRAM
+c     subroutines required by main program
 
-       EXTERNAL GENTAB,INITIL,INTSTR,SCLTAB,ZERO_AMH
+       external gentab,initil,intstr,scltab,zero_amh
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     INTERNAL VARIABLES:
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     internal variables:
 
-         INTEGER JSTRT,JFINS,I_QUENCH,LEN,ISHKIT,NMDIFV,GLY_COUNT
-         INTEGER III
+         integer jstrt,jfins,i_quench,len,ishkit,nmdifv,gly_count
+         integer iii
 
-         CHARACTER*10 SAVE_NAME
-
-
-      CALL ZERO_AMH
-
-C     --------------------- BEGIN -----------------------
+         character*10 save_name
 
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     OPEN REQUIRED FILES, READ INPUT PARAMETER FILE, AND GENERATE HEADER FILE
-C      CALL READ_INPUT_ALT() ! CALLED BEFORE INITIL : JOHAN
-      CALL INITIL
-C      CALL READ_ALTGAMMA()  ! CALLED AFTER  INITIL : JOHAN
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      call zero_amh
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     SET UP TEMPERATURE-ANNEALING SCHEDULE
-C      CALL ANNSCH(NMTEMP,ITGRD,TEMGRD,TEMTUR,ICTEMP,CTEMP)
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c     --------------------- begin -----------------------
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     GENERATE REQUISITE FORCE/POTENTIAL TABLES
-      CALL GENTAB
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-        WRITE(SO,*) 'IN SCLTAB',ISCLTAB
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     SCALE TABLES
-      IF (ISCLTAB) CALL SCLTAB
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     open required files, read input parameter file, and generate header file
+c      call read_input_alt() ! called BEFORE initil : Johan
+      call initil
+c      call read_altgamma()  ! called AFTER  initil : Johan
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-        WRITE(SO,*) 'OUT SCLTAB'
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     GENERATE INITIAL STRUCTURES
-      QUENCH_CRD=0.0D0
-      CALL INTSTR
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     set up temperature-annealing schedule
+c      call annsch(nmtemp,itgrd,temgrd,temtur,ictemp,ctemp)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     generate requisite force/potential tables
+      call gentab
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+        write(SO,*) 'in scltab',iscltab
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     scale tables
+      if (iscltab) call scltab
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+
+        write(SO,*) 'out scltab'
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     generate initial structures
+      quench_crd=0.0D0
+      call intstr
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
         
-        WRITE(SO,*) 'OUT INTSTR'
+        write(SO,*) 'out intstr'
 
-        IF (.NOT. QUENCH) NQUENCH=1
-        DO I_QUENCH = 1,NQUENCH
-        PRCORD=QUENCH_CRD(:,:,:,:,I_QUENCH)
+        if (.not. quench) nquench=1
+        do i_quench = 1,nquench
+        prcord=quench_crd(:,:,:,:,i_quench)
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     SET INDICIES FOR THE FIRST AND LAST RESIDUES
-C     WHICH ARE NOT FIXED IN CRYSTAL CONFORMATION
-      JSTRT=1
-      JFINS=NMRES
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     set indicies for the first and last residues
+c     which are not fixed in crystal conformation
+      jstrt=1
+      jfins=nmres
 
-C     SET SUBSEGMENT LENGTH
-      LEN=JFINS - JSTRT + 1
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c     set subsegment length
+      len=jfins - jstrt + 1
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-C++++++++++++++++++++++++++++++JOHAN
-!       CALL READ_INPUT_ALT()
-!       CALL READ_ALTGAMMA() ! MUST BE CALLED AFTER INITIL
+c++++++++++++++++++++++++++++++johan
+!       call read_input_alt()
+!       call read_altgamma() ! must be called after initil
 
-C------------------------------JOHAN
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     --- DIAGNOSTICS ---
-C      WRITE(OARCHV,121)JSTRT,JFINS,LEN
-C  121 FORMAT(/' START ',I3,' END ',I3,' LENGTH ',I3)
-C      WRITE(OARCHV,122)JSTRT,JFINS,NMSTEP,NUMPRO
-C  122 FORMAT('JSTRT ',I3,' JFINS ',I3,' MUTATIONS/T ',
-C     *       I3,' NUMPRO ',I3)
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c------------------------------johan
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     --- diagnostics ---
+c      write(oarchv,121)jstrt,jfins,len
+c  121 format(/' start ',i3,' end ',i3,' length ',i3)
+c      write(oarchv,122)jstrt,jfins,nmstep,numpro
+c  122 format('jstrt ',i3,' jfins ',i3,' mutations/T ',
+c     *       i3,' numpro ',i3)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     GENERATE INITIAL ENSEMBLE OF PROTEINS
-C     FIND CONFIGURATION WHICH SATISFIES THE CONSTRAINTS
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     generate initial ensemble of proteins
+c     find configuration which satisfies the constraints
 
-      IDIGNS=.FALSE.
+      idigns=.false.
 
-        ENDDO ! I_QUENCH
+        enddo ! i_quench
 
-        GLY_COUNT = 0
-       DO 764 III = 1,NMRES
-       IF (IRES(III).EQ.8) THEN
-         COORDS(9*(III-1)+1 - GLY_COUNT*3,1) = (PRCORD(III, 1, 1, 1)) !  CA X
-         COORDS(9*(III-1)+2 - GLY_COUNT*3,1) = (PRCORD(III, 2, 1, 1)) !  CA Y
-         COORDS(9*(III-1)+3 - GLY_COUNT*3,1) = (PRCORD(III, 3, 1, 1)) !  CA Z
-         COORDS(9*(III-1)+4 - GLY_COUNT*3,1) = (PRCORD(III, 1, 1, 3)) !  O X
-         COORDS(9*(III-1)+5 - GLY_COUNT*3,1) = (PRCORD(III, 2, 1, 3)) !  O Y
-         COORDS(9*(III-1)+6 - GLY_COUNT*3,1) = (PRCORD(III, 3, 1, 3)) !  O Z
-         GLY_COUNT = GLY_COUNT + 1
-       ELSE
-         COORDS(9*(III-1)+1 - GLY_COUNT*3,1) = (PRCORD(III, 1, 1, 1)) !  CA X
-         COORDS(9*(III-1)+2 - GLY_COUNT*3,1) = (PRCORD(III, 2, 1, 1)) !  CA Y
-         COORDS(9*(III-1)+3 - GLY_COUNT*3,1) = (PRCORD(III, 3, 1, 1)) !  CA Z
-         COORDS(9*(III-1)+4 - GLY_COUNT*3,1) = (PRCORD(III, 1, 1, 2)) !  CB X
-         COORDS(9*(III-1)+5 - GLY_COUNT*3,1) = (PRCORD(III, 2, 1, 2)) !  CB Y
-         COORDS(9*(III-1)+6 - GLY_COUNT*3,1) = (PRCORD(III, 3, 1, 2)) !  CB Z
-         COORDS(9*(III-1)+7 - GLY_COUNT*3,1) = (PRCORD(III, 1, 1, 3)) !  O X
-         COORDS(9*(III-1)+8 - GLY_COUNT*3,1) = (PRCORD(III, 2, 1, 3)) !  O Y
-         COORDS(9*(III-1)+9 - GLY_COUNT*3,1) = (PRCORD(III, 3, 1, 3)) !  O Z
-       ENDIF
-764    CONTINUE
+        gly_count = 0
+       do 764 iii = 1,nmres
+       if (ires(iii).eq.8) then
+         coords(9*(iii-1)+1 - gly_count*3,1) = (prcord(iii, 1, 1, 1)) !  CA X
+         coords(9*(iii-1)+2 - gly_count*3,1) = (prcord(iii, 2, 1, 1)) !  CA Y
+         coords(9*(iii-1)+3 - gly_count*3,1) = (prcord(iii, 3, 1, 1)) !  CA Z
+         coords(9*(iii-1)+4 - gly_count*3,1) = (prcord(iii, 1, 1, 3)) !  O X
+         coords(9*(iii-1)+5 - gly_count*3,1) = (prcord(iii, 2, 1, 3)) !  O Y
+         coords(9*(iii-1)+6 - gly_count*3,1) = (prcord(iii, 3, 1, 3)) !  O Z
+         gly_count = gly_count + 1
+       else
+         coords(9*(iii-1)+1 - gly_count*3,1) = (prcord(iii, 1, 1, 1)) !  CA X
+         coords(9*(iii-1)+2 - gly_count*3,1) = (prcord(iii, 2, 1, 1)) !  CA Y
+         coords(9*(iii-1)+3 - gly_count*3,1) = (prcord(iii, 3, 1, 1)) !  CA Z
+         coords(9*(iii-1)+4 - gly_count*3,1) = (prcord(iii, 1, 1, 2)) !  CB X
+         coords(9*(iii-1)+5 - gly_count*3,1) = (prcord(iii, 2, 1, 2)) !  CB Y
+         coords(9*(iii-1)+6 - gly_count*3,1) = (prcord(iii, 3, 1, 2)) !  CB Z
+         coords(9*(iii-1)+7 - gly_count*3,1) = (prcord(iii, 1, 1, 3)) !  O X
+         coords(9*(iii-1)+8 - gly_count*3,1) = (prcord(iii, 2, 1, 3)) !  O Y
+         coords(9*(iii-1)+9 - gly_count*3,1) = (prcord(iii, 3, 1, 3)) !  O Z
+       endif
+764    continue
 
 
 
-      END
+      end

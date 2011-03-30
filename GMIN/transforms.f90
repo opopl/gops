@@ -1,79 +1,79 @@
-!   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!   THIS FILE IS PART OF GMIN.
+!   GMIN: A program for finding global minima
+!   Copyright (C) 1999-2006 David J. Wales
+!   This file is part of GMIN.
 !
-!   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   GMIN is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   GMIN is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 MODULE TRANSFORMS
     
 CONTAINS
 
-!!! GENERAL TRANSFORMATION
+!!! General transformation
 
     FUNCTION MATRIX_TRANSFORM(INPUT_COORDS, TRANSFORMATION_MATRIX) RESULT(OUTPUT_COORDS)
-    ! GENERAL TRANSFORM, REQUIRES THAT THE TRANSFORMATION MATRIX BE SQUARE AND THE SAME SIZE AS THE INPUT COORDINATES.
+    ! General transform, requires that the transformation matrix be square and the same size as the input coordinates.
         IMPLICIT NONE
 
         DOUBLE PRECISION, DIMENSION(:) :: OUTPUT_COORDS
         DOUBLE PRECISION, INTENT(IN), DIMENSION(:) :: INPUT_COORDS, TRANSFORMATION_MATRIX
 
-!        IF (!THE SIZES DON'T MATCH...
+!        IF (!the sizes don't match...
 
 !       MATMUL
 
     END FUNCTION MATRIX_TRANSFORM
 
-!!! TRANSLATIONS START HERE
+!!! Translations start here
 
     FUNCTION TRANSLATE(INPUT_COORDS, TRANSLATION) RESULT(OUTPUT_COORDS)
-    ! TRANSLATES THE INPUT COORDINATES BY TRANSLATION (X1,Y1,Z1,X2,Y2,Z2...XN,YN,ZN)
-    ! (X, Y, Z) -> (X+X, Y+Y, Z+Z)
+    ! Translates the input coordinates by TRANSLATION (X1,Y1,Z1,X2,Y2,Z2...Xn,Yn,Zn)
+    ! (x, y, z) -> (x+X, y+Y, z+Z)
         IMPLICIT NONE
 
         DOUBLE PRECISION, DIMENSION(:) :: OUTPUT_COORDS
         DOUBLE PRECISION, INTENT(IN), DIMENSION(:) :: INPUT_COORDS, TRANSLATION
 
         IF (SIZE(INPUT_COORDS) .NE. SIZE(TRANSLATION)) THEN
-            STOP 'ERROR: SIZES OF THE INPUT COORDINATES AND TRANSLATION ARRAYS &
-            & ARE DIFFERENT IN FUNCTION TRANSLATE OF MODULE TRANSFORMS.'
+            STOP 'Error: Sizes of the input coordinates and translation arrays &
+            & are different in function TRANSLATE of module TRANSFORMS.'
         END IF
 
         OUTPUT_COORDS = INPUT_COORDS + TRANSLATION
     END FUNCTION TRANSLATE
 
-!!! (PROPER) ROTATIONS START HERE
+!!! (Proper) rotations start here
 
    FUNCTION ROTATE_ABOUT_AXIS_ORIGIN(INPUT_COORDS, ROTATION_AXIS, ROTATION_ANGLE) RESULT(OUTPUT_COORDS)
-    ! ROTATES THE INPUT COORDINATES THROUGH THE GIVEN ANGLE ABOUT THE AXIS PROVIDED.
+    ! Rotates the input coordinates through the given angle about the axis provided.
     ! CAN THE INPUT_COORDS VECTOR BE LARGER THAN 3?  NEED TO THINK ABOUT COORDS, SHOULD IT BE AN ARRAY - COORDS(INDEX, ATOM) 
 
         
     END FUNCTION ROTATE_ABOUT_AXIS_ORIGIN
 
     FUNCTION ROTATE_ABOUT_XYZ(INPUT_COORDS, ROTATION_ANGLES) RESULT(OUTPUT_COORDS)
-    ! ROTATES THE INPUT COORDINATES ABOUT THE X, Y AND Z AXES BY THE ANGLES SPECIFIED.
+    ! Rotates the input coordinates about the x, y and z axes by the angles specified.
 
     END FUNCTION ROTATE_ABOUT_XYZ
 
-!!! REFLECTIONS START HERE
+!!! Reflections start here
 
-!!! INVERSIONS START HERE
+!!! Inversions start here
 
     FUNCTION INVERSION_THROUGH_ORIGIN(INPUT_COORDS) RESULT(OUTPUT_COORDS)
-    ! INVERTS THE INPUT COORDINATES THROUGH (0,0,0)
-    ! (X, Y, Z) -> (-X, -Y, -Z)
+    ! Inverts the input coordinates through (0,0,0)
+    ! (x, y, z) -> (-x, -y, -z)
         IMPLICIT NONE
 
         DOUBLE PRECISION, DIMENSION(:) :: OUTPUT_COORDS
@@ -83,21 +83,21 @@ CONTAINS
     END FUNCTION INVERSION_THROUGH_ORIGIN
 
     FUNCTION INVERSION_THROUGH_POINT( INPUT_COORDS, POINT_COORDS ) RESULT(OUTPUT_COORDS)
-    ! INVERTS THE INPUT COORDINATES THROUGH POINT_COORDS (X1,Y1,Z1,X2,Y2,Z2...XN,YN,ZN)
-    ! (X, Y, Z) -> (2X-X, 2Y-Y, 2Z-Z)
+    ! Inverts the input coordinates through POINT_COORDS (X1,Y1,Z1,X2,Y2,Z2...Xn,Yn,Zn)
+    ! (x, y, z) -> (2X-x, 2Y-y, 2Z-z)
         IMPLICIT NONE
 
         DOUBLE PRECISION, DIMENSION(:) :: OUTPUT_COORDS
         DOUBLE PRECISION, INTENT(IN), DIMENSION(:) :: INPUT_COORDS, POINT_COORDS
 
         IF (SIZE(INPUT_COORDS) .NE. SIZE(POINT_COORDS)) THEN
-            STOP 'ERROR: SIZES OF THE INPUT COORDINATES AND THE POINT OF INVERSION COORDINATES &
-                  & ARE DIFFERENT IN FUNCTION INVERSION_THROUGH_POINT OF MODULE TRANSFORMS.'
+            STOP 'Error: Sizes of the input coordinates and the point of inversion coordinates &
+                  & are different in function INVERSION_THROUGH_POINT of module TRANSFORMS.'
         END IF
 
         OUTPUT_COORDS = (2 * POINT_COORDS) - INPUT_COORDS
     END FUNCTION INVERSION_THROUGH_POINT
 
-!!! IMPROPER ROTATIONS START HERE
+!!! Improper rotations start here
 
 END MODULE TRANSFORMS

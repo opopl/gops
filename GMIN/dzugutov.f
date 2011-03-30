@@ -1,44 +1,44 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C-----------------------------------------------------------------------*
 C
-C  ENERGY AND GRADIENT FOR THE DZUGUTOV POTENTIAL.
+C  Energy and gradient for the Dzugutov potential.
 C
 C  16.02.2000
-C  SERGEI SIMDYANKIN <SSIM@NADA.KTH.SE>
+C  Sergei Simdyankin <ssim@nada.kth.se>
 C
-C CORRESPONDENCE WITH THE PARAMETERS IN THE FILE "POTENTIAL.F"
+C correspondence with the parameters in the file "potential.f"
 C V     = GRAD
 C EDZ   = EREAL
 C GTEST = GRADT
 C STEST 
 C
-C MEANING OF THE VARIABLES
-C DIST - DISTANCE
-C EDZ  - TOTAL INTERACTION ENERGY
-C VT   - (3*N) VECTOR OF INTERACTION ENERGIES OF EACH PARTICLE
-C G    - (N,N) STORAGE FOR GRADIENT INTERMEDIATE BITS
-C V    - (3*N) VECTOR - GRADIENT (FORCE ACTING ON A PARTICLE)
+C meaning of the variables
+C DIST - distance
+C EDZ  - total interaction energy
+C VT   - (3*N) vector of interaction energies of each particle
+C G    - (N,N) storage for gradient intermediate bits
+C V    - (3*N) vector - gradient (force acting on a particle)
 ! 
 C-----------------------------------------------------------------------*
       SUBROUTINE DZPOT(X,V,EDZ,GTEST,STEST)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       LOGICAL GTEST, STEST, DZT
       INTEGER J1, J2, J3, J4
@@ -72,7 +72,7 @@ C-----------------------------------------------------------------------*
                ENDIF
                DDUMMY=0.0D0
                IF (DIST.LT.DZP72) THEN
-                  CALL DERPHI(DIST,DUMMY,DDUMMY,DDDUMMY,STEST,DZP1,DZP2,DZP3,DZP4,DZP5,DZP6,DZP7)
+                  call derphi(DIST,DUMMY,DDUMMY,DDDUMMY,STEST,DZP1,DZP2,DZP3,DZP4,DZP5,DZP6,DZP7)
                   VT(J1)=VT(J1)+DUMMY
                   VT(J2)=VT(J2)+DUMMY
                   EDZ=EDZ+DUMMY
@@ -96,7 +96,7 @@ C-----------------------------------------------------------------------*
                   NEAREST(J1)=J2
                ENDIF
                IF (DIST.LT.DZP72) THEN
-                  CALL DERPHI(DIST,DUMMY,DDUMMY,DDDUMMY,STEST,DZP1,DZP2,DZP3,DZP4,DZP5,DZP6,DZP7)
+                  call derphi(DIST,DUMMY,DDUMMY,DDDUMMY,STEST,DZP1,DZP2,DZP3,DZP4,DZP5,DZP6,DZP7)
                   VT(J1)=VT(J1)+DUMMY
                   VT(J2)=VT(J2)+DUMMY
                   EDZ=EDZ+DUMMY
@@ -139,7 +139,7 @@ C           X(3*(J1-1)+1)=X(3*(J1-1)+1)*(DIST-1.0D0)/DIST
 C           X(3*(J1-1)+2)=X(3*(J1-1)+2)*(DIST-1.0D0)/DIST
 C           X(3*(J1-1)+3)=X(3*(J1-1)+3)*(DIST-1.0D0)/DIST
 C           PRINT*,'J1,VT,DIST=',J1,VT(J1),DIST
-C           PRINT*,'MOVING ATOM ',J1,' NEARER TO ATOM ',NEAREST(J1)
+C           PRINT*,'moving atom ',J1,' nearer to atom ',NEAREST(J1)
             X(3*(J1-1)+1)=X(3*(NEAREST(J1)-1)+1)+(X(3*(J1-1)+1)-X(3*(NEAREST(J1)-1)+1))/NEARD(J1)
             X(3*(J1-1)+2)=X(3*(NEAREST(J1)-1)+2)+(X(3*(J1-1)+2)-X(3*(NEAREST(J1)-1)+2))/NEARD(J1)
             X(3*(J1-1)+3)=X(3*(NEAREST(J1)-1)+3)+(X(3*(J1-1)+3)-X(3*(NEAREST(J1)-1)+3))/NEARD(J1)
@@ -151,33 +151,33 @@ C           PRINT*,'MOVING ATOM ',J1,' NEARER TO ATOM ',NEAREST(J1)
       END
 
 C%%%%%%%
-C VALUES OF THE POTENTIAL, FIRST, AND SECOND DERIVATIVES
-C IF SECDER = .FALSE. DDPHI = 0 ON OUTPUT
+C values of the potential, first, and second derivatives
+C if secder = .false. ddphi = 0 on output
 C%%%%%%%
 C-----------------------------------------------------------------------*
-      SUBROUTINE DERPHI(R2,PHI,DPHI,DDPHI,SECDER,M,A,C,AA,B,D,BB)
-      IMPLICIT NONE
-      DOUBLE PRECISION R2, PHI, DPHI, DDPHI, M
-      LOGICAL SECDER
-      INTEGER M2
+      subroutine derphi(r2,phi,dphi,ddphi,secder,m,A,c,aa,B,d,bb)
+      implicit none
+      DOUBLE PRECISION r2, phi, dphi, ddphi, m
+      logical secder
+      integer m2
 
-      DOUBLE PRECISION A, AA, B, BB, C, D 
-C     PARAMETER(M=16, A=5.82D0, C=1.10D0, AA=1.87D0, B=1.28D0,  D=0.27D0, BB=1.94D0, M2=8)
-C     PARAMETER(M=4,  A=3.00D0, C=0.52D0, AA=1.65D0, B=2.109D0, D=0.55D0, BB=1.94D0, M2=2)
-      DOUBLE PRECISION R, V1, DV1, DDV1, V2, DV2, DDV2, DUMMY
-      DOUBLE PRECISION EXPO, EXPARG
+      DOUBLE PRECISION A, aa, B, bb, c, d 
+C     parameter(m=16, A=5.82d0, c=1.10d0, aa=1.87d0, B=1.28d0,  d=0.27d0, bb=1.94d0, m2=8)
+C     parameter(m=4,  A=3.00d0, c=0.52d0, aa=1.65d0, B=2.109d0, d=0.55d0, bb=1.94d0, m2=2)
+      DOUBLE PRECISION r, V1, dV1, ddV1, V2, dV2, ddV2, DUMMY
+      DOUBLE PRECISION expo, exparg
 
-      M2=M/2
-      R = SQRT(R2)
+      m2=m/2
+      r = sqrt(r2)
 C
-C  INITIALIZATION NEEDED FOR SUN!
+C  Initialization needed for Sun!
 C
       V1=0.0D0
       V2=0.0D0
-      DV1=0.0D0
-      DDV1=0.0D0
-      DV2=0.0D0
-      DDV2=0.0D0
+      dV1=0.0D0
+      ddV1=0.0D0
+      dV2=0.0D0
+      ddV2=0.0D0
 
       IF (R .LT. BB) THEN
          EXPARG = D/(R-BB)
@@ -212,4 +212,4 @@ C           ENDIF
       IF (SECDER) DDPHI = DDV1 + DDV2
 
       RETURN
-      END                       
+      end                       

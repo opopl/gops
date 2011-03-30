@@ -1,27 +1,27 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C  ENERGY AND GRADIENT FOR THE STOCKMAYER POTENTIAL USING TWO POLAR
-C  COORDINATES FOR THE DIPOLE DIRECTION
+C  Energy and gradient for the Stockmayer potential using two polar
+C  coordinates for the dipole direction
 C
       SUBROUTINE STOCK(X,V,ESTOCK,GTEST)
-      USE COMMONS
+      USE commons
 
       IMPLICIT NONE
       LOGICAL GTEST,SECT
@@ -42,25 +42,25 @@ C
          Y1=X(J3-1)
          Z1=X(J3)
          T1=X(3*REALNATOMS+J3-2)
-         CT1=COS(T1)
-         ST1=SIN(T1)
+         CT1=cos(T1)
+         ST1=sin(T1)
          P1=X(3*REALNATOMS+J3-1)
-         CP1=COS(P1)
-         SP1=SIN(P1)
+         CP1=cos(P1)
+         SP1=sin(P1)
          DO J2=J1+1,REALNATOMS
             J4=3*J2
             X2=X(J4-2)
             Y2=X(J4-1)
             Z2=X(J4)
             T2=X(3*REALNATOMS+J4-2)
-            CT2=COS(T2)
-            ST2=SIN(T2)
+            CT2=cos(T2)
+            ST2=sin(T2)
             P2=X(3*REALNATOMS+J4-1)
-            CP2=COS(P2)
-            SP2=SIN(P2)
-            N1DOTR12=ST1*CP1*(X1-X2)+ST1*SP1*(Y1-Y2)+CT1*(Z1-Z2)
-            N2DOTR12=ST2*CP2*(X1-X2)+ST2*SP2*(Y1-Y2)+CT2*(Z1-Z2)
-            N1DOTN2=ST1*CP1*ST2*CP2 + ST1*SP1*ST2*SP2 + CT1*CT2
+            CP2=cos(P2)
+            SP2=sin(P2)
+            n1dotr12=st1*cp1*(x1-x2)+st1*sp1*(y1-y2)+ct1*(z1-z2)
+            n2dotr12=st2*cp2*(x1-x2)+st2*sp2*(y1-y2)+ct2*(z1-z2)
+            n1dotn2=st1*cp1*st2*cp2 + st1*sp1*st2*sp2 + ct1*ct2
             R122=(X1-X2)**2+(Y1-Y2)**2+(Z1-Z2)**2
             R12=SQRT(R122)
             R126=R122**3
@@ -70,54 +70,54 @@ C
             R125=R126/R12
             R1214=R1212*R122
            
-            DUMMY= (MU2*R127*(-3*N1DOTR12*N2DOTR12 + N1DOTN2*R122) +
-     &             (4 - 4*STOCKLAMBDA*R126))/R1212
+            DUMMY= (MU2*R127*(-3*n1dotr12*n2dotr12 + n1dotn2*R122) +
+     &             (4 - 4*stocklambda*R126))/R1212
          
             VT(J1)=VT(J1)+DUMMY
             VT(J2)=VT(J2)+DUMMY
             ESTOCK=ESTOCK+DUMMY
 
-! DERIVATIVES FOR POSITIONS
+! derivatives for positions
 
-      DUMMY = (-3*(-((-16 + 8*STOCKLAMBDA*R126 + 
-     &   MU2*(5*N1DOTR12*N2DOTR12*R127 - N1DOTN2*R129))*(X1 - X2))
-     &   + MU2*N2DOTR12*R129*CP1*ST1 + MU2*N1DOTR12*R129*CP2*ST2))/R1214
+      DUMMY = (-3*(-((-16 + 8*stocklambda*R126 + 
+     &   mu2*(5*n1dotr12*n2dotr12*R127 - n1dotn2*R129))*(x1 - x2))
+     &   + mu2*n2dotr12*R129*CP1*ST1 + mu2*n1dotr12*R129*CP2*ST2))/R1214
       V(J3-2)=V(J3-2)+DUMMY
       V(J4-2)=V(J4-2)-DUMMY
 
-      DUMMY = (-3*(-((-16 + 8*STOCKLAMBDA*R126 + 
-     &   MU2*(5*N1DOTR12*N2DOTR12*R127 - N1DOTN2*R129))*(Y1 - Y2))
-     &   + MU2*N2DOTR12*R129*SP1*ST1 + MU2*N1DOTR12*R129*SP2*ST2))/R1214
+      DUMMY = (-3*(-((-16 + 8*stocklambda*R126 + 
+     &   mu2*(5*n1dotr12*n2dotr12*R127 - n1dotn2*R129))*(y1 - y2))
+     &   + mu2*n2dotr12*R129*SP1*ST1 + mu2*n1dotr12*R129*SP2*ST2))/R1214
       V(J3-1)=V(J3-1)+DUMMY
       V(J4-1)=V(J4-1)-DUMMY
 
-      DUMMY = (-3*(-((-16 + 8*STOCKLAMBDA*R126 + 
-     &   MU2*(5*N1DOTR12*N2DOTR12*R127 - N1DOTN2*R129))*(Z1 - Z2))
-     &   + MU2*N2DOTR12*R129*CT1 + MU2*N1DOTR12*R129*CT2))/R1214
+      DUMMY = (-3*(-((-16 + 8*stocklambda*R126 + 
+     &   mu2*(5*n1dotr12*n2dotr12*R127 - n1dotn2*R129))*(z1 - z2))
+     &   + mu2*n2dotr12*R129*CT1 + mu2*n1dotr12*R129*CT2))/R1214
       V(J3)=V(J3)+DUMMY
       V(J4)=V(J4)-DUMMY
 
-! DERIVATIVES FOR ANGULAR VARIABLES OF ATOM J1
+! derivatives for angular variables of atom J1
 
       V(3*REALNATOMS+J3-2) = V(3*REALNATOMS+J3-2) +
-     &   (MU2*((3*N2DOTR12*Z1 - 3*N2DOTR12*Z2 - R122*CT2)*ST1 + 
-     &   CP1*CT1*(3*N2DOTR12*(-X1 + X2) + R122*CP2*ST2) + 
-     &   CT1*SP1*(-3*N2DOTR12*Y1 + 3*N2DOTR12*Y2 + R122*SP2*ST2)))/R125
+     &   (mu2*((3*n2dotr12*z1 - 3*n2dotr12*z2 - R122*CT2)*ST1 + 
+     &   CP1*CT1*(3*n2dotr12*(-x1 + x2) + R122*CP2*ST2) + 
+     &   CT1*SP1*(-3*n2dotr12*y1 + 3*n2dotr12*y2 + R122*SP2*ST2)))/R125
 
       V(3*REALNATOMS+J3-1) = V(3*REALNATOMS+J3-1) +
-     &   (MU2*ST1*(SP1*(3*N2DOTR12*(X1 - X2) - R122*CP2*ST2) + 
-     &   CP1*(3*N2DOTR12*(-Y1 + Y2) + R122*SP2*ST2)))/R125
+     &   (mu2*ST1*(SP1*(3*n2dotr12*(x1 - x2) - R122*CP2*ST2) + 
+     &   CP1*(3*n2dotr12*(-y1 + y2) + R122*SP2*ST2)))/R125
 
-! DERIVATIVES FOR ANGULAR VARIABLES OF ATOM J2
+! derivatives for angular variables of atom J2
 
       V(3*REALNATOMS+J4-2) = V(3*REALNATOMS+J4-2) +
-     &   (MU2*(CP2*CT2*(3*N1DOTR12*(-X1 + X2) + R122*CP1*ST1) + 
-     &   CT2*SP2*(-3*N1DOTR12*Y1 + 3*N1DOTR12*Y2 + R122*SP1*ST1) + 
-     &   (3*N1DOTR12*Z1 - 3*N1DOTR12*Z2 - R122*CT1)*ST2))/R125
+     &   (mu2*(CP2*CT2*(3*n1dotr12*(-x1 + x2) + R122*CP1*ST1) + 
+     &   CT2*SP2*(-3*n1dotr12*y1 + 3*n1dotr12*y2 + R122*SP1*ST1) + 
+     &   (3*n1dotr12*z1 - 3*n1dotr12*z2 - R122*CT1)*ST2))/R125
 
       V(3*REALNATOMS+J4-1) = V(3*REALNATOMS+J4-1) +
-     &   (MU2*(SP2*(3*N1DOTR12*(X1 - X2) - R122*CP1*ST1) + 
-     &   CP2*(3*N1DOTR12*(-Y1 + Y2) + R122*SP1*ST1))*ST2)/R125
+     &   (mu2*(SP2*(3*n1dotr12*(x1 - x2) - R122*CP1*ST1) + 
+     &   CP2*(3*n1dotr12*(-y1 + y2) + R122*SP1*ST1))*ST2)/R125
 
          ENDDO
       ENDDO

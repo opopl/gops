@@ -1,59 +1,59 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
-C FROM FZET@NADA.KTH.SE THU AUG 24 08:56:18 2000
-C HELLO!
-C I AM SORRY FOR THE DELAY. 
-C I HAVE ATTACHED TWO POTENTIALS IN THE DESIRED FORMAT IN 
-C THIS EMAIL, THE FIRST ONE IS THE GAMMA-BRASSY ONE, THE 
-C SECOND ONE IS THE "DO-NOT-CRYSTALLIZE" ONE. IT IS OF 
-C COURSE THE SAME POTENTIAL, BUT WITH DIFFERENT VALUES OF 
-C THE PARAMETERS. THE ANALYTICAL EXPRESSION IS:
+C From fzet@nada.kth.se Thu Aug 24 08:56:18 2000
+C Hello!
+C I am sorry for the delay. 
+C I have attached two potentials in the desired format in 
+C this email, the first one is the gamma-brassy one, the 
+C second one is the "do-not-crystallize" one. It is of 
+C course the same potential, but with different values of 
+C the parameters. The analytical expression is:
 C 
-C V=A*EXP(ALPHA*R)*COS(2*K_F*R)/R**3 + B*(R/SIGMA)**POW + CONST.
+C V=A*exp(alpha*r)*cos(2*K_F*r)/r**3 + B*(r/sigma)**pow + Const.
 C 
-C THE CONSTANT IS NEEDED TO HAVE V=0 AT THE CUTOFF.
-C (THE CUTOFF IS OF COURSE ANOTHER PARAMETER...)
+C The constant is needed to have V=0 at the cutoff.
+C (The cutoff is of course another parameter...)
 C 
-C HERE IS THE FIRST ONE:
+C Here is the first one:
 
 !-----------------------------------------------------------------------*
 C
-C  ENERGY AND GRADIENT FOR THE MODIFIED DZUGUTOV(ZETTERLING) POTENTIAL-1.
+C  Energy and gradient for the modified Dzugutov(Zetterling) potential-1.
 C
 C  23/08-2000
-C  FREDRIK ZETTERLING <FZET@PDC.KTH.SE>
+C  Fredrik Zetterling <fzet@pdc.kth.se>
 C
-! CORRESPONDENCE WITH THE PARAMETERS IN THE FILE "POTENTIAL.F"
+! correspondence with the parameters in the file "potential.f"
 ! V     = GRAD
 ! EDZ   = EREAL
 ! GTEST = GRADT
 !
-! MEANING OF THE VARIABLES
-! DIST - DISTANCE
-! EDZ  - TOTAL INTERACTION ENERGY
-! VT   - (3*N) VECTOR OF INTERACTION ENERGIES OF EACH PARTICLE
-! G    - (3*N,3*N) MATRIX OF "FORCES" (FIRST DERIVATIVES OF THE POTENTIAL)/R
-! V    - (3*N) VECTOR - GRADIENT (FORCE ACTING ON A PARTICLE)
+! meaning of the variables
+! DIST - distance
+! EDZ  - total interaction energy
+! VT   - (3*N) vector of interaction energies of each particle
+! G    - (3*N,3*N) matrix of "forces" (first derivatives of the potential)/r
+! V    - (3*N) vector - gradient (force acting on a particle)
 ! 
 !-----------------------------------------------------------------------*
       SUBROUTINE Z1(X,V,EDZ,GTEST)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       INTEGER J1, J2, J3, J4
       LOGICAL GTEST, DZT
@@ -87,7 +87,7 @@ C
                ENDIF
                G(J2,J1)=0.0D0
                IF (DIST.LT.RCUT2) THEN 
-                  CALL DERPHIZ1(DIST,DUMMY,DDUMMY,DDDUMMY,.TRUE.,.FALSE.)
+                  call derphiz1(DIST,DUMMY,DDUMMY,DDDUMMY,.true.,.false.)
                   VT(J1)=VT(J1)+DUMMY
                   VT(J2)=VT(J2)+DUMMY
                   EDZ=EDZ+DUMMY
@@ -111,7 +111,7 @@ C
                   NEAREST(J1)=J2   
                ENDIF
                IF (DIST.LT.RCUT2) THEN 
-                  CALL DERPHIZ1(DIST,DUMMY,DDUMMY,DDDUMMY,.FALSE.,.FALSE.)
+                  call derphiz1(DIST,DUMMY,DDUMMY,DDDUMMY,.false.,.false.)
                   VT(J1)=VT(J1)+DUMMY
                   VT(J2)=VT(J2)+DUMMY
                   EDZ=EDZ+DUMMY
@@ -161,73 +161,73 @@ C           PRINT*,'J1,VT,DIST=',J1,VT(J1),DIST
       END
 
 !%%%%%%%
-! VALUES OF THE POTENTIAL, FIRST, AND SECOND DERIVATIVES
-! IF SECDER = .FALSE. DDPHI = 0 ON OUTPUT
+! values of the potential, first, and second derivatives
+! if secder = .false. ddphi = 0 on output
 !%%%%%%%
-C  ***  THE DERIVATIVE IS DIVIDED BY R !
+C  ***  The derivative is divided by R !
 !-----------------------------------------------------------------------*
-      SUBROUTINE DERPHIZ1(R2,PHI,DPHI,DDPHI,GTEST,SECDER)
-      IMPLICIT NONE
-      DOUBLE PRECISION R, R2, PHI, DPHI, DDPHI
-      LOGICAL SECDER, GTEST
+      subroutine derphiz1(r2,phi,dphi,ddphi,gtest,secder)
+      implicit none
+      DOUBLE PRECISION r, r2, phi, dphi, ddphi
+      logical secder, gtest
 
-      DOUBLE PRECISION A,B,KF,ALPH,SIG,POW,ST,RCUT ! PAIR POTENTIAL PARAMETERS
+      DOUBLE PRECISION A,B,KF,ALPH,SIG,POW,ST,RCUT ! pair potential parameters
       DOUBLE PRECISION DUMMY1,DUMMY2,DUMMY3
 
-      PARAMETER ( A=1.58 )
-      PARAMETER ( B=420000000.0 )
-      PARAMETER ( KF=4.12 )
-      PARAMETER ( ALPH=-0.22 )
-      PARAMETER ( SIG=0.331 )
-      PARAMETER ( POW=-18 )
-C     PARAMETER ( ST=0.046822 )
-C     PARAMETER ( RCUT=2.65D0 )
-      PARAMETER ( ST=0.04682632412414856D0 )
-      PARAMETER ( RCUT=2.649085591311991D0 )
+      parameter ( A=1.58 )
+      parameter ( B=420000000.0 )
+      parameter ( KF=4.12 )
+      parameter ( ALPH=-0.22 )
+      parameter ( SIG=0.331 )
+      parameter ( POW=-18 )
+C     parameter ( ST=0.046822 )
+C     parameter ( RCUT=2.65d0 )
+      parameter ( ST=0.04682632412414856D0 )
+      parameter ( RCUT=2.649085591311991D0 )
 
       R = SQRT(R2)
 
-      DUMMY1=B*(R/SIG)**POW
-      DUMMY2=A*DEXP(ALPH*R)/R**3
-      DUMMY3=DCOS(2*KF*R)
-      PHI=ST+DUMMY2*DUMMY3+DUMMY1
+      DUMMY1=B*(r/SIG)**POW
+      DUMMY2=A*DEXP(ALPH*r)/r**3
+      DUMMY3=DCOS(2*KF*r)
+      phi=ST+DUMMY2*DUMMY3+DUMMY1
 
-      IF (GTEST) DPHI=(DUMMY2*(DUMMY3*(ALPH-3/R)-2*KF*DSIN(2*KF*R))+POW*DUMMY1/R)/R
+      IF (GTEST) dphi=(DUMMY2*(DUMMY3*(ALPH-3/r)-2*KF*DSIN(2*KF*r))+POW*DUMMY1/r)/r
             
       IF (SECDER) THEN 
-         DDPHI=DBLE(POW)*DBLE(POW-1)*B*((R/SIG)**POW)/(R**2)
-     1      +A*(DEXP(ALPH*R)/(R**3))*((ALPH-3/R)*((ALPH-3/R)
-     2      *DCOS(2*KF*R)-4*KF*DSIN(2*KF*R))+(3/(R**2)-4*KF*KF)
-     3      *DCOS(2*KF*R))
+         ddphi=DBLE(POW)*DBLE(POW-1)*B*((r/SIG)**POW)/(r**2)
+     1      +A*(DEXP(ALPH*r)/(r**3))*((ALPH-3/r)*((ALPH-3/r)
+     2      *DCOS(2*KF*r)-4*KF*DSIN(2*KF*r))+(3/(r**2)-4*KF*KF)
+     3      *DCOS(2*KF*r))
       ENDIF
 
-      END                       ! SUBROUTINE DERPHI
+      end                       ! subroutine derphi
 !-----------------------------------------------------------------------*
 
-C AND HERE IS THE SECOND ONE:
+C And here is the second one:
 
 !-----------------------------------------------------------------------*
 C
-C  ENERGY AND GRADIENT FOR THE MODIFIED DZUGUTOV(ZETTERLING) POTENTIAL-2.
+C  Energy and gradient for the modified Dzugutov(Zetterling) potential-2.
 C
 C  23/08-2000
-C  FREDRIK ZETTERLING <FZET@PDC.KTH.SE>
+C  Fredrik Zetterling <fzet@pdc.kth.se>
 C
-! CORRESPONDENCE WITH THE PARAMETERS IN THE FILE "POTENTIAL.F"
+! correspondence with the parameters in the file "potential.f"
 ! V     = GRAD
 ! EDZ   = EREAL
 ! GTEST = GRADT
 !
-! MEANING OF THE VARIABLES
-! DIST - DISTANCE
-! EDZ  - TOTAL INTERACTION ENERGY
-! VT   - (3*N) VECTOR OF INTERACTION ENERGIES OF EACH PARTICLE
-! G    - (3*N,3*N) MATRIX OF "FORCES" (FIRST DERIVATIVES OF THE POTENTIAL)/R
-! V    - (3*N) VECTOR - GRADIENT (FORCE ACTING ON A PARTICLE)
+! meaning of the variables
+! DIST - distance
+! EDZ  - total interaction energy
+! VT   - (3*N) vector of interaction energies of each particle
+! G    - (3*N,3*N) matrix of "forces" (first derivatives of the potential)/r
+! V    - (3*N) vector - gradient (force acting on a particle)
 ! 
 !-----------------------------------------------------------------------*
       SUBROUTINE Z2(X,V,EDZ,GTEST)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       LOGICAL GTEST
       INTEGER J1, J2, J3, J4
@@ -262,7 +262,7 @@ C
                ENDIF
                G(J2,J1)=0.0D0
                IF (DIST.LT.RCUT2) THEN
-                  CALL DERPHIZ2(DIST,DUMMY,DDUMMY,DDDUMMY,.TRUE.,.FALSE.)
+                  call derphiz2(DIST,DUMMY,DDUMMY,DDDUMMY,.true.,.false.)
                   VT(J1)=VT(J1)+DUMMY
                   VT(J2)=VT(J2)+DUMMY
                   EDZ=EDZ+DUMMY
@@ -286,7 +286,7 @@ C
                   NEAREST(J1)=J2   
                ENDIF
                IF (DIST.LT.RCUT2) THEN
-                  CALL DERPHIZ2(DIST,DUMMY,DDUMMY,DDDUMMY,.FALSE.,.FALSE.)
+                  call derphiz2(DIST,DUMMY,DDUMMY,DDDUMMY,.false.,.false.)
                   VT(J1)=VT(J1)+DUMMY
                   VT(J2)=VT(J2)+DUMMY
                   EDZ=EDZ+DUMMY
@@ -336,46 +336,46 @@ C           PRINT*,'J1,VT,DIST=',J1,VT(J1),DIST
       END
 
 !%%%%%%%
-! VALUES OF THE POTENTIAL, FIRST, AND SECOND DERIVATIVES
-! IF SECDER = .FALSE. DDPHI = 0 ON OUTPUT
+! values of the potential, first, and second derivatives
+! if secder = .false. ddphi = 0 on output
 !%%%%%%%
 !-----------------------------------------------------------------------*
-      SUBROUTINE DERPHIZ2(R2,PHI,DPHI,DDPHI,GTEST,SECDER)
-      IMPLICIT NONE
-      DOUBLE PRECISION R, R2, PHI, DPHI, DDPHI
-      LOGICAL SECDER, GTEST
+      subroutine derphiz2(r2,phi,dphi,ddphi,gtest,secder)
+      implicit none
+      DOUBLE PRECISION r, r2, phi, dphi, ddphi
+      logical secder, gtest
 
-      DOUBLE PRECISION A,B,KF,ALPH,SIG,POW,ST,RCUT ! PAIR POTENTIAL PARAMETERS
+      DOUBLE PRECISION A,B,KF,ALPH,SIG,POW,ST,RCUT ! pair potential parameters
       DOUBLE PRECISION DUMMY1,DUMMY2,DUMMY3
 
-      PARAMETER ( A=1.04D0 )
-      PARAMETER ( B=4200000.0D0 )
-      PARAMETER ( KF=4.139D0 )
-      PARAMETER ( ALPH=0.33D0 )
-      PARAMETER ( SIG=0.348D0 )
-      PARAMETER ( POW=-14.5D0 )
-C     PARAMETER ( ST=0.133915D0 )
-C     PARAMETER ( RCUT=2.645D0 )
-      PARAMETER ( ST=0.1339154253770228D0 )
-      PARAMETER ( RCUT=2.644877840738571D0 )
+      parameter ( A=1.04D0 )
+      parameter ( B=4200000.0D0 )
+      parameter ( KF=4.139D0 )
+      parameter ( ALPH=0.33D0 )
+      parameter ( SIG=0.348D0 )
+      parameter ( POW=-14.5D0 )
+C     parameter ( ST=0.133915D0 )
+C     parameter ( RCUT=2.645D0 )
+      parameter ( ST=0.1339154253770228D0 )
+      parameter ( RCUT=2.644877840738571D0 )
 
-      R = SQRT(R2)
+      r = sqrt(r2)
 
-      DUMMY1=B*(R/SIG)**POW
-      DUMMY2=A*DEXP(ALPH*R)/R**3
-      DUMMY3=DCOS(2*KF*R)
-      PHI=ST+DUMMY2*DUMMY3+DUMMY1
+      DUMMY1=B*(r/SIG)**POW
+      DUMMY2=A*DEXP(ALPH*r)/r**3
+      DUMMY3=DCOS(2*KF*r)
+      phi=ST+DUMMY2*DUMMY3+DUMMY1
 
-      IF (GTEST) DPHI=(DUMMY2*(DUMMY3*(ALPH-3/R)-2*KF*DSIN(2*KF*R))+POW*DUMMY1/R)/R
+      IF (GTEST) dphi=(DUMMY2*(DUMMY3*(ALPH-3/r)-2*KF*DSIN(2*KF*r))+POW*DUMMY1/r)/R
 
-      IF (SECDER) THEN 
+      if (secder) then 
             
-         DDPHI=DBLE(POW)*DBLE(POW-1)*B*((R/SIG)**POW)/(R**2)
-     1      +A*(DEXP(ALPH*R)/(R**3))*((ALPH-3/R)*((ALPH-3/R)
-     2      *DCOS(2*KF*R)-4*KF*DSIN(2*KF*R))+(3/(R**2)-4*KF*KF)
-     3      *DCOS(2*KF*R))
+         ddphi=DBLE(POW)*DBLE(POW-1)*B*((r/SIG)**POW)/(r**2)
+     1      +A*(DEXP(ALPH*r)/(r**3))*((ALPH-3/r)*((ALPH-3/r)
+     2      *DCOS(2*KF*r)-4*KF*DSIN(2*KF*r))+(3/(r**2)-4*KF*KF)
+     3      *DCOS(2*KF*r))
 
-      ENDIF
+      endif
   
-      END                       ! SUBROUTINE DERPHI
+      end                       ! subroutine derphi
 !-----------------------------------------------------------------------*

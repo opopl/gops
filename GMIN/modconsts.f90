@@ -1,61 +1,61 @@
-!  GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-!  COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!  THIS FILE IS PART OF GMIN.
+!  GMIN: A program for finding global minima
+!  Copyright (C) 1999-2006 David J. Wales
+!  This file is part of GMIN.
 !
-!  GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!  (AT YOUR OPTION) ANY LATER VERSION.
+!  GMIN is free software; you can redistribute it and/or modify
+!  it under the terms of the GNU General Public License as published by
+!  the Free Software Foundation; either version 2 of the License, or
+!  (at your option) any later version.
 !
-!  GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!  GMIN is distributed in the hope that it will be useful,
+!  but WITHOUT ANY WARRANTY; without even the implied warranty of
+!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!  GNU General Public License for more details.
 !
-!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!  You should have received a copy of the GNU General Public License
+!  along with this program; if not, write to the Free Software
+!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
-MODULE CONSTS
+MODULE consts
       IMPLICIT NONE
       SAVE
 
-!   THESE ARE THE CONSTANTS TAKEN FROM PRB 50 5645 (1994)          72ND
+!   These are the constants taken from PRB 50 5645 (1994)          72nd
 
       DOUBLE PRECISION CHI,BETA,D,A,B,RC,DELTA,&
-     &                 VSSSIG,VSPSIG,VPPSIG,VPPPI,KAPPA,&
-     &                 EPSS,EPSP,ALPHA
+     &                 Vsssig,Vspsig,Vppsig,Vpppi,KAPPA,&
+     &                 EPSs,EPSp,ALPHA
 
       PARAMETER (CHI=0.486D0, BETA=4.0D0/1.12D0, D=2.35D0, A=0.08D0,&
-     &    B=-1.4D0, RC=3.5D0, DELTA=0.1D0, VSSSIG= -2.37D0, &
-     &    VSPSIG=2.52D0, VPPSIG=3.32D0, VPPPI= -1.07D0,&
+     &    B=-1.4D0, RC=3.5D0, DELTA=0.1D0, Vsssig= -2.37D0, &
+     &    Vspsig=2.52D0, Vppsig=3.32D0, Vpppi= -1.07D0,&
      &    ALPHA = 1.0D0/1.12D0,KAPPA=1.903D0,&
-     &    EPSS=-13.55D0, EPSP=-6.52D0)
+     &    EPSs=-13.55D0, EPSp=-6.52D0)
 
-!   FIRST THOSE FOR THE REPULSIVE ENERGY TERM
-!   CHI IS CHI(0), BETA AND D ARE PRETTY SELF EXPLANATORY
-!   ALTHOUGH BETA=4/R(0), WHERE R(0) IS HALF THE DIMER BOND LENGTH
-!   AND D IS THE BOND LENGTH OF A CRYSTAL.
+!   First those for the repulsive energy term
+!   CHI is CHI(0), BETA and D are pretty self explanatory
+!   although BETA=4/R(0), where R(0) is half the dimer bond length
+!   and D is the bond length of a crystal.
 
-!   THEN IN THE BOND COUNTING TERMS
-!   A AND B ARE FITTED PARAMETERS SO THA THE COHESIVE ENERGIES OF
-!   SEVERAL CLUSTERS IN CLOSE AGREEMENT WITH THE CORRESPONDING AB 
-!   INITIO VALUES.
-!   RC IS NOT A CUTOFF DISTANCE FOR INTERACTION APPARENTLY BUT
-!   MERELY A DISTANCE FOR CALIBRATING THE ENERGY TERM.
-!   THERE IS NO CUTOFF BETWEEN ATOMS IN THE MENON-SUBBASWAMY SCHEME.
+!   Then in the bond counting terms
+!   A and B are fitted parameters so tha the cohesive energies of
+!   several clusters in close agreement with the corresponding ab 
+!   initio values.
+!   RC is NOT a cutoff distance for interaction apparently but
+!   merely a distance for calibrating the energy term.
+!   There is no cutoff between atoms in the Menon-Subbaswamy scheme.
 
-!   VECT(1) IS THE VSSSIG PARAMETER ALLEGEDLY FROM HARRISON'S 
-!   UNIVERSAL PARAMETER SCHEME (THESE FIGURES COME FROM 
-!   PRB 50 12754 (1993) AND I HAVE ASSUMED THAT THEY ARE AT THE
-!   CRYSTAL BOND LENGTH (D=2.35) ALTHOUGH THIS DOES NOT APPEAR TO BE
-!   CONSISTENT WITH THE SCHEME IN HARRRISON'T BOOK "ELECTRONIC 
-!   STRUCTURE AND THE PROPERTIES IF SOLIDS".
-!   SIMILARLY, VECT(2) IS VSPSIG, VECT(3) VPPSIG AND VECT(4) VPPPI.
-!   THESE ARE ASSIGNED IN THE MAIN PROGRAM TB.SI.F
-!   KAPPA, ZETA AND ALPHA ARE ALL PRETTY SELF-EXPLANATORY.
+!   VECT(1) is the Vsssig parameter allegedly from Harrison's 
+!   universal parameter scheme (These figures come from 
+!   PRB 50 12754 (1993) and I have assumed that they are at the
+!   crystal bond length (D=2.35) although this does not appear to be
+!   consistent with the scheme in Harrrison't book "Electronic 
+!   Structure and The Properties if Solids".
+!   Similarly, VECT(2) is Vspsig, VECT(3) Vppsig and VECT(4) Vpppi.
+!   These are assigned in the main program TB.Si.f
+!   KAPPA, ZETA and ALPHA are all pretty self-explanatory.
 
-!   THE PARAMETER FUNCTION WILL NOT ACCEPT ARRAYS...MOST USEFUL.
+!   The PARAMETER function will not accept ARRAYS...most useful.
 
-END MODULE CONSTS
+END MODULE consts
 

@@ -1,31 +1,31 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  SUBROUTINE SW2 CALCULATES THE ENERGY AND CARTESIAN GRADIENT
-C  FOR THE SW SI POTENTIAL.
+C  Subroutine SW2 calculates the energy and Cartesian gradient
+C  for the SW Si potential.
 C
 C*************************************************************************
 C
       SUBROUTINE SWTWO(X, V, ENERGY, GTEST)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       INTEGER N, J1, J2, J3, J4
       LOGICAL GTEST
@@ -41,7 +41,7 @@ C
          VT(J1)=0.0D0
       ENDDO
 C
-C  DEAL WITH ANY ATOMS THAT HAVE LEFT THE BOX.
+C  Deal with any atoms that have left the box.
 C
       IF (PERIODIC.AND.(.NOT.FIXIMAGE).AND.(.NOT.NORESET)) THEN
          DO J1=1,N
@@ -52,7 +52,7 @@ C
          ENDDO
       ENDIF
 C 
-C  STORE DISTANCE MATRICES.
+C  Store distance matrices.
 C
       ENERGY=0.0D0
          DO J1=1, N
@@ -127,29 +127,29 @@ C
 C
 C*************************************************************************
 C
-C  SUBROUTINE SW3 CALCULATES THE ENERGY AND CARTESIAN GRADIENT 
-C  DERIVATIVE MATRIX ANALYTICALLY FOR THE SW SI POTENTIAL.
+C  Subroutine SW3 calculates the energy and Cartesian gradient 
+C  derivative matrix analytically for the SW Si potential.
 C
 C*************************************************************************
 C
       SUBROUTINE SWTHREE(V, ENERGY, GTEST)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       INTEGER N, J1, J2, J3, K1, K2, K3
       LOGICAL GTEST
       DOUBLE PRECISION ENERGY, ER2131, E3,
      1                 V(3*NATOMS), R(NATOMS,NATOMS), R122, R132, R12S, R13S,
-     2                 R12DOTR13PT, R12DOTR13, ERLDOT,
+     2                 r12DOTr13PT, r12DOTr13, ERLDOT,
      3                 ER(NATOMS,NATOMS), R2(NATOMS,NATOMS), THIRD,
      4                 ER21, ER31, R12, R13, DOT2, DUMMY1, DUMMY2, DUMMY3,
-     5                 LVEC(NATOMS,NATOMS,3), V211, V212, V213, V311, V312, V313, V211B, V212B, V213B
+     5                 LVEC(NATOMS,NATOMS,3), V211, V212, V213, V311, V312, V313, V211b, V212b, V213b
       DOUBLE PRECISION XLAMBDA, LGAMMA, SMALLA
       PARAMETER (LGAMMA=1.2D0, SMALLA=1.8D0, THIRD=0.33333333333333333333D0, XLAMBDA=21.0D0)
 C
-C  IN THE MOUSSEAU VERSION XLAMBDA=21.0D0*1.5D0
+C  In the Mousseau version XLAMBDA=21.0D0*1.5D0
 C
 C 
-C  STORE THINGS
+C  Store things
 C
       N=NATOMS
       DO J1=1,N
@@ -172,13 +172,13 @@ C
                K2=3*(J2-1)
                ER21=ER(J2,J1)
                R12=R(J2,J1)
-               R12S=(R12 - SMALLA)**2
+               r12s=(r12 - smalla)**2
                V211=LVEC(J2,J1,1)
-               V211B=V211/(R12*R12S)
+               V211b=V211/(r12*r12s)
                V212=LVEC(J2,J1,2)
-               V212B=V212/(R12*R12S)
+               V212b=V212/(r12*r12s)
                V213=LVEC(J2,J1,3)
-               V213B=V213/(R12*R12S)
+               V213b=V213/(r12*r12s)
                
                DO J3=1,N
                   IF (((R(J3,J1).LT.SMALLA).AND.(J3.NE.J1)).AND.(J3.NE.J2)) THEN
@@ -189,9 +189,9 @@ C
                      V311=LVEC(J3,J1,1)
                      V312=LVEC(J3,J1,2)
                      V313=LVEC(J3,J1,3)
-                     R12DOTR13=(V211*V311+V212*V312+V213*V313)/(R12*R13)
-                     R12DOTR13PT=(R12DOTR13+THIRD)
-                     DOT2=R12DOTR13PT**2
+                     r12DOTr13=(V211*V311+V212*V312+V213*V313)/(r12*r13)
+                     r12DOTr13PT=(r12DOTr13+third)
+                     DOT2=r12DOTr13PT**2
 
                      DUMMY1=ER2131*DOT2
                      E3=E3+DUMMY1
@@ -202,27 +202,27 @@ C
                      IF (GTEST) THEN
                         R122=R12**2
                         R132=R13**2
-                        R13S=(R13 - SMALLA)**2
-                        ERLDOT=ER2131*XLAMBDA*R12DOTR13PT
-                        DUMMY1=2*R12DOTR13+(LGAMMA*R12*R12DOTR13PT)/R12S
-                        DUMMY2=2*R12/R13
-                        DUMMY3=2*R12DOTR13+(LGAMMA*R12DOTR13PT*R13)/R13S
+                        r13s=(r13 - smalla)**2
+                        ERLDOT=ER2131*XLAMBDA*r12DOTr13PT
+                        DUMMY1=2*r12DOTr13+(lgamma*r12*r12DOTr13PT)/r12s
+                        DUMMY2=2*r12/r13
+                        DUMMY3=2*r12DOTr13+(lgamma*r12DOTr13PT*r13)/r13s
 
-                        V(K1+1)=V(K1+1)+ (ERLDOT*((2*R13*(R12 - R12DOTR13*R13)*V211 + 
-     &                           2*R12*(-(R12*R12DOTR13) + R13)*V311)/(R122*R132) + LGAMMA*R12DOTR13PT*(-V211B - 
-     &                           V311/(R13*R13S))))/2.0D0
-                        V(K1+2)=V(K1+2)+ (ERLDOT*((2*R13*(R12 - R12DOTR13*R13)*V212 + 
-     &                           2*R12*(-(R12*R12DOTR13) + R13)*V312)/(R122*R132) + LGAMMA*R12DOTR13PT*(-V212B - 
-     &                           V312/(R13*R13S))))/2.0D0
-                        V(K1+3)=V(K1+3)+ (ERLDOT*((2*R13*(R12 - R12DOTR13*R13)*V213 + 
-     &                           2*R12*(-(R12*R12DOTR13) + R13)*V313)/(R122*R132) + LGAMMA*R12DOTR13PT*(-V213B - 
-     &                           V313/(R13*R13S))))/2.0D0
-                        V(K2+1)=V(K2+1)+ ERLDOT*(DUMMY1*V211-DUMMY2*V311)/(2.*R122)
-                        V(K2+2)=V(K2+2)+ ERLDOT*(DUMMY1*V212-DUMMY2*V312)/(2.*R122)
-                        V(K2+3)=V(K2+3)+ ERLDOT*(DUMMY1*V213-DUMMY2*V313)/(2.*R122)
-                        V(K3+1)=V(K3+1)+ ERLDOT*((-2*R13*V211)/R12+DUMMY3*V311)/(2.*R132)
-                        V(K3+2)=V(K3+2)+ ERLDOT*((-2*R13*V212)/R12+DUMMY3*V312)/(2.*R132)
-                        V(K3+3)=V(K3+3)+ ERLDOT*((-2*R13*V213)/R12+DUMMY3*V313)/(2.*R132)
+                        V(K1+1)=V(K1+1)+ (ERLDOT*((2*r13*(r12 - r12DOTr13*r13)*V211 + 
+     &                           2*r12*(-(r12*r12DOTr13) + r13)*V311)/(r122*r132) + lgamma*r12DOTr13PT*(-V211b - 
+     &                           V311/(r13*r13s))))/2.0D0
+                        V(K1+2)=V(K1+2)+ (ERLDOT*((2*r13*(r12 - r12DOTr13*r13)*V212 + 
+     &                           2*r12*(-(r12*r12DOTr13) + r13)*V312)/(r122*r132) + lgamma*r12DOTr13PT*(-V212b - 
+     &                           V312/(r13*r13s))))/2.0D0
+                        V(K1+3)=V(K1+3)+ (ERLDOT*((2*r13*(r12 - r12DOTr13*r13)*V213 + 
+     &                           2*r12*(-(r12*r12DOTr13) + r13)*V313)/(r122*r132) + lgamma*r12DOTr13PT*(-V213b - 
+     &                           V313/(r13*r13s))))/2.0D0
+                        V(K2+1)=V(K2+1)+ ERLDOT*(DUMMY1*V211-DUMMY2*V311)/(2.*r122)
+                        V(K2+2)=V(K2+2)+ ERLDOT*(DUMMY1*V212-DUMMY2*V312)/(2.*r122)
+                        V(K2+3)=V(K2+3)+ ERLDOT*(DUMMY1*V213-DUMMY2*V313)/(2.*r122)
+                        V(K3+1)=V(K3+1)+ ERLDOT*((-2*r13*V211)/r12+DUMMY3*V311)/(2.*r132)
+                        V(K3+2)=V(K3+2)+ ERLDOT*((-2*r13*V212)/r12+DUMMY3*V312)/(2.*r132)
+                        V(K3+3)=V(K3+3)+ ERLDOT*((-2*r13*V213)/r12+DUMMY3*V313)/(2.*r132)
                      ENDIF
                   ENDIF
                ENDDO

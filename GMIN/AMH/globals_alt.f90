@@ -1,56 +1,56 @@
-      MODULE GLOBALS_ALT
+      module globals_alt
 
-        IMPLICIT NONE
+        implicit none
 
-        SAVE
+        save
 
         ! PARAMETERS TO BE SET BEFORE COMPILATION:
-        ! N_ALTGAMTYPES = # OF DIFFERENT GAMMAS FOR A PARTICULAR WELL
-        ! CURRENTLY THIS CAN ONLY BE SET TO 2 
-        ! MAX_WELL_ALT = MAX WELLS FOR ALTERNATIVE GAMMA POTENTIAL
-        ! ALIMITS SET THE DENSITYLIMITS FOR DEFINING THE WELLS OF THE 1-BODY POTENTIAL
+        ! n_altgamtypes = # of different gammas for a particular well
+        ! currently this can only be set to 2 
+        ! max_well_alt = max wells for alternative gamma potential
+        ! Alimits set the densitylimits for defining the wells of the 1-body potential
 
-        INTEGER MAX_WELL_ALT,N_ALTGAMTYPES,MAX_LETTERS,DEBUGFLAG
-        INTEGER OUTFILE1_ALT(10),N_OB_WELLS,TIMINGS_FILE_ALT
-        PARAMETER(N_ALTGAMTYPES=2)
-        PARAMETER(MAX_WELL_ALT=2)
-        PARAMETER(MAX_LETTERS=20)
-        PARAMETER(DEBUGFLAG=0)
-        PARAMETER(N_OB_WELLS=3)
+        integer max_well_alt,n_altgamtypes,max_letters,debugflag
+        integer outfile1_alt(10),n_OB_wells,timings_file_alt
+        parameter(n_altgamtypes=2)
+        parameter(max_well_alt=2)
+        parameter(max_letters=20)
+        parameter(debugflag=0)
+        parameter(n_OB_wells=3)
 
 
-        CHARACTER, DIMENSION(20) ::  AMINOACIDS*3 = (/"ALA",  "ARG",   "ASN",   "ASP",   "CYS", &
+        character, dimension(20) ::  aminoacids*3 = (/"ALA",  "ARG",   "ASN",   "ASP",   "CYS", &
              "GLN",   "GLU",   "GLY",   "HIS",   "ILE",   "LEU", &
              "LYS",   "MET",   "PHE",   "PRO",   "SER",   "THR", &
              "TRP",   "TYR",   "VAL" /) 
-         DOUBLE PRECISION, DIMENSION(20) :: HP_SCALE = (/ 0.45D0,  0.08D0,  0.15D0,  0.12D0, &      ! RESIDUE HYDROPHOBICITY SCALE
+         double precision, dimension(20) :: hp_scale = (/ 0.45D0,  0.08D0,  0.15D0,  0.12D0, &      ! residue hydrophobicity scale
              0.40D0,  0.11D0,  0.11D0,  0.35D0,  0.16D0,  1.00D0,  0.61D0,  0.00D0,  0.18D0, &
              0.41D0,  0.23D0,  0.25D0,  0.23D0, 0.39D0,  0.25D0,  0.70D0 /)
 
 
         ! PARAMETERS TO BE READ IN FROM INPUTFILE:
-        ! ALTPOTFLAG DECIDES WETHER OR NOT TO USE ALTERNATIVE ANISOTROPIC POTENTIAL
-        ! (WHICH IS MANYBODY AND THEREFORE PROBABLY A BIT SLOWING DOWN)
+        ! altpotflag decides wether or not to use alternative anisotropic potential
+        ! (which is manybody and therefore probably a bit slowing down)
 
-        INTEGER ALTPOTFLAG(MAX_WELL_ALT)                             ! ALTPOT
-        DOUBLE PRECISION KAPPA_ALT,TRESHOLD_ALT,KAPPA_WELL
-        INTEGER ONEBODYFLAG,ONEBODY_TYPE                          ! ONEBODY
-        DOUBLE PRECISION KAPPA_OB
-        LOGICAL DEBUG_NUMER_FORCES
+        integer altpotflag(max_well_alt)                             ! ALTPOT
+        double precision kappa_alt,treshold_alt,kappa_well
+        integer onebodyflag,onebody_type                          ! ONEBODY
+        double precision kappa_OB
+        logical debug_numer_forces
 
         ! VARIABLES TO BE SET DURING EXECUTION:
 
-        INTEGER OUTPUT_STEPSIZE_ALT , OUTPUT_STEP_ALT ,COUNT_ALT                 ! ALTPOT
-        DOUBLE PRECISION ALTGAMMA(MAX_LETTERS,MAX_LETTERS,N_ALTGAMTYPES,MAX_WELL_ALT),T_ALT
-        DOUBLE PRECISION ONEBODY_GAMMA(MAX_LETTERS,N_OB_WELLS)     ! ONEBODY
-        DOUBLE PRECISION ALIMITS_OB(2,N_OB_WELLS) 
-        LOGICAL DO_SEND_OUTPUT
+        integer output_stepsize_alt , output_step_alt ,count_alt                 ! ALTPOT
+        double precision altgamma(max_letters,max_letters,n_altgamtypes,max_well_alt),T_alt
+        double precision onebody_gamma(max_letters,n_OB_wells)     ! ONEBODY
+        double precision Alimits_OB(2,n_OB_wells) 
+        logical do_send_output
 
 
         !  DIAGNOSTIC VARIABLES (NOT NECESSARY FOR EXECUTION)
-        !  OBSERVE!  N_OB_WELLS MUST BE 3 CURRENTLY !!!
-        DOUBLE PRECISION OB_DENSITY(MAX_LETTERS,N_OB_WELLS),OB_DNS_COUNT
-         DOUBLE PRECISION, DIMENSION(20) :: ACCUMULATED_TIME=0.0D0
+        !  OBSERVE!  n_OB_wells must be 3 currently !!!
+        double precision OB_density(max_letters,n_OB_wells),OB_dns_count
+         double precision, dimension(20) :: accumulated_time=0.0D0
 
 
-      END MODULE GLOBALS_ALT
+      end module globals_alt

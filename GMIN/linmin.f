@@ -1,32 +1,32 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C THE SUBROUTINE LINMIN TAKES THE 3*N DIMENSIONAL POINT P AND THE 3*N DIMENSIO-
-C NAL DIRECTION GRAD, MOVES AND RESETS P TO WHERE THE FUNCTION FUNC(P) TAKES ON
-C A MINIMUM IN THE DIRECTION GRAD FROM P, AND REPLACES GRAD BY THE ACTUAL VECTOR
-C DISPLACEMENT THAT P WAS MOVED.
-C THE VALUE OF FUNC AT THE RETURNED LOCATION P IS RETURNED AS FRET.
+C The subroutine LINMIN takes the 3*N dimensional point P and the 3*N dimensio-
+C nal direction GRAD, moves and resets P to where the function FUNC(P) takes on
+C a minimum in the direction GRAD from P, and replaces GRAD by the actual vector
+C displacement that P was moved.
+C The value of FUNC at the returned location P is returned as FRET.
 C
 C
       SUBROUTINE LINMIN(ITER,P,GRAD,N,FRET)
-      USE COMMONS
-      USE F1COM
+      USE commons
+      use f1com
       IMPLICIT DOUBLE PRECISION (A-H,P-Z)
       INTEGER ITER
       DOUBLE PRECISION F1DIM
@@ -49,7 +49,7 @@ C
       NCOUNT=0
       AX=0.0D0
 C
-C  WE ALREADY KNOW FA!
+C  We already know FA!
 C
 C     FA=F1DIM(AX)
 C
@@ -75,28 +75,28 @@ C     PRINT*,'AX,BX,FA,FB=',AX,BX,FA,FB
       ENDIF
 
       EMIN1=FB-FA
-C     WRITE(*,'(A,E20.10)') 'INITIAL ENERGY LOWERING IN LINMIN=',EMIN1
+C     WRITE(*,'(A,E20.10)') 'Initial energy lowering in LINMIN=',EMIN1
       DUMMY=FB
 
 C
-C  IF NCOUNT > 0 WE HAVE ALREADY BRACKETED THE MINIMUM!
+C  If NCOUNT > 0 we have already bracketed the minimum!
 C
       IF ((NCOUNT.EQ.0).OR.(EMIN1.GE.0.0D0)) THEN
          CALL MNBRAK(AX,BX,CX,FA,FB,FC,F1DIM)
-C        WRITE(*,'(A,6F15.7)') 'AFTER MNBRACK AX,BX,CX,FA,FB,FC=',AX,BX,CX,FA,FB,FC
+C        WRITE(*,'(A,6F15.7)') 'after MNBRACK AX,BX,CX,FA,FB,FC=',AX,BX,CX,FA,FB,FC
          EMIN2=FB-DUMMY
-C        WRITE(*,'(A,E20.10)')    'ENERGY LOWERING BY MNBRAK=        ',EMIN2
+C        WRITE(*,'(A,E20.10)')    'Energy lowering by MNBRAK=        ',EMIN2
       ENDIF
       DUMMY=FB
 
       IF (DBRENTT) THEN
          FRET=DBRENT(AX,BX,CX,TOLB,XMIN)
          EMIN3=FRET-DUMMY
-C        WRITE(*,'(A,E20.10)') 'ENERGY LOWERING BY DBRENT=        ',EMIN3
+C        WRITE(*,'(A,E20.10)') 'Energy lowering by DBRENT=        ',EMIN3
       ELSE
          FRET=BRENT(AX,BX,CX,TOLB,XMIN)
          EMIN3=FRET-DUMMY
-C        WRITE(*,'(A,E20.10)') 'ENERGY LOWERING BY BRENT=         ',EMIN3
+C        WRITE(*,'(A,E20.10)') 'Energy lowering by BRENT=         ',EMIN3
       ENDIF
 
       DO 20 J=1,3*N

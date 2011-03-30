@@ -465,7 +465,7 @@
       SITE(4,2) = 0.0D0
       SITE(4,3) =-0.138D0
 
-      C6        = 1704.76651D0 ! LJ COEFFICIENTS IN KCAL/MOL ANGSTROM**6 OR ANGSTROM**12
+      C6        = 1704.76651D0 ! LJ coefficients in kcal/mol Angstrom**6 or Angstrom**12
       C12       = 1729898.17D0
       CHARGE(1) = 1.2456D0
       CHARGE(2) = 0.6228D0

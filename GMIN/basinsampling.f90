@@ -1,28 +1,28 @@
-!  GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-!  COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!  THIS FILE IS PART OF GMIN.
+!  GMIN: A program for finding global minima
+!  Copyright (C) 1999-2006 David J. Wales
+!  This file is part of GMIN.
 !
-!  GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!  (AT YOUR OPTION) ANY LATER VERSION.
+!  GMIN is free software; you can redistribute it and/or modify
+!  it under the terms of the GNU General Public License as published by
+!  the Free Software Foundation; either version 2 of the License, or
+!  (at your option) any later version.
 !
-!  GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!  GMIN is distributed in the hope that it will be useful,
+!  but WITHOUT ANY WARRANTY; without even the implied warranty of
+!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!  GNU General Public License for more details.
 !
-!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!  You should have received a copy of the GNU General Public License
+!  along with this program; if not, write to the Free Software
+!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 ! 
-! THE `BASIN-SAMPLING' ALGORITHM COMBINES `BASIN-HOPPING' AND WANG-LANDAU
-! SAMPLING TECHNIQUE TO STUDY THE THERMODYNAMICS OF THE TRANSFORMED PES.
-! IT PROVIDES A DIRECT TEMPERATURE-INDEPENDENT ESTIMATE OF THE DENSITY OF STATES
-! ALONG WITH THERMODYNAMIC PROPERTIES SUCH AS THE FREE ENERGY AND ENTROPY VIA ENSEMBLE AVERAGES USING
-! SAMPLES OF LOCAL MINIMA RATHER THAN INSTANTANEOUS CONFIGURATIONS. (TETYANA BOGDAN)
-! T.V. BOGDAN, D.J. WALES AND F. CALVO, J. CHEM. PHYS., 124, 044102 (2006).
+! The `basin-sampling' algorithm combines `basin-hopping' and Wang-Landau
+! sampling technique to study the thermodynamics of the transformed PES.
+! It provides a direct temperature-independent estimate of the density of states
+! along with thermodynamic properties such as the free energy and entropy via ensemble averages using
+! samples of local minima rather than instantaneous configurations. (Tetyana Bogdan)
+! T.V. Bogdan, D.J. Wales and F. Calvo, J. Chem. Phys., 124, 044102 (2006).
 !                                            
 !---======================================---
       SUBROUTINE BASINSAMPLING
@@ -42,7 +42,7 @@
               & HARVEST, BINLABEL(HBINS), OLDENERGY, NORM, MINDISTANCE(HBINS), MINDISTANCEOLD, LNHARVEST, QWEIGHT(HBINS,2), &
               & CURRENTQ, Q4ORDERPARAM, KNOWNENERGIES(61836), RMAT(3,3), HISTINT
 
-      !REAL(16) LNWEIGHT(HBINS), DISTANCE(HBINS) 
+      !real(16) lnWeight(Hbins), Distance(Hbins) 
       REAL(8) LNWEIGHT(HBINS), DISTANCE(HBINS) 
          
       LOGICAL YESNO, FLAT, EVAP, EVAPREJECT, ACCEPTMOVE
@@ -51,32 +51,32 @@
 
       COMMON /EV/ EVAP, EVAPREJECT
 
-! IF THE BS RUN IS REQUESTED TO BE RESTARTED THE FOLLOWING FILES WILL BE READ IN:
+! If the BS run is requested to be restarted the following files will be read in:
       
       IF (BSPTRESTART) THEN
-         OPEN(UNIT=421, FILE='LNWEIGHT.HIS', STATUS='OLD')
+         OPEN(UNIT=421, FILE='lnWeight.his', status='old')
          DO I=1, HBINS
-            READ(421, '(2G20.10)') DUMMY, LNWEIGHT(I)
+            READ(421, '(2G20.10)') dummy, lnWeight(i)
          ENDDO
-         PRINT *, 'FOLLOWING LN(WEIGHT) HISTOGRAM WAS READ:'
+         PRINT *, 'Following ln(Weight) histogram was read:'
          PRINT *, LNWEIGHT
          CLOSE(421)
-         OPEN(UNIT=421, FILE='DISTANCE.HIS', STATUS='OLD')
+         OPEN(UNIT=421, FILE='Distance.his', status='old')
          DO I=1, HBINS
-            READ(421, '(2G20.10)') DUMMY, DISTANCE(I)
+            READ(421, '(2G20.10)') dummy, Distance(i)
          ENDDO
-         PRINT *, 'FOLLOWING DISTANCE HISTOGRAM WAS READ:'
+         PRINT *, 'Following Distance histogram was read:'
          PRINT *, DISTANCE
          CLOSE(421)
-         OPEN(UNIT=421, FILE='MINDISTANCE.HIS', STATUS='OLD')
+         OPEN(UNIT=421, FILE='MinDistance.his', status='old')
          DO I=1, HBINS
-            READ(421, '(2G20.10)') DUMMY, MINDISTANCE(I)
+            READ(421, '(2G20.10)') dummy, MinDistance(i)
          ENDDO
-         PRINT *, 'FOLLOWING MINIMIZED DISTANCE HISTOGRAM WAS READ:'
+         PRINT *, 'Following Minimized Distance histogram was read:'
          PRINT *, MINDISTANCE
          CLOSE(421)
       ELSE
-! NOTE THAT WEIGHT ACCUMULATION IS IS DONE IN LOGARITHMS
+! note that weight accumulation is is done in logarithms
          LNWEIGHT=0.0D0 
          QWEIGHT=0.0D0
          DISTANCE=0.0D0
@@ -84,34 +84,34 @@
       ENDIF
 
       IF (BSPTRESTART) THEN
-         OPEN(UNIT=422, FILE='VISITS.HIS', STATUS='OLD')
+         OPEN(UNIT=422, FILE='Visits.his', status='old')
          DO I=1, HBINS
-            READ(422, '(2G20.10)') DUMMY, VISITS(I)
+            READ(422, '(2G20.10)') dummy, Visits(i)
          ENDDO
-         PRINT *, 'FOLLOWING VISITS HISTOGRAM WAS READ:'
+         PRINT *, 'Following Visits histogram was read:'
          PRINT *, VISITS
          CLOSE(422)
-         OPEN(UNIT=422, FILE='VISITSTOTAL.HIS', STATUS='OLD')
+         OPEN(UNIT=422, FILE='VisitsTotal.his', status='old')
          DO I=1, HBINS
-            READ(422, '(2G20.10)') DUMMY, VISITSTOTAL(I)
+            READ(422, '(2G20.10)') dummy, VisitsTotal(i)
          ENDDO
-         PRINT *, 'FOLLOWING VISITSTOTAL HISTOGRAM WAS READ:'
+         PRINT *, 'Following VisitsTotal histogram was read:'
          PRINT *, VISITSTOTAL
          CLOSE(422)
-         OPEN(UNIT=422, FILE='LNMODFAC.RESTART', STATUS='OLD')
-         READ(422, '(G20.10)') LNMODFAC
-         PRINT *, 'RESTARTING FROM MODIFICATION FACTOR', LNMODFAC
+         OPEN(UNIT=422, FILE='lnModfac.restart', status='old')
+         READ(422, '(G20.10)') lnModFac
+         PRINT *, 'Restarting from modification factor', lnModFac
          CLOSE(422)
-         OPEN(UNIT=422, FILE='NWL.RESTART', STATUS='OLD')
-         READ(422, '(G20.10)') NWL
-         PRINT *, 'NUMBER OF WANG LANDAU ITERATIONS ALREADY COMPLETED: ', NWL
+         OPEN(UNIT=422, FILE='nWL.restart', status='old')
+         READ(422, '(G20.10)') nWL
+         PRINT *, 'Number of Wang Landau iterations already completed: ', nWL
          CLOSE(422)
       ELSE
          VISITS=0
          VISITSTOTAL=0
          MINIMANUMBER=0
          LNMODFAC=LOG(HISTFAC) ! REFER TO THE TABLE
-         PRINT *, 'LNMODFAC, EXP', LNMODFAC, EXP(LNMODFAC)
+         PRINT *, 'lnModfac, exp', lnModFac, exp(lnModFac)
          NWL=0
       ENDIF
 
@@ -121,14 +121,14 @@
       ENDDO
 
 
-! FOR VISITPROP CONVERGENCE SCENARIO 
-! IF ONE WANTS TO USE PREVIOUSLY ACCUMULATED NUMBER OF VISITS, SET EQUIL TO -1 IN DATA AND COPY 
-! OLD VISITSTOTAL.HIS TO FROZEN.HIS
+! for VISITPROP convergence scenario 
+! if one wants to use previously accumulated number of visits, set Equil to -1 in data and copy 
+! old VisitsTotal.his to Frozen.his
 !
       IF (EQUIL.EQ.-1) THEN
-         OPEN(UNIT=422, FILE='FROZEN.HIS', STATUS='OLD')
+         OPEN(UNIT=422, FILE='Frozen.his', status='old')
          DO I=1, HBINS
-            READ(422, '(2G20.10)') DUMMY, FROZENVISITS(I)
+            READ(422, '(2G20.10)') dummy, FrozenVisits(i)
          ENDDO
        ENDIF
 
@@ -136,16 +136,16 @@
       IF (FIXCOM) CALL CENTRECOM(COORDS(1:3*NATOMS,1))
       CURRENTPOINTCOORDINATES=COORDS
       PERTURBEDCOORDINATESSAVE=COORDS
-      PRINT *, 'CALCULATING INITIAL ENERGY'
+      PRINT *, 'Calculating initial energy'
       CALL QUENCH(.FALSE.,1,LBFGS_ITERATIONS,DUMMY,NDUMMY,CONVERGED,CURRENTPOINTCOORDINATES)
       CURRENTPOINTENERGY=POTEL
-      PRINT *, 'INITIAL ENERGY', CURRENTPOINTENERGY
+      PRINT *, 'Initial energy', CurrentPointEnergy
 
 
       BININDEXOLD=ENERGY2INDEX(CURRENTPOINTENERGY)
 
       IF ((BININDEXOLD < 1 ).OR.(BININDEXOLD > HBINS)) THEN
-         PRINT *, 'STARTING GEOMETRY IS OUTSIDE REQUESTED RANGE. EXITING.'
+         PRINT *, 'Starting geometry is outside requested range. Exiting.'
          RETURN
       ENDIF 
       DISTANCEOLD=0.0D0       
@@ -156,29 +156,29 @@
       CONVERGED=0
       NQUENCHESSINCELASTUPDATE=0
 
-! REPEAT FOR THE REQUESTED NUMBER OF WANG-LANDAU ITERATIONS. 
-! THE ITERATION IS COMPLETE WHEN THE VISITS HISTOGRAM SATISFIES THE FLATNESS CRITERION.
+! Repeat for the requested number of Wang-Landau iterations. 
+! The iteration is complete when the visits histogram satisfies the flatness criterion.
 
       DO
          IF ( NWL==TARGETWL ) EXIT
-! JMC DO SOMETHING DIFFERENT HERE IF CHARMM
+! jmc do something different here if charmm
          IF (CHRMMT) THEN
 
-! FIXED END MOVE SCHEME
+! Fixed end move scheme
              IF (FIXEDENDMOVET) THEN ! STEALING FEM KEYWORD FOR BASIN-HOPPING GMIN IC MOVES...
-!!!                 CALL FIXEDENDMOVE(1)
-!!!                 PERTURBEDCOORDINATES(1:3*NATOMS,1) = COORDS(1:3*NATOMS,1)
+!!!                 CALL FixedEndMove(1)
+!!!                 PerturbedCoordinates(1:3*NATOMS,1) = coords(1:3*NATOMS,1)
 !!!             ELSE
-! STEP IN INTERNAL COORDINATES
+! step in internal coordinates
                 COORDS(1:3*NATOMS,1) = PERTURBEDCOORDINATESSAVE(1:3*NATOMS,1)
                 IF(CHRIGIDTRANST) CALL MKRIGIDTRANS(1)
                 IF(CHRIGIDROTT) CALL MKRIGIDROT(1)
                 CALL TAKESTEPCH(1)
-                ! NEW GEOMETRY IS NOW IN COORDS
+                ! new geometry is now in coords
                 IF (FIXCOM) CALL CENTRECOM(COORDS(1:3*NATOMS,1))
                 PERTURBEDCOORDINATES(1:3*NATOMS,1) = COORDS(1:3*NATOMS,1)
              ELSE
-! TRY TAKING STEP IN CARTESIANS; NEED TO PRESERVE DETAILED BALANCE AND EXPLORE ALL OF CONFIGURATION SPACE.
+! try taking step in Cartesians; need to preserve detailed balance and explore all of configuration space.
                 PERTURBEDCOORDINATES = PERTURBGEOMETRY(PERTURBEDCOORDINATESSAVE)
                 IF (FIXCOM) CALL CENTRECOM(PERTURBEDCOORDINATES(1:3*NATOMS,1))
                 COORDS(1:3*NATOMS,1) = PERTURBEDCOORDINATES(1:3*NATOMS,1)
@@ -192,8 +192,8 @@
 
          CALL QUENCH(.FALSE.,1,LBFGS_ITERATIONS,DUMMY,NDUMMY,CONVERGED,COORDS)
          IF (EVAPREJECT) THEN
-            IF (DEBUG) PRINT *, 'EVAPORATION DURING MINIMISATION'
-            IF (DEBUG) PRINT *, 'OLDENERGY, CURRENTPOINTENERGY, POTEL=',OLDENERGY, CURRENTPOINTENERGY, POTEL
+            IF (DEBUG) PRINT *, 'Evaporation during minimisation'
+            IF (DEBUG) PRINT *, 'oldenergy, CurrentPointEnergy, potel=',oldenergy, CurrentPointEnergy, potel
             CYCLE
          ENDIF
          OLDENERGY=CURRENTPOINTENERGY
@@ -204,13 +204,13 @@
          IF ((CONVERGED.EQ.1).AND.(.NOT.EVAPREJECT)) THEN
             NQUENCHESSUCCESS=NQUENCHESSUCCESS+1
             BININDEXNEW=ENERGY2INDEX(CURRENTPOINTENERGY)
-            !CALL ORDERQ4(NATOMS, CURRENTPOINTCOORDINATES, Q4ORDERPARAM)
-            !CURRENTQ=Q4ORDERPARAM
-            !PRINT *, BININDEXNEW, CURRENTPOINTENERGY, CURRENTQ, Q4ORDERPARAM
+            !call ORDERQ4(Natoms, CurrentPointCoordinates, Q4orderparam)
+            !CurrentQ=Q4orderparam
+            !print *, BinIndexnew, CurrentPointEnergy, CurrentQ, Q4orderparam
 
 
             IF (BININDEXNEW < 1 .OR.BININDEXNEW>HBINS) THEN
-               IF (DEBUG) PRINT *, 'STRUCTURE OUTSIDE ENERGY RANGE. REJECTING MOVE'
+               IF (DEBUG) PRINT *, 'Structure outside energy range. Rejecting move'
                ACCEPTMOVE=.FALSE.
             ELSE 
          	IF ((BINSTRUCTURES).AND.(MOD(NQUENCHES, SAVENTH).EQ.0)) THEN
@@ -227,13 +227,13 @@
                ENDIF
             ENDIF
 
-            IF (DEBUG) PRINT *, 'EOLD, ENEW, IOLD, INEW, WOLD, WNEW, CONVERGED , RATIO'
+            IF (DEBUG) PRINT *, 'Eold, Enew, Iold, Inew, Wold, Wnew, Converged , Ratio'
             IF (DEBUG) PRINT *, OLDENERGY, CURRENTPOINTENERGY, BININDEXOLD, BININDEXNEW, LNWEIGHT(BININDEXOLD) , &
                      & LNWEIGHT(BININDEXNEW), CONVERGED, LNRATIO
 
             IF (ACCEPTMOVE) THEN 
-               ! MOVE ACCEPTED
-               !PRINT *, 'MOVING FROM BIN', BININDEXOLD, 'TO BIN', BININDEXNEW
+               ! move accepted
+               !print *, 'Moving from bin', BinIndexold, 'to bin', BinIndexnew
 
                VISITS(BININDEXNEW)=VISITS(BININDEXNEW)+1
                VISITSTOTAL(BININDEXNEW)=VISITSTOTAL(BININDEXNEW)+1
@@ -248,8 +248,8 @@
                BININDEXOLD=BININDEXNEW
                PERTURBEDCOORDINATESSAVE=PERTURBEDCOORDINATES
             ELSE
-               ! MOVE REJECTED
-               !PRINT *, 'STAYING IN BIN', BININDEXOLD
+               ! move rejected
+               !print *, 'Staying in bin', BinIndexold
                VISITS(BININDEXOLD)=VISITS(BININDEXOLD)+1
                VISITSTOTAL(BININDEXOLD)=VISITSTOTAL(BININDEXOLD)+1
                LNWEIGHT(BININDEXOLD)=LNWEIGHT(BININDEXOLD)+LNMODFAC
@@ -257,82 +257,82 @@
                MINDISTANCE(BININDEXOLD)=MINDISTANCE(BININDEXOLD)+MINDISTANCEOLD
             ENDIF
          ELSE
-         IF (DEBUG) PRINT *, 'OPTIMISATION UNSUCCESSFUL'
+         IF (DEBUG) PRINT *, 'Optimisation unsuccessful'
          ENDIF
 
          IF ((MOD(NQUENCHESSUCCESS,DUMPEVERYNTHQUENCH).EQ.0).AND.(NQUENCHESSINCELASTUPDATE > EQUIL)) THEN  
-            ! RECORD STATISTICS
-             OPEN(UNIT=421, FILE='LNWEIGHT.HIS', STATUS='UNKNOWN')
+            ! record statistics
+             OPEN(UNIT=421, FILE='lnWeight.his', status='unknown')
              DO I=1, HBINS
-                WRITE(421, '(2G20.10)')  BINLABEL(I), LNWEIGHT(I)
+                WRITE(421, '(2G20.10)')  BinLabel(i), lnWeight(i)
              ENDDO
              CLOSE(421)
            
-             OPEN(UNIT=421, FILE='DISTANCE.HIS', STATUS='UNKNOWN')
+             OPEN(UNIT=421, FILE='Distance.his', status='unknown')
              DO I=1, HBINS
-                WRITE(421, '(2G20.10)')  BINLABEL(I), DISTANCE(I)
+                WRITE(421, '(2G20.10)')  BinLabel(i), Distance(i)
              ENDDO
              CLOSE(421)
            
-             OPEN(UNIT=421, FILE='MINDISTANCE.HIS', STATUS='UNKNOWN')
+             OPEN(UNIT=421, FILE='MinDistance.his', status='unknown')
              DO I=1, HBINS
-                WRITE(421, '(2G20.10)')  BINLABEL(I), MINDISTANCE(I)
+                WRITE(421, '(2G20.10)')  BinLabel(i), MinDistance(i)
              ENDDO
              CLOSE(421)
       
-             OPEN(UNIT=422, FILE='VISITS.HIS', STATUS='UNKNOWN')
+             OPEN(UNIT=422, FILE='Visits.his', status='unknown')
              DO I=1, HBINS
-                WRITE(422, '(2G20.10)')  BINLABEL(I), VISITS(I)
+                WRITE(422, '(2G20.10)')  BinLabel(i), Visits(i)
              ENDDO
              CLOSE(422)
       
-             OPEN(UNIT=422, FILE='VISITSTOTAL.HIS', STATUS='UNKNOWN')
+             OPEN(UNIT=422, FILE='VisitsTotal.his', status='unknown')
              DO I=1, HBINS
-                WRITE(422, '(2G20.10)')  BINLABEL(I), VISITSTOTAL(I)
+                WRITE(422, '(2G20.10)')  BinLabel(i), VisitsTotal(i)
              ENDDO
              CLOSE(422)
            
-             OPEN(UNIT=422, FILE='LNMODFAC.RESTART', STATUS='UNKNOWN')
-             WRITE(422, '(G20.10)') LNMODFAC
+             OPEN(UNIT=422, FILE='lnModfac.restart', status='unknown')
+             WRITE(422, '(G20.10)') lnModFac
              CLOSE(422)
            
-             OPEN(UNIT=422, FILE='NWL.RESTART', STATUS='UNKNOWN')
-             WRITE(422, '(G20.10)') NWL
+             OPEN(UNIT=422, FILE='nWL.restart', status='unknown')
+             WRITE(422, '(G20.10)') nWL
              CLOSE(422)
       
-             OPEN(UNIT=421, FILE='MINIMANUMBER.HIS', STATUS='UNKNOWN')
+             OPEN(UNIT=421, FILE='MinimaNumber.his', status='unknown')
              DO I=1, HBINS
-                WRITE(421, '(2G20.10)')  BINLABEL(I), MINIMANUMBER(I)
+                WRITE(421, '(2G20.10)')  BinLabel(i), MinimaNumber(i)
              ENDDO
              CLOSE(421)
 
 
              CALL RECORD_STAT(LNWEIGHT,DISTANCE, MINDISTANCE, VISITSTOTAL, BINLABEL)
 
-             ! CHECKING HISTOGRAM FOR CONVERGENCE
+             ! checking histogram for convergence
 
              FLAT=CHECKFLATNESS(VISITS,LNMODFAC,NWL, FROZENVISITS)
              IF (FLAT) THEN
                 NQUENCHESSINCELASTUPDATE=0
-                PRINT *, '--===VISITS HISTOGRAM SATISFIED FLATNESS CRITERION===--'
+                PRINT *, '--===Visits histogram satisfied flatness criterion===--'
                 LNMODFAC=HISTFACMUL*LNMODFAC
-                PRINT *, 'LNMODFAC, EXP', LNMODFAC, EXP(LNMODFAC)
-                PRINT *, 'UPDATING MODIFICATION FACTOR TO', LNMODFAC
+                PRINT *, 'lnModfac, exp', lnModFac, exp(lnModFac)
+                PRINT *, 'Updating modification factor to', lnModFac
                 FROZENVISITS=VISITS
                 VISITS=0
                 NWL=NWL+1
                 
-                OPEN(UNIT=422, FILE='LNMODFAC.RESTART', STATUS='UNKNOWN')
-                WRITE(422, '(G20.10)') LNMODFAC
+                OPEN(UNIT=422, FILE='lnModfac.restart', status='unknown')
+                WRITE(422, '(G20.10)') lnModFac
                 CLOSE(422)
               
-                OPEN(UNIT=422, FILE='NWL.RESTART', STATUS='UNKNOWN')
-                WRITE(422, '(G20.10)') NWL
+                OPEN(UNIT=422, FILE='nWL.restart', status='unknown')
+                WRITE(422, '(G20.10)') nWL
                 CLOSE(422)
              ENDIF
       
 
-              PRINT *, NQUENCHES, ' QUENCHES COMPLETED'
+              PRINT *, NQUENCHES, ' quenches completed'
          ENDIF
 
       NQUENCHES=NQUENCHES+1
@@ -421,7 +421,7 @@
 
       CALCULATEDDISTANCE=DSQRT(SUM ( (X1(:,1)-X2(:,1))**2 + (Y1(:,1)-Y2(:,1))**2 + (Z1(:,1)-Z2(:,1))**2 ) )
 
-      IF (DEBUG) PRINT *, 'DISTANCE' , CALCULATEDDISTANCE
+      IF (DEBUG) PRINT *, 'Distance' , CalculatedDistance
 
       END FUNCTION CALCULATEDDISTANCE
 
@@ -450,16 +450,16 @@
          ENDIF
       ENDDO
       HMIN=MINVAL(VISITSNONZERO)
-      IF (DEBUG) PRINT *, 'MIN AND MAX', HMIN, HMAX
+      IF (DEBUG) PRINT *, 'Min and max', Hmin, Hmax
 
       HDEV=(1.0D0*HMAX-HMIN)/(HMAX+HMIN)
     
-      OPEN(UNIT=421, FILE='HISTFLUCTUATIONS', STATUS='UNKNOWN', POSITION='APPEND')
-      WRITE(421, '(G20.10)') HDEV
+      OPEN(UNIT=421, FILE='HistFluctuations', status='unknown', position='append')
+      WRITE(421, '(G20.10)') HDev
       CLOSE(421)
 
       IF (VISITPROP) THEN
-          !MINIMAL NUMBER OF VISITS SHOULD BE PROPORTIONAL TO 1/SQRT(LN(F))
+          !minimal number of visits should be proportional to 1/sqrt(ln(f))
  
           CHECKFLATNESS=.FALSE.
           FLATBIN=.FALSE.
@@ -470,12 +470,12 @@
              DO I=1, HBINS
                 IF ((VISITS(I) > 1.0D0/SQRT(LNMODFAC)).OR.((VISITS(I).EQ.0).AND.(FROZENVISITS(I).EQ.0))) FLATBIN(I)=.TRUE.
              ENDDO
-             IF (DEBUG)  PRINT *, 'FLATNESS BY BIN', FLATBIN 
+             IF (DEBUG)  PRINT *, 'Flatness by bin', FlatBin 
              IF (ALL(FLATBIN)) CHECKFLATNESS=.TRUE.
           ENDIF
       ELSE
-         ! HISTOGRAM FLATNESS CRITERION: SHOULD BE USED FOR DISCONNECTED PES IN THE INITIAL RUN
-         ! WHERE 1/LNF CRITERION WILL NEVER BE SATISFIED.
+         ! histogram flatness criterion: should be used for disconnected PES in the initial run
+         ! where 1/lnf criterion will never be satisfied.
          IF ((HDEV<HPERCENT).AND.(ABS(1.0D0*HMIN-HMAX)>HPERCENT)) CHECKFLATNESS=.TRUE.
       ENDIF
 
@@ -486,19 +486,19 @@
             DELTAHK=DELTAHK+0
          ENDIF
       ENDDO
-      OPEN(UNIT=421, FILE='HISTSATURATION', STATUS='UNKNOWN', POSITION='APPEND')
-      WRITE(421, '(G20.10)') DELTAHK
+      OPEN(UNIT=421, FILE='HistSaturation', status='unknown', position='append')
+      WRITE(421, '(G20.10)') deltaHk
       CLOSE(421)
 
-      WRITE (ISTR, '(I10)') NWL
-      FILENAME="HISTSATURATION."//TRIM(ADJUSTL(ISTR))
-      OPEN(UNIT=421,FILE=FILENAME, STATUS="UNKNOWN", FORM="FORMATTED", POSITION="APPEND")
-      WRITE(421, '(G20.10)') DELTAHK
+      WRITE (ISTR, '(i10)') nWL
+      FILENAME="HistSaturation."//trim(adjustl(istr))
+      OPEN(UNIT=421,FILE=FILENAME, STATUS="unknown", form="formatted", position="append")
+      WRITE(421, '(G20.10)') deltaHk
       CLOSE(421)
 
       IF (CHECKFLATNESS) THEN
-         OPEN(UNIT=421, FILE='DELTAHK.VS.LNMODFAC', STATUS='UNKNOWN', POSITION='APPEND')
-         WRITE(421, '(2G20.10)') LNMODFAC,DELTAHK
+         OPEN(UNIT=421, FILE='deltaHk.vs.lnModfac', status='unknown', position='append')
+         WRITE(421, '(2G20.10)') lnModFac,deltaHk
          CLOSE(421)
       ENDIF
 
@@ -552,8 +552,8 @@
          ENDIF
       ENDDO
 
-     ! CALCULATE DENSITY OF MINIMA IN THE BS APPROXIMATION: P_J=[G_J*(DM/D_J)**KAPPA]/NORM*DELTAV 
-     ! NOW WE WILL ACTUALLY BE STORING LN(P_J)
+     ! calculate density of minima in the BS approximation: P_j=[G_j*(dm/d_j)**kappa]/Norm*deltaV 
+     ! now we will actually be storing ln(p_j)
 
       FULLBINS=0
       TOTLNG_J=0.D0
@@ -632,9 +632,9 @@
         ENDDO
 
 
-      OPEN(UNIT=421, FILE='BL.PJNORM.LNGJ.DJNM.DJM.VT.HIS', STATUS='UNKNOWN')
+      OPEN(UNIT=421, FILE='BL.Pjnorm.lnGj.Djnm.Djm.VT.his', status='unknown')
       DO I=1, HBINS
-         WRITE(421, '(6G20.10)')  BINLABEL(I), P_JNORM(I), LNG_J(I), D_JNONMIN(I), D_JMIN(I), VISITSTOTAL(I)
+         WRITE(421, '(6G20.10)')  BinLabel(i), p_jnorm(i), lng_j(i), d_jnonmin(i), d_jmin(i), VisitsTotal(i)
       ENDDO
          CLOSE(421)
 
@@ -667,7 +667,7 @@
             RETURN
          ENDIF
 
-         INQUIRE(FILE='BINENERGIES', EXIST=YESNO)
+         INQUIRE(FILE='binenergies', exist=yesno)
 
          NEWBINENERGY=.TRUE.
          DO JB=1, BINENSAVED
@@ -678,40 +678,40 @@
 
          IF (NEWBINENERGY) THEN
             BINENSAVED=BINENSAVED+1
-            !CALL ORDERQ4(NATOMS, CURRENTPOINTCOORDINATES, Q4ORDERPARAM)
+            !call ORDERQ4(Natoms, CurrentPointCoordinates, Q4orderparam)
             IF (ODIHET) CALL CHCALCDIHE(DIHEORDERPARAM,CURRENTPOINTCOORDINATES(1:3*NATOMS,1))
             IF (OSASAT) CALL ORDER_SASA(SASAORDERPARAM,RPRO,CURRENTPOINTCOORDINATES(1:3*NATOMS:3,1), &
                       & CURRENTPOINTCOORDINATES(2:3*NATOMS:3,1),CURRENTPOINTCOORDINATES(3:3*NATOMS:3,1))
             BINENERGIES(BINENSAVED)=CURRENTPOINTENERGY
             IF (WRITESTRUCT)  THEN
                 IF ((BINENSAVED.EQ.1).AND.(YESNO)) THEN
-                   OPEN(UNIT=1979,FILE='BINENERGIES',STATUS='OLD')
+                   OPEN(UNIT=1979,FILE='binenergies',status='old')
                 ELSE
-                   OPEN(UNIT=1979,FILE='BINENERGIES',STATUS='UNKNOWN',POSITION='APPEND')
+                   OPEN(UNIT=1979,FILE='binenergies',status='unknown',position='append')
                 ENDIF
-! JMC                WRITE(1979,'(2G20.10)') CURRENTPOINTENERGY, Q4ORDERPARAM
+! jmc                write(1979,'(2G20.10)') CurrentPointEnergy, Q4orderparam
                 IF (ODIHET.AND.OSASAT) THEN
-                   WRITE(1979,'(3G20.10)') CURRENTPOINTENERGY, DIHEORDERPARAM, SASAORDERPARAM
+                   WRITE(1979,'(3G20.10)') CurrentPointEnergy, diheorderparam, SASAorderparam
                 ELSEIF (OSASAT) THEN
-                   WRITE(1979,'(2G20.10)') CURRENTPOINTENERGY, SASAORDERPARAM
+                   WRITE(1979,'(2G20.10)') CurrentPointEnergy, SASAorderparam
                 ELSEIF (ODIHET) THEN
-                   WRITE(1979,'(2G20.10)') CURRENTPOINTENERGY, DIHEORDERPARAM
+                   WRITE(1979,'(2G20.10)') CurrentPointEnergy, diheorderparam
                 ELSE
-                   WRITE(1979,'(G20.10)') CURRENTPOINTENERGY
+                   WRITE(1979,'(G20.10)') CurrentPointEnergy
                 ENDIF
                 CLOSE (1979)
-                WRITE (ISTR, '(I10)') BININDEX
-                BINNAME="BINSTRUCTURES."//TRIM(ADJUSTL(ISTR))
+                WRITE (ISTR, '(i10)') binindex
+                BINNAME="binstructures."//trim(adjustl(istr))
                 IF ((BINENSAVED.EQ.1).AND.(YESNO)) THEN
-                   OPEN(UNIT=1979,FILE=BINNAME, STATUS="OLD", FORM="FORMATTED")
+                   OPEN(UNIT=1979,FILE=BINNAME, STATUS="old", form="formatted")
                 ELSE
-                   OPEN(UNIT=1979,FILE=BINNAME, STATUS="UNKNOWN", FORM="FORMATTED", POSITION="APPEND")
+                   OPEN(UNIT=1979,FILE=BINNAME, STATUS="unknown", form="formatted", position="append")
                 ENDIF
-                WRITE(1979,'(I10)') NATOMS
-                WRITE(1979,'(A,1G20.10)') '     STRUCTURE WITH ENERGY ', CURRENTPOINTENERGY
+                WRITE(1979,'(I10)') natoms
+                WRITE(1979,'(A,1G20.10)') '     Structure with energy ', CurrentPointEnergy
                 IF (CHRMMT) THEN
                    DO JB=1,NATOMS
-                      WRITE(1979,'(A,1X,3F20.10)') ZSYM(JB)(1:1),(CURRENTPOINTCOORDINATES(3*(JB-1)+JC,1),JC=1,3)
+                      WRITE(1979,'(A,1X,3F20.10)') ZSYM(JB)(1:1),(CurrentPointCoordinates(3*(JB-1)+JC,1),JC=1,3)
                    ENDDO
                 ELSE
                    WRITE(1979,30) (CURRENTPOINTCOORDINATES(JB,1),JB=1,3*NATOMS)
@@ -722,17 +722,17 @@
              MINIMANUMBER(BININDEX)=MINIMANUMBER(BININDEX)+1
          ENDIF
 
-! IMPORTANCE INDEX 
+! Importance Index 
 
  	 IF ((.NOT.NEWBINENERGY).AND.(WRITESTRUCT)) THEN 
-		OPEN(UNIT=1979,FILE="BINENIMPORTANCEINDEX", STATUS="UNKNOWN", FORM="FORMATTED")
+		OPEN(UNIT=1979,FILE="BinEnImportanceIndex", status="unknown", form="formatted")
 		DO JB=1, BINENSAVED
 	             IF (ABS(BINENERGIES(JB)-CURRENTPOINTENERGY).LE.BQMAX) THEN
 		     BINENIMPORTANCEINDEX(JB)=BINENIMPORTANCEINDEX(JB)+1
              	     ENDIF
          	ENDDO
 		DO JB=1, BINENSAVED
-		WRITE(1979,'(1G20.10, I10)') BINENERGIES(JB), BINENIMPORTANCEINDEX(JB)
+		WRITE(1979,'(1G20.10, I10)') binenergies(jb), binenImportanceIndex(jb)
 		ENDDO
 		CLOSE (1979)
 	 ENDIF

@@ -1,27 +1,27 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C  ENERGY AND GRADIENT FOR LJ PLUS COULOMB REPULSION ON SOME PARTICLES.
-C  MARK MILLER AND MARIE-PIERRE GAIGEOT
+C  Energy and gradient for LJ plus coulomb repulsion on some particles.
+C  Mark Miller and Marie-Pierre Gaigeot
 C
       SUBROUTINE LJCOUL(X,V,ENERGY,GTEST)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       LOGICAL GTEST
       INTEGER J1, J2, J3, J4
@@ -29,8 +29,8 @@ C
      1                 R6, ENERGY, DUMMYX, DUMMYY, DUMMYZ, DUMMY,
      2                 COULQ2, COULQ2_ENERGY, R8
 
-C     DIVIDE COULOMB CONTRIBUTION TO ENERGY BY 4.  THIS FACTOR IS CANCELLED AT THE
-C     END OF THE ENERGY LOOP BY THE 4 PREFACTOR IN THE LJ PART OF THE POTENTIAL.
+C     Divide Coulomb contribution to energy by 4.  This factor is cancelled at the
+C     end of the energy loop by the 4 prefactor in the LJ part of the potential.
       COULQ2 = COULQ * COULQ
       COULQ2_ENERGY = COULQ2 / 4.0D0
   
@@ -90,8 +90,8 @@ C     END OF THE ENERGY LOOP BY THE 4 PREFACTOR IN THE LJ PART OF THE POTENTIAL.
 
 C--------------------------------------------------------------------------------
 
-C     ATTEMPT SWAP BETWEEN CHARGED AND NEUTRAL PARTICLES IN THE LJ+COULOMB
-C     POTENTIAL.
+C     Attempt swap between charged and neutral particles in the LJ+Coulomb
+C     potential.
 
       SUBROUTINE TAKESTEPLJC(NP)
 
@@ -106,7 +106,7 @@ C     POTENTIAL.
 
       IF (COULN==0 .OR. COULN==NATOMS) RETURN
 
-C     CHOOSE ONE CHARGED PARTICLE (1 TO COULN) AND ONE NEUTRAL (COULN+1 TO NATOMS)
+C     Choose one charged particle (1 to COULN) and one neutral (COULN+1 to NATOMS)
       J1 = 3 * (INT(DPRAND()*COULN))
       J2 = 3 * (INT(DPRAND()*(NATOMS-COULN)) + COULN)
 

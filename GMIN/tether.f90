@@ -1,536 +1,536 @@
-!  GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-!  COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!  THIS FILE IS PART OF GMIN.
+!  GMIN: A program for finding global minima
+!  Copyright (C) 1999-2006 David J. Wales
+!  This file is part of GMIN.
 !
-!  GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!  (AT YOUR OPTION) ANY LATER VERSION.
+!  GMIN is free software; you can redistribute it and/or modify
+!  it under the terms of the GNU General Public License as published by
+!  the Free Software Foundation; either version 2 of the License, or
+!  (at your option) any later version.
 !
-!  GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!  GMIN is distributed in the hope that it will be useful,
+!  but WITHOUT ANY WARRANTY; without even the implied warranty of
+!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!  GNU General Public License for more details.
 !
-!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!  You should have received a copy of the GNU General Public License
+!  along with this program; if not, write to the Free Software
+!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 !
-! TETHER PERFORMS A CONVENTIONAL WL RUN FOR SELECTED LOCAL MINIMA THAT HAVE THE HIGHEST BINIMPORTANCEINDEX
-! WITH THE ADDITIONAL CONSTRAINT THAT THE DISTANCE BETWEEN THE GIVEN MINIMUM AND ANY STRUCTURE THAT IS ACCEPTED DURING THE 
-! SAMPLE IS LESS THAN THE AVERAGE DISTANCE D_JMIN FOR THE BS BIN TO WHICH THE MINIMUM BELONGS. 
-! IT IS POSSIBLE TO SPLIT THE ENERGY RANGE INTO A NUMBER OF WINDOWS 'HWINDOWS'. SETTING 'HWINDOWS' TO 1 
-! USING A KEYWORD PRODUCES A WL
-! RUN OF THE WHOLE RANGE. (TETYANA BOGDAN)
-! T.V. BOGDAN, D.J. WALES AND F. CALVO, J. CHEM. PHYS., 124, 044102 (2006).
+! Tether performs a conventional WL run for selected local minima that have the highest BinImportanceIndex
+! with the additional constraint that the distance between the given minimum and any structure that is accepted during the 
+! sample is less than the average distance d_jmin for the BS bin to which the minimum belongs. 
+! It is possible to split the energy range into a number of windows 'hwindows'. Setting 'hwindows' to 1 
+! using a keyword produces a WL
+! run of the whole range. (Tetyana Bogdan)
+! T.V. Bogdan, D.J. Wales and F. Calvo, J. Chem. Phys., 124, 044102 (2006).
 !
 !---======================================---
-      SUBROUTINE TETHEREDWL
-      USE COMMONS, ONLY: NATOMS,  COORDS, HISTMIN, HISTMAX, HBINS, HISTFAC, TARGETWL, &
-                         & HISTFACMUL, DEBUG, EQUIL , PERIODIC, TWOD, BINSTRUCTURES, SAVENTH, HDISTCONSTRAINT, &
-                         & DUMPEVERYNTHQUENCH, HWINDOWS, LHBINS, SAMPLEDBINS, LNHARMFREQ, CHRMMT, FIXEDENDMOVET
-      USE TETHERFUNC
+      subroutine TetheredWL
+      use Commons, only: Natoms,  coords, histmin, histMAX, hbins, histfac, TargetWL, &
+                         & histfacmul, debug, Equil , periodic, twod, binstructures, SaveNth, hdistconstraint, &
+                         & DumpEveryNthQuench, hwindows, lhbins, sampledbins, lnHarmFreq, CHRMMT, FixedEndMoveT
+      use TetherFunc
 
-      IMPLICIT NONE
+      implicit none
     
 
-      INTEGER NSTEPS, I, J, K, VISITS(HBINS), VISITSTOTAL(HBINS), LBFGS_ITERATIONS, BININDEXOLD, BININDEXNEW, NQUENCHES, &
-              & NQUENCHESSINCEFLAT, NQUENCHESSUCCESS, NWL, NQUENCHESSINCELASTUPDATE, ESCAPEDFROMTETHER, NQUENCHESMAX, &
-              & LVISITS(LHBINS,HWINDOWS), LVISITSTOTAL(LHBINS,HWINDOWS), NDUMMY, CONVERGED, &
-              & LVISITS_S(SAMPLEDBINS,HWINDOWS), LVISITSTOTAL_S(SAMPLEDBINS,HWINDOWS) 
-      REAL(8) POTEL, WEIGHT(HBINS) , DISTANCE(HBINS), DUMMY, CURRENTPOINTENERGY, CURRENTPOINTCOORDINATES(3*NATOMS, 1), &
-              & DISTANCEOLD, LNMODFAC, PERTURBEDCOORDINATES(3*NATOMS, 1), PERTURBEDCOORDINATESSAVE(3*NATOMS, 1), LNRATIO, &
-              & HARVEST, BINLABEL(HBINS), NORM, MINDISTANCE(HBINS), MINDISTANCEOLD, GRAD(3*NATOMS), &
-              & SOURCEMINIMUM(3*NATOMS, 1), HISTINT, &
-              & CHECKTETHER, LNHARVEST, OLDENERGY, DELTA, &
-              &  WINDOW_COORDS(3*NATOMS, HWINDOWS), & 
-              & LBINLABEL(HBINS/HWINDOWS,HWINDOWS ), L_LNWEIGHT(LHBINS,HWINDOWS), TOT_LNWEIGHT(HBINS-HWINDOWS+1), SCALEFAC, &
-              & LBINLABEL_S(SAMPLEDBINS,HWINDOWS ), L_LNWEIGHT_S(SAMPLEDBINS,HWINDOWS), EXTRAPOLFAC, SHIFTFAC, BOTTOMWEIGHT
+      integer nsteps, i, j, k, Visits(Hbins), VisitsTotal(Hbins), lbfgs_iterations, BinIndexold, BinIndexnew, NQuenches, &
+              & NQuenchesSinceFlat, NQuenchesSuccess, nWL, NQuenchesSinceLastUpdate, EscapedFromTether, NQuenchesMax, &
+              & lVisits(lhbins,hwindows), lVisitsTotal(lhbins,hwindows), ndummy, Converged, &
+              & lVisits_S(sampledbins,hwindows), lVisitsTotal_S(sampledbins,hwindows) 
+      real(8) potel, Weight(Hbins) , Distance(Hbins), dummy, CurrentPointEnergy, CurrentPointCoordinates(3*Natoms, 1), &
+              & Distanceold, lnModFac, PerturbedCoordinates(3*Natoms, 1), PerturbedCoordinatesSave(3*Natoms, 1), lnRatio, &
+              & harvest, BinLabel(HBins), Norm, MinDistance(Hbins), MinDistanceold, grad(3*Natoms), &
+              & SourceMinimum(3*Natoms, 1), HISTINT, &
+              & CheckTether, lnharvest, OldEnergy, delta, &
+              &  window_coords(3*Natoms, hwindows), & 
+              & lBinLabel(HBins/hwindows,hwindows ), l_lnWeight(lhbins,hwindows), tot_lnWeight(hbins-hwindows+1), ScaleFac, &
+              & lBinLabel_S(sampledbins,hwindows ), l_lnWeight_S(sampledbins,hwindows), ExtrapolFac, ShiftFac, BottomWeight
 
-!!!! THINK ABOUT THIS:, TOT_LNWEIGHT_S(HBINS-HWINDOWS+1)
+!!!! THINK ABOUT THIS:, tot_lnWeight_S(hbins-hwindows+1)
 
 
-      REAL(8) LNWEIGHT(HBINS)
+      real(8) lnWeight(Hbins)
 
-      CHARACTER (LEN =256)  HISTFILENAME
-      CHARACTER (LEN= 10)  ISTR
+      character (len =256)  histfilename
+      character (len= 10)  istr
 
-      LOGICAL YESNO, FLAT, EVAP, EVAPREJECT, ACCEPTMOVE, ALLFOUND
+      logical yesno, Flat, evap, evapreject, AcceptMove, allfound
 
-      COMMON /MYPOT/ POTEL
+      common /mypot/ potel
 
-      COMMON /EV/ EVAP, EVAPREJECT
+      common /ev/ evap, evapreject
 
       HISTINT=(HISTMAX-HISTMIN)/HBINS
-      WINDOW_COORDS=0.0D0
-      PRINT *, 'TETHERING IN ', HWINDOWS, ' WINDOWS STARTED. SAMPLING FOR COORDINATES:'
-      PRINT *, 'ENERGY RANGE SPLIT AS FOLLOWS: WINDOW, EMIN, EMAX:'
-      DO J=1, HWINDOWS
-          PRINT *, J ! THIS IS A ROUGH NOT EXACT ESTIMATION OF ENERGY RANGES
-          PRINT *, HISTMIN+(J-1)*HISTINT*(HBINS/HWINDOWS), HISTMIN+(J)*HISTINT*(HBINS/HWINDOWS)
-      ENDDO
+      window_coords=0.0d0
+      print *, 'Tethering in ', hwindows, ' windows started. Sampling for coordinates:'
+      print *, 'Energy range split as follows: window, Emin, Emax:'
+      do j=1, hwindows
+          print *, j ! this is a rough not exact estimation of energy ranges
+          print *, histmin+(j-1)*histint*(hbins/hwindows), histmin+(j)*histint*(hbins/hwindows)
+      enddo
 
 
-      CURRENTPOINTCOORDINATES(:,1)=COORDS(:,1)
-      PERTURBEDCOORDINATESSAVE(:,1)=COORDS(:,1)
-      PRINT *, 'CALCULATING INITIAL ENERGY'
-      CALL QUENCH(.FALSE.,1,LBFGS_ITERATIONS,DUMMY,NDUMMY,CONVERGED,CURRENTPOINTCOORDINATES)
-      CURRENTPOINTENERGY=POTEL
-      SOURCEMINIMUM(:,1)=COORDS(:,1) 
-      PRINT *, 'INITIAL ENERGY', CURRENTPOINTENERGY
+      CurrentPointCoordinates(:,1)=coords(:,1)
+      PerturbedCoordinatesSave(:,1)=coords(:,1)
+      print *, 'Calculating initial energy'
+      call quench(.false.,1,lbfgs_iterations,dummy,ndummy,Converged,CurrentPointCoordinates)
+      CurrentPointEnergy=potel
+      SourceMinimum(:,1)=coords(:,1) 
+      print *, 'Initial energy', CurrentPointEnergy
 
-      DO
-        ALLFOUND=.FALSE.
-        DO J=1, HWINDOWS
-           DO I=1, 3*NATOMS
-             IF (WINDOW_COORDS(I,J).NE.0.0D0) THEN
-               ALLFOUND=.TRUE.
-             ELSE
-               ALLFOUND=.FALSE.
-             ENDIF
-            ENDDO
-        ENDDO
+      do
+        allfound=.false.
+        do j=1, hwindows
+           do i=1, 3*natoms
+             if (window_coords(i,j).ne.0.0d0) then
+               allfound=.true.
+             else
+               allfound=.false.
+             endif
+            enddo
+        enddo
         
-        IF (ALLFOUND) EXIT       
+        if (allfound) exit       
     
-        CURRENTPOINTCOORDINATES(:,1)=COORDS(:,1)
+        CurrentPointCoordinates(:,1)=coords(:,1)
         
-        DO I=1, 3*NATOMS
-             PERTURBEDCOORDINATESSAVE(I,1)=COORDS(I,1)
-        ENDDO
+        do i=1, 3*Natoms
+             PerturbedCoordinatesSave(i,1)=coords(i,1)
+        enddo
 
         IF (CHRMMT) THEN
-            IF (FIXEDENDMOVET) THEN ! ACTUALLY BASIN-HOPPING-TYPE STEP IN INTERNAL COORDINATES
-!!!                 CALL FIXEDENDMOVE(1)
-!!!                 PERTURBEDCOORDINATES(:3*NATOMS,1) = COORDS(:3*NATOMS,1)
+            IF (FixedEndMoveT) THEN ! actually basin-hopping-type step in internal coordinates
+!!!                 CALL FixedEndMove(1)
+!!!                 PerturbedCoordinates(:3*NATOMS,1) = coords(:3*NATOMS,1)
 !!!             ELSE
-               COORDS(:3*NATOMS,1) = PERTURBEDCOORDINATESSAVE(:3*NATOMS,1)
+               coords(:3*NATOMS,1) = PerturbedCoordinatesSave(:3*NATOMS,1)
                CALL FILLICT(1)
                CALL TAKESTEPCH(1)
-               ! NEW GEOMETRY IS NOW IN COORDS
-               PERTURBEDCOORDINATES(:3*NATOMS,1) = COORDS(:3*NATOMS,1)
-            ELSE ! TRY TAKING STEP IN CARTESIANS
-               PERTURBEDCOORDINATES = PERTURBGEOMETRY(PERTURBEDCOORDINATESSAVE)
-               COORDS(1:3*NATOMS,1) = PERTURBEDCOORDINATES(1:3*NATOMS,1)
+               ! new geometry is now in coords
+               PerturbedCoordinates(:3*NATOMS,1) = coords(:3*NATOMS,1)
+            ELSE ! try taking step in Cartesians
+               PerturbedCoordinates = PerturbGeometry(PerturbedCoordinatesSave)
+               coords(1:3*NATOMS,1) = PerturbedCoordinates(1:3*NATOMS,1)
                CALL FILLICT(1)
             ENDIF
         ELSE
-           PERTURBEDCOORDINATES=PERTURBGEOMETRY(PERTURBEDCOORDINATESSAVE)
-           COORDS(:,1)=PERTURBEDCOORDINATES(:,1)
+           PerturbedCoordinates=PerturbGeometry(PerturbedCoordinatesSave)
+           coords(:,1)=PerturbedCoordinates(:,1)
         ENDIF
 
    
-        !CALL PRINTXYZ(NATOMS,COORDS(:,1)) 
-        CALL POTENTIAL(COORDS, GRAD, POTEL, .TRUE., .FALSE.)
-        CURRENTPOINTENERGY=POTEL
-        !CALL PRINTXYZ(NATOMS,COORDS(:,1)) 
-        CURRENTPOINTCOORDINATES(:,1)=COORDS(:,1)
+        !call PrintXyz(Natoms,coords(:,1)) 
+        call potential(coords, grad, potel, .true., .false.)
+        CurrentPointEnergy=potel
+        !call PrintXyz(Natoms,coords(:,1)) 
+        CurrentPointCoordinates(:,1)=coords(:,1)
 
-        DO J=1, HWINDOWS
+        do j=1, hwindows
 
-           IF ((CURRENTPOINTENERGY.GT.HISTMIN+(LHBINS-SAMPLEDBINS)*HISTINT+(J-1)*HISTINT*(HBINS/HWINDOWS)).AND. &
-              & (CURRENTPOINTENERGY.LT.HISTMIN+(LHBINS-SAMPLEDBINS)*HISTINT+(J)*HISTINT*(HBINS/HWINDOWS)).AND. & 
-              & WINDOW_COORDS(1,J).EQ.0.D0) THEN
+           if ((CurrentPointEnergy.gt.histmin+(lhbins-sampledbins)*HistInt+(j-1)*histint*(hbins/hwindows)).and. &
+              & (CurrentPointEnergy.lt.histmin+(lhbins-sampledbins)*HistInt+(j)*histint*(hbins/hwindows)).and. & 
+              & window_coords(1,j).eq.0.d0) then
 
-              DO I=1, 3*NATOMS
-                 WINDOW_COORDS(I,J)=CURRENTPOINTCOORDINATES(I,1)
-              ENDDO
-              PRINT *, WINDOW_COORDS(1,J), 'E', CURRENTPOINTENERGY
-            ENDIF
-        ENDDO
+              do i=1, 3*Natoms
+                 window_coords(i,j)=CurrentPointCoordinates(i,1)
+              enddo
+              print *, window_coords(1,j), 'e', CurrentPointEnergy
+            endif
+        enddo
 
-      ENDDO
+      enddo
 
-      PRINT *, 'SEEDING WINDOWS WITH STARTING GEOMETRIES SUCCESSFUL'
+      print *, 'Seeding windows with starting geometries successful'
 
-      PRINT *, 'SAMPLING REQUESTED FOR ', SAMPLEDBINS, 'BINS'
+      print *, 'Sampling requested for ', sampledbins, 'bins'
 
 
     
-!     GLOBAL DENSITY OF STATES VARIABLES: 
-      LNWEIGHT=0.0D0
-      VISITS=0
-      VISITSTOTAL=0
-      DO I=1, HBINS
-         BINLABEL(I)=HISTMIN + HISTINT*(I-0.5)
-      ENDDO
+!     Global density of states variables: 
+      lnWeight=0.0d0
+      Visits=0
+      VisitsTotal=0
+      do i=1, Hbins
+         BinLabel(i)=HistMin + HistInt*(i-0.5)
+      enddo
 
       
 
-!****  VARIABLES FOR EACH WINDOW:
+!****  Variables for each window:
 
-      PRINT *, 'EACH WINDOW IS DIVIDED INTO ', LHBINS, 'BINS.'
+      print *, 'Each window is divided into ', lhbins, 'bins.'
 
       
-   DO J=1, HWINDOWS
+   do j=1, hwindows
 
-      PRINT *, 'WL SIMULATION FOR WINDOW' , J
+      print *, 'WL simulation for window' , j
 
 
-      DO I=1, LHBINS
-         LVISITS(I,J)=0
-         LVISITSTOTAL(I,J)=0       
-      ENDDO
+      do i=1, lhbins
+         lVisits(i,j)=0
+         lVisitsTotal(i,j)=0       
+      enddo
 
-      DO I=1, SAMPLEDBINS 
-         LVISITS_S(I,J)=0
-         LVISITSTOTAL_S(I,J)=0       
-      ENDDO
+      do i=1, sampledbins 
+         lVisits_S(i,j)=0
+         lVisitsTotal_S(i,j)=0       
+      enddo
 
-      DO I=1, LHBINS
-         LBINLABEL(I,J)=(HISTMIN+(J-1)*HISTINT*LHBINS) + HISTINT*(I-0.5)
-      ENDDO
+      do i=1, lhbins
+         lBinLabel(i,j)=(HistMin+(j-1)*histint*lhbins) + HistInt*(i-0.5)
+      enddo
 
-      DO I=1, SAMPLEDBINS 
-         LBINLABEL_S(I,J)=(HISTMIN+(LHBINS-SAMPLEDBINS)*HISTINT+(J-1)*HISTINT*LHBINS) + HISTINT*(I-0.5)
-      ENDDO
+      do i=1, sampledbins 
+         lBinLabel_S(i,j)=(HistMin+(lhbins-sampledbins)*HistInt+(j-1)*histint*lhbins) + HistInt*(i-0.5)
+      enddo
       
-      IF (J.NE.1) THEN
-        DO I=1, LHBINS
-           LBINLABEL(I,J)=LBINLABEL(I,J)-HISTINT*(J-1)
-        ENDDO
-      ENDIF
+      if (j.ne.1) then
+        do i=1, lhbins
+           lBinLabel(i,j)=lBinLabel(i,j)-histint*(j-1)
+        enddo
+      endif
 
 
-      !DO I=1, SAMPLEDBINS
-      !   PRINT *, LBINLABEL_S(I,J), LVISITS_S(I,J), L_LNWEIGHT_S(I,J)
-      !ENDDO
+      !do i=1, sampledbins
+      !   print *, lBinLabel_S(i,j), lVisits_S(i,j), l_lnWeight_S(i,j)
+      !enddo
 
 
- !****    SEEDING W(X) WITH HARMONIC DENSITY OF STATES FOR EACH WINDOW ****
+ !****    seeding w(x) with harmonic density of states for each window ****
 
-      PRINT *, 'HARMONIC FREQUENCY FOR THE MINIMUM: ', LNHARMFREQ
-      DO I=1, LHBINS
-         L_LNWEIGHT(I,J)=LOG((LBINLABEL(I,J)-HISTMIN)**((3*NATOMS/2)-1))-LNHARMFREQ
-      ENDDO
+      print *, 'Harmonic Frequency for the Minimum: ', lnHarmFreq
+      do i=1, lhbins
+         l_lnWeight(i,j)=log((lBinLabel(i,j)-HistMin)**((3*Natoms/2)-1))-lnHarmFreq
+      enddo
 
-      L_LNWEIGHT_S=L_LNWEIGHT(LHBINS-SAMPLEDBINS+1:LHBINS,:)
+      l_lnWeight_S=l_lnWeight(lhbins-sampledbins+1:lhbins,:)
 
 !*** OR NOT:
-      !L_LNWEIGHT_S=0.D0
+      !l_lnWeight_S=0.d0
 
-       OPEN(UNIT=422, FILE='HARMVIBDOS.UNWEIGHTED', STATUS='UNKNOWN')
-       DO I=1, LHBINS
-          WRITE(422, '(2G20.10)') LBINLABEL(I,J), L_LNWEIGHT(I,J)
-       ENDDO
-       CLOSE(422)
+       open(unit=422, file='HarmVibDOS.unweighted', status='unknown')
+       do i=1, lhbins
+          write(422, '(2G20.10)') lBinLabel(i,j), l_lnWeight(i,j)
+       enddo
+       close(422)
 
-       OPEN(UNIT=422, FILE='HARMVIBDOS_S.UNWEIGHTED', STATUS='UNKNOWN')
-       DO I=1, SAMPLEDBINS 
-          WRITE(422, '(2G20.10)') LBINLABEL_S(I,J), L_LNWEIGHT_S(I,J)
-       ENDDO
-       CLOSE(422)
+       open(unit=422, file='HarmVibDOS_S.unweighted', status='unknown')
+       do i=1, sampledbins 
+          write(422, '(2G20.10)') lBinLabel_S(i,j), l_lnWeight_S(i,j)
+       enddo
+       close(422)
 
-      PRINT *, 'SEEDING WITH STARTING GEOMETRY:'
+      print *, 'Seeding with starting geometry:'
 
-      DO      
+      do      
         
-        IF (J==1) THEN
+        if (j==1) then
            IF (CHRMMT) THEN
-               IF (FIXEDENDMOVET) THEN ! ACTUALLY BASIN-HOPPING-TYPE STEPS IN INTERNAL COORDINATES
-!!!                 CALL FIXEDENDMOVE(1)
-!!!                 PERTURBEDCOORDINATES(:3*NATOMS,1) = COORDS(:3*NATOMS,1)
+               IF (FixedEndMoveT) THEN ! actually basin-hopping-type steps in internal coordinates
+!!!                 CALL FixedEndMove(1)
+!!!                 PerturbedCoordinates(:3*NATOMS,1) = coords(:3*NATOMS,1)
 !!!             ELSE
-                  COORDS(:3*NATOMS,1) = WINDOW_COORDS(:,J)
+                  coords(:3*NATOMS,1) = window_coords(:,j)
                   CALL FILLICT(1)
                   CALL TAKESTEPCH(1)
-                  ! NEW GEOMETRY IS NOW IN COORDS
-                  PERTURBEDCOORDINATES(:3*NATOMS,1) = COORDS(:3*NATOMS,1)
-               ELSE ! TRY TAKING STEP IN CARTESIANS
-                  PERTURBEDCOORDINATES=PERTURBGEOMETRY(WINDOW_COORDS(:,J))
-                  COORDS(1:3*NATOMS,1) = PERTURBEDCOORDINATES(1:3*NATOMS,1)
+                  ! new geometry is now in coords
+                  PerturbedCoordinates(:3*NATOMS,1) = coords(:3*NATOMS,1)
+               ELSE ! try taking step in Cartesians
+                  PerturbedCoordinates=PerturbGeometry(window_coords(:,j))
+                  coords(1:3*NATOMS,1) = PerturbedCoordinates(1:3*NATOMS,1)
                   CALL FILLICT(1)
                ENDIF
            ELSE
-              PERTURBEDCOORDINATES=PERTURBGEOMETRY(WINDOW_COORDS(:,J))
-              COORDS(:,1)=PERTURBEDCOORDINATES(:,1)
+              PerturbedCoordinates=PerturbGeometry(window_coords(:,j))
+              coords(:,1)=PerturbedCoordinates(:,1)
            ENDIF
 
-        ELSE
+        else
            IF (CHRMMT) THEN
-               IF (FIXEDENDMOVET) THEN ! ACTUALLY BASIN-HOPPING-TYPE STEPS IN INTERNAL COORDINATES
-!!!                 CALL FIXEDENDMOVE(1)
-!!!                 PERTURBEDCOORDINATES(:3*NATOMS,1) = COORDS(:3*NATOMS,1)
+               IF (FixedEndMoveT) THEN ! actually basin-hopping-type steps in internal coordinates
+!!!                 CALL FixedEndMove(1)
+!!!                 PerturbedCoordinates(:3*NATOMS,1) = coords(:3*NATOMS,1)
 !!!             ELSE
-                  COORDS(:3*NATOMS,1) = WINDOW_COORDS(:,(J-1))
+                  coords(:3*NATOMS,1) = window_coords(:,(j-1))
                   CALL FILLICT(1)
                   CALL TAKESTEPCH(1)
-                  ! NEW GEOMETRY IS NOW IN COORDS
-                  PERTURBEDCOORDINATES(:3*NATOMS,1) = COORDS(:3*NATOMS,1)
-               ELSE ! TRY TAKING STEP IN CARTESIANS
-                  PERTURBEDCOORDINATES=PERTURBGEOMETRY(WINDOW_COORDS(:,(J-1)))
-                  COORDS(1:3*NATOMS,1) = PERTURBEDCOORDINATES(1:3*NATOMS,1)
+                  ! new geometry is now in coords
+                  PerturbedCoordinates(:3*NATOMS,1) = coords(:3*NATOMS,1)
+               ELSE ! try taking step in Cartesians
+                  PerturbedCoordinates=PerturbGeometry(window_coords(:,(j-1)))
+                  coords(1:3*NATOMS,1) = PerturbedCoordinates(1:3*NATOMS,1)
                   CALL FILLICT(1)
                ENDIF
            ELSE
-              PERTURBEDCOORDINATES=PERTURBGEOMETRY(WINDOW_COORDS(:,(J-1)))
-              COORDS(:,1)=PERTURBEDCOORDINATES(:,1)
+              PerturbedCoordinates=PerturbGeometry(window_coords(:,(j-1)))
+              coords(:,1)=PerturbedCoordinates(:,1)
            ENDIF
-        ENDIF
+        endif
 
-        CALL POTENTIAL(COORDS, GRAD, POTEL, .TRUE., .FALSE.)
-        CURRENTPOINTENERGY=POTEL
-        CURRENTPOINTCOORDINATES(:,1)=COORDS(:,1)
-        BININDEXOLD=ENERGY2INDEX(CURRENTPOINTENERGY, LBINLABEL_S(1,J))
-        PRINT *, CURRENTPOINTENERGY, BININDEXOLD, LBINLABEL_S(1,J), LBINLABEL_S(SAMPLEDBINS,J)
-        IF ((BININDEXOLD.GE.1 ).AND.(BININDEXOLD.LE.SAMPLEDBINS)) THEN
-          DO I=1, 3*NATOMS
-             WINDOW_COORDS(I,J)=CURRENTPOINTCOORDINATES(I,1)
-          ENDDO
-          PRINT *, WINDOW_COORDS(1,J), 'E', CURRENTPOINTENERGY
-          EXIT
-        ELSE
-          DO I=1, 3*NATOMS
-             WINDOW_COORDS(I,(J-1))=CURRENTPOINTCOORDINATES(I,1)
-          ENDDO
-        ENDIF
+        call potential(coords, grad, potel, .true., .false.)
+        CurrentPointEnergy=potel
+        CurrentPointCoordinates(:,1)=coords(:,1)
+        BinIndexold=Energy2Index(CurrentPointEnergy, lBinLabel_S(1,j))
+        print *, CurrentPointEnergy, BinIndexold, lBinLabel_S(1,j), lBinLabel_S(sampledbins,j)
+        if ((BinIndexold.ge.1 ).and.(BinIndexold.le.sampledbins)) then
+          do i=1, 3*Natoms
+             window_coords(i,j)=CurrentPointCoordinates(i,1)
+          enddo
+          print *, window_coords(1,j), 'e', CurrentPointEnergy
+          exit
+        else
+          do i=1, 3*Natoms
+             window_coords(i,(j-1))=CurrentPointCoordinates(i,1)
+          enddo
+        endif
 
-      ENDDO
-
-
-      LNMODFAC=LOG(HISTFAC)
-      NWL=0
-
-      DO I=1, 3*NATOMS
-         CURRENTPOINTCOORDINATES(I,1)=WINDOW_COORDS(I,J)
-      ENDDO
-
-      DO I=1, 3*NATOMS
-         PERTURBEDCOORDINATESSAVE(I,1)=WINDOW_COORDS(I,J)
-      ENDDO
-      COORDS=CURRENTPOINTCOORDINATES
-      CALL POTENTIAL(COORDS, GRAD, POTEL, .TRUE., .FALSE.)
-      !CALL QUENCH(.FALSE.,1,LBFGS_ITERATIONS,DUMMY,DUMMY,CONVERGED,COORDS)
-      CURRENTPOINTENERGY=POTEL
-      OLDENERGY=POTEL
-      PRINT *, 'INITIAL ENERGY', CURRENTPOINTENERGY, 'FOR WINDOW', J
+      enddo
 
 
+      lnModFac=log(HistFac)
+      nWL=0
 
-      BININDEXOLD=ENERGY2INDEX(CURRENTPOINTENERGY, LBINLABEL_S(1,J))
+      do i=1, 3*Natoms
+         CurrentPointCoordinates(i,1)=window_coords(i,j)
+      enddo
 
-      !IF (DEBUG) PRINT *, CURRENTPOINTENERGY, BININDEXOLD, 'HERE'
-
-      IF ((BININDEXOLD < 1 ).OR.(BININDEXOLD > SAMPLEDBINS)) THEN
-         PRINT *, 'STARTING GEOMETRY IS OUTSIDE REQUESTED RANGE. EXITING.'
-         RETURN
-      ENDIF 
-
-      NQUENCHES=0
-      NQUENCHESSINCEFLAT=0
-      NQUENCHESSUCCESS=0
-      ESCAPEDFROMTETHER=0
-      NQUENCHESSINCELASTUPDATE=0
-
-
-!REPEAT FOR THE REQUESTED NUMBER OF WANG-LANDAU ITERATIONS. 
+      do i=1, 3*Natoms
+         PerturbedCoordinatesSave(i,1)=window_coords(i,j)
+      enddo
+      coords=CurrentPointCoordinates
+      call potential(coords, grad, potel, .true., .false.)
+      !call quench(.false.,1,lbfgs_iterations,dummy,dummy,Converged,coords)
+      CurrentPointEnergy=potel
+      OldEnergy=potel
+      print *, 'Initial energy', CurrentPointEnergy, 'for window', j
 
 
-      DO
-         IF ( NWL==TARGETWL )  THEN
-          PRINT *, 'WL RUN FOR WINDOW', J, 'COMPLETE.'
-          EXIT
-         ENDIF
+
+      BinIndexold=Energy2Index(CurrentPointEnergy, lBinLabel_S(1,j))
+
+      !if (debug) print *, CurrentPointEnergy, BinIndexold, 'here'
+
+      if ((BinIndexold < 1 ).or.(BinIndexold > sampledbins)) then
+         print *, 'Starting geometry is outside requested range. Exiting.'
+         return
+      endif 
+
+      NQuenches=0
+      NQuenchesSinceFlat=0
+      NQuenchesSuccess=0
+      EscapedFromTether=0
+      NQuenchesSinceLastUpdate=0
+
+
+!Repeat for the requested number of Wang-Landau iterations. 
+
+
+      do
+         if ( nWL==TargetWL )  then
+          print *, 'WL run for window', j, 'complete.'
+          exit
+         endif
 
          IF (CHRMMT) THEN
-             IF (FIXEDENDMOVET) THEN ! ACTUALLY BASIN-HOPPING-TYPE STEP IN INTERNAL COORDINATES
-!!!                 CALL FIXEDENDMOVE(1)
-!!!                 PERTURBEDCOORDINATES(:3*NATOMS,1) = COORDS(:3*NATOMS,1)
+             IF (FixedEndMoveT) THEN ! actually basin-hopping-type step in internal coordinates
+!!!                 CALL FixedEndMove(1)
+!!!                 PerturbedCoordinates(:3*NATOMS,1) = coords(:3*NATOMS,1)
 !!!             ELSE
-                COORDS(:3*NATOMS,1) = PERTURBEDCOORDINATESSAVE(:3*NATOMS,1)
+                coords(:3*NATOMS,1) = PerturbedCoordinatesSave(:3*NATOMS,1)
                 CALL FILLICT(1)
                 CALL TAKESTEPCH(1)
-                ! NEW GEOMETRY IS NOW IN COORDS
-                PERTURBEDCOORDINATES(:3*NATOMS,1) = COORDS(:3*NATOMS,1)
-             ELSE ! TRY TAKING STEP IN CARTESIANS
-                PERTURBEDCOORDINATES = PERTURBGEOMETRY(PERTURBEDCOORDINATESSAVE)
-                COORDS(1:3*NATOMS,1) = PERTURBEDCOORDINATES(1:3*NATOMS,1)
+                ! new geometry is now in coords
+                PerturbedCoordinates(:3*NATOMS,1) = coords(:3*NATOMS,1)
+             ELSE ! try taking step in Cartesians
+                PerturbedCoordinates = PerturbGeometry(PerturbedCoordinatesSave)
+                coords(1:3*NATOMS,1) = PerturbedCoordinates(1:3*NATOMS,1)
                 CALL FILLICT(1)
              ENDIF
          ELSE
-            PERTURBEDCOORDINATES=PERTURBGEOMETRY(PERTURBEDCOORDINATESSAVE)
-            COORDS(:,1)=PERTURBEDCOORDINATES(:,1)
+            PerturbedCoordinates=PerturbGeometry(PerturbedCoordinatesSave)
+            coords(:,1)=PerturbedCoordinates(:,1)
          ENDIF
 
-         CHECKTETHER=CALCULATEDDISTANCE(SOURCEMINIMUM, PERTURBEDCOORDINATES)
-         !PRINT *, 'DISTANCE2',CHECKTETHER,HDISTCONSTRAINT
-         CALL POTENTIAL(COORDS, GRAD, POTEL, .TRUE., .FALSE.)
-         !PRINT *, 'DISTANCE3', CHECKTETHER, HDISTCONSTRAINT
-         IF ((EVAPREJECT).OR.(CHECKTETHER.GT.HDISTCONSTRAINT)) THEN
-            ESCAPEDFROMTETHER=ESCAPEDFROMTETHER+1
-            CYCLE
-         ENDIF
-         OLDENERGY=CURRENTPOINTENERGY
-         CURRENTPOINTENERGY=POTEL
-         CURRENTPOINTCOORDINATES=COORDS
+         CheckTether=CalculatedDistance(SourceMinimum, PerturbedCoordinates)
+         !print *, 'Distance2',CheckTether,hdistconstraint
+         call potential(coords, grad, potel, .true., .false.)
+         !print *, 'Distance3', CheckTether, hdistconstraint
+         if ((evapreject).or.(CheckTether.gt.hdistconstraint)) then
+            EscapedFromTether=EscapedFromTether+1
+            cycle
+         endif
+         oldenergy=CurrentPointEnergy
+         CurrentPointEnergy=potel
+         CurrentPointCoordinates=coords
 
 
-         IF (.NOT.EVAPREJECT) THEN
-            NQUENCHESSUCCESS=NQUENCHESSUCCESS+1
-            BININDEXNEW=ENERGY2INDEX(CURRENTPOINTENERGY, LBINLABEL_S(1,J))
+         if (.not.evapreject) then
+            NQuenchesSuccess=NQuenchesSuccess+1
+            BinIndexnew=Energy2Index(CurrentPointEnergy, lBinLabel_S(1,j))
 
 
-            IF (BININDEXNEW < 1 .OR.BININDEXNEW>SAMPLEDBINS) THEN
-               !PRINT *, 'STRUCTURE OUTSIDE ENERGY RANGE. REJECTING MOVE'
-                ACCEPTMOVE=.FALSE. 
-            ELSE 
-               LNRATIO=L_LNWEIGHT_S(BININDEXOLD,J)-L_LNWEIGHT_S(BININDEXNEW,J)
-               CALL RANDOM_NUMBER(HARVEST)
-               LNHARVEST=LOG(HARVEST)
+            if (BinIndexnew < 1 .or.BinIndexnew>sampledbins) then
+               !print *, 'Structure outside energy range. Rejecting move'
+                AcceptMove=.false. 
+            else 
+               lnRatio=l_lnWeight_S(BinIndexold,j)-l_lnWeight_S(BinIndexnew,j)
+               call random_number(harvest)
+               lnharvest=log(harvest)
 
-                  IF ((LNRATIO>0.D0).OR.(LNRATIO>LNHARVEST)) THEN
-                     ACCEPTMOVE=.TRUE.
-                  ELSE
-                     ACCEPTMOVE=.FALSE.
-                  ENDIF
-            ENDIF
+                  if ((lnRatio>0.d0).or.(lnRatio>lnharvest)) then
+                     AcceptMove=.true.
+                  else
+                     AcceptMove=.false.
+                  endif
+            endif
 
-            !PRINT *, 'EOLD, ENEW, IOLD, INEW, WOLD, WNEW, ACCEPTMOVE , RATIO'
-            !PRINT *, OLDENERGY, CURRENTPOINTENERGY, BININDEXOLD, BININDEXNEW, L_LNWEIGHT(BININDEXOLD,J) , &
-            !         & L_LNWEIGHT(BININDEXNEW,J), ACCEPTMOVE, LNRATIO
+            !print *, 'Eold, Enew, Iold, Inew, Wold, Wnew, AcceptMove , Ratio'
+            !print *, oldenergy, CurrentPointEnergy, BinIndexold, BinIndexnew, l_lnWeight(BinIndexold,j) , &
+            !         & l_lnWeight(BinIndexnew,j), AcceptMove, lnRatio
 
 
-            IF (ACCEPTMOVE) THEN 
-               ! MOVE ACCEPTED
-                 LVISITS_S(BININDEXNEW,J)=LVISITS_S(BININDEXNEW,J)+1
-                 LVISITSTOTAL_S(BININDEXNEW,J)=LVISITSTOTAL_S(BININDEXNEW,J)+1
-                 L_LNWEIGHT_S(BININDEXNEW,J)=L_LNWEIGHT_S(BININDEXNEW,J)+LNMODFAC
-               PERTURBEDCOORDINATESSAVE=PERTURBEDCOORDINATES
-               BININDEXOLD=BININDEXNEW
-               OLDENERGY=CURRENTPOINTENERGY
-            ELSE
-               ! MOVE REJECTED
-               !PRINT *, 'STAYING IN BIN', BININDEXOLD
-                  LVISITS_S(BININDEXOLD,J)=LVISITS_S(BININDEXOLD,J)+1
-                  LVISITSTOTAL_S(BININDEXOLD,J)=LVISITSTOTAL_S(BININDEXOLD,J)+1
-                  L_LNWEIGHT_S(BININDEXOLD,J)=L_LNWEIGHT_S(BININDEXOLD,J)+LNMODFAC
-            ENDIF
-         ELSE
-         IF (DEBUG) PRINT *, 'OPTIMISATION UNSUCCESSFUL'
-         ENDIF
+            if (AcceptMove) then 
+               ! move accepted
+                 lVisits_S(BinIndexnew,j)=lVisits_S(BinIndexnew,j)+1
+                 lVisitsTotal_S(BinIndexnew,j)=lVisitsTotal_S(BinIndexnew,j)+1
+                 l_lnWeight_S(BinIndexnew,j)=l_lnWeight_S(BinIndexnew,j)+lnModFac
+               PerturbedCoordinatesSave=PerturbedCoordinates
+               BinIndexold=BinIndexnew
+               OldEnergy=CurrentPointEnergy
+            else
+               ! move rejected
+               !print *, 'Staying in bin', BinIndexold
+                  lVisits_S(BinIndexold,j)=lVisits_S(BinIndexold,j)+1
+                  lVisitsTotal_S(BinIndexold,j)=lVisitsTotal_S(BinIndexold,j)+1
+                  l_lnWeight_S(BinIndexold,j)=l_lnWeight_S(BinIndexold,j)+lnModFac
+            endif
+         else
+         if (debug) print *, 'Optimisation unsuccessful'
+         endif
 
-         IF ((MOD(NQUENCHESSUCCESS,DUMPEVERYNTHQUENCH).EQ.0).AND.(NQUENCHESSINCELASTUPDATE > EQUIL)) THEN 
-            ! RECORD STATISTICS
-            ! PRINT *, NQUENCHESSUCCESS
-             WRITE (ISTR, '(I10)') J 
+         if ((mod(NQuenchesSuccess,DumpEveryNthQuench).eq.0).and.(NQuenchesSinceLastUpdate > Equil)) then 
+            ! record statistics
+            ! print *, NQuenchesSuccess
+             write (istr, '(i10)') j 
 
-             HISTFILENAME="LNWEIGHT.HIS."//TRIM(ADJUSTL(ISTR))
-             OPEN(UNIT=421, FILE=HISTFILENAME, STATUS='UNKNOWN')
-             DO I=1, SAMPLEDBINS
-                WRITE(421, '(2G20.10)')  LBINLABEL_S(I,J), L_LNWEIGHT_S(I,J)
-             ENDDO
-             CLOSE(421)
+             histfilename="lnWeight.his."//trim(adjustl(istr))
+             open(unit=421, file=histfilename, status='unknown')
+             do i=1, sampledbins
+                write(421, '(2G20.10)')  lBinLabel_S(i,j), l_lnWeight_S(i,j)
+             enddo
+             close(421)
            
-             HISTFILENAME="VISITS.HIS."//TRIM(ADJUSTL(ISTR))
-             OPEN(UNIT=422, FILE=HISTFILENAME, STATUS='UNKNOWN')
-             DO I=1, SAMPLEDBINS
-                WRITE(422, '(2G20.10)')  LBINLABEL_S(I,J), LVISITS_S(I,J)
-             ENDDO
-             CLOSE(422)
+             histfilename="Visits.his."//trim(adjustl(istr))
+             open(unit=422, file=histfilename, status='unknown')
+             do i=1, sampledbins
+                write(422, '(2G20.10)')  lBinLabel_S(i,j), lVisits_S(i,j)
+             enddo
+             close(422)
       
-             HISTFILENAME="VISITSTOTAL.HIS."//TRIM(ADJUSTL(ISTR))
-             OPEN(UNIT=422, FILE=HISTFILENAME, STATUS='UNKNOWN')
-             DO I=1, SAMPLEDBINS
-                WRITE(422, '(2G20.10)')  LBINLABEL_S(I,J), LVISITSTOTAL_S(I,J)
-             ENDDO
-             CLOSE(422)
+             histfilename="VisitsTotal.his."//trim(adjustl(istr))
+             open(unit=422, file=histfilename, status='unknown')
+             do i=1, sampledbins
+                write(422, '(2G20.10)')  lBinLabel_S(i,j), lVisitsTotal_S(i,j)
+             enddo
+             close(422)
            
-             OPEN(UNIT=422, FILE='NWL.RESTART', STATUS='UNKNOWN')
-             WRITE(422, '(4G20.10)') NWL, NINT(1.0D0/LNMODFAC), J, NQUENCHES
-             CLOSE(422)
+             open(unit=422, file='nWL.restart', status='unknown')
+             write(422, '(4G20.10)') nWL, nint(1.0d0/lnModFac), j, NQuenches
+             close(422)
       
-             OPEN(UNIT=422, FILE='ESCAPEDFROMTETHER', STATUS='UNKNOWN')
-             WRITE(422, '(G20.10)') ESCAPEDFROMTETHER
-             CLOSE(422)
+             open(unit=422, file='EscapedFromTether', status='unknown')
+             write(422, '(G20.10)') EscapedFromTether
+             close(422)
  
 
-             FLAT=CHECKFLATNESS(LVISITS_S(:,J), LNMODFAC, NWL) 
-             IF (FLAT) THEN
-                NQUENCHESSINCELASTUPDATE=0
-                PRINT *, '--===VISITS HISTOGRAM SATISFIED FLATNESS CRITERION===--'
-                LNMODFAC=HISTFACMUL*LNMODFAC
-                PRINT *, 'UPDATING MODFAC TO', LNMODFAC, 'NEXT WL ITERATION:', NWL+1, 'VISITS NEEDED:', NINT(1.0D0/LNMODFAC)
-                DO I=1, SAMPLEDBINS
-                   LVISITS_S(I,J)=0
-                ENDDO
-                NWL=NWL+1
-                ENDIF
+             Flat=CheckFlatness(lVisits_S(:,j), lnModFac, nWL) 
+             if (Flat) then
+                NQuenchesSinceLastUpdate=0
+                print *, '--===Visits histogram satisfied flatness criterion===--'
+                lnModFac=HistFacMul*lnModFac
+                print *, 'Updating modfac to', lnModFac, 'next WL iteration:', nWL+1, 'Visits needed:', nint(1.0d0/lnModFac)
+                do i=1, sampledbins
+                   lVisits_S(i,j)=0
+                enddo
+                nWL=nWL+1
+                endif
       
-         ENDIF
+         endif
 
-      NQUENCHES=NQUENCHES+1
-      NQUENCHESSINCELASTUPDATE=NQUENCHESSINCELASTUPDATE+1
-      IF (NQUENCHES.GT.200000) EXIT
-      ENDDO
+      NQuenches=NQuenches+1
+      NQuenchesSinceLastUpdate=NQuenchesSinceLastUpdate+1
+      if (NQuenches.gt.200000) exit
+      enddo
 
-    ENDDO
-
-
-    PRINT *, 'VIBRATIONAL DENSITY OF STATES GENERATION IN WINDOWS COMPLETE. STARTING SCALING:'
-
-    TOT_LNWEIGHT=0.D0
+    enddo
 
 
-    IF (HWINDOWS.GT.1) THEN
-       SCALEFAC=1.0D0
-       DO J=1, HWINDOWS
-           IF (J.EQ.1) THEN
-              DO I=1, LHBINS
-                 LNWEIGHT(I+(J-1)*LHBINS)=L_LNWEIGHT(I, J)
-              ENDDO
-           ELSE
-              SCALEFAC=L_LNWEIGHT(LHBINS, J-1)/L_LNWEIGHT(1, J)
-              PRINT *, L_LNWEIGHT(LHBINS, J-1), L_LNWEIGHT(1, J), SCALEFAC, L_LNWEIGHT(1, J)*SCALEFAC 
-              DO I=1, LHBINS
-                 L_LNWEIGHT(I, J)=L_LNWEIGHT(I, J)*SCALEFAC
-              ENDDO
-              WRITE (ISTR, '(I10)') J 
-              HISTFILENAME="LNWEIGHT2.HIS."//TRIM(ADJUSTL(ISTR))
-              OPEN(UNIT=421, FILE=HISTFILENAME, STATUS='UNKNOWN')
-              DO I=1, LHBINS
-                 WRITE(421, '(2G20.10)')  LBINLABEL(I,J), L_LNWEIGHT(I,J)
-              ENDDO
-              CLOSE(421)
-              DO I=1, LHBINS
-                 LNWEIGHT(I+(J-1)*LHBINS)=L_LNWEIGHT(I, J)
-              ENDDO
-           ENDIF
-        ENDDO
-      ELSE
-       DO J=1, HWINDOWS
+    print *, 'Vibrational density of states generation in windows complete. Starting scaling:'
 
-         PRINT *, LBINLABEL(LHBINS-SAMPLEDBINS+1,J), LBINLABEL_S(1,J) 
-         PRINT *, L_LNWEIGHT(LHBINS-SAMPLEDBINS+1,J), L_LNWEIGHT_S(1,J) 
+    tot_lnWeight=0.d0
 
-         EXTRAPOLFAC=ABS(L_LNWEIGHT_S(1,J)-L_LNWEIGHT((LHBINS-SAMPLEDBINS+1),J))
-         PRINT *, 'EXTRAPOLFAC', EXTRAPOLFAC 
 
-        DO I=1, SAMPLEDBINS
-           L_LNWEIGHT_S(I,J)=L_LNWEIGHT_S(I,J)-EXTRAPOLFAC
-        ENDDO
-        L_LNWEIGHT(LHBINS-SAMPLEDBINS+1:LHBINS,:)=L_LNWEIGHT_S
+    if (hwindows.gt.1) then
+       ScaleFac=1.0d0
+       do j=1, hwindows
+           if (j.eq.1) then
+              do i=1, lhbins
+                 lnWeight(i+(j-1)*lhbins)=l_lnWeight(i, j)
+              enddo
+           else
+              ScaleFac=l_lnWeight(lhbins, j-1)/l_lnWeight(1, j)
+              print *, l_lnWeight(lhbins, j-1), l_lnWeight(1, j), ScaleFac, l_lnWeight(1, j)*ScaleFac 
+              do i=1, lhbins
+                 l_lnWeight(i, j)=l_lnWeight(i, j)*ScaleFac
+              enddo
+              write (istr, '(i10)') j 
+              histfilename="lnWeight2.his."//trim(adjustl(istr))
+              open(unit=421, file=histfilename, status='unknown')
+              do i=1, lHbins
+                 write(421, '(2G20.10)')  lBinLabel(i,j), l_lnWeight(i,j)
+              enddo
+              close(421)
+              do i=1, lhbins
+                 lnWeight(i+(j-1)*lhbins)=l_lnWeight(i, j)
+              enddo
+           endif
+        enddo
+      else
+       do j=1, hwindows
 
-!        SHIFTFAC=(LOG((LBINLABEL(I,J)-HISTMIN)**((3*NATOMS/2)-1))-LNHARMFREQ)-L_LNWEIGHT(1,J)
-!        PRINT *, SHIFTFAC
+         print *, lBinLabel(lhbins-sampledbins+1,j), lBinLabel_S(1,j) 
+         print *, l_lnWeight(lhbins-sampledbins+1,j), l_lnWeight_S(1,j) 
+
+         ExtrapolFac=abs(l_lnWeight_S(1,j)-l_lnWeight((lhbins-sampledbins+1),j))
+         print *, 'ExtrapolFac', ExtrapolFac 
+
+        do i=1, sampledbins
+           l_lnWeight_S(i,j)=l_lnWeight_S(i,j)-ExtrapolFac
+        enddo
+        l_lnWeight(lhbins-sampledbins+1:lhbins,:)=l_lnWeight_S
+
+!        ShiftFac=(log((lBinLabel(i,j)-HistMin)**((3*Natoms/2)-1))-lnHarmFreq)-l_lnWeight(1,j)
+!        print *, ShiftFac
 !
-!        DO I=1, LHBINS
-!              L_LNWEIGHT(I,J)=L_LNWEIGHT(I,J)+SHIFTFAC
-!        ENDDO
+!        do i=1, lhbins
+!              l_lnWeight(i,j)=l_lnWeight(i,j)+ShiftFac
+!        enddo
 
     
-        LNWEIGHT=L_LNWEIGHT(:,J) 
-       ENDDO
-      ENDIF
+        lnWeight=l_lnWeight(:,j) 
+       enddo
+      endif
 
            
 
-    HISTFILENAME="LNWEIGHT.HIS"
-    OPEN(UNIT=422, FILE=HISTFILENAME, STATUS='UNKNOWN')
-    !DO I=1, HBINS-HWINDOWS+1
-    DO I=1, HBINS
-        WRITE(422, '(2G20.10)')  BINLABEL(I), LNWEIGHT(I)
-    ENDDO
-    CLOSE(422)
-    END SUBROUTINE TETHEREDWL
+    histfilename="lnWeight.his"
+    open(unit=422, file=histfilename, status='unknown')
+    !do i=1, hbins-hwindows+1
+    do i=1, hbins
+        write(422, '(2G20.10)')  BinLabel(i), lnWeight(i)
+    enddo
+    close(422)
+    end subroutine TetheredWL
 

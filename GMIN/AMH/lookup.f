@@ -1,420 +1,420 @@
 
-C     --------------------- LOOKUP ----------------------
+c     --------------------- lookup ----------------------
 
-      SUBROUTINE LOOKUP(MAXR,CRDIXN,VPOTNT,FORSE,PRO_CORD,F_CORD,
-     *                  TRGENG,NUMLNG,NMRES,RINCINV,RINCSQ,
-     *                  IGOMB,NGOMB,TEMPAV,MAXTAB,ILONG,
-     *                  E,IBIASGAUSS,BIAS_AV,BIAS_VAR,
-     *                  BIAS_PREFACTOR,IBIASPOLY,NBIASPOLY,
-     *                  BIASPOLY,I_QBIAS_A,I_QBIAS_B,CCEV_DIST,PEXCLD)
+      subroutine lookup(maxr,crdixn,vpotnt,forse,pro_cord,f_cord,
+     *                  trgeng,numlng,nmres,rincinv,rincsq,
+     *                  igomb,ngomb,tempav,maxtab,ilong,
+     *                  E,ibiasgauss,bias_av,bias_var,
+     *                  bias_prefactor,ibiaspoly,nbiaspoly,
+     *                  biaspoly,i_Qbias_a,i_Qbias_b,ccev_dist,pexcld)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-C     LOOKP  PERFORMS LOOKUP OF POTNTLIAL OR FORCE
-C            FOR INTERACTING SITES GIVEN THE DISTANCES
-C            BETWEEN THEM
+c     LOOKP  performs lookup of potntlial or force
+c            for interacting sites given the distances
+c            between them
 
-C     ARGUMENTS:
+c     arguments:
 
-C        TEMPAV- IF TRUE, THEN FIND POTNTLIAL ENERGY
-C
-C        I_IXN   COUNTER WHICH RANGES OVER ALL OF THE INTERACTIONS.  THE 
-C                ACTUAL NUMBER DEPENDS ON IF NEAREST NEIGHBOR INTERACTIONS ARE
-C                INCLUDED OR NOT, BUT IS APROX.  N(N-1)/2
-C
-C     ---------------------------------------------------
+c        tempav- if true, then find potntlial energy
+c
+c        i_ixn   Counter which ranges over all of the interactions.  The 
+c                actual number depends on if nearest neighbor interactions are
+c                included or not, but is aprox.  N(N-1)/2
+c
+c     ---------------------------------------------------
 
-      USE AMHGLOBALS,  ONLY:MAXCNT,MAXSIZ,I_RG_BIAS,IEXCLD,MINMR,MAXMR,
-     *      IEXCLD_GAMMA,MAXCRD,SO
-      USE AMH_INTERFACES, ONLY:GOMB,ADDITIVE_EV,RG_BIAS,EV_GAMMA,
-     *                      Q_BIAS_SEG_A,Q_BIAS_SEG_B
+      use amhglobals,  only:maxcnt,maxsiz,i_Rg_bias,iexcld,minmr,maxmr,
+     *      iexcld_gamma,maxcrd,SO
+      use amh_interfaces, only:gomb,additive_ev,Rg_bias,ev_gamma,
+     *                      Q_bias_seg_a,Q_bias_seg_b
       
-      IMPLICIT NONE
+      implicit none
       
-      INTEGER, INTENT(IN):: MAXR,MAXTAB
-      INTEGER, INTENT(IN):: CRDIXN(MAXTAB,2),
-     *  NUMLNG(0:MAXSIZ,MAXTAB),NMRES,ILONG(MAXCNT,2,MAXTAB),
-     *  NBIASPOLY
-       DOUBLE PRECISION, INTENT(IN):: VPOTNT(0:MAXR+1,MAXCNT,MAXTAB),
-     *  FORSE(0:MAXR+1,MAXCNT,MAXTAB),PRO_CORD(MAXSIZ,3,MAXCRD),
-     *  RINCINV(MAXCNT,MAXTAB),
-     *  RINCSQ(MAXCNT,MAXTAB),NGOMB,BIAS_AV,BIAS_VAR,BIAS_PREFACTOR,
-     *  BIASPOLY(1:100),CCEV_DIST(MAXCNT,MAXTAB),PEXCLD
-       DOUBLE PRECISION, INTENT(OUT):: F_CORD(MAXSIZ,3,MAXCRD),
-     *  E(:,:),TRGENG(MAXTAB,3)
-      LOGICAL, INTENT(IN):: IGOMB,TEMPAV,IBIASGAUSS,IBIASPOLY,
-     *           I_QBIAS_A,I_QBIAS_B
+      integer, intent(in):: maxr,maxtab
+      integer, intent(in):: crdixn(maxtab,2),
+     *  numlng(0:maxsiz,maxtab),nmres,ilong(maxcnt,2,maxtab),
+     *  nbiaspoly
+       double precision, intent(in):: vpotnt(0:maxr+1,maxcnt,maxtab),
+     *  forse(0:maxr+1,maxcnt,maxtab),pro_cord(maxsiz,3,maxcrd),
+     *  rincinv(maxcnt,maxtab),
+     *  rincsq(maxcnt,maxtab),ngomb,bias_av,bias_var,bias_prefactor,
+     *  biaspoly(1:100),ccev_dist(maxcnt,maxtab),pexcld
+       double precision, intent(out):: f_cord(maxsiz,3,maxcrd),
+     *  E(:,:),trgeng(maxtab,3)
+      logical, intent(in):: igomb,tempav,ibiasgauss,ibiaspoly,
+     *           i_Qbias_a,i_Qbias_b
 
 
-         INTEGER INDEX(MAXCNT,MAXTAB),ISIT1,ISIT2,TAB
+         integer index(maxcnt,maxtab),isit1,isit2,tab
 
 
-         DOUBLE PRECISION DISTNE(MAXCNT,MAXTAB),TFORCE(MAXCNT,MAXTAB),
-     *        POTNTL(MAXCNT),F_CORD_TEMP(MAXSIZ,3,MAXCRD),
-     *        ETA(MAXCNT,MAXTAB),A_TO_NMO(1:MAXSIZ,1:2),
-     *        XDIFF(MAXCNT,MAXTAB),YDIFF(MAXCNT,MAXTAB),
-     *        ZDIFF(MAXCNT,MAXTAB),E_TEMP(SIZE(E,1),SIZE(E,2)),BIAS_F
+         double precision distne(maxcnt,maxtab),tforce(maxcnt,maxtab),
+     *        potntl(maxcnt),f_cord_temp(maxsiz,3,maxcrd),
+     *        eta(maxcnt,maxtab),A_to_nmo(1:maxsiz,1:2),
+     *        xdiff(maxcnt,maxtab),ydiff(maxcnt,maxtab),
+     *        zdiff(maxcnt,maxtab),E_temp(size(E,1),size(E,2)),bias_F
 
 
-C     INTERNAL VARIABLES:
+c     internal variables:
 
-         INTEGER I_IXN,IA,IB,I515,INDX 
+         integer i_ixn,ia,ib,i515,indx 
 
-          DOUBLE PRECISION M,C,ETA_PRIME
+          double precision m,c,eta_prime
 
-C -COMMENT BACK IN IF WANT TO USE THESE VARIABLES
-C        DOUBLE PRECISION FORSEGO1,FORSEGO2,ARSETOT,DELTAV,
-C    *         OLDAMHE,OLDDIST(MAXCNT,MAXTAB),ARSETOT2,
-C    *         DELTADIST(MAXCNT,MAXTAB),DELTAVBIAS,
-C    *         OLDBIASE,
-C    *         OLDTFORCE(MAXCNT,MAXTAB),OLDBIAS_F,
-C        DOUBLE PRECISION V240,V240OLD,DELTAV240
-C        DOUBLE PRECISION F_CORD_OLD(MAXSIZ,3,MAXCRD)
-C        INTEGER I1,I2
+c -comment back in if want to use these variables
+c        double precision forsego1,forsego2,arsetot,deltaV,
+c    *         oldamhE,olddist(maxcnt,maxtab),arsetot2,
+c    *         deltadist(maxcnt,maxtab),deltaVbias,
+c    *         oldbiasE,
+c    *         oldtforce(maxcnt,maxtab),oldbias_F,
+c        double precision V240,V240old,deltaV240
+c        double precision f_cord_old(maxsiz,3,maxcrd)
+c        integer i1,i2
 
-C     --------------------- BEGIN -----------------------
+c     --------------------- begin -----------------------
 
-!     ZERO FORCE AND ENERGY
+!     zero force and energy
 
-      F_CORD=0.0D0
+      f_cord=0.0D0
       E=0.0D0
 
 
-C        FIND (X_I-X_J), (Y_I-Y_J), (Z_I-Z_J) FOR
-C        EACH PAIR OF INTERACTING SITES I AND J
+c        find (x_i-x_j), (y_i-y_j), (z_i-z_j) for
+c        each pair of interacting sites i and j
 
-         DO 1001 TAB=1,MAXTAB
-         DO 501 I_IXN=1,NUMLNG(NMRES,TAB)
+         do 1001 tab=1,maxtab
+         do 501 i_ixn=1,numlng(nmres,tab)
 
-            ISIT1=ILONG(I_IXN,1,TAB)
-            ISIT2=ILONG(I_IXN,2,TAB)
+            isit1=ilong(i_ixn,1,tab)
+            isit2=ilong(i_ixn,2,tab)
 
-            XDIFF(I_IXN,TAB)=PRO_CORD(ISIT1,1,CRDIXN(TAB,1)) -
-     *                  PRO_CORD(ISIT2,1,CRDIXN(TAB,2))
-
-
-            YDIFF(I_IXN,TAB)=PRO_CORD(ISIT1,2,CRDIXN(TAB,1)) -
-     *                  PRO_CORD(ISIT2,2,CRDIXN(TAB,2))
-
-            ZDIFF(I_IXN,TAB)=PRO_CORD(ISIT1,3,CRDIXN(TAB,1)) -
-     *                  PRO_CORD(ISIT2,3,CRDIXN(TAB,2))
-
-            DISTNE(I_IXN,TAB)=DSQRT(XDIFF(I_IXN,TAB)**2 +
-     *                        YDIFF(I_IXN,TAB)**2 +
-     *                        ZDIFF(I_IXN,TAB)**2)
-
-C     FIND POTNTLIAL INDEX; DISTANCES SHOULD BE IN ARRAY DISTNE
-
-         INDEX(I_IXN,TAB)=INT( DISTNE(I_IXN,TAB)*RINCINV(I_IXN,TAB) )
-         ETA(I_IXN,TAB)=DISTNE(I_IXN,TAB)*RINCINV(I_IXN,TAB)
-     *          -DBLE(INDEX(I_IXN,TAB))
-         TFORCE(I_IXN,TAB)=0.0D0
+            xdiff(i_ixn,tab)=pro_cord(isit1,1,crdixn(tab,1)) -
+     *                  pro_cord(isit2,1,crdixn(tab,2))
 
 
+            ydiff(i_ixn,tab)=pro_cord(isit1,2,crdixn(tab,1)) -
+     *                  pro_cord(isit2,2,crdixn(tab,2))
 
-501    CONTINUE
-1001   CONTINUE
+            zdiff(i_ixn,tab)=pro_cord(isit1,3,crdixn(tab,1)) -
+     *                  pro_cord(isit2,3,crdixn(tab,2))
 
-!         WRITE(6,*)'I_QBIAS'
-C        IF (I_QBIAS) THEN
-C           CALL Q_BIAS(DISTNE,F_CORD_TEMP,NMRES,E_TEMP,
-C    *                 NUMLNG,ILONG,
-C    *                 XDIFF,YDIFF,ZDIFF)
-C          F_CORD=F_CORD+F_CORD_TEMP
-C          E=E+E_TEMP
-C       ENDIF
+            distne(i_ixn,tab)=dsqrt(xdiff(i_ixn,tab)**2 +
+     *                        ydiff(i_ixn,tab)**2 +
+     *                        zdiff(i_ixn,tab)**2)
 
-        IF (I_QBIAS_A) THEN
-           CALL Q_BIAS_SEG_A(DISTNE,F_CORD_TEMP,NMRES,E_TEMP,XDIFF,YDIFF,ZDIFF)
-           F_CORD=F_CORD+F_CORD_TEMP
-           E=E+E_TEMP
-        ENDIF
+c     find potntlial index; distances should be in array distne
 
-        IF (I_QBIAS_B) THEN
-           CALL Q_BIAS_SEG_B(DISTNE,F_CORD_TEMP,NMRES,E_TEMP,XDIFF,YDIFF,ZDIFF)
-           F_CORD=F_CORD+F_CORD_TEMP
-           E=E+E_TEMP
-        ENDIF
-
-        IF (I_RG_BIAS) THEN
-           CALL RG_BIAS(PRO_CORD,F_CORD_TEMP,E_TEMP,TEMPAV)
-           F_CORD=F_CORD+F_CORD_TEMP
-           E=E+E_TEMP
-        ENDIF
-
-        IF (IEXCLD) THEN
-            CALL ADDITIVE_EV(DISTNE,F_CORD_TEMP,NMRES,E_TEMP,
-     *                 NUMLNG,ILONG,TEMPAV,CRDIXN,
-     *                 XDIFF,YDIFF,ZDIFF,CCEV_DIST,PEXCLD)
-           F_CORD=F_CORD+F_CORD_TEMP
-           E=E+E_TEMP
-        ENDIF
-
-        IF (IEXCLD_GAMMA) THEN
-           CALL EV_GAMMA(PRO_CORD,F_CORD_TEMP,E_TEMP,TEMPAV)
-           F_CORD=F_CORD+F_CORD_TEMP
-           E=E+E_TEMP
-        ENDIF
+         index(i_ixn,tab)=int( distne(i_ixn,tab)*rincinv(i_ixn,tab) )
+         eta(i_ixn,tab)=distne(i_ixn,tab)*rincinv(i_ixn,tab)
+     *          -dble(index(i_ixn,tab))
+         tforce(i_ixn,tab)=0.0D0
 
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+
+501    continue
+1001   continue
+
+!         write(6,*)'i_Qbias'
+c        if (i_Qbias) then
+c           call Q_bias(distne,f_cord_temp,nmres,E_temp,
+c    *                 numlng,ilong,
+c    *                 xdiff,ydiff,zdiff)
+c          f_cord=f_cord+f_cord_temp
+c          E=E+E_temp
+c       endif
+
+        if (i_Qbias_a) then
+           call Q_bias_seg_a(distne,f_cord_temp,nmres,E_temp,xdiff,ydiff,zdiff)
+           f_cord=f_cord+f_cord_temp
+           E=E+E_temp
+        endif
+
+        if (i_Qbias_b) then
+           call Q_bias_seg_b(distne,f_cord_temp,nmres,E_temp,xdiff,ydiff,zdiff)
+           f_cord=f_cord+f_cord_temp
+           E=E+E_temp
+        endif
+
+        if (i_Rg_bias) then
+           call Rg_bias(pro_cord,f_cord_temp,E_temp,tempav)
+           f_cord=f_cord+f_cord_temp
+           E=E+E_temp
+        endif
+
+        if (iexcld) then
+            call additive_ev(distne,f_cord_temp,nmres,E_temp,
+     *                 numlng,ilong,tempav,crdixn,
+     *                 xdiff,ydiff,zdiff,ccev_dist,pexcld)
+           f_cord=f_cord+f_cord_temp
+           E=E+E_temp
+        endif
+
+        if (iexcld_gamma) then
+           call ev_gamma(pro_cord,f_cord_temp,E_temp,tempav)
+           f_cord=f_cord+f_cord_temp
+           E=E+E_temp
+        endif
 
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     FIND POTNTLIAL FOR EACH OF THE INTERACTING SITES
-C     NOTE THAT INTERPOLATION USED IS TO ENSURE THAT 
-C     ENERGY = INTEGRATED FORCE (THAT'S WHY DON'T 
-C     LINEARLY INTERPOLATE FOR ENERGY LIKE WE DO FOR
-C     F(R)/R
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-        IF( TEMPAV.AND.(.NOT.IGOMB) )THEN
-             DO 606 TAB=1,MAXTAB
 
-             TRGENG(TAB,1)=0.0D0
-             TRGENG(TAB,2)=0.0D0
-             TRGENG(TAB,3)=0.0D0
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     find potntlial for each of the interacting sites
+c     note that interpolation used is to ensure that 
+c     energy = integrated force (that's why don't 
+c     linearly interpolate for energy like we do for
+c     F(r)/r
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-             DO 505 I_IXN=1,NUMLNG(NMRES,TAB)
-               ISIT1=ILONG(I_IXN,1,TAB)
-               ISIT2=ILONG(I_IXN,2,TAB)
+        if( tempav.and.(.not.igomb) )then
+             do 606 tab=1,maxtab
 
-               INDX=INDEX(I_IXN,TAB)
-               IF (INDX.GT.MAXR) CYCLE !OUTSIDE RANGE OF FORCE TABLE
+             trgeng(tab,1)=0.0D0
+             trgeng(tab,2)=0.0D0
+             trgeng(tab,3)=0.0D0
+
+             do 505 i_ixn=1,numlng(nmres,tab)
+               isit1=ilong(i_ixn,1,tab)
+               isit2=ilong(i_ixn,2,tab)
+
+               indx=index(i_ixn,tab)
+               if (indx.gt.maxr) cycle !outside range of force table
          
-               M=(FORSE(INDX+1,I_IXN,TAB)-
-     *                       FORSE(INDX,I_IXN,TAB))
-C NOTE THAT M IS THEREFORE WHAT I HAD IN MY NOTES TIMES RINC
-C `C', ON THE OTHER HAND IS THE SAME:  C=FORSE(INDX)-M*FLOAT(INDX)
-C WHICH SIMPLIFIES TO ...
+               m=(forse(indx+1,i_ixn,tab)-
+     *                       forse(indx,i_ixn,tab))
+c note that m is therefore what i had in my notes times rinc
+c `c', on the other hand is the same:  c=forse(indx)-m*float(indx)
+c which simplifies to ...
 
-         C=FORSE(INDX,I_IXN,TAB)*DBLE(INDX+1)
-     *           -FORSE(INDX+1,I_IXN,TAB)*DBLE(INDX)
+         c=forse(indx,i_ixn,tab)*dble(indx+1)
+     *           -forse(indx+1,i_ixn,tab)*dble(indx)
 
-           ETA_PRIME=1.0D0-ETA(I_IXN,TAB) 
+           eta_prime=1.0D0-eta(i_ixn,tab) 
 
-C THE FOLLOWING FORMULA IS IN MY NOTES (REMEMBER M HERE
-C NOT QUITE IDENTICAL TO THERE (SEE ABOVE)
+c the following formula is in my notes (remember m here
+c not quite identical to there (see above)
 
-               POTNTL(I_IXN)=VPOTNT(INDX+1,I_IXN,TAB)+
-     *      RINCSQ(I_IXN,TAB)*
-     *      ETA_PRIME* (M* 
-     *      (DBLE(INDX+1)*(DBLE(INDX+1)-ETA_PRIME)+
-     *       ETA_PRIME*ETA_PRIME/3.0D0)  +
-     *      C* (DBLE(INDX+1)-0.5D0*ETA_PRIME)  )
+               potntl(i_ixn)=vpotnt(indx+1,i_ixn,tab)+
+     *      rincsq(i_ixn,tab)*
+     *      eta_prime* (m* 
+     *      (dble(indx+1)*(dble(indx+1)-eta_prime)+
+     *       eta_prime*eta_prime/3.0D0)  +
+     *      c* (dble(indx+1)-0.5D0*eta_prime)  )
                
 
-C    CALC CONTRIBUTION TO ENERGY DUE TO 1ST MEM
-C    AND THAT DUE TO MEMS WITHOUT EXCLUDED VOL
-C    THIS IS ROUGH IN THAT PROPER INTERPOLATION
-C    AS ABOVE IS NOT USED. THUS WILL APPARENTLY  GET SMALL
-C    RESIDUAL EXCLUDED VOLUME CONTRIBUTION.
+c    calc contribution to energy due to 1st mem
+c    and that due to mems without excluded vol
+c    this is rough in that proper interpolation
+c    as above is not used. Thus will apparently  get small
+c    residual excluded volume contribution.
 
 
-C              IF (I_IXN.EQ.240.AND.TAB.EQ.1)  THEN
-C                      V240=POTNTL(I_IXN)
-C              ENDIF
+c              if (i_ixn.eq.240.and.tab.eq.1)  then
+c                      V240=potntl(i_ixn)
+c              endif
 
 
-               E(1,5) = E(1,5) + POTNTL(I_IXN)
+               E(1,5) = E(1,5) + potntl(i_ixn)
 
-C THESE LINES WERE USED TO CHECK OUT CONTRIBUTIONS FROM A
-C PARTICULAR GAMMA VALUE (WE ZEROED OUT ALL OTHER GAMMA
-C VALUES IN GAMMA.DAT
-C              IF (ABS(POTNTL(I_IXN)).GT.0.001) THEN
-C                 WRITE(SO,*) '****************************'
-C                 WRITE(SO,*) 'LOOKUP REPORTS:'
-C                 WRITE(SO,*) 'TAB=',TAB
-C                 WRITE(SO,*) 'ISIT1,ISIT2,R,CONTRIB==',ISIT1,ISIT2,
-C    *                DISTNE(I_IXN,TAB),POTNTL(I_IXN)
-C                 WRITE(SO,*) 'R INCREMENT=',1.0/RINCINV(I_IXN,TAB)
-C                 WRITE(SO,*) 'GRID POINTS =',
-C    *                  REAL(INDX)*(1.0/RINCINV(I_IXN,TAB)),
-C    *                  REAL(INDX+1)*(1.0/RINCINV(I_IXN,TAB))
-C              ENDIF 
+c these lines were used to check out contributions from a
+c particular gamma value (we zeroed out all other gamma
+c values in gamma.dat
+c              if (abs(potntl(i_ixn)).gt.0.001) then
+c                 write(SO,*) '****************************'
+c                 write(SO,*) 'lookup reports:'
+c                 write(SO,*) 'tab=',tab
+c                 write(SO,*) 'isit1,isit2,r,contrib==',isit1,isit2,
+c    *                distne(i_ixn,tab),potntl(i_ixn)
+c                 write(SO,*) 'r increment=',1.0/rincinv(i_ixn,tab)
+c                 write(SO,*) 'grid points =',
+c    *                  real(indx)*(1.0/rincinv(i_ixn,tab)),
+c    *                  real(indx+1)*(1.0/rincinv(i_ixn,tab))
+c              endif 
 
-               IF ((ISIT2-ISIT1) .LT. MINMR) THEN
-                    E(1,7) = E(1,7) + POTNTL(I_IXN)
-                    TRGENG(TAB,1)=TRGENG(TAB,1)+POTNTL(I_IXN)
-               ELSEIF ((ISIT2-ISIT1) .GT. MAXMR) THEN
-                    E(1,8) = E(1,8) + POTNTL(I_IXN)
-                    TRGENG(TAB,3)=TRGENG(TAB,3)+POTNTL(I_IXN)
-               ELSE
-                    E(1,13) = E(1,13) + POTNTL(I_IXN)
-                    TRGENG(TAB,2)=TRGENG(TAB,2)+POTNTL(I_IXN)
-               ENDIF
-  505        CONTINUE
-  606        CONTINUE
+               if ((isit2-isit1) .lt. minmr) then
+                    E(1,7) = E(1,7) + potntl(i_ixn)
+                    trgeng(tab,1)=trgeng(tab,1)+potntl(i_ixn)
+               elseif ((isit2-isit1) .gt. maxmr) then
+                    E(1,8) = E(1,8) + potntl(i_ixn)
+                    trgeng(tab,3)=trgeng(tab,3)+potntl(i_ixn)
+               else
+                    E(1,13) = E(1,13) + potntl(i_ixn)
+                    trgeng(tab,2)=trgeng(tab,2)+potntl(i_ixn)
+               endif
+  505        continue
+  606        continue
               
-        ENDIF                        ! END OF     IF ( TEMPAV AND (NOT IGOMB)  )
+        endif                        ! end of     if ( tempav and (not igomb)  )
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-C     FIND FORCE FOR EACH OF THE INTERACTING SITES
+c     find force for each of the interacting sites
           
-         IF (.NOT.IGOMB) THEN
-           DO 1595 TAB=1,4
-           DO 595 I_IXN=1,NUMLNG(NMRES,TAB)
-            ISIT1=ILONG(I_IXN,1,TAB)
-            ISIT2=ILONG(I_IXN,2,TAB)
-            INDX=INDEX(I_IXN,TAB)
-            IF (INDX.GT.MAXR) CYCLE !OUTSIDE RANGE OF FORCE TABLE
-            TFORCE(I_IXN,TAB)=
-     *            (1.0D0-ETA(I_IXN,TAB))*FORSE(INDX,I_IXN,TAB)
-     *             +ETA(I_IXN,TAB)*FORSE(INDX+1,I_IXN,TAB)
+         if (.not.igomb) then
+           do 1595 tab=1,4
+           do 595 i_ixn=1,numlng(nmres,tab)
+            isit1=ilong(i_ixn,1,tab)
+            isit2=ilong(i_ixn,2,tab)
+            indx=index(i_ixn,tab)
+            if (indx.gt.maxr) cycle !outside range of force table
+            tforce(i_ixn,tab)=
+     *            (1.0D0-eta(i_ixn,tab))*forse(indx,i_ixn,tab)
+     *             +eta(i_ixn,tab)*forse(indx+1,i_ixn,tab)
 
-  595     CONTINUE
- 1595     CONTINUE
+  595     continue
+ 1595     continue
 
-         ELSE
-           CALL GOMB(   ETA,INDEX,TEMPAV,NGOMB,A_TO_NMO,E_TEMP,IBIASGAUSS,BIAS_AV,
-     *                  BIAS_VAR,BIAS_PREFACTOR,BIAS_F,IBIASPOLY,NBIASPOLY,BIASPOLY)
-           E=E+E_TEMP
+         else
+           call gomb(   eta,index,tempav,ngomb,A_to_nmo,E_temp,ibiasgauss,bias_av,
+     *                  bias_var,bias_prefactor,bias_F,ibiaspoly,nbiaspoly,biaspoly)
+           E=E+E_temp
 
-          DO 777 TAB=1,MAXTAB
-          IF (TAB.EQ.1.OR.TAB.EQ.2) THEN
-            IA=1
-          ELSE
-            IA=2
-          ENDIF
-          IF (TAB.EQ.1.OR.TAB.EQ.3) THEN
-            IB=1
-          ELSE
-            IB=2
-          ENDIF
-          DO 506 I_IXN=1,NUMLNG(NMRES,TAB)
-            ISIT1=ILONG(I_IXN,1,TAB)
-            ISIT2=ILONG(I_IXN,2,TAB)
-            INDX=INDEX(I_IXN,TAB)
-            IF (INDX.GT.MAXR) CYCLE !OUTSIDE RANGE OF FORCE TABLE
+          do 777 tab=1,maxtab
+          if (tab.eq.1.or.tab.eq.2) then
+            ia=1
+          else
+            ia=2
+          endif
+          if (tab.eq.1.or.tab.eq.3) then
+            ib=1
+          else
+            ib=2
+          endif
+          do 506 i_ixn=1,numlng(nmres,tab)
+            isit1=ilong(i_ixn,1,tab)
+            isit2=ilong(i_ixn,2,tab)
+            indx=index(i_ixn,tab)
+            if (indx.gt.maxr) cycle !outside range of force table
 
 
-            TFORCE(I_IXN,TAB)=
-     *       ((1.0D0-ETA(I_IXN,TAB))*FORSE(INDX,I_IXN,TAB)
-     *        +ETA(I_IXN,TAB)*FORSE(INDX+1,I_IXN,TAB)  )
-     *         *0.5D0*NGOMB*(A_TO_NMO(ISIT1,IA)+A_TO_NMO(ISIT2,IB))
+            tforce(i_ixn,tab)=
+     *       ((1.0D0-eta(i_ixn,tab))*forse(indx,i_ixn,tab)
+     *        +eta(i_ixn,tab)*forse(indx+1,i_ixn,tab)  )
+     *         *0.5D0*ngomb*(A_to_nmo(isit1,ia)+A_to_nmo(isit2,ib))
  
-            TFORCE(I_IXN,TAB)=TFORCE(I_IXN,TAB)*(1.0D0+BIAS_F)
+            tforce(i_ixn,tab)=tforce(i_ixn,tab)*(1.0D0+bias_F)
 
-  506     CONTINUE
-  777     CONTINUE
+  506     continue
+  777     continue
 
-         ENDIF
+         endif
 
 
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C        THE BELOW LINES MAY BE (SELECTIVELY) UNCOMMENTED TO 
-C        CHECK THAT ENERGY CORRESPONDS
-C        TO THE INTEGRATED FORCE. ALSO UNCOMMENT THE
-C        'V240' LINE IN E-CAL ABOVE IF REQUIRED.
-C      
-C        
-C        OPEN(77,FILE='TEMP.DAT',STATUS='OLD')
-C        READ(77,*) OLDAMHE
-C        IF (OLDAMHE.EQ.99.0) GOTO 123
-C        READ(77,*) OLDBIASE
-C        READ(77,*) V240OLD
-C        READ(77,*) OLDBIAS_F
-C        DELTAV=E(1,5)-OLDAMHE
-C        DELTAVBIAS=E(1,10)-OLDBIASE
-C        DELTAV240=V240-V240OLD
-C        ARSETOT=0D0
-C        ARSETOT2=0D0
-C        DO TAB=1,MAXTAB
-C        DO  I_IXN=1,NUMLNG(NMRES,TAB)
-C          READ(77,*) OLDDIST(I_IXN,TAB)
-C          READ(77,*) OLDTFORCE(I_IXN,TAB)
-C          DELTADIST(I_IXN,TAB)=DISTNE(I_IXN,TAB)-OLDDIST(I_IXN,TAB)
-C          ARSETOT=ARSETOT+0.5*
-C    +         (   TFORCE(I_IXN,TAB)*DISTNE(I_IXN,TAB)/(1.0+BIAS_F)
-C    +      +OLDTFORCE(I_IXN,TAB)*OLDDIST(I_IXN,TAB)/(1.0+OLDBIAS_F) ) 
-C    +                   *DELTADIST(I_IXN,TAB)
-C          ARSETOT2=ARSETOT2+0.5*
-C    +         (   TFORCE(I_IXN,TAB)*DISTNE(I_IXN,TAB)
-C    +                                     *BIAS_F/(1.0+BIAS_F)
-C    +      +OLDTFORCE(I_IXN,TAB)*OLDDIST(I_IXN,TAB)
-C    +                             *OLDBIAS_F/(1.0+OLDBIAS_F)  )
-C    +                   *DELTADIST(I_IXN,TAB)
-C        ENDDO
-C        ENDDO
-C        WRITE(SO,*) 'AMHE (INC EXCLD V)',E(1,5)
-C        WRITE(SO,*) 'SUM OF -FXDELTA_R,AND DELTA_V',-ARSETOT,DELTAV
-C        WRITE(SO,*)  'RATIO',-ARSETOT/DELTAV
-C        WRITE(SO,*) 'BIAS SUM OF -FXDELTA_R,AND DELTA_V',
-C    +                                  -ARSETOT2,DELTAVBIAS
-C        WRITE(SO,*) 'BIAS_F,OLDBIAS_F',BIAS_F,OLDBIAS_F
-C123      CLOSE(77)
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c        the below lines may be (selectively) uncommented to 
+c        check that energy corresponds
+c        to the integrated force. Also uncomment the
+c        'V240' line in E-cal above if required.
+c      
+c        
+c        open(77,file='temp.dat',status='old')
+c        read(77,*) oldamhE
+c        if (oldamhE.eq.99.0) goto 123
+c        read(77,*) oldbiasE
+c        read(77,*) V240old
+c        read(77,*) oldbias_F
+c        deltaV=E(1,5)-oldamhE
+c        deltaVbias=E(1,10)-oldbiasE
+c        deltaV240=V240-V240old
+c        arsetot=0d0
+c        arsetot2=0d0
+c        do tab=1,maxtab
+c        do  i_ixn=1,numlng(nmres,tab)
+c          read(77,*) olddist(i_ixn,tab)
+c          read(77,*) oldtforce(i_ixn,tab)
+c          deltadist(i_ixn,tab)=distne(i_ixn,tab)-olddist(i_ixn,tab)
+c          arsetot=arsetot+0.5*
+c    +         (   tforce(i_ixn,tab)*distne(i_ixn,tab)/(1.0+bias_F)
+c    +      +oldtforce(i_ixn,tab)*olddist(i_ixn,tab)/(1.0+oldbias_F) ) 
+c    +                   *deltadist(i_ixn,tab)
+c          arsetot2=arsetot2+0.5*
+c    +         (   tforce(i_ixn,tab)*distne(i_ixn,tab)
+c    +                                     *bias_F/(1.0+bias_F)
+c    +      +oldtforce(i_ixn,tab)*olddist(i_ixn,tab)
+c    +                             *oldbias_F/(1.0+oldbias_F)  )
+c    +                   *deltadist(i_ixn,tab)
+c        enddo
+c        enddo
+c        write(SO,*) 'amhE (inc excld V)',E(1,5)
+c        write(SO,*) 'sum of -Fxdelta_r,and delta_V',-arsetot,deltaV
+c        write(SO,*)  'ratio',-arsetot/deltaV
+c        write(SO,*) 'bias sum of -Fxdelta_r,and delta_V',
+c    +                                  -arsetot2,deltaVbias
+c        write(SO,*) 'bias_F,oldbias_F',bias_F,oldbias_F
+c123      close(77)
 
-C        OPEN(77,FILE='TEMP.DAT',STATUS='UNKNOWN')
-C        WRITE(77,*) E(1,5)
-C        WRITE(77,*) E(1,10)
-C        WRITE(77,*) V240
-C        WRITE(77,*) BIAS_F
-C        DO TAB=1,MAXTAB
-C        DO  I_IXN=1,NUMLNG(NMRES,TAB)
-C          WRITE(77,*) DISTNE(I_IXN,TAB)
-C          WRITE(77,*) TFORCE(I_IXN,TAB)
-C        ENDDO
-C        ENDDO
-C        CLOSE(77)
+c        open(77,file='temp.dat',status='unknown')
+c        write(77,*) E(1,5)
+c        write(77,*) E(1,10)
+c        write(77,*) V240
+c        write(77,*) bias_F
+c        do tab=1,maxtab
+c        do  i_ixn=1,numlng(nmres,tab)
+c          write(77,*) distne(i_ixn,tab)
+c          write(77,*) tforce(i_ixn,tab)
+c        enddo
+c        enddo
+c        close(77)
 
-C         WRITE(SO,*) '240 F, FOLD, FAV',
-C    +                TFORCE(240,1)*DISTNE(240,1)/(1.0+BIAS_F),
-C    +             OLDTFORCE(240,1)*OLDDIST(240,1)/(1.0+OLDBIAS_F),
-C    +             0.5*(TFORCE(240,1)*DISTNE(240,1)/(1.0+BIAS_F)+
-C    +             OLDTFORCE(240,1)*OLDDIST(240,1)/(1.0+OLDBIAS_F))          
-C         WRITE(SO,*) ' 240 R, ROLD, DELR',DISTNE(240,1),OLDDIST(240,1),
-C    +                       DELTADIST(240,1)
-C         WRITE(SO,*) '240 V, VOLD, DELV',V240,V240OLD,V240-V240OLD
-C         WRITE(SO,*) '240  -F*DELTA_DIST ',-DELTADIST(240,1)*
-C    +             0.5*(TFORCE(240,1)*DISTNE(240,1)/(1.0+BIAS_F)+
-C    +             OLDTFORCE(240,1)*OLDDIST(240,1)/(1.0+OLDBIAS_F))
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c         write(SO,*) '240 F, Fold, Fav',
+c    +                tforce(240,1)*distne(240,1)/(1.0+bias_F),
+c    +             oldtforce(240,1)*olddist(240,1)/(1.0+oldbias_F),
+c    +             0.5*(tforce(240,1)*distne(240,1)/(1.0+bias_F)+
+c    +             oldtforce(240,1)*olddist(240,1)/(1.0+oldbias_F))          
+c         write(SO,*) ' 240 r, rold, delr',distne(240,1),olddist(240,1),
+c    +                       deltadist(240,1)
+c         write(SO,*) '240 V, Vold, delV',V240,V240old,V240-V240old
+c         write(SO,*) '240  -F*delta_dist ',-deltadist(240,1)*
+c    +             0.5*(tforce(240,1)*distne(240,1)/(1.0+bias_F)+
+c    +             oldtforce(240,1)*olddist(240,1)/(1.0+oldbias_F))
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-*         IF (TEMPAV) WRITE(SO,*) TAB,E(1,5)
+*         if (tempav) write(SO,*) tab,E(1,5)
 
-C        FIND FORCE FOR EACH INTERACTION
+c        find force for each interaction
 
-         DO 616 TAB=1,MAXTAB
-         DO 515 I515=1,NUMLNG(NMRES,TAB)
-            XDIFF(I515,TAB)=TFORCE(I515,TAB)*XDIFF(I515,TAB)
-            YDIFF(I515,TAB)=TFORCE(I515,TAB)*YDIFF(I515,TAB)
-            ZDIFF(I515,TAB)=TFORCE(I515,TAB)*ZDIFF(I515,TAB)
-  515    CONTINUE
-  616    CONTINUE
+         do 616 tab=1,maxtab
+         do 515 i515=1,numlng(nmres,tab)
+            xdiff(i515,tab)=tforce(i515,tab)*xdiff(i515,tab)
+            ydiff(i515,tab)=tforce(i515,tab)*ydiff(i515,tab)
+            zdiff(i515,tab)=tforce(i515,tab)*zdiff(i515,tab)
+  515    continue
+  616    continue
 
-         DO 613 TAB=1,MAXTAB
+         do 613 tab=1,maxtab
 
-         DO I_IXN=1,NUMLNG(NMRES,TAB)
-            ISIT1=ILONG(I_IXN,1,TAB)
-            ISIT2=ILONG(I_IXN,2,TAB)
+         do i_ixn=1,numlng(nmres,tab)
+            isit1=ilong(i_ixn,1,tab)
+            isit2=ilong(i_ixn,2,tab)
             
-               F_CORD(ISIT1,1,CRDIXN(TAB,1))=
-     *        F_CORD(ISIT1,1,CRDIXN(TAB,1)) + XDIFF(I_IXN,TAB)
+               f_cord(isit1,1,crdixn(tab,1))=
+     *        f_cord(isit1,1,crdixn(tab,1)) + xdiff(i_ixn,tab)
 
-               F_CORD(ISIT1,2,CRDIXN(TAB,1))=
-     *        F_CORD(ISIT1,2,CRDIXN(TAB,1)) + YDIFF(I_IXN,TAB)
+               f_cord(isit1,2,crdixn(tab,1))=
+     *        f_cord(isit1,2,crdixn(tab,1)) + ydiff(i_ixn,tab)
 
-               F_CORD(ISIT1,3,CRDIXN(TAB,1))=
-     *        F_CORD(ISIT1,3,CRDIXN(TAB,1)) + ZDIFF(I_IXN,TAB)
+               f_cord(isit1,3,crdixn(tab,1))=
+     *        f_cord(isit1,3,crdixn(tab,1)) + zdiff(i_ixn,tab)
 
-               F_CORD(ISIT2,1,CRDIXN(TAB,2))=
-     *        F_CORD(ISIT2,1,CRDIXN(TAB,2)) - XDIFF(I_IXN,TAB)
+               f_cord(isit2,1,crdixn(tab,2))=
+     *        f_cord(isit2,1,crdixn(tab,2)) - xdiff(i_ixn,tab)
 
-               F_CORD(ISIT2,2,CRDIXN(TAB,2))=
-     *        F_CORD(ISIT2,2,CRDIXN(TAB,2)) - YDIFF(I_IXN,TAB)
+               f_cord(isit2,2,crdixn(tab,2))=
+     *        f_cord(isit2,2,crdixn(tab,2)) - ydiff(i_ixn,tab)
 
 
-               F_CORD(ISIT2,3,CRDIXN(TAB,2))=
-     *        F_CORD(ISIT2,3,CRDIXN(TAB,2)) - ZDIFF(I_IXN,TAB)
+               f_cord(isit2,3,crdixn(tab,2))=
+     *        f_cord(isit2,3,crdixn(tab,2)) - zdiff(i_ixn,tab)
 
-           ENDDO
+           enddo
 
-  613      CONTINUE 
+  613      continue 
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     ---------------------- DONE -----------------------
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     ---------------------- done -----------------------
 
-      RETURN
-      END
+      return
+      end

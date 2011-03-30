@@ -22,7 +22,7 @@
           NCARBON = 6
       ENDIF
 
-!     NUMBER CARBON PLUS HYDROGEN SITES
+!     Number carbon plus hydrogen sites
 
       NCPHST = NCARBON + (NRBSITES - NCARBON)/2
 
@@ -62,7 +62,7 @@
             J4 = 3*J2
             J6 = OFFSET + J4
 
-!     SUM OVER SITES TO CALCULATE REPULSION AND DISPERSION INTERACTIONS
+!     Sum over sites to calculate repulsion and dispersion interactions
 
             DO I = 1, NCPHST
 
@@ -117,7 +117,7 @@
 
             ENDDO
 
-!     SUM OVER SITES TO CALCULATE COULOMB INTERACTIONS
+!     Sum over sites to calculate coulomb interactions
 
             DO I = 1, NRBSITES 
 
@@ -172,7 +172,7 @@
       DOUBLE PRECISION :: CHARGE(NRBSITES), CWRCC, CWRHH, CWRCH, CWACC, CWAHH, CWACH, CWECC, CWEHH, CWECH, CCKJ
 
 !     C6H6
-!     IN ANGSTROM; C: 1-6, H: 7-12(FORESHORTENED), H: 13-18 (ONLY FOR COULOMB)
+!     in angstrom; C: 1-6, H: 7-12(foreshortened), H: 13-18 (only for Coulomb)
 
       SITE(1,:)  = (/ 1.39662264416316D0, 0.00000000000000D0, 0.0D0/)
       SITE(2,:)  = (/ 0.69831132208158D0, 1.20951068934589D0, 0.0D0/)
@@ -190,10 +190,10 @@
       SITE(14,:) = (/ 1.24181746025292D0, 2.15089093488420D0, 0.0D0/)
       SITE(15,:) = (/-1.24181746025292D0, 2.15089093488420D0, 0.0D0/)
       SITE(16,:) = (/-2.48363492050584D0, 0.00000000000000D0, 0.0D0/)
-      SITE(17,:) = (/-1.24181746025292D0,-2.15089093488420D0, 0.0D0/)
+      SITE(17,:) = (/-1.24181746025292d0,-2.15089093488420d0, 0.0D0/)
       SITE(18,:) = (/ 1.24181746025292D0,-2.15089093488420D0, 0.0D0/)
 
-      CWRCC  = 270363.D0 ! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
+      CWRCC  = 270363.D0 ! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
       CWRHH  = 12680.D0
       CWRCH  = SQRT(CWRCC*CWRHH)
       CWACC  = 1701.73D0

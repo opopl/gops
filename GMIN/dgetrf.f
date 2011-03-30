@@ -1,83 +1,83 @@
       SUBROUTINE DGETF2( M, N, A, LDA, IPIV, INFO )
 *
-*  -- LAPACK ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     JUNE 30, 1992
+*  -- LAPACK routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     June 30, 1992
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
 *     ..
-*     .. ARRAY ARGUMENTS ..
+*     .. Array Arguments ..
       INTEGER            IPIV( * )
       DOUBLE PRECISION   A( LDA, * )
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  DGETF2 COMPUTES AN LU FACTORIZATION OF A GENERAL M-BY-N MATRIX A
-*  USING PARTIAL PIVOTING WITH ROW INTERCHANGES.
+*  DGETF2 computes an LU factorization of a general m-by-n matrix A
+*  using partial pivoting with row interchanges.
 *
-*  THE FACTORIZATION HAS THE FORM
+*  The factorization has the form
 *     A = P * L * U
-*  WHERE P IS A PERMUTATION MATRIX, L IS LOWER TRIANGULAR WITH UNIT
-*  DIAGONAL ELEMENTS (LOWER TRAPEZOIDAL IF M > N), AND U IS UPPER
-*  TRIANGULAR (UPPER TRAPEZOIDAL IF M < N).
+*  where P is a permutation matrix, L is lower triangular with unit
+*  diagonal elements (lower trapezoidal if m > n), and U is upper
+*  triangular (upper trapezoidal if m < n).
 *
-*  THIS IS THE RIGHT-LOOKING LEVEL 2 BLAS VERSION OF THE ALGORITHM.
+*  This is the right-looking Level 2 BLAS version of the algorithm.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  M       (INPUT) INTEGER
-*          THE NUMBER OF ROWS OF THE MATRIX A.  M >= 0.
+*  M       (input) INTEGER
+*          The number of rows of the matrix A.  M >= 0.
 *
-*  N       (INPUT) INTEGER
-*          THE NUMBER OF COLUMNS OF THE MATRIX A.  N >= 0.
+*  N       (input) INTEGER
+*          The number of columns of the matrix A.  N >= 0.
 *
-*  A       (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDA,N)
-*          ON ENTRY, THE M BY N MATRIX TO BE FACTORED.
-*          ON EXIT, THE FACTORS L AND U FROM THE FACTORIZATION
-*          A = P*L*U; THE UNIT DIAGONAL ELEMENTS OF L ARE NOT STORED.
+*  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+*          On entry, the m by n matrix to be factored.
+*          On exit, the factors L and U from the factorization
+*          A = P*L*U; the unit diagonal elements of L are not stored.
 *
-*  LDA     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY A.  LDA >= MAX(1,M).
+*  LDA     (input) INTEGER
+*          The leading dimension of the array A.  LDA >= max(1,M).
 *
-*  IPIV    (OUTPUT) INTEGER ARRAY, DIMENSION (MIN(M,N))
-*          THE PIVOT INDICES; FOR 1 <= I <= MIN(M,N), ROW I OF THE
-*          MATRIX WAS INTERCHANGED WITH ROW IPIV(I).
+*  IPIV    (output) INTEGER array, dimension (min(M,N))
+*          The pivot indices; for 1 <= i <= min(M,N), row i of the
+*          matrix was interchanged with row IPIV(i).
 *
-*  INFO    (OUTPUT) INTEGER
-*          = 0: SUCCESSFUL EXIT
-*          < 0: IF INFO = -K, THE K-TH ARGUMENT HAD AN ILLEGAL VALUE
-*          > 0: IF INFO = K, U(K,K) IS EXACTLY ZERO. THE FACTORIZATION
-*               HAS BEEN COMPLETED, BUT THE FACTOR U IS EXACTLY
-*               SINGULAR, AND DIVISION BY ZERO WILL OCCUR IF IT IS USED
-*               TO SOLVE A SYSTEM OF EQUATIONS.
+*  INFO    (output) INTEGER
+*          = 0: successful exit
+*          < 0: if INFO = -k, the k-th argument had an illegal value
+*          > 0: if INFO = k, U(k,k) is exactly zero. The factorization
+*               has been completed, but the factor U is exactly
+*               singular, and division by zero will occur if it is used
+*               to solve a system of equations.
 *
 *  =====================================================================
 *
-*     .. PARAMETERS ..
+*     .. Parameters ..
       DOUBLE PRECISION   ONE, ZERO
       PARAMETER          ( ONE = 1.0D+0, ZERO = 0.0D+0 )
 *     ..
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       INTEGER            J, JP
 *     ..
-*     .. EXTERNAL FUNCTIONS ..
+*     .. External Functions ..
       INTEGER            IDAMAX
       EXTERNAL           IDAMAX
 *     ..
-*     .. EXTERNAL SUBROUTINES ..
+*     .. External Subroutines ..
       EXTERNAL           DGER, DSCAL, DSWAP, XERBLA
 *     ..
-*     .. INTRINSIC FUNCTIONS ..
+*     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
-*     TEST THE INPUT PARAMETERS.
+*     Test the input parameters.
 *
       INFO = 0
       IF( M.LT.0 ) THEN
@@ -92,25 +92,25 @@
          RETURN
       END IF
 *
-*     QUICK RETURN IF POSSIBLE
+*     Quick return if possible
 *
       IF( M.EQ.0 .OR. N.EQ.0 )
      $   RETURN
 *
       DO 10 J = 1, MIN( M, N )
 *
-*        FIND PIVOT AND TEST FOR SINGULARITY.
+*        Find pivot and test for singularity.
 *
          JP = J - 1 + IDAMAX( M-J+1, A( J, J ), 1 )
          IPIV( J ) = JP
          IF( A( JP, J ).NE.ZERO ) THEN
 *
-*           APPLY THE INTERCHANGE TO COLUMNS 1:N.
+*           Apply the interchange to columns 1:N.
 *
             IF( JP.NE.J )
      $         CALL DSWAP( N, A( J, 1 ), LDA, A( JP, 1 ), LDA )
 *
-*           COMPUTE ELEMENTS J+1:M OF J-TH COLUMN.
+*           Compute elements J+1:M of J-th column.
 *
             IF( J.LT.M )
      $         CALL DSCAL( M-J, ONE / A( J, J ), A( J+1, J ), 1 )
@@ -122,7 +122,7 @@
 *
          IF( J.LT.MIN( M, N ) ) THEN
 *
-*           UPDATE TRAILING SUBMATRIX.
+*           Update trailing submatrix.
 *
             CALL DGER( M-J, N-J, -ONE, A( J+1, J ), 1, A( J, J+1 ), LDA,
      $                 A( J+1, J+1 ), LDA )
@@ -130,89 +130,89 @@
    10 CONTINUE
       RETURN
 *
-*     END OF DGETF2
+*     End of DGETF2
 *
       END
       SUBROUTINE DGETRF( M, N, A, LDA, IPIV, INFO )
 *
-*  -- LAPACK ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     MARCH 31, 1993
+*  -- LAPACK routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     March 31, 1993
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       INTEGER            INFO, LDA, M, N
 *     ..
-*     .. ARRAY ARGUMENTS ..
+*     .. Array Arguments ..
       INTEGER            IPIV( * )
       DOUBLE PRECISION   A( LDA, * )
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  DGETRF COMPUTES AN LU FACTORIZATION OF A GENERAL M-BY-N MATRIX A
-*  USING PARTIAL PIVOTING WITH ROW INTERCHANGES.
+*  DGETRF computes an LU factorization of a general M-by-N matrix A
+*  using partial pivoting with row interchanges.
 *
-*  THE FACTORIZATION HAS THE FORM
+*  The factorization has the form
 *     A = P * L * U
-*  WHERE P IS A PERMUTATION MATRIX, L IS LOWER TRIANGULAR WITH UNIT
-*  DIAGONAL ELEMENTS (LOWER TRAPEZOIDAL IF M > N), AND U IS UPPER
-*  TRIANGULAR (UPPER TRAPEZOIDAL IF M < N).
+*  where P is a permutation matrix, L is lower triangular with unit
+*  diagonal elements (lower trapezoidal if m > n), and U is upper
+*  triangular (upper trapezoidal if m < n).
 *
-*  THIS IS THE RIGHT-LOOKING LEVEL 3 BLAS VERSION OF THE ALGORITHM.
+*  This is the right-looking Level 3 BLAS version of the algorithm.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  M       (INPUT) INTEGER
-*          THE NUMBER OF ROWS OF THE MATRIX A.  M >= 0.
+*  M       (input) INTEGER
+*          The number of rows of the matrix A.  M >= 0.
 *
-*  N       (INPUT) INTEGER
-*          THE NUMBER OF COLUMNS OF THE MATRIX A.  N >= 0.
+*  N       (input) INTEGER
+*          The number of columns of the matrix A.  N >= 0.
 *
-*  A       (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDA,N)
-*          ON ENTRY, THE M-BY-N MATRIX TO BE FACTORED.
-*          ON EXIT, THE FACTORS L AND U FROM THE FACTORIZATION
-*          A = P*L*U; THE UNIT DIAGONAL ELEMENTS OF L ARE NOT STORED.
+*  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+*          On entry, the M-by-N matrix to be factored.
+*          On exit, the factors L and U from the factorization
+*          A = P*L*U; the unit diagonal elements of L are not stored.
 *
-*  LDA     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY A.  LDA >= MAX(1,M).
+*  LDA     (input) INTEGER
+*          The leading dimension of the array A.  LDA >= max(1,M).
 *
-*  IPIV    (OUTPUT) INTEGER ARRAY, DIMENSION (MIN(M,N))
-*          THE PIVOT INDICES; FOR 1 <= I <= MIN(M,N), ROW I OF THE
-*          MATRIX WAS INTERCHANGED WITH ROW IPIV(I).
+*  IPIV    (output) INTEGER array, dimension (min(M,N))
+*          The pivot indices; for 1 <= i <= min(M,N), row i of the
+*          matrix was interchanged with row IPIV(i).
 *
-*  INFO    (OUTPUT) INTEGER
-*          = 0:  SUCCESSFUL EXIT
-*          < 0:  IF INFO = -I, THE I-TH ARGUMENT HAD AN ILLEGAL VALUE
-*          > 0:  IF INFO = I, U(I,I) IS EXACTLY ZERO. THE FACTORIZATION
-*                HAS BEEN COMPLETED, BUT THE FACTOR U IS EXACTLY
-*                SINGULAR, AND DIVISION BY ZERO WILL OCCUR IF IT IS USED
-*                TO SOLVE A SYSTEM OF EQUATIONS.
+*  INFO    (output) INTEGER
+*          = 0:  successful exit
+*          < 0:  if INFO = -i, the i-th argument had an illegal value
+*          > 0:  if INFO = i, U(i,i) is exactly zero. The factorization
+*                has been completed, but the factor U is exactly
+*                singular, and division by zero will occur if it is used
+*                to solve a system of equations.
 *
 *  =====================================================================
 *
-*     .. PARAMETERS ..
+*     .. Parameters ..
       DOUBLE PRECISION   ONE
       PARAMETER          ( ONE = 1.0D+0 )
 *     ..
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       INTEGER            I, IINFO, J, JB, NB
 *     ..
-*     .. EXTERNAL SUBROUTINES ..
+*     .. External Subroutines ..
       EXTERNAL           DGEMM, DGETF2, DLASWP, DTRSM, XERBLA
 *     ..
-*     .. EXTERNAL FUNCTIONS ..
+*     .. External Functions ..
       INTEGER            ILAENV
       EXTERNAL           ILAENV
 *     ..
-*     .. INTRINSIC FUNCTIONS ..
+*     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
-*     TEST THE INPUT PARAMETERS.
+*     Test the input parameters.
 *
       INFO = 0
       IF( M.LT.0 ) THEN
@@ -227,32 +227,32 @@
          RETURN
       END IF
 *
-*     QUICK RETURN IF POSSIBLE
+*     Quick return if possible
 *
       IF( M.EQ.0 .OR. N.EQ.0 )
      $   RETURN
 *
-*     DETERMINE THE BLOCK SIZE FOR THIS ENVIRONMENT.
+*     Determine the block size for this environment.
 *
       NB = ILAENV( 1, 'DGETRF', ' ', M, N, -1, -1 )
       IF( NB.LE.1 .OR. NB.GE.MIN( M, N ) ) THEN
 *
-*        USE UNBLOCKED CODE.
+*        Use unblocked code.
 *
          CALL DGETF2( M, N, A, LDA, IPIV, INFO )
       ELSE
 *
-*        USE BLOCKED CODE.
+*        Use blocked code.
 *
          DO 20 J = 1, MIN( M, N ), NB
             JB = MIN( MIN( M, N )-J+1, NB )
 *
-*           FACTOR DIAGONAL AND SUBDIAGONAL BLOCKS AND TEST FOR EXACT
-*           SINGULARITY.
+*           Factor diagonal and subdiagonal blocks and test for exact
+*           singularity.
 *
             CALL DGETF2( M-J+1, JB, A( J, J ), LDA, IPIV( J ), IINFO )
 *
-*           ADJUST INFO AND THE PIVOT INDICES.
+*           Adjust INFO and the pivot indices.
 *
             IF( INFO.EQ.0 .AND. IINFO.GT.0 )
      $         INFO = IINFO + J - 1
@@ -260,27 +260,27 @@
                IPIV( I ) = J - 1 + IPIV( I )
    10       CONTINUE
 *
-*           APPLY INTERCHANGES TO COLUMNS 1:J-1.
+*           Apply interchanges to columns 1:J-1.
 *
             CALL DLASWP( J-1, A, LDA, J, J+JB-1, IPIV, 1 )
 *
             IF( J+JB.LE.N ) THEN
 *
-*              APPLY INTERCHANGES TO COLUMNS J+JB:N.
+*              Apply interchanges to columns J+JB:N.
 *
                CALL DLASWP( N-J-JB+1, A( 1, J+JB ), LDA, J, J+JB-1,
      $                      IPIV, 1 )
 *
-*              COMPUTE BLOCK ROW OF U.
+*              Compute block row of U.
 *
-               CALL DTRSM( 'LEFT', 'LOWER', 'NO TRANSPOSE', 'UNIT', JB,
+               CALL DTRSM( 'Left', 'Lower', 'No transpose', 'Unit', JB,
      $                     N-J-JB+1, ONE, A( J, J ), LDA, A( J, J+JB ),
      $                     LDA )
                IF( J+JB.LE.M ) THEN
 *
-*                 UPDATE TRAILING SUBMATRIX.
+*                 Update trailing submatrix.
 *
-                  CALL DGEMM( 'NO TRANSPOSE', 'NO TRANSPOSE', M-J-JB+1,
+                  CALL DGEMM( 'No transpose', 'No transpose', M-J-JB+1,
      $                        N-J-JB+1, JB, -ONE, A( J+JB, J ), LDA,
      $                        A( J, J+JB ), LDA, ONE, A( J+JB, J+JB ),
      $                        LDA )
@@ -290,76 +290,76 @@
       END IF
       RETURN
 *
-*     END OF DGETRF
+*     End of DGETRF
 *
       END
       SUBROUTINE DLASWP( N, A, LDA, K1, K2, IPIV, INCX )
 *
-*  -- LAPACK AUXILIARY ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     JUNE 30, 1999
+*  -- LAPACK auxiliary routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     June 30, 1999
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       INTEGER            INCX, K1, K2, LDA, N
 *     ..
-*     .. ARRAY ARGUMENTS ..
+*     .. Array Arguments ..
       INTEGER            IPIV( * )
       DOUBLE PRECISION   A( LDA, * )
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  DLASWP PERFORMS A SERIES OF ROW INTERCHANGES ON THE MATRIX A.
-*  ONE ROW INTERCHANGE IS INITIATED FOR EACH OF ROWS K1 THROUGH K2 OF A.
+*  DLASWP performs a series of row interchanges on the matrix A.
+*  One row interchange is initiated for each of rows K1 through K2 of A.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  N       (INPUT) INTEGER
-*          THE NUMBER OF COLUMNS OF THE MATRIX A.
+*  N       (input) INTEGER
+*          The number of columns of the matrix A.
 *
-*  A       (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDA,N)
-*          ON ENTRY, THE MATRIX OF COLUMN DIMENSION N TO WHICH THE ROW
-*          INTERCHANGES WILL BE APPLIED.
-*          ON EXIT, THE PERMUTED MATRIX.
+*  A       (input/output) DOUBLE PRECISION array, dimension (LDA,N)
+*          On entry, the matrix of column dimension N to which the row
+*          interchanges will be applied.
+*          On exit, the permuted matrix.
 *
-*  LDA     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY A.
+*  LDA     (input) INTEGER
+*          The leading dimension of the array A.
 *
-*  K1      (INPUT) INTEGER
-*          THE FIRST ELEMENT OF IPIV FOR WHICH A ROW INTERCHANGE WILL
-*          BE DONE.
+*  K1      (input) INTEGER
+*          The first element of IPIV for which a row interchange will
+*          be done.
 *
-*  K2      (INPUT) INTEGER
-*          THE LAST ELEMENT OF IPIV FOR WHICH A ROW INTERCHANGE WILL
-*          BE DONE.
+*  K2      (input) INTEGER
+*          The last element of IPIV for which a row interchange will
+*          be done.
 *
-*  IPIV    (INPUT) INTEGER ARRAY, DIMENSION (M*ABS(INCX))
-*          THE VECTOR OF PIVOT INDICES.  ONLY THE ELEMENTS IN POSITIONS
-*          K1 THROUGH K2 OF IPIV ARE ACCESSED.
-*          IPIV(K) = L IMPLIES ROWS K AND L ARE TO BE INTERCHANGED.
+*  IPIV    (input) INTEGER array, dimension (M*abs(INCX))
+*          The vector of pivot indices.  Only the elements in positions
+*          K1 through K2 of IPIV are accessed.
+*          IPIV(K) = L implies rows K and L are to be interchanged.
 *
-*  INCX    (INPUT) INTEGER
-*          THE INCREMENT BETWEEN SUCCESSIVE VALUES OF IPIV.  IF IPIV
-*          IS NEGATIVE, THE PIVOTS ARE APPLIED IN REVERSE ORDER.
+*  INCX    (input) INTEGER
+*          The increment between successive values of IPIV.  If IPIV
+*          is negative, the pivots are applied in reverse order.
 *
-*  FURTHER DETAILS
+*  Further Details
 *  ===============
 *
-*  MODIFIED BY
-*   R. C. WHALEY, COMPUTER SCIENCE DEPT., UNIV. OF TENN., KNOXVILLE, USA
+*  Modified by
+*   R. C. Whaley, Computer Science Dept., Univ. of Tenn., Knoxville, USA
 *
 * =====================================================================
 *
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       INTEGER            I, I1, I2, INC, IP, IX, IX0, J, K, N32
       DOUBLE PRECISION   TEMP
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
-*     INTERCHANGE ROW I WITH ROW IPIV(I) FOR EACH OF ROWS K1 THROUGH K2.
+*     Interchange row I with row IPIV(I) for each of rows K1 through K2.
 *
       IF( INCX.GT.0 ) THEN
          IX0 = K1
@@ -410,55 +410,55 @@
 *
       RETURN
 *
-*     END OF DLASWP
+*     End of DLASWP
 *
       END
       INTEGER          FUNCTION IEEECK( ISPEC, ZERO, ONE )
 *
-*  -- LAPACK AUXILIARY ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     JUNE 30, 1998
+*  -- LAPACK auxiliary routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     June 30, 1998
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       INTEGER            ISPEC
       REAL               ONE, ZERO
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  IEEECK IS CALLED FROM THE ILAENV TO VERIFY THAT INFINITY AND
-*  POSSIBLY NAN ARITHMETIC IS SAFE (I.E. WILL NOT TRAP).
+*  IEEECK is called from the ILAENV to verify that Infinity and
+*  possibly NaN arithmetic is safe (i.e. will not trap).
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  ISPEC   (INPUT) INTEGER
-*          SPECIFIES WHETHER TO TEST JUST FOR INIFINITY ARITHMETIC
-*          OR WHETHER TO TEST FOR INFINITY AND NAN ARITHMETIC.
-*          = 0: VERIFY INFINITY ARITHMETIC ONLY.
-*          = 1: VERIFY INFINITY AND NAN ARITHMETIC.
+*  ISPEC   (input) INTEGER
+*          Specifies whether to test just for inifinity arithmetic
+*          or whether to test for infinity and NaN arithmetic.
+*          = 0: Verify infinity arithmetic only.
+*          = 1: Verify infinity and NaN arithmetic.
 *
-*  ZERO    (INPUT) REAL
-*          MUST CONTAIN THE VALUE 0.0
-*          THIS IS PASSED TO PREVENT THE COMPILER FROM OPTIMIZING
-*          AWAY THIS CODE.
+*  ZERO    (input) REAL
+*          Must contain the value 0.0
+*          This is passed to prevent the compiler from optimizing
+*          away this code.
 *
-*  ONE     (INPUT) REAL
-*          MUST CONTAIN THE VALUE 1.0
-*          THIS IS PASSED TO PREVENT THE COMPILER FROM OPTIMIZING
-*          AWAY THIS CODE.
+*  ONE     (input) REAL
+*          Must contain the value 1.0
+*          This is passed to prevent the compiler from optimizing
+*          away this code.
 *
 *  RETURN VALUE:  INTEGER
-*          = 0:  ARITHMETIC FAILED TO PRODUCE THE CORRECT ANSWERS
-*          = 1:  ARITHMETIC PRODUCED THE CORRECT ANSWERS
+*          = 0:  Arithmetic failed to produce the correct answers
+*          = 1:  Arithmetic produced the correct answers
 *
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       REAL               NAN1, NAN2, NAN3, NAN4, NAN5, NAN6, NEGINF,
      $                   NEGZRO, NEWZRO, POSINF
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
       IEEECK = 1
 *
       POSINF = ONE / ZERO
@@ -512,7 +512,7 @@
 *
 *
 *
-*     RETURN IF WE WERE ONLY ASKED TO CHECK INFINITY ARITHMETIC
+*     Return if we were only asked to check infinity arithmetic
 *
       IF( ISPEC.EQ.0 )
      $   RETURN
@@ -564,107 +564,107 @@
       INTEGER          FUNCTION ILAENV( ISPEC, NAME, OPTS, N1, N2, N3,
      $                 N4 )
 *
-*  -- LAPACK AUXILIARY ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     JUNE 30, 1999
+*  -- LAPACK auxiliary routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     June 30, 1999
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       CHARACTER*( * )    NAME, OPTS
       INTEGER            ISPEC, N1, N2, N3, N4
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  ILAENV IS CALLED FROM THE LAPACK ROUTINES TO CHOOSE PROBLEM-DEPENDENT
-*  PARAMETERS FOR THE LOCAL ENVIRONMENT.  SEE ISPEC FOR A DESCRIPTION OF
-*  THE PARAMETERS.
+*  ILAENV is called from the LAPACK routines to choose problem-dependent
+*  parameters for the local environment.  See ISPEC for a description of
+*  the parameters.
 *
-*  THIS VERSION PROVIDES A SET OF PARAMETERS WHICH SHOULD GIVE GOOD,
-*  BUT NOT OPTIMAL, PERFORMANCE ON MANY OF THE CURRENTLY AVAILABLE
-*  COMPUTERS.  USERS ARE ENCOURAGED TO MODIFY THIS SUBROUTINE TO SET
-*  THE TUNING PARAMETERS FOR THEIR PARTICULAR MACHINE USING THE OPTION
-*  AND PROBLEM SIZE INFORMATION IN THE ARGUMENTS.
+*  This version provides a set of parameters which should give good,
+*  but not optimal, performance on many of the currently available
+*  computers.  Users are encouraged to modify this subroutine to set
+*  the tuning parameters for their particular machine using the option
+*  and problem size information in the arguments.
 *
-*  THIS ROUTINE WILL NOT FUNCTION CORRECTLY IF IT IS CONVERTED TO ALL
-*  LOWER CASE.  CONVERTING IT TO ALL UPPER CASE IS ALLOWED.
+*  This routine will not function correctly if it is converted to all
+*  lower case.  Converting it to all upper case is allowed.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  ISPEC   (INPUT) INTEGER
-*          SPECIFIES THE PARAMETER TO BE RETURNED AS THE VALUE OF
+*  ISPEC   (input) INTEGER
+*          Specifies the parameter to be returned as the value of
 *          ILAENV.
-*          = 1: THE OPTIMAL BLOCKSIZE; IF THIS VALUE IS 1, AN UNBLOCKED
-*               ALGORITHM WILL GIVE THE BEST PERFORMANCE.
-*          = 2: THE MINIMUM BLOCK SIZE FOR WHICH THE BLOCK ROUTINE
-*               SHOULD BE USED; IF THE USABLE BLOCK SIZE IS LESS THAN
-*               THIS VALUE, AN UNBLOCKED ROUTINE SHOULD BE USED.
-*          = 3: THE CROSSOVER POINT (IN A BLOCK ROUTINE, FOR N LESS
-*               THAN THIS VALUE, AN UNBLOCKED ROUTINE SHOULD BE USED)
-*          = 4: THE NUMBER OF SHIFTS, USED IN THE NONSYMMETRIC
-*               EIGENVALUE ROUTINES
-*          = 5: THE MINIMUM COLUMN DIMENSION FOR BLOCKING TO BE USED;
-*               RECTANGULAR BLOCKS MUST HAVE DIMENSION AT LEAST K BY M,
-*               WHERE K IS GIVEN BY ILAENV(2,...) AND M BY ILAENV(5,...)
-*          = 6: THE CROSSOVER POINT FOR THE SVD (WHEN REDUCING AN M BY N
-*               MATRIX TO BIDIAGONAL FORM, IF MAX(M,N)/MIN(M,N) EXCEEDS
-*               THIS VALUE, A QR FACTORIZATION IS USED FIRST TO REDUCE
-*               THE MATRIX TO A TRIANGULAR FORM.)
-*          = 7: THE NUMBER OF PROCESSORS
-*          = 8: THE CROSSOVER POINT FOR THE MULTISHIFT QR AND QZ METHODS
-*               FOR NONSYMMETRIC EIGENVALUE PROBLEMS.
-*          = 9: MAXIMUM SIZE OF THE SUBPROBLEMS AT THE BOTTOM OF THE
-*               COMPUTATION TREE IN THE DIVIDE-AND-CONQUER ALGORITHM
-*               (USED BY XGELSD AND XGESDD)
-*          =10: IEEE NAN ARITHMETIC CAN BE TRUSTED NOT TO TRAP
-*          =11: INFINITY ARITHMETIC CAN BE TRUSTED NOT TO TRAP
+*          = 1: the optimal blocksize; if this value is 1, an unblocked
+*               algorithm will give the best performance.
+*          = 2: the minimum block size for which the block routine
+*               should be used; if the usable block size is less than
+*               this value, an unblocked routine should be used.
+*          = 3: the crossover point (in a block routine, for N less
+*               than this value, an unblocked routine should be used)
+*          = 4: the number of shifts, used in the nonsymmetric
+*               eigenvalue routines
+*          = 5: the minimum column dimension for blocking to be used;
+*               rectangular blocks must have dimension at least k by m,
+*               where k is given by ILAENV(2,...) and m by ILAENV(5,...)
+*          = 6: the crossover point for the SVD (when reducing an m by n
+*               matrix to bidiagonal form, if max(m,n)/min(m,n) exceeds
+*               this value, a QR factorization is used first to reduce
+*               the matrix to a triangular form.)
+*          = 7: the number of processors
+*          = 8: the crossover point for the multishift QR and QZ methods
+*               for nonsymmetric eigenvalue problems.
+*          = 9: maximum size of the subproblems at the bottom of the
+*               computation tree in the divide-and-conquer algorithm
+*               (used by xGELSD and xGESDD)
+*          =10: ieee NaN arithmetic can be trusted not to trap
+*          =11: infinity arithmetic can be trusted not to trap
 *
-*  NAME    (INPUT) CHARACTER*(*)
-*          THE NAME OF THE CALLING SUBROUTINE, IN EITHER UPPER CASE OR
-*          LOWER CASE.
+*  NAME    (input) CHARACTER*(*)
+*          The name of the calling subroutine, in either upper case or
+*          lower case.
 *
-*  OPTS    (INPUT) CHARACTER*(*)
-*          THE CHARACTER OPTIONS TO THE SUBROUTINE NAME, CONCATENATED
-*          INTO A SINGLE CHARACTER STRING.  FOR EXAMPLE, UPLO = 'U',
-*          TRANS = 'T', AND DIAG = 'N' FOR A TRIANGULAR ROUTINE WOULD
-*          BE SPECIFIED AS OPTS = 'UTN'.
+*  OPTS    (input) CHARACTER*(*)
+*          The character options to the subroutine NAME, concatenated
+*          into a single character string.  For example, UPLO = 'U',
+*          TRANS = 'T', and DIAG = 'N' for a triangular routine would
+*          be specified as OPTS = 'UTN'.
 *
-*  N1      (INPUT) INTEGER
-*  N2      (INPUT) INTEGER
-*  N3      (INPUT) INTEGER
-*  N4      (INPUT) INTEGER
-*          PROBLEM DIMENSIONS FOR THE SUBROUTINE NAME; THESE MAY NOT ALL
-*          BE REQUIRED.
+*  N1      (input) INTEGER
+*  N2      (input) INTEGER
+*  N3      (input) INTEGER
+*  N4      (input) INTEGER
+*          Problem dimensions for the subroutine NAME; these may not all
+*          be required.
 *
-* (ILAENV) (OUTPUT) INTEGER
-*          >= 0: THE VALUE OF THE PARAMETER SPECIFIED BY ISPEC
-*          < 0:  IF ILAENV = -K, THE K-TH ARGUMENT HAD AN ILLEGAL VALUE.
+* (ILAENV) (output) INTEGER
+*          >= 0: the value of the parameter specified by ISPEC
+*          < 0:  if ILAENV = -k, the k-th argument had an illegal value.
 *
-*  FURTHER DETAILS
+*  Further Details
 *  ===============
 *
-*  THE FOLLOWING CONVENTIONS HAVE BEEN USED WHEN CALLING ILAENV FROM THE
-*  LAPACK ROUTINES:
-*  1)  OPTS IS A CONCATENATION OF ALL OF THE CHARACTER OPTIONS TO
-*      SUBROUTINE NAME, IN THE SAME ORDER THAT THEY APPEAR IN THE
-*      ARGUMENT LIST FOR NAME, EVEN IF THEY ARE NOT USED IN DETERMINING
-*      THE VALUE OF THE PARAMETER SPECIFIED BY ISPEC.
-*  2)  THE PROBLEM DIMENSIONS N1, N2, N3, N4 ARE SPECIFIED IN THE ORDER
-*      THAT THEY APPEAR IN THE ARGUMENT LIST FOR NAME.  N1 IS USED
-*      FIRST, N2 SECOND, AND SO ON, AND UNUSED PROBLEM DIMENSIONS ARE
-*      PASSED A VALUE OF -1.
-*  3)  THE PARAMETER VALUE RETURNED BY ILAENV IS CHECKED FOR VALIDITY IN
-*      THE CALLING SUBROUTINE.  FOR EXAMPLE, ILAENV IS USED TO RETRIEVE
-*      THE OPTIMAL BLOCKSIZE FOR STRTRI AS FOLLOWS:
+*  The following conventions have been used when calling ILAENV from the
+*  LAPACK routines:
+*  1)  OPTS is a concatenation of all of the character options to
+*      subroutine NAME, in the same order that they appear in the
+*      argument list for NAME, even if they are not used in determining
+*      the value of the parameter specified by ISPEC.
+*  2)  The problem dimensions N1, N2, N3, N4 are specified in the order
+*      that they appear in the argument list for NAME.  N1 is used
+*      first, N2 second, and so on, and unused problem dimensions are
+*      passed a value of -1.
+*  3)  The parameter value returned by ILAENV is checked for validity in
+*      the calling subroutine.  For example, ILAENV is used to retrieve
+*      the optimal blocksize for STRTRI as follows:
 *
 *      NB = ILAENV( 1, 'STRTRI', UPLO // DIAG, N, -1, -1, -1 )
 *      IF( NB.LE.1 ) NB = MAX( 1, N )
 *
 *  =====================================================================
 *
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       LOGICAL            CNAME, SNAME
       CHARACTER*1        C1
       CHARACTER*2        C2, C4
@@ -672,26 +672,26 @@
       CHARACTER*6        SUBNAM
       INTEGER            I, IC, IZ, NB, NBMIN, NX
 *     ..
-*     .. INTRINSIC FUNCTIONS ..
+*     .. Intrinsic Functions ..
       INTRINSIC          CHAR, ICHAR, INT, MIN, REAL
 *     ..
-*     .. EXTERNAL FUNCTIONS ..
+*     .. External Functions ..
       INTEGER            IEEECK
       EXTERNAL           IEEECK
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
       GO TO ( 100, 100, 100, 400, 500, 600, 700, 800, 900, 1000,
      $        1100 ) ISPEC
 *
-*     INVALID VALUE FOR ISPEC
+*     Invalid value for ISPEC
 *
       ILAENV = -1
       RETURN
 *
   100 CONTINUE
 *
-*     CONVERT NAME TO UPPER CASE IF THE FIRST CHARACTER IS LOWER CASE.
+*     Convert NAME to upper case if the first character is lower case.
 *
       ILAENV = 1
       SUBNAM = NAME
@@ -699,7 +699,7 @@
       IZ = ICHAR( 'Z' )
       IF( IZ.EQ.90 .OR. IZ.EQ.122 ) THEN
 *
-*        ASCII CHARACTER SET
+*        ASCII character set
 *
          IF( IC.GE.97 .AND. IC.LE.122 ) THEN
             SUBNAM( 1:1 ) = CHAR( IC-32 )
@@ -712,7 +712,7 @@
 *
       ELSE IF( IZ.EQ.233 .OR. IZ.EQ.169 ) THEN
 *
-*        EBCDIC CHARACTER SET
+*        EBCDIC character set
 *
          IF( ( IC.GE.129 .AND. IC.LE.137 ) .OR.
      $       ( IC.GE.145 .AND. IC.LE.153 ) .OR.
@@ -729,7 +729,7 @@
 *
       ELSE IF( IZ.EQ.218 .OR. IZ.EQ.250 ) THEN
 *
-*        PRIME MACHINES:  ASCII+128
+*        Prime machines:  ASCII+128
 *
          IF( IC.GE.225 .AND. IC.LE.250 ) THEN
             SUBNAM( 1:1 ) = CHAR( IC-32 )
@@ -754,11 +754,11 @@
 *
   110 CONTINUE
 *
-*     ISPEC = 1:  BLOCK SIZE
+*     ISPEC = 1:  block size
 *
-*     IN THESE EXAMPLES, SEPARATE CODE IS PROVIDED FOR SETTING NB FOR
-*     REAL AND COMPLEX.  WE ASSUME THAT NB WILL TAKE THE SAME VALUE IN
-*     SINGLE OR DOUBLE PRECISION.
+*     In these examples, separate code is provided for setting NB for
+*     real and complex.  We assume that NB will take the same value in
+*     single or double precision.
 *
       NB = 1
 *
@@ -909,7 +909,7 @@
 *
   200 CONTINUE
 *
-*     ISPEC = 2:  MINIMUM BLOCK SIZE
+*     ISPEC = 2:  minimum block size
 *
       NBMIN = 2
       IF( C2.EQ.'GE' ) THEN
@@ -987,7 +987,7 @@
 *
   300 CONTINUE
 *
-*     ISPEC = 3:  CROSSOVER POINT
+*     ISPEC = 3:  crossover point
 *
       NX = 0
       IF( C2.EQ.'GE' ) THEN
@@ -1041,51 +1041,51 @@
 *
   400 CONTINUE
 *
-*     ISPEC = 4:  NUMBER OF SHIFTS (USED BY XHSEQR)
+*     ISPEC = 4:  number of shifts (used by xHSEQR)
 *
       ILAENV = 6
       RETURN
 *
   500 CONTINUE
 *
-*     ISPEC = 5:  MINIMUM COLUMN DIMENSION (NOT USED)
+*     ISPEC = 5:  minimum column dimension (not used)
 *
       ILAENV = 2
       RETURN
 *
   600 CONTINUE 
 *
-*     ISPEC = 6:  CROSSOVER POINT FOR SVD (USED BY XGELSS AND XGESVD)
+*     ISPEC = 6:  crossover point for SVD (used by xGELSS and xGESVD)
 *
       ILAENV = INT( REAL( MIN( N1, N2 ) )*1.6E0 )
       RETURN
 *
   700 CONTINUE
 *
-*     ISPEC = 7:  NUMBER OF PROCESSORS (NOT USED)
+*     ISPEC = 7:  number of processors (not used)
 *
       ILAENV = 1
       RETURN
 *
   800 CONTINUE
 *
-*     ISPEC = 8:  CROSSOVER POINT FOR MULTISHIFT (USED BY XHSEQR)
+*     ISPEC = 8:  crossover point for multishift (used by xHSEQR)
 *
       ILAENV = 50
       RETURN
 *
   900 CONTINUE
 *
-*     ISPEC = 9:  MAXIMUM SIZE OF THE SUBPROBLEMS AT THE BOTTOM OF THE
-*                 COMPUTATION TREE IN THE DIVIDE-AND-CONQUER ALGORITHM
-*                 (USED BY XGELSD AND XGESDD)
+*     ISPEC = 9:  maximum size of the subproblems at the bottom of the
+*                 computation tree in the divide-and-conquer algorithm
+*                 (used by xGELSD and xGESDD)
 *
       ILAENV = 25
       RETURN
 *
  1000 CONTINUE
 *
-*     ISPEC = 10: IEEE NAN ARITHMETIC CAN BE TRUSTED NOT TO TRAP
+*     ISPEC = 10: ieee NaN arithmetic can be trusted not to trap
 *
 C     ILAENV = 0
       ILAENV = 1
@@ -1096,7 +1096,7 @@ C     ILAENV = 0
 *
  1100 CONTINUE
 *
-*     ISPEC = 11: INFINITY ARITHMETIC CAN BE TRUSTED NOT TO TRAP
+*     ISPEC = 11: infinity arithmetic can be trusted not to trap
 *
 C     ILAENV = 0
       ILAENV = 1
@@ -1105,52 +1105,52 @@ C     ILAENV = 0
       END IF
       RETURN
 *
-*     END OF ILAENV
+*     End of ILAENV
 *
       END
       SUBROUTINE XERBLA( SRNAME, INFO )
 *
-*  -- LAPACK AUXILIARY ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     SEPTEMBER 30, 1994
+*  -- LAPACK auxiliary routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     September 30, 1994
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       CHARACTER*6        SRNAME
       INTEGER            INFO
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  XERBLA  IS AN ERROR HANDLER FOR THE LAPACK ROUTINES.
-*  IT IS CALLED BY AN LAPACK ROUTINE IF AN INPUT PARAMETER HAS AN
-*  INVALID VALUE.  A MESSAGE IS PRINTED AND EXECUTION STOPS.
+*  XERBLA  is an error handler for the LAPACK routines.
+*  It is called by an LAPACK routine if an input parameter has an
+*  invalid value.  A message is printed and execution stops.
 *
-*  INSTALLERS MAY CONSIDER MODIFYING THE STOP STATEMENT IN ORDER TO
-*  CALL SYSTEM-SPECIFIC EXCEPTION-HANDLING FACILITIES.
+*  Installers may consider modifying the STOP statement in order to
+*  call system-specific exception-handling facilities.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  SRNAME  (INPUT) CHARACTER*6
-*          THE NAME OF THE ROUTINE WHICH CALLED XERBLA.
+*  SRNAME  (input) CHARACTER*6
+*          The name of the routine which called XERBLA.
 *
-*  INFO    (INPUT) INTEGER
-*          THE POSITION OF THE INVALID PARAMETER IN THE PARAMETER LIST
-*          OF THE CALLING ROUTINE.
+*  INFO    (input) INTEGER
+*          The position of the invalid parameter in the parameter list
+*          of the calling routine.
 *
 * =====================================================================
 *
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
       WRITE( *, FMT = 9999 )SRNAME, INFO
 *
       STOP
 *
- 9999 FORMAT( ' ** ON ENTRY TO ', A6, ' PARAMETER NUMBER ', I2, ' HAD ',
-     $      'AN ILLEGAL VALUE' )
+ 9999 FORMAT( ' ** On entry to ', A6, ' parameter number ', I2, ' had ',
+     $      'an illegal value' )
 *
-*     END OF XERBLA
+*     End of XERBLA
 *
       END

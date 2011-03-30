@@ -1,47 +1,47 @@
-!OP226>=================================== 
-!OP226> GPL LICENSE INFO {{{ 
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+!op226>=================================== 
+!op226> GPL License Info {{{ 
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-!OP226>}}} 
-!OP226>=================================== 
-C  CONJUGATE GRADIENT DRIVER. 
-C  CFLAG CONVERGENCE TEST
-C  CTEST CHECKS FOR CHANGES IN CHIRALITY FOR AMBER RUNS
+!op226>}}} 
+!op226>=================================== 
+C  Conjugate gradient driver. 
+C  CFLAG convergence test
+C  CTEST checks for changes in chirality for AMBER runs
 C
-!> \PARAM QTEST LOGICAL 
-!> \PARAM NP INTEGER
-!> \PARAM ITER INTEGER
-!> \PARAM TIME DOUBLE PRECISION
-!> \PARAM BRUN INTEGER
-!> \PARAM QDONE INTEGER
-!> \PARAM P DOUBLE PRECISION(3*NATOMS)
+!> \param QTEST LOGICAL 
+!> \param NP INTEGER
+!> \param ITER INTEGER
+!> \param TIME DOUBLE PRECISION
+!> \param BRUN INTEGER
+!> \param QDONE INTEGER
+!> \param P DOUBLE PRECISION(3*NATOMS)
       SUBROUTINE QUENCH(QTEST,NP,ITER,TIME,BRUN,QDONE,P)
-!OP226> DECLARATIONS {{{ 
-      USE COMMONS
+!op226> Declarations {{{ 
+      use COMMONS
       USE QMODULE
-      USE PORFUNCS
+      use porfuncs
       IMPLICIT NONE
 
       INTEGER I, J1, NSQSTEPS, NP, IFLAG, ITER, NOPT, J2, NDUMMY, J3, CSMIT
       DOUBLE PRECISION P(3*NATOMS),POTEL,TIME,EREAL,RBCOORDS(18),TMPCOORDS(3*NATOMS), DIST, QE, QX, AVVAL, CSMRMS
-      LOGICAL QTEST, CFLAG, RES, COMPON, EVAPREJECT
+      LOGICAL QTEST, CFLAG, RES, COMPON, evapreject
       DOUBLE PRECISION  GRAD(3*NATOMS), DUMMY, DUM(3*NATOMS), DISTMIN, SSAVE, DIST2, RMAT(3,3)
 C     DOUBLE PRECISION  WORK(60*NATOMS)
       DOUBLE PRECISION, PARAMETER :: HALFPI=1.570796327D0
@@ -52,28 +52,28 @@ C     DOUBLE PRECISION  WORK(60*NATOMS)
       COMMON /DMIN/ DISTMIN
       LOGICAL GUIDECHANGET, GUIDET, CSMDOGUIDET
       COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
-      COMMON /EV/ EVAPREJECT
+      common /ev/ evapreject
       DOUBLE PRECISION QSTART, QFINISH
       COMMON /Q4C/ QSTART, QFINISH
       COMMON /CSMAVVAL/ AVVAL, CSMRMS, CSMIT
 
 C
-C   SF344> GRADUALLY CHANGING PARAMETERS TO PREVENT DISSOCIATION OF PY ELLIPSOIDS WITH REPULSIVE SITES 
+C   sf344> gradually changing parameters to prevent dissociation of PY ellipsoids with repulsive sites 
 C
-      DOUBLE PRECISION EPSSAVE(3)
+      DOUBLE PRECISION epssave(3)
 
 C
-C  DATA FOR THE SCREEN SAVER.
+C  Data for the screen saver.
 C
-      INTEGER BRUN, QDONE,II
-!OP226>}}} 
+      INTEGER BRUN, QDONE,ii
+!op226>}}} 
 C
-C  TURN ON GUIDING POTENTIALS. THESE GET TURNED OFF IN POTENTIAL.F WHEN
-C  THE RMS FORCE IS SMALL ENOUGH.
+C  Turn on guiding potentials. These get turned off in potential.F when
+C  the RMS force is small enough.
 C
       SSAVE=STEP(NP)
 C
-C CSW34 RESET THE NFIX COUNTER
+C csw34 Reset the NFIX counter
 C
       NFIX=0
 
@@ -91,7 +91,7 @@ C
       IF (WENZEL) NOPT=2
       IF (MULLERBROWNT) NOPT=2
 C
-C  QTEST IS SET FOR THE FINAL QUENCHES WITH TIGHTER CONVERGENCE CRITERIA.
+C  QTEST is set for the final quenches with tighter convergence criteria.
 C
       IF (QTEST) THEN
          GMAX=CQMAX
@@ -125,18 +125,18 @@ C     ENDIF
            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
          END IF
          POTEL=EREAL
-         IF (.NOT.CFLAG) WRITE(MYUNIT,'(A,I7,A)') ' WARNING - COMPRESSED QUENCH ',NQ(NP),'  DID NOT CONVERGE'
-         WRITE(MYUNIT,'(A,I7,A,F20.10,A,I5,A,F15.7,A,I4,A,F12.2)') 'COMP Q ',NQ(NP),' ENERGY=',
-     1              POTEL,' STEPS=',ITER,' RMS FORCE=',RMS
+         IF (.NOT.CFLAG) WRITE(MYUNIT,'(A,I7,A)') ' WARNING - compressed quench ',NQ(NP),'  did not converge'
+         WRITE(MYUNIT,'(A,I7,A,F20.10,A,I5,A,F15.7,A,I4,A,F12.2)') 'Comp Q ',NQ(NP),' energy=',
+     1              POTEL,' steps=',ITER,' RMS force=',RMS
       ENDIF
       COMPON=.FALSE.
 
 
-10    IF (PERMOPT) THEN ! LB415
-         !IF ( NQ(NP) .EQ. 1) THEN
+10    IF (PERMOPT) THEN ! lb415
+         !IF ( NQ(NP) .eq. 1) THEN
          IF (DUMPT) THEN
             WRITE(DUMPXYZUNIT+NP,'(I6)') NDUMMY
-            WRITE(DUMPXYZUNIT+NP,'(A,I6)') 'QUENCH> INITIAL POINTS BEFORE QUENCH ',NQ(NP)
+            WRITE(DUMPXYZUNIT+NP,'(A,I6)') 'quench> initial points before quench ',NQ(NP)
             WRITE(DUMPXYZUNIT+NP,'(A,3G20.10)') ('LA ',P(3*(J2-1)+1),P(3*(J2-1)+2),P(3*(J2-1)+3),J2=1,NATOMS)
          ENDIF
          CALL POTENTIAL(P,GRAD,EREAL,.FALSE.,.FALSE.)
@@ -146,17 +146,17 @@ C     ENDIF
          RMS=CSMRMS
          ITER=CSMIT
          !ELSE
-         !   CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP) ! MINIMIZE STRUCTURE
-         !   WRITE(*,*) 'PERMDIST MYLBFGS', EREAL, ITER, RMS
+         !   CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP) ! minimize structure
+         !   write(*,*) 'permdist mylbfgs', EREAL, ITER, RMS
          !   POTEL=EREAL
-         !   IF (.NOT.CFLAG) WRITE(MYUNIT,'(A,I7,A)') 'WARNING - QUENCH ',NQ(NP),'  DID NOT CONVERGE'
+         !   IF (.NOT.CFLAG) WRITE(MYUNIT,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
          !   DO II=1,NSAVE
-         !      IF ( II .GE. NQ(NP) ) EXIT ! THERE'S NO NEED TO CHECK FURTHER, THERE'S NOTHING
+         !      IF ( II .GE. NQ(NP) ) EXIT ! There's no need to check further, there's nothing
          !      CALL MINPERMDIST(P,QMINP(II,:),NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,PERIODIC,TWOD,DUMMY,DIST2,RIGID,RMAT)
-         !      WRITE(*,*) DUMMY, 'DUMMY',II
+         !      write(*,*) DUMMY, 'dummy',ii
          !      IF (DUMMY .LT. 0.5D0) THEN
          !         !DO NOT ACCEPT THIS QUENCH
-         !         WRITE(MYUNIT,*) 'THIS QUENCH ENDED IN A KNOWN MINIMUM. IT WON`T BE COUNTED.'
+         !         WRITE(MYUNIT,*) 'This quench ended in a known minimum. It won`t be counted.'
          !         RETURN
          !      ENDIF
          !   ENDDO
@@ -170,10 +170,10 @@ C     ENDIF
          P(1)=QX
       ELSE IF (DL_POLY) THEN
 C
-C  NEED TO MAKE DL_POLY INPUT FILE FOR CURRENT COORDINATES.
+C  Need to make DL_POLY input file for current coordinates.
 C
          OPEN (UNIT=91,FILE='CONFIG',STATUS='OLD')
-         OPEN (UNIT=92,FILE='CONFIG',STATUS='UNKNOWN')
+         OPEN (UNIT=92,FILE='config',STATUS='UNKNOWN')
          READ(91,'(A80)') DSTRING
          WRITE(92,'(A80)') DSTRING
          READ(91,'(A80)') DSTRING
@@ -190,11 +190,11 @@ C
          ENDDO
          CLOSE(91)
          CLOSE(92)
-         CALL SYSTEM('CP CONFIG CONFIG.OLD; CP CONFIG CONFIG')
-         CALL SYSTEM('DLPOLY.X > OUTPUT.DL_POLY ; TAIL -9 STATIS > ENERGY')
-         OPEN (UNIT=91,FILE='ENERGY',STATUS='OLD')
+         CALL SYSTEM('cp CONFIG CONFIG.old; cp config CONFIG')
+         CALL SYSTEM('DLPOLY.X > output.DL_POLY ; tail -9 STATIS > energy')
+         OPEN (UNIT=91,FILE='energy',STATUS='OLD')
          READ(91,*) EREAL
-         WRITE(MYUNIT,'(A,G20.10)') 'ENERGY=',EREAL
+         WRITE(MYUNIT,'(A,G20.10)') 'energy=',EREAL
          CLOSE(91)
          OPEN(UNIT=91,FILE='REVCON',STATUS='OLD')
          READ(91,'(A1)') DUMMY
@@ -211,7 +211,7 @@ C        WRITE(MYUNIT,'(3G20.10)') P(3*(NATOMS-1)+1),P(3*(NATOMS-1)+2),P(3*(NATO
          CLOSE(91)
          CFLAG=.TRUE.
 C
-C  READ THE COORDINATES OF THE MINIMISED GEOMETRY INTO VECTOR P.
+C  Read the coordinates of the minimised geometry into vector P.
 C
 C     ELSE IF (BFGS .AND.(.NOT.QTEST)) THEN
       ELSE IF (BFGS) THEN
@@ -221,15 +221,15 @@ C        CALL CGMIN(100,P,CFLAG,ITER,EREAL,NP)
       ELSEIF (TNT) THEN
 C        CALL CGMIN(100,P,CFLAG,ITER,EREAL,NP)
          CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,100,ITER,.TRUE.,NP)
-          WRITE(MYUNIT, '(A)') 'SUBROUTINE TN DOES NOT COMPILE WITH NAG/PG'
+          WRITE(MYUNIT, '(A)') 'subroutine tn does not compile with NAG/PG'
          STOP
 C        CALL TN(IFLAG,3*NATOMS,P,EREAL,GRAD,WORK,60*NATOMS,GMAX,ITER,MAXIT,CFLAG,DEBUG)
       ELSEIF (CONJG) THEN
          CALL CGMIN(MAXIT,P,CFLAG,ITER,EREAL,NP)
     ! 
-! COMPUTE QUANTUM ENERGY WITH VARIATION GAUSSIAN WAVEPACKET.
-! COORDS ARE SCALED BY VGW LJ SIGMA (LJSIGMA) INPUTED WITH VGW PARAMS.
-! COORDS ARE THEN SCALED BACK TO UNIT SIGMA.
+! Compute quantum energy with Variation Gaussian Wavepacket.
+! Coords are scaled by VGW LJ sigma (LJSIGMA) inputed with VGW params.
+! Coords are then scaled back to unit sigma.
 ! 
       ELSEIF (VGW) THEN    
         IF(QTEST) THEN              
@@ -255,17 +255,17 @@ C        CALL CGMIN(5,P,CFLAG,ITER,EREAL,NP)
             CALL THOMSONANGTOC(P,NATOMS)
 
 !         ELSE IF(PYBINARYT) THEN
-!! SF344> TRYING OUT SOME SORT OF SYSTEMATIC PARAMETER CHANGE TO PREVENT PARTICLES FROM DISSOCIATING:
-!! FIRST DECREASE REPULSIVE EPSILON VALUES, CONVERGE, THEN GRADUALLY INCREASE THEM
-!           EPSSAVE(:)=PEPSILON1(:)
+!! sf344> trying out some sort of systematic parameter change to prevent particles from dissociating:
+!! first decrease repulsive epsilon values, converge, then gradually increase them
+!           epssave(:)=PEPSILON1(:)
 !          IF(.NOT.QTEST) THEN
-!           WRITE(MYUNIT,*) 'FIRST ITERATION: DECREASING EPSILON_REP VALUES BY A FACTOR OF 10000' 
+!           WRITE(MYUNIT,*) 'first iteration: decreasing epsilon_rep values by a factor of 10000' 
 !           PEPSILON1(:)=PEPSILON1(:)/10000.0D0
 !            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-!           WRITE(MYUNIT,*) 'SECOND ITERATION: INCREASING EPSILON_REP VALUES BY A FACTOR OF 100' 
+!           WRITE(MYUNIT,*) 'second iteration: increasing epsilon_rep values by a factor of 100' 
 !           PEPSILON1(:)=PEPSILON1(:)*100.0D0
 !            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-!            WRITE(MYUNIT,*) 'THIRD ITERATION: INCREASING EPSILON_REP VALUES BY A FACTOR OF 100' 
+!            WRITE(MYUNIT,*) 'third iteration: increasing epsilon_rep values by a factor of 100' 
 !           PEPSILON1(:)=PEPSILON1(:)*100.0D0
 !            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
 !          END IF
@@ -279,12 +279,12 @@ C        CALL CGMIN(5,P,CFLAG,ITER,EREAL,NP)
       IF (CFLAG) QDONE=1
       IF (.NOT.CFLAG) THEN
          IF (QTEST) THEN
-            WRITE(MYUNIT,'(A,I6,A)') 'WARNING - FINAL QUENCH ',NQ(NP),'  DID NOT CONVERGE'
+            WRITE(MYUNIT,'(A,I6,A)') 'WARNING - Final Quench ',NQ(NP),'  did not converge'
          ELSE
             IF (NPAR.GT.1) THEN
-               WRITE(MYUNIT,'(A,I7,A)') 'WARNING - QUENCH ',NQ(NP),'  DID NOT CONVERGE'
+               WRITE(MYUNIT,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
             ELSE
-               WRITE(MYUNIT,'(A,I7,A)') 'WARNING - QUENCH ',NQ(NP),'  DID NOT CONVERGE'
+               WRITE(MYUNIT,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
             ENDIF
          ENDIF
       ENDIF
@@ -297,78 +297,78 @@ C        CALL CGMIN(5,P,CFLAG,ITER,EREAL,NP)
          IF (RES) GOTO 10
       ENDIF
 
-C     PRINT*,'TABOO LISTS:'
+C     PRINT*,'Taboo lists:'
 C     DO J1=1,NPAR
-C        PRINT*,'PARALLEL RUN ',J1
+C        PRINT*,'Parallel run ',J1
 C        WRITE(*,'(6F15.7)') (ESAVE(J2,J1),J2=1,NT(J1))
 C     ENDDO
-C     PRINT*,'INERTIA LISTS:'
+C     PRINT*,'Inertia lists:'
 C     DO J1=1,NPAR
-C        PRINT*,'PARALLEL RUN ',J1
+C        PRINT*,'Parallel run ',J1
 C        WRITE(MYUNIT,'(6F15.7)') (XINSAVE(J2,J1),J2=1,NT(J1))
 C     ENDDO
 
       IF (SAVEQ) CALL GSAVEIT(EREAL,P,NP)
 !     IF (QDONE.EQ.0) THEN
-!        PRINT '(A)','WARNING QUENCH DID NOT CONVERGE FROM STARTING COODINATES:'
+!        PRINT '(A)','WARNING quench did not converge from starting coodinates:'
 !        WRITE(MYUNIT,'(3G20.10)') (COORDS(J1,NP),J1=1,3*NATOMS)
 !     ENDIF
 C
-C  IF EPSSPHERE IS NON-ZERO WE ARE PRESUMABLY DOING A CALCULATION OF THE 
-C  ENERGY DENSITY OF LOCAL MINIMA. WE NEED TO KNOW THE MINIMUM DISTANCE
-C  BETWEEN THE STARTING POINT AND THE QUENCHED MINIMA.
+C  If EPSSPHERE is non-zero we are presumably doing a calculation of the 
+C  energy density of local minima. We need to know the minimum distance
+C  between the starting point and the quenched minima.
 C
       IF ((EPSSPHERE.NE.0.0D0).OR.BSWL) THEN
          DO J1=1,3*NATOMS
             DUM(J1)=COORDS(J1,NP)
          ENDDO
 C
-C  DUM IS RETURNED IN THE CLOSEST ORIENTATION TO P; P SHOULD NOT CHANGE.
-C  THIS IS NEARLY THE SAME MIND AS OPTIM! TO EXECUTE A RANDOM WALK WE MUST TAKE 
-C  ANOTHER STEP AND MINIMISE UNTIL THE DISTANCE BETWEEN THE STARTING POINT
-C  AND THE QUENCH MINIMUM IS LESS THAN EPSSPHERE.
+C  DUM is returned in the closest orientation to P; P should not change.
+C  This is nearly the same mind as OPTIM! To execute a random walk we must take 
+C  another step and minimise until the distance between the starting point
+C  and the quench minimum is less than EPSSPHERE.
 C
 !        CALL MINDGMIN(P,DUM,NATOMS,DISTMIN,PERIODIC,TWOD)
          CALL NEWMINDIST(P,DUM,NATOMS,DISTMIN,PERIODIC,TWOD,'AX    ',.FALSE.,RIGID,DEBUG,RMAT)
       ENDIF
 C
-C  DEAL WITH EPSSPHERE SAMPLING.
+C  Deal with EPSSPHERE sampling.
 C
       IF (EPSSPHERE.NE.0.0D0) THEN
          IF ((DISTMIN.GT.EPSSPHERE).OR.(ABS(EREAL-EPREV(NP)).LE.ECONV)) THEN
-            WRITE(MYUNIT,'(A,F12.5,A,4F14.5)') 'STEP ',STEP(NP),' EREAL, EPREV, DISTMIN, EPSSPHERE=',
+            WRITE(MYUNIT,'(A,F12.5,A,4F14.5)') 'step ',STEP(NP),' EREAL, EPREV, DISTMIN, EPSSPHERE=',
      1                                     EREAL, EPREV(NP), DISTMIN, EPSSPHERE
             DO J1=1,3*NATOMS
                COORDS(J1,NP)=COORDSO(J1,NP)
             ENDDO
             CALL TAKESTEP(NP)
-             WRITE(MYUNIT,'(A,G20.10)' ) 'RESEEDING STEP, MAXIMUM DISPLACEMENT RESET TO ',STEP(NP)
+             WRITE(MYUNIT,'(A,G20.10)' ) 'reseeding step, maximum displacement reset to ',STEP(NP)
             GOTO 11
          ELSE
-            WRITE(MYUNIT,'(A,2F20.10)') 'VALID STEP, DISTMIN, EPSSPHERE=',DISTMIN, EPSSPHERE
+            WRITE(MYUNIT,'(A,2F20.10)') 'valid step, DISTMIN, EPSSPHERE=',DISTMIN, EPSSPHERE
          ENDIF
       ENDIF
 C
-C  IF WE ARE PROVIDED WITH TARGET MINIMUM COORDINATES IN FILE COORDS.TARGET THEN
-C  CALCULATE THE MINIMUM DISTANCES. MAY BE USEFUL FOR ALGORITHM DEVELOPMENT.
-C  IF WE GET CLOSE, WE DON;T WANT TO ESCAPE WITHOUT A HIT!
+C  If we are provided with target minimum coordinates in file coords.target then
+C  calculate the minimum distances. May be useful for algorithm development.
+C  If we get close, we don;t want to escape without a hit!
 C
 !     IF (ALLOCATED(TCOORDS)) THEN
 !        DO J1=1,NTARGETS
 !           TMPCOORDS(1:3*NATOMS)=TCOORDS(J1,1:3*NATOMS)
 !           CALL MINPERMDIST(P,TMPCOORDS,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,PERIODIC,TWOD,DUMMY,DIST2,RIGID)
-!           WRITE(MYUNIT, '(A,I5,A,F15.3,A,F15.3,A,F20.10)') 'FOR TARGET STRUCTURE ',J1,' DIST=',DUMMY,' DIST2=',DIST2,' V=',POTEL
+!           WRITE(MYUNIT, '(A,I5,A,F15.3,A,F15.3,A,F20.10)') 'for target structure ',J1,' dist=',DUMMY,' dist2=',DIST2,' V=',POTEL
 !        ENDDO
 !        DO J1=1,MIN(NMSBSAVE,MAXSAVE)
 !           TMPCOORDS(1:3*NATOMS)=MSBCOORDS(1:3*NATOMS,J1)
 !           CALL MINPERMDIST(P,TMPCOORDS,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,PERIODIC,TWOD,DUMMY,DIST2,RIGID)
-!           PRINT '(A,I5,A,F15.3,A,F15.3,A,F20.10)','FOR TABOO  STRUCTURE ',J1,' DIST=',DUMMY,' DIST2=',DIST2,' V=',POTEL
+!           PRINT '(A,I5,A,F15.3,A,F15.3,A,F20.10)','for taboo  structure ',J1,' dist=',DUMMY,' dist2=',DIST2,' V=',POTEL
 !        ENDDO
 !     ENDIF
 C
-C  NORESET TRUE DOES NOT SET THE CONFIGURATION POINT TO THE QUENCH GEOMETRY
-C  A RELAXED FROZEN CORE DOES NOT GET SAVED, BUT THE LOWEST MINIMA ARE SAVED
-C  BY GSAVEIT.
+C  NORESET true does not set the configuration point to the quench geometry
+C  A relaxed frozen core does not get saved, but the lowest minima are saved
+C  by GSAVEIT.
 C
       IF (.NOT.NORESET) THEN
          DO J1=1,3*(NATOMS-NSEED)
@@ -381,10 +381,10 @@ C
 
       IF (Q4T) CALL ORDERQ4(NATOMS,P,QFINISH)
 C
-C  CALLING CENTRE HERE WITHOUT AN EVAPORATION CHECK CAN PUT PARTICLES
-C  OUTSIDE THE CONTAINER, AND MAKE A VALID STEP IN TAKESTEP IMPOSSIBLE.
+C  Calling CENTRE here without an evaporation check can put particles
+C  outside the container, and make a valid step in takestep impossible.
 C
-C     PRINT*,'CALLING CENTRE FROM QUENCH'
+C     PRINT*,'Calling centre from quench'
 C     IF ((.NOT.FIELDT).AND.(.NOT.SEEDT).AND.CENT) CALL CENTRE2(COORDS(1:3*NATOMS,NP))
 
       IF (DUMPT) THEN
@@ -408,7 +408,7 @@ C     IF ((.NOT.FIELDT).AND.(.NOT.SEEDT).AND.CENT) CALL CENTRE2(COORDS(1:3*NATOM
             ENDDO
          ELSE IF (CHRMMT) THEN
             CALL CHARMMDUMP3(P)
-            CALL CHARMMDUMP2(P,DUMPXYZUNIT+NP) ! XYZ
+            CALL CHARMMDUMP2(P,DUMPXYZUNIT+NP) ! xyz
          ELSEIF (NCORE(NP).GT.0) THEN
             WRITE(DUMPVUNIT-NP,'(1X,F20.10,E20.10)') EREAL, POTEL
             WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
@@ -422,7 +422,7 @@ C           WRITE(DUMPXYZUNIT+NP,80) ('LB',P(3*(I-1)+1),P(3*(I-1)+2),P(3*(I-1)+3
             WRITE(DUMPVUNIT-NP,'(1X,F20.10,E20.10)') EREAL, POTEL
             WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
             WRITE(DUMPXYZUNIT+NP,70) NQ(NP), EREAL, RMS
-70          FORMAT(1X,'QUENCH NUMBER ',I6,' FINAL ENERGY=',F20.10,' RMS FORCE=',E20.10)
+70          FORMAT(1X,'QUENCH NUMBER ',I6,' final energy=',F20.10,' RMS force=',E20.10)
             WRITE(DUMPXYZUNIT+NP,80) ('LA ',P(3*(I-1)+1),P(3*(I-1)+2),P(3*(I-1)+3),I=1,NATOMS-NS)
             IF (NS.NE.0) WRITE(DUMPXYZUNIT+NP,80) ('LB',P(3*(I-1)+1),P(3*(I-1)+2),P(3*(I-1)+3),I=NATOMS-NS+1,NATOMS)
 80          FORMAT(A2,3F20.10)
@@ -445,7 +445,7 @@ C           WRITE(DUMPXYZUNIT+NP,80) ('LB',P(3*(I-1)+1),P(3*(I-1)+2),P(3*(I-1)+3
       IF ((NQ(NP).GE.NSSTOP).AND.SEEDT) THEN
          SEEDT=.FALSE.
          NSEED=0
-         WRITE(MYUNIT,'(I6,A,G20.10)') NSSTOP,' QUENCHES COMPLETED, SETTING COORDINATES TO THE LOWEST MINIMUM, E=',QMIN(1)
+         WRITE(MYUNIT,'(I6,A,G20.10)') NSSTOP,' quenches completed, setting coordinates to the lowest minimum, E=',QMIN(1)
          DO J1=1,3*NATOMS
             COORDS(J1,NP)=QMINP(1,J1)
          ENDDO

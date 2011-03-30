@@ -1,210 +1,210 @@
-      SUBROUTINE Q_BIAS_SEG_A(DISTNE,F_CORD,NMRES,E,
-     *                  XDIFF,YDIFF,ZDIFF)
+      subroutine Q_bias_seg_a(distne,f_cord,nmres,E,
+     *                  xdiff,ydiff,zdiff)
 
-C     CALCULATES THE CONTRIBUTION TO FORCES (IE ZRCORD) DUE TO
-C     A POTENTIAL THAT IS POLYNOMIAL IN Q (Q DEPENDS ON CA POSITIONS
-C     ONLY, SO IT ONLY GIVES FORCES ON THESE ATOMS, BUT A DIMENSION
-C     FOR TABLE NUMBER HAS BEEN INCLUDED IN MANY ARRAYS TO HOPEFULLY
-C     ALLOW GENERALIZATION
+c     calculates the contribution to forces (ie zrcord) due to
+c     a potential that is polynomial in Q (Q depends on Ca positions
+c     only, so it only gives forces on these atoms, but a dimension
+c     for table number has been included in many arrays to hopefully
+c     allow generalization
 
-C FORMAT 1  -  START WITH Q STRUCTURE AND CONSTAIN TO Q WITH POLY_NOMIAL
-C FORMAT 2  -  START WITH Q STRUCTURE AND EXPAND QUARTIC POLYNOMIAL
-C FORMAT 3  -  START WITH RANDOM STRUCTURE AND EXPAND QUARTIC POLYNOMIAL
+c format 1  -  start with q structure and constain to q with poly_nomial
+c format 2  -  start with q structure and expand quartic polynomial
+c format 3  -  start with random structure and expand quartic polynomial
  
-      USE AMHGLOBALS,  ONLY: MAXSIZ,MAXTAB,MAXCNT,MAXCRD,
-     *   DEL_R_A,Q_IJ_A,DQ_DR_IJ_A,QBIASPOLY_A,TARG_DIST,N_QBIAS_A,
-     *   I_Q_FORMAT_A,Q0_A,Q_WEIGHT_A,Q_CLIP_A,I_IXN_QBIAS_A,
-     *   NUMCONST_A, SEGLIST_A,FOLDSTRT_MIN_A,SS_A,QVALUE_A,
-     *   FOLDSTRT_MAX_A,N_DIVS_MAX,SS_DIST,SS_PATTERN_A
-C     ARGUMENT DECLARATIONS
+      use amhglobals,  only: maxsiz,maxtab,maxcnt,maxcrd,
+     *   del_r_a,Q_ij_a,dq_dr_ij_a,qbiaspoly_a,targ_dist,n_Qbias_a,
+     *   i_Q_format_a,Q0_a,Q_weight_a,Q_clip_a,i_ixn_Qbias_a,
+     *   numconst_a, seglist_a,foldstrt_min_a,ss_a,Qvalue_a,
+     *   foldstrt_max_a,n_divs_max,ss_dist,ss_pattern_a
+c     argument declarations
 
-      IMPLICIT NONE
+      implicit none
 
-       DOUBLE PRECISION, INTENT(IN)::DISTNE(MAXCNT,MAXTAB),
-     * XDIFF(MAXCNT,MAXTAB),YDIFF(MAXCNT,MAXTAB),
-     * ZDIFF(MAXCNT,MAXTAB)
+       double precision, intent(in)::distne(maxcnt,maxtab),
+     * xdiff(maxcnt,maxtab),ydiff(maxcnt,maxtab),
+     * zdiff(maxcnt,maxtab)
 
-       DOUBLE PRECISION, INTENT(OUT)::F_CORD(MAXSIZ,3,MAXCRD),E(:,:)
-      INTEGER, INTENT(IN):: NMRES
+       double precision, intent(out)::f_cord(maxsiz,3,maxcrd),E(:,:)
+      integer, intent(in):: nmres
 
-C     INTERNAL VARIABLES
+c     internal variables
 
-      INTEGER I_IXN,I_DIFF,I_DIST,I_CORD,I_RES,I_TAB,
-     *        ISIT1,ISIT2,K,I,J,F
-      DOUBLE PRECISION Q,R_DIST,FACTOR,Q_FORCE(MAXSIZ,3,MAXTAB),
-     *     V,DV_DQ  
+      integer i_ixn,i_diff,i_dist,i_cord,i_res,i_tab,
+     *        isit1,isit2,k,i,j,f
+      double precision Q,r_dist,factor,Q_force(maxsiz,3,maxtab),
+     *     V,dV_dQ  
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-        F_CORD=0.0D0
+        f_cord=0.0D0
         E=0.0D0
 
-C      INITIALIZE Q_FORCE
+c      initialize Q_force
 
-       DO I_RES=1,NMRES
-         DO I_CORD=1,3
-           DO I_TAB=1,4
-             Q_FORCE(I_RES,I_CORD,I_TAB)=0.0D0
-            ENDDO
-         ENDDO
-       ENDDO
+       do i_res=1,nmres
+         do i_cord=1,3
+           do i_tab=1,4
+             Q_force(i_res,i_cord,i_tab)=0.0D0
+            enddo
+         enddo
+       enddo
  
-C      CALCULATE Q AND 'UNSCALED' CONTRIBUTION TO ZRCORD
+c      calculate Q and 'unscaled' contribution to zrcord
 
         Q=0.0D0
-C        WRITE(6,*)'Q_BIAS_SEG_A  NUMCONST_A',NUMCONST_A
+c        write(6,*)'Q_bias_seg_a  numconst_a',numconst_a
  
-C       DO 50 I = 1,  NUMCONST_A,5
-C   THIS CYCLE COMMAND PREVENT GOING OUTSIDE ARRAY BOUNDRIES
+c       do 50 i = 1,  numconst_a,5
+c   this cycle command prevent going outside array boundries
 
-       DO 50 I = 1,  NUMCONST_A
-            IF (I > NMRES )CYCLE 
+       do 50 i = 1,  numconst_a
+            if (i > nmres )cycle 
 
-             ISIT1=SEGLIST_A(I)
+             isit1=seglist_a(i)
 
-C IDENTIFY THE SECONDARY STRUCTURE UNIT
+c identify the secondary structure unit
    
-       IF (SS_A)THEN
-        F = 0
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(1) .AND. 
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(1)) F = 1
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(2) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(2)) F = 2
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(3) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(3)) F = 3
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(4) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(4)) F = 4
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(5) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(5)) F = 5
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(6) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(6)) F = 6
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(7) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(7)) F = 7
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(8) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(8)) F = 8
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(9) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(9)) F = 9
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(10) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(10)) F = 10
-      IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(11) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(10)) F = 11
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(12) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(12)) F = 12
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(13) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(13)) F = 13
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(14) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(13)) F = 13
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(15) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(15)) F = 15
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(16) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(16)) F = 16
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(17) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(17)) F = 17
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(18) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(18)) F = 18
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(19) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(19)) F = 19
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(20) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(20)) F = 20
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(21) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(21)) F = 21
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(22) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(22)) F = 22
-       IF (SEGLIST_A(I) <= FOLDSTRT_MAX_A(23) .AND.
-     *                    SEGLIST_A(I) > FOLDSTRT_MIN_A(23)) F = 23
-        ENDIF  ! SS_A
+       if (ss_a)then
+        f = 0
+       if (seglist_a(i) <= foldstrt_max_a(1) .and. 
+     *                    seglist_a(i) > foldstrt_min_a(1)) f = 1
+       if (seglist_a(i) <= foldstrt_max_a(2) .and.
+     *                    seglist_a(i) > foldstrt_min_a(2)) f = 2
+       if (seglist_a(i) <= foldstrt_max_a(3) .and.
+     *                    seglist_a(i) > foldstrt_min_a(3)) f = 3
+       if (seglist_a(i) <= foldstrt_max_a(4) .and.
+     *                    seglist_a(i) > foldstrt_min_a(4)) f = 4
+       if (seglist_a(i) <= foldstrt_max_a(5) .and.
+     *                    seglist_a(i) > foldstrt_min_a(5)) f = 5
+       if (seglist_a(i) <= foldstrt_max_a(6) .and.
+     *                    seglist_a(i) > foldstrt_min_a(6)) f = 6
+       if (seglist_a(i) <= foldstrt_max_a(7) .and.
+     *                    seglist_a(i) > foldstrt_min_a(7)) f = 7
+       if (seglist_a(i) <= foldstrt_max_a(8) .and.
+     *                    seglist_a(i) > foldstrt_min_a(8)) f = 8
+       if (seglist_a(i) <= foldstrt_max_a(9) .and.
+     *                    seglist_a(i) > foldstrt_min_a(9)) f = 9
+       if (seglist_a(i) <= foldstrt_max_a(10) .and.
+     *                    seglist_a(i) > foldstrt_min_a(10)) f = 10
+      if (seglist_a(i) <= foldstrt_max_a(11) .and.
+     *                    seglist_a(i) > foldstrt_min_a(10)) f = 11
+       if (seglist_a(i) <= foldstrt_max_a(12) .and.
+     *                    seglist_a(i) > foldstrt_min_a(12)) f = 12
+       if (seglist_a(i) <= foldstrt_max_a(13) .and.
+     *                    seglist_a(i) > foldstrt_min_a(13)) f = 13
+       if (seglist_a(i) <= foldstrt_max_a(14) .and.
+     *                    seglist_a(i) > foldstrt_min_a(13)) f = 13
+       if (seglist_a(i) <= foldstrt_max_a(15) .and.
+     *                    seglist_a(i) > foldstrt_min_a(15)) f = 15
+       if (seglist_a(i) <= foldstrt_max_a(16) .and.
+     *                    seglist_a(i) > foldstrt_min_a(16)) f = 16
+       if (seglist_a(i) <= foldstrt_max_a(17) .and.
+     *                    seglist_a(i) > foldstrt_min_a(17)) f = 17
+       if (seglist_a(i) <= foldstrt_max_a(18) .and.
+     *                    seglist_a(i) > foldstrt_min_a(18)) f = 18
+       if (seglist_a(i) <= foldstrt_max_a(19) .and.
+     *                    seglist_a(i) > foldstrt_min_a(19)) f = 19
+       if (seglist_a(i) <= foldstrt_max_a(20) .and.
+     *                    seglist_a(i) > foldstrt_min_a(20)) f = 20
+       if (seglist_a(i) <= foldstrt_max_a(21) .and.
+     *                    seglist_a(i) > foldstrt_min_a(21)) f = 21
+       if (seglist_a(i) <= foldstrt_max_a(22) .and.
+     *                    seglist_a(i) > foldstrt_min_a(22)) f = 22
+       if (seglist_a(i) <= foldstrt_max_a(23) .and.
+     *                    seglist_a(i) > foldstrt_min_a(23)) f = 23
+        endif  ! ss_a
 
-C      DO 100 J = I+2, NUMCONST_A,4
+c      do 100 j = i+2, numconst_a,4
 
-      DO 100 J = I+2, NUMCONST_A
-C        WRITE(6,*)'Q_BIAS_SEG_A I, J  ', I, J 
+      do 100 j = i+2, numconst_a
+c        write(6,*)'Q_bias_seg_a i, j  ', i, j 
 
-       IF ((SS_A) .AND. (SEGLIST_A(J)  >=  FOLDSTRT_MAX_A(F) .OR. 
-     *              SEGLIST_A(J)  < FOLDSTRT_MIN_A(F)) )  CYCLE
+       if ((ss_a) .and. (seglist_a(j)  >=  foldstrt_max_a(f) .or. 
+     *              seglist_a(j)  < foldstrt_min_a(f)) )  cycle
 
-            ISIT2 = SEGLIST_A(J)
-            I_DIFF = ISIT2-ISIT1
-            I_IXN = I_IXN_QBIAS_A(ISIT1,ISIT2)
+            isit2 = seglist_a(j)
+            i_diff = isit2-isit1
+            i_ixn = i_ixn_Qbias_a(isit1,isit2)
 
-       IF (SS_A) THEN        
-        R_DIST=DISTNE(I_IXN,1)-
-     *   SS_DIST(SEGLIST_A(I),SEGLIST_A(J),SS_PATTERN_A(F))
-      ENDIF
+       if (ss_a) then        
+        r_dist=distne(i_ixn,1)-
+     *   ss_dist(seglist_a(i),seglist_a(j),ss_pattern_a(f))
+      endif
 
-       IF (.NOT. SS_A) THEN
-          R_DIST=DISTNE(I_IXN,1)-TARG_DIST(I_IXN,1)
-       ENDIF 
+       if (.not. ss_a) then
+          r_dist=distne(i_ixn,1)-targ_dist(i_ixn,1)
+       endif 
  
-        I_DIST=INT(ABS(R_DIST)/DEL_R_A(I_DIFF))+1
-        IF (I_DIST.GE.N_DIVS_MAX) GOTO 100
+        i_dist=int(abs(r_dist)/del_r_a(i_diff))+1
+        if (i_dist.ge.n_divs_max) goto 100
 
-        Q=Q+Q_IJ_A(I_DIST-1,I_DIFF)
-     *       +DQ_DR_IJ_A(I_DIST,I_DIFF)*(ABS(R_DIST)!LINEARLY INTERP TO GET Q
-     *       -DEL_R_A(I_DIFF)*FLOAT(I_DIST-1) )         
+        Q=Q+Q_ij_a(i_dist-1,i_diff)
+     *       +dq_dr_ij_a(i_dist,i_diff)*(abs(r_dist)!linearly interp to get Q
+     *       -del_r_a(i_diff)*float(i_dist-1) )         
 
-       FACTOR=DQ_DR_IJ_A(I_DIST,I_DIFF)/SIGN(DISTNE(I_IXN,1),R_DIST)
+       factor=dq_dr_ij_a(i_dist,i_diff)/sign(distne(i_ixn,1),r_dist)
 
-        Q_FORCE(ISIT1,1,1)=Q_FORCE(ISIT1,1,1)
-     *                           +FACTOR*XDIFF(I_IXN,1)
-        Q_FORCE(ISIT2,1,1)=Q_FORCE(ISIT2,1,1)
-     *                           -FACTOR*XDIFF(I_IXN,1)
-        Q_FORCE(ISIT1,2,1)=Q_FORCE(ISIT1,2,1)
-     *                           +FACTOR*YDIFF(I_IXN,1)
-        Q_FORCE(ISIT2,2,1)=Q_FORCE(ISIT2,2,1)
-     *                           -FACTOR*YDIFF(I_IXN,1)
-        Q_FORCE(ISIT1,3,1)=Q_FORCE(ISIT1,3,1)
-     *                           +FACTOR*ZDIFF(I_IXN,1)
-        Q_FORCE(ISIT2,3,1)=Q_FORCE(ISIT2,3,1)
-     *                           -FACTOR*ZDIFF(I_IXN,1)
+        Q_force(isit1,1,1)=Q_force(isit1,1,1)
+     *                           +factor*xdiff(i_ixn,1)
+        Q_force(isit2,1,1)=Q_force(isit2,1,1)
+     *                           -factor*xdiff(i_ixn,1)
+        Q_force(isit1,2,1)=Q_force(isit1,2,1)
+     *                           +factor*ydiff(i_ixn,1)
+        Q_force(isit2,2,1)=Q_force(isit2,2,1)
+     *                           -factor*ydiff(i_ixn,1)
+        Q_force(isit1,3,1)=Q_force(isit1,3,1)
+     *                           +factor*zdiff(i_ixn,1)
+        Q_force(isit2,3,1)=Q_force(isit2,3,1)
+     *                           -factor*zdiff(i_ixn,1)
 
-100     ENDDO    ! J
-50    ENDDO    ! I
+100     enddo    ! j
+50    enddo    ! i
 
-C     CALC Q, AND HENCE V(Q) AND DV(Q)/DQ
-C        WRITE(6,*)'Q_WEIGHT_A ',Q_WEIGHT_A
-C        WRITE(6,*)'N_QBIAS_A ',N_QBIAS_A
-C        WRITE(6,*)'I_Q_FORMAT_A ',I_Q_FORMAT_A
-C        WRITE(6,*)'Q_CLIP_A ',Q_CLIP_A
-C        WRITE(6,*)'Q0_A ',Q0_A
-C        WRITE(6,*)'Q ',Q
+c     calc Q, and hence V(Q) and dV(Q)/dQ
+c        write(6,*)'Q_weight_a ',Q_weight_a
+c        write(6,*)'n_Qbias_a ',n_Qbias_a
+c        write(6,*)'i_Q_format_a ',i_Q_format_a
+c        write(6,*)'Q_clip_a ',Q_clip_a
+c        write(6,*)'Q0_a ',Q0_a
+c        write(6,*)'Q ',Q
 
-      QVALUE_A=Q
+      Qvalue_a=Q
       V=0.0D0
-      DV_DQ=0.0D0
-      IF (I_Q_FORMAT_A.EQ.1) THEN
-        DO I=1,N_QBIAS_A
-          V=V+QBIASPOLY_A(I)*Q**I
-          DV_DQ=DV_DQ+FLOAT(I)*QBIASPOLY_A(I)*Q**(I-1)
-        ENDDO
-      ELSEIF (I_Q_FORMAT_A.EQ.2 .OR.
-     *     (I_Q_FORMAT_A.EQ.3.AND.ABS(Q-Q0_A).LE.Q_CLIP_A) ) THEN
-        V= Q_WEIGHT_A*(Q)**4  + (-4)*Q_WEIGHT_A*Q0_A*(Q)**3
-     * + 6*Q_WEIGHT_A*(Q0_A)**2*(Q)**2 + (-4)*Q_WEIGHT_A*Q0_A**3*(Q)**1
-        DV_DQ=DBLE(N_QBIAS_A)*Q_WEIGHT_A*(Q-Q0_A)**(N_QBIAS_A-1)
-      ELSEIF (I_Q_FORMAT_A.EQ.3.AND.(Q-Q0_A.GT.Q_CLIP_A)) THEN
-        DV_DQ=DBLE(N_QBIAS_A)*Q_WEIGHT_A*(Q_CLIP_A)**(N_QBIAS_A-1)
-        V=Q_WEIGHT_A*(Q_CLIP_A)**N_QBIAS_A + DV_DQ*(Q-Q0_A-Q_CLIP_A)
-      ELSEIF (I_Q_FORMAT_A.EQ.3.AND.(Q-Q0_A.LT.-Q_CLIP_A)) THEN
-        DV_DQ=DBLE(N_QBIAS_A)*Q_WEIGHT_A*(-Q_CLIP_A)**(N_QBIAS_A-1)
-        V=Q_WEIGHT_A*(-Q_CLIP_A)**N_QBIAS_A - DV_DQ*(Q0_A-Q-Q_CLIP_A)
-      ELSE
-       WRITE(6,*) 'I_Q_FORMAT_A WRONG Q_BIAS',I_Q_FORMAT_A
-       STOP
-      ENDIF
+      dV_dQ=0.0D0
+      if (i_Q_format_a.eq.1) then
+        do i=1,n_Qbias_a
+          V=V+qbiaspoly_a(i)*Q**i
+          dV_dQ=dV_dQ+float(i)*qbiaspoly_a(i)*Q**(i-1)
+        enddo
+      elseif (i_Q_format_a.eq.2 .or.
+     *     (i_Q_format_a.eq.3.and.abs(Q-Q0_a).le.Q_clip_a) ) then
+        V= Q_weight_a*(Q)**4  + (-4)*Q_weight_a*Q0_a*(Q)**3
+     * + 6*Q_weight_a*(Q0_a)**2*(Q)**2 + (-4)*Q_weight_a*Q0_a**3*(Q)**1
+        dV_dQ=dble(n_Qbias_a)*Q_weight_a*(Q-Q0_a)**(n_Qbias_a-1)
+      elseif (i_Q_format_a.eq.3.and.(Q-Q0_a.gt.Q_clip_a)) then
+        dV_dQ=dble(n_Qbias_a)*Q_weight_a*(Q_clip_a)**(n_Qbias_a-1)
+        V=Q_weight_a*(Q_clip_a)**n_Qbias_a + dV_dQ*(Q-Q0_a-Q_clip_a)
+      elseif (i_Q_format_a.eq.3.and.(Q-Q0_a.lt.-Q_clip_a)) then
+        dV_dQ=dble(n_Qbias_a)*Q_weight_a*(-Q_clip_a)**(n_Qbias_a-1)
+        V=Q_weight_a*(-Q_clip_a)**n_Qbias_a - dV_dQ*(Q0_a-Q-Q_clip_a)
+      else
+       write(6,*) 'i_Q_format_a wrong Q_bias',i_Q_format_a
+       stop
+      endif
 
       E(1,10)=E(1,10)+V
 
-C     CALC 'PROPERLY SCALED' CONTRIBUTION TO ZRCORD
+c     calc 'properly scaled' contribution to zrcord
 
-       DO K =1, NUMCONST_A
-          I_RES  = SEGLIST_A(K)
+       do k =1, numconst_a
+          i_res  = seglist_a(k)
 
-        DO I_CORD=1,3
-          F_CORD(I_RES,I_CORD,1)=F_CORD(I_RES,I_CORD,1)-
-     +                               DV_DQ*Q_FORCE(I_RES,I_CORD,1)
+        do i_cord=1,3
+          f_cord(i_res,i_cord,1)=f_cord(i_res,i_cord,1)-
+     +                               dV_dQ*Q_force(i_res,i_cord,1)
 
-        ENDDO
-      ENDDO
+        enddo
+      enddo
 
-      RETURN
-      END
+      return
+      end

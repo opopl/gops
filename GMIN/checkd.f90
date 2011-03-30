@@ -9,7 +9,7 @@
       LOGICAL          :: GTEST, STEST
       DOUBLE PRECISION, PARAMETER :: ERRLIM = 1.D-06, DELX = 1.D-06
 
-!     CHECKS GRADIENTS
+!     Checks gradients
 
       DO IVRNO = 1, 3*NATOMS
 
@@ -18,11 +18,11 @@
          GTEST    = .FALSE.
          X(IVRNO) = X(IVRNO) - DELX
          CALL POTENTIAL (X, G, FM, GTEST, STEST)
-!         WRITE(*, *) 'ENERGY MINUS = ', FM
+!         WRITE(*, *) 'Energy minus = ', FM
 
          X(IVRNO) = X(IVRNO) + 2.D0*DELX
          CALL POTENTIAL (X, G,  FP, GTEST, STEST)
-!         WRITE(*, *) 'ENERGY PLUS  = ', FP
+!         WRITE(*, *) 'Energy plus  = ', FP
 
          GTEST = .TRUE.
          X(IVRNO) = X(IVRNO) - DELX
@@ -30,8 +30,8 @@
          DFN = (FP - FM) / (2.D0*DELX)
          DFA = G(IVRNO)
 
-         WRITE(*, *) 'GRADIENT NUMERICAL  = ', DFN
-         WRITE(*, *) 'GRADIENT ANALYTICAL = ', DFA
+         WRITE(*, *) 'Gradient numerical  = ', DFN
+         WRITE(*, *) 'Gradient analytical = ', DFA
 
          IF (ABS(DFN - DFA) > ERRLIM) WRITE(*, *) IVRNO, DFN, DFA, ABS(DFN-DFA)
 

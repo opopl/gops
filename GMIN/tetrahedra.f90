@@ -1,6 +1,6 @@
       SUBROUTINE TETRAHEDRA  (X, G, ENERGY, GTEST)
 
-!     EACH RIGIDBODY CONSISTES OF 4 MORSE SITES IN A REGULAR TETRAHEDRAL ARRANGEMENT PLUS A REPULSIVE SITE AT THE CENTRE
+!     each rigidbody consistes of 4 Morse sites in a regular tetrahedral arrangement plus a repulsive site at the centre
 
       USE COMMONS, ONLY: NATOMS, NRBSITES, SITE, RHO, MREQ, EPSR
 
@@ -140,7 +140,7 @@
       DOUBLE PRECISION :: RMI(3,3), DRMI(3,3), P(3), RBCOORDS(NRBSITES*3), P3(3,3)
       LOGICAL          :: GTEST
 
-      OPEN(UNIT=26, FILE='TETRAHEDRA.XYZ', STATUS='UNKNOWN')
+      OPEN(UNIT=26, FILE='tetrahedra.xyz', STATUS='UNKNOWN')
 
       GTEST = .FALSE.
 
@@ -148,7 +148,7 @@
 
          WRITE(26,'(I6)') (NATOMS/2)*NRBSITES
          WRITE(26,10) J1, QMIN(J1), FF(J1)
-10       FORMAT('ENERGY OF MINIMUM ',I6,'=',F20.10,' FIRST FOUND AT STEP ',I8)
+10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)
 
          DO J3 = 1, NATOMS/2
 
@@ -167,8 +167,8 @@
             ENDDO
 
             WRITE(26,'(A4,3F20.10,2X,A12,2X,3F20.10,2X,A12,2X,3F20.10,2X,A12,2X,3F20.10)')          &
-     &      'LA', RBCOORDS(1), RBCOORDS(2), RBCOORDS(3), 'ATOM_VECTOR', P3(1,1), P3(1,2), P3(1,3),  &
-     &      'ATOM_VECTOR', P3(2,1), P3(2,2), P3(2,3), 'ATOM_VECTOR', P3(3,1), P3(3,2), P3(3,3)
+     &      'LA', RBCOORDS(1), RBCOORDS(2), RBCOORDS(3), 'atom_vector', P3(1,1), P3(1,2), P3(1,3),  &
+     &      'atom_vector', P3(2,1), P3(2,2), P3(2,3), 'atom_vector', P3(3,1), P3(3,2), P3(3,3)
 
              DO J2 = 2, NRBSITES
 
@@ -176,7 +176,7 @@
                   IF (J2 == NRBSITES) J4 = 2
                   P(:) = RBCOORDS(3*J4-2:3*J4) - RBCOORDS(3*J2-2:3*J2)
                   WRITE(26,'(A4,3F20.10,2X,A12,2X,3F20.10)')                                        &
-     &            'LA', RBCOORDS(3*J2-2), RBCOORDS(3*J2-1), RBCOORDS(3*J2), 'ATOM_VECTOR', P(1), P(2), P(3)
+     &            'LA', RBCOORDS(3*J2-2), RBCOORDS(3*J2-1), RBCOORDS(3*J2), 'atom_vector', P(1), P(2), P(3)
 
              ENDDO
 

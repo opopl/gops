@@ -1,72 +1,72 @@
-!   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-!   COPYRIGHT (C) 1999-2010 DAVID J. WALES
-!   THIS FILE IS PART OF GMIN.
+!   GMIN: A program for finding global minima
+!   Copyright (C) 1999-2010 David J. Wales
+!   This file is part of GMIN.
 !
-!   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   GMIN is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   GMIN is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 ! 
-! THE GROUPROTATION SUBROUTINE ALLOWS FOR ALMOST ANY ROTATION OF A DEFINED SET OF ATOMS.
-! THE ROTATION AXIS IS DEFINED BY TWO ATOMS (BATOMS1 AND BATOM2), THE GROUP OF ATOMS TO 
-! ROTATE IS DEFINED BY THE LOGICAL ARRAY ATOMINGROUP (IF ELEMENT IS .TRUE., THAT ATOM IS
-! IN THE GROUP), ANGLE IS THE ROTATION ANGLE IN RADIANS AND STEPCOORDS CONTAINS THE CURRENT
-! ATOMIC COORDINATES.
+! The GROUPROTATION subroutine allows for almost any rotation of a defined set of atoms.
+! The rotation axis is defined by two atoms (BATOMS1 and BATOM2), the group of atoms to 
+! rotate is defined by the logical array ATOMINGROUP (if element is .TRUE., that atom is
+! in the group), ANGLE is the rotation angle in radians and STEPCOORDS contains the current
+! atomic coordinates.
 !
 
       SUBROUTINE GROUPROTATION(BATOM1,BATOM2,ANGLE,ATOMINGROUP,STEPCOORDS)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       INTEGER :: BATOM1, BATOM2, I1
       DOUBLE PRECISION :: BVECTOR(3), LENGTH, ANGLE, DUMMYMAT(3,3)=0.0D0, ROTMAT(3,3)
       DOUBLE PRECISION :: GROUPATOM(3), GROUPATOMROT(3), STEPCOORDS(3*NATOMS)
       LOGICAL :: ATOMINGROUP(NATOMS)
 ! STEP 1
-! PRODUCE NOTMALISED BOND VECTOR CORRESPONDING TO THE ROTATION AXIS
-! BATOM1 AND BATOM2 ARE THE ATOMS DEFINING THIS VECTOR
+! Produce notmalised bond vector corresponding to the rotation axis
+! BATOM1 and BATOM2 are the atoms defining this vector
       BVECTOR(1)=STEPCOORDS(3*BATOM1-2)-STEPCOORDS(3*BATOM2-2)
       BVECTOR(2)=STEPCOORDS(3*BATOM1-1)-STEPCOORDS(3*BATOM2-1)
       BVECTOR(3)=STEPCOORDS(3*BATOM1  )-STEPCOORDS(3*BATOM2  )
-! FIND LENGTH   
+! Find length   
       LENGTH=DSQRT(BVECTOR(1)**2 + BVECTOR(2)**2 + BVECTOR(3)**2)
-! NORMALISE      
+! Normalise      
       BVECTOR(1)=BVECTOR(1)/LENGTH
       BVECTOR(2)=BVECTOR(2)/LENGTH
       BVECTOR(3)=BVECTOR(3)/LENGTH
 ! STEP 2
-! SCALE THIS VECTOR SO ITS LENGTH IS THE ROTATION TO BE DONE (IN RADIANS)
+! Scale this vector so its length is the rotation to be done (in radians)
       BVECTOR(1)=BVECTOR(1)*ANGLE
       BVECTOR(2)=BVECTOR(2)*ANGLE
       BVECTOR(3)=BVECTOR(3)*ANGLE
 ! STEP 3
-! GET THE ROTATION MATRIX FOR THIS VECTOR AXIS FROM RMDRVT
-! INTERFACE:
+! Get the rotation matrix for this vector axis from RMDRVT
+! Interface:
 ! SUBROUTINE RMDRVT(P, RM, DRM1, DRM2, DRM3, GTEST)
-! P IS AN UN-NORMALISED VECTOR YOU WISH TO ROTATE AROUND. ITS LENGTH EQUALS THE DESIRED ROTATION IN RADIANS
-! RM WILL RETURN THE 3X3 ROTATION MATRIX
-! DRM1-3 ARE DERIVATIVE MATRICIES, NOT NEEDED HERE
-! GTEST IS ALSO NOT NEEDED SO SET TO .FALSE.
+! P is an un-normalised vector you wish to rotate around. Its length equals the desired rotation in radians
+! RM will return the 3x3 rotation matrix
+! DRM1-3 are derivative matricies, not needed here
+! GTEST is also not needed so set to .FALSE.
       CALL RMDRVT(BVECTOR,ROTMAT,DUMMYMAT,DUMMYMAT,DUMMYMAT,.FALSE.)
 ! STEP 4
-! ROTATE GROUP, ONE ATOM AT A TIME. FIRST, TRANSLATE ATOM SO THE PIVOT (END OF BOND CLOSEST TO ATOM) IS AT THE ORIGIN  
+! Rotate group, one atom at a time. First, translate atom so the pivot (end of bond closest to atom) is at the origin  
       DO I1=1,NATOMS
          IF (ATOMINGROUP(I1)) THEN
             GROUPATOM(1)=STEPCOORDS(3*I1-2)-STEPCOORDS(3*BATOM2-2)
             GROUPATOM(2)=STEPCOORDS(3*I1-1)-STEPCOORDS(3*BATOM2-1)
             GROUPATOM(3)=STEPCOORDS(3*I1  )-STEPCOORDS(3*BATOM2  )
-! APPLY THE ROTATION MATRIX
+! Apply the rotation matrix
             GROUPATOMROT=MATMUL(ROTMAT,GROUPATOM)
-! TRANSLATE BACK TO THE ORIGIN AND COPY TO COORDS
+! Translate back to the origin and copy to COORDS
             STEPCOORDS(3*I1-2)=GROUPATOMROT(1)+STEPCOORDS(3*BATOM2-2)
             STEPCOORDS(3*I1-1)=GROUPATOMROT(2)+STEPCOORDS(3*BATOM2-1)
             STEPCOORDS(3*I1  )=GROUPATOMROT(3)+STEPCOORDS(3*BATOM2  )

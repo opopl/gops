@@ -3,727 +3,727 @@
 !            BUILD_RHO_SITE                                            *
 !            BUILD_V_SITE	                                       *
 !***********************************************************************
-! FUNCTIONS:  RHO_POT,RHO_POT_D,RHO_POT_DD                             *
-!             VPOT,VPOT_D,VPOT_DD				       *             
-!             FEMBED,FEMBED_D,FEMBED_DD                                *
-!             FCUT, FCUT_2,FCUT_DD                                     *
-!             MFUNC,MFUNC_D, MFUNC_DD,                                 *
-!             GFUNC,GFUNC_D,GFUNC_DD                                   *
-!             HFUNC                                                    *
-!             DELTA_DIRAC                                              *
+! FUNCTIONS:  rho_pot,rho_pot_d,rho_pot_dd                             *
+!             Vpot,Vpot_d,Vpot_dd				       *             
+!             Fembed,Fembed_d,Fembed_dd                                *
+!             fcut, fcut_2,fcut_dd                                     *
+!             Mfunc,Mfunc_d, Mfunc_dd,                                 *
+!             gfunc,gfunc_d,gfunc_dd                                   *
+!             Hfunc                                                    *
+!             delta_dirac                                              *
 !                                                                      *             
 !****|******************************************************************|
 
 !****|******************************************************************|
-        DOUBLE PRECISION FUNCTION RHO_POT(IPOT,R)
-	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-	DOUBLE PRECISION RC
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H' 
-        COMMON /PARAM_CUT_OFF/RC	
-	INTEGER IPOT		
-	DOUBLE PRECISION  R
+        double precision function rho_pot(ipot,R)
+	implicit double precision (a-h,o-z)
+	double precision Rc
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h' 
+        COMMON /param_cut_off/Rc	
+	integer ipot		
+	double precision  R
 	
-!DEBUG       	WRITE(*,*) '================================'
-!DEBUG	WRITE(*,*) RC
-!DEBIG	STOP 
+!debug       	write(*,*) '================================'
+!debug	write(*,*) Rc
+!debig	stop 
 		
-        IF(IPOT.EQ.1) THEN   	
-           RHO_POT=EXP(-2*Q*(R/RO-1.0D0))*FCUT(IPOT,R,RC,DELTA)	   
-        ELSEIF(IPOT.EQ.2) THEN	
-           RHO_POT=(RO/R)**(2*Q)*FCUT(IPOT,R,RC,DELTA)		   
-        ELSEIF(IPOT.EQ.3) THEN	
-            RHO_POT=EXP(-2*Q*(R/RO-1.0D0))*FCUT(IPOT,R,RC,DELTA)		   
-	ELSEIF(IPOT.EQ.4) THEN			
-	RHO_POT=GFUNC(R,A,BETA1,BETA2,R03,R04)*FCUT(IPOT,R,RC,H)	
-	ELSEIF ((IPOT.EQ.5).OR.(IPOT.EQ.6)) THEN
-	RHO_POT = FPSI(R)
-	ELSEIF ((IPOT.EQ.12).OR.(IPOT.EQ.13)) THEN
-	RHO_POT =  (   0.77718711248373D0 * (5.6D0-R)**4 &
-	            -  0.48102928454986D0 * (5.6D0-R)**5 &  
-		    +  0.14501312593993D0 * (5.6D0-R)**6 &
-		    -  0.021292226813959D0* (5.6D0-R)**7 &
-		    +  0.001220921762567D0* (5.6D0-R)**8) * HFUNC(5.6D0-R)
-	ELSE
-	WRITE(*,*) 'ERREUR DE IPOT'	
+        if(ipot.eq.1) then   	
+           rho_pot=exp(-2*q*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)	   
+        elseif(ipot.eq.2) then	
+           rho_pot=(Ro/R)**(2*q)*fcut(ipot,R,Rc,delta)		   
+        elseif(ipot.eq.3) then	
+            rho_pot=exp(-2*q*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)		   
+	elseif(ipot.eq.4) then			
+	rho_pot=gfunc(R,a,beta1,beta2,R03,R04)*fcut(ipot,R,Rc,h)	
+	elseif ((ipot.eq.5).or.(ipot.eq.6)) then
+	rho_pot = fpsi(R)
+	elseif ((ipot.eq.12).or.(ipot.eq.13)) then
+	rho_pot =  (   0.77718711248373d0 * (5.6d0-R)**4 &
+	            -  0.48102928454986d0 * (5.6d0-R)**5 &  
+		    +  0.14501312593993d0 * (5.6d0-R)**6 &
+		    -  0.021292226813959d0* (5.6d0-R)**7 &
+		    +  0.001220921762567d0* (5.6d0-R)**8) * Hfunc(5.6d0-R)
+	else
+	write(*,*) 'erreur de ipot'	
 	
-	ENDIF 
+	endif 
 	   
-        RETURN
-        END    
+        Return
+        End    
 
 !****|******************************************************************|	
 !****|******************************************************************|	
-       DOUBLE PRECISION FUNCTION RHO_POT_D(IPOT,R)
-	IMPLICIT DOUBLE PRECISION (A-H,O-Z)  
-        DOUBLE PRECISION RC     
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H' 
-	COMMON /PARAM_CUT_OFF/RC
-	DOUBLE PRECISION R		
-	INTEGER IPOT	      
+       double precision function rho_pot_d(ipot,R)
+	implicit double precision (a-h,o-z)  
+        double precision Rc     
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h' 
+	COMMON /param_cut_off/Rc
+	double precision R		
+	integer ipot	      
 
 
-        IF(IPOT.EQ.1.) THEN     	   	     	        
-      RHO_POT_D=-(2*Q)/RO*EXP(-2*Q*(R/RO-1.0D0))*FCUT(IPOT,R,RC,DELTA)+     &
-               EXP(-2*Q*(R/RO-1.0D0))*FCUT_D(IPOT,R,RC,DELTA)
+        if(ipot.eq.1.) then     	   	     	        
+      rho_pot_d=-(2*q)/Ro*EXP(-2*q*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)+     &
+               EXP(-2*q*(R/Ro-1.0d0))*fcut_d(ipot,R,Rc,delta)
      
      
-        ELSEIF(IPOT.EQ.2) THEN
+        elseif(ipot.eq.2) then
     
-        RHO_POT_D=-2*Q/R*(RO/R)**(2*Q)*FCUT(IPOT,R,RC,DELTA)+               &
-               (RO/R)**(2*Q)*FCUT_D(IPOT,R,RC,DELTA)	
+        rho_pot_d=-2*q/R*(Ro/R)**(2*q)*fcut(ipot,R,Rc,delta)+               &
+               (Ro/R)**(2*q)*fcut_d(ipot,R,Rc,delta)	
      
-        ELSEIF(IPOT.EQ.3) THEN 
+        elseif(ipot.eq.3) then 
 	   	     	        
-      RHO_POT_D=-(2*Q)/RO*EXP(-2*Q*(R/RO-1.0D0))*FCUT(IPOT,R,RC,DELTA)+     &
-               EXP(-2*Q*(R/RO-1.0D0))*FCUT_D(IPOT,R,RC,DELTA)	
+      rho_pot_d=-(2*q)/Ro*EXP(-2*q*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)+     &
+               EXP(-2*q*(R/Ro-1.0d0))*fcut_d(ipot,R,Rc,delta)	
 	
-        ELSEIF(IPOT.EQ.4) THEN 	
+        elseif(ipot.eq.4) then 	
    			    
-       RHO_POT_D=GFUNC_D(R,A,BETA1,BETA2,R03,R04)*FCUT(IPOT,R,RC,H)    &
-     	        +GFUNC(R,A,BETA1,BETA2,R03,R04)*FCUT_D(IPOT,R,RC,H)   
-	ELSEIF ((IPOT.EQ.5).OR.(IPOT.EQ.6)) THEN
+       rho_pot_d=gfunc_d(R,a,beta1,beta2,R03,R04)*fcut(ipot,R,Rc,h)    &
+     	        +gfunc(R,a,beta1,beta2,R03,R04)*fcut_d(ipot,R,Rc,h)   
+	elseif ((ipot.eq.5).or.(ipot.eq.6)) then
 	
-	RHO_POT_D=FPSI_D(R)
-	ELSEIF ((IPOT.EQ.12).OR.(IPOT.EQ.13)) THEN
-	RHO_POT_D =  (- 0.77718711248373D0 * 4.D0* (5.6D0-R)**3 & 
-	              + 0.48102928454986D0 * 5.D0* (5.6D0-R)**4 &
-	              - 0.14501312593993D0 * 6.D0* (5.6D0-R)**5 &
-		      + 0.021292226813959D0* 7.D0* (5.6D0-R)**6 &
-		      - 0.001220921762567D0* 8.D0* (5.6D0-R)**7) * HFUNC(5.6D0-R)
-	ELSE
-	WRITE(*,*) 'ERREUR DE IPOT'
-	ENDIF
+	rho_pot_d=fpsi_d(R)
+	elseif ((ipot.eq.12).or.(ipot.eq.13)) then
+	rho_pot_d =  (- 0.77718711248373d0 * 4.d0* (5.6d0-R)**3 & 
+	              + 0.48102928454986d0 * 5.d0* (5.6d0-R)**4 &
+	              - 0.14501312593993d0 * 6.d0* (5.6d0-R)**5 &
+		      + 0.021292226813959d0* 7.d0* (5.6d0-R)**6 &
+		      - 0.001220921762567d0* 8.d0* (5.6d0-R)**7) * Hfunc(5.6d0-R)
+	else
+	write(*,*) 'erreur de ipot'
+	endif
 		
 		        
-        RETURN
-        END  
+        Return
+        End  
 !****|******************************************************************|	
-        DOUBLE PRECISION  FUNCTION RHO_POT_DD(IPOT,R)
-	IMPLICIT  DOUBLE PRECISION(A-H,O-Z)  
-	DOUBLE PRECISION RC      
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H' 
-	COMMON /PARAM_CUT_OFF/RC	
-	DOUBLE PRECISION R		
-	INTEGER IPOT	      
+        double precision  function rho_pot_dd(ipot,R)
+	implicit  double precision(a-h,o-z)  
+	double precision Rc      
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h' 
+	COMMON /param_cut_off/Rc	
+	double precision R		
+	integer ipot	      
 
 
-       IF(IPOT.EQ.1) THEN   
-       RHO_POT_DD=(2*Q/RO)**2*EXP(-2*Q*(R/RO-1.0D0))*FCUT(IPOT,R,RC,DELTA)        &
-              -2.0D0*(2*Q/RO)*EXP(-2*Q*(R/RO-1.0D0))*FCUT_D(IPOT,R,RC,DELTA)      &
-                             +EXP(-2*Q*(R/RO-1.0D0))*FCUT_DD(IPOT,R,RC,DELTA)      
+       if(ipot.eq.1) then   
+       rho_pot_dd=(2*q/Ro)**2*EXP(-2*q*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)        &
+              -2.0d0*(2*q/Ro)*EXP(-2*q*(R/Ro-1.0d0))*fcut_d(ipot,R,Rc,delta)      &
+                             +EXP(-2*q*(R/Ro-1.0d0))*fcut_dd(ipot,R,Rc,delta)      
 	     
-        ELSEIF(IPOT.EQ.2) THEN
-        RHO_POT_DD=2*Q*(2*Q+1)/R**2*(RO/R)**(2*Q)*FCUT(IPOT,R,RC,DELTA)          &
-                  -   2*(2*Q)/R*(RO/R)**(2*Q)*FCUT_D(IPOT,R,RC,DELTA)            &
-                   + (RO/R)**(2*Q)*FCUT_DD(IPOT,R,RC,DELTA)
+        elseif(ipot.eq.2) then
+        rho_pot_dd=2*q*(2*q+1)/R**2*(Ro/R)**(2*q)*fcut(ipot,R,Rc,delta)          &
+                  -   2*(2*q)/R*(Ro/R)**(2*q)*fcut_d(ipot,R,Rc,delta)            &
+                   + (Ro/R)**(2*q)*fcut_dd(ipot,R,Rc,delta)
        
 	
-        ELSEIF(IPOT.EQ.3) THEN
-       RHO_POT_DD=(2*Q/RO)**2*EXP(-2*Q*(R/RO-1.0D0))*FCUT(IPOT,R,RC,DELTA)         &
-              -2.0D0*(2*Q/RO)*EXP(-2*Q*(R/RO-1.0D0))*FCUT_D(IPOT,R,RC,DELTA)       &
-                             +EXP(-2*Q*(R/RO-1.0D0))*FCUT_DD(IPOT,R,RC,DELTA)           
+        elseif(ipot.eq.3) then
+       rho_pot_dd=(2*q/Ro)**2*EXP(-2*q*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)         &
+              -2.0d0*(2*q/Ro)*EXP(-2*q*(R/Ro-1.0d0))*fcut_d(ipot,R,Rc,delta)       &
+                             +EXP(-2*q*(R/Ro-1.0d0))*fcut_dd(ipot,R,Rc,delta)           
 	          	   	
-        ELSEIF(IPOT.EQ.4) THEN 	
+        elseif(ipot.eq.4) then 	
 !****|******************************************************************|	   			    
-       RHO_POT_DD=GFUNC_DD(R,A,BETA1,BETA2,R03,R04)*FCUT(IPOT,R,RC,H)     &    
-             +2*GFUNC_D(R,A,BETA1,BETA2,R03,R04)*FCUT_D(IPOT,R,RC,H)      &
-                + GFUNC(R,A,BETA1,BETA2,R03,R04)*FCUT_DD(IPOT,R,RC,H)  
+       rho_pot_dd=gfunc_dd(R,a,beta1,beta2,R03,R04)*fcut(ipot,R,Rc,h)     &    
+             +2*gfunc_d(R,a,beta1,beta2,R03,R04)*fcut_d(ipot,R,Rc,h)      &
+                + gfunc(R,a,beta1,beta2,R03,R04)*fcut_dd(ipot,R,Rc,h)  
 !****|******************************************************************|	   
-	ELSEIF ((IPOT.EQ.5).OR.(IPOT.EQ.6)) THEN
-	RHO_POT_DD = FPSI_DD(R)
+	elseif ((ipot.eq.5).or.(ipot.eq.6)) then
+	rho_pot_dd = fpsi_dd(R)
 	
-	ELSEIF ((IPOT.EQ.12).OR.(IPOT.EQ.13)) THEN
-	RHO_POT_DD =  (  0.77718711248373D0 *12.D0* (5.6D0-R)**2 & 
-	               - 0.48102928454986D0 *20.D0* (5.6D0-R)**3 &
-	               + 0.14501312593993D0 *30.D0* (5.6D0-R)**4 &
-		       - 0.021292226813959D0*42.D0* (5.6D0-R)**5 &
-		       + 0.001220921762567D0*56.D0* (5.6D0-R)**6) * HFUNC(5.6D0-R)
-	ELSE
-	WRITE(*,*) 'ERREUR DE IPOT'
-	ENDIF	        
-        RETURN
-        END  	
+	elseif ((ipot.eq.12).or.(ipot.eq.13)) then
+	rho_pot_dd =  (  0.77718711248373d0 *12.d0* (5.6d0-R)**2 & 
+	               - 0.48102928454986d0 *20.d0* (5.6d0-R)**3 &
+	               + 0.14501312593993d0 *30.d0* (5.6d0-R)**4 &
+		       - 0.021292226813959d0*42.d0* (5.6d0-R)**5 &
+		       + 0.001220921762567d0*56.d0* (5.6d0-R)**6) * Hfunc(5.6d0-R)
+	else
+	write(*,*) 'erreur de ipot'
+	endif	        
+        Return
+        End  	
 	
 !****|******************************************************************|
-        DOUBLE PRECISION FUNCTION VPOT(IPOT,R)
-	IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-	DOUBLE PRECISION RC
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H' 
-	COMMON /PARAM_CUT_OFF/RC	
-	INTEGER IPOT
-	DOUBLE PRECISION MFUNC,R	
+        double precision function Vpot(ipot,R)
+	implicit double precision (a-h,o-z)
+	double precision Rc
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h' 
+	COMMON /param_cut_off/Rc	
+	integer ipot
+	double precision Mfunc,R	
 	
-        IF(IPOT.EQ.1) THEN   	
-           VPOT=EXP(-P*(R/RO-1.0D0))*FCUT(IPOT,R,RC,DELTA)
-           VPOT=A_R*VPOT	   	    
-        ELSEIF(IPOT.EQ.2) THEN	
-           VPOT=(RO/R)**P*FCUT(IPOT,R,RC,DELTA)
-           VPOT=A_R*VPOT	   		   
-        ELSEIF(IPOT.EQ.3) THEN		
-           VPOT=(RO/R)**P*FCUT(IPOT,R,RC,DELTA)	
-           VPOT=A_R*VPOT	   			   	   
-	ELSEIF(IPOT.EQ.4) THEN	
+        if(ipot.eq.1) then   	
+           Vpot=exp(-p*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)
+           Vpot=a_r*Vpot	   	    
+        elseif(ipot.eq.2) then	
+           Vpot=(Ro/R)**p*fcut(ipot,R,Rc,delta)
+           Vpot=a_r*Vpot	   		   
+        elseif(ipot.eq.3) then		
+           Vpot=(Ro/R)**p*fcut(ipot,R,Rc,delta)	
+           Vpot=a_r*Vpot	   			   	   
+	elseif(ipot.eq.4) then	
 		
-	VPOT=(E1*MFUNC(R,R01,ALPHA1)+E2*MFUNC(R,R02,ALPHA2)+DD)*      &
-             FCUT(IPOT,R,RC,H)                                        &
-            -S1*HFUNC(RS1-R)*(RS1-R)**4                               &
-            -S2*HFUNC(RS2-R)*(RS2-R)**4                               &   
-            -S3*HFUNC(RS3-R)*(RS3-R)**4	
-	ELSEIF ((IPOT.EQ.5).OR.(IPOT.EQ.6)) THEN
+	Vpot=(E1*Mfunc(R,R01,alpha1)+E2*Mfunc(R,R02,alpha2)+dd)*      &
+             fcut(ipot,R,Rc,h)                                        &
+            -S1*Hfunc(Rs1-R)*(Rs1-R)**4                               &
+            -S2*Hfunc(Rs2-R)*(Rs2-R)**4                               &   
+            -S3*Hfunc(Rs3-R)*(Rs3-R)**4	
+	elseif ((ipot.eq.5).or.(ipot.eq.6)) then
 	
-	VPOT = 0.5D0*FVARPHI(R)
+	Vpot = 0.5d0*fvarphi(R)
 	
-	ELSEIF (IPOT.EQ.12) THEN
+	elseif (ipot.eq.12) then
 	
-	VPOT = EXP(  12.33339230761400D0	         &
-	           - 10.84732196908600D0*R	         &
-	           +  4.57335244245080D0*R**2            &
-		   -  0.85266291445935D0*R**3)*            HFUNC(2.3D0-R) * HFUNC0(R-1.D0)  & 
+	Vpot = exp(  12.33339230761400d0	         &
+	           - 10.84732196908600d0*R	         &
+	           +  4.57335244245080d0*R**2            &
+		   -  0.85266291445935d0*R**3)*            Hfunc(2.3d0-R) * Hfunc0(R-1.d0)  & 
 		    
-	         +(- 14.261501929757D0*   (3.5D0-R)**4   &
-		   + 15.850036758176D0*   (3.5D0-R)**5   &
-	           - 11.325102264291D0*   (3.5D0-R)**6   &
-		   - 4.0971114831366D0*   (3.5D0-R)**7   &
-	           + 3.6739378016909D0*   (3.5D0-R)**8  ) * HFUNC(3.5D0-R)*HFUNC(R-2.3D0)  &
-		 +(  1.3066813393823D0*   (6.0D0-R)**4   &
-		   - 0.60542710718094D0*  (6.0D0-R)**5   &
-		   + 1.0055527194350D0 *  (6.0D0-R)**6   &
-		   - 0.14918186777562D0*  (6.0D0-R)**7   &
-		   + 0.032773112059590D0* (6.0D0-R)**8  ) * HFUNC(6.D0-R)*HFUNC(R-2.3D0)   &
-		 +(  0.011433120304691D0* (7.6D0-R)**4   &
-		   - 0.021982172508973D0* (7.6D0-R)**5   &
-		   - 0.012542439692607D0* (7.6D0-R)**6   &
-		   + 0.025062673874258D0* (7.6D0-R)**7   &
-		   - 0.0075442887837418D0*(7.6D0-R)**8  ) * HFUNC(7.6D0-R)*HFUNC(R-2.3D0) 
+	         +(- 14.261501929757d0*   (3.5d0-R)**4   &
+		   + 15.850036758176d0*   (3.5d0-R)**5   &
+	           - 11.325102264291d0*   (3.5d0-R)**6   &
+		   - 4.0971114831366d0*   (3.5d0-R)**7   &
+	           + 3.6739378016909d0*   (3.5d0-R)**8  ) * Hfunc(3.5d0-R)*Hfunc(R-2.3d0)  &
+		 +(  1.3066813393823d0*   (6.0d0-R)**4   &
+		   - 0.60542710718094d0*  (6.0d0-R)**5   &
+		   + 1.0055527194350d0 *  (6.0d0-R)**6   &
+		   - 0.14918186777562d0*  (6.0d0-R)**7   &
+		   + 0.032773112059590d0* (6.0d0-R)**8  ) * Hfunc(6.d0-R)*Hfunc(R-2.3d0)   &
+		 +(  0.011433120304691d0* (7.6d0-R)**4   &
+		   - 0.021982172508973d0* (7.6d0-R)**5   &
+		   - 0.012542439692607d0* (7.6d0-R)**6   &
+		   + 0.025062673874258d0* (7.6d0-R)**7   &
+		   - 0.0075442887837418d0*(7.6d0-R)**8  ) * Hfunc(7.6d0-R)*Hfunc(R-2.3d0) 
 
-	VPOT=0.5D0*VPOT
-	ELSEIF (IPOT.EQ.13) THEN
+	Vpot=0.5d0*Vpot
+	elseif (ipot.eq.13) then
         
-	VPOT = EXP(  12.8822300381920D0    		     &
-	           - 12.1838501578140D0*R  		     &
-	           +  5.5998956281737D0*R**2		     &
-		   -  1.0915156420318D0*R**3)               *  HFUNC(2.3D0-R)*HFUNC0(R-1.D0)  & 
+	Vpot = exp(  12.8822300381920d0    		     &
+	           - 12.1838501578140d0*R  		     &
+	           +  5.5998956281737d0*R**2		     &
+		   -  1.0915156420318d0*R**3)               *  Hfunc(2.3d0-R)*Hfunc0(R-1.d0)  & 
 		   
-		 +(   8.4670497139946D0*     (3.5D0-R)**4    &
-		   - 46.183472786003D0*      (3.5D0-R)**5    &
-		   + 79.633499844770D0*      (3.5D0-R)**6    &
-		   - 64.847634731465D0*      (3.5D0-R)**7    &
-		   + 19.454623850774D0*      (3.5D0-R)**8  ) * HFUNC(3.5D0-R)*HFUNC(R-2.3D0)  & 
+		 +(   8.4670497139946d0*     (3.5d0-R)**4    &
+		   - 46.183472786003d0*      (3.5d0-R)**5    &
+		   + 79.633499844770d0*      (3.5d0-R)**6    &
+		   - 64.847634731465d0*      (3.5d0-R)**7    &
+		   + 19.454623850774d0*      (3.5d0-R)**8  ) * Hfunc(3.5d0-R)*Hfunc(R-2.3d0)  & 
 		   
-		 +(-  0.097845860135187D0*   (6.0D0-R)**4    &
-		   -  0.47537134413743D0*    (6.0D0-R)**5    &
-		   -  0.00096806164225329D0* (6.0D0-R)**6    &
-		   -  0.16355187497617D0*    (6.0D0-R)**7    &
-		   -  0.00090914903435333D0* (6.0D0-R)**8  ) * HFUNC(6.D0-R)*HFUNC(R-2.3D0)   &   
+		 +(-  0.097845860135187d0*   (6.0d0-R)**4    &
+		   -  0.47537134413743d0*    (6.0d0-R)**5    &
+		   -  0.00096806164225329d0* (6.0d0-R)**6    &
+		   -  0.16355187497617d0*    (6.0d0-R)**7    &
+		   -  0.00090914903435333d0* (6.0d0-R)**8  ) * Hfunc(6.d0-R)*Hfunc(R-2.3d0)   &   
 		     
-		 +(-  0.022038480751134D0*   (7.6D0-R)**4    &
-		   -  0.060955465943384D0*   (7.6D0-R)**5    &
-		   +  0.11573689045653D0*    (7.6D0-R)**6    &
-		   -  0.062697675088029D0*   (7.6D0-R)**7    &
-		   +  0.011273545085049D0*   (7.6D0-R)**8  ) * HFUNC(7.6D0-R)*HFUNC(R-2.3D0) 
+		 +(-  0.022038480751134d0*   (7.6d0-R)**4    &
+		   -  0.060955465943384d0*   (7.6d0-R)**5    &
+		   +  0.11573689045653d0*    (7.6d0-R)**6    &
+		   -  0.062697675088029d0*   (7.6d0-R)**7    &
+		   +  0.011273545085049d0*   (7.6d0-R)**8  ) * Hfunc(7.6d0-R)*Hfunc(R-2.3d0) 
 
-        VPOT=0.5D0*VPOT
-	ELSE
-	WRITE(*,*) 'ERREUR DE IPOT'	
+        Vpot=0.5d0*Vpot
+	else
+	write(*,*) 'erreur de ipot'	
 	
-	ENDIF    
+	endif    
 	   
-        RETURN
-        END    
+        Return
+        End    
 !****|******************************************************************|
-        DOUBLE PRECISION FUNCTION VPOT_D(IPOT,R)
-	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H'	
-	DOUBLE PRECISION RC
-	COMMON /PARAM_CUT_OFF/RC	 
-	DOUBLE PRECISION MFUNC,MFUNC_D,R		
-	INTEGER IPOT	      
+        double precision function Vpot_d(ipot,R)
+	implicit double precision (a-h,o-z)	
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h'	
+	double precision Rc
+	COMMON /param_cut_off/Rc	 
+	double precision Mfunc,Mfunc_d,R		
+	integer ipot	      
 
 
-        IF(IPOT.EQ.1) THEN
+        if(ipot.eq.1) then
       	   	     	        
-        VPOT_D=-P/RO*DEXP(-P*(R/RO-1.0D0))*FCUT(IPOT,R,RC,DELTA)+    &
-               DEXP(-P*(R/RO-1.0D0))*FCUT_D(IPOT,R,RC,DELTA)
-        VPOT_D=A_R*VPOT_D     
+        Vpot_d=-p/Ro*DEXP(-p*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)+    &
+               DEXP(-p*(R/Ro-1.0d0))*fcut_d(ipot,R,Rc,delta)
+        Vpot_d=a_r*Vpot_d     
      
-        ELSEIF(IPOT.EQ.2) THEN
+        elseif(ipot.eq.2) then
     
-	VPOT_D=-P/R*(RO/R)**P*FCUT(IPOT,R,RC,DELTA)+                 &
-               (RO/R)**P*FCUT_D(IPOT,R,RC,DELTA)
-        VPOT_D=A_R*VPOT_D     
-        ELSEIF(IPOT.EQ.3) THEN
+	Vpot_d=-p/R*(Ro/R)**p*fcut(ipot,R,Rc,delta)+                 &
+               (Ro/R)**p*fcut_d(ipot,R,Rc,delta)
+        Vpot_d=a_r*Vpot_d     
+        elseif(ipot.eq.3) then
     
-	VPOT_D=-P/R*(RO/R)**P*FCUT(IPOT,R,RC,DELTA)+                 &
-               (RO/R)**P*FCUT_D(IPOT,R,RC,DELTA)        	
-        VPOT_D=A_R*VPOT_D    
-        ELSEIF(IPOT.EQ.4) THEN 
+	Vpot_d=-p/R*(Ro/R)**p*fcut(ipot,R,Rc,delta)+                 &
+               (Ro/R)**p*fcut_d(ipot,R,Rc,delta)        	
+        Vpot_d=a_r*Vpot_d    
+        elseif(ipot.eq.4) then 
 
-      VPOT_D=(E1*MFUNC_D(R,R01,ALPHA1)+E2*MFUNC_D(R,R02,ALPHA2))*    &
-            FCUT(IPOT,R,RC,H)                                        &
-            +4*S1*HFUNC(RS1-R)*(RS1-R)**3                            &
-            +4*S2*HFUNC(RS2-R)*(RS2-R)**3                            &    
-            +4*S3*HFUNC(RS3-R)*(RS3-R)**3                            &
-      +    (E1*MFUNC(R,R01,ALPHA1)+E2*MFUNC(R,R02,ALPHA2)+DD)*       &
-            FCUT_D(IPOT,R,RC,H)     		 	   
-	ELSEIF ((IPOT.EQ.5).OR.(IPOT.EQ.6)) THEN
+      Vpot_d=(E1*Mfunc_d(R,R01,alpha1)+E2*Mfunc_d(R,R02,alpha2))*    &
+            fcut(ipot,R,Rc,h)                                        &
+            +4*S1*Hfunc(Rs1-R)*(Rs1-R)**3                            &
+            +4*S2*Hfunc(Rs2-R)*(Rs2-R)**3                            &    
+            +4*S3*Hfunc(Rs3-R)*(Rs3-R)**3                            &
+      +    (E1*Mfunc(R,R01,alpha1)+E2*Mfunc(R,R02,alpha2)+dd)*       &
+            fcut_d(ipot,R,Rc,h)     		 	   
+	elseif ((ipot.eq.5).or.(ipot.eq.6)) then
 	
-	VPOT_D = 0.5D0*FVARPHI_D(R)
+	Vpot_d = 0.5d0*fvarphi_d(R)
      
-	ELSEIF (IPOT.EQ.12) THEN
+	elseif (ipot.eq.12) then
 	
-	VPOT_D= EXP( 12.333392307614D0	   -  10.847321969086D0*R	    &
-	            +4.5733524424508D0*R**2 -  0.85266291445935D0*R**3)     &
-		*( -  10.847321969086D0	   +   4.5733524424508D0*2.D0*R     &
-		   -  0.85266291445935D0*3.D0*R**2)                         &   
-		    * HFUNC(2.3D0-R) * HFUNC(R-1.D0)                        &  
-	         +(  14.261501929757D0*   4.D0*  (3.5D0-R)**3   &
-		   - 15.850036758176D0*   5.D0*  (3.5D0-R)**4   &
-	           + 11.325102264291D0*   6.D0*  (3.5D0-R)**5   &
-		   + 4.0971114831366D0*   7.D0*  (3.5D0-R)**6   &
-	           - 3.6739378016909D0*   8.D0*  (3.5D0-R)**7  ) * HFUNC(3.5D0-R)*HFUNC(R-2.3D0)  &
-		 +(- 1.3066813393823D0*   4.D0*  (6.0D0-R)**3   &
-		   + 0.60542710718094D0*  5.D0*  (6.0D0-R)**4   &
-		   - 1.0055527194350D0*   6.D0*  (6.0D0-R)**5   &
-		   + 0.14918186777562D0*  7.D0*  (6.0D0-R)**6   &
-		   - 0.032773112059590*   8.D0*  (6.0D0-R)**7  ) * HFUNC(6.D0-R)*HFUNC(R-2.3D0)	&
-		 +(- 0.011433120304691D0* 4.D0*  (7.6D0-R)**3   &
-		   + 0.021982172508973D0* 5.D0*  (7.6D0-R)**4   &
-		   + 0.012542439692607D0* 6.D0*  (7.6D0-R)**5   &
-		   - 0.025062673874258D0* 7.D0*  (7.6D0-R)**6   &
-		   + 0.0075442887837418D0*8.D0*  (7.6D0-R)**7  ) * HFUNC(7.6D0-R)*HFUNC(R-2.3D0) 
+	Vpot_d= exp( 12.333392307614d0	   -  10.847321969086d0*R	    &
+	            +4.5733524424508d0*R**2 -  0.85266291445935d0*R**3)     &
+		*( -  10.847321969086d0	   +   4.5733524424508d0*2.d0*R     &
+		   -  0.85266291445935d0*3.d0*R**2)                         &   
+		    * Hfunc(2.3d0-R) * Hfunc(R-1.d0)                        &  
+	         +(  14.261501929757d0*   4.d0*  (3.5d0-R)**3   &
+		   - 15.850036758176d0*   5.d0*  (3.5d0-R)**4   &
+	           + 11.325102264291d0*   6.d0*  (3.5d0-R)**5   &
+		   + 4.0971114831366d0*   7.d0*  (3.5d0-R)**6   &
+	           - 3.6739378016909d0*   8.d0*  (3.5d0-R)**7  ) * Hfunc(3.5d0-R)*Hfunc(R-2.3d0)  &
+		 +(- 1.3066813393823d0*   4.d0*  (6.0d0-R)**3   &
+		   + 0.60542710718094d0*  5.d0*  (6.0d0-R)**4   &
+		   - 1.0055527194350d0*   6.d0*  (6.0d0-R)**5   &
+		   + 0.14918186777562d0*  7.d0*  (6.0d0-R)**6   &
+		   - 0.032773112059590*   8.d0*  (6.0d0-R)**7  ) * Hfunc(6.d0-R)*Hfunc(R-2.3d0)	&
+		 +(- 0.011433120304691d0* 4.d0*  (7.6d0-R)**3   &
+		   + 0.021982172508973d0* 5.d0*  (7.6d0-R)**4   &
+		   + 0.012542439692607d0* 6.d0*  (7.6d0-R)**5   &
+		   - 0.025062673874258d0* 7.d0*  (7.6d0-R)**6   &
+		   + 0.0075442887837418d0*8.d0*  (7.6d0-R)**7  ) * Hfunc(7.6d0-R)*Hfunc(R-2.3d0) 
 
-	VPOT_D=0.5D0*VPOT_D
-	ELSEIF (IPOT.EQ.13) THEN
+	Vpot_d=0.5d0*Vpot_d
+	elseif (ipot.eq.13) then
         
-	VPOT_D = EXP( 12.882230038192D0      -   12.183850157814*R               &
-	           +5.5998956281737D0*R**2 -    1.0915156420318D0*R**3)        &
-		 *(-12.183850157814        +    5.5998956281737D0*2.D0*R       &
-		   -1.0915156420318D0*3.D0*R**2)                               &
-		   * HFUNC(2.3D0-R) * HFUNC0(R-1.D0)                            &
-		 +(- 8.4670497139946D0*     4.D0*  (3.5D0-R)**3    &
-		   + 46.183472786003D0*     5.D0*  (3.5D0-R)**4    &
-		   - 79.633499844770D0*     6.D0*  (3.5D0-R)**5    &
-		   + 64.847634731465D0*     7.D0*  (3.5D0-R)**6    &
-		   - 19.454623850774D0*     8.D0*  (3.5D0-R)**7  ) * HFUNC(3.5D0-R)*HFUNC(R-2.3D0)  & 
-		 +(+ 0.097845860135187D0*   4.D0*  (6.0D0-R)**3    &
-		   + 0.47537134413743D0*    5.D0*  (6.0D0-R)**4    &
-		   + 0.00096806164225329D0* 6.D0*  (6.0D0-R)**5    &
-		   + 0.16355187497617D0*    7.D0*  (6.0D0-R)**6    &
-		   + 0.00090914903435333D0* 8.D0*  (6.0D0-R)**7  ) * HFUNC(6.D0-R)*HFUNC(R-2.3D0)   &	  
-		 +(+ 0.022038480751134D0*   4.D0*  (7.6D0-R)**3    &
-		   + 0.060955465943384D0*   5.D0*  (7.6D0-R)**4    &
-		   - 0.11573689045653D0*    6.D0*  (7.6D0-R)**5    &
-		   + 0.062697675088029D0*   7.D0*  (7.6D0-R)**6    &
-		   - 0.011273545085049D0*   8.D0*  (7.6D0-R)**7  ) * HFUNC(7.6D0-R)*HFUNC(R-2.3D0) 
-	VPOT_D=0.5D0*VPOT_D
+	Vpot_d = exp( 12.882230038192d0      -   12.183850157814*R               &
+	           +5.5998956281737d0*R**2 -    1.0915156420318d0*R**3)        &
+		 *(-12.183850157814        +    5.5998956281737d0*2.d0*R       &
+		   -1.0915156420318d0*3.d0*R**2)                               &
+		   * Hfunc(2.3d0-R) * Hfunc0(R-1.d0)                            &
+		 +(- 8.4670497139946d0*     4.d0*  (3.5d0-R)**3    &
+		   + 46.183472786003d0*     5.d0*  (3.5d0-R)**4    &
+		   - 79.633499844770d0*     6.d0*  (3.5d0-R)**5    &
+		   + 64.847634731465d0*     7.d0*  (3.5d0-R)**6    &
+		   - 19.454623850774d0*     8.d0*  (3.5d0-R)**7  ) * Hfunc(3.5d0-R)*Hfunc(R-2.3d0)  & 
+		 +(+ 0.097845860135187d0*   4.d0*  (6.0d0-R)**3    &
+		   + 0.47537134413743d0*    5.d0*  (6.0d0-R)**4    &
+		   + 0.00096806164225329d0* 6.d0*  (6.0d0-R)**5    &
+		   + 0.16355187497617d0*    7.d0*  (6.0d0-R)**6    &
+		   + 0.00090914903435333d0* 8.d0*  (6.0d0-R)**7  ) * Hfunc(6.d0-R)*Hfunc(R-2.3d0)   &	  
+		 +(+ 0.022038480751134d0*   4.d0*  (7.6d0-R)**3    &
+		   + 0.060955465943384d0*   5.d0*  (7.6d0-R)**4    &
+		   - 0.11573689045653d0*    6.d0*  (7.6d0-R)**5    &
+		   + 0.062697675088029d0*   7.d0*  (7.6d0-R)**6    &
+		   - 0.011273545085049d0*   8.d0*  (7.6d0-R)**7  ) * Hfunc(7.6d0-R)*Hfunc(R-2.3d0) 
+	Vpot_d=0.5d0*Vpot_d
 
-	ELSE
-	WRITE(*,*) 'ERREUR DE IPOT'
-	ENDIF	                         
+	else
+	write(*,*) 'erreur de ipot'
+	endif	                         
     
-        RETURN
-        END    
+        Return
+        End    
 	
 !****|******************************************************************|
-        DOUBLE PRECISION FUNCTION VPOT_DD(IPOT,R)
-	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H' 
-	DOUBLE PRECISION RC
-	COMMON /PARAM_CUT_OFF/RC	
-	DOUBLE PRECISION MFUNC,MFUNC_D,MFUNC_DD,R		
-	INTEGER IPOT	      
+        double precision function Vpot_dd(ipot,R)
+	implicit double precision (a-h,o-z)	
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h' 
+	double precision Rc
+	COMMON /param_cut_off/Rc	
+	double precision Mfunc,Mfunc_d,Mfunc_dd,R		
+	integer ipot	      
 
 
-        IF(IPOT.EQ.1) THEN   
-       VPOT_DD=(P/RO)**2*EXP(-P*(R/RO-1.0D0))*FCUT(IPOT,R,RC,DELTA)      &
-          -2.0D0*(P/RO)*EXP(-P*(R/RO-1.0D0))*FCUT_D(IPOT,R,RC,DELTA)     &
-              +EXP(-P*(R/RO-1.0D0))*FCUT_DD(IPOT,R,RC,DELTA)
-         VPOT_DD=A_R*VPOT_DD   
+        if(ipot.eq.1) then   
+       Vpot_dd=(p/Ro)**2*EXP(-p*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)      &
+          -2.0d0*(p/Ro)*EXP(-p*(R/Ro-1.0d0))*fcut_d(ipot,R,Rc,delta)     &
+              +EXP(-p*(R/Ro-1.0d0))*fcut_dd(ipot,R,Rc,delta)
+         Vpot_dd=a_r*Vpot_dd   
 	     
-        ELSEIF(IPOT.EQ.2) THEN
-        VPOT_DD=P*(P+1)/R**2*(RO/R)**P*FCUT(IPOT,R,RC,DELTA)          &
-                      -2*P/R*(RO/R)**P*FCUT_D(IPOT,R,RC,DELTA)        &
-                            +(RO/R)**P*FCUT_DD(IPOT,R,RC,DELTA)       
-        VPOT_DD=A_R*VPOT_DD  
+        elseif(ipot.eq.2) then
+        Vpot_dd=p*(p+1)/R**2*(Ro/R)**p*fcut(ipot,R,Rc,delta)          &
+                      -2*p/R*(Ro/R)**p*fcut_d(ipot,R,Rc,delta)        &
+                            +(Ro/R)**p*fcut_dd(ipot,R,Rc,delta)       
+        Vpot_dd=a_r*Vpot_dd  
 	
-        ELSEIF(IPOT.EQ.3) THEN
-       VPOT_DD=P*(P+1)/R**2*(RO/R)**P*FCUT(IPOT,R,RC,DELTA)           &
-                      -2*P/R*(RO/R)**P*FCUT_D(IPOT,R,RC,DELTA)        &
-                            +(RO/R)**P*FCUT_DD(IPOT,R,RC,DELTA)       
-         VPOT_DD=A_R*VPOT_DD  
+        elseif(ipot.eq.3) then
+       Vpot_dd=p*(p+1)/R**2*(Ro/R)**p*fcut(ipot,R,Rc,delta)           &
+                      -2*p/R*(Ro/R)**p*fcut_d(ipot,R,Rc,delta)        &
+                            +(Ro/R)**p*fcut_dd(ipot,R,Rc,delta)       
+         Vpot_dd=a_r*Vpot_dd  
 	          	  
-        ELSEIF(IPOT.EQ.4) THEN 
+        elseif(ipot.eq.4) then 
 
 !****|******************************************************************|	   			    
-      VPOT_DD=(E1*MFUNC_DD(R,R01,ALPHA1)+E2*MFUNC_DD(R,R02,ALPHA2))*FCUT(IPOT,R,RC,H)       &
-       +    2*(E1*MFUNC_D(R,R01,ALPHA1)+E2*MFUNC_D(R,R02,ALPHA2))*FCUT_D(IPOT,R,RC,H)       &
-       +     (E1*MFUNC(R,R01,ALPHA1)+E2*MFUNC(R,R02,ALPHA2)+DD)*FCUT_DD(IPOT,R,RC,H)        &   
-       -      12*S1*HFUNC(RS1-R)*(RS1-R)**2            					    &
-       -      12*S2*HFUNC(RS2-R)*(RS2-R)**2       					    &
-       -      12*S3*HFUNC(RS3-R)*(RS3-R)**2      					          
+      Vpot_dd=(E1*Mfunc_dd(R,R01,alpha1)+E2*Mfunc_dd(R,R02,alpha2))*fcut(ipot,R,Rc,h)       &
+       +    2*(E1*Mfunc_d(R,R01,alpha1)+E2*Mfunc_d(R,R02,alpha2))*fcut_d(ipot,R,Rc,h)       &
+       +     (E1*Mfunc(R,R01,alpha1)+E2*Mfunc(R,R02,alpha2)+dd)*fcut_dd(ipot,R,Rc,h)        &   
+       -      12*S1*Hfunc(Rs1-R)*(Rs1-R)**2            					    &
+       -      12*S2*Hfunc(Rs2-R)*(Rs2-R)**2       					    &
+       -      12*S3*Hfunc(Rs3-R)*(Rs3-R)**2      					          
      		 
 !****|******************************************************************|	   
- 	ELSEIF ((IPOT.EQ.5).OR.(IPOT.EQ.6)) THEN
+ 	elseif ((ipot.eq.5).or.(ipot.eq.6)) then
 	
-	VPOT_DD = 0.5D0*FVARPHI_DD(R)
+	Vpot_dd = 0.5d0*fvarphi_dd(R)
 	
-	ELSE
-	WRITE(*,*) 'ERREUR DE IPOT'
-	ENDIF	                         
+	else
+	write(*,*) 'erreur de ipot'
+	endif	                         
     
-        RETURN
-        END    		
+        Return
+        End    		
 	
 	  
 !****|******************************************************************|	
-	DOUBLE PRECISION  FUNCTION FCUT(IPOT,R,RC,WIDTH)
-	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
-	DOUBLE PRECISION R,RC,WIDTH,TEST,X
+	double precision  function fcut(ipot,R,Rc,width)
+	implicit double precision (a-h,o-z)	
+	double precision R,Rc,width,test,x
 	
-	IF(IPOT.EQ.1.OR.IPOT.EQ.2.OR.IPOT.EQ.3) THEN
-           TEST=(R-RC)/WIDTH
-	   IF(TEST.LT.-100.D0)  THEN
-           FCUT=1.0D0	
-	   ELSEIF(TEST.GT.100.D0) THEN
-           FCUT=0.0D0	
-	   ELSE	
-	   X=TEST	
-           FCUT=1.0D0/(1.0D0+EXP(X))
-	   ENDIF
-	ELSEIF(IPOT.EQ.4) THEN	   
-	    TEST=(R-RC)
-	   IF(TEST.GT.0.D0)  THEN
-           FCUT=0.0D0
-	   ELSEIF(TEST.LE.0.D0) THEN
-	   X=TEST/WIDTH	   
-           FCUT= X**4/(1+X**4)	   	   
-	   ENDIF
-	ELSEIF ((IPOT.EQ.5).OR.(IPOT.EQ.6).OR.(IPOT.EQ.12).OR.(IPOT.EQ.13)) THEN
-	FCUT=1.D0   		   
-	ENDIF
+	if(ipot.eq.1.or.ipot.eq.2.or.ipot.eq.3) then
+           test=(R-Rc)/width
+	   if(test.lt.-100.d0)  then
+           fcut=1.0d0	
+	   elseif(test.gt.100.d0) then
+           fcut=0.0d0	
+	   else	
+	   x=test	
+           fcut=1.0d0/(1.0d0+EXP(x))
+	   endif
+	elseif(ipot.eq.4) then	   
+	    test=(R-Rc)
+	   if(test.gt.0.d0)  then
+           fcut=0.0d0
+	   elseif(test.le.0.d0) then
+	   x=test/width	   
+           fcut= x**4/(1+x**4)	   	   
+	   endif
+	elseif ((ipot.eq.5).or.(ipot.eq.6).or.(ipot.eq.12).or.(ipot.eq.13)) then
+	fcut=1.d0   		   
+	endif
 	   			
-        RETURN
-        END   	
+        Return
+        End   	
 	
 !****|******************************************************************|	
-	DOUBLE PRECISION  FUNCTION FCUT_D(IPOT,R,RC,WIDTH)
-	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
-	DOUBLE PRECISION R,RC,WIDTH,TEST,X
+	double precision  function fcut_d(ipot,R,Rc,width)
+	implicit double precision (a-h,o-z)	
+	double precision R,Rc,width,test,x
 	
-	IF(IPOT.EQ.1.OR.IPOT.EQ.2.OR.IPOT.EQ.3) THEN	
-          TEST=(R-RC)/WIDTH
-	   IF(TEST.LT.-100.D0)  THEN
-             FCUT_D=0.0D0	
-	   ELSEIF(TEST.GT.100.D0) THEN
-             FCUT_D=0.0D0		
-	    ELSE
-	     X=TEST		
-             FCUT_D=-EXP(X)/(1+EXP(X))**2
-             FCUT_D=FCUT_D/WIDTH          
-	   ENDIF		
-	ELSEIF(IPOT.EQ.4) THEN	
-	    TEST=(R-RC)
-	   IF(TEST.GT.0.D0)  THEN
-	   FCUT_D=0.0D0	
-	   ELSEIF(TEST.LE.0.D0) THEN
-	   X=TEST/WIDTH
-           FCUT_D= 4*X**3/(1+X**4)**2  	 
-           FCUT_D=FCUT_D/WIDTH  	     
-	   ENDIF		
-	ELSEIF ((IPOT.EQ.5).OR.(IPOT.EQ.6).OR.(IPOT.EQ.12).OR.(IPOT.EQ.13)) THEN
-	FCUT_D=1.D0   		   
-	ENDIF	
+	if(ipot.eq.1.or.ipot.eq.2.or.ipot.eq.3) then	
+          test=(R-Rc)/width
+	   if(test.lt.-100.d0)  then
+             fcut_d=0.0d0	
+	   elseif(test.gt.100.d0) then
+             fcut_d=0.0d0		
+	    else
+	     x=test		
+             fcut_d=-EXP(x)/(1+EXP(x))**2
+             fcut_d=fcut_d/width          
+	   endif		
+	elseif(ipot.eq.4) then	
+	    test=(R-Rc)
+	   if(test.gt.0.d0)  then
+	   fcut_d=0.0d0	
+	   elseif(test.le.0.d0) then
+	   x=test/width
+           fcut_d= 4*x**3/(1+x**4)**2  	 
+           fcut_d=fcut_d/width  	     
+	   endif		
+	elseif ((ipot.eq.5).or.(ipot.eq.6).or.(ipot.eq.12).or.(ipot.eq.13)) then
+	fcut_d=1.d0   		   
+	endif	
 		
-        RETURN
-        END   	
+        Return
+        End   	
 	   		
 !****|******************************************************************|	
-	DOUBLE PRECISION FUNCTION FCUT_DD(IPOT,R,RC,WIDTH)
-	IMPLICIT  DOUBLE PRECISION(A-H,O-Z)	
-	DOUBLE PRECISION R,RC,WIDTH,TEST,X
+	double precision function fcut_dd(ipot,R,Rc,width)
+	implicit  double precision(a-h,o-z)	
+	double precision R,Rc,width,test,x
 	
-	IF(IPOT.EQ.1.OR.IPOT.EQ.2.OR.IPOT.EQ.3) THEN	
-          TEST=(R-RC)/WIDTH
-	   IF(TEST.LT.-100.D0)  THEN
-             FCUT_DD=0.0D0	
-	   ELSEIF(TEST.GT.100.D0) THEN
-             FCUT_DD=0.0D0		
-	    ELSE
-	     X=TEST		
-             FCUT_DD= -EXP(X)/( (1.0D0+EXP(X) ) )**2 +2.0D0*EXP(2*X)/(1.0D0+EXP(X) )**3    
-           FCUT_DD=FCUT_DD/WIDTH**2     
-	   ENDIF		
-	ELSEIF(IPOT.EQ.4) THEN	
-	    TEST=(R-RC)
-	   IF(TEST.GT.0.D0)  THEN
-	   FCUT_DD=0.0D0	
-	   ELSEIF(TEST.LE.0.D0) THEN
-	   X=TEST/WIDTH	   
-           FCUT_DD=12*X**2/(1+X**4)**2-32*X**6/(1+X**4)**3
-           FCUT_DD=FCUT_DD/WIDTH**2 	      	   
-	   ENDIF		
-	ELSEIF ((IPOT.EQ.5).OR.(IPOT.EQ.6).OR.(IPOT.EQ.12).OR.(IPOT.EQ.13)) THEN
-	FCUT_DD=1.D0   		   
+	if(ipot.eq.1.or.ipot.eq.2.or.ipot.eq.3) then	
+          test=(R-Rc)/width
+	   if(test.lt.-100.d0)  then
+             fcut_dd=0.0d0	
+	   elseif(test.gt.100.d0) then
+             fcut_dd=0.0d0		
+	    else
+	     x=test		
+             fcut_dd= -EXP(x)/( (1.0d0+EXP(x) ) )**2 +2.0d0*EXP(2*x)/(1.0d0+EXP(x) )**3    
+           fcut_dd=fcut_dd/width**2     
+	   endif		
+	elseif(ipot.eq.4) then	
+	    test=(R-Rc)
+	   if(test.gt.0.d0)  then
+	   fcut_dd=0.0d0	
+	   elseif(test.le.0.d0) then
+	   x=test/width	   
+           fcut_dd=12*x**2/(1+x**4)**2-32*x**6/(1+x**4)**3
+           fcut_dd=fcut_dd/width**2 	      	   
+	   endif		
+	elseif ((ipot.eq.5).or.(ipot.eq.6).or.(ipot.eq.12).or.(ipot.eq.13)) then
+	fcut_dd=1.d0   		   
 	
-	ENDIF	
+	endif	
 		
-        RETURN
-        END  	
+        Return
+        End  	
 		   	 	 	
 !****|******************************************************************|
-        DOUBLE PRECISION FUNCTION FEMBED(IPOT,X)
-	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
-        DOUBLE PRECISION X
-	INTEGER IPOT
-	DOUBLE PRECISION RC
-	COMMON /PARAM_CUT_OFF/RC	
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H'
-	INCLUDE 'ACKLAND_MENDELEV_FE.H'	
+        double precision function Fembed(ipot,x)
+	implicit double precision (a-h,o-z)	
+        double precision x
+	integer ipot
+	double precision Rc
+	COMMON /param_cut_off/Rc	
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h'
+	include 'ackland_mendelev_fe.h'	
 
 		
-	  IF(IPOT.EQ.1.OR.IPOT.EQ.2.OR.IPOT.EQ.3) THEN	
-             FEMBED=X**(ALPHA)
-             FEMBED=-B_A*FEMBED	  
+	  if(ipot.eq.1.or.ipot.eq.2.or.ipot.eq.3) then	
+             Fembed=x**(alpha)
+             Fembed=-b_a*Fembed	  
 	        
-	  ELSEIF(IPOT.EQ.4) THEN	     
+	  elseif(ipot.eq.4) then	     
 	  
-	  IF(X.LE.1) THEN	  	  
-	   FEMBED=F0+0.5*F2*(X-1)**2+Q1*(X-1)**3+Q2*(X-1)**4 +Q3*(X-1)**5 +Q4*(X-1)**6 
+	  if(x.le.1) then	  	  
+	   Fembed=F0+0.5*F2*(x-1)**2+q1*(x-1)**3+q2*(x-1)**4 +q3*(x-1)**5 +q4*(x-1)**6 
         
-	  ELSEIF(X.GT.1) THEN	  	  	
-	   FEMBED=(F0+0.5*F2*(X-1)**2+Q1*(X-1)**3+QQ1*(X-1)**4)/(1+QQ2*(X-1)**3)    	   
-	  ENDIF	   	  
+	  elseif(x.gt.1) then	  	  	
+	   Fembed=(F0+0.5*F2*(x-1)**2+q1*(x-1)**3+qq1*(x-1)**4)/(1+qq2*(x-1)**3)    	   
+	  endif	   	  
 	  	  
-	  ELSEIF(IPOT.EQ.5) THEN
+	  elseif(ipot.eq.5) then
 	  
-	  FEMBED = -DSQRT(X) + APHI*X*X + APHI2*X*X*X*X  
+	  Fembed = -dsqrt(x) + aphi*x*x + aphi2*x*x*x*x  
 	  
-	  ELSEIF(IPOT.EQ.6) THEN
-	   IF (X.LT.1.D0) THEN
-	     FEMBED = -APHI*DSQRT(X) - APHI2*(1-DSQRT(X))*DLOG(2.D0-X)/DLOG(2.D0) 
-	     ELSE
-	     FEMBED = -APHI*DSQRT(X) 
-	   ENDIF
+	  elseif(ipot.eq.6) then
+	   if (x.lt.1.d0) then
+	     Fembed = -aphi*dsqrt(x) - aphi2*(1-dsqrt(x))*dlog(2.d0-x)/dlog(2.d0) 
+	     else
+	     Fembed = -aphi*dsqrt(x) 
+	   endif
 
-	  ELSEIF(IPOT.EQ.12) THEN
-	   FEMBED = -     DSQRT(X)                                         &
-	            - 1.9162462126235D0*1.D-7*(X-60.D0)**4*HFUNC(X-60.D0) &
-	            + 4.6418727035037D0*1.D-7*(X-70.D0)**4*HFUNC(X-70.D0) &
-	            + 6.6448294272955D0*1.D-7*(X-80.D0)**4*HFUNC(X-80.D0) &
-		    - 2.0680252960229D0*1.D-6*(X-85.D0)**4*HFUNC(X-85.D0) &
-		    + 1.1387131464983D0*1.D-6*(X-90.D0)**4*HFUNC(X-90.D0)
-	  ELSEIF(IPOT.EQ.13) THEN
-	   FEMBED = - DSQRT(X)                                         &
-	            + 3.2283012597866D0*1.D-7*(X-60.D0)**4*HFUNC(X-60.D0) &		
-		    - 1.1552813894483D0*1.D-6*(X-70.D0)**4*HFUNC(X-70.D0) &
-		    + 2.3747280268355D0*1.D-6*(X-80.D0)**4*HFUNC(X-80.D0) &
-		    - 2.0379550826523D0*1.D-6*(X-85.D0)**4*HFUNC(X-85.D0) & 
-		    + 4.9758343293936D0*1.D-7*(X-90.D0)**4*HFUNC(X-90.D0)
+	  elseif(ipot.eq.12) then
+	   Fembed = -     dsqrt(x)                                         &
+	            - 1.9162462126235d0*1.d-7*(x-60.d0)**4*Hfunc(x-60.d0) &
+	            + 4.6418727035037d0*1.d-7*(x-70.d0)**4*Hfunc(x-70.d0) &
+	            + 6.6448294272955d0*1.d-7*(x-80.d0)**4*Hfunc(x-80.d0) &
+		    - 2.0680252960229d0*1.d-6*(x-85.d0)**4*Hfunc(x-85.d0) &
+		    + 1.1387131464983d0*1.d-6*(x-90.d0)**4*Hfunc(x-90.d0)
+	  elseif(ipot.eq.13) then
+	   Fembed = - dsqrt(x)                                         &
+	            + 3.2283012597866d0*1.d-7*(x-60.d0)**4*Hfunc(x-60.d0) &		
+		    - 1.1552813894483d0*1.d-6*(x-70.d0)**4*Hfunc(x-70.d0) &
+		    + 2.3747280268355d0*1.d-6*(x-80.d0)**4*Hfunc(x-80.d0) &
+		    - 2.0379550826523d0*1.d-6*(x-85.d0)**4*Hfunc(x-85.d0) & 
+		    + 4.9758343293936d0*1.d-7*(x-90.d0)**4*Hfunc(x-90.d0)
 
 
-	 END IF 
-	RETURN
-        END
+	 end if 
+	return
+        end
 !****|******************************************************************|
-        DOUBLE PRECISION FUNCTION FEMBED_D(IPOT,X)
-	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
-	DOUBLE PRECISION X
-	DOUBLE PRECISION RC
-	COMMON /PARAM_CUT_OFF/RC	
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H'
-	INCLUDE 'ACKLAND_MENDELEV_FE.H'
+        double precision function Fembed_d(ipot,x)
+	implicit double precision (a-h,o-z)	
+	double precision x
+	double precision Rc
+	COMMON /param_cut_off/Rc	
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h'
+	include 'ackland_mendelev_fe.h'
 	
           
-	  IF(IPOT.EQ.1.OR.IPOT.EQ.2.OR.IPOT.EQ.3) THEN	
-             FEMBED_D=ALPHA*X**(ALPHA-1.0D0)
-             FEMBED_D=-B_A*FEMBED_D	     	  
-	  ELSEIF(IPOT.EQ.4) THEN	     	  
-	  IF(X.LE.1) THEN	  	  
-	   FEMBED_D=F2*(X-1)+3*Q1*(X-1)**2+4*Q2*(X-1)**3+5*Q3*(X-1)**4+6*Q4*(X-1)**5 
+	  if(ipot.eq.1.or.ipot.eq.2.or.ipot.eq.3) then	
+             Fembed_d=alpha*x**(alpha-1.0d0)
+             Fembed_d=-b_a*Fembed_d	     	  
+	  elseif(ipot.eq.4) then	     	  
+	  if(x.le.1) then	  	  
+	   Fembed_d=F2*(x-1)+3*q1*(x-1)**2+4*q2*(x-1)**3+5*q3*(x-1)**4+6*q4*(x-1)**5 
         
-	  ELSEIF(X.GT.1) THEN	  	  	
-	 FEMBED_D=(F2*(X-1)+3*Q1*(X-1)**2+4*QQ1*(X-1)**3)/(1+QQ2*(X-1)**3)       &
-                  -3*QQ2*(X-1)**2*(F0+0.5*F2*(X-1)**2+Q1*(X-1)**3+QQ1*(X-1)**4)  &
-                  /(1+QQ2*(X-1)**3)**2      
+	  elseif(x.gt.1) then	  	  	
+	 Fembed_d=(F2*(x-1)+3*q1*(x-1)**2+4*qq1*(x-1)**3)/(1+qq2*(x-1)**3)       &
+                  -3*qq2*(x-1)**2*(F0+0.5*F2*(x-1)**2+q1*(x-1)**3+qq1*(x-1)**4)  &
+                  /(1+qq2*(x-1)**3)**2      
           
 	      	   
-	   ENDIF	   	  	  
+	   endif	   	  	  
 
-	  ELSEIF (IPOT.EQ.5) THEN
+	  elseif (ipot.eq.5) then
 	  
-	  FEMBED_D = -0.5D0/DSQRT(X) + 2.D0*APHI*X  &
-	              + 4.D0*APHI2*X*X*X
+	  Fembed_d = -0.5d0/dsqrt(x) + 2.d0*aphi*x  &
+	              + 4.d0*aphi2*x*x*x
 
 
-	  ELSEIF(IPOT.EQ.6) THEN
-	  IF (X.LT.1.D0) THEN
-	    FEMBED_D = -APHI*0.5D0/DSQRT(X)                   &
-	               + APHI2*(0.5D0*DLOG(2.D0-X)/DSQRT(X)  &
-	               + (1-DSQRT(X))/(2.D0-X))/DLOG(2.D0) 
-	   ELSE
-	    FEMBED_D = -0.5D0*APHI/DSQRT(X)     
-          END IF 	    
+	  elseif(ipot.eq.6) then
+	  if (x.lt.1.d0) then
+	    Fembed_d = -aphi*0.5d0/dsqrt(x)                   &
+	               + aphi2*(0.5d0*dlog(2.d0-x)/dsqrt(x)  &
+	               + (1-dsqrt(x))/(2.d0-x))/dlog(2.d0) 
+	   else
+	    Fembed_d = -0.5d0*aphi/dsqrt(x)     
+          end if 	    
 	    
-	  ELSEIF(IPOT.EQ.12) THEN
-	   FEMBED_D = - 0.5D0 / DSQRT(X)                                 &
-	            + 4.D0*(                                           &
-		    - 1.9162462126235D0*1.D-7*(X-60.D0)**3*HFUNC(X-60.D0) &
-	            + 4.6418727035037D0*1.D-7*(X-70.D0)**3*HFUNC(X-70.D0) &
-	            + 6.6448294272955D0*1.D-7*(X-80.D0)**3*HFUNC(X-80.D0) &
-		    - 2.0680252960229D0*1.D-6*(X-85.D0)**3*HFUNC(X-85.D0) &
-		    + 1.1387131464983D0*1.D-6*(X-90.D0)**3*HFUNC(X-90.D0) &
+	  elseif(ipot.eq.12) then
+	   Fembed_d = - 0.5d0 / dsqrt(x)                                 &
+	            + 4.d0*(                                           &
+		    - 1.9162462126235d0*1.d-7*(x-60.d0)**3*Hfunc(x-60.d0) &
+	            + 4.6418727035037d0*1.d-7*(x-70.d0)**3*Hfunc(x-70.d0) &
+	            + 6.6448294272955d0*1.d-7*(x-80.d0)**3*Hfunc(x-80.d0) &
+		    - 2.0680252960229d0*1.d-6*(x-85.d0)**3*Hfunc(x-85.d0) &
+		    + 1.1387131464983d0*1.d-6*(x-90.d0)**3*Hfunc(x-90.d0) &
 		           )
-	  ELSEIF(IPOT.EQ.13) THEN
-	   FEMBED_D = - 0.5D0 / DSQRT(X)                                 &
-	            + 4.D0*(                                           &
-	            + 3.2283012597866D0*1.D-7*(X-60.D0)**3*HFUNC(X-60.D0) &		
-		    - 1.1552813894483D0*1.D-6*(X-70.D0)**3*HFUNC(X-70.D0) &
-		    + 2.3747280268355D0*1.D-6*(X-80.D0)**3*HFUNC(X-80.D0) &
-		    - 2.0379550826523D0*1.D-6*(X-85.D0)**3*HFUNC(X-85.D0) & 
-		    + 4.9758343293936D0*1.D-7*(X-90.D0)**3*HFUNC(X-90.D0) &
+	  elseif(ipot.eq.13) then
+	   Fembed_d = - 0.5d0 / dsqrt(x)                                 &
+	            + 4.d0*(                                           &
+	            + 3.2283012597866d0*1.d-7*(x-60.d0)**3*Hfunc(x-60.d0) &		
+		    - 1.1552813894483d0*1.d-6*(x-70.d0)**3*Hfunc(x-70.d0) &
+		    + 2.3747280268355d0*1.d-6*(x-80.d0)**3*Hfunc(x-80.d0) &
+		    - 2.0379550826523d0*1.d-6*(x-85.d0)**3*Hfunc(x-85.d0) & 
+		    + 4.9758343293936d0*1.d-7*(x-90.d0)**3*Hfunc(x-90.d0) &
 		           )
         
 	
-	ENDIF
+	endif
 
-        RETURN
-        END
+        return
+        end
 	
 !****|******************************************************************|	
-        DOUBLE PRECISION FUNCTION FEMBED_DD(IPOT,X)
-	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
-        INCLUDE 'ACKLAND_SMA.H'  
-        INCLUDE 'ACKLAND_MISHIN_CU.H'
-	DOUBLE PRECISION RC
-	COMMON /PARAM_CUT_OFF/RC	
-	DOUBLE PRECISION X,DENOM
-	INCLUDE 'ACKLAND_MENDELEV_FE.H'
+        double precision function Fembed_dd(ipot,x)
+	implicit double precision (a-h,o-z)	
+        include 'ackland_sma.h'  
+        include 'ackland_mishin_cu.h'
+	double precision Rc
+	COMMON /param_cut_off/Rc	
+	double precision x,denom
+	include 'ackland_mendelev_fe.h'
           
-	  IF(IPOT.EQ.1.OR.IPOT.EQ.2.OR.IPOT.EQ.3) THEN	
-             FEMBED_DD=ALPHA*(ALPHA-1)*X**(ALPHA-2.0D0)
-             FEMBED_DD=-B_A*FEMBED_DD	     	  
-	  ELSEIF(IPOT.EQ.4) THEN	     	  
-	  IF(X<1) THEN
-	   FEMBED_DD=F2+6*Q1*(X-1)+12*Q2*(X-1)**2+20*Q3*(X-1)**3+30*Q4*(X-1)**4 
+	  if(ipot.eq.1.or.ipot.eq.2.or.ipot.eq.3) then	
+             Fembed_dd=alpha*(alpha-1)*x**(alpha-2.0d0)
+             Fembed_dd=-b_a*Fembed_dd	     	  
+	  elseif(ipot.eq.4) then	     	  
+	  if(x<1) then
+	   Fembed_dd=F2+6*q1*(x-1)+12*q2*(x-1)**2+20*q3*(x-1)**3+30*q4*(x-1)**4 
         
-	  ELSEIF(X>1) THEN
-	 DENOM=1+QQ2*(X-1)**3
+	  elseif(x>1) then
+	 denom=1+qq2*(x-1)**3
 	 	  	  	  	
-	 FEMBED_DD=(F2+6*Q1*(X-1)+12*QQ1*(X-1)**2)/DENOM                              &
-         -6*QQ2*(X-1)**2*(F2*(X-1)+3*Q1*(X-1)**2+4*QQ1*(X-1)**3)/DENOM**2             &
-         -6*QQ2*(X-1)*(F0+0.5*F2*(X-1)**2+Q1*(X-1)**3+QQ1*(X-1)**4)/DENOM**2          &
-          +18*QQ2**2*(X-1)**4*(F0+0.5*F2*(X-1)**2+Q1*(X-1)**3+QQ1*(X-1)**4)/DENOM**3  
+	 Fembed_dd=(F2+6*q1*(x-1)+12*qq1*(x-1)**2)/denom                              &
+         -6*qq2*(x-1)**2*(F2*(x-1)+3*q1*(x-1)**2+4*qq1*(x-1)**3)/denom**2             &
+         -6*qq2*(x-1)*(F0+0.5*F2*(x-1)**2+q1*(x-1)**3+qq1*(x-1)**4)/denom**2          &
+          +18*qq2**2*(x-1)**4*(F0+0.5*F2*(x-1)**2+q1*(x-1)**3+qq1*(x-1)**4)/denom**3  
                         	   
-	   ENDIF	   	  	  
+	   endif	   	  	  
         	    
-	  ELSEIF (IPOT.EQ.5) THEN
-	    FEMBED_DD = 0.25D0/DSQRT(X**3) + 2.D0*APHI  &
-	              + 12.D0*APHI2*X*X
+	  elseif (ipot.eq.5) then
+	    Fembed_dd = 0.25d0/dsqrt(x**3) + 2.d0*aphi  &
+	              + 12.d0*aphi2*x*x
 		      
-          ELSEIF (IPOT.EQ.6) THEN
-	   IF (X.LT.1.D0) THEN
-	     FEMBED_DD = 0.25D0*APHI/DSQRT(X**3)  + APHI2/DLOG(2.D0)*   &
+          elseif (ipot.eq.6) then
+	   if (x.lt.1.d0) then
+	     Fembed_dd = 0.25d0*aphi/dsqrt(x**3)  + aphi2/dlog(2.d0)*   &
 	             (                                              &
-		       -0.25D0*DLOG(2.D0-X)/DSQRT(X**3)             &
-		       -1.0/((2.D0-X)*DSQRT(X))                     &
-		       +(1.0-DSQRT(X))/(2.D0-X)**2                  &
+		       -0.25d0*dlog(2.d0-x)/dsqrt(x**3)             &
+		       -1.0/((2.d0-x)*dsqrt(x))                     &
+		       +(1.0-dsqrt(x))/(2.d0-x)**2                  &
 		      ) 
-	     ELSE
-	      FEMBED_DD = 0.25D0*APHI/DSQRT(X**3)     
-            END IF 
+	     else
+	      Fembed_dd = 0.25d0*aphi/dsqrt(x**3)     
+            end if 
 	 
-        ENDIF
+        endif
 
-        RETURN
-        END
+        return
+        end
 !****|******************************************************************|
-        DOUBLE PRECISION FUNCTION DELTA_DIRAC(I,J)
-        INTEGER I,J
+        double precision function delta_dirac(i,j)
+        integer i,j
 
-         DELTA_DIRAC=0.0D0
-        IF(I.EQ.J) THEN
-         DELTA_DIRAC=1.0D0
-        ENDIF
-        RETURN
-        END
+         delta_dirac=0.0d0
+        if(i.eq.j) then
+         delta_dirac=1.0d0
+        endif
+        return
+        end
 !****|******************************************************************|	
-	DOUBLE PRECISION FUNCTION HFUNC(X)
-	DOUBLE PRECISION X
+	double precision function Hfunc(x)
+	double precision x
 	
-	IF(X.LT.0.0) THEN
-	  HFUNC=0.0D0
-	ELSEIF(X.GE.0.0) THEN	  
-	  HFUNC=1.0D0	 
-	 ENDIF
-        RETURN
-        END	 
+	if(x.lt.0.0) then
+	  Hfunc=0.0d0
+	elseif(x.ge.0.0) then	  
+	  Hfunc=1.0d0	 
+	 endif
+        return
+        end	 
 !****|******************************************************************|	
-	DOUBLE PRECISION FUNCTION HFUNC0(X)
-	DOUBLE PRECISION X
+	double precision function Hfunc0(x)
+	double precision x
 	
-	IF(X.LE.0.0) THEN
-	  HFUNC0=0.0D0
-	ELSEIF(X.GT.0.0) THEN	  
-	  HFUNC0=1.0D0	 
-	 ENDIF
-        RETURN
-        END	 
+	if(x.le.0.0) then
+	  Hfunc0=0.0d0
+	elseif(x.gt.0.0) then	  
+	  Hfunc0=1.0d0	 
+	 endif
+        return
+        end	 
 !****|******************************************************************|
-	DOUBLE PRECISION FUNCTION MFUNC(R,R0,ALPHA)
-	DOUBLE PRECISION R,R0,ALPHA
+	double precision function Mfunc(R,R0,alpha)
+	double precision R,R0,alpha
 	
-	MFUNC=EXP(-2*ALPHA*(R-R0))-2*EXP(-ALPHA*(R-R0))
+	Mfunc=exp(-2*alpha*(R-R0))-2*exp(-alpha*(R-R0))
 		
-        RETURN
-        END	 
+        return
+        end	 
 !****|******************************************************************|
-	DOUBLE PRECISION FUNCTION MFUNC_D(R,R0,ALPHA)
-	DOUBLE PRECISION R,R0,ALPHA
+	double precision function Mfunc_d(R,R0,alpha)
+	double precision R,R0,alpha
 	
-       MFUNC_D=-2*ALPHA*EXP(-2*ALPHA*(R-R0))+2*ALPHA*EXP(-ALPHA*(R-R0))
+       Mfunc_d=-2*alpha*exp(-2*alpha*(R-R0))+2*alpha*exp(-alpha*(R-R0))
 		
-        RETURN
-        END
+        return
+        end
 !****|******************************************************************|	
-        DOUBLE PRECISION FUNCTION MFUNC_DD(R,R0,ALPHA)
-	DOUBLE PRECISION R,R0,ALPHA
+        double precision function Mfunc_dd(R,R0,alpha)
+	double precision R,R0,alpha
 	
-         MFUNC_DD=+4*ALPHA**2*EXP(-2*ALPHA*(R-R0))-2*ALPHA**2*EXP(-ALPHA*(R-R0))
+         Mfunc_dd=+4*alpha**2*exp(-2*alpha*(R-R0))-2*alpha**2*exp(-alpha*(R-R0))
 		
-        RETURN
-        END		
+        return
+        end		
 !****|******************************************************************|
-	DOUBLE PRECISION FUNCTION GFUNC(X,A,B1,B2,X1,X2)
-	DOUBLE PRECISION X,A,B1,B2,X1,X2
+	double precision function gfunc(x,a,b1,b2,x1,x2)
+	double precision x,a,b1,b2,x1,x2
 	
-	GFUNC=A*EXP(-B1*(X-X1)**2)+EXP(-B2*(X-X2))
+	gfunc=a*exp(-b1*(x-x1)**2)+exp(-b2*(x-x2))
 		
-        RETURN
-        END	 		
+        return
+        end	 		
 !****|******************************************************************|
-	DOUBLE PRECISION FUNCTION GFUNC_D(X,A,B1,B2,X1,X2)
-	DOUBLE PRECISION X,A,B1,B2,X1,X2
+	double precision function gfunc_d(x,a,b1,b2,x1,x2)
+	double precision x,a,b1,b2,x1,x2
 	
-	GFUNC_D=-2*B1*(X-X1)*A*EXP(-B1*(X-X1)**2)-B2*EXP(-B2*(X-X2))
+	gfunc_d=-2*b1*(x-x1)*a*exp(-b1*(x-x1)**2)-b2*exp(-b2*(x-x2))
 		
-        RETURN
-        END	
+        return
+        end	
 !****|******************************************************************|
-	DOUBLE PRECISION FUNCTION GFUNC_DD(X,A,B1,B2,X1,X2)
-	DOUBLE PRECISION X,A,B1,B2,X1,X2
+	double precision function gfunc_dd(x,a,b1,b2,x1,x2)
+	double precision x,a,b1,b2,x1,x2
 	
-	GFUNC_DD=-2*A*B1*EXP(-B1*(X-X1)**2)+4*A*B1**2*(X-X1)**2*EXP(-B1*(X-X1)**2)   &
-                        +B2**2*EXP(-B2*(X-X2)) 		
-        RETURN
-        END	
+	gfunc_dd=-2*a*b1*exp(-b1*(x-x1)**2)+4*a*b1**2*(x-x1)**2*exp(-b1*(x-x1)**2)   &
+                        +b2**2*exp(-b2*(x-x2)) 		
+        return
+        end	
 	 		
 !****|******************************************************************|
 !****|******************************************************************|
@@ -732,209 +732,209 @@
 
 !****|******************************************************************|
 !****|******************************************************************|
-       DOUBLE PRECISION FUNCTION FPSI(X)
-       IMPLICIT DOUBLE PRECISION (A-H,O-Z) 
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
+       double precision function fpsi(x)
+       implicit double precision (a-h,o-z) 
+       include 'ackland_mendelev_fe.h'
        
-       TEMP = 0.D0
-       DO I=1,NPSI
-         TEMP = TEMP + AP(I)*HFUNC(RP(I)-X)*(RP(I)-X)**3
-       END DO
-       FPSI = TEMP
-       RETURN
-       END  
+       temp = 0.d0
+       do i=1,npsi
+         temp = temp + ap(i)*Hfunc(rp(i)-x)*(rp(i)-x)**3
+       end do
+       fpsi = temp
+       return
+       end  
 !****|******************************************************************|
-       DOUBLE PRECISION FUNCTION FPSI_D(X)
-       IMPLICIT DOUBLE PRECISION (A-H,O-Z) 
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
+       double precision function fpsi_d(x)
+       implicit double precision (a-h,o-z) 
+       include 'ackland_mendelev_fe.h'
        
-       TEMP = 0.D0
-       DO I=1,NPSI
-         TEMP = TEMP - 3.D0*AP(I)*HFUNC(RP(I)-X)*(RP(I)-X)**2
-       END DO
-       FPSI_D = TEMP
-       RETURN
-       END  
+       temp = 0.d0
+       do i=1,npsi
+         temp = temp - 3.d0*ap(i)*Hfunc(rp(i)-x)*(rp(i)-x)**2
+       end do
+       fpsi_d = temp
+       return
+       end  
 !****|******************************************************************|
-       DOUBLE PRECISION FUNCTION FPSI_DD(X)
-       IMPLICIT DOUBLE PRECISION (A-H,O-Z) 
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
+       double precision function fpsi_dd(x)
+       implicit double precision (a-h,o-z) 
+       include 'ackland_mendelev_fe.h'
        
-       TEMP = 0.D0
-       DO I=1,NPSI
-         TEMP = TEMP + 6.D0*AP(I)*HFUNC(RP(I)-X)*(RP(I)-X)
-       END DO
-       FPSI_DD = TEMP
-       RETURN
-       END  
+       temp = 0.d0
+       do i=1,npsi
+         temp = temp + 6.d0*ap(i)*Hfunc(rp(i)-x)*(rp(i)-x)
+       end do
+       fpsi_dd = temp
+       return
+       end  
 !****|******************************************************************|
 !****|******************************************************************|
-       DOUBLE PRECISION FUNCTION FVARPHI (X)
-       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
+       double precision function fvarphi (x)
+       implicit double precision (a-h,o-z)
+       include 'ackland_mendelev_fe.h'
         
-	 THREEI   =1.D0/3.D0      
-        ZNFE2   = ZNFE*ZNFE
-       AU_TO_EV = HART
-        AU_TO_A = ABOHR
-         TEMP   = 0.D0
+	 threei   =1.d0/3.d0      
+        ZnFE2   = ZnFE*ZnFE
+       AU_TO_EV = hart
+        AU_TO_A = abohr
+         temp   = 0.d0
 
-       RS = 0.88534D0*ABOHR*ZNFE**(-THREEI)/DSQRT(2.D0)
-       RX = X/RS
+       rs = 0.88534d0*abohr*ZnFE**(-threei)/dsqrt(2.d0)
+       rx = x/rs
        
-        IF (X.LT.R1) THEN 
-          FVARPHI = ZNFE2 * FPHI(RX) * AU_TO_A* AU_TO_EV/X 
-        ELSE IF ((X.GE.R1).AND.(X.LT.R2)) THEN 
-          FVARPHI = DEXP (  BFE0 + BFE1*X + BFE2*X*X + BFE3*X*X*X )
-        ELSE IF (X.GE.R2) THEN
-          DO I=1,NVARPHI
-             TEMP = TEMP + AF(I)*HFUNC(RF(I)-X)*(RF(I)-X)**3
-          END DO
-          FVARPHI = TEMP
-        END IF              
+        if (x.lt.r1) then 
+          fvarphi = ZnFE2 * fphi(rx) * AU_TO_A* AU_TO_EV/x 
+        else if ((x.ge.r1).and.(x.lt.r2)) then 
+          fvarphi = dexp (  bFE0 + bFE1*x + bFE2*x*x + bFE3*x*x*x )
+        else if (x.ge.r2) then
+          do i=1,nvarphi
+             temp = temp + af(i)*Hfunc(rf(i)-x)*(rf(i)-x)**3
+          end do
+          fvarphi = temp
+        end if              
         
-       RETURN
-       END 
+       return
+       end 
 !****|******************************************************************|
-       DOUBLE PRECISION FUNCTION FVARPHI_D (X)
-       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
-         THREEI   = 1.D0/3.D0
-        ZNFE2   = ZNFE*ZNFE
-       AU_TO_EV = HART
-        AU_TO_A = ABOHR
-         TEMP   = 0.D0
+       double precision function fvarphi_d (x)
+       implicit double precision (a-h,o-z)
+       include 'ackland_mendelev_fe.h'
+         threei   = 1.d0/3.d0
+        ZnFE2   = ZnFE*ZnFE
+       AU_TO_EV = hart
+        AU_TO_A = abohr
+         temp   = 0.d0
 
-       RS = 0.88534D0*ABOHR*ZNFE**(-THREEI)/DSQRT(2.D0)
-       RX = X/RS
+       rs = 0.88534d0*abohr*ZnFE**(-threei)/dsqrt(2.d0)
+       rx = x/rs
 
-        IF (X.LT.R1) THEN 
-          FVARPHI_D =  - ZNFE2*FPHI(RX)*AU_TO_EV*AU_TO_A/(X*X) &
-                 + ZNFE2 * FPHI_D(RX) * AU_TO_EV*AU_TO_A / (X*RS)     
-        ELSE IF ((X.GE.R1).AND.(X.LT.R2)) THEN 
-          FVARPHI_D = (BFE1 + 2.0D0*BFE2*X + 3.0D0*BFE3*X*X) &
-                     *DEXP (BFE0 + BFE1*X + BFE2*X*X + BFE3*X*X*X)
-        ELSE IF (X.GE.R2) THEN
-          DO I=1,NVARPHI
-             TEMP = TEMP - 3.D0*AF(I)*HFUNC(RF(I)-X)*(RF(I)-X)**2
-          END DO
-          FVARPHI_D = TEMP
-        END IF              
+        if (x.lt.r1) then 
+          fvarphi_d =  - ZnFE2*fphi(rx)*AU_TO_EV*AU_TO_A/(x*x) &
+                 + ZnFE2 * fphi_d(rx) * AU_TO_EV*AU_TO_A / (x*rs)     
+        else if ((x.ge.r1).and.(x.lt.r2)) then 
+          fvarphi_d = (bFE1 + 2.0d0*bFE2*x + 3.0d0*bFE3*x*x) &
+                     *dexp (bFE0 + bFE1*x + bFE2*x*x + bFE3*x*x*x)
+        else if (x.ge.r2) then
+          do i=1,nvarphi
+             temp = temp - 3.d0*af(i)*Hfunc(rf(i)-x)*(rf(i)-x)**2
+          end do
+          fvarphi_d = temp
+        end if              
         
-       RETURN
-       END
+       return
+       end
 !****|******************************************************************|
-       DOUBLE PRECISION FUNCTION FVARPHI_DD (X)
-       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-       INCLUDE 'ACKLAND_MENDELEV_FE.H'
-         THREEI   = 1.D0/3.D0
-        ZNFE2   = ZNFE*ZNFE
-       AU_TO_EV = HART
-        AU_TO_A = ABOHR
-         TEMP   = 0.D0
+       double precision function fvarphi_dd (x)
+       implicit double precision (a-h,o-z)
+       include 'ackland_mendelev_fe.h'
+         threei   = 1.d0/3.d0
+        ZnFE2   = ZnFE*ZnFE
+       AU_TO_EV = hart
+        AU_TO_A = abohr
+         temp   = 0.d0
 
-       RS = 0.88534D0*ABOHR*ZNFE**(-THREEI)/DSQRT(2.D0)
-       RX = X/RS
+       rs = 0.88534d0*abohr*ZnFE**(-threei)/dsqrt(2.d0)
+       rx = x/rs
 
-        IF (X.LT.R1) THEN 
-	FVARPHI_DD = 0.5D0*ZNFE2*FPHI(RX)*AU_TO_EV*AU_TO_A/(X*X*X) &
-	             - ZNFE2*FPHI_D(RX)*AU_TO_EV*AU_TO_A/(X*X*RS)  &
-		     - ZNFE2 * FPHI_D(RX) * AU_TO_EV*AU_TO_A / (X*X*RS) &
-		     + ZNFE2 * FPHI_DD(RX) * AU_TO_EV*AU_TO_A / (X*RS*RS)	 		 
-        ELSE IF ((X.GE.R1).AND.(X.LT.R2)) THEN 
-          FVARPHI_DD = (2.0D0*BFE2 + 6.0D0*BFE3*X) &
-                     *DEXP (BFE0 + BFE1*X + BFE2*X*X + BFE3*X*X*X)&
+        if (x.lt.r1) then 
+	fvarphi_dd = 0.5d0*ZnFE2*fphi(rx)*AU_TO_EV*AU_TO_A/(x*x*x) &
+	             - ZnFE2*fphi_d(rx)*AU_TO_EV*AU_TO_A/(x*x*rs)  &
+		     - ZnFE2 * fphi_d(rx) * AU_TO_EV*AU_TO_A / (x*x*rs) &
+		     + ZnFE2 * fphi_dd(rx) * AU_TO_EV*AU_TO_A / (x*rs*rs)	 		 
+        else if ((x.ge.r1).and.(x.lt.r2)) then 
+          fvarphi_dd = (2.0d0*bFE2 + 6.0d0*bFE3*x) &
+                     *dexp (bFE0 + bFE1*x + bFE2*x*x + bFE3*x*x*x)&
 		     + &
-                    (BFE1 + 2.0D0*BFE2*X + 3.0D0*BFE3*X*X)**2 &
-                     *DEXP (BFE0 + BFE1*X + BFE2*X*X + BFE3*X*X*X)		     
-        ELSE IF (X.GE.R2) THEN
-          DO I=1,NVARPHI
-             TEMP = TEMP + 6.D0*AF(I)*HFUNC(RF(I)-X)*(RF(I)-X)
-          END DO
-          FVARPHI_DD = TEMP
-        END IF              
+                    (bFE1 + 2.0d0*bFE2*x + 3.0d0*bFE3*x*x)**2 &
+                     *dexp (bFE0 + bFE1*x + bFE2*x*x + bFE3*x*x*x)		     
+        else if (x.ge.r2) then
+          do i=1,nvarphi
+             temp = temp + 6.d0*af(i)*Hfunc(rf(i)-x)*(rf(i)-x)
+          end do
+          fvarphi_dd = temp
+        end if              
         
-       RETURN
-       END
+       return
+       end
 !****|******************************************************************|
 !****|******************************************************************|
 !****|******************************************************************|
-       DOUBLE PRECISION FUNCTION FPHI(X)
-       DOUBLE PRECISION X
+       double precision function fphi(x)
+       double precision x
   
-        FPHI = 0.1818D0*DEXP(-3.2D0*X) & 
-            +  0.5099D0*DEXP(-0.9423D0*X) &
-            +  0.2802D0*DEXP(-0.4029D0*X) &
-            +  0.02817*DEXP(-0.2016*X)
+        fphi = 0.1818d0*dexp(-3.2d0*x) & 
+            +  0.5099d0*dexp(-0.9423d0*x) &
+            +  0.2802d0*dexp(-0.4029d0*x) &
+            +  0.02817*dexp(-0.2016*x)
 
-       RETURN
-       END
+       return
+       end
 !****|******************************************************************|
-       DOUBLE PRECISION FUNCTION FPHI_D(X)
-       DOUBLE PRECISION X
+       double precision function fphi_d(x)
+       double precision x
   
-       FPHI_D = -  0.58176D0*DEXP(-3.2D0*X) &
-                -  0.480479D0*DEXP(-0.9423D0*X) & 
-                -  0.112893D0*DEXP(-0.4029D0*X) &
-                -  0.00567907D0*DEXP(-0.2016*X)
+       fphi_d = -  0.58176d0*dexp(-3.2d0*x) &
+                -  0.480479d0*dexp(-0.9423d0*x) & 
+                -  0.112893d0*dexp(-0.4029d0*x) &
+                -  0.00567907d0*dexp(-0.2016*x)
 
-       RETURN
-       END
+       return
+       end
 
 !****|******************************************************************|
-       DOUBLE PRECISION FUNCTION FPHI_DD(X)
-       DOUBLE PRECISION X
+       double precision function fphi_dd(x)
+       double precision x
   
-       FPHI_DD =    1.86163D0*DEXP(-3.2D0*X) &
-                +  0.452755D0*DEXP(-0.9423D0*X) & 
-                +  0.0454846D0*DEXP(-0.4029D0*X) &
-                +  0.0011449D0*DEXP(-0.2016*X)
+       fphi_dd =    1.86163d0*dexp(-3.2d0*x) &
+                +  0.452755d0*dexp(-0.9423d0*x) & 
+                +  0.0454846d0*dexp(-0.4029d0*x) &
+                +  0.0011449d0*dexp(-0.2016*x)
 
-       RETURN
-       END
+       return
+       end
 
 !****|******************************************************************|
 !****|******************************************************************|
 !****|******************************************************************|
 !****|******************************************************************|
 
-      SUBROUTINE BUILD_RHO_SITE(IPOT,RHO_SITE,RN,NDIR,NAT_UP,NDIR_MAX)
-        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-        DOUBLE PRECISION RN(NAT_UP,NDIR_MAX,3), RHO_SITE(NAT_UP),    &
-                          RHO_TEMP,NORMR,R,RTEMP(3)
-        INTEGER NDIR(NAT_UP),NAT_UP,NDIR_MAX,IPOT    
+      SUBROUTINE BUILD_RHO_SITE(ipot,rho_site,Rn,ndir,nat_up,ndir_max)
+        implicit double precision (a-h,o-z)
+        double precision Rn(nat_up,ndir_max,3), rho_site(nat_up),    &
+                          rho_temp,normR,R,Rtemp(3)
+        integer ndir(nat_up),nat_up,ndir_max,ipot    
 
   
-       DO I=1,NAT_UP  
-          RHO_TEMP=0.0D0
-           DO NI=1,NDIR(I)
-	    RTEMP(:)=RN(I,NI,:)	   
-            R=SQRT(DOT_PRODUCT(RTEMP,RTEMP)) 
-            RHO_TEMP=RHO_TEMP+RHO_POT(IPOT,R)	    
-           END DO
+       do i=1,nat_up  
+          rho_temp=0.0D0
+           do ni=1,ndir(i)
+	    Rtemp(:)=Rn(i,ni,:)	   
+            R=sqrt(DOT_PRODUCT(Rtemp,Rtemp)) 
+            rho_temp=rho_temp+rho_pot(ipot,R)	    
+           end do
 
-            RHO_SITE(I)=RHO_TEMP	
-        END DO
+            rho_site(i)=rho_temp	
+        end do
  
        RETURN
        END
 !****|******************************************************************|       
-       SUBROUTINE BUILD_V_SITE(IPOT,V_SITE,RN,NDIR,NAT_UP,NDIR_MAX)
-        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-        DOUBLE PRECISION RN(NAT_UP,NDIR_MAX,3),V_SITE(NAT_UP),   &
-                         V_TEMP,NORMR,R,RTEMP(3)
-        INTEGER NDIR(NAT_UP),NAT_UP,NAT_MAX,NDIR_MAX,IPOT
+       SUBROUTINE BUILD_V_SITE(ipot,V_site,Rn,ndir,nat_up,ndir_max)
+        implicit double precision (a-h,o-z)
+        double precision Rn(nat_up,ndir_max,3),V_site(nat_up),   &
+                         V_temp,normR,R,Rtemp(3)
+        integer ndir(nat_up),nat_up,nat_max,ndir_max,ipot
 
   
-       DO I=1,NAT_UP  
-          V_TEMP=0.0D0
-           DO NI=1,NDIR(I)	   
-	    RTEMP(:)=RN(I,NI,:)	   
-            R=SQRT(DOT_PRODUCT(RTEMP,RTEMP))           	   
-            V_TEMP=V_TEMP+VPOT(IPOT,R)	    
-           END DO
-              V_SITE(I)=V_TEMP	
-        END DO
+       do i=1,nat_up  
+          V_temp=0.0D0
+           do ni=1,ndir(i)	   
+	    Rtemp(:)=Rn(i,ni,:)	   
+            R=sqrt(DOT_PRODUCT(Rtemp,Rtemp))           	   
+            V_temp=V_temp+Vpot(ipot,R)	    
+           end do
+              V_site(i)=V_temp	
+        end do
  
        RETURN
        END      

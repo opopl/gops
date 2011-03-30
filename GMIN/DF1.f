@@ -1,24 +1,24 @@
-C     ROUTINE TO CALCULATION FORCES AND ENERGY.
-C     X AND Y ARE PARTICLE COORDINATES.
-C     D1 IS THE DIAMETER OF SMALL PARTICLES.
-C     D IS THE DIAMETER OF PARTICLES IN THE UNIT OF SMALL PARTICLE DIAMETER,
-C     SO D=1 FOR PARTICLES 1 TO N / 2 AND D=1.4 FOR PARTICLES N/2+1 TO N.
-C     N IS THE NUMBER OF PARTICLES.  THE PARTICLES ARE BIDISPERSE WITH DIAMETER
-C     RATIO OF 1.4.
-C     FX AND FY ARE FORCES IN X AND Y DIRECTION ACTING ON PARTICLES.
-C     V IS THE TOTAL POTENTIAL ENERGY.
+c     Routine to calculation forces and energy.
+c     x and y are particle coordinates.
+c     D1 is the diameter of small particles.
+c     D is the diameter of particles in the unit of small particle diameter,
+c     so D=1 for particles 1 to N / 2 and D=1.4 for particles N/2+1 to N.
+c     N is the number of particles.  The particles are bidisperse with diameter
+c     ratio of 1.4.
+c     fx and fy are forces in x and y direction acting on particles.
+c     V is the total potential energy.
 
 
-      SUBROUTINE DF1GRAD(COORDS,N,VNEW,V,GTEST,BOXLX,BOXLY)
+      SUBROUTINE DF1grad(COORDS,N,VNEW,V,GTEST,BOXLX,BOXLY)
       USE COMMONS,ONLY : FIXIMAGE
       IMPLICIT NONE
       
-      INTEGER N, J1, I, J, J2
+      integer N, J1, I, J, J2
       LOGICAL GTEST
-      DOUBLE PRECISION X(N), Y(N), COORDS(3*N), VNEW(3*N), BOXLX, BOXLY
-      DOUBLE PRECISION D(N), D1
-      DOUBLE PRECISION FX(N), FY(N), V, FR
-      DOUBLE PRECISION XIJ, YIJ, RIJ, DIJ
+      double precision x(N), y(N), COORDS(3*N), VNEW(3*N), BOXLX, BOXLY
+      double precision D(N), D1
+      double precision fx(N), fy(N), V, fr
+      double precision xij, yij, rij, dij
 
       D1=1.4D0
       DO J1=1,N/2
@@ -28,7 +28,7 @@ C     V IS THE TOTAL POTENTIAL ENERGY.
          D(J1)=D1
       ENDDO
 C
-C  DEAL WITH ANY ATOMS THAT HAVE LEFT THE BOX.
+C  Deal with any atoms that have left the box.
 C
 C     IF ((.NOT.FIXIMAGE).AND.(.NOT.NORESET)) THEN
       IF (.NOT.FIXIMAGE) THEN
@@ -46,34 +46,34 @@ C     IF ((.NOT.FIXIMAGE).AND.(.NOT.NORESET)) THEN
 
       V = 0.D0
 
-      DO I = 1, N
-         FX(I) = 0.D0
-         FY(I) = 0.D0
-      ENDDO
+      do i = 1, N
+         fx(i) = 0.D0
+         fy(i) = 0.D0
+      enddo
       
-      DO I = 1, N - 1
-         DO J = I + 1, N
-            XIJ = X(I) - X(J)
-            XIJ = XIJ - BOXLX*NINT(XIJ/BOXLX)
-            YIJ = Y(I) - Y(J)
-            YIJ = YIJ - BOXLY*NINT(YIJ/BOXLY)
-            RIJ = DSQRT(XIJ * XIJ + YIJ * YIJ)
-            DIJ = (D(I) + D(J)) / 2.D0
-            IF (RIJ .LT. DIJ) THEN
-               FR = (1.D0 - RIJ / DIJ) / DIJ
-               FX(I) = FX(I) + FR * XIJ / RIJ
-               FX(J) = FX(J) - FR * XIJ / RIJ
-               FY(I) = FY(I) + FR * YIJ / RIJ
-               FY(J) = FY(J) - FR * YIJ / RIJ
+      do i = 1, N - 1
+         do j = i + 1, N
+            xij = x(i) - x(j)
+            xij = xij - BOXLX*NINT(xij/BOXLX)
+            yij = y(i) - y(j)
+            yij = yij - BOXLY*NINT(yij/BOXLY)
+            rij = dsqrt(xij * xij + yij * yij)
+            dij = (D(i) + D(j)) / 2.D0
+            if (rij .lt. dij) then
+               fr = (1.D0 - rij / dij) / dij
+               fx(i) = fx(i) + fr * xij / rij
+               fx(j) = fx(j) - fr * xij / rij
+               fy(i) = fy(i) + fr * yij / rij
+               fy(j) = fy(j) - fr * yij / rij
               
-               V = V + (1.D0 - RIJ / DIJ) ** 2 / 2.D0
-            ENDIF
-         ENDDO
-      ENDDO
+               V = V + (1.D0 - rij / dij) ** 2 / 2.D0
+            endif
+         enddo
+      enddo
       DO J1=1,N
          VNEW(3*(J1-1)+1)=-FX(J1)
          VNEW(3*(J1-1)+2)=-FY(J1)
       ENDDO
 
-      RETURN
-      END
+      return
+      end

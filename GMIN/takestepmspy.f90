@@ -38,9 +38,9 @@
          J2     = 3*J1
          DUMMY2 = COORDS(J2-2,NP)**2 + COORDS(J2-1,NP)**2 + COORDS(J2,NP)**2
          IF (DUMMY2 .GT. RADIUS) THEN
-            WRITE(*,'(A,I5,5F20.10)') 'J1,RAD,R**2,X,Y,Z:', J1, RADIUS, DUMMY2, COORDS(J2-2,NP), &
+            WRITE(*,'(A,I5,5F20.10)') 'J1,RAD,R**2,x,y,z:', J1, RADIUS, DUMMY2, COORDS(J2-2,NP), &
                                        COORDS(J2-1,NP), COORDS(J2,NP)
-            PRINT*, 'INITIAL COORDINATE OUTSIDE CONTAINER -- INCREASE CONTAINER RADIUS'
+            PRINT*, 'initial coordinate outside container -- increase container radius'
             STOP
          END IF
 
@@ -72,10 +72,10 @@
       YMASS = YMASS/(REALNATOMS)
       ZMASS = ZMASS/(REALNATOMS)
 
-!     FIND THE MOST WEAKLY BOUND ATOM, JMAX, THE SECOND MOST WEAKLY BOUND ATOM, JMAX2,
-!     AND THE PAIR ENERGY OF THE MOST TIGHTLY BOUND ATOM, VMIN. AN ANGULAR STEP IS
-!     TAKEN FOR JMAX IF ITS PAIR ENERGY IS > ASTEP*VMIN PUTTING THE ATOM AT A RADIUS OF
-!     DMAX (OR CMMAX FROM CM OF THE CLUSTER).
+!     Find the most weakly bound atom, JMAX, the second most weakly bound atom, JMAX2,
+!     and the pair energy of the most tightly bound atom, VMIN. An angular step is
+!     taken for JMAX if its pair energy is > ASTEP*VMIN putting the atom at a radius of
+!     DMAX (or CMMAX from CM of the cluster).
 
       DMAX  =  1.0D0
       VMAX  = -1.0D3

@@ -1,26 +1,26 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C  ENERGY AND GRADIENT FOR THOMSON PROBLEM IN THETA, PHI COORDINATES.
+C  Energy and gradient for Thomson problem in theta, phi coordinates.
 C
       SUBROUTINE THOMSON(X,V,ETHOMSON,GTEST)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       LOGICAL GTEST
       INTEGER J1, J2, J3, J4
@@ -68,11 +68,11 @@ C           DIST=1.0D0/(SR2*SQRT(1.0D0-CT1*CT2-CPDIFF*ST1*ST2))
       RETURN
       END
 C
-C  ENERGY AND GRADIENT FOR THOMSON PROBLEM IN THETA, PHI COORDINATES.
-C  IN THIS CASE THERE IS ONE ODD CHARGE WITH MAGNITUDE DIFFERENT FROM UNITY.
+C  Energy and gradient for Thomson problem in theta, phi coordinates.
+C  In this case there is one odd charge with magnitude different from unity.
 C
       SUBROUTINE ODDTHOMSON(X,V,ETHOMSON,GTEST)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       LOGICAL GTEST
       INTEGER J1, J2, J3, J4
@@ -92,7 +92,7 @@ C
       VT(1:NATOMS)=0.0D0
       V(1:2*NATOMS)=0.0D0
 C
-C  TERMS INVOLVING THE ODD CHARGE.
+C  Terms involving the odd charge.
 C
       CT1=COST(1)
       ST1=SINT(1)
@@ -105,7 +105,7 @@ C
          DIST=1.0D0/SQRT(1.0D0-CT1*CT2-CPDIFF*ST1*ST2)
          ETHOMSON=ETHOMSON+DIST
          DIST=DIST**3
-         DIST=DIST*ODDCHARGE ! PUT THE ODD CHARGE INTO THE GRADIENT; ENERGY CORRECTED BELOW
+         DIST=DIST*ODDCHARGE ! put the odd charge into the gradient; energy corrected below
          DUMMY=SPDIFF*ST1*ST2*DIST
          V(1)=V(1)+(CPDIFF*CT1*ST2-CT2*ST1)*DIST
          V(2)=V(2)    -DUMMY
@@ -142,7 +142,7 @@ C
       RETURN
       END
 !
-!  SUBROUTINE TO CONVERT CARTESIANS TO THETA, PHI.
+!  Subroutine to convert Cartesians to theta, phi.
 !
       SUBROUTINE THOMSONCTOANG(COORDS,P,NATOMS,MYUNIT)
       IMPLICIT NONE
@@ -157,7 +157,7 @@ C
          COORDS(3*(J1-1)+3)=COORDS(3*(J1-1)+3)/DIST
          P(2*(J1-1)+1)=ACOS(COORDS(3*(J1-1)+3))
          IF (ABS(COORDS(3*(J1-1)+3)-COS(P(2*(J1-1)+1))).GT.1.0D-10) THEN
-             WRITE(MYUNIT, '(A)') 'INCONSISTENT CONVERSION FOR Z'
+             WRITE(MYUNIT, '(A)') 'inconsistent conversion for z'
             STOP
          ENDIF
          IF (COORDS(3*(J1-1)+1).EQ.0.0D0) THEN
@@ -178,17 +178,17 @@ C
          IF (ABS(COORDS(3*(J1-1)+1)-SIN(P(2*(J1-1)+1))*COS(P(2*(J1-1)+2))).GT.1.0D-5) THEN
             P(2*(J1-1)+2)=P(2*(J1-1)+2)+2*HALFPI
             IF (ABS(COORDS(3*(J1-1)+1)-SIN(P(2*(J1-1)+1))*COS(P(2*(J1-1)+2))).GT.1.0D-5) THEN
-                WRITE(MYUNIT, '(A)') 'INCONSISTENT CONVERSION FOR X'
+                WRITE(MYUNIT, '(A)') 'inconsistent conversion for x'
                STOP
             ENDIF
          ENDIF
          IF (ABS(COORDS(3*(J1-1)+2)-SIN(P(2*(J1-1)+1))*SIN(P(2*(J1-1)+2))).GT.1.0D-5) THEN
             P(2*(J1-1)+2)=-P(2*(J1-1)+2)
             IF (ABS(COORDS(3*(J1-1)+2)-SIN(P(2*(J1-1)+1))*SIN(P(2*(J1-1)+2))).GT.1.0D-5) THEN
-                WRITE(MYUNIT, '(A)') 'INCONSISTENT CONVERSION FOR Y'
-                WRITE(MYUNIT, '(A,3G20.10)') 'X,Y,Z:      ',COORDS(3*(J1-1)+1),COORDS(3*(J1-1)+2),COORDS(3*(J1-1)+3)
-                WRITE(MYUNIT, '(A,3G20.10)') 'THETA,PHI: ',P(2*(J1-1)+1),P(2*(J1-1)+2)
-                WRITE(MYUNIT, '(A,3G20.10)') 'X,Y,Z CALC: ',SIN(P(2*(J1-1)+1))*COS(P(2*(J1-1)+2)),
+                WRITE(MYUNIT, '(A)') 'inconsistent conversion for y'
+                WRITE(MYUNIT, '(A,3G20.10)') 'x,y,z:      ',COORDS(3*(J1-1)+1),COORDS(3*(J1-1)+2),COORDS(3*(J1-1)+3)
+                WRITE(MYUNIT, '(A,3G20.10)') 'theta,phi: ',P(2*(J1-1)+1),P(2*(J1-1)+2)
+                WRITE(MYUNIT, '(A,3G20.10)') 'x,y,z calc: ',SIN(P(2*(J1-1)+1))*COS(P(2*(J1-1)+2)),
      &                                            SIN(P(2*(J1-1)+1))*SIN(P(2*(J1-1)+2)),
      &                                            COS(P(2*(J1-1)+1))
                STOP
@@ -199,7 +199,7 @@ C
 
       END
 !
-!  SUBROUTINE TO CONVERT THETA, PHI TO CARTESIANS.
+!  Subroutine to convert theta, phi to Cartesians.
 !
       SUBROUTINE THOMSONANGTOC(P,NATOMS)
       IMPLICIT NONE

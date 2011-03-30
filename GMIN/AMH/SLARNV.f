@@ -1,56 +1,56 @@
       SUBROUTINE SLARNV( IDIST, ISEED, N, X )
 *
-*  -- LAPACK AUXILIARY ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     SEPTEMBER 30, 1994
+*  -- LAPACK auxiliary routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     September 30, 1994
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       INTEGER            IDIST, N
 *     ..
-*     .. ARRAY ARGUMENTS ..
+*     .. Array Arguments ..
       INTEGER            ISEED( 4 )
       REAL               X( N )
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  SLARNV RETURNS A VECTOR OF N RANDOM DOUBLE PRECISION NUMBERS FROM A UNIFORM OR
-*  NORMAL DISTRIBUTION.
+*  SLARNV returns a vector of n random double precision numbers from a uniform or
+*  normal distribution.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  IDIST   (INPUT) INTEGER
-*          SPECIFIES THE DISTRIBUTION OF THE RANDOM NUMBERS:
-*          = 1:  UNIFORM (0,1)
-*          = 2:  UNIFORM (-1,1)
-*          = 3:  NORMAL (0,1)
+*  IDIST   (input) INTEGER
+*          Specifies the distribution of the random numbers:
+*          = 1:  uniform (0,1)
+*          = 2:  uniform (-1,1)
+*          = 3:  normal (0,1)
 *
-*  ISEED   (INPUT/OUTPUT) INTEGER ARRAY, DIMENSION (4)
-*          ON ENTRY, THE SEED OF THE RANDOM NUMBER GENERATOR; THE ARRAY
-*          ELEMENTS MUST BE BETWEEN 0 AND 4095, AND ISEED(4) MUST BE
-*          ODD.
-*          ON EXIT, THE SEED IS UPDATED.
+*  ISEED   (input/output) INTEGER array, dimension (4)
+*          On entry, the seed of the random number generator; the array
+*          elements must be between 0 and 4095, and ISEED(4) must be
+*          odd.
+*          On exit, the seed is updated.
 *
-*  N       (INPUT) INTEGER
-*          THE NUMBER OF RANDOM NUMBERS TO BE GENERATED.
+*  N       (input) INTEGER
+*          The number of random numbers to be generated.
 *
-*  X       (OUTPUT) REAL ARRAY, DIMENSION (N)
-*          THE GENERATED RANDOM NUMBERS.
+*  X       (output) REAL array, dimension (N)
+*          The generated random numbers.
 *
-*  FURTHER DETAILS
+*  Further Details
 *  ===============
 *
-*  THIS ROUTINE CALLS THE AUXILIARY ROUTINE SLARUV TO GENERATE RANDOM
-*  DOUBLE PRECISION NUMBERS FROM A UNIFORM (0,1) DISTRIBUTION, IN BATCHES OF UP TO
-*  128 USING VECTORISABLE CODE. THE BOX-MULLER METHOD IS USED TO
-*  TRANSFORM NUMBERS FROM A UNIFORM TO A NORMAL DISTRIBUTION.
+*  This routine calls the auxiliary routine SLARUV to generate random
+*  double precision numbers from a uniform (0,1) distribution, in batches of up to
+*  128 using vectorisable code. The Box-Muller method is used to
+*  transform numbers from a uniform to a normal distribution.
 *
 *  =====================================================================
 *
-*     .. PARAMETERS ..
+*     .. Parameters ..
       REAL               ONE, TWO
       PARAMETER          ( ONE = 1.0E+0, TWO = 2.0E+0 )
       INTEGER            LV
@@ -58,19 +58,19 @@
       REAL               TWOPI
       PARAMETER          ( TWOPI = 6.2831853071795864769252867663E+0 )
 *     ..
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       INTEGER            I, IL, IL2, IV
 *     ..
-*     .. LOCAL ARRAYS ..
+*     .. Local Arrays ..
       REAL                 U( LV )
 *     ..
-*     .. INTRINSIC FUNCTIONS ..
+*     .. Intrinsic Functions ..
       INTRINSIC          COS, LOG, MIN, SQRT
 *     ..
-*     .. EXTERNAL SUBROUTINES ..
+*     .. External Subroutines ..
       EXTERNAL           SLARUV
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
       DO 40 IV = 1, N, LV / 2
          IL = MIN( LV / 2, N-IV+1 )
@@ -80,28 +80,28 @@
             IL2 = IL
          END IF
 *
-*        CALL SLARUV TO GENERATE IL2 NUMBERS FROM A UNIFORM (0,1)
-*        DISTRIBUTION (IL2 <= LV)
+*        Call SLARUV to generate IL2 numbers from a uniform (0,1)
+*        distribution (IL2 <= LV)
 *
          CALL SLARUV( ISEED, IL2, U )
 *
          IF( IDIST.EQ.1 ) THEN
 *
-*           COPY GENERATED NUMBERS
+*           Copy generated numbers
 *
             DO 10 I = 1, IL
                X( IV+I-1 ) = U( I )
    10       CONTINUE
          ELSE IF( IDIST.EQ.2 ) THEN
 *
-*           CONVERT GENERATED NUMBERS TO UNIFORM (-1,1) DISTRIBUTION
+*           Convert generated numbers to uniform (-1,1) distribution
 *
             DO 20 I = 1, IL
                X( IV+I-1 ) = TWO*U( I ) - ONE
    20       CONTINUE
          ELSE IF( IDIST.EQ.3 ) THEN
 *
-*           CONVERT GENERATED NUMBERS TO NORMAL (0,1) DISTRIBUTION
+*           Convert generated numbers to normal (0,1) distribution
 *
             DO 30 I = 1, IL
                X( IV+I-1 ) = SQRT( -TWO*LOG( U( 2*I-1 ) ) )*
@@ -111,6 +111,6 @@
    40 CONTINUE
       RETURN
 *
-*     END OF SLARNV
+*     End of SLARNV
 *
       END

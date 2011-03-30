@@ -1,26 +1,26 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C  ENERGY AND GRADIENT FOR LJ.
+C  Energy and gradient for LJ.
 C
       SUBROUTINE LJ(X,V,ELJ,GTEST,SECT)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       LOGICAL GTEST,SECT
       INTEGER J1, J2, J3, J4
@@ -114,20 +114,20 @@ C
 C
 C*************************************************************************
 C
-C  SUBROUTINE LJDIFF CALCULATES THE CARTESIAN SECOND
-C  DERIVATIVE MATRIX ANALYTICALLY. REDUCED UNITS.
+C  Subroutine LJDIFF calculates the cartesian second
+C  derivative matrix analytically. Reduced units.
 C
 C*************************************************************************
 C
       SUBROUTINE LJDIFF(N, X)
       IMPLICIT NONE
-      INTEGER N, J1, J2,NATOMS
+      INTEGER N, J1, J2,natoms
       DOUBLE PRECISION X(3*N), 
      1                 R2(N,N), 
      2                 R8(N,N), G(N,N),
      3                 R14(N,N), F(N,N)
 C 
-C  STORE DISTANCE MATRICES.
+C  Store distance matrices.
 C
 
       DO J1=1,N
@@ -153,7 +153,7 @@ C
 C*****************************************************************************
 
       SUBROUTINE LJS(G,F,R2,R14,R8,X,N)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       INTEGER N, J1, J2, J3, J4, J5, J6
       DOUBLE PRECISION G(NATOMS,NATOMS), R14(NATOMS,NATOMS), R8(NATOMS,NATOMS),
@@ -171,7 +171,7 @@ C*****************************************************************************
          ENDDO
       ENDDO
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO J1=1,N
          DO J2=1,3
@@ -185,8 +185,8 @@ C
          ENDDO
       ENDDO
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO J1=1,N
          DO J2=1,3
@@ -202,7 +202,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO J1=1,N
          DO J2=1,3
@@ -214,7 +214,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO J1=1,N
          DO J2=1,3
@@ -231,7 +231,7 @@ C
          ENDDO
       ENDDO
 C
-C  SYMMETRISE HESSIAN
+C  Symmetrise Hessian
 C
       DO J1=1,3*N
          DO J2=J1+1,3*N
@@ -242,17 +242,17 @@ C
       END
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 C
-C  ENERGY AND GRADIENT FOR LJ WITH A CUTOFF
+C  Energy and gradient for LJ with a cutoff
 C
       SUBROUTINE LJCUT(X,V,ELJ,GTEST,SECT)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       LOGICAL GTEST,SECT
       INTEGER J1, J2, J3, J4
       DOUBLE PRECISION X(3*NATOMS), DIST, V(3*NATOMS), G(NATOMS,NATOMS), 
      1                 R6, ELJ, DUMMYX, DUMMYY, DUMMYZ, XMUL2, DUMMY, CUTOFF2
-      LOGICAL EVAP, EVAPREJECT
-      COMMON /EV/ EVAP, EVAPREJECT
+      LOGICAL EVAP, evapreject
+      COMMON /EV/ EVAP, evapreject
 
       CUTOFF2=CUTOFF**2
       IF (SECT) THEN
@@ -270,15 +270,15 @@ C     EVAP=.FALSE.
             DIST=X(J3-2)**2+X(J3-1)**2+X(J3)**2
 C            IF ((DIST.GT.RADIUS).AND.(.NOT.LJMFT)) THEN
 CC              IF (DEBUG) WRITE(*,'(A,I3,A,3G15.5,A,G15.5,A,G15.5)') 
-CC    1                    'ATOM ',J1,' AT ',X(J3-2),X(J3-1),X(J3),' DIST=',DIST,' RADIUS=',RADIUS
+CC    1                    'Atom ',J1,' at ',X(J3-2),X(J3-1),X(J3),' DIST=',DIST,' RADIUS=',RADIUS
 C               EVAP=.TRUE.
 C               ELJ=ELJ+10.0D2*(DIST-RADIUS)**2
 C            ENDIF
             G(J1,J1)=0.0D0
-            ATOM2: DO J2=J1+1,NATOMS
+            atom2: DO J2=J1+1,NATOMS
                J4=3*J2
                DIST=(X(J3-2)-X(J4-2))**2+(X(J3-1)-X(J4-1))**2+(X(J3)-X(J4))**2
-               IF (DIST.GT.CUTOFF2) CYCLE ATOM2
+               IF (DIST.GT.CUTOFF2) CYCLE atom2
                DIST=1.0D0/DIST
                R6=DIST**3
                DUMMY=R6*(R6-1.0D0)
@@ -288,7 +288,7 @@ C            ENDIF
                DIST=DIST*R6
                G(J2,J1)=-24.0D0*(2.0D0*R6-1.0D0)*DIST
                G(J1,J2)=G(J2,J1)
-            ENDDO ATOM2
+            ENDDO atom2
          ENDDO
       ELSE
          DO J1=1,NATOMS
@@ -297,26 +297,26 @@ C            ENDIF
 C            IF ((DIST.GT.RADIUS).AND.(.NOT.LJMFT)) THEN
 C               EVAP=.TRUE.
 CC              IF (DEBUG) WRITE(*,'(A,I3,A,3G15.5,A,G15.5,A,G15.5)') 
-CC    1                    'ATOM ',J1,' AT ',X(J3-2),X(J3-1),X(J3),' DIST=',DIST,' RADIUS=',RADIUS
+CC    1                    'Atom ',J1,' at ',X(J3-2),X(J3-1),X(J3),' DIST=',DIST,' RADIUS=',RADIUS
 C               ELJ=ELJ+10.0D2*(DIST-RADIUS)**2
 C            ENDIF
-            ATOM22: DO J2=J1+1,NATOMS
+            atom22: DO J2=J1+1,NATOMS
                J4=3*J2
                DIST=(X(J3-2)-X(J4-2))**2+(X(J3-1)-X(J4-1))**2+(X(J3)-X(J4))**2
-               IF (DIST.GT.CUTOFF2) CYCLE ATOM22
+               IF (DIST.GT.CUTOFF2) CYCLE atom22
                DIST=1.0D0/DIST
                R6=DIST**3
                DUMMY=R6*(R6-1.0D0)
                VT(J1)=VT(J1)+DUMMY
                VT(J2)=VT(J2)+DUMMY
                ELJ=ELJ+DUMMY
-            ENDDO ATOM22
+            ENDDO atom22
          ENDDO
       ENDIF
 C      IF (DEBUG.AND.EVAP) THEN
-CC        WRITE(*,'(A)') 'AN ATOM HAS EVAPORATED - DUMPING COORDINATES'
+CC        WRITE(*,'(A)') 'An atom has evaporated - dumping coordinates'
 CC        WRITE(40,'(I4)') NATOMS
-CC        WRITE(40,'(A,I4,A,F15.5)') 'ENERGY AFTER EVAP=',ELJ
+CC        WRITE(40,'(A,I4,A,F15.5)') 'energy after evap=',ELJ
 CC        WRITE(40,'(A2,3F20.10)') ('LJ ',X(3*(J1-1)+1),X(3*(J1-1)+2),X(3*(J1-1)+3),J1=1,NATOMS)
 C      ENDIF
       ELJ=ELJ*4.0D0

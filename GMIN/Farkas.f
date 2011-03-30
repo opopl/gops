@@ -1,138 +1,138 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
-C
-C*******************************************************************************
-C
-C THIS SUBROUTINE CALCULATES THE AL/NI FARKAS ENERGY AND FIRST DERIVATIVE
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C*******************************************************************************
+C
+C This subroutine calculates the Al/Ni Farkas energy and first derivative
+C
+C*******************************************************************************
 
-      SUBROUTINE FARKAS(X,GRADFARK,EFARK,GRADT,NATOMS)
-C      USE COMMONS
-      IMPLICIT NONE
-C     INTEGER AMAX
+      SUBROUTINE FARKAS(X,gradFark,eFark,GRADT,NATOMS)
+C      USE commons
+      implicit none
+C     integer amax
 
-      INTEGER J1, J2, LFDEN, LFEMBED, LFPAIR, NATOMS
-      DOUBLE PRECISION FDENX(500), FDENY(500), FDENY2(500),
-     1                 FEMBEDX(500), FEMBEDY(500), FEMBEDY2(500),
-     2                 FPAIRX(500), FPAIRY(500), FPAIRY2(500),
-     3                 VPAIR, F, RHO(NATOMS), X(3*NATOMS), EFARK, 
-     4                 RHOTEMP, DIST, RCUT, GRADFARK(3*NATOMS), DF(NATOMS), 
-     5                 DVTEMP, DVTEMP1, DVTEMP2, DVTEMP3, DRHO,
-     6                 DVPAIR, VPTEMP, RCUTSQ, DVPLO, RMIN
-      LOGICAL GRADT
-      COMMON /CFARKAS/ LFDEN, LFEMBED, LFPAIR, 
-     1                FDENX, FDENY, FDENY2,
-     2                FEMBEDX, FEMBEDY, FEMBEDY2,
-     3                FPAIRX, FPAIRY, FPAIRY2
+      integer j1, j2, lfden, lfembed, lfpair, natoms
+      double precision fdenx(500), fdeny(500), fdeny2(500),
+     1                 fembedx(500), fembedy(500), fembedy2(500),
+     2                 fpairx(500), fpairy(500), fpairy2(500),
+     3                 vpair, f, rho(NATOMS), x(3*NATOMS), eFark, 
+     4                 rhotemp, dist, rcut, gradFark(3*NATOMS), df(NATOMS), 
+     5                 dvtemp, dvtemp1, dvtemp2, dvtemp3, drho,
+     6                 dvpair, vptemp, rcutsq, dvplo, rmin
+      logical GRADT
+      common /cfarkas/ lfden, lfembed, lfpair, 
+     1                fdenx, fdeny, fdeny2,
+     2                fembedx, fembedy, fembedy2,
+     3                fpairx, fpairy, fpairy2
 
-C CALCULATE ENERGY
+C Calculate energy
 
-      RCUT=FPAIRX(LFPAIR)
-      RMIN=FPAIRX(1)
-      RCUTSQ=RCUT**2
-      CALL DSPLINT(FPAIRX,FPAIRY,FPAIRY2,LFPAIR,FPAIRX(1),DVPLO)
-      EFARK=0.0D0
+      rcut=fpairx(lfpair)
+      rmin=fpairx(1)
+      rcutsq=rcut**2
+      call dsplint(fpairx,fpairy,fpairy2,lfpair,fpairx(1),dvplo)
+      eFark=0.0d0
       DO 22 J1=1,NATOMS
-         RHO(J1)=0.0D0
-         VPAIR=0.0D0
+         RHO(J1)=0.0d0
+         vpair=0.0d0
          DO 23 J2=1,NATOMS
-            IF (J1.NE.J2) THEN
+            if (j1.ne.j2) then
                DIST=(X(3*(J2-1)+1)-X(3*(J1-1)+1))**2 +
      1              (X(3*(J2-1)+2)-X(3*(J1-1)+2))**2 +
      2              (X(3*(J2-1)+3)-X(3*(J1-1)+3))**2
-               IF (DIST.LT.RCUTSQ) THEN
-                 DIST=DSQRT(DIST)
-                 IF (DIST.GT.RMIN) THEN
-                   CALL SPLINT(FDENX,FDENY,FDENY2,LFDEN,DIST,
-     1                         RHOTEMP)
-                 ELSE
-                   RHOTEMP=FDENY(1)
-                 ENDIF
-                 RHO(J1)=RHO(J1)+RHOTEMP
-                 IF (J1.LT.J2) THEN
-                   IF (DIST.GT.RMIN) THEN
-                     CALL SPLINT(FPAIRX,FPAIRY,FPAIRY2,LFPAIR,
-     1                         DIST,VPTEMP)
-                   ELSE
-                     VPTEMP=FPAIRY(1)+(DIST-RMIN)*DVPLO
-C                     PRINT*,'ED: R OUTSIDE RANGE', DIST
-                   ENDIF
-                   VPAIR=VPAIR+VPTEMP
-                 ENDIF
-               ENDIF
-            ENDIF
+               if (dist.lt.rcutsq) then
+                 dist=dsqrt(dist)
+                 if (dist.gt.rmin) then
+                   call splint(fdenx,fdeny,fdeny2,lfden,dist,
+     1                         rhotemp)
+                 else
+                   rhotemp=fdeny(1)
+                 endif
+                 RHO(J1)=RHO(J1)+rhotemp
+                 if (j1.lt.j2) then
+                   if (dist.gt.rmin) then
+                     call splint(fpairx,fpairy,fpairy2,lfpair,
+     1                         dist,vptemp)
+                   else
+                     vptemp=fpairy(1)+(dist-rmin)*dvplo
+C                     print*,'ED: r outside range', dist
+                   endif
+                   vpair=vpair+vptemp
+                 endif
+               endif
+            endif
 23       CONTINUE
-         IF (RHO(J1).LT.FEMBEDX(LFEMBED)) THEN
-           CALL SPLINT(FEMBEDX,FEMBEDY,FEMBEDY2,LFEMBED,RHO(J1),F)
-         ELSE
-C           PRINT*, 'ED: RHO OUTSIDE OF RANGE', RHO(J1)
-           F=FEMBEDY(LFEMBED)
-         ENDIF
-         EFARK=EFARK+VPAIR+F
+         if (rho(j1).lt.fembedx(lfembed)) then
+           call splint(fembedx,fembedy,fembedy2,lfembed,rho(j1),f)
+         else
+C           print*, 'ED: rho outside of range', rho(j1)
+           f=fembedy(lfembed)
+         endif
+         eFark=eFark+vpair+f
 22    CONTINUE
 
-C      PRINT*,EFARK
+C      print*,eFark
 
-C CALCULATE GRADIENT
+C Calculate gradient
 
-      IF (.NOT.GRADT) RETURN
+      IF (.not.GRADT) RETURN
 
       DO 30 J1=1,NATOMS
-        IF (RHO(J1).LT.FEMBEDX(LFEMBED)) THEN
-          CALL DSPLINT(FEMBEDX,FEMBEDY,FEMBEDY2,LFEMBED,RHO(J1),
-     1               DF(J1))
-        ELSE
-C          PRINT*, 'ED: RHO OUTSIDE OF RANGE', RHO(J1)
-          DF(J1)=0.0D0
-        ENDIF
+        if (rho(j1).lt.fembedx(lfembed)) then
+          call dsplint(fembedx,fembedy,fembedy2,lfembed,rho(j1),
+     1               df(j1))
+        else
+C          print*, 'ED: rho outside of range', rho(j1)
+          df(j1)=0.0d0
+        endif
 30    CONTINUE    
       
       DO 50 J1=1,NATOMS
-         DVTEMP1=0.0D0
-         DVTEMP2=0.0D0
-         DVTEMP3=0.0D0
+         DVTEMP1=0.0d0
+         DVTEMP2=0.0d0
+         DVTEMP3=0.0d0
          DO 40 J2=1,NATOMS
-            IF (J1.NE.J2) THEN
+            if (j1.ne.j2) then
                DIST=( X(3*(J2-1)+1)-X(3*(J1-1)+1) )**2 +
      1              ( X(3*(J2-1)+2)-X(3*(J1-1)+2) )**2 +
      2              ( X(3*(J2-1)+3)-X(3*(J1-1)+3) )**2
-               IF (DIST.LT.RCUTSQ) THEN
-                 DIST=DSQRT(DIST)
-                 IF (DIST.GT.RMIN) THEN
-                   CALL DSPLINT(FPAIRX,FPAIRY,FPAIRY2,LFPAIR,DIST,
-     1                        DVPAIR)
-                   CALL DSPLINT(FDENX,FDENY,FDENY2,LFDEN,DIST,DRHO)
-                 ELSE
-C                   PRINT*, 'ED: R OUTSIDE OF RANGE', DIST
-                   DVPAIR=DVPLO 
-                   DRHO=0.0D0
-                 ENDIF
-                 DVTEMP=(DVPAIR+(DF(J1)+DF(J2))*DRHO)/DIST
+               if (dist.lt.rcutsq) then
+                 dist=dsqrt(dist)
+                 if (dist.gt.rmin) then
+                   call dsplint(fpairx,fpairy,fpairy2,lfpair,dist,
+     1                        dvpair)
+                   call dsplint(fdenx,fdeny,fdeny2,lfden,dist,drho)
+                 else
+C                   print*, 'ED: r outside of range', dist
+                   dvpair=dvplo 
+                   drho=0.0d0
+                 endif
+                 dvtemp=(dvpair+(df(j1)+df(j2))*drho)/dist
                  DVTEMP1=DVTEMP1+DVTEMP*(X(3*(J1-1)+1)-X(3*(J2-1)+1))
                  DVTEMP2=DVTEMP2+DVTEMP*(X(3*(J1-1)+2)-X(3*(J2-1)+2))
                  DVTEMP3=DVTEMP3+DVTEMP*(X(3*(J1-1)+3)-X(3*(J2-1)+3))
-               ENDIF
-            ENDIF
+               endif
+            endif
 40       CONTINUE
-         GRADFARK(3*(J1-1)+1)=DVTEMP1
-         GRADFARK(3*(J1-1)+2)=DVTEMP2
-         GRADFARK(3*(J1-1)+3)=DVTEMP3
+         gradFark(3*(J1-1)+1)=DVTEMP1
+         gradFark(3*(J1-1)+2)=DVTEMP2
+         gradFark(3*(J1-1)+3)=DVTEMP3
 50    CONTINUE
 
       RETURN
@@ -140,309 +140,309 @@ C                   PRINT*, 'ED: R OUTSIDE OF RANGE', DIST
 
 C*******************************************************************************
 C
-C THIS SUBROUTINE INITIALIZES THE ARRAYS OF 2ND DERIVATIVES FOR THE 
-C CUBIC SPLINE INTERPOLATIONS FOR NI.
+C This subroutine initializes the arrays of 2nd derivatives for the 
+C cubic spline interpolations for Ni.
 C
 C*******************************************************************************
 
       SUBROUTINE NIINIT
 
-      IMPLICIT NONE
+      implicit none
 
-      INTEGER I, LFDEN, LFEMBED, LFPAIR
-      DOUBLE PRECISION FDENX(500), FDENY(500), FDENY2(500),
-     1                 FEMBEDX(500), FEMBEDY(500), FEMBEDY2(500),
-     2                 FPAIRX(500), FPAIRY(500), FPAIRY2(500),
-     3                 DYLO, DYHI
-      COMMON /CFARKAS/ LFDEN, LFEMBED, LFPAIR, 
-     1                FDENX, FDENY, FDENY2,
-     2                FEMBEDX, FEMBEDY, FEMBEDY2,
-     3                FPAIRX, FPAIRY, FPAIRY2
+      integer i, lfden, lfembed, lfpair
+      double precision fdenx(500), fdeny(500), fdeny2(500),
+     1                 fembedx(500), fembedy(500), fembedy2(500),
+     2                 fpairx(500), fpairy(500), fpairy2(500),
+     3                 dylo, dyhi
+      common /cfarkas/ lfden, lfembed, lfpair, 
+     1                fdenx, fdeny, fdeny2,
+     2                fembedx, fembedy, fembedy2,
+     3                fpairx, fpairy, fpairy2
 
-      OPEN(UNIT=8,FILE='NI.DEN',STATUS='OLD')
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*) DYLO, DYHI
-      READ(8,*)
-      DO 20 I=1,500
-        READ(8,*,END=30) FDENX(I), FDENY(I)
-20    CONTINUE
-      PRINT*,'WARNING: INCREASE THE DIMENSIONS IN NIINIT'
-      STOP
+      open(unit=8,file='ni.den',status='old')
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*) dylo, dyhi
+      read(8,*)
+      do 20 i=1,500
+        read(8,*,end=30) fdenx(i), fdeny(i)
+20    continue
+      print*,'WARNING: increase the dimensions in NIINIT'
+      stop
 
-30    LFDEN=I-1
-      CLOSE(UNIT=8)
-      PRINT*,'NI.DEN HAS ', LFDEN, ' ENTRIES'
-      PRINT*,'FIRST DERIVATIVES AT END POINTS ', DYLO, DYHI
+30    lfden=i-1
+      close(unit=8)
+      print*,'ni.den has ', lfden, ' entries'
+      print*,'First derivatives at end points ', dylo, dyhi
 
-      CALL SPLINEGMIN(FDENX,FDENY,LFDEN,DYLO,DYHI,FDENY2)
+      call splinegmin(fdenx,fdeny,lfden,dylo,dyhi,fdeny2)
 
-      OPEN(UNIT=8,FILE='NI.PAIR',STATUS='OLD')
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*) DYLO, DYHI
-      READ(8,*)
-      DO 70 I=1,500
-        READ(8,*,END=80) FPAIRX(I), FPAIRY(I)
-70    CONTINUE
-      PRINT*,'WARNING: INCREASE THE DIMENSIONS IN NIINIT'
-      STOP
+      open(unit=8,file='ni.pair',status='old')
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*) dylo, dyhi
+      read(8,*)
+      do 70 i=1,500
+        read(8,*,end=80) fpairx(i), fpairy(i)
+70    continue
+      print*,'WARNING: increase the dimensions in NIINIT'
+      stop
 
-80    LFPAIR=I-1
-      CLOSE(UNIT=8)
-      PRINT*,'NI.PAIR HAS ', LFPAIR, ' ENTRIES'
-      PRINT*,'SECOND DERIVATIVES AT END POINTS ', DYLO, DYHI
+80    lfpair=i-1
+      close(unit=8)
+      print*,'ni.pair has ', lfpair, ' entries'
+      print*,'second derivatives at end points ', dylo, dyhi
 
-      CALL SPLINEGMIN(FPAIRX,FPAIRY,LFPAIR,DYLO,DYHI,FPAIRY2)
+      call splinegmin(fpairx,fpairy,lfpair,dylo,dyhi,fpairy2)
 
-      OPEN(UNIT=8,FILE='NI.EMBED',STATUS='OLD')
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*) DYLO, DYHI
-      READ(8,*)
-      DO 120 I=1,500
-        READ(8,*,END=130) FEMBEDX(I), FEMBEDY(I)
-120   CONTINUE
-      PRINT*,'WARNING: INCREASE 500'
-      STOP
+      open(unit=8,file='ni.embed',status='old')
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*) dylo, dyhi
+      read(8,*)
+      do 120 i=1,500
+        read(8,*,end=130) fembedx(i), fembedy(i)
+120   continue
+      print*,'WARNING: increase 500'
+      stop
 
-130   LFEMBED=I-1
-      CLOSE(UNIT=8)
-      PRINT*,'NI.EMBED HAS ', LFEMBED, ' ENTRIES'
-      PRINT*,'FIRST DERIVATIVES AT END POINTS ',DYLO,DYHI
+130   lfembed=i-1
+      close(unit=8)
+      print*,'ni.embed has ', lfembed, ' entries'
+      print*,'First derivatives at end points ',dylo,dyhi
 
-      CALL SPLINEGMIN(FEMBEDX,FEMBEDY,LFEMBED,DYLO,DYHI,
-     1            FEMBEDY2)
+      call splinegmin(fembedx,fembedy,lfembed,dylo,dyhi,
+     1            fembedy2)
 
       RETURN
       END
 
 C*******************************************************************************
 C
-C THIS SUBROUTINE INITIALIZES THE ARRAYS OF 2ND DERIVATIVES FOR THE 
-C CUBIC SPLINE INTERPOLATIONS FOR AL.
+C This subroutine initializes the arrays of 2nd derivatives for the 
+C cubic spline interpolations for Al.
 C
 C*******************************************************************************
 
       SUBROUTINE ALINIT
 
-      IMPLICIT NONE
+      implicit none
 
-      INTEGER I, LFDEN, LFEMBED, LFPAIR
-      DOUBLE PRECISION FDENX(500), FDENY(500), FDENY2(500),
-     1                 FEMBEDX(500), FEMBEDY(500), FEMBEDY2(500),
-     2                 FPAIRX(500), FPAIRY(500), FPAIRY2(500), 
-     3                 DYLO, DYHI
-      COMMON /CFARKAS/ LFDEN, LFEMBED, LFPAIR, 
-     1                FDENX, FDENY, FDENY2,
-     2                FEMBEDX, FEMBEDY, FEMBEDY2,
-     3                FPAIRX, FPAIRY, FPAIRY2
+      integer i, lfden, lfembed, lfpair
+      double precision fdenx(500), fdeny(500), fdeny2(500),
+     1                 fembedx(500), fembedy(500), fembedy2(500),
+     2                 fpairx(500), fpairy(500), fpairy2(500), 
+     3                 dylo, dyhi
+      common /cfarkas/ lfden, lfembed, lfpair, 
+     1                fdenx, fdeny, fdeny2,
+     2                fembedx, fembedy, fembedy2,
+     3                fpairx, fpairy, fpairy2
 
-      OPEN(UNIT=8,FILE='AL.DEN',STATUS='OLD')
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*) DYLO, DYHI
-      READ(8,*)
-      DO 20 I=1,500
-        READ(8,*,END=30) FDENX(I), FDENY(I)
-20    CONTINUE
-      PRINT*,'WARNING: INCREASE THE DIMENSIONS IN ALINIT'
-      STOP
+      open(unit=8,file='al.den',status='old')
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*) dylo, dyhi
+      read(8,*)
+      do 20 i=1,500
+        read(8,*,end=30) fdenx(i), fdeny(i)
+20    continue
+      print*,'WARNING: increase the dimensions in ALINIT'
+      stop
 
-30    LFDEN=I-1
-      CLOSE(UNIT=8)
-      PRINT*,'AL.DEN HAS ', LFDEN, ' ENTRIES'
-      PRINT*,'FIRST DERIVATIVES AT END POINTS ',DYLO,DYHI
+30    lfden=i-1
+      close(unit=8)
+      print*,'al.den has ', lfden, ' entries'
+      print*,'First derivatives at end points ',dylo,dyhi
 
-      CALL SPLINEGMIN(FDENX,FDENY,LFDEN,DYLO,DYHI,FDENY2)
+      call splinegmin(fdenx,fdeny,lfden,dylo,dyhi,fdeny2)
 
-      OPEN(UNIT=8,FILE='AL.PAIR',STATUS='OLD')
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*) DYLO, DYHI
-      READ(8,*)
-      DO 70 I=1,500
-        READ(8,*,END=80) FPAIRX(I), FPAIRY(I)
-70    CONTINUE
-      PRINT*,'WARNING: INCREASE THE DIMENSIONS IN ALINIT'
-      STOP
+      open(unit=8,file='al.pair',status='old')
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*) dylo, dyhi
+      read(8,*)
+      do 70 i=1,500
+        read(8,*,end=80) fpairx(i), fpairy(i)
+70    continue
+      print*,'WARNING: increase the dimensions in ALINIT'
+      stop
 
-80    LFPAIR=I-1
-      CLOSE(UNIT=8)
-      PRINT*,'AL.PAIR HAS ', LFPAIR, ' ENTRIES'
-      PRINT*,'FIRST DERIVATIVES AT END POINTS ',DYLO,DYHI
+80    lfpair=i-1
+      close(unit=8)
+      print*,'al.pair has ', lfpair, ' entries'
+      print*,'First derivatives at end points ',dylo,dyhi
 
-      CALL SPLINEGMIN(FPAIRX,FPAIRY,LFPAIR,DYLO,DYHI,FPAIRY2)
+      call splinegmin(fpairx,fpairy,lfpair,dylo,dyhi,fpairy2)
 
-      OPEN(UNIT=8,FILE='AL.EMBED',STATUS='OLD')
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*)
-      READ(8,*) DYLO, DYHI
-      READ(8,*)
-      DO 120 I=1,500
-        READ(8,*,END=130) FEMBEDX(I), FEMBEDY(I)
-120   CONTINUE
-      PRINT*,'WARNING: INCREASE THE DIMENSIONS IN ALINIT'
-      STOP
+      open(unit=8,file='al.embed',status='old')
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*)
+      read(8,*) dylo, dyhi
+      read(8,*)
+      do 120 i=1,500
+        read(8,*,end=130) fembedx(i), fembedy(i)
+120   continue
+      print*,'WARNING: increase the dimensions in ALINIT'
+      stop
 
-130   LFEMBED=I-1
-      CLOSE(UNIT=8)
-      PRINT*,'AL.EMBED HAS ', LFEMBED, ' ENTRIES'
-      PRINT*,'FIRST DERIVATIVES AT END POINTS ',DYLO,DYHI
+130   lfembed=i-1
+      close(unit=8)
+      print*,'al.embed has ', lfembed, ' entries'
+      print*,'First derivatives at end points ',dylo,dyhi
 
-      CALL SPLINEGMIN(FEMBEDX,FEMBEDY,LFEMBED,DYLO,DYHI,FEMBEDY2)
+      call splinegmin(fembedx,fembedy,lfembed,dylo,dyhi,fembedy2)
 
       RETURN
       END
 
-      SUBROUTINE SPLINEGMIN(X,Y,N,YP1,YPN,Y2)
-      INTEGER N,NMAX
-      DOUBLE PRECISION YP1,YPN,X(N),Y(N),Y2(N)
+      SUBROUTINE splinegmin(x,y,n,yp1,ypn,y2)
+      INTEGER n,NMAX
+      DOUBLE PRECISION yp1,ypn,x(n),y(n),y2(n)
       PARAMETER (NMAX=5000)
-      INTEGER I,K
-      DOUBLE PRECISION P,QN,SIG,UN,U(NMAX)
-      IF (YP1.GT..99D30) THEN
-        Y2(1)=0.D0
-        U(1)=0.D0
-      ELSE
-        Y2(1)=-0.5D0
-        U(1)=(3.D0/(X(2)-X(1)))*((Y(2)-Y(1))/(X(2)-X(1))-YP1)
-      ENDIF
-      DO 11 I=2,N-1
-        SIG=(X(I)-X(I-1))/(X(I+1)-X(I-1))
-        P=SIG*Y2(I-1)+2.D0
-        Y2(I)=(SIG-1.D0)/P
-        U(I)=(6.D0*((Y(I+1)-Y(I))/(X(I+
-     *1)-X(I))-(Y(I)-Y(I-1))/(X(I)-X(I-1)))/(X(I+1)-X(I-1))-SIG*
-     *U(I-1))/P
-11    CONTINUE
-      IF (YPN.GT..99D30) THEN
-        QN=0.D0
-        UN=0.D0
-      ELSE
-        QN=0.5D0
-        UN=(3.D0/(X(N)-X(N-1)))*(YPN-(Y(N)-Y(N-1))/(X(N)-X(N-1)))
-      ENDIF
-      Y2(N)=(UN-QN*U(N-1))/(QN*Y2(N-1)+1.D0)
-      DO 12 K=N-1,1,-1
-        Y2(K)=Y2(K)*Y2(K+1)+U(K)
-12    CONTINUE
-      RETURN
+      INTEGER i,k
+      DOUBLE PRECISION p,qn,sig,un,u(NMAX)
+      if (yp1.gt..99d30) then
+        y2(1)=0.d0
+        u(1)=0.d0
+      else
+        y2(1)=-0.5d0
+        u(1)=(3.d0/(x(2)-x(1)))*((y(2)-y(1))/(x(2)-x(1))-yp1)
+      endif
+      do 11 i=2,n-1
+        sig=(x(i)-x(i-1))/(x(i+1)-x(i-1))
+        p=sig*y2(i-1)+2.d0
+        y2(i)=(sig-1.d0)/p
+        u(i)=(6.d0*((y(i+1)-y(i))/(x(i+
+     *1)-x(i))-(y(i)-y(i-1))/(x(i)-x(i-1)))/(x(i+1)-x(i-1))-sig*
+     *u(i-1))/p
+11    continue
+      if (ypn.gt..99d30) then
+        qn=0.d0
+        un=0.d0
+      else
+        qn=0.5d0
+        un=(3.d0/(x(n)-x(n-1)))*(ypn-(y(n)-y(n-1))/(x(n)-x(n-1)))
+      endif
+      y2(n)=(un-qn*u(n-1))/(qn*y2(n-1)+1.d0)
+      do 12 k=n-1,1,-1
+        y2(k)=y2(k)*y2(k+1)+u(k)
+12    continue
+      return
       END
 
-      SUBROUTINE SPLINT(XA,YA,Y2A,N,X,Y)
-      INTEGER N
-      DOUBLE PRECISION X,Y,XA(N),Y2A(N),YA(N)
-      INTEGER KHI,KLO
-      DOUBLE PRECISION A,B,H,POS
+      SUBROUTINE splint(xa,ya,y2a,n,x,y)
+      INTEGER n
+      DOUBLE PRECISION x,y,xa(n),y2a(n),ya(n)
+      INTEGER khi,klo
+      DOUBLE PRECISION a,b,h,pos
 
-      IF ((X.LT.XA(1)).OR.(X.GT.XA(N))) THEN
-        PRINT*, 'WARNING: X OUT OF RANGE IN SPLINT', X, XA(1),XA(N)
-        STOP
-      ENDIF
+      if ((x.lt.xa(1)).or.(x.gt.xa(n))) then
+        print*, 'WARNING: x out of range in SPLINT', x, xa(1),xa(n)
+        stop
+      endif
 
-C WORKS IF INTERVALS EQUALLY SPACED 
+C works if intervals equally spaced 
 
-      POS=1+(N-1)*(X-XA(1))/(XA(N)-XA(1))
-      KLO=INT(POS)
-      KHI=INT(POS)+1
+      pos=1+(n-1)*(x-xa(1))/(xa(n)-xa(1))
+      klo=int(pos)
+      khi=int(pos)+1
 
-C CHECK IF ON END POINT: UNLIKELY BUT POSSIBLE
+C Check if on end point: unlikely but possible
 
-      IF (KLO.EQ.N) THEN
-        KLO=N-1
-        KHI=N
-      ENDIF
+      if (klo.eq.n) then
+        klo=n-1
+        khi=n
+      endif
 
-C INTERVAL BISECTION IF NOT
-C      KLO=1
-C      KHI=N
-C1     IF (KHI-KLO.GT.1) THEN
-C        K=(KHI+KLO)/2
-C        IF(XA(K).GT.X)THEN
-C          KHI=K
-C        ELSE
-C          KLO=K
-C        ENDIF
-C      GOTO 1
-C      ENDIF
+C interval bisection if not
+C      klo=1
+C      khi=n
+C1     if (khi-klo.gt.1) then
+C        k=(khi+klo)/2
+C        if(xa(k).gt.x)then
+C          khi=k
+C        else
+C          klo=k
+C        endif
+C      goto 1
+C      endif
 
-      H=XA(KHI)-XA(KLO)
-      IF (H.EQ.0.D0) PRINT*, 'BAD XA INPUT IN SPLINT'
-      A=(XA(KHI)-X)/H
-      B=(X-XA(KLO))/H
-      Y=A*YA(KLO)+B*YA(KHI)+((A**3-A)*Y2A(KLO)+(B**3-B)*Y2A(KHI))*(H**
-     *2)/6.D0
-      RETURN
+      h=xa(khi)-xa(klo)
+      if (h.eq.0.d0) print*, 'bad xa input in splint'
+      a=(xa(khi)-x)/h
+      b=(x-xa(klo))/h
+      y=a*ya(klo)+b*ya(khi)+((a**3-a)*y2a(klo)+(b**3-b)*y2a(khi))*(h**
+     *2)/6.d0
+      return
       END
 
-      SUBROUTINE DSPLINT(XA,YA,Y2A,N,X,DYDX)
-      INTEGER N
-      DOUBLE PRECISION X,DYDX,XA(N),Y2A(N),YA(N)
-      INTEGER KHI,KLO
-      DOUBLE PRECISION A,B,H,POS
+      SUBROUTINE dsplint(xa,ya,y2a,n,x,dydx)
+      INTEGER n
+      DOUBLE PRECISION x,dydx,xa(n),y2a(n),ya(n)
+      INTEGER khi,klo
+      DOUBLE PRECISION a,b,h,pos
 
-      IF ((X.LT.XA(1)).OR.(X.GT.XA(N))) THEN
-        PRINT*, 'WARNING: X OUT OF RANGE IN DSPLINT', X, XA(1),XA(N)
-        STOP
-      ENDIF
+      if ((x.lt.xa(1)).or.(x.gt.xa(n))) then
+        print*, 'WARNING: x out of range in DSPLINT', x, xa(1),xa(n)
+        stop
+      endif
 
-C WORKS IF INTERVALS EQUALLY SPACED 
+C works if intervals equally spaced 
 
-      POS=1+(N-1)*(X-XA(1))/(XA(N)-XA(1))
-      KLO=INT(POS)
-      KHI=INT(POS)+1
+      pos=1+(n-1)*(x-xa(1))/(xa(n)-xa(1))
+      klo=int(pos)
+      khi=int(pos)+1
 
-C CHECK IF ON END POINT: UNLIKELY BUT POSSIBLE
+C Check if on end point: unlikely but possible
 
-      IF (KLO.EQ.N) THEN
-        KLO=N-1
-        KHI=N
-      ENDIF
+      if (klo.eq.n) then
+        klo=n-1
+        khi=n
+      endif
 
-C INTERVAL BISECTION IF NOT
-C      KLO=1
-C      KHI=N
-C1     IF (KHI-KLO.GT.1) THEN
-C        K=(KHI+KLO)/2
-C        IF(XA(K).GT.X)THEN
-C          KHI=K
-C        ELSE
-C          KLO=K
-C        ENDIF
-C      GOTO 1
-C      ENDIF
+C interval bisection if not
+C      klo=1
+C      khi=n
+C1     if (khi-klo.gt.1) then
+C        k=(khi+klo)/2
+C        if(xa(k).gt.x)then
+C          khi=k
+C        else
+C          klo=k
+C        endif
+C      goto 1
+C      endif
 
-      H=XA(KHI)-XA(KLO)
-      IF (H.EQ.0.D0) PRINT*, 'BAD XA INPUT IN SPLINT'
-      A=(XA(KHI)-X)/H
-      B=(X-XA(KLO))/H
-      DYDX=(YA(KHI)-YA(KLO))/(XA(KHI)-XA(KLO))-
-     1     (3*A**2-1)*(XA(KHI)-XA(KLO))*Y2A(KLO)/6.0D0+
-     2     (3*B**2-1)*(XA(KHI)-XA(KLO))*Y2A(KHI)/6.0D0
-      RETURN
+      h=xa(khi)-xa(klo)
+      if (h.eq.0.d0) print*, 'bad xa input in splint'
+      a=(xa(khi)-x)/h
+      b=(x-xa(klo))/h
+      dydx=(ya(khi)-ya(klo))/(xa(khi)-xa(klo))-
+     1     (3*a**2-1)*(xa(khi)-xa(klo))*y2a(klo)/6.0d0+
+     2     (3*b**2-1)*(xa(khi)-xa(klo))*y2a(khi)/6.0d0
+      return
       END

@@ -1,155 +1,155 @@
 
-C     --------------------- FORCE ----------------------
+c     --------------------- force ----------------------
 
-      SUBROUTINE FORCE(NUMPRO,PRCORD,ZRCORD,AVEP,TEMPAV,MAXR,VPOTNT,FORSE,
-     *          TRGENG,PEXCLD,NUMLNG,NMRES,RINCINV,RINCSQ,ILONG,CRDIXN,IRES,
-     *                 EQDIST,HBOND,OXEXCLDV,SCL_CALL)
+      subroutine force(numpro,prcord,zrcord,avep,tempav,maxr,vpotnt,forse,
+     *          trgeng,pexcld,numlng,nmres,rincinv,rincsq,ilong,crdixn,ires,
+     *                 eqdist,hbond,oxexcldv,scl_call)
  
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-C     FORCE  FINDS THE FORCES AND POTENTIAL FOR THE CONFIGURATIONS IN PRCORD
+c     FORCE  finds the forces and potential for the configurations in prcord
 
-C     ARGUMENTS:
+c     arguments:
 
-C        MAXSIZ- MAXIMUM PROTEIN LENGTH (I)
-C        MAXPRO- MAXIMUM NUMBER OF PROTEINS (I)
-C        NUMPRO- ACTUAL ENSEMBLE NUMBER (I)
-C        PRCORD- CURRENT SET OF CONFIGURATIONS (I)
-C        MAXCNT- MAXIMUM NUMBER OF PAIR IXNS (I)
-C        ZRCORD- TOTAL FORCE ON EACH RESIDUE (O)
-C        AVEP  - ARRAY USED TO RECORD 1ST AND 2ND 
-C                MOMENTS OF THE POTENTIAL ENERGY
-C        TEMPAV- IF TEMPAV, THEN COMPUTE TOTAL FORCES
-C                AND POTENTIAL FOR AVERAGING
-C        MAXR  - MAXIMUM R-GRID LENGTH (I)
-C        MAXRES- MAXIMUM NUMBER OF RESIDUES (I)
-C        IRES  - CODED AMINO ACID SEQUENCE (I)
+c        maxsiz- maximum protein length (i)
+c        maxpro- maximum number of proteins (i)
+c        numpro- actual ensemble number (i)
+c        prcord- current set of configurations (i)
+c        maxcnt- maximum number of pair ixns (i)
+c        zrcord- total force on each residue (o)
+c        avep  - array used to record 1st and 2nd 
+c                moments of the potential energy
+c        tempav- if tempav, then compute total forces
+c                and potential for averaging
+c        maxr  - maximum r-grid length (i)
+c        maxres- maximum number of residues (i)
+c        ires  - coded amino acid sequence (i)
          
-         USE AMHGLOBALS,  ONLY: MAXTAB,MAXSIZ,MAXCNT,MAXPRO,MAXCRD,
-     *         OXSCL,CHRLSCL,RAMASCL,IGOMB,NGOMB,IBIASGAUSS,BIAS_AV,BIAS_VAR,
-     *         BIAS_PREFACTOR,IBIASPOLY,NBIASPOLY,BIASPOLY,
-     *         I_QBIAS_A,I_QBIAS_B,CCEV_DIST,I_NON_ADD_CONTACT,I_CON_P_AP,
-     *         I_REP,I_HBOND_EASTWOOD,SO
+         use amhglobals,  only: maxtab,maxsiz,maxcnt,maxpro,maxcrd,
+     *         oxscl,chrlscl,ramascl,igomb,ngomb,ibiasgauss,bias_av,bias_var,
+     *         bias_prefactor,ibiaspoly,nbiaspoly,biaspoly,
+     *         i_Qbias_a,i_Qbias_b,ccev_dist,i_non_add_contact,i_con_P_AP,
+     *         i_rep,i_hbond_eastwood,SO
 
-         USE AMH_INTERFACES, ONLY:OXY,LOOKUP,
-     *    CONTACT_P_AP,NON_ADD_CONTACT,REP_BIAS,DSSP_HDRGN_EASTWOOD,HDRGN
+         use amh_interfaces, only:oxy,lookup,
+     *    contact_P_AP,non_add_contact,rep_bias,dssp_hdrgn_eastwood,hdrgn
 
-         USE GLOBALS_ALT, ONLY:ALTPOTFLAG
+         use globals_alt, only:altpotflag
 
-         IMPLICIT NONE
+         implicit none
 
-C     ARGUMENT DECLARATIONS:
+c     argument declarations:
 
-         LOGICAL TEMPAV,SCL_CALL,HBOND,OXEXCLDV
+         logical tempav,scl_call,hbond,oxexcldv
 
-         INTEGER NUMPRO,CRDIXN(MAXTAB,2),MAXR,NUMLNG(0:MAXSIZ,MAXTAB),NMRES,
-     *           ILONG(MAXCNT,2,MAXTAB),IRES(MAXSIZ)
+         integer numpro,crdixn(maxtab,2),maxr,numlng(0:maxsiz,maxtab),nmres,
+     *           ilong(maxcnt,2,maxtab),ires(maxsiz)
      
-         DOUBLE PRECISION PRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
-     *        ZRCORD(MAXSIZ,3,MAXPRO,MAXCRD),F_CORD(MAXSIZ,3,MAXCRD),PRO_CORD(MAXSIZ,3,MAXCRD),
-     *        AVEP(MAXPRO,2,50),RINCINV(MAXCNT,MAXTAB),
-     *        RINCSQ(MAXCNT,MAXTAB),VPOTNT(0:MAXR+1,MAXCNT,MAXTAB),
-     *        FORSE(0:MAXR+1,MAXCNT,MAXTAB),TRGENG(MAXTAB,3),PEXCLD,E(2,50),EQDIST(5),
-     *        FRCORD(MAXSIZ,3,MAXPRO,MAXCRD)
+         double precision prcord(maxsiz,3,maxpro,maxcrd),
+     *        zrcord(maxsiz,3,maxpro,maxcrd),f_cord(maxsiz,3,maxcrd),pro_cord(maxsiz,3,maxcrd),
+     *        avep(maxpro,2,50),rincinv(maxcnt,maxtab),
+     *        rincsq(maxcnt,maxtab),vpotnt(0:maxr+1,maxcnt,maxtab),
+     *        forse(0:maxr+1,maxcnt,maxtab),trgeng(maxtab,3),pexcld,E(2,50),eqdist(5),
+     *        frcord(maxsiz,3,maxpro,maxcrd)
 
-C     INTERNAL VARIABLES:
-C        --- DO LOOP INDICES ---
+c     internal variables:
+c        --- do loop indices ---
 
-         INTEGER  I_PRO
+         integer  i_pro
 
-          EXTERNAL  ALTPOT_MASTER
+          external  altpot_master
 
-C     --------------------- BEGIN -----------------------
+c     --------------------- begin -----------------------
 
-C             WRITE(SO,*) 'BEGIN FORCE'
+c             write(SO,*) 'begin force'
   
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     INITIALIZE STORAGE FOR POTENTIAL ENERGY
-C     AND INITIALIZE ZRCORD
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     initialize storage for potential energy
+c     and initialize zrcord
 
-      AVEP=0.0D0
-      ZRCORD=0.0D0
-      PRO_CORD=0.0D0
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+      avep=0.0D0
+      zrcord=0.0D0
+      pro_cord=0.0D0
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-      IF (I_REP) THEN
-        CALL REP_BIAS(PRCORD,FRCORD,E(1,43))
-        ZRCORD=ZRCORD+FRCORD
-        IF (TEMPAV) AVEP(1,:,:)=AVEP(1,:,:)+E
-      ENDIF
+      if (i_rep) then
+        call rep_bias(prcord,frcord,E(1,43))
+        zrcord=zrcord+frcord
+        if (tempav) avep(1,:,:)=avep(1,:,:)+E
+      endif
                
-      DO 500 I_PRO=1,NUMPRO
-        PRO_CORD=PRCORD(:,:,I_PRO,:)
+      do 500 i_pro=1,numpro
+        pro_cord=prcord(:,:,i_pro,:)
 
-C       FIND HBOND FORCE AND POTENTIAL
-C       IF ( .NOT.SCL_CALL ) THEN
-         IF ( HBOND ) THEN
-            CALL HDRGN(PRO_CORD,F_CORD,TEMPAV,E)
-            ZRCORD(:,:,I_PRO,:)=ZRCORD(:,:,I_PRO,:)+F_CORD
-            IF (TEMPAV) AVEP(I_PRO,:,:)=AVEP(I_PRO,:,:)+E
-         ENDIF
+c       find hbond force and potential
+c       if ( .not.scl_call ) then
+         if ( hbond ) then
+            call hdrgn(pro_cord,f_cord,tempav,E)
+            zrcord(:,:,i_pro,:)=zrcord(:,:,i_pro,:)+f_cord
+            if (tempav) avep(i_pro,:,:)=avep(i_pro,:,:)+E
+         endif
 
-         IF ( I_HBOND_EASTWOOD ) THEN
-            CALL DSSP_HDRGN_EASTWOOD(PRO_CORD,F_CORD,TEMPAV,E)
-            ZRCORD(:,:,I_PRO,:)=ZRCORD(:,:,I_PRO,:)+F_CORD
-            IF (TEMPAV) AVEP(I_PRO,:,:)=AVEP(I_PRO,:,:)+E
-C           WRITE(6,*)'E HYDROGEN BOND ', E
-       ENDIF
+         if ( i_hbond_eastwood ) then
+            call dssp_hdrgn_eastwood(pro_cord,f_cord,tempav,E)
+            zrcord(:,:,i_pro,:)=zrcord(:,:,i_pro,:)+f_cord
+            if (tempav) avep(i_pro,:,:)=avep(i_pro,:,:)+E
+c           write(6,*)'E hydrogen bond ', E
+       endif
  
-C       IF( .NOT.SCL_CALL ) THEN
-           CALL OXY(MAXTAB,IRES,1,NMRES,PRO_CORD,F_CORD,
-     *              EQDIST,OXSCL,CHRLSCL,RAMASCL,
-     *              OXEXCLDV,NUMLNG,ILONG,NMRES,E)
+c       if( .not.scl_call ) then
+           call oxy(maxtab,ires,1,nmres,pro_cord,f_cord,
+     *              eqdist,oxscl,chrlscl,ramascl,
+     *              oxexcldv,numlng,ilong,nmres,E)
 
-            ZRCORD(:,:,I_PRO,:)=ZRCORD(:,:,I_PRO,:)+F_CORD
-            IF (TEMPAV) AVEP(I_PRO,:,:)=AVEP(I_PRO,:,:)+E
-C        ENDIF
+            zrcord(:,:,i_pro,:)=zrcord(:,:,i_pro,:)+f_cord
+            if (tempav) avep(i_pro,:,:)=avep(i_pro,:,:)+E
+c        endif
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC 
-C        FIND POTENTIAL AND FORCE DUE TO CA/CB VIA LOOKUP 
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc 
+c        find potential and force due to Ca/Cb via lookup 
 
-C          WRITE(SO,*)'IN LOOKUP'
+c          write(SO,*)'in lookup'
 
-         CALL LOOKUP(MAXR,CRDIXN,VPOTNT,FORSE,PRO_CORD,F_CORD,
-     *      TRGENG,NUMLNG,NMRES,RINCINV,RINCSQ,IGOMB,NGOMB,TEMPAV,MAXTAB,ILONG,
-     *      E,IBIASGAUSS,BIAS_AV,BIAS_VAR,BIAS_PREFACTOR,IBIASPOLY,NBIASPOLY,
-     *               BIASPOLY,I_QBIAS_A,I_QBIAS_B,CCEV_DIST,PEXCLD)
-         ZRCORD(:,:,I_PRO,:)=ZRCORD(:,:,I_PRO,:)+F_CORD
-         IF (TEMPAV) AVEP(I_PRO,:,:)=AVEP(I_PRO,:,:)+E
+         call lookup(maxr,crdixn,vpotnt,forse,pro_cord,f_cord,
+     *      trgeng,numlng,nmres,rincinv,rincsq,igomb,ngomb,tempav,maxtab,ilong,
+     *      E,ibiasgauss,bias_av,bias_var,bias_prefactor,ibiaspoly,nbiaspoly,
+     *               biaspoly,i_Qbias_a,i_Qbias_b,ccev_dist,pexcld)
+         zrcord(:,:,i_pro,:)=zrcord(:,:,i_pro,:)+f_cord
+         if (tempav) avep(i_pro,:,:)=avep(i_pro,:,:)+E
 
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-C       FIND NON-ADDITIVE CONTACT CONTRIBUTION
-C                  WRITE(SO,*) 'IN NON_ADD'
+c       find non-additive contact contribution
+c                  write(SO,*) 'in non_add'
 
-          IF (I_NON_ADD_CONTACT) THEN
+          if (i_non_add_contact) then
              E=0.0D0
-             CALL NON_ADD_CONTACT(PRO_CORD,NMRES,TEMPAV,F_CORD,E(1,17))
-             ZRCORD(:,:,I_PRO,:)=ZRCORD(:,:,I_PRO,:)+F_CORD
-             IF (TEMPAV) AVEP(I_PRO,:,:)=AVEP(I_PRO,:,:)+E
-          ENDIF
+             call non_add_contact(pro_cord,nmres,tempav,f_cord,E(1,17))
+             zrcord(:,:,i_pro,:)=zrcord(:,:,i_pro,:)+f_cord
+             if (tempav) avep(i_pro,:,:)=avep(i_pro,:,:)+E
+          endif
 
-         IF((ALTPOTFLAG(1).GT.0).OR.(ALTPOTFLAG(2).GT.0))THEN ! ANISOTROPICALLY VARYING POTENTIAL:
+         if((altpotflag(1).gt.0).or.(altpotflag(2).gt.0))then ! Anisotropically varying potential:
             E=0.0D0
-            CALL ALTPOT_MASTER(PRO_CORD,F_CORD,E,TEMPAV,NMRES)
-             ZRCORD(:,:,I_PRO,:)=ZRCORD(:,:,I_PRO,:)+F_CORD
-             IF (TEMPAV) AVEP(I_PRO,:,:)=AVEP(I_PRO,:,:)+E
-         ENDIF
+            call altpot_master(pro_cord,f_cord,E,tempav,nmres)
+             zrcord(:,:,i_pro,:)=zrcord(:,:,i_pro,:)+f_cord
+             if (tempav) avep(i_pro,:,:)=avep(i_pro,:,:)+E
+         endif
 
-         IF (I_CON_P_AP) THEN 
+         if (i_con_P_AP) then 
              E=0.0D0
-             CALL CONTACT_P_AP(PRO_CORD,NMRES,F_CORD,E(1,40:42))
-             ZRCORD(:,:,I_PRO,:)=ZRCORD(:,:,I_PRO,:)+F_CORD
-             IF (TEMPAV) AVEP(I_PRO,:,:)=AVEP(I_PRO,:,:)+E
-         ENDIF
-  500 CONTINUE                        ! END OF LOOP OVER PROTEINS
+             call contact_P_AP(pro_cord,nmres,f_cord,E(1,40:42))
+             zrcord(:,:,i_pro,:)=zrcord(:,:,i_pro,:)+f_cord
+             if (tempav) avep(i_pro,:,:)=avep(i_pro,:,:)+E
+         endif
+  500 continue                        ! End of loop over proteins
 
-C   ENERGY 
-C   AVEP(NUM_PRO , ???? , ENERGY TERM , NMDIF)
+c   energy 
+c   avep(num_pro , ???? , energy term , nmdif)
 
-C FORCE 
-C ZRCORD(NUMRES,I_AXIS,NUMPRO,CORD TYPE ),
+c force 
+c zrcord(numres,i_axis,numpro,cord type ),
 
-C     ---------------------- DONE -----------------------
-      RETURN
-      END
+c     ---------------------- done -----------------------
+      return
+      end

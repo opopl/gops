@@ -1,258 +1,258 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
-C   FINNIS-SINCLAIR POTENTIAL ADDED BY J.A. ELLIOTT 2009
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
+C   Finnis-Sinclair potential added by J.A. Elliott 2009
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  HERE WE CALCULATE THE FINNIS-SINCLAIR POTENTIAL AND GRADIENT
+C  Here we calculate the Finnis-Sinclair potential and gradient
 C
 C*************************************************************************
 C
       SUBROUTINE FS (X,V,PG,GRADT)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
-      INTEGER J1, J2, J, ATOMTYPE
+      INTEGER J1, J2, j, atomtype
       DOUBLE PRECISION X(3*NATOMS), PG, DIST, PTEMP, V(3*NATOMS),
-     1       GA, FSRHO(NATOMS), VTEMP, RTEMP, DUMMY,
+     1       GA, fsrho(NATOMS), VTEMP, RTEMP, DUMMY,
      2       VTEMP1(NATOMS), VTEMP2(NATOMS), VTEMP3(NATOMS),
-     3       D, A, BETA, C, C0, C1, C2, C3, DX, DY, DZ, MIN_DIST,
-     4       CUTP, CUTR1, CUTR2, TEMP_DIST(NATOMS,NATOMS)
+     3       d, A, beta, c, c0, c1, c2, c3, dx, dy, dz, min_dist,
+     4       cutp, cutr1, cutr2, temp_dist(natoms,natoms)
       LOGICAL GRADT
 
-C FINNIS-SINCLAR POTENTIAL PARAMETERS
-C PHIL MAG A 50, 45 (1984)
-C PARAMETERS FOR FE SUBSEQUENTLY MODIFIED IN ERRATUM
-C PHIL MAG A 53, 161 (1986)
-C (BOTH SETS FOR FE ARE INCLUDED)
+C Finnis-Sinclar potential parameters
+C Phil Mag A 50, 45 (1984)
+C parameters for Fe subsequently modified in Erratum
+C Phil Mag A 53, 161 (1986)
+C (both sets for Fe are included)
 C
-C BCC METALS
+C bcc metals
 C
-C D = DENSITY CUT-OFF [ANGSTROMS]
-C A = BINDING ENERGY [EV]
-C BETA = INTRODUCES MAXIMUM VALUE OF PHI WITHIN THE FIRST-NEAREST-NEIGHBOR DISTANCE.
-C C = TWO-BODY INTERACTION CUT-OFF [ANGSTROMS]
-C C0,C1,C2 = FITTING PARAMETERS
+C d = density cut-off [Angstroms]
+C A = binding energy [eV]
+C beta = introduces maximum value of phi within the first-nearest-neighbor distance.
+C c = two-body interaction cut-off [Angstroms]
+C c0,c1,c2 = fitting parameters
 
-      ATOMTYPE=GATOM
+      atomtype=gatom
 
-      IF (ATOMTYPE.EQ.1) THEN
+      if (atomtype.eq.1) then
 
-C VANADIUM
-        D=3.692767D0
-        A=2.010637D0
-        BETA=0.0D0
-        C=3.8D0
-        C0=-0.8816318D0
-        C1=1.4907756D0
-        C2=-0.3976370D0
+C Vanadium
+        d=3.692767d0
+        A=2.010637d0
+        beta=0.0d0
+        c=3.8d0
+        c0=-0.8816318d0
+        c1=1.4907756d0
+        c2=-0.3976370d0
 
-      ELSE IF (ATOMTYPE.EQ.2) THEN
+      else if (atomtype.eq.2) then
 
-C NIOBIUM
-        D=3.915354D0
-        A=3.013789D0
-        BETA=0.0D0
-        C=4.2D0
-        C0=-1.5640104D0
-        C1=2.0055779D0
-        C2=-0.4663764D0
+C Niobium
+        d=3.915354d0
+        A=3.013789d0
+        beta=0.0d0
+        c=4.2d0
+        c0=-1.5640104d0
+        c1=2.0055779d0
+        c2=-0.4663764d0
 
-      ELSE IF (ATOMTYPE.EQ.3) THEN
+      else if (atomtype.eq.3) then
 
-C TANTALUM
-        D=4.076980D0
-        A=2.591061D0
-        BETA=0.0D0
-        C=4.2D0
-        C0=1.2157373D0
-        C1=0.0271471D0
-        C2=-0.1217350D0
+C Tantalum
+        d=4.076980d0
+        A=2.591061d0
+        beta=0.0d0
+        c=4.2d0
+        c0=1.2157373d0
+        c1=0.0271471d0
+        c2=-0.1217350d0
 
-      ELSE IF (ATOMTYPE.EQ.4) THEN
+      else if (atomtype.eq.4) then
 
-C CHROMIUM
-        D=3.915720D0
-        A=1.453418D0
-        BETA=1.8D0
-        C=2.9D0
-        C0=29.1429813D0
-        C1=-23.3975027D0
-        C2=4.7578297D0
+C Chromium
+        d=3.915720d0
+        A=1.453418d0
+        beta=1.8d0
+        c=2.9d0
+        c0=29.1429813d0
+        c1=-23.3975027d0
+        c2=4.7578297d0
 
-      ELSE IF (ATOMTYPE.EQ.5) THEN
+      else if (atomtype.eq.5) then
 
-C MOLYBDENUM
-        D=4.114825D0
-        A=1.887117D0
-        BETA=0.0D0
-        C=3.25D0
-        C0=43.4475218D0
-        C1=-31.9332978D0
-        C2=6.0804249D0
+C Molybdenum
+        d=4.114825d0
+        A=1.887117d0
+        beta=0.0d0
+        c=3.25d0
+        c0=43.4475218d0
+        c1=-31.9332978d0
+        c2=6.0804249d0
 
-      ELSE IF (ATOMTYPE.EQ.6) THEN
+      else if (atomtype.eq.6) then
 
-C TUNGSTEN
-        D=4.400224D0
-        A=1.896373D0
-        BETA=0.0D0
-        C=3.25D0
-        C0=47.1346499D0
-        C1=-33.7665655D0
-        C2=6.2541999D0
+C Tungsten
+        d=4.400224d0
+        A=1.896373d0
+        beta=0.0d0
+        c=3.25d0
+        c0=47.1346499d0
+        c1=-33.7665655d0
+        c2=6.2541999d0
 
-      ELSE IF (ATOMTYPE.EQ.7) THEN
+      else if (atomtype.eq.7) then
 
-C IRON - ORIGINAL PARAMETERS IN PHIL MAG A VOL. 50 P.45 (1984)
-        D=3.699579D0
-        A=1.889846D0
-        BETA=1.8D0
-        C=3.4D0
-        C0=1.2110601D0
-        C1=-0.7510840D0
-        C2=0.1380773D0
+C Iron - original parameters in Phil Mag A vol. 50 p.45 (1984)
+        d=3.699579d0
+        A=1.889846d0
+        beta=1.8d0
+        c=3.4d0
+        c0=1.2110601d0
+        c1=-0.7510840d0
+        c2=0.1380773d0
 
-      ELSE IF (ATOMTYPE.EQ.8) THEN
+      else if (atomtype.eq.8) then
 
-C IRON - MODIFIED PARAMETERS IN ERRATUM, PHIL MAG A VOL. 53 P.161 (1986)
-        D=3.569745D0
-        A=1.828905D0
-        BETA=1.8D0
-        C=3.4D0
-        C0=1.2371147D0
-        C1=-0.3592185D0
-        C2=-0.0385607D0
+C Iron - modified parameters in Erratum, Phil Mag A vol. 53 p.161 (1986)
+        d=3.569745d0
+        A=1.828905d0
+        beta=1.8d0
+        c=3.4d0
+        c0=1.2371147d0
+        c1=-0.3592185d0
+        c2=-0.0385607d0
 
-      ENDIF
+      endif
 
-C IF BETA IS NON-ZERO, SET A MINIMUM DISTANCE CUT-OFF TO AVOID RTEMP GOING NEGATIVE
-      IF (BETA.NE.0D0) THEN
-        MIN_DIST=D*(BETA-1.0D0)/BETA
-      ELSE
-        MIN_DIST=0.0D0
-      ENDIF
+c If beta is non-zero, set a minimum distance cut-off to avoid rtemp going negative
+      if (beta.ne.0d0) then
+        min_dist=d*(beta-1.0d0)/beta
+      else
+        min_dist=0.0d0
+      endif
 
-C CALCULATE THE POTENTIAL AND GRADIENT TERMS
+c Calculate the potential and gradient terms
 
-C FIRST, POPULATE DENSITY AND DISTANCE MATRICES
+c First, populate density and distance matrices
 
-      DO J2=1,NATOMS                               ! INITIALISE DISTANCE AND DENSITY ARRAYS
-        DO J1=1,NATOMS
-          TEMP_DIST(J1,J2)=0.0D0
-        ENDDO
-        FSRHO(J2)=0.0D0
-      ENDDO
+      do j2=1,natoms                               ! initialise distance and density arrays
+        do j1=1,natoms
+          temp_dist(j1,j2)=0.0d0
+        enddo
+        fsrho(j2)=0.0d0
+      enddo
 
-      RTEMP = 0.0D0                               ! INITIALISE ENERGY ACCUMULATORS
-      PTEMP = 0.0D0
+      rtemp = 0.0d0                               ! initialise energy accumulators
+      ptemp = 0.0d0
 
-      DO J1=1,NATOMS-1                              ! BEGIN OUTER LOOP OVER ALL ATOMS EXCEPT LAST
+      do j1=1,natoms-1                              ! begin outer loop over all atoms except last
 
-        DO J2=J1+1,NATOMS                           ! BEGIN FIRST INNER LOOP OVER ALL J2>J1
+        do j2=j1+1,natoms                           ! begin first inner loop over all j2>j1
 
-          TEMP_DIST(J2,J1)=                           ! CALC AND STORE DISTANCE BETWEEN ATOMS J1,J2
-     1         DSQRT(( X(3*(J2-1)+1)-X(3*(J1-1)+1) )**2 +
+          temp_dist(j2,j1)=                           ! calc and store distance between atoms j1,j2
+     1         dsqrt(( X(3*(J2-1)+1)-X(3*(J1-1)+1) )**2 +
      2         ( X(3*(J2-1)+2)-X(3*(J1-1)+2) )**2 +
      3         ( X(3*(J2-1)+3)-X(3*(J1-1)+3) )**2)
 
-          DIST=TEMP_DIST(J2,J1)                       ! STORE THE ACTUAL DISTANCE USED IN INNER LOOP
-          TEMP_DIST(J1,J2)=DIST                       ! IMPOSE SYMMETRY ON DISTANCE MATRIX
+          dist=temp_dist(j2,j1)                       ! store the actual distance used in inner loop
+          temp_dist(j1,j2)=dist                       ! impose symmetry on distance matrix
 
-          CUTP=DSIGN(0.5D0,C-DIST)+0.5D0                               ! CUT-OFF FOR 2-BODY INTERACTION
-          PTEMP=PTEMP
-     1          +CUTP*(((DIST-C)**2)*(C0+DIST*(C1+C2*DIST)))           ! ACCUMULATE TWO-BODY POTENTIAL TERM
+          cutp=dsign(0.5d0,c-dist)+0.5d0                               ! cut-off for 2-body interaction
+          ptemp=ptemp
+     1          +cutp*(((dist-c)**2)*(c0+dist*(c1+c2*dist)))           ! accumulate two-body potential term
 
-          CUTR1=DSIGN(0.5D0,D-DIST)+0.5D0                              ! CUT-OFF FOR MANY-BODY INTERACTION
-          CUTR2=DSIGN(0.5D0,DIST-MIN_DIST)+0.5D0                       ! MINIMUM DISTANCE CUT-OFF
-          RTEMP=CUTR1*CUTR2*((DIST-D)**2+(BETA*(DIST-D)**3/D))
-          FSRHO(J1)=FSRHO(J1)+RTEMP                   ! ACCUMULATE CONTRIBUTION TO DENSITY MATRIX
-          FSRHO(J2)=FSRHO(J2)+RTEMP                   ! ACCUMULATE CONTRIBUTION TO DENSITY MATRIX
+          cutr1=dsign(0.5d0,d-dist)+0.5d0                              ! cut-off for many-body interaction
+          cutr2=dsign(0.5d0,dist-min_dist)+0.5d0                       ! minimum distance cut-off
+          rtemp=cutr1*cutr2*((dist-d)**2+(beta*(dist-d)**3/d))
+          fsrho(j1)=fsrho(j1)+rtemp                   ! accumulate contribution to density matrix
+          fsrho(j2)=fsrho(j2)+rtemp                   ! accumulate contribution to density matrix
 
-        ENDDO                                       ! END INNER LOOP OVER ALL J2>J1
+        enddo                                       ! end inner loop over all j2>j1
 
-      ENDDO                                         ! END OUTER LOOP OVER ALL ATOMS EXCEPT LAST
+      enddo                                         ! end outer loop over all atoms except last
 
-C     NOW, SUM THE POTENTIAL ENERGY OVER ALL ATOMS
+c     Now, sum the potential energy over all atoms
 
-      PG=PTEMP                                    ! INITIALISE POTENTIAL ENERGY
+      pg=ptemp                                    ! initialise potential energy
 
-      DO J1=1,NATOMS
-        FSRHO(J1)=DSQRT(FSRHO(J1))                ! SQUARE ROOT DENSITY
-        PG=PG-A*FSRHO(J1)                         ! ACCUMULATE POTENTIAL ENERGY
-      ENDDO
+      do j1=1,natoms
+        fsrho(j1)=dsqrt(fsrho(j1))                ! square root density
+        pg=pg-a*fsrho(j1)                         ! accumulate potential energy
+      enddo
 
-C     CALCULATE GRADIENT TERMS, IF REQUIRED
+c     Calculate gradient terms, if required
 
-      IF (GRADT) THEN
+      if (gradt) then
 
-        DO J1=1,NATOMS                            ! INITIALISE TOTAL GRADIENT TERMS
-          V(3*(J1-1)+1)=0.D0
-          V(3*(J1-1)+2)=0.D0
-          V(3*(J1-1)+3)=0.D0
-          VTEMP1(J1)=0.0D0
-          VTEMP2(J1)=0.0D0
-          VTEMP3(J1)=0.0D0
-        ENDDO
+        do j1=1,natoms                            ! initialise total gradient terms
+          V(3*(J1-1)+1)=0.d0
+          V(3*(J1-1)+2)=0.d0
+          V(3*(J1-1)+3)=0.d0
+          vtemp1(J1)=0.0d0
+          vtemp2(J1)=0.0d0
+          vtemp3(J1)=0.0d0
+        enddo
 
-        DO J1=1,NATOMS-1                                ! BEGIN OUTER LOOP OVER ALL ATOMS EXCEPT LAST
+        do j1=1,natoms-1                                ! begin outer loop over all atoms except last
 
-          DUMMY=1.0D0/FSRHO(J1)                         ! STORE RECIPROCAL OF DENSITY ELEMENT FOR ATOM J1
+          dummy=1.0d0/fsrho(j1)                         ! store reciprocal of density element for atom j1
 
-          DO J2=J1+1,NATOMS                             ! BEGIN INNER LOOP OVER ALL J2>J1
+          do j2=j1+1,natoms                             ! begin inner loop over all j2>j1
 
-            DIST=TEMP_DIST(J1,J2)                                        ! RECALL DISTANCE FROM EARLIER LOOP
+            dist=temp_dist(j1,j2)                                        ! recall distance from earlier loop
 
-            CUTP=DSIGN(0.5D0,C-DIST)+0.5D0                               ! CUT-OFF FOR 2-BODY GRADIENT
-            VTEMP= CUTP*(2.0D0*(DIST-C)*(C0+DIST*(C1+C2*DIST))           ! ACCUMULATE 2-BODY GRADIENT TERM
-     1             +((DIST-C)**2)*(C1+2.0D0*C2*DIST))/DIST
+            cutp=dsign(0.5d0,c-dist)+0.5d0                               ! cut-off for 2-body gradient
+            vtemp= cutp*(2.0d0*(dist-c)*(c0+dist*(c1+c2*dist))           ! accumulate 2-body gradient term
+     1             +((dist-c)**2)*(c1+2.0d0*c2*dist))/dist
 
-            CUTR1=DSIGN(0.5D0,D-DIST)+0.5D0                              ! CUT-OFF FOR MANY-BODY GRADIENT
-            CUTR2=DSIGN(0.5D0,DIST-MIN_DIST)+0.5D0                       ! MINIMUM DISTANCE CUT-OFF
-            VTEMP=VTEMP                                                  ! ACCUMULATE MANY-BODY GRADIENT TERM
-     1            -CUTR1*CUTR2*((0.5D0*A)*(DUMMY+1.0D0/FSRHO(J2))*
-     2            (2.0D0*(DIST-D)+3.0D0*(BETA/D)*(DIST-D)**2))/DIST
+            cutr1=dsign(0.5d0,d-dist)+0.5d0                              ! cut-off for many-body gradient
+            cutr2=dsign(0.5d0,dist-min_dist)+0.5d0                       ! minimum distance cut-off
+            vtemp=vtemp                                                  ! accumulate many-body gradient term
+     1            -cutr1*cutr2*((0.5d0*A)*(dummy+1.0d0/fsrho(j2))*
+     2            (2.0d0*(dist-d)+3.0d0*(beta/d)*(dist-d)**2))/dist
 
-            DX=(X(3*(J1-1)+1)-X(3*(J2-1)+1))         ! CALCULATE CARTESIAN COMPONENTS OF DISTANCE
-            DY=(X(3*(J1-1)+2)-X(3*(J2-1)+2))
-            DZ=(X(3*(J1-1)+3)-X(3*(J2-1)+3))
+            dx=(X(3*(J1-1)+1)-X(3*(J2-1)+1))         ! calculate Cartesian components of distance
+            dy=(X(3*(J1-1)+2)-X(3*(J2-1)+2))
+            dz=(X(3*(J1-1)+3)-X(3*(J2-1)+3))
 
-            VTEMP1(J1)=VTEMP1(J1)+VTEMP*DX           ! ACCUMULATE PRIMARY GRADIENT COMPONENTS
-            VTEMP2(J1)=VTEMP2(J1)+VTEMP*DY
-            VTEMP3(J1)=VTEMP3(J1)+VTEMP*DZ
+            vtemp1(j1)=vtemp1(j1)+vtemp*dx           ! accumulate primary gradient components
+            vtemp2(j1)=vtemp2(j1)+vtemp*dy
+            vtemp3(j1)=vtemp3(j1)+vtemp*dz
 
-            VTEMP1(J2)=VTEMP1(J2)-VTEMP*DX           ! ACCUMULATE SYMMETRIC GRADIENT COMPONENTS
-            VTEMP2(J2)=VTEMP2(J2)-VTEMP*DY
-            VTEMP3(J2)=VTEMP3(J2)-VTEMP*DZ
+            vtemp1(j2)=vtemp1(j2)-vtemp*dx           ! accumulate symmetric gradient components
+            vtemp2(j2)=vtemp2(j2)-vtemp*dy
+            vtemp3(j2)=vtemp3(j2)-vtemp*dz
 
-          ENDDO
+          enddo
 
-        ENDDO
+        enddo
 
-C       FINALLY, SUM THE GRADIENT TERMS OVER ALL ATOMS
+c       Finally, sum the gradient terms over all atoms
 
-        DO J1=1,NATOMS
-          V(3*(J1-1)+1)=V(3*(J1-1)+1)+VTEMP1(J1)
-          V(3*(J1-1)+2)=V(3*(J1-1)+2)+VTEMP2(J1)
-          V(3*(J1-1)+3)=V(3*(J1-1)+3)+VTEMP3(J1)
-        ENDDO
+        do j1=1,natoms
+          V(3*(J1-1)+1)=V(3*(J1-1)+1)+vtemp1(j1)
+          V(3*(J1-1)+2)=V(3*(J1-1)+2)+vtemp2(j1)
+          V(3*(J1-1)+3)=V(3*(J1-1)+3)+vtemp3(j1)
+        enddo
 
-      ENDIF
+      endif
 
       RETURN
       END

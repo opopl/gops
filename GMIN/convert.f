@@ -58,9 +58,9 @@ C
       SUBROUTINE CONVERT2(OVEC,H1VEC,H2VEC,X,Y,Z,A,B,C)
       USE PORFUNCS
 C
-C  CONVERT H, H, O POSITIONS TO EULERS - NEEDS H, H, O
-C  POSITIONS AND CENTRES OF MASS. HERE WE ALLOW FOR THE POSSIBILITY THAT THE
-C  IDEAL RIGID WATER GEOMETRY MAY BE BROKEN AND TAKE THE BEST FIT.
+C  Convert H, H, O positions to Eulers - needs H, H, O
+C  positions and centres of mass. Here we allow for the possibility that the
+C  ideal rigid water geometry may be broken and take the best fit.
 C
       IMPLICIT NONE
       DOUBLE PRECISION X,Y,Z,A,B,C,OVEC(3),H1VEC(3),H2VEC(3),PI,OL,CL,TH,PH,PS,SINA,SINB,SINC,COSA,COSB,COSC,SP12,SP13,SP22,
@@ -192,7 +192,7 @@ C
 20    A=ABEST
       B=BBEST
       C=CBEST
-C     IF (DMIN.GT.0.1D0) WRITE(*,'(A,F15.5)') 'WARNING, DEVIATION FROM RIGID BODY GEOMETRY DETECTED, BEST FIT IS ',DMIN
+C     IF (DMIN.GT.0.1D0) WRITE(*,'(A,F15.5)') 'WARNING, deviation from rigid body geometry detected, best fit is ',DMIN
 
       RETURN
       END

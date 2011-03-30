@@ -1,24 +1,24 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE GSAVEIT(EREAL,P,NP)
-      USE COMMONS
-      USE QMODULE
+      USE commons
+      use qmodule
       IMPLICIT NONE
 
 
@@ -28,14 +28,14 @@ C
       COMMON /TOT/ NQTOT
       COMMON /PCALL/ NPCALL
 C
-C  SAVE THE LOWEST NSAVE DISTINGUISHABLE CONFIGURATIONS.
+C  Save the lowest NSAVE distinguishable configurations.
 C
 C     WRITE(*,'(A,12E15.7)') 'EREAL,ECONV,QMIN',EREAL,ECONV,(QMIN(J1),J1=1,NSAVE)
       DO J1=1,NSAVE
          IF (DABS(EREAL-QMIN(J1)).LT.ECONV) THEN
 C
-C  THESE ARE PROBABLY THE SAME - BUT JUST TO MAKE SURE WE SAVE THE 
-C  LOWEST.
+C  These are probably the same - but just to make sure we save the 
+C  lowest.
 C
             IF (EREAL.LT.QMIN(J1)) THEN
                QMIN(J1)=EREAL
@@ -76,12 +76,12 @@ C
       DO J1=1,NTARGETS
          IF (EREAL-TARGETS(J1).LT.ECONV) THEN
             IF (NPAR.LT.2) THEN
-               WRITE(MYUNIT,'(2(A,I15),A)') 'SAVEIT> TARGET HIT AFTER ',NQTOT,' QUENCHES ',NPCALL,' FUNCTION CALLS.'
-               WRITE(MYUNIT,'(2(A,F20.10))') 'SAVEIT> ENERGY=',EREAL,' TARGET=',TARGETS(J1)
+               WRITE(MYUNIT,'(2(A,I15),A)') 'saveit> Target hit after ',NQTOT,' quenches ',NPCALL,' function calls.'
+               WRITE(MYUNIT,'(2(A,F20.10))') 'saveit> Energy=',EREAL,' target=',TARGETS(J1)
             ELSE
-               WRITE(MYUNIT,'(A,I1,A,I2,2(A,I15),A)') '[',NP,']SAVEIT> TARGET HIT IN PARALLEL RUN ',NP,
-     1                    ' AFTER ',NQTOT,' QUENCHES ',NPCALL,' FUNCTION CALLS.'
-               WRITE(MYUNIT,'(A,I1,2(A,F20.10))') '[',NP,']SAVEIT> ENERGY=',EREAL,' TARGET=',TARGETS(J1)
+               WRITE(MYUNIT,'(A,I1,A,I2,2(A,I15),A)') '[',NP,']saveit> Target hit in parallel run ',NP,
+     1                    ' after ',NQTOT,' quenches ',NPCALL,' function calls.'
+               WRITE(MYUNIT,'(A,I1,2(A,F20.10))') '[',NP,']saveit> Energy=',EREAL,' target=',TARGETS(J1)
             ENDIF
             HIT=.TRUE.
          ENDIF
@@ -90,11 +90,11 @@ C
       RETURN
       END
 C
-C  CSW34> NEW SUBROUTINE TO SAVE THE LOWEST NSAVEINTE CONFIGURATIONS INDEXED BY INTERACTION ENTHALPY BETWEEN PROTEIN AND LIGAND
+C  csw34> new subroutine to save the lowest NSAVEINTE configurations indexed by interaction enthalpy between protein and ligand
 C
       SUBROUTINE A9INTESAVEIT(INTEREAL,P,NP)
-      USE COMMONS
-      USE QMODULE
+      USE commons
+      use qmodule
       IMPLICIT NONE
 
 
@@ -104,14 +104,14 @@ C
       COMMON /TOT/ NQTOT
       COMMON /PCALL/ NPCALL
 C
-C  SAVE THE LOWEST NSAVEINTE DISTINGUISHABLE CONFIGURATIONS.
+C  Save the lowest NSAVEINTE distinguishable configurations.
 C
 C     WRITE(*,'(A,12E15.7)') 'INTEREAL,ECONV,QMIN',INTEREAL,ECONV,(INTEQMIN(J1),J1=1,NSAVEINTE)
       DO J1=1,NSAVEINTE
          IF (DABS(INTEREAL-INTEQMIN(J1)).LT.ECONV) THEN
 C
-C  THESE ARE PROBABLY THE SAME - BUT JUST TO MAKE SURE WE SAVE THE 
-C  LOWEST.
+C  These are probably the same - but just to make sure we save the 
+C  lowest.
 C
             IF (INTEREAL.LT.INTEQMIN(J1)) THEN
                INTEQMIN(J1)=INTEREAL

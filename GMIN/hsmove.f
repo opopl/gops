@@ -1,23 +1,23 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE HSMOVE(LCOORDSN,NP,NMOVE)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       INTEGER J1, J2, PARTNR(NATOMS), J3, NTYPEA, NUMBERS(NATOMS), NPAIR, NP, NMOVE
       DOUBLE PRECISION FIXDIR(3*NATOMS), BOXL, COLTIM(NATOMS), TIMBIG, RX12, RY12, RZ12, MINIM, 
@@ -116,9 +116,9 @@ C     ENDDO
       T12=COLTIM(NPAIR)
       T122=COLTIM2(J2)
 
-      IF (DEBUG) WRITE(*,'(A,I4,A,I4,A,I4,A,G15.6)') ' COLLISION ',NPAIR,' IS BETWEEN ATOMS ',J1,' AND ',J2,' AT TIME ',T12
+      IF (DEBUG) WRITE(*,'(A,I4,A,I4,A,I4,A,G15.6)') ' collision ',NPAIR,' is between atoms ',J1,' and ',J2,' at time ',T12
 C
-C  ADVANCE ALL POSITIONS TO TIME T12*T12FAC. 
+C  Advance all positions to time T12*T12FAC. 
 C
       IF (T12FAC.LE.1.0D0) THEN
          DO J3=1,NATOMS
@@ -127,12 +127,12 @@ C
             LCOORDSN(3*(J3-1)+2,NP)=LCOORDSN(3*(J3-1)+2,NP)+FIXDIR(3*(J3-1)+2)*T12*T12FAC
             LCOORDSN(3*(J3-1)+3,NP)=LCOORDSN(3*(J3-1)+3,NP)+FIXDIR(3*(J3-1)+3)*T12*T12FAC
 C
-C  COULD PUT ATOMS LEAVING THE PRIMARY SUPERCELL BACK IN THE BOX HERE
-C  IF DESIRED.
+C  Could put atoms leaving the primary supercell back in the box here
+C  if desired.
 C
          ENDDO
 C
-C  ADVANCE POSITIONS OF THE COLLIDING PAIR ONLY TO TIME T12. 
+C  Advance positions of the colliding pair only to time T12. 
 C
 C        LCOORDSN(3*(J1-1)+1,NP)=LCOORDSN(3*(J1-1)+1,NP)+FIXDIR(3*(J1-1)+1)*T12
 C        LCOORDSN(3*(J1-1)+2,NP)=LCOORDSN(3*(J1-1)+2,NP)+FIXDIR(3*(J1-1)+2)*T12
@@ -142,17 +142,17 @@ C        LCOORDSN(3*(J2-1)+2,NP)=LCOORDSN(3*(J2-1)+2,NP)+FIXDIR(3*(J2-1)+2)*T12
 C        LCOORDSN(3*(J2-1)+3,NP)=LCOORDSN(3*(J2-1)+3,NP)+FIXDIR(3*(J2-1)+3)*T12
 
 C        IF (PERIODIC) THEN
-C           PRINT*,'SEPARATION BETWEEN THESE ATOMS IS NOW ',SQRT(MINIM(LCOORDSN(3*(J1-1)+1,NP),LCOORDSN(3*(J2-1)+1,NP),BOXL)**2
+C           PRINT*,'separation between these atoms is now ',SQRT(MINIM(LCOORDSN(3*(J1-1)+1,NP),LCOORDSN(3*(J2-1)+1,NP),BOXL)**2
 C    1                                      +MINIM(LCOORDSN(3*(J1-1)+2,NP),LCOORDSN(3*(J2-1)+2,NP),BOXL)**2
 C    2                                      +MINIM(LCOORDSN(3*(J1-1)+3,NP),LCOORDSN(3*(J2-1)+3,NP),BOXL)**2)
 C        ELSE
-C           PRINT*,'SEPARATION BETWEEN THESE ATOMS IS NOW ',SQRT((LCOORDSN(3*(J1-1)+1,NP)-LCOORDSN(3*(J2-1)+1,NP))**2
+C           PRINT*,'separation between these atoms is now ',SQRT((LCOORDSN(3*(J1-1)+1,NP)-LCOORDSN(3*(J2-1)+1,NP))**2
 C    1                                      +(LCOORDSN(3*(J1-1)+2,NP)-LCOORDSN(3*(J2-1)+2,NP))**2
 C    2                                      +(LCOORDSN(3*(J1-1)+3,NP)-LCOORDSN(3*(J2-1)+3,NP))**2)
 C        ENDIF
       ELSE 
 C
-C  PUT THE FIRST COLLIDING PAIR HALF WAY BETWEEN THEIR ENTRANCE/EXIT POSITIONS
+C  Put the first colliding pair half way between their entrance/exit positions
 C
 
          LCOORDSN(3*(J1-1)+1,NP)=LCOORDSN(3*(J1-1)+1,NP)+FIXDIR(3*(J1-1)+1)*(T122-T12)/2
@@ -171,7 +171,7 @@ C
      1            +(LCOORDSN(3*(J1-1)+2,NP)-LCOORDSN(3*(J2-1)+2,NP))**2
      2            +(LCOORDSN(3*(J1-1)+3,NP)-LCOORDSN(3*(J2-1)+3,NP))**2)
          ENDIF
-C        PRINT*,'SEPARATION HALF WAY BETWEEN ENTRANCE AND EXIT=',DNEW
+C        PRINT*,'separation half way between entrance and exit=',DNEW
 
          IF (BINARY) THEN
             IF (J1.LE.NTYPEA) THEN
@@ -185,7 +185,7 @@ C        PRINT*,'SEPARATION HALF WAY BETWEEN ENTRANCE AND EXIT=',DNEW
             ENDIF
          ENDIF
 C
-C  RESCALE THE DISTANCE BETWEEN THE FIRST COLLIDING PAIR
+C  Rescale the distance between the first colliding pair
 C
          IF (PERIODIC) THEN
             RX12=MINIM(LCOORDSN(3*(J1-1)+1,NP),LCOORDSN(3*(J2-1)+1,NP),BOXL)*SQRT(SIGSQ)/DNEW/2
@@ -225,7 +225,7 @@ C
      1            +(LCOORDSN(3*(J1-1)+2,NP)-LCOORDSN(3*(J2-1)+2,NP))**2
      2            +(LCOORDSN(3*(J1-1)+3,NP)-LCOORDSN(3*(J2-1)+3,NP))**2)
          ENDIF
-C        PRINT*,'SEPARATION RESET TO ',DNEW
+C        PRINT*,'separation reset to ',DNEW
       ENDIF
 
 C     LSTEP=0.0D0
@@ -238,7 +238,7 @@ C     CALL ORTHOG(FIXDIR,LCOORDS,NATOMS,3*NATOMS,.TRUE.)
 
       ENDDO
      
-      IF (DEBUG) WRITE(*,'(I4,A)') NMOVE,' HARD SPHERE TYPE COLLISIONS COMPLETED'
+      IF (DEBUG) WRITE(*,'(I4,A)') NMOVE,' hard sphere type collisions completed'
       
       RETURN
       END

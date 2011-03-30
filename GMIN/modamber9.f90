@@ -1,44 +1,44 @@
       MODULE MODAMBER9 
-!      USE COMMONS, ONLY : NATOMS        ! COORDS DELETED
+!      use commons, only : natoms        ! COORDS deleted
 
       IMPLICIT NONE
       SAVE
 
-! STUFF FOR DUMPING NORMAL MODE INFO
-      LOGICAL, DIMENSION(:), ALLOCATABLE :: DUMPMODEN
-      LOGICAL :: KTWNT
-      DOUBLE PRECISION :: KTWN
+! Stuff for dumping normal mode info
+      logical, dimension(:), allocatable :: DUMPMODEN
+      logical :: KTWNT
+      double precision :: KTWN
 
-      LOGICAL MDSTEPT, READCOORDS, NOCISTRANSRNA, CHECKCISTRANSALWAYS, GOODSTRUCTURE1, GOODSTRUCTURE2, AMBERENERGIEST
+      LOGICAL MDSTEPT, readcoords, NOCISTRANSRNA, CHECKCISTRANSALWAYS, GOODSTRUCTURE1, GOODSTRUCTURE2, AMBERENERGIEST
       LOGICAL NOCISTRANSDNA, UACHIRAL, SETCHIRAL, CHECKCISTRANSALWAYSRNA, CHECKCISTRANSALWAYSDNA
-      CHARACTER(LEN=20) :: AMBERSTR
-      CHARACTER(LEN=8)  :: AMBERSTR1
-      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: COORDS1, COORDS, ATMASS1
-      INTEGER, DIMENSION(:), ALLOCATABLE :: CISARRAY1, CISARRAY2, CHIARRAY1, CHIARRAY2
-      CHARACTER(LEN=81) :: PRMTOP
+      CHARACTER(len=20) :: amberstr
+      CHARACTER(len=8)  :: amberstr1
+      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: coords1, coords, atmass1
+      INTEGER, DIMENSION(:), ALLOCATABLE :: cisarray1, cisarray2, chiarray1, chiarray2
+      CHARACTER(len=81) :: prmtop
       DOUBLE PRECISION, PARAMETER :: TEMPPARAM = 0.0000001
-!      INTEGER   NATOM, IREST, NTB
-!      DOUBLE PRECISION    TT,CRD(3*656),VEL(3,656)
+!      INTEGER   NATOM, irest, ntb
+!      DOUBLE PRECISION    tt,crd(3*656),vel(3,656)
 ! LIGAND MOVE PARAMETERS
-! LIGROTSCALE = SCALING FACTOR FOR RIGID ROTATIONS (0->1)
-! LIGCARTSTEP = SIZE OF RANDOM CARTESIAN COORDINATE MOVE FOR LIGAND 
-! LIGTRANSSTEP = SIZE OF RIGID TRANSLATION MOVE FOR LIGAND 
-! LIGMOVEFREQ = FREQUENCY OF LIGAND MOVES I.E. 1 = EVERY STEP
-! DOLIGMOVE = LOGICAL SWITCH TO TELL AMBERINTERFACE.F TO DO THE LIGAND MOVE
-      DOUBLE PRECISION :: LIGROTSCALE, LIGCARTSTEP, LIGTRANSSTEP
-      INTEGER :: LIGMOVEFREQ
-      LOGICAL :: DOLIGMOVE=.FALSE.
+! ligrotscale = scaling factor for rigid rotations (0->1)
+! ligcartstep = size of random cartesian coordinate move for ligand 
+! ligtransstep = size of rigid translation move for ligand 
+! ligmovefreq = frequency of ligand moves i.e. 1 = every step
+! doligmove = logical switch to tell amberinterface.f to do the ligand move
+      DOUBLE PRECISION :: ligrotscale, ligcartstep, ligtransstep
+      INTEGER :: ligmovefreq
+      LOGICAL :: doligmove=.FALSE.
 ! END OF LIGAND MOVE PARAMETERS
 
 ! ROTAMER MOVE PARAMETERS
-! ROTAMERT = LOGICAL SWITCH INDICATING ROTAMER MOVES SHOULD BE USED
-! ROTMAXCHANGE = MAXIMUM NUMBER OF ROTAMERS TO CHANGE IN ONE STEP
-! ROTPSELECT = THE PROBABILITY OF CHOOSING A PARTICULAR ROTAMER
-! ROTOCCUW = THE AMOUNT THE OCCUPATION FREQUENCY AFFECTS THE ROTAMER SELECTION I.E.
-!            ROTOCCUW = 0.0 -> ALL ROTAMERS POSSIBLE
-!            ROTOCCUW = 0.004 -> ONLY ROTAMERS WITH A > 0.4% OCCUPATION SELECTED
-! ROTCENTRE = RESIDUE ID USED TO SPECIFY CENTRE OF ROTAMER MOVES (LIGAND MAYBE?)
-! ROTCUTTOFF = SELECTION PROBABILITY DECAYS LINEARLY FROM THE CENTRE (ABOVE) TO THE CUTOFF
+! rotamert = logical switch indicating rotamer moves should be used
+! rotmaxchange = maximum number of rotamers to change in one step
+! rotpselect = the probability of choosing a particular rotamer
+! rotoccuw = the amount the occupation frequency affects the rotamer selection i.e.
+!            rotoccuw = 0.0 -> all rotamers possible
+!            rotoccuw = 0.004 -> only rotamers with a > 0.4% occupation selected
+! rotcentre = residue id used to specify centre of rotamer moves (ligand maybe?)
+! rotcuttoff = selection probability decays linearly from the centre (above) to the cutoff
       LOGICAL :: ROTAMERT
       INTEGER :: ROTMAXCHANGE, ROTCENTRE
       DOUBLE PRECISION :: ROTPSELECT, ROTOCCUW, ROTCUTOFF 
@@ -53,304 +53,304 @@
       LOGICAL, ALLOCATABLE :: ATOMGROUPS(:,:)
       
 ! END OF GROUP ROTATION MOVE PARAMETERS
-      INTEGER :: N_AMB_CALLS=0      
+      INTEGER :: n_amb_calls=0      
 !      CHARACTER(20) AMBERPRMTOP 
-!      DOUBLE PRECISION XBAR, YBAR, ZBAR
-!   DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE        :: Y
-   DOUBLE PRECISION,  DIMENSION(:), ALLOCATABLE :: X
-   INTEGER, DIMENSION(:), ALLOCATABLE :: IX, IPAIRS
-   CHARACTER(LEN=4), DIMENSION(:), ALLOCATABLE :: IH
-   INTEGER :: MYUNITNEW,MYUNIT2,MDCRD_UNIT,MDINFO_UNIT,AMBPDB_UNIT,AMBXYZ_UNIT,AMBRST_UNIT,AMBFINALIO_NODE
-LOGICAL MASTER
-COMMON/EXTRA_LOGICAL/MASTER
+!      DOUBLE PRECISION xbar, ybar, zbar
+!   DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE        :: y
+   double precision,  dimension(:), allocatable :: x
+   integer, dimension(:), allocatable :: ix, ipairs
+   character(len=4), dimension(:), allocatable :: ih
+   integer :: myunitnew,myunit2,mdcrd_unit,mdinfo_unit,ambpdb_unit,ambxyz_unit,ambrst_unit,ambfinalio_node
+logical master
+common/extra_logical/master
 
 
-INTEGER IREDIR(8)
-COMMON/NMRRDR/REDIR,IREDIR
+integer iredir(8)
+common/nmrrdr/redir,iredir
 
-INTEGER NMROPT,IPRINT,NOESKP,ISCALE,IPNLTY,IUSE,MAXSUB,JAR
-DOUBLE PRECISION SCALM,PENCUT,ENSAVE,TAUSW,EBDEV,EADEV,DRJAR
-COMMON/NMR1AMBER/SCALM,PENCUT,ENSAVE,TAUSW,EBDEV,EADEV,DRJAR, &
-      NMROPT,IPRINT,NOESKP,ISCALE,IPNLTY,IUSE,MAXSUB,JAR
+integer nmropt,iprint,noeskp,iscale,ipnlty,iuse,maxsub,jar
+double precision scalm,pencut,ensave,tausw,ebdev,eadev,drjar
+common/nmr1amber/scalm,pencut,ensave,tausw,ebdev,eadev,drjar, &
+      nmropt,iprint,noeskp,iscale,ipnlty,iuse,maxsub,jar
 
-INTEGER     NTPR,NTWR,NTWX,NTWV,NTWE,NTPP,IOUTFM,NTWPRT,NTAVE
-COMMON/HULP/NTPR,NTWR,NTWX,NTWV,NTWE,NTPP,IOUTFM,NTWPRT,NTAVE
+integer     ntpr,ntwr,ntwx,ntwv,ntwe,ntpp,ioutfm,ntwprt,ntave
+common/hulp/ntpr,ntwr,ntwx,ntwv,ntwe,ntpp,ioutfm,ntwprt,ntave
 
-!  PARAMETERS FOR LES:
+!  parameters for LES:
 
-INTEGER MAXLES,MAXLESTYP,MAXLESADJ
-PARAMETER (MAXLES=500000)
-PARAMETER (MAXLESTYP=100)
-PARAMETER (MAXLESADJ=100000)
+integer maxles,maxlestyp,maxlesadj
+parameter (maxles=500000)
+parameter (maxlestyp=100)
+parameter (maxlesadj=100000)
 
-INTEGER BC_LESR,BC_LESI
-PARAMETER( BC_LESI=1+MAXLES*3+MAXLESADJ*2+1)
-PARAMETER (BC_LESR=MAXLESTYP*MAXLESTYP+1)
+integer bc_lesr,bc_lesi
+parameter( bc_lesi=1+maxles*3+maxlesadj*2+1)
+parameter (bc_lesr=maxlestyp*maxlestyp+1)
 
-DOUBLE PRECISION LESFAC(MAXLESTYP*MAXLESTYP),LFAC
+double precision lesfac(maxlestyp*maxlestyp),lfac
 
-! FOR SEPARATE LES AND NON-LES TEMPERATURE COUPLING
+! for separate LES and non-LES temperature coupling
 
-DOUBLE PRECISION EKINLES0,TEMP0LES,RNDFLES,SDFACLES
-DOUBLE PRECISION SCALTLES,TEMPSULES,EKELES,RSDLES
-DOUBLE PRECISION EKMHLES,EKPHLES
+double precision ekinles0,temp0les,rndfles,sdfacles
+double precision scaltles,tempsules,ekeles,rsdles
+double precision ekmhles,ekphles
 
-COMMON/LESR/LESFAC,TEMP0LES
+common/lesr/lesfac,temp0les
 
-LOGICAL BELLY, ERSTOP, QSETUP, QPSANDER
+logical belly, erstop, qsetup, qpsander
 
-LOGICAL NEWSTYLE,OK
-INTEGER BC_MDI  ! SIZE IN INTEGERS OF COMMON BLOCK MDI
-INTEGER BC_MDR  ! SIZE IN REALS OF COMMON BLOCK MDR
+logical newstyle,ok
+integer BC_MDI  ! size in integers of common block mdi
+integer BC_MDR  ! size in Reals of common block mdr
 
-      INTEGER ISGSTA,ISGEND,IPS,NNBIPST,NNBIPS
+      integer ISGSTA,ISGEND,IPS,NNBIPST,NNBIPS
       COMMON/DTSGI/ISGSTA,ISGEND,IPS,NNBIPST,NNBIPS
 
       LOGICAL TSGLD,TLANGV,TEIPS,TVIPS
       COMMON/DTSGL/TSGLD,TLANGV,TEIPS,TVIPS
 
-   ! RUNMIN/TRAJENE VAR
-   DOUBLE PRECISION CARRMS
+   ! runmin/trajene var
+   double precision carrms
 
 
-!+ SPECIFICATION AND CONTROL OF AMBER'S WORKING PRECISION
+!+ Specification and control of Amber's working precision
 
 
-DOUBLE PRECISION BOX,CUT,SCNB,SCEE,DIELC,RAD,WEL,RADHB,WELHB, &
-      CUTCAP,XCAP,YCAP,ZCAP,FCAP,RWELL,XBOX0,YBOX0,ZBOX0
-COMMON/BOXR/BOX(3),CUT,SCNB,SCEE,DIELC,XBOX0,YBOX0,ZBOX0, &
-      CUTCAP,XCAP,YCAP,ZCAP,FCAP,RWELL, &
-      RAD(100),WEL(100),RADHB(200),WELHB(200)
+double precision box,cut,scnb,scee,dielc,rad,wel,radhb,welhb, &
+      cutcap,xcap,ycap,zcap,fcap,rwell,xbox0,ybox0,zbox0
+common/boxr/box(3),cut,scnb,scee,dielc,xbox0,ybox0,zbox0, &
+      cutcap,xcap,ycap,zcap,fcap,rwell, &
+      rad(100),wel(100),radhb(200),welhb(200)
 
-! ... INTEGERS:
+! ... integers:
 
-INTEGER NTB,IFBOX,NUMPK,NBIT,IFCAP,NATCAP,ISFTRP
-COMMON/BOXI/NTB,IFBOX,NUMPK,NBIT,IFCAP,NATCAP,ISFTRP
+integer ntb,ifbox,numpk,nbit,ifcap,natcap,isftrp
+common/boxi/ntb,ifbox,numpk,nbit,ifcap,natcap,isftrp
 
-DOUBLE PRECISION EXTRABOXDIM
-!PARAMETER (EXTRABOXDIM=30.D0)
+double precision extraboxdim
+!parameter (extraboxdim=30.d0)
 
-! ... FLOATS:
+! ... floats:
 
-DOUBLE PRECISION T,DT,TEMP0,TAUTP,PRES0,COMP,TAUP,TEMP,TEMPI, & !9
-      TOL,TAUR,DX0,DRMS,VLIMIT,RBTARG(9),TMASS,TMASSINV,  & !25
-          KAPPA,OFFSET,SURFTEN,GAMMA_LN,EXTDIEL,INTDIEL,RDT,  & !32
-          GBALPHA,GBBETA,GBGAMMA,CUT_INNER,CLAMBDA,SALTCON,  & !38
-          SOLVPH,RGBMAX,FSMAX,RESTRAINT_WT, &  !42
-          SKMIN,SKMAX,VFAC,GBNECKSCALE,V11,V12,V22,KEVB,EVBT,ARAD   !52
-PARAMETER (BC_MDR=52)
-COMMON/MDR/T,DT,TEMP0,TAUTP,PRES0,COMP,TAUP,TEMP,TEMPI, &
-      TOL,TAUR,DX0,DRMS,VLIMIT,RBTARG,TMASS,TMASSINV, &
-      KAPPA,OFFSET,SURFTEN,GAMMA_LN,EXTDIEL,INTDIEL,RDT, &
-      GBALPHA,GBBETA,GBGAMMA,CUT_INNER,CLAMBDA,SALTCON, &
-      SOLVPH,RGBMAX,FSMAX,RESTRAINT_WT,SKMIN,SKMAX,VFAC,GBNECKSCALE, &
-      V11,V12,V22,KEVB,EVBT,ARAD
+double precision t,dt,temp0,tautp,pres0,comp,taup,temp,tempi, & !9
+      tol,taur,dx0,drms,vlimit,rbtarg(9),tmass,tmassinv,  & !25
+          kappa,offset,surften,gamma_ln,extdiel,intdiel,rdt,  & !32
+          gbalpha,gbbeta,gbgamma,cut_inner,clambda,saltcon,  & !38
+          solvph,rgbmax,fsmax,restraint_wt, &  !42
+          skmin,skmax,vfac,gbneckscale,v11,v12,v22,kevb,evbt,Arad   !52
+parameter (BC_MDR=52)
+common/mdr/t,dt,temp0,tautp,pres0,comp,taup,temp,tempi, &
+      tol,taur,dx0,drms,vlimit,rbtarg,tmass,tmassinv, &
+      kappa,offset,surften,gamma_ln,extdiel,intdiel,rdt, &
+      gbalpha,gbbeta,gbgamma,cut_inner,clambda,saltcon, &
+      solvph,rgbmax,fsmax,restraint_wt,skmin,skmax,vfac,gbneckscale, &
+      v11,v12,v22,kevb,evbt,Arad
 
-! ... STRINGS:
+! ... strings:
 
-CHARACTER(LEN=4) IWTNM,IOWTNM,IHWTNM
-CHARACTER(LEN=256) RESTRAINTMASK,BELLYMASK,TGTFITMASK,TGTRMSMASK,NOSHAKEMASK
-COMMON/MDS/ RESTRAINTMASK,BELLYMASK,TGTFITMASK,TGTRMSMASK,NOSHAKEMASK,  &
-            IWTNM,IOWTNM,IHWTNM(2)
+character(len=4) iwtnm,iowtnm,ihwtnm
+character(len=256) restraintmask,bellymask,tgtfitmask,tgtrmsmask,noshakemask
+common/mds/ restraintmask,bellymask,tgtfitmask,tgtrmsmask,noshakemask,  &
+            iwtnm,iowtnm,ihwtnm(2)
 
-INTEGER NRP,NSPM,IG,NTX,NTCX,           &!5
-      NTXO,NTT,NTP,NTR,INIT,             &!10
-      NTCM,NSCM,ISOLVP,NSOLUT,KLAMBDA,   &!15
-      NTC,NTCC,NTF,NTID,NTN,             &!20
-      NTNB,NSNB,NDFMIN,NSTLIM,NRC,       &!25
-      NTRX,NPSCAL,IMIN,MAXCYC,NCYC,      &!30
-      NTMIN,IREST,JFASTW,                &!33
-      IBGWAT,IENWAT,IORWAT,              &!36
-      IWATPR,NSOLW,IGB,ALPB,IYAMMP,           &!41
-      GBSA,VRAND,IWRAP,NRESPA,IRESPA,NRESPAI,ICFE,  &!48
-      RBORNSTAT,IVCAP,ICONSTREFF,        &!51
-      NEB,VV,TMODE,IPOL,IESP,IEVB,NODEID,NUM_NOSHAKE,    &!59
-      IDECOMP,ICNSTPH,NTCNSTPH,MAXDUP,NUMEXCHG,REPCRD,NUMWATKEEP     !66
-PARAMETER (BC_MDI=66)
+integer nrp,nspm,ig,ntx,ntcx,           &!5
+      ntxo,ntt,ntp,ntr,init,             &!10
+      ntcm,nscm,isolvp,nsolut,klambda,   &!15
+      ntc,ntcc,ntf,ntid,ntn,             &!20
+      ntnb,nsnb,ndfmin,nstlim,nrc,       &!25
+      ntrx,npscal,imin,maxcyc,ncyc,      &!30
+      ntmin,irest,jfastw,                &!33
+      ibgwat,ienwat,iorwat,              &!36
+      iwatpr,nsolw,igb,alpb,iyammp,           &!41
+      gbsa,vrand,iwrap,nrespa,irespa,nrespai,icfe,  &!48
+      rbornstat,ivcap,iconstreff,        &!51
+      neb,vv,tmode,ipol,iesp,ievb,nodeid,num_noshake,    &!59
+      idecomp,icnstph,ntcnstph,maxdup,numexchg,repcrd,numwatkeep     !66
+parameter (BC_MDI=66)
 
-COMMON/MDIAMBER/NRP,NSPM,IG, &
-      NTX,NTCX,NTXO,NTT,NTP,NTR,INIT,NTCM,NSCM, &
-      ISOLVP,NSOLUT,NTC,NTCC,NTF,NTID,NTN,NTNB,NSNB,NDFMIN, &
-      NSTLIM,NRC,NTRX,NPSCAL,IMIN,MAXCYC,NCYC,NTMIN, &
-      IREST,JFASTW,IBGWAT,IENWAT,IORWAT, &
-      IWATPR,NSOLW,IGB,ALPB,IYAMMP,GBSA,VRAND,NUMEXCHG,REPCRD,NUMWATKEEP, &
-      IWRAP,NRESPA,IRESPA,NRESPAI,ICFE,RBORNSTAT, &
-      IVCAP,ICONSTREFF,IDECOMP,KLAMBDA,ICNSTPH,NTCNSTPH,MAXDUP,NEB,VV, &
-          TMODE,IPOL,IESP,IEVB,NODEID,NUM_NOSHAKE
+common/mdiamber/nrp,nspm,ig, &
+      ntx,ntcx,ntxo,ntt,ntp,ntr,init,ntcm,nscm, &
+      isolvp,nsolut,ntc,ntcc,ntf,ntid,ntn,ntnb,nsnb,ndfmin, &
+      nstlim,nrc,ntrx,npscal,imin,maxcyc,ncyc,ntmin, &
+      irest,jfastw,ibgwat,ienwat,iorwat, &
+      iwatpr,nsolw,igb,alpb,iyammp,gbsa,vrand,numexchg,repcrd,numwatkeep, &
+      iwrap,nrespa,irespa,nrespai,icfe,rbornstat, &
+      ivcap,iconstreff,idecomp,klambda,icnstph,ntcnstph,maxdup,neb,vv, &
+          tmode,ipol,iesp,ievb,nodeid,num_noshake
 
 
-CHARACTER(LEN=4096) GROUPBUFFER
-CHARACTER(LEN=256) MDIN, MDOUT, INPCRD, PARM, RESTRT, &
-      REFC, MDVEL, MDEN, MDCRD, MDINFO, NMRF, MINCOR, &
-      VECS, RADII, FREQE,REDIR(8),RSTDIP,MDDIP,INPDIP,GROUPS,GPES, &
-      CPIN, CPOUT, CPRESTRT, EVBIN, EVBOUT, MMTSB_SETUP_FILE
+character(len=4096) groupbuffer
+character(len=256) mdin, mdout, inpcrd, parm, restrt, &
+      refc, mdvel, mden, mdcrd, mdinfo, nmrf, mincor, &
+      vecs, radii, freqe,redir(8),rstdip,mddip,inpdip,groups,gpes, &
+      cpin, cpout, cprestrt, evbin, evbout, mmtsb_setup_file
 
-CHARACTER OWRITE, FACC
-COMMON /FILES/ GROUPBUFFER, MDIN, MDOUT, INPCRD, PARM, RESTRT, &
-      REFC, MDVEL, MDEN, MDCRD, MDINFO, NMRF, MINCOR, &
-      VECS, RADII, FREQE, OWRITE, FACC,RSTDIP,MDDIP,INPDIP,GROUPS,GPES, &
-      CPIN, CPOUT, CPRESTRT, EVBIN, EVBOUT, MMTSB_SETUP_FILE
+character owrite, facc
+common /files/ groupbuffer, mdin, mdout, inpcrd, parm, restrt, &
+      refc, mdvel, mden, mdcrd, mdinfo, nmrf, mincor, &
+      vecs, radii, freqe, owrite, facc,rstdip,mddip,inpdip,groups,gpes, &
+      cpin, cpout, cprestrt, evbin, evbout, mmtsb_setup_file
 
-INTEGER IER
-INTEGER       NATOM,NRES,NBONH,NBONA,NTHETH,NTHETA,NPHIH, &
-      NPHIA,NNB,NTYPES,NCONP,MAXMEM,NWDVAR,NPARM, &
-      NATC,NATTGTFIT,NATTGTRMS,IBELLY,NATBEL,ISHAKE,NMXRS, &
-      MXSUB,NATYP,NPDEC,I02,I04,I06,I08,I10, &
-      IIBH,IJBH,IICBH,IIBA,IJBA,IICBA, &
-      I24,I26,I28,I30,I32,I34,I36,I38,I40, &
-      I42,I44,I46,I48,I50,I52,I54,I56,I58,IBELLYGP, &
-      ICNSTRGP,ITGTFITGP,ITGTRMSGP,I64,I65,I68, &
-      I70,I72,I74,I76,I78,I79,I80,I82,I84,I86, &
-      ICPSTINF,ICPRESST,ICPTRSCT, ICPPTCNT, &
-      L15,LWINV,LPOL,LCRD,LFORCE,L36,LVEL,LVEL2,L45,L50, &
-      LCRDR,L60,L65,LMASS,L75,L80,L85,L90,L95,L96,L97,L98,L99,LFRCTMP, &
-      L105,L110,L115,L120,L125,L130,L135,L140,L145,L150, &
-      L165,L170,L175,L180,L185,L186,L187,L188,L189,L190, &
-      LCPCRG,LCPENE, &
-      M02,M04,M06,M08,M10,M12,M14,M16,M18,I01, &
-      IIFSTWT,IIFSTWR,NREALB,NINTB,NHOLB,NPAIRB,LASTR,LASTI,LASTH, &
-      LASTPR,NBPER,NGPER,NDPER,IFPERT,LPOLP, NCOPY, &
-      IMASK1,IMASK2,NUMADJST,MXADJMSK,ICPHIDX,ICPTPAIR,LFSG,LVSG,NOSHAKE
+integer ier
+integer       natom,nres,nbonh,nbona,ntheth,ntheta,nphih, &
+      nphia,nnb,ntypes,nconp,maxmem,nwdvar,nparm, &
+      natc,nattgtfit,nattgtrms,ibelly,natbel,ishake,nmxrs, &
+      mxsub,natyp,npdec,i02,i04,i06,i08,i10, &
+      iibh,ijbh,iicbh,iiba,ijba,iicba, &
+      i24,i26,i28,i30,i32,i34,i36,i38,i40, &
+      i42,i44,i46,i48,i50,i52,i54,i56,i58,ibellygp, &
+      icnstrgp,itgtfitgp,itgtrmsgp,i64,i65,i68, &
+      i70,i72,i74,i76,i78,i79,i80,i82,i84,i86, &
+      icpstinf,icpresst,icptrsct, icpptcnt, &
+      l15,lwinv,lpol,lcrd,lforce,l36,lvel,lvel2,l45,l50, &
+      lcrdr,l60,l65,lmass,l75,l80,l85,l90,l95,l96,l97,l98,l99,lfrctmp, &
+      l105,l110,l115,l120,l125,l130,l135,l140,l145,l150, &
+      l165,l170,l175,l180,l185,l186,l187,l188,l189,l190, &
+      lcpcrg,lcpene, &
+      m02,m04,m06,m08,m10,m12,m14,m16,m18,i01, &
+      iifstwt,iifstwr,nrealb,nintb,nholb,npairb,lastr,lasti,lasth, &
+      lastpr,nbper,ngper,ndper,ifpert,lpolp, ncopy, &
+      imask1,imask2,numadjst,mxadjmsk,icphidx,icptpair,lfsg,lvsg,noshake
 
 !  1        2         3         4         5      6     7     8      9      10
-COMMON/MEMORY/ &
- NATOM   ,NRES     ,NBONH    ,NBONA   ,NTHETH,NTHETA,NPHIH ,                       & ! 7
- NPHIA   ,NNB      ,NTYPES   ,NCONP   ,MAXMEM,NWDVAR,NPARM ,                       & !14
- NATC    ,NATTGTFIT,NATTGTRMS,IBELLY  ,NATBEL,ISHAKE,NMXRS ,                       & !21
- MXSUB   ,NATYP    ,NPDEC    ,I02     ,I04   ,I06   ,I08   ,I10   ,                & !29
- IIBH    ,IJBH     ,IICBH    ,IIBA    ,IJBA  ,IICBA ,                              & !35
- I24     ,I26      ,I28      ,I30     ,I32   ,I34   ,I36   ,I38   ,I40   ,         & !44
- I42     ,I44      ,I46      ,I48     ,I50   ,I52   ,I54   ,I56   ,I58   ,IBELLYGP,& !54
- ICNSTRGP,ITGTFITGP,ITGTRMSGP,I64     ,I65   ,I68   ,                              & !60
- I70     ,I72      ,I74      ,I76     ,I78   ,I79   ,I80   ,I82   ,                & !68
- I84     ,I86      ,                                                               & !70
- ICPSTINF,ICPRESST ,ICPTRSCT ,ICPPTCNT,                                            & !74
- L15      ,LWINV   ,LPOL     ,LCRD    ,LFORCE,L36   ,LVEL  ,LVEL2 ,                & !82
- L45     ,L50      ,                                                               & !84
- LCRDR   ,L60      ,L65      ,LMASS   ,L75   ,L80   ,L85   ,L90   ,L95   ,L96   ,  & !94
- L97     ,L98      ,L99      ,LFRCTMP  ,                                           & !98
- L105    ,L110     ,L115     ,L120    ,L125  ,L130  ,L135  ,L140  ,L145  ,L150  ,  & !108
- L165    ,L170     ,L175     ,L180    ,L185  ,L186  ,L187  ,L188  ,L189  ,L190  ,  & !118
- LCPCRG  ,LCPENE   ,                                                               & !120
- M02     ,M04      ,M06      ,M08     ,M10   ,M12   ,M14   ,M16   ,M18   ,I01   ,  & !130
- IIFSTWT ,IIFSTWR  ,NREALB   ,NINTB   ,NHOLB ,NPAIRB,LASTR ,LASTI ,LASTH ,         & !139
- LASTPR  ,NBPER   ,NGPER     ,NDPER   ,IFPERT,LPOLP ,NCOPY ,                       & !146
- IMASK1  ,IMASK2   ,NUMADJST ,MXADJMSK,ICPHIDX,ICPTPAIR,LFSG,LVSG,NOSHAKE            !155
+common/memory/ &
+ natom   ,nres     ,nbonh    ,nbona   ,ntheth,ntheta,nphih ,                       & ! 7
+ nphia   ,nnb      ,ntypes   ,nconp   ,maxmem,nwdvar,nparm ,                       & !14
+ natc    ,nattgtfit,nattgtrms,ibelly  ,natbel,ishake,nmxrs ,                       & !21
+ mxsub   ,natyp    ,npdec    ,i02     ,i04   ,i06   ,i08   ,i10   ,                & !29
+ iibh    ,ijbh     ,iicbh    ,iiba    ,ijba  ,iicba ,                              & !35
+ i24     ,i26      ,i28      ,i30     ,i32   ,i34   ,i36   ,i38   ,i40   ,         & !44
+ i42     ,i44      ,i46      ,i48     ,i50   ,i52   ,i54   ,i56   ,i58   ,ibellygp,& !54
+ icnstrgp,itgtfitgp,itgtrmsgp,i64     ,i65   ,i68   ,                              & !60
+ i70     ,i72      ,i74      ,i76     ,i78   ,i79   ,i80   ,i82   ,                & !68
+ i84     ,i86      ,                                                               & !70
+ icpstinf,icpresst ,icptrsct ,icpptcnt,                                            & !74
+ l15      ,lwinv   ,lpol     ,lcrd    ,lforce,l36   ,lvel  ,lvel2 ,                & !82
+ l45     ,l50      ,                                                               & !84
+ lcrdr   ,l60      ,l65      ,lmass   ,l75   ,l80   ,l85   ,l90   ,l95   ,l96   ,  & !94
+ l97     ,l98      ,l99      ,lfrctmp  ,                                           & !98
+ l105    ,l110     ,l115     ,l120    ,l125  ,l130  ,l135  ,l140  ,l145  ,l150  ,  & !108
+ l165    ,l170     ,l175     ,l180    ,l185  ,l186  ,l187  ,l188  ,l189  ,l190  ,  & !118
+ lcpcrg  ,lcpene   ,                                                               & !120
+ m02     ,m04      ,m06      ,m08     ,m10   ,m12   ,m14   ,m16   ,m18   ,i01   ,  & !130
+ iifstwt ,iifstwr  ,nrealb   ,nintb   ,nholb ,npairb,lastr ,lasti ,lasth ,         & !139
+ lastpr  ,nbper   ,ngper     ,ndper   ,ifpert,lpolp ,ncopy ,                       & !146
+ imask1  ,imask2   ,numadjst ,mxadjmsk,icphidx,icptpair,lfsg,lvsg,noshake            !155
 
-INTEGER VERBOSE,NETFRC,     EW_TYPE,    VDWMETH, &
-      PERIODIC,  USE_PME,    OPT_INFL,   ISCHRGD, FIX_DIP, &
-      FIX_QUAD,  MPOLTYPE,   INDUCED,    FRAMEON, CHNGMASK, &
-      SCALDIP
+integer verbose,netfrc,     ew_type,    vdwmeth, &
+      periodic,  use_pme,    opt_infl,   ischrgd, fix_dip, &
+      fix_quad,  mpoltype,   induced,    frameon, chngmask, &
+      scaldip
 
-COMMON/EWCNTRL/ &
-      VERBOSE,   NETFRC,     EW_TYPE,    VDWMETH,    &! 4
-      PERIODIC,  USE_PME,    OPT_INFL,   ISCHRGD, FIX_DIP,    &!9
-      FIX_QUAD,  MPOLTYPE,   INDUCED,    FRAMEON, CHNGMASK,   &!14
-      SCALDIP
-
-
-!INTEGER    MCHRG,  MAMASS,  MRK,    MREQ,   MTK, &
-!      MTEQ,   MFK,     MFPK,   MQEQ,   MPK, &
-!      MPN,    MPHASE,  MSOLTY, MCN1,   MCN2, &
-!      MASOL,  MBSOL,   MHBCUT, MXREF,  MSF, &
-!      MOMEGA, MGRAPH,  MIAC,   MIBLO,  MICO, &
-!      MLBRES, MIPRES,  MIBH,   MJBH,   MICBH, &
-!      MIBA,   MJBA,    MICBA,  MITH,   MJTH, &
-!      MKTH,   MICTH,   MITA,   MJTA,   MKTA, &
-!      MICTA,  MIPH,    MJPH,   MKPH,   MLPH, &
-!      MICPH,  MIPA,    MJPA,   MKPA,   MLPA, &
-!      MICPA,  MINB,    MSYMBL, MITREE, MGROUP, &
-!      MIGRES, MIAR1,   MX,     MF,     MH, &
-!      MNBEL,  MXBEL,   MIAR2,  MCSCR,  MCVAL, &
-!      MCVEC,  MDD,     MB,     MROOTS, MVECT, &
-!      MXDIR,  MWREF,   MIGRP2, MA,     MWR, &
-!      MWI,    MZ,      MFV1,   MIV1,   MHRAD, &
-!      MGAM,   MWINV,   MKPVT,  MXINIT, MCN114, &
-!      MCN214, MJOIN,   MROTAT, MPOL
+common/ewcntrl/ &
+      verbose,   netfrc,     ew_type,    vdwmeth,    &! 4
+      periodic,  use_pme,    opt_infl,   ischrgd, fix_dip,    &!9
+      fix_quad,  mpoltype,   induced,    frameon, chngmask,   &!14
+      scaldip
 
 
-!COMMON /POINTR/   MCHRG,  MAMASS,  MRK,    MREQ,   MTK, &
-!      MTEQ,   MFK,     MFPK,   MQEQ,   MPK, &
-!      MPN,    MPHASE,  MSOLTY, MCN1,   MCN2, &
-!      MASOL,  MBSOL,   MHBCUT, MXREF,  MSF, &
-!      MOMEGA, MGRAPH,  MIAC,   MIBLO,  MICO, &
-!      MLBRES, MIPRES,  MIBH,   MJBH,   MICBH, &
-!      MIBA,   MJBA,    MICBA,  MITH,   MJTH, &
-!      MKTH,   MICTH,   MITA,   MJTA,   MKTA, &
-!      MICTA,  MIPH,    MJPH,   MKPH,   MLPH, &
-!      MICPH,  MIPA,    MJPA,   MKPA,   MLPA, &
-!      MICPA,  MINB,    MSYMBL, MITREE, MGROUP, &
-!      MIGRES, MIAR1,   MX,     MF,     MH, &
-!      MNBEL,  MXBEL,   MIAR2,  MCSCR,  MCVAL, &
-!      MCVEC,  MDD,     MB,     MROOTS, MVECT, &
-!      MXDIR,  MWREF,   MIGRP2, MA,     MWR, &
-!      MWI,    MZ,      MFV1,   MIV1,   MHRAD, &
-!      MGAM,   MWINV,   MKPVT,  MXINIT, MCN114, &
-!      MCN214, MJOIN,   MROTAT, MPOL
-
-   DOUBLE PRECISION ENE(51)
-   INTEGER NATIVE,NR3,NR
-   ! NMRCAL VARS
-   DOUBLE PRECISION F,ENMR,DEVDIS,DEVANG,DEVTOR,AG,BG,CG
-   INTEGER NUMPHI,NTTYP,NHB
-! COMMON BLOCK CONTAINING VARIABLES RELATING TO NMR RESTRAINTS.
-
-INTEGER       INTREQ,IRLREQ,LNMR01,INMR02,IPRR,IPRW
-COMMON/NMRSTF/INTREQ,IRLREQ,LNMR01,INMR02,IPRR,IPRW
+!integer    mchrg,  mamass,  mrk,    mreq,   mtk, &
+!      mteq,   mfk,     mfpk,   mqeq,   mpk, &
+!      mpn,    mphase,  msolty, mcn1,   mcn2, &
+!      masol,  mbsol,   mhbcut, mxref,  msf, &
+!      momega, mgraph,  miac,   miblo,  mico, &
+!      mlbres, mipres,  mibh,   mjbh,   micbh, &
+!      miba,   mjba,    micba,  mith,   mjth, &
+!      mkth,   micth,   mita,   mjta,   mkta, &
+!      micta,  miph,    mjph,   mkph,   mlph, &
+!      micph,  mipa,    mjpa,   mkpa,   mlpa, &
+!      micpa,  minb,    msymbl, mitree, mgroup, &
+!      migres, miar1,   mx,     mf,     mh, &
+!      mnbel,  mxbel,   miar2,  mcscr,  mcval, &
+!      mcvec,  mdd,     mb,     mroots, mvect, &
+!      mxdir,  mwref,   migrp2, ma,     mwr, &
+!      mwi,    mz,      mfv1,   miv1,   mhrad, &
+!      mgam,   mwinv,   mkpvt,  mxinit, mcn114, &
+!      mcn214, mjoin,   mrotat, mpol
 
 
-DOUBLE PRECISION TGTRMSD,TGTMDFRC
-COMMON/TMD_REAL/ TGTRMSD,TGTMDFRC
+!common /pointr/   mchrg,  mamass,  mrk,    mreq,   mtk, &
+!      mteq,   mfk,     mfpk,   mqeq,   mpk, &
+!      mpn,    mphase,  msolty, mcn1,   mcn2, &
+!      masol,  mbsol,   mhbcut, mxref,  msf, &
+!      momega, mgraph,  miac,   miblo,  mico, &
+!      mlbres, mipres,  mibh,   mjbh,   micbh, &
+!      miba,   mjba,    micba,  mith,   mjth, &
+!      mkth,   micth,   mita,   mjta,   mkta, &
+!      micta,  miph,    mjph,   mkph,   mlph, &
+!      micph,  mipa,    mjpa,   mkpa,   mlpa, &
+!      micpa,  minb,    msymbl, mitree, mgroup, &
+!      migres, miar1,   mx,     mf,     mh, &
+!      mnbel,  mxbel,   miar2,  mcscr,  mcval, &
+!      mcvec,  mdd,     mb,     mroots, mvect, &
+!      mxdir,  mwref,   migrp2, ma,     mwr, &
+!      mwi,    mz,      mfv1,   miv1,   mhrad, &
+!      mgam,   mwinv,   mkpvt,  mxinit, mcn114, &
+!      mcn214, mjoin,   mrotat, mpol
 
-!LOGICAL CALLEDONCE      ! JUST CALL SUBROUTINE AMBERINTERFACE ONCE
-!COMMON/LOGICALS/ CALLEDONCE
+   double precision ene(51)
+   integer native,nr3,nr
+   ! nmrcal vars
+   double precision f,enmr,devdis,devang,devtor,ag,bg,cg
+   integer numphi,nttyp,nhb
+! Common block containing variables relating to nmr restraints.
 
-! SF344> EXTRA VARIABLES ADDED TO TURN ON/OFF THE CONTINUOUS SMOOTHING OF NON-BONDED TERMS
-!       (THAT IS: FORCE SWITCHING FOR THE ELECTROSTATICS, STODDARD-FORD FOR THE VAN DER WAALS TERMS)
+integer       intreq,irlreq,lnmr01,inmr02,iprr,iprw
+common/nmrstf/intreq,irlreq,lnmr01,inmr02,iprr,iprw
 
-INTEGER IFSWITCH, IRESPA2, NRESPA2
-DOUBLE PRECISION FSWITCHBETA
-!DOUBLE PRECISION, DIMENSION (:,:),ALLOCATABLE :: DEDRCUT,ECUT
-COMMON/EXTRASAMBERINT/IFSWITCH,IRESPA2,NRESPA2
-COMMON/EXTRASAMBERDP/FSWITCHBETA
 
-!MSB50
-INTEGER, DIMENSION(:,:),ALLOCATABLE:: IC_COORDS
-CHARACTER(LEN=3), DIMENSION(:), ALLOCATABLE:: IC_IMPROP
-INTEGER:: LENIC
-INTEGER, DIMENSION(:), ALLOCATABLE :: NPHIPSI
-INTEGER, DIMENSION(:), ALLOCATABLE :: NOMEGAC
-INTEGER, DIMENSION(:), ALLOCATABLE :: NSIDECHAIN
-INTEGER, DIMENSION(:), ALLOCATABLE :: NCHIRAL
-INTEGER, DIMENSION(:), ALLOCATABLE :: PHIPSI
-INTEGER, DIMENSION(:), ALLOCATABLE :: OMEGAC
-INTEGER, DIMENSION(:), ALLOCATABLE :: TW_SIDECHAIN
-INTEGER, DIMENSION(:), ALLOCATABLE :: CHIRAL
-LOGICAL, DIMENSION(:), ALLOCATABLE :: IS_SIDECHAIN
-INTEGER, DIMENSION(:), ALLOCATABLE :: NICTOT !NO OF RESIDUES PER SEGMENT
-INTEGER:: NSEG
-LOGICAL:: TOMEGAC
-LOGICAL:: AMBERICT, AMBSTEPT, AMBPERTT,AMBIT, AMBOLDPERTT
-DOUBLE PRECISION:: PERTHRESH !THRESHHOLD FOR DIHEDRAL PERTURBATION
-                    !PERTURB IF DIFFERENCE (START-END) > PERTHRESH
-INTEGER:: NTW_ANGLES !IF AMBPERTT: HOW MANY ANGLES CAN YOU REALLY TWIST
-DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: TW_DIFFP
-LOGICAL :: INTMINPERMT=.FALSE.
+double precision tgtrmsd,tgtmdfrc
+common/tmd_real/ tgtrmsd,tgtmdfrc
+
+!logical calledonce      ! just call subroutine amberinterface once
+!common/logicals/ calledonce
+
+! sf344> extra variables added to turn on/off the continuous smoothing of non-bonded terms
+!       (that is: force switching for the electrostatics, Stoddard-Ford for the van der Waals terms)
+
+integer ifswitch, irespa2, nrespa2
+double precision fswitchbeta
+!double precision, dimension (:,:),allocatable :: dedrcut,ecut
+common/extrasamberint/ifswitch,irespa2,nrespa2
+common/extrasamberdp/fswitchbeta
+
+!msb50
+integer, dimension(:,:),allocatable:: IC_COORDS
+character(len=3), dimension(:), allocatable:: IC_IMPROP
+integer:: lenic
+integer, dimension(:), allocatable :: NPHIPSI
+integer, dimension(:), allocatable :: NOMEGAC
+integer, dimension(:), allocatable :: NSIDECHAIN
+integer, dimension(:), allocatable :: NCHIRAL
+integer, dimension(:), allocatable :: PHIPSI
+integer, dimension(:), allocatable :: OMEGAC
+integer, dimension(:), allocatable :: TW_SIDECHAIN
+integer, dimension(:), allocatable :: CHIRAL
+logical, dimension(:), allocatable :: IS_SIDECHAIN
+integer, dimension(:), allocatable :: NICTOT !no of residues per segment
+integer:: nseg
+logical:: tomegac
+logical:: AMBERICT, AMBSTEPT, AMBPERTT,AMBIT, AMBOLDPERTT
+double precision:: PERTHRESH !threshhold for dihedral perturbation
+                    !perturb if difference (start-end) > perthresh
+integer:: NTW_ANGLES !if ambpertt: how many angles can you really twist
+double precision, dimension(:), allocatable :: TW_DIFFP
+logical :: INTMINPERMT=.FALSE.
 
 !
-! VARIABLES FOR STEERED MINIMISATION/GROUPING.
+! Variables for steered minimisation/grouping.
 !
 LOGICAL :: STEEREDMINT, LOCALSTEEREDMINT
 INTEGER :: SMINATOMA, SMINATOMB
 DOUBLE PRECISION :: SMINK, SMINKINC, SMINDISTSTART, SMINDISTFINISH, SMINKCURRENT
-!   ATOM GROUPS FOR STEERED MINIMISATION
+!   atom groups for steered minimisation
 INTEGER :: NATOMSINA, NATOMSINB, NATOMSINC
 INTEGER,ALLOCATABLE,DIMENSION(:) :: ATOMSINALIST, ATOMSINBLIST, ATOMSINCLIST  
 LOGICAL,ALLOCATABLE,DIMENSION(:) :: ATOMSINALISTLOGICAL, ATOMSINBLISTLOGICAL, ATOMSINCLISTLOGICAL
 !LOGICAL :: BHDEBUG
 !DOUBLE PRECISION :: BHSTEPSIZE
 DOUBLE PRECISION :: AMCHNMAX, AMCHNMIN, AMCHPMAX, AMCHPMIN
-! FREEZING IN AMBER TO SPEED UP ENDHESS
+! freezing in AMBER to speed up endhess
 LOGICAL, ALLOCATABLE,DIMENSION(:) :: FROZENAMBER
 
 END MODULE MODAMBER9 

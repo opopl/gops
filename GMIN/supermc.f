@@ -1,23 +1,23 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE SUPERMC(SPOTEL,SCOORDS,NSUPERCOUNT,POTEL)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       
 
@@ -27,7 +27,7 @@ C
       LOGICAL ASTEST
       SAVE
 C
-C  SAVE THE NSUPER PREVIOUS ENERGIES AND COORDINATES.
+C  Save the NSUPER previous energies and coordinates.
 C
       SPOTEL(NSUPERCOUNT)=POTEL
       DO J2=1,3*NATOMS
@@ -43,7 +43,7 @@ C
          NSSUCCESST=0
          NSFAILT=0
 C
-C  CALCULATE THE INITIAL ENERGY AND SAVE IN SEPREV.
+C  Calculate the initial energy and save in SEPREV.
 C
          SEPREV=SPOTEL(1)
          DO J1=1,3*NATOMS
@@ -54,7 +54,7 @@ C
          IF (ASTEST) THEN
 C           IF (DEBUG) THEN
                WRITE(*,34) RANDOM,SPOTEL(1),SEPREV,NSSUCCESS,NSFAIL
-34             FORMAT('SUPER RAN,SPOTEL,SEPREV,NSSUC,NSFAIL=',3F15.7,2I6,' ACC')
+34             FORMAT('Super RAN,SPOTEL,SEPREV,NSSUC,NSFAIL=',3F15.7,2I6,' ACC')
 C           ENDIF
             NSSUCCESS=NSSUCCESS+1
             SEPREV=SPOTEL(1)
@@ -70,7 +70,7 @@ C              COORDSO(J2,1)=SCOORDS(J2,INDEX(1))
                COORDS(J2,1)=SCOORDS(J2,INDEX(NSUPER))
                COORDSO(J2,1)=SCOORDS(J2,INDEX(NSUPER))
             ENDDO
-            PRINT*,'RESETTING COORDINATES TO ',EPREV(1)
+            PRINT*,'Resetting coordinates to ',EPREV(1)
          ELSE
             NSFAIL=NSFAIL+1
             EPREV(1)=SEPREV
@@ -83,11 +83,11 @@ C              VAT(J2,INDEX(1)?)=VATO(J2,INDEX(1)?)   ?????
 C           ENDDO
 C           IF (DEBUG) THEN
                WRITE(*,36) RANDOM,SPOTEL(1),SEPREV,NSSUCCESS,NSFAIL
-36             FORMAT('SUPER RAN,SPOTEL,SEPREV,NSSUC,NSFAIL=',3F15.7,2I6,' REJ')
+36             FORMAT('Super RAN,SPOTEL,SEPREV,NSSUC,NSFAIL=',3F15.7,2I6,' REJ')
 C           ENDIF
          ENDIF
 C
-C  CHECK THE ACCEPTANCE RATIO.
+C  Check the acceptance ratio.
 C
          IF ((MOD(NSUPERSTEP,NSACCEPT).EQ.0).AND.(NSEED.EQ.0)) THEN
             IF (1.0D0*(NSSUCCESS)/(1.0D0*(NSSUCCESS+NSFAIL)).GT.SACCRAT) THEN
@@ -97,17 +97,17 @@ C              SUPSTEP=SUPSTEP*1.1D0
 C              SUPSTEP=SUPSTEP/1.1D0
                TEMPS=TEMPS*1.1D0
             ENDIF
-C           WRITE(*,'(A,F15.7)') 'SUPERSTEP SCALING FACTOR IS NOW ',SUPSTEP
-            WRITE(*,'(A,F15.7)') 'SUPERSTEP TEMPERATURE IS NOW ',TEMPS
+C           WRITE(*,'(A,F15.7)') 'Superstep scaling factor is now ',SUPSTEP
+            WRITE(*,'(A,F15.7)') 'Superstep temperature is now ',TEMPS
             WRITE(*,'(A,I4,A,F15.7)') 
-     1        'ACCEPTANCE RATIO FOR PREVIOUS ',NSACCEPT,' SUPERSTEPS=',1.0D0*(NSSUCCESS)/(1.0D0*(NSSUCCESS+NSFAIL))
+     1        'Acceptance ratio for previous ',NSACCEPT,' supersteps=',1.0D0*(NSSUCCESS)/(1.0D0*(NSSUCCESS+NSFAIL))
             NSSUCCESST=NSSUCCESST+NSSUCCESS
             NSFAILT=NSFAILT+NSFAIL
             NSSUCCESS=0
             NSFAIL=0 
          ENDIF
       ENDIF
-      WRITE(*,'(A,I6,A,F20.10)') 'ENERGY IN SUPERSTEP CHAIN AT STEP ',NSUPERSTEP,' IS ',SPOTEL(1)
+      WRITE(*,'(A,I6,A,F20.10)') 'Energy in superstep chain at step ',NSUPERSTEP,' is ',SPOTEL(1)
 
       NSUPERSTEP=NSUPERSTEP+1
       NSUPERCOUNT=NSUPER
@@ -115,9 +115,9 @@ C           WRITE(*,'(A,F15.7)') 'SUPERSTEP SCALING FACTOR IS NOW ',SUPSTEP
       RETURN
       END
 C
-C     THIS SUBPROGRAM PERFORMS A SORT ON THE INPUT DATA AND
-C     ARRANGES IT FROM SMALLEST TO BIGGEST. THE EXCHANGE-SORT
-C     ALGORITHM IS USED.
+C     This subprogram performs a sort on the input data and
+C     arranges it from smallest to biggest. The exchange-sort
+C     algorithm is used.
 C
       SUBROUTINE SORT5(N,J3,A,NA)
       IMPLICIT NONE
@@ -146,7 +146,7 @@ C
 C************************************************************************************************
 C
       SUBROUTINE STRANSITION(ENEW,EOLD,ASTEST,RANDOM)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       DOUBLE PRECISION ENEW, EOLD, DPRAND, RANDOM
       LOGICAL ASTEST
@@ -169,7 +169,7 @@ C
 C************************************************************************************************
 C
       SUBROUTINE STAKESTEP(SCOORDS,INDEX)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
       
 
@@ -197,7 +197,7 @@ C
          J2=3*J1
          IF ((((VAT(J1,INDEX(1)).GT.SUPSTEP*ASTEP(1)*VMIN).AND.
      1       (J1.EQ.JMAX)).OR.(NATOMS-NSEED.EQ.1))) THEN
-           IF (DEBUG) PRINT*,'ANGULAR MOVE FOR POINT ',J1
+           IF (DEBUG) PRINT*,'angular move for point ',J1
            THETA=DPRAND()*PI
            PHI=DPRAND()*PI*2.0D0
            SCOORDS(J2-2,INDEX(1))=DMAX*DSIN(THETA)*DCOS(PHI)
@@ -211,7 +211,7 @@ C
            RANDOM=(DPRAND()-0.5D0)*2.0D0
            SCOORDS(J2,INDEX(1))=SCOORDS(J2,INDEX(1))+SUPSTEP*STEP(1)*RANDOM
 C
-C STOP ATOMS LEAVING THE CONTAINER IN THIS STEP
+C Stop atoms leaving the container in this step
 C
            IF (.NOT.PERIODIC) THEN
               DUMMY=SCOORDS(J2-2,INDEX(1))**2+SCOORDS(J2-1,INDEX(1))**2+SCOORDS(J2,INDEX(1))**2
@@ -224,7 +224,7 @@ C
          ENDIF
       ENDDO
 C
-C  PRESERVE CENTRE OF MASS IF REQUIRED.
+C  Preserve centre of mass if required.
 C
       IF (CENT.AND.(.NOT.SEEDT)) THEN
          XMASS=0.0D0

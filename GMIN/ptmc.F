@@ -1,20 +1,20 @@
-!  GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-!  COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!  THIS FILE IS PART OF GMIN.
+!  GMIN: A program for finding global minima
+!  Copyright (C) 1999-2006 David J. Wales
+!  This file is part of GMIN.
 !
-!  GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!  (AT YOUR OPTION) ANY LATER VERSION.
+!  GMIN is free software; you can redistribute it and/or modify
+!  it under the terms of the GNU General Public License as published by
+!  the Free Software Foundation; either version 2 of the License, or
+!  (at your option) any later version.
 !
-!  GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!  GMIN is distributed in the hope that it will be useful,
+!  but WITHOUT ANY WARRANTY; without even the implied warranty of
+!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!  GNU General Public License for more details.
 !
-!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!  You should have received a copy of the GNU General Public License
+!  along with this program; if not, write to the Free Software
+!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 ! 
 !---======================================---
@@ -24,9 +24,9 @@
       USE COMMONS
 
       IMPLICIT NONE
-#IFDEF MPI
+#ifdef MPI
 
-      INCLUDE 'MPIF.H'
+      INCLUDE 'mpif.h'
 
       
       INTEGER :: NHIST=100, NHISTE=2000, IACCEPT(0:NTRAJ-1), MPIERR, I,J,K, IS(MPI_STATUS_SIZE)
@@ -55,37 +55,37 @@
       CALL MPI_INIT(MPIERR)
       CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NDUMMY,MPIERR)
       IF ((NDUMMY.NE.NPAR).OR.(NDUMMY.NE.NTRAJ)) THEN
-      WRITE (MYUNIT, '(A)')  'NUMBER OF TEMPERATURE TRAJECTORIES DOES NOT CORRESPOND TO THE NUMBER  
-     1           OF PROCESSORS. STOP.'
+      WRITE (MYUNIT, '(A)')  'Number of temperature trajectories does not correspond to the number  
+     1           of processors. Stop.'
          RETURN
       ENDIF
       CALL MPI_COMM_RANK(MPI_COMM_WORLD,MYNODE,MPIERR)
 
-      WRITE (ISTR, '(I10)') MYNODE
-      FILENAME="OUTPUT."//TRIM(ADJUSTL(ISTR))
-      WRITE(MYUNIT, '(A,I10,A,I10,A)') "IN PTMC PROCESSOR", MYNODE, " OF", NPAR, " SPEAKING:"
-      WRITE(MYUNIT, '(A,I10)') 'NUMBER OF ATOMS', NATOMS
+      WRITE (ISTR, '(i10)') MYNODE
+      FILENAME="output."//trim(adjustl(istr))
+      WRITE(MYUNIT, '(A,I10,A,I10,A)') "In ptmc Processor", mynode, " of", NPAR, " speaking:"
+      WRITE(MYUNIT, '(A,I10)') 'Number of atoms', natoms
       IF (PERIODIC) THEN
-         WRITE(MYUNIT, '(A,6G20.10)') 'BINARY DATA', NTYPEA, EPSAB, EPSBB, SIGAB, SIGBB, CUTOFF
-         WRITE(MYUNIT, '(A,3G20.10)') 'BOX DATA', BOXLX, BOXLY, BOXLZ
+         WRITE(MYUNIT, '(A,6G20.10)') 'Binary data', ntypea, epsab, epsbb, sigab, sigbb, cutoff
+         WRITE(MYUNIT, '(A,3G20.10)') 'Box data', boxlx, boxly, boxlz
       ELSEIF(CHRMMT) THEN
          WRITE(MYUNIT, '(A)') 'CHARRRMMM'
       ELSEIF (MODEL1T) THEN
-         WRITE(MYUNIT, '(A)') 'PTMC> 1D LANDSCAPE MODEL 1'
+         WRITE(MYUNIT, '(A)') 'ptmc> 1D landscape model 1'
          RADIUS=1.0D100
       ELSE
-         WRITE(MYUNIT, '(A,G20.10)') 'RADIUS**2', RADIUS
+         WRITE(MYUNIT, '(A,G20.10)') 'Radius**2', radius
       ENDIF
 
       ITRAJ=MYNODE
       NEACCEPT=0
 
-      ! INITIALISATION
+      ! Initialisation
 
       DO I=1,NATOMS
-         X(I)=COORDS(3*(I-1)+1,MYNODE+1)
-         Y(I)=COORDS(3*(I-1)+2,MYNODE+1)
-         Z(I)=COORDS(3*(I-1)+3,MYNODE+1)
+         X(I)=COORDS(3*(I-1)+1,mynode+1)
+         Y(I)=COORDS(3*(I-1)+2,mynode+1)
+         Z(I)=COORDS(3*(I-1)+3,mynode+1)
       ENDDO
       DO I=1,NATOMS
          Q(1,I)=X(I)
@@ -93,7 +93,7 @@
          Q(3,I)=Z(I)
       ENDDO
 
-      WRITE(MYUNIT, '(A,3G20.10)') 'XYZ', X(1), Y(1), Z(1) 
+      WRITE(MYUNIT, '(A,3G20.10)') 'xyz', x(1), y(1), z(1) 
  
       CTE=(LOG(PTTMAX/PTTMIN))/(NTRAJ-1)
       CTE=EXP(CTE)
@@ -103,7 +103,7 @@
          T=TEMPTRAJ(I)
          BETA(I)=1.0D0/T
 
-         IF (T.LT.1.0D0) THEN
+         IF (T.LT.1.0d0) THEN
             H(I)=(16./(1.-SQRT(T)))**(1./6.)-(16./(1.+SQRT(T)))**(1./6.)
             H(I)=0.46*H(I)
          ELSE
@@ -121,17 +121,17 @@
          CALL QORDER_LJ(Q,Q4,Q6)
       ENDIF
 
-      WRITE(MYUNIT, '(A, 2G20.10)') 'TEMPERATURE RANGE', TEMPTRAJ(0), TEMPTRAJ(NTRAJ-1)
-      WRITE(MYUNIT, '(A, G20.10)') 'THIS TEMPERATURE TRAJECTORY=', TEMPTRAJ(MYNODE)
-      WRITE(MYUNIT, '(A, G20.10)') 'STARTING E=', VINIT
-      WRITE(MYUNIT, '(A, 2G20.10)') 'STARTING Q4, Q6=', Q4, Q6
+      WRITE(MYUNIT, '(A, 2G20.10)') 'Temperature range', TEMPTRAJ(0), TEMPTRAJ(NTRAJ-1)
+      WRITE(MYUNIT, '(A, G20.10)') 'This temperature trajectory=', TEMPTRAJ(MYNODE)
+      WRITE(MYUNIT, '(A, G20.10)') 'Starting E=', VINIT
+      WRITE(MYUNIT, '(A, 2G20.10)') 'Starting Q4, Q6=', Q4, Q6
 
-      ! INITIALISATION COMPLETE
+      ! Initialisation complete
 
       RNDSEED=2002+MYNODE
       CALL SDPRND(RNDSEED)
       RANDOM=DPRAND()
-      WRITE(MYUNIT, '(A, G20.10)') 'STARTING RANDOM NUMBER=', RANDOM
+      WRITE(MYUNIT, '(A, G20.10)') 'Starting random number=', RANDOM
 
       NTOT=0
 
@@ -156,7 +156,7 @@
       ENDDO
 
       Q4MAX=0.1
-      Q6MAX=0.5 ! WILL HAVE TO CHANGE AS IS RATHER SYSTEM-SPECIFIC
+      Q6MAX=0.5 ! will have to change as is rather system-specific
       DQ4=Q4MAX/(NHIST-1)
       DQ6=Q6MAX/(NHIST-1)
       DHISTE=(PTEMAX-PTEMIN)/(NHISTE-1)
@@ -166,7 +166,7 @@
       ENUL=VINIT
 
       IF (MYNODE.EQ.0) THEN
-         OPEN(UNIT=10, FILE='DISTRIBUTIONS.HEADER', FORM='FORMATTED')
+         OPEN(UNIT=10, FILE='distributions.header', FORM='formatted')
          WRITE(10,*) NATOMS
          WRITE(10,*) NTRAJ, PTSTEPS/NENRPER, NENRPER
          WRITE(10,*) ENUL
@@ -174,16 +174,16 @@
       ENDIF 
       
 
-      FILENAME2="CONFIG."//TRIM(ADJUSTL(ISTR))
-      OPEN(UNIT=11+MYNODE,FILE=FILENAME2, FORM="FORMATTED")
+      FILENAME2="config."//trim(adjustl(istr))
+      OPEN(UNIT=11+MYNODE,FILE=FILENAME2, form="formatted")
 
       NUPDATE=100
-      MSTEP=NATOMS ! IS IT A GENERAL RULE?
+      MSTEP=NATOMS ! is it a general rule?
       NSTAT=MSTEP*(PTSTEPS+NEQUIL)
 
       DO I=1, PTSTEPS+NEQUIL
          DO J=1,MSTEP
-         ! PROPAGATE
+         ! Propagate
 
             DO K=1, NATOMS
                XO(K)=X(K)
@@ -191,10 +191,10 @@
                ZO(K)=Z(K)
             ENDDO
 7777        RANDOM=DPRAND()
-            NH=INT(1+NATOMS*RANDOM) ! CHECKED THAT IT COVERS THE WHOLE RANGE
+            NH=INT(1+NATOMS*RANDOM) ! checked that it covers the whole range
             IF (NH.LE.0.OR.NH.GT.NATOMS) GOTO 7777
 
-            ! MOVE RANDOMELY SELECTED PARTICLE - WILL HAVE TO BE GENERALIZED
+            ! move randomely selected particle - will have to be generalized
             RANDOM=DPRAND()
             DDX=H(MYNODE)*(RANDOM-0.5)
             RANDOM=DPRAND()
@@ -210,12 +210,12 @@
                Y(NH)=Y(NH)-BOXLY*ANINT(Y(NH)/BOXLY) 
                Z(NH)=Z(NH)-BOXLZ*ANINT(Z(NH)/BOXLZ) 
                DO K=1,NATOMS
-                  COORDS(3*(K-1)+1,MYNODE+1)=X(K)
-                  COORDS(3*(K-1)+2,MYNODE+1)=Y(K)
-                  COORDS(3*(K-1)+3,MYNODE+1)=Z(K)
+                  COORDS(3*(K-1)+1,mynode+1)=X(K)
+                  COORDS(3*(K-1)+2,mynode+1)=Y(K)
+                  COORDS(3*(K-1)+3,mynode+1)=Z(K)
                ENDDO
                FITS=.TRUE.
-             ELSE ! E.G. LJ 
+             ELSE ! e.g. LJ 
                DDXN=DDX/NATOMS
                DDYN=DDY/NATOMS
                DDZN=DDZ/NATOMS
@@ -236,9 +236,9 @@
                   RMAX=MAX(R2,RMAX)
                 ENDDO
                DO K=1,NATOMS
-                  COORDS(3*(K-1)+1,MYNODE+1)=X(K)
-                  COORDS(3*(K-1)+2,MYNODE+1)=Y(K)
-                  COORDS(3*(K-1)+3,MYNODE+1)=Z(K)
+                  COORDS(3*(K-1)+1,mynode+1)=X(K)
+                  COORDS(3*(K-1)+2,mynode+1)=Y(K)
+                  COORDS(3*(K-1)+3,mynode+1)=Z(K)
                ENDDO
                 IF (RMAX.GT.RADIUS) THEN
                    FITS=.FALSE.
@@ -254,9 +254,9 @@
 
             DELTA=VFINAL-VINIT
             WCOMP=DELTA*BETA(MYNODE)
-            W=MIN(1.0D0,EXP(-WCOMP))
+            W=MIN(1.0d0,EXP(-WCOMP))
             RANDOM=DPRAND()
-            IF ((RANDOM.GT.W).OR.(.NOT.FITS)) THEN !REJECT MOVE
+            IF ((RANDOM.GT.W).OR.(.NOT.FITS)) THEN !reject move
                DO K=1, NATOMS
                   X(K)=XO(K)
                   Y(K)=YO(K)
@@ -278,7 +278,7 @@
          ENDDO
        
 
-         IF (MOD(I,NUPDATE).EQ.0) THEN ! UPDATE MC STEPS
+         IF (MOD(I,NUPDATE).EQ.0) THEN ! update mc steps
             WAC=1.0*IACCEPT(MYNODE)/NUPDATE/MSTEP
             IF (WAC.LT.0.4) THEN
                H(MYNODE)=H(MYNODE)*0.9
@@ -294,7 +294,7 @@
             RANDOM=DPRAND()
             J=(NTRAJ-1)*RANDOM
             RANDOM=DPRAND()
-            IF (RANDOM.GT.EXCHPROB) THEN ! 0.1 PROBABILITY OF EXCHANGE 
+            IF (RANDOM.GT.EXCHPROB) THEN ! 0.1 probability of exchange 
                J=-2
                EXCHANGE=.FALSE.
             ELSE
@@ -358,7 +358,7 @@
               ENDIF
            ENDIF
 
-9999       CONTINUE
+9999       continue
 
            VINIT=E
 
@@ -405,13 +405,13 @@
 
       CALL MPI_FINALIZE(MPIERR)
  
-      ! COMPUTING THE AVERAGES
+      ! computing the averages
       EAV(MYNODE)=EAV(MYNODE)/PTSTEPS
       EAV2(MYNODE)=EAV2(MYNODE)/PTSTEPS
       CV=(EAV2(MYNODE)-EAV(MYNODE)**2)*BETA(MYNODE)**2
 
-      FILENAME3="T.EV.CV.EV2.STEPS."//TRIM(ADJUSTL(ISTR))
-      OPEN(UNIT=41+MYNODE,FILE=FILENAME3, STATUS="UNKNOWN", FORM="FORMATTED")
+      FILENAME3="T.Ev.Cv.Ev2.Steps."//trim(adjustl(istr))
+      OPEN(UNIT=41+MYNODE,FILE=FILENAME3, STATUS="unknown", form="formatted")
       WRITE(41+MYNODE,'(5G20.10)') TEMPTRAJ(MYNODE),EAV(MYNODE),CV, EAV2(MYNODE),PTSTEPS
       CALL FLUSH(41+MYNODE)
       CLOSE(41+MYNODE)
@@ -422,23 +422,23 @@
       Q6AV2(MYNODE)=Q6AV2(MYNODE)/PTSTEPS
       FQ4=SQRT(Q4AV2(MYNODE)-Q4AV(MYNODE)**2)
       FQ6=SQRT(Q6AV2(MYNODE)-Q6AV(MYNODE)**2) 
-      FILENAME4="T.Q4AV.Q6AV.Q4AV2.Q6AV2.STEPS."//TRIM(ADJUSTL(ISTR))
-      OPEN(UNIT=1980,FILE=FILENAME4, STATUS="UNKNOWN", FORM="FORMATTED")
+      FILENAME4="T.Q4Av.Q6Av.Q4Av2.Q6Av2.Steps."//trim(adjustl(istr))
+      OPEN(UNIT=1980,FILE=FILENAME4, STATUS="unknown", form="formatted")
       WRITE(1980,'(6G20.10)') TEMPTRAJ(MYNODE), Q4AV(MYNODE), Q6AV(MYNODE), Q4AV2(MYNODE),  
      1                        Q6AV2(MYNODE), PTSTEPS
       CLOSE(1980)
 
-      FILENAME5="PROFILE_E."//TRIM(ADJUSTL(ISTR)) 
-      OPEN(UNIT=1981,FILE=FILENAME5, STATUS="UNKNOWN", FORM="FORMATTED")
+      FILENAME5="profile_E."//trim(adjustl(istr)) 
+      OPEN(UNIT=1981,FILE=FILENAME5, STATUS="unknown", form="formatted")
       DO K=1,NHISTE
          WRITE(1981,'(2G20.10)') PTEMIN+(K-1)*DHISTE,NHISTQE(K,MYNODE)
       ENDDO
       CLOSE(1981)
 
-      FILENAME6="PROFILE_Q4."//TRIM(ADJUSTL(ISTR))
-      FILENAME7="PROFILE_Q6."//TRIM(ADJUSTL(ISTR))
-      OPEN(UNIT=1982,FILE=FILENAME6, STATUS="UNKNOWN", FORM="FORMATTED")
-      OPEN(UNIT=1983,FILE=FILENAME7, STATUS="UNKNOWN", FORM="FORMATTED")
+      FILENAME6="profile_Q4."//trim(adjustl(istr))
+      FILENAME7="profile_Q6."//trim(adjustl(istr))
+      OPEN(UNIT=1982,FILE=FILENAME6, STATUS="unknown", form="formatted")
+      OPEN(UNIT=1983,FILE=FILENAME7, STATUS="unknown", form="formatted")
       DO K=1,NHIST
          WRITE(1982,'(2G20.10)') (K-1)*DQ4,NHISTQ4(K,MYNODE)
          WRITE(1983,'(2G20.10)') (K-1)*DQ6,NHISTQ6(K,MYNODE)
@@ -446,13 +446,13 @@
       CLOSE(1982)
       CLOSE(1983)
 
-      FILENAME8="I.VMIN.VMAX."//TRIM(ADJUSTL(ISTR)) 
-      OPEN(UNIT=1984,FILE=FILENAME8, STATUS="UNKNOWN", FORM="FORMATTED")
+      FILENAME8="I.Vmin.Vmax."//trim(adjustl(istr)) 
+      OPEN(UNIT=1984,FILE=FILENAME8, STATUS="unknown", form="formatted")
       WRITE(1984,'(3G20.10)') MYNODE, VMIN(MYNODE),VMAX(MYNODE)
       CLOSE(1984)
 
-      WRITE(MYUNIT, '(G20.10,A,G20.10)') NACCEPTPT(MYNODE), ' STEPS ACCEPTED OUT OF ', NSTAT
-      WRITE(MYUNIT, '(G20.10,A,G20.10)') NEACCEPT, ' EXCHANGES ACCEPTED OUT OF ', NTOT
+      WRITE(MYUNIT, '(G20.10,A,G20.10)') NACCEPTPT(MYNODE), ' steps accepted out of ', NSTAT
+      WRITE(MYUNIT, '(G20.10,A,G20.10)') NEACCEPT, ' exchanges accepted out of ', NTOT
 
       DO K=1,NATOMS
          Q(1,K)=X(K)
@@ -467,12 +467,12 @@
 
 
 
-      FILENAME9="XYZ_OUT."//TRIM(ADJUSTL(ISTR))
-      OPEN(UNIT=1985,FILE=FILENAME9, STATUS="UNKNOWN", FORM="FORMATTED")
+      FILENAME9="xyz_out."//trim(adjustl(istr))
+      OPEN(UNIT=1985,FILE=FILENAME9, STATUS="unknown", form="formatted")
       WRITE(1985, '(G20.10)') NTYPEA 
-      WRITE(1985, '(4G20.10)') EPSAB, EPSBB, SIGAB, SIGBB
-      WRITE(1985, '(3G20.10)') BOXLX, BOXLY, BOXLZ
-      WRITE(1985, '(G20.10)') CUTOFF
+      WRITE(1985, '(4G20.10)') epsab, epsbb, sigab, sigbb
+      WRITE(1985, '(3G20.10)') boxlx, boxly, boxlz
+      WRITE(1985, '(G20.10)') cutoff
       DO I=1,NATOMS
          WRITE(1985,*) X(I),Y(I),Z(I)
       ENDDO
@@ -482,8 +482,8 @@
       CLOSE(1985)
       CLOSE(11+MYNODE)
 
-#ELSE
+#else
       RETURN
-#ENDIF
+#endif
       END SUBROUTINE PARALLELTEMPERING
 

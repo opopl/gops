@@ -1,27 +1,27 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C  SYMMETRY ANALYSIS - SAVE THE GENERATORS OF SYMMETRY
-C  OPERATIONS DETECTED FOR A SUBSET OF ATOMS (OR ALL OF THEM).
-C  TO APPLY THESE LATER WE NEED ALL ATOMS IN THE CORRESPONDING
-C  ORIENTATION. NATOMS IS THE NUMBER OF ATOMS AT THE BEGINNING OF
-C  Q WHOSE SYMMETRY ELEMENTS WE SEEK.
+C  SYMMETRY ANALYSIS - save the generators of symmetry
+C  operations detected for a subset of atoms (or all of them).
+C  To apply these later we need all atoms in the corresponding
+C  orientation. NATOMS is the number of atoms at the beginning of
+C  Q whose symmetry elements we seek.
 C
       SUBROUTINE PTGRP(Q,NATOMS,DEBUG,SYMTOL1,SYMTOL2,SYMTOL3,GENMAT,IGEN,FPGRP,CM,MATDIFF)
       USE COMMONS,ONLY : MYUNIT,HPTGRP
@@ -40,10 +40,10 @@ C
       INTEGER IDONE, ICOUNT, ICOMP, ILINEAR, IDGRP, IINV, IREF, IROT, IHIGH, IPRNT, IBTOR, PERM(NATOMS), IDUMMY
       LOGICAL NEW, DEBUG
 C
-C     SYMMETRY INFORMATION
-C     FPGRP   FULL POINT GROUP
-C     BPGRP   LARGEST ABELIAN SUBGROUP
-C     PGRP    "COMPUTATIONAL" POINT GROUP
+C     Symmetry Information
+C     FPGRP   Full point group
+C     BPGRP   Largest Abelian subgroup
+C     PGRP    "Computational" point group
 C
       CHARACTER(LEN=4) FPGRP, BPGRP, PGRP
 C     INTEGER NORD(2*NATOMS+1)
@@ -65,9 +65,9 @@ C     INTEGER NORD(2*NATOMS+1)
       TOLE=SYMTOL3
       QSAVE(1:3*NATOMS)=Q(1:3*NATOMS)
 C
-C INITIALIZE.
+C Initialize.
 C
-651   Q(1:3*NATOMS)=QSAVE(1:3*NATOMS) ! OTHERWISE THE COFM CAN BE RESET DIFFERENTLY 
+651   Q(1:3*NATOMS)=QSAVE(1:3*NATOMS) ! otherwise the CofM can be reset differently 
       IHIGH=0
       IGEN=0
       IROT=0
@@ -93,7 +93,7 @@ C     ICOMP2=0
 C     ICOMPX=0
       ISKIP=0
 C
-C  TRANSLATE TO CENTER OF MASS.
+C  Translate to center of mass.
 C
       CMX=0.D0
       CMY=0.D0
@@ -114,22 +114,22 @@ C
       QREF(1:3*NATOMS)=Q(1:3*NATOMS)
 50    FORMAT(3(2X,F12.6))
 C
-C     BUILD INERTIA TENSOR
+C     Build inertia tensor
 C
       CALL INERTIA(Q,IT,NATOMS)
 C
-C DIAGONALIZE INERTIA TENSOR. THE 0 FLAG REORDERS THE E/VALUES AND
-C E/VECTORS FROM SMALLEST TO LARGEST.
+C Diagonalize inertia tensor. The 0 flag reorders the e/values and
+C e/vectors from smallest to largest.
 C
       CALL EIG(IT,IV,3,3,0)
 C
-C  CHECK *NOW* FOR DEGENERACY OF EIGENVALUES -- IF PRESENT, THEN SEE IF
-C  UNIQUE MOMENT OF INERTIA IS ALONG X.  IF SO, CHANGE THIS AXIS TO Z
-C  BY ROTATING THE EIGENVECTOR MATRIX ABOUT Y.  THIS GUARANTEES THAT
-C  THE UNIQUE AXIS WILL LIE ALONG Z.
+C  Check *now* for degeneracy of eigenvalues -- If present, then see if
+C  unique moment of inertia is along x.  If so, change this axis to z
+C  by rotating the eigenvector matrix about y.  This guarantees that
+C  the unique axis will lie along z.
 C
-C  THE MOMENTS COULD BE LARGE, SO THIS SHOULD BE A DIFFERENT TOLERANCE
-C  TO THE DISTANCE CHECKING, I.E. A RELATIVE TOLERANCE.
+C  The moments could be large, so this should be a different tolerance
+C  to the distance checking, i.e. a relative tolerance.
 C
       IF (ABS((IT(2,2)-IT(3,3))/(IT(1,1)+IT(2,2)+IT(3,3))).LT.TOLE) THEN
          RANG=90.0D0
@@ -145,16 +145,16 @@ C
          IT(3,3)=ATMP
       ENDIF
 
-      IF (IPRNT.GE.4) WRITE(MYUNIT,*)' DIAGONALIZED INERTIA TENSOR '
+      IF (IPRNT.GE.4) WRITE(MYUNIT,*)' Diagonalized inertia tensor '
       IF (IPRNT.GE.4) WRITE(MYUNIT,50) ((IT(I,J),J=1,3),I = 1,3)
       CALL MATMULV(NEWQ,Q,IV,NATOMS,3,3)
-      IF (IPRNT.GE.4) WRITE(MYUNIT,*) ' PRINCIPAL AXIS ORIENTATION FOR MOLECULAR SYSTEM '
+      IF (IPRNT.GE.4) WRITE(MYUNIT,*) ' Principal axis orientation for molecular system '
       IF (IPRNT.GE.4) WRITE(MYUNIT,50) (NEWQ(I),I=1,3*NATOMS)
       AGAIN=.TRUE.
 C
-C  CHECK HANDEDNESS OF INERTIAL AXES.
-C  IF DOT PRODUCT IS NEGATIVE; SWITCH SIGN OF
-C  Y AXIS (THE CHOICE OF AXIS TO CHANGE IS ARBITRARY).
+C  Check handedness of inertial axes.
+C  If dot product is negative; switch sign of
+C  y axis (the choice of axis to change is arbitrary).
 C
       CALL MYCROSS(IV(1,1),IV(1,2),TATB,1)
       XXX=MYDOT(TATB,IV(1,3),3)
@@ -164,24 +164,24 @@ C
          ENDDO
       ENDIF
 C
-C  THE GEOMETRY USED TO FIND THE
-C  SYMMETRY OPERATIONS CHANGES ORIENTATION THROUGHOUT PTGRP. USE NEW SUBROUTINE REORIENT TO
-C  FIND THE MATRIX THAT MAPS THE REFERENCE CONFIGURATION IN QREF ONTO THE CURRENT
-C  CONFIGURATION, AND GET THE GENERATOR FOR THE REFERENCE CONFIGURATION FROM A
-C  SUITABLE MATRIX TRANSFORMATION.
+C  The geometry used to find the
+C  symmetry operations changes orientation throughout ptgrp. Use new subroutine reorient to
+C  find the matrix that maps the reference configuration in QREF onto the current
+C  configuration, and get the generator for the reference configuration from a
+C  suitable matrix transformation.
 C
-C  GENERATE WELL-DEFINED SORTED COORDINATE VECTOR NOW. USED IN
-C  SYMMETRY EVALUATION ROUTINES WHICH FOLLOW.
-C  IF QSORT CHANGES THEN THE REFERENCE ORIENTATION HAS CHANGED, AND
-C  SUBSEQUENT GENERATORS WILL BE WITH RESPECT TO THE NEW ORIENTATION.
+C  Generate well-defined sorted coordinate vector now. Used in
+C  symmetry evaluation routines which follow.
+C  If QSORT changes then the reference orientation has changed, and
+C  subsequent generators will be with respect to the new orientation.
 C
 C     CALL SORTXYZ(NEWQ,QSORT,NORD,TOLD,NATOMS)
       QSORT(1:3*NATOMS)=NEWQ(1:3*NATOMS)
       IF (IPRNT.GE.4) WRITE(MYUNIT,*) ' SORTED COORDINATE VECTOR'
       IF (IPRNT.GE.4) WRITE(MYUNIT,50) (QSORT(J),J=1,NATOMS*3)
 C
-C  CHECK TO SEE IF POINT GROUP IS ABELIAN - IF SO, SKIP TO THE ABELIAN
-C  OPERATIONS BLOCK.
+C  Check to see if point group is Abelian - if so, skip to the Abelian
+C  operations block.
 C
       X=-1.D0
       IDEGEN=0
@@ -191,32 +191,32 @@ C
          X=Z
       ENDDO
       IF (IDEGEN.EQ.0) THEN
-         IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' THE MOLECULE BELONGS TO AN ABELIAN GROUP.'
+         IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' The molecule belongs to an Abelian group.'
          GOTO 630
       ENDIF
 C
-C  *** START OF THE BIG IDEGEN=1 BLOCK.  ***
+C  *** Start of the big IDEGEN=1 block.  ***
 C
       IF (IDEGEN.EQ.1) THEN
 C
-C  CHECK TO MAKE SURE THAT THE PRINCIPAL AXES
-C  ARE PARALLEL TO X, Y AND Z. IF NOT, ROTATE ORIENTATION TO THIS POINT.
+C  Check to make sure that the principal axes
+C  are parallel to x, y and z. If not, rotate orientation to this point.
 C
-C  USE A DIFFERENT TOLERANCE FOR ZERO MOMENT OF INERTIA CHECKING.
+C  Use a different tolerance for zero moment of inertia checking.
 C
          FPGRP='   '
          IF (IPRNT.GE.3) WRITE(MYUNIT,110)
-110      FORMAT(' THE MOLECULE BELONGS TO A POINT GROUP WITH DOUBLY',
-     1        ' DEGENERATE REPRESENTATIONS.')
+110      FORMAT(' The molecule belongs to a point group with doubly',
+     1        ' degenerate representations.')
          DO I=1,3
             IF (ABS(IT(I,I)).LT.5.0D-2) ILINEAR=1
          ENDDO
          IF (ILINEAR.EQ.1) THEN
-            IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' THE MOLECULE IS LINEAR.'
+            IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' The molecule is linear.'
             GOTO 630
          ENDIF
 C
-C  CHECK FOR ROTATIONAL AXES FROM C2 TO 6. 
+C  Check for rotational axes from C2 to 6. 
 C
          DO I=2,6
             ZANG=360.D0/(1.0D0*I)
@@ -233,29 +233,29 @@ C              IF (ICOMP.EQ.0) THEN
                IF (DIST2.LT.TOLD) THEN
                   IHIGH=I
                   IHIGHX=J
-                  IGEN=1 ! JUST SAVE THE GENERATOR FOR THE PRINCIPAL AXIS AT THIS POINT
+                  IGEN=1 ! just save the generator for the principal axis at this point
 C                  IF (IGEN.LT.100) THEN
 C                     DO J2=1,IGEN
 C                        CALL CMPMAT(GENMAT,100,J2,RM,NEW,MATDIFF)
 C                        IF (.NOT.NEW) GOTO 10
 C                     ENDDO
 C                     IGEN=IGEN+1
-CC                    PRINT*,'HERE A IGEN=',IGEN
-                     IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'AXIS ',J,' IS A ROTATION AXIS OF ORDER ',I
+CC                    PRINT*,'here A IGEN=',IGEN
+                     IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'axis ',J,' is a rotation axis of order ',I
 C
-C   MAKE THE TRANSFORMATION MATRIX CORRESPONDING TO THE REFERENCE STATE IN QREF
+C   Make the transformation matrix corresponding to the reference state in QREF
 C
-!                    IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'CALLING REORIENT A'
+!                    IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient A'
                      CALL REORIENT(NATOMS,SCRATCH,QREF,RMAT)
                      CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
                      CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
                      GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!                    IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'HERE A IGEN=',IGEN,' NEW GENMAT:'
+!                    IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here A IGEN=',IGEN,' new GENMAT:'
 !                    IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 10                   CONTINUE
 C                  ENDIF
 C
-C  STUFF ORDERING INTO NORD2
+C  Stuff ordering into NORD2
 C
 C                 DO IXX=1,2*NATOMS
 C                    NORD2(IXX)=NORD(IXX)
@@ -268,35 +268,35 @@ C                 ENDDO
             ENDDO
          ENDDO
 C
-C  CATCH PROBLEM IF IHIGH=0 BECAUSE TWO OF THE INERTIA TENSOR
-C  E/VALUES JUST HAPPEN TO BE VERY CLOSE - START ALL OVER AGAIN
-C  WITH SMALLER TOLE.
+C  Catch problem if IHIGH=0 because two of the inertia tensor
+C  e/values just happen to be very close - start all over again
+C  with smaller TOLE.
 C
          IF (IHIGH.EQ.0) THEN
-            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'ACCIDENTAL DEGENERACY DETECTED'
+            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'Accidental degeneracy detected'
             TOLE=TOLE/10.0D0
             IF (TOLE.GT.1.0D-7) THEN
                GOTO 651
             ELSE
-               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' THE FULL MOLECULAR POINT GROUP IS UNDETERMINED'
-               WRITE(GPSTRING,653) ' THE FULL MOLECULAR POINT GROUP IS UNDETERMINED'
+               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' The full molecular point group is undetermined'
+               WRITE(GPSTRING,653) ' The full molecular point group is undetermined'
 653            FORMAT(A80)
                GOTO 652
             ENDIF
          ENDIF
 
          IF (IPRNT.GE.3) WRITE(MYUNIT,160) IHIGH,IHIGHX
-160      FORMAT(' THE HIGHEST ORDER ROTATIONAL AXIS IS C',I2,' ABOUT ',I2)
+160      FORMAT(' The highest order rotational axis is C',I2,' about ',I2)
 C
-C  IF HIGHEST ORDER AXIS IS 2, AND THERE IS TWOFOLD DEGENERACY, THE
-C  GROUP MUST BE D2D. PROCEED TO FIND THE S4 AXIS WHICH DETERMINES
-C  THE UNIQUE ROTATIONAL AXIS. THIS IS SUBSEQUENTLY USED TO ROTATE
-C  MOLECULE TO A USEFUL ORIENTATION. (NORD2 NOW CONTAINS AN EFFECTIVE
-C  PERMUTATION LIST).
+C  If highest order axis is 2, and there is twofold degeneracy, the
+C  group must be D2d. Proceed to find the S4 axis which determines
+C  the unique rotational axis. This is subsequently used to rotate
+C  molecule to a useful orientation. (NORD2 now contains an effective
+C  permutation list).
 C
          IF (IHIGH.EQ.2) THEN
             IHIGHX=0
-            FPGRP='D2D'
+            FPGRP='D2d'
             HPTGRP=8
             ZANG=90.0D0
             DO IDIR=1,3
@@ -320,41 +320,41 @@ C                 ENDDO
                ENDIF
             ENDDO
             IF (IHIGHX.EQ.0) THEN
-               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'ACCIDENTAL DEGENERACY DETECTED'
+               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'Accidental degeneracy detected'
                TOLE=TOLE/10.0D0
                IF (TOLE.GT.1.0D-7) THEN
                   GOTO 651
                ELSE
-                  IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' THE FULL MOLECULAR POINT GROUP IS UNDETERMINED'
-                  WRITE(GPSTRING,653) ' THE FULL MOLECULAR POINT GROUP IS UNDETERMINED'
+                  IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' The full molecular point group is undetermined'
+                  WRITE(GPSTRING,653) ' The full molecular point group is undetermined'
                   GOTO 652
                ENDIF
             ENDIF
             IF (IPRNT.GE.3) WRITE(MYUNIT,190) IHIGHX
-190         FORMAT(' THE UNIQUE ROTATIONAL AXIS IS ',I1,'.')
+190         FORMAT(' The unique rotational axis is ',I1,'.')
          ENDIF
 C
-C  NOW, THE UNIQUE AXIS IS KNOWN, NO MATTER WHAT THE GROUP IS.
-C  PROCEED TO ROTATE AROUND UNIQUE AXIS SUCH THAT THE PROJECTION
-C  OF ONE OF THE ATOMS WHICH ARE EQUIVALENT UNDER THE ROTATION LIES
-C  ALONG ONE OF THE OTHER TWO CARTESIAN AXES.
+C  Now, the unique axis is known, no matter what the group is.
+C  Proceed to rotate around unique axis such that the projection
+C  of one of the atoms which are equivalent under the rotation lies
+C  along one of the other two Cartesian axes.
 C
-C  FIND AN ATOM WHICH IS PERMUTED UNDER THE ROTATION.
-C  NEW PROBLEM - IN A LARGE MOLECULE IT IS POSSIBLE TO HAVE, SAY,
-C  A 10-ORBIT, WITH A PRINCIPAL AXIS OF ORDER ONLY 5. IN THIS CASE
-C  WE NEED TO FIND AN ATOM FROM AN ORBIT OF ORDER EQUAL TO THE
-C  ORDER OF THE PRINCIPAL AXIS TO LOOK FOR VERTICAL MIRROR PLANES.
-C  IF WE PUT AN ATOM FROM THE 10-ORBIT IN THE XZ OR YZ PLANE WE
-C  HAVE NOT PUT A VERTICAL MIRROR PLANE COINCIDENT WITH THE AXIS.
-C  ON THE OTHER HAND, FOR D_{ND} GROUPS WITH ODD N WE ACTUALLY
-C  MAY NOT HAVE AN ORBIT OF SIZE EQUAL TO THE ORDER OF THE PRINCIPAL
-C  AXIS - THERE IS SURE TO BE ONE OF TWICE THE SIZE THOUGH. HERE
-C  THE ORIGINAL ALGORITHM WOULD HAVE WORKED.
-C  THE PRINCIPAL AXIS ORDER IS IHIGH - THIS IS ONLY NEEDED IF
-C  IHIGH IS ODD.
+C  Find an atom which is permuted under the rotation.
+C  New problem - in a large molecule it is possible to have, say,
+C  a 10-orbit, with a principal axis of order only 5. In this case
+C  we need to find an atom from an orbit of order equal to the
+C  order of the principal axis to look for vertical mirror planes.
+C  If we put an atom from the 10-orbit in the xz or yz plane we
+C  have not put a vertical mirror plane coincident with the axis.
+C  On the other hand, for D_{nd} groups with odd n we actually
+C  may not have an orbit of size equal to the order of the principal
+C  axis - there is sure to be one of twice the size though. Here
+C  the original algorithm would have worked.
+C  The principal axis order is IHIGH - this is only needed if
+C  IHIGH is odd.
 C
          IF (MOD(IHIGH,2).EQ.1) THEN
-            IF (IPRNT.GE.4) WRITE(MYUNIT,*)' BEFORE ROTATION'
+            IF (IPRNT.GE.4) WRITE(MYUNIT,*)' Before rotation'
             IF (IPRNT.GE.4) WRITE(MYUNIT,50) (NEWQ(J),J=1,NATOMS*3)
             CALL ZERO(SCRATCH,3*NATOMS*3)
             DO J=1,NATOMS
@@ -390,9 +390,9 @@ C              IF (ABS(SCRATCH(J)-SCRATCH(J-1)).GT.TOLD) THEN
             NUMB=0
             IREF=0
 C
-C  HERE WE ARE TRYING TO FIND AN ORBIT WHOSE SIZE NORD2 IS A MULTIPLE
-C  OF IHIGH. IF SUCH AN ORBIT IS NOT FOUND THEN IREF WILL REMAIN ZERO 
-C  AND WE MUST FIND MORE SELF-CONSISTENT TOLERANCES.
+C  Here we are trying to find an orbit whose size NORD2 is a multiple
+C  of IHIGH. If such an orbit is not found then IREF will remain zero 
+C  and we must find more self-consistent tolerances.
 C
             DO I=1,NORBIT
                NUMB=NORD2(NATOMS+I)+NUMB
@@ -405,9 +405,9 @@ C              WRITE(MYUNIT,*) 'I,IHIGH,NORD2=',I,IHIGH,NORD2(NATOMS+I)
             ENDDO
 250         IF (IREF.NE.0) THEN
                IF (IPRNT.GE.13) WRITE(MYUNIT,260) MINORB, NORD2(IREF) 
-260            FORMAT(' THE PRINCIPAL AXIS HAS ORDER ',I3,/,
-     1         ' ATOM NUMBER ',I3,' BELONGS TO AN ORBIT OF THIS ORDER AND', 
-     2         ' WILL BE USED AS A REFERENCE.')
+260            FORMAT(' The principal axis has order ',i3,/,
+     1         ' Atom number ',i3,' belongs to an orbit of this order and', 
+     2         ' will be used as a reference.')
                IF (IPRNT.GE.13) WRITE(MYUNIT,520) (NORD2(IREF+J),J=1,MINORB-1)
                ICOUNT=NORD2(IREF)
             ELSE
@@ -423,9 +423,9 @@ C              WRITE(MYUNIT,*) 'I,IHIGH,NORD2=',I,IHIGH,NORD2(NATOMS+I)
                ENDDO
 255            IF (IREF.NE.0) THEN
                   IF (IPRNT.GE.13) WRITE(MYUNIT,265) MINORB, NORD2(IREF)
-265               FORMAT(' THE PRINCIPAL AXIS HAS ORDER ',I3,/,
-     1                   ' ATOM NUMBER ',I3,' BELONGS TO AN ORBIT OF TWICE THIS ORDER', 
-     2                   ' AND WILL BE USED AS A REFERENCE.')
+265               FORMAT(' The principal axis has order ',i3,/,
+     1                   ' Atom number ',i3,' belongs to an orbit of twice this order', 
+     2                   ' and will be used as a reference.')
                   IF (IPRNT.GE.13) WRITE(MYUNIT,520) (NORD2(IREF+J),J=1,MINORB-1)
                   ICOUNT=NORD2(IREF)
                ELSE
@@ -441,20 +441,20 @@ C              WRITE(MYUNIT,*) 'I,IHIGH,NORD2=',I,IHIGH,NORD2(NATOMS+I)
                   ENDDO
 256               IF (IREF.EQ.0) THEN
                      IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(A,G20.10)')
-     &   'ORBIT SIZE INCONSISTENT WITH AXIS ORDER - TRY DECREASING TOLD TO ',TOLD/10.0D0
+     &   'Orbit size inconsistent with axis order - try decreasing TOLD to ',TOLD/10.0D0
                      TOLD=TOLD/10.0D0
                      IF (TOLD.GT.1.0D-7) THEN
                         GOTO 651
                      ELSE
-                        IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' THE FULL MOLECULAR POINT GROUP IS UNDETERMINED'
-                        WRITE(GPSTRING,653) ' THE FULL MOLECULAR POINT GROUP IS UNDETERMINED'
+                        IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' The full molecular point group is undetermined'
+                        WRITE(GPSTRING,653) ' The full molecular point group is undetermined'
                         GOTO 652
                      ENDIF
                   ENDIF
                   IF (IPRNT.GE.13) WRITE(MYUNIT,266) MINORB, NORD2(IREF)
-266               FORMAT(' THE PRINCIPAL AXIS HAS ORDER ',I3,/,
-     1' ATOM NUMBER ',I3,' BELONGS TO AN ORBIT OF FOUR TIMES THIS ORDER'
-     2            ,' AND WILL BE USED AS A REFERENCE.')
+266               FORMAT(' The principal axis has order ',i3,/,
+     1' Atom number ',i3,' belongs to an orbit of four times this order'
+     2            ,' and will be used as a reference.')
                   IF (IPRNT.GE.13) WRITE(MYUNIT,520) (NORD2(IREF+J),J=1,MINORB-1)
                   ICOUNT=NORD2(IREF)
                ENDIF
@@ -468,8 +468,8 @@ C              PRINT '(A,3I5)','I,PERM(I),ICOUNT=',I,PERM(I),ICOUNT
             ENDDO
          ENDIF
 C
-C   CALCULATE ANGLE BETWEEN PROJECTION OF THIS VECTOR AND ONE OF THE 
-C   CARTESIAN AXES
+C   Calculate angle between projection of this vector and one of the 
+C   Cartesian axes
 C
          ISTART=3*(ICOUNT-1)
          IF (ICOUNT.LT.1) THEN
@@ -478,19 +478,19 @@ C
          DPROJ=SQRT( NEWQ(ISTART+1)**2 + NEWQ(ISTART+2)**2 +
      1        NEWQ(ISTART+3)**2 - NEWQ(ISTART+IHIGHX)**2 )
          IF (DPROJ.EQ.0.0D0) THEN
-            WRITE(MYUNIT,'(A)') 'WARNING IN PTGRP, ZERO PROJECTION, THIS SHOULD NEVER HAPPEN'
+            WRITE(MYUNIT,'(A)') 'WARNING in ptgrp, zero projection, this should never happen'
             DPROJ=1.0D-3
          ENDIF
 C
-C   FIND FIRST CARTESIAN AXIS WHICH IS NOT THE UNIQUE AXIS.
-C   (HAS TO BE X OR Y)
+C   Find first Cartesian axis which is not the unique axis.
+C   (Has to be x or y)
 C
          IMNAX=2-IHIGHX/2
          ARG=NEWQ(ISTART+IMNAX)/DPROJ
          IF (ABS(ARG).GT.1.0D0) ARG=1.0D0*ARG/ABS(ARG)
          ANGL=ACOS(ARG)/DTOR
 C
-C   SKIP OUT OF LOOP IF ALIGNMENT ALREADY SATISFIED
+C   Skip out of loop if alignment already satisfied
 C
          DO I=0,2
             X=ANGL-1.0D0*(I*90)
@@ -499,11 +499,11 @@ C           IF (ABS(X).LT.TOLD) ISKIP=1
          ENDDO
          IF (ISKIP.EQ.1) GOTO 340
 C
-C   GET SIGN OF ANGLE NEEDED TO ROTATE MOLECULE INTO POSITION
+C   Get sign of angle needed to rotate molecule into position
 C
-C   I FOUND A CASE WHERE THIS DIDN'T WORK. THERE ARE ONLY TWO
-C   POSSIBILITIES (+ AND -) SO IF ONE DOESN'T WORK, JUST USE 
-C   THE OTHER!
+C   I found a case where this didn't work. There are only two
+C   possibilities (+ and -) so if one doesn't work, just use 
+C   the other!
 C
 C        Z0=1
 C        DO I=1,3
@@ -511,19 +511,19 @@ C           IF (I.NE.IHIGHX) Z0=Z0*NEWQ(ISTART+I)
 C        ENDDO
 C        IF (Z0.GT.0.D0) ANGL=-ANGL
 C
-C   ROTATE MOLECULE INTO POSITION - ALL NATOMS 
+C   Rotate molecule into position - all NATOMS 
 C
          CALL ZERO(SCRATCH,NATOMS*2*3)
-         CALL VADD(SCRATCH(1),SCRATCH(NATOMS*3+1),NEWQ,NATOMS*3,1) ! PUTS NEWQ IN SCRATCH
+         CALL VADD(SCRATCH(1),SCRATCH(NATOMS*3+1),NEWQ,NATOMS*3,1) ! puts NEWQ in SCRATCH
          CALL ROTM(IHIGHX,ANGL,1,RM)
          CALL ROTM(IHIGHX,-ANGL,1,RMINV)
-C        PRINT*,'NEWQ BEFORE TRANSFORMATION:'
+C        PRINT*,'NEWQ before transformation:'
 C        PRINT '(3G20.10)',NEWQ(1:3*NATOMS)
-         CALL MATMULV(NEWQ,SCRATCH,RM,NATOMS,3,3) ! PUTS ROTATED STRUCTURE IN NEWQ
+         CALL MATMULV(NEWQ,SCRATCH,RM,NATOMS,3,3) ! puts rotated structure in NEWQ
          IF (IPRNT.GE.3) WRITE(MYUNIT,310) ANGL,IHIGHX
-310      FORMAT(' MOLECULE ROTATED THROUGH ',F20.10,' DEGREES ',
-     1        'ABOUT THE ',I1,' AXIS.')
-         IF (IPRNT.GE.4) WRITE(MYUNIT,*)' AFTER ROTATION:'
+310      FORMAT(' Molecule rotated through ',F20.10,' degrees ',
+     1        'about the ',i1,' axis.')
+         IF (IPRNT.GE.4) WRITE(MYUNIT,*)' After rotation:'
          IF (IPRNT.GE.4) WRITE(MYUNIT,50) (NEWQ(J),J=1,NATOMS*3)
 
          DO 320 J1=1,3
@@ -532,29 +532,29 @@ C        PRINT '(3G20.10)',NEWQ(1:3*NATOMS)
             IF (ABS(NEWQ(ISTART+J1)).GT.1.0D-6) THEN
                ANGL=-2.0D0*ANGL
                CALL ZERO(SCRATCH,NATOMS*2*3)
-               CALL VADD(SCRATCH(1),SCRATCH(NATOMS*3+1),NEWQ,NATOMS*3,1) ! PUTS NEWQ IN SCRATCH
+               CALL VADD(SCRATCH(1),SCRATCH(NATOMS*3+1),NEWQ,NATOMS*3,1) ! puts NEWQ in SCRATCH
                CALL ROTM(IHIGHX,ANGL,1,RM)
                CALL ROTM(IHIGHX,-ANGL,1,RMINV)
-               CALL MATMULV(NEWQ,SCRATCH,RM,NATOMS,3,3) ! PUTS TRANSFORMED STRUCTURE IN NEWQ
+               CALL MATMULV(NEWQ,SCRATCH,RM,NATOMS,3,3) ! puts transformed structure in NEWQ
                IF (IPRNT.GE.3) WRITE(MYUNIT,310) ANGL,IHIGHX
-               IF (IPRNT.GE.4) WRITE(MYUNIT,*)' AFTER ROTATION:'
+               IF (IPRNT.GE.4) WRITE(MYUNIT,*)' After rotation:'
                IF (IPRNT.GE.4) WRITE(MYUNIT,50) (NEWQ(J),J=1,NATOMS*3)  
             ENDIF
 320      CONTINUE
 C
-C   NEW REFERENCE STRUCTURE, SO WE NEED TO GENERATE NEW SORTED VECTOR
-C   AND UPDATE THE TRANSFORMATION MATRIX FOR THE REFERENCE STRUCTURE
+C   New reference structure, so we need to generate new sorted vector
+C   And update the transformation matrix for the reference structure
 C
 C        CALL SORTXYZ(NEWQ,QSORT,NORD,TOLD,NATOMS)
          QSORT(1:3*NATOMS)=NEWQ(1:3*NATOMS)
-C     PRINT*,'B QSORT:'
+C     PRINT*,'B qsort:'
 C     PRINT '(3G20.10)',QSORT(1:3*NATOMS)
-C     PRINT*,'NEWQ:'
+C     PRINT*,'newq:'
 C     PRINT '(3G20.10)',NEWQ(1:3*NATOMS)
-         IF (IPRNT.GE.4) WRITE(MYUNIT,*) ' NEW SORTED COORDINATES'
+         IF (IPRNT.GE.4) WRITE(MYUNIT,*) ' New sorted coordinates'
          IF (IPRNT.GE.4) WRITE(MYUNIT,50) (QSORT(J),J=1,NATOMS*3)
 C
-C   CHECK FOR SIGMA(V) PLANES NOW.
+C   Check for sigma(v) planes now.
 C
          CALL ZERO(SCRATCH,NATOMS*3*2)
          ISIGMV=0
@@ -569,7 +569,7 @@ C           CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
             IF (DIST2.LT.TOLD) ISIGMV=1
 330      CONTINUE
 C
-C   CHECK FOR S(2N) AXIS
+C   Check for S(2n) axis
 C
 340      ZANGS=180.D0/(1.0D0*IHIGH)
          CALL ROTM(IHIGHX,ZANGS,1,RM)
@@ -579,22 +579,22 @@ C        CALL COMPARE2(SCRATCH,QSORT,NORD,ICOMP,TOLD,NATOMS,IPRNT)
 C        IF (ICOMP.EQ.0) THEN
 C        CALL MINPERM(NATOMS,QSORT,SCRATCH,0.0D0,0.0D0,0.0D0,.FALSE.,PERM,DUMMY,DIST2,WORSTRAD)
          CALL TESTSYMOP(NATOMS,QSORT,SCRATCH,PERM,TOLD,DIST2,WORSTRAD)
-C        PRINT '(A,G20.10,A,I6,A,G20.10,I6)','DIST2 AFTER CHECK FOR S(2N) AXIS=',DIST2,' IHIGH=',IHIGH,' TOLD,IPRNT=',TOLD,IPRNT
+C        PRINT '(A,G20.10,A,I6,A,G20.10,I6)','DIST2 after check for S(2n) axis=',DIST2,' IHIGH=',IHIGH,' TOLD,IPRNT=',TOLD,IPRNT
 C        CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
          IF (DIST2.LT.TOLD) THEN
             ISAXIS=1
             IF (IPRNT.GE.3) THEN
                WRITE(MYUNIT,350) 2*IHIGH
-350            FORMAT(' S',I3,' AXIS EXISTS.')
+350            FORMAT(' S',I3,' axis exists.')
             ENDIF
             IF (IGEN.LT.100) THEN
                DO J1=1,3
                   RM(J1,IHIGHX)=-RM(J1,IHIGHX)
                ENDDO
 C
-C   MAKE THE TRANSFORMATION MATRIX CORRESPONDING TO THE REFERENCE STATE IN QREF 
+C   Make the transformation matrix corresponding to the reference state in QREF 
 C
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'CALLING REORIENT F'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient F'
                CALL REORIENT(NATOMS,SCRATCH,QREF,RMAT) 
                CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
                CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
@@ -604,17 +604,17 @@ C
                ENDDO
                IGEN=IGEN+1
                GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'HERE F IGEN=',IGEN,' NEW GENMAT:'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here F IGEN=',IGEN,' new GENMAT:'
 !              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 61          CONTINUE
             ENDIF
          ENDIF
-C        PRINT*,'DUMMY AFTER CHECK FOR S(2N) AXIS = ',DUMMY,' ISAXIS=',ISAXIS
+C        PRINT*,'dummy after check for S(2n) axis = ',DUMMY,' ISAXIS=',ISAXIS
 C
-C   LOOK FOR PERPENDICULAR C2 AXES - CHECK ALONG CARTESIAN AXES AND
-C   ALONG ANGLE BISECTORS OF S2N OPERATIONS
+C   Look for perpendicular C2 axes - check along Cartesian axes and
+C   along angle bisectors of S2n operations
 C
-C   FIRST ROTATE MOLECULE BY 1/2 S(2N) ANGLE AROUND IHIGH X AND PUT IN
+C   first rotate molecule by 1/2 S(2n) angle around IHIGH x and put in
 C   SCRATCH(6*NATOMS+1)
 C
          ZANG=180.D0
@@ -627,7 +627,7 @@ C        CALL SORTXYZ(SCRATCH(6*NATOMS+1),SCRATCH(3*NATOMS+1),NORD,TOLD,NATOMS)
          DO 360 I=1,3
             IF (I.EQ.IHIGHX) GOTO 360
 C
-C   CHECKING CARTESIAN AXES FOR BOTH ROTATED AND UNROTATED MOLECULE
+C   Checking Cartesian axes for both rotated and unrotated molecule
 C
             CALL ROTM(I,ZANG,1,RM)
             CALL MATMULV(SCRATCH,NEWQ,RM,NATOMS,3,3)
@@ -646,14 +646,14 @@ C           IF (ICOMP.EQ.0) JCOMP=JCOMP+1
 C           IF (ICOMPX.EQ.0) JCOMPX=JCOMPX+1
 360      CONTINUE
          IF (JCOMP.GE.1) THEN
-            IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' ON-AXIS PERPENDICULAR C2 ELEMENTS FOUND.'
+            IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' On-axis perpendicular C2 elements found.'
             IDGRP=1
          ELSEIF (JCOMPX.GE.1) THEN
-            IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' OFF-AXIS PERPENDICULAR C2 ELEMENTS FOUND.'
+            IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' Off-axis perpendicular C2 elements found.'
             IDGRP=1
          ENDIF
 C
-C   CHECK FOR SIGMA(H)
+C   Check for sigma(h)
 C
          IF (IDGRP.EQ.1) THEN
             CALL REFLECT(NEWQ,SCRATCH,NATOMS,IHIGHX)
@@ -663,20 +663,20 @@ C           CALL MINPERM(NATOMS,QSORT,SCRATCH,0.0D0,0.0D0,0.0D0,.FALSE.,PERM,DUM
             CALL TESTSYMOP(NATOMS,QSORT,SCRATCH,PERM,TOLD,DIST2,WORSTRAD)
 C           CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
             IF (DIST2.LT.TOLD) THEN
-               FPGRP='DNH'
+               FPGRP='DNh'
                HPTGRP=4*IHIGH
                IF (IPRNT.GE.3) WRITE(MYUNIT,390)
             ENDIF
          ELSE
             CALL REFLECT(NEWQ,SCRATCH,NATOMS,IHIGHX)
-390         FORMAT(' HORIZONTAL PLANE OF SYMMETRY FOUND.')
+390         FORMAT(' Horizontal plane of symmetry found.')
 C           CALL COMPARE2(SCRATCH,QSORT,NORD,ICOMP2,TOLD,NATOMS,IPRNT)
 C           IF (ICOMP2.EQ.0) THEN
 C           CALL MINPERM(NATOMS,QSORT,SCRATCH,0.0D0,0.0D0,0.0D0,.FALSE.,PERM,DUMMY,DIST2,WORSTRAD)
             CALL TESTSYMOP(NATOMS,QSORT,SCRATCH,PERM,TOLD,DIST2,WORSTRAD)
 C           CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
             IF (DIST2.LT.TOLD) THEN
-               FPGRP='CNH'
+               FPGRP='CNh'
                HPTGRP=2*IHIGH
                IF (IPRNT.GE.3) WRITE(MYUNIT,390)
             ELSE
@@ -691,12 +691,12 @@ C           CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
                   IF (J.EQ.IHIGHX) GOTO 400
                   CALL REFLECT(NEWQ,SCRATCH,NATOMS,J)
 C                 CALL COMPARE2(SCRATCH,QSORT,NORD,ICOMP2,TOLD,NATOMS,IPRNT)
-C                 IF (ICOMP2.EQ.0) FPGRP='CNV'
+C                 IF (ICOMP2.EQ.0) FPGRP='CNv'
 C                 CALL MINPERM(NATOMS,QSORT,SCRATCH,0.0D0,0.0D0,0.0D0,.FALSE.,PERM,DUMMY,DIST2,WORSTRAD)
                   CALL TESTSYMOP(NATOMS,QSORT,SCRATCH,PERM,TOLD,DIST2,WORSTRAD)
 C                 CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
                   IF (DIST2.LT.TOLD) THEN
-                     FPGRP='CNV'
+                     FPGRP='CNv'
                      HPTGRP=2*IHIGH
                   ENDIF
 400            CONTINUE
@@ -704,22 +704,22 @@ C                 CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
          ENDIF
       ENDIF
 C
-C  *** END OF IDEGEN=1 BLOCK. *** 
+C  *** End of IDEGEN=1 block. *** 
 C
       IF (IDEGEN.EQ.2) THEN
-         IF (IPRNT.GE.3) WRITE(MYUNIT,*) ' IN CUBIC LOOP '
+         IF (IPRNT.GE.3) WRITE(MYUNIT,*) ' In cubic loop '
          IF (IPRNT.GE.3) WRITE(MYUNIT,410)
-410      FORMAT(' THE MOLECULE BELONGS TO A POINT GROUP WITH DOUBLY', 
-     1          ' AND TRIPLY DEGENERATE REPRESENTATIONS.')
+410      FORMAT(' The molecule belongs to a point group with doubly', 
+     1          ' and triply degenerate representations.')
 C
-C   NOW WE KNOW THAT THE POINT GROUP IS EITHER T, TD, O, OH, T, I, TH
-C   OR IH.  FOR THESE GROUPS, HOWEVER, THE INERTIA TENSOR
-C   IS ROTATIONALLY INVARIANT; THEREFORE DIFFERENT (AND SIGNIFICANTLY
-C   MORE COMPLICATED) METHODS NEED TO BE USED.  THIS ONE SEEMS TO
-C   BE PARTICULARLY EFFICIENT.
+C   Now we know that the point group is either T, Td, O, Oh, T, I, Th
+C   or Ih.  For these groups, however, the inertia tensor
+C   is rotationally invariant; therefore different (and significantly
+C   more complicated) methods need to be used.  This one seems to
+C   be particularly efficient.
 C
-C   CHECK FOR INVERSION SYMMETRY. THIS WILL TELL US A GREAT DEAL.
-C   (IF INVERSION CENTER PRESENT, THEN GROUP IS EITHER OH, TH OR IH.
+C   Check for inversion symmetry. This will tell us a great deal.
+C   (If inversion center present, then group is either Oh, Th or Ih.
 C
          DO I=1,NATOMS*3
             SCRATCH(I)=-NEWQ(I)
@@ -729,10 +729,10 @@ C        CALL MINPERM(NATOMS,QSORT,SCRATCH,0.0D0,0.0D0,0.0D0,.FALSE.,PERM,DUMMY,
          CALL TESTSYMOP(NATOMS,QSORT,SCRATCH,PERM,TOLD,DUMMYSINV,WORSTRAD)
 C        CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DUMMYSINV,WORSTRAD)
 C
-C   LOCATE ALL ORBITS (GROUPS OF EQUIVALENT ATOMS AT DISTANCE R) -
-C   DO THIS BY GENERATING AND THEN SORTING THE C.O.M-OUTER ATOM
-C   DISTANCE MATRIX (MASS-WEIGHTED). USE NORD2 TO KEEP TRACK OF
-C   WHICH ATOMS ARE IN WHICH ORBIT.
+C   Locate all orbits (groups of equivalent atoms at distance r) -
+C   do this by generating and then sorting the c.o.m-outer atom
+C   distance matrix (mass-weighted). Use NORD2 to keep track of
+C   which atoms are in which orbit.
 C
          CALL ZERO(SCRATCH,3*NATOMS*3)
          DO J=1,NATOMS
@@ -743,10 +743,10 @@ C
          CALL PIKSR2(NATOMS,SCRATCH,NORD2)
          IF (IPRNT.GE.3) WRITE(MYUNIT,440) (SCRATCH(J),J=1,NATOMS)
 C
-C   NOW COUNT NUMBER OF ORBITS; PLACE PERTINENT INFO (DISTANCES) IN TOP
-C   END OF SCRATCH ARRAY AND USE TOP END OF NORD2 TO HOLD NUMBER
-C   OF CENTERS/ORBIT.  THIS BOOKKEEPING FACILITATES THINGS DOWN
-C   THE ROAD.  
+C   Now count number of orbits; place pertinent info (distances) in top
+C   end of SCRATCH array and use top end of NORD2 to hold number
+C   of centers/orbit.  This bookkeeping facilitates things down
+C   the road.  
 C
          NORBIT=1
          IORBIT=1
@@ -771,22 +771,22 @@ C           IF (ABS(SCRATCH(J)-SCRATCH(J-1)).GT.TOLD) THEN
             WRITE(MYUNIT,*)(SCRATCH(6*NATOMS+IK),IK=1,NORBIT)
          ENDIF
 C
-C   DEBUG PRINT TO MAKE SURE WE'VE GOT ALL THE ORBITS CORRECT.
+C   Debug print to make sure we've got all the orbits correct.
 C
          IF (IPRNT.GE.3) THEN
             WRITE(MYUNIT,470) NORBIT
-470         FORMAT(' NUMBER OF DISTINCT ORBITS: ',I3,/,' SUMMARY OF ORBIT SIZES:')
+470         FORMAT(' Number of distinct orbits: ',i3,/,' Summary of orbit sizes:')
             DO I=1,NORBIT
                WRITE(MYUNIT,480) I, NORD2(NATOMS+I)
 480            FORMAT(2I3)
             ENDDO
          ENDIF
 C
-C  THE PROGRAMMER THINKS THAT ONLY THE SMALLEST ORBIT OF NON-UNIT
-C  MAGNITUDE WILL BE NEEDED TO IDENTIFY THE POINT GROUP UNIQUELY
-C  BY THE FOLLOWING METHOD.  FIND THIS ORBIT AND PROCEED.  
+C  The programmer thinks that only the smallest orbit of non-unit
+C  magnitude will be needed to identify the point group uniquely
+C  by the following method.  Find this orbit and proceed.  
 C
-C  SCRATCH(6*NATOMS+ORBIT NUMBER) WILL BE THE RADIUS OF THE ORBIT.
+C  SCRATCH(6*NATOMS+orbit number) will be the radius of the orbit.
 C
          MINORB=NATOMS
          NUMB=0
@@ -801,73 +801,73 @@ C
             ENDIF
 500      CONTINUE
          IF (IREF.EQ.0) THEN
-            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'ACCIDENTAL DEGENERACY DETECTED'
+            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'Accidental degeneracy detected'
             TOLE=TOLE/10.0D0
             IF (TOLE.GT.1.0D-7) THEN
                GOTO 651
             ELSE
-               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' THE FULL MOLECULAR POINT GROUP IS UNDETERMINED'
-               WRITE(GPSTRING,653) ' THE FULL MOLECULAR POINT GROUP IS UNDETERMINED'
+               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' The full molecular point group is undetermined'
+               WRITE(GPSTRING,653) ' The full molecular point group is undetermined'
                GOTO 652
             ENDIF
          ENDIF
          IF (IPRNT.GE.13) WRITE(MYUNIT,510) MINORB,NORD2(IREF)
-510      FORMAT(' THE SMALLEST NON-UNIT ORBIT CONTAINS ',I3,' MEMBERS.',/,
-     1    ' ATOM NUMBER ',I3,' BELONGS TO THIS ORBIT AND WILL BE',
-     2    ' USED AS A REFERENCE.')
+510      FORMAT(' The smallest non-unit orbit contains ',i3,' members.',/,
+     1    ' Atom number ',i3,' belongs to this orbit and will be',
+     2    ' used as a reference.')
          IF (IPRNT.GE.13) WRITE(MYUNIT,520)(NORD2(IREF+J),J=1,MINORB-1)  
-520      FORMAT(' OTHER MEMBERS OF THIS ORBIT ARE: ',100I4)
+520      FORMAT(' Other members of this orbit are: ',100I4)
          CALL ZERO(SCRATCH,9*NATOMS)
          IBOT=3*NORD2(IREF)-2
 C
-C   REORDER NORD2(IREF+J), J=1,MINORB-1 IN TERMS OF DECREASING DISTANCE FROM
-C   ATOM NORD2(IREF). COORDINATES ARE IN NEWQ. HOPEFULLY, THIS REORDERING
-C   WILL MEAN THAT GENERATORS ARE NOT MISSED IN THE LOOP BELOW.
+C   Reorder NORD2(IREF+J), J=1,MINORB-1 in terms of decreasing distance from
+C   atom NORD2(IREF). Coordinates are in NEWQ. Hopefully, this reordering
+C   will mean that generators are not missed in the loop below.
 C
-C   APPEARS TO MAKE NO DIFFERENCE AT ALL.
+C   Appears to make no difference at all.
 C
-CC        PRINT*,'REORDERING'
+CC        PRINT*,'reordering'
 CC        PRINT*,'NORD2: ',NORD2(IREF+1:IREF+MINORB-1)
 C         DO J=1,MINORB-1
 C            DISTANCE(J)=(NEWQ(3*(NORD2(IREF)-1)+1)-NEWQ(3*(NORD2(IREF+J)-1)+1))**2
 C     &                 +(NEWQ(3*(NORD2(IREF)-1)+2)-NEWQ(3*(NORD2(IREF+J)-1)+2))**2
 C     &                 +(NEWQ(3*(NORD2(IREF)-1)+3)-NEWQ(3*(NORD2(IREF+J)-1)+3))**2
 CC           PRINT '(A,2I5,G20.10)','J,NORD2(IREF+J),DISTANCE=',J,NORD2(IREF+J),DISTANCE(J)
-C            DISTLOOP: DO J1=1,J-1 
+C            distloop: DO J1=1,J-1 
 C               IF (DISTANCE(J).GT.DISTANCE(J1)) THEN
 C                  DUMMY=DISTANCE(J)
 C                  IDUMMY=NORD2(IREF+J)
 C                  DO J2=J,J1+1,-1
-CC                    PRINT*,'CHANGING NORD2 ',IREF+J2,' TO NORD2 ',IREF+J2-1
+CC                    PRINT*,'changing NORD2 ',IREF+J2,' to NORD2 ',IREF+J2-1
 C                     NORD2(IREF+J2)=NORD2(IREF+J2-1)
 C                     DISTANCE(J2)=DISTANCE(J2-1)
 C                  ENDDO
-CC                 PRINT*,'CHANGING NORD2 ',IREF+J1,' TO ',IDUMMY
+CC                 PRINT*,'changing NORD2 ',IREF+J1,' to ',IDUMMY
 C                  NORD2(IREF+J1)=IDUMMY
 C                  DISTANCE(J1)=DUMMY
-C                  EXIT DISTLOOP
+C                  EXIT distloop
 C               ENDIF
-C            ENDDO DISTLOOP
+C            ENDDO distloop
 C         ENDDO
-CC        PRINT*,'NEWORDER'
+CC        PRINT*,'neworder'
 CC        PRINT*,'NORD2: ',NORD2(IREF+1:IREF+MINORB-1)
 CC        CALL FLUSH(6)
 
 C
-C   NOW USE REFERENCE ATOM FROM ORBIT AND LOOP OVER ALL OTHER ATOMS,
-C   THIS IS THE SECOND LOOP (610) BELOW.
-C   OUTER LOOP BELOW (620) IS FULLY EXECUTED TWO TIMES
-C   IF AND ONLY IF THE FPGRP IS OF THE T OR I VARIETY AND NO
-C   C2 AXIS APPROPRIATE FOR ORIENTATION FUDGING WAS FOUND AFTER
-C   IDENTIFICATION OF THE GROUP.
-C   FIRST ROTATE MOLECULE SO THAT THE INTERATOMIC DISTANCE VECTOR
-C   IS PARALLEL TO THE Z-AXIS, WITH BISECTOR ALONG X-AXIS.
-C   STRUCTURE NOW IN SCRATCH(1). HERE ONE HAS TO ALLOW FOR THE
-C   POSSIBILITY THAT ATOMS I AND J ARE 180 DEGREES APART; IF THIS
-C   IS THE CASE, LOOP THROUGH OTHER ATOMS IN ORBIT AND FIND ONE
-C   THAT IS PERPENDICULAR (THERE HAS TO BE ONE FOR CUBIC GROUPS)
-C   AND USE THIS VECTOR AS THE "BISECTOR". IF
-C   IT ISN'T DONE THIS WAY, THE ORIENTATION FUDGING GETS FUDGED UP.
+C   Now use reference atom from orbit and loop over all other atoms,
+C   this is the second loop (610) below.
+C   Outer loop below (620) is fully executed two times
+C   if and only if the FPGRP is of the T or I variety and no
+C   C2 axis appropriate for orientation fudging was found after
+C   identification of the group.
+C   First rotate molecule so that the interatomic distance vector
+C   is parallel to the z-axis, with bisector along x-axis.
+C   Structure now in SCRATCH(1). Here one has to allow for the
+C   possibility that atoms I and J are 180 degrees apart; if this
+C   is the case, loop through other atoms in orbit and find one
+C   that is perpendicular (there has to be one for cubic groups)
+C   and use this vector as the "bisector". If
+C   it isn't done this way, the orientation fudging gets fudged up.
 C
          DO 620 ICOUNT=1,2
             IF (IPRNT.GE.3) WRITE(MYUNIT,*)' PASS ',ICOUNT,' THROUGH ROT. FINDER '
@@ -877,10 +877,10 @@ C
                IBOT2=3*NORD2(IREF+J)-2
                CALL XVEC(NEWQ(IBOT),NEWQ(IBOT2),SCRATCH(1),0)
                DIST=SQRT(MYDOT(SCRATCH(1),SCRATCH(1),3))
-C              CALL VADD(SCRATCH(1),NEWQ(IBOT),NEWQ(IBOT2),3*NATOMS,1) ! BUG DJW
+C              CALL VADD(SCRATCH(1),NEWQ(IBOT),NEWQ(IBOT2),3*NATOMS,1) ! bug DJW
                CALL VADD(SCRATCH(1),NEWQ(IBOT),NEWQ(IBOT2),3,1)
 C
-C   DEAL WITH THE LINEAR PROBLEM RIGHT NOW.
+C   Deal with the linear problem right now.
 C
                BILEN=MYDOT(SCRATCH(1),SCRATCH(1),3)
 C              IF (BILEN.LT.TOLD) THEN
@@ -903,8 +903,8 @@ C                    IF (ABS(TEST).LT.TOLD) THEN
                CALL ZERO(SCRATCH,3*NATOMS*3)
                CALL MATMULV(SCRATCH(3*NATOMS+1),NEWQ,RM,NATOMS,3,3)
 C
-C   NOW YOU HAVE BISECTOR ALONG X. ROTATE ABOUT X TO BRING THE TWO
-C   ATOMS INTO POSITION PARALLEL TO Z.
+C   Now you have bisector along x. Rotate about x to bring the two
+C   atoms into position parallel to z.
 C
                DIP=SQRT(MYDOT(SCRATCH(3*NATOMS+IBOT+1),SCRATCH(3*NATOMS+IBOT+1),2))
                ARGU=SCRATCH(3*NATOMS+IBOT+2)/DIP
@@ -914,8 +914,8 @@ C
                CALL ROTM(1,ANGLE2,1,RM)
                CALL MATMULV(SCRATCH,SCRATCH(3*NATOMS+1),RM,NATOMS,3,3)
 C
-C   NOW FIND NEW VECTOR WHICH BISECTS THE TWO ATOMS IN QUESTION -
-C   IT HAD BEST BE X! (UNLESS LINEAR CASE WHERE TATB IS FORCED.)
+C   Now find new vector which bisects the two atoms in question -
+C   it had best be x! (Unless linear case where TATB is forced.)
 C
                CALL VADD(TATB,SCRATCH(IBOT),SCRATCH(IBOT2),3,1)
                IF (ISET.EQ.1) THEN
@@ -923,17 +923,17 @@ C
                   TATB(1)=1.D0
                ENDIF
 C
-C 1. TEST IF THE TWO ATOMS ARE CONNECTED BY SYMMETRY AXES, LOOPING
-C    OVER POSSIBILITIES (2,3,4 AND 5). T1 CONTAINS THE MATRIX TRANSFORMATION
-C    REQUIRED UP TO THIS POINT FROM NEWQ, AND T1T IS ITS TRANSPOSE (INVERSE).
+C 1. Test if the two atoms are connected by symmetry axes, looping
+C    over possibilities (2,3,4 and 5). T1 contains the matrix transformation
+C    required up to this point from NEWQ, and T1T is its transpose (inverse).
 C
-C    THE ALGORITHM USES THE FACT THAT IF THERE IS AN N-FOLD AXIS THEN THE
-C    EDGE CHOSEN FOR THE REFERENCE ATOMS IS PART OF AN N-SIDED POLYGON. ANGMAG
-C    IS THE ANGLE BETWEEN THE VECTOR THROUGH THE CENTRE OF THIS HYPOTHETICAL
-C    POLYGON AND THE VECTOR WHICH BISECTS THE REFERENCE EDGE. SIAZ IS THEN
-C    CALLED TO DETERMINE THE ROTATION NEEDED TO MAP THE HYPOTHETICAL N-FOLD
-C    AXIS ONTO THE Z AXIS. THIS TRANSFORMATION IS SAVED IN T2, AND ITS
-C    TRANSPOSE IN T2T.
+C    The algorithm uses the fact that if there is an n-fold axis then the
+C    edge chosen for the reference atoms is part of an n-sided polygon. ANGMAG
+C    is the angle between the vector through the centre of this hypothetical
+C    polygon and the vector which bisects the reference edge. SIAZ is then
+C    called to determine the rotation needed to map the hypothetical n-fold
+C    axis onto the z axis. This transformation is saved in T2, and its
+C    transpose in T2T.
 C
                DO 600 IAXORD=5,2,-1
                   ICLIP=0
@@ -954,8 +954,8 @@ C                 CALL MINPERM(NATOMS,QSORT,SCRATCH(6*NATOMS+1),0.0D0,0.0D0,0.0D
                   CALL TESTSYMOP(NATOMS,QSORT,SCRATCH(6*NATOMS+1),PERM,TOLD,DIST2,WORSTRAD)
 C                 CALL BIPARTITE(NATOMS,QSORT,SCRATCH(6*NATOMS+1),PERM,DUMMY,DIST2,WORSTRAD)
 C
-C   POINT GROUP DETERMINATION HAPPENS HERE, AS WELL AS ORIENTATION
-C   FUDGING.
+C   Point group determination happens here, as well as orientation
+C   fudging.
 C
 C                 IF (IIAX.EQ.0) THEN
                   IF (IPRNT.GT.4) WRITE(MYUNIT,'(A,I5,3F12.3)') 'IAXORD,DUMMY,DIST2,TOLD=',IAXORD,DUMMY,DIST2,TOLD
@@ -966,9 +966,9 @@ C                 PRINT '(3G20.10)',SCRATCH(6*NATOMS+1:9*NATOMS)
                   IF (DIST2.LT.TOLD) THEN
                      IF (IGEN.LT.100) THEN
 C
-C   MAKE THE TRANSFORMATION MATRIX CORRESPONDING TO THE REFERENCE STATE IN QREF
+C   Make the transformation matrix corresponding to the reference state in QREF
 C
-!                       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'CALLING REORIENT B'
+!                       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient B'
                         CALL REORIENT(NATOMS,SCRATCH(6*NATOMS+1),QREF,RMAT)
                         CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
                         CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
@@ -978,31 +978,31 @@ C
                         ENDDO
                         IGEN=IGEN+1
                         GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!                       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'HERE B IGEN=',IGEN,' NEW GENMAT:'
+!                       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here B IGEN=',IGEN,' new GENMAT:'
 !                       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 20                      CONTINUE
                      ENDIF
                      IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,580) IAXORD
-580                  FORMAT(' AXIS OF ORDER ',I1,' IDENTIFIED.')
+580                  FORMAT(' Axis of order ',I1,' identified.')
                      IF (IAXORD.EQ.5) THEN
                         FPGRP='I  '
                         HPTGRP=60
-C                       IF (ISINV.EQ.0) FPGRP='I H'
+C                       IF (ISINV.EQ.0) FPGRP='I h'
                         IF (DUMMYSINV.LT.TOLD) THEN
-                           FPGRP='I H'
+                           FPGRP='I h'
                            HPTGRP=120
                         ENDIF
                      ENDIF
                      IF (IAXORD.EQ.4) THEN
                         FPGRP='O  '
                         HPTGRP=24
-C                       IF (ISINV.EQ.0) FPGRP='O H'
+C                       IF (ISINV.EQ.0) FPGRP='O h'
                         IF (DUMMYSINV.LT.TOLD) THEN
-                           FPGRP='O H'
+                           FPGRP='O h'
                            HPTGRP=48
                         ENDIF
 C
-C   ORIENTATION IS GOOD. PUT STRUCTURE INTO NEWQ AND LEAVE LOOP.
+C   Orientation is good. Put structure into NEWQ and leave loop.
 C
                         CALL ZERO(NEWQ,3*NATOMS)
                         CALL VADD(NEWQ,NEWQ,SCRATCH(3*NATOMS+1),3*NATOMS,1)
@@ -1015,32 +1015,32 @@ C                       CALL SORTXYZ(NEWQ,QSORT,NORD,TOLD,NATOMS)
                         IF (FPGRP.EQ.'   ') THEN
                            FPGRP='T  '
                            HPTGRP=12
-C                          IF (ISINV.EQ.0) FPGRP='T H'
+C                          IF (ISINV.EQ.0) FPGRP='T h'
                            IF (DUMMYSINV.LT.TOLD) THEN
-                              FPGRP='T H'
+                              FPGRP='T h'
                               HPTGRP=24
                            ENDIF
                         ENDIF
                      ENDIF
                      IF (IAXORD.EQ.2) THEN
-                        IF (FPGRP.NE.'   '.AND.FPGRP.NE.'O H'.AND.FPGRP.NE.'O  ') THEN
+                        IF (FPGRP.NE.'   '.AND.FPGRP.NE.'O h'.AND.FPGRP.NE.'O  ') THEN
 C
-C   HAVE A C2 AXIS FOR I OR T GROUP. THIS IS VERY GOOD. TD AND T CAN BE DIFFERENTIATED
-C   HERE.  DO THIS NOW IF APPROPRIATE. THEN PUT STRUCTURE INTO NEWQ AND
-C   LEAVE LOOP IF IT IS AN I GROUP. OTHERWISE, NEED TO CONTINUE THROUGH
-C   (SINCE THERE MIGHT BE A HIGHER ORDER AXIS DOWN THE LINE.) IF
-C   PASS TWO, HOWEVER, THEN EXIT FOR T SINCE IT MUST BE THE CORRECT GROUP.
+C   Have a C2 axis for I or T group. This is very good. Td and T can be differentiated
+C   here.  Do this now if appropriate. Then put structure into NEWQ and
+C   leave loop if it is an I group. Otherwise, need to continue through
+C   (since there might be a higher order axis down the line.) If
+C   pass two, however, then exit for T since it must be the correct group.
 C
-                           IF (ICOUNT.EQ.2.AND.(FPGRP.EQ.'T  '.OR.FPGRP.EQ.'T H')) THEN
+                           IF (ICOUNT.EQ.2.AND.(FPGRP.EQ.'T  '.OR.FPGRP.EQ.'T h')) THEN
                               DO 590 JPLANE=1,3
                                  CALL REFLECT(SCRATCH(3*NATOMS+1),SCRATCH,NATOMS,JPLANE)
 C                                CALL COMPARE2(SCRATCH,QSORT,NORD,ICOMPQ,TOLD,NATOMS,IPRNT)
 C                                CALL MINPERM(NATOMS,QSORT,SCRATCH,0.0D0,0.0D0,0.0D0,.FALSE.,PERM,DUMMY,DIST2,WORSTRAD)
                                  CALL TESTSYMOP(NATOMS,QSORT,SCRATCH,PERM,TOLD,DIST2,WORSTRAD)
 C                                CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
-C                                IF (ICOMPQ.EQ.0.AND.ISINV.NE.0) FPGRP='T D'
+C                                IF (ICOMPQ.EQ.0.AND.ISINV.NE.0) FPGRP='T d'
                                  IF ((DIST2.LT.TOLD).AND.(DUMMYSINV.GT.TOLD)) THEN
-                                    FPGRP='T D'
+                                    FPGRP='T d'
                                     HPTGRP=24
                                  ENDIF
                                  CALL ZERO(NEWQ,3*NATOMS)
@@ -1063,21 +1063,21 @@ C                                CALL SORTXYZ(NEWQ,QSORT,NORD,TOLD,NATOMS)
 610         CONTINUE
 620      CONTINUE
          IF (FPGRP.EQ.'   ') THEN
-            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'ACCIDENTAL DEGENERACY DETECTED'
+            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'Accidental degeneracy detected'
             TOLE=TOLE/10.0D0
             IF (TOLE.GT.1.0D-7) THEN
                GOTO 651
             ELSE
-               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' THE FULL MOLECULAR POINT GROUP IS UNDETERMINED'
-               WRITE(GPSTRING,653) ' THE FULL MOLECULAR POINT GROUP IS UNDETERMINED'
+               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' The full molecular point group is undetermined'
+               WRITE(GPSTRING,653) ' The full molecular point group is undetermined'
                GOTO 652
             ENDIF
          ENDIF
       ENDIF
 C
-C   *** THIS IS THE END OF THE IDEGEN=2 BLOCK. ***
+C   *** This is the end of the IDEGEN=2 block. ***
 C
-C   CHECK SYMMETRY OPERATIONS BELONGING TO ABELIAN GROUPS
+C   Check symmetry operations belonging to abelian groups
 C
 630   ANG=180.D0
       IREF=0
@@ -1098,9 +1098,9 @@ C        CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
                   IF (J1.EQ.I) RM(J1,J1)=-1.0D0
                ENDDO
 C
-C   MAKE THE TRANSFORMATION MATRIX CORRESPONDING TO THE REFERENCE STATE IN QREF 
+C   Make the transformation matrix corresponding to the reference state in QREF 
 C
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'CALLING REORIENT C'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient C'
                CALL REORIENT(NATOMS,SCRATCH,QREF,RMAT) 
                CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
                CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
@@ -1110,12 +1110,12 @@ C
                ENDDO
                IGEN=IGEN+1
                GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'HERE C IGEN=',IGEN,' NEW GENMAT:'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here C IGEN=',IGEN,' new GENMAT:'
 !              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 30             CONTINUE
             ENDIF
             IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,640) I
-640         FORMAT(' REFLECTION IN PLANE ',I2,' IS A VALID SYMMETRY OPERATION.')
+640         FORMAT(' Reflection in plane ',i2,' is a valid symmetry operation.')
             IREF=IBTOR(IREF,2**I/2)
          ENDIF
          CALL ROTM(I,ANG,1,RM)
@@ -1128,9 +1128,9 @@ C        CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
          IF (DIST2.LT.TOLD) THEN
             IF (IGEN.LT.100) THEN
 C
-C   MAKE THE TRANSFORMATION MATRIX CORRESPONDING TO THE REFERENCE STATE IN QREF 
+C   Make the transformation matrix corresponding to the reference state in QREF 
 C
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'CALLING REORIENT D'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient D'
                CALL REORIENT(NATOMS,SCRATCH,QREF,RMAT) 
                CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
                CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
@@ -1140,12 +1140,12 @@ C
                ENDDO
                IGEN=IGEN+1
                GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'HERE D IGEN=',IGEN,' NEW GENMAT:'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here D IGEN=',IGEN,' new GENMAT:'
 !              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 40             CONTINUE
             ENDIF
             IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,650) I
-650         FORMAT(' C2 ROTATION ABOUT ',I2,' IS A VALID SYMMETRY OPERATION ')
+650         FORMAT(' C2 rotation about ',i2,' is a valid symmetry operation ')
             IROT=IBTOR(IROT,2**I/2)
          ENDIF
       ENDDO
@@ -1159,13 +1159,13 @@ C     CALL MINPERM(NATOMS,QSORT,SCRATCH,0.0D0,0.0D0,0.0D0,.FALSE.,PERM,DUMMY,DIS
       CALL TESTSYMOP(NATOMS,QSORT,SCRATCH,PERM,TOLD,DIST2,WORSTRAD)
 C     CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
 C
-C  EVEN DND DO NOT HAVE THE INVERSION OPERATION - BUG FIXED DJW 13/5/92
+C  Even DNd do not have the inversion operation - bug fixed DJW 13/5/92
 C
 C     PRINT '(A,I6,G20.10)','ISAXIS,DIST2=',ISAXIS,DIST2
 C     IF ((ISAXIS.EQ.1).OR.(DIST2.LT.TOLD)) THEN
       IF (DIST2.LT.TOLD) THEN
          IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,680)
-680      FORMAT(' THE MOLECULE POSSESSES AN INVERSION CENTER. ')
+680      FORMAT(' The molecule possesses an inversion center. ')
          IF (IGEN.LT.100) THEN
             DO J1=1,3
                DO J2=1,3
@@ -1174,9 +1174,9 @@ C     IF ((ISAXIS.EQ.1).OR.(DIST2.LT.TOLD)) THEN
                RM(J1,J1)=-1.0D0
             ENDDO
 C
-C   MAKE THE TRANSFORMATION MATRIX CORRESPONDING TO THE REFERENCE STATE IN QREF 
+C   Make the transformation matrix corresponding to the reference state in QREF 
 C
-!           IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'CALLING REORIENT E'
+!           IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient E'
             CALL REORIENT(NATOMS,SCRATCH,QREF,RMAT) 
             CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
             CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
@@ -1186,22 +1186,22 @@ C
             ENDDO
             IGEN=IGEN+1
             GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!           IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'HERE E IGEN=',IGEN,' NEW GENMAT:'
+!           IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here E IGEN=',IGEN,' new GENMAT:'
 !           IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 60          CONTINUE
          ENDIF
          IF (ILINEAR.EQ.1) THEN
-            FPGRP='DXH'
+            FPGRP='DXh'
             HPTGRP=2
          ENDIF
          IF (FPGRP.EQ.'   '.AND.IDGRP.EQ.1) THEN
-            FPGRP='DND'
+            FPGRP='DNd'
             HPTGRP=4*IHIGH
          ENDIF
          IINV=1
       ELSE
          IF (ILINEAR.EQ.1) THEN
-            FPGRP='CXV'
+            FPGRP='CXv'
             HPTGRP=1
          ENDIF
          IF (FPGRP.EQ.'   '.AND.IDGRP.EQ.1) THEN
@@ -1210,32 +1210,32 @@ C
          ENDIF
       ENDIF
 C
-C   DETERMINE LARGEST ABELIAN SUBGROUP OF MOLECULE
+C   Determine largest abelian subgroup of molecule
 C
       IF (IROT.EQ.0.AND.IREF.EQ.0.AND.IINV.EQ.0) PGRP='C1 '
-      IF (IROT.EQ.0.AND.IREF.EQ.0.AND.IINV.EQ.1) PGRP='C I'
-      IF (IROT.EQ.0.AND.IREF.NE.0.AND.IINV.EQ.0) PGRP='C S'
+      IF (IROT.EQ.0.AND.IREF.EQ.0.AND.IINV.EQ.1) PGRP='C i'
+      IF (IROT.EQ.0.AND.IREF.NE.0.AND.IINV.EQ.0) PGRP='C s'
       IF (IROT.NE.0.AND.IREF.EQ.0.AND.IINV.EQ.0) PGRP='C2 '
-      IF (IROT.NE.0.AND.IREF.NE.0.AND.IINV.EQ.0) PGRP='C2V'
-      IF (IROT.NE.0.AND.IREF.NE.0.AND.IINV.EQ.1) PGRP='C2H'
+      IF (IROT.NE.0.AND.IREF.NE.0.AND.IINV.EQ.0) PGRP='C2v'
+      IF (IROT.NE.0.AND.IREF.NE.0.AND.IINV.EQ.1) PGRP='C2h'
       IF (IROT.EQ.7.AND.IREF.EQ.0.AND.IINV.EQ.0) PGRP='D2 '
-      IF (IROT.EQ.7.AND.IREF.EQ.7.AND.IINV.EQ.1) PGRP='D2H'
+      IF (IROT.EQ.7.AND.IREF.EQ.7.AND.IINV.EQ.1) PGRP='D2h'
       IF (IPRNT.GE.4) WRITE(MYUNIT,690) IREF,IROT,IINV
-690   FORMAT ('SYMMETRY BITS: ',3(1X,I3))
+690   FORMAT ('Symmetry bits: ',3(1X,I3))
 C
-C   PUT NEWQ INTO Q.
+C   Put NEWQ into Q.
 C
       BPGRP=PGRP
       CALL ZERO(SCRATCH,NATOMS*3)
       CALL VADD(Q,NEWQ,SCRATCH(1),NATOMS*3,1)
 
-      IF (PGRP.EQ.'C2H') PGRP='C S'
+      IF (PGRP.EQ.'C2h') PGRP='C s'
 
       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,770)
 770   FORMAT(80('*'))
 C
-C  THIS SHOULD COPE WITH ANYTHING WE ARE LIKELY TO COME UP AGAINST,
-C  UNTIL MARK TRIES A RING WITH 100 ATOMS!
+C  This should cope with anything we are likely to come up against,
+C  until Mark tries a ring with 100 atoms!
 C
       IF (IHIGH.EQ.0) THEN 
          WRITE(JNKSTR,'(A3)') FPGRP(1:3)
@@ -1247,7 +1247,7 @@ C
       FPGRP=JNKSTR
       IF (IDEGEN.GT.0) THEN
          IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,750) FPGRP
-750      FORMAT(' THE FULL MOLECULAR POINT GROUP IS ',A4,'.')
+750      FORMAT(' The full molecular point group is ',A4,'.')
          WRITE(GPSTRING,750) FPGRP
       ENDIF
       IF (IDEGEN.EQ.0) THEN
@@ -1256,9 +1256,9 @@ C
          WRITE(GPSTRING,750) STRING(BPGRP,IHIGH)
       ENDIF
       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,790) BPGRP
-790   FORMAT(' THE LARGEST ABELIAN SUBGROUP OF THE FULL MOLECULAR POINT GROUP IS ',A4,'.')
+790   FORMAT(' The largest Abelian subgroup of the full molecular point group is ',A4,'.')
       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,760) TOLD, TOLE, TOLO
-760   FORMAT(' DISTANCE TOLERANCE=',F12.5,' INERTIA TOLERANCE=',F12.5,' ORBIT TOLERANCE=',F12.5)  
+760   FORMAT(' Distance tolerance=',F12.5,' Inertia tolerance=',F12.5,' Orbit tolerance=',F12.5)  
       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,770)
 
 652   CONTINUE
@@ -1271,8 +1271,8 @@ C
       INTEGER IAXIS,J1,J2
       DOUBLE PRECISION VEC(3),ROT(3,3),RM(3,3),XTEMP(3,3),ANG1,ARG2,DISP,AZIM,ARG1,DIS,MYDOT
 C
-C     WRITE (6,*) 'SIAZ: VEC, IAXIS'
-C     WRITE (6,'(A,3F12.6,I3)') 'SIAZ: ',VEC, IAXIS
+C     Write (6,*) 'SIAZ: vec, iaxis'
+C     Write (6,'(a,3f12.6,i3)') 'SIAZ: ',vec, iaxis
 C 
 C DETERMINE LENGTH OF VECTOR.
 C
@@ -1287,7 +1287,7 @@ C
       ROT(3,2)=0.0D0
       DIS=SQRT(MYDOT(VEC,VEC,3))
       IF (ABS(DIS).LT.1.0D-10) RETURN
-C     WRITE (6,'(A,F12.6)') 'SIAZ: DIS', DIS
+C     Write (6,'(a,f12.6)') 'SIAZ: dis', dis
 C
 C   RETURNS ROTATION MATRIX NEEDED TO PLACE VECTOR
 C   VEC ALONG THE X (IAXIS=1), Y (IAXIS=2) OR Z (IAXIS=3)
@@ -1396,11 +1396,11 @@ C
 C     ROBUST EQUIVALENCE CHECK - DO WELL DEFINED SORT ON COORDINATE
 C     MATRIX AND COMPARE ELEMENT BY ELEMENT.  SHOULD BE FOOLPROOF.
 C
-C     VECS     COORDINATE VECTOR TO BE CHECKED (MODIFIED)
-C     VECR     SORTED REFERENCE COORDINATE VECTOR (INPUT ONLY)
+C     VECS     coordinate vector to be checked (modified)
+C     VECR     sorted reference coordinate vector (input only)
 C     NORD     ???
-C     ICOMP    NUMBER OF COORDINATES OUTSIDE OF TOL (OUTPUT ONLY)
-C     TOL      TOLERANCE FOR COMPARISON OF COORDS (INPUT ONLY)
+C     ICOMP    number of coordinates outside of TOL (output only)
+C     TOL      tolerance for comparison of coords (input only)
 C
       IMPLICIT NONE
       INTEGER I,JAP,NATOMS,ICOMP,IPRNT
@@ -1410,15 +1410,15 @@ C
       ICOMP=0
       CALL SORTXYZ(VECS,VECS,NORD(NATOMS+1),TOL,NATOMS)
       IF (IPRNT.GT.10) THEN
-         WRITE(6,*)'SORTED REFERENCE VECTOR (INPUT)'
+         WRITE(6,*)'Sorted reference vector (input)'
          WRITE(6,'(3G20.10)')(VECR(JAP),JAP=1,3*NATOMS)
-         WRITE(6,*)'SORTED TRANSFORMED VECTOR'
+         WRITE(6,*)'Sorted transformed vector'
          WRITE(6,'(3G20.10)')(VECS(JAP),JAP=1,3*NATOMS)
       ENDIF
       DO I=1,NATOMS*3
          Z=ABS(VECR(I)-VECS(I))
          IF (Z.GT.TOL) THEN
-C           PRINT '(A,I5,4G20.10)','I,VECR,VECS,DIFF,TOL=',I,VECR(I),VECS(I),Z,TOL
+C           PRINT '(A,I5,4G20.10)','I,VECR,VECS,diff,TOL=',I,VECR(I),VECS(I),Z,TOL
             ICOMP=ICOMP+1
             RETURN
          ENDIF
@@ -1435,35 +1435,35 @@ C
       INTEGER NATOMS,J,JK,I,NORD(NATOMS*2+1),J1
       DOUBLE PRECISION X(3*NATOMS),XX(3*NATOMS),Y(3*NATOMS),TOL
 C
-C     SORT ON THE X - IF TWO X'S ARE EQUIVALENT, SORT ON Y AND SO ON.
-C     IF THE COORDINATE < THE TOLERANCE WE SHOULD IGNORE IT! HOWEVER,
-C     IF THE TOLERANCE IS SLOPPY THAT CAN LEAD TO THE SORTING IGNORING
-C     GENUINE SMALL DIFFERENCES BETWEEN COORDINATES. SIGH. 
+C     Sort on the X - if two X's are equivalent, sort on Y and so on.
+C     If the coordinate < the tolerance we should ignore it! However,
+C     if the tolerance is sloppy that can lead to the sorting ignoring
+C     genuine small differences between coordinates. Sigh. 
 C
-C     PRINT '(A)','IN SORTXYZ'
+C     PRINT '(A)','in SORTXYZ'
       DO 10 I=1,3*NATOMS
          X(I)=XX(I)
 10    CONTINUE
       JK=1
 40    J=1
 C     PRINT*,'TOL=',TOL
-      OUTER: DO I=1,3*NATOMS-2,3
+      outer: DO I=1,3*NATOMS-2,3
 C        DO J1=1,NATOMS
-C           PRINT '(A,I5,3G20.10)','J1,COORDS: ',J1,X(3*(J1-1)+1),X(3*(J1-1)+2),X(3*(J1-1)+3)
+C           PRINT '(A,I5,3G20.10)','J1,coords: ',J1,X(3*(J1-1)+1),X(3*(J1-1)+2),X(3*(J1-1)+3)
 C        ENDDO
-C        PRINT '(A,2I5,3G20.10)','I,J,X(I),X(J),DIFF    =',I,J,X(I),X(J),X(I)-X(J)
+C        PRINT '(A,2I5,3G20.10)','I,J,X(I),X(J),diff    =',I,J,X(I),X(J),X(I)-X(J)
          IF (X(I)-X(J).GT.TOL) THEN
-            J=I          ! J IS SET TO THE INDEX OF THE X COORDINATE OF THE
-            CYCLE OUTER  ! THE CORRESPONDING COORDINATE IS SET TO -99999.D0, SO IT WON;T BE USED AGAIN.
+            J=I          ! J is set to the index of the x coordinate of the
+            CYCLE outer  ! the corresponding coordinate is set to -99999.D0, so it won;t be used again.
          ENDIF
          IF (ABS(X(I)-X(J)).LT.TOL) THEN
-C           PRINT '(A,2I5,3G20.10)','I,J,X(I+1),X(J+1),DIFF=',I,J,X(I+1),X(J+1),X(I+1)-X(J+1)
+C           PRINT '(A,2I5,3G20.10)','I,J,X(I+1),X(J+1),diff=',I,J,X(I+1),X(J+1),X(I+1)-X(J+1)
             IF (X(I+1)-X(J+1).GT.TOL) J=I
             IF (ABS(X(I+1)-X(J+1)).LT.TOL) THEN
                IF (X(I+2)-X(J+2).GT.TOL) J=I
             ENDIF
          ENDIF
-      ENDDO OUTER
+      ENDDO outer
       DO 60 I=0,2
          Y(3*JK-2+I)=X(J+I)
 60       X(J)=-99999.D0
@@ -1478,7 +1478,7 @@ C           PRINT '(A,2I5,3G20.10)','I,J,X(I+1),X(J+1),DIFF=',I,J,X(I+1),X(J+1),
       SUBROUTINE ROTM(IDIR,ANG,IX,RT)
 C
 C     FORMS THREE DIMENSIONAL ROTATION MATRIX (IX=0 IF ANG IN RADS,
-C     IX=1 IF DEG,  ADD 10 TO IX TO GET TRANSPOSE)
+c     IX=1 IF DEG,  ADD 10 TO IX TO GET TRANSPOSE)
 C
       IMPLICIT NONE
       INTEGER IDIR,IX,I,J,IBTAND,IEO
@@ -1549,7 +1549,7 @@ C
 
       SUBROUTINE MYCROSS(A,B,C,IX)
 C
-C CALCULATES THE (OPTIONALLY) NORMALIZED VECTOR CROSS PRODUCT C=A X B
+C CALCULATES THE (OPTIONALLY) NORMALIZED VECTOR CROSS PRODUCT C=A x B
 C
       IMPLICIT NONE
       INTEGER IX
@@ -1567,9 +1567,9 @@ C
       SUBROUTINE EIG(A,B,L,N,N1)
 C
 C DIAGONALIZATION BY THE JACOBI METHOD.
-C A - MATRIX TO BE DIAGONALIZED (EIGENVALUES RETURNED IN DIAGONAL
-C        ELEMENTS OF A).  IF YOU WANT TO SAVE A, YOU MUST DO THIS BEFORE
-C        CALLING EIG.  SET N TO THE SAME VALUE AS L.
+C A - MATRIX TO BE DIAGONALIZED (eigenvalues returned in diagonal
+C        elements of A).  If you want to save A, you must do this before
+C        calling EIG.  Set N to the same value as L.
 C B - EIGENVECTORS
 C L - DIMENSION OF A AND B
 C N - SIZE OF SUBMATRIX USED
@@ -1685,7 +1685,7 @@ C
       END
 
 C
-C  RETURNS A = B C
+C  Returns A = B C
 C
       SUBROUTINE MATMUL(A,B,C,NA,NB,NC,NTA,NTB,NTC)
       IMPLICIT NONE
@@ -1708,8 +1708,8 @@ C
       END     
       
 C
-C               T
-C  RETURNS A = C B
+C               t
+C  Returns A = C B
 C
       SUBROUTINE MATMULV(A,B,C,NA,NB,NC)
       IMPLICIT NONE
@@ -1728,7 +1728,7 @@ C
       RETURN 
       END
 C                
-C  RETURNS A = B C
+C  Returns A = B C
 C
       SUBROUTINE MYMATMUL(A,B,C,NA,NB,NC)
       IMPLICIT NONE
@@ -1814,15 +1814,15 @@ C
         RETURN
         END         
 
-      CHARACTER(LEN=4) FUNCTION STRING(NAME,IORD)
-      CHARACTER(LEN=4) NAME, ITOA*3
-      IF (NAME(2:2) .EQ. 'N') THEN
-         STRING(1:1)=NAME(1:1)
-         STRING(2: )=ITOA(IORD, 0)
-         STRING(LNBLNK(STRING)+1:)=NAME(3:3)
-      ELSE
-         STRING=NAME
-      ENDIF
+      CHARACTER(LEN=4) FUNCTION STRING(NAME,Iord)
+      CHARACTER(LEN=4) NAME, ItoA*3
+      If (Name(2:2) .eq. 'N') then
+         String(1:1)=Name(1:1)
+         String(2: )=ItoA(Iord, 0)
+         String(LNBlnk(String)+1:)=Name(3:3)
+      Else
+         String=Name
+      EndIf
       RETURN
       END
 
@@ -1835,7 +1835,7 @@ C
 10    AT(J,I)=A(I,J)
       RETURN
       END
-      DOUBLE PRECISION FUNCTION FDIST(A,B)
+      Double Precision FUNCTION FDIST(A,B)
 C
 C CALCULATES THE DISTANCE BETWEEN TWO POINTS IN CARTESIAN SPACE
 C
@@ -1861,7 +1861,7 @@ C
 10    Q=Q+X(I)**2
       P=SQRT(Q)
       IF(P.LT.1D-14)THEN
-      WRITE(6,*)' NULL VECTOR RETURNED FROM NORMAL'
+      WRITE(6,*)' null vector returned from NORMAL'
       RETURN
       ENDIF
       DO 11 I=1,N
@@ -1870,51 +1870,51 @@ C
       END 
        CHARACTER*(*) FUNCTION ITOA(NR, FRCPLS)
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C PURPOSE:      CONVERT NR TO A LEFT JUSTIFIED STRING
+C Purpose:      Convert NR to a left justified string
 C
-C ARGUMENTS:
-C     NR       NUMBER TO BE CONVERTED (INPUT ONLY)
-C     FRCPLS   FORCE LEADING '+' IF NR POSITIVE (INPUT ONLY)
+C Arguments:
+C     NR       number to be converted (input only)
+C     FRCPLS   Force leading '+' if NR positive (input only)
 C
-C LIMITATIONS:
-C     MAY RETURN WITH INCOMPLETE CONVERSION IF LENGTH OF ITOA IS TOO
-C     SHORT.  PUTS '*' IN LAST POSITION OF ITOA TO INDICATE OVERLOW.
+C Limitations:
+C     May return with incomplete conversion if length of ITOA is too
+C     short.  Puts '*' in last position of ITOA to indicate overlow.
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C $HEADER: ITOA.F,V 4.0 89/03/14 01:15:45 BERNHOLD EXP $
+C $Header: itoa.f,v 4.0 89/03/14 01:15:45 bernhold Exp $
 C
-C $LOG:	ITOA.F,V $
-C REVISION 4.0  89/03/14  01:15:45  BERNHOLD
-C BASELINE FOR SUN & VAX PRIOR TO PORTING EVERYWHERE
+C $Log:	itoa.f,v $
+C Revision 4.0  89/03/14  01:15:45  bernhold
+C Baseline for Sun & VAX prior to porting everywhere
 C 
-C REVISION 3.0  89/01/29  23:10:22  BERNHOLD
-C FIRST WORKING RELEASE FOR VAX
+C Revision 3.0  89/01/29  23:10:22  bernhold
+C First working release for VAX
 C 
-C REVISION 2.1  89/01/02  20:36:12  BERNHOLD
-C TO KEEP CONSISTENT WITH .U FILE JUST CHECKED IN.
+C Revision 2.1  89/01/02  20:36:12  bernhold
+C To keep consistent with .u file just checked in.
 C 
-C     REVISION 1.1  88/12/07  13:38:51  BERNHOLD
-C     INITIAL REVISION
+C     Revision 1.1  88/12/07  13:38:51  bernhold
+C     Initial revision
 C     
 C
-C SYSTEM:       STANDARD FORTRAN 77
+C System:       Standard FORTRAN 77
 C
-C COPYRIGHT 1988 DAVID E. BERNHOLDT
+C Copyright 1988 David E. Bernholdt
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
       INTEGER NR, FRCPLS, NRABS
       INTEGER I, J
 C
-C     CLEAR OUT THE STRING
+C     Clear out the string
 C
       DO 10 I=1, LEN(ITOA)
          ITOA=' '
  10   CONTINUE
 C
-C     START COUNTING POSITION IN STRING
+C     Start counting position in string
 C
       J=1
       NRABS=ABS (NR)
 C
-C     PUT IN SIGN AS APPROPRIATE
+C     Put in sign as appropriate
 C
       IF (NR .LT. 0) THEN
          ITOA(J:J)='-'
@@ -1925,14 +1925,14 @@ C
          J=J + 1
       ENDIF
 C
-C     CHECK IF WE ARE ABOUT TO OVERFLOW THE STRING
+C     Check if we are about to overflow the string
 C
       IF (J .GT. LEN(ITOA)) THEN
          ITOA(J-1:J-1)='*'
          RETURN
       ENDIF
 C
-C     LOOP OVER NR OF DIGITS IN NUMBER
+C     Loop over nr of digits in number
 C
       NDIG=INT( LOG10( FLOAT(NRABS)) ) + 1
       DO 100 I=NDIG, 1, -1
@@ -1940,8 +1940,8 @@ C
          ITOA(J:J)=CHAR(N + 48)
          J=J + 1
 C
-C        CHECK FOR OVERFLOW OF THE STRING, BUT IF THIS IS LAST DIGIT
-C        THEN ITS OKAY.
+C        Check for overflow of the string, but if this is last digit
+C        then its okay.
 C
          IF (J .GT. LEN(ITOA) .AND. I .GT. 1) THEN
             ITOA(J-1:J-1)='*'
@@ -1953,43 +1953,43 @@ C
       END
        INTEGER FUNCTION LNBLNK (STRING)
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C PURPOSE:   RETURNS THE POSITION OF THE LAST NON-BLANK CHARACTER
+C Purpose:   Returns the position of the last non-blank character
 C
-C ARGUMENTS: STRING   CHARACTER STRING (INPUT ONLY)
+C Arguments: STRING   character string (input only)
 C
-C REMARKS:   ALL FORTRAN 77 CHARACTER VARIABLES ARE BLANK PADDED ON THE
-C            RIGHT.  THE INTRINSIC FUNCTION LEN RETURNS THE DIMENSION
-C            OF THE CHARACTER OBJECT, NOT THE LENGTH OF THE CONTENTS.
+C Remarks:   All FORTRAN 77 character variables are blank padded on the
+C            right.  The intrinsic function LEN returns the dimension
+C            of the character object, not the length of the contents.
 C            
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C $HEADER: LNBLNK.F,V 1.1 88/01/11 22:08:15 BERNHOLD EXP $
+C $Header: lnblnk.f,v 1.1 88/01/11 22:08:15 bernhold Exp $
 C
-C    REVISION 0.0  87/07/24  BERNHOLDT (VAX)
-C $LOG:	LNBLNK.F,V $
-C    REVISION 1.1  88/01/11  22:08:15  BERNHOLD
-C    INITIAL REVISION
+C    Revision 0.0  87/07/24  bernholdt (VAX)
+C $Log:	lnblnk.f,v $
+C    Revision 1.1  88/01/11  22:08:15  bernhold
+C    Initial revision
 C    
 C
-C SYSTEM:     STANDARD FORTRAN 77
+C System:     Standard FORTRAN 77
 C
-C COPYRIGHT 1987 DAVID E. BERNHOLDT
+C Copyright 1987 David E. Bernholdt
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
        INTEGER I
        CHARACTER*(*) STRING
        CHARACTER(LEN=1) BLANK
        PARAMETER (BLANK = ' ')
 C
-C      START AT THE END AND WORK BACKWARDS
+C      Start at the end and work backwards
 C
        DO 100 I = LEN(STRING), 1, -1
-C         LOOK FOR FIRST NON-WHITESPACE CHARACTER
+C         Look for first non-whitespace character
           IF (STRING(I:I) .NE. BLANK) THEN
              LNBLNK = I
              RETURN
           ENDIF
   100  CONTINUE
 C
-C      IF WE GET THIS FAR, THE STRING IS EMPTY
+C      If we get this far, the string is empty
        LNBLNK = 0
        RETURN
        END
@@ -2013,10 +2013,10 @@ C      IF WE GET THIS FAR, THE STRING IS EMPTY
       RETURN
       END
 C
-C  TEST FOR WHETHER WE HAVE A SYMMETRY OPERATION OR NOT BY CHECKING
-C  THAT EACH ATOM IN VECTOR Q1 HAS A PARTNER WITHIN DISTANCE TOLD IN
-C  VECTOR Q2.
-C       Q1(I) <--> Q2(PERM(I))
+C  Test for whether we have a symmetry operation or not by checking
+C  that each atom in vector Q1 has a partner within distance TOLD in
+C  vector Q2.
+C       Q1(i) <--> Q2(perm(i))
 C
       SUBROUTINE TESTSYMOP(NATOMS,Q1,Q2,PERM,TOLD,DIST2,WORSTRAD)
       USE COMMONS,ONLY : MYUNIT,DEBUG
@@ -2033,12 +2033,12 @@ C
       DO J1=1,NATOMS
          PARTNER=.FALSE.
          DMIN=1.0D100
-         INNERLOOP: DO J2=1,NATOMS
-            IF (ASSIGNED(J2)) CYCLE INNERLOOP
+         innerloop: DO J2=1,NATOMS
+            IF (ASSIGNED(J2)) CYCLE innerloop
             DIST=(Q1(3*(J1-1)+1)-Q2(3*(J2-1)+1))**2+ 
      &           (Q1(3*(J1-1)+2)-Q2(3*(J2-1)+2))**2+ 
      &           (Q1(3*(J1-1)+3)-Q2(3*(J2-1)+3))**2
-C           IF (DEBUG) WRITE(MYUNIT,'(A,2I6,G20.10)') 'TESTSYMOP> J1,J2,DIST=',J1,J2,DIST
+C           IF (DEBUG) WRITE(MYUNIT,'(A,2I6,G20.10)') 'testsymop> J1,J2,DIST=',J1,J2,DIST
             IF (DIST.LT.TOLDSQ) THEN
                PARTNER=.TRUE.
                PERM(J1)=J2
@@ -2047,18 +2047,18 @@ C           IF (DEBUG) WRITE(MYUNIT,'(A,2I6,G20.10)') 'TESTSYMOP> J1,J2,DIST=',J
                   DIST2=DIST
                   JWORST=J1
                ENDIF
-C              WRITE(MYUNIT,'(A,2I6,G20.10)') 'TESTSYMOP> MATCH J1,J2,DIST=',J1,J2,DIST
-               EXIT INNERLOOP
+C              WRITE(MYUNIT,'(A,2I6,G20.10)') 'testsymop> match J1,J2,DIST=',J1,J2,DIST
+               EXIT innerloop
             ENDIF
-         ENDDO INNERLOOP
+         ENDDO innerloop
          IF (.NOT.PARTNER) THEN
-!           IF (DEBUG) WRITE(MYUNIT,'(A,I6)') 'TESTSYMOP> NO PARTNER FOR ATOM ',J1
+!           IF (DEBUG) WRITE(MYUNIT,'(A,I6)') 'testsymop> no partner for atom ',J1
             DIST2=1.0D3
             RETURN
          ENDIF
       ENDDO 
 !
-!  IF WE REACH HERE THEN THE TWO STRUCTURES ARE PERMUTATIONAL ISOMERS TO WITHIN THE TOLERANCE TOLD.
+!  If we reach here then the two structures are permutational isomers to within the tolerance TOLD.
 !
       DIST2=SQRT(DIST2)
       WORSTRAD=SQRT(Q1(3*(JWORST-1)+1)**2+Q1(3*(JWORST-1)+2)**2+Q1(3*(JWORST-1)+3)**2)

@@ -1,26 +1,26 @@
-C   GMIN: A PROGRAM FOR FINDING GLOBAL MINIMA
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF GMIN.
+C   GMIN: A program for finding global minima
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of GMIN.
 C
-C   GMIN IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   GMIN is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   GMIN IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   GMIN is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C  CONJUGATE GRADIENT MINIMIZATION.
+C  Conjugate gradient minimization.
 C
       SUBROUTINE CGMIN(MAXI,P,CFLAG,ITER,EREAL,NP)
-      USE COMMONS
+      USE commons
       IMPLICIT NONE
 
 
@@ -53,7 +53,7 @@ C     CALL ORDERQ4(NATOMS,P,QSTART)
          ELSE
             WRITE(40,'(I4)') NATOMS
             WRITE(40,10) NQ(NP)
-10          FORMAT(1X,'QUENCH NUMBER ',I6,' INITIAL POINTS IN CGMIN')
+10          FORMAT(1X,'QUENCH NUMBER ',I6,' initial points in cgmin')
             WRITE(40,'(A2,3F20.10)') ('LA ',P(3*(I-1)+1),P(3*(I-1)+2),P(3*(I-1)+3),I=1,NATOMS-NS)
             IF (NS.GT.0) WRITE(40,'(A2,3F20.10)') ('LB',P(3*(I-1)+1),P(3*(I-1)+2),P(3*(I-1)+3),I=NATOMS-NS+1,NATOMS)
          ENDIF
@@ -80,12 +80,12 @@ C     CALL ORDERQ4(NATOMS,P,QSTART)
       DO ITER=1,MAXI
 
 C        WRITE(40,'(I4)') NATOMS
-C        WRITE(40,'(A,I4,A,F15.5)') 'AT STEP NUMBER ',ITER,' ENERGY=',EREAL
+C        WRITE(40,'(A,I4,A,F15.5)') 'At step number ',ITER,' energy=',EREAL
 C        WRITE(40,'(A2,3F20.10)') ('LA ',P(3*(I-1)+1),P(3*(I-1)+2),P(3*(I-1)+3),I=1,NATOMS-NSEED)
 
-C        PRINT*,'VARIABLES:'
+C        PRINT*,'variables:'
 C        WRITE(*,'(5F20.10)') (P(J1),J1=1,3*NATOMS)
-C        PRINT*,'GRADIENT:'
+C        PRINT*,'gradient:'
 C        WRITE(*,'(5F20.10)') (GRAD(J1),J1=1,3*NATOMS)
 
          STUCK=.FALSE.
@@ -98,11 +98,11 @@ C        WRITE(*,'(5F20.10)') (GRAD(J1),J1=1,3*NATOMS)
                EREAL=0.0D0
                POTEL=0.0D0
                RMS=1.0D0
-               WRITE(*,'(A)') ' STUCK - STEP DISCARDED'
+               WRITE(*,'(A)') ' Stuck - step discarded'
                RETURN
 C
-C  SHORT RANGE MORSE POTENTIALS CAN GET STUCK THROUGH ATOMS GETTING TOO FAR OUT
-C  OF THE CORE. TRY CONTRACTING.
+C  Short range Morse potentials can get stuck through atoms getting too far out
+C  of the core. Try contracting.
 C
             ELSE IF (MORSET.AND.RHO.GT.6.0D0) THEN
                DO I=1,NATOMS-NSEED
@@ -121,7 +121,7 @@ C
          ENDIF
 
          IF (DEBUG) WRITE(6,'(A,G20.10,A,G15.5,A,I4,A)') 
-     1                    ' POTENTIAL ENERGY=',EREAL,' RMS FORCE=',GSUM,' AFTER ',ITER-1,' CG STEPS'
+     1                    ' Potential energy=',EREAL,' RMS force=',GSUM,' after ',ITER-1,' CG steps'
 
          FIXIMAGE=.TRUE.
          FRET=EREAL
@@ -153,29 +153,29 @@ C        CALL MYLINMIN(P,GRAD,NATOMS,FRET)
             EREAL=0.0D0
             POTEL=0.0D0
             RMS=1.0D0
-            WRITE(*,'(A)') ' ENERGY INCREASED IN QUENCH - STEP DISCARDED'
+            WRITE(*,'(A)') ' Energy increased in quench - step discarded'
             RETURN
          ENDIF
 
 C
-C  CATCH COLD FUSION FOR IONIC POTENTIALS AND DISCARD.
+C  Catch cold fusion for ionic potentials and discard.
 C
-C  CHANGED EREAL FOR COLD FUSION TO 1.0D6 RATHER THAN 0.0D0, WHICH COULD RESULT IN STEPS BEING ACCEPTED
-C  FOR SYSTEMS WITH POSITIVE ENERGIES. - KHS26 26/11/09
+C  Changed EREAL for cold fusion to 1.0D6 rather than 0.0D0, which could result in steps being accepted
+C  for systems with positive energies. - khs26 26/11/09
 C
          IF ((TOSI.OR.WELCH.OR.RGCL2.OR.AMBER.OR.ARNO.OR.PACHECO).AND.(EREAL.LT.-1.0D3)) THEN
             EREAL=0.0D6
             POTEL=0.0D6
             RMS=1.0D0
-            WRITE(*,'(A)') ' COLD FUSION DIAGNOSED - STEP DISCARDED'
-!     CSW34> SET COLDFUSION=.TRUE. SO THAT ATEST=.FALSE. IN MC
+            WRITE(*,'(A)') ' Cold fusion diagnosed - step discarded'
+!     csw34> set COLDFUSION=.TRUE. so that ATEST=.FALSE. in MC
             COLDFUSION=.TRUE.
             RETURN
          ENDIF
 !        IF ((AMBER.AND.NOTCALLED).AND.(RMS.LT.1.0D0)) THEN
 !           CALL CHIRALTEST(CTEST,P)
 !           IF (CTEST) THEN
-!              WRITE(*,'(A)') ' CHANGE IN CHIRALITY DETECTED - STEP REJECTED'
+!              WRITE(*,'(A)') ' Change in chirality detected - step rejected'
 !              POTEL=1.0D6
 !              EREAL=1.0D6
 !              RMS=1.0D0
@@ -189,11 +189,11 @@ C
          DO J=1,3*NATOMS
             GG=GG+G(J)**2
 C
-C  THIS IS FLETCHER-REEVES
+C  This is Fletcher-Reeves
 C
 C           DGG=DGG+GRAD(J)**2
 C
-C  THIS IS POLAK-RIBIERE
+C  This is Polak-Ribiere
 C
             DGG=DGG+(GRAD(J)+G(J))*GRAD(J)
          ENDDO

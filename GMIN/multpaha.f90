@@ -21,7 +21,7 @@
       DOUBLE PRECISION, PARAMETER :: B = 1.6485D0
       LOGICAL          :: GTEST
 
-!     TPAHA IS THE TOTAL NUMBER OF DIFFERENT PAH MOLECULES THAT CAN BE CONSIDERED; CURRENTLY TPAHA = 13
+!     TPAHA is the total number of different PAH molecules that can be considered; currently TPAHA = 13
 
       ALLOCATE(MINDXI(TPAHA+1))
       ALLOCATE(MINDXF(TPAHA))
@@ -29,9 +29,9 @@
       ALLOCATE(NRBST(TPAHA))
       ALLOCATE(STINDX(TPAHA))
 
-!     NCMP(I) IS THE NUMBER OF I-TH PAH MOLECULES PRESENT IN THE MIXTURE; NCMP(I) = 0 IF NO I-TH PAH IS PRESENT 
+!     NCMP(i) is the number of i-th PAH molecules present in the mixture; NCMP(i) = 0 if no i-th PAH is present 
 
-!      ASSIGN NUMBER OF SITES FOR EACH PAH MOLECULE
+!      ASSIGN number of sites for each PAH molecule
 
       NRBST(1) = 12; NRBST(2) = 18; NRBST(3) = 24; NRBST(4) = 26 
       NRBST(5) = 24; NRBST(6) = 32; NRBST(7) = 34; NRBST(8) = 36
@@ -102,7 +102,7 @@
 
          CALL RMDRVT(P, RMI, DRMI1, DRMI2, DRMI3, GTEST)
 
-         J9 = 1    ! J9 IS THE COMPONENT LABEL WITHIN THIS DO LOOP
+         J9 = 1    ! J9 is the component label within this DO loop
  
          DO WHILE (MINDXF(J9) < J1)
             J9 = J9 + 1
@@ -190,7 +190,7 @@
             CALL DEFCIRCUMCORONENE()
          ENDIF
  
-!         J4 = J4 + NRBST(J9) ! J4 SUMS UP TO THE TOTAL NUMBER OF SITES
+!         J4 = J4 + NRBST(J9) ! J4 sums up to the total number of sites
 
          DO J2 = 1, NRBST(J9)
 
@@ -491,7 +491,7 @@
       DOUBLE PRECISION :: RMI(3,3), DRMI(3,3), P(3), RBCOORDS(3)
       LOGICAL          :: GTEST
  
-      OPEN(UNIT=26, FILE='MULTPAHA.XYZ', STATUS='UNKNOWN')
+      OPEN(UNIT=26, FILE='multpaha.xyz', STATUS='UNKNOWN')
 
       ALLOCATE(MINDXF(TPAHA))
       ALLOCATE(NCRBN(TPAHA))
@@ -520,7 +520,7 @@
 
          WRITE(26,'(I6)') TTLST 
          WRITE(26,10) J1, QMIN(J1), FF(J1)
-10       FORMAT('ENERGY OF MINIMUM ',I6,'=',F20.10,' FIRST FOUND AT STEP ',I8)
+10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)
 
          DO J3 = 1, NATOMS/2
 
@@ -530,7 +530,7 @@
 
             CALL RMDRVT(P, RMI, DRMI, DRMI, DRMI, GTEST)
 
-            J9 = 1    ! J9 IS THE COMPONENT LABEL WITHIN THIS DO LOOP
+            J9 = 1    ! J9 is the component label within this DO loop
 
             DO WHILE (MINDXF(J9) < J3)
                J9 = J9 + 1

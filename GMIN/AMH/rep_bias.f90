@@ -1,131 +1,131 @@
-      SUBROUTINE REP_BIAS(PRCORD,FRCORD,E)
+      subroutine rep_bias(prcord,frcord,E)
 
-!     THIS SUBROUTINE IS CALLED BY FORCE.F AND WILL
-!     CALCULATE THE FORCE ON  REPLICAS INTRODUCED 
-!     BY THE INTERREPLICA POTENTIAL
-!     THIS FORCE IS MATCHED WITH THE EXPERIMENTAL 
-!     PHIVALUES READ IN EARLIER
+!     this subroutine is called by force.f and will
+!     calculate the force on  replicas introduced 
+!     by the interreplica potential
+!     this force is matched with the experimental 
+!     phivalues read in earlier
 
-!     DECLARING VARIABLES
-      USE AMHGLOBALS,  ONLY: MAXSIZ,MAXCRD,NMRES,NUMPRO,MAXPRO,REP_LAMBDA,REP_PHI_EXP,&
-        REP_CUT_OFF,REP_TOL,N_REP_CON,REP_CON_2_RES
+!     declaring variables
+      use amhglobals,  only: maxsiz,maxcrd,nmres,numpro,maxpro,rep_lambda,rep_phi_exp,&
+        rep_cut_off,rep_tol,n_rep_con,rep_con_2_res
 
-       DOUBLE PRECISION, INTENT(IN):: PRCORD(MAXSIZ,3,MAXPRO,MAXCRD)
-       DOUBLE PRECISION, INTENT(OUT):: FRCORD(MAXSIZ,3,MAXPRO,MAXCRD),E
+       double precision, intent(in):: prcord(maxsiz,3,maxpro,maxcrd)
+       double precision, intent(out):: frcord(maxsiz,3,maxpro,maxcrd),E
 
-      INTEGER :: I_RES,N_REP,J_RES,I_CON,I_REP
-      DOUBLE PRECISION :: R(MAXPRO,MAXSIZ,MAXSIZ),R0,PHI_SIM(NMRES),KERNEL(MAXPRO,MAXSIZ)
+      integer :: i_res,n_rep,j_res,i_con,i_rep
+      double precision :: r(maxpro,maxsiz,maxsiz),r0,phi_sim(nmres),kernel(maxpro,maxsiz)
 
-!     I_RES,J_RES,N_REP ARE INTEGERS DO LOOP OVER RESIDUES OR NUMBER OF REPLICAS
-!     MAXSIZ= MAX SIZE FOR ARRAY FOR HOLDING RESIDUES
-!     MAXCRD = 3 X,Y,Z
-!     NMRES  NUMBER OF RES OF PROTEIN
-!     NUMPRO NUMBER OF REPLICAS
-!     MAXPRO  PARAMETER MAXIMUM NUMBER OF REPLICAS POSSIBLE
-!     REP_LAMBDA IS THE LAMBDA COEFFICIENT DETERMINING THE UNCERTAINTIES IN THE FORCE
-!     REP_PHI_EXP ARE THE EXPERIMENTAL PHI VALUES READ IN IN REP_CONTACT
-!     REP_CUT_OFF AND REP_TOL DETERMINE R0 THE RADIUS USED FOR DETERMINING A CONTACT 
-      R0=REP_CUT_OFF+REP_TOL
-!     N_REP_CON IS THE AMOUNT TOTAL NUMBER OF CONTACTS MADE FOR RESIDUE I
-!     REP_CON_2_RES SPECIFIES THE RESIDUE LABEL OF THE MADE CONTACT 
-!     PRCORD ARE THE COORDINATES OF THE PROTEIN
-!     FRCORD IS THE RESULTING FORCE
-!     TEMPAV IS A FLAG THAT STORES ENERGIES OR NOT
-!     E IS THE TOTAL REPLICA ENERGY
-!     R IS AN RADIUS ARRAY OF RESIDUES IN SPECIFIED REPLICAS
-!     PHI_SIM ARE THE CALCULATED PHIVALUES FOR A CERTAIN RESIDUE
-!     KERNEL IS EXPLAINED LATER, IT IA PHI*LAMBDA
+!     i_res,j_res,n_rep are integers do loop over residues or number of replicas
+!     maxsiz= max size for array for holding residues
+!     maxcrd = 3 x,y,z
+!     nmres  number of res of protein
+!     numpro number of replicas
+!     maxpro  parameter maximum number of replicas possible
+!     rep_lambda is the lambda coefficient determining the uncertainties in the force
+!     rep_phi_exp are the experimental phi values read in in rep_contact
+!     rep_cut_off and rep_tol determine r0 the radius used for determining a contact 
+      r0=rep_cut_off+rep_tol
+!     n_rep_con is the amount total number of contacts made for residue i
+!     rep_con_2_res specifies the residue label of the made contact 
+!     prcord are the coordinates of the protein
+!     frcord is the resulting force
+!     tempav is a flag that stores energies or not
+!     E is the total replica energy
+!     r is an radius array of residues in specified replicas
+!     phi_sim are the calculated phivalues for a certain residue
+!     kernel is explained later, it ia phi*lambda
 
-!     WE WANT CB DISTANCES, SO WE SET MXCRD ARRAY ENTRY TO 2
+!     we want Cb distances, so we set mxcrd array entry to 2
 
-!     WE NEED TO CALCULATE ALL THE
-!     DISTANCES BETWEEN RESIDUES DURING EACH FOLDING RUN
-!     WE GET THE DISTANCES FROM PRCORD
-
-
-      DO N_REP=1,NUMPRO
-      DO I_RES=1,NMRES
-      DO J_RES=1,NMRES
-              R(N_REP,I_RES,J_RES)=SQRT(SUM((PRCORD(I_RES,:,N_REP,2)-PRCORD(J_RES,:,N_REP,2))**2))
-      END DO
-      END DO
-      END DO
+!     we need to calculate all the
+!     distances between residues during each folding run
+!     we get the distances from prcord
 
 
+      do n_rep=1,numpro
+      do i_res=1,nmres
+      do j_res=1,nmres
+              r(n_rep,i_res,j_res)=sqrt(sum((prcord(i_res,:,n_rep,2)-prcord(j_res,:,n_rep,2))**2))
+      end do
+      end do
+      end do
 
 
 
-!     CALCULATING THE FORCE, WE HAVE A CONSTANT PIECE FOR 
-!     THE FORCE, CALLED KERNEL ,AND A MULTIPLICATIVE TERM
-!     LET US CALCULATE THE KERNEL FIRST 
-!     WE NEED PHI VALUES TO CALCULATE THE KERNEL
+
+
+!     calculating the force, we have a constant piece for 
+!     the force, called kernel ,and a multiplicative term
+!     let us calculate the kernel first 
+!     we need phi values to calculate the kernel
  
-!     SETTING KERNEL AND PHISIM EQUL TO 0
+!     setting kernel and phisim equl to 0
 
-      KERNEL=0.0D0
-      PHI_SIM=0.0D0
+      kernel=0.0D0
+      phi_sim=0.0D0
 
-!     LOOPS TO CALCULATE KERNEL AND PHISIM
+!     loops to calculate kernel and phisim
 
-      DO I_REP=1,NUMPRO
-      DO I_RES=1,NMRES
-      DO I_CON=1,N_REP_CON(I_RES)
-                J_RES=REP_CON_2_RES(I_RES,I_CON)
-                PHI_SIM(I_RES)=PHI_SIM(I_RES)+((0.50D0/N_REP_CON(I_RES))*(1.0D0+TANH(5.0D0*(R0-R(I_REP,I_RES,J_RES)))))/NUMPRO
-      END DO
-      END DO
-      END DO
+      do i_rep=1,numpro
+      do i_res=1,nmres
+      do i_con=1,n_rep_con(i_res)
+                j_res=rep_con_2_res(i_res,i_con)
+                phi_sim(i_res)=phi_sim(i_res)+((0.50D0/n_rep_con(i_res))*(1.0D0+tanh(5.0D0*(r0-r(i_rep,i_res,j_res)))))/numpro
+      end do
+      end do
+      end do
 
 
-      DO I_REP=1,NUMPRO
-      DO I_RES=1,NMRES
-          KERNEL(I_REP,I_RES)=REP_LAMBDA(I_RES)*(PHI_SIM(I_RES)-REP_PHI_EXP(I_RES))
-      END DO
-      END DO
+      do i_rep=1,numpro
+      do i_res=1,nmres
+          kernel(i_rep,i_res)=rep_lambda(i_res)*(phi_sim(i_res)-rep_phi_exp(i_res))
+      end do
+      end do
 
     
 
 
-!     SETTING THE FORCE EQUAL TO ZERO
+!     setting the force equal to zero
 
-      FRCORD=0.0D0
+      frcord=0.0D0
 
-!     FORCE TERM IN SPECIFIED DIRECTION
-!     WE SIMPLY NEED TO SET UP ARRAYS THAT HOLD ALL THE FORCES IN X,Y,Z 
-!     DIRECTION FOR RESIDUE I_RES
+!     force term in specified direction
+!     we simply need to set up arrays that hold all the forces in x,y,z 
+!     direction for residue i_res
 
-      DO N_REP=1,NUMPRO
-      DO I_RES=1,NMRES
-      IF (N_REP_CON(I_RES) .EQ.0) THEN
-          FRCORD(I_RES,:,N_REP,2)=FRCORD(I_RES,:,N_REP,2)+0.0D0
-      ELSE
-      DO I_CON=1,N_REP_CON(I_RES)
-          J_RES=REP_CON_2_RES(I_RES,I_CON)
-          FRCORD(I_RES,:,N_REP,2)=FRCORD(I_RES,:,N_REP,2)+(PRCORD(I_RES,:,N_REP,2)-PRCORD(J_RES,:,N_REP,2))&
-          *((KERNEL(N_REP,I_RES)+KERNEL(N_REP,J_RES))/R(N_REP,I_RES,J_RES))&
-          *5.0D0*(1.0D0-(TANH(5.0D0*(R0-R(N_REP,I_RES,J_RES))))**2)
-      END DO
-      END IF
+      do n_rep=1,numpro
+      do i_res=1,nmres
+      if (n_rep_con(i_res) .eq.0) then
+          frcord(i_res,:,n_rep,2)=frcord(i_res,:,n_rep,2)+0.0D0
+      else
+      do i_con=1,n_rep_con(i_res)
+          j_res=rep_con_2_res(i_res,i_con)
+          frcord(i_res,:,n_rep,2)=frcord(i_res,:,n_rep,2)+(prcord(i_res,:,n_rep,2)-prcord(j_res,:,n_rep,2))&
+          *((kernel(n_rep,i_res)+kernel(n_rep,j_res))/r(n_rep,i_res,j_res))&
+          *5.0D0*(1.0D0-(tanh(5.0D0*(r0-r(n_rep,i_res,j_res))))**2)
+      end do
+      end if
     
-      END DO
-      END DO
+      end do
+      end do
  
 
 
 
 
 
-!     WE ALSO NEED TO CALCULATE THE POTENTIAL ENERGY E
+!     we also need to calculate the potential energy E
       E=0.0D0
 
-      DO I_RES=1,NMRES
-      DO I_REP=1,NUMPRO
-        E=E+(KERNEL(I_REP,I_RES)**2)/REP_LAMBDA(I_RES)
-      END DO
-      END DO
+      do i_res=1,nmres
+      do i_rep=1,numpro
+        E=E+(kernel(i_rep,i_res)**2)/rep_lambda(i_res)
+      end do
+      end do
 
 
-      END
+      end
 
 
 

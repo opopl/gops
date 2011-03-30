@@ -1,258 +1,258 @@
 
-      SUBROUTINE WALESAMH_INTERFACE(COORD_MCP,GRAD_FOR_WALES,E_FOR_WALES)
+      subroutine walesamh_interface(coord_mcp,grad_for_wales,e_for_wales)
 
 !     ---------------------------------------------------
-!     CALCULATES ENERGIES AND FORCES FOR GMIN VIA A SCLTAB LOOKUP
-!     TO AVOID DYNAMICS ROUTINES
+!     calculates energies and forces for gmin via a scltab lookup
+!     to avoid dynamics routines
 !     ---------------------------------------------------
 
-     USE AMHGLOBALS, ONLY: MAXTAB,MAXR,PRCORD,ZRCORD,AVEP,VPOTNT, &
-       FORSE,MAXSIZ,NMRES,PEXCLD,NUMLNG,RINCINV, RINCSQ,ILONG,CRDIXN,IRES, &
-       EQDIST,HBOND,OXEXCLDV,AVEP,MAXPRO,MAXCRD,X_MCP, WEIGHT_P_AP
-! AMINOA, WEIGHT_P_AP
+     use amhglobals, only: maxtab,maxr,prcord,zrcord,avep,vpotnt, &
+       forse,maxsiz,nmres,pexcld,numlng,rincinv, rincsq,ilong,crdixn,ires, &
+       eqdist,hbond,oxexcldv,avep,maxpro,maxcrd,x_mcp, weight_P_AP
+! aminoa, weight_P_AP
 
-     USE COMMONS
+     use commons
 
-      IMPLICIT NONE
+      implicit none
 
-      DOUBLE PRECISION GRAD_FOR_WALES(3*3*NMRES),E_FOR_WALES, &
-                       COORD_MCP(3*3*NMRES), F_CORD(MAXSIZ,3,MAXCRD), & 
-                       E_TEMP_MCP,TRGENG(MAXTAB,3), E_PE_NO_BIAS,E_P_AP   
+      DOUBLE PRECISION grad_for_wales(3*3*nmres),e_for_wales, &
+                       coord_mcp(3*3*nmres), f_cord(maxsiz,3,maxcrd), & 
+                       E_temp_mcp,trgeng(maxtab,3), E_PE_no_bias,E_P_AP   
 
-      LOGICAL TEMPAV,SCL_CALL
+      logical tempav,scl_call
 
-      INTEGER JSTRT,JFINS, GLY_COUNT, III
+      integer jstrt,jfins, gly_count, iii
 
-      CHARACTER*3 RES_TYPE
+      character*3 res_type
 
       LOGICAL :: CALLED=.FALSE.
 
-!     REQUIRED SUBROUTINES:
-      EXTERNAL FORCE, HARM_SPRING
+!     required subroutines:
+      external force, harm_spring
 
-!     --------------------- BEGIN -----------------------
+!     --------------------- begin -----------------------
 
-      TEMPAV=.TRUE.
-        RES_TYPE='ALA'
+      tempav=.true.
+        res_type='ALA'
 
-!       WRITE(6,*) 'MCP MC_COUNT MYLBGFS_COUNT ', MC_COUNT, MYLBGFS_COUNT 
+!       write(6,*) 'MCP mc_count mylbgfs_count ', mc_count, mylbgfs_count 
 
-!     IF (MC_COUNT.EQ.0 .AND. MYLBGFS_COUNT.EQ.0 ) THEN
+!     IF (mc_count.EQ.0 .and. mylbgfs_count.EQ.0 ) THEN
       IF (.NOT.CALLED) THEN
 
-        GLY_COUNT = 0
+        gly_count = 0
 
-      DO III = 1,NMRES
-       IF (IRES(III).EQ.8) THEN
-        PRCORD(III,1,1,1) = X_MCP(9*(III-1) + 1 - GLY_COUNT*3) !  CA X
-        PRCORD(III,2,1,1) = X_MCP(9*(III-1) + 2 - GLY_COUNT*3) !  CA Y
-        PRCORD(III,3,1,1) = X_MCP(9*(III-1) + 3 - GLY_COUNT*3) !  CA Z
-!    SWAP  CA FOR CB
-        PRCORD(III,1,1,2) = X_MCP(9*(III-1) + 1 - GLY_COUNT*3) !  CB X
-        PRCORD(III,2,1,2) = X_MCP(9*(III-1) + 2 - GLY_COUNT*3) !  CB Y
-        PRCORD(III,3,1,2) = X_MCP(9*(III-1) + 3 - GLY_COUNT*3) !  CB Z
-        PRCORD(III,1,1,3) = X_MCP(9*(III-1) + 4 - GLY_COUNT*3) !  O X
-        PRCORD(III,2,1,3) = X_MCP(9*(III-1) + 5 - GLY_COUNT*3) !  O Y
-        PRCORD(III,3,1,3) = X_MCP(9*(III-1) + 6 - GLY_COUNT*3) !  O Z
+      do iii = 1,nmres
+       if (ires(iii).eq.8) then
+        prcord(iii,1,1,1) = x_mcp(9*(iii-1) + 1 - gly_count*3) !  CA X
+        prcord(iii,2,1,1) = x_mcp(9*(iii-1) + 2 - gly_count*3) !  CA Y
+        prcord(iii,3,1,1) = x_mcp(9*(iii-1) + 3 - gly_count*3) !  CA Z
+!    SWAP  CA for CB
+        prcord(iii,1,1,2) = x_mcp(9*(iii-1) + 1 - gly_count*3) !  CB X
+        prcord(iii,2,1,2) = x_mcp(9*(iii-1) + 2 - gly_count*3) !  CB Y
+        prcord(iii,3,1,2) = x_mcp(9*(iii-1) + 3 - gly_count*3) !  CB Z
+        prcord(iii,1,1,3) = x_mcp(9*(iii-1) + 4 - gly_count*3) !  O X
+        prcord(iii,2,1,3) = x_mcp(9*(iii-1) + 5 - gly_count*3) !  O Y
+        prcord(iii,3,1,3) = x_mcp(9*(iii-1) + 6 - gly_count*3) !  O Z
 
-        GLY_COUNT = GLY_COUNT +1
+        gly_count = gly_count +1
 
-!    WRITE(6,*)'PRCORD ',PRCORD(III,1,1,1),PRCORD(III,2,1,1),PRCORD(III,3,1,1)
-!    WRITE(6,*)'PRCORD ',PRCORD(III,1,1,2),PRCORD(III,2,1,2),PRCORD(III,3,1,2)
-!    WRITE(6,*)'PRCORD ',PRCORD(III,1,1,3),PRCORD(III,2,1,3),PRCORD(III,3,1,3)
-      ELSE
-        PRCORD(III,1,1,1) = X_MCP(9*(III-1) + 1 - GLY_COUNT*3) !  CA X
-        PRCORD(III,2,1,1) = X_MCP(9*(III-1) + 2 - GLY_COUNT*3) !  CA Y
-        PRCORD(III,3,1,1) = X_MCP(9*(III-1) + 3 - GLY_COUNT*3) !  CA Z
-        PRCORD(III,1,1,2) = X_MCP(9*(III-1) + 4 - GLY_COUNT*3) !  CB X
-        PRCORD(III,2,1,2) = X_MCP(9*(III-1) + 5 - GLY_COUNT*3) !  CB Y
-        PRCORD(III,3,1,2) = X_MCP(9*(III-1) + 6 - GLY_COUNT*3) !  CB Z
-        PRCORD(III,1,1,3) = X_MCP(9*(III-1) + 7 - GLY_COUNT*3) !  O X
-        PRCORD(III,2,1,3) = X_MCP(9*(III-1) + 8 - GLY_COUNT*3) !  O Y
-        PRCORD(III,3,1,3) = X_MCP(9*(III-1) + 9 - GLY_COUNT*3) !  O Z
+!    write(6,*)'prcord ',prcord(iii,1,1,1),prcord(iii,2,1,1),prcord(iii,3,1,1)
+!    write(6,*)'prcord ',prcord(iii,1,1,2),prcord(iii,2,1,2),prcord(iii,3,1,2)
+!    write(6,*)'prcord ',prcord(iii,1,1,3),prcord(iii,2,1,3),prcord(iii,3,1,3)
+      else
+        prcord(iii,1,1,1) = x_mcp(9*(iii-1) + 1 - gly_count*3) !  CA X
+        prcord(iii,2,1,1) = x_mcp(9*(iii-1) + 2 - gly_count*3) !  CA Y
+        prcord(iii,3,1,1) = x_mcp(9*(iii-1) + 3 - gly_count*3) !  CA Z
+        prcord(iii,1,1,2) = x_mcp(9*(iii-1) + 4 - gly_count*3) !  CB X
+        prcord(iii,2,1,2) = x_mcp(9*(iii-1) + 5 - gly_count*3) !  CB Y
+        prcord(iii,3,1,2) = x_mcp(9*(iii-1) + 6 - gly_count*3) !  CB Z
+        prcord(iii,1,1,3) = x_mcp(9*(iii-1) + 7 - gly_count*3) !  O X
+        prcord(iii,2,1,3) = x_mcp(9*(iii-1) + 8 - gly_count*3) !  O Y
+        prcord(iii,3,1,3) = x_mcp(9*(iii-1) + 9 - gly_count*3) !  O Z
 
-!        WRITE(6,*)'PRCORD ',PRCORD(III,1,1,1),PRCORD(III,2,1,1),PRCORD(III,3,1,1)
-!        WRITE(6,*)'PRCORD ',PRCORD(III,1,1,2),PRCORD(III,2,1,2),PRCORD(III,3,1,2)
-!        WRITE(6,*)'PRCORD ',PRCORD(III,1,1,3),PRCORD(III,2,1,3),PRCORD(III,3,1,3)
-       ENDIF
-      ENDDO
+!        write(6,*)'prcord ',prcord(iii,1,1,1),prcord(iii,2,1,1),prcord(iii,3,1,1)
+!        write(6,*)'prcord ',prcord(iii,1,1,2),prcord(iii,2,1,2),prcord(iii,3,1,2)
+!        write(6,*)'prcord ',prcord(iii,1,1,3),prcord(iii,2,1,3),prcord(iii,3,1,3)
+       endif
+      enddo
 
          CALLED=.TRUE.
        
          ELSE
       
-        GLY_COUNT = 0
+        gly_count = 0
 
-       DO 1964 III = 1,NMRES
-        IF (IRES(III).EQ.8) THEN
-         PRCORD(III, 1, 1, 1) = (COORD_MCP(9*(III-1)+1- GLY_COUNT*3)) !  CA X
-         PRCORD(III, 2, 1, 1) = (COORD_MCP(9*(III-1)+2- GLY_COUNT*3)) !  CA Y
-         PRCORD(III, 3, 1, 1) = (COORD_MCP(9*(III-1)+3- GLY_COUNT*3)) !  CA Z
-!    SWAP  CA FOR CB
-         PRCORD(III, 1, 1, 2) = (COORD_MCP(9*(III-1)+1- GLY_COUNT*3)) !  CB X
-         PRCORD(III, 2, 1, 2) = (COORD_MCP(9*(III-1)+2- GLY_COUNT*3)) !  CB Y
-         PRCORD(III, 3, 1, 2) = (COORD_MCP(9*(III-1)+3- GLY_COUNT*3)) !  CB Z
-         PRCORD(III, 1, 1, 3) = (COORD_MCP(9*(III-1)+4- GLY_COUNT*3)) !  O X
-         PRCORD(III, 2, 1, 3) = (COORD_MCP(9*(III-1)+5- GLY_COUNT*3)) !  O Y
-         PRCORD(III, 3, 1, 3) = (COORD_MCP(9*(III-1)+6- GLY_COUNT*3)) !  O Z
-         GLY_COUNT = GLY_COUNT +1
-        ELSE
-         PRCORD(III, 1, 1, 1) = (COORD_MCP(9*(III-1)+1- GLY_COUNT*3)) !  CA X
-         PRCORD(III, 2, 1, 1) = (COORD_MCP(9*(III-1)+2- GLY_COUNT*3)) !  CA Y
-         PRCORD(III, 3, 1, 1) = (COORD_MCP(9*(III-1)+3- GLY_COUNT*3)) !  CA Z
-         PRCORD(III, 1, 1, 2) = (COORD_MCP(9*(III-1)+4- GLY_COUNT*3)) !  CB X
-         PRCORD(III, 2, 1, 2) = (COORD_MCP(9*(III-1)+5- GLY_COUNT*3)) !  CB Y
-         PRCORD(III, 3, 1, 2) = (COORD_MCP(9*(III-1)+6- GLY_COUNT*3)) !  CB Z
-         PRCORD(III, 1, 1, 3) = (COORD_MCP(9*(III-1)+7- GLY_COUNT*3)) !  O X
-         PRCORD(III, 2, 1, 3) = (COORD_MCP(9*(III-1)+8- GLY_COUNT*3)) !  O Y
-         PRCORD(III, 3, 1, 3) = (COORD_MCP(9*(III-1)+9- GLY_COUNT*3)) !  O Z
-        ENDIF
+       do 1964 iii = 1,nmres
+        if (ires(iii).eq.8) then
+         prcord(iii, 1, 1, 1) = (coord_mcp(9*(iii-1)+1- gly_count*3)) !  CA X
+         prcord(iii, 2, 1, 1) = (coord_mcp(9*(iii-1)+2- gly_count*3)) !  CA Y
+         prcord(iii, 3, 1, 1) = (coord_mcp(9*(iii-1)+3- gly_count*3)) !  CA Z
+!    SWAP  CA for CB
+         prcord(iii, 1, 1, 2) = (coord_mcp(9*(iii-1)+1- gly_count*3)) !  CB X
+         prcord(iii, 2, 1, 2) = (coord_mcp(9*(iii-1)+2- gly_count*3)) !  CB Y
+         prcord(iii, 3, 1, 2) = (coord_mcp(9*(iii-1)+3- gly_count*3)) !  CB Z
+         prcord(iii, 1, 1, 3) = (coord_mcp(9*(iii-1)+4- gly_count*3)) !  O X
+         prcord(iii, 2, 1, 3) = (coord_mcp(9*(iii-1)+5- gly_count*3)) !  O Y
+         prcord(iii, 3, 1, 3) = (coord_mcp(9*(iii-1)+6- gly_count*3)) !  O Z
+         gly_count = gly_count +1
+        else
+         prcord(iii, 1, 1, 1) = (coord_mcp(9*(iii-1)+1- gly_count*3)) !  CA X
+         prcord(iii, 2, 1, 1) = (coord_mcp(9*(iii-1)+2- gly_count*3)) !  CA Y
+         prcord(iii, 3, 1, 1) = (coord_mcp(9*(iii-1)+3- gly_count*3)) !  CA Z
+         prcord(iii, 1, 1, 2) = (coord_mcp(9*(iii-1)+4- gly_count*3)) !  CB X
+         prcord(iii, 2, 1, 2) = (coord_mcp(9*(iii-1)+5- gly_count*3)) !  CB Y
+         prcord(iii, 3, 1, 2) = (coord_mcp(9*(iii-1)+6- gly_count*3)) !  CB Z
+         prcord(iii, 1, 1, 3) = (coord_mcp(9*(iii-1)+7- gly_count*3)) !  O X
+         prcord(iii, 2, 1, 3) = (coord_mcp(9*(iii-1)+8- gly_count*3)) !  O Y
+         prcord(iii, 3, 1, 3) = (coord_mcp(9*(iii-1)+9- gly_count*3)) !  O Z
+        endif
 
-1964     CONTINUE
-        END IF 
+1964     continue
+        end if 
 
-      SCL_CALL=.TRUE.
+      scl_call=.true.
 
-      JSTRT=1
-      JFINS=NMRES
+      jstrt=1
+      jfins=nmres
 
-        E_TEMP_MCP=0.0D0
-        F_CORD=0.0D0
+        E_temp_mcp=0.0D0
+        f_cord=0.0D0
         E_P_AP=0.0D0           
-        E_FOR_WALES=0.0D0 
-        GRAD_FOR_WALES(:)=0.0D0
-        E_PE_NO_BIAS=0.0D0
-        ZRCORD(:,:,1,:)=0.D0
+        e_for_wales=0.0D0 
+        grad_for_wales(:)=0.0D0
+        E_PE_no_bias=0.0D0
+        zrcord(:,:,1,:)=0.D0
 
-       CALL HARM_SPRING(PRCORD,JSTRT,JFINS,MAXPRO,MAXCRD,IRES,F_CORD,E_TEMP_MCP)
+       call harm_spring(prcord,jstrt,jfins,maxpro,maxcrd,ires,f_cord,E_temp_mcp)
 
-       CALL FORCE(1,PRCORD,ZRCORD,AVEP,TEMPAV,MAXR,VPOTNT,FORSE,TRGENG, &
-                  PEXCLD,NUMLNG,NMRES,RINCINV,RINCSQ,ILONG,CRDIXN,IRES, & 
-                  EQDIST,HBOND,OXEXCLDV,SCL_CALL)
+       call force(1,prcord,zrcord,avep,tempav,maxr,vpotnt,forse,trgeng, &
+                  pexcld,numlng,nmres,rincinv,rincsq,ilong,crdixn,ires, & 
+                  eqdist,hbond,oxexcldv,scl_call)
 
-        ZRCORD(:,:,1,:)=ZRCORD(:,:,1,:)+F_CORD
+        zrcord(:,:,1,:)=zrcord(:,:,1,:)+f_cord
 
-!        E_P_AP=-WEIGHT_P_AP(1)*AVEP(1,1,40)-WEIGHT_P_AP(2)*AVEP(1,1,41)-WEIGHT_P_AP(3)*AVEP(1,1,42)
+!        E_P_AP=-weight_P_AP(1)*avep(1,1,40)-weight_P_AP(2)*avep(1,1,41)-weight_P_AP(3)*avep(1,1,42)
 
-         E_FOR_WALES =                  & !
-!                       AVEP(1,1,1)  +   & ! HYDRN POTENTIAL
-                        AVEP(1,1,2)  +   & ! RAMA POTENTIAL
-                        AVEP(1,1,3)  +   & ! PEPTIDE BOND
-                        AVEP(1,1,4)  +   & ! CHIRALITY
-                        AVEP(1,1,5)  +   & ! TOTAL AMH
-!                       AVEP(1,1,6)  +   & ! ?????  EMPTY
-!                       AVEP(1,1,7)  +   & ! AMHSR
-!                       AVEP(1,1,8)  +   & ! AMHLR
-                        AVEP(1,1,9)  +   & ! CARBON EX VOL
-                        AVEP(1,1,10) +   & ! Q_BIAS_A
-                        AVEP(1,1,11) +   & ! OXY EX VOL
-                        AVEP(1,1,12) +   & ! OBIAS_RG
-!                       AVEP(1,1,13) +   & ! AMHMR
-!                       AVEP(1,1,14) +   & ! OHDRGN_S   AVEP(I_PRO,1,21:24)
-!                       AVEP(1,1,15) +   & ! OHDRGN_M   AVEP(I_PRO,1,25:28) 
-!                       AVEP(1,1,16) +   & ! OHDRGN_L   AVEP(I_PRO,1,29:32)
-!                       AVEP(1,1,17) +   & ! NON_ADD  
-!                       AVEP(1,1,18) +   & ! Q_BIAS_B
-!                       AVEP(1,1,19) +   & ! ?????  EMPTY
-!                       AVEP(1,1,20) +   & ! ?????  EMPTY
-!                       AVEP(1,1,40) +   & ! E_P_AP_1
-!                       AVEP(1,1,41) +   & ! E_P_AP_2
-!                       AVEP(1,1,42) +   & ! E_P_AP_3
+         e_for_wales =                  & !
+!                       avep(1,1,1)  +   & ! hydrn potential
+                        avep(1,1,2)  +   & ! rama potential
+                        avep(1,1,3)  +   & ! peptide bond
+                        avep(1,1,4)  +   & ! chirality
+                        avep(1,1,5)  +   & ! total amh
+!                       avep(1,1,6)  +   & ! ?????  empty
+!                       avep(1,1,7)  +   & ! amhsr
+!                       avep(1,1,8)  +   & ! amhlr
+                        avep(1,1,9)  +   & ! carbon ex vol
+                        avep(1,1,10) +   & ! q_bias_a
+                        avep(1,1,11) +   & ! oxy ex vol
+                        avep(1,1,12) +   & ! obias_Rg
+!                       avep(1,1,13) +   & ! amhmr
+!                       avep(1,1,14) +   & ! ohdrgn_s   avep(i_pro,1,21:24)
+!                       avep(1,1,15) +   & ! ohdrgn_m   avep(i_pro,1,25:28) 
+!                       avep(1,1,16) +   & ! ohdrgn_l   avep(i_pro,1,29:32)
+!                       avep(1,1,17) +   & ! non_add  
+!                       avep(1,1,18) +   & ! q_bias_b
+!                       avep(1,1,19) +   & ! ?????  empty
+!                       avep(1,1,20) +   & ! ?????  empty
+!                       avep(1,1,40) +   & ! E_P_AP_1
+!                       avep(1,1,41) +   & ! E_P_AP_2
+!                       avep(1,1,42) +   & ! E_P_AP_3
 !                       E_P_AP       +   & ! E_P_AP
-!                       AVEP(1,1,43) +   & ! REPLICA ENERGY TERM
-                        E_TEMP_MCP
+!                       avep(1,1,43) +   & ! replica energy term
+                        E_temp_mcp
 
-!     I_PRO                   INDEX OVER PROTEINS
-!     I_STEP                  INDEX OVER TIME STEPS PER TEMPERATURE
-!     I_TEMP                  INDEX OVER TEMPERATURES
-!     ITCNT                   INCREMENT T (TEMPERATURE) COUNTER
+!     i_pro                   index over proteins
+!     i_step                  index over time steps per temperature
+!     i_temp                  index over temperatures
+!     itcnt                   increment T (temperature) counter
 
-        GLY_COUNT = 0
-       DO 764 III = 1,NMRES
-       IF (IRES(III).EQ.8) THEN
-         COORD_MCP(9*(III-1)+1 - GLY_COUNT*3) = (PRCORD(III, 1, 1, 1)) !  CA X
-         COORD_MCP(9*(III-1)+2 - GLY_COUNT*3) = (PRCORD(III, 2, 1, 1)) !  CA Y
-         COORD_MCP(9*(III-1)+3 - GLY_COUNT*3) = (PRCORD(III, 3, 1, 1)) !  CA Z
-         COORD_MCP(9*(III-1)+4 - GLY_COUNT*3) = (PRCORD(III, 1, 1, 3)) !  O X
-         COORD_MCP(9*(III-1)+5 - GLY_COUNT*3) = (PRCORD(III, 2, 1, 3)) !  O Y
-         COORD_MCP(9*(III-1)+6 - GLY_COUNT*3) = (PRCORD(III, 3, 1, 3)) !  O Z
-         GLY_COUNT = GLY_COUNT + 1 
-       ELSE
-         COORD_MCP(9*(III-1)+1 - GLY_COUNT*3) = (PRCORD(III, 1, 1, 1)) !  CA X
-         COORD_MCP(9*(III-1)+2 - GLY_COUNT*3) = (PRCORD(III, 2, 1, 1)) !  CA Y
-         COORD_MCP(9*(III-1)+3 - GLY_COUNT*3) = (PRCORD(III, 3, 1, 1)) !  CA Z
-         COORD_MCP(9*(III-1)+4 - GLY_COUNT*3) = (PRCORD(III, 1, 1, 2)) !  CB X
-         COORD_MCP(9*(III-1)+5 - GLY_COUNT*3) = (PRCORD(III, 2, 1, 2)) !  CB Y
-         COORD_MCP(9*(III-1)+6 - GLY_COUNT*3) = (PRCORD(III, 3, 1, 2)) !  CB Z
-         COORD_MCP(9*(III-1)+7 - GLY_COUNT*3) = (PRCORD(III, 1, 1, 3)) !  O X
-         COORD_MCP(9*(III-1)+8 - GLY_COUNT*3) = (PRCORD(III, 2, 1, 3)) !  O Y
-         COORD_MCP(9*(III-1)+9 - GLY_COUNT*3) = (PRCORD(III, 3, 1, 3)) !  O Z
-       ENDIF
-764    CONTINUE
+        gly_count = 0
+       do 764 iii = 1,nmres
+       if (ires(iii).eq.8) then
+         coord_mcp(9*(iii-1)+1 - gly_count*3) = (prcord(iii, 1, 1, 1)) !  CA X
+         coord_mcp(9*(iii-1)+2 - gly_count*3) = (prcord(iii, 2, 1, 1)) !  CA Y
+         coord_mcp(9*(iii-1)+3 - gly_count*3) = (prcord(iii, 3, 1, 1)) !  CA Z
+         coord_mcp(9*(iii-1)+4 - gly_count*3) = (prcord(iii, 1, 1, 3)) !  O X
+         coord_mcp(9*(iii-1)+5 - gly_count*3) = (prcord(iii, 2, 1, 3)) !  O Y
+         coord_mcp(9*(iii-1)+6 - gly_count*3) = (prcord(iii, 3, 1, 3)) !  O Z
+         gly_count = gly_count + 1 
+       else
+         coord_mcp(9*(iii-1)+1 - gly_count*3) = (prcord(iii, 1, 1, 1)) !  CA X
+         coord_mcp(9*(iii-1)+2 - gly_count*3) = (prcord(iii, 2, 1, 1)) !  CA Y
+         coord_mcp(9*(iii-1)+3 - gly_count*3) = (prcord(iii, 3, 1, 1)) !  CA Z
+         coord_mcp(9*(iii-1)+4 - gly_count*3) = (prcord(iii, 1, 1, 2)) !  CB X
+         coord_mcp(9*(iii-1)+5 - gly_count*3) = (prcord(iii, 2, 1, 2)) !  CB Y
+         coord_mcp(9*(iii-1)+6 - gly_count*3) = (prcord(iii, 3, 1, 2)) !  CB Z
+         coord_mcp(9*(iii-1)+7 - gly_count*3) = (prcord(iii, 1, 1, 3)) !  O X
+         coord_mcp(9*(iii-1)+8 - gly_count*3) = (prcord(iii, 2, 1, 3)) !  O Y
+         coord_mcp(9*(iii-1)+9 - gly_count*3) = (prcord(iii, 3, 1, 3)) !  O Z
+       endif
+764    continue
 
-!  AVEP(1,1,1,ITCNT)  = HYDROGEN BOND POTENTIAL
-!  AVEP(1,1,2,ITCNT)  = RAMA POTENTIAL
-!  AVEP(1,1,3,ITCNT)  = PEPTIDE BOND PLAINARITY POTENTIAL
-!  AVEP(1,1,4,ITCNT)  = CHIRALITY POTENTIAL
-!  AVEP(1,1,5,ITCNT)  = TOTAL AMH SHORT + MEDIUM + LONG
-!  AVEP(1,1,6,ITCNT)  = ------
-!  AVEP(1,1,7,ITCNT)  = AMH SHORT RANGE
-!  AVEP(1,1,8,ITCNT)  = AMH LONG RANGE
-!  AVEP(1,1,9,ITCNT)  = POTENTIAL DUE TO CARBON (A/B) EXCLUDED VOLUME
-!  AVEP(1,1,10,ITCNT) =  Q BIASING POTENTAL
-!  AVEP(1,1,11,ITCNT) = OXY POTENTIAL
-!  AVEP(1,1,12,ITCNT) =  RADIUS OF GYRATION BIAS
-!  AVEP(1,1,13,ITCNT) = AMH MEDIUM RANGE
-!  AVEP(1,1,14,ITCNT) = HYDROGEN BONDS SHORT RANGE
-!  AVEP(1,1,15,ITCNT) = HYDROGEN BONDS MEDIUM RANGE
-!  AVEP(1,1,16,ITCNT) = HYDROGEN BONDS LONG RANGE
-!  AVEP(1,1,17,ITCNT) = NONADDATIVE
-!  AVEP(1,1,18,ITCNT) = Q BIASING POTENTAL SEG
+!  avep(1,1,1,itcnt)  = hydrogen bond potential
+!  avep(1,1,2,itcnt)  = rama potential
+!  avep(1,1,3,itcnt)  = peptide bond plainarity potential
+!  avep(1,1,4,itcnt)  = chirality potential
+!  avep(1,1,5,itcnt)  = total amh short + medium + long
+!  avep(1,1,6,itcnt)  = ------
+!  avep(1,1,7,itcnt)  = amh short range
+!  avep(1,1,8,itcnt)  = amh long range
+!  avep(1,1,9,itcnt)  = potential due to carbon (a/b) excluded volume
+!  avep(1,1,10,itcnt) =  Q biasing potental
+!  avep(1,1,11,itcnt) = oxy potential
+!  avep(1,1,12,itcnt) =  radius of Gyration bias
+!  avep(1,1,13,itcnt) = amh medium range
+!  avep(1,1,14,itcnt) = hydrogen bonds short range
+!  avep(1,1,15,itcnt) = hydrogen bonds medium range
+!  avep(1,1,16,itcnt) = hydrogen bonds long range
+!  avep(1,1,17,itcnt) = nonaddative
+!  avep(1,1,18,itcnt) = Q biasing potental seg
 
-!        WRITE(6,*)'E SHAKE SPRINGS       ', E_TEMP_MCP
-!        WRITE(6,*)'E 1  OHDRGN           ',AVEP(1,1,1)
-!        WRITE(6,*)'E 2  ORAMA            ',AVEP(1,1,2)
-!        WRITE(6,*)'E 3  OOXY             ',AVEP(1,1,3)
-!        WRITE(6,*)'E 4  OCHIRAL          ',AVEP(1,1,4)
-!        WRITE(6,*)'E 5  OAMH             ',AVEP(1,1,5)
-!        WRITE(6,*)'E 6  ----             ',AVEP(1,1,6)
-!        WRITE(6,*)'E 7  OAMHSR           ',AVEP(1,1,7)
-!        WRITE(6,*)'E 8  OAMHLR           ',AVEP(1,1,8)
-!        WRITE(6,*)'E 9  OCCEV            ',AVEP(1,1,9)
-!        WRITE(6,*)'E 10 QBIAS_A          ',AVEP(1,1,10)
-!        WRITE(6,*)'E 11 OOEV             ',AVEP(1,1,11)
-!        WRITE(6,*)'E 12 RG_BIAS          ',AVEP(1,1,12)
-!        WRITE(6,*)'E 13 AMHMR            ',AVEP(1,1,13)
-!        WRITE(6,*)'E 14 HDRGNS           ',AVEP(1,1,14)
-!        WRITE(6,*)'E 15 HDRGNM           ',AVEP(1,1,15)
-!        WRITE(6,*)'E 16 HDRGNL           ',AVEP(1,1,16)
-!        WRITE(6,*)'E 17 NON ADD CONTACT  ',AVEP(1,1,17)
-!        WRITE(6,*)'E 18 QBIAS_B          ',AVEP(1,1,18)
-!        WRITE(6,*)'E E_P_AP              ',E_P_AP 
+!        write(6,*)'E shake springs       ', E_temp_mcp
+!        write(6,*)'e 1  ohdrgn           ',avep(1,1,1)
+!        write(6,*)'e 2  orama            ',avep(1,1,2)
+!        write(6,*)'e 3  ooxy             ',avep(1,1,3)
+!        write(6,*)'e 4  ochiral          ',avep(1,1,4)
+!        write(6,*)'e 5  oamh             ',avep(1,1,5)
+!        write(6,*)'e 6  ----             ',avep(1,1,6)
+!        write(6,*)'e 7  oamhsr           ',avep(1,1,7)
+!        write(6,*)'e 8  oamhlr           ',avep(1,1,8)
+!        write(6,*)'e 9  occev            ',avep(1,1,9)
+!        write(6,*)'e 10 Qbias_a          ',avep(1,1,10)
+!        write(6,*)'e 11 ooev             ',avep(1,1,11)
+!        write(6,*)'e 12 rg_bias          ',avep(1,1,12)
+!        write(6,*)'e 13 amhmr            ',avep(1,1,13)
+!        write(6,*)'e 14 hdrgns           ',avep(1,1,14)
+!        write(6,*)'e 15 hdrgnm           ',avep(1,1,15)
+!        write(6,*)'e 16 hdrgnl           ',avep(1,1,16)
+!        write(6,*)'e 17 non add contact  ',avep(1,1,17)
+!        write(6,*)'e 18 Qbias_b          ',avep(1,1,18)
+!        write(6,*)'e E_P_AP              ',E_P_AP 
 
-        GLY_COUNT = 0
+        gly_count = 0
 
-      DO 513 III=1,NMRES
-         IF (IRES(III).EQ.8) THEN
-          GRAD_FOR_WALES(9*(III-1)+1 - GLY_COUNT*3) = -(ZRCORD(III,1,1,1)) ! CA X
-          GRAD_FOR_WALES(9*(III-1)+2 - GLY_COUNT*3) = -(ZRCORD(III,2,1,1)) ! CA Y 
-          GRAD_FOR_WALES(9*(III-1)+3 - GLY_COUNT*3) = -(ZRCORD(III,3,1,1)) ! CA Z 
-          GRAD_FOR_WALES(9*(III-1)+4 - GLY_COUNT*3) = -(ZRCORD(III,1,1,3)) ! O  X
-          GRAD_FOR_WALES(9*(III-1)+5 - GLY_COUNT*3) = -(ZRCORD(III,2,1,3)) ! O  Y 
-          GRAD_FOR_WALES(9*(III-1)+6 - GLY_COUNT*3) = -(ZRCORD(III,3,1,3)) ! O  Z 
-          GLY_COUNT = GLY_COUNT +1
-         ELSE  
-          GRAD_FOR_WALES(9*(III-1)+1 - GLY_COUNT*3) = -(ZRCORD(III,1,1,1)) ! CA X
-          GRAD_FOR_WALES(9*(III-1)+2 - GLY_COUNT*3) = -(ZRCORD(III,2,1,1)) ! CA Y 
-          GRAD_FOR_WALES(9*(III-1)+3 - GLY_COUNT*3) = -(ZRCORD(III,3,1,1)) ! CA Z 
-          GRAD_FOR_WALES(9*(III-1)+4 - GLY_COUNT*3) = -(ZRCORD(III,1,1,2)) ! CB X 
-          GRAD_FOR_WALES(9*(III-1)+5 - GLY_COUNT*3) = -(ZRCORD(III,2,1,2)) ! CB Y 
-          GRAD_FOR_WALES(9*(III-1)+6 - GLY_COUNT*3) = -(ZRCORD(III,3,1,2)) ! CB Z 
-          GRAD_FOR_WALES(9*(III-1)+7 - GLY_COUNT*3) = -(ZRCORD(III,1,1,3)) ! O  X
-          GRAD_FOR_WALES(9*(III-1)+8 - GLY_COUNT*3) = -(ZRCORD(III,2,1,3)) ! O  Y 
-          GRAD_FOR_WALES(9*(III-1)+9 - GLY_COUNT*3) = -(ZRCORD(III,3,1,3)) ! O  Z 
-         ENDIF
-513    CONTINUE
+      do 513 iii=1,nmres
+         if (ires(iii).eq.8) then
+          grad_for_wales(9*(iii-1)+1 - gly_count*3) = -(zrcord(iii,1,1,1)) ! CA x
+          grad_for_wales(9*(iii-1)+2 - gly_count*3) = -(zrcord(iii,2,1,1)) ! CA y 
+          grad_for_wales(9*(iii-1)+3 - gly_count*3) = -(zrcord(iii,3,1,1)) ! CA z 
+          grad_for_wales(9*(iii-1)+4 - gly_count*3) = -(zrcord(iii,1,1,3)) ! O  x
+          grad_for_wales(9*(iii-1)+5 - gly_count*3) = -(zrcord(iii,2,1,3)) ! O  y 
+          grad_for_wales(9*(iii-1)+6 - gly_count*3) = -(zrcord(iii,3,1,3)) ! O  z 
+          gly_count = gly_count +1
+         else  
+          grad_for_wales(9*(iii-1)+1 - gly_count*3) = -(zrcord(iii,1,1,1)) ! CA x
+          grad_for_wales(9*(iii-1)+2 - gly_count*3) = -(zrcord(iii,2,1,1)) ! CA y 
+          grad_for_wales(9*(iii-1)+3 - gly_count*3) = -(zrcord(iii,3,1,1)) ! CA z 
+          grad_for_wales(9*(iii-1)+4 - gly_count*3) = -(zrcord(iii,1,1,2)) ! CB x 
+          grad_for_wales(9*(iii-1)+5 - gly_count*3) = -(zrcord(iii,2,1,2)) ! CB y 
+          grad_for_wales(9*(iii-1)+6 - gly_count*3) = -(zrcord(iii,3,1,2)) ! CB z 
+          grad_for_wales(9*(iii-1)+7 - gly_count*3) = -(zrcord(iii,1,1,3)) ! O  x
+          grad_for_wales(9*(iii-1)+8 - gly_count*3) = -(zrcord(iii,2,1,3)) ! O  y 
+          grad_for_wales(9*(iii-1)+9 - gly_count*3) = -(zrcord(iii,3,1,3)) ! O  z 
+         endif
+513    continue
 
-      RETURN
-      END
+      return
+      end

@@ -1,4 +1,4 @@
-!|GD351>
+!|gd351>
 
 SUBROUTINE ASAOOSPOT (X, G, ENERGY, GTEST)
 
@@ -16,23 +16,23 @@ SUBROUTINE ASAOOSPOT (X, G, ENERGY, GTEST)
   DOUBLE PRECISION :: SIGMAC, SIGMAP, Q, ZP, BETA, SIGMAPSQ, SIGMACSQ, RANGESQ, ONEPLUSQCB, PREFACTOR 
   
 
-  !HARD CORE APPROXIMATION:
-  !           R < 0.80000: ~ LINEAR
-  ! 0.80000 < R < AS     : ~ R^-12
-  ! AS      < R < 0.99500: ~ ARCTANH[(1.0-R)*AT1] + ASAKURA-OOSAWA(1.0)
-  ! 0.99500 < R < 1.00000: HARD CORE AND ATTRACTIVE POTENTIAL SMOOTHLY MERGED BY POLYNOMIAL OF GRADE 3
-  !ATTRACTIVE POTENTIAL
-  ! 1.00000 < R < 1.10000: ASAKURA-OOSAWA POTENTIAL
-  ! 1.10000 < R          : 0 
+  !hard core approximation:
+  !           r < 0.80000: ~ linear
+  ! 0.80000 < r < AS     : ~ r^-12
+  ! AS      < r < 0.99500: ~ ArcTanh[(1.0-r)*AT1] + Asakura-Oosawa(1.0)
+  ! 0.99500 < r < 1.00000: hard core and attractive potential smoothly merged by polynomial of grade 3
+  !attractive potential
+  ! 1.00000 < r < 1.10000: Asakura-Oosawa potential
+  ! 1.10000 < r          : 0 
 
-  !PARAMETERS CHANGE WHEN ZP, BETA, SIGMAC OR SIGMAP ARE CHANGED
+  !parameters change when ZP, BETA, SIGMAC or SIGMAP are changed
 
 
-  AT1 = 50.D0 !!HIGHER AT1 -> STEEPER HARDCORE APPROX
+  AT1 = 50.D0 !!higher AT1 -> steeper hardcore approx
   AS = 1.00001D0 - 1.D0/AT1 
   ASSQ = AS**2
 
-  !PARAMETERS FOR SMOOTHING FUNCTION VS (POLYNOMIAL OF GRADE 3)
+  !parameters for smoothing function VS (polynomial of grade 3)
   !VS(0.995)  = VATH(0.995)
   !VS'(0.995) = VATH(0.995)
   !VS(1.00)   = VAO(1.00)
@@ -50,30 +50,30 @@ SUBROUTINE ASAOOSPOT (X, G, ENERGY, GTEST)
   VSA3 =  659734.4586033578D0 - (40000.00008198949D0*AT1)/(1.D0 - 0.000025D0*AT1**2) + 1.6000000032762045D7*HW1
 
 
-  !!THESE HAVE TO BE CALCULATED WHEN CHANGING AT1
+  !!these have to be calculated when changing AT1
 
-  !PARAMETERS FOR CORE REPULSION VC(R) = VCV0 + (R-VCR0)^(-12)
-  !VATH(R) = ARCTANH(-50*(R-1.00))+VAO(1.00) 
+  !parameters for core repulsion VC(R) = VCV0 + (R-VCR0)^(-12)
+  !VATH(R) = ArcTanh(-50*(R-1.00))+VAO(1.00) 
   !VC(AS) = VATH(AS)
   !VC'(AS) = VATH'(AS)
-  !!VCV0 = -2.1925907471026258D3 !!VALUE FOR AT1=100
-  !!VCR0 =  4.633407007430528D-1 !!VALUE FOR AT1=100
-  VCV0 = -2.1917372506987317D3 !!VALUE FOR AT1=50
-  VCR0 =  4.533305685892997D-1 !!VALUE FOR AT1=50
-  !!VCV0 = -2191.137307077289D0  !!VALUE FOR AT1=25
-  !!VCR0 =  0.4333255033866304D0 !!VALUE FOR AT1=25
+  !!VCV0 = -2.1925907471026258D3 !!value for AT1=100
+  !!VCR0 =  4.633407007430528D-1 !!value for AT1=100
+  VCV0 = -2.1917372506987317D3 !!value for AT1=50
+  VCR0 =  4.533305685892997D-1 !!value for AT1=50
+  !!VCV0 = -2191.137307077289D0  !!value for AT1=25
+  !!VCR0 =  0.4333255033866304D0 !!value for AT1=25
  
-  !!THESE HAVE TO BE CALCULATED WHEN CHANGING AT1
+  !!these have to be calculated when changing AT1
 
-  !PARAMETERS FOR CORE REPULSION VL(R) = VLV0 + VLK0*R
+  !parameters for core repulsion VL(R) = VLV0 + VLK0*R
   !VL(0.8) = VC(0.8)
   !VL'(0.8) = VC'(0.8)
-  !!VLV0 =     1.3921755730646929D7 !!VALUE FOR AT1=100 
-  !!VLK0 =  -1.6815246938095480D7   !!VALUE FOR AT1=100  
-  VLV0 =  9.5208471705023050D6    !!VALUE FOR AT1=50
-  VLK0 =  -1.1488917740863195D7   !!VALUE FOR AT1=50
-  !!VLV0 =  4.599326776700881D6     !!VALUE FOR AT1=25 
-  !!VLK0 =  -5.540284774711806D6    !!VALUE FOR AT1=25 
+  !!VLV0 =     1.3921755730646929D7 !!value for AT1=100 
+  !!VLK0 =  -1.6815246938095480D7   !!value for AT1=100  
+  VLV0 =  9.5208471705023050D6    !!value for AT1=50
+  VLK0 =  -1.1488917740863195D7   !!value for AT1=50
+  !!VLV0 =  4.599326776700881D6     !!value for AT1=25 
+  !!VLK0 =  -5.540284774711806D6    !!value for AT1=25 
  
 
 
@@ -112,75 +112,75 @@ SUBROUTINE ASAOOSPOT (X, G, ENERGY, GTEST)
       RSQ = DOT_PRODUCT(RIJ(:),RIJ(:))
 
       IF (RSQ.LE.0.64D0*SIGMACSQ) THEN
-      !CORE - LINEAR
+      !core - linear
         R = SQRT(RSQ)
         
         ENERGY = ENERGY + (VLV0 + VLK0 * R)  
 
         IF (GTEST) THEN
-          !CALCULATE DERIVATIVES
-          DV = VLK0 / R   !FACTOR 1/R FROM DR/DXI = XI/R ALREADY INCLUDED
+          !calculate derivatives
+          DV = VLK0 / R   !factor 1/R from dR/dXi = Xi/R already included
           G(J1*3-2:J1*3) = G(J1*3-2:J1*3) + DV * RIJ(:)
           G(J2*3-2:J2*3) = G(J2*3-2:J2*3) - DV * RIJ(:)
         END IF 
 
 
       ELSEIF ((RSQ.GT.0.64D0*SIGMACSQ).AND.(RSQ.LE.ASSQ*SIGMACSQ)) THEN
-      !CORE - R^-12
+      !core - R^-12
         R = SQRT(RSQ)
         
         ENERGY = ENERGY + (VCV0 + (R-VCR0)**(-12))
-!        PRINT*,'R^-12',(VCV0 + (R-VCR0)**(-12))  
+!        print*,'r^-12',(VCV0 + (R-VCR0)**(-12))  
 
         IF (GTEST) THEN
-          !CALCULATE DERIVATIVES
-          DV = -12.D0 / ( (R-VCR0)**(13) * R )   !FACTOR 1/R FROM DR/DXI = XI/R ALREADY INCLUDED
+          !calculate derivatives
+          DV = -12.D0 / ( (R-VCR0)**(13) * R )   !factor 1/R from dR/dXi = Xi/R already included
           G(J1*3-2:J1*3) = G(J1*3-2:J1*3) + DV * RIJ(:)
           G(J2*3-2:J2*3) = G(J2*3-2:J2*3) - DV * RIJ(:)
         END IF 
 
       ELSEIF ((RSQ.GT.ASSQ*SIGMACSQ).AND.(RSQ.LE.0.990025D0*SIGMACSQ)) THEN
-      !CORE - ARCTANH
+      !core - ArcTanh
         R = SQRT(RSQ)
         ARG = (-AT1)*(R-1.D0)
-        V = 0.5D0*LOG((1+ARG)/(1-ARG)) - 0.837758D0 ! = ARCTANH(ARG)      
-!        PRINT*,'ARCTANH',V      
+        V = 0.5D0*LOG((1+ARG)/(1-ARG)) - 0.837758D0 ! = ArcTanh(ARG)      
+!        print*,'ArcTanh',V      
  
         ENERGY = ENERGY + V
 
         IF (GTEST) THEN
-          !CALCULATE DERIVATIVES
-          DV = -AT1 / ( (1.D0-ARG**2) * R )  !FACTOR 1/R FROM DR/DXI = XI/R ALREADY INCLUDED
+          !calculate derivatives
+          DV = -AT1 / ( (1.D0-ARG**2) * R )  !factor 1/R from dR/dXi = Xi/R already included
           G(J1*3-2:J1*3) = G(J1*3-2:J1*3) + DV * RIJ(:)
           G(J2*3-2:J2*3) = G(J2*3-2:J2*3) - DV * RIJ(:)
         END IF 
 
       ELSEIF ((RSQ.GT.0.990025D0*SIGMACSQ).AND.(RSQ.LE.SIGMACSQ)) THEN
-      !SMOOTH MERGING
+      !smooth merging
         R = SQRT(RSQ)
         V = VSA0 + VSA1 * R + VSA2 * RSQ + VSA3 * RSQ*R
 
         ENERGY = ENERGY + V
-!        PRINT*,'MERGING',V    
+!        print*,'merging',V    
 
         IF (GTEST) THEN
-          !CALCULATE DERIVATIVES
-          DV = VSA1 / R + 2.D0 * VSA2 + 3.D0 * VSA3 * R!FACTOR 1/R FROM DR/DXI = XI/R ALREADY INCLUDED
+          !calculate derivatives
+          DV = VSA1 / R + 2.D0 * VSA2 + 3.D0 * VSA3 * R!factor 1/R from dR/dXi = Xi/R already included
           G(J1*3-2:J1*3) = G(J1*3-2:J1*3) + DV * RIJ(:)
           G(J2*3-2:J2*3) = G(J2*3-2:J2*3) - DV * RIJ(:)
         END IF 
 
       ELSEIF ((RSQ.GT.SIGMACSQ).AND.(RSQ.LE.RANGESQ)) THEN
-      !ASAKURA-OOSAWA ATTRACTION
+      !Asakura-Oosawa attraction
         R = SQRT(RSQ)
         V = PREFACTOR * (1.D0 - (3.D0*R)/(2.D0*SIGMAC*(1.D0+Q)) + (RSQ*R)/(2.D0*ONEPLUSQCB*SIGMAC**3))
 
         ENERGY = ENERGY + V
-!        PRINT*,'ASAOOS',R,V    
+!        print*,'asaoos',R,V    
 
         IF (GTEST) THEN
-          !CALCULATE DERIVATIVES
-          DV = PREFACTOR * ( - 3.D0/(R*2.D0*SIGMAC*(1.D0+Q)) + 3.D0*R/(2.D0*ONEPLUSQCB*SIGMAC**3))!FACTOR 1/R FROM DR/DXI = XI/R ALREADY INCLUDED
+          !calculate derivatives
+          DV = PREFACTOR * ( - 3.D0/(R*2.D0*SIGMAC*(1.D0+Q)) + 3.D0*R/(2.D0*ONEPLUSQCB*SIGMAC**3))!factor 1/R from dR/dXi = Xi/R already included
           G(J1*3-2:J1*3) = G(J1*3-2:J1*3) + DV * RIJ(:)
           G(J2*3-2:J2*3) = G(J2*3-2:J2*3) - DV * RIJ(:)
         END IF 
@@ -194,4 +194,4 @@ END SUBROUTINE ASAOOSPOT
 
 
 
-!<GD351|
+!<gd351|

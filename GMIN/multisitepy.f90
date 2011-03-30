@@ -19,7 +19,7 @@
       DOUBLE PRECISION :: DRMI1(3,3), DRMI2(3,3), DRMI3(3,3), DRMJ1(3,3), DRMJ2(3,3), DRMJ3(3,3)
       DOUBLE PRECISION :: DF1DR(3), DF2DR(3), DG1DR(3), DG2DR(3)
       DOUBLE PRECISION :: ARIBRJ(3), XC(3), XCMRI(3), XCMRJ(3), FIJ(3), TIJ(3), TJI(3)
-      DOUBLE PRECISION :: D1ABEZ(3,3), D2ABEZ(3,3), D3ABEZ(3,3), D1ABE(3,3), D2ABE(3,3), D3ABE(3,3) 
+      double precision :: D1ABEZ(3,3), D2ABEZ(3,3), D3ABEZ(3,3), D1ABE(3,3), D2ABE(3,3), D3ABE(3,3) 
       LOGICAL          :: GTEST
 
       I3(:,:)      = 0.D0
@@ -508,25 +508,25 @@
       CHARACTER(LEN=11):: DUMMYLABEL2
 !      LENGTH   = 2.D0*PYA1(1)
 
-      OPEN(UNIT=299,FILE="PYSITES.XYZ",STATUS="OLD")
+      OPEN(UNIT=299,FILE="pysites.xyz",STATUS="old")
       READ(299,*) NPYSITE 
       READ(299,*) 
 
-! ALLOCATE ARRAYS
+! allocate arrays
       IF(.NOT.ALLOCATED(PST)) ALLOCATE(PST(NPYSITE,3))
       IF(.NOT.ALLOCATED(OST)) ALLOCATE(OST(NPYSITE,3))
       IF(.NOT.ALLOCATED(ELLST1)) ALLOCATE(ELLST1(NPYSITE,3))
       IF(.NOT.ALLOCATED(ELLST2)) ALLOCATE(ELLST2(NPYSITE,3))
       IF(.NOT.ALLOCATED(ELLMAT)) ALLOCATE(ELLMAT(NPYSITE,3,3))
-      IF(.NOT.ALLOCATED(SITECOORDS)) ALLOCATE(SITECOORDS(NPYSITE,3)) ! ARRAY HOLDING ALL SITE COORDINATES AND ORIENTATIONS
+      IF(.NOT.ALLOCATED(SITECOORDS)) ALLOCATE(SITECOORDS(NPYSITE,3)) ! array holding all site coordinates and orientations
       DO J1=1,NPYSITE
         READ(299,*) LABEL, PST(J1,1), PST(J1,2), PST(J1,3),DUMMYLABEL1,ELLST1(J1,1),ELLST1(J1,2),ELLST1(J1,3),&
                         & ELLST2(J1,1),ELLST2(J1,2),ELLST2(J1,3),DUMMYLABEL2,OST(J1,1),OST(J1,2),OST(J1,3)
       END DO
-        ELLST1(:,:)=ELLST1(:,:)/2       ! REPULSIVE SEMIAXES
-        ELLST2(:,:)=ELLST2(:,:)/2       ! ATTRACTIVE SEMIAXES
+        ELLST1(:,:)=ELLST1(:,:)/2       ! repulsive semiaxes
+        ELLST2(:,:)=ELLST2(:,:)/2       ! attractive semiaxes
 
-            RADIFT = .TRUE.  ! WILL HAVE TO GET BACK TO THIS ONCE!!!
+            RADIFT = .TRUE.  ! will have to get back to this once!!!
 
 
       END SUBROUTINE DEFINEPYMULTISITES
@@ -547,14 +547,14 @@
       EZR1(:,:) = 0.D0
       EZR2(:,:) = 0.D0
 
-! SF344> RMAT IS THE ROTATION MATRIX OF ONE SITE INTO THE BODY-FIXED FRAME, 
-!       WE HAVE ONE RMAT FOR EACH ELLIPSOID IN THE RIGID BODY
+! sf344> RMAT is the rotation matrix of one site into the body-fixed frame, 
+!       we have one RMAT for each ellipsoid in the rigid body
 !    
 
             CALL RMDRVT(OST(K,:), RMAT, DRMAT1, DRMAT2, DRMAT3, .FALSE.)
 
 
-! ORIGINAL MATRIX FOR ANGLE-AXIS PART
+! original matrix for angle-axis part
 
          EZR1(1,1) = 1.D0/(ELLST1(K,1)*ELLST1(K,1))
          EZR1(2,2) = 1.D0/(ELLST1(K,2)*ELLST1(K,2))
@@ -564,16 +564,16 @@
          EZR2(2,2) = 1.D0/(ELLST2(K,2)*ELLST2(K,2))
          EZR2(3,3) = 1.D0/(ELLST2(K,3)*ELLST2(K,3))
 
-! NOW ROTATE
+! now rotate
 
         EZR1R = MATMUL(RMAT,(MATMUL(EZR1(:,:),(TRANSPOSE(RMAT)))))
         EZR2R = MATMUL(RMAT,(MATMUL(EZR2(:,:),(TRANSPOSE(RMAT)))))
 
-!        WRITE(*,*) 'BODY ', K
-!        WRITE(*,*) 'ORIGINAL MATRIX: '
+!        WRITE(*,*) 'body ', K
+!        WRITE(*,*) 'original matrix: '
 !        WRITE(*,*) EZR1(:,:)
 
-!        WRITE(*,*) 'ROTATED MATRIX: '
+!        WRITE(*,*) 'rotated matrix: '
 !        WRITE(*,*) EZR1R(:,:)
 
       END SUBROUTINE PYSITEORIENTATIONS
@@ -609,7 +609,7 @@
       DOUBLE PRECISION :: DRMI1(3,3), DRMI2(3,3), DRMI3(3,3), DRMJ1(3,3), DRMJ2(3,3), DRMJ3(3,3)
       DOUBLE PRECISION :: DF1DR(3), DF2DR(3), DG1DR(3), DG2DR(3)
       DOUBLE PRECISION :: ARIBRJ(3), XC(3), XCMRI(3), XCMRJ(3), FIJ(3), TIJ(3), TJI(3)
-      DOUBLE PRECISION :: D1ABEZ(3,3), D2ABEZ(3,3), D3ABEZ(3,3), D1ABE(3,3), D2ABE(3,3), D3ABE(3,3) 
+      double precision :: D1ABEZ(3,3), D2ABEZ(3,3), D3ABEZ(3,3), D1ABE(3,3), D2ABE(3,3), D3ABE(3,3) 
       LOGICAL          :: GTEST
 
       I3(:,:)      = 0.D0
@@ -827,7 +827,7 @@
 
                      ENERGY = ENERGY + RHO112 - RHO26 
                      IF(ENERGY.LT.-1.0D10) THEN
-                        WRITE(MYUNIT,*) 'MULTISITEPY> COLD FUSION DETECTED'
+                        WRITE(MYUNIT,*) 'multisitepy> cold fusion detected'
                         ENERGY=1.0D20
                         G=1.0D0
                         RETURN 
@@ -1032,12 +1032,12 @@
 
 !     --------------------------------------------------------------------------
 
-      SUBROUTINE AATOSITES(X,P,XS)
-      USE COMMONS, ONLY : NPYSITE
-      USE PYMODULE, ONLY : PST,OST,ELLST1,ELLMAT
-      IMPLICIT NONE
+      SUBROUTINE AAtoSites(X,P,XS)
+      use commons, only : NPYSITE
+      use pymodule, only : PST,OST,ELLST1,ELLMAT
+      implicit none
       
-      DOUBLE PRECISION :: X(3),P(3),XS(NPYSITE,3),P1(3),I3(3,3),PHI,THETA,PSI
+      DOUBLE PRECISION :: X(3),P(3),XS(NPYSITE,3),P1(3),I3(3,3),phi,theta,psi
       DOUBLE PRECISION :: RMAT(3,3), RMAT1(3,3), DRM1(3,3), DRM2(3,3), DRM3(3,3), EZR1(3,3), EZR1R(3,3)
       INTEGER          :: J1
         
@@ -1055,34 +1055,34 @@
         XS(J1,3)=XS(J1,3) + X(3)
 
 !        AE1 = MATMUL(RMAT,(MATMUL(EZRI1(:,:),(TRANSPOSE(RMAT)))))
-! ORIGINAL MATRIX FOR ANGLE-AXIS PART
+! original matrix for angle-axis part
 
          EZR1(1,1) = 1.D0/(ELLST1(J1,1)*ELLST1(J1,1))
          EZR1(2,2) = 1.D0/(ELLST1(J1,2)*ELLST1(J1,2))
          EZR1(3,3) = 1.D0/(ELLST1(J1,3)*ELLST1(J1,3))
 
-! NOW ROTATE
+! now rotate
 
         EZR1R = MATMUL(RMAT1,(MATMUL(I3,(TRANSPOSE(RMAT1)))))
 
-! NOW ROTATE AGAIN
+! now rotate again
 
 !        ELLMAT(J1,:,:) = MATMUL(RMAT,(MATMUL(EZR1R,(TRANSPOSE(RMAT)))))
         ELLMAT(J1,:,:) = MATMUL(RMAT,RMAT1)
-!        WRITE(*,*) 'BODY ', J1
-!        WRITE(*,*) 'ORIGINAL MATRIX: '
+!        WRITE(*,*) 'body ', J1
+!        WRITE(*,*) 'original matrix: '
 !        WRITE(*,*) EZR1(:,:)
 
-!        WRITE(*,*) 'ROTATION MATRIX: '
+!        WRITE(*,*) 'rotation matrix: '
 !        WRITE(*,*) ELLMAT(J1,:,:)
 
 
-!   XS: CARTESIAN COORDINATES OF EACH SITE
-!   P: ANGLE-AXIS COORDINATES OF THE WHOLE BODY
+!   XS: cartesian coordinates of each site
+!   P: angle-axis coordinates of the whole body
 !        PS(J1,:)=MATMUL(RMAT,OST(J1,:))
       END DO
 
-      END SUBROUTINE AATOSITES
+      END SUBROUTINE AAtoSites
 
 !     --------------------------------------------------------------------------
 
@@ -1108,7 +1108,7 @@
       DOUBLE PRECISION :: DRMI1(3,3), DRMI2(3,3), DRMI3(3,3), DRMJ1(3,3), DRMJ2(3,3), DRMJ3(3,3)
       DOUBLE PRECISION :: DF1DR(3), DF2DR(3), DG1DR(3), DG2DR(3)
       DOUBLE PRECISION :: ARIBRJ(3), XC(3), XCMRI(3), XCMRJ(3), FIJ(3), TIJ(3), TJI(3)
-      DOUBLE PRECISION :: D1ABEZ(3,3), D2ABEZ(3,3), D3ABEZ(3,3), D1ABE(3,3), D2ABE(3,3), D3ABE(3,3) 
+      double precision :: D1ABEZ(3,3), D2ABEZ(3,3), D3ABEZ(3,3), D1ABE(3,3), D2ABE(3,3), D3ABE(3,3) 
       DOUBLE PRECISION :: RANDOM,DPRAND,ECFVAL,LOCALSTEP,DUMMY2 
       LOGICAL          :: OVERLAPT
 
@@ -1137,11 +1137,11 @@ OVERLAPT=.TRUE.
          DUMMY2 = COORDS(J3-2,NP)**2 + COORDS(J3-1,NP)**2 + COORDS(J3,NP)**2
       
          IF (DUMMY2 .GT. RADIUS) THEN
-! BRING BACK THE MOLECULE WITHIN THE RADIUS
+! bring back the molecule within the radius
                 COORDS(J3-2,NP)=COORDS(J3-2,NP)-SQRT(RADIUS)*NINT(COORDS(J3-2,NP)/SQRT(RADIUS))
                 COORDS(J3-1,NP)=COORDS(J3-1,NP)-SQRT(RADIUS)*NINT(COORDS(J3-1,NP)/SQRT(RADIUS))
                 COORDS(J3,NP)=COORDS(J3,NP)-SQRT(RADIUS)*NINT(COORDS(J3,NP)/SQRT(RADIUS))
-    WRITE(MYUNIT,'(A,2F20.10)') 'INITIAL COORDINATE OUTSIDE CONTAINER -- BRINGING MOLECULE BACK WITHIN THE CONTAINER RADIUS'
+    WRITE(MYUNIT,'(A,2F20.10)') 'initial coordinate outside container -- bringing molecule back within the container radius'
         END IF
 !     BEGIN INNER LOOP OVER PARTICLES
             IF (TMOVE(NP)) LOCALSTEP = STEP(NP)
@@ -1233,24 +1233,24 @@ OVERLAPT=.TRUE.
 !     CALCULATE ECF
                      CALL BRENTMIN (0.D0, 0.51D0, 1.D0, AE1, BE1, RIJ, LAMDAC, FMIN)
                           ECFVAL = - FMIN
-!                     ALLOW FOR A SLIGHT OVERLAP 
+!                     allow for a slight overlap 
                           IF (ECFVAL < PYOVERLAPTHRESH) THEN
-!                                WRITE(*,*) 'ATOMS OVERLAPPING', J1, J2, ECFVAL, ABSRIJ
+!                                WRITE(*,*) 'atoms overlapping', J1, J2, ECFVAL, ABSRIJ
                              OVERLAPT = .TRUE.
                              GO TO 95
                           ENDIF
 
             
 
-                  ENDDO  ! END LOOP OVER SITES IN THE SECOND BODY
+                  ENDDO  ! end loop over sites in the second body
 
-               ENDDO ! END LOOP OVER SITES IN THE FIRST BODY
+               ENDDO ! end loop over sites in the first body
 
 !     END INNER LOOP OVER PARTICLES
 
             ENDDO
 
-         ENDDO ! END WHILE
+         ENDDO ! End WHILE
 
 
 !     END OUTER LOOP OVER PARTICLES
