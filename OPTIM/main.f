@@ -16,7 +16,8 @@ C   You should have received a copy of the GNU General Public License
 C   along with this program; if not, write to the Free Software
 C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
-      PROGRAM OPTIM3
+      PROGRAM OPTIM
+
       USE COMMONS
       USE PORFUNCS
       !USE OPTIMHEADER
@@ -53,6 +54,7 @@ C
       AMBERT=.FALSE.
       NABT=.FALSE.
 
+      CALL READ_CMD_ARGS
 C
 C  The function iargc returns the argument count
 C  The statement call getarg( k , arg ) gets the  kth  command-

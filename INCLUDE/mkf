@@ -1,7 +1,7 @@
 
 
 PRF=$(SPATH)/all/porfuncs.sh
-DV=$(SPATH)/all/display_version.sh
+DV=$(SPATH)/all/dv.sh
 HEADER=$(SPATH)/all/header.sh
 
 DVOPTS=fflags "${FFLAGS}" prog $(PROGNAME) fc_full_name "${FULL_COMPILER_NAME}" fc_exec "${FC}" make_opts "${MAKE_OPTS}" 

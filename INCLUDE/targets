@@ -32,7 +32,7 @@ libmylapack.a: SAT-Ghost
 SAT-Ghost:
 
 clean:
-	rm -f $(PROG) $(OBJS) *.mod
+	rm -f $(PROG) $(OBJS) $(GENFFILES) *.mod
 
 cleanall:
 	rm -f $(PROG) $(OBJS) ${GENFFILES} *.o *.a *.mod *.lst
