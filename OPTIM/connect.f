@@ -159,13 +159,8 @@ C Also note that refcoord and refppsangle don't correspond to the same structure
             c(3,J1+nres)=Q(6*(J1-1)+6)
          ENDDO
          CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !         CALL CHAINBUILD
-=======
-         CALL int_from_cart(.true.,.false.)
-         CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       ENDIF
       CALL POTENTIAL(Q,  ESTART,VNEW,.FALSE.,.FALSE.,RMSSTART,.FALSE.,.FALSE.)
       EMIN(1)=ESTART
@@ -1295,13 +1290,8 @@ C              WRITE(83,'(3G20.10)') (DIAG(J2),J2=1,6*NATOMS)  !  WCOMMENT
                       c(3,K1+nres)=Q(6*(K1-1)+6)
                    ENDDO
                    CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !                   CALL CHAINBUILD
-=======
-                   CALL int_from_cart(.true.,.false.)
-                   CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
                ENDIF
 !              CALL POTENTIAL(Q,DUMMY1,GRAD,.TRUE.,.TRUE.,RMS,.FALSE.,.FALSE.)
                IF (CHRMMT) THEN
@@ -1420,13 +1410,8 @@ C                 CALL H2OMODES(NATOMS,IPOT,Q,DIAG) ! WCOMMENT
                         c(3,K1+nres)=Q(6*(K1-1)+6)
                      ENDDO
                      CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !                     CALL CHAINBUILD
-=======
-                     CALL int_from_cart(.true.,.false.)
-                     CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
                   ENDIF
 !                 CALL POTENTIAL(Q,DUMMY1,GRAD,.TRUE.,.TRUE.,RMS,.FALSE.,.FALSE.)
                   IF (CHRMMT) THEN
@@ -2173,11 +2158,7 @@ C        BFGSTST=.TRUE.
       CALL NEWMINDIST(QSTART,Q,NATOMS,DISTMS,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
 
       PRINT*
-<<<<<<< HEAD
 !      WRITE(*,'(A,I6)') ' MINIMUM DISTANCES OF STARTING AND FINISHING GEOMETRIES FROM +/- MINIMA FOR TS ',JUSE
-=======
-      WRITE(*,'(A,I6)') ' Minimum distances of Starting and Finishing geometries from +/- minima for ts ',JUSE
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       PRINT*
       WRITE(*,'(A)')  '            S              F'
 !      WRITE(*,'(A,2F15.6)')  ' + ',DISTPS,DISTPF

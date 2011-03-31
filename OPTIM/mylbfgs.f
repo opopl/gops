@@ -146,20 +146,12 @@ C
             c(3,J2+nres)=X(6*(J2-1)+6)
          END DO
          CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
-=======
-         CALL int_from_cart(.true.,.false.)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 C
 C jmc 9/1/03 Need this call to chainbuild to calculate xrot,xloc matrices which are used
 C in the calculation of d(bond vectors) by d(internals).
 C
-<<<<<<< HEAD
 !CALL CHAINBUILD
-=======
-         CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       ENDIF
 
       IF ((.NOT.KNOWE).OR.(.NOT.KNOWG)) THEN
@@ -301,11 +293,7 @@ C
 C
 C store internals (in OLDQ) and update X to contain internals
 C
-<<<<<<< HEAD
 !CALL GEOM_TO_VAR(N,OLDQ)
-=======
-            CALL geom_to_var(N,OLDQ)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
             X(1:N)=OLDQ(1:N)
          ELSE IF (CHRMMT) THEN 
             CALL GETKD(KD) ! get width of sparse band in G matrix KD
@@ -406,7 +394,6 @@ C jmc put Cartesians in X for return
 C
                IF (UNRST) THEN
                   TMPINT(1:N)=X(1:N)
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(N,TMPINT) ! JMC UPDATE INTERNALS
 !CALL CHAINBUILD ! GET CARTESIANS
                   DO I1=1,NRES
@@ -416,17 +403,6 @@ C
                      X(6*(I1-1)+4)=C(1,I1+NRES)
                      X(6*(I1-1)+5)=C(2,I1+NRES)
                      X(6*(I1-1)+6)=C(3,I1+NRES)
-=======
-                  CALL var_to_geom(N,TMPINT) ! jmc update internals
-                  CALL chainbuild ! get cartesians
-                  DO I1=1,nres
-                     X(6*(I1-1)+1)=c(1,I1)
-                     X(6*(I1-1)+2)=c(2,I1)
-                     X(6*(I1-1)+3)=c(3,I1)
-                     X(6*(I1-1)+4)=c(1,I1+nres)
-                     X(6*(I1-1)+5)=c(2,I1+nres)
-                     X(6*(I1-1)+6)=c(3,I1+nres)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
                   ENDDO
                ENDIF
             ENDIF
@@ -442,7 +418,6 @@ C                          ! May make redopath runs unreproducible?
          FIXIMAGE=.FALSE.
          IF (INTMINT) THEN
             IF (UNRST) THEN
-<<<<<<< HEAD
                TMPINT(1:N)=X(1:N) ! UPDATE INTERNALS
 !CALL VAR_TO_GEOM(N,TMPINT)
 !CALL CHAINBUILD ! GET CARTESIANS
@@ -453,18 +428,6 @@ C                          ! May make redopath runs unreproducible?
                   X(6*(I1-1)+4)=C(1,I1+NRES)
                   X(6*(I1-1)+5)=C(2,I1+NRES)
                   X(6*(I1-1)+6)=C(3,I1+NRES)
-=======
-               TMPINT(1:N)=X(1:N) ! update internals
-               CALL var_to_geom(N,TMPINT)
-               CALL chainbuild ! get cartesians
-               DO I1=1,nres
-                  X(6*(I1-1)+1)=c(1,I1)
-                  X(6*(I1-1)+2)=c(2,I1)
-                  X(6*(I1-1)+3)=c(3,I1)
-                  X(6*(I1-1)+4)=c(1,I1+nres)
-                  X(6*(I1-1)+5)=c(2,I1+nres)
-                  X(6*(I1-1)+6)=c(3,I1+nres)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
                ENDDO
             ENDIF
          ENDIF
@@ -858,13 +821,8 @@ C
 C need a temporary array NEWQ here as argument to var_to_geom to keep X unchanged in case we need to
 C modify the step below.
 C
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(N,NEWQ) ! UPDATE INTERNALS
 !CALL CHAINBUILD ! GET CARTESIANS
-=======
-            CALL var_to_geom(N,NEWQ) ! update internals
-            CALL chainbuild ! get cartesians
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
          ENDIF
       ENDIF
 
@@ -1075,19 +1033,11 @@ C           OLDQ(1:N)=OLDQ(1:N)+DELTAQ(1:N)
             OLDQ(1:N)=XINT(1:N)
          ELSEIF (UNRST) THEN
 !           TEST1(1:N)=X(1:N)
-<<<<<<< HEAD
 !CALL GEOM_TO_VAR(N,X(1:N)) ! TESTING!!! - TO PUT X BACK INTO REGISTER WITH THE COMMON BLOCK INTERNALS (AND G)
 !           CALL GEOM_TO_VAR(N,TEST1(1:N))
 !           DO J1=1,N
 !           IF (ABS((TEST1(J1)-X(J1))/X(J1))*100.0D0.GT.1.0D-6) PRINT *,'HELLO COORDS ',J1
 !           ENDDO
-=======
-            CALL geom_to_var(N,X(1:N)) ! testing!!! - to put X back into register with the common block internals (and g)
-!           CALL geom_to_var(N,TEST1(1:N))
-!           do j1=1,N
-!           if (abs((TEST1(j1)-x(j1))/x(j1))*100.0d0.gt.1.0D-6) print *,'hello coords ',J1
-!           enddo
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
          ENDIF
          GLAST(1:N)=GSAVE(1:N) 
          IF (.NOT.(NODUMP)) THEN ! jmc dumpp dumps x but x is in internals...

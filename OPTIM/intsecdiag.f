@@ -58,13 +58,8 @@ C     ZETA=DIFF/SQRT(VECL)
 C     WRITE(*,'(6F15.5)') (DUMMY3(J1),J1=1,NINTS)
 
       IF (UNRST) THEN
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NINTS,DUMMY3)
 !CALL CHAINBUILD
-=======
-         CALL var_to_geom(NINTS,DUMMY3)
-         CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       END IF
       CALL POTENTIAL(DUMCART,EPLUS,GRAD1,GTEST,.FALSE.,RMS,.FALSE.,.FALSE.)
 
@@ -73,13 +68,8 @@ C     WRITE(*,'(6F15.5)') (DUMMY3(J1),J1=1,NINTS)
 C     WRITE(*,'(6F15.5)') (DUMMY3(J1),J1=1,NINTS)
 
       IF (UNRST) THEN
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NINTS,DUMMY3)
 !CALL CHAINBUILD
-=======
-         CALL var_to_geom(NINTS,DUMMY3)
-         CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       END IF
 C jmc remember for unres, passing of coords array (first arg) is irrelevant...
       CALL POTENTIAL(DUMCART,EMINUS,GRAD2,GTEST,.FALSE.,RMS,.FALSE.,.FALSE.)

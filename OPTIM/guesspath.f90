@@ -308,13 +308,8 @@ CONTAINS
             LFNAME='guess.unres.xyz.'//TRIM(ADJUSTL(FILTHSTR))
             OPEN(UNIT=8,FILE=TRIM(ADJUSTL(LFNAME)),STATUS='UNKNOWN')
          ENDIF
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NCOORDS,START)
 !CALL CHAINBUILD
-=======
-         CALL var_to_geom(NCOORDS,START)
-         CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
          DO K2=1,NRES
             WRITE(7,'(3G20.10)') C(1,K2),C(2,K2),C(3,K2) ! backbone
             WRITE(7,'(3G20.10)') C(1,K2+NRES),C(2,K2+NRES),C(3,K2+NRES) ! side chains
@@ -376,13 +371,8 @@ CONTAINS
          ENDIF
       ENDDO
       IF (UNRST) THEN
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NCOORDS,X)
 !CALL CHAINBUILD
-=======
-         CALL var_to_geom(NCOORDS,X)
-         CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       ENDIF
       IF (DUMPPATH) THEN
          IF (UNRST) THEN

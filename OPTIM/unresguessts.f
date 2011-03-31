@@ -67,11 +67,7 @@ c     PRINT *,'FIN in unresguessts: ',FIN(6*(I1-1)+1),FIN(6*(I1-1)+2),FIN(6*(I1-
 c     PRINT *,'FIN in unresguessts: ',FIN(6*(I1-1)+4),FIN(6*(I1-1)+5),FIN(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
-=======
-      CALL int_from_cart(.true.,.false.)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
       DO I1=1,nres-3
         FINPPSANGLE(I1)=phi(I1+3)
@@ -94,11 +90,7 @@ C Order is bb dihedrals, sc dihedrals, bb bond angles, sc polars.
          c(3,I1+nres)=Q(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
-=======
-      CALL int_from_cart(.true.,.false.)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
 C use unres geometry arrays phi (bb dihedrals) and omeg (sc dihedrals)
 C NOTE THAT ANGLES ARE IN RADIANS!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -402,11 +394,7 @@ C jmc            CALL TWISTCH(IICD,ANGLE)
 C
 20    CONTINUE
 
-<<<<<<< HEAD
 !CALL CHAINBUILD
-=======
-      CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
       DO J1=1,nres
          Q(6*(J1-1)+1)=c(1,J1)

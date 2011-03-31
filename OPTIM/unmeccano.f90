@@ -44,19 +44,11 @@ IF (.NOT.ITEST) THEN
    EINITIAL=E1
    EFINAL=E2
 ELSE
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NINTS,Q)
 !CALL CHAINBUILD
    CALL POTENTIAL(Q,EINITIAL,GRAD,.TRUE.,.FALSE.,RMSINITIAL,.FALSE.,.FALSE.)
 !CALL VAR_TO_GEOM(NINTS,FIN)
 !CALL CHAINBUILD
-=======
-   CALL var_to_geom(NINTS,Q)
-   CALL chainbuild
-   CALL POTENTIAL(Q,EINITIAL,GRAD,.TRUE.,.FALSE.,RMSINITIAL,.FALSE.,.FALSE.)
-   CALL var_to_geom(NINTS,FIN)
-   CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
    CALL POTENTIAL(FIN,EFINAL,GRAD,.TRUE.,.FALSE.,RMSFINAL,.FALSE.,.FALSE.)
 ENDIF
 IF (ITEST.AND.PTEST) WRITE(*,'(A,F20.10,A,F15.6,A,F20.10,A,F15.6)') &
@@ -83,13 +75,8 @@ DO J1=1,NIMAGE
    DO J2=1,LNOPT
       POINTS(LNOPT*(J1-1)+J2)=Q(J2)+DELTA(J2)*J1/(NIMAGE+1)
    ENDDO
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(LNOPT,POINTS(LNOPT*(J1-1)+1:LNOPT*(J1-1)+LNOPT))
 !CALL GEOM_TO_VAR(LNOPT,POINTS(LNOPT*(J1-1)+1:LNOPT*(J1-1)+LNOPT))
-=======
-   CALL var_to_geom(LNOPT,POINTS(LNOPT*(J1-1)+1:LNOPT*(J1-1)+LNOPT))
-   CALL geom_to_var(LNOPT,POINTS(LNOPT*(J1-1)+1:LNOPT*(J1-1)+LNOPT))
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 ENDDO
 POINTS(LNOPT*NIMAGE+1)=MECDIST
 !
@@ -163,7 +150,6 @@ ENDIF
 
 DO J1=0,NIMAGE+1
    IF (J1.EQ.0) THEN 
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(LNOPT,Q(1:LNOPT))
    ELSE IF (J1.EQ.NIMAGE+1) THEN
 !CALL VAR_TO_GEOM(LNOPT,FIN(1:LNOPT))
@@ -171,15 +157,6 @@ DO J1=0,NIMAGE+1
 !CALL VAR_TO_GEOM(LNOPT,POINTS(LNOPT*(J1-1)+1:LNOPT*J1))
    ENDIF
 !CALL CHAINBUILD
-=======
-      CALL var_to_geom(LNOPT,Q(1:LNOPT))
-   ELSE IF (J1.EQ.NIMAGE+1) THEN
-      CALL var_to_geom(LNOPT,FIN(1:LNOPT))
-   ELSE
-      CALL var_to_geom(LNOPT,POINTS(LNOPT*(J1-1)+1:LNOPT*J1))
-   ENDIF
-   CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
    DO J2=1,NRES
       WRITE(7,'(3G20.10)') C(1,J2),C(2,J2),C(3,J2) ! backbone
       WRITE(7,'(3G20.10)') C(1,J2+NRES),C(2,J2+NRES),C(3,J2+NRES) ! side chains
@@ -269,13 +246,8 @@ FIXIMAGE=.FALSE.
 
 ! Put coordinates into the +pi to -pi range - should have been done in calling routine!
 DO J1=1,NIMAGE
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NINTS,X(NINTS*(J1-1)+1:NINTS*(J1-1)+NINTS))
 !CALL GEOM_TO_VAR(NINTS,X(NINTS*(J1-1)+1:NINTS*(J1-1)+NINTS))
-=======
-   CALL var_to_geom(NINTS,X(NINTS*(J1-1)+1:NINTS*(J1-1)+NINTS))
-   CALL geom_to_var(NINTS,X(NINTS*(J1-1)+1:NINTS*(J1-1)+NINTS))
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 ENDDO
 XLAST(1:N)=X(1:N)
 
@@ -308,13 +280,8 @@ IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A)') &
 
 10 CALL FLUSH(6,ISTAT)
 DO J1=1,NIMAGE
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NINTS,X(NINTS*(J1-1)+1:NINTS*(J1-1)+NINTS))
 !CALL GEOM_TO_VAR(NINTS,X(NINTS*(J1-1)+1:NINTS*(J1-1)+NINTS))
-=======
-   CALL var_to_geom(NINTS,X(NINTS*(J1-1)+1:NINTS*(J1-1)+NINTS))
-   CALL geom_to_var(NINTS,X(NINTS*(J1-1)+1:NINTS*(J1-1)+NINTS))
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 ENDDO
 XLAST(1:N)=X(1:N)
 
@@ -672,13 +639,8 @@ DO J1=1,NIMAGE
    DO J2=1,LNOPT
       XX(J2)=X(J2+LNOPT*(J1-1))
    ENDDO
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(LNOPT,XX(1:LNOPT))
 !CALL CHAINBUILD
-=======
-   CALL var_to_geom(LNOPT,XX(1:LNOPT))
-   CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
    CALL POTENTIAL(XX,EVEC(J1),GG,.TRUE.,.FALSE.,RMSVEC(J1),.FALSE.,.FALSE.)
    DO J2=1,LNOPT
       G(J2+LNOPT*(J1-1))=NORM1*GG(J2)

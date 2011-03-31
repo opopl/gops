@@ -99,13 +99,8 @@ C
          c(3,J2+nres)=COORDS(6*(J2-1)+6)
       END DO
       CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !CALL CHAINBUILD
-=======
-      CALL int_from_cart(.true.,.false.)
-      CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
       ITER=1
       frame=1
@@ -165,15 +160,9 @@ C     DO J1=1,NOPT
 C        VECSP(J1)=0.0D0  ! otherwise VECSP is not initialised
 C     ENDDO
 
-<<<<<<< HEAD
 C JMC PUT INTERNALS INTO COORDS ARRAY HERE IF WE'VE COME HERE FROM PATH, AS WE DON'T GO THROUGH 
 C THE DO LOOP BELOW WHERE THIS WOULD BE DONE NORMALLY.
       !IF (BFGSSTEP) CALL GEOM_TO_VAR(NINTS,COORDS(1:NINTS))
-=======
-C jmc Put internals into COORDS array here if we've come here from path, as we don't go through 
-C the do loop below where this would be done normally.
-      IF (BFGSSTEP) CALL geom_to_var(NINTS,COORDS(1:NINTS))
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
       IF (.NOT.((READV.AND.BFGSSTEP).OR.(.NOT.POTCALL))) THEN
          IF (FIXD.AND.(ITER.EQ.1)) THEN
@@ -306,21 +295,12 @@ C           DO J1=1,NOPT
 C              VECS(J1)=LVEC(J1,1)
 C           ENDDO
          ELSE
-<<<<<<< HEAD
 C JMC
 C PUT INTERNALS INTO COORDS HERE.  COORDS ARRAY SHOULD BE UNCHANGED ON BEING PASSED THROUGH BEIG.
 C SINCE WE'RE PASSING THE ENERGY CORRESPONDING TO THESE COORDS, I'M ASSUMING THAT THE UNRES C AND 
 C GEOMETRY ARRAYS HAVE ALREADY BEEN UPDATED CORRECTLY (IN MYLBFGS AT THE END OF EACH 
 C ITERATION AND BEFORE THIS ROUTINE IS CALLED - 18/10/03 IN FACT AT THE START OF THIS SUBROUTINE...)
 !CALL GEOM_TO_VAR(NINTS,COORDS(1:NINTS))
-=======
-C jmc
-C Put internals into COORDS here.  COORDS array should be unchanged on being passed through BEIG.
-C Since we're passing the energy corresponding to these coords, I'm assuming that the unres c and 
-C geometry arrays have already been updated correctly (in mylbfgs at the end of each 
-C iteration and before this routine is called - 18/10/03 in fact at the start of this subroutine...)
-            CALL geom_to_var(NINTS,COORDS(1:NINTS))
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
             CALL INTBEIG(ITER,COORDS,ENERGY,VECS,EVALMIN,NS,SOVER,PTEST,CONVERGED)
 C
 C  The following two routines are also obsolete.
@@ -608,7 +588,6 @@ C              PVFLAG=.FALSE.
 C              CALL PVOPT(COORDS,ENERGY,GRAD)
 C           ENDIF
 C
-<<<<<<< HEAD
 C JMC UPDATE CARTESIANS NOW
 !CALL VAR_TO_GEOM(NINTS,COORDS(1:NINTS))
 !           TMPINT=COORDS(1:NINTS)
@@ -622,21 +601,6 @@ C JMC ADDED THIS DO LOOP TO PUT CARTESIANS INTO COORDS FOR DUMPP
                COORDS(6*(J4-1)+4)=C(1,J4+NRES)
                COORDS(6*(J4-1)+5)=C(2,J4+NRES)
                COORDS(6*(J4-1)+6)=C(3,J4+NRES)
-=======
-C jmc update Cartesians now
-            CALL var_to_geom(NINTS,COORDS(1:NINTS))
-!           TMPINT=COORDS(1:NINTS)
-!           CALL var_to_geom(NINTS,TMPINT)
-            CALL chainbuild
-C jmc added this do loop to put cartesians into coords for dumpp
-            DO J4=1,nres
-               COORDS(6*(J4-1)+1)=c(1,J4)
-               COORDS(6*(J4-1)+2)=c(2,J4)
-               COORDS(6*(J4-1)+3)=c(3,J4)
-               COORDS(6*(J4-1)+4)=c(1,J4+nres)
-               COORDS(6*(J4-1)+5)=c(2,J4+nres)
-               COORDS(6*(J4-1)+6)=c(3,J4+nres)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
             END DO
 
             CALL POTENTIAL(COORDS,ENERGY,GRAD,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
@@ -698,7 +662,6 @@ C
       IF (BFGSSTEP) THEN
 C jmc put Cartesians back into COORDS
 !        TMPINT=COORDS(1:NINTS)
-<<<<<<< HEAD
 !        CALL VAR_TO_GEOM(NINTS,TMPINT)
 !CALL VAR_TO_GEOM(NINTS,COORDS(1:NINTS))
 !CALL CHAINBUILD
@@ -709,18 +672,6 @@ C jmc put Cartesians back into COORDS
             COORDS(6*(J4-1)+4)=C(1,J4+NRES)
             COORDS(6*(J4-1)+5)=C(2,J4+NRES)
             COORDS(6*(J4-1)+6)=C(3,J4+NRES)
-=======
-!        CALL var_to_geom(NINTS,TMPINT)
-         CALL var_to_geom(NINTS,COORDS(1:NINTS))
-         CALL chainbuild
-         DO J4=1,nres
-            COORDS(6*(J4-1)+1)=c(1,J4)
-            COORDS(6*(J4-1)+2)=c(2,J4)
-            COORDS(6*(J4-1)+3)=c(3,J4)
-            COORDS(6*(J4-1)+4)=c(1,J4+nres)
-            COORDS(6*(J4-1)+5)=c(2,J4+nres)
-            COORDS(6*(J4-1)+6)=c(3,J4+nres)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
          END DO
          FIXIMAGE=.FALSE.
          FIXD=FIXDSAVE

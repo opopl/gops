@@ -439,7 +439,6 @@ C
             c(3,J1+nres)=QINIT(6*(J1-1)+6)
          END DO
          CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !CALL GEOM_TO_VAR(NINTS,TSINT)
          NEWINT=TSINT-INTSTEP
@@ -452,20 +451,6 @@ C
             Q(6*(J1-1)+4)=C(1,J1+NRES)
             Q(6*(J1-1)+5)=C(2,J1+NRES)
             Q(6*(J1-1)+6)=C(3,J1+NRES)
-=======
-         CALL int_from_cart(.true.,.false.)
-         CALL geom_to_var(NINTS,TSINT)
-         NEWINT=TSINT-INTSTEP
-         CALL var_to_geom(NINTS,NEWINT)
-         CALL chainbuild
-         DO J1=1,nres
-            Q(6*(J1-1)+1)=c(1,J1)
-            Q(6*(J1-1)+2)=c(2,J1)
-            Q(6*(J1-1)+3)=c(3,J1)
-            Q(6*(J1-1)+4)=c(1,J1+nres)
-            Q(6*(J1-1)+5)=c(2,J1+nres)
-            Q(6*(J1-1)+6)=c(3,J1+nres)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
          END DO
          ! }}}
       ENDIF ! jmc end new stuff
@@ -1716,13 +1701,8 @@ C           WRITE(88,'(3G20.10)') (DIAG(J2),J2=1,6*NATOMS) ! WCOMMENT
                   c(3,J2+nres)=Q(6*(J2-1)+6)
                ENDDO
                CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !CALL CHAINBUILD
-=======
-               CALL int_from_cart(.true.,.false.)
-               CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
                HORDER=1
                FPGRP='C1'
                IF (ENDNUMHESS) THEN
@@ -1870,13 +1850,8 @@ C           WRITE(88,'(3G20.10)') (DIAG(J2),J2=1,6*NATOMS) ! WCOMMENT
                   c(3,J2+nres)=Q(6*(J2-1)+6)
                ENDDO
                CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !CALL CHAINBUILD
-=======
-               CALL int_from_cart(.true.,.false.)
-               CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
                HORDER=1
                FPGRP='C1'
                IF (ENDNUMHESS) THEN
@@ -2032,13 +2007,8 @@ C           WRITE(88,'(3G20.10)') (DIAG(J2),J2=1,6*NATOMS) ! WCOMMENT
                   c(3,J2+nres)=Q(6*(J2-1)+6)
                ENDDO
                CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !CALL CHAINBUILD
-=======
-               CALL int_from_cart(.true.,.false.)
-               CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
                HORDER=1
                FPGRP='C1'
                IF (ENDNUMHESS) THEN

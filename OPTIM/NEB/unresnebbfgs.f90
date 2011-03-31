@@ -177,15 +177,9 @@ SUBROUTINE NEBBFGSINT(D,U)
      XINTN = XINTN + STP*SEARCHSTEP(POINT,:)
 
      DO J1=1,NIMAGE
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NINTS,XINTN(NINTS*(J1-1)+1:NINTS*J1))
 ! GET CARTESIANS
 !CALL CHAINBUILD
-=======
-        CALL VAR_TO_GEOM(NINTS,XINTN(NINTS*(J1-1)+1:NINTS*J1))
-! get cartesians
-        CALL CHAINBUILD
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
         DO J2=1,NRES
            X(6*(J2-1)+1+NOPT*(J1-1))=C(1,J2)
            X(6*(J2-1)+2+NOPT*(J1-1))=C(2,J2)

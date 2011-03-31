@@ -54,7 +54,6 @@
 
 !****|******************************************************************|	
 !****|******************************************************************|	
-<<<<<<< HEAD
        DOUBLE PRECISION FUNCTION RHO_POT_D(IPOT,R)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)  
         DOUBLE PRECISION RC     
@@ -68,21 +67,6 @@
         IF(IPOT.EQ.1.) THEN     	   	     	        
       RHO_POT_D=-(2*Q)/RO*EXP(-2*Q*(R/RO-1.0D0))*FCUT(IPOT,R,RC,DELTA)+     &
                EXP(-2*Q*(R/RO-1.0D0))*FCUT_D(IPOT,R,RC,DELTA)
-=======
-       double precision function rho_pot_d(ipot,R)
-	implicit double precision (a-h,o-z)  
-        double precision Rc     
-        include 'ackland_sma.h'  
-        include 'ackland_mishin_cu.h' 
-	COMMON /param_cut_off/Rc
-	double precision R		
-	integer ipot	      
-
-
-        if(ipot.eq.1.) then     	   	     	        
-      rho_pot_d=-(2*q)/Ro*EXP(-2*q*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)+     &
-               EXP(-2*q*(R/Ro-1.0d0))*fcut_d(ipot,R,Rc,delta)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
      
      
         elseif(ipot.eq.2) then
@@ -116,7 +100,6 @@
         Return
         End  
 !****|******************************************************************|	
-<<<<<<< HEAD
         DOUBLE PRECISION  FUNCTION RHO_POT_DD(IPOT,R)
 	IMPLICIT  DOUBLE PRECISION(A-H,O-Z)  
 	DOUBLE PRECISION RC      
@@ -131,22 +114,6 @@
        RHO_POT_DD=(2*Q/RO)**2*EXP(-2*Q*(R/RO-1.0D0))*FCUT(IPOT,R,RC,DELTA)        &
               -2.0D0*(2*Q/RO)*EXP(-2*Q*(R/RO-1.0D0))*FCUT_D(IPOT,R,RC,DELTA)      &
                              +EXP(-2*Q*(R/RO-1.0D0))*FCUT_DD(IPOT,R,RC,DELTA)      
-=======
-        double precision  function rho_pot_dd(ipot,R)
-	implicit  double precision(a-h,o-z)  
-	double precision Rc      
-        include 'ackland_sma.h'  
-        include 'ackland_mishin_cu.h' 
-	COMMON /param_cut_off/Rc	
-	double precision R		
-	integer ipot	      
-
-
-       if(ipot.eq.1) then   
-       rho_pot_dd=(2*q/Ro)**2*EXP(-2*q*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)        &
-              -2.0d0*(2*q/Ro)*EXP(-2*q*(R/Ro-1.0d0))*fcut_d(ipot,R,Rc,delta)      &
-                             +EXP(-2*q*(R/Ro-1.0d0))*fcut_dd(ipot,R,Rc,delta)      
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 	     
         elseif(ipot.eq.2) then
         rho_pot_dd=2*q*(2*q+1)/R**2*(Ro/R)**(2*q)*fcut(ipot,R,Rc,delta)          &
@@ -165,7 +132,6 @@
              +2*gfunc_d(R,a,beta1,beta2,R03,R04)*fcut_d(ipot,R,Rc,h)      &
                 + gfunc(R,a,beta1,beta2,R03,R04)*fcut_dd(ipot,R,Rc,h)  
 !****|******************************************************************|	   
-<<<<<<< HEAD
 	ELSEIF ((IPOT.EQ.5).OR.(IPOT.EQ.6)) THEN
 	RHO_POT_DD = FPSI_DD(R)
 	
@@ -201,43 +167,6 @@
            VPOT=(RO/R)**P*FCUT(IPOT,R,RC,DELTA)	
            VPOT=A_R*VPOT	   			   	   
 	ELSEIF(IPOT.EQ.4) THEN	
-=======
-	elseif ((ipot.eq.5).or.(ipot.eq.6)) then
-	rho_pot_dd = fpsi_dd(R)
-	
-	elseif ((ipot.eq.12).or.(ipot.eq.13)) then
-	rho_pot_dd =  (  0.77718711248373d0 *12.d0* (5.6d0-R)**2 & 
-	               - 0.48102928454986d0 *20.d0* (5.6d0-R)**3 &
-	               + 0.14501312593993d0 *30.d0* (5.6d0-R)**4 &
-		       - 0.021292226813959d0*42.d0* (5.6d0-R)**5 &
-		       + 0.001220921762567d0*56.d0* (5.6d0-R)**6) * Hfunc(5.6d0-R)
-	else
-	write(*,*) 'erreur de ipot'
-	endif	        
-        Return
-        End  	
-	
-!****|******************************************************************|
-        double precision function Vpot(ipot,R)
-	implicit double precision (a-h,o-z)
-	double precision Rc
-        include 'ackland_sma.h'  
-        include 'ackland_mishin_cu.h' 
-	COMMON /param_cut_off/Rc	
-	integer ipot
-	double precision Mfunc,R	
-	
-        if(ipot.eq.1) then   	
-           Vpot=exp(-p*(R/Ro-1.0d0))*fcut(ipot,R,Rc,delta)
-           Vpot=a_r*Vpot	   	    
-        elseif(ipot.eq.2) then	
-           Vpot=(Ro/R)**p*fcut(ipot,R,Rc,delta)
-           Vpot=a_r*Vpot	   		   
-        elseif(ipot.eq.3) then		
-           Vpot=(Ro/R)**p*fcut(ipot,R,Rc,delta)	
-           Vpot=a_r*Vpot	   			   	   
-	elseif(ipot.eq.4) then	
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 		
 	Vpot=(E1*Mfunc(R,R01,alpha1)+E2*Mfunc(R,R02,alpha2)+dd)*      &
              fcut(ipot,R,Rc,h)                                        &
@@ -306,7 +235,6 @@
         Return
         End    
 !****|******************************************************************|
-<<<<<<< HEAD
         DOUBLE PRECISION FUNCTION VPOT_D(IPOT,R)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
         include 'ackland_sma.h'  
@@ -315,16 +243,6 @@
 	COMMON /PARAM_CUT_OFF/RC	 
 	DOUBLE PRECISION MFUNC,MFUNC_D,R		
 	INTEGER IPOT	      
-=======
-        double precision function Vpot_d(ipot,R)
-	implicit double precision (a-h,o-z)	
-        include 'ackland_sma.h'  
-        include 'ackland_mishin_cu.h'	
-	double precision Rc
-	COMMON /param_cut_off/Rc	 
-	double precision Mfunc,Mfunc_d,R		
-	integer ipot	      
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
 
         if(ipot.eq.1) then
@@ -412,7 +330,6 @@
         End    
 	
 !****|******************************************************************|
-<<<<<<< HEAD
         DOUBLE PRECISION FUNCTION VPOT_DD(IPOT,R)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
         include 'ackland_sma.h'  
@@ -421,16 +338,6 @@
 	COMMON /PARAM_CUT_OFF/RC	
 	DOUBLE PRECISION MFUNC,MFUNC_D,MFUNC_DD,R		
 	INTEGER IPOT	      
-=======
-        double precision function Vpot_dd(ipot,R)
-	implicit double precision (a-h,o-z)	
-        include 'ackland_sma.h'  
-        include 'ackland_mishin_cu.h' 
-	double precision Rc
-	COMMON /param_cut_off/Rc	
-	double precision Mfunc,Mfunc_d,Mfunc_dd,R		
-	integer ipot	      
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
 
         if(ipot.eq.1) then   
@@ -570,21 +477,12 @@
         End  	
 		   	 	 	
 !****|******************************************************************|
-<<<<<<< HEAD
         DOUBLE PRECISION FUNCTION FEMBED(IPOT,X)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
         DOUBLE PRECISION X
 	INTEGER IPOT
 	DOUBLE PRECISION RC
 	COMMON /PARAM_CUT_OFF/RC	
-=======
-        double precision function Fembed(ipot,x)
-	implicit double precision (a-h,o-z)	
-        double precision x
-	integer ipot
-	double precision Rc
-	COMMON /param_cut_off/Rc	
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
         include 'ackland_sma.h'  
         include 'ackland_mishin_cu.h'
 	include 'ackland_mendelev_fe.h'	
@@ -607,7 +505,6 @@
 	  
 	  Fembed = -dsqrt(x) + aphi*x*x + aphi2*x*x*x*x  
 	  
-<<<<<<< HEAD
 	  ELSEIF(IPOT.EQ.6) THEN
 	   IF (X.LT.1.D0) THEN
 	     FEMBED = -APHI*DSQRT(X) - APHI2*(1-DSQRT(X))*DLOG(2.D0-X)/DLOG(2.D0) 
@@ -640,40 +537,6 @@
 	DOUBLE PRECISION X
 	DOUBLE PRECISION RC
 	COMMON /PARAM_CUT_OFF/RC	
-=======
-	  elseif(ipot.eq.6) then
-	   if (x.lt.1.d0) then
-	     Fembed = -aphi*dsqrt(x) - aphi2*(1-dsqrt(x))*dlog(2.d0-x)/dlog(2.d0) 
-	     else
-	     Fembed = -aphi*dsqrt(x) 
-	   endif
-
-	  elseif(ipot.eq.12) then
-	   Fembed = -     dsqrt(x)                                         &
-	            - 1.9162462126235d0*1.d-7*(x-60.d0)**4*Hfunc(x-60.d0) &
-	            + 4.6418727035037d0*1.d-7*(x-70.d0)**4*Hfunc(x-70.d0) &
-	            + 6.6448294272955d0*1.d-7*(x-80.d0)**4*Hfunc(x-80.d0) &
-		    - 2.0680252960229d0*1.d-6*(x-85.d0)**4*Hfunc(x-85.d0) &
-		    + 1.1387131464983d0*1.d-6*(x-90.d0)**4*Hfunc(x-90.d0)
-	  elseif(ipot.eq.13) then
-	   Fembed = - dsqrt(x)                                         &
-	            + 3.2283012597866d0*1.d-7*(x-60.d0)**4*Hfunc(x-60.d0) &		
-		    - 1.1552813894483d0*1.d-6*(x-70.d0)**4*Hfunc(x-70.d0) &
-		    + 2.3747280268355d0*1.d-6*(x-80.d0)**4*Hfunc(x-80.d0) &
-		    - 2.0379550826523d0*1.d-6*(x-85.d0)**4*Hfunc(x-85.d0) & 
-		    + 4.9758343293936d0*1.d-7*(x-90.d0)**4*Hfunc(x-90.d0)
-
-
-	 end if 
-	return
-        end
-!****|******************************************************************|
-        double precision function Fembed_d(ipot,x)
-	implicit double precision (a-h,o-z)	
-	double precision x
-	double precision Rc
-	COMMON /param_cut_off/Rc	
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
         include 'ackland_sma.h'  
         include 'ackland_mishin_cu.h'
 	include 'ackland_mendelev_fe.h'
@@ -735,7 +598,6 @@
         end
 	
 !****|******************************************************************|	
-<<<<<<< HEAD
         DOUBLE PRECISION FUNCTION FEMBED_DD(IPOT,X)
 	IMPLICIT DOUBLE PRECISION (A-H,O-Z)	
         include 'ackland_sma.h'  
@@ -743,15 +605,6 @@
 	DOUBLE PRECISION RC
 	COMMON /PARAM_CUT_OFF/RC	
 	DOUBLE PRECISION X,DENOM
-=======
-        double precision function Fembed_dd(ipot,x)
-	implicit double precision (a-h,o-z)	
-        include 'ackland_sma.h'  
-        include 'ackland_mishin_cu.h'
-	double precision Rc
-	COMMON /param_cut_off/Rc	
-	double precision x,denom
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 	include 'ackland_mendelev_fe.h'
           
 	  if(ipot.eq.1.or.ipot.eq.2.or.ipot.eq.3) then	
@@ -879,7 +732,6 @@
 
 !****|******************************************************************|
 !****|******************************************************************|
-<<<<<<< HEAD
        DOUBLE PRECISION FUNCTION FPSI(X)
        IMPLICIT DOUBLE PRECISION (A-H,O-Z) 
        include 'ackland_mendelev_fe.h'
@@ -919,47 +771,6 @@
 !****|******************************************************************|
        DOUBLE PRECISION FUNCTION FVARPHI (X)
        IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-=======
-       double precision function fpsi(x)
-       implicit double precision (a-h,o-z) 
-       include 'ackland_mendelev_fe.h'
-       
-       temp = 0.d0
-       do i=1,npsi
-         temp = temp + ap(i)*Hfunc(rp(i)-x)*(rp(i)-x)**3
-       end do
-       fpsi = temp
-       return
-       end  
-!****|******************************************************************|
-       double precision function fpsi_d(x)
-       implicit double precision (a-h,o-z) 
-       include 'ackland_mendelev_fe.h'
-       
-       temp = 0.d0
-       do i=1,npsi
-         temp = temp - 3.d0*ap(i)*Hfunc(rp(i)-x)*(rp(i)-x)**2
-       end do
-       fpsi_d = temp
-       return
-       end  
-!****|******************************************************************|
-       double precision function fpsi_dd(x)
-       implicit double precision (a-h,o-z) 
-       include 'ackland_mendelev_fe.h'
-       
-       temp = 0.d0
-       do i=1,npsi
-         temp = temp + 6.d0*ap(i)*Hfunc(rp(i)-x)*(rp(i)-x)
-       end do
-       fpsi_dd = temp
-       return
-       end  
-!****|******************************************************************|
-!****|******************************************************************|
-       double precision function fvarphi (x)
-       implicit double precision (a-h,o-z)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
        include 'ackland_mendelev_fe.h'
         
 	 threei   =1.d0/3.d0      
@@ -982,7 +793,6 @@
           fvarphi = temp
         end if              
         
-<<<<<<< HEAD
        RETURN
        END 
 !****|******************************************************************|
@@ -1034,59 +844,6 @@
         ELSE IF ((X.GE.R1).AND.(X.LT.R2)) THEN 
           FVARPHI_DD = (2.0D0*BFE2 + 6.0D0*BFE3*X) &
                      *DEXP (BFE0 + BFE1*X + BFE2*X*X + BFE3*X*X*X)&
-=======
-       return
-       end 
-!****|******************************************************************|
-       double precision function fvarphi_d (x)
-       implicit double precision (a-h,o-z)
-       include 'ackland_mendelev_fe.h'
-         threei   = 1.d0/3.d0
-        ZnFE2   = ZnFE*ZnFE
-       AU_TO_EV = hart
-        AU_TO_A = abohr
-         temp   = 0.d0
-
-       rs = 0.88534d0*abohr*ZnFE**(-threei)/dsqrt(2.d0)
-       rx = x/rs
-
-        if (x.lt.r1) then 
-          fvarphi_d =  - ZnFE2*fphi(rx)*AU_TO_EV*AU_TO_A/(x*x) &
-                 + ZnFE2 * fphi_d(rx) * AU_TO_EV*AU_TO_A / (x*rs)     
-        else if ((x.ge.r1).and.(x.lt.r2)) then 
-          fvarphi_d = (bFE1 + 2.0d0*bFE2*x + 3.0d0*bFE3*x*x) &
-                     *dexp (bFE0 + bFE1*x + bFE2*x*x + bFE3*x*x*x)
-        else if (x.ge.r2) then
-          do i=1,nvarphi
-             temp = temp - 3.d0*af(i)*Hfunc(rf(i)-x)*(rf(i)-x)**2
-          end do
-          fvarphi_d = temp
-        end if              
-        
-       return
-       end
-!****|******************************************************************|
-       double precision function fvarphi_dd (x)
-       implicit double precision (a-h,o-z)
-       include 'ackland_mendelev_fe.h'
-         threei   = 1.d0/3.d0
-        ZnFE2   = ZnFE*ZnFE
-       AU_TO_EV = hart
-        AU_TO_A = abohr
-         temp   = 0.d0
-
-       rs = 0.88534d0*abohr*ZnFE**(-threei)/dsqrt(2.d0)
-       rx = x/rs
-
-        if (x.lt.r1) then 
-	fvarphi_dd = 0.5d0*ZnFE2*fphi(rx)*AU_TO_EV*AU_TO_A/(x*x*x) &
-	             - ZnFE2*fphi_d(rx)*AU_TO_EV*AU_TO_A/(x*x*rs)  &
-		     - ZnFE2 * fphi_d(rx) * AU_TO_EV*AU_TO_A / (x*x*rs) &
-		     + ZnFE2 * fphi_dd(rx) * AU_TO_EV*AU_TO_A / (x*rs*rs)	 		 
-        else if ((x.ge.r1).and.(x.lt.r2)) then 
-          fvarphi_dd = (2.0d0*bFE2 + 6.0d0*bFE3*x) &
-                     *dexp (bFE0 + bFE1*x + bFE2*x*x + bFE3*x*x*x)&
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 		     + &
                     (bFE1 + 2.0d0*bFE2*x + 3.0d0*bFE3*x*x)**2 &
                      *dexp (bFE0 + bFE1*x + bFE2*x*x + bFE3*x*x*x)		     

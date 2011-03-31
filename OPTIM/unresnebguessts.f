@@ -43,7 +43,6 @@ C
          c(3,I1+nres)=Q(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !CALL GEOM_TO_VAR(NVARU,QPPSANGLE)
 
@@ -58,22 +57,6 @@ C
       CALL UPDATEDC
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !CALL GEOM_TO_VAR(NVARU,FINPPSANGLE)
-=======
-      CALL int_from_cart(.true.,.false.)
-      CALL geom_to_var(nvaru,QPPSANGLE)
-
-      DO I1=1,nres
-         c(1,I1)=FINISH(6*(I1-1)+1)
-         c(2,I1)=FINISH(6*(I1-1)+2)
-         c(3,I1)=FINISH(6*(I1-1)+3)
-         c(1,I1+nres)=FINISH(6*(I1-1)+4)
-         c(2,I1+nres)=FINISH(6*(I1-1)+5)
-         c(3,I1+nres)=FINISH(6*(I1-1)+6)
-      END DO
-      CALL UPDATEDC
-      CALL int_from_cart(.true.,.false.)
-      CALL geom_to_var(nvaru,FINPPSANGLE)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
 C DAE's comment...not relevant for unres all-internal implementation.
 C We need to keep our images along the path between q and fin. Their alignment will
@@ -98,7 +81,6 @@ C
             QPPSANGLE(I1)=QPPSANGLE(I1)+ANGLE 
          ENDDO
  
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NVARU,QPPSANGLE)
 !CALL CHAINBUILD
          DO I1=1,NRES
@@ -108,17 +90,6 @@ C
             DUMMY(6*(I1-1)+4)=C(1,I1+NRES)
             DUMMY(6*(I1-1)+5)=C(2,I1+NRES)
             DUMMY(6*(I1-1)+6)=C(3,I1+NRES)
-=======
-         CALL var_to_geom(nvaru,QPPSANGLE)
-         CALL chainbuild
-         DO I1=1,nres
-            DUMMY(6*(I1-1)+1)=c(1,I1)
-            DUMMY(6*(I1-1)+2)=c(2,I1)
-            DUMMY(6*(I1-1)+3)=c(3,I1)
-            DUMMY(6*(I1-1)+4)=c(1,I1+nres)
-            DUMMY(6*(I1-1)+5)=c(2,I1+nres)
-            DUMMY(6*(I1-1)+6)=c(3,I1+nres)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
          ENDDO
 
          DO I1=1,3*NATOMS
@@ -155,7 +126,6 @@ C
          c(3,I1+nres)=QA(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 C     CALL CHAINBUILD
 !CALL GEOM_TO_VAR(NVARU,QAPPSANGLE)
@@ -185,37 +155,6 @@ C     CALL CHAINBUILD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 C     CALL CHAINBUILD
 !CALL GEOM_TO_VAR(NVARU,QCPPSANGLE)
-=======
-      CALL int_from_cart(.true.,.false.)
-c     CALL chainbuild
-      CALL geom_to_var(nvaru,QAPPSANGLE)
-
-      DO I1=1,nres
-         c(1,I1)=QB(6*(I1-1)+1)
-         c(2,I1)=QB(6*(I1-1)+2)
-         c(3,I1)=QB(6*(I1-1)+3)
-         c(1,I1+nres)=QB(6*(I1-1)+4)
-         c(2,I1+nres)=QB(6*(I1-1)+5)
-         c(3,I1+nres)=QB(6*(I1-1)+6)
-      END DO
-      CALL UPDATEDC
-      CALL int_from_cart(.true.,.false.)
-c     CALL chainbuild
-      CALL geom_to_var(nvaru,QBPPSANGLE)
-
-      DO I1=1,nres
-         c(1,I1)=QC(6*(I1-1)+1)
-         c(2,I1)=QC(6*(I1-1)+2)
-         c(3,I1)=QC(6*(I1-1)+3)
-         c(1,I1+nres)=QC(6*(I1-1)+4)
-         c(2,I1+nres)=QC(6*(I1-1)+5)
-         c(3,I1+nres)=QC(6*(I1-1)+6)
-      END DO
-      CALL UPDATEDC
-      CALL int_from_cart(.true.,.false.)
-c     CALL chainbuild
-      CALL geom_to_var(nvaru,QCPPSANGLE)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
       DISTCB=0.D0
       DISTBA=0.D0

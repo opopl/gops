@@ -1320,13 +1320,8 @@ C
       DOUBLE PRECISION DUM2(3*NATOMS),GRAD1(3*NATOMS),GRAD2(3*NATOMS),DELTA,RMS,ENERGY
       DOUBLE PRECISION DUM(NOPT)
 
-<<<<<<< HEAD
       IF (DEBUG) WRITE(*,*) 'MAKING NUMERICAL HESSIAN .=.'
 !CALL GEOM_TO_VAR(NOPT,X)
-=======
-      IF (DEBUG) WRITE(*,*) 'Making numerical hessian .=.'
-      CALL geom_to_var(NOPT,X)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
       DUM=X
 
@@ -1343,21 +1338,12 @@ C
       IF (.NOT.ALLOCATED(HESS)) ALLOCATE(HESS(3*NATOMS,3*NATOMS))
       DO I1=1,NOPT
          DUM(I1)=X(I1)-DELTA
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NOPT,DUM)
 !CALL CHAINBUILD
          CALL POTENTIAL(DUM2,ENERGY,GRAD1,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
          DUM(I1)=X(I1)+DELTA
 !CALL VAR_TO_GEOM(NOPT,DUM)
 !CALL CHAINBUILD
-=======
-         CALL var_to_geom(NOPT,DUM)
-         CALL chainbuild
-         CALL POTENTIAL(DUM2,ENERGY,GRAD1,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-         DUM(I1)=X(I1)+DELTA
-         CALL var_to_geom(NOPT,DUM)
-         CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
          CALL POTENTIAL(DUM2,ENERGY,GRAD2,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
          DUM(I1)=X(I1)
          DO J1=I1,NOPT
@@ -1366,13 +1352,8 @@ C
          ENDDO
       ENDDO
 
-<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NOPT,X)
 !CALL CHAINBUILD
-=======
-      CALL var_to_geom(NOPT,X)
-      CALL chainbuild
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
       IF (DEBUG) WRITE(*,*) 'Hessian made'
 

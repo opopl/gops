@@ -44,7 +44,6 @@ C
          c(3,I1+nres)=FIN(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 
 C USE UNRES GEOMETRY ARRAYS PHI (BB DIHEDRALS) AND OMEG (SC DIHEDRALS)
@@ -54,17 +53,6 @@ C NEED TO REMEMBER NOT TO TRY TO TWIST THEM THOUGH!
 C NO ENTRIES IN QPPSANGLE FOR CAPPING 'RESIDUES'.
       DO I1=1,NRES-3
         FINPPSANGLE(I1)=PHI(I1+3)
-=======
-      CALL int_from_cart(.true.,.false.)
-
-C use unres geometry arrays phi (bb dihedrals) and omeg (sc dihedrals)
-C Take care with numbering - see /unres/src/readpdb.f (subroutine int_from_cart)
-C For side chain dihedrals, have zero elements for proper (i.e. not capping) glycines.
-C Need to remember not to try to twist them though!
-C No entries in QPPSANGLE for capping 'residues'.
-      DO I1=1,nres-3
-        FINPPSANGLE(I1)=phi(I1+3)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       END DO
       DO I1=1,nres-2
         FINPPSANGLE(I1+nres-3)=omeg(I1+1)
@@ -84,11 +72,7 @@ C Order is bb dihedrals, sc dihedrals, bb polars, sc polars.
          c(3,I1+nres)=QLOCAL(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
-=======
-      CALL int_from_cart(.true.,.false.)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
       DO I1=1,nres-3
         QPPSANGLE(I1)=phi(I1+3)
@@ -169,7 +153,6 @@ c     PRINT *,'QLOCAL in unrescalcdihe: ',QLOCAL(6*(I1-1)+1),QLOCAL(6*(I1-1)+2),
 c     PRINT *,'QLOCAL in unrescalcdihe: ',QLOCAL(6*(I1-1)+4),QLOCAL(6*(I1-1)+5),QLOCAL(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 
 C USE UNRES GEOMETRY ARRAYS PHI (BB DIHEDRALS) AND OMEG (SC DIHEDRALS)
@@ -179,17 +162,6 @@ C NEED TO REMEMBER NOT TO TRY TO TWIST THEM THOUGH!
 C NO ENTRIES IN QPPSANGLE FOR CAPPING 'RESIDUES'.
       DO I1=1,NRES-3
         QPPSANGLE(I1)=PHI(I1+3)
-=======
-      CALL int_from_cart(.true.,.false.)
-
-C use unres geometry arrays phi (bb dihedrals) and omeg (sc dihedrals)
-C Take care with numbering - see /unres/src/readpdb.f (subroutine int_from_cart)
-C For side chain dihedrals, have zero elements for proper (i.e. not capping) glycines.
-C Need to remember not to try to twist them though!
-C No entries in QPPSANGLE for capping 'residues'.
-      DO I1=1,nres-3
-        QPPSANGLE(I1)=phi(I1+3)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       END DO
       DO I1=1,nres-2
         QPPSANGLE(I1+nres-3)=omeg(I1+1)
@@ -269,7 +241,6 @@ C
          c(3,I1+nres)=UREFCOORD(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
-<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 
 C USE UNRES GEOMETRY ARRAYS PHI (BB DIHEDRALS) AND OMEG (SC DIHEDRALS)
@@ -279,17 +250,6 @@ C NEED TO REMEMBER NOT TO TRY TO TWIST THEM THOUGH!
 C NO ENTRIES IN QPPSANGLE FOR CAPPING 'RESIDUES'.
       DO I1=1,NRES-3
         UREFPPSANGLE(I1)=PHI(I1+3)
-=======
-      CALL int_from_cart(.true.,.false.)
-
-C use unres geometry arrays phi (bb dihedrals) and omeg (sc dihedrals)
-C Take care with numbering - see /unres/src/readpdb.f (subroutine int_from_cart)
-C For side chain dihedrals, have zero elements for proper (i.e. not capping) glycines.
-C Need to remember not to try to twist them though!
-C No entries in QPPSANGLE for capping 'residues'.
-      DO I1=1,nres-3
-        UREFPPSANGLE(I1)=phi(I1+3)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       END DO
       DO I1=1,nres-2
         UREFPPSANGLE(I1+nres-3)=omeg(I1+1)
