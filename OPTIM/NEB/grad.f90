@@ -1,28 +1,28 @@
-!   NEB MODULE IS AN IMPLEMENTATI ON OF THE NUDGED ELASTIC BAND METHOD FOR PERFORMING DOUBLE-ENDED PATHWAY SEARCHES.
-!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
-!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
+!   NEB module is an implementati on of the nudged elastic band method for performing double-ended pathway searches.
+!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
+!   This file is part of NEB module. NEB module is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 MODULE GRADIENTS
      IMPLICIT NONE
      CONTAINS
 
-     ! THIS WORK WAS DESCRIBED IN DETAIL IN: S. A. TRYGUBENKO AND D. J. WALES, `A DOUBLY NUDGED ELASTIC BAND METHOD FOR FINDING
-     ! TRANSITION STATES', J. CHEM. PHYS., 120, 2082-2094 (2004). SUMMARY IS AVAILABLE ONLINE AT
-     ! HTTP://WWW-WALES.CH.CAM.AC.UK/~SAT39/DNEBTESTS/ 
+     ! This work was described in detail in: S. A. Trygubenko and D. J. Wales, `A Doubly Nudged Elastic Band Method for Finding
+     ! Transition States', J. Chem. Phys., 120, 2082-2094 (2004). Summary is available online at
+     ! http://www-wales.ch.cam.ac.uk/~sat39/DNEBtests/ 
      SUBROUTINE NEBGRADIENT
           USE KEYGRAD
           USE KEYTAU
@@ -58,27 +58,27 @@ MODULE GRADIENTS
           IF (BADTAU) RETURN
 
 !
-! RBAAT ACTUALLY WORKS BEST WITH STANDARD DNEB PROCEDURE. HMM.
+! RBAAT actually works best with standard DNEB procedure. Hmm.
 !
 
 !
-! FOR RBAAT RIGID BODIES FREEZE ONE SET OF COORDINATES BY SETTING GRADIENT
-! COMPONENTS TO ZERO. WE ARE THEN JUST MINIMISING WITH RESPECT TO THE OTHER SET
-! FOR EACH IMAGE.
+! For RBAAT rigid bodies freeze one set of coordinates by setting gradient
+! components to zero. We are then just minimising with respect to the other set
+! for each image.
 !
 !         IF (RBAAT) THEN
 !            DO J1=2,NIMAGE+1
-!               GGG(NOPT*(J1-1)+1:NOPT*(J1-1)+(NOPT/2))=0.0D0 ! FREEZE CENTRES OF MASS
-!               GGG(NOPT*(J1-1)+(NOPT/2)+1:NOPT*J1)=0.0D0 ! FREEZE ANGLES
+!               GGG(NOPT*(J1-1)+1:NOPT*(J1-1)+(NOPT/2))=0.0D0 ! freeze centres of mass
+!               GGG(NOPT*(J1-1)+(NOPT/2)+1:NOPT*J1)=0.0D0 ! freeze angles
 !            ENDDO
 !            GOTO 555
 !         ENDIF
 !          
-! GGGSAVE CONTAINS THE TRUE GRADIENT ON IMAGES
+! GGGSAVE contains the true gradient on images
 !
           GGGSAVE(1:NOPT*(NIMAGE+2))=GGG(1:NOPT*(NIMAGE+2))
-          ! GGG CONTAINS THE PERPENDICULAR COMPONENT OF THE TRUE GRADIENT AFTER THIS BLOCK
-          DO J1=2,NIMAGE+1  !  MEP-PERPENDICULAR COMPONENT OF TRUE GRADIENT ONLY: G = G - G|| = G - (G,TAU)*TAU
+          ! GGG contains the perpendicular component of the true gradient after this block
+          DO J1=2,NIMAGE+1  !  MEP-perpendicular component of true gradient only: G = G - G|| = G - (G,TAU)*TAU
                IF (UNRST) THEN
                   GGG(NOPT*(J1-1)+1:NOPT*(J1-1)+NINTS) = GGG(NOPT*(J1-1)+1:NOPT*(J1-1)+NINTS) - &
                &    DOT_PRODUCT(GGG(NOPT*(J1-1)+1:NOPT*(J1-1)+NINTS),TANVEC(:NINTS,J1-1))*TANVEC(:NINTS,J1-1)
@@ -98,31 +98,31 @@ MODULE GRADIENTS
              RMS=SQRT( DOT_PRODUCT(G,G)/(NIMAGE*NOPT) ) 
           ENDIF
 
-          IF (BULKT.AND.(GRADTYPE.NE.'DNEB')) THEN
-             PRINT '(A)',' NEBGRADIENT> ERROR - MINIMUM IMAGE DISTANCES ONLY CODED FOR GRADTYPE DNEB'
+          IF (BULKT.AND.(GRADTYPE.NE.'dneb')) THEN
+             PRINT '(A)',' nebgradient> ERROR - minimum image distances only coded for GRADTYPE dneb'
              STOP
           ENDIF
           
-          ! SPRING GRADIENT ON IMAGES
+          ! spring gradient on images
           SELECT CASE (GRADTYPE) ! THIS CALCULATES SPRING GRADIENT
-             CASE("JNEW") ! SPRINGS IN NEW IMPLEMENTATION OF NEB BY JONSSON
+             CASE("jnew") ! springs in new implementation of neb by Jonsson
                DO J1=1,NIMAGE
                  GSPR(NOPT*(J1-1)+1:NOPT*J1) = &
                  & - NEBK*( SQRT(SUM( ( XYZ(NOPT*(J1+1)+1:NOPT*(J1+2)) - XYZ(NOPT*J1+1:NOPT*(J1+1)) )**2 )) &
                  &          - SQRT(SUM( ( XYZ(NOPT*(J1-1)+1:NOPT*J1)     - XYZ(NOPT*J1+1:NOPT*(J1+1)) )**2 )) )*TANVEC(:,J1)
                ENDDO
-             CASE("SPR") ! FULL SPRINGS:  GSPR = K [2X(J) -X(J-1) -X(J+1)]
+             CASE("spr") ! full springs:  Gspr = k [2x(j) -x(j-1) -x(j+1)]
                DO J1=1,NIMAGE
                  GSPR(NOPT*(J1-1)+1:NOPT*J1) = &
                  & NEBK*( 2*XYZ(NOPT*J1+1:NOPT*(J1+1)) - XYZ(NOPT*(J1-1)+1:NOPT*J1) - XYZ(NOPT*(J1+1)+1:NOPT*(J1+2)) )
                ENDDO
-             CASE("JOLD") ! SPRINGS MEP-PARALLEL COMPONENT ONLY (ORIGINAL FORMULATION): G = (GSPR,TAU)*TAU
+             CASE("jold") ! springs MEP-parallel component only (original formulation): G = (Gspr,Tau)*Tau
                DO J1=1,NIMAGE
                  GSPR(NOPT*(J1-1)+1:NOPT*J1) = &
                  & NEBK*DOT_PRODUCT( (2*XYZ(NOPT*J1+1:NOPT*(J1+1)) - XYZ(NOPT*(J1-1)+1:NOPT*J1) - XYZ(NOPT*(J1+1)+1:NOPT*(J1+2))), &
                  & TANVEC(:,J1) )*TANVEC(:,J1)
                ENDDO
-              CASE("NPER")! SPRINGS MEP-PARALLEL COMPONENT (ORIGINAL FORMULATION) + N% OF PERPENDICULAR COMPONENT:
+              CASE("nper")! springs MEP-parallel component (original formulation) + n% of perpendicular component:
                DO J1=1,NIMAGE   !GJ = GJ + G|_*0.1 + GSPR|| == GJ + [ GSPR - (GSPR,TAU)*TAU ]*N + ...
                  GSPR(NOPT*(J1-1)+1:NOPT*J1) = ( &
                  &   NEBK*           ( 2*XYZ(NOPT*J1+1:NOPT*(J1+1)) - XYZ(NOPT*(J1-1)+1:NOPT*J1) - XYZ(NOPT*(J1+1)+1:NOPT*(J1+2)) )& 
@@ -134,28 +134,28 @@ MODULE GRADIENTS
                  & + NEBK*DOT_PRODUCT( 2*XYZ(NOPT*J1+1:NOPT*(J1+1)) - XYZ(NOPT*(J1-1)+1:NOPT*J1) - XYZ(NOPT*(J1+1)+1:NOPT*(J1+2)) ,&
                  & TANVEC(:,J1) )*TANVEC(:,J1)
                ENDDO
-              CASE("NPER2")! SAME AS ABOVE BUT OPTIMISED FOR EFFICIENCY?
+              CASE("nper2")! same as above but optimised for efficiency?
                DO J1=1,NIMAGE
-                 ! CALCULATE GS (SPRING GRADIENT ON IMAGE J1)
+                 ! calculate gs (spring gradient on image j1)
                  GSPR(NOPT*(J1-1)+1:NOPT*J1) = NEBK*(&
                  2*XYZ(NOPT*J1+1:NOPT*(J1+1))-XYZ(NOPT*(J1-1)+1:NOPT*J1)-XYZ(NOPT*(J1+1)+1:NOPT*(J1+2)) &
                                                        &)
-                 ! CALCULATE [ F*GS + (1-F)(GS,TAU)TAU ]
+                 ! calculate [ f*gs + (1-f)(gs,tau)tau ]
                  GSPR(NOPT*(J1-1)+1:NOPT*J1) = &
                  & PERPCOMP*GSPR(NOPT*(J1-1)+1:NOPT*J1) &
                  & +(1-PERPCOMP)*DOT_PRODUCT(GSPR(NOPT*(J1-1)+1:NOPT*J1),TANVEC(:,J1))*TANVEC(:,J1)
                ENDDO
-              CASE("DNEB")  ! THIS APPEARS TO BE THE DEFAULT
+              CASE("dneb")  ! this appears to be the default
                DO J1=1,NIMAGE
-                 ! CALCULATE SSS = ~G PERP IN DNEB PAPER, THE PERPENDICULAR PART OF THE SPRING GRADIENT VECTOR
+                 ! calculate SSS = ~g perp in DNEB paper, the perpendicular part of the spring gradient vector
 !
-!  HERE WE ARE CALCULATING SPRING GRADIENT VECTOR - (SPRING GRADIENT VECTOR . TANGENT VECTOR) TANGENT VECTOR
-!  THIS GIVES THE SPRING GRADIENT PERPENDICULAR COMPONENT, WHICH IS PUT IN SSS.
+!  Here we are calculating spring gradient vector - (spring gradient vector . tangent vector) tangent vector
+!  This gives the spring gradient perpendicular component, which is put in SSS.
 !
-!  CHANGED TO USE DYNAMICALLY ADJUSTED NEBK DJW 21/10/08
-!  ONLY DONE FOR DEFAULT CASE("DNEB")
+!  Changed to use dynamically adjusted NEBK DJW 21/10/08
+!  Only done for default CASE("dneb")
 !
-                  IF (BULKT) THEN ! MINIMUM IMAGE CONVENTION FOR DISTANCES!
+                  IF (BULKT) THEN ! minimum image convention for distances!
                      DO K=1,NATOMS
                         TEMP1(3*(K-1)+1)=XYZ(NOPT*J1+3*(K-1)+1) - XYZ(NOPT*(J1-1)+3*(K-1)+1 ) &
    &                       -PARAM1*NINT((XYZ(NOPT*J1+3*(K-1)+1) - XYZ(NOPT*(J1-1)+3*(K-1)+1))/PARAM1)
@@ -185,35 +185,35 @@ MODULE GRADIENTS
       & - NEWNEBK(J1)  *DOT_PRODUCT( XYZ(NOPT*J1+1:NOPT*(J1+1)) - XYZ(NOPT*(J1-1)+1:NOPT*J1)    , TANVEC(:,J1) )*TANVEC(:,J1) &
       & - NEWNEBK(J1+1)*DOT_PRODUCT( XYZ(NOPT*J1+1:NOPT*(J1+1)) - XYZ(NOPT*(J1+1)+1:NOPT*(J1+2)), TANVEC(:,J1) )*TANVEC(:,J1)
                   ENDIF
-!                 PRINT '(A,I6)','GRAD> SSS SPRING GRADIENT PERPENDICULAR FOR IMAGE ',J1
+!                 PRINT '(A,I6)','grad> SSS spring gradient perpendicular for image ',J1
 !                 PRINT '(6G20.10)',SSS(1+NOPT*J1:(J1+1)*NOPT)
 
 !
-! SSS NOW CONTAINS THE SPRING GRADIENT PERPENDICULAR PART.
-! SPRING CONTAINS THE COMPLETE SPRING GRADIENT.
+! SSS now contains the spring gradient perpendicular part.
+! SPRING contains the complete spring gradient.
 !
                   CALL NUDGE(J1,J1)
-!                 PRINT '(A,I6)','GRAD> SSS  G~* FOR IMAGE ',J1
+!                 PRINT '(A,I6)','grad> SSS  g~* for image ',J1
 !                 PRINT '(6G20.10)',SSS(1+NOPT*J1:(J1+1)*NOPT)
 !
-! ON EXIT FROM NUDGE SSS CONTAINS G~* FROM EQUATION (13) OF THE DNEB PAPER.
-! GGG STILL CONTAINS G PERP, THE PERPENDICULAR PART OF THE TRUE GRADIENT.
+! On exit from NUDGE SSS contains g~* from equation (13) of the DNEB paper.
+! GGG still contains g perp, the perpendicular part of the true gradient.
 !
                ENDDO
 !
-! THE CALL TO NUDGE CALCULATED A NEW SSS CONTAINING THE NUDGED SPRING GRADIENT G~*.
-! WE NOW ADD THIS TO GGG. WE ARE STILL MISSING ~G PARALLEL.
+! The call to NUDGE calculated a new SSS containing the nudged spring gradient g~*.
+! We now add this to GGG. We are still missing ~g parallel.
 !
                GGG(NOPT+1:NOPT*(NIMAGE+1)) = GGG(NOPT+1:NOPT*(NIMAGE+1)) + SSS(NOPT+1:NOPT*(NIMAGE+1))
-!                 PRINT '(A,I6)','GRAD> GGG G PERP + G~* FOR IMAGE ',J1
+!                 PRINT '(A,I6)','grad> GGG g perp + g~* for image ',J1
 !                 PRINT '(6G20.10)',GGG(1+NOPT*J1:(J1+1)*NOPT)
 !
-! CALCULATE ~G PARALLEL AND STORE IN SSS. THIS IS NOT ADDED TO GGG UNTIL AFTER THE WHOLE SELECT BLOCK.
-! IN FACT ~G PARALLEL IS NOT USED AS THE FORMULA EXPECTED FROM PROJECTION, BUT USES AN
-! ALTERNATIVE FORMULATION FROM EQUATION (5) OF THE DNEB PAPER.
+! Calculate ~g parallel and store in SSS. This is not added to GGG until after the whole SELECT block.
+! In fact ~g parallel is not used as the formula expected from projection, but uses an
+! alternative formulation from equation (5) of the DNEB paper.
 !
                DO J1=1,NIMAGE 
-                  IF (BULKT) THEN ! MINIMUM IMAGE CONVENTION FOR DISTANCES!
+                  IF (BULKT) THEN ! minimum image convention for distances!
 
                      DISTA=0.0D0; DISTB=0.0D0
                      DO J2=1,NATOMS
@@ -239,9 +239,9 @@ MODULE GRADIENTS
   &                 - NEWNEBK(J1)  *SQRT(SUM( ( XYZ(NOPT*(J1-1)+1:NOPT*J1)     - XYZ(NOPT*J1+1:NOPT*(J1+1)) )**2 )) )*TANVEC(:,J1)
                   ENDIF
                ENDDO
-              CASE("DNEB2") ! SAME AS "DNEB", EXCEPT SPRING GRADIENT USAGE IS MORE CONSISTENT;
+              CASE("dneb2") ! same as "dneb", except spring gradient usage is more consistent;
                DO J1=1,NIMAGE ! THANKS TO DR.~DOMINIC R. ALFONSO FOR POINTING THAT OUT
-                 ! CALCULATE GSPR PERP
+                 ! calculate Gspr perp
                  SSS(NOPT*J1+1:NOPT*(J1+1)) = &
                  &   NEBK*           ( 2*XYZ(NOPT*J1+1:NOPT*(J1+1)) - XYZ(NOPT*(J1-1)+1:NOPT*J1) - XYZ(NOPT*(J1+1)+1:NOPT*(J1+2)) )&
                  & - NEBK*DOT_PRODUCT( 2*XYZ(NOPT*J1+1:NOPT*(J1+1)) - XYZ(NOPT*(J1-1)+1:NOPT*J1) - XYZ(NOPT*(J1+1)+1:NOPT*(J1+2)) ,&
@@ -249,13 +249,13 @@ MODULE GRADIENTS
                  CALL NUDGE(J1,J1)
                ENDDO
 !
-! GGG CONTAINS THE TRUE GRADIENT COMPONENT PERPENDICULAR AND SSS NOW CONTAINS G~*,
-! SO THE NEXT LINE GIVES THE PERPENDICULAR COMPONENT OF THE DNEB GRADIENT.
+! GGG contains the true gradient component perpendicular and SSS now contains g~*,
+! so the next line gives the perpendicular component of the DNEB gradient.
 !
                GGG(NOPT+1:NOPT*(NIMAGE+1)) = GGG(NOPT+1:NOPT*(NIMAGE+1)) + SSS(NOPT+1:NOPT*(NIMAGE+1))
 
                DO J1=1,NIMAGE ! NOW CALCULATE GSPR PARALLEL (USING OLD FORMULA)
-                  IF (BULKT) THEN ! MINIMUM IMAGE CONVENTION FOR DISTANCES!
+                  IF (BULKT) THEN ! minimum image convention for distances!
                      DO K=1,NATOMS
                         TEMP1(3*(K-1)+1)=XYZ(NOPT*J1+3*(K-1)+1) - XYZ(NOPT*(J1-1)+3*(K-1)+1 ) &
    &                       -PARAM1*NINT((XYZ(NOPT*J1+3*(K-1)+1) - XYZ(NOPT*(J1-1)+3*(K-1)+1))/PARAM1)
@@ -279,8 +279,8 @@ MODULE GRADIENTS
                  &   TANVEC(:,J1) )*TANVEC(:,J1)
                   ENDIF
                ENDDO
-              CASE("DIHEN") ! DAE DISTANCE BETWEEN IMAGES CALCULATED IN DIHEDRAL ANGLE SPACE; FOR USE WITH CHARMM AND UNRES.
-                            ! USE NEW FORMULATION OF SPRING FORCE TO SIMPLIFY
+              CASE("dihen") ! DAE Distance between images calculated in dihedral angle space; for use with CHARMM and UNRES.
+                            ! Use new formulation of spring force to simplify
                SSS=0.0D0    ! INITIALISE SPRING GRADIENT
                DO J1=1,NIMAGE
                  IF (UNRST) THEN
@@ -292,7 +292,7 @@ MODULE GRADIENTS
                  ENDIF
                  GSPR(NOPT*(J1-1)+1:NOPT*(J1-1)+NINTS) = - NEBK * DIHEDIST * TANVEC(:NINTS,J1)
                ENDDO
-              CASE("DNEBU") ! DNEB FOR UNRES
+              CASE("dnebu") ! DNEB for unres
                SSS=0.0D0    ! INITIALISE SPRING GRADIENT
                DO J1=1,NIMAGE+2 ! GET INTERNALS FOR ENDPOINTS AND IMAGES
                   DO J2=1,NRES
@@ -309,7 +309,7 @@ MODULE GRADIENTS
                ENDDO
 
                DO J1=1,NIMAGE
-                 ! CALCULATE GSPR PERP
+                 ! calculate Gspr perp
                  DIFFM(1:NINTS) = QINT(NINTS*J1+1:NINTS*(J1+1)) - QINT(NINTS*(J1-1)+1:NINTS*J1)
                  DIFFP(1:NINTS) = QINT(NINTS*J1+1:NINTS*(J1+1)) - QINT(NINTS*(J1+1)+1:NINTS*(J1+2))
                  DO J2=1,NINTS
@@ -333,24 +333,24 @@ MODULE GRADIENTS
                     &XYZ(NOPT*(J1+1)+1:NOPT*(J1+2)))
                  ENDIF
                  SSS(NOPT*J1+1:NOPT*J1+NINTS) = - NEBK * DIHEDIST * TANVEC(:NINTS,J1)
-                 !PRINT *,'GSPR ',SSS(NOPT*J1+1:NOPT*J1+NINTS)
+                 !print *,'gspr ',sss(nopt*j1+1:nopt*j1+NINTS)
                ENDDO
-              CASE("DNEB3")  ! USES DEVIATION FROM THE AVERAGE SEPARATION IN THE SPRING TERM INSTEAD OF ABSOLUTE DISTANCE
-               CALL DISTANCES ! SETS UP IMAGE DISTANCES IN VECTOR DVEC FROM 1 TO NIMAGE+1
+              CASE("dneb3")  ! uses deviation from the average separation in the spring term instead of absolute distance
+               CALL DISTANCES ! sets up image distances in vector DVEC from 1 to NIMAGE+1
                MEAND=0.0D0
                DO J1=1,NIMAGE+1
                   MEAND=MEAND+DVEC(J1)
                ENDDO
                MEAND=MEAND/(NIMAGE+1)
-               PRINT '(A,F15.3)','GRAD> MEAN IMAGE SEPARATION=',MEAND
+               PRINT '(A,F15.3)','grad> Mean image separation=',MEAND
                
                DO J1=1,NIMAGE
-                 ! CALCULATE SSS = GSPR PERP  I.E. ~G PERP IN DNEB PAPER
+                 ! calculate SSS = Gspr perp  i.e. ~g perp in DNEB paper
 !
-!  HERE WE ARE CALCULATING SPRING GRADIENT VECTOR - (SPRING GRADIENT VECTOR . TANGENT VECTOR) TANGENT VECTOR
-!  THIS GIVES THE SPRING GRADIENT PERPENDICULAR COMPONENT
+!  Here we are calculating spring gradient vector - (spring gradient vector . tangent vector) tangent vector
+!  This gives the spring gradient perpendicular component
 !
-                  IF (BULKT) THEN ! MINIMUM IMAGE CONVENTION FOR DISTANCES!
+                  IF (BULKT) THEN ! minimum image convention for distances!
                      DO K=1,NATOMS
                         TEMP1(3*(K-1)+1)=XYZ(NOPT*J1+3*(K-1)+1) - XYZ(NOPT*(J1-1)+3*(K-1)+1 ) &
    &                       -PARAM1*NINT((XYZ(NOPT*J1+3*(K-1)+1) - XYZ(NOPT*(J1-1)+3*(K-1)+1))/PARAM1)
@@ -383,8 +383,8 @@ MODULE GRADIENTS
                   CALL NUDGE(J1,J1)
                ENDDO
 !
-! HERE WE COMPLETE THE DNEB GRADIENT VECTOR AS IN EQUATION (12) OF THE DNEB PAPER.
-! THE CALL TO NUDGE CALCULATED A NEW SSS CONTAINING THE NUDGED SPRING GRADIENT.
+! Here we complete the DNEB gradient vector as in equation (12) of the DNEB paper.
+! The call to NUDGE calculated a new SSS containing the nudged spring gradient.
 !
                GGG(NOPT+1:NOPT*(NIMAGE+1)) = GGG(NOPT+1:NOPT*(NIMAGE+1)) + SSS(NOPT+1:NOPT*(NIMAGE+1))
 
@@ -394,13 +394,13 @@ MODULE GRADIENTS
                  &   - NEWNEBK(J1)  *SQRT(SUM( ( XYZ(NOPT*(J1-1)+1:NOPT*J1)     - XYZ(NOPT*J1+1:NOPT*(J1+1)) )**2 )) )*TANVEC(:,J1)
                ENDDO
               CASE DEFAULT
-               PRINT *,'ERROR: UNKNOWN GRADIENT TYPE "'//TRIM(ADJUSTL(GRADTYPE))//'"'; STOP
+               PRINT *,'ERROR: unknown gradient type "'//trim(adjustl(GradType))//'"'; stop
           END SELECT
 
 !----------------------------------------------------------------------------------------------------------------------------------
 !
-! END OF LARGE SELECT BLOCK. NOW WE ADD ON SSS TO GGG, WHICH COMPLETES EQUATION (12) OF THE DNEB PAPER.
-! AT THIS POINT GG CONTAINS G PERP + ~G* AND WE NEED TO ADD ON ~G PARALLEL.
+! End of large select block. Now we add on SSS to GGG, which completes equation (12) of the DNEB paper.
+! At this point GG contains g perp + ~g* and we need to add on ~g parallel.
 !
 
           GGG(NOPT+1:NOPT*(NIMAGE+1)) = GGG(NOPT+1:NOPT*(NIMAGE+1)) + SSS(NOPT+1:NOPT*(NIMAGE+1))
@@ -410,7 +410,7 @@ MODULE GRADIENTS
                 DO J1=2,NIMAGE+1
                    IF ((BADIMAGE(J1).AND.(REPPOW(J2).GT.0)).OR.(BADPEPTIDE(J1).AND.(REPPOW(J2).LT.0))) THEN
 !
-!  ADD REPULSIVE/CONSTRAINT TERMS DEFINED AS INTERATOMIC DISTANCES.
+!  Add repulsive/constraint terms defined as interatomic distances.
 !
 
                       DIST=SQRT((XYZ(NOPT*(J1-1)+3*(ORDERI(J2)-1)+1)-XYZ(NOPT*(J1-1)+3*(ORDERJ(J2)-1)+1))**2 &
@@ -419,7 +419,7 @@ MODULE GRADIENTS
 
                       REPGRAD(1:3*NATOMS)=0.0D0
 
-                      DUMMY=DIST-DISTREF(J2)  !  DJW BUG THIS J2 WAS J1!
+                      DUMMY=DIST-DISTREF(J2)  !  DJW BUG this J2 was J1!
                       IF (DUMMY.EQ.0.0D0) DUMMY=1.0D-10
 
                       REPGRAD(3*(ORDERI(J2)-1)+1:3*(ORDERI(J2)-1)+3)= &
@@ -447,7 +447,7 @@ MODULE GRADIENTS
              ENDDO
           ENDIF
 !
-! SET GRADIENTS ON FROZEN ATOMS TO ZERO.
+! Set gradients on frozen atoms to zero.
 !
 555       IF (FREEZE) THEN
              DO J1=2,NIMAGE+1  
@@ -481,26 +481,26 @@ MODULE GRADIENTS
      END SUBROUTINE NEBGRADIENT
           
      SUBROUTINE NUDGE(JS,JT) ! SUBROUTINE DOES HIGHER-ORDER NUDGINGS; IT MODIFIES GSPR, EATS BOTH GSPR AND G; PREREQ.
-          ! - GSPR AND G ARE CALCULATED; JS - IMAGE ON WHICH GSPER IS NUDGED BY GTPER ON IMAGE JT
+          ! - Gspr and G are calculated; js - image on which gsper is nudged by gtper on image jt
           USE NEBDATA
           USE KEY, ONLY: UNRST
           IMPLICIT NONE
           INTEGER,INTENT(IN) :: JS,JT
 !
-! ON ENTRY, SSS CONTAINS THE PERPENDICULAR SPRING GRADIENT COMPONENT
-! GGG MUST CONTAIN A NON-UNIT VECTOR WITH THE PERPENDICULAR COMPONENT OF THE TRUE POTENTIAL
-! ON EXIT, SSS CONTAINS G~* FROM EQUATION (13) OF THE DNEB PAPER
+! On entry, SSS contains the perpendicular spring gradient component
+! GGG must contain a non-unit vector with the perpendicular component of the true potential
+! On exit, SSS contains g~* from equation (13) of the DNEB paper
 !
           IF (UNRST) THEN
              IF (DOT_PRODUCT(SSS(NOPT*JS+1:NOPT*JS+NINTS),GGG(NOPT*JT+1:NOPT*JT+NINTS)) < 0.0D0) THEN
-                  ! CALCULATE THE BEAST GSPR PERP - (GSPR PERP, GT PERP)* GT PERP/(GT PERP, GT PERP)
+                  ! calculate the beast Gspr perp - (Gspr perp, Gt perp)* Gt perp/(Gt perp, Gt perp)
                   SSS(NOPT*JS+1:NOPT*JS+NINTS) = SSS(NOPT*JS+1:NOPT*JS+NINTS) - &
                   & DOT_PRODUCT(SSS(NOPT*JS+1:NOPT*JS+NINTS),GGG(NOPT*JT+1:NOPT*JT+NINTS))*GGG(NOPT*JT+1:NOPT*JT+NINTS)/ &
                   & DOT_PRODUCT(GGG(NOPT*JT+1:NOPT*JT+NINTS),GGG(NOPT*JT+1:NOPT*JT+NINTS))
              ENDIF
           ELSE
              IF (DOT_PRODUCT(SSS(NOPT*JS+1:NOPT*(JS+1)),GGG(NOPT*JT+1:NOPT*(JT+1))) < 0.0D0) THEN
-                  ! CALCULATE THE BEAST GSPR PERP - (GSPR PERP, GT PERP)* GT PERP/(GT PERP, GT PERP)
+                  ! calculate the beast Gspr perp - (Gspr perp, Gt perp)* Gt perp/(Gt perp, Gt perp)
                   SSS(NOPT*JS+1:NOPT*(JS+1)) = SSS(NOPT*JS+1:NOPT*(JS+1)) - &
                   & DOT_PRODUCT(SSS(NOPT*JS+1:NOPT*(JS+1)),GGG(NOPT*JT+1:NOPT*(JT+1)))*GGG(NOPT*JT+1:NOPT*(JT+1))/ &
                   & DOT_PRODUCT(GGG(NOPT*JT+1:NOPT*(JT+1)),GGG(NOPT*JT+1:NOPT*(JT+1)))
@@ -525,18 +525,18 @@ MODULE GRADIENTS
 
        DOUBLE PRECISION :: DUMINT(NINTC)
 
-       ! ENERGY AND GRADIENT FOR IMAGES
+       ! energy and gradient for images
 !      PRINT '(A)',' '
-!      PRINT '(A,I8,A,G20.10,A)','IMAGE ',1,' ENERGY ',EEE(1),' POINTS:'
+!      PRINT '(A,I8,A,G20.10,A)','image ',1,' energy ',EEE(1),' points:'
 !      PRINT '(3G20.10)',XYZ(3*NATOMS*(1-1)+1:3*NATOMS*(1-1)+3)
        DO I=2,NIMAGE+1
 
           IF (FREEZENODEST) THEN
              IF (DESMINT) THEN
-                PRINT*, 'NEBGRAD>> DESMINT NOT IMPLEMENTED WITH FREEZENODES.'
+                print*, 'nebgrad>> DESMINT not implemented with freezenodes.'
                 STOP
              ENDIF
-             ! FOR NODES THAT DIDN'T MOVE, SET TRUE GRADIENT TO PREVIOUS VALUE
+             ! for nodes that didn't move, set true gradient to previous value
              IF (IMGFREEZE(I-1)) THEN
                 GGG(NOPT*(I-1)+1:NOPT*I) = TRUEGRAD(NOPT*(I-1)+1:NOPT*I)
                 CYCLE
@@ -545,7 +545,7 @@ MODULE GRADIENTS
 
           IF (UNRST) THEN
              IF (DESMINT) THEN
-                PRINT*, 'NEBGRAD>> UNRST NOT IMPLEMENTED WITH DESMINT!'
+                print*, 'nebgrad>> UNRST not implemented with DESMINT!'
                 STOP
              ENDIF
              DO J=1,NRES
@@ -561,7 +561,7 @@ MODULE GRADIENTS
 !CALL CHAINBUILD
           ENDIF
 
-!BS360: UPDATE ACE BORN RADII FOR EACH IMAGE
+!bs360: update ACE Born radii for each image
           IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
           IF (DESMINT) THEN
 
@@ -575,17 +575,17 @@ MODULE GRADIENTS
              CALL POTENTIAL(XYZ(NOPT*(I-1)+1:NOPT*I),EEE(I),GGG(NOPT*(I-1)+1:NOPT*I),.TRUE.,.FALSE.,RMSTMP,.FALSE.,.FALSE.)
              TRUEGRAD(NOPT*(I-1)+1:NOPT*I)=GGG(NOPT*(I-1)+1:NOPT*I) ! SAVE FOR PASSING TO BFGSTS LATER
           ENDIF
-!         PRINT '(A,I8,A,G20.10,A)','IMAGE ',I,' ENERGY ',EEE(I),' POINTS:'
+!         PRINT '(A,I8,A,G20.10,A)','image ',I,' energy ',EEE(I),' points:'
 !         PRINT '(3G20.10)',XYZ(3*NATOMS*(I-1)+1:3*NATOMS*(I-1)+3)
 
           IF ( EEE(I) > HUGE(EEE(I)) ) THEN ! BAD GUESS - HIGH-ENERGY IMAGE
-             PRINT *, "IMAGE",I," IS BAD! - TRYING TO LOWER IT'S ENERGY..."
+             PRINT *, "IMAGE",I," IS BAD! - TRYING TO LOWER IT's energy..."
              IF (DESMINT) THEN
-                PRINT*, 'NEBGRAD>> BAD ENERGY PERTURBATION NOT IMPLEMENTED WITH DESMINT YET.'
+                print*, 'nebgrad>> bad energy perturbation not implemented with DESMINT yet.'
                 STOP
              ENDIF
              DO J=1,NOPT ! CHANGING GEOMETRY RANDOMLY
-                !                        CALL RANDOM_NUMBER(HARVEST)
+                !                        call random_number(harvest)
                 HARVEST=DPRAND()
                 XYZ(NOPT*(I-1)+J) = XYZ(NOPT*(I-1)+J) + HARVEST*0.01
              ENDDO
@@ -610,13 +610,13 @@ MODULE GRADIENTS
              TRUEGRAD(NOPT*(I-1)+1:NOPT*I)=GGG(NOPT*(I-1)+1:NOPT*I) ! SAVE FOR PASSING TO BFGSTS LATER
 
              IF ( EEE(I) > HUGE(EEE(I)) ) THEN
-                PRINT *, "FAILED."
+                PRINT *, "Failed."
                 CALL TSUMMARY
                 STOP
              ENDIF
           ENDIF
        ENDDO
-!      PRINT '(A,I8,A,G20.10,A)','IMAGE ',NIMAGE+2,' ENERGY ',EEE(NIMAGE+2),' POINTS:'
+!      PRINT '(A,I8,A,G20.10,A)','image ',NIMAGE+2,' energy ',EEE(NIMAGE+2),' points:'
 !      PRINT '(3G20.10)',XYZ(3*NATOMS*(NIMAGE+2-1)+1:3*NATOMS*(NIMAGE+2-1)+3)
      END SUBROUTINE TRUEPOTEG
 

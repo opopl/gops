@@ -57,15 +57,15 @@ C
 C
       SUBROUTINE POTS(V,Q1,Q2,THETA)
  
-C     POTENTIAL PJT2 DUE POLYANSKY, JENSEN AND TENNYSON, 
-C     J. CHEM. PHYS., 105, 6490-6497 (1996)
-C     UPDATE OF POLYANSKY, JENSEN AND TENNYSON, J CHEM PHYS 101, 7651 (1994))
-C     UNITS: HARTREE AND BOHR
+C     Potential PJT2 due Polyansky, Jensen and Tennyson, 
+C     J. Chem. Phys., 105, 6490-6497 (1996)
+C     Update of Polyansky, Jensen and Tennyson, J Chem Phys 101, 7651 (1994))
+C     Units: Hartree and Bohr
  
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
  
-C     RZ = OH EQUILIBRIUM VALUE
-C     RHO = EQUILIBRIUM VALUE OF PI - BOND ANGLE(THETA)
+C     RZ = OH equilibrium value
+C     RHO = equilibrium value of pi - bond angle(THETA)
  
       DATA TOANG/0.5291772/, CMTOAU/219474.624/
       DATA X1/1.0/
@@ -107,48 +107,48 @@ C     RHO = EQUILIBRIUM VALUE OF PI - BOND ANGLE(THETA)
       DATA F1133   /     .00000000/
       DATA FA1133  /     .00000000/
       DATA F11111  / -4969.24544932/
-      DATA F111111/  8108.49652354/
+      DATA f111111/  8108.49652354/
       DATA F71   /  90.00000000/
  
  
  
-      DATA C1/50.0/,C2/10.0/,BETA1/22.0/,BETA2/13.5/,GAMMAS/0.05/,
-     *     GAMMAA/0.10/,DELTA/0.85/,RHH0/1.40/
+      data c1/50.0/,c2/10.0/,beta1/22.0/,beta2/13.5/,gammas/0.05/,
+     *     gammaa/0.10/,delta/0.85/,rhh0/1.40/
                  RHO=RHO1*3.141592654/180.000000000
-      FA11=0.0
-      F1A3=F1A1
-      F2A3=F2A1
-      F3A3=F3A1
-      F4A3=F4A1
-      F33=F11
-      F1A33=F1A11
-      F2A33=F2A11
-      F333=F111
-      F1A333=F1A111
-      F2A333=F2A111
-      F133=F113
-      F1A133=F1A113
-      F2A133=F2A113
-      F3333=F1111
-      FA3333=FA1111
-      F1333=F1113
-      FA1333=FA1113
-      F33333=F11111
-      F333333 =F111111
-      F73     =F71
+      fa11=0.0
+      f1a3=f1a1
+      f2a3=f2a1
+      f3a3=f3a1
+      f4a3=f4a1
+      f33=f11
+      f1a33=f1a11
+      f2a33=f2a11
+      f333=f111
+      f1a333=f1a111
+      f2a333=f2a111
+      f133=f113
+      f1a133=f1a113
+      f2a133=f2a113
+      f3333=f1111
+      fa3333=fa1111
+      f1333=f1113
+      fa1333=fa1113
+      f33333=f11111
+      f333333 =f111111
+      f73     =f71
  
-C     FIND VALUE FOR DR AND DS
+C     Find value for DR and DS
       DR = TOANG*Q1 - RZ
       DS = TOANG*Q2 - RZ
  
-C     TRANSFORM TO MORSE COORDINATES
+C     Transform to Morse coordinates
       Y1 = X1 - EXP(-A * DR)
       Y3 = X1 - EXP(-A * DS)
  
-C     TRANSFORM TO JENSENS ANGULAR COORDINATE
+C     transform to Jensens angular coordinate
       CORO = DCOS(THETA) + DCOS(RHO)
  
-C     NOW FOR THE POTENTIAL
+C     Now for the potential
       V0=(FA2+FA3*CORO+FA4*CORO**2+FA6*CORO**4+FA7*CORO**5)*CORO**2
       V0=V0+(FA8*CORO**6+FA5*CORO**3+FA9*CORO**7+FA10*CORO**8 )*CORO**2
       V0=V0+(                                    FA11*CORO**9 )*CORO**2
@@ -181,29 +181,29 @@ C     NOW FOR THE POTENTIAL
      6         +FE11111*Y1**5+FE33333*Y3**5
      7         +FE111111*Y1**6+FE333333*Y3**6
      8         +FE71    *Y1**7+FE73    *Y3**7
-C     MODIFICATION BY CHOI & LIGHT, J. CHEM. PHYS., 97, 7031 (1992).
-      SQRT2=SQRT(2.0)
-      XMUP1=SQRT2/3.0+0.5
-      XMUM1=XMUP1-X1
-      TERM=2.0*XMUM1*XMUP1*Q1*Q2*COS(THETA)
-      R1=TOANG*SQRT((XMUP1*Q1)**2+(XMUM1*Q2)**2-TERM)
-      R2=TOANG*SQRT((XMUM1*Q1)**2+(XMUP1*Q2)**2-TERM)
-      RHH=SQRT(Q1**2+Q2**2-2.0*Q1*Q2*COS(THETA))
-      RBIG=(R1+R2)/SQRT2
-      RLIT=(R1-R2)/SQRT2
+C     modification by Choi & Light, J. Chem. Phys., 97, 7031 (1992).
+      sqrt2=sqrt(2.0)
+      xmup1=sqrt2/3.0+0.5
+      xmum1=xmup1-x1
+      term=2.0*xmum1*xmup1*q1*q2*cos(theta)
+      r1=toang*sqrt((xmup1*q1)**2+(xmum1*q2)**2-term)
+      r2=toang*sqrt((xmum1*q1)**2+(xmup1*q2)**2-term)
+      rhh=sqrt(q1**2+q2**2-2.0*q1*q2*cos(theta))
+      rbig=(r1+r2)/sqrt2
+      rlit=(r1-r2)/sqrt2
  
-      ALPHA=(X1-TANH(GAMMAS*RBIG**2))*(X1-TANH(GAMMAA*RLIT**2))
-      ALPHA1=BETA1*ALPHA
-      ALPHA2=BETA2*ALPHA
-      DRHH=TOANG*(RHH-DELTA*RHH0)
+      alpha=(x1-tanh(gammas*rbig**2))*(x1-tanh(gammaa*rlit**2))
+      alpha1=beta1*alpha
+      alpha2=beta2*alpha
+      drhh=toang*(rhh-delta*rhh0)
       DOLEG=     (1.4500-THETA)
 C     IF (THETA.LE.0.64  ) V=0.1E17
 C     IF((DR.LE.-0.4).AND.(THETA.LE.1.1)) V=0.1E17
 C     IF((DS.LE.-0.4).AND.(THETA.LE.1.1)) V=0.1E17
 C     IF (DS.LE. 0.0  ) V=0.1E17
-      V = V + C1*EXP(-ALPHA1*DRHH) + C2*EXP(-ALPHA2*DRHH)
+      v = v + c1*exp(-alpha1*drhh) + c2*exp(-alpha2*drhh)
  
-C     CONVERT TO HARTREE
+C     Convert to Hartree
       V=V/CMTOAU
       RETURN
       END

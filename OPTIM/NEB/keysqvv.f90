@@ -1,20 +1,20 @@
-!   NEB MODULE IS AN IMPLEMENTATION OF THE NUDGED ELASTIC BAND METHOD FOR PERFORMING DOUBLE-ENDED PATHWAY SEARCHES.
-!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
-!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
+!   NEB module is an implementation of the nudged elastic band method for performing double-ended pathway searches.
+!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
+!   This file is part of NEB module. NEB module is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 MODULE KEYSQVV
      IMPLICIT NONE
@@ -36,26 +36,26 @@ MODULE KEYSQVV
           USE CHARUTILS
           IMPLICIT NONE
           REALSTR=RM0S(WR(DT,9))          
-          WRITE(*,'(1X,A)') 'KEYSQVV> USING TIME INTEGRATION STEP OF '//TRIM(REALSTR)
+          WRITE(*,'(1x,a)') 'KeySQVV> Using time integration step of '//trim(RealStr)
 
           IF (LIMITSQVVSTEP) THEN
                REALSTR=RM0S(WR(STEPDOFMAX,9))
-               WRITE(*,'(1X,A)') 'KEYSQVV> MAXIMAL STEP SIZE FOR EACH DEGREE OF FREEDOM = '//TRIM(REALSTR)
+               WRITE(*,'(1x,a)') 'KeySQVV> Maximal step size for each degree of freedom = '//trim(RealStr)
           ELSE
-               WRITE(*,'(1X,A)') 'KEYSQVV> UNLIMITED STEP'
+               WRITE(*,'(1x,a)') 'KeySQVV> Unlimited step'
           ENDIF
 
           IF (SQVVGUESS) THEN
                INTSTR=WI(NITERSQVVGUESSMAX)
-               WRITE(*,'(1X,A)') 'KEYSQVV> UP TO '//TRIM(INTSTR)//' STEPS OF SQVV INITIAL RELAXATION ARE ALLOWED'
+               WRITE(*,'(1x,a)') 'KeySQVV> Up to '//trim(IntStr)//' steps of SQVV initial relaxation are allowed'
                REALSTR=RM0S(WR(SQVVGUESSRMSTOL,9))
-               WRITE(*,'(1X,A)') 'KEYSQVV> RMS CONVERGENCE TOLERANCE IS '//TRIM(REALSTR)
+               WRITE(*,'(1x,a)') 'KeySQVV> RMS convergence tolerance is '//trim(RealStr)
           ELSE
-               WRITE(*,'(1X,A)') 'KEYSQVV> NO PREOPTIMIZATION WAS REQUESTED'
+               WRITE(*,'(1x,a)') 'KeySQVV> No preoptimization was requested'
           ENDIF
 
           IF (READVEL) THEN
-               WRITE(*,'(1X,A)') 'KEYSQVV> READING IN VELOCITY FILE'
+               WRITE(*,'(1x,a)') 'KeySQVV> Reading in velocity file'
           ENDIF
      END SUBROUTINE KEYSQVVPRINT
 END MODULE KEYSQVV

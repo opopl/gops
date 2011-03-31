@@ -1,26 +1,26 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999- DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999- David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C PAIR POTENTIAL FOR A TRAPPED ION CLUSTER CODED BY ERSIN YURTSEVER
-C FOR 0.5*TRAPK * R^NTRAPPOW, WHERE R IS THE DISTANCE FROM THE ORIGIN (FIXED).
+C Pair potential for a trapped ion cluster coded by Ersin Yurtsever
+C for 0.5*TRAPK * r^NTRAPPOW, where r is the distance from the origin (fixed).
 C                                        
       SUBROUTINE EYETRAP (N, X, POTEL, C1, C2, C3)
       USE KEY,ONLY : NTRAPPOW, TRAPK
@@ -28,25 +28,25 @@ C
       INTEGER N, I, J, J1, J2
       INTEGER NTRAPPOW2
       DOUBLE PRECISION X(3*N), POTEL, R, RO, C1, TEMP1, TEMP3, VOMIT, C2, C3
-C
-C     THIS VERSION HAS THE TRAP POTENTIAL R**NTRAPPOW
-C
+c
+c     this version has the trap potential r**NTRAPPOW
+c
       C1=0.0D0
       C2=0.0D0
       C3=0.0D0
 C
-C  WE MUST FIX THE CENTRE OF MASS AT THE ORIGIN, OTHERWISE THE FIRST AND SECOND
-C  DERIVATIVES NEED EXTRA TERMS CORRESPONDING TO THE DERIVATIVE OF THE CENTRE OF
-C  MASS WITH RESPECT TO CARTESIAN COORDINATES.
+C  We must fix the centre of mass at the origin, otherwise the first and second
+C  derivatives need extra terms corresponding to the derivative of the centre of
+C  mass with respect to cartesian coordinates.
 C
-C      DO 27 J1=1,N
-C         C3=C3+X(3*J1)
-C         C2=C2+X(3*J1-1)
-C         C1=C1+X(3*J1-2)
-C 27    CONTINUE
-C      C3=C3/N
-C      C2=C2/N
-C      C1=C1/N
+c      DO 27 J1=1,N
+c         C3=C3+X(3*J1)
+c         C2=C2+X(3*J1-1)
+c         C1=C1+X(3*J1-2)
+c 27    CONTINUE
+c      C3=C3/N
+c      C2=C2/N
+c      C1=C1/N
       POTEL=0.0D0
       DO 20 I=1,N
          J1=3*(I-1)+1
@@ -54,7 +54,7 @@ C      C1=C1/N
          VOMIT=(X(J1+1)-C2)**2
          TEMP3=(X(J1+2)-C3)**2
          RO=TEMP1+VOMIT+TEMP3
-         POTEL=POTEL+0.5D0*TRAPK*SQRT(RO)**NTRAPPOW
+         POTEL=POTEL+0.5D0*TRAPK*sqrt(RO)**NTRAPPOW
 
          DO 10 J=I+1,N
             J2=3*(J-1)+1
@@ -68,8 +68,8 @@ C      C1=C1/N
 C
 C*************************************************************************
 C
-C  SUBROUTINE DTRAP CALCULATES THE CARTESIAN GRADIENT AND SECOND
-C  DERIVATIVE MATRIX ANALYTICALLY.
+C  Subroutine DTRAP calculates the cartesian gradient and second
+C  derivative matrix analytically.
 C
 C*************************************************************************
 C
@@ -86,20 +86,20 @@ C
       LOGICAL STEST, GTEST
 
       INTEGER NPOW2
-      DOUBLE PRECISION R2,RNM2(N),RNM4(N)
+      DOUBLE PRECISION R2,RNM2(N),RNM4(n)
 C 
       IF (.NOT.GTEST) RETURN
 C
-C  ASSUME THE FIXED ORIGIN FOR THE HARMONIC POTENTIAL IS AT THE ORIGIN, NOT THE
-C  CENTRE OF MASS, OTHERWISE THE DERIVATIVES MUST INCLUDE TERMS FOR THE VARIATION
-C  OF THE CENTRE OF MASS WITH RESPECT TO COORDINATES.
+C  Assume the fixed origin for the harmonic potential is at the origin, not the
+C  centre of mass, otherwise the derivatives must include terms for the variation
+C  of the centre of mass with respect to coordinates.
 C
 C     CENTRE(1)=C1
 C     CENTRE(2)=C2
 C     CENTRE(3)=C3
-C *************************************************
+c *************************************************
 C
-C  STORE DISTANCE MATRICES.
+C  Store distance matrices.
 C
       DO 10 J1=1,N
          R3(J1,J1)=0.0D0
@@ -115,27 +115,27 @@ C
 20       CONTINUE
 10    CONTINUE
 C
-C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
+C  First calculate the gradient analytically.
 C
-      DO J1=1,N
-      RNM2(J1)=0.0D0
-      RNM4(J1)=0.0D0
-      ENDDO
+      do j1=1,n
+      rnm2(j1)=0.0d0
+      rnm4(j1)=0.0d0
+      enddo
 
       DO 30 J1=1,N
 
-         R2=X(3*(J1-1)+1)**2+X(3*(J1-1)+2)**2+X(3*(J1-1)+3)**2
-         IF(ABS(R2).GT.1.0E-5) THEN
-         DIST=SQRT(R2)
-         RNM2(J1)=DIST**(NTRAPPOW-2)
-         RNM4(J1)=RNM2(J1)/R2
-         ELSE
-         IF(NTRAPPOW.EQ.2) RNM2(J1)=1.0D0
-         ENDIF
+         r2=x(3*(j1-1)+1)**2+x(3*(j1-1)+2)**2+x(3*(j1-1)+3)**2
+         if(abs(r2).gt.1.0e-5) then
+         dist=sqrt(r2)
+         rnm2(j1)=dist**(NTRAPPOW-2)
+         rnm4(j1)=rnm2(j1)/r2
+         else
+         if(NTRAPPOW.eq.2) rnm2(j1)=1.0d0
+         endif
          DO 40 J2=1,3
             J3=3*(J1-1)+J2
 
-            V(J3)=0.50*TRAPK*NTRAPPOW*RNM2(J1)*X(J3)
+            v(j3)=0.50*TRAPK*NTRAPPOW*rnm2(j1)*x(j3)
 
             DO 50 J4=1,N
                V(J3)=V(J3)+(X(3*(J4-1)+J2)-X(J3))*R3(J4,J1)
@@ -144,14 +144,14 @@ C
 30    CONTINUE
       IF (.NOT.STEST) RETURN
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO 60 J1=1,N
 
          DO 70 J2=1,3
             J3=3*(J1-1)+J2
 
-            HESS(J3,J3)=0.5*TRAPK*NTRAPPOW*(RNM2(J1)+(NTRAPPOW-2)*X(J3)*X(J3)*RNM4(J1))
+            hess(j3,j3)=0.5*TRAPK*NTRAPPOW*(rnm2(j1)+(NTRAPPOW-2)*x(j3)*x(j3)*rnm4(j1))
 
             DO 80 J4=1,N
                HESS(J3,J3)=HESS(J3,J3)+3.0D0*(X(J3)-X(3*(J4-1)+J2))**2*R5(J4,J1)-R3(J4,J1)
@@ -159,15 +159,15 @@ C
 70       CONTINUE
 60    CONTINUE
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO 90 J1=1,N
          DO 100 J2=1,3
             J3=3*(J1-1)+J2
             DO 110 J4=J2+1,3
 
-      HESS(J3,3*(J1-1)+J4)=0.5*TRAPK*NTRAPPOW*(NTRAPPOW-2)*X(J3)*X(3*(J1-1)+J4)*RNM4(J1)
+      hess(j3,3*(j1-1)+j4)=0.5*TRAPK*NTRAPPOW*(NTRAPPOW-2)*x(j3)*x(3*(j1-1)+j4)*rnm4(j1)
 
                DO 120 J5=1,N
                   HESS(J3,3*(J1-1)+J4)=HESS(J3,3*(J1-1)+J4)
@@ -178,13 +178,13 @@ C
 100      CONTINUE
 90    CONTINUE
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO 130 J1=1,N
          DO 140 J2=1,3
             J3=3*(J1-1)+J2
             DO 150 J4=J1+1,N
-            J5=3*(J4-1)+J2
+            j5=3*(j4-1)+j2
 
             HESS(J3,3*(J4-1)+J2)=-3.0D0*R5(J4,J1)*(X(J3)-X(3*(J4-1)+J2))**2+R3(J4,J1)
 
@@ -193,7 +193,7 @@ C
 140      CONTINUE
 130   CONTINUE
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3
@@ -206,8 +206,8 @@ C
                   HESS(J3,J6)=-R5(J4,J1)*3.0D0
      1                       *(X(J3)-X(3*(J4-1)+J2))
      2                       *(X(3*(J1-1)+J5)-X(J6))
-C
-C ************************************************************************
+c
+c ************************************************************************
 
                   HESS(J6,J3)=HESS(J3,J6)
                   HESS(3*(J4-1)+J2,3*(J1-1)+J5)=HESS(J3,J6)

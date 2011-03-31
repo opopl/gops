@@ -1,20 +1,20 @@
-!   NEB MODULE IS AN IMPLEMENTATION OF THE NUDGED ELASTIC BAND METHOD FOR PERFORMING DOUBLE-ENDED PATHWAY SEARCHES.
-!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
-!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
+!   NEB module is an implementation of the nudged elastic band method for performing double-ended pathway searches.
+!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
+!   This file is part of NEB module. NEB module is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 MODULE KEYLBFGS
      IMPLICIT NONE
@@ -26,13 +26,13 @@ MODULE KEYLBFGS
           USE CHARUTILS
           USE KEY,ONLY : NEBMUPDATE, MAXNEBBFGS, NEBDGUESS
           IMPLICIT NONE
-          WRITE(*,'(1X,A,G20.10)') 'KEYLBFGS> MAXIMUM STEP SIZE PER IMAGE = ',MAXNEBBFGS
+          WRITE(*,'(1X,A,G20.10)') 'KeyLBFGS> Maximum step size per image = ',MAXNEBBFGS
           INTSTR=WI(NEBMUPDATE)
-          WRITE(*,'(1X,A)')  'KEYLBFGS> '//TRIM(INTSTR)//' HESSIAN UPDATES PER ITERATION'
+          WRITE(*,'(1x,a)')  'KeyLBFGS> '//trim(IntStr)//' Hessian updates per iteration'
           IF (DIAGCO) THEN
-               PRINT *, 'READING IN THE GUESS FOR THE DIAGONAL'
+               PRINT *, 'Reading in the guess for the diagonal'
           ELSE
-               WRITE(*,'(1X,A,G20.10)') 'KEYLBFGS> GUESS FOR INVERSE HESSIAN DIAGONAL ELEMENTS = ',NEBDGUESS
+               WRITE(*,'(1X,A,G20.10)') 'KeyLBFGS> Guess for inverse Hessian diagonal elements = ',NEBDGUESS
           ENDIF
      END SUBROUTINE KEYLBFGSPRINT
 END MODULE KEYLBFGS

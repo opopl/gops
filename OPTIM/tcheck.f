@@ -1,20 +1,20 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C     ROUTINE TO CALCULATE CARTESIAN COORDINATES FROM INTERNAL
@@ -51,21 +51,21 @@ C
 C
       WTEST=.FALSE.
 C
-C  TURN OFF ROTATION FOR REACTION PATHS.
+C  Turn off rotation for reaction paths.
 C
       IF ((INR.EQ.3).OR.REDOPATH) GOTO 440
-      NMOLS=NATOMS/2  !  NMOLS IS THE NUMBER OF MOLECULES
+      NMOLS=NATOMS/2  !  NMOLS is the number of molecules
       DO 190 J1=1,NMOLS
          J2=3*NMOLS+3*(J1-1)+1
          IF (ABS(DSIN(Q(J2))).LT.0.1D0) THEN
             WTEST=.TRUE.
             TEST=.FALSE.
-            PRINT*,'EULER ANGLE GOING BAD - EVASIVE ACTION'
+            PRINT*,'Euler angle going bad - evasive action'
             GOTO 200
           ENDIF
 190   CONTINUE
 C
-C  IF IT;S THE FIRST STEP FIND THE BEST ORIENTATION ANYWAY.
+C  If it;s the first step find the best orientation anyway.
 C
 200   IF (ISTATUS.LT.0) WTEST=.TRUE.
 C     PRINT*,'WTEST=',WTEST
@@ -77,7 +77,7 @@ C     PRINT*,'WTEST=',WTEST
          HYL=HOLEN*SIN(RANGLE)
          HZL=16.0D0*OHZ/18.0D0
          OL=-OHZ+HZL
-C        PRINT*,'ORIGINAL ANGLES'
+C        PRINT*,'Original angles'
 C        WRITE(*,210) (Q(3*NMOLS+J1),J1=1,3*(NMOLS))
 C210      FORMAT(3F20.16)
          IF ((NMOLS.EQ.64).OR.(NMOLS.EQ.67)) THEN
@@ -247,8 +247,8 @@ C              ENDIF
                ENDIF
                IF (DABS(SP12T/SP12-1.0D0).GT.1.0D-4) THEN
                   IF (DABS(SP22T/SP22-1.0D0).LT.1.0D-4) THEN
-C                    PRINT*,'INCONSISTENT ERRORS - QUIT'
-C                    STOP
+C                    PRINT*,'Inconsistent errors - QUIT'
+c                    STOP
                   ENDIF
                   IF (DABS(SP13T/SP13+1.0D0).LT.1.0D-4) THEN
                      TEMP=BT(I)
@@ -271,7 +271,7 @@ C                    STOP
 280      CONTINUE
          JBEST=1
          SBEST=-1.0D6
-         PRINT*,' SMALLEST SIN THETA VALUES ARE'
+         PRINT*,' Smallest sin theta values are'
          DO 300 J6=1,3
             WRITE(*,290) J6,SIZE(J6)
 290         FORMAT(I3,F20.10)
@@ -283,12 +283,12 @@ C                    STOP
          TEST=.TRUE.
          J5=JBEST
          PRINT*
-         PRINT*,' BEST IS',J5
+         PRINT*,' Best is',J5
          LBOUND=JBEST
          UBOUND=JBEST
          GOTO 220
 C
-C  THIS BRANCH FOR CLUSTERS
+C  This branch for clusters
 C
          ELSE
          DO 320 I=1,NMOLS
@@ -329,8 +329,8 @@ C
             YY3(I)=SP23*OL   +Y(I)
             ZZ3(I)=SP33*OL   +Z(I)
 C
-C  THIS PART IS TO ROTATE THE VECTOR SO THAT EIGENVECTOR-FOLLOWING
-C  CAN CONTINUE
+C  This part is to rotate the vector so that eigenvector-following
+C  can continue
 C
             DAT(I)=Q(3*NMOLS+3*(I-1)+1)+VEC(3*NMOLS+3*(I-1)+1)/1000 
             DBT(I)=Q(3*NMOLS+3*(I-1)+2)+VEC(3*NMOLS+3*(I-1)+2)/1000 
@@ -369,7 +369,7 @@ C
             DYY3(I)=SP23*OL   +DY(I)
             DZZ3(I)=SP33*OL   +DZ(I)
 320      CONTINUE
-C        PRINT*,'ROTATING COORDINATES'
+C        PRINT*,'Rotating coordinates'
          ROT(2,2)= DCOS(10.0D0*PI/180.0D0)
          ROT(2,3)=-DSIN(10.0D0*PI/180.0D0)
          ROT(3,2)= DSIN(10.0D0*PI/180.0D0)
@@ -445,8 +445,8 @@ C        PRINT*,'ROTATING COORDINATES'
                   ENDIF
                   IF (DABS(SP12T/SP12-1.0D0).GT.1.0D-4) THEN
                      IF (DABS(SP22T/SP22-1.0D0).LT.1.0D-4) THEN
-C                       PRINT*,'INCONSISTENT ERRORS - QUIT'
-C                       STOP
+C                       PRINT*,'Inconsistent errors - QUIT'
+c                       STOP
                      ENDIF
                      IF (SP13.NE.0.0D0) THEN
                         IF (DABS(SP13T/SP13+1.0D0).LT.1.0D-4) THEN
@@ -503,8 +503,8 @@ C                       STOP
                   ENDIF
                   IF (DABS(SP12T/SP12-1.0D0).GT.1.0D-4) THEN
                      IF (DABS(SP22T/SP22-1.0D0).LT.1.0D-4) THEN
-C                    PRINT*,'INCONSISTENT ERRORS - QUIT'
-C                    STOP
+C                    PRINT*,'Inconsistent errors - QUIT'
+c                    STOP
                      ENDIF
                      IF (SP13.NE.0.0D0) THEN
                         IF (DABS(SP13T/SP13+1.0D0).LT.1.0D-4) THEN
@@ -606,8 +606,8 @@ C                    STOP
                ENDIF
                IF (DABS(SP12T/SP12-1.0D0).GT.1.0D-4) THEN
                   IF (DABS(SP22T/SP22-1.0D0).LT.1.0D-4) THEN
-C                 PRINT*,'INCONSITENT ERRORS - QUIT'
-C                 STOP
+C                 PRINT*,'Inconsitent errors - QUIT'
+c                 STOP
                ENDIF
             ENDIF
             IF (SP13.NE.0.0D0) THEN
@@ -661,8 +661,8 @@ C                 STOP
                ENDIF
                IF (DABS(SP12T/SP12-1.0D0).GT.1.0D-4) THEN
                   IF (DABS(SP22T/SP22-1.0D0).LT.1.0D-4) THEN
-C                 PRINT*,'INCONSISTENT ERRORS - QUIT'
-C                 STOP
+C                 PRINT*,'Inconsistent errors - QUIT'
+c                 STOP
                   ENDIF
                   IF (SP13.NE.0.0D0) THEN
                      IF (DABS(SP13T/SP13+1.0D0).LT.1.0D-4) THEN

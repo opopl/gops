@@ -1,20 +1,20 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE CHANGEP
       USE COMMONS
@@ -22,7 +22,7 @@ C
       USE MODTWOEND
       USE MODAMBER
       USE MODNEB
-      USE PORFUNCS
+      use porfuncs
       IMPLICIT NONE
 
       INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, NTYPEA
@@ -37,19 +37,19 @@ C
       COMMON /LB3/MP,LP,GTOL,BSTPMIN,BSTPMAX
       COMMON /XLB3/XMP,XLP,XGTOL,XBSTPMIN,XBSTPMAX
 
-C     PRINT*,'IN CHANGEP'
+C     PRINT*,'In changep'
       IF (FILTH.EQ.0) THEN
-         WRITE(FNAME,'(A12)') 'CHANGEPARAMS'
+         WRITE(FNAME,'(A12)') 'changeparams'
       ELSE 
-         WRITE(FNAME,'(A)') 'CHANGEPARAMS.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(FNAME,'(A)') 'changeparams.'//TRIM(ADJUSTL(FILTHSTR))
       ENDIF
 
       INQUIRE(FILE=FNAME,EXIST=YESNO)
 C     PRINT*,'EXIST=',YESNO
       IF (YESNO) THEN
 C
-C  UNIT 5 SEEMS TO GET LEFT OPEN IN SOME PATHS THROUGH THE PROGRAM. IT SHOULD
-C  BE CLOSED IN FETCHZ?
+C  Unit 5 seems to get left open in some paths through the program. It should
+C  be closed in fetchz?
 C
          CLOSE(5)
          OPEN (5,FILE=FNAME,STATUS='OLD')
@@ -64,15 +64,15 @@ C     PRINT*,'END=',END
 C        PRINT*,'WORD=',WORD
       ENDIF
 C
-C  POINTS - KEYWORD AT THE END OF THE LIST OF OPTIONS AFTER WHICH
-C           THE CARTESIAN COORDINATES FOLLOW. MUST BE PRESENT UNLESS VARIABLES, AMBER, 
-C           CASTEP, ONETEP, CP2K, CHARMM OR CPMD 
-C           IS PRESENT INSTEAD.
+C  POINTS - keyword at the end of the list of options after which
+C           the Cartesian coordinates follow. Must be present unless VARIABLES, AMBER, 
+C           CASTEP, ONETEP, CP2K, CHARMM or CPMD 
+C           is present instead.
 C
       IF (END) THEN
         CLOSE(5)
-        CALL SYSTEM(' MV CHANGEPARAMS CHANGEPARAMS.READ ')
-C       PRINT*,'MV CHANGEPARAMS CHANGEPARAMS.READ '
+        CALL SYSTEM(' mv changeparams changeparams.read ')
+C       PRINT*,'mv changeparams changeparams.read '
         RETURN
       ENDIF
 
@@ -80,30 +80,30 @@ C       PRINT*,'MV CHANGEPARAMS CHANGEPARAMS.READ '
      &                          .OR. WORD .EQ. '\\') THEN 
          GOTO 190
 C
-C  SEARCH SPECIFIES THE VALUE OF INR, I.E. THE SEARCH TYPE.     - DEFAULT N=0
+C  SEARCH specifies the value of INR, i.e. the search type.     - default n=0
 C
       ELSE IF (WORD.EQ.'SEARCH') THEN
          CALL READI(INR)
-         WRITE(*,'(A,I3)') '*** CHANGING SEARCH TYPE TO ',INR
+         WRITE(*,'(A,I3)') '*** Changing search type to ',INR
 C
-C  TURN ON LBFGS GRADIENT MINIMIZATION. GMAX IS THE CONVERGENCE
-C  CRITERION FOR THE RMS GRADIENT, DEFAULT 0.001.
-C  FOR BFGSTS NEVL AND NEVS ARE THE MAXIMUM ITERATIONS ALLOWED IN THE SEARCHES FOR 
-C  THE LARGEST AND SMALLEST EIGENVECTORS, RESPECTIVELY AND NBFGSMAX1 IS THE LARGEST
-C  NUMBER OF BFGS STEPS ALLOWED IN THE SUBSEQUENT RESTRICTED MINIMIZATION.
-C  IF THE NEGATIVE EIGENVALUE APPEARS TO HAVE CONVERGED THEN NBFGSMAX2 STEPS
-C  ARE ALLOWED IN THE TANGENT SPACE.
-C  CONVU IS USED TO DETERMINE CONVERGENCE IN SUCH RUNS AND BFGSCONV CAN BE USED
-C  TO SET GMAX, THE CONVERGENCE CRITERIA FOR THE SUBSPACE OPTIMIZATION.
+C  Turn on LBFGS gradient minimization. GMAX is the convergence
+C  criterion for the RMS gradient, default 0.001.
+C  For BFGSTS NEVL and NEVS are the maximum iterations allowed in the searches for 
+C  the largest and smallest eigenvectors, respectively and NBFGSMAX1 is the largest
+C  number of BFGS steps allowed in the subsequent restricted minimization.
+C  If the negative eigenvalue appears to have converged then NBFGSMAX2 steps
+C  are allowed in the tangent space.
+C  CONVU is used to determine convergence in such runs and BFGSCONV can be used
+C  to set GMAX, the convergence criteria for the subspace optimization.
 C
-C  IF REOPT IS TRUE THE SMALLEST HESSIAN EIGENVECTOR IS REDETERMINED AFTER THE
-C  EF STEP BEFORE THE TANGENT SPACE MINIMISATION.
+C  IF REOPT is true the smallest Hessian eigenvector is redetermined after the
+C  EF step before the tangent space minimisation.
 C
       ELSE IF (WORD.EQ.'BFGSCONV') THEN
          IF (NITEMS.GT.1) THEN
             CALL READF(GMAX)
          ENDIF
-         WRITE(*,'(A,F15.5)') '*** CHANGING LBFGS RMS CONVERGENCE CRITERION TO ',GMAX
+         WRITE(*,'(A,F15.5)') '*** Changing LBFGS RMS convergence criterion to ',GMAX
       ELSE IF (WORD.EQ.'BFGSTS') THEN
          BFGSTST=.TRUE.
          INR=2
@@ -122,16 +122,16 @@ C
          IF (NITEMS.GT.5) THEN
             CALL READI(NEVL)
          ENDIF
-         WRITE(*,'(A)') '*** CHANGING PARAMETERS FOR BFGSTS ACCORDING TO FILE CHANGEPARAMS'
+         WRITE(*,'(A)') '*** Changing parameters for BFGSTS according to file changeparams'
       ELSE IF (WORD.EQ.'REOPT') THEN
          REOPT=.TRUE.
-         WRITE(*,'(A)') '*** TURNING ON EIGENVECTOR REOPTIMISATION AFTER EF STEP'
+         WRITE(*,'(A)') '*** turning on eigenvector reoptimisation after EF step'
 C
-C  IF CHECKINDEX IS .TRUE. AND THE BFGSTS ROUTINE CONVERGES AN ATTEMPT IS
-C  MADE TO COUNT THE NUMBER OF NEGATIVE HESSIAN EIGENVALUES USING PROJECTION,
-C  ORTHOGONALIZATION AND ITERATION. WE ALSO NEED THE OPPORTUNITY TO CHANGE THE
-C  PARAMETERS NEVL AND NEVS WITHIN BFGSTS IF BFGSTS ISN T TRUE.
-C  CHECKINDEX CAN ALSO BE USED WITH BFGSMIN AND SHOULD UNDERSTAND NOHESS TOO.
+C  If CHECKINDEX is .TRUE. and the BFGSTS routine converges an attempt is
+C  made to count the number of negative Hessian eigenvalues using projection,
+C  orthogonalization and iteration. We also need the opportunity to change the
+C  parameters NEVL and NEVS within BFGSTS if BFGSTS isn t true.
+C  CHECKINDEX can also be used with BFGSMIN and should understand NOHESS too.
 C
       ELSE IF (WORD.EQ.'CHECKINDEX') THEN
          CHECKINDEX=.TRUE.
@@ -144,20 +144,20 @@ C
          IF (NITEMS.GT.3) THEN
             CALL READI(NEVL)
          ENDIF
-         WRITE(*,'(A)') '*** TURNING ON HESSIAN INDEX CHECK'
+         WRITE(*,'(A)') '*** turning on Hessian index check'
 C
-C  IF THE INDEX FOUND BY CHECKINDEX DOES NOT CORRESPOND TO BFGSMIN OR BFGSTS THEN
-C  CHECKCONT CAUSES A PUSHOFF ALONG THE EIGENVECTOR CORREPSONDING TO THE SOFTEST
-C  UNDESIRED NEGATIVE EIGENVALUE. 
+C  If the index found by checkindex does not correspond to BFGSMIN or BFGSTS then
+C  CHECKCONT causes a pushoff along the eigenvector correpsonding to the softest
+C  undesired negative eigenvalue. 
 C
       ELSE IF (WORD.EQ.'CHECKCONT') THEN
          CHECKCONT=.TRUE.
-         WRITE(*,'(A)') '*** WILL CONTINUE AFTER HESSIAN INDEX CHECK'
+         WRITE(*,'(A)') '*** will continue after Hessian index check'
 C
-C  MAXBFGS X1 X2 X3 X4\/}: {\IT X\/} SPECIFIES THE MAXIMUM ALLOWED STEP LENGTH IN LBFGS
-C  MINIMISATIONS, {\IT X1\/} FOR  NORMAL MINIMISATIONS, {\IT X2\/} FOR RAYLEIGH-RITZ RATIO
-C  MINIMISATION, {\IT X3\/} FOR PUTTING STRUCTURES IN CLOSEST COINCIDENCE WITH
-C  {\BF MIND} (NO LONGER USED!!), AND {\IT X4\/} FOR NEB MINIMISATIONS. DEFAULT VALUES ALL 0.2.
+C  MAXBFGS x1 x2 x3 x4\/}: {\it x\/} specifies the maximum allowed step length in LBFGS
+C  minimisations, {\it x1\/} for  normal minimisations, {\it x2\/} for Rayleigh-Ritz ratio
+C  minimisation, {\it x3\/} for putting structures in closest coincidence with
+C  {\bf mind} (NO LONGER USED!!), and {\it x4\/} for NEB minimisations. Default values all 0.2.
 C
       ELSE IF (WORD.EQ.'MAXBFGS') THEN
          CALL READF(MAXBFGS)
@@ -165,27 +165,27 @@ C
          IF (NITEMS.GT.3) CALL READF(MAXMBFGS)
          IF (NITEMS.GT.4) CALL READF(MAXNEBBFGS)
 C
-C  PRESSURE TELLS THE PROGRAM TO PERFORM A CONSTANT PRESSURE OPTIMISATION
-C           FOR SC, ME AND P6 WITH PERIODIC BOUNDARY CONDITIONS - DEFAULT OFF
+C  PRESSURE tells the program to perform a constant pressure optimisation
+C           for SC, ME and P6 with periodic boundary conditions - default off
 C
       ELSE IF (WORD.EQ.'PRESSURE') THEN
          PRESSURE=.TRUE.
-         WRITE(*,'(A)') '*** TURNING ON CONSTANT PRESSURE OPTIMISATION'
+         WRITE(*,'(A)') '*** turning on constant pressure optimisation'
 C
-C  NZERO IS THE NUMBER OF ZERO EIGENVALUES, DEFAULT 0.
+C  NZERO is the number of zero eigenvalues, default 0.
 C
       ELSE IF (WORD.EQ.'ZEROS') THEN
          CALL READI(NZERO)
-         WRITE(*,'(A,I4)') '*** NUMBER OF ZERO HESSIAN EIGENVALUES RESET TO ',NZERO
+         WRITE(*,'(A,I4)') '*** number of zero Hessian eigenvalues reset to ',NZERO
       ELSE IF (WORD.EQ.'EVCUT') THEN
          CALL READF(EVCUT)
-         WRITE(*,'(A,F15.5)') '*** CUTOFF FOR ZERO HESSIAN EIGENVALUES RESET TO ',EVCUT
+         WRITE(*,'(A,F15.5)') '*** cutoff for zero Hessian eigenvalues reset to ',EVCUT
       ELSE IF (WORD.EQ.'PARALLEL') THEN
          PARALLEL=.TRUE.
          CALL READA(NPROC)
-         WRITE(*,'(A,A)') '*** NUMBER OF PARALLEL JOBS RESET TO ',NPROC
+         WRITE(*,'(A,A)') '*** number of parallel jobs reset to ',NPROC
 C
-C  DOUBLE ENDED TS SEARCH.
+C  Double ended ts search.
 C
       ELSE IF (WORD.EQ.'TWOENDS') THEN
          TWOENDS=.TRUE.
@@ -195,21 +195,21 @@ C
          IF (NITEMS.GT.4) CALL READF(RMSTWO)
          IF (NITEMS.GT.5) CALL READI(NTWOITER)
          IF (NITEMS.GT.6) CALL READF(TWOEVAL)
-          WRITE(*,'(A,2F15.5,I4,F15.5,I4,F15.5)') '*** TWOENDS PARAMETERS RESET TO ',FSTART,FINC,NTWO,RMSTWO,NTWOITER,TWOEVAL
+          WRITE(*,'(A,2F15.5,I4,F15.5,I4,F15.5)') '*** TWOENDS parameters reset to ',FSTART,FINC,NTWO,RMSTWO,NTWOITER,TWOEVAL
 C
-C  SCALE N SETS THE VALUE OF ISTCRT                             - DEFAULT N=10
+C  SCALE n sets the value of ISTCRT                             - default n=10
 C
       ELSE IF (WORD.EQ.'SCALE') THEN
          CALL READI(ISTCRT)
-         WRITE(*,'(A,I4)') '*** STEP SCALING CRITERION RESET TO ',ISTCRT
+         WRITE(*,'(A,I4)') '*** step scaling criterion reset to ',ISTCRT
 C
-C  PRINT N SETS THE VALUE OF IPRNT                              - DEFAULT N=0
+C  PRINT n sets the value of IPRNT                              - default n=0
 C
       ELSE IF (WORD.EQ.'PRINT') THEN
          CALL READI(IPRNT)
-         WRITE(*,'(A,I4)') '*** PRINT LEVEL RESET TO ',IPRNT
+         WRITE(*,'(A,I4)') '*** print level reset to ',IPRNT
 C
-C  MODE N  SPECIFIES THE EIGENVECTOR TO FOLLOW                  - DEFAULT N=0
+C  MODE n  specifies the eigenvector to follow                  - default n=0
 C
       ELSE IF (WORD.EQ.'MODE') THEN
          CALL READI(IVEC)
@@ -218,46 +218,46 @@ C
          ELSE
 C           IVEC2=IVEC
          ENDIF
-         WRITE(*,'(A,2I4)') '*** INITIAL AND SUBSEQUENT EIGENVECTORS FOLLOWED RESET TO ',IVEC,IVEC2
+         WRITE(*,'(A,2I4)') '*** initial and subsequent eigenvectors followed reset to ',IVEC,IVEC2
 C
-C  MAXSTEP N SPECIFIES THE MAXIMUM STEP SIZE IN REAL UNITS      - DEFAULT N=0.2
+C  MAXSTEP n specifies the maximum step size in real units      - default n=0.2
 C
       ELSE IF (WORD.EQ.'MAXSTEP') THEN
          CALL READF(MXSTP)
-         WRITE(*,'(A,F15.5)') '*** MAXIMUM STEP SIZE RESET TO ',MXSTP
+         WRITE(*,'(A,F15.5)') '*** maximum step size reset to ',MXSTP
       ELSE IF (WORD.EQ.'MAXMAX') THEN
          CALL READF(MAXMAX)
-         WRITE(*,'(A,F15.5)') '*** MAXIMUM VALUE OF THE MAXIMUM ALLOWED STEP SIZE RESET TO ',MAXMAX
+         WRITE(*,'(A,F15.5)') '*** maximum value of the maximum allowed step size reset to ',MAXMAX
       ELSE IF (WORD.EQ.'MINMAX') THEN
          CALL READF(MINMAX)
-         WRITE(*,'(A,F15.5)') '*** MINIMUM VALUE OF THE MAXIMUM ALLOWED STEP SIZE RESET TO ',MINMAX
+         WRITE(*,'(A,F15.5)') '*** minimum value of the maximum allowed step size reset to ',MINMAX
 C
-C  VALUES N PRINT THE HESSIAN EIGENVALUES EVERY N CYCLES        - DEFAULT N=20     
+C  VALUES n print the Hessian eigenvalues every n cycles        - default n=20     
 C
       ELSE IF (WORD .EQ. 'VALUES') THEN
          CALL READI(NVALUES)
-         WRITE(*,'(A,F15.5)') '*** HESSIAN EIGENVALUE PRINT FREQUENCY RESET TO ',MINMAX
+         WRITE(*,'(A,F15.5)') '*** Hessian eigenvalue print frequency reset to ',MINMAX
 C
-C  EFSTEPS N PRINT THE UNSCALED STEPS CALCULATED FOR EACH MODE
-C          EVERY N CYCLES                                       - DEFAULT OFF
+C  EFSTEPS n print the unscaled steps calculated for each mode
+C          every n cycles                                       - default OFF
 C
       ELSE IF (WORD .EQ. 'EFSTEPS') THEN
          EFSTEPST=.TRUE.
          CALL READI(EFSTEPS)
-         WRITE(*,'(A,F15.5)') '*** UNSCALED STEP PRINT FREQUENCY RESET TO ',EFSTEPS
+         WRITE(*,'(A,F15.5)') '*** unscaled step print frequency reset to ',EFSTEPS
 C
-C  STEPS N SETS THE NUMBER OF OPTIMISATION STEPS TO PERFORM
-C          PER CALL TO OPTIM                                    - DEFAULT N=1     
+C  STEPS n sets the number of optimisation steps to perform
+C          per call to OPTIM                                    - default n=1     
 C
       ELSE IF (WORD .EQ. 'STEPS') THEN
          CALL READI(NSTEPS)
-         WRITE(*,'(A,I5)') '*** TOTAL NUMBER OF STEPS RESET TO ',NSTEPS
+         WRITE(*,'(A,I5)') '*** total number of steps reset to ',NSTEPS
 C
-C  DUMPVECTOR SWITCHES ON DUMPING OF EIGENVECTORS TO FILE 
-C              VECTORS.DUMP                                     - DEFAULT OFF
-C  ALLSTEPS DUMPS THE VECTOR(S) AT EACH STEP. ALLVECTORS DUMPS ALL THE VECTORS.
-C  THE DEFAULTS ARE FOR ONLY THE VECTOR CORRESPONDING TO THE SOFTEST NON-ZERO
-C  EIGENVALUE TO BE DUMPED FOR THE LAST STEP.
+C  DUMPVECTOR switches on dumping of eigenvectors to file 
+C              vectors.dump                                     - default OFF
+C  ALLSTEPS dumps the vector(s) at each step. ALLVECTORS dumps all the vectors.
+C  The defaults are for only the vector corresponding to the softest non-zero
+C  eigenvalue to be dumped for the last step.
 C
       ELSE IF (WORD .EQ. 'DUMPVECTOR') THEN
          DUMPV=.TRUE.
@@ -271,42 +271,42 @@ C
             IF (WORD.EQ.'ALLSTEPS') ALLSTEPS=.TRUE.
             IF (WORD.EQ.'ALLVECTORS') ALLVECTORS=.TRUE.
          ENDIF
-         WRITE(*,'(A,F15.5)') '*** HESSIAN EIGENVECTOR DUMPING RESET ACCORING TO CHANGEPARAMS FILE '
+         WRITE(*,'(A,F15.5)') '*** Hessian eigenvector dumping reset accoring to changeparams file '
 C
 C
-C  GRADIENT N PRINTS THE GRADIENTS ALONG THE HESSIAN EIGENDIRECTIONS
-C             EVERY N CYCLES                                    - DEFAULT OFF
+C  GRADIENT n prints the gradients along the Hessian eigendirections
+C             every n cycles                                    - default OFF
 C
       ELSE IF (WORD .EQ. 'GRADIENTS') THEN
         PGRAD=.TRUE.
         CALL READI(NGRADIENTS)
-         WRITE(*,'(A,F15.5)') '*** GRADIENT PRINTING RESET ACCORDING TO CHANGEPARAMS FILE '
+         WRITE(*,'(A,F15.5)') '*** gradient printing reset according to changeparams file '
 C
-C  VECTORS N PRINTS THE EIGENVECTORS EVERY N CYCLES             - DEFAULT OFF
+C  VECTORS n prints the eigenvectors every n cycles             - default OFF
 C
       ELSE IF (WORD .EQ. 'VECTORS') THEN
          VECTORST=.TRUE.
          CALL READI(NVECTORS)
-         WRITE(*,'(A,F15.5)') '*** HESSIAN EIGENVECTOR PRINTING RESET ACCORING TO CHANGEPARAMS FILE '
+         WRITE(*,'(A,F15.5)') '*** Hessian eigenvector printing reset accoring to changeparams file '
 C
-C  SUMMARY N PRINT A SUMMARY OF THE STEPS TAKEN EVERY N CYCLES  - DEFAULT N=20   
+C  SUMMARY n print a summary of the steps taken every n cycles  - default n=20   
 C
       ELSE IF (WORD .EQ. 'SUMMARY') THEN
          IF (NITEMS.GT.1) CALL READI(NSUMMARY)
-         WRITE(*,'(A,F15.5)') '*** SUMMARY PRINT FREQUENCY RESET ACCORING TO CHANGEPARAMS FILE '
+         WRITE(*,'(A,F15.5)') '*** summary print frequency reset accoring to changeparams file '
 C
-C  ADM [OFF | ON N] PRINTS THE ATOMIC DISTANCE MATRIX EVERY N 
-C                   IF SWITCHED ON                 CYCLES       - DEFAULT N=20      
+C  ADM [OFF | ON n] prints the atomic distance matrix every n 
+C                   if switched on                 cycles       - default n=20      
 C
       ELSE IF (WORD .EQ. 'ADM') THEN
          ADMT=.TRUE.
          CALL READI(NADM)
-         WRITE(*,'(A,F15.5)') '*** ATOMIC DISTANCE MATRIX PRINT FREQUENCY RESET ACCORING TO CHANGEPARAMS FILE '
+         WRITE(*,'(A,F15.5)') '*** atomic distance matrix print frequency reset accoring to changeparams file '
 C
-C  CONVERGE N M INDEX/NOINDEX SETS THE CONVERGENCE CRITERIA FOR THE MAXIMUM 
-C               UNSCALED STEP AND RMS FORCE                     - DEFAULT N=0.0001, M=0.000001
-C                                                           OR M < 0.00001 .AND. N < M*100000  
-C               IF NOINDEX IS SET THE HESSIAN INDEX ISN T CHECKED - THE DEFAULT IS
+C  CONVERGE n m INDEX/NOINDEX sets the convergence criteria for the maximum 
+C               unscaled step and RMS force                     - default n=0.0001, m=0.000001
+C                                                           or m < 0.00001 .AND. n < m*100000  
+C               If NOINDEX is set the Hessian index isn t checked - the default is
 C               INDEX.
 C
       ELSE IF (WORD .EQ. 'CONVERGE') THEN
@@ -318,76 +318,76 @@ C
             CALL READU(WORD)
             IF (WORD.EQ.'NOINDEX') INDEXT=.FALSE.
          ENDIF
-         WRITE(*,'(A,2F15.5)') '*** EF CONVERGENCE CRITERIA RESET TO ',CONVU,CONVR
+         WRITE(*,'(A,2F15.5)') '*** EF convergence criteria reset to ',CONVU,CONVR
 C
-C  SYMCUT N RMS FORCE BELOW WHICH SYMMETRY SUBROUTINE IS CALLED - DEFAULT 0.001
+C  SYMCUT n RMS force below which symmetry subroutine is called - default 0.001
 C
       ELSE IF (WORD .EQ. 'SYMCUT') THEN
          CALL READF(SYMCUT)
-         WRITE(*,'(A,2F15.5)') '*** RMS FORCE BELOW WHICH SYMMETRY IS CALLED RESET TO ',SYMCUT
+         WRITE(*,'(A,2F15.5)') '*** RMS force below which symmetry is called reset to ',SYMCUT
 C
-C  TOLD N INITIAL DISTANCE TOLERANCE IN SYMMETRY SUBROUTINE     - DEFAULT 0.0001
+C  TOLD n initial distance tolerance in symmetry subroutine     - default 0.0001
 C
       ELSE IF (WORD .EQ. 'TOLD') THEN
          CALL READF(TOLD)
-         WRITE(*,'(A,2F15.5)') '*** INITIAL DISTANCE TOLERANCE IN SYMMETRY RESET TO ',TOLD
+         WRITE(*,'(A,2F15.5)') '*** initial distance tolerance in symmetry reset to ',TOLD
 C
-C  TOLE N INITIAL TOLERANCE FOR THE DIFFERENCE IN PRINCIPAL MOMENTS 
-C         OF INERTIA DIVIDED BY THE SUM OF THE PRINCIPAL MOMENTS 
-C         IN SYMMETRY SUBROUTINE                                - DEFAULT 0.0001
+C  TOLE n initial tolerance for the difference in principal moments 
+C         of inertia divided by the sum of the principal moments 
+C         in symmetry subroutine                                - default 0.0001
 C
       ELSE IF (WORD .EQ. 'TOLE') THEN
          CALL READF(TOLE)
-         WRITE(*,'(A,2F15.5)') '*** INITIAL MOMENT OF INERTIA TOLERANCE IN SYMMETRY RESET TO ',TOLE
+         WRITE(*,'(A,2F15.5)') '*** initial moment of inertia tolerance in symmetry reset to ',TOLE
       ELSE IF (WORD .EQ. 'AXIS') THEN
          CALL READI(NHCHECK)
-         WRITE(*,'(A,I3)') '*** HIGHEST ROTATION AXIS CHECKED IN SYMMETRY RESET TO ',NHCHECK
+         WRITE(*,'(A,I3)') '*** highest rotation axis checked in symmetry reset to ',NHCHECK
 C
-C  TRAD N SETS THE TRUST RADIUS TO N                            - DEFAULT N=4       
+C  TRAD n sets the trust radius to n                            - default n=4       
 C
       ELSE IF (WORD .EQ. 'TRAD') THEN
          CALL READF(TRAD)
-         WRITE(*,'(A,F15.5)') '*** TRUST RADIUS RESET TO ',TRAD
+         WRITE(*,'(A,F15.5)') '*** trust radius reset to ',TRAd
 C
-C  NUDGED ELASTIC BAND CALCULATION USING A MAXIMUM OF NSTEPNEB STEPS WITH
-C  NIMAGE IMAGES AND RMS CONVERGENCE CRITERION RMSNEB.
+C  Nudged elastic band calculation using a maximum of NSTEPNEB steps with
+C  NIMAGE images and RMS convergence criterion RMSNEB.
 C
       ELSE IF (WORD.EQ.'NEB') THEN
          NEBT=.TRUE.
          IF (NITEMS.GT.1) CALL READI(NSTEPNEB)
          IF (NITEMS.GT.2) CALL READI(NIMAGE)
          IF (NITEMS.GT.3) CALL READF(RMSNEB)
-         WRITE(*,'(A,2I5,F15.5)') '*** READ NEW PARAMETERS FOR OLD NEB ',NSTEPNEB,NIMAGE,RMSNEB
+         WRITE(*,'(A,2I5,F15.5)') '*** read new parameters for old NEB ',NSTEPNEB,NIMAGE,RMSNEB
 
 C
-C  PUSHOFF X SETS THE MAGNITUDE OF THE STEP AWAY FROM A STATIONARY POINT OF THE
-C            WRONG INDEX - DEFAULT X=0.01
+C  PUSHOFF x sets the magnitude of the step away from a stationary point of the
+C            wrong index - default x=0.01
 C
       ELSE IF (WORD .EQ. 'PUSHOFF') THEN
          CALL READF(PUSHOFF)
-         WRITE(*,'(A,F15.5)') '*** PUSHOFF RESET TO ',PUSHOFF
+         WRITE(*,'(A,F15.5)') '*** pushoff reset to ',PUSHOFF
 C
-C  NSTEPMIN SETS THE MINIMUM NUMBER OF STEPS ALLOWED BEFORE CONVERGENCE.
+C  NSTEPMIN sets the minimum number of steps allowed before convergence.
 C 
       ELSE IF (WORD .EQ. 'STEPMIN') THEN
          CALL READI(NSTEPMIN)
-         WRITE(*,'(A,I4)') '*** MINIMUM NUMBER OF STEPS ALLOWED BEFORE CONVERGENCE RESET TO ',NSTEPMIN
+         WRITE(*,'(A,I4)') '*** minimum number of steps allowed before convergence reset to ',NSTEPMIN
 C
-C  PUSHCUT SETS THE THRESHOLD FOR WHEN A PUSHOFF WILL BE APPLIED, I.E.
-C  THE RMS FORCE MUST BE LESS THAN PUSHCUT.
+C  PUSHCUT sets the threshold for when a PUSHOFF will be applied, i.e.
+C  the RMS force must be less than PUSHCUT.
 C
       ELSE IF (WORD .EQ. 'PUSHCUT') THEN
          CALL READF(PUSHCUT)
-         WRITE(*,'(A,F15.5)') '*** CUTOFF BELOW WHICH PUSHOFFS MAY BE APPLIED RESET TO ',PUSHCUT
+         WRITE(*,'(A,F15.5)') '*** cutoff below which pushoffs may be applied reset to ',PUSHCUT
 C
-C  NUMBER OF BFGS UPDATES BEFORE RESETTING, DEFAULT=4
+C  Number of BFGS updates before resetting, default=4
 C
       ELSE IF (WORD.EQ.'UPDATES') THEN
          CALL READI(MUPDATE)
          IF (NITEMS.GT.2) CALL READI(XMUPDATE)
-         WRITE(*,'(A,2I4)') '*** NUMBER OF LBFGS STEPS SAVED RESET TO ',MUPDATE,XMUPDATE
+         WRITE(*,'(A,2I4)') '*** number of LBFGS steps saved reset to ',MUPDATE,XMUPDATE
 C
-C  DEBUG ON/OFF SETS N=1 FOR EFSTEPS, VALUES, SUMMARY ABOVE     - DEFAULT OFF 
+C  DEBUG ON/OFF sets n=1 for EFSTEPS, VALUES, SUMMARY above     - default OFF 
 C
       ELSE IF (WORD .EQ. 'DEBUG') THEN
          CALL READU(WW)
@@ -399,45 +399,45 @@ C
            NSUMMARY=1 
            NVALUES=1
          ENDIF
-         WRITE(*,'(A,2I4)') '*** DEBUG PRINTING TURNED ON '
+         WRITE(*,'(A,2I4)') '*** debug printing turned on '
 C
-C  EIGENVALUE SHIFT PARAMETER.
+C  Eigenvalue shift parameter.
 C
       ELSE IF (WORD .EQ. 'SHIFT') THEN
          CALL READF(SHIFTV)
-         WRITE(*,'(A,2I4)') '*** EIGENVALUE SHIFT PARAMETER CHANGED TO ',SHIFTV
+         WRITE(*,'(A,2I4)') '*** eigenvalue shift parameter changed to ',SHIFTV
 C
-C  WHETHER TO PUT PERIODIC IMAGES BACK IN THE PRIMARY SUPERCELL.
+C  Whether to put periodic images back in the primary supercell.
 C
       ELSE IF (WORD .EQ. 'NORESET') THEN
          NORESET=.TRUE.
-         WRITE(*,'(A,2I4)') '*** PERIODIC IMAGES WILL NOT BE PUT BACK INTO THE PRIMARY SUPERCELL '
+         WRITE(*,'(A,2I4)') '*** periodic images will not be put back into the primary supercell '
       ELSE IF (WORD.EQ.'NOIT') THEN
          NOIT=.TRUE.
-         WRITE(*,'(A,2I4)') '*** NOIT HAS BEEN SET TO .TRUE.'
+         WRITE(*,'(A,2I4)') '*** NOIT has been set to .TRUE.'
 C
-C  LINE MINIMISATION OF GRADIENT ALONG EF DIRECTION
+C  Line minimisation of gradient along EF direction
 C
       ELSE IF (WORD.EQ.'LINEMIN') THEN
          LINEMIN=.TRUE.
-         WRITE(*,'(A)') '*** LINE MINIMISATION FOR EF STEP TURNED ON'
+         WRITE(*,'(A)') '*** line minimisation for EF step turned on'
 C
-C  STEPS N SETS THE NUMBER OF OPTIMISATION STEPS TO PERFORM
-C          PER CALL TO OPTIM                                    - DEFAULT N=1
+C  STEPS n sets the number of optimisation steps to perform
+C          per call to OPTIM                                    - default n=1
 C
       ELSE IF (WORD .EQ. 'BFGSSTEPS') THEN
         CALL READI(BFGSSTEPS)
-         WRITE(*,'(A,I6)') '*** MAXIMUM NUMBER OF BFGS STEPS CHANGED TO ',BFGSSTEPS
+         WRITE(*,'(A,I6)') '*** maximum number of BFGS steps changed to ',BFGSSTEPS
       ELSE IF (WORD.EQ.'MAXERISE') THEN
          CALL READF(MAXERISE)
          IF (NITEMS.GT.1) CALL READF(XMAXERISE)
-         WRITE(*,'(A,2G20.10)') '*** MAXIMUM ENERGY/EV RISE CHANGED TO ',MAXERISE,XMAXERISE
+         WRITE(*,'(A,2G20.10)') '*** maximum energy/ev rise changed to ',MAXERISE,XMAXERISE
       ELSE IF (WORD .EQ. 'STOP') THEN
-         WRITE(*,'(A)') '*** STOP DIRECTIVE READ FROM CHANGEPARAMS'
-         CALL SYSTEM(' MV CHANGEPARAMS CHANGEPARAMS.READ ')
+         WRITE(*,'(A)') '*** STOP directive read from changeparams'
+         CALL SYSTEM(' mv changeparams changeparams.read ')
          STOP
       ELSE
-        CALL REPORT('UNRECOGNIZED COMMAND '//WORD,.TRUE.)
+        CALL REPORT('Unrecognized command '//WORD,.TRUE.)
       ENDIF
 
       CALL FLUSH(6,ISTAT)

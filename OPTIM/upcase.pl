@@ -21,9 +21,6 @@ sub wanted;
 File::Find::find({wanted => \&wanted}, '.');
 #exit;
 
-my @ffiles;
-my $f;
-
 sub wanted {
     /^.*\.(f90|f|F)\z/s && push(@ffiles,"$name");
 }

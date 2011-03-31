@@ -1,4 +1,4 @@
-!|GD351>
+!|gd351>
 
 SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
   USE COMMONS, ONLY: NATOMS, NRBSITES, RBSITE, RBSTLA
@@ -23,26 +23,26 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
   DOUBLE PRECISION :: S2A(0:3), S1A(0:3), AI(0:3), BI(0:3)
 
 
-  !SIGMASQ: SQUARED PARAMETER SIGMA OF LENNARD-JONES POTENTIAL
-  !RANGESQ: SQUARED RANGE OF POTENTIAL
-  !FACTOR: CONTROLS PATCHWIDTH
-  !IF SIGMASQ OR RANGESQ ARE CHANGED, PARAMETERS OF SMOOTHING FUNCTIONS VF1 AND VF2 HAVE TO BE ADJUSTED; IF FACTOR IS CHANGED, ALPHALEFT, ALPHARIGHT HAVE TO BE ADJUSTED
+  !SIGMASQ: squared parameter sigma of Lennard-Jones potential
+  !RANGESQ: squared range of potential
+  !FACTOR: controls patchwidth
+  !if SIGMASQ or RANGESQ are changed, parameters of smoothing functions VF1 and VF2 have to be adjusted; if FACTOR is changed, ALPHALEFT, ALPHARIGHT have to be adjusted
   SIGMASQ = 1.0D0
   RANGESQ = 3.61D0
   FACTOR =  (2.D0*PI*0.05)**2
 
-  !PARAMETERS FOR SMOOTHING FUNCTION VF2 (POLYNOMIAL OF GRADE 3) - HAS TO FULFILL
-  !VF2(0.9*RANGE) = VLJ(0.9*RANGE)
-  !VF2(RANGE) = 0
-  !VF2'(0.9*RANGE) = VLJ'(0.9*RANGE)
-  !VF2'(RANGE) = 0
+  !parameters for smoothing function VF2 (polynomial of grade 3) - has to fulfill
+  !VF2(0.9*range) = VLJ(0.9*range)
+  !VF2(range) = 0
+  !VF2'(0.9*range) = VLJ'(0.9*range)
+  !VF2'(range) = 0
   S2A(0:3) =  (/ 4.3196421660790450D1, -7.2976415249550730D1, 4.0919975890836945D1, -7.6195284520433670D0 /)
 
   ENERGY = 0.D0
   IF (GTEST) G(:) = 0.D0
 
   IF (SECT) THEN
-    PRINT*,'2ND DERIVATIVES NOT IMPLEMENTED (YET)'
+    PRINT*,'2nd derivatives not implemented (yet)'
     STOP
   END IF
 
@@ -56,7 +56,7 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
     RI(J1,1:3) = X(J3-2:J3)
     P(J1,1:3)  = X(J5-2:J5)
 
-    !CALCULATE ACTUAL POSITION OF PATCHES
+    !calculate actual position of patches
     CALL RMDFAS(P(J1,1:3), RMI, DRMI1, DRMI2, DRMI3, D2RMI1, D2RMI2, D2RMI3, D2RMI12, D2RMI23, D2RMI31, GTEST, SECT)
 
     DO J2 = 1, NRBSITES
@@ -79,21 +79,21 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
       RSQ = DOT_PRODUCT(RIJ(:),RIJ(:))
 
       IF (RSQ.LE.0.81D0*SIGMASQ) THEN
-      !CORE - LJ REPULSION
+      !core - LJ repulsion
         R2 = 1.D0/RSQ
         R6 = R2*R2*R2
 
         ENERGY = ENERGY + (R6 - 1.D0) * R6
 
         IF (GTEST) THEN
-          !CALCULATE DERIVATIVES
-          DVLJ = -6.D0 * (2.D0 * R6 - 1.D0) * R6 * R2 !FACTOR 1/R FROM DR/DXI = XI/R ALREADY INCLUDED
+          !calculate derivatives
+          DVLJ = -6.D0 * (2.D0 * R6 - 1.D0) * R6 * R2 !factor 1/R from dR/dXi = Xi/R already included
           G(J1*3-2:J1*3) = G(J1*3-2:J1*3) + DVLJ * RIJ(:)
           G(J2*3-2:J2*3) = G(J2*3-2:J2*3) - DVLJ * RIJ(:)
         END IF 
 
       ELSEIF ((RSQ.GT.0.81D0*SIGMASQ).AND.(RSQ.LE.SIGMASQ)) THEN
-      !NEAR EDGE OF CORE - SMOOTHEND REPULSION
+      !near edge of core - smoothend repulsion
         ALPHAMIN = 2.D0*PI
 
         R = SQRT(RSQ)
@@ -140,9 +140,9 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
           IF ((ALPHA1.EQ.0.D0).OR.(ALPHA1.EQ.PI)) THEN
             DALPHA1(:)=0.D0
           ELSE 
-            !DERIVATIVES OF ARG1 WRT INTERPARTICLE VECTOR RIJ
+            !derivatives of ARG1 wrt interparticle vector RIJ
             DARG1(1:3) = ( -PATCHPOS(J1,J3,:) + DOT_PRODUCT(PATCHPOS(J1,J3,:),-RIJ(:)) * A(:) ) / RHALF
-            !DERIVATIVES OF ARG1 WRT ORIENTATIONAL VECTOR P OF PARTICLES J1
+            !derivatives of ARG1 wrt orientational vector P of particles J1
             DARG1(4) = DOT_PRODUCT(DPATCHPOS1(J1,J3,:),-RIJ(:)) / RHALF
             DARG1(5) = DOT_PRODUCT(DPATCHPOS2(J1,J3,:),-RIJ(:)) / RHALF
             DARG1(6) = DOT_PRODUCT(DPATCHPOS3(J1,J3,:),-RIJ(:)) / RHALF
@@ -151,9 +151,9 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
           IF ((ALPHA2.EQ.0.D0).OR.(ALPHA2.EQ.PI)) THEN
             DALPHA2(:)=0.D0
           ELSE 
-            !DERIVATIVES OF ARG2 WRT INTERPARTICLE VECTOR RIJ
+            !derivatives of ARG2 wrt interparticle vector RIJ
             DARG2(1:3) = ( PATCHPOS(J2,J4,:) + DOT_PRODUCT(PATCHPOS(J2,J4,:),RIJ(:)) * A(:) ) / RHALF
-            !DERIVATIVES OF ARG2 WRT ORIENTATIONAL VECTOR P OF PARTICLE J2
+            !derivatives of ARG2 wrt orientational vector P of particle J2
             DARG2(4) = DOT_PRODUCT(DPATCHPOS1(J2,J4,:),RIJ(:)) / RHALF
             DARG2(5) = DOT_PRODUCT(DPATCHPOS2(J2,J4,:),RIJ(:)) / RHALF
             DARG2(6) = DOT_PRODUCT(DPATCHPOS3(J2,J4,:),RIJ(:)) / RHALF
@@ -161,11 +161,11 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
           END IF
         END IF
 
-        !PARAMETERS FOR SMOOTHING FUNCTION VF1 (POLYNOMIAL OF GRADE 3) - HAS TO FULFILL
-        !VF1(0.9*SIGMA) = VLJ(0.9*SIGMA)
-        !VF1(SIGMA) = VLJ(SIGMA)*VANG(THETA) = 0
-        !VF1'(0.9*SIGMA) = VLJ'(0.9*SIGMA)
-        !VF1'(SIGMA) = VLJ'(SIGMA)*VANG(THETA)
+        !parameters for smoothing function VF1 (polynomial of grade 3) - has to fulfill
+        !VF1(0.9*sigma) = VLJ(0.9*sigma)
+        !VF1(sigma) = VLJ(sigma)*VANG(THETA) = 0
+        !VF1'(0.9*sigma) = VLJ'(0.9*sigma)
+        !VF1'(sigma) = VLJ'(sigma)*VANG(THETA)
         AI(0:3) = (/ 299.49098473874074D0,-747.4130927079459D0,596.3532311996697D0,-148.4311232304645D0 /)
         BI(0:3) = (/ 485.999999999995D0,-1565.9999999999836D0,1679.9999999999825D0,-599.9999999999939D0 /)
         S1A(0:3) = AI(0:3) + BI(0:3)*VEXP
@@ -174,26 +174,26 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
 
 
         IF (GTEST) THEN
-          !CALCULATE DERIVATIVES
+          !calculate derivatives
           DVF1 = S1A(1)/R + 2.D0*S1A(2) + 3.D0*S1A(3)*R
           A0 = ((-2.D0*VEXP)/FACTOR)*(BI(0)+BI(1)*R+BI(2)*RSQ+BI(3)*RCUB)
           DVEXP(1:3) = ALPHA1*DALPHA1(1:3) + ALPHA2*DALPHA2(1:3)
           DVF1DX(:) = DVF1 * RIJ(:) + A0 * DVEXP(:)
-          !PARTICLE 1, DERIVATIVES WRT CARTESIAN COORDINATES RI(J1,J) ( D (RIJ(I)) / D (RI(J1,J)) = DELTA(IJ) )
+          !particle 1, derivatives wrt cartesian coordinates RI(J1,j) ( d (RIJ(i)) / d (RI(J1,j)) = delta(ij) )
           G(J1*3-2:J1*3) = G(J1*3-2:J1*3) + DVF1DX(1:3)
-          !PARTICLE 2, DERIVATIVES WRT CARTESIAN COORDINATES RI(J2,J) ( D (RIJ(I)) / D (RI(J2,J)) = -DELTA(IJ) )
+          !particle 2, derivatives wrt cartesian coordinates RI(J2,j) ( d (RIJ(i)) / d (RI(J2,j)) = -delta(ij) )
           G(J2*3-2:J2*3) = G(J2*3-2:J2*3) - DVF1DX(1:3)
 
           A1 = A0*ALPHA1
           A2 = A0*ALPHA2
-          !PARTICLE 1, DERIVATIVES WRT ORIENTATIONAL COORDINATES
+          !particle 1, derivatives wrt orientational coordinates
           G(3*(REALNATOMS+J1)-2:3*(REALNATOMS+J1)) = G(3*(REALNATOMS+J1)-2:3*(REALNATOMS+J1)) + A1 * DALPHA1(4:6)
-          !PARTICLE 2, DERIVATIVES WRT ORIENTATIONAL COORDINATES
+          !particle 2, derivatives wrt orientational coordinates
           G(3*(REALNATOMS+J2)-2:3*(REALNATOMS+J2)) = G(3*(REALNATOMS+J2)-2:3*(REALNATOMS+J2)) + A2 * DALPHA2(4:6)
         END IF
 
       ELSEIF ((RSQ.GT.SIGMASQ).AND.(RSQ.LE.0.81D0*RANGESQ)) THEN
-      !PATCHY REGION - LJ ATTRACTION IF PATCHES ARE ALIGNED
+      !patchy region - LJ attraction if patches are aligned
         R = SQRT(RSQ)
         R2 = 1.D0 / RSQ
         R6 = R2*R2*R2
@@ -203,7 +203,7 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
 
         IF (GTEST) THEN
           A(:) = -RIJ(:) * R2
-          DVLJ = -6.D0 * (2.D0 * R6 - 1.D0) * R6 * R2 !FACTOR 1/R FROM DR/DXI = XI/R ALREADY INCLUDED
+          DVLJ = -6.D0 * (2.D0 * R6 - 1.D0) * R6 * R2 !factor 1/R from dR/dXi = Xi/R already included
         END IF
 
         DO J3 = 1, NRBSITES
@@ -222,16 +222,16 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
           ELSE
             ALPHA1 = ACOS(ARG1)
             IF (GTEST) THEN
-              !DERIVATIVES OF ARG1 WRT INTERPARTICLE VECTOR RIJ
+              !derivatives of ARG1 wrt interparticle vector RIJ
               DARG1(1:3) = ( -PATCHPOS(J1,J3,:) + DOT_PRODUCT(PATCHPOS(J1,J3,:),-RIJ(:)) * A(:) ) / RHALF
-              !DERIVATIVES OF ARG1 WRT ORIENTATIONAL VECTOR P OF PARTICLES J1
+              !derivatives of ARG1 wrt orientational vector P of particles J1
               DARG1(4) = DOT_PRODUCT(DPATCHPOS1(J1,J3,:),-RIJ(:)) / RHALF
               DARG1(5) = DOT_PRODUCT(DPATCHPOS2(J1,J3,:),-RIJ(:)) / RHALF
               DARG1(6) = DOT_PRODUCT(DPATCHPOS3(J1,J3,:),-RIJ(:)) / RHALF
               DALPHA1(:) = -DARG1(:) / SQRT(1.D0-ARG1**2)
             END IF 
           END IF
-          !SOME KIND OF ANGLE-CUTOFF COULD BE ADDED..
+          !some kind of angle-cutoff could be added..
           VEXP1 = EXP(-ALPHA1**2/FACTOR)
 
 
@@ -250,9 +250,9 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
             ELSE
               ALPHA2 = ACOS(ARG2)
               IF (GTEST) THEN
-                !DERIVATIVES OF ARG2 WRT INTERPARTICLE VECTOR RIJ
+                !derivatives of ARG2 wrt interparticle vector RIJ
                 DARG2(1:3) = ( PATCHPOS(J2,J4,:) + DOT_PRODUCT(PATCHPOS(J2,J4,:),RIJ(:)) * A(:) ) / RHALF
-                !DERIVATIVES OF ARG2 WRT ORIENTATIONAL VECTOR P OF PARTICLE J2
+                !derivatives of ARG2 wrt orientational vector P of particle J2
                 DARG2(4) = DOT_PRODUCT(DPATCHPOS1(J2,J4,:),RIJ(:)) / RHALF
                 DARG2(5) = DOT_PRODUCT(DPATCHPOS2(J2,J4,:),RIJ(:)) / RHALF
                 DARG2(6) = DOT_PRODUCT(DPATCHPOS3(J2,J4,:),RIJ(:)) / RHALF
@@ -260,7 +260,7 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
               END IF 
             END IF
 
-            !SOME KIND OF ANGLE-CUTOFF COULD BE ADDED..
+            !some kind of angle-cutoff could be added..
             VEXP2 = EXP(-ALPHA2**2/FACTOR)
             VEXP = VEXP1 * VEXP2
             V = VLJ * VEXP
@@ -272,17 +272,17 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
               A0 = -2.D0 * VLJ / FACTOR
               DVDX(1:3) = VEXP * (DVLJ * RIJ(:) + A0 * (ALPHA1*DALPHA1(1:3) + ALPHA2*DALPHA2(1:3)))
 
-              !PARTICLE 1, DERIVATIVES WRT CARTESIAN COORDINATES RI(J1,J) ( D (RIJ(I)) / D (RI(J1,J)) = DELTA(IJ) )
+              !particle 1, derivatives wrt cartesian coordinates RI(J1,j) ( d (RIJ(i)) / d (RI(J1,j)) = delta(ij) )
               G(J1*3-2:J1*3) = G(J1*3-2:J1*3) + DVDX(1:3)
-              !PARTICLE 2, DERIVATIVES WRT CARTESIAN COORDINATES RI(J2,J) ( D (RIJ(I)) / D (RI(J2,J)) = -DELTA(IJ) )
+              !particle 2, derivatives wrt cartesian coordinates RI(J2,j) ( d (RIJ(i)) / d (RI(J2,j)) = -delta(ij) )
               G(J2*3-2:J2*3) = G(J2*3-2:J2*3) - DVDX(1:3)
 
               A1 = -2.D0 * V * ALPHA1 / FACTOR
               A2 = -2.D0 * V * ALPHA2 / FACTOR
 
-              !PARTICLE 1, DERIVATIVES WRT ORIENTATIONAL COORDINATES
+              !particle 1, derivatives wrt orientational coordinates
               G(3*(REALNATOMS+J1)-2:3*(REALNATOMS+J1)) = G(3*(REALNATOMS+J1)-2:3*(REALNATOMS+J1)) + A1 * DALPHA1(4:6)
-              !PARTICLE 2, DERIVATIVES WRT ORIENTATIONAL COORDINATES
+              !particle 2, derivatives wrt orientational coordinates
               G(3*(REALNATOMS+J2)-2:3*(REALNATOMS+J2)) = G(3*(REALNATOMS+J2)-2:3*(REALNATOMS+J2)) + A2 * DALPHA2(4:6)
 
             END IF 
@@ -291,7 +291,7 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
         END DO
 
       ELSEIF ((RSQ.GT.0.81*RANGESQ).AND.(RSQ.LE.RANGESQ)) THEN
-      !PATCHY REGION NEAR CUTOFF - SMOOTHEND ATTRACTION IF PATCHES ARE ALIGNED
+      !patchy region near cutoff - smoothend attraction if patches are aligned
         R = SQRT(RSQ)
         R2 = 1.D0/RSQ
         RHALF = R / 2.D0
@@ -300,7 +300,7 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
 
         IF (GTEST) THEN
           A(:) = -RIJ(:) * R2
-          DVF2 = S2A(1)/R  + 2.D0*S2A(2)  + 3.D0*S2A(3) * R !FACTOR 1/R FROM DR/DXI = XI/R ALREADY INCLUDED
+          DVF2 = S2A(1)/R  + 2.D0*S2A(2)  + 3.D0*S2A(3) * R !factor 1/R from dR/dXi = Xi/R already included
         END IF
 
 
@@ -320,16 +320,16 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
           ELSE
             ALPHA1 = ACOS(ARG1)
             IF (GTEST) THEN
-              !DERIVATIVES OF ARG1 WRT INTERPARTICLE VECTOR RIJ
+              !derivatives of ARG1 wrt interparticle vector RIJ
               DARG1(1:3) = ( -PATCHPOS(J1,J3,:) + DOT_PRODUCT(PATCHPOS(J1,J3,:),-RIJ(:)) * A(:) ) / RHALF
-              !DERIVATIVES OF ARG1 WRT ORIENTATIONAL VECTOR P OF PARTICLES J1
+              !derivatives of ARG1 wrt orientational vector P of particles J1
               DARG1(4) = DOT_PRODUCT(DPATCHPOS1(J1,J3,:),-RIJ(:)) / RHALF
               DARG1(5) = DOT_PRODUCT(DPATCHPOS2(J1,J3,:),-RIJ(:)) / RHALF
               DARG1(6) = DOT_PRODUCT(DPATCHPOS3(J1,J3,:),-RIJ(:)) / RHALF
               DALPHA1(:) = -DARG1(:) / SQRT(1.D0-ARG1**2)
             END IF 
           END IF
-          !SOME KIND OF ANGLE-CUTOFF COULD BE ADDED..
+          !some kind of angle-cutoff could be added..
           VEXP1 = EXP(-ALPHA1**2/FACTOR)
 
 
@@ -348,9 +348,9 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
             ELSE
               ALPHA2 = ACOS(ARG2)
               IF (GTEST) THEN
-                !DERIVATIVES OF ARG2 WRT INTERPARTICLE VECTOR RIJ
+                !derivatives of ARG2 wrt interparticle vector RIJ
                 DARG2(1:3) = ( PATCHPOS(J2,J4,:) + DOT_PRODUCT(PATCHPOS(J2,J4,:),RIJ(:)) * A(:) ) / RHALF
-                !DERIVATIVES OF ARG2 WRT ORIENTATIONAL VECTOR P OF PARTICLE J2
+                !derivatives of ARG2 wrt orientational vector P of particle J2
                 DARG2(4) = DOT_PRODUCT(DPATCHPOS1(J2,J4,:),RIJ(:)) / RHALF
                 DARG2(5) = DOT_PRODUCT(DPATCHPOS2(J2,J4,:),RIJ(:)) / RHALF
                 DARG2(6) = DOT_PRODUCT(DPATCHPOS3(J2,J4,:),RIJ(:)) / RHALF
@@ -358,7 +358,7 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
               END IF 
             END IF
 
-            !SOME KIND OF ANGLE-CUTOFF COULD BE ADDED..
+            !some kind of angle-cutoff could be added..
             VEXP2 = EXP(-ALPHA2**2/FACTOR)
             VEXP = VEXP1 * VEXP2
             
@@ -371,17 +371,17 @@ SUBROUTINE PATCHYD (X, G, ENERGY, GTEST, SECT)
               A0 = -2.D0 * VF2 / FACTOR
               DVDX(1:3) = VEXP * (DVF2 * RIJ(:) + A0 * (ALPHA1*DALPHA1(1:3) + ALPHA2*DALPHA2(1:3)))
 
-              !PARTICLE 1, DERIVATIVES WRT CARTESIAN COORDINATES RI(J1,J) ( D (RIJ(I)) / D (RI(J1,J)) = DELTA(IJ) )
+              !particle 1, derivatives wrt cartesian coordinates RI(J1,j) ( d (RIJ(i)) / d (RI(J1,j)) = delta(ij) )
               G(J1*3-2:J1*3) = G(J1*3-2:J1*3) + DVDX(1:3)
-              !PARTICLE 2, DERIVATIVES WRT CARTESIAN COORDINATES RI(J2,J) ( D (RIJ(I)) / D (RI(J2,J)) = -DELTA(IJ) )
+              !particle 2, derivatives wrt cartesian coordinates RI(J2,j) ( d (RIJ(i)) / d (RI(J2,j)) = -delta(ij) )
               G(J2*3-2:J2*3) = G(J2*3-2:J2*3) - DVDX(1:3)
 
               A1 = -2.D0 * V * ALPHA1 / FACTOR
               A2 = -2.D0 * V * ALPHA2 / FACTOR
 
-              !PARTICLE 1, DERIVATIVES WRT ORIENTATIONAL COORDINATES
+              !particle 1, derivatives wrt orientational coordinates
               G(3*(REALNATOMS+J1)-2:3*(REALNATOMS+J1)) = G(3*(REALNATOMS+J1)-2:3*(REALNATOMS+J1)) + A1 * DALPHA1(4:6)
-              !PARTICLE 2, DERIVATIVES WRT ORIENTATIONAL COORDINATES
+              !particle 2, derivatives wrt orientational coordinates
               G(3*(REALNATOMS+J2)-2:3*(REALNATOMS+J2)) = G(3*(REALNATOMS+J2)-2:3*(REALNATOMS+J2)) + A2 * DALPHA2(4:6)
 
             END IF 
@@ -399,8 +399,8 @@ END SUBROUTINE PATCHYD
 
 
 SUBROUTINE DEFPATCHES()
-!DISTRIBUTION OF PATCHES ON PARTICLE SURFACE - THIS IS CALLED FROM KEYWORD.F
-!A: GEOMETRY PARAMETER
+!distribution of patches on particle surface - this is called from keyword.f
+!A: geometry parameter
 
   USE COMMONS, ONLY: NATOMS, NRBSITES, RBSITE, RBSTLA
 
@@ -426,7 +426,7 @@ SUBROUTINE DEFPATCHES()
 !!$    SITE(4,2)=5.D-1*SIN(0.D0)*SIN(0.D0)
 !!$    SITE(4,3)=5.D-1*COS(0.D0)
 
-!DIRECT DEFINITION OF TETRAHEDRAL DISTRIBUTION (EQUIVALENT: A~7.29808138D0)
+!direct definition of tetrahedral distribution (equivalent: A~7.29808138D0)
      RBSITE(1,:)= (5.D-1/SQRT(3.D0))*(/  1.D0,  1.D0,  1.D0/)
      RBSITE(2,:)= (5.D-1/SQRT(3.D0))*(/ -1.D0, -1.D0,  1.D0/)
      RBSITE(3,:)= (5.D-1/SQRT(3.D0))*(/ -1.D0,  1.D0, -1.D0/)
@@ -435,10 +435,10 @@ SUBROUTINE DEFPATCHES()
      RBSTLA(:,:)=RBSITE(:,:)
 
   ELSE
-    PRINT*,'PATCHNUMBER ',NRBSITES,' NOT IMPLEMENTED.'
+    PRINT*,'Patchnumber ',NRBSITES,' not implemented.'
     STOP
   END IF
 
 END SUBROUTINE DEFPATCHES
 
-!<GD351|
+!<gd351|

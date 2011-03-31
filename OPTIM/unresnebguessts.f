@@ -1,32 +1,32 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C ROUTINE TO GENERATE NEB IMAGES FOR UNRES BY INTERPOLATING
-C BETWEEN DIFFERENT INTERNAL COORDINATES 
-C CHANGED TO BE CALLED FROM SAT'S NEWNEB -- MAKE FINISH PASSED ARRAY
+C Routine to generate neb images for unres by interpolating
+C between different internal coordinates 
+C Changed to be called from sat's newneb -- make finish passed array
 C
       SUBROUTINE UNRESDIHENEB(Q,FINISH,POINTS)
       USE COMMONS
       USE KEY
 C     USE MODNEB
       USE MODUNRES
-      USE KEYNEB,ONLY: NIMAGE
+      use KeyNEB,only: Nimage
       IMPLICIT NONE
 C
       DOUBLE PRECISION ANGLE,TWISTFRAC,POINTS(3*NATOMS*NIMAGE),PI
@@ -34,15 +34,16 @@ C
       REAL*8 DUMMY(3*NATOMS),Q(3*NATOMS),FINISH(3*NATOMS),DIFFPP,DIST,FINPPSANGLE(NINTS),QPPSANGLE(NINTS)
       PARAMETER (PI=3.141592653589793D0)
 
-      DO I1=1,NRES
-         C(1,I1)=Q(6*(I1-1)+1)
-         C(2,I1)=Q(6*(I1-1)+2)
-         C(3,I1)=Q(6*(I1-1)+3)
-         C(1,I1+NRES)=Q(6*(I1-1)+4)
-         C(2,I1+NRES)=Q(6*(I1-1)+5)
-         C(3,I1+NRES)=Q(6*(I1-1)+6)
+      DO I1=1,nres
+         c(1,I1)=Q(6*(I1-1)+1)
+         c(2,I1)=Q(6*(I1-1)+2)
+         c(3,I1)=Q(6*(I1-1)+3)
+         c(1,I1+nres)=Q(6*(I1-1)+4)
+         c(2,I1+nres)=Q(6*(I1-1)+5)
+         c(3,I1+nres)=Q(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
+<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !CALL GEOM_TO_VAR(NVARU,QPPSANGLE)
 
@@ -57,23 +58,39 @@ C
       CALL UPDATEDC
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 !CALL GEOM_TO_VAR(NVARU,FINPPSANGLE)
+=======
+      CALL int_from_cart(.true.,.false.)
+      CALL geom_to_var(nvaru,QPPSANGLE)
 
-C DAE'S COMMENT...NOT RELEVANT FOR UNRES ALL-INTERNAL IMPLEMENTATION.
-C WE NEED TO KEEP OUR IMAGES ALONG THE PATH BETWEEN Q AND FIN. THEIR ALIGNMENT WILL
-C BE MESSED UP BY REBUILDING. THEREFORE REBUILD STARTING POINT Q (BEFORE ANY DIHES HAVE
-C BEEN CHANGED), AND PUT THESE REBUILT COORDINATES IN MAXIMAL ALIGNMENT WITH THE PROPER Q.
-C USING MIND. THIS WILL STORE THE ROTATION MATRIX REQUIRED, WHICH WE THEN APPLY TO ALL THE 
-C REBUILT IMAGES
+      DO I1=1,nres
+         c(1,I1)=FINISH(6*(I1-1)+1)
+         c(2,I1)=FINISH(6*(I1-1)+2)
+         c(3,I1)=FINISH(6*(I1-1)+3)
+         c(1,I1+nres)=FINISH(6*(I1-1)+4)
+         c(2,I1+nres)=FINISH(6*(I1-1)+5)
+         c(3,I1+nres)=FINISH(6*(I1-1)+6)
+      END DO
+      CALL UPDATEDC
+      CALL int_from_cart(.true.,.false.)
+      CALL geom_to_var(nvaru,FINPPSANGLE)
+>>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
-      TWISTFRAC=1.D0/(NIMAGE+1)   ! INCREMENTAL, SO TWISTFRAC IS ALWAYS THE SAME
+C DAE's comment...not relevant for unres all-internal implementation.
+C We need to keep our images along the path between q and fin. Their alignment will
+C be messed up by rebuilding. Therefore rebuild starting point q (before any dihes have
+C been changed), and put these rebuilt coordinates in maximal alignment with the proper q.
+C using mind. This will store the rotation matrix required, which we then apply to all the 
+C rebuilt images
 
-      DO J1=1,NIMAGE
+      TWISTFRAC=1.D0/(Nimage+1)   ! Incremental, so TWISTFRAC is always the same
 
-         DO I1=1,NVARU
+      DO J1=1,Nimage
+
+         DO I1=1,nvaru
             DIFFPP = FINPPSANGLE(I1) - QPPSANGLE(I1)
 C
-C NEXT TWO LINES ARE MEANT TO ENSURE THAT YOU ALWAYS INTERPOLATE
-C ALONG THE SHORTEST DISTANCE BETWEEN THE DIHEDRAL ANGLES.
+C next two lines are meant to ensure that you always interpolate
+C along the shortest distance between the dihedral angles.
 C
             IF (DIFFPP.LT.-PI) DIFFPP = DIFFPP+2.0D0*PI
             IF (DIFFPP.GT.PI) DIFFPP = DIFFPP-2.0D0*PI
@@ -81,6 +98,7 @@ C
             QPPSANGLE(I1)=QPPSANGLE(I1)+ANGLE 
          ENDDO
  
+<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NVARU,QPPSANGLE)
 !CALL CHAINBUILD
          DO I1=1,NRES
@@ -90,6 +108,17 @@ C
             DUMMY(6*(I1-1)+4)=C(1,I1+NRES)
             DUMMY(6*(I1-1)+5)=C(2,I1+NRES)
             DUMMY(6*(I1-1)+6)=C(3,I1+NRES)
+=======
+         CALL var_to_geom(nvaru,QPPSANGLE)
+         CALL chainbuild
+         DO I1=1,nres
+            DUMMY(6*(I1-1)+1)=c(1,I1)
+            DUMMY(6*(I1-1)+2)=c(2,I1)
+            DUMMY(6*(I1-1)+3)=c(3,I1)
+            DUMMY(6*(I1-1)+4)=c(1,I1+nres)
+            DUMMY(6*(I1-1)+5)=c(2,I1+nres)
+            DUMMY(6*(I1-1)+6)=c(3,I1+nres)
+>>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
          ENDDO
 
          DO I1=1,3*NATOMS
@@ -102,7 +131,7 @@ C
       END
 
 C
-C ROUTINE TO CALCULATE DISTANCE IN SPRING FORCE FOR NEB, WHEN USING THE DISTANCE IN DIHEDRAL ANGLE SPACE
+C Routine to calculate distance in spring force for neb, when using the distance in dihedral angle space
 C DISTDIHE = |QC - QB| - |QB - QA|
 C
       SUBROUTINE UNRESGETDIHEDIST(DIHEDIST,QA,QB,QC)
@@ -117,15 +146,16 @@ C
       DOUBLE PRECISION PI
       PARAMETER (PI=3.141592653589793D0)
 
-      DO I1=1,NRES
-         C(1,I1)=QA(6*(I1-1)+1)
-         C(2,I1)=QA(6*(I1-1)+2)
-         C(3,I1)=QA(6*(I1-1)+3)
-         C(1,I1+NRES)=QA(6*(I1-1)+4)
-         C(2,I1+NRES)=QA(6*(I1-1)+5)
-         C(3,I1+NRES)=QA(6*(I1-1)+6)
+      DO I1=1,nres
+         c(1,I1)=QA(6*(I1-1)+1)
+         c(2,I1)=QA(6*(I1-1)+2)
+         c(3,I1)=QA(6*(I1-1)+3)
+         c(1,I1+nres)=QA(6*(I1-1)+4)
+         c(2,I1+nres)=QA(6*(I1-1)+5)
+         c(3,I1+nres)=QA(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
+<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 C     CALL CHAINBUILD
 !CALL GEOM_TO_VAR(NVARU,QAPPSANGLE)
@@ -155,11 +185,42 @@ C     CALL CHAINBUILD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 C     CALL CHAINBUILD
 !CALL GEOM_TO_VAR(NVARU,QCPPSANGLE)
+=======
+      CALL int_from_cart(.true.,.false.)
+c     CALL chainbuild
+      CALL geom_to_var(nvaru,QAPPSANGLE)
+
+      DO I1=1,nres
+         c(1,I1)=QB(6*(I1-1)+1)
+         c(2,I1)=QB(6*(I1-1)+2)
+         c(3,I1)=QB(6*(I1-1)+3)
+         c(1,I1+nres)=QB(6*(I1-1)+4)
+         c(2,I1+nres)=QB(6*(I1-1)+5)
+         c(3,I1+nres)=QB(6*(I1-1)+6)
+      END DO
+      CALL UPDATEDC
+      CALL int_from_cart(.true.,.false.)
+c     CALL chainbuild
+      CALL geom_to_var(nvaru,QBPPSANGLE)
+
+      DO I1=1,nres
+         c(1,I1)=QC(6*(I1-1)+1)
+         c(2,I1)=QC(6*(I1-1)+2)
+         c(3,I1)=QC(6*(I1-1)+3)
+         c(1,I1+nres)=QC(6*(I1-1)+4)
+         c(2,I1+nres)=QC(6*(I1-1)+5)
+         c(3,I1+nres)=QC(6*(I1-1)+6)
+      END DO
+      CALL UPDATEDC
+      CALL int_from_cart(.true.,.false.)
+c     CALL chainbuild
+      CALL geom_to_var(nvaru,QCPPSANGLE)
+>>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
       DISTCB=0.D0
       DISTBA=0.D0
-      DO I1=1,NVARU
-C JMC WHY NOT ADJUST IF > PI ETC?
+      DO I1=1,nvaru
+C jmc why not adjust if > pi etc?
          DIFFPP=QCPPSANGLE(I1)-QBPPSANGLE(I1)
          IF (DIFFPP.LT.-PI) DIFFPP = DIFFPP+2.0D0*PI
          IF (DIFFPP.GT.PI) DIFFPP = DIFFPP-2.0D0*PI
@@ -172,8 +233,8 @@ C JMC WHY NOT ADJUST IF > PI ETC?
          DISTBA=DISTBA+ABS(DIFFPP)
       ENDDO
 
-      DISTCB=DISTCB/NVARU
-      DISTBA=DISTBA/NVARU
+      DISTCB=DISTCB/nvaru
+      DISTBA=DISTBA/nvaru
 
       DIHEDIST=DISTCB-DISTBA
 

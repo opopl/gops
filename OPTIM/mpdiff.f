@@ -1,26 +1,26 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  SUBROUTINE MDIFF CALCULATES THE CARTESIAN GRADIENT AND SECOND
-C  DERIVATIVE MATRIX ANALYTICALLY FOR THE MORSE POTENTIAL.
+C  Subroutine MDIFF calculates the cartesian gradient and second
+C  derivative matrix analytically for the Morse potential.
 C
 C*************************************************************************
 C
@@ -42,10 +42,10 @@ C
       ELSE
         RCUT=BOXLZ*CUTOFF
       ENDIF
-!     PRINT*,'CUTOFF USED = ',RCUT
+!     PRINT*,'Cutoff used = ',RCUT
 
 C
-C  DEAL WITH ATOMS LEAVING THE BOX:
+C  Deal with atoms leaving the box:
 C
       IF ((.NOT.FIXIMAGE).AND.(.NOT.NORESET)) THEN
          DO 41 J1=1,N
@@ -55,9 +55,9 @@ C
 41       CONTINUE
       ENDIF
 C
-C  CALCULATION OF CONNECTING VECTORS; TO IMPLEMENT THE PERIODIC
-C  BOUNDARY CONDITIONS, THE SHORTEST VECTOR BETWEEN TWO ATOMS IS
-C  USED:
+C  Calculation of connecting vectors; to implement the periodic
+C  boundary conditions, the shortest vector between two atoms is
+C  used:
 C
       DO 25 J1=1,N
          VEC(J1,J1,1)=0.0D0
@@ -79,7 +79,7 @@ C
 15       CONTINUE
 25    CONTINUE
 C
-C  STORE DISTANCE MATRICES.
+C  Store distance matrices.
 C
       P2=0.0D0
       DO 20 J1=1,N
@@ -97,7 +97,7 @@ C
 10       CONTINUE
 20    CONTINUE
 C
-C  HERE WE CALCULATE THE ENERGY
+C  Here we calculate the energy
 C                                        
       RRCUT=RHO*RCUT
       DO 22 I=1,N
@@ -109,7 +109,7 @@ C
 22    CONTINUE
       IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
 C
-C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
+C  First calculate the gradient analytically.
 C
       DO 50 J1=1,N
          DO 40 J2=1,3
@@ -127,7 +127,7 @@ C           PRINT*,'J3,V(J3)=',J3,V(J3)
 50    CONTINUE
       IF (.NOT.STEST) RETURN
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO 80 J1=1,N
          DO 70 J2=1,3
@@ -146,8 +146,8 @@ C           PRINT*,'HESS(',J3,',',J3,')=',HESS(J3,J3)
 70       CONTINUE
 80    CONTINUE
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -169,7 +169,7 @@ C              PRINT*,'HESS(',J3,',',3*(J1-1)+J4,')=',HESS(J3,3*(J1-1)+J4)
 110      CONTINUE
 120   CONTINUE
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO 150 J1=1,N
          DO 140 J2=1,3
@@ -188,7 +188,7 @@ C              PRINT*,'HESS(',J3,',',3*(J4-1)+J2,')=',HESS(J3,3*(J4-1)+J2)
 140      CONTINUE
 150   CONTINUE
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3
@@ -223,31 +223,31 @@ C                 PRINT*,'HESS(',J3,',',J6,')=',HESS(J3,J6)
 180   CONTINUE
       RETURN
       END
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2005 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2005 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  SUBROUTINE MDIFF CALCULATES THE CARTESIAN GRADIENT AND SECOND
-C  DERIVATIVE MATRIX ANALYTICALLY FOR THE MORSE POTENTIAL.
-C  THIS IS DAN SHEPPARD'S VERSION WITH DIFFERENT UNITS FOR THE POTENTIAL
-C  AND A SHIFT AT THE CUTOFF DISTANCE.
+C  Subroutine MDIFF calculates the cartesian gradient and second
+C  derivative matrix analytically for the Morse potential.
+C  This is Dan Sheppard's version with different units for the potential
+C  and a shift at the cutoff distance.
 C
 C*************************************************************************
 C
@@ -262,7 +262,7 @@ C
      3                 CUTOFF, RCUT, RRCUT, U0, R0, UC
       LOGICAL GTEST, STEST
 
-CGH: ADDED TO MATCH PT PARAMETERS
+CGH: added to match Pt parameters
       R0 = 2.8970D0
       U0 = 0.7102D0
 
@@ -273,12 +273,12 @@ CGH: ADDED TO MATCH PT PARAMETERS
       ELSE
         RCUT=BOXLZ*CUTOFF
       ENDIF
-!     PRINT*,'CUTOFF USED = ',RCUT
+!     PRINT*,'Cutoff used = ',RCUT
 
-CGH: CUTOFF ENERGY SHIFT
+CGH: cutoff energy shift
       UC = U0*DEXP(RHO-RHO*RCUT/R0)*(DEXP(RHO-RHO*RCUT/R0)-2.0D0)
 C
-C  DEAL WITH ATOMS LEAVING THE BOX:
+C  Deal with atoms leaving the box:
 C
       IF ((.NOT.FIXIMAGE).AND.(.NOT.NORESET)) THEN
          DO 41 J1=1,N
@@ -288,9 +288,9 @@ C
 41       CONTINUE
       ENDIF
 C
-C  CALCULATION OF CONNECTING VECTORS; TO IMPLEMENT THE PERIODIC
-C  BOUNDARY CONDITIONS, THE SHORTEST VECTOR BETWEEN TWO ATOMS IS
-C  USED:
+C  Calculation of connecting vectors; to implement the periodic
+C  boundary conditions, the shortest vector between two atoms is
+C  used:
 C
       DO 25 J1=1,N
          VEC(J1,J1,1)=0.0D0
@@ -312,7 +312,7 @@ C
 15       CONTINUE
 25    CONTINUE
 C
-C  STORE DISTANCE MATRICES.
+C  Store distance matrices.
 C
       P2=0.0D0
       DO 20 J1=1,N
@@ -331,7 +331,7 @@ CGH            R(J2,J1)=RHO*DSQRT(DIST)/R0
 10       CONTINUE
 20    CONTINUE
 C
-C  HERE WE CALCULATE THE ENERGY
+C  Here we calculate the energy
 C
 CGH      RRCUT=RHO*RCUT
       RRCUT=RHO*RCUT/R0
@@ -345,7 +345,7 @@ CGH               P2=P2+MEXP(I,J)*(MEXP(I,J)-2.0D0)
 22    CONTINUE
       IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
 C
-C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
+C  First calculate the gradient analytically.
 C
       DO 50 J1=1,N
          DO 40 J2=1,3
@@ -365,7 +365,7 @@ C           PRINT*,'J3,V(J3)=',J3,V(J3)
 
       IF (.NOT.STEST) RETURN
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO 80 J1=1,N
          DO 70 J2=1,3
@@ -384,8 +384,8 @@ C           PRINT*,'HESS(',J3,',',J3,')=',HESS(J3,J3)
 70       CONTINUE
 80    CONTINUE
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -407,7 +407,7 @@ C              PRINT*,'HESS(',J3,',',3*(J1-1)+J4,')=',HESS(J3,3*(J1-1)+J4)
 110      CONTINUE
 120   CONTINUE
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO 150 J1=1,N
          DO 140 J2=1,3
@@ -426,7 +426,7 @@ C              PRINT*,'HESS(',J3,',',3*(J4-1)+J2,')=',HESS(J3,3*(J4-1)+J2)
 140      CONTINUE
 150   CONTINUE
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3

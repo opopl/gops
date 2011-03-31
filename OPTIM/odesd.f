@@ -1,20 +1,20 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE ODESD(ITMAX,VARS,MFLAG,NSTP,PTEST)
       USE COMMONS
@@ -48,7 +48,7 @@ C
          CALL PVOPT(VARS,ENERGY,DYDX)
       ENDIF
       IF (.NOT.KNOWG) CALL POTENTIAL(VARS,ENERGY,DYDX,.TRUE.,GRADSQ,RMS,.FALSE.,.FALSE.)
-      CALL DUMPP(VARS,ENERGY) ! ASSUMES NODUMP IS ALWAYS FALSE IF WE ARE CALLING ODESD.F
+      CALL DUMPP(VARS,ENERGY) ! assumes NODUMP is always false if we are calling odesd.f
       EREAL=ENERGY
       REALRMS=RMS
 
@@ -62,16 +62,16 @@ C        ENERGY=SQRT(DDOT(3*NATOMS,DYDX,1,DYDX,1))
                CALL G2SPECIAL(NATOMS,VARS,DYDX,VEC2,ENERGY,RMS,EREAL,REALRMS,MFLAG)
             ELSE IF (FIXAFTER.EQ.0) THEN
                FIXAFTER=NSTP+2
-               PRINT*,' CHANGING TO ATOM TYPE LC AND SETTING FIXAFTER=',NSTP+2
+               PRINT*,' changing to atom type LC and setting FIXAFTER=',NSTP+2
                DO J1=1,NATOMS
                   ZSYM(J1)='LC'
                ENDDO
                RETURN
             ENDIF
          ENDIF
-C        IF (GRADSQ) WRITE(*,'(A,4F20.10)') ' G^2, RMS FORCE AND REAL ENERGY AND RMS=',ENERGY,RMS,EREAL,RMS
+C        IF (GRADSQ) WRITE(*,'(A,4F20.10)') ' g^2, RMS force and real energy and RMS=',ENERGY,RMS,EREAL,RMS
          IF (MFLAG) THEN
-            IF (GRADSQ) WRITE(*,'(A,4F20.10)') ' G^2, RMS FORCE AND REAL ENERGY AND RMS=',ENERGY,RMS,EREAL,REALRMS
+            IF (GRADSQ) WRITE(*,'(A,4F20.10)') ' g^2, RMS force and real energy and RMS=',ENERGY,RMS,EREAL,REALRMS
             RETURN
          ENDIF
          DO J1=1,3*NATOMS
@@ -80,11 +80,11 @@ C           DYDX(J1)=VEC2(J1)/ENERGY
          ENDDO
       ENDIF
       IF (GRADSQ) THEN
-         IF (PTEST) WRITE(*,'(A,4F20.10,A,I6,2(A,F15.5))') ' G^2, RMS FORCE AND REAL ENERGY AND RMS=',ENERGY,RMS,EREAL,REALRMS,
-     1                                     ' AFTER ',NSTP-1,' SD STEPS, PATH LENGTH=',SLENGTH,' STEP=',MXSTPLOCAL
+         IF (PTEST) WRITE(*,'(A,4F20.10,A,I6,2(A,F15.5))') ' g^2, RMS force and real energy and RMS=',ENERGY,RMS,EREAL,REALRMS,
+     1                                     ' after ',NSTP-1,' SD steps, path length=',SLENGTH,' step=',MXSTPLOCAL
       ELSE
-         IF (PTEST) WRITE(*,'(A,2F20.10,A,I6,2(A,F15.5))') ' ENERGY AND RMS FORCE=',ENERGY,REALRMS,
-     1                                     ' AFTER ',NSTP-1,' SD STEPS, PATH LENGTH=',SLENGTH,' STEP=',MXSTPLOCAL
+         IF (PTEST) WRITE(*,'(A,2F20.10,A,I6,2(A,F15.5))') ' Energy and RMS force=',ENERGY,REALRMS,
+     1                                     ' after ',NSTP-1,' SD steps, path length=',SLENGTH,' step=',MXSTPLOCAL
       ENDIF
       CALL FLUSH(6,ISTAT)
 
@@ -95,7 +95,7 @@ C           DYDX(J1)=VEC2(J1)/ENERGY
          IF (PV.AND.(.NOT.PVFLAG)) MFLAG=.FALSE.
          IF (MFLAG) THEN
             FIXIMAGE=.FALSE.
-            IF (GRADSQ) WRITE(*,'(A,4F20.10)') ' G^2, RMS FORCE AND REAL ENERGY AND RMS=',ENERGY,RMS,EREAL,REALRMS
+            IF (GRADSQ) WRITE(*,'(A,4F20.10)') ' g^2, RMS force and real energy and RMS=',ENERGY,RMS,EREAL,REALRMS
             RETURN
          ENDIF
       ENDIF
@@ -116,7 +116,7 @@ C        DYDX(I)=-DYDX(I)
       IF (BSMIN) CALL BSSTEP(VARS,DYDX,NVAR,SLENGTH,MXSTPLOCAL,EPS,YSCAL,STRYDID,STRYNEXT,ENERGY,RMS,EREAL,REALRMS,PTEST)
       IF (RKMIN) CALL RKQS(VARS,DYDX,NVAR,SLENGTH,MXSTPLOCAL,EPS,YSCAL,STRYDID,STRYNEXT,ENERGY,RMS,EREAL,REALRMS,PTEST)
 
-C     WRITE(*,'(A,F20.10,A,F20.10)') 'STEP LENGTH=',STRYDID,' NEXT ESTIMATED STEP SIZE=',STRYNEXT
+C     WRITE(*,'(A,F20.10,A,F20.10)') 'Step length=',STRYDID,' next estimated step size=',STRYNEXT
 
       IF (STRYDID.GE.MXSTPLOCAL) THEN
          NOK=NOK+1
@@ -125,17 +125,17 @@ C     WRITE(*,'(A,F20.10,A,F20.10)') 'STEP LENGTH=',STRYDID,' NEXT ESTIMATED STE
       ENDIF
 C     PRINT*,'STRYDID,MXSTPLOCAL,NOK,NBAD=',STRYDID,MXSTPLOCAL,NOK,NBAD
       IF (ABS(STRYNEXT).LT.STRYMIN) THEN
-         PRINT*, ' WARNING, STEPSIZE < 0 IN ODESD'
-         OPEN(UNIT=96,FILE='DISCONN',STATUS='UNKNOWN')
-         PRINT*,' INTRACTABLE DISCONTINUITY - QUIT '
-         WRITE(96,'(A)') 'INTRACTABLE DISCONTINUITY'
+         PRINT*, ' WARNING, stepsize < 0 in odesd'
+         OPEN(UNIT=96,FILE='disconn',STATUS='UNKNOWN')
+         PRINT*,' intractable discontinuity - quit '
+         WRITE(96,'(A)') 'intractable discontinuity'
          CLOSE(96)
          IF (GRADSQ) THEN 
-            WRITE(*,'(A,4F20.10)') ' G^2, RMS FORCE AND REAL ENERGY AND RMS=',ENERGY,RMS,EREAL,REALRMS
+            WRITE(*,'(A,4F20.10)') ' g^2, RMS force and real energy and RMS=',ENERGY,RMS,EREAL,REALRMS
          ELSE
-            WRITE(*,'(A,2F20.10,A,I6,A,F15.10)') ' ENERGY AND RMS FORCE=',ENERGY,REALRMS
+            WRITE(*,'(A,2F20.10,A,I6,A,F15.10)') ' Energy and RMS force=',ENERGY,REALRMS
          ENDIF
-         CALL DUMPIT(VARS,'POINTS.FINAL')
+         CALL DUMPIT(VARS,'points.final')
          STOP
       ENDIF
 
@@ -159,7 +159,7 @@ C     PRINT*,'STRYDID,MXSTPLOCAL,NOK,NBAD=',STRYDID,MXSTPLOCAL,NOK,NBAD
      *REDMAX,REDMIN,TINY,SCALMX,DDOT,RMS
       PARAMETER (KMAXX=8,IMAX=KMAXX+1,SAFE1=.25D0,SAFE2=.7D0,
      *REDMAX=1.D-5,REDMIN=.7D0,TINY=1.D-30,SCALMX=.1D0)
-CU    USES DERIVS,MMID,PZEXTR
+CU    USES derivs,mmid,pzextr
       INTEGER I,IQ,K,KK,KM,KMAX,KOPT,NSEQ(IMAX)
       DOUBLE PRECISION EPS1,EPSOLD,ERRMAX,FACT,H,RED,SCALE,WORK,WRKMIN
      *,XEST,XNEW,ENERGY,EOLD,VNEW(NV),
@@ -174,7 +174,7 @@ CU    USES DERIVS,MMID,PZEXTR
       DATA FIRST/.TRUE./,EPSOLD/-1.D0/
       DATA NSEQ /2,4,6,8,10,12,14,16,18/
 
-C     PRINT*,'IN BSSTEP'
+C     PRINT*,'in bsstep'
       EOLD=ENERGY
       IF(EPS.NE.EPSOLD)THEN
         HNEXT=-1.D29
@@ -207,13 +207,13 @@ C     PRINT*,'IN BSSTEP'
 2     DO 17 K=1,KMAX
         XNEW=X+H
         IF ((XNEW.EQ.X).OR.(EPS.LT.1.0D-20)) THEN
-           PRINT*,'STEPSIZE UNDERFLOW IN BSSTEP'
-           OPEN(UNIT=96,FILE='DISCONN',STATUS='UNKNOWN')
-           PRINT*,' INTRACTABLE DISCONTINUITY - QUIT '
-           WRITE(96,'(A)') 'INTRACTABLE DISCONTINUITY'
+           PRINT*,'stepsize underflow in bsstep'
+           OPEN(UNIT=96,FILE='disconn',STATUS='UNKNOWN')
+           PRINT*,' intractable discontinuity - quit '
+           WRITE(96,'(A)') 'intractable discontinuity'
            CLOSE(96)
-           WRITE(*,'(A,4F20.10)') ' G^2, RMS FORCE AND REAL ENERGY AND RMS=',ENERGY,RMS,EREAL,REALRMS
-           CALL DUMPIT(Y,'POINTS.FINAL')
+           WRITE(*,'(A,4F20.10)') ' g^2, RMS force and real energy and RMS=',ENERGY,RMS,EREAL,REALRMS
+           CALL DUMPIT(Y,'points.final')
            STOP
         ENDIF
         CALL MMID(YSAV,DYDX,NV,X,H,NSEQ(K),YSEQ)
@@ -239,19 +239,19 @@ C       CALL PZEXTR(K,XEST,YSEQ,Y,YERR,NV,QCOLSAVE,XSAVE)
                 ENERGY=DDOT(NV,VNEW,1,VNEW,1)
 C               CALL DSYMV('U',NV,2.0D0,HESS,NV,VNEW,1,0.0D0,VEC2,1)
 C               RMS= DSQRT(DDOT(NV,VEC2,1,VEC2,1)/(NV))
-C               WRITE(*,'(A,4F20.10)') ' G^2, RMS FORCE AND REAL ENERGY AND RMS=',ENERGY,RMS,EREAL,REALRMS
+C               WRITE(*,'(A,4F20.10)') ' g^2, RMS force and real energy and RMS=',ENERGY,RMS,EREAL,REALRMS
              ENDIF
              IF (ENERGY.GT.EOLD) THEN
-                ERRMAX=2.0D0 ! REJECT STEP
+                ERRMAX=2.0D0 ! reject step
                 EPS=EPS/2.0D0
-                IF (PTEST) WRITE(*,'(3(A,G20.10))') ' BSSTEP> ENERGY RISES FROM ',EOLD,' TO ',ENERGY,
-     &                                               ' REDUCE EPS TO ',EPS
+                IF (PTEST) WRITE(*,'(3(A,G20.10))') ' bsstep> energy rises from ',EOLD,' to ',ENERGY,
+     &                                               ' reduce eps to ',EPS
              ELSE
 C               EPS=EPS*1.1D0
-                DYDX(1:NV)=VNEW(1:NV) ! PASS THE ENERGY AND GRADIENT BACK AND WE DON;T HAVE TO CALL POTENTIAL AGAIN
+                DYDX(1:NV)=VNEW(1:NV) ! pass the energy and gradient back and we don;t have to call potential again
              ENDIF
           ENDIF
-          IF (ERRMAX.LT.1.D0) GOTO 4 ! STEP ACCEPTED
+          IF (ERRMAX.LT.1.D0) GOTO 4 ! step accepted
           IF(K.EQ.KMAX.OR.K.EQ.KOPT+1)THEN
             RED=SAFE2/ERR(KM)
             GOTO 3
@@ -365,7 +365,7 @@ C           YOUT(I)=-VEC2(I)
       END
 
 !
-!  QCOL AND X COULD NOT BE SAVED PROPERLY - HAVE TO PASS THEM AS ARGUMENTS
+!  QCOL and X could not be saved properly - have to pass them as arguments
 !
       SUBROUTINE PZEXTR(IEST,XEST,YEST,YZ,DY,NV,QCOL,X)
       IMPLICIT NONE
@@ -374,9 +374,9 @@ C           YOUT(I)=-VEC2(I)
       PARAMETER (IMAX=13)
       INTEGER J,K1
       DOUBLE PRECISION DELTA,F1,F2,Q,D(NV),QCOL(NV,IMAX),X(IMAX)
-C     SAVE QCOL,X
+C     SAVE qcol,x
 
-C     PRINT*,'IN PZEXTR'
+C     PRINT*,'in pzextr'
       X(IEST)=XEST
       DO 11 J=1,NV
         DY(J)=YEST(J)
@@ -411,9 +411,9 @@ C     PRINT*,'IN PZEXTR'
       END
 
 !
-!  SAVE STATEMENT ALONE DOES NOT SAVE D AND X !
-!  SAVE X CANNOT WORK BECAUSE X IS AN AUTOMATIC VARIABLE
-!  HENCE WE MUST PASS THESE ARRAYS AND DECLARE THEM IN THE CALLING ROUTINE
+!  SAVE statement alone does NOT save D and X !
+!  SAVE X cannot work because X is an automatic variable
+!  hence we must pass these arrays and declare them in the calling routine
 !
       SUBROUTINE RZEXTR(IEST,XEST,YEST,YZ,DY,NV,D,X,FX)
       IMPLICIT NONE
@@ -422,7 +422,7 @@ C     PRINT*,'IN PZEXTR'
       PARAMETER (IMAX=13)
       INTEGER J,K
       DOUBLE PRECISION B,B1,C,DDY,V,YY,D(NV,IMAX),FX(IMAX),X(IMAX)
-C     SAVE D,X
+C     SAVE d,x
 
       X(IEST)=XEST
       IF(IEST.EQ.1) THEN
@@ -468,7 +468,7 @@ C     SAVE D,X
       IMPLICIT NONE
       INTEGER N
       DOUBLE PRECISION EPS,HDID,HNEXT,HTRY,X,DYDX(N),Y(N),YSCAL(N)
-CU    USES RKCK
+CU    USES rkck
       INTEGER I
       DOUBLE PRECISION ERRMAX,H,XNEW,YERR(N),YTEMP(N),SAFETY,PGROW
      *,PSHRNK,
@@ -494,16 +494,16 @@ CU    USES RKCK
             ENERGY=DDOT(N,VNEW,1,VNEW,1)
 C           CALL DSYMV('U',N,2.0D0,HESS,N,VNEW,1,0.0D0,VEC2,1)
 C           RMS= DSQRT(DDOT(N,VEC2,1,VEC2,1)/(N))
-C           WRITE(*,'(A,4F20.10)') ' G^2, RMS FORCE AND REAL ENERGY AND RMS=',ENERGY,RMS,EREAL,REALRMS
+C           WRITE(*,'(A,4F20.10)') ' g^2, RMS force and real energy and RMS=',ENERGY,RMS,EREAL,REALRMS
          ENDIF
          IF (ENERGY.GT.EOLD) THEN
             ERRMAX=2.0D0
             EPS=EPS/2.0D0
-            IF (PTEST) WRITE(*,'(3(A,G20.10))') ' RKQS> ENERGY RISES FROM ',EOLD,' TO ',ENERGY,
-     &                                               ' REDUCE EPS TO ',EPS
+            IF (PTEST) WRITE(*,'(3(A,G20.10))') ' rkqs> energy rises from ',EOLD,' to ',ENERGY,
+     &                                               ' reduce eps to ',EPS
          ELSE
 C           EPS=EPS*1.1D0
-            DYDX(1:N)=VNEW(1:N) ! PASS THE ENERGY AND GRADIENT BACK AND WE DON;T HAVE TO CALL POTENTIAL AGAIN
+            DYDX(1:N)=VNEW(1:N) ! pass the energy and gradient back and we don;t have to call potential again
          ENDIF
       ENDIF
 
@@ -514,13 +514,13 @@ C           EPS=EPS*1.1D0
         ENDIF
         XNEW=X+H
         IF ((XNEW.EQ.X).OR.(EPS.LT.1.0D-20)) THEN
-           PRINT*,' STEPSIZE UNDERFLOW IN RKQS'
-           OPEN(UNIT=96,FILE='DISCONN',STATUS='UNKNOWN')
-           PRINT*,' INTRACTABLE DISCONTINUITY - QUIT '
-           WRITE(96,'(A)') 'INTRACTABLE DISCONTINUITY'
+           PRINT*,' stepsize underflow in rkqs'
+           OPEN(UNIT=96,FILE='disconn',STATUS='UNKNOWN')
+           PRINT*,' intractable discontinuity - quit '
+           WRITE(96,'(A)') 'intractable discontinuity'
            CLOSE(96)
-           WRITE(*,'(A,4F20.10)') ' G^2, RMS FORCE AND REAL ENERGY AND RMS=',ENERGY,RMS,EREAL,REALRMS
-           CALL DUMPIT(Y,'POINTS.FINAL')
+           WRITE(*,'(A,4F20.10)') ' g^2, RMS force and real energy and RMS=',ENERGY,RMS,EREAL,REALRMS
+           CALL DUMPIT(Y,'points.final')
            STOP
         ENDIF
         GOTO 1
@@ -568,7 +568,7 @@ C           EPS=EPS*1.1D0
       DO 11 I=1,N
         YTEMP(I)=Y(I)+B21*H*DYDX(I)
 11    CONTINUE
-C     CALL DERIVS(X+A2*H,YTEMP,AK2)
+C     call derivs(x+A2*h,ytemp,ak2)
 
       CALL POTENTIAL(YTEMP,ENERGY,AK2,.TRUE.,GRADSQ,RMS,.FALSE.,.FALSE.)
       IF (GRADSQ) THEN
@@ -591,7 +591,7 @@ C        AK2(I)=-AK2(I)
       DO 12 I=1,N
         YTEMP(I)=Y(I)+H*(B31*DYDX(I)+B32*AK2(I))
 12    CONTINUE
-C     CALL DERIVS(X+A3*H,YTEMP,AK3)
+C     call derivs(x+A3*h,ytemp,ak3)
 
       CALL POTENTIAL(YTEMP,ENERGY,AK3,.TRUE.,GRADSQ,RMS,.FALSE.,.FALSE.)
       IF (GRADSQ) THEN
@@ -614,7 +614,7 @@ C        AK3(I)=-AK3(I)
       DO 13 I=1,N
         YTEMP(I)=Y(I)+H*(B41*DYDX(I)+B42*AK2(I)+B43*AK3(I))
 13    CONTINUE
-C     CALL DERIVS(X+A4*H,YTEMP,AK4)
+C     call derivs(x+A4*h,ytemp,ak4)
 
       CALL POTENTIAL(YTEMP,ENERGY,AK4,.TRUE.,GRADSQ,RMS,.FALSE.,.FALSE.)
       IF (GRADSQ) THEN
@@ -637,7 +637,7 @@ C        AK4(I)=-AK4(I)
       DO 14 I=1,N
         YTEMP(I)=Y(I)+H*(B51*DYDX(I)+B52*AK2(I)+B53*AK3(I)+B54*AK4(I))
 14    CONTINUE
-C     CALL DERIVS(X+A5*H,YTEMP,AK5)
+C     call derivs(x+A5*h,ytemp,ak5)
 
       CALL POTENTIAL(YTEMP,ENERGY,AK5,.TRUE.,GRADSQ,RMS,.FALSE.,.FALSE.)
       IF (GRADSQ) THEN
@@ -661,7 +661,7 @@ C        AK5(I)=-AK5(I)
         YTEMP(I)=Y(I)+H*(B61*DYDX(I)+B62*AK2(I)+B63*AK3(I)+B64*AK4(I)+
      *B65*AK5(I))
 15    CONTINUE
-C     CALL DERIVS(X+A6*H,YTEMP,AK6)
+C     call derivs(x+A6*h,ytemp,ak6)
 
       CALL POTENTIAL(YTEMP,ENERGY,AK6,.TRUE.,GRADSQ,RMS,.FALSE.,.FALSE.)
       IF (GRADSQ) THEN

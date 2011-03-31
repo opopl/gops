@@ -1,20 +1,20 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE H2O(NMOLS,IPOT,COORDS,GRAD,ENERGY,GTEST,SSTEST)
 C ----------------------------------------------------------------------
@@ -23,14 +23,14 @@ C       NORMAL MODE ANALYSIS FOR WATER MOLECULES
 C       TO THREE TRANSLATIONAL MODES AND THREE ROTATINAL MODES 
 C                          CODED BY H. TANAKA      1988, 01, 08 
 C                               SEE J.CHEM.PHYS. 87, 6070 (1987) 
-C                          MODIFIED BY ME 1992
+C                          Modified by me 1992
 C       FIRST AND SECOND DERIVATIVES ARE EXPRESSED IN ANALYTICAL FORM 
 C       EWALD SUM IS NOT TAKEN INTO ACCOUNT 
-C       WRITING TO UNIT 13 SUPPRESSED
+C       Writing to unit 13 suppressed
 C
-C       THIS IS THE SUBROUTINE DESIGNED TO RETURN THE ENERGY AND
-C       FIRST AND SECOND DERIVATIVES WITH RESPECT TO THE CENTRE
-C       OF MASS AND THE EULER ANGLES.
+C       This is the subroutine designed to return the energy and
+C       first and second derivatives with respect to the centre
+C       of mass and the Euler angles.
 C
 C ----------------------------------------------------------------------
       USE MODHESS
@@ -90,12 +90,12 @@ C    *          BCZ1(NMOLS),BCZ2(NMOLS),BCZ3(NMOLS),BCZ4(NMOLS),
       DATA QQ,AD1,AD2/0.535D0,6.95D+5,6.00D+2/ 
       DATA ANGLE,HOLEN,COLEN/104.52D0,0.9572D0,0.15D0/ 
 C     DATA QE/332.17752D0/ 
-      DATA QE/332.0637782D0/  ! HARTREE TO KJ/MOL DIVIDED BY 4.184 TIMES A TO BOHR
+      DATA QE/332.0637782D0/  ! hartree to kJ/mol divided by 4.184 times A to bohr
       DATA UJ/4.184D3/ 
       DATA SG,WM/1.0D-8,18.0D0/ 
       N=NMOLS
 C
-C  IPOT DEFINES THE TIPS TYPE AS USUAL.
+C  IPOT defines the TIPS type as usual.
 C
       IF (IPOT.EQ.4) THEN 
          QQ=0.52D0 
@@ -151,8 +151,8 @@ C
       RQ3=30.0D0/(RL-RC)**5 
       RQ6=60.0D0/(RL-RC)**5 
 C
-C  COORDS CONTAINS THE COORDINATES AS X1, Y1, Z1, X2, Y2,...
-C  ...,Z3N,E11,E12,E13, ETC.
+C  COORDS contains the coordinates as X1, Y1, Z1, X2, Y2,...
+C  ...,Z3N,E11,E12,E13, etc.
 C
       DO 666 J1=1,N
          J2=3*(J1-1)
@@ -204,20 +204,20 @@ C        COORDS(3*N+J2+3)=EC(J1)
          ENDDO
       ENDIF
 C
-C  DRVTV DOES MOST OF THE WORK:
-C    EP IS THE ENERGY IN KJ PER MOLE / 2
-C    SD ARE THE SECOND DERIVATIVES
+C  DRVTV does most of the work:
+C    EP is the energy in kJ per mole / 2
+C    SD are the second derivatives
 C
-C    N3=3*N, SO I1(J1) = 1, 4, 7,...
+C    N3=3*N, so I1(J1) = 1, 4, 7,...
 C               I2(J2) = 2, 5, 8,...
 C               I3(J3) = 3, 6, 9,...
 C               K1(L1) = 3*N + I1(J1)
 C               K2(L2) = 3*N + I2(J2)
 C               K3(L3) = 3*N + I3(J3)
 C
-C  THE SECOND DERIVATIVE MATRIX THEREFORE APPEARS TO BE IN EXACTLY
-C  THE FORM THAT I NEED IT, WITH ALL THE CENTRE OF MASS DERIVATIVES
-C  AND THEN ALL THE EULER ANGLE DERIVATIVES.
+C  The second derivative matrix therefore appears to be in exactly
+C  the form that I need it, with all the centre of mass derivatives
+C  and then all the Euler angle derivatives.
 C
       CALL DRVTV(NMOLS,GTEST,SSTEST,
      1           FX,FY,FZ,FA,FB,FC,FX0,FY0,FZ0,FX1,FY1,FZ1,FX2,FY2,FZ2,FX3,FY3,FZ3,FX4,FY4,FZ4,
@@ -230,8 +230,8 @@ C
      7           BCY1,BCY2,BCY3,BCY4,CCY1,CCY2,CCY3,CCY4,AAZ1,AAZ2,AAZ3,AAZ4,ACZ1,ACZ2,ACZ3,ACZ4,CCZ1,CCZ2,CCZ3,CCZ4,
      8           LC)
 C
-C  EMUP IS AN ENERGY CONVERSION FACTOR THAT PUTS EVERYTHING
-C  IN KJ PER MOL PER MOLECULE
+C  EMUP is an energy conversion factor that puts everything
+C  in kJ per mol per molecule
 C
       EMUP=49.72553808D0
       DO 754 J1=1,N
@@ -528,13 +528,13 @@ C
 C
 C******************************************************************
 C
-C  THIS IS WHERE THE DERIVATIVES ARE CALCULATED.
-C  THE TOTAL EP = SUM V(I,J) / 2 KJ PER MOLE
-C            FDX IS THE GRADIENT WITH RESPECT TO THE X COORDINATE
-C                 OF THE CENTRE OF MASS ON A GIVEN SITE
-C            FDA IS THE DERIVATIVE OF THE ENERGY WITH RESPECT TO THE
-C                 FIRST EULER ANGLE ON A GIVEN SITE
-C            SDXX, SDXA, SDAA ARE THE ANALOGOUS SECOND DERIVATIVES
+C  This is where the derivatives are calculated.
+C  The total EP = sum V(i,j) / 2 kJ per mole
+C            FDX is the gradient with respect to the X coordinate
+C                 of the centre of mass on a given site
+C            FDA is the derivative of the energy with respect to the
+C                 first Euler angle on a given site
+C            SDXX, SDXA, SDAA are the analogous second derivatives
 C
       SUBROUTINE DRVTV(NMOLS,GTEST,SSTEST,
      1                 FX,FY,FZ,FA,FB,FC,FX0,FY0,FZ0,FX1,FY1,FZ1,FX2,FY2,FZ2,FX3,FY3,FZ3,FX4,FY4,FZ4,
@@ -609,7 +609,7 @@ C
       COMMON /DR/ RC,BXL,RC2,RL,RQ,RQ3,RQ6,EP,EMUPID,P1,P2,P3,P4,P5,P6 
       EP=0.0D0 
 C
-C  LOOP OVER ALL WATER MOLECULES, EXCEPT THE LAST
+C  Loop over all water molecules, except the last
 C
       DO 60 I=1,NN 
       XX=X(I) 
@@ -628,15 +628,15 @@ C
       YL4=YY4(I) 
       ZL4=ZZ4(I) 
 C
-C        T FOR TRANSLATION R FOR ROTATION
-C        I INDEX
+C        T for translation R for rotation
+C        I index
 C  NTI1 = 1, 4, 7,...
 C  NTI2 = 2, 5, 8,...
 C  NTI3 = 3, 6, 9,...
 C  NRI1 = 3*N + 1, 4, 7,...
 C  NRI2 = 3*N + 2, 5, 8,...
 C  NRI3 = 3*N + 3, 6, 9,...
-C        J INDEX
+C        J index
 C  NTJ1 = 1, 4, 7,...
 C  NTJ2 = 2, 5, 8,...
 C  NTJ3 = 3, 6, 9,...
@@ -651,7 +651,7 @@ C
       NTI2=NTI1+1 
       NTI3=NTI2+1 
 C
-C  LOOP OVER ALL THE OTHER WATER MOLECULES
+C  Loop over all the other water molecules
 C
 *VOPTION NOVEC 
       DO 70 J=I+1,N 
@@ -2601,11 +2601,11 @@ C ::::: @@@ 33 ::::::::::::::::::::::::::::::::::::::::::::::::::::
       ENDIF
       EPID=EPI*EMUPID 
 C
-C  TOTAL ENERGY
+C  Total Energy
 C
       EP=EP+EPID 
 C
-C TRANSLATION - TRANSLATION FOR MOLECULE I, DIAGONAL BLOCK
+C translation - translation for molecule I, diagonal block
 C
       IF (SSTEST) THEN
       HESS(NTI1,NTI1)=SDXX+HESS(NTI1,NTI1) 
@@ -2618,7 +2618,7 @@ C
       HESS(NTI3,NTI2)=SDYZ+HESS(NTI3,NTI2) 
       HESS(NTI3,NTI3)=SDZZ+HESS(NTI3,NTI3) 
 C
-C TRANSLATION - TRANSLATION FOR MOLECULE J, DIAGONAL BLOCK
+C translation - translation for molecule J, diagonal block
 C
       HESS(NTJ1,NTJ1)=SDXX+HESS(NTJ1,NTJ1) 
       HESS(NTJ1,NTJ2)=SDXY+HESS(NTJ1,NTJ2) 
@@ -2630,7 +2630,7 @@ C
       HESS(NTJ3,NTJ2)=SDYZ+HESS(NTJ3,NTJ2) 
       HESS(NTJ3,NTJ3)=SDZZ+HESS(NTJ3,NTJ3) 
 C
-C  TRANSLATION ON I WITH TRANSLATION ON J, OFF-DIAGONAL
+C  Translation on I with translation on J, off-diagonal
 C
       HESS(NTJ1,NTI1)=-SDXX+HESS(NTJ1,NTI1) 
       HESS(NTJ1,NTI2)=-SDXY+HESS(NTJ1,NTI2) 
@@ -2642,7 +2642,7 @@ C
       HESS(NTJ3,NTI2)=-SDYZ+HESS(NTJ3,NTI2) 
       HESS(NTJ3,NTI3)=-SDZZ+HESS(NTJ3,NTI3) 
 C
-C  TRANSLATION ON J WITH TRANSLATION ON I, OFF-DIAGONAL
+C  Translation on J with translation on I, off-diagonal
 C
       HESS(NTI1,NTJ1)=-SDXX+HESS(NTI1,NTJ1) 
       HESS(NTI1,NTJ2)=-SDXY+HESS(NTI1,NTJ2) 
@@ -2654,7 +2654,7 @@ C
       HESS(NTI3,NTJ2)=-SDYZ+HESS(NTI3,NTJ2) 
       HESS(NTI3,NTJ3)=-SDZZ+HESS(NTI3,NTJ3) 
 C
-C  ROTATION ON I WITH ROTATION ON I, DIAGONAL
+C  Rotation on I with rotation on I, diagonal
 C
       HESS(NRI1,NRI1)=SDAAI+HESS(NRI1,NRI1) 
       HESS(NRI1,NRI2)=SDABI+HESS(NRI1,NRI2) 
@@ -2666,7 +2666,7 @@ C
       HESS(NRI3,NRI2)=SDBCI+HESS(NRI3,NRI2) 
       HESS(NRI3,NRI3)=SDCCI+HESS(NRI3,NRI3) 
 C
-C  ROTATION ON J WITH ROTATION ON J, DIAGONAL
+C  Rotation on J with rotation on J, diagonal
 C
       HESS(NRJ1,NRJ1)=SDAAJ+HESS(NRJ1,NRJ1) 
       HESS(NRJ1,NRJ2)=SDABJ+HESS(NRJ1,NRJ2) 
@@ -2678,7 +2678,7 @@ C
       HESS(NRJ3,NRJ2)=SDBCJ+HESS(NRJ3,NRJ2) 
       HESS(NRJ3,NRJ3)=SDCCJ+HESS(NRJ3,NRJ3) 
 C
-C  ROTATION ON I WITH ROTATION ON J, OFF-DIAGONAL
+C  Rotation on I with rotation on J, off-diagonal
 C
       HESS(NRI1,NRJ1)=-SDAAK+HESS(NRI1,NRJ1) 
       HESS(NRJ1,NRI1)=-SDAAK+HESS(NRJ1,NRI1) 
@@ -2690,7 +2690,7 @@ C
       HESS(NRJ3,NRI1)=-SDACK+HESS(NRJ3,NRI1) 
       HESS(NRI3,NRJ1)=-SDCAK+HESS(NRI3,NRJ1) 
 C
-C  ROTATION ON J WITH ROTATION ON I, OFF-DIAGONAL
+C  Rotation on J with rotation on I, off-diagonal
 C
       HESS(NRJ1,NRI3)=-SDCAK+HESS(NRJ1,NRI3) 
       HESS(NRI2,NRJ2)=-SDBBK+HESS(NRI2,NRJ2) 
@@ -2702,7 +2702,7 @@ C
       HESS(NRI3,NRJ3)=-SDCCK+HESS(NRI3,NRJ3) 
       HESS(NRJ3,NRI3)=-SDCCK+HESS(NRJ3,NRI3) 
 C
-C  TRANSLATION ON I WITH ROTATION ON I, OFF-DIAGONAL
+C  Translation on I with rotation on I, off-diagonal
 C
       HESS(NTI1,NRI1)=SDXAI+HESS(NTI1,NRI1) 
       HESS(NRI1,NTI1)=SDXAI+HESS(NRI1,NTI1) 
@@ -2723,7 +2723,7 @@ C
       HESS(NTI3,NRI3)=SDZCI+HESS(NTI3,NRI3) 
       HESS(NRI3,NTI3)=SDZCI+HESS(NRI3,NTI3) 
 C
-C  TRANSLATION ON J WITH ROTATION ON J, OFF-DIAGONAL
+C  Translation on J with rotation on J, off-diagonal
 C
       HESS(NTJ1,NRJ1)=SDXAJ+HESS(NTJ1,NRJ1) 
       HESS(NRJ1,NTJ1)=SDXAJ+HESS(NRJ1,NTJ1) 
@@ -2744,7 +2744,7 @@ C
       HESS(NTJ3,NRJ3)=SDZCJ+HESS(NTJ3,NRJ3) 
       HESS(NRJ3,NTJ3)=SDZCJ+HESS(NRJ3,NTJ3) 
 C
-C  TRANSLATION ON J WITH ROTATION ON I, OFF-DIAGONAL
+C  Translation on J with rotation on I, off-diagonal
 C
       HESS(NTJ1,NRI1)=-SDXAI+HESS(NTJ1,NRI1) 
       HESS(NRI1,NTJ1)=-SDXAI+HESS(NRI1,NTJ1) 
@@ -2765,7 +2765,7 @@ C
       HESS(NTJ3,NRI3)=-SDZCI+HESS(NTJ3,NRI3) 
       HESS(NRI3,NTJ3)=-SDZCI+HESS(NRI3,NTJ3) 
 C
-C  TRANSLATION ON I WITH ROTATION ON J, OFF-DIAGONAL
+C  Translation on I with rotation on J, off-diagonal
 C
       HESS(NTI1,NRJ1)=-SDXAJ+HESS(NTI1,NRJ1) 
       HESS(NRJ1,NTI1)=-SDXAJ+HESS(NRJ1,NTI1) 

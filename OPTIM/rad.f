@@ -1,23 +1,23 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C  ADD ENERGY AND GRADIENT CORRECTION TERMS FOR THE CONTAINER SEPARATELY.
+C  Add energy and gradient correction terms for the container separately.
 C
 C     SUBROUTINE RAD(X,ENERGY,GRAD,GTEST)
       SUBROUTINE RAD(X)
@@ -52,7 +52,7 @@ C     CMZ=0.0D0
          J3=3*J1
          DIST=(X(J3-2)-CMX)**2+(X(J3-1)-CMY)**2+(X(J3)-CMZ)**2
          IF (DIST.GT.RADIUS) THEN
-            PRINT*,'IN RAD DIST,RADIUS=',SQRT(DIST),SQRT(RADIUS)
+            PRINT*,'In RAD DIST,RADIUS=',SQRT(DIST),SQRT(RADIUS)
 
 C            ENERGY=ENERGY+ALPHA*(SQRT(DIST)-SQRT(RADIUS))**2/2.0D0
 
@@ -74,11 +74,11 @@ C            ENDIF
             ENDDO
             NEARD=SQRT(NEARD)
 C           IF (NEARD.GT.1.2D0) THEN
-C              PRINT*,'COORDS BEFORE:'
+C              PRINT*,'coords before:'
 C              WRITE(*,'(3F20.10)') (X(J2),J2=1,3*NATOMS)
-C              PRINT*,'MOVING ATOM ',J1,' NEARER TO ATOM ',NEIGH,' NEARD=',NEARD
-C              PRINT*,'ATOM ',J1,' INITIALLY AT ',X(3*(J1-1)+1),X(3*(J1-1)+2),X(3*(J1-1)+3)
-C              PRINT*,'ATOM ',NEIGH,'           AT ',X(3*(NEIGH-1)+1),X(3*(NEIGH-1)+2),X(3*(NEIGH-1)+3)
+C              PRINT*,'moving atom ',J1,' nearer to atom ',NEIGH,' NEARD=',NEARD
+C              PRINT*,'atom ',J1,' initially at ',X(3*(J1-1)+1),X(3*(J1-1)+2),X(3*(J1-1)+3)
+C              PRINT*,'atom ',NEIGH,'           at ',X(3*(NEIGH-1)+1),X(3*(NEIGH-1)+2),X(3*(NEIGH-1)+3)
                X(3*(J1-1)+1)=X(3*(NEIGH-1)+1)+(X(3*(J1-1)+1)-X(3*(NEIGH-1)+1))*1.2D0/NEARD
                X(3*(J1-1)+2)=X(3*(NEIGH-1)+2)+(X(3*(J1-1)+2)-X(3*(NEIGH-1)+2))*1.2D0/NEARD
                X(3*(J1-1)+3)=X(3*(NEIGH-1)+3)+(X(3*(J1-1)+3)-X(3*(NEIGH-1)+3))*1.2D0/NEARD
@@ -86,9 +86,9 @@ C              PRINT*,'ATOM ',NEIGH,'           AT ',X(3*(NEIGH-1)+1),X(3*(NEIGH
                X(3*(J1-1)+2)=X(3*(NEIGH-1)+2)+(X(3*(J1-1)+2)-X(3*(NEIGH-1)+2))*0.95D0
                X(3*(J1-1)+3)=X(3*(NEIGH-1)+3)+(X(3*(J1-1)+3)-X(3*(NEIGH-1)+3))*0.95D0
                RADMOVED=.TRUE.
-C              PRINT*,'ATOM ',J1,'       NOW AT ',X(3*(J1-1)+1),X(3*(J1-1)+2),X(3*(J1-1)+3)
-C              PRINT*,'DIST IS NOW=',SQRT((X(J3-2)-CMX)**2+(X(J3-1)-CMY)**2+(X(J3)-CMZ)**2)
-C              PRINT*,'COORDS AFTER:'
+C              PRINT*,'atom ',J1,'       now at ',X(3*(J1-1)+1),X(3*(J1-1)+2),X(3*(J1-1)+3)
+C              PRINT*,'DIST is now=',SQRT((X(J3-2)-CMX)**2+(X(J3-1)-CMY)**2+(X(J3)-CMZ)**2)
+C              PRINT*,'coords after:'
 C              WRITE(*,'(3F20.10)') (X(J2),J2=1,3*NATOMS)
 C           ENDIF
 C           DIST=SQRT(RADIUS*0.7D0/DIST)

@@ -1,143 +1,143 @@
-      SUBROUTINE  NON_ADD_CONTACT(PRO_CORD,NMRES,TEMPAV,F_CORD,E)
+      subroutine  non_add_contact(pro_cord,nmres,tempav,f_cord,E)
 
-! DOES NON-ADDITIVE CONTACT POTENTIAL
+! does non-additive contact potential
 
-      USE AMHGLOBALS,  ONLY : AMHMAXSIZ,MAXCRD,IRES,R_MIN,R_MAX,SORT_NON_ADD,&
-            GAMMA_NON_ADD,CLASS_OF_RES_2
+      use amhglobals,  only : AMHmaxsiz,maxcrd,ires,r_min,r_max,sort_non_add,&
+            gamma_non_add,class_of_res_2
 
-      IMPLICIT NONE
+      implicit none
 
-      DOUBLE PRECISION, INTENT(IN):: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
-      INTEGER, INTENT(IN):: NMRES
-      LOGICAL, INTENT(IN):: TEMPAV
+      double precision, intent(in):: pro_cord(AMHmaxsiz,3,maxcrd)
+      integer, intent(in):: nmres
+      logical, intent(in):: tempav
 
-      DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD)
-      DOUBLE PRECISION, INTENT(OUT):: E
+      double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd)
+      double precision, intent(out):: E
 
-      DOUBLE PRECISION :: DIST,DIST_FACTOR(AMHMAXSIZ,AMHMAXSIZ,3),THETA(AMHMAXSIZ,AMHMAXSIZ,3),A(AMHMAXSIZ,2,3),&
-       WEIGHT(AMHMAXSIZ,AMHMAXSIZ,3),WEIGHT2(AMHMAXSIZ,2,3),F_NON_ADD(AMHMAXSIZ,AMHMAXSIZ),&
-       THETA_DOT(AMHMAXSIZ,AMHMAXSIZ,3),T_MIN,T_MAX
-      INTEGER :: I,J,IATOM,JATOM,I_WELL,I_WELL2,T_I,T_J,IGAM1,IGAM2,I_TYPE
+      double precision :: dist,dist_factor(AMHmaxsiz,AMHmaxsiz,3),theta(AMHmaxsiz,AMHmaxsiz,3),A(AMHmaxsiz,2,3),&
+       weight(AMHmaxsiz,AMHmaxsiz,3),weight2(AMHmaxsiz,2,3),f_non_add(AMHmaxsiz,AMHmaxsiz),&
+       theta_dot(AMHmaxsiz,AMHmaxsiz,3),t_min,t_max
+      integer :: i,j,iatom,jatom,i_well,i_well2,T_i,T_j,igam1,igam2,i_type
 
-!     ZERO FORCE AND ENERGY
+!     zero force and energy
 
-      F_CORD=0.0D0
+      f_cord=0.0D0
       E=0.0D0
 
-      DO I=1,NMRES-1   !WORK OUT THETA VALUES BETWEEN ALL PAIRS
-      DO J=I+1,NMRES
-        IATOM=2
-        JATOM=2
-        IF (IRES(I) .EQ. 8) IATOM=1
-        IF (IRES(J) .EQ. 8) JATOM=1
-        DIST=DSQRT (  (PRO_CORD(J,1,JATOM)-PRO_CORD(I,1,IATOM))**2 + &
-                      (PRO_CORD(J,2,JATOM)-PRO_CORD(I,2,IATOM))**2 + &
-                      (PRO_CORD(J,3,JATOM)-PRO_CORD(I,3,IATOM))**2 )
-        DIST_FACTOR(I,J,:)=(PRO_CORD(I,:,IATOM)-PRO_CORD(J,:,JATOM))/DIST
-        DO I_WELL=1,2
-          T_MIN=TANH(7.0D0*(DIST-R_MIN(I_WELL)))
-          T_MAX=TANH(7.0D0*(R_MAX(I_WELL)-DIST))
-          THETA(I,J,I_WELL) = 0.25D0*( 1.0D0+T_MIN )*( 1.0D0+T_MAX ) 
-          THETA_DOT(I,J,I_WELL)=7.0D0*THETA(I,J,I_WELL)*(T_MAX-T_MIN) 
-        ENDDO
-      ENDDO
-      ENDDO
+      do i=1,nmres-1   !work out theta values between all pairs
+      do j=i+1,nmres
+        iatom=2
+        jatom=2
+        if (ires(i) .eq. 8) iatom=1
+        if (ires(j) .eq. 8) jatom=1
+        dist=dsqrt (  (pro_cord(j,1,jatom)-pro_cord(i,1,iatom))**2 + &
+                      (pro_cord(j,2,jatom)-pro_cord(i,2,iatom))**2 + &
+                      (pro_cord(j,3,jatom)-pro_cord(i,3,iatom))**2 )
+        dist_factor(i,j,:)=(pro_cord(i,:,iatom)-pro_cord(j,:,jatom))/dist
+        do i_well=1,2
+          t_min=tanh(7.0D0*(dist-r_min(i_well)))
+          t_max=tanh(7.0D0*(r_max(i_well)-dist))
+          theta(i,j,i_well) = 0.25D0*( 1.0D0+t_min )*( 1.0D0+t_max ) 
+          theta_dot(i,j,i_well)=7.0D0*theta(i,j,i_well)*(t_max-t_min) 
+        enddo
+      enddo
+      enddo
 
 
       A=0.0D0
-      DO I=1,NMRES-1     !CALCULATE LOCAL DENSITIES, A
-      DO J=I+1,NMRES
-        DO I_WELL=1,2
-          A(I,CLASS_OF_RES_2(J),I_WELL)=A(I,CLASS_OF_RES_2(J),I_WELL)+THETA(I,J,I_WELL)
-          A(J,CLASS_OF_RES_2(I),I_WELL)=A(J,CLASS_OF_RES_2(I),I_WELL)+THETA(I,J,I_WELL)
-        ENDDO
-      ENDDO 
-      ENDDO
+      do i=1,nmres-1     !calculate local densities, A
+      do j=i+1,nmres
+        do i_well=1,2
+          A(i,class_of_res_2(j),i_well)=A(i,class_of_res_2(j),i_well)+theta(i,j,i_well)
+          A(j,class_of_res_2(i),i_well)=A(j,class_of_res_2(i),i_well)+theta(i,j,i_well)
+        enddo
+      enddo 
+      enddo
 
 
-      WEIGHT=0.0D0
-      DO I=1,NMRES-1     !CALCULATE WEIGHTS GIVEN TO BARE INTERACTIONS
-      T_I=CLASS_OF_RES_2(I)
-      DO J=I+1,NMRES
-      T_J=CLASS_OF_RES_2(J)
-        IGAM1=SORT_NON_ADD(T_I,T_J,1,1,1)
-        IGAM2=SORT_NON_ADD(T_J,T_I,1,1,1)
-        DO I_WELL=1,2
-          DO I_TYPE=1,2
-          DO I_WELL2=1,2
-            WEIGHT(I,J,I_WELL)=WEIGHT(I,J,I_WELL)+ &
-                 GAMMA_NON_ADD(IGAM1)*A(I,I_TYPE,I_WELL2)+ &
-                 GAMMA_NON_ADD(IGAM2)*A(J,I_TYPE,I_WELL2)
-            IGAM1=IGAM1+1
-            IGAM2=IGAM2+1
-          ENDDO
-          ENDDO
-        ENDDO
-      ENDDO
-      ENDDO
+      weight=0.0D0
+      do i=1,nmres-1     !calculate weights given to bare interactions
+      T_i=class_of_res_2(i)
+      do j=i+1,nmres
+      T_j=class_of_res_2(j)
+        igam1=sort_non_add(T_i,T_j,1,1,1)
+        igam2=sort_non_add(T_j,T_i,1,1,1)
+        do i_well=1,2
+          do i_type=1,2
+          do i_well2=1,2
+            weight(i,j,i_well)=weight(i,j,i_well)+ &
+                 gamma_non_add(igam1)*A(i,i_type,i_well2)+ &
+                 gamma_non_add(igam2)*A(j,i_type,i_well2)
+            igam1=igam1+1
+            igam2=igam2+1
+          enddo
+          enddo
+        enddo
+      enddo
+      enddo
 
-      WEIGHT2=0.0D0
-      DO I=1,NMRES-13
-      T_I=CLASS_OF_RES_2(I)
-      DO J=I+13,NMRES
-      T_J=CLASS_OF_RES_2(J)
-      IGAM1=SORT_NON_ADD(T_I,T_J,1,1,1)
-      IGAM2=SORT_NON_ADD(T_J,T_I,1,1,1)
-      DO I_WELL=1,2
-      DO I_TYPE=1,2
-      DO I_WELL2=1,2
-        WEIGHT2(I,I_TYPE,I_WELL2)=WEIGHT2(I,I_TYPE,I_WELL2)+  &
-                    THETA(I,J,I_WELL)*GAMMA_NON_ADD(IGAM1)
-        WEIGHT2(J,I_TYPE,I_WELL2)=WEIGHT2(J,I_TYPE,I_WELL2)+  &
-                    THETA(I,J,I_WELL)*GAMMA_NON_ADD(IGAM2)
-        IGAM1=IGAM1+1
-        IGAM2=IGAM2+1
-      ENDDO
-      ENDDO
-      ENDDO
-      ENDDO
-      ENDDO
+      weight2=0.0D0
+      do i=1,nmres-13
+      T_i=class_of_res_2(i)
+      do j=i+13,nmres
+      T_j=class_of_res_2(j)
+      igam1=sort_non_add(T_i,T_j,1,1,1)
+      igam2=sort_non_add(T_j,T_i,1,1,1)
+      do i_well=1,2
+      do i_type=1,2
+      do i_well2=1,2
+        weight2(i,i_type,i_well2)=weight2(i,i_type,i_well2)+  &
+                    theta(i,j,i_well)*gamma_non_add(igam1)
+        weight2(j,i_type,i_well2)=weight2(j,i_type,i_well2)+  &
+                    theta(i,j,i_well)*gamma_non_add(igam2)
+        igam1=igam1+1
+        igam2=igam2+1
+      enddo
+      enddo
+      enddo
+      enddo
+      enddo
 
-      IF (TEMPAV) THEN        !CALCULATE E
+      if (tempav) then        !calculate E
         E=0.0D0
-        DO I=1,NMRES-13
-        DO J=I+13,NMRES
-        DO I_WELL=1,2
-          E=E-THETA(I,J,I_WELL)*WEIGHT(I,J,I_WELL)
-        ENDDO
-        ENDDO
-        ENDDO
-      ENDIF
+        do i=1,nmres-13
+        do j=i+13,nmres
+        do i_well=1,2
+          E=E-theta(i,j,i_well)*weight(i,j,i_well)
+        enddo
+        enddo
+        enddo
+      endif
 
-      F_NON_ADD=0.0D0    !CALCULATE 1ST CONTRIBUTION TO F_IJ
-      DO I=1,NMRES-13
-      DO J=I+13,NMRES
-      DO I_WELL=1,2
-        F_NON_ADD(I,J)=F_NON_ADD(I,J)+THETA_DOT(I,J,I_WELL)*WEIGHT(I,J,I_WELL)
-      ENDDO
-      ENDDO
-      ENDDO
+      f_non_add=0.0D0    !calculate 1st contribution to F_ij
+      do i=1,nmres-13
+      do j=i+13,nmres
+      do i_well=1,2
+        f_non_add(i,j)=f_non_add(i,j)+theta_dot(i,j,i_well)*weight(i,j,i_well)
+      enddo
+      enddo
+      enddo
 
-      DO I=1,NMRES-1   !ADD 2ND CONTRIBUTION TO F_IJ
-      T_I=CLASS_OF_RES_2(I)
-      DO J=I+1,NMRES
-      T_J=CLASS_OF_RES_2(J)
-      DO I_WELL2=1,2
-        F_NON_ADD(I,J)=F_NON_ADD(I,J)+THETA_DOT(I,J,I_WELL2)* &
-                ( WEIGHT2(I,T_J,I_WELL2) + WEIGHT2(J,T_I,I_WELL2) )
-      ENDDO
-      ENDDO
-      ENDDO
+      do i=1,nmres-1   !add 2nd contribution to F_ij
+      T_i=class_of_res_2(i)
+      do j=i+1,nmres
+      T_j=class_of_res_2(j)
+      do i_well2=1,2
+        f_non_add(i,j)=f_non_add(i,j)+theta_dot(i,j,i_well2)* &
+                ( weight2(i,T_j,i_well2) + weight2(j,T_i,i_well2) )
+      enddo
+      enddo
+      enddo
 
-      DO I=1,NMRES-1                  !CALCULATE F_CORD
-      IATOM=2
-      IF (IRES(I) .EQ. 8) IATOM=1
-      DO J=I+1,NMRES
-      JATOM=2
-      IF (IRES(J) .EQ. 8) JATOM=1
-        F_CORD(I,:,IATOM)=F_CORD(I,:,IATOM)+DIST_FACTOR(I,J,:)*F_NON_ADD(I,J)
-        F_CORD(J,:,JATOM)=F_CORD(J,:,JATOM)-DIST_FACTOR(I,J,:)*F_NON_ADD(I,J)
-      ENDDO
-      ENDDO
+      do i=1,nmres-1                  !calculate f_cord
+      iatom=2
+      if (ires(i) .eq. 8) iatom=1
+      do j=i+1,nmres
+      jatom=2
+      if (ires(j) .eq. 8) jatom=1
+        f_cord(i,:,iatom)=f_cord(i,:,iatom)+dist_factor(i,j,:)*f_non_add(i,j)
+        f_cord(j,:,jatom)=f_cord(j,:,jatom)-dist_factor(i,j,:)*f_non_add(i,j)
+      enddo
+      enddo
 
-      END
+      end

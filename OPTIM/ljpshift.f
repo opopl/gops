@@ -1,37 +1,37 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  SUBROUTINE LJPSHIFTBIN CALCULATES THE ENERGY, CARTESIAN GRADIENT AND SECOND
-C  DERIVATIVE MATRIX ANALYTICALLY FOR LENNARD-JONES IN REDUCED UNITS
-C  (EPSILON=SIGMA=1) USING A SHIFTED, TRUNCATED POTENTIAL.
+C  Subroutine LJPSHIFTBIN calculates the energy, cartesian gradient and second
+C  derivative matrix analytically for Lennard-Jones in reduced units
+C  (epsilon=sigma=1) using a shifted, truncated potential.
 C
-C  ADAPTED FOR THE BINARY LJ GLASS DESCRIBED BY SASTRY, DEBENETTI AND
-C  STILLINGER, NATURE, 393, 554, 1998. ATOM TYPES ARE A AND B. THE FIRST
-C  NTYPEA ARE A, THE NEXT NBTYPE=NATOMS-NTYPEA ARE B. EPSILON AND SIGMA FOR A ARE THE
-C  UNITS OF ENERGY AND DISTANCE, SO WE ALSO NEED EPSAB, EPSAB, SIGAB AND
-C  SIGAA IN THESE UNITS. SASTRY ET AL. DENSITY IS 1.2 I.E. A BOX LENGTH
-C  OF 5.975206 FOR 256 ATOMS. 
+C  Adapted for the binary LJ glass described by Sastry, Debenetti and
+C  Stillinger, Nature, 393, 554, 1998. Atom types are A and B. The first
+C  NTYPEA are A, the next NBTYPE=NATOMS-NTYPEA are B. epsilon and sigma for A are the
+C  units of energy and distance, so we also need EPSAB, EPSAB, SIGAB and
+C  SIGAA in these units. Sastry et al. density is 1.2 i.e. a box length
+C  of 5.975206 for 256 atoms. 
 C
-C  THE SHIFTING AND TRUNCATION IS AS DESCRIBED BY STODDARD AND FORD, PHYS.
-C  REV. A, 8, 1504, 1973. ATOM TYPE 'LS'.
+C  The shifting and truncation is as described by Stoddard and Ford, Phys.
+C  Rev. A, 8, 1504, 1973. Atom type 'LS'.
 C
 C
 C*************************************************************************
@@ -77,29 +77,29 @@ C     COMMON /ANVCOMMON/ ANV
       RCONSTAB=(6.0D0*SIGRCAB12-3.0D0*SIGRCAB6)/CUTAB**2
       RCONSTBB=(6.0D0*SIGRCBB12-3.0D0*SIGRCBB6)/CUTBB**2
 C
-C  WORK OUT CUTOFF FOR POTENTIAL. TWO PARTICLES INTERACT IF R<C, BUT
-C  WE WILL USE THE EQUIVALENT CONDITION 1/R^2 > 1/C^2.
+C  Work out cutoff for potential. Two particles interact if r<c, but
+C  we will use the equivalent condition 1/r^2 > 1/c^2.
 C
-C     IF (PTEST) PRINT*,'CUTOFF USED = ',CUTOFF
+C     IF (PTEST) PRINT*,'Cutoff used = ',CUTOFF
 C
-C  DEAL WITH ANY ATOMS THAT HAVE LEFT THE BOX.
+C  Deal with any atoms that have left the box.
 C
-C     PRINT*,'IN LJPSHIFT FIXIMAGE,NORESET,GTEST=',FIXIMAGE,NORESET,GTEST
+C     PRINT*,'In ljpshift FIXIMAGE,NORESET,GTEST=',FIXIMAGE,NORESET,GTEST
       IF ((.NOT.FIXIMAGE).AND.(.NOT.NORESET)) THEN
          DO J1=1,N
             J2 = 3*(J1-1)
-C           IF (ANINT(X(J2+1)/BOXLX).NE.0) PRINT*,'RESETTING X FOR J1,X,XNEW=',J1,X(J2+1),X(J2+1) - BOXLX*ANINT(X(J2+1)/BOXLX)
-C           IF (ANINT(X(J2+2)/BOXLX).NE.0) PRINT*,'RESETTING Y FOR J1,X,XNEW=',J1,X(J2+2),X(J2+2) - BOXLY*ANINT(X(J2+2)/BOXLY)
-C           IF (ANINT(X(J2+3)/BOXLX).NE.0) PRINT*,'RESETTING Z FOR J1,X,XNEW=',J1,X(J2+3),X(J2+3) - BOXLZ*ANINT(X(J2+3)/BOXLZ)
+C           IF (ANINT(X(J2+1)/BOXLX).NE.0) PRINT*,'resetting X for J1,X,Xnew=',J1,X(J2+1),X(J2+1) - BOXLX*ANINT(X(J2+1)/BOXLX)
+C           IF (ANINT(X(J2+2)/BOXLX).NE.0) PRINT*,'resetting Y for J1,X,Xnew=',J1,X(J2+2),X(J2+2) - BOXLY*ANINT(X(J2+2)/BOXLY)
+C           IF (ANINT(X(J2+3)/BOXLX).NE.0) PRINT*,'resetting Z for J1,X,Xnew=',J1,X(J2+3),X(J2+3) - BOXLZ*ANINT(X(J2+3)/BOXLZ)
             X(J2+1)=X(J2+1) - BOXLX*ANINT(X(J2+1)/BOXLX)
             X(J2+2)=X(J2+2) - BOXLY*ANINT(X(J2+2)/BOXLY)
             X(J2+3)=X(J2+3) - BOXLZ*ANINT(X(J2+3)/BOXLZ)
          ENDDO
       ENDIF
 C
-C  CALCULATE INTERATOMIC VECTORS USING THE MINIMUM IMAGE CONVENTION.
-C  VEC(I,J,ALPHA) IS THE ALPHA (X, Y OR Z) COMPONENT OF THE VECTOR BETWEEN
-C  ATOMS I AND J.
+C  Calculate interatomic vectors using the minimum image convention.
+C  VEC(i,j,alpha) is the alpha (x, y or z) component of the vector between
+C  atoms i and j.
 C
       POTEL=0.0D0
       IF (GTEST.OR.BOXTEST) THEN
@@ -289,7 +289,7 @@ C        WRITE(*,'(A,6F20.10)') 'X53,X93=,',X(157),X(158),X(159),X(277),X(278),X
             VBOX(2)=VBOX(2)+PRESS*BOXLX*BOXLZ
             VBOX(3)=VBOX(3)+PRESS*BOXLY*BOXLX
          ENDIF
-C        IF (BOXTEST) WRITE(*,'(A,3G20.10)') 'BOX LENGTH GRADIENT: ',VBOX(1),VBOX(2),VBOX(3)
+C        IF (BOXTEST) WRITE(*,'(A,3G20.10)') 'Box length gradient: ',VBOX(1),VBOX(2),VBOX(3)
       ENDIF
       
       IF ((.NOT.STEST).AND.(.NOT.BOXTEST)) RETURN
@@ -300,7 +300,7 @@ C        IF (BOXTEST) WRITE(*,'(A,3G20.10)') 'BOX LENGTH GRADIENT: ',VBOX(1),VBO
             SBOX(2)=SBOX(2)/BOXLY**2
             SBOX(3)=SBOX(3)/BOXLZ**2
          ENDIF
-C        IF (BOXTEST) WRITE(*,'(A,3G20.10)') 'BOX LENGTH SECOND DERIVATIVES: ',SBOX(1),SBOX(2),SBOX(3)
+C        IF (BOXTEST) WRITE(*,'(A,3G20.10)') 'Box length second derivatives: ',SBOX(1),SBOX(2),SBOX(3)
       ENDIF
 
       RETURN
@@ -320,7 +320,7 @@ C*****************************************************************************
       COMMON /RCONSTBIN/ RCONSTAA, RCONSTAB, RCONSTBB, IRCUT2AA, IRCUT2AB, IRCUT2BB
 C     COMMON /ANVCOMMON/ ANV
 C
-C  CALCULATE THE G TENSOR.
+C  Calculate the g tensor.
 C
       DO J1=1,NTYPEA
          G(J1,J1)=0.0D0
@@ -370,7 +370,7 @@ C
       ENDDO
       RETURN
 C
-C  BOX LENGTH DERIVATIVES
+C  Box length derivatives
 C
 10    VBOX(1)=0.0D0
       VBOX(2)=0.0D0
@@ -482,7 +482,7 @@ C           F(J2,J1)=672.0D0*R14(J2,J1)-192.0D0*R8(J2,J1)
       
       IF (BOXTEST) GOTO 10
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO J1=1,N
          DO J2=1,3
@@ -506,8 +506,8 @@ C
          ENDDO
       ENDDO
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO J1=1,N
          DO J2=1,3
@@ -537,7 +537,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO J1=1,N
          DO J2=1,3
@@ -568,7 +568,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO J1=1,N
          DO J2=1,3
@@ -603,7 +603,7 @@ C
          ENDDO
       ENDDO
 C
-C  SYMMETRISE HESSIAN
+C  Symmetrise Hessian
 C
       DO J1=1,3*N
          DO J2=J1+1,3*N
@@ -613,7 +613,7 @@ C
 
       RETURN
 C
-C  BOX LENGTH DERIVATIVES
+C  Box length derivatives
 C
 10    SBOX(1)=0.0D0
       SBOX(2)=0.0D0
@@ -691,7 +691,7 @@ C
       RETURN
       END
 C
-C  SAME AS ABOVE WITHOUT PERIODIC BOUNDARIES.
+C  Same as above without periodic boundaries.
 C
       SUBROUTINE LJPSHIFTBINC(N, X, V, POTEL, CUTOFF, GTEST, STEST, PTEST)
       USE KEY
@@ -732,14 +732,14 @@ C
       RCONSTAB=(6.0D0*SIGRCAB12-3.0D0*SIGRCAB6)/CUTAB**2
       RCONSTBB=(6.0D0*SIGRCBB12-3.0D0*SIGRCBB6)/CUTBB**2
 C
-C  WORK OUT CUTOFF FOR POTENTIAL. TWO PARTICLES INTERACT IF R<C, BUT
-C  WE WILL USE THE EQUIVALENT CONDITION 1/R^2 > 1/C^2.
+C  Work out cutoff for potential. Two particles interact if r<c, but
+C  we will use the equivalent condition 1/r^2 > 1/c^2.
 C
-C     IF (PTEST) PRINT*,'CUTOFF USED = ',CUTOFF
+C     IF (PTEST) PRINT*,'Cutoff used = ',CUTOFF
 C
-C  CALCULATE INTERATOMIC VECTORS 
-C  VEC(I,J,ALPHA) IS THE ALPHA (X, Y OR Z) COMPONENT OF THE VECTOR BETWEEN
-C  ATOMS I AND J.
+C  Calculate interatomic vectors 
+C  VEC(i,j,alpha) is the alpha (x, y or z) component of the vector between
+C  atoms i and j.
 C
       POTEL=0.0D0
       IF (GTEST) THEN
@@ -905,7 +905,7 @@ C*****************************************************************************
      3                 RCONSTAA, RCONSTAB, RCONSTBB, IRCUT2AA, IRCUT2AB, IRCUT2BB
       COMMON /RCONSTBIN/ RCONSTAA, RCONSTAB, RCONSTBB, IRCUT2AA, IRCUT2AB, IRCUT2BB
 C
-C  CALCULATE THE G TENSOR.
+C  Calculate the g tensor.
 C
       DO J1=1,NTYPEA
          G(J1,J1)=0.0D0
@@ -984,7 +984,7 @@ C           F(J2,J1)=672.0D0*R14(J2,J1)-192.0D0*R8(J2,J1)
          ENDDO
       ENDDO
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1008,8 +1008,8 @@ C
          ENDDO
       ENDDO
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1039,7 +1039,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1070,7 +1070,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1105,7 +1105,7 @@ C
          ENDDO
       ENDDO
 C
-C  SYMMETRISE HESSIAN
+C  Symmetrise Hessian
 C
       DO J1=1,3*N
          DO J2=J1+1,3*N
@@ -1118,16 +1118,16 @@ C
 C
 C*************************************************************************
 C
-C  SUBROUTINE LJPSHIFT CALCULATES THE ENERGY, CARTESIAN GRADIENT AND SECOND
-C  DERIVATIVE MATRIX ANALYTICALLY FOR LENNARD-JONES IN REDUCED UNITS
-C  (EPSILON=SIGMA=1) USING A SHIFTED, TRUNCATED POTENTIAL.
+C  Subroutine LJPSHIFT calculates the energy, cartesian gradient and second
+C  derivative matrix analytically for Lennard-Jones in reduced units
+C  (epsilon=sigma=1) using a shifted, truncated potential.
 C
-C  ADAPTED FOR THE BINARY LJ GLASS DESCRIBED BY SASTRY, DEBENETTI AND
-C  STILLINGER, NATURE, 393, 554, 1998. ATOM TYPES ARE A AND B. THE FIRST
-C  NTYPEA ARE A, THE NEXT NBTYPE=NATOMS-NTYPEA ARE B. EPSILON AND SIGMA FOR A ARE THE
-C  UNITS OF ENERGY AND DISTANCE, SO WE ALSO NEED EPSAB, EPSAB, SIGAB AND
-C  SIGAA IN THESE UNITS. SASTRY ET AL. DENSITY IS 1.2 I.E. A BOX LENGTH
-C  OF 5.975206 FOR 256 ATOMS. 
+C  Adapted for the binary LJ glass described by Sastry, Debenetti and
+C  Stillinger, Nature, 393, 554, 1998. Atom types are A and B. The first
+C  NTYPEA are A, the next NBTYPE=NATOMS-NTYPEA are B. epsilon and sigma for A are the
+C  units of energy and distance, so we also need EPSAB, EPSAB, SIGAB and
+C  SIGAA in these units. Sastry et al. density is 1.2 i.e. a box length
+C  of 5.975206 for 256 atoms. 
 C
 C
 C*************************************************************************
@@ -1154,12 +1154,12 @@ C     COMMON /ANVCOMMON/ ANV
       CONSTAA=4.0D0*SIGRCAA6-7.0D0*SIGRCAA12
       RCONSTAA=(6.0D0*SIGRCAA12-3.0D0*SIGRCAA6)/CUTAA**2
 C
-C  WORK OUT CUTOFF FOR POTENTIAL. TWO PARTICLES INTERACT IF R<C, BUT
-C  WE WILL USE THE EQUIVALENT CONDITION 1/R^2 > 1/C^2.
+C  Work out cutoff for potential. Two particles interact if r<c, but
+C  we will use the equivalent condition 1/r^2 > 1/c^2.
 C
-C     IF (PTEST) PRINT*,'CUTOFF USED = ',CUTOFF
+C     IF (PTEST) PRINT*,'Cutoff used = ',CUTOFF
 C
-C  DEAL WITH ANY ATOMS THAT HAVE LEFT THE BOX.
+C  Deal with any atoms that have left the box.
 C
       IF ((.NOT.FIXIMAGE).AND.(.NOT.NORESET)) THEN
          DO J1=1,N
@@ -1170,9 +1170,9 @@ C
          ENDDO
       ENDIF
 C
-C  CALCULATE INTERATOMIC VECTORS USING THE MINIMUM IMAGE CONVENTION.
-C  VEC(I,J,ALPHA) IS THE ALPHA (X, Y OR Z) COMPONENT OF THE VECTOR BETWEEN
-C  ATOMS I AND J.
+C  Calculate interatomic vectors using the minimum image convention.
+C  VEC(i,j,alpha) is the alpha (x, y or z) component of the vector between
+C  atoms i and j.
 C
       POTEL=0.0D0
       IF (GTEST) THEN
@@ -1271,7 +1271,7 @@ C*****************************************************************************
       LOGICAL DOUBLET
       COMMON /RCONST/ RCONSTAA, IRCUT2AA
 C
-C  CALCULATE THE G TENSOR.
+C  Calculate the g tensor.
 C
       DO J1=1,N
          G(J1,J1)=0.0D0
@@ -1319,7 +1319,7 @@ C*****************************************************************************
          ENDDO
       ENDDO
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1331,8 +1331,8 @@ C
          ENDDO
       ENDDO
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1347,7 +1347,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1362,7 +1362,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1381,7 +1381,7 @@ C
          ENDDO
       ENDDO
 C
-C  SYMMETRISE HESSIAN
+C  Symmetrise Hessian
 C
       DO J1=1,3*N
          DO J2=J1+1,3*N
@@ -1400,9 +1400,9 @@ C
      2                 BOXLX,BOXLY,BOXLZ,CUTOFF,DIF,TEMP1
 
 C
-C  VALUE OF DIF IS THE ORDER OF MAGNITUDE TO WHICH THE LATTICE
-C  CONSTANT CAN BE OPTIMISED. SETTING IT SMALLER THAN 10^(-7)
-C  CAUSES NUMERICAL PROBLEMS ON THE DEC.
+C  Value of DIF is the order of magnitude to which the lattice
+C  constant can be optimised. Setting it smaller than 10^(-7)
+C  causes numerical problems on the DEC.
 C
       DIF=1.0D-7
       BSAVE=BOXLX
@@ -1453,21 +1453,21 @@ C
       CALL LJPSHIFT(N, XC,  V, F3,   BOXLX, BOXLY, BOXLZ, CUTOFF, .FALSE., .FALSE., .FALSE.)
 
       SECOND=(F3+F2-2.0D0*F1)/(4.0D0*DIF*DIF)
-      PRINT*,'ENERGY FOR LATTICE CYCLE ',NCOUNT,' IS ',F1
-      PRINT*,'GRADIENT WRT BOX LENGTH=',GRAD
-      PRINT*,'SECOND DERIVATIVE WRT BOX LENGTH=',SECOND
+      PRINT*,'Energy for lattice cycle ',NCOUNT,' is ',F1
+      PRINT*,'Gradient wrt box length=',GRAD
+      PRINT*,'Second derivative wrt box length=',SECOND
       NCOUNT=NCOUNT+1
       IF (DABS(GRAD/SECOND).GT.1.0D-4) THEN
          BOXLX=BOXLX-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
          BOXLY=BOXLY-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
          BOXLZ=BOXLZ-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
-         PRINT*,'STEP=',-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
+         PRINT*,'Step=',-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
          GOTO 10
       ELSE
          BOXLX=BOXLX-GRAD/SECOND
          BOXLY=BOXLY-GRAD/SECOND
          BOXLZ=BOXLZ-GRAD/SECOND
-         PRINT*,'STEP=',-GRAD/SECOND
+         PRINT*,'Step=',-GRAD/SECOND
          IF (DABS(GRAD/SECOND).GT.1.0D-6) GOTO 10
       ENDIF
       RETURN
@@ -1475,19 +1475,19 @@ C
 C
 C*************************************************************************
 C
-C  SUBROUTINE LJPSHIFTBIN2 CALCULATES THE ENERGY, CARTESIAN GRADIENT AND SECOND
-C  DERIVATIVE MATRIX ANALYTICALLY FOR LENNARD-JONES IN REDUCED UNITS
-C  (EPSILON=SIGMA=1) USING A SHIFTED, TRUNCATED POTENTIAL.
+C  Subroutine LJPSHIFTBIN2 calculates the energy, cartesian gradient and second
+C  derivative matrix analytically for Lennard-Jones in reduced units
+C  (epsilon=sigma=1) using a shifted, truncated potential.
 C
-C  ADAPTED FOR THE BINARY LJ GLASS DESCRIBED BY SASTRY, DEBENETTI AND
-C  STILLINGER, NATURE, 393, 554, 1998. ATOM TYPES ARE A AND B. THE FIRST
-C  NTYPEA ARE A, THE NEXT NBTYPE=NATOMS-NTYPEA ARE B. EPSILON AND SIGMA FOR A ARE THE
-C  UNITS OF ENERGY AND DISTANCE, SO WE ALSO NEED EPSAB, EPSAB, SIGAB AND
-C  SIGAA IN THESE UNITS. SASTRY ET AL. DENSITY IS 1.2 I.E. A BOX LENGTH
-C  OF 5.975206 FOR 256 ATOMS. 
+C  Adapted for the binary LJ glass described by Sastry, Debenetti and
+C  Stillinger, Nature, 393, 554, 1998. Atom types are A and B. The first
+C  NTYPEA are A, the next NBTYPE=NATOMS-NTYPEA are B. epsilon and sigma for A are the
+C  units of energy and distance, so we also need EPSAB, EPSAB, SIGAB and
+C  SIGAA in these units. Sastry et al. density is 1.2 i.e. a box length
+C  of 5.975206 for 256 atoms. 
 C
-C  THIS ROUTINE USES THE SAME NEIGHBOURS WHEN FIXIMAGE IS SET TO TRY AND AVOID
-C  DISCONTINUITIES IN THE SECOND DERIVATIVES.
+C  This routine uses the same neighbours when FIXIMAGE is set to try and avoid
+C  discontinuities in the second derivatives.
 C
 C
 C*************************************************************************
@@ -1536,14 +1536,14 @@ C     SAVE CHECKCUT
          CHECKCUT(J1,J1)=.FALSE.
       ENDDO
 C
-C  WORK OUT CUTOFF FOR POTENTIAL. TWO PARTICLES INTERACT IF R<C, BUT
-C  WE WILL USE THE EQUIVALENT CONDITION 1/R^2 > 1/C^2.
+C  Work out cutoff for potential. Two particles interact if r<c, but
+C  we will use the equivalent condition 1/r^2 > 1/c^2.
 C
-C     IF (PTEST) PRINT*,'CUTOFF USED = ',CUTOFF
+C     IF (PTEST) PRINT*,'Cutoff used = ',CUTOFF
 C
-C  DEAL WITH ANY ATOMS THAT HAVE LEFT THE BOX.
+C  Deal with any atoms that have left the box.
 C
-C     PRINT*,'IN LJPSHIFTBIN2 FIXIMAGE,NORESET=',FIXIMAGE,NORESET
+C     PRINT*,'in LJPSHIFTBIN2 FIXIMAGE,NORESET=',FIXIMAGE,NORESET
       IF ((.NOT.FIXIMAGE).AND.(.NOT.NORESET)) THEN
          DO J1=1,N
             J2 = 3*(J1-1)
@@ -1553,9 +1553,9 @@ C     PRINT*,'IN LJPSHIFTBIN2 FIXIMAGE,NORESET=',FIXIMAGE,NORESET
          ENDDO
       ENDIF
 C
-C  CALCULATE INTERATOMIC VECTORS USING THE MINIMUM IMAGE CONVENTION.
-C  VEC(I,J,ALPHA) IS THE ALPHA (X, Y OR Z) COMPONENT OF THE VECTOR BETWEEN
-C  ATOMS I AND J.
+C  Calculate interatomic vectors using the minimum image convention.
+C  VEC(i,j,alpha) is the alpha (x, y or z) component of the vector between
+C  atoms i and j.
 C
       POTEL=0.0D0
       IF (GTEST) THEN
@@ -1745,7 +1745,7 @@ C*****************************************************************************
      3                 RCONSTAA, RCONSTAB, RCONSTBB, IRCUT2AA, IRCUT2AB, IRCUT2BB
       COMMON /RCONSTBIN/ RCONSTAA, RCONSTAB, RCONSTBB, IRCUT2AA, IRCUT2AB, IRCUT2BB
 C
-C  CALCULATE THE G TENSOR.
+C  Calculate the g tensor.
 C
       DO J1=1,NTYPEA
          G(J1,J1)=0.0D0
@@ -1823,7 +1823,7 @@ C           F(J2,J1)=672.0D0*R14(J2,J1)-192.0D0*R8(J2,J1)
          ENDDO
       ENDDO
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1835,8 +1835,8 @@ C
          ENDDO
       ENDDO
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1850,7 +1850,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1865,7 +1865,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO J1=1,N
          DO J2=1,3
@@ -1884,7 +1884,7 @@ C
          ENDDO
       ENDDO
 C
-C  SYMMETRISE HESSIAN
+C  Symmetrise Hessian
 C
       DO J1=1,3*N
          DO J2=J1+1,3*N

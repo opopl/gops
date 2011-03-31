@@ -1,22 +1,22 @@
 !
-!     OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!     IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!     THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!     (AT YOUR OPTION) ANY LATER VERSION.
+!     OPTIM is free software; you can redistribute it and/or modify
+!     it under the terms of the GNU General Public License as published by
+!     the Free Software Foundation; either version 2 of the License, or
+!     (at your option) any later version.
 !
-!     OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!     BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!     MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!     GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!     OPTIM is distributed in the hope that it will be useful,
+!     but WITHOUT ANY WARRANTY; without even the implied warranty of
+!     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!     GNU General Public License for more details.
 !
-!     YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!     ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!     FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!     You should have received a copy of the GNU General Public License
+!     along with this program; if not, write to the Free Software
+!     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 !     ____________________________________________________________________________________
 
-!     SUBROUTINE LWOTPGH CALCULATES THE GRADIENT AND HESSIAN MATRIX ANALYTICALLY FOR THE
-!     LEWIS-WAHNSTROM MODEL OF ORTHOTERPHENYL IN REDUCED UNITS.
+!     Subroutine LWOTPGH calculates the gradient and Hessian matrix analytically for the
+!     Lewis-Wahnstrom model of orthoterphenyl in reduced units.
 !     ____________________________________________________________________________________
 
       SUBROUTINE LWOTPGH (X, G, ENERGY, GTEST, SECT)
@@ -188,86 +188,86 @@
 
 !     [1] SIX COMPLETELY DIAGONAL TERMS: SAME MOLECULE, SAME COORDINATES
 
-!     XI,XI
+!     xi,xi
                      HESS(J3-2,J3-2) = HESS(J3-2,J3-2) + D2VDR2(J7,J8)*RSS(1)*RSS(1) + DVDR(J7,J8)
-!     YI,YI             
+!     yi,yi             
                      HESS(J3-1,J3-1) = HESS(J3-1,J3-1) + D2VDR2(J7,J8)*RSS(2)*RSS(2) + DVDR(J7,J8)
-!     ZI,ZI
+!     zi,zi
                      HESS(J3,J3)     = HESS(J3,J3)     + D2VDR2(J7,J8)*RSS(3)*RSS(3) + DVDR(J7,J8)
-!     PI1,PI1
+!     pi1,pi1
                      HESS(J5-2,J5-2) = HESS(J5-2,J5-2) + D2VDR2(J7,J8)*DOTI1(J7,J8)*DOTI1(J7,J8) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(DR1(J7,:),DR1(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R1(J7,:))
-!     PI2,PI2
+!     pi2,pi2
                      HESS(J5-1,J5-1) = HESS(J5-1,J5-1) + D2VDR2(J7,J8)*DOTI2(J7,J8)*DOTI2(J7,J8) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(DR2(J7,:),DR2(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R2(J7,:))
-!     PI3,PI3
+!     pi3,pi3
                      HESS(J5,J5)     = HESS(J5,J5) + D2VDR2(J7,J8)*DOTI3(J7,J8)*DOTI3(J7,J8) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(DR3(J7,:),DR3(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R3(J7,:))
 
 !     [2] OFF-DIAGONAL TERMS ON THE DIAGONAL BLOCKS: SAME MOLECULE, DIFFERENT COORDINATES
 
-!     XI,YI
+!     xi,yi
                      DUMMY           = D2VDR2(J7,J8)*RSS(1)*RSS(2)
                      HESS(J3-2,J3-1) = HESS(J3-2,J3-1) + DUMMY
                      HESS(J3-1,J3-2) = HESS(J3-1,J3-2) + DUMMY
-!     YI,ZI
+!     yi,zi
                      DUMMY           = D2VDR2(J7,J8)*RSS(2)*RSS(3)
                      HESS(J3-1,J3)   = HESS(J3-1,J3) + DUMMY
                      HESS(J3,J3-1)   = HESS(J3,J3-1) + DUMMY
-!     ZI,XI
+!     zi,xi
                      DUMMY           = D2VDR2(J7,J8)*RSS(3)*RSS(1)
                      HESS(J3,J3-2)   = HESS(J3,J3-2) + DUMMY
                      HESS(J3-2,J3)   = HESS(J3-2,J3) + DUMMY
-!     XI,PI1
+!     xi,pi1
                      DUMMY           = D2VDR2(J7,J8)*DOTI1(J7,J8)*RSS(1) + DVDR(J7,J8)*DR1(J7,1)
                      HESS(J3-2,J5-2) = HESS(J3-2,J5-2) + DUMMY
                      HESS(J5-2,J3-2) = HESS(J5-2,J3-2) + DUMMY
-!     YI,PI1
+!     yi,pi1
                      DUMMY           = D2VDR2(J7,J8)*DOTI1(J7,J8)*RSS(2) + DVDR(J7,J8)*DR1(J7,2)
                      HESS(J3-1,J5-2) = HESS(J3-1,J5-2) + DUMMY
                      HESS(J5-2,J3-1) = HESS(J5-2,J3-1) + DUMMY
-!     ZI,PI1
+!     zi,pi1
                      DUMMY           = D2VDR2(J7,J8)*DOTI1(J7,J8)*RSS(3) + DVDR(J7,J8)*DR1(J7,3)
                      HESS(J3,J5-2)   = HESS(J3,J5-2) + DUMMY
                      HESS(J5-2,J3)   = HESS(J5-2,J3) + DUMMY
-!     XI,PI2
+!     xi,pi2
                      DUMMY           = D2VDR2(J7,J8)*DOTI2(J7,J8)*RSS(1) + DVDR(J7,J8)*DR2(J7,1)
                      HESS(J3-2,J5-1) = HESS(J3-2,J5-1) + DUMMY
                      HESS(J5-1,J3-2) = HESS(J5-1,J3-2) + DUMMY
-!     YI,PI2
+!     yi,pi2
                      DUMMY           = D2VDR2(J7,J8)*DOTI2(J7,J8)*RSS(2) + DVDR(J7,J8)*DR2(J7,2)
                      HESS(J3-1,J5-1) = HESS(J3-1,J5-1) + DUMMY
                      HESS(J5-1,J3-1) = HESS(J5-1,J3-1) + DUMMY
-!     ZI,PI2
+!     zi,pi2
                      DUMMY           = D2VDR2(J7,J8)*DOTI2(J7,J8)*RSS(3) + DVDR(J7,J8)*DR2(J7,3)
                      HESS(J3,J5-1)   = HESS(J3,J5-1) + DUMMY
                      HESS(J5-1,J3)   = HESS(J5-1,J3) + DUMMY
-!     XI,PI3
+!     xi,pi3
                      DUMMY           = D2VDR2(J7,J8)*DOTI3(J7,J8)*RSS(1) + DVDR(J7,J8)*DR3(J7,1)
                      HESS(J3-2,J5)   = HESS(J3-2,J5) + DUMMY
                      HESS(J5,J3-2)   = HESS(J5,J3-2) + DUMMY
-!     YI,PI3
+!     yi,pi3
                      DUMMY           = D2VDR2(J7,J8)*DOTI3(J7,J8)*RSS(2) + DVDR(J7,J8)*DR3(J7,2)
                      HESS(J3-1,J5)   = HESS(J3-1,J5) + DUMMY
                      HESS(J5,J3-1)   = HESS(J5,J3-1) + DUMMY
-!     ZI,PI3
+!     zi,pi3
                      DUMMY           = D2VDR2(J7,J8)*DOTI3(J7,J8)*RSS(3) + DVDR(J7,J8)*DR3(J7,3)
                      HESS(J3,J5)     = HESS(J3,J5) + DUMMY
                      HESS(J5,J3)     = HESS(J5,J3) + DUMMY
-!     PI1,PI2
+!     pi1,pi2
                      DUMMY           = D2VDR2(J7,J8)*DOTI1(J7,J8)*DOTI2(J7,J8) + DVDR(J7,J8)*DOT_PRODUCT(DR2(J7,:),DR1(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R12(J7,:))
                      HESS(J5-2,J5-1) = HESS(J5-2,J5-1) + DUMMY
                      HESS(J5-1,J5-2) = HESS(J5-1,J5-2) + DUMMY
-!     PI2,PI3
+!     pi2,pi3
                      DUMMY           = D2VDR2(J7,J8)*DOTI2(J7,J8)*DOTI3(J7,J8) + DVDR(J7,J8)*DOT_PRODUCT(DR3(J7,:),DR2(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R23(J7,:))
                      HESS(J5-1,J5)   = HESS(J5-1,J5) + DUMMY
                      HESS(J5,J5-1)   = HESS(J5,J5-1) + DUMMY
-!     PI3,PI1
+!     pi3,pi1
                      DUMMY           = D2VDR2(J7,J8)*DOTI3(J7,J8)*DOTI1(J7,J8) + DVDR(J7,J8)*DOT_PRODUCT(DR1(J7,:),DR3(J7,:)) &
                                      + DVDR(J7,J8)*DOT_PRODUCT(RSS,D2R31(J7,:))
                      HESS(J5,J5-2)   = HESS(J5,J5-2) + DUMMY
@@ -276,81 +276,81 @@
                  
 !     [3] DIAGONAL ELEMENTS ON OFF-DIAGONAL BLOCKS: DIFFERENT MOLECULES, SAME COORDINATE
 
-!     XI,XJ
+!     xi,xj
                      HESS(J3-2,J4-2) = HESS(J3-2,J4-2) - D2VDR2(J7,J8)*RSS(1)*RSS(1) - DVDR(J7,J8)
-!     YI,YJ
+!     yi,yj
                      HESS(J3-1,J4-1) = HESS(J3-1,J4-1) - D2VDR2(J7,J8)*RSS(2)*RSS(2) - DVDR(J7,J8)
-!     ZI,ZJ
+!     zi,zj
                      HESS(J3,J4)     = HESS(J3,J4)     - D2VDR2(J7,J8)*RSS(3)*RSS(3) - DVDR(J7,J8)
-!     PI1,PJ1
+!     pi1,pj1
                      HESS(J5-2,J6-2) = HESS(J5-2,J6-2) - D2VDR2(J7,J8)*DOTJ1(J7,J8)*DOTI1(J7,J8) &
                                      - DVDR(J7,J8)*DOT_PRODUCT(DR1(J8,:),DR1(J7,:))
-!     PI2,PJ2
+!     pi2,pj2
                      HESS(J5-1,J6-1) = HESS(J5-1,J6-1) - D2VDR2(J7,J8)*DOTJ2(J7,J8)*DOTI2(J7,J8) &
                                      - DVDR(J7,J8)*DOT_PRODUCT(DR2(J8,:),DR2(J7,:))
-!     PI3,PJ3
+!     pi3,pj3
                      HESS(J5,J6)     = HESS(J5,J6)     - D2VDR2(J7,J8)*DOTJ3(J7,J8)*DOTI3(J7,J8) &
                                     - DVDR(J7,J8)*DOT_PRODUCT(DR3(J8,:),DR3(J7,:))
 
 !     [4] COMPLETELY OFF-DIAGONAL TERMS: DIFFERENT MOLECULES, DIFFERENT COORDINATES
 
-!     XI,YJ
+!     xi,yj
                      DUMMY           = - D2VDR2(J7,J8)*RSS(1)*RSS(2)
                      HESS(J3-2,J4-1) = HESS(J3-2,J4-1) + DUMMY
                      HESS(J4-1,J3-2) = HESS(J4-1,J3-2) + DUMMY
-!     YI,ZJ
+!     yi,zj
                      DUMMY           = - D2VDR2(J7,J8)*RSS(2)*RSS(3)
                      HESS(J3-1,J4)   = HESS(J3-1,J4) + DUMMY
                      HESS(J4,J3-1)   = HESS(J4,J3-1) + DUMMY
-!     ZI,XJ
+!     zi,xj
                      DUMMY           = - D2VDR2(J7,J8)*RSS(3)*RSS(1)
                      HESS(J3,J4-2)   = HESS(J3,J4-2) + DUMMY
                      HESS(J4-2,J3)   = HESS(J4-2,J3) + DUMMY
-!     XI,PJ1
+!     xi,pj1
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ1(J7,J8)*RSS(1) - DVDR(J7,J8)*DR1(J8,1)
                      HESS(J3-2,J6-2) = HESS(J3-2,J6-2) + DUMMY
                      HESS(J6-2,J3-2) = HESS(J6-2,J3-2) + DUMMY
-!     YI,PJ1
+!     yi,pj1
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ1(J7,J8)*RSS(2) - DVDR(J7,J8)*DR1(J8,2)
                      HESS(J3-1,J6-2) = HESS(J3-1,J6-2) + DUMMY
                      HESS(J6-2,J3-1) = HESS(J6-2,J3-1) + DUMMY
-!     ZI,PJ1
+!     zi,pj1
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ1(J7,J8)*RSS(3) - DVDR(J7,J8)*DR1(J8,3)
                      HESS(J3,J6-2)   = HESS(J3,J6-2) + DUMMY
                      HESS(J6-2,J3)   = HESS(J6-2,J3) + DUMMY
-!     XI,PJ2
+!     xi,pj2
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ2(J7,J8)*RSS(1) - DVDR(J7,J8)*DR2(J8,1)
                      HESS(J3-2,J6-1) = HESS(J3-2,J6-1) + DUMMY
                      HESS(J6-1,J3-2) = HESS(J6-1,J3-2) + DUMMY
-!     YI,PJ2
+!     yi,pj2
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ2(J7,J8)*RSS(2) - DVDR(J7,J8)*DR2(J8,2)
                      HESS(J3-1,J6-1) = HESS(J3-1,J6-1) + DUMMY
                      HESS(J6-1,J3-1) = HESS(J6-1,J3-1) + DUMMY
-!     ZI,PJ2
+!     zi,pj2
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ2(J7,J8)*RSS(3) - DVDR(J7,J8)*DR2(J8,3)
                      HESS(J3,J6-1)   = HESS(J3,J6-1) + DUMMY
                      HESS(J6-1,J3)   = HESS(J6-1,J3) + DUMMY
-!     XI,PJ3
+!     xi,pj3
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ3(J7,J8)*RSS(1) - DVDR(J7,J8)*DR3(J8,1)
                      HESS(J3-2,J6)   = HESS(J3-2,J6) + DUMMY
                      HESS(J6,J3-2)   = HESS(J6,J3-2) + DUMMY
-!     YI,PJ3
+!     yi,pj3
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ3(J7,J8)*RSS(2) - DVDR(J7,J8)*DR3(J8,2)
                      HESS(J3-1,J6)   = HESS(J3-1,J6) + DUMMY
                      HESS(J6,J3-1)   = HESS(J6,J3-1) + DUMMY
-!     ZI,PJ3
+!     zi,pj3
                      DUMMY           = - D2VDR2(J7,J8)*DOTJ3(J7,J8)*RSS(3) - DVDR(J7,J8)*DR3(J8,3)
                      HESS(J3,J6)     = HESS(J3,J6) + DUMMY
                      HESS(J6,J3)     = HESS(J6,J3) + DUMMY
-!     PI1,PJ2
+!     pi1,pj2
                      DUMMY           = - D2VDR2(J7,J8)*DOTI1(J7,J8)*DOTJ2(J7,J8) - DVDR(J7,J8)*DOT_PRODUCT(DR2(J8,:),DR1(J7,:))
                      HESS(J5-2,J6-1) = HESS(J5-2,J6-1) + DUMMY
                      HESS(J6-1,J5-2) = HESS(J6-1,J5-2) + DUMMY
-!     PI2,PJ3
+!     pi2,pj3
                      DUMMY           = - D2VDR2(J7,J8)*DOTI2(J7,J8)*DOTJ3(J7,J8) - DVDR(J7,J8)*DOT_PRODUCT(DR3(J8,:),DR2(J7,:))
                      HESS(J5-1,J6)   = HESS(J5-1,J6) + DUMMY
                      HESS(J6,J5-1)   = HESS(J6,J5-1) + DUMMY
-!     PI3,PJ1
+!     pi3,pj1
                      DUMMY           = - D2VDR2(J7,J8)*DOTI3(J7,J8)*DOTJ1(J7,J8) - DVDR(J7,J8)*DOT_PRODUCT(DR1(J8,:),DR3(J7,:))
                      HESS(J5,J6-2)   = HESS(J5,J6-2) + DUMMY
                      HESS(J6-2,J5)   = HESS(J6-2,J5) + DUMMY

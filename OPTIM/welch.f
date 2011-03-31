@@ -1,29 +1,29 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C  ENERGY AND DERIVATIVES OF THE BINARY SALT POTENTIAL DESCRIBED
-C  BY WELCH ET AL, JCP, 94, 4980, 1976 AND PHILLIPS ET AL, JCP,
+C  Energy and derivatives of the binary salt potential described
+C  by Welch et al, JCP, 94, 4980, 1976 and Phillips et al, JCP,
 C  94, 4980, 1991.
-C  ENERGY IS IN HARTREE, LENGTH IN BOHR.
+C  Energy is in hartree, length in Bohr.
 C
       SUBROUTINE WEL(N, X, V, POTEL, APP, AMM, APM, RHO, XQP, XQM, ALPHAP, ALPHAM, ZSYM, GTEST, STEST)
-      USE PORFUNCS
+      use porfuncs
       USE MODHESS
       IMPLICIT NONE 
       INTEGER N, I, J, J1, J2
@@ -40,7 +40,7 @@ C
          ELSE IF (ZSYM(I).EQ.'PL') THEN
             Q(I)=1.0D0
          ELSE
-            WRITE(*,'(A)') ' ALL ATOMS MUST BE TYPE PL OR MI FOR WELCH'
+            WRITE(*,'(A)') ' All atoms must be type PL or MI for Welch'
             STOP
          ENDIF
       ENDDO
@@ -74,19 +74,19 @@ C
          ENDDO
       ENDDO
 C
-C  CALCULATE THE ENERGY.
+C  Calculate the energy.
 C
       CALL WENERGY(N,XMU,ALPHA,Q,RRD,RRD3,RRD5,X,XQ,POTEL,AC,XMAT,XMINV,RHO)
 
       IF (.NOT.GTEST) RETURN
 C
-C  GRADIENT.
+C  Gradient.
 C
       CALL WGRAD(N,XMU,ALPHA,Q,RRD,RRD3,RRD5,X,XQ,AC,V,XMAT,XMINV,RHO)
 
       IF (.NOT.STEST) RETURN
 C
-C  HESSIAN.
+C  Hessian.
 C
       DIF=1.0D-3
       DO J1=1,3*N
@@ -106,7 +106,7 @@ C
 C
 C*******************************************************************************
 C
-C  ENERGY FOR THE WELCH POTENTIAL
+C  Energy for the Welch potential
 C
       SUBROUTINE WENERGY(N,XMU,ALPHA,Q,RRD,RRD3,RRD5,X,XQ,POTEL,AC,XMAT,XMINV,RHO)
       IMPLICIT NONE
@@ -118,7 +118,7 @@ C
 
       RHOL=1.0D0/RHO
 C
-C  CALCULATE THE INTERPARTICLE DISTANCES.
+C  Calculate the interparticle distances.
 C 
       DO I=1,N
          K=1+3*(I-1)         
@@ -139,7 +139,7 @@ C
          ENDDO
       ENDDO
 C
-C  CALCULATE THE INDUCED DIPOLES.
+C  Calculate the induced dipoles.
 C
       CALL DIP(N,X,ALPHA,RRD3,RRD5,XMU,Q,XMAT,XMINV)
 
@@ -151,16 +151,16 @@ C
 
       DO I=1,N
 C
-C  INDUCED DIPOLE SELF-ENERGY
+C  Induced dipole self-energy
 C
          ESELF=ESELF+(XMU(3*(I-1)+1)**2+XMU(3*(I-1)+2)**2+XMU(3*(I-1)+3)**2)/(2.0D0*ALPHA(I))
          DO J=I+1,N
 C
-C  CHARGE-CHARGE.
+C  Charge-charge.
 C
             ECC=ECC+Q(I)*Q(J)*RRD(J,I)
 C
-C  EXPONENTIAL REPULSION.
+C  Exponential repulsion.
 C
             DUMMY=(X(3*(J-1)+1)-X(3*(I-1)+1)+XMU(3*(I-1)+1)/XQ(I)-XMU(3*(J-1)+1)/XQ(J))**2
      1           +(X(3*(J-1)+2)-X(3*(I-1)+2)+XMU(3*(I-1)+2)/XQ(I)-XMU(3*(J-1)+2)/XQ(J))**2
@@ -168,7 +168,7 @@ C
             DUMMY=SQRT(DUMMY)
             EREP=EREP+AC(J,I)*DEXP(-RHOL*DUMMY)
 C
-C  CHARGE-INDUCED DIPOLE TERM. INCLUDE I,J AND J,I.
+C  Charge-induced dipole term. Include I,J and J,I.
 C
             DUMMY=(((X(3*(J-1)+1)-X(3*(I-1)+1))*XMU(3*(I-1)+1)+
      1              (X(3*(J-1)+2)-X(3*(I-1)+2))*XMU(3*(I-1)+2)+
@@ -178,7 +178,7 @@ C
      2              (X(3*(I-1)+3)-X(3*(J-1)+3))*XMU(3*(J-1)+3))*Q(I))*RRD3(J,I)
             ECID=ECID+DUMMY
 C
-C  INDUCED DIPOLE-INDUCED DIPOLE TERM.
+C  Induced dipole-induced dipole term.
 C
             EIDID=EIDID+(XMU(3*(I-1)+1)*XMU(3*(J-1)+1)
      1                  +XMU(3*(I-1)+2)*XMU(3*(J-1)+2)
@@ -205,7 +205,7 @@ C     WRITE(*,'(A,F20.10)') 'EIDID=',EIDID
 C
 C***************************************************************
 C
-C  CALCULATE THE INDUCED DIPOLES BY MATRIX INVERSION.
+C  Calculate the induced dipoles by matrix inversion.
 C
       SUBROUTINE DIP(NATOMS,X,ALPHA,RRD3,RRD5,XMU,Q,XMAT,XMINV)
       IMPLICIT NONE
@@ -216,7 +216,7 @@ C
      3                 RRD5(NATOMS,NATOMS), DET(2), ZWORK(3*NATOMS), RCOND
       LOGICAL SFLAG
 C
-C  SET UP THE MATRIX AND VECTOR.
+C  Set up the matrix and vector.
 C
       DO J1=1,NATOMS
          J3=3*(J1-1)
@@ -285,7 +285,7 @@ C     ENDDO
          XVEC(3*(J1-1)+3)=-DUMMY3*ALPHA(J1)*0.5D0
       ENDDO
 C
-C  SET XMINV TO XMAT.
+C  Set XMINV to XMAT.
 C
       DO J1=1,3*NATOMS
          XMINV(J1,J1)=XMAT(J1,J1)
@@ -299,7 +299,7 @@ C
       CALL DGECO(XMINV,NTEMP,NTEMP,IPVT,RCOND,ZWORK)
       CALL DGEDI(XMINV,NTEMP,NTEMP,IPVT,DET,ZWORK,11)
 
-C     IF (ABS(DET(2)).LT.-6) PRINT '(A,G20.10)',' WELCH> WARNING - MATRIX XMAT CLOSE TO SINGULARITY, DETERMINANT=',
+C     IF (ABS(DET(2)).LT.-6) PRINT '(A,G20.10)',' welch> WARNING - matrix XMAT close to singularity, determinant=',
 C    &                        DET(1)*10.0**DET(2)
 
       DO J1=1,3*NATOMS
@@ -315,7 +315,7 @@ C    &                        DET(1)*10.0**DET(2)
 C
 C***************************************************************
 C
-C  CALCULATE THE ANALYTIC DERIVATIVES OF THE INDUCED DIPOLES.
+C  Calculate the analytic derivatives of the induced dipoles.
 C
       SUBROUTINE DIPGRAD(NATOMS,X,ALPHA,RRD,RRD3,RRD5,XMU,Q,XMINV,XMUGRAD)
       IMPLICIT NONE
@@ -326,17 +326,17 @@ C
      3                 XMUGRAD(3*NATOMS,3*NATOMS), VEC1(3*NATOMS), VEC2(3*NATOMS)
       
 C
-C  SET UP THE DERIVATIVE MATRIX AND VECTOR FOR ATOM J5 COMPONENT J6.
+C  Set up the derivative matrix and vector for atom J5 component J6.
 C
-C     PRINT*,'ANALYTIC DERIVATIVES OF MU'
-      DO J5=1,NATOMS           ! J5 = I (CAN BE A OR B)
+C     PRINT*,'Analytic derivatives of mu'
+      DO J5=1,NATOMS           ! J5 = i (can be A or B)
          J4=3*(J5-1)
-         DO J6=1,3             ! J6 = GAMMA
+         DO J6=1,3             ! J6 = gamma
             DO J1=1,3*NATOMS
                VEC2(J1)=0.0D0
             ENDDO
-            DO J7=1,3          ! FIRST INDEX OF T TENSOR = ALPHA
-               DO J1=1,NATOMS  ! ATOM B
+            DO J7=1,3          ! first index of T tensor = alpha
+               DO J1=1,NATOMS  ! atom B
                   J3=3*(J1-1)
                   DUM=-15.0D0*RRD5(J1,J5)*ALPHA(J5)*(X(J4+J7)-X(J3+J7))*(X(J4+J6)-X(J3+J6))*RRD(J1,J5)**2
                   DO J2=1,3
@@ -352,7 +352,7 @@ C     PRINT*,'ANALYTIC DERIVATIVES OF MU'
                ENDDO
                VEC2(J4+J7)=DUMMY
             ENDDO
-            DO J1=1,NATOMS  ! ATOM B
+            DO J1=1,NATOMS  ! atom B
                J3=3*(J1-1)
                DUM=RRD5(J1,J5)
                VEC1(J3+1)=(X(J4+1)-X(J3+1))*DUM
@@ -365,8 +365,8 @@ C     PRINT*,'ANALYTIC DERIVATIVES OF MU'
             ENDDO
             VEC2(J4+J6)=VEC2(J4+J6)+DUMMY*3.0D0*ALPHA(J5)
    
-            DO J7=1,3          ! FIRST INDEX OF T TENSOR = ALPHA
-               DO J1=1,NATOMS  ! ATOM A THIS TIME
+            DO J7=1,3          ! first index of T tensor = alpha
+               DO J1=1,NATOMS  ! atom A this time
                   J3=3*(J1-1)
                   DUM=RRD5(J1,J5)*ALPHA(J1)
                   DUMMY=(X(J4+1)-X(J3+1))*XMU(J4+1)+(X(J4+2)-X(J3+2))*XMU(J4+2)+(X(J4+3)-X(J3+3))*XMU(J4+3)
@@ -375,36 +375,36 @@ C     PRINT*,'ANALYTIC DERIVATIVES OF MU'
      2                                  -5.0D0*DUMMY*(X(J4+J6)-X(J3+J6))*RRD(J1,J5)**2))
                ENDDO
             ENDDO
-            DO J1=1,NATOMS  ! ATOM A THIS TIME
+            DO J1=1,NATOMS  ! atom A this time
                J3=3*(J1-1)
                DUM=RRD5(J1,J5)*ALPHA(J1)
-               DO J2=1,3    ! BETA INDEX OF T(AI)(2) WHERE B OR I=J1
+               DO J2=1,3    ! beta index of T(Ai)(2) where B or i=J1
                   DUMMY=3.0D0*(X(J4+J2)-X(J3+J2))*DUM
                   VEC2(J3+J6)=VEC2(J3+J6)+DUMMY*XMU(J4+J2)
                ENDDO
             ENDDO
 C
-C  NOW VEC2 SHOULD CONTAIN (D M/D X) MU APART FROM THE FACTOR OF -1/2.
+C  Now VEC2 should contain (d M/d X) mu apart from the factor of -1/2.
 C
-            DO J1=1,NATOMS   ! SECOND ATOM B
+            DO J1=1,NATOMS   ! second atom B
                J3=3*(J1-1)
                DUM=RRD3(J1,J5)*ALPHA(J1)*Q(J5)
-               DO J2=1,3     ! ALPHA INDEX OF T(IB)(1)
+               DO J2=1,3     ! alpha index of T(iB)(1)
                   VEC3(J3+J2)=-3.0D0*(X(J4+J2)-X(J3+J2))*(X(J4+J6)-X(J3+J6))*RRD(J1,J5)**2*DUM
                ENDDO
                VEC3(J3+J6)=VEC3(J3+J6)+DUM
             ENDDO
 
-            DO J1=1,NATOMS   ! FIRST ATOM A
+            DO J1=1,NATOMS   ! first atom A
                J3=3*(J1-1)
                DUM=RRD3(J1,J5)*ALPHA(J5)*Q(J1)
-               DO J2=1,3     ! ALPHA INDEX OF T(AI)(1)
+               DO J2=1,3     ! alpha index of T(Ai)(1)
                   VEC3(J4+J2)= VEC3(J4+J2)+3.0D0*(X(J4+J2)-X(J3+J2))*(X(J4+J6)-X(J3+J6))*RRD(J1,J5)**2*DUM
                ENDDO
                VEC3(J4+J6)=VEC3(J4+J6)-DUM
             ENDDO
 C
-C  NOW VEC3 - VEC2 SHOULD CONTAIN (D Y/D X) - (D M/D X) MU APART FROM A FACTOR OF -1/2.
+C  Now VEC3 - VEC2 should contain (d Y/d X) - (d M/d X) mu apart from a factor of -1/2.
 C
             DO J1=1,3*NATOMS
                DUMMY=0.0D0
@@ -424,7 +424,7 @@ C              WRITE(*,'(2I3,F20.10)') J1,J4+J6,XMUGRAD(J1,J4+J6)
 C
 C*******************************************************************************
 C
-C  ANALYTIC GRADIENT FOR THE WELCH POTENTIAL
+C  Analytic gradient for the Welch potential
 C
       SUBROUTINE WGRAD(N,XMU,ALPHA,Q,RRD,RRD3,RRD5,X,XQ,AC,GRAD,XMAT,XMINV,RHO)
       IMPLICIT NONE
@@ -438,11 +438,11 @@ C
 
       RHOL=1.0D0/RHO
 C
-C  CALCULATE INDUCED DIPOLE DERIVATIVES.
+C  Calculate induced dipole derivatives.
 C
       CALL DIPGRAD(N,X,ALPHA,RRD,RRD3,RRD5,XMU,Q,XMINV,XMUGRAD)
 C
-C  CHARGE-CHARGE.
+C  Charge-charge.
 C
       DO J1=1,N
          DO J2=1,3
@@ -455,10 +455,10 @@ C
          ENDDO
       ENDDO
 C
-C  SELF-ENERGY.
+C  Self-energy.
 C
-      DO J1=1,N       ! THIS IS I
-         DO J3=1,3    ! THIS IS ALPHA
+      DO J1=1,N       ! this is i
+         DO J3=1,3    ! this is alpha
             J2=3*(J1-1)+J3
             DUMMY=0.0D0
             DO J4=1,N
@@ -471,11 +471,11 @@ C
          ENDDO
       ENDDO
 C
-C  CHARGE-INDUCED DIPOLE
+C  Charge-induced dipole
 C
-      DO J1=1,N         ! ATOM I
+      DO J1=1,N         ! atom i
          J2=3*(J1-1)
-         DO J3=1,3      ! INDEX GAMMA
+         DO J3=1,3      ! index gamma
             DUMMY=0.0D0
             DO J4=1,N   ! A
                DUMMY=DUMMY+XMU(3*(J4-1)+J3)*RRD3(J4,J1)
@@ -521,7 +521,7 @@ C
          ENDDO
       ENDDO
 C
-C  INDUCED DIPOLE-INDUCED DIPOLE.
+C  Induced dipole-induced dipole.
 C 
       DO J1=1,N
          J2=3*(J1-1)
@@ -598,7 +598,7 @@ C
          ENDDO
       ENDDO
 C
-C  EXPONENTIAL REPULSION.
+C  Exponential repulsion.
 C
       DO J1=1,N
          J2=3*(J1-1)
@@ -635,7 +635,7 @@ C
       DO J1=1,3*N
          GRAD(J1)=VCC(J1)+VSELF(J1)+VREP(J1)+VCID(J1)+VIDID(J1)
       ENDDO
-C     PRINT*,'ANALYTIC GRADIENT:'
+C     PRINT*,'Analytic gradient:'
 C     WRITE(*,'(I3,F20.10)') (J1,GRAD(J1),J1=1,3*NATOMS)
 
       RETURN

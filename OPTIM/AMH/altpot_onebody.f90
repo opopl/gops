@@ -1,214 +1,214 @@
-      SUBROUTINE INIT_ONEBODY()
+      subroutine init_onebody()
   
-        USE GLOBALS_ALT, ONLY : ONEBODY_GAMMA,HP_SCALE,KAPPA_OB,ALIMITS_OB,ONEBODYFLAG &
-             ,MAX_LETTERS,OB_DENSITY,OB_DNS_COUNT
-        IMPLICIT NONE
-        INTEGER I
+        use globals_alt, only : onebody_gamma,hp_scale,kappa_OB,Alimits_OB,onebodyflag &
+             ,max_letters,OB_density,OB_dns_count
+        implicit none
+        integer i
 
-        ONEBODYFLAG=0
+        onebodyflag=0
 
-        ALIMITS_OB(1,1)=0.0D0
-        ALIMITS_OB(2,1)=3.0D0
-        ALIMITS_OB(1,2)=3.0D0
-        ALIMITS_OB(2,2)=6.0D0
-        ALIMITS_OB(1,2)=6.0D0
-        ALIMITS_OB(2,2)=9.0D0
+        Alimits_OB(1,1)=0.0D0
+        Alimits_OB(2,1)=3.0D0
+        Alimits_OB(1,2)=3.0D0
+        Alimits_OB(2,2)=6.0D0
+        Alimits_OB(1,2)=6.0D0
+        Alimits_OB(2,2)=9.0D0
 
-        KAPPA_OB=3.0D0
-        DO I=1,MAX_LETTERS,1
-           ONEBODY_GAMMA(I,1)=1.- HP_SCALE(I)
-           ONEBODY_GAMMA(I,2)=HP_SCALE(I)*.5D0 +.25D0
-           ONEBODY_GAMMA(I,3)=HP_SCALE(I)
-        ENDDO
+        kappa_OB=3.0D0
+        do i=1,max_letters,1
+           onebody_gamma(i,1)=1.- hp_scale(i)
+           onebody_gamma(i,2)=hp_scale(i)*.5D0 +.25D0
+           onebody_gamma(i,3)=hp_scale(i)
+        enddo
 
-        OB_DENSITY=0.0D0
-        OB_DNS_COUNT=0.0D0
+        OB_density=0.0D0
+        OB_dns_count=0.0D0
 
-        RETURN
-      END SUBROUTINE INIT_ONEBODY
+        return
+      end subroutine init_onebody
 
       !----------------------------
 
-      SUBROUTINE CALC_OB_DENSITY(A,NMRES)
+      subroutine calc_OB_density(A,nmres)
 
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ,TGSEQUENCES_AMW,NUMSEQ_AMW
-        USE GLOBALS_ALT, ONLY :OB_DNS_COUNT,OB_DENSITY,ALIMITS_OB
-        IMPLICIT NONE
-        DOUBLE PRECISION A(AMHMAXSIZ),A_I
-        INTEGER WELL,ITYPE,NMRES,I,ISEQ
+        use amhglobals,  only : AMHmaxsiz,tgsequences_amw,numseq_amw
+        use globals_alt, only :OB_dns_count,OB_density,Alimits_OB
+        implicit none
+        double precision A(AMHmaxsiz),A_i
+        integer well,itype,nmres,i,iseq
 
-        OB_DNS_COUNT=OB_DNS_COUNT+1.0D0
-        OB_DENSITY=0.0D0
+        OB_dns_count=OB_dns_count+1.0D0
+        OB_density=0.0D0
 
-       DO ISEQ=1,NUMSEQ_AMW
-        DO I=1,NMRES
-           ITYPE=TGSEQUENCES_AMW(I,ISEQ)
-           A_I=A(I)
-           WELL=1
-           IF(A_I .GT. ALIMITS_OB(1,2) .AND. A_I .LE. ALIMITS_OB(2,2) )WELL=2
-           IF(A_I .GT. ALIMITS_OB(1,3) .AND. A_I .LE. ALIMITS_OB(2,3) )WELL=3
-           OB_DENSITY(ITYPE,WELL)=OB_DENSITY(ITYPE,WELL)+1.0
-        ENDDO
-       ENDDO
+       do iseq=1,numseq_amw
+        do i=1,nmres
+           itype=tgsequences_amw(i,iseq)
+           A_i=A(i)
+           well=1
+           if(A_i .gt. Alimits_OB(1,2) .and. A_i .le. Alimits_OB(2,2) )well=2
+           if(A_i .gt. Alimits_OB(1,3) .and. A_i .le. Alimits_OB(2,3) )well=3
+           OB_density(itype,well)=OB_density(itype,well)+1.0
+        enddo
+       enddo
 
-          OB_DENSITY=OB_DENSITY/REAL(NUMSEQ_AMW)
+          OB_density=OB_density/real(numseq_amw)
 
-        RETURN
-      END SUBROUTINE CALC_OB_DENSITY
+        return
+      end subroutine calc_OB_density
 
       !-------------------------------------------
       !
-      ! ENERGY_OB = -GAMMA*F(A)
-      ! FORCE_OB  = +GAMMA*DF(A)/DR = +GAMMA*[DF(A)/DA] * [DA/DR] = 
-      !  GAMMA*SUM(I,K) {[DTHETA/DDRIJ] }
+      ! Energy_OB = -gamma*f(A)
+      ! Force_OB  = +gamma*df(A)/dr = +gamma*[df(A)/dA] * [DA/dr] = 
+      !  gamma*sum(i,k) {[dtheta/ddrij] }
 
-      SUBROUTINE CALC_ONEBODY_FORCE(F_CORD,THETA_DOT,XYZ_UNIT_VECT,NMRES,A)
+      subroutine calc_onebody_force(f_cord,theta_dot,xyz_unit_vect,nmres,A)
 
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ,MAXCRD,TGSEQUENCES_AMW,NUMSEQ_AMW
-        USE GLOBALS_ALT, ONLY : MAX_WELL_ALT,ACCUMULATED_TIME
-! DEBUGGING   USE GLOBALS_ALT, ONLY :  OB_DENSITY,OB_DNS_COUNT,  
-        USE ALTPOT_INTERFACES, ONLY: CALC_OB_DENSITY, CALC_DDA_ONEBODY
-
-
-        IMPLICIT NONE
-       DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD)
-!        DOUBLE PRECISION F_CORD(AMHMAXSIZ,3,MAXCRD)
-        INTEGER, INTENT(IN):: NMRES
-        DOUBLE PRECISION A(AMHMAXSIZ),THETA_DOT(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
-        DOUBLE PRECISION F_OB(AMHMAXSIZ,3),XYZ_UNIT_VECT(AMHMAXSIZ,AMHMAXSIZ,3)
-        DOUBLE PRECISION DDAMAT(AMHMAXSIZ)
-! DEBUGGING   DOUBLE PRECISION OB_FORCE(AMHMAXSIZ)
-        INTEGER ITYPE,I,J,IATOM,ISEQ
-
-        DOUBLE PRECISION START_TIME, END_TIME
-
-!        EXTERNAL CPU_TIME 
-
-        CALL CPU_TIME(START_TIME)
-
-        F_OB=0.0D0
-
-       DO ISEQ=1,NUMSEQ_AMW,1
-        DO I=1,NMRES,1
-           ITYPE=TGSEQUENCES_AMW(I,ISEQ)
-           DDAMAT(I)=CALC_DDA_ONEBODY(A(I),ITYPE)
-        ENDDO
-       ENDDO
+        use amhglobals,  only : AMHmaxsiz,maxcrd,tgsequences_amw,numseq_amw
+        use globals_alt, only : max_well_alt,accumulated_time
+! debugging   use globals_alt, only :  OB_density,OB_dns_count,  
+        use altpot_interfaces, only: calc_OB_density, calc_ddA_onebody
 
 
-        DO J=1,NMRES,1
-           DO I=1,NMRES,1
-              IF(I.NE.J) THEN
-                 F_OB(J,:)=F_OB(J,:)-DDAMAT(I)*THETA_DOT(J,I,1)*XYZ_UNIT_VECT(J,I,:)
-              ENDIF
-              IF(ABS(I-J).GT.1) THEN
-                 F_OB(J,:)=F_OB(J,:)-DDAMAT(J)*THETA_DOT(J,I,1)*XYZ_UNIT_VECT(J,I,:)
-              ENDIF
-           ENDDO
-        ENDDO
+        implicit none
+       double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd)
+!        double precision f_cord(AMHmaxsiz,3,maxcrd)
+        integer, intent(in):: nmres
+        double precision A(AMHmaxsiz),theta_dot(AMHmaxsiz,AMHmaxsiz,max_well_alt)
+        double precision f_OB(AMHmaxsiz,3),xyz_unit_vect(AMHmaxsiz,AMHmaxsiz,3)
+        double precision ddAmat(AMHmaxsiz)
+! debugging   double precision OB_force(AMHmaxsiz)
+        integer itype,i,j,iatom,iseq
 
-        ! FOR DEBUGGING, SHOULD BE SWITCHED OFF
-        !      OPEN(UNIT=1001,FILE='KOLLA_OB_FORCE',STATUS='UNKNOWN')  
-        !       IF(OB_DNS_COUNT.LT.3.)REWIND(1001)
-        !       WRITE(1001,100)OB_DNS_COUNT,(F_OB(I,1),I=1,30)
-        !      CLOSE(1001)XYZ_UNIT_VECT(I,J,:)
-        !100   FORMAT(200(1X,E12.6))
+        double precision start_time, end_time
 
-        DO I=1,NMRES,1                  
-           IATOM=2
-!    HACK FOR CONSISTENCY
-           IF (TGSEQUENCES_AMW(I,1) .EQ. 8) IATOM=1
-           F_CORD(I,:,IATOM)=F_CORD(I,:,IATOM)+F_OB(I,:)
-        ENDDO
+!        external cpu_time 
 
-        CALL CALC_OB_DENSITY(A,NMRES)
+        call CPU_TIME(start_time)
+
+        f_OB=0.0D0
+
+       do iseq=1,numseq_amw,1
+        do i=1,nmres,1
+           itype=tgsequences_amw(i,iseq)
+           ddAmat(i)=calc_ddA_onebody(A(i),itype)
+        enddo
+       enddo
 
 
-        CALL CPU_TIME(END_TIME)
-        ACCUMULATED_TIME(3)=ACCUMULATED_TIME(3)+END_TIME-START_TIME
-        RETURN
-      END SUBROUTINE CALC_ONEBODY_FORCE
+        do j=1,nmres,1
+           do i=1,nmres,1
+              if(i.ne.j) then
+                 f_OB(j,:)=f_OB(j,:)-ddAmat(i)*theta_dot(j,i,1)*xyz_unit_vect(j,i,:)
+              endif
+              if(abs(i-j).gt.1) then
+                 f_OB(j,:)=f_OB(j,:)-ddAmat(j)*theta_dot(j,i,1)*xyz_unit_vect(j,i,:)
+              endif
+           enddo
+        enddo
+
+        ! For debugging, should be switched off
+        !      open(unit=1001,file='kolla_OB_force',status='unknown')  
+        !       if(OB_dns_count.lt.3.)rewind(1001)
+        !       write(1001,100)OB_dns_count,(f_OB(i,1),i=1,30)
+        !      close(1001)xyz_unit_vect(i,j,:)
+        !100   format(200(1x,e12.6))
+
+        do i=1,nmres,1                  
+           iatom=2
+!    hack for consistency
+           if (tgsequences_amw(i,1) .eq. 8) iatom=1
+           f_cord(i,:,iatom)=f_cord(i,:,iatom)+f_OB(i,:)
+        enddo
+
+        call calc_OB_density(A,nmres)
+
+
+        call CPU_TIME(end_time)
+        accumulated_time(3)=accumulated_time(3)+end_time-start_time
+        return
+      end subroutine calc_onebody_force
 
 
 
       !----------------------------------
 
 
-      DOUBLE PRECISION FUNCTION CALC_ONEBODY_POT(A,NMRES,E_OB)
+      double precision function calc_onebody_pot(A,nmres,E_OB)
 
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ,TGSEQUENCES_AMW,NUMSEQ_AMW
-        USE GLOBALS_ALT, ONLY : ONEBODY_GAMMA,KAPPA_OB,ALIMITS_OB,ONEBODY_TYPE
+        use amhglobals,  only : AMHmaxsiz,tgsequences_amw,numseq_amw
+        use globals_alt, only : onebody_gamma,kappa_OB,Alimits_OB,onebody_type
 
-        IMPLICIT NONE
-        DOUBLE PRECISION A(AMHMAXSIZ),OBPOT1,OBPOT2,OBPOT3,ENERGY,E_OB(3)
-        INTEGER ITYPE,I,NMRES,ISEQ
+        implicit none
+        double precision A(AMHmaxsiz),obpot1,obpot2,obpot3,ENERGY,E_OB(3)
+        integer itype,i,nmres,iseq
 
         ENERGY=0.0D0
         E_OB=0.0D0
 
-        IF(ONEBODY_TYPE.EQ.1)THEN
-            DO ISEQ=1,NUMSEQ_AMW
-             DO I=1,NMRES
-                 ITYPE=TGSEQUENCES_AMW(I,ISEQ)
-                 ENERGY=ENERGY-ONEBODY_GAMMA(ITYPE,1)*A(I)
-             ENDDO
-            ENDDO
-           E_OB(1)=ENERGY/REAL(NUMSEQ_AMW)
-        ELSEIF(ONEBODY_TYPE.EQ.2)THEN
-          DO ISEQ=1,NUMSEQ_AMW
-           DO I=1,NMRES
-               ITYPE=TGSEQUENCES_AMW(I,ISEQ)
-!              ITYPE=IRES(I)
-              OBPOT1=(TANH(KAPPA_OB*(A(I)-ALIMITS_OB(1,1)))+ &
-                   TANH(KAPPA_OB*(ALIMITS_OB(2,1)-A(I))))*ONEBODY_GAMMA(ITYPE,1)
-              OBPOT2=(TANH(KAPPA_OB*(A(I)-ALIMITS_OB(1,2)))+ &
-                   TANH(KAPPA_OB*(ALIMITS_OB(2,2)-A(I))))*ONEBODY_GAMMA(ITYPE,2)
-              OBPOT3=(TANH(KAPPA_OB*(A(I)-ALIMITS_OB(1,3)))+ &
-                   TANH(KAPPA_OB*(ALIMITS_OB(2,3)-A(I))))*ONEBODY_GAMMA(ITYPE,3)
-              E_OB(1)=E_OB(1)-OBPOT1*0.5D0
-              E_OB(2)=E_OB(2)-OBPOT2*0.5D0
-              E_OB(3)=E_OB(3)-OBPOT3*0.5D0
-              !       IF(I.EQ.30) WRITE(*,*) "OB DETAILS: ", A(I)
-           ENDDO
-          ENDDO
-            ENERGY=E_OB(1)/REAL(NUMSEQ_AMW)+ & 
-                        E_OB(2)/REAL(NUMSEQ_AMW)+ & 
-                        E_OB(3)/REAL(NUMSEQ_AMW)
-           !     WRITE(*,*) "OB 2: ", E_OB(1),E_OB(2),E_OB(3),ENERGY
-        ELSE
+        if(onebody_type.eq.1)then
+            do iseq=1,numseq_amw
+             do i=1,nmres
+                 itype=tgsequences_amw(i,iseq)
+                 ENERGY=ENERGY-onebody_gamma(itype,1)*A(i)
+             enddo
+            enddo
+           E_OB(1)=ENERGY/real(numseq_amw)
+        elseif(onebody_type.eq.2)then
+          do iseq=1,numseq_amw
+           do i=1,nmres
+               itype=tgsequences_amw(i,iseq)
+!              itype=ires(i)
+              obpot1=(tanh(kappa_OB*(A(i)-Alimits_OB(1,1)))+ &
+                   tanh(kappa_OB*(Alimits_OB(2,1)-A(i))))*onebody_gamma(itype,1)
+              obpot2=(tanh(kappa_OB*(A(i)-Alimits_OB(1,2)))+ &
+                   tanh(kappa_OB*(Alimits_OB(2,2)-A(i))))*onebody_gamma(itype,2)
+              obpot3=(tanh(kappa_OB*(A(i)-Alimits_OB(1,3)))+ &
+                   tanh(kappa_OB*(Alimits_OB(2,3)-A(i))))*onebody_gamma(itype,3)
+              E_OB(1)=E_OB(1)-obpot1*0.5D0
+              E_OB(2)=E_OB(2)-obpot2*0.5D0
+              E_OB(3)=E_OB(3)-obpot3*0.5D0
+              !       if(i.eq.30) write(*,*) "OB Details: ", A(i)
+           enddo
+          enddo
+            ENERGY=E_OB(1)/real(numseq_amw)+ & 
+                        E_OB(2)/real(numseq_amw)+ & 
+                        E_OB(3)/real(numseq_amw)
+           !     write(*,*) "OB 2: ", E_OB(1),E_OB(2),E_OB(3),ENERGY
+        else
            ENERGY=0.0D0
-        ENDIF
+        endif
 
-        CALC_ONEBODY_POT=ENERGY
-        RETURN
-      END FUNCTION CALC_ONEBODY_POT
+        calc_onebody_pot=ENERGY
+        return
+      end function calc_onebody_pot
 
 
       !---------------------------------------
       ! 
-      DOUBLE PRECISION FUNCTION CALC_DDA_ONEBODY(A_I,ITYPE)
+      double precision function calc_ddA_onebody(A_i,itype)
 
-        USE GLOBALS_ALT, ONLY : ONEBODY_GAMMA,KAPPA_OB,ALIMITS_OB,ONEBODY_TYPE
-        IMPLICIT NONE
-        INTEGER ITYPE
-        DOUBLE PRECISION A_I,T11,T12,T21,T22,T13,T23,DDA1,DDA2,DDA3
+        use globals_alt, only : onebody_gamma,kappa_OB,Alimits_OB,onebody_type
+        implicit none
+        integer itype
+        double precision A_i,t11,t12,t21,t22,t13,t23,ddA1,ddA2,ddA3
 
-        IF(ONEBODY_TYPE.EQ.1)THEN
-           CALC_DDA_ONEBODY=ONEBODY_GAMMA(ITYPE,1)
-        ELSEIF(ONEBODY_TYPE.EQ.2)THEN
-           T11=TANH(KAPPA_OB*(A_I-ALIMITS_OB(1,1)))
-           T21=TANH(KAPPA_OB*(ALIMITS_OB(2,1)-A_I))
-           T12=TANH(KAPPA_OB*(A_I-ALIMITS_OB(1,2)))
-           T22=TANH(KAPPA_OB*(ALIMITS_OB(2,2)-A_I))
-           T13=TANH(KAPPA_OB*(A_I-ALIMITS_OB(1,3)))
-           T23=TANH(KAPPA_OB*(ALIMITS_OB(2,3)-A_I))
-           DDA1=(T21**2 - T11**2 )*KAPPA_OB*ONEBODY_GAMMA(ITYPE,1)*0.5D0
-           DDA2=(T22**2 - T12**2 )*KAPPA_OB*ONEBODY_GAMMA(ITYPE,2)*0.5D0
-           DDA3=(T23**2 - T13**2 )*KAPPA_OB*ONEBODY_GAMMA(ITYPE,3)*0.5D0
-           CALC_DDA_ONEBODY=-1*(DDA1+DDA2+DDA3)
-        ELSE
-           CALC_DDA_ONEBODY=0.0D0
-        ENDIF
+        if(onebody_type.eq.1)then
+           calc_ddA_onebody=onebody_gamma(itype,1)
+        elseif(onebody_type.eq.2)then
+           t11=tanh(kappa_OB*(A_i-Alimits_OB(1,1)))
+           t21=tanh(kappa_OB*(Alimits_OB(2,1)-A_i))
+           t12=tanh(kappa_OB*(A_i-Alimits_OB(1,2)))
+           t22=tanh(kappa_OB*(Alimits_OB(2,2)-A_i))
+           t13=tanh(kappa_OB*(A_i-Alimits_OB(1,3)))
+           t23=tanh(kappa_OB*(Alimits_OB(2,3)-A_i))
+           ddA1=(t21**2 - t11**2 )*kappa_OB*onebody_gamma(itype,1)*0.5D0
+           ddA2=(t22**2 - t12**2 )*kappa_OB*onebody_gamma(itype,2)*0.5D0
+           ddA3=(t23**2 - t13**2 )*kappa_OB*onebody_gamma(itype,3)*0.5D0
+           calc_ddA_onebody=-1*(ddA1+ddA2+ddA3)
+        else
+           calc_ddA_onebody=0.0D0
+        endif
 
-        RETURN
-      END FUNCTION CALC_DDA_ONEBODY
+        return
+      end function calc_ddA_onebody

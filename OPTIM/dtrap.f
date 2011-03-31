@@ -1,26 +1,26 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  SUBROUTINE DTRAP CALCULATES THE CARTESIAN GRADIENT AND SECOND
-C  DERIVATIVE MATRIX ANALYTICALLY.
+C  Subroutine DTRAP calculates the cartesian gradient and second
+C  derivative matrix analytically.
 C
 C*************************************************************************
 C
@@ -36,15 +36,15 @@ C
 
       IF (.NOT.GTEST) RETURN
 C
-C  ASSUME THE FIXED ORIGIN FOR THE HARMONIC POTENTIAL IS AT THE ORIGIN, NOT THE
-C  CENTRE OF MASS, OTHERWISE THE DERIVATIVES MUST INCLUDE TERMS FOR THE VARIATION
-C  OF THE CENTRE OF MASS WITH RESPECT TO COORDINATES.
+C  Assume the fixed origin for the harmonic potential is at the origin, not the
+C  centre of mass, otherwise the derivatives must include terms for the variation
+C  of the centre of mass with respect to coordinates.
 C
 C     CENTRE(1)=C1
 C     CENTRE(2)=C2
 C     CENTRE(3)=C3
 C
-C  STORE DISTANCE MATRICES.
+C  Store distance matrices.
 C
       DO 10 J1=1,N
          R3(J1,J1)=0.0D0
@@ -60,7 +60,7 @@ C
 20       CONTINUE
 10    CONTINUE
 C
-C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
+C  First calculate the gradient analytically.
 C
       DO 30 J1=1,N
          DO 40 J2=1,3
@@ -75,7 +75,7 @@ C           V(J3)=V(J3)+K*(X(J3)-CENTRE(J2))
 30    CONTINUE
       IF (.NOT.STEST) RETURN
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO 60 J1=1,N
          DO 70 J2=1,3
@@ -88,8 +88,8 @@ C
 70       CONTINUE
 60    CONTINUE
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO 90 J1=1,N
          DO 100 J2=1,3
@@ -105,7 +105,7 @@ C
 100      CONTINUE
 90    CONTINUE
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO 130 J1=1,N
          DO 140 J2=1,3
@@ -117,7 +117,7 @@ C
 140      CONTINUE
 130   CONTINUE
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO 180 J1=1,N
          DO 170 J2=1,3

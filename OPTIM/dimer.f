@@ -1,67 +1,67 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
-C      SUBROUTINE FDIMER (R,B1,C1,B2,C2,A,VALUE,GRAD,ICALL)
-       SUBROUTINE FDIMER (COORDS,VALUE,GRAD,ICALL)
+C      subroutine fdimer (r,b1,c1,b2,c2,a,value,grad,icall)
+       subroutine fdimer (coords,value,grad,icall)
        USE MODHESS
        USE COMMONS
        IMPLICIT NONE
        INTEGER J1,NPAR,ICALL,NP,I
        DOUBLE PRECISION BPAR(1000,5),GRAD(3*NATOMS),X(5),
-     &           BFIT(1000,3),COORDS(3*NATOMS),VALUE,B,BB2,EOFF,R,B1,C1,B2,C2,A
-       CHARACTER(LEN=10) INDEX(1000)
-       COMMON /BS/B,BB2,X,EOFF,NPAR
-       SAVE /BS/
+     &           bfit(1000,3),coords(3*NATOMS),VALUE,B,BB2,EOFF,R,B1,C1,B2,C2,A
+       character(LEN=10) index(1000)
+       common /bs/b,bb2,x,eoff,npar
+       save /bs/
 
-       B1=COORDS(2)
-       C1=COORDS(3)
-       B2=COORDS(4)
-       C2=COORDS(5)
-       A=COORDS(6)
+       b1=coords(2)
+       c1=coords(3)
+       b2=coords(4)
+       c2=coords(5)
+       a=coords(6)
        WRITE(*,'(6F15.7)') (COORDS(J1),J1=1,6)
 
-       IF ( ICALL .EQ. 1) THEN
-          NP=1
-          OPEN(UNIT=40,FILE='DIMER.DAT',STATUS='OLD')
-          READ (40,'(6F10.5)') EOFF,(X(I),I=1,5)
-110         READ (40,'(A10,5E25.17)',END=210) INDEX(NP),
-     &                     (BPAR(NP,I),I=1,4)
-            NP=NP+1
-          GOTO 110
-210       CONTINUE
-          CLOSE(40)
-          NPAR=NP-1
-       ENDIF  
-       DO I=1,NPAR
-          BFIT(I,1)=BPAR(I,1)+BPAR(I,2)/R**6+BPAR(I,3)/R**8
-     &             +BPAR(I,4)/R**5
-          BFIT(I,2)=-6.D0*BPAR(I,2)/R**7 - 8.D0*BPAR(I,3)/R**9
-     &             -5.D0*BPAR(I,4)/R**6
-          BFIT(I,3)=42.D0*BPAR(I,2)/R**8 + 72.D0*BPAR(I,3)/R**10
-     &             +30.D0*BPAR(I,4)/R**7
-       END DO
-       CALL DIMER (BFIT,B1,C1,B2,C2,A,INDEX,EOFF,NPAR,VALUE,GRAD)
-       RETURN
-       END
+       if ( icall .eq. 1) then
+          np=1
+          open(unit=40,file='dimer.dat',status='old')
+          read (40,'(6f10.5)') eoff,(x(i),i=1,5)
+110         read (40,'(a10,5e25.17)',end=210) index(np),
+     &                     (bpar(np,i),i=1,4)
+            np=np+1
+          goto 110
+210       continue
+          close(40)
+          npar=np-1
+       endif  
+       do i=1,npar
+          bfit(i,1)=bpar(i,1)+bpar(i,2)/r**6+bpar(i,3)/r**8
+     &             +bpar(i,4)/r**5
+          bfit(i,2)=-6.d0*bpar(i,2)/r**7 - 8.d0*bpar(i,3)/r**9
+     &             -5.d0*bpar(i,4)/r**6
+          bfit(i,3)=42.d0*bpar(i,2)/r**8 + 72.d0*bpar(i,3)/r**10
+     &             +30.d0*bpar(i,4)/r**7
+       end do
+       call dimer (bfit,b1,c1,b2,c2,a,index,eoff,npar,value,grad)
+       return
+       end
 C
-C   CALCULATION OF P.E. SURFACE
+C   Calculation of P.E. surface
 C
-       SUBROUTINE DIMER (B,B1,C1,B2,C2,A,INDEX,EOFF,NPAR,VALUE,GRAD)
+       subroutine dimer (b,b1,c1,b2,c2,a,index,eoff,npar,value,grad)
        USE MODHESS
        USE COMMONS
        IMPLICIT NONE
@@ -69,221 +69,221 @@ C
      1                  B1,B2,C2,A,EOFF,VALUE,GRAD2D,GRADD,DVALUE,C1,
      2                  ANG,BDDC,BDDS,BDD1,BDD3,D1BDDC,D1BDDS,D1BDD1,D1BDD3,D2BDDC
        INTEGER NPAR,I,J,L1,K1,L2,K2,M,N,N1,NOTS
-       CHARACTER(LEN=10) INDEX(*),SYMF(16)
+       character(LEN=10) index(*),symf(16)
  
- 20    FORMAT (5I2)
-       VALUE=0.
-       DO I=1,6
-          GRAD(I)=0.D0
-          DO J=1,6
-             HESS(I,J)=0.D0
-          END DO
-       END DO
-       DO I=1,NPAR
-          READ (INDEX(I),20) L1,K1,L2,K2,M
-          DO N=1,8
-             WT(N)=1.D0
-             WT(N+8)=(-1.D0)**(L1+L2)
-          END DO
-          WRITE (SYMF(1),20) L1,K1,L2,K2,M
-          WRITE (SYMF(2),20) L1,K1,L2,K2,-M
-          WRITE (SYMF(3),20) L1,K1,L2,-K2,M
-          WRITE (SYMF(4),20) L1,K1,L2,-K2,-M
-          WRITE (SYMF(5),20) L1,-K1,L2,K2,M
-          WRITE (SYMF(6),20) L1,-K1,L2,K2,-M
-          WRITE (SYMF(7),20) L1,-K1,L2,-K2,M
-          WRITE (SYMF(8),20) L1,-K1,L2,-K2,-M
-          WRITE (SYMF(9),20) L2,K2,L1,K1,M
-          WRITE (SYMF(10),20) L2,K2,L1,K1,-M
-          WRITE (SYMF(11),20) L2,K2,L1,-K1,M
-          WRITE (SYMF(12),20) L2,K2,L1,-K1,-M
-          WRITE (SYMF(13),20) L2,-K2,L1,K1,M
-          WRITE (SYMF(14),20) L2,-K2,L1,K1,-M
-          WRITE (SYMF(15),20) L2,-K2,L1,-K1,M
-          WRITE (SYMF(16),20) L2,-K2,L1,-K1,-M
-          DO N = 2,16
-             DO N1=1,N-1
-                IF (SYMF(N).EQ.SYMF(N1)) WT(N)=0.D0
-             END DO
-          END DO
-          NOTS=0
-          DO N=1,16
-             IF ( WT(N).NE.0.) THEN
-                READ (SYMF(N),20) L1,K1,L2,K2,M
+ 20    format (5i2)
+       value=0.
+       do i=1,6
+          grad(i)=0.d0
+          do j=1,6
+             hess(i,j)=0.d0
+          end do
+       end do
+       do i=1,npar
+          read (index(i),20) l1,k1,l2,k2,m
+          do n=1,8
+             wt(n)=1.d0
+             wt(n+8)=(-1.d0)**(l1+l2)
+          end do
+          write (symf(1),20) l1,k1,l2,k2,m
+          write (symf(2),20) l1,k1,l2,k2,-m
+          write (symf(3),20) l1,k1,l2,-k2,m
+          write (symf(4),20) l1,k1,l2,-k2,-m
+          write (symf(5),20) l1,-k1,l2,k2,m
+          write (symf(6),20) l1,-k1,l2,k2,-m
+          write (symf(7),20) l1,-k1,l2,-k2,m
+          write (symf(8),20) l1,-k1,l2,-k2,-m
+          write (symf(9),20) l2,k2,l1,k1,m
+          write (symf(10),20) l2,k2,l1,k1,-m
+          write (symf(11),20) l2,k2,l1,-k1,m
+          write (symf(12),20) l2,k2,l1,-k1,-m
+          write (symf(13),20) l2,-k2,l1,k1,m
+          write (symf(14),20) l2,-k2,l1,k1,-m
+          write (symf(15),20) l2,-k2,l1,-k1,m
+          write (symf(16),20) l2,-k2,l1,-k1,-m
+          do n = 2,16
+             do n1=1,n-1
+                if (symf(n).eq.symf(n1)) wt(n)=0.d0
+             end do
+          end do
+          nots=0
+          do n=1,16
+             if ( wt(n).ne.0.) then
+                read (symf(n),20) l1,k1,l2,k2,m
 
-C
-C
-          ANG = K1*C1+K2*C2+M*A
-          BDDC =WT(N)*B(I,1)*DVALUE(L1,M,K1,B1)*DVALUE(L2,-M,K2,B2)*
-     &          COS(ANG)
-          BDDS =WT(N)*B(I,1)*DVALUE(L1,M,K1,B1)*DVALUE(L2,-M,K2,B2)*
-     &          SIN(ANG)
-          BDD1 =WT(N)*B(I,1)*GRADD(L1,M,K1,B1)*DVALUE(L2,-M,K2,B2)
-          BDD3 =WT(N)*B(I,1)*DVALUE(L1,M,K1,B1)*GRADD(L2,-M,K2,B2)
-          D1BDDC =WT(N)*B(I,2)*DVALUE(L1,M,K1,B1)*DVALUE(L2,-M,K2,B2)*
-     &          COS(ANG)
-          D1BDDS =WT(N)*B(I,2)*DVALUE(L1,M,K1,B1)*DVALUE(L2,-M,K2,B2)*
-     &          SIN(ANG)
-          D1BDD1 =WT(N)*B(I,2)*GRADD(L1,M,K1,B1)*DVALUE(L2,-M,K2,B2)
-          D1BDD3 =WT(N)*B(I,2)*DVALUE(L1,M,K1,B1)*GRADD(L2,-M,K2,B2)
-          D2BDDC =WT(N)*B(I,3)*DVALUE(L1,M,K1,B1)*DVALUE(L2,-M,K2,B2)*
-     &          COS(ANG)
-          VALUE=VALUE+BDDC
-          GRAD(1)=GRAD(1)+D1BDDC
-          GRAD(2)=GRAD(2)+BDD1*COS(ANG)
-          GRAD(3)=GRAD(3)-K1*BDDS
-          GRAD(4)=GRAD(4)+BDD3*COS(ANG)
-          GRAD(5)=GRAD(5)-K2*BDDS
-          GRAD(6)=GRAD(6)-M*BDDS
-          HESS(6,6)=HESS(6,6)-M*M*BDDC
-          HESS(6,5)=HESS(6,5)-M*K2*BDDC
-          HESS(6,4)=HESS(6,4)-M*BDD3*SIN(ANG)
-          HESS(6,3)=HESS(6,3)-M*K1*BDDC
-          HESS(6,2)=HESS(6,2)-M*BDD1*SIN(ANG)
-          HESS(6,1)=HESS(6,1)-M*D1BDDS
-          HESS(5,5)=HESS(5,5)-K2*K2*BDDC
-          HESS(5,4)=HESS(5,4)-K2*BDD3*SIN(ANG)
-          HESS(5,3)=HESS(5,3)-K2*K1*BDDC
-          HESS(5,2)=HESS(5,2)-K2*BDD1*SIN(ANG)
-          HESS(5,1)=HESS(5,1)-K2*D1BDDS
-          HESS(4,4)=HESS(4,4)+COS(ANG)*B(I,1)*WT(N)*
-     &              DVALUE(L1,M,K1,B1)*GRAD2D(L2,-M,K2,B2)
-          HESS(4,3)=HESS(4,3)-K1*BDD3*SIN(ANG)
-          HESS(4,2)=HESS(4,2)+COS(ANG)*B(I,1)*WT(N)*
-     &              GRADD(L1,M,K1,B1)*GRADD(L2,-M,K2,B2)
-          HESS(4,1)=HESS(4,1)+D1BDD3*COS(ANG)
-          HESS(3,3)=HESS(3,3)-K1*K1*BDDC
-          HESS(3,2)=HESS(3,2)-K1*BDD1*SIN(ANG)
-          HESS(3,1)=HESS(3,1)-K1*D1BDDS
-          HESS(2,2)=HESS(2,2)+COS(ANG)*B(I,1)*WT(N)*
-     &              GRAD2D(L1,M,K1,B1)*DVALUE(L2,-M,K2,B2)
-          HESS(2,1)=HESS(2,1)+D1BDD1*COS(ANG)
-          HESS(1,1)=HESS(1,1)+D2BDDC
-C
-C
-          END IF
-         END DO
-       END DO
-       DO I=6,1,-1
-          DO J=I,1,-1
-             HESS(J,I)=HESS(I,J)
-          END DO
-       END DO
-       VALUE=VALUE+EOFF
-       RETURN
-       END
+c
+c
+          ang = k1*c1+k2*c2+m*a
+          bddc =wt(n)*b(i,1)*dvalue(l1,m,k1,b1)*dvalue(l2,-m,k2,b2)*
+     &          cos(ang)
+          bdds =wt(n)*b(i,1)*dvalue(l1,m,k1,b1)*dvalue(l2,-m,k2,b2)*
+     &          sin(ang)
+          bdd1 =wt(n)*b(i,1)*gradd(l1,m,k1,b1)*dvalue(l2,-m,k2,b2)
+          bdd3 =wt(n)*b(i,1)*dvalue(l1,m,k1,b1)*gradd(l2,-m,k2,b2)
+          d1bddc =wt(n)*b(i,2)*dvalue(l1,m,k1,b1)*dvalue(l2,-m,k2,b2)*
+     &          cos(ang)
+          d1bdds =wt(n)*b(i,2)*dvalue(l1,m,k1,b1)*dvalue(l2,-m,k2,b2)*
+     &          sin(ang)
+          d1bdd1 =wt(n)*b(i,2)*gradd(l1,m,k1,b1)*dvalue(l2,-m,k2,b2)
+          d1bdd3 =wt(n)*b(i,2)*dvalue(l1,m,k1,b1)*gradd(l2,-m,k2,b2)
+          d2bddc =wt(n)*b(i,3)*dvalue(l1,m,k1,b1)*dvalue(l2,-m,k2,b2)*
+     &          cos(ang)
+          value=value+bddc
+          grad(1)=grad(1)+d1bddc
+          grad(2)=grad(2)+bdd1*cos(ang)
+          grad(3)=grad(3)-k1*bdds
+          grad(4)=grad(4)+bdd3*cos(ang)
+          grad(5)=grad(5)-k2*bdds
+          grad(6)=grad(6)-m*bdds
+          hess(6,6)=hess(6,6)-m*m*bddc
+          hess(6,5)=hess(6,5)-m*k2*bddc
+          hess(6,4)=hess(6,4)-m*bdd3*sin(ang)
+          hess(6,3)=hess(6,3)-m*k1*bddc
+          hess(6,2)=hess(6,2)-m*bdd1*sin(ang)
+          hess(6,1)=hess(6,1)-m*d1bdds
+          hess(5,5)=hess(5,5)-k2*k2*bddc
+          hess(5,4)=hess(5,4)-k2*bdd3*sin(ang)
+          hess(5,3)=hess(5,3)-k2*k1*bddc
+          hess(5,2)=hess(5,2)-k2*bdd1*sin(ang)
+          hess(5,1)=hess(5,1)-k2*d1bdds
+          hess(4,4)=hess(4,4)+cos(ang)*b(i,1)*wt(n)*
+     &              dvalue(l1,m,k1,b1)*grad2d(l2,-m,k2,b2)
+          hess(4,3)=hess(4,3)-k1*bdd3*sin(ang)
+          hess(4,2)=hess(4,2)+cos(ang)*b(i,1)*wt(n)*
+     &              gradd(l1,m,k1,b1)*gradd(l2,-m,k2,b2)
+          hess(4,1)=hess(4,1)+d1bdd3*cos(ang)
+          hess(3,3)=hess(3,3)-k1*k1*bddc
+          hess(3,2)=hess(3,2)-k1*bdd1*sin(ang)
+          hess(3,1)=hess(3,1)-k1*d1bdds
+          hess(2,2)=hess(2,2)+cos(ang)*b(i,1)*wt(n)*
+     &              grad2d(l1,m,k1,b1)*dvalue(l2,-m,k2,b2)
+          hess(2,1)=hess(2,1)+d1bdd1*cos(ang)
+          hess(1,1)=hess(1,1)+d2bddc
+c
+c
+          end if
+         end do
+       end do
+       do i=6,1,-1
+          do j=i,1,-1
+             hess(j,i)=hess(i,j)
+          end do
+       end do
+       value=value+eoff
+       return
+       end
 
-       FUNCTION GRAD2D (J,M1,M,T)
+       function grad2d (j,m1,m,t)
        IMPLICIT NONE
        DOUBLE PRECISION FACTLOCAL,X2N,COEFF,VALUE,DENOM,T,T2,GRAD2D
        INTEGER M,MDIFF,N2,N1,I,IA,IB,J,M1
 
-       COEFF=SQRT (FACTLOCAL(J+M)*FACTLOCAL(J-M)*FACTLOCAL(J+M1)*FACTLOCAL(J-M1))
-       MDIFF=M1-M
-       N2=MIN(J-M1,J+M)
-       T2=T/2.
-       VALUE=0.
-       IF (MDIFF.LT.0) THEN
-           N1=-MDIFF
-       ELSE
-           N1=0
-       END IF
-       DO I=N1,N2
-       IA=2*J-MDIFF-2*I
-       IB=MDIFF+2*I
-          DENOM=FACTLOCAL(I)*FACTLOCAL(MDIFF+I)*FACTLOCAL(J+M-I)*FACTLOCAL(J-M1-I)*4
-          VALUE=VALUE+(-1)**(MDIFF+I)*(
-     &          IA*(IA-1.)*X2N(COS(T2),IA-2)*X2N(SIN(T2),IB+2)+
-     &          IB*(IB-1)*X2N(COS(T2),IA+2)*X2N(SIN(T2),IB-2)-
-     &          2*(IA*IB+J)*X2N(COS(T2),IA)*X2N(SIN(T2),IB))/DENOM
-       END DO
-       GRAD2D=COEFF*VALUE
-       RETURN
-       END
+       coeff=sqrt (factlocal(j+m)*factlocal(j-m)*factlocal(j+m1)*factlocal(j-m1))
+       mdiff=m1-m
+       n2=min(j-m1,j+m)
+       t2=t/2.
+       value=0.
+       if (mdiff.lt.0) then
+           n1=-mdiff
+       else
+           n1=0
+       end if
+       do i=n1,n2
+       ia=2*j-mdiff-2*i
+       ib=mdiff+2*i
+          denom=factlocal(i)*factlocal(mdiff+i)*factlocal(j+m-i)*factlocal(j-m1-i)*4
+          value=value+(-1)**(mdiff+i)*(
+     &          ia*(ia-1.)*x2n(cos(t2),ia-2)*x2n(sin(t2),ib+2)+
+     &          ib*(ib-1)*x2n(cos(t2),ia+2)*x2n(sin(t2),ib-2)-
+     &          2*(ia*ib+j)*x2n(cos(t2),ia)*x2n(sin(t2),ib))/denom
+       end do
+       grad2d=coeff*value
+       return
+       end
 
-       FUNCTION GRADD (J,M1,M,T)
+       function gradd (j,m1,m,t)
        IMPLICIT NONE
        DOUBLE PRECISION FACTLOCAL,X2N,COEFF,VALUE,DENOM,T,T2,GRADD
        INTEGER J,M1,M,MDIFF,N2,N1,I
 
-       COEFF=SQRT (FACTLOCAL(J+M)*FACTLOCAL(J-M)*FACTLOCAL(J+M1)*FACTLOCAL(J-M1))
-       MDIFF=M1-M
-       N2=MIN(J-M1,J+M)
-       T2=T/2.
-       VALUE=0.
-       IF (MDIFF.LT.0) THEN
-           N1=-MDIFF
-       ELSE
-           N1=0
-       END IF
-       DO I=N1,N2
-          DENOM=FACTLOCAL(I)*FACTLOCAL(MDIFF+I)*FACTLOCAL(J+M-I)*FACTLOCAL(J-M1-I)*2
-          VALUE=VALUE+(-1)**(MDIFF+I)*(-1*
-     &          (2*J-MDIFF-2*I)*X2N(COS(T2),2*J-MDIFF-2*I-1)*
-     &          X2N(SIN(T2),MDIFF+2*I+1)+
-     &          (MDIFF+2*I)*X2N(COS(T2),2*J-MDIFF-2*I+1)*
-     &          X2N(SIN(T2),MDIFF+2*I-1))/DENOM
-       END DO
-       GRADD=COEFF*VALUE
-       RETURN
-       END
+       coeff=sqrt (factlocal(j+m)*factlocal(j-m)*factlocal(j+m1)*factlocal(j-m1))
+       mdiff=m1-m
+       n2=min(j-m1,j+m)
+       t2=t/2.
+       value=0.
+       if (mdiff.lt.0) then
+           n1=-mdiff
+       else
+           n1=0
+       end if
+       do i=n1,n2
+          denom=factlocal(i)*factlocal(mdiff+i)*factlocal(j+m-i)*factlocal(j-m1-i)*2
+          value=value+(-1)**(mdiff+i)*(-1*
+     &          (2*j-mdiff-2*i)*x2n(cos(t2),2*j-mdiff-2*i-1)*
+     &          x2n(sin(t2),mdiff+2*i+1)+
+     &          (mdiff+2*i)*x2n(cos(t2),2*j-mdiff-2*i+1)*
+     &          x2n(sin(t2),mdiff+2*i-1))/denom
+       end do
+       gradd=coeff*value
+       return
+       end
 
-       FUNCTION DVALUE (J,M1,M,T)
+       function dvalue (j,m1,m,t)
        IMPLICIT NONE
        DOUBLE PRECISION FACTLOCAL,X2N,COEFF,VALUE,DENOM,T,DVALUE
        INTEGER J, M1, M, MDIFF, N2, N1, I
 
-       COEFF=SQRT (FACTLOCAL(J+M)*FACTLOCAL(J-M)*FACTLOCAL(J+M1)*FACTLOCAL(J-M1))
-       MDIFF=M1-M
-       N2=MIN(J-M1,J+M)
-       VALUE=0.
-       IF (MDIFF.LT.0) THEN
-           N1=-MDIFF
-       ELSE
-           N1=0
-       END IF
-       DO I=N1,N2
-          DENOM=FACTLOCAL(I)*FACTLOCAL(MDIFF+I)*FACTLOCAL(J+M-I)*FACTLOCAL(J-M1-I)
-          VALUE=VALUE+(-1)**(MDIFF+I)*X2N(COS(T/2.),(2*J-MDIFF-2*I))*
-     &          X2N(SIN(T/2.),MDIFF+2*I)/DENOM
-       END DO
-       DVALUE=COEFF*VALUE
-       RETURN
-       END
+       coeff=sqrt (factlocal(j+m)*factlocal(j-m)*factlocal(j+m1)*factlocal(j-m1))
+       mdiff=m1-m
+       n2=min(j-m1,j+m)
+       value=0.
+       if (mdiff.lt.0) then
+           n1=-mdiff
+       else
+           n1=0
+       end if
+       do i=n1,n2
+          denom=factlocal(i)*factlocal(mdiff+i)*factlocal(j+m-i)*factlocal(j-m1-i)
+          value=value+(-1)**(mdiff+i)*x2n(cos(t/2.),(2*j-mdiff-2*i))*
+     &          x2n(sin(t/2.),mdiff+2*i)/denom
+       end do
+       dvalue=coeff*value
+       return
+       end
 
-       FUNCTION FACTLOCAL(N)
+       function factlocal(n)
        IMPLICIT NONE
        INTEGER N, I
        DOUBLE PRECISION :: FACTLOCAL
 
-       IF (N.EQ.0) THEN
-           FACTLOCAL=1
-       ELSE
-           FACTLOCAL=1.
-           DO I=2,N
-              FACTLOCAL=FACTLOCAL*I
-           END DO
-       END IF
-CC     WRITE (6,*) N,FACT
-       RETURN
-       END
+       if (n.eq.0) then
+           factlocal=1
+       else
+           factlocal=1.
+           do i=2,n
+              factlocal=factlocal*i
+           end do
+       end if
+cc     write (6,*) n,fact
+       return
+       end
 
-       FUNCTION X2N(X,N)
+       function x2n(x,n)
        IMPLICIT NONE
        DOUBLE PRECISION X, X2N
        INTEGER N
 
-       IF (X.EQ.0.) THEN
-          IF (N .EQ. 0) THEN
-              X2N=1.
-          ELSE
-              X2N=0.
-          END IF
-        ELSE
-          X2N=X**N
-        END IF
-        RETURN
-        END
+       if (x.eq.0.) then
+          if (n .eq. 0) then
+              x2n=1.
+          else
+              x2n=0.
+          end if
+        else
+          x2n=x**n
+        end if
+        return
+        end
 
 
 

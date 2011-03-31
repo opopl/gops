@@ -1,20 +1,20 @@
-!   NEB MODULE IS AN IMPLEMENTATION OF THE NUDGED ELASTIC BAND METHOD FOR PERFORMING DOUBLE-ENDED PATHWAY SEARCHES.
-!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
-!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
+!   NEB module is an implementation of the nudged elastic band method for performing double-ended pathway searches.
+!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
+!   This file is part of NEB module. NEB module is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 MODULE KEYOUTPUT
      IMPLICIT NONE
@@ -22,33 +22,33 @@ MODULE KEYOUTPUT
      LOGICAL :: OPTIMIZETS          = .FALSE.
      LOGICAL :: PRINTOPTIMIZETS     = .FALSE.
      LOGICAL :: SAVECANDIDATES      = .FALSE.
-     CHARACTER(LEN=5) :: CANDIDATES = 'MAXIM'
+     CHARACTER(LEN=5) :: CANDIDATES = 'maxim'
      CONTAINS
 
      SUBROUTINE KEYOUTPUTPRINT
           IMPLICIT NONE
 
           IF (OPTIMIZETS) THEN
-               WRITE(*,'(1X,A)') 'KEYOUTPUT> TRANSITION STATE CANDIDATES WILL BE OPTIMIZED'
+               WRITE(*,'(1x,a)') 'KeyOutput> Transition state candidates will be optimized'
                IF (PRINTOPTIMIZETS) THEN
-                    WRITE(*,'(1X,A)') 'KEYOUTPUT> VERBOSE PRINTING DURING TRANSITION STATES OPTIMIZATION'
+                    WRITE(*,'(1x,a)') 'KeyOutput> Verbose printing during transition states optimization'
                ELSE
-                    WRITE(*,'(1X,A)') 'KEYOUTPUT> CONCISE PRINTING DURING TRANSITION STATES OPTIMIZATION'
+                    WRITE(*,'(1x,a)') 'KeyOutput> Concise printing during transition states optimization'
                ENDIF
           ELSE
-               WRITE(*,'(1X,A)') 'KEYOUTPUT> TRANSITION STATE CANDIDATES WILL NOT BE OPTIMIZED'
+               WRITE(*,'(1x,a)') 'KeyOutput> Transition state candidates will NOT be optimized'
           ENDIF
 
           IF (SAVECANDIDATES) &
-          &WRITE(*,'(1X,A)') 'KEYOUTPUT> COORDINATES FOR TRANSITION STATES CANDIDATES WILL BE SAVED TO FILES "POINTS*.OUT"'
+          &WRITE(*,'(1x,a)') 'KeyOutput> Coordinates for transition states candidates will be saved to files "points*.out"'
 
           SELECT CASE (CANDIDATES)
-          CASE ('MAXIM')
-               WRITE(*,'(1X,A)') 'KEYOUTPUT> TRANSITION STATE CANDIDATES ARE MAXIMA ALONG NEB'
-          CASE ('ALL')
-               WRITE(*,'(1X,A)') 'KEYOUTPUT> TRANSITION STATE CANDIDATES ARE ALL IMAGES'
-          CASE ('HIGH')
-               WRITE(*,'(1X,A)') 'KEYOUTPUT> TRANSITION STATE CANDIDATE IS THE HIGHEST ENERGY IMAGE'
+          CASE ('maxim')
+               WRITE(*,'(1x,a)') 'KeyOutput> Transition state candidates are maxima along NEB'
+          CASE ('all')
+               WRITE(*,'(1x,a)') 'KeyOutput> Transition state candidates are all images'
+          CASE ('high')
+               WRITE(*,'(1x,a)') 'KeyOutput> Transition state candidate is the highest energy image'
           END SELECT
      END SUBROUTINE KEYOUTPUTPRINT
 END MODULE KEYOUTPUT

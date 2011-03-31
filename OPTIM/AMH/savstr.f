@@ -1,252 +1,252 @@
 
-C     --------------------- SAVSTR ----------------------
+c     --------------------- savstr ----------------------
 
-      SUBROUTINE SAVSTR(NMRES,NUMPRO,MAXPRO,
-     *            MAXCRD,PRCORD,IRES,SAVE_NAME,OCONV)
+      subroutine savstr(nmres,numpro,maxpro,
+     *            maxcrd,prcord,ires,save_name,oconv)
 
-C     --------------------------------------------------
+c     --------------------------------------------------
 
-C     SAVSTR SAVE PROTEIN STRUCTURES, EG. FINAL.PDB
+c     SAVSTR save protein structures, eg. final.pdb
 
-C     ARGUMENTS:
-C        NMRES  - NUMBER OF RESIDUES (I)
-C        AMHMAXSIZ - MAXIMUM NUMBER OF RESIDUES (I)
-C        NUMPRO - NUMBER OF TRIAL PROTEIN STRUCTURES (I)
-C        MAXPRO - MAXIMUM NUMBER OF TRIAL PROTEIN 
-C                 STRUCTURES (I)
-C        MAXCRD - MAXIMUM NUMBER OF ATOMS/ RESIDUE (I)
-C        PRCORD - TRIAL STRUCTURES (I)
-C        OCONV  - UNIT ID FOR FILE TO WHICH STRUCTURES
-C                 ARE TO BE WRITTEN (I)
+c     arguments:
+c        nmres  - number of residues (i)
+c        AMHmaxsiz - maximum number of residues (i)
+c        numpro - number of trial protein structures (i)
+c        maxpro - maximum number of trial protein 
+c                 structures (i)
+c        maxcrd - maximum number of atoms/ residue (i)
+c        prcord - trial structures (i)
+c        oconv  - unit id for file to which structures
+c                 are to be written (i)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-      USE AMHGLOBALS,  ONLY: AMHMAXSIZ
-
-
-      IMPLICIT NONE
-
-C     ARGUMENT DECLARATIONS:
-
-       INTEGER NMRES,NUMPRO,MAXPRO,
-     *           MAXCRD,OCONV
+      use amhglobals,  only: AMHmaxsiz
 
 
-        DOUBLE PRECISION PRCORD(AMHMAXSIZ,3,MAXPRO,MAXCRD)
+      implicit none
 
-        INTEGER IRES(AMHMAXSIZ)
+c     argument declarations:
 
-C     INTERNAL VARIABLES:
-
-        DOUBLE PRECISION CPRCORD(AMHMAXSIZ,3), NITCORD(AMHMAXSIZ,3)
-
-        INTEGER I_PRO, I_RES, I_AXIS, ATOM_NO
-
-        CHARACTER*10 SAVE_NAME
-        INTEGER NL
-
-        CHARACTER*3 RES_TYPE(AMHMAXSIZ)
-
-        EXTERNAL GET_RES_NAME
-
-C     --------------------- BEGIN -----------------------
+       integer nmres,numpro,maxpro,
+     *           maxcrd,oconv
 
 
-        DO 11 NL = 10, 1, -1
+        double precision prcord(AMHmaxsiz,3,maxpro,maxcrd)
 
-          IF (SAVE_NAME(NL:NL) .NE. ' ') THEN
+        integer ires(AMHmaxsiz)
 
-             GO TO 12
+c     internal variables:
 
-          END IF
+        double precision cprcord(AMHmaxsiz,3), nitcord(AMHmaxsiz,3)
 
-11      CONTINUE
-12      CONTINUE
+        integer i_pro, i_res, i_axis, atom_no
+
+        character*10 save_name
+        integer nl
+
+        character*3 res_type(AMHmaxsiz)
+
+        external get_res_name
+
+c     --------------------- begin -----------------------
 
 
-         OPEN(UNIT=OCONV,FILE=SAVE_NAME(1:NL)//'.PDB',
-     *        STATUS='NEW',FORM='FORMATTED')
+        do 11 nl = 10, 1, -1
+
+          if (save_name(nl:nl) .ne. ' ') then
+
+             go to 12
+
+          end if
+
+11      continue
+12      continue
 
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C  CALCULTATE N AND C' POSITIONS
+         open(unit=oconv,file=save_name(1:nl)//'.pdb',
+     *        status='new',form='formatted')
 
-      DO 490 I_PRO=1,NUMPRO
-          DO 491 I_RES=1,NMRES
-              DO 492 I_AXIS = 1,3
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c  Calcultate N and C' positions
+
+      do 490 i_pro=1,numpro
+          do 491 i_res=1,nmres
+              do 492 i_axis = 1,3
               
-        CPRCORD(I_RES,I_AXIS)=0.4436538*PRCORD(I_RES,I_AXIS,I_PRO,1)
-     *                   +0.2352006*PRCORD(I_RES+1,I_AXIS,I_PRO,1)
-     *                   +0.3211455*PRCORD(I_RES,I_AXIS,I_PRO,3)
-        NITCORD(I_RES+1,I_AXIS)=0.4831806*PRCORD(I_RES,I_AXIS,I_PRO,1)
-     *                   +0.7032820*PRCORD(I_RES+1,I_AXIS,I_PRO,1)
-     *                   -0.1864626*PRCORD(I_RES,I_AXIS,I_PRO,3)
+        cprcord(i_res,i_axis)=0.4436538*prcord(i_res,i_axis,i_pro,1)
+     *                   +0.2352006*prcord(i_res+1,i_axis,i_pro,1)
+     *                   +0.3211455*prcord(i_res,i_axis,i_pro,3)
+        nitcord(i_res+1,i_axis)=0.4831806*prcord(i_res,i_axis,i_pro,1)
+     *                   +0.7032820*prcord(i_res+1,i_axis,i_pro,1)
+     *                   -0.1864626*prcord(i_res,i_axis,i_pro,3)
 
 
-492           CONTINUE
-491        CONTINUE
-490     CONTINUE
+492           continue
+491        continue
+490     continue
 
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C  WRITE OUT FINAL STRUCTURE
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c  Write out final structure
 
-        ATOM_NO = 1
+        atom_no = 1
 
-      DO 502 I_PRO=1,NUMPRO
-            DO 500 I_RES=1,NMRES
+      do 502 i_pro=1,numpro
+            do 500 i_res=1,nmres
 
-            CALL GET_RES_NAME(IRES(I_RES), RES_TYPE(I_RES))
+            call get_res_name(ires(i_res), res_type(i_res))
 
-CNNNNNNNNNNNNNNN
-            IF( I_RES .GT. 1) THEN            ! WRITE N POSITION
+cNNNNNNNNNNNNNNN
+            if( i_res .gt. 1) then            ! write N position
 
-         WRITE(OCONV,665) ATOM_NO, RES_TYPE(I_RES), I_RES,
-     *        (NITCORD(I_RES, I_AXIS), I_AXIS =1,3), ATOM_NO
+         write(oconv,665) atom_no, res_type(i_res), i_res,
+     *        (nitcord(i_res, i_axis), i_axis =1,3), atom_no
 
-665        FORMAT('ATOM    ',I3,'  N   ', A3, '   ',I3,'    ',3(F8.3),
-     *             '  1.00  0.00      TPDB ',I3)
+665        format('ATOM    ',i3,'  N   ', a3, '   ',i3,'    ',3(f8.3),
+     *             '  1.00  0.00      TPDB ',i3)
 
-            ATOM_NO = ATOM_NO + 1
-
-
-            END IF
-
-CCACACACACCACACACACA
-         WRITE(OCONV,666) ATOM_NO, RES_TYPE(I_RES), I_RES, 
-     *        (PRCORD(I_RES, I_AXIS, 1, 1), I_AXIS =1,3), ATOM_NO
-666        FORMAT('ATOM    ',I3,'  CA  ', A3, '   ',I3,'    ',3(F8.3),
-     *             '  1.00  0.00      TPDB ',I3)
-            ATOM_NO = ATOM_NO + 1
+            atom_no = atom_no + 1
 
 
-CC'C'C'C'C'C'C'C'C'C'
+            end if
 
-            IF( I_RES .LT. NMRES) THEN            ! WRITE C' POSITION
-
-         WRITE(OCONV,667) ATOM_NO, RES_TYPE(I_RES), I_RES,
-     *        (CPRCORD(I_RES, I_AXIS), I_AXIS =1,3), ATOM_NO
-
-667        FORMAT('ATOM    ',I3,'  C   ', A3, '   ',I3,'    ',3(F8.3),
-     *             '  1.00  0.00      TPDB ',I3)
-
-            ATOM_NO = ATOM_NO + 1
-
-COOOOOOOOOOOOO                                  ! WRITE O POSITION
-
-         WRITE(OCONV,668) ATOM_NO, RES_TYPE(I_RES), I_RES,
-     *        (PRCORD(I_RES, I_AXIS, 1,3), I_AXIS =1,3), ATOM_NO
-
-668        FORMAT('ATOM    ',I3,'  O   ', A3, '   ',I3,'    ',3(F8.3),
-     *             '  1.00  0.00      TPDB ',I3)
-
-            ATOM_NO = ATOM_NO + 1
-
-            END IF
+cCACACACACCACACACACA
+         write(oconv,666) atom_no, res_type(i_res), i_res, 
+     *        (prcord(i_res, i_axis, 1, 1), i_axis =1,3), atom_no
+666        format('ATOM    ',i3,'  CA  ', a3, '   ',i3,'    ',3(f8.3),
+     *             '  1.00  0.00      TPDB ',i3)
+            atom_no = atom_no + 1
 
 
-             IF (IRES(I_RES) .NE. 8) THEN
-         WRITE(OCONV,669) ATOM_NO, RES_TYPE(I_RES), I_RES,
-     *        (PRCORD(I_RES, I_AXIS, 1, 2), I_AXIS =1,3), ATOM_NO
-669        FORMAT('ATOM    ',I3,'  CB  ', A3, '   ',I3,'    ',3(F8.3),
-     *             '  1.00  0.00      TPDB ',I3)
-            ATOM_NO = ATOM_NO + 1
+cC'C'C'C'C'C'C'C'C'C'
 
-             END IF 
+            if( i_res .lt. nmres) then            ! write C' position
+
+         write(oconv,667) atom_no, res_type(i_res), i_res,
+     *        (cprcord(i_res, i_axis), i_axis =1,3), atom_no
+
+667        format('ATOM    ',i3,'  C   ', a3, '   ',i3,'    ',3(f8.3),
+     *             '  1.00  0.00      TPDB ',i3)
+
+            atom_no = atom_no + 1
+
+cOOOOOOOOOOOOO                                  ! write O position
+
+         write(oconv,668) atom_no, res_type(i_res), i_res,
+     *        (prcord(i_res, i_axis, 1,3), i_axis =1,3), atom_no
+
+668        format('ATOM    ',i3,'  O   ', a3, '   ',i3,'    ',3(f8.3),
+     *             '  1.00  0.00      TPDB ',i3)
+
+            atom_no = atom_no + 1
+
+            end if
 
 
+             if (ires(i_res) .ne. 8) then
+         write(oconv,669) atom_no, res_type(i_res), i_res,
+     *        (prcord(i_res, i_axis, 1, 2), i_axis =1,3), atom_no
+669        format('ATOM    ',i3,'  CB  ', a3, '   ',i3,'    ',3(f8.3),
+     *             '  1.00  0.00      TPDB ',i3)
+            atom_no = atom_no + 1
 
-  500       CONTINUE
-  502 CONTINUE
-
-
-      CLOSE(OCONV)
-
-C     ---------------------- DONE -----------------------
-
-      RETURN
-      END
-
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-        SUBROUTINE GET_RES_NAME(RES_NUMBER, RES_NAME)
+             end if 
 
 
 
-        IMPLICIT NONE
+  500       continue
+  502 continue
 
 
-        INTEGER RES_NUMBER
+      close(oconv)
 
-        CHARACTER*3 RES_NAME
+c     ---------------------- done -----------------------
 
-        IF (RES_NUMBER .EQ. 1) THEN 
-                RES_NAME =  "ALA" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 2) THEN 
-                RES_NAME =  "ARG" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 3) THEN 
-                RES_NAME =  "ASN" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 4) THEN 
-                RES_NAME =  "ASP" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 5) THEN 
-                RES_NAME =  "CYS" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 6) THEN 
-                RES_NAME =  "GLN" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 7) THEN 
-                RES_NAME =  "GLU" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 8) THEN 
-                RES_NAME =  "GLY" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 9) THEN 
-                RES_NAME =  "HIS" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 10) THEN 
-                RES_NAME =  "ILE" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 11) THEN 
-                RES_NAME =  "LEU" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 12) THEN 
-                RES_NAME =  "LYS" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 13) THEN 
-                RES_NAME =  "MET" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 14) THEN 
-                RES_NAME =  "PHE" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 15) THEN 
-                RES_NAME =  "PRO" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 16) THEN 
-                RES_NAME =  "SER" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 17) THEN 
-                RES_NAME =  "THR" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 18) THEN 
-                RES_NAME =  "TRP" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 19) THEN 
-                RES_NAME =  "TYR" 
-        ENDIF
-        IF (RES_NUMBER .EQ. 20) THEN 
-                RES_NAME =  "VAL" 
-        ENDIF
+      return
+      end
+
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+        subroutine get_res_name(res_number, res_name)
 
 
-        IF ((RES_NUMBER .GT. 20) .OR. (RES_NUMBER .LT. 1)) THEN
-           WRITE(*,*) 'RESIDUE OUT OF RANGE'
-        END IF
+
+        implicit none
+
+
+        integer res_number
+
+        character*3 res_name
+
+        if (res_number .eq. 1) then 
+                res_name =  "ALA" 
+        endif
+        if (res_number .eq. 2) then 
+                res_name =  "ARG" 
+        endif
+        if (res_number .eq. 3) then 
+                res_name =  "ASN" 
+        endif
+        if (res_number .eq. 4) then 
+                res_name =  "ASP" 
+        endif
+        if (res_number .eq. 5) then 
+                res_name =  "CYS" 
+        endif
+        if (res_number .eq. 6) then 
+                res_name =  "GLN" 
+        endif
+        if (res_number .eq. 7) then 
+                res_name =  "GLU" 
+        endif
+        if (res_number .eq. 8) then 
+                res_name =  "GLY" 
+        endif
+        if (res_number .eq. 9) then 
+                res_name =  "HIS" 
+        endif
+        if (res_number .eq. 10) then 
+                res_name =  "ILE" 
+        endif
+        if (res_number .eq. 11) then 
+                res_name =  "LEU" 
+        endif
+        if (res_number .eq. 12) then 
+                res_name =  "LYS" 
+        endif
+        if (res_number .eq. 13) then 
+                res_name =  "MET" 
+        endif
+        if (res_number .eq. 14) then 
+                res_name =  "PHE" 
+        endif
+        if (res_number .eq. 15) then 
+                res_name =  "PRO" 
+        endif
+        if (res_number .eq. 16) then 
+                res_name =  "SER" 
+        endif
+        if (res_number .eq. 17) then 
+                res_name =  "THR" 
+        endif
+        if (res_number .eq. 18) then 
+                res_name =  "TRP" 
+        endif
+        if (res_number .eq. 19) then 
+                res_name =  "TYR" 
+        endif
+        if (res_number .eq. 20) then 
+                res_name =  "VAL" 
+        endif
+
+
+        if ((res_number .gt. 20) .or. (res_number .lt. 1)) then
+           write(*,*) 'Residue out of Range'
+        end if
              
 
-        RETURN
+        return
 
-        END   
+        end   
 

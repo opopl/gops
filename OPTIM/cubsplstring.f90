@@ -1,5 +1,5 @@
 MODULE CUBSPLSTRING
-  ! FUNCTIONS FOR DEALING WITH A STRING INTERPOLATED VIA CUBIC SPLINES
+  ! functions for dealing with a string interpolated via cubic splines
   ! WARNING: ARC LENGTH DERIVATIVES ARE NOT ALWAYS QUITE RIGHT!!!!
   ! THIS CAN OCCASSIONALLY MAKE FOLLOWARCNEWT FAIL TO CONVERGE
 
@@ -13,11 +13,11 @@ MODULE CUBSPLSTRING
   DOUBLE PRECISION, TARGET :: ARCTOL
   COMPLEX, PARAMETER :: CMPLXI=(0.0D0,1.0D0)
 
-  INTEGER :: GLOBALB ! FOR USE IN CALCULATING ARCLENGTH WITH DQAG ONLY
+  INTEGER :: GLOBALB ! for use in calculating arclength with DQAG only
 
 CONTAINS
   SUBROUTINE INTERPCUBSPL
-    ! STRING WITH INTERPOLATE WITH CUBIC SPLINES
+    ! string with interpolate with cubic splines
 
     IMPLICIT NONE
     TYPE(IMGNODE), POINTER :: DUMMYP
@@ -29,13 +29,13 @@ CONTAINS
        DUMMYP => DUMMYP%NEXT
        DUMMYP%DIFF(:) = DUMMYP%XYZ(:) - DUMMYP%PREV%XYZ(:)
        DUMMYP%CHORD = SQRT(DOT_PRODUCT(DUMMYP%DIFF, DUMMYP%DIFF))
-       ABSC(IM+1) = ABSC(IM) + DUMMYP%CHORD ! ABSCISSA
+       ABSC(IM+1) = ABSC(IM) + DUMMYP%CHORD ! abscissa
        IF(.NOT.CUBSPLT) DUMMYP%ARC=ABSC(IM+1)
-       COEFF(1,IM+1,:) = DUMMYP%XYZ(:) ! CUBIC SPLINE COEFFICIENTS  
+       COEFF(1,IM+1,:) = DUMMYP%XYZ(:) ! cubic spline coefficients  
     ENDDO
 
     DO CRD = 1,NC
-       ! SET SECOND DERIVATIVES AT END POINTS EQUAL TO ZERO
+       ! set second derivatives at end points equal to zero
        COEFF(2,1,CRD) = 0.0D0; COEFF(2,NIM+2,CRD) = 0.0D0
 
        CALL CUBSPL(ABSC(1:NIM+2), COEFF(1:4,1:NIM+2,CRD), NIM+2, IBCBEG, IBCEND)       
@@ -44,7 +44,7 @@ CONTAINS
     ENDDO    
     
     IF(CUBSPLT) THEN
-    ! CALCULATE THE ARC LENGTHS AT EACH IMAGE
+    ! calculate the arc lengths at each image
     DUMMYP => FIRST%PREV
     DO IM = 1,NIM+1
        DUMMYP => DUMMYP%NEXT
@@ -57,8 +57,8 @@ CONTAINS
   END SUBROUTINE INTERPCUBSPL
 
   SUBROUTINE GETSPLVAL(X,B,N,ANS)
-    ! GET VALUE OF NTH DERIVATIVE OF SPLINE, AT ABSCISSA X OVER B, PUT INTO ANS
-    ! WARNING: DOES NOT CHECK FOR X TO BE WITHIN LIMITS
+    ! Get value of Nth derivative of spline, at abscissa X over B, put into ANS
+    ! WARNING: does NOT check for X to be within limits
 
     DOUBLE PRECISION, INTENT(IN) :: X
     INTEGER, INTENT(IN) :: B, N
@@ -71,58 +71,58 @@ CONTAINS
     ELSE IF(N.EQ.2) THEN
        ANS(:) = 6*COEFF(4,B+1,:)*X+2*COEFF(3,B+1,:)
     ELSE
-       PRINT*, 'N MUST BE 0,1,OR 2', N
+       print*, 'N must be 0,1,or 2', N
        STOP
     ENDIF
 
   END SUBROUTINE GETSPLVAL
 
   DOUBLE PRECISION FUNCTION ARCDERV(X,B)
-    ! GET NORM OF TANGENT AT SPLINE PARAMETER X OVER B
+    ! get norm of tangent at spline parameter X over B
     IMPLICIT NONE
 
     DOUBLE PRECISION :: X, D(NC)
     INTEGER :: B
 
-    CALL GETSPLVAL(X,B,1,D) ! GET SPLINE DERIVATIVE
+    CALL GETSPLVAL(X,B,1,D) ! get spline derivative
     ARCDERV = SQRT(DOT_PRODUCT(D,D))
-!    IF(BMCURPAIR.EQ.10) PRINT*, 'TESTXA: ', X, B, ARCDERV
+!    IF(BMCURPAIR.EQ.10) print*, 'TESTXA: ', X, B, ARCDERV
     IF (ARCDERV.LT.TINY) THEN
-       PRINT*, 'ERROR: VERY SMALL ARCDERV - BAD PARAMETRIZATION', X, B, ARCDERV
+       print*, 'ERROR: very small arcderv - bad parametrization', X, B, ARCDERV
        STOP
     ENDIF
   END FUNCTION ARCDERV  
 
   DOUBLE PRECISION FUNCTION ARCDERVF(X)
-    ! FUNCTION FOR CALLING WITH DQAG INTEGRATION
-    ! WORKS JUST LIKE FUNCTION ARCDERV BUT USES THE 
-    ! VARIABLE GLOBALB INSTEAD OF B
-    ! GET NORM OF TANGENT AT SPLINE PARAMETER X OVER B
+    ! function for calling with DQAG integration
+    ! works just like function ARCDERV but uses the 
+    ! variable GLOBALB instead of B
+    ! get norm of tangent at spline parameter X over B
     IMPLICIT NONE
 
     DOUBLE PRECISION :: X
     DOUBLE PRECISION :: D(NC)
 
-    CALL GETSPLVAL(X,GLOBALB,1,D) ! GET SPLINE DERIVATIVE
+    CALL GETSPLVAL(X,GLOBALB,1,D) ! get spline derivative
     ARCDERVF = SQRT(DOT_PRODUCT(D,D))
     IF (ARCDERVF.LT.TINY) THEN
-       PRINT*, 'ERROR: VERY SMALL ARCDERV - BAD PARAMETRIZATION', &
+       print*, 'ERROR: very small arcderv - bad parametrization', &
             & X, GLOBALB, ARCDERVF
        STOP
     ENDIF
   END FUNCTION ARCDERVF
 
   DOUBLE PRECISION FUNCTION ARCLENGTH(X,B)
-    ! CALCULATE THE ARC LENGTH FROM BASE IMAGE B TO X ABOVE THAT IMAGE
-    ! ASSUME X IS BETWEEN 0 AND ABSC(B+2)-ABSC(B+1)
-    ! USES ADAPTIVE QUADRATURE FUNCTION FROM SLATEC (DQAG)
+    ! calculate the arc length from base image B to X above that image
+    ! assume X is between 0 and absc(b+2)-absc(b+1)
+    ! uses adaptive quadrature function from SLATEC (DQAG)
 
     IMPLICIT NONE
     
     DOUBLE PRECISION :: X
     INTEGER :: B
     
-    INTEGER, PARAMETER :: LIMIT = 100 ! MAXIMAL NUMBER OF SUBDIVISIONS
+    INTEGER, PARAMETER :: LIMIT = 100 ! maximal number of subdivisions
     DOUBLE PRECISION :: ANS, ERR
     INTEGER :: NEVAL, IERR
     INTEGER :: LAST, IWORK(LIMIT)
@@ -133,9 +133,9 @@ CONTAINS
     
     ARCLENGTH = ANS
 
-!    PRINT*, 'TESTXA:', ANS, ERR, LAST
+!    print*, 'TESTXA:', ANS, ERR, LAST
     IF(IERR.NE.0) THEN
-       PRINT*, 'ERROR IN CALCULATING ARC LENGTH: ', X, B, ANS, ERR
+       print*, 'Error in calculating arc length: ', X, B, ANS, ERR
        STOP
     ENDIF
     RETURN
@@ -143,10 +143,10 @@ CONTAINS
   END FUNCTION ARCLENGTH    
 
   DOUBLE PRECISION FUNCTION FOLLOWARCNEWT(A, S, R)
-    ! S IS THE IMAGE PROVIDING THE STARTING POINT
-    ! R IS LOCATION OF S RELATIVE TO A: IF R = 0, S IS LOWER BOUND, IF R=1, S IS UPPER BOUND
-    ! USE NEWTON-RAPHSTON TO FIND THE PARAMETER VALUE WITHIN APPROPRIATE SPLINE SEGMENT
-    ! THAT GIVES AN ARC LENGTH OF A WITHIN THAT SEGMENT
+    ! S is the image providing the starting point
+    ! R is location of S relative to A: if R = 0, S is lower bound, if R=1, S is upper bound
+    ! Use Newton-Raphston to find the parameter value within appropriate spline segment
+    ! that gives an arc length of A within that segment
 
     IMPLICIT NONE
 
@@ -164,14 +164,14 @@ CONTAINS
     ELSE IF (R.EQ.1) THEN
        B = S-1
     ELSE
-       PRINT*, 'R MUST BE 0 OR 1.'
+       print*, 'R must be 0 or 1.'
        STOP
     ENDIF
 
     UPPER = ABSC(B+2)-ABSC(B+1)
     LOWER = 0.0D0
 
-!    PRINT*, 'TESTFOLLOWARCNEWT: ', A, S, B, R, NIM, TIM
+!    print*, 'TESTFOLLOWARcNEWT: ', A, S, B, R, NIM, TIM
     
     X = ABSC(S+1)-ABSC(B+1)
     STEP = ARCTOL + 1
@@ -179,13 +179,13 @@ CONTAINS
     DO WHILE (STEP.GT.ARCTOL)
        ITS = ITS + 1
        IF (ITS.GT.MAXITS) THEN
-          IF (PTEST) PRINT*, 'FOLLOWARC NEWT FAILED! TAKING BISECTION STEP', A, S, R, ITS          
+          IF (PTEST) print*, 'FOLLOWARC NEWT FAILED! Taking bisection step', A, S, R, ITS          
           X = (UPPER+LOWER)/2
           ITS = 1          
        ENDIF       
        FX = ARCLENGTH(X,B) - A
 
-       ! KEEPS TRACK OF A LOWER AND UPPER BOUND IN CASE HAVE TO CALL BISECTION METHOD LATER
+       ! keeps track of a lower and upper bound in case have to call bisection method later
 
        IF (FX.GT.0.AND.X.LT.UPPER) THEN
           UPPER = X
@@ -204,10 +204,10 @@ CONTAINS
   END FUNCTION FOLLOWARCNEWT
 
   DOUBLE PRECISION FUNCTION FOLLOWARCBIS(A, B, L, U)
-    ! FIND PARAMETER CORRESPONDING TO GIVEN ARCLENGTH BY BISECTION
-    ! LESS EFFICIENT THAN FOLLOWARCNEWT, ONLY FOR USE WHERE THAT DOESN'T CONVERGE
-    ! RETURNS PARAMETER ABOVE BASE IMAGE B CORRESPONDING TO ARCLENGTH A ABOVE B
-    ! L AND U ARE STARTING UPPER AND LOWER BOUNDS
+    ! Find parameter corresponding to given arclength by bisection
+    ! less efficient than FOLLOWARCNEWT, only for use where that doesn't converge
+    ! Returns parameter above base image B corresponding to arclength A above B
+    ! L and U are starting upper and lower bounds
 
     DOUBLE PRECISION :: A, L, U
     INTEGER :: B, ITS
@@ -220,14 +220,14 @@ CONTAINS
        ITS = ITS+1
        X = (UPPER+LOWER)/2
        AX = ARCLENGTH(X,B)
-       PRINT '(A,5F20.10)', 'TESTXB: ', X, AX, LOWER, UPPER, A
+       print '(A,5F20.10)', 'TESTXB: ', X, AX, LOWER, UPPER, A
        IF (AX.GT.A) THEN
           UPPER = X
        ELSE
           LOWER = X
        ENDIF
        IF (ITS.GT.1.0D6) THEN
-          PRINT*, 'ERROR: BISECTION METHOD NOT CONVERGING! SOMETHING IS WRONG.'
+          print*, 'ERROR: BISECTION METHOD NOT CONVERGING! Something is wrong.'
           STOP
        ENDIF
     ENDDO

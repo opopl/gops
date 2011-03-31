@@ -1,239 +1,239 @@
 
-C     --------------------- SHKDRV  ----------------------
+c     --------------------- shkdrv  ----------------------
 
-      SUBROUTINE HARM_SPRING(PRCORD,JSTRT,JFINS,MAXPRO,MAXCRD, 
-     *                         IRES,F_CORD_HARM,E_TEMP_HARM)
+      subroutine harm_spring(prcord,jstrt,jfins,maxpro,maxcrd, 
+     *                         ires,f_cord_harm,E_temp_harm)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-C     HARM_SPRING DRIVER ROUTINE FOR PERFORMING HARD SPRINGS
-C                 FOR MAINTAIN CHAIN CONNECTIVITY
+c     harm_spring driver routine for performing hard springs
+c                 for maintain chain connectivity
 
-C     ARGUMENTS:
+c     arguments:
 
-C        AMHMAXSIZ- MAXIMUM NUMBER OF PROTEIN RESIDUES (I)
-C        PRCORD- NEW COORDINATES WHICH SATSIFY BOND 
-C                LENGTHS (O)
+c        AMHmaxsiz- maximum number of protein residues (i)
+c        prcord- new coordinates which satsify bond 
+c                lengths (o)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-      USE AMHGLOBALS,  ONLY: AMHMAXSIZ,E_HARM_SPRINGS
+      use amhglobals,  only: AMHmaxsiz,E_harm_springs
 
-      IMPLICIT NONE
+      implicit none
 
-C     ARGUMENT DECLARATIONS:
+c     argument declarations:
 
-         INTEGER JSTRT,JFINS,MAXPRO,MAXCRD,IRES(AMHMAXSIZ)
+         integer jstrt,jfins,maxpro,maxcrd,ires(AMHmaxsiz)
      
-         DOUBLE PRECISION PRCORD(AMHMAXSIZ,3,MAXPRO,MAXCRD),
-     *     X_DIFF(AMHMAXSIZ),Y_DIFF(AMHMAXSIZ),Z_DIFF(AMHMAXSIZ),
-     *     F_CORD_HARM(AMHMAXSIZ,MAXCRD,MAXCRD),CA_DIST(AMHMAXSIZ),CA_CB_DIST(AMHMAXSIZ),E_TEMP_HARM,CAF,
-     *     R_DEV,CA_DISTANCE,CA_SPRING_SCL,CA_CB_DISTANCE,CA_CB_SPRING_SCL,
-     *     CA_OX_DIST(AMHMAXSIZ),CA_OX_DISTANCE,CA_OX_SPRING_SCL,
-     *     OX_CAPLUS_DIST(AMHMAXSIZ),OX_CAPLUS_DISTANCE,OX_CAPLUS_SPRING_SCL
+         double precision prcord(AMHmaxsiz,3,maxpro,maxcrd),
+     *     x_diff(AMHmaxsiz),y_diff(AMHmaxsiz),z_diff(AMHmaxsiz),
+     *     f_cord_harm(AMHmaxsiz,maxcrd,maxcrd),ca_dist(AMHmaxsiz),ca_cb_dist(AMHmaxsiz),E_temp_harm,caf,
+     *     r_dev,CA_distance,ca_spring_scl,CA_CB_distance,ca_cb_spring_scl,
+     *     ca_ox_dist(AMHmaxsiz),CA_OX_distance,ca_ox_spring_scl,
+     *     ox_caplus_dist(AMHmaxsiz),OX_CAplus_distance,ox_caplus_spring_scl
 
-C     INTERNAL VARIABLES:
+c     internal variables:
 
-C        --- DO LOOP INDICES ---
+c        --- do loop indices ---
 
-         INTEGER I507,I512
+         integer i507,i512
 
-C        --- IMPLIED DO LOOP INDICES ---
+c        --- implied do loop indices ---
 
-C  FROM PTTARG.F   CA-CA+1     BONDLN(I505,1)=3.8004
-C  FROM PTTARG.F   CB-CA       BONDLN(I505,2)=1.54
-C  FROM SHAKOX.F   OX-CA       EQDIST(1)=2.42677
-C  FROM SHAKOX.F   CA+1-OX     EQDIST(2)=2.82146
+c  from pttarg.f   ca-ca+1     bondln(i505,1)=3.8004
+c  from pttarg.f   cb-ca       bondln(i505,2)=1.54
+c  from shakox.f   ox-ca       eqdist(1)=2.42677
+c  from shakox.f   ca+1-ox     eqdist(2)=2.82146
 
-C CA-CA
+c CA-CA
 
-        CA_SPRING_SCL=50.0D0
-        CA_DISTANCE=3.8004D0       
-        E_TEMP_HARM = 0.D0
-        F_CORD_HARM=0.D0
+        ca_spring_scl=50.0D0
+        CA_distance=3.8004D0       
+        E_temp_harm = 0.D0
+        f_cord_harm=0.D0
 
-           DO 507 I507=JSTRT,JFINS-1
+           do 507 i507=jstrt,jfins-1
 
-           CAF=0.0D0
+           caf=0.0D0
 
-        X_DIFF(I507)=PRCORD(I507+1,1,1,1) - PRCORD(I507,1,1,1)
-        Y_DIFF(I507)=PRCORD(I507+1,2,1,1) - PRCORD(I507,2,1,1)
-        Z_DIFF(I507)=PRCORD(I507+1,3,1,1) - PRCORD(I507,3,1,1)
+        x_diff(i507)=prcord(i507+1,1,1,1) - prcord(i507,1,1,1)
+        y_diff(i507)=prcord(i507+1,2,1,1) - prcord(i507,2,1,1)
+        z_diff(i507)=prcord(i507+1,3,1,1) - prcord(i507,3,1,1)
 
-        CA_DIST(I507)=DSQRT(X_DIFF(I507)**2 + Y_DIFF(I507)**2 + Z_DIFF(I507)**2)
+        ca_dist(i507)=dsqrt(x_diff(i507)**2 + y_diff(i507)**2 + z_diff(i507)**2)
 
-        R_DEV=CA_DIST(I507)-CA_DISTANCE
+        r_dev=ca_dist(i507)-CA_distance
 
-        E_TEMP_HARM =  E_TEMP_HARM +  CA_SPRING_SCL*R_DEV**2
-        CAF=2.0D0*CA_SPRING_SCL*R_DEV/CA_DIST(I507)
+        E_temp_harm =  E_temp_harm +  ca_spring_scl*r_dev**2
+        caf=2.0D0*ca_spring_scl*r_dev/ca_dist(i507)
 
-        F_CORD_HARM(I507,1,1) = F_CORD_HARM(I507,1,1) + X_DIFF(I507)*CAF
-        F_CORD_HARM(I507,2,1) = F_CORD_HARM(I507,2,1) + Y_DIFF(I507)*CAF
-        F_CORD_HARM(I507,3,1) = F_CORD_HARM(I507,3,1) + Z_DIFF(I507)*CAF
-        F_CORD_HARM(I507+1,1,1) = F_CORD_HARM(I507+1,1,1) - X_DIFF(I507)*CAF
-        F_CORD_HARM(I507+1,2,1) = F_CORD_HARM(I507+1,2,1) - Y_DIFF(I507)*CAF
-        F_CORD_HARM(I507+1,3,1) = F_CORD_HARM(I507+1,3,1) - Z_DIFF(I507)*CAF
+        f_cord_harm(i507,1,1) = f_cord_harm(i507,1,1) + x_diff(i507)*caf
+        f_cord_harm(i507,2,1) = f_cord_harm(i507,2,1) + y_diff(i507)*caf
+        f_cord_harm(i507,3,1) = f_cord_harm(i507,3,1) + z_diff(i507)*caf
+        f_cord_harm(i507+1,1,1) = f_cord_harm(i507+1,1,1) - x_diff(i507)*caf
+        f_cord_harm(i507+1,2,1) = f_cord_harm(i507+1,2,1) - y_diff(i507)*caf
+        f_cord_harm(i507+1,3,1) = f_cord_harm(i507+1,3,1) - z_diff(i507)*caf
 
- 507         CONTINUE
+ 507         continue
            
-C           WRITE(6,*)'CA CA ',E_TEMP_HARM
+c           write(6,*)'ca ca ',E_temp_harm
 
-C        IF (MEMIRES(JTGRES).NE.8)THEN
+c        if (memires(jtgres).ne.8)then
 
-          CA_CB_SPRING_SCL=50.0D0
-          CA_CB_DISTANCE=1.54D0       
+          ca_cb_spring_scl=50.0D0
+          CA_CB_distance=1.54D0       
 
-           DO 607 I507=JSTRT,JFINS
-            IF (IRES(I507).NE.8)THEN 
+           do 607 i507=jstrt,jfins
+            if (ires(i507).ne.8)then 
 
-           CAF=0.D0
+           caf=0.D0
 
-          X_DIFF(I507)=PRCORD(I507,1,1,1) - PRCORD(I507,1,1,2)
-          Y_DIFF(I507)=PRCORD(I507,2,1,1) - PRCORD(I507,2,1,2)
-          Z_DIFF(I507)=PRCORD(I507,3,1,1) - PRCORD(I507,3,1,2)
+          x_diff(i507)=prcord(i507,1,1,1) - prcord(i507,1,1,2)
+          y_diff(i507)=prcord(i507,2,1,1) - prcord(i507,2,1,2)
+          z_diff(i507)=prcord(i507,3,1,1) - prcord(i507,3,1,2)
 
-            CA_CB_DIST(I507)=DSQRT(X_DIFF(I507)**2 + Y_DIFF(I507)**2 + Z_DIFF(I507)**2)
+            ca_cb_dist(i507)=dsqrt(x_diff(i507)**2 + y_diff(i507)**2 + z_diff(i507)**2)
 
-        R_DEV=CA_CB_DIST(I507)-CA_CB_DISTANCE
+        r_dev=ca_cb_dist(i507)-CA_CB_distance
 
-        E_TEMP_HARM = E_TEMP_HARM + CA_CB_SPRING_SCL*R_DEV**2
-        CAF=2.0D0*CA_CB_SPRING_SCL*R_DEV/CA_CB_DIST(I507)
+        E_temp_harm = E_temp_harm + ca_cb_spring_scl*r_dev**2
+        caf=2.0D0*ca_cb_spring_scl*r_dev/ca_cb_dist(i507)
 
-        F_CORD_HARM(I507,1,1) = F_CORD_HARM(I507,1,1) - X_DIFF(I507)*CAF
-        F_CORD_HARM(I507,2,1) = F_CORD_HARM(I507,2,1) - Y_DIFF(I507)*CAF
-        F_CORD_HARM(I507,3,1) = F_CORD_HARM(I507,3,1) - Z_DIFF(I507)*CAF
-        F_CORD_HARM(I507,1,2) = F_CORD_HARM(I507,1,2) + X_DIFF(I507)*CAF
-        F_CORD_HARM(I507,2,2) = F_CORD_HARM(I507,2,2) + Y_DIFF(I507)*CAF
-        F_CORD_HARM(I507,3,2) = F_CORD_HARM(I507,3,2) + Z_DIFF(I507)*CAF
+        f_cord_harm(i507,1,1) = f_cord_harm(i507,1,1) - x_diff(i507)*caf
+        f_cord_harm(i507,2,1) = f_cord_harm(i507,2,1) - y_diff(i507)*caf
+        f_cord_harm(i507,3,1) = f_cord_harm(i507,3,1) - z_diff(i507)*caf
+        f_cord_harm(i507,1,2) = f_cord_harm(i507,1,2) + x_diff(i507)*caf
+        f_cord_harm(i507,2,2) = f_cord_harm(i507,2,2) + y_diff(i507)*caf
+        f_cord_harm(i507,3,2) = f_cord_harm(i507,3,2) + z_diff(i507)*caf
 
-         ENDIF
-C         WRITE(6,*)'HARMHARM ', R_DEV
+         endif
+c         write(6,*)'harmharm ', r_dev
 
- 607         CONTINUE
+ 607         continue
 
-C          WRITE(6,*)'CA CB E ',E_TEMP_HARM
+c          write(6,*)'ca cb E ',E_temp_harm
 
-C        WRITE(6,*)'CA CA DISTANCE ', CA_DIST(5),CA_DISTANCE 
-C        WRITE(6,*)'CA CB DISTANCE ', CA_CB_DIST(5),CA_CB_DISTANCE 
-C        WRITE(6,*)'E_TEMP_HARM ', E_TEMP_HARM
+c        write(6,*)'ca ca distance ', ca_dist(5),CA_distance 
+c        write(6,*)'ca cb distance ', ca_cb_dist(5),CA_CB_distance 
+c        write(6,*)'E_temp_harm ', E_temp_harm
 
-       CA_OX_SPRING_SCL=50.0D0
-       CA_OX_DISTANCE= 2.42677D0  
+       ca_ox_spring_scl=50.0D0
+       CA_OX_distance= 2.42677D0  
 
-C     SHAKE BETWEEN CA-OX
-C  FROM SHAKOX.F   CA-OX       EQDIST(1)=2.42677
+c     Shake between Ca-Ox
+c  from shakox.f   ca-ox       eqdist(1)=2.42677
 
-           DO 707 I507=JSTRT,JFINS
+           do 707 i507=jstrt,jfins
 
-           CAF=0.0D0
+           caf=0.0D0
 
-          X_DIFF(I507)=PRCORD(I507,1,1,1) - PRCORD(I507,1,1,3)
-          Y_DIFF(I507)=PRCORD(I507,2,1,1) - PRCORD(I507,2,1,3)
-          Z_DIFF(I507)=PRCORD(I507,3,1,1) - PRCORD(I507,3,1,3)
+          x_diff(i507)=prcord(i507,1,1,1) - prcord(i507,1,1,3)
+          y_diff(i507)=prcord(i507,2,1,1) - prcord(i507,2,1,3)
+          z_diff(i507)=prcord(i507,3,1,1) - prcord(i507,3,1,3)
 
-            CA_OX_DIST(I507)=DSQRT(X_DIFF(I507)**2 + Y_DIFF(I507)**2 + Z_DIFF(I507)**2)
+            ca_ox_dist(i507)=dsqrt(x_diff(i507)**2 + y_diff(i507)**2 + z_diff(i507)**2)
 
-        R_DEV=CA_OX_DIST(I507)-CA_OX_DISTANCE
+        r_dev=ca_ox_dist(i507)-CA_OX_distance
 
-        E_TEMP_HARM =  E_TEMP_HARM +  CA_OX_SPRING_SCL*R_DEV**2
-        CAF=2.0D0*CA_OX_SPRING_SCL*R_DEV/CA_OX_DIST(I507)
+        E_temp_harm =  E_temp_harm +  ca_ox_spring_scl*r_dev**2
+        caf=2.0D0*ca_ox_spring_scl*r_dev/ca_ox_dist(i507)
 
-        F_CORD_HARM(I507,1,1) = F_CORD_HARM(I507,1,1) - X_DIFF(I507)*CAF
-        F_CORD_HARM(I507,2,1) = F_CORD_HARM(I507,2,1) - Y_DIFF(I507)*CAF
-        F_CORD_HARM(I507,3,1) = F_CORD_HARM(I507,3,1) - Z_DIFF(I507)*CAF
-        F_CORD_HARM(I507,1,3) = F_CORD_HARM(I507,1,3) + X_DIFF(I507)*CAF
-        F_CORD_HARM(I507,2,3) = F_CORD_HARM(I507,2,3) + Y_DIFF(I507)*CAF
-        F_CORD_HARM(I507,3,3) = F_CORD_HARM(I507,3,3) + Z_DIFF(I507)*CAF
+        f_cord_harm(i507,1,1) = f_cord_harm(i507,1,1) - x_diff(i507)*caf
+        f_cord_harm(i507,2,1) = f_cord_harm(i507,2,1) - y_diff(i507)*caf
+        f_cord_harm(i507,3,1) = f_cord_harm(i507,3,1) - z_diff(i507)*caf
+        f_cord_harm(i507,1,3) = f_cord_harm(i507,1,3) + x_diff(i507)*caf
+        f_cord_harm(i507,2,3) = f_cord_harm(i507,2,3) + y_diff(i507)*caf
+        f_cord_harm(i507,3,3) = f_cord_harm(i507,3,3) + z_diff(i507)*caf
 
- 707         CONTINUE
+ 707         continue
 
-C         WRITE(6,*)'CA OX E ',E_TEMP_HARM
+c         write(6,*)'ca ox E ',E_temp_harm
 
 
-C     SHAKE BETWEEN CA-OX
+c     Shake between Ca-Ox
 
-          OX_CAPLUS_SPRING_SCL=50.0D0
-          OX_CAPLUS_DISTANCE= 2.82146D0
+          ox_caplus_spring_scl=50.0D0
+          OX_CAplus_distance= 2.82146D0
     
-C  FROM SHAKOX.F   CA-OX       EQDIST(1)=2.42677
-C  FROM SHAKOX.F   OX-CA+1     EQDIST(2)=2.82146
+c  from shakox.f   ca-ox       eqdist(1)=2.42677
+c  from shakox.f   ox-ca+1     eqdist(2)=2.82146
 
-           DO 807 I507=JSTRT,JFINS-1
+           do 807 i507=jstrt,jfins-1
 
-           CAF=0.0D0
+           caf=0.0D0
 
-          X_DIFF(I507)=PRCORD(I507,1,1,3) - PRCORD(I507+1,1,1,1)
-          Y_DIFF(I507)=PRCORD(I507,2,1,3) - PRCORD(I507+1,2,1,1)
-          Z_DIFF(I507)=PRCORD(I507,3,1,3) - PRCORD(I507+1,3,1,1)
+          x_diff(i507)=prcord(i507,1,1,3) - prcord(i507+1,1,1,1)
+          y_diff(i507)=prcord(i507,2,1,3) - prcord(i507+1,2,1,1)
+          z_diff(i507)=prcord(i507,3,1,3) - prcord(i507+1,3,1,1)
 
-            OX_CAPLUS_DIST(I507)=DSQRT(X_DIFF(I507)**2 + Y_DIFF(I507)**2 + Z_DIFF(I507)**2)
+            ox_caplus_dist(i507)=dsqrt(x_diff(i507)**2 + y_diff(i507)**2 + z_diff(i507)**2)
 
-        R_DEV=OX_CAPLUS_DIST(I507)-OX_CAPLUS_DISTANCE 
+        r_dev=ox_caplus_dist(i507)-OX_CAplus_distance 
 
-        E_TEMP_HARM =  E_TEMP_HARM +  OX_CAPLUS_SPRING_SCL*R_DEV**2
-        CAF=2.0D0*OX_CAPLUS_SPRING_SCL*R_DEV/OX_CAPLUS_DIST(I507)
+        E_temp_harm =  E_temp_harm +  ox_caplus_spring_scl*r_dev**2
+        caf=2.0D0*ox_caplus_spring_scl*r_dev/ox_caplus_dist(i507)
 
-        F_CORD_HARM(I507,1,3) = F_CORD_HARM(I507,1,3) - X_DIFF(I507)*CAF
-        F_CORD_HARM(I507,2,3) = F_CORD_HARM(I507,2,3) - Y_DIFF(I507)*CAF
-        F_CORD_HARM(I507,3,3) = F_CORD_HARM(I507,3,3) - Z_DIFF(I507)*CAF
-        F_CORD_HARM(I507+1,1,1) = F_CORD_HARM(I507+1,1,1) + X_DIFF(I507)*CAF
-        F_CORD_HARM(I507+1,2,1) = F_CORD_HARM(I507+1,2,1) + Y_DIFF(I507)*CAF
-        F_CORD_HARM(I507+1,3,1) = F_CORD_HARM(I507+1,3,1) + Z_DIFF(I507)*CAF
+        f_cord_harm(i507,1,3) = f_cord_harm(i507,1,3) - x_diff(i507)*caf
+        f_cord_harm(i507,2,3) = f_cord_harm(i507,2,3) - y_diff(i507)*caf
+        f_cord_harm(i507,3,3) = f_cord_harm(i507,3,3) - z_diff(i507)*caf
+        f_cord_harm(i507+1,1,1) = f_cord_harm(i507+1,1,1) + x_diff(i507)*caf
+        f_cord_harm(i507+1,2,1) = f_cord_harm(i507+1,2,1) + y_diff(i507)*caf
+        f_cord_harm(i507+1,3,1) = f_cord_harm(i507+1,3,1) + z_diff(i507)*caf
 
- 807         CONTINUE
+ 807         continue
 
 
-C     THERE IS ONE MORE HARMONIC POTENTIAL FOR THE TERMINAL OXYGEN,
-C     WHICH IS DIFFERENT TO GMIN IN ORDER TO PREVENT TO STATES HAVING 
-C     THE SAME ENERGY.
+c     There is one more harmonic potential for the terminal oxygen,
+c     which is different to GMIN in order to prevent to states having 
+c     the same energy.
 
-         DO 907 I507=JFINS,JFINS
+         do 907 i507=jfins,jfins
 
-           CAF=0.0D0
-           OX_CAPLUS_DISTANCE= 2.4D0
-!!   OX-CB
-         X_DIFF(I507)=PRCORD(I507,1,1,3) - PRCORD(I507,1,1,2)
-         Y_DIFF(I507)=PRCORD(I507,2,1,3) - PRCORD(I507,2,1,2)
-         Z_DIFF(I507)=PRCORD(I507,3,1,3) - PRCORD(I507,3,1,2)
+           caf=0.0D0
+           ox_caplus_distance= 2.4D0
+!!   ox-cb
+         x_diff(i507)=prcord(i507,1,1,3) - prcord(i507,1,1,2)
+         y_diff(i507)=prcord(i507,2,1,3) - prcord(i507,2,1,2)
+         z_diff(i507)=prcord(i507,3,1,3) - prcord(i507,3,1,2)
 
-        OX_CAPLUS_DIST(I507)= DSQRT(X_DIFF(I507)**2 + Y_DIFF(I507)**2 + Z_DIFF(I507)**2)
-      R_DEV=OX_CAPLUS_DIST(I507)-OX_CAPLUS_DISTANCE
+        ox_caplus_dist(i507)= dsqrt(x_diff(i507)**2 + y_diff(i507)**2 + z_diff(i507)**2)
+      r_dev=ox_caplus_dist(i507)-OX_CAplus_distance
 
-      E_TEMP_HARM =  E_TEMP_HARM +  OX_CAPLUS_SPRING_SCL*R_DEV**2
-      CAF=2.0D0*OX_CAPLUS_SPRING_SCL*R_DEV/OX_CAPLUS_DIST(I507)
+      E_temp_harm =  E_temp_harm +  ox_caplus_spring_scl*r_dev**2
+      caf=2.0D0*ox_caplus_spring_scl*r_dev/ox_caplus_dist(i507)
 
-      F_CORD_HARM(I507,1,3) = F_CORD_HARM(I507,1,3) - X_DIFF(I507)*CAF
-      F_CORD_HARM(I507,2,3) = F_CORD_HARM(I507,2,3) - Y_DIFF(I507)*CAF
-      F_CORD_HARM(I507,3,3) = F_CORD_HARM(I507,3,3) - Z_DIFF(I507)*CAF
-      F_CORD_HARM(I507,1,2) = F_CORD_HARM(I507,1,2) + X_DIFF(I507)*CAF
-      F_CORD_HARM(I507,2,2) = F_CORD_HARM(I507,2,2) + Y_DIFF(I507)*CAF
-      F_CORD_HARM(I507,3,2) = F_CORD_HARM(I507,3,2) + Z_DIFF(I507)*CAF
+      f_cord_harm(i507,1,3) = f_cord_harm(i507,1,3) - x_diff(i507)*caf
+      f_cord_harm(i507,2,3) = f_cord_harm(i507,2,3) - y_diff(i507)*caf
+      f_cord_harm(i507,3,3) = f_cord_harm(i507,3,3) - z_diff(i507)*caf
+      f_cord_harm(i507,1,2) = f_cord_harm(i507,1,2) + x_diff(i507)*caf
+      f_cord_harm(i507,2,2) = f_cord_harm(i507,2,2) + y_diff(i507)*caf
+      f_cord_harm(i507,3,2) = f_cord_harm(i507,3,2) + z_diff(i507)*caf
 
-         OX_CAPLUS_DISTANCE=4.40D0
+         OX_CAplus_distance=4.40D0
 
-       X_DIFF(I507)=PRCORD(I507,1,1,3) - PRCORD(I507-1,1,1,3)
-       Y_DIFF(I507)=PRCORD(I507,2,1,3) - PRCORD(I507-1,2,1,3)
-       Z_DIFF(I507)=PRCORD(I507,3,1,3) - PRCORD(I507-1,3,1,3)
+       x_diff(i507)=prcord(i507,1,1,3) - prcord(i507-1,1,1,3)
+       y_diff(i507)=prcord(i507,2,1,3) - prcord(i507-1,2,1,3)
+       z_diff(i507)=prcord(i507,3,1,3) - prcord(i507-1,3,1,3)
 
-        OX_CAPLUS_DIST(I507)= DSQRT(X_DIFF(I507)**2 + Y_DIFF(I507)**2 + Z_DIFF(I507)**2)
+        ox_caplus_dist(i507)= dsqrt(x_diff(i507)**2 + y_diff(i507)**2 + z_diff(i507)**2)
 
-      R_DEV=OX_CAPLUS_DIST(I507)-OX_CAPLUS_DISTANCE
+      r_dev=ox_caplus_dist(i507)-OX_CAplus_distance
 
-      E_TEMP_HARM =  E_TEMP_HARM +  OX_CAPLUS_SPRING_SCL*R_DEV**2
-      CAF=2.0D0*OX_CAPLUS_SPRING_SCL*R_DEV/OX_CAPLUS_DIST(I507)
+      E_temp_harm =  E_temp_harm +  ox_caplus_spring_scl*r_dev**2
+      caf=2.0D0*ox_caplus_spring_scl*r_dev/ox_caplus_dist(i507)
 
-       E_HARM_SPRINGS =  E_TEMP_HARM
+       E_harm_springs =  E_temp_harm
 
-      F_CORD_HARM(I507,1,3) = F_CORD_HARM(I507,1,3) - X_DIFF(I507)*CAF
-      F_CORD_HARM(I507,2,3) = F_CORD_HARM(I507,2,3) - Y_DIFF(I507)*CAF
-      F_CORD_HARM(I507,3,3) = F_CORD_HARM(I507,3,3) - Z_DIFF(I507)*CAF
-      F_CORD_HARM(I507-1,1,3) = F_CORD_HARM(I507-1,1,3) + X_DIFF(I507)*CAF
-      F_CORD_HARM(I507-1,2,3) = F_CORD_HARM(I507-1,2,3) + Y_DIFF(I507)*CAF
-      F_CORD_HARM(I507-1,3,3) = F_CORD_HARM(I507-1,3,3) + Z_DIFF(I507)*CAF
+      f_cord_harm(i507,1,3) = f_cord_harm(i507,1,3) - x_diff(i507)*caf
+      f_cord_harm(i507,2,3) = f_cord_harm(i507,2,3) - y_diff(i507)*caf
+      f_cord_harm(i507,3,3) = f_cord_harm(i507,3,3) - z_diff(i507)*caf
+      f_cord_harm(i507-1,1,3) = f_cord_harm(i507-1,1,3) + x_diff(i507)*caf
+      f_cord_harm(i507-1,2,3) = f_cord_harm(i507-1,2,3) + y_diff(i507)*caf
+      f_cord_harm(i507-1,3,3) = f_cord_harm(i507-1,3,3) + z_diff(i507)*caf
 
-907         CONTINUE
+907         continue
 
-C     ---------------------- DONE -----------------------
+c     ---------------------- done -----------------------
 
-      RETURN
-      END
+      return
+      end

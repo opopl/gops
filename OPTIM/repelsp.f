@@ -1,20 +1,20 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE REPELSP(COORDS,RMS,INEG,MFLAG)
       USE COMMONS
@@ -65,7 +65,7 @@ C           NOSHIFT=NOSHIFTSAVE
                ENDDO
                CALL NEWMINDIST(COORDS,DUM,NATOMS,DIST,BULKT,TWOD,ZSYM(1),.FALSE.,RIGIDBODY,DEBUG,RMAT)
                IF (DIST.LT.0.05D0) THEN
-                  WRITE(*,'(A,F15.5,A,I5)') ' SEARCH HAS MOVED TO A DISTANCE OF ',DIST,' FROM TRANSITION STATE ',J1
+                  WRITE(*,'(A,F15.5,A,I5)') ' Search has moved to a distance of ',DIST,' from transition state ',J1
                   REPEL=.TRUE.
                   MFLAG=.FALSE.
                   REPELFROM=J1
@@ -75,7 +75,7 @@ C           NOSHIFT=NOSHIFTSAVE
                   NOIT=.TRUE.
 C                 NOSHIFTSAVE=NOSHIFT
 C
-C     EIGENVALUE SHIFTING
+C     Eigenvalue shifting
 C
 C                 IF (NOSHIFT) THEN
 C                    NOSHIFT=.FALSE.
@@ -84,38 +84,38 @@ C                    NOSHIFT=.FALSE.
                      ENDDO
                      IF (RTEST) THEN
                         IF (JZ.NE.0.0D0) THEN
-                           WRITE(*,'(A,G20.10)') ' USING TRANS/Z ROTATION SHIFT=',SHIFTV
+                           WRITE(*,'(A,G20.10)') ' Using trans/z rotation shift=',SHIFTV
                            SHIFTL(3)=SHIFTV
                            SHIFTL(6)=SHIFTV
                         ELSE
-                           WRITE(*,'(A,G20.10)') ' USING Z ROTATION SHIFT=',SHIFTV
+                           WRITE(*,'(A,G20.10)') ' Using z rotation shift=',SHIFTV
                            SHIFTL(6)=SHIFTV
                         ENDIF
 C                    ELSE IF (NOSHIFT) THEN
-C                       WRITE(*,'(A)') 'NO SHIFTING'
+C                       WRITE(*,'(A)') 'No shifting'
                      ELSE IF (TWOD) THEN
                         IF (.NOT.BULKT) THEN
                            SHIFTL(1)=SHIFTV
                            SHIFTL(2)=SHIFTV
                            SHIFTL(6)=SHIFTV
-                           WRITE(*,'(A)') ' X,Y TRANSLATIONAL AND Z ROTATIONAL SHIFTING'
+                           WRITE(*,'(A)') ' x,y translational and z rotational shifting'
                         ELSE
                            SHIFTL(1)=SHIFTV
                         SHIFTL(2)=SHIFTV
-                           WRITE(*,'(A)') ' X,Y TRANSLATIONAL SHIFTING'
+                           WRITE(*,'(A)') ' x,y translational shifting'
                         ENDIF
                      ELSE IF (EYTRAPT.OR.(ZSYM(NATOMS).EQ.'BE')) THEN
                         SHIFTL(4)=SHIFTV
                         SHIFTL(5)=SHIFTV
                         SHIFTL(6)=SHIFTV
-                        WRITE(*,'(A,G20.10)') ' USING ROTATIONAL SHIFT=',SHIFTV
+                        WRITE(*,'(A,G20.10)') ' Using rotational shift=',SHIFTV
                      ELSE IF (BULKT) THEN
-                        WRITE(*,'(A,G20.10)') ' USING TRANSLATIONAL SHIFT=',SHIFTV
+                        WRITE(*,'(A,G20.10)') ' Using translational shift=',SHIFTV
                         DO J2=1,3
                            SHIFTL(J2)=SHIFTV
                         ENDDO
                      ELSE
-                        WRITE(*,'(A,G20.10)') ' USING TRANSLATIONAL/ROTATIONAL SHIFT=',SHIFTV
+                        WRITE(*,'(A,G20.10)') ' Using translational/rotational shift=',SHIFTV
                         DO J2=1,6
                            SHIFTL(J2)=SHIFTV
                         ENDDO

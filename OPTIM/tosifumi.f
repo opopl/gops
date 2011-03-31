@@ -1,27 +1,27 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
-C  ENERGY AND DERIVATIVES OF A GENERAL BORN-MAYER POTENTIAL WITH
-C  TOSI-FUMI PARAMETERS SPECIFIED AFTER THE KEYWORD TOSI IN THE
-C  ODATA FILE. ENERGY IS IN HARTREE, LENGTH IN BOHR.
+C  Energy and derivatives of a general Born-Mayer potential with
+C  Tosi-Fumi parameters specified after the keyword TOSI in the
+C  odata file. Energy is in hartree, length in Bohr.
 C
       SUBROUTINE TOSIFUMI(N, X, V, POTEL, APP, AMM, APM, RHO, ZSYM, GTEST, STEST)
-      USE PORFUNCS
+      use porfuncs
       USE MODHESS
       IMPLICIT NONE 
       INTEGER N, I, J, J1, J2, K, L, J3
@@ -37,7 +37,7 @@ C
          ELSE IF (ZSYM(I).EQ.'PL') THEN
             Q(I)=1.0D0
          ELSE
-            WRITE(*,'(A)') ' ALL ATOMS MUST BE TYPE PL OR MI FOR TOSI-FUMI'
+            WRITE(*,'(A)') ' All atoms must be type PL or MI for Tosi-Fumi'
             STOP
          ENDIF
       ENDDO
@@ -64,7 +64,7 @@ C
          ENDDO
       ENDDO
 C
-C  CALCULATE THE INTERPARTICLE DISTANCES.
+C  Calculate the interparticle distances.
 C 
       DO I=1,N
          K=1+3*(I-1)         
@@ -86,7 +86,7 @@ C
 
       IF (.NOT.GTEST) RETURN
 C
-C  GRADIENT.
+C  Gradient.
 C
       DO J1=1,N
          DO J2=1,3
@@ -103,7 +103,7 @@ C
 
       IF (.NOT.STEST) RETURN
 C
-C  HESSIAN.
+C  Hessian.
 C
       DO I=1,3*N
          DO J=1,3*N
@@ -113,14 +113,14 @@ C
       DO I=1,3*N
          DO J=I,3*N
 C 
-C  DETERMINE THE CARTESIAN COORDINATE OF X(I) AND X(J).
+C  Determine the cartesian coordinate of X(I) and X(J).
 C
             K=MOD((I-1),3)
             L=MOD((J-1),3)
 C 
-C  THIS IF STATEMENT CALLS SHESS IF I AND J ARE THE SAME
-C  CARTESIAN COORDINATE AND CALLS DHESS IF THE ARE DIFFERENT
-C  CARTESIAN COORDINATES
+C  This IF statement calls SHESS if I and J are the same
+C  Cartesian coordinate and calls DHESS if the are different
+C  Cartesian coordinates
 C
             IF(K .EQ. L)THEN
                CALL NSHESS(I,J,K,L,X,N,RHO,AC,Q,RD)
@@ -144,14 +144,14 @@ C.....THIS SUBROUTINE IF THE COORDINATES ARE THE SAME
 
       RW=RHO
  
-C.....I1 AND J1 ARE THE PARTICLE NUMBERS FOR X(I) AND X(J)
+c.....I1 and J1 are the particle numbers for X(I) and X(J)
 
       I1 = ((I-1)/3) + 1
       J1 = ((J-1)/3) + 1
  
-C.....IF THE PARTICLES ARE THE SAME DO THE NEXT TWO LOOPS
-C.....THERE ARE TWO LOOPS SO THAT WE CAN SKIP PARTICLE I1
-C.....WITHOUT RESORTING TO AN IF STATEMENT
+c.....if the particles are the same do the next two loops
+c.....there are two loops so that we can skip particle I1
+c.....without resorting to an IF statement
 
       IF(I1 .EQ. J1)THEN
       
@@ -193,7 +193,7 @@ C.....WITHOUT RESORTING TO AN IF STATEMENT
  
       ELSE
  
-C.....DO THIS IF THE PARTICLES ARE NOT THE SAME
+c.....do this if the particles are not the same
       R = RD(I1,J1)
       QQ = Q(I1)*Q(J1)
       AB = AC(I1,J1)
@@ -225,7 +225,7 @@ C.....THIS SUBROUTINE IF THE COORDINATES ARE NOT THE SAME
       I1 = ((I-1)/3) + 1
       J1 = ((J-1)/3) + 1
  
-C.....DO THE NEXT TO LOOPS IF THE PARTICLES ARE THE SAME
+c.....do the next to loops if the particles are the same
 
       IF(I1 .EQ. J1)THEN
  
@@ -266,7 +266,7 @@ C.....DO THE NEXT TO LOOPS IF THE PARTICLES ARE THE SAME
  
       ELSE
  
-C.....DO THIS IF THE PARTICLES ARE NOT THE SAME
+c.....do this if the particles are not the same
       N = K + 3*(J1-1) + 1
       N1 = L + 3*(I1-1) + 1
  
@@ -286,7 +286,7 @@ C.....DO THIS IF THE PARTICLES ARE NOT THE SAME
       RETURN
       END
 C
-C  ENERGY AND ANALYTIC DERIVATIVES OF POSSIBLE DISPERSION TERMS.
+C  Energy and analytic derivatives of possible dispersion terms.
 C
       SUBROUTINE TOSIFUMIC6(N, X, V, EDISP, C6PP, C6MM, C6PM, ZSYM, GTEST, STEST)
       USE MODHESS
@@ -299,7 +299,7 @@ C
       CHARACTER(LEN=5) ZSYM(N)
       LOGICAL GTEST, STEST
 C 
-C  STORE DISTANCE MATRICES.
+C  Store distance matrices.
 C
       EDISP=0.0D0
       DO J1=1,N
@@ -331,7 +331,7 @@ C
 
       IF (.NOT.GTEST) RETURN
 C
-C  CALCULATE THE G TENSOR.
+C  Calculate the g tensor.
 C
       DO J1=1,N
          G(J1,J1)=0.0D0
@@ -353,7 +353,7 @@ C
          ENDDO
       ENDDO
 C
-C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
+C  First calculate the gradient analytically.
 C
       DO J1=1,N
          DO J2=1,3
@@ -368,7 +368,7 @@ C
 
       IF (.NOT.STEST) RETURN
 C
-C  F TENSOR
+C  f tensor
 C
       DO J1=1,N
          F(J1,J1)=0.0D0
@@ -390,7 +390,7 @@ C
          ENDDO
       ENDDO
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO J1=1,N
          DO J2=1,3
@@ -404,8 +404,8 @@ C
          ENDDO
       ENDDO
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO J1=1,N
          DO J2=1,3
@@ -422,7 +422,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO J1=1,N
          DO J2=1,3
@@ -434,7 +434,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO J1=1,N
          DO J2=1,3
@@ -451,7 +451,7 @@ C
          ENDDO
       ENDDO
 C
-C  SYMMETRISE HESSIAN
+C  Symmetrise Hessian
 C
       DO J1=1,3*N
          DO J2=J1+1,3*N
@@ -463,7 +463,7 @@ C
 
 C**************************************************************************
 C
-C  ENERGY AND ANALYTIC DERIVATIVES OF POSSIBLE FIRST ORDER INDUCTION.
+C  Energy and analytic derivatives of possible first order induction.
 C
       SUBROUTINE TOSIFUMIPOL(N, X, V, EIND, ALPHAP, ALPHAM, ZSYM, DAMP, GTEST, STEST)
       USE MODHESS
@@ -480,7 +480,7 @@ C
 
       IF (.NOT.GTEST) RETURN
 C
-C  ANALYTIC GRADIENT.
+C  Analytic gradient.
 C
       CALL TFGRAD(N, X, VEC1, ALPHAP, ALPHAM, ZSYM, DAMP)
       DO J1=1,3*N
@@ -489,9 +489,9 @@ C
 
       IF (.NOT.STEST) RETURN
 C
-C  ANALYTIC SECOND DERIVATIVES. NOT DONE FOR DAMPING!
+C  Analytic second derivatives. Not done for damping!
 C
-C     PRINT*,'ANALYTIC SECOND DERIVATIVES:'
+C     PRINT*,'Analytic second derivatives:'
 C     CALL TFSEC(N, X, ALPHAP, ALPHAM, ZSYM, DAMP, NPROD)
 C     DO J1=1,3*N
 C        DO J2=1,3*N
@@ -499,9 +499,9 @@ C           WRITE(*,'(A,2I4,F20.10)') 'J1,J2,A=',J1,J2,HESS(J2,J1)
 C        ENDDO
 C     ENDDO
 C
-C  NUMERICAL SECOND DERIVATIVES.
+C  Numerical second derivatives.
 C
-C     PRINT*,'NUMERICAL SECOND DERIVATIVES:'
+C     PRINT*,'Numerical second derivatives:'
       DIF=1.0D-4
       DO J1=1,3*N
          TEMP1=X(J1)
@@ -521,7 +521,7 @@ C           WRITE(*,'(A,2I3,F20.10)') 'J1,J2,A=',J1,J2,(VEC1(J2)-VEC2(J2))/(2.0D
 
 C*******************************************************************************
 C
-C  FIRST ORDER INDUCTION ENERGY
+C  First order induction energy
 C
       SUBROUTINE TFIND(N, X, EIND, ALPHAP, ALPHAM, ZSYM, DAMP)
       IMPLICIT NONE
@@ -532,12 +532,12 @@ C
      3                 F2, RR(N,N)
       CHARACTER(LEN=5) ZSYM(N)
 C
-C STATEMENT FUNCTIONS
+C Statement functions
 C
       F2(DUMMY)=1.0D0-DEXP(-DUMMY/DAMP)*(1.0D0+DUMMY/DAMP+DUMMY**2/(2.0D0*DAMP**2))
 C     F2(DUMMY)=1.0D0
 C 
-C  STORE DISTANCE MATRICES.
+C  Store distance matrices.
 C
       DO J1=1,N
          R(J1,J1)=0.0D0
@@ -561,7 +561,7 @@ C
          ENDDO
       ENDDO
 C
-C  FIRST ORDER INDUCTION ENERGY.
+C  First order induction energy.
 C
       EIND=0.0D0
       DO J1=1,N
@@ -593,7 +593,7 @@ C
 
 C*************************************************************************
 C
-C  ANALYTIC FIRST DERIVATIVES OF POSSIBLE FIRST ORDER INDUCTION.
+C  Analytic first derivatives of possible first order induction.
 C
       SUBROUTINE TFGRAD(N, X, V, ALPHAP, ALPHAM, ZSYM, DAMP)
       IMPLICIT NONE
@@ -606,7 +606,7 @@ C
      5                 DAMP2, DAMP3, RJ4J1, DSAVE(N,N)
       CHARACTER(LEN=5) ZSYM(N)
 C
-C STATEMENT FUNCTIONS
+C Statement functions
 C
 C     F2(DUMMY)=1.0D0-DEXP(-DUMMY/DAMP)*(1.0D0+DUMMY/DAMP+DUMMY**2/(2.0D0*DAMP**2))
 C     F2P(DUMMY)=DEXP(-DUMMY/DAMP)*DUMMY**2/(2.0D0*DAMP**3)
@@ -614,7 +614,7 @@ C     F2P(DUMMY)=DEXP(-DUMMY/DAMP)*DUMMY**2/(2.0D0*DAMP**3)
       DAMP2=DAMP**2
       DAMP3=DAMP**3
 C 
-C  STORE DISTANCE MATRICES.
+C  Store distance matrices.
 C
       DO J1=1,N
          R(J1,J1)=0.0D0
@@ -653,13 +653,13 @@ C
          V(J1)=0.0D0
       ENDDO
 C
-C  GRADIENT.
+C  Gradient.
 C
-      DO J1=1,N           !   J1 = L
-         DO J2=1,3        !   J2 = ALPHA
+      DO J1=1,N           !   J1 = l
+         DO J2=1,3        !   J2 = alpha
             J3=3*J1-3+J2 
             XJ3=X(J3)
-            DO J4=1,N        !  J4 = I
+            DO J4=1,N        !  J4 = i
                DUMMY=0.0D0
                DUMMY3=DOT(J4,J4)-DOT(J4,J1)
                DUMMY4=(XJ3-X(3*J4-3+J2))*R2(J4,J1)
@@ -667,7 +667,7 @@ C
                DUMMY6=DSAVE(J4,J1)*RR(J4,J1)**2/(2.0D0*DAMP**3)
                DUMMY7=X(3*J4-3+J2)
                DUMMY8=R(J4,J1)
-               DO J5=1,N     !  J5 = K
+               DO J5=1,N     !  J5 = k
                   DUMMY=DUMMY-(NPROD(J5,J1)*R3(J5,J4)*(1.0D0 + 
      1      DSAVE(J5,J4)*(-1.0D0 - RR(J5,J4)/DAMP - (0.5D0*RR(J5,J4)**2)/DAMP2))*
      2    (DUMMY6*DUMMY8*(DUMMY7 - XJ3)*(DUMMY3 + DOT(J5,J1) - DOT(J5,J4)) + 
@@ -681,7 +681,7 @@ C
             ENDDO
 
             DUMMY=0.0D0
-            DO J4=1,N            ! J4 = J
+            DO J4=1,N            ! J4 = j
                DUMMY3=DOT(J1,J1)-DOT(J4,J1)
                DUMMY4=(XJ3-X(3*J4-3+J2))*R2(J4,J1)
                DUMMY5=R3(J4,J1)
@@ -689,7 +689,7 @@ C
                DUMMY7=1.0D0-DSAVE(J4,J1)*(1.0D0+RR(J4,J1)/DAMP+RR(J4,J1)**2/(2.0D0*DAMP2))
                DUMMY8=DSAVE(J4,J1)*RR(J4,J1)**2/(2.0D0*DAMP**3)
                RJ4J1=R(J4,J1)
-               DO J5=1,N         ! J5 = K
+               DO J5=1,N         ! J5 = k
                   DUMMY=DUMMY+DUMMY5*NPROD(J5,J4)*R3(J5,J1)*
      1  ( (1.0D0-DSAVE(J5,J1)*(1.0D0+RR(J5,J1)/DAMP+RR(J5,J1)**2/(2.0D0*DAMP2)))
      2       *(DUMMY8*(-DUMMY6 + XJ3)*(DUMMY3 - DOT(J5,J1) + DOT(J5,J4))*
@@ -711,7 +711,7 @@ C
       RETURN 
       END
 C
-C  ANALYTIC SECOND DERIVATIVES OF POSSIBLE FIRST ORDER INDUCTION.
+C  Analytic second derivatives of possible first order induction.
 C
       SUBROUTINE TFSEC(N, X, ALPHAP, ALPHAM, ZSYM, DAMP, NPROD)
       USE MODHESS
@@ -726,13 +726,13 @@ C
      6                 XJ6J2, XJ6J4, DOT66, DOT61, R2J6J1, RR(N,N)
       CHARACTER(LEN=5) ZSYM(N)
 C
-C  STATEMENT FUNCTIONS.
+C  Statement functions.
 C
 C     F2(DUMMY)=1.0D0-DEXP(-DUMMY/DAMP)*(1.0D0+DUMMY/DAMP+DUMMY**2/(2.0D0*DAMP**2))
 C     F2P(DUMMY)=DEXP(-DUMMY/DAMP)*DUMMY**2/(2.0D0*DAMP**3)
 C     F2PP(DUMMY)=DEXP(-DUMMY/DAMP)*DUMMY*(1.0D0-DUMMY/(2.0D0*DAMP))/DAMP**3
 C 
-C  STORE DISTANCE MATRICES.
+C  Store distance matrices.
 C
       DO J1=1,N
          R(J1,J1)=0.0D0
@@ -767,19 +767,19 @@ C
          ENDDO
       ENDDO
 C
-C  SECOND DERIVATIVES - COORDINATES ON THE SAME ATOM.
+C  Second derivatives - coordinates on the same atom.
 C
-      DO J1=1,N                         ! J1 = L     
+      DO J1=1,N                         ! J1 = l     
          DOT11=DOT(J1,J1)
-         DO J2=1,3                      ! J2 = ALPHA
+         DO J2=1,3                      ! J2 = alpha
             J3=3*J1-3+J2
             XJ3=X(J3)
-            DO J4=J2,3                  ! J4 = BETA
+            DO J4=J2,3                  ! J4 = beta
                J5=3*J1-3+J4
                XJ5=X(J5)
                EX=0.0D0
                IF (J4.EQ.J2) EX=1.0D0
-               DO J6=1,N                ! J6 = I
+               DO J6=1,N                ! J6 = i
                   DOT66=DOT(J6,J6)
                   DOT61=DOT(J6,J1)
                   R2J6J1=R2(J6,J1)
@@ -788,7 +788,7 @@ C
                   XJ6J4=X(3*J6-3+J4)
                   DUMMY=2.0D0*EX*R3J6J1**2 - 12.0D0*R2J6J1**4*(XJ3 - XJ6J2)*(XJ5 - XJ6J4) + 
      1         18.0D0*(DOT11 - 2.0D0*DOT61 + DOT66)*R2J6J1**5*(XJ3 - XJ6J2)*(XJ5 - XJ6J4)
-                  DO J7=1,N             ! J7 = K
+                  DO J7=1,N             ! J7 = k
                      DUMMY=DUMMY+2.0D0*R2J6J1*R3J6J1*NPROD(J7,J1)*R3(J7,J6)*
      1                    (3.0D0*EX*(DOT61 - DOT66 - DOT(J7,J1) + DOT(J7,J6)) - 
      2                  15.0D0*R2J6J1*(XJ3 - XJ6J2)*(XJ5 - XJ6J4)*(DOT61 - DOT66 - DOT(J7,J1) + DOT(J7,J6)) + 
@@ -798,16 +798,16 @@ C
                   HESS(J5,J3)=HESS(J5,J3)-AL(J6)*DUMMY/2.0D0
                ENDDO
 C
-C  CASE L = I.
+C  Case l = i.
 C
                DUMMY=0.0D0
-               DO J6=1,N              ! J6 = J
+               DO J6=1,N              ! J6 = j
                   R3J6J1=R3(J6,J1)
                   R2J6J1=R2(J6,J1)
                   XJ6J2=X(3*J6-3+J2)
                   XJ6J4=X(3*J6-3+J4)
                   DOT61=DOT(J6,J1)
-                  DO J7=1,N           ! J7 = K
+                  DO J7=1,N           ! J7 = k
                      DUMMY=DUMMY+R3J6J1*NPROD(J7,J6)*R3(J7,J1)*(EX*
      1     (2.0D0 - 3.0D0*(DOT11 - DOT61 - DOT(J7,J1) + DOT(J7,J6))*(R2J6J1 + R2(J7,J1))) - 
      2    3.0D0*(2.0D0*XJ3 - XJ6J2 - 3.0D0*(DOT11 - DOT61 - DOT(J7,J1) + DOT(J7,J6))*
@@ -826,26 +826,26 @@ C
          ENDDO
       ENDDO
 C
-C  SECOND DERIVATIVES - DIFFERENT ATOMS.
+C  Second derivatives - different atoms.
 C
-      DO J1=1,N             ! J1 = L     
+      DO J1=1,N             ! J1 = l     
          DOT11=DOT(J1,J1)
-         DO J2=1,3          ! J2 = ALPHA
+         DO J2=1,3          ! J2 = alpha
             J3=3*J1-3+J2 
             XJ3=X(J3)
-            DO J4=J1+1,N    ! J4 = M
+            DO J4=J1+1,N    ! J4 = m
                DOT44=DOT(J4,J4)
                DOT41=DOT(J4,J1)
                XJ4J2=X(3*J4-3+J2)
                R2J4J1=R2(J4,J1)
                R3J4J1=R3(J4,J1)
-               DO J5=1,3    ! J5 = BETA
+               DO J5=1,3    ! J5 = beta
                   J6=3*J4-3+J5
                   XJ1J5=X(3*J1-3+J5)
                   XJ6=X(J6)
                   EX=0.0D0
                   IF (J5.EQ.J2) EX=1.0D0
-                  DO J7=1,N   ! J7 = I
+                  DO J7=1,N   ! J7 = i
                      DUMMY=2.0D0*NPROD(J4,J1)*R3(J7,J1)*R3(J7,J4)*
      1  (EX - 3.0D0*(R2(J7,J1)*(XJ3 - X(-3 + J2 + 3*J7))*(XJ1J5 - X(-3 + J5 + 3*J7)) + 
      2       R2(J7,J4)*(XJ4J2 - X(-3 + J2 + 3*J7))*(XJ6 - X(-3 + J5 + 3*J7))) + 
@@ -854,10 +854,10 @@ C
                      HESS(J6,J3)=HESS(J6,J3)-AL(J7)*DUMMY/2.0D0
                   ENDDO
 C
-C  I = L TERM
+C  i = l term
 C
                   DUMMY=0.0D0
-                  DO J7=1,N    ! J7 = J
+                  DO J7=1,N    ! J7 = j
                      DUMMY=DUMMY+2.0D0*R3J4J1*NPROD(J7,J4)*R3(J7,J1)*
      1  (-EX + 3.0D0*EX*R2J4J1*(DOT11 - DOT41 - DOT(J7,J1) + DOT(J7,J4)) - 
      2    3.0D0*R2J4J1*(-XJ1J5 + XJ6)*(2.0D0*XJ3 - XJ4J2 - 
@@ -870,10 +870,10 @@ C
                   ENDDO
                   HESS(J6,J3)=HESS(J6,J3)-AL(J1)*DUMMY/2.0D0
 C
-C  I = M TERM
+C  i = m term
 C
                   DUMMY=0.0D0
-                  DO J7=1,N    ! J7 = J
+                  DO J7=1,N    ! J7 = j
                      DUMMY=DUMMY+2.0D0*R3J4J1*NPROD(J7,J1)*R3(J7,J4)*
      1  (-EX - 3.0D0*EX*R2J4J1*(DOT41 - DOT44 - DOT(J7,J1) + DOT(J7,J4)) - 
      2    3.0D0*(-2.0D0*R2J4J1**2*(XJ3 - XJ4J2)*(XJ1J5 - XJ6)*

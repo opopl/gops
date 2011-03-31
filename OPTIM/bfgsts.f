@@ -1,52 +1,52 @@
 C
-! GPL LICENSE INFO {{{
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+! GPL License Info {{{
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C   }}}
 C
-!BFGSTS: HYBRID EIGENVECTOR-FOLLOWING/GRADIENT MINIMIZATION {{{
+!BFGSTS: hybrid eigenvector-following/gradient minimization {{{
 C***********************************************************************
 C
-C  THIS SUBROUTINE IS DESIGNED TO PERFORM A HYBRID EIGENVECTOR-FOLLOWING/GRADIENT
-C  MINIMIZATION OPTIMIZATION FOR LARGE SYSTEMS WHERE WE DO NOT WANT TO 
-C  DIAGONALIZE THE WHOLE HESSIAN.
+C  This subroutine is designed to perform a hybrid eigenvector-following/gradient
+C  minimization optimization for large systems where we do not want to 
+C  diagonalize the whole Hessian.
 C
 C***********************************************************************
 C
       SUBROUTINE BFGSTS(ITMAX,COORDS,ENERGY,GRAD,MFLAG,RMS,EVALMIN,EVALMAX,VECS,ITER,POTCALL,PTEST)
-! DOXYGEN COMMENTS {{{
-!> \NAME BFGSTS
-!> \BRIEF PERFORM HYBRID EIGENVECTOR-FOLLOWING/GRADIENT MINIMIZATION FOR LARGE SYSTEMS 
-!> \PARAM ITMAX
-!> \PARAM COORDS
-!> \PARAM ENERGY
-!> \PARAM GRAD
-!> \PARAM MFLAG
-!> \PARAM RMS 
-!> \PARAM EVALMIN
-!> \PARAM EVALMAX
-!> \PARAM VECS
-!> \PARAM ITER
-!> \PARAM POTCALL
-!> \PARAM PTEST
+! Doxygen comments {{{
+!> \name BFGSTS
+!> \brief perform hybrid eigenvector-following/gradient minimization for large systems 
+!> \param ITMAX
+!> \param COORDS
+!> \param ENERGY
+!> \param GRAD
+!> \param MFLAG
+!> \param RMS 
+!> \param EVALMIN
+!> \param EVALMAX
+!> \param VECS
+!> \param ITER
+!> \param POTCALL
+!> \param PTEST
 ! }}}
-! MODULES {{{
+! Modules {{{
       USE COMMONS
       USE KEY
       USE VECCK
@@ -56,14 +56,14 @@ C
       USE PORFUNCS
 ! }}}
       IMPLICIT NONE
-! SUBROUTINE PARAMETERS {{{
+! subroutine parameters {{{
 
       INTEGER ITMAX, ITER 
       LOGICAL POTCALL, PTEST, MFLAG
       DOUBLE PRECISION, DIMENSION(3*NATOMS) :: COORDS, GRAD, VECS
       DOUBLE PRECISION  ENERGY,RMS, EVALMAX, EVALMIN 
 !}}}
-! LOCAL PARAMETERS  {{{
+! local parameters  {{{
 
       INTEGER J1, J2, INEG, J, NS, I, K1, NBFGS, FRAME, ITDONE, J3, NSTEPMINSAVE
       DOUBLE PRECISION SCRATCH(6*NATOMS),SUM,AVG,FOBNEW,DUMMY,
@@ -81,8 +81,8 @@ C     EXTERNAL OP, IOVECT
       DOUBLE PRECISION TEMPERATURE, HRED
       COMMON /CONN/ STOPFIRST, CONNECTT, NCONNECT, DUMPPATH, READPATH, CALCRATES, TEMPERATURE, HRED
 C
-C  ASSIGN ENOUGH MEMORY TO WORK FOR A BLOCKSIZE OF 32 TO BE POSSIBLE.
-C  THIS IS FOR DSYEVR.
+C  Assign enough memory to WORK for a blocksize of 32 to be possible.
+C  This is for DSYEVR.
 C
       INTEGER IWORK(33*3*NATOMS)
       INTEGER ILWORK, LWORK, NFOUND, ISUPPZ(2*3*NATOMS)
@@ -92,50 +92,50 @@ C
       COMMON /KNOWN/ KNOWE, KNOWG, KNOWH
 ! }}}
       SAVE
-! SUBROUTINE BODY  {{{
+! Subroutine body  {{{
 
       LWORK=33*3*NATOMS
       ILWORK=33*3*NATOMS
 
       IF ((ZSYM(1)(1:1).EQ.'W').AND.(.NOT.BFGSSTEP)) THEN
-         PRINT*,'BFGSTS PROCEDURES HAVE NOT BEEN PROGRAMMED FOR TIP POTENTIALS'
+         PRINT*,'BFGSTS procedures have not been programmed for TIP potentials'
          CALL FLUSH(6,ISTAT)
          STOP
       ENDIF
       FIXDSAVE=FIXD
       IF ((HINDEX.GT.1).AND.(.NOT.NOIT)) THEN
-         WRITE(*,'(A)') 'FOR HINDEX > 1 YOU MUST USE NOIT WITH BFGSTS'
+         WRITE(*,'(A)') 'For HINDEX > 1 you must use NOIT with BFGSTS'
          CALL FLUSH(6,ISTAT)
          STOP
       ENDIF
 !
-! CHECK FOR CONSISTENT CONVERGENCE CRITERIA ON RMS GRADIENT IN MYLBFGS AND EF PART.
+! Check for consistent convergence criteria on RMS gradient in MYLBFGS and EF part.
 !     
       IF (GMAX.NE.CONVR) THEN
-         IF (DEBUG) PRINT '(2(A,G20.10),A)','BFGSTS> WARNING - GMAX ',GMAX,' IS DIFFERENT FROM CONVR ',CONVR,' - RESETTING'
+         IF (DEBUG) PRINT '(2(A,G20.10),A)','bfgsts> WARNING - GMAX ',GMAX,' is different from CONVR ',CONVR,' - resetting'
          GMAX=MIN(CONVR,GMAX)
          CONVR=MIN(CONVR,GMAX)
       ENDIF
       IF (MINMAX.GE.CONVU) THEN
-         IF (DEBUG) PRINT '(2(A,G20.10),A)','BFGSTS> WARNING - CONVU <= MINMAX - RESETTING CONVU'
+         IF (DEBUG) PRINT '(2(A,G20.10),A)','bfgsts> WARNING - CONVU <= MINMAX - resetting CONVU'
          CONVU=2*MINMAX
       ENDIF
 !
-!  RESET MAXIMUM STEP SIZES IN CASE THIS ISN'T THE FIRST CALL TO EFOL.
+!  Reset maximum step sizes in case this isn't the first call to EFOL.
 !
-      IF (DEBUG) PRINT '(A,G20.10)',' BFGSTS> RESETTING MAXIMUM STEP SIZES TO ',MXSTP
+      IF (DEBUG) PRINT '(A,G20.10)',' bfgsts> resetting maximum step sizes to ',MXSTP
       DO J1=1,NOPT
          STPMAX(J1)=MXSTP
       ENDDO
 
       ITER=1
-      FRAME=1
+      frame=1
       CONVERGED=.TRUE.
 C
-C  IF DUMPV IS .TRUE. THEN VECTOR.DUMP IS ALREADY OPEN AND ATTACHED TO UNIT 44.
-C  SGI COMPILER WON;T ALLOW US TO ATTACH IT TO ANOTHER UNIT.
-C  VECTOR.DUMP COULD CONTAIN MULTIPLE DUMPS FOR MORE THAN THE LAST STEP, SO WE 
-C  HAVE TO MAKE SURE WE GET THE RESULTS FOR THE LAST STEP.
+C  If DUMPV is .TRUE. then vector.dump is already open and attached to unit 44.
+C  SGI compiler won;t allow us to attach it to another unit.
+C  vector.dump could contain multiple dumps for more than the last step, so we 
+C  have to make sure we get the results for the last step.
 C
       IF (READV.AND.(ITER.EQ.1)) THEN   
          IF (DUMPV) THEN
@@ -146,9 +146,9 @@ C
 111         CONTINUE
          ELSE
             IF (FILTH.EQ.0) THEN
-               FNAME='VECTOR.DUMP'
+               FNAME='vector.dump'
             ELSE
-               WRITE(FNAME,'(A)') 'VECTOR.DUMP.'//TRIM(ADJUSTL(FILTHSTR))
+               WRITE(FNAME,'(A)') 'vector.dump.'//TRIM(ADJUSTL(FILTHSTR))
             ENDIF
    
             OPEN(UNIT=45,FILE=FNAME,STATUS='OLD')
@@ -157,7 +157,7 @@ C
             GOTO 20
 10          CLOSE(45)
          ENDIF
-         WRITE(*,'(A,F20.10)') ' REACTION VECTOR READ SUCCESSFULLY. EIGENVALUE=   ',EVALMIN
+         WRITE(*,'(A,F20.10)') ' Reaction vector read successfully. Eigenvalue=   ',EVALMIN
          NS=100
       ENDIF
       IF (FREEZE) THEN
@@ -176,11 +176,11 @@ C
 90    IF (PTEST) PRINT*
       NUP=HINDEX
       IF ((.NOT.BFGSSTEP).AND.PTEST) WRITE(*,11) ITER
-11          FORMAT (' BFGSTS> BEGINNING OF OPTIMIZATION CYCLE ', I4,'.',/
+11          FORMAT (' BFGSTS> Beginning of optimization cycle ', I4,'.',/
      1              ' ---------------------------------------')
       FIXIMAGE=.FALSE.
       IF ((FIXAFTER.GT.0).AND.(ITER.GT.FIXAFTER)) FIXIMAGE=.TRUE.
-      IF (CHRMMT) NCHENCALLS = 999 ! MAKE SURE NON-BOND LIST IS UPDATED AT THE START OF EACH TS SEARCH.
+      IF (CHRMMT) NCHENCALLS = 999 ! make sure non-bond list is updated at the start of each TS search.
       IF (POTCALL) THEN
          IF (PV.AND.(.NOT.BFGSSTEP)) THEN
             IF (.NOT.KNOWE) CALL POTENTIAL(COORDS,ENERGY,GRAD,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
@@ -217,7 +217,7 @@ C
          ENDIF
       ENDIF
       IF (.NOT.((READV.AND.BFGSSTEP).OR.(.NOT.POTCALL))) THEN
-C        IF (DEBUG) PRINT*,'THIS LINE IS NEEDED TO PREVENT MISCOMPILATION BY SUN FORTE DEVELOPER 7' ! SIGH !!!
+C        IF (DEBUG) PRINT*,'This line is needed to prevent miscompilation by Sun Forte Developer 7' ! SIGH !!!
          IF (FIXD.AND.(ITER.EQ.1)) THEN
             IF (CONNECTT) THEN
                DO J1=1,NOPT
@@ -241,7 +241,7 @@ C        IF (DEBUG) PRINT*,'THIS LINE IS NEEDED TO PREVENT MISCOMPILATION BY SUN
             IF (.NOT.NOIT) THEN
                CALL ITEIG(ITER,COORDS,VECS,EVALMIN,EVALMAX,NS,SOVER,PTEST,VECL,CONVERGED)
             ELSE
-               ABSTOL=DLAMCH('SAFE  MINIMUM')
+               ABSTOL=DLAMCH('Safe  minimum')
                IF (ITER.GT.1) THEN
                   DO J1=1,NOPT
                      VECSP(J1)=VECS(J1)
@@ -250,9 +250,9 @@ C        IF (DEBUG) PRINT*,'THIS LINE IS NEEDED TO PREVENT MISCOMPILATION BY SUN
                CALL DSYEVR('V','I','U',NOPT,HESS,SIZE(HESS,1),0.0D0,1.0D0,1,HINDEX,ABSTOL,NFOUND,DIAG,
      1                        ZWORK,3*NATOMS,ISUPPZ,WORK,
      2                        LWORK, IWORK, ILWORK, INFO )
-               IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' IN DSYEVR'
-C              PRINT*,'OPTIMAL AND ACTUAL VALUES OF LWORK=',WORK(1),LWORK
-C              PRINT*,'OPTIMAL AND ACTUAL VALUES OF ILWORK=',IWORK(1),ILWORK
+               IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' in DSYEVR'
+C              PRINT*,'Optimal and actual values of LWORK=',WORK(1),LWORK
+C              PRINT*,'Optimal and actual values of ILWORK=',IWORK(1),ILWORK
                EVALMIN=DIAG(1)
                SOVER=0.0D0
                DO J1=1,NOPT
@@ -261,9 +261,9 @@ C              PRINT*,'OPTIMAL AND ACTUAL VALUES OF ILWORK=',IWORK(1),ILWORK
                ENDDO
                IF (PTEST) THEN
                   IF (ITER.GT.1) THEN
-                     WRITE(*,'(A,F15.7,A,F15.7)') ' SMALLEST EIGENVALUE=',EVALMIN,' OVERLAP WITH PREVIOUS VECTOR=',SOVER
+                     WRITE(*,'(A,F15.7,A,F15.7)') ' Smallest eigenvalue=',EVALMIN,' overlap with previous vector=',SOVER
                   ELSE
-                     WRITE(*,'(A,F15.7,A,F15.7)') ' SMALLEST EIGENVALUE=',EVALMIN
+                     WRITE(*,'(A,F15.7,A,F15.7)') ' Smallest eigenvalue=',EVALMIN
                   ENDIF
                ENDIF
                DO I=1,NOPT
@@ -276,8 +276,8 @@ C              PRINT*,'OPTIMAL AND ACTUAL VALUES OF ILWORK=',IWORK(1),ILWORK
                   ENDDO
                ENDDO
 C
-C  FIND THE VECTOR OF STPMAX VALUES BY COMPARING PREDICTED AND
-C  ACTUAL SECOND DERIVATIVES FOR EACH EIGENVECTOR.
+C  Find the vector of STPMAX values by comparing predicted and
+C  actual second derivatives for each eigenvector.
 C
                IF ((ITER.GT.1).AND.(ISTCRT.EQ.10)) THEN
                   DO J1=1,NOPT
@@ -289,7 +289,7 @@ C
                      K1=K1+1
                      IF (DABS(XPSTEP(K1)).GT.1.0D-40) THEN
 C
-C  ALLOW FOR POSSIBLE PHASE CHANGE IN THE EIGENVECTOR. JUST TAKE THE SMALLER VALUE.
+C  Allow for possible phase change in the eigenvector. Just take the smaller value.
 C
                         RAT1=DABS(( XFOB(J1)-PFOB(K1))/(DIAG(J1)*XPSTEP(K1))-1.0D0)
                         RAT2=DABS((-XFOB(J1)-PFOB(K1))/(DIAG(J1)*XPSTEP(K1))-1.0D0)
@@ -304,7 +304,7 @@ C                       WRITE(*,'(A,2I4,5E15.7)') 'J1,K1,FOB,PFOB,PSTEP,RAT1,DIA
                                  SUM=SUM+ATMASS(J2)
                               ENDDO
                               AVG=SQRT(SUM/NATOMS)
-C                             PRINT *,'THE AVERAGE IS',AVG
+C                             PRINT *,'the average is',AVG
                               STPMAX(J1)=MIN(MAX(TEMPA(K1)*1.09D0,MINMAX),AVG*MAXMAX)
                            ELSE
                               STPMAX(J1)=MIN(MAX(TEMPA(K1)*1.09D0,MINMAX),MAXMAX)
@@ -318,12 +318,12 @@ C                             PRINT *,'THE AVERAGE IS',AVG
                TEMP=-1.0D0
             ENDIF
 C
-C  DO NOT USE.
+C  Do not use.
 C
 C           CALL ITEIGN(ITER,COORDS,VECS,EVALMIN,EVALMAX,PTEST)
 C
-C  LANCZOS ROUTINE - DOES WORK BUT SEEMS TO BE SLOWER? FOR NFIG=3 IT IS ONLY
-C  A BIT SLOWER THAN ITEIG WITH CEIG=0.01.
+C  Lanczos routine - does work but seems to be slower? For NFIG=3 it is only
+C  a bit slower than ITEIG with CEIG=0.01.
 C
 C           NVAL=-10
 C           ANV=ABS(NVAL)
@@ -333,18 +333,18 @@ C           IF (ITER.GT.1) NPERM=1
 C           MAXOP=NEVS
 C           NBLOCK=1
 C           IF ((ANV.GT.MANV).OR.(NBLOCK.GT.MAXBLOCK)) THEN
-C              WRITE(*,'(A)') ' TOO MANY EIGENVECTORS OR TOO LARGE A LANCZOS BLOCKSIZE REQUESTED'
-C              STOP
+C              WRITE(*,'(A)') ' Too many eigenvectors or too large a Lanczos blocksize requested'
+c              STOP
 C           ENDIF
 C
 C           CALL DNLASO(HESS, Q, NATOMS, OP, IOVECT, 3*NATOMS, NVAL, NFIG, NPERM,
 C    *                  NMVAL, VAL, NMVEC, LVEC, NBLOCK, MAXOP, MAXJ, LWORK,
 C    *                  IND, IERR)
-C           WRITE(*,'(I3,A,100F20.10)') NPERM,' EIGENVECTORS DETERMINED: ',(VAL(J1,1),J1=1,NPERM)
+C           WRITE(*,'(I3,A,100F20.10)') NPERM,' eigenvectors determined: ',(VAL(J1,1),J1=1,NPERM)
 C           IF (IERR.NE.0) THEN
-C              WRITE(*,'(A,I4)') 'LANCZOS CALL COMPLETED WITH ERROR CODE ',IERR
+C              WRITE(*,'(A,I4)') 'Lanczos call completed with error code ',IERR
 C           ELSE
-C              WRITE(*,'(A,F20.10)') ' SMALLEST EIGENVALUE=',VAL(1,1)
+C              WRITE(*,'(A,F20.10)') ' Smallest eigenvalue=',VAL(1,1)
 C           ENDIF
 
 C           EVALMIN=VAL(1,1)
@@ -355,7 +355,7 @@ C           ENDDO
             CALL BEIG(ITER,COORDS,ENERGY,VECS,EVALMIN,NS,SOVER,PTEST,CONVERGED)
 
 C
-C  THE FOLLOWING TWO ROUTINES ARE ALSO OBSOLETE.
+C  The following two routines are also obsolete.
 C
 C           CALL POWEIG(ITER,COORDS,ENERGY,VECS,EVALMIN)
 C           CALL MCEIG(ITER,COORDS,ENERGY,VECS,EVALMIN)
@@ -363,7 +363,7 @@ C           CALL MCEIG(ITER,COORDS,ENERGY,VECS,EVALMIN)
       ENDIF
 
       IF ((EVALMIN.LT.0.0D0).AND.FIXD) THEN
-         IF (PTEST) WRITE(*,'(A)') ' NEGATIVE EIGENVALUE, CHANGING TO HYBRID EF'
+         IF (PTEST) WRITE(*,'(A)') ' Negative eigenvalue, changing to hybrid EF'
          FIXD=.FALSE.
          CALL VECNORM(VECS,NOPT)
          DO J1=1,NOPT
@@ -384,8 +384,8 @@ C     IF (FIXD) THEN
          ENDDO
       ENDIF
 C
-C  DUMP THE SMALLEST NON-ZERO EIGENVALUE AND EIGENVECTOR 
-C  IN FILE VECTOR.DUMP, IF REQUIRED.
+C  Dump the smallest non-zero eigenvalue and eigenvector 
+C  in file vector.dump, if required.
 C
       IF (DUMPV) THEN
          IF (.NOT.ALLSTEPS) REWIND(44)
@@ -394,11 +394,11 @@ C
          CALL FLUSH(44,ISTAT)
       ENDIF
 C
-C  TAKE AN EIGENVECTOR-FOLLOWING STEP UPHILL ALONG THE DIRECTION CORRESPONDING
-C  TO THE SMALLEST NON-ZERO EIGENVALUE. THEN DO A LINE MINIMIZATION ALONG THE
-C  GRADIENT VECTOR WITH COMPONENT ALONG THE UPHILL DIRECTION PROJECTED OUT. 
-C  DO WE NEED A NEW GRADIENT VECTOR OR WILL THE OLD ONE FROM THE POINT BEFORE
-C  STEPPING UPHILL DO?
+C  Take an eigenvector-following step uphill along the direction corresponding
+C  to the smallest non-zero eigenvalue. Then do a line minimization along the
+C  gradient vector with component along the uphill direction projected out. 
+C  Do we need a new gradient vector or will the old one from the point before
+C  stepping uphill do?
 C
       FOB=0.0D0
       DO J1=1,NOPT
@@ -419,15 +419,15 @@ C
          ENDIF
          IF (PROJ1.GT.PROJ2) REDOPATH1=.TRUE.
          IF (PROJ2.GT.PROJ1) REDOPATH2=.TRUE.
-         PRINT '(A,2G20.10)',' BFGSTS> PROJECTIONS OF STEP ONTO DIRECTIONS OF MINIMA 1 AND 2 ARE: ',PROJ1,PROJ2 
+         PRINT '(A,2G20.10)',' bfgsts> projections of step onto directions of minima 1 and 2 are: ',PROJ1,PROJ2 
       ENDIF
       IF (FIXD) GOTO 666
       IF (HINDEX.LE.1) THEN
          IF (EVALMIN.LT.0.0D0) THEN
-C           PRINT*,'THERE IS AT LEAST ONE NEGATIVE EIGENVALUE'
+C           PRINT*,'There is at least one negative eigenvalue'
             INEG=1
          ELSE
-C           PRINT*,'THERE ARE NO NEGATIVE EIGENVALUES'
+C           PRINT*,'There are no negative eigenvalues'
             INEG=0
          ENDIF
       ELSE
@@ -435,27 +435,27 @@ C           PRINT*,'THERE ARE NO NEGATIVE EIGENVALUES'
          DO J1=1,HINDEX
             IF (DIAG(J1).LT.0.0D0) INEG=INEG+1
          ENDDO
-         WRITE(*,'(A,I5,A)') ' THERE ARE AT LEAST ',INEG,' NEGATIVE HESSIAN EIGENVALUES'
+         WRITE(*,'(A,I5,A)') ' There are at least ',INEG,' negative Hessian eigenvalues'
       ENDIF
 C
-C  TAKE A STEP AWAY FROM A STATIONARY POINT ALONG THE APPROPRIATE
-C  HESSIAN EIGENVECTOR. THIS ENABLES US TO START FROM CONVERGED MINIMA.
-C  DISTINGUISH THE CASE WHERE WE WANT TO TAKE A VERY SMALL STEP AWAY
-C  FROM A TRANSITION STATE FROM OTHERS WHERE WE WANT A BIG DISPLACEMENT
-C  TO GET UNSTUCK. 
+C  Take a step away from a stationary point along the appropriate
+C  Hessian eigenvector. This enables us to start from converged minima.
+C  Distinguish the case where we want to take a very small step away
+C  from a transition state from others where we want a big displacement
+C  to get unstuck. 
 C
       AWAY=.FALSE.
       IF ((RMS.LT.PUSHCUT).AND.(.NOT.FIXD)) THEN
-         IF ((INEG.NE.HINDEX).AND.CONVERGED) THEN ! DON;T TRY PUSHOFF IF CONVERGED IS .FALSE.
+         IF ((INEG.NE.HINDEX).AND.CONVERGED) THEN ! don;t try pushoff if CONVERGED is .FALSE.
             IF (HINDEX.LE.1) THEN
                IF ((ITER.EQ.1).AND.(INEG.EQ.0)) THEN
                   IF (PTEST) THEN
-                     IF (IVEC.GE.0) PRINT*,'STEPPING AWAY FROM MINIMUM ALONG SOFTEST MODE + DIRECTION'
-                     IF (IVEC.LT.0) PRINT*,'STEPPING AWAY FROM MINIMUM ALONG SOFTEST MODE - DIRECTION'
+                     IF (IVEC.GE.0) PRINT*,'Stepping away from minimum along softest mode + direction'
+                     IF (IVEC.LT.0) PRINT*,'Stepping away from minimum along softest mode - direction'
                   ENDIF
                   AWAY=.TRUE.
                ELSE IF (MOD(ITER-1,4).EQ.0) THEN
-                  PRINT*,'STEPPING AWAY FROM SOLUTION OF WRONG INDEX'
+                  PRINT*,'Stepping away from solution of wrong index'
                   IF (PUSHOFF.EQ.0.0D0) THEN
                      FOB=STPMAX(1)
                   ELSE 
@@ -465,7 +465,7 @@ C
             ELSE
                DO J1=1,HINDEX
                   IF (DIAG(J1).GT.0.0D0) THEN
-                     WRITE(*,'(A,I6)') 'STEPPING AWAY FROM SOLUTION OF WRONG INDEX ALONG EIGENVECTOR ',J1
+                     WRITE(*,'(A,I6)') 'Stepping away from solution of wrong index along eigenvector ',J1
                      IF (PUSHOFF.EQ.0.0D0) THEN
                         XFOB(J1)=STPMAX(J1)
                      ELSE
@@ -478,17 +478,17 @@ C
       ENDIF
       IF (BFGSSTEP) THEN
          IF (INEG.EQ.0) THEN
-            PRINT*,'****WARNING - BFGSSTEP SET FOR A MINIMUM'
+            PRINT*,'****WARNING - BFGSSTEP set for a minimum'
          ELSE
             IF (PTEST) THEN
-               IF (IVEC.GE.0) PRINT*,'STEPPING AWAY FROM SADDLE ALONG SOFTEST MODE + DIRECTION'
-               IF (IVEC.LT.0) PRINT*,'STEPPING AWAY FROM SADDLE ALONG SOFTEST MODE - DIRECTION'
+               IF (IVEC.GE.0) PRINT*,'Stepping away from saddle along softest mode + direction'
+               IF (IVEC.LT.0) PRINT*,'Stepping away from saddle along softest mode - direction'
             ENDIF
             AWAY=.TRUE.
          ENDIF
       ENDIF
 C
-C  EF DETERMINATION OF STEPS
+C  EF determination of steps
 C
       IF (HINDEX.LE.1) THEN
          XP1=DABS(EVALMIN)/2.0D0
@@ -513,16 +513,16 @@ C
             ENDIF
             IF (IVEC.LT.0) PSTEP=-PSTEP
          ENDIF
-C        WRITE(*,'(A,F20.10)') ' UNSCALED STEP=',PSTEP
+C        WRITE(*,'(A,F20.10)') ' Unscaled step=',PSTEP
 C
-C  SCALE ACCORDING TO STEP SIZE IN EV BASIS:
+C  Scale according to step size in ev basis:
 C
          STPMAG=ABS(PSTEP)
          IF (.NOT.AWAY) THEN
             SCALE=MIN(STPMAX(1)/MAX(DABS(PSTEP),1D-10),1.0D0)
             PSTEP=SCALE*PSTEP
          ENDIF
-         STEP(1)=PSTEP ! BECAUSE WE SAVE THIS VALUE IN XPSTEP LATER FROM STEP ARRAY
+         STEP(1)=PSTEP ! because we save this value in XPSTEP later from STEP array
       ELSE
          DO I=HINDEX,1,-1
             STEP(I)=0.0D0
@@ -540,7 +540,7 @@ C
                LP2=1.0D0 + 4.0D0*(XFOB(I)/DIAG(I))**2
             ENDIF
             LP=LP1*(1.0D0+DSQRT(LP2))
-            WRITE(*,'(A,I4,A,4X,F19.10)') ' MODE ',I,' WILL BE SEARCHED UPHILL. EIGENVALUE=',DIAG(I)
+            WRITE(*,'(A,I4,A,4X,F19.10)') ' Mode ',I,' will be searched uphill. Eigenvalue=',DIAG(I)
             LP=-LP
             STEP(I)=-XFOB(I)/LP
          ENDDO
@@ -548,7 +548,7 @@ C
             SCRATCH(NOPT+J1)=STEP(J1)
          ENDDO
 C
-C  CONVERT THE STEPS TO THE CARTESIAN RATHER THAN THE EV BASIS
+C  Convert the steps to the Cartesian rather than the EV basis
 C
          DO J=1,NOPT
             SCRATCH(J+NOPT)=0.0D0
@@ -557,7 +557,7 @@ C
             ENDDO
          ENDDO
 C
-C  SCALE ACCORDING TO STEP SIZE IN EV BASIS:
+C  Scale according to step size in ev basis:
 C
          CALL VSTAT(STEP(1),AV,NOPT,3*NATOMS)
          STPMAG=MAX(AV(1),1D-10)
@@ -583,13 +583,13 @@ C
          IF (EFSTEPST.AND.(MOD(ITER-1,EFSTEPS).EQ.0)) THEN
             DO I=NZERO+1,HINDEX
                 WRITE(*,360) I, STEP(I)
-360             FORMAT(' UNSCALED STEP FOR MODE ',I3,'=',F20.10)
+360             FORMAT(' Unscaled step for mode ',I3,'=',F20.10)
             ENDDO
          ENDIF
       ENDIF
 C
-C  USE MAXMAX UNTIL WE HAVE A NEGATIVE EIGENVALUE. BE SURE TO
-C  STEP UPHILL!
+C  Use MAXMAX until we have a negative eigenvalue. Be sure to
+C  step uphill!
 C
       LINE=.FALSE.
       IF (CONVERGED) THEN
@@ -609,7 +609,7 @@ C
          DELE=E1+E2
       ENDIF
 C
-C  REGENERATE FULL Q VECTOR. 
+C  Regenerate full Q vector. 
 C
 666   IF (.NOT.FIXD) THEN
          IF (HINDEX.LE.1) THEN
@@ -618,8 +618,8 @@ C
             ENDDO
          ELSE
 C
-C  UNPACK SCRATCH(1:NOPT) TO REGENERATE FULL Q VECTOR.
-C  CSTEP CONTAINS THE STEP IN THE CARTESIAN BASIS.
+C  Unpack SCRATCH(1:NOPT) to regenerate full Q vector.
+C  CSTEP contains the step in the Cartesian basis.
 C
             DO J=1,NOPT
                COORDS(J)=SCRATCH(J)
@@ -647,8 +647,8 @@ C
          EOLD=ENERGY
          IF (.NOT.BFGSSTEP) THEN
 C
-C  OPTIMISING THE BOX LENGTHS HERE WOULD CHANGE THE CRITICAL EIGENVALUE AND
-C  EIGENVECTOR.
+C  Optimising the box lengths here would change the critical eigenvalue and
+C  eigenvector.
 C
 C           IF (PV) THEN
 C              CALL POTENTIAL(COORDS,ENERGY,GRAD,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
@@ -663,14 +663,14 @@ C
          ENDIF
       ENDIF
 C
-C  IF REOPT IS TRUE THEN REOPTIMISE THE EIGENVECTOR CORRESPONDING TO THE UPHILL DIRECTION
-C  BEFORE DOING THE TANGENT SPACE MINIMISATION. DOES NOT MAKE SENSE WITH FIXD.
+C  If REOPT is true then reoptimise the eigenvector corresponding to the uphill direction
+C  before doing the tangent space minimisation. Does not make sense with FIXD.
 C
       IF (REOPT) THEN
-         WRITE(*,'(A)') 'REOPTIMISING UPHILL DIRECTION AFTER EF STEP'
+         WRITE(*,'(A)') 'Reoptimising uphill direction after EF step'
          IF (.NOT.NOHESS) THEN
             IF (NOIT) THEN
-               PRINT*,'REOPTIMISATION WITH NOIT NOT IMPLEMENTED'
+               PRINT*,'reoptimisation with NOIT not implemented'
                CALL FLUSH(6,ISTAT)
                STOP
             ENDIF
@@ -689,7 +689,7 @@ C
          FOBNEW=FOBNEW+GRAD(J1)*ZWORK(J1,1)
       ENDDO
 C
-C  ONLY SCALE IF WE HAVE A -VE EIGENVALUE
+C  Only scale if we have a -ve eigenvalue
 C
       IF ((EOLD.NE.0.0D0).AND.(EVALMIN.LT.0.0D0).AND.(.NOT.FIXD)) THEN
          EPER=MIN(DABS(1.0D0-(FOBNEW-FOB)/(PSTEP*EVALMIN)),DABS(1.0D0-(-FOBNEW-FOB)/(PSTEP*EVALMIN)))
@@ -698,14 +698,14 @@ C        WRITE(*,'(A,3F20.10)') 'EPER,EPER1,EPER2=',
 C    1          EPER,DABS(1.0D0-(FOBNEW-FOB)/(PSTEP*EVALMIN)),DABS(1.0D0-(-FOBNEW-FOB)/(PSTEP*EVALMIN))
          IF (EPER.GT.TRAD) THEN
             STPMAX(1)=MAX(STPMAX(1)/1.1D0,MINMAX)
-C           WRITE(*,'(A,E12.4,A,E12.4)') ' DECREASING ALLOWED EF STEP; TRUST RADIUS=',TRAD,' CALCULATED RATIO=',EPER
+C           WRITE(*,'(A,E12.4,A,E12.4)') ' Decreasing allowed EF step; trust radius=',TRAD,' calculated ratio=',EPER
          ELSE
             STPMAX(1)=MIN(STPMAX(1)*1.1D0,MAXMAX)
-C           WRITE(*,'(A,E12.4,A,E12.4)') ' INCREASING ALLOWED EF STEP; TRUST RADIUS=',TRAD,' CALCULATED RATIO=',EPER
+C           WRITE(*,'(A,E12.4,A,E12.4)') ' Increasing allowed EF step; trust radius=',TRAD,' calculated ratio=',EPER
          ENDIF
       ENDIF
 C
-C SUMMARIZE
+C Summarize
 C
 C     IF (SUMMARYT.AND.(MOD(ITER-1,NSUMMARY).EQ.0)) THEN
          IF (PTEST) THEN
@@ -713,7 +713,7 @@ C     IF (SUMMARYT.AND.(MOD(ITER-1,NSUMMARY).EQ.0)) THEN
                WRITE(*,30)
 30             FORMAT(1X,79('-'))
                WRITE(*,40)
-40             FORMAT(' VECTOR      GRADIENT        SECDER       STEP          MAX STEP    TRUST RATIO')
+40             FORMAT(' Vector      Gradient        Secder       Step          Max step    Trust ratio')
                WRITE(*,30)
                WRITE(*,50) 1,FOB,EVALMIN,PSTEP,STPMAX(1),EPER
 50             FORMAT(1X,I4,1X,E15.6,1X,E15.6,1X,E13.6,1X,E12.6,1X,E15.6)
@@ -729,7 +729,7 @@ C     IF (SUMMARYT.AND.(MOD(ITER-1,NSUMMARY).EQ.0)) THEN
             ENDIF
          ELSE IF (.NOT.BFGSSTEP) THEN
 C           WRITE(*,'(A,I6,A,F20.10,A,F15.7,A,F12.4,A,F12.4)') 
-C    1          ' CYCLE ',ITER,' E=',ENERGY,' RMS=',RMS,' EIGENVALUE=',EVALMIN,' OVERLAP=',SOVER
+C    1          ' Cycle ',ITER,' E=',ENERGY,' RMS=',RMS,' eigenvalue=',EVALMIN,' overlap=',SOVER
          ENDIF
 C     ENDIF
 C
@@ -739,9 +739,9 @@ C
          RETURN
       ENDIF
 C
-C  TANGENT SPACE MINIMIZATION NEXT.
-C  UPHILL DIRECTION IS PROJECTED OUT OF THE STEP IN MYLBFGS
-C  THE NEXT IF BLOCK ALLOWS FOR ZERO TANGENT SPACE STEPS IN THE INITIAL PHASE
+C  Tangent space minimization next.
+C  Uphill direction is projected out of the step in mylbfgs
+C  The next IF block allows for zero tangent space steps in the initial phase
 C
       IF ((NBFGSMAX1.EQ.0).AND.((1.0D0-DABS(SOVER).GT.BFGSTSTOL).OR.(INEG.EQ.0))) THEN
          FIXIMAGE=.FALSE.
@@ -759,8 +759,8 @@ C
       ENDIF
 
 !
-! IF WE DON'T RESET THEN THE PREVIOUS STEPS AND GRADIENTS SAVED IN MYLBFGS
-! WILL NOT NECESSARILY BE PERPENDICULAR TO THE NEW UPHILL DIRECTION.
+! If we don't reset then the previous steps and gradients saved in mylbfgs
+! will not necessarily be perpendicular to the new uphill direction.
 !
       RESET=.TRUE.
       IF (ITER.EQ.1) RESET=.TRUE.
@@ -782,13 +782,13 @@ C
 
       IF (REPELTST) CALL REPELSP(COORDS,RMS,INEG,MFLAG)
 
-      RMS2=RMS ! SAVE SUBSPACE RMS
-      RMS=DSQRT(DOTOPT(GRAD(1),GRAD(1),NOPT))/SQRT(1.0D0*NOPT) ! TRUE RMS
-      IF (PTEST) WRITE(*,'(A,F15.7,A,F15.7,A,F15.7)') ' BFGSTS> RMS GRAD=',RMS,
-     &         ' SUBSPACE GRAD=',RMS2,' UNSCALED EF STEP LENGTH=',STPMAG
+      RMS2=RMS ! save subspace RMS
+      RMS=DSQRT(DOTOPT(GRAD(1),GRAD(1),NOPT))/SQRT(1.0D0*NOPT) ! true RMS
+      IF (PTEST) WRITE(*,'(A,F15.7,A,F15.7,A,F15.7)') ' bfgsts> RMS grad=',RMS,
+     &         ' subspace grad=',RMS2,' unscaled EF step length=',STPMAG
       IF (MFLAG) THEN
 !        IF (NFREEZE.GT.0) THEN
-!           PRINT '(A,I8,A)',' BFGSTS> UNFREEZING ',NFREEZE,' ATOMS'
+!           PRINT '(A,I8,A)',' bfgsts> unfreezing ',NFREEZE,' atoms'
 !           MFLAG=.FALSE.
 !           FROZEN(1:NATOMS)=.FALSE.
 !           NFREEZE=0
@@ -800,8 +800,8 @@ C
          ENDIF
       ENDIF
 !
-! BUG FIX 11/4/08 DJW - WOULD HAVE CONVERGED ON SUBSPACE GRADIENT, NOT TOTAL AFTER SUBSPACE MINIMISATION
-! WITHOUT PROJECTION. PROBABLY CAUSED WHEN PROJECTION WAS CHANGED IN MYLBFGS.
+! Bug fix 11/4/08 DJW - would have converged on subspace gradient, not total after subspace minimisation
+! without projection. Probably caused when projection was changed in MYLBFGS.
 !
       ITER=ITER+1
       IF (ITER.GT.ITMAX) THEN
@@ -820,7 +820,7 @@ C     IF ((AMBER).AND.(MOVIE)) CALL AMOVIEDUMP(FRAME)
       END
 ! }}}
 C
-!ITEG: ORTHOGONALISE VEC1 TO OVERALL TRANSLATIONS AND ROTATIONS.{{{
+!ITEG: Orthogonalise VEC1 to overall translations and rotations.{{{
 C
       SUBROUTINE ORTHOGOPT(VEC1,COORDS,OTEST) 
 ! {{{
@@ -864,7 +864,7 @@ C
          TMASS=TMASS+AMASS(J2)
       ENDDO
 C
-C  IF MASST THEN THE COORDINATES ALREADY HAVE A SQUARE ROOT OF THE MASS IN THEM
+C  If MASST then the coordinates already have a square root of the mass in them
 C
       DO J2=1,NATOMS
          CMX=CMX+COORDS(3*(J2-1)+1)*RMASS(J2)
@@ -874,12 +874,12 @@ C
       CMX=CMX/TMASS
       CMY=CMY/TMASS
       CMZ=CMZ/TMASS
-C     WRITE(*,'(A,3F20.10)') 'CENTRE AT ',CMX,CMY,CMZ
+C     WRITE(*,'(A,3F20.10)') 'centre at ',CMX,CMY,CMZ
 1     VDOT=0.0D0
       NCHECK=NCHECK+1
 C
-C  ORTHOGONALIZE TO KNOWN EIGENVECTORS CORRESPONDING TO NEGATIVE EIGENVALUES
-C  FOR CHECKINDEX RUN WITH NOHESS.
+C  Orthogonalize to known eigenvectors corresponding to negative eigenvalues
+C  for CHECKINDEX run with NOHESS.
 C
       IF (CHECKINDEX) THEN
          DO J2=1,NMDONE
@@ -903,9 +903,9 @@ C
 C
       IF ((VDOT.GT.1.0D-6).AND.(SHIFTED).AND.(NCHECK.LT.100)) GOTO 1
       IF (NCHECK.GE.100) THEN
-         PRINT*,'*** WARNING, CANNOT ORTHOGONALISE TO KNOWN EIGENVECTORS IN ORTHOGOPT'
+         PRINT*,'*** WARNING, cannot orthogonalise to known eigenvectors in ORTHOGOPT'
       ENDIF
-      IF ((SHIFTED).AND.(.NOT.FIXD)) RETURN  ! ZEROS ARE SHIFTED - LOWEST EIGENVECTOR SHOULD BE UNCONTAMINATED
+      IF ((SHIFTED).AND.(.NOT.FIXD)) RETURN  ! zeros are shifted - lowest eigenvector should be uncontaminated
 
       IF (ZSYM(1).EQ.'BE') GOTO 10
       IF (EYTRAPT) GOTO 10
@@ -918,7 +918,7 @@ C
       ENDDO
       DUMMY1=DUMMY1/ROOTN
       VDOT=MAX(VDOT,ABS(DUMMY1))
-C     WRITE(*,'(A,F20.10)') 'X DOT:',DUMMY1
+C     WRITE(*,'(A,F20.10)') 'X dot:',DUMMY1
       DO J2=1,NOPT,3
          VEC1(J2)=VEC1(J2)-DUMMY1/ROOTN
       ENDDO
@@ -930,7 +930,7 @@ C     WRITE(*,'(A,F20.10)') 'X DOT:',DUMMY1
       ENDDO
       DUMMY1=DUMMY1/ROOTN
       VDOT=MAX(VDOT,ABS(DUMMY1))
-C     WRITE(*,'(A,F20.10)') 'Y DOT:',DUMMY1
+C     WRITE(*,'(A,F20.10)') 'Y dot:',DUMMY1
       DO J2=2,NOPT,3
          VEC1(J2)=VEC1(J2)-DUMMY1/ROOTN
       ENDDO
@@ -942,7 +942,7 @@ C     WRITE(*,'(A,F20.10)') 'Y DOT:',DUMMY1
       ENDDO
       DUMMY1=DUMMY1/ROOTN
       VDOT=MAX(VDOT,ABS(DUMMY1))
-C     WRITE(*,'(A,F20.10)') 'Z DOT:',DUMMY1
+C     WRITE(*,'(A,F20.10)') 'Z dot:',DUMMY1
       DO J2=3,NOPT,3
          VEC1(J2)=VEC1(J2)-DUMMY1/ROOTN
       ENDDO
@@ -950,9 +950,9 @@ C     WRITE(*,'(A,F20.10)') 'Z DOT:',DUMMY1
 
 31    CONTINUE
       IF ((VDOT.GT.1.0D-6).AND.BULKT.AND.(NCHECK.LT.100)) GOTO 1
-!     PRINT*,'AFTER NEXT PART VDOT=',VDOT
+!     PRINT*,'after next part VDOT=',VDOT
       IF (NCHECK.GE.100) THEN
-         PRINT*,'*** WARNING, CANNOT ORTHOGONALISE TO KNOWN EIGENVECTORS IN ORTHOGOPT'
+         PRINT*,'*** WARNING, cannot orthogonalise to known eigenvectors in ORTHOGOPT'
       ENDIF
       IF (BULKT.AND.TWOD) GOTO 20
       IF (BULKT) RETURN
@@ -968,7 +968,7 @@ C     WRITE(*,'(A,F20.10)') 'Z DOT:',DUMMY1
          DUMMY2=DUMMY2+AMASS(J2)*((COORDS(J3)-CMZ)**2+(COORDS(J3-1)-CMY)**2)
       ENDDO
       IF (DUMMY2.GT.0.0D0) THEN
-!        WRITE(*,'(A,F20.10)') 'XRDOT:',DUMMY1/SQRT(DUMMY2)
+!        WRITE(*,'(A,F20.10)') 'XRdot:',DUMMY1/SQRT(DUMMY2)
          VDOT=MAX(VDOT,ABS(DUMMY1)/SQRT(DUMMY2))
          DUMMY2=DUMMY1/DUMMY2
          DO J2=1,NATOMS
@@ -978,7 +978,7 @@ C     WRITE(*,'(A,F20.10)') 'Z DOT:',DUMMY1
          ENDDO
       ENDIF
       IF (OTEST) CALL VECNORM(VEC1,NOPT)
-!     PRINT*,'ROT X COMPONENT=',DUMMY2
+!     PRINT*,'rot x component=',DUMMY2
 
       DUMMY1=0.0D0
       DUMMY2=0.0D0
@@ -988,7 +988,7 @@ C     WRITE(*,'(A,F20.10)') 'Z DOT:',DUMMY1
          DUMMY2=DUMMY2+AMASS(J2)*((COORDS(J3)-CMZ)**2+(COORDS(J3-2)-CMX)**2)
       ENDDO
       IF (DUMMY2.GT.0.0D0) THEN
-!        WRITE(*,'(A,F20.10)') 'YRDOT:',DUMMY1/SQRT(DUMMY2)
+!        WRITE(*,'(A,F20.10)') 'YRdot:',DUMMY1/SQRT(DUMMY2)
          VDOT=MAX(VDOT,ABS(DUMMY1)/SQRT(DUMMY2))
          DUMMY2=DUMMY1/DUMMY2
          DO J2=1,NATOMS
@@ -998,7 +998,7 @@ C     WRITE(*,'(A,F20.10)') 'Z DOT:',DUMMY1
          ENDDO
       ENDIF
       IF (OTEST) CALL VECNORM(VEC1,NOPT)
-!     PRINT*,'ROT Y COMPONENT=',DUMMY2
+!     PRINT*,'rot y component=',DUMMY2
 
 20    DUMMY1=0.0D0
       DUMMY2=0.0D0
@@ -1008,7 +1008,7 @@ C     WRITE(*,'(A,F20.10)') 'Z DOT:',DUMMY1
          DUMMY2=DUMMY2+AMASS(J2)*((COORDS(J3-1)-CMY)**2+(COORDS(J3-2)-CMX)**2)
       ENDDO
       IF (DUMMY2.GT.0.0D0) THEN
-!        WRITE(*,'(A,F20.10)') 'ZRDOT:',DUMMY1/SQRT(DUMMY2)
+!        WRITE(*,'(A,F20.10)') 'ZRdot:',DUMMY1/SQRT(DUMMY2)
          VDOT=MAX(VDOT,ABS(DUMMY1)/SQRT(DUMMY2))
          DUMMY2=DUMMY1/DUMMY2
          DO J2=1,NATOMS
@@ -1018,46 +1018,46 @@ C     WRITE(*,'(A,F20.10)') 'Z DOT:',DUMMY1
          ENDDO
       ENDIF
       IF (OTEST) CALL VECNORM(VEC1,NOPT)
-!     PRINT*,'ROT Z COMPONENT=',DUMMY2
+!     PRINT*,'rot z component=',DUMMY2
 
-C     WRITE(*,'(A,F20.10)') 'LARGEST REMAINING COMPONENT IN ORTHOGOPT=',VDOT
+C     WRITE(*,'(A,F20.10)') 'Largest remaining component in ORTHOGOPT=',VDOT
       IF ((VDOT.GT.1.0D-6).AND.(NCHECK.LT.100)) GOTO 1
-C     PRINT*,'AFTER NEXT PART VDOT=',VDOT
+C     PRINT*,'after next part VDOT=',VDOT
       IF (NCHECK.GE.100) THEN
-         PRINT*,'*** WARNING, CANNOT ORTHOGONALISE TO KNOWN EIGENVECTORS IN ORTHOGOPT'
+         PRINT*,'*** WARNING, cannot orthogonalise to known eigenvectors in ORTHOGOPT'
       ENDIF
 ! }}}
       RETURN
       END
 ! }}}
 
-!ITEIG: EST. SMALLEST NON-ZERO EIGENVALUE & EIGENVECTOR BY REPEATED ITERATION {{{
+!ITEIG: Est. smallest non-zero eigenvalue & eigenvector by repeated iteration {{{
 C
-C  ESTIMATE THE SMALLEST NON-ZERO EIGENVALUE AND THE ASSOCIATED
-C  EIGENVECTOR BY REPEATED ITERATION. MODIFIED TO FIND MORE THAN
-C  ONE EIGENVECTOR. THE EIGENVALUE OF THE CHOSEN EIGENVECTOR IS
-C  RETURNED AS EVALMIN, THOUGH IT MAY NOT BE THE MINIMUM VALUE.
-C  VECS CONTAINS THE CHOSEN EIGENVECTOR, AND IS NOT ALTERED BY THE
-C  CALLING ROUTINE.
+C  Estimate the smallest non-zero eigenvalue and the associated
+C  eigenvector by repeated iteration. Modified to find more than
+C  one eigenvector. The eigenvalue of the chosen eigenvector is
+C  returned as EVALMIN, though it may not be the minimum value.
+C  VECS contains the chosen eigenvector, and is not altered by the
+C  calling routine.
 C
       SUBROUTINE ITEIG(ITER,COORDS,VECS,EVALMIN,EVALMAX,NS,SOVER,PTEST,VECL,CONVERGED)
-! DOXYGEN {{{
+! Doxygen {{{
 !>
-!> \NAME ITEIG
-!> \BRIEF ESTIMATE THE SMALLEST NON-ZERO EIGENVALUE AND THE ASSOCIATED
-!> \BRIEF EIGENVECTOR BY REPEATED ITERATION. 
-!>  MODIFIED TO FIND MORE THAN
-!>  ONE EIGENVECTOR. THE EIGENVALUE OF THE CHOSEN EIGENVECTOR IS
-!>  RETURNED AS EVALMIN, THOUGH IT MAY NOT BE THE MINIMUM VALUE.
-!>  VECS CONTAINS THE CHOSEN EIGENVECTOR, AND IS NOT ALTERED BY THE
-!>  CALLING ROUTINE.
-!> \PARAM[IN]
-!> \PARAM[IN]
-!> \PARAM[OUT]
-!> \PARAM[OUT]
+!> \name ITEIG
+!> \brief Estimate the smallest non-zero eigenvalue and the associated
+!> \brief eigenvector by repeated iteration. 
+!>  Modified to find more than
+!>  one eigenvector. The eigenvalue of the chosen eigenvector is
+!>  returned as EVALMIN, though it may not be the minimum value.
+!>  VECS contains the chosen eigenvector, and is not altered by the
+!>  calling routine.
+!> \param[in]
+!> \param[in]
+!> \param[out]
+!> \param[out]
 !>
 ! }}}
-! MODULES {{{
+! Modules {{{
 
         USE COMMONS
         USE KEY
@@ -1068,7 +1068,7 @@ C
 
       IMPLICIT NONE
 
-! SUBROUTINE PARAMETERS {{{
+! subroutine parameters {{{
 
       INTEGER ITER 
       DOUBLE PRECISION, DIMENSION(3*NATOMS) :: COORDS, VECS 
@@ -1080,7 +1080,7 @@ C
       LOGICAL CONVERGED
 
 ! }}}
-! LOCAL PARAMETERS {{{
+! local parameters {{{
 
       INTEGER J1, J2, ISEED
       DOUBLE PRECISION DUMMY1,VEC1(3*NATOMS),XSIGN,
@@ -1091,12 +1091,12 @@ C
       SAVE
 
 ! }}}
-! SUBROUTINE BODY {{{
+! subroutine body {{{
 
       NMPREV=NMDONE
       IF (ITER.EQ.1) JVECP=30
 C
-C  FIRST ESTIMATE THE LARGEST EIGENVALUE OF HESS. 
+C  First estimate the largest eigenvalue of HESS. 
 C
       IF ((ITER.EQ.1).AND.(.NOT.TTDONE)) THEN
          DO J1=1,NOPT
@@ -1144,12 +1144,12 @@ C        CALL MATMUL(VEC2,HESS,VEC1,3*NATOMS,3*NATOMS,1,NOPT,NOPT,1)
          ENDDO
          PERCENT=100.0D0*DABS((DUMMY1-EVALMAX)/DUMMY1)
 C        CALL EXTRAP(J1,NOPT,VEC2,PERCENT)
-C        WRITE(*,'(A,4F20.10)') 'DUMMY1,EVALMAX,PERCENT,CEIG=',DUMMY1,EVALMAX,PERCENT,CEIG
+C        WRITE(*,'(A,4F20.10)') 'DUMMY1,EVALMAX,percent,CEIG=',DUMMY1,EVALMAX,PERCENT,CEIG
          IF (100.0D0*DABS((DUMMY1-EVALMAX)/DUMMY1).LT.CEIG) THEN
-            IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' LARGEST  EIGENVALUE CONVERGED IN ',J1,' STEPS. EIGENVALUE=',EVALMAX
+            IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' Largest  eigenvalue converged in ',J1,' steps. Eigenvalue=',EVALMAX
             GOTO 10
          ENDIF
-C        WRITE(*,'(A,I4,A,F15.7,A,F15.7)') ' AT STEP ',J1,' % CHANGE=',PERCENT,' EIGENVALUE=',EVALMAX
+C        WRITE(*,'(A,I4,A,F15.7,A,F15.7)') ' At step ',J1,' % change=',PERCENT,' eigenvalue=',EVALMAX
          DUMMY1=EVALMAX
 
          DO J2=1,NOPT
@@ -1157,20 +1157,20 @@ C        WRITE(*,'(A,I4,A,F15.7,A,F15.7)') ' AT STEP ',J1,' % CHANGE=',PERCENT,'
          ENDDO
       ENDDO
 
-      IF (PTEST) WRITE(*,'(A,F15.7)') ' ****WARNING - LARGEST  EIGENVALUE DID NOT CONVERGE, VALUE=',EVALMAX
+      IF (PTEST) WRITE(*,'(A,F15.7)') ' ****WARNING - Largest  eigenvalue did not converge, value=',EVALMAX
 10    IF (ITER.GT.1) THEN
          DUMMY1=0.0D0
          DO J2=1,NOPT
             DUMMY1=DUMMY1+VECL(J2)*VEC2(J2)
          ENDDO
          IF (PTEST) WRITE(*,'(A,G12.4)') 
-     1          ' OVERLAP BETWEEN PREVIOUS AND NEW EIGENVECTORS FOR LARGEST  EIGENVALUE=',DUMMY1
+     1          ' Overlap between previous and new eigenvectors for largest  eigenvalue=',DUMMY1
       ENDIF
       DO J2=1,NOPT
          VECL(J2)=VEC2(J2)
       ENDDO
 C
-C  SHIFT ALL THE EIGENVALUES ACCORDING TO THE SIZE OF EVALMAX.
+C  Shift all the eigenvalues according to the size of EVALMAX.
 C
       DO J1=1,NATOMS
          J2=3*(J1-1)
@@ -1181,7 +1181,7 @@ C        IF (.NOT.FROZEN(J1)) THEN
 C        ENDIF
       ENDDO
 C
-C  NOW ESTIMATE THE NEW LARGEST MAGNITUDE EIGENVALUE OF HESS.
+C  Now estimate the new largest magnitude eigenvalue of HESS.
 C
       IF ((ITER.EQ.1).AND.(.NOT.TWOENDS).AND.(.NOT.READV)) THEN
          DO J1=1,NOPT
@@ -1222,7 +1222,7 @@ C        VEC1(1)=1.0D0
          ENDDO
          EVALMIN=DSQRT(DUMMY2)
 C
-C  NORMALIZE. CHANGING THE PHASE MAY BE NECESSARY FOR EXTRAPOLATION TO WORK.
+C  Normalize. Changing the phase may be necessary for extrapolation to work.
 C
          DO J2=1,NOPT
             VEC2(J2)=-VEC2(J2)/EVALMIN
@@ -1231,18 +1231,18 @@ C
          PERCENT=100.0D0*DABS((DUMMY1-EVALMIN)/DUMMY1)
 C        CALL EXTRAP(J1,NOPT,VEC2,PERCENT)
          IF (PERCENT.LT.CEIG) THEN
-            IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' SMALLEST EIGENVALUE CONVERGED IN ',J1,' STEPS. EIGENVALUE=',EVALMIN
+            IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' Smallest eigenvalue converged in ',J1,' steps. Eigenvalue=',EVALMIN
             CONVERGED=.TRUE.
             GOTO 20
          ENDIF
-C        WRITE(*,'(A,I4,A,F15.7,A,F15.7)') ' AT STEP ',J1,' % CHANGE=',PERCENT,' EIGENVALUE=',EVALMIN
+C        WRITE(*,'(A,I4,A,F15.7,A,F15.7)') ' At step ',J1,' % change=',PERCENT,' eigenvalue=',EVALMIN
          DUMMY1=EVALMIN
 
          DO J2=1,NOPT
             VEC1(J2)=VEC2(J2)
          ENDDO
       ENDDO
-      IF (PTEST) WRITE(*,'(A,F15.7)') ' **WARNING - SMALLEST EIGENVALUE DID NOT CONVERGE, VALUE=',EVALMIN
+      IF (PTEST) WRITE(*,'(A,F15.7)') ' **WARNING - Smallest eigenvalue did not converge, value=',EVALMIN
       CONVERGED=.FALSE.
      
 C 20    EVALMIN=-EVALMIN+EVALMAX*0.55D0
@@ -1253,10 +1253,10 @@ C 20    EVALMIN=-EVALMIN+EVALMAX*0.55D0
          DO J1=1,NOPT
             SOVER=SOVER+VECS(J1)*VEC2(J1)
          ENDDO
-         IF (PTEST) WRITE(*,'(A,G12.4)') ' OVERLAP BETWEEN PREVIOUS AND NEW EIGENVECTORS FOR SMALLEST EIGENVALUE=',SOVER
+         IF (PTEST) WRITE(*,'(A,G12.4)') ' Overlap between previous and new eigenvectors for smallest eigenvalue=',SOVER
       ENDIF
 C
-C  THE FOLLOWING CODE SHOULD ALLOW US TO SEARCH ALONG OTHER EIGENVECTORS.
+C  The following code should allow us to search along other eigenvectors.
 C
       IF ((IVEC.EQ.0).OR.((ITER.EQ.1).AND.(ABS(IVEC).EQ.1))) THEN
          DO J1=1,NOPT
@@ -1280,7 +1280,7 @@ C
             DO J1=1,NOPT
                VECS(J1)=VEC2(J1)
             ENDDO
-            IF (PTEST) WRITE(*,'(A,F12.5,A,F12.5)') ' MODE    1 WILL BE SEARCHED UPHILL, OVERLAP=',OVLAP(1),' EIGENVALUE=',EVALMIN
+            IF (PTEST) WRITE(*,'(A,F12.5,A,F12.5)') ' Mode    1 will be searched uphill, overlap=',OVLAP(1),' eigenvalue=',EVALMIN
             JVECP=1
             RETURN
          ENDIF
@@ -1289,10 +1289,10 @@ C
       JVEC=1
       OVMAX=OVLAP(1)
 C
-C  THE LARGEST EIGENVALUE IN MAGNITUDE OF THE SHIFTED HESSIAN IS 
-C  GUARANTEED TO BE NEGATIVE. HOWEVER, IF WE NEED TO FIND OTHER
-C  (SHIFTED) EIGENVALUES WE MUST ALLOW FOR THE POSSIBILITY THAT THEY COULD
-C  BE POSITIVE.
+C  The largest eigenvalue in magnitude of the shifted Hessian is 
+C  guaranteed to be negative. However, if we need to find other
+C  (shifted) eigenvalues we must allow for the possibility that they could
+C  be positive.
 C
       CHECKINDEX=.TRUE.
 80    CONTINUE
@@ -1344,7 +1344,7 @@ C        CALL MATMUL(VEC2,HESS,VEC1,3*NATOMS,3*NATOMS,1,NOPT,NOPT,1)
          IF (DABS((DABS(DUMMY1)-DABS(EVALMIN))/EVALMIN).LT.0.1D0) XSIGN=DUMMY1/DABS(DUMMY1)
          EVALMIN=EVALMIN*XSIGN
 C
-C  NORMALIZE.
+C  Normalize.
 C
          DO J2=1,NOPT
             VEC2(J2)=VEC2(J2)/EVALMIN
@@ -1353,7 +1353,7 @@ C
          EVALMIN=EVALMIN+EVALMAX*0.55D0
          PERCENT=100.0D0*DABS((DUMMY4-EVALMIN)/DUMMY4)
          IF (PERCENT.LT.CEIG) THEN
-            IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' NEW EIGENVALUE CONVERGED IN      ',J1,' STEPS. EIGENVALUE=',EVALMIN
+            IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' New eigenvalue converged in      ',J1,' steps. Eigenvalue=',EVALMIN
             GOTO 90
          ENDIF
          DUMMY4=EVALMIN
@@ -1362,7 +1362,7 @@ C
             VEC1(J2)=VEC2(J2)
          ENDDO
       ENDDO
-      IF (PTEST) WRITE(*,'(A,F15.7)') ' ****WARNING - NEW EIGENVALUE  DID NOT CONVERGE, VALUE=  ',EVALMIN
+      IF (PTEST) WRITE(*,'(A,F15.7)') ' ****WARNING - New eigenvalue  did not converge, value=  ',EVALMIN
 
 90    CONTINUE
 
@@ -1388,8 +1388,8 @@ C        WRITE(*,'(A,I4,F15.5)') 'NMDONE,OVLAP=',NMDONE,OVLAP(NMDONE)
             DO J1=1,NOPT
                VECS(J1)=VEC2(J1)
             ENDDO
-            IF (PTEST) WRITE(*,'(A,I4,A,F12.5,A,F12.5)') ' MODE ',NMDONE,' WILL BE SEARCHED UPHILL, OVERLAP=',OVLAP(NMDONE),
-     1                                ' EIGENVALUE=',EVALS(NMDONE)
+            IF (PTEST) WRITE(*,'(A,I4,A,F12.5,A,F12.5)') ' Mode ',NMDONE,' will be searched uphill, overlap=',OVLAP(NMDONE),
+     1                                ' eigenvalue=',EVALS(NMDONE)
             CHECKINDEX=.FALSE.
             JVECP=NMDONE
             RETURN
@@ -1399,7 +1399,7 @@ C        WRITE(*,'(A,I4,F15.5)') 'NMDONE,OVLAP=',NMDONE,OVLAP(NMDONE)
             DO J1=1,NOPT
                VECS(J1)=VEC2(J1)
             ENDDO
-            WRITE(*,'(A,I4,A,F12.5)') 'MODE ',NMDONE,' WILL BE SEARCHED UPHILL, EIGENVALUE=',EVALS(NMDONE)
+            WRITE(*,'(A,I4,A,F12.5)') 'Mode ',NMDONE,' will be searched uphill, eigenvalue=',EVALS(NMDONE)
             CHECKINDEX=.FALSE.
             JVECP=NMDONE
             RETURN
@@ -1412,8 +1412,8 @@ C     IF (NMDONE.EQ.30) THEN
             VECS(J1)=VECCHK(J1,JVEC)
          ENDDO
          EVALMIN=EVALS(JVEC)
-         IF (PTEST) WRITE(*,'(I3,A,I3,A,F12.5,A,F12.5)') NMDONE,' EIGENVECTORS FOUND; USING NUMBER ',JVEC,
-     1                                               ' EIGENVALUE=',EVALS(JVEC),' OVERLAP=',OVMAX
+         IF (PTEST) WRITE(*,'(I3,A,I3,A,F12.5,A,F12.5)') NMDONE,' eigenvectors found; using number ',JVEC,
+     1                                               ' eigenvalue=',EVALS(JVEC),' overlap=',OVMAX
          CHECKINDEX=.FALSE.
          JVECP=JVEC
          RETURN
@@ -1425,9 +1425,9 @@ C     IF (NMDONE.EQ.30) THEN
       END
 ! }}}
 C
-C  ESTIMATE THE SMALLEST NON-ZERO EIGENVALUE AND THE ASSOCIATED
-C  EIGENVECTOR BY REPEATED ITERATION USING NESBET'S ALGORITHM.
-C  THIS SEEMS TO GIVE THE LARGEST NOT THE SMALLEST EIGENVECTOR?
+C  Estimate the smallest non-zero eigenvalue and the associated
+C  eigenvector by repeated iteration using Nesbet's algorithm.
+C  This seems to give the largest not the smallest eigenvector?
 C     NOT USED
 C
       SUBROUTINE ITEIGN(ITER,COORDS,VECS,EVALMIN,EVALMAX,PTEST)
@@ -1484,26 +1484,26 @@ C
             DUMMY2=1.0D0/DSQRT(DUMMY2)
          ENDDO
          IF ((100.0D0*DABS((DUMMY1-EVALMAX)/DUMMY1).LT.CEIG).AND.(J1.GT.1)) THEN
-            IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' LARGEST EIGENVALUE CONVERGED IN ',J1,' STEPS. EIGENVALUE=',DUMMY1
+            IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' Largest eigenvalue converged in ',J1,' steps. Eigenvalue=',DUMMY1
             GOTO 20
          ENDIF
-         IF (PTEST) WRITE(*,'(A,I4,A,F15.7,A,F15.7)') ' AT STEP ',J1,' CONVERGENCE=',DABS(DUMMY1-EVALMAX),' EIGENVALUE=',DUMMY1
+         IF (PTEST) WRITE(*,'(A,I4,A,F15.7,A,F15.7)') ' At step ',J1,' convergence=',DABS(DUMMY1-EVALMAX),' eigenvalue=',DUMMY1
          EVALMAX=DUMMY1
       ENDDO
-      IF (PTEST) WRITE(*,'(A,F15.7)') ' ****WARNING - LARGEST EIGENVALUE DID NOT CONVERGE, VALUE=',EVALMAX
+      IF (PTEST) WRITE(*,'(A,F15.7)') ' ****WARNING - Largest eigenvalue did not converge, value=',EVALMAX
      
 20    CONTINUE
       DO J2=1,NOPT
          VECL(J2)=VEC1(J2)
       ENDDO
 C
-C  SHIFT ALL THE EIGENVALUES ACCORDING TO THE SIZE OF EVALMAX.
+C  Shift all the eigenvalues according to the size of EVALMAX.
 C
       DO J1=1,NOPT
          HESS(J1,J1)=HESS(J1,J1)-EVALMAX*0.55D0
       ENDDO
 C
-C  NOW ESTIMATE THE NEW LARGEST MAGNITUDE EIGENVALUE OF HESS.
+C  Now estimate the new largest magnitude eigenvalue of HESS.
 C
       IF (ITER.EQ.1) THEN
          DO J1=1,NOPT
@@ -1550,14 +1550,14 @@ C
             CALL ORTHOGOPT(VEC1,COORDS,.TRUE.)
          ENDDO
          IF (100.0D0*DABS((DUMMY1-EVALMIN)/DUMMY1).LT.CEIG) THEN
-            IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' SMALLEST EIGENVALUE CONVERGED IN ',J1,' STEPS. EIGENVALUE=', EVALMIN+EVALMAX*0.55D0
+            IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' Smallest eigenvalue converged in ',J1,' steps. Eigenvalue=', EVALMIN+EVALMAX*0.55D0
             GOTO 30
          ENDIF
-         IF (PTEST) WRITE(*,'(A,I4,A,F15.7,A,F15.7)') ' AT STEP ',J1,' CONVERGENCE=',DABS(DUMMY1-EVALMIN),
-     1           ' EIGENVALUE=', EVALMIN+EVALMAX*0.55D0
+         IF (PTEST) WRITE(*,'(A,I4,A,F15.7,A,F15.7)') ' At step ',J1,' convergence=',DABS(DUMMY1-EVALMIN),
+     1           ' eigenvalue=', EVALMIN+EVALMAX*0.55D0
          EVALMIN=DUMMY1
       ENDDO
-      IF (PTEST) WRITE(*,'(A,F15.7)') ' **WARNING - SMALLEST EIGENVALUE DID NOT CONVERGE, VALUE=', EVALMIN+EVALMAX*0.55D0
+      IF (PTEST) WRITE(*,'(A,F15.7)') ' **WARNING - Smallest eigenvalue did not converge, value=', EVALMIN+EVALMAX*0.55D0
      
 30    EVALMIN= EVALMIN+EVALMAX*0.55D0
       DUMMY1=0.0D0
@@ -1572,8 +1572,8 @@ C
       RETURN
       END
 C
-C  COUNT THE NUMBER OF NEGATIVE HESSIAN EIGENVALUES BY FURTHER ITERATION AND
-C  ORTHOGONALIZATION IF REQUIRED.
+C  Count the number of negative Hessian eigenvalues by further iteration and
+C  orthogonalization if required.
 C
       SUBROUTINE CHECKIND(COORDS,MFLAG,INEG,ENERGY,EVALMIN,EVALMAX,PTEST)
       USE COMMONS
@@ -1591,8 +1591,8 @@ C
       LOGICAL MFLAG,PTEST,CONVERGED
       COMMON /IS/ ISEED
 C
-C  ASSIGN ENOUGH MEMORY TO WORK FOR A BLOCKSIZE OF 32 TO BE POSSIBLE.
-C  THIS IS FOR DSYEVR.
+C  Assign enough memory to WORK for a blocksize of 32 to be possible.
+C  This is for DSYEVR.
 C
       INTEGER ILWORK, LWORK, NFOUND, ISUPPZ(2*3*NATOMS)
       INTEGER IWORK(33*3*NATOMS), INFO
@@ -1613,15 +1613,15 @@ C
                CALL SHIFTH(COORDS,.TRUE.,NOPT,NATOMS,ATMASS)
             ENDIF
          ENDIF
-         ABSTOL=DLAMCH('SAFE  MINIMUM')
+         ABSTOL=DLAMCH('Safe  minimum')
          CALL DSYEVR('V','I','U',NOPT,HESS,SIZE(HESS,1),0.0D0,1.0D0,1,10,ABSTOL,NFOUND,DIAG,ZWORK,3*NATOMS,ISUPPZ,WORK,
      1                        LWORK, IWORK, ILWORK, INFO )
-         IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' IN DSYEVR'
-C        PRINT*,'OPTIMAL AND ACTUAL VALUES OF LWORK=',WORK(1),LWORK
-C        PRINT*,'OPTIMAL AND ACTUAL VALUES OF ILWORK=',IWORK(1),ILWORK
+         IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' in DSYEVR'
+C        PRINT*,'Optimal and actual values of LWORK=',WORK(1),LWORK
+C        PRINT*,'Optimal and actual values of ILWORK=',IWORK(1),ILWORK
          EVALMIN=DIAG(1)
          SOVER=0.0D0
-         WRITE(*,'(A)') 'LOWEST 10 NON-ZERO HESSIAN EIGENVALUES:'
+         WRITE(*,'(A)') 'Lowest 10 non-zero Hessian eigenvalues:'
          WRITE(*,'(5F15.5)') (DIAG(J1),J1=1,10)
          DO J1=1,10
             DO J2=1,NOPT
@@ -1633,11 +1633,11 @@ C        PRINT*,'OPTIMAL AND ACTUAL VALUES OF ILWORK=',IWORK(1),ILWORK
             VECS(J1)=ZWORK(J1,1)
          ENDDO
 C
-C  GET THE LARGEST AND SMALLEST EIGENVALUES IF WE DON'T ALREADY KNOW THEM.
+C  Get the largest and smallest eigenvalues if we don't already know them.
 C
          IF (BFGSMINT.OR.RKMIN.OR.BSMIN) THEN
             CALL ITEIG(1,COORDS,VECS,EVALMIN,EVALMAX,NS,SOVER,PTEST,VECL,CONVERGED)
-            IF (.NOT.CONVERGED) WRITE(*,'(A,F15.7)') ' **WARNING - SMALLEST EIGENVALUE DID NOT CONVERGE, VALUE=',EVALMIN
+            IF (.NOT.CONVERGED) WRITE(*,'(A,F15.7)') ' **WARNING - Smallest eigenvalue did not converge, value=',EVALMIN
             IF (EVALMIN.LT.0.0D0) THEN
                INEG=1
             ELSE
@@ -1646,7 +1646,7 @@ C
          ENDIF
          NMDONE=INEG
          IF (EVALMIN.GT.0.0D0) THEN
-            WRITE(*,'(A,F20.10)') ' HESSIAN INDEX IS 0, SMALLEST EIGENVECTOR=',EVALMIN
+            WRITE(*,'(A,F20.10)') ' Hessian index is 0, smallest eigenvector=',EVALMIN
             GOTO 666
          ENDIF
    
@@ -1656,10 +1656,10 @@ C
             ENDDO
          ENDIF
 C
-C  THE LARGEST EIGENVALUE IN MAGNITUDE OF THE SHIFTED HESSIAN IS 
-C  GUARANTEED TO BE NEGATIVE. HOWEVER, IF WE NEED TO FIND OTHER
-C  (SHIFTED) EIGENVALUES WE MUST ALLOW FOR THE POSSIBILITY THAT THEY COULD
-C  BE POSITIVE.
+C  The largest eigenvalue in magnitude of the shifted Hessian is 
+C  guaranteed to be negative. However, if we need to find other
+C  (shifted) eigenvalues we must allow for the possibility that they could
+C  be positive.
 C
 
 80       NMDONE=INEG
@@ -1691,32 +1691,32 @@ C           CALL MATMUL(VEC2,HESS,VEC1,3*NATOMS,3*NATOMS,1,NOPT,NOPT,1)
             IF (DABS((DABS(DUMMY1)-DABS(EVALMIN))/EVALMIN).LT.0.1D0) XSIGN=DUMMY1/DABS(DUMMY1)
             EVALMIN=EVALMIN*XSIGN
 C
-C  NORMALIZE.
+C  Normalize.
 C
             DO J2=1,NOPT
                VEC2(J2)=VEC2(J2)/EVALMIN
             ENDDO
             IF (100.0D0*DABS((DUMMY4-EVALMIN)/DUMMY4).LT.CEIG) THEN
-               IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' NEW EIGENVECTOR CONVERGED IN ',J1,' STEPS. EIGENVALUE=',EVALMIN+EVALMAX*0.55D0
+               IF (PTEST) WRITE(*,'(A,I4,A,F15.7)') ' New eigenvector converged in ',J1,' steps. Eigenvalue=',EVALMIN+EVALMAX*0.55D0
                GOTO 90
             ENDIF
-C           WRITE(*,'(A,I4,A,F15.7,A,F15.7)') ' AT STEP ',J1,' % CHANGE=',100.0D0*DABS((DUMMY4-EVALMIN)/DUMMY4),
-C    1              ' EIGENVALUE=',EVALMIN+EVALMAX*0.55D0
+C           WRITE(*,'(A,I4,A,F15.7,A,F15.7)') ' At step ',J1,' % change=',100.0D0*DABS((DUMMY4-EVALMIN)/DUMMY4),
+C    1              ' eigenvalue=',EVALMIN+EVALMAX*0.55D0
             DUMMY4=EVALMIN
 
             DO J2=1,NOPT
                VEC1(J2)=VEC2(J2)
             ENDDO
          ENDDO
-         IF (PTEST) WRITE(*,'(A,F15.7)') ' ****WARNING - NEW EIGENVECTOR DID NOT CONVERGE, VALUE=',EVALMIN+EVALMAX*0.55D0
+         IF (PTEST) WRITE(*,'(A,F15.7)') ' ****WARNING - New eigenvector did not converge, value=',EVALMIN+EVALMAX*0.55D0
 
 90       EVALMIN=EVALMIN+EVALMAX*0.55D0
          IF (EVALMIN.GT.0.0D0) THEN
-            PRINT*,'HESSIAN INDEX=',INEG
+            PRINT*,'Hessian index=',INEG
          ELSE
             INEG=INEG+1
             IF (INEG.GT.10) THEN
-               PRINT*,'HESSIAN INDEX IS 10 OR GREATER'
+               PRINT*,'Hessian index is 10 or greater'
                FIXIMAGE=.FALSE.
                RETURN
             ENDIF
@@ -1731,8 +1731,8 @@ C    1              ' EIGENVALUE=',EVALMIN+EVALMAX*0.55D0
 
       IF (((BFGSMINT).AND.(INEG.NE.0)).AND.CHECKCONT) THEN
          MFLAG=.FALSE.
-         IF (IVEC.GE.0) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',1,' + DIRECTION'
-         IF (IVEC.LT.0) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',1,' - DIRECTION'
+         IF (IVEC.GE.0) PRINT*,'Stepping away from saddle along mode ',1,' + direction'
+         IF (IVEC.LT.0) PRINT*,'Stepping away from saddle along mode ',1,' - direction'
          DUMMY1=PUSHOFF
          IF (IVEC.LT.0) DUMMY1=-DUMMY1
          DO J1=1,NOPT
@@ -1743,8 +1743,8 @@ C    1              ' EIGENVALUE=',EVALMIN+EVALMAX*0.55D0
       ENDIF
       IF (((BFGSTST).AND.(INEG.NE.1)).AND.CHECKCONT) THEN
          MFLAG=.FALSE.
-         IF (IVEC.GE.0) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',1,' + DIRECTION'
-         IF (IVEC.LT.0) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',1,' - DIRECTION'
+         IF (IVEC.GE.0) PRINT*,'Stepping away from saddle along mode ',1,' + direction'
+         IF (IVEC.LT.0) PRINT*,'Stepping away from saddle along mode ',1,' - direction'
          DUMMY1=PUSHOFF
          IF (IVEC.LT.0) DUMMY1=-DUMMY1
          DO J1=1,NOPT
@@ -1760,7 +1760,7 @@ C    1              ' EIGENVALUE=',EVALMIN+EVALMAX*0.55D0
 C
 C*************************************************************************
 C
-C  CHECK THE HESSIAN INDEX - ASSUMES NO HESSIAN IS AVAILABLE.
+C  Check the Hessian index - assumes no Hessian is available.
 C
       SUBROUTINE CHECKIND2(COORDS,MFLAG,INEG,ENERGY)
       USE COMMONS
@@ -1794,11 +1794,11 @@ C
       CALL BEIG(1,COORDS,ENERGY,VEC2,EVALMIN,NS,SOVER,.TRUE.,CONVERGED)
 
       IF (EVALMIN.GT.0.0D0) THEN
-         PRINT*,'HESSIAN INDEX=',INEG
+         PRINT*,'Hessian index=',INEG
       ELSE
          INEG=INEG+1
          IF (INEG.GT.10) THEN
-            PRINT*,' HESSIAN INDEX IS 10 OR GREATER'
+            PRINT*,' Hessian index is 10 or greater'
             FIXIMAGE=.FALSE.
             RETURN
          ENDIF
@@ -1810,8 +1810,8 @@ C
 
       IF (((BFGSMINT).AND.(INEG.NE.0)).AND.CHECKCONT) THEN
          MFLAG=.FALSE.
-         IF (IVEC.GE.0) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',1,' + DIRECTION'
-         IF (IVEC.LT.0) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',1,' - DIRECTION'
+         IF (IVEC.GE.0) PRINT*,'Stepping away from saddle along mode ',1,' + direction'
+         IF (IVEC.LT.0) PRINT*,'Stepping away from saddle along mode ',1,' - direction'
          DUMMY1=PUSHOFF
          IF (IVEC.LT.0) DUMMY1=-DUMMY1
          DO J1=1,NOPT
@@ -1822,8 +1822,8 @@ C
       ENDIF
       IF (((BFGSTST).AND.(INEG.NE.1)).AND.CHECKCONT) THEN
          MFLAG=.FALSE.
-         IF (IVEC.GE.0) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',1,' + DIRECTION'
-         IF (IVEC.LT.0) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',1,' - DIRECTION'
+         IF (IVEC.GE.0) PRINT*,'Stepping away from saddle along mode ',1,' + direction'
+         IF (IVEC.LT.0) PRINT*,'Stepping away from saddle along mode ',1,' - direction'
          DUMMY1=PUSHOFF
          IF (IVEC.LT.0) DUMMY1=-DUMMY1
          DO J1=1,NOPT
@@ -1838,7 +1838,7 @@ C
       END
 
 C
-C  AITKEN'S EXTRAPOLATION METHOD. SEE "NUMERICAL METHODS THAT WORK"  P. 216.
+C  Aitken's extrapolation method. See "Numerical Methods that Work"  p. 216.
 C
       SUBROUTINE EXTRAP(NSTEP,NOPT,VEC,PERCENT)
       IMPLICIT NONE
@@ -1848,7 +1848,7 @@ C
       DO I=1,NOPT
          VECT(I,1)=VECT(I,2)
          VECT(I,2)=VECT(I,3)
-         VECT(I,3)=VEC(I)   !  IS THIS RIGHT? 
+         VECT(I,3)=VEC(I)   !  is this right? 
       ENDDO
       IF ((NSTEP.LT.3).OR.(MOD(NSTEP,3).NE.0)) RETURN
       IF (PERCENT.GT.10.0D0) RETURN
@@ -1864,7 +1864,7 @@ C
          IF (ABS(Z).GT.ABS(VEC(I))/20.0D0) Z=0.0D0
          VECT(I,1)=Z
       ENDDO
-      PRINT*,'EXTRAPOLATING'
+      PRINT*,'Extrapolating'
       DUMMY=0.0D0
       DO I=1,NOPT
          VEC(I)=VECT(I,3)-VECT(I,1)
@@ -1879,7 +1879,7 @@ C
       RETURN
       END
 
-      DOUBLE PRECISION FUNCTION MINIM(A,B,BOXL)
+      DOUBLE PRECISION FUNCTION MINIM(a,b,boxl)
       IMPLICIT NONE
       DOUBLE PRECISION A, B, BOXL
 
@@ -1891,7 +1891,7 @@ C
       SUBROUTINE HSMOVE(COORDS,COORDSN,FIXDIR,STEP,PTEST)
       USE COMMONS
       USE KEY
-      USE PORFUNCS
+      use porfuncs
       IMPLICIT NONE
       INTEGER J1, J2, PARTNR(NATOMS), J3, NTYPEA, NMOVE, NUMBERS(NATOMS), NPAIR, ISTAT, NCOLL
       DOUBLE PRECISION COORDS(3*NATOMS), FIXDIR(3*NATOMS), COLTIM(NATOMS), TIMBIG, RX12, RY12, RZ12, MINIM, STEP,
@@ -1985,7 +1985,7 @@ C                 WRITE(*,'(A,2I4,4G20.10)') 'J1,J2,T12,B12,SQRT(DISCR),V12SQ=',
       ENDDO
 
       IF (NCOLL.LT.NMOVE) THEN
-         WRITE(*,'(A)') ' WARNING - INSUFFICIENT  COLLISIONS FOR INPUT VELOCITIES'
+         WRITE(*,'(A)') ' WARNING - insufficient  collisions for input velocities'
          COORDSN(1:3*NATOMS)=COORDSN(1:3*NATOMS)+FIXDIR(1:3*NATOMS)/2.0D0
          FIXDIR(1:3*NATOMS)=COORDSN(1:3*NATOMS)-COORDS(1:3*NATOMS)
          STEP=0.0D0
@@ -2019,9 +2019,9 @@ C     PRINT*,'NPAIR,J2,J1=',NPAIR,J2,J1
       T12=COLTIM(NPAIR)
       T122=COLTIM2(J2)
 
-      IF (PTEST) WRITE(*,'(A,I4,A,I4,A,I4,A,G15.6)') ' COLLISION ',NPAIR,' IS BETWEEN ATOMS ',J1,' AND ',J2,' AT TIME ',T12
+      IF (PTEST) WRITE(*,'(A,I4,A,I4,A,I4,A,G15.6)') ' collision ',NPAIR,' is between atoms ',J1,' and ',J2,' at time ',T12
 C
-C  ADVANCE ALL POSITIONS TO TIME T12*T12FAC. 
+C  Advance all positions to time T12*T12FAC. 
 C
       IF (T12FAC.LE.1.0D0) THEN
          DO J3=1,NATOMS
@@ -2030,12 +2030,12 @@ C
             COORDSN(3*(J3-1)+2)=COORDSN(3*(J3-1)+2)+FIXDIR(3*(J3-1)+2)*T12*T12FAC
             COORDSN(3*(J3-1)+3)=COORDSN(3*(J3-1)+3)+FIXDIR(3*(J3-1)+3)*T12*T12FAC
 C
-C  COULD PUT ATOMS LEAVING THE PRIMARY SUPERCELL BACK IN THE BOX HERE
-C  IF DESIRED.
+C  Could put atoms leaving the primary supercell back in the box here
+C  if desired.
 C
          ENDDO
 C
-C  ADVANCE POSITIONS OF THE COLLIDING PAIR ONLY TO TIME T12. 
+C  Advance positions of the colliding pair only to time T12. 
 C
 C        COORDSN(3*(J1-1)+1)=COORDSN(3*(J1-1)+1)+FIXDIR(3*(J1-1)+1)*T12
 C        COORDSN(3*(J1-1)+2)=COORDSN(3*(J1-1)+2)+FIXDIR(3*(J1-1)+2)*T12
@@ -2045,18 +2045,18 @@ C        COORDSN(3*(J2-1)+2)=COORDSN(3*(J2-1)+2)+FIXDIR(3*(J2-1)+2)*T12
 C        COORDSN(3*(J2-1)+3)=COORDSN(3*(J2-1)+3)+FIXDIR(3*(J2-1)+3)*T12
 
          IF (BULKT) THEN
-            IF (PTEST) PRINT*,'SEPARATION BETWEEN THESE ATOMS IS NOW ',
+            IF (PTEST) PRINT*,'separation between these atoms is now ',
      1                                  SQRT(MINIM(COORDSN(3*(J1-1)+1),COORDSN(3*(J2-1)+1),PARAM1)**2
      2                                      +MINIM(COORDSN(3*(J1-1)+2),COORDSN(3*(J2-1)+2),PARAM2)**2
      3                                      +MINIM(COORDSN(3*(J1-1)+3),COORDSN(3*(J2-1)+3),PARAM3)**2)
          ELSE
-            IF (PTEST) PRINT*,'SEPARATION BETWEEN THESE ATOMS IS NOW ',SQRT((COORDSN(3*(J1-1)+1)-COORDSN(3*(J2-1)+1))**2
+            IF (PTEST) PRINT*,'separation between these atoms is now ',SQRT((COORDSN(3*(J1-1)+1)-COORDSN(3*(J2-1)+1))**2
      1                                      +(COORDSN(3*(J1-1)+2)-COORDSN(3*(J2-1)+2))**2
      2                                      +(COORDSN(3*(J1-1)+3)-COORDSN(3*(J2-1)+3))**2)
          ENDIF
       ELSE 
 C
-C  PUT THE FIRST COLLIDING PAIR HALF WAY BETWEEN THEIR ENTRANCE/EXIT POSITIONS
+C  Put the first colliding pair half way between their entrance/exit positions
 C
 
          COORDSN(3*(J1-1)+1)=COORDSN(3*(J1-1)+1)+FIXDIR(3*(J1-1)+1)*(T122-T12)/2
@@ -2075,7 +2075,7 @@ C
      1            +(COORDSN(3*(J1-1)+2)-COORDSN(3*(J2-1)+2))**2
      2            +(COORDSN(3*(J1-1)+3)-COORDSN(3*(J2-1)+3))**2)
          ENDIF
-         IF (PTEST) PRINT*,'SEPARATION HALF WAY BETWEEN ENTRANCE AND EXIT=',DNEW
+         IF (PTEST) PRINT*,'separation half way between entrance and exit=',DNEW
 
          IF (BINARY) THEN
             IF (J1.LE.NTYPEA) THEN
@@ -2089,7 +2089,7 @@ C
             ENDIF
          ENDIF
 C
-C  RESCALE THE DISTANCE BETWEEN THE FIRST COLLIDING PAIR
+C  Rescale the distance between the first colliding pair
 C
          IF (BULKT) THEN
             RX12=MINIM(COORDSN(3*(J1-1)+1),COORDSN(3*(J2-1)+1),PARAM1)*SQRT(SIGSQ)/DNEW/2
@@ -2129,7 +2129,7 @@ C
      1               +(COORDSN(3*(J1-1)+2)-COORDSN(3*(J2-1)+2))**2
      2               +(COORDSN(3*(J1-1)+3)-COORDSN(3*(J2-1)+3))**2)
          ENDIF
-         IF (PTEST) PRINT*,'SEPARATION RESET TO ',DNEW
+         IF (PTEST) PRINT*,'separation reset to ',DNEW
       ENDIF
 
       STEP=0.0D0

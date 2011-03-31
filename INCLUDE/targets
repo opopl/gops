@@ -15,15 +15,11 @@ default: $(PROG)
 
 $(PROGNAME): $(PROG)
 
-$(PROG): $(OBJS) $(EXTRAS) 
-	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(EXTRAS) $(OBJS) $(LDFLAGS) $(LIBS)
+$(PROG): $(OBJS)  
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 
 cup:
 	rm -rf $(NOTUSEDSOURCE)
-
-##  no agressive optimizations for selected files to cut down on compile time
-#keyword.o: keyword.f
-	#$(FC) $(NOOPT) $(SEARCH_PATH) -c $<
 
 libmyblas.a: SAT-Ghost
 	cd $(BLASPATH); make double FC="${FC}" FFLAGS="${FFLAGS}" BLAS_EXCLUDE_LIST="${BLAS_EXCLUDE_LIST}";\
@@ -36,7 +32,10 @@ libmylapack.a: SAT-Ghost
 SAT-Ghost:
 
 clean:
-	rm -f $(PROG) $(OBJS) $(EXTRAS) ${GENFFILES} *.o *.a *.mod *.lst
+	rm -f $(PROG) $(OBJS) *.mod
+
+cleanall:
+	rm -f $(PROG) $(OBJS) ${GENFFILES} *.o *.a *.mod *.lst
 	if test -d $(BLASPATH) ;  then cd $(BLASPATH) ; make clean ; fi
 	if test -d $(LAPACKPATH) ;  then cd $(LAPACKPATH) ; make clean ; fi
 	if test -d NEB ;  then cd NEB ; make clean ; fi

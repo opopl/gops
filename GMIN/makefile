@@ -1,7 +1,7 @@
 #vim:ft=make
 
 PROGNAME=GMIN
-GENFFILES = porfuncs.f90 mc.f ptmc.f bspt.f main.f 
+GENFFILES = porfuncs.f90 dv.f90 mc.f ptmc.f bspt.f main.f 
 NOTUSEDSOURCE= io_sanity.f90 molinfo.f90 transforms.f90
 VPATH = .:AMH:.
 #
@@ -22,4 +22,3 @@ libamh.a: SAT-Ghost
 libamh.a: amhglobals.o
 
 include deps
-read_cmd_args.o: display_version.o

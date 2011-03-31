@@ -1,20 +1,20 @@
-!   NEB MODULE IS AN IMPLEMENTATION OF THE NUDGED ELASTIC BAND METHOD FOR PERFORMING DOUBLE-ENDED PATHWAY SEARCHES.
-!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
-!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
+!   NEB module is an implementation of the nudged elastic band method for performing double-ended pathway searches.
+!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
+!   This file is part of NEB module. NEB module is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 MODULE NEBUTILS
      IMPLICIT NONE
@@ -40,9 +40,9 @@ MODULE NEBUTILS
           IMPLICIT NONE       !DISTANCES BETWEEN INDIVIDUAL IMAGES BOTH
           INTEGER :: J, K
 
-          ! /------------------SEPARATION(ALONG THE MEP)-------------------\
-          ! Q--------IMAGE1------IMAGE2---- ...----IMAGENIMAGE-------------FIN
-          ! \_DVEC(1)_/ \_DVEC(2)_/                       \_DVEC(NIMAGE+1)_/
+          ! /------------------Separation(along the MEP)-------------------\
+          ! Q--------Image1------Image2---- ...----ImageNimage-------------Fin
+          ! \_DVec(1)_/ \_DVec(2)_/                       \_DVec(Nimage+1)_/
      
           IF (BULKT) THEN
              DO J=1,NIMAGE+1
@@ -81,7 +81,7 @@ MODULE NEBUTILS
           AVDEVOLD=AVDEV
 
           IF (BULKT) THEN
-             PRINT '(A)','INTERNALIMAGEDISTRIBUTION> ERROR - THIS ROUTINE SHOULD NOT BE CALLED WITH BULKT TRUE'
+             PRINT '(A)','internalimagedistribution> ERROR - this routine should not be called with BULKT true'
              STOP
           ENDIF
           DO J=1,NIMAGE+1
@@ -133,10 +133,10 @@ MODULE NEBUTILS
           DOUBLE PRECISION :: STXYZ(3*NTSITES)  
           CHARACTER(LEN=80) :: FILENAME,FILENAME2,DUMMYS,DUMMYS2
            
-          ! FOR INTERNALS
+          ! for internals
           DOUBLE PRECISION :: DELTACART(3*NATOMS)
           LOGICAL :: INTPTEST, FAILED
-          ! ALIGNMENT STUFF
+          ! alignment stuff
           DOUBLE PRECISION :: DISTF, DIST, DIST2, RMAT(3,3)
           CHARACTER(LEN=5) :: ZSYMSAVE
           COMMON /SYS/ ZSYMSAVE
@@ -148,7 +148,7 @@ MODULE NEBUTILS
 
           IF (MORPHT) THEN
              IF (DESMINT) THEN
-                PRINT*, 'ERROR! MORPHT NOT IMPLEMENTED WITH DESM.'
+                print*, 'ERROR! MORPHT not implemented with DESM.'
                 STOP
              ENDIF
 
@@ -160,12 +160,12 @@ MODULE NEBUTILS
              IF (ITDONE.LT.NIMAGE) THEN
                 IF (MFLAG) THEN
 !
-!  UNFORTUNATELY MANY STATEMENTS IN THE NEB
-!  ROUTINES DO NOT SPECIFY THE ARRAY BOUNDS ON ARRAY OPERATIONS, WHICH THEN DEFAULT TO THE
-!  DECLARED ARRAY SIZE AND THEREFORE GO WRONG. HENCE IF WE REDUCE THE NUMBER OF IMAGES HERE
-!  THEN WE HAVE TO DEALLOCATE AND REALLOCATE:
+!  Unfortunately many statements in the NEB
+!  routines do not specify the array bounds on array operations, which then default to the
+!  declared array size and therefore go wrong. Hence if we reduce the number of images here
+!  then we have to deallocate and reallocate:
 !                  
-                   PRINT '(A,I6)',' MAKEIMAGE> FEWER MORPH POINTS THAN IMAGES - REDUCING IMAGES TO ',ITDONE
+                   PRINT '(A,I6)',' makeimage> Fewer morph points than images - reducing images to ',ITDONE
                    NIMAGE=ITDONE
 
                    DEALLOCATE(XYZ,GGG,SSS,EEE,RRR,TANVEC,DVEC,DEVIATION,STEPIMAGE,TRUEGRAD)
@@ -182,20 +182,20 @@ MODULE NEBUTILS
                    XYZ(:NOPT)=QQ
                    XYZ(NOPT*(NIMAGE+1)+1:)=FINFIN
 
-                   INTERVAL=ITDONE/NIMAGE
+                   INTERVAL=ITDONE/Nimage
                    NDONE=0
-                   OPEN(UNIT=991,FILE='MORPH.POINTS',STATUS='OLD')
+                   OPEN(UNIT=991,FILE='morph.points',STATUS='OLD')
                    DO J1=2,NIMAGE+1
                       DO J2=1,INTERVAL
                          NDONE=NDONE+1
-                         READ(991,*) XYZ(NOPT*(J1-1)+1:NOPT*(J1-1)+NOPT) 
+                         READ(991,*) xyz(nopt*(J1-1)+1:nopt*(J1-1)+NOPT) 
                       ENDDO
-                      IF (DEBUG) PRINT '(2(A,I6))',' MAKEIMAGE> IMAGE ',J1,' READ FROM MORPH.POINTS FRAME ',NDONE
+                      IF (DEBUG) PRINT '(2(A,I6))',' makeimage> Image ',J1,' read from morph.points frame ',NDONE
                    ENDDO
                    CLOSE(991)
-                   XYZ(NOPT*(NIMAGE+1)+1:NOPT*(NIMAGE+1)+NOPT)=QF(1:NOPT) ! TO ALIGN THE FINAL IMAGE
+                   xyz(nopt*(Nimage+1)+1:nopt*(Nimage+1)+NOPT)=QF(1:NOPT) ! to align the final image
                 ELSE
-                   PRINT '(A)',' MAKEIMAGE> FEWER MORPH POINTS THAN IMAGES - REVERT TO LINEAR INTERPOLATION'
+                   PRINT '(A)',' makeimage> Fewer morph points than images - revert to linear interpolation'
                    ALLOCATE(DELTAX(NOPT))
                    DELTAX(1:NOPT) = ( XYZ(NOPT*(NIMAGE+1)+1:NOPT*(NIMAGE+2) ) - XYZ(1:NOPT) )/(NIMAGE+1)
                    DO I=2,NIMAGE+1
@@ -206,13 +206,13 @@ MODULE NEBUTILS
              ELSE
                 INTERVAL=ITDONE/NIMAGE
                 NDONE=0
-                OPEN(UNIT=991,FILE='MORPH.POINTS',STATUS='OLD')
+                OPEN(UNIT=991,FILE='morph.points',STATUS='OLD')
                 DO J1=2,NIMAGE+1
                    DO J2=1,INTERVAL
                       NDONE=NDONE+1
                       READ(991,*) XYZ(NOPT*(J1-1)+1:NOPT*(J1-1)+NOPT) 
                    ENDDO
-                   IF (DEBUG) PRINT '(2(A,I6))',' MAKEIMAGE> IMAGE ',J1,' READ FROM MORPH.POINTS FRAME ',NDONE
+                   IF (DEBUG) PRINT '(2(A,I6))',' makeimage> Image ',J1,' read from morph.points frame ',NDONE
                 ENDDO
                 CLOSE(991)
                 XYZ(NOPT*(NIMAGE+1)+1:NOPT*(NIMAGE+1)+NOPT)=QF(1:NOPT) ! TO ALIGN THE FINAL IMAGE
@@ -220,7 +220,7 @@ MODULE NEBUTILS
              MORPHT=.FALSE. ! DJW
           ELSEIF (GREATCIRCLET) THEN 
              IF (NOPT.NE.3*NATOMS) THEN
-                PRINT '(A)','NNUTILS> ERROR - NOPT NEEDS TO BE 3*NATOMS TO USE GREATCIRCLE INTERPOLATION'
+                PRINT '(A)','nnutils> ERROR - NOPT needs to be 3*NATOMS to use GREATCIRCLE interpolation'
                 STOP
              ENDIF
              ALLOCATE(XINITIAL(3*NATOMS+1),XIMAGE(NIMAGE,3*NATOMS))
@@ -273,7 +273,7 @@ MODULE NEBUTILS
                    ENDIF
                 ENDDO
 
-!     QUATERNION INTERPOLATION: ISLERP
+!     QUATERNION INTERPOLATION: iSLERP
 !     NOW THETA = \ALPHA (THE ANGLE BETWEEN THE TWO QUATERNIONS)
 
                 CT       = DOT_PRODUCT(QTN(1,:),QTN(NIMAGE+2,:))
@@ -330,39 +330,39 @@ MODULE NEBUTILS
                 DELTAX(1:NOPT) = ( XYZ(NOPT*(NIMAGE+1)+1:NOPT*(NIMAGE+2) ) - XYZ(1:NOPT) )/(NIMAGE+1)
              ENDIF
    
-! BS360: INTERPOLATION USING DIHEDRALS.
+! bs360: Interpolation using dihedrals.
              IF (CHRMMT.AND.CHICDNEB.AND.ICINTERPT) THEN
                 QS(1:NOPT)=XYZ(1:NOPT)         
                 QF(1:NOPT)=XYZ(NOPT*(NIMAGE+1)+1:NOPT*(NIMAGE+2))
              ENDIF
-! END BS360
-! MSB50: INTERPOLATION USING DIHEDRALS FOR AMBER
+! end bs360
+! msb50: Interpolation using dihedrals for amber
              IF ((AMBERT.OR.NABT).AND.AMBICDNEBT.AND.AMBERICT) THEN
                 QS(1:NOPT)=XYZ(1:NOPT)
                 QF(1:NOPT)=XYZ(NOPT*(NIMAGE+1)+1:NOPT*(NIMAGE+2))
-                PRINT*, "MSB50 NOPT", NOPT
+                PRINT*, "msb50 NOPT", NOPT
 !                DO K=1, 3*NATOMS
-!                    PRINT '(6F9.3)', QF(6*(K-1)+1:6*K)
+!                    PRINT '(6f9.3)', QF(6*(K-1)+1:6*K)
 !                ENDDO
              ENDIF
-! END MSB50
+! end msb50
              DO I=2,NIMAGE+1
                   XYZ(NOPT*(I-1)+1:NOPT*I) = XYZ(1:NOPT) + DELTAX*(I-1)
        
-! BS360
+! bs360
                   IF (CHRMMT.AND.CHICDNEB.AND.ICINTERPT) THEN
                      COORDS(1:NOPT)=XYZ(NOPT*(I-1)+1:NOPT*I)
                      SFRAC=1.D0-(I-1.D0)/(NIMAGE+1.D0)                  
-!                     WRITE(6,*) 'I,NIMAGE+1,SFRAC= ',I,NIMAGE+1,SFRAC
+!                     write(6,*) 'i,NIMAGE+1,sfrac= ',i,NIMAGE+1,sfrac
                      CALL ICINTERPOL(COORDS,QS,QF,SFRAC)
                      XYZ(NOPT*(I-1)+1:NOPT*I)=COORDS(1:NOPT)        
-!                     WRITE(100+I,'(3F10.3)') XYZ(NOPT*(I-1)+1:NOPT*I)
-!                     CALL FLUSH(100+I)
-                     CALL FLUSH(100+I,ISTAT)
+!                     write(100+I,'(3F10.3)') XYZ(NOPT*(I-1)+1:NOPT*I)
+!                     call flush(100+I)
+                     call flush(100+I,ISTAT)
                   ENDIF
-! END BS360
+! end bs360
 
-! MSB50
+! msb50
                   IF ((AMBERT.OR.NABT).AND.AMBICDNEBT.AND.AMBERICT) THEN
                      COORDS(1:NOPT)=XYZ(NOPT*(I-1)+1:NOPT*I)
                      SFRAC=1.D0-(I-1.D0)/(NIMAGE+1.D0)
@@ -370,15 +370,15 @@ MODULE NEBUTILS
                          CALL SETDIHEAM() 
                      ENDIF
                      CALL TAKESTEPAMDIHED(COORDS, QS, QF,SFRAC)
-                     WRITE(6,*) 'I,NIMAGE+1,SFRAC= ',I,NIMAGE+1,SFRAC
+                     write(6,*) 'i,NIMAGE+1,sfrac= ',i,NIMAGE+1,sfrac
                      XYZ(NOPT*(I-1)+1:NOPT*I)=COORDS(1:NOPT)
-                     !DO K=1,(NOPT/3)
-                     !  PRINT*, XYZ(3*(K-1)+1:3*K) 
+                     !DO k=1,(NOPT/3)
+                     !  PRINT*, XYZ(3*(k-1)+1:3*k) 
                      !ENDDO
-!                    WRITE(100+I,'(3F10.3)') XYZ(NOPT*(I-1)+1:NOPT*I)
-!                     CALL FLUSH(100+I)
+!                    write(100+I,'(3F10.3)') XYZ(NOPT*(I-1)+1:NOPT*I)
+!                     call flush(100+I)
                   ENDIF
-! END MSB50
+! end msb50
 
                   IF (DESMINT) THEN
                      PREVDIH => DIHINFO(I,:)
@@ -395,11 +395,11 @@ MODULE NEBUTILS
              DEALLOCATE(DELTAX)
           ENDIF
 !
-!  NOW IF WE HAVE SOME RIGID BODIES, INTERPOLATE THEM AS RIGID BODIES!
-!  HOWEVER, ALSO CHECK WHETHER THE ALTERNATIVE INTERPOLATION BASED ON
-!  REGULAR MINPERMDIST FOR THE WHOLE MOLECULE GIVES A BETTER INITIAL GUESS.
-!  IF SO, WE CAN REPLACE BLOCKS OF ATOMS WITH THIS INTERPOLATION, BUT
-!  WE MUST USE THE SAME LOCAL PERMUTATIONAL ISOMER FOR EACH IMAGE.
+!  Now if we have some rigid bodies, interpolate them as rigid bodies!
+!  However, also check whether the alternative interpolation based on
+!  regular minpermdist for the whole molecule gives a better initial guess.
+!  If so, we can replace blocks of atoms with this interpolation, but
+!  we must use the same local permutational isomer for each image.
 !
      IF (LOCALPERMDIST) THEN
         ALIGNEDBEFORE(1:NATOMS)=.FALSE.
@@ -411,8 +411,8 @@ MODULE NEBUTILS
            NTRIES=0
 11         CONTINUE
 !
-!  IDENTIFY THE CURRENT HIGHEST IMAGE. WE WILL USE THIS TO CHOOSE BETWEEN
-!  + AND - ROTATIONS ABOUT THE CHOSEN RB AXIS FOR EACH IMAGE.
+!  Identify the current highest image. We will use this to choose between
+!  + and - rotations about the chosen RB axis for each image.
 !
            EWORST=-HUGE(1.0D0)
            DO J1=1,NIMAGE
@@ -423,24 +423,24 @@ MODULE NEBUTILS
                  JWORST=J1
                  EWORST=E1
               ENDIF
-!             IF (DEBUG) PRINT '(A,I6,A,G20.10)',' NNUTILS> IMAGE ',J1,' ENERGY=',E1
+!             IF (DEBUG) PRINT '(A,I6,A,G20.10)',' nnutils> image ',J1,' energy=',E1
            ENDDO
-           IF (DEBUG) PRINT '(A,I6,A,G20.10)',' NNUTILS> HIGHEST IMAGE IS ',JWORST,' ENERGY=',EWORST
+           IF (DEBUG) PRINT '(A,I6,A,G20.10)',' nnutils> highest image is ',JWORST,' energy=',EWORST
            NTRIES=NTRIES+1
-!          PRINT '(A,I6)',' MAKEIMAGE> NUMBER OF ENTRIES IN RBGROUP=',NRBTOTAL
+!          PRINT '(A,I6)',' makeimage> number of entries in RBGROUP=',NRBTOTAL
 !          PRINT '(22I6)',RBGROUP(1:NRBTOTAL)
 !
-!  RIGID BODY INTERPOLATIONS USE LSTART AND LFINISH, WHICH ARE ASSIGNED FROM QS AND QF.
-!  WE REPLACE BLOCKS OF ATOMS IN THE XYZ ARRAY CORRESPONDING TO THESE ATOMS IF THE LOCAL
-!  RIGID BODY INTERPOLATION LOWERS THE ENERGY.
+!  Rigid body interpolations use LSTART and LFINISH, which are assigned from QS and QF.
+!  We replace blocks of atoms in the XYZ array corresponding to these atoms if the local
+!  rigid body interpolation lowers the energy.
 !
            QS(1:3*NATOMS)=XYZ(1:NOPT)
            QF(1:3*NATOMS)=XYZ(NOPT*(NIMAGE+1)+1:NOPT*(NIMAGE+1)+NOPT)
 !
-!  NOW CHANGE THE WHOLE XYZ ARRAY TO BE BASED ON THE PERMUTATIONAL ISOMER THAT
-!  MINIMISES THE OVERALL DISTANCE. THE DIFFERENCE IS IN THE INITIAL STRAIGHT LINE
-!  GUESS, WHICH MAY BE FOR DIFFERENT PERMUTATIONAL ISOMERS.
-!  USE THE PERMUTATION THAT GIVES THE LOWEST VALUE FOR THE HIGHEST IMAGE.
+!  Now change the whole XYZ array to be based on the permutational isomer that
+!  minimises the overall distance. The difference is in the initial straight line
+!  guess, which may be for different permutational isomers.
+!  Use the permutation that gives the lowest value for the highest image.
 !
            QS2(1:3*NATOMS)=XYZ(1:NOPT)
            QF2(1:3*NATOMS)=XYZ(NOPT*(NIMAGE+1)+1:NOPT*(NIMAGE+1)+NOPT)
@@ -455,15 +455,15 @@ MODULE NEBUTILS
                  JWORST2=J1
                  EWORST2=E1
               ENDIF
-!             IF (DEBUG) PRINT '(A,I6,A,G20.10)',' NNUTILS> ALTERNATIVE INTERPOLATION, IMAGE ',J1,' ENERGY=',E1
-              IF (EWORST2.GT.EWORST) EXIT ! NO POINT CONTINUING, WE WILL USE THE OTHER INITIAL GUESS.
+!             IF (DEBUG) PRINT '(A,I6,A,G20.10)',' nnutils> alternative interpolation, image ',J1,' energy=',E1
+              IF (EWORST2.GT.EWORST) EXIT ! no point continuing, we will use the other initial guess.
            ENDDO
            IF (EWORST2.LT.EWORST) THEN
-              IF (DEBUG) PRINT '(A)',' NNUTILS> ADOPTING ALTERNATIVE INTERPOLATION FOR INITIAL GUESS'
+              IF (DEBUG) PRINT '(A)',' nnutils> adopting alternative interpolation for initial guess'
               JWORST=JWORST2
               EWORST=EWORST2 
               LEIMAGE(1:NIMAGE)=LEIMAGE2(1:NIMAGE)
-              IF (DEBUG) PRINT '(A,I6,A,G20.10)',' NNUTILS> HIGHEST IMAGE IS ',JWORST,' ENERGY=',EWORST
+              IF (DEBUG) PRINT '(A,I6,A,G20.10)',' nnutils> highest image is ',JWORST,' energy=',EWORST
               XYZ(1:3*NATOMS)=QS2(1:3*NATOMS)
               XYZ((NIMAGE+1)*NOPT+1:(NIMAGE+1)*NOPT+3*NATOMS)=QF2(1:3*NATOMS)
               DO J1=1,NIMAGE
@@ -471,10 +471,10 @@ MODULE NEBUTILS
               ENDDO
            ENDIF
 !
-! INITIAL GUESS HAS BEEN SELECTED
+! Initial guess has been selected
 !
            NRUNNING=0
-           GROUPLOOP: DO J1=1,NRBGROUP
+           grouploop: DO J1=1,NRBGROUP
               CMXS=0.0D0; CMYS=0.0D0; CMZS=0.0D0; CMXF=0.0D0; CMYF=0.0D0; CMZF=0.0D0
               DO J2=1,RBNINGROUP(J1)
                  J3=RBGROUP(J2+NRUNNING)
@@ -486,7 +486,7 @@ MODULE NEBUTILS
                  CMXF=CMXF+LFINISH(3*(J2-1)+1)
                  CMYF=CMYF+LFINISH(3*(J2-1)+2)
                  CMZF=CMZF+LFINISH(3*(J2-1)+3)
-!                PRINT '(3(A,I6))',' MAKEIMAGE> GROUP ',J1,' CONTAINS ATOM ',J3,' TOTAL IN GROUP=',RBNINGROUP(J1)
+!                PRINT '(3(A,I6))',' makeimage> group ',J1,' contains atom ',J3,' total in group=',RBNINGROUP(J1)
               ENDDO
               NRBSET=RBNINGROUP(J1)
               NRUNNING=NRUNNING+NRBSET
@@ -501,12 +501,12 @@ MODULE NEBUTILS
                  LFINISH(3*(J2-1)+3)=LFINISH(3*(J2-1)+3)-CMZF
               ENDDO
               IF (DEBUG) THEN
-                 PRINT '(A,I8,A,I8)',' MAKEIMAGE> NUMBER OF ATOMS IN RIGID BODY GROUP ',J1,' IS ',NRBSET
-!                PRINT '(A,3F15.5)',' MAKEIMAGE> START  CENTRE OF MASS: ',CMXS,CMYS,CMZS
-!                PRINT '(A,3F15.5)',' MAKEIMAGE> START  COORDINATES:'
+                 PRINT '(A,I8,A,I8)',' makeimage> Number of atoms in rigid body group ',J1,' is ',NRBSET
+!                PRINT '(A,3F15.5)',' makeimage> start  centre of mass: ',CMXS,CMYS,CMZS
+!                PRINT '(A,3F15.5)',' makeimage> start  coordinates:'
 !                PRINT '(3F20.10)',LSTART(1:3*NRBSET)
-!                PRINT '(A,3F15.5)',' MAKEIMAGE> FINISH CENTRE OF MASS: ',CMXF,CMYF,CMZF
-!                PRINT '(A,3F15.5)',' MAKEIMAGE> FINISH COORDINATES:'
+!                PRINT '(A,3F15.5)',' makeimage> finish centre of mass: ',CMXF,CMYF,CMZF
+!                PRINT '(A,3F15.5)',' makeimage> finish coordinates:'
 !                PRINT '(3F20.10)',LFINISH(1:3*NRBSET)
               ENDIF
               DBEST=1.0D100
@@ -524,11 +524,11 @@ MODULE NEBUTILS
                     DUMMY=SQRT(DUMMY)
                     LV(1)=LV(1)/DUMMY; LV(2)=LV(2)/DUMMY; LV(3)=LV(3)/DUMMY
 !
-! CHECK RESULT BY BACK-ROTATION AND FIND THE BEST ANGLE-AXIS THAT GIVES THE MINIMUM ERROR.
+! Check result by back-rotation and find the best angle-axis that gives the minimum error.
 !
-! DOT PRODUCT IN DUMMY SHOULD BE THE SAME FOR THE ATOM IN START AND FINISH.
-! HOWEVER, WE ARE DEALING WITH APPROXIMATE REIGID BODIES, SO THE SYMMETRY COULD BE BROKEN
-! WITH A LIKELY LOSS OF ACCURACY.
+! Dot product in DUMMY should be the same for the atom in start and finish.
+! However, we are dealing with approximate reigid bodies, so the symmetry could be broken
+! with a likely loss of accuracy.
 !
                     DUMMY= LSTART(3*(J2-1)+1)*LV(1)+LSTART(3*(J2-1)+2)*LV(2)+LSTART(3*(J2-1)+3)*LV(3)
                     DUMMY=LSTART(3*(J2-1)+1)**2+LSTART(3*(J2-1)+2)**2+LSTART(3*(J2-1)+3)**2-DUMMY**2
@@ -548,7 +548,7 @@ MODULE NEBUTILS
                     IF (ABS(DUMMY2/(2.0D0*SQRT(MAX(DUMMY,1.0D-30)))).GT.1.0D0) CYCLE
                     THETA2=2.0D0*ASIN(DUMMY2/(2.0D0*SQRT(MAX(DUMMY,1.0D-30))))
 !
-! TRY THETA1
+! Try theta1
 !
                     DUMMY=0.0D0
                     DO J4=1,NRBSET
@@ -561,10 +561,10 @@ MODULE NEBUTILS
                        TBEST=THETA1
                        LVBEST(1:3)=LV(1:3)
                     ENDIF
-!                   IF (DEBUG) PRINT '(A,2F20.10,A,3F15.5)',' MAKEIMAGE> THETA1, RESIDUAL: ', &
-! &                            THETA1,SQRT(DUMMY),' AXIS: ',LV(1:3)  ! DJW
+!                   IF (DEBUG) PRINT '(A,2F20.10,A,3F15.5)',' makeimage> theta1, residual: ', &
+! &                            THETA1,SQRT(DUMMY),' axis: ',LV(1:3)  ! DJW
 !
-! TRY THETA2
+! Try theta2
 !
                     DUMMY=0.0D0
                     DO J4=1,NRBSET
@@ -577,11 +577,11 @@ MODULE NEBUTILS
                        TBEST=THETA2
                        LVBEST(1:3)=LV(1:3)
                     ENDIF
-!                   IF (DEBUG) PRINT '(A,2F20.10,A,3F15.5)',' MAKEIMAGE> THETA2, RESIDUAL: ', &
-! &                            THETA2,SQRT(DUMMY),' AXIS: ',LV(1:3)  ! DJW
+!                   IF (DEBUG) PRINT '(A,2F20.10,A,3F15.5)',' makeimage> theta2, residual: ', &
+! &                            THETA2,SQRT(DUMMY),' axis: ',LV(1:3)  ! DJW
                     THETA1=-THETA1; THETA2=-THETA2
 !
-! TRY -THETA1
+! Try -theta1
 !
                     DUMMY=0.0D0
                     DO J4=1,NRBSET
@@ -594,10 +594,10 @@ MODULE NEBUTILS
                        TBEST=THETA1
                        LVBEST(1:3)=LV(1:3)
                     ENDIF
-!                   IF (DEBUG) PRINT '(A,2F20.10,A,3F15.5)',' MAKEIMAGE> THETA1, RESIDUAL: ', &
-! &                            THETA1,SQRT(DUMMY),' AXIS: ',LV(1:3)  ! DJW
+!                   IF (DEBUG) PRINT '(A,2F20.10,A,3F15.5)',' makeimage> theta1, residual: ', &
+! &                            THETA1,SQRT(DUMMY),' axis: ',LV(1:3)  ! DJW
 !
-! TRY -THETA2
+! Try -theta2
 !
                     DUMMY=0.0D0
                     DO J4=1,NRBSET
@@ -610,19 +610,19 @@ MODULE NEBUTILS
                        TBEST=THETA2
                        LVBEST(1:3)=LV(1:3)
                     ENDIF
-!                   IF (DEBUG) PRINT '(A,2F20.10,A,3F15.5)',' MAKEIMAGE> THETA2, RESIDUAL: ', &
-! &                            THETA2,SQRT(DUMMY),' AXIS: ',LV(1:3)  ! DJW
+!                   IF (DEBUG) PRINT '(A,2F20.10,A,3F15.5)',' makeimage> theta2, residual: ', &
+! &                            THETA2,SQRT(DUMMY),' axis: ',LV(1:3)  ! DJW
                  ENDDO
               ENDDO
 !
-! IF THE ANGLE IS SMALL (RADIANS) THEN PRESUMABLY A STRAIGHT LINE INTERPOLATION SHOULD BE OK.
-! TBEST IS ALSO SET TO ZERO IF THE ATTEMPTED RIGID BODY ROTATION WAS NOT ACCURATE ENOUGH.
+! If the angle is small (radians) then presumably a straight line interpolation should be OK.
+! TBEST is also set to zero if the attempted rigid body rotation was not accurate enough.
 !
-              IF (ABS(TBEST).LT.0.1D0) CYCLE GROUPLOOP
+              IF (ABS(TBEST).LT.0.1D0) CYCLE grouploop
 
               IF (DEBUG) THEN
-                 PRINT '(2(A,G20.10))',' MAKEIMAGE> BEST RESIDUAL IS ',SQRT(DBEST),' FOR ANGLE ',TBEST
-!                PRINT '(A,3F15.5)',' MAKEIMAGE> ROTATED COORDINATES:'
+                 PRINT '(2(A,G20.10))',' makeimage> best residual is ',SQRT(DBEST),' for angle ',TBEST
+!                PRINT '(A,3F15.5)',' makeimage> rotated coordinates:'
 !                DO J4=1,NRBSET
 !                   LX(1:3)=LSTART(3*(J4-1)+1:3*(J4-1)+3)
 !                   CALL ROTATEANGLAXIS(LX,TBEST,LVBEST)
@@ -632,14 +632,14 @@ MODULE NEBUTILS
               ENDIF
 
 !
-!  INTERPOLATE THIS GROUP USING THE BEST ROTATION. 
-!  WE CAN TRY TBEST/2 AND (2*PI-TBEST)/2 TO TRY AND GUESS THE BEST PATH.
+!  Interpolate this group using the best rotation. 
+!  We can try TBEST/2 and (2*pi-TBEST)/2 to try and guess the best path.
 !
-!  IF THE GROUP CONTAINS AN ATOM THAT IS IN A PREVIOUS RIGID BODY THEN TRANSLATE THE
-!  GROUP SO THAT THIS ATOM LINES UP WITH ITS PREVIOUS IMAGES. OTHERWISE SHIFT THE
-!  CENTRE OF MASS SEQUENTIALLY BETWEEN THE VALUES FOR THE STARTING AND FINISHING 
-!  GEOMETRIES. IT IS POSSIBLE THAT THE CURRENT GROUP WILL CONTAIN MORE THAN ONE ATOM
-!  IN COMMON WITH PREVIOUS GROUPS. IN THIS CASE WE USE THE LAST ATOM.
+!  If the group contains an atom that is in a previous rigid body then translate the
+!  group so that this atom lines up with its previous images. Otherwise shift the
+!  centre of mass sequentially between the values for the starting and finishing 
+!  geometries. It is possible that the current group will contain more than one atom
+!  in common with previous groups. In this case we use the last atom.
 !
               ALIGNCOMMON=.FALSE.
               NALIGNATOM=0
@@ -651,15 +651,15 @@ MODULE NEBUTILS
                        ALIGNCOMMON=.TRUE.
                        NALIGNATOM=NALIGNATOM+1
                        ALIGNATOM(NALIGNATOM)=J5
-                       IF (DEBUG) PRINT '(A,I6,A)',' MAKEIMAGE> ATOM ',RBGROUP(NRUNNING-NRBSET+J5), &
-  &                                                ' WAS IN A PREVIOUSLY ALIGNED RIGID GROUP'
+                       IF (DEBUG) PRINT '(A,I6,A)',' makeimage> atom ',RBGROUP(NRUNNING-NRBSET+J5), &
+  &                                                ' was in a previously aligned rigid group'
                     ENDIF
                  ENDDO
               ENDDO
-              IF (DEBUG.AND.ALIGNCOMMON) PRINT '(A,I6,A)',' MAKEIMAGE> TRANSLATING GROUP TO ALIGN EACH SHARED ATOM IN TURN '
+              IF (DEBUG.AND.ALIGNCOMMON) PRINT '(A,I6,A)',' makeimage> translating group to align each shared atom in turn '
 
-              ALIGNLOOP: DO J7=1,MAX(NALIGNATOM,1)
-                 IF (DEBUG.AND.ALIGNCOMMON) PRINT '(A,I6,A)',' MAKEIMAGE> ALIGNING ON ATOM ',RBGROUP(NRUNNING-NRBSET+ALIGNATOM(J7))
+              alignloop: DO J7=1,MAX(NALIGNATOM,1)
+                 IF (DEBUG.AND.ALIGNCOMMON) PRINT '(A,I6,A)',' makeimage> aligning on atom ',RBGROUP(NRUNNING-NRBSET+ALIGNATOM(J7))
 
                  EWORST2=-HUGE(1.0D0)
                  DO J4=1,NIMAGE
@@ -701,18 +701,18 @@ MODULE NEBUTILS
                        COORDS(3*(J6-1)+1:3*(J6-1)+3)=LTEMP(3*(J5-1)+1:3*(J5-1)+3)
                     ENDDO
                     CALL POTENTIAL(COORDS,E1,LGDUMMY,.FALSE.,.FALSE.,RMSDUMMY,.FALSE.,.FALSE.)
-!                   IF (DEBUG) PRINT '(A,G20.10,A,I6,A,G20.10)',' MAKEIMAGE> FOR ROTATION ',THETA,' IMAGE ',J4,' ENERGY=',E1
+!                   IF (DEBUG) PRINT '(A,G20.10,A,I6,A,G20.10)',' makeimage> for rotation ',THETA,' image ',J4,' energy=',E1
                     LEIMAGE2(J4)=E1
                     IF (E1.GT.EWORST2) THEN
                        JWORST2=J4
                        EWORST2=E1
                     ENDIF
-                    IF (EWORST2.GT.EWORST*1.01D0) EXIT ! NO POINT CONTINUING - HIGHEST IMAGE IS HIGHER THAN PREVIOUS. 
+                    IF (EWORST2.GT.EWORST*1.01D0) EXIT ! no point continuing - highest image is higher than previous. 
                  ENDDO
-                 IF (DEBUG) PRINT '(A,I6,A,G20.10)',' NNUTILS> HIGHEST IMAGE TESTED FOR + ROTATION WAS ',JWORST2, &
-  &                                                 ' ENERGY=',EWORST2
+                 IF (DEBUG) PRINT '(A,I6,A,G20.10)',' nnutils> highest image tested for + rotation was ',JWORST2, &
+  &                                                 ' energy=',EWORST2
 !
-!  TRY ROTATING THE OTHER WAY.
+!  Try rotating the other way.
 !
                  EWORST3=-HUGE(1.0D0)
                  IF (TBEST.LT.0.0D0) THEN
@@ -760,32 +760,32 @@ MODULE NEBUTILS
                        COORDS(3*(J6-1)+1:3*(J6-1)+3)=LTEMP(3*(J5-1)+1:3*(J5-1)+3)
                     ENDDO
                     CALL POTENTIAL(COORDS,E2,LGDUMMY,.FALSE.,.FALSE.,RMSDUMMY,.FALSE.,.FALSE.)
-!                   IF (DEBUG) PRINT '(A,G20.10,A,I6,A,G20.10)',' MAKEIMAGE> FOR ROTATION ',THETA,' IMAGE ',J4,' ENERGY=',E2
+!                   IF (DEBUG) PRINT '(A,G20.10,A,I6,A,G20.10)',' makeimage> for rotation ',THETA,' image ',J4,' energy=',E2
                     LEIMAGE3(J4)=E2
                     IF (E2.GT.MIN(EWORST3,EWORST*1.01D0)) THEN
                        JWORST3=J4
                        EWORST3=E2
                     ENDIF
-                    IF (EWORST3.GT.MIN(EWORST,EWORST2)) EXIT ! NO POINT CONTINUING - HIGHEST IMAGE IS HIGHER THAN PREVIOUS. 
+                    IF (EWORST3.GT.MIN(EWORST,EWORST2)) EXIT ! no point continuing - highest image is higher than previous. 
                  ENDDO
-                 IF (DEBUG) PRINT '(A,I6,A,G20.10)',' NNUTILS> HIGHEST IMAGE TESTED FOR - ROTATION WAS ',JWORST3, &
-  &                                                 ' ENERGY=',EWORST3
+                 IF (DEBUG) PRINT '(A,I6,A,G20.10)',' nnutils> highest image tested for - rotation was ',JWORST3, &
+  &                                                 ' energy=',EWORST3
 
 !
-!  ALLOW THE ENERGY TO RISE BY ONE PER CENT?
+!  Allow the energy to rise by one per cent?
 !
                  IF (MIN(EWORST2,EWORST3).GT.EWORST*1.01D0) THEN
-                       IF (DEBUG) PRINT '(A,G20.10,A)',' NNUTILS> BOTH INTERPOLATIONS RAISE THE ENERGY FROM ',LEIMAGE(JWORST),&
-  &                                   ' - SKIP'
-                       CYCLE ALIGNLOOP
+                       IF (DEBUG) PRINT '(A,G20.10,A)',' nnutils> both interpolations raise the energy from ',LEIMAGE(JWORST),&
+  &                                   ' - skip'
+                       CYCLE alignloop
                  ENDIF
                  IF (EWORST2.LT.EWORST3) THEN
                     LEIMAGE(1:NIMAGE)=LEIMAGE2(1:NIMAGE)
                     JWORST=JWORST2
                     DUMMY=TBEST
                     EWORST=EWORST2
-                    IF (DEBUG) PRINT '(A,I6,A,I6,A)',' MAKEIMAGE> + ROTATIONAL INTERPOLATION FOR RIGID BODY GROUP ',J1, &
-  &                                                  ' WITH ',NRBSET,' ATOMS'
+                    IF (DEBUG) PRINT '(A,I6,A,I6,A)',' makeimage> + rotational interpolation for rigid body group ',J1, &
+  &                                                  ' with ',NRBSET,' atoms'
                  ELSE
                     LEIMAGE(1:NIMAGE)=LEIMAGE3(1:NIMAGE)
                     JWORST=JWORST3
@@ -795,17 +795,17 @@ MODULE NEBUTILS
                        DUMMY=-(6.283185307D0-TBEST)
                     ENDIF
                     EWORST=EWORST3
-                    IF (DEBUG) PRINT '(A,I6,A,I6,A)',' MAKEIMAGE> - ROTATIONAL INTERPOLATION FOR RIGID BODY GROUP ',J1, &
-  &                                                  ' WITH ',NRBSET,' ATOMS'
+                    IF (DEBUG) PRINT '(A,I6,A,I6,A)',' makeimage> - rotational interpolation for rigid body group ',J1, &
+  &                                                  ' with ',NRBSET,' atoms'
                  ENDIF
 
-!                PRINT '(A,4F15.5)',' ANGLE, VECTOR=',DUMMY,LVBEST(1:3)
-!                PRINT '(A)',' ATOM LIST:' 
+!                PRINT '(A,4F15.5)',' angle, vector=',DUMMY,LVBEST(1:3)
+!                PRINT '(A)',' atom list:' 
 !                PRINT '(22I6)',RBGROUP(NRUNNING-NRBSET+1:NRUNNING) 
 !
-!  NOW CHANGE THE POSITIONS OF THE ATOMS IN THIS GROUP IN EACH IMAGE, ROTATING THROUGH
-!  ANGLE DUMMY EACH TIME. ROTATE LSTART FOR THE FIRST HALF, THEN LFINISH FOR THE 
-!  SECOND HALF. SAME AS ABOVE, BUT WE ALREADY HAVE THE ENERGIES.
+!  Now change the positions of the atoms in this group in each image, rotating through
+!  angle DUMMY each time. Rotate LSTART for the first half, then LFINISH for the 
+!  second half. Same as above, but we already have the energies.
 !
                  DO J4=1,NIMAGE
                     IF (J4.LE.NIMAGE/2) THEN
@@ -847,20 +847,20 @@ MODULE NEBUTILS
 !!!! DJW
 !                   COORDS(1:NOPT)=XYZ(NOPT*J4+1:NOPT*J4+NOPT)
 !                   CALL POTENTIAL(COORDS,E2,LGDUMMY,.FALSE.,.FALSE.,RMSDUMMY,.FALSE.,.FALSE.)
-!                   IF (DEBUG) PRINT '(A,I6,A,G20.10)',' MAKEIMAGE> CHECK IMAGE ',J4,' ENERGY=',E2
+!                   IF (DEBUG) PRINT '(A,I6,A,G20.10)',' makeimage> CHECK image ',J4,' energy=',E2
 !!!! DJW
                  ENDDO
 !
-! DO NOT FORGET TO RESET THE END POINTS - THE RIGID BODY PERMUTATION MIGHT BE DIFFERENT!
+! Do not forget to reset the end points - the rigid body permutation might be different!
 !
                  DO J5=1,NRBSET
                     J6=RBGROUP(NRUNNING-NRBSET+J5)
                     XYZ(3*(J6-1)+1:3*(J6-1)+3)=QS(3*(J6-1)+1:3*(J6-1)+3)
                     XYZ((NIMAGE+1)*NOPT+3*(J6-1)+1:(NIMAGE+1)*NOPT+3*(J6-1)+3)=QF(3*(J6-1)+1:3*(J6-1)+3)
                  ENDDO
-              ENDDO ALIGNLOOP
-           ENDDO GROUPLOOP
-           IF (NTRIES.LT.NRBTRIES) GOTO 11 ! DO IT AGAIN! DJW
+              ENDDO alignloop
+           ENDDO grouploop
+           IF (NTRIES.LT.NRBTRIES) GOTO 11 ! do it again! DJW
         ENDIF
      ENDIF
 
@@ -877,9 +877,9 @@ MODULE NEBUTILS
           IF (MOREPRINTING) THEN
                SELECT CASE (EXITSTATUS)
                CASE (1)
-                    WRITE(*,'(1X,A)') 'CONVERGENCE CRITERION WAS SATISFIED.'
+                    WRITE(*,'(1x,a)') 'Convergence criterion was satisfied.'
                CASE (2)
-                    WRITE(*,'(1X,A)') 'REACHED MAXIMAL NUMBER OF ITERATIONS LIMIT.'
+                    WRITE(*,'(1x,a)') 'Reached maximal number of iterations limit.'
                END SELECT
                REALSTR=RM0S(WR(TOTAL,2))
                IF (NITERDONE.NE.0) THEN
@@ -887,19 +887,19 @@ MODULE NEBUTILS
                ELSE
                   REALSTR2=RM0S(WR(TOTAL,2))
                ENDIF
-               WRITE(*,'(1X,A)') 'TIME= '//TRIM(REALSTR)//' SEC ('//TRIM(REALSTR2)//' SEC/ITERATION)'
+               WRITE(*,'(1x,a)') 'time= '//trim(RealStr)//' sec ('//trim(RealStr2)//' sec/iteration)'
           ELSE ! THIS IS SHORT INFO WHICH IS A PART OF CONNECT OUTPUT
                IF (NITERMAX.GT.0) THEN
                   INTSTR = WI(NITERDONE)
-                  WRITE(*,'(A)',ADVANCE='NO') ' DOUBLE-ENDED SEARCH ITERATIONS= '//TRIM(INTSTR)
+                  WRITE(*,'(a)',advance='no') ' Double-ended search iterations= '//trim(IntStr)
                   REALSTR=WR(RMS,4)
-                  WRITE(*,'(A)',ADVANCE='NO') ' RMS= '//TRIM(REALSTR)//' DEV= '
+                  WRITE(*,'(a)',advance='no') ' RMS= '//trim(RealStr)//' Dev= '
                   REALSTR=WR(AVDEV,2)
-                  WRITE(*,'(A)',ADVANCE='NO') TRIM(REALSTR)//'% S= '
+                  WRITE(*,'(a)',advance='no') trim(RealStr)//'% S= '
                   REALSTR=WR(SEPARATION,2)
-                  WRITE(*,'(A)',ADVANCE='NO') TRIM(REALSTR)
+                  WRITE(*,'(a)',advance='no') trim(RealStr)
                   REALSTR=WR(TOTAL,2)
-                  WRITE(*,'(A)') ' TIME= '//TRIM(REALSTR)
+                  WRITE(*,'(a)') ' time= '//trim(RealStr)
                ENDIF
           ENDIF
      END SUBROUTINE PRINTSUMMARY
@@ -912,21 +912,21 @@ MODULE NEBUTILS
           CHARACTER(LEN=1),INTENT(IN) :: I
           INTEGER ISTAT
 
-          IF (I=="B") THEN
-               OPEN(UNIT=90,FILE='RMSOFI',STATUS='REPLACE')
-               OPEN(UNIT=91,FILE='AVDEVOFI',STATUS='REPLACE')
-               OPEN(UNIT=92,FILE='EOFI',STATUS='REPLACE')
-               OPEN(UNIT=93,FILE='SOFI',STATUS='REPLACE')
-          ELSEIF (I=="E") THEN
+          IF (I=="b") then
+               OPEN(UNIT=90,FILE='RmsofI',status='replace')
+               OPEN(UNIT=91,FILE='AvDevofI',status='replace')
+               OPEN(UNIT=92,FILE='EofI',status='replace')
+               OPEN(UNIT=93,FILE='SofI',status='replace')
+          ELSEIF (I=="e") then
                CLOSE(UNIT=90)
                CLOSE(UNIT=91)
                CLOSE(UNIT=92)
                CLOSE(UNIT=93)
-          ELSEIF (I=="M") THEN
-               WRITE(UNIT=90,FMT='(1X,I7,F20.10)') NITERDONE+NITERDONESAVE,RMS
-               WRITE(UNIT=91,FMT='(1X,I7,F20.10)') NITERDONE+NITERDONESAVE,AVDEV
-               WRITE(UNIT=92,FMT='(1X,I7,F20.10)') NITERDONE+NITERDONESAVE,ETOTAL/NIMAGE
-               WRITE(UNIT=93,FMT='(1X,I7,F20.10)') NITERDONE+NITERDONESAVE,SEPARATION
+          ELSEIF (I=="m") then
+               WRITE(UNIT=90,FMT='(1x,i7,f20.10)') NIterDone+NIterDoneSave,RMS
+               WRITE(UNIT=91,FMT='(1x,i7,f20.10)') NIterDone+NIterDoneSave,AvDev
+               WRITE(UNIT=92,FMT='(1x,i7,f20.10)') NIterDone+NIterDoneSave,Etotal/Nimage
+               WRITE(UNIT=93,FMT='(1x,i7,f20.10)') NIterDone+NIterDoneSave,Separation
                CALL FLUSH(90,ISTAT)
                CALL FLUSH(91,ISTAT)
                CALL FLUSH(92,ISTAT)
@@ -954,29 +954,29 @@ MODULE NEBUTILS
                UNIT=992
                IF (NITER.GT.0) THEN
                   WRITE(FILENAME,'(I8)') NITER
-                  FILENAME='NEB.EOFS.' // TRIM(ADJUSTL(FILENAME))
+                  FILENAME='neb.EofS.' // TRIM(ADJUSTL(FILENAME))
                ELSE   
-                  FILENAME='NEB.EOFS'
+                  FILENAME='neb.EofS'
                ENDIF
                IF (.NOT.FILTH==0) THEN
                     FILENAME=TRIM(FILENAME)//'.'//TRIM(ADJUSTL(FILTHSTR))
                ENDIF
-               OPEN(UNIT=UNIT,FILE=FILENAME,STATUS='REPLACE')
+               OPEN(UNIT=UNIT,FILE=FILENAME,STATUS='replace')
 !         ENDIF
 
           DUMMY=0.0D0
-          WRITE(UNIT=UNIT,FMT='(2G24.13)') DUMMY,EEE(1)
+          WRITE(UNIT=UNIT,FMT='(2g24.13)') dummy,eee(1)
           DO I=2,NIMAGE+1
                DUMMY = DUMMY + DVEC(I-1)
-               WRITE(UNIT=UNIT,FMT='(2G24.13)') DUMMY,EEE(I)
+               WRITE(UNIT=UNIT,FMT='(2g24.13)') dummy,eee(i)
           ENDDO
           DUMMY = DUMMY + DVEC(NIMAGE+1)
-          WRITE(UNIT=UNIT,FMT='(2G24.13)') DUMMY,EEE(NIMAGE+2)
+          WRITE(UNIT=UNIT,FMT='(2g24.13)') dummy,eee(Nimage+2)
 
 !         IF (.NOT.PRESENT(UNITIN)) THEN
                CLOSE(UNIT)
 !         ENDIF
-          PRINT *, 'WRITEPROFILE> NEB PROFILE WAS SAVED TO FILE "'//TRIM(FILENAME)//'"'
+          PRINT *, 'writeprofile> NEB profile was saved to file "'//trim(filename)//'"'
      END SUBROUTINE WRITEPROFILE
 
      SUBROUTINE RWG(WHAT,GUESS,NITER)
@@ -999,83 +999,83 @@ MODULE NEBUTILS
 
           IF (FILTH.EQ.0) THEN
              FILENAME=XYZFILE
-             FILENAME2='NEB.PATH.UNR.XYZ'
+             FILENAME2='neb.path.unr.xyz'
              IF (GUESS) FILENAME=GUESSFILE
              IF (RBAAT) FILENAME2=RBXYZFILE
           ELSE
              FILENAME=TRIM(XYZFILE)//'.'//TRIM(ADJUSTL(FILTHSTR))
-             FILENAME2='NEB.PATH.UNR.XYZ.'//TRIM(ADJUSTL(FILTHSTR))
+             FILENAME2='neb.path.unr.xyz.'//TRIM(ADJUSTL(FILTHSTR))
              IF (GUESS) FILENAME=TRIM(GUESSFILE) !  //'.'//TRIM(ADJUSTL(FILTHSTR))
              IF (RBAAT) FILENAME2=TRIM(RBXYZFILE)//'.'//TRIM(ADJUSTL(FILTHSTR))
           ENDIF
 
           SELECT CASE(WHAT)
-          CASE("W")
+          CASE("w")
                IF (NITER.GT.0) THEN
                   IF (FILTH.EQ.0) THEN
                      WRITE(DUMMYS,'(I8)') NITER
                      DUMMYS2=TRIM(ADJUSTL(FILENAME))
-                     FILENAME='NEB.' // TRIM(ADJUSTL(DUMMYS)) // '.XYZ' ! SO THAT VMD RECOGNISES THE FILE TYPE!
-                     FILENAME2='RBNEB.' // TRIM(ADJUSTL(DUMMYS)) // '.XYZ'
+                     FILENAME='neb.' // TRIM(ADJUSTL(DUMMYS)) // '.xyz' ! so that vmd recognises the file type!
+                     FILENAME2='rbneb.' // TRIM(ADJUSTL(DUMMYS)) // '.xyz'
                   ENDIF
                ENDIF
-               OPEN(UNIT=993,FILE=FILENAME,STATUS='REPLACE')
+               OPEN(UNIT=993,FILE=FILENAME,STATUS='replace')
                IF (DESMINT) THEN
                   DO J2=1,NIMAGE+2
-                     WRITE(993,'(I4/)') NATOMS
-                     WRITE(993,'(A5,1X,3F20.10)') (ZSYM((J1+2)/3),XYZCART( (J2-1)*NOPT+J1),&
+                     WRITE(993,'(i4/)') natoms
+                     WRITE(993,'(a5,1x,3f20.10)') (ZSYM((j1+2)/3),XYZCART( (j2-1)*Nopt+j1),&
                           & XYZCART((J2-1)*NOPT+J1+1), XYZCART((J2-1)*NOPT+J1+2),J1=1,NOPT,3)
                   ENDDO
                ELSEIF (STOCKT .OR. STOCKAAT) THEN
                   DO J2=1,NIMAGE+2
-                     WRITE(993,'(I4/)') (NATOMS/2)
-                     DO J1=1,(NATOMS/2)
-                        WRITE(993,'(A5,1X,6F20.10)') ZSYM((J1+2)/3), &
+                     WRITE(993,'(i4/)') (natoms/2)
+                     DO J1=1,(natoms/2)
+                        WRITE(993,'(a5,1x,6f20.10)') ZSYM((j1+2)/3), &
                              & XYZ((J2-1)*NOPT+3*(J1-1)+1), XYZ((J2-1)*NOPT+3*(J1-1)+2), XYZ((J2-1)*NOPT+3*(J1-1)+3), &
-  &    XYZ((J2-1)*NOPT+3*((NATOMS/2)+J1-1)+1), XYZ((J2-1)*NOPT+3*((NATOMS/2)+J1-1)+2), XYZ((J2-1)*NOPT+3*((NATOMS/2)+J1-1)+3)
+  &    XYZ((J2-1)*NOPT+3*((natoms/2)+J1-1)+1), XYZ((J2-1)*NOPT+3*((natoms/2)+J1-1)+2), XYZ((J2-1)*NOPT+3*((natoms/2)+J1-1)+3)
                      ENDDO
                   ENDDO
                ELSEIF (RBAAT .AND. (.NOT. STOCKAAT)) THEN
-                  OPEN(UNIT=114,FILE=FILENAME2,STATUS='UNKNOWN')
+                  OPEN(UNIT=114,FILE=FILENAME2,STATUS='unknown')
                   DO J2=1,NIMAGE+2
-                     WRITE(993,'(I4/)') NATOMS/2
+                     WRITE(993,'(i4/)') NATOMS/2
                      DO J1=1,(NATOMS/2)
-                        WRITE(993,'(A5,1X,3F20.10)') 'O', &
+                        WRITE(993,'(a5,1x,3f20.10)') 'O', &
                              & XYZ((J2-1)*NOPT+3*(J1-1)+1), XYZ((J2-1)*NOPT+3*(J1-1)+2), XYZ((J2-1)*NOPT+3*(J1-1)+3)
                      ENDDO
                      CALL SITEPOS(XYZ((J2-1)*NOPT+1:J2*NOPT),STXYZ)
-                     WRITE(114,'(I4/)') (NATOMS/2)*NRBSITES
+                     WRITE(114,'(i4/)') (NATOMS/2)*NRBSITES
                      DO J1=1,(NATOMS/2)*NRBSITES
                         J3 = 3*J1
-                        WRITE(114,'(A5,1X,3F20.10)') 'O', STXYZ(J3-2), STXYZ(J3-1), STXYZ(J3)
+                        WRITE(114,'(a5,1x,3f20.10)') 'O', STXYZ(J3-2), STXYZ(J3-1), STXYZ(J3)
                      ENDDO
                   ENDDO
                   CLOSE(UNIT=114)
                ELSEIF (AMHT) THEN
                  DO J2=1,NIMAGE+2
-!  GLY SET GETPARAMS.F 
-!               WRITE(993,'(I4)')NATOMS +NUMGLY
-!  GLY PRINTING TURNED OFF DJW
-                WRITE(993,'(I4)')NATOMS 
-                WRITE(993,*)'ENERGY'
+!  GLY set getparams.f 
+!               WRITE(993,'(i4)')NATOMS +NUMGLY
+!  GLY printing turned off DJW
+                WRITE(993,'(i4)')NATOMS 
+                WRITE(993,*)'Energy'
                 GLY_COUNT = 0
                 
             DO J1=1,NMRES
               IF (SEQ(J1).EQ.8) THEN
-          WRITE(993,'(A5,1X,3F20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
+          WRITE(993,'(a5,1x,3f20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
      &                                  XYZ((J2-1)*NOPT+9*(J1-1)+3-GLY_COUNT*3)
-!  GLY PRINTING TURNED OFF DJW
-!         WRITE(993,'(A5,1X,3F20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
+!  GLY printing turned off DJW
+!         WRITE(993,'(a5,1x,3f20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
 !    &                                  XYZ((J2-1)*NOPT+9*(J1-1)+3-GLY_COUNT*3)
-          WRITE(993,'(A5,1X,3F20.10)') 'O    ',XYZ((J2-1)*NOPT+9*(J1-1)+4-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+5-GLY_COUNT*3), &
+          WRITE(993,'(a5,1x,3f20.10)') 'O    ',XYZ((J2-1)*NOPT+9*(J1-1)+4-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+5-GLY_COUNT*3), &
      &                                  XYZ((J2-1)*NOPT+9*(J1-1)+6-GLY_COUNT*3)
                 GLY_COUNT = GLY_COUNT +1
               ELSE
-          WRITE(993,'(A5,1X,3F20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
+          WRITE(993,'(a5,1x,3f20.10)') 'C1   ',XYZ((J2-1)*NOPT+9*(J1-1)+1-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+2-GLY_COUNT*3), &
      &                                  XYZ((J2-1)*NOPT+9*(J1-1)+3-GLY_COUNT*3)
-          WRITE(993,'(A5,1X,3F20.10)') 'C2   ',XYZ((J2-1)*NOPT+9*(J1-1)+4-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+5-GLY_COUNT*3), &
+          WRITE(993,'(a5,1x,3f20.10)') 'C2   ',XYZ((J2-1)*NOPT+9*(J1-1)+4-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+5-GLY_COUNT*3), &
      &                                  XYZ((J2-1)*NOPT+9*(J1-1)+6-GLY_COUNT*3)
-          WRITE(993,'(A5,1X,3F20.10)') 'O    ',XYZ((J2-1)*NOPT+9*(J1-1)+7-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+8-GLY_COUNT*3), &
+          WRITE(993,'(a5,1x,3f20.10)') 'O    ',XYZ((J2-1)*NOPT+9*(J1-1)+7-GLY_COUNT*3),XYZ((J2-1)*NOPT+9*(J1-1)+8-GLY_COUNT*3), &
      &                                  XYZ((J2-1)*NOPT+9*(J1-1)+9-GLY_COUNT*3)
               ENDIF
           ENDDO
@@ -1084,16 +1084,16 @@ MODULE NEBUTILS
 
                 ELSE
                   DO J2=1,NIMAGE+2
-                     WRITE(993,'(I4/)') NATOMS
-                     WRITE(993,'(A5,1X,3F20.10)') (ZSYM((J1+2)/3),XYZ( (J2-1)*NOPT+J1),&
+                     WRITE(993,'(i4/)') natoms
+                     WRITE(993,'(a5,1x,3f20.10)') (ZSYM((j1+2)/3),xyz( (j2-1)*Nopt+j1),&
                           & XYZ((J2-1)*NOPT+J1+1), XYZ((J2-1)*NOPT+J1+2),J1=1,NOPT,3)
                   ENDDO
                ENDIF
 
-               PRINT *, 'RWG> NEB COORDINATES WERE SAVED TO XYZ FILE "'//TRIM(FILENAME)//'"'
+               PRINT *, 'rwg> NEB coordinates were saved to xyz file "'//trim(filename)//'"'
 
                IF (UNRST) THEN
-                  OPEN(UNIT=114,FILE=FILENAME2,STATUS='UNKNOWN')
+                  OPEN(UNIT=114,FILE=FILENAME2,STATUS='unknown')
                   DO J2=1,NIMAGE+2
                        DO J3=1,(NATOMS/2)-1
                           DO J4=1,3
@@ -1103,34 +1103,34 @@ MODULE NEBUTILS
                              &2.0D0*XYZ((J2-1)*NOPT+(6*J3+J4)))/3.0D0
                           ENDDO
                        ENDDO
-                       WRITE(114,'(I4/)') 2*NATOMS-2
-                       WRITE(114,'(A5,1X,3F20.10)')('C    ',XYZ((J2-1)*NOPT+J1),&
+                       WRITE(114,'(i4/)') 2*natoms-2
+                       WRITE(114,'(a5,1x,3f20.10)')('C    ',xyz((j2-1)*Nopt+j1),&
                        &XYZ((J2-1)*NOPT+J1+1),XYZ((J2-1)*NOPT+J1+2),J1=1,NOPT,3)
-                       WRITE(114,'(A5,1X,3F20.10)')('O    ', PEPCOORDS(J1),&
+                       WRITE(114,'(a5,1x,3f20.10)')('O    ', pepcoords(j1),&
                        &PEPCOORDS(J1+1), PEPCOORDS(J1+2), J1=1,NOPT-11,6)
-                       WRITE(114,'(A5,1X,3F20.10)')('N    ', PEPCOORDS(J1+3),&
+                       WRITE(114,'(a5,1x,3f20.10)')('N    ', pepcoords(j1+3),&
                        &PEPCOORDS(J1+4), PEPCOORDS(J1+5), J1=1,NOPT-11,6)
                   ENDDO
                   CLOSE(UNIT=114)
-                  PRINT *, 'COORDINATES WERE SAVED TO FILE ',FILENAME2
+                  PRINT *, 'Coordinates were saved to file ',filename2
                ENDIF          
-          CASE("R")
-!              OPEN(UNIT=993,FILE=FILENAME,STATUS='OLD',IOSTAT=EOF)
-               OPEN(UNIT=993,FILE=FILENAME,STATUS='OLD')
+          CASE("r")
+!              OPEN(UNIT=993,FILE=FILENAME,STATUS='old',iostat=eof)
+               OPEN(UNIT=993,FILE=FILENAME,STATUS='old')
 !              IF (.NOT.EOF==0) THEN
-!                   PRINT *, "WHERE IS "//TRIM(ADJUSTL(FILENAME))//" FILE? - CAN'T FIND IT!"
+!                   PRINT *, "WHERE IS "//TRIM(ADJUSTL(FILENAME))//" FILE? - CAN't find it!"
 !                   CALL TSUMMARY
 !                   STOP
 !              ENDIF
                DO J2=1,NIMAGE+2
 !
-! HERE WE SKIP TWO LINES, ALLOWING FOR THE SECOND LINE TO BE BLANK.
+! Here we skip two lines, allowing for the second line to be blank.
 !
                      READ(993,'(A/)') DUMMYS 
-                     READ(993,*) (ZSYM((J1+2)/3),XYZ( (J2-1)*NOPT+J1),&
+                     READ(993,*) (ZSYM((j1+2)/3),XYZ( (J2-1)*NOPT+J1),&
                           & XYZ((J2-1)*NOPT+J1+1), XYZ((J2-1)*NOPT+J1+2),J1=1,NOPT,3)
                ENDDO
-               PRINT '(A)','NNUTILS> GUESS READ FROM FILE ' // TRIM(ADJUSTL(GUESSFILE))
+               PRINT '(A)','nnutils> Guess read from file ' // TRIM(ADJUSTL(GUESSFILE))
           END SELECT
           CLOSE(UNIT=993)
      END SUBROUTINE RWG
@@ -1143,11 +1143,11 @@ MODULE NEBUTILS
           INTEGER :: RECLEN,I
 
           INQUIRE(IOLENGTH=RECLEN) XYZ(1:NOPT)
-          OPEN(UNIT=40,FILE=TRIM(PTSFILE),STATUS='UNKNOWN',FORM='UNFORMATTED',ACCESS='DIRECT',RECL=RECLEN)
+          OPEN(UNIT=40,FILE=TRIM(PTSFILE),STATUS='unknown',form='unformatted',access='direct',recl=reclen)
           DO I=1,NIMAGE+2
                WRITE(40,REC=I) ( XYZ(NOPT*(I-1)+1:NOPT*I) )
           ENDDO
           CLOSE(40)
-          PRINT *, 'NEB COORDINATES WERE SAVED TO BINARY FILE "'//TRIM(PTSFILE)//'"'
+          PRINT *, 'NEB coordinates were saved to binary file "'//trim(PtsFile)//'"'
      END SUBROUTINE SAVEBANDCOORD
 END MODULE NEBUTILS

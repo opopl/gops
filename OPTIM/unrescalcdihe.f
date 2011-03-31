@@ -1,49 +1,50 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
-C JMC MAY NEED TO USE DIFFERENCE BETWEEN POLAR ANGLES AS WELL IN THE ORDER PARAMETER FOR UNRES
-C LIKE WITH TWISTTYPE10...
+C jmc May need to use difference between polar angles as well in the order parameter for unres
+C like with twisttype10...
 C
-C ROUTINE TO CALCULATE DIFFERENCE BETWEEN DIFFERENT INTERNAL COORDINATE DIHEDRAL VALUES FOR QLOCAL AND FIN (CARTESIAN) COORDS
+C Routine to calculate difference between different internal coordinate dihedral values for QLOCAL and FIN (Cartesian) coords
 C
       SUBROUTINE UNRESCALCDIHE(DIHE,ALLANG,QLOCAL,FIN)
       USE COMMONS
-C     USE KEY
+c     USE KEY
       USE MODUNRES
       IMPLICIT NONE
 C
       INTEGER I1,J1
-      REAL*8 DIFFPP,DIHE, SUMD2,ALLDIFFPP, ALLANG, ALLSUMD2,FINPPSANGLE(4*NRES-9) ! DIM OF *PPSANGLE IS NPHI+NTHETA+2(NRES-2)
-      REAL*8 QPPSANGLE(4*NRES-9),DIFFARRAY(4*NRES-9),QLOCAL(3*NATOMS),FIN(3*NATOMS)
+      REAL*8 DIFFPP,DIHE, SUMD2,ALLDIFFPP, ALLANG, ALLSUMD2,FINPPSANGLE(4*nres-9) ! dim of *ppsangle is nphi+ntheta+2(nres-2)
+      REAL*8 QPPSANGLE(4*nres-9),DIFFARRAY(4*nres-9),QLOCAL(3*NATOMS),FIN(3*NATOMS)
       INTEGER IICD,TWISTMODE,TWISTTYPE,NM,NWRONG
       LOGICAL LINTCOOR,PTEST
       DOUBLE PRECISION PI
       PARAMETER (PI=3.141592653589793D0)
 
-      DO I1=1,NRES
-         C(1,I1)=FIN(6*(I1-1)+1)
-         C(2,I1)=FIN(6*(I1-1)+2)
-         C(3,I1)=FIN(6*(I1-1)+3)
-         C(1,I1+NRES)=FIN(6*(I1-1)+4)
-         C(2,I1+NRES)=FIN(6*(I1-1)+5)
-         C(3,I1+NRES)=FIN(6*(I1-1)+6)
+      DO I1=1,nres
+         c(1,I1)=FIN(6*(I1-1)+1)
+         c(2,I1)=FIN(6*(I1-1)+2)
+         c(3,I1)=FIN(6*(I1-1)+3)
+         c(1,I1+nres)=FIN(6*(I1-1)+4)
+         c(2,I1+nres)=FIN(6*(I1-1)+5)
+         c(3,I1+nres)=FIN(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
+<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 
 C USE UNRES GEOMETRY ARRAYS PHI (BB DIHEDRALS) AND OMEG (SC DIHEDRALS)
@@ -53,82 +54,97 @@ C NEED TO REMEMBER NOT TO TRY TO TWIST THEM THOUGH!
 C NO ENTRIES IN QPPSANGLE FOR CAPPING 'RESIDUES'.
       DO I1=1,NRES-3
         FINPPSANGLE(I1)=PHI(I1+3)
+=======
+      CALL int_from_cart(.true.,.false.)
+
+C use unres geometry arrays phi (bb dihedrals) and omeg (sc dihedrals)
+C Take care with numbering - see /unres/src/readpdb.f (subroutine int_from_cart)
+C For side chain dihedrals, have zero elements for proper (i.e. not capping) glycines.
+C Need to remember not to try to twist them though!
+C No entries in QPPSANGLE for capping 'residues'.
+      DO I1=1,nres-3
+        FINPPSANGLE(I1)=phi(I1+3)
+>>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       END DO
-      DO I1=1,NRES-2
-        FINPPSANGLE(I1+NRES-3)=OMEG(I1+1)
-C JMC 30/4/03 TRY ADDING BACKBONE AND SIDE CHAIN POLAR ANGLES
-C THIS SHOULD BE MORE IMPORTANT FOR UNRES THAN FOR CHARMM...
-C ORDER IS BB DIHEDRALS, SC DIHEDRALS, BB POLARS, SC POLARS.
-        FINPPSANGLE(I1+2*NRES-5)=THETA(I1+2)
-        FINPPSANGLE(I1+3*NRES-7)=ALPH(I1+1)
+      DO I1=1,nres-2
+        FINPPSANGLE(I1+nres-3)=omeg(I1+1)
+C jmc 30/4/03 try adding backbone and side chain polar angles
+C This should be more important for unres than for charmm...
+C Order is bb dihedrals, sc dihedrals, bb polars, sc polars.
+        FINPPSANGLE(I1+2*nres-5)=theta(I1+2)
+        FINPPSANGLE(I1+3*nres-7)=alph(I1+1)
       END DO
 
-      DO I1=1,NRES
-         C(1,I1)=QLOCAL(6*(I1-1)+1)
-         C(2,I1)=QLOCAL(6*(I1-1)+2)
-         C(3,I1)=QLOCAL(6*(I1-1)+3)
-         C(1,I1+NRES)=QLOCAL(6*(I1-1)+4)
-         C(2,I1+NRES)=QLOCAL(6*(I1-1)+5)
-         C(3,I1+NRES)=QLOCAL(6*(I1-1)+6)
+      DO I1=1,nres
+         c(1,I1)=QLOCAL(6*(I1-1)+1)
+         c(2,I1)=QLOCAL(6*(I1-1)+2)
+         c(3,I1)=QLOCAL(6*(I1-1)+3)
+         c(1,I1+nres)=QLOCAL(6*(I1-1)+4)
+         c(2,I1+nres)=QLOCAL(6*(I1-1)+5)
+         c(3,I1+nres)=QLOCAL(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
+<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
+=======
+      CALL int_from_cart(.true.,.false.)
+>>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
-      DO I1=1,NRES-3
-        QPPSANGLE(I1)=PHI(I1+3)
+      DO I1=1,nres-3
+        QPPSANGLE(I1)=phi(I1+3)
       END DO
-      DO I1=1,NRES-2
-        QPPSANGLE(I1+NRES-3)=OMEG(I1+1)
-C JMC 30/4/03 TRY ADDING BACKBONE AND SIDE CHAIN POLAR ANGLES
-C THIS SHOULD BE MORE IMPORTANT FOR UNRES THAN FOR CHARMM...
-C ORDER IS BB DIHEDRALS, SC DIHEDRALS, BB POLARS, SC POLARS.
-        QPPSANGLE(I1+2*NRES-5)=THETA(I1+2)
-        QPPSANGLE(I1+3*NRES-7)=ALPH(I1+1)
+      DO I1=1,nres-2
+        QPPSANGLE(I1+nres-3)=omeg(I1+1)
+C jmc 30/4/03 try adding backbone and side chain polar angles
+C This should be more important for unres than for charmm...
+C Order is bb dihedrals, sc dihedrals, bb polars, sc polars.
+        QPPSANGLE(I1+2*nres-5)=theta(I1+2)
+        QPPSANGLE(I1+3*nres-7)=alph(I1+1)
       END DO
 C
       SUMD2=0.D0
       DO I1=1,NPHI+NRES-2
          DIFFPP = QPPSANGLE(I1) - FINPPSANGLE(I1)
 C
-C NEXT TWO LINES ARE MEANT TO ENSURE THAT YOU ALWAYS INTERPOLATE
-C ALONG THE SHORTEST DISTANCE BETWEEN THE DIHEDRAL ANGLES.
+C next two lines are meant to ensure that you always interpolate
+C along the shortest distance between the dihedral angles.
 C
-C JMC         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
-C JMC         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
+C jmc         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
+C jmc         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
          IF (DIFFPP.LT.-PI) DIFFPP = DIFFPP+2.0D0*PI
          IF (DIFFPP.GT.PI) DIFFPP = DIFFPP-2.0D0*PI
-C        WRITE(*,'(A,I6,3F15.10)') 'FINS QS',I1,FINPPSANGLE(I1),QPPSANGLE(I1),DIFFPP
+c        WRITE(*,'(A,I6,3F15.10)') 'FINS QS',I1,FINPPSANGLE(I1),QPPSANGLE(I1),DIFFPP
          SUMD2=SUMD2+DIFFPP*DIFFPP
       ENDDO
 
       ALLSUMD2=SUMD2
-      DO I1=NPHI+NRES-1,NPHI+NTHETA+2*NRES-4
+      DO I1=NPHI+NRES-1,NPHI+ntheta+2*nres-4
          DIFFPP = QPPSANGLE(I1) - FINPPSANGLE(I1)
-C        WRITE(*,'(A,I6,3F15.10)') 'FINS QS',I1,FINPPSANGLE(I1),QPPSANGLE(I1),DIFFPP
+c        WRITE(*,'(A,I6,3F15.10)') 'FINS QS',I1,FINPPSANGLE(I1),QPPSANGLE(I1),DIFFPP
          ALLSUMD2=ALLSUMD2+DIFFPP*DIFFPP
       ENDDO
  
-C JMC TESTING
-C     PRINT *,'DIHE,ALLANG ',SUMD2,ALLSUMD2
-C JMC REMEMBER IF SUMD IS IN RADIANS, THEN DIHE WILL HAVE DIFFERENT
-C RANGE OF VALUES FOR CHARMM VS UNRES...
-      DIHE=DSQRT(SUMD2/(NPHI+NSIDE))
-      ALLANG=DSQRT(ALLSUMD2/(NPHI+NTHETA+2.0D0*NSIDE))
+C jmc testing
+c     PRINT *,'DIHE,ALLANG ',SUMD2,ALLSUMD2
+C jmc REMEMBER if sumd is in radians, then dihe will have different
+C range of values for charmm vs unres...
+      DIHE=DSQRT(SUMD2/(NPHI+nside))
+      ALLANG=DSQRT(ALLSUMD2/(NPHI+ntheta+2.0D0*nside))
 
       RETURN
 
       END
 
-C JMC MAY NEED TO USE DIFFERENCE BETWEEN POLAR ANGLES AS WELL IN THE ORDER PARAMETER FOR UNRES
-C LIKE WITH TWISTTYPE10...
+C jmc May need to use difference between polar angles as well in the order parameter for unres
+C like with twisttype10...
 C
-C ROUTINE TO CALCULATE DIFFERENCE BETWEEN
-C DIFFERENT INTERNAL COORDINATE DIHEDRAL VALUES FOR PASSED COORDINATE ARRAY QLOCAL AND A STORED REFERENCE ARRAY
-C (SEE KEYWORDS.F)
+C Routine to calculate difference between
+C different internal coordinate dihedral values for passed coordinate array QLOCAL and a stored reference array
+C (see keywords.f)
 C
       SUBROUTINE UNRESCALCDIHEREF(DIHE,ALLANG,QLOCAL)
       USE COMMONS
-C     USE KEY
+c     USE KEY
       USE MODUNRES
       IMPLICIT NONE
 
@@ -136,23 +152,24 @@ C     USE KEY
 C
       REAL*8 X(NATOMS),Y(NATOMS),Z(NATOMS)
       REAL*8 DIFFPP,DIHE, SUMD2,ALLDIFFPP, ALLANG, ALLSUMD2
-      REAL*8 QPPSANGLE(4*NRES-9),DIFFARRAY(4*NRES-9),QLOCAL(3*NATOMS)
+      REAL*8 QPPSANGLE(4*nres-9),DIFFARRAY(4*nres-9),QLOCAL(3*NATOMS)
       INTEGER IICD,TWISTMODE,TWISTTYPE,NM,NWRONG
       LOGICAL LINTCOOR,PTEST
       DOUBLE PRECISION PI
       PARAMETER (PI=3.141592653589793D0)
 
-      DO I1=1,NRES
-         C(1,I1)=QLOCAL(6*(I1-1)+1)
-         C(2,I1)=QLOCAL(6*(I1-1)+2)
-         C(3,I1)=QLOCAL(6*(I1-1)+3)
-         C(1,I1+NRES)=QLOCAL(6*(I1-1)+4)
-         C(2,I1+NRES)=QLOCAL(6*(I1-1)+5)
-         C(3,I1+NRES)=QLOCAL(6*(I1-1)+6)
-C     PRINT *,'QLOCAL IN UNRESCALCDIHE: ',QLOCAL(6*(I1-1)+1),QLOCAL(6*(I1-1)+2),QLOCAL(6*(I1-1)+3)
-C     PRINT *,'QLOCAL IN UNRESCALCDIHE: ',QLOCAL(6*(I1-1)+4),QLOCAL(6*(I1-1)+5),QLOCAL(6*(I1-1)+6)
+      DO I1=1,nres
+         c(1,I1)=QLOCAL(6*(I1-1)+1)
+         c(2,I1)=QLOCAL(6*(I1-1)+2)
+         c(3,I1)=QLOCAL(6*(I1-1)+3)
+         c(1,I1+nres)=QLOCAL(6*(I1-1)+4)
+         c(2,I1+nres)=QLOCAL(6*(I1-1)+5)
+         c(3,I1+nres)=QLOCAL(6*(I1-1)+6)
+c     PRINT *,'QLOCAL in unrescalcdihe: ',QLOCAL(6*(I1-1)+1),QLOCAL(6*(I1-1)+2),QLOCAL(6*(I1-1)+3)
+c     PRINT *,'QLOCAL in unrescalcdihe: ',QLOCAL(6*(I1-1)+4),QLOCAL(6*(I1-1)+5),QLOCAL(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
+<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 
 C USE UNRES GEOMETRY ARRAYS PHI (BB DIHEDRALS) AND OMEG (SC DIHEDRALS)
@@ -162,14 +179,25 @@ C NEED TO REMEMBER NOT TO TRY TO TWIST THEM THOUGH!
 C NO ENTRIES IN QPPSANGLE FOR CAPPING 'RESIDUES'.
       DO I1=1,NRES-3
         QPPSANGLE(I1)=PHI(I1+3)
+=======
+      CALL int_from_cart(.true.,.false.)
+
+C use unres geometry arrays phi (bb dihedrals) and omeg (sc dihedrals)
+C Take care with numbering - see /unres/src/readpdb.f (subroutine int_from_cart)
+C For side chain dihedrals, have zero elements for proper (i.e. not capping) glycines.
+C Need to remember not to try to twist them though!
+C No entries in QPPSANGLE for capping 'residues'.
+      DO I1=1,nres-3
+        QPPSANGLE(I1)=phi(I1+3)
+>>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       END DO
-      DO I1=1,NRES-2
-        QPPSANGLE(I1+NRES-3)=OMEG(I1+1)
-C JMC 30/4/03 TRY ADDING BACKBONE AND SIDE CHAIN POLAR ANGLES
-C THIS SHOULD BE MORE IMPORTANT FOR UNRES THAN FOR CHARMM...
-C ORDER IS BB DIHEDRALS, SC DIHEDRALS, BB POLARS, SC POLARS.
-        QPPSANGLE(I1+2*NRES-5)=THETA(I1+2)
-        QPPSANGLE(I1+3*NRES-7)=ALPH(I1+1)
+      DO I1=1,nres-2
+        QPPSANGLE(I1+nres-3)=omeg(I1+1)
+C jmc 30/4/03 try adding backbone and side chain polar angles
+C This should be more important for unres than for charmm...
+C Order is bb dihedrals, sc dihedrals, bb polars, sc polars.
+        QPPSANGLE(I1+2*nres-5)=theta(I1+2)
+        QPPSANGLE(I1+3*nres-7)=alph(I1+1)
       END DO
 C
       SUMD2=0.D0
@@ -177,44 +205,44 @@ C
          DIFFPP = QPPSANGLE(I1) - UREFPPSANGLE(I1)
 
 C
-C NEXT TWO LINES ARE MEANT TO ENSURE THAT YOU ALWAYS INTERPOLATE
-C ALONG THE SHORTEST DISTANCE BETWEEN THE DIHEDRAL ANGLES.
+C next two lines are meant to ensure that you always interpolate
+C along the shortest distance between the dihedral angles.
 C
-C JMC         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
-C JMC         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
+C jmc         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
+C jmc         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
          IF (DIFFPP.LT.-PI) DIFFPP = DIFFPP+2.0D0*PI
          IF (DIFFPP.GT.PI) DIFFPP = DIFFPP-2.0D0*PI
          SUMD2=SUMD2+DIFFPP*DIFFPP
       ENDDO
 
       ALLSUMD2=SUMD2
-      DO I1=NPHI+NRES-1,NPHI+NTHETA+2*NRES-4
+      DO I1=NPHI+NRES-1,NPHI+ntheta+2*nres-4
          DIFFPP = QPPSANGLE(I1) - UREFPPSANGLE(I1)
 C
-C NEXT TWO LINES ARE MEANT TO ENSURE THAT YOU ALWAYS INTERPOLATE
-C ALONG THE SHORTEST DISTANCE BETWEEN THE ANGLES.
+C next two lines are meant to ensure that you always interpolate
+C along the shortest distance between the angles.
 C
-C JMC         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
-C JMC         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
-C        IF (DIFFPP.LT.-PI) DIFFPP = DIFFPP+2.0D0*PI
-C        IF (DIFFPP.GT.PI) DIFFPP = DIFFPP-2.0D0*PI
+C jmc         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
+C jmc         IF (DIFFPP.GT.180.0) DIFFPP = DIFFPP-360.D0
+c        IF (DIFFPP.LT.-PI) DIFFPP = DIFFPP+2.0D0*PI
+c        IF (DIFFPP.GT.PI) DIFFPP = DIFFPP-2.0D0*PI
          ALLSUMD2=ALLSUMD2+DIFFPP*DIFFPP
       ENDDO
  
-C JMC TESTING
-C     PRINT *,'DIHE,ALLANG ',SUMD2,ALLSUMD2
-C JMC REMEMBER IF SUMD IS IN RADIANS, THEN DIHE WILL HAVE DIFFERENT
-C RANGE OF VALUES FOR CHARMM VS UNRES...
-      DIHE=DSQRT(SUMD2/(NPHI+NSIDE))
-      ALLANG=DSQRT(ALLSUMD2/(NPHI+NTHETA+2.0D0*NSIDE))
+C jmc testing
+c     PRINT *,'DIHE,ALLANG ',SUMD2,ALLSUMD2
+C jmc REMEMBER if sumd is in radians, then dihe will have different
+C range of values for charmm vs unres...
+      DIHE=DSQRT(SUMD2/(NPHI+nside))
+      ALLANG=DSQRT(ALLSUMD2/(NPHI+ntheta+2.0D0*nside))
 
       RETURN
 
       END
 
 C
-C ROUTINE TO READ IN REFERENCE COORDINATES IN PLAIN XYZ FORMAT (UNRES) FOR MIND/RMSD COMPARISON
-C STORED IN CHREF COMMON BLOCK
+C routine to read in reference coordinates in plain xyz format (unres) for mind/rmsd comparison
+C stored in CHREF common block
 C
       SUBROUTINE UNREADREF(NATOMS)
       USE MODUNRES
@@ -224,7 +252,7 @@ C
       REAL*8 X(NATOMS), Y(NATOMS), Z(NATOMS)
       CHARACTER*2 DUM
 
-      OPEN (UNIT=10,FILE='REF.CRD',STATUS='OLD')
+      OPEN (UNIT=10,FILE='ref.crd',STATUS='OLD')
 
       READ(10,*)
       DO I1=1,NATOMS
@@ -232,15 +260,16 @@ C
       ENDDO
       CLOSE(10)
 C
-      DO I1=1,NRES
-         C(1,I1)=UREFCOORD(6*(I1-1)+1)
-         C(2,I1)=UREFCOORD(6*(I1-1)+2)
-         C(3,I1)=UREFCOORD(6*(I1-1)+3)
-         C(1,I1+NRES)=UREFCOORD(6*(I1-1)+4)
-         C(2,I1+NRES)=UREFCOORD(6*(I1-1)+5)
-         C(3,I1+NRES)=UREFCOORD(6*(I1-1)+6)
+      DO I1=1,nres
+         c(1,I1)=UREFCOORD(6*(I1-1)+1)
+         c(2,I1)=UREFCOORD(6*(I1-1)+2)
+         c(3,I1)=UREFCOORD(6*(I1-1)+3)
+         c(1,I1+nres)=UREFCOORD(6*(I1-1)+4)
+         c(2,I1+nres)=UREFCOORD(6*(I1-1)+5)
+         c(3,I1+nres)=UREFCOORD(6*(I1-1)+6)
       END DO
       CALL UPDATEDC
+<<<<<<< HEAD
 !CALL INT_FROM_CART(.TRUE.,.FALSE.)
 
 C USE UNRES GEOMETRY ARRAYS PHI (BB DIHEDRALS) AND OMEG (SC DIHEDRALS)
@@ -250,21 +279,32 @@ C NEED TO REMEMBER NOT TO TRY TO TWIST THEM THOUGH!
 C NO ENTRIES IN QPPSANGLE FOR CAPPING 'RESIDUES'.
       DO I1=1,NRES-3
         UREFPPSANGLE(I1)=PHI(I1+3)
+=======
+      CALL int_from_cart(.true.,.false.)
+
+C use unres geometry arrays phi (bb dihedrals) and omeg (sc dihedrals)
+C Take care with numbering - see /unres/src/readpdb.f (subroutine int_from_cart)
+C For side chain dihedrals, have zero elements for proper (i.e. not capping) glycines.
+C Need to remember not to try to twist them though!
+C No entries in QPPSANGLE for capping 'residues'.
+      DO I1=1,nres-3
+        UREFPPSANGLE(I1)=phi(I1+3)
+>>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       END DO
-      DO I1=1,NRES-2
-        UREFPPSANGLE(I1+NRES-3)=OMEG(I1+1)
-C JMC 30/4/03 TRY ADDING BACKBONE AND SIDE CHAIN POLAR ANGLES
-C THIS SHOULD BE MORE IMPORTANT FOR UNRES THAN FOR CHARMM...
-C ORDER IS BB DIHEDRALS, SC DIHEDRALS, BB POLARS, SC POLARS.
-        UREFPPSANGLE(I1+2*NRES-5)=THETA(I1+2)
-        UREFPPSANGLE(I1+3*NRES-7)=ALPH(I1+1)
+      DO I1=1,nres-2
+        UREFPPSANGLE(I1+nres-3)=omeg(I1+1)
+C jmc 30/4/03 try adding backbone and side chain polar angles
+C This should be more important for unres than for charmm...
+C Order is bb dihedrals, sc dihedrals, bb polars, sc polars.
+        UREFPPSANGLE(I1+2*nres-5)=theta(I1+2)
+        UREFPPSANGLE(I1+3*nres-7)=alph(I1+1)
       END DO
 
       RETURN
       END
 
 C
-C ROUTINE TO CALCULATE RADIUS OF GYRATION
+C Routine to calculate radius of gyration
 C
       SUBROUTINE UNRESCALCRGYR(RGYR,QLOCAL)
       USE COMMONS
@@ -289,47 +329,47 @@ C
       LWEIG=.FALSE.
       FACT=0.0D0
 
-C JMC W IS WEIGHTING ARRAY.
-C JMC WE'RE ALWAYS CALCULATING THE GEOMETRIC RGY, SINCE LMASS AND LWEIG ARE FALSE.
+C jmc W is weighting array.
+C jmc we're always calculating the geometric rgy, since lmass and lweig are false.
       CALL UEDITRGYR(RGYR,NATOMS,X,Y,Z,W,AM,ISLCT,FACT,LMASS,LWEIG)
 
       RETURN
       END
 C
-C DAE MODIFIED SOLELY TO PASS RG BACK TO OPTIM
+C DAE modified solely to pass RG back to OPTIM
 C
 
-CHARMM ELEMENT SOURCE/MANIP/RGYR.SRC 1.1
+CHARMM Element source/manip/rgyr.src 1.1
 
       SUBROUTINE UEDITRGYR(RG,NATOMS,X,Y,Z,W,AM,ISLCT,FACT,LMASS,LWEIG)
 
       IMPLICIT NONE
 C-----------------------------------------------------------------------
-C     COMPUTE THE RADIUS OF GYRATION, CENTER OF MASS,
-C     AND TOTAL MASS OF THE SELECTED SUBSET OF EITHER THE MAIN OR
-C     THE COMPARISON STRUCTURE. THE RESULTS ARE OUTPUT TO UNIT OUTU.
-C     IF KEYWORD WEIG IS GIVEN THE WEIGHTING ARRAY, WHICH THE USER
-C     MUST FILL WITH CORMAN OR SCALAR COMMANDS, IS USED FOR THE
-C     WEIGHTING. THIS IS INDICATED BY LWEIG=.TRUE. AND IS TAKEN CARE
-C     OF IN CORMAN'S CALL TO RGYR.
-C     IF KEYWORD MASS IS GIVEN, THEN THE MASS-WEIGHTED RADIUS OF
-C     GYRATION, ETC ARE COMPUTED, OTHERWISE UNIT WEIGHTING PER
-C     ATOM IS USED (GIVING RMS DISTANCE FROM THE GEOMETRIC CENTER).
-C     THE DEFAULT OPTION IS TO DO E GEOMETRIC RGYR CALCULATION.
-C     A CONSTANT OFFSET TO BE SUBTRACTED FROM THE WEIGHTS CAN BE
-C     SPECIFIED WITH KEYWORD FACT.
+C     Compute the radius of gyration, center of mass,
+C     and total mass of the selected subset of either the main or
+C     the comparison structure. The results are output to unit OUTU.
+C     If keyword WEIG is given the weighting array, which the user
+C     must fill with CORMAN or SCALAR commands, is used for the
+C     weighting. This is indicated by LWEIG=.TRUE. and is taken care
+C     of in CORMAN's call to RGYR.
+C     If keyword MASS is given, then the mass-weighted radius of
+C     gyration, etc are computed, otherwise unit weighting per
+C     atom is used (giving rms distance from the geometric center).
+C     The default option is to do e geometric RGYR calculation.
+C     A constant offset to be subtracted from the weights can be
+C     specified with keyword FACT.
 C
 C     SYNTAX:
 C
-C     COOR RGYR  [FACT <REAL>] {[MASS]} [COMP]  [<ATOM-SELECTION>]
+C     COOR RGYR  [FACT <real>] {[MASS]} [COMP]  [<atom-selection>]
 C     {[WEIG]}
 C
 C     1983-09-01/LN
-C     1985-01-05/ DEFAULT REVISED /LN
+C     1985-01-05/ Default revised /LN
 C
-C##INCLUDE '/EXPORT/HOME/DAE22/CHARMMCODE/FCM/IMPNON.FCM'
-C##INCLUDE '/EXPORT/HOME/DAE22/CHARMMCODE/FCM/NUMBER.FCM'
-C##INCLUDE '/EXPORT/HOME/DAE22/CHARMMCODE/FCM/STREAM.FCM'
+C##INCLUDE '/export/home/dae22/charmmcode/fcm/impnon.fcm'
+C##INCLUDE '/export/home/dae22/charmmcode/fcm/number.fcm'
+C##INCLUDE '/export/home/dae22/charmmcode/fcm/stream.fcm'
 C     IMPLICIT REAL*8(A-H,O-Z)
 
       INTEGER NATOMS
@@ -342,13 +382,13 @@ C     IMPLICIT REAL*8(A-H,O-Z)
       INTEGER NMISS,I
       REAL*8 TMASS,WW,RG,AR
 
-C JMC
+C jmc
       INTEGER*1 OUTU
       OUTU=6
 
       ANUM=9999.0D0
 C
-C     CENTER-OF-MASS:
+C     Center-of-mass:
 C
       XCM=0.0D0
       YCM=0.0D0
@@ -383,23 +423,23 @@ C       IF(WRNLEV.GE.2) WRITE(OUTU,25)
         WRITE(OUTU,25)
 C       RETURN
       ENDIF
- 25   FORMAT(/' RGYR: *** ERROR ***  ALL COORDINATES WERE MISSING'/)
+ 25   FORMAT(/' RGYR: *** ERROR ***  All coordinates were missing'/)
 C
       IF(TMASS.LE.0.0) THEN
 C       IF(PRNLEV.GE.2) WRITE(OUTU,35) TMASS
         WRITE(OUTU,35) TMASS
         IF(TMASS.EQ.0.0) RETURN
       ENDIF
- 35   FORMAT(/' RGYR: *** WARNING *** NET "MASS"=',F12.5/)
+ 35   FORMAT(/' RGYR: *** WARNING *** Net "mass"=',F12.5/)
 C
       XCM=XCM/TMASS
       YCM=YCM/TMASS
       ZCM=ZCM/TMASS
 C     IF(NMISS.NE.0 .AND. WRNLEV.GE.2) WRITE(OUTU,45) NMISS
       IF(NMISS.NE.0) WRITE(OUTU,45) NMISS
- 45   FORMAT(/' RGYR:   THERE WERE',I5,' MISSING COORDINATES.'/)
+ 45   FORMAT(/' RGYR:   There were',I5,' missing coordinates.'/)
 C
-C     RADIUS OF GYRATION:
+C     Radius of gyration:
 C
       RG=0.0D0
       DO 60 I=1,NATOMS
@@ -421,15 +461,15 @@ C
  60   CONTINUE
       AR=ABS(RG/TMASS)
 C
-C     COMPUTE AN RG WITH THE SAME SIGN AS RG/TMASS:
+C     Compute an RG with the same sign as RG/TMASS:
 C
       RG=SQRT(AR)*RG/(TMASS*AR)
 
 C     CALL SETMSR('RGYR',RG)
-C     CALL SETMSR('MASS',TMASS)
-C     CALL SETMSR('XCM ',XCM)
-C     CALL SETMSR('YCM ',YCM)
-C     CALL SETMSR('ZCM ',ZCM)
+c     CALL SETMSR('MASS',TMASS)
+c     CALL SETMSR('XCM ',XCM)
+c     CALL SETMSR('YCM ',YCM)
+c     CALL SETMSR('ZCM ',ZCM)
 C
 C     IF(PRNLEV.GE.2) THEN
         IF(LWEIG) WRITE(OUTU,71)
@@ -438,11 +478,11 @@ C     IF(PRNLEV.GE.2) THEN
         WRITE(OUTU,74) RG,TMASS,XCM,YCM,ZCM
 C     ENDIF
  71   FORMAT(/' RGYR:'/)
- 72   FORMAT(/' RGYR:  MASS WEIGHTED RESULTS:'/)
- 73   FORMAT(/' RGYR:  GEOMETRIC RESULTS:'/)
- 74   FORMAT(/'       RADIUS OF GYRATION=',F12.5,5X,
-     $     'NET "MASS"=',F12.3/
-     $     '       CENTER-OF-"MASS" = ' ,3F12.5/)
+ 72   FORMAT(/' RGYR:  Mass weighted results:'/)
+ 73   FORMAT(/' RGYR:  Geometric results:'/)
+ 74   FORMAT(/'       Radius of gyration=',F12.5,5X,
+     $     'Net "mass"=',F12.3/
+     $     '       Center-of-"mass" = ' ,3F12.5/)
 C
       RETURN
       END

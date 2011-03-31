@@ -1,20 +1,20 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE H2OMODES(NMOLS,IPOT,COORDS,DIAG)
       USE MODHESS
@@ -90,7 +90,7 @@ C ----------------------------------------------------------------------
       DATA QQ,AD1,AD2/0.535D0,6.95D+5,6.00D+2/ 
       DATA ANGLE,HOLEN,COLEN/104.52D0,0.9572D0,0.15D0/ 
 C     DATA QE/332.17752D0/ 
-      DATA QE/332.0637782D0/  ! HARTREE TO KJ/MOL DIVIDED BY 4.184 TIMES A TO BOHR
+      DATA QE/332.0637782D0/  ! hartree to kJ/mol divided by 4.184 times A to bohr
       DATA UJ/4.184D3/ 
       DATA SG,WM/1.0D-8,18.0D0/ 
       INTEGER INFO
@@ -98,13 +98,13 @@ C     DATA QE/332.17752D0/
 
       N=NMOLS
 C
-C  CSINTH IS A FUDGE TO MUCK AROUND WITH THE EULER ANGLES IF
-C  ONE OF THEM IS SMALL. SWAPS THE Y AND Z AXES FOR THE MOLECULE IN QUESTION.
-C  IPOT DEFINES THE TIPS TYPE AS USUAL. 
+C  CSINTH is a fudge to muck around with the Euler angles if
+C  one of them is small. Swaps the y and z axes for the molecule in question.
+C  IPOT defines the TIPS type as usual. 
 C
       CSINTH =0.001D0
 C
-C  THIS IS THE ONLY TIME IPOT IS USED!
+C  This is the only time IPOT is used!
 C
       IF (IPOT.EQ.4) THEN 
          QQ=0.52D0 
@@ -187,7 +187,7 @@ C
          COSB=COS(PH) 
          COSC=COS(PS) 
          COSAP=SINA*SINC
-C        PRINT*,'I,ABS(SINA),TEST=',I,ABS(SINA),ABS(SINA).GT.CSINTH
+C        PRINT*,'I,ABS(SINA),test=',I,ABS(SINA),ABS(SINA).GT.CSINTH
          IF (ABS(SINA).GT.CSINTH) THEN
             LC(I)=1 
             CALL LC1(NMOLS,SINA,SINB,SINC,COSA,COSB,COSC,HYL,HZL,OL,CL,I,
@@ -626,7 +626,7 @@ C           CALL LC2(SINAP,SINBP,SINCP,COSAP,COSBP,COSCP,HYL,HZL,OL,CL,I)
       ENDDO
 
       CALL DSYEV('V','U',N6,HESS,SIZE(HESS,1),DIAG,TEMPA,18*NMOLS,INFO)
-      CALL EIGENSORT_VAL_ASC(DIAG,HESS,N6,6*NMOLS)
+      call eigensort_val_asc(diag,hess,n6,6*nmols)
 
       DO 772 I=1,N6 
          IF(DIAG(I).GT.0.0D0) THEN 

@@ -1,20 +1,20 @@
-!   CONNECT MODULE IS AN IMPLEMENTATION OF A CONNECTION ALGORITHM FOR FINDING REARRANGEMENT PATHWAYS.
-!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
-!   THIS FILE IS PART OF CONNECT MODULE. CONNECT MODULE IS PART OF OPTIM.
+!   CONNECT module is an implementation of a connection algorithm for finding rearrangement pathways.
+!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
+!   This file is part of CONNECT module. CONNECT module is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 MODULE TRYCONNECTMODULE
      IMPLICIT NONE
@@ -69,11 +69,11 @@ MODULE TRYCONNECTMODULE
           INTEGER :: NREDOPATHTRIES2=1
           DOUBLE PRECISION :: REDOSTRETCH=5.0D0
 !
-!  WE WANT TO RETURN HERE TO RERUN THE PATH FOR TRANSITION STATES READ IN WITH REDOPATH
-!  IN CASE THE CONNECTION FAILS.
+!  We want to return here to rerun the path for transition states read in with REDOPATH
+!  in case the connection fails.
 !
-          NC1=0 ! COUNTER FOR CHANGES OF PUSHOFF VALUE
-          NC2=0 ! COUNTER FOR CHANGES OF BFGSSTEP VALUE
+          NC1=0 ! counter for changes of PUSHOFF value
+          NC2=0 ! counter for changes of BFGSSTEP value
           SAVEPUSHOFF=PUSHOFF
           SAVEMAXBFGS=MAXBFGS
           NMINORIG=NMIN
@@ -88,21 +88,21 @@ MODULE TRYCONNECTMODULE
              ENDIF
           ENDIF
 
-          IF (CHRMMT) NCHENCALLS = 999 ! UPDATE NON-BONDED LIST ON NEXT CALL TO POTENTIAL.
+          IF (CHRMMT) NCHENCALLS = 999 ! update non-bonded list on next call to potential.
 !
-!  SUBROUTINE CHECKPAIR PUTS THE ENDPOINTS INTO OPTIMAL ALIGNMENT.
+!  Subroutine CHECKPAIR puts the endpoints into optimal alignment.
 !
           IF (.NOT.REDOPATH) THEN
              CALL CHECKPAIR(JS,JF,PERMTEST)
           ELSE
             PERMTEST=.FALSE.
-            IF (ABS(MI(JS)%DATA%E-MI(JF)%DATA%E) < EDIFFTOL) PERMTEST=.TRUE. ! MUST INITIALISE THIS LOGICAL
+            IF (ABS(MI(JS)%DATA%E-MI(JF)%DATA%E) < EDIFFTOL) PERMTEST=.TRUE. ! must initialise this logical
             CALL MINPERMDIST(TSREDO,MIN1REDO,NATOMS,DEBUG,PARAM1,PARAM2,PARAM3,BULKT,TWOD,D,DIST2,RIGIDBODY,RMAT)
             D1INIT=D
             CALL MINPERMDIST(TSREDO,MIN2REDO,NATOMS,DEBUG,PARAM1,PARAM2,PARAM3,BULKT,TWOD,D,DIST2,RIGIDBODY,RMAT)
             D2INIT=D
 
-             IF (DEBUG) PRINT '(A,2F20.10)',' TRYCONNECT> INITIAL DISTANCES OF TRANSITION STATE TO MINIMA ARE :',D1INIT,D2INIT
+             IF (DEBUG) PRINT '(A,2F20.10)',' tryconnect> Initial distances of transition state to minima are :',D1INIT,D2INIT
           ENDIF
 
           IF (GUESSPATHT) THEN
@@ -133,11 +133,11 @@ MODULE TRYCONNECTMODULE
             ELSE
                CALL GUESSPATH(MI(JS)%DATA%X,MI(JF)%DATA%X,3*NATOMS,EDIFFTOL,NATOMS)
             ENDIF
-          ! HOW MANY IMAGES TO USE?
-            IF (NIMAGE > IMAGEMAX) PRINT*,'WARNING - NIMAGE IS GREATER THAN IMAGEMAX'
-            IF (NIMAGE < 2       ) PRINT*,'WARNING - NIMAGE IS < 2'
+          ! how many images to use?
+            IF (NIMAGE > IMAGEMAX) PRINT*,'WARNING - Nimage is greater than ImageMax'
+            IF (NIMAGE < 2       ) PRINT*,'WARNING - Nimage is < 2'
             NIMAGE=NINTERP
-!           NITERMAX = NIMAGE*ITERDENSITY ! TRY ZERO NEB ITERATIONS IF WE HAVE A GUESSPATH PATH
+!           NIterMax = Nimage*IterDensity ! try zero neb iterations if we have a GUESSPATH path
             NITERMAX = 0
             IF (NINTERP.LT.2) THEN ! NO IMAGES FROM GUESSPATH - REVERT TO USUAL SCHEME
                IF (.NOT.(NCONDONE==1 .AND. FCD)) THEN
@@ -151,7 +151,7 @@ MODULE TRYCONNECTMODULE
                   NIMAGE=DISTFAC*(IMAGEDENSITY+IMAGEINCR*(MI(JF)%DATA%NTRIES(JS)-1))
                   IF (NIMAGE >= IMAGEMAX) THEN
                      NIMAGE = IMAGEMAX
-!                    MI(JF)%DATA%NTRIES(JS)=NTRIESMAX ! NO POINT TRYING AGAIN WITH THE SAME NUMBER OF IMAGES
+!                    mi(jf)%data%ntries(js)=NTriesMax ! no point trying again with the same number of images
                   ENDIF
                   IF (NIMAGE < 2       ) NIMAGE = 2
                   NITERMAX = NIMAGE*ITERDENSITY
@@ -159,9 +159,9 @@ MODULE TRYCONNECTMODULE
 
             ENDIF
           ELSEIF (MECCANOT) THEN
-          ! HOW MANY IMAGES TO USE?
+          ! how many images to use?
             NIMAGE=NINT(MIN(MECIMDENS*MI(JF)%DATA%D(JS),MECMAXIMAGES*1.0D0)) ! IMAGE DENSITY TIMES DISTANCE
-!           IF (NIMAGE > IMAGEMAX) PRINT*,'WARNING - NIMAGE IS GREATER THAN IMAGEMAX'
+!           if (Nimage > ImageMax) PRINT*,'WARNING - Nimage is greater than ImageMax'
             IF (NIMAGE < 1       ) NIMAGE=1
             NITERMAX=NINT(MIN(NIMAGE*MECITDENS,MECMAXIT*1.0D0)) ! NUMBER OF IMAGES TIMES ITERATION DENSITY
             IF (UNRST) THEN
@@ -197,74 +197,74 @@ MODULE TRYCONNECTMODULE
             NIMAGE=1
             NITERMAX = 0 ! TRY ZERO NEB ITERATIONS IF WE HAVE POINTS IN TSREDO
           ELSEIF (NCONDONE==1 .AND. FCD) THEN ! FIRST CYCLE DIFFERENT - PARAMETERS SUPPLIED USING NEWNEB
-                                          ! KEYWORD OR NEWNEB DEFAULTS WILL BE USED INSTEAD
-               PRINT '(A)'," TRYCONNECT> FIRST DNEB CALCULATION WILL USE PARAMETERS FROM THE NEWNEB LINE IN ODATA"
+                                          ! keyword or newneb defaults will be used instead
+               PRINT '(A)'," tryconnect> First DNEB calculation will use parameters from the NEWNEB line in odata"
           ELSE
             IF (REDOPATHNEB) THEN
                NIMAGE=(D1INIT+D2INIT)*IMAGEDENSITY
             ELSE
                NIMAGE=MI(JF)%DATA%D(JS)*(IMAGEDENSITY+IMAGEINCR*(MI(JF)%DATA%NTRIES(JS)-1))
             ENDIF
-!           PRINT '(A,F10.2,G20.10,F10.2,2I8)',' TRYCONNECT> IMAGEDENSITY,DIST,IMAGEINCR,TRIES,NIMAGE=', &
+!           PRINT '(A,F10.2,G20.10,F10.2,2I8)',' tryconnect> IMAGEDENSITY,dist,IMAGEINCR,tries,NIMAGE=', &
 ! &                    IMAGEDENSITY,MI(JF)%DATA%D(JS), &
 ! &                    IMAGEINCR,MI(JF)%DATA%NTRIES(JS),NIMAGE
                IF (NIMAGE >= IMAGEMAX) THEN
                   NIMAGE = IMAGEMAX
-!                 MI(JF)%DATA%NTRIES(JS)=NTRIESMAX ! NO POINT TRYING AGAIN WITH THE SAME NUMBER OF IMAGES
+!                 mi(jf)%data%ntries(js)=NTriesMax ! no point trying again with the same number of images
                ENDIF
                IF (NIMAGE < 2       ) NIMAGE = 2
                NITERMAX = NIMAGE*ITERDENSITY
           ENDIF
          
-          ! BOOK-KEEPING :-)
+          ! book-keeping :-)
           IF (.NOT.(MECCANOT.OR.(REDOPATH.AND.(.NOT.REDOPATHNEB)))) THEN             
              IF (GROWSTRINGT) THEN
-                WRITE(CHR,'(I7)') INT(NIMAGE*GSCURITERD)
-                WRITE(*,'(/A)',ADVANCE='NO') ' TRYCONNECT> '//TRIM(ADJUSTL(CHR))//'-ITERATION GS RUN FOR MINIMA '
+                WRITE(CHR,'(i7)') INT(NIMAGE*GSCURITERD)
+                WRITE(*,'(/a)',advance='no') ' tryconnect> '//trim(adjustl(chr))//'-iteration GS run for minima '
              ELSE IF (USEINT) THEN
-                WRITE(*,'(/A)',ADVANCE='NO') ' TRYCONNECT> INTERPOLATION WITH CONSTRAINT POTENTIAL FOR MINIMA '
+                WRITE(*,'(/a)',advance='no') ' tryconnect> Interpolation with constraint potential for minima '
              ELSE IF (USEINTLJ) THEN
-                WRITE(*,'(/A)',ADVANCE='NO') ' TRYCONNECT> INTERPOLATION WITH INTERPLJ POTENTIAL FOR MINIMA '
+                WRITE(*,'(/a)',advance='no') ' tryconnect> Interpolation with interpLJ potential for minima '
              ELSE
                 WRITE(CHR,'(I7)') NITERMAX
-                WRITE(*,'(/A)',ADVANCE='NO') ' TRYCONNECT> '//TRIM(ADJUSTL(CHR))//'-ITERATION DNEB RUN FOR MINIMA '
+                WRITE(*,'(/a)',advance='no') ' tryconnect> '//trim(adjustl(chr))//'-iteration DNEB run for minima '
              ENDIF
-             WRITE(CHR,'(I5)') JS
-             WRITE(*,'(A)',ADVANCE='NO') TRIM(ADJUSTL(CHR))
+             WRITE(CHR,'(i5)') js
+             WRITE(*,'(a)',advance='no') trim(adjustl(chr))
           
              IF (MI(JS)%DATA%S) THEN
-                  WRITE(*,'(A)',ADVANCE='NO') '_S'
+                  WRITE(*,'(a)',advance='no') '_S'
              ELSEIF (MI(JS)%DATA%F) THEN
-                  WRITE(*,'(A)',ADVANCE='NO') '_F'
+                  WRITE(*,'(a)',advance='no') '_F'
              ELSE
-                  WRITE(*,'(A)',ADVANCE='NO') '_U'
+                  WRITE(*,'(a)',advance='no') '_U'
              ENDIF
-             WRITE(CHR,'(I5)') JF
-             WRITE(*,'(A)',ADVANCE='NO') ' AND '//TRIM(ADJUSTL(CHR))
+             WRITE(CHR,'(i5)') jf
+             WRITE(*,'(a)',advance='no') ' and '//trim(adjustl(chr))
              IF (MI(JF)%DATA%S) THEN
-                  WRITE(*,'(A)',ADVANCE='NO') '_S'
+                  WRITE(*,'(a)',advance='no') '_S'
              ELSEIF (MI(JF)%DATA%F) THEN
-                  WRITE(*,'(A)',ADVANCE='NO') '_F'
+                  WRITE(*,'(a)',advance='no') '_F'
              ELSE
-                  WRITE(*,'(A)',ADVANCE='NO') '_U'
+                  WRITE(*,'(a)',advance='no') '_U'
              ENDIF
           
-             ! GETTING TS CANDIDATES FROM NEB
+             ! getting ts candidates from NEB
 
              IF (USEINT.OR.USEINTLJ) THEN
-                WRITE(CHR,'(I5)') INTIMAGE
+                WRITE(CHR,'(i5)') INTIMAGE
              ELSE
-                WRITE(CHR,'(I5)') NIMAGE
+                WRITE(CHR,'(i5)') NIMAGE
              ENDIF
-             WRITE(*,'(A)',ADVANCE='NO') ' USING '//TRIM(ADJUSTL(CHR))//' IMAGES '
+             WRITE(*,'(a)',advance='no') ' using '//trim(adjustl(chr))//' images '
              IF (MI(JF)%DATA%NTRIES(JS) > 1) THEN
-                  WRITE(CHR,'(I5)') MI(JF)%DATA%NTRIES(JS)
-                  WRITE(*,'(A)',ADVANCE='NO') '(ATTEMPT #'//TRIM(ADJUSTL(CHR))//') '
+                  WRITE(CHR,'(i5)') mi(jf)%data%ntries(js)
+                  WRITE(*,'(a)',advance='no') '(attempt #'//trim(adjustl(chr))//') '
              ENDIF
-             WRITE(*,'(A)') ' ...'
+             WRITE(*,'(a)') ' ...'
           ENDIF
 
-          EVDISTTHRESH=-0.2D0 ! DJW ! NOT BEING USED AT THE MOMENT
+          EVDISTTHRESH=-0.2D0 ! DJW ! not being used at the moment
 
           IF (EVDISTTHRESH.GT.0.0D0) THEN
              NFREEZE=0
@@ -273,7 +273,7 @@ MODULE TRYCONNECTMODULE
      &             +(MI(JS)%DATA%X(3*(J1-1)+2)-MI(JF)%DATA%X(3*(J1-1)+2))**2 &
      &             +(MI(JS)%DATA%X(3*(J1-1)+3)-MI(JF)%DATA%X(3*(J1-1)+3))**2
                 IF (LDUMMY.GE.EVDISTTHRESH) THEN
-                   PRINT '(A,I8,A,F20.10)',' TRYCONNECT> DISPLACEMENT OF ATOM ',J1,' BETWEEN END POINTS IS ',SQRT(LDUMMY)
+                   PRINT '(A,I8,A,F20.10)',' tryconnect> displacement of atom ',J1,' between end points is ',SQRT(LDUMMY)
                 ELSE
                    FROZEN(J1)=.TRUE.
                    NFREEZE=NFREEZE+1
@@ -281,33 +281,33 @@ MODULE TRYCONNECTMODULE
              ENDDO
              IF (NFREEZE.GT.0) THEN
                 FREEZE=.TRUE.
-                PRINT '(A,I8,A)',' TRYCONNECT> INITIALLY FREEZING ',NFREEZE,' ATOMS'
+                PRINT '(A,I8,A)',' tryconnect> initially freezing ',NFREEZE,' atoms'
              ENDIF
           ENDIF
 
-          IF ((.NOT.(USEINT.OR.USEINTLJ)).AND.(NIMAGE>=IMAGEMAX)) MI(JF)%DATA%NTRIES(JS)=NTRIESMAX ! NO POINT TRYING AGAIN WITH THE SAME NUMBER 
+          IF ((.NOT.(USEINT.OR.USEINTLJ)).AND.(NIMAGE>=IMAGEMAX)) MI(JF)%DATA%NTRIES(JS)=NTRIESMAX ! No point trying again with the same number 
           IF (REDOPATHXYZ) THEN
              NORERUN=.FALSE.
 !
-! NCONDONE SHOULD BE NTS+1, OTHERWISE ONE PREVIOUS RUN HAS FAILED TO GET A NEW TS FROM THE PATH.<N>.XYZ FILE,
-! WHICH SHOULD NEVER HAPPEN?!
+! NConDone should be NTS+1, otherwise one previous run has failed to get a new ts from the path.<n>.xyz file,
+! which should never happen?!
 !
              IF (NCONDONE.NE.NTS+1) THEN
-                PRINT '(2(A,I8))',' TRYCONNECT> ERROR - NCONDONE=',NCONDONE,' NTS=',NTS
+                PRINT '(2(A,I8))',' tryconnect> ERROR - NCONDONE=',NConDone,' NTS=',NTS
                 STOP
              ENDIF
              CALL MKFNAMES(NTS+1,FILTH,FILTHSTR,ITSTRING,EOFSSTRING)
              INQUIRE(FILE=TRIM(ADJUSTL(ITSTRING)),EXIST=EXISTS)
-             IF (EXISTS) THEN ! ALLOWS FOR RERUN WITH DIFFERENT ENERGY DIFFERENCE CRITERION FOR
-                              ! CONSECUTIVE FRAMES IN PATH WITHOUT REDOING ORIGINAL PATH
-                PRINT '(2A)',' TRYCONNECT> READING DATA FOR TS FROM EXISTING FILE ',TRIM(ADJUSTL(ITSTRING))
+             IF (EXISTS) THEN ! allows for rerun with different energy difference criterion for
+                              ! consecutive frames in path without redoing original path
+                PRINT '(2A)',' tryconnect> Reading data for ts from existing file ',TRIM(ADJUSTL(itstring))
                 NORERUN=.TRUE.
              ELSE
-                PRINT '(3A)',' TRYCONNECT> NO FILE ',TRIM(ADJUSTL(ITSTRING)),' FOUND'
+                PRINT '(3A)',' tryconnect> No file ',TRIM(ADJUSTL(itstring)),' found'
                 REDOPATH=.FALSE.
                 REDOPATHXYZ=.FALSE.
-                STOP ! REDOPATHXYZ IS ONLY GOING TO WORK AFTER A RUN FROM REDOPOINTS, IN WHICH CASE
-                     ! WE SHOULD FINISH AFTER READING THE LAST PATH.
+                STOP ! REDOPATHXYZ is only going to work after a run from redopoints, in which case
+                     ! we should finish after reading the last path.
              ENDIF
              IF (NORERUN) THEN
                 NTSFOUND=1
@@ -327,12 +327,12 @@ MODULE TRYCONNECTMODULE
                    TSFOUND(1)%E=ETSDUM
                 ENDDO
 111             CONTINUE
-                IF (DEBUG) PRINT *,'TSFOUND(1)%E=',TSFOUND(1)%E
-                PRINT '(A,G20.10)',' TRYCONNECT> ETS=',TSFOUND(1)%E
+                IF (DEBUG) PRINT *,'TSfound(1)%E=',TSfound(1)%E
+                PRINT '(A,G20.10)',' tryconnect> Ets=',TSfound(1)%E
                 CLOSE(89)
              ELSE
                 IF (PERMTEST.AND.(MOD(NIMAGE,2).NE.0).AND.(.NOT.REDOPATH)) THEN
-                   PRINT '(A)',' TRYCONNECT> CHANGING TO AN EVEN NUMBER OF IMAGES FOR POSSIBLE PERMUTATIONAL ISOMER'
+                   PRINT '(A)',' tryconnect> Changing to an even number of images for possible permutational isomer'
                    NIMAGE=NIMAGE+1
                 ENDIF
                 IF (UNRST) THEN 
@@ -347,7 +347,7 @@ MODULE TRYCONNECTMODULE
              ENDIF
           ELSE
              IF (PERMTEST.AND.(MOD(NIMAGE,2).NE.0).AND.(.NOT. REDOPATH)) THEN
-                PRINT '(A)',' TRYCONNECT> CHANGING TO AN EVEN NUMBER OF IMAGES FOR POSSIBLE PERMUTATIONAL ISOMER'
+                PRINT '(A)',' tryconnect> Changing to an even number of images for possible permutational isomer'
                 NIMAGE=NIMAGE+1
              ENDIF
              IF (UNRST) THEN 
@@ -359,7 +359,7 @@ MODULE TRYCONNECTMODULE
              ELSE
                 IF (REDOPATHNEB) THEN
                    IF (DEBUG) THEN
-                      PRINT '(A,2F20.10)',' TRYCONNECT> CALLING NEWNEB WITH MIN-SAD-MIN DISTANCES:',D1INIT,D2INIT
+                      PRINT '(A,2F20.10)',' tryconnect> calling newneb with min-sad-min distances:',D1INIT,D2INIT
                    ENDIF
                    CALL NEWNEB(REDOPATH,TSREDO,REDOE1,MIN1REDO,REDOE2,MIN2REDO)
                 ELSE
@@ -368,20 +368,20 @@ MODULE TRYCONNECTMODULE
              ENDIF
           ENDIF
 !
-!  WE MAY HAVE NEW MINIMA RATHER THAN NEW TS. 
-!  DEAL WITH THIS FIRST.
+!  We may have new minima rather than new ts. 
+!  Deal with this first.
 !
           IF (NMINFOUND.GT.0) THEN
 !
-! CHECK IF IT;S A NEW MIN - FOLLOW WHAT WE DO IN NEWCONNECT.F90
-! SAVE DATA FOR NEW MIN USING HORRIBLE WRITE/READ TRICK TO SAVE IN STATIC POINTER VARIABLES
-! CREATE DISTANCES - FUDGING NEB NEIGHBOUR VALUES 
+! Check if it;s a new min - follow what we do in newconnect.f90
+! Save data for new min using horrible write/read trick to save in static pointer variables
+! Create distances - fudging NEB neighbour values 
 ! 
              NMINSAVE=NMIN
              DO I=1,NMINFOUND
                 NULLIFY(PINTERPCOORDS,PENERGY)
                 ALLOCATE(PINTERPCOORDS(NOPT),PENERGY)
-                OPEN(UNIT=781,FILE='MINSCRATCH',STATUS='UNKNOWN')
+                OPEN(UNIT=781,FILE='minscratch',STATUS='UNKNOWN')
                 WRITE(781,*) MINFOUND(I)%E,MINFOUND(I)%COORD(1:NOPT)
                 REWIND(781)
                 READ(781,*) PENERGY,PINTERPCOORDS
@@ -390,10 +390,10 @@ MODULE TRYCONNECTMODULE
                 IF (MINNEW) THEN
                    CALL ADDNEWMIN(PENERGY,PINTERPCOORDS)
 !                  PRINT*, PINTERPCOORDS(:)
-                   WRITE(*,'(A,I7,A,G20.10)') ' TRYCONNECT> ADDED NEW MINIMUM ',NMIN,' ENERGY=',PENERGY
-                   IF (USEINT.OR.USEINTLJ) THEN ! WRITE MINIMUM TO FILE MIN<N> TO ENABLE DEBUGGING
+                   WRITE(*,'(A,I7,A,G20.10)') ' tryconnect> added new minimum ',NMIN,' energy=',PENERGY
+                   IF (USEINT.OR.USEINTLJ) THEN ! write minimum to file min<n> to enable debugging
                       WRITE(TRYFNAME,'(I6)') NMIN
-                      TRYFNAME='MIN' // TRIM(ADJUSTL(TRYFNAME))
+                      TRYFNAME='min' // TRIM(ADJUSTL(TRYFNAME))
                       OPEN(UNIT=89,FILE=TRYFNAME,STATUS='UNKNOWN')
                       IF (AMHT) THEN
                          GLY_COUNT=0
@@ -427,23 +427,23 @@ MODULE TRYCONNECTMODULE
                       CLOSE(89)
                    ENDIF
 !                  DO J2=1,NMIN-1
-!                     PRINT '(A,2I8,G20.10)','MIN1 MIN2 D=',NMIN,J2,MI(NMIN)%DATA%D(J2)
+!                     PRINT '(A,2I8,G20.10)','min1 min2 d=',NMIN,J2,MI(NMIN)%DATA%D(J2)
 !                  ENDDO
                 ELSE
-                   WRITE(*,'(A,I7)') ' TRYCONNECT> FOUND OLD MINIMUM ',POSITION
+                   WRITE(*,'(A,I7)') ' tryconnect> found old minimum ',POSITION
                 ENDIF
                 NULLIFY(PINTERPCOORDS,PENERGY)
                 DEALLOCATE(MINFOUND(I)%E,MINFOUND(I)%COORD)
              ENDDO
-             RETURN ! ASSUMES THAT WE HAVE NO TS IF WE HAVE NEW MINIMA. PROBABLY OK.
+             RETURN ! assumes that we have no TS if we have new minima. Probably OK.
           ENDIF
 
-! SAVING NEW TS INTO TS RACK; OTHERWISE - FREE MEMORY IMMEDIATELY
+! saving new ts into ts rack; otherwise - free memory immediately
 
           NTSOLD=NTS
           UNIQUE=0
           DO I=1,NTSFOUND
-!              PRINT '(A,2G20.10)',' TRYCONNECT> TSFOUND(I)%E, MAXTSENERGY=',TSFOUND(I)%E, MAXTSENERGY
+!              PRINT '(A,2G20.10)',' tryconnect> TSFOUND(i)%E, MAXTSENERGY=',TSfound(i)%E, MAXTSENERGY
                AMIDEFAIL=.FALSE.
                IF (CHRMMT .AND. CHECKOMEGAT) &
                   CALL CHECKOMEGA(TSFOUND(I)%COORD,AMIDEFAIL)
@@ -451,20 +451,20 @@ MODULE TRYCONNECTMODULE
                IF (CHRMMT .AND. CHECKCHIRALT) &
                   CALL CHECKCHIRAL(TSFOUND(I)%COORD,CHIRALFAIL)
                IF (CHRMMT .AND. AMIDEFAIL) THEN
-                  PRINT '(A,G20.10,A)',' TRYCONNECT> TRANSITION STATE WITH ENERGY ',TSFOUND(I)%E, &
-  &                                   ' IGNORED, CIS-TRANS ISOMERISATION OF AN AMIDE BOND DETECTED.'
+                  PRINT '(A,G20.10,A)',' tryconnect> Transition state with energy ',TSfound(i)%E, &
+  &                                   ' ignored, cis-trans isomerisation of an amide bond detected.'
                   DEALLOCATE(TSFOUND(I)%E,TSFOUND(I)%COORD,TSFOUND(I)%EVALMIN,TSFOUND(I)%VECS)
                ELSEIF (CHRMMT .AND. CHIRALFAIL) THEN
-                  PRINT '(A,G20.10,A)',' TRYCONNECT> TRANSITION STATE WITH ENERGY ',TSFOUND(I)%E, &
-  &                                    ' IGNORED, INVERSION OF A CHIRAL CA CENTER DETECTED.'
+                  PRINT '(A,G20.10,A)',' tryconnect> Transition state with energy ',TSfound(i)%E, &
+  &                                    ' ignored, inversion of a chiral CA center detected.'
                   DEALLOCATE(TSFOUND(I)%E,TSFOUND(I)%COORD,TSFOUND(I)%EVALMIN,TSFOUND(I)%VECS)
                ELSEIF (TSFOUND(I)%E.GT.MAXTSENERGY) THEN
-                  PRINT '(A,G20.10,A)',' TRYCONNECT> TRANSITION STATE WITH ENERGY ',TSFOUND(I)%E,' IGNORED'
+                  PRINT '(A,G20.10,A)',' tryconnect> Transition state with energy ',TSfound(i)%E,' ignored'
                   DEALLOCATE(TSFOUND(I)%E,TSFOUND(I)%COORD,TSFOUND(I)%EVALMIN,TSFOUND(I)%VECS)
 !
-! ALLOW REDOPATH TO ADD THE SAME TRANSITION STATE MORE THAN ONCE.
-! FOR USE WITH DIFFERENT PUSHOFF AND BFGSSTEP VALUES IN CASE THE CONNECTION FAILS
-! TO GIVE THE MINIMA PAIR THAT WE ACTUALLY WANT.
+! Allow redopath to add the same transition state more than once.
+! For use with different PUSHOFF and BFGSSTEP values in case the connection fails
+! to give the minima pair that we actually want.
 !
                ELSEIF ( ISNEWTS(TSFOUND(I)).OR.REDOPATH ) THEN
                   IF (NTS==TSRACKSIZE) CALL REALLOCATETSRACK
@@ -476,49 +476,49 @@ MODULE TRYCONNECTMODULE
                   TS(NTS)%DATA%BAD=.FALSE.
                   NULLIFY(TSFOUND(I)%E,TSFOUND(I)%COORD,TSFOUND(I)%EVALMIN,TSFOUND(I)%VECS)
                ELSE
-                  IF (NCONDONE==1) PRINT *, 'DISCARDED TS #',I
+                  IF (NCONDONE==1) PRINT *, 'Discarded TS #',i
                   DEALLOCATE(TSFOUND(I)%E,TSFOUND(I)%COORD,TSFOUND(I)%EVALMIN,TSFOUND(I)%VECS)
                ENDIF
           ENDDO
 
-!         CALL DUMPTS ! TS.XYZ FILE IS NOT USED FOR ANYTHING?
+!         CALL DUMPTS ! ts.xyz file is not used for anything?
 
-          ! PRINT INFO AS TO HOW MANY TS ARE ACTUALLY USEFUL
+          ! print info as to how many TS are actually useful
           IF (UNIQUE==NTSFOUND.AND..NOT.UNIQUE==0) THEN
                IF (NTSFOUND==1) THEN
                   IF (RERUN) THEN
-                    WRITE(*,'(A)') ' TRYCONNECT> RERUNNING PATH FOR THIS TS'
+                    WRITE(*,'(A)') ' tryconnect> rerunning path for this TS'
                   ELSE
-                    WRITE(*,'(A)') ' TRYCONNECT> TS APPEARS TO BE NEW'
+                    WRITE(*,'(A)') ' tryconnect> TS appears to be new'
                   ENDIF
                ELSE
-                    WRITE(*,'(A)') ' TRYCONNECT> ALL OF TS FOUND APPEAR TO BE NEW'
+                    WRITE(*,'(A)') ' tryconnect> All of TS found appear to be new'
                ENDIF
           ELSEIF (UNIQUE < NTSFOUND) THEN
-               WRITE(CHR,'(I7)') UNIQUE 
-               WRITE(*,'(1X,A)') TRIM(ADJUSTL(CHR))//' OF TS FOUND APPEAR TO BE NEW.'
+               WRITE(CHR,'(i7)') unique 
+               WRITE(*,'(1X,A)') trim(adjustl(chr))//' of TS found appear to be new.'
           ELSEIF (UNIQUE ==0 .AND..NOT.NTSFOUND==0) THEN
-               WRITE(*,'(1X,A)') ' TRYCONNECT> ALL OF TS FOUND ARE ALREADY KNOWN'
+               WRITE(*,'(1X,A)') ' tryconnect> All of TS found are already known'
           ENDIF
 
-          ! PATH RUN FOR ALL UNIQUE TS
+          ! path run for all unique ts
           DO I=NTS-UNIQUE+1,NTS
-               WRITE(CHR,'(I5)') I
-               PRINT '(/1X,A)', '>>>>>  PATH RUN FOR TS '//TRIM(ADJUSTL(CHR))//' ...'
+               WRITE(CHR,'(i5)') i
+               PRINT '(/1x,a)', '>>>>>  Path run for ts '//trim(adjustl(chr))//' ...'
                ALLOCATE( QPLUS(NOPT),QMINUS(NOPT),EPLUS,EMINUS )
                CALL MKFNAMES(I,FILTH,FILTHSTR,ITSTRING,EOFSSTRING)
                EDUMMY=TS(I)%DATA%E
                TMPTS=TS(I)%DATA%X
-               ! STRUCTURE IN TS(I)%DATA%X IS A STATIONARY POINT WHICH IS WHY WE DON'T NEED TO STORE G AND RMS FOR IT
-               LGDUMMY(1:3*NATOMS)=0.0D0; RMS=0.0D0 ! WE MUST INITIALIZE THEM HERE, HOWEVER 
+               ! structure in ts(i)%data%X is a stationary point which is why we don't need to store G and rms for it
+               LGDUMMY(1:3*NATOMS)=0.0D0; RMS=0.0D0 ! we must initialize them here, however 
                NORERUN=.FALSE.
                IF (REDOPATH) THEN
 !                 CALL MKFNAMES(NCONDONE,FILTH,FILTHSTR,ITSTRING,EOFSSTRING)
                   IF (REDOPATHXYZ) THEN
                      INQUIRE(FILE=TRIM(ADJUSTL(ITSTRING)),EXIST=EXISTS)
                      IF (EXISTS) THEN ! ALLOWS FOR RERUN WITH DIFFERENT ENERGY DIFFERENCE CRITERION FOR
-                                      ! CONSECUTIVE FRAMES IN PATH WITHOUT REDOING ORIGINAL PATH
-                        PRINT '(2A)',' TRYCONNECT> READING DATA FOR MINIMA FROM EXISTING FILE ',TRIM(ADJUSTL(ITSTRING))
+                                      ! consecutive frames in path without redoing original path
+                        PRINT '(2A)',' tryconnect> Reading data for minima from existing file ',TRIM(ADJUSTL(itstring))
                         NORERUN=.TRUE.
                      ENDIF
                   ENDIF
@@ -547,9 +547,9 @@ MODULE TRYCONNECTMODULE
                      ENDDO
                   ENDDO
 99                CONTINUE
-                  IF (DEBUG) PRINT '(A,G20.10)','EPLUS=',EPLUS
-                  IF (DEBUG) PRINT '(A,G20.10)','EMINUS=',EMINUS
-                  PRINT '(A,G20.10,A,G20.10)',' TRYCONNECT> E+=',EPLUS,'                      E-=',EMINUS
+                  IF (DEBUG) PRINT '(A,G20.10)','Eplus=',EPLUS
+                  IF (DEBUG) PRINT '(A,G20.10)','Eminus=',Eminus
+                  PRINT '(A,G20.10,A,G20.10)',' tryconnect> E+=',Eplus,'                      E-=',Eminus
                   CLOSE(89)
                ENDIF
                DEALLOCATE(TS(I)%DATA%VECS)
@@ -558,8 +558,8 @@ MODULE TRYCONNECTMODULE
                    CALL CHECK_CISTRANS_RNA(QPLUS,NATOMS,ZSYM,GOODSTRUCTURE1)
                    CALL CHECK_CISTRANS_RNA(QMINUS,NATOMS,ZSYM,GOODSTRUCTURE2)
                    IF(.NOT.GOODSTRUCTURE1.OR..NOT.GOODSTRUCTURE2) THEN
-                    PRINT '(A,G20.10,A)',' TRYCONNECT> TRANSITION STATE WITH ENERGY ',TS(I)%DATA%E, &
-  &                                     ' IGNORED, CIS-TRANS ISOMERISATION DETECTED IN THE RNA RIBOSE RING.'
+                    PRINT '(A,G20.10,A)',' tryconnect> Transition state with energy ',TS(I)%DATA%E, &
+  &                                     ' ignored, cis-trans isomerisation detected in the RNA ribose ring.'
                     DEALLOCATE(TS(I)%DATA%EVALMIN)
                     DEALLOCATE(QPLUS,QMINUS,EPLUS,EMINUS)
                     TS(I)%DATA%BAD=.TRUE.
@@ -569,8 +569,8 @@ MODULE TRYCONNECTMODULE
                    CALL CHECK_CISTRANS_DNA(QPLUS,NATOMS,ZSYM,GOODSTRUCTURE1)
                    CALL CHECK_CISTRANS_DNA(QMINUS,NATOMS,ZSYM,GOODSTRUCTURE2)
                    IF(.NOT.GOODSTRUCTURE1.OR..NOT.GOODSTRUCTURE2) THEN
-                    PRINT '(A,G20.10,A)',' TRYCONNECT> TRANSITION STATE WITH ENERGY ',TS(I)%DATA%E, &
-  &                                     ' IGNORED, CIS-TRANS ISOMERISATION DETECTED IN THE DNA DEOXYRIBOSE RING.'
+                    PRINT '(A,G20.10,A)',' tryconnect> Transition state with energy ',TS(I)%DATA%E, &
+  &                                     ' ignored, cis-trans isomerisation detected in the DNA deoxyribose ring.'
                     DEALLOCATE(TS(I)%DATA%EVALMIN)
                     DEALLOCATE(QPLUS,QMINUS,EPLUS,EMINUS)
                     TS(I)%DATA%BAD=.TRUE.
@@ -584,8 +584,8 @@ MODULE TRYCONNECTMODULE
                    DO J1=1,NATOMS
                     IF(CISARRAY1(J1)/=0) THEN
                       GOODSTRUCTURE1=.FALSE.
-                      WRITE(*,'(A,I6)') ' TRYCONNECT> MINUS MINIMUM: CIS-TRANS ISOMERISATION '// &
-  &                                                   'OF A PEPTIDE BOND DETECTED INVOLVING ATOM ', J1
+                      WRITE(*,'(A,I6)') ' tryconnect> MINUS minimum: cis-trans isomerisation '// &
+  &                                                   'of a peptide bond detected involving atom ', J1
                     END IF
                    END DO
 
@@ -595,15 +595,15 @@ MODULE TRYCONNECTMODULE
                    DO J1=1,NATOMS
                     IF(CISARRAY1(J1)/=0) THEN
                       GOODSTRUCTURE2=.FALSE.
-                      WRITE(*,'(A,I6)') ' TRYCONNECT> PLUS MINIMUM: CIS-TRANS ISOMERISATION '// &
-  &                                                   'OF A PEPTIDE BOND DETECTED INVOLVING ATOM ', J1
+                      WRITE(*,'(A,I6)') ' tryconnect> PLUS minimum: cis-trans isomerisation '// &
+  &                                                   'of a peptide bond detected involving atom ', J1
                     END IF
                    END DO
                    IF(.NOT.GOODSTRUCTURE1.OR..NOT.GOODSTRUCTURE2) THEN
-                      WRITE(*,'(A)') ' TRYCONNECT> CIS-TRANS ISOMERISATION OF A PEPTIDE BOND DETECTED '//&
-  &                                                '(WRT. THE ORIGINAL STRUCTURE), REJECTING'
-                    PRINT '(A,G20.10,A)',' TRYCONNECT> TRANSITION STATE WITH ENERGY ',TS(I)%DATA%E, &
-  &                                     ' IGNORED, CIS-TRANS ISOMERISATION DETECTED IN ONE OR MORE PEPTIDE BONDS.'
+                      WRITE(*,'(A)') ' tryconnect> Cis-trans isomerisation of a peptide bond detected '//&
+  &                                                '(wrt. the original structure), rejecting'
+                    PRINT '(A,G20.10,A)',' tryconnect> Transition state with energy ',TS(I)%DATA%E, &
+  &                                     ' ignored, cis-trans isomerisation detected in one or more peptide bonds.'
                     DEALLOCATE(TS(I)%DATA%EVALMIN)
                     DEALLOCATE(QPLUS,QMINUS,EPLUS,EMINUS)
                     TS(I)%DATA%BAD=.TRUE.
@@ -615,7 +615,7 @@ MODULE TRYCONNECTMODULE
                   CALL CHECK_CHIRALITY(QMINUS,NATOMS,GOODSTRUCTURE1)
                   CALL CHECK_CHIRALITY(QPLUS,NATOMS,GOODSTRUCTURE2)
                   IF (.NOT.GOODSTRUCTURE1.OR..NOT.GOODSTRUCTURE2) THEN
-                    WRITE(*,'(A)') ' CONNECT> CHIRALITY INVERSION DETECTED IN AT LEAST ONE OF THE CARBON CENTRES, REJECTING'
+                    WRITE(*,'(A)') ' connect> Chirality inversion detected in at least one of the carbon centres, rejecting'
                     DEALLOCATE(TS(I)%DATA%EVALMIN)
                     DEALLOCATE(QPLUS,QMINUS,EPLUS,EMINUS)
                     TS(I)%DATA%BAD=.TRUE.
@@ -634,15 +634,15 @@ MODULE TRYCONNECTMODULE
                IF (CHRMMT .AND. CHECKCHIRALT .AND. .NOT.CHIRALFAIL) &
                   CALL CHECKCHIRAL(QMINUS,CHIRALFAIL)
                IF (CHRMMT .AND. AMIDEFAIL) THEN
-                  PRINT '(A,G20.10,A)',' TRYCONNECT> TRANSITION STATE WITH ENERGY ',TS(I)%DATA%E, &
-  &                                     ' IGNORED, CIS-TRANS ISOMERISATION OF AN AMIDE-BOND DETECTED.'
+                  PRINT '(A,G20.10,A)',' tryconnect> Transition state with energy ',TS(I)%DATA%E, &
+  &                                     ' ignored, cis-trans isomerisation of an amide-bond detected.'
                   DEALLOCATE(TS(I)%DATA%EVALMIN)
                   DEALLOCATE(QPLUS,QMINUS,EPLUS,EMINUS)
                   TS(I)%DATA%BAD=.TRUE.
                   CYCLE
                ELSEIF (CHRMMT .AND. CHIRALFAIL) THEN
-                  PRINT '(A,G20.10,A)',' TRYCONNECT> TRANSITION STATE WITH ENERGY ',TS(I)%DATA%E, &
-  &                                        ' IGNORED, INVERSION OF A CHIRAL CA CENTER DETECTED.'
+                  PRINT '(A,G20.10,A)',' tryconnect> Transition state with energy ',TS(I)%DATA%E, &
+  &                                        ' ignored, inversion of a chiral CA center detected.'
                   DEALLOCATE(TS(I)%DATA%EVALMIN)
                   DEALLOCATE(QPLUS,QMINUS,EPLUS,EMINUS)
                   TS(I)%DATA%BAD=.TRUE.
@@ -653,7 +653,7 @@ MODULE TRYCONNECTMODULE
                     TS(I)%DATA%BAD=.TRUE.
                     CYCLE
                ELSEIF (TS(I)%DATA%E-MIN(EPLUS,EMINUS).GT.MAXMAXBARRIER) THEN
-                  PRINT '(2(A,G20.10))',' TRYCONNECT> TRANSITION STATE WITH ENERGY ',TS(I)%DATA%E,' IGNORED, MAXIMUM BARRIER=', &
+                  PRINT '(2(A,G20.10))',' tryconnect> Transition state with energy ',TS(I)%DATA%E,' ignored, maximum barrier=', &
   &                                      TS(I)%DATA%E-MIN(EPLUS,EMINUS)
                   DEALLOCATE(TS(I)%DATA%EVALMIN)
                   DEALLOCATE(QPLUS,QMINUS,EPLUS,EMINUS)
@@ -661,7 +661,7 @@ MODULE TRYCONNECTMODULE
 !                 STOP !!! DJW
                   CYCLE
                ELSEIF (TS(I)%DATA%E-MAX(EPLUS,EMINUS).GT.MAXBARRIER) THEN
-                  PRINT '(2(A,G20.10))',' TRYCONNECT> TRANSITION STATE WITH ENERGY ',TS(I)%DATA%E,' IGNORED, MINIMUM BARRIER=', &
+                  PRINT '(2(A,G20.10))',' tryconnect> Transition state with energy ',TS(I)%DATA%E,' ignored, minimum barrier=', &
   &                                      TS(I)%DATA%E-MAX(EPLUS,EMINUS)
                   DEALLOCATE(TS(I)%DATA%EVALMIN)
                   DEALLOCATE(QPLUS,QMINUS,EPLUS,EMINUS)
@@ -679,22 +679,22 @@ MODULE TRYCONNECTMODULE
 
 333            CONTINUE
 !              IF (I.EQ.195) DEBUG=.TRUE.
-!              PRINT *,'TRYCONNECT>  HERE I=',I
-!              PRINT *,'TRYCONNECT>  PLUS MIN'
+!              PRINT *,'tryconnect>  here I=',I
+!              PRINT *,'tryconnect>  plus min'
                CALL ISNEWMIN(EPLUS,QPLUS,MINPLUSPOS,PLUSNEW,REDOPATH,PERMUTE,INVERT,INDEX,IMATCH)
-!              PRINT *,'TRYCONNECT>  MINUS MIN'
+!              PRINT *,'tryconnect>  minus min'
                CALL ISNEWMIN(EMINUS,QMINUS,MINMINUSPOS,MINUSNEW,REDOPATH,PERMUTE,INVERT,INDEX,IMATCH)
 !              IF (I.EQ.195) THEN
-!                 PRINT *,'CALLING ISNEWMIN AGAIN FOR BOTH MINIMA:'
-!                 PRINT *,'TRYCONNECT>  PLUS MIN'
+!                 PRINT *,'calling ISNEWMIN again for both minima:'
+!                 PRINT *,'tryconnect>  plus min'
 !                 CALL ISNEWMIN(EPLUS,QPLUS,MINPLUSPOS,PLUSNEW,REDOPATH,PERMUTE,INVERT,INDEX,IMATCH)
-!                 PRINT *,'TRYCONNECT>  MINUS MIN'
+!                 PRINT *,'tryconnect>  minus min'
 !                 CALL ISNEWMIN(EMINUS,QMINUS,MINMINUSPOS,MINUSNEW,REDOPATH,PERMUTE,INVERT,INDEX,IMATCH)
 !                 STOP
 !              ENDIF
 !
-! THE ABOVE CHECK WILL NOT DISCOVER THE CASE WHEN THE PLUS MINIMUM IS NEW, AND IS THE SAME
-! AS THE MINUS MINIMUM.
+! The above check will not discover the case when the plus minimum is new, and is the same
+! as the minus minimum.
 !
                IF (PLUSNEW.AND.MINUSNEW) THEN
                   IF (ABS(EMINUS-EPLUS) < EDIFFTOL) THEN
@@ -710,18 +710,18 @@ MODULE TRYCONNECTMODULE
                TMPTS=TS(I)%DATA%X
                IF (DUMPALLPATHS) CALL MAKEALLPATHINFO(TMPTS,QPLUS,QMINUS,EDUMMY,EPLUS,EMINUS,FRQSTS,FRQSPLUS,FRQSMINUS)
                
-               WRITE(CHR,'(I7)') MINPLUSPOS
-               WRITE(CHR2,'(I7)') MINMINUSPOS
+               WRITE(CHR,'(i7)') MinPlusPos
+               WRITE(CHR2,'(i7)') MinMinusPos
                100 FORMAT (8X,A,T65,A)
                IF ( .NOT.PLUSNEW .AND. .NOT.MINUSNEW ) THEN
-                    WRITE(*,100) 'KNOWN (#'//TRIM(ADJUSTL(CHR))//')','KNOWN (#'//TRIM(ADJUSTL(CHR2))//')'
+                    WRITE(*,100) 'Known (#'//trim(adjustl(chr))//')','Known (#'//trim(adjustl(chr2))//')'
                     CALL NEWCONNECTION(MINPLUSPOS,MINMINUSPOS,I)
                     DEALLOCATE(QPLUS,QMINUS,EPLUS,EMINUS)
                     CALL SETDISTANCE(MINPLUSPOS,MINMINUSPOS,0.0D0)
                     IF (INTERPCOSTFUNCTION) CALL SETINTERP(MINPLUSPOS,MINMINUSPOS,0.0D0)
                ELSE IF ( PLUSNEW .AND. MINUSNEW ) THEN
-                    WRITE(CHR2,'(I7)') MINPLUSPOS+1
-                    WRITE(*,100) '*NEW* (PLACED IN '//TRIM(ADJUSTL(CHR))//')','*NEW* (PLACED IN '//TRIM(ADJUSTL(CHR2))//')'
+                    WRITE(CHR2,'(i7)') MinPlusPos+1
+                    WRITE(*,100) '*NEW* (Placed in '//trim(adjustl(chr))//')','*NEW* (Placed in '//trim(adjustl(chr2))//')'
 
                     CALL ADDNEWMIN(EPLUS,QPLUS)
                     CALL ADDNEWMIN(EMINUS,QMINUS)
@@ -730,11 +730,11 @@ MODULE TRYCONNECTMODULE
                     IF (INTERPCOSTFUNCTION) MI(MINPLUSPOS+1)%DATA%INTERP(MINPLUSPOS)=0.0D0
                ELSE IF ( PLUSNEW .OR. MINUSNEW ) THEN
                     IF ( PLUSNEW ) THEN
-                         WRITE(*,100) '*NEW* (PLACED IN '//TRIM(ADJUSTL(CHR))//')','KNOWN (#'//TRIM(ADJUSTL(CHR2))//')'
+                         WRITE(*,100) '*NEW* (Placed in '//trim(adjustl(chr))//')','Known (#'//trim(adjustl(chr2))//')'
                          CALL ADDNEWMIN(EPLUS,QPLUS)
                          DEALLOCATE(EMINUS,QMINUS)
                     ELSE
-                         WRITE(*,100) 'KNOWN (#'//TRIM(ADJUSTL(CHR))//')','*NEW* (PLACED IN '//TRIM(ADJUSTL(CHR2))//')'
+                         WRITE(*,100) 'Known (#'//trim(adjustl(chr))//')','*NEW* (Placed in '//trim(adjustl(chr2))//')'
                          DEALLOCATE(EPLUS,QPLUS)
                          CALL ADDNEWMIN(EMINUS,QMINUS)
                     ENDIF
@@ -744,7 +744,7 @@ MODULE TRYCONNECTMODULE
                ENDIF
           ENDDO
 !
-! ALLOW FOR NEW PATHWAY CALCULATION WITH DIFFERENT PUSHOFF AND MAXBFGS
+! Allow for new pathway calculation with different PUSHOFF and MAXBFGS
 !
          IF (REDOPATH) THEN
             CALL MINPERMDIST(QP,MIN1REDO,NATOMS,DEBUG,PARAM1,PARAM2,PARAM3,BULKT,TWOD,D,DIST2,RIGIDBODY,RMAT)
@@ -761,11 +761,11 @@ MODULE TRYCONNECTMODULE
 
             PATHFAILED=.FALSE.
             IF ((DIST1P.GT.GEOMDIFFTOL).AND.(DIST1M.GT.GEOMDIFFTOL)) THEN
-               PRINT '(A)',' TRYCONNECT> PATH FAILED TO MATCH FIRST MINIMUM'
+               PRINT '(A)',' tryconnect> path failed to match first minimum'
                PATHFAILED=.TRUE.
             ENDIF
             IF ((DIST2P.GT.GEOMDIFFTOL).AND.(DIST2M.GT.GEOMDIFFTOL)) THEN
-               PRINT '(A)',' TRYCONNECT> PATH FAILED TO MATCH SECOND MINIMUM'
+               PRINT '(A)',' tryconnect> path failed to match second minimum'
                PATHFAILED=.TRUE.
             ENDIF
             IF (PATHFAILED) THEN
@@ -789,7 +789,7 @@ MODULE TRYCONNECTMODULE
                   MAXBFGS=SAVEMAXBFGS-NC2*(SAVEMAXBFGS-SAVEMAXBFGS/REDOSTRETCH)/NREDOPATHTRIES2
                ENDIF
                IF (NC2.LE.2*NREDOPATHTRIES2) THEN
-                  PRINT '(2(A,F15.5))',' TRYCONNECT> REDO PATH WITH PUSHOFF=',PUSHOFF,' MAXBFGS=',MAXBFGS
+                  PRINT '(2(A,F15.5))',' tryconnect> Redo path with pushoff=',PUSHOFF,' maxbfgs=',MAXBFGS
                   RERUN=.TRUE.
                   GOTO 10
                ENDIF

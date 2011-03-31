@@ -1,26 +1,26 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE SECDIAG(VEC,COORDS,ENERGY,GL,DIAG,GTEST,XRMS)
       USE COMMONS
       USE KEY
-      USE MODCHARMM
-      USE PORFUNCS
+      USE modcharmm
+      use porfuncs
       IMPLICIT NONE
       INTEGER J1
       LOGICAL GTEST, FPLUS, FMINUS
@@ -41,20 +41,20 @@ C     IF (CHRMMT) DIFF=5.0D-2
       IF (CHRMMT) DIFF=0.01D0
 C     IF (DFTBT) DIFF=1.0D-3
 C
-C  MUST READ VEC INTO LOCALV BECAUSE WE ARE GOING TO PLAY WITH THE VECTOR IN
-C  QUESTION. THIS WOULD MESS UP CASES WHERE WE NEED TO RETRY WITH A SMALLER
-C  STEP SIZE, BECAUSE WE CANNOT UNDO THE PREVIOUS STEP CLEANLY IF THE MAGNITUDE
-C  OF VEC IS CHANGED! 1/7/04 DJW
+C  Must read VEC into LOCALV because we are going to play with the vector in
+C  question. This would mess up cases where we need to retry with a smaller
+C  step size, because we cannot undo the previous step cleanly if the magnitude
+C  of VEC is changed! 1/7/04 DJW
 C
       LOCALV(1:NOPT)=VEC(1:NOPT)
-C     PRINT '(A)','SECDIAG> VEC BEFORE ORTHOGOPT'
+C     PRINT '(A)','secdiag> vec before orthogopt'
 C     PRINT '(6G20.10)',LOCALV(1:NOPT)
       IF (NFREEZE.LT.3) THEN
         CALL ORTHOGOPT(LOCALV,COORDS,.TRUE.)
       ELSE
          CALL VECNORM(LOCALV,NOPT)
       ENDIF
-C     PRINT '(A)','SECDIAG> VEC AFTER ORTHOGOPT'
+C     PRINT '(A)','secdiag> vec after orthogopt'
 C     PRINT '(6G20.10)',LOCALV(1:NOPT)
 
       IF (FREEZE) THEN
@@ -74,48 +74,48 @@ C     PRINT '(6G20.10)',LOCALV(1:NOPT)
          DUMMY3(J1)=COORDS(J1)+ZETA*LOCALV(J1)
       ENDDO
       IF (CPMD) THEN
-         INQUIRE(FILE='RESTART.1.PLUS',EXIST=FPLUS)
+         INQUIRE(FILE='RESTART.1.plus',EXIST=FPLUS)
          IF (FPLUS) THEN
-            CALL SYSTEM(' CP RESTART.1.PLUS RESTART.1 ')
+            CALL SYSTEM(' cp RESTART.1.plus RESTART.1 ')
          ELSE
-            CALL SYSTEM(' CP RESTART.1.SAVE RESTART.1 ')
+            CALL SYSTEM(' cp RESTART.1.save RESTART.1 ')
          ENDIF
       ELSE IF (CASTEP) THEN
-C        INQUIRE(FILE=SYS(1:LSYS) // '.WVFN.PLUS',EXIST=FPLUS)
+C        INQUIRE(FILE=SYS(1:LSYS) // '.wvfn.plus',EXIST=FPLUS)
 C        IF (FPLUS) THEN
-C           CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.WVFN.PLUS ' // SYS(1:LSYS) // '.WVFN.1 ')
+C           CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.wvfn.plus ' // SYS(1:LSYS) // '.wvfn.1 ')
 C        ELSE
-C           CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.WVFN.SAVE ' // SYS(1:LSYS) // '.WVFN.1 ')
+C           CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.wvfn.save ' // SYS(1:LSYS) // '.wvfn.1 ')
 C        ENDIF
       ENDIF
 C     PRINT*,'DUMMY3:'
       CALL POTENTIAL(DUMMY3,EPLUS,GRAD1,GTEST,.FALSE.,RMS,.FALSE.,.FALSE.)
-      IF (CPMD) CALL SYSTEM(' CP RESTART.1 RESTART.1.PLUS ')
-C     IF (CASTEP) CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.WVFN.1 ' // SYS(1:LSYS) // '.WVFN.PLUS ')
+      IF (CPMD) CALL SYSTEM(' cp RESTART.1 RESTART.1.plus ')
+C     IF (CASTEP) CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.wvfn.1 ' // SYS(1:LSYS) // '.wvfn.plus ')
       DO J1=1,NOPT
          DUMMY3(J1)=COORDS(J1)-ZETA*LOCALV(J1)
       ENDDO
       IF (CPMD) THEN
-         INQUIRE(FILE='RESTART.1.MINUS',EXIST=FMINUS)
+         INQUIRE(FILE='RESTART.1.minus',EXIST=FMINUS)
          IF (FMINUS) THEN
-            CALL SYSTEM(' CP RESTART.1.MINUS RESTART.1 ')
+            CALL SYSTEM(' cp RESTART.1.minus RESTART.1 ')
          ELSE
-            CALL SYSTEM(' CP RESTART.1.SAVE RESTART.1 ')
+            CALL SYSTEM(' cp RESTART.1.save RESTART.1 ')
          ENDIF
       ELSE IF (CASTEP) THEN
-C        INQUIRE(FILE=SYS(1:LSYS) // '.WVFN.MINUS',EXIST=FMINUS)
+C        INQUIRE(FILE=SYS(1:LSYS) // '.wvfn.minus',EXIST=FMINUS)
 C        IF (FMINUS) THEN
-C           CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.WVFN.MINUS ' // SYS(1:LSYS) // '.WVFN.1 ')
+C           CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.wvfn.minus ' // SYS(1:LSYS) // '.wvfn.1 ')
 C        ELSE
-C           CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.WVFN.SAVE ' // SYS(1:LSYS) // '.WVFN.1 ')
+C           CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.wvfn.save ' // SYS(1:LSYS) // '.wvfn.1 ')
 C        ENDIF
       ENDIF
 C     PRINT*,'DUMMY3:'
       CALL POTENTIAL(DUMMY3,EMINUS,GRAD2,GTEST,.FALSE.,RMS,.FALSE.,.FALSE.)
-      IF (CPMD) CALL SYSTEM(' CP RESTART.1 RESTART.1.MINUS ')
-C     IF (CASTEP) CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.WVFN.1 ' // SYS(1:LSYS) // '.WVFN.MINUS ')
+      IF (CPMD) CALL SYSTEM(' cp RESTART.1 RESTART.1.minus ')
+C     IF (CASTEP) CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.wvfn.1 ' // SYS(1:LSYS) // '.wvfn.minus ')
       DIAG=(EPLUS+EMINUS-2.0D0*ENERGY)/(ZETA**2*VECL)
-C     IF (DEBUG) WRITE(*,'(A,G15.5)') 'SECDIAG> DIFF',ZETA
+C     IF (DEBUG) WRITE(*,'(A,G15.5)') 'secdiag> DIFF',ZETA
 
       DIAG2=0.0D0
       DO J1=1,NOPT
@@ -126,8 +126,8 @@ C        WRITE(*,'(A,I4,4F20.10)') 'J1,GRAD1,GRAD2,LOCALV,DIAG2=',J1,GRAD1(J1),G
       DIAG3=2*(DIAG-DIAG2/2)
 C     IF (.NOT.GTEST) WRITE(*,'(A,6F20.10)') 'D,D2,D3,E+,E-,E=',DIAG,DIAG2,DIAG3,EPLUS,EMINUS,ENERGY
 C
-C  ALTHOUGH DIAG3 IS A MORE ACCURATE ESTIMATE OF THE DIAGONAL SECOND DERIVATIVE, IT
-C  CANNOT BE DIFFERENTIATED ANALYTICALLY.
+C  Although DIAG3 is a more accurate estimate of the diagonal second derivative, it
+C  cannot be differentiated analytically.
 C
       IF (GTEST) THEN
          DO J1=1,NOPT
@@ -136,15 +136,15 @@ C
             ELSE
                GL(J1)=(GRAD1(J1)-GRAD2(J1))/(ZETA*VECL**2)-2.0D0*DIAG*LOCALV(J1)/VECL**2
             ENDIF
-!           WRITE(*,'(A,I4,4G16.7)') 'SECDIAG> J1,GRAD1,GRAD2,LOCALV,GL=',J1,GRAD1(J1),GRAD2(J1),LOCALV(J1),GL(J1)
+!           WRITE(*,'(A,I4,4G16.7)') 'secdiag> J1,GRAD1,GRAD2,LOCALV,GL=',J1,GRAD1(J1),GRAD2(J1),LOCALV(J1),GL(J1)
          ENDDO
          IF (NFREEZE.LT.3) CALL ORTHOGOPT(GL,COORDS,.FALSE.)
-C        PRINT *,'SECDIAG> BEFORE PROJ STUFF GL:'
+C        PRINT *,'secdiag> before proj stuff GL:'
 C        PRINT '(3F20.10)',GL(1:NOPT)
-C        CALL ORTHOGOPT(GL,COORDS,.FALSE.) ! SEEMS TO DO SOME GOOD FOR MSEVB
+C        CALL ORTHOGOPT(GL,COORDS,.FALSE.) ! seems to do some good for MSEVB
 C
-C  PROJECT OUT ANY COMPONENT OF THE GRADIENT ALONG LOCALV (WHICH IS A UNIT VECTOR)
-C  THIS IS A BIG IMPROVEMENT FOR DFTB.
+C  Project out any component of the gradient along LOCALV (which is a unit vector)
+C  This is a big improvement for DFTB.
 C
          PROJ=0.0D0
          DO J1=1,NOPT
@@ -158,11 +158,11 @@ C
             XRMS=XRMS+GL(J1)**2
          ENDDO
          XRMS=DSQRT(XRMS/NOPT)
-!        PRINT *,'SECDIAG> AFTER PROJ STUFF GL:'
+!        PRINT *,'secdiag> after proj stuff GL:'
 !        PRINT '(3F20.10)',GL(1:NOPT)
 
          IF (DEBUG) WRITE(*,'(A,3G15.5,3G20.12,G10.3)') 'D,D2,D3,E+,E-,E,RMS=',DIAG,DIAG2,DIAG3,EPLUS,EMINUS,ENERGY,XRMS
-         IF (DEBUG) WRITE(*,'(A,G20.10)') 'PREDICTED GRADIENT COMPONENT=',(EPLUS-EMINUS)/(2*ZETA)
+         IF (DEBUG) WRITE(*,'(A,G20.10)') 'predicted gradient component=',(EPLUS-EMINUS)/(2*ZETA)
       ENDIF
 !     PRINT '(A)','LOCALV:'
 !     PRINT '(3G20.10)',LOCALV(1:NOPT)

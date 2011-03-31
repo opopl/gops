@@ -1,20 +1,20 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 
       SUBROUTINE NORMAL(X,N)
@@ -31,7 +31,7 @@ C
       ENDDO
       P=DSQRT(Q)
       IF(P.LT.1D-14)THEN
-      WRITE(6,*)' NULL VECTOR RETURNED FROM NORMAL'
+      WRITE(6,*)' null vector returned from NORMAL'
       RETURN
       ENDIF
       DO I=1,N
@@ -40,7 +40,7 @@ C
       RETURN
       END 
 C
-C  NORMALIZE VECTOR VEC1
+C  Normalize vector VEC1
 C
       SUBROUTINE VECNORM(VEC1,NOPT)
       IMPLICIT NONE
@@ -51,7 +51,7 @@ C
       DO J2=1,NOPT
          DUMMY2=DUMMY2+VEC1(J2)**2
       ENDDO
-!     PRINT '(A,G20.10)','VECNORM> DUMMY2=',DUMMY2
+!     PRINT '(A,G20.10)','vecnorm> DUMMY2=',DUMMY2
       IF (DUMMY2.GT.0.0D0) THEN
          DUMMY2=1.0D0/DSQRT(DUMMY2)
          DO J2=1,NOPT
@@ -91,13 +91,13 @@ C      END
 
       SUBROUTINE VSTAT(V,ZQ,LENGTH,N)
 C
-C RETURNS STATISTICAL INFO ABOUT VECTOR V IN ZQ
-C     ZQ(1)  LARGEST ABSOLUTE MAGNITUDE
-C     ZQ(2)  SMALLEST ABSOLUTE MAGNITUDE
-C     ZQ(3)  LARGEST VALUE
-C     ZQ(4)  SMALLEST VALUE
-C     ZQ(5)  2-NORM
-C     ZQ(6)  DYNAMIC RANGE OF THE VECTOR (ABS. MIN. - ABS. MAX.)
+C RETURNS STATISTICAL INFO ABOUT VECTOR V in ZQ
+C     ZQ(1)  Largest absolute magnitude
+C     ZQ(2)  Smallest absolute magnitude
+C     ZQ(3)  Largest value
+C     ZQ(4)  Smallest value
+C     ZQ(5)  2-norm
+C     ZQ(6)  Dynamic range of the vector (abs. min. - abs. max.)
 C   
 
       IMPLICIT NONE
@@ -108,7 +108,7 @@ C
       ZQ(1:6)=0.0D0
       ZQ(2)=DABS(V(1))
       ZQ(4)=V(1)
-C     PRINT*,'STATISTICS REPORTED FOR VECTOR:'
+C     PRINT*,'Statistics reported for vector:'
 C     WRITE(*,10) (J,V(J),J=1,LENGTH)
 C10    FORMAT(I4,F20.10)
       DO I=1,LENGTH
@@ -118,31 +118,31 @@ C10    FORMAT(I4,F20.10)
          ZQ(4)=MIN(ZQ(4),V(I))
          U=U+V(I)*V(I)
       ENDDO
-      IF (LENGTH .NE. 0.0) ZQ(5)=DSQRT(U/LENGTH)
+      If (Length .ne. 0.0) ZQ(5)=DSQRT(U/LENGTH)
       ZQ(6)=ZQ(2)-ZQ(1)
       RETURN
       END
 
        INTEGER FUNCTION ATOI (STRING)
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C PURPOSE:      CONVERT STRING TO AN INTEGER VALUE
+C Purpose:      Convert STRING to an integer value
 C
-C ARGUMENTS:    STRING   CHARACTER STRING (INPUT ONLY)
+C Arguments:    STRING   character string (input only)
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C 
-C REVISION 4.0  89/03/14  01:15:20  BERNHOLD
-C BASELINE FOR SUN & VAX PRIOR TO PORTING EVERYWHERE
+C Revision 4.0  89/03/14  01:15:20  bernhold
+C Baseline for Sun & VAX prior to porting everywhere
 C 
-C REVISION 3.0  89/01/29  23:09:23  BERNHOLD
-C FIRST WORKING RELEASE FOR VAX
+C Revision 3.0  89/01/29  23:09:23  bernhold
+C First working release for VAX
 C 
-C REVISION 2.1  89/01/02  20:35:02  BERNHOLD
-C TO KEEP CONSISTENT WITH .U FILE JUST CHECKED IN.
+C Revision 2.1  89/01/02  20:35:02  bernhold
+C To keep consistent with .u file just checked in.
 C 
 C
-C SYSTEM:       STANDARD FORTRAN 77
+C System:       Standard FORTRAN 77
 C
-C COPYRIGHT 1988 DAVID E. BERNHOLDT
+C Copyright 1988 David E. Bernholdt
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
        CHARACTER(LEN=80) STRING
        CHARACTER(LEN=1) C
@@ -154,7 +154,7 @@ C
        I = 1
        C = STRING(I:I)
 C
-C      PASS OVER ANY LEADING SPACES
+C      Pass over any leading spaces
 C
  100   IF (C .EQ. ' ') THEN
           I = I + 1
@@ -162,8 +162,8 @@ C
           GOTO 100
        ENDIF
 C
-C      SEE IF FIRST CHARACTER MAKES THE NUMBER NEGATIVE
-C      ACCEPT + AS VALID CHARACTER BEFORE THE DIGITS START
+C      See if first character makes the number negative
+C      Accept + as valid character before the digits start
 C
        IF (C .EQ. '-') THEN
           NEG = .TRUE.
@@ -174,17 +174,17 @@ C
           C = STRING(I:I)
        ENDIF
 C
-C      CONTINUE AS LONG AS ITS A DIGIT...
+C      Continue as long as its a digit...
 C
  200   IF (LGE(C, '0') .AND. LLE(C,'9')) THEN
-C            SHIFT NUMBER OVER & ADD NEW DIGIT
+C            Shift number over & add new digit
           ATOI = 10*ATOI + ICHAR(C)-48
           I = I + 1
           C = STRING(I:I)
           GOTO 200
        ENDIF
 C
-C      NEGATE THE RESULT IF NECESSARY
+C      Negate the result if necessary
 C
        IF (NEG) ATOI = -ATOI
        RETURN
@@ -192,12 +192,12 @@ C
 C*****************************************************
       
       SUBROUTINE MATMULV(A,B,C,NA,NB,NC)
-! DOXYGEN {{{
-!> \NAME MATMULV 
-!> \BRIEF MULTIPLY MATRICES: A=B*C
-!> \PARAM[OUT] A - OUTPUT MATRIX => A=BC 
-!> \PARAM[IN] B,C - INPUT MATRICES 
-!> \PARAM[IN] NA,NB,NC (INTEGER) MATRIX DIMENSIONS
+! Doxygen {{{
+!> \name MATMULV 
+!> \brief multiply matrices: A=B*C
+!> \param[out] A - output matrix => A=BC 
+!> \param[in] B,C - input matrices 
+!> \param[in] NA,NB,NC (INTEGER) matrix dimensions
 ! }}}
       IMPLICIT NONE
       INTEGER I,K,J,NA,NB,NC
@@ -217,58 +217,58 @@ C              PRINT*,'I,K,J,B,C,Z=',I,K,J,B(J,I),C(J,K),Z
       RETURN 
       END
        CHARACTER*(*) FUNCTION ITOA(NR, FRCPLS)
-! DOXYGEN {{{
-!> \NAME ITOA 
-!> \BRIEF CONVERT NUMBER TO A LEFT JUSTIFIED STRING
-!> \PARAM[IN] NR NUMBER TO BE CONVERTED
-!> \PARAM[IN] FRCPLS FORCE LEADING '+' IF NR POSITIVE
+! Doxygen {{{
+!> \name ITOA 
+!> \brief Convert number to a left justified string
+!> \param[in] NR number to be converted
+!> \param[in] FRCPLS Force leading '+' if NR positive
 ! }}}
-C DESCRIPTION {{{
+C Description {{{
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C PURPOSE:      CONVERT NR TO A LEFT JUSTIFIED STRING
+C Purpose:      Convert NR to a left justified string
 C
-C ARGUMENTS:
-C     NR       NUMBER TO BE CONVERTED (INPUT ONLY)
-C     FRCPLS   FORCE LEADING '+' IF NR POSITIVE (INPUT ONLY)
+C Arguments:
+C     NR       number to be converted (input only)
+C     FRCPLS   Force leading '+' if NR positive (input only)
 C
-C LIMITATIONS:
-C     MAY RETURN WITH INCOMPLETE CONVERSION IF LENGTH OF ITOA IS TOO
-C     SHORT.  PUTS '*' IN LAST POSITION OF ITOA TO INDICATE OVERLOW.
+C Limitations:
+C     May return with incomplete conversion if length of ITOA is too
+C     short.  Puts '*' in last position of ITOA to indicate overlow.
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C
-C REVISION 4.0  89/03/14  01:15:45  BERNHOLD
-C BASELINE FOR SUN & VAX PRIOR TO PORTING EVERYWHERE
+C Revision 4.0  89/03/14  01:15:45  bernhold
+C Baseline for Sun & VAX prior to porting everywhere
 C 
-C REVISION 3.0  89/01/29  23:10:22  BERNHOLD
-C FIRST WORKING RELEASE FOR VAX
+C Revision 3.0  89/01/29  23:10:22  bernhold
+C First working release for VAX
 C 
-C REVISION 2.1  89/01/02  20:36:12  BERNHOLD
-C TO KEEP CONSISTENT WITH .U FILE JUST CHECKED IN.
+C Revision 2.1  89/01/02  20:36:12  bernhold
+C To keep consistent with .u file just checked in.
 C 
-C     REVISION 1.1  88/12/07  13:38:51  BERNHOLD
-C     INITIAL REVISION
+C     Revision 1.1  88/12/07  13:38:51  bernhold
+C     Initial revision
 C     
 C
-C SYSTEM:       STANDARD FORTRAN 77
+C System:       Standard FORTRAN 77
 C
-C COPYRIGHT 1988 DAVID E. BERNHOLDT
+C Copyright 1988 David E. Bernholdt
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C }}}
       INTEGER NR, FRCPLS, NRABS
       INTEGER I, J, N, NDIG
 C
-C     CLEAR OUT THE STRING
+C     Clear out the string
 C
       DO 10 I = 1, LEN(ITOA)
          ITOA = ' '
  10   CONTINUE
 C
-C     START COUNTING POSITION IN STRING
+C     Start counting position in string
 C
       J = 1
       NRABS = ABS (NR)
 C
-C     PUT IN SIGN AS APPROPRIATE
+C     Put in sign as appropriate
 C
       IF (NR .LT. 0) THEN
          ITOA(J:J) = '-'
@@ -279,14 +279,14 @@ C
          J = J + 1
       ENDIF
 C
-C     CHECK IF WE ARE ABOUT TO OVERFLOW THE STRING
+C     Check if we are about to overflow the string
 C
       IF (J .GT. LEN(ITOA)) THEN
          ITOA(J-1:J-1) = '*'
          RETURN
       ENDIF
 C
-C     LOOP OVER NR OF DIGITS IN NUMBER
+C     Loop over nr of digits in number
 C
       NDIG = INT( LOG10( FLOAT(NRABS)) ) + 1
       DO 100 I = NDIG, 1, -1
@@ -294,8 +294,8 @@ C
          ITOA(J:J) = CHAR(N + 48)
          J = J + 1
 C
-C        CHECK FOR OVERFLOW OF THE STRING, BUT IF THIS IS LAST DIGIT
-C        THEN ITS OKAY.
+C        Check for overflow of the string, but if this is last digit
+C        then its okay.
 C
          IF (J .GT. LEN(ITOA) .AND. I .GT. 1) THEN
             ITOA(J-1:J-1) = '*'
@@ -305,19 +305,19 @@ C
 C
       RETURN
       END
-      CHARACTER(LEN=4) FUNCTION STRING(NAME,IORD)
-      CHARACTER(LEN=4) NAME, ITOA*3
+      CHARACTER(LEN=4) FUNCTION STRING(NAME,Iord)
+      CHARACTER(LEN=4) NAME, ItoA*3
       INTEGER IORD
-      IF (NAME(2:2) .EQ. 'N') THEN
-         STRING(1:1) = NAME(1:1)
-         STRING(2: ) = ITOA(IORD, 0)
-         STRING(LNBLNK(STRING)+1:) = NAME(3:3)
-      ELSE
-         STRING = NAME
-      ENDIF
+      If (Name(2:2) .eq. 'N') then
+         String(1:1) = Name(1:1)
+         String(2: ) = ItoA(Iord, 0)
+         String(LNBlnk(String)+1:) = Name(3:3)
+      Else
+         String = Name
+      EndIf
       RETURN
       END
-      FUNCTION DOTOPT(A,B,N)
+      function dotopt(a,b,n)
       IMPLICIT NONE
       INTEGER I,N
       DOUBLE PRECISION A(N),B(N), DOTOPT
@@ -331,7 +331,7 @@ C
 
       SUBROUTINE CROSSOPT(A,B,C,IX)
 C
-C CALCULATES THE (OPTIONALLY) NORMALIZED VECTOR CROSS PRODUCT C=A X B
+C CALCULATES THE (OPTIONALLY) NORMALIZED VECTOR CROSS PRODUCT C=A x B
 C
       IMPLICIT NONE
       INTEGER IX
@@ -346,7 +346,7 @@ C
 C
 C CALCULATES THE DISTANCE BETWEEN TWO POINTS IN CARTESIAN SPACE
 C
-      FUNCTION DIST(A,B)
+      function dist(a,b)
       IMPLICIT NONE
       INTEGER I
       DOUBLE PRECISION A(3),B(3),Z,DIST
@@ -363,30 +363,30 @@ C
 C     ROBUST EQUIVALENCE CHECK - DO WELL DEFINED SORT ON COORDINATE
 C     MATRIX AND COMPARE ELEMENT BY ELEMENT.  SHOULD BE FOOLPROOF.
 C
-C     VEC      COORDINATE VECTOR TO BE CHECKED (MODIFIED)
-C     VECR     SORTED REFERENCE COORDINATE VECTOR (INPUT ONLY)
+C     VEC      coordinate vector to be checked (modified)
+C     VECR     sorted reference coordinate vector (input only)
 C     NORD     ???
-C     ICOMP    NUMBER OF COORDINATES OUTSIDE OF TOL (OUTPUT ONLY)
-C     TOL      TOLERANCE FOR COMPARISON OF COORDS (INPUT ONLY)
+C     ICOMP    number of coordinates outside of TOL (output only)
+C     TOL      tolerance for comparison of coords (input only)
 C
       SUBROUTINE COMPARE2(VEC,VECR,NORD,ICOMP,TOL)
       USE COMMONS
       IMPLICIT NONE
-C     MAXIMUM NUMBER OF ATOMS CURRENTLY ALLOWED
+C     Maximum number of atoms currently allowed
       INTEGER NORD(2*NATOMS+1),I,JAP,ICOMP
       DOUBLE PRECISION VEC(3*NATOMS),VECR(3*NATOMS),Z,TOL
 C
       ICOMP=0
       IF (IPRNT.GT.130) THEN
-         WRITE(6,*)'INPUT VECTOR BEFORE SORTING'
+         WRITE(6,*)'Input vector before sorting'
          WRITE(6,80)(VEC(JAP),JAP=1,3*NATOMS)
  80   FORMAT(3(1X,F10.5))
       ENDIF
       CALL SORTXYZ(VEC,VEC,NORD(NATOMS+1),TOL)
       IF (IPRNT.GT.130) THEN
-         WRITE(6,*)'COMPARISON VECTOR'
+         WRITE(6,*)'Comparison vector'
          WRITE(6,80)(VECR(JAP),JAP=1,3*NATOMS)
-         WRITE(6,*)'SORTED INPUT VECTOR'
+         WRITE(6,*)'Sorted input vector'
          WRITE(6,80)(VEC(JAP),JAP=1,3*NATOMS)
       ENDIF
       DO 30 I=1,NATOMS*3
@@ -402,42 +402,42 @@ C        PRINT*,'I,Z,VECR,VEC=',I,Z,VECR(I),VEC(I)
 
        INTEGER FUNCTION LNBLNK (STRING)
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-C PURPOSE:   RETURNS THE POSITION OF THE LAST NON-BLANK CHARACTER
+C Purpose:   Returns the position of the last non-blank character
 C
-C ARGUMENTS: STRING   CHARACTER STRING (INPUT ONLY)
+C Arguments: STRING   character string (input only)
 C
-C REMARKS:   ALL FORTRAN 77 CHARACTER VARIABLES ARE BLANK PADDED ON THE
-C            RIGHT.  THE INTRINSIC FUNCTION LEN RETURNS THE DIMENSION
-C            OF THE CHARACTER OBJECT, NOT THE LENGTH OF THE CONTENTS.
+C Remarks:   All FORTRAN 77 character variables are blank padded on the
+C            right.  The intrinsic function LEN returns the dimension
+C            of the character object, not the length of the contents.
 C            
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 C
-C    REVISION 0.0  87/07/24  BERNHOLDT (VAX)
+C    Revision 0.0  87/07/24  bernholdt (VAX)
 C
-C    REVISION 1.1  88/01/11  22:08:15  BERNHOLD
-C    INITIAL REVISION
+C    Revision 1.1  88/01/11  22:08:15  bernhold
+C    Initial revision
 C    
 C
-C SYSTEM:     STANDARD FORTRAN 77
+C System:     Standard FORTRAN 77
 C
-C COPYRIGHT 1987 DAVID E. BERNHOLDT
+C Copyright 1987 David E. Bernholdt
 C:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
        INTEGER I
        CHARACTER*(*) STRING
        CHARACTER(LEN=1) BLANK
        PARAMETER (BLANK = ' ')
 C
-C      START AT THE END AND WORK BACKWARDS
+C      Start at the end and work backwards
 C
        DO 100 I = LEN(STRING), 1, -1
-C         LOOK FOR FIRST NON-WHITESPACE CHARACTER
+C         Look for first non-whitespace character
           IF (STRING(I:I) .NE. BLANK) THEN
              LNBLNK = I
              RETURN
           ENDIF
   100  CONTINUE
 C
-C      IF WE GET THIS FAR, THE STRING IS EMPTY
+C      If we get this far, the string is empty
        LNBLNK = 0
        RETURN
        END
@@ -454,7 +454,7 @@ C      IF WE GET THIS FAR, THE STRING IS EMPTY
       ENDDO
       RETURN
       END
-        FUNCTION ANGMAG(ORBIT,D,IORDER,IRETURN)
+        function angmag(orbit,d,iorder,ireturn)
         IMPLICIT NONE
         INTEGER IRETURN, IORDER
         DOUBLE PRECISION DTOR, ORDER, A1, X, TOP, BOT, ORBIT, D, ANGMAG

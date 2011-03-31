@@ -1,20 +1,20 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE VDUMP(DIAG,ZT,N,M)
       USE KEY
@@ -25,27 +25,27 @@ C
       DOUBLE PRECISION DIAG(M)
       LOGICAL ZT(M)
 C
-C  DUMP THE EIGENVECTORS WHICH CORRESPOND TO NON-ZERO EIGENVALUES
-C  IN FILE VECTORS.DUMP
+C  dump the eigenvectors which correspond to non-zero eigenvalues
+C  in file vectors.dump
 C
       IF (.NOT.ALLSTEPS) REWIND(44)
       IF (ALLVECTORS) THEN
-!       CSW34> FIND HOW MANY MODES ARE GOING TO BE PRINTED AND ECHO THIS
-!       TO A FILE FOR THE ANALYSIS SCRIPT (THIS COULD BE REMOVED WHEN ALL THE
-!       DUMPING IS DONE IN OPTIM). THIS IS A PROBLEM WITH FREEZE WHERE
-!       SOME NON-REAL MODES HAVE ZERO EIGANVALUE.
+!       csw34> Find how many modes are going to be printed and echo this
+!       to a file for the analysis script (this could be removed when all the
+!       dumping is done in OPTIM). This is a problem with FREEZE where
+!       some non-real modes have zero eiganvalue.
             MCOUNT=0
             DO J1=1,N
                 IF (ZT(J1)) MCOUNT=MCOUNT+1
             ENDDO
-            OPEN(UNIT=499,FILE='NMODES.DAT',STATUS='UNKNOWN')
+            OPEN(UNIT=499,FILE='nmodes.dat',STATUS='UNKNOWN')
             WRITE(499,'(I6)') MCOUNT
             CLOSE(499)
          DO J1=1,N
             IF (ZT(J1)) THEN
-! IF PRINTING THE MASS WEIGHTED VECTORS (NORMAL MODES), CONVERT OMEGA^2
-! INTO THE VIBRATIONAL FREQUENCY IN WAVENUMBERS (CM^(-1)). 108.52 IS THE
-! CONVERSION FACTOR FROM (KCAL MOL-1 KG-1 A-2)^2 TO CM-1.
+! If printing the mass weighted vectors (normal modes), convert omega^2
+! into the vibrational frequency in wavenumbers (cm^(-1)). 108.52 is the
+! conversion factor from (kcal mol-1 kg-1 A-2)^2 to cm-1.
               IF (MWVECTORS) THEN
                         WRITE(44,'(F20.10)') DSQRT(DIAG(J1))*108.52
               ELSE
@@ -59,7 +59,7 @@ C
       ELSE
          DO J1=N,1,-1
             IF (ZT(J1)) THEN
-! AS ABOVE
+! As above
                IF (MWVECTORS) THEN
                         WRITE(44,'(F20.10)') DSQRT(DIAG(J1))*108.52
                ELSE

@@ -1,20 +1,20 @@
-!   NEB MODULE IS AN IMPLEMENTATION OF THE NUDGED ELASTIC BAND METHOD FOR PERFORMING DOUBLE-ENDED PATHWAY SEARCHES.
-!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
-!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
+!   NEB module is an implementation of the nudged elastic band method for performing double-ended pathway searches.
+!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
+!   This file is part of NEB module. NEB module is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 MODULE KEYNEB
      USE KEY,ONLY: DEBUG,NEBK,NEBKINITIAL,NEBKFINAL,NEBFACTOR
@@ -35,13 +35,13 @@ MODULE KEYNEB
      LOGICAL :: DUMPNEBEOS          = .FALSE.
      INTEGER :: DUMPNEBEOSFREQ      = 100
      LOGICAL :: READGUESS           = .FALSE.
-     CHARACTER(LEN=10) :: XYZFILE   = 'NEB.XYZ   '
-     CHARACTER(LEN=12) :: RBXYZFILE = 'RBNEB.XYZ   '
-     CHARACTER(LEN=10) :: PTSFILE   = 'NEB.OUT   '
-     CHARACTER(LEN=10) :: EOFSFILE  = 'NEB.EOFS  '
-     CHARACTER(LEN=80) :: GUESSFILE = 'GUESS.XYZ '
+     CHARACTER(LEN=10) :: XYZFILE   = 'neb.xyz   '
+     CHARACTER(LEN=12) :: RBXYZFILE = 'rbneb.xyz   '
+     CHARACTER(LEN=10) :: PTSFILE   = 'neb.out   '
+     CHARACTER(LEN=10) :: EOFSFILE  = 'neb.EofS  '
+     CHARACTER(LEN=80) :: GUESSFILE = 'guess.xyz '
      LOGICAL :: OLDCONNECT          = .FALSE.
-     !LOGICAL :: DEBUG               = .FALSE.
+     !logical :: debug               = .False.
      CONTAINS
 
      SUBROUTINE KEYNEBPRINT(VARIABLEIN)
@@ -52,44 +52,44 @@ MODULE KEYNEB
           
           LOGICAL :: VARIABLE
           
-          WRITE(*,'(1X,A,2G19.10,A,G19.10)') 'KEYNEB> INITIAL AND FINAL NEB FORCE CONSTANTS ', &
-  &                                           NEBKINITIAL,NEBKFINAL,' FACTOR=',NEBFACTOR
+          WRITE(*,'(1X,A,2G19.10,A,G19.10)') 'KeyNEB> Initial and final NEB force constants ', &
+  &                                           NEBKINITIAL,NEBKFINAL,' factor=',NEBFACTOR
           VARIABLE=.FALSE.
           IF (PRESENT(VARIABLEIN)) VARIABLE=VARIABLEIN
           IF (DNEBSWITCH.GT.0.0D0) WRITE(*,'(A,G20.10)') &
-  &               ' KEYNEB> GRADIENT WILL SWITCH TO SINGLE-NUDGED FORMULATION FOR RMS<',DNEBSWITCH
+  &               ' KeyNEB> Gradient will switch to single-nudged formulation for RMS<',DNEBSWITCH
           IF (VARIABLE) THEN
-               WRITE(*,'(1X,A)') 'KEYNEB> NUMBER OF IMAGES WILL VARY DEPENDING ON THE SEPARATION OF THE ENDPOINTS'
+               WRITE(*,'(1x,a)') 'KeyNEB> Number of images will vary depending on the separation of the endpoints'
           ELSE
                INTSTR=WI(NIMAGE)
-               WRITE(*,'(1X,A)') 'KEYNEB> USING '//TRIM(INTSTR)//' IMAGES'
+               WRITE(*,'(1x,a)') 'KeyNEB> Using '//trim(IntStr)//' images'
           ENDIF
           
           IF (DUMPNEBXYZ) THEN
                INTSTR=WI(DUMPNEBXYZFREQ)
-               WRITE(*,'(1X,A)') 'KEYNEB> NEB COORDINATES WILL BE SAVED TO XYZ FILE "'//TRIM(XYZFILE)//'" EVERY '&
-               &//TRIM(INTSTR)//' ITERATIONS'
+               WRITE(*,'(1x,a)') 'KeyNEB> NEB coordinates will be saved to xyz file "'//trim(XyzFile)//'" every '&
+               &//TRIM(INTSTR)//' iterations'
           ENDIF
           IF (DUMPNEBPTS) THEN
                INTSTR=WI(DUMPNEBPTSFREQ)
-               WRITE(*,'(1X,A)') 'KEYNEB> NEB COORDINATES WILL BE SAVED TO BINARY FILE "'//TRIM(PTSFILE)//'" EVERY '&
-               &//TRIM(INTSTR)//' ITERATIONS'
+               WRITE(*,'(1x,a)') 'KeyNEB> NEB coordinates will be saved to binary file "'//trim(PtsFile)//'" every '&
+               &//TRIM(INTSTR)//' iterations'
           ENDIF
           IF (DUMPNEBEOS) THEN
                INTSTR=WI(DUMPNEBEOSFREQ)
-               WRITE(*,'(1X,A)') 'KEYNEB> ENERGY PROFILE WILL BE SAVED TO FILE "'//TRIM(EOFSFILE)//'" EVERY '&
-               &//TRIM(INTSTR)//' ITERATIONS'
+               WRITE(*,'(1x,a)') 'KeyNEB> Energy profile will be saved to file "'//trim(EofSFile)//'" every '&
+               &//TRIM(INTSTR)//' iterations'
           ENDIF
 
-          IF (READGUESS) WRITE(*,'(1X,A)') 'KEYNEB> GUESS WILL BE READ FROM FILE "'//TRIM(GUESSFILE)//'"'
-          IF (OLDCONNECT) WRITE(*,'(1X,A)') "KEYNEB> TRANSITION STATE CANDIDATE WILL BE RETURNED IN FIRST ENDPOINT'S COORD ARRAY"
+          IF (READGUESS) WRITE(*,'(1x,a)') 'KeyNEB> Guess will be read from file "'//trim(GuessFile)//'"'
+          IF (OLDCONNECT) WRITE(*,'(1x,a)') "KeyNEB> Transition state candidate will be returned in first endpoint's coord array"
           IF (DEBUG) THEN
-               WRITE(*,'(1X,A)') "KEYNEB> VERBOSE PRINTING IS ON"
-               WRITE(*,'(1X,A)') 'KEYNEB> EVOLUTION OF AVDEV, E, RMS AND S WILL BE SAVED TO '&
-               &//'FILES "AVDEVOFI", "EOFI", "RMSOFI" AND "SOFI"'
+               WRITE(*,'(1x,a)') "KeyNEB> Verbose printing is on"
+               WRITE(*,'(1x,a)') 'KeyNEB> Evolution of AvDev, E, Rms and S will be saved to '&
+               &//'files "AvDevofI", "EofI", "RmsofI" and "SofI"'
           ENDIF
-          IF (DESMAXAVGE.LT.0.99*HUGE(1.0D0)) WRITE(*,'(1X,A,G20.10)') 'KEYGS> MAX AVERAGE ENERGY: ', DESMAXAVGE
-          IF (DESMAXEJUMP.LT.0.99*HUGE(1.0D0)) WRITE(*,'(1X,A,G20.10)') 'KEYGS> MAX ENERGY JUMP PER IMAGE: ', DESMAXEJUMP
+          IF (DESMAXAVGE.LT.0.99*HUGE(1.0D0)) WRITE(*,'(1x,a,G20.10)') 'KeyGS> Max average energy: ', DESMAXAVGE
+          IF (DESMAXEJUMP.LT.0.99*HUGE(1.0D0)) WRITE(*,'(1x,a,G20.10)') 'KeyGS> Max energy jump per image: ', DESMAXEJUMP
           
      END SUBROUTINE KEYNEBPRINT
 

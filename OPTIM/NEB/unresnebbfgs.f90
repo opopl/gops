@@ -1,20 +1,20 @@
-!   NEB MODULE IS AN IMPLEMENTATION OF THE NUDGED ELASTIC BAND METHOD FOR PERFORMING DOUBLE-ENDED PATHWAY SEARCHES.
-!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
-!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
+!   NEB module is an implementation of the nudged elastic band method for performing double-ended pathway searches.
+!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
+!   This file is part of NEB module. NEB module is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 MODULE MINIMISER3
      IMPLICIT NONE
@@ -42,11 +42,11 @@ SUBROUTINE NEBBFGSINT(D,U)
      DOUBLE PRECISION,DIMENSION(0:U,D) :: SEARCHSTEP,GDIF
      DOUBLE PRECISION :: XINTN(D), OLDCARTN(NOPT*NIMAGE), OLDQN(D+2*NINTS)
 
-!  STORE BASE SET OF CARTESIAN COORDINATES
+!  Store base set of Cartesian coordinates
 
      OLDCARTN = X
 
-! TRANSFORM COORDINATES TO INTERNALS XINT.  (NOTE G IS ALWAYS IN INTERNALS FOR UNRES)
+! Transform coordinates to internals Xint.  (Note G is always in internals for unres)
 
      DO J1=1,NIMAGE
          DO J2=1,NRES
@@ -93,8 +93,8 @@ SUBROUTINE NEBBFGSINT(D,U)
      CALL INITIALISE2(OLDQN)
      CALL NEBGRADIENT
 
-! G (WHICH POINTS TO EITHER WHOLE OR THE APPROPRIATE PART OF GGG) IS OF DIMENSION 3*NATOMS*(FUNCTION OF NIMAGES)
-! SO NEED TO MAKE ARRAY GINT, WHICH MATCHES DIAG ETC.
+! G (which points to either whole or the appropriate part of ggg) is of dimension 3*natoms*(function of nimages)
+! so need to make array Gint, which matches Diag etc.
      DO J1=1,NIMAGE
         GINT(NINTS*(J1-1)+1:NINTS*J1)=G(NOPT*(J1-1)+1:NOPT*(J1-1)+NINTS)
      ENDDO
@@ -115,8 +115,8 @@ SUBROUTINE NEBBFGSINT(D,U)
           YS=DOT_PRODUCT( GDIF(NPT/D,:), SEARCHSTEP(NPT/D,:)  )
           IF (YS==0.0D0) YS=1.0D0
       
-          ! UPDATE ESTIMATE OF DIAGONAL INVERSE HESSIAN ELEMENTS.
-          ! WE DIVIDE BY BOTH YS AND YY AT DIFFERENT POINTS, SO THEY HAD BETTER NOT BE ZERO!
+          ! Update estimate of diagonal inverse Hessian elements.
+          ! We divide by both YS and YY at different points, so they had better not be zero!
           IF (.NOT.DIAGCO) THEN
                YY=DOT_PRODUCT( GDIF(NPT/D,:) , GDIF(NPT/D,:) )
                IF (YY==0.0D0) YY=1.0D0
@@ -126,8 +126,8 @@ SUBROUTINE NEBBFGSINT(D,U)
                CALL CHECKINPUT2
           ENDIF
       
-          ! COMPUTE -H*G USING THE FORMULA GIVEN IN: NOCEDAL, J. 1980, "UPDATING QUASI-NEWTON MATRICES WITH LIMITED STORAGE",
-          ! MATHEMATICS OF COMPUTATION, VOL.35, NO.151, PP. 773-782
+          ! COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980, "Updating quasi-Newton matrices with limited storage",
+          ! Mathematics of Computation, Vol.35, No.151, pp. 773-782
           CP= POINT; IF (POINT==0) CP = NEBMUPDATE
           RHO1(CP)=1.0D0/YS
           GTMP = -GINT
@@ -154,17 +154,17 @@ SUBROUTINE NEBBFGSINT(D,U)
           STP = 1.0D0
      ENDIF MAIN
 
-     !  STORE THE NEW SEARCH DIRECTION
+     !  Store the new search direction
      IF (NITERDONE.GT.1) SEARCHSTEP(POINT,:)=GTMP
       
      IF (DOT_PRODUCT(GINT,GTMP)/SQRT( DOT_PRODUCT(GINT,GINT)*DOT_PRODUCT(GTMP,GTMP) ) > 0.0D0) THEN
-          IF (MOREPRINTING) PRINT*,'SEARCH DIRECTION HAS POSITIVE PROJECTION ONTO GRADIENT - REVERSING STEP'
+          IF (MOREPRINTING) PRINT*,'Search direction has positive projection onto gradient - reversing step'
           GTMP=-GTMP
           SEARCHSTEP(POINT,:)=GTMP
      ENDIF
      GTMP=GINT
 
-     !  WE SHOULD APPLY THE MAXIMUM DNEB LBFGS STEP TO EACH IMAGE SEPARATELY.
+     !  We should apply the maximum DNEB LBFGS step to each image separately.
      DO J2=1,NIMAGE
           STEPIMAGE(J2) = SQRT(DOT_PRODUCT(SEARCHSTEP(POINT,NINTS*(J2-1)+1:NINTS*J2),SEARCHSTEP(POINT,NINTS*(J2-1)+1:NINTS*J2)))
           IF (STEPIMAGE(J2) > MAXNEBBFGS) THEN
@@ -173,13 +173,19 @@ SUBROUTINE NEBBFGSINT(D,U)
           ENDIF
      ENDDO
 
-     !  WE NOW HAVE THE PROPOSED STEP - UPDATE GEOMETRY AND CALCULATE NEW GRADIENT
+     !  We now have the proposed step - update geometry and calculate new gradient
      XINTN = XINTN + STP*SEARCHSTEP(POINT,:)
 
      DO J1=1,NIMAGE
+<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NINTS,XINTN(NINTS*(J1-1)+1:NINTS*J1))
 ! GET CARTESIANS
 !CALL CHAINBUILD
+=======
+        CALL VAR_TO_GEOM(NINTS,XINTN(NINTS*(J1-1)+1:NINTS*J1))
+! get cartesians
+        CALL CHAINBUILD
+>>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
         DO J2=1,NRES
            X(6*(J2-1)+1+NOPT*(J1-1))=C(1,J2)
            X(6*(J2-1)+2+NOPT*(J1-1))=C(2,J2)
@@ -192,54 +198,54 @@ SUBROUTINE NEBBFGSINT(D,U)
 
      CALL NEBGRADIENT
 
-! G (WHICH POINTS TO EITHER WHOLE OR THE APPROPRIATE PART OF GGG) IS OF DIM 3*NATOMS*(FUNCTION OF NIMAGES)
-! SO NEED TO MAKE GINT, WHICH MATCHES DIAG ETC.
+! G (which points to either whole or the appropriate part of ggg) is of dim 3*natoms*(function of nimages)
+! so need to make Gint, which matches Diag etc.
      DO J1=1,NIMAGE
         GINT(NINTS*(J1-1)+1:NINTS*J1)=G(NOPT*(J1-1)+1:NOPT*(J1-1)+NINTS)
      ENDDO
 
-! DAE STEP FINISHED, RESET OLDCART,OLDQ
+! DAE step finished, reset oldcart,oldq
      OLDCARTN = X
      OLDQN(NINTS+1:NINTS*(NIMAGE+1)) = XINTN
 
-! JMC     CALL IMAGEDISTRIBUTION
+! jmc     call ImageDistribution
      CALL INTERNALIMAGEDISTRIBUTION(OLDQN)
      STEPTOT = SUM(STEPIMAGE)/NIMAGE
      IF (MOREPRINTING) THEN
-        WRITE(*,'(I6,2F20.10,F8.2,A,F8.3,F9.3)') NITERDONE,ETOTAL/NIMAGE,RMS,&
-     &    AVDEV,'%',SEPARATION, STEPTOT
+        WRITE(*,'(i6,2f20.10,f8.2,a,f8.3,f9.3)') NIterDone,ETOTAL/Nimage,RMS,&
+     &    AVDEV,'%',Separation, StepTot
         CALL FLUSH(6,ISTAT)
      ENDIF
-     IF (DEBUG) CALL DUMPFILES("M")
+     IF (DEBUG) CALL DUMPFILES("m")
 
      CALL TERMINATERUN2
      IF (EXITSTATUS > 0) EXIT
 
 
-     ! COMPUTE THE NEW STEP AND GRADIENT CHANGE
+     ! Compute the new step and gradient change
      NPT=POINT*D
      SEARCHSTEP(POINT,:) = STP*SEARCHSTEP(POINT,:)
      GDIF(POINT,:)=GINT-GTMP
      POINT=POINT+1; IF (POINT==NEBMUPDATE) POINT=0
-     IF (DUMPNEBXYZ.AND.MOD(NITERDONE,DUMPNEBXYZFREQ)==0) CALL RWG("W",.FALSE.,NITERDONE)
+     IF (DUMPNEBXYZ.AND.MOD(NITERDONE,DUMPNEBXYZFREQ)==0) CALL RWG("w",.False.,NITERDONE)
      IF (DUMPNEBPTS.AND.MOD(NITERDONE,DUMPNEBPTSFREQ)==0) CALL SAVEBANDCOORD
      IF (DUMPNEBEOS.AND.MOD(NITERDONE,DUMPNEBEOSFREQ)==0) CALL WRITEPROFILE(NITERDONE)
      END DO
 
-     IF (DEBUG) CALL DUMPFILES("E")
+     IF (DEBUG) CALL DUMPFILES("e")
 
-CONTAINS
+contains
      SUBROUTINE INITIALISE2(OLDQN) ! IF OLDQN IS NOT MADE AN ARGUMENT THEN IFC MISCOMPILES
           DOUBLE PRECISION :: OLDQN(D+2*NINTS)
 
           CALL CHECKINPUT2
-          IF (DEBUG) CALL DUMPFILES("B")
+          IF (DEBUG) CALL DUMPFILES("b")
 
           IF (MOREPRINTING) THEN
-               PRINT '(/1X,A)', REPEAT(">",21)//" ENTERING L-BFGS MINIMISER "//REPEAT(">",21)
-               WRITE(*,'(1X,A)') REPEAT("_",91)
-               WRITE(*,'(A6,A20,A20,A9,2A8,A9)') 'ITER','ENERGY','RMS FORCE','AV.DEV','PATH','STEP'
-               WRITE(*,'(1X,A)') REPEAT("_",91)
+               PRINT '(/1x,a)', repeat(">",21)//" ENTERING L-BFGS MINIMISER "//repeat(">",21)
+               WRITE(*,'(1x,a)') repeat("_",91)
+               WRITE(*,'(a6,a20,a20,a9,2a8,a9)') 'Iter','Energy','RMS Force','Av.Dev','Path','Step'
+               WRITE(*,'(1x,a)') repeat("_",91)
           ENDIF
      END SUBROUTINE INITIALISE2
 
@@ -254,13 +260,13 @@ CONTAINS
           ENDIF
 
           IF (NITERMAX < 0) THEN
-               PRINT '(1X,A)', 'MAXIMAL NUMBER OF ITERATIONS IS LESS THAN ZERO! STOP.'
+               PRINT '(1x,a)', 'Maximal number of iterations is less than zero! Stop.'
                CALL TSUMMARY
                STOP
           ENDIF
           
           IF (DIAGCO) THEN
-               PRINT*,'USING ESTIMATE OF THE INVERSE DIAGONAL ELEMENTS'
+               PRINT*,'using estimate of the inverse diagonal elements'
                DO I=1,D
                     IF (DIAG(I)<=0.0D0) THEN
                          WRITE(*,'(" THE",I5,"-TH DIAGONAL ELEMENT OF THE INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE")') I

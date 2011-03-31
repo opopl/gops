@@ -1,45 +1,45 @@
 
-C     ---------------------  YNORM ----------------------
+c     ---------------------  ynorm ----------------------
 
-      SUBROUTINE YNORM(AMHMAXSIZ,JSTRT,JFINS,OBSERV,RNORM)
+      subroutine ynorm(AMHmaxsiz,jstrt,jfins,observ,rnorm)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-C     YNORM  NORMALIZES THE ARRAY OBSERV BY RNORM
+c     YNORM  normalizes the array observ by rnorm
 
-C     ARGUMENTS:
+c     arguments:
 
-C        AMHMAXSIZ- MAXIMUM ARRAY LENGTH
-C        JSTRT - FIRST SITE TO BE INCLUDED
-C        JFINS - LAST SITE TO BE INCLUDED
-C        OBSERV- SET OF OBSERVABLES TO BE NORMALIZED
-C        RNORM - NORMALIZING FACTOR
+c        AMHmaxsiz- maximum array length
+c        jstrt - first site to be included
+c        jfins - last site to be included
+c        observ- set of observables to be normalized
+c        rnorm - normalizing factor
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-      IMPLICIT NONE
+      implicit none
 
-C      INCLUDE 'UTILITY'  ! UTILITY FILE
+c      include 'utility'  ! utility file
 
-C     ARGUMENT DECLARATIONS:
+c     argument declarations:
 
-         INTEGER AMHMAXSIZ,JSTRT,JFINS
+         integer AMHmaxsiz,jstrt,jfins
      
-         DOUBLE PRECISION OBSERV(AMHMAXSIZ),RNORM
+         double precision observ(AMHmaxsiz),rnorm
 
-C     INTERNAL VARIABLES:
-          INTEGER I_RES
+c     internal variables:
+          integer i_res
 
 
-C     --------------------- BEGIN -----------------------
+c     --------------------- begin -----------------------
 
-C     NORMALIZE OBSERV BY RNORM
+c     normalize observ by rnorm
 
-      DO 515 I_RES=JSTRT,JFINS
-         OBSERV(I_RES)=RNORM*OBSERV(I_RES)
-  515 CONTINUE
+      do 515 i_res=jstrt,jfins
+         observ(i_res)=rnorm*observ(i_res)
+  515 continue
 
-C     --------------------- DONE  -----------------------
+c     --------------------- done  -----------------------
       
-      RETURN
-      END
+      return
+      end

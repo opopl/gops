@@ -1,230 +1,230 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE DSYGVX( ITYPE, JOBZ, RANGE, UPLO, N, A, LDA, B, LDB,
      $                   VL, VU, IL, IU, ABSTOL, M, W, Z, LDZ, WORK,
      $                   LWORK, IWORK, IFAIL, INFO )
 *
-*  -- LAPACK DRIVER ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     JUNE 30, 1999
+*  -- LAPACK driver routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     June 30, 1999
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO
       INTEGER            IL, INFO, ITYPE, IU, LDA, LDB, LDZ, LWORK, M, N
       DOUBLE PRECISION   ABSTOL, VL, VU
 *     ..
-*     .. ARRAY ARGUMENTS ..
+*     .. Array Arguments ..
       INTEGER            IFAIL( * ), IWORK( * )
       DOUBLE PRECISION   A( LDA, * ), B( LDB, * ), W( * ), WORK( * ),
      $                   Z( LDZ, * )
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  DSYGVX COMPUTES SELECTED EIGENVALUES, AND OPTIONALLY, EIGENVECTORS
-*  OF A REAL GENERALIZED SYMMETRIC-DEFINITE EIGENPROBLEM, OF THE FORM
-*  A*X=(LAMBDA)*B*X,  A*BX=(LAMBDA)*X,  OR B*A*X=(LAMBDA)*X.  HERE A
-*  AND B ARE ASSUMED TO BE SYMMETRIC AND B IS ALSO POSITIVE DEFINITE.
-*  EIGENVALUES AND EIGENVECTORS CAN BE SELECTED BY SPECIFYING EITHER A
-*  RANGE OF VALUES OR A RANGE OF INDICES FOR THE DESIRED EIGENVALUES.
+*  DSYGVX computes selected eigenvalues, and optionally, eigenvectors
+*  of a real generalized symmetric-definite eigenproblem, of the form
+*  A*x=(lambda)*B*x,  A*Bx=(lambda)*x,  or B*A*x=(lambda)*x.  Here A
+*  and B are assumed to be symmetric and B is also positive definite.
+*  Eigenvalues and eigenvectors can be selected by specifying either a
+*  range of values or a range of indices for the desired eigenvalues.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  ITYPE   (INPUT) INTEGER
-*          SPECIFIES THE PROBLEM TYPE TO BE SOLVED:
-*          = 1:  A*X = (LAMBDA)*B*X
-*          = 2:  A*B*X = (LAMBDA)*X
-*          = 3:  B*A*X = (LAMBDA)*X
+*  ITYPE   (input) INTEGER
+*          Specifies the problem type to be solved:
+*          = 1:  A*x = (lambda)*B*x
+*          = 2:  A*B*x = (lambda)*x
+*          = 3:  B*A*x = (lambda)*x
 *
-*  JOBZ    (INPUT) CHARACTER*1
-*          = 'N':  COMPUTE EIGENVALUES ONLY;
-*          = 'V':  COMPUTE EIGENVALUES AND EIGENVECTORS.
+*  JOBZ    (input) CHARACTER*1
+*          = 'N':  Compute eigenvalues only;
+*          = 'V':  Compute eigenvalues and eigenvectors.
 *
-*  RANGE   (INPUT) CHARACTER*1
-*          = 'A': ALL EIGENVALUES WILL BE FOUND.
-*          = 'V': ALL EIGENVALUES IN THE HALF-OPEN INTERVAL (VL,VU]
-*                 WILL BE FOUND.
-*          = 'I': THE IL-TH THROUGH IU-TH EIGENVALUES WILL BE FOUND.
+*  RANGE   (input) CHARACTER*1
+*          = 'A': all eigenvalues will be found.
+*          = 'V': all eigenvalues in the half-open interval (VL,VU]
+*                 will be found.
+*          = 'I': the IL-th through IU-th eigenvalues will be found.
 *
-*  UPLO    (INPUT) CHARACTER*1
-*          = 'U':  UPPER TRIANGLE OF A AND B ARE STORED;
-*          = 'L':  LOWER TRIANGLE OF A AND B ARE STORED.
+*  UPLO    (input) CHARACTER*1
+*          = 'U':  Upper triangle of A and B are stored;
+*          = 'L':  Lower triangle of A and B are stored.
 *
-*  N       (INPUT) INTEGER
-*          THE ORDER OF THE MATRIX PENCIL (A,B).  N >= 0.
+*  N       (input) INTEGER
+*          The order of the matrix pencil (A,B).  N >= 0.
 *
 *  A       (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDA, N)
-*          ON ENTRY, THE SYMMETRIC MATRIX A.  IF UPLO = 'U', THE
-*          LEADING N-BY-N UPPER TRIANGULAR PART OF A CONTAINS THE
-*          UPPER TRIANGULAR PART OF THE MATRIX A.  IF UPLO = 'L',
-*          THE LEADING N-BY-N LOWER TRIANGULAR PART OF A CONTAINS
-*          THE LOWER TRIANGULAR PART OF THE MATRIX A.
+*          On entry, the symmetric matrix A.  If UPLO = 'U', the
+*          leading N-by-N upper triangular part of A contains the
+*          upper triangular part of the matrix A.  If UPLO = 'L',
+*          the leading N-by-N lower triangular part of A contains
+*          the lower triangular part of the matrix A.
 *
-*          ON EXIT, THE LOWER TRIANGLE (IF UPLO='L') OR THE UPPER
-*          TRIANGLE (IF UPLO='U') OF A, INCLUDING THE DIAGONAL, IS
-*          DESTROYED.
+*          On exit, the lower triangle (if UPLO='L') or the upper
+*          triangle (if UPLO='U') of A, including the diagonal, is
+*          destroyed.
 *
-*  LDA     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY A.  LDA >= MAX(1,N).
+*  LDA     (input) INTEGER
+*          The leading dimension of the array A.  LDA >= max(1,N).
 *
 *  B       (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDA, N)
-*          ON ENTRY, THE SYMMETRIC MATRIX B.  IF UPLO = 'U', THE
-*          LEADING N-BY-N UPPER TRIANGULAR PART OF B CONTAINS THE
-*          UPPER TRIANGULAR PART OF THE MATRIX B.  IF UPLO = 'L',
-*          THE LEADING N-BY-N LOWER TRIANGULAR PART OF B CONTAINS
-*          THE LOWER TRIANGULAR PART OF THE MATRIX B.
+*          On entry, the symmetric matrix B.  If UPLO = 'U', the
+*          leading N-by-N upper triangular part of B contains the
+*          upper triangular part of the matrix B.  If UPLO = 'L',
+*          the leading N-by-N lower triangular part of B contains
+*          the lower triangular part of the matrix B.
 *
-*          ON EXIT, IF INFO <= N, THE PART OF B CONTAINING THE MATRIX IS
-*          OVERWRITTEN BY THE TRIANGULAR FACTOR U OR L FROM THE CHOLESKY
-*          FACTORIZATION B = U**T*U OR B = L*L**T.
+*          On exit, if INFO <= N, the part of B containing the matrix is
+*          overwritten by the triangular factor U or L from the Cholesky
+*          factorization B = U**T*U or B = L*L**T.
 *
-*  LDB     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY B.  LDB >= MAX(1,N).
+*  LDB     (input) INTEGER
+*          The leading dimension of the array B.  LDB >= max(1,N).
 *
 *  VL      (INPUT) DOUBLE PRECISION
 *  VU      (INPUT) DOUBLE PRECISION
-*          IF RANGE='V', THE LOWER AND UPPER BOUNDS OF THE INTERVAL TO
-*          BE SEARCHED FOR EIGENVALUES. VL < VU.
-*          NOT REFERENCED IF RANGE = 'A' OR 'I'.
+*          If RANGE='V', the lower and upper bounds of the interval to
+*          be searched for eigenvalues. VL < VU.
+*          Not referenced if RANGE = 'A' or 'I'.
 *
-*  IL      (INPUT) INTEGER
-*  IU      (INPUT) INTEGER
-*          IF RANGE='I', THE INDICES (IN ASCENDING ORDER) OF THE
-*          SMALLEST AND LARGEST EIGENVALUES TO BE RETURNED.
-*          1 <= IL <= IU <= N, IF N > 0; IL = 1 AND IU = 0 IF N = 0.
-*          NOT REFERENCED IF RANGE = 'A' OR 'V'.
+*  IL      (input) INTEGER
+*  IU      (input) INTEGER
+*          If RANGE='I', the indices (in ascending order) of the
+*          smallest and largest eigenvalues to be returned.
+*          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0.
+*          Not referenced if RANGE = 'A' or 'V'.
 *
 *  ABSTOL  (INPUT) DOUBLE PRECISION
-*          THE ABSOLUTE ERROR TOLERANCE FOR THE EIGENVALUES.
-*          AN APPROXIMATE EIGENVALUE IS ACCEPTED AS CONVERGED
-*          WHEN IT IS DETERMINED TO LIE IN AN INTERVAL [A,B]
-*          OF WIDTH LESS THAN OR EQUAL TO
+*          The absolute error tolerance for the eigenvalues.
+*          An approximate eigenvalue is accepted as converged
+*          when it is determined to lie in an interval [a,b]
+*          of width less than or equal to
 *
-*                  ABSTOL + EPS *   MAX( |A|,|B| ) ,
+*                  ABSTOL + EPS *   max( |a|,|b| ) ,
 *
-*          WHERE EPS IS THE MACHINE PRECISION.  IF ABSTOL IS LESS THAN
-*          OR EQUAL TO ZERO, THEN  EPS*|T|  WILL BE USED IN ITS PLACE,
-*          WHERE |T| IS THE 1-NORM OF THE TRIDIAGONAL MATRIX OBTAINED
-*          BY REDUCING A TO TRIDIAGONAL FORM.
+*          where EPS is the machine precision.  If ABSTOL is less than
+*          or equal to zero, then  EPS*|T|  will be used in its place,
+*          where |T| is the 1-norm of the tridiagonal matrix obtained
+*          by reducing A to tridiagonal form.
 *
-*          EIGENVALUES WILL BE COMPUTED MOST ACCURATELY WHEN ABSTOL IS
-*          SET TO TWICE THE UNDERFLOW THRESHOLD 2*DLAMCH('S'), NOT ZERO.
-*          IF THIS ROUTINE RETURNS WITH INFO>0, INDICATING THAT SOME
-*          EIGENVECTORS DID NOT CONVERGE, TRY SETTING ABSTOL TO
+*          Eigenvalues will be computed most accurately when ABSTOL is
+*          set to twice the underflow threshold 2*DLAMCH('S'), not zero.
+*          If this routine returns with INFO>0, indicating that some
+*          eigenvectors did not converge, try setting ABSTOL to
 *          2*DLAMCH('S').
 *
-*  M       (OUTPUT) INTEGER
-*          THE TOTAL NUMBER OF EIGENVALUES FOUND.  0 <= M <= N.
-*          IF RANGE = 'A', M = N, AND IF RANGE = 'I', M = IU-IL+1.
+*  M       (output) INTEGER
+*          The total number of eigenvalues found.  0 <= M <= N.
+*          If RANGE = 'A', M = N, and if RANGE = 'I', M = IU-IL+1.
 *
 *  W       (OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (N)
-*          ON NORMAL EXIT, THE FIRST M ELEMENTS CONTAIN THE SELECTED
-*          EIGENVALUES IN ASCENDING ORDER.
+*          On normal exit, the first M elements contain the selected
+*          eigenvalues in ascending order.
 *
 *  Z       (OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDZ, MAX(1,M))
-*          IF JOBZ = 'N', THEN Z IS NOT REFERENCED.
-*          IF JOBZ = 'V', THEN IF INFO = 0, THE FIRST M COLUMNS OF Z
-*          CONTAIN THE ORTHONORMAL EIGENVECTORS OF THE MATRIX A
-*          CORRESPONDING TO THE SELECTED EIGENVALUES, WITH THE I-TH
-*          COLUMN OF Z HOLDING THE EIGENVECTOR ASSOCIATED WITH W(I).
-*          THE EIGENVECTORS ARE NORMALIZED AS FOLLOWS:
-*          IF ITYPE = 1 OR 2, Z**T*B*Z = I;
-*          IF ITYPE = 3, Z**T*INV(B)*Z = I.
+*          If JOBZ = 'N', then Z is not referenced.
+*          If JOBZ = 'V', then if INFO = 0, the first M columns of Z
+*          contain the orthonormal eigenvectors of the matrix A
+*          corresponding to the selected eigenvalues, with the i-th
+*          column of Z holding the eigenvector associated with W(i).
+*          The eigenvectors are normalized as follows:
+*          if ITYPE = 1 or 2, Z**T*B*Z = I;
+*          if ITYPE = 3, Z**T*inv(B)*Z = I.
 *
-*          IF AN EIGENVECTOR FAILS TO CONVERGE, THEN THAT COLUMN OF Z
-*          CONTAINS THE LATEST APPROXIMATION TO THE EIGENVECTOR, AND THE
-*          INDEX OF THE EIGENVECTOR IS RETURNED IN IFAIL.
-*          NOTE: THE USER MUST ENSURE THAT AT LEAST MAX(1,M) COLUMNS ARE
-*          SUPPLIED IN THE ARRAY Z; IF RANGE = 'V', THE EXACT VALUE OF M
-*          IS NOT KNOWN IN ADVANCE AND AN UPPER BOUND MUST BE USED.
+*          If an eigenvector fails to converge, then that column of Z
+*          contains the latest approximation to the eigenvector, and the
+*          index of the eigenvector is returned in IFAIL.
+*          Note: the user must ensure that at least max(1,M) columns are
+*          supplied in the array Z; if RANGE = 'V', the exact value of M
+*          is not known in advance and an upper bound must be used.
 *
-*  LDZ     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY Z.  LDZ >= 1, AND IF
-*          JOBZ = 'V', LDZ >= MAX(1,N).
+*  LDZ     (input) INTEGER
+*          The leading dimension of the array Z.  LDZ >= 1, and if
+*          JOBZ = 'V', LDZ >= max(1,N).
 *
 *  WORK    (WORKSPACE/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LWORK)
-*          ON EXIT, IF INFO = 0, WORK(1) RETURNS THE OPTIMAL LWORK.
+*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
-*  LWORK   (INPUT) INTEGER
-*          THE LENGTH OF THE ARRAY WORK.  LWORK >= MAX(1,8*N).
-*          FOR OPTIMAL EFFICIENCY, LWORK >= (NB+3)*N,
-*          WHERE NB IS THE BLOCKSIZE FOR DSYTRD RETURNED BY ILAENV.
+*  LWORK   (input) INTEGER
+*          The length of the array WORK.  LWORK >= max(1,8*N).
+*          For optimal efficiency, LWORK >= (NB+3)*N,
+*          where NB is the blocksize for DSYTRD returned by ILAENV.
 *
-*          IF LWORK = -1, THEN A WORKSPACE QUERY IS ASSUMED; THE ROUTINE
-*          ONLY CALCULATES THE OPTIMAL SIZE OF THE WORK ARRAY, RETURNS
-*          THIS VALUE AS THE FIRST ENTRY OF THE WORK ARRAY, AND NO ERROR
-*          MESSAGE RELATED TO LWORK IS ISSUED BY XERBLA.
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
 *
-*  IWORK   (WORKSPACE) INTEGER ARRAY, DIMENSION (5*N)
+*  IWORK   (workspace) INTEGER array, dimension (5*N)
 *
-*  IFAIL   (OUTPUT) INTEGER ARRAY, DIMENSION (N)
-*          IF JOBZ = 'V', THEN IF INFO = 0, THE FIRST M ELEMENTS OF
-*          IFAIL ARE ZERO.  IF INFO > 0, THEN IFAIL CONTAINS THE
-*          INDICES OF THE EIGENVECTORS THAT FAILED TO CONVERGE.
-*          IF JOBZ = 'N', THEN IFAIL IS NOT REFERENCED.
+*  IFAIL   (output) INTEGER array, dimension (N)
+*          If JOBZ = 'V', then if INFO = 0, the first M elements of
+*          IFAIL are zero.  If INFO > 0, then IFAIL contains the
+*          indices of the eigenvectors that failed to converge.
+*          If JOBZ = 'N', then IFAIL is not referenced.
 *
-*  INFO    (OUTPUT) INTEGER
-*          = 0:  SUCCESSFUL EXIT
-*          < 0:  IF INFO = -I, THE I-TH ARGUMENT HAD AN ILLEGAL VALUE
-*          > 0:  DPOTRF OR DSYEVX RETURNED AN ERROR CODE:
-*             <= N:  IF INFO = I, DSYEVX FAILED TO CONVERGE;
-*                    I EIGENVECTORS FAILED TO CONVERGE.  THEIR INDICES
-*                    ARE STORED IN ARRAY IFAIL.
-*             > N:   IF INFO = N + I, FOR 1 <= I <= N, THEN THE LEADING
-*                    MINOR OF ORDER I OF B IS NOT POSITIVE DEFINITE.
-*                    THE FACTORIZATION OF B COULD NOT BE COMPLETED AND
-*                    NO EIGENVALUES OR EIGENVECTORS WERE COMPUTED.
+*  INFO    (output) INTEGER
+*          = 0:  successful exit
+*          < 0:  if INFO = -i, the i-th argument had an illegal value
+*          > 0:  DPOTRF or DSYEVX returned an error code:
+*             <= N:  if INFO = i, DSYEVX failed to converge;
+*                    i eigenvectors failed to converge.  Their indices
+*                    are stored in array IFAIL.
+*             > N:   if INFO = N + i, for 1 <= i <= N, then the leading
+*                    minor of order i of B is not positive definite.
+*                    The factorization of B could not be completed and
+*                    no eigenvalues or eigenvectors were computed.
 *
-*  FURTHER DETAILS
+*  Further Details
 *  ===============
 *
-*  BASED ON CONTRIBUTIONS BY
-*     MARK FAHEY, DEPARTMENT OF MATHEMATICS, UNIV. OF KENTUCKY, USA
+*  Based on contributions by
+*     Mark Fahey, Department of Mathematics, Univ. of Kentucky, USA
 *
 * =====================================================================
 *
-*     .. PARAMETERS ..
+*     .. Parameters ..
       DOUBLE PRECISION   ONE
       PARAMETER          ( ONE = 1.0D+0 )
 *     ..
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       LOGICAL            ALLEIG, INDEIG, LQUERY, UPPER, VALEIG, WANTZ
       CHARACTER          TRANS
       INTEGER            LOPT, LWKOPT, NB
 *     ..
-*     .. EXTERNAL FUNCTIONS ..
+*     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
       EXTERNAL           LSAME, ILAENV
 *     ..
-*     .. EXTERNAL SUBROUTINES ..
+*     .. External Subroutines ..
       EXTERNAL           DPOTRF, DSYEVX, DSYGST, DTRMM, DTRSM, XERBLA
 *     ..
-*     .. INTRINSIC FUNCTIONS ..
+*     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
-*     TEST THE INPUT PARAMETERS.
+*     Test the input parameters.
 *
       UPPER = LSAME( UPLO, 'U' )
       WANTZ = LSAME( JOBZ, 'V' )
@@ -274,7 +274,7 @@ C
          RETURN
       END IF
 *
-*     QUICK RETURN IF POSSIBLE
+*     Quick return if possible
 *
       M = 0
       IF( N.EQ.0 ) THEN
@@ -282,7 +282,7 @@ C
          RETURN
       END IF
 *
-*     FORM A CHOLESKY FACTORIZATION OF B.
+*     Form a Cholesky factorization of B.
 *
       CALL DPOTRF( UPLO, N, B, LDB, INFO )
       IF( INFO.NE.0 ) THEN
@@ -290,7 +290,7 @@ C
          RETURN
       END IF
 *
-*     TRANSFORM PROBLEM TO STANDARD EIGENVALUE PROBLEM AND SOLVE.
+*     Transform problem to standard eigenvalue problem and solve.
 *
       CALL DSYGST( ITYPE, UPLO, N, A, LDA, B, LDB, INFO )
       CALL DSYEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU, ABSTOL,
@@ -299,14 +299,14 @@ C
 *
       IF( WANTZ ) THEN
 *
-*        BACKTRANSFORM EIGENVECTORS TO THE ORIGINAL PROBLEM.
+*        Backtransform eigenvectors to the original problem.
 *
          IF( INFO.GT.0 )
      $      M = INFO - 1
          IF( ITYPE.EQ.1 .OR. ITYPE.EQ.2 ) THEN
 *
-*           FOR A*X=(LAMBDA)*B*X AND A*B*X=(LAMBDA)*X;
-*           BACKTRANSFORM EIGENVECTORS: X = INV(L)'*Y OR INV(U)*Y
+*           For A*x=(lambda)*B*x and A*B*x=(lambda)*x;
+*           backtransform eigenvectors: x = inv(L)'*y or inv(U)*y
 *
             IF( UPPER ) THEN
                TRANS = 'N'
@@ -314,13 +314,13 @@ C
                TRANS = 'T'
             END IF
 *
-            CALL DTRSM( 'LEFT', UPLO, TRANS, 'NON-UNIT', N, M, ONE, B,
+            CALL DTRSM( 'Left', UPLO, TRANS, 'Non-unit', N, M, ONE, B,
      $                  LDB, Z, LDZ )
 *
          ELSE IF( ITYPE.EQ.3 ) THEN
 *
-*           FOR B*A*X=(LAMBDA)*X;
-*           BACKTRANSFORM EIGENVECTORS: X = L*Y OR U'*Y
+*           For B*A*x=(lambda)*x;
+*           backtransform eigenvectors: x = L*y or U'*y
 *
             IF( UPPER ) THEN
                TRANS = 'T'
@@ -328,176 +328,176 @@ C
                TRANS = 'N'
             END IF
 *
-            CALL DTRMM( 'LEFT', UPLO, TRANS, 'NON-UNIT', N, M, ONE, B,
+            CALL DTRMM( 'Left', UPLO, TRANS, 'Non-unit', N, M, ONE, B,
      $                  LDB, Z, LDZ )
          END IF
       END IF
 *
-*     SET WORK(1) TO OPTIMAL WORKSPACE SIZE.
+*     Set WORK(1) to optimal workspace size.
 *
       WORK( 1 ) = LWKOPT
 *
       RETURN
 *
-*     END OF DSYGVX
+*     End of DSYGVX
 *
       END
       SUBROUTINE DSYEVX( JOBZ, RANGE, UPLO, N, A, LDA, VL, VU, IL, IU,
      $                   ABSTOL, M, W, Z, LDZ, WORK, LWORK, IWORK,
      $                   IFAIL, INFO )
 *
-*  -- LAPACK DRIVER ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     JUNE 30, 1999
+*  -- LAPACK driver routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     June 30, 1999
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       CHARACTER          JOBZ, RANGE, UPLO
       INTEGER            IL, INFO, IU, LDA, LDZ, LWORK, M, N
       DOUBLE PRECISION   ABSTOL, VL, VU
 *     ..
-*     .. ARRAY ARGUMENTS ..
+*     .. Array Arguments ..
       INTEGER            IFAIL( * ), IWORK( * )
       DOUBLE PRECISION   A( LDA, * ), W( * ), WORK( * ), Z( LDZ, * )
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  DSYEVX COMPUTES SELECTED EIGENVALUES AND, OPTIONALLY, EIGENVECTORS
-*  OF A REAL SYMMETRIC MATRIX A.  EIGENVALUES AND EIGENVECTORS CAN BE
-*  SELECTED BY SPECIFYING EITHER A RANGE OF VALUES OR A RANGE OF INDICES
-*  FOR THE DESIRED EIGENVALUES.
+*  DSYEVX computes selected eigenvalues and, optionally, eigenvectors
+*  of a real symmetric matrix A.  Eigenvalues and eigenvectors can be
+*  selected by specifying either a range of values or a range of indices
+*  for the desired eigenvalues.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  JOBZ    (INPUT) CHARACTER*1
-*          = 'N':  COMPUTE EIGENVALUES ONLY;
-*          = 'V':  COMPUTE EIGENVALUES AND EIGENVECTORS.
+*  JOBZ    (input) CHARACTER*1
+*          = 'N':  Compute eigenvalues only;
+*          = 'V':  Compute eigenvalues and eigenvectors.
 *
-*  RANGE   (INPUT) CHARACTER*1
-*          = 'A': ALL EIGENVALUES WILL BE FOUND.
-*          = 'V': ALL EIGENVALUES IN THE HALF-OPEN INTERVAL (VL,VU]
-*                 WILL BE FOUND.
-*          = 'I': THE IL-TH THROUGH IU-TH EIGENVALUES WILL BE FOUND.
+*  RANGE   (input) CHARACTER*1
+*          = 'A': all eigenvalues will be found.
+*          = 'V': all eigenvalues in the half-open interval (VL,VU]
+*                 will be found.
+*          = 'I': the IL-th through IU-th eigenvalues will be found.
 *
-*  UPLO    (INPUT) CHARACTER*1
-*          = 'U':  UPPER TRIANGLE OF A IS STORED;
-*          = 'L':  LOWER TRIANGLE OF A IS STORED.
+*  UPLO    (input) CHARACTER*1
+*          = 'U':  Upper triangle of A is stored;
+*          = 'L':  Lower triangle of A is stored.
 *
-*  N       (INPUT) INTEGER
-*          THE ORDER OF THE MATRIX A.  N >= 0.
+*  N       (input) INTEGER
+*          The order of the matrix A.  N >= 0.
 *
 *  A       (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDA, N)
-*          ON ENTRY, THE SYMMETRIC MATRIX A.  IF UPLO = 'U', THE
-*          LEADING N-BY-N UPPER TRIANGULAR PART OF A CONTAINS THE
-*          UPPER TRIANGULAR PART OF THE MATRIX A.  IF UPLO = 'L',
-*          THE LEADING N-BY-N LOWER TRIANGULAR PART OF A CONTAINS
-*          THE LOWER TRIANGULAR PART OF THE MATRIX A.
-*          ON EXIT, THE LOWER TRIANGLE (IF UPLO='L') OR THE UPPER
-*          TRIANGLE (IF UPLO='U') OF A, INCLUDING THE DIAGONAL, IS
-*          DESTROYED.
+*          On entry, the symmetric matrix A.  If UPLO = 'U', the
+*          leading N-by-N upper triangular part of A contains the
+*          upper triangular part of the matrix A.  If UPLO = 'L',
+*          the leading N-by-N lower triangular part of A contains
+*          the lower triangular part of the matrix A.
+*          On exit, the lower triangle (if UPLO='L') or the upper
+*          triangle (if UPLO='U') of A, including the diagonal, is
+*          destroyed.
 *
-*  LDA     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY A.  LDA >= MAX(1,N).
+*  LDA     (input) INTEGER
+*          The leading dimension of the array A.  LDA >= max(1,N).
 *
 *  VL      (INPUT) DOUBLE PRECISION
 *  VU      (INPUT) DOUBLE PRECISION
-*          IF RANGE='V', THE LOWER AND UPPER BOUNDS OF THE INTERVAL TO
-*          BE SEARCHED FOR EIGENVALUES. VL < VU.
-*          NOT REFERENCED IF RANGE = 'A' OR 'I'.
+*          If RANGE='V', the lower and upper bounds of the interval to
+*          be searched for eigenvalues. VL < VU.
+*          Not referenced if RANGE = 'A' or 'I'.
 *
-*  IL      (INPUT) INTEGER
-*  IU      (INPUT) INTEGER
-*          IF RANGE='I', THE INDICES (IN ASCENDING ORDER) OF THE
-*          SMALLEST AND LARGEST EIGENVALUES TO BE RETURNED.
-*          1 <= IL <= IU <= N, IF N > 0; IL = 1 AND IU = 0 IF N = 0.
-*          NOT REFERENCED IF RANGE = 'A' OR 'V'.
+*  IL      (input) INTEGER
+*  IU      (input) INTEGER
+*          If RANGE='I', the indices (in ascending order) of the
+*          smallest and largest eigenvalues to be returned.
+*          1 <= IL <= IU <= N, if N > 0; IL = 1 and IU = 0 if N = 0.
+*          Not referenced if RANGE = 'A' or 'V'.
 *
 *  ABSTOL  (INPUT) DOUBLE PRECISION
-*          THE ABSOLUTE ERROR TOLERANCE FOR THE EIGENVALUES.
-*          AN APPROXIMATE EIGENVALUE IS ACCEPTED AS CONVERGED
-*          WHEN IT IS DETERMINED TO LIE IN AN INTERVAL [A,B]
-*          OF WIDTH LESS THAN OR EQUAL TO
+*          The absolute error tolerance for the eigenvalues.
+*          An approximate eigenvalue is accepted as converged
+*          when it is determined to lie in an interval [a,b]
+*          of width less than or equal to
 *
-*                  ABSTOL + EPS *   MAX( |A|,|B| ) ,
+*                  ABSTOL + EPS *   max( |a|,|b| ) ,
 *
-*          WHERE EPS IS THE MACHINE PRECISION.  IF ABSTOL IS LESS THAN
-*          OR EQUAL TO ZERO, THEN  EPS*|T|  WILL BE USED IN ITS PLACE,
-*          WHERE |T| IS THE 1-NORM OF THE TRIDIAGONAL MATRIX OBTAINED
-*          BY REDUCING A TO TRIDIAGONAL FORM.
+*          where EPS is the machine precision.  If ABSTOL is less than
+*          or equal to zero, then  EPS*|T|  will be used in its place,
+*          where |T| is the 1-norm of the tridiagonal matrix obtained
+*          by reducing A to tridiagonal form.
 *
-*          EIGENVALUES WILL BE COMPUTED MOST ACCURATELY WHEN ABSTOL IS
-*          SET TO TWICE THE UNDERFLOW THRESHOLD 2*DLAMCH('S'), NOT ZERO.
-*          IF THIS ROUTINE RETURNS WITH INFO>0, INDICATING THAT SOME
-*          EIGENVECTORS DID NOT CONVERGE, TRY SETTING ABSTOL TO
+*          Eigenvalues will be computed most accurately when ABSTOL is
+*          set to twice the underflow threshold 2*DLAMCH('S'), not zero.
+*          If this routine returns with INFO>0, indicating that some
+*          eigenvectors did not converge, try setting ABSTOL to
 *          2*DLAMCH('S').
 *
-*          SEE "COMPUTING SMALL SINGULAR VALUES OF BIDIAGONAL MATRICES
-*          WITH GUARANTEED HIGH RELATIVE ACCURACY," BY DEMMEL AND
-*          KAHAN, LAPACK WORKING NOTE #3.
+*          See "Computing Small Singular Values of Bidiagonal Matrices
+*          with Guaranteed High Relative Accuracy," by Demmel and
+*          Kahan, LAPACK Working Note #3.
 *
-*  M       (OUTPUT) INTEGER
-*          THE TOTAL NUMBER OF EIGENVALUES FOUND.  0 <= M <= N.
-*          IF RANGE = 'A', M = N, AND IF RANGE = 'I', M = IU-IL+1.
+*  M       (output) INTEGER
+*          The total number of eigenvalues found.  0 <= M <= N.
+*          If RANGE = 'A', M = N, and if RANGE = 'I', M = IU-IL+1.
 *
 *  W       (OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (N)
-*          ON NORMAL EXIT, THE FIRST M ELEMENTS CONTAIN THE SELECTED
-*          EIGENVALUES IN ASCENDING ORDER.
+*          On normal exit, the first M elements contain the selected
+*          eigenvalues in ascending order.
 *
 *  Z       (OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDZ, MAX(1,M))
-*          IF JOBZ = 'V', THEN IF INFO = 0, THE FIRST M COLUMNS OF Z
-*          CONTAIN THE ORTHONORMAL EIGENVECTORS OF THE MATRIX A
-*          CORRESPONDING TO THE SELECTED EIGENVALUES, WITH THE I-TH
-*          COLUMN OF Z HOLDING THE EIGENVECTOR ASSOCIATED WITH W(I).
-*          IF AN EIGENVECTOR FAILS TO CONVERGE, THEN THAT COLUMN OF Z
-*          CONTAINS THE LATEST APPROXIMATION TO THE EIGENVECTOR, AND THE
-*          INDEX OF THE EIGENVECTOR IS RETURNED IN IFAIL.
-*          IF JOBZ = 'N', THEN Z IS NOT REFERENCED.
-*          NOTE: THE USER MUST ENSURE THAT AT LEAST MAX(1,M) COLUMNS ARE
-*          SUPPLIED IN THE ARRAY Z; IF RANGE = 'V', THE EXACT VALUE OF M
-*          IS NOT KNOWN IN ADVANCE AND AN UPPER BOUND MUST BE USED.
+*          If JOBZ = 'V', then if INFO = 0, the first M columns of Z
+*          contain the orthonormal eigenvectors of the matrix A
+*          corresponding to the selected eigenvalues, with the i-th
+*          column of Z holding the eigenvector associated with W(i).
+*          If an eigenvector fails to converge, then that column of Z
+*          contains the latest approximation to the eigenvector, and the
+*          index of the eigenvector is returned in IFAIL.
+*          If JOBZ = 'N', then Z is not referenced.
+*          Note: the user must ensure that at least max(1,M) columns are
+*          supplied in the array Z; if RANGE = 'V', the exact value of M
+*          is not known in advance and an upper bound must be used.
 *
-*  LDZ     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY Z.  LDZ >= 1, AND IF
-*          JOBZ = 'V', LDZ >= MAX(1,N).
+*  LDZ     (input) INTEGER
+*          The leading dimension of the array Z.  LDZ >= 1, and if
+*          JOBZ = 'V', LDZ >= max(1,N).
 *
 *  WORK    (WORKSPACE/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LWORK)
-*          ON EXIT, IF INFO = 0, WORK(1) RETURNS THE OPTIMAL LWORK.
+*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK.
 *
-*  LWORK   (INPUT) INTEGER
-*          THE LENGTH OF THE ARRAY WORK.  LWORK >= MAX(1,8*N).
-*          FOR OPTIMAL EFFICIENCY, LWORK >= (NB+3)*N,
-*          WHERE NB IS THE MAX OF THE BLOCKSIZE FOR DSYTRD AND DORMTR
-*          RETURNED BY ILAENV.
+*  LWORK   (input) INTEGER
+*          The length of the array WORK.  LWORK >= max(1,8*N).
+*          For optimal efficiency, LWORK >= (NB+3)*N,
+*          where NB is the max of the blocksize for DSYTRD and DORMTR
+*          returned by ILAENV.
 *
-*          IF LWORK = -1, THEN A WORKSPACE QUERY IS ASSUMED; THE ROUTINE
-*          ONLY CALCULATES THE OPTIMAL SIZE OF THE WORK ARRAY, RETURNS
-*          THIS VALUE AS THE FIRST ENTRY OF THE WORK ARRAY, AND NO ERROR
-*          MESSAGE RELATED TO LWORK IS ISSUED BY XERBLA.
+*          If LWORK = -1, then a workspace query is assumed; the routine
+*          only calculates the optimal size of the WORK array, returns
+*          this value as the first entry of the WORK array, and no error
+*          message related to LWORK is issued by XERBLA.
 *
-*  IWORK   (WORKSPACE) INTEGER ARRAY, DIMENSION (5*N)
+*  IWORK   (workspace) INTEGER array, dimension (5*N)
 *
-*  IFAIL   (OUTPUT) INTEGER ARRAY, DIMENSION (N)
-*          IF JOBZ = 'V', THEN IF INFO = 0, THE FIRST M ELEMENTS OF
-*          IFAIL ARE ZERO.  IF INFO > 0, THEN IFAIL CONTAINS THE
-*          INDICES OF THE EIGENVECTORS THAT FAILED TO CONVERGE.
-*          IF JOBZ = 'N', THEN IFAIL IS NOT REFERENCED.
+*  IFAIL   (output) INTEGER array, dimension (N)
+*          If JOBZ = 'V', then if INFO = 0, the first M elements of
+*          IFAIL are zero.  If INFO > 0, then IFAIL contains the
+*          indices of the eigenvectors that failed to converge.
+*          If JOBZ = 'N', then IFAIL is not referenced.
 *
-*  INFO    (OUTPUT) INTEGER
-*          = 0:  SUCCESSFUL EXIT
-*          < 0:  IF INFO = -I, THE I-TH ARGUMENT HAD AN ILLEGAL VALUE
-*          > 0:  IF INFO = I, THEN I EIGENVECTORS FAILED TO CONVERGE.
-*                THEIR INDICES ARE STORED IN ARRAY IFAIL.
+*  INFO    (output) INTEGER
+*          = 0:  successful exit
+*          < 0:  if INFO = -i, the i-th argument had an illegal value
+*          > 0:  if INFO = i, then i eigenvectors failed to converge.
+*                Their indices are stored in array IFAIL.
 *
 * =====================================================================
 *
-*     .. PARAMETERS ..
+*     .. Parameters ..
       DOUBLE PRECISION   ZERO, ONE
       PARAMETER          ( ZERO = 0.0D+0, ONE = 1.0D+0 )
 *     ..
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       LOGICAL            ALLEIG, INDEIG, LOWER, LQUERY, VALEIG, WANTZ
       CHARACTER          ORDER
       INTEGER            I, IINFO, IMAX, INDD, INDE, INDEE, INDIBL,
@@ -507,22 +507,22 @@ C
       DOUBLE PRECISION   ABSTLL, ANRM, BIGNUM, EPS, RMAX, RMIN, SAFMIN,
      $                   SIGMA, SMLNUM, TMP1, VLL, VUU
 *     ..
-*     .. EXTERNAL FUNCTIONS ..
+*     .. External Functions ..
       LOGICAL            LSAME
       INTEGER            ILAENV
       DOUBLE PRECISION   DLAMCH, DLANSY
       EXTERNAL           LSAME, ILAENV, DLAMCH, DLANSY
 *     ..
-*     .. EXTERNAL SUBROUTINES ..
+*     .. External Subroutines ..
       EXTERNAL           DCOPY, DLACPY, DORGTR, DORMTR, DSCAL, DSTEBZ,
      $                   DSTEIN, DSTEQR, DSTERF, DSWAP, DSYTRD, XERBLA
 *     ..
-*     .. INTRINSIC FUNCTIONS ..
+*     .. Intrinsic Functions ..
       INTRINSIC          MAX, MIN, SQRT
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
-*     TEST THE INPUT PARAMETERS.
+*     Test the input parameters.
 *
       LOWER = LSAME( UPLO, 'L' )
       WANTZ = LSAME( JOBZ, 'V' )
@@ -576,7 +576,7 @@ C
          RETURN
       END IF
 *
-*     QUICK RETURN IF POSSIBLE
+*     Quick return if possible
 *
       M = 0
       IF( N.EQ.0 ) THEN
@@ -600,16 +600,16 @@ C
          RETURN
       END IF
 *
-*     GET MACHINE CONSTANTS.
+*     Get machine constants.
 *
-      SAFMIN = DLAMCH( 'SAFE MINIMUM' )
-      EPS = DLAMCH( 'PRECISION' )
+      SAFMIN = DLAMCH( 'Safe minimum' )
+      EPS = DLAMCH( 'Precision' )
       SMLNUM = SAFMIN / EPS
       BIGNUM = ONE / SMLNUM
       RMIN = SQRT( SMLNUM )
       RMAX = MIN( SQRT( BIGNUM ), ONE / SQRT( SQRT( SAFMIN ) ) )
 *
-*     SCALE MATRIX TO ALLOWABLE RANGE, IF NECESSARY.
+*     Scale matrix to allowable range, if necessary.
 *
       ISCALE = 0
       ABSTLL = ABSTOL
@@ -641,7 +641,7 @@ C
          END IF
       END IF
 *
-*     CALL DSYTRD TO REDUCE SYMMETRIC MATRIX TO TRIDIAGONAL FORM.
+*     Call DSYTRD to reduce symmetric matrix to tridiagonal form.
 *
       INDTAU = 1
       INDE = INDTAU + N
@@ -652,9 +652,9 @@ C
      $             WORK( INDTAU ), WORK( INDWRK ), LLWORK, IINFO )
       LOPT = 3*N + WORK( INDWRK )
 *
-*     IF ALL EIGENVALUES ARE DESIRED AND ABSTOL IS LESS THAN OR EQUAL TO
-*     ZERO, THEN CALL DSTERF OR DORGTR AND SSTEQR.  IF THIS FAILS FOR
-*     SOME EIGENVALUE, THEN TRY DSTEBZ.
+*     If all eigenvalues are desired and ABSTOL is less than or equal to
+*     zero, then call DSTERF or DORGTR and SSTEQR.  If this fails for
+*     some eigenvalue, then try DSTEBZ.
 *
       IF( ( ALLEIG .OR. ( INDEIG .AND. IL.EQ.1 .AND. IU.EQ.N ) ) .AND.
      $    ( ABSTOL.LE.ZERO ) ) THEN
@@ -683,7 +683,7 @@ C
          INFO = 0
       END IF
 *
-*     OTHERWISE, CALL DSTEBZ AND, IF EIGENVECTORS ARE DESIRED, SSTEIN.
+*     Otherwise, call DSTEBZ and, if eigenvectors are desired, SSTEIN.
 *
       IF( WANTZ ) THEN
          ORDER = 'B'
@@ -703,8 +703,8 @@ C
      $                IWORK( INDIBL ), IWORK( INDISP ), Z, LDZ,
      $                WORK( INDWRK ), IWORK( INDIWO ), IFAIL, INFO )
 *
-*        APPLY ORTHOGONAL MATRIX USED IN REDUCTION TO TRIDIAGONAL
-*        FORM TO EIGENVECTORS RETURNED BY DSTEIN.
+*        Apply orthogonal matrix used in reduction to tridiagonal
+*        form to eigenvectors returned by DSTEIN.
 *
          INDWKN = INDE
          LLWRKN = LWORK - INDWKN + 1
@@ -712,7 +712,7 @@ C
      $                LDZ, WORK( INDWKN ), LLWRKN, IINFO )
       END IF
 *
-*     IF MATRIX WAS SCALED, THEN RESCALE EIGENVALUES APPROPRIATELY.
+*     If matrix was scaled, then rescale eigenvalues appropriately.
 *
    40 CONTINUE
       IF( ISCALE.EQ.1 ) THEN
@@ -724,8 +724,8 @@ C
          CALL DSCAL( IMAX, ONE / SIGMA, W, 1 )
       END IF
 *
-*     IF EIGENVALUES ARE NOT IN ORDER, THEN SORT THEM, ALONG WITH
-*     EIGENVECTORS.
+*     If eigenvalues are not in order, then sort them, along with
+*     eigenvectors.
 *
       IF( WANTZ ) THEN
          DO 60 J = 1, M - 1
@@ -754,78 +754,78 @@ C
    60    CONTINUE
       END IF
 *
-*     SET WORK(1) TO OPTIMAL WORKSPACE SIZE.
+*     Set WORK(1) to optimal workspace size.
 *
       WORK( 1 ) = LWKOPT
 *
       RETURN
 *
-*     END OF DSYEVX
+*     End of DSYEVX
 *
       END
       SUBROUTINE DLACPY( UPLO, M, N, A, LDA, B, LDB )
 *
-*  -- LAPACK AUXILIARY ROUTINE (VERSION 3.0) --
-*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
-*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
-*     FEBRUARY 29, 1992
+*  -- LAPACK auxiliary routine (version 3.0) --
+*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd.,
+*     Courant Institute, Argonne National Lab, and Rice University
+*     February 29, 1992
 *
-*     .. SCALAR ARGUMENTS ..
+*     .. Scalar Arguments ..
       CHARACTER          UPLO
       INTEGER            LDA, LDB, M, N
 *     ..
-*     .. ARRAY ARGUMENTS ..
+*     .. Array Arguments ..
       DOUBLE PRECISION   A( LDA, * ), B( LDB, * )
 *     ..
 *
-*  PURPOSE
+*  Purpose
 *  =======
 *
-*  DLACPY COPIES ALL OR PART OF A TWO-DIMENSIONAL MATRIX A TO ANOTHER
-*  MATRIX B.
+*  DLACPY copies all or part of a two-dimensional matrix A to another
+*  matrix B.
 *
-*  ARGUMENTS
+*  Arguments
 *  =========
 *
-*  UPLO    (INPUT) CHARACTER*1
-*          SPECIFIES THE PART OF THE MATRIX A TO BE COPIED TO B.
-*          = 'U':      UPPER TRIANGULAR PART
-*          = 'L':      LOWER TRIANGULAR PART
-*          OTHERWISE:  ALL OF THE MATRIX A
+*  UPLO    (input) CHARACTER*1
+*          Specifies the part of the matrix A to be copied to B.
+*          = 'U':      Upper triangular part
+*          = 'L':      Lower triangular part
+*          Otherwise:  All of the matrix A
 *
-*  M       (INPUT) INTEGER
-*          THE NUMBER OF ROWS OF THE MATRIX A.  M >= 0.
+*  M       (input) INTEGER
+*          The number of rows of the matrix A.  M >= 0.
 *
-*  N       (INPUT) INTEGER
-*          THE NUMBER OF COLUMNS OF THE MATRIX A.  N >= 0.
+*  N       (input) INTEGER
+*          The number of columns of the matrix A.  N >= 0.
 *
 *  A       (INPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDA,N)
-*          THE M BY N MATRIX A.  IF UPLO = 'U', ONLY THE UPPER TRIANGLE
-*          OR TRAPEZOID IS ACCESSED; IF UPLO = 'L', ONLY THE LOWER
-*          TRIANGLE OR TRAPEZOID IS ACCESSED.
+*          The m by n matrix A.  If UPLO = 'U', only the upper triangle
+*          or trapezoid is accessed; if UPLO = 'L', only the lower
+*          triangle or trapezoid is accessed.
 *
-*  LDA     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY A.  LDA >= MAX(1,M).
+*  LDA     (input) INTEGER
+*          The leading dimension of the array A.  LDA >= max(1,M).
 *
 *  B       (OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDB,N)
-*          ON EXIT, B = A IN THE LOCATIONS SPECIFIED BY UPLO.
+*          On exit, B = A in the locations specified by UPLO.
 *
-*  LDB     (INPUT) INTEGER
-*          THE LEADING DIMENSION OF THE ARRAY B.  LDB >= MAX(1,M).
+*  LDB     (input) INTEGER
+*          The leading dimension of the array B.  LDB >= max(1,M).
 *
 *  =====================================================================
 *
-*     .. LOCAL SCALARS ..
+*     .. Local Scalars ..
       INTEGER            I, J
 *     ..
-*     .. EXTERNAL FUNCTIONS ..
+*     .. External Functions ..
       LOGICAL            LSAME
       EXTERNAL           LSAME
 *     ..
-*     .. INTRINSIC FUNCTIONS ..
+*     .. Intrinsic Functions ..
       INTRINSIC          MIN
 *     ..
-*     .. EXECUTABLE STATEMENTS ..
+*     .. Executable Statements ..
 *
       IF( LSAME( UPLO, 'U' ) ) THEN
          DO 20 J = 1, N
@@ -848,6 +848,6 @@ C
       END IF
       RETURN
 *
-*     END OF DLACPY
+*     End of DLACPY
 *
       END

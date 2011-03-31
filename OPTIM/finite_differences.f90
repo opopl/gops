@@ -1,111 +1,111 @@
-MODULE FINITE_DIFFERENCES
+module finite_differences
 
-IMPLICIT NONE
+implicit none
 
-CONTAINS
-
-!###############################
-
-FUNCTION FINDIFGRAD(X, POT, EPS, DOUBLE)
-DOUBLE PRECISION, INTENT(IN) :: X(:), EPS
-LOGICAL, INTENT(IN) :: DOUBLE ! BETTER ACCURACY GRADIENT
-INTERFACE
-	DOUBLE PRECISION FUNCTION POT(X)
-	DOUBLE PRECISION, INTENT(IN), DIMENSION(:) :: X
-	END FUNCTION POT
-END INTERFACE
-DOUBLE PRECISION, DIMENSION(SIZE(X)) :: FINDIFGRAD, EI
-INTEGER :: I
-
-EI = 0.0
-IF (DOUBLE) THEN
-	DO I = 1, SIZE(X)
-		EI(I) = EPS
-		FINDIFGRAD(I) = (-POT(X+2*EI) + 8*POT(X+EI) - 8*POT(X-EI) + POT(X-2*EI)) / (12*EPS)
-		EI(I) = 0.0
-	END DO
-ELSE
-	DO I = 1, SIZE(X)
-		EI(I) = EPS
-		FINDIFGRAD(I) = (POT(X+EI) - POT(X-EI)) / (2*EPS)
-		EI(I) = 0.0
-	END DO
-END IF
-END FUNCTION FINDIFGRAD
+contains
 
 !###############################
 
-FUNCTION FINDIFHESS(X, G, GRAD, EPS) RESULT(HESS)
-DOUBLE PRECISION, INTENT(IN) :: X(:), G(:), EPS
-INTERFACE
-	FUNCTION GRAD(X)
-	DOUBLE PRECISION, INTENT(IN), DIMENSION(:) :: X
-	DOUBLE PRECISION, DIMENSION(SIZE(X)) :: GRAD
-	END FUNCTION GRAD
-END INTERFACE
-DOUBLE PRECISION, DIMENSION(SIZE(X)) :: X0
-DOUBLE PRECISION, DIMENSION(SIZE(X),SIZE(X)) :: HESS
-INTEGER :: I
+function FinDifGrad(x, pot, eps, double)
+DOUBLE PRECISION, intent(in) :: x(:), eps
+LOGICAL, intent(in) :: double ! better accuracy gradient
+interface
+	DOUBLE PRECISION function pot(x)
+	DOUBLE PRECISION, intent(in), dimension(:) :: x
+	end function pot
+end interface
+DOUBLE PRECISION, dimension(size(x)) :: FinDifGrad, ei
+integer :: i
 
-X0 = X
-DO I = 1, SIZE(X)
-	X0(I) = X(I) + EPS
-	HESS(I,:) = (GRAD(X0) - G) / EPS
-	X0(I) = X(I)
-END DO
-CALL SYMMETRIZE(HESS)
-END FUNCTION FINDIFHESS
+ei = 0.0
+if (double) then
+	do i = 1, size(x)
+		ei(i) = eps
+		FinDifGrad(i) = (-pot(x+2*ei) + 8*pot(x+ei) - 8*pot(x-ei) + pot(x-2*ei)) / (12*eps)
+		ei(i) = 0.0
+	end do
+else
+	do i = 1, size(x)
+		ei(i) = eps
+		FinDifGrad(i) = (pot(x+ei) - pot(x-ei)) / (2*eps)
+		ei(i) = 0.0
+	end do
+end if
+end function FinDifGrad
 
 !###############################
 
-FUNCTION FINDIFHESS_POT(X, POT, EPS) RESULT(HESS)
-DOUBLE PRECISION, INTENT(IN) :: X(:), EPS
-INTERFACE
-	DOUBLE PRECISION FUNCTION POT(X)
-	DOUBLE PRECISION, INTENT(IN), DIMENSION(:) :: X
-	END FUNCTION POT
-END INTERFACE
+function FinDifHess(x, g, grad, eps) result(hess)
+DOUBLE PRECISION, intent(in) :: x(:), g(:), eps
+interface
+	function grad(x)
+	DOUBLE PRECISION, intent(in), dimension(:) :: x
+	DOUBLE PRECISION, dimension(size(x)) :: grad
+	end function grad
+end interface
+DOUBLE PRECISION, dimension(size(x)) :: x0
+DOUBLE PRECISION, dimension(size(x),size(x)) :: hess
+integer :: i
+
+x0 = x
+do i = 1, size(x)
+	x0(i) = x(i) + eps
+	hess(i,:) = (grad(x0) - g) / eps
+	x0(i) = x(i)
+end do
+call symmetrize(hess)
+end function FinDifHess
+
+!###############################
+
+function FinDifHess_Pot(x, pot, eps) result(hess)
+DOUBLE PRECISION, intent(in) :: x(:), eps
+interface
+	DOUBLE PRECISION function pot(x)
+	DOUBLE PRECISION, intent(in), dimension(:) :: x
+	end function pot
+end interface
 DOUBLE PRECISION :: V0
-DOUBLE PRECISION, DIMENSION(SIZE(X)) :: EI, EJ
-DOUBLE PRECISION, DIMENSION(SIZE(X),SIZE(X)) :: HESS
-INTEGER :: I, J
+DOUBLE PRECISION, dimension(size(x)) :: ei, ej
+DOUBLE PRECISION, dimension(size(x),size(x)) :: hess
+integer :: i, j
 
-V0 = POT(X)
+V0 = pot(x)
 
-EI = 0.0
-EJ = 0.0
+ei = 0.0
+ej = 0.0
 
-DO I = 1, SIZE(X)
-   EI(I) = EPS
-   HESS(I,I) = (-POT(X+2*EI) + 16*POT(X+EI) - 30*V0 + 16*POT(X-EI) - POT(X-2*EI)) / (12*EPS**2)
-   DO J = 1, I-1
-      EJ(J) = EPS
-!     HESS(I,J) = (POT(X+EI+EJ) - POT(X-EI+EJ) - POT(X+EI-EJ) + POT(X-EI-EJ)) / (2*EPS)**2
-      HESS(I,J) = (-POT(X+2*EI+2*EJ) + 16*POT(X+EI+EJ) - 30*V0 + 16*POT(X-EI-EJ) - POT(X-2*EI-2*EJ)) / &
-  &   (24*EPS**2) - (HESS(I,I) + HESS(J,J)) / 2
-      HESS(J,I) = HESS(I,J)
-      EJ(J) = 0.0
-   END DO
-   EI(I) = 0.0
-END DO
-END FUNCTION FINDIFHESS_POT
-
-!###############################
-
-SUBROUTINE SYMMETRIZE(HESS)
-DOUBLE PRECISION, INTENT(INOUT) :: HESS(:,:)
-INTEGER :: I, J, N
-DOUBLE PRECISION :: TMP
-N = SIZE(HESS,1)
-DO I = 1, N
-	DO J = I+1, N
-		TMP = 0.5 * (HESS(I,J) + HESS(J,I))
-		HESS(I,J) = TMP
-		HESS(J,I) = TMP
-	END DO
-END DO
-END SUBROUTINE SYMMETRIZE
+do i = 1, size(x)
+   ei(i) = eps
+   hess(i,i) = (-pot(x+2*ei) + 16*pot(x+ei) - 30*V0 + 16*pot(x-ei) - pot(x-2*ei)) / (12*eps**2)
+   do j = 1, i-1
+      ej(j) = eps
+!     hess(i,j) = (pot(x+ei+ej) - pot(x-ei+ej) - pot(x+ei-ej) + pot(x-ei-ej)) / (2*eps)**2
+      hess(i,j) = (-pot(x+2*ei+2*ej) + 16*pot(x+ei+ej) - 30*V0 + 16*pot(x-ei-ej) - pot(x-2*ei-2*ej)) / &
+  &   (24*eps**2) - (hess(i,i) + hess(j,j)) / 2
+      hess(j,i) = hess(i,j)
+      ej(j) = 0.0
+   end do
+   ei(i) = 0.0
+end do
+end function FinDifHess_Pot
 
 !###############################
 
-END MODULE FINITE_DIFFERENCES
+subroutine symmetrize(hess)
+DOUBLE PRECISION, intent(inout) :: hess(:,:)
+integer :: i, j, N
+DOUBLE PRECISION :: tmp
+N = size(hess,1)
+do i = 1, N
+	do j = i+1, N
+		tmp = 0.5 * (hess(i,j) + hess(j,i))
+		hess(i,j) = tmp
+		hess(j,i) = tmp
+	end do
+end do
+end subroutine symmetrize
+
+!###############################
+
+end module finite_differences

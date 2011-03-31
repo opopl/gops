@@ -1,23 +1,23 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE TWOEND(ENERGY,GRAD,VECS,Q)
-      USE PORFUNCS
+      use porfuncs
       USE COMMONS
       USE KEY
       USE MODTWOEND
@@ -30,22 +30,22 @@ C
      1                 GRAD(3*NATOMS), SOVER, RMS2, EREAL, PROJP,
      2                 EP, STARTP(3*NATOMS), DELTAP, DELTA, RVEC(3*NATOMS), DUMMY1, PROJ, Q(3*NATOMS), VECL(3*NATOMS)
 C
-C  ASSIGN ENOUGH MEMORY TO WORK FOR A BLOCKSIZE OF 32 TO BE POSSIBLE.
-C  THIS IS FOR DSYEVR.
+C  Assign enough memory to WORK for a blocksize of 32 to be possible.
+C  This is for DSYEVR.
 C
       INTEGER ILWORK, LWORK, NFOUND, ISUPPZ(2*3*NATOMS)
       INTEGER IWORK(33*3*NATOMS), INFO
       DOUBLE PRECISION WORK(33*3*NATOMS),  ABSTOL, DIAG(3*NATOMS), ZMAT(3*NATOMS,3*NATOMS), DLAMCH
-      LOGICAL PVFLAG, MFLAG, RESET, SWITCH,CONVERGED           !  IS A FULL ZMAT REALLY NEEDED?
+      LOGICAL PVFLAG, MFLAG, RESET, SWITCH,CONVERGED           !  is a full ZMAT really needed?
       COMMON /PVF/ PVFLAG
 C     COMMON /WORK/ ZMAT
 
       LWORK=33*3*NATOMS
       ILWORK=33*3*NATOMS
 C
-C  BULK PRINCIPAL IMAGE CODE ASSUMES THAT PARAM1, PARAM2 AND PARAM3 ARE THE BOX LENGTHS.
+C  Bulk principal image code assumes that PARAM1, PARAM2 and PARAM3 are the box lengths.
 C
-      OPEN(UNIT=87,FILE='CANDIDATE',STATUS='UNKNOWN')
+      OPEN(UNIT=87,FILE='candidate',STATUS='UNKNOWN')
 
       DO J1=1,NATOMS
          J3=3*(J1-1)
@@ -78,7 +78,7 @@ C     ENDDO
       CALL ORTHOGOPT(VECS,Q,.TRUE.)
       ITER=1
 C
-C  INITIAL DISTANCE
+C  Initial distance
 C
       DIST=0.0D0
       DO J1=1,NOPT
@@ -93,7 +93,7 @@ C        WRITE(*,'(A,I6,2F20.10,I4,F20.10)') 'J1,FIN,START,LANV,DIST=',J1,FIN(J1
          STARTP(J1)=START(J1)
       ENDDO
 C
-C  MINIMISATION SUBJECT TO FORCE CONSTANT FORCE
+C  Minimisation subject to force constant FORCE
 C
 10    SWITCH=.FALSE.
       DIST=0.0D0
@@ -107,7 +107,7 @@ C
          ZWORK(J1,1)=ZMAT(J1,1)
       ENDDO
 C
-C  CALCULATE REQUIRED FORCE CONSTANT
+C  Calculate required force constant
 C
       DUMMY1=0.0D0
       DO J1=1,NOPT
@@ -124,14 +124,14 @@ C     WRITE(*,'(A,F20.10)') 'DIST=',1.0D0/DUMMY1
         DUMMY1=DUMMY1+RVEC(J1)*GRAD(J1)
       ENDDO
       PROJ=DUMMY1
-C     PRINT*,'PROJECTION OF GRADIENT=',DUMMY1
+C     PRINT*,'Projection of gradient=',DUMMY1
 C     FORCE=-DUMMY1-MAX(FINC*ABS(DUMMY1),FINC)
       FORCE=-DUMMY1-FINC-ABS(DUMMY1)*FINC
       IF (DUMMY1.LT.-FINC-ABS(DUMMY1)*FINC) FORCE=0.0D0
       RESET=.FALSE.
       IF (ITER.EQ.1) RESET=.TRUE.
       IF (UNRST.OR.CHRMMT) THEN
-         PRINT*,'ERROR - TWOEND NOT COMPATIBLE WITH UNRES OR CHARMM'
+         PRINT*,'ERROR - twoend not compatible with UNRES or CHARMM'
          STOP
       ENDIF
       CALL MYLBFGS(NOPT,MUPDATE,START,.FALSE.,RMSTWO,MFLAG,ENERGY,RMS2,EREAL,RMS,NTWO,RESET,
@@ -144,19 +144,19 @@ C     FORCE=-DUMMY1-MAX(FINC*ABS(DUMMY1),FINC)
          IF (NOIT) THEN
             IF (.NOT.VARIABLES) CALL SHIFTH(START,.TRUE.,NOPT,NATOMS,ATMASS)
 
-            ABSTOL=DLAMCH('SAFE  MINIMUM')
+            ABSTOL=DLAMCH('Safe  minimum')
             CALL DSYEVR('V','I','U',NOPT,HESS,SIZE(HESS,1),0.0D0,1.0D0,1,1,ABSTOL,NFOUND,DIAG,ZMAT,3*NATOMS,ISUPPZ,WORK,
      1                     LWORK, IWORK, ILWORK, INFO )
-            IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' IN DSYEVR'
-C           PRINT*,'OPTIMAL AND ACTUAL VALUES OF LWORK=',WORK(1),LWORK
-C           PRINT*,'OPTIMAL AND ACTUAL VALUES OF ILWORK=',IWORK(1),ILWORK
+            IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' in DSYEVR'
+C           PRINT*,'Optimal and actual values of LWORK=',WORK(1),LWORK
+C           PRINT*,'Optimal and actual values of ILWORK=',IWORK(1),ILWORK
             EVALMIN=DIAG(1)
 
-C           WRITE(*,'(A,F20.10)') ' SMALLEST EIGENVALUE=',EVALMIN
+C           WRITE(*,'(A,F20.10)') ' Smallest eigenvalue=',EVALMIN
             DO J1=1,NOPT
                VECS(J1)=ZMAT(J1,1)
             ENDDO
-C           PRINT*,'EIGENVALUES:'
+C           PRINT*,'Eigenvalues:'
 C           WRITE(*,'(6F15.5)') (DIAG(J1),J1=1,6)
          ELSE
             CALL ITEIG(ITER,START,VECS,EVALMIN,EVALMAX,NS,SOVER,.FALSE.,VECL,CONVERGED)
@@ -165,7 +165,7 @@ C           WRITE(*,'(6F15.5)') (DIAG(J1),J1=1,6)
       DELTA=ENERGY-EP
       DELTA=PROJ-PROJP
       WRITE(*,'(I4,A,F15.7,A,F12.5,A,F15.5,A,F15.5,A,F12.5,A,F12.5,A,F12.5)') 
-     1  ITER,' K=',FORCE,' D=',DIST,' E=',ENERGY,' PROJ=',PROJ,' DELTA=',DELTA,' EVALUE=',EVALMIN
+     1  ITER,' k=',FORCE,' D=',DIST,' E=',ENERGY,' proj=',PROJ,' delta=',DELTA,' evalue=',EVALMIN
       IF ((DELTA.LT.TWOEVAL).AND.(ITER.GT.2)) THEN
          SWITCH=.TRUE.
       ELSE
@@ -178,7 +178,7 @@ C           WRITE(*,'(6F15.5)') (DIAG(J1),J1=1,6)
       DELTAP=DELTA
       WRITE(4,'(3F20.10)') (START(J1),J1=1,NOPT)
       IF (DIST.LT.0.05) THEN
-         PRINT*,'FINAL GEOMETRY REACHED IN TWOENDS'
+         PRINT*,'final geometry reached in twoends'
          CLOSE(87)
          STOP
          RETURN
@@ -189,7 +189,7 @@ C           WRITE(*,'(6F15.5)') (DIAG(J1),J1=1,6)
          WRITE(44,'(3F20.10)') (VECS(J1),J1=1,NOPT)
       ENDIF
       IF (SWITCH) THEN
-         WRITE(*,'(A)') ' CANDIDATE FOR TRANSITION STATE SEARCH LOCATED'
+         WRITE(*,'(A)') ' Candidate for transition state search located'
 C        DO J1=1,NOPT
 C           Q(J1)=START(J1)
 C        ENDDO
@@ -199,7 +199,7 @@ C        RETURN
       ENDIF
       ITER=ITER+1
       IF (ITER.GT.NTWOITER) THEN
-         PRINT*,'MAXIMUM STEPS EXCEEDED IN DOUBLE ENDED SEARCH'
+         PRINT*,'Maximum steps exceeded in double ended search'
          STOP
       ENDIF
 

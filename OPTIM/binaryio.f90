@@ -1,70 +1,70 @@
-!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!   THIS FILE IS PART OF OPTIM.
+!   OPTIM: A program for optimizing geometries and calculating reaction pathways
+!   Copyright (C) 1999-2006 David J. Wales
+!   This file is part of OPTIM.
 !   
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !   
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !   
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 
-! SAT&TVB  MON APR 18 21:08:26 BST 2005
-MODULE BINARYIO
-     IMPLICIT NONE
-     CONTAINS
+! SAT&TVB  Mon Apr 18 21:08:26 BST 2005
+MODULE BinaryIO
+     implicit none
+     contains
 
-     SUBROUTINE READINPFILE(Q) 
-          USE KEY,ONLY: FILTH2
-          USE COMMONS,ONLY: NATOMS
-          USE PORFUNCS
-          IMPLICIT NONE
-          DOUBLE PRECISION,DIMENSION(:),INTENT(INOUT)::Q
+     subroutine ReadInpFile(Q) 
+          use key,only: filth2
+          use commons,only: natoms
+          use porfuncs
+          implicit none
+          double precision,dimension(:),intent(inout)::Q
 
-          INTEGER :: I,J
-          CHARACTER(LEN=256) :: FILENAME
+          integer :: i,j
+          character(len=256) :: filename
 
-          ! GENERATE FILENAME
-          IF (FILTH2==0) THEN
-               FILENAME='POINTS1.INP'
-          ELSE
-               WRITE(FILENAME,*) FILTH2
-               FILENAME='POINTS1.INP.'//TRIM(ADJUSTL(FILENAME))
-          ENDIF
+          ! generate filename
+          if (filth2==0) then
+               filename='points1.inp'
+          else
+               WRITE(filename,*) filth2
+               filename='points1.inp.'//trim(adjustl(filename))
+          endif
 
-          ! READ IN THE COORDINATES
-          INQUIRE(IOLENGTH=I) (Q(J),J=1,3*NATOMS)
-          OPEN(113,FILE=TRIM(FILENAME),ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='OLD',RECL=I)
-          READ(113,REC=1) (Q(J),J=1,3*NATOMS)
-          CLOSE(113)
+          ! read in the coordinates
+          inquire(iolength=i) (Q(j),j=1,3*Natoms)
+          open(113,file=trim(filename),access='direct',form='unformatted',status='old',recl=i)
+          read(113,rec=1) (Q(j),j=1,3*Natoms)
+          close(113)
 
-          ! CHECK THE COORDINATES LOOK SENSIBLE
-          IF (MAXVAL(Q)==0.0D0) THEN
-              PRINT *, 'ZERO COORDINATES - STOP'
+          ! check the coordinates look sensible
+          if (MaxVal(Q)==0.0d0) then
+              print *, 'Zero coordinates - stop'
               STOP
-          ENDIF
-     END SUBROUTINE READINPFILE
+          endif
+     end subroutine ReadInpFile
 
-     SUBROUTINE WRITEOUTFILE(Q,FILENAME) 
-          USE COMMONS,ONLY: NATOMS
-          IMPLICIT NONE
-          DOUBLE PRECISION,DIMENSION(:),INTENT(INOUT)::Q
-          CHARACTER(LEN=*),INTENT(IN) :: FILENAME
+     subroutine WriteOutFile(Q,filename) 
+          use commons,only: natoms
+          implicit none
+          double precision,dimension(:),intent(inout)::Q
+          character(len=*),intent(in) :: filename
 
-          INTEGER :: I,J
+          integer :: i,j
 
-          ! WRITE OUT THE COORDINATES
-          INQUIRE(IOLENGTH=I) (Q(J),J=1,3*NATOMS)
-          OPEN(113,FILE=FILENAME,ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=I)
-          WRITE(113,REC=1) (Q(J),J=1,3*NATOMS)
-          CLOSE(113)
-     END SUBROUTINE WRITEOUTFILE
-END MODULE BINARYIO
+          ! write out the coordinates
+          inquire(iolength=i) (Q(j),j=1,3*Natoms)
+          open(113,file=filename,access='direct',form='unformatted',status='unknown',recl=i)
+          write(113,rec=1) (Q(j),j=1,3*Natoms)
+          close(113)
+     end subroutine WriteOutFile
+END MODULE BinaryIO

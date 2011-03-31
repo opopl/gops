@@ -1,35 +1,35 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C        LIMITED MEMORY BFGS METHOD FOR LARGE SCALE OPTIMIZATION
 C                          JORGE NOCEDAL
-C                        *** JULY 1990 ***
+C                        *** July 1990 ***
 C
-C        LINE SEARCH REMOVED PLUS SMALL MODIFICATIONS, DJW 2001
-C        THIS ROUTINE IS FOR MINIMISING A RAYLEIGH-RITZ RATIO
-C        IN BFGS/BFGS TRANSITION STATE SEARCHES.
+C        Line search removed plus small modifications, DJW 2001
+C        This routine is for minimising a Rayleigh-Ritz ratio
+C        in BFGS/BFGS transition state searches.
 C
       SUBROUTINE XMYLBFGS(N,M,X,DIAGCO,DIAG,EPS,W,EENERGY,COORDS,ITDONE,ITMAX,ENERGY,PTEST,CONVERGED)
       USE COMMONS
       USE KEY
       USE MODTWOEND
-      USE PORFUNCS
+      use porfuncs
       IMPLICIT NONE
       INTEGER N,M,J1,ITMAX,ITDONE,NFAIL
       DOUBLE PRECISION X(N),G(3*NATOMS),DIAG(N),W(N*(2*M+1)+2*M),SLENGTH,DDOT
@@ -45,9 +45,9 @@ C
       NFAIL=0
       FAILED=.FALSE.
       IF (FILTH.EQ.0) THEN
-         WRITE(VECSTRING,'(A)') 'VECTOR.DUMP.XLBFGS'
+         WRITE(VECSTRING,'(A)') 'vector.dump.xlbfgs'
       ELSE
-         WRITE(VECSTRING,'(A)') 'VECTOR.DUMP.XLBFGS.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(VECSTRING,'(A)') 'vector.dump.xlbfgs.'//TRIM(ADJUSTL(FILTHSTR))
       ENDIF
       IF (NFREEZE.LT.3) THEN
          CALL ORTHOGOPT(X,COORDS,.TRUE.)
@@ -56,8 +56,8 @@ C
       ENDIF
       CALL SECDIAG(X,COORDS,EENERGY,G,ENERGY,.TRUE.,RMS)
 
-      IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A)') 'XMYLBFGS> EIGENVALUE AND RMS=',ENERGY,RMS,' AFTER ',ITDONE,' STEPS'
-!     PRINT '(A)','X FOR THIS EIGENVALUE:'
+      IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A)') 'xmylbfgs> Eigenvalue and RMS=',ENERGY,RMS,' after ',ITDONE,' steps'
+!     PRINT '(A)','X for this eigenvalue:'
 !     PRINT '(3G20.10)',X(1:15)
 
 10    CALL FLUSH(6,ISTAT)
@@ -66,11 +66,11 @@ C
          MFLAG=.TRUE.
          IF (MFLAG) THEN
             FIXIMAGE=.FALSE.
-            IF (PTEST) WRITE(*,'(A,I4,A,F15.7,A,F15.7)') 'XMYLBFGS> SMALLEST EIGENVALUE CONVERGED IN ',ITDONE,
-     1              ' STEPS. EIGENVALUE=',ENERGY,' RMS FORCE=',RMS
+            IF (PTEST) WRITE(*,'(A,I4,A,F15.7,A,F15.7)') 'xmylbfgs> Smallest eigenvalue converged in ',ITDONE,
+     1              ' steps. Eigenvalue=',ENERGY,' RMS force=',RMS
             CALL FLUSH(6,ISTAT)
             IF (PTEST.AND.(ITER.GT.0)) 
-     1          WRITE(*,'(A,F20.10)') 'XMYLBFGS> DIAGONAL INVERSE HESSIAN ELEMENTS ARE NOW ',DIAG(1)
+     1          WRITE(*,'(A,F20.10)') 'xmylbfgs> Diagonal inverse Hessian elements are now ',DIAG(1)
             CONVERGED=.TRUE.
             RETURN
          ENDIF
@@ -78,9 +78,9 @@ C
 
       IF ((ITDONE.EQ.ITMAX).OR.FAILED) THEN
          FIXIMAGE=.FALSE.
-         IF (PTEST) WRITE(*,'(A,G15.7,A,G15.7)') 'XMYLBFGS> **WARNING - SMALLEST EIGENVALUE DID NOT CONVERGE, VALUE=',ENERGY,
-     1           ' RMS FORCE=',RMS
-         IF (PTEST) WRITE(*,'(A,F20.10)') 'XMYLBFGS> DIAGONAL INVERSE HESSIAN ELEMENTS ARE NOW ',DIAG(1)
+         IF (PTEST) WRITE(*,'(A,G15.7,A,G15.7)') 'xmylbfgs> **WARNING - Smallest eigenvalue did not converge, value=',ENERGY,
+     1           ' RMS force=',RMS
+         IF (PTEST) WRITE(*,'(A,F20.10)') 'xmylbfgs> Diagonal inverse Hessian elements are now ',DIAG(1)
          CONVERGED=.FALSE.
          RETURN
       ENDIF
@@ -88,27 +88,27 @@ C
       IF (ITER.EQ.0) THEN
          IF (N.LE.0.OR.M.LE.0) THEN
             WRITE(*,240)
- 240        FORMAT('XMYLBFGS> IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')
+ 240        FORMAT('xmylbfgs> IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')
             STOP
          ENDIF
          POINT=0
          MFLAG=.FALSE.
          IF (DIAGCO) THEN
-            PRINT*,'USING ESTIMATE OF THE INVERSE DIAGONAL ELEMENTS'
+            PRINT*,'using estimate of the inverse diagonal elements'
             DO I=1,N
                IF (DIAG(I).LE.0.0D0) THEN
                   WRITE(*,235) I
- 235              FORMAT('XMYLBFGS> THE',I5,'-TH DIAGONAL ELEMENT OF THE',/,
+ 235              FORMAT('xmylbfgs> THE',I5,'-TH DIAGONAL ELEMENT OF THE',/,
      1                   ' INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE')
                   STOP
                ENDIF
             ENDDO
          ELSE
-C           INQUIRE(FILE='DIAG',EXIST=YESNO)
+C           INQUIRE(FILE='diag',EXIST=YESNO)
 C           IF (YESNO) THEN
-C              OPEN(UNIT=34,FILE='DIAG',STATUS='OLD')
+C              OPEN(UNIT=34,FILE='diag',STATUS='OLD')
 C              READ(34,*) (DIAG(I),I=1,N)
-C              PRINT*,'XMYLBFGS> DIAG READ IN XMYLBFGS'
+C              PRINT*,'xmylbfgs> diag read in XMYLBFGS'
 C              WRITE(*,'(6F15.5)') (DIAG(I),I=1,N)
 C           ELSE
             DO I=1,N
@@ -134,7 +134,7 @@ C
          ISPT= N+2*M
          IYPT= ISPT+N*M
 C
-C  NR STEP FOR DIAGONAL INVERSE HESSIAN
+C  NR step for diagonal inverse Hessian
 C
          DO I=1,N
             W(ISPT+I)= -G(I)*DIAG(I)
@@ -142,11 +142,11 @@ C
          ENDDO
          GNORM= DSQRT(DDOT(N,G,1,G,1))
 C
-C  MAKE THE FIRST GUESS FOR THE STEP LENGTH CAUTIOUS.
+C  Make the first guess for the step length cautious.
 C
          IF (GNORM.EQ.0.0D0) THEN
-            GNORM=1.0D0 ! EXACT ZERO IS PRESUMABLY WRONG!
-            PRINT '(A)','WARNING - GNORM WAS ZERO IN XMYLBFGS, RESETTING TO ONE'
+            GNORM=1.0D0 ! exact zero is presumably wrong!
+            PRINT '(A)','WARNING - GNORM was zero in xmylbfgs, resetting to one'
          ENDIF
          STP=MIN(GNORM,1.0D0/GNORM)
       ELSE 
@@ -155,9 +155,9 @@ C
          YS= DDOT(N,W(IYPT+NPT+1),1,W(ISPT+NPT+1),1)
          IF (YS.EQ.0.0D0) YS=1.0D0
 C
-C  UPDATE ESTIMATE OF DIAGONAL INVERSE HESSIAN ELEMENTS
-C  WE DIVIDE BY BOTH YS AND YY AT DIFFERENT POINTS, SO
-C  THEY HAD BETTER NOT BE ZERO!
+C  Update estimate of diagonal inverse Hessian elements
+C  We divide by both YS and YY at different points, so
+C  they had better not be zero!
 C
          IF (.NOT.DIAGCO) THEN
             YY= DDOT(N,W(IYPT+NPT+1),1,W(IYPT+NPT+1),1)
@@ -167,7 +167,7 @@ C
 C              DIAG(I)= ABS(YS/YY)
             ENDDO
          ELSE
-            PRINT*,'XMYLBFGS> USING ESTIMATE OF THE INVERSE DIAGONAL ELEMENTS'
+            PRINT*,'xmylbfgs> using estimate of the inverse diagonal elements'
             DO I=1,N
                IF (DIAG(I).LE.0.0D0) THEN
                   WRITE(*,235) I
@@ -176,9 +176,9 @@ C              DIAG(I)= ABS(YS/YY)
             ENDDO
          ENDIF
 C
-C     COMPUTE -H*G USING THE FORMULA GIVEN IN: NOCEDAL, J. 1980,
-C     "UPDATING QUASI-NEWTON MATRICES WITH LIMITED STORAGE",
-C     MATHEMATICS OF COMPUTATION, VOL.24, NO.151, PP. 773-782.
+C     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980,
+C     "Updating quasi-Newton matrices with limited storage",
+C     Mathematics of Computation, Vol.24, No.151, pp. 773-782.
 C     ---------------------------------------------------------
 C
          CP= POINT
@@ -215,13 +215,13 @@ C
          STP=1.0D0
       ENDIF
 C
-C  ORTHOGONALISATION OF THE SEARCH DIRECTION TO TRANSLATIONS AND ROTATIONS
-C  APPEARS TO MAKE NO DIFFERENCE.
+C  Orthogonalisation of the search direction to translations and rotations
+C  appears to make no difference.
 C
 C      CALL ORTHOGOPT(W,COORDS,.FALSE.)
 
 C
-C  STORE THE NEW SEARCH DIRECTION
+C  Store the new search direction
 C
 C     IF (ITER.NE.0) THEN
          DO I=1,N
@@ -236,7 +236,7 @@ C     OVERLAP=DDOT(N,G,1,W,1)/SQRT(DDOT(N,G,1,G,1)*DDOT(N,W,1,W,1))
       IF (DOT1*DOT2.NE.0.0D0) OVERLAP=DDOT(N,G,1,W,1)/(DOT1*DOT2)
 
       IF (OVERLAP.GT.0.0D0) THEN
-         IF (PTEST) PRINT*,'SEARCH DIRECTION HAS POSITIVE PROJECTION ONTO GRADIENT - REVERSING STEP'
+         IF (PTEST) PRINT*,'Search direction has positive projection onto gradient - reversing step'
          DO I=1,N
             W(ISPT+POINT*N+I)= -W(I)
          ENDDO
@@ -254,11 +254,11 @@ C        GOTO 10
       SLENGTH=SQRT(SLENGTH)
       IF (STP*SLENGTH.GT.MAXXBFGS) STP=MAXXBFGS/SLENGTH
 
-!     PRINT *,'X BEFORE STEP:'
+!     PRINT *,'X before step:'
 !     PRINT '(3G20.10)',X(1:15)
       XBEFORE(1:N)=X(1:N)
 C
-C  WE NOW HAVE THE PROPOSED STEP.
+C  We now have the proposed step.
 C
       DO J1=1,N
          X(J1)=X(J1)+STP*W(ISPT+POINT*N+J1)
@@ -274,7 +274,7 @@ C
          CLOSE(45)
       ENDIF
 
-      IF (ENEW.EQ.0.0D0) ENEW=1.0D-100 ! TO PREVENT DIVIDE BY ZERO
+      IF (ENEW.EQ.0.0D0) ENEW=1.0D-100 ! to prevent divide by zero
 C     IF (((ENEW-ENERGY)/ABS(ENEW).LE.XMAXERISE).OR.(CASTEP.AND.((ENEW-ENERGY)/ABS(ENEW).LE.1.0D-1))) THEN
       IF (((ENEW-ENERGY)/ABS(ENEW).LE.XMAXERISE)) THEN
 C     IF (.TRUE.) THEN
@@ -285,29 +285,29 @@ C     IF (.TRUE.) THEN
             G(J1)=GNEW(J1)
          ENDDO
          IF (PTEST) WRITE(*,'(A,2G20.10,A,I6,A,F13.10)') 
-     1          'XMYLBFGS> EIGENVALUE AND RMS=',ENERGY,RMS,' AFTER ',ITDONE,' STEPS, STEP:',STP*SLENGTH
-!        PRINT '(A)','X FOR THIS EIGENVALUE:'
+     1          'xmylbfgs> Eigenvalue and RMS=',ENERGY,RMS,' after ',ITDONE,' steps, step:',STP*SLENGTH
+!        PRINT '(A)','X for this eigenvalue:'
 !        PRINT '(3G20.10)',X(1:15)
       ELSE
 C
-C  EIGENVALUE INCREASED - TRY AGAIN WITH A SMALLER STEP SIZE?
+C  Eigenvalue increased - try again with a smaller step size?
 C
-         IF ((NDECREASE.GT.5).OR.(CASTEP.OR.ONETEP.OR.CP2K)) THEN   ! DECREASING THE STEP SIZE FOR CASTEP DOESN;T SEEM TO HELP.
-                                                                                 ! COULD TRY THIS AGAIN ONE DAY!
+         IF ((NDECREASE.GT.5).OR.(CASTEP.OR.ONETEP.OR.CP2K)) THEN   ! decreasing the step size for castep doesn;t seem to help.
+                                                                                 ! could try this again one day!
             NFAIL=NFAIL+1
-            PRINT*,' LBFGS STEP CANNOT FIND A LOWER NON-ZERO EIGENVALUE, NFAIL=',NFAIL
-            ITER=0  !  TRY RESETTING
+            PRINT*,' LBFGS step cannot find a lower non-zero eigenvalue, NFAIL=',NFAIL
+            ITER=0  !  try resetting
             DO J1=1,N
                X(J1)=X(J1)-STP*W(ISPT+POINT*N+J1)
             ENDDO 
             IF (NFAIL.GT.1) THEN
                FAILED=.TRUE.
-!              PRINT *,'X AT FAILURE:'
+!              PRINT *,'X at failure:'
 !              PRINT '(3G20.10)',X(1:15)
-!              PRINT '(A)','RESETTING X:'
+!              PRINT '(A)','resetting X:'
 !              X(1:N)=XBEFORE(1:N)
 !              CALL SECDIAG(X,COORDS,EENERGY,GNEW,ENEW,.TRUE.,RMS)
-!              PRINT '(A,G20.10)','EIGENVALUE IS NOW ',ENEW
+!              PRINT '(A,G20.10)','eigenvalue is now ',ENEW
 !              STOP !! DJW
             ENDIF
             GOTO 10
@@ -318,22 +318,22 @@ C
          NDECREASE=NDECREASE+1
          STP=STP/10.0D0
          IF (PTEST) WRITE(*,'(A,F19.10,A,G16.10,A,F15.8)') 
-     1                         ' EIGENVALUE INCREASED FROM ',ENERGY,' TO ',ENEW,' DECREASING STEP TO ',STP*SLENGTH
+     1                         ' eigenvalue increased from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
 !        IF ((NDECREASE.EQ.21).AND.(ENERGY*ENEW.LT.0.0D0)) THEN
-!           PRINT '(A)','XMYLBFGS> ERROR - EIGENVALUE CHANGES SIGN ON REMOVING STEP ??'
-!           PRINT *,'X BEFORE STEP:'
+!           PRINT '(A)','xmylbfgs> ERROR - eigenvalue changes sign on removing step ??'
+!           PRINT *,'X before step:'
 !           PRINT '(3G20.10)',XBEFORE(1:N)
-!           PRINT *,'X NOEW:'
+!           PRINT *,'X noew:'
 !           PRINT '(3G20.10)',X(1:N)
 !           STOP
 !        ENDIF
 C        FIXIMAGE=.TRUE. ? DJW
          GOTO 20
       ENDIF
-!     PRINT '(A)','XMYLBFGS> X AFTER STEP'
+!     PRINT '(A)','xmylbfgs> X after step'
 !     PRINT '(3G20.10)',X(1:15)
 C
-C     COMPUTE THE NEW STEP AND GRADIENT CHANGE
+C     Compute the new step and gradient change
 C
       NPT=POINT*N
       DO I=1,N
@@ -341,10 +341,10 @@ C
          W(IYPT+NPT+I)= G(I)-W(I)
       ENDDO
 C
-C  DOES IT HELP TO KEEP X NORMALISED? 
-C  CALLING ORTHOGOPT WILL CHANGE X SLIGHTLY AND CAN THEREFORE CHANGE
-C  THE EIGENVALUE. IT COULD THEREFORE CAUSE NFAIL MESSAGES IF THE EIGENVALUE
-C  ISN;T ALLOWED TO RISE SLIGHTLY.
+C  Does it help to keep X normalised? 
+C  Calling ORTHOGOPT will change X slightly and can therefore change
+C  the eigenvalue. It could therefore cause NFAIL messages if the eigenvalue
+C  isn;t allowed to rise slightly.
 C
       IF (NFREEZE.LT.3) THEN
          CALL ORTHOGOPT(X,COORDS,.TRUE.)

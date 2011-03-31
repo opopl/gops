@@ -1,20 +1,20 @@
-!   CONNECT MODULE IS AN IMPLEMENTATION OF A CONNECTION ALGORITHM FOR FINDING REARRANGEMENT PATHWAYS.
-!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
-!   THIS FILE IS PART OF CONNECT MODULE. CONNECT MODULE IS PART OF OPTIM.
+!   CONNECT module is an implementation of a connection algorithm for finding rearrangement pathways.
+!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
+!   This file is part of CONNECT module. CONNECT module is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 MODULE KEYDECIDE
      IMPLICIT NONE 
@@ -34,21 +34,21 @@ MODULE KEYDECIDE
           IMPLICIT NONE
 
           IF (INDEXCOSTFUNCTION) THEN
-               WRITE(*,'(A)') ' KEYDECIDE> COST FUNCTION IN DIJKSTRA ALGORITHM IS BASED ON THE POSITION OF MINIMA IN LIST'
+               WRITE(*,'(a)') ' KeyDecide> Cost function in Dijkstra algorithm is based on the position of minima in list'
           ELSEIF (EXPCOSTFUNCTION) THEN
-               WRITE(*,'(A)') ' KEYDECIDE> COST FUNCTION IN DIJKSTRA ALGORITHM IS EXP[D]'
+               WRITE(*,'(a)') ' KeyDecide> Cost function in Dijkstra algorithm is Exp[D]'
           ELSEIF (INTERPCOSTFUNCTION) THEN
              IF (INTCONSTRAINTT) THEN
-                WRITE(*,'(A,I6)') ' KEYDECIDE> COST FUNCTION IN DIJKSTRA ALGORITHM FROM INTERP FUNCTION, POWER=', COSTFUNCTIONPOWER
+                WRITE(*,'(A,I6)') ' KeyDecide> Cost function in Dijkstra algorithm from interp function, power=', COSTFUNCTIONPOWER
              ELSEIF (INTLJT) THEN
-                WRITE(*,'(A,F15.5)') ' KEYDECIDE> COST FUNCTION IN DIJKSTRA ALGORITHM FROM INTERPLJ FUNCTION'
+                WRITE(*,'(a,F15.5)') ' KeyDecide> Cost function in Dijkstra algorithm from interpLJ function'
              ELSE
-                WRITE(*,'(A,F15.5)') ' KEYDECIDE> COST FUNCTION IN DIJKSTRA ALGORITHM FROM MAXIMUM ENERGY ON INTERPOLATION, DIST=',&
+                WRITE(*,'(a,F15.5)') ' KeyDecide> Cost function in Dijkstra algorithm from maximum energy on interpolation, dist=',&
    &                                 INTERPDIFF  
              ENDIF
           ELSE
                INTSTR=WI(COSTFUNCTIONPOWER)
-               WRITE(*,'(A)') ' KEYDECIDE> COST FUNCTION IN DIJKSTRA ALGORITHM IS D^'//TRIM(INTSTR)
+               WRITE(*,'(a)') ' KeyDecide> Cost function in Dijkstra algorithm is D^'//trim(IntStr)
           ENDIF
      END SUBROUTINE KEYDECIDEPRINT
 END MODULE KEYDECIDE

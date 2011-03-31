@@ -1,98 +1,98 @@
 
-!     --------------------- MOVE  ----------------------
+!     --------------------- move  ----------------------
 
-      SUBROUTINE MOVE(JSTRT,JFINS,ISHKIT,NMDIFV,I_QUENCH)
+      subroutine move(jstrt,jfins,ishkit,nmdifv,i_quench)
  
 !     --------------------------------------------------
 
-!     MOVE   IS THE DRIVING SUBROUTINE FOR CARRYING OUT
-!            THE MOLECULAR DYNAMICS: ANNEALING SCHEDULE,
-!            VERLET ALGORITHM, AND OBSERVABLE STATISTICS
+!     MOVE   is the driving subroutine for carrying out
+!            the molecular dynamics: annealing schedule,
+!            Verlet algorithm, and observable statistics
 
-!     ARGUMENTS:
+!     arguments:
 
-!        JSTRT - FIRST MODIFIED SITE
-!        JFINS - LAST MODIFIES SITE
-!        ISHKIT- USED TO TRACK NUMBER OF SHAKE 
-!                ITERATIONS
-!        NMDIFV- NUMBER OF INTERMEDIATE STRUCTURES SAVED
-!                ON MOVIE TAPE
+!        jstrt - first modified site
+!        jfins - last modifies site
+!        ishkit- used to track number of shake 
+!                iterations
+!        nmdifv- number of intermediate structures saved
+!                on movie tape
 !     ---------------------------------------------------
 
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!                               FILTRATION
-!        I_PRO                        INDEX OVER PROTEINS
-!        I_STEP                        INDEX OVER TIME STEPS PER TEMPERATURE
-!        I_TEMP                        INDEX OVER TEMPERATURES
-!        ITCNT                        INCREMENT T (TEMPERATURE) COUNTER
+!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+!                               filtration
+!        i_pro                        index over proteins
+!        i_step                        index over time steps per temperature
+!        i_temp                        index over temperatures
+!        itcnt                        increment T (temperature) counter
 
-!     NMSTEP IS THE NUMBER OF TIME STEPS PER TEMPERATURE
+!     nmstep is the number of time steps per temperature
 
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-     USE GLOBALS, ONLY:SO,WEIGHT_P_AP, I513,NUMPRO,I1,AVEP,NMRES,PRCORD,QRCORD, &
-       SRCORD,TRCORD,ZRCORD,VELOCP,BONDLN,TEMTUR,TOLSHK,MAXSHK, &
-       TIMSTP,NUMCRD,OARCHV,WORK1,WORK3,WORK4,ISEED,IRES,NMTEMP, &
-       MOVANAL,INCMOV,OMOVI,OMOVISEG,NMSTEP,OPE_NO_BIAS,OKE, &
-       OHDRGN,ORAMA,OOXY,OCHIRAL,OAMH,OAMHSR,OREP,OPE_WITH_BIAS, &
-       OCCEV,OOEV,I526,I525,I527,I528,I514,NMDIF,OAMHLR, &
-       OAMHMR,OBIAS_RG,OHDRGN_S,OHDRGN_M,OHDRGN_L,OHDRGN_SEQ, &
-       ONONADD,OCON_P_AP,I_ETIM_STEP,OPE_PLUS_KE, &
-       I_ETIM,QUENCH,NQUENCH,N_Q_ANNEAL_A,N_Q_ANNEAL_B, &
-       Q0_A,Q0_B,Q0_INC_A,Q0_INC_B,QVALUE_A,QVALUE_B, &
-       MAXPRO,OOBIASSEGA,OOBIASSEGB,Q0_SAFE_A, Q0_SAFE_B, &
-       ITGRD,TEMTUR_QUENCH
+     use globals, only:SO,weight_P_AP, i513,numpro,i1,avep,nmres,prcord,qrcord, &
+       srcord,trcord,zrcord,velocp,bondln,temtur,tolshk,maxshk, &
+       timstp,numcrd,oarchv,work1,work3,work4,iseed,ires,nmtemp, &
+       movanal,incmov,omovi,omoviseg,nmstep,oPE_no_bias,oKE, &
+       ohdrgn,orama,ooxy,ochiral,oamh,oamhsr,orep,oPE_with_bias, &
+       occev,ooev,i526,i525,i527,i528,i514,nmdif,oamhlr, &
+       oamhmr,obias_Rg,ohdrgn_s,ohdrgn_m,ohdrgn_l,ohdrgn_seq, &
+       ononadd,ocon_P_AP,i_Etim_step,oPE_plus_KE, &
+       i_Etim,quench,nquench,n_Q_anneal_a,n_Q_anneal_b, &
+       Q0_a,Q0_b,Q0_inc_a,Q0_inc_b,Qvalue_a,Qvalue_b, &
+       maxpro,oobiassega,oobiassegb,Q0_safe_a, Q0_safe_b, &
+       itgrd,temtur_quench
 
-!       USE AMH_INTERFACES, ONLY:E_WRITE,PTR_SUB,ARBITRATE
-       USE AMH_INTERFACES, ONLY:E_WRITE,PTR_SUB
-      USE GLOBALS_ALT, ONLY:DO_SEND_OUTPUT,COUNT_ALT,T_ALT
+!       use amh_interfaces, only:E_write,Ptr_Sub,arbitrate
+       use amh_interfaces, only:E_write,Ptr_Sub
+      use globals_alt, only:do_send_output,count_alt,T_alt
 
-      IMPLICIT NONE
+      implicit none
 
-!     PASSED ARGUMENT DECLARATIONS:
+!     passed argument declarations:
 
-         INTEGER :: JSTRT,JFINS,ISHKIT,I_QUENCH,I504,I501
+         integer :: jstrt,jfins,ishkit,i_quench,i504,i501
 
-!     INTERNAL VARIABLES:
+!     internal variables:
 
-         LOGICAL :: TEMPAV,BDSHAK
+         logical :: tempav,bdshak
  
-         INTEGER :: ITCNT,NMDIFV,IBEGN,IDUMMY,NMOVIES,I
-         REAL :: TEMPH,TOTKE(MAXPRO)
+         integer :: itcnt,nmdifv,ibegn,idummy,nmovies,i
+         real :: temph,totke(maxpro)
 
-!,ARBITRATE
+!,arbitrate
 
-     INTEGER :: I_PRO, I_STEP, I_TEMP, I_GRID_NUM
-     INTEGER :: REPOUT_MOVE, REP_MOVE
-     DOUBLE PRECISION :: E_TEMP(5),T_TEMP(5)
+     integer :: i_pro, i_step, i_temp, i_grid_num
+     integer :: repout_move, rep_move
+     double precision :: E_temp(5),T_temp(5)
 
-     DOUBLE PRECISION :: DD(5), VARRRR(5)
-     DOUBLE PRECISION:: CC(5), VARRR(5)
+     double precision :: DD(5), VARRRR(5)
+     double precision:: CC(5), VARRR(5)
      INTEGER :: A(10), VARA(10) 
      INTEGER :: B(10), VARB(10)
      INTEGER :: C(10), VARC(10) 
      INTEGER :: D(10), VARD(10) 
      INTEGER :: BB(5), VARR(5)
 
-     POINTER (EE, VARRRR)
-     POINTER (TT, VARRR)
-     POINTER (INET1, VARA) ! VAR IS THE POINTEE
-                          ! P IS THE INTEGER POINTER
-     POINTER (INET2, VARB) ! VAR IS THE POINTEE
-     POINTER (INET3, VARC) ! VAR IS THE POINTEE
-     POINTER (INET4, VARD) ! VAR IS THE POINTEE
-     POINTER (PORT_NUMBER, VARR)
+     POINTER (ee, VARRRR)
+     POINTER (tt, VARRR)
+     POINTER (inet1, VARA) ! VAR is the pointee
+                          ! p is the integer pointer
+     POINTER (inet2, VARB) ! VAR is the pointee
+     POINTER (inet3, VARC) ! VAR is the pointee
+     POINTER (inet4, VARD) ! VAR is the pointee
+     POINTER (port_number, VARR)
 
-!     REQUIRED SUBROUTINES
-        EXTERNAL MDCTRL,YNORM,INITV
+!     required subroutines
+        external mdctrl,ynorm,initv
       
-          EE = LOC(DD)
-          TT = LOC(CC)
-          INET1 = LOC (A)
-          INET2 = LOC(B)
-          INET3 = LOC(C)
-          INET4 = LOC(D)
-          PORT_NUMBER = LOC(BB)
+          ee = LOC(DD)
+          tt = LOC(CC)
+          inet1 = LOC (A)
+          inet2 = LOC(B)
+          inet3 = LOC(C)
+          inet4 = LOC(D)
+          port_number = LOC(BB)
 
           A(1) = 132
           B(1) = 239
@@ -100,390 +100,390 @@
           D(1) = 126
           BB(1) = 123457
 
-!         WRITE(6,*) 'SERVER IP INFO'
-!         WRITE(6,*) 'INET1 = ', INET2
-!         WRITE(6,*) 'INET2 = ', INET2
-!         WRITE(6,*) 'INET3 = ', INET3
-!         WRITE(6,*) 'INET4 = ', INET4 
+!         WRITE(6,*) 'Server IP info'
+!         WRITE(6,*) 'inet1 = ', inet2
+!         WRITE(6,*) 'inet2 = ', inet2
+!         WRITE(6,*) 'inet3 = ', inet3
+!         WRITE(6,*) 'inet4 = ', inet4 
 
-        NMDIFV = 0
-        TEMPH = 0.0
+        nmdifv = 0
+        temph = 0.0
 
-!     --------------------- BEGIN -----------------------
+!     --------------------- begin -----------------------
 
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!     INITIALIZE ARCHIVE ARRAYS
+!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+!     initialize archive arrays
 
-      DO 513 I513=1,NMDIF
-         DO 516 I_PRO=1,NUMPRO
-            DO 100 I1=1,50
-              AVEP(I_PRO,1,I1,I513)=0.0
-              AVEP(I_PRO,2,I1,I513)=0.0
-100            CONTINUE
-  516    CONTINUE
-  513 CONTINUE
+      do 513 i513=1,nmdif
+         do 516 i_pro=1,numpro
+            do 100 i1=1,50
+              avep(i_pro,1,i1,i513)=0.0
+              avep(i_pro,2,i1,i513)=0.0
+100            continue
+  516    continue
+  513 continue
 
-!     ISHKIT TRACKS THE NUMBER OF SHAKE ITERATIONS
+!     ishkit tracks the number of shake iterations
 
-      ISHKIT=0
+      ishkit=0
 
-!     IF BDSHAK IS TRUE, THEN SHAKE FAILED
+!     if bdshak is true, then shake failed
 
-      BDSHAK=.FALSE.
+      bdshak=.false.
 
-!    NEW ANNEALLING SCHEDULE FOR QUENCHING   
-!    MOVE TEMTUR_QUENCH INTO TEMTUR FROM RESTRT.F
+!    new annealling schedule for quenching   
+!    move temtur_quench into temtur from restrt.f
      
-         IF (QUENCH) THEN
-          DO 504 I504=1, NQUENCH
-!           DO 540 I_GRID_NUM=1,4
-            IF( ITGRD(1).GT.0 )THEN
-             DO 501 I501=1,ITGRD(1)
-              TEMTUR(I501)=TEMTUR_QUENCH(I501,I_QUENCH)
-!          WRITE(6,*)'IN MOVE TEMTUR_QUENCH STEPS STRUCTURE',
-!     * TEMTUR(I501),TEMTUR_QUENCH(I501,I504),I_GRID_NUM,I501,I_QUENCH
+         if (quench) then
+          do 504 i504=1, nquench
+!           do 540 i_grid_num=1,4
+            if( itgrd(1).gt.0 )then
+             do 501 i501=1,itgrd(1)
+              temtur(i501)=temtur_quench(i501,i_quench)
+!          write(6,*)'in move temtur_quench steps structure',
+!     * temtur(i501),temtur_quench(i501,i504),i_grid_num,i501,i_quench
 
-501          CONTINUE
-            ENDIF  !  ITGRD(GRID_NUM)
-!540        CONTINUE
-504       CONTINUE
-         ENDIF
+501          continue
+            endif  !  itgrd(grid_num)
+!540        continue
+504       continue
+         endif
 
-!     IF NO HEATBATH, THEN SET INITIAL VELOCITIES
+!     if no heatbath, then set initial velocities
 
-!################# START OF NORMAL RUN #################
+!################# Start of Normal Run #################
 
-       CALL INITV(PRCORD,QRCORD,SRCORD, &
-                  TRCORD,ZRCORD,VELOCP,BONDLN,TEMTUR(1), &
-                  JSTRT,JFINS,TOLSHK,MAXSHK,BDSHAK, &
-                  TIMSTP,NUMPRO,ISHKIT, &
-                  NUMCRD,OARCHV,WORK1, &
-                  WORK3,WORK4,ISEED,IRES)
-         IBEGN=1
+       call initv(prcord,qrcord,srcord, &
+                  trcord,zrcord,velocp,bondln,temtur(1), &
+                  jstrt,jfins,tolshk,maxshk,bdshak, &
+                  timstp,numpro,ishkit, &
+                  numcrd,oarchv,work1, &
+                  work3,work4,iseed,ires)
+         ibegn=1
 
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-
-
-!     SET COUNTER FOR T AVERAGES
-      ITCNT=1
-
-!     WRITE HEADER FOR MOVIE FILE
-      IF( .NOT.MOVANAL )THEN
-         NMDIFV=INT( FLOAT(NMTEMP)/FLOAT(INCMOV) )
-
-         IF ( .NOT.QUENCH ) THEN
-         WRITE(OMOVI,334)NMRES,NUMCRD,NUMPRO,NMDIFV
-         WRITE(OMOVISEG,334)NMRES,NUMCRD,NUMPRO,NMDIFV
-         ELSEIF (I_QUENCH.EQ.1) THEN
-         WRITE(OMOVI,334)NMRES,NUMCRD,NUMPRO,NQUENCH
-         ENDIF
-  334    FORMAT(4(I8,1X),' NMRES NMCRD NUMPRO NMSNAP')
-      ENDIF
+!ccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 
-!     SET COUNTER FOR NUMBER OF SAVED STRUCTURES FOR
-!     EVALUATING |R|
+!     set counter for T averages
+      itcnt=1
 
-      NMDIFV=0
+!     write header for movie file
+      if( .not.movanal )then
+         nmdifv=int( float(nmtemp)/float(incmov) )
 
-!!!!!!!!!!!!!!!!  START OF LOOP OVER TEMPERATURES  !!!!!!!!!!!!!!!!!!!!!!
-!     PERFORM NMTEMP TIMESTEPS FOR EACH PROTEIN
+         if ( .not.quench ) then
+         write(omovi,334)nmres,numcrd,numpro,nmdifv
+         write(omoviseg,334)nmres,numcrd,numpro,nmdifv
+         elseif (i_quench.eq.1) then
+         write(omovi,334)nmres,numcrd,numpro,nquench
+         endif
+  334    format(4(i8,1x),' nmres nmcrd numpro nmsnap')
+      endif
 
 
-      IF (MOVANAL) THEN
-        WRITE(SO,*) 'OPENING MOVIE FILE'
-        OPEN(11,FILE='MOVIE_IN',STATUS='OLD')
+!     set counter for number of saved structures for
+!     evaluating |R|
 
-          READ(11,1040) NMOVIES
-          NMTEMP=NMOVIES
-          INCMOV=1
-1040        FORMAT(31X,I4)
-      ENDIF
+      nmdifv=0
 
-      DO 509 I_TEMP=IBEGN,NMTEMP
-        IF (I_TEMP.LT.N_Q_ANNEAL_A) THEN
-!  TEMP FIX DIVIDING BY 0 !!!!!
-         Q0_A = Q0_SAFE_A +  &
-                Q0_INC_A*REAL(N_Q_ANNEAL_A-I_TEMP)/REAL(N_Q_ANNEAL_A)
-         Q0_B = Q0_SAFE_B +  &
-                Q0_INC_B*REAL(N_Q_ANNEAL_B-I_TEMP)/REAL(N_Q_ANNEAL_B)
-        ELSE
-          Q0_A=Q0_SAFE_A
-          Q0_B=Q0_SAFE_B
-        ENDIF
+!!!!!!!!!!!!!!!!  Start of loop over temperatures  !!!!!!!!!!!!!!!!!!!!!!
+!     perform nmtemp timesteps for each protein
 
-      WRITE(SO,474)I_TEMP,TEMTUR(I_TEMP),QVALUE_A,QVALUE_B
-474    FORMAT('ITEMP,TEMP,QA,QB',  &
-                         1X,I5,1X,F4.2,1X,F6.4,1X,F6.4)
 
-        IF (I_TEMP.EQ.NMTEMP) THEN
-            WRITE(SO,*) 'SIMULATION COMPLETED'
-        ENDIF
+      if (movanal) then
+        write(SO,*) 'opening movie file'
+        open(11,file='movie_in',status='old')
 
-        IF (MOVANAL) THEN
-          READ(11,1041) IDUMMY,IDUMMY,IDUMMY,TEMTUR(I_TEMP),IDUMMY
-          WRITE(SO,*) 'TEMPERATURE IS',TEMTUR(I_TEMP)
-1041      FORMAT(3(I6,1X),F8.4,1X,I5)
-          DO 10175 I=1,NMRES
-               READ(11,1020) PRCORD(I,1,1,1), &
-               PRCORD(I,2,1,1),PRCORD(I,3,1,1), &
-               PRCORD(I,1,1,2), &
-               PRCORD(I,2,1,2),PRCORD(I,3,1,2), &
-               PRCORD(I,1,1,3), &
-               PRCORD(I,2,1,3),PRCORD(I,3,1,3)
-1020       FORMAT(4X,3(F8.3,1X),4X,3(F8.3,1X),4X,3(F8.3,1X))
+          read(11,1040) nmovies
+          nmtemp=nmovies
+          incmov=1
+1040        format(31x,i4)
+      endif
 
-10175     CONTINUE
-        ENDIF
+      do 509 i_temp=ibegn,nmtemp
+        if (i_temp.lt.n_Q_anneal_a) then
+!  temp fix dividing by 0 !!!!!
+         Q0_a = Q0_safe_a +  &
+                Q0_inc_a*real(n_Q_anneal_a-i_temp)/real(n_Q_anneal_a)
+         Q0_b = Q0_safe_b +  &
+                Q0_inc_b*real(n_Q_anneal_b-i_temp)/real(n_Q_anneal_b)
+        else
+          Q0_a=Q0_safe_a
+          Q0_b=Q0_safe_b
+        endif
 
-!        SET RMS VELOCITY FOR CURRENT T
+      write(SO,474)i_temp,temtur(i_temp),Qvalue_a,Qvalue_b
+474    format('itemp,temp,Qa,Qb',  &
+                         1x,i5,1x,f4.2,1x,f6.4,1x,f6.4)
 
-         TEMPH=SQRT(TEMTUR(I_TEMP))
+        if (i_temp.eq.nmtemp) then
+            write(SO,*) 'simulation completed'
+        endif
 
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!        DETERMINE WHETHER AVERAGES SHOULD BE CARRIED
-!        AT THIS T
+        if (movanal) then
+          read(11,1041) idummy,idummy,idummy,temtur(i_temp),idummy
+          write(SO,*) 'temperature is',temtur(i_temp)
+1041      format(3(i6,1x),f8.4,1x,i5)
+          do 10175 i=1,nmres
+               read(11,1020) prcord(i,1,1,1), &
+               prcord(i,2,1,1),prcord(i,3,1,1), &
+               prcord(i,1,1,2), &
+               prcord(i,2,1,2),prcord(i,3,1,2), &
+               prcord(i,1,1,3), &
+               prcord(i,2,1,3),prcord(i,3,1,3)
+1020       format(4x,3(f8.3,1x),4x,3(f8.3,1x),4x,3(f8.3,1x))
 
-         IF (QUENCH) THEN
-           IF (I_TEMP.EQ.NMTEMP) THEN !IF QUENCH ONLY PRINT INFO AT END
-              TEMPAV=.TRUE.
-           ELSE
-             TEMPAV=.FALSE.
-           ENDIF
-         ELSE
-           IF( MOD(I_TEMP,INCMOV).EQ.0 )THEN !IN NORMAL CASE PRINT INFO EVERY INCMOV STEPS
-              TEMPAV=.TRUE.
-           ELSE
-              TEMPAV=.FALSE.
-           ENDIF
-         ENDIF
+10175     continue
+        endif
+
+!        set RMS velocity for current T
+
+         temph=sqrt(temtur(i_temp))
+
+!ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+!        determine whether averages should be carried
+!        at this T
+
+         if (quench) then
+           if (i_temp.eq.nmtemp) then !if quench only print info at end
+              tempav=.true.
+           else
+             tempav=.false.
+           endif
+         else
+           if( mod(i_temp,incmov).eq.0 )then !in normal case print info every incmov steps
+              tempav=.true.
+           else
+              tempav=.false.
+           endif
+         endif
 
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-!        PERFORM NMSTEP TIMESTEPS FOR THE CURRENT TEMPERATURE
+!        perform nmstep timesteps for the current temperature
 
-         IF (MOVANAL) NMSTEP=1
+         if (movanal) nmstep=1
  
-         DO 510 I_STEP=1,NMSTEP
-            COUNT_ALT=I_TEMP/INCMOV                   ! START FOR ALTPOT
-            T_ALT=TEMTUR(I_TEMP)                                   
-            DO_SEND_OUTPUT=.FALSE.                                 
-            IF( (TEMPAV .AND. I_STEP.EQ.NMSTEP)     &              
-             .OR. (I_ETIM .AND. MOD(I_STEP,I_ETIM_STEP).EQ.0) )THEN 
-              DO_SEND_OUTPUT=.TRUE.                                 
-            ENDIF                                     ! END FOR ALTPOT
+         do 510 i_step=1,nmstep
+            count_alt=i_temp/incmov                   ! Start For altpot
+            T_alt=temtur(i_temp)                                   
+            do_send_output=.false.                                 
+            if( (tempav .and. i_step.eq.nmstep)     &              
+             .or. (i_Etim .and. mod(i_step,i_Etim_step).eq.0) )then 
+              do_send_output=.true.                                 
+            endif                                     ! End For altpot
 
-            CALL MDCTRL(JSTRT,JFINS,TEMPAV,ISHKIT,BDSHAK,ITCNT,TOTKE)
-            IF( (TEMPAV .AND. I_STEP.EQ.NMSTEP) &
-             .OR. (I_ETIM .AND. MOD(I_STEP,I_ETIM_STEP).EQ.0) )THEN
-              CALL E_WRITE(AVEP(:,:,:,ITCNT),TOTKE,TEMTUR(I_TEMP), &
-                                       NUMPRO,I_TEMP,INCMOV)
+            call mdctrl(jstrt,jfins,tempav,ishkit,bdshak,itcnt,totke)
+            if( (tempav .and. i_step.eq.nmstep) &
+             .or. (i_Etim .and. mod(i_step,i_Etim_step).eq.0) )then
+              call E_write(avep(:,:,:,itcnt),totke,temtur(i_temp), &
+                                       numpro,i_temp,incmov)
 
-      E_TEMP(1)=  &
-         DBLE(AVEP(1,1,1,ITCNT)+AVEP(1,1,2,ITCNT)+AVEP(1,1,3,ITCNT) + &
-          AVEP(1,1,4,ITCNT)+AVEP(1,1,5,ITCNT)+AVEP(1,1,9,ITCNT) + &
-                     AVEP(1,1,11,ITCNT)+AVEP(1,1,17,ITCNT) + &
-                       -WEIGHT_P_AP(1)*AVEP(1,1,40,ITCNT) + &
-                       -WEIGHT_P_AP(2)*AVEP(1,1,41,ITCNT) + &
-                       -WEIGHT_P_AP(3)*AVEP(1,1,42,ITCNT))
+      E_temp(1)=  &
+         dble(avep(1,1,1,itcnt)+avep(1,1,2,itcnt)+avep(1,1,3,itcnt) + &
+          avep(1,1,4,itcnt)+avep(1,1,5,itcnt)+avep(1,1,9,itcnt) + &
+                     avep(1,1,11,itcnt)+avep(1,1,17,itcnt) + &
+                       -weight_P_AP(1)*avep(1,1,40,itcnt) + &
+                       -weight_P_AP(2)*avep(1,1,41,itcnt) + &
+                       -weight_P_AP(3)*avep(1,1,42,itcnt))
 
-         T_TEMP(1)=DBLE(TEMTUR(I_TEMP))
-          CC(1) = T_TEMP(1)
-          DD(1) = E_TEMP(1)
-        WRITE(SO,*) "ENERGY TEMP BEFORE ARB CALL  ",E_TEMP(1),T_TEMP(1)
+         T_temp(1)=dble(temtur(i_temp))
+          CC(1) = T_temp(1)
+          DD(1) = E_temp(1)
+        write(SO,*) "energy temp before arb call  ",E_temp(1),T_temp(1)
 
-      REP_MOVE=20
-!      IF ( MOD(I_TEMP,REP_MOVE) .EQ. 0)THEN 
-!        WRITE(SO,*)"REPLICA MOVE I_STEP REP_MOVE MOD  ", &
-!                         I_TEMP,REP_MOVE,MOD(I_TEMP,REP_MOVE)
-!       CALL ARBITRATE (EE,TT,INET1,INET2,INET3,INET4,PORT_NUMBER)
-!      ENDIF
+      rep_move=20
+!      if ( mod(i_temp,rep_move) .eq. 0)then 
+!        write(SO,*)"REPLICA MOVE i_step rep_move mod  ", &
+!                         i_temp,rep_move,mod(i_temp,rep_move)
+!       CALL arbitrate (ee,tt,inet1,inet2,inet3,inet4,port_number)
+!      endif
 
-      REPOUT_MOVE=5
-!      IF ( MOD(I_TEMP,REPOUT_MOVE) .EQ. 0) THEN
-!        WRITE(SO,*)"OUTPUT I_TEMP REP_MOVE MOD  ",       &
-!                    I_TEMP,REPOUT_MOVE,MOD(I_TEMP,REP_MOVE)
-!      ENDIF
+      repout_move=5
+!      if ( mod(i_temp,repout_move) .eq. 0) then
+!        write(SO,*)"output i_temp rep_move mod  ",       &
+!                    i_temp,repout_move,mod(i_temp,rep_move)
+!      endif
 
-      ENDIF
+      endif
 
-!CCCCCCCCCCCCCCCCCCCCCC
-!           SHAKE WAS UNSUCCESSFUL, RETURN AND PERFORM FINAL
-!           ANALYSIS
+!cccccccccccccccccccccc
+!           shake was unsuccessful, return and perform final
+!           analysis
 
-            IF( BDSHAK )THEN
-               WRITE(OARCHV,144)I_TEMP,TEMTUR(I_TEMP),I_STEP
-  144          FORMAT(/'SORRY BUCKY -- SHAKE MISFIRE ', &
-                     I6,' T ',1PE10.3,' T ',I5)
-               GO TO 300
+            if( bdshak )then
+               write(oarchv,144)i_temp,temtur(i_temp),i_step
+  144          format(/'Sorry bucky -- shake misfire ', &
+                     i6,' T ',1pe10.3,' t ',i5)
+               go to 300
 
-            ENDIF
-
-
-              WRITE(OARCHV,*)'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
+            endif
 
 
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-!   SAVE STRUCTURE FOR LATER MOVIE ANALYSIS, IF THE TIME IS RIGHT
-       IF( MOD(I_TEMP,INCMOV).EQ.0 .AND. (.NOT.MOVANAL)  &
-             .AND. (I_STEP.EQ.NMSTEP-1.OR.NMSTEP.EQ.1)) THEN
-!        IF( 
-!    *        MOD(I_STEP,20).EQ.0) THEN
-
-!           SAVE THE CURENT STRUCTURE
-
-            NMDIFV=NMDIFV + 1
-
-            DO 526 I526=1,NUMPRO
-                IF (.NOT. QUENCH) THEN
-              WRITE(OMOVI,683)I526,NMDIFV,I_STEP-1,TEMTUR(I_TEMP),I_TEMP
- 683          FORMAT(3(I6,1X),F8.4,1X,I5,' STUCT SNAP T T TID')
-              DO 525 I525=1,NMRES
-                  WRITE(OMOVI,332) &
-                 (PRCORD(I525,I1,I526,1),I1=1,3), &
-                 (PRCORD(I525,I1,I526,2),I1=1,3), &
-                 (PRCORD(I525,I1,I526,3),I1=1,3)
-
-332     FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1X))
-  525         CONTINUE
-                ENDIF   ! QUENCH
-
-  526       CONTINUE
+              write(oarchv,*)'XXXXXXXXXXXXXXXXXXXXXXXXXXX'
 
 
-            IF (I_TEMP.EQ.NMTEMP) THEN
-            DO 527 I527=1,NUMPRO
-                IF (QUENCH) THEN
-                WRITE(OMOVI,683)I527,NQUENCH,I_QUENCH, &
-                                        TEMTUR(I_TEMP),I_TEMP
-                ELSE
-                WRITE(OMOVISEG,683)I527,NMDIFV,I_STEP-1, &
-                                        TEMTUR(I_TEMP),I_TEMP
-                ENDIF
-                DO 528 I528=1,NMRES
-                    IF (QUENCH) THEN
-                     WRITE(OMOVI,332)                &
-                   (PRCORD(I528,I1,I527,1),I1=1,3), &
-                   (PRCORD(I528,I1,I527,2),I1=1,3), &
-                   (PRCORD(I528,I1,I527,3),I1=1,3)
-                    ELSE
-                    WRITE(OMOVISEG,332)              &
-                    (PRCORD(I528,I1,I527,1),I1=1,3), &
-                    (PRCORD(I528,I1,I527,2),I1=1,3), &
-                    (PRCORD(I528,I1,I527,3),I1=1,3)
-                    ENDIF
-  528           CONTINUE
-  527         CONTINUE
-            ENDIF
+!cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+!   save structure for later movie analysis, if the time is right
+       if( mod(i_temp,incmov).eq.0 .and. (.not.movanal)  &
+             .and. (i_step.eq.nmstep-1.or.nmstep.eq.1)) then
+!        if( 
+!    *        mod(i_step,20).eq.0) then
 
-         ENDIF
+!           save the curent structure
 
-!CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+            nmdifv=nmdifv + 1
+
+            do 526 i526=1,numpro
+                if (.not. quench) then
+              write(omovi,683)i526,nmdifv,i_step-1,temtur(i_temp),i_temp
+ 683          format(3(i6,1x),f8.4,1x,i5,' stuct snap t T Tid')
+              do 525 i525=1,nmres
+                  write(omovi,332) &
+                 (prcord(i525,i1,i526,1),i1=1,3), &
+                 (prcord(i525,i1,i526,2),i1=1,3), &
+                 (prcord(i525,i1,i526,3),i1=1,3)
+
+332     format('CA: ',3(f8.3,1x),'CB: ',3(f8.3,1x),'Ox: ', 3(f8.3,1x))
+  525         continue
+                endif   ! quench
+
+  526       continue
 
 
+            if (i_temp.eq.nmtemp) then
+            do 527 i527=1,numpro
+                if (quench) then
+                write(omovi,683)i527,nquench,i_quench, &
+                                        temtur(i_temp),i_temp
+                else
+                write(omoviseg,683)i527,nmdifv,i_step-1, &
+                                        temtur(i_temp),i_temp
+                endif
+                do 528 i528=1,nmres
+                    if (quench) then
+                     write(omovi,332)                &
+                   (prcord(i528,i1,i527,1),i1=1,3), &
+                   (prcord(i528,i1,i527,2),i1=1,3), &
+                   (prcord(i528,i1,i527,3),i1=1,3)
+                    else
+                    write(omoviseg,332)              &
+                    (prcord(i528,i1,i527,1),i1=1,3), &
+                    (prcord(i528,i1,i527,2),i1=1,3), &
+                    (prcord(i528,i1,i527,3),i1=1,3)
+                    endif
+  528           continue
+  527         continue
+            endif
+
+         endif
+
+!cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
 
-  510    CONTINUE
+
+
+  510    continue
 !%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-!        INCREMENT COUNTER FOR OBSERVABLES AS 
-!        FUNCTION OF T
+!        increment counter for observables as 
+!        function of T
 
-         IF( TEMPAV )ITCNT=ITCNT + 1
+         if( tempav )itcnt=itcnt + 1
 
-!        PERFORM COLLISIONS FOR NEXT T
+!        perform collisions for next T
 
-         CALL INITV(PRCORD,QRCORD,SRCORD,  &
-                   TRCORD,ZRCORD,VELOCP,BONDLN, &
-                   TEMTUR(I_TEMP),JSTRT,JFINS,TOLSHK, &
-                   MAXSHK,BDSHAK,TIMSTP,NUMPRO, &
-                   ISHKIT,NUMCRD,  &
-                   OARCHV,WORK1,WORK3, &
-                   WORK4,ISEED,IRES)
+         call initv(prcord,qrcord,srcord,  &
+                   trcord,zrcord,velocp,bondln, &
+                   temtur(i_temp),jstrt,jfins,tolshk, &
+                   maxshk,bdshak,timstp,numpro, &
+                   ishkit,numcrd,  &
+                   oarchv,work1,work3, &
+                   work4,iseed,ires)
 
-  509 CONTINUE
+  509 continue
 
-        IF (I_QUENCH.EQ.NQUENCH) THEN
-        CLOSE(OHDRGN)
-        CLOSE(OHDRGN_S)
-        CLOSE(OHDRGN_M)
-        CLOSE(OHDRGN_L)
-        CLOSE(OHDRGN_SEQ)
-        CLOSE(ORAMA)
-        CLOSE(OOXY)
-        CLOSE(OCHIRAL)
-        CLOSE(OPE_NO_BIAS)
-        CLOSE(OPE_WITH_BIAS)
-        CLOSE(OPE_PLUS_KE)
-        CLOSE(OKE)
-        CLOSE(OAMH)
-        CLOSE(OAMHSR)
-        CLOSE(OAMHLR)
-        CLOSE(OAMHMR)
-        CLOSE(OREP)
-        CLOSE(OCON_P_AP)
-        CLOSE(ONONADD)
-        CLOSE(OCCEV)
-        CLOSE(OOEV)
-!        CLOSE(OBIAS)
-!        CLOSE(OBIAS_RG)
-        CLOSE(OOBIASSEGA)
-        CLOSE(OOBIASSEGB)
+        if (i_quench.eq.nquench) then
+        close(ohdrgn)
+        close(ohdrgn_s)
+        close(ohdrgn_m)
+        close(ohdrgn_l)
+        close(ohdrgn_seq)
+        close(orama)
+        close(ooxy)
+        close(ochiral)
+        close(oPE_no_bias)
+        close(oPE_with_bias)
+        close(oPE_plus_KE)
+        close(oKE)
+        close(oamh)
+        close(oamhsr)
+        close(oamhlr)
+        close(oamhmr)
+        close(orep)
+        close(ocon_P_AP)
+        close(ononadd)
+        close(occev)
+        close(ooev)
+!        close(obias)
+!        close(obias_Rg)
+        close(oobiassega)
+        close(oobiassegb)
 
-        ENDIF
-
-
-
-!       WRITE(6,*)' MOVE '
-!       WRITE(6,*)'OARCHV 30 ',OARCHV
-!       WRITE(6,*)'OMOVI 55 ',OMOVI
-!       WRITE(6,*)'OHDRGN  ',OHDRGN
-!       WRITE(6,*)'OHDRGN_S 81 ',OHDRGN_S
-!       WRITE(6,*)'OHDRGN_M 82',OHDRGN_M
-!       WRITE(6,*)'OHDRGN_L 83',OHDRGN_L
-!       WRITE(6,*)'OHDRGN_SEQ 85',OHDRGN_SEQ
-!       WRITE(6,*)'ORAMA 61 ',ORAMA
-!       WRITE(6,*)'OOXY 62',OOXY
-!       WRITE(6,*)'OCHIRAL 63 ',OCHIRAL
-!       WRITE(6,*)'OAMH  64',OAMH
-!       WRITE(6,*)'OTOTAL 65 ',OTOTAL
-!       WRITE(6,*)'OAMHSR 66 ',OAMHSR
-!       WRITE(6,*)'OPE 67 ',OPE
-!       WRITE(6,*)'OKE  73',OKE
-!       WRITE(6,*)'OAMHLR 68 ',OAMHLR
-!       WRITE(6,*)'OAMHMR 78 ',OAMHMR
-!       WRITE(6,*)'ONONADD 84 ',ONONADD
-!       WRITE(6,*)'OAMHLR 68 ',OAMHLR
-!       WRITE(6,*)'OAMHMR 78 ',OAMHMR
-!       WRITE(6,*)'ONONADD  84',ONONADD
-!       WRITE(6,*)'OCON_P_AP 86',OCON_P_AP
-!       WRITE(6,*)'OBIAS_RG 77',OBIAS_RG
-!       WRITE(6,*)'OMOVISEG 75',OMOVISEG
-!       WRITE(6,*)'OOBIASSEGA 87 ',OOBIASSEGA
-!       WRITE(6,*)'OOBIASSEGB 88',OOBIASSEGB
+        endif
 
 
-!!!!!!!!!!!!!!!!!!!!   END OF LOOP OVER TEMPERATURES !!!!!!!!!!!!!!!!!!!!!!!!
 
-  300 CONTINUE
+!       write(6,*)' move '
+!       write(6,*)'oarchv 30 ',oarchv
+!       write(6,*)'omovi 55 ',omovi
+!       write(6,*)'ohdrgn  ',ohdrgn
+!       write(6,*)'ohdrgn_s 81 ',ohdrgn_s
+!       write(6,*)'ohdrgn_m 82',ohdrgn_m
+!       write(6,*)'ohdrgn_l 83',ohdrgn_l
+!       write(6,*)'ohdrgn_seq 85',ohdrgn_seq
+!       write(6,*)'orama 61 ',orama
+!       write(6,*)'ooxy 62',ooxy
+!       write(6,*)'ochiral 63 ',ochiral
+!       write(6,*)'oamh  64',oamh
+!       write(6,*)'ototal 65 ',ototal
+!       write(6,*)'oamhsr 66 ',oamhsr
+!       write(6,*)'oPE 67 ',oPE
+!       write(6,*)'oKE  73',oKE
+!       write(6,*)'oamhlr 68 ',oamhlr
+!       write(6,*)'oamhmr 78 ',oamhmr
+!       write(6,*)'ononadd 84 ',ononadd
+!       write(6,*)'oamhlr 68 ',oamhlr
+!       write(6,*)'oamhmr 78 ',oamhmr
+!       write(6,*)'ononadd  84',ononadd
+!       write(6,*)'ocon_P_AP 86',ocon_P_AP
+!       write(6,*)'obias_Rg 77',obias_Rg
+!       write(6,*)'omoviseg 75',omoviseg
+!       write(6,*)'oobiassega 87 ',oobiassega
+!       write(6,*)'oobiassegb 88',oobiassegb
 
-!     PREPARE 'OBSERVABLES' FOR PRINTING AS A 
-!     FUNCTION OF T
 
-!     SET NORMALIZATION FACTORS
+!!!!!!!!!!!!!!!!!!!!   End of loop over temperatures !!!!!!!!!!!!!!!!!!!!!!!!
 
-      ITCNT=ITCNT - 1
+  300 continue
 
-      TEMPH=1.0/FLOAT(NMSTEP)
+!     prepare 'observables' for printing as a 
+!     function of T
 
-!        NORMALIZE 1ST MOMENTS
+!     set normalization factors
 
-      DO 514 I514=1,ITCNT
-         CALL YNORM(NUMPRO,1,NUMPRO,AVEP(1,1,5,I514), &
-                   TEMPH)
-514 CONTINUE
+      itcnt=itcnt - 1
+
+      temph=1.0/float(nmstep)
+
+!        normalize 1st moments
+
+      do 514 i514=1,itcnt
+         call ynorm(numpro,1,numpro,avep(1,1,5,i514), &
+                   temph)
+514 continue
 
 
-!     ---------------------- DONE -----------------------
+!     ---------------------- done -----------------------
 
-      RETURN
-      END
+      return
+      end

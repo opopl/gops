@@ -1,22 +1,22 @@
-!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!   THIS FILE IS PART OF OPTIM.
+!   OPTIM: A program for optimizing geometries and calculating reaction pathways
+!   Copyright (C) 1999-2006 David J. Wales
+!   This file is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
-!   EIGENVECTOR-FOLLOWING OPTIMIZATION ALGORITHM.
+!   Eigenvector-following optimization algorithm.
 !
 MODULE MODEFOL
       IMPLICIT NONE
@@ -27,11 +27,11 @@ MODULE MODEFOL
       USE SYMINF
       USE MODHESS
       USE ZWK
-      USE PORFUNCS
-      USE MODCHARMM, ONLY: CHRMMT
+      use porfuncs
+      USE modcharmm, ONLY: CHRMMT
       IMPLICIT NONE
 
-!     INTEGER,INTENT(IN),OPTIONAL :: INRIN
+!     integer,intent(in),optional :: INRIN
       INTEGER,INTENT(IN) :: INRIN
       LOGICAL DONE, TSTEST, MINTEST, NRTEST, ZT(3*NATOMS),& 
      &        PZT(3*NATOMS), SDTEST, AWAY, MFLAG, TEST1, TEST2, PTEST
@@ -51,8 +51,8 @@ MODULE MODEFOL
       CHARACTER(LEN=5) ZSYMSAVE
       COMMON /SYS/ ZSYMSAVE
 !
-!  ASSIGN ENOUGH MEMORY TO WORK FOR A BLOCKSIZE OF 32 TO BE POSSIBLE. 
-!  THIS IS FOR DSYEVR.
+!  Assign enough memory to WORK for a blocksize of 32 to be possible. 
+!  This is for DSYEVR.
 !
       INTEGER ILWORK, LWORK, NFOUND, ISUPPZ(2*3*NATOMS)
       INTEGER IWORK(33*3*NATOMS)
@@ -65,45 +65,45 @@ MODULE MODEFOL
       LOGICAL PVFLAG
       COMMON /PVF/ PVFLAG
 !
-!  IVEC TELLS WHICH EIGENMODE TO FOLLOW (0,1- LOWEST EIGENVALUE,
-!          2- NEXT LOWEST EIGENVALUE NOPT- HIGHEST EIGENVALUE)
-!  INR=0 - MINIMISE
-!  INR=1 - NEWTON-RAPHSON
-!  INR=2 - TRANSITION STATE
-!  INR=3 - MINIMISE BUT DON T DO ANY REORIENTATIONS (REACTION PATHS)
-!          AND USE PSEUDO-THIRD DERIVATIVE CORRECTION.
-!  INR=4 - TS SEARCH BUT AND USE PSEUDO-THIRD DERIVATIVE CORRECTION.
-!  INR=5 - AS FOR INR=0 BUT MOVE TO PRINCIPAL AXES FIRST
-!  INR=6 - STEEPEST DESCENT - MINIMISATION. 
-!  INR=7 - STEEPEST DESCENT - CAN STOP AT A SADDLE POINT.
-!  INR=8 - STEEPEST DESCENT/ASCENT SEARCH FOR A TRANSITION STATE
-!  STPMAX IS THE MAXIMUM STEP SIZE 
-!  ISTCRT = 0 USES DOT PRODUCT STEP LENGTH (IN CARTESIAN BASIS)
-!           1 USES MAXIMUM CARTESIAN DISPLACEMENT AS CRITERION
-!           2 USES MAXIMUM E/VECTOR DISPLACEMENT AS CRITERION
-!           3 (SD) - TOTAL ARC LENGTH IS STPMAX(1)
-!           THE ABOVE ALL USE A SINGLE TRUST RADIUS FOR DYNAMIC SCALING.  
-!     10 SCALES IN THE EV BASIS USING A TRUST RADIUS FOR EACH DIRECTION. 
+!  IVEC tells which eigenmode to follow (0,1- lowest eigenvalue,
+!          2- next lowest eigenvalue NOPT- highest eigenvalue)
+!  INR=0 - minimise
+!  INR=1 - Newton-Raphson
+!  INR=2 - transition state
+!  INR=3 - minimise but don t do any reorientations (reaction paths)
+!          and use pseudo-third derivative correction.
+!  INR=4 - ts search but and use pseudo-third derivative correction.
+!  INR=5 - as for INR=0 but move to principal axes first
+!  INR=6 - Steepest descent - minimisation. 
+!  INR=7 - Steepest descent - can stop at a saddle point.
+!  INR=8 - Steepest descent/ascent search for a transition state
+!  STPMAX is the maximum step size 
+!  ISTCRT = 0 uses dot product step length (in Cartesian basis)
+!           1 uses maximum Cartesian displacement as criterion
+!           2 uses maximum e/vector displacement as criterion
+!           3 (SD) - total arc length is STPMAX(1)
+!           The above all use a single trust radius for dynamic scaling.  
+!     10 scales in the EV basis using a trust radius for each direction. 
 !
       LWORK=33*3*NATOMS
       ILWORK=33*3*NATOMS
       INRSAVE=INR
       INR=INRIN
 !
-! FOR CHARMM: UPDATE NONBONDED LIST AT THE START OF EACH OPTIMIZATION
+! for CHARMM: update nonbonded list at the start of each optimization
 !
       IF(CHRMMT) CALL UPDATENBONDS(QTS)
 !
-!  RESET MAXIMUM STEP SIZES IN CASE THIS ISN'T THE FIRST CALL TO EFOL.
+!  Reset maximum step sizes in case this isn't the first call to EFOL.
 !
-      IF (DEBUG) PRINT '(A,G20.10)',' EFOL> RESETTING MAXIMUM STEP SIZES TO ',MXSTP
+      IF (DEBUG) PRINT '(A,G20.10)',' efol> resetting maximum step sizes to ',MXSTP
       DO J1=1,NOPT
          STPMAX(J1)=MXSTP
       ENDDO
 !
 !
-!  THIS CALL TO GMETRY IS NEEDED FOR REDO RUNS WITH TIP POTENTIALS, OTHERWISE IF
-!  AN EULER ANGLE GOES BAD THE STEP IS F*CKED.
+!  This call to gmetry is needed for REDO runs with TIP potentials, otherwise if
+!  an Euler angle goes bad the step is f*cked.
 !
       VEC(1:NOPT)=0.0D0
       CALL GMETRY(0,VEC,QTS)
@@ -145,20 +145,20 @@ MODULE MODEFOL
          TSTEST=.TRUE.
          CONVU=0.0D0
       ELSE
-         PRINT '(A,I8)','EFOL> INR VALUE NOT RECOGNISED,  SET TO 0 FROM ',INR
+         PRINT '(A,I8)','efol> INR value not recognised,  set to 0 from ',INR
          INR=0
          MINTEST=.TRUE.
          IF (PTEST) WRITE(*,10) 
       ENDIF
-10    FORMAT(' UPDATING STRUCTURE WITH EIGENVECTOR-FOLLOWING STEPS.')
-20    FORMAT(' UPDATING STRUCTURE WITH PSEUDO-NEWTON-RAPHSON STEPS.')
-30    FORMAT(' UPDATING STRUCTURE WITH QUADRATIC STEEPEST-DESCENT STEPS.')
-      IF (MASST.AND.PTEST) PRINT*,'MASS WEIGHTING IS ACTIVE'
+10    FORMAT(' Updating structure with eigenvector-following steps.')
+20    FORMAT(' Updating structure with pseudo-Newton-Raphson steps.')
+30    FORMAT(' Updating structure with quadratic steepest-descent steps.')
+      IF (MASST.AND.PTEST) PRINT*,'Mass weighting is active'
       ITER=1
 
 40    IF (PTEST) PRINT*
       IF (PTEST) WRITE(*,60) ITER
-60    FORMAT (' BEGINNING OF OPTIMIZATION CYCLE ', I4,'.',/&
+60    FORMAT (' Beginning of optimization cycle ', I4,'.',/&
      &' -------------------------------------')
       IF (PV.AND.(.NOT.BFGSSTEP)) THEN
          CALL POTENTIAL(QTS,ENERGY,VNEW,.FALSE.,.FALSE.,RMS,PTEST,.FALSE.)
@@ -168,16 +168,16 @@ MODULE MODEFOL
       CALL POTENTIAL(QTS,ENERGY,VNEW,.TRUE.,.TRUE.,RMS,PTEST,.FALSE.)
       CALL DUMPP(QTS,ENERGY)
 !
-!  GDIIS STEP IF REQUIRED. THIS REALLY JUST DOESN'T WORK!
+!  GDIIS step if required. This really just doesn't work!
 !
 !     IF (DTEST) THEN
 !        CALL  DIIS(NOPT,SVEC,ITER-1,QSAVE,VNEW,QTS,RMS,ENERGY,DONE)
-!        IF (PTEST) WRITE(*,'(A,F20.10)') ' ENERGY BEFORE DIIS=',ENERGY
+!        IF (PTEST) WRITE(*,'(A,F20.10)') ' Energy before DIIS=',ENERGY
 !        CALL POTENTIAL(Q,ENERGY,VNEW,.TRUE.,.TRUE.,RMS,PTEST,.FALSE.)
-!        IF (PTEST) WRITE(*,'(A,F20.10)') ' ENERGY AFTER DIIS=',ENERGY
+!        IF (PTEST) WRITE(*,'(A,F20.10)') ' Energy after DIIS=',ENERGY
 !     ENDIF
 !
-!  TRANSFORMATION TO MASS WEIGHTED COORDINATES IF REQUIRED.
+!  Transformation to mass weighted coordinates if required.
 !
       IF (MASST) CALL MASSWT(NATOMS,ATMASS,QTS,VNEW,.TRUE.)
 
@@ -201,26 +201,26 @@ MODULE MODEFOL
             ELSE
                STPMAX(1)=MIN(STPMAX(1)*1.1D0,MAXMAX)
             ENDIF
-            IF (PTEST) WRITE(*,'(3(A,F12.6))') ' MAXIMUM STEP SIZE=',STPMAX(1),' TRUST RADIUS=',TRAD,' CALCULATED RATIO=', EPER
+            IF (PTEST) WRITE(*,'(3(A,F12.6))') ' Maximum step size=',STPMAX(1),' trust radius=',TRAD,' calculated ratio=', EPER
          ENDIF
       ENDIF
 !
-!  DIAGONALIZE THE RELEVANT HESSIAN AND DETERMINE THE NUMBER OF
-!  NEGATIVE EIGENVALUES.
+!  Diagonalize the relevant hessian and determine the number of
+!  negative eigenvalues.
 !
-!  DSYEV AND DSYEVR ARE SUPPOSED TO ORDER THE EIGENVALUES AND CORRESPONDING 
-!  EIGENVECTORS IN ASCENDING ORDER, BUT WE NEED THE EIGENVALUES
-!  IN DESCENDING ORDER. 
+!  DSYEV and DSYEVR are supposed to order the eigenvalues and corresponding 
+!  eigenvectors in ascending order, but we need the eigenvalues
+!  in descending order. 
 !
 
 !     IF (LANCZOST) THEN
 !        IF (PTEST) WRITE(*,55) ACCLAN, SHIFTLAN
-!55      FORMAT(' MATRIX DIAGONALISATION BY THE LANCZOS METHOD, ACCURACY=',E12.5,' SHIFT=',E12.5)
+!55      FORMAT(' Matrix diagonalisation by the Lanczos method, accuracy=',E12.5,' shift=',E12.5)
 !C       CALL LANCZOS(NOPT,HESS,DIAG,1.0D0,-1.0D0,NFOUND)
 !        IF (NFOUND.NE.NOPT) THEN
 !           IF (PTEST) WRITE(*,56) NFOUND
-!56         FORMAT(' *** WARNING *** ONLY ',I4,' EIGENVALUES FOUND BY LANCZOS')
-!           IF (ISTCRT.EQ.10) PRINT*,' SCALE 2 IS RECOMMENDED!'
+!56         FORMAT(' *** WARNING *** Only ',I4,' eigenvalues found by Lanczos')
+!           IF (ISTCRT.EQ.10) PRINT*,' SCALE 2 is recommended!'
 !        ENDIF
 !     ELSE
 !        NFOUND=NOPT
@@ -229,15 +229,15 @@ MODULE MODEFOL
          CALL DSYEVR('V','I','U',NOPT,HESS,SIZE(HESS,1),0.0D0,1.0D0,1,NUSEEV,ABSTOL,NFOUND,DIAG, &
      &                        ZWORK,3*NATOMS,ISUPPZ,WORK, &
      &                        LWORK, IWORK, ILWORK, INFO )
-              IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' IN DSYEVR'
-!             PRINT '(A,F15.5,I10)','OPTIMAL AND ACTUAL VALUE OF LWORK=',WORK(1),LWORK
-!             PRINT '(A,I10,I10)','OPTIMAL AND ACTUAL VALUE OF ILWORK=',IWORK(1),ILWORK
+              IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' in DSYEVR'
+!             PRINT '(A,F15.5,I10)','Optimal and actual value of LWORK=',WORK(1),LWORK
+!             PRINT '(A,I10,I10)','Optimal and actual value of ILWORK=',IWORK(1),ILWORK
 !
-!  PUT THE NUSEEV EIGENVALUES AND EIGENVECTORS INTO THE SAME PLACES AS THEY ARE EXPECTED TO
-!  BE FOR FULL DIGAGONALISATION.
-!  NOTE THE DIFFERENT ORDERING! WE HAVE VALUES FOR THE LOWEST NUSEEV EIGENVALUES
-!  IN ELEMENTS 1:NUSEEV, BUT WE WANT TO PUT THEM IN NOPT-NUSEEV+1:NOPT
-!  DO THIS USING DUMMY DIAG VALUES AND SORTING.
+!  Put the NUSEEV eigenvalues and eigenvectors into the same places as they are expected to
+!  be for full digagonalisation.
+!  Note the different ordering! We have values for the lowest NUSEEV eigenvalues
+!  in elements 1:NUSEEV, but we want to put them in NOPT-NUSEEV+1:NOPT
+!  Do this using dummy DIAG values and sorting.
 !
          HESS=0.0D0 
          DO I=1,NUSEEV
@@ -246,30 +246,30 @@ MODULE MODEFOL
             ENDDO
          ENDDO
          NEV=NUSEEV
-         DIAG(NEV+1:NOPT)=1.0D100 ! PUT NON-EXISTENT DUMMY EIGENVALUES IN DUMMY ELEMENTS, THEN SORT
+         DIAG(NEV+1:NOPT)=1.0D100 ! put non-existent dummy eigenvalues in dummy elements, then sort
 !        CALL EIGENSORT_VAL_ASC(DIAG,HESS,NOPT,3*NATOMS)
       ELSE
          CALL DSYEV('V','U',NOPT,HESS,SIZE(HESS,1),DIAG,TEMPA,9*NATOMS,INFO)
-         IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' IN DSYEV'
+         IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' in DSYEV'
 !
-!  THE SORT ORDER GIVEN BY DSYEV SEEMS TO VARY WITH PLATFORM!
+!  The sort order given by DSYEV seems to vary with platform!
 ! 
-         IF (DIAG(1).LT.DIAG(NOPT)) CALL EIGENSORT_VAL_ASC(DIAG,HESS,NOPT,3*NATOMS)
+         if (diag(1).lt.diag(nopt)) call eigensort_val_asc(diag,hess,nopt,3*natoms)
          NEV=NOPT
       ENDIF
 !
-!  FIND EIGENVALUE DEMANDED BY VALUE OF IVEC (FIRST PASS ONLY)
-!  AND COUNT NUMBER OF NEGATIVE EIGENVALUES IN HESSIAN (ALL PASSES).
+!  Find eigenvalue demanded by value of ivec (first pass only)
+!  and count number of negative eigenvalues in hessian (all passes).
 !
       DO J=1,NOPT
          ZT(J)=.TRUE.
       ENDDO
 !
-!  DETERMINE THE ZERO EIGENVALUES. ASSUME THE ZEROS HAVE BEEN
-!  SHIFTED TO THE TOP OF THE RANGE.
-!  HOWEVER, SOME SYSTEMS SHOULD HAVE THREE ZEROS, SOME NONE
-!  AT ALL, AND LINEAR SYSTEMS ONE LESS THEN USUAL.
-!  ROTATING SYSTEMS HAVE ONE!
+!  Determine the zero eigenvalues. Assume the zeros have been
+!  shifted to the top of the range.
+!  However, some systems should have three zeros, some none
+!  at all, and linear systems one less then usual.
+!  Rotating systems have one!
 !
       IF (ZSYM(1).EQ.'TH') THEN
          NZERO=3
@@ -317,7 +317,7 @@ MODULE MODEFOL
             ENDDO
             NZERO=NATOMS+2
          ENDIF
-      ELSE IF ((FPGRP.EQ.'DXH'.OR.FPGRP.EQ.'CXV').AND.(ZSYM(NATOMS)(1:1).NE.'W')) THEN
+      ELSE IF ((FPGRP.EQ.'DXh'.OR.FPGRP.EQ.'CXv').AND.(ZSYM(NATOMS)(1:1).NE.'W')) THEN
          ZT(1)=.FALSE.
          ZT(2)=.FALSE.
          ZT(3)=.FALSE.
@@ -379,14 +379,14 @@ MODULE MODEFOL
       ENDDO
 
       IF (VALUEST.AND.(MOD(ITER-1,NVALUES).EQ.0)) THEN
-         IF (PTEST) WRITE(*,'(A)') ' EIGENVALUES OF THE HESSIAN MATRIX:'
+         IF (PTEST) WRITE(*,'(A)') ' Eigenvalues of the Hessian matrix:'
          IF (PTEST) WRITE (*,'(6(F12.5,1X))') (DIAG(I),I=MAX(NZERO+1,NOPT-NEV+1),NOPT)
       ENDIF
       IF (VECTORST.AND.(MOD(ITER-1,NVECTORS).EQ.0)) THEN
-         IF (PTEST) WRITE(*,'(A)') ' EIGENVECTORS OF THE HESSIAN MATRIX:'
+         IF (PTEST) WRITE(*,'(A)') ' Eigenvectors of the Hessian matrix:'
          CALL HESSOUT(NOPT,NOPT,3*NATOMS,1)
       ENDIF
-!     PRINT '(A)','PREDICTED ZERO EIGENVECTORS FOR THOMSON'
+!     PRINT '(A)','Predicted zero eigenvectors for Thomson'
 !     VECX(1:3*NATOMS)=0.0D0; VECY(1:3*NATOMS)=0.0D0; VECZ(1:3*NATOMS)=0.0D0
 !     DO J1=1,3*NATOMS,2
 !        VECX(J1)=SIN(QTS(J1+1))
@@ -412,19 +412,19 @@ MODULE MODEFOL
 !           DUMMYY=DUMMYY+HESS(J2,J1)*VECY(J2)
 !           DUMMYZ=DUMMYZ+HESS(J2,J1)*VECZ(J2)
 !        ENDDO
-!        PRINT '(A,I6,A,3F20.10)','X,Y,Z DOT PRODUCTS FOR EIGENVECTOR ',J1,' ARE ',DUMMYX,DUMMYY,DUMMYZ
+!        PRINT '(A,I6,A,3F20.10)','x,y,z dot products for eigenvector ',J1,' are ',DUMMYX,DUMMYY,DUMMYZ
 !     ENDDO
 
       IF (EVCUT.NE.0.0D0) THEN
          DO J1=1,NOPT
             IF (DABS(DIAG(J1)).LT.EVCUT) THEN
-               IF (PTEST) PRINT*,'EIGENVALUE CUTOFF - NO STEP WILL BE TAKEN FOR MODE ',J1
+               IF (PTEST) PRINT*,'Eigenvalue cutoff - no step will be taken for mode ',J1
                ZT(J1)=.FALSE.
             ENDIF
          ENDDO
       ENDIF
 !
-!  COUNT NEGATIVE EIGENVALUES AND FIND THE SMALLEST.
+!  Count negative eigenvalues and find the smallest.
 !
       INEG=0
       SMALL=1.0D20
@@ -442,15 +442,15 @@ MODULE MODEFOL
 
       IF (KEEPINDEX.AND.(ITER.EQ.1)) THEN
          HINDEX=INEG
-         IF (PTEST) WRITE(*,'(A,I4)') ' SEARCHING FOR A SADDLE WITH HESSIAN INDEX=',HINDEX
+         IF (PTEST) WRITE(*,'(A,I4)') ' Searching for a saddle with Hessian index=',HINDEX
       ENDIF
 !
-!  FOR TRANSITION STATE SEARCHES SET IMODE TO THE APPROPRIATE MODE TO BE
-!  FOLLOWED. IF IVEC=0 THIS IS THE SOFTEST MODE FOR EACH STEP. 
-!  IMODE NEEDS TO BE SET HERE FOR:
-!  (A) TSTEST AND ITER=1,
-!  (B) TSTEST AND ITER>1 IF IVEC=0.
-!  (C) MINTEST OR SDTEST AND IVEC NOT 0.
+!  For transition state searches set IMODE to the appropriate mode to be
+!  followed. If IVEC=0 this is the softest mode for each step. 
+!  IMODE needs to be set here for:
+!  (a) TSTEST and ITER=1,
+!  (b) TSTEST and ITER>1 if IVEC=0.
+!  (c) MINTEST or SDTEST and IVEC not 0.
 !
       IMODE=0
       IASSIGN=0
@@ -465,8 +465,8 @@ MODULE MODEFOL
          ENDIF
       ENDDO
 !
-!  ON LATER PASSES, DETERMINE OVERLAP BETWEEN HESSIAN EIGENVECTORS
-!  AND VEC (SAVED FROM PREVIOUS STEP) FOR TRANSITION STATE SEARCHES.
+!  On later passes, determine overlap between Hessian eigenvectors
+!  and VEC (saved from previous step) for transition state searches.
 !
       IF (ITER.GT.1.AND.TSTEST.AND.(IVEC.NE.0)) THEN
          Z0=0.0D0
@@ -479,18 +479,18 @@ MODULE MODEFOL
          ENDDO
 
          IF (PTEST) WRITE(*,100) Z0,IM,DIAG(IM),SMALL
-100      FORMAT(' LARGEST OVERLAP=',F8.5,' FOR VECTOR ',I4,' EIGENVALUE=',F14.7,' SMALLEST EIGENVALUE=',F14.7)
+100      FORMAT(' Largest overlap=',F8.5,' for vector ',I4,' eigenvalue=',F14.7,' Smallest eigenvalue=',F14.7)
          IF (Z0.LT.0.8D0) THEN
             IF (IM.EQ.OMODE) THEN
-               IF (PTEST) PRINT*,'SMALL OVERLAP, BUT WITH SAME EIGENVECTOR'
+               IF (PTEST) PRINT*,'Small overlap, but with same eigenvector'
             ELSE IF (IM.GT.OMODE) THEN
-               IF (PTEST) WRITE(*,'(A)') ' SMALL OVERLAP WITH SOFTER EIGENVECTOR ACCEPTED'
+               IF (PTEST) WRITE(*,'(A)') ' Small overlap with softer eigenvector accepted'
             ELSE
                IF (ZT(OMODE)) THEN
-                  IF (PTEST) PRINT*,'SMALL OVERLAP, FOLLOW PREVIOUS MODE'
+                  IF (PTEST) PRINT*,'Small overlap, follow previous mode'
                   IM=OMODE
 
-!                 IF (PTEST) PRINT*,'SMALL OVERLAP - BACKTRACKING'
+!                 IF (PTEST) PRINT*,'Small overlap - backtracking'
 !                 DO J1=1,NOPT
 !                    CSTEP(J1)=CSTEP(J1)/2.0D0
 !                    PSTEP(J1)=PSTEP(J1)/2.0D0
@@ -504,18 +504,18 @@ MODULE MODEFOL
 
                ENDIF
             ENDIF
-!CC          IF (PTEST) PRINT*,'SMALL OVERLAP - SWITCH TO SOFTSET MODE'
+!CC          IF (PTEST) PRINT*,'Small overlap - switch to softset mode'
 !CC          IVEC=0
 !CC          IM=IMODE
          ENDIF
 
          IF (IM.LT.OMODE-8) THEN
-            IF (PTEST) PRINT*,'RESETTING MODE FOLLOWED TO ',OMODE
+            IF (PTEST) PRINT*,'resetting mode followed to ',OMODE
             IM=OMODE
          ENDIF
 !
-!  THIS SHOULD SAVE US FROM FOLLOWING A VECTOR WITH A ZERO EIGENVALUE.
-!  IMODE IS SET TO A MODE WITH NON-ZERO EIGENVALUE BEFORE WE ENTER THIS BLOCK.
+!  This should save us from following a vector with a zero eigenvalue.
+!  IMODE is set to a mode with non-zero eigenvalue before we enter this block.
 !
          IF (ZT(IM)) THEN
             IMODE=IM
@@ -523,7 +523,7 @@ MODULE MODEFOL
             IMODE=OMODE
          ENDIF
          OMODE=IMODE
-         IF (PTEST) PRINT*,'MODE TO BE FOLLOWED=',IMODE
+         IF (PTEST) PRINT*,'Mode to be followed=',IMODE
       ELSE
          OMODE=IMODE
       ENDIF
@@ -535,8 +535,8 @@ MODULE MODEFOL
          ENDDO
       ENDDO
 !
-!  CALCULATE THE LOCALISATION INDEX FOR EACH PAIR OF NORMAL MODES AND GET THE MEAN AND
-!  STANDARD DEVIATION. THE SUM IS ONLY OVER EIGENVECTORS WITH NEGATIVE (NONZERO) EIGENVALUES.
+!  Calculate the localisation index for each pair of normal modes and get the mean and
+!  standard deviation. The sum is only over eigenvectors with negative (nonzero) eigenvalues.
 !
 !     DUMMY1=0.0D0
 !     DUMMY2=0.0D0
@@ -585,23 +585,23 @@ MODULE MODEFOL
 !     ENDDO
 !     PRINT*,'INEG*(INEG-1)/2,NCONTRIB=',INEG*(INEG-1)/2,NCONTRIB
 !     IF (NCONTRIB.GT.1) THEN
-!        WRITE(*,'(A,I9,5G20.10)') 'LOCALISATION ',
+!        WRITE(*,'(A,I9,5G20.10)') 'localisation ',
 !    1              INEG,DUMMY1/NCONTRIB,SQRT((DUMMY2-DUMMY1**2/NCONTRIB)/(NCONTRIB-1)),
 !    2              DUMMY5/MAX(1,NMINUS),DUMMY6/NPLUS,PDUMMY1/NPCONTRIB
 !     ELSE IF (NCONTRIB.GT.0) THEN
-!        WRITE(*,'(A,I9,5G20.10)') 'LOCALISATION ',
+!        WRITE(*,'(A,I9,5G20.10)') 'localisation ',
 !    1              INEG,DUMMY1/NCONTRIB,0.0D0,DUMMY5/MAX(1,NMINUS),DUMMY6/NPLUS,PDUMMY1/NPCONTRIB
 !     ELSE
-!        WRITE(*,'(A,I9,5G20.10)') 'LOCALISATION ',
+!        WRITE(*,'(A,I9,5G20.10)') 'localisation ',
 !    1              INEG,0.0D0,0.0D0,DUMMY5/MAX(1,NMINUS),DUMMY6/NPLUS,PDUMMY1/NPCONTRIB
 !     ENDIF
 !
-!  FIND THE VECTOR OF STPMAX VALUES BY COMPARING PREDICTED AND
-!  ACTUAL SECOND DERIVATIVES FOR EACH EIGENVECTOR.
+!  Find the vector of STPMAX values by comparing predicted and
+!  actual second derivatives for each eigenvector.
 !
       IF (ITER.EQ.1) THEN
          DO J1=1,NOPT
-            RAT(J1)=0.0D0  !  INITIALISE RAT - OTHERWISE WE CAN;T PRINT IT.
+            RAT(J1)=0.0D0  !  Initialise RAT - otherwise we can;t print it.
          ENDDO
       ENDIF
       IF ((ITER.GT.1).AND.(ISTCRT.EQ.10)) THEN
@@ -618,7 +618,7 @@ MODULE MODEFOL
 !     1                          ABS((-FOB(NOPT-K1)-PFOB(NOPT-K2))/(PSTEP(NOPT-K2)*DIAG(NOPT-K1))-1.0D0) )
 !            ENDDO
 !         ENDDO
-!         IF (PTEST) WRITE(*,'(A)') 'MATRIX OF TRUST RATIOS FOR FIVE SOFTEST NON-ZERO MODES:'
+!         IF (PTEST) WRITE(*,'(A)') 'Matrix of trust ratios for five softest non-zero modes:'
 !         IF (PTEST) WRITE(*,'(10G12.4)') ((TMAT(K2,K1),K2=1,10),K1=1,10)
             
          DO J1=1,NOPT
@@ -633,8 +633,8 @@ MODULE MODEFOL
                IF ((.NOT.PZT(K1)).AND.(K1.LT.NOPT)) GOTO 150
                IF (DABS(PSTEP(K1)).GT.1.0D-40) THEN
 !
-!  ALLOW FOR POSSIBLE PHASE CHANGE IN THE EIGENVECTOR. JUST TAKE THE SMALLER VALUE.
-!  BUG FIX 5/2/08 - FACTOR OF 2 IN THE RATIOS ! DJW
+!  Allow for possible phase change in the eigenvector. Just take the smaller value.
+!  Bug fix 5/2/08 - factor of 2 in the ratios ! DJW
 !
                   RAT1=DABS(( FOB(J1)-PFOB(K1))/(2*DIAG(J1)*PSTEP(K1))-1.0D0)
                   RAT2=DABS((-FOB(J1)-PFOB(K1))/(2*DIAG(J1)*PSTEP(K1))-1.0D0)
@@ -652,7 +652,7 @@ MODULE MODEFOL
                            SUM=SUM+ATMASS(J2)
                         ENDDO
                         AVG=SQRT(SUM/NATOMS)
-!                       IF (PTEST) PRINT *,'THE AVERAGE IS',AVG
+!                       IF (PTEST) PRINT *,'the average is',AVG
                         STPMAX(J1)=MIN(MAX(TEMPA(K1)*1.09D0,MINMAX),AVG*MAXMAX)
                      ELSE
                         STPMAX(J1)=MIN(MAX(TEMPA(K1)*1.09D0,MINMAX),MAXMAX)
@@ -668,15 +668,15 @@ MODULE MODEFOL
 
       IF (PGRAD.AND.(MOD(ITER-1,NGRADIENTS).EQ.0)) THEN
          IF (PTEST) WRITE(*,160)
-160      FORMAT(' GRADIENTS ALONG HESSIAN EIGENVECTORS: ')
+160      FORMAT(' Gradients along Hessian eigenvectors: ')
          IF (PTEST) WRITE(*,'(6(F12.5,1X))')(FOB(I),I=MAX(NZERO+1,NOPT-NEV+1),NOPT)
       ENDIF
       IF (PTEST) WRITE(*,170)INEG
-170   FORMAT(' NUMBER OF NEGATIVE EIGENVALUES=',I3)
+170   FORMAT(' Number of negative eigenvalues=',I3)
       IF (PTEST) WRITE(NSTRING,170)INEG
       IF (DUMPV) CALL VDUMP(DIAG,ZT,NOPT,3*NATOMS)
 !
-! CALCULATE STEP:
+! Calculate step:
 !
       SUM=0.0D0
       PROD=0.0D0
@@ -686,29 +686,29 @@ MODULE MODEFOL
             IF (DIAG(J1).GT.0.0D0) PROD=PROD+DLOG(DIAG(J1))
          ENDIF
       ENDDO
-      IF ((FPGRP.EQ.'DXH'.OR.FPGRP.EQ.'CXV').AND.(ZSYM(NATOMS)(1:1).NE.'W')) THEN
+      IF ((FPGRP.EQ.'DXh'.OR.FPGRP.EQ.'CXv').AND.(ZSYM(NATOMS)(1:1).NE.'W')) THEN
          SUM=SUM/MAX(NOPT-5,1)
       ELSE
          SUM=SUM/MAX(NOPT-6,1)
       ENDIF
       IF (PTEST) WRITE(*,235) SUM,PROD
-235   FORMAT(' MEAN MODULUS OF POSITIVE HESSIAN EIGENVALUES=',4X,F20.10,/,&
-     &       ' LOG PRODUCT OF POSITIVE HESSIAN EIGENVALUES =',4X,F20.10)
+235   FORMAT(' Mean modulus of positive Hessian eigenvalues=',4X,F20.10,/,&
+     &       ' Log product of positive Hessian eigenvalues =',4X,F20.10)
       IF (TSTEST) THEN
          IF (HINDEX.GT.1) THEN
-            IF (PTEST) PRINT '(A,I8,A)',' EFOL> ',HINDEX,' MODES WILL BE SEARCHED UPHILL'
+            IF (PTEST) PRINT '(A,I8,A)',' efol> ',HINDEX,' modes will be searched uphill'
          ELSE
             IF (PTEST) WRITE(*,210) IMODE,DIAG(IMODE)
-210         FORMAT(' MODE ',I4,' WILL BE SEARCHED UPHILL. EIGENVALUE=',4X,F19.10)
+210         FORMAT(' Mode ',I4,' will be searched uphill. Eigenvalue=',4X,F19.10)
          ENDIF
 !
-! SAVE EIGENVECTOR BEING FOLLOWED FOR USE ON NEXT STEP
+! Save eigenvector being followed for use on next step
 !
          DO I=1,NOPT
             VEC(I)=HESS(I,IMODE)
          ENDDO
 !
-!  IF THE CONVERGENCE CRITERIA ARE MET THEN RETURN NOW.
+!  If the convergence criteria are met then return now.
 !
       ENDIF
       TEMP=-1.0D0
@@ -718,11 +718,11 @@ MODULE MODEFOL
       ENDDO
       RMS=DSQRT(RMS/NOPT)
 !
-!  TAKE A STEP AWAY FROM A STATIONARY POINT ALONG THE APPROPRIATE
-!  HESSIAN EIGENVECTOR. THIS ENABLES US TO START FROM CONVERGED MINIMA.
-!  DISTINGUISH THE CASE WHERE WE WANT TO TAKE A VERY SMALL STEP AWAY
-!  FROM A TRANSITION STATE FROM OTHERS WHERE WE WANT A BIG DISPLACEMENT
-!  TO GET UNSTUCK. 
+!  Take a step away from a stationary point along the appropriate
+!  Hessian eigenvector. This enables us to start from converged minima.
+!  Distinguish the case where we want to take a very small step away
+!  from a transition state from others where we want a big displacement
+!  to get unstuck. 
 !
       AWAY=.FALSE.
       IF (RMS.LT.PUSHCUT) THEN
@@ -734,7 +734,7 @@ MODULE MODEFOL
       ENDIF
       IF ((.NOT.SDTEST).OR.AWAY) THEN
 !
-!  EF DETERMINATION OF STEPS
+!  EF determination of steps
 !
          ICOUNT=0
          DO I=NOPT,1,-1
@@ -756,32 +756,32 @@ MODULE MODEFOL
                IF ((I.EQ.IMODE).AND.(TSTEST)) THEN
                   LP=-LP
                ELSE IF (TSTEST.AND.(ICOUNT.LT.HINDEX).AND.(HINDEX.GT.1)) THEN
-                  IF (PTEST) WRITE(*,'(A,I4,A,4X,F19.10)') ' MODE ',I,' WILL BE SEARCHED UPHILL. EIGENVALUE=',DIAG(I)
+                  IF (PTEST) WRITE(*,'(A,I4,A,4X,F19.10)') ' Mode ',I,' will be searched uphill. Eigenvalue=',DIAG(I)
                   LP=-LP
                ENDIF
 !
-!  PSEUDO-NEWTON-RAPHSON
+!  Pseudo-Newton-Raphson
 !
                IF (NRTEST) LP=LP*DIAG(I)/DABS(DIAG(I))
                STEP(I)=-FOB(I)/LP
 !
-!  MINIMISE TO REMOVE ZERO EIGENVALUES ! DJW
+!  Minimise to remove zero eigenvalues ! DJW
 !
 !              IF (ABS(DIAG(I)).LT.1.0D-1) THEN
 !                 STEP(I)=-FOB(I)*STPMAX(I)/ABS(FOB(I))
-!                 PRINT '(A,I8,A,G20.10)',' EFOL> MINIMISING FOR MODE ',I,' STEP=',STEP(I)
+!                 PRINT '(A,I8,A,G20.10)',' efol> minimising for mode ',I,' step=',STEP(I)
 !              ENDIF
                ICOUNT=ICOUNT+1
             ENDIF
          ENDDO
 !
-!  TAKE ACTION IF WE ARE HEADING FOR A STATIONARY POINT OF THE WRONG INDEX.
+!  Take action if we are heading for a stationary point of the wrong index.
 !
          IF (AWAY) THEN
             IF (TSTEST) THEN
                IF (INEG.EQ.0) THEN
-                  IF ((IVEC.GE.0).AND.PTEST) PRINT*,'STEPPING AWAY FROM MINIMUM ALONG MODE ',IMODE,' + DIRECTION'
-                  IF ((IVEC.LT.0).AND.PTEST) PRINT*,'STEPPING AWAY FROM MINIMUM ALONG MODE ',IMODE,' - DIRECTION'
+                  IF ((IVEC.GE.0).AND.PTEST) PRINT*,'Stepping away from minimum along mode ',IMODE,' + direction'
+                  IF ((IVEC.LT.0).AND.PTEST) PRINT*,'Stepping away from minimum along mode ',IMODE,' - direction'
                   IF (PUSHOFF.NE.0.0D0) THEN
                      STEP(IMODE)=PUSHOFF
                   ELSE
@@ -790,12 +790,12 @@ MODULE MODEFOL
                   IF (IVEC.LT.0) STEP(IMODE)=-STEP(IMODE)
                ELSE 
 !
-!  STEP OFF ALONG ALL THE MODES WITH NEGATIVE EIGENVALUE EXCEPT THE SMALLEST.
+!  Step off along all the modes with negative eigenvalue except the smallest.
 !
                   IF (IVEC.EQ.0) THEN
                      DO J1=1,NOPT-1
                         IF (ZT(J1).AND.(DIAG(J1).LT.0.0D0)) THEN
-                           IF (PTEST) PRINT*,'STEPPING AWAY FROM HIGHER ORDER SADDLE ALONG MODE ',J1
+                           IF (PTEST) PRINT*,'Stepping away from higher order saddle along mode ',J1
                            IF (PUSHOFF.NE.0.0D0) THEN
                               STEP(J1)=PUSHOFF
                            ELSE
@@ -805,10 +805,10 @@ MODULE MODEFOL
                      ENDDO
                   ELSE
 !
-!  STEP OFF ONLY ALONG THE MODE SPECIFIED BY IMODE.
+!  Step off only along the mode specified by IMODE.
 !
-                     IF ((IVEC.GE.0).AND.PTEST) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',IMODE,' + DIRECTION'
-                     IF ((IVEC.LT.0).AND.PTEST) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',IMODE,' - DIRECTION'
+                     IF ((IVEC.GE.0).AND.PTEST) PRINT*,'Stepping away from saddle along mode ',IMODE,' + direction'
+                     IF ((IVEC.LT.0).AND.PTEST) PRINT*,'Stepping away from saddle along mode ',IMODE,' - direction'
                      IF (PUSHOFF.NE.0.0D0) THEN
                         STEP(IMODE)=PUSHOFF
                      ELSE
@@ -819,12 +819,12 @@ MODULE MODEFOL
                ENDIF
             ELSE IF (MINTEST.OR.SDTEST) THEN
 !
-!  STEP OFF ALONG ALL THE MODES WITH NEGATIVE EIGENVALUES.
+!  Step off along all the modes with negative eigenvalues.
 !
                IF (IVEC.EQ.0) THEN
                   DO J1=1,NOPT
                      IF (ZT(J1).AND.(DIAG(J1).LT.0.0D0)) THEN
-                        IF (PTEST) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',J1
+                        IF (PTEST) PRINT*,'Stepping away from saddle along mode ',J1
                         IF (PUSHOFF.NE.0.0D0) THEN
                            STEP(J1)=PUSHOFF
                         ELSE
@@ -834,10 +834,10 @@ MODULE MODEFOL
                   ENDDO
                ELSE
 !
-!  STEP OFF ONLY ALONG THE MODE SPECIFIED.
+!  Step off only along the mode specified.
 !
-                  IF ((IVEC.GE.0).AND.PTEST) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',IMODE,' + DIRECTION'
-                  IF ((IVEC.LT.0).AND.PTEST) PRINT*,'STEPPING AWAY FROM SADDLE ALONG MODE ',IMODE,' - DIRECTION'
+                  IF ((IVEC.GE.0).AND.PTEST) PRINT*,'Stepping away from saddle along mode ',IMODE,' + direction'
+                  IF ((IVEC.LT.0).AND.PTEST) PRINT*,'Stepping away from saddle along mode ',IMODE,' - direction'
                   IF (PUSHOFF.NE.0.0D0) THEN
                   STEP(IMODE)=PUSHOFF
                   ELSE
@@ -851,28 +851,28 @@ MODULE MODEFOL
          IF (EFSTEPST.AND.(MOD(ITER-1,EFSTEPS).EQ.0).AND.(.NOT.SDTEST)) THEN
             DO I=NZERO+1,NOPT
                 IF (PTEST) WRITE(*,360) I, STEP(I)
-360             FORMAT(' UNSCALED STEP FOR MODE ',I4,'=',F20.10)
+360             FORMAT(' Unscaled step for mode ',I4,'=',F20.10)
             ENDDO
          ENDIF
          IF ((TEMP.GT.1.0D0).AND.PTEST) WRITE(*,366) TEMP
-366      FORMAT(' LARGEST MODULUS RATIO OF NON-ZERO E/VALUES= ',5X,G20.10)   
+366      FORMAT(' Largest modulus ratio of non-zero e/values= ',5X,G20.10)   
 
       ELSE
 !
-!  STEEPEST DESCENT/ASCENT STEP - PAGE-MCIVER METHOD
+!  Steepest descent/ascent step - Page-McIver method
 !
-!  OUTLINE OF METHOD:
-!  VALUE OF PARAMETER T IS DETERMINED BY THE ARC LENGTH VIA
-!  A DIFFERENTIAL EQUATION (33) FROM THE PM PAPER.
-!  IF ALL EIGENVALUES ARE +VE THEN THE INTEGRAL IS BOUNDED.
-!  TO CONVERGE TO A SADDLE POINT THE GRADIENT MUST HAVE NO COMPONENT
-!  IN EIGENDIRECTIONS WITH NEGATIVE EIGENVALUES. SUCH CASES CAN
-!  OBVIOUSLY CAUSE NUMERICAL PROBLEMS!
+!  Outline of method:
+!  Value of parameter t is determined by the arc length via
+!  a differential equation (33) from the PM paper.
+!  If all eigenvalues are +ve then the integral is bounded.
+!  To converge to a saddle point the gradient must have no component
+!  in eigendirections with negative eigenvalues. Such cases can
+!  obviously cause numerical problems!
 !
-!  ZERO GRADIENT COMPONENTS SHOULD BE CONSERVED, SO TRY SETTING STEPS
-!  TO ZERO IF THE GRADIENT COMPONENT IS LESS THAN CONVR AND INR=7.
+!  Zero gradient components should be conserved, so try setting steps
+!  to zero if the gradient component is less than CONVR and INR=7.
 !
-!  STPMAX(1) IS DYNAMICALLY ADJUSTED VIA A TRUST RADIUS SCHEME.
+!  STPMAX(1) is dynamically adjusted via a trust radius scheme.
 !     
          DELTAT=STPMAX(1)/(100.0D0*RMS*SQRT(1.0D0*NOPT))
          DELTAS=RMS*SQRT(1.0D0*NOPT)*DELTAT/2.0D0
@@ -890,13 +890,13 @@ MODULE MODEFOL
          ENDDO
          DELTAS=DELTAS+DSQRT(TEMP)*DELTAT
 !
-!  WE NEED TO ESCAPE FROM THE LOOP IF THE INTEGRAL HAS EFFECTIVELY CONVERGED
-!  OR IF THE ARC LENGTH EXCEEDS THE ALLOWED VALUE.
+!  We need to escape from the loop if the integral has effectively converged
+!  or if the arc length exceeds the allowed value.
 !
          IF ((DELTAS.LT.STPMAX(1)).AND.(J1.LT.100000).AND.((DELTAS-DELTASP)/DELTASP.GT.1.0D-10)) GOTO 666
 
          TPAR=J1*DELTAT
-         IF (PTEST) WRITE(*,'(A,F12.6,A,F15.3,A,I6)') ' EFOL> ESTIMATED ARC LENGTH=',DELTAS,' FOR T=',TPAR,' INTEGRATION STEPS=',J1
+         IF (PTEST) WRITE(*,'(A,F12.6,A,F15.3,A,I6)') ' efol> Estimated arc length=',DELTAS,' for t=',TPAR,' integration steps=',J1
 
          STEP(1:NOPT)=0.0D0
          DO J1=NOPT-NEV+1,NOPT 
@@ -907,14 +907,14 @@ MODULE MODEFOL
          STPMAG=DSQRT(DOTOPT(STEP(1),STEP(1),NOPT))
          SSTPMAG=STPMAG
          SCALE=1.0D0
-         IF (PTEST) WRITE(*,'(A,2F12.6)') ' EFOL> % OF STEP AND GRADIENT ALONG SOFTEST MODE=',  &
+         IF (PTEST) WRITE(*,'(A,2F12.6)') ' efol> % of step and gradient along softest mode=',  &
      &                                       ABS(STEP(NOPT))*100.0D0/STPMAG,ABS(FOB(NOPT))*100.0D0/(RMS*SQRT(1.0D0*NOPT))
       ENDIF
 !
-!  CALCULATE PARTS OF THE NUMERICALLY PREDICTED ENERGY CHANGE BEFORE
-!  SCALING FOR POSSIBLE DYNAMIC ADJUSTMENT OF THE STEP SIZE. THE
-!  PREDICTED ENERGY CHANGE IS CALCULATED BELOW ONCE WE HAVE SCALED
-!  EVERYTHING.
+!  Calculate parts of the numerically predicted energy change before
+!  scaling for possible dynamic adjustment of the step size. The
+!  predicted energy change is calculated below once we have scaled
+!  everything.
 !
       E1=0.0D0
       DO J1=1,NOPT
@@ -927,11 +927,11 @@ MODULE MODEFOL
       E2=E2/2.0D0
 
 !
-!  CALCULATE SCALING FACTOR FROM THE STEPS IN THE NORMAL MODE
-!  BASIS. SEEMS TO WORK BEST FOR SCALING OF STEP IN EV BASIS
-!  FOR CARTESIANS AND COORDINATE BASIS FOR INTERNALS.
+!  Calculate scaling factor from the steps in the normal mode
+!  basis. Seems to work best for scaling of step in ev basis
+!  for Cartesians and coordinate basis for internals.
 !
-!  SCALE ACCORDING TO STEP SIZE IN EV BASIS:
+!  Scale according to step size in ev basis:
 !
       IF (ISTCRT.EQ.10) THEN
          CALL VSTAT(STEP(1),AV,NOPT,3*NATOMS)
@@ -942,7 +942,7 @@ MODULE MODEFOL
             IF (ABS(DIAG(J1)).LT.EVCUT) THEN
                STEP(J1)=0.0D0
 !              STEP(J1)=-FOB(J1)*MAXMAX/ABS(FOB(J1))
-!              PRINT '(A,I8,A,G20.10)',' EFOL> EIGENVALUE ',J1,' IS TOO SMALL; PUSH OFF DOWNHILL ',STEP(J1)
+!              PRINT '(A,I8,A,G20.10)',' efol> eigenvalue ',J1,' is too small; push off downhill ',STEP(J1)
 !              PRINT '(A,I8,4G20.10)','J1,FOB,DIAG,MAXMAX,STEP=',J1,FOB(J1),DIAG(J1),MAXMAX,STEP(J1)
             ENDIF
          ENDDO
@@ -959,7 +959,7 @@ MODULE MODEFOL
          IF (SUMMARYT.AND.(MOD(ITER-1,NSUMMARY).EQ.0)) THEN
             IF (PTEST) WRITE(*,290)
 290         FORMAT(79('-'))
-            IF (PTEST) WRITE(*,'(A)') 'VECTOR      GRADIENT        SECDER       STEP          MAX STEP    TRUST RATIO'
+            IF (PTEST) WRITE(*,'(A)') 'Vector      Gradient        Secder       Step          Max step    Trust ratio'
             IF (PTEST) WRITE(*,290)
             DO I=NOPT-NEV+1,NOPT
 !              IF (ZT(I)) THEN
@@ -973,7 +973,7 @@ MODULE MODEFOL
          IF (SUMMARYT.AND.(MOD(ITER-1,NSUMMARY).EQ.0)) THEN
             IF (PTEST) WRITE(*,291)
 291         FORMAT(51('-'))
-            IF (PTEST) WRITE(*,'(A)') 'VECTOR      GRADIENT        SECDER       STEP'
+            IF (PTEST) WRITE(*,'(A)') 'Vector      Gradient        Secder       Step'
             IF (PTEST) WRITE(*,291)
             DO I=NOPT-NEV+1,NOPT
 !              IF (ZT(I)) THEN
@@ -990,7 +990,7 @@ MODULE MODEFOL
          SSTPMAG=SCALE*STPMAG
       ENDIF
 !
-!  FIND THE STEP IN THE CARTESIAN BASIS AND STORE IN CSTEP
+!  Find the step in the Cartesian basis and store in CSTEP
 !
       DO J=1,NOPT
          DUMMY=0.0D0
@@ -1000,8 +1000,8 @@ MODULE MODEFOL
          CSTEP(J)=DUMMY
       ENDDO
 !
-!  SCALING IF REQUIRED IN THE CARTESIAN BASIS - ACCORDING TO THE
-!  MAXIMUM COMPONENT
+!  Scaling if required in the Cartesian basis - according to the
+!  maximum component
 !
       IF (ISTCRT.EQ.1) THEN
          CALL VSTAT(CSTEP(1),AV(1),NOPT,6*NATOMS)
@@ -1010,7 +1010,7 @@ MODULE MODEFOL
          CALL SCDOT(SCALE,CSTEP(1),6*NATOMS)
          SSTPMAG=SCALE*STPMAG
 !
-!   SCALING IN THE CARTESIAN BASIS IN TERMS OF THE TOTAL STEP.
+!   Scaling in the Cartesian basis in terms of the total step.
 !
       ELSE IF (ISTCRT.EQ.0) THEN
          CALL VSTAT(CSTEP(1),AV(1),NOPT,6*NATOMS)
@@ -1019,11 +1019,11 @@ MODULE MODEFOL
          CALL SCDOT(SCALE,CSTEP(1),6*NATOMS)
          SSTPMAG=SCALE*STPMAG
       ENDIF
-      IF ((.NOT.SDTEST).AND.PTEST) WRITE(*,'(A,12X,2G20.10)') ' THE MAXIMUM SCALED/UNSCALED STEP IS: ',SSTPMAG,STPMAG
+      IF ((.NOT.SDTEST).AND.PTEST) WRITE(*,'(A,12X,2G20.10)') ' The maximum scaled/unscaled step is: ',SSTPMAG,STPMAG
 !
-!  WE CAN NOW CHECK FOR CONVERGENCE SINCE WE KNOW THE RMS FORCE, THE
-!  HESSIAN INDEX AND THE MAGNITUDE OF THE PROPOSED STEP. IF CONVERGED,
-!  WE DON'T TAKE THE STEP.
+!  We can now check for convergence since we know the RMS force, the
+!  Hessian index and the magnitude of the proposed step. If converged,
+!  we don't take the step.
 !
       IF ((CONVU.EQ.0.0D0).OR.SDTEST) THEN
          TEST1=RMS.LT.CONVR
@@ -1041,7 +1041,7 @@ MODULE MODEFOL
       IF (ITER.LT.NSTEPMIN) MFLAG=.FALSE.
       IF (PV.AND.(.NOT.PVFLAG)) MFLAG=.FALSE.
 !
-!  DON'T CALL SYMMETRY IF WE'RE DOING FENSKE-HALL, OR IF THE RMS FORCE IS TOO HIGH.
+!  Don't call symmetry if we're doing Fenske-Hall, or if the RMS force is too high.
 !
       IF ((ZSYM(NATOMS).NE.'FH').AND.(.NOT.VARIABLES).AND.(.NOT.FIELDT).AND.(.NOT.RINGPOLYMERT).AND.(.NOT.AMBER)&
      &        .AND.(PTEST).AND.(((RMS.LT.SYMCUT).OR.(ITER.EQ.NSTEPS)).OR.MFLAG)) THEN
@@ -1086,7 +1086,7 @@ MODULE MODEFOL
          GOTO 1111
       ENDIF
 !
-!  CALCULATE PREDICTED CHANGE IN ENERGY. TAKE THE STEP USING VADD.
+!  Calculate predicted change in energy. Take the step using VADD.
 !
       DELE=E1*SCALE+E2*SCALE**2
       CALL VADD(QTS,QTS,CSTEP,NOPT,1)
@@ -1094,15 +1094,15 @@ MODULE MODEFOL
       KNOWG=.FALSE.
       KNOWH=.FALSE.
 !
-! SUMMARIZE
+! Summarize
 !
       IF ((ISTCRT.NE.10).AND.(ISTCRT.NE.3)) THEN
-         IF (PTEST) WRITE(*,'(A,F8.5)') ' SCALE FACTOR SET TO: ',SCALE
-         IF (PTEST) WRITE(*,'(A,F15.6)') ' MAXIMUM STEP LENGTH ALLOWED IS ',STPMAX(1)
+         IF (PTEST) WRITE(*,'(A,F8.5)') ' Scale factor set to: ',SCALE
+         IF (PTEST) WRITE(*,'(A,F15.6)') ' Maximum step length allowed is ',STPMAX(1)
          IF (SUMMARYT.AND.(MOD(ITER-1,NSUMMARY).EQ.0)) THEN
             IF (PTEST) WRITE(*,490)
             IF (PTEST) WRITE(*,480)
-480         FORMAT('PARAMETER',T20,'DV/DR',T32,'STEP',T46,'ROLD',T56,'RNEW')
+480         FORMAT('Parameter',T20,'dV/dR',T32,'Step',T46,'Rold',T56,'Rnew')
             IF (PTEST) WRITE(*,490)
 490         FORMAT(64('-'))
             DO I=1,NOPT
@@ -1118,7 +1118,7 @@ MODULE MODEFOL
       IF ((FIXAFTER.GT.0).AND.(ITER.GT.FIXAFTER)) FIXIMAGE=.TRUE.
       CALL FLUSH(6,ISTAT)
 !
-!  UNDO MASS WEIGHTING IF NECESSARY.
+!  Undo mass weighting if necessary.
 !
       IF (MASST) THEN
          DO J1=1,NATOMS
@@ -1132,7 +1132,7 @@ MODULE MODEFOL
       CALL FLUSH(6,ISTAT)
       CALL GMETRY(ITER,VEC,QTS)
 !
-!     PRINT OUT THE COORDINATES AND DISTANCE MATRIX
+!     Print out the coordinates and distance matrix
 !
       IF (ADMT.AND.(MOD(ITER-1,NADM).EQ.0)) CALL ADM(QTS)
 !     IF ((AMBER).AND.(MOVIE)) CALL AMOVIEDUMP(FRAME)
@@ -1153,10 +1153,10 @@ MODULE MODEFOL
 
       GOTO 40
 
-! 1111  IF (PRESENT(INRIN)) THEN ! SAT
+! 1111  if (present(INRin)) then ! SAT
 
 1111  INR=INRSAVE
-!     ENDIF
+!     endif
 
       END SUBROUTINE EFOL
 END MODULE MODEFOL

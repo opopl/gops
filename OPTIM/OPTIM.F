@@ -1,34 +1,34 @@
 
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   GPL LICENSE INFO {{{
+C   GPL License Info {{{
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C }}}
 C
       SUBROUTINE OPTIM(F1,F2,FLSTRING)
-! DOXYGEN {{{
-C> \NAME OPTIM
-C> \BRIEF
-C> \PARAM F1
-C> \PARAM F2
-C> \PARAM FLSTRING
+! Doxygen {{{
+C> \name OPTIM
+C> \brief
+C> \param F1
+C> \param F2
+C> \param FLSTRING
 ! }}}
-      !         MODULES {{{
+      !         Modules {{{
       USE COMMONS
       USE KEY
       USE MODTWOEND
@@ -45,17 +45,17 @@ C> \PARAM FLSTRING
       USE MODMEC
       USE PORFUNCS
       USE CHARUTILS
-      USE INTCOMMONS, ONLY : INTINTERPT, DESMINT, NATINT, INTMINPERMT !MSB50 REMOVE LAST
-      USE INTCUTILS, ONLY : INTSETUP, INTCLEANUP ! MSB50 LAST
+      USE INTCOMMONS, ONLY : INTINTERPT, DESMINT, NATINT, INTMINPERMT !msb50 remove last
+      USE INTCUTILS, ONLY : INTSETUP, INTCLEANUP ! msb50 last
 !     USE BENCHMARKS, ONLY : MINBMT, MINBM
       ! }}}
-      ! VARIABLES  {{{
+      ! Variables  {{{
 
       IMPLICIT NONE
-! SUBROUTINE PARAMETERS  
+! subroutine parameters  
       INTEGER F1,F2
       CHARACTER(LEN=80) FLSTRING
-! LOCAL PARAMETERS  {{{
+! local parameters  {{{
 
       INTEGER J1, J2, NPCALL, ECALL, FCALL, SCALL, HORDER, NATOMSSAVE
       DOUBLE PRECISION VNEW(3*NATOMS), ENERGY, EVALMIN, RMS, VECS(3*NATOMS), QSAVE(3*NATOMS),
@@ -73,7 +73,7 @@ C> \PARAM FLSTRING
       INTEGER FRAME
       LOGICAL PVFLAG
       COMMON /PVF/ PVFLAG
-C     COMMON /VN/ VNEW   !  COMMON SV WAS ALSO DELETED
+C     COMMON /VN/ VNEW   !  common SV was also deleted
       COMMON /STRINGS/ ESTRING, GPSTRING, NSTRING, FSTRING
       COMMON /PCALL/ NPCALL, ECALL, FCALL, SCALL, ETIME, FTIME, STIME
       LOGICAL PATHT, DRAGT
@@ -88,17 +88,17 @@ C     COMMON /VN/ VNEW   !  COMMON SV WAS ALSO DELETED
       CHARACTER(LEN=5) ZSYMSAVE
       COMMON /SYS/ ZSYMSAVE
       LOGICAL PATHFAILT ! JMC
-!MSB50 FOR TEST
+!msb50 for test
 !     DOUBLE PRECISION X(3*NATOMS*60)
       COMMON /OEPATH/ ETS,EPLUS,EMINUS
 !}}}
       ! }}}
-! SUBROUTINE BODY {{{
-! PRINT OPTIM VERSION IN THE OUTPUT
+! Subroutine body {{{
+! Print OPTIM version in the output
       !VERSIONTEMP=SVNVERSION
-      !WRITE(*, '(A,I5)') ' OPTIM> VERSION R',VERSIONTEMP
+      !WRITE(*, '(A,I5)') ' OPTIM> version r',VERSIONTEMP
 C
-C  DYNAMIC MEMORY ALLOCATION
+C  Dynamic memory allocation
 C
       ALLOCATE (FROZEN(NATOMS),ZSYM(NATOMS),NR(NATOMS),STPMAX(3*NATOMS))
       ALLOCATE (FROZENRES(NATOMS))
@@ -111,7 +111,7 @@ C      STPMAX(:)=0.0D0
       CALL KEYWORD(Q)
 
       IF (UNRST.AND.(RKMIN.OR.BSMIN.OR.(INR.GT.-1))) THEN
-         PRINT '(A)','UNRES NOT CODED FOR REQUESTED OPTIMISATION OPTION'
+         PRINT '(A)','UNRES not coded for requested optimisation option'
          CALL FLUSH(6,ISTAT)
          STOP
       ENDIF
@@ -124,14 +124,14 @@ C      STPMAX(:)=0.0D0
 
       CALL CPU_TIME(TSTART)
 C     IF (CONNECTT.AND.NEWNEBT) THEN
-C        PRINT*,'WARNING - CANNOT USE OLD CONNECT WITH NEW NEB, CHANGING TO OLD NEB'
+C        PRINT*,'WARNING - cannot use old connect with new neb, changing to old neb'
 C        NEWNEBT=.FALSE.
 C        NEBT=.TRUE.
 C     ENDIF
-      IF ((FILTH2.EQ.0).AND.(FILTH.NE.0)) WRITE(FILTHSTR,'(I10)') FILTH ! OTHERWISE FILTHSTR ISN;T SET CORRECTLY.
+      IF ((FILTH2.EQ.0).AND.(FILTH.NE.0)) WRITE(FILTHSTR,'(I10)') FILTH ! otherwise FILTHSTR isn;t set correctly.
       IF (REPELTST) ALLOCATE(REPELTS(3*NATOMS,100)) ! PREVIOUS TS GEOMETRIES TO AVOID
-      IF (CHECKINDEX) ALLOCATE(VECCHK(3*NATOMS,MAX(NUSEEV,HINDEX,1))) ! VECTORS TO ORTHOGONISE TO
-      ALLOCATE(ZWORK(3*NATOMS,MAX(NUSEEV,HINDEX,1)))                  ! PARTIAL EIGENVECTORS STORAGE
+      IF (CHECKINDEX) ALLOCATE(VECCHK(3*NATOMS,MAX(NUSEEV,HINDEX,1))) ! vectors to orthogonise to
+      ALLOCATE(ZWORK(3*NATOMS,MAX(NUSEEV,HINDEX,1)))                  ! partial eigenvectors storage
       IF (TWOENDS.OR.CONNECTT.OR.NEWNEBT.OR.DRAGT.OR.GUESSPATHT.OR.MECCANOT.OR.MORPHT.OR.GREATCIRCLET.OR.BHINTERPT.OR.BISECTT) 
      &               ALLOCATE(FIN(3*NATOMS),START(3*NATOMS))
 
@@ -144,15 +144,15 @@ C     ENDIF
       STIME=0
       FRAME=1
       IF (FILTH.EQ.0) THEN
-         FNAME='POINTS'
-         FNAMEF='POINTS.FINAL'
-         FNAMEV='VECTOR.DUMP'
-         EFNAME='ENERGIES'
+         FNAME='points'
+         FNAMEF='points.final'
+         FNAMEV='vector.dump'
+         EFNAME='energies'
       ELSE
-         WRITE(FNAME,'(A)') 'POINTS.'//TRIM(ADJUSTL(FILTHSTR))
-         WRITE(FNAMEF,'(A)') 'POINTS.FINAL.'//TRIM(ADJUSTL(FILTHSTR))
-         WRITE(FNAMEV,'(A)') 'VECTOR.DUMP.'//TRIM(ADJUSTL(FILTHSTR))
-         WRITE(EFNAME,'(A)') 'ENERGIES.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(FNAME,'(A)') 'points.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(FNAMEF,'(A)') 'points.final.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(FNAMEV,'(A)') 'vector.dump.'//TRIM(ADJUSTL(FILTHSTR))
+         WRITE(EFNAME,'(A)') 'energies.'//TRIM(ADJUSTL(FILTHSTR))
       ENDIF
 
       IF (PRINTPTS.OR.MORPHT) THEN
@@ -180,9 +180,9 @@ C ----- TESTING AND BENCHMARKS HERE ----
 !     IF (MINBMT) CALL MINBM
 C---------------------------------------
 C
-C  THE NEXT LINE IS NEEDED FOR PARALLEL RUNS OF CLEAN/DIRTY MAIDENS.
+C  The next line is needed for parallel runs of clean/dirty maidens.
 C
-      CALL SYSTEM('ECHO JUNK > ODATA.READ')
+      CALL SYSTEM('echo junk > odata.read')
 C     BULKT=.FALSE.
       IF ((ZSYMSAVE.EQ.'TT').AND.(PARAM1.NE.0.0D0)) BULKT=.TRUE.
       IF ((ZSYMSAVE.EQ.'SW').AND.(PARAM1.NE.0.0D0)) BULKT=.TRUE.
@@ -198,23 +198,23 @@ C     LDUMMY=(NATOMS.EQ.64).AND.(ZSYMSAVE(1:1).EQ.'W')
      4      (ZSYMSAVE.EQ.'LP').OR.(ZSYMSAVE.EQ.'LS').OR.(ZSYMSAVE.EQ.'LC').OR.
      5      (ZSYMSAVE.EQ.'LK'))
 C     NOSHIFT=(FIELDT.OR.BFGSMINT.OR.BSMIN.OR.RKMIN.OR.NOHESS.OR.BFGSSTEP)
-C     IF (INR.GE.0) NOSHIFT=.FALSE. ! CHANGED INR DEFAULT VALUE IN KEYWORDS TO -1
-C                                     THIS ISN;T GOOD ENOUGH - IF WE ARE DOING A PATH AND
-C                                     EFOL IS CALLED ONCE TO GET THE EIGENVALUES AND EIGENVECTORS
-C                                     THEN WE NEED TO SHIFT.
-C  SHIFTING ONLY NEEDS TO BE TURNED OFF IF WE ARE DOING VARIABLES OR BFGSTS WITHOUT NOIT;
-C  ACCOUNT FOR THIS IN BFGSTS.
+C     IF (INR.GE.0) NOSHIFT=.FALSE. ! changed INR default value in keywords to -1
+C                                     This isn;t good enough - if we are doing a path and
+C                                     EFOL is called once to get the eigenvalues and eigenvectors
+C                                     then we need to SHIFT.
+C  Shifting only needs to be turned off if we are doing VARIABLES or BFGSTS without NOIT;
+C  account for this in BFGSTS.
 C     IF (NOIT) NOSHIFT=.FALSE.
 C     IF (VARIABLES) NOSHIFT=.TRUE.
 C     NOSHIFT=(FIELDT.OR.BFGSMINT.OR.BSMIN.OR.RKMIN.OR.NOHESS.OR.BFGSSTEP)
-C     IF (INR.GE.0) NOSHIFT=.FALSE. ! CHANGED INR DEFAULT VALUE IN KEYWORDS TO -1
+C     IF (INR.GE.0) NOSHIFT=.FALSE. ! changed INR default value in keywords to -1
 C     IF (NOIT) NOSHIFT=.FALSE.
 C     IF (VARIABLES) NOSHIFT=.TRUE.
 C
-C  RESIZE THE SYSTEM IF REQUIRED.
+C  Resize the system if required.
 C
       IF (RESIZE.NE.1.0D0) THEN
-         PRINT*,'SCALING COORDINATES BY ',RESIZE
+         PRINT*,'Scaling coordinates by ',RESIZE
          IF (ZSYMSAVE(1:1).EQ.'W') THEN
             DO J1=1,3*(NATOMS/2)
                Q(J1)=Q(J1)*RESIZE
@@ -227,7 +227,7 @@ C
       ENDIF
       IF (CASTEP.AND.PRESSURE) CALL CLATMIN(Q,VNEW)
 C
-C  RESCALE DISTANCES IF WE ARE DOING LJ (INPUT ASSUMED FOR SIG=3.4 A)
+C  Rescale distances if we are doing LJ (input assumed for SIG=3.4 A)
 C
       IF ((ZSYMSAVE.EQ.'AR').AND.(ZSYM(1).NE.'CA')) THEN
          DO J1=1,NATOMS
@@ -237,7 +237,7 @@ C
          ENDDO
       ENDIF
 C
-C  SCALE SIDE CHAIN BOND LENGTHS FOR CHARMM OR AMBER FOR CONNECTION RUNS
+C  Scale side chain bond lengths for CHARMM or AMBER for connection runs
 C
       IF (REDUCEDBONDLENGTHT) THEN
          IF (CHRMMT) CALL CHREDUCEDBONDLENGTH(Q,BLFACTOR,CBT)
@@ -252,14 +252,14 @@ C     NREAL=J2
 C
 C     CALL GMETRY(0,VEC,Q)
 C
-C  DON'T CALL SYMMETRY IF WE'RE DOING FENSKE-HALL
+C  Don't call symmetry if we're doing Fenske-Hall
 C
       IF ((ZSYMSAVE.NE.'FH').AND.(.NOT.VARIABLES).AND.(.NOT.AMBER).AND.(.NOT.AMBERT).AND.(.NOT.CHRMMT).AND.
      1 (.NOT.NABT).AND.(.NOT.UNRST).AND.(.NOT.RINGPOLYMERT)) THEN
 ! {{{
 C
-C  FOR W1/W2/W3/W4 POTENTIALS Q CONTAINS THE CENTRE OF MASS COORDINATES
-C  FOLLOWED BY THE EULER ANGLES AND THE NUMBER OF MOLECULES IS NATOMS/2
+C  For W1/W2/W3/W4 potentials Q contains the centre of mass coordinates
+C  followed by the Euler angles and the number of molecules is NATOMS/2
 C
          IF (ZSYMSAVE(1:1).EQ.'W') THEN
 ! {{{
@@ -344,70 +344,70 @@ C           ENDDO
 ! }}}
       ENDIF
       IF (ADMT) CALL ADM(Q)
-C     IF ((AMBER).AND.(MOVIE)) CALL AMOVIEDUMP(FRAME)
+C     IF ((AMBER).AND.(MOVIE)) CALL amoviedump(frame)
 C
-C  EIGENVALUE SHIFTING
+C  Eigenvalue shifting
 C
       DO J1=1,6
          SHIFTL(J1)=0.0D0
       ENDDO
 !
-! SET THE  SHIFTL ELEMENTS EVEN IF NOHESS IS .TRUE. 
-! THIS SHOULD DO NOTHING IF WE NEVER USE A HESSIAN, BUT ALLOWS FOR A SECOND-ORDER
-! PATHWAY SEARCH EVEN IF NOHESS IS USED FOR THE TRANSITION STATE SEARCH.
+! Set the  SHIFTL elements even if NOHESS is .TRUE. 
+! This should do nothing if we never use a Hessian, but allows for a second-order
+! pathway search even if NOHESS is used for the transition state search.
 !
       IF (ZSYM(1).EQ.'CK') THEN
-         WRITE(*,'(A,G20.10)') ' OPTIM> USING Z ROTATIONAL EV SHIFT=',SHIFTV
+         WRITE(*,'(A,G20.10)') ' OPTIM> Using z rotational ev shift=',SHIFTV
          SHIFTL(6)=SHIFTV
       ELSE IF (PULLT.OR.EFIELDT) THEN
-         WRITE(*,'(A,G20.10)') ' OPTIM> USING X,Y,Z TRANS AND Z ROTATION EV SHIFT=',SHIFTV
+         WRITE(*,'(A,G20.10)') ' OPTIM> Using x,y,z trans and z rotation ev shift=',SHIFTV
          SHIFTL(1)=SHIFTV
          SHIFTL(2)=SHIFTV
          SHIFTL(3)=SHIFTV
          SHIFTL(6)=SHIFTV
-         WRITE(*,'(A)') ' OPTIM> X,Y TRANSLATIONAL AND Z ROTATIONAL EV SHIFTING'
+         WRITE(*,'(A)') ' OPTIM> x,y translational and z rotational ev shifting'
       ELSE IF (RTEST) THEN
          IF (JZ.NE.0.0D0) THEN
-            WRITE(*,'(A,G20.10)') ' OPTIM> USING TRANS/Z ROTATION EV SHIFT=',SHIFTV
+            WRITE(*,'(A,G20.10)') ' OPTIM> Using trans/z rotation ev shift=',SHIFTV
             SHIFTL(3)=SHIFTV
             SHIFTL(6)=SHIFTV
          ELSE
-            WRITE(*,'(A,G20.10)') ' OPTIM> USING Z ROTATION EV SHIFT=',SHIFTV
+            WRITE(*,'(A,G20.10)') ' OPTIM> Using z rotation ev shift=',SHIFTV
             SHIFTL(6)=SHIFTV
          ENDIF
 C     ELSE IF (NOSHIFT) THEN
-C        WRITE(*,'(A)') 'NO EV SHIFTING'
-      ELSE IF (TWOD) THEN ! Z COMPONENTS ARE SHIFTED IN POTENTIAL.F
+C        WRITE(*,'(A)') 'No ev shifting'
+      ELSE IF (TWOD) THEN ! z components are shifted in potential.f
          IF (EYTRAPT.OR.(ZSYMSAVE.EQ.'BE')) THEN
             SHIFTL(6)=SHIFTV
-            WRITE(*,'(A)') ' OPTIM> Z ROTATIONAL EV SHIFTING'
+            WRITE(*,'(A)') ' OPTIM> z rotational ev shifting'
          ELSE IF (.NOT.BULKT) THEN
             SHIFTL(1)=SHIFTV
             SHIFTL(2)=SHIFTV
             SHIFTL(6)=SHIFTV
-            WRITE(*,'(A)') ' OPTIM> X,Y TRANSLATIONAL AND Z ROTATIONAL EV SHIFTING'
+            WRITE(*,'(A)') ' OPTIM> x,y translational and z rotational ev shifting'
          ELSE
             SHIFTL(1)=SHIFTV
             SHIFTL(2)=SHIFTV
-            WRITE(*,'(A)') ' OPTIM> X,Y TRANSLATIONAL EV SHIFTING'
+            WRITE(*,'(A)') ' OPTIM> x,y translational ev shifting'
          ENDIF
       ELSE IF (EYTRAPT.OR.(ZSYMSAVE.EQ.'BE')) THEN
          SHIFTL(4)=SHIFTV
          SHIFTL(5)=SHIFTV
          SHIFTL(6)=SHIFTV
-         WRITE(*,'(A,G20.10)') ' OPTIM> USING ROTATIONAL EV SHIFT=',SHIFTV
+         WRITE(*,'(A,G20.10)') ' OPTIM> Using rotational ev shift=',SHIFTV
       ELSE IF (BULKT) THEN
-         WRITE(*,'(A,G20.10)') ' OPTIM> USING TRANSLATIONAL EV SHIFT=',SHIFTV
+         WRITE(*,'(A,G20.10)') ' OPTIM> Using translational ev shift=',SHIFTV
          DO J1=1,3
             SHIFTL(J1)=SHIFTV
          ENDDO
       ELSE IF (ZSYM(NATOMS).EQ.'TH') THEN
-         WRITE(*,'(A)') ' OPTIM> USING ROTATIONAL EV SHIFTING'
+         WRITE(*,'(A)') ' OPTIM> Using rotational ev shifting'
          SHIFTL(4)=SHIFTV
          SHIFTL(5)=SHIFTV
          SHIFTL(6)=SHIFTV
       ELSE
-         WRITE(*,'(A,G20.10)') ' OPTIM> USING TRANSLATIONAL/ROTATIONAL EV SHIFT=',SHIFTV
+         WRITE(*,'(A,G20.10)') ' OPTIM> Using translational/rotational ev shift=',SHIFTV
          DO J1=1,6
             SHIFTL(J1)=SHIFTV
          ENDDO
@@ -432,7 +432,7 @@ C     NREAL=J2
       ELSE IF (GUESSPATHT.AND.(.NOT.CONNECTT)) THEN
          ! {{{
          CALL NEWMINDIST(FIN,Q,NATOMS,DISTSF,BULKT,TWOD,ZSYMSAVE,.FALSE.,RIGIDBODY,DEBUG,RMAT)
-         WRITE(*,'(A,F12.2)') ' OPTIM> DISTANCE BETWEEN START AND FINISH=',DISTSF
+         WRITE(*,'(A,F12.2)') ' OPTIM> distance between start and finish=',DISTSF
          IF (UNRST) THEN
             DO J1=1,NRES
                C(1,J1)=Q(6*(J1-1)+1)
@@ -484,7 +484,7 @@ C        ELSE
             ENDIF
             IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
             CALL POTENTIAL(Q,EINITIAL,LGDUMMY,.TRUE.,.FALSE.,RMSINITIAL,.FALSE.,.FALSE.)
-            WRITE(*,'(A,2(G20.10,A))') ' OPTIM> INITIAL ENERGY=',EINITIAL,' RMS FORCE=',RMSINITIAL
+            WRITE(*,'(a,2(g20.10,a))') ' OPTIM> Initial energy=',EINITIAL,' RMS force=',RMSinitial
             IF (UNRST) THEN
                 DO J1=1,NRES
                    C(1,J1)=FIN(6*(J1-1)+1)
@@ -500,11 +500,11 @@ C        ELSE
             ENDIF
             IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
             CALL POTENTIAL(FIN,EFINAL,LGDUMMY,.TRUE.,.FALSE.,RMSFINAL,.FALSE.,.FALSE.)
-            WRITE(*,'(A,2(G20.10,A))') ' OPTIM> FINAL ENERGY  =',  EFINAL,' RMS FORCE=',RMSFINAL
+            WRITE(*,'(a,2(g20.10,a))') ' OPTIM> Final energy  =',  EFINAL,' RMS force=',RMSfinal
             IF (MAX(RMSINITIAL,RMSFINAL)>GMAX.AND.(BFGSMINT.OR.BSMIN.OR.RKMIN)) THEN ! SAT
               ! {{{
-               PRINT *, 'BAD ENDPOINTS SUPPLIED - RMS FORCE TOO BIG!'
-               PRINT *, 'ACCEPTABLE RMS FORCE WOULD BE LESS OR EQUAL TO ',GMAX
+               PRINT *, 'Bad endpoints supplied - RMS force too big!'
+               PRINT *, 'Acceptable RMS force would be less or equal to ',GMAX
                IF (REOPTIMISEENDPOINTS) THEN
                   IF (RMSINITIAL>GMAX.AND.(BFGSMINT.OR.BSMIN.OR.RKMIN)) THEN
                      KNOWE=.FALSE.
@@ -535,8 +535,8 @@ C        ELSE
                ! }}}
             ELSE IF (MAX(RMSINITIAL,RMSFINAL)>CONVR) THEN ! SAT
               ! {{{
-               PRINT *, 'BAD ENDPOINTS SUPPLIED - RMS FORCE TOO BIG!'
-               PRINT *, 'ACCEPTABLE RMS FORCE WOULD BE LESS OR EQUAL TO ',CONVR
+               PRINT *, 'Bad endpoints supplied - RMS force too big!'
+               PRINT *, 'Acceptable RMS force would be less or equal to ',CONVR
                IF (REOPTIMISEENDPOINTS) THEN
                   IF (RMSINITIAL>CONVR) THEN
                      CALL GEOPT(FNAMEF,EFNAME,Q)
@@ -604,7 +604,7 @@ C        ELSE
 !CALL CHAINBUILD
             CALL POTENTIAL(FIN,E2,LGDUMMY,.TRUE.,.FALSE.,RMSFINAL,.FALSE.,.FALSE.)
             IF (DEBUG) WRITE(*,'(A,F20.10,A,F15.6,A,F20.10,A,F15.6)') 
-     1           ' OPTIM> INITIAL ENERGY=',E1,' RMS FORCE=',RMSINITIAL,' FINAL ENERGY=',E2,' RMS=',RMSFINAL
+     1           ' OPTIM> Initial energy=',E1,' RMS force=',RMSINITIAL,' final energy=',E2,' RMS=',RMSFINAL
             CALL UNMECCANO(.FALSE.,.TRUE.,ENERGY,.FALSE.,Q,FIN,E1,E2,RMSINITIAL,RMSFINAL)
          ELSE
             IF (.NOT.VARIABLES) CALL NEWMINDIST(Q,FIN,NATOMS,DIST,BULKT,TWOD,ZSYM(1),.FALSE.,RIGIDBODY,DEBUG,RMAT)
@@ -627,7 +627,7 @@ C        ELSE
          IF (NEBMIND) THEN
             CALL MINPERMDIST(Q,FIN,NATOMS,DEBUG,PARAM1,PARAM2,PARAM3,BULKT,TWOD,DIST,DIST2,RIGIDBODY,RMAT)
             REALSTR=WR(DIST,3)
-            WRITE(*,'(A,F12.2)')' OPTIM> STRUCTURES WERE PUT IN THE CLOSEST COINCIDENCE, DISTANCE = '//TRIM(REALSTR)
+            WRITE(*,'(a,f12.2)')' OPTIM> Structures were put in the closest coincidence, distance = '//trim(RealStr)
          ENDIF
          IF (UNRST) THEN
              DO J1=1,NRES
@@ -644,7 +644,7 @@ C        ELSE
          ENDIF
          IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
          CALL POTENTIAL(Q,EINITIAL,LGDUMMY,.TRUE.,.FALSE.,RMSINITIAL,.FALSE.,.FALSE.)
-         WRITE(*,'(A,2(G20.10,A))') ' OPTIM> INITIAL ENERGY=',EINITIAL,' RMS FORCE=',RMSINITIAL
+         WRITE(*,'(a,2(g20.10,a))') ' OPTIM> Initial energy=',EINITIAL,' RMS force=',RMSinitial
          IF (UNRST) THEN
              DO J1=1,NRES
                 C(1,J1)=FIN(6*(J1-1)+1)
@@ -660,7 +660,7 @@ C        ELSE
          ENDIF
          IF (CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
          CALL POTENTIAL(FIN,EFINAL,LGDUMMY,.TRUE.,.FALSE.,RMSFINAL,.FALSE.,.FALSE.)
-         WRITE(*,'(A,2(G20.10,A))') ' OPTIM> FINAL ENERGY  =',  EFINAL,' RMS FORCE=',RMSFINAL
+         WRITE(*,'(a,2(g20.10,a))') ' OPTIM> Final energy  =',  EFINAL,' RMS force=',RMSfinal
          IF (NEWNEBT) THEN
               CALL NEWNEB(.FALSE.,DCOORDS,EINITIAL,Q,EFINAL,FIN,.TRUE.)
          ELSE
@@ -671,11 +671,11 @@ C        ELSE
          ! {{{
          IF(ORDERPARAMT.OR.RINGPOLYMERT) QSAVE(1:3*NATOMS)=Q(1:3*NATOMS)
          IF (FILTH.EQ.0) THEN
-            EOFSSTRING='EOFS'
-            ITSTRING='POINTS.PATH.XYZ'
+            EOFSSTRING='EofS'
+            ITSTRING='points.path.xyz'
          ELSE
-            WRITE(EOFSSTRING,'(A)') 'EOFS.'//TRIM(ADJUSTL(FILTHSTR))
-            WRITE(ITSTRING,'(A)') 'POINTS.PATH.XYZ.'//TRIM(ADJUSTL(FILTHSTR))
+            WRITE(EOFSSTRING,'(A)') 'EofS.'//TRIM(ADJUSTL(FILTHSTR))
+            WRITE(ITSTRING,'(A)') 'points.path.xyz.'//TRIM(ADJUSTL(FILTHSTR))
          ENDIF
 
          DO J1=1,NOPT
@@ -683,7 +683,7 @@ C        ELSE
             FRQSMINUS(J1)=0.0D0
             FRQSPLUS(J1)=0.0D0
          ENDDO
-! INITIALISE VECS IN CASE THIS DOESN'T HAPPEN ELSEWHERE
+! initialise VECS in case this doesn't happen elsewhere
          IF (UNRST) THEN
             DO J1=1,NINTS
                VECS(J1)=DPRAND()*2-1.0D0
@@ -697,7 +697,7 @@ C        ELSE
          ENDIF
          CALL PATH(Q,ENERGY,VNEW,RMS,EVALMIN,VECS,.TRUE.,QPLUS,QMINUS,.TRUE.,ETS,EPLUS,EMINUS,
      1             SLENGTH,DISP,GAMMA,NTILDE,FRQSTS,FRQSPLUS,FRQSMINUS,ITSTRING,EOFSSTRING,PATHFAILT) 
-              ! JMC ADDED ARG PATHFAILT
+              ! jmc added arg PATHFAILT
          IF (PATHFAILT) THEN
             CALL FLUSH(6,ISTAT)
             STOP
@@ -705,15 +705,15 @@ C        ELSE
          IF (CALCRATES) CALL RATES(NATOMS,NINTS) ! JMC
          IF (ORDERPARAMT) THEN
             Q(1:3*NATOMS)=QSAVE(1:3*NATOMS)
-            CALL GEOPT(FNAMEF,EFNAME,Q) !BS360
+            CALL GEOPT(FNAMEF,EFNAME,Q) !bs360
          ENDIF
          IF (RINGPOLYMERT.AND.(ENDHESS.OR.ENDNUMHESS)) THEN 
             Q(1:3*NATOMS)=QSAVE(1:3*NATOMS)
-            NSTEPS=0 ! WILL AVOID GEOMETRY OPTIMISATION - NEED ENDHESS OR ENDNUMHESS
+            NSTEPS=0 ! will avoid geometry optimisation - need ENDHESS or ENDNUMHESS
             IF (.NOT.(ENDHESS.OR.ENDNUMHESS)) THEN
-               PRINT '(A)',' OPTIM> NEITHER ENDHESS NOR ENDNUMHESS KEYWORDS ARE SET - MAKING ENDHESS TRUE'
+               PRINT '(A)',' OPTIM> Neither ENDHESS nor ENDNUMHESS keywords are set - making ENDHESS true'
             ENDIF
-            CALL GEOPT(FNAMEF,EFNAME,Q) ! TO GET THE INSTANTON RATES.
+            CALL GEOPT(FNAMEF,EFNAME,Q) ! to get the instanton rates.
          ENDIF
          ! }}}
 C     ELSE IF (DRAGT) THEN
@@ -730,7 +730,7 @@ C        CALL DRAG
       IF (INTMINT.OR.DESMINT.OR.INTINTERPT.OR.NATINT) CALL INTCLEANUP
 
       IF (UNRST) DEALLOCATE(UREFCOORD,UREFPPSANGLE,INTSTEP)
-      IF (ZSYM(NATOMS).EQ.'SV') CALL CLEANMEMORY
+      IF (ZSYM(NATOMS).EQ.'SV') call cleanMemory
       DEALLOCATE (FROZEN,ZSYM,NR,STPMAX)
       IF (ALLOCATED(REPELTS)) DEALLOCATE(REPELTS) 
       IF (ALLOCATED(VECCHK)) DEALLOCATE(VECCHK)
@@ -739,13 +739,13 @@ C        CALL DRAG
       IF (ALLOCATED(START)) DEALLOCATE(START)
       IF (ALLOCATED(QW)) DEALLOCATE(QW)
 
-      CALL FLUSH(6,ISTAT) ! SHOULD NOT BE NECESSARY, BUT ...
+      CALL FLUSH(6,ISTAT) ! should not be necessary, but ...
       STOP
       ! }}}
       END
 
       SUBROUTINE TSUMMARY
-      ! DECLARATIONS {{{
+      ! Declarations {{{
       USE KEY,ONLY : TSTART
       IMPLICIT NONE
       INTEGER NPCALL, ECALL, FCALL, SCALL
@@ -753,18 +753,18 @@ C        CALL DRAG
       COMMON /PCALL/ NPCALL, ECALL, FCALL, SCALL, ETIME, FTIME, STIME
       ! }}}
 
-C SUBROUTINE BODY {{{
+C Subroutine body {{{
       CALL MYCPU_TIME(TFINISH,.FALSE.)
       TFINISH=TFINISH-TSTART
 
       PRINT*
-      WRITE(*,'(A,F15.2)') ' ELAPSED TIME=                      ',TFINISH
+      WRITE(*,'(A,F15.2)') ' Elapsed time=                      ',TFINISH
       IF (TFINISH.NE.0.0D0) THEN
-         WRITE(*,'(A,I10,A,F15.2,A,F5.1)') ' OPTIM> # OF ENERGY CALLS=                 ',ECALL,' TIME=',ETIME,
+         WRITE(*,'(A,I10,A,F15.2,A,F5.1)') ' OPTIM> # of energy calls=                 ',ECALL,' time=',ETIME,
      1         ' %=',ETIME*100.0D0/TFINISH
-         WRITE(*,'(A,I10,A,F15.2,A,F5.1)') ' OPTIM> # OF ENERGY+GRADIENT CALLS=        ',FCALL,' TIME=',FTIME,
+         WRITE(*,'(A,I10,A,F15.2,A,F5.1)') ' OPTIM> # of energy+gradient calls=        ',FCALL,' time=',FTIME,
      1         ' %=',FTIME*100.0D0/TFINISH
-         WRITE(*,'(A,I10,A,F15.2,A,F5.1)') ' OPTIM> # OF ENERGY+GRADIENT+HESSIAN CALLS=',SCALL,' TIME=',STIME,
+         WRITE(*,'(A,I10,A,F15.2,A,F5.1)') ' OPTIM> # of energy+gradient+Hessian calls=',SCALL,' time=',STIME,
      1         ' %=',STIME*100/TFINISH
       ENDIF
 C }}}

@@ -1,114 +1,114 @@
-MODULE PES_SHELL
-  USE HB3B_COEF,ONLY:CONN
-  IMPLICIT NONE
+module pes_shell
+  use hb3b_coef,only:conn
+  implicit none
 
-  ! DEFINE CONSTANTS
-  REAL,PARAMETER::EMASS=1822.88848
-  REAL,PARAMETER::AUANG=0.5291772083
-  REAL,PARAMETER::AUCM=219474.6313710
-  REAL,PARAMETER::AUKCAL=627.51
+  ! Define constants
+  real,parameter::emass=1822.88848
+  real,parameter::auang=0.5291772083
+  real,parameter::aucm=219474.6313710
+  real,parameter::aukcal=627.51
 
-  ! WATER FUNCTIONS MAP
-  INTEGER,SAVE::IWATERFCN
-  ! 1: HBB12
-  ! 2: HBB12+3B
-  ! 3: HBB12+HB3B
+  ! water functions map
+  integer,save::iwaterfcn
+  ! 1: hbb12
+  ! 2: hbb12+3b
+  ! 3: hbb12+hb3b
 
-CONTAINS
+contains
   !=================================================!
-  ! THIS SUBROUTINE IS USED TO INITALIZE THE PES    !
+  ! this subroutine is used to initalize the pes    !
   !=================================================!
-  SUBROUTINE PES_INIT(NW, DNAME)
-    INTEGER,INTENT(IN)::NW
-    CHARACTER (LEN=*), INTENT(IN) :: DNAME
+  subroutine pes_init(nw, dname)
+    integer,intent(in)::nw
+    character (len=*), intent(in) :: dname
     !::::::::::::::::::::
-    INTEGER::I
-    INTEGER,DIMENSION(NW)::IDX_O
+    integer::i
+    integer,dimension(nw)::idx_o
 
-    ! 3-BODY POT
-    CALL PES_INIT_3B(DNAME)
+    ! 3-body pot
+    call pes_init_3b(dname)
 
-    ! DIMER POT
-    CALL PREPOT()
+    ! dimer pot
+    call prepot()
 
-    ! H-BONDED 3B
-    ALLOCATE(CONN(NW*2,NW-1))
-    IDX_O=(/(I,I=1,NW)/)
-    DO I=1,NW
-       IDX_O(I)=0
-       CONN(I*2-1,:)=PACK(IDX_O,MASK=IDX_O.NE.0)
-       CONN(I*2,:)=CONN(I*2-1,:)
-       IDX_O(I)=I
-    END DO
+    ! H-bonded 3b
+    allocate(conn(nw*2,nw-1))
+    idx_o=(/(i,i=1,nw)/)
+    do i=1,nw
+       idx_o(i)=0
+       conn(i*2-1,:)=pack(idx_o,mask=idx_o.ne.0)
+       conn(i*2,:)=conn(i*2-1,:)
+       idx_o(i)=i
+    end do
 
-    RETURN
-  END SUBROUTINE PES_INIT
+    return
+  end subroutine pes_init
 
   !==================================================!
-  ! WATER POTENTIALS                                 !
+  ! water potentials                                 !
   !==================================================!
-  FUNCTION F(X) RESULT(POT)
-    REAL,DIMENSION(:,:),INTENT(IN)::X
-    REAL::POT
+  function f(x) result(pot)
+    real,dimension(:,:),intent(in)::x
+    real::pot
     ! ::::::::::::::::::::
-    REAL,DIMENSION(3,1:SIZE(X,2))::XNEW,XXA
-    REAL::P1,P2,P3
-    INTEGER::NATM,NW,I
+    real,dimension(3,1:size(x,2))::xnew,xxa
+    real::p1,p2,p3
+    integer::natm,nw,i
 
-    NATM=SIZE(X,2); NW=NATM/3
-    XNEW=X
-    XXA=X*AUANG
+    natm=size(x,2); nw=natm/3
+    xnew=x
+    xxa=x*auang
 
-    P1=0.D0; P2=0.D0; P3=0.D0
-    SELECT CASE(IWATERFCN)
-    CASE(1) ! 1: HBB12
-       CALL POT12BHBB(NATM,XNEW,P2)
-    CASE(2) ! 2: HBB12+3B
-       CALL POT12BHBB(NATM,XNEW,P2)
-       CALL POT3B(NATM,XNEW,P3)          
-    CASE(3) ! 3: HBB12+HB3B
-       CALL POT12BHBB(NATM,XNEW,P2)
-       CALL POT_HB3B(NW,XXA,P3)
-    END SELECT
+    p1=0.d0; p2=0.d0; p3=0.d0
+    select case(iwaterfcn)
+    case(1) ! 1: hbb12
+       call pot12bhbb(natm,xnew,p2)
+    case(2) ! 2: hbb12+3b
+       call pot12bhbb(natm,xnew,p2)
+       call pot3b(natm,xnew,p3)          
+    case(3) ! 3: hbb12+hb3b
+       call pot12bhbb(natm,xnew,p2)
+       call pot_hb3b(nw,xxa,p3)
+    end select
 
-    POT=P3+P2+P1
+    pot=p3+p2+p1
 
-    RETURN
-  END FUNCTION F
+    return
+  end function f
   
   !==================================================
-  ! CALCULATE THE THREE BODY POTENTIALS
+  ! Calculate the three body potentials
   !==================================================
-  SUBROUTINE POT3B(NATM,XX,POT)
-    INTEGER,INTENT(IN)::NATM
-    REAL,DIMENSION(3,NATM),INTENT(IN)::XX
-    REAL,INTENT(INOUT)::POT
+  subroutine pot3b(natm,xx,pot)
+    integer,intent(in)::natm
+    real,dimension(3,natm),intent(in)::xx
+    real,intent(inout)::pot
     !::::::::::::::::::::
-    REAL,DIMENSION(3,9)::X3
-    REAL::E3
-    REAL,EXTERNAL::FPES
-    INTEGER::I,J,K,FO
+    real,dimension(3,9)::x3
+    real::e3
+    real,external::fpes
+    integer::i,j,k,fo
 
-    FO=NATM/3*2;E3=0.D0;POT=0.D0
-    DO I=1,NATM/3-2
-       X3(:,7)=XX(:,FO+I)          ! O1
-       X3(:,1)=XX(:,I*2-1)         ! H1
-       X3(:,2)=XX(:,I*2)           ! H1'
-       DO J=I+1,NATM/3-1
-          X3(:,8)=XX(:,FO+J)       ! O2
-          X3(:,3)=XX(:,J*2-1)      ! H2
-          X3(:,4)=XX(:,J*2)        ! H2'
-          DO K=J+1,NATM/3
-             X3(:,9)=XX(:,FO+K)       ! O3
-             X3(:,5)=XX(:,K*2-1)      ! H3
-             X3(:,6)=XX(:,K*2)        ! H3'
-             E3=FPES(X3)      ! THREE-BODY CORRECTION
-             POT=POT+E3
-          END DO
-       END DO
-    END DO
+    fo=natm/3*2;e3=0.d0;pot=0.d0
+    do i=1,natm/3-2
+       x3(:,7)=xx(:,fo+i)          ! O1
+       x3(:,1)=xx(:,i*2-1)         ! H1
+       x3(:,2)=xx(:,i*2)           ! H1'
+       do j=i+1,natm/3-1
+          x3(:,8)=xx(:,fo+j)       ! O2
+          x3(:,3)=xx(:,j*2-1)      ! H2
+          x3(:,4)=xx(:,j*2)        ! H2'
+          do k=j+1,natm/3
+             x3(:,9)=xx(:,fo+k)       ! O3
+             x3(:,5)=xx(:,k*2-1)      ! H3
+             x3(:,6)=xx(:,k*2)        ! H3'
+             e3=fpes(x3)      ! three-body correction
+             pot=pot+e3
+          end do
+       end do
+    end do
 
-    RETURN
-  END SUBROUTINE POT3B
+    return
+  end subroutine pot3b
 
-END MODULE PES_SHELL
+end module pes_shell

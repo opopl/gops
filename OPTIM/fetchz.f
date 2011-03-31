@@ -1,20 +1,20 @@
-C   OPTIM: A PROGRAMFOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A programfor optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE FETCHZ(Q)
       USE COMMONS
@@ -22,15 +22,15 @@ C
       USE MODTWOEND
       USE SYMINF
       USE MODNEB
-      USE MODCHARMM
-      USE MODAMBER9, ONLY : KTWNT
+      USE modcharmm
+      USE modamber9, only : KTWNT
       USE MODUNRES
-      USE KEYCONNECT
+      use KeyConnect
       USE MODGUESS
       USE MODMEC
-      USE PORFUNCS
-      USE MSEVB_COMMON
-      USE BINARYIO
+      use PORFUNCS
+      USE msevb_common
+      use BINARYIO
       USE SDWATER, ONLY : SDINIT
       !USE BOWMANWATER, ONLY : BOWMANINIT
       USE AMHGLOBALS
@@ -44,7 +44,7 @@ C
       CHARACTER FNAME*80, TSTRING*80, CD1*1, CD2*2
       COMMON /CAS/ AMAT, AINV, NELEMENTS, NTYPE
       LOGICAL CONNECTT, DUMPPATH, READPATH, CALCRATES, STOPFIRST
-      INTEGER NCONNECT,I500
+      INTEGER NCONNECT,i500
       DOUBLE PRECISION TEMPERATURE, HRED
       COMMON /CONN/ STOPFIRST, CONNECTT, NCONNECT, DUMPPATH, READPATH, CALCRATES, TEMPERATURE, HRED
       LOGICAL PATHT, DRAGT
@@ -58,7 +58,7 @@ C     COMMON /OTS/ NREPELTS, REPELTST, REPELPUSH, REPEL, REPELFROM
       COMMON /CUB/ CUBIC
       DOUBLE PRECISION CAPSRHO, EPS2, RAD, HEIGHT
       COMMON /CAPS/ CAPSRHO, EPS2, RAD, HEIGHT
-      CHARACTER(LEN=20) :: STR,STR2,FTEMP,FINSTRING
+      character(len=20) :: str,str2,FTEMP,FINSTRING
       CHARACTER(LEN=21) :: WW
       INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST
       LOGICAL END, SKIPBL, CLEAR, ECHO, CAT
@@ -69,138 +69,138 @@ C    LOCAL AMH VARIABLES
       DOUBLE PRECISION X, Y, Z
 
 C
-C  THOMSON PROBLEM:
+C  Thomson problem:
 C
       DOUBLE PRECISION, PARAMETER :: HALFPI=1.570796327D0
       DOUBLE PRECISION THTEMP(3*NATOMS), DIST
 
 
       IF (CHRMMT.OR.UNRST.OR.AMBERT.OR.NABT) THEN
-         ALLOCATE (IATNUM(NATOMS))   ! ATMASS ALREADY SET UP
+         ALLOCATE (IATNUM(NATOMS))   ! ATMASS already set up
       ELSE IF (PYGPERIODICT.OR.PYBINARYT.OR.PYGT) THEN
          ALLOCATE (IATNUM(NATOMS),ATMASS(NATOMS))
          ATMASS(:)=1.0D0
       ELSE
          ALLOCATE (IATNUM(NATOMS),ATMASS(NATOMS))
-C        SF344> INITIALISE ATMASS VALUES TO NOT DEFAULT TO ZERO 
-C               UNINITIALISED STUFF (MAY CAUSE PROBLEMS IN INERTIA OTHERWISE)
+C        sf344> initialise ATMASS values to not default to zero 
+C               uninitialised stuff (may cause problems in INERTIA otherwise)
          ATMASS(:)=1.0D0 
       ENDIF
 
 C
-C  REMIND USERS IN CASE THEY HAVE NOT CHANGED THE TIGHTER DEFAULT SETTING OF MAXERISE FOR
-C  PV, CASTEP, ONETEP AND CP2K RUNS. 
+C  Remind users in case they have not changed the tighter default setting of MAXERISE for
+C  PV, CASTEP, ONETEP and CP2K runs. 
 C
       IF (PV.AND.(MAXERISE.LT.1.0D-7)) WRITE(*,'(A,G20.10)') 
-     1          ' FETCHZ> WARNING - MAXIMUM PERMITTED ENERGY RISE SEEMS A BIT SMALL: ',MAXERISE
+     1          ' fetchz> WARNING - maximum permitted energy rise seems a bit small: ',MAXERISE
       IF ((CASTEP.OR.ONETEP.OR.CP2K).AND.(MAXERISE.LT.1.0D-7)) WRITE(*,'(A,G20.10)') 
-     1          ' FETCHZ> WARNING - MAXIMUM PERMITTED ENERGY RISE SEEMS A BIT SMALL: ',MAXERISE 
+     1          ' fetchz> WARNING - maximum permitted energy rise seems a bit small: ',MAXERISE 
 
-      IF (MACHINE) THEN
-          IF (FILTH2==0) THEN
-               FINSTRING='POINTS2.INP'
-          ELSE
+      if (machine) then
+          if (filth2==0) then
+               finstring='points2.inp'
+          else
                WRITE(FTEMP,*) FILTH
-               WRITE(FINSTRING,'(A)') 'POINTS2.INP.' // TRIM(ADJUSTL(FTEMP))
-          ENDIF
-      ELSE
+               WRITE(FINSTRING,'(A)') 'points2.inp.' // TRIM(ADJUSTL(FTEMP))
+          endif
+      else
            IF (FILTH2.EQ.0) THEN
-              FINSTRING='FINISH'
+              FINSTRING='finish'
            ELSE
               WRITE(FTEMP,*) FILTH
-              WRITE(FINSTRING,'(A)') 'FINISH.' // TRIM(ADJUSTL(FTEMP))
+              WRITE(FINSTRING,'(A)') 'finish.' // TRIM(ADJUSTL(FTEMP))
            ENDIF
-      ENDIF
+      endif
 
       IF (HYBRIDMINT) THEN
-         PRINT '(3(A,I5),A)',' FETCHZ> HYBRID MINIMISATION, MAXIMUM STEPS=',HMNSTEPS,
-     &      ', MAXIMUM TANGENT SPACE STEPS=',HMNBFGSMAX1,' OR ',HMNBFGSMAX2,' AT CONVERGENCE'
-         IF (NUSEEV.GT.0) WRITE(*,'(A,I5,A,G20.10)') '         MAXIMUM NUMBER OF EIGENVALUES/EIGENVECTORS TO BE CALCULATED=',NUSEEV,
-     &                       ' MAXIMUM STEP SIZE ALONG AN EIGENVECTOR=',HMMXSTP
+         PRINT '(3(A,I5),A)',' fetchz> Hybrid minimisation, maximum steps=',HMNSTEPS,
+     &      ', maximum tangent space steps=',HMNBFGSMAX1,' or ',HMNBFGSMAX2,' at convergence'
+         IF (NUSEEV.GT.0) WRITE(*,'(A,I5,A,G20.10)') '         Maximum number of eigenvalues/eigenvectors to be calculated=',NUSEEV,
+     &                       ' maximum step size along an eigenvector=',HMMXSTP
          IF (NOHESS) THEN
             WRITE(*,'(A,I4,A,F12.4)') 
-     1       '         NO HESSIAN: USING RAYLEIGHT-RITZ; ALLOWED STEPS=',HMNEVS,' CONVERGENCE FOR RMS < ',HMCEIG
-         WRITE(*,'(A,A2,A,G20.10)') '         STEP TYPE IS ',HMMETHOD,
-     &                ' AND WILL REVERT TO LBFGS IF THE LOWEST NONZERO EIGENVALUE > ',HMEVMAX
+     1       '         No Hessian: using Rayleight-Ritz; allowed steps=',HMNEVS,' convergence for RMS < ',HMCEIG
+         WRITE(*,'(A,A2,A,G20.10)') '         step type is ',HMMETHOD,
+     &                ' and will revert to LBFGS if the lowest nonzero eigenvalue > ',HMEVMAX
          ELSE
             WRITE(*,'(A,I4,A,I4,A,F12.4,A)') 
-     1        '         ALLOWED STEPS FOR LARGEST HESSIAN EIGENVECTOR=',HMNEVL,
-     2        ', SMALLEST EIGENVECTOR=',HMNEVS,' CONVERGENCE AT ',HMCEIG,'%'
+     1        '         Allowed steps for largest Hessian eigenvector=',HMNEVL,
+     2        ', smallest eigenvector=',HMNEVS,' convergence at ',HMCEIG,'%'
          ENDIF
       ENDIF
       IF (BFGSMINT.AND.(.NOT.BFGSTST)) THEN
-         WRITE(*,'(A,I8)') ' FETCHZ> LBFGS MINIMIZATION, MAXIMUM STEPS=',BFGSSTEPS
+         WRITE(*,'(A,I8)') ' fetchz> LBFGS minimization, maximum steps=',BFGSSTEPS
       ELSE IF (BFGSTST) THEN
          IF (BFGSSTEP.AND.(.NOT.HYBRIDMINT)) THEN
-            WRITE(*,'(A)') ' FETCHZ> ONE EF STEP WILL BE TAKEN BEFORE BFGS MINIMIZATION'
+            WRITE(*,'(A)') ' fetchz> One EF step will be taken before BFGS minimization'
          ELSE
-            WRITE(*,'(A,I4)') ' FETCHZ> HYBRID EF/BFGS TRANSITION STATE SEARCH, MAXIMUM STEPS=',NSTEPS
-            WRITE(*,'(A,I4,A,I4,A,F12.6)') '         MAXIMUM TANGENT SPACE STEPS=',NBFGSMAX1, 
-     &                               ' OR ',NBFGSMAX2,' WHEN OVERLAP IS BETTER THAN ',1.0D0-BFGSTSTOL
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> UPHILL MODE IS ',IVEC,' FOR INITIAL STEP AND ',IVEC2,' AFTER THAT'
+            WRITE(*,'(A,I4)') ' fetchz> Hybrid EF/BFGS transition state search, maximum steps=',NSTEPS
+            WRITE(*,'(A,I4,A,I4,A,F12.6)') '         maximum tangent space steps=',NBFGSMAX1, 
+     &                               ' or ',NBFGSMAX2,' when overlap is better than ',1.0D0-BFGSTSTOL
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> Uphill mode is ',IVEC,' for initial step and ',IVEC2,' after that'
          ENDIF
          IF (.NOT.(READV.AND.BFGSSTEP)) THEN
             IF (NOHESS) THEN
                WRITE(*,'(A,I4,A,F12.4)') 
-     1          ' FETCHZ> NO HESSIAN: USING RAYLEIGH-RITZ, ALLOWED STEPS=',NEVS,' CONVERGENCE FOR RMS < ',CEIG
+     1          ' fetchz> No Hessian: using Rayleigh-Ritz, allowed steps=',NEVS,' convergence for RMS < ',CEIG
             ELSE
                WRITE(*,'(A,I4,A,I4,A,F12.4,A)') 
-     1           ' FETCHZ> ALLOWED STEPS FOR LARGEST HESSIAN EIGENVECTOR=',NEVL,
-     2           ', SMALLEST EIGENVECTOR=',NEVS,' CONVERGENCE AT ',CEIG,'%'
+     1           ' fetchz> Allowed steps for largest Hessian eigenvector=',NEVL,
+     2           ', smallest eigenvector=',NEVS,' convergence at ',CEIG,'%'
             ENDIF
          ENDIF
          IF ((NSECDIAG.NE.1).AND.(NSECDIAG.NE.2)) THEN
-            PRINT '(A)',' FETCHZ> UNRECOGNISED VALUE FOR NSECDIAG - RESETTING TO ONE'
+            PRINT '(A)',' fetchz> unrecognised value for NSECDIAG - resetting to one'
             NSECDIAG=1
          ENDIF
          IF (.NOT.NOIT) WRITE(*,'(A,I4)') 
-     &         ' FETCHZ> HESSIAN EIGENVECTOR IN RAYLEIGH-RITZ SCHEME CALCULATED USING METHOD ',NSECDIAG
+     &         ' fetchz> Hessian eigenvector in Rayleigh-Ritz scheme calculated using method ',NSECDIAG
       ELSE IF (BBRSDMT) THEN
-         WRITE(*,'(A,I5,A,G20.10)')   ' FETCHZ> BBR STEEPEST-DESCENT METHOD, MAXIMUM STEPS=',BBRSTEPS,' RMS CONVERGENCE ',BBRCONV
-         WRITE(*,'(5(A,F15.5),A,I5)') '         GAMMA=',BBRGAM,' EPS=',BBREPS,' SIG1=',BBRSIGMA1,' SIG2=',BBRSIGMA2, 
-     &                                ' ALPHA=',BBRALPHA,' M=',BBRM
+         WRITE(*,'(A,I5,A,G20.10)')   ' fetchz> BBR steepest-descent method, maximum steps=',BBRSTEPS,' RMS convergence ',BBRCONV
+         WRITE(*,'(5(A,F15.5),A,I5)') '         gamma=',BBRGAM,' eps=',BBREPS,' sig1=',BBRSIGMA1,' sig2=',BBRSIGMA2, 
+     &                                ' alpha=',BBRALPHA,' m=',BBRM
       ELSE IF (BSMIN) THEN
          NUSE=NSTEPS
          IF (PATHSDSTEPS.GT.0) NUSE=PATHSDSTEPS
-         WRITE(*,'(A,I5)') ' FETCHZ> BULIRSCH-STOER GRADIENT ONLY STEEPEST-DESCENT, MAXIMUM STEPS=',NUSE
+         WRITE(*,'(A,I5)') ' fetchz> Bulirsch-Stoer gradient only steepest-descent, maximum steps=',NUSE
       ELSE IF (RKMIN) THEN
          NUSE=NSTEPS
          IF (PATHSDSTEPS.GT.0) NUSE=PATHSDSTEPS
-         WRITE(*,'(A,I5)') ' FETCHZ> 5TH ORDER RUNGE-KUTTA GRADIENT ONLY STEEPEST-DESCENT, MAXIMUM STEPS=',NUSE
+         WRITE(*,'(A,I5)') ' fetchz> 5th order Runge-Kutta gradient only steepest-descent, maximum steps=',NUSE
       ELSE
-         IF (NUSEEV.GT.0) WRITE(*,'(A,I5)') ' FETCHZ> MAXIMUM NUMBER OF EIGENVALUES/EIGENVECTORS TO BE CALCULATED=',NUSEEV
-         IF (INR.EQ.0) WRITE(*,'(A,I5)') ' FETCHZ> EIGENVECTOR-FOLLOWING MINIMIZATION, MAXIMUM STEPS=',NSTEPS
-         IF (INR.EQ.1) WRITE(*,'(A,I5)') ' FETCHZ> MODIFIED NEWTON-RAPHSON STEPS, MAXIMUM STEPS=',NSTEPS
-         IF (INR.EQ.2) WRITE(*,'(A,I5)') ' FETCHZ> EIGENVECTOR-FOLLOWING TRANSITION STATE SEARCH, MAXIMUM STEPS=',NSTEPS
+         IF (NUSEEV.GT.0) WRITE(*,'(A,I5)') ' fetchz> Maximum number of eigenvalues/eigenvectors to be calculated=',NUSEEV
+         IF (INR.EQ.0) WRITE(*,'(A,I5)') ' fetchz> Eigenvector-following minimization, maximum steps=',NSTEPS
+         IF (INR.EQ.1) WRITE(*,'(A,I5)') ' fetchz> Modified Newton-Raphson steps, maximum steps=',NSTEPS
+         IF (INR.EQ.2) WRITE(*,'(A,I5)') ' fetchz> Eigenvector-following transition state search, maximum steps=',NSTEPS
          IF (INR.EQ.3) WRITE(*,'(A,I5)') 
-     1' FETCHZ> EIGENVECTOR-FOLLOWING MINIMIZATION, NO REORIENTATION AND PSEUDO-THIRD DERIVATIVE CORRECTION, MAXIMUM STEPS=',NSTEPS
+     1' fetchz> Eigenvector-following minimization, no reorientation and pseudo-third derivative correction, maximum steps=',NSTEPS
          IF (INR.EQ.4) WRITE(*,'(A,I5)') 
-     1    ' FETCHZ> EIGENVECTOR-FOLLOWING TRANSITION STATE SEARCH WITH PSEUDO-THIRD DERIVATIVE CORRECTION, MAXIMUM STEPS=',NSTEPS
+     1    ' fetchz> Eigenvector-following transition state search with pseudo-third derivative correction, maximum steps=',NSTEPS
          IF (INR.EQ.5) WRITE(*,'(A,I5)') 
-     1    ' FETCHZ> EIGENVECTOR-FOLLOWING MINIMIZATION, GEOMETRY SHIFTED TO PRINCIPAL AXES AT FIRST STEP, MAXIMUM STEPS=',NSTEPS
+     1    ' fetchz> Eigenvector-following minimization, geometry shifted to principal axes at first step, maximum steps=',NSTEPS
          IF (INR.EQ.6) WRITE(*,'(A,I5)') 
-     1    ' FETCHZ> STEEPEST-DESCENT MINIMIZATION USING FIRST AND SECOND DERIVATIVES, MAXIMUM STEPS=',NSTEPS
+     1    ' fetchz> Steepest-descent minimization using first and second derivatives, maximum steps=',NSTEPS
          IF (INR.EQ.7) WRITE(*,'(A,I5)') 
-     1    ' FETCHZ> STEEPEST-DESCENT MINIMIZATION USING FIRST AND SECOND DERIVATIVES - CAN STOP AT A SADDLE, MAXIMUM STEPS=',NSTEPS
+     1    ' fetchz> Steepest-descent minimization using first and second derivatives - can stop at a saddle, maximum steps=',NSTEPS
          IF ((INR.EQ.2).OR.(INR.EQ.4)) THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> UPHILL MODE IS ',IVEC,' FOR INITIAL STEP AND ',IVEC2,' AFTER THAT'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> Uphill mode is ',IVEC,' for initial step and ',IVEC2,' after that'
          ENDIF
          IF ((PATHSDSTEPS.GT.0).AND.(INR.LE.6)) PRINT '(A,I8)',
-     &                  ' FETCHZ> MAXIMUM NUMBER OF STEPS FOR PATHWAY MINIMISATION=',PATHSDSTEPS
+     &                  ' fetchz> Maximum number of steps for pathway minimisation=',PATHSDSTEPS
       ENDIF
 
-      IF (GRADSQ) WRITE(*,'(A)') ' FETCHZ> USING THE MODULUS GRADIENT AS THE OBJECTIVE FUNCTION'
+      IF (GRADSQ) WRITE(*,'(A)') ' fetchz> Using the modulus gradient as the objective function'
       PRINT*
       CALL FLUSH(6,ISTAT)
 
       IF (AMBER.OR.AMBERT.OR.NABT) THEN
          NOPT=3*NATOMS
-         WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' AMBER ATOMS'
-         IF (MOVIE) WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> MOVIE WILL BE DUMPED IN XYZ FORMAT'
+         WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' AMBER atoms'
+         IF (MOVIE) WRITE(*,'(A,I4,A,I4,A)') ' fetchz> movie will be dumped in xyz format'
          IF (TWOENDS.OR.CONNECTT.OR.NEBT.OR.NEWNEBT.OR.DRAGT.OR.GUESSPATHT
      $     .OR.MECCANOT.OR.MORPHT.OR.GREATCIRCLET.OR.GROWSTRINGT.OR.BHINTERPT.OR.BISECTT) THEN
             OPEN (UNIT=7,FILE=FINSTRING,STATUS='OLD')
-          IF(AMBERT.OR.NABT) THEN      ! READ COORDINATES FROM FILE FINISH (CONTAINING ONLY COORDINATES)
+          IF(AMBERT.OR.NABT) THEN      ! read coordinates from file finish (containing only coordinates)
             DO J1=1,NATOMS
                READ(7,*)  FIN(3*(J1-1)+1),FIN(3*(J1-1)+2),FIN(3*(J1-1)+3)
             ENDDO
@@ -225,62 +225,62 @@ C              WRITE(*,*) CD1, CD2, IDUM1, IDUM2, FIN(3*(J1-1)+1),FIN(3*(J1-1)+2
          ENDIF
          RPDOF=NOPT/RPIMAGES
          IF (RPDOF*RPIMAGES.NE.NOPT) THEN
-            PRINT '(2(A,I6))','FETCHZ> ERROR *** NUMBER OF VARIABLES READ, ',
-     &                         NOPT,' IS NOT A MULTIPLE OF THE NUMBER OF BEADS ',RPIMAGES
+            PRINT '(2(A,I6))','fetchz> ERROR *** number of variables read, ',
+     &                         NOPT,' is not a multiple of the number of beads ',RPIMAGES
             STOP
          ENDIF
-         WRITE(*,'(A,I6,A,I6,A)')' SYSTEM ',NOPT,' COORDINATES WILL BE OPTIMISED FOR A RING POLYMER OF ',RPIMAGES,' BEADS'
+         WRITE(*,'(A,I6,A,I6,A)')' SYSTEM ',NOPT,' coordinates will be optimised for a ring polymer of ',RPIMAGES,' beads'
          IF (RPSYSTEM(1:4).EQ.'AECK') THEN
-            WRITE(*,'(A,G20.10,A)') '               1/KT (A.U.)=',RPBETA,' POTENTIAL TYPE=' // TRIM(ADJUSTL(RPSYSTEM))
+            WRITE(*,'(A,G20.10,A)') '               1/kT (a.u.)=',RPBETA,' potential type=' // TRIM(ADJUSTL(RPSYSTEM))
             NATOMS=NOPT
          ELSEIF (RPSYSTEM(1:2).EQ.'SD') THEN
             NOXYGEN=(RPDOF/3+1)/3
             NCHARGE=(RPDOF/3)-3*NOXYGEN
-            WRITE(*,'(A,G20.10,A)') '               1/KT (MOL/KCAL)=',RPBETA,' POTENTIAL TYPE=' // TRIM(ADJUSTL(RPSYSTEM))
-            WRITE(*,'(A,2I6)')     '               NUMBER OF O AND H ATOMS=',NOXYGEN,(RPDOF/3)-NOXYGEN
+            WRITE(*,'(A,G20.10,A)') '               1/kT (mol/kcal)=',RPBETA,' potential type=' // TRIM(ADJUSTL(RPSYSTEM))
+            WRITE(*,'(A,2I6)')     '               Number of O and H atoms=',NOXYGEN,(RPDOF/3)-NOXYGEN
             CALL SDINIT(NOXYGEN,NCHARGE)
             NATOMS=NOPT/3
          ELSEIF (RPSYSTEM(1:2).EQ.'TT') THEN
-            WRITE(*,'(A,G20.10,A)')  '              1/KT A.U.=',RPBETA,' POTENTIAL TYPE=' // TRIM(ADJUSTL(RPSYSTEM))
-            RPBETA=RPBETA*0.00159360144367 ! CONVERT TO KCAL/MOL UNITS
-            WRITE(*,'(A,G20.10,A)')  '              1/KT (MOL/KCAL)=',RPBETA
-            WRITE(*,'(A,I0,A)') '              TTM3-F POTENTIAL FOR A CLUSTER OF ', RPDOF/9, ' WATER MOLECULES'
+            WRITE(*,'(A,G20.10,A)')  '              1/kT a.u.=',RPBETA,' potential type=' // TRIM(ADJUSTL(RPSYSTEM))
+            RPBETA=RPBETA*0.00159360144367 ! convert to kcal/mol units
+            WRITE(*,'(A,G20.10,A)')  '              1/kT (mol/kcal)=',RPBETA
+            WRITE(*,'(A,I0,A)') '              TTM3-F potential for a cluster of ', RPDOF/9, ' water molecules'
             NATOMS=NOPT/3
          ELSEIF (RPSYSTEM(1:3).EQ.'MCY') THEN
-            WRITE(*,'(A,G20.10,A)')  '              1/KT (A.U.)=',RPBETA,' POTENTIAL TYPE=' // TRIM(ADJUSTL(RPSYSTEM))
-            WRITE(*,'(A,I1,A,I0,A)') '              VRT(MCY-5F) FLEXIBLE WATER DIMER POTENTIAL'
+            WRITE(*,'(A,G20.10,A)')  '              1/kT (a.u.)=',RPBETA,' potential type=' // TRIM(ADJUSTL(RPSYSTEM))
+            WRITE(*,'(A,I1,A,I0,A)') '              VRT(MCY-5f) flexible water dimer potential'
             NOXYGEN=RPDOF/9
             IF (NOXYGEN /= 2) THEN
-               PRINT *, 'ERROR: VRT(MCY-5F) ONLY FOR WATER DIMER; NOXYGEN = ', NOXYGEN
+               PRINT *, 'ERROR: VRT(MCY-5f) only for water dimer; NOXYGEN = ', NOXYGEN
                STOP
             ENDIF
             NATOMS=NOPT/3
          ELSEIF (RPSYSTEM(1:2).EQ.'JB') THEN
             NOXYGEN=RPDOF/9
-            WRITE(*,'(A,G20.10,A)')  '              1/KT (A.U.)=',RPBETA,' POTENTIAL TYPE=' // TRIM(ADJUSTL(RPSYSTEM))
-            WRITE(*,'(A,I1,A,I0,A)') '              BOWMAN''S PES#',BOWMANPES,' FOR A CLUSTER OF ',NOXYGEN,' WATER MOLECULES'
-            !CALL BOWMANINIT(NOXYGEN, BOWMANPES, TRIM(BOWMANDIR))
+            WRITE(*,'(A,G20.10,A)')  '              1/kT (a.u.)=',RPBETA,' potential type=' // TRIM(ADJUSTL(RPSYSTEM))
+            WRITE(*,'(A,I1,A,I0,A)') '              Bowman''s PES#',BOWMANPES,' for a cluster of ',NOXYGEN,' water molecules'
+            !CALL BOWMANINIT(NOXYGEN, BOWMANPES, trim(BOWMANDIR))
             NATOMS=NOPT/3
          ELSE
-            PRINT *, ' FETCHZ> UNKNOWN RPSYSTEM: ', RPSYSTEM
+            PRINT *, ' fetchz> unknown RPSYSTEM: ', RPSYSTEM
             STOP
          ENDIF
-         WRITE(*,'(A,I6,A)')     '               READING PARTICLE MASSES FOR ',RPDOF,' DEGREES OF FREEDOM FROM FILE RPMASSES:'
+         WRITE(*,'(A,I6,A)')     '               Reading particle masses for ',RPDOF,' degrees of freedom from file RPmasses:'
          ALLOCATE(RPMASSES(RPDOF))
 !
-! MUST NOT USE UNIT 1 HERE - THE POINTS AND ENERGIES FILES ARE CONNECTED TO
-! UNITS 1 AND 2 IF PRINTPTS OR MORPHT IS TRUE.
+! Must not use unit 1 here - the points and energies files are connected to
+! units 1 and 2 if PRINTPTS or MORPHT is true.
 !
          IF (RPFIXT) THEN
             ALLOCATE(XMINA(RPDOF), XMINB(RPDOF))
-            OPEN(UNIT=121,FILE='XMINA',STATUS='OLD')
+            OPEN(UNIT=121,FILE='xminA',STATUS='OLD')
             READ(121,*) XMINA
             CLOSE(121)
-            OPEN(UNIT=122,FILE='XMINB',STATUS='OLD')
+            OPEN(UNIT=122,FILE='xminB',STATUS='OLD')
             READ(122,*) XMINB
             CLOSE(122)
          ENDIF
-         OPEN(UNIT=123,FILE='RPMASSES',STATUS='OLD')
+         OPEN(UNIT=123,FILE='RPmasses',STATUS='OLD')
          READ(123,*) RPMASSES(1:RPDOF)
          CLOSE(123)
          WRITE(*,'(6G20.10)') RPMASSES(1:RPDOF)
@@ -314,38 +314,38 @@ C              WRITE(*,*) CD1, CD2, IDUM1, IDUM2, FIN(3*(J1-1)+1),FIN(3*(J1-1)+2
          ENDIF
       ELSE IF (AMHT) THEN
          NOPT=3*NATOMS
-         WRITE(*,'(A,I4,A,I4,A)') ' SYSTEM ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' AMH ATOMS'
+         WRITE(*,'(A,I4,A,I4,A)') ' SYSTEM ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' AMH atoms'
 
          IF (TWOENDS.OR.CONNECTT.OR.NEBT.OR.NEWNEBT.OR.DRAGT.OR.GUESSPATHT.OR.MECCANOT) THEN
               IF (FILTH2.EQ.0) THEN
-                 FINSTRING='FINISH'
+                 FINSTRING='finish'
               ELSE
                  WRITE(FTEMP,*) FILTH
-                 WRITE(FINSTRING,'(A)') 'FINISH.' // TRIM(ADJUSTL(FTEMP))
+                 WRITE(FINSTRING,'(A)') 'finish.' // TRIM(ADJUSTL(FTEMP))
               ENDIF
 
            OPEN(UNIT=80,FILE=FINSTRING,STATUS='OLD',FORM='FORMATTED')
 
                   WRITE(6,*)'FINISH ', NRES_AMH_TEMP
-                  WRITE(6,201)(SEQ(J),J=1,NRES_AMH_TEMP)
-201               FORMAT (25(I2,1X))
+                  WRITE(6,201)(SEQ(j),j=1,NRES_AMH_TEMP)
+201               format (25(i2,1x))
             DO 500 I500=1,NRES_AMH_TEMP
                   READ(80,*)X,Y,Z
 
-76                FORMAT(3(G25.15))
+76                format(3(G25.15))
 C                  WRITE(6,76) X,Y,Z
                   FINCORD(I500,1,1,1)=X
                   FINCORD(I500,2,1,1)=Y
                   FINCORD(I500,3,1,1)=Z
 
                   READ(80,*)X,Y,Z
-C                  WRITE(6,76)X,Y,Z
+c                  WRITE(6,76)X,Y,Z
                   FINCORD(I500,1,1,2)=X
                   FINCORD(I500,2,1,2)=Y
                   FINCORD(I500,3,1,2)=Z
 
                   READ(80,*)X,Y,Z
-C                  WRITE(6,76)X,Y,Z
+c                  WRITE(6,76)X,Y,Z
                   FINCORD(I500,1,1,3)=X
                   FINCORD(I500,2,1,3)=Y
                   FINCORD(I500,3,1,3)=Z
@@ -386,32 +386,32 @@ C                  WRITE(6,76)X,Y,Z
       ELSE IF (CHRMMT) THEN
          NOPT=3*NATOMS
          IF (.NOT.INTMINT) THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' CHARMM ATOMS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' CHARMM atoms'
          ELSE
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> INTERNAL COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' CHARMM ATOMS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> internal coordinates will be optimised for ',NATOMS,' CHARMM atoms'
          ENDIF
          IF (TWOENDS.OR.CONNECTT.OR.NEBT.OR.NEWNEBT.OR.DRAGT.OR.GUESSPATHT
      $     .OR.MECCANOT.OR.MORPHT.OR.GREATCIRCLET.OR.GROWSTRINGT.OR.BHINTERPT.OR.BISECTT) THEN
-            IF (MACHINE) THEN
-                 OPEN(7,FILE=FINSTRING,ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='OLD',RECL=3*8*NATOMS)
-                 READ(7,REC=1) (FIN(J1),J1=1,3*NATOMS)
+            IF (MACHINE) then
+                 OPEN(7,FILE=FINSTRING,access='direct',form='unformatted',status='old',recl=3*8*Natoms)
+                 read(7,rec=1) (FIN(j1),j1=1,3*Natoms)
                  CLOSE(7)
-            ELSE
+            else
                  OPEN (UNIT=7,FILE=FINSTRING,STATUS='OLD')
                  READ (7,*)
                  DO J1=1,NATOMS
 !                   READ (7,*) IDUM1,IDUM2,CD1,CD2,FIN(3*(J1-1)+1),FIN(3*(J1-1)+2),FIN(3*(J1-1)+3),IDUM1,IDUM2
                     READ (7,*) IDUM1,IDUM2,CD1,CD2,FIN(3*(J1-1)+1),FIN(3*(J1-1)+2),FIN(3*(J1-1)+3)
                  ENDDO
-            ENDIF
+            endif
          ENDIF
       ELSE IF (UNRST) THEN
          NOPT=3*NATOMS
-C JMC NOW SET IN KEYWORDS.F         NINTS=2*NRES-5+2*NSIDE
+C jmc now set in keywords.f         NINTS=2*nres-5+2*nside
          IF (.NOT.INTMINT) THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' UNRES ATOMS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' UNRES atoms'
          ELSE
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NINTS,' INTERNAL COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' UNRES ATOMS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NINTS,' internal coordinates will be optimised for ',NATOMS,' UNRES atoms'
          ENDIF
          IF (TWOENDS.OR.CONNECTT.OR.NEBT.OR.NEWNEBT.OR.DRAGT.OR.GUESSPATHT
      $     .OR.MECCANOT.OR.MORPHT.OR.GREATCIRCLET.OR.GROWSTRINGT.OR.BHINTERPT.OR.BISECTT) THEN
@@ -422,24 +422,24 @@ C JMC NOW SET IN KEYWORDS.F         NINTS=2*NRES-5+2*NSIDE
             ENDDO
          ENDIF
       ELSE IF (CASTEP) THEN
-         WRITE(*,'(A,I4,A)') ' FETCHZ> CASTEP RUN FOR ',NATOMS,' ATOMS'
-         WRITE(*,'(A,A)') ' FETCHZ> CASTEP RUN COMMAND IS ',TRIM(ADJUSTL(CASTEPJOB))
-         FNAME=SYS(1:LSYS) // '.CELL'
-         IF (DEBUG) WRITE(*,'(A,A)') ' FETCHZ> READING CELL PARAMETERS FROM FILE ',FNAME
+         WRITE(*,'(A,I4,A)') ' fetchz> CASTEP run for ',NATOMS,' atoms'
+         WRITE(*,'(A,A)') ' fetchz> CASTEP run command is ',TRIM(ADJUSTL(CASTEPJOB))
+         FNAME=SYS(1:LSYS) // '.cell'
+         IF (DEBUG) WRITE(*,'(A,A)') ' fetchz> Reading cell parameters from file ',FNAME
          OPEN(UNIT=7,FILE=FNAME,STATUS='OLD')
-         READCELL: DO 
+         readcell: DO 
             READ(7,'(A19)') WW
             CALL UPPERCASE(WW)
             IF (WW(1:19).EQ.'%BLOCK LATTICE_CART') THEN
-               READ(7,*) WW ! THE LINE WITH THE UNITS ON IT
+               READ(7,*) WW ! the line with the units on it
                READ(7,*) AMAT(1,1), AMAT(2,1), AMAT(3,1)
                READ(7,*) AMAT(1,2), AMAT(2,2), AMAT(3,2)
                READ(7,*) AMAT(1,3), AMAT(2,3), AMAT(3,3)
-               IF (DEBUG) PRINT '(A)',' FETCHZ> CELL MATRIX:'
+               IF (DEBUG) PRINT '(A)',' fetchz> cell matrix:'
                IF (DEBUG) PRINT '(3F20.10)',((AMAT(J1,J2),J2=1,3),J1=1,3)
-               EXIT READCELL
+               EXIT readcell
             ENDIF
-         ENDDO READCELL
+         ENDDO readcell
          CLOSE(7)
 
          DETER=-AMAT(1,3)*AMAT(2,2)*AMAT(3,1)
@@ -458,14 +458,14 @@ C JMC NOW SET IN KEYWORDS.F         NINTS=2*NRES-5+2*NSIDE
          AINV(3,2)=( AMAT(1,2)*AMAT(3,1)-AMAT(1,1)*AMAT(3,2))/DETER
          AINV(3,3)=(-AMAT(1,2)*AMAT(2,1)+AMAT(1,1)*AMAT(2,2))/DETER
 
-            FNAME=SYS(1:LSYS) // '.CELL'
-            WRITE(*,'(A,A)') ' FETCHZ> READING COORDINATES FROM FILE ',FNAME
+            FNAME=SYS(1:LSYS) // '.cell'
+            WRITE(*,'(A,A)') ' fetchz> Reading coordinates from file ',FNAME
             OPEN(UNIT=7,FILE=FNAME,STATUS='OLD')
-            READX: DO 
+            readX: DO 
             READ(7,'(A20)') WW
             CALL UPPERCASE(WW)
             IF (WW(1:16).EQ.'%BLOCK POSITIONS') THEN
-               IF (WW(18:20).EQ.'ABS') THEN ! DONT NEED TO CONVERT FROM FRACTIONAL COORDINATES
+               IF (WW(18:20).EQ.'ABS') THEN ! dont need to convert from fractional coordinates
                   AMAT(1:3,1:3)=0.0D0; AINV(1:3,1:3)=0.0D0
                   AMAT(1,1)=1.0D0;AMAT(2,2)=1.0D0;AMAT(3,3)=1.0D0
                   AINV(1,1)=1.0D0;AINV(2,2)=1.0D0;AINV(3,3)=1.0D0
@@ -484,13 +484,13 @@ C                 PRINT *,ZSYM(J1)(1:2),Q(3*(J1-1)+1),Q(3*(J1-1)+2),Q(3*(J1-1)+3
 !                 IATNUM(J1)=1
 !                 ZSYM(J1)='H'
                ENDDO
-               EXIT READX
+               EXIT readX
             ENDIF
-         ENDDO READX
+         ENDDO readX
          CLOSE(7)
 
          NOPT=3*NATOMS
-C        WRITE(*,'(A)') 'THE ABSOLUTE COORDINATES FROM FETCHZ'
+C        WRITE(*,'(A)') 'The absolute coordinates from fetchz'
 C        WRITE(*,'(6F15.5)') (Q(J1),J1=1,NOPT)
 
          IF (TWOENDS.OR.CONNECTT.OR.NEBT.OR.NEWNEBT.OR.DRAGT.OR.GUESSPATHT
@@ -500,29 +500,29 @@ C        WRITE(*,'(6F15.5)') (Q(J1),J1=1,NOPT)
                READ(7,*) FIN(3*(J1-1)+1),FIN(3*(J1-1)+2),FIN(3*(J1-1)+3)
             ENDDO
             CLOSE(7)
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> COORDINATES OF SECOND POINT READ FROM FILE FINISH'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> Coordinates of second point read from file finish'
          ENDIF
-C        PRINT*,' FETCHZ> COORDINATES:'
+C        PRINT*,' fetchz> coordinates:'
 C        WRITE(*,'(3F20.10)') (Q(J1),J1=1,3*NATOMS)
 
       ELSE IF (ONETEP) THEN
-         WRITE(*,'(A,I4,A)') ' FETCHZ> ONETEP RUN FOR ',NATOMS,' ATOMS'
-         FNAME=SYS(1:LSYS) // '.DAT'
-         IF (DEBUG) WRITE(*,'(A,A)') ' FETCHZ> READING CELL PARAMETERS FROM FILE ',FNAME
+         WRITE(*,'(A,I4,A)') ' fetchz> ONETEP run for ',NATOMS,' atoms'
+         FNAME=SYS(1:LSYS) // '.dat'
+         IF (DEBUG) WRITE(*,'(A,A)') ' fetchz> Reading cell parameters from file ',FNAME
          OPEN(UNIT=7,FILE=FNAME,STATUS='OLD')
-         READCELL2: DO 
+         readcell2: DO 
             READ(7,'(A19)') WW
             CALL UPPERCASE(WW)
             IF (WW(1:19).EQ.'%BLOCK LATTICE_CART') THEN
-C              READ(7,*) WW ! THE LINE WITH THE UNITS ON IT ! EVERYTHING MUST BE IN A.U.! THIS LINE MUST NOT BE PRESENT!
+C              READ(7,*) WW ! the line with the units on it ! everything must be in a.u.! This line must not be present!
                READ(7,*) AMAT(1,1), AMAT(1,2), AMAT(1,3)
                READ(7,*) AMAT(2,1), AMAT(2,2), AMAT(2,3)
                READ(7,*) AMAT(3,1), AMAT(3,2), AMAT(3,3)
-               IF (DEBUG) PRINT '(A)',' FETCHZ> CELL MATRIX:'
+               IF (DEBUG) PRINT '(A)',' fetchz> cell matrix:'
                IF (DEBUG) PRINT '(3F20.10)',((AMAT(J1,J2),J2=1,3),J1=1,3)
-               EXIT READCELL2
+               EXIT readcell2
             ENDIF
-         ENDDO READCELL2
+         ENDDO readcell2
          CLOSE(7)
 
          DETER=-AMAT(1,3)*AMAT(2,2)*AMAT(3,1)
@@ -541,14 +541,14 @@ C              READ(7,*) WW ! THE LINE WITH THE UNITS ON IT ! EVERYTHING MUST BE
          AINV(3,2)=( AMAT(1,2)*AMAT(3,1)-AMAT(1,1)*AMAT(3,2))/DETER
          AINV(3,3)=(-AMAT(1,2)*AMAT(2,1)+AMAT(1,1)*AMAT(2,2))/DETER
 
-         FNAME=SYS(1:LSYS) // '.DAT'
-         WRITE(*,'(A,A)') ' FETCHZ> READING COORDINATES FROM FILE ',FNAME
+         FNAME=SYS(1:LSYS) // '.dat'
+         WRITE(*,'(A,A)') ' fetchz> Reading coordinates from file ',FNAME
          OPEN(UNIT=7,FILE=FNAME,STATUS='OLD')
-         READX2: DO 
+         readX2: DO 
             READ(7,'(A20)') WW
             CALL UPPERCASE(WW)
             IF (WW(1:16).EQ.'%BLOCK POSITIONS') THEN
-               IF (WW(18:20).EQ.'ABS') THEN ! DONT NEED TO CONVERT FROM FRACTIONAL COORDINATES
+               IF (WW(18:20).EQ.'ABS') THEN ! dont need to convert from fractional coordinates
                   AMAT(1:3,1:3)=0.0D0; AINV(1:3,1:3)=0.0D0
                   AMAT(1,1)=1.0D0;AMAT(2,2)=1.0D0;AMAT(3,3)=1.0D0
                   AINV(1,1)=1.0D0;AINV(2,2)=1.0D0;AINV(3,3)=1.0D0
@@ -567,13 +567,13 @@ C                 PRINT *,WW(1:2),Q(3*(J1-1)+1),Q(3*(J1-1)+2),Q(3*(J1-1)+3)
 !                 IATNUM(J1)=6
 !                 ZSYM(J1)='C'
                ENDDO
-               EXIT READX2
+               EXIT readX2
             ENDIF
-         ENDDO READX2
+         ENDDO readX2
          CLOSE(7)
 
          NOPT=3*NATOMS
-C        WRITE(*,'(A)') 'THE ABSOLUTE COORDINATES FROM FETCHZ'
+C        WRITE(*,'(A)') 'The absolute coordinates from fetchz'
 C        WRITE(*,'(6F15.5)') (Q(J1),J1=1,NOPT)
 
          IF (TWOENDS.OR.CONNECTT.OR.NEBT.OR.NEWNEBT.OR.DRAGT.OR.GUESSPATHT
@@ -583,13 +583,13 @@ C        WRITE(*,'(6F15.5)') (Q(J1),J1=1,NOPT)
                READ(7,*) FIN(3*(J1-1)+1),FIN(3*(J1-1)+2),FIN(3*(J1-1)+3)
             ENDDO
             CLOSE(7)
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> COORDINATES OF SECOND POINT READ FROM FILE FINISH'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> Coordinates of second point read from file finish'
          ENDIF
-C        PRINT*,' FETCHZ> COORDINATES:'
+C        PRINT*,' fetchz> coordinates:'
 C        WRITE(*,'(3F20.10)') (Q(J1),J1=1,3*NATOMS)
 
-C     READING THE CELL PARAMETERS AND THE ATOMIC COORDINATES FROM THE CP2K INPUT FILE 
-C     ($FNAME.INP). FOR SIMPLICITY WE ASUME THAT THE CELL-VECTORS ARE ALWAYS GIVEN IN THE FORMAT
+C     Reading the cell parameters and the atomic coordinates from the CP2K input file 
+C     ($FNAME.inp). For simplicity we asume that the cell-vectors are always given in the format
 C
 C     &CELL
 C     A AMAT(1,1), AMAT(1,2), AMAT(1,3) 
@@ -598,29 +598,29 @@ C     C AMAT(3,1), AMAT(3,2), AMAT(3,3)
 C     PERIODIC NONE/X/Y/Z/XY/XZ/YX/XYZ 
 C     &END CELL
 C   
-C     THE PERIODIC KEYWORD IS NOT NECESSARY BUT IF IT IS PRESENT IT SHOULD ALWAYS FOLLOW THE CELL PARAMETER SETTINGS
-C     IF NOT PRESENT FULL PERIODICITY NAMELY PERIODIC XYZ IS ASSUMED.
-C     NOTICE THAT CP2K LISTS THE THREE LATTICE VECTORS AS ROWS WHILE OPTIM WANTS THEM AS COLUMS. 
-C     FOR THE READING OF THE ATOMIC COORDINATES WE ASUME THE FOLLOWING FORMAT
+C     The PERIODIC keyword is not necessary but if it is present it should always follow the cell parameter settings
+C     If not present full periodicity namely PERIODIC XYZ is assumed.
+C     Notice that cp2k lists the three lattice vectors as rows while OPTIM wants them as colums. 
+C     For the reading of the atomic coordinates we asume the following format
 C
 C     &COORD
 C     SCALED .TRUE. OR .FALSE.
-C     ATOMICSYMBOL1 X1 Y1 Z1 
-C     ATOMICSYMBOL2 X2 Y2 Z2 
+C     AtomicSymbol1 X1 Y1 Z1 
+C     AtomicSymbol2 X2 Y2 Z2 
 C     ......................
-C     ATOMICSYMBOLN XN YN ZN 
+C     AtomicSymboln Xn Yn Zn 
 C     &END COORD
 C
-C     NOTICE THAT THE UNIT FOR THE CELL DIMENSIONS AS WELL AS FOR THE ATOMIC COORDINATES IS ANGSTROM 
+C     Notice that the unit for the cell dimensions as well as for the atomic coordinates is Angstrom 
 C     ------------------
 
       ELSE IF (CP2K) THEN
-         WRITE(*,'(A,I4,A)') ' FETCHZ> CP2K RUN FOR ',NATOMS,' ATOMS'
-         WRITE(*,'(A,A)') ' FETCHZ> CP2K RUN COMMAND IS ',TRIM(ADJUSTL(CP2KJOB))
-         FNAME=SYS(1:LSYS) // '.INP'
-         IF (DEBUG) WRITE(*,'(A,A)') ' FETCHZ> READING CELL PARAMETERS FROM FILE ',FNAME
+         WRITE(*,'(A,I4,A)') ' fetchz> CP2K run for ',NATOMS,' atoms'
+         WRITE(*,'(A,A)') ' fetchz> CP2K run command is ',TRIM(ADJUSTL(CP2KJOB))
+         FNAME=SYS(1:LSYS) // '.inp'
+         IF (DEBUG) WRITE(*,'(A,A)') ' fetchz> Reading cell parameters from file ',FNAME
          OPEN(UNIT=7,FILE=FNAME,STATUS='OLD')
-         READCELL3: DO
+         readcell3: DO
             READ(7,'(A21)') WW
             WW=ADJUSTL(WW)
             CALL UPPERCASE(WW)
@@ -628,11 +628,11 @@ C     ------------------
                READ(7,*) WW, AMAT(1,1), AMAT(2,1), AMAT(3,1)
                READ(7,*) WW, AMAT(1,2), AMAT(2,2), AMAT(3,2)
                READ(7,*) WW, AMAT(1,3), AMAT(2,3), AMAT(3,3)
-               IF (DEBUG) PRINT '(A)',' FETCHZ> CELL MATRIX:'
+               IF (DEBUG) PRINT '(A)',' fetchz> cell matrix:'
                IF (DEBUG) PRINT '(3F20.10)',((AMAT(J1,J2),J2=1,3),J1=1,3)
-               EXIT READCELL3
+               EXIT readcell3
             ENDIF
-         ENDDO READCELL3
+         ENDDO readcell3
          CLOSE(7)
 
          DETER=-AMAT(1,3)*AMAT(2,2)*AMAT(3,1)
@@ -651,10 +651,10 @@ C     ------------------
          AINV(3,2)=( AMAT(1,2)*AMAT(3,1)-AMAT(1,1)*AMAT(3,2))/DETER
          AINV(3,3)=(-AMAT(1,2)*AMAT(2,1)+AMAT(1,1)*AMAT(2,2))/DETER
 
-         FNAME=SYS(1:LSYS) // '.INP'
-         WRITE(*,'(A,A)') ' FETCHZ> READING COORDINATES FROM FILE ',FNAME
+         FNAME=SYS(1:LSYS) // '.inp'
+         WRITE(*,'(A,A)') ' fetchz> Reading coordinates from file ',FNAME
          OPEN(UNIT=7,FILE=FNAME,STATUS='OLD')
-         READX3: DO
+         readX3: DO
             READ(7,'(A21)') WW
             WW=ADJUSTL(WW)
             CALL UPPERCASE(WW)
@@ -663,7 +663,7 @@ C     ------------------
                WW=ADJUSTL(WW)
                CALL UPPERCASE(WW)
                IF (WW(1:6).EQ.'SCALED') THEN 
-                  IF (WW(1:14).EQ.'SCALED .FALSE.') THEN ! NO CONVERSION NEEDED
+                  IF (WW(1:14).EQ.'SCALED .FALSE.') THEN ! No conversion needed
                      AMAT(1:3,1:3)=0.0D0; AINV(1:3,1:3)=0.0D0
                      AMAT(1,1)=1.0D0;AMAT(2,2)=1.0D0;AMAT(3,3)=1.0D0
                      AINV(1,1)=1.0D0;AINV(2,2)=1.0D0;AINV(3,3)=1.0D0
@@ -679,13 +679,13 @@ C                 PRINT *,ZSYM(J1),Q(3*(J1-1)+1),Q(3*(J1-1)+2),Q(3*(J1-1)+3)
                   Q(3*(J1-1)+2)=TEMPY
                   Q(3*(J1-1)+3)=TEMPZ
                ENDDO
-               EXIT READX3
+               EXIT readX3
             ENDIF
-         ENDDO READX3
+         ENDDO readX3
          CLOSE(7)
 
          NOPT=3*NATOMS
-C        WRITE(*,'(A)') 'THE ABSOLUTE COORDINATES FROM FETCHZ'
+C        WRITE(*,'(A)') 'The absolute coordinates from fetchz'
 C        WRITE(*,'(6F15.5)') (Q(J1),J1=1,NOPT)
 
          IF (TWOENDS.OR.CONNECTT.OR.NEBT.OR.NEWNEBT.OR.DRAGT.OR.GUESSPATHT
@@ -695,14 +695,14 @@ C        WRITE(*,'(6F15.5)') (Q(J1),J1=1,NOPT)
                READ(7,*) FIN(3*(J1-1)+1),FIN(3*(J1-1)+2),FIN(3*(J1-1)+3)
             ENDDO
             CLOSE(7)
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> COORDINATES OF SECOND POINT READ FROM FILE FINISH'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> Coordinates of second point read from file finish'
          ENDIF
-C        PRINT*,' FETCHZ> COORDINATES:'
+C        PRINT*,' fetchz> coordinates:'
 C        WRITE(*,'(3F20.10)') (Q(J1),J1=1,3*NATOMS)
 
       ELSE IF (CPMD) THEN
          FNAME=SYS(1:LSYS)
-         WRITE(*,'(A,A)') ' FETCHZ> READING COORDINATES FROM FILE ',FNAME
+         WRITE(*,'(A,A)') ' fetchz> Reading coordinates from file ',FNAME
          OPEN(UNIT=7,FILE=FNAME,STATUS='OLD')
          LNATOMS=0
 11       READ(7,'(A)') FNAME
@@ -729,18 +729,18 @@ C                 ZSYM(LNATOMS+J2)=TSTRING(2:3)
          ELSE
             GOTO 11
          ENDIF
-         IF (PARALLEL) WRITE(*,'(3A)') ' FETCHZ> AUXILLIARY PROGRAM WILL BE RUN ON ' // NPROC // ' PROCESSORS'
+         IF (PARALLEL) WRITE(*,'(3A)') ' fetchz> Auxilliary program will be run on ' // NPROC // ' processors'
 
 13       CONTINUE
          CLOSE(7)
 
          NOPT=3*NATOMS
-         CALL SYSTEM(' GREP -C ANGSTROM ' // SYS(1:LSYS) // ' > TEMP')
-         OPEN(UNIT=7,FILE='TEMP',STATUS='OLD')
+         CALL SYSTEM(' grep -c ANGSTROM ' // SYS(1:LSYS) // ' > temp')
+         OPEN(UNIT=7,FILE='temp',STATUS='OLD')
          READ(7,*) J1
          CLOSE(7)
          IF (J1.EQ.1) THEN
-            WRITE(*,'(A)') ' FETCHZ> CONVERTING INITIAL COORDINATES FROM ANGSTROM TO BOHR'
+            WRITE(*,'(A)') ' fetchz> Converting initial coordinates from Angstrom to Bohr'
             DO J1=1,NOPT
                Q(J1)=Q(J1)*1.889726164D0
             ENDDO
@@ -752,9 +752,9 @@ C                 ZSYM(LNATOMS+J2)=TSTRING(2:3)
                READ(7,*) FIN(3*(J1-1)+1),FIN(3*(J1-1)+2),FIN(3*(J1-1)+3)
             ENDDO
             CLOSE(7)
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> COORDINATES OF SECOND POINT READ FROM FILE FINISH'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> Coordinates of second point read from file finish'
          ENDIF
-C        PRINT*,'COORDINATES:'
+C        PRINT*,'coordinates:'
 C        WRITE(*,'(3F20.10)') (Q(J1),J1=1,3*NATOMS)
       ELSE IF (VARIABLES) THEN
          NATOMS=0
@@ -765,14 +765,14 @@ C        WRITE(*,'(3F20.10)') (Q(J1),J1=1,3*NATOMS)
             GOTO 100
          ENDIF
          NOPT=NATOMS
-         WRITE(*,'(A,I4,A,I4)') ' FETCHZ> ',NOPT,' VARIABLES WILL BE OPTIMISED, NUMBER OF ZERO EIGENVALUES=',NZERO
-         WRITE(*,'(A,G20.10)') ' FETCHZ> COUPLING PARAMETER=',PARAM1 ! DJW FOR MICHAEL KASTNER POTENTIAL
+         WRITE(*,'(A,I4,A,I4)') ' fetchz> ',NOPT,' variables will be optimised, number of zero eigenvalues=',NZERO
+         WRITE(*,'(A,G20.10)') ' fetchz> coupling parameter=',PARAM1 ! DJW for Michael Kastner potential
          IF (TWOENDS.OR.CONNECTT.OR.NEBT.OR.NEWNEBT.OR.DRAGT.OR.GUESSPATHT
      $     .OR.MECCANOT.OR.MORPHT.OR.GREATCIRCLET.OR.GROWSTRINGT.OR.BHINTERPT.OR.BISECTT) THEN
             OPEN (UNIT=7,FILE=FINSTRING,STATUS='OLD') 
             IF (VARIABLES) THEN
                READ(7,*) (FIN(J1),J1=1,NOPT)
-               PRINT'(A)',' FETCHZ> FINISH VARIABLES:'
+               PRINT'(A)',' fetchz> finish variables:'
                WRITE(*,'(6G20.10)') (FIN(J1),J1=1,NOPT)
             ELSE
                DO J1=1,NATOMS
@@ -780,17 +780,17 @@ C        WRITE(*,'(3F20.10)') (Q(J1),J1=1,3*NATOMS)
                ENDDO
             ENDIF
             CLOSE(7)
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> COORDINATES OF SECOND POINT READ FROM FILE FINISH'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> Coordinates of second point read from file finish'
          ENDIF
       ELSE 
 C
-C  CONTINUE READING COORDINATES FROM ODATA FILE. THIS IS THE DEFAULT.
+C  Continue reading coordinates from odata file. This is the default.
 C
          LNATOMS=0
 300      CALL INPUT(END)
          IF (.NOT.END) THEN
             IF (LNATOMS+1.GT.NATOMS) THEN
-               PRINT*,'ERROR CHECK FOR BLANK LINE IN ODATA: LNATOMS,NATOMS=',LNATOMS,NATOMS
+               PRINT*,'ERROR check for blank line in odata: LNATOMS,NATOMS=',LNATOMS,NATOMS
                CALL FLUSH(6,ISTAT)
                STOP
             ENDIF
@@ -804,7 +804,7 @@ C
             CALL READF(Q(J+3))
             LNATOMS=LNATOMS+1
             IF (ZSYM(1).EQ.'CK') THEN
-               CHARGE(LNATOMS)=Q(J+3)  ! SAVE CHARGE FOR CK IONS
+               CHARGE(LNATOMS)=Q(J+3)  ! save charge for CK ions
                Q(J+3)=0.0D0
 C              PRINT*,'LNATOMS,CHARGE,Q=',LNATOMS,CHARGE(LNATOMS),Q(J+3)
             ENDIF
@@ -813,26 +813,26 @@ C              PRINT*,'LNATOMS,CHARGE,Q=',LNATOMS,CHARGE(LNATOMS),Q(J+3)
          CLOSE(5)
 
 !        IF (DEBUG) THEN
-!           PRINT '(A)',' FETCHZ> COORDINATES:'
+!           PRINT '(A)',' fetchz> coordinates:'
 !           PRINT '(3F20.10)',Q(1:3*NATOMS)
 !        ENDIF
          IF (QSPCFWT) THEN
-            WRITE(*,'(3(A,I6))') ' SYSTEM ',NATOMS/3,' QSPCFW FLEXIBLE WATER MOLECULES'
+            WRITE(*,'(3(A,I6))') ' SYSTEM ',NATOMS/3,' QSPCFW flexible water molecules'
          ENDIF
          IF (QTIP4PFT) THEN
-            WRITE(*,'(3(A,I6))') ' SYSTEM ',NATOMS/3,' QTIP4PF FLEXIBLE WATER MOLECULES'
+            WRITE(*,'(3(A,I6))') ' SYSTEM ',NATOMS/3,' QTIP4PF flexible water molecules'
          ENDIF
          IF (SDT) THEN
-            WRITE(*,'(3(A,I6))') ' SYSTEM STILLINGER-DAVID POTENTIAL FOR ',
-     &         SDOXYGEN,' OXYGEN AND ',SDHYDROGEN,' HYDROGEN ATOMS; CHARGE=',SDCHARGE
+            WRITE(*,'(3(A,I6))') ' SYSTEM Stillinger-David potential for ',
+     &         SDOXYGEN,' Oxygen and ',SDHYDROGEN,' Hydrogen atoms; charge=',SDCHARGE
             IF (SDHYDROGEN-2*SDOXYGEN.NE.SDCHARGE) THEN
-               PRINT '(A)',' FETCHZ> ERROR IN STILLINGER-DAVID INITIALIZATION'
+               PRINT '(A)',' fetchz> ERROR in Stillinger-David initialization'
                STOP
             END IF
             CALL SDINIT(SDOXYGEN,SDCHARGE)
 C
-C  PATHSAMPLE WILL SET THE ATOM TYPE TO SD. TO GET THE RIGHT MASSES
-C  CHANGE TO O AND H NOW.
+C  Pathsample will set the atom type to SD. To get the right masses
+C  change to O and H now.
 C
             DO J1=1,SDOXYGEN
                ZSYM(J1)='O '
@@ -842,8 +842,8 @@ C
             ENDDO
          ENDIF
        !  IF (BOWMANT) THEN
-            !WRITE(*,'(A,I1,A,I0,A)') ' SYSTEM BOWMAN''S PES#',BOWMANPES,' FOR A CLUSTER OF ',NATOMS/3,' WATER MOLECULES'
-            !CALL BOWMANINIT(NATOMS/3, BOWMANPES, TRIM(BOWMANDIR))
+            !WRITE(*,'(A,I1,A,I0,A)') ' SYSTEM Bowman''s PES#',BOWMANPES,' for a cluster of ',NATOMS/3,' water molecules'
+            !CALL BOWMANINIT(NATOMS/3, BOWMANPES, trim(BOWMANDIR))
             !DO J1=1,2*NATOMS/3
                !ZSYM(J1)='H '
             !ENDDO
@@ -852,12 +852,12 @@ C
             !ENDDO
          !ENDIF
 C 
-C  DIRTY TRICK TO TRY AND RUN THOMSON PROBLEM AS NATOMS/3 *2 EFFECTIVE ATOMS
-C  USING ANGULAR COORDINATES INSTEAD OF XYZ.
+C  Dirty trick to try and run Thomson problem as NATOMS/3 *2 effective atoms
+C  using angular coordinates instead of xyz.
 C
          IF (ZSYM(NATOMS).EQ.'TH') THEN
             IF ((NATOMS/3)*1.0D0.NE.(NATOMS*1.0D0/3)) THEN
-               PRINT '(A)',' FETCHZ> ERROR, THE NUMBER OF ATOMS NEEDS TO BE DIVISIBLE BY 3 FOR THOMSON FUDGE'
+               PRINT '(A)',' fetchz> ERROR, the number of atoms needs to be divisible by 3 for Thomson fudge'
                CALL FLUSH(6,ISTAT)
                STOP
             ENDIF
@@ -868,7 +868,7 @@ C
                Q(3*(J1-1)+3)=Q(3*(J1-1)+3)/DIST
                THTEMP(2*(J1-1)+1)=ACOS(Q(3*(J1-1)+3))
                IF (ABS(Q(3*(J1-1)+3)-COS(THTEMP(2*(J1-1)+1))).GT.1.0D-10) THEN
-                  PRINT '(A)','INCONSISTENT CONVERSION FOR Z'
+                  PRINT '(A)','inconsistent conversion for z'
                   CALL FLUSH(6,ISTAT)
                   STOP
                ENDIF
@@ -890,7 +890,7 @@ C
                IF (ABS(Q(3*(J1-1)+1)-SIN(THTEMP(2*(J1-1)+1))*COS(THTEMP(2*(J1-1)+2))).GT.1.0D-5) THEN
                   THTEMP(2*(J1-1)+2)=THTEMP(2*(J1-1)+2)+2*HALFPI
                   IF (ABS(Q(3*(J1-1)+1)-SIN(THTEMP(2*(J1-1)+1))*COS(THTEMP(2*(J1-1)+2))).GT.1.0D-5) THEN
-                     PRINT '(A)','INCONSISTENT CONVERSION FOR X'
+                     PRINT '(A)','inconsistent conversion for x'
                      CALL FLUSH(6,ISTAT)
                      STOP
                   ENDIF
@@ -898,10 +898,10 @@ C
                IF (ABS(Q(3*(J1-1)+2)-SIN(THTEMP(2*(J1-1)+1))*SIN(THTEMP(2*(J1-1)+2))).GT.1.0D-5) THEN
                   THTEMP(2*(J1-1)+2)=-THTEMP(2*(J1-1)+2)
                   IF (ABS(Q(3*(J1-1)+2)-SIN(THTEMP(2*(J1-1)+1))*SIN(THTEMP(2*(J1-1)+2))).GT.1.0D-5) THEN
-                     PRINT '(A)','INCONSISTENT CONVERSION FOR Y'
-                     PRINT '(A,3G20.10)','X,Y,Z:      ',Q(3*(J1-1)+1),Q(3*(J1-1)+2),Q(3*(J1-1)+3)
-                     PRINT '(A,3G20.10)','THETA,PHI: ',THTEMP(2*(J1-1)+1),THTEMP(2*(J1-1)+2)
-                     PRINT '(A,3G20.10)','X,Y,Z CALC: ',SIN(THTEMP(2*(J1-1)+1))*COS(THTEMP(2*(J1-1)+2)),
+                     PRINT '(A)','inconsistent conversion for y'
+                     PRINT '(A,3G20.10)','x,y,z:      ',Q(3*(J1-1)+1),Q(3*(J1-1)+2),Q(3*(J1-1)+3)
+                     PRINT '(A,3G20.10)','theta,phi: ',THTEMP(2*(J1-1)+1),THTEMP(2*(J1-1)+2)
+                     PRINT '(A,3G20.10)','x,y,z calc: ',SIN(THTEMP(2*(J1-1)+1))*COS(THTEMP(2*(J1-1)+2)),
      &                                                  SIN(THTEMP(2*(J1-1)+1))*SIN(THTEMP(2*(J1-1)+2)),
      &                                                  COS(THTEMP(2*(J1-1)+1))
                      CALL FLUSH(6,ISTAT)
@@ -909,10 +909,10 @@ C
                   ENDIF
                ENDIF
             ENDDO
-            NATOMS=(NATOMS/3)*2 ! THE GREAT BIG FUDGE
+            NATOMS=(NATOMS/3)*2 ! The great big fudge
             LNATOMS=NATOMS
-            Q(1:3*NATOMS)=THTEMP(1:3*NATOMS) ! COORDINATES SAVED AS THETA, PHI
-            PRINT '(A,I6)',' FETCHZ> NUMBER OF ATOMS CHANGED FOR THE THOMSON PROBLEM TO ',NATOMS
+            Q(1:3*NATOMS)=THTEMP(1:3*NATOMS) ! coordinates saved as theta, phi
+            PRINT '(A,I6)',' fetchz> Number of atoms changed for the Thomson problem to ',NATOMS
          ENDIF
 
          IF (MACHINE) THEN
@@ -921,7 +921,7 @@ C
 
          IF (ZSYM(NATOMS)(1:1).EQ.'W') THEN
             RIGIDBODY=.TRUE.
-C            OPEN(UNIT=18,FILE='EULER',STATUS='OLD')   !   WCOMMENT
+C            OPEN(UNIT=18,FILE='Euler',STATUS='OLD')   !   WCOMMENT
 C            READ(18,*) (Q(3*LNATOMS+J1),J1=1,3*LNATOMS)
 C            CLOSE(18)
          ENDIF
@@ -933,199 +933,199 @@ C            CLOSE(18)
                READ(7,*) FIN(3*(J1-1)+1),FIN(3*(J1-1)+2),FIN(3*(J1-1)+3)
             ENDDO
             CLOSE(7)
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> COORDINATES OF SECOND POINT READ FROM FILE FINISH'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> Coordinates of second point read from file finish'
 C           IF (ZSYM(1)(1:1).EQ.'W') THEN   !  WCOMMENT
-C              OPEN (UNIT=7,FILE='EULER.FINISH',STATUS='OLD')
+C              OPEN (UNIT=7,FILE='Euler.finish',STATUS='OLD')
 C              DO J1=1,LNATOMS
 C                 READ(7,*) FIN(3*LNATOMS+3*(J1-1)+1),FIN(3*LNATOMS+3*(J1-1)+2),FIN(3*LNATOMS+3*(J1-1)+3)
 C              ENDDO
 C              CLOSE(7)
-C              WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> EULER ANGLES OF SECOND POINT READ FROM FILE FINISH'
+C              WRITE(*,'(A,I4,A,I4,A)') ' fetchz> Euler angles of second point read from file finish'
 C           ENDIF
          ENDIF
 
          IF (LNATOMS.NE.NATOMS) THEN
-            PRINT*,'ERROR CHECK FOR BLANK LINE IN ODATA: LNATOMS,NATOMS=',LNATOMS,NATOMS
+            PRINT*,'ERROR check for blank line in odata: LNATOMS,NATOMS=',LNATOMS,NATOMS
          ENDIF
          NOPT=3*NATOMS
          IF (NTAG.GT.0) THEN
-            PRINT '(A,I6,A)',' FETCHZ> ',NTAG,' TAGGED ATOMS AND MASS FACTORS:'
+            PRINT '(A,I6,A)',' fetchz> ',NTAG,' tagged atoms and mass factors:'
             PRINT '(I6,F12.2)',(TAGNUM(J1),TAGFAC(TAGNUM(J1)),J1=1,NTAG)
          ENDIF
          IF (ZSYM(NATOMS).EQ.'IN') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' SHIELDED BORN-MEYER IONS'
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' shielded Born-Meyer ions'
             WRITE(*,'(A,F12.8,A,I2,A,F12.8,A,F12.8,A,F12.8,A,F12.8)') 
-     1         ' FETCHZ> GAMMA=',PARAM1,' CHARGE=',INT(PARAM2),' RHO=',PARAM3,' A++=',PARAM4,' A--=',PARAM5,' A+-=',PARAM6
+     1         ' fetchz> gamma=',PARAM1,' charge=',INT(PARAM2),' rho=',PARAM3,' A++=',PARAM4,' A--=',PARAM5,' A+-=',PARAM6
          ELSE IF (ZSYM(1).EQ.'CA') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' CA+AR ATOMS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Ca+Ar atoms'
          ELSE IF (ZSYM(1).EQ.'LM') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,
-     1              ' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ONE ION + ',NATOMS,' INERT GAS ATOMS'
-            WRITE(*,'(A,3G12.4)') ' FETCHZ> MASON-SCHAMP POTENTIAL WITH EPSILON, RM, GAMMA=',PARAM1,PARAM2,PARAM3
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,
+     1              ' Cartesian coordinates will be optimised for one ion + ',NATOMS,' inert gas atoms'
+            WRITE(*,'(A,3G12.4)') ' fetchz> Mason-Schamp potential with epsilon, rm, gamma=',PARAM1,PARAM2,PARAM3
          ELSE IF (ZSYM(NATOMS).EQ.'AR') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' LENNARD-JONES ATOMS'
-            WRITE(*,'(A)') ' FETCHZ> COORDINATES WILL BE SCALED (DIVIDED) BY 3.4 BEFORE AFTER INPUT'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Lennard-Jones atoms'
+            WRITE(*,'(A)') ' fetchz> Coordinates will be scaled (divided) by 3.4 before after input'
          ELSE IF (WELCH) THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' WELCH IONS'
-            WRITE(*,'(A,F12.8,A,F12.8,A,F12.8,A,F12.8)') ' FETCHZ> A++=',APP,' A--=',AMM,' A+-=',APM,' RHO=',RHO
-            WRITE(*,'(A,F12.8,A,F12.8,A,F12.8,A,F12.8)') ' FETCHZ> Q+=',XQP,' Q-=',XQM,' ALPHA+=',ALPHAP,' ALPHA-=',ALPHAM
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Welch ions'
+            WRITE(*,'(A,F12.8,A,F12.8,A,F12.8,A,F12.8)') ' fetchz> A++=',APP,' A--=',AMM,' A+-=',APM,' rho=',RHO
+            WRITE(*,'(A,F12.8,A,F12.8,A,F12.8,A,F12.8)') ' fetchz> Q+=',XQP,' Q-=',XQM,' alpha+=',ALPHAP,' alpha-=',ALPHAM
          ELSE IF (ZSYM(NATOMS).EQ.'SY') THEN
-            WRITE(*,'(A,I4,A,F15.5,A,F15.5)') ' FETCHZ> ',(NATOMS/2),' STOCKMAYER ATOMS WITH MU=',
-     &                                            STOCKMU,' AND LAMBDA=',STOCKLAMBDA
+            WRITE(*,'(A,I4,A,F15.5,A,F15.5)') ' fetchz> ',(NATOMS/2),' Stockmayer atoms with mu=',
+     &                                            STOCKMU,' and lambda=',STOCKLAMBDA
          ELSE IF (ZSYM(NATOMS).EQ.'CD') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' RIGID BODY COORDINATES WILL BE OPTIMISED FOR ',NATOMS/2,' CAPSID PENTAMERS'
-            WRITE(*,'(4(A,F12.8))') ' FETCHZ> MORSE RHO=',CAPSRHO,' REPULSIVE SITE EPSILON=',
-     1                                     EPS2,' PENTAMER RADIUS=',RAD,' HEIGHT=',HEIGHT
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' rigid body coordinates will be optimised for ',NATOMS/2,' capsid pentamers'
+            WRITE(*,'(4(A,F12.8))') ' fetchz> Morse rho=',CAPSRHO,' repulsive site epsilon=',
+     1                                     EPS2,' pentamer radius=',RAD,' height=',HEIGHT
          ELSE IF (TOSI) THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' TOSI-FUMI IONS'
-            WRITE(*,'(4(A,F12.8))') ' FETCHZ> A++=',PARAM1,' A--=',PARAM2,' A+-=',PARAM3,' RHO=',PARAM4
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Tosi-Fumi ions'
+            WRITE(*,'(4(A,F12.8))') ' fetchz> A++=',PARAM1,' A--=',PARAM2,' A+-=',PARAM3,' rho=',PARAM4
             IF (TOSIC6) THEN
-               WRITE(*,'(A)') ' FETCHZ> C6 COEFFICIENTS: '
-               WRITE(*,'(A,F12.8,A,F12.8,A,F12.8)') ' FETCHZ> C6++=',C6PP,' C6--=',C6MM,' C6+-=',C6PM
+               WRITE(*,'(A)') ' fetchz> C6 coefficients: '
+               WRITE(*,'(A,F12.8,A,F12.8,A,F12.8)') ' fetchz> C6++=',C6PP,' C6--=',C6MM,' C6+-=',C6PM
             ENDIF
             IF (TOSIPOL) THEN
-               WRITE(*,'(A)') ' FETCHZ> POLARIZABILITIES:'
-               WRITE(*,'(A,F12.8,A,F12.8)') ' FETCHZ> ALPHA+=',ALPHAP,' ALPHA-=',ALPHAM
-               WRITE(*,'(A,F12.8,A)') ' FETCHZ> DAMPING COEFFICENT=',DAMP,' PER BOHR'
+               WRITE(*,'(A)') ' fetchz> Polarizabilities:'
+               WRITE(*,'(A,F12.8,A,F12.8)') ' fetchz> alpha+=',ALPHAP,' alpha-=',ALPHAM
+               WRITE(*,'(A,F12.8,A)') ' fetchz> damping coefficent=',DAMP,' per bohr'
             ENDIF
          ELSE IF (ZSYM(NATOMS).EQ.'AZ') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' AZIZ AR ATOMS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Aziz Ar atoms'
             IF (PARAM1.NE.0.0D0) THEN
-               WRITE(*,'(A,F12.8)') ' FETCHZ> AXILROD-TELLER POTENTIAL WILL BE ADDED WITH Z*=',PARAM1
+               WRITE(*,'(A,F12.8)') ' fetchz> Axilrod-Teller potential will be added with Z*=',PARAM1
             ENDIF
          ELSE IF (ZSYM(NATOMS).EQ.'DZ') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' DZUGUTOV ATOMS'
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Dzugutov atoms'
             WRITE(*,'(A,F12.8,A,F12.8,A,F12.8,A,F12.8,A,F12.8,A,F12.8,A,F12.8)') 
-     1         ' FETCHZ> M=',PARAM1,' A=',PARAM2,' C=',PARAM3,' AA=',PARAM4,' B=',PARAM5,' D=',PARAM6,' BB=',PARAM7
+     1         ' fetchz> m=',PARAM1,' A=',PARAM2,' c=',PARAM3,' aa=',PARAM4,' B=',PARAM5,' d=',PARAM6,' bb=',PARAM7
          ELSE IF (ZSYM(NATOMS).EQ.'AX') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' LENNARD-JONES+AXILROD-TELLER ATOMS'
-            WRITE(*,'(A,F12.8)') ' FETCHZ> AXILROD-TELLER Z*=',PARAM1
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Lennard-Jones+Axilrod-Teller atoms'
+            WRITE(*,'(A,F12.8)') ' fetchz> Axilrod-Teller Z*=',PARAM1
          ELSE IF (NATBT) THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' TB NA ATOMS'
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' TB Na atoms'
          ELSE IF (ZSYM(NATOMS).EQ.'SW') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' STILLINGER-WEBER SI ATOMS'
-            WRITE(*,'(A,F15.8,A,F15.8,A,F15.8)') ' FETCHZ> BOX LENGTHS: X ',PARAM1,', Y ',PARAM2,', Z ',PARAM3
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Stillinger-Weber Si atoms'
+            WRITE(*,'(A,F15.8,A,F15.8,A,F15.8)') ' fetchz> Box lengths: x ',PARAM1,', y ',PARAM2,', z ',PARAM3
          ELSE IF (ZSYM(NATOMS).EQ.'SM') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' STILLINGER-WEBER SI ATOMS'
-            WRITE(*,'(A)') ' WITH THE THREE-BODY TERM MULTIPLIED BY 1.5'
-            WRITE(*,'(A,F15.8,A,F15.8,A,F15.8)') ' FETCHZ> BOX LENGTHS: X ',PARAM1,', Y ',PARAM2,', Z ',PARAM3
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Stillinger-Weber Si atoms'
+            WRITE(*,'(A)') ' with the three-body term multiplied by 1.5'
+            WRITE(*,'(A,F15.8,A,F15.8,A,F15.8)') ' fetchz> Box lengths: x ',PARAM1,', y ',PARAM2,', z ',PARAM3
          ELSE IF (ZSYM(NATOMS).EQ.'SI') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' MURRELL SI POTENTIAL'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Murrell Si potential'
          ELSE IF (ZSYM(NATOMS).EQ.'JC') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' GENERAL MURRELL POTENTIAL'
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' general Murrell potential'
          ELSE IF (ZSYM(NATOMS).EQ.'CC') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' MURRELL C POTENTIAL'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Murrell C potential'
          ELSE IF (ZSYM(NATOMS).EQ.'JM') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' GENERAL MURRELL POTENTIAL'
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' general Murrell potential'
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1        ' FETCHZ> BOX LENGTHS: X ',PARAM1,', Y ',PARAM2,', Z ',PARAM3,', CUTOFF ',PARAM4
+     1        ' fetchz> Box lengths: x ',PARAM1,', y ',PARAM2,', z ',PARAM3,', cutoff ',PARAM4
          ELSE IF (ZSYM(NATOMS).EQ.'M') THEN
             WRITE(*,'(A,I4,A,I4,A,F12.4)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' MORSE ATOMS, RHO=',PARAM1
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Morse atoms, rho=',PARAM1
          ELSE IF (ZSYM(NATOMS).EQ.'TT') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1       ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' MENON AND SUBASWAMY APRIL 1997 PRB SI ATOMS'
+     1       ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Menon and Subaswamy April 1997 PRB Si atoms'
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1       ' FETCHZ> BOX LENGTHS: X ',PARAM1,', Y ',PARAM2,', Z ',PARAM3,', CUTOFF (FRACTIONAL) ',PARAM4
+     1       ' fetchz> Box lengths: x ',PARAM1,', y ',PARAM2,', z ',PARAM3,', cutoff (fractional) ',PARAM4
          ELSE IF (ZSYM(NATOMS).EQ.'LP') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' LENNARD-JONES ATOMS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Lennard-Jones atoms'
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1       ' FETCHZ> BOX LENGTHS: X ',PARAM1,', Y ',PARAM2,', Z ',PARAM3,', CUTOFF (FRACTIONAL) ',PARAM4
+     1       ' fetchz> Box lengths: x ',PARAM1,', y ',PARAM2,', z ',PARAM3,', cutoff (fractional) ',PARAM4
             IF (BINARY) WRITE(*,'(A,I4,A,I4,A,F11.5,A,F11.5,A,F11.5,A,F11.5)') 
-     1         ' FETCHZ> BINARY MIXTURE: ',NTYPEA,' A ATOMS,',NATOMS-NTYPEA,' B ATOMS, EPS(AB)=',EPSAB,' EPS(BB)=',EPSBB,
-     2         ' SIGMA(AB)=',SIGAB,' SIGMA(BB)=',SIGBB
+     1         ' fetchz> Binary mixture: ',NTYPEA,' A atoms,',NATOMS-NTYPEA,' B atoms, eps(AB)=',EPSAB,' eps(BB)=',EPSBB,
+     2         ' sigma(AB)=',SIGAB,' sigma(BB)=',SIGBB
          ELSE IF ((ZSYM(NATOMS).EQ.'LS').OR.(ZSYM(NATOMS).EQ.'BC')) THEN
 !
-! BINARY COULD BE TRUE OR FALSE FOR ATOM TYPE 'LS'. FOR ATOM TYPE 'BC'
-! IT SHOULD HAVE BEEN SET TRUE USING THE CORRESPONDING KEYWORD IN ODATA
+! BINARY could be true or false for atom type 'LS'. For atom type 'BC'
+! it should have been set true using the corresponding keyword in odata
 !
             IF ((ZSYM(NATOMS).EQ.'BC').AND.(.NOT.BINARY)) THEN
-               PRINT '(A)',' FETCHZ> ERROR - ATOM TYPE BC REQUIRES THE BINARY KEYWORD IN ODATA'
+               PRINT '(A)',' fetchz> ERROR - atom type BC requires the BINARY keyword in odata'
                CALL FLUSH(6,ISTAT)
                STOP
             ENDIF
             WRITE(*,'(A,I4,A,I4,A)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' SHIFTED, TRUNCATED LENNARD-JONES ATOMS'
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' shifted, truncated Lennard-Jones atoms'
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1        ' FETCHZ> BOX LENGTHS: X ',PARAM1,', Y ',PARAM2,', Z ',PARAM3,', CUTOFF (FRACTIONAL) ',PARAM4
+     1        ' fetchz> Box lengths: x ',PARAM1,', y ',PARAM2,', z ',PARAM3,', cutoff (fractional) ',PARAM4
             IF (BINARY) WRITE(*,'(A,I4,A,I4,A,F11.5,A,F11.5,A,F11.5,A,F11.5)') 
-     1         ' FETCHZ> BINARY MIXTURE: ',NTYPEA,' A ATOMS,',NATOMS-NTYPEA,' B ATOMS, EPS(AB)=',EPSAB,' EPS(BB)=',EPSBB,
-     2         ' SIGMA(AB)=',SIGAB,' SIGMA(AB)=',SIGBB
+     1         ' fetchz> Binary mixture: ',NTYPEA,' A atoms,',NATOMS-NTYPEA,' B atoms, eps(AB)=',EPSAB,' eps(BB)=',EPSBB,
+     2         ' sigma(AB)=',SIGAB,' sigma(AB)=',SIGBB
          ELSE IF (ZSYM(NATOMS).EQ.'LK') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' KOB/SCIORTINO LENNARD-JONES ATOMS'
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Kob/Sciortino Lennard-Jones atoms'
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1        ' FETCHZ> BOX LENGTHS: X ',PARAM1,', Y ',PARAM2,', Z ',PARAM3,', CUTOFF (FRACTIONAL) ',PARAM4
+     1        ' fetchz> Box lengths: x ',PARAM1,', y ',PARAM2,', z ',PARAM3,', cutoff (fractional) ',PARAM4
             IF (BINARY) WRITE(*,'(A,I4,A,I4,A,F11.5,A,F11.5,A,F11.5,A,F11.5)') 
-     1         ' FETCHZ> BINARY MIXTURE: ',NTYPEA,' A ATOMS,',NATOMS-NTYPEA,' B ATOMS, EPS(AB)=',EPSAB,' EPS(BB)=',EPSBB,
-     2         ' SIGMA(AB)=',SIGAB,' SIGMA(AB)=',SIGBB
+     1         ' fetchz> Binary mixture: ',NTYPEA,' A atoms,',NATOMS-NTYPEA,' B atoms, eps(AB)=',EPSAB,' eps(BB)=',EPSBB,
+     2         ' sigma(AB)=',SIGAB,' sigma(AB)=',SIGBB
          ELSE IF (ZSYM(NATOMS).EQ.'LC') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1        ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' SHIFTED, TRUNCATED LENNARD-JONES ATOMS'
+     1        ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' shifted, truncated Lennard-Jones atoms'
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1        ' FETCHZ> BOX LENGTHS: X ',PARAM1,', Y ',PARAM2,', Z ',PARAM3,', CUTOFF (FRACTIONAL) ',PARAM4
+     1        ' fetchz> Box lengths: x ',PARAM1,', y ',PARAM2,', z ',PARAM3,', cutoff (fractional) ',PARAM4
             IF (BINARY) WRITE(*,'(A,I4,A,I4,A,F11.5,A,F11.5,A,F11.5,A,F11.5)') 
-     1         ' FETCHZ> BINARY MIXTURE: ',NTYPEA,' A ATOMS,',NATOMS-NTYPEA,' B ATOMS, EPS(AB)=',EPSAB,' EPS(BB)=',EPSBB,
-     2         ' SIGMA(AB)=',SIGAB,' SIGMA(AB)=',SIGBB
+     1         ' fetchz> Binary mixture: ',NTYPEA,' A atoms,',NATOMS-NTYPEA,' B atoms, eps(AB)=',EPSAB,' eps(BB)=',EPSBB,
+     2         ' sigma(AB)=',SIGAB,' sigma(AB)=',SIGBB
          ELSE IF (ZSYM(NATOMS).EQ.'MP') THEN
             WRITE(*,'(A,I4,A,I4,A,F12.4)') 
-     1       ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' MORSE ATOMS, RHO=',PARAM1
+     1       ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Morse atoms, rho=',PARAM1
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1       ' FETCHZ> BOX LENGTHS: X ',PARAM2,', Y ',PARAM3,', Z ',PARAM4,', CUTOFF (FRACTIONAL) ',PARAM5
+     1       ' fetchz> Box lengths: x ',PARAM2,', y ',PARAM3,', z ',PARAM4,', cutoff (fractional) ',PARAM5
          ELSE IF (ZSYM(NATOMS).EQ.'DS') THEN
             WRITE(*,'(A,I4,A,I4,A,F12.4)') 
-     1       ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' MORSE ATOMS, RHO=',PARAM1
+     1       ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Morse atoms, rho=',PARAM1
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1       ' FETCHZ> BOX LENGTHS: X ',PARAM2,', Y ',PARAM3,', Z ',PARAM4,', CUTOFF (FRACTIONAL) ',PARAM5
+     1       ' fetchz> Box lengths: x ',PARAM2,', y ',PARAM3,', z ',PARAM4,', cutoff (fractional) ',PARAM5
          ELSE IF (ZSYM(NATOMS).EQ.'GP') THEN
             WRITE(*,'(A,I6,A,I4,A,I4)') 
-     1       ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' GUPTA ATOMS FOR ATOM TYPE',GUPTATYPE
+     1       ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Gupta atoms for atom type',GUPTATYPE
          ELSE IF (ZSYM(NATOMS).EQ.'MS') THEN
             WRITE(*,'(A,I4,A,I4,A,F12.4)') 
-     1       ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' MORSE ATOMS, RHO=',PARAM1
+     1       ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Morse atoms, rho=',PARAM1
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1       ' FETCHZ> BOX LENGTHS: X ',PARAM2,', Y ',PARAM3,', CUTOFF (FRACTIONAL) ',PARAM4
+     1       ' fetchz> Box lengths: x ',PARAM2,', y ',PARAM3,', cutoff (fractional) ',PARAM4
          ELSE IF (ZSYM(NATOMS).EQ.'CK') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',2*NATOMS,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' 2D TRAPPED IONS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',2*NATOMS,' Cartesian coordinates will be optimised for ',NATOMS,' 2D trapped ions'
          ELSE IF (EYTRAPT) THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ', 
-     &                               NATOMS,' TRAPPED IONS'
-            WRITE(*,'(A,G12.4,A,I4)') ' FETCHZ> WITH RADIAL POTENTIAL 0.5 * ',TRAPK,' * R**',NTRAPPOW
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ', 
+     &                               NATOMS,' trapped ions'
+            WRITE(*,'(A,G12.4,A,I4)') ' fetchz> with radial potential 0.5 * ',TRAPK,' * r**',NTRAPPOW
          ELSE IF (ZSYM(NATOMS).EQ.'BE') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' TRAPPED IONS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' trapped ions'
          ELSE IF ((ZSYM(NATOMS).EQ.'AU').OR.(ZSYM(NATOMS).EQ.'AG').OR.(ZSYM(NATOMS).EQ.'NI')) THEN
             IF (ZSYM(NATOMS).EQ.'AU') THEN
                WRITE(*,'(A,I4,A,I4,A)') 
-     1          ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' SUTTON-CHEN AU-TYPE ATOMS'
-               WRITE(*,'(A,F15.6,A,F15.6,A,F15.6)') ' FETCHZ> N=10, M=8, EPS=',PARAM1,' C=',PARAM2,' SIGMA=',PARAM3
+     1          ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Sutton-Chen Au-type atoms'
+               WRITE(*,'(A,F15.6,A,F15.6,A,F15.6)') ' fetchz> n=10, m=8, eps=',PARAM1,' c=',PARAM2,' sigma=',PARAM3
             ELSE IF (ZSYM(NATOMS).EQ.'AG') THEN
                WRITE(*,'(A,I4,A,I4,A)') 
-     1          ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' SUTTON-CHEN AG-TYPE ATOMS'
-               WRITE(*,'(A,F15.6,A,F15.6,A,F15.6)') ' FETCHZ> N=12, M=6, EPS=',PARAM1,' C=',PARAM2,' SIGMA=',PARAM3
+     1          ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Sutton-Chen Ag-type atoms'
+               WRITE(*,'(A,F15.6,A,F15.6,A,F15.6)') ' fetchz> n=12, m=6, eps=',PARAM1,' c=',PARAM2,' sigma=',PARAM3
             ELSE IF (ZSYM(NATOMS).EQ.'NI') THEN
                WRITE(*,'(A,I4,A,I4,A)') 
-     1          ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' SUTTON-CHEN NI-TYPE ATOMS'
-               WRITE(*,'(A,F15.6,A,F15.6,A,F15.6)') ' FETCHZ> N=9, M=6, EPS=',PARAM1,' C=',PARAM2,' SIGMA=',PARAM3
+     1          ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Sutton-Chen Ni-type atoms'
+               WRITE(*,'(A,F15.6,A,F15.6,A,F15.6)') ' fetchz> n=9, m=6, eps=',PARAM1,' c=',PARAM2,' sigma=',PARAM3
             ENDIF
          ELSE IF (ZSYM(NATOMS).EQ.'PL') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1       ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR THE 3-COLOUR 46-BEAD MODEL POLYPEPTIDE'
+     1       ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for the 3-colour 46-bead model polypeptide'
          ELSE IF (BLNT) THEN
             WRITE(*,'(A,I4,A,I4,A)')
-     1       ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR THE GENERAL 3-COLOUR BEAD MODEL'
+     1       ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for the general 3-colour bead model'
          ELSE IF (ZSYM(NATOMS).EQ.'GL') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1         ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR THE GO-MODEL 3-COLOUR 46-BEAD MODEL POLYPEPTIDE'
+     1         ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for the Go-model 3-colour 46-bead model polypeptide'
          ELSE IF (ZSYM(NATOMS).EQ.'SC') THEN
-            INQUIRE(FILE='SCPARAMS',EXIST=YESNO)
+            INQUIRE(FILE='SCparams',EXIST=YESNO)
             IF (.NOT.YESNO) THEN
                NN=12
                MM=6
@@ -1133,123 +1133,123 @@ C           ENDIF
                CSC=144.41
                SIG=1.414
             ELSE
-               OPEN(UNIT=33,FILE='SCPARAMS',STATUS='OLD')
+               OPEN(UNIT=33,FILE='SCparams',STATUS='OLD')
                READ(33,*) NN,MM,EPS,CSC,SIG
                CLOSE(33)
             ENDIF
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' SUTTON-CHEN ATOMS'
-C           WRITE(*,'(A,F15.6,A,F15.6,A,F15.6)') ' FETCHZ> N=',NN,' M=',MM,' EPS=',PARAM1,' C=',PARAM2,' SIGMA=',PARAM3
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Sutton-Chen atoms'
+C           WRITE(*,'(A,F15.6,A,F15.6,A,F15.6)') ' fetchz> n=',NN,' m=',MM,' eps=',PARAM1,' c=',PARAM2,' sigma=',PARAM3
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1       ' FETCHZ> BOX LENGTHS: X ',PARAM1,', Y ',PARAM2,', Z ',PARAM3,', CUTOFF ',PARAM4
+     1       ' fetchz> Box lengths: x ',PARAM1,', y ',PARAM2,', z ',PARAM3,', cutoff ',PARAM4
          ELSE IF (ZSYM(NATOMS).EQ.'PR') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1       ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' PACHECO-RAMALHO C60 MOLECULES'
+     1       ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Pacheco-Ramalho C60 molecules'
          ELSE IF (ZSYM(NATOMS).EQ.'C6') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1       ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' GIRIFALCO C60 MOLECULES'
+     1       ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Girifalco C60 molecules'
          ELSE IF ( ZSYM(NATOMS).EQ.'GOT') THEN
             WRITE(*,'(A,I4,A,I4,A)')
-     1       ' SYSTEM ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' GO CALPHA SITES'
+     1       ' SYSTEM ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Go Calpha sites'
          ELSE IF (ZSYM(NATOMS).EQ.'P6') THEN
             WRITE(*,'(A,I4,A,I4,A)') 
-     1       ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' GIRIFALCO C60 MOLECULES'
+     1       ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Girifalco C60 molecules'
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1       ' FETCHZ> BOX LENGTHS: X ',PARAM1,', Y ',PARAM2,', Z ',PARAM3,', CUTOFF ',PARAM4
+     1       ' fetchz> Box lengths: x ',PARAM1,', y ',PARAM2,', z ',PARAM3,', cutoff ',PARAM4
          ELSE IF (ZSYM(NATOMS).EQ.'FH') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' FENSKE-HALL ATOMS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Fenske-Hall atoms'
          ELSE IF (ZSYM(NATOMS)(1:1).EQ.'W') THEN
             IF (ZSYM(NATOMS).EQ.'W4') WRITE(*,'(A,I4,A,I4,A)') 
-     2       ' FETCHZ> ',3*NATOMS,' COORDINATES WILL BE OPTIMISED FOR ',NATOMS/2,' TIP4P WATER MOLECULES'
+     2       ' fetchz> ',3*NATOMS,' coordinates will be optimised for ',NATOMS/2,' TIP4P water molecules'
             IF (ZSYM(NATOMS).EQ.'W3') WRITE(*,'(A,I4,A,I4,A)') 
-     2       ' FETCHZ> ',3*NATOMS,' COORDINATES WILL BE OPTIMISED FOR ',NATOMS/2,' TIP3P WATER MOLECULES'
+     2       ' fetchz> ',3*NATOMS,' coordinates will be optimised for ',NATOMS/2,' TIP3P water molecules'
             IF (ZSYM(NATOMS).EQ.'W2') WRITE(*,'(A,I4,A,I4,A)') 
-     2       ' FETCHZ> ',3*NATOMS,' COORDINATES WILL BE OPTIMISED FOR ',NATOMS/2,' TIPS2 WATER MOLECULES'
+     2       ' fetchz> ',3*NATOMS,' coordinates will be optimised for ',NATOMS/2,' TIPS2 water molecules'
             IF (ZSYM(NATOMS).EQ.'W1') WRITE(*,'(A,I4,A,I4,A)') 
-     2       ' FETCHZ> ',3*NATOMS,' COORDINATES WILL BE OPTIMISED FOR ',NATOMS/2,' TIPS1 WATER MOLECULES'
+     2       ' fetchz> ',3*NATOMS,' coordinates will be optimised for ',NATOMS/2,' TIPS1 water molecules'
          ELSE IF (ZSYM(NATOMS).EQ.'ME') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' MIE ATOMS'
-            WRITE(*,'(A,I3,A,I3)') ' FETCHZ> N=',INT(PARAM1),' M=',INT(PARAM2)
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Mie atoms'
+            WRITE(*,'(A,I3,A,I3)') ' fetchz> n=',INT(PARAM1),' m=',INT(PARAM2)
             WRITE(*,'(A,F15.8,A,F15.8,A,F15.8,A,F15.8)') 
-     1       '  SYSTEM BOX LENGTHS: X ',PARAM1,', Y ',PARAM2,', Z ',PARAM3,', CUTOFF ',PARAM4
+     1       '  SYSTEM Box lengths: x ',PARAM1,', y ',PARAM2,', z ',PARAM3,', cutoff ',PARAM4
          ELSE IF (CADPAC) THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' CADPAC ATOMS'
-            WRITE(*,'(A,A,A,A)') ' FETCHZ> SYSTEM NAME: ',SYS(1:LSYS),', EDIT COMMAND: ',EDITIT
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' CADPAC atoms'
+            WRITE(*,'(A,A,A,A)') ' fetchz> System name: ',SYS(1:LSYS),', edit command: ',EDITIT
          ELSE IF (GAMESSUS) THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' GAMESS-US ATOMS'
-            WRITE(*,'(A,A,A,A)') ' FETCHZ> SYSTEM NAME: ',SYS(1:LSYS),', EDIT COMMAND: ',EDITIT
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' GAMESS-US atoms'
+            WRITE(*,'(A,A,A,A)') ' fetchz> System name: ',SYS(1:LSYS),', edit command: ',EDITIT
          ELSE IF (GAMESSUK) THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' GAMESS-UK ATOMS'
-            WRITE(*,'(A,A,A,A)') ' FETCHZ> SYSTEM NAME: ',SYS(1:LSYS),', EDIT COMMAND: ',EDITIT
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' GAMESS-UK atoms'
+            WRITE(*,'(A,A,A,A)') ' fetchz> System name: ',SYS(1:LSYS),', edit command: ',EDITIT
          ELSE IF (GAUSSIAN) THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' GAUSSIAN ATOMS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Gaussian atoms'
          ELSE IF (DFTBT) THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' TIFFANY TB ATOMS'
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' Tiffany TB atoms'
          ELSE IF (ZSYM(NATOMS).EQ.'SV') THEN
-            WRITE(*,'(A,I4,A,I4,A)') ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' MSEVB ATOMS '
+            WRITE(*,'(A,I4,A,I4,A)') ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' MSEVB atoms '
 
-! SET SOME VALUES
+! Set some values
 
-            NUM_EIG = (NATOMS-1)/3
-            NUM_HYD = NATOMS - NUM_EIG
+            num_eig = (NATOMS-1)/3
+            num_hyd = NATOMS - num_eig
 
-! INITIALISE SOME MEMORY
+! Initialise some memory
 
-            MAXNUMVBSTATES = 2
+            maxNumVBstates = 2
 
-            DO J1 = 1, SHELLSTOCOUNT
-               MAXNUMVBSTATES = MAXNUMVBSTATES + 4*(2**(J1-1))    ! 4 TO ACCOUNT FOR MULTIPLE PIVOT STATES
-            ENDDO
+            do j1 = 1, shellsToCount
+               maxNumVBstates = maxNumVBstates + 4*(2**(j1-1))    ! 4 to account for multiple pivot states
+            enddo
 
-! HARD LIMIT MAX NUMBER OF VB SHELLS AT THE MOMENT
+! Hard limit max number of VB shells at the moment
 
-            IF (MAXNUMVBSTATES.GT.1000) MAXNUMVBSTATES = 1000
+            if (maxNumVBstates.gt.1000) maxNumVBstates = 1000
          
-            ALLOCATE(EACH_COULOMB(NATOMS,NATOMS), WATER_INTER_COULOMB(NATOMS,NATOMS), LJR(NATOMS,NATOMS))
-            ALLOCATE(INTER_COULOMB(NATOMS,NATOMS), LJ_INTER(NATOMS,NATOMS), REPULSE_INTER(NATOMS,NATOMS))
-            ALLOCATE(ATOM_COULOMB(NATOMS))
+            ALLOCATE(each_coulomb(natoms,natoms), water_inter_coulomb(natoms,natoms), ljr(natoms,natoms))
+            ALLOCATE(inter_coulomb(natoms,natoms), lj_inter(natoms,natoms), repulse_inter(natoms,natoms))
+            ALLOCATE(atom_coulomb(natoms))
 
-            ALLOCATE(ATMPL(MAXNUMVBSTATES,NATOMS), STATESINTERACT(MAXNUMVBSTATES,MAXNUMVBSTATES))
-            ALLOCATE(ZUNDEL_SPECIES(MAXNUMVBSTATES,MAXNUMVBSTATES,7))
-            ALLOCATE(ZUNDEL_F(MAXNUMVBSTATES,MAXNUMVBSTATES),ZUNDEL_G(MAXNUMVBSTATES,MAXNUMVBSTATES))
+            ALLOCATE(atmpl(maxNumVBstates,natoms), statesInteract(maxNumVBstates,maxNumVBstates))
+            ALLOCATE(zundel_species(maxNumVBstates,maxNumVBstates,7))
+            ALLOCATE(zundel_f(maxNumVBstates,maxNumVBstates),zundel_g(maxNumVBstates,maxNumVBstates))
 
-            ALLOCATE(PSIX(NATOMS), PSIY(NATOMS), PSIZ(NATOMS))
-            ALLOCATE(INTERATOMICR(NATOMS,NATOMS))            
+            ALLOCATE(psix(natoms), psiy(natoms), psiz(natoms))
+            ALLOCATE(interAtomicR(natoms,natoms))            
          ENDIF
          IF (CPMD) WRITE(*,'(A,I6,A,I6,A)') 
-     1          ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,' CPMD ATOMS; BULK BOUNDARY CONDITIONS'
+     1          ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,' CPMD atoms; bulk boundary conditions'
          IF (CPMDC) WRITE(*,'(A,I6,A,I6,A)')
-     1          ' FETCHZ> ',NOPT,' CARTESIAN COORDINATES WILL BE OPTIMISED FOR ',NATOMS,
-     1              ' CPMD ATOMS; CLUSTER BOUNDARY CONDITIONS'
+     1          ' fetchz> ',NOPT,' Cartesian coordinates will be optimised for ',NATOMS,
+     1              ' CPMD atoms; cluster boundary conditions'
          
-         IF (TWOD) WRITE(*,'(A)') ' FETCHZ> TWO-DIMENSIONAL FLATLAND ENFORCED'
+         IF (TWOD) WRITE(*,'(A)') ' fetchz> Two-dimensional flatland enforced'
          IF (DOUBLET) WRITE(*,'(A,F12.5,A,F12.5,A,F12.5)') 
-     1      ' FETCHZ> DOUBLE-WELL POTENTIAL BETWEEN FIRST TWO ATOMS, BARRIER=',PARAM5,
-     1                               ' FIRST MINIMUM AT ',PARAM4,' SECOND AT ',PARAM4+2.0D0*PARAM6
+     1      ' fetchz> Double-well potential between first two atoms, barrier=',PARAM5,
+     1                               ' first minimum at ',PARAM4,' second at ',PARAM4+2.0D0*PARAM6
       ENDIF
-      IF (ZSYM(1)(1:1).EQ.'W') THEN ! MUST GENERALISE FOR OTHER RIGID BODIES SOMEHOW
+      IF (ZSYM(1)(1:1).EQ.'W') THEN ! must generalise for other rigid bodies somehow
          DEALLOCATE (IATNUM,ATMASS)
          ALLOCATE (IATNUM(3*(NATOMS/2)),ATMASS(3*(NATOMS/2)))
       ENDIF
 C
-C DAE ATMASS IS SET IN CHSETZSYMATMASS FOR CHARMM. PERTABLE WOULD OVERWRITE
-C JMC SIMILARLY FOR UNRES IN UNRSETZSYMATMASS...
+C DAE ATMASS is set in CHSETZSYMATMASS for CHARMM. PERTABLE would overwrite
+C jmc similarly for unres in UNRSETZSYMATMASS...
 C
       IF (.NOT.(CHRMMT.OR.UNRST.OR.AMBERT.OR.NABT.OR.RINGPOLYMERT)) CALL PERTABLE
       IF (CASTEP) THEN
-         INQUIRE(FILE='CASTEP.MASSES',EXIST=YESNO)
+         INQUIRE(FILE='castep.masses',EXIST=YESNO)
          IF (YESNO) THEN
-            OPEN(UNIT=1,FILE='CASTEP.MASSES',STATUS='OLD')
+            OPEN(UNIT=1,FILE='castep.masses',STATUS='OLD')
             READ(1,*) (ATMASS(J1),J1=1,NATOMS)
             CLOSE(1)
-            PRINT '(A)',' FETCHZ> MASSES REPLACED BY VALUES FROM CASTEP.MASSES FILE, VALUES ARE:'
+            PRINT '(A)',' fetchz> Masses replaced by values from castep.masses file, Values are:'
             WRITE(*,'(F20.10)') (ATMASS(J1),J1=1,NATOMS)
          ENDIF
          DO J1=1,NATOMS
             DO J2=J1+1,NATOMS
                IF (ATMASS(J2).LT.ATMASS(J1)) THEN
-                  PRINT '(A)',' FETCHZ> CASTEP INPUT ERROR: ATOMS MUST BE ORDERED BY ATOMIC NUMBER'
-                  PRINT '(A,I6,A,G20.10)',' MASS FOR ATOM ',J2,' IS ',ATMASS(J2)
-                  PRINT '(A,I6,A,G20.10)',' MASS FOR ATOM ',J1,' IS ',ATMASS(J1)
+                  PRINT '(A)',' fetchz> CASTEP input error: atoms must be ordered by atomic number'
+                  PRINT '(A,I6,A,G20.10)',' mass for atom ',J2,' is ',ATMASS(J2)
+                  PRINT '(A,I6,A,G20.10)',' mass for atom ',J1,' is ',ATMASS(J1)
                   STOP
                ENDIF
             ENDDO
@@ -1260,268 +1260,268 @@ C
 C        IF (ZSYM(NATOMS)(1:1).EQ.'W') STPMAX(J1+3*NATOMS)=MXSTP ! WCOMMENT
       ENDDO
 C
-C  MORE PRINTING
+C  More printing
 C
       PRINT*
-      IF (TIMELIMIT.LT.HUGE(TIMELIMIT)/2)  WRITE(*,'(A,F20.1)') ' FETCHZ> TIME LIMIT (S): ',TIMELIMIT
+      IF (TIMELIMIT.LT.HUGE(TIMELIMIT)/2)  WRITE(*,'(A,F20.1)') ' fetchz> Time limit (s): ',TIMELIMIT
       IF (PV.OR.PVTS) THEN
-         WRITE(*,'(A,F20.10)') ' FETCHZ> BOX LENGTHS WILL BE VARIED TO GIVE A CONSTANT PRESSURE OF ',PRESS
-         WRITE(*,'(A,F20.10)') ' FETCHZ> BOX LENGTH GRADIENT CONVERGENCE CRITERION ',PVCONV
-         WRITE(*,'(A,G20.10)') ' FETCHZ> BOX LENGTH GRADIENT TOLERANCE FOR MULTIPLE STEPS ',PVTOL
-         WRITE(*,'(A,G20.10)') ' FETCHZ> CONSTANT PRESSURE CALCULATION WILL USE USING FRACTIONAL COORDINATES'
-         IF (CUBIC) WRITE(*,'(A)') ' FETCHZ> A CUBIC CELL WILL BE MAINTAINED IF INITIAL CELL IS CUBIC'
+         WRITE(*,'(A,F20.10)') ' fetchz> Box lengths will be varied to give a constant pressure of ',PRESS
+         WRITE(*,'(A,F20.10)') ' fetchz> Box length gradient convergence criterion ',PVCONV
+         WRITE(*,'(A,G20.10)') ' fetchz> Box length gradient tolerance for multiple steps ',PVTOL
+         WRITE(*,'(A,G20.10)') ' fetchz> Constant pressure calculation will use using fractional coordinates'
+         IF (CUBIC) WRITE(*,'(A)') ' fetchz> A cubic cell will be maintained if initial cell is cubic'
          IF (PVTS) THEN
-            IF (NBOXTS.EQ.1) WRITE(*,'(A)') ' FETCHZ> SEARCHING FOR A TRANSITION STATE IN X BOX LENGTH'
-            IF (NBOXTS.EQ.2) WRITE(*,'(A)') ' FETCHZ> SEARCHING FOR A TRANSITION STATE IN Y BOX LENGTH'
-            IF (NBOXTS.EQ.3) WRITE(*,'(A)') ' FETCHZ> SEARCHING FOR A TRANSITION STATE IN Z BOX LENGTH'
+            IF (NBOXTS.EQ.1) WRITE(*,'(A)') ' fetchz> Searching for a transition state in x box length'
+            IF (NBOXTS.EQ.2) WRITE(*,'(A)') ' fetchz> Searching for a transition state in y box length'
+            IF (NBOXTS.EQ.3) WRITE(*,'(A)') ' fetchz> Searching for a transition state in z box length'
          ENDIF
       ENDIF
-      IF (FRACTIONAL) WRITE(*,'(A)') ' FETCHZ> FRACTIONAL COORDINATES TO BE USED IN BOX LENGTH OPTIMISATION AT CONSTANT PRESSURE'
+      IF (FRACTIONAL) WRITE(*,'(A)') ' fetchz> Fractional coordinates to be used in box length optimisation at constant pressure'
       IF (REPELTST) THEN
          NREPELTS=0
-         OPEN(UNIT=77,FILE='POINTS.REPEL',STATUS='OLD',ERR=10)
+         OPEN(UNIT=77,FILE='points.repel',STATUS='OLD',ERR=10)
          DO J1=1,100
             READ(77,*,END=10) (REPELTS(J2,J1),J2=1,3*NATOMS)
             NREPELTS=NREPELTS+1
          ENDDO
 10       CLOSE(77)
          WRITE(*,'(A,I5,A,F15.5)') 
-     1          ' FETCHZ> SEARCH WILL BE DISPLACED FROM ',NREPELTS,' POINTS FOUND IN POINTS.REPEL, STEP=',REPELPUSH
+     1          ' fetchz> Search will be displaced from ',NREPELTS,' points found in points.repel, step=',REPELPUSH
       ENDIF
       IF (.NOT.(BFGSMINT.OR.BSMIN.OR.RKMIN)) THEN
-         IF (ISTCRT.EQ.0) WRITE(*,'(A)') ' FETCHZ> SCALING STEPS ACCORDING TO THE TOTAL CARTESIAN DISPLACEMENT'
-         IF (ISTCRT.EQ.1) WRITE(*,'(A)') ' FETCHZ> SCALING STEPS ACCORDING TO THE LARGEST ATOMIC CARTESIAN DISPLACEMENT'
-         IF (ISTCRT.EQ.10) WRITE(*,'(A,F12.5)') ' FETCHZ> SCALING STEPS ACCORDING TO TRUST RADIUS=',TRAD
+         IF (ISTCRT.EQ.0) WRITE(*,'(A)') ' fetchz> Scaling steps according to the total Cartesian displacement'
+         IF (ISTCRT.EQ.1) WRITE(*,'(A)') ' fetchz> Scaling steps according to the largest atomic Cartesian displacement'
+         IF (ISTCRT.EQ.10) WRITE(*,'(A,F12.5)') ' fetchz> Scaling steps according to trust radius=',TRAD
       ENDIF
       IF (FIXD) THEN
          IF (T12FAC.LE.1.0D0) THEN
-            WRITE(*,'(A,F12.4)') ' FETCHZ> FIXED INITIAL UPHILL SEARCH DIRECTION, FRACTION OF FIRST COLLISION TIME USED=',T12FAC
+            WRITE(*,'(A,F12.4)') ' fetchz> Fixed initial uphill search direction, fraction of first collision time used=',T12FAC
          ELSE
-            WRITE(*,'(A,F12.4)') ' FETCHZ> FIXED INITIAL UPHILL SEARCH DIRECTION, FIRST COLLIDING ATOMS WILL BE PLACED HALF WAY'
+            WRITE(*,'(A,F12.4)') ' fetchz> Fixed initial uphill search direction, first colliding atoms will be placed half way'
          ENDIF
       ENDIF
-      IF (READV) WRITE(*,'(A)') ' FETCHZ> INITIAL EIGENVECTOR WILL BE READ FROM VECTOR.DUMP'
-      IF (READSP) WRITE(*,'(A)') ' FETCHZ> STATIONARY POINT INFO WILL BE READ'
-      IF (DUMPSP) WRITE(*,'(A)') ' FETCHZ> STATIONARY POINT INFO WILL BE DUMPED'
+      IF (READV) WRITE(*,'(A)') ' fetchz> Initial eigenvector will be read from vector.dump'
+      IF (READSP) WRITE(*,'(A)') ' fetchz> stationary point info will be read'
+      IF (DUMPSP) WRITE(*,'(A)') ' fetchz> stationary point info will be dumped'
       IF (FREEZE) THEN
-         WRITE(*,'(A,I6,A)') ' FETCHZ> ', NFREEZE,' ATOMS WILL BE FROZEN:'
+         WRITE(*,'(A,I6,A)') ' fetchz> ', NFREEZE,' atoms will be frozen:'
          DO J1=1,NATOMS
             IF (FROZEN(J1)) WRITE(*,'(I6)') J1
          ENDDO
       ENDIF
-      IF (NORESET) WRITE(*,'(A)') ' FETCHZ> ATOMS WILL NOT BE RETURNED TO THE PRIMARY SUPERCELL'
+      IF (NORESET) WRITE(*,'(A)') ' fetchz> Atoms will not be returned to the primary supercell'
 
       IF (RTEST) THEN
          IF (JZ.NE.0.0D0) THEN 
-            WRITE(*,'(A,F12.4)') ' FETCHZ> ADDING CENTRIFUGAL POTENTIAL FOR ANGULAR MOMENTUM JZ=',JZ
+            WRITE(*,'(A,F12.4)') ' fetchz> Adding centrifugal potential for angular momentum Jz=',JZ
          ELSE
-            WRITE(*,'(A,F12.4)') ' FETCHZ> ADDING CENTRIFUGAL POTENTIAL FOR ANGULAR VELOCITY OMEGA=',OMEGA
+            WRITE(*,'(A,F12.4)') ' fetchz> Adding centrifugal potential for angular velocity omega=',OMEGA
          ENDIF
       ENDIF
 
       IF ((INR.EQ.2).AND.(HINDEX.NE.1)) THEN
-         WRITE(*,'(A,I4)') ' FETCHZ> SEARCHING FOR A SADDLE WITH HESSIAN INDEX=',HINDEX
+         WRITE(*,'(A,I4)') ' fetchz> Searching for a saddle with Hessian index=',HINDEX
       ENDIF
       IF ((INR.EQ.2).AND.(KEEPINDEX)) THEN
-         WRITE(*,'(A)') ' FETCHZ> SEARCHING FOR A SADDLE WITH HESSIAN INDEX DETERMINED BY STARTING POINT'
+         WRITE(*,'(A)') ' fetchz> Searching for a saddle with Hessian index determined by starting point'
       ENDIF
    
       IF (NOIT) THEN
-         WRITE(*,'(A,I3,A)') ' FETCHZ> LOWEST ',HINDEX,' EIGENVALUES AND EIGENVECTORS WILL BE CALCULATED NON-ITERATIVELY'
+         WRITE(*,'(A,I3,A)') ' fetchz> Lowest ',HINDEX,' eigenvalues and eigenvectors will be calculated non-iteratively'
       ENDIF
       IF (FIELDT) THEN
-         WRITE(*,'(A,F12.4)') 'SETTINGS ADDING CENTRIFUGAL POTENTIAL FOR JZ=',JZ
-         IF (D5HT) WRITE(*,'(A,F12.4)') ' FETCHZ> ADDING D5H SYMMETRY FIELD STRENGTH=',FD5H
-         IF (OHT) WRITE(*,'(A,F12.4)') ' FETCHZ> ADDING D5H SYMMETRY FIELD STRENGTH=',FOH
-         IF (IHT) WRITE(*,'(A,F12.4)') ' FETCHZ> ADDING D5H SYMMETRY FIELD STRENGTH=',FIH
-         IF (TDT) WRITE(*,'(A,F12.4)') ' FETCHZ> ADDING D5H SYMMETRY FIELD STRENGTH=',FTD
+         WRITE(*,'(A,F12.4)') 'SETTINGS Adding centrifugal potential for Jz=',JZ
+         IF (D5HT) WRITE(*,'(A,F12.4)') ' fetchz> Adding D5h symmetry field strength=',FD5H
+         IF (OHT) WRITE(*,'(A,F12.4)') ' fetchz> Adding D5h symmetry field strength=',FOH
+         IF (IHT) WRITE(*,'(A,F12.4)') ' fetchz> Adding D5h symmetry field strength=',FIH
+         IF (TDT) WRITE(*,'(A,F12.4)') ' fetchz> Adding D5h symmetry field strength=',FTD
       ENDIF
 
-      IF (ADMT) WRITE(*,'(A,I4,A)') ' FETCHZ> DISTANCE MATRIX WILL BE PRINTED EVERY ',NADM,' CYCLES'
+      IF (ADMT) WRITE(*,'(A,I4,A)') ' fetchz> Distance matrix will be printed every ',NADM,' cycles'
       IF (.NOT.BULKT) THEN
          WRITE(*,'(A,F15.8,A,I3)') 
-     1  ' FETCHZ> POINT GROUP CHECKED WHEN RMS FORCE <',SYMCUT,', HIGHEST SYMMETRY AXIS TESTED FOR=',NHCHECK
-         WRITE(*,'(A,2F15.8)') ' FETCHZ> INITIAL DISTANCE AND EIGENVALUE TOLERANCES IN SYMMETRY DETERMINATION=',TOLD,TOLE
+     1  ' fetchz> Point group checked when RMS force <',SYMCUT,', highest symmetry axis tested for=',NHCHECK
+         WRITE(*,'(A,2F15.8)') ' fetchz> Initial distance and eigenvalue tolerances in symmetry determination=',TOLD,TOLE
       ENDIF
-      WRITE(*,'(A,I6)') ' FETCHZ> MINIMUM NUMBER OF OPTIMIZATION STEPS=',NSTEPMIN
-      IF (NEBT) THEN
-          WRITE(*,'(A,I5,A,I5,A,F12.5)') ' FETCHZ> NEB PARAMETERS: ',NIMAGE,
-     1          ' IMAGES, A MAXIMUM OF ',NSTEPNEB,' STEPS, AND RMS CONVERGENCE CRITERION ',RMSNEB
+      WRITE(*,'(A,I6)') ' fetchz> Minimum number of optimization steps=',NSTEPMIN
+      IF (NEBT) then
+          WRITE(*,'(A,I5,A,I5,A,F12.5)') ' fetchz> NEB parameters: ',NIMAGE,
+     1          ' images, a maximum of ',NSTEPNEB,' steps, and RMS convergence criterion ',RMSNEB
       ENDIF
       IF (NEBRESEEDT)  THEN
-         WRITE(*,'(A,I5,A)') ' FETCHZ> DNEB IMAGES WILL BE RESEEDED EVERY ',NEBRESEEDINT,' STEPS'
-         WRITE(*,'(A,G20.10)') '         FOR ENERGIES EXCEEDING ',NEBRESEEDEMAX
-         WRITE(*,'(A,G20.10)') '         OR ENERGY ABOVE HIGHEST END POINT EXCEEDS ',NEBRESEEDBMAX
-         WRITE(*,'(A,G20.10,I6)') '         FACTOR AND POWER PARAMETERS FOR REPULSIVE SITES A: ',NEBRESEEDDEL1,NEBRESEEDPOW1
-         WRITE(*,'(A,G20.10,I6)') '         FACTOR AND POWER PARAMETERS FOR REPULSIVE SITES B: ',NEBRESEEDDEL2,NEBRESEEDPOW2
+         WRITE(*,'(A,I5,A)') ' fetchz> DNEB images will be reseeded every ',NEBRESEEDINT,' steps'
+         WRITE(*,'(A,G20.10)') '         for energies exceeding ',NEBRESEEDEMAX
+         WRITE(*,'(A,G20.10)') '         or energy above highest end point exceeds ',NEBRESEEDBMAX
+         WRITE(*,'(A,G20.10,I6)') '         factor and power parameters for repulsive sites A: ',NEBRESEEDDEL1,NEBRESEEDPOW1
+         WRITE(*,'(A,G20.10,I6)') '         factor and power parameters for repulsive sites B: ',NEBRESEEDDEL2,NEBRESEEDPOW2
       ENDIF
       IF (INTLJT) THEN
-         PRINT '(A,F15.5)',   ' FETCHZ> USING INTERPLJ POTENTIAL FOR INITIAL INTERPOLATION IN EACH CYCLE'
-         PRINT '(A,I8)',      '         MAXIMUM OPTIMIZATION STEPS FOR INTERPLJ POTENTIAL=',INTLJSTEPS
-         PRINT '(A,I8)',      '         NUMBER OF INTERMEDIATE IMAGES FOR INTERPLJ POTENTIAL=',INTIMAGE
-         PRINT '(A,F15.5)',   '         RMS GRADIENT PER IMAGE TOLERANCE FOR CONSTRAINED POTENTIAL=',INTLJTOL
-         PRINT '(A,F20.10)',  '         MINIMUM DISTANCE DIFFERENCE FOR INTERNAL MINIMUM=',INTLJDEL
-         PRINT '(A,F20.10)',  '         MULTIPLYING FACTOR FOR INTERNAL MINIMUM PENALTY FUNCTION=',INTLJEPS
+         PRINT '(A,F15.5)',   ' fetchz> Using interpLJ potential for initial interpolation in each cycle'
+         PRINT '(A,I8)',      '         maximum optimization steps for interpLJ potential=',INTLJSTEPS
+         PRINT '(A,I8)',      '         number of intermediate images for interpLJ potential=',INTIMAGE
+         PRINT '(A,F15.5)',   '         RMS gradient per image tolerance for constrained potential=',INTLJTOL
+         PRINT '(A,F20.10)',  '         minimum distance difference for internal minimum=',INTLJDEL
+         PRINT '(A,F20.10)',  '         multiplying factor for internal minimum penalty function=',INTLJEPS
       ENDIF
       IF (INTCONSTRAINTT) THEN
-         PRINT '(A,F15.5)',   ' FETCHZ> USING CONSTRAINT POTENTIAL FOR INITIAL INTERPOLATION IN EACH CYCLE'
-         PRINT '(A,F15.5)',   '         WITH ABSOLUTE DISTANCE CHANGE TOLERANCE ',INTCONSTRAINTTOL
-         PRINT '(A,F15.5)',   '         CONSTRAINT SPRING CONSTANT=',INTCONSTRAINTDEL
-         PRINT '(2(A,F15.5))','         REPULSION FACTOR BETWEEN UNCONSTRAINED ATOMS=',INTCONSTRAINTREP 
-         PRINT '(A,F15.5)',   '         CUTOFF FOR REPULSION WILL BE THE MINIMUM OF ',INTCONSTRAINREPCUT
-         PRINT '(A)',         '         AND THE SHORTEST DISTANCE IN THE END POINTS'
-         PRINT '(A,F15.5)',   '         FRACTION FOR RESTORING TRUE POTENTIAL=',INTCONFRAC
-         PRINT '(A,I6)',      '         MAXIMUM SEPARATION OF ATOMS IN SEQUENCE FOR CONSTRAINT=',INTCONSEP
-         PRINT '(A,I6)',      '         MINIMUM SEPARATION OF ATOMS IN SEQUENCE FOR REPULSION=',INTREPSEP
-         PRINT '(A,I8)',      '         MAXIMUM OPTIMIZATION STEPS FOR CONSTRAINED POTENTIAL=',INTSTEPS1
-         PRINT '(A,2I8)',      '         NUMBER OF INTERMEDIATE IMAGES FOR CONSTRAINED POTENTIAL AND MAXIMUM=',INTIMAGE,MAXINTIMAGE
-         PRINT '(A,F15.5)',   '         RMS GRADIENT PER IMAGE TOLERANCE FOR CONSTRAINED POTENTIAL=',INTRMSTOL
-         PRINT '(A,I8)',      '         MAXIMUM OPTIMIZATION STEPS FOR CONSTRAINED/REAL POTENTIAL=',INTCONSTEPS
-         PRINT '(A,I8)',      '         MAXIMUM STEPS FOR RELAXATION AFTER ADDING A NEW ATOM BEFORE BACKTRACK=',INTRELSTEPS
-         PRINT '(A,I6)',      '         MAXIMUM NUMBER OF CONSTRAINTS PER ATOM=',MAXCONUSE
-         PRINT '(A,F20.10)',  '         MAXIMUM ENERGY PER IMAGE FOR CONVERGENCE DURING CONSTRAINT POTENTIAL PHASE=',MAXCONE
+         PRINT '(A,F15.5)',   ' fetchz> Using constraint potential for initial interpolation in each cycle'
+         PRINT '(A,F15.5)',   '         with absolute distance change tolerance ',INTCONSTRAINTTOL
+         PRINT '(A,F15.5)',   '         constraint spring constant=',INTCONSTRAINTDEL
+         PRINT '(2(A,F15.5))','         repulsion factor between unconstrained atoms=',INTCONSTRAINTREP 
+         PRINT '(A,F15.5)',   '         cutoff for repulsion will be the minimum of ',INTCONSTRAINREPCUT
+         PRINT '(A)',         '         and the shortest distance in the end points'
+         PRINT '(A,F15.5)',   '         fraction for restoring true potential=',INTCONFRAC
+         PRINT '(A,I6)',      '         maximum separation of atoms in sequence for constraint=',INTCONSEP
+         PRINT '(A,I6)',      '         minimum separation of atoms in sequence for repulsion=',INTREPSEP
+         PRINT '(A,I8)',      '         maximum optimization steps for constrained potential=',INTSTEPS1
+         PRINT '(A,2I8)',      '         number of intermediate images for constrained potential and maximum=',INTIMAGE,MAXINTIMAGE
+         PRINT '(A,F15.5)',   '         RMS gradient per image tolerance for constrained potential=',INTRMSTOL
+         PRINT '(A,I8)',      '         maximum optimization steps for constrained/real potential=',INTCONSTEPS
+         PRINT '(A,I8)',      '         maximum steps for relaxation after adding a new atom before backtrack=',INTRELSTEPS
+         PRINT '(A,I6)',      '         maximum number of constraints per atom=',MAXCONUSE
+         PRINT '(A,F20.10)',  '         maximum energy per image for convergence during constraint potential phase=',MAXCONE
          IF (CHECKCONINT) THEN
-            PRINT '(A,I6)',      '         ADDING TERMS FOR CONSTRAINT INTERNAL MINIMA'
+            PRINT '(A,I6)',      '         adding terms for constraint internal minima'
          ELSE
-            PRINT '(A,I6)',      '         NOT ADDING TERMS FOR CONSTRAINT INTERNAL MINIMA'
+            PRINT '(A,I6)',      '         not adding terms for constraint internal minima'
          ENDIF
-!        IF (DOCROSSCHECK) PRINT '(A,F15.5)','         CHECK FOR CHAIN CROSSING OF CONSTRAINTS WITH DISTANCE < ',CROSSCUT
+!        IF (DOCROSSCHECK) PRINT '(A,F15.5)','         check for chain crossing of constraints with distance < ',CROSSCUT
       ENDIF
       IF (INTLJT.OR.INTCONSTRAINTT) THEN
-         PRINT '(A,2F15.5)','         MINIMUM AND MAXIMUM IMAGE SEPARATIONS: ',IMSEPMIN,IMSEPMAX
+         PRINT '(A,2F15.5)','         Minimum and Maximum image separations: ',IMSEPMIN,IMSEPMAX
       ENDIF
 
-      IF (NEBMAG.GT.0) WRITE(*,'(A,I5)') ' FETCHZ> NEB MAGNIFICATIONS=',NEBMAG
+      IF (NEBMAG.GT.0) WRITE(*,'(A,I5)') ' fetchz> NEB magnifications=',NEBMAG
       IF (CONNECTT.AND.(.NOT.NEWCONNECTT)) THEN
-         WRITE(*,'(A,I5)') ' FETCHZ> OLD CONNECT RUN, MAXIMUM TRANSITION STATES=',NCONNECT
+         WRITE(*,'(A,I5)') ' fetchz> OLD connect run, maximum transition states=',NCONNECT
          IF (FIXD) WRITE(*,'(A,F12.5)')
-     1             ' FETCHZ> HARD SPHERE TRANSITION STATE GUESSES WILL BE APPLIED FOR MINIMA SPEARATED BY LESS THAN ',DTHRESH
-         IF (STOPFIRST) WRITE(*,'(A)') ' FETCHZ> CALCULATION WILL STOP WHEN THE INITIAL MINIMUM BECOMES CONNECTED'
+     1             ' fetchz> Hard sphere transition state guesses will be applied for minima spearated by less than ',DTHRESH
+         IF (STOPFIRST) WRITE(*,'(A)') ' fetchz> Calculation will stop when the initial minimum becomes connected'
       ENDIF
       IF (CALCRATES) THEN
          WRITE(*,'(A,F12.5,A,E20.10)') 
-     1          ' FETCHZ> RATE CONSTANTS WILL BE CALCULATED FOR TEMPERATURE ',TEMPERATURE,' AND PLANK;S CONSTANT=',HRED
-         IF (READPATH)  WRITE(*,'(A)') ' FETCHZ> RATE CONSTANTS WILL BE CALCULATED FOR PATHWAY SAVED IN PATH.INFO'
+     1          ' fetchz> Rate constants will be calculated for temperature ',TEMPERATURE,' and Plank;s constant=',HRED
+         IF (READPATH)  WRITE(*,'(A)') ' fetchz> Rate constants will be calculated for pathway saved in path.info'
       ENDIF
-      IF (PATHT) WRITE(*,'(A,I6,A)')' FETCHZ> PATHWAYS WILL BE CALCULATED SAVING ',NPATHFRAME,' FRAMES ON EACH SIDE'
-      IF (MACHINE) WRITE(*,'(A)') ' FETCHZ> WILL USE BINARY FILES FOR COMMUNICATION'
-      IF (MACHINE) WRITE(*,'(A)')' FETCHZ> WARNING READING BINARY FILES IS NOT FULLY SUPPORTED. THOUROUGHLY TESTED FOR CHARMM ONLY'
-      IF (DUMPPATH) WRITE(*,'(A)')' FETCHZ> PATHWAY INFORMATION WILL BE PRINTED TO PATH.INFO'
-      IF (DUMPDATAT) WRITE(*,'(A)')' FETCHZ> STATIONARY POINT INFORMATION WILL BE PRINTED TO MIN.DATA'
+      IF (PATHT) WRITE(*,'(A,I6,A)')' fetchz> Pathways will be calculated saving ',NPATHFRAME,' frames on each side'
+      if (machine) write(*,'(a)') ' fetchz> Will use binary files for communication'
+      if (machine) write(*,'(a)')' fetchz> WARNING Reading binary files is not fully supported. Thouroughly tested for CHARMM only'
+      IF (DUMPPATH) WRITE(*,'(A)')' fetchz> Pathway information will be printed to path.info'
+      IF (DUMPDATAT) WRITE(*,'(A)')' fetchz> Stationary point information will be printed to min.data'
       IF (ORDERPARAMT) THEN
          IF (.NOT.DUMPDATAT) THEN
-            PRINT '(A)','FETCHZ> WARNING - ORDER PARAMETER CALCULATION REQUESTED, BUT DUMPDATA NOT SET IN ODATA'
+            PRINT '(A)','fetchz> WARNING - order parameter calculation requested, but DUMPDATA not set in odata'
          ELSE
-            WRITE(*,'(A,I8)')' FETCHZ> NUMBER OF ORDER PARAMETERS AND DERIVATIVES TO BE PRINTED=',NORDER
+            WRITE(*,'(A,I8)')' fetchz> number of order parameters and derivatives to be printed=',NORDER
             DO J1=1,NORDER
-               WRITE(*,'(A,A,I8)')' FETCHZ> ORDER PARAMETER AND ADDITIONAL INFO=',WHICHORDER(J1),ORDERNUM(J1)
+               WRITE(*,'(A,A,I8)')' fetchz> order parameter and additional info=',WHICHORDER(J1),ORDERNUM(J1)
             ENDDO
          ENDIF
       ENDIF
       IF (BFGSMINT.OR.BFGSTST) THEN
          IF (GMAX.GT.CONVR) THEN
             CONVR=GMAX
-            WRITE(*,'(A)') ' FETCHZ> RMS CONVERGENCE RESET TO THE LBFGS CONVERGENCE LIMIT'
+            WRITE(*,'(A)') ' fetchz> RMS convergence reset to the LBFGS convergence limit'
          ENDIF
          WRITE(*,'(A,G15.8,A,I6)') 
-     1           ' FETCHZ> CONVERGENCE CRITERION FOR LBFGS OPTIMIZATION: RMS FORCE<',GMAX,' MAXIMUM STEPS=',BFGSSTEPS
-         WRITE(*,'(A,G20.10)') ' FETCHZ> MAXIMUM ENERGY RISE IN LBFGS MINIMIZATION=',MAXERISE
-         WRITE(*,'(A,I4)') ' FETCHZ> NUMBER OF UPDATES BEFORE RESET IN LBFGS= ',MUPDATE
-         IF (BFGSTST) WRITE(*,'(A,I4)') ' FETCHZ> NUMBER OF UPDATES BEFORE RESET IN XLBFGS=',XMUPDATE
-         WRITE(*,'(A,I4)') ' FETCHZ> NUMBER OF UPDATES BEFORE RESET IN MIND=',5
-         IF (NEBT.OR.NEWNEBT) WRITE(*,'(A,I4)') ' FETCHZ> NUMBER OF UPDATES BEFORE RESET IN NEB=',NEBMUPDATE
-         WRITE(*,'(A,F10.4)') ' FETCHZ> INITIAL GUESS FOR DIAGONAL ELEMENTS IN LBFGS= ',DGUESS
-         IF (BFGSTST) WRITE(*,'(A,F10.4)') ' FETCHZ> INITIAL GUESS FOR DIAGONAL ELEMENTS IN XLBFGS=',XDGUESS
-         WRITE(*,'(A,F10.4)') ' FETCHZ> MAXIMUM STEP SIZE IN LBFGS ENERGY MINIMIZATION= ',MAXBFGS
-         IF (BFGSTST) WRITE(*,'(A,F10.4)') ' FETCHZ> MAXIMUM STEP SIZE IN XLBFGS=',MAXXBFGS
-         WRITE(*,'(A,F10.4)') ' FETCHZ> MAXIMUM STEP SIZE IN LBFGS NEB IMAGE MINIMIZATION=             ',MAXNEBBFGS
+     1           ' fetchz> Convergence criterion for LBFGS optimization: RMS force<',GMAX,' maximum steps=',BFGSSTEPS
+         WRITE(*,'(A,G20.10)') ' fetchz> Maximum energy rise in LBFGS minimization=',MAXERISE
+         WRITE(*,'(A,I4)') ' fetchz> Number of updates before reset in LBFGS= ',MUPDATE
+         IF (BFGSTST) WRITE(*,'(A,I4)') ' fetchz> Number of updates before reset in XLBFGS=',XMUPDATE
+         WRITE(*,'(A,I4)') ' fetchz> Number of updates before reset in mind=',5
+         IF (NEBT.OR.NEWNEBT) WRITE(*,'(A,I4)') ' fetchz> Number of updates before reset in neb=',NEBMUPDATE
+         WRITE(*,'(A,F10.4)') ' fetchz> Initial guess for diagonal elements in LBFGS= ',DGUESS
+         IF (BFGSTST) WRITE(*,'(A,F10.4)') ' fetchz> Initial guess for diagonal elements in XLBFGS=',XDGUESS
+         WRITE(*,'(A,F10.4)') ' fetchz> Maximum step size in LBFGS energy minimization= ',MAXBFGS
+         IF (BFGSTST) WRITE(*,'(A,F10.4)') ' fetchz> Maximum step size in XLBFGS=',MAXXBFGS
+         WRITE(*,'(A,F10.4)') ' fetchz> Maximum step size in LBFGS neb image minimization=             ',MAXNEBBFGS
       ELSE IF (BSMIN) THEN
          IF (GMAX.GT.CONVR) THEN
             CONVR=GMAX
-            WRITE(*,'(A)') ' FETCHZ> RMS CONVERGENCE RESET TO THE BS CONVERGENCE LIMIT'
+            WRITE(*,'(A)') ' fetchz> RMS convergence reset to the BS convergence limit'
          ENDIF
-         WRITE(*,'(A,G15.8)') ' FETCHZ> CONVERGENCE CRITERION FOR BS STEEPEST-DESCENT: RMS FORCE<',GMAX
+         WRITE(*,'(A,G15.8)') ' fetchz> Convergence criterion for BS steepest-descent: RMS force<',GMAX
       ELSE IF (RKMIN) THEN
          IF (GMAX.GT.CONVR) THEN
             CONVR=GMAX
-            WRITE(*,'(A)') ' FETCHZ> RMS CONVERGENCE RESET TO THE RK CONVERGENCE LIMIT'
+            WRITE(*,'(A)') ' fetchz> RMS convergence reset to the RK convergence limit'
          ENDIF
-         WRITE(*,'(A,G15.8)') ' FETCHZ> CONVERGENCE CRITERION FOR RK STEEPEST-DESCENT: RMS FORCE<',GMAX
+         WRITE(*,'(A,G15.8)') ' fetchz> Convergence criterion for RK steepest-descent: RMS force<',GMAX
       ENDIF
-      IF (REOPT) WRITE(*,'(A)') ' FETCHZ> SMALLEST EIGENVECTOR WILL BE RECONVERGED AFTER EF STEP BEFORE TANGENT SPACE MINIMISATION'
+      IF (REOPT) WRITE(*,'(A)') ' fetchz> Smallest eigenvector will be reconverged after EF step before tangent space minimisation'
       IF (.NOT.(BFGSMINT.OR.BSMIN.OR.RKMIN)) 
-     1       WRITE(*,'(A,G15.8,A,G15.8)') ' FETCHZ> CONVERGENCE CRITERIA: EF STEP<',CONVU,' RMS FORCE<',CONVR
-      IF (CHECKINDEX) WRITE(*,'(A)') ' FETCHZ> HESSIAN INDEX WILL BE CHECKED'
+     1       WRITE(*,'(A,G15.8,A,G15.8)') ' fetchz> Convergence criteria: EF step<',CONVU,' RMS force<',CONVR
+      IF (CHECKINDEX) WRITE(*,'(A)') ' fetchz> Hessian index will be checked'
       IF (CHECKCONT) WRITE(*,'(A)') 
-     1    ' FETCHZ> SEARCH WILL RESUME AFTER PUSHOFF IF COVERGENCE TO THE WRONG HESSIAN INDEX IS DETECTED'
-      IF (DCHECK) WRITE(*,'(A)') ' FETCHZ> WARNINGS WILL BE ISSUED IF ATOMS BECOME CLOSER THAN 0.5 UNITS'
+     1    ' fetchz> Search will resume after pushoff if covergence to the wrong Hessian index is detected'
+      IF (DCHECK) WRITE(*,'(A)') ' fetchz> Warnings will be issued if atoms become closer than 0.5 units'
       IF (DUMPV) THEN   
          IF (ALLSTEPS) THEN
             IF (ALLVECTORS) THEN
-               WRITE(*,'(A)') ' FETCHZ> ALL EIGENVECTORS WILL BE DUMPED AT EVERY STEP'
+               WRITE(*,'(A)') ' fetchz> All eigenvectors will be dumped at every step'
             ELSE
-               WRITE(*,'(A)') ' FETCHZ> EIGENVECTOR CORRESPONDING TO SMALLEST EIGENVALUE WILL BE DUMPED AT EVERY STEP'
+               WRITE(*,'(A)') ' fetchz> Eigenvector corresponding to smallest eigenvalue will be dumped at every step'
             ENDIF
          ELSE
             IF (ALLVECTORS) THEN
-               WRITE(*,'(A)') ' FETCHZ> ALL EIGENVECTORS WILL BE DUMPED AT THE FINAL STEP'
+               WRITE(*,'(A)') ' fetchz> All eigenvectors will be dumped at the final step'
             ELSE
-               WRITE(*,'(A)') ' FETCHZ> EIGENVECTOR CORRESPONDING TO SMALLEST EIGENVALUE WILL BE DUMPED AT THE FINAL STEP'
+               WRITE(*,'(A)') ' fetchz> Eigenvector corresponding to smallest eigenvalue will be dumped at the final step'
             ENDIF
             IF (MWVECTORS) THEN
-               WRITE(*,'(A)') ' FETCHZ> THESE WILL BE THE VECTORS OF THE MASS WEIGHTED HESSIAN, WITH FREQENCIES IN WAVENUMBERS'
+               WRITE(*,'(A)') ' fetchz> These will be the vectors of the mass weighted hessian, with freqencies in wavenumbers'
             ENDIF
             IF (KTWNT) THEN
-               WRITE(*,'(A)') ' FETCHZ> EFFECT OF THERMALLY ACCESSIBLE MODES WILL BE OUTPUT'
+               WRITE(*,'(A)') ' fetchz> Effect of thermally accessible modes will be output'
             ENDIF
          ENDIF
       ENDIF
-      IF (EVCUT.NE.0.0D0) WRITE(*,'(A,G15.8,A)') ' FETCHZ> EIGENVALUES SMALLER THAN ',EVCUT,' WILL BE TREATED AS ZERO'
+      IF (EVCUT.NE.0.0D0) WRITE(*,'(A,G15.8,A)') ' fetchz> Eigenvalues smaller than ',EVCUT,' will be treated as zero'
       IF (DTEST) WRITE(*,'(A,I3,A,I3,A,G15.8)') 
-     1       ' FETCHZ> GDIIS OF MAXIMUM DIMENSION ',NDIIA,' WILL BE USED EVERY ',NINTV,' STEPS WHEN RMS FORCE < ',PCUT
+     1       ' fetchz> GDIIS of maximum dimension ',NDIIA,' will be used every ',NINTV,' steps when RMS force < ',PCUT
       IF (HUPDATE) THEN
-         WRITE(*,'(A,F14.5)') ' FETCHZ> HESSIAN UPDATE PROCEDURE WILL BE APPLIED, PHI=',PHIG
+         WRITE(*,'(A,F14.5)') ' fetchz> Hessian update procedure will be applied, PHI=',PHIG
          IF (NSTHUP.EQ.0) THEN
-            WRITE(*,'(A)') ' SETTINGS NO ANALYTIC HESSIANS WILL BE CALCULATED'
+            WRITE(*,'(A)') ' SETTINGS No analytic Hessians will be calculated'
          ELSE
             IF (INTHUP.EQ.0) THEN
-               WRITE(*,'(A,I4)') ' SETTNIGS ANALYTIC HESSIANS WILL BE CALCULATED ONLY AT STEP ',NSTHUP
+               WRITE(*,'(A,I4)') ' SETTNIGS Analytic Hessians will be calculated only at step ',NSTHUP
             ELSE
-               WRITE(*,'(A,I4,A,I4)') ' SETTNIGS ANALYTIC HESSIANS WILL BE CALCULATED EVERY ',INTHUP,
-     1                                ' STEPS STARTING FROM STEP ',NSTHUP
+               WRITE(*,'(A,I4,A,I4)') ' SETTNIGS Analytic Hessians will be calculated every ',INTHUP,
+     1                                ' steps starting from step ',NSTHUP
             ENDIF
          ENDIF
-         IF (INTHUP.EQ.-1) WRITE(*,'(A)') ' FETCHZ> HESSIAN WILL BE FIXED FOR ALL STEPS'
+         IF (INTHUP.EQ.-1) WRITE(*,'(A)') ' fetchz> Hessian will be fixed for all steps'
       ENDIF
-      IF (READHESS)  WRITE(*,'(A)') ' FETCHZ> HESSIAN WILL BE READ FROM FILE DERIVS FOR INITIAL GEOMETRY'
-      IF (MASST) WRITE(*,'(A)') ' FETCHZ> FICTITIOUS KINETIC METRIC WILL BE USED'
+      IF (READHESS)  WRITE(*,'(A)') ' fetchz> Hessian will be read from file derivs for initial geometry'
+      IF (MASST) WRITE(*,'(A)') ' fetchz> Fictitious kinetic metric will be used'
       IF (.NOT.(BFGSMINT.OR.BSMIN.OR.RKMIN)) THEN
-         WRITE(*,'(A,F15.8)') ' FETCHZ> INITIAL MAXIMUM FOR EF/SD STEPS=',MXSTP
-         WRITE(*,'(A,F15.8)') ' FETCHZ> MAXIMUM VALUE FOR MAXIMUM ALLOWED EF/SD STEPS=',MAXMAX
-         WRITE(*,'(A,F15.8)') ' FETCHZ> MINIMUM VALUE FOR MAXIMUM ALLOWED EF/SD STEPS=',MINMAX
+         WRITE(*,'(A,F15.8)') ' fetchz> Initial maximum for EF/SD steps=',MXSTP
+         WRITE(*,'(A,F15.8)') ' fetchz> Maximum value for maximum allowed EF/SD steps=',MAXMAX
+         WRITE(*,'(A,F15.8)') ' fetchz> Minimum value for maximum allowed EF/SD steps=',MINMAX
       ENDIF
-      IF (PRESSURE) WRITE(*,'(A)') ' FETCHZ> LATTICE CONSTANT WILL BE OPTIMISED FOR ZERO PRESSURE'
+      IF (PRESSURE) WRITE(*,'(A)') ' fetchz> Lattice constant will be optimised for zero pressure'
       IF (INR.NE.1) THEN
          IF (.NOT.(BFGSMINT.OR.BSMIN.OR.RKMIN)) 
-     1         WRITE(*,'(A,F15.8)') ' FETCHZ> VALUE OF PUSHOFF FROM STATIONARY POINTS OF THE WRONG INDEX=',PUSHOFF
+     1         WRITE(*,'(A,F15.8)') ' fetchz> Value of pushoff from stationary points of the wrong index=',PUSHOFF
          IF (.NOT.(BFGSMINT.OR.BSMIN.OR.RKMIN)) WRITE(*,'(A,F15.8)') 
-     1          ' FETCHZ> A PUSHOFF FROM STATIONARY POINTS OF THE WRONG INDEX MAY BE APPLIED WHEN THE RMS FORCE <',PUSHCUT
+     1          ' fetchz> A pushoff from stationary points of the wrong index may be applied when the RMS force <',PUSHCUT
       ENDIF
-      IF (RESIZE.NE.1.0D0) WRITE(*,'(A,F15.8)') ' FETCHZ> INITIAL COORDINATES WILL BE SCALED BY A FACTOR OF ',RESIZE
-C     WRITE(*,'(A,E15.8)') ' FETCHZ> EIGENVALUE SHIFTING PARAMETER=',SHIFTV
-      IF (FILTH.NE.0) WRITE(*,'(A,I6)') ' FETCHZ> NUMBER TO DISTINGUISH OUTPUT FILES=',FILTH
-      IF (CONTAINER) WRITE(*,'(A,F15.5)') ' FETCHZ> SYSTEM WILL BE ENCLOSED IN A SPHERICAL CONTAINER RADIUS=',SQRT(RADIUS)
-      IF (FIXAFTER.GE.0) WRITE(*,'(A,I6)') ' FETCHZ> FIXIMAGE WILL BE SET PERMANENTLY ON AFTER STEP ',FIXAFTER
-      IF (.NOT.PRINTPTS) WRITE(*,'(A,I6)') ' FETCHZ> COORDINATES FOR INTERMEDIATE STEPS WILL NOT BE DUMPED TO FILE POINTS'
+      IF (RESIZE.NE.1.0D0) WRITE(*,'(A,F15.8)') ' fetchz> Initial coordinates will be scaled by a factor of ',RESIZE
+C     WRITE(*,'(A,E15.8)') ' fetchz> Eigenvalue shifting parameter=',SHIFTV
+      IF (FILTH.NE.0) WRITE(*,'(A,I6)') ' fetchz> Number to distinguish output files=',FILTH
+      IF (CONTAINER) WRITE(*,'(A,F15.5)') ' fetchz> System will be enclosed in a spherical container radius=',SQRT(RADIUS)
+      IF (FIXAFTER.GE.0) WRITE(*,'(A,I6)') ' fetchz> FIXIMAGE will be set permanently on after step ',FIXAFTER
+      IF (.NOT.PRINTPTS) WRITE(*,'(A,I6)') ' fetchz> Coordinates for intermediate steps will not be dumped to file points'
       PRINT*
 
-      IF (IPRNT.NE.0) WRITE(*,'(A,I3)') ' FETCHZ> IPRNT SET TO ',IPRNT
+      IF (IPRNT.NE.0) WRITE(*,'(A,I3)') ' fetchz> IPRNT set to ',IPRNT
       IF ((.NOT.BFGSMINT).AND.(.NOT.BFGSTST).AND.(.NOT.BSMIN.OR.RKMIN)) THEN
-       IF (PGRAD) WRITE(*,'(A,I3,A)') ' FETCHZ> GRADIENTS ALONG HESSIAN EIGENVECTORS WILL BE PRINTED EVERY ',NGRADIENTS,' STEPS'
-       IF (EFSTEPST) WRITE(*,'(A,I4,A)') ' FETCHZ> MAXIMUM UNSCALED STEPS FOR EACH MODE WILL BE PRINTED EVERY ',EFSTEPS,' STEPS'
-       IF (VALUEST) WRITE(*,'(A,I4,A)') ' FETCHZ> HESSIAN EIGENVALUES WILL BE PRINTED EVERY ',NVALUES,' STEPS'
-       IF (VECTORST) WRITE(*,'(A,I4,A)') ' FETCHZ> HESSIAN EIGENVECTORS WILL BE PRINTED EVERY ',NVECTORS,' STEPS'
-       WRITE(*,'(A,I3,A)') ' FETCHZ> SUMMARY OF STEPS AND DERIVATIVES WILL BE PRINTED EVERY ',NSUMMARY,' STEPS'
+       IF (PGRAD) WRITE(*,'(A,I3,A)') ' fetchz> Gradients along Hessian eigenvectors will be printed every ',NGRADIENTS,' steps'
+       IF (EFSTEPST) WRITE(*,'(A,I4,A)') ' fetchz> Maximum unscaled steps for each mode will be printed every ',EFSTEPS,' steps'
+       IF (VALUEST) WRITE(*,'(A,I4,A)') ' fetchz> Hessian eigenvalues will be printed every ',NVALUES,' steps'
+       IF (VECTORST) WRITE(*,'(A,I4,A)') ' fetchz> Hessian eigenvectors will be printed every ',NVECTORS,' steps'
+       WRITE(*,'(A,I3,A)') ' fetchz> Summary of steps and derivatives will be printed every ',NSUMMARY,' steps'
       ENDIF
       PRINT*
 

@@ -1,26 +1,26 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C***********************************************************************
 C
-C  THIS SUBROUTINE IS DESIGNED TO PERFORM A HYBRID EIGENVECTOR-FOLLOWING
-C  OPTIMIZATION FOR LARGE SYSTEMS WHERE WE DO NOT WANT TO DIAGONALIZE THE WHOLE HESSIAN.
-C  IN CONTRAST TO BFGSTS.F, IN THIS ROUTINE WE GO DOWNHILL.
+C  This subroutine is designed to perform a hybrid eigenvector-following
+C  optimization for large systems where we do not want to diagonalize the whole Hessian.
+C  In contrast to bfgsts.f, in this routine we go DOWNHILL.
 C
 C***********************************************************************
 C
@@ -31,7 +31,7 @@ C
       USE ZWK
       USE MODCHARMM
       USE MODHESS
-      USE PORFUNCS
+      use porfuncs
       IMPLICIT NONE
 
       INTEGER J1, J2, INEG, J, ITER, NS, I, K1, NBFGS, ITMAX, ITDONE, J3
@@ -45,8 +45,8 @@ C
       LOGICAL MFLAG, AWAY, PVFLAG, RESET, STEST, POTCALL, PTEST, CONVERGED
       COMMON /PVF/ PVFLAG
 C
-C  ASSIGN ENOUGH MEMORY TO WORK FOR A BLOCKSIZE OF 32 TO BE POSSIBLE.
-C  THIS IS FOR DSYEVR.
+C  Assign enough memory to WORK for a blocksize of 32 to be possible.
+C  This is for DSYEVR.
 C
       INTEGER IWORK(33*3*NATOMS)
       INTEGER ILWORK, LWORK, NFOUND, ISUPPZ(2*3*NATOMS)
@@ -58,37 +58,37 @@ C
       LWORK=33*3*NATOMS
       ILWORK=33*3*NATOMS
       IF (ZSYM(1)(1:1).EQ.'W') THEN
-         PRINT*,'HYBRIDMIN PROCEDURES HAVE NOT BEEN PROGRAMMED FOR TIP POTENTIALS'
+         PRINT*,'HYBRIDMIN procedures have not been programmed for TIP potentials'
          CALL FLUSH(6,ISTAT)
          STOP
       ENDIF
       IF ((NUSEEV.GT.1).AND.(.NOT.NOIT.OR.NOHESS)) THEN
-         WRITE(*,'(A)') 'FOR NUSEEV > 1 YOU MUST USE A HESSIAN AND NOIT WITH HYBRIDMIN'
+         WRITE(*,'(A)') 'For NUSEEV > 1 you must use a Hessian and NOIT with HYBRIDMIN'
          CALL FLUSH(6,ISTAT)
          STOP
       ENDIF
 !
-! CHECK FOR CONSISTENT CONVERGENCE CRITERIA.
+! Check for consistent convergence criteria.
 !
       IF (GMAX.NE.CONVR) THEN
-         PRINT '(2(A,G20.10),A)','BFGSTS> WARNING - GMAX ',GMAX,' IS DIFFERENT FROM CONVR ',CONVR,' - RESETTING'
+         PRINT '(2(A,G20.10),A)','bfgsts> WARNING - GMAX ',GMAX,' is different from CONVR ',CONVR,' - resetting'
          GMAX=MIN(CONVR,GMAX)
          CONVR=MIN(CONVR,GMAX)
       ENDIF
 !
-!  RESET MAXIMUM STEP SIZES IN CASE THIS ISN'T THE FIRST CALL TO EFOL.
+!  Reset maximum step sizes in case this isn't the first call to EFOL.
 !
-      IF (DEBUG) PRINT '(A,G20.10)',' HYBRIDMIN> RESETTING MAXIMUM STEP SIZES TO ',HMMXSTP
+      IF (DEBUG) PRINT '(A,G20.10)',' hybridmin> resetting maximum step sizes to ',HMMXSTP
       STPMAX(1:NOPT)=HMMXSTP
 
       ITER=1
       CONVERGED=.TRUE.
-      VECS(1:NOPT)=VECTS(1:NOPT) ! SO THAT VECTS IS NOT OVERWRITTEN
+      VECS(1:NOPT)=VECTS(1:NOPT) ! so that VECTS is not overwritten
 C
-C  IF DUMPV IS .TRUE. THEN VECTOR.DUMP IS ALREADY OPEN AND ATTACHED TO UNIT 44.
-C  SGI COMPILER WON;T ALLOW US TO ATTACH IT TO ANOTHER UNIT.
-C  VECTOR.DUMP COULD CONTAIN MULTIPLE DUMPS FOR MORE THAN THE LAST STEP, SO WE 
-C  HAVE TO MAKE SURE WE GET THE RESULTS FOR THE LAST STEP.
+C  If DUMPV is .TRUE. then vector.dump is already open and attached to unit 44.
+C  SGI compiler won;t allow us to attach it to another unit.
+C  vector.dump could contain multiple dumps for more than the last step, so we 
+C  have to make sure we get the results for the last step.
 C
       IF (READV.AND.(ITER.EQ.1)) THEN
          IF (DUMPV) THEN
@@ -99,9 +99,9 @@ C
 111         CONTINUE
          ELSE
             IF (FILTH.EQ.0) THEN
-               FNAME='VECTOR.DUMP'
+               FNAME='vector.dump'
             ELSE
-               WRITE(FNAME,'(A)') 'VECTOR.DUMP.'//TRIM(ADJUSTL(FILTHSTR))
+               WRITE(FNAME,'(A)') 'vector.dump.'//TRIM(ADJUSTL(FILTHSTR))
             ENDIF
    
             OPEN(UNIT=45,FILE=FNAME,STATUS='OLD')
@@ -111,7 +111,7 @@ C
 10          CLOSE(45)
             DIAG(1)=EVALMIN
          ENDIF
-         WRITE(*,'(A,F20.10)') ' HYBRIDMIN> REACTION VECTOR READ SUCCESSFULLY. EIGENVALUE=   ',EVALMIN
+         WRITE(*,'(A,F20.10)') ' hybridmin> Reaction vector read successfully. Eigenvalue=   ',EVALMIN
          NS=100
       ENDIF
       IF (FREEZE) THEN
@@ -131,11 +131,11 @@ C
 90    IF (PTEST) PRINT*
       NUP=NUSEEV
       IF (PTEST) WRITE(*,11) ITER
-11          FORMAT (' HYBRIDMIN> BEGINNING OF OPTIMIZATION CYCLE ', I4,'.',/
+11          FORMAT (' hybridmin> Beginning of optimization cycle ', I4,'.',/
      1              ' ---------------------------------------')
       FIXIMAGE=.FALSE.
       IF ((FIXAFTER.GT.0).AND.(ITER.GT.FIXAFTER)) FIXIMAGE=.TRUE.
-      IF (CHRMMT) NCHENCALLS = 999 ! MAKE SURE NON-BOND LIST IS UPDATED AT THE START OF EACH TS SEARCH.
+      IF (CHRMMT) NCHENCALLS = 999 ! make sure non-bond list is updated at the start of each TS search.
       IF (POTCALL) THEN
          IF (PV) THEN
             IF (.NOT.KNOWE) CALL POTENTIAL(COORDS,ENERGY,GRAD,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
@@ -173,12 +173,12 @@ C
       IF (POTCALL) THEN
          IF (.NOT.NOHESS) THEN 
             IF (.NOT.NOIT) THEN
-               CEIGSAVE=CEIG; CEIG=HMCEIG; NEVSSAVE=NEVS; NEVS=HMNEVS; NEVLSAVE=NEVL; NEVL=HMNEVL ! CHANGE COMMON VARIABLES
+               CEIGSAVE=CEIG; CEIG=HMCEIG; NEVSSAVE=NEVS; NEVS=HMNEVS; NEVLSAVE=NEVL; NEVL=HMNEVL ! change common variables
                CALL ITEIG(ITER,COORDS,VECS,EVALMIN,EVALMAX,NS,SOVER,PTEST,VECL,CONVERGED)
-               CEIG=CEIGSAVE; NEVS=NEVSSAVE; NEVL=NEVLSAVE ! RESET COMMON VARIABLES
+               CEIG=CEIGSAVE; NEVS=NEVSSAVE; NEVL=NEVLSAVE ! reset common variables
                DIAG(1)=EVALMIN
             ELSE
-               ABSTOL=DLAMCH('SAFE  MINIMUM')
+               ABSTOL=DLAMCH('Safe  minimum')
                IF (ITER.GT.1) THEN
                   DO J1=1,NOPT
                      VECSP(J1)=VECS(J1)
@@ -187,9 +187,9 @@ C
                CALL DSYEVR('V','I','U',NOPT,HESS,SIZE(HESS,1),0.0D0,1.0D0,1,NUSEEV,ABSTOL,NFOUND,DIAG,
      1                        ZWORK,3*NATOMS,ISUPPZ,WORK,
      2                        LWORK, IWORK, ILWORK, INFO )
-               IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' IN DSYEVR'
-C              PRINT*,'OPTIMAL AND ACTUAL VALUES OF LWORK=',WORK(1),LWORK
-C              PRINT*,'OPTIMAL AND ACTUAL VALUES OF ILWORK=',IWORK(1),ILWORK
+               IF (INFO.NE.0) PRINT*,'WARNING - INFO=',INFO,' in DSYEVR'
+C              PRINT*,'Optimal and actual values of LWORK=',WORK(1),LWORK
+C              PRINT*,'Optimal and actual values of ILWORK=',IWORK(1),ILWORK
                EVALMIN=DIAG(1)
                SOVER=0.0D0
                DO J1=1,NOPT
@@ -198,21 +198,21 @@ C              PRINT*,'OPTIMAL AND ACTUAL VALUES OF ILWORK=',IWORK(1),ILWORK
                ENDDO
                IF (PTEST) THEN
                   IF (ITER.GT.1) THEN
-                     WRITE(*,'(A,F15.7,A,F15.7)') ' SMALLEST EIGENVALUE=',EVALMIN,' OVERLAP WITH PREVIOUS VECTOR=',SOVER
+                     WRITE(*,'(A,F15.7,A,F15.7)') ' Smallest eigenvalue=',EVALMIN,' overlap with previous vector=',SOVER
                   ELSE
-                     WRITE(*,'(A,F15.7,A,F15.7)') ' SMALLEST EIGENVALUE=',EVALMIN
+                     WRITE(*,'(A,F15.7,A,F15.7)') ' Smallest eigenvalue=',EVALMIN
                   ENDIF
                ENDIF
             ENDIF
          ELSE
-            CEIGSAVE=CEIG; CEIG=HMCEIG; NEVSSAVE=NEVS; NEVS=HMNEVS ! CHANGE COMMON VARIABLES
+            CEIGSAVE=CEIG; CEIG=HMCEIG; NEVSSAVE=NEVS; NEVS=HMNEVS ! change common variables
             CALL BEIG(ITER,COORDS,ENERGY,VECS,EVALMIN,NS,SOVER,PTEST,CONVERGED)
-            CEIG=CEIGSAVE; NEVS=NEVSSAVE  ! RESET COMMON VARIABLES
+            CEIG=CEIGSAVE; NEVS=NEVSSAVE  ! reset common variables
             DIAG(1)=EVALMIN
          ENDIF
       ENDIF
 !
-!  RETURN IF THE EIGENVALUE GOES ABOVE A CERTAIN THRESHOLD.
+!  Return if the eigenvalue goes above a certain threshold.
 !
       IF (EVALMIN.GT.HMEVMAX) THEN
          FIXIMAGE=.FALSE.
@@ -227,7 +227,7 @@ C              PRINT*,'OPTIMAL AND ACTUAL VALUES OF ILWORK=',IWORK(1),ILWORK
          DUMMY=DUMMY+VECS(J1)**2
       ENDDO
 !
-!  SAVE XFOB FOR SCALING THE MAXIMUM ALLOWED STEP ALONG EACH EIGENVECTOR.
+!  Save XFOB for scaling the maximum allowed step along each eigenvector.
 !
       DO I=1,NUSEEV
          XFOB(I)=0.0D0
@@ -236,8 +236,8 @@ C              PRINT*,'OPTIMAL AND ACTUAL VALUES OF ILWORK=',IWORK(1),ILWORK
          ENDDO
       ENDDO
 C
-C  DUMP THE SMALLEST NON-ZERO EIGENVALUE AND EIGENVECTOR 
-C  IN FILE VECTOR.DUMP, IF REQUIRED.
+C  Dump the smallest non-zero eigenvalue and eigenvector 
+C  in file vector.dump, if required.
 C
       IF (DUMPV) THEN
          IF (.NOT.ALLSTEPS) REWIND(44)
@@ -246,31 +246,31 @@ C
          CALL FLUSH(44,ISTAT)
       ENDIF
 C
-C  TAKE AN EIGENVECTOR-FOLLOWING OR PAGE-MCIVER STEP DOWNHILL ALONG ALL KNOWN EIGENVECTORS.
-C  THEN DO LBFGS MINIMIZATION IN THE TANGENT SPACE IF REQUIRED. 
+C  Take an eigenvector-following or Page-McIver step downhill along all known eigenvectors.
+C  Then do LBFGS minimization in the tangent space if required. 
 C
       INEG=0
       DO J1=1,NUSEEV
          IF (DIAG(J1).LT.0.0D0) INEG=INEG+1
       ENDDO
-      IF (DEBUG.AND.(INEG.GT.0)) WRITE(*,'(A,I5,A)') ' HYBRIDMIN> THERE ARE AT LEAST ',INEG,' NEGATIVE HESSIAN EIGENVALUES'
+      IF (DEBUG.AND.(INEG.GT.0)) WRITE(*,'(A,I5,A)') ' hybridmin> There are at least ',INEG,' negative Hessian eigenvalues'
 C
-C  TAKE A STEP AWAY FROM A STATIONARY POINT ALONG THE APPROPRIATE
-C  HESSIAN EIGENVECTOR. THIS ENABLES US TO START FROM CONVERGED TRANSITION STATES.
+C  Take a step away from a stationary point along the appropriate
+C  Hessian eigenvector. This enables us to start from converged transition states.
 C
       AWAY=.FALSE.
       IF (RMS.LT.PUSHCUT) THEN
-         IF ((INEG.NE.0).AND.CONVERGED) THEN ! DON;T TRY PUSHOFF IF CONVERGED IS .FALSE.
+         IF ((INEG.NE.0).AND.CONVERGED) THEN ! don;t try pushoff if CONVERGED is .FALSE.
             IF ((ITER.EQ.1).AND.(INEG.EQ.1)) THEN
                IF (PTEST) THEN
-                  IF (IVEC.GE.0) PRINT '(A)',' HYBRIDMIN> STEPPING AWAY FROM MINIMUM ALONG SOFTEST MODE + DIRECTION'
-                  IF (IVEC.LT.0) PRINT '(A)',' HYBRIDMIN> STEPPING AWAY FROM MINIMUM ALONG SOFTEST MODE - DIRECTION'
+                  IF (IVEC.GE.0) PRINT '(A)',' hybridmin> Stepping away from minimum along softest mode + direction'
+                  IF (IVEC.LT.0) PRINT '(A)',' hybridmin> Stepping away from minimum along softest mode - direction'
                ENDIF
                AWAY=.TRUE.
             ELSE IF (MOD(ITER-1,4).EQ.0) THEN
                DO J1=1,NUSEEV
                   IF (DIAG(J1).LT.0.0D0) THEN
-                     WRITE(*,'(A,I6)') ' HYBRIDMIN> STEPPING AWAY FROM SADDLE POINT ALONG EIGENVECTOR ',J1
+                     WRITE(*,'(A,I6)') ' hybridmin> Stepping away from saddle point along eigenvector ',J1
                      IF (PUSHOFF.EQ.0.0D0) THEN
                         XFOB(J1)=STPMAX(J1)
                      ELSE
@@ -283,7 +283,7 @@ C
       ENDIF
       IF (HMMETHOD.EQ.'EF') THEN
 C
-C  EF DETERMINATION OF STEPS
+C  EF determination of steps
 C
          DO I=NUSEEV,1,-1
             STEP(I)=0.0D0
@@ -299,7 +299,7 @@ C
                LP2=1.0D0 + 4.0D0*(XFOB(I)/DIAG(I))**2
             ENDIF
             LP=LP1*(1.0D0+DSQRT(LP2))
-            IF (DEBUG) WRITE(*,'(A,I4,A,4X,F19.10)') ' HYBRIDMIN> MODE ',I,' WILL BE SEARCHED DOWNHILL. EIGENVALUE=',DIAG(I)
+            IF (DEBUG) WRITE(*,'(A,I4,A,4X,F19.10)') ' hybridmin> Mode ',I,' will be searched downhill. Eigenvalue=',DIAG(I)
             STEP(I)=-XFOB(I)/LP
             IF (AWAY.AND.(I.EQ.1)) THEN
                IF (PUSHOFF.NE.0.0D0) THEN
@@ -322,8 +322,8 @@ C
             ENDDO
          ELSE
 C
-C  STEP AND SCALING DETERMINED BY PAGE-MCIVER SCHEME.
-C  STPMAX(1) IS DYNAMICALLY ADJUSTED VIA A TRUST RADIUS SCHEME.
+C  Step and scaling determined by Page-McIver scheme.
+C  STPMAX(1) is dynamically adjusted via a trust radius scheme.
 C     
             DELTAT=STPMAX(1)/(100.0D0*RMS*SQRT(1.0D0*NOPT))
             DELTAS=RMS*SQRT(1.0D0*NOPT)*DELTAT/2.0D0
@@ -340,14 +340,14 @@ C
             ENDDO 
             DELTAS=DELTAS+DSQRT(TEMP)*DELTAT
 !
-!  WE NEED TO ESCAPE FROM THE LOOP IF THE INTEGRAL HAS EFFECTIVELY CONVERGED
-!  OR IF THE ARC LENGTH EXCEEDS THE ALLOWED VALUE. 
+!  We need to escape from the loop if the integral has effectively converged
+!  or if the arc length exceeds the allowed value. 
 !  
             IF ((DELTAS.LT.STPMAX(1)).AND.(J1.LT.100000).AND.((DELTAS-DELTASP)/DELTASP.GT.1.0D-10)) GOTO 666
 
             TPAR=J1*DELTAT
-            IF (PTEST) WRITE(*,'(A,G16.6,A,F15.3,A,I6)') ' EFOL> ESTIMATED ARC LENGTH=',DELTAS,' FOR T=',TPAR,
-     &                               ' INTEGRATION STEPS=',J1
+            IF (PTEST) WRITE(*,'(A,G16.6,A,F15.3,A,I6)') ' efol> Estimated arc length=',DELTAS,' for t=',TPAR,
+     &                               ' integration steps=',J1
 
             STEP(1:NOPT)=0.0D0
             DO J1=1,NUSEEV
@@ -355,25 +355,25 @@ C
             ENDDO
          ENDIF
       ELSE 
-         PRINT '(A,A)',' HYBRIDMIN> UNRECOGNISED HYBRID MINIMISATION STEP METHOD: ',HMMETHOD
+         PRINT '(A,A)',' hybridmin> unrecognised hybrid minimisation step method: ',HMMETHOD
          STOP
       ENDIF
 C
-C  SCALE ACCORDING TO STEP SIZE IN EV BASIS:
+C  Scale according to step size in ev basis:
 C
       STPMAG=MAX(DSQRT(DOTOPT(STEP(1),STEP(1),NUSEEV)),1.0D-10)
-      IF (PTEST) WRITE(*,'(A,2F12.6)') ' HYBRIDMIN> % OF STEP AND GRADIENT ALONG SOFTEST MODE=',  
+      IF (PTEST) WRITE(*,'(A,2F12.6)') ' hybridmin> % of step and gradient along softest mode=',  
      &                              ABS(STEP(1))*100.0D0/STPMAG,ABS(XFOB(1))*100.0D0/(RMS*SQRT(1.0D0*NOPT))
       IF (.NOT.AWAY) THEN 
          DO J1=1,NUSEEV
             SCALE=MIN(STPMAX(J1)/MAX(DABS(STEP(J1)),1D-10),1.0D0)
-            IF (DEBUG) PRINT '(A,I8,A,2G20.10)',' HYBRIDMIN> SCALED AND UNSCALED STEPS FOR MODE ',J1,' ARE: ',
+            IF (DEBUG) PRINT '(A,I8,A,2G20.10)',' hybridmin> scaled and unscaled steps for mode ',J1,' are: ',
      &                                            STEP(J1),SCALE*STEP(J1)
             STEP(J1)=SCALE*STEP(J1)
          ENDDO
       ENDIF
 C
-C  CONVERT THE STEPS TO THE CARTESIAN RATHER THAN THE EV BASIS AND PUT IN CSTEP(NOPT+1:2*NOPT)
+C  Convert the steps to the Cartesian rather than the EV basis and put in CSTEP(NOPT+1:2*NOPT)
 C
       DO J=1,NOPT
          CSTEP(J)=0.0D0
@@ -382,7 +382,7 @@ C
          ENDDO
       ENDDO
 C
-C  PUT NEW COORDINATES INTO COORDS.
+C  Put new coordinates into COORDS.
 C
       DO J=1,NOPT
          COORDS(J)=SAVECOORDS(J)+CSTEP(J)
@@ -394,10 +394,10 @@ C
       ESAVE=ENERGY
       CALL POTENTIAL(COORDS,ENERGY,GRAD,.TRUE.,.FALSE.,RMS,PTEST,.FALSE.)
 C
-C  ADJUST MAXIMUM STEP SIZE.
+C  Adjust maximum step size.
 C
       IF (ENERGY.GT.ESAVE+MAXERISE) THEN
-         PRINT '(A,G20.10,A,G20.10,A)',' HYBRIDMIN> ENERGY INCREASED FROM ',ESAVE,' TO ',ENERGY,' - REVERSING STEP'
+         PRINT '(A,G20.10,A,G20.10,A)',' hybridmin> energy increased from ',ESAVE,' to ',ENERGY,' - reversing step'
          DO J1=1,NOPT
             COORDS(J1)=COORDS(J1)-CSTEP(J1)
             STPMAX(J1)=MAX(STPMAX(J1)/2.0D0,MINMAX)
@@ -422,13 +422,13 @@ C
       CALL DUMPP(COORDS,ENERGY)
       CALL FLUSH(6,ISTAT)
 C
-C SUMMARIZE
+C Summarize
 C
       IF (PTEST) THEN
          WRITE(*,30)
 30       FORMAT(1X,79('-'))
          WRITE(*,40)
-40       FORMAT(' VECTOR      GRADIENT        SECDER       STEP          MAX STEP    TRUST RATIO')
+40       FORMAT(' Vector      Gradient        Secder       Step          Max step    Trust ratio')
          WRITE(*,30)
          DO I=NUSEEV,1,-1
             WRITE(*,50) I,XFOB(I),DIAG(I),STEP(I),STPMAX(I),XRAT(I)
@@ -437,9 +437,9 @@ C
          WRITE(*,30)
       ENDIF
 C
-C  TANGENT SPACE MINIMIZATION NEXT.
-C  UPHILL DIRECTION IS PROJECTED OUT OF THE STEP IN MYLBFGS
-C  THE NEXT IF BLOCK ALLOWS FOR ZERO TANGENT SPACE STEPS IN THE INITIAL PHASE
+C  Tangent space minimization next.
+C  Uphill direction is projected out of the step in mylbfgs
+C  The next IF block allows for zero tangent space steps in the initial phase
 C
       IF ((HMNBFGSMAX1.EQ.0).AND.((1.0D0-DABS(SOVER).GT.0.0001D0))) THEN
          FIXIMAGE=.FALSE.
@@ -464,10 +464,10 @@ C
          CALL MYLBFGS(NOPT,MUPDATE,COORDS,.FALSE.,MFLAG,ENERGY,RMS2,EREAL,RMS,NBFGS,
      1                RESET,ITDONE,PTEST,GRAD,.TRUE.,.TRUE.)
       ENDIF
-      RMS2=RMS ! SAVE SUBSPACE RMS
-      RMS=DSQRT(DOTOPT(GRAD(1),GRAD(1),NOPT))/SQRT(1.0D0*NOPT) ! TRUE RMS
-      IF (PTEST) WRITE(*,'(A,F15.7,A,F15.7,A,F15.7)') ' HYBRIDMIN> TOTAL RMS GRADIENT=',RMS,
-     &         ' SUBSPACE GRADIENT=',RMS2,' UNSCALED SECOND ORDER STEP LENGTH=',STPMAG
+      RMS2=RMS ! save subspace RMS
+      RMS=DSQRT(DOTOPT(GRAD(1),GRAD(1),NOPT))/SQRT(1.0D0*NOPT) ! true RMS
+      IF (PTEST) WRITE(*,'(A,F15.7,A,F15.7,A,F15.7)') ' hybridmin> Total RMS gradient=',RMS,
+     &         ' subspace gradient=',RMS2,' unscaled second order step length=',STPMAG
       IF (MFLAG) THEN
          IF (((RMS.GT.CONVR).OR.(INEG.GT.0)).OR.(STPMAG.GT.CONVU)) MFLAG=.FALSE.
          IF (MFLAG) RETURN

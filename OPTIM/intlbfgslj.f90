@@ -1,19 +1,19 @@
-!   COPYRIGHT (C) 2003-2010 DAVID J. WALES
-!   THIS FILE IS PART OF OPTIM.
+!   Copyright (C) 2003-2010 David J. Wales
+!   This file is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 SUBROUTINE INTLBFGSLJ(QSTART,QFINISH,NMINFOUND,NTSFOUND,MINFOUND,TSFOUND)
 USE PORFUNCS
@@ -26,7 +26,7 @@ USE MODEFOL
 
 IMPLICIT NONE 
 
-DOUBLE PRECISION, INTENT(IN) :: QSTART(NOPT), QFINISH(NOPT)  ! THE TWO END POINTS
+DOUBLE PRECISION, INTENT(IN) :: QSTART(NOPT), QFINISH(NOPT)  ! The two end points
 DOUBLE PRECISION EDUMMY,EVALMIN,EVALMAX
 INTEGER D, U
 DOUBLE PRECISION DF, DMAX, DMIN
@@ -49,16 +49,16 @@ LOGICAL TSCONVERGED
 DOUBLE PRECISION, POINTER :: X(:), G(:)
 DOUBLE PRECISION, ALLOCATABLE :: EINT(:)
 !
-! THESE DECLARATIONS HAVE TO MATCH THOSE IN NEB/NTC.F90
+! These declarations have to match those in NEB/ntc.f90
 !
 TYPE MINFOUNDTYPE
    DOUBLE PRECISION,POINTER :: E
    DOUBLE PRECISION,POINTER :: COORD(:)
 END TYPE MINFOUNDTYPE
-INTEGER,PARAMETER :: NMINMAX = 3000 ! MAXIMAL NUMBER OF MIN TO BE CHECKED IN ONE INTLBFGSLJ RUN
+INTEGER,PARAMETER :: NMINMAX = 3000 ! Maximal number of min to be checked in one intlbfgslj run
 TYPE (MINFOUNDTYPE) :: MINFOUND(NMINMAX)
 
-INTEGER,PARAMETER :: NTSMAX = 3000 ! MAXIMAL NUMBER OF TS TO BE CHECKED IN ONE INTLBFGSLJ RUN
+INTEGER,PARAMETER :: NTSMAX = 3000 ! Maximal number of ts to be checked in one intlbfgslj run
 TYPE TSFOUNDTYPE
      DOUBLE PRECISION,POINTER :: E
      DOUBLE PRECISION,POINTER :: EVALMIN
@@ -68,12 +68,12 @@ END TYPE TSFOUNDTYPE
 
 TYPE (TSFOUNDTYPE) :: TSFOUND(NTSMAX)
 !
-! EFK: FOR FREEZENODES
+! efk: for freezenodes
 !
 DOUBLE PRECISION :: TESTG, TOTGNORM
 INTEGER :: IM
 !
-! DIMENSIONS INVOLVING INTIMAGE
+! Dimensions involving INTIMAGE
 !
 INTEGER, PARAMETER :: MAXINTIMAGE=200
 DOUBLE PRECISION, ALLOCATABLE :: STEPIMAGE(:), &
@@ -91,7 +91,7 @@ ALLOCATE(GTMP(3*NATOMS*INTIMAGE), &
 
 INTIMAGESAVE=INTIMAGE
 CALL MYCPU_TIME(STIME,.FALSE.)
-PRINT '(A,I6)',' INTLBFGSLJ> MAXIMUM NUMBER OF STEPS FOR LJ INTERP PHASE IS ',INTLJSTEPS
+PRINT '(A,I6)',' intlbfgslj> Maximum number of steps for LJ interp phase is ',INTLJSTEPS
 PREVGRAD=1.0D100
 IF (FREEZENODEST) IMGFREEZE(1:INTIMAGE)=.FALSE.
 D=NOPT*INTIMAGE
@@ -99,28 +99,28 @@ U=INTMUPDATE
 NITERDONE=1
 
 IF ( D<=0 ) THEN
-   PRINT *, 'D IS NOT POSITIVE, D=',D
+   PRINT *, 'd is not positive, d=',d
    CALL TSUMMARY
    STOP
 ENDIF
 IF ( U<=0 ) THEN
-   PRINT *, 'U IS NOT POSITIVE, U=',U
+   PRINT *, 'u is not positive, u=',u
    CALL TSUMMARY
    STOP
 ENDIF
 IF (INTLJSTEPS < 0) THEN
-   PRINT '(1X,A)', 'MAXIMAL NUMBER OF ITERATIONS IS LESS THAN ZERO! STOP.'
+   PRINT '(1x,a)', 'Maximal number of iterations is less than zero! Stop.'
    CALL TSUMMARY
    STOP
 ENDIF
 !
-! XYZ, GGG INCLUDE THE END POINT IMAGES
-! X, G DO NOT.
+! XYZ, GGG include the end point images
+! X, G do not.
 !
 X=>XYZ(NOPT+1:NOPT*(INTIMAGE+1))
 G=>GGG(NOPT+1:NOPT*(INTIMAGE+1))
 !
-! INITIALISE XYZ
+! Initialise XYZ
 !
 XYZ(1:NOPT)=QSTART(1:NOPT)
 XYZ(NOPT*(INTIMAGE+1)+1:NOPT*(INTIMAGE+2))=QFINISH(1:NOPT)
@@ -128,7 +128,7 @@ DO J1=1,INTIMAGE+2
    XYZ((J1-1)*NOPT+1:J1*NOPT)=((INTIMAGE+2-J1)*QSTART(1:NOPT)+(J1-1)*QFINISH(1:NOPT))/(INTIMAGE+1)
 ENDDO
 !
-! CALCULATE INITIAL CONSTRAINTS.
+! Calculate initial constraints.
 !
 IF (.NOT.ALLOCATED(ATOMACTIVE)) ALLOCATE(ATOMACTIVE(NATOMS))
 DUMMY=1.0D100
@@ -142,18 +142,18 @@ DO J1=1,NATOMS
       DUMMY=DF
    ENDIF
 ENDDO
-IF (DEBUG) PRINT '(A,I6,A,F15.5)',' INTLBFGSLJ> SMALLEST OVERALL MOTION FOR ATOM ',NBEST,' DIST=',DUMMY
+IF (DEBUG) PRINT '(A,I6,A,F15.5)',' intlbfgslj> Smallest overall motion for atom ',NBEST,' dist=',DUMMY
 ! EDGEINT(1:INTIMAGE+1,1:NATOMS,1:NATOMS)=.FALSE.
-!!!!!!!!!!!!!!!!!!! ALL IN ONE FROM LINEAR !!!!!!!!!!!!!!!!!
+!!!!!!!!!!!!!!!!!!! all in one from linear !!!!!!!!!!!!!!!!!
 NACTIVE=NATOMS
 ATOMACTIVE(1:NATOMS)=.TRUE.
 CALL INTGRADLJ(ETOTAL,XYZ,GGG,IMGFREEZE,RMS,.FALSE.)
 EOLD=ETOTAL
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-IF (DEBUG) WRITE(*,'(A26,A20,A15,A13,A9)') 'ITER','ENERGY PER IMAGE','RMS FORCE','STEP'
+IF (DEBUG) WRITE(*,'(A26,A20,A15,A13,A9)') 'Iter','Energy per image','RMS Force','Step'
 
-DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
+DO ! Main do loop with counter NITERDONE, initially set to one
 
    MAIN: IF (NITERDONE==1) THEN
         POINT = 0
@@ -168,16 +168,16 @@ DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
         YS=DOT_PRODUCT( GDIF(NPT/D,:), SEARCHSTEP(NPT/D,:)  )
         IF (YS==0.0D0) YS=1.0D0
     
-        ! UPDATE ESTIMATE OF DIAGONAL INVERSE HESSIAN ELEMENTS.
-        ! WE DIVIDE BY BOTH YS AND YY AT DIFFERENT POINTS, SO THEY HAD BETTER NOT BE ZERO!
+        ! Update estimate of diagonal inverse Hessian elements.
+        ! We divide by both YS and YY at different points, so they had better not be zero!
 
         YY=DOT_PRODUCT( GDIF(NPT/D,:) , GDIF(NPT/D,:) )
         IF (YY==0.0D0) YY=1.0D0
 !       DIAG = ABS(YS/YY)
         DIAG = YS/YY
       
-        ! COMPUTE -H*G USING THE FORMULA GIVEN IN: NOCEDAL, J. 1980, "UPDATING QUASI-NEWTON MATRICES WITH LIMITED STORAGE",
-        ! MATHEMATICS OF COMPUTATION, VOL.35, NO.151, PP. 773-782
+        ! COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980, "Updating quasi-Newton matrices with limited storage",
+        ! Mathematics of Computation, Vol.35, No.151, pp. 773-782
         CP= POINT; IF (POINT==0) CP = INTMUPDATE
         RHO1(CP)=1.0D0/YS
         GTMP = -G
@@ -206,27 +206,27 @@ DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
         STP(1:D) = 1.0D0
    ENDIF MAIN
 
-   !  STORE THE NEW SEARCH DIRECTION
+   !  Store the new search direction
    IF (NITERDONE.GT.1) SEARCHSTEP(POINT,:)=GTMP
       
 !
-! IF THE NUMBER OF IMAGES HAS CHANGED SINCE G WAS DECLARED THEN G IS NOT THE SAME
-! SIZE AS GTMP AND DOT_PRODUCT CANNOT BE USED.
+! If the number of images has changed since G was declared then G is not the same
+! size as Gtmp and Dot_Product cannot be used.
 !
-!  IF (DOT_PRODUCT(G,GTMP)/SQRT( DOT_PRODUCT(G,G)*DOT_PRODUCT(GTMP,GTMP) ) > 0.0D0) THEN
+!  IF (Dot_Product(G,Gtmp)/SQRT( Dot_Product(G,G)*Dot_Product(Gtmp,Gtmp) ) > 0.0D0) THEN
 !
-!  SEPARATE SQRT;S TO AVOID OVERFLOW.
+!  Separate sqrt;s to avoid overflow.
 !
    IF (DDOT(D,G,1,GTMP,1)/MAX(1.0D-100,SQRT( DDOT(D,G,1,G,1))*SQRT(DDOT(D,GTMP,1,GTMP,1)) ) > 0.0D0) THEN
-        IF (DEBUG) PRINT*,'SEARCH DIRECTION HAS POSITIVE PROJECTION ONTO GRADIENT - REVERSING STEP'
+        IF (DEBUG) PRINT*,'Search direction has positive projection onto gradient - reversing step'
         GTMP=-GTMP
         SEARCHSTEP(POINT,:)=GTMP
    ENDIF
    GTMP=G
 
-!  WE SHOULD APPLY THE MAXIMUM LBFGS STEP TO EACH IMAGE SEPARATELY.
-!  HOWEVER, USING DIFFERENT SCALE FACTORS FOR DIFFERENT IMAGES LEADS TO HUGE
-!  DISCONTINUITIES! NOW TAKE THE MINIMUM SCALE FACTOR FOR ALL IMAGES. DJW 26/11/07
+!  We should apply the maximum LBFGS step to each image separately.
+!  However, using different scale factors for different images leads to huge
+!  discontinuities! Now take the minimum scale factor for all images. DJW 26/11/07
 
    STPMIN=1.0D0
    DO J2=1,INTIMAGE
@@ -236,11 +236,11 @@ DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
            STP(NOPT*(J2-1)+1:NOPT*J2) = MAXINTBFGS/STEPIMAGE(J2)
            STPMIN=MIN(STPMIN,STP(NOPT*(J2-1)+1))
       ENDIF
-!     PRINT '(A,I8,3G20.10)','IMAGE,INITIAL STEP SIZE,STP,PROD=',J2,DUMMY,STP(NOPT*(J2-1)+1),STEPIMAGE(J2)*STP(NOPT*(J2-1)+1)
+!     PRINT '(A,I8,3G20.10)','image,initial step size,STP,prod=',J2,DUMMY,STP(NOPT*(J2-1)+1),STEPIMAGE(J2)*STP(NOPT*(J2-1)+1)
    ENDDO
    STP(1:D)=STPMIN
 
-! EFK: DECIDE WHETHER TO FREEZE SOME NODES
+! EFK: decide whether to freeze some nodes
    IF (FREEZENODEST) THEN
       TOTGNORM=SQRT(DOT_PRODUCT(G(1:NOPT*INTIMAGE),G(1:NOPT*INTIMAGE))/INTIMAGE)
       NIMAGEFREEZE=0
@@ -249,7 +249,7 @@ DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
          IMGFREEZE(IM)=.FALSE.
          IF (TOTGNORM.NE.0.0D0) THEN
             IF (TESTG/TOTGNORM.LT.FREEZETOL) THEN
-!              IF (DEBUG) PRINT '(A,I6,2G20.10)', ' INTLBFGSLJ> FREEZING IMAGE: ', IM, TESTG, TOTGNORM
+!              IF (DEBUG) PRINT '(A,I6,2G20.10)', ' intlbfgslj> Freezing image: ', IM, TESTG, TOTGNORM
                IMGFREEZE(IM)=.TRUE.
                STEPIMAGE(IM)=0.0D0
                NIMAGEFREEZE=NIMAGEFREEZE+1
@@ -257,9 +257,9 @@ DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
             ENDIF
          ENDIF
       ENDDO
-      IF (DEBUG) PRINT '(2(A,I6))', ' INTLBFGSLJ> NUMBER OF FROZEN IMAGES=',NIMAGEFREEZE,' / ',INTIMAGE
+      IF (DEBUG) PRINT '(2(A,I6))', ' intlbfgslj> Number of frozen images=',NIMAGEFREEZE,' / ',INTIMAGE
    ENDIF
-   !  WE NOW HAVE THE PROPOSED STEP - UPDATE GEOMETRY AND CALCULATE NEW GRADIENT
+   !  We now have the proposed step - update geometry and calculate new gradient
 20 X(1:D) = X(1:D) + STP(1:D)*SEARCHSTEP(POINT,1:D)
 
 !  IF ((RMS.LT.INTRMSTOL*1.0D10).AND.(MOD(NITERDONE,10).EQ.0).AND.(NSTEPSMAX-NITERDONE.GT.100)) &
@@ -283,11 +283,11 @@ DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
             DMIN=DUMMY
             JMIN=J1
          ENDIF
-         IF (DEBUG) PRINT '(A,I6,A,I6,A,G20.10)',' INTLBFGS> DISTANCE BETWEEN IMAGES ', &
-  &                                               J1,' AND ',J1+1,' IS ',DUMMY
+         IF (DEBUG) PRINT '(A,I6,A,I6,A,G20.10)',' intlbfgs> distance between images ', &
+  &                                               J1,' and ',J1+1,' is ',DUMMY
       ENDDO
       IF ((DMAX.GT.IMSEPMAX).AND.(INTIMAGE.LT.MAXINTIMAGE)) THEN
-         PRINT '(A,I6,A,I6)',' INTLBFGS> ADD AN IMAGE BETWEEN ',JMAX,' AND ',JMAX+1
+         PRINT '(A,I6,A,I6)',' intlbfgs> Add an image between ',JMAX,' and ',JMAX+1
          ALLOCATE(DPTMP(3*NATOMS*(INTIMAGE+2)))
          DPTMP(1:3*NATOMS*(INTIMAGE+2))=XYZ(1:3*NATOMS*(INTIMAGE+2))
          DEALLOCATE(XYZ)
@@ -297,9 +297,9 @@ DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
   &                                            + DPTMP(3*NATOMS*JMAX+1:3*NATOMS*(JMAX+1)))/2.0D0
          XYZ(3*NATOMS*(JMAX+1)+1:3*NATOMS*(INTIMAGE+3))=DPTMP(3*NATOMS*JMAX+1:3*NATOMS*(INTIMAGE+2))
 !
-! SAVE STEP-TAKING MEMORIES IN SEARCHSTEP AND GDIF.
-! THESE ARRAYS RUN FROM 0 TO INTMUPDATE OVER MEMORIES AND
-! 1:NOPT*INTIMAGE OVER ONLY THE VARIABLE IMAGES.
+! Save step-taking memories in SEARCHSTEP and GDIF.
+! These arrays run from 0 to INTMUPDATE over memories and
+! 1:NOPT*INTIMAGE over only the variable images.
 !
          DEALLOCATE(DPTMP)
          ALLOCATE(D2TMP(0:INTMUPDATE,1:NOPT*INTIMAGE))
@@ -343,7 +343,7 @@ DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
          D=NOPT*INTIMAGE
       ELSEIF ((DMIN.LT.IMSEPMIN).AND.(INTIMAGE.GT.1)) THEN
          IF (JMIN.EQ.1) JMIN=2
-         PRINT '(A,I6,A,I6)',' INTLBFGS> REMOVE IMAGE ',JMIN
+         PRINT '(A,I6,A,I6)',' intlbfgs> Remove image ',JMIN
          ALLOCATE(DPTMP(3*NATOMS*(INTIMAGE+2)))
          DPTMP(1:3*NATOMS*(INTIMAGE+2))=XYZ(1:3*NATOMS*(INTIMAGE+2))
          DEALLOCATE(XYZ)
@@ -353,9 +353,9 @@ DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
 
          DEALLOCATE(DPTMP)
 !
-! SAVE STEP-TAKING MEMORIES IN SEARCHSTEP AND GDIF.
-! THESE ARRAYS RUN FROM 0 TO INTMUPDATE OVER MEMORIES AND
-! 1:NOPT*INTIMAGE OVER ONLY THE VARIABLE IMAGES.
+! Save step-taking memories in SEARCHSTEP and GDIF.
+! These arrays run from 0 to INTMUPDATE over memories and
+! 1:NOPT*INTIMAGE over only the variable images.
 !
          ALLOCATE(D2TMP(0:INTMUPDATE,1:NOPT*INTIMAGE))
          D2TMP(0:INTMUPDATE,1:NOPT*INTIMAGE)=SEARCHSTEP(0:INTMUPDATE,1:NOPT*INTIMAGE)
@@ -398,31 +398,31 @@ DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
    EOLD=ETOTAL
    STEPTOT = SUM(STEPIMAGE)/INTIMAGE
    IF (DEBUG) THEN
-      WRITE(*,'(A,I6,2G20.10,F9.3)') ' INTLBFGSLJ> STEPS: ',NITERDONE,ETOTAL/INTIMAGE,RMS,STEPTOT
+      WRITE(*,'(A,I6,2G20.10,F9.3)') ' intlbfgslj> steps: ',NITERDONE,ETOTAL/INTIMAGE,RMS,STEPTOT
       CALL FLUSH(6,ISTAT)
    ENDIF
 
    EXITSTATUS=0
-   INTDGUESS=DIAG(1) ! SHOULD BE OK FOR SUBSEQUENT RUNS OF THE SAME SYSTEM DJW
+   INTDGUESS=DIAG(1) ! should be ok for subsequent runs of the same system DJW
    IF (RMS<=INTLJTOL.AND.NITERDONE>1) EXITSTATUS=1
    IF (NITERDONE==INTLJSTEPS) EXITSTATUS=2
 
    IF (EXITSTATUS > 0) THEN  
-      IF (EXITSTATUS.EQ.1) THEN ! ADD ACTIVE ATOM 
+      IF (EXITSTATUS.EQ.1) THEN ! add active atom 
          IF (NACTIVE.LT.NATOMS) THEN 
             GOTO 777
          ENDIF
 !        CALL MYCPU_TIME(FTIME,.FALSE.)
-!        PRINT '(A,I6,A,F10.1)',' INTLBFGSLJ> CONVERGED AT STEP ',NITERDONE,' TIME=',FTIME-STIME
+!        PRINT '(A,I6,A,F10.1)',' intlbfgslj> converged at step ',NITERDONE,' time=',FTIME-STIME
       ELSEIF (EXITSTATUS.EQ.2) THEN 
          CALL MYCPU_TIME(FTIME,.FALSE.)
-         PRINT '(A,F10.1)',' INTLBFGSLJ> FAILED TO ACHIEVE REQUESTED RMS CONVERGENCE, TIME=',FTIME-STIME
+         PRINT '(A,F10.1)',' intlbfgslj> Failed to achieve requested RMS convergence, time=',FTIME-STIME
       ENDIF
       EXIT
    ENDIF
    777 CONTINUE
 !
-! COMPUTE THE NEW STEP AND GRADIENT CHANGE
+! Compute the new step and gradient change
 !
    NPT=POINT*D
    SEARCHSTEP(POINT,:) = STP*SEARCHSTEP(POINT,:)
@@ -435,15 +435,15 @@ DO ! MAIN DO LOOP WITH COUNTER NITERDONE, INITIALLY SET TO ONE
    NITERDONE=NITERDONE+1
    IF (NITERDONE.GT.INTLJSTEPS) EXIT
 
-ENDDO ! END OF MAIN DO LOOP OVER COUNTER NITERDONE
+ENDDO ! end of main do loop over counter NITERDONE
 
 IF (EXITSTATUS.EQ.1) THEN
    CALL MYCPU_TIME(FTIME,.FALSE.)
-   WRITE(*,'(A,I6,A,G20.10,A,G15.5,A,F10.1)') ' INTLBFGSLJ> CONVERGED IN ',NITERDONE,' STEPS, ENERGY/IMAGE=',ETOTAL/INTIMAGE, &
-  &                               ' RMS=',RMS,' TIME=',FTIME-STIME
+   WRITE(*,'(A,I6,A,G20.10,A,G15.5,A,F10.1)') ' intlbfgslj> Converged in ',NITERDONE,' steps, energy/image=',ETOTAL/INTIMAGE, &
+  &                               ' RMS=',RMS,' time=',FTIME-STIME
 ELSEIF (EXITSTATUS.EQ.2) THEN
-   WRITE(*,'(A,I6,A,G20.10,A,G20.10)') ' INTLBFGSLJ> AFTER ',NITERDONE,' STEPS, ENERGY PER IMAGE=',ETOTAL/INTIMAGE, &
-  &                               ' RMS GRADIENT=',RMS
+   WRITE(*,'(A,I6,A,G20.10,A,G20.10)') ' intlbfgslj> After ',NITERDONE,' steps, energy per image=',ETOTAL/INTIMAGE, &
+  &                               ' RMS gradient=',RMS
 ENDIF
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !        DIFF=1.0D-5
@@ -451,7 +451,7 @@ ENDIF
 !        EOLD=ETOTAL
 !        ALLOCATE(GLAST(D))
 !        GLAST(1:D)=G(1:D)
-!        PRINT '(A,I6)',' INTLBFGSLJ> ANALYTIC AND NUMERICAL GRADIENTS: D=',D
+!        PRINT '(A,I6)',' intlbfgslj> analytic and numerical gradients: D=',D
 !        DO J2=1,D
 !           X(J2)=X(J2)+DIFF
 !           CALL INTGRADLJ(ETOTAL,XYZ,GGG,IMGFREEZE,RMS,.TRUE.)
@@ -462,7 +462,7 @@ ENDIF
 !           X(J2)=X(J2)+DIFF
 !           IF (ABS(GLAST(J2)).NE.0.0D0) THEN
 !              IF (100.0D0*ABS((GLAST(J2)-(EPLUS-EMINUS)/(2.0D0*DIFF))/GLAST(J2)).GT.10.0D0) THEN
-!                 WRITE(*,'(A,3I8,3G20.10)') 'ERROR ',(J2-1)/NOPT+1,(J2-NOPT*((J2-1)/NOPT)-1)/3+1,J2, &
+!                 WRITE(*,'(A,3I8,3G20.10)') 'error ',(J2-1)/NOPT+1,(J2-NOPT*((J2-1)/NOPT)-1)/3+1,J2, &
 !    &                                 GLAST(J2),(EPLUS-EMINUS)/(2.0D0*DIFF), &
 !    &                                 (EPLUS-EMINUS)/(2.0D0*DIFF*GLAST(J2))
 !              ELSE
@@ -475,19 +475,19 @@ ENDIF
 !        DEALLOCATE(GLAST)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
-! LINEAR INTERPOLATION FOR REAL POTENTIAL
+! Linear interpolation for real potential
 !
 DINCREMENT=0.01D0
 DTOTAL=0.0D0
-OPEN(UNIT=753,FILE='INTENERGY',STATUS='UNKNOWN')
+OPEN(UNIT=753,FILE='intenergy',STATUS='UNKNOWN')
 !
-! LOCAL MAXIMA MUST HAVE NSIDE HIGHER ENERGIES ON EACH SIDE
-! THIS HAS THE DESIRABLE SIDE-EFFECT THAT WE DON'T BOTHER WITH 
-! IMAGES THAT ARE ESSENTIALLY COLLAPSED ON EACH OTHER - THEIR
-! SPACING WILL PROBABLY BE < DINCREMENT, OR 5*DINCREMENT.
+! local maxima must have NSIDE higher energies on each side
+! This has the desirable side-effect that we don't bother with 
+! images that are essentially collapsed on each other - their
+! spacing will probably be < DINCREMENT, or 5*DINCREMENT.
 !
 NSIDE=5      
-INTTST=.TRUE. ! TRY PASSING LOCAL MAXIMA BACK AS TS GUESSES
+INTTST=.TRUE. ! try passing local maxima back as ts guesses
 NTSFOUND=0
 NMINFOUND=0
 PRINTOPTIMIZETS=DEBUG
@@ -498,16 +498,16 @@ DO J1=1,INTIMAGE+1
    ENDDO
    DUMMY=SQRT(DUMMY)
    DIST=0.0D0
-   PRINT '(A,I6,A,I6,A,G20.10)',' INTLBFGSLJ> DISTANCE BETWEEN IMAGES ',J1,' AND ',J1+1,' IS ',DUMMY
+   PRINT '(A,I6,A,I6,A,G20.10)',' intlbfgslj> distance between images ',J1,' and ',J1+1,' is ',DUMMY
    NDUMMY=DUMMY/DINCREMENT+1
    ALLOCATE(EINT(NDUMMY))
    J3=1
  
-   INTLOOP: DO 
+   intloop: DO 
       LOCALCOORDS(1:3*NATOMS)=((DUMMY-DIST)*XYZ((J1-1)*3*NATOMS+1:J1*3*NATOMS)+ &
   &                                    DIST*XYZ(J1*3*NATOMS+1:(J1+1)*3*NATOMS))/DUMMY
       CALL POTENTIAL(LOCALCOORDS,EREAL,VNEW,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-      IF (DEBUG) PRINT '(A,3G20.10)',' INTLBFGSLJ> ',DTOTAL+DIST,EREAL
+      If (DEBUG) PRINT '(A,3G20.10)',' intlbfgslj> ',DTOTAL+DIST,EREAL
       WRITE(753,'(3G20.10)') DTOTAL+DIST,EREAL
       DIST=DIST+DINCREMENT
       EINT(J3)=EREAL
@@ -518,11 +518,11 @@ DO J1=1,INTIMAGE+1
                IF (EINT(J3-NSIDE).LT.EINT(J4)) GOTO 432
             ENDDO
 !
-! WE HAVE A TS CANDIDATE. TRY OPTIMISING IT!
+! We have a ts candidate. Try optimising it!
 !
             CALL MYCPU_TIME(STARTTIME,.FALSE.)
             KNOWG=.FALSE.
-            KNOWE=.FALSE. ! TO BE SAFE!
+            KNOWE=.FALSE. ! to be safe!
             LOCALCOORDS(1:NOPT)= &
   &                 ((DUMMY-(J3-NSIDE-1)*DINCREMENT)*XYZ((J1-1)*NOPT+1:J1*NOPT)+ &
   &                         (J3-NSIDE-1)*DINCREMENT *XYZ(J1*NOPT+1:(J1+1)*NOPT))/DUMMY
@@ -537,8 +537,8 @@ DO J1=1,INTIMAGE+1
             IF (TSCONVERGED) THEN
                NTSFOUND=NTSFOUND+1
 !
-! SAVE COORDINATES AND DIRECTION VECTOR BETWEEN IMAGES TO USE AS STARTING GUESS
-! FOR THE EIGENVECTOR.
+! Save coordinates and direction vector between images to use as starting guess
+! for the eigenvector.
 !
                ALLOCATE(TSFOUND(NTSFOUND)%E,TSFOUND(NTSFOUND)%COORD(NOPT), &
   &                     TSFOUND(NTSFOUND)%EVALMIN,TSFOUND(NTSFOUND)%VECS(NOPT))
@@ -546,8 +546,8 @@ DO J1=1,INTIMAGE+1
                TSFOUND(NTSFOUND)%COORD(1:NOPT)=LOCALCOORDS(1:NOPT)
                TSFOUND(NTSFOUND)%E=EDUMMY
                TSFOUND(NTSFOUND)%EVALMIN=EVALMIN
-               PRINT '(A,I6,A,G20.10,A,F10.1))',' INTLBFGSLJ> TRANSITION STATE FOUND, ITERATIONS=',ITDONE, &
-  &                                  ' ENERGY=',EDUMMY,' TIME=',TIME0-STARTTIME
+               PRINT '(A,I6,A,G20.10,A,F10.1))',' intlbfgslj> transition state found, iterations=',ITDONE, &
+  &                                  ' energy=',EDUMMY,' time=',TIME0-STARTTIME
             ENDIF
 432         CONTINUE
          ENDIF
@@ -555,30 +555,30 @@ DO J1=1,INTIMAGE+1
       J3=J3+1
       IF (DIST.GT.DUMMY) EXIT INTLOOP
       IF (J3.GT.NDUMMY) THEN
-         PRINT '(A,I6)',' INTLBFGSLJ> ERROR *** NUMBER OF INTERPOLATED ENERGIES SHOULD NOT BE ',J3
+         PRINT '(A,I6)',' intlbfgslj> ERROR *** number of interpolated energies should not be ',J3
       ENDIF
-   ENDDO INTLOOP
+   ENDDO intloop
    DTOTAL=DTOTAL+DUMMY
    DEALLOCATE(EINT)
 ENDDO
 
 LOCALCOORDS(1:3*NATOMS)=XYZ((INTIMAGE+1)*3*NATOMS+1:(INTIMAGE+2)*3*NATOMS)
 CALL POTENTIAL(LOCALCOORDS,EREAL,VNEW,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-IF (DEBUG) PRINT '(A,3G20.10)',' INTLBFGSLJ> ',DTOTAL,EREAL
+IF (DEBUG) PRINT '(A,3G20.10)',' intlbfgslj> ',DTOTAL,EREAL
 WRITE(753,'(3G20.10)') DTOTAL,EREAL
 CLOSE(753)
 
 IF (.NOT.INTTST) THEN
    PTEST=.FALSE.
-   PRINT '(A,I8)',' INTLBFGSLJ> MINIMISING ALL THE IMAGES - RESULTS WRITTEN TO IMAGES.MIN'
-   OPEN(987,FILE='IMAGES.MIN',STATUS='UNKNOWN')
+   PRINT '(A,I8)',' intlbfgslj> minimising all the images - results written to images.min'
+   OPEN(987,FILE='images.min',STATUS='UNKNOWN')
    WRITE(987,'(I6)') NATOMS
-   WRITE(987,'(A)') 'START - IMAGE 1'
+   WRITE(987,'(A)') 'start - image 1'
    WRITE(987,'(A,3G20.10)') (ZSYM(J2),XYZ(3*(J2-1)+1:3*(J2-1)+3),J2=1,NATOMS)
    DO J1=2,INTIMAGE+1
       KNOWG=.FALSE.
       KNOWE=.FALSE. 
-!     PRINT '(A,I8,A,F20.10)',' INTLBFGSLJ> MINIMISING IMAGE ',J1
+!     PRINT '(A,I8,A,F20.10)',' intlbfgslj> minimising image ',J1
 
 !     BSMIN=.TRUE.
 !     DEBUG=.TRUE.
@@ -596,21 +596,21 @@ IF (.NOT.INTTST) THEN
       IF (MFLAG) THEN
          NMINFOUND=NMINFOUND+1
 !
-!  WE HAVE TO COMMUNICATE THE MINIMA FOUND BACK TO TRYCONNECT USING THE DATA STRUCTURE
-!  SET UP FOR NEW TRANSITION STATES.
-!  ADDED NEW VARIABLE MINFOUND TO ALLOW FOR THIS CHECK IN TRYCONNECT.
-!  IT SEEMS IMPOSSIBLE TO MAKE INTLBFGS SEE ISNEWMIN AND ADDNEWMIN FOR SOME REASON.
+!  We have to communicate the minima found back to tryconnect using the data structure
+!  set up for new transition states.
+!  Added new variable MINFOUND to allow for this check in tryconnect.
+!  It seems impossible to make intlbfgs see isnewmin and addnewmin for some reason.
 !
          ALLOCATE(MINFOUND(NMINFOUND)%E,MINFOUND(NMINFOUND)%COORD(NOPT))
          MINFOUND(NMINFOUND)%COORD(1:NOPT)=XYZ(NOPT*(J1-1)+1:NOPT*J1)
          MINFOUND(NMINFOUND)%E=EREAL
          WRITE(987,'(I6)') NATOMS
-         WRITE(987,'(A,I5)') 'IMAGE ',J1
+         WRITE(987,'(A,I5)') 'image ',J1
          WRITE(987,'(A,3G20.10)') (ZSYM(J2), MINFOUND(NMINFOUND)%COORD(3*(J2-1)+1:3*(J2-1)+3),J2=1,NATOMS)
       ENDIF
    ENDDO
    WRITE(987,'(I6)') NATOMS
-   WRITE(987,'(A)') 'FINISH - IMAGE INTIMAGE+2'
+   WRITE(987,'(A)') 'finish - image INTIMAGE+2'
    WRITE(987,'(A,3G20.10)') (ZSYM(J2),XYZ(NOPT*(INTIMAGE+1)+3*(J2-1)+1:NOPT*(INTIMAGE+1)+3*(J2-1)+3),J2=1,NATOMS)
    CLOSE(987)
 ENDIF

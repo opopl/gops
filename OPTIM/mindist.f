@@ -1,29 +1,29 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C  FINDS THE MINIMUM DISTANCE BETWEEN TWO GEOMETRIES USING LBFGS
-C  GEOMETRY R0 IS RESET TO R1 AFTER EACH OPTIMISATION STEP. GEOMETRY
-C  IN R SHOULD NOT CHANGE, SO NEITHER SHOULD RA. RB IS RETURNED AS THE
-C  CLOSEST GEOMETRY TO RA.
+C  Finds the minimum distance between two geometries using LBFGS
+C  Geometry R0 is reset to R1 after each optimisation step. Geometry
+C  in R should not change, so neither should RA. RB is returned as the
+C  closest geometry to RA.
 C
-C JMC AS LONG AS ZSYM ISN'T 'W' (IN WHICH CASE MIND DOES SOMETHING SPECIAL) MIND
-C DOESN'T CARE WHAT ATOMIC SYMBOL WE GIVE IT
+C jmc As long as zsym isn't 'W' (in which case mind does something special) mind
+C doesn't care what atomic symbol we give it
 C
       SUBROUTINE MINDIST(RA,RB,NATOMS,DIST,BULKT,TWOD,ZUSE,PRESERVET)
       USE KEY,ONLY : FREEZE, PULLT, EFIELDT
@@ -44,7 +44,7 @@ C
       ALLOCATE(RBSAVE(3*NATOMS))
       RBSAVE(1:3*NATOMS)=RB(1:3*NATOMS)
 C
-C  INITIALISE ACCUMULATED ROTATION MATRIX TO THE IDENTITY.
+C  Initialise accumulated rotation matrix to the identity.
 C
       DO J1=1,3
          DO J2=1,3
@@ -99,26 +99,26 @@ C    1            RB(3*(NATOMS+J1-1)+1),RB(3*(NATOMS+J1-1)+2),RB(3*(NATOMS+J1-1)
          ENDDO
       ENDIF
 C
-C     PUT C.O.M. TO ORIGIN
+C     put c.o.m. to origin
 C
       IF (.NOT.FREEZE) THEN
-         DO IG=1,3
-            RG=0.D0
-            RG0=0.D0
-            DO I=1,NSIZE
-               RG=RG+R(IG,I)
-               RG0=RG0+R0(IG,I)
-            ENDDO
-            RG=RG/NSIZE
-            RG0=RG0/NSIZE
-            DO I=1,NSIZE
-               R(IG,I)=R(IG,I)-RG
-               R0(IG,I)=R0(IG,I)-RG0
-            ENDDO
-         ENDDO
+         do ig=1,3
+            rg=0.d0
+            rg0=0.d0
+            do i=1,nsize
+               rg=rg+R(ig,i)
+               rg0=rg0+R0(ig,i)
+            enddo
+            rg=rg/nsize
+            rg0=rg0/nsize
+            do i=1,nsize
+               R(ig,i)=R(ig,i)-rg
+               R0(ig,i)=R0(ig,i)-rg0
+            enddo
+         enddo
       ENDIF
 C
-C     INITIAL ANGLES
+C     initial angles
 C
       P(1)=0.0D0
       P(2)=0.0D0
@@ -126,7 +126,7 @@ C
 C     IF (TWOD) P(1)=0.0D0
 C     IF (TWOD) P(2)=0.0D0
 C
-C     CALCULATE INITIAL DISTANCE
+C     calculate initial distance
 C
       NCOUNT=0
 10    DIST0=DISTFUNC(P,R,R0,R1)
@@ -142,15 +142,15 @@ C
       DIST=DISTFUNC(P,R,R0,R1)
       DIST=SQRT(DIST)
       IF (MFLAG) THEN
-C        WRITE(*,'(A,2F15.5,A,I6)') 'INITIAL AND FINAL DISTANCES:',DIST0,DIST,' ITERATIONS=',ITER
+C        WRITE(*,'(A,2F15.5,A,I6)') 'Initial and final distances:',DIST0,DIST,' iterations=',ITER
 C        PRINT*
       ELSE
          NCOUNT=NCOUNT+1
          IF (NCOUNT.GT.0) THEN 
-            PRINT*,'CONVERGENCE FAILURE IN MIND'
-C           STOP
+            PRINT*,'convergence failure in mind'
+c           STOP
          ELSE
-C           WRITE(*,'(A,2F15.5,A,I6,A,I6)') 'INITIAL AND FINAL DISTANCES:',DIST0,DIST,' ITERATIONS=',ITER,' NCOUNT=',NCOUNT
+C           WRITE(*,'(A,2F15.5,A,I6,A,I6)') 'Initial and final distances:',DIST0,DIST,' iterations=',ITER,' NCOUNT=',NCOUNT
             DO J1=1,NSIZE
                R0(1,J1)=R1(1,J1)
                R0(2,J1)=R1(2,J1)
@@ -163,7 +163,7 @@ C           WRITE(*,'(A,2F15.5,A,I6,A,I6)') 'INITIAL AND FINAL DISTANCES:',DIST0
          ENDIF
       ENDIF
 C
-C  THIS BLOCK ALLOWS THE SECOND GEOMETRY TO ROTATE OUT OF THE XY PLANE; NOT ALLOWED!
+C  This block allows the second geometry to rotate out of the xy plane; not allowed!
 C
 C     IF (TWOD) THEN
 C        IF (AGAIN) THEN
@@ -264,107 +264,107 @@ C    1              RA(3*(NATOMS/2+J1-1)+1),RA(3*(NATOMS/2+J1-1)+2),RA(3*(NATOMS
       RETURN
       END
 
-C__________________________________________________________________________
+c__________________________________________________________________________
 
-        SUBROUTINE INVERSE(A,B)
+        subroutine inverse(A,B)
         IMPLICIT NONE
         DOUBLE PRECISION A(3,3),B(3,3),C(2,2),D(3,3),DET
         INTEGER I, J, JJ, II
 
-        DO I=1,3
-           DO J=1,3
-              DO JJ=1,J-1
-                 DO II=1,I-1
-                    C(II,JJ)=A(II,JJ)
-                 ENDDO
-                 DO II=I+1,3
-                    C(II-1,JJ)=A(II,JJ)
-                 ENDDO
-              ENDDO
+        do i=1,3
+           do j=1,3
+              do jj=1,j-1
+                 do ii=1,i-1
+                    C(ii,jj)=A(ii,jj)
+                 enddo
+                 do ii=i+1,3
+                    C(ii-1,jj)=A(ii,jj)
+                 enddo
+              enddo
               
-              DO JJ=J+1,3
-                 DO II=1,I-1
-                    C(II,JJ-1)=A(II,JJ)
-                 ENDDO
-                 DO II=I+1,3
-                    C(II-1,JJ-1)=A(II,JJ)
+              do jj=j+1,3
+                 do ii=1,i-1
+                    C(ii,jj-1)=A(ii,jj)
+                 enddo
+                 do ii=i+1,3
+                    C(ii-1,jj-1)=A(ii,jj)
                     
-                 ENDDO
-              ENDDO
+                 enddo
+              enddo
               
-              B(I,J)=C(1,1)*C(2,2)-C(1,2)*C(2,1)
-              D(I,J)=B(I,J)*(-1)**(I+J)
-           ENDDO
-        ENDDO
+              B(i,j)=C(1,1)*C(2,2)-C(1,2)*C(2,1)
+              D(i,j)=B(i,j)*(-1)**(i+j)
+           enddo
+        enddo
         
-        DET=A(1,1)*D(1,1)+A(1,2)*D(1,2)+A(1,3)*D(1,3)
-        IF (DET.EQ.0.0D0) WRITE(*,'(A,G20.10)') 'ERROR, DETERMINANT IN MIND ROUTINE INVERSE=',DET
+        det=A(1,1)*D(1,1)+A(1,2)*D(1,2)+A(1,3)*D(1,3)
+        IF (DET.EQ.0.0D0) WRITE(*,'(A,G20.10)') 'ERROR, determinant in mind routine inverse=',DET
         
-        DO I=1,3
-           DO J=1,3
-              B(I,J)=D(J,I)/DET
-           ENDDO
-        ENDDO
+        do i=1,3
+           do j=1,3
+              B(i,j)=D(j,i)/det
+           enddo
+        enddo
         
-        RETURN
-        END
-C_____________________________________________________________________
+        return
+        end
+c_____________________________________________________________________
 
       SUBROUTINE PROD(A,B,C)
       IMPLICIT NONE
       DOUBLE PRECISION A(3,3),B(3,3),C(3,3)
       INTEGER I, J
 
-      DO I=1,3
-         DO J=1,3
-            C(I,J)=A(I,1)*B(1,J)+A(I,2)*B(2,J)+A(I,3)*B(3,J)
-         ENDDO
-      ENDDO
+      do i=1,3
+         do j=1,3
+            C(i,j)=A(i,1)*B(1,j)+A(i,2)*B(2,j)+A(i,3)*B(3,j)
+         enddo
+      enddo
 
-      RETURN
-      END
-C_____________________________________________________________________
+      return
+      end
+c_____________________________________________________________________
 
-      FUNCTION DISTFUNC(P,R,R0,R1)
+      function distfunc(p,r,r0,r1)
       IMPLICIT NONE
 
       DOUBLE PRECISION R(3,*),R0(3,*),A(3,3),R1(3,*),DIST,DISTFUNC
       DOUBLE PRECISION MYROTMAT(3,3),ROTX(3,3),ROTY(3,3),ROTZ(3,3),OMEGATOT(3,3)
       DOUBLE PRECISION P(3)
-      INTEGER NSIZE,I,J
+      integer nsize,I,J
       COMMON /MINDOM/ MYROTMAT, OMEGATOT
 
-      COMMON/GEOM/NSIZE
+      common/geom/nsize
 
-      ROTX(1,1)=1.0D0
-      ROTX(1,2)=0.0D0
-      ROTX(2,1)=0.0D0
-      ROTX(1,3)=0.0D0
-      ROTX(3,1)=0.0D0
-      ROTX(2,2)=DCOS(P(1))
-      ROTX(3,3)=ROTX(2,2)
-      ROTX(2,3)=DSIN(P(1))
-      ROTX(3,2)=-ROTX(2,3)
+      rotx(1,1)=1.0D0
+      rotx(1,2)=0.0D0
+      rotx(2,1)=0.0D0
+      rotx(1,3)=0.0D0
+      rotx(3,1)=0.0D0
+      rotx(2,2)=dcos(p(1))
+      rotx(3,3)=rotx(2,2)
+      rotx(2,3)=dsin(p(1))
+      rotx(3,2)=-rotx(2,3)
 
-      ROTY(1,2)=0.0D0
-      ROTY(2,1)=0.0D0
-      ROTY(2,3)=0.0D0
-      ROTY(3,2)=0.0D0
-      ROTY(2,2)=1.0D0
-      ROTY(1,1)=DCOS(P(2))
-      ROTY(3,3)=ROTY(1,1)
-      ROTY(1,3)=-DSIN(P(2))
-      ROTY(3,1)=-ROTY(1,3)
+      roty(1,2)=0.0D0
+      roty(2,1)=0.0D0
+      roty(2,3)=0.0D0
+      roty(3,2)=0.0D0
+      roty(2,2)=1.0D0
+      roty(1,1)=dcos(p(2))
+      roty(3,3)=roty(1,1)
+      roty(1,3)=-dsin(p(2))
+      roty(3,1)=-roty(1,3)
 
-      ROTZ(1,3)=0.0D0
-      ROTZ(3,1)=0.0D0
-      ROTZ(2,3)=0.0D0
-      ROTZ(3,2)=0.0D0
-      ROTZ(3,3)=1.0D0
-      ROTZ(1,1)=DCOS(P(3))
-      ROTZ(2,2)=ROTZ(1,1)
-      ROTZ(1,2)=DSIN(P(3))
-      ROTZ(2,1)=-ROTZ(1,2)
+      rotz(1,3)=0.0D0
+      rotz(3,1)=0.0D0
+      rotz(2,3)=0.0D0
+      rotz(3,2)=0.0D0
+      rotz(3,3)=1.0D0
+      rotz(1,1)=dcos(p(3))
+      rotz(2,2)=rotz(1,1)
+      rotz(1,2)=dsin(p(3))
+      rotz(2,1)=-rotz(1,2)
 
       A(1,1)=ROTY(1,1)*ROTZ(1,1)+ROTY(1,2)*ROTZ(2,1)+ROTY(1,3)*ROTZ(3,1)
       A(1,2)=ROTY(1,1)*ROTZ(1,2)+ROTY(1,2)*ROTZ(2,2)+ROTY(1,3)*ROTZ(3,2)
@@ -386,90 +386,90 @@ C_____________________________________________________________________
       MYROTMAT(3,2)=ROTX(3,1)*A(1,2)+ROTX(3,2)*A(2,2)+ROTX(3,3)*A(3,2)
       MYROTMAT(3,3)=ROTX(3,1)*A(1,3)+ROTX(3,2)*A(2,3)+ROTX(3,3)*A(3,3)
 
-C     CALL PROD(ROTY,ROTZ,A)
-C     CALL PROD(ROTX,A,MYROTMAT)
+C     call prod(roty,rotz,A)
+C     call prod(rotx,A,MYROTMAT)
 
-      DO I=1,NSIZE
-         DO J=1,3
-            R1(J,I)=MYROTMAT(J,1)*R0(1,I)+MYROTMAT(J,2)*R0(2,I)+MYROTMAT(J,3)*R0(3,I)
-         ENDDO
-      ENDDO
+      do i=1,nsize
+         do j=1,3
+            R1(j,i)=MYROTMAT(j,1)*R0(1,i)+MYROTMAT(j,2)*R0(2,i)+MYROTMAT(j,3)*R0(3,i)
+         enddo
+      enddo
 
-      DIST=0.D0
-      DO I=1,NSIZE
-         DIST=DIST+(R(1,I)-R1(1,I))**2+(R(2,I)-R1(2,I))**2+(R(3,I)-R1(3,I))**2
-C        WRITE(*,'(A,I5,2G20.10)') 'I,DIST,TOTAL=',I,(R(1,I)-R1(1,I))**2+(R(2,I)-R1(2,I))**2+(R(3,I)-R1(3,I))**2,DIST
-      ENDDO
+      dist=0.d0
+      do i=1,nsize
+         dist=dist+(r(1,i)-r1(1,i))**2+(r(2,i)-r1(2,i))**2+(r(3,i)-r1(3,i))**2
+C        WRITE(*,'(A,I5,2G20.10)') 'I,DIST,TOTAL=',I,(r(1,i)-r1(1,i))**2+(r(2,i)-r1(2,i))**2+(r(3,i)-r1(3,i))**2,DIST
+      enddo
 
-      DISTFUNC=DIST
+      DISTFUNC=dist
       
-      RETURN
-      END
-C_____________________________________________________________________
+      return
+      end
+c_____________________________________________________________________
 
       SUBROUTINE DDISTFUNC(P,F,R,R0,R1)
       IMPLICIT NONE
 
       DOUBLE PRECISION R(3,*),R0(3,*),R1(3,*)
       DOUBLE PRECISION P(3),F(3)
-      INTEGER NSIZE, I
+      integer nsize, I
 
-      COMMON/GEOM/NSIZE
+      common/geom/nsize
 
-      F(1)=0.D0
-      F(2)=0.D0
-      F(3)=0.D0
-      DO I=1,NSIZE
-         F(1)=F(1)+R(2,I)*R1(3,I)-R(3,I)*R1(2,I)
-         F(2)=F(2)+R(3,I)*R1(1,I)-R(1,I)*R1(3,I)
-         F(3)=F(3)+R(1,I)*R1(2,I)-R(2,I)*R1(1,I)
-      ENDDO
-      F(1)=-2.D0*F(1)
-      F(2)=-2.D0*F(2)
-      F(3)=-2.D0*F(3)
+      F(1)=0.d0
+      F(2)=0.d0
+      F(3)=0.d0
+      do i=1,nsize
+         F(1)=F(1)+R(2,i)*R1(3,i)-R(3,i)*R1(2,i)
+         F(2)=F(2)+R(3,i)*R1(1,i)-R(1,i)*R1(3,i)
+         F(3)=F(3)+R(1,i)*R1(2,i)-R(2,i)*R1(1,i)
+      enddo
+      F(1)=-2.d0*F(1)
+      F(2)=-2.d0*F(2)
+      F(3)=-2.d0*F(3)
 
-      RETURN
+      return
 
-      END
-C_____________________________________________________________________
+      end
+c_____________________________________________________________________
 
-      SUBROUTINE DDDISTFUNC(P,H,R,R0,R1)
+      subroutine DDDISTFUNC(P,H,R,R0,R1)
       IMPLICIT NONE
 
       DOUBLE PRECISION R(3,*),R0(3,*),R1(3,*)
       DOUBLE PRECISION P(3),H(3,3)
-      INTEGER NSIZE, I, J
+      integer nsize, I, J
 
-      COMMON/GEOM/NSIZE
+      common/geom/nsize
 
-      DO I=1,3
-         DO J=1,3
-            H(I,J)=0.D0
-            H(I,J)=0.D0
-            H(I,J)=0.D0
-         ENDDO
-      ENDDO
-      DO I=1,NSIZE
-         H(1,1)=H(1,1)+R(2,I)*R1(2,I)+R(3,I)*R1(3,I)
-         H(2,2)=H(2,2)+R(1,I)*R1(1,I)+R(3,I)*R1(3,I)
-         H(3,3)=H(3,3)+R(1,I)*R1(1,I)+R(2,I)*R1(2,I)
-         H(2,1)=H(2,1)-R(2,I)*R1(1,I)
-         H(3,1)=H(3,1)-R(3,I)*R1(1,I)
-         H(3,2)=H(3,2)-R(3,I)*R1(2,I)
-      ENDDO
+      do i=1,3
+         do j=1,3
+            H(i,j)=0.d0
+            H(i,j)=0.d0
+            H(i,j)=0.d0
+         enddo
+      enddo
+      do i=1,nsize
+         H(1,1)=H(1,1)+R(2,i)*R1(2,i)+R(3,i)*R1(3,i)
+         H(2,2)=H(2,2)+R(1,i)*R1(1,i)+R(3,i)*R1(3,i)
+         H(3,3)=H(3,3)+R(1,i)*R1(1,i)+R(2,i)*R1(2,i)
+         H(2,1)=H(2,1)-R(2,i)*R1(1,i)
+         H(3,1)=H(3,1)-R(3,i)*R1(1,i)
+         H(3,2)=H(3,2)-R(3,i)*R1(2,i)
+      enddo
       H(1,2)=H(2,1)
       H(1,3)=H(3,1)
       H(2,3)=H(3,2)
 
-      DO I=1,3
-         DO J=1,3
-            H(I,J)=2.D0*H(I,J)
-         ENDDO
-      ENDDO
+      do i=1,3
+         do j=1,3
+            H(i,j)=2.d0*H(i,j)
+         enddo
+      enddo
 
-      RETURN
+      return
 
-      END
+      end
 
       SUBROUTINE ROTGEOM(NATOMS,COORDS)
       IMPLICIT NONE
@@ -551,9 +551,9 @@ C
 
       SUBROUTINE CONVERT2(OVEC,H1VEC,H2VEC,X,Y,Z,A,B,C)
 C
-C  CONVERT H, H, O POSITIONS TO EULERS - NEEDS H, H, O
-C  POSITIONS AND CENTRES OF MASS. HERE WE ALLOW FOR THE POSSIBILITY THAT THE
-C  IDEAL RIGID WATER GEOMETRY MAY BE BROKEN AND TAKE THE BEST FIT.
+C  Convert H, H, O positions to Eulers - needs H, H, O
+C  positions and centres of mass. Here we allow for the possibility that the
+C  ideal rigid water geometry may be broken and take the best fit.
 C
       IMPLICIT NONE
       DOUBLE PRECISION X,Y,Z,A,B,C,OVEC(3),H1VEC(3),H2VEC(3),PI,OL,SINA,SINB,SINC,COSA,COSB,COSC,SP12,SP13,SP22,
@@ -687,23 +687,23 @@ C     RETURN
 20    A=ABEST
       B=BBEST
       C=CBEST
-C     IF (DMIN.GT.0.1D0) WRITE(*,'(A,F15.5)') 'WARNING, DEVIATION FROM RIGID BODY GEOMETRY DETECTED, BEST FIT IS ',DMIN
+C     IF (DMIN.GT.0.1D0) WRITE(*,'(A,F15.5)') 'WARNING, deviation from rigid body geometry detected, best fit is ',DMIN
 
       RETURN
       END
 
 C        LIMITED MEMORY BFGS METHOD FOR LARGE SCALE OPTIMIZATION
 C                          JORGE NOCEDAL
-C                        *** JULY 1990 ***
+C                        *** July 1990 ***
 C
-C        LINE SEARCH REMOVED PLUS SMALL MODIFICATIONS, DJW 2001
+C        Line search removed plus small modifications, DJW 2001
 C
       SUBROUTINE MMYLBFGS(X,EPS,MFLAG,ENERGY,ITMAX,ITDONE,R,R0,R1)
       USE KEY
-      USE PORFUNCS
+      use porfuncs
       IMPLICIT NONE
       INTEGER N,M,J1,J2,ITMAX,ITDONE,NFAIL,J
-      PARAMETER (N=3,M=5)  !  MMUPDATE IS ACTUALLY IGNORED
+      PARAMETER (N=3,M=5)  !  MMUPDATE is actually ignored
       DOUBLE PRECISION X(N),G(3),DIAG(N),W(N*(2*M+1)+2*M),SLENGTH,DDOT,OVERLAP,DISTFUNC
       DOUBLE PRECISION EPS,DUMMY1,ENERGY,ENEW,RMS,ALPHA,GSAVE(3)
       DOUBLE PRECISION GNORM,STP,YS,YY,SQ,YR,BETA,MYROTMAT(3,3),OMEGATOT(3,3),OTEMP(3,3)
@@ -714,7 +714,7 @@ C
       COMMON /GEOM/ NSIZE
       COMMON /MINDOM/ MYROTMAT, OMEGATOT
 C
-C  SGI APPEARS TO NEED THIS SAVE STATEMENT!
+C  SGI appears to need this SAVE statement!
 C
       SAVE
 
@@ -733,20 +733,20 @@ C
          G(J1)=GSAVE(J1)
       ENDDO
 
-      IF (PTEST) WRITE(*,'(A,2F20.10,A,I6,A)') ' DISTANCE AND RMS FORCE=',ENERGY,RMS,' AFTER ',ITDONE,' LBFGS STEPS'
+      IF (PTEST) WRITE(*,'(A,2F20.10,A,I6,A)') ' Distance and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
 
 10    CALL FLUSH(6,ISTAT)
       MFLAG=.FALSE.
       IF (RMS.LE.EPS) THEN
          MFLAG=.TRUE.
          IF (MFLAG) THEN
-C           WRITE(*,'(A,F20.10)') ' DIAGONAL INVERSE HESSIAN ELEMENTS ARE NOW ',DIAG(1)
+C           WRITE(*,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
             RETURN
          ENDIF
       ENDIF
 
       IF (ITDONE.EQ.ITMAX) THEN
-C        WRITE(*,'(A,F20.10)') ' DIAGONAL INVERSE HESSIAN ELEMENTS ARE NOW ',DIAG(1)
+C        WRITE(*,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
          RETURN
       ENDIF
 
@@ -780,7 +780,7 @@ C
          ISPT= N+2*M
          IYPT= ISPT+N*M
 C
-C  NR STEP FOR DIAGONAL INVERSE HESSIAN
+C  NR step for diagonal inverse Hessian
 C
          DO I=1,N
             W(ISPT+I)= -G(I)*DIAG(I)
@@ -788,7 +788,7 @@ C
          ENDDO
          GNORM= DSQRT(DDOT(N,G,1,G,1))
 C
-C  MAKE THE FIRST GUESS FOR THE STEP LENGTH CAUTIOUS.
+C  Make the first guess for the step length cautious.
 C
          STP=MIN(1.0D0/GNORM,GNORM)
 C        STP=1.0D0
@@ -798,9 +798,9 @@ C        STP=1.0D0
          YS= DDOT(N,W(IYPT+NPT+1),1,W(ISPT+NPT+1),1)
          IF (YS.EQ.0.0D0) YS=1.0D0
 C
-C  UPDATE ESTIMATE OF DIAGONAL INVERSE HESSIAN ELEMENTS
-C  WE DIVIDE BY BOTH YS AND YY AT DIFFERENT POINTS, SO
-C  THEY HAD BETTER NOT BE ZERO!
+C  Update estimate of diagonal inverse Hessian elements
+C  We divide by both YS and YY at different points, so
+C  they had better not be zero!
 C
          YY= DDOT(N,W(IYPT+NPT+1),1,W(IYPT+NPT+1),1)
          IF (YY.EQ.0.0D0) YY=1.0D0
@@ -810,9 +810,9 @@ C        DUMMY1=ABS(YS/YY)
             DIAG(I)= DUMMY1
          ENDDO
 C
-C     COMPUTE -H*G USING THE FORMULA GIVEN IN: NOCEDAL, J. 1980,
-C     "UPDATING QUASI-NEWTON MATRICES WITH LIMITED STORAGE",
-C     MATHEMATICS OF COMPUTATION, VOL.24, NO.151, PP. 773-782.
+C     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980,
+C     "Updating quasi-Newton matrices with limited storage",
+C     Mathematics of Computation, Vol.24, No.151, pp. 773-782.
 C     ---------------------------------------------------------
 C
          CP= POINT
@@ -849,7 +849,7 @@ C
          STP=1.0D0
       ENDIF
 C
-C  STORE THE NEW SEARCH DIRECTION
+C  Store the new search direction
 C
       IF (ITER.GT.0) THEN
          DO I=1,N
@@ -869,8 +869,8 @@ C     PRINT*,'OVERLAP,DIAG(1)=',OVERLAP,DIAG(1)
 C     PRINT*,'G . G=',DDOT(N,G,1,G,1)
 C     PRINT*,'W . W=',DDOT(N,W,1,W,1)
       IF (OVERLAP.GT.0.0D0) THEN
-         IF (PTEST) PRINT*,'SEARCH DIRECTION HAS POSITIVE PROJECTION ONTO GRADIENT - REVERSING STEP'
-C        IF (PTEST) PRINT*,'SEARCH DIRECTION HAS POSITIVE PROJECTION ONTO GRADIENT - RESET'
+         IF (PTEST) PRINT*,'Search direction has positive projection onto gradient - reversing step'
+C        IF (PTEST) PRINT*,'Search direction has positive projection onto gradient - reset'
          DO I=1,N
 C           W(I)=-W(I)
             W(ISPT+POINT*N+I)= -W(I)
@@ -889,7 +889,7 @@ C        GOTO 10
       SLENGTH=SQRT(SLENGTH)
       IF (STP*SLENGTH.GT.MAXMBFGS) STP=MAXMBFGS/SLENGTH
 C
-C  WE NOW HAVE THE PROPOSED STEP.
+C  We now have the proposed step.
 C
       DO J1=1,N
          X(J1)=X(J1)+STP*W(ISPT+POINT*N+J1)
@@ -903,15 +903,15 @@ C
          ENERGY=ENEW
       ELSE 
 C
-C  ENERGY INCREASED - TRY AGAIN WITH A SMALLER STEP SIZE
+C  Energy increased - try again with a smaller step size
 C
 C        IF (STP*SLENGTH.LT.1.0D-10) THEN
          IF (NDECREASE.GT.5) THEN
             NFAIL=NFAIL+1
-            PRINT*,' IN MMYLBFGS LBFGS STEP CANNOT FIND A LOWER DISTANCE, NFAIL=',NFAIL
-            ITER=0  !  TRY RESETTING
+            PRINT*,' in mmylbfgs LBFGS step cannot find a lower distance, NFAIL=',NFAIL
+            ITER=0  !  try resetting
             IF (NFAIL.GT.20) THEN
-               PRINT*,' TOO MANY FAILURES - GIVE UP'
+               PRINT*,' Too many failures - give up'
                RETURN
             ENDIF
             DO J1=1,N
@@ -925,11 +925,11 @@ C        IF (STP*SLENGTH.LT.1.0D-10) THEN
          NDECREASE=NDECREASE+1
          STP=STP/10.0D0
          IF (PTEST) 
-     1    WRITE(*,'(A,F19.10,A,F16.10,A,F15.8)') ' DISTANCE INCREASED FROM ',ENERGY,' TO ',ENEW,' DECREASING STEP TO ',STP*SLENGTH
+     1    WRITE(*,'(A,F19.10,A,F16.10,A,F15.8)') ' Distance increased from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
          GOTO 20
       ENDIF
 C
-C  RESET COMPARISON GEOMETRY TO R1 AND ROTATION ANGLES TO ZERO. ACCUMULATE THE OVERALL TRANSFORMATION MATRIX IN 
+C  Reset comparison geometry to R1 and rotation angles to zero. Accumulate the overall transformation matrix in 
 C  OMEGATOT.
 C
       OTEMP(1,1)=MYROTMAT(1,1)*OMEGATOT(1,1)+MYROTMAT(1,2)*OMEGATOT(2,1)+MYROTMAT(1,3)*OMEGATOT(3,1)
@@ -962,10 +962,10 @@ C
       DO J1=1,N
          G(J1)=GSAVE(J1)
       ENDDO
-      IF (PTEST) WRITE(*,'(A,2F20.10,A,I6,A,G15.5)') ' DISTANCE AND RMS FORCE=',ENERGY,RMS,' AFTER ',ITDONE,
-     1        ' LBFGS STEPS, STEP:',STP*SLENGTH
+      IF (PTEST) WRITE(*,'(A,2F20.10,A,I6,A,G15.5)') ' Distance and RMS force=',ENERGY,RMS,' after ',ITDONE,
+     1        ' LBFGS steps, step:',STP*SLENGTH
 C
-C     COMPUTE THE NEW STEP AND GRADIENT CHANGE
+C     Compute the new step and gradient change
 C
 30    NPT=POINT*N
       DO I=1,N

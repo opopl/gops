@@ -1,34 +1,34 @@
-!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!   THIS FILE IS PART OF OPTIM.
+!   OPTIM: A program for optimizing geometries and calculating reaction pathways
+!   Copyright (C) 1999-2006 David J. Wales
+!   This file is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
-!   FINDS THE MINIMUM DISTANCE BETWEEN TWO GEOMETRIES.
-!   GEOMETRY IN RA SHOULD NOT CHANGE. RB IS RETURNED AS THE
-!   CLOSEST GEOMETRY TO RA IF PRESERVET IS .FALSE.
+!   Finds the minimum distance between two geometries.
+!   Geometry in RA should not change. RB is returned as the
+!   closest geometry to RA if PRESERVET is .FALSE.
 !
-!   NEW ANALYTIC METHOD BASED ON QUATERIONS FROM
-!   KEARSLEY, ACTA CRYST. A, 45, 208-210, 1989.
+!   New analytic method based on quaterions from
+!   Kearsley, Acta Cryst. A, 45, 208-210, 1989.
 !
-! JMC AS LONG AS ZSYM ISN'T 'W' (IN WHICH CASE MIND DOES SOMETHING SPECIAL) MIND
-! DOESN'T CARE WHAT ATOMIC SYMBOL WE GIVE IT.
+! jmc As long as zsym isn't 'W' (in which case mind does something special) mind
+! doesn't care what atomic symbol we give it.
 !
-!  IF PRESERVET IS FALSE WE PUT RB INTO BEST CORRESPONDENCE WITH RA. THIS INVOLVES
-!  A TRANSLATION TO THE SAME CENTRE OF COORDINATES, FOLLOWED BY A ROTATION ABOUT THAT
-!  CENTRE.
+!  If PRESERVET is false we put RB into best correspondence with RA. This involves
+!  a translation to the same centre of coordinates, followed by a rotation about that
+!  centre.
 !
 SUBROUTINE NEWMINDIST(RA,RB,NATOMS,DIST,BULKT,TWOD,ZUSE,PRESERVET,RIGIDBODY,DEBUG,RMAT)
 USE COMMONS,ONLY : PARAM1, PARAM2, PARAM3
@@ -52,18 +52,18 @@ IF (RBAAT) THEN
    RETURN
 ENDIF
 ! CALL POTENTIAL(RA,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-! PRINT '(2(A,F25.15))','NEWMINDIST> INITIAL RA ENERGY=',ENERGY,' RMS=',RMS
+! PRINT '(2(A,F25.15))','newmindist> Initial RA energy=',ENERGY,' RMS=',RMS
 ! CALL POTENTIAL(RB,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-! PRINT '(2(A,F25.15))','NEWMINDIST> INITIAL RB ENERGY=',ENERGY,' RMS=',RMS
+! PRINT '(2(A,F25.15))','newmindist> Initial RB energy=',ENERGY,' RMS=',RMS
 
 ! WRITE(*,*) NATOMS
-! WRITE(*,*) 'RA STARTING GEOMETRY'
+! WRITE(*,*) 'RA starting geometry'
 ! WRITE(*,'(A3,3G20.10)') ('LA ',RA(3*(J1-1)+1),RA(3*(J1-1)+2),RA(3*(J1-1)+3),J1=1,NATOMS)
 ! WRITE(*,*) NATOMS
-! WRITE(*,*) 'RB STARTING GEOMETRY'
+! WRITE(*,*) 'RB starting geometry'
 ! WRITE(*,'(A3,3G20.10)') ('LA ',RB(3*(J1-1)+1),RB(3*(J1-1)+2),RB(3*(J1-1)+3),J1=1,NATOMS)
 ! 
-! CONVERT RIGID BODY COORDINATES TO CARTESIANS FOR RIGID BODIES. 
+! Convert rigid body coordinates to Cartesians for rigid bodies. 
 !
 IF (ZUSE(1:1).EQ.'W') THEN
    ALLOCATE(XA(3*3*(NATOMS/2)),XB(3*3*(NATOMS/2)))
@@ -93,13 +93,13 @@ IF (ZUSE(1:1).EQ.'W') THEN
       XB(9*(J1-1)+6+3)=H2VEC(3)
    ENDDO
 ELSEIF (RIGIDBODY) THEN
-   PRINT '(A)',' NEWMINDIST> NEW QUATERNION PROCEDURE NOT YET CODED FOR GENERAL ANGLE-AXIS VARIABLES'
+   PRINT '(A)',' newmindist> New quaternion procedure not yet coded for general angle-axis variables'
    STOP
 ELSEIF ((TWOD.OR.PULLT.OR.EFIELDT).AND.(.NOT.BULKT)) THEN
-!  ALLOCATE(XA(3*(NATOMS/2)*NUMBER OF SITES,XB(3*(NATOMS/2)*NUMBER OF SITES))
-!  NSIZE=(NATOMS/2)*NUMBER OF SITES
-!  PRINT '(A)',' NEWMINDIST> NEW QUATERNION PROCEDURE NOT YET CODED FOR FLATLAND'
-! THERE IS ONE UNKNOWN ANGLE, SO THIS SHOULD BE TRIVIAL!'
+!  ALLOCATE(XA(3*(NATOMS/2)*number of sites,XB(3*(NATOMS/2)*number of sites))
+!  NSIZE=(NATOMS/2)*number of sites
+!  PRINT '(A)',' newmindist> New quaternion procedure not yet coded for flatland'
+! There is one unknown angle, so this should be trivial!'
    CALL MINDIST(RA,RB,NATOMS,DIST,BULKT,TWOD,ZUSE,PRESERVET)
    RMAT(1:3,1:3)=OMEGATOT(1:3,1:3)
    RETURN
@@ -107,7 +107,7 @@ ELSEIF ((TWOD.OR.PULLT.OR.EFIELDT).AND.(.NOT.BULKT)) THEN
 ELSEIF (STOCKT) THEN
    ALLOCATE(XA(3*(NATOMS/2)),XB(3*(NATOMS/2)))
    NSIZE=(NATOMS/2)
-!  PRINT *,'NEWMINDIST> WARNING *** FOR STOCKT ONLY COFM COORDINATES LOADED INTO XA AND XB???'
+!  PRINT *,'newmindist> WARNING *** for STOCKT only CofM coordinates loaded into XA and XB???'
    XA(1:3*NSIZE)=RA(1:3*NSIZE)
    XB(1:3*NSIZE)=RB(1:3*NSIZE)
 ELSE
@@ -117,7 +117,7 @@ ELSE
    XB(1:3*NATOMS)=RB(1:3*NATOMS)
 ENDIF
 !
-! IF THERE ARE FROZEN ATOMS THEN JUST CALCULATE THE DISTANCE AND RETURN.
+! If there are frozen atoms then just calculate the distance and return.
 !
 IF (NFREEZE.GT.0) THEN
    DIST=0.0D0
@@ -137,7 +137,7 @@ IF (NFREEZE.GT.0) THEN
    ENDIF
    DIST=SQRT(DIST)
    
-   RMAT(1:3,1:3)=0.0D0 ! ROTATION MATRIX IS THE IDENTITY
+   RMAT(1:3,1:3)=0.0D0 ! rotation matrix is the identity
    RMAT(1,1)=1.0D0; RMAT(2,2)=1.0D0; RMAT(3,3)=1.0D0
    RETURN
 ENDIF
@@ -155,7 +155,7 @@ IF (BULKT) THEN
    ENDDO
 ENDIF
 !
-! MOVE CENTRE OF COORDINATES OF XA AND XB TO THE ORIGIN.
+! Move centre of coordinates of XA and XB to the origin.
 !
 CMXA=0.0D0; CMYA=0.0D0; CMZA=0.0D0
 DO J1=1,NSIZE
@@ -187,10 +187,10 @@ XSHIFT=0.0D0; YSHIFT=0.0D0; ZSHIFT=0.0D0
 NCIT=0
 IF (BULKT) THEN 
    BOXLX=PARAM1; BOXLY=PARAM2; BOXLZ=PARAM3
-! ITERATIVE SOLUTION
+! Iterative solution
 ! 1  NCIT=NCIT+1
 !    IF (NCIT.GT.1000) THEN
-!       PRINT '(A)','INERTIA> WARNING - ITERATIVE CALCULATION OF CENTRE OF MASS SHIFT DID NOT CONVERGE'
+!       PRINT '(A)','inertia> WARNING - iterative calculation of centre of mass shift did not converge'
 !    ENDIF
 !    XSHIFTNEW=0.0D0
 !    YSHIFTNEW=0.0D0
@@ -202,19 +202,19 @@ IF (BULKT) THEN
 !    ENDDO
 !    XSHIFTNEW=XSHIFTNEW/NSIZE; YSHIFTNEW=YSHIFTNEW/NSIZE; ZSHIFTNEW=ZSHIFTNEW/NSIZE
 !    IF ((ABS(XSHIFTNEW-XSHIFT).GT.1.0D-6).OR.(ABS(YSHIFTNEW-YSHIFT).GT.1.0D-6).OR.(ABS(ZSHIFTNEW-ZSHIFT).GT.1.0D-6)) THEN
-! !     IF (DEBUG) PRINT '(A,I6,6F15.7)',' NEWMINDIST> ',NCIT,XSHIFTNEW,YSHIFTNEW,ZSHIFTNEW,XSHIFT,YSHIFT,ZSHIFT
+! !     IF (DEBUG) PRINT '(A,I6,6F15.7)',' newmindist> ',NCIT,XSHIFTNEW,YSHIFTNEW,ZSHIFTNEW,XSHIFT,YSHIFT,ZSHIFT
 !       XSHIFT=0.05D0*XSHIFT+0.95D0*XSHIFTNEW
 !       YSHIFT=0.05D0*YSHIFT+0.95D0*YSHIFTNEW
 !       IF (.NOT.TWOD) ZSHIFT=0.05D0*ZSHIFT+0.95D0*ZSHIFTNEW
 !       GOTO 1
 !    ENDIF
-! !  IF (DEBUG) PRINT '(A,I6,3F15.7)',' NEWMINDIST> COORDINATE SHIFT CONVERGED. CYCLES AND VALUES: ',NCIT,XSHIFT,YSHIFT,ZSHIFT
+! !  IF (DEBUG) PRINT '(A,I6,3F15.7)',' newmindist> coordinate shift converged. Cycles and values: ',NCIT,XSHIFT,YSHIFT,ZSHIFT
 !    XSHIFT=XSHIFTNEW
 !    YSHIFT=YSHIFTNEW 
 !    ZSHIFT=ZSHIFTNEW
 !
-! ACTUALLY, THE ITERATIVE SOLUTION SEEMS TO BE WORSE THAN SIMPLY PUTTING THE CENTRE OF MASS
-! AT THE ORIGIN. 
+! Actually, the iterative solution seems to be worse than simply putting the centre of mass
+! at the origin. 
 !
    DIST=0.0D0
    DO J1=1,NSIZE
@@ -225,13 +225,13 @@ IF (BULKT) THEN
    ENDDO
    DIST=SQRT(DIST)
 
-   RMAT(1:3,1:3)=0.0D0 ! ROTATION MATRIX IS THE IDENTITY
+   RMAT(1:3,1:3)=0.0D0 ! rotation matrix is the identity
    RMAT(1,1)=1.0D0; RMAT(2,2)=1.0D0; RMAT(3,3)=1.0D0
 ELSE
 !
-!  THE FORMULA BELOW IS NOT INVARIANT TO OVERALL TRANSLATION BECAUSE XP, YP, ZP
-!  INVOLVE A SUM OF COORDINATES! WE NEED TO HAVE XA AND XB COORDINATE CENTRES BOTH 
-!  AT THE ORIGIN!!
+!  The formula below is not invariant to overall translation because XP, YP, ZP
+!  involve a sum of coordinates! We need to have XA and XB coordinate centres both 
+!  at the origin!!
 !
    QMAT(1:4,1:4)=0.0D0
    DO J1=1,NSIZE
@@ -266,11 +266,11 @@ ELSE
 !  PRINT '(A,G20.10)','QMAT(4,4)=',QMAT(4,4)
 
    CALL DSYEV('V','U',4,QMAT,4,DIAG,TEMPA,9*NATOMS,INFO)
-   IF (INFO.NE.0) PRINT '(A,I6,A)',' NEWMINDIST> WARNING - INFO=',INFO,' IN DSYEV'
+   IF (INFO.NE.0) PRINT '(A,I6,A)',' newmindist> WARNING - INFO=',INFO,' in DSYEV'
 
    MINV=1.0D100
    DO J1=1,4
-!     PRINT '(A,I8,G20.10)','NEWMINDIST> J1,DIAG=',J1,DIAG(J1)
+!     PRINT '(A,I8,G20.10)','newmindist> J1,DIAG=',J1,DIAG(J1)
       IF (DIAG(J1).LT.MINV) THEN
          JMIN=J1
          MINV=DIAG(J1)
@@ -280,16 +280,16 @@ ELSE
       IF (ABS(MINV).LT.1.0D-6) THEN
          MINV=0.0D0
       ELSE
-         PRINT '(A,G20.10,A)',' NEWMINDIST> WARNING MINV IS ',MINV,' CHANGE TO ABSOLUTE VALUE'
+         PRINT '(A,G20.10,A)',' newmindist> WARNING MINV is ',MINV,' change to absolute value'
          MINV=-MINV
       ENDIF
    ENDIF
    DIST=SQRT(MINV)
 
-!  IF (DEBUG) PRINT '(A,G20.10,A,I6)',' NEWMINDIST> MINIMUM RESIDUAL IS ',DIAG(JMIN),' FOR EIGENVECTOR ',JMIN
+!  IF (DEBUG) PRINT '(A,G20.10,A,I6)',' newmindist> minimum residual is ',DIAG(JMIN),' for eigenvector ',JMIN
    Q1=QMAT(1,JMIN); Q2=QMAT(2,JMIN); Q3=QMAT(3,JMIN); Q4=QMAT(4,JMIN)
 !
-! RMAT WILL CONTAIN THE MATRIX THAT MAPS XB ONTO THE BEST CORRESPONDENCE WITH XA
+! RMAT will contain the matrix that maps XB onto the best correspondence with XA
 !
    RMAT(1,1)=Q1**2+Q2**2-Q3**2-Q4**2
    RMAT(1,2)=2*(Q2*Q3+Q1*Q4)
@@ -305,7 +305,7 @@ ENDIF
 IF (.NOT.PRESERVET) THEN
    IF (ZUSE(1:1).EQ.'W') THEN
 !
-!  TRANSLATE THE XB COORDINATES TO THE CENTRE OF COORDINATES OF XA.
+!  Translate the XB coordinates to the centre of coordinates of XA.
 !
       DO J1=1,NSIZE
          XB(3*(J1-1)+1)=XB(3*(J1-1)+1)+CMXA+XSHIFT
@@ -313,7 +313,7 @@ IF (.NOT.PRESERVET) THEN
          XB(3*(J1-1)+3)=XB(3*(J1-1)+3)+CMZA+ZSHIFT
       ENDDO
 !
-!  ROTATE XB COORDINATES ABOUT NEW CENTRE OF MASS
+!  Rotate XB coordinates about new centre of mass
 !
       CALL NEWROTGEOM(NSIZE,XB,RMAT,CMXA,CMYA,CMZA)
       DO J1=1,NATOMS/2
@@ -331,12 +331,12 @@ IF (.NOT.PRESERVET) THEN
       ENDDO
    ELSEIF (RIGIDBODY) THEN
 !
-!  NEEDS SOME THOUGHT FOR THE ANGLE/AXIS RIGID BODY FORMULATION.
+!  Needs some thought for the angle/axis rigid body formulation.
 !
-      PRINT '(A)',' NEWMINDIST> WARNING *** BACK TRANSFORMATION NOT PROGRAMMED YET FOR RIGID BODIES'
+      PRINT '(A)',' newmindist> WARNING *** back transformation not programmed yet for rigid bodies'
    ELSE
 !
-!  TRANSLATE THE RB COORDINATES TO THE CENTRE OF COORDINATES OF RA.
+!  Translate the RB coordinates to the centre of coordinates of RA.
 !
       DO J1=1,NSIZE
          RB(3*(J1-1)+1)=RB(3*(J1-1)+1)-CMXB+CMXA+XSHIFT
@@ -357,7 +357,7 @@ ENDIF
 DEALLOCATE(XA,XB)
 
 ! WRITE(*,*) NATOMS
-! WRITE(*,*) 'RB FINISHING GEOMETRY'
+! WRITE(*,*) 'RB finishing geometry'
 ! WRITE(*,'(A3,3G20.10)') ('LA ',RB(3*(J1-1)+1),RB(3*(J1-1)+2),RB(3*(J1-1)+3),J1=1,NATOMS)
 
 RETURN
@@ -397,7 +397,7 @@ DOUBLE PRECISION, PARAMETER ::  PI=3.141592654D0
 NREALATOMS=(NATOMS/2)
 OFFSET = 3*NREALATOMS
 !
-! FIRST ROTATE THE DIPOLES.
+! First rotate the dipoles.
 !
 DO J1=1,NREALATOMS
    J3=3*J1
@@ -450,13 +450,13 @@ DO J1=1,NREALATOMS
       DIFFBEST=DIFF
    ENDIF
    IF (DIFFBEST.GT.1.0D-5) THEN
-      PRINT '(A,G20.10)','NEWROTGEOMSTOCK> WARNING - ANGLE ROTATION FAILED - DIFFBEST=',DIFFBEST
+      PRINT '(A,G20.10)','newrotgeomstock> WARNING - angle rotation failed - DIFFBEST=',DIFFBEST
    ENDIF
-!  PRINT '(A,G20.10)','NEWROTGEOMSTOCK> DIFFBEST=',DIFFBEST
+!  PRINT '(A,G20.10)','newrotgeomstock> DIFFBEST=',DIFFBEST
 !
-!  INVERSE COS GIVES US AN ANGLE BETWEEN 0 AND PI. HOWEVER, 2*PI - ANGLE GIVES
-!  THE SAME COS. THERE ARE THEREFORE TWO POSSIBILITIES FOR THETA AND TWO FOR PHI,
-!  AND ONLY ONE SHOULD REGENERATE THE CORRECT DISPLACEMENTS. FIND IT!
+!  Inverse cos gives us an angle between 0 and pi. However, 2*pi - angle gives
+!  the same cos. There are therefore two possibilities for theta and two for phi,
+!  and only one should regenerate the correct displacements. Find it!
 !
    COORDS(OFFSET+J3-2)=T1B; COORDS(OFFSET+J3-1)=P1B
 ENDDO
@@ -493,22 +493,22 @@ DO J1=1,NREALATOMS
    J3 = J1*3
    THETA = COORDS(OFFSET+J3-2)
    PHI = COORDS(OFFSET+J3-1)
-!  MAKE A UNIT VECTOR POINTING ALONG THE DIPOLE.
+!  Make a unit vector pointing along the dipole.
    BEFORE(1) = SIN(THETA) * COS(PHI)
    BEFORE(2) = SIN(THETA) * SIN(PHI)
    BEFORE(3) = COS(THETA)
-!  ROTATE THE UNIT VECTOR USING THE ROTATION MATRIX.
+!  Rotate the unit vector using the rotation matrix.
    AFTER(1) = MYROTMAT(1,1)*BEFORE(1) + MYROTMAT(1,2)*BEFORE(2) + MYROTMAT(1,3)*BEFORE(3)
    AFTER(2) = MYROTMAT(2,1)*BEFORE(1) + MYROTMAT(2,2)*BEFORE(2) + MYROTMAT(2,3)*BEFORE(3)
    AFTER(3) = MYROTMAT(3,1)*BEFORE(1) + MYROTMAT(3,2)*BEFORE(2) + MYROTMAT(3,3)*BEFORE(3)
-!  CONVERT THE UNIT VECTOR BACK TO SPHERICAL POLARS.
+!  Convert the unit vector back to spherical polars.
    IF (AFTER(3) > 1.0D0) AFTER(3)=1.0D0
    IF (AFTER(3) < -1.0D0) AFTER(3)=-1.0D0
    COORDS(OFFSET+J3-2) = ACOS(AFTER(3))
    COORDS(OFFSET+J3-1) = ATAN2(AFTER(2), AFTER(1))
 ENDDO
 !
-! NOW ROTATE THE PARTICLE POSITIONS.
+! Now rotate the particle positions.
 ! 
 DO I=1,(NATOMS/2)
    BEFORE(1)=COORDS(3*(I-1)+1)-CX

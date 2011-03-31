@@ -1,26 +1,26 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  SUBROUTINE SW2 CALCULATES THE ENERGY, CARTESIAN GRADIENT AND SECOND
-C  DERIVATIVE MATRIX ANALYTICALLY FOR THE SW SI POTENTIAL.
+C  Subroutine SW2 calculates the energy, Cartesian gradient and second
+C  derivative matrix analytically for the SW Si potential.
 C
 C*************************************************************************
 C
@@ -39,7 +39,7 @@ C
 C     COMMON /ANVCOMMON/ ANV
 
 C
-C  DEAL WITH ANY ATOMS THAT HAVE LEFT THE BOX.
+C  Deal with any atoms that have left the box.
 C
       IF (BULKT.AND.(.NOT.FIXIMAGE).AND.(.NOT.NORESET)) THEN
          DO J1=1,N
@@ -50,10 +50,10 @@ C
          ENDDO
       ENDIF
 C 
-C  STORE DISTANCE MATRICES.
+C  Store distance matrices.
 C
       ENERGY=0.0D0
-C     IF (BULKT.AND.(.NOT.FIXIMAGE)) PRINT*,'RECALCULATING ANV'
+C     IF (BULKT.AND.(.NOT.FIXIMAGE)) PRINT*,'recalculating ANV'
 C     IF (GTEST) THEN
          DO J1=1, N
             VEC(J1,J1,1)=0.0D0
@@ -97,7 +97,7 @@ C     IF (GTEST) THEN
             ENDDO 
          ENDDO
 C
-C  SWTHREE NEEDS TO KNOW VEC
+C  SWthree needs to know VEC
 C
 C     ELSE
 C        DO J1=1,N
@@ -144,7 +144,7 @@ C*****************************************************************************
       DOUBLE PRECISION BIGA, BIGB, SMALLA
       PARAMETER (BIGA=7.049556277D0, BIGB=0.6022245584D0, SMALLA=1.8D0)
 C
-C  CALCULATE THE G TENSOR.
+C  Calculate the g tensor.
 C
       DO J1=1,N
          G(J1,J1)=0.0D0
@@ -160,8 +160,8 @@ C
          ENDDO
       ENDDO
 C
-C  FROM HERE ON DOWN THE CODE IS SYSTEM-INDEPENDENT!
-C  FIRST CALCULATE THE GRADIENT ANALYTICALLY.
+C  From here on down the code is system-independent!
+C  First calculate the gradient analytically.
 C
       DO J1=1,N
          DO J2=1,3
@@ -203,7 +203,7 @@ C*****************************************************************************
          ENDDO
       ENDDO
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO J1=1,N
          DO J2=1,3
@@ -216,8 +216,8 @@ C
          ENDDO
       ENDDO
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO J1=1,N
          DO J2=1,3
@@ -233,7 +233,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO J1=1,N
          DO J2=1,3
@@ -248,7 +248,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO J1=1,N
          DO J2=1,3
@@ -267,7 +267,7 @@ C
          ENDDO
       ENDDO
 C
-C  SYMMETRISE HESSIAN
+C  Symmetrise Hessian
 C
       DO J1=1,3*N
          DO J2=J1+1,3*N
@@ -283,9 +283,9 @@ C
       DOUBLE PRECISION XC(3*N),F1,F2,F3,GRAD,SECOND,XSAVE(3*N),
      1                 P2, P3,V(3*N),LAMBDA,BOXLX,BOXLY,BOXLZ,DIF,TEMP1
 C
-C  VALUE OF DIF IS THE ORDER OF MAGNITUDE TO WHICH THE LATTICE
-C  CONSTANT CAN BE OPTIMISED. SETTING IT SMALLER THAN 10^(-7)
-C  CAUSES NUMERICAL PROBLEMS ON THE DEC.
+C  Value of DIF is the order of magnitude to which the lattice
+C  constant can be optimised. Setting it smaller than 10^(-7)
+C  causes numerical problems on the DEC.
 C
       DIF=1.0D-7
       NCOUNT=1
@@ -345,21 +345,21 @@ C     CALL SWTHREE(N, XC, V, P3, .FALSE., .FALSE.,LAMBDA)
       F3=P2+P3
 
       SECOND=(F3+F2-2.0D0*F1)/(4.0D0*DIF*DIF)
-      PRINT*,'ENERGY FOR LATTICE CYCLE ',NCOUNT,' IS ',F1
-      PRINT*,'GRADIENT WRT BOX LENGTH=',GRAD
-      PRINT*,'SECOND DERIVATIVE WRT BOX LENGTH=',SECOND
+      PRINT*,'Energy for lattice cycle ',NCOUNT,' is ',F1
+      PRINT*,'Gradient wrt box length=',GRAD
+      PRINT*,'Second derivative wrt box length=',SECOND
       NCOUNT=NCOUNT+1
       IF (DABS(GRAD/SECOND).GT.1.0D-4) THEN
          BOXLX=BOXLX-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
          BOXLY=BOXLY-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
          BOXLZ=BOXLZ-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
-         PRINT*,'STEP=',-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
+         PRINT*,'Step=',-0.0001D0*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
          GOTO 10
       ELSE
          BOXLX=BOXLX-GRAD/SECOND
          BOXLY=BOXLY-GRAD/SECOND
          BOXLZ=BOXLZ-GRAD/SECOND
-         PRINT*,'STEP=',-GRAD/SECOND
+         PRINT*,'Step=',-GRAD/SECOND
          IF (DABS(GRAD/SECOND).GT.1.0D-6) GOTO 10
       ENDIF
       RETURN
@@ -367,8 +367,8 @@ C     CALL SWTHREE(N, XC, V, P3, .FALSE., .FALSE.,LAMBDA)
 C
 C*************************************************************************
 C
-C  SUBROUTINE SW2 CALCULATES THE ENERGY, CARTESIAN GRADIENT AND SECOND
-C  DERIVATIVE MATRIX ANALYTICALLY FOR THE SW SI POTENTIAL.
+C  Subroutine SW2 calculates the energy, Cartesian gradient and second
+C  derivative matrix analytically for the SW Si potential.
 C
 C*************************************************************************
 C
@@ -379,17 +379,17 @@ C
       LOGICAL GTEST, STEST
       DOUBLE PRECISION X(3*N), ENERGY, GAMMA2, ER2131,
      1                 V(3*N), R(N,N), R122, R123, R132, R133, R12S, R13S,
-     2                 G(N,N), R12DOTR13PT, R12DOTR13, R134, R124, ERLDOT,
+     2                 G(N,N), r12DOTr13PT, r12DOTr13, R134, R124, ERLDOT,
      3                 ER(N,N), F(N,N), R2(N,N), THIRD,
-     4                 ER21, ER31, R12, R13, R23, R13S3, R12S3, DOT1,
-     5                 R13S4, R12S4, DOT2, ERL, 
+     4                 ER21, ER31, R12, R13, R23, r13s3, r12s3, DOT1,
+     5                 r13s4, r12s4, DOT2, ERL, 
      6                 VEC(N,N,3), V211, V212, V213, V311, V312, V313, V2112, V2122, V2132,
      7                 V3112, V3122, V3132
       DOUBLE PRECISION LAMBDA, GAMMA, SMALLA
       PARAMETER (GAMMA=1.2D0, SMALLA=1.8D0, THIRD=0.33333333333333333333D0)
       
 C 
-C  STORE THINGS
+C  Store things
 C
       DO J1=1,N
          ER(J1,J1)=0.0D0
@@ -431,60 +431,60 @@ C           WRITE(*,'(A,2I4,2E20.10)') 'J1,J2,R,ER=',J1,J2,R(J2,J1),ER(J2,J1)
                      V3112=V311**2
                      V3122=V312**2
                      V3132=V313**2
-                     R12DOTR13=(V211*V311+V212*V312+V213*V313)/(R12*R13)
-                     DOT1=R12DOTR13**2
-                     R12DOTR13PT=(R12DOTR13+THIRD)
-                     DOT2=R12DOTR13PT**2
+                     r12DOTr13=(V211*V311+V212*V312+V213*V313)/(r12*r13)
+                     DOT1=r12DOTR13**2
+                     r12DOTr13PT=(r12DOTr13+third)
+                     DOT2=r12DOTr13PT**2
 
                      ENERGY=ENERGY+ER2131*DOT2
 
                      IF (GTEST) THEN
                         R122=R12**2
                         R132=R13**2
-                        R12S=(R12 - SMALLA)**2
-                        R13S=(R13 - SMALLA)**2
-                        ERLDOT=ER2131*LAMBDA*R12DOTR13PT
+                        r12s=(r12 - smalla)**2
+                        r13s=(r13 - smalla)**2
+                        ERLDOT=ER2131*lambda*r12DOTr13PT
 
                        V(K1+1)=V(K1+1)+ (ERLDOT*
-     1    ((2*R13*(R12 - R12DOTR13*R13)*V211 + 
-     1         2*R12*(-(R12*R12DOTR13) + R13)*V311)/(R122*R132) + 
-     1      GAMMA*R12DOTR13PT*(-(V211/(R12*R12S)) - 
-     1         V311/(R13*R13S))))/2.0D0
+     1    ((2*r13*(r12 - r12DOTr13*r13)*V211 + 
+     1         2*r12*(-(r12*r12DOTr13) + r13)*V311)/(r122*r132) + 
+     1      gamma*r12DOTr13PT*(-(V211/(r12*r12s)) - 
+     1         V311/(r13*r13s))))/2.0D0
                         V(K1+2)=V(K1+2)+ (ERLDOT*
-     1    ((2*R13*(R12 - R12DOTR13*R13)*V212 + 
-     1         2*R12*(-(R12*R12DOTR13) + R13)*V312)/(R122*R132) + 
-     1      GAMMA*R12DOTR13PT*(-(V212/(R12*R12S)) - 
-     1         V312/(R13*R13S))))/2.0D0
+     1    ((2*r13*(r12 - r12DOTr13*r13)*V212 + 
+     1         2*r12*(-(r12*r12DOTr13) + r13)*V312)/(r122*r132) + 
+     1      gamma*r12DOTr13PT*(-(V212/(r12*r12s)) - 
+     1         V312/(r13*r13s))))/2.0D0
                         V(K1+3)=V(K1+3)+ (ERLDOT*
-     1    ((2*R13*(R12 - R12DOTR13*R13)*V213 + 
-     1         2*R12*(-(R12*R12DOTR13) + R13)*V313)/(R122*R132) + 
-     1      GAMMA*R12DOTR13PT*(-(V213/(R12*R12S)) - 
-     1         V313/(R13*R13S))))/2.0D0
+     1    ((2*r13*(r12 - r12DOTr13*r13)*V213 + 
+     1         2*r12*(-(r12*r12DOTr13) + r13)*V313)/(r122*r132) + 
+     1      gamma*r12DOTr13PT*(-(V213/(r12*r12s)) - 
+     1         V313/(r13*r13s))))/2.0D0
                         V(K2+1)=V(K2+1)+ (ERLDOT*
-     1    ((2*R12DOTR13 + (GAMMA*R12*R12DOTR13PT)/R12S)*
-     1       V211 - (2*R12*V311)/R13))/(2.*R122)
+     1    ((2*r12DOTr13 + (gamma*r12*r12DOTr13PT)/r12s)*
+     1       V211 - (2*r12*V311)/r13))/(2.*r122)
                         V(K2+2)=V(K2+2)+ (ERLDOT*
-     1    ((2*R12DOTR13 + (GAMMA*R12*R12DOTR13PT)/R12S)*
-     1       V212 - (2*R12*V312)/R13))/(2.*R122)
+     1    ((2*r12DOTr13 + (gamma*r12*r12DOTr13PT)/r12s)*
+     1       V212 - (2*r12*V312)/r13))/(2.*r122)
                         V(K2+3)=V(K2+3)+ (ERLDOT*
-     1    ((2*R12DOTR13 + (GAMMA*R12*R12DOTR13PT)/R12S)*
-     1       V213 - (2*R12*V313)/R13))/(2.*R122)
+     1    ((2*r12DOTr13 + (gamma*r12*r12DOTr13PT)/r12s)*
+     1       V213 - (2*r12*V313)/r13))/(2.*r122)
                         V(K3+1)=V(K3+1)+ (ERLDOT*
-     1    ((-2*R13*V211)/R12 + 
-     1      (2*R12DOTR13 + (GAMMA*R12DOTR13PT*R13)/R13S)*
-     1       V311))/(2.*R132)
+     1    ((-2*r13*V211)/r12 + 
+     1      (2*r12DOTr13 + (gamma*r12DOTr13PT*r13)/r13s)*
+     1       V311))/(2.*r132)
                        V(K3+2)=V(K3+2)+ (ERLDOT*
-     1    ((-2*R13*V212)/R12 + 
-     1      (2*R12DOTR13 + (GAMMA*R12DOTR13PT*R13)/R13S)*
-     1       V312))/(2.*R132)
+     1    ((-2*r13*V212)/r12 + 
+     1      (2*r12DOTr13 + (gamma*r12DOTr13PT*r13)/r13s)*
+     1       V312))/(2.*r132)
                         V(K3+3)=V(K3+3)+ (ERLDOT*
-     1    ((-2*R13*V213)/R12 + 
-     1      (2*R12DOTR13 + (GAMMA*R12DOTR13PT*R13)/R13S)*
-     1       V313))/(2.*R132)
+     1    ((-2*r13*V213)/r12 + 
+     1      (2*r12DOTr13 + (gamma*r12DOTr13PT*r13)/r13s)*
+     1       V313))/(2.*r132)
 
                      ENDIF
                      IF (STEST) THEN
-                        ERL=ER2131*LAMBDA
+                        ERL=ER2131*lambda
                         GAMMA2=GAMMA**2
                         R122=R12**2
                         R123=R12*R122
@@ -492,885 +492,885 @@ C           WRITE(*,'(A,2I4,2E20.10)') 'J1,J2,R,ER=',J1,J2,R(J2,J1),ER(J2,J1)
                         R132=R13**2
                         R133=R13*R132
                         R134=R13*R133
-                        R12S=(R12 - SMALLA)**2
-                        R13S=(R13 - SMALLA)**2
-                        R12S3=R12S*(R12 - SMALLA)
-                        R13S3=R13S*(R13 - SMALLA)
-                        R12S4=R12S3*(R12 - SMALLA)
-                        R13S4=R13S3*(R13 - SMALLA)
+                        r12s=(r12 - smalla)**2
+                        r13s=(r13 - smalla)**2
+                        r12s3=r12s*(r12 - smalla)
+                        r13s3=r13s*(r13 - smalla)
+                        r12s4=r12s3*(r12 - smalla)
+                        r13s4=r13s3*(r13 - smalla)
 
-                        HESS(K1+1,K1+1)=HESS(K1+1,K1+1)+ (ERL*((2*(R13*(-R12 + R12DOTR13*R13)*V211 + 
-     1            R12*(R12*R12DOTR13 - R13)*V311)**2)/(R124*R134)
-     1       + (4*GAMMA*R12DOTR13PT*
-     1         (R13*(R12 - R12DOTR13*R13)*V211 + 
-     1           R12*(-(R12*R12DOTR13) + R13)*V311)*
-     1         (-(V211/(R12*R12S)) - 
-     1           V311/(R13*R13S)))/(R122*R132) + 
+                        HESS(K1+1,K1+1)=HESS(K1+1,K1+1)+ (ERL*((2*(r13*(-r12 + r12DOTr13*r13)*V211 + 
+     1            r12*(r12*r12DOTr13 - r13)*V311)**2)/(R124*R134)
+     1       + (4*gamma*r12DOTr13PT*
+     1         (r13*(r12 - r12DOTr13*r13)*V211 + 
+     1           r12*(-(r12*r12DOTr13) + r13)*V311)*
+     1         (-(V211/(r12*r12s)) - 
+     1           V311/(r13*r13s)))/(R122*R132) + 
      1      GAMMA2*DOT2*
-     1       (V211/(R12*R12S) + 
-     1          V311/(R13*R13S))**2 + 
-     1      GAMMA*DOT2*
-     1       (-(1/(R12*R12S)) - 1/(R13*R13S) + 
-     1         ((3*R12 - SMALLA)*V2112)/
-     1          (R123*R12S3) + 
-     1         ((3*R13 - SMALLA)*V3112)/(R133*R13S3))
-     1       - (2*R12DOTR13PT*(R133*(2*R12 - 3*R12DOTR13*R13)*
+     1       (V211/(r12*r12s) + 
+     1          V311/(r13*r13s))**2 + 
+     1      gamma*DOT2*
+     1       (-(1/(r12*r12s)) - 1/(r13*r13s) + 
+     1         ((3*r12 - smalla)*V2112)/
+     1          (R123*r12s3) + 
+     1         ((3*r13 - smalla)*V3112)/(R133*r13s3))
+     1       - (2*r12DOTr13PT*(R133*(2*r12 - 3*r12DOTr13*r13)*
      1            V2112 + 
-     1           2*R12*R13*(R122 - R12*R12DOTR13*R13 + R132)*V211*
+     1           2*r12*r13*(R122 - r12*r12DOTr13*r13 + R132)*V211*
      1            V311 + 
      1           R122*(R132*
-     1               (R122*R12DOTR13 - 2*R12*R13 + R12DOTR13*R132) + 
-     1              R12*(-3*R12*R12DOTR13 + 2*R13)*V3112)))/
+     1               (R122*r12DOTr13 - 2*r12*r13 + r12DOTr13*R132) + 
+     1              r12*(-3*r12*r12DOTr13 + 2*r13)*V3112)))/
      1       (R124*R134)))/2.
-                        HESS(K1+1,K1+2)=HESS(K1+1,K1+2)+ (ERL*((2*(R13*(-R12 + R12DOTR13*R13)*V211 + 
-     1           R12*(R12*R12DOTR13 - R13)*V311)*
-     1         (R13*(-R12 + R12DOTR13*R13)*V212 + 
-     1           R12*(R12*R12DOTR13 - R13)*V312))/(R124*R134) + 
-     1      (2*GAMMA*R12DOTR13PT*
-     1         (-(V211/(R12*R12S)) - 
-     1           V311/(R13*R13S))*
-     1         (R13*(R12 - R12DOTR13*R13)*V212 + 
-     1           R12*(-(R12*R12DOTR13) + R13)*V312))/(R122*R132)
-     1       + (2*GAMMA*R12DOTR13PT*
-     1         (R13*(R12 - R12DOTR13*R13)*V211 + 
-     1           R12*(-(R12*R12DOTR13) + R13)*V311)*
-     1         (-(V212/(R12*R12S)) - 
-     1           V312/(R13*R13S)))/(R122*R132) + 
+                        HESS(K1+1,K1+2)=HESS(K1+1,K1+2)+ (ERL*((2*(r13*(-r12 + r12DOTr13*r13)*V211 + 
+     1           r12*(r12*r12DOTr13 - r13)*V311)*
+     1         (r13*(-r12 + r12DOTr13*r13)*V212 + 
+     1           r12*(r12*r12DOTr13 - r13)*V312))/(R124*R134) + 
+     1      (2*gamma*r12DOTr13PT*
+     1         (-(V211/(r12*r12s)) - 
+     1           V311/(r13*r13s))*
+     1         (r13*(r12 - r12DOTr13*r13)*V212 + 
+     1           r12*(-(r12*r12DOTr13) + r13)*V312))/(R122*R132)
+     1       + (2*gamma*r12DOTr13PT*
+     1         (r13*(r12 - r12DOTr13*r13)*V211 + 
+     1           r12*(-(r12*r12DOTr13) + r13)*V311)*
+     1         (-(V212/(r12*r12s)) - 
+     1           V312/(r13*r13s)))/(R122*R132) + 
      1      GAMMA2*DOT2*
-     1       (-(V211/(R12*R12S)) - 
-     1         V311/(R13*R13S))*
-     1       (-(V212/(R12*R12S)) - 
-     1         V312/(R13*R13S)) + 
-     1      GAMMA*DOT2*
-     1       (((3*R12 - SMALLA)*V211*V212)/
-     1          (R123*R12S3) + 
-     1         ((3*R13 - SMALLA)*V311*V312)/
-     1          (R133*R13S3)) + 
-     1      (2*R12DOTR13PT*(R12*V311*
-     1            (-(R13*(R122 - R12*R12DOTR13*R13 + R132)*
+     1       (-(V211/(r12*r12s)) - 
+     1         V311/(r13*r13s))*
+     1       (-(V212/(r12*r12s)) - 
+     1         V312/(r13*r13s)) + 
+     1      gamma*DOT2*
+     1       (((3*r12 - smalla)*V211*V212)/
+     1          (R123*r12s3) + 
+     1         ((3*r13 - smalla)*V311*V312)/
+     1          (R133*r13s3)) + 
+     1      (2*r12DOTr13PT*(r12*V311*
+     1            (-(r13*(R122 - r12*r12DOTr13*r13 + R132)*
      1                 V212) + 
-     1              R122*(3*R12*R12DOTR13 - 2*R13)*V312) - 
-     1           R13*V211*
-     1            (R132*(2*R12 - 3*R12DOTR13*R13)*V212 + 
-     1              R12*(R122 - R12*R12DOTR13*R13 + R132)*V312)))/
+     1              R122*(3*r12*r12DOTr13 - 2*r13)*V312) - 
+     1           r13*V211*
+     1            (R132*(2*r12 - 3*r12DOTr13*r13)*V212 + 
+     1              r12*(R122 - r12*r12DOTr13*r13 + R132)*V312)))/
      1       (R124*R134)))/2.
-                        HESS(K1+1,K1+3)=HESS(K1+1,K1+3)+ (ERL*((2*(R13*(-R12 + R12DOTR13*R13)*V211 + 
-     1           R12*(R12*R12DOTR13 - R13)*V311)*
-     1         (R13*(-R12 + R12DOTR13*R13)*V213 + 
-     1           R12*(R12*R12DOTR13 - R13)*V313))/(R124*R134) + 
-     1      (2*GAMMA*R12DOTR13PT*
-     1         (-(V211/(R12*R12S)) - 
-     1           V311/(R13*R13S))*
-     1         (R13*(R12 - R12DOTR13*R13)*V213 + 
-     1           R12*(-(R12*R12DOTR13) + R13)*V313))/(R122*R132)
-     1       + (2*GAMMA*R12DOTR13PT*
-     1         (R13*(R12 - R12DOTR13*R13)*V211 + 
-     1           R12*(-(R12*R12DOTR13) + R13)*V311)*
-     1         (-(V213/(R12*R12S)) - 
-     1           V313/(R13*R13S)))/(R122*R132) + 
+                        HESS(K1+1,K1+3)=HESS(K1+1,K1+3)+ (ERL*((2*(r13*(-r12 + r12DOTr13*r13)*V211 + 
+     1           r12*(r12*r12DOTr13 - r13)*V311)*
+     1         (r13*(-r12 + r12DOTr13*r13)*V213 + 
+     1           r12*(r12*r12DOTr13 - r13)*V313))/(R124*R134) + 
+     1      (2*gamma*r12DOTr13PT*
+     1         (-(V211/(r12*r12s)) - 
+     1           V311/(r13*r13s))*
+     1         (r13*(r12 - r12DOTr13*r13)*V213 + 
+     1           r12*(-(r12*r12DOTr13) + r13)*V313))/(R122*R132)
+     1       + (2*gamma*r12DOTr13PT*
+     1         (r13*(r12 - r12DOTr13*r13)*V211 + 
+     1           r12*(-(r12*r12DOTr13) + r13)*V311)*
+     1         (-(V213/(r12*r12s)) - 
+     1           V313/(r13*r13s)))/(R122*R132) + 
      1      GAMMA2*DOT2*
-     1       (-(V211/(R12*R12S)) - 
-     1         V311/(R13*R13S))*
-     1       (-(V213/(R12*R12S)) - 
-     1         V313/(R13*R13S)) + 
-     1      GAMMA*DOT2*
-     1       (((3*R12 - SMALLA)*V211*V213)/
-     1          (R123*R12S3) + 
-     1         ((3*R13 - SMALLA)*V311*V313)/
-     1          (R133*R13S3)) + 
-     1      (2*R12DOTR13PT*(R12*V311*
-     1            (-(R13*(R122 - R12*R12DOTR13*R13 + R132)*
+     1       (-(V211/(r12*r12s)) - 
+     1         V311/(r13*r13s))*
+     1       (-(V213/(r12*r12s)) - 
+     1         V313/(r13*r13s)) + 
+     1      gamma*DOT2*
+     1       (((3*r12 - smalla)*V211*V213)/
+     1          (R123*r12s3) + 
+     1         ((3*r13 - smalla)*V311*V313)/
+     1          (R133*r13s3)) + 
+     1      (2*r12DOTr13PT*(r12*V311*
+     1            (-(r13*(R122 - r12*r12DOTr13*r13 + R132)*
      1                 V213) + 
-     1              R122*(3*R12*R12DOTR13 - 2*R13)*V313) - 
-     1           R13*V211*
-     1            (R132*(2*R12 - 3*R12DOTR13*R13)*V213 + 
-     1              R12*(R122 - R12*R12DOTR13*R13 + R132)*V313)))/
+     1              R122*(3*r12*r12DOTr13 - 2*r13)*V313) - 
+     1           r13*V211*
+     1            (R132*(2*r12 - 3*r12DOTr13*r13)*V213 + 
+     1              r12*(R122 - r12*r12DOTr13*r13 + R132)*V313)))/
      1       (R124*R134)))/2.
                         HESS(K1+1,K2+1)=HESS(K1+1,K2+1)+ (ERL*((-2*DOT1 + 
-     1         R12DOTR13*(-6*R12DOTR13PT + (2*R12)/R13 - 
-     1            (4*GAMMA*R12*R12DOTR13PT)/R12S) + 
-     1         R12*R12DOTR13PT*(2/R13 - 
-     1            (GAMMA2*R12*R12DOTR13PT)/R12S4 - 
-     1            (3*GAMMA*R12*R12DOTR13PT)/R12S3 + 
-     1            (2*GAMMA*R12)/(R13*R12S) + 
-     1            (GAMMA*R12DOTR13PT*SMALLA)/R12S3))*
-     1       V2112 + (R12*
-     1         (4*(R12DOTR13 + R12DOTR13PT)*R13 + 
-     1           R12*(-2 - 2*DOT1 - 2*R12DOTR13*R12DOTR13PT + 
-     1              (4*GAMMA*R12DOTR13PT*R13)/R12S - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S) + 
-     1           (GAMMA*R122*R12DOTR13PT*
-     1              (-2*R12DOTR13 - (GAMMA*R12DOTR13PT*R13)/R13S)
-     1              )/R12S)*V211*V311)/R132 + 
-     1      R122*(R12DOTR13PT*
-     1          (2*R12DOTR13 - (2*R12)/R13 + 
-     1            (GAMMA*R122*R12DOTR13PT)/R12S3 - 
-     1            (GAMMA*R12*R12DOTR13PT*SMALLA)/R12S3) + 
-     1         (2*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1         r12DOTr13*(-6*r12DOTr13PT + (2*r12)/r13 - 
+     1            (4*gamma*r12*r12DOTr13PT)/r12s) + 
+     1         r12*r12DOTr13PT*(2/r13 - 
+     1            (GAMMA2*r12*r12DOTr13PT)/r12s4 - 
+     1            (3*gamma*r12*r12DOTr13PT)/r12s3 + 
+     1            (2*gamma*r12)/(r13*r12s) + 
+     1            (gamma*r12DOTr13PT*smalla)/r12s3))*
+     1       V2112 + (r12*
+     1         (4*(r12DOTr13 + r12DOTr13PT)*r13 + 
+     1           r12*(-2 - 2*DOT1 - 2*r12DOTr13*r12DOTr13PT + 
+     1              (4*gamma*r12DOTr13PT*r13)/r12s - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s) + 
+     1           (gamma*R122*r12DOTr13PT*
+     1              (-2*r12DOTr13 - (gamma*r12DOTr13PT*r13)/r13s)
+     1              )/r12s)*V211*V311)/R132 + 
+     1      R122*(r12DOTr13PT*
+     1          (2*r12DOTr13 - (2*r12)/r13 + 
+     1            (gamma*R122*r12DOTr13PT)/r12s3 - 
+     1            (gamma*r12*r12DOTr13PT*smalla)/r12s3) + 
+     1         (2*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V3112)/R133)))/(2.*R124)
                         HESS(K1+1,K2+2)=HESS(K1+1,K2+2)+ (ERL*(V211*
-     1       ((-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12*R12DOTR13)/R13 + (2*R12*R12DOTR13PT)/R13 - 
-     1            (GAMMA2*R122*DOT2)/R12S4 - 
-     1            (3*GAMMA*R122*DOT2)/R12S3 - 
-     1            (4*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R122*R12DOTR13PT)/(R13*R12S) + 
-     1            (GAMMA*R12*DOT2*SMALLA)/R12S3)*
-     1          V212 + (2*R12*
-     1            (-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+     1       ((-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12*r12DOTr13)/r13 + (2*r12*r12DOTr13PT)/r13 - 
+     1            (GAMMA2*R122*DOT2)/r12s4 - 
+     1            (3*gamma*R122*DOT2)/r12s3 - 
+     1            (4*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*R122*r12DOTr13PT)/(r13*r12s) + 
+     1            (gamma*r12*DOT2*smalla)/r12s3)*
+     1          V212 + (2*r12*
+     1            (-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V312)/R132) + 
-     1      (R12*V311*(R13*
-     1            (-2*R12*DOT1 - 2*R12*R12DOTR13*R12DOTR13PT + 
-     1              2*R12DOTR13*R13 + 2*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R122*R12DOTR13*R12DOTR13PT)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R12S - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R13S - 
-     1              (GAMMA2*R122*DOT2*R13)/
-     1               (R12S*R13S))*V212 + 
-     1           2*R12*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1      (r12*V311*(r13*
+     1            (-2*r12*DOT1 - 2*r12*r12DOTr13*r12DOTr13PT + 
+     1              2*r12DOTr13*r13 + 2*r12DOTr13PT*r13 - 
+     1              (2*gamma*R122*r12DOTr13*r12DOTr13PT)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r12s - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r13s - 
+     1              (GAMMA2*R122*DOT2*r13)/
+     1               (r12s*r13s))*V212 + 
+     1           2*r12*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V312))/R133))/(2.*R124)
                         HESS(K1+1,K2+3)=HESS(K1+1,K2+3)+ (ERL*(V211*
-     1       ((-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12*R12DOTR13)/R13 + (2*R12*R12DOTR13PT)/R13 - 
-     1            (GAMMA2*R122*DOT2)/R12S4 - 
-     1            (3*GAMMA*R122*DOT2)/R12S3 - 
-     1            (4*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R122*R12DOTR13PT)/(R13*R12S) + 
-     1            (GAMMA*R12*DOT2*SMALLA)/R12S3)*
-     1          V213 + (2*R12*
-     1            (-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+     1       ((-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12*r12DOTr13)/r13 + (2*r12*r12DOTr13PT)/r13 - 
+     1            (GAMMA2*R122*DOT2)/r12s4 - 
+     1            (3*gamma*R122*DOT2)/r12s3 - 
+     1            (4*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*R122*r12DOTr13PT)/(r13*r12s) + 
+     1            (gamma*r12*DOT2*smalla)/r12s3)*
+     1          V213 + (2*r12*
+     1            (-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V313)/R132) + 
-     1      (R12*V311*(R13*
-     1            (-2*R12*DOT1 - 2*R12*R12DOTR13*R12DOTR13PT + 
-     1              2*R12DOTR13*R13 + 2*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R122*R12DOTR13*R12DOTR13PT)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R12S - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R13S - 
-     1              (GAMMA2*R122*DOT2*R13)/
-     1               (R12S*R13S))*V213 + 
-     1           2*R12*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1      (r12*V311*(r13*
+     1            (-2*r12*DOT1 - 2*r12*r12DOTr13*r12DOTr13PT + 
+     1              2*r12DOTr13*r13 + 2*r12DOTr13PT*r13 - 
+     1              (2*gamma*R122*r12DOTr13*r12DOTr13PT)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r12s - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r13s - 
+     1              (GAMMA2*R122*DOT2*r13)/
+     1               (r12s*r13s))*V213 + 
+     1           2*r12*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V313))/R133))/(2.*R124)
-                        HESS(K1+1,K3+1)=HESS(K1+1,K3+1)+ (ERL*(R12DOTR13PT*R132*
-     1       (2*R12DOTR13 - (2*R13)/R12 + 
-     1         (GAMMA*R12DOTR13PT*R132)/R13S3 - 
-     1         (GAMMA*R12DOTR13PT*R13*SMALLA)/R13S3) + 
-     1      (2*R132*((R12DOTR13 + R12DOTR13PT)*R13 + 
-     1           R12*(-1 + (GAMMA*R12DOTR13PT*R13)/R12S))*
+                        HESS(K1+1,K3+1)=HESS(K1+1,K3+1)+ (ERL*(r12DOTr13PT*R132*
+     1       (2*r12DOTr13 - (2*r13)/r12 + 
+     1         (gamma*r12DOTr13PT*R132)/r13s3 - 
+     1         (gamma*r12DOTr13PT*r13*smalla)/r13s3) + 
+     1      (2*R132*((r12DOTr13 + r12DOTr13PT)*r13 + 
+     1           r12*(-1 + (gamma*r12DOTr13PT*r13)/r12s))*
      1         V2112)/R123 + 
-     1      (R13*(2*R13*(-1 - DOT1 - R12DOTR13*R12DOTR13PT - 
-     1              (GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S) + 
-     1           R12*(4*R12DOTR13 + 4*R12DOTR13PT - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R12S + 
-     1              (4*GAMMA*R12DOTR13PT*R13)/R13S - 
+     1      (r13*(2*r13*(-1 - DOT1 - r12DOTr13*r12DOTr13PT - 
+     1              (gamma*r12DOTr13*r12DOTr13PT*r13)/r13s) + 
+     1           r12*(4*r12DOTr13 + 4*r12DOTr13PT - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r12s + 
+     1              (4*gamma*r12DOTr13PT*r13)/r13s - 
      1              (GAMMA2*DOT2*R132)/
-     1               (R12S*R13S)))*V211*
+     1               (r12s*r13s)))*V211*
      1         V311)/R122 + 
-     1      (-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1         (2*R12DOTR13*R13)/R12 + (2*R12DOTR13PT*R13)/R12 - 
-     1         (GAMMA2*DOT2*R132)/R13S4 - 
-     1         (3*GAMMA*DOT2*R132)/R13S3 - 
-     1         (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1         (2*GAMMA*R12DOTR13PT*R132)/(R12*R13S) + 
-     1         (GAMMA*DOT2*R13*SMALLA)/R13S3)*
+     1      (-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1         (2*r12DOTr13*r13)/r12 + (2*r12DOTr13PT*r13)/r12 - 
+     1         (GAMMA2*DOT2*R132)/r13s4 - 
+     1         (3*gamma*DOT2*R132)/r13s3 - 
+     1         (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1         (2*gamma*r12DOTr13PT*R132)/(r12*r13s) + 
+     1         (gamma*DOT2*r13*smalla)/r13s3)*
      1       V3112))/(2.*R134)
-                        HESS(K1+1,K3+2)=HESS(K1+1,K3+2)+ (ERL*((R13*V211*
-     1         (2*R13*(-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+                        HESS(K1+1,K3+2)=HESS(K1+1,K3+2)+ (ERL*((r13*V211*
+     1         (2*r13*(-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V212 + 
-     1           R12*(2*R12*R12DOTR13 + 2*R12*R12DOTR13PT - 
-     1              2*DOT1*R13 - 2*R12DOTR13*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R13S - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R132)/
-     1               R13S - 
-     1              (GAMMA2*R12*DOT2*R132)/
-     1               (R12S*R13S))*V312))/
+     1           r12*(2*r12*r12DOTr13 + 2*r12*r12DOTr13PT - 
+     1              2*DOT1*r13 - 2*r12DOTr13*r12DOTr13PT*r13 - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r13s - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*R132)/
+     1               r13s - 
+     1              (GAMMA2*r12*DOT2*R132)/
+     1               (r12s*r13s))*V312))/
      1       R123 + V311*
-     1       ((2*R13*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1       ((2*r13*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V212)/R122 + 
-     1         (-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12DOTR13*R13)/R12 + (2*R12DOTR13PT*R13)/R12 - 
-     1            (GAMMA2*DOT2*R132)/R13S4 - 
-     1            (3*GAMMA*DOT2*R132)/R13S3 - 
-     1            (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (2*GAMMA*R12DOTR13PT*R132)/(R12*R13S) + 
-     1            (GAMMA*DOT2*R13*SMALLA)/R13S3)*
+     1         (-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12DOTr13*r13)/r12 + (2*r12DOTr13PT*r13)/r12 - 
+     1            (GAMMA2*DOT2*R132)/r13s4 - 
+     1            (3*gamma*DOT2*R132)/r13s3 - 
+     1            (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (2*gamma*r12DOTr13PT*R132)/(r12*r13s) + 
+     1            (gamma*DOT2*r13*smalla)/r13s3)*
      1          V312)))/(2.*R134)
-                        HESS(K1+1,K3+3)=HESS(K1+1,K3+3)+ (ERL*((R13*V211*
-     1         (2*R13*(-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+                        HESS(K1+1,K3+3)=HESS(K1+1,K3+3)+ (ERL*((r13*V211*
+     1         (2*r13*(-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V213 + 
-     1           R12*(2*R12*R12DOTR13 + 2*R12*R12DOTR13PT - 
-     1              2*DOT1*R13 - 2*R12DOTR13*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R13S - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R132)/
-     1               R13S - 
-     1              (GAMMA2*R12*DOT2*R132)/
-     1               (R12S*R13S))*V313))/
+     1           r12*(2*r12*r12DOTr13 + 2*r12*r12DOTr13PT - 
+     1              2*DOT1*r13 - 2*r12DOTr13*r12DOTr13PT*r13 - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r13s - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*R132)/
+     1               r13s - 
+     1              (GAMMA2*r12*DOT2*R132)/
+     1               (r12s*r13s))*V313))/
      1       R123 + V311*
-     1       ((2*R13*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1       ((2*r13*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V213)/R122 + 
-     1         (-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12DOTR13*R13)/R12 + (2*R12DOTR13PT*R13)/R12 - 
-     1            (GAMMA2*DOT2*R132)/R13S4 - 
-     1            (3*GAMMA*DOT2*R132)/R13S3 - 
-     1            (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (2*GAMMA*R12DOTR13PT*R132)/(R12*R13S) + 
-     1            (GAMMA*DOT2*R13*SMALLA)/R13S3)*
+     1         (-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12DOTr13*r13)/r12 + (2*r12DOTr13PT*r13)/r12 - 
+     1            (GAMMA2*DOT2*R132)/r13s4 - 
+     1            (3*gamma*DOT2*R132)/r13s3 - 
+     1            (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (2*gamma*r12DOTr13PT*R132)/(r12*r13s) + 
+     1            (gamma*DOT2*r13*smalla)/r13s3)*
      1          V313)))/(2.*R134)
-                        HESS(K1+2,K1+2)=HESS(K1+2,K1+2)+ (ERL*((2*(R13*(-R12 + R12DOTR13*R13)*V212 + 
-     1            R12*(R12*R12DOTR13 - R13)*V312)**2)/(R124*R134)
-     1       + (4*GAMMA*R12DOTR13PT*
-     1         (R13*(R12 - R12DOTR13*R13)*V212 + 
-     1           R12*(-(R12*R12DOTR13) + R13)*V312)*
-     1         (-(V212/(R12*R12S)) - 
-     1           V312/(R13*R13S)))/(R122*R132) + 
+                        HESS(K1+2,K1+2)=HESS(K1+2,K1+2)+ (ERL*((2*(r13*(-r12 + r12DOTr13*r13)*V212 + 
+     1            r12*(r12*r12DOTr13 - r13)*V312)**2)/(R124*R134)
+     1       + (4*gamma*r12DOTr13PT*
+     1         (r13*(r12 - r12DOTr13*r13)*V212 + 
+     1           r12*(-(r12*r12DOTr13) + r13)*V312)*
+     1         (-(V212/(r12*r12s)) - 
+     1           V312/(r13*r13s)))/(R122*R132) + 
      1      GAMMA2*DOT2*
-     1       (V212/(R12*R12S) + 
-     1          V312/(R13*R13S))**2 + 
-     1      GAMMA*DOT2*
-     1       (-(1/(R12*R12S)) - 1/(R13*R13S) + 
-     1         ((3*R12 - SMALLA)*V2122)/
-     1          (R123*R12S3) + 
-     1         ((3*R13 - SMALLA)*V3122)/(R133*R13S3))
-     1       - (2*R12DOTR13PT*(R133*(2*R12 - 3*R12DOTR13*R13)*
+     1       (V212/(r12*r12s) + 
+     1          V312/(r13*r13s))**2 + 
+     1      gamma*DOT2*
+     1       (-(1/(r12*r12s)) - 1/(r13*r13s) + 
+     1         ((3*r12 - smalla)*V2122)/
+     1          (R123*r12s3) + 
+     1         ((3*r13 - smalla)*V3122)/(R133*r13s3))
+     1       - (2*r12DOTr13PT*(R133*(2*r12 - 3*r12DOTr13*r13)*
      1            V2122 + 
-     1           2*R12*R13*(R122 - R12*R12DOTR13*R13 + R132)*V212*
+     1           2*r12*r13*(R122 - r12*r12DOTr13*r13 + R132)*V212*
      1            V312 + 
      1           R122*(R132*
-     1               (R122*R12DOTR13 - 2*R12*R13 + R12DOTR13*R132) + 
-     1              R12*(-3*R12*R12DOTR13 + 2*R13)*V3122)))/
+     1               (R122*r12DOTr13 - 2*r12*r13 + r12DOTr13*R132) + 
+     1              r12*(-3*r12*r12DOTr13 + 2*r13)*V3122)))/
      1       (R124*R134)))/2.
-                        HESS(K1+2,K1+3)=HESS(K1+2,K1+3)+ (ERL*((2*(R13*(-R12 + R12DOTR13*R13)*V212 + 
-     1           R12*(R12*R12DOTR13 - R13)*V312)*
-     1         (R13*(-R12 + R12DOTR13*R13)*V213 + 
-     1           R12*(R12*R12DOTR13 - R13)*V313))/(R124*R134) + 
-     1      (2*GAMMA*R12DOTR13PT*
-     1         (-(V212/(R12*R12S)) - 
-     1           V312/(R13*R13S))*
-     1         (R13*(R12 - R12DOTR13*R13)*V213 + 
-     1           R12*(-(R12*R12DOTR13) + R13)*V313))/(R122*R132)
-     1       + (2*GAMMA*R12DOTR13PT*
-     1         (R13*(R12 - R12DOTR13*R13)*V212 + 
-     1           R12*(-(R12*R12DOTR13) + R13)*V312)*
-     1         (-(V213/(R12*R12S)) - 
-     1           V313/(R13*R13S)))/(R122*R132) + 
+                        HESS(K1+2,K1+3)=HESS(K1+2,K1+3)+ (ERL*((2*(r13*(-r12 + r12DOTr13*r13)*V212 + 
+     1           r12*(r12*r12DOTr13 - r13)*V312)*
+     1         (r13*(-r12 + r12DOTr13*r13)*V213 + 
+     1           r12*(r12*r12DOTr13 - r13)*V313))/(R124*R134) + 
+     1      (2*gamma*r12DOTr13PT*
+     1         (-(V212/(r12*r12s)) - 
+     1           V312/(r13*r13s))*
+     1         (r13*(r12 - r12DOTr13*r13)*V213 + 
+     1           r12*(-(r12*r12DOTr13) + r13)*V313))/(R122*R132)
+     1       + (2*gamma*r12DOTr13PT*
+     1         (r13*(r12 - r12DOTr13*r13)*V212 + 
+     1           r12*(-(r12*r12DOTr13) + r13)*V312)*
+     1         (-(V213/(r12*r12s)) - 
+     1           V313/(r13*r13s)))/(R122*R132) + 
      1      GAMMA2*DOT2*
-     1       (-(V212/(R12*R12S)) - 
-     1         V312/(R13*R13S))*
-     1       (-(V213/(R12*R12S)) - 
-     1         V313/(R13*R13S)) + 
-     1      GAMMA*DOT2*
-     1       (((3*R12 - SMALLA)*V212*V213)/
-     1          (R123*R12S3) + 
-     1         ((3*R13 - SMALLA)*V312*V313)/
-     1          (R133*R13S3)) + 
-     1      (2*R12DOTR13PT*(R12*V312*
-     1            (-(R13*(R122 - R12*R12DOTR13*R13 + R132)*
+     1       (-(V212/(r12*r12s)) - 
+     1         V312/(r13*r13s))*
+     1       (-(V213/(r12*r12s)) - 
+     1         V313/(r13*r13s)) + 
+     1      gamma*DOT2*
+     1       (((3*r12 - smalla)*V212*V213)/
+     1          (R123*r12s3) + 
+     1         ((3*r13 - smalla)*V312*V313)/
+     1          (R133*r13s3)) + 
+     1      (2*r12DOTr13PT*(r12*V312*
+     1            (-(r13*(R122 - r12*r12DOTr13*r13 + R132)*
      1                 V213) + 
-     1              R122*(3*R12*R12DOTR13 - 2*R13)*V313) - 
-     1           R13*V212*
-     1            (R132*(2*R12 - 3*R12DOTR13*R13)*V213 + 
-     1              R12*(R122 - R12*R12DOTR13*R13 + R132)*V313)))/
+     1              R122*(3*r12*r12DOTr13 - 2*r13)*V313) - 
+     1           r13*V212*
+     1            (R132*(2*r12 - 3*r12DOTr13*r13)*V213 + 
+     1              r12*(R122 - r12*r12DOTr13*r13 + R132)*V313)))/
      1       (R124*R134)))/2.
-                        HESS(K1+2,K2+1)=HESS(K1+2,K2+1)+ (ERL*((2*R12*V311*
-     1         (R13*(-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+                        HESS(K1+2,K2+1)=HESS(K1+2,K2+1)+ (ERL*((2*r12*V311*
+     1         (r13*(-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V212 + 
-     1           R12*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1           r12*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V312))/R133 + 
-     1      V211*((-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12*R12DOTR13)/R13 + (2*R12*R12DOTR13PT)/R13 - 
-     1            (GAMMA2*R122*DOT2)/R12S4 - 
-     1            (3*GAMMA*R122*DOT2)/R12S3 - 
-     1            (4*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R122*R12DOTR13PT)/(R13*R12S) + 
-     1            (GAMMA*R12*DOT2*SMALLA)/R12S3)*
-     1          V212 + (R12*
-     1            (-2*R12*DOT1 - 2*R12*R12DOTR13*R12DOTR13PT + 
-     1              2*R12DOTR13*R13 + 2*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R122*R12DOTR13*R12DOTR13PT)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R12S - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R13S - 
-     1              (GAMMA2*R122*DOT2*R13)/
-     1               (R12S*R13S))*V312)/
+     1      V211*((-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12*r12DOTr13)/r13 + (2*r12*r12DOTr13PT)/r13 - 
+     1            (GAMMA2*R122*DOT2)/r12s4 - 
+     1            (3*gamma*R122*DOT2)/r12s3 - 
+     1            (4*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*R122*r12DOTr13PT)/(r13*r12s) + 
+     1            (gamma*r12*DOT2*smalla)/r12s3)*
+     1          V212 + (r12*
+     1            (-2*r12*DOT1 - 2*r12*r12DOTr13*r12DOTr13PT + 
+     1              2*r12DOTr13*r13 + 2*r12DOTr13PT*r13 - 
+     1              (2*gamma*R122*r12DOTr13*r12DOTr13PT)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r12s - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r13s - 
+     1              (GAMMA2*R122*DOT2*r13)/
+     1               (r12s*r13s))*V312)/
      1          R132)))/(2.*R124)
                         HESS(K1+2,K2+2)=HESS(K1+2,K2+2)+ (ERL*((-2*DOT1 + 
-     1         R12DOTR13*(-6*R12DOTR13PT + (2*R12)/R13 - 
-     1            (4*GAMMA*R12*R12DOTR13PT)/R12S) + 
-     1         R12*R12DOTR13PT*(2/R13 - 
-     1            (GAMMA2*R12*R12DOTR13PT)/R12S4 - 
-     1            (3*GAMMA*R12*R12DOTR13PT)/R12S3 + 
-     1            (2*GAMMA*R12)/(R13*R12S) + 
-     1            (GAMMA*R12DOTR13PT*SMALLA)/R12S3))*
-     1       V2122 + (R12*
-     1         (4*(R12DOTR13 + R12DOTR13PT)*R13 + 
-     1           R12*(-2 - 2*DOT1 - 2*R12DOTR13*R12DOTR13PT + 
-     1              (4*GAMMA*R12DOTR13PT*R13)/R12S - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S) + 
-     1           (GAMMA*R122*R12DOTR13PT*
-     1              (-2*R12DOTR13 - (GAMMA*R12DOTR13PT*R13)/R13S)
-     1              )/R12S)*V212*V312)/R132 + 
-     1      R122*(R12DOTR13PT*
-     1          (2*R12DOTR13 - (2*R12)/R13 + 
-     1            (GAMMA*R122*R12DOTR13PT)/R12S3 - 
-     1            (GAMMA*R12*R12DOTR13PT*SMALLA)/R12S3) + 
-     1         (2*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1         r12DOTr13*(-6*r12DOTr13PT + (2*r12)/r13 - 
+     1            (4*gamma*r12*r12DOTr13PT)/r12s) + 
+     1         r12*r12DOTr13PT*(2/r13 - 
+     1            (GAMMA2*r12*r12DOTr13PT)/r12s4 - 
+     1            (3*gamma*r12*r12DOTr13PT)/r12s3 + 
+     1            (2*gamma*r12)/(r13*r12s) + 
+     1            (gamma*r12DOTr13PT*smalla)/r12s3))*
+     1       V2122 + (r12*
+     1         (4*(r12DOTr13 + r12DOTr13PT)*r13 + 
+     1           r12*(-2 - 2*DOT1 - 2*r12DOTr13*r12DOTr13PT + 
+     1              (4*gamma*r12DOTr13PT*r13)/r12s - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s) + 
+     1           (gamma*R122*r12DOTr13PT*
+     1              (-2*r12DOTr13 - (gamma*r12DOTr13PT*r13)/r13s)
+     1              )/r12s)*V212*V312)/R132 + 
+     1      R122*(r12DOTr13PT*
+     1          (2*r12DOTr13 - (2*r12)/r13 + 
+     1            (gamma*R122*r12DOTr13PT)/r12s3 - 
+     1            (gamma*r12*r12DOTr13PT*smalla)/r12s3) + 
+     1         (2*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V3122)/R133)))/(2.*R124)
                         HESS(K1+2,K2+3)=HESS(K1+2,K2+3)+ (ERL*(V212*
-     1       ((-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12*R12DOTR13)/R13 + (2*R12*R12DOTR13PT)/R13 - 
-     1            (GAMMA2*R122*DOT2)/R12S4 - 
-     1            (3*GAMMA*R122*DOT2)/R12S3 - 
-     1            (4*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R122*R12DOTR13PT)/(R13*R12S) + 
-     1            (GAMMA*R12*DOT2*SMALLA)/R12S3)*
-     1          V213 + (2*R12*
-     1            (-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+     1       ((-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12*r12DOTr13)/r13 + (2*r12*r12DOTr13PT)/r13 - 
+     1            (GAMMA2*R122*DOT2)/r12s4 - 
+     1            (3*gamma*R122*DOT2)/r12s3 - 
+     1            (4*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*R122*r12DOTr13PT)/(r13*r12s) + 
+     1            (gamma*r12*DOT2*smalla)/r12s3)*
+     1          V213 + (2*r12*
+     1            (-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V313)/R132) + 
-     1      (R12*V312*(R13*
-     1            (-2*R12*DOT1 - 2*R12*R12DOTR13*R12DOTR13PT + 
-     1              2*R12DOTR13*R13 + 2*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R122*R12DOTR13*R12DOTR13PT)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R12S - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R13S - 
-     1              (GAMMA2*R122*DOT2*R13)/
-     1               (R12S*R13S))*V213 + 
-     1           2*R12*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1      (r12*V312*(r13*
+     1            (-2*r12*DOT1 - 2*r12*r12DOTr13*r12DOTr13PT + 
+     1              2*r12DOTr13*r13 + 2*r12DOTr13PT*r13 - 
+     1              (2*gamma*R122*r12DOTr13*r12DOTr13PT)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r12s - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r13s - 
+     1              (GAMMA2*R122*DOT2*r13)/
+     1               (r12s*r13s))*V213 + 
+     1           2*r12*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V313))/R133))/(2.*R124)
-                        HESS(K1+2,K3+1)=HESS(K1+2,K3+1)+ (ERL*((2*R13*V211*
-     1         (R13*(-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+                        HESS(K1+2,K3+1)=HESS(K1+2,K3+1)+ (ERL*((2*r13*V211*
+     1         (r13*(-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V212 + 
-     1           R12*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1           r12*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V312))/R123 + 
-     1      V311*((R13*(2*R12*R12DOTR13 + 2*R12*R12DOTR13PT - 
-     1              2*DOT1*R13 - 2*R12DOTR13*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R13S - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R132)/
-     1               R13S - 
-     1              (GAMMA2*R12*DOT2*R132)/
-     1               (R12S*R13S))*V212)/
-     1          R122 + (-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12DOTR13*R13)/R12 + (2*R12DOTR13PT*R13)/R12 - 
-     1            (GAMMA2*DOT2*R132)/R13S4 - 
-     1            (3*GAMMA*DOT2*R132)/R13S3 - 
-     1            (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (2*GAMMA*R12DOTR13PT*R132)/(R12*R13S) + 
-     1            (GAMMA*DOT2*R13*SMALLA)/R13S3)*
+     1      V311*((r13*(2*r12*r12DOTr13 + 2*r12*r12DOTr13PT - 
+     1              2*DOT1*r13 - 2*r12DOTr13*r12DOTr13PT*r13 - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r13s - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*R132)/
+     1               r13s - 
+     1              (GAMMA2*r12*DOT2*R132)/
+     1               (r12s*r13s))*V212)/
+     1          R122 + (-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12DOTr13*r13)/r12 + (2*r12DOTr13PT*r13)/r12 - 
+     1            (GAMMA2*DOT2*R132)/r13s4 - 
+     1            (3*gamma*DOT2*R132)/r13s3 - 
+     1            (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (2*gamma*r12DOTr13PT*R132)/(r12*r13s) + 
+     1            (gamma*DOT2*r13*smalla)/r13s3)*
      1          V312)))/(2.*R134)
-                        HESS(K1+2,K3+2)=HESS(K1+2,K3+2)+ (ERL*(R12DOTR13PT*R132*
-     1       (2*R12DOTR13 - (2*R13)/R12 + 
-     1         (GAMMA*R12DOTR13PT*R132)/R13S3 - 
-     1         (GAMMA*R12DOTR13PT*R13*SMALLA)/R13S3) + 
-     1      (2*R132*((R12DOTR13 + R12DOTR13PT)*R13 + 
-     1           R12*(-1 + (GAMMA*R12DOTR13PT*R13)/R12S))*
+                        HESS(K1+2,K3+2)=HESS(K1+2,K3+2)+ (ERL*(r12DOTr13PT*R132*
+     1       (2*r12DOTr13 - (2*r13)/r12 + 
+     1         (gamma*r12DOTr13PT*R132)/r13s3 - 
+     1         (gamma*r12DOTr13PT*r13*smalla)/r13s3) + 
+     1      (2*R132*((r12DOTr13 + r12DOTr13PT)*r13 + 
+     1           r12*(-1 + (gamma*r12DOTr13PT*r13)/r12s))*
      1         V2122)/R123 + 
-     1      (R13*(2*R13*(-1 - DOT1 - R12DOTR13*R12DOTR13PT - 
-     1              (GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S) + 
-     1           R12*(4*R12DOTR13 + 4*R12DOTR13PT - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R12S + 
-     1              (4*GAMMA*R12DOTR13PT*R13)/R13S - 
+     1      (r13*(2*r13*(-1 - DOT1 - r12DOTr13*r12DOTr13PT - 
+     1              (gamma*r12DOTr13*r12DOTr13PT*r13)/r13s) + 
+     1           r12*(4*r12DOTr13 + 4*r12DOTr13PT - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r12s + 
+     1              (4*gamma*r12DOTr13PT*r13)/r13s - 
      1              (GAMMA2*DOT2*R132)/
-     1               (R12S*R13S)))*V212*
+     1               (r12s*r13s)))*V212*
      1         V312)/R122 + 
-     1      (-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1         (2*R12DOTR13*R13)/R12 + (2*R12DOTR13PT*R13)/R12 - 
-     1         (GAMMA2*DOT2*R132)/R13S4 - 
-     1         (3*GAMMA*DOT2*R132)/R13S3 - 
-     1         (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1         (2*GAMMA*R12DOTR13PT*R132)/(R12*R13S) + 
-     1         (GAMMA*DOT2*R13*SMALLA)/R13S3)*
+     1      (-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1         (2*r12DOTr13*r13)/r12 + (2*r12DOTr13PT*r13)/r12 - 
+     1         (GAMMA2*DOT2*R132)/r13s4 - 
+     1         (3*gamma*DOT2*R132)/r13s3 - 
+     1         (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1         (2*gamma*r12DOTr13PT*R132)/(r12*r13s) + 
+     1         (gamma*DOT2*r13*smalla)/r13s3)*
      1       V3122))/(2.*R134)
-                        HESS(K1+2,K3+3)=HESS(K1+2,K3+3)+ (ERL*((R13*V212*
-     1         (2*R13*(-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+                        HESS(K1+2,K3+3)=HESS(K1+2,K3+3)+ (ERL*((r13*V212*
+     1         (2*r13*(-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V213 + 
-     1           R12*(2*R12*R12DOTR13 + 2*R12*R12DOTR13PT - 
-     1              2*DOT1*R13 - 2*R12DOTR13*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R13S - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R132)/
-     1               R13S - 
-     1              (GAMMA2*R12*DOT2*R132)/
-     1               (R12S*R13S))*V313))/
+     1           r12*(2*r12*r12DOTr13 + 2*r12*r12DOTr13PT - 
+     1              2*DOT1*r13 - 2*r12DOTr13*r12DOTr13PT*r13 - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r13s - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*R132)/
+     1               r13s - 
+     1              (GAMMA2*r12*DOT2*R132)/
+     1               (r12s*r13s))*V313))/
      1       R123 + V312*
-     1       ((2*R13*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1       ((2*r13*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V213)/R122 + 
-     1         (-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12DOTR13*R13)/R12 + (2*R12DOTR13PT*R13)/R12 - 
-     1            (GAMMA2*DOT2*R132)/R13S4 - 
-     1            (3*GAMMA*DOT2*R132)/R13S3 - 
-     1            (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (2*GAMMA*R12DOTR13PT*R132)/(R12*R13S) + 
-     1            (GAMMA*DOT2*R13*SMALLA)/R13S3)*
+     1         (-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12DOTr13*r13)/r12 + (2*r12DOTr13PT*r13)/r12 - 
+     1            (GAMMA2*DOT2*R132)/r13s4 - 
+     1            (3*gamma*DOT2*R132)/r13s3 - 
+     1            (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (2*gamma*r12DOTr13PT*R132)/(r12*r13s) + 
+     1            (gamma*DOT2*r13*smalla)/r13s3)*
      1          V313)))/(2.*R134)
-                        HESS(K1+3,K1+3)=HESS(K1+3,K1+3)+ (ERL*((2*(R13*(-R12 + R12DOTR13*R13)*V213 + 
-     1            R12*(R12*R12DOTR13 - R13)*V313)**2)/(R124*R134)
-     1       + (4*GAMMA*R12DOTR13PT*
-     1         (R13*(R12 - R12DOTR13*R13)*V213 + 
-     1           R12*(-(R12*R12DOTR13) + R13)*V313)*
-     1         (-(V213/(R12*R12S)) - 
-     1           V313/(R13*R13S)))/(R122*R132) + 
+                        HESS(K1+3,K1+3)=HESS(K1+3,K1+3)+ (ERL*((2*(r13*(-r12 + r12DOTr13*r13)*V213 + 
+     1            r12*(r12*r12DOTr13 - r13)*V313)**2)/(R124*R134)
+     1       + (4*gamma*r12DOTr13PT*
+     1         (r13*(r12 - r12DOTr13*r13)*V213 + 
+     1           r12*(-(r12*r12DOTr13) + r13)*V313)*
+     1         (-(V213/(r12*r12s)) - 
+     1           V313/(r13*r13s)))/(R122*R132) + 
      1      GAMMA2*DOT2*
-     1       (V213/(R12*R12S) + 
-     1          V313/(R13*R13S))**2 + 
-     1      GAMMA*DOT2*
-     1       (-(1/(R12*R12S)) - 1/(R13*R13S) + 
-     1         ((3*R12 - SMALLA)*V2132)/
-     1          (R123*R12S3) + 
-     1         ((3*R13 - SMALLA)*V3132)/(R133*R13S3))
-     1       - (2*R12DOTR13PT*(R133*(2*R12 - 3*R12DOTR13*R13)*
+     1       (V213/(r12*r12s) + 
+     1          V313/(r13*r13s))**2 + 
+     1      gamma*DOT2*
+     1       (-(1/(r12*r12s)) - 1/(r13*r13s) + 
+     1         ((3*r12 - smalla)*V2132)/
+     1          (R123*r12s3) + 
+     1         ((3*r13 - smalla)*V3132)/(R133*r13s3))
+     1       - (2*r12DOTr13PT*(R133*(2*r12 - 3*r12DOTr13*r13)*
      1            V2132 + 
-     1           2*R12*R13*(R122 - R12*R12DOTR13*R13 + R132)*V213*
+     1           2*r12*r13*(R122 - r12*r12DOTr13*r13 + R132)*V213*
      1            V313 + 
      1           R122*(R132*
-     1               (R122*R12DOTR13 - 2*R12*R13 + R12DOTR13*R132) + 
-     1              R12*(-3*R12*R12DOTR13 + 2*R13)*V3132)))/
+     1               (R122*r12DOTr13 - 2*r12*r13 + r12DOTr13*R132) + 
+     1              r12*(-3*r12*r12DOTr13 + 2*r13)*V3132)))/
      1       (R124*R134)))/2.
-                        HESS(K1+3,K2+1)=HESS(K1+3,K2+1)+ (ERL*((2*R12*V311*
-     1         (R13*(-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+                        HESS(K1+3,K2+1)=HESS(K1+3,K2+1)+ (ERL*((2*r12*V311*
+     1         (r13*(-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V213 + 
-     1           R12*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1           r12*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V313))/R133 + 
-     1      V211*((-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12*R12DOTR13)/R13 + (2*R12*R12DOTR13PT)/R13 - 
-     1            (GAMMA2*R122*DOT2)/R12S4 - 
-     1            (3*GAMMA*R122*DOT2)/R12S3 - 
-     1            (4*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R122*R12DOTR13PT)/(R13*R12S) + 
-     1            (GAMMA*R12*DOT2*SMALLA)/R12S3)*
-     1          V213 + (R12*
-     1            (-2*R12*DOT1 - 2*R12*R12DOTR13*R12DOTR13PT + 
-     1              2*R12DOTR13*R13 + 2*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R122*R12DOTR13*R12DOTR13PT)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R12S - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R13S - 
-     1              (GAMMA2*R122*DOT2*R13)/
-     1               (R12S*R13S))*V313)/
+     1      V211*((-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12*r12DOTr13)/r13 + (2*r12*r12DOTr13PT)/r13 - 
+     1            (GAMMA2*R122*DOT2)/r12s4 - 
+     1            (3*gamma*R122*DOT2)/r12s3 - 
+     1            (4*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*R122*r12DOTr13PT)/(r13*r12s) + 
+     1            (gamma*r12*DOT2*smalla)/r12s3)*
+     1          V213 + (r12*
+     1            (-2*r12*DOT1 - 2*r12*r12DOTr13*r12DOTr13PT + 
+     1              2*r12DOTr13*r13 + 2*r12DOTr13PT*r13 - 
+     1              (2*gamma*R122*r12DOTr13*r12DOTr13PT)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r12s - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r13s - 
+     1              (GAMMA2*R122*DOT2*r13)/
+     1               (r12s*r13s))*V313)/
      1          R132)))/(2.*R124)
-                        HESS(K1+3,K2+2)=HESS(K1+3,K2+2)+ (ERL*((2*R12*V312*
-     1         (R13*(-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+                        HESS(K1+3,K2+2)=HESS(K1+3,K2+2)+ (ERL*((2*r12*V312*
+     1         (r13*(-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V213 + 
-     1           R12*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1           r12*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V313))/R133 + 
-     1      V212*((-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12*R12DOTR13)/R13 + (2*R12*R12DOTR13PT)/R13 - 
-     1            (GAMMA2*R122*DOT2)/R12S4 - 
-     1            (3*GAMMA*R122*DOT2)/R12S3 - 
-     1            (4*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R122*R12DOTR13PT)/(R13*R12S) + 
-     1            (GAMMA*R12*DOT2*SMALLA)/R12S3)*
-     1          V213 + (R12*
-     1            (-2*R12*DOT1 - 2*R12*R12DOTR13*R12DOTR13PT + 
-     1              2*R12DOTR13*R13 + 2*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R122*R12DOTR13*R12DOTR13PT)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R12S - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R13S - 
-     1              (GAMMA2*R122*DOT2*R13)/
-     1               (R12S*R13S))*V313)/
+     1      V212*((-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12*r12DOTr13)/r13 + (2*r12*r12DOTr13PT)/r13 - 
+     1            (GAMMA2*R122*DOT2)/r12s4 - 
+     1            (3*gamma*R122*DOT2)/r12s3 - 
+     1            (4*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*R122*r12DOTr13PT)/(r13*r12s) + 
+     1            (gamma*r12*DOT2*smalla)/r12s3)*
+     1          V213 + (r12*
+     1            (-2*r12*DOT1 - 2*r12*r12DOTr13*r12DOTr13PT + 
+     1              2*r12DOTr13*r13 + 2*r12DOTr13PT*r13 - 
+     1              (2*gamma*R122*r12DOTr13*r12DOTr13PT)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r12s - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r13s - 
+     1              (GAMMA2*R122*DOT2*r13)/
+     1               (r12s*r13s))*V313)/
      1          R132)))/(2.*R124)
                         HESS(K1+3,K2+3)=HESS(K1+3,K2+3)+ (ERL*((-2*DOT1 + 
-     1         R12DOTR13*(-6*R12DOTR13PT + (2*R12)/R13 - 
-     1            (4*GAMMA*R12*R12DOTR13PT)/R12S) + 
-     1         R12*R12DOTR13PT*(2/R13 - 
-     1            (GAMMA2*R12*R12DOTR13PT)/R12S4 - 
-     1            (3*GAMMA*R12*R12DOTR13PT)/R12S3 + 
-     1            (2*GAMMA*R12)/(R13*R12S) + 
-     1            (GAMMA*R12DOTR13PT*SMALLA)/R12S3))*
-     1       V2132 + (R12*
-     1         (4*(R12DOTR13 + R12DOTR13PT)*R13 + 
-     1           R12*(-2 - 2*DOT1 - 2*R12DOTR13*R12DOTR13PT + 
-     1              (4*GAMMA*R12DOTR13PT*R13)/R12S - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S) + 
-     1           (GAMMA*R122*R12DOTR13PT*
-     1              (-2*R12DOTR13 - (GAMMA*R12DOTR13PT*R13)/R13S)
-     1              )/R12S)*V213*V313)/R132 + 
-     1      R122*(R12DOTR13PT*
-     1          (2*R12DOTR13 - (2*R12)/R13 + 
-     1            (GAMMA*R122*R12DOTR13PT)/R12S3 - 
-     1            (GAMMA*R12*R12DOTR13PT*SMALLA)/R12S3) + 
-     1         (2*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1         r12DOTr13*(-6*r12DOTr13PT + (2*r12)/r13 - 
+     1            (4*gamma*r12*r12DOTr13PT)/r12s) + 
+     1         r12*r12DOTr13PT*(2/r13 - 
+     1            (GAMMA2*r12*r12DOTr13PT)/r12s4 - 
+     1            (3*gamma*r12*r12DOTr13PT)/r12s3 + 
+     1            (2*gamma*r12)/(r13*r12s) + 
+     1            (gamma*r12DOTr13PT*smalla)/r12s3))*
+     1       V2132 + (r12*
+     1         (4*(r12DOTr13 + r12DOTr13PT)*r13 + 
+     1           r12*(-2 - 2*DOT1 - 2*r12DOTr13*r12DOTr13PT + 
+     1              (4*gamma*r12DOTr13PT*r13)/r12s - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s) + 
+     1           (gamma*R122*r12DOTr13PT*
+     1              (-2*r12DOTr13 - (gamma*r12DOTr13PT*r13)/r13s)
+     1              )/r12s)*V213*V313)/R132 + 
+     1      R122*(r12DOTr13PT*
+     1          (2*r12DOTr13 - (2*r12)/r13 + 
+     1            (gamma*R122*r12DOTr13PT)/r12s3 - 
+     1            (gamma*r12*r12DOTr13PT*smalla)/r12s3) + 
+     1         (2*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V3132)/R133)))/(2.*R124)
-                        HESS(K1+3,K3+1)=HESS(K1+3,K3+1)+ (ERL*((2*R13*V211*
-     1         (R13*(-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+                        HESS(K1+3,K3+1)=HESS(K1+3,K3+1)+ (ERL*((2*r13*V211*
+     1         (r13*(-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V213 + 
-     1           R12*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1           r12*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V313))/R123 + 
-     1      V311*((R13*(2*R12*R12DOTR13 + 2*R12*R12DOTR13PT - 
-     1              2*DOT1*R13 - 2*R12DOTR13*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R13S - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R132)/
-     1               R13S - 
-     1              (GAMMA2*R12*DOT2*R132)/
-     1               (R12S*R13S))*V213)/
-     1          R122 + (-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12DOTR13*R13)/R12 + (2*R12DOTR13PT*R13)/R12 - 
-     1            (GAMMA2*DOT2*R132)/R13S4 - 
-     1            (3*GAMMA*DOT2*R132)/R13S3 - 
-     1            (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (2*GAMMA*R12DOTR13PT*R132)/(R12*R13S) + 
-     1            (GAMMA*DOT2*R13*SMALLA)/R13S3)*
+     1      V311*((r13*(2*r12*r12DOTr13 + 2*r12*r12DOTr13PT - 
+     1              2*DOT1*r13 - 2*r12DOTr13*r12DOTr13PT*r13 - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r13s - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*R132)/
+     1               r13s - 
+     1              (GAMMA2*r12*DOT2*R132)/
+     1               (r12s*r13s))*V213)/
+     1          R122 + (-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12DOTr13*r13)/r12 + (2*r12DOTr13PT*r13)/r12 - 
+     1            (GAMMA2*DOT2*R132)/r13s4 - 
+     1            (3*gamma*DOT2*R132)/r13s3 - 
+     1            (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (2*gamma*r12DOTr13PT*R132)/(r12*r13s) + 
+     1            (gamma*DOT2*r13*smalla)/r13s3)*
      1          V313)))/(2.*R134)
-                        HESS(K1+3,K3+2)=HESS(K1+3,K3+2)+ (ERL*((2*R13*V212*
-     1         (R13*(-R12 + R12DOTR13*R13 + R12DOTR13PT*R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R12S)*
+                        HESS(K1+3,K3+2)=HESS(K1+3,K3+2)+ (ERL*((2*r13*V212*
+     1         (r13*(-r12 + r12DOTr13*r13 + r12DOTr13PT*r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r12s)*
      1            V213 + 
-     1           R12*(R12*R12DOTR13 + R12*R12DOTR13PT - R13 + 
-     1              (GAMMA*R12*R12DOTR13PT*R13)/R13S)*
+     1           r12*(r12*r12DOTr13 + r12*r12DOTr13PT - r13 + 
+     1              (gamma*r12*r12DOTr13PT*r13)/r13s)*
      1            V313))/R123 + 
-     1      V312*((R13*(2*R12*R12DOTR13 + 2*R12*R12DOTR13PT - 
-     1              2*DOT1*R13 - 2*R12DOTR13*R12DOTR13PT*R13 - 
-     1              (2*GAMMA*R12*R12DOTR13*R12DOTR13PT*R13)/
-     1               R12S + 
-     1              (2*GAMMA*R12*R12DOTR13PT*R13)/R13S - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R132)/
-     1               R13S - 
-     1              (GAMMA2*R12*DOT2*R132)/
-     1               (R12S*R13S))*V213)/
-     1          R122 + (-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1            (2*R12DOTR13*R13)/R12 + (2*R12DOTR13PT*R13)/R12 - 
-     1            (GAMMA2*DOT2*R132)/R13S4 - 
-     1            (3*GAMMA*DOT2*R132)/R13S3 - 
-     1            (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (2*GAMMA*R12DOTR13PT*R132)/(R12*R13S) + 
-     1            (GAMMA*DOT2*R13*SMALLA)/R13S3)*
+     1      V312*((r13*(2*r12*r12DOTr13 + 2*r12*r12DOTr13PT - 
+     1              2*DOT1*r13 - 2*r12DOTr13*r12DOTr13PT*r13 - 
+     1              (2*gamma*r12*r12DOTr13*r12DOTr13PT*r13)/
+     1               r12s + 
+     1              (2*gamma*r12*r12DOTr13PT*r13)/r13s - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*R132)/
+     1               r13s - 
+     1              (GAMMA2*r12*DOT2*R132)/
+     1               (r12s*r13s))*V213)/
+     1          R122 + (-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1            (2*r12DOTr13*r13)/r12 + (2*r12DOTr13PT*r13)/r12 - 
+     1            (GAMMA2*DOT2*R132)/r13s4 - 
+     1            (3*gamma*DOT2*R132)/r13s3 - 
+     1            (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (2*gamma*r12DOTr13PT*R132)/(r12*r13s) + 
+     1            (gamma*DOT2*r13*smalla)/r13s3)*
      1          V313)))/(2.*R134)
-                        HESS(K1+3,K3+3)=HESS(K1+3,K3+3)+ (ERL*(R12DOTR13PT*R132*
-     1       (2*R12DOTR13 - (2*R13)/R12 + 
-     1         (GAMMA*R12DOTR13PT*R132)/R13S3 - 
-     1         (GAMMA*R12DOTR13PT*R13*SMALLA)/R13S3) + 
-     1      (2*R132*((R12DOTR13 + R12DOTR13PT)*R13 + 
-     1           R12*(-1 + (GAMMA*R12DOTR13PT*R13)/R12S))*
+                        HESS(K1+3,K3+3)=HESS(K1+3,K3+3)+ (ERL*(r12DOTr13PT*R132*
+     1       (2*r12DOTr13 - (2*r13)/r12 + 
+     1         (gamma*r12DOTr13PT*R132)/r13s3 - 
+     1         (gamma*r12DOTr13PT*r13*smalla)/r13s3) + 
+     1      (2*R132*((r12DOTr13 + r12DOTr13PT)*r13 + 
+     1           r12*(-1 + (gamma*r12DOTr13PT*r13)/r12s))*
      1         V2132)/R123 + 
-     1      (R13*(2*R13*(-1 - DOT1 - R12DOTR13*R12DOTR13PT - 
-     1              (GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S) + 
-     1           R12*(4*R12DOTR13 + 4*R12DOTR13PT - 
-     1              (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R12S + 
-     1              (4*GAMMA*R12DOTR13PT*R13)/R13S - 
+     1      (r13*(2*r13*(-1 - DOT1 - r12DOTr13*r12DOTr13PT - 
+     1              (gamma*r12DOTr13*r12DOTr13PT*r13)/r13s) + 
+     1           r12*(4*r12DOTr13 + 4*r12DOTr13PT - 
+     1              (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r12s + 
+     1              (4*gamma*r12DOTr13PT*r13)/r13s - 
      1              (GAMMA2*DOT2*R132)/
-     1               (R12S*R13S)))*V213*
+     1               (r12s*r13s)))*V213*
      1         V313)/R122 + 
-     1      (-2*DOT1 - 6*R12DOTR13*R12DOTR13PT + 
-     1         (2*R12DOTR13*R13)/R12 + (2*R12DOTR13PT*R13)/R12 - 
-     1         (GAMMA2*DOT2*R132)/R13S4 - 
-     1         (3*GAMMA*DOT2*R132)/R13S3 - 
-     1         (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1         (2*GAMMA*R12DOTR13PT*R132)/(R12*R13S) + 
-     1         (GAMMA*DOT2*R13*SMALLA)/R13S3)*
+     1      (-2*DOT1 - 6*r12DOTr13*r12DOTr13PT + 
+     1         (2*r12DOTr13*r13)/r12 + (2*r12DOTr13PT*r13)/r12 - 
+     1         (GAMMA2*DOT2*R132)/r13s4 - 
+     1         (3*gamma*DOT2*R132)/r13s3 - 
+     1         (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1         (2*gamma*r12DOTr13PT*R132)/(r12*r13s) + 
+     1         (gamma*DOT2*r13*smalla)/r13s3)*
      1       V3132))/(2.*R134)
                         HESS(K2+1,K2+1)=HESS(K2+1,K2+1)+ (ERL*((2*DOT1 + 
-     1         R12DOTR13*(6*R12DOTR13PT + 
-     1            (4*GAMMA*R12*R12DOTR13PT)/R12S) + 
-     1         (GAMMA*R12*DOT2*
-     1            (GAMMA*R12 + 3*R122 - 4*R12*SMALLA + SMALLA**2))/
-     1          R12S4)*V2112 - 
-     1      (4*R12*(R122*(R12DOTR13 + R12DOTR13PT) + 
-     1           (R12DOTR13 + R12DOTR13PT)*SMALLA**2 + 
-     1           R12*(GAMMA*R12DOTR13PT - 2*R12DOTR13*SMALLA - 
-     1              2*R12DOTR13PT*SMALLA))*V211*V311)/
-     1       (R13*R12S) + 
-     1      R122*(R12DOTR13PT*
-     1          (-2*R12DOTR13 - (GAMMA*R12*R12DOTR13PT)/R12S) + 
+     1         r12DOTr13*(6*r12DOTr13PT + 
+     1            (4*gamma*r12*r12DOTr13PT)/r12s) + 
+     1         (gamma*r12*DOT2*
+     1            (gamma*r12 + 3*R122 - 4*r12*smalla + smalla**2))/
+     1          r12s4)*V2112 - 
+     1      (4*r12*(R122*(r12DOTr13 + r12DOTr13PT) + 
+     1           (r12DOTr13 + r12DOTr13PT)*smalla**2 + 
+     1           r12*(gamma*r12DOTr13PT - 2*r12DOTr13*smalla - 
+     1              2*r12DOTr13PT*smalla))*V211*V311)/
+     1       (r13*r12s) + 
+     1      R122*(r12DOTr13PT*
+     1          (-2*r12DOTr13 - (gamma*r12*r12DOTr13PT)/r12s) + 
      1         (2*V3112)/R132)))/(2.*R124)
-                        HESS(K2+1,K2+2)=HESS(K2+1,K2+2)+ (ERL*((2*R12*V311*
-     1         (R13*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12*R12DOTR13PT)/R12S)*V212 + 
-     1           R12*V312))/R132 + 
-     1      V211*((2*DOT1 + 6*R12DOTR13*R12DOTR13PT + 
-     1            (GAMMA2*R122*DOT2)/R12S4 + 
-     1            (2*GAMMA*R122*DOT2)/R12S3 + 
-     1            (4*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (GAMMA*R12*DOT2)/R12S)*V212
-     1          + (2*R12*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12*R12DOTR13PT)/R12S)*V312)/
-     1          R13)))/(2.*R124)
-                        HESS(K2+1,K2+3)=HESS(K2+1,K2+3)+ (ERL*((2*R12*V311*
-     1         (R13*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12*R12DOTR13PT)/R12S)*V213 + 
-     1           R12*V313))/R132 + 
-     1      V211*((2*DOT1 + 6*R12DOTR13*R12DOTR13PT + 
-     1            (GAMMA2*R122*DOT2)/R12S4 + 
-     1            (2*GAMMA*R122*DOT2)/R12S3 + 
-     1            (4*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (GAMMA*R12*DOT2)/R12S)*V213
-     1          + (2*R12*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12*R12DOTR13PT)/R12S)*V313)/
-     1          R13)))/(2.*R124)
+                        HESS(K2+1,K2+2)=HESS(K2+1,K2+2)+ (ERL*((2*r12*V311*
+     1         (r13*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12*r12DOTr13PT)/r12s)*V212 + 
+     1           r12*V312))/R132 + 
+     1      V211*((2*DOT1 + 6*r12DOTr13*r12DOTr13PT + 
+     1            (GAMMA2*R122*DOT2)/r12s4 + 
+     1            (2*gamma*R122*DOT2)/r12s3 + 
+     1            (4*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (gamma*r12*DOT2)/r12s)*V212
+     1          + (2*r12*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12*r12DOTr13PT)/r12s)*V312)/
+     1          r13)))/(2.*R124)
+                        HESS(K2+1,K2+3)=HESS(K2+1,K2+3)+ (ERL*((2*r12*V311*
+     1         (r13*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12*r12DOTr13PT)/r12s)*V213 + 
+     1           r12*V313))/R132 + 
+     1      V211*((2*DOT1 + 6*r12DOTr13*r12DOTr13PT + 
+     1            (GAMMA2*R122*DOT2)/r12s4 + 
+     1            (2*gamma*R122*DOT2)/r12s3 + 
+     1            (4*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (gamma*r12*DOT2)/r12s)*V213
+     1          + (2*r12*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12*r12DOTr13PT)/r12s)*V313)/
+     1          r13)))/(2.*R124)
                         HESS(K2+1,K3+1)=HESS(K2+1,K3+1)+ (ERL*(2*R132*
-     1       (-R12DOTR13 + R12DOTR13PT*(-1 - (GAMMA*R12)/R12S))*
-     1       V2112 + R12*R13*
+     1       (-r12DOTr13 + r12DOTr13PT*(-1 - (gamma*r12)/r12s))*
+     1       V2112 + r12*r13*
      1       (2 + 2*DOT1 + 
-     1         2*R12DOTR13*R12DOTR13PT*
-     1          (1 + (GAMMA*R12)/R12S + 
-     1            (GAMMA*R13)/R13S) + 
-     1         (GAMMA2*R12*DOT2*R13)/
-     1          (R12S*R13S))*V211*
+     1         2*r12DOTr13*r12DOTr13PT*
+     1          (1 + (gamma*r12)/r12s + 
+     1            (gamma*r13)/r13s) + 
+     1         (GAMMA2*r12*DOT2*r13)/
+     1          (r12s*r13s))*V211*
      1       V311 + 2*R122*
-     1       (R12DOTR13PT*R132 + 
-     1         (-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12DOTR13PT*R13)/R13S)*V3112))
+     1       (r12DOTr13PT*R132 + 
+     1         (-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12DOTr13PT*r13)/r13s)*V3112))
      1    )/(2.*R123*R133)
-                        HESS(K2+1,K3+2)=HESS(K2+1,K3+2)+ (ERL*(2*R12*V311*
-     1       (R13*V212 + 
-     1         R12*(-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12DOTR13PT*R13)/R13S)*V312) + 
-     1      R13*V211*((-2*R12DOTR13*R13 - 2*R12DOTR13PT*R13 - 
-     1            (2*GAMMA*R12*R12DOTR13PT*R13)/R12S)*
-     1          V212 + R12*
-     1          (2*DOT1 + 2*R12DOTR13*R12DOTR13PT + 
-     1            (2*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (GAMMA2*R12*DOT2*R13)/
-     1             (R12S*R13S))*V312)))/
+                        HESS(K2+1,K3+2)=HESS(K2+1,K3+2)+ (ERL*(2*r12*V311*
+     1       (r13*V212 + 
+     1         r12*(-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12DOTr13PT*r13)/r13s)*V312) + 
+     1      r13*V211*((-2*r12DOTr13*r13 - 2*r12DOTr13PT*r13 - 
+     1            (2*gamma*r12*r12DOTr13PT*r13)/r12s)*
+     1          V212 + r12*
+     1          (2*DOT1 + 2*r12DOTr13*r12DOTr13PT + 
+     1            (2*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (GAMMA2*r12*DOT2*r13)/
+     1             (r12s*r13s))*V312)))/
      1  (2.*R123*R133)
-                        HESS(K2+1,K3+3)=HESS(K2+1,K3+3)+ (ERL*(2*R12*V311*
-     1       (R13*V213 + 
-     1         R12*(-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12DOTR13PT*R13)/R13S)*V313) + 
-     1      R13*V211*((-2*R12DOTR13*R13 - 2*R12DOTR13PT*R13 - 
-     1            (2*GAMMA*R12*R12DOTR13PT*R13)/R12S)*
-     1          V213 + R12*
-     1          (2*DOT1 + 2*R12DOTR13*R12DOTR13PT + 
-     1            (2*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (GAMMA2*R12*DOT2*R13)/
-     1             (R12S*R13S))*V313)))/
+                        HESS(K2+1,K3+3)=HESS(K2+1,K3+3)+ (ERL*(2*r12*V311*
+     1       (r13*V213 + 
+     1         r12*(-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12DOTr13PT*r13)/r13s)*V313) + 
+     1      r13*V211*((-2*r12DOTr13*r13 - 2*r12DOTr13PT*r13 - 
+     1            (2*gamma*r12*r12DOTr13PT*r13)/r12s)*
+     1          V213 + r12*
+     1          (2*DOT1 + 2*r12DOTr13*r12DOTr13PT + 
+     1            (2*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (GAMMA2*r12*DOT2*r13)/
+     1             (r12s*r13s))*V313)))/
      1  (2.*R123*R133)
                         HESS(K2+2,K2+2)=HESS(K2+2,K2+2)+ (ERL*((2*DOT1 + 
-     1         R12DOTR13*(6*R12DOTR13PT + 
-     1            (4*GAMMA*R12*R12DOTR13PT)/R12S) + 
-     1         (GAMMA*R12*DOT2*
-     1            (GAMMA*R12 + 3*R122 - 4*R12*SMALLA + SMALLA**2))/
-     1          R12S4)*V2122 - 
-     1      (4*R12*(R122*(R12DOTR13 + R12DOTR13PT) + 
-     1           (R12DOTR13 + R12DOTR13PT)*SMALLA**2 + 
-     1           R12*(GAMMA*R12DOTR13PT - 2*R12DOTR13*SMALLA - 
-     1              2*R12DOTR13PT*SMALLA))*V212*V312)/
-     1       (R13*R12S) + 
-     1      R122*(R12DOTR13PT*
-     1          (-2*R12DOTR13 - (GAMMA*R12*R12DOTR13PT)/R12S) + 
+     1         r12DOTr13*(6*r12DOTr13PT + 
+     1            (4*gamma*r12*r12DOTr13PT)/r12s) + 
+     1         (gamma*r12*DOT2*
+     1            (gamma*r12 + 3*R122 - 4*r12*smalla + smalla**2))/
+     1          r12s4)*V2122 - 
+     1      (4*r12*(R122*(r12DOTr13 + r12DOTr13PT) + 
+     1           (r12DOTr13 + r12DOTr13PT)*smalla**2 + 
+     1           r12*(gamma*r12DOTr13PT - 2*r12DOTr13*smalla - 
+     1              2*r12DOTr13PT*smalla))*V212*V312)/
+     1       (r13*r12s) + 
+     1      R122*(r12DOTr13PT*
+     1          (-2*r12DOTr13 - (gamma*r12*r12DOTr13PT)/r12s) + 
      1         (2*V3122)/R132)))/(2.*R124)
-                        HESS(K2+2,K2+3)=HESS(K2+2,K2+3)+ (ERL*((2*R12*V312*
-     1         (R13*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12*R12DOTR13PT)/R12S)*V213 + 
-     1           R12*V313))/R132 + 
-     1      V212*((2*DOT1 + 6*R12DOTR13*R12DOTR13PT + 
-     1            (GAMMA2*R122*DOT2)/R12S4 + 
-     1            (2*GAMMA*R122*DOT2)/R12S3 + 
-     1            (4*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (GAMMA*R12*DOT2)/R12S)*V213
-     1          + (2*R12*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12*R12DOTR13PT)/R12S)*V313)/
-     1          R13)))/(2.*R124)
-                        HESS(K2+2,K3+1)=HESS(K2+2,K3+1)+ (ERL*(2*R13*V211*
-     1       (R13*(-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12*R12DOTR13PT)/R12S)*V212 + 
-     1         R12*V312) + 
-     1      R12*V311*(R13*
-     1          (2*DOT1 + 2*R12DOTR13*R12DOTR13PT + 
-     1            (2*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (GAMMA2*R12*DOT2*R13)/
-     1             (R12S*R13S))*V212 + 
-     1         2*R12*(-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12DOTR13PT*R13)/R13S)*V312)))/
+                        HESS(K2+2,K2+3)=HESS(K2+2,K2+3)+ (ERL*((2*r12*V312*
+     1         (r13*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12*r12DOTr13PT)/r12s)*V213 + 
+     1           r12*V313))/R132 + 
+     1      V212*((2*DOT1 + 6*r12DOTr13*r12DOTr13PT + 
+     1            (GAMMA2*R122*DOT2)/r12s4 + 
+     1            (2*gamma*R122*DOT2)/r12s3 + 
+     1            (4*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (gamma*r12*DOT2)/r12s)*V213
+     1          + (2*r12*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12*r12DOTr13PT)/r12s)*V313)/
+     1          r13)))/(2.*R124)
+                        HESS(K2+2,K3+1)=HESS(K2+2,K3+1)+ (ERL*(2*r13*V211*
+     1       (r13*(-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12*r12DOTr13PT)/r12s)*V212 + 
+     1         r12*V312) + 
+     1      r12*V311*(r13*
+     1          (2*DOT1 + 2*r12DOTr13*r12DOTr13PT + 
+     1            (2*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (GAMMA2*r12*DOT2*r13)/
+     1             (r12s*r13s))*V212 + 
+     1         2*r12*(-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12DOTr13PT*r13)/r13s)*V312)))/
      1  (2.*R123*R133)
                         HESS(K2+2,K3+2)=HESS(K2+2,K3+2)+ (ERL*(2*R132*
-     1       (-R12DOTR13 + R12DOTR13PT*(-1 - (GAMMA*R12)/R12S))*
-     1       V2122 + R12*R13*
+     1       (-r12DOTr13 + r12DOTr13PT*(-1 - (gamma*r12)/r12s))*
+     1       V2122 + r12*r13*
      1       (2 + 2*DOT1 + 
-     1         2*R12DOTR13*R12DOTR13PT*
-     1          (1 + (GAMMA*R12)/R12S + 
-     1            (GAMMA*R13)/R13S) + 
-     1         (GAMMA2*R12*DOT2*R13)/
-     1          (R12S*R13S))*V212*
+     1         2*r12DOTr13*r12DOTr13PT*
+     1          (1 + (gamma*r12)/r12s + 
+     1            (gamma*r13)/r13s) + 
+     1         (GAMMA2*r12*DOT2*r13)/
+     1          (r12s*r13s))*V212*
      1       V312 + 2*R122*
-     1       (R12DOTR13PT*R132 + 
-     1         (-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12DOTR13PT*R13)/R13S)*V3122))
+     1       (r12DOTr13PT*R132 + 
+     1         (-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12DOTr13PT*r13)/r13s)*V3122))
      1    )/(2.*R123*R133)
-                        HESS(K2+2,K3+3)=HESS(K2+2,K3+3)+ (ERL*(2*R12*V312*
-     1       (R13*V213 + 
-     1         R12*(-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12DOTR13PT*R13)/R13S)*V313) + 
-     1      R13*V212*((-2*R12DOTR13*R13 - 2*R12DOTR13PT*R13 - 
-     1            (2*GAMMA*R12*R12DOTR13PT*R13)/R12S)*
-     1          V213 + R12*
-     1          (2*DOT1 + 2*R12DOTR13*R12DOTR13PT + 
-     1            (2*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (GAMMA2*R12*DOT2*R13)/
-     1             (R12S*R13S))*V313)))/
+                        HESS(K2+2,K3+3)=HESS(K2+2,K3+3)+ (ERL*(2*r12*V312*
+     1       (r13*V213 + 
+     1         r12*(-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12DOTr13PT*r13)/r13s)*V313) + 
+     1      r13*V212*((-2*r12DOTr13*r13 - 2*r12DOTr13PT*r13 - 
+     1            (2*gamma*r12*r12DOTr13PT*r13)/r12s)*
+     1          V213 + r12*
+     1          (2*DOT1 + 2*r12DOTr13*r12DOTr13PT + 
+     1            (2*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (GAMMA2*r12*DOT2*r13)/
+     1             (r12s*r13s))*V313)))/
      1  (2.*R123*R133)
                         HESS(K2+3,K2+3)=HESS(K2+3,K2+3)+ (ERL*((2*DOT1 + 
-     1         R12DOTR13*(6*R12DOTR13PT + 
-     1            (4*GAMMA*R12*R12DOTR13PT)/R12S) + 
-     1         (GAMMA*R12*DOT2*
-     1            (GAMMA*R12 + 3*R122 - 4*R12*SMALLA + SMALLA**2))/
-     1          R12S4)*V2132 - 
-     1      (4*R12*(R122*(R12DOTR13 + R12DOTR13PT) + 
-     1           (R12DOTR13 + R12DOTR13PT)*SMALLA**2 + 
-     1           R12*(GAMMA*R12DOTR13PT - 2*R12DOTR13*SMALLA - 
-     1              2*R12DOTR13PT*SMALLA))*V213*V313)/
-     1       (R13*R12S) + 
-     1      R122*(R12DOTR13PT*
-     1          (-2*R12DOTR13 - (GAMMA*R12*R12DOTR13PT)/R12S) + 
+     1         r12DOTr13*(6*r12DOTr13PT + 
+     1            (4*gamma*r12*r12DOTr13PT)/r12s) + 
+     1         (gamma*r12*DOT2*
+     1            (gamma*r12 + 3*R122 - 4*r12*smalla + smalla**2))/
+     1          r12s4)*V2132 - 
+     1      (4*r12*(R122*(r12DOTr13 + r12DOTr13PT) + 
+     1           (r12DOTr13 + r12DOTr13PT)*smalla**2 + 
+     1           r12*(gamma*r12DOTr13PT - 2*r12DOTr13*smalla - 
+     1              2*r12DOTr13PT*smalla))*V213*V313)/
+     1       (r13*r12s) + 
+     1      R122*(r12DOTr13PT*
+     1          (-2*r12DOTr13 - (gamma*r12*r12DOTr13PT)/r12s) + 
      1         (2*V3132)/R132)))/(2.*R124)
-                        HESS(K2+3,K3+1)=HESS(K2+3,K3+1)+ (ERL*(2*R13*V211*
-     1       (R13*(-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12*R12DOTR13PT)/R12S)*V213 + 
-     1         R12*V313) + 
-     1      R12*V311*(R13*
-     1          (2*DOT1 + 2*R12DOTR13*R12DOTR13PT + 
-     1            (2*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (GAMMA2*R12*DOT2*R13)/
-     1             (R12S*R13S))*V213 + 
-     1         2*R12*(-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12DOTR13PT*R13)/R13S)*V313)))/
+                        HESS(K2+3,K3+1)=HESS(K2+3,K3+1)+ (ERL*(2*r13*V211*
+     1       (r13*(-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12*r12DOTr13PT)/r12s)*V213 + 
+     1         r12*V313) + 
+     1      r12*V311*(r13*
+     1          (2*DOT1 + 2*r12DOTr13*r12DOTr13PT + 
+     1            (2*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (GAMMA2*r12*DOT2*r13)/
+     1             (r12s*r13s))*V213 + 
+     1         2*r12*(-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12DOTr13PT*r13)/r13s)*V313)))/
      1  (2.*R123*R133)
-                        HESS(K2+3,K3+2)=HESS(K2+3,K3+2)+ (ERL*(2*R13*V212*
-     1       (R13*(-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12*R12DOTR13PT)/R12S)*V213 + 
-     1         R12*V313) + 
-     1      R12*V312*(R13*
-     1          (2*DOT1 + 2*R12DOTR13*R12DOTR13PT + 
-     1            (2*GAMMA*R12*R12DOTR13*R12DOTR13PT)/R12S + 
-     1            (2*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (GAMMA2*R12*DOT2*R13)/
-     1             (R12S*R13S))*V213 + 
-     1         2*R12*(-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12DOTR13PT*R13)/R13S)*V313)))/
+                        HESS(K2+3,K3+2)=HESS(K2+3,K3+2)+ (ERL*(2*r13*V212*
+     1       (r13*(-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12*r12DOTr13PT)/r12s)*V213 + 
+     1         r12*V313) + 
+     1      r12*V312*(r13*
+     1          (2*DOT1 + 2*r12DOTr13*r12DOTr13PT + 
+     1            (2*gamma*r12*r12DOTr13*r12DOTr13PT)/r12s + 
+     1            (2*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (GAMMA2*r12*DOT2*r13)/
+     1             (r12s*r13s))*V213 + 
+     1         2*r12*(-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12DOTr13PT*r13)/r13s)*V313)))/
      1  (2.*R123*R133)
                         HESS(K2+3,K3+3)=HESS(K2+3,K3+3)+ (ERL*(2*R132*
-     1       (-R12DOTR13 + R12DOTR13PT*(-1 - (GAMMA*R12)/R12S))*
-     1       V2132 + R12*R13*
+     1       (-r12DOTr13 + r12DOTr13PT*(-1 - (gamma*r12)/r12s))*
+     1       V2132 + r12*r13*
      1       (2 + 2*DOT1 + 
-     1         2*R12DOTR13*R12DOTR13PT*
-     1          (1 + (GAMMA*R12)/R12S + 
-     1            (GAMMA*R13)/R13S) + 
-     1         (GAMMA2*R12*DOT2*R13)/
-     1          (R12S*R13S))*V213*
+     1         2*r12DOTr13*r12DOTr13PT*
+     1          (1 + (gamma*r12)/r12s + 
+     1            (gamma*r13)/r13s) + 
+     1         (GAMMA2*r12*DOT2*r13)/
+     1          (r12s*r13s))*V213*
      1       V313 + 2*R122*
-     1       (R12DOTR13PT*R132 + 
-     1         (-R12DOTR13 - R12DOTR13PT - 
-     1            (GAMMA*R12DOTR13PT*R13)/R13S)*V3132))
+     1       (r12DOTr13PT*R132 + 
+     1         (-r12DOTr13 - r12DOTr13PT - 
+     1            (gamma*r12DOTr13PT*r13)/r13s)*V3132))
      1    )/(2.*R123*R133)
-                        HESS(K3+1,K3+1)=HESS(K3+1,K3+1)+ (ERL*(R12DOTR13PT*R132*
-     1       (-2*R12DOTR13 - (GAMMA*R12DOTR13PT*R13)/R13S) + 
+                        HESS(K3+1,K3+1)=HESS(K3+1,K3+1)+ (ERL*(r12DOTr13PT*R132*
+     1       (-2*r12DOTr13 - (gamma*r12DOTr13PT*r13)/r13s) + 
      1      (2*R132*V2112)/R122 - 
-     1      (4*R13*(GAMMA*R12DOTR13PT*R13 + 
-     1           (R12DOTR13 + R12DOTR13PT)*R13S)*V211*
-     1         V311)/(R12*R13S) + 
-     1      (2*DOT1 + 6*R12DOTR13*R12DOTR13PT + 
-     1         (GAMMA2*DOT2*R132)/R13S4 + 
-     1         (2*GAMMA*DOT2*R132)/R13S3 + 
-     1         (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1         (GAMMA*DOT2*R13)/R13S)*V3112))
+     1      (4*r13*(gamma*r12DOTr13PT*r13 + 
+     1           (r12DOTr13 + r12DOTr13PT)*r13s)*V211*
+     1         V311)/(r12*r13s) + 
+     1      (2*DOT1 + 6*r12DOTr13*r12DOTr13PT + 
+     1         (GAMMA2*DOT2*R132)/r13s4 + 
+     1         (2*gamma*DOT2*R132)/r13s3 + 
+     1         (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1         (gamma*DOT2*r13)/r13s)*V3112))
      1   /(2.*R134)
-                        HESS(K3+1,K3+2)=HESS(K3+1,K3+2)+ (ERL*((2*R13*V211*
-     1         (R13*V212 + 
-     1           R12*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12DOTR13PT*R13)/R13S)*V312))/
+                        HESS(K3+1,K3+2)=HESS(K3+1,K3+2)+ (ERL*((2*r13*V211*
+     1         (r13*V212 + 
+     1           r12*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12DOTr13PT*r13)/r13s)*V312))/
      1       R122 + V311*
-     1       ((2*R13*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12DOTR13PT*R13)/R13S)*V212)/
-     1          R12 + (2*DOT1 + 6*R12DOTR13*R12DOTR13PT + 
-     1            (GAMMA2*DOT2*R132)/R13S4 + 
-     1            (2*GAMMA*DOT2*R132)/R13S3 + 
-     1            (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (GAMMA*DOT2*R13)/R13S)*V312))
+     1       ((2*r13*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12DOTr13PT*r13)/r13s)*V212)/
+     1          r12 + (2*DOT1 + 6*r12DOTr13*r12DOTr13PT + 
+     1            (GAMMA2*DOT2*R132)/r13s4 + 
+     1            (2*gamma*DOT2*R132)/r13s3 + 
+     1            (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (gamma*DOT2*r13)/r13s)*V312))
      1    )/(2.*R134)
-                        HESS(K3+1,K3+3)=HESS(K3+1,K3+3)+ (ERL*((2*R13*V211*
-     1         (R13*V213 + 
-     1           R12*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12DOTR13PT*R13)/R13S)*V313))/
+                        HESS(K3+1,K3+3)=HESS(K3+1,K3+3)+ (ERL*((2*r13*V211*
+     1         (r13*V213 + 
+     1           r12*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12DOTr13PT*r13)/r13s)*V313))/
      1       R122 + V311*
-     1       ((2*R13*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12DOTR13PT*R13)/R13S)*V213)/
-     1          R12 + (2*DOT1 + 6*R12DOTR13*R12DOTR13PT + 
-     1            (GAMMA2*DOT2*R132)/R13S4 + 
-     1            (2*GAMMA*DOT2*R132)/R13S3 + 
-     1            (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (GAMMA*DOT2*R13)/R13S)*V313))
+     1       ((2*r13*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12DOTr13PT*r13)/r13s)*V213)/
+     1          r12 + (2*DOT1 + 6*r12DOTr13*r12DOTr13PT + 
+     1            (GAMMA2*DOT2*R132)/r13s4 + 
+     1            (2*gamma*DOT2*R132)/r13s3 + 
+     1            (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (gamma*DOT2*r13)/r13s)*V313))
      1    )/(2.*R134)
-                        HESS(K3+2,K3+2)=HESS(K3+2,K3+2)+ (ERL*(R12DOTR13PT*R132*
-     1       (-2*R12DOTR13 - (GAMMA*R12DOTR13PT*R13)/R13S) + 
+                        HESS(K3+2,K3+2)=HESS(K3+2,K3+2)+ (ERL*(r12DOTr13PT*R132*
+     1       (-2*r12DOTr13 - (gamma*r12DOTr13PT*r13)/r13s) + 
      1      (2*R132*V2122)/R122 - 
-     1      (4*R13*(GAMMA*R12DOTR13PT*R13 + 
-     1           (R12DOTR13 + R12DOTR13PT)*R13S)*V212*
-     1         V312)/(R12*R13S) + 
-     1      (2*DOT1 + 6*R12DOTR13*R12DOTR13PT + 
-     1         (GAMMA2*DOT2*R132)/R13S4 + 
-     1         (2*GAMMA*DOT2*R132)/R13S3 + 
-     1         (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1         (GAMMA*DOT2*R13)/R13S)*V3122))
+     1      (4*r13*(gamma*r12DOTr13PT*r13 + 
+     1           (r12DOTr13 + r12DOTr13PT)*r13s)*V212*
+     1         V312)/(r12*r13s) + 
+     1      (2*DOT1 + 6*r12DOTr13*r12DOTr13PT + 
+     1         (GAMMA2*DOT2*R132)/r13s4 + 
+     1         (2*gamma*DOT2*R132)/r13s3 + 
+     1         (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1         (gamma*DOT2*r13)/r13s)*V3122))
      1   /(2.*R134)
-                        HESS(K3+2,K3+3)=HESS(K3+2,K3+3)+ (ERL*((2*R13*V212*
-     1         (R13*V213 + 
-     1           R12*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12DOTR13PT*R13)/R13S)*V313))/
+                        HESS(K3+2,K3+3)=HESS(K3+2,K3+3)+ (ERL*((2*r13*V212*
+     1         (r13*V213 + 
+     1           r12*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12DOTr13PT*r13)/r13s)*V313))/
      1       R122 + V312*
-     1       ((2*R13*(-R12DOTR13 - R12DOTR13PT - 
-     1              (GAMMA*R12DOTR13PT*R13)/R13S)*V213)/
-     1          R12 + (2*DOT1 + 6*R12DOTR13*R12DOTR13PT + 
-     1            (GAMMA2*DOT2*R132)/R13S4 + 
-     1            (2*GAMMA*DOT2*R132)/R13S3 + 
-     1            (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1            (GAMMA*DOT2*R13)/R13S)*V313))
+     1       ((2*r13*(-r12DOTr13 - r12DOTr13PT - 
+     1              (gamma*r12DOTr13PT*r13)/r13s)*V213)/
+     1          r12 + (2*DOT1 + 6*r12DOTr13*r12DOTr13PT + 
+     1            (GAMMA2*DOT2*R132)/r13s4 + 
+     1            (2*gamma*DOT2*R132)/r13s3 + 
+     1            (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1            (gamma*DOT2*r13)/r13s)*V313))
      1    )/(2.*R134)
-                        HESS(K3+3,K3+3)=HESS(K3+3,K3+3)+ (ERL*(R12DOTR13PT*R132*
-     1       (-2*R12DOTR13 - (GAMMA*R12DOTR13PT*R13)/R13S) + 
+                        HESS(K3+3,K3+3)=HESS(K3+3,K3+3)+ (ERL*(r12DOTr13PT*R132*
+     1       (-2*r12DOTr13 - (gamma*r12DOTr13PT*r13)/r13s) + 
      1      (2*R132*V2132)/R122 - 
-     1      (4*R13*(GAMMA*R12DOTR13PT*R13 + 
-     1           (R12DOTR13 + R12DOTR13PT)*R13S)*V213*
-     1         V313)/(R12*R13S) + 
-     1      (2*DOT1 + 6*R12DOTR13*R12DOTR13PT + 
-     1         (GAMMA2*DOT2*R132)/R13S4 + 
-     1         (2*GAMMA*DOT2*R132)/R13S3 + 
-     1         (4*GAMMA*R12DOTR13*R12DOTR13PT*R13)/R13S + 
-     1         (GAMMA*DOT2*R13)/R13S)*V3132))
+     1      (4*r13*(gamma*r12DOTr13PT*r13 + 
+     1           (r12DOTr13 + r12DOTr13PT)*r13s)*V213*
+     1         V313)/(r12*r13s) + 
+     1      (2*DOT1 + 6*r12DOTr13*r12DOTr13PT + 
+     1         (GAMMA2*DOT2*R132)/r13s4 + 
+     1         (2*gamma*DOT2*R132)/r13s3 + 
+     1         (4*gamma*r12DOTr13*r12DOTr13PT*r13)/r13s + 
+     1         (gamma*DOT2*r13)/r13s)*V3132))
      1   /(2.*R134)
 
                         HESS(K1+2,K1+1)=HESS(K1+1,K1+2) 

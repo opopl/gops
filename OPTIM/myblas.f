@@ -1,305 +1,305 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C--------------------------------------------------------------------
-C  SPARSE BLAS TOOLKIT INTERFACE ROUTINE:
-C--------------------------------------------------------------------
-      SUBROUTINE DCOOMM( TRANSA, M, N, K, ALPHA, DESCRA,
-     *           VAL, INDX, JNDX, NNZ,
-     *           B, LDB, BETA, C, LDC, WORK, LWORK)
+c  Sparse BLAS Toolkit interface routine:
+c--------------------------------------------------------------------
+      subroutine dcoomm( transa, m, n, k, alpha, descra,
+     *           val, indx, jndx, nnz,
+     *           b, ldb, beta, c, ldc, work, lwork)
 
-C--------------------------------------------------------------------
-C         ------------ BEGIN INTERFACE DESCRIPTION ------------
-C   TOOLKIT INTERFACE:
-C   DCOOMM -- COMPRESSED SPARSE ROW FORMAT MATRIX-MATRIX MULTIPLY
-C  
-C   C <- ALPHA A B + BETA C
-C  
-C   ARGUMENTS:
-C  
-C   INT TRANSA	INDICATES HOW TO OPERATE WITH THE SPARSE MATRIX
-C  		0 : OPERATE WITH MATRIX
-C  		1 : OPERATE WITH TRANSPOSE MATRIX
-C  
-C   INT M	NUMBER OF ROWS IN MATRIX A
-C  
-C   INT N	NUMBER OF COLUMNS IN MATRIX C
-C  
-C   INT K	NUMBER OF COLUMNS IN MATRIX A
-C  
-C   DOUBLE ALPHA SCALAR PARAMETER
-C  
-C   DOUBLE BETA  SCALAR PARAMETER
-C  
-C   INT DESCRA()	DESCRIPTOR ARGUMENT.  NINE ELEMENT INTEGER ARRAY
-C  		DESCRA(1) MATRIX STRUCTURE
-C  			0 : GENERAL
-C  			1 : SYMMETRIC
-C  			2 : HERMITIAN
-C  			3 : TRIANGULAR
-C  			4 : SKEW(ANTI)-SYMMETRIC
-C  			5 : DIAGONAL
-C  		DESCRA(2) UPPER/LOWER TRIANGULAR INDICATOR
-C  			1 : LOWER
-C  			2 : UPPER
-C  		DESCRA(3) MAIN DIAGONAL TYPE
-C  			0 : NON-UNIT
-C  			1 : UNIT
-C  		DESCRA(4) ARRAY BASE 
-C  			0 : C/C++ COMPATIBLE
-C  			1 : FORTRAN COMPATIBLE
-C  		DESCRA(5) REPEATED INDICES?
-C  			0 : UNKNOWN
-C  			1 : NO REPEATED INDICES
-C  
-C  
-C
-C   DOUBLE VAL()  SCALAR ARRAY OF LENGTH NNZ CONTAINING MATRIX ENTRIES.
-C  
-C   INT INDX()    INTEGER ARRAY OF LENGTH NNZ CONTAINING ROW INDICES.
-C
-C   INT JNDX()    INTEGER ARRAY OF LENGTH NNZ CONTAINING COLUMN INDICES.
-C
-C   INT NNZ       NUMBER OF NON-ZERO ELEMENTS IN A.
-C
-C   DOUBLE B()    RECTANGULAR ARRAY WITH FIRST DIMENSION LDB.
-C  
-C   DOUBLE C()    RECTANGULAR ARRAY WITH FIRST DIMENSION LDC.
-C  
-C   DOUBLE WORK() SCRATCH ARRAY OF LENGTH LWORK.  LWORK SHOULD BE AT LEAST
-C                 MAX(M,N)
-C  
-C       ------------ END INTERFACE DESCRIPTION --------------
-C--------------------------------------------------------------------
-      IMPLICIT NONE
+c--------------------------------------------------------------------
+c         ------------ begin interface description ------------
+c   Toolkit interface:
+c   dcoomm -- compressed sparse row format matrix-matrix multiply
+c  
+c   C <- alpha A B + beta C
+c  
+c   Arguments:
+c  
+c   int transa	Indicates how to operate with the sparse matrix
+c  		0 : operate with matrix
+c  		1 : operate with transpose matrix
+c  
+c   int m	Number of rows in matrix A
+c  
+c   int n	Number of columns in matrix c
+c  
+c   int k	Number of columns in matrix A
+c  
+c   double alpha Scalar parameter
+c  
+c   double beta  Scalar parameter
+c  
+c   int descra()	Descriptor argument.  Nine element integer array
+c  		descra(1) matrix structure
+c  			0 : general
+c  			1 : symmetric
+c  			2 : Hermitian
+c  			3 : Triangular
+c  			4 : Skew(Anti)-Symmetric
+c  			5 : Diagonal
+c  		descra(2) upper/lower triangular indicator
+c  			1 : lower
+c  			2 : upper
+c  		descra(3) main diagonal type
+c  			0 : non-unit
+c  			1 : unit
+c  		descra(4) Array base 
+c  			0 : C/C++ compatible
+c  			1 : Fortran compatible
+c  		descra(5) repeated indices?
+c  			0 : unknown
+c  			1 : no repeated indices
+c  
+c  
+c
+c   double val()  scalar array of length nnz containing matrix entries.
+c  
+c   int indx()    integer array of length nnz containing row indices.
+c
+c   int jndx()    integer array of length nnz containing column indices.
+c
+c   int nnz       number of non-zero elements in A.
+c
+c   double b()    rectangular array with first dimension ldb.
+c  
+c   double c()    rectangular array with first dimension ldc.
+c  
+c   double work() scratch array of length lwork.  lwork should be at least
+c                 max(m,n)
+c  
+c       ------------ end interface description --------------
+c--------------------------------------------------------------------
+      implicit none
       INTEGER J1
-C
-C     INTERFACE VARIABLES:
-C
-      INTEGER TRANSA, M, N, K, LDB, LDC, LWORK
-      DOUBLE PRECISION ALPHA
-      DOUBLE PRECISION BETA
-      INTEGER DESCRA(*)
-      DOUBLE PRECISION B(*), C(*)
-      DOUBLE PRECISION WORK(*)
-C
-C     FORMAT SPECIFIC INTERFACE VARIABLES:
-C
-      INTEGER NNZ
-      INTEGER INDX(*), JNDX(*)
-      DOUBLE PRECISION VAL(*)
-C
-C     LOCAL VARIABLES:
-C
-      INTEGER INFO
-      CHARACTER TRANSPOSE
-C
-C     EXTERNALS:
-C
-      EXTERNAL XERBLA
+c
+c     interface variables:
+c
+      integer transa, m, n, k, ldb, ldc, lwork
+      double precision alpha
+      double precision beta
+      integer descra(*)
+      double precision b(*), c(*)
+      double precision work(*)
+c
+c     format specific interface variables:
+c
+      integer nnz
+      integer indx(*), jndx(*)
+      double precision val(*)
+c
+c     local variables:
+c
+      integer info
+      character transpose
+c
+c     externals:
+c
+      external xerbla
 
-C
-C     TEST INPUT PARAMETERS:
-C
+c
+c     Test input parameters:
+c
 
-      INFO = 0
-      IF ( (TRANSA .NE. 0) .AND. (TRANSA .NE. 1) ) THEN
-         INFO = 1
-      ELSE IF ( M .LT. 0 ) THEN
-         INFO = 2
-      ELSE IF (N .LT. 0) THEN
-         INFO = 3
-      ELSE IF (K .LT. 0) THEN
-         INFO = 4
-      ELSE
-        IF (TRANSA .EQ. 0) THEN
-C         CHECK FOR CONSISTANT DIMENSIONS:
-          IF ( LDB .LT. K ) THEN 
-            INFO = 15
-          ELSE IF (LDC .LT. M) THEN
-            INFO = 18
-          ENDIF
-        ELSE IF (TRANSA .EQ. 1) THEN
-C         CHECK FOR CONSISTANT DIMENSIONS:
-          IF ( LDB .LT. M ) THEN 
-            INFO = 15
-          ELSE IF (LDC .LT. K) THEN
-            INFO = 18
-          ENDIF
-        ENDIF
-      ENDIF
+      info = 0
+      if ( (transa .ne. 0) .and. (transa .ne. 1) ) then
+         info = 1
+      else if ( m .lt. 0 ) then
+         info = 2
+      else if (n .lt. 0) then
+         info = 3
+      else if (k .lt. 0) then
+         info = 4
+      else
+        if (transa .eq. 0) then
+c         Check for consistant dimensions:
+          if ( ldb .lt. k ) then 
+            info = 15
+          else if (ldc .lt. m) then
+            info = 18
+          endif
+        else if (transa .eq. 1) then
+c         Check for consistant dimensions:
+          if ( ldb .lt. m ) then 
+            info = 15
+          else if (ldc .lt. k) then
+            info = 18
+          endif
+        endif
+      endif
 
-      IF ( INFO .NE. 0 ) THEN
-        CALL XERBLA('COOMM', INFO)
-        RETURN
-      ENDIF
+      if ( info .ne. 0 ) then
+        call xerbla('COOMM', info)
+        return
+      endif
 
 
-      IF ( (DESCRA(1) .GE. 0 .AND. DESCRA(1) .LE. 5 ) .AND.
-     *      ALPHA .EQ. 0.D0                                 ) THEN
-C       QUICK RETURN AFTER SCALING:
-        CALL DSCAL(M*N, BETA, C, 1)
-        RETURN
-       ENDIF
+      if ( (descra(1) .ge. 0 .and. descra(1) .le. 5 ) .and.
+     *      alpha .eq. 0.D0                                 ) then
+c       Quick return after scaling:
+        call dscal(m*n, beta, c, 1)
+        return
+       endif
       
-      TRANSPOSE = 'N'
-      IF ( TRANSA .EQ. 1 ) TRANSPOSE = 'T'
+      transpose = 'N'
+      if ( transa .eq. 1 ) transpose = 'T'
  
-C
-C     CALL APPROPRIATE KERNEL SUBROUTINE:
-C
+c
+c     Call appropriate kernel subroutine:
+c
 
-      IF (DESCRA(1) .EQ. 0   .OR.
-     *    DESCRA(1) .EQ. 3   .OR.
-     *    DESCRA(1) .EQ. 5        ) THEN
-C
-C        GENERAL MATRIX MULTIPLY:
-C
-         IF (TRANSPOSE .EQ. 'N') THEN
-           CALL DCOOMMGK( M, N, K, ALPHA,
-     *       VAL, INDX, JNDX, NNZ,
-     *       B, LDB, BETA, C, LDC, DESCRA(4))
-         ELSE
-           CALL DCOOMMGK( M, N, K, ALPHA,
-     *       VAL, JNDX, INDX, NNZ,
-     *       B, LDB, BETA, C, LDC, DESCRA(4))
-         ENDIF
-        RETURN
-      ELSE IF (DESCRA(1) .EQ. 1  .OR. 
-     *         DESCRA(1) .EQ. 2        ) THEN
-C
-C       SYMMETRIC/HERMITIAN  MATRIX MULTIPLY:
-C
-        CALL DCOOMMSK( M, N, K, ALPHA,
-     *       VAL, INDX, JNDX, NNZ,
-     *       B, LDB, BETA, C, LDC, DESCRA(4))
-        RETURN
-      ELSE IF (DESCRA(1) .EQ. 4 ) THEN
-C
-C        SKEW-SYMMETRIC MATRIX MULTIPLY:
-C
-         IF (TRANSPOSE .EQ. 'N') THEN
-          CALL DCOOMMKK( M, N, K, ALPHA,
-     *       VAL, INDX, JNDX, NNZ,
-     *       B, LDB, BETA, C, LDC, DESCRA(4))
-         ELSE
-          CALL DCOOMMKK( M, N, K, ALPHA,
-     *       VAL, JNDX, INDX, NNZ,
-     *       B, LDB, BETA, C, LDC, DESCRA(4))
-         ENDIF
-        RETURN
-      ELSE
-        INFO = 6
-      ENDIF
+      if (descra(1) .eq. 0   .or.
+     *    descra(1) .eq. 3   .or.
+     *    descra(1) .eq. 5        ) then
+c
+c        General matrix multiply:
+c
+         if (transpose .eq. 'N') then
+           call dcoommgk( m, n, k, alpha,
+     *       val, indx, jndx, nnz,
+     *       b, ldb, beta, c, ldc, descra(4))
+         else
+           call dcoommgk( m, n, k, alpha,
+     *       val, jndx, indx, nnz,
+     *       b, ldb, beta, c, ldc, descra(4))
+         endif
+        return
+      else if (descra(1) .eq. 1  .or. 
+     *         descra(1) .eq. 2        ) then
+c
+c       Symmetric/Hermitian  matrix multiply:
+c
+        call dcoommsk( m, n, k, alpha,
+     *       val, indx, jndx, nnz,
+     *       b, ldb, beta, c, ldc, descra(4))
+        return
+      else if (descra(1) .eq. 4 ) then
+c
+c        Skew-Symmetric matrix multiply:
+c
+         if (transpose .eq. 'N') then
+          call dcoommkk( m, n, k, alpha,
+     *       val, indx, jndx, nnz,
+     *       b, ldb, beta, c, ldc, descra(4))
+         else
+          call dcoommkk( m, n, k, alpha,
+     *       val, jndx, indx, nnz,
+     *       b, ldb, beta, c, ldc, descra(4))
+         endif
+        return
+      else
+        info = 6
+      endif
   
-      IF ( INFO .NE. 0 ) THEN
-        CALL XERBLA('COOMM', INFO)
-        RETURN
-      ENDIF
+      if ( info .ne. 0 ) then
+        call xerbla('COOMM', info)
+        return
+      endif
  
-      RETURN
-      END 
+      return
+      end 
 
 
 
-C--------------------------------------------------------------------
-C  SPARSE BLAS KERNEL ROUTINE(S):
-C--------------------------------------------------------------------
-      SUBROUTINE DCOOMMGK( M, N, K, ALPHA, 
-     *           VAL, INDX, JNDX, NNZ,
-     *           B, LDB, BETA, C, LDC, BASE)
-      IMPLICIT NONE
-      INTEGER M, N, K, NNZ, LDB, LDC, BASE
-      INTEGER L,J
-      DOUBLE PRECISION ALPHA
-      DOUBLE PRECISION BETA
-      INTEGER INDX(*), JNDX(*)
-      DOUBLE PRECISION VAL(*)
-      DOUBLE PRECISION B(LDB,*), C(LDC,*)
-C
-C     SCALE C BY BETA:
-C
-C DAE 
-C
-      CALL DSCAL( N*LDC, BETA, C(1,1), 1)
+c--------------------------------------------------------------------
+c  Sparse BLAS kernel routine(s):
+c--------------------------------------------------------------------
+      subroutine DCOOMMGK( m, n, k, alpha, 
+     *           val, indx, jndx, nnz,
+     *           b, ldb, beta, c, ldc, base)
+      implicit none
+      integer m, n, k, nnz, ldb, ldc, base
+      integer l,j
+      double precision alpha
+      double precision beta
+      integer indx(*), jndx(*)
+      double precision val(*)
+      double precision b(ldb,*), c(ldc,*)
+c
+c     Scale c by beta:
+c
+c dae 
+c
+      call dscal( n*ldc, beta, c(1,1), 1)
   
-      DO 5 L=1,N
-         DO 10 J=1,NNZ
-           C(INDX(J),L) = C(INDX(J),L)+ALPHA*B(JNDX(J),L)*VAL(J)
- 10      CONTINUE
- 5    CONTINUE
+      do 5 l=1,n
+         do 10 j=1,nnz
+           c(indx(j),l) = c(indx(j),l)+alpha*b(jndx(j),l)*val(j)
+ 10      continue
+ 5    continue
 
-      RETURN
-      END
+      return
+      end
          
-      SUBROUTINE DCOOMMSK( M, N, K, ALPHA, VAL, INDX, JNDX, NNZ,
-     *                          B, LDB, BETA, C, LDC, BASE)
-      IMPLICIT NONE
-      INTEGER M, N, K, NNZ, LDB, LDC, BASE
-      INTEGER L,J
-      DOUBLE PRECISION ALPHA
-      DOUBLE PRECISION BETA
-      INTEGER INDX(*), JNDX(*)
-      DOUBLE PRECISION VAL(*)
-      DOUBLE PRECISION B(LDB,*), C(LDC,*)
-C
-C     SCALE C BY BETA:
-C
-      CALL DSCAL( N*M, BETA, C(1,1), 1)
+      subroutine DCOOMMSK( m, n, k, alpha, val, indx, jndx, nnz,
+     *                          b, ldb, beta, c, ldc, base)
+      implicit none
+      integer m, n, k, nnz, ldb, ldc, base
+      integer l,j
+      double precision alpha
+      double precision beta
+      integer indx(*), jndx(*)
+      double precision val(*)
+      double precision b(ldb,*), c(ldc,*)
+c
+c     Scale c by beta:
+c
+      call dscal( n*m, beta, c(1,1), 1)
 
-      DO 5 L=1,N
-         DO 10 J=1,NNZ
-           IF ( INDX(J) .NE. JNDX(J) ) THEN
-              C(INDX(J),L) = C(INDX(J),L)+ALPHA*B(JNDX(J),L)*VAL(J)
-              C(JNDX(J),L) = C(JNDX(J),L)+ALPHA*B(INDX(J),L)*VAL(J)
-           ELSE
-              C(INDX(J),L) = C(INDX(J),L)+ALPHA*B(JNDX(J),L)*VAL(J)
-           ENDIF
- 10      CONTINUE
- 5    CONTINUE
+      do 5 l=1,n
+         do 10 j=1,nnz
+           if ( indx(j) .ne. jndx(j) ) then
+              c(indx(j),l) = c(indx(j),l)+alpha*b(jndx(j),l)*val(j)
+              c(jndx(j),l) = c(jndx(j),l)+alpha*b(indx(j),l)*val(j)
+           else
+              c(indx(j),l) = c(indx(j),l)+alpha*b(jndx(j),l)*val(j)
+           endif
+ 10      continue
+ 5    continue
 
-      RETURN
-      END
+      return
+      end
          
-      SUBROUTINE DCOOMMKK( M, N, K, ALPHA, VAL, INDX, JNDX, NNZ,
-     *                          B, LDB, BETA, C, LDC, BASE)
-      IMPLICIT NONE
-      INTEGER M, N, K, NNZ, LDB, LDC, BASE
-      INTEGER L,J
-      DOUBLE PRECISION ALPHA
-      DOUBLE PRECISION BETA
-      INTEGER INDX(*), JNDX(*)
-      DOUBLE PRECISION VAL(*)
-      DOUBLE PRECISION B(LDB,*), C(LDC,*)
-C
-C     SCALE C BY BETA:
-C
-      CALL DSCAL( N*M, BETA, C(1,1), 1)
+      subroutine DCOOMMKK( m, n, k, alpha, val, indx, jndx, nnz,
+     *                          b, ldb, beta, c, ldc, base)
+      implicit none
+      integer m, n, k, nnz, ldb, ldc, base
+      integer l,j
+      double precision alpha
+      double precision beta
+      integer indx(*), jndx(*)
+      double precision val(*)
+      double precision b(ldb,*), c(ldc,*)
+c
+c     Scale c by beta:
+c
+      call dscal( n*m, beta, c(1,1), 1)
 
-      DO 5 L=1,N
-         DO 10 J=1,NNZ
-           IF ( INDX(J) .NE. JNDX(J) ) THEN
-             C(INDX(J),L) = C(INDX(J),L)+ALPHA*B(JNDX(J),L)*VAL(J)
-             C(JNDX(J),L) = C(JNDX(J),L)-ALPHA*B(INDX(J),L)*VAL(J)
-           ENDIF
- 10      CONTINUE
- 5    CONTINUE
+      do 5 l=1,n
+         do 10 j=1,nnz
+           if ( indx(j) .ne. jndx(j) ) then
+             c(indx(j),l) = c(indx(j),l)+alpha*b(jndx(j),l)*val(j)
+             c(jndx(j),l) = c(jndx(j),l)-alpha*b(indx(j),l)*val(j)
+           endif
+ 10      continue
+ 5    continue
 
-      RETURN
-      END
+      return
+      end
          

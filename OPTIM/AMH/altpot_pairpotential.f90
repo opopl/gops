@@ -1,336 +1,336 @@
-      DOUBLE PRECISION FUNCTION CALC_ENERGY_ALT(THETA,SIGMA,E_ALT,NMRES,I_WELL)
+      double precision function calc_energy_alt(theta,sigma,E_alt,nmres,i_well)
 
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ,CUTOFF_CONT_LOW,TGSEQUENCES_AMW,NUMSEQ_AMW
-        USE GLOBALS_ALT, ONLY : MAX_WELL_ALT,ALTGAMMA
+        use amhglobals,  only : AMHmaxsiz,CUTOFF_CONT_LOW,tgsequences_amw,numseq_amw
+        use globals_alt, only : max_well_alt,altgamma
 
-        IMPLICIT NONE
-        INTEGER I,J,I_WELL,NMRES,ITYPE,JTYPE,ISEQ
-        DOUBLE PRECISION THETA(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT),E_ALT(2,MAX_WELL_ALT)
-        DOUBLE PRECISION SIGMA(AMHMAXSIZ,AMHMAXSIZ),TIJ
+        implicit none
+        integer i,j,i_well,nmres,itype,jtype,iseq
+        double precision theta(AMHmaxsiz,AMHmaxsiz,max_well_alt),E_alt(2,max_well_alt)
+        double precision sigma(AMHmaxsiz,AMHmaxsiz),tij
 
-        E_ALT(1,I_WELL)=0.0D0
-        E_ALT(2,I_WELL)=0.0D0
+        E_alt(1,i_well)=0.0D0
+        E_alt(2,i_well)=0.0D0
 
-        DO ISEQ=1,NUMSEQ_AMW
-          DO I=1,NMRES-CUTOFF_CONT_LOW 
-!               ITYPE=IRES(I)
-                ITYPE=TGSEQUENCES_AMW(I,ISEQ)
-             DO J=I+CUTOFF_CONT_LOW,NMRES
-!               JTYPE=IRES(J)
-                JTYPE=TGSEQUENCES_AMW(J,ISEQ)
+        do iseq=1,numseq_amw
+          do i=1,nmres-CUTOFF_CONT_LOW 
+!               itype=ires(i)
+                itype=tgsequences_amw(i,iseq)
+             do j=i+CUTOFF_CONT_LOW,nmres
+!               jtype=ires(j)
+                jtype=tgsequences_amw(j,iseq)
 
-                TIJ=THETA(I,J,I_WELL)
-                E_ALT(1,I_WELL)= E_ALT(1,I_WELL) - &
-                  TIJ*(1.0-SIGMA(I,J)) * ALTGAMMA(ITYPE,JTYPE,1,I_WELL)
-                E_ALT(2,I_WELL)= E_ALT(2,I_WELL) - & 
-                  TIJ*SIGMA(I,J) * ALTGAMMA(ITYPE,JTYPE,2,I_WELL)
-              IF(SIGMA(I,J).GT.1.01D0)THEN
-                 WRITE(*,*)'SIGMA ',I,' ',J,' BIGGER THAN ONE',SIGMA(I,J)
-                 STOP
-              ELSEIF(SIGMA(I,J).LT. -0.01D0)THEN
-                 WRITE(*,*)'SIGMA ',I,' ',J,' LESS THAN ZERO',SIGMA(I,J)
-                 STOP
-              ENDIF
-           ENDDO
-        ENDDO
-       ENDDO
+                tij=theta(i,j,i_well)
+                E_alt(1,i_well)= E_alt(1,i_well) - &
+                  tij*(1.0-sigma(i,j)) * altgamma(itype,jtype,1,i_well)
+                E_alt(2,i_well)= E_alt(2,i_well) - & 
+                  tij*sigma(i,j) * altgamma(itype,jtype,2,i_well)
+              if(sigma(i,j).gt.1.01D0)then
+                 write(*,*)'sigma ',i,' ',j,' bigger than one',sigma(i,j)
+                 stop
+              elseif(sigma(i,j).lt. -0.01D0)then
+                 write(*,*)'sigma ',i,' ',j,' less than zero',sigma(i,j)
+                 stop
+              endif
+           enddo
+        enddo
+       enddo
 
-         E_ALT(1,I_WELL)=E_ALT(1,I_WELL)/REAL(NUMSEQ_AMW)
-         E_ALT(2,I_WELL)=E_ALT(2,I_WELL)/REAL(NUMSEQ_AMW)
+         E_alt(1,i_well)=E_alt(1,i_well)/real(numseq_amw)
+         E_alt(2,i_well)=E_alt(2,i_well)/real(numseq_amw)
 
-        CALC_ENERGY_ALT=E_ALT(1,I_WELL)+E_ALT(2,I_WELL)
-        RETURN
+        calc_energy_alt=E_alt(1,i_well)+E_alt(2,i_well)
+        return
 
-      END FUNCTION CALC_ENERGY_ALT
+      end function calc_energy_alt
 
       !------------------------------
 
 
 
-      SUBROUTINE CALC_FORCE_ALT(F_CORD,PRO_CORD,THETA,THETA_DOT,SIGMA,XYZ_UNIT_VECT,NMRES &
-                , I_WELL, A, KAPPA, TRESHOLD)
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ,MAXCRD, TGSEQUENCES_AMW,NUMSEQ_AMW
-        USE GLOBALS_ALT, ONLY : MAX_WELL_ALT,DEBUG_NUMER_FORCES, DO_SEND_OUTPUT,ACCUMULATED_TIME
-        USE ALTPOT_INTERFACES, ONLY: CALC_HEAVISIDE_ALT, CALC_FORCE_ALT_1, CALC_FORCE_ALT_2, CALC_FORCE_ALT_3
+      subroutine calc_force_alt(f_cord,pro_cord,theta,theta_dot,sigma,xyz_unit_vect,nmres &
+                , i_well, A, kappa, treshold)
+        use amhglobals,  only : AMHmaxsiz,maxcrd, tgsequences_amw,numseq_amw
+        use globals_alt, only : max_well_alt,debug_numer_forces, do_send_output,accumulated_time
+        use altpot_interfaces, only: calc_heaviside_alt, calc_force_alt_1, calc_force_alt_2, calc_force_alt_3
 
-        IMPLICIT NONE
-        INTEGER, INTENT(IN) :: I_WELL, NMRES
-         DOUBLE PRECISION, INTENT(IN) :: KAPPA, TRESHOLD
-         DOUBLE PRECISION, INTENT(IN) :: THETA(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT),THETA_DOT(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
-         DOUBLE PRECISION, INTENT(IN) :: SIGMA(AMHMAXSIZ,AMHMAXSIZ), A(AMHMAXSIZ), XYZ_UNIT_VECT(AMHMAXSIZ,AMHMAXSIZ,3)
-         DOUBLE PRECISION, INTENT(IN) :: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
-         DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD)
+        implicit none
+        integer, intent(in) :: i_well, nmres
+         double precision, intent(in) :: kappa, treshold
+         double precision, intent(in) :: theta(AMHmaxsiz,AMHmaxsiz,max_well_alt),theta_dot(AMHmaxsiz,AMHmaxsiz,max_well_alt)
+         double precision, intent(in) :: sigma(AMHmaxsiz,AMHmaxsiz), A(AMHmaxsiz), xyz_unit_vect(AMHmaxsiz,AMHmaxsiz,3)
+         double precision, intent(in) :: pro_cord(AMHmaxsiz,3,maxcrd)
+         double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd)
 
-        !LOCAL
-        INTEGER I,J,IATOM,ISEQ,ITYPE
-        DOUBLE PRECISION FORCES1(AMHMAXSIZ,3,MAXCRD),FORCES2(AMHMAXSIZ,3,MAXCRD),FORCES3(AMHMAXSIZ,3,MAXCRD)
-        DOUBLE PRECISION HEAVISIDE(AMHMAXSIZ), HEAVISIDE_DOT(AMHMAXSIZ)
+        !Local
+        integer i,j,iatom,iseq,itype
+        double precision forces1(AMHmaxsiz,3,maxcrd),forces2(AMHmaxsiz,3,maxcrd),forces3(AMHmaxsiz,3,maxcrd)
+        double precision heaviside(AMHmaxsiz), heaviside_dot(AMHmaxsiz)
 
-        DOUBLE PRECISION START_TIME, END_TIME
+        double precision start_time, end_time
 
-!        EXTERNAL CPU_TIME   
+!        external cpu_time   
 
-        CALL CPU_TIME(START_TIME)
+        call CPU_TIME(start_time)
 
-        FORCES1=0.D0
-        FORCES2=0.D0
-        FORCES3=0.D0
+        forces1=0.D0
+        forces2=0.D0
+        forces3=0.D0
 
-        CALL CALC_HEAVISIDE_ALT(HEAVISIDE,HEAVISIDE_DOT,A,TRESHOLD,KAPPA)
+        call calc_heaviside_alt(heaviside,heaviside_dot,A,treshold,kappa)
 
-        CALL CALC_FORCE_ALT_1 (FORCES1,PRO_CORD,THETA,THETA_DOT,SIGMA,XYZ_UNIT_VECT,NMRES &
-                              , I_WELL, A, KAPPA, TRESHOLD, HEAVISIDE, HEAVISIDE_DOT)
-        CALL CALC_FORCE_ALT_2 (FORCES2,PRO_CORD,THETA,THETA_DOT,SIGMA,XYZ_UNIT_VECT,NMRES &
-                              , I_WELL, A, KAPPA, TRESHOLD, HEAVISIDE, HEAVISIDE_DOT)
-        CALL CALC_FORCE_ALT_3 (FORCES3,PRO_CORD,THETA,THETA_DOT,SIGMA,XYZ_UNIT_VECT,NMRES &
-                              , I_WELL, A, KAPPA, TRESHOLD, HEAVISIDE, HEAVISIDE_DOT)
+        call calc_force_alt_1 (forces1,pro_cord,theta,theta_dot,sigma,xyz_unit_vect,nmres &
+                              , i_well, A, kappa, treshold, heaviside, heaviside_dot)
+        call calc_force_alt_2 (forces2,pro_cord,theta,theta_dot,sigma,xyz_unit_vect,nmres &
+                              , i_well, A, kappa, treshold, heaviside, heaviside_dot)
+        call calc_force_alt_3 (forces3,pro_cord,theta,theta_dot,sigma,xyz_unit_vect,nmres &
+                              , i_well, A, kappa, treshold, heaviside, heaviside_dot)
 
         
-        F_CORD=F_CORD+FORCES1/REAL(NUMSEQ_AMW)+FORCES2/REAL(NUMSEQ_AMW)+FORCES3/REAL(NUMSEQ_AMW)
+        f_cord=f_cord+forces1/real(numseq_amw)+forces2/real(numseq_amw)+forces3/real(numseq_amw)
 
 
-        IF(DO_SEND_OUTPUT .AND. DEBUG_NUMER_FORCES) THEN
-           OPEN(UNIT=1561,FILE='ALT_ANAL_FORCE_DETAILED_1_PP',STATUS='UNKNOWN')  
-           OPEN(UNIT=1562,FILE='ALT_ANAL_FORCE_DETAILED_2_PP',STATUS='UNKNOWN')  
-           OPEN(UNIT=1563,FILE='ALT_ANAL_FORCE_DETAILED_3_PP',STATUS='UNKNOWN')  
+        if(do_send_output .and. debug_numer_forces) then
+           open(unit=1561,file='alt_anal_force_detailed_1_pp',status='unknown')  
+           open(unit=1562,file='alt_anal_force_detailed_2_pp',status='unknown')  
+           open(unit=1563,file='alt_anal_force_detailed_3_pp',status='unknown')  
 
-          DO ISEQ=1,NUMSEQ_AMW
-           DO I=1,NMRES
-              ITYPE=TGSEQUENCES_AMW(I,ISEQ)
-              IATOM=2
-              IF (ITYPE .EQ. 8) IATOM=1
-              WRITE(1561,1100) (FORCES1(I,J,IATOM),J=1,3), A(I)
-              WRITE(1562,1100) (FORCES2(I,J,IATOM),J=1,3), A(I)
-              WRITE(1563,1100) (FORCES3(I,J,IATOM),J=1,3), A(I)
-           ENDDO
-          ENDDO
-           CLOSE(1561)
-           CLOSE(1562)
-           CLOSE(1563)
-1100       FORMAT(400(1X,E12.6))
-        ENDIF
+          do iseq=1,numseq_amw
+           do i=1,nmres
+              itype=tgsequences_amw(i,iseq)
+              iatom=2
+              if (itype .eq. 8) iatom=1
+              write(1561,1100) (forces1(i,j,iatom),j=1,3), A(i)
+              write(1562,1100) (forces2(i,j,iatom),j=1,3), A(i)
+              write(1563,1100) (forces3(i,j,iatom),j=1,3), A(i)
+           enddo
+          enddo
+           close(1561)
+           close(1562)
+           close(1563)
+1100       format(400(1x,e12.6))
+        endif
 
-        CALL CPU_TIME(END_TIME)
-        ACCUMULATED_TIME(2)=ACCUMULATED_TIME(2)+(END_TIME-START_TIME)
+        call CPU_TIME(end_time)
+        accumulated_time(2)=accumulated_time(2)+(end_time-start_time)
 
-        RETURN
-      END SUBROUTINE CALC_FORCE_ALT
+        return
+      end subroutine calc_force_alt
 
       !-----------------------------------------------
 
-      SUBROUTINE CALC_FORCE_ALT_1 (F_CORD,PRO_CORD,THETA,THETA_DOT,SIGMA,XYZ_UNIT_VECT,NMRES &
-           , I_WELL, A, KAPPA, TRESHOLD, HEAVISIDE, HEAVISIDE_DOT)
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ,MAXCRD,IRES, & 
-                         CUTOFF_CONT_LOW,TGSEQUENCES_AMW,NUMSEQ_AMW
-        USE GLOBALS_ALT, ONLY : ALTGAMMA,MAX_WELL_ALT,DEBUGFLAG,ACCUMULATED_TIME
+      subroutine calc_force_alt_1 (f_cord,pro_cord,theta,theta_dot,sigma,xyz_unit_vect,nmres &
+           , i_well, A, kappa, treshold, heaviside, heaviside_dot)
+        use amhglobals,  only : AMHmaxsiz,maxcrd,ires, & 
+                         CUTOFF_CONT_LOW,tgsequences_amw,numseq_amw
+        use globals_alt, only : altgamma,max_well_alt,debugflag,accumulated_time
 
-        IMPLICIT NONE
-        INTEGER, INTENT(IN) :: I_WELL, NMRES
-         DOUBLE PRECISION, INTENT(IN) :: KAPPA, TRESHOLD
-         DOUBLE PRECISION, INTENT(IN) :: THETA(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
-         DOUBLE PRECISION, INTENT(IN) :: THETA_DOT(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
-         DOUBLE PRECISION, INTENT(IN) :: SIGMA(AMHMAXSIZ,AMHMAXSIZ), A(AMHMAXSIZ)
-         DOUBLE PRECISION, INTENT(IN) :: XYZ_UNIT_VECT(AMHMAXSIZ,AMHMAXSIZ,3)
-         DOUBLE PRECISION, INTENT(IN) :: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
-         DOUBLE PRECISION, INTENT(IN) :: HEAVISIDE(AMHMAXSIZ), HEAVISIDE_DOT(AMHMAXSIZ)
-         DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD)
-
-
-        ! LOCAL
-        INTEGER K,I,J,KATOM,ITYPE,JTYPE,ISEQ
-        DOUBLE PRECISION GAMMA1,GAMMA2,DELTAGAMMA_THETA,START_TIME, END_TIME
-
-         DOUBLE PRECISION, PARAMETER :: EPSILON=0.0001D0
-
-!        EXTERNAL CPU_TIME
+        implicit none
+        integer, intent(in) :: i_well, nmres
+         double precision, intent(in) :: kappa, treshold
+         double precision, intent(in) :: theta(AMHmaxsiz,AMHmaxsiz,max_well_alt)
+         double precision, intent(in) :: theta_dot(AMHmaxsiz,AMHmaxsiz,max_well_alt)
+         double precision, intent(in) :: sigma(AMHmaxsiz,AMHmaxsiz), A(AMHmaxsiz)
+         double precision, intent(in) :: xyz_unit_vect(AMHmaxsiz,AMHmaxsiz,3)
+         double precision, intent(in) :: pro_cord(AMHmaxsiz,3,maxcrd)
+         double precision, intent(in) :: heaviside(AMHmaxsiz), heaviside_dot(AMHmaxsiz)
+         double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd)
 
 
-        CALL CPU_TIME(START_TIME)
+        ! Local
+        integer k,i,j,katom,itype,jtype,iseq
+        double precision gamma1,gamma2,deltagamma_theta,start_time, end_time
 
-       DO ISEQ=1,NUMSEQ_AMW
-         DO I=1,NMRES-CUTOFF_CONT_LOW,1 
-          ITYPE=TGSEQUENCES_AMW(I,ISEQ)
-!           ITYPE=IRES(I)
-           DO J=I+CUTOFF_CONT_LOW,NMRES,1
-! THIS OPTIMIZES THE SUBROUTINE 15-FOLD
-              IF(ABS(THETA(I,J,I_WELL))<EPSILON) CYCLE 
-              DO K=1,NMRES,1 
-                 IF(I.EQ.K .OR. J.EQ.K) CYCLE
-                 KATOM=2
-                 IF (IRES(K) .EQ. 8) KATOM=1
-                 JTYPE=TGSEQUENCES_AMW(J,ISEQ)
-!                 JTYPE=IRES(J)
-                 GAMMA1=ALTGAMMA(ITYPE,JTYPE,1,I_WELL)
-                 GAMMA2=ALTGAMMA(ITYPE,JTYPE,2,I_WELL)
-                 DELTAGAMMA_THETA=(GAMMA2-GAMMA1)*THETA(I,J,I_WELL)
+         double precision, parameter :: epsilon=0.0001D0
+
+!        external cpu_time
+
+
+        call CPU_TIME(start_time)
+
+       do iseq=1,numseq_amw
+         do i=1,nmres-CUTOFF_CONT_LOW,1 
+          itype=tgsequences_amw(i,iseq)
+!           itype=ires(i)
+           do j=i+CUTOFF_CONT_LOW,nmres,1
+! This optimizes the subroutine 15-fold
+              if(abs(theta(i,j,i_well))<epsilon) cycle 
+              do k=1,nmres,1 
+                 if(i.eq.k .or. j.eq.k) cycle
+                 katom=2
+                 if (ires(k) .eq. 8) katom=1
+                 jtype=tgsequences_amw(j,iseq)
+!                 jtype=ires(j)
+                 gamma1=altgamma(itype,jtype,1,i_well)
+                 gamma2=altgamma(itype,jtype,2,i_well)
+                 deltagamma_theta=(gamma2-gamma1)*theta(i,j,i_well)
                  
-                 IF(ABS(I-K)>1 .AND. ABS(THETA_DOT(I,K,1))>EPSILON) THEN
-                    F_CORD(K,:,KATOM)=F_CORD(K,:,KATOM) + &
-                       DELTAGAMMA_THETA*HEAVISIDE_DOT(I)*HEAVISIDE(J)* &
-                        THETA_DOT(I,K,1)*XYZ_UNIT_VECT(K,I,:)
-                 ENDIF
-                 IF(ABS(J-K)>1 .AND. ABS(THETA_DOT(J,K,1))>EPSILON) THEN
-                    F_CORD(K,:,KATOM)=F_CORD(K,:,KATOM) + & 
-                       DELTAGAMMA_THETA*HEAVISIDE(I)*HEAVISIDE_DOT(J)* & 
-                        THETA_DOT(J,K,1)*XYZ_UNIT_VECT(K,J,:) 
-                 ENDIF
-              ENDDO
-           ENDDO
-        ENDDO
-       ENDDO
+                 if(abs(i-k)>1 .and. abs(theta_dot(i,k,1))>epsilon) then
+                    f_cord(k,:,katom)=f_cord(k,:,katom) + &
+                       deltagamma_theta*heaviside_dot(i)*heaviside(j)* &
+                        theta_dot(i,k,1)*xyz_unit_vect(k,i,:)
+                 endif
+                 if(abs(j-k)>1 .and. abs(theta_dot(j,k,1))>epsilon) then
+                    f_cord(k,:,katom)=f_cord(k,:,katom) + & 
+                       deltagamma_theta*heaviside(i)*heaviside_dot(j)* & 
+                        theta_dot(j,k,1)*xyz_unit_vect(k,j,:) 
+                 endif
+              enddo
+           enddo
+        enddo
+       enddo
         
-        CALL CPU_TIME(END_TIME)
-        ACCUMULATED_TIME(11)= ACCUMULATED_TIME(11) + END_TIME-START_TIME
+        call CPU_TIME(end_time)
+        accumulated_time(11)= accumulated_time(11) + end_time-start_time
 
-        RETURN
-      END SUBROUTINE CALC_FORCE_ALT_1
+        return
+      end subroutine calc_force_alt_1
 
       !-----------------------------------------------
 
 
-      SUBROUTINE CALC_FORCE_ALT_2 (F_CORD,PRO_CORD,THETA,THETA_DOT,SIGMA, & 
-                XYZ_UNIT_VECT,NMRES &
-           , I_WELL, A, KAPPA, TRESHOLD, HEAVISIDE, HEAVISIDE_DOT)
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ,MAXCRD,IRES, CUTOFF_CONT_LOW,TGSEQUENCES_AMW,NUMSEQ_AMW
-        USE GLOBALS_ALT, ONLY : ALTGAMMA,MAX_WELL_ALT,DEBUGFLAG,ACCUMULATED_TIME
+      subroutine calc_force_alt_2 (f_cord,pro_cord,theta,theta_dot,sigma, & 
+                xyz_unit_vect,nmres &
+           , i_well, A, kappa, treshold, heaviside, heaviside_dot)
+        use amhglobals,  only : AMHmaxsiz,maxcrd,ires, CUTOFF_CONT_LOW,tgsequences_amw,numseq_amw
+        use globals_alt, only : altgamma,max_well_alt,debugflag,accumulated_time
 
-        IMPLICIT NONE
-        INTEGER, INTENT(IN) :: I_WELL, NMRES
-         DOUBLE PRECISION, INTENT(IN) :: KAPPA, TRESHOLD
-         DOUBLE PRECISION, INTENT(IN) :: THETA(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
-         DOUBLE PRECISION, INTENT(IN) :: THETA_DOT(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
-         DOUBLE PRECISION, INTENT(IN) :: SIGMA(AMHMAXSIZ,AMHMAXSIZ), A(AMHMAXSIZ)
-         DOUBLE PRECISION, INTENT(IN) ::  XYZ_UNIT_VECT(AMHMAXSIZ,AMHMAXSIZ,3)
-         DOUBLE PRECISION, INTENT(IN) :: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
-         DOUBLE PRECISION, INTENT(IN) :: HEAVISIDE(AMHMAXSIZ), HEAVISIDE_DOT(AMHMAXSIZ)
-         DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD)
+        implicit none
+        integer, intent(in) :: i_well, nmres
+         double precision, intent(in) :: kappa, treshold
+         double precision, intent(in) :: theta(AMHmaxsiz,AMHmaxsiz,max_well_alt)
+         double precision, intent(in) :: theta_dot(AMHmaxsiz,AMHmaxsiz,max_well_alt)
+         double precision, intent(in) :: sigma(AMHmaxsiz,AMHmaxsiz), A(AMHmaxsiz)
+         double precision, intent(in) ::  xyz_unit_vect(AMHmaxsiz,AMHmaxsiz,3)
+         double precision, intent(in) :: pro_cord(AMHmaxsiz,3,maxcrd)
+         double precision, intent(in) :: heaviside(AMHmaxsiz), heaviside_dot(AMHmaxsiz)
+         double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd)
 
 
-        ! LOCAL
-        INTEGER K,I,KATOM,IATOM,ITYPE,KTYPE,ISEQ
-        DOUBLE PRECISION GAMMA1,GAMMA2,SUM_GAMMA_SIGMA_THETA_DOT
-        DOUBLE PRECISION FORCE(3)
+        ! Local
+        integer k,i,katom,iatom,itype,ktype,iseq
+        double precision gamma1,gamma2,sum_gamma_sigma_theta_dot
+        double precision force(3)
 
-        DOUBLE PRECISION START_TIME, END_TIME
+        double precision start_time, end_time
 
-!        EXTERNAL CPU_TIME
+!        external cpu_time
 
-        CALL CPU_TIME(START_TIME)
+        call CPU_TIME(start_time)
 
-       DO ISEQ=1,NUMSEQ_AMW
+       do iseq=1,numseq_amw
  
-        DO K=1,NMRES-CUTOFF_CONT_LOW,1
-           KATOM=2
+        do k=1,nmres-CUTOFF_CONT_LOW,1
+           katom=2
 
-!           IF (IRES(K) .EQ. 8) KATOM=1
-!           KTYPE=IRES(K)
-!   HACK FOR CONSISTENCY
-            IF (TGSEQUENCES_AMW(K,1) .EQ. 8) KATOM=1
+!           if (ires(k) .eq. 8) katom=1
+!           ktype=ires(k)
+!   hack for consistency
+            if (tgsequences_amw(k,1) .eq. 8) katom=1
 
-            KTYPE=TGSEQUENCES_AMW(K,ISEQ)
+            ktype=tgsequences_amw(k,iseq)
 
-           DO I=K+CUTOFF_CONT_LOW,NMRES,1
-              IATOM=2
+           do i=k+CUTOFF_CONT_LOW,nmres,1
+              iatom=2
 
-              IF (IRES(I) .EQ. 8) IATOM=1
-!              ITYPE=IRES(I)
-!   HACK FOR CONSISTENCY
-            IF (TGSEQUENCES_AMW(I,1) .EQ. 8) IATOM=1
+              if (ires(i) .eq. 8) iatom=1
+!              itype=ires(i)
+!   hack for consistency
+            if (tgsequences_amw(i,1) .eq. 8) iatom=1
 
-              ITYPE=TGSEQUENCES_AMW(I,ISEQ)
-              GAMMA1=ALTGAMMA(KTYPE,ITYPE,1,I_WELL)
-              GAMMA2=ALTGAMMA(KTYPE,ITYPE,2,I_WELL)
-              SUM_GAMMA_SIGMA_THETA_DOT=(GAMMA1*(1.0D0-SIGMA(K,I)) + & 
-                               GAMMA2*SIGMA(K,I))*THETA_DOT(K,I,I_WELL)
-              FORCE(:)=XYZ_UNIT_VECT(K,I,:)*SUM_GAMMA_SIGMA_THETA_DOT
-              F_CORD(K,:,KATOM)=F_CORD(K,:,KATOM)+FORCE(:)
-              F_CORD(I,:,IATOM)=F_CORD(I,:,IATOM)-FORCE(:)
-           ENDDO
-        ENDDO
-       ENDDO
+              itype=tgsequences_amw(i,iseq)
+              gamma1=altgamma(ktype,itype,1,i_well)
+              gamma2=altgamma(ktype,itype,2,i_well)
+              sum_gamma_sigma_theta_dot=(gamma1*(1.0D0-sigma(k,i)) + & 
+                               gamma2*sigma(k,i))*theta_dot(k,i,i_well)
+              force(:)=xyz_unit_vect(k,i,:)*sum_gamma_sigma_theta_dot
+              f_cord(k,:,katom)=f_cord(k,:,katom)+force(:)
+              f_cord(i,:,iatom)=f_cord(i,:,iatom)-force(:)
+           enddo
+        enddo
+       enddo
 
-        CALL CPU_TIME(END_TIME)
-        ACCUMULATED_TIME(12)= ACCUMULATED_TIME(12)+(END_TIME-START_TIME)
-        RETURN
+        call CPU_TIME(end_time)
+        accumulated_time(12)= accumulated_time(12)+(end_time-start_time)
+        return
 
-      END SUBROUTINE CALC_FORCE_ALT_2
+      end subroutine calc_force_alt_2
 
       !-----------------------------------------------
 
 
 
-      SUBROUTINE CALC_FORCE_ALT_3 (F_CORD,PRO_CORD,THETA,THETA_DOT,SIGMA,XYZ_UNIT_VECT,NMRES &
-           , I_WELL, A, KAPPA, TRESHOLD, HEAVISIDE, HEAVISIDE_DOT)
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ,MAXCRD, CUTOFF_CONT_LOW,TGSEQUENCES_AMW,NUMSEQ_AMW
-        USE GLOBALS_ALT, ONLY : ALTGAMMA,MAX_WELL_ALT,DEBUGFLAG,ACCUMULATED_TIME
-        USE ALTPOT_INTERFACES, ONLY: CALC_SUM_THETA_DOT_ALT 
+      subroutine calc_force_alt_3 (f_cord,pro_cord,theta,theta_dot,sigma,xyz_unit_vect,nmres &
+           , i_well, A, kappa, treshold, heaviside, heaviside_dot)
+        use amhglobals,  only : AMHmaxsiz,maxcrd, CUTOFF_CONT_LOW,tgsequences_amw,numseq_amw
+        use globals_alt, only : altgamma,max_well_alt,debugflag,accumulated_time
+        use altpot_interfaces, only: calc_sum_theta_dot_alt 
 
-        IMPLICIT NONE
-        INTEGER, INTENT(IN) :: I_WELL, NMRES
-         DOUBLE PRECISION, INTENT(IN) :: KAPPA, TRESHOLD
-         DOUBLE PRECISION, INTENT(IN) :: THETA(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
-         DOUBLE PRECISION, INTENT(IN) :: THETA_DOT(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
-         DOUBLE PRECISION, INTENT(IN) :: SIGMA(AMHMAXSIZ,AMHMAXSIZ), A(AMHMAXSIZ)
-         DOUBLE PRECISION, INTENT(IN) :: XYZ_UNIT_VECT(AMHMAXSIZ,AMHMAXSIZ,3)
-         DOUBLE PRECISION, INTENT(IN) :: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
-         DOUBLE PRECISION, INTENT(IN) :: HEAVISIDE(AMHMAXSIZ), HEAVISIDE_DOT(AMHMAXSIZ)
-         DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD)
-
-
-        ! LOCAL
-        INTEGER K,I,KATOM,IATOM,ITYPE,KTYPE,ISEQ
-        DOUBLE PRECISION GAMMA1,GAMMA2,DELTAGAMMA_THETA
-        DOUBLE PRECISION FORCE_K(3), FORCE_I(3)
-        DOUBLE PRECISION SUM_THETA_DOT(AMHMAXSIZ,3)
+        implicit none
+        integer, intent(in) :: i_well, nmres
+         double precision, intent(in) :: kappa, treshold
+         double precision, intent(in) :: theta(AMHmaxsiz,AMHmaxsiz,max_well_alt)
+         double precision, intent(in) :: theta_dot(AMHmaxsiz,AMHmaxsiz,max_well_alt)
+         double precision, intent(in) :: sigma(AMHmaxsiz,AMHmaxsiz), A(AMHmaxsiz)
+         double precision, intent(in) :: xyz_unit_vect(AMHmaxsiz,AMHmaxsiz,3)
+         double precision, intent(in) :: pro_cord(AMHmaxsiz,3,maxcrd)
+         double precision, intent(in) :: heaviside(AMHmaxsiz), heaviside_dot(AMHmaxsiz)
+         double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd)
 
 
-        DOUBLE PRECISION START_TIME, END_TIME
+        ! Local
+        integer k,i,katom,iatom,itype,ktype,iseq
+        double precision gamma1,gamma2,deltagamma_theta
+        double precision force_k(3), force_i(3)
+        double precision sum_theta_dot(AMHmaxsiz,3)
 
-!        EXTERNAL CPU_TIME
 
-        CALL CPU_TIME(START_TIME)
+        double precision start_time, end_time
 
-        CALL CALC_SUM_THETA_DOT_ALT(SUM_THETA_DOT,THETA_DOT,XYZ_UNIT_VECT,NMRES)
+!        external cpu_time
 
-      DO ISEQ=1,NUMSEQ_AMW
+        call CPU_TIME(start_time)
 
-        DO K=1,NMRES-CUTOFF_CONT_LOW,1
-           KATOM=2
+        call calc_sum_theta_dot_alt(sum_theta_dot,theta_dot,xyz_unit_vect,nmres)
 
-           IF (TGSEQUENCES_AMW(K,1) .EQ. 8) KATOM=1
-           KTYPE=TGSEQUENCES_AMW(K,ISEQ)
+      do iseq=1,numseq_amw
+
+        do k=1,nmres-CUTOFF_CONT_LOW,1
+           katom=2
+
+           if (tgsequences_amw(k,1) .eq. 8) katom=1
+           ktype=tgsequences_amw(k,iseq)
                                                                                                      
-!           IF (IRES(K) .EQ. 8) KATOM=1
-!           KTYPE=IRES(K)
-           DO I=K+CUTOFF_CONT_LOW,NMRES,1
-              IATOM=2
+!           if (ires(k) .eq. 8) katom=1
+!           ktype=ires(k)
+           do i=k+CUTOFF_CONT_LOW,nmres,1
+              iatom=2
 
-           IF (TGSEQUENCES_AMW(I,1) .EQ. 8) IATOM=1
-           ITYPE=TGSEQUENCES_AMW(I,ISEQ)
+           if (tgsequences_amw(i,1) .eq. 8) iatom=1
+           itype=tgsequences_amw(i,iseq)
 
-!              IF (IRES(I) .EQ. 8) IATOM=1
-!              ITYPE=IRES(I)
+!              if (ires(i) .eq. 8) iatom=1
+!              itype=ires(i)
 
-              GAMMA1=ALTGAMMA(KTYPE,ITYPE,1,I_WELL)
-              GAMMA2=ALTGAMMA(KTYPE,ITYPE,2,I_WELL)
-              DELTAGAMMA_THETA=(GAMMA2-GAMMA1)*THETA(K,I,I_WELL) 
-              FORCE_K=0.D0
-              FORCE_I=0.D0
-              FORCE_K(:)=FORCE_K(:)+XYZ_UNIT_VECT(K,I,:)*DELTAGAMMA_THETA*HEAVISIDE_DOT(I)*HEAVISIDE(K)*THETA_DOT(K,I,1) 
-              FORCE_I(:)=FORCE_I(:)+XYZ_UNIT_VECT(I,K,:)*DELTAGAMMA_THETA*HEAVISIDE_DOT(K)*HEAVISIDE(I)*THETA_DOT(I,K,1) 
-              FORCE_K(:)=FORCE_K(:)+DELTAGAMMA_THETA*HEAVISIDE(I)*HEAVISIDE_DOT(K)*SUM_THETA_DOT(K,:)
-              FORCE_I(:)=FORCE_I(:)+DELTAGAMMA_THETA*HEAVISIDE(K)*HEAVISIDE_DOT(I)*SUM_THETA_DOT(I,:)
-              F_CORD(K,:,KATOM)=F_CORD(K,:,KATOM)+FORCE_K(:)
-              F_CORD(I,:,IATOM)=F_CORD(I,:,IATOM)+FORCE_I(:)
-           ENDDO
-        ENDDO
-      ENDDO
+              gamma1=altgamma(ktype,itype,1,i_well)
+              gamma2=altgamma(ktype,itype,2,i_well)
+              deltagamma_theta=(gamma2-gamma1)*theta(k,i,i_well) 
+              force_k=0.D0
+              force_i=0.D0
+              force_k(:)=force_k(:)+xyz_unit_vect(k,i,:)*deltagamma_theta*heaviside_dot(i)*heaviside(k)*theta_dot(k,i,1) 
+              force_i(:)=force_i(:)+xyz_unit_vect(i,k,:)*deltagamma_theta*heaviside_dot(k)*heaviside(i)*theta_dot(i,k,1) 
+              force_k(:)=force_k(:)+deltagamma_theta*heaviside(i)*heaviside_dot(k)*sum_theta_dot(k,:)
+              force_i(:)=force_i(:)+deltagamma_theta*heaviside(k)*heaviside_dot(i)*sum_theta_dot(i,:)
+              f_cord(k,:,katom)=f_cord(k,:,katom)+force_k(:)
+              f_cord(i,:,iatom)=f_cord(i,:,iatom)+force_i(:)
+           enddo
+        enddo
+      enddo
 
-        CALL CPU_TIME(END_TIME)
-        ACCUMULATED_TIME(13)= ACCUMULATED_TIME(13) + (END_TIME-START_TIME) 
+        call CPU_TIME(end_time)
+        accumulated_time(13)= accumulated_time(13) + (end_time-start_time) 
 
-        RETURN
-      END SUBROUTINE CALC_FORCE_ALT_3
+        return
+      end subroutine calc_force_alt_3
 
       !-----------------------------------------------
 

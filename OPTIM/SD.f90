@@ -1,531 +1,531 @@
-MODULE SDWATER
+module SDwater
 
-IMPLICIT NONE
+implicit none
 
-REAL*8 :: ALPHA = 1.444 !ANGSTROMS**3 !POLARIZABILITY OF O. (H+ CAN'T BE POLARIZED AT ALL)
-REAL*8 :: RE = 0.9584 !ANGSTROMS
-INTEGER :: NO, NA
-INTEGER :: LWORK
-REAL*8, DIMENSION(:), ALLOCATABLE :: WORK, Q
+real*8 :: alpha = 1.444 !Angstroms**3 !polarizability of O. (H+ can't be polarized at all)
+real*8 :: re = 0.9584 !Angstroms
+integer :: NO, Na
+integer :: lwork
+real*8, dimension(:), allocatable :: work, q
 
-INTERFACE DIST
-   MODULE PROCEDURE DIST_X, DIST_D
-END INTERFACE
+interface dist
+   module procedure dist_x, dist_d
+end interface
 
-CONTAINS
+contains
 
 !#######################################################################
 
-!VECTOR BETWEEN ITH PARTICLE AND JTH PARTICLE
-PURE FUNCTION DIFF(X, J, I)
-REAL*8, DIMENSION(3) :: DIFF
-REAL*8,  INTENT(IN), DIMENSION(:) :: X
-INTEGER, INTENT(IN)               :: I, J
-DIFF = X(I*3-2:I*3) - X(J*3-2:J*3)
-END FUNCTION DIFF
+!vector between ith particle and jth particle
+pure function diff(x, j, i)
+real*8, dimension(3) :: diff
+real*8,  intent(IN), dimension(:) :: x
+integer, intent(IN)               :: i, j
+diff = x(i*3-2:i*3) - x(j*3-2:j*3)
+end function diff
 
-!DISTANCE BETWEEN ITH PARTICLE AND JTH PARTICLE IN ANGSTROM
-PURE REAL*8 FUNCTION DIST_X(X, I, J)
-REAL*8,  INTENT(IN), DIMENSION(:) :: X
-INTEGER, INTENT(IN)               :: I, J
-DIST_X = SQRT(SUM(DIFF(X, I, J)**2))
-END FUNCTION DIST_X
+!distance between ith particle and jth particle in Angstrom
+pure real*8 function dist_x(x, i, j)
+real*8,  intent(IN), dimension(:) :: x
+integer, intent(IN)               :: i, j
+dist_x = sqrt(sum(diff(x, i, j)**2))
+end function dist_x
 
-PURE REAL*8 FUNCTION DIST_D(DIFF)
-REAL*8,  INTENT(IN), DIMENSION(3) :: DIFF
-DIST_D = SQRT(SUM(DIFF**2))
-END FUNCTION DIST_D
+pure real*8 function dist_d(diff)
+real*8,  intent(IN), dimension(3) :: diff
+dist_d = sqrt(sum(diff**2))
+end function dist_d
 
 !#######################################################################
 ! FUNCTIONS
 !#######################################################################
 
-PURE REAL*8 FUNCTION PHIHH(R)
-REAL*8, INTENT(IN) :: R ! ANGSTROM
-PHIHH = 332.1669 / R
-END FUNCTION PHIHH
+pure real*8 function phiHH(r)
+real*8, intent(in) :: r ! Angstrom
+phiHH = 332.1669 / r
+end function phiHH
 
 !#######################################################################
 
-PURE REAL*8 FUNCTION PHIOH(R)
-REAL*8, INTENT(IN) :: R
-PHIOH = 332.1669 / R * (10*EXP(-3.699392820*R)-2) &
-        + (-184.6966743*(R-RE) + 123.9762188*(R-RE)**2) * EXP(-8*(R-RE)**2)
-END FUNCTION PHIOH
+pure real*8 function phiOH(r)
+real*8, intent(in) :: r
+phiOH = 332.1669 / r * (10*exp(-3.699392820*r)-2) &
+        + (-184.6966743*(r-re) + 123.9762188*(r-re)**2) * exp(-8*(r-re)**2)
+end function phiOH
 
 !#######################################################################
 
-PURE REAL*8 FUNCTION PHIOO(R)
-REAL*8, INTENT(IN) :: R
-PHIOO = 1328.6676/R               &
-        + 24/(1+EXP(2.5*(R-2.9))) &
-        + 90/(1+EXP(8*(R-2.45)))  &
-        + EXP(-6*(R-2.7))
-END FUNCTION PHIOO
+pure real*8 function phiOO(r)
+real*8, intent(in) :: r
+phiOO = 1328.6676/r               &
+        + 24/(1+exp(2.5*(r-2.9))) &
+        + 90/(1+exp(8*(r-2.45)))  &
+        + exp(-6*(r-2.7))
+end function phiOO
 
 !#######################################################################
 
-PURE REAL*8 FUNCTION OMKR3(R) ! (1 - K) / R**3
-REAL*8, INTENT(IN) :: R
-OMKR3 = 1 / ( R**3                                        &
-               + 1.855785223*(R-RE)**2 * EXP(-8*(R-RE)**2) &
-               + 16.95145727 * EXP(-2.702563425*R) )
-END FUNCTION OMKR3
+pure real*8 function omKr3(r) ! (1 - K) / r**3
+real*8, intent(in) :: r
+omKr3 = 1 / ( r**3                                        &
+               + 1.855785223*(r-re)**2 * exp(-8*(r-re)**2) &
+               + 16.95145727 * exp(-2.702563425*r) )
+end function omKr3
 
 !#######################################################################
 
-PURE REAL*8 FUNCTION OMLR3(R) ! (1 - L) / R**3
-REAL*8, INTENT(IN) :: R
-OMLR3 = 1 - EXP(-3.169888166*R) * (1 + (3.169888166 + (5.024095492 + (-17.99599078 + 23.92285*R)*R)*R)*R )
-OMLR3 = OMLR3 / R**3
-END FUNCTION OMLR3
+pure real*8 function omLr3(r) ! (1 - L) / r**3
+real*8, intent(in) :: r
+omLr3 = 1 - exp(-3.169888166*r) * (1 + (3.169888166 + (5.024095492 + (-17.99599078 + 23.92285*r)*r)*r)*r )
+omLr3 = omLr3 / r**3
+end function omLr3
 
 !#######################################################################
 ! FUNCTION DERIVATIVES
 !#######################################################################
 
-PURE REAL*8 FUNCTION DPHIHHDROR(R) ! MINUS DERIVATIVE OF PHIHH W.R.T R DIVIDED BY R
-REAL*8, INTENT(IN) :: R ! ANGSTROM
-DPHIHHDROR = 332.1669 / R**3
-END FUNCTION DPHIHHDROR
+pure real*8 function dphiHHdror(r) ! minus derivative of phiHH w.r.t r divided by r
+real*8, intent(in) :: r ! Angstrom
+dphiHHdror = 332.1669 / r**3
+end function dphiHHdror
 
 !#######################################################################
 
-PURE REAL*8 FUNCTION DPHIOHDROR(R) ! MINUS DERIVATIVE OF PHIOH W.R.T R DIVIDED BY R
-REAL*8, INTENT(IN) :: R
-REAL*8 :: TMP
-TMP = 3.699392820*R
-DPHIOHDROR = 332.1669 / R**2 * (10*EXP(-TMP)*(1+TMP) - 2)
-TMP = R - RE
-DPHIOHDROR = DPHIOHDROR + EXP(-8*TMP**2) * (184.6966743 + TMP*(-2*123.9762188 + 16*TMP*(-184.6966743 + 123.9762188*TMP)))
-DPHIOHDROR = DPHIOHDROR / R
-END FUNCTION DPHIOHDROR
+pure real*8 function dphiOHdror(r) ! minus derivative of phiOH w.r.t r divided by r
+real*8, intent(in) :: r
+real*8 :: tmp
+tmp = 3.699392820*r
+dphiOHdror = 332.1669 / r**2 * (10*exp(-tmp)*(1+tmp) - 2)
+tmp = r - re
+dphiOHdror = dphiOHdror + exp(-8*tmp**2) * (184.6966743 + tmp*(-2*123.9762188 + 16*tmp*(-184.6966743 + 123.9762188*tmp)))
+dphiOHdror = dphiOHdror / r
+end function dphiOHdror
 
 !#######################################################################
 
-PURE REAL*8 FUNCTION DPHIOODROR(R) ! MINUS DERIVATIVE OF PHIOO W.R.T R DIVIDED BY R
-REAL*8, INTENT(IN) :: R
-REAL*8 :: TMP
-DPHIOODROR = 1328.6676 / R**2
-TMP = EXP(2.5*(R-2.9))
-DPHIOODROR = DPHIOODROR + 24 / (1+TMP)**2 * 2.5*TMP
-TMP = EXP(8*(R-2.45))
-DPHIOODROR = DPHIOODROR + 90 / (1+TMP)**2 * 8 * TMP
-DPHIOODROR = DPHIOODROR + 6 * EXP(-6*(R-2.7))
-DPHIOODROR = DPHIOODROR / R
-END FUNCTION DPHIOODROR
+pure real*8 function dphiOOdror(r) ! minus derivative of phiOO w.r.t r divided by r
+real*8, intent(in) :: r
+real*8 :: tmp
+dphiOOdror = 1328.6676 / r**2
+tmp = exp(2.5*(r-2.9))
+dphiOOdror = dphiOOdror + 24 / (1+tmp)**2 * 2.5*tmp
+tmp = exp(8*(r-2.45))
+dphiOOdror = dphiOOdror + 90 / (1+tmp)**2 * 8 * tmp
+dphiOOdror = dphiOOdror + 6 * exp(-6*(r-2.7))
+dphiOOdror = dphiOOdror / r
+end function dphiOOdror
 
 !#######################################################################
 
-PURE REAL*8 FUNCTION DOMKR3DR(R) ! D/DR (1 - K)/R**3
-REAL*8, INTENT(IN) :: R
-REAL*8 :: RRE2
-RRE2 = (R - RE)**2
-DOMKR3DR = R**3 + 1.855785223*RRE2 * EXP(-8*RRE2) + 16.95145727 * EXP(-2.702563425*R)
-DOMKR3DR = - ( 3*R**2 + 1.855785223*(R-RE)*(2 - 16.95145727*RRE2)*EXP(-8*RRE2) - 2.702563425 * 16.95145727 * EXP(-2.702563425*R) ) &
-  &      / DOMKR3DR**2
-END FUNCTION DOMKR3DR
+pure real*8 function domKr3dr(r) ! d/dr (1 - K)/r**3
+real*8, intent(in) :: r
+real*8 :: rre2
+rre2 = (r - re)**2
+domKr3dr = r**3 + 1.855785223*rre2 * exp(-8*rre2) + 16.95145727 * exp(-2.702563425*r)
+domKr3dr = - ( 3*r**2 + 1.855785223*(r-re)*(2 - 16.95145727*rre2)*exp(-8*rre2) - 2.702563425 * 16.95145727 * exp(-2.702563425*r) ) &
+  &      / domKr3dr**2
+end function domKr3dr
 
 !#######################################################################
 
-PURE REAL*8 FUNCTION DOMLR3DR(R) ! D/DR (1 - L)/R**3
-REAL*8, INTENT(IN) :: R
-DOMLR3DR = R**2
-DOMLR3DR = - (3 - EXP(-3.169888166*R) * (3 + (2*3.169888166 + (5.024095492 - 23.92285*DOMLR3DR)*R)*R +  &
-  &           3.169888166*(1 + (3.169888166 + (5.024095492 + (-17.99599078 + 23.92285*R)*R)*R)*R)*R ) ) / DOMLR3DR**2
-END FUNCTION DOMLR3DR
+pure real*8 function domLr3dr(r) ! d/dr (1 - L)/r**3
+real*8, intent(in) :: r
+domLr3dr = r**2
+domLr3dr = - (3 - exp(-3.169888166*r) * (3 + (2*3.169888166 + (5.024095492 - 23.92285*domLr3dr)*r)*r +  &
+  &           3.169888166*(1 + (3.169888166 + (5.024095492 + (-17.99599078 + 23.92285*r)*r)*r)*r)*r ) ) / domLr3dr**2
+end function domLr3dr
 
 !#######################################################################
 ! DIPOLE
 !#######################################################################
 
-! CALCULATES DIPOLE MU(I,:) ON THE ITH OXYGEN ATOM
+! calculates dipole mu(i,:) on the ith Oxygen atom
 
-! MU = ALPHA * G
-! WHERE ALPHA IS POLARIZABILITY AND G IS MODIFIED FIELD
-! G = - SUM( |R> * OMK * Q / R**3) - SUM( <T|MU> * OMK / R**3)
-! T = 1 - 3 |R><R| / R**2
-! PHI = 0.5 * SUM( <MU|R> * OML * Q / R**3)
+! mu = alpha * G
+! where alpha is polarizability and G is modified field
+! G = - sum( |r> * omK * q / r**3) - sum( <T|mu> * omK / r**3)
+! T = 1 - 3 |r><r| / r**2
+! phi = 0.5 * sum( <mu|r> * omL * q / r**3)
 
-! LINEAR COUPLED EQUATIONS: MU=ALPHA*G, G=B+C.MU
-! G = B + ALPHA*C.G
-! I.G = B + D.G
-! (I-D).G = B
-! A.G = B !SOLVE THIS WITH ?GETRS
-
-!######################################################################
-
-FUNCTION FIELD1(X) ! AT OXYGENS = - SUM( |R> * OMK * Q / R**3 )
-REAL*8, INTENT(IN) :: X(3*NA)
-REAL*8 :: FIELD1(3*NO)
-REAL*8 :: RV(3), R
-INTEGER :: I, J
-FIELD1 = 0
-DO I = 1, NO !OXYGEN ATOMS
-	DO J = 1, NA
-      IF (J==I) CYCLE
-      RV = DIFF(X,I,J)
-      R = DIST(RV)
-		FIELD1(3*I-2:3*I) = FIELD1(3*I-2:3*I) - RV*Q(J)*OMKR3(R)
-   END DO
-END DO
-END FUNCTION FIELD1
+! linear coupled equations: mu=alpha*G, G=b+C.mu
+! G = b + alpha*C.G
+! I.G = b + D.G
+! (I-D).G = b
+! A.G = b !solve this with ?getrs
 
 !######################################################################
 
-FUNCTION FIELD2(X) ! AT OXYGENS = - SUM( <T| * OMK * Q / R**3 )
-REAL*8, INTENT(IN) :: X(3*NA)
-REAL*8 :: FIELD2(3*NO,3*NO)
-REAL*8 :: RV(3), R
-INTEGER :: I, J
-FIELD2 = 0
-DO I = 1, NO !OXYGEN ATOMS
-	DO J = 1, NO
-      IF (J==I) CYCLE
-		RV = DIFF(X, I, J)
-		R = DIST(RV)
-      FIELD2(3*I-2:3*I,3*J-2:3*J) = FIELD2(3*I-2:3*I,3*J-2:3*J) - T(R, RV)*OMKR3(R)
-   END DO
-END DO
-END FUNCTION FIELD2
+function field1(x) ! at Oxygens = - sum( |r> * omK * q / r**3 )
+real*8, intent(in) :: x(3*Na)
+real*8 :: field1(3*NO)
+real*8 :: rv(3), r
+integer :: i, j
+field1 = 0
+do i = 1, NO !oxygen atoms
+	do j = 1, Na
+      if (j==i) cycle
+      rv = diff(x,i,j)
+      r = dist(rv)
+		field1(3*i-2:3*i) = field1(3*i-2:3*i) - rv*q(j)*omKr3(r)
+   end do
+end do
+end function field1
 
 !######################################################################
 
-!FIELD FROM AN ELECTRIC DIPOLE
-!POT(R) = MU.\HAT{R} / R**2 / 4PIE_0
-!WHERE \HAT{R} IS UNIT VECTOR IN DIRECTION OF R
-!FIELD = (3*(MU.\HAT{R})*\HAT{R} - MU)/R**3 / 4PIE_0
-!T_IJ = \DELTA_IJ - 3*R_I*R_J
-PURE FUNCTION T(R, RV)
-REAL*8, DIMENSION(3,3) :: T
-REAL*8, INTENT(IN) :: R, RV(3)
-REAL*8 :: TMP
-INTEGER :: K, L
-TMP = - 3 / R**2
-DO K = 1, 3
-   DO L = K, 3
-      T(K,L) = TMP * RV(K) * RV(L)
-   END DO
-END DO
-DO K = 2, 3
-   DO L = 1, K-1
-      T(K,L) = T(L,K)
-   END DO
-END DO
-FORALL(K=1:3) T(K,K) = T(K,K) + 1
-END FUNCTION T
+function field2(x) ! at Oxygens = - sum( <T| * omK * q / r**3 )
+real*8, intent(in) :: x(3*Na)
+real*8 :: field2(3*NO,3*NO)
+real*8 :: rv(3), r
+integer :: i, j
+field2 = 0
+do i = 1, NO !oxygen atoms
+	do j = 1, NO
+      if (j==i) cycle
+		rv = diff(x, i, j)
+		r = dist(rv)
+      field2(3*i-2:3*i,3*j-2:3*j) = field2(3*i-2:3*i,3*j-2:3*j) - T(r, rv)*omKr3(r)
+   end do
+end do
+end function field2
+
+!######################################################################
+
+!field from an electric dipole
+!pot(r) = mu.\hat{r} / r**2 / 4pie_0
+!where \hat{r} is unit vector in direction of r
+!field = (3*(mu.\hat{r})*\hat{r} - mu)/r**3 / 4pie_0
+!T_ij = \delta_ij - 3*r_i*r_j
+pure function T(r, rv)
+real*8, dimension(3,3) :: T
+real*8, intent(in) :: r, rv(3)
+real*8 :: tmp
+integer :: k, l
+tmp = - 3 / r**2
+do k = 1, 3
+   do l = k, 3
+      T(k,l) = tmp * rv(k) * rv(l)
+   end do
+end do
+do k = 2, 3
+   do l = 1, k-1
+      T(k,l) = T(l,k)
+   end do
+end do
+forall(k=1:3) T(k,k) = T(k,k) + 1
+end function T
 
 !#######################################################################
 
-SUBROUTINE FACTORIZE(A, IPIV)
-REAL*8, INTENT(INOUT) :: A(3*NO,3*NO)
-INTEGER, INTENT(OUT) :: IPIV(3*NO)
-INTEGER :: INFO
+subroutine factorize(A, ipiv)
+real*8, intent(inout) :: A(3*NO,3*NO)
+integer, intent(out) :: ipiv(3*NO)
+integer :: info
 
-CALL DSYTRF('U', 3*NO, A, 3*NO, IPIV, WORK, LWORK, INFO)
+call DSYTRF('U', 3*NO, A, 3*NO, ipiv, work, lwork, info)
 
-IF (INT(WORK(1)) /= LWORK) PRINT *, WORK(1), "IS BETTER THAN", LWORK
-IF (INFO < 0) THEN
-   PRINT '("THE ", I0, "TH PARAMETER HAD AN ILLEGAL VALUE")', -INFO
-   STOP
-ELSE IF (INFO > 0) THEN
-   PRINT '("ERROR: U(",I0,",",I0,") = 0")', INFO, INFO
-   STOP
-END IF
-END SUBROUTINE FACTORIZE
+if (int(work(1)) /= lwork) print *, work(1), "is better than", lwork
+if (info < 0) then
+   print '("the ", I0, "th parameter had an illegal value")', -info
+   stop
+else if (info > 0) then
+   print '("error: U(",I0,",",I0,") = 0")', info, info
+   stop
+end if
+end subroutine factorize
 
 !#######################################################################
 
-SUBROUTINE SOLVE(A, IPIV, MU)
-REAL*8, INTENT(IN) :: A(3*NO,3*NO)
-INTEGER, INTENT(IN) :: IPIV(3*NO)
-REAL*8, INTENT(INOUT) :: MU(NO,3)
-INTEGER :: INFO
+subroutine solve(A, ipiv, mu)
+real*8, intent(in) :: A(3*NO,3*NO)
+integer, intent(in) :: ipiv(3*NO)
+real*8, intent(inout) :: mu(NO,3)
+integer :: info
 
-CALL DSYTRS('U', 3*NO, 1, A, 3*NO, IPIV, MU, 3*NO, INFO)
-IF (INFO < 0) THEN
-   PRINT '("THE ", I0, "TH PARAMETER HAD AN ILLEGAL VALUE")', -INFO
-   STOP
-ELSE IF (INFO > 0) THEN
-   PRINT '("ERROR: U(",I0,",",I0,") = 0")', INFO, INFO
-   STOP
-END IF
-END SUBROUTINE SOLVE
+call DSYTRS('U', 3*NO, 1, A, 3*NO, ipiv, mu, 3*NO, info)
+if (info < 0) then
+   print '("the ", I0, "th parameter had an illegal value")', -info
+   stop
+else if (info > 0) then
+   print '("error: U(",I0,",",I0,") = 0")', info, info
+   stop
+end if
+end subroutine solve
 
 !#######################################################################
 ! DIPOLE DERIVATIVES
 !######################################################################
 
-FUNCTION DTDX(R, RV, NDIM, S)
-REAL*8, DIMENSION(3,3) :: DTDX
-REAL*8, INTENT(IN) :: R, RV(3)
-INTEGER, INTENT(IN) :: NDIM, S
-REAL*8 :: TMP
-INTEGER :: K, L
-FORALL(K=1:3,L=1:3) DTDX(K,L) = 2 * RV(K) * RV(L) * RV(NDIM)
-TMP = R**2
-FORALL(L=1:3) DTDX(NDIM,L) = DTDX(NDIM,L) - TMP*RV(L)
-FORALL(K=1:3) DTDX(K,NDIM) = DTDX(K,NDIM) - TMP*RV(K)
-DTDX = DTDX * S * 3 / TMP**2
-END FUNCTION DTDX
+function dTdx(r, rv, ndim, s)
+real*8, dimension(3,3) :: dTdx
+real*8, intent(in) :: r, rv(3)
+integer, intent(in) :: ndim, s
+real*8 :: tmp
+integer :: k, l
+forall(k=1:3,l=1:3) dTdx(k,l) = 2 * rv(k) * rv(l) * rv(ndim)
+tmp = r**2
+forall(l=1:3) dTdx(ndim,l) = dTdx(ndim,l) - tmp*rv(l)
+forall(k=1:3) dTdx(k,ndim) = dTdx(k,ndim) - tmp*rv(k)
+dTdx = dTdx * s * 3 / tmp**2
+end function dTdx
 
 !#######################################################################
 
-FUNCTION DBDX(X, N, MU)
-REAL*8, INTENT(IN) :: X(3*NA), MU(3*NO)
-INTEGER, INTENT(IN) :: N
-REAL*8 :: DBDX(3*NO)
-INTEGER :: I, J
-REAL*8 :: R, RV(3), TMP
-INTEGER :: NAT, NDIM
-NAT = (N-1)/3 + 1
-NDIM = N - 3*(NAT-1)
+function dbdx(x, n, mu)
+real*8, intent(in) :: x(3*Na), mu(3*NO)
+integer, intent(in) :: n
+real*8 :: dbdx(3*NO)
+integer :: i, j
+real*8 :: r, rv(3), tmp
+integer :: nat, ndim
+nat = (n-1)/3 + 1
+ndim = n - 3*(nat-1)
 
-IF (NAT > NO) THEN ! .: NAT != I
-	DO I = 1, NO
-		RV = DIFF(X, I, NAT)
-		R = DIST(RV)
-		DBDX(3*I-2:3*I) = Q(NAT) * DOMKR3DR(R) * RV(NDIM) / R * RV
-		DBDX(3*(I-1)+NDIM) = DBDX(3*(I-1)+NDIM) + OMKR3(R) * Q(NAT)
-	END DO
-ELSE ! NAT <= NO
-	! I != NAT
-	DO I = 1, NO
-		IF (I==NAT) CYCLE
-		RV = DIFF(X, I, NAT)
-		R = DIST(RV)
-		DBDX(3*I-2:3*I) = DOMKR3DR(R)*RV(NDIM)/R * (RV*Q(NAT) + MATMUL(T(R,RV),MU(3*NAT-2:3*NAT)))
+if (nat > NO) then ! .: nat != i
+	do i = 1, NO
+		rv = diff(x, i, nat)
+		r = dist(rv)
+		dbdx(3*i-2:3*i) = q(nat) * domKr3dr(r) * rv(ndim) / r * rv
+		dbdx(3*(i-1)+ndim) = dbdx(3*(i-1)+ndim) + omKr3(r) * q(nat)
+	end do
+else ! nat <= NO
+	! i != nat
+	do i = 1, NO
+		if (i==nat) cycle
+		rv = diff(x, i, nat)
+		r = dist(rv)
+		dbdx(3*i-2:3*i) = domKr3dr(r)*rv(ndim)/r * (rv*q(nat) + matmul(T(r,rv),mu(3*nat-2:3*nat)))
 
-		TMP = OMKR3(R)
-		DBDX(3*(I-1)+NDIM) = DBDX(3*(I-1)+NDIM) + TMP * Q(NAT)
-		DBDX(3*I-2:3*I) = DBDX(3*I-2:3*I) + TMP * MATMUL(DTDX(R,RV,NDIM,1), MU(3*NAT-2:3*NAT))
-	END DO
+		tmp = omKr3(r)
+		dbdx(3*(i-1)+ndim) = dbdx(3*(i-1)+ndim) + tmp * q(nat)
+		dbdx(3*i-2:3*i) = dbdx(3*i-2:3*i) + tmp * matmul(dTdx(r,rv,ndim,1), mu(3*nat-2:3*nat))
+	end do
 
-	! I = NAT
-	DBDX(3*NAT-2:3*NAT) = 0
-	DO J = 1, NA
-		IF (J==NAT) CYCLE
-		RV = DIFF(X, NAT, J)
-		R = DIST(RV)
-                DBDX(3*NAT-2:3*NAT) = DBDX(3*NAT-2:3*NAT) - DOMKR3DR(R) * RV(NDIM)/R * Q(J) * RV
-		DBDX(N) = DBDX(N) - OMKR3(R) * Q(J)
-	END DO
+	! i = nat
+	dbdx(3*nat-2:3*nat) = 0
+	do j = 1, Na
+		if (j==nat) cycle
+		rv = diff(x, nat, j)
+		r = dist(rv)
+                dbdx(3*nat-2:3*nat) = dbdx(3*nat-2:3*nat) - domKr3dr(r) * rv(ndim)/r * q(j) * rv
+		dbdx(n) = dbdx(n) - omKr3(r) * q(j)
+	end do
 
-	DO J = 1, NO
-		IF (J==NAT) CYCLE
-		RV = DIFF(X, NAT, J)
-		R = DIST(RV)
-		DBDX(3*NAT-2:3*NAT) = DBDX(3*NAT-2:3*NAT) - DOMKR3DR(R) * RV(NDIM)/R * MATMUL(T(R,RV),MU(3*J-2:3*J))
-		DBDX(3*NAT-2:3*NAT) = DBDX(3*NAT-2:3*NAT) + OMKR3(R) * MATMUL(DTDX(R,RV,NDIM,-1),MU(3*J-2:3*J))
-	END DO
-END IF
-DBDX = - ALPHA * DBDX
-END FUNCTION DBDX
+	do j = 1, NO
+		if (j==nat) cycle
+		rv = diff(x, nat, j)
+		r = dist(rv)
+		dbdx(3*nat-2:3*nat) = dbdx(3*nat-2:3*nat) - domKr3dr(r) * rv(ndim)/r * matmul(T(r,rv),mu(3*j-2:3*j))
+		dbdx(3*nat-2:3*nat) = dbdx(3*nat-2:3*nat) + omKr3(r) * matmul(dTdx(r,rv,ndim,-1),mu(3*j-2:3*j))
+	end do
+end if
+dbdx = - alpha * dbdx
+end function dbdx
 
 !#######################################################################
 ! MAIN SUBROUTINES
 !#######################################################################
 
-SUBROUTINE SDINIT(NO_, NP_)
-INTEGER, INTENT(IN) :: NO_, NP_
-INTEGER :: INFO
-REAL*8, DIMENSION(3*NO_, 3*NO_) :: A
-REAL*8, DIMENSION(3*NO_) :: B, IPIV
+subroutine sdinit(NO_, Np_)
+integer, intent(in) :: NO_, Np_
+integer :: info
+real*8, dimension(3*NO_, 3*NO_) :: A
+real*8, dimension(3*NO_) :: b, ipiv
 
 NO = NO_
-NA = 3*NO_ + NP_
-ALLOCATE(Q(NA))
-Q(1:NO) = -2 * SQRT(332.1669)
-Q(NO+1:) = SQRT(332.1669)
+Na = 3*NO_ + Np_
+allocate(q(Na))
+q(1:NO) = -2 * sqrt(332.1669)
+q(NO+1:) = sqrt(332.1669)
 
-ALLOCATE(WORK(1))
-CALL DSYSV('U', SIZE(A,DIM=2), 1, A, SIZE(A,DIM=1), IPIV, B, SIZE(B), WORK, -1, INFO)
-IF (INFO < 0) THEN
-   PRINT '("THE ", I0, "TH PARAMETER HAD AN ILLEGAL VALUE")', -INFO
-   STOP
-ELSE IF (INFO > 0) THEN
-   PRINT '("ERROR: U(",I0,",",I0,") = 0")', INFO, INFO
-   STOP
-END IF
-LWORK = WORK(1)
-!PRINT *, 'BEST LWORK =', LWORK
-DEALLOCATE(WORK)
-ALLOCATE(WORK(LWORK))
-END SUBROUTINE SDINIT
-
-!#######################################################################
-
-SUBROUTINE DESTRUCT()
-DEALLOCATE(WORK, Q)
-END SUBROUTINE DESTRUCT
+allocate(work(1))
+call DSYSV('U', size(A,dim=2), 1, A, size(A,dim=1), ipiv, b, size(b), work, -1, info)
+if (info < 0) then
+   print '("the ", I0, "th parameter had an illegal value")', -info
+   stop
+else if (info > 0) then
+   print '("error: U(",I0,",",I0,") = 0")', info, info
+   stop
+end if
+lwork = work(1)
+!print *, 'best lwork =', lwork
+deallocate(work)
+allocate(work(lwork))
+end subroutine sdinit
 
 !#######################################################################
 
-REAL*8 FUNCTION SDPOTENTIAL(X) RESULT(V)
-REAL*8, INTENT(IN) :: X(:)
-INTEGER :: I, J
-REAL*8 :: MU(3*NO), RV(3), R, PHI2
-REAL*8, DIMENSION(3*NO,3*NO) :: A
-INTEGER :: IPIV(3*NO)
+subroutine destruct()
+deallocate(work, q)
+end subroutine destruct
 
-!SUM OVER HH PAIRS
+!#######################################################################
+
+real*8 function sdpotential(x) result(V)
+real*8, intent(in) :: x(:)
+integer :: i, j
+real*8 :: mu(3*NO), rv(3), r, phi2
+real*8, dimension(3*NO,3*NO) :: A
+integer :: ipiv(3*NO)
+
+!sum over HH pairs
 V = 0
-DO J = NO+2, NA
-   DO I = NO+1, J-1
-      R = DIST(X,I,J)
-      V = V + PHIHH(R)
-   END DO
-END DO
+do j = NO+2, Na
+   do i = NO+1, j-1
+      r = dist(x,i,j)
+      V = V + phiHH(r)
+   end do
+end do
 
-!SUM OVER OH PAIRS
-DO J = 1, NO !O ATOMS
-   DO I = NO+1, NA !H ATOMS
-      R = DIST(X,I,J)
-      V = V + PHIOH(R)
-   END DO
-END DO 
+!sum over OH pairs
+do j = 1, NO !O atoms
+   do i = NO+1, Na !H atoms
+      r = dist(x,i,j)
+      V = V + phiOH(r)
+   end do
+end do 
 
-!SUM OVER OO PAIRS
-DO J = 2, NO
-   DO I = 1, J-1
-      R = DIST(X, I, J)
-      V = V + PHIOO(R)
-   END DO
-END DO
+!sum over OO pairs
+do j = 2, NO
+   do i = 1, j-1
+      r = dist(x, i, j)
+      V = V + phiOO(r)
+   end do
+end do
 
-MU = FIELD1(X) * ALPHA
+mu = field1(x) * alpha
 
-A = FIELD2(X)
-A = A * ALPHA ! IS D
+A = field2(x)
+A = A * alpha ! is D
 A = - A
-FORALL(I=1:3*NO) A(I,I) = 1 + A(I,I)
+forall(i=1:3*NO) A(i,i) = 1 + A(i,i)
 
-CALL FACTORIZE(A, IPIV)
-CALL SOLVE(A, IPIV, MU)
+call factorize(A, ipiv)
+call solve(A, ipiv, mu)
 
-PHI2 = 0
-DO I = 1, NA !ALL ATOMS
-   DO J = 1, NO !OXYGEN ATOMS
-      IF (I==J) CYCLE
-      RV = DIFF(X,J,I)
-      R = DIST(RV)
-      PHI2 = PHI2 + DOT_PRODUCT(MU(3*J-2:3*J), RV) * Q(I) * OMLR3(R)
-   END DO
-END DO
-PHI2 = PHI2 / 2
-V = V + PHI2
+phi2 = 0
+do i = 1, Na !all atoms
+   do j = 1, NO !Oxygen atoms
+      if (i==j) cycle
+      rv = diff(x,j,i)
+      r = dist(rv)
+      phi2 = phi2 + dot_product(mu(3*j-2:3*j), rv) * q(i) * omLr3(r)
+   end do
+end do
+phi2 = phi2 / 2
+V = V + phi2
 
-END FUNCTION SDPOTENTIAL
+end function sdpotential
 
 !######################################################################
 
-FUNCTION SDGRAD(X) RESULT(G)
-REAL*8, INTENT(IN) :: X(:)
-REAL*8 :: G(SIZE(X))
-INTEGER :: I, J, NAT, NDIM, N
-REAL*8 :: MU(3*NO), RV(3), R, DMUDX(3*NO)
-REAL*8, DIMENSION(3*NO,3*NO) :: A
-INTEGER :: IPIV(3*NO)
+function sdgrad(x) result(g)
+real*8, intent(in) :: x(:)
+real*8 :: g(size(x))
+integer :: i, j, nat, ndim, n
+real*8 :: mu(3*NO), rv(3), r, dmudx(3*NO)
+real*8, dimension(3*NO,3*NO) :: A
+integer :: ipiv(3*NO)
 
-G = 0
+g = 0
 
-! HH PAIRS
-DO J = NO+2, NA
-   DO I = NO+1, J-1
-		RV = DIFF(X,I,J)
-		R = DIST(RV)
-		RV = RV * DPHIHHDROR(R)
-		G(3*J-2:3*J) = G(3*J-2:3*J) - RV
-		G(3*I-2:3*I) = G(3*I-2:3*I) + RV
-   END DO
-END DO
+! HH pairs
+do j = NO+2, Na
+   do i = NO+1, j-1
+		rv = diff(x,i,j)
+		r = dist(rv)
+		rv = rv * dphiHHdror(r)
+		g(3*j-2:3*j) = g(3*j-2:3*j) - rv
+		g(3*i-2:3*i) = g(3*i-2:3*i) + rv
+   end do
+end do
 
-! OH PAIRS
-DO J = 1, NO !O ATOMS
-   DO I = NO+1, NA !H ATOMS
-  		RV = DIFF(X,I,J)
-		R = DIST(RV)
-		RV = RV * DPHIOHDROR(R)
-		G(3*J-2:3*J) = G(3*J-2:3*J) - RV
-		G(3*I-2:3*I) = G(3*I-2:3*I) + RV
-   END DO
-END DO 
+! OH pairs
+do j = 1, NO !O atoms
+   do i = NO+1, Na !H atoms
+  		rv = diff(x,i,j)
+		r = dist(rv)
+		rv = rv * dphiOHdror(r)
+		g(3*j-2:3*j) = g(3*j-2:3*j) - rv
+		g(3*i-2:3*i) = g(3*i-2:3*i) + rv
+   end do
+end do 
 
-! OO PAIRS
-DO J = 2, NO
-   DO I = 1, J-1
-  		RV = DIFF(X,I,J)
-		R = DIST(RV)
-		RV = RV * DPHIOODROR(R)
-		G(3*J-2:3*J) = G(3*J-2:3*J) - RV
-		G(3*I-2:3*I) = G(3*I-2:3*I) + RV
-   END DO
-END DO
+! OO pairs
+do j = 2, NO
+   do i = 1, j-1
+  		rv = diff(x,i,j)
+		r = dist(rv)
+		rv = rv * dphiOOdror(r)
+		g(3*j-2:3*j) = g(3*j-2:3*j) - rv
+		g(3*i-2:3*i) = g(3*i-2:3*i) + rv
+   end do
+end do
 
-MU = FIELD1(X) * ALPHA
+mu = field1(x) * alpha
 
-A = FIELD2(X)
-A = A * ALPHA ! IS D
+A = field2(x)
+A = A * alpha ! is D
 A = - A
-FORALL(I=1:3*NO) A(I,I) = 1 + A(I,I)
+forall(i=1:3*NO) A(i,i) = 1 + A(i,i)
 
-CALL FACTORIZE(A, IPIV)
-CALL SOLVE(A, IPIV, MU)
+call factorize(A, ipiv)
+call solve(A, ipiv, mu)
 
-DO N = 1, 3*NA
-	NAT = (N-1)/3 + 1
-	NDIM = N - 3*(NAT-1)
-	DMUDX = DBDX(X, N, MU)
-	CALL SOLVE(A, IPIV, DMUDX)
-DO I = 1, NA
-		DO J = 1, NO
-			IF (I==J) CYCLE
-			RV = DIFF(X,J,I)
-			R = DIST(RV)
-			G(N) = G(N) + Q(I) * OMLR3(R) * DOT_PRODUCT(DMUDX(3*J-2:3*J),RV) / 2
-		END DO
-	END DO
+do n = 1, 3*Na
+	nat = (n-1)/3 + 1
+	ndim = n - 3*(nat-1)
+	dmudx = dbdx(x, n, mu)
+	call solve(A, ipiv, dmudx)
+do i = 1, Na
+		do j = 1, NO
+			if (i==j) cycle
+			rv = diff(x,j,i)
+			r = dist(rv)
+			g(n) = g(n) + q(i) * omLr3(r) * dot_product(dmudx(3*j-2:3*j),rv) / 2
+		end do
+	end do
 
-	DO J = 1, NO
-		IF (J==NAT) CYCLE
-		RV = DIFF(X,J,NAT)
-		R = DIST(RV)
-		G(N) = G(N) + Q(NAT) / 2 * (MU(3*(J-1)+NDIM) * OMLR3(R) + DOT_PRODUCT(MU(3*J-2:3*J),RV) * DOMLR3DR(R) * RV(NDIM)/R)
-	END DO
+	do j = 1, NO
+		if (j==nat) cycle
+		rv = diff(x,j,nat)
+		r = dist(rv)
+		g(n) = g(n) + q(nat) / 2 * (mu(3*(j-1)+ndim) * omLr3(r) + dot_product(mu(3*j-2:3*j),rv) * domLr3dr(r) * rv(ndim)/r)
+	end do
 
-	IF (NAT <= NO) THEN
-		DO I = 1, NA
-			IF (I==NAT) CYCLE
-			RV = DIFF(X,NAT,I)
-			R = DIST(RV)
-			G(N) = G(N) - Q(I) / 2 * (MU(N) * OMLR3(R) + DOMLR3DR(R) * RV(NDIM)/R * DOT_PRODUCT(MU(3*NAT-2:3*NAT),RV))
-		END DO
-	END IF
-END DO
-END FUNCTION SDGRAD
+	if (nat <= NO) then
+		do i = 1, Na
+			if (i==nat) cycle
+			rv = diff(x,nat,i)
+			r = dist(rv)
+			g(n) = g(n) - q(i) / 2 * (mu(n) * omLr3(r) + domLr3dr(r) * rv(ndim)/r * dot_product(mu(3*nat-2:3*nat),rv))
+		end do
+	end if
+end do
+end function sdgrad
 
-FUNCTION SDHESS(X, G) RESULT(HESS)
-REAL*8, INTENT(IN) :: X(:), G(:)
-REAL*8 :: HESS(SIZE(X),SIZE(X)), X0(SIZE(X))
-INTEGER :: I, J
-REAL*8 :: EPS = 1.0D-8, TMP
+function sdhess(x, g) result(hess)
+real*8, intent(in) :: x(:), g(:)
+real*8 :: hess(size(x),size(x)), x0(size(x))
+integer :: i, j
+real*8 :: eps = 1.0D-8, tmp
 
-X0 = X
-DO I = 1, 3*NA
-	X0(I) = X(I) + EPS
-	HESS(I,:) = (SDGRAD(X0) - G) / EPS
-	X0(I) = X(I)
-END DO
-! SYMMETRIZE
-DO I = 1, 3*NA
-	DO J = 1, 3*NA
-		TMP = 0.5 * (HESS(I,J) + HESS(J,I))
-		HESS(I,J) = TMP
-		HESS(J,I) = TMP
-	END DO
-END DO
-END FUNCTION SDHESS
+x0 = x
+do i = 1, 3*Na
+	x0(i) = x(i) + eps
+	hess(i,:) = (sdgrad(x0) - g) / eps
+	x0(i) = x(i)
+end do
+! symmetrize
+do i = 1, 3*Na
+	do j = 1, 3*Na
+		tmp = 0.5 * (hess(i,j) + hess(j,i))
+		hess(i,j) = tmp
+		hess(j,i) = tmp
+	end do
+end do
+end function sdhess
 
 !######################################################################
 
-END MODULE SDWATER
+end module sdwater

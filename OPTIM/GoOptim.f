@@ -1,127 +1,127 @@
-      SUBROUTINE GO(QO,NATOMS,GRAD,ENERGY,GTEST,STEST)
+      SUBROUTINE Go(qo,NATOMS,grad,energy,GTEST,STEST)
       USE KEY
-      IMPLICIT NONE
+      implicit NONE
       INTEGER NATOMS
-      DOUBLE PRECISION QO(3*NATOMS), GRAD(3*NATOMS)
+      DOUBLE PRECISION qo(3*NATOMS), grad(3*NATOMS)
       DOUBLE PRECISION ENERGY
 
-!      DOUBLE PRECISION  RB(NATOMS), BK(NATOMS), ANTC(NATOMS), 
-!     Q TK(NATOMS), PK(NATOMS), GAMS1(NATOMS), GAMS3(NATOMS), 
-!     Q GAMC1(NATOMS), GAMC3(NATOMS), SIGMA(NATOMS*10), 
-!     Q EPSC(NATOMS*10),  NNCSIGMA(NATOMS*NATOMS),NCSIGMA(NATOMS*NATOMS)
-!      INTEGER  IB1(NATOMS), IB2(NATOMS), IT(NATOMS), JT(NATOMS), 
+!      DOUBLE PRECISION  Rb(NATOMS), bK(NATOMS), ANTC(NATOMS), 
+!     Q Tk(NATOMS), PK(NATOMS), GAMS1(NATOMS), GAMS3(NATOMS), 
+!     Q GAMC1(NATOMS), GAMC3(NATOMS), Sigma(NATOMS*10), 
+!     Q EpsC(NATOMS*10),  NNCsigma(NATOMS*NATOMS),NCsigma(NATOMS*NATOMS)
+!      INTEGER  Ib1(NATOMS), Ib2(NATOMS), IT(NATOMS), JT(NATOMS), 
 !     Q KT(NATOMS),IP(NATOMS), JP(NATOMS), KP(NATOMS), 
 !     Q LP(NATOMS), IC(NATOMS*10), JC(NATOMS*10),INC(NATOMS*NATOMS), 
 !     Q JNC(NATOMS*NATOMS), NBA, NTA, NPA, NC, NNC
       LOGICAL :: CALLED=.FALSE.
       LOGICAL GTEST, STEST
-        INTEGER NGOMAX
-        PARAMETER(NGOMAX=500)
-      DOUBLE PRECISION  RB(NGOMAX), BK(NGOMAX), ANTC(NGOMAX),
-     Q TK(NGOMAX), PK(NGOMAX), GAMS1(NGOMAX), GAMS3(NGOMAX),
-     Q GAMC1(NGOMAX), GAMC3(NGOMAX), SIGMA(NGOMAX*10),
-     Q EPSC(NGOMAX*10),  NNCSIGMA(NGOMAX*NGOMAX),NCSIGMA(NGOMAX*NGOMAX)
-      INTEGER  IB1(NGOMAX), IB2(NGOMAX), IT(NGOMAX), JT(NGOMAX),
-     Q KT(NGOMAX),IP(NGOMAX), JP(NGOMAX), KP(NGOMAX),
-     Q LP(NGOMAX), IC(NGOMAX*10), JC(NGOMAX*10),INC(NGOMAX*NGOMAX),
-     Q JNC(NGOMAX*NGOMAX), NBA, NTA, NPA, NC, NNC
+        integer NgoMAX
+        parameter(NgoMAX=500)
+      DOUBLE PRECISION  Rb(NgoMAX), bK(NgoMAX), ANTC(NgoMAX),
+     Q Tk(NgoMAX), PK(NgoMAX), GAMS1(NgoMAX), GAMS3(NgoMAX),
+     Q GAMC1(NgoMAX), GAMC3(NgoMAX), Sigma(NgoMAX*10),
+     Q EpsC(NgoMAX*10),  NNCsigma(NgoMAX*NgoMAX),NCsigma(NgoMAX*NgoMAX)
+      INTEGER  Ib1(NgoMAX), Ib2(NgoMAX), IT(NgoMAX), JT(NgoMAX),
+     Q KT(NgoMAX),IP(NgoMAX), JP(NgoMAX), KP(NgoMAX),
+     Q LP(NgoMAX), IC(NgoMAX*10), JC(NgoMAX*10),INC(NgoMAX*NgoMAX),
+     Q JNC(NgoMAX*NgoMAX), NBA, NTA, NPA, NC, NNC
 
-        COMMON /DOUBLE PRECISION/ RB, BK, ANTC, TK,PK, GAMS1, GAMS3, GAMC1, GAMC3,
-     Q SIGMA, EPSC, NNCSIGMA, NCSIGMA
-        COMMON /INT/ IB1, IB2, IT, JT, KT, IP,
+        common /double precision/ Rb, bK, ANTC, Tk,PK, GAMS1, GAMS3, GAMC1, GAMC3,
+     Q sigma, epsC, NNCsigma, NCsigma
+        common /int/ Ib1, Ib2, IT, JT, KT, IP,
      Q JP, KP, LP,IC, JC, INC, JNC, NBA, NTA, NPA, NC, NNC
 
 
-        IF(NATOMS.GT. NGOMAX)THEN
-        WRITE(*,*) 'TOO MANY ATOMS FOR GO, CHANGE NGOMAX'
+        if(NATOMS.gt. NgoMAx)then
+        write(*,*) 'TOO MANY ATOMS FOR GO, change NgoMAX'
         STOP
-        ENDIF
+        endif
 
 !  DIMENSION(:):: 
-!      SAVE  NATOMS,IB1, IB2,RB, BK, IT, JT, KT, ANTC, TK, IP, JP, KP, LP, PK,
-!     Q GAMS1, GAMS3, GAMC1, GAMC3,IC, JC, SIGMA, EPSC, INC, JNC, NNCSIGMA,NBA, NTA, NPA, NC, NNC
-!  PUT IN A LINE THAT READS IN THE PARAMETERS, IF THIS IS THE FIRST TIME IT HAS BEEN CALLED
+!      SAVE  NATOMS,Ib1, Ib2,Rb, bK, IT, JT, KT, ANTC, Tk, IP, JP, KP, LP, PK,
+!     Q GAMS1, GAMS3, GAMC1, GAMC3,IC, JC, Sigma, EpsC, INC, JNC, NNCsigma,NBA, NTA, NPA, NC, NNC
+!  put in a line that reads in the parameters, if this is the first time it has been called
 
-       IF(.NOT.CALLED)THEN
+       if(.NOT.CALLED)then
 !        CALLED=.TRUE.
-!        ENDIF
-       CALL GOINIT(NATOMS,IB1, IB2,RB, BK, IT, JT, KT, ANTC, TK, IP, 
-     Q JP, KP, LP, PK, GAMS1, GAMS3, GAMC1, GAMC3,IC, JC, SIGMA, 
-     Q EPSC, INC, JNC, NNCSIGMA, NCSIGMA,NBA, NTA, NPA, NC, NNC)
+!        endIF
+       call Goinit(NATOMS,Ib1, Ib2,Rb, bK, IT, JT, KT, ANTC, Tk, IP, 
+     Q JP, KP, LP, PK, GAMS1, GAMS3, GAMC1, GAMC3,IC, JC, Sigma, 
+     Q EpsC, INC, JNC, NNCsigma, NCsigma,NBA, NTA, NPA, NC, NNC)
 
         CALLED=.TRUE.
-        ENDIF
-! CALL THE ENERGY ROUTINE
+        endIF
+! call the energy routine
 
-      CALL CALC_ENERGY_GO(QO,NATOMS, GRAD, ENERGY, IB1, IB2,
-     Q RB, BK, IT, JT, KT, ANTC, TK, IP, JP, KP, LP, PK,
-     Q GAMS1, GAMS3, GAMC1, GAMC3,IC, JC, SIGMA, EPSC, INC, 
-     Q JNC, NNCSIGMA,NCSIGMA,NBA, NTA, NPA, NC, NNC)
+      call calc_energy_Go(qo,natoms, GRAD, energy, Ib1, Ib2,
+     Q Rb, bK, IT, JT, KT, ANTC, Tk, IP, JP, KP, LP, PK,
+     Q GAMS1, GAMS3, GAMC1, GAMC3,IC, JC, Sigma, EpsC, INC, 
+     Q JNC, NNCsigma,NCsigma,NBA, NTA, NPA, NC, NNC)
 
 
       IF (STEST) THEN
-         PRINT '(A)','ERROR - SECOND DERIVATIVES NOT AVAILABLE FOR THIS POTENTIAL'
+         PRINT '(A)','ERROR - second derivatives not available for this potential'
          STOP
       ENDIF
-      RETURN
-      END
+      return
+      end
 
 
 
 
 
 !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-!* GOINIT() READS THE ATOM POSITIONS FROM FILE.  IF 1 IS SELECTED FOR  *
-!* STARTT THEN THE VELOCITIES ARE ASSIGNED, OTHERWISE, THEY ARE READ   *
-!* BY SELECTING 2, OR GENERATED BY SELECTING 3                         *
+!* Goinit() reads the atom positions from file.  If 1 is selected for  *
+!* startt then the velocities are assigned, otherwise, they are read   *
+!* by selecting 2, or generated by selecting 3                         *
 !***********************************************************************
 
-      SUBROUTINE GOINIT(NATOMS,IB1, IB2,RB, BK, IT, JT, KT, ANTC, TK,
-     Q  IP, JP, KP, LP, PK,GAMS1, GAMS3, GAMC1, GAMC3,IC, JC, SIGMA, 
-     Q EPSC, INC, JNC, NNCSIGMA, NCSIGMA,NBA, NTA, NPA, NC, NNC)
+      subroutine Goinit(NATOMS,Ib1, Ib2,Rb, bK, IT, JT, KT, ANTC, Tk,
+     Q  IP, JP, KP, LP, PK,GAMS1, GAMS3, GAMC1, GAMC3,IC, JC, Sigma, 
+     Q EpsC, INC, JNC, NNCsigma, NCsigma,NBA, NTA, NPA, NC, NNC)
       USE KEY
-      IMPLICIT NONE
+      implicit NONE
 
-        INTEGER I,J,MAXCON,NNCMAX,NATOMS,STORAGE, DUMMY,  ANR, IB11,
-     Q IB12, IB22, IB21,IT1, JT1, KT1, IT2, JT2, KT2, IP1, JP1,
+        integer i,j,MaxCon,NNCmax,NATOMS,storage, dummy,  ANr, IB11,
+     Q IB12, Ib22, Ib21,IT1, JT1, KT1, IT2, JT2, KT2, IP1, JP1,
      Q KP1, LP1, IP2, JP2, KP2,
-     Q LP2, NBA1, NTA1, NPA1, NBA2, NTA2, NPA2,  IND1, IND2, ANT,
-     Q  MDT1, MDT2, CL1, CL2
+     Q LP2, nBA1, nTA1, nPA1, nBA2, nTA2, nPA2,  ind1, ind2, ANt,
+     Q  MDT1, MDT2, cl1, cl2
 
-      DOUBLE PRECISION  RB(NATOMS), BK(NATOMS), ANTC(NATOMS), 
-     Q TK(NATOMS), PK(NATOMS), GAMS1(NATOMS), GAMS3(NATOMS),
-     Q GAMC1(NATOMS), GAMC3(NATOMS), SIGMA(NATOMS*10), EPSC(NATOMS*10),  
-     Q NNCSIGMA(NATOMS*NATOMS),NCSIGMA(NATOMS*NATOMS)
-      INTEGER  IB1(NATOMS), IB2(NATOMS), IT(NATOMS), JT(NATOMS), 
+      DOUBLE PRECISION  Rb(NATOMS), bK(NATOMS), ANTC(NATOMS), 
+     Q Tk(NATOMS), PK(NATOMS), GAMS1(NATOMS), GAMS3(NATOMS),
+     Q GAMC1(NATOMS), GAMC3(NATOMS), Sigma(NATOMS*10), EpsC(NATOMS*10),  
+     Q NNCsigma(NATOMS*NATOMS),NCsigma(NATOMS*NATOMS)
+      INTEGER  Ib1(NATOMS), Ib2(NATOMS), IT(NATOMS), JT(NATOMS), 
      Q KT(NATOMS),IP(NATOMS), JP(NATOMS), KP(NATOMS),
      Q LP(NATOMS), IC(NATOMS*10), JC(NATOMS*10),INC(NATOMS*NATOMS), 
      Q JNC(NATOMS*NATOMS), NBA, NTA, NPA, NC, NNC
 
-       DOUBLE PRECISION  PINITMAX, TK1, TK2, PK1, PK2, APTTEMP, MST,
-     Q SIGMAT1, SIGMAT2, EPSTEMP
-!      INTEGER I,J,MAXCON,NNCMAX,NATOMS,STORAGE, DUMMY,  ANR, IB11, 
-!     Q IB12, IB22, IB21,IT1, JT1, KT1, IT2, JT2, KT2, IP1, JP1, 
+       DOUBLE PRECISION  pinitmax, TK1, TK2, PK1, PK2, APTtemp, msT,
+     Q SigmaT1, SigmaT2, epstemp
+!      integer i,j,MaxCon,NNCmax,NATOMS,storage, dummy,  ANr, IB11, 
+!     Q IB12, Ib22, Ib21,IT1, JT1, KT1, IT2, JT2, KT2, IP1, JP1, 
 !     Q KP1, LP1, IP2, JP2, KP2,
-!     Q LP2, NBA1, NTA1, NPA1, NBA2, NTA2, NPA2,  IND1, IND2, ANT, 
-!     Q  MDT1, MDT2, CL1, CL2
-        CHARACTER(LEN=20) FMTB, FMTT, FMTP, CA, RP
+!     Q LP2, nBA1, nTA1, nPA1, nBA2, nTA2, nPA2,  ind1, ind2, ANt, 
+!     Q  MDT1, MDT2, cl1, cl2
+        character(LEN=20) FMTB, FMTT, FMTP, CA, RP
 
-       DOUBLE PRECISION NNCEPS
-       DIMENSION NNCEPS(NATOMS*NATOMS)
-      DOUBLE PRECISION DX,DY,DZ
-       DOUBLE PRECISION PI
-      PI = 3.14159265358979323846264338327950288419716939937510
+       DOUBLE PRECISION NNCeps
+       dimension NNCeps(NATOMS*NATOMS)
+      DOUBLE PRECISION dx,dy,dz
+       double precision PI
+      pi = 3.14159265358979323846264338327950288419716939937510
 
-        NNCMAX = NATOMS*NATOMS
-        MAXCON=NATOMS*10
-! OLD FORMATTING
+        NNCmax = NATOMS*NATOMS
+        MaxCon=NATOMS*10
+! old formatting
         FMTB="(3I5,2F8.3)"
         FMTT="(4I5,2F8.3)"
         FMTP="(5I5,2F8.3)"
         CA="(3I5,F10.3, F9.6)"
         RP="(I5,2I5, 2F8.3)"
 
-! NEW FORMATTING
+! new formatting
 !        FMTB="(3I5,2F8.3)"
 !        FMTT="(4I5,2F8.3)"
 !        FMTP="(5I5,2F8.3)"
@@ -129,203 +129,203 @@
 !        RP="(I8,2I5, 2F10.3)"
 
 
-! THESE LINES READ IN THE PARAMETERS.
-        OPEN(30, FILE='GO.INP', STATUS='OLD', ACCESS='SEQUENTIAL')
+! These lines read in the parameters.
+        open(30, file='GO.INP', status='old', access='sequential')
 
-          READ(30,*) NBA
+          read(30,*) nBA
 
-        DO I=1, NBA
-          READ(30,*) J, IB1(I), IB2(I),RB(I), BK(I)
-        END DO
+        do i=1, nBA
+          read(30,*) j, Ib1(i), Ib2(i),Rb(i), bK(i)
+        end do
 
-          READ(30,*) NTA
-        DO I=1, NTA
-          READ(30,*) J, IT(I), JT(I), KT(I), ANTC(I), TK(I)
-        ENDDO
+          read(30,*) nTA
+        do i=1, nTA
+          read(30,*) j, IT(i), JT(i), KT(i), ANTC(i), Tk(i)
+        enddo
 
-          READ(30,*) NPA
+          read(30,*) nPA
 
-! THIS READS IN THE DIHEDRAL ANGLES AND CALCULATES THE COSINES AND SINES
-! IN ORDER TO MAKE THE FORCE AND ENERGY CALCULATIONS EASIER, LATER.
-        DO I=1, NPA
-           READ(30,*) J, IP(I), JP(I), KP(I), LP(I), APTTEMP, PK(I)
+! this reads in the dihedral angles and calculates the cosines and sines
+! in order to make the force and energy calculations easier, later.
+        do i=1, npA
+           read(30,*) j, IP(i), JP(i), KP(i), LP(i), APTtemp, PK(i)
 
-!1010   IF(APTTEMP .GT. PI)THEN
-!       APTTEMP = APTTEMP -2*PI
-!       GOTO 1010
-!        ELSE
-!1010    IF(APTTEMP .LT. 0.0)THEN
-!        APTTEMP = APTTEMP+2*PI
-!        GOTO 1010
-!        ENDIF
+!1010   if(APTtemp .gt. PI)then
+!       APTtemp = APTtemp -2*Pi
+!       goto 1010
+!        else
+!1010    if(APTtemp .lt. 0.0)then
+!        APTtemp = APTtemp+2*Pi
+!        goto 1010
+!        endif
          
-            GAMS1(I)= PK(I)*SIN(APTTEMP)
-            GAMC1(I)= PK(I)*COS(APTTEMP)
+            GAMS1(i)= PK(i)*Sin(APTtemp)
+            GAMC1(i)= PK(i)*Cos(APTtemp)
 
-!1020    IF(3*APTTEMP .GT. PI)THEN
-!        APTTEMP = APTTEMP -2.0/3.0*PI
-!        GOTO 1020
-!        ELSE
-!1020    IF(3*APTTEMP .LT. 0.0)THEN
-!        APTTEMP = APTTEMP +2.0/3.0*PI
-!        GOTO 1020
+!1020    if(3*APTtemp .gt. PI)then
+!        APTtemp = APTtemp -2.0/3.0*Pi
+!        goto 1020
+!        else
+!1020    if(3*APTtemp .lt. 0.0)then
+!        APTtemp = APTtemp +2.0/3.0*Pi
+!        goto 1020
 
-!        ENDIF
+!        endif
 
-            GAMS3(I)= PK(I)*SIN(3.0*APTTEMP)/2
-            GAMC3(I)= PK(I)*COS(3.0*APTTEMP)/2
+            GAMS3(i)= PK(i)*Sin(3.0*APTtemp)/2
+            GAMC3(i)= PK(i)*Cos(3.0*APTtemp)/2
 
         END DO
 
 
-        READ(30,*) NC
+        read(30,*) NC
 
-          IF(NC .GT. MAXCON)THEN
-             WRITE(*,*) 'TOO MANY CONTACTS'
+          if(NC .gt. MaxCon)then
+             write(*,*) 'too many contacts'
              STOP
-          ENDIF
+          endif
 
-        DO I=1, NC
+        do i=1, NC
 
-          READ(30, *) IND1, IC(I), JC(I), SIGMA(I), EPSC(I)
-        END DO
+          read(30, *) ind1, IC(i), JC(i), Sigma(i), EpsC(i)
+        end do
 
  
-! READ NON-NATIVE INTERACTIONS
-        READ(30,*) NNC
-        IF(NNC .GT. NNCMAX)THEN
-        WRITE(*,*) 'TOO MANY NON CONTACTS'
+! read non-native interactions
+        read(30,*) NNC
+        if(NNC .gt. NNCmax)then
+        write(*,*) 'too many non contacts'
         STOP
-        ENDIF        
-        DO I=1, NNC
-           READ(30,*) IND1, INC(I), JNC(I), NCSIGMA(I), NNCEPS(I)
-! THIS SIMPLIFIES CALCULATIONS LATER
-           NNCSIGMA(I) = 12*NNCEPS(I)*NCSIGMA(I)**6
-        END DO
+        endif        
+        do i=1, NNC
+           read(30,*) ind1, INC(i), JNC(i), NCsigma(i), NNCeps(i)
+! this simplifies calculations later
+           NNCsigma(i) = 12*NNCEps(i)*NCsigma(i)**6
+        end do
 
 
-!        READ(30,*) AN
-       CLOSE(30)
-       END
+!        read(30,*) AN
+       close(30)
+       end
 
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^END OF GOINIT^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^end of Goinit^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 C
-C CALCULATE THE FORCES AND ENERGIES
+C Calculate the Forces and energies
 C
-      SUBROUTINE CALC_ENERGY_GO(QO,NATOMS,GRAD, ENERGY,IB1, IB2,
-     Q RB, BK, IT, JT, KT, ANTC, TK, IP, JP, KP, LP, PK,
-     Q GAMS1, GAMS3, GAMC1, GAMC3,IC, JC, SIGMA, EPSC, INC, JNC, 
-     Q NNCSIGMA,NCSIGMA,NBA, NTA, NPA, NC, NNC)
+      subroutine calc_energy_Go(qo,natoms,GRAD, energy,Ib1, Ib2,
+     Q Rb, bK, IT, JT, KT, ANTC, Tk, IP, JP, KP, LP, PK,
+     Q GAMS1, GAMS3, GAMC1, GAMC3,IC, JC, Sigma, EpsC, INC, JNC, 
+     Q NNCsigma,NCsigma,NBA, NTA, NPA, NC, NNC)
 
       INTEGER I, J, NATOMS,NBA, NTA, NPA, NC, NNC
 
-      DOUBLE PRECISION QO(3*NATOMS), GRAD(3*NATOMS), ENERGY
-      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS)
+      DOUBLE PRECISION qo(3*NATOMS), grad(3*NATOMS), ENERGY
+      DOUBLE PRECISION x(NATOMS), y(NATOMS), z(NATOMS)
 
-        DOUBLE PRECISION RB(NBA), BK(NBA), ANTC(NTA), TK(NTA), PK(NPA), 
-     Q GAMS1(NPA), GAMS3(NPA), GAMC1(NPA), GAMC3(NPA), SIGMA(NC), 
-     Q EPSC(NC),  NNCSIGMA(NNC),NCSIGMA(NNC)
-        INTEGER IB1(NBA), IB2(NBA), IT(NTA), JT(NTA), KT(NTA),IP(NPA), 
+        DOUBLE PRECISION Rb(NBA), bK(NBA), ANTC(NTA), Tk(NTA), PK(NPA), 
+     Q GAMS1(NPA), GAMS3(NPA), GAMC1(NPA), GAMC3(NPA), Sigma(NC), 
+     Q EpsC(NC),  NNCsigma(NNC),NCsigma(NNC)
+        INTEGER Ib1(NBA), Ib2(NBA), IT(NTA), JT(NTA), KT(NTA),IP(NPA), 
      Q JP(NPA), KP(NPA), LP(NPA), IC(NC), JC(NC), INC(NNC), JNC(NNC)
-      DOUBLE PRECISION DX,DY,DZ
+      DOUBLE PRECISION dx,dy,dz
 
-      DO I = 1, NATOMS
-         J = (I-1)*3
-         X(I) = QO(J+1)
-         Y(I) = QO(J+2)
-         Z(I) = QO(J+3)
-         GRAD(J+1) = 0.0
-        GRAD(J+2) = 0.0
-        GRAD(J+3) = 0.0
-      ENDDO
+      do i = 1, natoms
+         j = (i-1)*3
+         x(i) = qo(j+1)
+         y(i) = qo(j+2)
+         z(i) = qo(j+3)
+         grad(j+1) = 0.0
+        grad(j+2) = 0.0
+        grad(j+3) = 0.0
+      enddo
 
-      ENERGY = 0.0
+      energy = 0.0
 
-      CALL GOBONDS(X,Y,Z,GRAD, ENERGY, NATOMS,IB1, IB2,RB, BK,NBA)
-      CALL GOANGL(X,Y,Z,GRAD, ENERGY, NATOMS,IT,JT,KT,ANTC,TK,NTA)
-        CALL GODIHEDRAL(X,Y,Z,GRAD, ENERGY, NATOMS,IP,JP,KP,LP,PK,
+      call Gobonds(x,y,z,grad, energy, natoms,Ib1, Ib2,Rb, bK,NBA)
+      call Goangl(x,y,z,grad, energy, natoms,IT,JT,KT,ANTC,Tk,NTA)
+        call GoDihedral(x,y,z,grad, energy, natoms,IP,JP,KP,LP,PK,
      Q GAMS1, GAMS3, GAMC1, GAMC3,NPA)
-        CALL GOCONTACTS(X,Y,Z,GRAD, ENERGY, NATOMS, IC, JC, 
-     Q SIGMA, EPSC, NC)
-        CALL GONONCONTACTS(X,Y,Z,GRAD, ENERGY, NATOMS, INC, 
-     Q JNC, NCSIGMA,NNCSIGMA,NNC)
+        call GoContacts(x,y,z,grad, energy, natoms, IC, JC, 
+     Q Sigma, EpsC, NC)
+        call GoNonContacts(x,y,z,grad, energy, natoms, INC, 
+     Q JNC, NCsigma,NNCsigma,NNC)
 
-      END
+      end
 
 
 !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-!* GOBONDS  COMPUTES THE HOOKEAN FORCE AND ENERGY BETWEEN CHOSEN ATOMS *
+!* GoBonds  computes the hookean force and energy between chosen atoms *
 !***********************************************************************
 
-      SUBROUTINE GOBONDS(X,Y,Z,GRAD,ENERGY, NATOMS,IB1, IB2,RB, BK,NBA)
+      subroutine GoBonds(x,y,z,grad,energy, natoms,Ib1, Ib2,Rb, bK,NBA)
       USE KEY
-      IMPLICIT NONE
-      INTEGER I2, J2,  OUTE,I, N, J, NATOMS, NBA
-      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS), GRAD(3*NATOMS),
-     Q ENERGY
-      DOUBLE PRECISION R2, F, R1
-      DOUBLE PRECISION DX,DY,DZ
+      implicit NONE
+      integer I2, J2,  outE,I, N, J, NATOMS, NBA
+      DOUBLE PRECISION x(NATOMS), y(NATOMS), z(NATOMS), grad(3*NATOMS),
+     Q energy
+      DOUBLE PRECISION r2, f, r1
+      DOUBLE PRECISION dx,dy,dz
 
-        DOUBLE PRECISION RB(NBA), BK(NBA)
-        INTEGER IB1(NBA), IB2(NBA)
+        DOUBLE PRECISION Rb(NBA), bK(NBA)
+        INTEGER Ib1(NBA), Ib2(NBA)
 
 
-        DO 1 I=1, NBA
-           I2 = IB1(I)
-           J2 = IB2(I)
+        do 1 i=1, nBA
+           I2 = Ib1(i)
+           J2 = Ib2(i)
 
-        DX = X(I2) - X(J2)
-        DY = Y(I2) - Y(J2)
-        DZ = Z(I2) - Z(J2)
+        dx = X(I2) - X(J2)
+        dy = Y(I2) - Y(J2)
+        dz = Z(I2) - Z(J2)
 
-          R2 = DX**2 + DY**2 + DZ**2
-          R1 = SQRT(R2)
+          r2 = dx**2 + dy**2 + dz**2
+          r1 = sqrt(r2)
 
-! ENERGY CALCULATION
-             ENERGY = ENERGY + BK(I)*(R1-RB(I))**2/2.0
+! energy calculation
+             Energy = Energy + bk(i)*(r1-Rb(i))**2/2.0
 
-! END ENERGY CALCULATION
+! End energy calculation
 
-! F_OVER_R IS THE FORCE OVER THE MAGNITUDE OF R SO THERE IS NO NEED TO RESOLVE
-! THE DX, DY AND DZ INTO UNIT VECTORS
+! f_over_r is the force over the magnitude of r so there is no need to resolve
+! the dx, dy and dz into unit vectors
 
-! THE INDEX I INDICATES THE INTERACTION BETWEEN PARTICLE I AND I+1
+! the index i indicates the interaction between particle i and i+1
 
-             F = -BK(I)*(R1-RB(I))/R1
-!            F = RB(I)*BK(I)/R1 - BK(I)
-        !WRITE(*,*) I, F
-            ! NOW ADD THE FORCE
-              GRAD(I2*3-2) = GRAD(I2*3-2) - F * DX
-              GRAD(I2*3-1) = GRAD(I2*3-1) - F * DY
-              GRAD(I2*3)   = GRAD(I2*3)   - F * DZ
-! THE NEGATIVE SIGN IS DUE TO THE COMPUTATION OF DX, DY AND DZ
-              GRAD(J2*3-2) = GRAD(J2*3-2) + F * DX
-              GRAD(J2*3-1) = GRAD(J2*3-1) + F * DY
-              GRAD(J2*3)   = GRAD(J2*3)   + F * DZ
+             f = -bk(i)*(r1-Rb(i))/r1
+!            f = Rb(i)*bK(i)/r1 - bK(i)
+        !write(*,*) i, f
+            ! now add the force
+              grad(I2*3-2) = grad(I2*3-2) - f * dx
+              grad(I2*3-1) = grad(I2*3-1) - f * dy
+              grad(I2*3)   = grad(I2*3)   - f * dz
+! the negative sign is due to the computation of dx, dy and dz
+              grad(J2*3-2) = grad(J2*3-2) + f * dx
+              grad(J2*3-1) = grad(J2*3-1) + f * dy
+              grad(J2*3)   = grad(J2*3)   + f * dz
 
-1         CONTINUE
+1         continue
       !STOP
       END
 
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^END OF GOBONDS^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^END OF GoBONDS^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-!* GOANGL  COMPUTES THE FORCE DUE TO THE BOND ANGLES                   *
-!* THIS CODE IS TAKEN FROM AMBER, AND MODIFIED                         *
+!* GoANGL  computes the Force due to the bond angles                   *
+!* This code is taken from AMBER, and modified                         *
 !***********************************************************************
 
-      SUBROUTINE GOANGL(X,Y,Z,GRAD, ENERGY, NATOMS,IT, JT, KT, 
-     Q ANTC, TK,NTA)
+      SUBROUTINE GoANGL(x,y,z,grad, energy, NATOMS,IT, JT, KT, 
+     Q ANTC, Tk,NTA)
       USE KEY
-      IMPLICIT NONE
-      INTEGER NATOMS
-      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS), GRAD(3*NATOMS),
-     Q ENERGY
-      INTEGER I, N, J, NTA
-! "XX, IX," WAS RIGHT AFTER "X," BUT HAS BEEN TAKEN OUT FOR THE TIME BEING
+      implicit NONE
+      integer NATOMS
+      DOUBLE PRECISION x(NATOMS), y(NATOMS), z(NATOMS), grad(3*NATOMS),
+     Q energy
+      integer I, N, J, NTA
+! "XX, IX," was right after "X," but has been taken out for the time being
 !      IMPLICIT _REAL_ (A-H,O-Z)
       LOGICAL SKIP,NOCRST
 C
@@ -336,25 +336,25 @@ C
       DOUBLE PRECISION CST,EAW,RIJ,RKJ,RIK,DFW,ANT,XIJ,YIJ,
      + ZIJ,XKJ,YKJ,
      + ZKJ, DF
-      DIMENSION  XIJ(NTA),YIJ(NTA),ZIJ(NTA),XKJ(NTA),YKJ(NTA),
+      dimension  XIJ(NTA),YIJ(NTA),ZIJ(NTA),XKJ(NTA),YKJ(NTA),
      + ZKJ(NTA),CST(NTA),EAW(NTA),RIJ(NTA),RKJ(NTA),RIK(NTA),
      + DFW(NTA),ANT(NTA)
       DOUBLE PRECISION CT0, CT1, CT2, RIJ0, RKJ0, RIK0, ANT0, DA, ST, 
-     + CIK, CII, CKK, DT1, DT2, DT3, DT4, DT5, DT6, DT7, DT8, DT9, PT999
-     Q , EBAL,STH
+     + CIK, CII, CKK, DT1, DT2, DT3, DT4, DT5, DT6, DT7, DT8, DT9, pt999
+     Q , ebal,STH
 
-! THESE ARE ALL REPLACED WITH GLOBAL ARRAYS THAT DON'T NEED TO DECLARED
-! I THINK AMBER USES THIS METHOD SINCE IT HAS SUCH A LARGE MEMORY
-! IF I NEED TO, I WILL USE THIS METHOD LATER.
+! These are all replaced with global arrays that don't need to declared
+! I think AMBER uses this method since it has such a large memory
+! If I need to, I will use this method later.
 !      DIMENSION IT(*),JT(*),KT(*),ICT(*),X(*),F(*)
 
-! ",XX(*),IX(*)" WAS REMOVED FROM DIMENSION ABOVE
-        DOUBLE PRECISION ANTC(NTA), TK(NTA)
+! ",XX(*),IX(*)" was removed from Dimension above
+        DOUBLE PRECISION ANTC(NTA), Tk(NTA)
         INTEGER JN, IT(NTA), JT(NTA), KT(NTA)
         INTEGER I3, J3, K3
 
-      DATA PT999 /1.0D0/
-      EBAL= 0.0D0
+      data pt999 /1.0d0/
+      ebal= 0.0d0
 
 
 !        X(1) = 1.0 
@@ -367,14 +367,14 @@ C
  
 !        DO JN=3, NTA
 
- !       X(JN) = COS(3.14159*2*(JN-3)/200.)
-!        Y(JN) = SIN(3.14159*2*(JN-3)/200.)
+ !       X(JN) = cos(3.14159*2*(JN-3)/200.)
+!        Y(JN) = sin(3.14159*2*(JN-3)/200.)
 !        Z(JN) = 0.0
 
 
-!        ENDDO
+!        enddo
 
-          DO JN = 1, NTA
+          DO JN = 1, nTA
             I3 = IT(JN)
             J3 = JT(JN)
             K3 = KT(JN)
@@ -386,7 +386,7 @@ C
 
 
 C
-C           ----- CALCULATION OF THE ANGLE -----
+C           ----- CALCULATION OF THE angle -----
 C
             XIJ(JN) = X(I3)-X(J3)
             YIJ(JN) = Y(I3)-Y(J3)
@@ -396,13 +396,13 @@ C
             ZKJ(JN) = Z(K3)-Z(J3)
           END DO
 C
-          DO JN = 1,NTA
+          DO JN = 1,nTA
             RIJ0 = XIJ(JN)*XIJ(JN)+YIJ(JN)*YIJ(JN)+ZIJ(JN)*ZIJ(JN)
             RKJ0 = XKJ(JN)*XKJ(JN)+YKJ(JN)*YKJ(JN)+ZKJ(JN)*ZKJ(JN)
             RIK0 = SQRT(RIJ0*RKJ0)
             CT0 = (XIJ(JN)*XKJ(JN)+YIJ(JN)*YKJ(JN)+ZIJ(JN)*ZKJ(JN))/RIK0
-            CT1 = MAX(-PT999,CT0)
-            CT2 = MIN(PT999,CT1)
+            CT1 = MAX(-pt999,CT0)
+            CT2 = MIN(pt999,CT1)
             CST(JN) = CT2
             ANT(JN) = ACOS(CT2)
             RIJ(JN) = RIJ0
@@ -410,26 +410,26 @@ C
             RIK(JN) = RIK0
           END DO
 
-! END OF INSERTION
+! end of insertion
 
 
 C
 C         ----- CALCULATION OF THE ENERGY AND DER -----
 C
 
-          DO JN = 1,NTA
+          DO JN = 1,nTA
             ANT0 = ANT(JN)
             DA = ANT0 - ANTC(JN)
             DF = TK(JN)*DA
 
 
-! THESE LINES WERE IN AMBER, BUT I DON'T NEED THEM... YET...
-!            IF(IDECOMP.EQ.1 .OR. IDECOMP.EQ.2) THEN
+! These lines were in AMBER, but I don't need them... yet...
+!            if(idecomp.eq.1 .or. idecomp.eq.2) then
 !             II = (IT(JN) + 3)/3
 !             JJ = (JT(JN) + 3)/3
 !             KK = (KT(JN) + 3)/3
-!              CALL DECANGLE(XX,IX,II,JJ,KK,EAW(JN))
-!            ENDIF
+!              call decangle(XX,IX,II,JJ,KK,EAW(JN))
+!            endif
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !            DFW(JN) = -(DF+DF)/SIN(ANT0)
@@ -439,7 +439,7 @@ C
 C
 C         ----- CALCULATION OF THE FORCE -----
 C
-          DO JN = 1,NTA
+          DO JN = 1,nTA
             I3 = IT(JN)
             J3 = JT(JN)
             K3 = KT(JN)
@@ -460,59 +460,59 @@ C
             DT6 = -DT3-DT9
 C
 
-            GRAD(I3*3-2) = GRAD(I3*3-2)+ DT1
-            GRAD(I3*3-1) = GRAD(I3*3-1)+ DT2
-            GRAD(I3*3)   = GRAD(I3*3)  + DT3
-            GRAD(J3*3-2) = GRAD(J3*3-2)+ DT4
-            GRAD(J3*3-1) = GRAD(J3*3-1)+ DT5
-            GRAD(J3*3)   = GRAD(J3*3)  + DT6
-            GRAD(K3*3-2) = GRAD(K3*3-2)+ DT7
-            GRAD(K3*3-1) = GRAD(K3*3-1)+ DT8
-            GRAD(K3*3)   = GRAD(K3*3)  + DT9
+            grad(I3*3-2) = grad(I3*3-2)+ DT1
+            grad(I3*3-1) = grad(I3*3-1)+ DT2
+            grad(I3*3)   = grad(I3*3)  + DT3
+            grad(J3*3-2) = grad(J3*3-2)+ DT4
+            grad(J3*3-1) = grad(J3*3-1)+ DT5
+            grad(J3*3)   = grad(J3*3)  + DT6
+            grad(K3*3-2) = grad(K3*3-2)+ DT7
+            grad(K3*3-1) = grad(K3*3-1)+ DT8
+            grad(K3*3)   = grad(K3*3)  + DT9
 
-!         WRITE(100,*) DT1,DT2,DT3,DT4,DT5,DT6,DT7,DT8,DT9
+!         write(100,*) DT1,DT2,DT3,DT4,DT5,DT6,DT7,DT8,DT9
           END DO
 !         STOP
-! ENERGY CALCULATIONS
+! Energy Calculations
 
 
-          DO I=1, NTA
-             ENERGY = ENERGY + TK(I)*(ANTC(I)- ANT(I))**2/2.0
-          END DO
+          do i=1, nTA
+             energy = energy + TK(i)*(ANTC(i)- ANT(i))**2/2.0
+          end do
 
        RETURN
        END
 
-!^^^^^^^^^^^^^^^^^^^^^^^^END OF GOANGL^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+!^^^^^^^^^^^^^^^^^^^^^^^^End of GoANGL^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 
 !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-!* GODIHEDRAL COMPUTES THE DIHEDRAL ANGLES AND THE FORCES DUE TO THEM *
+!* Godihedral computes the dihedral angles and the forces due to them *
 !**********************************************************************
 
-      SUBROUTINE GODIHEDRAL(X,Y,Z,GRAD, ENERGY, NATOMS,IP,JP,KP,LP,PK,
+      SUBROUTINE Godihedral(x,y,z,grad, energy, NATOMS,IP,JP,KP,LP,PK,
      Q GAMS1, GAMS3, GAMC1, GAMC3,NPA)
       USE KEY
-      IMPLICIT NONE
-      INTEGER I, N, J, NATOMS, NPA, JN
-      DOUBLE PRECISION X(NATOMS),Y(NATOMS),Z(NATOMS),
-     Q GRAD(3*NATOMS),ENERGY
+      implicit NONE
+      integer I, N, J, NATOMS, NPA, JN
+      DOUBLE PRECISION x(NATOMS),y(NATOMS),z(NATOMS),
+     Q grad(3*NATOMS),energy
 
 
       DOUBLE PRECISION PK(NPA),GAMS1(NPA),GAMS3(NPA),
      Q GAMC1(NPA),GAMC3(NPA)
       INTEGER IP(NPA), JP(NPA), KP(NPA), LP(NPA) 
 
-      DOUBLE PRECISION LFAC
-      INTEGER I3, J3, K3, L3
-      DOUBLE PRECISION  XIJ,YIJ,ZIJ,XKJ,YKJ,
+      double precision lfac
+      integer I3, J3, K3, L3
+      double precision  XIJ,YIJ,ZIJ,XKJ,YKJ,
      + ZKJ,XKL,YKL,ZKL,DX,DY,
      + DZ, GX,GY,GZ,CT,CPHI,
      + SPHI,Z1, Z2,FXI,FYI,FZI,
      + FXJ,FYJ,FZJ, FXK,FYK,FZK,
-     + FXL,FYL,FZL,DF,Z10,Z20,Z12,Z11,Z22,FTEM,CT0,CT1,AP0,AP1,
-     + DUMS,DFLIM, DF1, DF0, DR1, DR2,DR3,DR4,DR5,DR6,DRX,DRY,DRZ,
+     + FXL,FYL,FZL,DF,Z10,Z20,Z12,Z11,Z22,ftem,CT0,CT1,AP0,AP1,
+     + Dums,DFLIM, DF1, DF0, DR1, DR2,DR3,DR4,DR5,DR6,DRX,DRY,DRZ,
      +  DC1, DC2, DC3, DC4, DC5, DC6,S
 
       DIMENSION XIJ(NPA),YIJ(NPA),ZIJ(NPA),XKJ(NPA),YKJ(NPA),
@@ -522,19 +522,19 @@ C
      + FXJ(NPA),FYJ(NPA),FZJ(NPA), FXK(NPA),FYK(NPA),FZK(NPA),
      + FXL(NPA),FYL(NPA),FZL(NPA),DF(NPA)
 C
-      DOUBLE PRECISION  TM24,TM06,TENM3,ZERO,ONE,TWO,FOUR,SIX,TWELVE
+      double precision  TM24,TM06,tenm3,zero,one,two,four,six,twelve
 
-      DATA TM24,TM06,TENM3/1.0D-24,1.0D-06,1.0D-03/
-      DATA ZERO,ONE,TWO,FOUR,SIX,TWELVE/0.D0,1.D0,2.D0,4.D0,6.D0,12.D0/
+      DATA TM24,TM06,tenm3/1.0d-24,1.0d-06,1.0d-03/
+      data zero,one,two,four,six,twelve/0.d0,1.d0,2.d0,4.d0,6.d0,12.d0/
 
-      DOUBLE PRECISION PI,SINNP,COSNP,SINNP3,COSNP3
-      PI = 3.14159265358979323846264338327950288419716939937510
+      double precision pi,SINNP,COSNP,SINNP3,COSNP3
+      pi = 3.14159265358979323846264338327950288419716939937510
 
-!      PI = 3.141592653589793
+!      pi = 3.141592653589793
 C
 C     ----- GRAND LOOP FOR THE DIHEDRAL STUFF -----
 C
-          DO JN = 1,NPA
+          DO JN = 1,nPA
 
             I3 = IP(JN)
             J3 = JP(JN)
@@ -542,7 +542,7 @@ C
             L3 = LP(JN)
 
 C
-C           ----- CALCULATION OF IJ, KJ, KL VECTORS -----
+C           ----- CALCULATION OF ij, kj, kl VECTORS -----
 C
  
 
@@ -559,7 +559,7 @@ C
 C
 C         ----- GET THE NORMAL VECTOR -----
 C
-          DO JN = 1,NPA
+          DO JN = 1,nPA
             DX(JN) = YIJ(JN)*ZKJ(JN)-ZIJ(JN)*YKJ(JN)
             DY(JN) = ZIJ(JN)*XKJ(JN)-XIJ(JN)*ZKJ(JN)
             DZ(JN) = XIJ(JN)*YKJ(JN)-YIJ(JN)*XKJ(JN)
@@ -568,7 +568,7 @@ C
             GZ(JN) = YKJ(JN)*XKL(JN)-XKJ(JN)*YKL(JN)
           END DO
 C
-          DO JN = 1,NPA
+          DO JN = 1,nPA
             FXI(JN) = SQRT(DX(JN)*DX(JN)
      Q                    +DY(JN)*DY(JN)
      Q                    +DZ(JN)*DZ(JN)+TM24)
@@ -580,44 +580,44 @@ C
 C
 C         ----- BRANCH IF LINEAR DIHEDRAL -----
 C                             
-         DO JN = 1,NPA
-!#IFDEF CRAY_PVP
-!            BIT = ONE/FXI(JN)
-!            BIK = ONE/FYI(JN)
-!            Z10 = CVMGT(ZERO,BIT,TENM3.GT.FXI(JN))
-!            Z20 = CVMGT(ZERO,BIK,TENM3.GT.FYI(JN))
-!#ELSE
-            Z10 = ONE/FXI(JN)
-            Z20 = ONE/FYI(JN)
-            IF (TM24 .GT. FXI(JN)) Z10 = ZERO
-            IF (TM24 .GT. FYI(JN)) Z20 = ZERO
-!#ENDIF
+         DO JN = 1,nPA
+!#ifdef CRAY_PVP
+!            BIT = one/FXI(JN)
+!            BIK = one/FYI(JN)
+!            Z10 = CVMGT(zero,BIT,tenm3.GT.FXI(JN))
+!            Z20 = CVMGT(zero,BIK,tenm3.GT.FYI(JN))
+!#else
+            z10 = one/FXI(jn)
+            z20 = one/FYI(jn)
+            if (tm24 .gt. FXI(jn)) z10 = zero
+            if (tm24 .gt. FYI(jn)) z20 = zero
+!#endif
             Z12 = Z10*Z20
             Z1(JN) = Z10
             Z2(JN) = Z20
-!#IFDEF CRAY_PVP
-!            FTEM = CVMGZ(ZERO,ONE,Z12)
-!#ELSE
-            FTEM = ZERO
-            IF (Z12 .NE. ZERO) FTEM = ONE
-!#ENDIF
+!#ifdef CRAY_PVP
+!            FTEM = CVMGZ(zero,one,Z12)
+!#else
+            ftem = zero
+            if (z12 .ne. zero) ftem = one
+!#endif
             FZI(JN) = FTEM
-            CT0 = MIN(ONE,CT(JN)*Z12)
-            CT1 = MAX(-ONE,CT0)
+            CT0 = MIN(one,CT(JN)*Z12)
+            CT1 = MAX(-one,CT0)
             S = XKJ(JN)*(DZ(JN)*GY(JN)-DY(JN)*GZ(JN))+
      Q          YKJ(JN)*(DX(JN)*GZ(JN)-DZ(JN)*GX(JN))+
      Q          ZKJ(JN)*(DY(JN)*GX(JN)-DX(JN)*GY(JN))
             AP0 = ACOS(CT1)
             AP1 = PI-SIGN(AP0,S)
             CT(JN) = AP1
-!1050    IF(AP1 .GT. PI)THEN
-!        AP1 = AP1-2*PI
-!        GOTO 1050
-!        ELSE
-!1050	IF(AP1 .LT. 0.0)THEN
-!        AP1 = AP1+2*PI
-!        GOTO 1050
-!        ENDIF
+!1050    if(AP1 .gt. PI)then
+!        AP1 = AP1-2*Pi
+!        goto 1050
+!        else
+!1050	if(AP1 .lt. 0.0)then
+!        AP1 = AP1+2*Pi
+!        goto 1050
+!        endif
 
             CT(JN) = AP1
             CPHI(JN) = COS(AP1)
@@ -627,60 +627,60 @@ C
 C         ----- CALCULATE THE ENERGY AND THE DERIVATIVES WITH RESPECT TO
 C               COSPHI -----
 C
-        DO JN = 1,NPA
+        DO JN = 1,nPA
             CT0 = CT(JN)
-!1030 	IF(CT0 .GT. PI)THEN
-!	CT0 = CT0-2*PI
-!	GOTO 1030
-!	ELSE
-!1030	IF(CT0 .LT. 0.0)THEN
-!        CT0 = CT0+2*PI
-!	GOTO 1030
-!	ENDIF
+!1030 	if(CT0 .gt. PI)then
+!	CT0 = CT0-2*Pi
+!	goto 1030
+!	else
+!1030	if(CT0 .lt. 0.0)then
+!        CT0 = CT0+2*Pi
+!	goto 1030
+!	endif
 
             COSNP = COS(CT0)
             SINNP = SIN(CT0)
-!	WRITE(100,*) JN, SPHI(JN),SINNP
-!1040    IF(3*CT0 .GT. PI)THEN
-!        CT0 = CT0 -2.0/3.0*PI
-!        GOTO 1040
-!        ELSE
-!1040	IF(3*CT0 .LT. 0.0)THEN
-!        CT0 = CT0 +2.0/3.0*PI
-!        GOTO 1040
+!	write(100,*) JN, SPHI(JN),SINNP
+!1040    if(3*CT0 .gt. PI)then
+!        CT0 = CT0 -2.0/3.0*Pi
+!        goto 1040
+!        else
+!1040	if(3*CT0 .lt. 0.0)then
+!        CT0 = CT0 +2.0/3.0*Pi
+!        goto 1040
 
-!        ENDIF
+!        endif
 
 
-            COSNP3 = COS(CT0*3.0)
-            SINNP3 = SIN(CT0*3.0)
+            COSNP3 = cos(CT0*3.0)
+            SINNP3 = sin(CT0*3.0)
 
 !DEBUG LINES
-!             IF(JN .LE. 10)THEN
-!               WRITE(*,*) COSNP, GAMC11(JN), COSNP3, 2*GAMC31(JN)
-!               WRITE(*,*) SINNP, GAMS11(JN), SINNP3, 2*GAMS31(JN)
+!             if(JN .le. 10)then
+!               write(*,*) COSNP, GAMC11(JN), COSNP3, 2*GAMC31(JN)
+!               write(*,*) SINNP, GAMS11(JN), SINNP3, 2*GAMS31(JN)
 
-!            END IF
+!            end if
 
 
 
-!LATER            EPW(JN) = (PK(MC)+COSNP*GAMC(MC)+SINNP*GAMS(MC))*FZI(JN)
-!            IF(IDECOMP.EQ.1 .OR. IDECOMP.EQ.2) THEN
+!later            EPW(JN) = (PK(MC)+COSNP*GAMC(MC)+SINNP*GAMS(MC))*FZI(JN)
+!            if(idecomp.eq.1 .or. idecomp.eq.2) then
 !              II = (IP(JN+IST) + 3)/3
 !              JJ = (JP(JN+IST) + 3)/3
 !              KK = (IABS(KP(JN+IST)) + 3)/3
 !              LL = (IABS(LP(JN+IST)) + 3)/3
-!              CALL DECPHI(XX,IX,II,JJ,KK,LL,EPW(JN))
-!            ENDIF
+!              call decphi(xx,ix,II,JJ,KK,LL,EPW(JN))
+!            endif
 
-! HERE IS THE ENERGY PART
+! Here is the energy part
 
-            ENERGY =  ENERGY + (3.0/2.0*PK(JN)-GAMC1(JN)*COSNP - 
+            Energy =  Energy + (3.0/2.0*PK(JN)-GAMC1(JN)*COSNP - 
      Q GAMS1(JN)*SINNP - GAMC3(JN)*COSNP3 - GAMS3(JN)*SINNP3)*FZI(JN)
-!	IF(FZI(JN) .EQ. 0.0)THEN
-!	WRITE(77,*) JN, FZI(JN)
-!	ENDIF
-! END OF ENERGY PART(AT LEAST UNTIL THE BOTTOM OF THIS ROUTINE
+!	if(FZI(JN) .eq. 0.0)then
+!	write(77,*) JN, FZI(JN)
+!	endif
+! End of energy part(at least until the bottom of this routine
 
 	   DF0 = (GAMS1(JN)*COSNP - GAMC1(JN)*SINNP + 3*GAMC3(JN)*COSNP3 - 3*GAMC3(JN)*SINNP3)
 
@@ -688,32 +688,32 @@ C
      Q + 3*(GAMC3(JN)*SINNP3-GAMS3(JN)*COSNP3))
 
             DUMS = SPHI(JN)+SIGN(TM24,SPHI(JN))
-!	WRITE(89,*) JN, SPHI(JN)
+!	write(89,*) JN, SPHI(JN)
 
 !            DFLIM = GAMC(JN)*(PN(MC)-GMUL(INC)+GMUL(INC)*CPHI(JN))
-! DFLIM WAS AS IS WRITTEN ABOVE, BUT IF SPHI IS SMALL ~ 0, THEN CPHI
-! ~ 1, WHICH MEANS THAT THE TERMS OF GMUL(GMUL IS ZERO FOR ODD POWERED DIHEDRALS) WILL ALMOST PERFECTLY CANCEL.
-! AND ALL YOU WILL HAVE LEFT IS PN, WHICH IN THIS CASE IS THE 1+3=4
+! DFLIM was as is written above, but if SPhi is small ~ 0, then CPHI
+! ~ 1, which means that the terms of Gmul(Gmul is zero for odd powered dihedrals) will almost perfectly cancel.
+! and all you will have left is PN, which in this case is the 1+3=4
 
             DFLIM = GAMC1(JN) + 3*GAMC3(JN)
 
-!#IFDEF CRAY_PVP
+!#ifdef CRAY_PVP
 !            DF1 = CVMGT(DFLIM,DF0/DUMS,TM06.GT.ABS(DUMS))
-!#ELSE
-            DF1 = DF0/DUMS
-            IF(TM24.GT.ABS(DUMS))THEN
-	     DF1 = DFLIM
-            ENDIF
+!#else
+            df1 = df0/dums
+            if(tm24.gt.abs(dums))then
+	     df1 = dflim
+            endif
 
-!#ENDIF
+!#endif
             DF(JN) = DF1*FZI(JN)
 	
-!	WRITE(88,"(I4,5F12.8)") JN, DF(JN), SPHI(JN), CPHI(JN), GAMC1(JN), GAMS1(JN)
+!	write(88,"(I4,5F12.8)") JN, DF(JN), SPHI(JN), CPHI(JN), GAMC1(JN), GAMS1(JN)
           END DO
 C                                     
 C         ----- NOW DO TORSIONAL FIRST DERIVATIVES -----
 C
-         DO JN = 1,NPA
+         DO JN = 1,nPA
 C
 C           ----- NOW, SET UP ARRAY DC = FIRST DER. OF COSPHI W/RESPECT
 C                 TO THE CARTESIAN DIFFERENCES T -----
@@ -749,169 +749,169 @@ C
             L3 = LP(JN)
 
 
-            GRAD(I3*3-2) =  GRAD(I3*3-2) +  DR1
-            GRAD(I3*3-1) =  GRAD(I3*3-1) +  DR2
-            GRAD(I3*3)   =  GRAD(I3*3)   +  DR3
-            GRAD(J3*3-2) =  GRAD(J3*3-2) +  DRX -  DR1
-            GRAD(J3*3-1) =  GRAD(J3*3-1) +  DRY -  DR2
-            GRAD(J3*3)   =  GRAD(J3*3)   +  DRZ -  DR3
-            GRAD(K3*3-2) =  GRAD(K3*3-2) -  DRX -  DR4
-            GRAD(K3*3-1) =  GRAD(K3*3-1) -  DRY -  DR5
-            GRAD(K3*3)   =  GRAD(K3*3)   -  DRZ -  DR6
-            GRAD(L3*3-2) =  GRAD(L3*3-2) +  DR4
-            GRAD(L3*3-1) =  GRAD(L3*3-1) +  DR5
-            GRAD(L3*3)   =  GRAD(L3*3)   +  DR6
+            grad(I3*3-2) =  grad(I3*3-2) +  DR1
+            grad(I3*3-1) =  grad(I3*3-1) +  DR2
+            grad(I3*3)   =  grad(I3*3)   +  DR3
+            grad(J3*3-2) =  grad(J3*3-2) +  DRX -  DR1
+            grad(J3*3-1) =  grad(J3*3-1) +  DRY -  DR2
+            grad(J3*3)   =  grad(J3*3)   +  DRZ -  DR3
+            grad(K3*3-2) =  grad(K3*3-2) -  DRX -  DR4
+            grad(K3*3-1) =  grad(K3*3-1) -  DRY -  DR5
+            grad(K3*3)   =  grad(K3*3)   -  DRZ -  DR6
+            grad(L3*3-2) =  grad(L3*3-2) +  DR4
+            grad(L3*3-1) =  grad(L3*3-1) +  DR5
+            grad(L3*3)   =  grad(L3*3)   +  DR6
 
           END DO
 
           END
 
 
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^END OF GODIHEDRAL^^^^^^^^^^^^^^^^^^^^^^^^^^^
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^^END of GoDihedral^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-!* GOCONTACTS: COMPUTES THE FORCE ON ALL ATOMS DUE TO CONTACTS VIA A   *
-!* 10-12 POTENTIAL                                                     *
+!* GoCONTACTS: computes the force on all atoms due to contacts via a   *
+!* 10-12 potential                                                     *
 !***********************************************************************
 
-      SUBROUTINE GOCONTACTS(X,Y,Z,GRAD,ENERGY,
-     Q NATOMS,IC,JC,SIGMA,EPSC,NC)
+      subroutine Gocontacts(x,y,z,grad,energy,
+     Q NATOMS,IC,JC,Sigma,EpsC,NC)
       USE KEY
-      IMPLICIT NONE
-      INTEGER I, N, J,NATOMS,NC
+      implicit NONE
+      integer I, N, J,NATOMS,NC
 
-      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS) 
-     Q , GRAD(3*NATOMS), ENERGY
-      DOUBLE PRECISION DX,DY,DZ
+      DOUBLE PRECISION x(NATOMS), y(NATOMS), z(NATOMS) 
+     Q , grad(3*NATOMS), energy
+      DOUBLE PRECISION dx,dy,dz
 
-      INTEGER C1, C2, CONFID, Q, SC1, SC2, CF1, CF2
-      DOUBLE PRECISION  R2, RM2, RM10, F_OVER_R, DSIG, DEPS, 
-     Q S1, S2, EP1, EP2, R1, RC,R, SUMMM
+      integer C1, C2, ConfID, Q, SC1, SC2, Cf1, cf2
+      DOUBLE PRECISION  r2, rm2, rm10, f_over_r, dsig, deps, 
+     Q s1, s2, ep1, ep2, r1, rc,r, summm
 
-        DOUBLE PRECISION SIGMA(NC), EPSC(NC)
+        DOUBLE PRECISION Sigma(NC), EpsC(NC)
         INTEGER IC(NC), JC(NC)
 
 
 !      Q = 0
-!      CONTS = 0
+!      Conts = 0
 
-!      DO I=1, NC
-!         COUNT(I) = 0
-!      END DO
-!	WRITE(89,*) NC
-	DO I=1, NC
+!      do i=1, NC
+!         count(i) = 0
+!      end do
+!	write(89,*) NC
+	do i=1, NC
 	
-           C1 = IC(I)
-           C2 = JC(I)
-!        WRITE(*,*) C1, C2
+           C1 = IC(i)
+           C2 = JC(i)
+!        write(*,*) C1, C2
 
-	DX = X(C1) - X(C2)
+	dx = X(C1) - X(C2)
 
- 	DY = Y(C1) - Y(C2)
+ 	dy = Y(C1) - Y(C2)
 
-	DZ = Z(C1) - Z(C2)
+	dz = Z(C1) - Z(C2)
 
-	  R2 = DX**2 + DY**2 + DZ**2
+	  r2 = dx**2 + dy**2 + dz**2
 
-	      RM2 = 1.0/R2
-              RM2 = RM2*SIGMA(I)
-	      RM10 = RM2**5
+	      rm2 = 1.0/r2
+              rm2 = rm2*sigma(i)
+	      rm10 = rm2**5
 
 
-	ENERGY = ENERGY + EPSC(I)*RM10*(5*RM2-6.0)
-!         ENERGY=ENERGY+EPSC(I)*RM10*(5*RM2-6)
-	F_OVER_R = -EPSC(I)*60.0*RM10*(RM2-1.0)/R2
-!	WRITE(99,*) F_OVER_R,C1,C2,I
-	!WRITE(*,*) F_OVER_R
-!         F_OVER_R = -EPSC(I)*RM10*(RM2-1.0)*60.0/R2
+	energy = energy + epsC(i)*rm10*(5*rm2-6.0)
+!         energy=energy+epsC(i)*rm10*(5*rm2-6)
+	f_over_r = -epsc(i)*60.0*rm10*(rm2-1.0)/r2
+!	write(99,*) f_over_r,C1,C2,i
+	!write(*,*) f_over_r
+!         f_over_r = -epsC(i)*rm10*(rm2-1.0)*60.0/r2
 
-! NOW ADD THE ACCELERATION 
-	      GRAD(3*C1-2) = GRAD(3*C1-2) + F_OVER_R * DX
-	      GRAD(3*C1-1) = GRAD(3*C1-1) + F_OVER_R * DY
-	      GRAD(3*C1)   = GRAD(3*C1)   + F_OVER_R * DZ
+! now add the acceleration 
+	      grad(3*C1-2) = grad(3*C1-2) + f_over_r * dx
+	      grad(3*C1-1) = grad(3*C1-1) + f_over_r * dy
+	      grad(3*C1)   = grad(3*C1)   + f_over_r * dz
 
- 	      GRAD(3*C2-2) =  GRAD(3*C2-2) - F_OVER_R * DX
-	      GRAD(3*C2-1) =  GRAD(3*C2-1) - F_OVER_R * DY
-	      GRAD(3*C2)   =  GRAD(3*C2)   - F_OVER_R * DZ
-!	WRITE(89,*) C1,C2
-!	WRITE(90,*) DX,DY,DZ
- !       WRITE(100,*) F_OVER_R, EPSC(I),SIGMA(I), R2,RM2,RM10
-              ENDDO
+ 	      grad(3*C2-2) =  grad(3*C2-2) - f_over_r * dx
+	      grad(3*C2-1) =  grad(3*C2-1) - f_over_r * dy
+	      grad(3*C2)   =  grad(3*C2)   - f_over_r * dz
+!	write(89,*) C1,C2
+!	write(90,*) dx,dy,dz
+ !       write(100,*) f_over_r, epsC(i),sigma(i), r2,rm2,rm10
+              enddo
 	!STOP
 
-      END
+      end
 
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^^END OF GOCONTACTS^^^^^^^^^^^^^^^^^^^^^^^^^^^
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^^end of GoContacts^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
 !<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-!* GONONCONTACTS COMPUTES THE FORCES DUE TO NON NATIVE CONTACTS       *
+!* GoNonContacts computes the forces due to non native contacts       *
 !**********************************************************************
 
-      SUBROUTINE GONONCONTACTS(X,Y,Z,GRAD, ENERGY, 
-     Q NATOMS, INC, JNC, NCSIGMA,NNCSIGMA,NNC)
+      subroutine Gononcontacts(x,y,z,grad, energy, 
+     Q NATOMS, INC, JNC, NCsigma,NNCsigma,NNC)
       USE KEY
-      IMPLICIT NONE
-      INTEGER I, N, J, AN, NATOMS
+      implicit NONE
+      integer I, N, J, AN, NATOMS
 
-      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS), 
-     Q GRAD(3*NATOMS), ENERGY
+      DOUBLE PRECISION x(NATOMS), y(NATOMS), z(NATOMS), 
+     Q grad(3*NATOMS), energy
 
-      INTEGER C1, C2
-      DOUBLE PRECISION  R2, RM2, RM14, F_OVER_R 
+      integer C1, C2
+      DOUBLE PRECISION  r2, rm2, rm14, f_over_r 
 
-	INTEGER NNC 
+	integer NNC 
 
-        DOUBLE PRECISION NNCSIGMA(NNC),NCSIGMA(NNC)
+        DOUBLE PRECISION NNCsigma(NNC),NCsigma(NNC)
         INTEGER INC(NNC), JNC(NNC)
-      DOUBLE PRECISION DX,DY,DZ
+      DOUBLE PRECISION dx,dy,dz
 
 
 
-!      WRITE(*,*) NPAIRNUM
-	DO I=1, NNC
+!      write(*,*) Npairnum
+	do i=1, NNC
            
-           C1 = INC(I)
-           C2 = JNC(I)
+           C1 = INC(i)
+           C2 = JNC(i)
 
-	DX = X(C1) - X(C2)
+	dx = X(C1) - X(C2)
 
- 	DY = Y(C1) - Y(C2)
+ 	dy = Y(C1) - Y(C2)
 
-	DZ = Z(C1) - Z(C2)
+	dz = Z(C1) - Z(C2)
 
-	  R2 = DX**2 + DY**2 + DZ**2
+	  r2 = dx**2 + dy**2 + dz**2
 
-             RM2 = 1/R2
-             RM14 = RM2**7
+             rm2 = 1/r2
+             rm14 = rm2**7
 
-! NNCSIGMA1 IS ACTUALLY 12*EPS*SIGMA**12 (LOOK AT READ.F AND INIT.F)
+! NNCsigma1 is actually 12*eps*sigma**12 (look at read.f and init.f)
 
-!NCSIGMA(I), NNCEPS(I
-		ENERGY = ENERGY  + NCSIGMA(I)**6/R2**6
-!              ENERGY = ENERGY + NNCSIGMA(I)*RM14*R2/12.0
-		F_OVER_R = - 12.0*NCSIGMA(I)**6/R2**7
+!NCsigma(i), NNCeps(i
+		energy = energy  + NCsigma(i)**6/r2**6
+!              energy = energy + NNCSigma(i)*rm14*r2/12.0
+		f_over_r = - 12.0*NCsigma(i)**6/r2**7
 
 
-! F_OVER_R IS THE FORCE OVER THE MAGNITUDE OF R SO THERE IS NO NEED TO RESOLVE
-! THE DX, DY AND DZ INTO UNIT VECTORS
-!              F_OVER_R = -NNCSIGMA(I)*RM14
+! f_over_r is the force over the magnitude of r so there is no need to resolve
+! the dx, dy and dz into unit vectors
+!              f_over_r = -NNCSigma(i)*rm14
 
-! NOW ADD THE ACCELERATION 
-	      GRAD(C1*3-2) = GRAD(C1*3-2) + F_OVER_R * DX
-	      GRAD(C1*3-1) = GRAD(C1*3-1) + F_OVER_R * DY
-	      GRAD(C1*3)   = GRAD(C1*3)   + F_OVER_R * DZ
+! now add the acceleration 
+	      grad(C1*3-2) = grad(C1*3-2) + f_over_r * dx
+	      grad(C1*3-1) = grad(C1*3-1) + f_over_r * dy
+	      grad(C1*3)   = grad(C1*3)   + f_over_r * dz
 
- 	      GRAD(C2*3-2) =  GRAD(C2*3-2) - F_OVER_R * DX
-	      GRAD(C2*3-1) =  GRAD(C2*3-1) - F_OVER_R * DY
-	      GRAD(C2*3)   =  GRAD(C2*3)   - F_OVER_R * DZ
+ 	      grad(C2*3-2) =  grad(C2*3-2) - f_over_r * dx
+	      grad(C2*3-1) =  grad(C2*3-1) - f_over_r * dy
+	      grad(C2*3)   =  grad(C2*3)   - f_over_r * dz
 
-           END DO
+           end do
 
 
       END
 
-!^^^^^^^^^^^^^^^^^^^^^^^^^^^END OF GONONCONTACTS^^^^^^^^^^^^^^^^^^^^^^^^^
+!^^^^^^^^^^^^^^^^^^^^^^^^^^^End of GoNonContacts^^^^^^^^^^^^^^^^^^^^^^^^^
 
 

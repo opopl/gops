@@ -1,51 +1,51 @@
 C
 C {{{
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C}}}
 C
       SUBROUTINE POTENTIAL(COORDS,ENERGY,VNEW,GTEST,STEST,RMS,PTEST,BOXTEST)
-! DOXYGEN {{{
+! Doxygen {{{
 !>
-!> \NAME POTENTIAL 
-!> \BRIEF
-!> \PARAM[IN] 
-!> \PARAM[IN]
-!> \PARAM[OUT]
-!> \PARAM[OUT]
+!> \name POTENTIAL 
+!> \brief
+!> \param[in] 
+!> \param[in]
+!> \param[out]
+!> \param[out]
 !>
 ! }}}
-      ! MODULES {{{
+      ! Modules {{{
       USE COMMONS
       USE KEY
       USE MODHESS
       USE MODCHARMM
-      USE PORFUNCS
-      USE SDWATER, ONLY : SDPOTENTIAL, SDGRAD, SDHESS
+      use PORFUNCS
+      use SDWATER, ONLY : SDPOTENTIAL, SDGRAD, SDHESS
       USE MCY, ONLY : MCYPOT=>POTENTIAL
       !USE BOWMANWATER, ONLY : BOWMANPOT
       USE FINITE_DIFFERENCES
-      USE MODAMBER9,ONLY : IFSWITCH,GOODSTRUCTURE1,IRESPA,CISARRAY1,CHECKCISTRANSALWAYS,CHECKCISTRANSALWAYSDNA,
-     1                     CHECKCISTRANSALWAYSRNA
-C      USE AMHGLOBALS
+      USE MODAMBER9,only : ifswitch,goodstructure1,irespa,cisarray1,checkcistransalways,checkcistransalwaysdna,
+     1                     checkcistransalwaysrna
+C      use AMHGLOBALS
 ! }}}
       IMPLICIT NONE
-! SUBROUTINE PARAMETERS {{{
+! subroutine parameters {{{
 
         DOUBLE PRECISION, DIMENSION(3*NATOMS) :: COORDS
         DOUBLE PRECISION ENERGY
@@ -55,7 +55,7 @@ C      USE AMHGLOBALS
         LOGICAL PTEST, BOXTEST
 
 ! }}}
-! LOCAL PARAMETERS {{{
+! local parameters {{{
 
       INTEGER J1, J2, J3, NN, MM, IPOT, NELEMENTS, NTYPE(105), NCOUNT, ISTART, NDUM, NPCALL, ECALL, FCALL, SCALL,
      1        J4, J5, J6, JSTART, ISTAT, NDUMMY
@@ -79,20 +79,20 @@ C      USE AMHGLOBALS
 
       DOUBLE PRECISION VPLUS(3*NATOMS), VMINUS(3*NATOMS), DIFF, EPLUS1, EPLUS2, EMINUS1, EMINUS2
 
-!     DOUBLE PRECISION UPPERE, LOWERE, DELTACOORD, NUMERICALGRAD(3*NATOMS), RMSDIFF
-!     DOUBLE PRECISION DUMMYGRAD(3*NATOMS), UPPERGRAD(3*NATOMS), LOWERGRAD(3*NATOMS)
-!     DOUBLE PRECISION NUMERICALSD, TEMPHESS(3*NATOMS,3*NATOMS)
+!     double precision upperE, lowerE, deltaCoord, numericalGrad(3*NATOMS), RMSdiff
+!     double precision dummyGrad(3*NATOMS), upperGrad(3*NATOMS), lowerGrad(3*NATOMS)
+!     double precision numericalSD, tempHess(3*NATOMS,3*NATOMS)
 
-!     SF344> NAB & AMBER ADDITIONS
-      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE  ::  TEMPHESS
+!     sf344> NAB & AMBER additions
+      DOUBLE PRECISION,dimension(:),allocatable  ::  temphess
       DOUBLE PRECISION  :: GRAD1(3*NATOMS)
-      INTEGER I,J,K
+      integer i,j,k
 ! }}}
       SAVE
-! SUBROUTINE BODY {{{
+! subroutine body {{{
 
 C
-C  SSTEST NEEDS TO BE TRUE IF WE REALLY WANT AN ANALYTIC HESSIAN THIS STEP.
+C  SSTEST needs to be true if we really want an analytic Hessian this step.
 C
       CALL MYCPU_TIME(TIME0,.FALSE.)
       NPCALL=NPCALL+1
@@ -111,21 +111,21 @@ C
          IF (STEST.OR.READHESS.OR.HUPDATE) THEN
             IF (VARIABLES) THEN
                ALLOCATE(HESS(NATOMS,NATOMS))
-               IF (DEBUG) PRINT '(A,I10)', ' POTENTIAL> ALLOCATING HESSIAN WITH DIMENSION ',NATOMS
+               IF (DEBUG) PRINT '(A,I10)', ' potential> allocating hessian with dimension ',NATOMS
 C            ELSE IF (RINGPOLYMERT) THEN
-            ELSE IF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'AECK') THEN ! ASYMMETRIC ECKART BARRIER
+            ELSE IF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'AECK') THEN ! asymmetric Eckart barrier
                ALLOCATE(HESS(NATOMS,NATOMS))
-               IF (DEBUG) PRINT '(A,I10)', ' POTENTIAL> ALLOCATING HESSIAN WITH DIMENSION ',NATOMS
+               IF (DEBUG) PRINT '(A,I10)', ' potential> allocating hessian with dimension ',NATOMS
             ELSE
                ALLOCATE(HESS(3*NATOMS,3*NATOMS))
-               IF (DEBUG) PRINT '(A,I10)', ' POTENTIAL> ALLOCATING HESSIAN WITH DIMENSION ',3*NATOMS
+               IF (DEBUG) PRINT '(A,I10)', ' potential> allocating hessian with dimension ',3*NATOMS
             ENDIF
          ENDIF
       ENDIF
       
       IF (READHESS) THEN
-         WRITE(*,'(A)') ' POTENTIAL> READING HESSIAN FROM FILE DERIVS'
-         OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD')
+         WRITE(*,'(A)') ' potential> Reading Hessian from file derivs'
+         OPEN(UNIT=15,FILE='derivs',STATUS='OLD')
          IF (CADPAC) THEN
             DO J1=1,3+NATOMS
                READ(15,*,ERR=666)
@@ -134,7 +134,7 @@ C            ELSE IF (RINGPOLYMERT) THEN
             READ(15,*,ERR=666)
             READ(15,*,ERR=666) (((HESS(3*(J1-1)+J3,J2),J3=1,3),J2=1,3*NATOMS),J1=1,NATOMS)
          ELSE IF (GAMESSUS) THEN
-            OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD')
+            OPEN(UNIT=15,FILE='derivs',STATUS='OLD')
 11          READ(15,'(A80)') GSTRING
             IF (GSTRING(1:6).NE.' $GRAD') GOTO 11
             READ(15,'(A80)') GSTRING
@@ -154,21 +154,21 @@ C            ELSE IF (RINGPOLYMERT) THEN
             ENDDO
          ELSE IF (GAMESSUK) THEN
 C
-C SINCE THE MOLECULE MAY WELL HAVE BEEN REORIENTED BY GAMESS-UK AS PART OF THE POINT GROUP SYMMETRY
-C ANALYSIS, THESE GRADIENTS WILL HAVE TO BE TRANSFORMED IF THEY ARE REQUIRED TO CORRESPOND TO THE ORIENTATION OF THE
-C MOLECULE AS IT WAS INPUT TO GAMESS-UK, AND ACCOUNT MUST ALSO BE TAKEN OF THE REORDERING OF ATOMS. THE
-C TRANSFORM KEYWORD REQUESTS A BLOCK OF TYPE TR_MATRIX, CONTAINING A ROTATION AND TRANSLATION MATRICES
-C (DENOTED HERE AS R AND T RESPECTIVELY) WHICH MAY BE USED TO CONSTRUCT THE GRADIENT IN THE ORIGINAL, INPUT FRAME.
-C THERE ARE 3 RECORDS, RECORD NUMBER I CONTAINING R(I,1), R(I,2), R(I,3), T(I) IN FORMAT (2X,4F15.7). TAKING THE
-C COORDINATES C IN THE GAMESS-UK COORDINATE SYSTEM (I.E. AFTER SYMMETRY ADAPTION, AS FOUND IN THE
-C COORDINATES BLOCK) THE TRANSFORMATION R C-T YIELDS THE COORDINATES OF THE ATOM AS IT WAS INPUT TO
-C GAMESS-UK, AND R G, (WHERE G IS THE GRADIENT FROM THE GRADIENTS BLOCK) IS THE GRADIENT IN THE INITIAL
-C COORDINATE SYSTEM. NOTE THAT THE RECORD STRUCTURE WRITTEN OUT IN THE TR_MATRIX BLOCK IS SUITABLE FOR INCLUSION
-C (WITHOUT THE BLOCK HEADER) AFTER THE ORIENT DIRECTIVE. 
+C Since the molecule may well have been reoriented by GAMESS-UK as part of the point group symmetry
+C analysis, these gradients will have to be transformed if they are required to correspond to the orientation of the
+C molecule as it was input to GAMESS-UK, and account must also be taken of the reordering of atoms. The
+C TRANSFORM keyword requests a block of type tr_matrix, containing a rotation and translation matrices
+C (denoted here as R and T respectively) which may be used to construct the gradient in the original, input frame.
+C There are 3 records, record number i containing R(i,1), R(i,2), R(i,3), T(i) in format (2x,4f15.7). Taking the
+C coordinates c in the GAMESS-UK coordinate system (i.e. after symmetry adaption, as found in the
+C coordinates block) the transformation R c-T yields the coordinates of the atom as it was input to
+C GAMESS-UK, and R g, (where g is the gradient from the gradients block) is the gradient in the initial
+C coordinate system. Note that the record structure written out in the tr_matrix block is suitable for inclusion
+C (without the block header) after the ORIENT directive. 
 C
-            OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD')
+            OPEN(UNIT=15,FILE='derivs',STATUS='OLD')
 121         READ(15,'(A80)') GSTRING
-            IF (GSTRING(1:17).NE.'BLOCK = GRADIENTS') GOTO 121
+            IF (GSTRING(1:17).NE.'block = gradients') GOTO 121
             DO J1=1,NATOMS
                READ(15,*) VNEW(3*(J1-1)+1),VNEW(3*(J1-1)+2),VNEW(3*(J1-1)+3)
             ENDDO
@@ -178,7 +178,7 @@ C
             READ(15,*) ((HESS(J1,J3),J3=1,3*NATOMS),J1=1,3*NATOMS)
             REWIND(15)
 161         READ(15,'(A80)') GSTRING
-            IF (GSTRING(1:17).NE.'BLOCK = TR_MATRIX') GOTO 161
+            IF (GSTRING(1:17).NE.'block = tr_matrix') GOTO 161
             READ(15,*) GAMESR(1,1), GAMESR(1,2), GAMESR(1,3), GAMEST(1)
             READ(15,*) GAMESR(2,1), GAMESR(2,2), GAMESR(2,3), GAMEST(2)
             READ(15,*) GAMESR(3,1), GAMESR(3,2), GAMESR(3,3), GAMEST(3)
@@ -214,22 +214,22 @@ C
                ENDDO
             ENDDO
          ELSE
-            WRITE(*,'(A)') ' POTENTIAL> READHESS CURRENTLY ONLY WORKS FOR CADPAC, GAMESS-US AND GAMESS-UK RUN TYPES'
+            WRITE(*,'(A)') ' potential> READHESS currently only works for CADPAC, GAMESS-US and GAMESS-UK run types'
          ENDIF
          CLOSE(15)
       ENDIF
 C
-C  SPHERICAL CONTAINER
+C  Spherical container
 C
       IF (CONTAINER) CALL RAD(COORDS)
 C     IF (CONTAINER) CALL RAD(COORDS,ENERGY,VNEW,GTEST)
 
       IF (RINGPOLYMERT) THEN
 C
-C GET THE ENERGY AND DERIVATIVES CORRESPONDING TO THE TRUE POTENTIAL FOR EACH BEAD AND
-C CONSTRUCT THE TOTAL ENERGY, GRADIENT AND (IF NECESSARY) HESSIAN.
+C Get the energy and derivatives corresponding to the true potential for each bead and
+C construct the total energy, gradient and (if necessary) Hessian.
 C
-         IF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'AECK') THEN ! ASYMMETRIC ECKART BARRIER
+         IF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'AECK') THEN ! asymmetric Eckart barrier
             NZERO=0
             ENERGY=0.0D0
             IF (GTEST) VNEW(1:NOPT)=0.0D0
@@ -245,7 +245,7 @@ C
      &                    0.421875D0*SINH(0.7674950309598664D0*DUMMY1))/COSH(0.3837475154799332*DUMMY1)**4
             ENDDO
 C
-C EXTRA TERMS DUE TO SPRINGS BETWEEN IMAGES.
+C Extra terms due to springs between images.
 C
             ENERGY=ENERGY+DUMMY2*(COORDS(1)-COORDS(RPIMAGES))**2/2.0D0
             IF (RPIMAGES.GT.2) THEN
@@ -253,9 +253,9 @@ C
                   ENERGY=ENERGY+DUMMY2*(COORDS(J1)-COORDS(J1-1))**2/2.0D0
                ENDDO
             ENDIF
-!           PRINT '(A)','COORDINATES:'
+!           PRINT '(A)','coordinates:'
 !           PRINT '(6G20.10)',COORDS(1:NOPT)
-!           PRINT '(A,G20.10)','ENERGY=',ENERGY
+!           PRINT '(A,G20.10)','energy=',ENERGY
             IF (GTEST) THEN
                IF (RPIMAGES.GT.2) THEN
                   VNEW(1)=VNEW(1)+(2.0D0*COORDS(1)-COORDS(RPIMAGES)-COORDS(2))*DUMMY2
@@ -267,7 +267,7 @@ C
                   VNEW(1)=VNEW(1)+(COORDS(1)-COORDS(2))*DUMMY2
                   VNEW(2)=VNEW(2)+(COORDS(2)-COORDS(1))*DUMMY2
                ENDIF
-!              PRINT '(A)','GRADIENT:'
+!              PRINT '(A)','gradient:'
 !              PRINT '(6G20.10)',VNEW(1:NOPT)
             ENDIF
             IF (STEST) THEN
@@ -289,7 +289,7 @@ C
                    HESS(2,1)=HESS(2,1)-DUMMY2
                    HESS(2,2)=HESS(2,2)+2*DUMMY2
                ENDIF
-!              PRINT '(A)','HESSIAN:'
+!              PRINT '(A)','Hessian:'
 !              PRINT '(6G20.10)',HESS(1:NOPT,1:NOPT)
             ENDIF
          ELSE
@@ -297,45 +297,45 @@ C
             ENERGY=0.0D0
             IF (GTEST) VNEW(1:NOPT)=0.0D0
             IF (STEST) HESS(1:NOPT,1:NOPT)=0.0D0
-            IF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'SD') THEN ! STILLINGER-DAVID FLEXIBLE WATER POTENTIAL
-               DUMMY2=1.0D0/(RPBETA*15.1787D0/RPIMAGES)**2 ! HBAR = 15.1787 FS KCAL / MOL
+            IF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'SD') THEN ! Stillinger-David flexible water potential
+               DUMMY2=1.0D0/(RPBETA*15.1787D0/RPIMAGES)**2 ! hbar = 15.1787 fs kcal / mol
                DO J1=1,RPIMAGES
                   ENERGY=ENERGY+SDPOTENTIAL(COORDS(RPDOF*(J1-1)+1:RPDOF*J1))
                   IF (GTEST.OR.STEST) VNEW(RPDOF*(J1-1)+1:RPDOF*J1)=SDGRAD(COORDS(RPDOF*(J1-1)+1:RPDOF*J1))
                   IF (STEST) HESS(RPDOF*(J1-1)+1:RPDOF*J1,RPDOF*(J1-1)+1:RPDOF*J1) =
      &                  SDHESS(COORDS(RPDOF*(J1-1)+1:RPDOF*J1),VNEW(RPDOF*(J1-1)+1:RPDOF*J1))
                ENDDO
-            ELSEIF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'TT') THEN ! XANTHEAS' TTM3-F WATER POTENTIAL
-               DUMMY2=1.0D0/(RPBETA*15.1787D0/RPIMAGES)**2 ! HBAR = 15.1787 FS KCAL / MOL
+            ELSEIF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'TT') THEN ! Xantheas' TTM3-F water potential
+               DUMMY2=1.0D0/(RPBETA*15.1787D0/RPIMAGES)**2 ! hbar = 15.1787 fs kcal / mol
                DO J1=1,RPIMAGES
                   CALL TTM3FCALL(RPDOF/9,COORDS(RPDOF*(J1-1)+1:RPDOF*J1),ENERGY,VNEW(RPDOF*(J1-1)+1:RPDOF*J1))
                   IF (STEST) THEN
-                     PRINT *, 'NO HESSIAN FOR TTM3-F'
+                     PRINT *, 'no hessian for TTM3-F'
                      STOP
                   ENDIF
                ENDDO
-            ELSEIF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'MCY') THEN !VRT(MCY-5F) WATER POTENTIAL
-               DUMMY2=1.0D0/(RPBETA/RPIMAGES)**2 ! ATOMIC UNITS
+            ELSEIF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'MCY') THEN !VRT(MCY-5f) water potential
+               DUMMY2=1.0D0/(RPBETA/RPIMAGES)**2 ! atomic units
                DO J1=1,RPIMAGES
                   ENERGY=ENERGY+MCYPOT(COORDS(RPDOF*(J1-1)+1:RPDOF*J1))
                   IF (GTEST) VNEW(RPDOF*(J1-1)+1:RPDOF*J1)=FINDIFGRAD(COORDS(RPDOF*(J1-1)+1:RPDOF*J1), MCYPOT, 1.0D-3, GRAD4T)
                   IF (STEST) HESS(RPDOF*(J1-1)+1:RPDOF*J1,RPDOF*(J1-1)+1:RPDOF*J1) =
      &                  FINDIFHESS_POT(COORDS(RPDOF*(J1-1)+1:RPDOF*J1),MCYPOT,1.0D-3)
                ENDDO
-!            ELSEIF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'JB') THEN ! JAMES BOWMAN'S WATER POTENTIAL
-               !DUMMY2=1.0D0/(RPBETA/RPIMAGES)**2 ! ATOMIC UNITS (HBAR = 1)
+!            ELSEIF (TRIM(ADJUSTL(RPSYSTEM)).EQ.'JB') THEN ! James Bowman's water potential
+               !DUMMY2=1.0D0/(RPBETA/RPIMAGES)**2 ! atomic units (hbar = 1)
                !DO J1=1,RPIMAGES
-                  !!ENERGY=ENERGY+BOWMANPOT(COORDS(RPDOF*(J1-1)+1:RPDOF*J1)) ! HARTREES
+                  !!ENERGY=ENERGY+BOWMANPOT(COORDS(RPDOF*(J1-1)+1:RPDOF*J1)) ! Hartrees
                   !IF (GTEST) VNEW(RPDOF*(J1-1)+1:RPDOF*J1)=FINDIFGRAD(COORDS(RPDOF*(J1-1)+1:RPDOF*J1), BOWMANPOT, 1.0D-3, GRAD4T)
                   !!IF (STEST) HESS(RPDOF*(J1-1)+1:RPDOF*J1,RPDOF*(J1-1)+1:RPDOF*J1) =
      !!&                  FINDIFHESS_POT(COORDS(RPDOF*(J1-1)+1:RPDOF*J1),BOWMANPOT,1.0D-3)
                !ENDDO
             ELSE
-               PRINT '(A)',' POTENTIAL> ERROR *** UNRECOGNISED RP SYSTEM TYPE ',TRIM(ADJUSTL(RPSYSTEM))
+               PRINT '(A)',' potential> ERROR *** unrecognised RP system type ',TRIM(ADJUSTL(RPSYSTEM))
                STOP
             ENDIF
 C
-C EXTRA TERMS DUE TO SPRINGS BETWEEN IMAGES.
+C Extra terms due to springs between images.
 C
             IF (RPCYCLICT) THEN
                DO J2=1,RPDOF
@@ -354,9 +354,9 @@ C
                   ENDDO
                ENDDO
             ENDIF
-C           PRINT '(A)','COORDINATES:'
+C           PRINT '(A)','coordinates:'
 C           PRINT '(6G20.10)',COORDS(1:NOPT)
-C           PRINT '(A,G20.10)','ENERGY=',ENERGY
+C           PRINT '(A,G20.10)','energy=',ENERGY
             IF (GTEST) THEN
                IF (RPIMAGES.GT.1) THEN
                   IF (RPCYCLICT) THEN
@@ -391,7 +391,7 @@ C           PRINT '(A,G20.10)','ENERGY=',ENERGY
                      ENDDO
                   ENDDO
                ENDIF
-C              PRINT '(A)','GRADIENT:'
+C              PRINT '(A)','gradient:'
 C              PRINT '(6G20.10)',VNEW(1:NOPT)
             ENDIF
             IF (STEST) THEN
@@ -429,14 +429,14 @@ C              PRINT '(6G20.10)',VNEW(1:NOPT)
                      END DO
                   ENDIF
                ENDIF
-               IF (DEBUG) PRINT *, ' POTENTIAL> HESSIAN CREATED'
-C              PRINT '(A)','HESSIAN:'
+               IF (DEBUG) PRINT *, ' potential> hessian created'
+C              PRINT '(A)','Hessian:'
 C              PRINT '(6G20.10)',HESS(1:NOPT,1:NOPT)
             ENDIF
          ENDIF
          IF (PTEST) THEN
-            WRITE(*,10) ' ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,10) ' ENERGY FOR LAST CYCLE=',ENERGY
+            WRITE(*,10) ' Energy for last cycle=',ENERGY
+            WRITE(ESTRING,10) ' Energy for last cycle=',ENERGY
          ENDIF
       ELSE IF (VARIABLES) THEN
 C        CALL CTEST(NATOMS, COORDS, VNEW, ENERGY, GTEST, STEST)
@@ -446,7 +446,7 @@ C         CALL P4DIFF(NATOMS,COORDS,VNEW,ENERGY,PARAM1,GTEST,STEST)
          CALL P4DIFF(NATOMS,COORDS,VNEW,ENERGY,PARAM1,PARAM2,GTEST,STEST)
 
 C         DIFF=1.0D-3
-C         PRINT*,'ANALYTIC AND NUMERICAL GRADIENTS: NATOMS=',NATOMS
+C         PRINT*,'analytic and numerical gradients: NATOMS=',NATOMS
 C         DO J1=1,NATOMS
 C            COORDS(J1)=COORDS(J1)+DIFF
 C            CALL P4DIFF(NATOMS,COORDS,VPLUS,EPLUS,PARAM1,.FALSE.,.FALSE.)
@@ -457,7 +457,7 @@ C            IF ((ABS(VNEW(J1)).NE.0.0D0).AND.(100.0D0*ABS((VNEW(J1)-(EPLUS-EMIN
 C               WRITE(*,'(I5,2G20.10)') J1,VNEW(J1),(EPLUS-EMINUS)/(2.0D0*DIFF)
 C            ENDIF
 C         ENDDO
-C         PRINT*,'ANALYTIC AND NUMERICAL SECOND DERIVATIVES:'
+C         PRINT*,'analytic and numerical second derivatives:'
 C         DO J1=1,NATOMS
 C            COORDS(J1)=COORDS(J1)+DIFF
 C            CALL P4DIFF(NATOMS,COORDS,VPLUS,EPLUS,PARAM1,.TRUE.,.FALSE.)
@@ -474,18 +474,18 @@ C            ENDDO
 C         ENDDO
 
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' '
          ENDIF
 
 C         IF (RESTART) THEN
 CC
-CC  THIS IS AN INEFFICIENT DIRTY FIX
+CC  This is an inefficient dirty fix
 CC
 CC           CALL FDIMER(COORDS,ENERGY,VNEW,1)
-C            OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD')
+C            OPEN(UNIT=15,FILE='derivs',STATUS='OLD')
 C            IF (PTEST) THEN
-C               PRINT*,'READING EXTERNAL DERIVATIVE INFORMATION'
+C               PRINT*,'Reading external derivative information'
 C            ENDIF
 C            READ(15,*) ENERGY
 C            READ(15,*) (VNEW(J1),J1=1,NOPT)
@@ -493,123 +493,123 @@ C            READ(15,*) ((HESS(J2,J3),J3=1,NOPT),J2=1,NOPT)
 C            CLOSE(15)
 CC        ELSE
 CC           CALL FDIMER(COORDS,ENERGY,VNEW,ITER)
-CC           PRINT*,'ANALYTIC HESSIAN:'
-CC           WRITE(*,'(3F20.10)') ((HESS(J1,J2),J1=1,6),J2=1,6)
-CC           CALL DIFF(COORDS, 6, VNEW, HESS)
-CC           PRINT*,'NUMERICAL HESSIAN:'
-CC           WRITE(*,'(3F20.10)') ((HESS(J1,J2),J1=1,6),J2=1,6)
-CC           STOP
-C            PRINT*,'READING EXTERNAL DERIVATIVE INFORMATION'
-C            OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD')
+Cc           PRINT*,'Analytic Hessian:'
+Cc           WRITE(*,'(3F20.10)') ((HESS(J1,J2),J1=1,6),J2=1,6)
+Cc           CALL DIFF(COORDS, 6, VNEW, HESS)
+Cc           PRINT*,'Numerical Hessian:'
+Cc           WRITE(*,'(3F20.10)') ((HESS(J1,J2),J1=1,6),J2=1,6)
+cc           STOP
+C            PRINT*,'Reading external derivative information'
+C            OPEN(UNIT=15,FILE='derivs',STATUS='OLD')
 C            READ(15,*) ENERGY
 C            READ(15,*) (VNEW(J1),J1=1,NOPT)
 C            READ(15,*) ((HESS(J2,J3),J3=1,NOPT),J2=1,NOPT)
 C            CLOSE(15)
 C         ENDIF
-C         WRITE(*,'(A,27X,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
-C         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+C         WRITE(*,'(A,27X,F20.10,A)') ' potential> Energy for last cycle=',ENERGY,' hartree'
+C         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' hartree'
 C
-C  PAUL WHITFORD'S GO MODEL
+C  Paul Whitford's Go model
 C
-      ELSE IF (ZSYM(NATOMS).EQ.'GO')THEN
-         IF (STEST) PRINT '(A)',' POTENTIAL> ERROR - CALLING GO WITH STEST TRUE'
+      ELSE IF (ZSYM(NATOMS).EQ.'GO')then
+         IF (STEST) PRINT '(A)',' potential> ERROR - calling GO with STEST true'
          CALL GO(COORDS,NATOMS,VNEW,ENERGY,GTEST,STEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,10) ' ENERGY FOR LAST CYCLE=',ENERGY
+            WRITE(*,10) ' Energy for last cycle=',ENERGY
+            WRITE(ESTRING,10) ' Energy for last cycle=',ENERGY
          ENDIF
 C
-C  QSPCFW  FLEXIBLE WATER MODEL INTRODUCED BY PAESANI ET AL. (JCP 125, 184507 (2006))
-C  CODED BY JAVIER.
+C  qSPCFw  flexible water model introduced by Paesani et al. (JCP 125, 184507 (2006))
+C  Coded by Javier.
 C
       ELSE IF (QSPCFWT) THEN
          CALL QSPCFW((NATOMS/3),COORDS,VNEW,ENERGY,GTEST)
          IF (PTEST) THEN
-            WRITE(*,'(A,27X,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
-            WRITE(ESTRING,10) ' ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
+            WRITE(*,'(A,27X,F20.10,A)') ' potential> Energy for last cycle=',ENERGY,' kcal/mol'
+            WRITE(ESTRING,10) ' Energy for last cycle=',ENERGY,' kcal/mol'
          ENDIF
 C
-C  QTIP4PF FLEXIBLE WATER MODEL INTRODUCED BY HABERSHON ET AL. (JCP 131, 024501 (2009))
-C  CODED BY JAVIER.
+C  qTIP4PF flexible water model introduced by Habershon et al. (JCP 131, 024501 (2009))
+C  Coded by Javier.
 C
       ELSE  IF (QTIP4PFT) THEN
          CALL QTIP4PF((NATOMS/3),COORDS,VNEW,ENERGY,GTEST)
-         IF (STEST) THEN
-            PRINT *, 'NO HESSIAN FOR QTIP4PF'
-            STOP
-         END IF
+         if (STEST) THEN
+            print *, 'no hessian for QTIP4PF'
+            stop
+         end if
          IF (PTEST) THEN
-            WRITE(*,'(A,27X,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
-            WRITE(ESTRING,10) ' ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
+            WRITE(*,'(A,27X,F20.10,A)') ' potential> Energy for last cycle=',ENERGY,' kcal/mol'
+            WRITE(ESTRING,10) ' Energy for last cycle=',ENERGY,' kcal/mol'
          ENDIF
 C
-C  JEREMY RICHARDSON'S STILLINGER-DAVID MODEL
+C  Jeremy Richardson's Stillinger-David model
 C  
       ELSE IF (SDT) THEN
          ENERGY=SDPOTENTIAL(COORDS(1:NOPT))
          IF (GTEST.OR.STEST) VNEW(1:NOPT)=SDGRAD(COORDS(1:NOPT))
          IF (STEST) HESS(1:NOPT,1:NOPT)=SDHESS(COORDS(1:NOPT),VNEW(1:NOPT))
          IF (PTEST) THEN
-            WRITE(*,'(A,27X,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
-            WRITE(ESTRING,10) ' ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
+            WRITE(*,'(A,27X,F20.10,A)') ' potential> Energy for last cycle=',ENERGY,' kcal/mol'
+            WRITE(ESTRING,10) ' Energy for last cycle=',ENERGY,' kcal/mol'
          ENDIF
 C
-C YIMIN WANG AND JOEL BOWMAN'S WATER POTENTIAL
+C Yimin Wang and Joel Bowman's water potential
 C
 !!    ELSE IF (BOWMANT) THEN
-         !ENERGY=BOWMANPOT(COORDS(1:NOPT)) ! HARTREES
+         !ENERGY=BOWMANPOT(COORDS(1:NOPT)) ! Hartrees
          !IF (GTEST) VNEW(1:NOPT)=FINDIFGRAD(COORDS(1:NOPT), BOWMANPOT, 1.0D-3, GRAD4T)
          !IF (STEST) THEN
             !HESS(1:NOPT,1:NOPT)=FINDIFHESS_POT(COORDS(1:NOPT),BOWMANPOT,1.0D-3)
          !END IF
          !IF (PTEST) THEN
-            !WRITE(*,'(A,27X,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
-            !WRITE(ESTRING,10) ' ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+            !WRITE(*,'(A,27X,F20.10,A)') ' potential> Energy for last cycle=',ENERGY,' hartree'
+            !WRITE(ESTRING,10) ' Energy for last cycle=',ENERGY,' hartree'
          !ENDIF
       ELSE IF (NATBT) THEN
          CALL NATB(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'SV') THEN
          CALL DRVMSEVB(3*NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' MSEVB ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) ' MSEVB ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' MSEVB Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) ' MSEVB Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
       ELSE IF (WELCH) THEN
          CALL WEL(NATOMS, COORDS, VNEW, ENERGY, APP, AMM, APM, RHO, XQP, XQM, ALPHAP, ALPHAM, ZSYM, GTEST, SSTEST)
          IF (PTEST) THEN
-            WRITE(*,'(A,27X,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+            WRITE(*,'(A,27X,F20.10,A)') ' potential> Energy for last cycle=',ENERGY,' hartree'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' hartree'
          ENDIF
       ELSE IF (TOSI) THEN
          CALL TOSIFUMI(NATOMS, COORDS, VNEW, ENERGY, PARAM1, PARAM2, PARAM3, PARAM4, ZSYM, GTEST, SSTEST)
          IF (TOSIC6) THEN
             CALL TOSIFUMIC6(NATOMS, COORDS, VNEW, EDISP, C6PP, C6MM, C6PM, ZSYM, GTEST, SSTEST)
-            IF (PTEST) WRITE(*,'(A,F20.10,A)') ' DISPERSION ENERGY=',EDISP,' HARTREE'
+            IF (PTEST) WRITE(*,'(A,F20.10,A)') ' Dispersion energy=',EDISP,' hartree'
             ENERGY=ENERGY+EDISP
          ENDIF
          IF (TOSIPOL) THEN
             CALL TOSIFUMIPOL(NATOMS, COORDS, VNEW, EIND, ALPHAP, ALPHAM, ZSYM, DAMP, GTEST, SSTEST)
-            IF (PTEST) WRITE(*,'(A,F20.10,A)') ' FIRST ORDER INDUCTION ENERGY=',EIND,' HARTREE'
+            IF (PTEST) WRITE(*,'(A,F20.10,A)') ' First order induction energy=',EIND,' hartree'
             ENERGY=ENERGY+EIND
          ENDIF
-         IF (PTEST) WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
-         IF (PTEST) WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+         IF (PTEST) WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' hartree'
+         IF (PTEST) WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' hartree'
       ELSE IF (SIO2T) THEN
          CALL SIO2(NATOMS, COORDS, VNEW, ENERGY, PARAM1, PARAM2, PARAM3, PARAM4, ZSYM, GTEST, SSTEST)
          IF (SIO2C6T) THEN
             CALL SIO2C6(NATOMS, COORDS, VNEW, EDISP, C6PP, C6MM, C6PM, ZSYM, GTEST, SSTEST)
-            IF (PTEST) WRITE(*,'(A,F20.10,A)') ' DISPERSION ENERGY=',EDISP,' HARTREE'
+            IF (PTEST) WRITE(*,'(A,F20.10,A)') ' Dispersion energy=',EDISP,' hartree'
             ENERGY=ENERGY+EDISP
          ENDIF
 C
-C  CHECK NUMERICAL FIRST AND SECOND DERIVATIVES
+C  Check numerical first and second derivatives
 C
 C        DIFF=1.0D-4
-C        PRINT*,'ANALYTIC AND NUMERICAL GRADIENTS:'
+C        PRINT*,'analytic and numerical gradients:'
 C        DO J1=1,3*NATOMS
 C           COORDS(J1)=COORDS(J1)+DIFF
 C           CALL SIO2(NATOMS,COORDS,VPLUS,EPLUS,PARAM1, PARAM2, PARAM3, PARAM4,ZSYM,.FALSE.,.FALSE.)
@@ -628,7 +628,7 @@ C           IF ((ABS(VNEW(J1)).NE.0.0D0).AND.(100.0D0*(VNEW(J1)-(EPLUS-EMINUS)/(
 C              WRITE(*,'(I5,2F20.10)') J1,VNEW(J1),(EPLUS-EMINUS)/(2.0D0*DIFF)
 C           ENDIF
 C        ENDDO
-!        PRINT*,'ANALYTIC AND NUMERICAL SECOND DERIVATIVES:'
+!        PRINT*,'analytic and numerical second derivatives:'
 !        DO J1=1,3*NATOMS
 !           COORDS(J1)=COORDS(J1)+DIFF
 !           CALL SIO2(NATOMS,COORDS,VPLUS,EPLUS,PARAM1, PARAM2, PARAM3, PARAM4,ZSYM,.TRUE.,.FALSE.)
@@ -648,18 +648,18 @@ C        ENDDO
 !        ENDDO
 !        STOP
 
-         IF (PTEST) WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
-         IF (PTEST) WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+         IF (PTEST) WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' hartree'
+         IF (PTEST) WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' hartree'
 C     ELSE IF (ZSYM(NATOMS).EQ.'CL') THEN
-C        PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+C        PRINT*,' WARNING - GTEST and SSTEST ignored'
 C     ELSE IF (ZSYM(NATOMS).EQ.'CL') THEN
-C        PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+C        PRINT*,' WARNING - GTEST and SSTEST ignored'
 C        CALL KDIFF(NATOMS, COORDS, VNEW, ENERGY)
 C        CALL KPAIRS(NATOMS, 3*NATOMS, COORDS, ENERGY)
-C        WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
-C        WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+C        WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' hartree'
+C        WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' hartree'
       ELSE IF (ZSYM(NATOMS).EQ.'AZ') THEN
-         PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+         PRINT*,' WARNING - GTEST and SSTEST ignored'
          CALL AZIZ(NATOMS,COORDS,VNEW,ENERGY,1)
          IF (PARAM1.NE.0.0D0) THEN
             ZSTAR=PARAM1
@@ -668,37 +668,37 @@ C        WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
             P2=ENERGY
             ENERGY=ENERGY+P3
          ENDIF
-         WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
+         WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
 20       FORMAT(A,27X,F20.10)
-         WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
+         WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
          IF (PARAM1.NE.0.0D0) THEN
-            WRITE(*,20) ' TWO-BODY CONTRIBUTION=   ',P2
-            WRITE(*,20) ' THREE-BODY CONTRIBUTION= ',P3
-            WRITE(*,20) ' Z PARAMETER=             ',ZSTAR
+            WRITE(*,20) ' Two-body contribution=   ',P2
+            WRITE(*,20) ' Three-body contribution= ',P3
+            WRITE(*,20) ' Z parameter=             ',ZSTAR
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'Z1') THEN
          CALL Z1(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST,PARAM1,PARAM2,PARAM3)
          IF (PTEST) THEN
-            WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
+            WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+            WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'ZF') THEN
          CALL Z2FASTER(NATOMS,COORDS,PARAM1,PARAM2,PARAM3,ENERGY,VNEW,STEST)
          IF (PTEST) THEN
-            WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
+            WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+            WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'Z2') THEN
          CALL Z2(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST,PARAM1,PARAM2,PARAM3)
          IF (PTEST) THEN
-            WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
+            WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+            WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'DZ') THEN
          CALL DZUGUTOV(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5,PARAM6,PARAM7)
          IF (PTEST) THEN
-            WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
+            WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+            WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'AX') THEN
          ZSTAR=PARAM1
@@ -706,17 +706,17 @@ C        WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
             CALL LJDIFF(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST)
             P2=ENERGY; P3=0.0D0
          ELSE
-            CALL LJDIFF(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST) ! 2-BODY DERIVATIVES
-            CALL AXDIFF(NATOMS, COORDS, VNEW, ZSTAR, GTEST, SSTEST)  ! 3-BODY DERIVATIVES ADDED
-            CALL AXPAIRS (NATOMS, COORDS, P2, P3, ENERGY, ZSTAR)     ! AXTELL ENERGY
+            CALL LJDIFF(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST) ! 2-body derivatives
+            CALL AXDIFF(NATOMS, COORDS, VNEW, ZSTAR, GTEST, SSTEST)  ! 3-body derivatives added
+            CALL AXPAIRS (NATOMS, COORDS, P2, P3, ENERGY, ZSTAR)     ! AxTell energy
          ENDIF
          IF (PTEST) THEN
-            WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
+            WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+            WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
             IF (PARAM1.NE.0.0D0) THEN
-               WRITE(*,20) ' TWO-BODY CONTRIBUTION=   ',P2
-               WRITE(*,20) ' THREE-BODY CONTRIBUTION= ',P3
-               WRITE(*,20) ' Z PARAMETER=             ',ZSTAR
+               WRITE(*,20) ' Two-body contribution=   ',P2
+               WRITE(*,20) ' Three-body contribution= ',P3
+               WRITE(*,20) ' Z parameter=             ',ZSTAR
             ENDIF
          ENDIF
       ELSE IF ((ZSYM(NATOMS).EQ.'SW').OR.(ZSYM(NATOMS).EQ.'SM')) THEN
@@ -724,19 +724,19 @@ C        WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
          IF (ZSYM(NATOMS).EQ.'SM') XLAMBDA=21.0D0*1.5D0
          IF (PRESSURE) THEN
             CALL SWLATMIN(NATOMS,COORDS,PARAM1,PARAM2,PARAM3,VNEW,XLAMBDA)
-            PRINT*,'LATTICE CONSTANT OPTIMISED'
-            PRINT*,'NEW BOX LENGTH=',PARAM1
+            PRINT*,'Lattice constant optimised'
+            PRINT*,'New Box length=',PARAM1
          ENDIF
          CALL SWTWO(NATOMS, COORDS, VNEW, P2, P3, PARAM1, PARAM2, PARAM3, GTEST, SSTEST, XLAMBDA)
          ENERGY=P2+P3
-C        WRITE(*,'(A,3F20.10)') 'IN POTENTIAL, U,PV,H=',ENERGY,PRESS*PARAM1*PARAM2*PARAM3,ENERGY+PRESS*PARAM1*PARAM2*PARAM3
+C        WRITE(*,'(A,3F20.10)') 'In potential, U,PV,H=',ENERGY,PRESS*PARAM1*PARAM2*PARAM3,ENERGY+PRESS*PARAM1*PARAM2*PARAM3
          IF (PV) ENERGY=ENERGY+PRESS*PARAM1*PARAM2*PARAM3
 
-C        PRINT*,'ANALYTIC DERIVATIVES:'
+C        PRINT*,'Analytic derivatives:'
 C        WRITE(*,'(3E20.10)') (VNEW(J1),J1=1,3*NATOMS)
 C        WRITE(*,'(3F20.10)') ((HESS(J1,J2),J1=1,3*NATOMS),J2=1,3*NATOMS)
 C        CALL DIFF(COORDS,NATOMS,VNEW,HDUM)
-C        PRINT*,'NUMERICAL DERIVATIVES:'
+C        PRINT*,'Numerical derivatives:'
 C        WRITE(*,'(3E20.10)') (VNEW(J1),J1=1,3*NATOMS)
 C        WRITE(*,'(3F20.10)') ((HESS(J1,J2),J1=1,3*NATOMS),J2=1,3*NATOMS)
 C        DO J1=1,3*NATOMS
@@ -750,64 +750,64 @@ C           ENDDO
 C        ENDDO
 
          IF (PTEST) THEN
-            WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(*,20) ' TWO-BODY CONTRIBUTION=   ',P2
-            WRITE(*,20) ' THREE-BODY CONTRIBUTION= ',P3
+            WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+            WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
+            WRITE(*,20) ' Two-body contribution=   ',P2
+            WRITE(*,20) ' Three-body contribution= ',P3
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'JC') THEN
          CALL JMEC(NATOMS, COORDS, P2, P3, VNEW,ENERGY, PARAM4,GTEST,SSTEST)
          IF (PV) ENERGY=ENERGY+PRESS*PARAM1*PARAM2*PARAM3
-         WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-         WRITE(*,10) 'TWO-BODY CONTRIBUTION=',P2,' EV'
-         WRITE(*,10) 'THREE-BODY CONTRIBUTION=',P3,' EV'
+         WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
+         WRITE(*,10) 'Two-body contribution=',P2,' eV'
+         WRITE(*,10) 'Three-body contribution=',P3,' eV'
       ELSE IF (ZSYM(NATOMS).EQ.'CC') THEN
-         PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+         PRINT*,' WARNING - GTEST and SSTEST ignored'
          CALL JMECC(NATOMS, COORDS, P2, P3, VNEW,ENERGY)
 C        CALL JM2CC(NATOMS, COORDS, VNEW)
 C        CALL JM3CC(NATOMS, COORDS, VNEW)
-         WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-         WRITE(*,10) 'TWO-BODY CONTRIBUTION=',P2,' EV'
-         WRITE(*,10) 'THREE-BODY CONTRIBUTION=',P3,' EV'
+         WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
+         WRITE(*,10) 'Two-body contribution=',P2,' eV'
+         WRITE(*,10) 'Three-body contribution=',P3,' eV'
       ELSE IF (ZSYM(NATOMS).EQ.'JM') THEN
-         PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+         PRINT*,' WARNING - GTEST and SSTEST ignored'
          CALL JMEP(NATOMS,COORDS,P2,P3,VNEW,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4)
 C        CALL JM2P(NATOMS,COORDS,VNEW,PARAM1,PARAM2,PARAM3,PARAM4)
 C        CALL JM3P(NATOMS,COORDS,VNEW,PARAM1,PARAM2,PARAM3,PARAM4)
-         WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-         WRITE(*,10) 'TWO-BODY CONTRIBUTION=',P2,' EV'
-         WRITE(*,10) 'THREE-BODY CONTRIBUTION=',P3,' EV'
+         WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
+         WRITE(*,10) 'Two-body contribution=',P2,' eV'
+         WRITE(*,10) 'Three-body contribution=',P3,' eV'
       ELSE IF (ZSYM(NATOMS).EQ.'M') THEN
          CALL MORSE(NATOMS,COORDS,ENERGY,VNEW,PARAM1,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
+            WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+            WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
             WRITE(*,20) ' RHO=',PARAM1
          ENDIF
 C     ELSE IF (ZSYM(NATOMS).EQ.'M2') THEN
-C        PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+C        PRINT*,' WARNING - GTEST and SSTEST ignored'
 C        CALL M2(NATOMS,COORDS,VNEW,ENERGY,MALPHA2,PARAM2,1)
-C        WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C        WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C        WRITE(*,'(A23,7X,2F20.10)') ' RHO AND DELTA=',PARAM1, PARAM2
+C        WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+C        WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
+C        WRITE(*,'(A23,7X,2F20.10)') ' RHO and DELTA=',PARAM1, PARAM2
 C     ELSE IF (ZSYM(NATOMS).EQ.'MV') THEN
-C        PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+C        PRINT*,' WARNING - GTEST and SSTEST ignored'
 C        CALL MAV(NATOMS,COORDS,VNEW,ENERGY,MALPHA1,PARAM2,1)
-C        WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C        WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C        WRITE(*,'(A23,7X,2F20.10)') ' RHO AND DELTA=',PARAM1, PARAM2
+C        WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+C        WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
+C        WRITE(*,'(A23,7X,2F20.10)') ' RHO and DELTA=',PARAM1, PARAM2
 C     ELSE IF (ZSYM(NATOMS).EQ.'GV') THEN
-C        PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+C        PRINT*,' WARNING - GTEST and SSTEST ignored'
 C        CALL GAV(NATOMS,COORDS,VNEW,ENERGY,GALPHA,PARAM2,1)
-C        WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C        WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C        WRITE(*,'(A23,7X,2F20.10)') ' RHO AND DELTA=',PARAM1, PARAM2
+C        WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+C        WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
+C        WRITE(*,'(A23,7X,2F20.10)') ' RHO and DELTA=',PARAM1, PARAM2
       ELSE IF (ZSYM(NATOMS).EQ.'TT') THEN
 C
-C           PARAM1, PARAM2 AND PARAM3 ARE THE BOXLENGTHS AND PARAM4 IS THE CUTOFF FRACTION.
+C           PARAM1, PARAM2 and PARAM3 are the boxlengths and PARAM4 is the cutoff fraction.
 C
          CALL TIGHTE(NATOMS,COORDS,VNEW,ENERGY,GTEST,PARAM1,PARAM2,PARAM3)
          IF (SSTEST) THEN
@@ -816,14 +816,14 @@ C
             FIXIMAGE=.FALSE.
          ENDIF
          IF (PTEST) THEN
-            WRITE(*,'(A,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
+            WRITE(*,'(A,F20.10,A)') ' potential> Energy for last cycle=',ENERGY,' eV'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'LP') THEN
 C
-C           PARAM1, PARAM2 AND PARAM3 ARE THE BOXLENGTHS, PARAM4 IS THE CUTOFF.
+C           PARAM1, PARAM2 and PARAM3 are the boxlengths, PARAM4 is the cutoff.
 C
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
          IF (BINARY) THEN
             CALL  LJPBIN(NATOMS,COORDS,VNEW,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4,GTEST,SSTEST,PTEST)
          ELSE
@@ -832,55 +832,55 @@ C
          IF (PV) ENERGY=ENERGY+PRESS*PARAM1*PARAM2*PARAM3
 C        FIXIMAGE=.TRUE.
 C        CALL DIFF(NATOMS,COORDS,HDUM,VDUM,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4)
-C        PRINT*,'ANALYTIC AND NUMERICAL DERIVATIVES:'
+C        PRINT*,'Analytic and numerical derivatives:'
 C        WRITE(*,'(2I4,3F20.10)') ((J1,J2,HESS(J1,J2),HDUM(J1,J2),HESS(J1,J2)/HDUM(J1,J2),J1=1,NOPT),J2=1,NOPT)
-C        STOP
+c        STOP
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'LC') THEN
 C
-C           PARAM1, PARAM2 AND PARAM3 ARE THE BOXLENGTHS, PARAM4 IS THE CUTOFF.
+C           PARAM1, PARAM2 and PARAM3 are the boxlengths, PARAM4 is the cutoff.
 C
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
          IF (.NOT.BINARY) THEN 
-            PRINT*,'ERROR ATOM TYPE LC ONLY WORKS FOR BINARY LJ'
+            PRINT*,'error atom type LC only works for binary LJ'
             STOP
          ENDIF
          CALL  LJPSHIFTBIN2(NATOMS,COORDS,VNEW,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4,GTEST,SSTEST,PTEST)
          IF (PV) ENERGY=ENERGY+PRESS*PARAM1*PARAM2*PARAM3
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'BC') THEN
 C
-C     PARAM1 IS THE CUTOFF.
+C     PARAM1 is the cutoff.
 C
          CALL LJPSHIFTBINC(NATOMS,COORDS,VNEW,ENERGY,PARAM1,GTEST,SSTEST,PTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
 
       ELSE IF (ZSYM(NATOMS).EQ.'LS') THEN
 C
-C           PARAM1, PARAM2 AND PARAM3 ARE THE BOXLENGTHS, PARAM4 IS THE CUTOFF.
+C           PARAM1, PARAM2 and PARAM3 are the boxlengths, PARAM4 is the cutoff.
 C
          IF (BINARY) THEN 
             CALL  LJPSHIFTBIN(NATOMS,COORDS,VNEW,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4,GTEST,SSTEST,PTEST,BOXTEST)
          ELSE
             IF (PRESSURE) THEN
                CALL LJPSLATMIN(NATOMS,COORDS,PARAM1,PARAM2,PARAM3,PARAM4,VNEW)
-               PRINT*,'LATTICE CONSTANT OPTIMISED'
-               PRINT*,'NEW BOX LENGTH=',PARAM1
+               PRINT*,'Lattice constant optimised'
+               PRINT*,'New Box length=',PARAM1
             ENDIF
             CALL  LJPSHIFT(NATOMS,COORDS,VNEW,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4,GTEST,SSTEST,PTEST)
          ENDIF
 C        FIXIMAGE=.TRUE.
 C        CALL DIFF(NATOMS,COORDS,HDUM,VDUM,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4)
-C        PRINT*,'ANALYTIC AND NUMERICAL DERIVATIVES:'
+C        PRINT*,'Analytic and numerical derivatives:'
 C        DO J1=1,NOPT
 C           DO J2=1,NOPT
 C              IF (DABS(HDUM(J1,J2)).GT.1.0D-10) THEN
@@ -895,59 +895,59 @@ C              IF (DABS(DABS(VNEW(J1)/VDUM(J1))-1.0D0).GT.0.01D0)
 C    1            WRITE(*,'(I4,3F20.10)') J1,VNEW(J1),VDUM(J1),VNEW(J1)/VDUM(J1)
 C           ENDIF
 C        ENDDO
-C        STOP
+c        STOP
 C        WRITE(*,'(A,3F20.10)') 'ENERGY,PV,H=',ENERGY,PRESS*PARAM1*PARAM2*PARAM3,ENERGY+PRESS*PARAM1*PARAM2*PARAM3 
          IF (PV) ENERGY=ENERGY+PRESS*PARAM1*PARAM2*PARAM3
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'LK') THEN
 C
-C           PARAM1, PARAM2 AND PARAM3 ARE THE BOXLENGTHS, PARAM4 IS THE CUTOFF.
+C           PARAM1, PARAM2 and PARAM3 are the boxlengths, PARAM4 is the cutoff.
 C
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
          IF (BINARY) THEN 
             CALL  LJPKOB(NATOMS,COORDS,VNEW,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4,GTEST,SSTEST,PTEST)
          ELSE
-            PRINT*,'BINARY KEYWORD EXPECTED FOR ATOM TYPE LK - QUIT'
+            PRINT*,'BINARY keyword expected for atom type LK - quit'
             STOP
          ENDIF
          IF (PV) ENERGY=ENERGY+PRESS*PARAM1*PARAM2*PARAM3
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'LM') THEN
 C
-C  PARAMETERS ARE EPSILON, RM AND GAMMA.
+C  Parameters are epsilon, rm and gamma.
 C
          CALL LJMS(NATOMS, PARAM1, PARAM2, PARAM3, COORDS, VNEW, ENERGY, GTEST, SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'MP') THEN
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
          IF (PRESSURE) THEN
             CALL MLATMIN(NATOMS,COORDS,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5)
-            PRINT*,'LATTICE CONSTANT OPTIMISED'
-            PRINT*,'NEW BOX LENGTH IN X =',PARAM2
-            PRINT*,'NEW BOX LENGTH IN Y =',PARAM3
-            PRINT*,'NEW BOX LENGTH IN Z =',PARAM4
+            PRINT*,'Lattice constant optimised'
+            PRINT*,'New Box length in x =',PARAM2
+            PRINT*,'New Box length in y =',PARAM3
+            PRINT*,'New Box length in z =',PARAM4
          ENDIF
          CALL MPDIFF(NATOMS,COORDS,VNEW,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5,GTEST,SSTEST)
-         IF (PTEST) WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+         IF (PTEST) WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
       ELSE IF (ZSYM(NATOMS).EQ.'GP') THEN
          CALL  GUPTA(NATOMS,COORDS,VNEW,ENERGY,GTEST,GUPTATYPE)
-         IF (PTEST) WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
+         IF (PTEST) WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
       ELSE IF (ZSYM(NATOMS).EQ.'DS') THEN
          CALL MPDIFFDS(NATOMS,COORDS,VNEW,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5,GTEST,SSTEST)
 
 C        DIFF=1.0D-5
-C        PRINT*,'ANALYTIC AND NUMERICAL GRADIENTS:'
+C        PRINT*,'analytic and numerical gradients:'
 C        DO J1=1,3*NATOMS
 C        DO J1=18,18
 C           IF (FROZEN((J1-1)/3+1)) CYCLE
@@ -962,77 +962,77 @@ C           ENDIF
 C        ENDDO
 !        STOP
 
-         IF (PTEST) WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+         IF (PTEST) WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
       ELSE IF (ZSYM(NATOMS).EQ.'MS') THEN
          IF (PRESSURE) THEN
             CALL MSLATMIN(NATOMS,COORDS,PARAM1,PARAM2,PARAM3,PARAM4)
-            PRINT*,'LATTICE CONSTANT OPTIMISED'
-            PRINT*,'NEW BOX LENGTH IN X=',PARAM2
-            PRINT*,'NEW BOX LENGTH IN Y=',PARAM3
+            PRINT*,'Lattice constant optimised'
+            PRINT*,'New Box length in x=',PARAM2
+            PRINT*,'New Box length in y=',PARAM3
          ENDIF
-         PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+         PRINT*,' WARNING - GTEST and SSTEST ignored'
          CALL MSDIFF(NATOMS,COORDS,VNEW,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4)
-         WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+         WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
       ELSE IF (ZSYM(NATOMS).EQ.'CK') THEN
          CALL ECTRAP(NATOMS,COORDS,ENERGY,C1,C2,C3)
          CALL DCTRAP(NATOMS,COORDS,VNEW,C1,C2,C3)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' UNITS'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' UNITS'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' units'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' units'
          ENDIF
       ELSE IF (EYTRAPT) THEN
          CALL EYETRAP(NATOMS,COORDS,ENERGY,C1,C2,C3)
          CALL EYDTRAP(NATOMS,COORDS,VNEW,C1,C2,C3,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' hartree'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' hartree'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'C1') THEN
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
          CALL C10(COORDS,NATOMS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' ARBS'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' ARBS'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' arbs'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' arbs'
          ENDIF
       ELSE IF (DF1T) THEN
          CALL DF1GRAD(COORDS,NATOMS,VNEW,ENERGY,GTEST,SSTEST,PARAM1,PARAM2)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
       ELSE IF (BLNT) THEN
          CALL BLN(COORDS,NATOMS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'PL') THEN
          CALL P46MERDIFF(COORDS,NATOMS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' ARBS'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' ARBS'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' arbs'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' arbs'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'GL') THEN
          CALL G46MERDIFF(COORDS,NATOMS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' ARBS'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' ARBS'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' arbs'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' arbs'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'AK') THEN
          CALL ACK(NATOMS,COORDS,ENERGY,VNEW,PARAM1,PARAM2,PARAM3,PARAM4,PRESSURE,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'SC') THEN
          CALL OESCP(NATOMS,COORDS,ENERGY,VNEW,PARAM1,PARAM2,PARAM3,PARAM4,PRESSURE,GTEST,SSTEST)
 C        IF (GTEST.OR.SSTEST) CALL DSCP(NATOMS,COORDS,VNEW,PARAM1,PARAM2,PARAM3,PARAM4,GTEST,SSTEST)
          IF (PV) ENERGY=ENERGY+PRESS*PARAM1*PARAM2*PARAM3
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'PR') THEN
          CALL PRC60(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST)
@@ -1044,49 +1044,49 @@ C        IF (GTEST.OR.SSTEST) CALL DSCP(NATOMS,COORDS,VNEW,PARAM1,PARAM2,PARAM3,
             ENERGY=ENERGY+P3
          ENDIF
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'C6') THEN
          CALL C60DIFF(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'P6') THEN
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
 C
-C LATTICE CONSTANT OPTIMISATION IF REQUIRED: (ZERO EXTERNAL PRESSURE)
-C THE COORDINATES MAY GET CHANGED FOR LATTICE OPTIMISATION, SO USE Q.
+C Lattice constant optimisation if required: (zero external pressure)
+C The coordinates may get changed for lattice optimisation, so use Q.
 C
          IF (PRESSURE) THEN
 C           ENERGY=GOLDEN(NATOMS,COORDS,PARAM1+0.001D0,PARAM1,PARAM1-0.001D0,
 C    1           1.0D-10,XMIN,PARAM4)
             CALL LATMIN(NATOMS,COORDS,PARAM1,PARAM4)
-            PRINT*,'LATTICE CONSTANT OPTIMISED'
+            PRINT*,'Lattice constant optimised'
             PARAM2=PARAM1
             PARAM3=PARAM1
-            PRINT*,'NEW BOX LENGTH=',PARAM1
-            PRINT*,'CUTOFF (CHANGED IN PROPORTION) IS NOW ',PARAM4
+            PRINT*,'New Box length=',PARAM1
+            PRINT*,'Cutoff (changed in proportion) is now ',PARAM4
          ENDIF
-         PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+         PRINT*,' WARNING - GTEST and SSTEST ignored'
          CALL C60P(NATOMS,COORDS,VNEW,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4)
          IF (PV) ENERGY=ENERGY+PRESS*PARAM1*PARAM2*PARAM3
-         WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+         WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
 C     ELSE IF (ZSYM(NATOMS).EQ.'TB') THEN
-C        PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+C        PRINT*,' WARNING - GTEST and SSTEST ignored'
 C        CALL TBE(NATOMS,COORDS,ENERGY)
-C        WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-C        WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
+C        WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+C        WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
 C        CALL TBDIFF(NATOMS,COORDS,VNEW)
 C        CALL DIFF1(NATOMS,COORDS,HESS)
 C        CALL DIFF2(NATOMS,COORDS,HESS)
       ELSE IF (ZSYM(NATOMS).EQ.'FH') THEN
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
          BA=0.5291772D0
          PRINT*,'NATOMS,ZSYM(NATOMS)=',NATOMS,ZSYM(NATOMS)
-         OPEN(UNIT=15,FILE='FHDERIVS',STATUS='OLD')
+         OPEN(UNIT=15,FILE='fhderivs',STATUS='OLD')
          READ(15,*) (VNEW(J1),J1=1,3*NATOMS)
          READ(15,*) (((HESS(3*(J1-1)+J3,J2),J3=1,3),J2=1,3*NATOMS),J1=1,NATOMS)
          DO J1=1,3*NATOMS
@@ -1097,16 +1097,16 @@ C        CALL DIFF2(NATOMS,COORDS,HESS)
             ENDDO
          ENDDO
       ELSE IF (ZSYM(NATOMS).EQ.'ME') THEN
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
-         PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
+         PRINT*,' WARNING - GTEST and SSTEST ignored'
          CALL EMIE(NATOMS,COORDS,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5,PARAM6,PRESSURE)
          CALL MIED(NATOMS,COORDS,VNEW,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5,PARAM6)
-         WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+         WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
       ELSE IF (ZSYM(NATOMS).EQ.'SY') THEN
          CALL STOCK(NATOMS,COORDS,VNEW,ENERGY,GTEST,SSTEST)
 !         DIFF=1.0D-5
-!         PRINT*,'ANALYTIC AND NUMERICAL GRADIENTS:'
+!         PRINT*,'analytic and numerical gradients:'
 !         DO J1=1,3*NATOMS
 !            COORDS(J1)=COORDS(J1)+DIFF
 !            CALL STOCK(NATOMS,COORDS,VPLUS,EPLUS,.FALSE.,.FALSE.)
@@ -1117,7 +1117,7 @@ C        CALL DIFF2(NATOMS,COORDS,HESS)
 !               WRITE(*,'(I5,2F20.10)') J1,VNEW(J1),(EPLUS-EMINUS)/(2.0D0*DIFF)
 !            ENDIF
 !         ENDDO
-!         PRINT*,'ANALYTIC AND NUMERICAL SECOND DERIVATIVES:'
+!         PRINT*,'analytic and numerical second derivatives:'
 !         DO J1=1,3*NATOMS
 !            COORDS(J1)=COORDS(J1)+DIFF
 !            CALL STOCK(NATOMS,COORDS,VPLUS,EPLUS,.TRUE.,.FALSE.)
@@ -1136,22 +1136,22 @@ C        CALL DIFF2(NATOMS,COORDS,HESS)
 !         STOP
 
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY
          ENDIF
       ELSE IF (DBPT) THEN
          CALL DUMBBELLP(COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          END IF
 
       ELSE IF (DBPTDT) THEN
 
          CALL DMBLTD(COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN 
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          END IF
          
       ELSE IF (LWOTPT) THEN
@@ -1161,26 +1161,26 @@ C        CALL DIFF2(NATOMS,COORDS,HESS)
             CALL LWOTPGH(COORDS,VNEW,ENERGY,GTEST,SSTEST)
          ENDIF
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          END IF
       ELSE IF (MSSTOCKT) THEN
          CALL MSSTOCKGH(COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          END IF
       ELSE IF (NCAPT) THEN
          CALL NEWCAPSID (COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          END IF
       ELSE IF (NTIPT) THEN
          CALL NEWTIP(COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          END IF
 
       ELSE IF (GBT) THEN
@@ -1190,30 +1190,30 @@ C        CALL DIFF2(NATOMS,COORDS,HESS)
             CALL GB(NATOMS,COORDS,VNEW,ENERGY,GTEST,SSTEST)
          ENDIF
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          ENDIF
 
       ELSE IF (GBDT) THEN
 
          CALL GBD(NATOMS,COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          END IF
 
       ELSE IF (PAHAT) THEN
          CALL PAHAGH(COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          END IF
 
       ELSE IF (PATCHYDT) THEN
          CALL PATCHYD(COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          END IF
 
       ELSE IF (PYGT) THEN 
@@ -1222,8 +1222,8 @@ C        CALL DIFF2(NATOMS,COORDS,HESS)
                 CALL PYGSECDER(COORDS,SSTEST)
          END IF
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          END IF
       ELSE IF (PYGPERIODICT.OR.PYBINARYT) THEN
          CALL PYGPERIODIC (COORDS,VNEW,ENERGY,GTEST,SSTEST)
@@ -1238,22 +1238,22 @@ C        CALL DIFF2(NATOMS,COORDS,HESS)
                 CALL PYGPERIODICSECDER(COORDS,SSTEST)
          END IF
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         '
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         '
          END IF
       ELSE IF (STOCKAAT) THEN
          CALL STOCKGHAA(COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,'         '
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,'         ' 
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,'         '
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,'         ' 
          ENDIF
 
       ELSE IF (CASTEP) THEN
-         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH NOT EQUAL TO ZERO IN POTENTIAL'
-         FNAME= SYS(1:LSYS) // '.CELL'
+         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH not equal to zero in potential'
+         FNAME= SYS(1:LSYS) // '.cell'
          OPEN(UNIT=7,FILE=FNAME,STATUS='OLD')
-         OPEN(UNIT=8,FILE='NEW.CELL',STATUS='UNKNOWN')
-C        WRITE(*,'(A)') 'THE ABSOLUTE COORDINATES IN POTENTENTIAL.F (BEFORE CASTEP)' 
+         OPEN(UNIT=8,FILE='new.cell',STATUS='UNKNOWN')
+C        WRITE(*,'(A)') 'The absolute coordinates in potentential.f (before CASTEP)' 
 C        WRITE(*,'(6F15.5)') (COORDS(J1),J1=1,NOPT)
          DO 
             READ(7,'(A80)',END=888) FNAME
@@ -1261,8 +1261,8 @@ C        WRITE(*,'(6F15.5)') (COORDS(J1),J1=1,NOPT)
             CALL UPPERCASE(FNAME2)
             IF (FNAME2(1:16).EQ.'%BLOCK POSITIONS') THEN
                WRITE(8,'(A21)') FNAME
-C              IF ((FNAME2(18:20).EQ.'ABS').AND.DEBUG) PRINT '(A)',' POTENTIAL> CASTEP ABSOLUTE COORDINATES'
-C              IF ((FNAME2(18:20).EQ.'FRA').AND.DEBUG) PRINT '(A)',' POTENTIAL> CASTEP FRACTIONAL COORDINATES'
+C              IF ((FNAME2(18:20).EQ.'ABS').AND.DEBUG) PRINT '(A)',' potential> CASTEP absolute coordinates'
+C              IF ((FNAME2(18:20).EQ.'FRA').AND.DEBUG) PRINT '(A)',' potential> CASTEP fractional coordinates'
                DO J1=1,NATOMS
                   READ(7,*) FNAME
                   XTEMP=AINV(1,1)*COORDS(3*(J1-1)+1)+AINV(1,2)*COORDS(3*(J1-1)+2)+AINV(1,3)*COORDS(3*(J1-1)+3)
@@ -1275,7 +1275,7 @@ C                 WRITE(*,'(A2,3F20.10)') FNAME(1:2),XTEMP,YTEMP,ZTEMP
                FNAME2=FNAME
                CALL UPPERCASE(FNAME2)
                IF (FNAME2(1:19).NE.'%ENDBLOCK POSITIONS') THEN
-                  PRINT '(3A)',' POTENTIAL> ERROR - STRING ',FNAME(1:19),' SHOULD BE %ENDBLOCK POSITIONS'
+                  PRINT '(3A)',' potential> ERROR - string ',FNAME(1:19),' should be %ENDBLOCK POSITIONS'
                ELSE
                   WRITE(8,'(A24)') FNAME
                ENDIF
@@ -1286,80 +1286,80 @@ C                 WRITE(*,'(A2,3F20.10)') FNAME(1:2),XTEMP,YTEMP,ZTEMP
 888      CONTINUE
          CLOSE(7)
          CLOSE(8)
-!        CALL SYSTEM(' CAT ' // SYS(1:LSYS) // '.CELL >>' // SYS(1:LSYS) // '.CELL.OLD' )
-!        CALL SYSTEM(' CAT ' // SYS(1:LSYS) // '.CASTEP >>' // SYS(1:LSYS) // '.CASTEP.OLD' )
-         CALL SYSTEM(' CAT ' // SYS(1:LSYS) // '.CELL >' // SYS(1:LSYS) // '.CELL.OLD' )
-         CALL SYSTEM(' CAT ' // SYS(1:LSYS) // '.CASTEP >' // SYS(1:LSYS) // '.CASTEP.OLD' )
-         CALL SYSTEM(' RM ' // SYS(1:LSYS) // '.CASTEP ' )
-         CALL SYSTEM(' MV NEW.CELL ' // SYS(1:LSYS) // '.CELL' )
-C        WRITE(*,'(A)') ' POTENTIAL> CALLING CASTEP ENERGY AND GRADIENT'
+!        CALL SYSTEM(' cat ' // SYS(1:LSYS) // '.cell >>' // SYS(1:LSYS) // '.cell.old' )
+!        CALL SYSTEM(' cat ' // SYS(1:LSYS) // '.castep >>' // SYS(1:LSYS) // '.castep.old' )
+         CALL SYSTEM(' cat ' // SYS(1:LSYS) // '.cell >' // SYS(1:LSYS) // '.cell.old' )
+         CALL SYSTEM(' cat ' // SYS(1:LSYS) // '.castep >' // SYS(1:LSYS) // '.castep.old' )
+         CALL SYSTEM(' rm ' // SYS(1:LSYS) // '.castep ' )
+         CALL SYSTEM(' mv new.cell ' // SYS(1:LSYS) // '.cell' )
+C        WRITE(*,'(A)') ' potential> Calling CASTEP energy and gradient'
 
 !
-!  CHANGE JOB SUBMISSION TO USE A STRING FOLLOWING THE CASTEP KEYWORD IN ODATA
-!  THE PARALLEL KEYWORD WILL NO LONGER BE NEEDED IF THE NUMBER OF PROCESSORS
-!  IS SPECIFIED HERE INSTEAD.
-!  THE EXAMPLES BELOW ARE RETAINED FOR REFERENCE.
+!  Change job submission to use a string following the CASTEP keyword in odata
+!  The PARALLEL keyword will no longer be needed if the number of processors
+!  is specified here instead.
+!  The examples below are retained for reference.
 !
          CALL SYSTEM(CASTEPJOB)
 
 C        IF (PARALLEL) THEN
-C           CALL SYSTEM(' ( MPIRUN -NP ' // NPROC // ' /EXPORT/HOME/WALES/BIN/CASTEPEXE.NEW ' // SYS(1:LSYS) // ' ) ')
-C           CALL SYSTEM(' ( MPIRUN -NP ' // NPROC // ' /EXPORT/HOME/WALES/BIN/CASTEPEXE.NEW ' // SYS(1:LSYS) // ' ) >& /DEV/NULL')
-C           CALL SYSTEM(' ( MPRUN -N -NP ' // NPROC // ' /EXPORT/HOME/WALES/BIN/CASTEPEXE.NEW ' // SYS(1:LSYS) // ' ) ')
-C           CALL SYSTEM(' ( LAMWRAPPER  /HOME/WALES/BIN/CASTEP4.1.MPI ' // SYS(1:LSYS) // ' ) ')
-C           CALL SYSTEM(' ( SCRUNWRAPPER  /HOME/WALES/BIN/CASTEPEXE.NEW ' // SYS(1:LSYS) // ' ) ')
-C           CALL SYSTEM(' ( MPICHWRAPPER  /HOME/WALES/BIN/CASTEP4.1.MPI ' // SYS(1:LSYS) // ' ) ')
-C           CALL SYSTEM(' ( MPICHWRAPPER  /HOME/WALES/BIN/CASTEP.MPI ' // SYS(1:LSYS) // ' ) ')
-C           CALL SYSTEM(' ( MPIRUN  /HOME/WALES/BIN/CASTEP ' // SYS(1:LSYS) // ' ) ')
+C           CALL SYSTEM(' ( mpirun -np ' // NPROC // ' /export/home/wales/bin/castepexe.new ' // SYS(1:LSYS) // ' ) ')
+C           CALL SYSTEM(' ( mpirun -np ' // NPROC // ' /export/home/wales/bin/castepexe.new ' // SYS(1:LSYS) // ' ) >& /dev/null')
+C           CALL SYSTEM(' ( mprun -n -np ' // NPROC // ' /export/home/wales/bin/castepexe.new ' // SYS(1:LSYS) // ' ) ')
+C           CALL SYSTEM(' ( lamwrapper  /home/wales/bin/castep4.1.mpi ' // SYS(1:LSYS) // ' ) ')
+C           CALL SYSTEM(' ( scrunwrapper  /home/wales/bin/castepexe.new ' // SYS(1:LSYS) // ' ) ')
+C           CALL SYSTEM(' ( mpichwrapper  /home/wales/bin/castep4.1.mpi ' // SYS(1:LSYS) // ' ) ')
+C           CALL SYSTEM(' ( mpichwrapper  /home/wales/bin/castep.mpi ' // SYS(1:LSYS) // ' ) ')
+C           CALL SYSTEM(' ( mpirun  /home/wales/bin/castep ' // SYS(1:LSYS) // ' ) ')
 C
-C  NEXT VERSION FOR SICORTEX
+C  Next version for SiCortex
 C
-C           CALL SYSTEM(' SRUN -P SCA -N ' // NPROC // ' /HOME/WALES/BIN/CASTEP ' // SYS(1:LSYS) )
+C           CALL SYSTEM(' srun -p sca -n ' // NPROC // ' /home/wales/bin/castep ' // SYS(1:LSYS) )
 C
-C  NEXT VERSION FOR DARWIN. 
-C  THE SLEEP 10 LINE SEEMS TO BE NEEDED ON DARWIN WHERE ONE JOB CAN START
-C  BEFORE THE PREVIOUS ONE HAS BEEN CLEANED UP.
+C  Next version for darwin. 
+C  The sleep 10 line seems to be needed on darwin where one job can start
+C  before the previous one has been cleaned up.
 C
-C           CALL SYSTEM(' ( MPIRUN  -NP '//NPROC//' -MACHINEFILE MACHINE.FILE /HOME/DW34/BIN/CASTEP.MPI '//SYS(1:LSYS)//' ) ')
-C           CALL SYSTEM('SLEEP 10') ! NEW DJW
-C           CALL SYSTEM('MPIEXEC -COMM NONE KILLALL -9 CASTEP.MPI') ! NEW DJW
+C           CALL SYSTEM(' ( mpirun  -np '//NPROC//' -machinefile machine.file /home/dw34/bin/castep.mpi '//SYS(1:LSYS)//' ) ')
+C           CALL SYSTEM('sleep 10') ! new DJW
+C           CALL SYSTEM('mpiexec -comm none killall -9 castep.mpi') ! new DJW
 C        ELSE
-C           CALL SYSTEM(' ( CASTEP4.1 ' // SYS(1:LSYS) // ' ) >& /DEV/NULL')
-C           CALL SYSTEM(' ( CASTEP4.1 ' // SYS(1:LSYS) // ' ) ')
+C           CALL SYSTEM(' ( castep4.1 ' // SYS(1:LSYS) // ' ) >& /dev/null')
+C           CALL SYSTEM(' ( castep4.1 ' // SYS(1:LSYS) // ' ) ')
 C        ENDIF
 
-         CALL SYSTEM(' GREP "FINAL" ' // SYS(1:LSYS) // '.CASTEP | GREP ENERGY | TAIL -1 > TEMP.CASTEP1')
-         CALL SYSTEM(' GREP "FINAL ENERGY" ' // SYS(1:LSYS) // '.CASTEP | GREP ENERGY | TAIL -1 > TEMP.CASTEP2')
-         CALL SYSTEM(' SED -E "S/[A-ZA-Z]//G" -E "S/=//" -E "S/,//" -E "S/(.*)//" TEMP.CASTEP1 > TEMP2.CASTEP1 ')
-         CALL SYSTEM(' SED -E "S/[A-ZA-Z]//G" -E "S/=//" -E "S/,//" -E "S/(.*)//" TEMP.CASTEP2 > TEMP2.CASTEP2 ')
-         OPEN(UNIT=7,FILE='TEMP2.CASTEP1',STATUS='OLD')
+         CALL SYSTEM(' grep "Final" ' // SYS(1:LSYS) // '.castep | grep energy | tail -1 > temp.castep1')
+         CALL SYSTEM(' grep "Final energy" ' // SYS(1:LSYS) // '.castep | grep energy | tail -1 > temp.castep2')
+         CALL SYSTEM(' sed -e "s/[a-zA-Z]//g" -e "s/=//" -e "s/,//" -e "s/(.*)//" temp.castep1 > temp2.castep1 ')
+         CALL SYSTEM(' sed -e "s/[a-zA-Z]//g" -e "s/=//" -e "s/,//" -e "s/(.*)//" temp.castep2 > temp2.castep2 ')
+         OPEN(UNIT=7,FILE='temp2.castep1',STATUS='OLD')
          READ(7,*) ENERGY1
          CLOSE(7)
-         OPEN(UNIT=7,FILE='TEMP2.CASTEP2',STATUS='OLD')
+         OPEN(UNIT=7,FILE='temp2.castep2',STATUS='OLD')
          READ(7,*) ENERGY2
          CLOSE(7)
-         CALL SYSTEM('GREP "TOTAL TIME" ' // SYS(1:LSYS) // '.CASTEP | TAIL -1 | SED -E "S/  */ /G" > TEMP')
-         OPEN (UNIT=7,FILE='TEMP',STATUS='OLD')
+         CALL SYSTEM('grep "Total time" ' // SYS(1:LSYS) // '.castep | tail -1 | sed -e "s/  */ /g" > temp')
+         OPEN (UNIT=7,FILE='temp',STATUS='OLD')
          READ(7,'(A)') FNAME
          CLOSE(7)
-         WRITE(*,'(A,A,A,2F20.10)') ' POTENTIAL> CASTEP ',TRIM(FNAME),' ENERGIES=',ENERGY1, ENERGY2
+         WRITE(*,'(A,A,A,2F20.10)') ' potential> CASTEP ',TRIM(FNAME),' Energies=',ENERGY1, ENERGY2
          ENERGY=ENERGY1
 C
-C  NOTE THAT CASTEP4.1 REORDERS THE ATOMS! LOOKS LIKE THEY HAVE TO BE IN ORDER OF
-C  INCREASING ATOMIC NUMBER.
+C  Note that CASTEP4.1 reorders the atoms! Looks like they have to be in order of
+C  increasing atomic number.
 C
-         CALL SYSTEM(' SED -E "1,/FORCE/D" ' // SYS(1:LSYS) // '.CASTEP > EDITED.1')
-!        CALL SYSTEM(' SED -E "1,/X/D" -E "S/.........//" -E "S/\*//G" EDITED.1 > EDITED.CASTEP')
+         CALL SYSTEM(' sed -e "1,/Force/d" ' // SYS(1:LSYS) // '.castep > edited.1')
+!        CALL SYSTEM(' sed -e "1,/x/d" -e "s/.........//" -e "s/\*//g" edited.1 > edited.castep')
 !
-! CHANGED TO DEAL WITH NEW OUTPUT FORMAT FOR FORCE PRINTING IN CASTEP 4.4 DJW 27/7/10
+! Changed to deal with new output format for Force printing in castep 4.4 DJW 27/7/10
 !
-         CALL SYSTEM(' SED -E "1,/X/D" -E "S/.....//" -E "S/\*//G" EDITED.1 > EDITED.CASTEP')
+         CALL SYSTEM(' sed -e "1,/x/d" -e "s/.....//" -e "s/\*//g" edited.1 > edited.castep')
 
-         OPEN(UNIT=7,FILE='EDITED.CASTEP',STATUS='OLD')
-C        IF (DEBUG) PRINT '(A)',' POTENTIAL> CASTEP FORCES:'
+         OPEN(UNIT=7,FILE='edited.castep',STATUS='OLD')
+C        IF (DEBUG) PRINT '(A)',' potential> CASTEP forces:'
          DO J1=1,NATOMS
 !
-! CHANGED TO DEAL WITH NEW OUTPUT FORMAT FOR FORCE PRINTING IN CASTEP 4.4 DJW 27/7/10
+! Changed to deal with new output format for Force printing in castep 4.4 DJW 27/7/10
 !
 !           READ(7,*) VNEW(3*(J1-1)+1),VNEW(3*(J1-1)+2),VNEW(3*(J1-1)+3)
             READ(7,*) NDUMMY,VNEW(3*(J1-1)+1),VNEW(3*(J1-1)+2),VNEW(3*(J1-1)+3)
@@ -1370,37 +1370,37 @@ C           IF (DEBUG) WRITE(*,'(3F20.10)') VNEW(3*(J1-1)+1),VNEW(3*(J1-1)+2),VN
          ENDDO
          CLOSE(7)
 C
-C  DO WE NEED TO PROJECT OUT OVERALL ROTATION AND TRANSLATION? ONLY IF IT S A 
-C  CLUSTER.
+C  Do we need to project out overall rotation and translation? Only if it s a 
+C  cluster.
 C
 
-C EL316
+C el316
 C        IF (CASTEPC) CALL ORTHOGOPT(VNEW,COORDS,.FALSE.)
-C EL316
+C el316
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV/ATOM'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV/ATOM'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV/atom'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV/atom'
          ENDIF
-         CALL SYSTEM(' GREP -C "ELEC_RESTORE_FILE" ' // SYS(1:LSYS) // '.PARAM > TEMP')
-         OPEN(UNIT=7,FILE='TEMP',STATUS='OLD')
+         CALL SYSTEM(' grep -c "elec_restore_file" ' // SYS(1:LSYS) // '.param > temp')
+         OPEN(UNIT=7,FILE='temp',STATUS='OLD')
          READ(7,*) ISTART
          CLOSE(7)
-         INQUIRE(FILE=SYS(1:LSYS) // '.WVFN.1',EXIST=YESNO)
-         FNAME='ECHO ELEC_RESTORE_FILE  :  ' // SYS(1:LSYS) // '.WVFN >> ' // SYS(1:LSYS) // '.PARAM' !THE .1 SHOULD BE EXCLUDED
+         INQUIRE(FILE=SYS(1:LSYS) // '.wvfn.1',EXIST=YESNO)
+         FNAME='echo elec_restore_file  :  ' // SYS(1:LSYS) // '.wvfn >> ' // SYS(1:LSYS) // '.param' !the .1 should be excluded
          IF (YESNO.AND.(ISTART.EQ.0)) CALL SYSTEM(FNAME)
       ELSE IF (ONETEP) THEN
-         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH NOT EQUAL TO ZERO IN POTENTIAL'
-         FNAME= SYS(1:LSYS) // '.DAT'
+         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH not equal to zero in potential'
+         FNAME= SYS(1:LSYS) // '.dat'
          OPEN(UNIT=7,FILE=FNAME,STATUS='OLD')
-         OPEN(UNIT=8,FILE='NEW.DAT',STATUS='UNKNOWN')
+         OPEN(UNIT=8,FILE='new.dat',STATUS='UNKNOWN')
          DO 
             READ(7,'(A80)',END=889) FNAME
             FNAME2=FNAME
             CALL UPPERCASE(FNAME2)
             IF (FNAME2(1:16).EQ.'%BLOCK POSITIONS') THEN
                WRITE(8,'(A21)') FNAME
-C              IF ((FNAME2(18:20).EQ.'ABS').AND.DEBUG) PRINT '(A)',' POTENTIAL> ONETEP ABSOLUTE COORDINATES'
-C              IF ((FNAME2(18:20).EQ.'FRA').AND.DEBUG) PRINT '(A)',' POTENTIAL> ONETEP FRACTIONAL COORDINATES'
+C              IF ((FNAME2(18:20).EQ.'ABS').AND.DEBUG) PRINT '(A)',' potential> ONETEP absolute coordinates'
+C              IF ((FNAME2(18:20).EQ.'FRA').AND.DEBUG) PRINT '(A)',' potential> ONETEP fractional coordinates'
                DO J1=1,NATOMS
                   READ(7,*) FNAME
                   XTEMP=AINV(1,1)*COORDS(3*(J1-1)+1)+AINV(1,2)*COORDS(3*(J1-1)+2)+AINV(1,3)*COORDS(3*(J1-1)+3)
@@ -1413,7 +1413,7 @@ C                 WRITE(*,'(A2,3F20.10)') FNAME(1:2),XTEMP,YTEMP,ZTEMP
                FNAME2=FNAME
                CALL UPPERCASE(FNAME2)
                IF (FNAME2(1:19).NE.'%ENDBLOCK POSITIONS') THEN
-                  PRINT '(3A)',' POTENTIAL> ERROR - STRING ',FNAME(1:19),' SHOULD BE %ENDBLOCK POSITIONS'
+                  PRINT '(3A)',' potential> ERROR - string ',FNAME(1:19),' should be %ENDBLOCK POSITIONS'
                ELSE
                   WRITE(8,'(A24)') FNAME
                ENDIF
@@ -1424,47 +1424,47 @@ C                 WRITE(*,'(A2,3F20.10)') FNAME(1:2),XTEMP,YTEMP,ZTEMP
 889      CONTINUE
          CLOSE(7)
          CLOSE(8)
-         CALL SYSTEM(' CAT ' // SYS(1:LSYS) // '.DAT >' // SYS(1:LSYS) // '.DAT.OLD' )
-         CALL SYSTEM(' CAT ' // SYS(1:LSYS) // '.ONETEP >' // SYS(1:LSYS) // '.ONETEP.OLD' )
-         CALL SYSTEM(' RM ' // SYS(1:LSYS) // '.ONETEP ' )
-         CALL SYSTEM(' MV NEW.DAT ' // SYS(1:LSYS) // '.DAT' )
-C        WRITE(*,'(A)') ' POTENTIAL> CALLING ONETEP ENERGY AND GRADIENT'
+         CALL SYSTEM(' cat ' // SYS(1:LSYS) // '.dat >' // SYS(1:LSYS) // '.dat.old' )
+         CALL SYSTEM(' cat ' // SYS(1:LSYS) // '.onetep >' // SYS(1:LSYS) // '.onetep.old' )
+         CALL SYSTEM(' rm ' // SYS(1:LSYS) // '.onetep ' )
+         CALL SYSTEM(' mv new.dat ' // SYS(1:LSYS) // '.dat' )
+C        WRITE(*,'(A)') ' potential> Calling ONETEP energy and gradient'
 
          CALL SYSTEM(ONETEPJOB)
 
 C        IF (PARALLEL) THEN
-C           CALL SYSTEM(' ( MPIRUN  /HOME/WALES/BIN/ONETEP ' // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.ONETEP ) ')
+C           CALL SYSTEM(' ( mpirun  /home/wales/bin/onetep ' // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.onetep ) ')
 C
-C  NEXT VERSION FOR SICORTEX
+C  Next version for SiCortex
 C
-C           CALL SYSTEM(' SRUN -P SCA -N ' // NPROC // ' /HOME/WALES/BIN/ONETEP ' // SYS(1:LSYS) )
+C           CALL SYSTEM(' srun -p sca -n ' // NPROC // ' /home/wales/bin/onetep ' // SYS(1:LSYS) )
 C
 C        ELSE
-C           CALL SYSTEM(' ( MPIRUN  /HOME/WALES/BIN/ONETEP ' // SYS(1:LSYS) // ' >& ' // SYS(1:LSYS) // '.ONETEP ) ')
+C           CALL SYSTEM(' ( mpirun  /home/wales/bin/onetep ' // SYS(1:LSYS) // ' >& ' // SYS(1:LSYS) // '.onetep ) ')
 C        ENDIF
-!        CALL SYSTEM(' GREP "TOTAL_ENERGY" ' // SYS(1:LSYS) // '.ONETEP > TEMP.ONETEP')
-         CALL SYSTEM(' GREP "TOTAL" ' // SYS(1:LSYS) // '.ONETEP | TAIL -1 > TEMP.ONETEP')
-         CALL SYSTEM(' SED -E "S/.*://" TEMP.ONETEP > TEMP2.ONETEP ')
-         OPEN(UNIT=7,FILE='TEMP2.ONETEP',STATUS='OLD')
+!        CALL SYSTEM(' grep "total_energy" ' // SYS(1:LSYS) // '.onetep > temp.onetep')
+         CALL SYSTEM(' grep "Total" ' // SYS(1:LSYS) // '.onetep | tail -1 > temp.onetep')
+         CALL SYSTEM(' sed -e "s/.*://" temp.onetep > temp2.onetep ')
+         OPEN(UNIT=7,FILE='temp2.onetep',STATUS='OLD')
          READ(7,*) ENERGY1
          CLOSE(7)
-         CALL SYSTEM('GREP "TOTAL TIME" ' // SYS(1:LSYS) // '.ONETEP | SED -E "S/  */ /G" > TEMP')
-         OPEN (UNIT=7,FILE='TEMP',STATUS='OLD')
+         CALL SYSTEM('grep "TOTAL TIME" ' // SYS(1:LSYS) // '.onetep | sed -e "s/  */ /g" > temp')
+         OPEN (UNIT=7,FILE='temp',STATUS='OLD')
          READ(7,'(A)') FNAME
          CLOSE(7)
-         WRITE(*,'(A,A,A,2F20.10)') ' POTENTIAL> ONETEP ',TRIM(FNAME),' ENERGY=',ENERGY1
+         WRITE(*,'(A,A,A,2F20.10)') ' potential> ONETEP ',TRIM(FNAME),' Energy=',ENERGY1
          ENERGY=ENERGY1
 C
-C  ONETEP DOES NOT SEEM TO REORDER THE ATOMS. 
+C  ONETEP does not seem to reorder the atoms. 
 C
-         CALL SYSTEM(' SED -E "1,/FORCES/D" ' // SYS(1:LSYS) // '.ONETEP > EDITED.1')
-         CALL SYSTEM(' SED -E "1,/X/D" -E "S/.........//" -E "S/\*//G" EDITED.1 > EDITED.ONETEP') 
+         CALL SYSTEM(' sed -e "1,/Forces/d" ' // SYS(1:LSYS) // '.onetep > edited.1')
+         CALL SYSTEM(' sed -e "1,/x/d" -e "s/.........//" -e "s/\*//g" edited.1 > edited.onetep') 
 
-         OPEN(UNIT=7,FILE='EDITED.ONETEP',STATUS='OLD')
-         IF (DEBUG) PRINT '(A)',' POTENTIAL> ONETEP COORDS:'
+         OPEN(UNIT=7,FILE='edited.onetep',STATUS='OLD')
+         IF (DEBUG) PRINT '(A)',' potential> ONETEP coords:'
 C
-C  IT SEEMS IMPOSSIBLE TO CHANGE FORCE OUTPUT FROM HARTREE/ANGSTROM UNITS, SO NEED
-C  TO CHANGE TO HARTREE/BOHR HERE.
+C  It seems impossible to change force output from hartree/angstrom units, so need
+C  to change to hartree/bohr here.
 C
          DO J1=1,NATOMS
             READ(7,*) NDUMMY,VNEW(3*(J1-1)+1),VNEW(3*(J1-1)+2),VNEW(3*(J1-1)+3)
@@ -1476,35 +1476,35 @@ C
          ENDDO
          CLOSE(7)
 C
-C  DO WE NEED TO PROJECT OUT OVERALL ROTATION AND TRANSLATION? 
+C  Do we need to project out overall rotation and translation? 
 C
 C        IF (ONETEPC) CALL ORTHOGOPT(VNEW,COORDS,.FALSE.)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV/ATOM'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV/ATOM'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV/atom'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV/atom'
          ENDIF
-         INQUIRE(FILE=SYS(1:LSYS) // '.DENSKERN',EXIST=YESNO)
-         CALL SYSTEM(' GREP -C "READ_DENSKERN" ' // SYS(1:LSYS) // '.DAT > TEMP')
-         OPEN(UNIT=7,FILE='TEMP',STATUS='OLD')
+         INQUIRE(FILE=SYS(1:LSYS) // '.denskern',EXIST=YESNO)
+         CALL SYSTEM(' grep -c "read_denskern" ' // SYS(1:LSYS) // '.dat > temp')
+         OPEN(UNIT=7,FILE='temp',STATUS='OLD')
          READ(7,*) ISTART
          CLOSE(7)
-         FNAME='ECHO "READ_DENSKERN       : TRUE" >> ' // SYS(1:LSYS) // '.DAT' 
+         FNAME='echo "read_denskern       : TRUE" >> ' // SYS(1:LSYS) // '.dat' 
          IF (YESNO.AND.(ISTART.EQ.0)) CALL SYSTEM(FNAME)
 
-!        INQUIRE(FILE=SYS(1:LSYS) // '.TIGHTBOX_NGWFS',EXIST=YESNO)
-!        CALL SYSTEM(' GREP -C "READ_TIGHTBOX_NGWFS" ' // SYS(1:LSYS) // '.DAT > TEMP')
-!        OPEN(UNIT=7,FILE='TEMP',STATUS='OLD')
+!        INQUIRE(FILE=SYS(1:LSYS) // '.tightbox_ngwfs',EXIST=YESNO)
+!        CALL SYSTEM(' grep -c "read_tightbox_ngwfs" ' // SYS(1:LSYS) // '.dat > temp')
+!        OPEN(UNIT=7,FILE='temp',STATUS='OLD')
 !        READ(7,*) ISTART
 !        CLOSE(7)
-!        FNAME='ECHO "READ_TIGHTBOX_NGWFS       : TRUE" >> ' // SYS(1:LSYS) // '.DAT' 
+!        FNAME='echo "read_tightbox_ngwfs       : TRUE" >> ' // SYS(1:LSYS) // '.dat' 
 !        IF (YESNO.AND.(ISTART.EQ.0)) CALL SYSTEM(FNAME)
 
       ELSE IF (CP2K) THEN 
-         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH NOT EQUAL TO ZERO IN POTENTIAL'
-         FNAME= SYS(1:LSYS) // '.INP' 
+         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH not equal to zero in potential'
+         FNAME= SYS(1:LSYS) // '.inp' 
          OPEN(UNIT=7,FILE=FNAME,STATUS='OLD')
-         OPEN(UNIT=8,FILE='DRIVER.INP',STATUS='UNKNOWN')
-         OPEN(UNIT=9,FILE='TRAJECTORY.XYZ',POSITION='APPEND')
+         OPEN(UNIT=8,FILE='driver.inp',STATUS='UNKNOWN')
+         OPEN(UNIT=9,FILE='trajectory.xyz',POSITION='APPEND')
          DO
             READ(7,'(A80)',END=890) FNAME
             FNAME2=FNAME
@@ -1513,7 +1513,7 @@ C        IF (ONETEPC) CALL ORTHOGOPT(VNEW,COORDS,.FALSE.)
             IF (FNAME2(1:6).EQ.'&COORD') THEN
                WRITE(8,'(A80)') FNAME
                WRITE(9,*) NATOMS 
-               READ(7,'(A80)') FNAME ! READING AND WRITING THE SETTING OF SCALED AWAY
+               READ(7,'(A80)') FNAME ! Reading and writing the setting of scaled away
                WRITE(8,'(A80)') FNAME
                WRITE(9,*) "    " 
                DO J1=1,NATOMS
@@ -1529,7 +1529,7 @@ C        IF (ONETEPC) CALL ORTHOGOPT(VNEW,COORDS,.FALSE.)
                FNAME2=ADJUSTL(FNAME2)
                CALL UPPERCASE(FNAME2)
                IF (FNAME2(1:10).NE.'&END COORD') THEN
-                  PRINT '(3A)',' POTENTIAL> ERROR - STRING ',FNAME(1:10),' SHOULD BE &END COORD'
+                  PRINT '(3A)',' potential> ERROR - string ',FNAME(1:10),' should be &END COORD'
                ELSE
                   WRITE(8,'(A24)') FNAME
                ENDIF
@@ -1541,39 +1541,39 @@ C        IF (ONETEPC) CALL ORTHOGOPT(VNEW,COORDS,.FALSE.)
          CLOSE(7)
          CLOSE(8)
          CLOSE(9)
-         CALL SYSTEM(' CAT ' // 'DRIVER.INP >>' // SYS(1:LSYS) // '.INP.OLD' )
-         WRITE(*,'(A)') ' POTENTIAL> CALLING CP2K ENERGY AND GRADIENT'
+         CALL SYSTEM(' cat ' // 'driver.inp >>' // SYS(1:LSYS) // '.inp.old' )
+         WRITE(*,'(A)') ' potential> Calling CP2K energy and gradient'
 
-         CALL SYSTEM(' ( ' // CP2KJOB // ' > ' // SYS(1:LSYS) // '.OUT ) ' )
+         CALL SYSTEM(' ( ' // CP2KJOB // ' > ' // SYS(1:LSYS) // '.out ) ' )
 
 C      ---------
-C      MEK-QUAKE
+C      Mek-quake
 C      ---------
 C        IF (PARALLEL) THEN
-C           FNAME='/USR/LOCAL/OPENMPI/1.3/INTEL101/BIN/'
-C           FNAME2=' /HOME/EL316/CP2KOPTIM2/EXE/LINUX-X86-64-INTEL/'
-C           CALL SYSTEM(' ( ' // FNAME(1:36) //'MPIRUN ' // FNAME2(1:47) // 'CP2KDRIVER' // ' > ' // SYS(1:LSYS) // '.OUT ) ' )
+C           FNAME='/usr/local/openmpi/1.3/intel101/bin/'
+C           FNAME2=' /home/el316/cp2koptim2/exe/Linux-x86-64-intel/'
+C           CALL SYSTEM(' ( ' // FNAME(1:36) //'mpirun ' // FNAME2(1:47) // 'cp2kdriver' // ' > ' // SYS(1:LSYS) // '.out ) ' )
 C        ELSE
-C           FNAME2=' /HOME/EL316/CP2KOPTIM/EXE/LINUX-X86-64-INTEL/'
-C           CALL SYSTEM(' ( ' // FNAME2(1:46) // 'CP2KDRIVER ' // ' > ' // SYS(1:LSYS) // '.OUT ) ' )
+C           FNAME2=' /home/el316/cp2koptim/exe/Linux-x86-64-intel/'
+C           CALL SYSTEM(' ( ' // FNAME2(1:46) // 'cp2kdriver ' // ' > ' // SYS(1:LSYS) // '.out ) ' )
 C        ENDIF
 
 C      -----
-C      CLUST
+C      Clust
 C      -----
 C        IF (PARALLEL) THEN
-C           FNAME='/USR/LOCAL/OPENMPI-1.2.6-INTEL-10.0/BIN/'
-C           FNAME2=' /HOME/EL316/CP2KOPTIM2/EXE/LINUX-X86-64-INTEL/'
-C           CALL SYSTEM(FNAME(1:40)//'MPIRUN -NP '//NPROC// FNAME2(1:47)//'CP2KDRIVER'//' > '//SYS(1:LSYS)//'.OUT')
+C           FNAME='/usr/local/openmpi-1.2.6-intel-10.0/bin/'
+C           FNAME2=' /home/el316/cp2koptim2/exe/Linux-x86-64-intel/'
+C           CALL SYSTEM(FNAME(1:40)//'mpirun -np '//NPROC// FNAME2(1:47)//'cp2kdriver'//' > '//SYS(1:LSYS)//'.out')
 C        ELSE
-C           CALL SYSTEM(' ( /HOME/EL316/CP2KOPTIM/EXE/LINUX-X86-64-INTEL/CP2KDRIVER ' // ' > ' // SYS(1:LSYS) // '.OUT ) ')
+C           CALL SYSTEM(' ( /home/el316/cp2koptim/exe/Linux-x86-64-intel/cp2kdriver ' // ' > ' // SYS(1:LSYS) // '.out ) ')
 C        ENDIF
         
-         CALL SYSTEM(' CAT ' // 'DRIVER.OUT >>' // SYS(1:LSYS) // '.CP2K.OLD' )
-         CALL SYSTEM(' RM ' // 'DRIVER.INP' )
-         CALL SYSTEM(' RM ' // 'DRIVER.OUT' )
-         CALL SYSTEM(' RM ' // 'DUMP.OUT' )
-         FNAME='COORDENERGRAD.OUT' 
+         CALL SYSTEM(' cat ' // 'driver.out >>' // SYS(1:LSYS) // '.cp2k.old' )
+         CALL SYSTEM(' rm ' // 'driver.inp' )
+         CALL SYSTEM(' rm ' // 'driver.out' )
+         CALL SYSTEM(' rm ' // 'dump.out' )
+         FNAME='coordenergrad.out' 
          OPEN(UNIT=7,FILE=FNAME,STATUS='UNKNOWN')
          READ(7,'(A)') FNAME 
          DO J1=1,NATOMS
@@ -1586,23 +1586,23 @@ C        ENDIF
             READ(7,*) VNEW(3*(J1-1)+1),VNEW(3*(J1-1)+2),VNEW(3*(J1-1)+3)
          ENDDO
          CLOSE(7)
-         CALL SYSTEM(' CAT COORDENERGRAD.OUT >> ' // SYS(1:LSYS) // '.OUT.OLD' )
-         CALL SYSTEM(' RM COORDENERGRAD.OUT' )
+         CALL SYSTEM(' cat coordenergrad.out >> ' // SYS(1:LSYS) // '.out.old' )
+         CALL SYSTEM(' rm coordenergrad.out' )
 
          DO J1=1,3*NATOMS
             VNEW(J1)=-VNEW(J1)/0.529177249D0
           ENDDO 
 
       ELSE IF (CPMD) THEN
-         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH NOT EQUAL TO ZERO IN POTENTIAL'
+         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH not equal to zero in potential'
          INQUIRE(FILE='RESTART.1',EXIST=YESNO)
 C        IF (NPCALL.GT.1) THEN
-         OPEN(UNIT=8,FILE='NEWGEOM',STATUS='UNKNOWN')
+         OPEN(UNIT=8,FILE='newgeom',STATUS='UNKNOWN')
          DO J1=1,NATOMS
             WRITE(8,'(6F20.10)') COORDS(3*(J1-1)+1),COORDS(3*(J1-1)+2),COORDS(3*(J1-1)+3),0.0D0,0.0D0,0.0D0
          ENDDO
          CLOSE(8)
-         CALL SYSTEM(' MV NEWGEOM GEOMETRY ')
+         CALL SYSTEM(' mv newgeom GEOMETRY ')
          IF ((NPCALL.EQ.1).OR.((NPCALL.EQ.0).AND.YESNO)) THEN
             IF (PRESSURE) THEN
                NCOUNT=0
@@ -1614,23 +1614,23 @@ C        IF (NPCALL.GT.1) THEN
                IF (NDUM.EQ.0) GOTO 111
                READ(7,*) BOXLX
                CLOSE(7)
-C              CALL SYSTEM(' GREP -C ANGSTROM ' // SYS(1:LSYS) // ' > TEMP')
-C              OPEN(UNIT=7,FILE='TEMP',STATUS='OLD')
+C              CALL SYSTEM(' grep -c ANGSTROM ' // SYS(1:LSYS) // ' > temp')
+C              OPEN(UNIT=7,FILE='temp',STATUS='OLD')
 C              READ(7,*) J1
 C              CLOSE(7)
 C              IF (J1.EQ.1) THEN
-C                 WRITE(*,'(A)') ' CONVERTING CELL SIZE FROM ANGSTROM TO BOHR'
+C                 WRITE(*,'(A)') ' Converting cell size from Angstrom to Bohr'
 C                 BOXLX=BOXLX*1.889726164D0
 C              ENDIF
                GOTO 567
-561            WRITE(*,'(A)') 'CELL NOT FOUND IN INPUT DATA SET - QUIT'
+561            WRITE(*,'(A)') 'CELL not found in input data set - quit'
                STOP
 567            CONTINUE
             ENDIF
-            CALL SYSTEM(' SED -E "S/DUMMY/RESTART WAVEFUNCTION GEOFILE COORDINATES LATEST/" ' //  SYS(1:LSYS) // ' > TEMP ')
+            CALL SYSTEM(' sed -e "s/DUMMY/RESTART WAVEFUNCTION GEOFILE COORDINATES LATEST/" ' //  SYS(1:LSYS) // ' > temp ')
             IF (PRESSURE) THEN
-               OPEN(UNIT=7,FILE='TEMP',STATUS='OLD')
-               OPEN(UNIT=8,FILE='TEMP2',STATUS='UNKNOWN')
+               OPEN(UNIT=7,FILE='temp',STATUS='OLD')
+               OPEN(UNIT=8,FILE='temp2',STATUS='UNKNOWN')
                DO J1=1,NCOUNT
                   READ(7,'(A)') STRING
                   WRITE(8,'(A)') STRING
@@ -1641,52 +1641,52 @@ C              ENDIF
                WRITE(8,'(A)') STRING
                GOTO 664
 665            CONTINUE
-C              CALL SYSTEM(' SED -E "S/ANGSTROM/NOANGSTROM/" TEMP2 > TEMP ')
-               CALL SYSTEM(' CP TEMP2 TEMP ')
+C              CALL SYSTEM(' sed -e "s/ANGSTROM/noangstrom/" temp2 > temp ')
+               CALL SYSTEM(' cp temp2 temp ')
             ENDIF
-            CALL SYSTEM(' MV TEMP ' // SYS(1:LSYS) // '.RESTART')
+            CALL SYSTEM(' mv temp ' // SYS(1:LSYS) // '.restart')
          ENDIF
 
          IF (PRESSURE) THEN
-            WRITE(*,'(A)') ' BOX LENGTH OPTIMIZATION'
+            WRITE(*,'(A)') ' Box length optimization'
             CALL CPMDLATMIN(NATOMS,COORDS,ENERGY,VNEW,BOXLX)
             YESNO=.TRUE.
          ELSE
-C           WRITE(*,'(A)') ' CALLING CPMD ENERGY AND GRADIENT'
-            CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.OUT ' // SYS(1:LSYS) // '.OLD.OUT >& /DEV/NULL ')
+C           WRITE(*,'(A)') ' Calling CPMD energy and gradient'
+            CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.out ' // SYS(1:LSYS) // '.old.out >& /dev/null ')
             IF (.NOT.YESNO) THEN 
                IF (SCORE_QUEUE) THEN
-                  CALL SYSTEM(' ( /USR/LOCAL/BIN/SCRUNWRAPPER ' // TRIM(CPMD_COMMAND) // ' '
-     1                 // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+                  CALL SYSTEM(' ( /usr/local/bin/scrunwrapper ' // TRIM(CPMD_COMMAND) // ' '
+     1                 // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
                ELSE IF (PARALLEL) THEN
-                  CALL SYSTEM(' ( MPRUN -N -NP '// NPROC // ' ' // TRIM(CPMD_COMMAND) // ' '
-     1                 // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+                  CALL SYSTEM(' ( mprun -n -np '// NPROC // ' ' // TRIM(CPMD_COMMAND) // ' '
+     1                 // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
                ELSE
-                  CALL SYSTEM(' ( ' // TRIM(CPMD_COMMAND) // ' ' // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+                  CALL SYSTEM(' ( ' // TRIM(CPMD_COMMAND) // ' ' // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
                ENDIF
             ELSE   
                IF (SCORE_QUEUE) THEN
-                  CALL SYSTEM(' ( /USR/LOCAL/BIN/SCRUNWRAPPER ' // TRIM(CPMD_COMMAND) // ' '
-     1                 // SYS(1:LSYS) // '.RESTART > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+                  CALL SYSTEM(' ( /usr/local/bin/scrunwrapper ' // TRIM(CPMD_COMMAND) // ' '
+     1                 // SYS(1:LSYS) // '.restart > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
                ELSE IF (PARALLEL) THEN
-                  CALL SYSTEM(' ( MPRUN -N -NP ' // NPROC // ' ' // TRIM(CPMD_COMMAND) // ' '
-     1                            // SYS(1:LSYS) // '.RESTART > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+                  CALL SYSTEM(' ( mprun -n -np ' // NPROC // ' ' // TRIM(CPMD_COMMAND) // ' '
+     1                            // SYS(1:LSYS) // '.restart > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
                ELSE
-                  CALL SYSTEM(' ( ' // TRIM(CPMD_COMMAND) // ' ' // SYS(1:LSYS) // '.RESTART > '
-     1                        // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+                  CALL SYSTEM(' ( ' // TRIM(CPMD_COMMAND) // ' ' // SYS(1:LSYS) // '.restart > '
+     1                        // SYS(1:LSYS) // '.out ) >& /dev/null')
                ENDIF
             ENDIF
             CLOSE(7)
             OPEN (UNIT=7,FILE='ENERGY',STATUS='OLD')
             READ(7,*) ENERGY, GEMAX
             CLOSE(7)
-            CALL SYSTEM('GREP "CPU TIME" ' // SYS(1:LSYS) // 
-     1       '.OUT | TAIL -1 | SED -E "S/ *CPU TIME/ CPU TIME FOR CPMD/" -E "S/  */ /G" > TEMP')
-            OPEN (UNIT=7,FILE='TEMP',STATUS='OLD')
+            CALL SYSTEM('grep "CPU TIME" ' // SYS(1:LSYS) // 
+     1       '.out | tail -1 | sed -e "s/ *CPU TIME/ CPU time for CPMD/" -e "s/  */ /g" > temp')
+            OPEN (UNIT=7,FILE='temp',STATUS='OLD')
             READ(7,'(A)') FNAME
-            WRITE(*,'(A,A,F20.10,A,F20.10)') TRIM(FNAME),' POTENTIAL> ENERGY=',ENERGY,' GEMAX=',GEMAX
+            WRITE(*,'(A,A,F20.10,A,F20.10)') TRIM(FNAME),' potential> Energy=',ENERGY,' GEMAX=',GEMAX
 C           IF (GEMAX.GT.1.0D-5) THEN
-C              WRITE(*,'(A,G15.5,A)') 'WARNING, GEMAX=',GEMAX,' CPMD WAVEFUNCTION CONVERGENCE SUSPECT'
+C              WRITE(*,'(A,G15.5,A)') 'WARNING, GEMAX=',GEMAX,' CPMD wavefunction convergence suspect'
 C           ENDIF
             OPEN(UNIT=7,FILE='GEOMETRY',STATUS='OLD')
             DO J1=1,NATOMS
@@ -1702,36 +1702,36 @@ C    1                              VNEW(3*(J1-1)+1),VNEW(3*(J1-1)+2),VNEW(3*(J1
             CLOSE(7)
          ENDIF
 C
-C  DO WE NEED TO PROJECT OUT OVERALL ROTATION AND TRANSLATION? ONLY IF IT S A 
-C  CLUSTER.
+C  Do we need to project out overall rotation and translation? Only if it s a 
+C  cluster.
 C
          IF (CPMDC) CALL ORTHOGOPT(VNEW,COORDS,.FALSE.)
          IF (PV) ENERGY=ENERGY+PRESS*PARAM1*PARAM2*PARAM3
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' hartree'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' hartree'
          ENDIF
       ELSE IF (CADPAC) THEN
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
-         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH NOT EQUAL TO ZERO IN POTENTIAL'
-         OPEN(UNIT=15,FILE='TEMPPOINTS',STATUS='UNKNOWN')
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
+         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH not equal to zero in potential'
+         OPEN(UNIT=15,FILE='temppoints',STATUS='UNKNOWN')
          WRITE(15,'(3F20.10)') (COORDS(J1),J1=1,NOPT)
          CLOSE(15)
-C        INQUIRE(FILE='DERIVS',EXIST=YESNO)
+C        INQUIRE(FILE='derivs',EXIST=YESNO)
          IF (SSTEST) THEN
             IF (.NOT.YESNO) THEN
-               WRITE(*,'(A)') ' CALLING CADPAC ENERGY AND FIRST AND SECOND DERIVATIVES'
-               CALL SYSTEM(' ( ' // EDITIT // ' < TEMPPOINTS > ' // SYS(1:LSYS) // '.DAT ) >& /DEV/NULL')
-               CALL SYSTEM('ECHO SECDER >> ' // SYS(1:LSYS) // '.DAT')
-               CALL SYSTEM('ECHO PUNCH FCM >> ' // SYS(1:LSYS) // '.DAT')
-               CALL SYSTEM('ECHO START >> ' // SYS(1:LSYS) // '.DAT')
-               CALL SYSTEM('ECHO FINISH >> ' // SYS(1:LSYS) // '.DAT')
-               CALL SYSTEM('RUNCADPAC ' // SYS(1:LSYS) // ' >& /DEV/NULL')
+               WRITE(*,'(A)') ' Calling CADPAC energy and first and second derivatives'
+               CALL SYSTEM(' ( ' // EDITIT // ' < temppoints > ' // SYS(1:LSYS) // '.dat ) >& /dev/null')
+               CALL SYSTEM('echo SECDER >> ' // SYS(1:LSYS) // '.dat')
+               CALL SYSTEM('echo PUNCH FCM >> ' // SYS(1:LSYS) // '.dat')
+               CALL SYSTEM('echo START >> ' // SYS(1:LSYS) // '.dat')
+               CALL SYSTEM('echo FINISH >> ' // SYS(1:LSYS) // '.dat')
+               CALL SYSTEM('runcadpac ' // SYS(1:LSYS) // ' >& /dev/null')
             ELSE
-               WRITE(*,'(A)') ' USING EXISTING CADPAC DERIVS FILE FOR FIRST AND SECOND DERIVATIVES'
+               WRITE(*,'(A)') ' Using existing CADPAC derivs file for first and second derivatives'
             ENDIF
           
-            OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD')
+            OPEN(UNIT=15,FILE='derivs',STATUS='OLD')
             DO J1=1,3+NATOMS
                READ(15,*,ERR=666)
             ENDDO
@@ -1741,59 +1741,59 @@ C        INQUIRE(FILE='DERIVS',EXIST=YESNO)
             CLOSE(15)
          ELSE IF (GTEST) THEN
             IF (.NOT.YESNO) THEN
-               WRITE(*,'(A)') ' CALLING CADPAC ENERGY AND FIRST DERIVATIVES'
-               CALL SYSTEM(' ( ' // EDITIT // ' < TEMPPOINTS > ' // SYS(1:LSYS) // '.DAT ) >& /DEV/NULL')
-               CALL SYSTEM('ECHO GRADIENT >> ' // SYS(1:LSYS) // '.DAT')
-               CALL SYSTEM('ECHO PUNCH GRADIENT >> ' // SYS(1:LSYS) // '.DAT')
-               CALL SYSTEM('ECHO START >> ' // SYS(1:LSYS) // '.DAT')
-               CALL SYSTEM('ECHO FINISH >> ' // SYS(1:LSYS) // '.DAT')
-               CALL SYSTEM('RUNCADPAC ' // SYS(1:LSYS) // ' >& /DEV/NULL')
+               WRITE(*,'(A)') ' Calling CADPAC energy and first derivatives'
+               CALL SYSTEM(' ( ' // EDITIT // ' < temppoints > ' // SYS(1:LSYS) // '.dat ) >& /dev/null')
+               CALL SYSTEM('echo GRADIENT >> ' // SYS(1:LSYS) // '.dat')
+               CALL SYSTEM('echo PUNCH GRADIENT >> ' // SYS(1:LSYS) // '.dat')
+               CALL SYSTEM('echo START >> ' // SYS(1:LSYS) // '.dat')
+               CALL SYSTEM('echo FINISH >> ' // SYS(1:LSYS) // '.dat')
+               CALL SYSTEM('runcadpac ' // SYS(1:LSYS) // ' >& /dev/null')
             ELSE
-               WRITE(*,'(A)') ' USING EXISTING CADPAC DERIVS FILE FOR ENERGY AND FIRST DERIVATIVES'
+               WRITE(*,'(A)') ' Using existing CADPAC derivs file for energy and first derivatives'
             ENDIF
-            OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD',ERR=666)
+            OPEN(UNIT=15,FILE='derivs',STATUS='OLD',ERR=666)
             DO J1=1,4+NATOMS
                READ(15,*,ERR=666)
             ENDDO
             READ(15,*,ERR=666) (VNEW(J1),J1=1,3*NATOMS)
          ELSE
             IF (.NOT.YESNO) THEN
-               WRITE(*,'(A)') ' CALLING CADPAC ENERGY'
-               CALL SYSTEM(' ( ' // EDITIT // ' < TEMPPOINTS > ' // SYS(1:LSYS) // '.DAT ) >& /DEV/NULL')
-               CALL SYSTEM('ECHO START >> ' // SYS(1:LSYS) // '.DAT')
-               CALL SYSTEM('ECHO FINISH >> ' // SYS(1:LSYS) // '.DAT')
-               CALL SYSTEM('RUNCADPAC ' // SYS(1:LSYS) // ' >& /DEV/NULL')
+               WRITE(*,'(A)') ' Calling CADPAC energy'
+               CALL SYSTEM(' ( ' // EDITIT // ' < temppoints > ' // SYS(1:LSYS) // '.dat ) >& /dev/null')
+               CALL SYSTEM('echo START >> ' // SYS(1:LSYS) // '.dat')
+               CALL SYSTEM('echo FINISH >> ' // SYS(1:LSYS) // '.dat')
+               CALL SYSTEM('runcadpac ' // SYS(1:LSYS) // ' >& /dev/null')
             ELSE
-               WRITE(*,'(A)') ' USING EXISTING CADPAC DERIVS FILE FOR ENERGY'
+               WRITE(*,'(A)') ' Using existing CADPAC derivs file for energy'
             ENDIF
          ENDIF
 C
-C  THERE IS NO PROVISION FOR PUNCHING THE ENERGY CONSISTENTLY IN CADPAC.
+C  There is no provision for punching the energy consistently in CADPAC.
 C
-         CALL SYSTEM('GREP "FINAL SCF" ' // SYS(1:LSYS) // '.OUT > TEMP')
-         CALL SYSTEM('GREP "ENERGY (RMP2)" ' // SYS(1:LSYS) // '.OUT >> TEMP')
-         CALL SYSTEM('GREP "FINAL DFT" ' // SYS(1:LSYS) // '.OUT | HEAD -1 >> TEMP')
-         CALL SYSTEM('TAIL -1 TEMP | SED -E "S/Y.*-/-/"  -E "S/[A-ZA-Z]//G" > ABENERGY')
-         CALL SYSTEM('MV ' // SYS(1:LSYS) // '.DAT ' // SYS(1:LSYS) // '.OLD.DAT')
-         CALL SYSTEM('MV ' // SYS(1:LSYS) // '.OUT ' // SYS(1:LSYS) // '.OLD.OUT')
-         IF (GTEST.OR.SSTEST) CALL SYSTEM('MV DERIVS DERIVS.OLD')
+         CALL SYSTEM('grep "Final SCF" ' // SYS(1:LSYS) // '.out > temp')
+         CALL SYSTEM('grep "Energy (RMP2)" ' // SYS(1:LSYS) // '.out >> temp')
+         CALL SYSTEM('grep "Final DFT" ' // SYS(1:LSYS) // '.out | head -1 >> temp')
+         CALL SYSTEM('tail -1 temp | sed -e "s/y.*-/-/"  -e "s/[a-zA-Z]//g" > abenergy')
+         CALL SYSTEM('mv ' // SYS(1:LSYS) // '.dat ' // SYS(1:LSYS) // '.old.dat')
+         CALL SYSTEM('mv ' // SYS(1:LSYS) // '.out ' // SYS(1:LSYS) // '.old.out')
+         IF (GTEST.OR.SSTEST) CALL SYSTEM('mv derivs derivs.old')
       ELSE IF (GAMESSUS) THEN
-         OPEN(UNIT=15,FILE='TEMPPOINTS',STATUS='UNKNOWN')
+         OPEN(UNIT=15,FILE='temppoints',STATUS='UNKNOWN')
          WRITE(15,'(3F20.10)') (COORDS(J1),J1=1,NOPT)
          CLOSE(15)
-C        INQUIRE(FILE='DERIVS',EXIST=YESNO)
+C        INQUIRE(FILE='derivs',EXIST=YESNO)
          IF (SSTEST) THEN
             IF (.NOT.YESNO) THEN
-               WRITE(*,'(A)') ' POTENTIAL> CALLING GAMESS-US ENERGY AND FIRST AND SECOND DERIVATIVES'
-               CALL SYSTEM("ECHO ' $CONTRL RUNTYP=HESSIAN $END' > " // SYS(1:LSYS) // ".INP")
-               CALL SYSTEM(' ( ' // EDITIT // ' < TEMPPOINTS >> ' // SYS(1:LSYS) // '.INP ) >& /DEV/NULL')
-               CALL SYSTEM('RUNGMS ' // SYS(1:LSYS) // ' 01 ' // NPROC // ' >& ' // SYS(1:LSYS) // '.OUT ') 
-               CALL SYSTEM(' CP ~/SCR/' // TRIM(ADJUSTL(SYS(1:LSYS))) // '.DAT DERIVS ')                    
+               WRITE(*,'(A)') ' potential> Calling GAMESS-US energy and first and second derivatives'
+               CALL SYSTEM("echo ' $CONTRL RUNTYP=HESSIAN $END' > " // SYS(1:LSYS) // ".inp")
+               CALL SYSTEM(' ( ' // EDITIT // ' < temppoints >> ' // SYS(1:LSYS) // '.inp ) >& /dev/null')
+               CALL SYSTEM('rungms ' // SYS(1:LSYS) // ' 01 ' // NPROC // ' >& ' // SYS(1:LSYS) // '.out ') 
+               CALL SYSTEM(' cp ~/scr/' // TRIM(ADJUSTL(SYS(1:LSYS))) // '.dat derivs ')                    
             ELSE
-               WRITE(*,'(A)') ' USING EXISTING GAMESS-US DERIVS FILE FOR FIRST AND SECOND DERIVATIVES'
+               WRITE(*,'(A)') ' Using existing GAMESS-US derivs file for first and second derivatives'
             ENDIF
           
-            OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD')
+            OPEN(UNIT=15,FILE='derivs',STATUS='OLD')
 122         READ(15,'(A80)') GSTRING
             IF (GSTRING(1:6).NE.' $GRAD') GOTO 122
             READ(15,'(A80)') GSTRING
@@ -1817,16 +1817,16 @@ C              READ(15,'(5X,3E15.8)',ERR=666) (HESS(J1,J3),J3=16,18)
             CLOSE(15)
          ELSE IF (GTEST) THEN
             IF (.NOT.YESNO) THEN
-               WRITE(*,'(A)') ' POTENTIAL> CALLING GAMESS-US ENERGY AND FIRST DERIVATIVES'
-               CALL SYSTEM("ECHO  ' $CONTRL RUNTYP=GRADIENT $END' > " // SYS(1:LSYS) // ".INP")
-               CALL SYSTEM(' ( ' // EDITIT // ' < TEMPPOINTS >> ' // SYS(1:LSYS) // '.INP ) ')
-               PRINT '(A)',' RUNNING: ' // 'RUNGMS ' // SYS(1:LSYS) // ' 01 ' // NPROC // ' >& ' // SYS(1:LSYS) // '.OUT'
-               CALL SYSTEM('RUNGMS ' // SYS(1:LSYS) // ' 01 ' // NPROC // ' >& ' // SYS(1:LSYS) // '.OUT')
-               CALL SYSTEM(' CP ~/SCR/' // TRIM(ADJUSTL(SYS(1:LSYS))) // '.DAT DERIVS ')
+               WRITE(*,'(A)') ' potential> Calling GAMESS-US energy and first derivatives'
+               CALL SYSTEM("echo  ' $CONTRL RUNTYP=GRADIENT $END' > " // SYS(1:LSYS) // ".inp")
+               CALL SYSTEM(' ( ' // EDITIT // ' < temppoints >> ' // SYS(1:LSYS) // '.inp ) ')
+               PRINT '(A)',' running: ' // 'rungms ' // SYS(1:LSYS) // ' 01 ' // NPROC // ' >& ' // SYS(1:LSYS) // '.out'
+               CALL SYSTEM('rungms ' // SYS(1:LSYS) // ' 01 ' // NPROC // ' >& ' // SYS(1:LSYS) // '.out')
+               CALL SYSTEM(' cp ~/scr/' // TRIM(ADJUSTL(SYS(1:LSYS))) // '.dat derivs ')
             ELSE
-               WRITE(*,'(A)') ' USING EXISTING GAMESS-US DERIVS FILE FOR ENERGY AND FIRST DERIVATIVES'
+               WRITE(*,'(A)') ' Using existing GAMESS-US derivs file for energy and first derivatives'
             ENDIF
-            OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD',ERR=666)
+            OPEN(UNIT=15,FILE='derivs',STATUS='OLD',ERR=666)
 133         READ(15,'(A80)') GSTRING
             IF (GSTRING(1:6).NE.' $GRAD') GOTO 133
             READ(15,'(A80)') GSTRING
@@ -1837,51 +1837,51 @@ C              READ(15,'(5X,3E15.8)',ERR=666) (HESS(J1,J3),J3=16,18)
             CLOSE(15)
          ELSE
             IF (.NOT.YESNO) THEN
-               WRITE(*,'(A)') ' CALLING GAMESS-US ENERGY'
-               CALL SYSTEM("ECHO  ' $CONTRL RUNTYP=ENERGY $END' > " // SYS(1:LSYS) // ".INP")
-               CALL SYSTEM(' ( ' // EDITIT // ' < TEMPPOINTS >> ' // SYS(1:LSYS) // '.INP ) >& /DEV/NULL')
-               CALL SYSTEM('RUNGMS ' // SYS(1:LSYS) // ' 01 ' // NPROC // ' >& ' // SYS(1:LSYS) // '.OUT')
-               CALL SYSTEM(' CP ~/SCR/' // TRIM(ADJUSTL(SYS(1:LSYS))) // '.DAT DERIVS ')
+               WRITE(*,'(A)') ' Calling GAMESS-US energy'
+               CALL SYSTEM("echo  ' $CONTRL RUNTYP=ENERGY $END' > " // SYS(1:LSYS) // ".inp")
+               CALL SYSTEM(' ( ' // EDITIT // ' < temppoints >> ' // SYS(1:LSYS) // '.inp ) >& /dev/null')
+               CALL SYSTEM('rungms ' // SYS(1:LSYS) // ' 01 ' // NPROC // ' >& ' // SYS(1:LSYS) // '.out')
+               CALL SYSTEM(' cp ~/scr/' // TRIM(ADJUSTL(SYS(1:LSYS))) // '.dat derivs ')
             ELSE
-               WRITE(*,'(A)') ' USING EXISTING GAMESS-US DERIVS FILE FOR ENERGY'
+               WRITE(*,'(A)') ' Using existing GAMESS-US derivs file for energy'
             ENDIF
          ENDIF
 C
-C  THERE IS NO PROVISION FOR PUNCHING THE ENERGY CONSISTENTLY IN GAMESS-US.
+C  There is no provision for punching the energy consistently in GAMESS-US.
 C
-         CALL SYSTEM('GREP "FINAL" ' // SYS(1:LSYS) // '.OUT | GREP ENERGY > TEMP')
-         CALL SYSTEM('GREP "E(MP2)" ' // SYS(1:LSYS) // '.OUT >> TEMP')
-         CALL SYSTEM('GREP "FINAL MCSCF ENERGY" ' // SYS(1:LSYS) // '.OUT >> TEMP')
-         CALL SYSTEM('TAIL -1 TEMP | SED -E "S/.*-/-/"  -E "S/[A-ZA-Z]//G" > ABENERGY')
-         CALL SYSTEM('MV ' // SYS(1:LSYS) // '.INP ' // SYS(1:LSYS) // '.OLD.INP')
-         CALL SYSTEM('MV ' // SYS(1:LSYS) // '.OUT ' // SYS(1:LSYS) // '.OLD.OUT') 
-         IF (GTEST.OR.SSTEST) CALL SYSTEM('MV DERIVS DERIVS.OLD')                  
+         CALL SYSTEM('grep "FINAL" ' // SYS(1:LSYS) // '.out | grep ENERGY > temp')
+         CALL SYSTEM('grep "E(MP2)" ' // SYS(1:LSYS) // '.out >> temp')
+         CALL SYSTEM('grep "FINAL MCSCF ENERGY" ' // SYS(1:LSYS) // '.out >> temp')
+         CALL SYSTEM('tail -1 temp | sed -e "s/.*-/-/"  -e "s/[a-zA-Z]//g" > abenergy')
+         CALL SYSTEM('mv ' // SYS(1:LSYS) // '.inp ' // SYS(1:LSYS) // '.old.inp')
+         CALL SYSTEM('mv ' // SYS(1:LSYS) // '.out ' // SYS(1:LSYS) // '.old.out') 
+         IF (GTEST.OR.SSTEST) CALL SYSTEM('mv derivs derivs.old')                  
       ELSE IF (GAMESSUK) THEN
 C
-C  THE SYSTEM.IN FILE WILL NEED THE LINE:
+C  The system.in file will need the line:
 C  PUNCH SCFENERGY TRANSFORM GRADIENT SECDER
 C
-         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH NOT EQUAL TO ZERO IN POTENTIAL'
-         OPEN(UNIT=15,FILE='TEMPPOINTS',STATUS='UNKNOWN')
+         IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH not equal to zero in potential'
+         OPEN(UNIT=15,FILE='temppoints',STATUS='UNKNOWN')
          WRITE(15,'(3F20.10)') (COORDS(J1),J1=1,NOPT)
          CLOSE(15)
-C        INQUIRE(FILE='DERIVS',EXIST=YESNO)
+C        INQUIRE(FILE='derivs',EXIST=YESNO)
          IF (SSTEST) THEN
             IF (.NOT.YESNO) THEN
-               WRITE(*,'(A)') ' CALLING GAMESS-UK ENERGY AND FIRST AND SECOND DERIVATIVES'
-               CALL SYSTEM(' ( ' // EDITIT // ' < TEMPPOINTS > ' // SYS(1:LSYS) // '.IN ) >& /DEV/NULL')
-               CALL SYSTEM("ECHO 'RUNTYPE HESSIAN' >> " // SYS(1:LSYS) // ".IN")
-               CALL SYSTEM("ECHO 'ENTER' >> " // SYS(1:LSYS) // ".IN")
-               CALL SYSTEM('RUNGAMESS ' // SYS(1:LSYS) // '>&/DEV/NULL' )
-C              CALL SYSTEM('RUNGAMESS ' // SYS(1:LSYS) // ' ' // NPROC // ' >& ' // SYS(1:LSYS) // '.OUT ')
-               CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.PUN DERIVS ')
+               WRITE(*,'(A)') ' Calling GAMESS-UK energy and first and second derivatives'
+               CALL SYSTEM(' ( ' // EDITIT // ' < temppoints > ' // SYS(1:LSYS) // '.in ) >& /dev/null')
+               CALL SYSTEM("echo 'runtype hessian' >> " // SYS(1:LSYS) // ".in")
+               CALL SYSTEM("echo 'enter' >> " // SYS(1:LSYS) // ".in")
+               CALL SYSTEM('rungamess ' // SYS(1:LSYS) // '>&/dev/null' )
+C              CALL SYSTEM('rungamess ' // SYS(1:LSYS) // ' ' // NPROC // ' >& ' // SYS(1:LSYS) // '.out ')
+               CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.pun derivs ')
             ELSE
-               WRITE(*,'(A)') ' USING EXISTING GAMESS DERIVS FILE FOR FIRST AND SECOND DERIVATIVES'
+               WRITE(*,'(A)') ' Using existing GAMESS derivs file for first and second derivatives'
             ENDIF
           
-            OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD')
+            OPEN(UNIT=15,FILE='derivs',STATUS='OLD')
 12          READ(15,'(A80)') GSTRING
-            IF (GSTRING(1:17).NE.'BLOCK = GRADIENTS') GOTO 12
+            IF (GSTRING(1:17).NE.'block = gradients') GOTO 12
             DO J1=1,NATOMS
                READ(15,*,ERR=666) VNEW(3*(J1-1)+1),VNEW(3*(J1-1)+2),VNEW(3*(J1-1)+3)
             ENDDO
@@ -1892,7 +1892,7 @@ C              CALL SYSTEM('RUNGAMESS ' // SYS(1:LSYS) // ' ' // NPROC // ' >& '
 
             REWIND(15)
 162         READ(15,'(A80)') GSTRING
-            IF (GSTRING(1:17).NE.'BLOCK = TR_MATRIX') GOTO 162
+            IF (GSTRING(1:17).NE.'block = tr_matrix') GOTO 162
             READ(15,*) GAMESR(1,1), GAMESR(1,2), GAMESR(1,3), GAMEST(1)
             READ(15,*) GAMESR(2,1), GAMESR(2,2), GAMESR(2,3), GAMEST(2)
             READ(15,*) GAMESR(3,1), GAMESR(3,2), GAMESR(3,3), GAMEST(3)
@@ -1928,25 +1928,25 @@ C              CALL SYSTEM('RUNGAMESS ' // SYS(1:LSYS) // ' ' // NPROC // ' >& '
             ENDDO
          ELSE IF (GTEST) THEN
             IF (.NOT.YESNO) THEN
-               WRITE(*,'(A)') ' CALLING GAMESS-UK ENERGY AND FIRST DERIVATIVES'
-               CALL SYSTEM(' ( ' // EDITIT // ' < TEMPPOINTS > ' // SYS(1:LSYS) // '.IN ) >& /DEV/NULL')
-               CALL SYSTEM("ECHO 'RUNTYPE GRADIENT' >> " // SYS(1:LSYS) // ".IN")
-               CALL SYSTEM("ECHO 'ENTER' >> " // SYS(1:LSYS) // ".IN")
-               CALL SYSTEM('RUNGAMESS ' // SYS(1:LSYS) // '>&/DEV/NULL' )
-               CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.PUN DERIVS ')
+               WRITE(*,'(A)') ' Calling GAMESS-UK energy and first derivatives'
+               CALL SYSTEM(' ( ' // EDITIT // ' < temppoints > ' // SYS(1:LSYS) // '.in ) >& /dev/null')
+               CALL SYSTEM("echo 'runtype gradient' >> " // SYS(1:LSYS) // ".in")
+               CALL SYSTEM("echo 'enter' >> " // SYS(1:LSYS) // ".in")
+               CALL SYSTEM('rungamess ' // SYS(1:LSYS) // '>&/dev/null' )
+               CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.pun derivs ')
             ELSE
-               WRITE(*,'(A)') ' USING EXISTING GAMESS-UK DERIVS FILE FOR ENERGY AND FIRST DERIVATIVES'
+               WRITE(*,'(A)') ' Using existing GAMESS-UK derivs file for energy and first derivatives'
             ENDIF
 
-            OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD')
+            OPEN(UNIT=15,FILE='derivs',STATUS='OLD')
 13          READ(15,'(A80)') GSTRING
-            IF (GSTRING(1:17).NE.'BLOCK = GRADIENTS') GOTO 13
+            IF (GSTRING(1:17).NE.'block = gradients') GOTO 13
             DO J1=1,NATOMS
                READ(15,'(1X,3F16.6)',ERR=666) VNEW(3*(J1-1)+1),VNEW(3*(J1-1)+2),VNEW(3*(J1-1)+3)
             ENDDO
             REWIND(15)
 163         READ(15,'(A80)') GSTRING
-            IF (GSTRING(1:17).NE.'BLOCK = TR_MATRIX') GOTO 163
+            IF (GSTRING(1:17).NE.'block = tr_matrix') GOTO 163
             READ(15,'(1X,4F16.6)') GAMESR(1,1), GAMESR(1,2), GAMESR(1,3), GAMEST(1)
             READ(15,'(1X,4F16.6)') GAMESR(2,1), GAMESR(2,2), GAMESR(2,3), GAMEST(2)
             READ(15,'(1X,4F16.6)') GAMESR(3,1), GAMESR(3,2), GAMESR(3,3), GAMEST(3)
@@ -1964,41 +1964,41 @@ C              CALL SYSTEM('RUNGAMESS ' // SYS(1:LSYS) // ' ' // NPROC // ' >& '
             ENDDO
          ELSE
             IF (.NOT.YESNO) THEN
-               WRITE(*,'(A)') ' CALLING GAMESS-UK ENERGY'
-               CALL SYSTEM(' ( ' // EDITIT // ' < TEMPPOINTS > ' // SYS(1:LSYS) // '.IN ) >& /DEV/NULL')
-               CALL SYSTEM("ECHO 'RUNTYPE ENERGY' >> " // SYS(1:LSYS) // ".IN")
-               CALL SYSTEM("ECHO 'ENTER' >> " // SYS(1:LSYS) // ".IN")
-               CALL SYSTEM('RUNGAMESS ' // SYS(1:LSYS) // '>&/DEV/NULL' )
-               CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.PUN DERIVS ')
+               WRITE(*,'(A)') ' Calling GAMESS-UK energy'
+               CALL SYSTEM(' ( ' // EDITIT // ' < temppoints > ' // SYS(1:LSYS) // '.in ) >& /dev/null')
+               CALL SYSTEM("echo 'runtype energy' >> " // SYS(1:LSYS) // ".in")
+               CALL SYSTEM("echo 'enter' >> " // SYS(1:LSYS) // ".in")
+               CALL SYSTEM('rungamess ' // SYS(1:LSYS) // '>&/dev/null' )
+               CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.pun derivs ')
             ELSE
-               WRITE(*,'(A)') ' USING EXISTING GAMESS DERIVS FILE FOR ENERGY'
+               WRITE(*,'(A)') ' Using existing GAMESS derivs file for energy'
             ENDIF
          ENDIF
 C
-C  THERE IS PROVISION FOR PUNCHING THE ENERGY CONSISTENTLY IN GAMESS-UK.
+C  There is provision for punching the energy consistently in GAMESS-UK.
 C
          REWIND(15)
 14       READ(15,'(A80)') GSTRING
-         IF (GSTRING(1:20).NE.'BLOCK = TOTAL_ENERGY') GOTO 14
+         IF (GSTRING(1:20).NE.'block = total_energy') GOTO 14
          READ(15,*) ENERGY
          CLOSE(15)
-         OPEN(UNIT=15,FILE='ABENERGY',STATUS='UNKNOWN')
+         OPEN(UNIT=15,FILE='abenergy',STATUS='UNKNOWN')
          WRITE(15,'(F20.10)') ENERGY
          CLOSE(15)
-         CALL SYSTEM('MV ' // SYS(1:LSYS) // '.IN ' // SYS(1:LSYS) // '.OLD.IN')
-         CALL SYSTEM('MV ' // SYS(1:LSYS) // '.OUT ' // SYS(1:LSYS) // '.OLD.OUT')
-         IF (GTEST.OR.SSTEST) CALL SYSTEM('MV DERIVS DERIVS.OLD')
+         CALL SYSTEM('mv ' // SYS(1:LSYS) // '.in ' // SYS(1:LSYS) // '.old.in')
+         CALL SYSTEM('mv ' // SYS(1:LSYS) // '.out ' // SYS(1:LSYS) // '.old.out')
+         IF (GTEST.OR.SSTEST) CALL SYSTEM('mv derivs derivs.old')
       ELSE IF (GAUSSIAN) THEN
          IF ((.NOT.ALLOCATED(HGAUSS)).AND.SSTEST) ALLOCATE(HGAUSS(3*NATOMS,3*NATOMS))
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
-         PRINT*,'READING GAUSSIAN DERIVATIVE INFORMATION'
-         OPEN(UNIT=15,FILE='DERIVS',STATUS='OLD')
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
+         PRINT*,'Reading GAUSSIAN derivative information'
+         OPEN(UNIT=15,FILE='derivs',STATUS='OLD')
          READ(15,*) (VNEW(J1),J1=1,3*NATOMS)
-C        PRINT*,'GAUSSIAN FORCES:'
+C        PRINT*,'Gaussian forces:'
 C        WRITE(*,30) (VNEW(J1),J1=1,3*NATOMS)
 C30       FORMAT(3F15.6)
 C
-C  ARE THEY FORCES OR FIRST DERIVATIVES OF THE ENERGY??
+C  Are they forces or first derivatives of the energy??
 C
          DO J1=1,3*NATOMS
             VNEW(J1)=-VNEW(J1)
@@ -2006,7 +2006,7 @@ C
          NSTEP=1
          NSTART=1
          NFINISH=5
-C        PRINT*,'GAUSSIAN SECOND DERIVATIVES:'
+C        PRINT*,'Gaussian second derivatives:'
 40       DO J1=NSTEP,3*NATOMS
             READ(15,*) (HESS(J1,J2),J2=NSTART,MIN(NFINISH,J1))
             DO J2=NSTART,MIN(NFINISH,J1)
@@ -2022,8 +2022,8 @@ C           WRITE(*,116) (HESS(J1,J2),J2=NSTART,MIN(NFINISH,J1))
          
 50       CONTINUE
 C
-C   PERMUTE THESE MATRIX ELEMENTS FROM THE DAFT GAUSSIAN CONVENTION
-C   TO SOMETHING SENSIBLE.
+C   Permute these matrix elements from the daft Gaussian convention
+C   to something sensible.
 C
          DO J1=1,3*NATOMS
             J3=MOD(J1,9)
@@ -2046,8 +2046,8 @@ C
          CALL DFTB(NATOMS,COORDS,VNEW,ENERGY,GTEST,PARAM1)
          IF (SSTEST) CALL SECDFTB(NATOMS,COORDS,VNEW,PARAM1)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
          ENDIF
       ELSE IF (AMBER) THEN
          CALL AMB(COORDS,VNEW,ENERGY,GTEST,SSTEST)
@@ -2055,111 +2055,111 @@ C
 
       ELSE IF (AMBERT) THEN
          VNEW = 0.0D0
-         IF (CHECKCISTRANSALWAYS) CALL CHECK_CISTRANS_PROTEIN(COORDS,NATOMS,GOODSTRUCTURE1,MINOMEGA,CISARRAY1)
+         IF (CHECKCISTRANSALWAYS) CALL CHECK_CISTRANS_PROTEIN(COORDS,NATOMS,goodstructure1,MINOMEGA,CISARRAY1)
          IF (CHECKCISTRANSALWAYSDNA) CALL CHECK_CISTRANS_DNA(COORDS,NATOMS,ZSYM,GOODSTRUCTURE1)
          IF (CHECKCISTRANSALWAYSRNA) CALL CHECK_CISTRANS_RNA(COORDS,NATOMS,ZSYM,GOODSTRUCTURE1)
          CALL AMBERENERGIES(COORDS,VNEW,ENERGY,GTEST,STEST)
          IF (STEST) CALL AMBERSECDER(COORDS,.TRUE.)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' kcal/mol'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' kcal/mol'
          ENDIF
-C          DO I=1,3*NATOMS
-C                WRITE(*,*) VNEW(I)
+C          DO i=1,3*NATOMS
+C                WRITE(*,*) VNEW(i)
 C          END DO
       ELSE IF (NABT) THEN
-C         CALL CHECK_CISTRANS_RNA(COORDS,NATOMS,ZSYM,GOODSTRUCTURE1) 
-C         WRITE(*,*) 'GOODSTRUCTURE1=', GOODSTRUCTURE1
-C         STOP
-C      NAB STRUCTURES INITIALISED IN KEYWORDS.F
+c         CALL CHECK_CISTRANS_RNA(COORDS,NATOMS,ZSYM,GOODSTRUCTURE1) 
+c         WRITE(*,*) 'GOODSTRUCTURE1=', GOODSTRUCTURE1
+c         STOP
+C      NAB structures initialised in keywords.f
          VNEW = 0.0D0
          IF(STEST) THEN
-C         ANALYTICAL SECOND DERIVATIVES
-         IF(ALLOCATED(HESS)) DEALLOCATE(HESS)
-         IF(.NOT.ALLOCATED(TEMPHESS)) ALLOCATE(TEMPHESS(9*NATOMS*NATOMS))
+C         Analytical second derivatives
+         IF(allocated(HESS)) deallocate(HESS)
+         IF(.not.allocated(temphess)) allocate(temphess(9*NATOMS*NATOMS))
          TEMPHESS(:) = 0.0D0
             CALL MME2WRAPPER(COORDS,ENERGY,VNEW,TEMPHESS,ATMASS,GRAD1)
             ALLOCATE(HESS(3*NATOMS,3*NATOMS))
-            K=1
-            DO I=1,3*NATOMS
-                DO J=1,3*NATOMS
-                   HESS(I,J) = TEMPHESS(K)
-                   K=K+1
+            k=1
+            DO i=1,3*NATOMS
+                DO j=1,3*NATOMS
+                   HESS(i,j) = TEMPHESS(k)
+                   k=k+1
                 END DO
             END DO
             DEALLOCATE(TEMPHESS)
          ELSE
 C           CALL AMBERNUMFIRSTDER(COORDS,GTEST)
 
-C       CHECK CIS-TRANS ISOMERISATION FOR DNA OR RNA
+C       check cis-trans isomerisation for DNA or RNA
          IF (CHECKCISTRANSALWAYSDNA) CALL CHECK_CISTRANS_DNA(COORDS,NATOMS,ZSYM,GOODSTRUCTURE1)
          IF (CHECKCISTRANSALWAYSRNA) CALL CHECK_CISTRANS_RNA(COORDS,NATOMS,ZSYM,GOODSTRUCTURE1)
-         IF (CHECKCISTRANSALWAYS) CALL CHECK_CISTRANS_PROTEIN(COORDS,NATOMS,GOODSTRUCTURE1,MINOMEGA,CISARRAY1)
+         IF (CHECKCISTRANSALWAYS) CALL CHECK_CISTRANS_PROTEIN(COORDS,NATOMS,goodstructure1,MINOMEGA,CISARRAY1)
         !   CALL CHECK_CISTRANS_DNA(COORDS,NATOMS,ZSYM,GOODSTRUCTURE1)
         !   STOP
            CALL AMBERENERGIES(COORDS,VNEW,ENERGY,GTEST,STEST)
 C           CALL MME(ENERGY,COORDS,VNEW,1)
          END IF
           IF (PTEST) THEN
-             WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
-             WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
+             WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' kcal/mol'
+             WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' kcal/mol'
           ENDIF
 
        ELSE IF (AMHT) THEN
-!            IF (DEBUG) WRITE(6,*)'ENTERING WALESAMH_INTERFACE'
+!            IF (DEBUG) WRITE(6,*)'Entering WALESAMH_INTERFACE'
 C            DO J1=1,NATOMS
 C                 WRITE(6,*)'COORDS WALESAMH_INTERFACE',COORDS(J1)
 C            ENDDO
 
-             CALL WALESAMH_INTERFACE(COORDS,VNEW,ENERGY)
+             CALl WALESAMH_INTERFACE(COORDS,VNEW,ENERGY)
 
          IF (PTEST) THEN
-            WRITE(*,10) ' ENERGY FOR LAST CYCLE=',ENERGY,' WOLYNES UNITS'
-            WRITE(ESTRING,10) ' ENERGY FOR LAST CYCLE=',ENERGY,' WOLYNES UNITS'
+            WRITE(*,10) ' Energy for last cycle=',ENERGY,' Wolynes Units'
+            WRITE(ESTRING,10) ' Energy for last cycle=',ENERGY,' Wolynes Units'
          ENDIF
 
-C         DIFF=1.0D-3
-C         PRINT*,'ANALYTIC AND NUMERICAL GRADIENTS:'
-C         DO J1=1,3*NATOMS 
-C             WRITE(*,'(F20.10,2X,F20.10,2XI5)')X(J1),GRAD(J1),J1
-C            X(J1)=X(J1)+DIFF
-C            CALL WALESAMH_INTERFACE(X,GRADDUM,EPLUS)
-C            X(J1)=X(J1)-2.0D0*DIFF
-C            CALL WALESAMH_INTERFACE(X,GRADDUM,EMINUS)
-C            X(J1)=X(J1)+DIFF
-C            IF (GRAD(J1).NE.0.0D0) WRITE(*,'(A5,I5,3F20.10)') FFF,J1,GRAD(J1),(EPLUS-EMINUS)/(2.0D0*DIFF),
-C     1                          100*ABS((GRAD(J1)-(EPLUS-EMINUS)/(2.0D0*DIFF))/GRAD(J1))
-C           GRAD(J1)=(EPLUS-EMINUS)/(2.0D0*DIFF)
-C         ENDDO
+c         DIFF=1.0D-3
+c         PRINT*,'analytic and numerical gradients:'
+c         DO J1=1,3*NATOMS 
+c             WRITE(*,'(F20.10,2x,F20.10,2xI5)')X(J1),GRAD(J1),J1
+c            X(J1)=X(J1)+DIFF
+c            CALL WALESAMH_INTERFACE(X,GRADDUM,EPLUS)
+c            X(J1)=X(J1)-2.0D0*DIFF
+c            CALL WALESAMH_INTERFACE(X,GRADDUM,EMINUS)
+c            X(J1)=X(J1)+DIFF
+c            IF (GRAD(J1).NE.0.0D0) WRITE(*,'(A5,I5,3F20.10)') fff,J1,GRAD(J1),(EPLUS-EMINUS)/(2.0D0*DIFF),
+c     1                          100*ABS((GRAD(J1)-(EPLUS-EMINUS)/(2.0D0*DIFF))/GRAD(J1))
+c           GRAD(J1)=(EPLUS-EMINUS)/(2.0D0*DIFF)
+c         ENDDO
 
       ELSE IF (CHRMMT) THEN
 !        IF (CHECKOMEGAT.AND.DEBUG) THEN ! DJW
 !           AMIDEFAIL=.FALSE.
 !           CALL CHECKOMEGA(COORDS,AMIDEFAIL)
-!           IF (AMIDEFAIL) PRINT '(A,L5)',' POTENTIAL> WARNING *** CIS PEPTIDE BOND DETECTED'
+!           IF (AMIDEFAIL) PRINT '(A,L5)',' potential> WARNING *** cis peptide bond detected'
 !        ENDIF
          CALL OCHARMM(COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' kcal/mol'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' kcal/mol'
          ENDIF
       ELSE IF (UNRST) THEN
          CALL UENERGY(COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' KCAL/MOL'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' kcal/mol'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' kcal/mol'
          ENDIF
 !
-! POTENTIALS IDENTIFIED BY ATOM TYPES CORRESPONDING TO REAL ATOMIC SYMBOLS MUST
-! COME AT THE END IN CASE SOMEONE WANTS TO USE THIS ATOM IN ONE OF THE ELECTRONIC
-! STRCUTURE CODES IDENTIFIED BY KEYWORDS ABOVE.
+! Potentials identified by atom types corresponding to real atomic symbols must
+! come at the end in case someone wants to use this atom in one of the electronic
+! strcuture codes identified by keywords above.
 !
       ELSE IF (ZSYM(NATOMS).EQ.'BE') THEN
          CALL ETRAP(NATOMS,COORDS,ENERGY,C1,C2,C3)
          CALL DTRAP(NATOMS,COORDS,VNEW,C1,C2,C3,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' hartree'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' hartree'
          ENDIF
       ELSE IF ((ZSYM(NATOMS).EQ.'AU').OR.(ZSYM(NATOMS).EQ.'AG').OR.(ZSYM(NATOMS).EQ.'NI')) THEN
          IF (ZSYM(NATOMS).EQ.'AU') THEN
@@ -2175,40 +2175,40 @@ C         ENDDO
          PARAM4=FLOAT(NN)
          PARAM5=FLOAT(MM)
 C
-C PARAM1 IS REALLY EPS
-C PARAM2 IS REALLY C
-C PARAM3 IS REALLY SIG
+C PARAM1 is really EPS
+C PARAM2 is really C
+C PARAM3 is really SIG
 C
-         PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+         PRINT*,' WARNING - GTEST and SSTEST ignored'
          CALL SCDIFF(NATOMS,COORDS,VNEW,PARAM1,PARAM2,PARAM3,NN,MM,ENERGY)
-         WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-         WRITE(ESTRING,10)' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
+         WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+         WRITE(ESTRING,10)' potential> Energy for last cycle=',ENERGY,' eV'
       ELSE IF (ZSYM(NATOMS).EQ.'IN') THEN
-         PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+         PRINT*,' WARNING - GTEST and SSTEST ignored'
          CALL IONS(NATOMS,COORDS,VNEW,ENERGY,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5,PARAM6,1)
-         WRITE(*,'(A,27X,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
-         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+         WRITE(*,'(A,27X,F20.10,A)') ' potential> Energy for last cycle=',ENERGY,' hartree'
+         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' hartree'
 10       FORMAT(A,27X,F20.10,A)
 
       ELSE IF (ZSYM(1).EQ.'CA') THEN
          CALL CAARDIFF(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'AR') THEN
          CALL LJDIFF(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EPSILON'
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' epsilon'
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' epsilon'
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'TH') THEN
          CALL THOMSON(NATOMS, COORDS, VNEW, ENERGY, GTEST, SSTEST)
 C
-C  CHECK NUMERICAL FIRST AND SECOND DERIVATIVES
+C  Check numerical first and second derivatives
 C
 C        DIFF=1.0D-4
-C        PRINT*,'ANALYTIC AND NUMERICAL GRADIENTS:'
+C        PRINT*,'analytic and numerical gradients:'
 C        DO J1=1,3*NATOMS
 C           COORDS(J1)=COORDS(J1)+DIFF
 C           CALL THOMSON(NATOMS,COORDS,VPLUS,EPLUS,.FALSE.,.FALSE.)
@@ -2219,7 +2219,7 @@ C           IF ((ABS(VNEW(J1)).NE.0.0D0).AND.(100.0D0*(VNEW(J1)-(EPLUS-EMINUS)/(
 C              WRITE(*,'(I5,2F20.10)') J1,VNEW(J1),(EPLUS-EMINUS)/(2.0D0*DIFF)
 C           ENDIF
 C        ENDDO
-C        PRINT*,'ANALYTIC AND NUMERICAL SECOND DERIVATIVES:'
+C        PRINT*,'analytic and numerical second derivatives:'
 C        DO J1=1,3*NATOMS
 C           COORDS(J1)=COORDS(J1)+DIFF
 C           CALL THOMSON(NATOMS,COORDS,VPLUS,EPLUS,.TRUE.,.FALSE.)
@@ -2236,18 +2236,18 @@ C              ENDIF
 C           ENDDO
 C        ENDDO
          IF (PTEST) THEN
-            WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
+            WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+            WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'SI') THEN
-         PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+         PRINT*,' WARNING - GTEST and SSTEST ignored'
          CALL JM2(NATOMS, COORDS, VNEW)
          CALL JM3(NATOMS, COORDS, VNEW)
          CALL JME(NATOMS, COORDS, P2, P3, ENERGY)
-         WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-         WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' EV'
-         WRITE(*,10) 'TWO-BODY CONTRIBUTION=',P2,' EV'
-         WRITE(*,10) 'THREE-BODY CONTRIBUTION=',P3,' EV'
+         WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' eV'
+         WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' eV'
+         WRITE(*,10) 'Two-body contribution=',P2,' eV'
+         WRITE(*,10) 'Three-body contribution=',P3,' eV'
       ELSE IF (ZSYM(NATOMS)(1:1).EQ.'W') THEN
          IF (ZSYM(NATOMS).EQ.'W5') IPOT=5
          IF (ZSYM(NATOMS).EQ.'W4') IPOT=4
@@ -2258,76 +2258,76 @@ C        ENDDO
             CALL TIPNP(IPOT,COORDS,VNEW,ENERGY,GTEST,SSTEST)
          ELSE
             IF (IPOT.EQ.5) THEN
-               PRINT*,' TIP5P NOT YET CODED IN C OF M/EULER COORDINATES'
+               PRINT*,' TIP5P not yet coded in C of M/Euler coordinates'
                STOP
             ENDIF
             CALL H2O(NATOMS/2,IPOT,COORDS,VNEW,ENERGY,GTEST,SSTEST)
          ENDIF
 
-! TEST DERIVATIVES
+! Test derivatives
 
-!!         DELTACOORD = 1.0D-5
-!!         RMSDIFF = 0.0D0
+!!         deltaCoord = 1.0d-5
+!!         RMSdiff = 0.0d0
 
-!         DO J1 = 1, 3*NATOMS
-!            COORDS(J1) = COORDS(J1) + DELTACOORD
-!            CALL TIPNP(IPOT,COORDS,DUMMYGRAD,UPPERE,.FALSE.,.FALSE.)
-!            COORDS(J1) = COORDS(J1) - 2.0D0*DELTACOORD
-!            CALL TIPNP(IPOT,COORDS,DUMMYGRAD,LOWERE,.FALSE.,.FALSE.)
-!            COORDS(J1) = COORDS(J1) + DELTACOORD
+!         do j1 = 1, 3*NATOMS
+!            coords(j1) = coords(j1) + deltaCoord
+!            call TIPnP(IPOT,COORDS,dummyGrad,upperE,.FALSE.,.FALSE.)
+!            coords(j1) = coords(j1) - 2.0d0*deltaCoord
+!            call TIPnP(IPOT,COORDS,dummyGrad,lowerE,.FALSE.,.FALSE.)
+!            coords(j1) = coords(j1) + deltaCoord
 
-!            NUMERICALGRAD(J1) = (UPPERE-LOWERE)/(2.0D0*DELTACOORD)
-!            RMSDIFF = RMSDIFF + (NUMERICALGRAD(J1)-VNEW(J1))**2
-!            PRINT *, J1, VNEW(J1), NUMERICALGRAD(J1)
-!         ENDDO
+!            numericalGrad(j1) = (upperE-lowerE)/(2.0d0*deltaCoord)
+!            RMSdiff = RMSdiff + (numericalGrad(j1)-VNEW(j1))**2
+!            print *, j1, VNEW(j1), numericalGrad(j1)
+!         enddo
 
-!         RMSDIFF = DSQRT(RMSDIFF/(3*NATOMS))
-!         WRITE(11,*) 'RMS DIFFERENCE:', RMSDIFF
+!         RMSdiff = DSQRT(RMSdiff/(3*NATOMS))
+!         write(11,*) 'RMS difference:', RMSdiff
 
-!!         IF (SSTEST) THEN
-!!            TEMPHESS = HESS
+!!         if (SSTEST) then
+!!            tempHess = HESS
 
-!!            DO J1 = 1, 3*NATOMS
-!!               COORDS(J1) = COORDS(J1) + DELTACOORD
-!!               CALL TIPNP(IPOT,COORDS,UPPERGRAD,UPPERE,.TRUE.,.FALSE.)
-!!               COORDS(J1) = COORDS(J1) - 2.0D0*DELTACOORD
-!!              CALL TIPNP(IPOT,COORDS,LOWERGRAD,LOWERE,.TRUE.,.FALSE.)
-!!               COORDS(J1) = COORDS(J1) + DELTACOORD
+!!            do j1 = 1, 3*NATOMS
+!!               coords(j1) = coords(j1) + deltaCoord
+!!               call TIPnP(IPOT,COORDS,upperGrad,upperE,.TRUE.,.FALSE.)
+!!               coords(j1) = coords(j1) - 2.0d0*deltaCoord
+!!              call TIPnP(IPOT,COORDS,lowerGrad,lowerE,.TRUE.,.FALSE.)
+!!               coords(j1) = coords(j1) + deltaCoord
 
-!!               DO J2 = 1, J1
-!!                  NUMERICALSD = (UPPERGRAD(J2)-LOWERGRAD(J2))/(2.0D0*DELTACOORD)
-!!                  WRITE(12, *) J2, J1, TEMPHESS(J2,J1), NUMERICALSD, (TEMPHESS(J2,J1)-NUMERICALSD)
-!!                  RMSDIFF = RMSDIFF + (TEMPHESS(J2,J1)-NUMERICALSD)**2
-!!               ENDDO
-!!            END DO
+!!               do j2 = 1, j1
+!!                  numericalSD = (upperGrad(j2)-lowerGrad(j2))/(2.0d0*deltaCoord)
+!!                  write(12, *) j2, j1, tempHess(j2,j1), numericalSD, (tempHess(j2,j1)-numericalSD)
+!!                  RMSdiff = RMSdiff + (tempHess(j2,j1)-numericalSD)**2
+!!               enddo
+!!            end do
 
-!!            HESS = TEMPHESS
+!!            HESS = tempHess
 
-!!            RMSDIFF = DSQRT(RMSDIFF/((9*NATOMS*NATOMS+3*NATOMS)/2))
-!!            WRITE(11,*) 'RMS DIFFERENCE:', RMSDIFF
-!!         ENDIF
+!!            RMSdiff = DSQRT(RMSdiff/((9*NATOMS*NATOMS+3*NATOMS)/2))
+!!            write(11,*) 'RMS difference:', RMSdiff
+!!         endif
 
          IF (PTEST) THEN
             IF (IPOT.LE.4) THEN
-               WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' KJ/MOL'
-               WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' KJ/MOL'
+               WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' kJ/mol'
+               WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' kJ/mol'
             ELSE
-               WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
-               WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+               WRITE(*,10) ' potential> Energy for last cycle=',ENERGY,' hartree'
+               WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY,' hartree'
             ENDIF
          ENDIF
       ELSE IF (ZSYM(NATOMS).EQ.'CD') THEN
          CALL FCAPSID(NATOMS,COORDS,VNEW,ENERGY,GTEST,SSTEST)
          IF (PTEST) THEN
-            WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-            WRITE(ESTRING,10) 'ENERGY FOR LAST CYCLE=',ENERGY
+            WRITE(*,10) ' potential> Energy for last cycle=',ENERGY
+            WRITE(ESTRING,10) 'Energy for last cycle=',ENERGY
          ENDIF
 
 C
-C  CHECK NUMERICAL FIRST AND SECOND DERIVATIVES
+C  Check numerical first and second derivatives
 C
 C        DIFF=1.0D-4
-C        PRINT*,'ANALYTIC AND NUMERICAL GRADIENTS:'
+C        PRINT*,'analytic and numerical gradients:'
 C        DO J1=1,3*NATOMS
 C           COORDS(J1)=COORDS(J1)+DIFF
 C           CALL FCAPSID(NATOMS,COORDS,HDUMM,VPLUS,EPLUS,.FALSE.,.FALSE.)
@@ -2338,7 +2338,7 @@ C           IF ((ABS(VNEW(J1)).NE.0.0D0).AND.(100.0D0*(VNEW(J1)-(EPLUS-EMINUS)/(
 C              WRITE(*,'(I5,2F20.10)') J1,VNEW(J1),(EPLUS-EMINUS)/(2.0D0*DIFF)
 C           ENDIF
 C        ENDDO
-C        PRINT*,'ANALYTIC AND NUMERICAL SECOND DERIVATIVES:'
+C        PRINT*,'analytic and numerical second derivatives:'
 C        DO J1=1,3*NATOMS
 C           COORDS(J1)=COORDS(J1)+DIFF
 C           CALL FCAPSID(NATOMS,COORDS,HDUMM,VPLUS,EPLUS,.TRUE.,.FALSE.)
@@ -2357,7 +2357,7 @@ C        ENDDO
 !     DC430 >
       ENDIF
 C
-C  --------------- END OF POSSIBLE POTENTIALS - NOW ADD EXTRA TERM REQUIRED ------------------------------
+C  --------------- End of possible potentials - now add extra term required ------------------------------
 C
       IF (PULLT) THEN
          ENERGY=ENERGY-PFORCE*(COORDS(3*(PATOM1-1)+3)-COORDS(3*(PATOM2-1)+3))
@@ -2365,10 +2365,10 @@ C
          VNEW(3*(PATOM2-1)+3)=VNEW(3*(PATOM2-1)+3)+PFORCE
       ENDIF
 C
-C  ADD ON ATTRACTIVE TERM FOR "CLOSEST" MINIMUM IF THIS IS A REDOPATH RUN
-C  HERE WE HAVE TO DEFINE CLOSEST IN TERMS OF WHICH MINIMUM WE HAVE MOVED
-C  TOWARDS, NOT IN TERMS OF ABSOLUTE DISTANCE, BECAUSE OF ASYMMETRIC PATHWAYS.
-C  AVOID DIVISION BY ZERO FOR D1INIT AND D2INIT!
+C  Add on attractive term for "closest" minimum if this is a REDOPATH run
+C  Here we have to define closest in terms of which minimum we have moved
+C  towards, not in terms of absolute distance, because of asymmetric pathways.
+C  Avoid division by zero for D1INIT and D2INIT!
 C
       IF (REDOKADD.AND.REDOPATH.AND.(.NOT.REDOPATHXYZ).AND.(REDOK.NE.0.0D0).AND.
      &        (ALLOCATED(MIN1REDO)).AND.(ALLOCATED(MIN2REDO)).AND.(D1INIT*D2INIT.NE.0.0D0)) THEN
@@ -2387,8 +2387,8 @@ C
                DUMMY3=DUMMY3+(COORDS(J1)-MIN1REDO(J1))**2
             ENDDO
             DUMMY1=DUMMY1/SQRT(DUMMY3)
-            IF (DEBUG) PRINT '(A,2G15.5,A,G20.10)',' POTENTIAL> DISTANCES/INITIAL DISTANCE ARE ',DIST1/D1INIT,DIST2/D2INIT, 
-     &               ' GRAD % TOWARDS FIRST MINIMUM=',DUMMY1*100/SQRT(DUMMY2)
+            IF (DEBUG) PRINT '(A,2G15.5,A,G20.10)',' potential> distances/initial distance are ',DIST1/D1INIT,DIST2/D2INIT, 
+     &               ' grad % towards first minimum=',DUMMY1*100/SQRT(DUMMY2)
 !           IF (DUMMY1.GT.0.0D0) DUMMY1=-DUMMY1
             DO J1=1,NOPT
                VNEW(J1)=VNEW(J1)+REDOK*(COORDS(J1)-MIN1REDO(J1))
@@ -2405,8 +2405,8 @@ C
                DUMMY3=DUMMY3+(COORDS(J1)-MIN2REDO(J1))**2
             ENDDO
             DUMMY1=DUMMY1/SQRT(DUMMY3)
-            IF (DEBUG) PRINT '(A,2G15.5,A,G20.10)',' POTENTIAL> DISTANCES/INITIAL DISTANCE ARE ',DIST1/D1INIT,DIST2/D2INIT, 
-     &               ' GRAD % FOR SECOND MINIMUM=',DUMMY1*100/SQRT(DUMMY2)
+            IF (DEBUG) PRINT '(A,2G15.5,A,G20.10)',' potential> distances/initial distance are ',DIST1/D1INIT,DIST2/D2INIT, 
+     &               ' grad % for second minimum=',DUMMY1*100/SQRT(DUMMY2)
 !           IF (DUMMY1.GT.0.0D0) DUMMY1=-DUMMY1
             DO J1=1,NOPT
                VNEW(J1)=VNEW(J1)+REDOK*(COORDS(J1)-MIN2REDO(J1))
@@ -2415,11 +2415,11 @@ C
          ENDIF
       ENDIF
 C
-C  ADD ON TERMS FOR ROTATION ABOUT THE Z AXIS
+C  Add on terms for rotation about the z axis
 C
       IF (RTEST) THEN
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
-         PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
+         PRINT*,' WARNING - GTEST and SSTEST ignored'
          IF (JZ.NE.0.0D0) THEN 
             CALL ROTD(NATOMS, COORDS, VNEW, 1.0D0, JZ, .FALSE., ROT)
          ELSE
@@ -2427,72 +2427,72 @@ C
             CALL ROTDERIV(NATOMS, COORDS, VNEW, 1.0D0, OMEGA, IZ)
          ENDIF
          ENERGY=ENERGY+ROT
-         WRITE(*,10) ' POTENTIAL> ENERGY FOR LAST CYCLE INCLUDING ROTATION=',ENERGY,' EPSILON'
-         WRITE(ESTRING,'(A,9X,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE INCLUDING ROTATION=',ENERGY,' EPSILON'
+         WRITE(*,10) ' potential> Energy for last cycle including rotation=',ENERGY,' epsilon'
+         WRITE(ESTRING,'(A,9X,F20.10,A)') ' potential> Energy for last cycle including rotation=',ENERGY,' epsilon'
       ENDIF
 
       IF (FIELDT) THEN
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
-         PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
+         PRINT*,' WARNING - GTEST and SSTEST ignored'
          CALL FD(NATOMS,COORDS,VNEW,ENERGY)
-         WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE INCLUDING FIELD=',ENERGY
-         WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE INCLUDING FIELD=',ENERGY
+         WRITE(*,20) ' potential> Energy for last cycle including field=',ENERGY
+         WRITE(ESTRING,20) ' potential> Energy for last cycle including field=',ENERGY
       ENDIF
 
 C     IF (FTEST) THEN
 C        IF (GFRACTION.NE.0.0D0) THEN
-C           PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+C           PRINT*,' WARNING - GTEST and SSTEST ignored'
 C           CALL GAV(NATOMS,COORDS,VNEW,ENERGY,GALPHA,PARAM2,1)
-C           WRITE(*,'(A,F20.10)') ' FRACTION OF NON-LOCAL GAUSSIAN POTENTIAL USED=',GFRACTION
-C           WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C           WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C           WRITE(*,'(A23,7X,2F20.10)') ' RHO AND DELTA=',PARAM1, PARAM2
+C           WRITE(*,'(A,F20.10)') ' Fraction of non-local Gaussian potential used=',GFRACTION
+C           WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+C           WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
+C           WRITE(*,'(A23,7X,2F20.10)') ' RHO and DELTA=',PARAM1, PARAM2
 C        ENDIF
 C        IF (MFRACTION1.NE.0.0D0) THEN
-C           PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+C           PRINT*,' WARNING - GTEST and SSTEST ignored'
 C           CALL MAV(NATOMS,COORDS,VNEW,ENERGY,GALPHA,PARAM2,1)
-C           WRITE(*,'(A,F20.10)') ' FRACTION OF NON-LOCAL MORSE1 POTENTIAL USED=',MFRACTION1
-C           WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C           WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C           WRITE(*,'(A23,7X,2F20.10)') ' RHO AND DELTA=',PARAM1, PARAM2
+C           WRITE(*,'(A,F20.10)') ' Fraction of non-local Morse1 potential used=',MFRACTION1
+C           WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+C           WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
+C           WRITE(*,'(A23,7X,2F20.10)') ' RHO and DELTA=',PARAM1, PARAM2
 C        ENDIF
 C        IF (MFRACTION2.NE.0.0D0) THEN
-C           PRINT*,' WARNING - GTEST AND SSTEST IGNORED'
+C           PRINT*,' WARNING - GTEST and SSTEST ignored'
 C           CALL M2(NATOMS,COORDS,VNEW,ENERGY,GALPHA,PARAM2,1)
-C           WRITE(*,'(A,F20.10)') ' FRACTION OF NON-LOCAL MORSE2 POTENTIAL USED=',MFRACTION2
-C           WRITE(*,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C           WRITE(ESTRING,20) ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY
-C           WRITE(*,'(A23,7X,2F20.10)') ' RHO AND DELTA=',PARAM1, PARAM2
+C           WRITE(*,'(A,F20.10)') ' Fraction of non-local Morse2 potential used=',MFRACTION2
+C           WRITE(*,20) ' potential> Energy for last cycle=',ENERGY
+C           WRITE(ESTRING,20) ' potential> Energy for last cycle=',ENERGY
+C           WRITE(*,'(A23,7X,2F20.10)') ' RHO and DELTA=',PARAM1, PARAM2
 C        ENDIF
 C     ENDIF
 C
-C  DOUBLE WELL POTENTIAL BETWEEN THE FIRST TWO ATOMS.
+C  Double well potential between the first two atoms.
 C
       IF (DOUBLET) THEN
-         PRINT*,'WARNING - THIS POTENTIAL HAS NOT BEEN TESTED IN OPTIM.3.0'
+         PRINT*,'WARNING - this potential has not been tested in OPTIM.3.0'
          CALL DOUBLE(NATOMS,COORDS,VNEW,EDOUBLE,GTEST,STEST,PARAM4,PARAM5,PARAM6)
          ENERGY=ENERGY+EDOUBLE
          IF (PTEST) THEN
-            WRITE(*,'(A,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE INCLUDING DOUBLE WELL=     ',ENERGY,' EPSILON'
-            WRITE(ESTRING,'(A,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE INCLUDING DOUBLE WELL=     ',ENERGY,' EPSILON'
+            WRITE(*,'(A,F20.10,A)') ' potential> Energy for last cycle including double well=     ',ENERGY,' epsilon'
+            WRITE(ESTRING,'(A,F20.10,A)') ' potential> Energy for last cycle including double well=     ',ENERGY,' epsilon'
          ENDIF
       ENDIF
 
       IF (GAUSSIAN.OR.CADPAC.OR.GAMESSUK.OR.GAMESSUS) THEN
-         INQUIRE(FILE='ABENERGY',EXIST=ETEST)
+         INQUIRE(FILE='abenergy',EXIST=ETEST)
          IF (ETEST) THEN
-            OPEN(UNIT=91,FILE='ABENERGY',STATUS='OLD')
+            OPEN(UNIT=91,FILE='abenergy',STATUS='OLD')
             READ(91,*) ENERGY
-            IF (PTEST) WRITE(*,'(A,27X,F20.10,A)') ' POTENTIAL> ENERGY FOR LAST CYCLE=',ENERGY,' HARTREE'
+            IF (PTEST) WRITE(*,'(A,27X,F20.10,A)') ' potential> Energy for last cycle=',ENERGY,' hartree'
             CLOSE(91)
          ELSE
-            WRITE(*,'(A)') ' POTENTIAL> ERROR - ABENERGY FILE NOT FOUND'
+            WRITE(*,'(A)') ' potential> Error - abenergy file not found'
             STOP
          ENDIF
       ENDIF
 
       IF (GTEST) THEN
-!        PRINT '(A,L5)',' POTENTIAL> FREEZE,VNEW=',FREEZE
+!        PRINT '(A,L5)',' potential> FREEZE,VNEW=',FREEZE
 !        PRINT '(3G20.10)',VNEW(1:3*NATOMS)
          IF (FREEZE) THEN
             DO J1=1,NATOMS
@@ -2503,31 +2503,31 @@ C
                ENDIF
             ENDDO
          ENDIF
-!        PRINT '(A,L5)',' POTENTIAL> AFTER FREEZE BLOCK, VNEW:'
+!        PRINT '(A,L5)',' potential> after freeze block, VNEW:'
 !        PRINT '(3G20.10)',VNEW(1:3*NATOMS)
 
          IF (UNRST) THEN
             CALL VSTAT(VNEW,TEMP,NINTS,NOPT)
-            IF (PTEST) WRITE(*,'(A,43X,F15.10,2X,A,G15.10)') ' POTENTIAL> RMS FORCE: ',TEMP(5),' |GRADIENT|=',
+            IF (PTEST) WRITE(*,'(A,43X,F15.10,2X,A,G15.10)') ' potential> RMS force: ',TEMP(5),' |gradient|=',
      &                        TEMP(5)*SQRT(1.0D0*(NINTS))
          ELSE
             CALL VSTAT(VNEW,TEMP,NOPT,NOPT)
-            IF (PTEST) WRITE(*,'(A,43X,F15.10,2X,A,G15.10)') ' POTENTIAL> RMS FORCE: ',TEMP(5),' |GRADIENT|=',
+            IF (PTEST) WRITE(*,'(A,43X,F15.10,2X,A,G15.10)') ' potential> RMS force: ',TEMP(5),' |gradient|=',
      &                        TEMP(5)*SQRT(1.0D0*(NOPT))
          ENDIF
          RMS=TEMP(5)
-!        PRINT '(A,G20.10)',' POTENTIAL> RMS=',RMS
-         IF (CPMD.AND.(RMS.EQ.0.0D0)) RMS=1.0D0  !  TO PREVENT CONVERGENCE WHEN CPMD SCF FAILS
+!        PRINT '(A,G20.10)',' potential> RMS=',RMS
+         IF (CPMD.AND.(RMS.EQ.0.0D0)) RMS=1.0D0  !  to prevent convergence when CPMD SCF fails
       ENDIF
 C
-C  IF THE HESSIAN GETS OVERWRITTEN BY DIAGONALISATION WE MUST READ IT BACK IN BEFORE UPDATING!
+C  If the Hessian gets overwritten by diagonalisation we must read it back in before updating!
 C
       IF (GTEST.AND.(STEST.AND.HUPDATE)) THEN
          NHUP=NHUP+1
          IF (INTHUP.EQ.-1) THEN
-            WRITE(*,'(A)') ' POTENTIAL> NOT UPDATING HESSIAN'
+            WRITE(*,'(A)') ' potential> Not updating Hessian'
             IF (NHUP.GT.1) THEN
-               OPEN(UNIT=34,FILE='HESSDUMP',FORM='UNFORMATTED',STATUS='UNKNOWN')
+               OPEN(UNIT=34,FILE='hessdump',FORM='UNFORMATTED',STATUS='UNKNOWN')
                READ(34) ((HESS(J2,J1),J2=1,NOPT),J1=1,NOPT)
                CLOSE(34)
 C              DO J1=1,NOPT
@@ -2537,8 +2537,8 @@ C                 ENDDO
 C              ENDDO
             ENDIF
          ELSE IF ((NHUP.GT.1).AND.(.NOT.SSTEST)) THEN
-            WRITE(*,'(A)') ' POTENTIAL> UPDATING HESSIAN'
-            OPEN(UNIT=34,FILE='HESSDUMP',FORM='UNFORMATTED',STATUS='UNKNOWN')
+            WRITE(*,'(A)') ' potential> Updating Hessian'
+            OPEN(UNIT=34,FILE='hessdump',FORM='UNFORMATTED',STATUS='UNKNOWN')
             READ(34) ((HESS(J2,J1),J2=1,NOPT),J1=1,NOPT)
             CLOSE(34)
 C           CALL HUPD(HSAVE,COORDS,COORDSO,VNEW,GRADO,PHI)
@@ -2552,7 +2552,7 @@ C           CALL HUPD(HSAVE,COORDS,COORDSO,VNEW,GRADO,PHI)
                HESS(J1,J1)=1.0D0
             ENDDO
          ENDIF
-         OPEN(UNIT=34,FILE='HESSDUMP',FORM='UNFORMATTED',STATUS='UNKNOWN')
+         OPEN(UNIT=34,FILE='hessdump',FORM='UNFORMATTED',STATUS='UNKNOWN')
          WRITE(34) ((HESS(J2,J1),J2=1,NOPT),J1=1,NOPT)
          CLOSE(34)
          DO J1=1,NOPT
@@ -2580,8 +2580,8 @@ C           ENDDO
                   HESS(3*(J3-1)+3,J2)=0.0D0
                ENDDO
 !
-! WE MUST NOT SHIFT HERE! THIS NEEDS TO BE DONE IN SHIFTH.F.
-! WE NEED TO HAVE CORRECT ZERO EIGENVALUES FOR PATH.INFO, FOR EXAMPLE.
+! We must not shift here! This needs to be done in shifth.f.
+! We need to have correct zero eigenvalues for path.info, for example.
 !
 !              HESS(J2,J2)=SHIFTV
             ENDIF
@@ -2604,16 +2604,16 @@ C           ENDDO
          ENDIF
       ENDIF
 
-C      WRITE(*,'(A,F30.20)') 'ENERGY IN POTENTIAL:',ENERGY
+C      WRITE(*,'(A,F30.20)') 'Energy in POTENTIAL:',ENERGY
 C      PRINT*,'GTEST,SSTEST=',GTEST,SSTEST
-C      WRITE(*,'(A,F20.10)') 'RMS IN POTENTIAL=',RMS
-C      PRINT*,'COORDS IN POTENTIAL:'
+C      WRITE(*,'(A,F20.10)') 'RMS in potential=',RMS
+C      PRINT*,'coords in potential:'
 C      WRITE(*,'(6F20.10)') (COORDS(J1),J1=1,NOPT)
 C     PRINT*,'PARAMS'
 C     WRITE(*,'(3F20.10)') PARAM1,PARAM2,PARAM3
-C     IF (GTEST) PRINT*,'GRAD:'
+C     IF (GTEST) PRINT*,'grad:'
 C     IF (GTEST) WRITE(*,'(6F15.5)') (VNEW(J1),J1=1,NOPT)
-C     IF (SSTEST) PRINT*,'HESS:'
+C     IF (SSTEST) PRINT*,'hess:'
 C     IF (SSTEST) WRITE(*,'(6F15.5)') ((HESS(J1,J2),J1=1,NOPT),J2=1,NOPT)
 
       CALL MYCPU_TIME(TIME,.FALSE.)
@@ -2630,43 +2630,43 @@ C     IF (SSTEST) WRITE(*,'(6F15.5)') ((HESS(J1,J2),J1=1,NOPT),J2=1,NOPT)
       ! }}}
       RETURN
 
-666   WRITE(*,'(A)') ' POTENTIAL> ERROR READING CADPAC OR GAMES OUTPUT'
+666   WRITE(*,'(A)') ' potential> Error reading CADPAC or GAMES output'
       STOP
 
       END
 C
-C  SEE BOFILL AND COMAJUAN, J. COMP. CHEM., 11, 1326, 1995.
-C  PHI=1 IS POWELL UPDATE AND PHI=0 IS MURTAGH-SARGENT.
+C  See Bofill and Comajuan, J. Comp. Chem., 11, 1326, 1995.
+C  PHI=1 is Powell update and PHI=0 is Murtagh-Sargent.
 C
 C     SUBROUTINE HUPD(HSAVE,COORDS,COORDSO,GRAD,GRADO,PHI)
       SUBROUTINE HUPD(COORDS,COORDSO,GRAD,GRADO,PHIG)
       USE COMMONS
       USE MODHESS
       IMPLICIT NONE
-! DOXYGEN {{{
+! Doxygen {{{
 !>
-!> \NAME
-!> \BRIEF
-!> \PARAM[IN]
-!> \PARAM[IN]
-!> \PARAM[OUT]
-!> \PARAM[OUT]
+!> \name
+!> \brief
+!> \param[in]
+!> \param[in]
+!> \param[out]
+!> \param[out]
 !>
 ! }}}
-! MODULES {{{
+! Modules {{{
 
 
 ! }}}
-! SUBROUTINE PARAMETERS {{{
+! subroutine parameters {{{
 
 
 ! }}}
-! LOCAL PARAMETERS {{{
+! local parameters {{{
 
 
 ! }}}
 
-! SUBROUTINE BODY {{{
+! subroutine body {{{
 
 
 ! }}}
@@ -2676,7 +2676,7 @@ C     SUBROUTINE HUPD(HSAVE,COORDS,COORDSO,GRAD,GRADO,PHI)
      2                 DTJ, DTD, DUMMY2, PHIG, VECD(3*NATOMS), VECZ(3*NATOMS)
 C    3                 HSAVE(3*NATOMS,3*NATOMS)
 
-      PRINT*,'WARNING - HESSIAN UPDATING HAS NOT BEEN TESTED'
+      PRINT*,'WARNING - Hessian updating has not been tested'
       DTD=0.0D0
       DO J1=1,NOPT
          VECD(J1)=COORDS(J1)-COORDSO(J1)

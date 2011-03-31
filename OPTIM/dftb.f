@@ -1,38 +1,38 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C  TIFFANY S TB ROUTINE FOR C.
+C  Tiffany s TB routine for C.
 C
-      SUBROUTINE DFTB(N,XS,DERIV1ST,ENERGY,GTEST,XMULREAL)
+      SUBROUTINE DFTB(N,XS,deriv1st,ENERGY,GTEST,XMULREAL)
       USE KEY
       IMPLICIT NONE
       LOGICAL GTEST
       INTEGER I, J, K, AI, AJ, NDIM,NMAX, I2, J2, K2, LWORK, INFO, J1, N, NDIAG
-      DOUBLE PRECISION DIST,XMULREAL,WORK(320*N),DPRAND,S(4*N,4*N),SORIG(4*N,4*N),
+      DOUBLE PRECISION DIST,XMULREAL,WORK(320*N),DPRAND,S(4*N,4*N),Sorig(4*N,4*N),
      &                 ENERGY,XS(3*N),HB(4*N,4*N),HA(4*N,4*N),VA(4*N,4*N),VB(4*N,4*N)
 
-      DOUBLE PRECISION R(N,N), ABSTOL,DIRCOS(N,N,3),DIAG(4*N),DERIV1ST(3*N),DIAGA(4*N),DIAGB(4*N)
+      DOUBLE PRECISION R(N,N), ABSTOL,DIRCOS(N,N,3),DIAG(4*N),deriv1st(3*N),DIAGA(4*N),DIAGB(4*N)
 
-      DOUBLE PRECISION SSSSIG,SSPSIG,SPPSIG,SPPPI,EPSSAC,EPSSBC,EPSPAC,EPSPBC,HSSSIGA,HSPSIGA,
-     &        HPPSIGA,HPPPIA,HSSSIGB,HSPSIGB,HPPSIGB,HPPPIB
+      DOUBLE PRECISION Ssssig,Sspsig,Sppsig,Spppi,EPSsac,EPSsbc,EPSpac,EPSpbc,Hsssiga,Hspsiga,
+     &        Hppsiga,Hpppia,Hsssigb,Hspsigb,Hppsigb,Hpppib
 
-      PARAMETER(EPSSAC=-0.519289D0, EPSPAC=-0.216472D0, EPSSBC=-0.434382D0, EPSPBC=-0.216472D0)
+      PARAMETER(EPSsac=-0.519289D0, EPSpac=-0.216472D0, EPSsbc=-0.434382D0, EPSpbc=-0.216472D0)
    
       INTEGER IWORK(20*N), IFAIL(4*N) 
 
@@ -45,7 +45,7 @@ C     COMMON /RDIST/ R, DIRCOS, DIAGA, DIAGB
       LWORK=320*N
       XMUL=INT(XMULREAL)
 
-C   CALCULATE DISTANCE MATRIX
+C   Calculate distance matrix
 
       DO I=1,N
        I2=3*(I-1)
@@ -56,10 +56,10 @@ C   CALCULATE DISTANCE MATRIX
              R(I,J)=SQRT(DIST)
              R(J,I)=R(I,J)
 
-C   NOW THE DIRECTION COSINES
-C   WHICH INCIDENTALLY ARE THE PROJECTIONS OF A UNIT VECTOR ONTO 
-C   THE AXES AND NOT THE COSINES.
-C   NOTE WE HAVE NOT CALCULATED DIRCOS(I,I)
+C   Now the direction cosines
+C   Which incidentally are the projections of a unit vector onto 
+C   the axes and NOT the cosines.
+C   Note we have not calculated DIRCOS(I,I)
 
             DO K=1,3
                DIRCOS(I,J,K)=(XS(J2+K)-XS(I2+K))/R(I,J)
@@ -74,19 +74,19 @@ C            PRINT*,'D3 IS',DIRCOS(I,J,3)
       END DO 
 
 
-C   CALCULATE REPULSIVE FREE ENERGY
+C   Calculate Repulsive Free Energy
 
       UREP=0.0D0
 
       DO I=1,N
          DO J=I+1,N
 
-CC          PRINT*,'JS AND ATNOS ARE',I,J,IATNUM(I),IATNUM(J)
+CC          PRINT*,'js and atnos are',I,J,IATNUM(I),IATNUM(J)
 C REMEMBER  : THESE CALCUALTIONS ARE IN BOHR, NOT ANGSTROM
 
               CALL AREPCC(N,I,J,REP,R)
 
-C        PRINT*,'REP IN H IS',REP
+C        PRINT*,'rep in h is',REP
 
         UREP=REP+UREP
 
@@ -95,104 +95,104 @@ C        PRINT*,'REP IN H IS',REP
         ENDDO
       ENDDO
 
-C      PRINT*,' NEW UREP IN H IS',UREP
+C      PRINT*,' NEW urep in h is',UREP
 
-C   ONLY INCLUDE OVERLAP OR INTERACTION WITH DIFFERENT ATOMS HERE.
+C   Only include overlap or interaction with different atoms here.
                
       DO I=1,N
          AI=4*(I-1)
          DO J=I+1,N
             AJ=4*(J-1)
 
-C   CALCULATE THE OVERLAP MATRIX S(I,J), RELATED TO THESE PARAMETERS
-C   BY THE SLATER-KOSTER SCHEME
+C   Calculate the overlap matrix S(I,J), related to these parameters
+C   by the Slater-Koster scheme
 
-           CALL OVECC(N,I,J,SSSSIG, SSPSIG, SPPSIG, SPPPI, R)
+           CALL OVECC(N,I,J,Ssssig, Sspsig, Sppsig, Spppi, R)
 
-           S((AI+1),(AJ+2))=DIRCOS(I,J,1)*SSPSIG
-           S((AI+1),(AJ+3))=DIRCOS(I,J,2)*SSPSIG
-           S((AI+1),(AJ+4))=DIRCOS(I,J,3)*SSPSIG
+           S((AI+1),(AJ+2))=DIRCOS(I,J,1)*Sspsig
+           S((AI+1),(AJ+3))=DIRCOS(I,J,2)*Sspsig
+           S((AI+1),(AJ+4))=DIRCOS(I,J,3)*Sspsig
 
-           S((AI+2),(AJ+1))=-DIRCOS(I,J,1)*SSPSIG
-           S((AI+3),(AJ+1))=-DIRCOS(I,J,2)*SSPSIG
-           S((AI+4),(AJ+1))=-DIRCOS(I,J,3)*SSPSIG
+           S((AI+2),(AJ+1))=-DIRCOS(I,J,1)*Sspsig
+           S((AI+3),(AJ+1))=-DIRCOS(I,J,2)*Sspsig
+           S((AI+4),(AJ+1))=-DIRCOS(I,J,3)*Sspsig
 
-           S((AI+1),(AJ+1))=SSSSIG
+           S((AI+1),(AJ+1))=Ssssig
  
-           S((AI+2),(AJ+2))=DIRCOS(I,J,1)**2*SPPSIG+(1.0D0-DIRCOS(I,J,1)**2)*SPPPI
-           S((AI+2),(AJ+3))=DIRCOS(I,J,1)*DIRCOS(I,J,2)*(SPPSIG-SPPPI)
-           S((AI+2),(AJ+4))=DIRCOS(I,J,1)*DIRCOS(I,J,3)*(SPPSIG-SPPPI)
+           S((AI+2),(AJ+2))=DIRCOS(I,J,1)**2*Sppsig+(1.0D0-DIRCOS(I,J,1)**2)*Spppi
+           S((AI+2),(AJ+3))=DIRCOS(I,J,1)*DIRCOS(I,J,2)*(Sppsig-Spppi)
+           S((AI+2),(AJ+4))=DIRCOS(I,J,1)*DIRCOS(I,J,3)*(Sppsig-Spppi)
 
            S((AI+3),(AJ+2))=S((AI+2),(AJ+3))
-           S((AI+3),(AJ+3))=DIRCOS(I,J,2)**2*SPPSIG+(1.0D0-DIRCOS(I,J,2)**2)*SPPPI
-           S((AI+3),(AJ+4))=DIRCOS(I,J,2)*DIRCOS(I,J,3)*(SPPSIG-SPPPI)
+           S((AI+3),(AJ+3))=DIRCOS(I,J,2)**2*Sppsig+(1.0D0-DIRCOS(I,J,2)**2)*Spppi
+           S((AI+3),(AJ+4))=DIRCOS(I,J,2)*DIRCOS(I,J,3)*(Sppsig-Spppi)
 
            S((AI+4),(AJ+2))=S((AI+2),(AJ+4))
            S((AI+4),(AJ+3))=S((AI+3),(AJ+4))
-           S((AI+4),(AJ+4))=DIRCOS(I,J,3)**2*SPPSIG+(1.0D0-DIRCOS(I,J,3)**2)*SPPPI
+           S((AI+4),(AJ+4))=DIRCOS(I,J,3)**2*Sppsig+(1.0D0-DIRCOS(I,J,3)**2)*Spppi
             
-C   HAMILTONIAN IS FOUND USING THE SLATER-KOSTER SCHEME
-C   AS SHOWN IN THEIR PAPER AND HARRISON S BOOK P.481
-C   WHICH RELATES H TO THE PARAMETER V USING DIRECTION COSINES.
-C   LAMBDA CHANGES FOR EACH I AND J
+C   Hamiltonian is found using the Slater-Koster scheme
+C   as shown in their paper and Harrison s book p.481
+C   which relates H to the parameter V using direction cosines.
+C   LAMBDA changes for each I and J
       
-C MY CHANGE MEANS CONSTRUCTING  A AND B TYPE INTERACTION MATRICES
-C AS AN UHF ANALOGUE
+C my change means constructing  a and b type interaction matrices
+C as an uhf analogue
 
-           CALL HAMCCA(N,I,J,HSSSIGA, HSPSIGA, HPPSIGA, HPPPIA, R)
-           CALL HAMCCB(N,I,J,HSSSIGB, HSPSIGB, HPPSIGB, HPPPIB, R)
+           CALL HAMCCA(N,I,J,Hsssiga, Hspsiga, Hppsiga, Hpppia, R)
+           CALL HAMCCB(N,I,J,Hsssigb, Hspsigb, Hppsigb, Hpppib, R)
 
-           HA((AI+1),(AJ+2))=DIRCOS(I,J,1)*HSPSIGA
-           HA((AI+1),(AJ+3))=DIRCOS(I,J,2)*HSPSIGA
-           HA((AI+1),(AJ+4))=DIRCOS(I,J,3)*HSPSIGA
+           HA((AI+1),(AJ+2))=DIRCOS(I,J,1)*Hspsiga
+           HA((AI+1),(AJ+3))=DIRCOS(I,J,2)*Hspsiga
+           HA((AI+1),(AJ+4))=DIRCOS(I,J,3)*Hspsiga
 
-           HA((AI+2),(AJ+1))=-DIRCOS(I,J,1)*HSPSIGA
-           HA((AI+3),(AJ+1))=-DIRCOS(I,J,2)*HSPSIGA
-           HA((AI+4),(AJ+1))=-DIRCOS(I,J,3)*HSPSIGA
+           HA((AI+2),(AJ+1))=-DIRCOS(I,J,1)*Hspsiga
+           HA((AI+3),(AJ+1))=-DIRCOS(I,J,2)*Hspsiga
+           HA((AI+4),(AJ+1))=-DIRCOS(I,J,3)*Hspsiga
 
-           HB((AI+1),(AJ+2))=DIRCOS(I,J,1)*HSPSIGB
-           HB((AI+1),(AJ+3))=DIRCOS(I,J,2)*HSPSIGB
-           HB((AI+1),(AJ+4))=DIRCOS(I,J,3)*HSPSIGB
+           HB((AI+1),(AJ+2))=DIRCOS(I,J,1)*Hspsigb
+           HB((AI+1),(AJ+3))=DIRCOS(I,J,2)*Hspsigb
+           HB((AI+1),(AJ+4))=DIRCOS(I,J,3)*Hspsigb
 
-           HB((AI+2),(AJ+1))=-DIRCOS(I,J,1)*HSPSIGB
-           HB((AI+3),(AJ+1))=-DIRCOS(I,J,2)*HSPSIGB
-           HB((AI+4),(AJ+1))=-DIRCOS(I,J,3)*HSPSIGB
+           HB((AI+2),(AJ+1))=-DIRCOS(I,J,1)*Hspsigb
+           HB((AI+3),(AJ+1))=-DIRCOS(I,J,2)*Hspsigb
+           HB((AI+4),(AJ+1))=-DIRCOS(I,J,3)*Hspsigb
 
-C  TRANSFORM THE HA INTO SK ELEMENTS....
+C  transform the Ha into SK elements....
 
-           HA((AI+1),(AJ+1))=HSSSIGA
+           HA((AI+1),(AJ+1))=Hsssiga
 
-           HA((AI+2),(AJ+2))=DIRCOS(I,J,1)**2*HPPSIGA+(1.0D0-DIRCOS(I,J,1)**2)*HPPPIA
-           HA((AI+2),(AJ+3))=DIRCOS(I,J,1)*DIRCOS(I,J,2)*(HPPSIGA-HPPPIA)
-           HA((AI+2),(AJ+4))=DIRCOS(I,J,1)*DIRCOS(I,J,3)*(HPPSIGA-HPPPIA)
+           HA((AI+2),(AJ+2))=DIRCOS(I,J,1)**2*Hppsiga+(1.0D0-DIRCOS(I,J,1)**2)*Hpppia
+           HA((AI+2),(AJ+3))=DIRCOS(I,J,1)*DIRCOS(I,J,2)*(Hppsiga-Hpppia)
+           HA((AI+2),(AJ+4))=DIRCOS(I,J,1)*DIRCOS(I,J,3)*(Hppsiga-Hpppia)
 
            HA((AI+3),(AJ+2))=HA((AI+2),(AJ+3))
-           HA((AI+3),(AJ+3))=DIRCOS(I,J,2)**2*HPPSIGA+(1.0D0-DIRCOS(I,J,2)**2)*HPPPIA
-           HA((AI+3),(AJ+4))=DIRCOS(I,J,2)*DIRCOS(I,J,3)*(HPPSIGA-HPPPIA)
+           HA((AI+3),(AJ+3))=DIRCOS(I,J,2)**2*Hppsiga+(1.0D0-DIRCOS(I,J,2)**2)*Hpppia
+           HA((AI+3),(AJ+4))=DIRCOS(I,J,2)*DIRCOS(I,J,3)*(Hppsiga-Hpppia)
 
            HA((AI+4),(AJ+2))=HA((AI+2),(AJ+4))
            HA((AI+4),(AJ+3))=HA((AI+3),(AJ+4))
-           HA((AI+4),(AJ+4))=DIRCOS(I,J,3)**2*HPPSIGA+(1.0D0-DIRCOS(I,J,3)**2)*HPPPIA
+           HA((AI+4),(AJ+4))=DIRCOS(I,J,3)**2*Hppsiga+(1.0D0-DIRCOS(I,J,3)**2)*Hpppia
 
-C NOW FOR THE BETA TYPE...
+C now for the beta type...
 
-           HB((AI+1),(AJ+1))=HSSSIGB
+           HB((AI+1),(AJ+1))=Hsssigb
 
-           HB((AI+2),(AJ+2))=DIRCOS(I,J,1)**2*HPPSIGB+(1.0D0-DIRCOS(I,J,1)**2)*HPPPIB
-           HB((AI+2),(AJ+3))=DIRCOS(I,J,1)*DIRCOS(I,J,2)*(HPPSIGB-HPPPIB)
-           HB((AI+2),(AJ+4))=DIRCOS(I,J,1)*DIRCOS(I,J,3)*(HPPSIGB-HPPPIB)
+           HB((AI+2),(AJ+2))=DIRCOS(I,J,1)**2*Hppsigb+(1.0D0-DIRCOS(I,J,1)**2)*Hpppib
+           HB((AI+2),(AJ+3))=DIRCOS(I,J,1)*DIRCOS(I,J,2)*(Hppsigb-Hpppib)
+           HB((AI+2),(AJ+4))=DIRCOS(I,J,1)*DIRCOS(I,J,3)*(Hppsigb-Hpppib)
 
            HB((AI+3),(AJ+2))=HB((AI+2),(AJ+3))
-           HB((AI+3),(AJ+3))=DIRCOS(I,J,2)**2*HPPSIGB+(1.0D0-DIRCOS(I,J,2)**2)*HPPPIB
-           HB((AI+3),(AJ+4))=DIRCOS(I,J,2)*DIRCOS(I,J,3)*(HPPSIGB-HPPPIB)
+           HB((AI+3),(AJ+3))=DIRCOS(I,J,2)**2*Hppsigb+(1.0D0-DIRCOS(I,J,2)**2)*Hpppib
+           HB((AI+3),(AJ+4))=DIRCOS(I,J,2)*DIRCOS(I,J,3)*(Hppsigb-Hpppib)
 
            HB((AI+4),(AJ+2))=HB((AI+2),(AJ+4))
            HB((AI+4),(AJ+3))=HB((AI+3),(AJ+4))
-           HB((AI+4),(AJ+4))=DIRCOS(I,J,3)**2*HPPSIGB+(1.0D0-DIRCOS(I,J,3)**2)*HPPPIB
+           HB((AI+4),(AJ+4))=DIRCOS(I,J,3)**2*Hppsigb+(1.0D0-DIRCOS(I,J,3)**2)*Hpppib
 
         ENDDO
 
-C   INTERACTION/OVERLAP OF DIFFERENT AOS ON THE SAME ATOM
+C   Interaction/Overlap of different AOs on the same atom
          
         DO K=1,4
            DO K2=K+1,4
@@ -204,17 +204,17 @@ C             H((AI+K),(AI+K2))=0.0D0
            ENDDO
         ENDDO
 
-C   INTERACTION OF SAME AO ON THE SAME ATOM
+C   Interaction of same AO on the same atom
 
-         HA((AI+1),(AI+1))=EPSSAC
-         HA((AI+2),(AI+2))=EPSPAC
-         HA((AI+3),(AI+3))=EPSPAC
-         HA((AI+4),(AI+4))=EPSPAC
+         HA((AI+1),(AI+1))=EPSsac
+         HA((AI+2),(AI+2))=EPSpac
+         HA((AI+3),(AI+3))=EPSpac
+         HA((AI+4),(AI+4))=EPSpac
 
-         HB((AI+1),(AI+1))=EPSSBC
-         HB((AI+2),(AI+2))=EPSPBC
-         HB((AI+3),(AI+3))=EPSPBC
-         HB((AI+4),(AI+4))=EPSPBC
+         HB((AI+1),(AI+1))=EPSsbc
+         HB((AI+2),(AI+2))=EPSpbc
+         HB((AI+3),(AI+3))=EPSpbc
+         HB((AI+4),(AI+4))=EPSpbc
 
       ENDDO
 
@@ -224,7 +224,7 @@ C   INTERACTION OF SAME AO ON THE SAME ATOM
 
       DO I=1,4*N
         DO J=1,4*N
-           SORIG(I,J)=S(I,J)
+           Sorig(I,J)=S(I,J)
         ENDDO
       ENDDO
 
@@ -242,15 +242,15 @@ C   INTERACTION OF SAME AO ON THE SAME ATOM
 C
 C     CALL DSYGV( 1, 'V', 'U', NDIM, H, NMAX, S, NMAX, DIAG, WORK, LWORK, INFO )
 C
-      IF (DIAG(1).LT.DIAG(NDIM)) CALL EIGENSORT_VAL_ASC(DIAG,VA,NDIM,NMAX)
+      if (diag(1).lt.diag(ndim)) call eigensort_val_asc(diag,va,ndim,nmax)
  
       IF (INFO.NE.0) THEN
          DIAGTEST=.TRUE.
-         ENERGY=1.0D6*DPRAND() ! PUT IN DPRAND TO PREVENT ZERO EIGENVALUE IN SECDIAG
+         ENERGY=1.0D6*DPRAND() ! put in DPRAND to prevent zero eigenvalue in secdiag
          DO J1=1,3*N
-            DERIV1ST(J1)=1.0D10*DPRAND()
+            deriv1st(J1)=1.0D10*DPRAND()
          ENDDO
-         PRINT*,'ALPHA DFTB DIAGONALISATION FAILED - INFO=',INFO
+         PRINT*,'alpha DFTB diagonalisation failed - INFO=',INFO
          RETURN
       ENDIF
 
@@ -260,7 +260,7 @@ C
 
       DO I=1,4*N
         DO J=1,4*N
-           S(I,J)=SORIG(I,J)
+           S(I,J)=Sorig(I,J)
         END DO
       END DO
 
@@ -274,15 +274,15 @@ C
      1     0.0D0, 1, 120, ABSTOL, NDIAG, DIAG, VB, NMAX, WORK, LWORK, IWORK, IFAIL, INFO)
 
 C     CALL DSYGV( 1, 'V', 'U', NDIM, H, NMAX, S, NMAX, DIAG, WORK, LWORK, INFO )
-      IF (DIAG(1).LT.DIAG(NDIM)) CALL EIGENSORT_VAL_ASC(DIAG,VB,NDIM,NMAX)
+      if (diag(1).lt.diag(ndim)) call eigensort_val_asc(diag,vb,ndim,nmax)
 
       IF (INFO.NE.0) THEN
          DIAGTEST=.TRUE.
          ENERGY=1.0D6*DPRAND()
          DO J1=1,3*N
-            DERIV1ST(J1)=1.0D10*DPRAND()
+            deriv1st(J1)=1.0D10*DPRAND()
          ENDDO
-         PRINT*,'DSYGV FAILED - INFO=',INFO
+         PRINT*,'DSYGV failed - INFO=',INFO
          RETURN
       ENDIF
 
@@ -296,31 +296,31 @@ C     CALL DSYGV( 1, 'V', 'U', NDIM, H, NMAX, S, NMAX, DIAG, WORK, LWORK, INFO )
          ENERGY=ENERGY+DIAGA(J)+DIAGB(J)
       ENDDO
 
-C   FOR SINGLE ATOM THERE SHOULD BE NO CONTRIBUTION FROM THE
-C   BOND COUNTING TERM
+C   For single atom there should be no contribution from the
+C   bond counting term
 C      IF (N .EQ. 1) THEN
 C         ENERGY=2*ENERGY
 C      ELSE
-C ALTERED WITH NO UREP TO FIGURE OUT WHAT MY UREP SHOULD BE...
+C altered with no urep to figure out what my urep should be...
           ENERGY=ENERGY+UREP
 C           ENERGY=UREP+0.0D0
-C TESTING THE REP PART OF THE POTENTIAL (DERIVS)
+C testing the rep part of the potential (derivs)
 
 C      END IF
 
-C   NOW CALL THE ALL NEW ORIGINALLY CRAFTED SUBROUTINE TO CALCULATE
-C   THE FIRST DERIVATIVES.
+C   Now call the all new originally crafted subroutine to calculate
+C   the first derivatives.
 
-      IF (GTEST) CALL DFDERIV1(XMUL,N,XS,DERIV1ST,VA,VB,R, DIRCOS, DIAGA, DIAGB)
+      IF (GTEST) CALL DFDERIV1(XMUL,N,XS,deriv1st,VA,VB,R, DIRCOS, DIAGA, DIAGB)
 
 
       RETURN
       END
 C   
-C  SUBROUTINE TO EXPAND THE POLYNOMIAL SUM FOR THE OVERLAP MATRIX ELEMENTS
-C  THIS IS BETWEEN SAME ELEMENT....SAME ELEMENT/DIFF ELEMENT WILL BE MORE
+C  subroutine to expand the polynomial sum for the overlap matrix elements
+C  this is between same element....same element/diff element will be more
 C   
-      SUBROUTINE OVECC(N,K,L,SSSS,SSPS,SPPS,SPPP,R)
+      SUBROUTINE OVECC(N,K,L,SSSs,SSPs,SPPs,SPPp,R)
       IMPLICIT NONE
       INTEGER  K,L,N
       DOUBLE PRECISION R(N,N), QTB(N,N)
@@ -334,7 +334,7 @@ C     COMMON /RDIST/ R, DIRCOS, DIAGA, DIAGB
      6             D30,D31,D32,D33,D34,D35,D36,D37,D38,D39,D40
 
       PARAMETER (   D1=  0.4635980000 ,D2=-0.354943D0,
-C OLD PARAM :D2= -0.3593880000 ,
+C old param :D2= -0.3593880000 ,
      /  D3=  0.1597240000 ,D4= -0.0236036000
      / ,D5= -0.0160748000 ,D6=  0.0101939000 ,D7= -0.0010466800 ,D8= -0.0013805000
      / ,D9=  0.0007822820,D10= -0.0001806570,
@@ -344,7 +344,7 @@ C OLD PARAM :D2= -0.3593880000 ,
      / ,D19= -0.0013407800,D20=  0.0002213130,
 
      /  D21= -0.1381954000 , D22=0.021232D0,
-C OLD PARAM: D22=  0.0272058000 ,
+C old param: D22=  0.0272058000 ,
      /  D23=  0.1362280000 ,D24= -0.1495750000
      / ,D25=  0.0722040000 ,D26= -0.0144966000 ,D27= -0.0040281700 ,D28=  0.0047257800
      / ,D29= -0.0021491900,D30=  0.0004729620,
@@ -359,13 +359,13 @@ C OLD PARAM: D22=  0.0272058000 ,
 
        QTB(K,L)=(R(K,L)-((B3+A3)/2.0D0))/((B3-A3)/2.0D0)
 
-C       PRINT*,'R OF IJ IN OVERL IS',R(K,L)
+C       PRINT*,'r of ij in OVERL is',R(K,L)
 
-C  SSSSIG
+C  Ssssig
 
       IF (R(K,L).LT.6.858869592109767D0) THEN
 
-      SSSS=D1 + D2*QTB(K,L) + D3*(-1.0D0 + 2.0D0*QTB(K,L)**2) 
+      SSSs=D1 + D2*QTB(K,L) + D3*(-1.0D0 + 2.0D0*QTB(K,L)**2) 
      /    + D4*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    D5*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4) 
      /    + D6*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -377,15 +377,15 @@ C  SSSSIG
      
       ELSE
        
-      SSSS=0.0D0
+      SSSs=0.0D0
 
        ENDIF
 
-C   SSPSIG
+C   Sspsig
 
             IF (R(K,L).LT.6.968036930355212D0) THEN
 
-      SSPS= D11 + D12*QTB(K,L) + D13*(-1.0D0 + 2.0D0*QTB(K,L)**2)
+      SSPs= D11 + D12*QTB(K,L) + D13*(-1.0D0 + 2.0D0*QTB(K,L)**2)
      /    + D14*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    D15*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4)
      /    + D16*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -397,18 +397,18 @@ C   SSPSIG
 
       ELSE
 
-      SSPS=0.0D0
+      SSPs=0.0D0
 
        ENDIF
 
 C *****
-C WHEN USING FS PARAMS, SWAP PPS AND PPPI
+C when using Fs params, swap pps and pppi
 C *****
-C SPPSIG
+C Sppsig
 
             IF (R(K,L).LT.7.031215111280781D0) THEN
 
-      SPPS= D21 + D22*QTB(K,L) + D23*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
+      SPPs= D21 + D22*QTB(K,L) + D23*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
      /    + D24*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    D25*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4)
      /    + D26*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -420,15 +420,15 @@ C SPPSIG
 
           ELSE
 
-        SPPS=0.0D0
+        SPPs=0.0D0
 
          ENDIF
 
-C   SPPPI
+C   Spppi
 
             IF (R(K,L).LT.6.4433341605186D0) THEN
 
-      SPPP= D31 + D32*QTB(K,L) + D33*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
+      SPPp= D31 + D32*QTB(K,L) + D33*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
      /    + D34*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    D35*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4)
      /    + D36*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -440,27 +440,27 @@ C   SPPPI
 
           ELSE
 
-      SPPP=0.0D0
+      SPPp=0.0D0
 
           ENDIF
 
-C       PRINT*,'IN OVERLAPCC, ELEMENTS ARE',SSSS,SSPS,SPPS,SPPP
-C       PRINT*,'B3 IS',B3
+C       PRINT*,'in overlapcc, elements are',SSSs,SSPs,SPPs,SPPp
+C       PRINT*,'B3 is',B3
 
 C         IF (R(K,L).GT.B3) THEN
-C          SSSS=0.0D0
-C          SSPS=0.0D0
-C          SPPS=0.0D0
-C          SPPP=0.0D0
+C          SSSs=0.0D0
+C          SSPs=0.0D0
+C          SPPs=0.0D0
+C          SPPp=0.0D0
 C         ENDIF
 
        RETURN
        END
    
-C  SUBROUTINE TO EXPAND THE POLYNOMIAL SUM FOR THE OVERLAP MATRIX ELEMENTS
-C  THIS IS BETWEEN SAME ELEMENT....SAME ELEMENT/DIFF ELEMENT WILL BE MORE
+C  subroutine to expand the polynomial sum for the overlap matrix elements
+C  this is between same element....same element/diff element will be more
 C   
-      SUBROUTINE HAMCCA(N,K,L,SSSS,SSPS,SPPS,SPPP,R)
+      SUBROUTINE HAMCCA(N,K,L,SSSs,SSPs,SPPs,SPPp,R)
       IMPLICIT NONE
       INTEGER  K,L,N
       DOUBLE PRECISION R(N,N), QTB(N,N)
@@ -480,7 +480,7 @@ C
      / ,G19= -0.0000637944,G20= -0.0010983800,
 
      /  G21=  0.2788480000 , G22=-0.1669651D0,
-C OLD PARAM G22= -0.1770288000 ,
+C old param G22= -0.1770288000 ,
      /  G23=  0.0113421000 ,G24=  0.0677288000
      / ,G25= -0.0683438000 ,G26=  0.0436374000 ,G27= -0.0211787000 ,G28=  0.0074277200
      / ,G29= -0.0013746800,G30= -0.0004145400,
@@ -494,11 +494,11 @@ C OLD PARAM G22= -0.1770288000 ,
        B2=7.0D0
        QTB(K,L)=(R(K,L)-((B2+A2)/2.0D0))/((B2-A2)/2.0D0)
 
-C  SSSSIG
+C  Ssssig
 
        IF (R(K,L).LT.6.501645139158383D0) THEN
 
-      SSSS=G1 + G2*QTB(K,L) + G3*(-1.0D0 + 2.0D0*QTB(K,L)**2) 
+      SSSs=G1 + G2*QTB(K,L) + G3*(-1.0D0 + 2.0D0*QTB(K,L)**2) 
      /    + G4*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    G5*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4) 
      /    + G6*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -510,15 +510,15 @@ C  SSSSIG
 
        ELSE
  
-       SSSS=0.0D0
+       SSSs=0.0D0
 
        ENDIF
 
-C   SSPSIG
+C   Sspsig
 
        IF (R(K,L).LT.6.514708000907687D0) THEN
 
-      SSPS=G11 + G12*QTB(K,L) + G13*(-1.0D0 + 2.0D0*QTB(K,L)**2)
+      SSPs=G11 + G12*QTB(K,L) + G13*(-1.0D0 + 2.0D0*QTB(K,L)**2)
      /    + G14*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    G15*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4)
      /    + G16*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -530,15 +530,15 @@ C   SSPSIG
 
        ELSE
  
-      SSPS=0.0D0
+      SSPs=0.0D0
 
        ENDIF
 
-C SPPSIG
+C Sppsig
 
        IF (R(K,L).LT.6.699591659971658D0) THEN
 
-      SPPS=G21 + G22*QTB(K,L) + G23*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
+      SPPs=G21 + G22*QTB(K,L) + G23*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
      /    + G24*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    G25*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4)
      /    + G26*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -550,16 +550,16 @@ C SPPSIG
 
        ELSE
 
-      SPPS=0.0D0
+      SPPs=0.0D0
 
         ENDIF
 
 
-C   SPPPI
+C   Spppi
 
        IF (R(K,L).LT.6.841936337171249D0) THEN
 
-      SPPP=G31 + G32*QTB(K,L) + G33*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
+      SPPp=G31 + G32*QTB(K,L) + G33*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
      /    + G34*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    G35*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4)
      /    + G36*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -571,27 +571,27 @@ C   SPPPI
 
          ELSE
 
-            SPPP=0.0D0
+            SPPp=0.0D0
 
          ENDIF
 
 
 C         IF (R(K,L).GT.B2) THEN
-C          SSSS=0.0D0
-C          SSPS=0.0D0
-C          SPPS=0.0D0
-C          SPPP=0.0D0
+C          SSSs=0.0D0
+C          SSPs=0.0D0
+C          SPPs=0.0D0
+C          SPPp=0.0D0
 C         ENDIF
 
       RETURN
       END
 
 C   
-C  SUBROUTINE TO EXPAND THE POLYNOMIAL SUM FOR THE OVERLAP MATRIX ELEMENTS
-C  THIS IS BETWEEN SAME ELEMENT....SAME ELEMENT/DIFF ELEMENT WILL BE MORE
+C  subroutine to expand the polynomial sum for the overlap matrix elements
+C  this is between same element....same element/diff element will be more
 C   
 
-      SUBROUTINE HAMCCB(N,K,L,SSSS,SSPS,SPPS,SPPP,R)
+      SUBROUTINE HAMCCB(N,K,L,SSSs,SSPs,SPPs,SPPp,R)
       IMPLICIT NONE
       INTEGER  K,L,N
       DOUBLE PRECISION R(N,N), QTB(N,N)
@@ -603,7 +603,7 @@ C
      9     G37,G38,G39,G40,A2,B2
 
        PARAMETER (   G1= -0.3789880000 , G2=0.287963,
-C OLD PARAM
+C old param
 C G2=  0.2886558000 ,
      /  G3= -0.1201660000 ,G4=  0.0100538000
      / ,G5=  0.0203983000 ,G6= -0.0149822000 ,G7=  0.0056378700 ,G8= -0.0006071250
@@ -626,11 +626,11 @@ C G2=  0.2886558000 ,
        B2=7.0D0
        QTB(K,L)=(R(K,L)-((B2+A2)/2.0D0))/((B2-A2)/2.0D0)
 
-C  SSSSIG
+C  Ssssig
 
        IF (R(K,L).LT.6.695259436126274D0) THEN
 
-      SSSS=G1 + G2*QTB(K,L) + G3*(-1.0D0 + 2.0D0*QTB(K,L)**2) 
+      SSSs=G1 + G2*QTB(K,L) + G3*(-1.0D0 + 2.0D0*QTB(K,L)**2) 
      /    + G4*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    G5*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4) 
      /    + G6*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -642,16 +642,16 @@ C  SSSSIG
 
       ELSE
 
-      SSSS=0.0D0
+      SSSs=0.0D0
 
       ENDIF
 
 
-C   SSPSIG
+C   Sspsig
 
        IF (R(K,L).LT.6.796735011037814D0) THEN
 
-      SSPS=G11 + G12*QTB(K,L) + G13*(-1.0D0 + 2.0D0*QTB(K,L)**2)
+      SSPs=G11 + G12*QTB(K,L) + G13*(-1.0D0 + 2.0D0*QTB(K,L)**2)
      /    + G14*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    G15*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4)
      /    + G16*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -663,16 +663,16 @@ C   SSPSIG
 
          ELSE
 
-        SSPS=0.0D0
+        SSPs=0.0D0
 
          ENDIF
 
 
-C SPPSIG
+C Sppsig
 
        IF (R(K,L).LT.6.880535598840217D0) THEN
 
-      SPPS=G21 + G22*QTB(K,L) + G23*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
+      SPPs=G21 + G22*QTB(K,L) + G23*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
      /    + G24*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    G25*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4)
      /    + G26*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -684,16 +684,16 @@ C SPPSIG
 
          ELSE
 
-         SPPS=0.0D0
+         SPPs=0.0D0
 
          ENDIF
 
 
-C   SPPPI
+C   Spppi
 
        IF (R(K,L).LT.5.944816716454667D0) THEN
 
-      SPPP=G31 + G32*QTB(K,L) + G33*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
+      SPPp=G31 + G32*QTB(K,L) + G33*(-1.0D0 + 2.0D0*QTB(K,L)**2)        
      /    + G34*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    G35*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4)
      /    + G36*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -705,26 +705,26 @@ C   SPPPI
 
         ELSE
 
-          SPPP=0.0D0
+          SPPp=0.0D0
 
         ENDIF
 
 
 C         IF (R(K,L).GT.B2) THEN
-C          SSSS=0.0D0
-C          SSPS=0.0D0
-C          SPPS=0.0D0
-C          SPPP=0.0D0
+C          SSSs=0.0D0
+C          SSPs=0.0D0
+C          SPPs=0.0D0
+C          SPPp=0.0D0
 C         ENDIF
 
       RETURN
       END
 C   
-C  SUBROUTINE TO EXPAND THE POLYNOMIAL SUM FOR THE OVERLAP MATRIX ELEMENTS
-C  THIS IS BETWEEN SAME ELEMENT....SAME ELEMENT/DIFF ELEMENT WILL BE MORE
+C  subroutine to expand the polynomial sum for the overlap matrix elements
+C  this is between same element....same element/diff element will be more
 C   
 
-      SUBROUTINE AREPCC(N,K,L,REP,R)
+      SUBROUTINE AREPCC(N,K,L,rep,R)
       IMPLICIT NONE
       INTEGER  K,L,N
       DOUBLE PRECISION R(N,N), QTB(N,N)
@@ -742,9 +742,9 @@ C
        B2=3.3D0
        QTB(K,L)=(R(K,L)-((B2+A2)/2.0D0))/((B2-A2)/2.0D0)
 
-C  SSSSIG
+C  Ssssig
 
-      REP=C1 + C2*QTB(K,L) + C3*(-1.0D0 + 2.0D0*QTB(K,L)**2) 
+      rep=C1 + C2*QTB(K,L) + C3*(-1.0D0 + 2.0D0*QTB(K,L)**2) 
      /    + C4*(-3.0D0*QTB(K,L) + 4.0D0*QTB(K,L)**3) +
      /    C5*(1 -8.0D0*QTB(K,L)**2 + 8.0D0*QTB(K,L)**4) 
      /    + C6*(5.0D0*QTB(K,L) -20.0D0*QTB(K,L)**3 + 16.0D0*QTB(K,L)**5)
@@ -758,21 +758,21 @@ C  SSSSIG
 
 
          IF (R(K,L).GT.3.251838574097556D0) THEN
-            REP=0.0D0
+            rep=0.0D0
          ELSE
-           REP=REP+0.00002383611355998103D0
+           rep=rep+0.00002383611355998103D0
          ENDIF
 
       RETURN
       END
-C   THIS IS PHASE TWO WHERE WE CALCULATE THE FIRST DERIVATIVES
-C   OF THE SILICON POTENTIAL CODED IN TB.SI.F. IT IS IN TIGHT
-C   BINDING PARAMETERISED FORM.
-C   OFF I GO...
-C   THIS IS DERIVS1.F.JLOOP.BETTERISH IN THE RESRVES DIRECTORY
-C   FOR THE RECORD
+C   This is phase two where we calculate the first derivatives
+C   of the silicon potential coded in TB.Si.f. It is in tight
+C   binding parameterised form.
+C   Off I go...
+C   This is derivs1.f.jloop.betterish in the resrves directory
+C   for the record
 
-      SUBROUTINE DFDERIV1(XMUL,N,XS,DERIV1ST,EIGVECA,EIGVECB,R, DIRCOS, DIAGA, DIAGB)
+      SUBROUTINE DFDERIV1(XMUL,N,XS,deriv1st,EIGVECA,EIGVECB,R, DIRCOS, DIAGA, DIAGB)
       IMPLICIT NONE 
       INTEGER N
       DOUBLE PRECISION R(N,N),DERIV1ST(3*N),
@@ -785,26 +785,26 @@ C     COMMON /RDIST/ R, DIRCOS, DIAGA, DIAGB
      1        I2,J2,XMUL
       DOUBLE PRECISION REP1ST(N,3),RR, D1, D2, D3,
      1                 DUMMY, DUMMY1,
-     2                 DIFFSVC(3,4,4), SDC1, SQC1, SQC2, SQC3,
-     3                 R1ST(N,N), DIFFSVA(3,4,4), DIFFSVB(3,4,4),
-C MADE UREP FIRST A SCALAR
-     4                 UREP1ST,XS(3*N),E1AA,E1BA,E1AB,E1BB,E1AC,E1BC,
-     5                 ELEC1STA(N,3),ELEC1STB(N,3),EIGVECA(4*N,4*N),DUMVECA(4*N),DUMVECB(4*N),
+     2                 diffSVc(3,4,4), SDC1, SQC1, SQC2, SQC3,
+     3                 R1st(N,N), diffSVa(3,4,4), diffSVb(3,4,4),
+C made urep first a scalar
+     4                 UREP1st,XS(3*N),E1Aa,E1Ba,E1Ab,E1Bb,E1Ac,E1Bc,
+     5                 ELEC1sta(N,3),ELEC1stb(N,3),EIGVECA(4*N,4*N),DUMVECA(4*N),DUMVECB(4*N),
      6                 EIGVECB(4*N,4*N)
       DOUBLE PRECISION SVSUB,TEMP1A,TEMP2A,TEMP1B,TEMP2B,
      1                 SQDIRCOS(3*N,N),SUBDIRCOS(3*N,N),
      2                 DELD1, DELD12, DELD2, DELD22, DELD3, DELD32, DELRDX, DSVSUB,
-     3                 DRSSSA,DRSSPA,DRSPPSA,DRSPPPA,
-     3                 DRSSSB,DRSSPB,DRSPPSB,DRSPPPB,
-     4                 SSSSIG, SSPSIG, SPPSIG, SPPPI,
-     5                 HSSSIGA, HSPSIGA, HPPSIGA, HPPPIA,
-     5                 HSSSIGB, HSPSIGB, HPPSIGB, HPPPIB,
-     5                 DORSSS,DORSSP,DORSPPS,DORSPPP
+     3                 DRSssa,DRSspa,DRSppsa,DRSpppa,
+     3                 DRSssb,DRSspb,DRSppsb,DRSpppb,
+     4                 Ssssig, Sspsig, Sppsig, Spppi,
+     5                 Hsssiga, Hspsiga, Hppsiga, Hpppia,
+     5                 Hsssigb, Hspsigb, Hppsigb, Hpppib,
+     5                 DORSss,DORSsp,DORSpps,DORSppp
       LOGICAL TEST1,TEST2,TEST3
 
-C       PRINT*,'MAKES IT TO DFDERIV'
+C       PRINT*,'makes it to dfderiv'
 C
-C  TAKE THE TRANSPOSE OF EIGVEC - MAKES LOOPS MORE EFFICIENT
+C  Take the transpose of EIGVEC - makes loops more efficient
 C
       DO J=1,4*N
          DO I=J+1,4*N
@@ -818,43 +818,43 @@ C
          ENDDO
       ENDDO
 
-C OCCUPATION NUMBERS
+C occupation numbers
 
 C
-C   CAN PUT ARRAYS INTO A BLOCK DATA FORMAT INSTEAD OF PARAMETER
-C   SO CAN JUST PUT IN ONCE IN A FILE TO BE INCLUDED
+C   Can put arrays into a block data format instead of parameter
+C   so can just put in once in a file to be included
 
-C   CAN T START AN ARRAY WITH A NO. IE. 1STDERIV...SYNTAX ERROR
+C   Can t start an array with a no. ie. 1stderiv...syntax error
 
-C   FIRST OF ALL CALCULATE DERIVATIVES OF REPULSIVE ENERGY TERM
-C   THIS IS CALLED REP1ST.
+C   First of all calculate derivatives of repulsive energy term
+C   This is called REP1st.
 
-C      WRITE(6,*)'FIRST GOING TO DO DERIVATIVE OF REPULSIVE ENERGY:'
+C      WRITE(6,*)'First going to do derivative of repulsive energy:'
 
       DO K=1,3
          DO I=1,N
             DO J=I+1,N
 
-               CALL DREPCC(N,I,J,UREP1ST,R)
+               CALL DREPCC(N,I,J,UREP1st,R)
 
-               R1ST(J,I)=-DIRCOS(I,J,K)*UREP1ST
-               R1ST(I,J)=-R1ST(J,I)
+               R1st(J,I)=-DIRCOS(I,J,K)*UREP1st
+               R1st(I,J)=-R1st(J,I)
 
             END DO
 
-            R1ST(I,I)=0.0D0
+            R1st(I,I)=0.0D0
             D1=0.0D0
             DO J=1,N
-              D1=D1+R1ST(J,I)
+              D1=D1+R1st(J,I)
             END DO
 
-            REP1ST(I,K)=D1
+            REP1st(I,K)=D1
          END DO
       END DO
 
-C   CO=1,2 OR 3 REPRESENTS THE X,Y OR Z COORDINATE AND THUS DIFFERENTIATION
-C   THAT COORDINATE. CRIPES, I HOPE MY WORK IS MORE COMPACT THAN MY COMMENT
-C   STATEMENTS.
+C   CO=1,2 or 3 represents the x,y or z coordinate and thus differentiation
+C   that coordinate. Cripes, I hope my work is more compact than my comment
+C   statements.
 
       DO I=1,N
          DO J=I+1,N
@@ -868,14 +868,14 @@ C   STATEMENTS.
          ENDDO
       ENDDO
 
-C     PRINT*,'ENTERING THE DIFFERENTIATION OF ELECTRONIC ENERGY ZONE'
+C     PRINT*,'Entering the differentiation of electronic energy zone'
         DO K=1,N
-           ELEC1STA(K,1)=0.0D0
-           ELEC1STB(K,1)=0.0D0
-           ELEC1STA(K,2)=0.0D0
-           ELEC1STB(K,2)=0.0D0
-           ELEC1STA(K,3)=0.0D0
-           ELEC1STB(K,3)=0.0D0
+           ELEC1sta(K,1)=0.0D0
+           ELEC1stb(K,1)=0.0D0
+           ELEC1sta(K,2)=0.0D0
+           ELEC1stb(K,2)=0.0D0
+           ELEC1sta(K,3)=0.0D0
+           ELEC1stb(K,3)=0.0D0
         ENDDO
 
         DO I=1,N
@@ -898,10 +898,10 @@ C     PRINT*,'ENTERING THE DIFFERENTIATION OF ELECTRONIC ENERGY ZONE'
               SQC2=SQDIRCOS(J2+2,I)
               SQC3=SQDIRCOS(J2+3,I)
 
-C   DIFFSV(DIFF. OF S OR V,AO NO.,AO NO.)
+C   diffSV(diff. of S or V,AO no.,AO no.)
 
-C   DIFFERENTIATION OF OVERLAP OR INTERACTION BETWEEN ORBITALS
-C   ON DIFFERENT ATOMS
+C   Differentiation of overlap or interaction between orbitals
+C   on different atoms
 
               DELD1=RR*SDC1
               DELD12=-2*RR*D1*SDC1
@@ -911,102 +911,102 @@ C   ON DIFFERENT ATOMS
               DELD32=-2*SQC3*D1*RR
               DELRDX=D1
 
-              CALL OVECC(N,I,J,SSSSIG, SSPSIG, SPPSIG, SPPPI,R)
-              CALL DOVECC(N,I,J,DORSSS,DORSSP,DORSPPS,DORSPPP,R)
+              CALL OVECC(N,I,J,Ssssig, Sspsig, Sppsig, Spppi,R)
+              CALL DOVECC(N,I,J,DORSss,DORSsp,DORSpps,DORSppp,R)
 
-              DUMMY1=DORSSP*DELRDX
+              DUMMY1=DORSsp*DELRDX
 
-              DIFFSVA(1,1,2)=SSPSIG*DELD1 - D1*DUMMY1
-              DIFFSVA(1,1,3)=SSPSIG*DELD2 - D2*DUMMY1
-              DIFFSVA(1,1,4)=SSPSIG*DELD3 - D3*DUMMY1
+              diffSVa(1,1,2)=Sspsig*DELD1 - D1*DUMMY1
+              diffSVa(1,1,3)=Sspsig*DELD2 - D2*DUMMY1
+              diffSVa(1,1,4)=Sspsig*DELD3 - D3*DUMMY1
 
-              DIFFSVA(1,2,1)=-DIFFSVA(1,1,2)
-              DIFFSVA(1,3,1)=-DIFFSVA(1,1,3)
-              DIFFSVA(1,4,1)=-DIFFSVA(1,1,4)
+              diffSVa(1,2,1)=-diffSVa(1,1,2)
+              diffSVa(1,3,1)=-diffSVa(1,1,3)
+              diffSVa(1,4,1)=-diffSVa(1,1,4)
 
-              SVSUB=SPPSIG - SPPPI
-              DSVSUB=DORSPPS - DORSPPP
+              SVSUB=Sppsig - Spppi
+              DSVSUB=DORSpps - DORSppp
 
-              DIFFSVA(1,1,1)=DORSSS*DELRDX
+              diffSVa(1,1,1)=DORSss*DELRDX
               DUMMY1=DELRDX*DSVSUB
 
-              DIFFSVA(1,2,2)=SQC1*DUMMY1  + SVSUB*DELD12   + DORSPPP*DELRDX
-              DIFFSVA(1,2,3)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
-              DIFFSVA(1,2,4)=D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
+              diffSVa(1,2,2)=SQC1*DUMMY1  + SVSUB*DELD12   + DORSppp*DELRDX
+              diffSVa(1,2,3)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
+              diffSVa(1,2,4)=D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
                 
-              DIFFSVA(1,3,2)= DIFFSVA(1,2,3)
-              DIFFSVA(1,3,3)= SQC2*DUMMY1 + SVSUB*DELD22 + DORSPPP*DELRDX
-              DIFFSVA(1,3,4)= D2*D3*DUMMY1 - SVSUB*D2*DELD3  - SVSUB*D3*DELD2
+              diffSVa(1,3,2)= diffSVa(1,2,3)
+              diffSVa(1,3,3)= SQC2*DUMMY1 + SVSUB*DELD22 + DORSppp*DELRDX
+              diffSVa(1,3,4)= D2*D3*DUMMY1 - SVSUB*D2*DELD3  - SVSUB*D3*DELD2
 
-              DIFFSVA(1,4,2)= DIFFSVA(1,2,4)
-              DIFFSVA(1,4,3)= DIFFSVA(1,3,4)
-              DIFFSVA(1,4,4)= SQC3*DUMMY1 + SVSUB*DELD32 + DORSPPP*DELRDX
+              diffSVa(1,4,2)= diffSVa(1,2,4)
+              diffSVa(1,4,3)= diffSVa(1,3,4)
+              diffSVa(1,4,4)= SQC3*DUMMY1 + SVSUB*DELD32 + DORSppp*DELRDX
 
-              CALL HAMCCA(N,I,J,HSSSIGA, HSPSIGA, HPPSIGA, HPPPIA,R)
-              CALL DAMCCA(N,I,J,DRSSSA,DRSSPA,DRSPPSA,DRSPPPA,R)
+              CALL HAMCCA(N,I,J,Hsssiga, Hspsiga, Hppsiga, Hpppia,R)
+              CALL DAMCCA(N,I,J,DRSssa,DRSspa,DRSppsa,DRSpppa,R)
 
-              DUMMY1=DRSSPA*DELRDX
+              DUMMY1=DRSspa*DELRDX
 
-              DIFFSVA(2,1,2)=HSPSIGA*DELD1 - D1*DUMMY1
-              DIFFSVA(2,1,3)=HSPSIGA*DELD2 - D2*DUMMY1
-              DIFFSVA(2,1,4)=HSPSIGA*DELD3 - D3*DUMMY1
+              diffSVa(2,1,2)=Hspsiga*DELD1 - D1*DUMMY1
+              diffSVa(2,1,3)=Hspsiga*DELD2 - D2*DUMMY1
+              diffSVa(2,1,4)=Hspsiga*DELD3 - D3*DUMMY1
 
-              DIFFSVA(2,2,1)=-DIFFSVA(2,1,2)
-              DIFFSVA(2,3,1)=-DIFFSVA(2,1,3)
-              DIFFSVA(2,4,1)=-DIFFSVA(2,1,4)
+              diffSVa(2,2,1)=-diffSVa(2,1,2)
+              diffSVa(2,3,1)=-diffSVa(2,1,3)
+              diffSVa(2,4,1)=-diffSVa(2,1,4)
 
-              SVSUB=HPPSIGA - HPPPIA
-              DSVSUB=DRSPPSA - DRSPPPA
+              SVSUB=Hppsiga - Hpppia
+              DSVSUB=DRSppsa - DRSpppa
 
-              DIFFSVA(2,1,1)=DRSSSA*DELRDX
+              diffSVa(2,1,1)=DRSssa*DELRDX
               DUMMY1=DELRDX*DSVSUB
 
-              DIFFSVA(2,2,2)=SQC1*DUMMY1  + SVSUB*DELD12   + DRSPPPA*DELRDX
-              DIFFSVA(2,2,3)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
-              DIFFSVA(2,2,4)=D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
+              diffSVa(2,2,2)=SQC1*DUMMY1  + SVSUB*DELD12   + DRSpppa*DELRDX
+              diffSVa(2,2,3)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
+              diffSVa(2,2,4)=D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
 
-              DIFFSVA(2,3,2)= DIFFSVA(2,2,3)
-              DIFFSVA(2,3,3)= SQC2*DUMMY1  + SVSUB*DELD22    + DRSPPPA*DELRDX
-              DIFFSVA(2,3,4)= D2*D3*DUMMY1 - SVSUB*D2*DELD3  - SVSUB*D3*DELD2
+              diffSVa(2,3,2)= diffSVa(2,2,3)
+              diffSVa(2,3,3)= SQC2*DUMMY1  + SVSUB*DELD22    + DRSpppa*DELRDX
+              diffSVa(2,3,4)= D2*D3*DUMMY1 - SVSUB*D2*DELD3  - SVSUB*D3*DELD2
 
-              DIFFSVA(2,4,2)= DIFFSVA(2,2,4)
-              DIFFSVA(2,4,3)= DIFFSVA(2,3,4)
-              DIFFSVA(2,4,4)= SQC3*DUMMY1 + SVSUB*DELD32 + DRSPPPA*DELRDX
+              diffSVa(2,4,2)= diffSVa(2,2,4)
+              diffSVa(2,4,3)= diffSVa(2,3,4)
+              diffSVa(2,4,4)= SQC3*DUMMY1 + SVSUB*DELD32 + DRSpppa*DELRDX
 
-              CALL HAMCCB(N,I,J,HSSSIGB, HSPSIGB, HPPSIGB, HPPPIB,R)
-              CALL DAMCCB(N,XS,I,J,DRSSSB,DRSSPB,DRSPPSB,DRSPPPB,R, DIRCOS, DIAGA, DIAGB)
+              CALL HAMCCB(N,I,J,Hsssigb, Hspsigb, Hppsigb, Hpppib,R)
+              CALL DAMCCB(N,XS,I,J,DRSssb,DRSspb,DRSppsb,DRSpppb,R, DIRCOS, DIAGA, DIAGB)
 
-              DUMMY1=DRSSPB*DELRDX
+              DUMMY1=DRSspb*DELRDX
       
-              DIFFSVA(3,1,2)=HSPSIGB*DELD1 - D1*DUMMY1
-              DIFFSVA(3,1,3)=HSPSIGB*DELD2 - D2*DUMMY1
-              DIFFSVA(3,1,4)=HSPSIGB*DELD3 - D3*DUMMY1
+              diffSVa(3,1,2)=Hspsigb*DELD1 - D1*DUMMY1
+              diffSVa(3,1,3)=Hspsigb*DELD2 - D2*DUMMY1
+              diffSVa(3,1,4)=Hspsigb*DELD3 - D3*DUMMY1
      
-              DIFFSVA(3,2,1)=-DIFFSVA(3,1,2)
-              DIFFSVA(3,3,1)=-DIFFSVA(3,1,3)
-              DIFFSVA(3,4,1)=-DIFFSVA(3,1,4)
+              diffSVa(3,2,1)=-diffSVa(3,1,2)
+              diffSVa(3,3,1)=-diffSVa(3,1,3)
+              diffSVa(3,4,1)=-diffSVa(3,1,4)
 
-              SVSUB=HPPSIGB - HPPPIB
-              DSVSUB=DRSPPSB - DRSPPPB
+              SVSUB=Hppsigb - Hpppib
+              DSVSUB=DRSppsb - DRSpppb
 
-              DIFFSVA(3,1,1)=DRSSSB*DELRDX
+              diffSVa(3,1,1)=DRSssb*DELRDX
               DUMMY1=DELRDX*DSVSUB
 
-              DIFFSVA(3,2,2)=SQC1*DUMMY1 + SVSUB*DELD12 + DRSPPPB*DELRDX
-              DIFFSVA(3,2,3)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
-              DIFFSVA(3,2,4)=D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
+              diffSVa(3,2,2)=SQC1*DUMMY1 + SVSUB*DELD12 + DRSpppb*DELRDX
+              diffSVa(3,2,3)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
+              diffSVa(3,2,4)=D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
 
-              DIFFSVA(3,3,2)= DIFFSVA(3,2,3)
-              DIFFSVA(3,3,3)= SQC2*DUMMY1 + SVSUB*DELD22 + DRSPPPB*DELRDX
-              DIFFSVA(3,3,4)= D2*D3*DUMMY1 - SVSUB*D2*DELD3  - SVSUB*D3*DELD2
+              diffSVa(3,3,2)= diffSVa(3,2,3)
+              diffSVa(3,3,3)= SQC2*DUMMY1 + SVSUB*DELD22 + DRSpppb*DELRDX
+              diffSVa(3,3,4)= D2*D3*DUMMY1 - SVSUB*D2*DELD3  - SVSUB*D3*DELD2
 
-              DIFFSVA(3,4,2)= DIFFSVA(3,2,4)
-              DIFFSVA(3,4,3)= DIFFSVA(3,3,4)
-              DIFFSVA(3,4,4)= SQC3*DUMMY1 + SVSUB*DELD32 + DRSPPPB*DELRDX
+              diffSVa(3,4,2)= diffSVa(3,2,4)
+              diffSVa(3,4,3)= diffSVa(3,3,4)
+              diffSVa(3,4,4)= SQC3*DUMMY1 + SVSUB*DELD32 + DRSpppb*DELRDX
 
-CBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
-C   DIFFERENTIATION OF OVERLAP OR INTERACTION BETWEEN ORBITALS
-C   ON DIFFERENT ATOMS
+Cbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+C   Differentiation of overlap or interaction between orbitals
+C   on different atoms
 
               D1=DIRCOS(J,I,2)
               D2=DIRCOS(J,I,3)
@@ -1025,86 +1025,86 @@ C   ON DIFFERENT ATOMS
               DELD32=-2*SQC3*D1*RR
               DELRDX=D1
 
-              DIFFSVB(1,1,3)=(SSPSIG*DELD1 - D1*DORSSP*DELRDX)
-              DIFFSVB(1,1,4)=(SSPSIG*DELD2 - D2*DORSSP*DELRDX)
-              DIFFSVB(1,1,2)=DIFFSVA(1,1,3)
+              diffSVb(1,1,3)=(Sspsig*DELD1 - D1*DORSsp*DELRDX)
+              diffSVb(1,1,4)=(Sspsig*DELD2 - D2*DORSsp*DELRDX)
+              diffSVb(1,1,2)=diffSVa(1,1,3)
 
-              DIFFSVB(1,3,1)=-DIFFSVB(1,1,3)
-              DIFFSVB(1,4,1)=-DIFFSVB(1,1,4)
-              DIFFSVB(1,2,1)=-DIFFSVB(1,1,2)
+              diffSVb(1,3,1)=-diffSVb(1,1,3)
+              diffSVb(1,4,1)=-diffSVb(1,1,4)
+              diffSVb(1,2,1)=-diffSVb(1,1,2)
 
-              SVSUB=SPPSIG - SPPPI
-              DSVSUB=DORSPPS - DORSPPP
+              SVSUB=Sppsig - Spppi
+              DSVSUB=DORSpps - DORSppp
 
-              DIFFSVB(1,1,1)=DORSSS*DELRDX
+              diffSVb(1,1,1)=DORSss*DELRDX
 
-              DIFFSVB(1,3,3)=SQC1*DELRDX*DSVSUB + SVSUB*DELD12 + DORSPPP*DELRDX
-              DIFFSVB(1,2,3)=D1*D3*DELRDX*DSVSUB - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
-              DIFFSVB(1,2,4)=DIFFSVA(1,3,4)
+              diffSVb(1,3,3)=SQC1*DELRDX*DSVSUB + SVSUB*DELD12 + DORSppp*DELRDX
+              diffSVb(1,2,3)=D1*D3*DELRDX*DSVSUB - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
+              diffSVb(1,2,4)=diffSVa(1,3,4)
 
-              DIFFSVB(1,3,2)= DIFFSVB(1,2,3)
-              DIFFSVB(1,4,4)= SQC2*DELRDX*DSVSUB + SVSUB*DELD22 + DORSPPP*DELRDX
-              DIFFSVB(1,3,4)= D2*D1*DELRDX*DSVSUB - SVSUB*D2*DELD1 - SVSUB*D1*DELD2
+              diffSVb(1,3,2)= diffSVb(1,2,3)
+              diffSVb(1,4,4)= SQC2*DELRDX*DSVSUB + SVSUB*DELD22 + DORSppp*DELRDX
+              diffSVb(1,3,4)= D2*D1*DELRDX*DSVSUB - SVSUB*D2*DELD1 - SVSUB*D1*DELD2
 
-              DIFFSVB(1,4,2)= DIFFSVB(1,2,4)
-              DIFFSVB(1,4,3)= DIFFSVB(1,3,4)
-              DIFFSVB(1,2,2)= SQC3*DELRDX*DSVSUB + SVSUB*DELD32 + DORSPPP*DELRDX
+              diffSVb(1,4,2)= diffSVb(1,2,4)
+              diffSVb(1,4,3)= diffSVb(1,3,4)
+              diffSVb(1,2,2)= SQC3*DELRDX*DSVSUB + SVSUB*DELD32 + DORSppp*DELRDX
 
-              DIFFSVB(2,1,3)=(HSPSIGA*DELD1 - D1*DRSSPA*DELRDX)
-              DIFFSVB(2,1,4)=(HSPSIGA*DELD2 - D2*DRSSPA*DELRDX)
-              DIFFSVB(2,1,2)=DIFFSVA(2,1,3)
+              diffSVb(2,1,3)=(Hspsiga*DELD1 - D1*DRSspa*DELRDX)
+              diffSVb(2,1,4)=(Hspsiga*DELD2 - D2*DRSspa*DELRDX)
+              diffSVb(2,1,2)=diffSVa(2,1,3)
 
-              DIFFSVB(2,3,1)=-DIFFSVB(2,1,3)
-              DIFFSVB(2,4,1)=-DIFFSVB(2,1,4)
-              DIFFSVB(2,2,1)=-DIFFSVB(2,1,2)
+              diffSVb(2,3,1)=-diffSVb(2,1,3)
+              diffSVb(2,4,1)=-diffSVb(2,1,4)
+              diffSVb(2,2,1)=-diffSVb(2,1,2)
 
-              SVSUB=HPPSIGA - HPPPIA
-              DSVSUB=DRSPPSA - DRSPPPA
+              SVSUB=Hppsiga - Hpppia
+              DSVSUB=DRSppsa - DRSpppa
 
-              DIFFSVB(2,1,1)=DRSSSA*DELRDX
+              diffSVb(2,1,1)=DRSssa*DELRDX
 
-              DIFFSVB(2,3,3)=SQC1*DELRDX*DSVSUB + SVSUB*DELD12 + DRSPPPA*DELRDX
-              DIFFSVB(2,2,3)=D1*D3*DELRDX*DSVSUB - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
-              DIFFSVB(2,2,4)=DIFFSVA(2,3,4)
+              diffSVb(2,3,3)=SQC1*DELRDX*DSVSUB + SVSUB*DELD12 + DRSpppa*DELRDX
+              diffSVb(2,2,3)=D1*D3*DELRDX*DSVSUB - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
+              diffSVb(2,2,4)=diffSVa(2,3,4)
 
-              DIFFSVB(2,3,2)= DIFFSVB(2,2,3)
-              DIFFSVB(2,4,4)= SQC2*DELRDX*DSVSUB + SVSUB*DELD22 + DRSPPPA*DELRDX
-              DIFFSVB(2,3,4)= D2*D1*DELRDX*DSVSUB - SVSUB*D2*DELD1 - SVSUB*D1*DELD2
+              diffSVb(2,3,2)= diffSVb(2,2,3)
+              diffSVb(2,4,4)= SQC2*DELRDX*DSVSUB + SVSUB*DELD22 + DRSpppa*DELRDX
+              diffSVb(2,3,4)= D2*D1*DELRDX*DSVSUB - SVSUB*D2*DELD1 - SVSUB*D1*DELD2
 
-              DIFFSVB(2,4,2)= DIFFSVB(2,2,4)
-              DIFFSVB(2,4,3)= DIFFSVB(2,3,4)
-              DIFFSVB(2,2,2)= SQC3*DELRDX*DSVSUB + SVSUB*DELD32 + DRSPPPA*DELRDX
+              diffSVb(2,4,2)= diffSVb(2,2,4)
+              diffSVb(2,4,3)= diffSVb(2,3,4)
+              diffSVb(2,2,2)= SQC3*DELRDX*DSVSUB + SVSUB*DELD32 + DRSpppa*DELRDX
 
-              DIFFSVB(3,1,3)=(HSPSIGB*DELD1 - D1*DRSSPB*DELRDX)
-              DIFFSVB(3,1,4)=(HSPSIGB*DELD2 - D2*DRSSPB*DELRDX)
-              DIFFSVB(3,1,2)=DIFFSVA(3,1,3)
+              diffSVb(3,1,3)=(Hspsigb*DELD1 - D1*DRSspb*DELRDX)
+              diffSVb(3,1,4)=(Hspsigb*DELD2 - D2*DRSspb*DELRDX)
+              diffSVb(3,1,2)=diffSVa(3,1,3)
 
-              DIFFSVB(3,3,1)=-DIFFSVB(3,1,3)
-              DIFFSVB(3,4,1)=-DIFFSVB(3,1,4)
-              DIFFSVB(3,2,1)=-DIFFSVB(3,1,2)
+              diffSVb(3,3,1)=-diffSVb(3,1,3)
+              diffSVb(3,4,1)=-diffSVb(3,1,4)
+              diffSVb(3,2,1)=-diffSVb(3,1,2)
 
-              SVSUB=HPPSIGB - HPPPIB
-              DSVSUB=DRSPPSB - DRSPPPB
+              SVSUB=Hppsigb - Hpppib
+              DSVSUB=DRSppsb - DRSpppb
 
-              DIFFSVB(3,1,1)=DRSSSB*DELRDX
+              diffSVb(3,1,1)=DRSssb*DELRDX
 
-              DIFFSVB(3,3,3)=SQC1*DELRDX*DSVSUB + SVSUB*DELD12 + DRSPPPB*DELRDX
-              DIFFSVB(3,2,3)=D1*D3*DELRDX*DSVSUB - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
-              DIFFSVB(3,2,4)=DIFFSVA(3,3,4)
+              diffSVb(3,3,3)=SQC1*DELRDX*DSVSUB + SVSUB*DELD12 + DRSpppb*DELRDX
+              diffSVb(3,2,3)=D1*D3*DELRDX*DSVSUB - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
+              diffSVb(3,2,4)=diffSVa(3,3,4)
 
-              DIFFSVB(3,3,2)= DIFFSVB(3,2,3)
-              DIFFSVB(3,4,4)= SQC2*DELRDX*DSVSUB + SVSUB*DELD22 + DRSPPPB*DELRDX
-              DIFFSVB(3,3,4)= D2*D1*DELRDX*DSVSUB - SVSUB*D2*DELD1 - SVSUB*D1*DELD2
+              diffSVb(3,3,2)= diffSVb(3,2,3)
+              diffSVb(3,4,4)= SQC2*DELRDX*DSVSUB + SVSUB*DELD22 + DRSpppb*DELRDX
+              diffSVb(3,3,4)= D2*D1*DELRDX*DSVSUB - SVSUB*D2*DELD1 - SVSUB*D1*DELD2
 
-              DIFFSVB(3,4,2)= DIFFSVB(3,2,4)
-              DIFFSVB(3,4,3)= DIFFSVB(3,3,4)
-              DIFFSVB(3,2,2)= SQC3*DELRDX*DSVSUB + SVSUB*DELD32 + DRSPPPB*DELRDX
+              diffSVb(3,4,2)= diffSVb(3,2,4)
+              diffSVb(3,4,3)= diffSVb(3,3,4)
+              diffSVb(3,2,2)= SQC3*DELRDX*DSVSUB + SVSUB*DELD32 + DRSpppb*DELRDX
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C   DIFFSV(DIFF. OF S OR V,AO NO.,AO NO.)
+Cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+C   diffSV(diff. of S or V,AO no.,AO no.)
 
-C   DIFFERENTIATION OF OVERLAP OR INTERACTION BETWEEN ORBITALS
-C   ON DIFFERENT ATOMS
+C   Differentiation of overlap or interaction between orbitals
+C   on different atoms
 
               D1=DIRCOS(J,I,3)
               D2=DIRCOS(J,I,1)
@@ -1123,99 +1123,99 @@ C   ON DIFFERENT ATOMS
               DELD32=-2*SQC3*D1*RR
               DELRDX=D1
 
-              DUMMY1=DORSSP*DELRDX
+              DUMMY1=DORSsp*DELRDX
 
-              DIFFSVC(1,1,4)=SSPSIG*DELD1 - D1*DUMMY1
-              DIFFSVC(1,1,2)=DIFFSVA(1,1,4)
-              DIFFSVC(1,1,3)=DIFFSVB(1,1,4)
+              diffSVc(1,1,4)=Sspsig*DELD1 - D1*DUMMY1
+              diffSVc(1,1,2)=diffSVa(1,1,4)
+              diffSVc(1,1,3)=diffSVb(1,1,4)
 
-              DIFFSVC(1,4,1)=-DIFFSVC(1,1,4)
-              DIFFSVC(1,2,1)=-DIFFSVC(1,1,2)
-              DIFFSVC(1,3,1)=-DIFFSVC(1,1,3)
+              diffSVc(1,4,1)=-diffSVc(1,1,4)
+              diffSVc(1,2,1)=-diffSVc(1,1,2)
+              diffSVc(1,3,1)=-diffSVc(1,1,3)
 
-              SVSUB=SPPSIG - SPPPI
-              DSVSUB=DORSPPS - DORSPPP
+              SVSUB=Sppsig - Spppi
+              DSVSUB=DORSpps - DORSppp
 
-              DIFFSVC(1,1,1)=DORSSS*DELRDX
-
-              DUMMY1=DELRDX*DSVSUB
-
-              DIFFSVC(1,4,4)=SQC1*DUMMY1 + SVSUB*DELD12 + DORSPPP*DELRDX
-              DIFFSVC(1,2,3)=DIFFSVA(1,3,4)
-              DIFFSVC(1,2,4)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
-
-              DIFFSVC(1,3,2)= DIFFSVC(1,2,3)
-              DIFFSVC(1,2,2)= SQC2*DUMMY1 + SVSUB*DELD22 + DORSPPP*DELRDX
-              DIFFSVC(1,3,4)= D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
-
-              DIFFSVC(1,4,2)= DIFFSVC(1,2,4)
-              DIFFSVC(1,4,3)= DIFFSVC(1,3,4)
-              DIFFSVC(1,3,3)= SQC3*DUMMY1 + SVSUB*DELD32 + DORSPPP*DELRDX
-
-              DUMMY1=DRSSPA*DELRDX
-
-              DIFFSVC(2,1,4)=HSPSIGA*DELD1 - D1*DUMMY1
-              DIFFSVC(2,1,2)=DIFFSVA(2,1,4)
-              DIFFSVC(2,1,3)=DIFFSVB(2,1,4)
-
-              DIFFSVC(2,4,1)=-DIFFSVC(2,1,4)
-              DIFFSVC(2,2,1)=-DIFFSVC(2,1,2)
-              DIFFSVC(2,3,1)=-DIFFSVC(2,1,3)
-
-              SVSUB=HPPSIGA - HPPPIA
-              DSVSUB=DRSPPSA - DRSPPPA
-
-              DIFFSVC(2,1,1)=DRSSSA*DELRDX
+              diffSVc(1,1,1)=DORSss*DELRDX
 
               DUMMY1=DELRDX*DSVSUB
 
-              DIFFSVC(2,4,4)=SQC1*DUMMY1 + SVSUB*DELD12 + DRSPPPA*DELRDX
-              DIFFSVC(2,2,3)=DIFFSVA(2,3,4)
-              DIFFSVC(2,2,4)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
+              diffSVc(1,4,4)=SQC1*DUMMY1 + SVSUB*DELD12 + DORSppp*DELRDX
+              diffSVc(1,2,3)=diffSVa(1,3,4)
+              diffSVc(1,2,4)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
 
-              DIFFSVC(2,3,2)= DIFFSVC(2,2,3)
-              DIFFSVC(2,2,2)= SQC2*DUMMY1 + SVSUB*DELD22 + DRSPPPA*DELRDX
-              DIFFSVC(2,3,4)= D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
+              diffSVc(1,3,2)= diffSVc(1,2,3)
+              diffSVc(1,2,2)= SQC2*DUMMY1 + SVSUB*DELD22 + DORSppp*DELRDX
+              diffSVc(1,3,4)= D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
 
-              DIFFSVC(2,4,2)= DIFFSVC(2,2,4)
-              DIFFSVC(2,4,3)= DIFFSVC(2,3,4)
-              DIFFSVC(2,3,3)= SQC3*DUMMY1 + SVSUB*DELD32 + DRSPPPA*DELRDX
+              diffSVc(1,4,2)= diffSVc(1,2,4)
+              diffSVc(1,4,3)= diffSVc(1,3,4)
+              diffSVc(1,3,3)= SQC3*DUMMY1 + SVSUB*DELD32 + DORSppp*DELRDX
 
-              DUMMY1=DRSSPB*DELRDX
+              DUMMY1=DRSspa*DELRDX
 
-              DIFFSVC(3,1,4)=HSPSIGB*DELD1 - D1*DUMMY1
-              DIFFSVC(3,1,2)=DIFFSVA(3,1,4)
-              DIFFSVC(3,1,3)=DIFFSVB(3,1,4)
+              diffSVc(2,1,4)=Hspsiga*DELD1 - D1*DUMMY1
+              diffSVc(2,1,2)=diffSVa(2,1,4)
+              diffSVc(2,1,3)=diffSVb(2,1,4)
 
-              DIFFSVC(3,4,1)=-DIFFSVC(3,1,4)
-              DIFFSVC(3,2,1)=-DIFFSVC(3,1,2)
-              DIFFSVC(3,3,1)=-DIFFSVC(3,1,3)
+              diffSVc(2,4,1)=-diffSVc(2,1,4)
+              diffSVc(2,2,1)=-diffSVc(2,1,2)
+              diffSVc(2,3,1)=-diffSVc(2,1,3)
 
-              SVSUB=HPPSIGB - HPPPIB
-              DSVSUB=DRSPPSB - DRSPPPB
+              SVSUB=Hppsiga - Hpppia
+              DSVSUB=DRSppsa - DRSpppa
 
-              DIFFSVC(3,1,1)=DRSSSB*DELRDX
+              diffSVc(2,1,1)=DRSssa*DELRDX
 
               DUMMY1=DELRDX*DSVSUB
 
-              DIFFSVC(3,4,4)=SQC1*DUMMY1 + SVSUB*DELD12 + DRSPPPB*DELRDX
-              DIFFSVC(3,2,3)=DIFFSVA(3,3,4)
-              DIFFSVC(3,2,4)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
+              diffSVc(2,4,4)=SQC1*DUMMY1 + SVSUB*DELD12 + DRSpppa*DELRDX
+              diffSVc(2,2,3)=diffSVa(2,3,4)
+              diffSVc(2,2,4)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
 
-              DIFFSVC(3,3,2)= DIFFSVC(3,2,3)
-              DIFFSVC(3,2,2)= SQC2*DUMMY1 + SVSUB*DELD22 + DRSPPPB*DELRDX
-              DIFFSVC(3,3,4)= D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
+              diffSVc(2,3,2)= diffSVc(2,2,3)
+              diffSVc(2,2,2)= SQC2*DUMMY1 + SVSUB*DELD22 + DRSpppa*DELRDX
+              diffSVc(2,3,4)= D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
 
-              DIFFSVC(3,4,2)= DIFFSVC(3,2,4)
-              DIFFSVC(3,4,3)= DIFFSVC(3,3,4)
-              DIFFSVC(3,3,3)= SQC3*DUMMY1 + SVSUB*DELD32 + DRSPPPB*DELRDX
+              diffSVc(2,4,2)= diffSVc(2,2,4)
+              diffSVc(2,4,3)= diffSVc(2,3,4)
+              diffSVc(2,3,3)= SQC3*DUMMY1 + SVSUB*DELD32 + DRSpppa*DELRDX
 
-              E1AA=0.0D0
-              E1BA=0.0D0
-              E1AB=0.0D0
-              E1BB=0.0D0
-              E1AC=0.0D0
-              E1BC=0.0D0
+              DUMMY1=DRSspb*DELRDX
+
+              diffSVc(3,1,4)=Hspsigb*DELD1 - D1*DUMMY1
+              diffSVc(3,1,2)=diffSVa(3,1,4)
+              diffSVc(3,1,3)=diffSVb(3,1,4)
+
+              diffSVc(3,4,1)=-diffSVc(3,1,4)
+              diffSVc(3,2,1)=-diffSVc(3,1,2)
+              diffSVc(3,3,1)=-diffSVc(3,1,3)
+
+              SVSUB=Hppsigb - Hpppib
+              DSVSUB=DRSppsb - DRSpppb
+
+              diffSVc(3,1,1)=DRSssb*DELRDX
+
+              DUMMY1=DELRDX*DSVSUB
+
+              diffSVc(3,4,4)=SQC1*DUMMY1 + SVSUB*DELD12 + DRSpppb*DELRDX
+              diffSVc(3,2,3)=diffSVa(3,3,4)
+              diffSVc(3,2,4)=D1*D2*DUMMY1 - SVSUB*D1*DELD2 - SVSUB*D2*DELD1
+
+              diffSVc(3,3,2)= diffSVc(3,2,3)
+              diffSVc(3,2,2)= SQC2*DUMMY1 + SVSUB*DELD22 + DRSpppb*DELRDX
+              diffSVc(3,3,4)= D1*D3*DUMMY1 - SVSUB*D1*DELD3 - SVSUB*D3*DELD1
+
+              diffSVc(3,4,2)= diffSVc(3,2,4)
+              diffSVc(3,4,3)= diffSVc(3,3,4)
+              diffSVc(3,3,3)= SQC3*DUMMY1 + SVSUB*DELD32 + DRSpppb*DELRDX
+
+              E1Aa=0.0D0
+              E1Ba=0.0D0
+              E1Ab=0.0D0
+              E1Bb=0.0D0
+              E1Ac=0.0D0
+              E1Bc=0.0D0
 
               DO NUM1=1,4
                  DO LEV=4*N-119,4*N
@@ -1224,15 +1224,15 @@ C   ON DIFFERENT ATOMS
                  ENDDO
                  DO NUM2=1,4
  
-                    TEST1=((DIFFSVA(1,NUM1,NUM2).EQ.0.0D0).AND.
-     1                     (DIFFSVB(1,NUM1,NUM2).EQ.0.0D0).AND.
-     2                     (DIFFSVC(1,NUM1,NUM2).EQ.0.0D0))
-                    TEST2=((DIFFSVA(2,NUM1,NUM2).EQ.0.0D0).AND.
-     1                     (DIFFSVB(2,NUM1,NUM2).EQ.0.0D0).AND.
-     2                     (DIFFSVC(2,NUM1,NUM2).EQ.0.0D0))
-                    TEST3=((DIFFSVA(3,NUM1,NUM2).EQ.0.0D0).AND.
-     1                     (DIFFSVB(3,NUM1,NUM2).EQ.0.0D0).AND.
-     2                     (DIFFSVC(3,NUM1,NUM2).EQ.0.0D0))
+                    TEST1=((diffSVa(1,NUM1,NUM2).EQ.0.0D0).AND.
+     1                     (diffSVb(1,NUM1,NUM2).EQ.0.0D0).AND.
+     2                     (diffSVc(1,NUM1,NUM2).EQ.0.0D0))
+                    TEST2=((diffSVa(2,NUM1,NUM2).EQ.0.0D0).AND.
+     1                     (diffSVb(2,NUM1,NUM2).EQ.0.0D0).AND.
+     2                     (diffSVc(2,NUM1,NUM2).EQ.0.0D0))
+                    TEST3=((diffSVa(3,NUM1,NUM2).EQ.0.0D0).AND.
+     1                     (diffSVb(3,NUM1,NUM2).EQ.0.0D0).AND.
+     2                     (diffSVc(3,NUM1,NUM2).EQ.0.0D0))
 C                   WRITE(*,'(A,4I6,3L)') 'AI,AJ,NUM1,NUM2,T1,T2,T3=',AI,AJ,NUM1,NUM2,TEST1,TEST2,TEST3
                     IF (TEST1.AND.TEST2.AND.TEST3) GOTO 555
                     TEMP1A=0.0D0
@@ -1273,71 +1273,71 @@ C                   WRITE(*,'(A,4I6,3L)') 'AI,AJ,NUM1,NUM2,T1,T2,T3=',AI,AJ,NUM1
                           TEMP2B=TEMP2B-DUMMY*DIAGB(LEV)
                        ENDDO !LEV
                     ENDIF
-                    E1AA=E1AA+TEMP1A*DIFFSVA(2,NUM1,NUM2)+TEMP2A*DIFFSVA(1,NUM1,NUM2)
-                    E1AB=E1AB+TEMP1A*DIFFSVB(2,NUM1,NUM2)+TEMP2A*DIFFSVB(1,NUM1,NUM2)
-                    E1AC=E1AC+TEMP1A*DIFFSVC(2,NUM1,NUM2)+TEMP2A*DIFFSVC(1,NUM1,NUM2)
-                    E1BA=E1BA+TEMP1B*DIFFSVA(3,NUM1,NUM2)+TEMP2B*DIFFSVA(1,NUM1,NUM2)
-                    E1BB=E1BB+TEMP1B*DIFFSVB(3,NUM1,NUM2)+TEMP2B*DIFFSVB(1,NUM1,NUM2)
-                    E1BC=E1BC+TEMP1B*DIFFSVC(3,NUM1,NUM2)+TEMP2B*DIFFSVC(1,NUM1,NUM2)
+                    E1Aa=E1Aa+TEMP1A*diffSVa(2,NUM1,NUM2)+TEMP2A*diffSVa(1,NUM1,NUM2)
+                    E1Ab=E1Ab+TEMP1A*diffSVb(2,NUM1,NUM2)+TEMP2A*diffSVb(1,NUM1,NUM2)
+                    E1Ac=E1Ac+TEMP1A*diffSVc(2,NUM1,NUM2)+TEMP2A*diffSVc(1,NUM1,NUM2)
+                    E1Ba=E1Ba+TEMP1B*diffSVa(3,NUM1,NUM2)+TEMP2B*diffSVa(1,NUM1,NUM2)
+                    E1Bb=E1Bb+TEMP1B*diffSVb(3,NUM1,NUM2)+TEMP2B*diffSVb(1,NUM1,NUM2)
+                    E1Bc=E1Bc+TEMP1B*diffSVc(3,NUM1,NUM2)+TEMP2B*diffSVc(1,NUM1,NUM2)
 555                 CONTINUE 
                  ENDDO !NUM2
               ENDDO !NUM1
  
-              ELEC1STA(I,1)=ELEC1STA(I,1)+2.0D0*E1AA
-              ELEC1STA(J,1)=ELEC1STA(J,1)-2.0D0*E1AA
-              ELEC1STB(I,1)=ELEC1STB(I,1)+2.0D0*E1BA
-              ELEC1STB(J,1)=ELEC1STB(J,1)-2.0D0*E1BA
-              ELEC1STA(I,2)=ELEC1STA(I,2)+2.0D0*E1AB
-              ELEC1STA(J,2)=ELEC1STA(J,2)-2.0D0*E1AB
-              ELEC1STB(I,2)=ELEC1STB(I,2)+2.0D0*E1BB
-              ELEC1STB(J,2)=ELEC1STB(J,2)-2.0D0*E1BB
-              ELEC1STA(I,3)=ELEC1STA(I,3)+2.0D0*E1AC
-              ELEC1STA(J,3)=ELEC1STA(J,3)-2.0D0*E1AC
-              ELEC1STB(I,3)=ELEC1STB(I,3)+2.0D0*E1BC
-              ELEC1STB(J,3)=ELEC1STB(J,3)-2.0D0*E1BC
+              ELEC1sta(I,1)=ELEC1sta(I,1)+2.0D0*E1Aa
+              ELEC1sta(J,1)=ELEC1sta(J,1)-2.0D0*E1Aa
+              ELEC1stb(I,1)=ELEC1stb(I,1)+2.0D0*E1Ba
+              ELEC1stb(J,1)=ELEC1stb(J,1)-2.0D0*E1Ba
+              ELEC1sta(I,2)=ELEC1sta(I,2)+2.0D0*E1Ab
+              ELEC1sta(J,2)=ELEC1sta(J,2)-2.0D0*E1Ab
+              ELEC1stb(I,2)=ELEC1stb(I,2)+2.0D0*E1Bb
+              ELEC1stb(J,2)=ELEC1stb(J,2)-2.0D0*E1Bb
+              ELEC1sta(I,3)=ELEC1sta(I,3)+2.0D0*E1Ac
+              ELEC1sta(J,3)=ELEC1sta(J,3)-2.0D0*E1Ac
+              ELEC1stb(I,3)=ELEC1stb(I,3)+2.0D0*E1Bc
+              ELEC1stb(J,3)=ELEC1stb(J,3)-2.0D0*E1Bc
 
 666           CONTINUE
 
            ENDDO  !J 
         ENDDO  !
 
-C   IN ORDER TO DIFFERENTIATE BY THE COORDINATE OF ATOM K, YOU ONLY GET 
-C   A VALUE FOR THE DERIVATIVE IF ONE OF THE TWO ATOMS INVOLVED IN THE
-C   PAIR INTERACTION IS K OTHERWISE IT IS ZERO. THIS IS ACHIEVED BY USE
-C   OF THE FACTOR TERM. I M SURE THIS IS HIGHLY INEFFICIENT BUT IF IT
-C   WORKS THEN THAT IS WORTHWHILE. I CAN IMPROVE IT LATER....WHEN I M 
-C   DRAWING MY PENSION.            
-C   HAVE TO KEEP IT IN A LOOP WHERE I AND J ARE THE ATOM NUMBER RATHER
-C   THAN THE AO.
+C   In order to differentiate by the coordinate of atom K, you only get 
+C   a value for the derivative if one of the two atoms involved in the
+C   pair interaction is K otherwise it is zero. This is achieved by use
+C   of the FACTOR term. I m sure this is highly inefficient BUT if it
+C   works then that is worthwhile. I can improve it later....when I m 
+C   drawing my pension.            
+C   Have to keep it in a loop where I and J are the atom number rather
+C   than the AO.
 
-C   RECENT CHANGES INVOLVE REPLACING DERIVV WITH ITS SPECIFIC VALUE 
-C   FACTOR*DIFFSV(2,X,Y) AND PERHAPS SIMILARLY FOR DERIVS.
-C   DIFFSV AND DIFFH WILL BE ZERO.
-C   MUST BE AWARE THAT ALTHOUGH NONE OF THE DIAGONAL ELEMENTS ARE DEFINED
-C   THEY ARE EQUAL TO ZERO. NOT DEEMED NECESSARY TO CALC. THEM SINCE
-C   THE LOOP NEVER REACHES I=J.  GOOD TO USE J=I+1 SINCE USES SYMMETRY TO 
-C   CUT DOWN ON CALCULATIONS.
+C   Recent changes involve replacing derivV with its specific value 
+C   FACTOR*diffSV(2,X,Y) and perhaps similarly for derivS.
+C   diffSV and diffH will be zero.
+C   Must be aware that although none of the diagonal elements are defined
+C   they are equal to zero. Not deemed necessary to calc. them since
+C   the loop never reaches I=J.  Good to use J=I+1 since uses symmetry to 
+C   cut down on calculations.
 
-C   KEEP DIFFS2 SINCE IT IS ONLY DEPENDENT ON WHICH ATOMS ARE INTERACTING 
-C   NOT THE AOS
+C   Keep diffS2 since it is only dependent on which atoms are interacting 
+C   not the AOs
 
-C   INCLUDE FACTOR OF 2 FOR ELEC1ST SINCE TWO ELECTRONS FILL EACH MO
+C   Include factor of 2 for ELEC1st since two electrons fill each MO
 
       DO K=1,3
          DO I=1,N
             I2=3*(I-1)
-            DERIV1ST(I2+K)=ELEC1STA(I,K)+ELEC1STB(I,K)+REP1ST(I,K)
+            deriv1st(I2+K)=ELEC1sta(I,K)+ELEC1stb(I,K)+REP1st(I,K)
          ENDDO
       ENDDO
        
       RETURN
       END
 C   
-C  SUBROUTINE TO EXPAND THE POLYNOMIAL SUM FOR THE OVERLAP MATRIX ELEMENTS
-C  THIS IS BETWEEN SAME ELEMENT....SAME ELEMENT/DIFF ELEMENT WILL BE MORE
+C  subroutine to expand the polynomial sum for the overlap matrix elements
+C  this is between same element....same element/diff element will be more
 C   
 
-      SUBROUTINE DOVECC(N,K,L,SSSS,SSPS,SPPS,SPPP,R)
+      SUBROUTINE DOVECC(N,K,L,SSSs,SSPs,SPPs,SPPp,R)
       IMPLICIT NONE
       INTEGER  K,L,N
       DOUBLE PRECISION R(N,N), QTB(N,N)
@@ -1351,7 +1351,7 @@ C     COMMON /RDIST/ R, DIRCOS, DIAGA, DIAGB
      6             D30,D31,D32,D33,D34,D35,D36,D37,D38,D39,D40,DQDR
 
       PARAMETER ( D1=  0.4635980000 , D2=-0.354943D0,
-C OLD PARAMS D2= -0.3593880000 ,
+C old params D2= -0.3593880000 ,
      /  D3=  0.1597240000 ,D4= -0.0236036000
      / ,D5= -0.0160748000 ,D6=  0.0101939000 ,D7= -0.0010466800 ,D8= -0.0013805000
      / ,D9=  0.0007822820,D10= -0.0001806570,
@@ -1361,7 +1361,7 @@ C OLD PARAMS D2= -0.3593880000 ,
      / ,D19= -0.0013407800,D20=  0.0002213130,
 
      /  D21= -0.1381954000 , D22=0.021232D0,
-C OLD PARAMS D22=  0.0272058000 ,
+C old params D22=  0.0272058000 ,
      /  D23=  0.1362280000 ,D24= -0.1495750000
      / ,D25=  0.0722040000 ,D26= -0.0144966000 ,D27= -0.0040281700 ,D28=  0.0047257800
      / ,D29= -0.0021491900,D30=  0.0004729620,
@@ -1375,15 +1375,15 @@ C OLD PARAMS D22=  0.0272058000 ,
 
        QTB(K,L)=(R(K,L)-((B3+A3)/2.0D0))/((B3-A3)/2.0D0)
 
-C         PRINT*,'R IN DEROV IS',R(K,L)
+C         PRINT*,'r IN DEROV is',R(K,L)
 
       DQDR=1.0D0 /((B3-A3)/2.0D0)
 
-C  SSSSIG
+C  Ssssig
 
             IF (R(K,L).LT.6.858869592109767D0) THEN
 
-        SSSS=(D2 + D3*4.0D0*QTB(K,L)
+        SSSs=(D2 + D3*4.0D0*QTB(K,L)
      /   +D4*(-3.0D0 + 12.0D0*(QTB(K,L)**2))
      /   + D5*(-16.0D0*QTB(K,L) + 32.0D0*(QTB(K,L)**3)) +D6*(5.0D0 -60.0D0*(QTB(K,L)**2)
      /   + 80.0D0*(QTB(K,L)**4)) +D7*(36.0D0*QTB(K,L) - 192.0D0*(QTB(K,L)**3) +192.0D0*(QTB(K,L)**5))
@@ -1394,15 +1394,15 @@ C  SSSSIG
 
          ELSE
        
-      SSSS=0.0D0
+      SSSs=0.0D0
 
        ENDIF
 
-C   SSPSIG
+C   Sspsig
 
             IF (R(K,L).LT.6.968036930355212D0) THEN
 
-      SSPS=D12*DQDR + D13*4.0D0*QTB(K,L)*DQDR
+      SSPs=D12*DQDR + D13*4.0D0*QTB(K,L)*DQDR
      /   +D14*(-3.0D0*DQDR + 12.0D0*(QTB(K,L)**2)*DQDR)
      /   + D15*(-16.0D0*QTB(K,L)*DQDR + 32.0D0*(QTB(K,L)**3)*DQDR) +D16*(5.0D0*DQDR -60.0D0*(QTB(K,L)**2)*DQDR
      /   + 80.0D0*(QTB(K,L)**4)*DQDR) +D17*(36.0D0*QTB(K,L)*DQDR - 192.0D0*(QTB(K,L)**3)*DQDR +192.0D0*(QTB(K,L)**5)*DQDR)
@@ -1413,19 +1413,19 @@ C   SSPSIG
 
         ELSE
 
-      SSPS=0.0D0
+      SSPs=0.0D0
 
        ENDIF
 
 C *****
-C WHEN USING FS PARAMS, SWAP PPS AND PPPI
+C when using Fs params, swap pps and pppi
 C *****
 
-C SPPSIG
+C Sppsig
 
             IF (R(K,L).LT.7.031215111280781D0) THEN
 
-      SPPS=(D22 + D23*4.0D0*QTB(K,L)
+      SPPs=(D22 + D23*4.0D0*QTB(K,L)
      /   +D24*(-3.0D0 + 12.0D0*(QTB(K,L)**2))
      /   + D25*(-16.0D0*QTB(K,L) + 32.0D0*(QTB(K,L)**3)) +D26*(5.0D0 -60.0D0*(QTB(K,L)**2)
      /   + 80.0D0*(QTB(K,L)**4)) +D27*(36.0D0*QTB(K,L) - 192.0D0*(QTB(K,L)**3) +192.0D0*(QTB(K,L)**5))
@@ -1436,15 +1436,15 @@ C SPPSIG
 
           ELSE
 
-        SPPS=0.0D0
+        SPPs=0.0D0
 
          ENDIF
 
-C   SPPPI
+C   Spppi
 
             IF (R(K,L).LT.6.4433341605186D0) THEN
 
-      SPPP=(D32 + D33*4.0D0*QTB(K,L)
+      SPPp=(D32 + D33*4.0D0*QTB(K,L)
      /   +D34*(-3.0D0 + 12.0D0*(QTB(K,L)**2))
      /   + D35*(-16.0D0*QTB(K,L) + 32.0D0*(QTB(K,L)**3)) +D36*(5.0D0 -60.0D0*(QTB(K,L)**2)
      /   + 80.0D0*(QTB(K,L)**4)) +D37*(36.0D0*QTB(K,L) - 192.0D0*(QTB(K,L)**3) +192.0D0*(QTB(K,L)**5))
@@ -1456,25 +1456,25 @@ C   SPPPI
 
           ELSE
 
-        SPPP=0.0D0
+        SPPp=0.0D0
 
           ENDIF
 
 C   IF (R(K,L).GT.B3) THEN
-C          SSSS=0.0D0
-C          SSPS=0.0D0
-C          SPPS=0.0D0
-C          SPPP=0.0D0
-C         ENDIF
+C          SSSs=0.0D0
+C          SSPs=0.0D0
+C          SPPs=0.0D0
+c          SPPp=0.0D0
+c         ENDIF
 
       RETURN
       END
 C   
-C  SUBROUTINE TO EXPAND THE POLYNOMIAL SUM FOR THE OVERLAP MATRIX ELEMENTS
-C  THIS IS BETWEEN SAME ELEMENT....SAME ELEMENT/DIFF ELEMENT WILL BE MORE
+C  subroutine to expand the polynomial sum for the overlap matrix elements
+C  this is between same element....same element/diff element will be more
 C   
 
-      SUBROUTINE DAMCCA(N,K,L,SSSS,SSPS,SPPS,SPPP,R)
+      SUBROUTINE DAMCCA(N,K,L,SSSs,SSPs,SPPs,SPPp,R)
       IMPLICIT NONE
       INTEGER  K,L,N
       DOUBLE PRECISION R(N,N), QTB(N,N)
@@ -1494,7 +1494,7 @@ C
      / ,G19= -0.0000637944,G20= -0.0010983800,
 
      /  G21=  0.2788480000 ,G22=-0.1669651D0,
-C OLD PARAM: G22= -0.1770288000 ,
+C old param: G22= -0.1770288000 ,
      /  G23=  0.0113421000 ,G24=  0.0677288000
      / ,G25= -0.0683438000 ,G26=  0.0436374000 ,G27= -0.0211787000 ,G28=  0.0074277200
      / ,G29= -0.0013746800,G30= -0.0004145400,
@@ -1507,15 +1507,15 @@ C OLD PARAM: G22= -0.1770288000 ,
        B2=7.0D0
        QTB(K,L)=(R(K,L)-((B2+A2)/2.0D0))/((B2-A2)/2.0D0)
 
-C      PRINT*,'R IN DERHAM IS',R(K,L)
+C      PRINT*,'r IN DERHAM is',R(K,L)
 
       DQDR=1.0D0/((B2-A2)/2.0D0)
 
-C  SSSSIG
+C  Ssssig
 
        IF (R(K,L).LT.6.501645139158383D0) THEN
 
-       SSSS=G2*DQDR + G3*4.0D0*QTB(K,L)*DQDR
+       SSSs=G2*DQDR + G3*4.0D0*QTB(K,L)*DQDR
      /   +G4*(-3.0D0*DQDR + 12.0D0*(QTB(K,L)**2)*DQDR)
      /   + G5*(-16.0D0*QTB(K,L)*DQDR + 32.0D0*(QTB(K,L)**3)*DQDR) +G6*(5.0D0*DQDR -60.0D0*(QTB(K,L)**2)*DQDR
      /   + 80.0D0*(QTB(K,L)**4)*DQDR) +G7*(36.0D0*QTB(K,L)*DQDR - 192.0D0*(QTB(K,L)**3)*DQDR +192.0D0*(QTB(K,L)**5)*DQDR)
@@ -1526,16 +1526,16 @@ C  SSSSIG
 
        ELSE
  
-       SSSS=0.0D0
+       SSSs=0.0D0
 
        ENDIF
 
 
-C   SSPSIG
+C   Sspsig
 
        IF (R(K,L).LT.6.514708000907687D0) THEN
 
-      SSPS=G12*DQDR + G13*4.0D0*QTB(K,L)*DQDR
+      SSPs=G12*DQDR + G13*4.0D0*QTB(K,L)*DQDR
      /   +G14*(-3.0D0*DQDR + 12.0D0*(QTB(K,L)**2)*DQDR)
      /   + G15*(-16.0D0*QTB(K,L)*DQDR + 32.0D0*(QTB(K,L)**3)*DQDR) +G16*(5.0D0*DQDR -60.0D0*(QTB(K,L)**2)*DQDR
      /   + 80.0D0*(QTB(K,L)**4)*DQDR) +G17*(36.0D0*QTB(K,L)*DQDR - 192.0D0*(QTB(K,L)**3)*DQDR +192.0D0*(QTB(K,L)**5)*DQDR)
@@ -1546,18 +1546,18 @@ C   SSPSIG
 
        ELSE
  
-      SSPS=0.0D0
+      SSPs=0.0D0
 
        ENDIF
 
 
-C SWAPPED THESE TWO, DUE TO FUCKUP IN PRB
+C swapped these two, due to fuckup in PRB
 
-C SPPSIG
+C Sppsig
 
        IF (R(K,L).LT.6.699591659971658D0) THEN
 
-      SPPS=G22*DQDR + G23*4.0D0*QTB(K,L)*DQDR
+      SPPs=G22*DQDR + G23*4.0D0*QTB(K,L)*DQDR
      /   +G24*(-3.0D0*DQDR + 12.0D0*(QTB(K,L)**2)*DQDR)
      /   + G25*(-16.0D0*QTB(K,L)*DQDR + 32.0D0*(QTB(K,L)**3)*DQDR) +G26*(5.0D0*DQDR -60.0D0*(QTB(K,L)**2)*DQDR
      /   + 80.0D0*(QTB(K,L)**4)*DQDR) +G27*(36.0D0*QTB(K,L)*DQDR - 192.0D0*(QTB(K,L)**3)*DQDR +192.0D0*(QTB(K,L)**5)*DQDR)
@@ -1568,17 +1568,17 @@ C SPPSIG
 
        ELSE
 
-      SPPS=0.0D0
+      SPPs=0.0D0
 
         ENDIF
 
 
-C   SPPPI
+C   Spppi
 
        IF (R(K,L).LT.6.841936337171249D0) THEN
 
 
-      SPPP=G32*DQDR + G33*4.0D0*QTB(K,L)*DQDR
+      SPPp=G32*DQDR + G33*4.0D0*QTB(K,L)*DQDR
      /   +G34*(-3.0D0*DQDR + 12.0D0*(QTB(K,L)**2)*DQDR)
      /   + G35*(-16.0D0*QTB(K,L)*DQDR + 32.0D0*(QTB(K,L)**3)*DQDR) +G36*(5.0D0*DQDR -60.0D0*(QTB(K,L)**2)*DQDR
      /   + 80.0D0*(QTB(K,L)**4)*DQDR) +G37*(36.0D0*QTB(K,L)*DQDR - 192.0D0*(QTB(K,L)**3)*DQDR +192.0D0*(QTB(K,L)**5)*DQDR)
@@ -1589,27 +1589,27 @@ C   SPPPI
 
          ELSE
 
-            SPPP=0.0D0
+            SPPp=0.0D0
 
          ENDIF
 
-C         IF (R(K,L).GT.B2) THEN
-C          SSSS=0.0D0
-C          SSPS=0.0D0
-C          SPPS=0.0D0
-C          SPPP=0.0D0
-C         ENDIF
+c         IF (R(K,L).GT.B2) THEN
+c          SSSs=0.0D0
+c          SSPs=0.0D0
+c          SPPs=0.0D0
+c          SPPp=0.0D0
+c         ENDIF
 
 
       RETURN
       END
 C   
-C  SUBROUTINE TO EXPAND THE POLYNOMIAL SUM FOR THE OVERLAP MATRIX ELEMENTS
-C  THIS IS BETWEEN SAME ELEMENT....SAME ELEMENT/DIFF ELEMENT WILL BE MORE
+C  subroutine to expand the polynomial sum for the overlap matrix elements
+C  this is between same element....same element/diff element will be more
 C   
 
 
-      SUBROUTINE DAMCCB(N,XS,K,L,SSSS,SSPS,SPPS,SPPP,R, DIRCOS, DIAGA, DIAGB)
+      SUBROUTINE DAMCCB(N,XS,K,L,SSSs,SSPs,SPPs,SPPp,R, DIRCOS, DIAGA, DIAGB)
       IMPLICIT NONE
       INTEGER  K,L,N
       DOUBLE PRECISION R(N,N),
@@ -1626,7 +1626,7 @@ C     COMMON /RDIST/ R, DIRCOS, DIAGA, DIAGB
      9     G37,G38,G39,G40,A2,B2
 
        PARAMETER (  G1= -0.3789880000 ,G2=0.287963,
-C OLD PARAM; G2=  0.2886558000 ,
+C old param; G2=  0.2886558000 ,
      /  G3= -0.1201660000 ,G4=  0.0100538000
      / ,G5=  0.0203983000 ,G6= -0.0149822000 ,G7=  0.0056378700 ,G8= -0.0006071250
      / ,G9= -0.0008101620,G10=  0.0006987440,
@@ -1647,15 +1647,15 @@ C OLD PARAM; G2=  0.2886558000 ,
        B2=7.0D0
        QTB(K,L)=(R(K,L)-((B2+A2)/2.0D0))/((B2-A2)/2.0D0)
 
-C      PRINT*,'R IN DERHAM IS',R(K,L)
+C      PRINT*,'r IN DERHAM is',R(K,L)
 
       DQDR=1.0D0/((B2-A2)/2.0D0)
 
-C  SSSSIG
+C  Ssssig
 
        IF (R(K,L).LT.6.695259436126274D0) THEN
 
-       SSSS=G2*DQDR + G3*4.0D0*QTB(K,L)*DQDR
+       SSSs=G2*DQDR + G3*4.0D0*QTB(K,L)*DQDR
      /   +G4*(-3.0D0*DQDR + 12.0D0*(QTB(K,L)**2)*DQDR)
      /   + G5*(-16.0D0*QTB(K,L)*DQDR + 32.0D0*(QTB(K,L)**3)*DQDR) +G6*(5.0D0*DQDR -60.0D0*(QTB(K,L)**2)*DQDR
      /   + 80.0D0*(QTB(K,L)**4)*DQDR) +G7*(36.0D0*QTB(K,L)*DQDR - 192.0D0*(QTB(K,L)**3)*DQDR +192.0D0*(QTB(K,L)**5)*DQDR)
@@ -1667,16 +1667,16 @@ C  SSSSIG
 
       ELSE
 
-      SSSS=0.0D0
+      SSSs=0.0D0
 
       ENDIF
 
-C   SSPSIG
+C   Sspsig
 
        IF (R(K,L).LT.6.796735011037814D0) THEN
 
 
-      SSPS=G12*DQDR + G13*4.0D0*QTB(K,L)*DQDR
+      SSPs=G12*DQDR + G13*4.0D0*QTB(K,L)*DQDR
      /   +G14*(-3.0D0*DQDR + 12.0D0*(QTB(K,L)**2)*DQDR)
      /   + G15*(-16.0D0*QTB(K,L)*DQDR + 32.0D0*(QTB(K,L)**3)*DQDR) +G16*(5.0D0*DQDR -60.0D0*(QTB(K,L)**2)*DQDR
      /   + 80.0D0*(QTB(K,L)**4)*DQDR) +G17*(36.0D0*QTB(K,L)*DQDR - 192.0D0*(QTB(K,L)**3)*DQDR +192.0D0*(QTB(K,L)**5)*DQDR)
@@ -1687,19 +1687,19 @@ C   SSPSIG
 
          ELSE
 
-        SSPS=0.0D0
+        SSPs=0.0D0
 
          ENDIF
 
 
 
-C SWAPPED THESE TWO, DUE TO FUCKUP IN PRB
+C swapped these two, due to fuckup in PRB
 
-C SPPSIG
+C Sppsig
 
        IF (R(K,L).LT.6.880535598840217D0) THEN
 
-      SPPS=G22*DQDR + G23*4.0D0*QTB(K,L)*DQDR
+      SPPs=G22*DQDR + G23*4.0D0*QTB(K,L)*DQDR
      /   +G24*(-3.0D0*DQDR + 12.0D0*(QTB(K,L)**2)*DQDR)
      /   + G25*(-16.0D0*QTB(K,L)*DQDR + 32.0D0*(QTB(K,L)**3)*DQDR) +G26*(5.0D0*DQDR -60.0D0*(QTB(K,L)**2)*DQDR
      /   + 80.0D0*(QTB(K,L)**4)*DQDR) +G27*(36.0D0*QTB(K,L)*DQDR - 192.0D0*(QTB(K,L)**3)*DQDR +192.0D0*(QTB(K,L)**5)*DQDR)
@@ -1710,18 +1710,18 @@ C SPPSIG
 
          ELSE
 
-         SPPS=0.0D0
+         SPPs=0.0D0
 
          ENDIF
 
 
 
-C   SPPPI
+C   Spppi
 
        IF (R(K,L).LT.5.944816716454667D0) THEN
 
 
-      SPPP=G32*DQDR + G33*4.0D0*QTB(K,L)*DQDR
+      SPPp=G32*DQDR + G33*4.0D0*QTB(K,L)*DQDR
      /   +G34*(-3.0D0*DQDR + 12.0D0*(QTB(K,L)**2)*DQDR)
      /   + G35*(-16.0D0*QTB(K,L)*DQDR + 32.0D0*(QTB(K,L)**3)*DQDR) +G36*(5.0D0*DQDR -60.0D0*(QTB(K,L)**2)*DQDR
      /   + 80.0D0*(QTB(K,L)**4)*DQDR) +G37*(36.0D0*QTB(K,L)*DQDR - 192.0D0*(QTB(K,L)**3)*DQDR +192.0D0*(QTB(K,L)**5)*DQDR)
@@ -1732,26 +1732,26 @@ C   SPPPI
 
         ELSE
 
-          SPPP=0.0D0
+          SPPp=0.0D0
 
         ENDIF
 
 
-C         IF (R(K,L).GT.B2) THEN
-C          SSSS=0.0D0
-C          SSPS=0.0D0
-C          SPPS=0.0D0
-C          SPPP=0.0D0
-C         ENDIF
+c         IF (R(K,L).GT.B2) THEN
+c          SSSs=0.0D0
+c          SSPs=0.0D0
+c          SPPs=0.0D0
+c          SPPp=0.0D0
+c         ENDIF
 
       RETURN
       END
 C   
-C  SUBROUTINE TO EXPAND THE POLYNOMIAL SUM FOR THE OVERLAP MATRIX ELEMENTS
-C  THIS IS BETWEEN SAME ELEMENT....SAME ELEMENT/DIFF ELEMENT WILL BE MORE
+C  subroutine to expand the polynomial sum for the overlap matrix elements
+C  this is between same element....same element/diff element will be more
 C   
 
-      SUBROUTINE DREPCC(N,K,L,REP,R)
+      SUBROUTINE DREPCC(N,K,L,rep,R)
       IMPLICIT NONE
       INTEGER  K,L,N
       DOUBLE PRECISION R(N,N), QTB(N,N)
@@ -1770,15 +1770,15 @@ C     COMMON /RDIST/ R, DIRCOS, DIAGA, DIAGB
 C      A2=1.0D0
 C      B2=3.3D0
 
-C         IF (R(K,L).GT.B2) REP=0.0D0
+C         IF (R(K,L).GT.B2) rep=0.0D0
 
          IF (R(K,L).GT.3.251838574097556D0) THEN
-            REP=0.0D0
+            rep=0.0D0
          ELSE
-C  SSSSIG
+C  Ssssig
        QTB(K,L)=(R(K,L)-((B2+A2)/2.0D0))/((B2-A2)/2.0D0)
        DQDR=1.0D0/((B2-A2)/2.0D0)
-      REP=C2*DQDR + C3*4.0D0*QTB(K,L)*DQDR
+      rep=C2*DQDR + C3*4.0D0*QTB(K,L)*DQDR
      /   +C4*(-3.0D0*DQDR + 12.0D0*(QTB(K,L)**2)*DQDR)
      /   + C5*(-16.0D0*QTB(K,L)*DQDR + 32.0D0*(QTB(K,L)**3)*DQDR) +C6*(5.0D0*DQDR -60.0D0*(QTB(K,L)**2)*DQDR
      /   + 80.0D0*(QTB(K,L)**4)*DQDR) +C7*(36.0D0*QTB(K,L)*DQDR - 192.0D0*(QTB(K,L)**3)*DQDR +192.0D0*(QTB(K,L)**5)*DQDR)
@@ -1786,18 +1786,18 @@ C  SSSSIG
      /   +C9*(-64.0D0*QTB(K,L)*DQDR +640.0D0*(QTB(K,L)**3)*DQDR -1536.0D0*(QTB(K,L)**5)*DQDR +1024.0D0*(QTB(K,L)**7)*DQDR)
      / +C10*(9.0D0*DQDR -360.0D0*(QTB(K,L)**2)*DQDR +2160*(QTB(K,L)**4)*DQDR
      /   -4032.0D0*(QTB(K,L)**6)*DQDR +2304.0D0*(QTB(K,L)**8)*DQDR)
-C           REP=REP+0.00002383611355998103D0
+C           rep=rep+0.00002383611355998103D0
          ENDIF
 
 
-C       PRINT*,'IN DREPCC, REP IS',REP
+C       PRINT*,'in drepcc, rep is',rep
       RETURN
       END
 C
 C**************************************************************************
 C
-C  SUBROUTINE DIFF FORMS THE CARTESIAN SECOND DERIVATIVE MATRIX USING
-C  NUMERICAL DIFFERENTIATION.
+C  Subroutine diff forms the cartesian second derivative matrix using
+C  numerical differentiation.
 C
 C**************************************************************************
 C

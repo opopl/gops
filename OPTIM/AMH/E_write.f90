@@ -1,80 +1,80 @@
-      SUBROUTINE E_WRITE(AVEP,TOTKE,T,NUMPRO,I_TEMP,INCMOV)
+      subroutine E_write(avep,totke,T,numpro,i_temp,incmov)
 
-      USE AMHGLOBALS,  ONLY: WEIGHT_P_AP,OKE,OPE_NO_BIAS,OPE_WITH_BIAS,OPE_BACKBONE, &
-            OPE_PLUS_KE,OHDRGN,OHDRGN_S,OHDRGN_M,&
-            OHDRGN_L,OHDRGN_SEQ,ONONADD,OCON_P_AP,ORAMA,OOXY,OCHIRAL,OAMH,OAMHSR,&
-            OAMHMR,OAMHLR,OCCEV,OOEV,OBIAS_RG,MAXPRO,IGOMB,OREP, &
-            OOBIASSEGA,OOBIASSEGB
+      use amhglobals,  only: weight_P_AP,oKE,oPE_no_bias,oPE_with_bias,oPE_backbone, &
+            oPE_plus_KE,ohdrgn,ohdrgn_s,ohdrgn_m,&
+            ohdrgn_l,ohdrgn_seq,ononadd,ocon_P_AP,orama,ooxy,ochiral,oamh,oamhsr,&
+            oamhmr,oamhlr,occev,ooev,obias_Rg,maxpro,igomb,orep, &
+            oobiassega,oobiassegb
 
-      IMPLICIT NONE
-       DOUBLE PRECISION, INTENT(IN):: AVEP(:,:,:),TOTKE(MAXPRO),T
-      INTEGER, INTENT(IN):: NUMPRO,I_TEMP,INCMOV 
+      implicit none
+       double precision, intent(in):: avep(:,:,:),totke(maxpro),T
+      integer, intent(in):: numpro,i_temp,incmov 
 
-       DOUBLE PRECISION, DIMENSION(SIZE(AVEP,1)):: E_P_AP,E_PE_NO_BIAS,E_PE_WITH_BIAS,E_PE_BACKBONE
-      INTEGER:: COUNT,I_PRO
+       double precision, dimension(size(avep,1)):: E_P_AP,E_PE_no_bias,E_PE_with_bias,E_PE_backbone
+      integer:: count,i_pro
 
-! PRELIMINARY CALCULATIONS
+! preliminary calculations
      
-!  BIASSEG_A  AVEP(:,1,10)
-!  BIAS SEG_B AVEP(:,1,18)
+!  biasseg_a  avep(:,1,10)
+!  bias seg_b avep(:,1,18)
  
-!          E_P_AP(:)=-WEIGHT_P_AP(1)*AVEP(:,1,40)-WEIGHT_P_AP(2)*AVEP(:,1,41)-WEIGHT_P_AP(3)*AVEP(:,1,42)
-!          E_PE_NO_BIAS(:)=AVEP(:,1,1)+AVEP(:,1,2)+AVEP(:,1,3)+AVEP(:,1,4)+AVEP(:,1,5)+AVEP(:,1,9)+ &
-!                AVEP(:,1,11)+AVEP(:,1,17)+E_P_AP
-!          E_PE_WITH_BIAS(:)=E_PE_NO_BIAS(:)+AVEP(:,1,10)+AVEP(:,1,12)+AVEP(:,1,18)
-!          E_PE_BACKBONE(:)= AVEP(:,1,2)+AVEP(:,1,3)+AVEP(:,1,4)+AVEP(:,1,9)+AVEP(:,1,11)
-          COUNT=I_TEMP/INCMOV
+!          E_P_AP(:)=-weight_P_AP(1)*avep(:,1,40)-weight_P_AP(2)*avep(:,1,41)-weight_P_AP(3)*avep(:,1,42)
+!          E_PE_no_bias(:)=avep(:,1,1)+avep(:,1,2)+avep(:,1,3)+avep(:,1,4)+avep(:,1,5)+avep(:,1,9)+ &
+!                avep(:,1,11)+avep(:,1,17)+E_P_AP
+!          E_PE_with_bias(:)=E_PE_no_bias(:)+avep(:,1,10)+avep(:,1,12)+avep(:,1,18)
+!          E_PE_backbone(:)= avep(:,1,2)+avep(:,1,3)+avep(:,1,4)+avep(:,1,9)+avep(:,1,11)
+          count=i_temp/incmov
 
-!   10 BIAS QA  12 RG BIAS 18 BIAS QB
-1000      FORMAT(I8,2X,100(F12.3,2X))
+!   10 bias Qa  12 Rg bias 18 bias Qb
+1000      format(i8,2x,100(f12.3,2x))
 
-! POTENTIAL/KINETIC ENERGIES ETC
+! potential/kinetic energies etc
 
-          WRITE(OKE,1000) COUNT,T,TOTKE(1:NUMPRO)
-          WRITE(OPE_NO_BIAS,1000)  COUNT,T,E_PE_NO_BIAS(1:NUMPRO)
-          WRITE(OPE_WITH_BIAS,1000) COUNT,T,E_PE_WITH_BIAS(1:NUMPRO)
-          WRITE(OPE_PLUS_KE,1000) COUNT,T,TOTKE(1:NUMPRO)+E_PE_WITH_BIAS(1:NUMPRO)
-          WRITE(OPE_BACKBONE,1000) COUNT,T,E_PE_BACKBONE(1:NUMPRO)
+          write(oKE,1000) count,T,totke(1:numpro)
+          write(oPE_no_bias,1000)  count,T,E_PE_no_bias(1:numpro)
+          write(oPE_with_bias,1000) count,T,E_PE_with_bias(1:numpro)
+          write(oPE_plus_KE,1000) count,T,totke(1:numpro)+E_PE_with_bias(1:numpro)
+          write(oPE_backbone,1000) count,T,E_PE_backbone(1:numpro)
 
-! REPLICA BIAS ENERGY
+! replica bias energy
 
-          WRITE(OREP,1000) COUNT,T,AVEP(1,1,43)
+          write(orep,1000) count,T,avep(1,1,43)
 
-! HBOND CONTRIBUTIONS
-! HBOND CONTRIBUTIONS
-! OHDRGN      COUNT,T,AVEP(1:NUMPRO,1,1)  =  NUMBER , TEMP  ,   TOTAL HBOND
-! OHDRGN_S    COUNT,T,AVEP(1:NUMPRO,1,14),AVEP(I_PRO,1,21:24)  = NUMBER, TEMP, PRE PNAS AB HBOND, PNAS AB SHORT RANGE
-! OHDRGN_M    COUNT,T,AVEP(1:NUMPRO,1,15),AVEP(I_PRO,1,25:28)  = NUMBER, TEMP, PRE PNAS AB HBOND, PNAS AB MEDIUM RANGE
-! OHDRGN_L    COUNT,T,AVEP(1:NUMPRO,1,16),AVEP(I_PRO,1,29:32)  = NUMBER, TEMP, PRE PNAS AB HBOND, PNAS AB LONG RANGE
-! OHDRGN_SEQ  COUNT,T,AVEP(1:NUMPRO,1,16),AVEP(I_PRO,1,33:39)  = NUMBER, TEMP, PRE PNAS AB HBOND, PNAS AB SEQ
+! hbond contributions
+! hbond contributions
+! ohdrgn      count,T,avep(1:numpro,1,1)  =  number , temp  ,   total hbond
+! ohdrgn_s    count,T,avep(1:numpro,1,14),avep(i_pro,1,21:24)  = number, temp, pre pnas ab hbond, pnas ab short range
+! ohdrgn_m    count,T,avep(1:numpro,1,15),avep(i_pro,1,25:28)  = number, temp, pre pnas ab hbond, pnas ab medium range
+! ohdrgn_l    count,T,avep(1:numpro,1,16),avep(i_pro,1,29:32)  = number, temp, pre pnas ab hbond, pnas ab long range
+! ohdrgn_seq  count,T,avep(1:numpro,1,16),avep(i_pro,1,33:39)  = number, temp, pre pnas ab hbond, pnas ab seq
 
-          WRITE(OHDRGN,1000) COUNT,T,AVEP(1:NUMPRO,1,1)
-          WRITE(OHDRGN_S,1000) COUNT,T,(AVEP(I_PRO,1,14),AVEP(I_PRO,1,21:24),I_PRO=1,NUMPRO)
-          WRITE(OHDRGN_M,1000) COUNT,T,(AVEP(I_PRO,1,15),AVEP(I_PRO,1,25:28),I_PRO=1,NUMPRO)
-          WRITE(OHDRGN_L,1000) COUNT,T,(AVEP(I_PRO,1,16),AVEP(I_PRO,1,29:32),I_PRO=1,NUMPRO)
-          WRITE(OHDRGN_SEQ,1000) COUNT,T,(AVEP(I_PRO,1,33:39),I_PRO=1,NUMPRO)
+          write(ohdrgn,1000) count,T,avep(1:numpro,1,1)
+          write(ohdrgn_s,1000) count,T,(avep(i_pro,1,14),avep(i_pro,1,21:24),i_pro=1,numpro)
+          write(ohdrgn_m,1000) count,T,(avep(i_pro,1,15),avep(i_pro,1,25:28),i_pro=1,numpro)
+          write(ohdrgn_l,1000) count,T,(avep(i_pro,1,16),avep(i_pro,1,29:32),i_pro=1,numpro)
+          write(ohdrgn_seq,1000) count,T,(avep(i_pro,1,33:39),i_pro=1,numpro)
 
-! OTHER CONTRIBUTIONS
+! other contributions
 
-          WRITE(ONONADD,1000) COUNT,T,AVEP(1:NUMPRO,1,17)
-          WRITE(OCON_P_AP,1000) COUNT,T,(E_P_AP(I_PRO),AVEP(I_PRO,1,40), &
-                                           AVEP(I_PRO,1,41),AVEP(I_PRO,1,42),I_PRO=1,NUMPRO)
-          WRITE(ORAMA,1000) COUNT,T,AVEP(1:NUMPRO,1,2)
-          WRITE(OOXY,1000) COUNT,T,AVEP(1:NUMPRO,1,3)
-          WRITE(OCHIRAL,1000) COUNT, T,AVEP(1:NUMPRO,1,4)
-          WRITE(OAMH,1000) COUNT,T,AVEP(1:NUMPRO,1,5)    
+          write(ononadd,1000) count,T,avep(1:numpro,1,17)
+          write(ocon_P_AP,1000) count,T,(E_P_AP(i_pro),avep(i_pro,1,40), &
+                                           avep(i_pro,1,41),avep(i_pro,1,42),i_pro=1,numpro)
+          write(orama,1000) count,T,avep(1:numpro,1,2)
+          write(ooxy,1000) count,T,avep(1:numpro,1,3)
+          write(ochiral,1000) count, T,avep(1:numpro,1,4)
+          write(oamh,1000) count,T,avep(1:numpro,1,5)    
 
-!          IF (.NOT.IGOMB) THEN
-          WRITE(OAMHSR,1000) COUNT,T,AVEP(1:NUMPRO,1,7)
-          WRITE(OAMHMR,1000) COUNT,T,AVEP(1:NUMPRO,1,13)
-          WRITE(OAMHLR,1000) COUNT,T,AVEP(1:NUMPRO,1,8)
-!          ENDIF
+!          if (.not.igomb) then
+          write(oamhsr,1000) count,T,avep(1:numpro,1,7)
+          write(oamhmr,1000) count,T,avep(1:numpro,1,13)
+          write(oamhlr,1000) count,T,avep(1:numpro,1,8)
+!          endif
 
-          WRITE(OCCEV,1000) COUNT, T,AVEP(1:NUMPRO,1,9)
-          WRITE(OOEV,1000) COUNT,T,AVEP(1:NUMPRO,1,11)
-!        WRITE(OBIAS,1000) COUNT,T,AVEP(1:NUMPRO,1,10)
-          WRITE(OOBIASSEGA,1000) COUNT,T,AVEP(1:NUMPRO,1,10)
-          WRITE(OOBIASSEGB,1000) COUNT,T,AVEP(1:NUMPRO,1,18)
-!          WRITE(OBIAS_RG,1000) COUNT, T,AVEP(1:NUMPRO,1,12)
+          write(occev,1000) count, T,avep(1:numpro,1,9)
+          write(ooev,1000) count,T,avep(1:numpro,1,11)
+!        write(obias,1000) count,T,avep(1:numpro,1,10)
+          write(oobiassega,1000) count,T,avep(1:numpro,1,10)
+          write(oobiassegb,1000) count,T,avep(1:numpro,1,18)
+!          write(obias_Rg,1000) count, T,avep(1:numpro,1,12)
 
-      END
+      end

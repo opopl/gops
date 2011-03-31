@@ -1,41 +1,41 @@
 C
-C  GPL LICENSE INFO {{{
+C  GPL License Info {{{
 C 
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C }}}
 C 
 C
       SUBROUTINE INERTIA(IT,Q)
-! DOXYGEN {{{
-!> \NAME INERTIA
-!> \BRIEF BUILD INERTIA TENSOR IT FROM THE COORDINATES Q
-!> \PARAM[OUT] IT
-!> \PARAM[IN] Q
+! Doxygen {{{
+!> \name INERTIA
+!> \brief Build inertia tensor IT from the coordinates Q
+!> \param[out] IT
+!> \param[in] Q
 ! }}}
       USE COMMONS
       USE KEY
       IMPLICIT NONE
       DOUBLE PRECISION IT(3,3),SCRATCH(9),Q(*), DIST
       INTEGER I, J, K, J1
-C SUBROUTINE BODY {{{
+C Subroutine body {{{
 C
 C
       SCRATCH(1:9)=0.0D0
@@ -65,55 +65,55 @@ C      PRINT*,'MOLWT,SCRATCH=',MOLWT,SCRATCH(1),SCRATCH(2),SCRATCH(3)
       IT(1:3,1:3)=0.0D0
       IF (.NOT.MASST) THEN
          DO I=1,3
-            KLOOP: DO K=1,NATOMS
+            kloop: DO K=1,NATOMS
                DO J1=1,NTAG
                   IF (K.EQ.TAGNUM(J1)) THEN
                      IT(I,I)=ATMASS(K)*(DIST(Q(3*K-2),SCRATCH(1))**2-Q(3*(K-1)+I)**2)*TAGFAC(J1)+IT(I,I)
-                     CYCLE KLOOP
+                     CYCLE kloop
                   ENDIF
                ENDDO
                IT(I,I)=ATMASS(K)*(DIST(Q(3*K-2),SCRATCH(1))**2-Q(3*(K-1)+I)**2)+IT(I,I)
-            ENDDO KLOOP
+            ENDDO kloop
          ENDDO
          DO I=1,3
             DO J=1,3
                IF (I.NE.J) THEN
-                  KLOOP2: DO K=1,NATOMS
+                  kloop2: DO K=1,NATOMS
                      DO J1=1,NTAG
                         IF (K.EQ.TAGNUM(J1)) THEN
                            IT(I,J)=-ATMASS(K)*(Q(3*(K-1)+I)*Q(3*(K-1)+J))*TAGFAC(J1)+IT(I,J)
-                           CYCLE KLOOP2
+                           CYCLE kloop2
                         ENDIF
                      ENDDO
                      IT(I,J)=-ATMASS(K)*(Q(3*(K-1)+I)*Q(3*(K-1)+J))+IT(I,J)
-                  ENDDO KLOOP2
+                  ENDDO kloop2
                ENDIF
             ENDDO
          ENDDO
       ELSE
          DO I=1,3
-            KLOOP3: DO K=1,NATOMS
+            kloop3: DO K=1,NATOMS
                DO J1=1,NTAG
                   IF (K.EQ.TAGNUM(J1)) THEN
                      IT(I,I)=(DIST(Q(3*K-2),SCRATCH(1))**2-Q(3*(K-1)+I)**2)*TAGFAC(J1)+IT(I,I)
-                     CYCLE KLOOP3
+                     CYCLE kloop3
                   ENDIF
                ENDDO
                IT(I,I)=(DIST(Q(3*K-2),SCRATCH(1))**2-Q(3*(K-1)+I)**2)+IT(I,I)
-            ENDDO KLOOP3
+            ENDDO kloop3
          ENDDO
          DO I=1,3
             DO J=1,3
                IF (I.NE.J) THEN
-                  KLOOP4: DO K=1,NATOMS
+                  kloop4: DO K=1,NATOMS
                      DO J1=1,NTAG
                         IF (K.EQ.TAGNUM(J1)) THEN
                            IT(I,J)=-(Q(3*(K-1)+I)*Q(3*(K-1)+J))*TAGFAC(J1)+IT(I,J)
-                           CYCLE KLOOP4
+                           CYCLE kloop4
                         ENDIF
                      ENDDO
                      IT(I,J)=-(Q(3*(K-1)+I)*Q(3*(K-1)+J))+IT(I,J)
-                  ENDDO KLOOP4
+                  ENDDO kloop4
                ENDIF
             ENDDO
          ENDDO
@@ -126,12 +126,12 @@ C      PRINT*,'MOLWT,SCRATCH=',MOLWT,SCRATCH(1),SCRATCH(2),SCRATCH(3)
       USE COMMONS
       USE KEY,ONLY : FREEZE, RBAAT
       IMPLICIT NONE
-! SUBROUTINE PARAMETERS 
+! subroutine parameters 
       DOUBLE PRECISION ITX,ITY,ITZ,DUMQ(3*NATOMS)
-! LOCAL PARAMETERS 
+! local parameters 
       INTEGER J1, J2, J3, J4
       DOUBLE PRECISION IT(3,3), CMX, CMY, CMZ, VEC(3,3), MASST
-C SUBROUTINE BODY {{{
+C Subroutine body {{{
 
       IF (RBAAT) NATOMS = NATOMS/2
 
@@ -169,25 +169,25 @@ C SUBROUTINE BODY {{{
       DO J1=1,3
          DO J2=1,3
             IT(J1,J2)=0.0D0
-            J3LOOP1: DO J3=1,NATOMS
+            j3loop1: DO J3=1,NATOMS
                DO J4=1,NTAG
                   IF (J3.EQ.TAGNUM(J4)) THEN
                      IT(J1,J2)=IT(J1,J2)-DUMQ(3*(J3-1)+J1)*DUMQ(3*(J3-1)+J2)*ATMASS(J3)*TAGFAC(J4)
-                     CYCLE J3LOOP1
+                     CYCLE j3loop1
                   ENDIF
                ENDDO
                IT(J1,J2)=IT(J1,J2)-DUMQ(3*(J3-1)+J1)*DUMQ(3*(J3-1)+J2)*ATMASS(J3)
-            ENDDO J3LOOP1
+            ENDDO j3loop1
             IF (J1.EQ.J2) THEN
-               J3LOOP2: DO J3=1,NATOMS
+               j3loop2: DO J3=1,NATOMS
                   DO J4=1,NTAG
                      IF (J3.EQ.TAGNUM(J4)) THEN
                         IT(J1,J2)=IT(J1,J2)+(DUMQ(3*(J3-1)+1)**2+DUMQ(3*(J3-1)+2)**2+DUMQ(3*(J3-1)+3)**2)*ATMASS(J3)*TAGFAC(J4)
-                        CYCLE J3LOOP2
+                        CYCLE j3loop2
                      ENDIF
                   ENDDO
                   IT(J1,J2)=IT(J1,J2)+(DUMQ(3*(J3-1)+1)**2+DUMQ(3*(J3-1)+2)**2+DUMQ(3*(J3-1)+3)**2)*ATMASS(J3)
-               ENDDO J3LOOP2
+               ENDDO j3loop2
             ENDIF
          ENDDO
       ENDDO

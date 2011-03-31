@@ -1,378 +1,378 @@
 
-C     --------------------- GENTAB ----------------------
+c     --------------------- gentab ----------------------
 
-      SUBROUTINE GENTAB
+      subroutine gentab
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-C     GENTAB IS DRIVER ROUTINE FOR GENERATING REQUIRED TABLES
+c     GENTAB is driver routine for generating required tables
 
-C     ---------------------------------------------------
-C
-C  SUBROUTINE LOGIC
-C
-C     * CALL TIME
-C     * LOOP OVER NUMBER OF TABLES
-C       * DETERMINE THE INTERACTING SUBSET OF RESIDUES
-C         [ THIS MAY BE HISTORICAL ]
-C       * CALL POTIND
-C
-C       * CALL GENGRD
-C 
-C       * IF TABLE = 1, PASSI = TRUE
-C       * IF TABLE = NUMTAB, PASSF = TRUE
-C
-C       * CALL GASPOT
-C
-C     * CALL TIME
-C     * CONSTRUCT HBOND TABLES
-C
-C  SUBROUTINE VARIABLES
-C
-C      RSEP
+c     ---------------------------------------------------
+c
+c  Subroutine Logic
+c
+c     * Call time
+c     * Loop over number of tables
+c       * Determine the interacting subset of residues
+c         [ this may be historical ]
+c       * Call potind
+c
+c       * Call gengrd
+c 
+c       * If Table = 1, passi = true
+c       * If Table = numtab, passf = true
+c
+c       * Call Gaspot
+c
+c     * Call time
+c     * Construct hbond tables
+c
+c  Subroutine Variables
+c
+c      rsep
 
-      USE AMHGLOBALS,  ONLY:SO,NUMTAB,CRDIXN,NMRES,
-     *  IDIGNS,AMHMAXSIZ,MAXCNT,NUMLNG,ILONG,OARCHV,MAXS,WORK6,WORK3,
-     *  DELTA,DELTE,DELTZ,RINC,RCUTAMH,TARGET,BONDLN,NUMCRD,
-     *  N_DIVS_MAX,TARG_DIST,MAXCRD,IBIASFILE,I_REP,MAXTAB,ISS_STRUCT,
-     *  I_QBIAS_A,WIDTH_QEXP_A,DEL_R_A,Q_IJ_A,DQ_DR_IJ_A,I_BIAS_NATIVE_A,
-     *  I_QBIAS_B,I_BIAS_NATIVE_B,TOTALSSNORM,NUMCONST_A, NUMCONST_B,
-     *  DEL_R_B,Q_IJ_B,DQ_DR_IJ_B,WIDTH_QEXP_B,SS_A,SS_B,SS_DIST
+      use amhglobals,  only:SO,numtab,crdixn,nmres,
+     *  idigns,AMHmaxsiz,maxcnt,numlng,ilong,oarchv,maxs,work6,work3,
+     *  delta,delte,deltz,rinc,rcutAMH,target,bondln,numcrd,
+     *  n_divs_max,targ_dist,maxcrd,ibiasfile,i_rep,maxtab,iss_struct,
+     *  i_Qbias_a,width_Qexp_a,del_r_a,Q_ij_a,dQ_dr_ij_a,i_bias_native_a,
+     *  i_Qbias_b,i_bias_native_b,totalssnorm,numconst_a, numconst_b,
+     *  del_r_b,Q_ij_b,dQ_dr_ij_b,width_Qexp_b,ss_a,ss_b,ss_dist
 
-      USE AMH_INTERFACES, ONLY:REP_CONTACT
+      use amh_interfaces, only:rep_contact
 
-      IMPLICIT NONE
+      implicit none
 
-C     INTERNAL VARIABLES:
+c     internal variables:
 
-         LOGICAL PASSI,PASSF
+         logical passi,passf
 
-         INTEGER JBEGN,JEND, I_TAB, I_DIST,I_DIFF,TAB,I_IXN,ISIT1,ISIT2,NMRES_CHECK,IDUMMY,
-     *           I_RES,I_RES1, I_RES2
+         integer jbegn,jend, i_tab, i_dist,i_diff,tab,i_ixn,isit1,isit2,nmres_check,idummy,
+     *           i_res,i_res1, i_res2
 
-         DOUBLE PRECISION RSEP, MAX_CONT,MAX_RIJ,
-     *         SMALL,XDIFF,YDIFF,ZDIFF,
-     *         BIAS_CORD(AMHMAXSIZ,3,MAXCRD),
-     *         XDIFFTEMP,YDIFFTEMP,ZDIFFTEMP
+         double precision rsep, max_cont,max_rij,
+     *         small,xdiff,ydiff,zdiff,
+     *         bias_cord(AMHmaxsiz,3,maxcrd),
+     *         xdifftemp,ydifftemp,zdifftemp
 
-        INTEGER TEMPNRES,SEQ_A(500),SEQ_B(500),ICOORD,SA_ALPHA(500),SS_ALPHA(500),
-     *          SA_BETA(500),SS_BETA(500)
+        integer tempNres,seq_a(500),seq_b(500),icoord,sa_alpha(500),ss_alpha(500),
+     *          sa_beta(500),ss_beta(500)
 
-        DOUBLE PRECISION Q_VAR_A,DEL_Q_A,Q_VAR_B,DEL_Q_B,CORDS(500,3,3)
+        double precision Q_var_a,del_Q_a,Q_var_b,del_Q_b,cords(500,3,3)
         
-        CHARACTER BLAH*38
+        character blah*38
 
-C     REQUIRED SUBROUTINES
+c     required subroutines
 
-        EXTERNAL POTIND,GENGRD,GASPOT,EV_SET_UP
+        external potind,gengrd,gaspot,ev_set_up
 
-C     --------------------- BEGIN -----------------------
-C        WRITE(6,*) 'GENTAB IN'
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c     --------------------- begin -----------------------
+c        write(6,*) 'gentab in'
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-C     GENERATE POTENTIAL FROM MEMORY PROTEINS
-C     CONSTRUCT POTENTIAL AND FORCE TABLES
-C     FIND TABLES FOR ALPHA-ALPHA COORDINATES
+c     generate potential from memory proteins
+c     construct potential and force tables
+c     find tables for alpha-alpha coordinates
 
-      DO 500 I_TAB=1,NUMTAB
+      do 500 i_tab=1,numtab
 
-C        DETERMINE WHICH RESIDUES WILL INTERACT GIVEN
-C        THE PROTEIN LENGTH AND 'MUTATION' REGION
+c        determine which residues will interact given
+c        the protein length and 'mutation' region
 
-         IF( (CRDIXN(I_TAB,1).EQ.CRDIXN(I_TAB,2)).AND.
-     *       (CRDIXN(I_TAB,1).EQ.1) )THEN
-            JBEGN=2
-            JEND=NMRES
-            RSEP=5.0D0
-         ELSEIF( CRDIXN(I_TAB,1).NE.CRDIXN(I_TAB,2) )THEN
-            JBEGN=1
-            JEND=NMRES
-             RSEP=5.5D0
-         ELSE
-            JBEGN=1
-            JEND=NMRES
-            RSEP=10.5D0
-         ENDIF
+         if( (crdixn(i_tab,1).eq.crdixn(i_tab,2)).and.
+     *       (crdixn(i_tab,1).eq.1) )then
+            jbegn=2
+            jend=nmres
+            rsep=5.0D0
+         elseif( crdixn(i_tab,1).ne.crdixn(i_tab,2) )then
+            jbegn=1
+            jend=nmres
+             rsep=5.5D0
+         else
+            jbegn=1
+            jend=nmres
+            rsep=10.5D0
+         endif
 
-         IDIGNS=.FALSE.
+         idigns=.false.
 
-         CALL POTIND(AMHMAXSIZ,MAXCNT,NUMLNG(0,I_TAB),ILONG(1,1,I_TAB),JBEGN,JEND,NMRES,I_TAB)
+         call potind(AMHmaxsiz,maxcnt,numlng(0,i_tab),ilong(1,1,i_tab),jbegn,jend,nmres,i_tab)
 
-C        SET ANALYSIS PARAMETERS TO FALSE;
-C        FULL TABLES ARE TO BE GENERATED
+c        set analysis parameters to false;
+c        full tables are to be generated
 
-C        CONSTRUCT R-GRID FOR POTENTIAL
+c        construct r-grid for potential
 
-C         IF( I_TAB.EQ.1 )IDIGNS=.FALSE.
+c         if( i_tab.eq.1 )idigns=.false.
 
 
-         CALL GENGRD(MAXCNT,ILONG(1,1,I_TAB),
-     *               NUMLNG(0,I_TAB),NMRES,MAXS,
-     *               WORK6,WORK3,DELTA,DELTE,
-     *               AMHMAXSIZ,DELTZ(1,I_TAB),
-     *               RINC(1,I_TAB),IDIGNS,
-     *               OARCHV,RSEP,RCUTAMH)
-         IDIGNS=.FALSE.
+         call gengrd(maxcnt,ilong(1,1,i_tab),
+     *               numlng(0,i_tab),nmres,maxs,
+     *               work6,work3,delta,delte,
+     *               AMHmaxsiz,deltz(1,i_tab),
+     *               rinc(1,i_tab),idigns,
+     *               oarchv,rsep,rcutAMH)
+         idigns=.false.
 
-C        SET PASSI TRUE IF THIS IS THE FIRST CALL
-C        TO GASPOT; OTHERWISE SET PASSI TO FALSE
+c        set passi true if this is the first call
+c        to gaspot; otherwise set passi to false
 
-         IF( I_TAB.EQ.1 )THEN
-            PASSI=.TRUE.
-         ELSE
-            PASSI=.FALSE.
-         ENDIF
+         if( i_tab.eq.1 )then
+            passi=.true.
+         else
+            passi=.false.
+         endif
 
-C        SET PASSF TRUE IF THIS IS THE LAS TCALL
-C        TO GASPOT; OTHERWISE SET PASSF TO FALSE
+c        set passf true if this is the las tcall
+c        to gaspot; otherwise set passf to false
 
-         IF( I_TAB.EQ.NUMTAB )THEN
-            PASSF=.TRUE.
-         ELSE
-            PASSF=.FALSE.
-         ENDIF
+         if( i_tab.eq.numtab )then
+            passf=.true.
+         else
+            passf=.false.
+         endif
 
-C         IF( I_TAB.EQ.2 )IDIGNS=.TRUE.
-        CALL GASPOT(AMHMAXSIZ,TARGET, BONDLN,I_TAB,NUMCRD,CRDIXN(I_TAB,1),CRDIXN(I_TAB,2),PASSI,PASSF)
+c         if( i_tab.eq.2 )idigns=.true.
+        call gaspot(AMHmaxsiz,target, bondln,i_tab,numcrd,crdixn(i_tab,1),crdixn(i_tab,2),passi,passf)
 
-         IDIGNS=.FALSE.
+         idigns=.false.
 
-500     CONTINUE
+500     continue
 
 
 !*****************************************************
-! SET UP EXCLUDED VOLUMES
+! set up excluded volumes
 
-      CALL EV_SET_UP
+      call ev_set_up
 
-! SET UP REPLICA INTERACTION IF REQUIRED
+! set up replica interaction if required
 
-      IF (I_REP) CALL REP_CONTACT(TARGET)
+      if (i_rep) call rep_contact(target)
         
-        OPEN(ISS_STRUCT,FILE='PARAMS/ALPHZ',STATUS='OLD')
-        READ(ISS_STRUCT,991)BLAH
-991     FORMAT(A38)
-        IF (BLAH.EQ."THIS IS A NON-CONTINUOUS PROTEIN CHAIN")THEN
-           WRITE(6,*) 'I FOUND A NON-CONTINUTOUS PROTEIN'
-           STOP
-        ENDIF
-        READ(ISS_STRUCT,199)TEMPNRES
-199     FORMAT(I5)
-        READ (ISS_STRUCT,25)(SEQ_A(I_RES),I_RES=1,TEMPNRES)
-25      FORMAT(25(I2,1X))
+        open(iss_struct,file='params/alphz',status='old')
+        read(iss_struct,991)blah
+991     format(a38)
+        if (blah.eq."This is a non-continuous protein chain")then
+           write(6,*) 'I found a non-continutous protein'
+           stop
+        endif
+        read(iss_struct,199)tempNres
+199     format(i5)
+        read (iss_struct,25)(seq_a(i_res),i_res=1,tempNres)
+25      format(25(i2,1x))
         
-        DO 100 ICOORD=1,3
-            READ (ISS_STRUCT,30)(CORDS(I_RES,ICOORD,1),I_RES=1,TEMPNRES)
-30          FORMAT(8(F8.3,1X))
-100     CONTINUE
-        DO 101 ICOORD=1,3
-            READ (ISS_STRUCT,30)(CORDS(I_RES,ICOORD,2),I_RES=1,TEMPNRES)
-101     CONTINUE
-        DO 102 ICOORD=1,3
-            READ (ISS_STRUCT,30)(CORDS(I_RES,ICOORD,3),I_RES=1,TEMPNRES)
-102     CONTINUE
-        READ(ISS_STRUCT,25)(SA_ALPHA(I_RES),I_RES=1,TEMPNRES)
-        READ(ISS_STRUCT,25)(SS_ALPHA(I_RES),I_RES=1,TEMPNRES)
-        CLOSE (ISS_STRUCT)
+        do 100 icoord=1,3
+            read (iss_struct,30)(cords(i_res,icoord,1),i_res=1,tempNres)
+30          format(8(f8.3,1x))
+100     continue
+        do 101 icoord=1,3
+            read (iss_struct,30)(cords(i_res,icoord,2),i_res=1,tempNres)
+101     continue
+        do 102 icoord=1,3
+            read (iss_struct,30)(cords(i_res,icoord,3),i_res=1,tempNres)
+102     continue
+        read(iss_struct,25)(sa_alpha(i_res),i_res=1,tempNres)
+        read(iss_struct,25)(ss_alpha(i_res),i_res=1,tempNres)
+        close (iss_struct)
 
-C    TARG_DIST USED IN Q_BIAS_SEG ALPHA
+c    targ_dist used in Q_bias_seg alpha
 
-         DO 2501 I_RES1=1, TEMPNRES-1
-          DO  2502 I_RES2=I_RES1 +1, TEMPNRES
-            XDIFFTEMP=CORDS(I_RES1,1,1) - CORDS(I_RES2,1,1)
-            YDIFFTEMP=CORDS(I_RES1,2,1) - CORDS(I_RES2,2,1)
-            ZDIFFTEMP=CORDS(I_RES1,3,1) - CORDS(I_RES2,3,1)
-            SS_DIST(I_RES1,I_RES2,1)=SQRT(XDIFFTEMP**2 +
-     *                        YDIFFTEMP**2 + ZDIFFTEMP**2)
-2502       ENDDO
-2501      ENDDO
+         do 2501 i_res1=1, tempNres-1
+          do  2502 i_res2=i_res1 +1, tempNres
+            xdifftemp=cords(i_res1,1,1) - cords(i_res2,1,1)
+            ydifftemp=cords(i_res1,2,1) - cords(i_res2,2,1)
+            zdifftemp=cords(i_res1,3,1) - cords(i_res2,3,1)
+            ss_dist(i_res1,i_res2,1)=sqrt(xdifftemp**2 +
+     *                        ydifftemp**2 + zdifftemp**2)
+2502       enddo
+2501      enddo
 
-        OPEN(ISS_STRUCT,FILE='PARAMS/BETAZ',STATUS='OLD')
-        READ(ISS_STRUCT,991)BLAH
-        IF (BLAH.EQ."THIS IS A NON-CONTINUOUS PROTEIN CHAIN")THEN
-           WRITE(6,*) 'I FOUND A NON-CONTINUTOUS PROTEIN'
-           STOP
-        ENDIF
-        READ(ISS_STRUCT,199)TEMPNRES
-        READ (ISS_STRUCT,25)(SEQ_B(I_RES),I_RES=1,TEMPNRES)
-        DO 200 ICOORD=1,3
-            READ (ISS_STRUCT,30)(CORDS(I_RES,ICOORD,1),I_RES=1,TEMPNRES)
-200     CONTINUE
-        DO 201 ICOORD=1,3
-            READ (ISS_STRUCT,30)(CORDS(I_RES,ICOORD,2),I_RES=1,TEMPNRES)
-201     CONTINUE
-        DO 202 ICOORD=1,3
-            READ (ISS_STRUCT,30)(CORDS(I_RES,ICOORD,3),I_RES=1,TEMPNRES)
-202     CONTINUE
-        READ(ISS_STRUCT,25)(SA_BETA(I_RES),I_RES=1,TEMPNRES)
-        READ(ISS_STRUCT,25)(SS_BETA(I_RES),I_RES=1,TEMPNRES)
-        CLOSE (ISS_STRUCT)
+        open(iss_struct,file='params/betaz',status='old')
+        read(iss_struct,991)blah
+        if (blah.eq."This is a non-continuous protein chain")then
+           write(6,*) 'I found a non-continutous protein'
+           stop
+        endif
+        read(iss_struct,199)tempNres
+        read (iss_struct,25)(seq_b(i_res),i_res=1,tempNres)
+        do 200 icoord=1,3
+            read (iss_struct,30)(cords(i_res,icoord,1),i_res=1,tempNres)
+200     continue
+        do 201 icoord=1,3
+            read (iss_struct,30)(cords(i_res,icoord,2),i_res=1,tempNres)
+201     continue
+        do 202 icoord=1,3
+            read (iss_struct,30)(cords(i_res,icoord,3),i_res=1,tempNres)
+202     continue
+        read(iss_struct,25)(sa_beta(i_res),i_res=1,tempNres)
+        read(iss_struct,25)(ss_beta(i_res),i_res=1,tempNres)
+        close (iss_struct)
 
-C    TARG_DIST USED IN Q_BIAS_SEG BETA
+c    targ_dist used in Q_bias_seg beta
          
-         DO 3501 I_RES1=1, TEMPNRES-1
-          DO  3502 I_RES2=I_RES1 +1, TEMPNRES
-            XDIFFTEMP=CORDS(I_RES1,1,1) - CORDS(I_RES2,1,1)
-            YDIFFTEMP=CORDS(I_RES1,2,1) - CORDS(I_RES2,2,1)
-            ZDIFFTEMP=CORDS(I_RES1,3,1) - CORDS(I_RES2,3,1)
-            SS_DIST(I_RES1,I_RES2,2)=SQRT(XDIFFTEMP**2 + YDIFFTEMP**2 + ZDIFFTEMP**2)
-3502       ENDDO
-3501      ENDDO
+         do 3501 i_res1=1, tempNres-1
+          do  3502 i_res2=i_res1 +1, tempNres
+            xdifftemp=cords(i_res1,1,1) - cords(i_res2,1,1)
+            ydifftemp=cords(i_res1,2,1) - cords(i_res2,2,1)
+            zdifftemp=cords(i_res1,3,1) - cords(i_res2,3,1)
+            ss_dist(i_res1,i_res2,2)=sqrt(xdifftemp**2 + ydifftemp**2 + zdifftemp**2)
+3502       enddo
+3501      enddo
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C      MAKE TABLE FOR CALCULATION OF Q, AND DQ/DR<IJ>
-C      BOTH SCALED BY 1/ ( 0.5 (N-1)(N-2) )
-C      I HAVE NOTES ON THIS 'A SPECIFIC Q-DEPENDENT POTENTIAL'
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c      Make table for calculation of Q, and dQ/dr<ij>
+c      both scaled by 1/ ( 0.5 (N-1)(N-2) )
+c      I have notes on this 'A specific Q-dependent potential'
 
-        MAX_CONT=1E-8    !MAX CONT OF Q<IJ> TO Q BEFORE IGNORE IT
+        max_cont=1E-8    !max cont of Q<ij> to Q before ignore it
 
-       IF (I_QBIAS_A)THEN
-       DO  I_DIFF = 1,  NMRES
-         Q_VAR_A=(FLOAT(I_DIFF)**(2.0D0*WIDTH_QEXP_A))
-         MAX_RIJ=DSQRT( -2.0D0*LOG(MAX_CONT)*Q_VAR_A)
-         DEL_R_A(I_DIFF)=MAX_RIJ/N_DIVS_MAX
-           DO I_DIST=0,N_DIVS_MAX-1
-       IF (SS_A) THEN
-       Q_IJ_A(I_DIST,I_DIFF)=
-     *     DEXP(-0.5D0*(FLOAT(I_DIST)*DEL_R_A(I_DIFF))**2/
-     *     Q_VAR_A)*(2.0D0/(FLOAT(TOTALSSNORM)))
-       ENDIF
+       if (i_Qbias_a)then
+       do  i_diff = 1,  nmres
+         Q_var_a=(float(i_diff)**(2.0D0*width_Qexp_a))
+         max_rij=dsqrt( -2.0D0*log(max_cont)*Q_var_a)
+         del_r_a(i_diff)=max_rij/n_divs_max
+           do i_dist=0,n_divs_max-1
+       if (ss_a) then
+       Q_ij_a(i_dist,i_diff)=
+     *     dexp(-0.5D0*(float(i_dist)*del_r_a(i_diff))**2/
+     *     Q_var_a)*(2.0D0/(float(totalssnorm)))
+       endif
 
-      IF (.NOT. SS_A) THEN
-         Q_IJ_A(I_DIST,I_DIFF)=
-     *     DEXP(-0.5D0*(FLOAT(I_DIST)*DEL_R_A(I_DIFF))**2/
-     *    Q_VAR_A)* (2.0D0/(FLOAT((NUMCONST_A-1)*(NUMCONST_A-2))))
-      ENDIF
+      if (.not. ss_a) then
+         Q_ij_a(i_dist,i_diff)=
+     *     dexp(-0.5D0*(float(i_dist)*del_r_a(i_diff))**2/
+     *    Q_var_a)* (2.0D0/(float((numconst_a-1)*(numconst_a-2))))
+      endif
        
-       ENDDO ! DO   I_DIST=0,N_DIVS_MAX-1
-!       WRITE(6,*)'NUMCONST_A  IN GENTAB ',NUMCONST_A
+       enddo ! do   i_dist=0,n_divs_max-1
+!       write(6,*)'numconst_a  in gentab ',numconst_a
          
-         Q_IJ_A(N_DIVS_MAX,I_DIFF)=0.0D0
-!     USE EXPANSION TO CALC GRADIENT, FOR ACCURACY
-         DO I_DIST=1,N_DIVS_MAX
-           SMALL=-(0.5D0/Q_VAR_A)*(DEL_R_A(I_DIFF)**2)
-     *                     *(2.0D0*FLOAT(I_DIST-1)+1.0D0)
-         DEL_Q_A=Q_IJ_A(I_DIST-1,I_DIFF)*(
-     *          +SMALL+(1.0D0/2.0D0)*SMALL**2+(1.0D0/6.0D0)*SMALL**3+
-     *          (1.0D0/24.0D0)*SMALL**4+(1.0D0/120.0D0)*SMALL**5)
-         DQ_DR_IJ_A(I_DIST,I_DIFF)= (DEL_Q_A/DEL_R_A(I_DIFF))
+         Q_ij_a(n_divs_max,i_diff)=0.0D0
+!     use expansion to calc gradient, for accuracy
+         do i_dist=1,n_divs_max
+           small=-(0.5D0/Q_var_a)*(del_r_a(i_diff)**2)
+     *                     *(2.0D0*float(i_dist-1)+1.0D0)
+         del_Q_a=Q_ij_a(i_dist-1,i_diff)*(
+     *          +small+(1.0D0/2.0D0)*small**2+(1.0D0/6.0D0)*small**3+
+     *          (1.0D0/24.0D0)*small**4+(1.0D0/120.0D0)*small**5)
+         dQ_dr_ij_a(i_dist,i_diff)= (del_Q_a/del_r_a(i_diff))
 
-C         IF (I_DIFF.EQ.20) THEN   ! UNCOMMENT TO CHECK Q_IJ_A AND DQ_IJ_A/DR_IJ
-C             WRITE(6,*) FLOAT(I_DIST)*DEL_R_A(I_DIFF),
-C    *         Q_IJ_A(I_DIST-1,I_DIFF),DQ_DR_IJ(I_DIST,I_DIFF),
-C    *        (Q_IJ_A(I_DIST,I_DIFF)-Q_IJ_A(I_DIST-1,I_DIFF))/DEL_R_A(I_DIFF)
-C          ENDIF
-           ENDDO  ! DO I_DIST=1,N_DIVS_MAX
-       ENDDO   ! I
-       ENDIF  ! IF (I_QBIAS_A)THEN
+c         if (i_diff.eq.20) then   ! uncomment to check Q_ij_a and dQ_ij_a/dr_ij
+c             write(6,*) float(i_dist)*del_r_a(i_diff),
+c    *         Q_ij_a(i_dist-1,i_diff),dQ_dr_ij(i_dist,i_diff),
+c    *        (Q_ij_a(i_dist,i_diff)-Q_ij_a(i_dist-1,i_diff))/del_r_a(i_diff)
+c          endif
+           enddo  ! do i_dist=1,n_divs_max
+       enddo   ! i
+       endif  ! if (i_Qbias_a)then
 
-         IF (I_QBIAS_B)THEN
+         if (i_Qbias_b)then
 
-C  NORMAILIZATION OF Q CONSTRAINT OF SECONDARY STRUCTURE UNITS
-C  OVER RIGHT LENGTH OF RESIDUES FOR PROPER Q NORMALIZATION
+c  normailization of q constraint of secondary structure units
+c  over right length of residues for proper Q normalization
 
-       DO  I_DIFF = 1,  NMRES
-         Q_VAR_B=(FLOAT(I_DIFF)**(2.0D0*WIDTH_QEXP_B))
-         MAX_RIJ=DSQRT( -2.0D0*LOG(MAX_CONT)*Q_VAR_B)
-         DEL_R_B(I_DIFF)=MAX_RIJ/N_DIVS_MAX
-         DO I_DIST=0,N_DIVS_MAX-1
+       do  i_diff = 1,  nmres
+         Q_var_b=(float(i_diff)**(2.0D0*width_Qexp_b))
+         max_rij=dsqrt( -2.0D0*log(max_cont)*Q_var_b)
+         del_r_b(i_diff)=max_rij/n_divs_max
+         do i_dist=0,n_divs_max-1
         
-         IF (.NOT. SS_B) THEN
-       Q_IJ_B(I_DIST,I_DIFF)=
-     * DEXP(-0.5D0*(FLOAT(I_DIST)*DEL_R_B(I_DIFF))**2/
-     * Q_VAR_B ) *(2.0D0/(FLOAT((NUMCONST_B-1)*(NUMCONST_B-2))))
-        ENDIF
+         if (.not. ss_b) then
+       Q_ij_b(i_dist,i_diff)=
+     * dexp(-0.5D0*(float(i_dist)*del_r_b(i_diff))**2/
+     * Q_var_b ) *(2.0D0/(float((numconst_b-1)*(numconst_b-2))))
+        endif
 
-      IF (SS_B) THEN
-         Q_IJ_B(I_DIST,I_DIFF)=DEXP(-0.5D0*(FLOAT(I_DIST)*DEL_R_B(I_DIFF))**2/
-     *Q_VAR_B)*(2.0D0/(FLOAT((TOTALSSNORM-1)*(TOTALSSNORM-2))))
-        ENDIF
+      if (ss_b) then
+         Q_ij_b(i_dist,i_diff)=dexp(-0.5D0*(float(i_dist)*del_r_b(i_diff))**2/
+     *Q_var_b)*(2.0D0/(float((totalssnorm-1)*(totalssnorm-2))))
+        endif
            
-         ENDDO ! DO I_DIST=0,N_DIVS_MAX-1
-           Q_IJ_B(N_DIVS_MAX,I_DIFF)=0.0D0
+         enddo ! do i_dist=0,n_divs_max-1
+           Q_ij_b(n_divs_max,i_diff)=0.0D0
                                                                                                          
-!     USE EXPANSION TO CALC GRADIENT, FOR ACCURACY
-         DO I_DIST=1,N_DIVS_MAX
-           SMALL=-(0.5D0/Q_VAR_B)*(DEL_R_B(I_DIFF)**2)*(2.0D0*FLOAT(I_DIST-1)+1.0D0)
-           DEL_Q_B=Q_IJ_B(I_DIST-1,I_DIFF)*(
-     *            +SMALL+(1.0D0/2.0D0)*SMALL**2+(1.0D0/6.0D0)*SMALL**3+
-     *            (1.0D0/24.0D0)*SMALL**4+(1.0D0/120.0D0)*SMALL**5)
+!     use expansion to calc gradient, for accuracy
+         do i_dist=1,n_divs_max
+           small=-(0.5D0/Q_var_b)*(del_r_b(i_diff)**2)*(2.0D0*float(i_dist-1)+1.0D0)
+           del_Q_b=Q_ij_b(i_dist-1,i_diff)*(
+     *            +small+(1.0D0/2.0D0)*small**2+(1.0D0/6.0D0)*small**3+
+     *            (1.0D0/24.0D0)*small**4+(1.0D0/120.0D0)*small**5)
 
-           DQ_DR_IJ_B(I_DIST,I_DIFF)= (DEL_Q_B/DEL_R_B(I_DIFF))
+           dQ_dr_ij_b(i_dist,i_diff)= (del_Q_b/del_r_b(i_diff))
 
-C         IF (I_DIFF.EQ.20) THEN    ! UNCOMMENT TO CHECK Q_IJ AND DQ_IJ/DR_IJ
-C         WRITE(6,*) FLOAT(I_DIST)*DEL_R_B(I_DIFF),
-C     *     Q_IJ_B(I_DIST-1,I_DIFF),DQ_DR_IJ_B(I_DIST,I_DIFF),
-C     *   (Q_IJ_B(I_DIST,I_DIFF)-Q_IJ_B(I_DIST-1,I_DIFF))/DEL_R_B(I_DIFF)
-C          ENDIF
-             ENDDO  ! DO I_DIST=1,N_DIVS_MAX
-           ENDDO   ! I
-           ENDIF ! IF (I_QBIAS_B)THEN
+c         if (i_diff.eq.20) then    ! uncomment to check Q_ij and dQ_ij/dr_ij
+c         write(6,*) float(i_dist)*del_r_b(i_diff),
+c     *     Q_ij_b(i_dist-1,i_diff),dQ_dr_ij_b(i_dist,i_diff),
+c     *   (Q_ij_b(i_dist,i_diff)-Q_ij_b(i_dist-1,i_diff))/del_r_b(i_diff)
+c          endif
+             enddo  ! do i_dist=1,n_divs_max
+           enddo   ! i
+           endif ! if (i_Qbias_b)then
 
-C       ALSO CALCULATE SEPARATIONS IN THE TARGET, WHICH WILL
-C       NEED LATER IN SUBROUTINE Q_BIAS
-C       (TRANSFERRED THERE VIA GLOBALS)
-C       --OR ALTERNATIVELY READ IN STRUCTURE TO BIAS TO
+c       also calculate separations in the target, which will
+c       need later in subroutine Q_bias
+c       (transferred there via globals)
+c       --or alternatively read in structure to bias to
 
-C         WRITE(6,*)'IBIAS_NATIVE_A ',I_BIAS_NATIVE_A
-C         WRITE(6,*)'IBIAS_NATIVE_A ',I_BIAS_NATIVE_B
+c         write(6,*)'ibias_native_a ',i_bias_native_a
+c         write(6,*)'ibias_native_a ',i_bias_native_b
 
-C         WRITE(6,*)'I_QBIAS_A ',I_QBIAS_A
-C         WRITE(6,*)'I_QBIAS_B ',I_QBIAS_B
+c         write(6,*)'i_Qbias_a ',i_Qbias_a
+c         write(6,*)'i_Qbias_b ',i_Qbias_b
 
-           IF ((.NOT.I_BIAS_NATIVE_A .AND.  I_QBIAS_A ).OR.
-     *         (.NOT.I_BIAS_NATIVE_B .AND.  I_QBIAS_B )) THEN
+           if ((.not.i_bias_native_a .and.  i_Qbias_a ).or.
+     *         (.not.i_bias_native_b .and.  i_Qbias_b )) then
 
-C         IF (.NOT.I_BIAS_NATIVE_A .AND.  I_QBIAS_A )THEN
+c         if (.not.i_bias_native_a .and.  i_Qbias_a )then
 
-           OPEN(IBIASFILE,FILE='MOVIESEG_BIAS',STATUS='UNKNOWN',
-     *                                            ACTION='READ')
-           READ(IBIASFILE,1040) NMRES_CHECK,IDUMMY,IDUMMY,IDUMMY
-1040       FORMAT(4(I8,1X))
-           IF (NMRES_CHECK.NE.NMRES) THEN
-             WRITE(SO,*) 'MOVIESEG_BIAS FILE WRONG',NMRES_CHECK,NMRES
-             STOP
-           ENDIF
-           READ(IBIASFILE,*)
-1050       FORMAT(3X,3(1X,F8.4),2(4X,3(1X,F8.4)))
-           DO I_RES=1,NMRES
-             READ(IBIASFILE,1050)  BIAS_CORD(I_RES,1,1),
-     *       BIAS_CORD(I_RES,2,1),BIAS_CORD(I_RES,3,1),   
-     *       BIAS_CORD(I_RES,1,2),BIAS_CORD(I_RES,2,2),   
-     *       BIAS_CORD(I_RES,3,2),BIAS_CORD(I_RES,1,3),   
-     *       BIAS_CORD(I_RES,2,3),BIAS_CORD(I_RES,3,3)
-           ENDDO
-           CLOSE(IBIASFILE)
+           open(ibiasfile,file='movieseg_bias',status='unknown',
+     *                                            action='read')
+           read(ibiasfile,1040) nmres_check,idummy,idummy,idummy
+1040       format(4(i8,1x))
+           if (nmres_check.ne.nmres) then
+             write(SO,*) 'movieseg_bias file wrong',nmres_check,nmres
+             stop
+           endif
+           read(ibiasfile,*)
+1050       format(3x,3(1x,f8.4),2(4x,3(1x,f8.4)))
+           do i_res=1,nmres
+             read(ibiasfile,1050)  bias_cord(i_res,1,1),
+     *       bias_cord(i_res,2,1),bias_cord(i_res,3,1),   
+     *       bias_cord(i_res,1,2),bias_cord(i_res,2,2),   
+     *       bias_cord(i_res,3,2),bias_cord(i_res,1,3),   
+     *       bias_cord(i_res,2,3),bias_cord(i_res,3,3)
+           enddo
+           close(ibiasfile)
 
-          ENDIF 
+          endif 
 
-        IF ((I_BIAS_NATIVE_A .AND.  I_QBIAS_A ).OR.
-     *      (I_BIAS_NATIVE_B .AND.  I_QBIAS_B )) THEN
+        if ((i_bias_native_a .and.  i_Qbias_a ).or.
+     *      (i_bias_native_b .and.  i_Qbias_b )) then
 
-             BIAS_CORD=TARGET
-             WRITE(6,*) 'TARGET  USED FOR CONSTRAINT'
+             bias_cord=target
+             write(6,*) 'target  used for constraint'
 
-         DO 1001 TAB=1,MAXTAB
-         DO 501 I_IXN=1,NUMLNG(NMRES,TAB)
+         do 1001 tab=1,maxtab
+         do 501 i_ixn=1,numlng(nmres,tab)
 
-            ISIT1=ILONG(I_IXN,1,TAB)
-            ISIT2=ILONG(I_IXN,2,TAB)
+            isit1=ilong(i_ixn,1,tab)
+            isit2=ilong(i_ixn,2,tab)
 
-            XDIFF=BIAS_CORD(ISIT1,1,CRDIXN(TAB,1)) -
-     *                  BIAS_CORD(ISIT2,1,CRDIXN(TAB,2))
-            YDIFF=BIAS_CORD(ISIT1,2,CRDIXN(TAB,1)) -
-     *                  BIAS_CORD(ISIT2,2,CRDIXN(TAB,2))
-            ZDIFF=BIAS_CORD(ISIT1,3,CRDIXN(TAB,1)) -
-     *                  BIAS_CORD(ISIT2,3,CRDIXN(TAB,2))
+            xdiff=bias_cord(isit1,1,crdixn(tab,1)) -
+     *                  bias_cord(isit2,1,crdixn(tab,2))
+            ydiff=bias_cord(isit1,2,crdixn(tab,1)) -
+     *                  bias_cord(isit2,2,crdixn(tab,2))
+            zdiff=bias_cord(isit1,3,crdixn(tab,1)) -
+     *                  bias_cord(isit2,3,crdixn(tab,2))
 
-            TARG_DIST(I_IXN,TAB)=DSQRT(XDIFF**2 + YDIFF**2 + ZDIFF**2)
+            targ_dist(i_ixn,tab)=dsqrt(xdiff**2 + ydiff**2 + zdiff**2)
 
-501      ENDDO
-1001     ENDDO
+501      enddo
+1001     enddo
 
-       ENDIF
+       endif
 
-C        WRITE(6,*) 'GENTAB OUT'
-C     ---------------------- DONE -----------------------
-C        WRITE(SO,*) 'LEAVING GENTAB'    
-      END
+c        write(6,*) 'gentab out'
+c     ---------------------- done -----------------------
+c        write(SO,*) 'leaving gentab'    
+      end

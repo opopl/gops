@@ -1,8 +1,8 @@
 ! **************************************************************************
      
       SUBROUTINE AMB_GETKDNAT(KD)
-!GET WIDTH OF DIAGONAL FOR GCS MATRIX, FOR NATURAL INTERNALS
-!FOR NOW, ASSUME THE DIHEDRALS OR BONDS GIVE THE MAXIMUM WIDTH
+!get width of diagonal for GCS matrix, for natural internals
+!for now, assume the dihedrals or bonds give the maximum width
       USE MODAMBER9
 
 
@@ -12,11 +12,11 @@
       ATOMWIDTH=0
       DIFF=0
       DO IPHI=1,NPHIA
-        I=IX(I50+IPHI)/3 + 1
-        J=IX(I52+IPHI)/3 + 1
-        K=IABS(IX(I54+IPHI))/3 + 1
-        L=IABS(IX(I56+IPHI))/3 + 1
-!     PRINT *,'PDIHE I J K L',I,J,K,L
+        I=ix(i50+IPHI)/3 + 1
+        J=ix(i52+IPHI)/3 + 1
+        K=IABS(ix(i54+IPHI))/3 + 1
+        L=IABS(ix(i56+IPHI))/3 + 1
+!     print *,'pdihe I J K L',I,J,K,L
         DIFF=ABS(I-J)
         IF (DIFF.GT.ATOMWIDTH) ATOMWIDTH=DIFF
         DIFF=ABS(I-K)
@@ -31,11 +31,11 @@
         IF (DIFF.GT.ATOMWIDTH) ATOMWIDTH=DIFF
       ENDDO
       DO IPHI=1,NPHIH
-        I=IX(I40+IPHI)/3 + 1
-        J=IX(I42+IPHI)/3 + 1
-        K=IABS(IX(I44+IPHI))/3 + 1
-        L=IABS(IX(I46+IPHI))/3 + 1
-!     PRINT *,'PDIHE I J K L',I,J,K,L
+        I=ix(i40+IPHI)/3 + 1
+        J=ix(i42+IPHI)/3 + 1
+        K=IABS(ix(i44+IPHI))/3 + 1
+        L=IABS(ix(i46+IPHI))/3 + 1
+!     print *,'pdihe I J K L',I,J,K,L
         DIFF=ABS(I-J)
         IF (DIFF.GT.ATOMWIDTH) ATOMWIDTH=DIFF
         DIFF=ABS(I-K)
@@ -51,27 +51,27 @@
       ENDDO
 
       IF(.NOT.ALLOCATED(IBIB)) THEN
-         PRINT*, "IB GOING WRONG!"
-         ALLOCATE(IBIB(NBONA+NBONH))
-         DO I =1,NBONA
-            IBIB(I) = IX(IIBA+I-1)/3+1
+         PRINT*, "ib going wrong!"
+         ALLOCATE(IBIB(nbona+nbonh))
+         DO I =1,nbona
+            IBIB(I) = ix(iiba+I-1)/3+1
          ENDDO
-         DO I=1, NBONH
-            IBIB(NBONA+I) = IX(IIBH+I-1)/3+1
+         DO I=1, nbonh
+            IBIB(nbona+I) = ix(iibh+I-1)/3+1
          ENDDO
       ENDIF
 
       IF(.NOT.ALLOCATED(JBJB)) THEN
-          ALLOCATE(JBJB(NBONA+NBONH))
-          DO I =1,NBONA
-             JBJB(I) = IX(IJBA+I-1)/3+1
+          ALLOCATE(JBJB(nbona+nbonh))
+          DO I =1,nbona
+             JBJB(I) = ix(ijba+I-1)/3+1
           ENDDO
-          DO I=1, NBONH
-             JBJB(NBONA+I) = IX(IJBH+I-1)/3+1
+          DO I=1, nbonh
+             JBJB(nbona+I) = ix(ijbh+I-1)/3+1
           ENDDO
       ENDIF
 
-      DO IPHI = 1,NBONA+NBONH
+      DO IPHI = 1,nbona+nbonh
          I = IBIB(IPHI)
          J = JBJB(IPHI)
          DIFF=ABS(I-J)
@@ -79,7 +79,7 @@
       ENDDO
 !
       KD=3*ATOMWIDTH+2
-!     PRINT *,'AMB_GETKDNAT> ',KD
+!     print *,'amb_getkdnat> ',KD
 !
       RETURN
       END
@@ -87,15 +87,15 @@
 
 ! ***************************************************************************
 
-      SUBROUTINE AMBGETANGLE(I, J, K, THETA, DTDI, DTDJ, DTDK, NOCOOR,NODERV)
-! GIVEN THE COORDINATES FOR THREE ATOMS I, J, K
-! FIND THE ANGLE WITH J AS THE CENTRAL ATOM; RETURN IT IN THETA
-! ALSO RETURN ALL DERIVATIVES: DT/DIX, DT/DIY, DT/DIZ IN TRIPLET DTDI
-!SAME WITH DTDJ AND DTDK
+      SUBROUTINE AMBGETANGLE(I, J, K, THETA, dTdI, dTdJ, dTdK, NOCOOR,NODERV)
+! given the coordinates for three atoms I, J, K
+! find the angle with J as the central atom; return it in THETA
+! Also return all derivatives: dT/dIx, dT/dIy, dT/dIz in triplet dTdI
+!same with dTdJ and dTdK
 
       LOGICAL NOCOOR,NODERV
       DOUBLE PRECISION I(3), J(3), K(3), THETA
-      DOUBLE PRECISION DTDI(3), DTDJ(3), DTDK(3)
+      DOUBLE PRECISION dTdI(3), dTdJ(3), dTdK(3)
       DOUBLE PRECISION DXI, DYI, DZI, DXJ, DYJ, DZJ, RI2, RJ2, RI, RJ, RIR, RJR
       DOUBLE PRECISION DXIR, DYIR, DZIR, DXJR, DYJR, DZJR, CST, ISNT
 
@@ -123,31 +123,31 @@
 
       IF (.NOT.NODERV) THEN
       ISNT=1/SQRT(1-CST*CST)
-      DTDI(1)=(DXIR*CST-DXJR)*RIR*ISNT
-      DTDI(2)=(DYIR*CST-DYJR)*RIR*ISNT
-      DTDI(3)=(DZIR*CST-DZJR)*RIR*ISNT
-      DTDJ(1)=(DXIR*(RI-RJ*CST)+DXJR*(RJ-RI*CST))*RIR*RJR*ISNT
-      DTDJ(2)=(DYIR*(RI-RJ*CST)+DYJR*(RJ-RI*CST))*RIR*RJR*ISNT
-      DTDJ(3)=(DZIR*(RI-RJ*CST)+DZJR*(RJ-RI*CST))*RIR*RJR*ISNT
-      DTDK(1)=(DXJR*CST-DXIR)*RJR*ISNT
-      DTDK(2)=(DYJR*CST-DYIR)*RJR*ISNT
-      DTDK(3)=(DZJR*CST-DZIR)*RJR*ISNT
+      dTdI(1)=(DXIR*CST-DXJR)*RIR*ISNT
+      dTdI(2)=(DYIR*CST-DYJR)*RIR*ISNT
+      dTdI(3)=(DZIR*CST-DZJR)*RIR*ISNT
+      dTdJ(1)=(DXIR*(RI-RJ*CST)+DXJR*(RJ-RI*CST))*RIR*RJR*ISNT
+      dTdJ(2)=(DYIR*(RI-RJ*CST)+DYJR*(RJ-RI*CST))*RIR*RJR*ISNT
+      dTdJ(3)=(DZIR*(RI-RJ*CST)+DZJR*(RJ-RI*CST))*RIR*RJR*ISNT
+      dTdK(1)=(DXJR*CST-DXIR)*RJR*ISNT
+      dTdK(2)=(DYJR*CST-DYIR)*RJR*ISNT
+      dTdK(3)=(DZJR*CST-DZIR)*RJR*ISNT
       ENDIF
 
       RETURN
       END SUBROUTINE
 
-      SUBROUTINE AMBGETOUTOFPLANE(I, J, K, L, PHI, DPDI, DPDJ, DPDK, DPDL, NOCOOR,NODERV)
+      SUBROUTINE AMBGETOUTOFPLANE(I, J, K, L, PHI, dPdI, dPdJ, dPdK, dPdL, NOCOOR,NODERV)
 !EFK:
-!GIVEN THE COORDINATES FOR FOUR ATOMS I, J, K, L WITH I THE CENTRAL ATOM
-!FIND THE ANGLE BETWEEN J AND THE PLANE DEFINED BY I,K,L; RETURN IT IN PHI
-!ALSO RETURN ALL DERIVATIVES: DP/DIX, DP/DIY, DP/DIZ IN TRIPLET DPDI
-!SAME WITH DPDJ, DPDK, AND DPDL
-!CALCULATIONS FROM WILSON, DELCIUS, AND CROSS (WDC) CH.4
+!given the coordinates for four atoms I, J, K, L with I the central atom
+!find the angle between J and the plane defined by I,K,L; return it in PHI
+!Also return all derivatives: dP/dIx, dP/dIy, dP/dIz in triplet dPdI
+!same with dPdJ, dPdK, and dPdL
+!Calculations from Wilson, Delcius, and Cross (WDC) Ch.4
 !
       LOGICAL NOCOOR, NODERV
       DOUBLE PRECISION I(0:2), J(0:2), K(0:2), L(0:2), PHI
-      DOUBLE PRECISION DPDI(0:2), DPDJ(0:2), DPDK(0:2), DPDL(0:2)
+      DOUBLE PRECISION dPdI(0:2), dPdJ(0:2), dPdK(0:2), dPdL(0:2)
       DOUBLE PRECISION JIX, JIY, JIZ, KIX, KIY, KIZ, LIX, LIY, LIZ
       DOUBLE PRECISION RJI2, RKI2, RLI2, RJI, RKI, RLI, RJIR, RKIR, RLIR
       DOUBLE PRECISION AX, AY, AZ, BX, BY, BZ, CX, CY, CZ
@@ -155,17 +155,17 @@
       DOUBLE PRECISION SNP, CSP2, CSP, CSPR, TNP, DUMMY
       INTEGER X
 
-!GET VECTOR DIFFERENCES
-      JIX=J(0)-I(0) ! R41 IN WDC
+!get vector differences
+      JIX=J(0)-I(0) ! r41 in WDC
       JIY=J(1)-I(1)
       JIZ=J(2)-I(2)
-      KIX=K(0)-I(0) ! R42 IN WDC
+      KIX=K(0)-I(0) ! r42 in WDC
       KIY=K(1)-I(1)
       KIZ=K(2)-I(2)
-      LIX=L(0)-I(0) ! R43 IN WDC
+      LIX=L(0)-I(0) ! r43 in WDC
       LIY=L(1)-I(1)
       LIZ=L(2)-I(2)
-!GET VECTOR NORMS
+!Get vector norms
       RJI2 = JIX*JIX+JIY*JIY+JIZ*JIZ
       RKI2 = KIX*KIX+KIY*KIY+KIZ*KIZ
       RLI2 = LIX*LIX+LIY*LIY+LIZ*LIZ
@@ -175,77 +175,77 @@
       RJIR = 1/RJI
       RKIR = 1/RKI
       RLIR = 1/RLI
-!GET A = R41 X R42
+!Get A = r41 x r42
       AX = JIY*KIZ-KIY*JIZ
       AY = -JIX*KIZ+KIX*JIZ
       AZ = JIX*KIY-KIX*JIY
-!GET B = R43 X R41
+!Get B = r43 x r41
       BX = LIY*JIZ-JIY*LIZ
       BY = -LIX*JIZ +JIX*LIZ
       BZ = LIX*JIY-JIX*LIY
-!GET C = R42 X R43
+!Get C = r42 x r43
       CX = KIY*LIZ-LIY*KIZ
       CY = -KIX*LIZ+LIX*KIZ
       CZ = KIX*LIY-LIX*KIY
       RC2 = CX*CX+CY*CY+CZ*CZ
       RC = SQRT(RC2)
       RCR = 1/RC
-!SIN(PHI1) = |R42 X R43| / (|R42| *|R43|)
-!DUMMY = (R42 X R43)*R41
+!sin(phi1) = |r42 x r43| / (|r42| *|r43|)
+!DUMMY = (r42 x r43)*r41
       DUMMY = CX*JIX+CY*JIY+CZ*JIZ
-!SIN(PHI) = DUMMY / (SIN(PHI1) * |R42||R43||R41|)
+!sin(PHI) = DUMMY / (sin(phi1) * |r42||r43||r41|)
       SNP = DUMMY * RCR*RJIR 
-!NOTE: POSSIBLE BUG; MAY RUN INTO PROBLEMS IF ANGLE OVER 90 DEGREES
-!SHOULD FIX THIS LATER
+!NOTE: POSSIBLE BUG; may run into problems if angle over 90 degrees
+!should fix this later
       IF (.NOT.NOCOOR) PHI = ASIN(SNP)
 
       IF (NODERV) RETURN
 
-!CALCULATE DERIVATIVES FOR B MATRIX
+!Calculate derivatives for B matrix
       CSP2 = 1-SNP*SNP
-      CSP = SQRT(CSP2) !COS(PHI)
-      CSPR = 1/CSP !SEC(PHI)
-      TNP = SNP*CSPR !TAN(PHI)
-!POTENTIAL BUG: SINGULARITY AT PHI->PI/2
+      CSP = SQRT(CSP2) !cos(PHI)
+      CSPR = 1/CSP !sec(PHI)
+      TNP = SNP*CSPR !tan(PHI)
+!POTENTIAL BUG: singularity at PHI->pi/2
 !
-      DPDJ(0) = RJIR*(CX*CSPR*RCR - JIX*TNP*RJIR)
-      DPDJ(1) = RJIR*(CY*CSPR*RCR - JIY*TNP*RJIR)
-      DPDJ(2) = RJIR*(CZ*CSPR*RCR - JIZ*TNP*RJIR)
+      dPdJ(0) = RJIR*(CX*CSPR*RCR - JIX*TNP*RJIR)
+      dPdJ(1) = RJIR*(CY*CSPR*RCR - JIY*TNP*RJIR)
+      dPdJ(2) = RJIR*(CZ*CSPR*RCR - JIZ*TNP*RJIR)
 !
-!CONTINUE CHECKING WITH 2ND TERM HERE....
-      DUMMY = LIX*KIX+LIY*KIY+LIZ*KIZ !R43*R42
-      DPDK(0) = BX*CSPR*RCR*RJIR - KIX*TNP*RLI2*RCR*RCR &
+!CONTINUE CHECKING WITH 2nd TERM HERE....
+      DUMMY = LIX*KIX+LIY*KIY+LIZ*KIZ !r43*r42
+      dPdK(0) = BX*CSPR*RCR*RJIR - KIX*TNP*RLI2*RCR*RCR &
      &     + LIX*TNP*DUMMY*RCR*RCR
-      DPDK(1) = BY*CSPR*RCR*RJIR - KIY*TNP*RLI2*RCR*RCR &
+      dPdK(1) = BY*CSPR*RCR*RJIR - KIY*TNP*RLI2*RCR*RCR &
      &     + LIY*TNP*DUMMY*RCR*RCR
-      DPDK(2) = BZ*CSPR*RCR*RJIR - KIZ*TNP*RLI2*RCR*RCR &
+      dPdK(2) = BZ*CSPR*RCR*RJIR - KIZ*TNP*RLI2*RCR*RCR &
      &     + LIZ*TNP*DUMMY*RCR*RCR
 !    
-      DPDL(0) = AX*CSPR*RCR*RJIR - LIX*TNP*RKI2*RCR*RCR &
+      dPdL(0) = AX*CSPR*RCR*RJIR - LIX*TNP*RKI2*RCR*RCR &
      &     + KIX*TNP*DUMMY*RCR*RCR
-      DPDL(1) = AY*CSPR*RCR*RJIR - LIY*TNP*RKI2*RCR*RCR &
+      dPdL(1) = AY*CSPR*RCR*RJIR - LIY*TNP*RKI2*RCR*RCR &
      &     + KIY*TNP*DUMMY*RCR*RCR
-      DPDL(2) = AZ*CSPR*RCR*RJIR - LIZ*TNP*RKI2*RCR*RCR &
+      dPdL(2) = AZ*CSPR*RCR*RJIR - LIZ*TNP*RKI2*RCR*RCR &
      &     + KIZ*TNP*DUMMY*RCR*RCR
 !
       DO X = 0,2
-         DPDI(X) = -DPDJ(X)-DPDK(X)-DPDL(X)
+         dPdI(X) = -dPdJ(X)-dPdK(X)-dPdL(X)
       ENDDO
 !
       RETURN
       END
 
-      SUBROUTINE AMBGETTORSION(I, J, K, L, PHI, DPDI, DPDJ, DPDK, DPDL, NOCOOR, NODERV)
-!GIVEN THE COORDINATES FOR FOUR ATOMS I, J, K, L, BOUND IN ORDER, 
-!FIND THE DIHEDRAL TORSION ANGLE; RETURN IT IN PHI
-!ALSO RETURN ALL DERIVATIVES: DP/DIX, DP/DIY, DP/DIZ IN TRIPLET DPDI
-!SAME WITH DPDJ, DPDK, AND DPDL
+      SUBROUTINE AMBGETTORSION(I, J, K, L, PHI, dPdI, dPdJ, dPdK, dPdL, NOCOOR, NODERV)
+!given the coordinates for four atoms I, J, K, L, bound in order, 
+!find the dihedral torsion angle; return it in PHI
+!Also return all derivatives: dP/dIx, dP/dIy, dP/dIz in triplet dPdI
+!same with dPdJ, dPdK, and dPdL
 
       LOGICAL NOCOOR, NODERV
       DOUBLE PRECISION I(3), J(3), K(3), L(3), PHI
-      DOUBLE PRECISION DPDI(3), DPDJ(3), DPDK(3), DPDL(3)
+      DOUBLE PRECISION dPdI(3), dPdJ(3), dPdK(3), dPdL(3)
       DOUBLE PRECISION FX, FY, FZ, GX, GY, GZ, HX, HY, HZ
-      DOUBLE PRECISION AX, AY, AZ, BX, BY, BZ
+      DOUBLE PRECISION AX, AY, AZ, BX, BY, Bz
       DOUBLE PRECISION RF, RG, RH, RF2, RG2, RH2, RFR, RGR, RHR
       DOUBLE PRECISION CSTTWO, SNTTWO2, CSTTHREE, SNTTHREE2, SNTTWO2R, SNTTHREE2R
       DOUBLE PRECISION RA2, RB2, RA2R, RB2R, RABR, CP
@@ -272,14 +272,14 @@
       RG2=GX*GX+GY*GY+GZ*GZ
       RG=SQRT(RG2)
       RGR=1/RG
-!DAE FOR USE IN EVALUATING B-MATRIX
+!dae for use in evaluating B-matrix
       RF2=FX*FX+FY*FY+FZ*FZ
       RF=SQRT(RF2)
       RFR=1/RF
       RH2=HX*HX+HY*HY+HZ*HZ
       RH=SQRT(RH2)
       RHR=1/RH
-!    JMC        CSTTWO=(FX*GX+FY*GY+FZ*GZ)*RFR*RGR
+!    jmc        CSTTWO=(FX*GX+FY*GY+FZ*GZ)*RFR*RGR
       CSTTWO=-(FX*GX+FY*GY+FZ*GZ)*RFR*RGR
       SNTTWO2=1-CSTTWO*CSTTWO
       SNTTWO2R=1/SNTTWO2
@@ -293,7 +293,7 @@
          RA2R=1/RA2
          RB2R=1/RB2
          RABR=SQRT(RA2R*RB2R)
-!    CP=COS(PHI)
+!    CP=cos(phi)
          CP=(AX*BX+AY*BY+AZ*BZ)*RABR
          IF (CP.GT.1.0D0) THEN
             PHI=0.0D0
@@ -303,8 +303,8 @@
             PHI=ACOS(CP)
          ENDIF
 
-!    JMC TEST TO DETERMINE WHETHER THE DIHEDRAL ANGLE SHOULD BE > 0 OR < 0, FROM UNRES (INTCOR.F)
-!    > 0 IF CW ROTATION FROM 2-> 1 TO 3-> 4.
+!    jmc Test to determine whether the dihedral angle should be > 0 or < 0, from unres (intcor.f)
+!    > 0 if cw rotation from 2-> 1 to 3-> 4.
          MYTX=AY*BZ-BY*AZ
          MYTY=-AX*BZ+BX*AZ
          MYTZ=AX*BY-BX*AY
@@ -314,20 +314,20 @@
 
       IF (NODERV) RETURN
 
-!DAE CALCULATE B-MATRIX ELEMENTS
+!dae calculate B-matrix elements
       DUMMY=RFR*RFR*RGR*SNTTWO2R
-      DPDI = (/-AX*DUMMY, -AY*DUMMY, -AZ*DUMMY/)
+      dPdI = (/-AX*DUMMY, -AY*DUMMY, -AZ*DUMMY/)
 
       DUMMY=RFR*RFR*RGR*RGR*SNTTWO2R*(RG-RF*CSTTWO)
       DUMMY2=RHR*RGR*RGR*SNTTHREE2R*CSTTHREE
-      DPDJ = (/AX*DUMMY-BX*DUMMY2, AY*DUMMY-BY*DUMMY2, AZ*DUMMY-BZ*DUMMY2/)
+      dPdJ = (/AX*DUMMY-BX*DUMMY2, AY*DUMMY-BY*DUMMY2, AZ*DUMMY-BZ*DUMMY2/)
 
       DUMMY=RHR*RHR*RGR*RGR*SNTTHREE2R*(RG-RH*CSTTHREE)
       DUMMY2=RFR*RGR*RGR*SNTTWO2R*CSTTWO
-      DPDK = (/-BX*DUMMY+AX*DUMMY2, -BY*DUMMY+AY*DUMMY2,-BZ*DUMMY+AZ*DUMMY2/)
+      dPdK = (/-BX*DUMMY+AX*DUMMY2, -BY*DUMMY+AY*DUMMY2,-BZ*DUMMY+AZ*DUMMY2/)
 
       DUMMY=RHR*RHR*RGR*SNTTHREE2R
-      DPDL = (/BX*DUMMY,BY*DUMMY,BZ*DUMMY/)
+      dPdL = (/BX*DUMMY,BY*DUMMY,BZ*DUMMY/)
 
       RETURN
       END SUBROUTINE
@@ -336,10 +336,10 @@
 !************************************************************************************************
 
       SUBROUTINE AMBALIGNDIH(PHI,DIHC,RELPHI,PREVRELPHI,N)
-!ALIGNING DIHEDRAL ANGLES PROPERLY
-!IF ALIGNDIR IS SET, AND IT'S NOT THE FIRST DIHEDRAL IN THE GROUP (N.NE.1) THEN 
-!ADJUST ANGLE TO MINIMISE CHANGE IN RELATIVE DIHEDRAL TO THE FIRST IN THE GROUP
-!OTHERWISE ADJUST ANGLE TO MINIMISE CHANGE FROM PREVIOUS VALUE OF SAME ANGLE
+!aligning dihedral angles properly
+!if aligndir is set, and it's not the first dihedral in the group (N.NE.1) then 
+!adjust angle to minimise change in relative dihedral to the first in the group
+!otherwise adjust angle to minimise change from previous value of same angle
 
       USE INTCOMMONS, ONLY : PREVDIH, ALIGNDIR
 
@@ -376,9 +376,9 @@
 
 !*********************************************************************
       SUBROUTINE AMBGETNNZNAT(NNZ)
-!    GET NUMBER OF NONZERO ELEMENTS IN B MATRIX, FOR NATURAL INTERNALS      
+!    get number of nonzero elements in B matrix, for natural internals      
       USE COMMONS, ONLY : NATOMS
-      USE INTCOMMONS, ONLY : CARTATMSTART, ATOMXPOSINC, CENTERS, NBDS,&
+      USE INTCOMMONS, ONLY : CARTATMSTART, ATOMxPOSinC, CENTERS, NBDS,&
      &     NIMP, NFRG, NCRT, NCNT, LINDIH, RINGS, NRNG, NLDH
 
       IMPLICIT NONE
@@ -389,21 +389,21 @@
       DO I=1,NCNT
          CNTTYPE = CENTERS(I,0)
          IF (CNTTYPE.LT.3) THEN 
-            NNZ = NNZ + ATOMXPOSINC(CNTTYPE,5,5) + 3
+            NNZ = NNZ + ATOMxPOSinC(CNTTYPE,5,5) + 3
          ELSE IF (CNTTYPE.EQ.3) THEN
-            NNZ = NNZ + ATOMXPOSINC(CNTTYPE,5,4) + 3
+            NNZ = NNZ + ATOMxPOSinC(CNTTYPE,5,4) + 3
          ELSE IF (CNTTYPE.EQ.4.OR.CNTTYPE.EQ.5) THEN
-            NNZ = NNZ + ATOMXPOSINC(CNTTYPE,2,4) + 3
+            NNZ = NNZ + ATOMxPOSinC(CNTTYPE,2,4) + 3
          ELSE IF (CNTTYPE.EQ.6) THEN
-            NNZ = NNZ + ATOMXPOSINC(CNTTYPE,1,3) + 3
+            NNZ = NNZ + ATOMxPOSinC(CNTTYPE,1,3) + 3
          ELSE IF (CNTTYPE.EQ.7) THEN
-            NNZ = NNZ + ATOMXPOSINC(CNTTYPE,1,4) + 3
+            NNZ = NNZ + ATOMxPOSinC(CNTTYPE,1,4) + 3
          ELSE IF (CNTTYPE.EQ.8) THEN
-            NNZ = NNZ +ATOMXPOSINC(CNTTYPE,4,5) +3
+            NNZ = NNZ +ATOMxPOSinC(CNTTYPE,4,5) +3
 !    ELSE IF (CNTTYPE.EQ.8) THEN
-!    NNZ = NNZ + ATOMXPOSINC(3,4,4) + 3
+!    NNZ = NNZ + ATOMxPOSinC(3,4,4) + 3
 !    ELSE IF (CNTTYPE.EQ.9) THEN
-!    NNZ = NNZ + ATOMXPOSINC(2,4,5) + 3
+!    NNZ = NNZ + ATOMxPOSinC(2,4,5) + 3
          ENDIF
       ENDDO
       DO I=1,NRNG
@@ -416,31 +416,31 @@
       DO I=1,NLDH
          NNZ = NNZ + 6 + 3*(LINDIH(I,-1)+LINDIH(I,0))
       ENDDO
-!     PRINT*, 'GETNNZNAT>> NONZEROS FOUND IS:', NNZ
+!     print*, 'getnnznat>> nonzeros found is:', NNZ
       RETURN
       END
 
 
 !***********************************************************************
 !
-!SUBROUTINE TO DO INTERNAL COORDINATE MANIPULATIONS USING B-MATRIX
-!CALLS GETBEE TO CALCUALTE INTERNAL COORDINATES AND B-MATRIX
-!THEN TRANSFORMS CARTESIAN GRADIENTS TO INTERNAL GRADIENTS
-!NEMETH ET AL. JCP 113,5598(2000)
+!subroutine to do internal coordinate manipulations using B-matrix
+!calls GETBEE to calcualte internal coordinates and B-matrix
+!then transforms cartesian gradients to internal gradients
+!Nemeth et al. JCP 113,5598(2000)
 !
 
       SUBROUTINE AMBTRANSFORM(XCART,GCART,XINT,GINT,NINTC,NCART,NNZ,NOCOOR,NODERV,KD,INTEPSILON)
-      USE MODMXATMS, ONLY: MXATMS
+      USE modmxatms, ONLY: MXATMS
  
        USE SPFUNCTS, ONLY : DUMPCOORDS
 
        IMPLICIT NONE
-!SAT: TWO IMPLICIT NONE - LINE BELOW COMMENTED!
-!#INCLUDE '~/CHARMMCODE/FCM/DIMENS.FCM'
-!#INCLUDE '~/CHARMMCODE/FCM/PSF.FCM'
-!NNZ IS NUMBER OF NON-ZERO ELEMENTS IN B-MATRIX
-!NINTC IS NUMBER OF INTERNAL COORDINATES
-!NCART IS NUMBER OF CARTESIANS
+!SAT: two implicit none - line below commented!
+!#INCLUDE '~/charmmcode/fcm/dimens.fcm'
+!#INCLUDE '~/charmmcode/fcm/psf.fcm'
+!NNZ is number of non-zero elements in B-matrix
+!NINTC is number of internal coordinates
+!NCART is number of cartesians
 !
        INTEGER NNZ,NINTC,NCART,KD,K
 !
@@ -457,22 +457,22 @@
 
 !---------------------------------
 
-!GET B-MATRIX AND INTERNAL COORDIANTES
+!get B-matrix and internal coordiantes
 !
 
        CALL AMB_GETBEENAT(XCART,XINT,VAL,INDX,JNDX,NINTC,NCART, NNZ,GCS2,NOCOOR,NODERV,KD)
        IF (NODERV) RETURN
 
        GINT(1:NINTC) = 0.0D0
-!     PRINT *,'TF HERE1'
+!     print *,'tf here1'
 !
-!VAL IS COLUMN OF NON-ZERO BEE ELEMENTS INDEXED BY INDX AND JNDX
-!GCS2 = BEETBEE AS CALCULATED IN GETBEE, STORED IN SPARSE FORMAT
-!NEED TO CONVERT DOUBLE SPARSE FORMAT OF GCS2 TO LAPACK UPPERDIAGONAL ONLY GCS
-!KD IS NUMBER OF SUPERDIAGONALS OF GC
-!SEE DPBTRF.F HTTP://WWW.NETLIB.ORG/LAPACK/DOUBLE/DPBTRF.F
+!VAL is column of non-zero BEE elements indexed by INDX and JNDX
+!GCS2 = BEEtBEE as calculated in GETBEE, stored in sparse format
+!need to convert double sparse format of GCS2 to lapack upperdiagonal only GCS
+!KD is number of superdiagonals of GC
+!see dpbtrf.f http://www.netlib.org/lapack/double/dpbtrf.f
 !     
-!MOVE TO ARRAY OF DIMENSION KD+1
+!move to array of dimension KD+1
        DO J1=1,KD
           DO I1=1,J1
              GCS(KD+1+I1-J1,J1)=GCS2(KD+1+I1-J1,J1)
@@ -485,19 +485,19 @@
        ENDDO
 
 !
-!XINT NOW CONTAINS INTERNAL COORDINATES
-!NOW NEED TO TRANSFORM GRADIENTS
+!XINT now contains internal coordinates
+!now need to transform gradients
 !
-!FORM GC = GC + EI WHERE E IS SMALL
+!form GC = GC + eI where e is small
 !
        DO I1=1,NCART
           GCS(KD+1,I1)=GCS(KD+1,I1)+INTEPSILON
        ENDDO
 
 !
-!CHOLESKY DECOMPOSE GCS
-!USE LAPACK ROUTINE DPBTRF
-!LDGCS IS LEADING DIMENSION OF GCS
+!Cholesky decompose GCS
+!use lapack routine DPBTRF
+!LDGCS is leading dimension of GCS
 !
           UPLO='U'
           N=NCART
@@ -505,26 +505,26 @@
 
           CALL DPBTRF(UPLO,N,KD,GCS,LDGCS,INFO)
 
-          IF (INFO.NE.0) PRINT*,'WARNING - AFTER DPBTRF INFO=',INFO
-!     PRINT *,'TF HERE2'
+          IF (INFO.NE.0) PRINT*,'WARNING - after DPBTRF INFO=',INFO
+!     print *,'tf here2'
 !
-!GCS IS NOW THE UPPER TRIANGULAR MATRIX AFTER DECOMPOSITION
+!GCS is now the upper triangular matrix after decomposition
 !SOLVE G*GCART2=GCART FOR GCART2, WHERE G IS ORIGINAL GC(=BEETBEE)+INTEPSILON*I
-!DONE USING LAPACK ROUTINE DPBTRS WITH INPUT OF THE UPPER MATRIX FROM
-!CHOLESKY DECOMPOSITION
+!done using lapack routine DPBTRS with input of the upper matrix from
+!cholesky decomposition
 !
           NRHS=1
           LDB=NCART
           CALL DPBTRS(UPLO,N,KD,NRHS,GCS,LDGCS,GCART,LDB,INFO)
-          IF (INFO.NE.0) PRINT*,'WARNING - AFTER DPBTRS INFO=',INFO
+          IF (INFO.NE.0) PRINT*,'WARNING - after DPBTRS INFO=',INFO
 
-!    PRINT *,'TF HERE3'
+!    print *,'tf here3'
 !
-!GCART IS NOW GCART2
-!GINT = BEE*GCART AS FIRST APPROXIMATION
-!USE DCOOMM TO DO THIS SPARSE MULTIPLICATION
-!SPARSE MATRIX MULTIPLICATION ROUTINE FROM BLAS
-!HTTP://MATH.NIST.GOV/~KREMINGTON/FSPBLAS/
+!GCART is now GCART2
+!GINT = BEE*GCART as first approximation
+!use DCOOMM to do this sparse multiplication
+!sparse matrix multiplication routine from BLAS
+!http://math.nist.gov/~KRemington/fspblas/
 !
        TRANSA=0
        M=NINTC
@@ -537,30 +537,30 @@
        ENDDO
          DESCRA(4)=1
        LWORK=NINTC
-!     PRINT *,'TF HERE3.5'
+!     print *,'tf here3.5'
        CALL DCOOMM(TRANSA,M,N,K,ALPHA,DESCRA,VAL,INDX,JNDX,NNZ,GCART,NCART,BETA,GINT,NINTC,WORK,LWORK)
-       IF (INFO.NE.0) PRINT*,'WARNING - AFTER DCOOMM INFO=',INFO
+       IF (INFO.NE.0) PRINT*,'WARNING - after DCOOMM INFO=',INFO
 
 !      IF(ITERATEG) PREITGRAD(:) = GINT(:)
-!     PRINT *,'TF HERE4'
+!     print *,'tf here4'
 !
-!CAN SKIP BELOW ITERATION AND USE THIS FIRST APPROXIMATION
+!can skip below iteration and use this first approximation
 !
-!PRINT OUT GINT
+!print out GINT
 !     DO I1=1,NINTC
-!      PRINT *,'GINT',GINT(I1)
+!      print *,'GINT',GINT(I1)
 !     ENDDO
 !C
-!NOW ITERATE GINT
-!GINT(K+1)=GINT(K)+AT(GRAD-BEET*GINT(K))
-!MULTIPLICATION AT*GX IS THE SAME AS SOLVING G*GCART2=GX
+!now iterate GINT
+!GINT(K+1)=GINT(K)+At(GRAD-BEEt*GINT(K))
+!multiplication At*GX is the same as solving G*GCART2=GX
 !C
-!     PRINT *,'TRANSFORM HERE4'
+!     print *,'transform here4'
 !      LCONVERGE = .FALSE.
 !      NITS = 0
 !      IF (ITERATEG) THEN
 !         DO WHILE (.NOT.LCONVERGE)
-!    GX=BEET*GINT
+!    GX=BEEt*GINT
 !GX=GCART-GX
 !            TRANSA=1
 !            M=NINTC; N = 1; K = NCART
@@ -577,15 +577,15 @@
 !            DO I1=1,NCART
 !               GX(I1)=GCARTORIG(I1)-GX(I1)
 !            ENDDO
-!C!             PRINT*, 'TESTXC: ', SQRT(DOT_PRODUCT(GX,GX)/NCART)
-!C!GY=AT(GRAD-BEET*GINT(K))=AT*GX
+!C!             print*, 'TESTXC: ', SQRT(DOT_PRODUCT(GX,GX)/NCART)
+!C!GY=At(GRAD-BEEt*GINT(K))=At*GX
 !            NRHS=1
 !            LDB=NCART
 !            UPLO='U'
 !            N=NCART
 !            LDGCS=KD+1
 !            CALL DPBTRS(UPLO,N,KD,NRHS,GCS,LDGCS,GX,LDB,INFO)
-!            IF (INFO.NE.0) PRINT*,'WARNING - AFTER DPBTRS 2 INFO=',INFO
+!            IF (INFO.NE.0) PRINT*,'WARNING - after DPBTRS 2 INFO=',INFO
 !C!       CALL DPOTRS(UPLO,N,NRHS,GC,LDA,GX,LDB,INFO)
 !            TRANSA=0
 !            M=NINTC; N = 1; K=NCART
@@ -593,8 +593,8 @@
 !            CALL DCOOMM(TRANSA,M,N,K,ALPHA,DESCRA,VAL,INDX,JNDX,NNZ,GX,
 !    $            NCART,BETA,GY,NINTC,WORK,LWORK) 
 
-!             PRINT*, 'TESTXI: ', SQRT(DOT_PRODUCT(GY,GY)/NINTC)
-!UPDATE GINT 
+!             print*, 'TESTXI: ', SQRT(DOT_PRODUCT(GY,GY)/NINTC)
+!update GINT 
 !            SUMGY2=0.0
 !            DO I1=1,NINTC
 !               GINT(I1)=GINT(I1)+GY(I1)
@@ -607,22 +607,22 @@
 !            
 !            NITS = NITS+1
 !            IF (NITS.GT.1000) THEN
-!               PRINT*, 'ERROR: GRAD ITERATION FAILED TO CONVERGE!'
-!               CALL DUMPCOORDS(XCART,'BADCOORDS.XYZ', .FALSE.)
-!               CALL DUMPCOORDS(GCARTORIG, 'BADGRAD.XYZ', .FALSE.)
+!               print*, 'ERROR: Grad iteration failed to converge!'
+!               CALL DUMPCOORDS(XCART,'badcoords.xyz', .FALSE.)
+!               CALL DUMPCOORDS(GCARTORIG, 'badgrad.xyz', .FALSE.)
 !               STOP
 !            ENDIF
-!      PRINT *,'TRANSFORM MEANSUMGY2',MEANSUMGY2
+!      print *,'transform MEANSUMGY2',MEANSUMGY2
 !         ENDDO
 !      ENDIF
 !C
-!MOVE FINAL INTERNAL GRADIENTS TO GRAD
+!move final internal gradients to GRAD
 !C
 !     DO I1=1,NINTC
 !       GRAD(I1)=GINT(I1)
 !     ENDDO
 !C
-!ZERO GCS2 FOR NEXT CALL TO GETBEE
+!zero GCS2 for next call to getbee
 !     DO J1=1,KD
 !       DO I1=1,J1
 !         GCS2(KD+1+I1-J1,J1)=0.0
@@ -644,16 +644,16 @@
 ! *************************************************************************
 
 !     
-!     SUBROUTINE TO DO INTERNAL COORDINATE MANIPULATIONS USING B-MATRIX
-!     CALLS GETBEE TO CALCUALTE B-MATRIX
-!     THEN TRANSFORMS A STEP IN INTERNALS TO A STEP IN CARTESIANS 
-!     NEMETH ET AL. JCP 113,5598(2000)
+!     subroutine to do internal coordinate manipulations using B-matrix
+!     calls GETBEE to calcualte B-matrix
+!     then transforms a step in internals to a step in cartesians 
+!     Nemeth et al. JCP 113,5598(2000)
 !     
       SUBROUTINE AMB_TRANSBACKDELTA(X,CARTX,COORDS,NINTC,NCART,NNZ,KD,FAILED,PTEST2,INTEPSILON)
-      USE COMMONS, ONLY: NATOMS
-      USE MODAMBER9, ONLY: NBONA, NBONH, NTHETH, NTHETA
-      USE INTCOMMONS, ONLY : INTNEWT, NATINT, BACKTCUTOFF, BACKTPRINTERR
-      USE SPFUNCTS, ONLY : DUMPCOORDS
+      USE COMMONS, only: NATOMS
+      USE MODAMBER9, only: nbona, nbonh, ntheth, ntheta
+      USE INTCOMMONS, only : INTNEWT, NATINT, BACKTCUTOFF, BACKTPRINTERR
+      USE SPFUNCTS, only : DUMPCOORDS
 
       IMPLICIT NONE
 !     
@@ -661,16 +661,16 @@
 !     REAL*8 PREVDIH
 !     COMMON /DIHINFO/ PREVDIH(MAXP)
 !     
-!     NNZ IS NUMBER OF NON-ZERO ELEMENTS IN B-MATRIX
-!     NINTC IS NUMBER OF INTERNAL COORDINATES
-!     NCART IS NUMBER OF CARTESIANS
+!     NNZ is number of non-zero elements in B-matrix
+!     NINTC is number of internal coordinates
+!     NCART is number of cartesians
 !    E 
       INTEGER NNZ,NINTC,NCART
 !     
-!     COORDS IS CARTESIAN COORDINATES
-!     OLDQ IS OLD INTERNAL COORDINATES
-!     X IS EIGENVECTOR IN INTERNALS, CARTX IS EV IN CARTESIANS WHICH WE NEED TO CALCULATE
-!     NEED TO ZERO CARTX
+!     COORDS is cartesian coordinates
+!     OLDQ is old internal coordinates
+!     X is eigenvector in internals, CARTX is ev in cartesians which we need to calculate
+!     need to zero CARTX
 !     
       DOUBLE PRECISION COORDS(3*NATOMS),DUMCOORDS(3*NATOMS)
       DOUBLE PRECISION VAL(NNZ),WORK(NINTC)
@@ -691,30 +691,30 @@
 
 
 !      INTEGER CENTERS, RINGS, FRINGS, LINDIH, IMPDIH, NCNT, NRNG, NFRG,
-!     $     NLDH, NIMP, NBDS, ATOMXPOSINC
+!     $     NLDH, NIMP, NBDS, ATOMxPOSINC
 !      REAL*8 COEFF
 !      COMMON /NATINTERN/ COEFF(30,6,6),
 !     $     CENTERS(MAXA, 0:5), RINGS(MAXA, 6),
 !     $     FRINGS(MAXA, 6), LINDIH(MAXA, -1:8), IMPDIH(MAXA, 4), NCNT,
-!     $     NRNG, NFRG, NLDH, NIMP, NBDS, ATOMXPOSINC(10,5,5)
+!     $     NRNG, NFRG, NLDH, NIMP, NBDS, ATOMxPOSINC(10,5,5)
       
       CHARACTER*30 FNAME
-!MSB50
+!msb50
       INTEGER NBOND, NTHETS
       DOUBLE PRECISION PI, TWOPI
       PARAMETER(PI=3.141592653589793D0)
 
 
       TWOPI = 2.0D0*PI
-      NBOND = NBONA+NBONH 
-      NTHETS = NTHETA +NTHETH
+      NBOND = nbona+nbonh 
+      NTHETS = ntheta +ntheth
 
 !      PTEST=.TRUE.
       PTEST = .FALSE.
 
-!     MAKE DUMMY ARRAY NEWX THAT CAN CHANGE (ERROR IN ESTIMATE OF X)
-!     AND DUMX WHICH IS CUMULATIVE ESTIMATE OF X
-!     AND DUMMY ARRAY DUMCOORDS THAT CAN CHANGE
+!     make dummy array NEWX that can change (error in estimate of X)
+!     and DUMX which is cumulative estimate of X
+!     and dummy array DUMCOORDS that can change
 !     
       DO I1=1,NINTC
          NEWX(I1)=X(I1)
@@ -725,34 +725,34 @@
          DUMCOORDS(I1)=COORDS(I1)
       ENDDO
 !    
-!    START ITERATIVE LOOP TO DO CONVERSION OF INTERNAL COORDINATES TO CARTESIANS
-!    HAVE X, NEED TO SATISFY CARTX=A*X AND X=B*CARTX
+!    start iterative loop to do conversion of internal coordinates to cartesians
+!    have X, need to satisfy CARTX=A*X and X=B*CARTX
 !    
       LCONVERGE=.FALSE.
       FAILED=.TRUE.
       NITS=0
 !    
-!    ATTEMPT TO PREVENT NAN ON SOLARIS
+!    Attempt to prevent NaN on Solaris
 !    
       DUMMYQ(1:NINTC) = 0.0D0
       XNEW2(1:NINTC)=0.0D0
 
       DO WHILE (.NOT.LCONVERGE)
-!        IF (PTEST) PRINT '(A,I6,G20.10)',
-!    $        'TRANSBACKDELTA>> INTERNALS ERROR', NITS,
+!        IF (PTEST) print '(A,I6,G20.10)',
+!    $        'transbackdelta>> internals error', NITS,
 !    $        SQRT(DOT_PRODUCT(NEWX(1:NINTC),NEWX(1:NINTC)))
 !    
-!    GET B-MATRIX WITHOUT CHANGING CARTESIANS TO INTERNALS
-!    ADDED DUMMYQ ARGUMENT 13/2/04 DJW
+!    get B-matrix without changing cartesians to internals
+!    added DUMMYQ argument 13/2/04 DJW
 !    
          IF (PTEST) THEN
             PRINT*,'DUMCOORDS BEFORE GETBEE, INTEPSILON=',INTEPSILON
             WRITE(*,'(6G18.10)') (DUMCOORDS(J1),J1=1,NCART)
-            PRINT*,'DUMMYQ BEFORE GETBEE'
+            PRINT*,'DUMMYQ before GETBEE'
             WRITE(*,'(6G18.10)') (DUMMYQ(J1),J1=1,NINTC)
          ENDIF
 
-         IF (NITS.EQ.0) THEN ! STORE ORIGINAL AND TARGET INTERNALS
+         IF (NITS.EQ.0) THEN ! store original and target internals
             NOCOOR = .FALSE.; NODERV = .FALSE.
             CALL AMB_GETBEENAT(DUMCOORDS,QORIG,VAL,INDX,JNDX,NINTC,NCART,NNZ,GCS2,NOCOOR,NODERV,KD)
             QTARGET(:) = QORIG(:) + X(:)
@@ -767,16 +767,16 @@
         ENDIF
 
 !    
-!    WANT TO FIND CARTX=A*X
-!    A = G^-1*BEET
-!    SAME AS SOLVING G*CARTX=BEET*X
+!    want to find CARTX=A*X
+!    A = G^-1*BEEt
+!    same as solving G*CARTX=BEEt*X
 !    G=GC+INTEPSILON*I
-!    GC=BEETBEE (AS IN TRANSFORM), STORED AS SPARSE GCS
-!    KD IS NUMBER OF SUPERDIAGONALS OF GC
-!    SEE DPBTRF.F HTTP://WWW.NETLIB.ORG/LAPACK/DOUBLE/DPBTRF.F
+!    GC=BEEtBEE (as in TRANSFORM), stored as sparse GCS
+!    KD is number of superdiagonals of GC
+!    see dpbtrf.f http://www.netlib.org/lapack/double/dpbtrf.f
 !    
 !    KD=3*ATOMWIDTH+2       
-!    NEED TO MOVE GCS2 INTO GCS
+!    need to move GCS2 into GCS
 
          GCS(:,:) = 0.0D0
          DO J1=1,KD
@@ -787,21 +787,21 @@
          DO J1=KD+1,NCART
             DO I1=J1-KD,J1
                GCS(KD+1+I1-J1,J1)=GCS2(KD+1+I1-J1,J1)
-               !PRINT*, GCS(KD+1+I1-J1,J1)
+               !print*, GCS(KD+1+I1-J1,J1)
             ENDDO
          ENDDO
            
 !    
-!    FORM G = GC + EI WHERE E IS SMALL
+!    form G = GC + eI where e is small
 !    
          DO I1=1,NCART
             GCS(KD+1,I1)=GCS(KD+1,I1)+INTEPSILON
          ENDDO
 !    
-!    NEWX IS ERROR IN INTERNALS AT END OF LAST CYCLE
-!    MULTIPLY NEWX BY BEET TO GIVE CARTX
-!    USES SPARSE MATRIX MULTIPLICATION ROUTINE FROM BLAS
-!    HTTP://MATH.NIST.GOV/~KREMINGTON/FSPBLAS/
+!    NEWX is error in internals at end of last cycle
+!    multiply NEWX by BEEt to give CARTX
+!    Uses sparse matrix multiplication routine from BLAS
+!    http://math.nist.gov/~KRemington/fspblas/
 !    
          TRANSA=1
          M=NINTC
@@ -815,75 +815,75 @@
          DESCRA(4)=1
          LWORK=NINTC
          IF (PTEST) THEN
-            PRINT*,'BEFORE DCOOMM 1 NEWX:'
+            PRINT*,'before dcoomm 1 NEWX:'
             WRITE(*,'(6G20.10)') (NEWX(J1),J1=1,NINTC)
-            PRINT*,'BEFORE DCOOMM 1 CARTX:'
+            PRINT*,'before dcoomm 1 CARTX:'
             WRITE(*,'(6G20.10)') (CARTX(J1),J1=1,NCART)
          ENDIF
          CALL DCOOMM(TRANSA,M,N,K,ALPHA,DESCRA,VAL,INDX,JNDX,NNZ, &
      &        NEWX,NINTC,BETA,CARTX,NCART,WORK,LWORK)
          IF (PTEST) THEN
-            PRINT*,'AFTER DCOOMM 1 NEWX:'
+            PRINT*,'after dcoomm 1 NEWX:'
             WRITE(*,'(6G20.10)') (NEWX(J1),J1=1,NINTC)
-            PRINT*,'AFTER DCOOMM 1 CARTX:'
+            PRINT*,'after dcoomm 1 CARTX:'
             WRITE(*,'(6G20.10)') (CARTX(J1),J1=1,NCART)
          ENDIF         
 !    
-!    CHOLESKY DECOMPOSE GCS
-!    USE LAPACK ROUTINE DPBTRF
-!    LDGCS IS LEADING DIMENSION OF GCS
+!    Cholesky decompose GCS
+!    use lapack routine DPBTRF
+!    LDGCS is leading dimension of GCS
 !    
          UPLO='U'
          N=NCART
          LDGCS=KD+1
         IF (PTEST) THEN
-           PRINT*,'GCS BEFORE DPBTRF:'
+           PRINT*,'GCS before DPBTRF:'
            WRITE(*,'(6G18.10)') ((GCS(J1,J2),J1=1,KD+1),J2=1,NCART)
         ENDIF
 !    CALL MYCPU_TIME(TESTTIME1, .FALSE.)
          CALL DPBTRF(UPLO,N,KD,GCS,LDGCS,INFO)
 !    CALL MYCPU_TIME(TESTTIME2, .FALSE.)
 !    TOTCHOLTIME = TOTCHOLTIME + TESTTIME2 - TESTTIME1
-         IF (INFO.NE.0) PRINT*,'AFTER DPBTRF INFO=',INFO
+         IF (INFO.NE.0) PRINT*,'after DPBTRF INFO=',INFO
 
-!MSB50
+!msb50
 !        IF (PTEST) THEN
-!           PRINT*,'GCS AFTER DPBTRF:'
+!           PRINT*,'GCS after DPBTRF:'
 !           WRITE(*,'(6G18.10)') ((GCS(J1,J2),J1=1,KD+1),J2=1,NCART)
 !        ENDIF
 !    
-!    GCS IS NOW THE UPPER TRIANGULAR MATRIX AFTER DECOMPOSITION
+!    GCS is now the upper triangular matrix after decomposition
 !    SOLVE G*DELTAX=CARTX FOR DELTAX, WHERE G IS ORIGINAL BEETBEE+INTEPSILON*I
-!    DONE USING LAPACK ROUTINE DPBTRS WITH INPUT OF THE UPPER MATRIX FROM
-!    CHOLESKY DECOMPOSITION
+!    done using lapack routine DPBTRS with input of the upper matrix from
+!    cholesky decomposition
 !    
          NRHS=1
          LDB=NCART
          CALL DPBTRS(UPLO,N,KD,NRHS,GCS,LDGCS,CARTX,LDB,INFO)
-         IF (INFO.NE.0) PRINT*,'AFTER DPBTRS INFO=',INFO
+         IF (INFO.NE.0) PRINT*,'after DPBTRS INFO=',INFO
         IF (PTEST) THEN
-           PRINT*,'GCS AFTER DPBTRS:'
+           PRINT*,'GCS after DPBTRS:'
            WRITE(*,'(6G18.10)') ((GCS(J1,J2),J1=1,KD+1),J2=1,NCART)
-           PRINT*,'AFTER DPBTRS CARTX:'
+           PRINT*,'after DPBTRS CARTX:'
            WRITE(*,'(6G20.10)') (CARTX(J1),J1=1,NCART)
         ENDIF
 
 !    
-!    CARTX IS NOW SOLUTION OF CARTX=A*X
-!    EVALUATE XNEW2=B*CARTX
+!    CARTX is now solution of CARTX=A*X
+!    evaluate XNEW2=B*CARTX
 !    
 
          IF (INTNEWT) THEN
-            ! EVALUATE XNEW2 DIRECTLY FROM NEW CARTESIAN COORDS
+            ! evaluate XNEW2 directly from new cartesian coords
             NOCOOR = .FALSE.; NODERV = .TRUE.
             CALL AMB_GETBEENAT(DUMCOORDS+CARTX,DUMXINT2,DUMVAL,DUMINDX, &
      &           DUMJNDX,NINTC,NCART,NNZ,DUMGCS2,NOCOOR,NODERV,KD)
 
-            ! ALIGN DIHEDRAL ANGLES IF USING PRIMITIVE INTERNALS
+            ! align dihedral angles if using primitive internals
             IF (.NOT.NATINT) THEN 
-               !MSB 50 - PROBABLY BUG FOR AMBER
-               PRINT*, "WARNING - AMB_TRANSBACKDELTA HAS NATINT .FALSE.&
-               &- ARE YOU SURE? -> UNCOMMENT STOP IN AMBNATINERN_EXTRAS"
+               !msb 50 - probably bug for amber
+               PRINT*, "Warning - AMB_TRANSBACKDELTA has natint .FALSE.&
+               &- are you sure? -> uncomment stop in ambnatinern_extras"
                STOP 
                DO I1 = NBOND+NTHETS+1, NINTC
                   IF (DUMXINT2(I1) - QTARGET(I1).GT.PI) THEN
@@ -895,25 +895,25 @@
             ENDIF
             NEWX = QTARGET - DUMXINT2
 
-         ELSE ! SOLVE LINEAR EQUATION ONLY; ITERATE AWAY EFFECT OF EPSILON
+         ELSE ! solve linear equation only; iterate away effect of epsilon
             TRANSA=0
             N=1
             CALL DCOOMM(TRANSA,M,N,K,ALPHA,DESCRA,VAL,INDX,JNDX,NNZ, &
      &           CARTX,NCART,BETA,XNEW2,NINTC,WORK,LWORK)
 
             IF (PTEST) THEN
-               PRINT*,'XNEW2 AFTER DCOOMM 2:'
+               PRINT*,'XNEW2 after DCOOMM 2:'
                WRITE(*,'(6G18.10)') (XNEW2(J1),J1=1,NINTC)
-               PRINT*,'AFTER DCOOMM 2 CARTX:'
+               PRINT*,'after DCOOMM 2 CARTX:'
                WRITE(*,'(6G20.10)') (CARTX(J1),J1=1,NCART)
             ENDIF
             DO I1=1,NINTC
-               DUMX(I1)=DUMX(I1)+XNEW2(I1) ! SUM OF F(X_I) INSTEAD OF F(SUM(X_I))
+               DUMX(I1)=DUMX(I1)+XNEW2(I1) ! sum of f(x_i) instead of f(sum(x_i))
                NEWX(I1)=X(I1)-DUMX(I1)
             ENDDO
          ENDIF
 
-!    PROJECT TRANSLATION OUT OF CARTX
+!    project translation out of CARTX
          CARTDOTX=0.0D0
          CARTDOTY=0.0D0
          CARTDOTZ=0.0D0
@@ -927,7 +927,7 @@
             CARTX(3*(I1-1)+2)=CARTX(3*(I1-1)+2)-CARTDOTY/NATOMS
             CARTX(3*(I1-1)+3)=CARTX(3*(I1-1)+3)-CARTDOTZ/NATOMS
          ENDDO
-!    UPDATE DUMCOORDS FOR NEXT CALL TO GETBEE; CHECK FOR CONVERGENCE
+!    update DUMCOORDS for next call to GETBEE; check for convergence
          SUMDC2=0.0D0
          DO I1=1,NCART
             DUMCOORDS(I1)=DUMCOORDS(I1)+CARTX(I1)
@@ -942,13 +942,13 @@
          NITS=NITS+1
 
          IF (PTEST2) PRINT '(A,I5,2G20.10)',&
-             'TRANSBACKDELTA>> NITS,MEANDC2, INT ERRO =',NITS, MEANDC2,&
+             'transbackdelta>> NITS,MEANDC2, int erro =',NITS, MEANDC2,&
              SQRT(DOT_PRODUCT(NEWX(1:NINTC),NEWX(1:NINTC)))
 
          IF (SQRT(DOT_PRODUCT(NEWX(1:NINTC),NEWX(1:NINTC))).GT.100) THEN
-            PRINT*, 'ERROR! DELTATRANSFORM DIVERGED.'
-            CALL DUMPCOORDS(COORDS,'DIVERGED.XYZ', .FALSE.)
-            OPEN(UNIT=88,FILE='BADSTP', STATUS = 'UNKNOWN')
+            print*, 'ERROR! deltatransform diverged.'
+            CALL DUMPCOORDS(COORDS,'diverged.xyz', .FALSE.)
+            OPEN(unit=88,FILE='badstp', STATUS = 'UNKNOWN')
             WRITE(88,'(G25.15)') (X(J1), J1 = 1,NINTC)
             CLOSE(88)
             LCONVERGE = .TRUE.
@@ -958,22 +958,22 @@
          ENDIF
 
          IF (NITS.GT.100) THEN
-            PRINT*,'WARNING INTERNAL COORDINATE TRANSFORMATION&
-               & DID NOT CONVERGE, MEANDC2=',MEANDC2
+            PRINT*,'WARNING internal coordinate transformation&
+               & did not converge, MEANDC2=',MEANDC2
             FAILED = .TRUE.
             LCONVERGE=.TRUE.
          ENDIF
 !    
       ENDDO
 
-!    UPDATE CARTX SO THAT IT IS THE DIFFERENCE BETWEEN FINAL DUMCOORDS AND COORDS
-!    PRINT *,'TDB HERE1'
+!    update CARTX so that it is the difference between final DUMCOORDS and COORDS
+!    print *,'tdb here1'
 
       DO I1=1,3*NATOMS
          CARTX(I1)=DUMCOORDS(I1)-COORDS(I1)
       ENDDO
 !    
-!    PROJECT TRANSLATION OUT OF CARTX
+!    project translation out of CARTX
       CARTDOTX=0.0D0
       CARTDOTY=0.0D0
       CARTDOTZ=0.0D0
@@ -988,29 +988,29 @@
          CARTX(3*(I1-1)+3)=CARTX(3*(I1-1)+3)-CARTDOTZ/NATOMS
       ENDDO
 
-      IF(BACKTPRINTERR) PRINT*, 'TRANSBACKDELTA>>> ERROR = ', SQRT(DOT_PRODUCT(NEWX(1:NINTC),NEWX(1:NINTC)))
+      IF(BACKTPRINTERR) print*, 'transbackdelta>>> error = ', SQRT(DOT_PRODUCT(NEWX(1:NINTC),NEWX(1:NINTC)))
 
       RETURN
       END
 
 
       SUBROUTINE GETDIHONLY(XCART)
-!SUBROUTINE FROM AMBGETBEENAT -- ONLY DIHEDRAL PARTS TO PROVIDE EASIER ACCESS
+!subroutine from AMBGETBEENAT -- only dihedral parts to provide easier access
       USE COMMONS, ONLY: NATOMS
       USE INTCOMMONS
-      USE MODAMBER9, ONLY: IH, M04
+      USE modamber9, only: ih, m04
 
       IMPLICIT NONE
 
       DOUBLE PRECISION, INTENT(IN):: XCART(3*NATOMS)     
       INTEGER DIHC, RATMS, NANGC, NDIHC
       INTEGER XIND(8),INFO(-1:8)
-      DOUBLE PRECISION PHI, DPDI(0:2), DPDJ(0:2), DPDK(0:2), DPDL(0:2)  
+      DOUBLE PRECISION PHI, dPdI(0:2), dPdJ(0:2), dPdK(0:2), dPdL(0:2)  
       DOUBLE PRECISION NANGCR
       INTEGER RNG, FRG,LDH, I1, TCOUNT, J1, K1,L1
       INTEGER CURPHI
-      INTEGER IX, JX, KX, LX
-      DOUBLE PRECISION PHI2, DPDI2(0:2), DPDJ2(0:2), DPDK2(0:2), DPDL2(0:2)
+      INTEGER Ix, Jx, Kx, Lx
+      DOUBLE PRECISION PHI2, dPdI2(0:2), dPdJ2(0:2), dPdK2(0:2), dPdL2(0:2)
       LOGICAL NOCOOR
       DOUBLE PRECISION PHI1, PREVPHI1
       INTEGER ATOMS2PERM
@@ -1020,10 +1020,10 @@
       DO 25 RNG=1,NRNG
 
          IF(RINGS(RNG,6).EQ.-1) THEN
-            RATMS = 5 ! 5 ATOMS IN RING
-            NANGC = 2; NDIHC = 2 ! 2 ANGLE & 2 DIHEDRAL COORDS
+            RATMS = 5 ! 5 atoms in ring
+            NANGC = 2; NDIHC = 2 ! 2 angle & 2 dihedral coords
          ELSE
-            RATMS = 6 ! 6 ATOMS IN RING
+            RATMS = 6 ! 6 atoms in ring
             NANGC = 3; NDIHC = 3
          ENDIF
 
@@ -1039,7 +1039,7 @@
 
             CALL AMBGETTORSION(XCART(XIND(I1):XIND(I1)+2),                 &
      &           XCART(XIND(J1):XIND(J1)+2), XCART(XIND(K1):XIND(K1)+2),&
-     &           XCART(XIND(L1):XIND(L1)+2), PHI, DPDI, DPDJ, DPDK, DPDL,&
+     &           XCART(XIND(L1):XIND(L1)+2), PHI, dPdI, dPdJ, dPdK, dPdL,&
      &           .FALSE.,.TRUE.)
 
             DIHC = DIHC + 1
@@ -1048,8 +1048,8 @@
             IF (.NOT.NOCOOR) CALL AMBALIGNDIH(PHI, DIHC, PHI-PHI1, PREVDIH(DIHC)-PREVPHI1,TCOUNT)
             IF (TCOUNT.EQ.1) PHI1 = PHI
             TCOUNT = TCOUNT + 1
-!           PRINT '(A5,I4,4A4, F11.6,F11.6)',"RING", DIHC,IH(M04+RINGS(RNG,I1)-1), IH(M04+RINGS(RNG,J1)-1), &
-! &                  IH(M04+RINGS(RNG,K1)-1), IH(M04+RINGS(RNG,L1)-1), PREVDIH(DIHC),(PREVDIH(DIHC)/3.14159265358979)*180.0
+!           PRINT '(a5,i4,4a4, f11.6,f11.6)',"RING", DIHC,ih(m04+RINGS(RNG,I1)-1), ih(m04+RINGS(RNG,J1)-1), &
+! &                  ih(m04+RINGS(RNG,K1)-1), ih(m04+RINGS(RNG,L1)-1), PREVDIH(DIHC),(PREVDIH(DIHC)/3.14159265358979)*180.0
           ENDDO
 
  25   CONTINUE
@@ -1061,33 +1061,33 @@
     
           CALL AMBGETTORSION(XCART(XIND(3):XIND(3)+2),&
      &         XCART(XIND(1):XIND(1)+2), XCART(XIND(2):XIND(2)+2), &
-     &         XCART(XIND(6):XIND(6)+2), PHI, DPDI, DPDJ, DPDK, DPDL,&
+     &         XCART(XIND(6):XIND(6)+2), PHI, dPdI, dPdJ, dPdK, dPdL,&
      &         NOCOOR,.TRUE.)   
           DIHC = DIHC + 1
           PREVPHI1 = PREVDIH(DIHC)
           IF (.NOT.NOCOOR) CALL AMBALIGNDIH(PHI, DIHC, 0.0D0, 0.0D0, 1) 
-!         PRINT '(A5,I4,4A4,F11.6,F11.6)',"FRNG", DIHC,IH(M04+RINGS(RNG,3)-1), IH(M04+RINGS(RNG,1)-1), 
-!                IH(M04+RINGS(RNG,2)-1), IH(M04+RINGS(RNG,6)-1), PREVDIH(DIHC),  (PREVDIH(DIHC)/3.14159265358979)*180.0
+!         PRINT '(a5,i4,4a4,f11.6,f11.6)',"FRNG", DIHC,ih(m04+RINGS(RNG,3)-1), ih(m04+RINGS(RNG,1)-1), 
+!                ih(m04+RINGS(RNG,2)-1), ih(m04+RINGS(RNG,6)-1), PREVDIH(DIHC),  (PREVDIH(DIHC)/3.14159265358979)*180.0
  
           CALL AMBGETTORSION(XCART(XIND(5):XIND(5)+2),&
      &         XCART(XIND(1):XIND(1)+2), XCART(XIND(2):XIND(2)+2),  &
-     &         XCART(XIND(4):XIND(4)+2), PHI2, DPDI2, DPDJ2, DPDK2, &
-     &         DPDL2, NOCOOR,.TRUE.)
+     &         XCART(XIND(4):XIND(4)+2), PHI2, dPdI2, dPdJ2, dPdK2, &
+     &         dPdL2, NOCOOR,.TRUE.)
          DIHC = DIHC + 1
 
          IF (.NOT.NOCOOR) CALL AMBALIGNDIH(PHI2, DIHC, PHI2-PHI, PREVDIH(DIHC)-PREVPHI1, 2)         
-!           PRINT '(A5,I4,4A4,F11.6,F11.6)',"FRNG", DIHC,IH(M04+RINGS(RNG,5)-1), IH(M04+RINGS(RNG,1)-1), 
-!                   IH(M04+RINGS(RNG,2)-1), IH(M04+RINGS(RNG,4)-1), PREVDIH(DIHC), (PREVDIH(DIHC)/3.14159265358979)*180.0
+!           PRINT '(a5,i4,4a4,f11.6,f11.6)',"FRNG", DIHC,ih(m04+RINGS(RNG,5)-1), ih(m04+RINGS(RNG,1)-1), 
+!                   ih(m04+RINGS(RNG,2)-1), ih(m04+RINGS(RNG,4)-1), PREVDIH(DIHC), (PREVDIH(DIHC)/3.14159265358979)*180.0
          TCOUNT = TCOUNT + 1
       ENDDO 
 
       DO 30 LDH=1,NLDH
          INFO(-1:8) = LINDIH(LDH,-1:8)
-         !INFO(-1) AND INFO(0) DENOTE THE NUMBER OF POSSIBLE I AND L ATOMS
+         !INFO(-1) and INFO(0) denote the number of possible I and L atoms
          DO I1=1,INFO(0)+INFO(-1)+2
             XIND(I1) = 3*(INFO(I1) - 1) + 1
          ENDDO
-         NANGC = INFO(-1)*INFO(0) ! NUMBER OF TORSIONS INVOLVED
+         NANGC = INFO(-1)*INFO(0) ! number of torsions involved
 
          NANGCR = 1.0D0/NANGC
 
@@ -1096,12 +1096,12 @@
             DO L1=INFO(-1)+3,INFO(-1)+INFO(0)+2
                CURPHI = CURPHI + 1
 
-               IX = XIND(I1)
-               JX = XIND(1)
-               KX = XIND(2)
-               LX = XIND(L1)
+               Ix = XIND(I1)
+               Jx = XIND(1)
+               Kx = XIND(2)
+               Lx = XIND(L1)
                
-!               PRINT*, "GETDIHONLY PHI1", PHI1
+!               PRINT*, "getdihonly phi1", PHI1
 !               IF (CURPHI.EQ.1) THEN
 !                  DO I2 = 1, NPERMGROUP
 !                     IF (PERMNEIGHBOURS(I2,4)==LDH) THEN
@@ -1109,16 +1109,16 @@
 !                        I3= PERMNEIGHBOURS(I2,1)
 !                        PERMNEIGHBOURS(I3,
 !                      IF (PERMNEIGHBOURS(I2,5)==LDH) THEN
-               CALL AMBGETTORSION(XCART(IX:IX+2), XCART(JX:JX+2),  &
-     &              XCART(KX:KX+2), XCART(LX:LX+2), PHI, DPDI, DPDJ,   &
-     &              DPDK, DPDL, NOCOOR,.TRUE.)                              
+               CALL AMBGETTORSION(XCART(Ix:Ix+2), XCART(Jx:Jx+2),  &
+     &              XCART(Kx:Kx+2), XCART(Lx:Lx+2), PHI, dPdI, dPdJ,   &
+     &              dPdK, dPdL, NOCOOR,.TRUE.)                              
 
                DIHC = DIHC + 1
                IF (CURPHI.EQ.1) PREVPHI1 = PREVDIH(DIHC)
 
                IF (.NOT.NOCOOR) CALL AMBALIGNDIH(PHI, DIHC, PHI-PHI1, PREVDIH(DIHC)-PREVPHI1,CURPHI)
-!              PRINT '(A5,I4,X,4A4,F11.6, F11.6)',"LDH", DIHC,IH(M04+INFO(I1)-1), IH(M04+INFO(1)-1), 
-!    &                 IH(M04+INFO(2)-1), IH(M04+INFO(L1)-1), PREVDIH(DIHC) , (PREVDIH(DIHC)/3.14159265358979)*180.0
+!              PRINT '(a5,i4,x,4a4,f11.6, f11.6)',"LDH", DIHC,ih(m04+INFO(I1)-1), ih(m04+INFO(1)-1), 
+!    &                 ih(m04+INFO(2)-1), ih(m04+INFO(L1)-1), PREVDIH(DIHC) , (PREVDIH(DIHC)/3.14159265358979)*180.0
 
                IF (CURPHI.EQ.1) PHI1 = PHI
             ENDDO
@@ -1128,26 +1128,26 @@
       END SUBROUTINE GETDIHONLY
 ! *****************************************
       SUBROUTINE GETLDH(LDH, STDIHC,PHI1,XCART)
-         USE INTCOMMONS, ONLY: LINDIH, PREVDIH
-         USE MODAMBER9, ONLY: IH, M04
-         USE COMMONS, ONLY: NATOMS
+         use intcommons, only: LINDIH, PREVDIH
+         use modamber9, only: ih, m04
+         use commons, only: NATOMS
          IMPLICIT NONE
          INTEGER, INTENT(IN) :: LDH, STDIHC
          DOUBLE PRECISION, INTENT(INOUT):: PHI1 
          DOUBLE PRECISION, INTENT(IN):: XCART(3*NATOMS)
-         INTEGER :: INFO(-1:8), XIND(8), NANGC, CURPHI, IX,JX,KX,LX,DIHC
-         DOUBLE PRECISION :: NANGCR, PHI, DPDI(3), DPDJ(3), DPDK(3), DPDL(3)
+         INTEGER :: INFO(-1:8), XIND(8), NANGC, CURPHI, Ix,Jx,Kx,Lx,DIHC
+         DOUBLE PRECISION :: NANGCR, PHI, dPdI(3), dPdJ(3), dPdK(3), dPdL(3)
          DOUBLE PRECISION :: PREVPHI1
          INTEGER :: I1,L1
          DIHC = STDIHC -1 
-!FIND PH1
+!find ph1
          INFO(-1:8) = LINDIH(LDH,-1:8)
          INFO(-1:8) = LINDIH(LDH,-1:8)
-         !INFO(-1) AND INFO(0) DENOTE THE NUMBER OF POSSIBLE I AND L ATOMS
+         !INFO(-1) and INFO(0) denote the number of possible I and L atoms
          DO I1=1,INFO(0)+INFO(-1)+2
             XIND(I1) = 3*(INFO(I1) - 1) + 1
          ENDDO
-         NANGC = INFO(-1)*INFO(0) ! NUMBER OF TORSIONS INVOLVED
+         NANGC = INFO(-1)*INFO(0) ! number of torsions involved
 
          NANGCR = 1.0D0/NANGC
 
@@ -1156,20 +1156,20 @@
             DO L1=INFO(-1)+3,INFO(-1)+INFO(0)+2
                CURPHI = CURPHI + 1
 
-               IX = XIND(I1)
-               JX = XIND(1)
-               KX = XIND(2)
-               LX = XIND(L1)
+               Ix = XIND(I1)
+               Jx = XIND(1)
+               Kx = XIND(2)
+               Lx = XIND(L1)
 
-               CALL AMBGETTORSION(XCART(IX:IX+2), XCART(JX:JX+2),  &
-     &              XCART(KX:KX+2), XCART(LX:LX+2), PHI, DPDI, DPDJ,   &
-     &              DPDK, DPDL, .FALSE., .TRUE.)                      
+               CALL AMBGETTORSION(XCART(Ix:Ix+2), XCART(Jx:Jx+2),  &
+     &              XCART(Kx:Kx+2), XCART(Lx:Lx+2), PHI, dPdI, dPdJ,   &
+     &              dPdK, dPdL, .FALSE., .TRUE.)                      
                DIHC = DIHC + 1
                IF (CURPHI.EQ.1) PREVPHI1 = PREVDIH(DIHC)
 
-!               PRINT '(A15,3I4,4(I4,A4),F8.2)','GETBEE>DIH', & 
-!     &       LDH,DIHC, INFO(I1), IH(M04+INFO(I1)-1),INFO(1),IH(M04+INFO(1)-1),&
-!              INFO(2), IH(M04+INFO(2)-1),INFO(L1),IH(M04+INFO(L1)-1), PHI
+!               print '(a15,3i4,4(i4,a4),f8.2)','GETBEE>dih', & 
+!     &       LDH,DIHC, INFO(I1), ih(m04+INFO(I1)-1),INFO(1),ih(m04+INFO(1)-1),&
+!              INFO(2), ih(m04+INFO(2)-1),INFO(L1),ih(m04+INFO(L1)-1), PHI
                CALL AMBALIGNDIH(PHI, DIHC, PHI-PHI1, PREVDIH(DIHC)-PREVPHI1,CURPHI)
 
                IF (CURPHI.EQ.1) PHI1 = PHI
@@ -1182,37 +1182,37 @@
 
 ! ******************************************
       SUBROUTINE FINDPERMDIH
-!MSB50 - FIND DIHEDRAL ANGLES WHICH INVOLVE ATOMS FROM DIFFERENT PERMGROUPS
-!        S.T. FOR INTMINPERM THE MINIMUM DIHEDRAL CAN BE FOUND
-      USE KEY, ONLY: NPERMGROUP, DEBUG
-      USE INTCOMMONS
-      USE MODAMBER9, ONLY: IH, M04, NRES, IX,I02,M02
-      USE COMMONS, ONLY: NATOMS     
+!msb50 - find dihedral angles which involve atoms from different permgroups
+!        s.t. for INTMINPERM the minimum dihedral can be found
+      use key, only: NPERMGROUP, DEBUG
+      use intcommons
+      use modamber9, only: ih, m04, nres, ix,i02,m02
+      use commons, only: NATOMS     
 
       IMPLICIT NONE
-      INTEGER I1, A1, A2, B, K1, J1,L1, B1P,H2,HH, BH,B1, NCTA
-      INTEGER :: PGH, PGH2, PGBH
-      CHARACTER(LEN=4) :: RESNAME,  B1PN,HNAME,BHN
-      CHARACTER(LEN=4) :: PERMAC(10,3)
+      INTEGER i1, A1, A2, B, k1, j1,l1, B1P,h2,hh, Bh,B1, NCTa
+      INTEGER :: PGH, PGH2, PGBh
+      CHARACTER(LEN=4) :: RESNAME,  B1PN,hname,BhN
+      CHARACTER(LEN=4) :: permac(10,3)
       INTEGER :: RESNUM
-      INTEGER ATOMS2PERM(NATOMS) !INCLUDES PG OF SOME (IMPORTANT ATOMS, REST 0)
-      INTEGER ATCENTRE2PERM(NATOMS) !PG FOR CERTAIN CENTRES (I.E. THE ATOMS AROUND IT!!)
-      INTEGER THISROUNDFOUND
-      LOGICAL CRITICAL, ARGININE
-      INTEGER PG_CENTRE, PG_CENTRE2, PG_CENTREAC
-      INTEGER ALREADYPG(NATOMS)
-      DATA PERMAC(1,:) /'LEU ', 'NLEU','CLEU'/
-      DATA PERMAC(2,:) /'ILE ', 'NILE', 'CILE'/
-      DATA PERMAC(3,:) /'LYS ', 'NLYS', 'CLYS'/
-      DATA PERMAC(4,:) /'PHE ', 'NPHE', 'CPHE'/
-      DATA PERMAC(5,:) /'TYR ', 'NTYR', 'CTYR'/ 
-      DATA PERMAC(6,:) /'GLU ', 'NGLU', 'CGLU'/
-      DATA PERMAC(7,:) /'ASP ', 'NASP', 'CASP'/
-      DATA PERMAC(8,:) /'MET', 'NMET', 'CMET'/
-      DATA PERMAC(9,:) /'GLN', 'NGLN', 'CGLN'/
-      DATA PERMAC(10,:) /'ARG', 'NARG','CARG'/
-      CHARACTER(LEN=2) :: BONDEDHS(4)
-      DATA BONDEDHS /'HB','HE', 'HD', 'HG'/
+      INTEGER ATOMS2PERM(NATOMS) !includes pg of some (important atoms, rest 0)
+      INTEGER ATCENTRE2PERM(NATOMS) !pg for certain centres (i.e. the atoms around it!!)
+      INTEGER thisroundfound
+      LOGICAL critical, arginine
+      INTEGER pg_centre, pg_centre2, pg_centreAC
+      INTEGER alreadypg(NATOMS)
+      data permac(1,:) /'LEU ', 'NLEU','CLEU'/
+      data permac(2,:) /'ILE ', 'NILE', 'CILE'/
+      data permac(3,:) /'LYS ', 'NLYS', 'CLYS'/
+      data permac(4,:) /'PHE ', 'NPHE', 'CPHE'/
+      data permac(5,:) /'TYR ', 'NTYR', 'CTYR'/ 
+      data permac(6,:) /'GLU ', 'NGLU', 'CGLU'/
+      data permac(7,:) /'ASP ', 'NASP', 'CASP'/
+      data permac(8,:) /'MET', 'NMET', 'CMET'/
+      data permac(9,:) /'GLN', 'NGLN', 'CGLN'/
+      data permac(10,:) /'ARG', 'NARG','CARG'/
+      CHARACTER(LEN=2) :: bondedHs(4)
+      data bondedHs /'HB','HE', 'HD', 'HG'/
      
 
       IF (.NOT.ALLOCATED(MBADJACENT)) THEN
@@ -1221,107 +1221,107 @@
       ENDIF
       IF (.NOT.ALLOCATED(PERMNANGLE)) ALLOCATE(PERMNANGLE(NPERMGROUP,2))
       ATOMS2PERM(:)=0
-      PGH = 0; PGH2 = 0; PGBH = 0
+      PGH = 0; PGH2 = 0; PGBh = 0
       IF (.NOT.ALLOCATED(PERMNEIGHBOURS)) ALLOCATE(PERMNEIGHBOURS(NPERMGROUP,7))
       PERMNEIGHBOURS(:,:) = 0
-      ALREADYPG(:)=0
-      !ALREADYPG(ATOM)=ATOM2 IF THIS CENTRE HAS ALREADY BEEN FOUND AND IS IN PERMNEIGHBOURS
-      IF (DEBUG) PRINT*, "NCNT2", NCNT2
-      !THIS SCHEME ONLY WORKS IF OF THE TWO ADJACENT PERMGROUPS AT LEAST ONE IS CENTRE2 - 
-      ! WHICH IT IS FOR THE AMINO ACIDS I HAVE
-      ARGININE = .FALSE.
+      alreadypg(:)=0
+      !alreadypg(ATOM)=ATOM2 if this centre has already been found and is in permneighbours
+      IF (DEBUG) PRINT*, "ncnt2", NCNT2
+      !this scheme only works if of the two adjacent permgroups at least one is centre2 - 
+      ! which it is for the amino acids i have
+      arginine = .FALSE.
       DO I1 = 1, NCNT2
-         PGH = 0; PGH2 = 0; PGBH = 0
-         HH = 0; H2 = 0; BH=0
-         PG_CENTRE2=0;PG_CENTREAC=0;PG_CENTRE=0
-         THISROUNDFOUND=0
-         NCTA = CENTER2(I1)
-         A1 = CENTERS(NCTA, 1)
-         CALL GETRESID(A1, RESNAME, RESNUM)
-         CRITICAL = .FALSE.
-         DO K1=1,10
-            IF (PERMAC(K1,1).EQ.RESNAME.OR.PERMAC(K1,2).EQ.RESNAME &
-     &        .OR.PERMAC(K1,3).EQ.RESNAME) THEN
-               CRITICAL = .TRUE.
-               IF (K1==10) ARGININE=.TRUE.
+         PGH = 0; PGH2 = 0; PGBh = 0
+         hh = 0; h2 = 0; Bh=0
+         pg_centre2=0;pg_centreAC=0;pg_centre=0
+         thisroundfound=0
+         NCTa = CENTER2(I1)
+         A1 = CENTERS(NCTa, 1)
+         CALL GETRESID(A1, resname, resnum)
+         critical = .FALSE.
+         DO k1=1,10
+            IF (permac(k1,1).EQ.resname.OR.permac(k1,2).EQ.resname &
+     &        .OR.permac(k1,3).EQ.resname) THEN
+               critical = .TRUE.
+               IF (k1==10) arginine=.TRUE.
                EXIT
             ENDIF
          ENDDO
-         !PRINT*,I1, "FINDMINPERMN, NEIGBOURS OF", A1, "CRITICAL", CRITICAL, RESNAME
-         IF (.NOT.CRITICAL) CYCLE !NO TWO GROUPS AFTER ONE ANOTHER
-         !NEED TO FIND HYDROGENS/PERMGROUP ATOMS TO FIND PERMGROUP
-         IF (IH(M04+A1-1)=="CA") CYCLE !HAPPEN TO BE CENTER2S AS WELL
-         DO J1 = 2, 5 !LOOP OVER ATOMS BONDED TO A1
-            B1 = CENTERS(NCTA,J1)
-            DO K1= 1, NCNT2 !CENTER 2
-               IF(CENTERS(CENTER2(K1),1)==B1.AND.ALREADYPG(A1).NE.B1) THEN !FOUND 2-2
-                  DO L1 = 5, 2,-1
-                    PG_CENTRE2=B1
-                    HNAME=IH(M04+CENTERS(CENTER2(K1),L1)-1)
-                    IF ((HNAME.EQ.('HB2').OR.HNAME.EQ.('HG2')).OR. &
-     &              (HNAME.EQ.('HD2').OR.HNAME.EQ.('HE23')).OR.HNAME.EQ.('HE2 ')) THEN
-                      H2 = CENTERS(CENTER2(K1),L1)
-                      THISROUNDFOUND = THISROUNDFOUND + 1
-                      ALREADYPG(B1)=A1
-                      !PRINT*, "NEIGHBOUR", B1, "H", H2
-                      !PRINT*, "ALREADYPG", ALREADYPG(A1), "B1", B1,ALREADYPG(B1)
+         !PRINT*,I1, "findminpermn, neigbours of", A1, "critical", critical, resname
+         IF (.NOT.critical) CYCLE !no two groups after one another
+         !need to find hydrogens/permgroup atoms to find permgroup
+         IF (ih(m04+A1-1)=="CA") CYCLE !happen to be center2s as well
+         DO j1 = 2, 5 !loop over atoms bonded to A1
+            B1 = CENTERS(NCTa,j1)
+            DO k1= 1, NCNT2 !center 2
+               IF(CENTERS(CENTER2(k1),1)==B1.AND.alreadypg(A1).NE.B1) THEN !found 2-2
+                  DO l1 = 5, 2,-1
+                    pg_centre2=B1
+                    hname=ih(m04+CENTERS(CENTER2(k1),l1)-1)
+                    IF ((hname.EQ.('HB2').OR.hname.EQ.('HG2')).OR. &
+     &              (hname.EQ.('HD2').OR.hname.EQ.('HE23')).OR.hname.EQ.('HE2 ')) THEN
+                      h2 = CENTERS(CENTER2(k1),l1)
+                      thisroundfound = thisroundfound + 1
+                      alreadypg(B1)=A1
+                      !PRINT*, "neighbour", B1, "h", h2
+                      !PRINT*, "alreadypg", alreadypg(A1), "b1", b1,alreadypg(B1)
                       EXIT
                     ENDIF
-                  ENDDO !ONCE A PARTICULAR NEIGHBOUR WITH CENTERTYPE 2 IS FOUND 
-                  EXIT  !EXIT LOOP OVER 2CENTRES IN THAT CASE
+                  ENDDO !once a particular neighbour with centertype 2 is found 
+                  EXIT  !exit loop over 2centres in that case
                ENDIF
             ENDDO 
-            DO K1 = 1,3  !ALL OTHER CENTERS
-               IF ((RESNAME.EQ.PERMAC(1,K1).AND.IH(M04+B1-1).EQ.'CG  ').OR.&
-     &             (IH(M04+B1-1).EQ.'CG  '.AND.RESNAME.EQ.PERMAC(4,K1)).OR.&
-     &             (IH(M04+B1-1).EQ.'CG  '.AND.RESNAME.EQ.PERMAC(5,K1)))THEN
-                  PG_CENTREAC=B1
-                  DO L1 = 1, MBBONDNUM(B1)
-                   BHN = IH(M04+MBADJACENT(B1,L1)-1)
-                   IF (BHN.EQ.'CD1 '.OR.BHN.EQ.'CD2 ') THEN
-!                     CALL FINDPERMGROUP(BH, PGBH)
-                      BH=MBADJACENT(B1,L1)
-                      THISROUNDFOUND = THISROUNDFOUND +1
+            DO k1 = 1,3  !all other centers
+               IF ((resname.EQ.permac(1,k1).AND.ih(m04+B1-1).EQ.'CG  ').OR.&
+     &             (ih(m04+B1-1).EQ.'CG  '.AND.resname.EQ.permac(4,k1)).OR.&
+     &             (ih(m04+B1-1).EQ.'CG  '.AND.resname.EQ.permac(5,k1)))THEN
+                  pg_centreAC=B1
+                  DO l1 = 1, MBBONDNUM(B1)
+                   BhN = ih(m04+MBADJACENT(B1,l1)-1)
+                   IF (BhN.EQ.'CD1 '.OR.BhN.EQ.'CD2 ') THEN
+!                     CALL FINDPERMGROUP(Bh, PGBh)
+                      Bh=MBADJACENT(B1,l1)
+                      thisroundfound = thisroundfound +1
                       EXIT                     
                     ENDIF 
                   ENDDO   
                   EXIT               
-               ELSEIF (IH(M04+B1-1).EQ.'CD1 '.AND.RESNAME.EQ.PERMAC(2,K1))THEN
-                   PG_CENTREAC=B1
-                  DO L1 = 1, MBBONDNUM(B1)    
-                   BHN = IH(M04+MBADJACENT(B1,L1)-1)
-                   IF (BHN.EQ.'HD11 '.OR.BHN.EQ.'HD22'.OR.&
-     &                     BHN.EQ.'HD33') THEN
-                      BH=MBADJACENT(B1,L1)
-                      THISROUNDFOUND = THISROUNDFOUND +1
+               ELSEIF (ih(m04+B1-1).EQ.'CD1 '.AND.resname.EQ.permac(2,k1))THEN
+                   pg_centreAC=B1
+                  DO l1 = 1, MBBONDNUM(B1)    
+                   BhN = ih(m04+MBADJACENT(B1,l1)-1)
+                   IF (BhN.EQ.'HD11 '.OR.BhN.EQ.'HD22'.OR.&
+     &                     BhN.EQ.'HD33') THEN
+                      Bh=MBADJACENT(B1,l1)
+                      thisroundfound = thisroundfound +1
                       EXIT
                     ENDIF
                   ENDDO                  
                   EXIT
-               ELSEIF (IH(M04+B1-1).EQ.'NZ  '.AND.RESNAME.EQ.PERMAC(3,K1))THEN
-                  PG_CENTREAC=B1
-                  DO L1 = 1, MBBONDNUM(B1)
-                   BHN = IH(M04+MBADJACENT(B1,L1)-1)
-                   IF (BHN.EQ.'HZ1 '.OR.BHN.EQ.'HZ2 '.OR.&
-     &                     BHN.EQ.'HZ3 ') THEN
-                      BH=MBADJACENT(B1,L1)
-                      THISROUNDFOUND = THISROUNDFOUND +1
+               ELSEIF (ih(m04+B1-1).EQ.'NZ  '.AND.resname.EQ.permac(3,k1))THEN
+                  pg_centreAC=B1
+                  DO l1 = 1, MBBONDNUM(B1)
+                   BhN = ih(m04+MBADJACENT(B1,l1)-1)
+                   IF (BhN.EQ.'HZ1 '.OR.BhN.EQ.'HZ2 '.OR.&
+     &                     BhN.EQ.'HZ3 ') THEN
+                      Bh=MBADJACENT(B1,l1)
+                      thisroundfound = thisroundfound +1
                       EXIT
                     ENDIF
                   ENDDO                  
                   EXIT
-!               ELSEIF (IH(M04+B1-1).EQ.'CG  '.AND.RESNAME.EQ.PERMAC(4,K1)).OR. &
-!    &               (IH(M04+B1-1).EQ.'CG  '.AND.RESNAME.EQ.PERMAC(5,K1)) THEN
+!               ELSEIF (ih(m04+B1-1).EQ.'CG  '.AND.resname.EQ.permac(4,k1)).OR. &
+!    &               (ih(m04+B1-1).EQ.'CG  '.AND.resname.EQ.permac(5,k1)) THEN
 
-               ELSEIF(((IH(M04+B1-1).EQ.'CD  '.AND.RESNAME.EQ.PERMAC(6,K1))).OR. &
-     &              (IH(M04+B1-1).EQ.'CG  '.AND.RESNAME.EQ.PERMAC(7,K1))) THEN
-                  PG_CENTREAC=B1
-                  DO L1 = 1, MBBONDNUM(B1)
-                   BHN = IH(M04+MBADJACENT(B1,L1)-1)
-                   IF (BHN.EQ.'OE1 '.OR.BHN.EQ.'OE2 ' .OR.&
-     &                  BHN.EQ.'OD1 '.OR.BHN.EQ.'OD2 ') THEN
-                      THISROUNDFOUND = THISROUNDFOUND +1
-                      BH=MBADJACENT(B1,L1)
+               ELSEIF(((ih(m04+B1-1).EQ.'CD  '.AND.resname.EQ.permac(6,k1))).OR. &
+     &              (ih(m04+B1-1).EQ.'CG  '.AND.resname.EQ.permac(7,k1))) THEN
+                  pg_centreAC=B1
+                  DO l1 = 1, MBBONDNUM(B1)
+                   BhN = ih(m04+MBADJACENT(B1,l1)-1)
+                   IF (BhN.EQ.'OE1 '.OR.BhN.EQ.'OE2 ' .OR.&
+     &                  BhN.EQ.'OD1 '.OR.BhN.EQ.'OD2 ') THEN
+                      thisroundfound = thisroundfound +1
+                      Bh=MBADJACENT(B1,l1)
                       EXIT
                     ENDIF
                   ENDDO
@@ -1329,110 +1329,110 @@
                ENDIF
             ENDDO
 
-            IF ((IH(M04+B1-1).EQ.('HB2 ').OR.IH(M04+B1-1).EQ.('HG2 ')).OR. &
-     &        (IH(M04+B1-1).EQ.('HD2 ').OR.IH(M04+B1-1).EQ.('HE23').OR.    &
-     &         IH(M04+B1-1).EQ.('HE2 ').OR.IH(M04+B1-1).EQ.('HG12'))) THEN
-               HH = B1
-               PG_CENTRE=A1
-!               CALL FINDPERMGROUP(J1, PGH)  
-               THISROUNDFOUND = THISROUNDFOUND +1
-               EXIT !EXIT WHOLE LOOP - H WILL BE FOUND LAST
+            IF ((ih(m04+b1-1).EQ.('HB2 ').OR.ih(m04+b1-1).EQ.('HG2 ')).OR. &
+     &        (ih(m04+b1-1).EQ.('HD2 ').OR.ih(m04+b1-1).EQ.('HE23').OR.    &
+     &         ih(m04+b1-1).EQ.('HE2 ').OR.ih(m04+b1-1).EQ.('HG12'))) THEN
+               hh = b1
+               pg_centre=A1
+!               CALL FINDPERMGROUP(j1, PGH)  
+               thisroundfound = thisroundfound +1
+               EXIT !exit whole loop - H will be found last
             ENDIF
          ENDDO 
 
-         IF ((THISROUNDFOUND.GT.3).OR.(THISROUNDFOUND.LE.1)) THEN
-            IF ((ALREADYPG(A1).NE.0).AND.(THISROUNDFOUND.EQ.1)) THEN !COULD BE IF WE'VE ALREADY INCLUDED THIS
-               PRINT*, "CYCLE"
+         IF ((thisroundfound.GT.3).OR.(thisroundfound.LE.1)) THEN
+            IF ((alreadypg(A1).NE.0).AND.(thisroundfound.EQ.1)) THEN !could be if we've already included this
+               PRINT*, "cycle"
                CYCLE
             ELSE
-            PRINT*, "IMPOSSIBLE NUMBERS OF NEIGHBOURS FOUND FOR",A1, THISROUNDFOUND
-            PRINT*, "ERROR IN FINDPERMDIH"
+            PRINT*, "impossible numbers of neighbours found for",A1, thisroundfound
+            PRINT*, "ERROR in findpermdih"
             STOP
             ENDIF
          ENDIF
-         IF (J1==0) THEN
-           PRINT*, "NO HYDROGEN FOUND"; STOP
+         IF (j1==0) THEN
+           PRINT*, "no hydrogen found"; STOP
          ELSE
-            CALL FINDPERMGROUP(HH,H2,BH,PGH,PGH2,PGBH)
-            !PRINT*, "AFTER FINDPG HH,H2,BH,PGH,PGH2,PGBH", HH,H2,BH,PGH,PGH2,PGBH
-            IF (PGBH.NE.0) THEN
+            CALL FINDPERMGROUP(hh,h2,Bh,PGH,PGH2,PGBh)
+            !PRINT*, "after findpg hh,h2,Bh,Pgh,pgh2,pgbh", hh,h2,Bh,PGH,PGH2,PGBh
+            IF (PGBh.NE.0) THEN
                PERMNEIGHBOURS(PGH,1) = PERMNEIGHBOURS(PGH,1)+1
-               PERMNEIGHBOURS(PGBH,1) = PERMNEIGHBOURS(PGBH,1)+1
+               PERMNEIGHBOURS(PGBh,1) = PERMNEIGHBOURS(PGBh,1)+1
                IF (PERMNEIGHBOURS(PGH, PERMNEIGHBOURS(PGH,1)+1).NE.0 .OR. &
-     &              PERMNEIGHBOURS(PGBH,PERMNEIGHBOURS(PGBH,1)+1).NE.0) THEN
-                   PRINT*,I1, "ERROR", PGH, PERMNEIGHBOURS(PGH,1),PGBH
+     &              PERMNEIGHBOURS(PGBh,PERMNEIGHBOURS(PGBh,1)+1).NE.0) THEN
+                   PRINT*,i1, "ERROR", PGH, PERMNEIGHBOURS(PGH,1),PGBh
                    STOP
                ENDIF
-               PERMNEIGHBOURS(PGH,PERMNEIGHBOURS(PGH,1)+1) = PGBH
-               PERMNEIGHBOURS(PGBH,PERMNEIGHBOURS(PGBH,1)+1) = PGH
-               ATOMS2PERM(HH)=PGH
-               ATOMS2PERM(BH)=PGBH
-               ATCENTRE2PERM(PG_CENTRE) = PGH
-               ATCENTRE2PERM(PG_CENTREAC)= PGBH
+               PERMNEIGHBOURS(PGH,PERMNEIGHBOURS(PGH,1)+1) = PGBh
+               PERMNEIGHBOURS(PGBh,PERMNEIGHBOURS(PGBh,1)+1) = PGH
+               ATOMS2PERM(hh)=PGH
+               ATOMS2PERM(Bh)=PGBH
+               ATCENTRE2PERM(pg_centre) = PGH
+               ATCENTRE2PERM(pg_centreAC)= PGBH
             ENDIF
-            IF (PGH2.NE.0) THEN !NOT BONDED TO ANYTHING NEW
+            IF (PGH2.NE.0) THEN !not bonded to anything new
                PERMNEIGHBOURS(PGH,1) = PERMNEIGHBOURS(PGH,1)+1
                PERMNEIGHBOURS(PGH2,1) = PERMNEIGHBOURS(PGH2,1)+1
                IF( PERMNEIGHBOURS(PGH, PERMNEIGHBOURS(PGH,1)+1).NE.0 .OR. &
      &              PERMNEIGHBOURS(PGH2,PERMNEIGHBOURS(PGH2,1)+1).NE.0) THEN
-               PRINT*,I1, "ERROR", PGH, PERMNEIGHBOURS(PGH,1),PGH2
+               PRINT*,i1, "ERROR", PGH, PERMNEIGHBOURS(PGH,1),PGH2
                STOP
                ENDIF
                PERMNEIGHBOURS(PGH, PERMNEIGHBOURS(PGH,1)+1) = PGH2
                PERMNEIGHBOURS(PGH2,PERMNEIGHBOURS(PGH2,1)+1) = PGH
-               ATOMS2PERM(HH)=PGH
-               ATOMS2PERM(H2)=PGH2
-               ATCENTRE2PERM(PG_CENTRE) = PGH
-               ATCENTRE2PERM(PG_CENTRE2)= PGH2
+               ATOMS2PERM(hh)=PGH
+               ATOMS2PERM(h2)=PGH2
+               ATCENTRE2PERM(pg_centre) = PGH
+               ATCENTRE2PERM(pg_centre2)= PGH2
             ENDIF
          ENDIF
 
       ENDDO
 
 
-      !ONE SPECIAL PERMGROUP FOR ARGININE, NOT INVOLVING A CENTRE 2
-      IF (ARGININE) THEN
+      !one special permgroup for arginine, not involving a centre 2
+      IF (arginine) THEN
          DO I1=1,NRES
-               H2=0;BH=0;HH=0; PG_CENTRE2=0;PG_CENTRE=0; PG_CENTREAC=0
-               IF (IH(M02+I1-1)=='ARG'.OR.IH(M02+I1-1)=='NARG' &
-     &                 .OR.IH(M02+I1-1)=='CARG') THEN
-                   DO K1=IX(I02+I1-1),IX(I02+I1)-1
-                      SELECT CASE (IH(M04+K1-1))
+               h2=0;Bh=0;hh=0; pg_centre2=0;pg_centre=0; pg_centreAC=0
+               IF (ih(m02+I1-1)=='ARG'.OR.ih(m02+I1-1)=='NARG' &
+     &                 .OR.ih(m02+I1-1)=='CARG') THEN
+                   DO k1=ix(i02+I1-1),ix(i02+I1)-1
+                      SELECT CASE (ih(m04+k1-1))
                          CASE ('NH1 ')
-                              PG_CENTRE2=K1
+                              pg_centre2=k1
                          CASE ('CZ  ')
-                              PG_CENTRE=K1
+                              pg_centre=k1
                          CASE ('NH2 ')
-                              PG_CENTREAC=K1; HH=K1
+                              pg_centreAC=k1; hh=k1
                          CASE ('HH11')
-                              H2=K1
+                              h2=k1
                          CASE ('HH21')
-                              BH=K1
+                              Bh=k1
                       END SELECT 
                    ENDDO
-                   CALL FINDPG_NOSWAPS(HH,H2,BH,PGH,PGH2,PGBH)
-            !PRINT*, "AFTER FINDPG HH,H2,BH,PGH,PGH2,PGBH", HH,H2,BH,PGH,PGH2,PGBH
+                   CALL FINDPG_NOSWAPS(hh,h2,Bh,PGH,PGH2,PGBh)
+            !PRINT*, "after findpg hh,h2,Bh,Pgh,pgh2,pgbh", hh,h2,Bh,PGH,PGH2,PGBh
                    IF (PERMNEIGHBOURS(PGH,1).NE.0) THEN
-                      PRINT*, "ERROR, ONLY 1 PERMGROUP ABOUT", PGH
+                      PRINT*, "error, only 1 permgroup about", PGH
                       STOP
                    ENDIF
                    PERMNEIGHBOURS(PGH,1)= 2
                    PERMNEIGHBOURS(PGH2,1)= 1
-                   PERMNEIGHBOURS(PGBH,1)= 1
-                   PERMNEIGHBOURS(PGH,2) = PGBH;PERMNEIGHBOURS(PGH,3)=PGH2
-                   PERMNEIGHBOURS(PGBH,2) = PGH  
+                   PERMNEIGHBOURS(PGBh,1)= 1
+                   PERMNEIGHBOURS(PGH,2) = PGBh;PERMNEIGHBOURS(PGH,3)=PGH2
+                   PERMNEIGHBOURS(PGBh,2) = PGH  
                    PERMNEIGHBOURS(PGH2,2)= PGH
-                   ATOMS2PERM(HH)=PGH;ATOMS2PERM(H2)=PGH2;ATOMS2PERM(BH)=PGBH
-                   ATCENTRE2PERM(PG_CENTRE) = PGH
-                   ATCENTRE2PERM(PG_CENTRE2)= PGH2 
-                   ATCENTRE2PERM(PG_CENTREAC)=PGBH
+                   ATOMS2PERM(hh)=PGH;ATOMS2PERM(h2)=PGH2;ATOMS2PERM(Bh)=PGBh
+                   ATCENTRE2PERM(pg_centre) = PGH
+                   ATCENTRE2PERM(pg_centre2)= PGH2 
+                   ATCENTRE2PERM(pg_centreAC)=PGBh
                ENDIF
          ENDDO
       ENDIF
          
       IF (DEBUG) THEN
          DO I1=1, NPERMGROUP
-            PRINT '(A15,I2,2I4)', "PERMNEIGHBOURS", PERMNEIGHBOURS(I1,1), PERMNEIGHBOURS(I1,2), PERMNEIGHBOURS(I1,3)
+            PRINT '(a15,i2,2i4)', "permneighbours", PERMNEIGHBOURS(I1,1), PERMNEIGHBOURS(I1,2), PERMNEIGHBOURS(I1,3)
          ENDDO
       ENDIF
       DO I1=1, NPERMGROUP
@@ -1445,7 +1445,7 @@
          ENDDO
       ENDIF
 
-      !THIS WOULD BE IF I JUST WANTED TO CALCULATE THE RELEVANT DIHEDRALS
+      !this would be if I just wanted to calculate the relevant dihedrals
       !CALL LINDH2PERMG(ATOMS2PERM, ATCENTRE2PERM)
  
       DEALLOCATE(MBBONDNUM)
@@ -1456,96 +1456,96 @@
       END SUBROUTINE FINDPERMDIH
 ! *************************************************
       SUBROUTINE LINDH2PERMG(ATOMS2PERM,ATCENTRE2PERM)
-!MSB50 SEE AMB_NATINTERS.F90
-!FINIDING NUMBER OF DIHEDRAL (LDH) FOR PARTICULAR PERMGROUP
-!ALSO NEED DIHC TO FIND PHI1 (FROM PREVIOUS LDH FIRST PREVDIH IN GROUP?)
-!               AND FOR ALIGNMENT
-      USE INTCOMMONS, ONLY: STARTLINDH, NLDH, LINDIH, PERMNEIGHBOURS
-      USE COMMONS, ONLY: NATOMS
+!msb50 see amb_natinters.f90
+!finiding number of dihedral (LDH) for particular permgroup
+!also need DIHC to find PHI1 (from previous ldh first prevdih in group?)
+!               and for alignment
+      use intcommons, only: startlindh, NLDH, LINDIH, PERMNEIGHBOURS
+      use commons, only: NATOMS
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: ATOMS2PERM(NATOMS)
       INTEGER, INTENT(IN) ::ATCENTRE2PERM(NATOMS)
       INTEGER:: LDH, I1, DIHC, CURPHI, PG
       INTEGER:: INFO(-1:8)
-      INTEGER:: FIRST(NATOMS), SECOND(NATOMS)
+      INTEGER:: first(NATOMS), second(NATOMS)
       INTEGER:: ATOMS(2)
 
-      FIRST(NATOMS)=0; SECOND(NATOMS) = 0
+      first(NATOMS)=0; second(NATOMS) = 0
       DO LDH =1, NLDH
          IF (LINDIH(LDH,-1).NE.1.AND.LINDIH(LDH,0).NE.1) THEN
             ATOMS(1) = LINDIH(LDH,1)
             ATOMS(2) = LINDIH(LDH,2)
             DO I1 = 1,2
             IF (ATCENTRE2PERM(ATOMS(I1)).NE.0) THEN
-!               PG = ATOMS2PERM(ATOMS(I1)) !DUNNO?
+!               PG = ATOMS2PERM(ATOMS(I1)) !dunno?
                 PG = ATCENTRE2PERM(ATOMS(I1))
-               IF (FIRST(ATOMS(I1))==0) THEN
-                  FIRST(ATOMS(I1))=1
+               IF (first(ATOMS(I1))==0) THEN
+                  first(ATOMS(I1))=1
                   PERMNEIGHBOURS(PG, 3+PERMNEIGHBOURS(PG,1))=LDH 
-               !SECOND DIHEDRAL INVOLVED
-! EVERY GROUP HAS GOT TWO DIHEDRALS THAT CHANGE THOUGH, SO THIS IS NOT QUITE RIGHT YET. STORE THE OTHER ONE TOO!
-               ELSEIF (FIRST(ATOMS(I1))==1.AND.SECOND(ATOMS(I1))==0) THEN
-                  SECOND(ATOMS(I1))=1
+               !second dihedral involved
+! every group has got two dihedrals that change though, so this is not quite right yet. Store the other one too!
+               ELSEIF (first(ATOMS(I1))==1.AND.second(ATOMS(I1))==0) THEN
+                  second(ATOMS(I1))=1
                   PERMNEIGHBOURS(PG, 5+PERMNEIGHBOURS(PG,1))=LDH 
-               ELSEIF (FIRST(ATOMS(I1))==1.AND.SECOND(ATOMS(I1))==1) THEN
-                  PRINT*, "ERROR IN LINDH2PERM"; STOP
+               ELSEIF (first(ATOMS(I1))==1.AND.second(ATOMS(I1))==1) THEN
+                  PRINT*, "error in LINDH2PERM"; STOP
                ENDIF
             ENDIF
             ENDDO
-            !MAYBE DO THE ABOVE FOR ALL PGS, COULD FACILITATE THINGS
+            !maybe do the above for all PGs, could facilitate things
         ENDIF
       ENDDO
       END SUBROUTINE LINDH2PERMG
             
 !*****************************************************
-      SUBROUTINE FINDPERMGROUP(I1,I2, I3,PG1, PG2, PG3)
-!MSB50 - FOR ATOMS IN THREE DIFF PERMGROUPS FIND PERMGROUP (SEE KEYWORDS.F, PERMDIST)
-      USE KEY
+      SUBROUTINE FINDPERMGROUP(i1,i2, i3,PG1, PG2, PG3)
+!msb50 - for atoms in three diff permgroups find PERMGROUP (see keywords.f, PERMDIST)
+      use key
       IMPLICIT NONE
-      INTEGER, INTENT(IN) :: I1, I2, I3
+      INTEGER, INTENT(IN) :: i1, i2, i3
       INTEGER, INTENT(OUT) :: PG1, PG2, PG3
-      INTEGER :: START, III, TOTAL, SW,II,JJ
-      INTEGER :: PGATOMS(8), PGS(3), ATOMS(3)
-      LOGICAL :: FOUND(3)
+      INTEGER :: start, III, total, sw,II,JJ
+      INTEGER :: pgATOMS(8), PGS(3), atoms(3)
+      LOGICAL :: found(3)
 
-      ATOMS(:)=0; PGS(:)=0; FOUND(:)=.FALSE.
-      ATOMS(1)=I1; ATOMS(2)=I2; ATOMS(3)=I3
+      ATOMS(:)=0; PGS(:)=0; found(:)=.FALSE.
+      ATOMS(1)=i1; ATOMS(2)=i2; ATOMS(3)=i3
       PG1=0;PG2=0;PG3=0
 !      PG1(1)=PG1; PGS(2)=PG2; PGS(3)=PG3
-      IF (I2.EQ.0) FOUND(2)=.TRUE.
-      IF (I3.EQ.0) FOUND(3)=.TRUE.
-      START = 1
-!       WRITE(*,*) 'IN FINDPERMGROUP, PGS(:)', PGS(:)
+      IF (i2.EQ.0) found(2)=.TRUE.
+      IF (i3.EQ.0) found(3)=.TRUE.
+      start = 1
+!       WRITE(*,*) 'in findpermgroup, PGS(:)', PGS(:)
 !       STOP
-      DO III = 1, NPERMGROUP !LOOP OVER ALL PG'S
-         PGATOMS(:) = 0 !PGATOMS ARE ALL ATOMS IN THIS PERMGROUP
+      DO III = 1, NPERMGROUP !loop over all pg's
+         pgATOMS(:) = 0 !pgAtoms are all atoms in this permgroup
          IF (NPERMSIZE(III) == 2) THEN
-            PGATOMS(1) = PERMGROUP(START);PGATOMS(2)= PERMGROUP(START+1)
-            DO SW = 1, NSETS(III)
-!              PGATOMS(2+2*(SW-1)+1) = SWAP1(III, SW)
-!              PGATOMS(2+2*SW)=SWAP2(III, SW)
-               PGATOMS(2+2*(SW-1)+1) = SETS(PGATOMS(1), SW)
-               PGATOMS(2+2*SW)=SETS(PGATOMS(2), SW)
+            pgATOMS(1) = PERMGROUP(start);pgATOMS(2)= PERMGROUP(start+1)
+            DO sw = 1, NSETS(III)
+!              pgATOMS(2+2*(sw-1)+1) = SWAP1(III, sw)
+!              pgATOMS(2+2*sw)=SWAP2(III, sw)
+               pgATOMS(2+2*(sw-1)+1) = SETS(pgATOMS(1), sw)
+               pgATOMS(2+2*sw)=SETS(pgATOMS(2), sw)
             ENDDO
-            TOTAL = 2 + 2*NSETS(III)
+            total = 2 + 2*NSETS(III)
          ELSEIF (NPERMSIZE(III) == 3) THEN
-            PGATOMS(1) = PERMGROUP(START);PGATOMS(2)= PERMGROUP(START+1)
-            PGATOMS(3) = PERMGROUP(START+2)
-            TOTAL = 3
+            pgATOMS(1) = PERMGROUP(start);pgATOMS(2)= PERMGROUP(start+1)
+            pgATOMS(3) = PERMGROUP(start+2)
+            total = 3
          ELSE 
             STOP
          ENDIF
 
-         START = START + NPERMSIZE(III)
-         DO II = 1, TOTAL
-            DO JJ = 1,3 !CHECK WHETHER ONE OF YOUR ATOMS IS IN THIS PERMGROUP
-               IF (ATOMS(JJ).EQ.PGATOMS(II)) THEN
+         start = start + NPERMSIZE(III)
+         DO II = 1, total
+            DO JJ = 1,3 !check whether one of your atoms is in this permgroup
+               IF (ATOMS(JJ).EQ.pgATOMS(II)) THEN
                   PGS(JJ)=III   
-                  FOUND(JJ)=.TRUE. 
+                  found(JJ)=.TRUE. 
                ENDIF
             ENDDO
          ENDDO
-         IF (FOUND(1).AND.FOUND(2).AND.FOUND(3)) THEN
+         IF (found(1).AND.found(2).AND.found(3)) THEN
             PG1=PGS(1); PG2=PGS(2);PG3=PGS(3)
             EXIT
          ENDIF
@@ -1553,46 +1553,46 @@
      
       END SUBROUTINE FINDPERMGROUP
 ! **************************************************************
-      SUBROUTINE FINDPG_NOSWAPS(I1,I2,I3,PG1,PG2,PG3)
-!MSB50 - FOR ATOMS IN THREE DIFF PERMGROUPS FIND PERMGROUP (SEE KEYWORDS.F, PERMDIST)
-!HERE DON'T INCLUDE SWAPS, SO IF I2 AND I3 ARE IN PG1, BUT ALSO TURN OUT IN PGS INDEPENDENTLY
-      USE KEY
+      SUBROUTINE FINDPG_NOSWAPS(i1,i2,i3,PG1,PG2,PG3)
+!msb50 - for atoms in three diff permgroups find PERMGROUP (see keywords.f, PERMDIST)
+!here don't include swaps, so if i2 and i3 are in PG1, but also turn out in PGS independently
+      use key
       IMPLICIT NONE
-      INTEGER, INTENT(IN) :: I1, I2, I3
+      INTEGER, INTENT(IN) :: i1, i2, i3
       INTEGER, INTENT(OUT) :: PG1, PG2, PG3
-      INTEGER :: START, III, TOTAL, II,JJ
-      INTEGER :: PGATOMS(3), PGS(3), ATOMS(3)
-      LOGICAL :: FOUND(3) 
+      INTEGER :: start, III, total, II,JJ
+      INTEGER :: pgATOMS(3), PGS(3), atoms(3)
+      LOGICAL :: found(3) 
 
-      ATOMS(:)=0; PGS(:)=0; FOUND(:)=.FALSE.
-      ATOMS(1)=I1; ATOMS(2)=I2; ATOMS(3)=I3
+      ATOMS(:)=0; PGS(:)=0; found(:)=.FALSE.
+      ATOMS(1)=i1; ATOMS(2)=i2; ATOMS(3)=i3
       PGS(1)=PG1; PGS(2)=PG2; PGS(3)=PG3
-      IF (I2.EQ.0) FOUND(2)=.TRUE.
-      IF (I3.EQ.0) FOUND(3)=.TRUE.
-      START = 1
-      DO III = 1, NPERMGROUP !LOOP OVER ALL PG'S
-         PGATOMS(:) = 0 !PGATOMS ARE ALL ATOMS IN THIS PERMGROUP
+      IF (i2.EQ.0) found(2)=.TRUE.
+      IF (i3.EQ.0) found(3)=.TRUE.
+      start = 1
+      DO III = 1, NPERMGROUP !loop over all pg's
+         pgATOMS(:) = 0 !pgAtoms are all atoms in this permgroup
          IF (NPERMSIZE(III) == 2) THEN
-            PGATOMS(1) = PERMGROUP(START);PGATOMS(2)= PERMGROUP(START+1)
-            TOTAL = 2 
+            pgATOMS(1) = PERMGROUP(start);pgATOMS(2)= PERMGROUP(start+1)
+            total = 2 
          ELSEIF (NPERMSIZE(III) == 3) THEN
-            PGATOMS(1) = PERMGROUP(START);PGATOMS(2)= PERMGROUP(START+1)
-            PGATOMS(3) = PERMGROUP(START+2)
-            TOTAL = 3
+            pgATOMS(1) = PERMGROUP(start);pgATOMS(2)= PERMGROUP(start+1)
+            pgATOMS(3) = PERMGROUP(start+2)
+            total = 3
          ELSE
             STOP
          ENDIF
 
-         START = START + NPERMSIZE(III)
-         DO II = 1, TOTAL
-            DO JJ = 1,3 !CHECK WHETHER ONE OF YOUR ATOMS IS IN THIS PERMGROUP
-               IF (ATOMS(JJ).EQ.PGATOMS(II)) THEN
+         start = start + NPERMSIZE(III)
+         DO II = 1, total
+            DO JJ = 1,3 !check whether one of your atoms is in this permgroup
+               IF (ATOMS(JJ).EQ.pgATOMS(II)) THEN
                   PGS(JJ)=III
-                  FOUND(JJ)=.TRUE.
+                  found(JJ)=.TRUE.
                ENDIF
             ENDDO
          ENDDO
-         IF (FOUND(1).AND.FOUND(2).AND.FOUND(3)) THEN
+         IF (found(1).AND.found(2).AND.found(3)) THEN
             PG1=PGS(1); PG2=PGS(2);PG3=PGS(3)
             EXIT
          ENDIF
@@ -1600,35 +1600,35 @@
       END SUBROUTINE FINDPG_NOSWAPS
 
 ! ***************************************************
-      SUBROUTINE LOOPCENTERS(CN1, CT2, CN2, CN3,I1)
-!MSB50 - FINDS ATOM OF CERTAIN CENTERTYPE BONDED TO CENTERTYPES 2 OR 4
-        USE INTCOMMONS
+      SUBROUTINE LOOPCENTERS(CN1, CT2, CN2, CN3,i1)
+!msb50 - finds atom of certain centertype bonded to centertypes 2 or 4
+        use intcommons
         IMPLICIT NONE
-        INTEGER, INTENT(IN) :: CN1 ! FIRST CENTER - NUMBER, NOT ATOM
-        INTEGER, INTENT(IN) :: CT2! CENTERTYPE OF ATOM ADJACENT TO IT -NOT ATOM
-        INTEGER, INTENT(OUT) :: CN2, CN3 ! NUMBER OF ABOVE CENTER (MAXIMALLY 2)
-        INTEGER, INTENT(IN)  :: I1 !WHERE TO LOOP FROM, IN CASE YOU KNOW
-        INTEGER :: L1, A2, M1,A3, CT1
+        INTEGER, INTENT(IN) :: CN1 ! first center - number, not atom
+        INTEGER, INTENT(IN) :: CT2! centertype of atom adjacent to it -not atom
+        INTEGER, INTENT(OUT) :: CN2, CN3 ! number of above center (maximally 2)
+        INTEGER, INTENT(IN)  :: i1 !where to loop from, in case you know
+        INTEGER :: l1, A2, m1,A3, CT1
      
         CN2 = 0
         CN3 = 0
         CT1 = CENTERS(CN1, 0)
         IF (CT1 == 2) THEN
-           A2 = CENTERS(CN1,1) !ADJACENT TO IT -CAN DO THIS AS NON-TERMINAL AT BEGINNING
+           A2 = CENTERS(CN1,1) !adjacent to it -can do this as non-terminal at beginning
            A3 = CENTERS(CN1,2)
-           DO M1 = I1, NCNT
-              IF ((CENTERS(M1,1)==A2 .AND. CENTERS(M1,0)==CT2)) THEN
-                 CN2 = M1
-              ELSEIF ((CENTERS(M1,1)==A3 .AND. CENTERS(M1,0)==CT2)) THEN
-                 CN3 = M1
+           DO m1 = i1, NCNT
+              IF ((CENTERS(m1,1)==A2 .AND. CENTERS(m1,0)==CT2)) THEN
+                 CN2 = m1
+              ELSEIF ((CENTERS(m1,1)==A3 .AND. CENTERS(m1,0)==CT2)) THEN
+                 CN3 = m1
               ENDIF
               IF (CN2 .NE. 0 .AND. CN3 .NE. 0 ) EXIT 
            ENDDO
         ELSEIF (CT1 == 4) THEN
            A2 = CENTERS(CN1, 1)
-           DO M1 = I1, NCNT
-             IF ((CENTERS(M1,1)==A2 .AND. CENTERS(M1,0)==CT2)) THEN
-                 CN2 = M1
+           DO m1 = i1, NCNT
+             IF ((CENTERS(m1,1)==A2 .AND. CENTERS(m1,0)==CT2)) THEN
+                 CN2 = m1
                  EXIT
              ENDIF
            ENDDO
@@ -1637,11 +1637,11 @@
 
 ! ****************************************************
       SUBROUTINE FINDPGCHAIN(I)
-!MSB50 - STORES PER PERMGROUP WHICH PERMNEIGHBOURS(PG,1) .GT. 1 (I.E. COUPLED
-! PERMGROUPS) HOW LARGE THE SET IS IT IS PART OF - I.E. FOR LYSINE IT WOULD BE
-! FIVE, WHICH IS CURRENTLY MAXIMUM
-         USE INTCOMMONS, ONLY: PERMNEIGHBOURS, PERMCHAIN
-         USE KEY, ONLY: NPERMGROUP
+!msb50 - stores per PERMGROUP which PERMNEIGHBOURS(PG,1) .GT. 1 (i.e. coupled
+! permgroups) how large the set is it is part of - i.e. for lysine it would be
+! five, which is currently maximum
+         use INTCOMMONS, only: PERMNEIGHBOURS, PERMCHAIN
+         use key, only: NPERMGROUP
          IMPLICIT NONE
          INTEGER, INTENT(IN) ::I
          INTEGER :: PGCHAIN(5)
@@ -1666,13 +1666,13 @@
             ELSE
               IF (PERMNEIGHBOURS(PG2,2).NE.I) THEN
                  IF (PERMNEIGHBOURS(PERMNEIGHBOURS(PG2,2),1).NE.1) THEN
-                     PRINT*, "FINDPGCHAIN: ERROR! CHAIN TOO LONG"
+                     PRINT*, "findpgchain: error! chain too long"
                  ELSE
                      START_PG=PERMNEIGHBOURS(PG2,2)
                  ENDIF
               ELSE
                  IF (PERMNEIGHBOURS(PERMNEIGHBOURS(PG2,1),1).NE.1) THEN
-                     PRINT*, "FINDPGCHAIN: ERROR! CHAIN TOO LONG"
+                     PRINT*, "findpgchain: error! chain too long"
                  ELSE
                      START_PG=PERMNEIGHBOURS(PG2,1)
                  ENDIF
@@ -1683,9 +1683,9 @@
          PG2=0;PG3=0;PG4=0;PG5=0; PGCHAIN(:)=0
          LEN_CHAIN = LEN_CHAIN+1
          PGCHAIN(1) = START_PG
-         PG2=PERMNEIGHBOURS(START_PG,2) !HAS ONLY ONE NEIGHBOUR
+         PG2=PERMNEIGHBOURS(START_PG,2) !has only one neighbour
          LEN_CHAIN = LEN_CHAIN+1; PGCHAIN(2) = PG2
-         IF (PERMNEIGHBOURS(PG2,1).EQ.2) THEN !ANOTHER NEIGHBOUR THAN START_PG
+         IF (PERMNEIGHBOURS(PG2,1).EQ.2) THEN !another neighbour than start_pg
             IF (PERMNEIGHBOURS(PG2,2).NE.START_PG) THEN
                 PG3=PERMNEIGHBOURS(PG2,2)
                 LEN_CHAIN=LEN_CHAIN+1; PGCHAIN(3)=PG3
@@ -1693,7 +1693,7 @@
                 PG3=PERMNEIGHBOURS(PG2,3)
                 LEN_CHAIN=LEN_CHAIN+1; PGCHAIN(3)=PG3
             ENDIF
-            IF (PG3.NE.0.AND.PERMNEIGHBOURS(PG3,1).EQ.2) THEN !ANOTHER NEIGHBOUR-OTHER SIDE 
+            IF (PG3.NE.0.AND.PERMNEIGHBOURS(PG3,1).EQ.2) THEN !another neighbour-other side 
                 IF (PERMNEIGHBOURS(PG3,2).NE.PG2) THEN
                    PG4=PERMNEIGHBOURS(PG3,2)
                    LEN_CHAIN=LEN_CHAIN+1; PGCHAIN(4)=PG4
@@ -1710,8 +1710,8 @@
                       LEN_CHAIN=LEN_CHAIN+1; PGCHAIN(5)=PG5
                    ENDIF
                    IF (PG5.NE.0.AND.(PERMNEIGHBOURS(PG5,1).EQ.2)) THEN
-                      PRINT*,"FINDPGCHAIN>CHAIN LONGER THAN ATM ALLOWED"
-                      !AS ONLY LYSINE - 5 COUPLED PERMGROUPS
+                      PRINT*,"findpgchain>chain longer than atm allowed"
+                      !as only lysine - 5 coupled permgroups
                       STOP
                    ENDIF
                 ENDIF
@@ -1719,7 +1719,7 @@
          ENDIF
 
          IF (LEN_CHAIN.LT.2.OR.LEN_CHAIN.GT.5) THEN
-            PRINT*, "FINDPGCHAIN - STH GONE WRONG"
+            PRINT*, "findpgchain - sth gone wrong"
             STOP
          ELSE
             PERMCHAIN(START_PG,1) = LEN_CHAIN; PERMCHAIN(PG2,1) = LEN_CHAIN
@@ -1743,9 +1743,9 @@
 
 
 ! *****************************************************
-!MSB50 - GIVE IT ATOM INDEX AND IT RETURNS NAME OF RESIDUE AND RESIDUE NUMBER
+!msb50 - give it atom index and it returns name of residue and residue number
       SUBROUTINE GETRESID(ATNUM, RESNAME, RESNUM)
-      USE MODAMBER9, ONLY: IX, I02, NRES, M02,IH
+      use modamber9, only: ix, i02, nres, m02,ih
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: ATNUM
       CHARACTER(LEN=4), INTENT(OUT):: RESNAME
@@ -1753,9 +1753,9 @@
       INTEGER II
 
       DO II=1, NRES 
-          IF (IX(I02+II-1).LE.ATNUM .AND. IX(I02+II).GT.ATNUM) THEN
-             RESNUM = II
-             RESNAME = IH(M02+II-1)
+          IF (ix(i02+II-1).LE.ATNUM .AND. ix(i02+II).GT.ATNUM) THEN
+             resnum = II
+             resname = ih(m02+II-1)
           EXIT
           ENDIF
       ENDDO
@@ -1764,8 +1764,8 @@
 
 !*********************************************************
       SUBROUTINE PROL_PERMUTE(A1,A2,PTEST, RS,RF, DISTANCE)
-      USE MODAMBER9, ONLY:  NRES, M02, IH, M04
-      USE COMMONS, ONLY: NATOMS
+      use modamber9, only:  nres, m02, ih, m04
+      use commons, only: NATOMS
       IMPLICIT NONE
       INTEGER, INTENT(IN) :: A1, A2
       LOGICAL, INTENT(IN)::PTEST
@@ -1773,30 +1773,30 @@
       DOUBLE PRECISION, INTENT(INOUT)::RF(3*NATOMS)
       DOUBLE PRECISION, INTENT(OUT):: DISTANCE
       DOUBLE PRECISION:: RFTMP(3*NATOMS)
-      DOUBLE PRECISION:: DIST_ORIG
+      DOUBLE PRECISION:: DIST_orig
 
       RFTMP(:)=RF(:)
-      DIST_ORIG=DOT_PRODUCT(RF-RS, RF-RS)
-      IF (((IH(M04+A1-1).EQ.'HB2 '.OR.IH(M04+A1-1).EQ.'HB3 ').AND.&
-     &  (IH(M04+A2-1).EQ.'HB2 '.OR.IH(M04+A2-1).EQ.'HB3 ')).OR.   &
-     & ((IH(M04+A1-1).EQ.'HG2 '.OR.IH(M04+A1-1).EQ.'HG3 ').AND.&
-     &  (IH(M04+A2-1).EQ.'HG2 '.OR.IH(M04+A2-1).EQ.'HG3 ')).OR.   &
-     & ((IH(M04+A1-1).EQ.'HD2 '.OR.IH(M04+A1-1).EQ.'HD3 ').AND.&
-     &  (IH(M04+A2-1).EQ.'HD2 '.OR.IH(M04+A2-1).EQ.'HD3 '))) THEN
+      DIST_orig=DOT_PRODUCT(RF-RS, RF-RS)
+      IF (((ih(m04+A1-1).EQ.'HB2 '.OR.ih(m04+A1-1).EQ.'HB3 ').AND.&
+     &  (ih(m04+A2-1).EQ.'HB2 '.OR.ih(m04+A2-1).EQ.'HB3 ')).OR.   &
+     & ((ih(m04+A1-1).EQ.'HG2 '.OR.ih(m04+A1-1).EQ.'HG3 ').AND.&
+     &  (ih(m04+A2-1).EQ.'HG2 '.OR.ih(m04+A2-1).EQ.'HG3 ')).OR.   &
+     & ((ih(m04+A1-1).EQ.'HD2 '.OR.ih(m04+A1-1).EQ.'HD3 ').AND.&
+     &  (ih(m04+A2-1).EQ.'HD2 '.OR.ih(m04+A2-1).EQ.'HD3 '))) THEN
          
-          IF (PTEST) PRINT*, "PROL FOUND"
+          IF (PTEST) PRINT*, "prol found"
           RF(3*(A1-1)+1:3*A1)=RFTMP(3*(A2-1)+1:3*A2)
           RF(3*(A2-1)+1:3*A2)=RFTMP(3*(A1-1)+1:3*A1)
           DISTANCE=DOT_PRODUCT(RF-RS, RF-RS)
-          IF (PTEST) PRINT*, "PROL_PERMUTE> DISTANCE OLD, NEW", DIST_ORIG, DISTANCE
-          IF (DISTANCE.LT.DIST_ORIG) THEN
-             IF (PTEST) PRINT*, "PROL_PERMUTE> KEEP PERMUTATION", & 
-     &          DIST_ORIG,A1, A2, DISTANCE
+          IF (PTEST) PRINT*, "prol_permute> distance old, new", DIST_orig, DISTANCE
+          IF (DISTANCE.LT.DIST_orig) THEN
+             IF (PTEST) PRINT*, "prol_permute> keep permutation", & 
+     &          DIST_orig,A1, A2, distance
           ELSE
              RF(:) =RFTMP(:)
           ENDIF
       ELSE
-         PRINT*, "PROL_PERMUTE> ERROR! NOT PROLINE -CHECK INTMINPERM"
+         PRINT*, "prol_permute> error! not proline -check intminperm"
          STOP
       ENDIF
       RETURN

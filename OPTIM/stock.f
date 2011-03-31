@@ -1,21 +1,21 @@
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 !
-!  ENERGY AND GRADIENT FOR THE STOCKMAYER POTENTIAL USING TWO POLAR
-!  COORDINATES FOR THE DIPOLE DIRECTION
+!  Energy and gradient for the Stockmayer potential using two polar
+!  coordinates for the dipole direction
 !
       SUBROUTINE STOCK(NATOMS,X,V,ESTOCK,GTEST,STEST)
       USE KEY,ONLY : STOCKMU, STOCKLAMBDA, STOCKSPIN, STOCKZTOL, STOCKMAXSPIN
@@ -40,19 +40,19 @@
 
       IF (STOCKSPIN) THEN
          PI = ATAN2(1.0D0, 1.0D0) * 4.0D0
-!        CHECK THAT NO SPINS ARE TOO CLOSELY ALIGNED WITH Z, SINCE THAT WOULD
-!        INTRODUCE REDUNDANT PHI ANGLES.
+!        Check that no spins are too closely aligned with z, since that would
+!        introduce redundant phi angles.
          SPINITER = 1
          DO
             IF (.NOT.ZALIGNTEST(NATOMS, X)) THEN
                EXIT
             END IF
             IF (SPINITER.GT.STOCKMAXSPIN) THEN
-               PRINT*,'WARNING: RANDOMISATION OF ORIENTATION FAILED TO REMOVE Z-ALIGNED DIPOLES'
+               PRINT*,'WARNING: Randomisation of orientation failed to remove z-aligned dipoles'
                EXIT
             END IF
 
-!           RANDOM QUATERNION
+!           Random quaternion
             S = DPRAND();
             SIGMA1 = SQRT(1.0D0-S);
             SIGMA2 = SQRT(S);
@@ -63,7 +63,7 @@
             Q(3) = COS(THETA1) * SIGMA1;
             Q(4) = SIN(THETA2) * SIGMA2;
 
-!           ROTATION MATRIX CORRESPONDING TO THE QUATERNION
+!           Rotation matrix corresponding to the quaternion
             M(1,1) = Q(1)*Q(1) + Q(2)*Q(2) - Q(3)*Q(3) - Q(4)*Q(4)
             M(2,1) = 2.0*(Q(2)*Q(3) + Q(1)*Q(4))
             M(3,1) = 2.0*(Q(2)*Q(4) - Q(1)*Q(3))
@@ -80,7 +80,7 @@
          END DO
 
          IF ( (SPINITER.GT.1).AND.(SPINITER.LE.STOCKMAXSPIN) ) THEN
-            PRINT*,'WARNING: ORIENTATION HAS BEEN RANDOMISED TO REMOVE Z-ALIGNED DIPOLES'
+            PRINT*,'WARNING: Orientation has been randomised to remove z-aligned dipoles'
          END IF
       END IF
       
@@ -90,25 +90,25 @@
          Y1=X(J3-1)
          Z1=X(J3)
          T1=X(OFFSET+J3-2)
-         CT1=COS(T1)
-         ST1=SIN(T1)
+         CT1=cos(T1)
+         ST1=sin(T1)
          P1=X(OFFSET+J3-1)
-         CP1=COS(P1)
-         SP1=SIN(P1)
+         CP1=cos(P1)
+         SP1=sin(P1)
          DO J2=J1+1,REALNATOMS
             J4=3*J2
             X2=X(J4-2)
             Y2=X(J4-1)
             Z2=X(J4)
             T2=X(OFFSET+J4-2)
-            CT2=COS(T2)
-            ST2=SIN(T2)
+            CT2=cos(T2)
+            ST2=sin(T2)
             P2=X(OFFSET+J4-1)
-            CP2=COS(P2)
-            SP2=SIN(P2)
-            N1DOTR12=ST1*CP1*(X1-X2)+ST1*SP1*(Y1-Y2)+CT1*(Z1-Z2)
-            N2DOTR12=ST2*CP2*(X1-X2)+ST2*SP2*(Y1-Y2)+CT2*(Z1-Z2)
-            N1DOTN2=ST1*CP1*ST2*CP2 + ST1*SP1*ST2*SP2 + CT1*CT2
+            CP2=cos(P2)
+            SP2=sin(P2)
+            n1dotr12=st1*cp1*(x1-x2)+st1*sp1*(y1-y2)+ct1*(z1-z2)
+            n2dotr12=st2*cp2*(x1-x2)+st2*sp2*(y1-y2)+ct2*(z1-z2)
+            n1dotn2=st1*cp1*st2*cp2 + st1*sp1*st2*sp2 + ct1*ct2
             R122=(X1-X2)**2+(Y1-Y2)**2+(Z1-Z2)**2
             R12=SQRT(R122)
             R126=R122**3
@@ -118,326 +118,326 @@
             R125=R126/R12
             R1214=R1212*R122
            
-            DUMMY= (MU2*R127*(-3*N1DOTR12*N2DOTR12 + N1DOTN2*R122) +
-     &             (4 - 4*STOCKLAMBDA*R126))/R1212
+            DUMMY= (MU2*R127*(-3*n1dotr12*n2dotr12 + n1dotn2*R122) +
+     &             (4 - 4*stocklambda*R126))/R1212
          
             ESTOCK=ESTOCK+DUMMY
 
-! DERIVATIVES FOR POSITIONS
+! derivatives for positions
 
-      DUMMY = (-3*(-((-16 + 8*STOCKLAMBDA*R126 + 
-     &   MU2*(5*N1DOTR12*N2DOTR12*R127 - N1DOTN2*R129))*(X1 - X2))
-     &   + MU2*N2DOTR12*R129*CP1*ST1 + MU2*N1DOTR12*R129*CP2*ST2))/R1214
+      DUMMY = (-3*(-((-16 + 8*stocklambda*R126 + 
+     &   mu2*(5*n1dotr12*n2dotr12*R127 - n1dotn2*R129))*(x1 - x2))
+     &   + mu2*n2dotr12*R129*CP1*ST1 + mu2*n1dotr12*R129*CP2*ST2))/R1214
       V(J3-2)=V(J3-2)+DUMMY
       V(J4-2)=V(J4-2)-DUMMY
 
-      DUMMY = (-3*(-((-16 + 8*STOCKLAMBDA*R126 + 
-     &   MU2*(5*N1DOTR12*N2DOTR12*R127 - N1DOTN2*R129))*(Y1 - Y2))
-     &   + MU2*N2DOTR12*R129*SP1*ST1 + MU2*N1DOTR12*R129*SP2*ST2))/R1214
+      DUMMY = (-3*(-((-16 + 8*stocklambda*R126 + 
+     &   mu2*(5*n1dotr12*n2dotr12*R127 - n1dotn2*R129))*(y1 - y2))
+     &   + mu2*n2dotr12*R129*SP1*ST1 + mu2*n1dotr12*R129*SP2*ST2))/R1214
       V(J3-1)=V(J3-1)+DUMMY
       V(J4-1)=V(J4-1)-DUMMY
 
-      DUMMY = (-3*(-((-16 + 8*STOCKLAMBDA*R126 + 
-     &   MU2*(5*N1DOTR12*N2DOTR12*R127 - N1DOTN2*R129))*(Z1 - Z2))
-     &   + MU2*N2DOTR12*R129*CT1 + MU2*N1DOTR12*R129*CT2))/R1214
+      DUMMY = (-3*(-((-16 + 8*stocklambda*R126 + 
+     &   mu2*(5*n1dotr12*n2dotr12*R127 - n1dotn2*R129))*(z1 - z2))
+     &   + mu2*n2dotr12*R129*CT1 + mu2*n1dotr12*R129*CT2))/R1214
       V(J3)=V(J3)+DUMMY
       V(J4)=V(J4)-DUMMY
 
-! DERIVATIVES FOR ANGULAR VARIABLES OF ATOM J1
+! derivatives for angular variables of atom J1
 
       V(OFFSET+J3-2) = V(OFFSET+J3-2) +
-     &   (MU2*((3*N2DOTR12*Z1 - 3*N2DOTR12*Z2 - R122*CT2)*ST1 + 
-     &   CP1*CT1*(3*N2DOTR12*(-X1 + X2) + R122*CP2*ST2) + 
-     &   CT1*SP1*(-3*N2DOTR12*Y1 + 3*N2DOTR12*Y2 + R122*SP2*ST2)))/R125
+     &   (mu2*((3*n2dotr12*z1 - 3*n2dotr12*z2 - R122*CT2)*ST1 + 
+     &   CP1*CT1*(3*n2dotr12*(-x1 + x2) + R122*CP2*ST2) + 
+     &   CT1*SP1*(-3*n2dotr12*y1 + 3*n2dotr12*y2 + R122*SP2*ST2)))/R125
 
       V(OFFSET+J3-1) = V(OFFSET+J3-1) +
-     &   (MU2*ST1*(SP1*(3*N2DOTR12*(X1 - X2) - R122*CP2*ST2) + 
-     &   CP1*(3*N2DOTR12*(-Y1 + Y2) + R122*SP2*ST2)))/R125
+     &   (mu2*ST1*(SP1*(3*n2dotr12*(x1 - x2) - R122*CP2*ST2) + 
+     &   CP1*(3*n2dotr12*(-y1 + y2) + R122*SP2*ST2)))/R125
 
-! DERIVATIVES FOR ANGULAR VARIABLES OF ATOM J2
+! derivatives for angular variables of atom J2
 
       V(OFFSET+J4-2) = V(OFFSET+J4-2) +
-     &   (MU2*(CP2*CT2*(3*N1DOTR12*(-X1 + X2) + R122*CP1*ST1) + 
-     &   CT2*SP2*(-3*N1DOTR12*Y1 + 3*N1DOTR12*Y2 + R122*SP1*ST1) + 
-     &   (3*N1DOTR12*Z1 - 3*N1DOTR12*Z2 - R122*CT1)*ST2))/R125
+     &   (mu2*(CP2*CT2*(3*n1dotr12*(-x1 + x2) + R122*CP1*ST1) + 
+     &   CT2*SP2*(-3*n1dotr12*y1 + 3*n1dotr12*y2 + R122*SP1*ST1) + 
+     &   (3*n1dotr12*z1 - 3*n1dotr12*z2 - R122*CT1)*ST2))/R125
 
       V(OFFSET+J4-1) = V(OFFSET+J4-1) +
-     &   (MU2*(SP2*(3*N1DOTR12*(X1 - X2) - R122*CP1*ST1) + 
-     &   CP2*(3*N1DOTR12*(-Y1 + Y2) + R122*SP1*ST1))*ST2)/R125
+     &   (mu2*(SP2*(3*n1dotr12*(x1 - x2) - R122*CP1*ST1) + 
+     &   CP2*(3*n1dotr12*(-y1 + y2) + R122*SP1*ST1))*ST2)/R125
 
          ENDDO
       ENDDO
 
 !     ***********************
-!     ANALYTIC HESSIAN MATRIX
+!     Analytic Hessian matrix
 !     ***********************
       IF (STEST) THEN
          HESS(1:3*NATOMS, 1:3*NATOMS) = 0.0D0
          DO J1=1, REALNATOMS
             J3 = J1*3
-!           COORDINATES AND FUNCTIONS OF FIRST ATOM
-            X1 = X(J3 - 2)
-            Y1 = X(J3 - 1)
-            Z1 = X(J3)
-            T1 = X(OFFSET + J3 - 2)
-            P1 = X(OFFSET + J3 - 1)
-            ST1 = SIN(T1)
-            CT1 = COS(T1)
-            SP1 = SIN(P1)
-            CP1 = COS(P1)
+!           Coordinates and functions of first atom
+            x1 = X(J3 - 2)
+            y1 = X(J3 - 1)
+            z1 = X(J3)
+            t1 = X(OFFSET + J3 - 2)
+            p1 = X(OFFSET + J3 - 1)
+            st1 = SIN(t1)
+            ct1 = COS(t1)
+            sp1 = SIN(p1)
+            cp1 = COS(p1)
 
             DO J2=1, REALNATOMS
                IF (J1 == J2) CYCLE
                J4 = J2*3
 
-!              COORDINATES AND FUNCTIONS OF SECOND ATOM
-               X2 = X(J4 - 2)
-               Y2 = X(J4 - 1)
-               Z2 = X(J4)
-               T2 = X(OFFSET + J4 - 2)
-               P2 = X(OFFSET + J4 - 1)
-               ST2 = SIN(T2)
-               CT2 = COS(T2)
-               SP2 = SIN(P2)
-               CP2 = COS(P2)
+!              Coordinates and functions of second atom
+               x2 = X(J4 - 2)
+               y2 = X(J4 - 1)
+               z2 = X(J4)
+               t2 = X(OFFSET + J4 - 2)
+               p2 = X(OFFSET + J4 - 1)
+               st2 = SIN(t2)
+               ct2 = COS(t2)
+               sp2 = SIN(p2)
+               cp2 = COS(p2)
 
-!              COORDINATES AND FUNCTIONS RELATED TO BOTH ATOMS
-               DX = X1 - X2
-               DY = Y1 - Y2
-               DZ = Z1 - Z2
-               DX2 = DX * DX
-               DY2 = DY * DY
-               DZ2 = DZ * DZ
-               N1DOTR12 = ST1*CP1*DX + ST1*SP1*DY + CT1*DZ
-               N2DOTR12 = ST2*CP2*DX + ST2*SP2*DY + CT2*DZ
-               N1DOTN2 = ST1*CP1*ST2*CP2 + ST1*SP1*ST2*SP2 + CT1*CT2
-               R122 = DX2 + DY2 + DZ2
-               R12 = SQRT(R122)
-               R125 = R122*R122*R12
-               R126 = R125*R12
-               R127 = R126*R12
-               R128 = R126*R122
-               R129 = R127*R122
-               R1211 = R126*R125
-               R1212 = R126*R126
-               R1214 = R1212*R122
-               R1216 = R128*R128
-               SP1PP2 = SIN(P1 + P2)
-               SP1MP2 = SIN(P1 - P2)
-               CP1P2 = COS(P1 - P2)
+!              Coordinates and functions related to both atoms
+               dx = x1 - x2
+               dy = y1 - y2
+               dz = z1 - z2
+               dx2 = dx * dx
+               dy2 = dy * dy
+               dz2 = dz * dz
+               n1dotr12 = st1*cp1*dx + st1*sp1*dy + ct1*dz
+               n2dotr12 = st2*cp2*dx + st2*sp2*dy + ct2*dz
+               n1dotn2 = st1*cp1*st2*cp2 + st1*sp1*st2*sp2 + ct1*ct2
+               r122 = dx2 + dy2 + dz2
+               r12 = SQRT(r122)
+               r125 = r122*r122*r12
+               r126 = r125*r12
+               r127 = r126*r12
+               r128 = r126*r122
+               r129 = r127*r122
+               r1211 = r126*r125
+               r1212 = r126*r126
+               r1214 = r1212*r122
+               r1216 = r128*r128
+               sp1pp2 = SIN(p1 + p2)
+               sp1mp2 = SIN(p1 - p2)
+               cp1p2 = COS(p1 - p2)
 
-!              [1] THE FIVE COMPLETELY DIAGONAL TERMS: SAME ATOM, SAME COORDINATE
-!              X1,X1
+!              [1] The five completely diagonal terms: same atom, same coordinate
+!              x1,x1
                HESS(J3-2, J3-2) = HESS(J3-2, J3-2) +
-     &            (-3*(MU2*N1DOTN2*R1211 + 16*R122 - 8*STOCKLAMBDA*R128 +
-     &            DX2*(-224 + 64*STOCKLAMBDA*R126 + 35*MU2*N1DOTR12*N2DOTR12*R127 -
-     &            5*MU2*N1DOTN2*R129) -
-     &            MU2*R129*(5*N1DOTR12*(N2DOTR12 + 2*CP2*DX*ST2) +
-     &            2*CP1*ST1*(5*DX*N2DOTR12 - CP2*R122*ST2))))/R1216
-!              Y1,Y1
+     &            (-3*(MU2*n1dotn2*R1211 + 16*R122 - 8*stocklambda*R128 +
+     &            dx2*(-224 + 64*stocklambda*R126 + 35*MU2*n1dotr12*n2dotr12*R127 -
+     &            5*MU2*n1dotn2*R129) -
+     &            MU2*R129*(5*n1dotr12*(n2dotr12 + 2*cp2*dx*st2) +
+     &            2*cp1*st1*(5*dx*n2dotr12 - cp2*R122*st2))))/R1216
+!              y1,y1
                HESS(J3-1, J3-1) = HESS(J3-1, J3-1) +
-     &            (3*(-(MU2*N1DOTN2*R1211) - 16*R122 + 8*STOCKLAMBDA*R128 +
-     &            DY2*(224 - 64*STOCKLAMBDA*R126 +
-     &            5*MU2*(-7*N1DOTR12*N2DOTR12*R127 + N1DOTN2*R129)) +
-     &            MU2*R129*(5*N1DOTR12*(N2DOTR12 + 2*DY*SP2*ST2) +
-     &            2*SP1*ST1*(5*DY*N2DOTR12 - R122*SP2*ST2))))/R1216
-!              Z1,Z1
+     &            (3*(-(MU2*n1dotn2*R1211) - 16*R122 + 8*stocklambda*R128 +
+     &            dy2*(224 - 64*stocklambda*R126 +
+     &            5*MU2*(-7*n1dotr12*n2dotr12*R127 + n1dotn2*R129)) +
+     &            MU2*R129*(5*n1dotr12*(n2dotr12 + 2*dy*sp2*st2) +
+     &            2*sp1*st1*(5*dy*n2dotr12 - R122*sp2*st2))))/R1216
+!              z1,z1
                HESS(J3, J3) = HESS(J3, J3) +
-     &            (-3*(MU2*N1DOTN2*R1211 + 16*R122 +
-     &            DZ2*(-224 + 64*STOCKLAMBDA*R126 + 35*MU2*N1DOTR12*N2DOTR12*R127) -
-     &            8*STOCKLAMBDA*R128) + 3*MU2*(5*
-     &            (DZ2*N1DOTN2 + 2*CT2*DZ*N1DOTR12 + (2*CT1*DZ + N1DOTR12)*N2DOTR12)
-     &            - 2*CT1*CT2*R122)*R129)/R1216
-!              T1,T1
+     &            (-3*(MU2*n1dotn2*R1211 + 16*R122 +
+     &            dz2*(-224 + 64*stocklambda*R126 + 35*MU2*n1dotr12*n2dotr12*R127) -
+     &            8*stocklambda*R128) + 3*MU2*(5*
+     &            (dz2*n1dotn2 + 2*ct2*dz*n1dotr12 + (2*ct1*dz + n1dotr12)*n2dotr12)
+     &            - 2*ct1*ct2*R122)*R129)/R1216
+!              t1,t1
                HESS(OFFSET+J3-2, OFFSET+J3-2) = HESS(OFFSET+J3-2, OFFSET+J3-2) +
-     &            (MU2*(3*CT1*DZ*N2DOTR12 - CT1*CT2*R122 + 3*CP1*DX*N2DOTR12*ST1 +
-     &            3*DY*N2DOTR12*SP1*ST1 - CP1P2*R122*ST1*ST2))/R125
-!              P1,P1
+     &            (MU2*(3*ct1*dz*n2dotr12 - ct1*ct2*R122 + 3*cp1*dx*n2dotr12*st1 +
+     &            3*dy*n2dotr12*sp1*st1 - cp1p2*R122*st1*st2))/R125
+!              p1,p1
                HESS(OFFSET+J3-1, OFFSET+J3-1) = HESS(OFFSET+J3-1, OFFSET+J3-1) +
-     &            (MU2*ST1*(3*CP1*DX*N2DOTR12 + 3*DY*N2DOTR12*SP1 - CP1P2*R122*ST2))/R125
+     &            (MU2*st1*(3*cp1*dx*n2dotr12 + 3*dy*n2dotr12*sp1 - cp1p2*R122*st2))/R125
 
-!              [2] OFF-DIAGONAL TERMS ON THE DIAGONAL BLOCKS: SAME ATOM, DIFFERENT COORDINATES
-!              X1,Y1
+!              [2] Off-diagonal terms on the diagonal blocks: same atom, different coordinates
+!              x1,y1
                DUMMY =
-     &            (3*(MU2*R129*(5*CP1*DY*N2DOTR12*ST1 + 5*CP2*DY*N1DOTR12*ST2 -
-     &            R122*SP1PP2*ST1*ST2) +
-     &            DX*(DY*(224 - 64*STOCKLAMBDA*R126 + 5*MU2*(-7*N1DOTR12*N2DOTR12*R127 +
-     &            N1DOTN2*R129)) + 5*MU2*R129*(N2DOTR12*SP1*ST1 + N1DOTR12*SP2*ST2))))/
+     &            (3*(MU2*R129*(5*cp1*dy*n2dotr12*st1 + 5*cp2*dy*n1dotr12*st2 -
+     &            R122*sp1pp2*st1*st2) +
+     &            dx*(dy*(224 - 64*stocklambda*R126 + 5*MU2*(-7*n1dotr12*n2dotr12*R127 +
+     &            n1dotn2*R129)) + 5*MU2*R129*(n2dotr12*sp1*st1 + n1dotr12*sp2*st2))))/
      &            R1216
                HESS(J3-2, J3-1) = HESS(J3-2, J3-1) + DUMMY
                HESS(J3-1, J3-2) = HESS(J3-1, J3-2) + DUMMY
-!              X1,Z1
+!              x1,z1
                DUMMY =
-     &            (-3*(DX*DZ*(-224 + 64*STOCKLAMBDA*R126 + 35*MU2*N1DOTR12*N2DOTR12*R127) -
-     &            5*DX*MU2*(DZ*N1DOTN2 + CT2*N1DOTR12 + CT1*N2DOTR12)*R129 +
-     &            MU2*R129*(CP1*(-5*DZ*N2DOTR12 + CT2*R122)*ST1 +
-     &            CP2*(-5*DZ*N1DOTR12 + CT1*R122)*ST2)))/R1216
+     &            (-3*(dx*dz*(-224 + 64*stocklambda*R126 + 35*MU2*n1dotr12*n2dotr12*R127) -
+     &            5*dx*MU2*(dz*n1dotn2 + ct2*n1dotr12 + ct1*n2dotr12)*R129 +
+     &            MU2*R129*(cp1*(-5*dz*n2dotr12 + ct2*R122)*st1 +
+     &            cp2*(-5*dz*n1dotr12 + ct1*R122)*st2)))/R1216
                HESS(J3-2, J3) = HESS(J3-2, J3) + DUMMY
                HESS(J3, J3-2) = HESS(J3, J3-2) + DUMMY
-!              Y1,Z1
+!              y1,z1
                DUMMY =
-     &            (3*(DY*DZ*(224 - 64*STOCKLAMBDA*R126 - 35*MU2*N1DOTR12*N2DOTR12*R127) +
-     &            5*DY*MU2*(DZ*N1DOTN2 + CT2*N1DOTR12 + CT1*N2DOTR12)*R129 +
-     &            MU2*R129*(-(R122*(CT2*SP1*ST1 + CT1*SP2*ST2)) +
-     &            5*DZ*(N2DOTR12*SP1*ST1 + N1DOTR12*SP2*ST2))))/R1216
+     &            (3*(dy*dz*(224 - 64*stocklambda*R126 - 35*MU2*n1dotr12*n2dotr12*R127) +
+     &            5*dy*MU2*(dz*n1dotn2 + ct2*n1dotr12 + ct1*n2dotr12)*R129 +
+     &            MU2*R129*(-(R122*(ct2*sp1*st1 + ct1*sp2*st2)) +
+     &            5*dz*(n2dotr12*sp1*st1 + n1dotr12*sp2*st2))))/R1216
                HESS(J3-1, J3) = HESS(J3-1, J3) + DUMMY
                HESS(J3, J3-1) = HESS(J3, J3-1) + DUMMY
-!              X1,T1
+!              x1,t1
                DUMMY =
-     &            (-3*MU2*(ST1*(5*DX*DZ*N2DOTR12 - CT2*DX*R122 - CP2*DZ*R122*ST2) +
-     &            CT1*SP1*(-5*DX*DY*N2DOTR12 + CP2*DY*R122*ST2 + DX*R122*SP2*ST2) +
-     &            CP1*CT1*(-5*DX2*N2DOTR12 + R122*(N2DOTR12 + 2*CP2*DX*ST2))))/R127
+     &            (-3*MU2*(st1*(5*dx*dz*n2dotr12 - ct2*dx*R122 - cp2*dz*R122*st2) +
+     &            ct1*sp1*(-5*dx*dy*n2dotr12 + cp2*dy*R122*st2 + dx*R122*sp2*st2) +
+     &            cp1*ct1*(-5*dx2*n2dotr12 + R122*(n2dotr12 + 2*cp2*dx*st2))))/R127
                HESS(J3-2, OFFSET+J3-2) = HESS(J3-2, OFFSET+J3-2) + DUMMY
                HESS(OFFSET+J3-2, J3-2) = HESS(OFFSET+J3-2, J3-2) + DUMMY
-!              X1,P1
+!              x1,p1
                DUMMY =
-     &            (3*MU2*ST1*(5*CP1*DX*DY*N2DOTR12 - CP1*R122*(CP2*DY + DX*SP2)*ST2 +
-     &            SP1*(-5*DX2*N2DOTR12 + R122*(N2DOTR12 + 2*CP2*DX*ST2))))/R127
+     &            (3*MU2*st1*(5*cp1*dx*dy*n2dotr12 - cp1*R122*(cp2*dy + dx*sp2)*st2 +
+     &            sp1*(-5*dx2*n2dotr12 + R122*(n2dotr12 + 2*cp2*dx*st2))))/R127
                HESS(J3-2, OFFSET+J3-1) = HESS(J3-2, OFFSET+J3-1) + DUMMY
                HESS(OFFSET+J3-1, J3-2) = HESS(OFFSET+J3-1, J3-2) + DUMMY
-!              Y1,T1
+!              y1,t1
                DUMMY =
-     &            (-3*MU2*(CP1*CT1*(-5*DX*DY*N2DOTR12 + CP2*DY*R122*ST2 + DX*R122*SP2*ST2) +
-     &            ST1*(5*DY*DZ*N2DOTR12 - CT2*DY*R122 - DZ*R122*SP2*ST2) +
-     &            CT1*SP1*(-5*DY2*N2DOTR12 + R122*(N2DOTR12 + 2*DY*SP2*ST2))))/R127
+     &            (-3*MU2*(cp1*ct1*(-5*dx*dy*n2dotr12 + cp2*dy*R122*st2 + dx*R122*sp2*st2) +
+     &            st1*(5*dy*dz*n2dotr12 - ct2*dy*R122 - dz*R122*sp2*st2) +
+     &            ct1*sp1*(-5*dy2*n2dotr12 + R122*(n2dotr12 + 2*dy*sp2*st2))))/R127
                HESS(J3-1, OFFSET+J3-2) = HESS(J3-1, OFFSET+J3-2) + DUMMY
                HESS(OFFSET+J3-2, J3-1) = HESS(OFFSET+J3-2, J3-1) + DUMMY
-!              Y1,P1
+!              y1,p1
                DUMMY =
-     &            (3*MU2*ST1*(N2DOTR12*(5*CP1*DY2 - CP1*R122 - 5*DX*DY*SP1) +
-     &            R122*(CP2*DY*SP1 - 2*CP1*DY*SP2 + DX*SP1*SP2)*ST2))/R127
+     &            (3*MU2*st1*(n2dotr12*(5*cp1*dy2 - cp1*R122 - 5*dx*dy*sp1) +
+     &            R122*(cp2*dy*sp1 - 2*cp1*dy*sp2 + dx*sp1*sp2)*st2))/R127
                HESS(J3-1, OFFSET+J3-1) = HESS(J3-1, OFFSET+J3-1) + DUMMY
                HESS(OFFSET+J3-1, J3-1) = HESS(OFFSET+J3-1, J3-1) + DUMMY
-!              Z1,T1
+!              z1,t1
                DUMMY =
-     &            (-3*MU2*((5*DZ2*N2DOTR12 - (2*CT2*DZ + N2DOTR12)*R122)*ST1 +
-     &            CP1*CT1*(-5*DX*DZ*N2DOTR12 + CT2*DX*R122 + CP2*DZ*R122*ST2) +
-     &            CT1*SP1*(-5*DY*DZ*N2DOTR12 + CT2*DY*R122 + DZ*R122*SP2*ST2)))/R127
+     &            (-3*MU2*((5*dz2*n2dotr12 - (2*ct2*dz + n2dotr12)*R122)*st1 +
+     &            cp1*ct1*(-5*dx*dz*n2dotr12 + ct2*dx*R122 + cp2*dz*R122*st2) +
+     &            ct1*sp1*(-5*dy*dz*n2dotr12 + ct2*dy*R122 + dz*R122*sp2*st2)))/R127
                HESS(J3, OFFSET+J3-2) = HESS(J3, OFFSET+J3-2) + DUMMY
                HESS(OFFSET+J3-2, J3) = HESS(OFFSET+J3-2, J3) + DUMMY
-!              Z1,P1
+!              z1,p1
                DUMMY =
-     &            (3*MU2*ST1*((5*DZ*N2DOTR12 - CT2*R122)*(CP1*DY - DX*SP1) +
-     &            DZ*R122*SP1MP2*ST2))/R127
+     &            (3*MU2*st1*((5*dz*n2dotr12 - ct2*R122)*(cp1*dy - dx*sp1) +
+     &            dz*R122*sp1mp2*st2))/R127
                HESS(J3, OFFSET+J3-1) = HESS(J3, OFFSET+J3-1) + DUMMY
                HESS(OFFSET+J3-1, J3) = HESS(OFFSET+J3-1, J3) + DUMMY
-!              T1,P1
+!              t1,p1
                DUMMY =
-     &            -((CT1*MU2*(3*CP1*DY*N2DOTR12 - 3*DX*N2DOTR12*SP1 + R122*SP1MP2*ST2))/R125)
+     &            -((ct1*MU2*(3*cp1*dy*n2dotr12 - 3*dx*n2dotr12*sp1 + R122*sp1mp2*st2))/R125)
                HESS(OFFSET+J3-2, OFFSET+J3-1) = HESS(OFFSET+J3-2, OFFSET+J3-1) + DUMMY
                HESS(OFFSET+J3-1, OFFSET+J3-2) = HESS(OFFSET+J3-1, OFFSET+J3-2) + DUMMY
 
-!              [3] DIAGONAL ELEMENTS ON OFF-DIAGONAL BLOCKS: DIFFERENT PARTICLE, SAME COORDINATE
-!              X1,X2
+!              [3] Diagonal elements on off-diagonal blocks: different particle, same coordinate
+!              x1,x2
                HESS(J3-2, J4-2) =
-     &            (3*(MU2*N1DOTN2*R1211 + 16*R122 - 8*STOCKLAMBDA*R128 +
-     &            DX2*(-224 + 64*STOCKLAMBDA*R126 + 35*MU2*N1DOTR12*N2DOTR12*R127 -
-     &            5*MU2*N1DOTN2*R129) - MU2*R129*(5*N1DOTR12*(N2DOTR12 + 2*CP2*DX*ST2) +
-     &            2*CP1*ST1*(5*DX*N2DOTR12 - CP2*R122*ST2))))/R1216
-!              Y1,Y2
+     &            (3*(MU2*n1dotn2*R1211 + 16*R122 - 8*stocklambda*R128 +
+     &            dx2*(-224 + 64*stocklambda*R126 + 35*MU2*n1dotr12*n2dotr12*R127 -
+     &            5*MU2*n1dotn2*R129) - MU2*R129*(5*n1dotr12*(n2dotr12 + 2*cp2*dx*st2) +
+     &            2*cp1*st1*(5*dx*n2dotr12 - cp2*R122*st2))))/R1216
+!              y1,y2
                HESS(J3-1, J4-1) =
-     &            (3*(-224*DY2 + MU2*N1DOTN2*R1211 + 16*R122 + 64*DY2*STOCKLAMBDA*R126 +
-     &            35*DY2*MU2*N1DOTR12*N2DOTR12*R127 - 8*STOCKLAMBDA*R128 -
-     &            5*MU2*(DY2*N1DOTN2 + N1DOTR12*N2DOTR12)*R129 +
-     &            2*MU2*R129*(R122*SP1*SP2*ST1*ST2 - 5*DY*(N2DOTR12*SP1*ST1 +
-     &            N1DOTR12*SP2*ST2))))/R1216
-!              Z1,Z2
+     &            (3*(-224*dy2 + MU2*n1dotn2*R1211 + 16*R122 + 64*dy2*stocklambda*R126 +
+     &            35*dy2*MU2*n1dotr12*n2dotr12*R127 - 8*stocklambda*R128 -
+     &            5*MU2*(dy2*n1dotn2 + n1dotr12*n2dotr12)*R129 +
+     &            2*MU2*R129*(R122*sp1*sp2*st1*st2 - 5*dy*(n2dotr12*sp1*st1 +
+     &            n1dotr12*sp2*st2))))/R1216
+!              z1,z2
                HESS(J3, J4) =
-     &            (3*(-224*DZ2 + MU2*N1DOTN2*R1211 + 16*R122 + 64*DZ2*STOCKLAMBDA*R126 +
-     &            35*DZ2*MU2*N1DOTR12*N2DOTR12*R127 - 8*STOCKLAMBDA*R128 -
-     &            MU2*(5*(DZ2*N1DOTN2 + 2*CT2*DZ*N1DOTR12 + (2*CT1*DZ + N1DOTR12)*
-     &            N2DOTR12) - 2*CT1*CT2*R122)*R129))/R1216
-!              T1,T2
+     &            (3*(-224*dz2 + MU2*n1dotn2*R1211 + 16*R122 + 64*dz2*stocklambda*R126 +
+     &            35*dz2*MU2*n1dotr12*n2dotr12*R127 - 8*stocklambda*R128 -
+     &            MU2*(5*(dz2*n1dotn2 + 2*ct2*dz*n1dotr12 + (2*ct1*dz + n1dotr12)*
+     &            n2dotr12) - 2*ct1*ct2*R122)*R129))/R1216
+!              t1,t2
                HESS(OFFSET+J3-2, OFFSET+J4-2) =
-     &            (MU2*(-3*(CP1*CT1*DX + CT1*DY*SP1 - DZ*ST1)*(CP2*CT2*DX + CT2*DY*SP2 -
-     &            DZ*ST2) + R122*(CP1P2*CT1*CT2 + ST1*ST2)))/R125
-!              P1,P2
+     &            (MU2*(-3*(cp1*ct1*dx + ct1*dy*sp1 - dz*st1)*(cp2*ct2*dx + ct2*dy*sp2 -
+     &            dz*st2) + R122*(cp1p2*ct1*ct2 + st1*st2)))/R125
+!              p1,p2
                HESS(OFFSET+J3-1, OFFSET+J4-1) =
-     &            (MU2*(CP1P2*R122 - 3*(CP1*DY - DX*SP1)*(CP2*DY - DX*SP2))*ST1*ST2)/R125
+     &            (MU2*(cp1p2*R122 - 3*(cp1*dy - dx*sp1)*(cp2*dy - dx*sp2))*st1*st2)/R125
 
-!              [4] COMPLETELY OFF-DIAGONAL TERMS: DIFFERENT PARTICLE, DIFFERENT COORDINATE
-!              X1,Y2 AND Y1,X2
+!              [4] Completely off-diagonal terms: different particle, different coordinate
+!              x1,y2 and y1,x2
                HESS(J3-2, J4-1) =
-     &            (3*(DX*DY*(-224 + 64*STOCKLAMBDA*R126 + 35*MU2*N1DOTR12*N2DOTR12*R127 -
-     &            5*MU2*N1DOTN2*R129) - MU2*R129*(5*N2DOTR12*(CP1*DY + DX*SP1)*ST1 +
-     &            (5*CP2*DY*N1DOTR12 + 5*DX*N1DOTR12*SP2 - R122*SP1PP2*ST1)*ST2)))/R1216
+     &            (3*(dx*dy*(-224 + 64*stocklambda*R126 + 35*MU2*n1dotr12*n2dotr12*R127 -
+     &            5*MU2*n1dotn2*R129) - MU2*R129*(5*n2dotr12*(cp1*dy + dx*sp1)*st1 +
+     &            (5*cp2*dy*n1dotr12 + 5*dx*n1dotr12*sp2 - R122*sp1pp2*st1)*st2)))/R1216
                HESS(J3-1, J4-2) = HESS(J3-2, J4-1)
-!              X1,Z2 AND Z1,X2
+!              x1,z2 and z1,x2
                HESS(J3-2, J4) =
-     &            (3*(DX*DZ*(-224 + 64*STOCKLAMBDA*R126 + 35*MU2*N1DOTR12*N2DOTR12*R127) -
-     &            5*DX*MU2*(DZ*N1DOTN2 + CT2*N1DOTR12 + CT1*N2DOTR12)*R129 +
-     &            MU2*R129*(CP1*(-5*DZ*N2DOTR12 + CT2*R122)*ST1 +
-     &            CP2*(-5*DZ*N1DOTR12 + CT1*R122)*ST2)))/R1216
+     &            (3*(dx*dz*(-224 + 64*stocklambda*R126 + 35*MU2*n1dotr12*n2dotr12*R127) -
+     &            5*dx*MU2*(dz*n1dotn2 + ct2*n1dotr12 + ct1*n2dotr12)*R129 +
+     &            MU2*R129*(cp1*(-5*dz*n2dotr12 + ct2*R122)*st1 +
+     &            cp2*(-5*dz*n1dotr12 + ct1*R122)*st2)))/R1216
                HESS(J3, J4-2) = HESS(J3-2, J4)
-!              Y1,Z2 AND Z1,Y2
+!              y1,z2 and z1,y2
                HESS(J3-1, J4) =
-     &            (3*(DY*DZ*(-224 + 64*STOCKLAMBDA*R126 + 35*MU2*N1DOTR12*N2DOTR12*R127) -
-     &            5*DY*MU2*(DZ*N1DOTN2 + CT2*N1DOTR12 + CT1*N2DOTR12)*R129 +
-     &            MU2*R129*(R122*(CT2*SP1*ST1 + CT1*SP2*ST2) -
-     &            5*DZ*(N2DOTR12*SP1*ST1 + N1DOTR12*SP2*ST2))))/R1216
+     &            (3*(dy*dz*(-224 + 64*stocklambda*R126 + 35*MU2*n1dotr12*n2dotr12*R127) -
+     &            5*dy*MU2*(dz*n1dotn2 + ct2*n1dotr12 + ct1*n2dotr12)*R129 +
+     &            MU2*R129*(R122*(ct2*sp1*st1 + ct1*sp2*st2) -
+     &            5*dz*(n2dotr12*sp1*st1 + n1dotr12*sp2*st2))))/R1216
                HESS(J3, J4-1) = HESS(J3-1, J4)
-!              X1,T2
+!              x1,t2
                HESS(J3-2, OFFSET+J4-2) =
-     &            (-3*MU2*(CT2*SP2*(-5*DX*DY*N1DOTR12 + CP1*DY*R122*ST1 + DX*R122*SP1*ST1) +
-     &            CP2*CT2*(-5*DX2*N1DOTR12 + R122*(N1DOTR12 + 2*CP1*DX*ST1)) +
-     &            (5*DX*DZ*N1DOTR12 - CT1*DX*R122 - CP1*DZ*R122*ST1)*ST2))/R127
-!              X1,P2
+     &            (-3*MU2*(ct2*sp2*(-5*dx*dy*n1dotr12 + cp1*dy*R122*st1 + dx*R122*sp1*st1) +
+     &            cp2*ct2*(-5*dx2*n1dotr12 + R122*(n1dotr12 + 2*cp1*dx*st1)) +
+     &            (5*dx*dz*n1dotr12 - ct1*dx*R122 - cp1*dz*R122*st1)*st2))/R127
+!              x1,p2
                HESS(J3-2, OFFSET+J4-1) =
-     &            (-3*MU2*(-(N1DOTR12*(5*CP2*DX*DY + (-5*DX2 + R122)*SP2)) +
-     &            R122*(CP1*CP2*DY + CP2*DX*SP1 - 2*CP1*DX*SP2)*ST1)*ST2)/R127
-!              Y1,T2
+     &            (-3*MU2*(-(n1dotr12*(5*cp2*dx*dy + (-5*dx2 + R122)*sp2)) +
+     &            R122*(cp1*cp2*dy + cp2*dx*sp1 - 2*cp1*dx*sp2)*st1)*st2)/R127
+!              y1,t2
                HESS(J3-1, OFFSET+J4-2) =
-     &            (-3*MU2*(CP2*CT2*(-5*DX*DY*N1DOTR12 + CP1*DY*R122*ST1 + DX*R122*SP1*ST1) +
-     &            CT2*SP2*(-5*DY2*N1DOTR12 + R122*(N1DOTR12 + 2*DY*SP1*ST1)) +
-     &            (5*DY*DZ*N1DOTR12 - CT1*DY*R122 - DZ*R122*SP1*ST1)*ST2))/R127
-!              Y1,P2
+     &            (-3*MU2*(cp2*ct2*(-5*dx*dy*n1dotr12 + cp1*dy*R122*st1 + dx*R122*sp1*st1) +
+     &            ct2*sp2*(-5*dy2*n1dotr12 + R122*(n1dotr12 + 2*dy*sp1*st1)) +
+     &            (5*dy*dz*n1dotr12 - ct1*dy*R122 - dz*R122*sp1*st1)*st2))/R127
+!              y1,p2
                HESS(J3-1, OFFSET+J4-1) =
-     &            (3*MU2*(N1DOTR12*(5*CP2*DY2 - CP2*R122 - 5*DX*DY*SP2) +
-     &            R122*(-2*CP2*DY*SP1 + CP1*DY*SP2 + DX*SP1*SP2)*ST1)*ST2)/R127
-!              Z1,T2
+     &            (3*MU2*(n1dotr12*(5*cp2*dy2 - cp2*R122 - 5*dx*dy*sp2) +
+     &            R122*(-2*cp2*dy*sp1 + cp1*dy*sp2 + dx*sp1*sp2)*st1)*st2)/R127
+!              z1,t2
                HESS(J3, OFFSET+J4-2) =
-     &            (-3*MU2*(CP2*CT2*(-5*DX*DZ*N1DOTR12 + CT1*DX*R122 + CP1*DZ*R122*ST1) +
-     &            CT2*SP2*(-5*DY*DZ*N1DOTR12 + CT1*DY*R122 + DZ*R122*SP1*ST1) +
-     &            (5*DZ2*N1DOTR12 - (2*CT1*DZ + N1DOTR12)*R122)*ST2))/R127
-!              Z1,P2
+     &            (-3*MU2*(cp2*ct2*(-5*dx*dz*n1dotr12 + ct1*dx*R122 + cp1*dz*R122*st1) +
+     &            ct2*sp2*(-5*dy*dz*n1dotr12 + ct1*dy*R122 + dz*R122*sp1*st1) +
+     &            (5*dz2*n1dotr12 - (2*ct1*dz + n1dotr12)*R122)*st2))/R127
+!              z1,p2
                HESS(J3, OFFSET+J4-1) =
-     &            (3*MU2*((5*DZ*N1DOTR12 - CT1*R122)*(CP2*DY - DX*SP2) - DZ*R122*SP1MP2*ST1)*
-     &            ST2)/R127
-!              T1,X2
+     &            (3*MU2*((5*dz*n1dotr12 - ct1*R122)*(cp2*dy - dx*sp2) - dz*R122*sp1mp2*st1)*
+     &            st2)/R127
+!              t1,x2
                HESS(OFFSET+J3-2, J4-2) =
-     &            (3*MU2*(-(ST1*(-5*DX*DZ*N2DOTR12 + CT2*DX*R122 + CP2*DZ*R122*ST2)) +
-     &            CT1*SP1*(-5*DX*DY*N2DOTR12 + CP2*DY*R122*ST2 + DX*R122*SP2*ST2) +
-     &            CP1*CT1*(-5*DX2*N2DOTR12 + R122*(N2DOTR12 + 2*CP2*DX*ST2))))/R127
-!              P1,X2
+     &            (3*MU2*(-(st1*(-5*dx*dz*n2dotr12 + ct2*dx*R122 + cp2*dz*R122*st2)) +
+     &            ct1*sp1*(-5*dx*dy*n2dotr12 + cp2*dy*R122*st2 + dx*R122*sp2*st2) +
+     &            cp1*ct1*(-5*dx2*n2dotr12 + R122*(n2dotr12 + 2*cp2*dx*st2))))/R127
+!              p1,x2
                HESS(OFFSET+J3-1, J4-2) =
-     &            (3*MU2*ST1*(-(N2DOTR12*(5*CP1*DX*DY + (-5*DX2 + R122)*SP1)) +
-     &            R122*(CP1*CP2*DY - 2*CP2*DX*SP1 + CP1*DX*SP2)*ST2))/R127
-!              T1,Y2
+     &            (3*MU2*st1*(-(n2dotr12*(5*cp1*dx*dy + (-5*dx2 + R122)*sp1)) +
+     &            R122*(cp1*cp2*dy - 2*cp2*dx*sp1 + cp1*dx*sp2)*st2))/R127
+!              t1,y2
                HESS(OFFSET+J3-2, J4-1) =
-     &            (3*MU2*(CP1*CT1*(-5*DX*DY*N2DOTR12 + CP2*DY*R122*ST2 + DX*R122*SP2*ST2) +
-     &            ST1*(5*DY*DZ*N2DOTR12 - CT2*DY*R122 - DZ*R122*SP2*ST2) +
-     &            CT1*SP1*(-5*DY2*N2DOTR12 + R122*(N2DOTR12 + 2*DY*SP2*ST2))))/R127
-!              P1,Y2
+     &            (3*MU2*(cp1*ct1*(-5*dx*dy*n2dotr12 + cp2*dy*R122*st2 + dx*R122*sp2*st2) +
+     &            st1*(5*dy*dz*n2dotr12 - ct2*dy*R122 - dz*R122*sp2*st2) +
+     &            ct1*sp1*(-5*dy2*n2dotr12 + R122*(n2dotr12 + 2*dy*sp2*st2))))/R127
+!              p1,y2
                HESS(OFFSET+J3-1, J4-1) =
-     &            (3*MU2*ST1*(5*DX*DY*N2DOTR12*SP1 - R122*SP1*(CP2*DY + DX*SP2)*ST2 +
-     &            CP1*(-5*DY2*N2DOTR12 + R122*(N2DOTR12 + 2*DY*SP2*ST2))))/R127
-!              T1,Z2
+     &            (3*MU2*st1*(5*dx*dy*n2dotr12*sp1 - R122*sp1*(cp2*dy + dx*sp2)*st2 +
+     &            cp1*(-5*dy2*n2dotr12 + R122*(n2dotr12 + 2*dy*sp2*st2))))/R127
+!              t1,z2
                HESS(OFFSET+J3-2, J4) =
-     &            (3*MU2*((5*DZ2*N2DOTR12 - (2*CT2*DZ + N2DOTR12)*R122)*ST1 +
-     &            CP1*CT1*(-5*DX*DZ*N2DOTR12 + CT2*DX*R122 + CP2*DZ*R122*ST2) +
-     &            CT1*SP1*(-5*DY*DZ*N2DOTR12 + CT2*DY*R122 + DZ*R122*SP2*ST2)))/R127
-!              P1,Z2
+     &            (3*MU2*((5*dz2*n2dotr12 - (2*ct2*dz + n2dotr12)*R122)*st1 +
+     &            cp1*ct1*(-5*dx*dz*n2dotr12 + ct2*dx*R122 + cp2*dz*R122*st2) +
+     &            ct1*sp1*(-5*dy*dz*n2dotr12 + ct2*dy*R122 + dz*R122*sp2*st2)))/R127
+!              p1,z2
                HESS(OFFSET+J3-1, J4) =
-     &            (3*MU2*ST1*(-((5*DZ*N2DOTR12 - CT2*R122)*(CP1*DY - DX*SP1)) -
-     &            DZ*R122*SP1MP2*ST2))/R127
-!              T1,P2
+     &            (3*MU2*st1*(-((5*dz*n2dotr12 - ct2*R122)*(cp1*dy - dx*sp1)) -
+     &            dz*R122*sp1mp2*st2))/R127
+!              t1,p2
                HESS(OFFSET+J3-2, OFFSET+J4-1) =
-     &            (MU2*(CT1*R122*SP1MP2 + 3*(-(CP2*DY) + DX*SP2)*(CP1*CT1*DX + CT1*DY*SP1 -
-     &            DZ*ST1))*ST2)/R125
-!              P1,T2
+     &            (MU2*(ct1*R122*sp1mp2 + 3*(-(cp2*dy) + dx*sp2)*(cp1*ct1*dx + ct1*dy*sp1 -
+     &            dz*st1))*st2)/R125
+!              p1,t2
                HESS(OFFSET+J3-1, OFFSET+J4-2) =
-     &            (MU2*ST1*(-(CT2*R122*SP1MP2) + 3*(-(CP1*DY) + DX*SP1)*
-     &            (CP2*CT2*DX + CT2*DY*SP2 - DZ*ST2)))/R125
+     &            (MU2*st1*(-(ct2*R122*sp1mp2) + 3*(-(cp1*dy) + dx*sp1)*
+     &            (cp2*ct2*dx + ct2*dy*sp2 - dz*st2)))/R125
 
             END DO
 
@@ -447,8 +447,8 @@
       RETURN
       END
 C
-C  ORTHOGONALISE VEC1 TO OVERALL TRANSLATIONS AND ROTATIONS.
-C  STILL NOT WORKING PROPERLY FOR NO APPARENT REASON!
+C  Orthogonalise VEC1 to overall translations and rotations.
+C  Still not working properly for no apparent reason!
 C
       SUBROUTINE ORTHOGSTOCK(VEC1,COORDS,OTEST) 
       USE COMMONS
@@ -462,13 +462,13 @@ C
       LOGICAL OTEST
 
       IF (.NOT.ALLOCATED(VECCHK)) ALLOCATE(VECCHK(3*NATOMS,30))
-      ROOTN=SQRT(1.0D0*(NATOMS/2)) ! FACTOR OF 2 FOR STOCKMAYER
+      ROOTN=SQRT(1.0D0*(NATOMS/2)) ! factor of 2 for Stockmayer
       NCHECK=0
       CMX=0.0D0
       CMY=0.0D0
       CMZ=0.0D0
       TMASS=0.0D0
-      DO J2=1,(NATOMS/2) ! FACTOR OF 2 FOR STOCKMAYER
+      DO J2=1,(NATOMS/2) ! factor of 2 for Stockmayer
          AMASS(J2)=1.0D0
          RMASS(J2)=1.0D0
          IF (MASST) AMASS(J2)=ATMASS(J2)
@@ -476,9 +476,9 @@ C
          TMASS=TMASS+AMASS(J2)
       ENDDO
 C
-C  IF MASST THEN THE COORDINATES ALREADY HAVE A SQUARE ROOT OF THE MASS IN THEM
+C  If MASST then the coordinates already have a square root of the mass in them
 C
-      DO J2=1,(NATOMS/2) ! FACTOR OF 2 FOR STOCKMAYER
+      DO J2=1,(NATOMS/2) ! factor of 2 for Stockmayer
          CMX=CMX+COORDS(3*(J2-1)+1)*RMASS(J2)
          CMY=CMY+COORDS(3*(J2-1)+2)*RMASS(J2)
          CMZ=CMZ+COORDS(3*(J2-1)+3)*RMASS(J2)
@@ -487,8 +487,8 @@ C
       CMY=CMY/TMASS
       CMZ=CMZ/TMASS
 C
-C  ORTHOGONALIZE TO KNOWN EIGENVECTORS CORRESPONDING TO NEGATIVE EIGENVALUES
-C  FOR CHECKINDEX RUN WITH NOHESS.
+C  Orthogonalize to known eigenvectors corresponding to negative eigenvalues
+C  for CHECKINDEX run with NOHESS.
 C
       IF (CHECKINDEX) THEN
          DO J2=1,NMDONE
@@ -510,7 +510,7 @@ C
          IF (OTEST) CALL VECNORM(VEC1,NOPT)
       ENDIF
 !
-!  GRAM-SCMIDT ORTHOGONALISATION OF OVERALL TRANS/ROT EIGENVECTORS.
+!  Gram-Scmidt orthogonalisation of overall trans/rot eigenvectors.
 !
       ETX(1:3*NATOMS)=0.0D0; ETY(1:3*NATOMS)=0.0D0; ETZ(1:3*NATOMS)=0.0D0
       ERX(1:3*NATOMS)=0.0D0; ERY(1:3*NATOMS)=0.0D0; ERZ(1:3*NATOMS)=0.0D0
@@ -524,7 +524,7 @@ C
       DUMMYX=0.0D0
       DUMMYY=0.0D0
       DUMMYZ=0.0D0
-      DO J2=1,(NATOMS/2) ! ROTATION 
+      DO J2=1,(NATOMS/2) ! rotation 
          J3=3*J2
          ERX(3*(J2-1)+2)=  COORDS(J3)  -CMZ
          ERX(3*(J2-1)+3)=-(COORDS(J3-1)-CMY)
@@ -536,7 +536,7 @@ C
          ERZ(3*(J2-1)+2)=-(COORDS(J3-2)-CMX)
          DUMMYZ=DUMMYZ+ERZ(3*(J2-1)+1)**2+ERZ(3*(J2-1)+2)**2
       ENDDO
-      DO J2=(NATOMS/2)+1,NATOMS ! XROTATION FOR THETA, PHI COORDINATES
+      DO J2=(NATOMS/2)+1,NATOMS ! xrotation for theta, phi coordinates
          THETA=COORDS(3*(J2-1)+1)
          PHI=COORDS(3*(J2-1)+2)
          DUMMY=TAN(THETA)
@@ -556,7 +556,7 @@ C
           ERZ(J2)=ERZ(J2)/DUMMYZ
        ENDDO
 !
-! ORTHOGONALISE ERY TO ERX
+! Orthogonalise ERY to ERX
 !
        DUMMY=0.0D0
        DO J2=1,3*NATOMS
@@ -572,7 +572,7 @@ C
           ERY(J2)=ERY(J2)/DUMMY2
        ENDDO
 !
-! ORTHOGONALISE ERZ TO ERX
+! Orthogonalise ERZ to ERX
 !
        DUMMY=0.0D0
        DO J2=1,3*NATOMS
@@ -588,7 +588,7 @@ C
           ERZ(J2)=ERZ(J2)/DUMMY2
        ENDDO
 !
-! ORTHOGONALISE ERZ TO ERY
+! Orthogonalise ERZ to ERY
 !
        DUMMY=0.0D0
        DO J2=1,3*NATOMS
@@ -604,57 +604,57 @@ C
           ERZ(J2)=ERZ(J2)/DUMMY2
        ENDDO
 !
-!  CHECK ORTHOGONALISATION OF TRANS/ROT
+!  Check orthogonalisation of trans/rot
 !
 !       DUMMY=DDOT(3*NATOMS,ETX,1,ETX,1)
-!       PRINT *,'ETX,ETX=',DUMMY
+!       PRINT *,'etx,etx=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ETY,1,ETY,1)
-!       PRINT *,'ETY,ETY=',DUMMY
+!       PRINT *,'ety,ety=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ETZ,1,ETZ,1)
-!       PRINT *,'ETZ,ETZ=',DUMMY
+!       PRINT *,'etz,etz=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ERX,1,ERX,1)
-!       PRINT *,'ERX,ERX=',DUMMY
+!       PRINT *,'erx,erx=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ERY,1,ERY,1)
-!       PRINT *,'ERY,ERY=',DUMMY
+!       PRINT *,'ery,ery=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ERZ,1,ERZ,1)
-!       PRINT *,'ERZ,ERZ=',DUMMY
+!       PRINT *,'erz,erz=',DUMMY
 !
 !       DUMMY=DDOT(3*NATOMS,ETX,1,ETY,1)
-!       PRINT *,'ETX,ETY=',DUMMY
+!       PRINT *,'etx,ety=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ETX,1,ETZ,1)
-!       PRINT *,'ETX,ETZ=',DUMMY
+!       PRINT *,'etx,etz=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ETX,1,ERX,1)
-!       PRINT *,'ETX,ERX=',DUMMY
+!       PRINT *,'etx,erx=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ETX,1,ERY,1)
-!       PRINT *,'ETX,ERY=',DUMMY
+!       PRINT *,'etx,ery=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ETX,1,ERZ,1)
-!       PRINT *,'ETX,ERZ=',DUMMY
+!       PRINT *,'etx,erz=',DUMMY
 !
 !       DUMMY=DDOT(3*NATOMS,ETY,1,ETZ,1)
-!       PRINT *,'ETY,ETZ=',DUMMY
+!       PRINT *,'ety,etz=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ETY,1,ERX,1)
-!       PRINT *,'ETY,ERX=',DUMMY
+!       PRINT *,'ety,erx=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ETY,1,ERY,1)
-!       PRINT *,'ETY,ERY=',DUMMY
+!       PRINT *,'ety,ery=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ETY,1,ERZ,1)
-!       PRINT *,'ETY,ERZ=',DUMMY
+!       PRINT *,'ety,erz=',DUMMY
 !    
 !       DUMMY=DDOT(3*NATOMS,ETZ,1,ERX,1)
-!       PRINT *,'ETZ,ERX=',DUMMY
+!       PRINT *,'etz,erx=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ETZ,1,ERY,1)
-!       PRINT *,'ETZ,ERY=',DUMMY
+!       PRINT *,'etz,ery=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ETZ,1,ERZ,1)
-!       PRINT *,'ETZ,ERZ=',DUMMY
+!       PRINT *,'etz,erz=',DUMMY
 !
 !       DUMMY=DDOT(3*NATOMS,ERX,1,ERY,1)
-!       PRINT *,'ERX,ERY=',DUMMY
+!       PRINT *,'erx,ery=',DUMMY
 !       DUMMY=DDOT(3*NATOMS,ERX,1,ERZ,1)
-!       PRINT *,'ERX,ERZ=',DUMMY
+!       PRINT *,'erx,erz=',DUMMY
 !
 !       DUMMY=DDOT(3*NATOMS,ERY,1,ERZ,1)
-!       PRINT *,'ERY,ERZ=',DUMMY
+!       PRINT *,'ery,erz=',DUMMY
 !
-!  PROJECT TRANS/ROT SET OUT OF VEC1
+!  Project trans/rot set out of VEC1
 !
        DUMMY=DDOT(3*NATOMS,ETX,1,VEC1,1)
        DO J2=1,3*NATOMS
@@ -681,7 +681,7 @@ C
           VEC1(J2)=VEC1(J2)-DUMMY*ERZ(J2)
        ENDDO
 !
-! THE SIXTH COORDINATE FOR EACH PARTICLE IS A DUMMY.
+! The sixth coordinate for each particle is a dummy.
 !
       DO J2=(NATOMS/2)+1,NATOMS
          VEC1(3*(J2-1)+3)=0.0D0
@@ -714,7 +714,7 @@ C
       ETX(1:3*NATOMS)=0.0D0; ETY(1:3*NATOMS)=0.0D0; ETZ(1:3*NATOMS)=0.0D0
       ERX(1:3*NATOMS)=0.0D0; ERY(1:3*NATOMS)=0.0D0; ERZ(1:3*NATOMS)=0.0D0
 
-      ROOTN=SQRT(1.0D0*(NATOMS/2)) ! FACTOR OF 2 FOR STOCKMAYER
+      ROOTN=SQRT(1.0D0*(NATOMS/2)) ! factor of 2 for Stockmayer
       DO J2=1,(NATOMS/2) 
          ETX(3*(J2-1)+1)=1.0D0/ROOTN
          ETY(3*(J2-1)+2)=1.0D0/ROOTN
@@ -724,7 +724,7 @@ C
       DUMMYX=0.0D0
       DUMMYY=0.0D0
       DUMMYZ=0.0D0
-      DO J2=1,(NATOMS/2) ! ROTATION 
+      DO J2=1,(NATOMS/2) ! rotation 
          J3=3*J2
          ERX(3*(J2-1)+2)=  COORDS(J3)  -CMZ
          ERX(3*(J2-1)+3)=-(COORDS(J3-1)-CMY)
@@ -736,7 +736,7 @@ C
          ERZ(3*(J2-1)+2)=-(COORDS(J3-2)-CMX)
          DUMMYZ=DUMMYZ+ERZ(3*(J2-1)+1)**2+ERZ(3*(J2-1)+2)**2
       ENDDO
-      DO J2=(NATOMS/2)+1,NATOMS ! XROTATION FOR THETA, PHI COORDINATES
+      DO J2=(NATOMS/2)+1,NATOMS ! xrotation for theta, phi coordinates
          THETA=COORDS(3*(J2-1)+1)
          PHI=COORDS(3*(J2-1)+2)
          DUMMY=TAN(THETA)
@@ -756,13 +756,13 @@ C
          ERZ(J2)=ERZ(J2)/DUMMYZ
       ENDDO
 !
-! THE SIXTH COORDINATE FOR EACH PARTICLE IS A DUMMY.
+! The sixth coordinate for each particle is a dummy.
 !
       DO J2=(NATOMS/2)+1,NATOMS
          HESS(3*(J2-1)+3,3*(J2-1)+3)=HESS(3*(J2-1)+3,3*(J2-1)+3)+SHIFTL(1)
       ENDDO
 
-C     PRINT*,'UNSHIFTED HESS:'
+C     PRINT*,'unshifted hess:'
 C     WRITE(*,'(6F15.5)') ((HESS(J1,J2),J1=1,NOPT),J2=1,NOPT)
 
       DO J1=1,3*NATOMS
@@ -777,16 +777,16 @@ C     WRITE(*,'(6F15.5)') ((HESS(J1,J2),J1=1,NOPT),J2=1,NOPT)
          ENDDO
       ENDDO
 
-C     PRINT*,'SHIFTED HESS:'
+C     PRINT*,'shifted hess:'
 C     WRITE(*,'(6F15.5)') ((HESS(J1,J2),J1=1,NOPT),J2=1,NOPT)
-C     PRINT*,'COORDINATES:'
+C     PRINT*,'coordinates:'
 C     WRITE(*,'(6F15.5)') (Q(J1),J1=1,NOPT)
 
       RETURN
       END
 
 
-C     TEST FOR Z-ALIGNED DIPOLES, RETURNING TRUE IF FOUND AND FALSE OTHERWISE.
+C     Test for z-aligned dipoles, returning TRUE if found and FALSE otherwise.
       LOGICAL FUNCTION ZALIGNTEST(NATOMS, X)
          USE KEY,ONLY : STOCKZTOL, STOCKMAXSPIN
 

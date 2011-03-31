@@ -1,24 +1,24 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE CPMDLATMIN(N,XC,F1,V,BOXLX)
       USE KEY
-      USE PORFUNCS
+      use porfuncs
       IMPLICIT NONE
       INTEGER N, NCOUNT, J1
       DOUBLE PRECISION XC(3*N),F1,F2,F3,GRAD,SECOND,XSAVE(3*N), V(3*N), BSAVE, BOXLX,
@@ -26,9 +26,9 @@ C
       LOGICAL YESNO
       CHARACTER BOXSTRING*80
 C
-C  VALUE OF DIF IS THE ORDER OF MAGNITUDE TO WHICH THE LATTICE
-C  CONSTANT CAN BE OPTIMISED. SETTING IT SMALLER THAN 10^(-7)
-C  CAUSES NUMERICAL PROBLEMS ON THE DEC.
+C  Value of DIF is the order of magnitude to which the lattice
+C  constant can be optimised. Setting it smaller than 10^(-7)
+C  causes numerical problems on the DEC.
 C
 
       THRESH=0.08D0
@@ -46,28 +46,28 @@ C
 
 10    TEMP1=BOXLX
 
-      CALL SYSTEM(' CP ' // SYS(1:LSYS) // '.OUT ' // SYS(1:LSYS) // '.OLD.OUT >& /DEV/NULL ')
+      CALL SYSTEM(' cp ' // SYS(1:LSYS) // '.out ' // SYS(1:LSYS) // '.old.out >& /dev/null ')
       IF (.NOT.YESNO) THEN
          IF (PARALLEL) THEN
-            CALL SYSTEM(' ( MPIRUN -NP ' // NPROC // ' /EXPORT/HOME/WALES/BIN/CPMD.X.MPI ' 
-     1                    // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+            CALL SYSTEM(' ( mpirun -np ' // NPROC // ' /export/home/wales/bin/cpmd.x.mpi ' 
+     1                    // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
          ELSE
-            CALL SYSTEM(' ( CPMD.X.2 ' // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+            CALL SYSTEM(' ( cpmd.x.2 ' // SYS(1:LSYS) // ' > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
          ENDIF
       ELSE
-         OPEN(UNIT=8,FILE='NEWGEOM',STATUS='UNKNOWN')
+         OPEN(UNIT=8,FILE='newgeom',STATUS='UNKNOWN')
          DO J1=1,N
             WRITE(8,'(6F20.10)') XC(3*(J1-1)+1),XC(3*(J1-1)+2),XC(3*(J1-1)+3),0.0D0,0.0D0,0.0D0
          ENDDO
          CLOSE(8)
-         CALL SYSTEM(' MV NEWGEOM GEOMETRY ')
+         CALL SYSTEM(' mv newgeom GEOMETRY ')
          WRITE(BOXSTRING,'(F20.10,5F12.4)') BOXLX, 1.0D0, 1.0D0, 0.0D0, 0.0D0, 0.0D0
-         CALL SYSTEM(' SED -E "S/CELLSIZE/' // BOXSTRING // '/" ' // SYS(1:LSYS) // '.RESTART > '  // SYS(1:LSYS) // '.LATMIN ')
+         CALL SYSTEM(' sed -e "s/CELLSIZE/' // BOXSTRING // '/" ' // SYS(1:LSYS) // '.restart > '  // SYS(1:LSYS) // '.latmin ')
          IF (PARALLEL) THEN
-            CALL SYSTEM(' ( MPIRUN -NP ' // NPROC // ' /EXPORT/HOME/WALES/BIN/CPMD.X.MPI ' 
-     1                  // SYS(1:LSYS) // '.LATMIN > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+            CALL SYSTEM(' ( mpirun -np ' // NPROC // ' /export/home/wales/bin/cpmd.x.mpi ' 
+     1                  // SYS(1:LSYS) // '.latmin > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
          ELSE
-            CALL SYSTEM(' ( CPMD.X.2 ' // SYS(1:LSYS) // '.LATMIN > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+            CALL SYSTEM(' ( cpmd.x.2 ' // SYS(1:LSYS) // '.latmin > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
          ENDIF
       ENDIF
 
@@ -77,15 +77,15 @@ C
       READ(7,*) F1, GEMAX
       IF (DEBUG) WRITE(*,'(A,3F20.10)') 'ENERGY,GEMAX,BOXLX=',F1,GEMAX,BOXLX
 C     IF (GEMAX.GT.1.0D-5) THEN
-C        WRITE(*,'(A,G15.5,A)') 'WARNING, GEMAX=',GEMAX,' CPMD WAVEFUNCTION CONVERGENCE SUSPECT'
+C        WRITE(*,'(A,G15.5,A)') 'WARNING, GEMAX=',GEMAX,' CPMD wavefunction convergence suspect'
 C     ENDIF
       CLOSE(7)
-      CALL SYSTEM('GREP "CPU TIME" ' // SYS(1:LSYS) // 
-     1             '.OUT | TAIL -1 | SED -E "S/ *CPU TIME/ CPU TIME FOR CPMD CALL/" > TEMP')
-C    1             '.OUT | TAIL -1 | SED -E "S/ *CPU TIME/ CPU TIME FOR CPMD CALL/" -E "/S/  / /G" > TEMP')
-      OPEN (UNIT=7,FILE='TEMP',STATUS='OLD')
+      CALL SYSTEM('grep "CPU TIME" ' // SYS(1:LSYS) // 
+     1             '.out | tail -1 | sed -e "s/ *CPU TIME/ CPU time for CPMD call/" > temp')
+C    1             '.out | tail -1 | sed -e "s/ *CPU TIME/ CPU time for CPMD call/" -e "/s/  / /g" > temp')
+      OPEN (UNIT=7,FILE='temp',STATUS='OLD')
       READ(7,'(A)') BOXSTRING
-      WRITE(*,'(A,A,F20.10,A,F20.10)') BOXSTRING,' ENERGY=',F1,' GEMAX=',GEMAX
+      WRITE(*,'(A,A,F20.10,A,F20.10)') BOXSTRING,' Energy=',F1,' GEMAX=',GEMAX
       CLOSE(7)
       OPEN(UNIT=7,FILE='GEOMETRY',STATUS='OLD')
       DO J1=1,N
@@ -108,66 +108,66 @@ C    1             '.OUT | TAIL -1 | SED -E "S/ *CPU TIME/ CPU TIME FOR CPMD CAL
       DO J1=1,3*N
          XC(J1)=XSAVE(J1)*BOXLX/BSAVE
       ENDDO
-      OPEN(UNIT=8,FILE='NEWGEOM',STATUS='UNKNOWN')
+      OPEN(UNIT=8,FILE='newgeom',STATUS='UNKNOWN')
       DO J1=1,N
          WRITE(8,'(6F20.10)') XC(3*(J1-1)+1),XC(3*(J1-1)+2),XC(3*(J1-1)+3),0.0D0,0.0D0,0.0D0
       ENDDO
       CLOSE(8)
-      CALL SYSTEM(' MV NEWGEOM GEOMETRY ')
+      CALL SYSTEM(' mv newgeom GEOMETRY ')
       WRITE(BOXSTRING,'(F20.10,5F12.4)') BOXLX, 1.0D0, 1.0D0, 0.0D0, 0.0D0, 0.0D0
-      CALL SYSTEM(' SED -E "S/CELLSIZE/' // BOXSTRING // '/" ' // SYS(1:LSYS) // '.RESTART > '  // SYS(1:LSYS) // '.LATMIN ')
+      CALL SYSTEM(' sed -e "s/CELLSIZE/' // BOXSTRING // '/" ' // SYS(1:LSYS) // '.restart > '  // SYS(1:LSYS) // '.latmin ')
       IF (PARALLEL) THEN
-         CALL SYSTEM(' ( MPIRUN -NP ' // NPROC // ' /EXPORT/HOME/WALES/BIN/CPMD.X.MPI ' 
-     1                // SYS(1:LSYS) // '.LATMIN > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+         CALL SYSTEM(' ( mpirun -np ' // NPROC // ' /export/home/wales/bin/cpmd.x.mpi ' 
+     1                // SYS(1:LSYS) // '.latmin > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
       ELSE
-         CALL SYSTEM(' ( CPMD.X.2 ' // SYS(1:LSYS) // '.LATMIN > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+         CALL SYSTEM(' ( cpmd.x.2 ' // SYS(1:LSYS) // '.latmin > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
       ENDIF
       OPEN (UNIT=7,FILE='ENERGY',STATUS='OLD')
       READ(7,*) F2, GEMAX
       IF (DEBUG) WRITE(*,'(A,3F20.10)') 'ENERGY,GEMAX,BOXLX=',F2,GEMAX,BOXLX
 C     IF (GEMAX.GT.1.0D-5) THEN
-C        WRITE(*,'(A,G15.5,A)') 'WARNING, GEMAX=',GEMAX,' CPMD WAVEFUNCTION CONVERGENCE SUSPECT'
+C        WRITE(*,'(A,G15.5,A)') 'WARNING, GEMAX=',GEMAX,' CPMD wavefunction convergence suspect'
 C     ENDIF
       CLOSE(7)
-      CALL SYSTEM('GREP "CPU TIME" ' // SYS(1:LSYS) // 
-     1             '.OUT | TAIL -1 | SED -E "S/ *CPU TIME/ CPU TIME FOR CPMD CALL/" > TEMP')
-C    1             '.OUT | TAIL -1 | SED -E "S/ *CPU TIME/ CPU TIME FOR CPMD CALL/" -E "/S/  / /G" > TEMP')
-      OPEN (UNIT=7,FILE='TEMP',STATUS='OLD')
+      CALL SYSTEM('grep "CPU TIME" ' // SYS(1:LSYS) // 
+     1             '.out | tail -1 | sed -e "s/ *CPU TIME/ CPU time for CPMD call/" > temp')
+C    1             '.out | tail -1 | sed -e "s/ *CPU TIME/ CPU time for CPMD call/" -e "/s/  / /g" > temp')
+      OPEN (UNIT=7,FILE='temp',STATUS='OLD')
       READ(7,'(A)') BOXSTRING
-      WRITE(*,'(A,A,F20.10,A,F20.10)') BOXSTRING,' ENERGY=',F2,' GEMAX=',GEMAX
+      WRITE(*,'(A,A,F20.10,A,F20.10)') BOXSTRING,' Energy=',F2,' GEMAX=',GEMAX
       CLOSE(7)
 
       BOXLX=TEMP1-DIF
       DO J1=1,3*N
          XC(J1)=XSAVE(J1)*BOXLX/BSAVE
       ENDDO
-      OPEN(UNIT=8,FILE='NEWGEOM',STATUS='UNKNOWN')
+      OPEN(UNIT=8,FILE='newgeom',STATUS='UNKNOWN')
       DO J1=1,N
          WRITE(8,'(6F20.10)') XC(3*(J1-1)+1),XC(3*(J1-1)+2),XC(3*(J1-1)+3),0.0D0,0.0D0,0.0D0
       ENDDO
       CLOSE(8)
-      CALL SYSTEM(' MV NEWGEOM GEOMETRY ')
+      CALL SYSTEM(' mv newgeom GEOMETRY ')
       WRITE(BOXSTRING,'(F20.10,5F12.4)') BOXLX, 1.0D0, 1.0D0, 0.0D0, 0.0D0, 0.0D0
-      CALL SYSTEM(' SED -E "S/CELLSIZE/' // BOXSTRING // '/" ' // SYS(1:LSYS) // '.RESTART > '  // SYS(1:LSYS) // '.LATMIN ')
+      CALL SYSTEM(' sed -e "s/CELLSIZE/' // BOXSTRING // '/" ' // SYS(1:LSYS) // '.restart > '  // SYS(1:LSYS) // '.latmin ')
       IF (PARALLEL) THEN
-         CALL SYSTEM(' ( MPIRUN -NP ' // NPROC // ' /EXPORT/HOME/WALES/BIN/CPMD.X.MPI ' 
-     1               // SYS(1:LSYS) // '.LATMIN > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+         CALL SYSTEM(' ( mpirun -np ' // NPROC // ' /export/home/wales/bin/cpmd.x.mpi ' 
+     1               // SYS(1:LSYS) // '.latmin > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
       ELSE
-         CALL SYSTEM(' ( CPMD.X.2 ' // SYS(1:LSYS) // '.LATMIN > ' // SYS(1:LSYS) // '.OUT ) >& /DEV/NULL')
+         CALL SYSTEM(' ( cpmd.x.2 ' // SYS(1:LSYS) // '.latmin > ' // SYS(1:LSYS) // '.out ) >& /dev/null')
       ENDIF
       OPEN (UNIT=7,FILE='ENERGY',STATUS='OLD')
       READ(7,*) F3, GEMAX
       IF (DEBUG) WRITE(*,'(A,3F20.10)') 'ENERGY,GEMAX,BOXLX=',F3,GEMAX,BOXLX
 C     IF (GEMAX.GT.1.0D-5) THEN
-C        WRITE(*,'(A,G15.5,A)') 'WARNING, GEMAX=',GEMAX,' CPMD WAVEFUNCTION CONVERGENCE SUSPECT'
+C        WRITE(*,'(A,G15.5,A)') 'WARNING, GEMAX=',GEMAX,' CPMD wavefunction convergence suspect'
 C     ENDIF
       CLOSE(7)
-      CALL SYSTEM('GREP "CPU TIME" ' // SYS(1:LSYS) // 
-     1             '.OUT | TAIL -1 | SED -E "S/ *CPU TIME/ CPU TIME FOR CPMD CALL/" > TEMP')
-C    1             '.OUT | TAIL -1 | SED -E "S/ *CPU TIME/ CPU TIME FOR CPMD CALL/" -E "/S/  / /G" > TEMP')
-      OPEN (UNIT=7,FILE='TEMP',STATUS='OLD')
+      CALL SYSTEM('grep "CPU TIME" ' // SYS(1:LSYS) // 
+     1             '.out | tail -1 | sed -e "s/ *CPU TIME/ CPU time for CPMD call/" > temp')
+C    1             '.out | tail -1 | sed -e "s/ *CPU TIME/ CPU time for CPMD call/" -e "/s/  / /g" > temp')
+      OPEN (UNIT=7,FILE='temp',STATUS='OLD')
       READ(7,'(A)') BOXSTRING
-      WRITE(*,'(A,A,F20.10,A,F20.10)') BOXSTRING,' ENERGY=',F3,' GEMAX=',GEMAX
+      WRITE(*,'(A,A,F20.10,A,F20.10)') BOXSTRING,' Energy=',F3,' GEMAX=',GEMAX
       CLOSE(7)
 
       GRAD=(F2-F3)/(2.0D0*DIF)
@@ -175,34 +175,34 @@ C    1             '.OUT | TAIL -1 | SED -E "S/ *CPU TIME/ CPU TIME FOR CPMD CAL
       IF (GRAD.EQ.0.0D0) STOP
 
       SECOND=(F3+F2-2.0D0*F1)/(DIF*DIF)
-      WRITE(*,'(A,I5,A,T50,F20.10)') 'ENERGY FOR LATTICE CYCLE ',NCOUNT,' IS ',F1
-      WRITE(*,'(A,T50,F20.10)') 'GRADIENT WRT BOX LENGTH=',GRAD
-      WRITE(*,'(A,T50,F20.10)') 'SECOND DERIVATIVE WRT BOX LENGTH=',SECOND
-      WRITE(*,'(A,T50,F20.10)') 'FULL STEP SIZE=',-GRAD/SECOND
+      WRITE(*,'(A,I5,A,T50,F20.10)') 'Energy for lattice cycle ',NCOUNT,' is ',F1
+      WRITE(*,'(A,T50,F20.10)') 'Gradient wrt box length=',GRAD
+      WRITE(*,'(A,T50,F20.10)') 'Second derivative wrt box length=',SECOND
+      WRITE(*,'(A,T50,F20.10)') 'Full step size=',-GRAD/SECOND
       EPREV=F1
       NCOUNT=NCOUNT+1
       IF (DABS(GRAD/SECOND).GT.THRESH) THEN
          BOXLX=TEMP1-THRESH*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD))
-         WRITE(*,'(A,T50,F20.10,A,F15.5)') 'SCALED STEP=',-THRESH*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD)),' NEW BOX LENGTH=',BOXLX
+         WRITE(*,'(A,T50,F20.10,A,F15.5)') 'Scaled step=',-THRESH*GRAD*DABS(SECOND)/(SECOND*DABS(GRAD)),' new box length=',BOXLX
          DO J1=1,3*N
             XC(J1)=XSAVE(J1)*BOXLX/BSAVE
          ENDDO
          GOTO 10
       ELSE
          BOXLX=TEMP1-GRAD/SECOND
-         WRITE(*,'(A,T50,F20.10,A,F15.5)') 'SCALED STEP=',-GRAD/SECOND,' NEW BOX LENGTH=',BOXLX
+         WRITE(*,'(A,T50,F20.10,A,F15.5)') 'Scaled step=',-GRAD/SECOND,' new box length=',BOXLX
          DO J1=1,3*N
             XC(J1)=XSAVE(J1)*BOXLX/BSAVE
          ENDDO
          IF (DABS(GRAD/SECOND).GT.DIF/1.0D1) GOTO 10
       ENDIF
 
-      WRITE(*,'(A,I6,A)') 'BOX LENGTH OPTIMISATION CONVERGED IN ',NCOUNT,' STEPS. COORDINATES WRITTEN TO POINTS.LATMIN'
+      WRITE(*,'(A,I6,A)') 'Box length optimisation converged in ',NCOUNT,' steps. Coordinates written to points.latmin'
       DO J1=1,3*N
          XC(J1)=XSAVE(J1)*BOXLX/BSAVE
       ENDDO
-      IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH NOT EQUAL TO ZERO IN CPMDLATMIN'
-      OPEN(UNIT=7,FILE='POINTS.LATMIN',STATUS='UNKNOWN')
+      IF (FILTH.NE.0) PRINT*,'*** WARNING FILTH not equal to zero in cpmdlatmin'
+      OPEN(UNIT=7,FILE='points.latmin',STATUS='UNKNOWN')
       WRITE(7,'(3F20.10)') (XC(J1),J1=1,3*N)
       STOP
 

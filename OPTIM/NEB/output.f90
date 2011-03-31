@@ -1,20 +1,20 @@
-!   NEB MODULE IS AN IMPLEMENTATION OF THE NUDGED ELASTIC BAND METHOD FOR PERFORMING DOUBLE-ENDED PATHWAY SEARCHES.
-!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
-!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
+!   NEB module is an implementation of the nudged elastic band method for performing double-ended pathway searches.
+!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
+!   This file is part of NEB module. NEB module is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 MODULE NEBOUTPUT
      IMPLICIT NONE
@@ -60,19 +60,19 @@ MODULE NEBOUTPUT
              NT=1
              MAXE=-1.0D100
              MLOC=REDOTSIM+1
-             PRINT '(A,F20.10)',' TSLOCATOR> TRANSITION STATE HAS ENERGY ',EEE(REDOTSIM+1)
+             PRINT '(A,F20.10)',' tslocator> transition state has energy ',EEE(REDOTSIM+1)
              ALLOCATE(FIRST)
              DUMMY=>FIRST 
              DUMMY%I=MLOC
              NULLIFY(DUMMY%NEXT)
           ELSE
              SELECT CASE(CANDIDATES) ! IDENTIFY TS CANDIDATES
-             CASE('HIGH')
+             CASE('high')
                   NT=1
                   MAXE=-1.0D100
                   PRINT *,'NIMAGE=',NIMAGE
                   DO J1=2,NIMAGE+1
-                     PRINT '(A,I6,2G20.10)','OUTPUT> J1,EEE,MAXE=',J1,EEE(J1),MAXE
+                     PRINT '(A,I6,2G20.10)','output> J1,EEE,MAXE=',J1,EEE(J1),MAXE
                      IF (EEE(J1).GT.MAXE) THEN
                         MLOC=J1
                         MAXE=EEE(J1)
@@ -82,10 +82,10 @@ MODULE NEBOUTPUT
                   DUMMY=>FIRST 
                   DUMMY%I=MLOC
                   NULLIFY(DUMMY%NEXT)
-             CASE('ALL','MAXIM')
+             CASE('all','maxim')
                   DO I=2,NIMAGE+1 
                        T=.TRUE.
-                       IF (CANDIDATES=='MAXIM') THEN
+                       IF (CANDIDATES=='maxim') then
                             IF ( EEE(I-1) < EEE(I) .AND. EEE(I) > EEE(I+1) ) THEN
                                  T=.TRUE.
                             ELSE
@@ -112,9 +112,9 @@ MODULE NEBOUTPUT
           IF (ASSOCIATED(FIRST)) THEN
                DUMMY=>FIRST
           ELSE
-               ! THIS SHOULD COPE WITH HIGHLY ASYMMETRIC PROFILES, WHICH OTHERWISE LOOKS MONOTONIC
-               ! UNTIL WE TRY A HUGE NUMBER OF IMAGES. 
-               PRINT '(1X,A)', 'NO MAXIMUM IN PROFILE - USING HIGHEST IMAGE'
+               ! This should cope with highly asymmetric profiles, which otherwise looks monotonic
+               ! until we try a huge number of images. 
+               PRINT '(1x,a)', 'No maximum in profile - using highest image'
                ALLOCATE(FIRST)
                DUMMY=>FIRST
                IF (EEE(2).GT.EEE(NIMAGE+1)) THEN
@@ -125,27 +125,27 @@ MODULE NEBOUTPUT
                NULLIFY(DUMMY%NEXT)
           ENDIF
 
-!         WRITE(*,'(1X,A)',ADVANCE='NO') 'FOLLOWING IMAGES ARE CANDIDATES FOR TS:'
-!         DO J=1,NTSMAX
-!              IF (J<MAXPRINTOUT) WRITE(*,'(I5)',ADVANCE='NO') DUMMY%I-1
-!              IF (.NOT.ASSOCIATED(DUMMY%NEXT)) EXIT
-!              DUMMY=>DUMMY%NEXT
-!         ENDDO
-!         WRITE(*,'(A)') '.'
+!         write(*,'(1x,a)',advance='No') 'Following images are candidates for TS:'
+!         do j=1,NTSmax
+!              if (j<MaxPrintOut) write(*,'(i5)',advance='No') dummy%i-1
+!              if (.not.associated(dummy%next)) exit
+!              dummy=>dummy%next
+!         enddo
+!         write(*,'(a)') '.'
 
-          ! ------ BS360 : MORE GENERAL PRINTOUT (WITHOUT MAXPRINTOUT) -------
-          WRITE(*,'(1X,A,I4,A)',ADVANCE='NO') 'FOLLOWING ',NT,' IMAGES ARE CANDIDATES FOR TS:'
+          ! ------ bs360 : more general printout (without MaxPrintOut) -------
+          WRITE(*,'(1x,a,i4,a)',advance='No') 'Following ',nt,' images are candidates for TS:'
           DO J=1,NTSMAX
-               WRITE(*,'(I5)',ADVANCE='NO') DUMMY%I-1
+               WRITE(*,'(i5)',advance='No') dummy%i-1
                IF (.NOT.ASSOCIATED(DUMMY%NEXT)) EXIT
                DUMMY=>DUMMY%NEXT
-               !MSB50
+               !msb50
           ENDDO
           PRINT *,' '
-          ! ------ END BS360 ---------------------------
+          ! ------ end bs360 ---------------------------
           
           IF (OPTIMIZETS) THEN
-               WRITE(*,'(1X,A)',ADVANCE='NO') 'CONVERGED TO TS (NUMBER OF ITERATIONS):     '
+               WRITE(*,'(1x,a)',advance='No') 'Converged to TS (number of iterations):     '
 
                DUMMY=>FIRST
                NTSFOUND=0
@@ -162,11 +162,11 @@ MODULE NEBOUTPUT
                     ENDIF
                     IF (BFGSTST) THEN
                        IF (UNRST) THEN ! JMC
-                          KNOWG=.FALSE. ! IS THIS NEEDED NOW THAT GDUMMY IS SET? DJW
+                          KNOWG=.FALSE. ! Is this needed now that gdummy is set? DJW
                           VECS(1:NINTS)=TANVEC(1:NINTS,DUMMY%I-1)
                           VECSNORM=SUM(VECS(1:NINTS)**2)
-                          IF (VECSNORM.EQ.0.0D0) THEN  ! JUST IN CASE TANVEC IS SOMEHOW NOT SET? E.G. FOR REDOPATH !
-                             IF (DEBUG) PRINT '(A)', ' OUTPUT> SETTING RANDOM INITIAL VECTOR FOR EIGENVECTOR'
+                          IF (VECSNORM.EQ.0.0D0) THEN  ! Just in case TANVEC is somehow not set? e.g. for redopath !
+                             IF (DEBUG) PRINT '(A)', ' output> setting random initial vector for eigenvector'
                              DO J1=1,NINTS
                                 VECS(J1)=DPRAND()*2-1.0D0
                              ENDDO
@@ -177,14 +177,14 @@ MODULE NEBOUTPUT
                        ELSE
                           IF (DESMINT) THEN
                              TMPINTNEWT = INTNEWT
-                             INTNEWT = .FALSE. ! LINEAR TRANSFORMATION ONLY
-                             ! CONVERT INTERNAL TANGENTS TO CARTESIANS
+                             INTNEWT = .FALSE. ! linear transformation only
+                             ! convert internal tangents to cartesians
                              CALL TRANSBACKDELTA(TANVEC(1:NOPT,DUMMY%I-1),VECS,XYZCART(3*NATOMS*(DUMMY%I-1)+1:3*NATOMS*DUMMY%I), &
                                   & NINTC,3*NATOMS,NNZ,KD,FAILED,DEBUG,INTEPSILON)                             
                              INTNEWT = TMPINTNEWT
                              VECSNORM=SUM(VECS(1:3*NATOMS)**2)
-                             IF (VECSNORM.EQ.0.0D0) THEN  ! TANVEC ISN'T SET FOR GUESSPATH, MECCANO, UNMECCANO
-                                IF (DEBUG) PRINT '(A)', ' OUTPUT> SETTING RANDOM INITIAL VECTOR FOR EIGENVECTOR'
+                             IF (VECSNORM.EQ.0.0D0) THEN  ! TANVEC ISN't set for GUESSPATH, MECCANO, UNMECCANO
+                                IF (DEBUG) PRINT '(A)', ' output> setting random initial vector for eigenvector'
                                 DO J1=1,3*NATOMS
                                    VECS(J1)=DPRAND()*2-1.0D0
                                 ENDDO
@@ -193,8 +193,8 @@ MODULE NEBOUTPUT
                           ELSE
                              VECS(1:NOPT)=TANVEC(1:NOPT,DUMMY%I-1)
                              VECSNORM=SUM(VECS(1:NOPT)**2)
-                             IF (VECSNORM.EQ.0.0D0) THEN  ! TANVEC ISN'T SET FOR GUESSPATH, MECCANO, UNMECCANO
-                                IF (DEBUG) PRINT '(A)', ' OUTPUT> SETTING RANDOM INITIAL VECTOR FOR EIGENVECTOR'
+                             IF (VECSNORM.EQ.0.0D0) THEN  ! TANVEC ISN't set for GUESSPATH, MECCANO, UNMECCANO
+                                IF (DEBUG) PRINT '(A)', ' output> setting random initial vector for eigenvector'
                                 DO J1=1,NOPT
                                    VECS(J1)=DPRAND()*2-1.0D0
                                 ENDDO
@@ -225,7 +225,7 @@ MODULE NEBOUTPUT
                     ENDIF
                     CALL MYCPU_TIME(TIME,.FALSE.)
 
-!                   IF (CHRMMT) CALL CHECKTS(DUMMY,EVALMIN,TSCONVERGED) ! THIS IS NOW A DUMMY ROUTINE!
+!                   IF (CHRMMT) CALL CHECKTS(DUMMY,EVALMIN,TSCONVERGED) ! this is now a dummy routine!
 
                     IF (TSCONVERGED) THEN
                          NTSFOUND=NTSFOUND+1
@@ -244,13 +244,13 @@ MODULE NEBOUTPUT
                          TSFOUND(NTSFOUND)%EVALMIN=EVALMIN
                       ENDIF
 
-!                   IF (J<MAXPRINTOUT) THEN  ! COMMENTED BY BS360
+!                   if (j<MaxPrintOut) then  ! commented by bs360
                          IF (TSCONVERGED) THEN
-                              WRITE(*,'(I5)',ADVANCE='NO') ITDONE
+                              WRITE(*,'(i5)',advance='No') itdone
                          ELSE
-                              WRITE(*,'(A5)',ADVANCE='NO') '   :('
+                              WRITE(*,'(a5)',advance='No') '   :('
                          ENDIF
-!                   ENDIF
+!                   endif
 
                     IF (ASSOCIATED(DUMMY%NEXT)) THEN
                          DUMMY=>DUMMY%NEXT
@@ -260,29 +260,29 @@ MODULE NEBOUTPUT
                ENDDO
                CALL MYCPU_TIME(ENDTIME,.FALSE.)
 
-               WRITE(*,'(A)') '.'
+               WRITE(*,'(a)') '.'
 
-               WRITE(INTSTR,'(I10)') NTSFOUND
+               WRITE(INTSTR,'(i10)') NTSfound
 
                IF (MECCANOT) THEN                  
-                  WRITE(METHSTR,'(A)') 'MECCANO'
+                  WRITE(METHSTR,'(a)') 'MECCANO'
                ELSE IF (GROWSTRINGT) THEN
                   IF (EVOLVESTRINGT) THEN
-                     WRITE(METHSTR,'(A)') 'ES'
+                     WRITE(METHSTR,'(a)') 'ES'
                   ELSE
-                     WRITE(METHSTR,'(A)') 'GS'
+                     WRITE(METHSTR,'(a)') 'GS'
                   ENDIF
                ELSE
-                  WRITE(METHSTR,'(A)') 'DNEB'
+                  WRITE(METHSTR,'(a)') 'DNEB'
                ENDIF              
 
-               WRITE(*, '(1X,A,F7.2)',ADVANCE='YES') TRIM(METHSTR)//' RUN YIELDED '//TRIM(ADJUSTL(INTSTR))// &
-                            &' TRUE TRANSITION STATE(S) TIME=',ENDTIME-STARTTIME
-!              IF (NTSFOUND==1) THEN
-!                   WRITE(*, '(A)') '.'
-!              ELSE
-!                   WRITE(*, '(A)') 'S.'
-!              ENDIF
+               WRITE(*, '(1x,a,f7.2)',advance='yes') trim(METHSTR)//' run yielded '//trim(adjustl(IntStr))// &
+                            &' true transition state(s) time=',EndTime-StartTime
+!              if (NTSfound==1) then
+!                   write(*, '(a)') '.'
+!              else
+!                   write(*, '(a)') 's.'
+!              endif
           ENDIF
           IF (SAVECANDIDATES) THEN
                IF (ASSOCIATED(FIRST)) THEN
@@ -294,9 +294,9 @@ MODULE NEBOUTPUT
                     ENDIF
                     J=1
                     DO
-                         WRITE(FILENAME,'(I10)') J
-                         FILENAME='POINTS'//TRIM(ADJUSTL(FILENAME))//'.OUT'
-                         OPEN(UNIT=40,FILE=FILENAME,STATUS='UNKNOWN',FORM='UNFORMATTED',ACCESS='DIRECT',RECL=RECLEN)
+                         WRITE(FILENAME,'(i10)') j
+                         FILENAME='points'//trim(adjustl(filename))//'.out'
+                         OPEN(UNIT=40,FILE=FILENAME,STATUS='unknown',form='unformatted',access='direct',recl=reclen)
 
                          IF (DESMINT) THEN
                             WRITE(40,REC=1) ( XYZ(3*NATOMS*(DUMMY%I-1)+1:3*NATOMS*DUMMY%I) )
@@ -368,19 +368,19 @@ ALLOCATE(TSGUESS(MYTSMAX,3*NATOMS),LTANVEC(MYTSMAX,3*NATOMS))
 NTS=0
 
 IF (REDOPATHNEB) THEN
-   PRINT '(A,F20.10)',' CONTSLOCATOR> ERROR *** REDOPATH CANNOT BE SET WITH NEBCONSTRAINT'
+   PRINT '(A,F20.10)',' contslocator> ERROR *** REDOPATH cannot be set with NEBCONSTRAINT'
    STOP
 ELSE
    DO I=1,NIMAGE+1
-      DO J2=1,NIMAGE+2 ! EXTRA INTERPOLATION USING THE SAME NUMBER OF IMAGES
+      DO J2=1,NIMAGE+2 ! extra interpolation using the same number of images
          XLOCAL(1:NOPT)=( (NIMAGE+2-J2)*XYZ((I-1)*NOPT+1:I*NOPT)+(J2-1)*XYZ(I*NOPT+1:(I+1)*NOPT) )/(NIMAGE+1)
          CALL POTENTIAL(XLOCAL,ELOCAL(J2),LGDUMMY,.FALSE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-         PRINT '(3(A,I6),A,G20.10)',' CONTSLOCATOR> ENERGY AT POSITION ',J2,' BETWEEN IMAGES ',I,' AND ',I+1, &
+         PRINT '(3(A,I6),A,G20.10)',' contslocator> energy at position ',J2,' between images ',I,' and ',I+1, &
   &                                  ' E=',ELOCAL(J2)
       ENDDO
       IF (ELOCAL(2).LT.ELOCAL(1)) THEN
          NTS=NTS+1
-         IF (NTS.GT.MYTSMAX) THEN ! INCREASE STORAGE AS REQUIRED FOR TS CANDIDATES
+         IF (NTS.GT.MYTSMAX) THEN ! increase storage as required for TS candidates
             ALLOCATE(TSTEMP(MYTSMAX,3*NATOMS))
             TSTEMP(1:MYTSMAX,1:3*NATOMS)=TSGUESS(1:MYTSMAX,1:3*NATOMS)
             DEALLOCATE(TSGUESS)
@@ -393,7 +393,7 @@ ELSE
             DEALLOCATE(TSTEMP)
             MYTSMAX=2*MYTSMAX
          ENDIF
-         PRINT '(3(A,I6),A,G20.10)',' CONTSLOCATOR> ADDING TS CANDIDATE AT POSITION ',1,' BETWEEN IMAGES ',I,' AND ',I+1, &
+         PRINT '(3(A,I6),A,G20.10)',' contslocator> adding ts candidate at position ',1,' between images ',I,' and ',I+1, &
   &                               ' E=',ELOCAL(1)
          TSGUESS(NTS,1:3*NATOMS)=XYZ((I-1)*NOPT+1:I*NOPT)
          LTANVEC(NTS,1:3*NATOMS)=XYZ((I-1)*NOPT+1:I*NOPT)-XYZ(I*NOPT+1:(I+1)*NOPT)
@@ -401,7 +401,7 @@ ELSE
       DO J2=2,NIMAGE+1 
          IF ( (ELOCAL(J2-1).LT.ELOCAL(J2)) .AND. (ELOCAL(J2).GT.ELOCAL(J2+1)) ) THEN
             NTS=NTS+1
-            IF (NTS.GT.MYTSMAX) THEN ! INCREASE STORAGE AS REQUIRED FOR TS CANDIDATES
+            IF (NTS.GT.MYTSMAX) THEN ! increase storage as required for TS candidates
                ALLOCATE(TSTEMP(MYTSMAX,3*NATOMS))
                TSTEMP(1:MYTSMAX,1:3*NATOMS)=TSGUESS(1:MYTSMAX,1:3*NATOMS)
                DEALLOCATE(TSGUESS)
@@ -414,7 +414,7 @@ ELSE
                DEALLOCATE(TSTEMP)
                MYTSMAX=2*MYTSMAX
             ENDIF
-            PRINT '(3(A,I6),A,G20.10)',' CONTSLOCATOR> ADDING TS CANDIDATE AT POSITION ',J2,' BETWEEN IMAGES ',I,' AND ',I+1, &
+            PRINT '(3(A,I6),A,G20.10)',' contslocator> adding ts candidate at position ',J2,' between images ',I,' and ',I+1, &
   &                                  ' E=',ELOCAL(J2)
             TSGUESS(NTS,1:3*NATOMS)=( (NIMAGE+2-J2)*XYZ((I-1)*NOPT+1:I*NOPT)+(J2-1)*XYZ(I*NOPT+1:(I+1)*NOPT) )/(NIMAGE+1)
             LTANVEC(NTS,1:3*NATOMS)=XYZ((I-1)*NOPT+1:I*NOPT)-XYZ(I*NOPT+1:(I+1)*NOPT)
@@ -422,7 +422,7 @@ ELSE
       ENDDO
       IF (ELOCAL(NIMAGE+1).LT.ELOCAL(NIMAGE+2)) THEN
          NTS=NTS+1
-         IF (NTS.GT.MYTSMAX) THEN ! INCREASE STORAGE AS REQUIRED FOR TS CANDIDATES
+         IF (NTS.GT.MYTSMAX) THEN ! increase storage as required for TS candidates
             ALLOCATE(TSTEMP(MYTSMAX,3*NATOMS))
             TSTEMP(1:MYTSMAX,1:3*NATOMS)=TSGUESS(1:MYTSMAX,1:3*NATOMS)
             DEALLOCATE(TSGUESS)
@@ -435,7 +435,7 @@ ELSE
             DEALLOCATE(TSTEMP)
             MYTSMAX=2*MYTSMAX
          ENDIF
-         PRINT '(3(A,I6),A,G20.10)',' CONTSLOCATOR> ADDING TS CANDIDATE AT POSITION ',NIMAGE+2,' BETWEEN IMAGES ',I,' AND ',I+1, &
+         PRINT '(3(A,I6),A,G20.10)',' contslocator> adding ts candidate at position ',NIMAGE+2,' between images ',I,' and ',I+1, &
   &                               ' E=',ELOCAL(NIMAGE+2)
          TSGUESS(NTS,1:3*NATOMS)=XYZ(I*NOPT+1:(I+1)*NOPT) 
          LTANVEC(NTS,1:3*NATOMS)=XYZ((I-1)*NOPT+1:I*NOPT)-XYZ(I*NOPT+1:(I+1)*NOPT)
@@ -444,11 +444,11 @@ ELSE
 ENDIF
 
 IF (NTS.EQ.0) THEN
-   PRINT '(A)',' CONTSLOCATOR> NO TS CANDIDATES TO OPTIMISE'
+   PRINT '(A)',' contslocator> No ts candidates to optimise'
    STOP
 ENDIF
 
-WRITE(*,'(1X,A)',ADVANCE='NO') 'CONVERGED TO TS (NUMBER OF ITERATIONS):     '
+WRITE(*,'(1x,a)',advance='No') 'Converged to TS (number of iterations):     '
 
 NTSFOUND=0
 CALL MYCPU_TIME(STARTTIME,.FALSE.)
@@ -458,7 +458,7 @@ DO J=1,NTS
    KNOWG=.FALSE.
    IF (BFGSTST) THEN
       IF (UNRST) THEN 
-         PRINT '(A)',' CONTSLOCATOR> ERROR *** NOT CODED FOR UNRES'
+         PRINT '(A)',' contslocator> ERROR *** not coded for UNRES'
          STOP
       ELSE
          VECS(1:NOPT)=LTANVEC(J,1:NOPT)
@@ -476,19 +476,19 @@ DO J=1,NTS
       TSFOUND(NTSFOUND)%COORD=TSGUESS(J,1:NOPT)
       TSFOUND(NTSFOUND)%E=EDUMMY
       TSFOUND(NTSFOUND)%EVALMIN=EVALMIN
-      WRITE(*,'(I5)',ADVANCE='NO') ITDONE
+      WRITE(*,'(i5)',advance='No') itdone
    ELSE
-      WRITE(*,'(A5)',ADVANCE='NO') '   :('
+      WRITE(*,'(a5)',advance='No') '   :('
    ENDIF
 ENDDO
 CALL MYCPU_TIME(ENDTIME,.FALSE.)
 
-WRITE(*,'(A)') '.'
+WRITE(*,'(a)') '.'
 
-WRITE(INTSTR,'(I10)') NTSFOUND
+WRITE(INTSTR,'(i10)') NTSfound
 
-WRITE(*, '(A,F7.2)',ADVANCE='YES') ' CONSTRAINED POTENTIAL RUN YIELDED '//TRIM(ADJUSTL(INTSTR))// &
-                  &' TRUE TRANSITION STATE(S) TIME=',ENDTIME-STARTTIME
+WRITE(*, '(A,F7.2)',advance='yes') ' Constrained potential run yielded '//trim(adjustl(IntStr))// &
+                  &' true transition state(s) time=',EndTime-StartTime
 
 DEALLOCATE(TSGUESS)
 RETURN
@@ -505,17 +505,17 @@ END SUBROUTINE CONTSLOCATOR
           TYPE(CHAIN),POINTER :: DUMMY
           DOUBLE PRECISION :: EVALMIN
 
-          ! DAE IF EVALMIN LARGE IN MAGNITUDE, THIS TS IS LIKELY TO BE BOGUS, AND CAUSE PROBLEMS
-          ! WHEN THEN THE CONNECTED MINIMA HAVE TO BE FOUND
+          ! DAE If EVALMIN large in magnitude, this TS is likely to be bogus, and cause problems
+          ! when then the connected minima have to be found
 !          IF (CHRMMT.AND.(EVALMIN.LT.-100.D0)) THEN
-!               TSCONVERGED=.FALSE.
-!               WRITE(*,'(A,F20.10,A)') 'CHECKTS> EIGENVALUE ',EVALMIN,' TOO NEGATIVE, TS SEARCH FAILED'
-!               ! DAE FOR CHARMM CHECK THIS TRANSITION STATE TO SEE IF ITS GEOMETRY HAS BECOME UNFEASIBLE
-!!               CALL CHECKPOINT(XYZ(NOPT*(DUMMY%I-1):NOPT*DUMMY%I),FAILCHECK)
-!!               CALL CHECKPOINT(XYZ(NOPT*(DUMMY%I-1)+1:NOPT*DUMMY%I),FAILCHECK) ! BS360
+!               TSConverged=.FALSE.
+!               WRITE(*,'(A,F20.10,A)') 'checkts> Eigenvalue ',EVALMIN,' too negative, TS search failed'
+!               ! DAE for CHARMM check this transition state to see if its geometry has become unfeasible
+!!               CALL CHECKPOINT(xyz(nopt*(dummy%i-1):nopt*dummy%i),FAILCHECK)
+!!               CALL CHECKPOINT(xyz(nopt*(dummy%i-1)+1:nopt*dummy%i),FAILCHECK) ! bs360
 !!               IF (FAILCHECK) THEN
-!!                    WRITE(*,'(A)') 'CHECKTS> TRANSITION STATE HAS UNPHYSICAL GEOMETRY, TS SEARCH FAILED'
-!!                    TSCONVERGED=.FALSE.
+!!                    WRITE(*,'(A)') 'checkts> Transition state has unphysical geometry, TS search failed'
+!!                    TSConverged=.FALSE.
 !!               ENDIF
 !          ENDIF
       END SUBROUTINE CHECKTS

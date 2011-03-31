@@ -1,70 +1,70 @@
-      SUBROUTINE ADDITIVE_EV(DISTNE,F_CORD,NMRES,E,
-     *                  NUMLNG,ILONG,TEMPAV,CRDIXN,
-     *                  XDIFF,YDIFF,ZDIFF,CCEV_DIST,PEXCLD)
+      subroutine additive_ev(distne,f_cord,nmres,E,
+     *                  numlng,ilong,tempav,crdixn,
+     *                  xdiff,ydiff,zdiff,ccev_dist,pexcld)
 
 
-C     THIS ROUTINE WORKS OUT THE EXCLUDED VOLUME INTERACTION BETWEEN
-C     CARBON ATOMS IN THE CASE WHEN IT IS NOT ALREADY INCLUDED IN THE AMH
-C     POTENTIAL, IE WHEN WE HAVE NON-ADDITIVE AMH PART, BUT WANT ADDITIVE
-C     EXCLUDED VOLUME CONTRIBUTION
+c     this routine works out the excluded volume interaction between
+c     carbon atoms in the case when it is not already included in the AMH
+c     potential, ie when we have non-additive amh part, but want additive
+c     excluded volume contribution
 
-      USE AMHGLOBALS,  ONLY: AMHMAXSIZ,MAXTAB,MAXCNT,MAXCRD,IRES
+      use amhglobals,  only: AMHmaxsiz,maxtab,maxcnt,maxcrd,ires
 
 
-C     ARGUMENT DECLARATIONS
+c     argument declarations
 
-      IMPLICIT NONE
+      implicit none
 
-       DOUBLE PRECISION, INTENT(IN):: DISTNE(MAXCNT,MAXTAB),PEXCLD,
-     * XDIFF(MAXCNT,MAXTAB),YDIFF(MAXCNT,MAXTAB),
-     * ZDIFF(MAXCNT,MAXTAB),CCEV_DIST(MAXCNT,MAXTAB)
+       double precision, intent(in):: distne(maxcnt,maxtab),pexcld,
+     * xdiff(maxcnt,maxtab),ydiff(maxcnt,maxtab),
+     * zdiff(maxcnt,maxtab),ccev_dist(maxcnt,maxtab)
 
-       DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD),E(:,:)
-      INTEGER, INTENT(IN):: NMRES,NUMLNG(0:AMHMAXSIZ,MAXTAB),
-     *        ILONG(MAXCNT,2,MAXTAB),CRDIXN(MAXTAB,2)
-      LOGICAL, INTENT(IN):: TEMPAV
+       double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd),E(:,:)
+      integer, intent(in):: nmres,numlng(0:AMHmaxsiz,maxtab),
+     *        ilong(maxcnt,2,maxtab),crdixn(maxtab,2)
+      logical, intent(in):: tempav
 
-C     INTERNAL VARIABLES
+c     internal variables
 
-      INTEGER I_IXN,I_TAB,ISIT1,ISIT2
-      DOUBLE PRECISION R_DEV,EV_FORCE,XI
+      integer i_ixn,i_tab,isit1,isit2
+      double precision r_dev,ev_force,xi
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-!     ZERO FORCE AND ENERGY
+!     zero force and energy
 
-      F_CORD=0.0D0
+      f_cord=0.0D0
       E=0.0D0
-      XI=0.5D0
+      xi=0.5D0
 
-      DO I_TAB=1,4
-      DO I_IXN=1,NUMLNG(NMRES,I_TAB)
-        ISIT1=ILONG(I_IXN,1,I_TAB)
-        ISIT2=ILONG(I_IXN,2,I_TAB)
-        IF (IRES(ISIT1).EQ.8 .AND. (I_TAB.EQ.3.OR. I_TAB.EQ.4) ) CYCLE
-        IF (IRES(ISIT2).EQ.8 .AND. (I_TAB.EQ.2.OR. I_TAB.EQ.4) ) CYCLE
-        IF( (ISIT2-ISIT1).EQ.1 ) CYCLE
-!NO BETA-BETA TERM ON GLYCINES
+      do i_tab=1,4
+      do i_ixn=1,numlng(nmres,i_tab)
+        isit1=ilong(i_ixn,1,i_tab)
+        isit2=ilong(i_ixn,2,i_tab)
+        if (ires(isit1).eq.8 .and. (i_tab.eq.3.or. i_tab.eq.4) ) cycle
+        if (ires(isit2).eq.8 .and. (i_tab.eq.2.or. i_tab.eq.4) ) cycle
+        if( (isit2-isit1).eq.1 ) cycle
+!no beta-beta term on glycines
 
-        R_DEV=CCEV_DIST(I_IXN,I_TAB)-DISTNE(I_IXN,I_TAB)
-        E(1,9)=E(1,9)+0.5D0*PEXCLD*(1.0D0+TANH((R_DEV)/XI))
-        EV_FORCE=(PEXCLD/(2.0D0*XI))*(COSH((R_DEV)/XI)**(-2))/DISTNE(I_IXN,I_TAB)
+        r_dev=ccev_dist(i_ixn,i_tab)-distne(i_ixn,i_tab)
+        E(1,9)=E(1,9)+0.5D0*pexcld*(1.0D0+tanh((r_dev)/xi))
+        ev_force=(pexcld/(2.0D0*xi))*(cosh((r_dev)/xi)**(-2))/distne(i_ixn,i_tab)
 
-          F_CORD(ISIT1,1,CRDIXN(I_TAB,1))=
-     *          F_CORD(ISIT1,1,CRDIXN(I_TAB,1)) + EV_FORCE*XDIFF(I_IXN,I_TAB)
-          F_CORD(ISIT1,2,CRDIXN(I_TAB,1))=
-     *          F_CORD(ISIT1,2,CRDIXN(I_TAB,1)) + EV_FORCE*YDIFF(I_IXN,I_TAB)
-          F_CORD(ISIT1,3,CRDIXN(I_TAB,1))=
-     *          F_CORD(ISIT1,3,CRDIXN(I_TAB,1)) + EV_FORCE*ZDIFF(I_IXN,I_TAB)
+          f_cord(isit1,1,crdixn(i_tab,1))=
+     *          f_cord(isit1,1,crdixn(i_tab,1)) + ev_force*xdiff(i_ixn,i_tab)
+          f_cord(isit1,2,crdixn(i_tab,1))=
+     *          f_cord(isit1,2,crdixn(i_tab,1)) + ev_force*ydiff(i_ixn,i_tab)
+          f_cord(isit1,3,crdixn(i_tab,1))=
+     *          f_cord(isit1,3,crdixn(i_tab,1)) + ev_force*zdiff(i_ixn,i_tab)
 
-          F_CORD(ISIT2,1,CRDIXN(I_TAB,2))=
-     *          F_CORD(ISIT2,1,CRDIXN(I_TAB,2)) - EV_FORCE*XDIFF(I_IXN,I_TAB)
-          F_CORD(ISIT2,2,CRDIXN(I_TAB,2))=
-     *          F_CORD(ISIT2,2,CRDIXN(I_TAB,2)) - EV_FORCE*YDIFF(I_IXN,I_TAB)
-          F_CORD(ISIT2,3,CRDIXN(I_TAB,2))=
-     *          F_CORD(ISIT2,3,CRDIXN(I_TAB,2)) - EV_FORCE*ZDIFF(I_IXN,I_TAB)
+          f_cord(isit2,1,crdixn(i_tab,2))=
+     *          f_cord(isit2,1,crdixn(i_tab,2)) - ev_force*xdiff(i_ixn,i_tab)
+          f_cord(isit2,2,crdixn(i_tab,2))=
+     *          f_cord(isit2,2,crdixn(i_tab,2)) - ev_force*ydiff(i_ixn,i_tab)
+          f_cord(isit2,3,crdixn(i_tab,2))=
+     *          f_cord(isit2,3,crdixn(i_tab,2)) - ev_force*zdiff(i_ixn,i_tab)
 
-       ENDDO
-      ENDDO
+       enddo
+      enddo
 
-      END
+      end

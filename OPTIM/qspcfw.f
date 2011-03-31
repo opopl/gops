@@ -1,66 +1,66 @@
 C
 C*************************************************************************
 C
-C  SUBROUTINE QSPCFW CALCULATES THE ENERGY AND CARTESIAN GRADIENT ANALYTICALLY. 
-C  THIS CORRESPONDS TO A FLEXIBLE WATER MODEL INTRODUCED 
-C  BY PAESANI ET AL. (JCP 125, 184507 (2006))
+C  Subroutine qSPCFw calculates the energy and cartesian gradient analytically. 
+C  This corresponds to a flexible water model introduced 
+C  by Paesani et al. (JCP 125, 184507 (2006))
 C
 C*************************************************************************
 C
-      SUBROUTINE QSPCFW (NMOL,X,V,ENERGY,GTEST)
+      SUBROUTINE qspcfw (nmol,X,V,ENERGY,GTEST)
       IMPLICIT NONE
-      INTEGER N, J1, J2, J3, J4, J5, J6, J7, J8, J9, J10, NMOL
+      INTEGER N, J1, J2, J3, J4, J5, J6, J7, J8, J9, J10, nmol
       LOGICAL GTEST
-C      INCLUDE 'PARAM_ATOMS.H'
-      DOUBLE PRECISION X(9*NMOL), V(9*NMOL), ENERGY, EPSILON, SIGMA, QM,
-     1                 GAMMA, REQ, KR, KTHETA, THETAEQ, R6, R12, DIST, 
-     2                 ENERGY_LJ, ENERGY_Q, Q(4), HTOKCAL, RMX, RMY, RMZ,
+C      INCLUDE 'param_atoms.h'
+      DOUBLE PRECISION X(9*nmol), V(9*nmol), ENERGY, epsilon, sigma, qm,
+     1                 gamma, req, kr, ktheta, thetaeq, r6, r12, DIST, 
+     2                 ENERGY_LJ, ENERGY_Q, Q(4), HTOKCAL, rmx, rmy, rmz,
      3                 FLJ, DFLJ, FC, DFC, C12, C6, Q1, Q2, ENERGY_OH, ENERGY_THETA,
-     4                 XDUMM, FOH, DFOH, FTHETA, DFTHETA, X0(12*NMOL), THETA,
+     4                 XDUMM, FOH, DFOH, FTHETA, DFTHETA, X0(12*nmol), THETA,
      5                 OH1VECX,OH1VECY,OH1VECZ,OH2VECX,OH2VECY,OH2VECZ,COSTHETA,
      6                 RDIST, DUMMY, DRO(4,4),DRH1(4,4),DRH2(4,4),RDIST1,RDIST2,
-     7                 DTXH1,DTYH1,DTZH1,DTXH2,DTYH2,DTZH2,DOTNORMA,
-     8                 GTX1,GTY1,GTZ1,GTX2,GTY2,GTZ2
+     7                 DtxH1,DtyH1,DtzH1,DtxH2,DtyH2,DtzH2,dotnorma,
+     8                 Gtx1,Gty1,Gtz1,Gtx2,Gty2,Gtz2
 
-      PARAMETER (HTOKCAL=331.952261D0)
+      PARAMETER (HTOKCAL=331.952261d0)
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     STATEMENT FUNCTIONS
+C     Statement functions
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
       FLJ(XDUMM)=(C12/XDUMM**6-C6)/XDUMM**6
       DFLJ(XDUMM)=-6.0D0*(-C6+2.0D0*C12/XDUMM**6)/XDUMM**7
       FC(Q1,Q2,XDUMM)=Q1*Q2/XDUMM
       DFC(Q1,Q2,XDUMM)=-Q1*Q2/XDUMM**2
-      FOH(XDUMM)=0.5D0*KR*(XDUMM-REQ)**2
-      DFOH(XDUMM)=1.D0*KR*(XDUMM-REQ)
-      FTHETA(XDUMM)=0.5D0*KTHETA*(XDUMM-THETAEQ)**2
-      DFTHETA(XDUMM)=1.D0*KTHETA*(XDUMM-THETAEQ)
+      FOH(XDUMM)=0.5d0*kr*(XDUMM-req)**2
+      DFOH(XDUMM)=1.d0*kr*(XDUMM-req)
+      FTHETA(XDUMM)=0.5d0*ktheta*(XDUMM-thetaeq)**2
+      DFTHETA(XDUMM)=1.d0*ktheta*(XDUMM-thetaeq)
 
+CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCc
+C    Define the parameters of the potential
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C    DEFINE THE PARAMETERS OF THE POTENTIAL
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
-      EPSILON=0.1554D0
-      SIGMA=3.1655D0
-      QM=0.84D0
-      GAMMA=1.0D0
-      REQ=1.0D0
-      KR=1059.162D0
-      KTHETA=75.90D0
-      THETAEQ=112.0D0*DACOS(-1.D0)/180.D0
+      epsilon=0.1554d0
+      sigma=3.1655d0
+      qm=0.84d0
+      gamma=1.0d0
+      req=1.0d0
+      kr=1059.162d0
+      ktheta=75.90d0
+      thetaeq=112.0d0*dacos(-1.d0)/180.d0
 
-      C6=4.D0*EPSILON*(SIGMA)**6
-      C12=C6*(SIGMA)**6
-      Q(1)=0.D0
-      Q(2)=QM/2.D0
-      Q(3)=QM/2.D0
-      Q(4)=-QM
+      C6=4.d0*epsilon*(sigma)**6
+      C12=C6*(sigma)**6
+      Q(1)=0.d0
+      Q(2)=qm/2.d0
+      Q(3)=qm/2.d0
+      Q(4)=-qm
 
-      N=NMOL
+      N=nmol
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C      DEFINE THE M POINT FOR ALL WATER MOLECULES
+C      Define the M point for all water molecules
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
        
       DO J1=1,N
@@ -75,22 +75,22 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
        X0(J3+7)=X(J2+7)
        X0(J3+8)=X(J2+8)
        X0(J3+9)=X(J2+9)
-       RMX=GAMMA*X(J2+1)+(1.D0-GAMMA)*(X(J2+4)+X(J2+7))/2.D0
-       RMY=GAMMA*X(J2+2)+(1.D0-GAMMA)*(X(J2+5)+X(J2+8))/2.D0  ! CARTESIAN COORDINATES OF THE M POINT
-       RMZ=GAMMA*X(J2+3)+(1.D0-GAMMA)*(X(J2+6)+X(J2+9))/2.D0
-       X0(J3+10)=RMX
-       X0(J3+11)=RMY
-       X0(J3+12)=RMZ
+       rmx=gamma*X(J2+1)+(1.d0-gamma)*(X(J2+4)+X(J2+7))/2.d0
+       rmy=gamma*X(J2+2)+(1.d0-gamma)*(X(J2+5)+X(J2+8))/2.d0  ! cartesian coordinates of the M point
+       rmz=gamma*X(J2+3)+(1.d0-gamma)*(X(J2+6)+X(J2+9))/2.d0
+       X0(J3+10)=rmx
+       X0(J3+11)=rmy
+       X0(J3+12)=rmz
       END DO
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
       DO J1=1,9*N
-       V(J1)=0.D0         ! THREE POINTS PER MOLECULE
+       V(J1)=0.d0         ! Three points per molecule
       END DO
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C       INTERMOLECULAR POTENTIAL
+C       Intermolecular potential
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
       ENERGY_LJ=0.0D0
@@ -98,25 +98,25 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
       DO J1=1,4
        DO J2=1,4
-        DRO(J1,J2)=0.D0
-        DRH1(J1,J2)=0.D0
-        DRH2(J1,J2)=0.D0
+        DRO(J1,J2)=0.d0
+        DRH1(J1,J2)=0.d0
+        DRH2(J1,J2)=0.d0
        END DO
       END DO
 
       DO J2=1,4
-       DRO(1,J2)=0.D0
-       DRH1(1,J2)=0.D0
-       DRH2(1,J2)=0.D0
-       DRO(2,J2)=0.D0
-       DRH1(2,J2)=1.D0
-       DRH2(2,J2)=0.D0
-       DRO(3,J2)=0.D0
-       DRH1(3,J2)=0.D0
-       DRH2(3,J2)=1.D0
-       DRO(4,J2)=GAMMA
-       DRH1(4,J2)=0.5D0*(1.D0-GAMMA)
-       DRH2(4,J2)=0.5D0*(1.D0-GAMMA)
+       DRO(1,J2)=0.d0
+       DRH1(1,J2)=0.d0
+       DRH2(1,J2)=0.d0
+       DRO(2,J2)=0.d0
+       DRH1(2,J2)=1.d0
+       DRH2(2,J2)=0.d0
+       DRO(3,J2)=0.d0
+       DRH1(3,J2)=0.d0
+       DRH2(3,J2)=1.d0
+       DRO(4,J2)=gamma
+       DRH1(4,J2)=0.5d0*(1.d0-gamma)
+       DRH2(4,J2)=0.5d0*(1.d0-gamma)
       END DO
 
       DO J1=1,N
@@ -130,14 +130,14 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
      1         +(X0(J3+2)-X0(J4+2))**2
      2         +(X0(J3+3)-X0(J4+3))**2
            DIST=DSQRT(DIST)
-C           IF (DIST.LT.1.8D0) THEN
-C             ENERGY=1.D10
+C           IF (DIST.LT.1.8d0) THEN
+C             ENERGY=1.d10
 C             RETURN
 C           END IF
-           ENERGY_LJ=ENERGY_LJ+FLJ(DIST)   ! LJ CONTRIBUTION	
+           ENERGY_LJ=ENERGY_LJ+FLJ(DIST)   ! LJ contribution	
 
            IF (GTEST) THEN
-            RDIST=1.D0/DIST
+            RDIST=1.d0/DIST
             V(J9+1)=V(J9+1)+DFLJ(DIST)*RDIST*(X0(J3+1)-X0(J4+1))
             V(J9+2)=V(J9+2)+DFLJ(DIST)*RDIST*(X0(J3+2)-X0(J4+2))
             V(J9+3)=V(J9+3)+DFLJ(DIST)*RDIST*(X0(J3+3)-X0(J4+3))
@@ -151,10 +151,10 @@ C           END IF
      1            +(X0(J7+2)-X0(J8+2))**2
      2            +(X0(J7+3)-X0(J8+3))**2
              DUMMY=DSQRT(DUMMY)
-             ENERGY_Q=ENERGY_Q+HTOKCAL*FC(Q(J5),Q(J6),DUMMY)  ! COULOMB CONTRIBUTION
+             ENERGY_Q=ENERGY_Q+HTOKCAL*FC(Q(J5),Q(J6),DUMMY)  ! Coulomb contribution
 
             IF (GTEST) THEN
-              RDIST=1.D0/DUMMY
+              RDIST=1.d0/DUMMY
               V(J9+1)=V(J9+1)+HTOKCAL*DFC(Q(J5),Q(J6),DUMMY)*RDIST*(X0(J7+1)-X0(J8+1))*DRO(J5,J6)
               V(J9+2)=V(J9+2)+HTOKCAL*DFC(Q(J5),Q(J6),DUMMY)*RDIST*(X0(J7+2)-X0(J8+2))*DRO(J5,J6)
               V(J9+3)=V(J9+3)+HTOKCAL*DFC(Q(J5),Q(J6),DUMMY)*RDIST*(X0(J7+3)-X0(J8+3))*DRO(J5,J6)
@@ -174,7 +174,7 @@ C           END IF
 
 
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C       INTRAMOLECULAR POTENTIAL
+C       Intramolecular potential
 CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
 
       ENERGY_OH=0.0D0
@@ -187,61 +187,61 @@ CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
        OH1VECZ=X(J2+6)-X(J2+3)
        DIST=OH1VECX**2+OH1VECY**2+OH1VECZ**2
        DIST=DSQRT(DIST)                        !OH1 DISTANCE
-       RDIST1=1.D0/DIST
+       RDIST1=1.d0/DIST
 
        OH2VECX=X(J2+7)-X(J2+1)
        OH2VECY=X(J2+8)-X(J2+2)
        OH2VECZ=X(J2+9)-X(J2+3)
        DUMMY=OH2VECX**2+OH2VECY**2+OH2VECZ**2
        DUMMY=DSQRT(DUMMY)                     !OH2 DISTANCE
-       RDIST2=1.D0/DUMMY
+       RDIST2=1.d0/DUMMY
 
        ENERGY_OH=ENERGY_OH+FOH(DIST)+FOH(DUMMY)
 
        COSTHETA=(OH1VECX*OH2VECX+OH1VECY*OH2VECY+OH1VECZ*OH2VECZ)/(DIST*DUMMY)
-       DOTNORMA=COSTHETA
+       dotnorma=COSTHETA
        THETA=DACOS(COSTHETA)
        ENERGY_THETA=ENERGY_THETA+FTHETA(THETA)   ! HOH 
 
        IF (GTEST) THEN
-        DTXH1=-(1.D0/DSQRT(1.D0-DOTNORMA*DOTNORMA))*
-     &          (OH2VECX/(DIST*DUMMY)-DOTNORMA*OH1VECX/DIST**2)
-        DTYH1=-(1.D0/DSQRT(1.D0-DOTNORMA*DOTNORMA))*
-     &          (OH2VECY/(DIST*DUMMY)-DOTNORMA*OH1VECY/DIST**2)
-        DTZH1=-(1.D0/DSQRT(1.D0-DOTNORMA*DOTNORMA))*
-     &          (OH2VECZ/(DIST*DUMMY)-DOTNORMA*OH1VECZ/DIST**2)
-        DTXH2=-(1.D0/DSQRT(1.D0-DOTNORMA*DOTNORMA))*
-     &          (OH1VECX/(DIST*DUMMY)-DOTNORMA*OH2VECX/DUMMY**2)
-        DTYH2=-(1.D0/DSQRT(1.D0-DOTNORMA*DOTNORMA))*
-     &          (OH1VECY/(DIST*DUMMY)-DOTNORMA*OH2VECY/DUMMY**2)
-        DTZH2=-(1.D0/DSQRT(1.D0-DOTNORMA*DOTNORMA))*
-     &          (OH1VECZ/(DIST*DUMMY)-DOTNORMA*OH2VECZ/DUMMY**2)
+        DtxH1=-(1.d0/DSQRT(1.d0-dotnorma*dotnorma))*
+     &          (OH2VECX/(DIST*DUMMY)-dotnorma*OH1VECX/DIST**2)
+        DtyH1=-(1.d0/DSQRT(1.d0-dotnorma*dotnorma))*
+     &          (OH2VECY/(DIST*DUMMY)-dotnorma*OH1VECY/DIST**2)
+        DtzH1=-(1.d0/DSQRT(1.d0-dotnorma*dotnorma))*
+     &          (OH2VECZ/(DIST*DUMMY)-dotnorma*OH1VECZ/DIST**2)
+        DtxH2=-(1.d0/DSQRT(1.d0-dotnorma*dotnorma))*
+     &          (OH1VECX/(DIST*DUMMY)-dotnorma*OH2VECX/DUMMY**2)
+        DtyH2=-(1.d0/DSQRT(1.d0-dotnorma*dotnorma))*
+     &          (OH1VECY/(DIST*DUMMY)-dotnorma*OH2VECY/DUMMY**2)
+        DtzH2=-(1.d0/DSQRT(1.d0-dotnorma*dotnorma))*
+     &          (OH1VECZ/(DIST*DUMMY)-dotnorma*OH2VECZ/DUMMY**2)
 
-        GTX1=DFOH(DIST)*RDIST1*OH1VECX+DFTHETA(THETA)*DTXH1
-        GTY1=DFOH(DIST)*RDIST1*OH1VECY+DFTHETA(THETA)*DTYH1
-        GTZ1=DFOH(DIST)*RDIST1*OH1VECZ+DFTHETA(THETA)*DTZH1
-        GTX2=DFOH(DUMMY)*RDIST2*OH2VECX+DFTHETA(THETA)*DTXH2
-        GTY2=DFOH(DUMMY)*RDIST2*OH2VECY+DFTHETA(THETA)*DTYH2
-        GTZ2=DFOH(DUMMY)*RDIST2*OH2VECZ+DFTHETA(THETA)*DTZH2
-        V(J2+4)=V(J2+4)+GTX1
-        V(J2+5)=V(J2+5)+GTY1
-        V(J2+6)=V(J2+6)+GTZ1
-        V(J2+7)=V(J2+7)+GTX2
-        V(J2+8)=V(J2+8)+GTY2
-        V(J2+9)=V(J2+9)+GTZ2
-        V(J2+1)=V(J2+1)-GTX1-GTX2
-        V(J2+2)=V(J2+2)-GTY1-GTY2
-        V(J2+3)=V(J2+3)-GTZ1-GTZ2
+        Gtx1=DFOH(DIST)*RDIST1*OH1VECX+DFTHETA(THETA)*DtxH1
+        Gty1=DFOH(DIST)*RDIST1*OH1VECY+DFTHETA(THETA)*DtyH1
+        Gtz1=DFOH(DIST)*RDIST1*OH1VECZ+DFTHETA(THETA)*DtzH1
+        Gtx2=DFOH(DUMMY)*RDIST2*OH2VECX+DFTHETA(THETA)*DtxH2
+        Gty2=DFOH(DUMMY)*RDIST2*OH2VECY+DFTHETA(THETA)*DtyH2
+        Gtz2=DFOH(DUMMY)*RDIST2*OH2VECZ+DFTHETA(THETA)*DtzH2
+        V(J2+4)=V(J2+4)+Gtx1
+        V(J2+5)=V(J2+5)+Gty1
+        V(J2+6)=V(J2+6)+Gtz1
+        V(J2+7)=V(J2+7)+Gtx2
+        V(J2+8)=V(J2+8)+Gty2
+        V(J2+9)=V(J2+9)+Gtz2
+        V(J2+1)=V(J2+1)-Gtx1-Gtx2
+        V(J2+2)=V(J2+2)-Gty1-Gty2
+        V(J2+3)=V(J2+3)-Gtz1-Gtz2
        END IF
 
       END DO
 
 
-      ENERGY=0.5D0*ENERGY_LJ+0.5D0*ENERGY_Q+ENERGY_OH+ENERGY_THETA
+      ENERGY=0.5d0*ENERGY_LJ+0.5d0*ENERGY_Q+ENERGY_OH+ENERGY_THETA
 
 C      WRITE (*,*) 'LJ ',ENERGY_LJ
-C      WRITE (*,*) 'Q ',ENERGY_Q
-C      WRITE (*,*) 'OH ',ENERGY_OH
+c      WRITE (*,*) 'Q ',ENERGY_Q
+c      WRITE (*,*) 'OH ',ENERGY_OH
 C      WRITE (*,*) 'THETA ',ENERGY_THETA
        
 

@@ -1,28 +1,28 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C**************************************************************************
 C
-C  SUBROUTINE ROTD CALCULATES ANALYTICALLY THE CARTESIAN GRADIENT AND
-C  SECOND DERIVATIVE MATRIX DUE TO THE ROTATIONAL TERM ONLY AND INCREMENTS
-C  THE EXISTING MATRICES CONTAINING THE POTENTIAL CONTRIBUTIONS 
-C  ACCORDINGLY.
+C  Subroutine ROTD calculates analytically the cartesian gradient and
+C  second derivative matrix due to the ROTATIONAL TERM ONLY and increments
+C  the existing matrices containing the potential contributions 
+C  accordingly.
 C
 C**************************************************************************
 C
@@ -36,7 +36,7 @@ C
       LOGICAL FLAG
       XOM=1.0D0-1.0D0/FLOAT(N)
 C
-C  CALCULATE CENTRE OF MASS COMPONENTS XM, YM, ZM
+C  Calculate centre of mass components XM, YM, ZM
 C
       XM=0.0D0
       YM=0.0D0
@@ -50,7 +50,7 @@ C
       YM=YM/N
       ZM=ZM/N
 C
-C  CALCULATE CONSTANTS A, B, C, D, E, F
+C  Calculate constants A, B, C, D, E, F
 C
       A=0.0D0
       B=0.0D0
@@ -81,40 +81,40 @@ C
 
       IF (FLAG) RETURN
 C
-C  ANALYTIC GRADIENT:
+C  Analytic gradient:
 C
       DO J1=1,N
          J3=3*(J1-1)
          XA=X(J3+1)
          YA=X(J3+2)
          ZA=X(J3+3)
-         V(J3+1)=V(J3+1)+ZJ**2*(2*(-(A*XM)-B*XM+A*XA+B*XA+C*YM-C*YA)
-     &    /BOTTOM +
-     &    2*TOP*(A**2*XM+2*A*B*XM+B**2*XM-C**2*XM-D**2*XM+2*A*E*XM+  
-     &    2*B*E*XM-A**2*XA-2*A*B*XA-B**2*XA+C**2*XA+D**2*XA -
-     &    2*A*E*XA-2*B*E*XA-A*C*YM-C*E*YM-D*F*YM+A*C*YA+C*E*YA +
-     &    D*F*YA-B*D*ZM-D*E*ZM-C*F*ZM+B*D*ZA+D*E*ZA+C*F*ZA)/
-     &    BOTTOM**2) / (2.0D0*MASS) 
+         V(J3+1)=V(J3+1)+ZJ**2*(2*(-(a*XM)-b*XM+a*xa+b*xa+c*YM-c*ya)
+     &    /bottom +
+     &    2*top*(a**2*XM+2*a*b*XM+b**2*XM-c**2*XM-d**2*XM+2*a*e*XM+  
+     &    2*b*e*XM-a**2*xa-2*a*b*xa-b**2*xa+c**2*xa+d**2*xa -
+     &    2*a*e*xa-2*b*e*xa-a*c*YM-c*e*YM-d*f*YM+a*c*ya+c*e*ya +
+     &    d*f*ya-b*d*ZM-d*e*ZM-c*f*ZM+b*d*za+d*e*za+c*f*za)/
+     &    bottom**2) / (2.0D0*MASS) 
 
          V(J3+2)=V(J3+2)+ZJ**2*(
-     &    2*(C*XM-C*XA-B*YM-E*YM+B*YA+E*YA)/BOTTOM -
-     &    2*TOP*(A*C*XM+C*E*XM+D*F*XM-A*C*XA-C*E*XA-D*F*XA-2*A*B*YM- 
-     &    B**2*YM+C**2*YM-2*A*E*YM-2*B*E*YM-E**2*YM+F**2*YM +
-     &    2*A*B*YA+B**2*YA-C**2*YA+2*A*E*YA+2*B*E*YA+E**2*YA -
-     &    F**2*YA+C*D*ZM+A*F*ZM+B*F*ZM-C*D*ZA-A*F*ZA-B*F*ZA)/
-     &    BOTTOM**2 ) / (2.0D0*MASS)
+     &    2*(c*XM-c*xa-b*YM-e*YM+b*ya+e*ya)/bottom -
+     &    2*top*(a*c*XM+c*e*XM+d*f*XM-a*c*xa-c*e*xa-d*f*xa-2*a*b*YM- 
+     &    b**2*YM+c**2*YM-2*a*e*YM-2*b*e*YM-e**2*YM+f**2*YM +
+     &    2*a*b*ya+b**2*ya-c**2*ya+2*a*e*ya+2*b*e*ya+e**2*ya -
+     &    f**2*ya+c*d*ZM+a*f*ZM+b*f*ZM-c*d*za-a*f*za-b*f*za)/
+     &    bottom**2 ) / (2.0D0*MASS)
 
          V(J3+3)=V(J3+3)+ZJ**2*(
-     &    2*(A+2*B+E)*(-ZM+ZA)/BOTTOM -
-     &    2*TOP*(B*D*XM+D*E*XM+C*F*XM-B*D*XA-D*E*XA-C*F*XA+C*D*YM +
-     &    A*F*YM+B*F*YM-C*D*YA-A*F*YA-B*F*YA-A**2*ZM-2*A*B*ZM +
-     &    D**2*ZM-2*A*E*ZM-2*B*E*ZM-E**2*ZM+F**2*ZM+A**2*ZA +
-     &    2*A*B*ZA-D**2*ZA+2*A*E*ZA+2*B*E*ZA+E**2*ZA-F**2*ZA)/
-     &    BOTTOM**2) / (2.0D0*MASS)
+     &    2*(a+2*b+e)*(-ZM+za)/bottom -
+     &    2*top*(b*d*XM+d*e*XM+c*f*XM-b*d*xa-d*e*xa-c*f*xa+c*d*YM +
+     &    a*f*YM+b*f*YM-c*d*ya-a*f*ya-b*f*ya-a**2*ZM-2*a*b*ZM +
+     &    d**2*ZM-2*a*e*ZM-2*b*e*ZM-e**2*ZM+f**2*ZM+a**2*za +
+     &    2*a*b*za-d**2*za+2*a*e*za+2*b*e*za+e**2*za-f**2*za)/
+     &    bottom**2) / (2.0D0*MASS)
 
       ENDDO
 C
-C  CASE I: DIAGONAL TERMS.
+C  Case I: diagonal terms.
 C
       DO J1 = 1, N
          J3 = 3*(J1-1)
@@ -122,70 +122,70 @@ C
          YA=X(J3+2)
          ZA=X(J3+3)
          HESS(J3+1, J3+1) = HESS(J3+1, J3+1)+ZJ**2 * (
-     &  (2*A+2*B-2*A/N-2*B/N-2*YA**2+4*YA*YM-2*YM**2)/BOTTOM- 
-     &  TOP*(2*A**2*XOM+4*A*B*XOM+
-     &      2*B**2*XOM-2*C**2*XOM-
-     &      2*D**2*XOM+4*A*E*XOM+
-     &      4*B*E*XOM+8*A*(XA-XM)**2+8*B*(XA-XM)**2-
-     &      8*C*(XA-XM)*(YA-YM)-2*A*(YA-YM)**2-2*E*(YA-YM)**2-
-     &      8*D*(XA-XM)*(ZA-ZM)-4*F*(YA-YM)*(ZA-ZM)-
-     &      2*B*(ZA-ZM)**2-2*E*(ZA-ZM)**2)/BOTTOM**2-
-     &  8*(A*XA+B*XA-A*XM-B*XM-C*YA+C*YM)*
-     &    (A**2*XA+2*A*B*XA+B**2*XA-C**2*XA-D**2*XA+2*A*E*XA+
-     &      2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+D**2*XM-
-     &      2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA-D*F*YA+A*C*YM+
-     &      C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA+B*D*ZM+D*E*ZM+
-     &      C*F*ZM)/BOTTOM**2+
-     &  8*TOP*(A**2*XA+2*A*B*XA+B**2*XA-C**2*XA-D**2*XA+2*A*E*XA+
-     &       2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+D**2*XM-
-     &       2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA-D*F*YA+A*C*YM+
-     &       C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA+B*D*ZM+D*E*ZM+
-     &       C*F*ZM)**2/BOTTOM**3)/(2.0D0*MASS)
+     &  (2*a+2*b-2*a/N-2*b/N-2*ya**2+4*ya*YM-2*YM**2)/bottom- 
+     &  top*(2*a**2*XOM+4*a*b*XOM+
+     &      2*b**2*XOM-2*c**2*XOM-
+     &      2*d**2*XOM+4*a*e*XOM+
+     &      4*b*e*XOM+8*a*(xa-XM)**2+8*b*(xa-XM)**2-
+     &      8*c*(xa-XM)*(ya-YM)-2*a*(ya-YM)**2-2*e*(ya-YM)**2-
+     &      8*d*(xa-XM)*(za-ZM)-4*f*(ya-YM)*(za-ZM)-
+     &      2*b*(za-ZM)**2-2*e*(za-ZM)**2)/bottom**2-
+     &  8*(a*xa+b*xa-a*XM-b*XM-c*ya+c*YM)*
+     &    (a**2*xa+2*a*b*xa+b**2*xa-c**2*xa-d**2*xa+2*a*e*xa+
+     &      2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+d**2*XM-
+     &      2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya-d*f*ya+a*c*YM+
+     &      c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za+b*d*ZM+d*e*ZM+
+     &      c*f*ZM)/bottom**2+
+     &  8*top*(a**2*xa+2*a*b*xa+b**2*xa-c**2*xa-d**2*xa+2*a*e*xa+
+     &       2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+d**2*XM-
+     &       2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya-d*f*ya+a*c*YM+
+     &       c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za+b*d*ZM+d*e*ZM+
+     &       c*f*ZM)**2/bottom**3)/(2.0D0*MASS)
 
          HESS(J3+2, J3+2) = HESS(J3+2, J3+2)+ZJ**2 * (
-     &   (2*B+2*E-2*B/N-2*E/N-2*XA**2+4*XA*XM-2*XM**2)/BOTTOM-   
-     &  TOP*(4*A*B*XOM+2*B**2*XOM-
-     &      2*C**2*XOM+4*A*E*XOM+
-     &      4*B*E*XOM+2*E**2*XOM-
-     &      2*F**2*XOM-2*A*(XA-XM)**2-2*E*(XA-XM)**2-
-     &      8*C*(XA-XM)*(YA-YM)+8*B*(YA-YM)**2+8*E*(YA-YM)**2-
-     &      4*D*(XA-XM)*(ZA-ZM)-8*F*(YA-YM)*(ZA-ZM)-
-     &      2*A*(ZA-ZM)**2-2*B*(ZA-ZM)**2)/BOTTOM**2+
-     &  8*(C*XA-C*XM-B*YA-E*YA+B*YM+E*YM)*
-     &    (-(A*C*XA)-C*E*XA-D*F*XA+A*C*XM+C*E*XM+D*F*XM+
-     &      2*A*B*YA+B**2*YA-C**2*YA+2*A*E*YA+2*B*E*YA+E**2*YA-
-     &      F**2*YA-2*A*B*YM-B**2*YM+C**2*YM-2*A*E*YM-2*B*E*YM-
-     &      E**2*YM+F**2*YM-C*D*ZA-A*F*ZA-B*F*ZA+C*D*ZM+A*F*ZM+
-     &      B*F*ZM)/BOTTOM**2+
-     &  8*TOP*(-(A*C*XA)-C*E*XA-D*F*XA+A*C*XM+C*E*XM+D*F*XM+
-     &       2*A*B*YA+B**2*YA-C**2*YA+2*A*E*YA+2*B*E*YA+E**2*YA-
-     &       F**2*YA-2*A*B*YM-B**2*YM+C**2*YM-2*A*E*YM-2*B*E*YM-
-     &       E**2*YM+F**2*YM-C*D*ZA-A*F*ZA-B*F*ZA+C*D*ZM+A*F*ZM+
-     &       B*F*ZM)**2/BOTTOM**3)/(2.0D0*MASS)
+     &   (2*b+2*e-2*b/N-2*e/N-2*xa**2+4*xa*XM-2*XM**2)/bottom-   
+     &  top*(4*a*b*XOM+2*b**2*XOM-
+     &      2*c**2*XOM+4*a*e*XOM+
+     &      4*b*e*XOM+2*e**2*XOM-
+     &      2*f**2*XOM-2*a*(xa-XM)**2-2*e*(xa-XM)**2-
+     &      8*c*(xa-XM)*(ya-YM)+8*b*(ya-YM)**2+8*e*(ya-YM)**2-
+     &      4*d*(xa-XM)*(za-ZM)-8*f*(ya-YM)*(za-ZM)-
+     &      2*a*(za-ZM)**2-2*b*(za-ZM)**2)/bottom**2+
+     &  8*(c*xa-c*XM-b*ya-e*ya+b*YM+e*YM)*
+     &    (-(a*c*xa)-c*e*xa-d*f*xa+a*c*XM+c*e*XM+d*f*XM+
+     &      2*a*b*ya+b**2*ya-c**2*ya+2*a*e*ya+2*b*e*ya+e**2*ya-
+     &      f**2*ya-2*a*b*YM-b**2*YM+c**2*YM-2*a*e*YM-2*b*e*YM-
+     &      e**2*YM+f**2*YM-c*d*za-a*f*za-b*f*za+c*d*ZM+a*f*ZM+
+     &      b*f*ZM)/bottom**2+
+     &  8*top*(-(a*c*xa)-c*e*xa-d*f*xa+a*c*XM+c*e*XM+d*f*XM+
+     &       2*a*b*ya+b**2*ya-c**2*ya+2*a*e*ya+2*b*e*ya+e**2*ya-
+     &       f**2*ya-2*a*b*YM-b**2*YM+c**2*YM-2*a*e*YM-2*b*e*YM-
+     &       e**2*YM+f**2*YM-c*d*za-a*f*za-b*f*za+c*d*ZM+a*f*ZM+
+     &       b*f*ZM)**2/bottom**3)/(2.0D0*MASS)
 
         HESS(J3+3, J3+3) = HESS(J3+3, J3+3)+ZJ**2 * (
-     &   -(TOP*(2*A**2*XOM+4*A*B*XOM-2*D**2*XOM+
-     &        4*A*E*XOM+4*B*E*XOM+
-     &        2*E**2*XOM-2*F**2*XOM-
-     &        2*B*(XA-XM)**2-2*E*(XA-XM)**2-4*C*(XA-XM)*(YA-YM)-
-     &        2*A*(YA-YM)**2-2*B*(YA-YM)**2-8*D*(XA-XM)*(ZA-ZM)-
-     &        8*F*(YA-YM)*(ZA-ZM)+8*A*(ZA-ZM)**2+8*E*(ZA-ZM)**2)/
-     &     BOTTOM**2)+8*TOP*(B*D*XA+D*E*XA+C*F*XA-B*D*XM-D*E*XM-
-     &       C*F*XM+C*D*YA+A*F*YA+B*F*YA-C*D*YM-A*F*YM-B*F*YM-
-     &       A**2*ZA-2*A*B*ZA+D**2*ZA-2*A*E*ZA-2*B*E*ZA-E**2*ZA+
-     &       F**2*ZA+A**2*ZM+2*A*B*ZM-D**2*ZM+2*A*E*ZM+2*B*E*ZM+
-     &       E**2*ZM-F**2*ZM)**2/BOTTOM**3-
-     &  8*(A+2*B+E)*(ZA-ZM)*
-     &    (-(B*D*XA)-D*E*XA-C*F*XA+B*D*XM+D*E*XM+C*F*XM-C*D*YA-
-     &      A*F*YA-B*F*YA+C*D*YM+A*F*YM+B*F*YM+A**2*ZA+2*A*B*ZA-
-     &      D**2*ZA+2*A*E*ZA+2*B*E*ZA+E**2*ZA-F**2*ZA-A**2*ZM-
-     &      2*A*B*ZM+D**2*ZM-2*A*E*ZM-2*B*E*ZM-E**2*ZM+F**2*ZM)/
-     &   BOTTOM**2+(2*A+4*B+2*E-2*A/N-4*B/N-2*E/N+
-     &     8*ZA**2-16*ZA*ZM+8*ZM**2)/BOTTOM)/(2.0D0*MASS)
+     &   -(top*(2*a**2*XOM+4*a*b*XOM-2*d**2*XOM+
+     &        4*a*e*XOM+4*b*e*XOM+
+     &        2*e**2*XOM-2*f**2*XOM-
+     &        2*b*(xa-XM)**2-2*e*(xa-XM)**2-4*c*(xa-XM)*(ya-YM)-
+     &        2*a*(ya-YM)**2-2*b*(ya-YM)**2-8*d*(xa-XM)*(za-ZM)-
+     &        8*f*(ya-YM)*(za-ZM)+8*a*(za-ZM)**2+8*e*(za-ZM)**2)/
+     &     bottom**2)+8*top*(b*d*xa+d*e*xa+c*f*xa-b*d*XM-d*e*XM-
+     &       c*f*XM+c*d*ya+a*f*ya+b*f*ya-c*d*YM-a*f*YM-b*f*YM-
+     &       a**2*za-2*a*b*za+d**2*za-2*a*e*za-2*b*e*za-e**2*za+
+     &       f**2*za+a**2*ZM+2*a*b*ZM-d**2*ZM+2*a*e*ZM+2*b*e*ZM+
+     &       e**2*ZM-f**2*ZM)**2/bottom**3-
+     &  8*(a+2*b+e)*(za-ZM)*
+     &    (-(b*d*xa)-d*e*xa-c*f*xa+b*d*XM+d*e*XM+c*f*XM-c*d*ya-
+     &      a*f*ya-b*f*ya+c*d*YM+a*f*YM+b*f*YM+a**2*za+2*a*b*za-
+     &      d**2*za+2*a*e*za+2*b*e*za+e**2*za-f**2*za-a**2*ZM-
+     &      2*a*b*ZM+d**2*ZM-2*a*e*ZM-2*b*e*ZM-e**2*ZM+f**2*ZM)/
+     &   bottom**2+(2*a+4*b+2*e-2*a/N-4*b/N-2*e/N+
+     &     8*za**2-16*za*ZM+8*ZM**2)/bottom)/(2.0D0*MASS)
 
       ENDDO
 C
-C  CASE II: SAME CARTESIAN COORDINATE, DIFFERENT ATOM.
+C  Case II: same Cartesian coordinate, different atom.
 C
       DO J1=1,N
          J3=3*(J1-1)
@@ -198,105 +198,105 @@ C
             YB=X(J4+2)
             ZB=X(J4+3)
             HESS(J3+1,J4+1)=HESS(J3+1,J4+1)+ZJ**2*(
-     1      (-2*A/N-2*B/N-2*(YA-YM)*(YB-YM))/BOTTOM-
-     1     TOP*(-2*A**2/N-4*A*B/N-2*B**2/N+2*C**2/N+
-     1     2*D**2/N-4*A*E/N-4*B*E/N+
-     1     8*A*(XA-XM)*(XB-XM)+8*B*(XA-XM)*(XB-XM)-
-     1     4*C*(XB-XM)*(YA-YM)-4*C*(XA-XM)*(YB-YM)-
-     1     2*A*(YA-YM)*(YB-YM)-2*E*(YA-YM)*(YB-YM)-
-     1     4*D*(XB-XM)*(ZA-ZM)-2*F*(YB-YM)*(ZA-ZM)-
-     1     4*D*(XA-XM)*(ZB-ZM)-2*F*(YA-YM)*(ZB-ZM)-
-     1     2*B*(ZA-ZM)*(ZB-ZM)-2*E*(ZA-ZM)*(ZB-ZM))/BOTTOM**2-
-     1     4*(A*XB+B*XB-A*XM-B*XM-C*YB+C*YM)*
-     1     (A**2*XA+2*A*B*XA+B**2*XA-C**2*XA-D**2*XA+2*A*E*XA+
-     1     2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+D**2*XM-
-     1     2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA-D*F*YA+A*C*YM+
-     1     C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA+B*D*ZM+D*E*ZM+
-     1     C*F*ZM)/BOTTOM**2-
-     1     4*(A*XA+B*XA-A*XM-B*XM-C*YA+C*YM)*
-     1     (A**2*XB+2*A*B*XB+B**2*XB-C**2*XB-D**2*XB+2*A*E*XB+
-     1     2*B*E*XB-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+D**2*XM-
-     1     2*A*E*XM-2*B*E*XM-A*C*YB-C*E*YB-D*F*YB+A*C*YM+
-     1     C*E*YM+D*F*YM-B*D*ZB-D*E*ZB-C*F*ZB+B*D*ZM+D*E*ZM+
-     1     C*F*ZM)/BOTTOM**2+
-     1     8*TOP*(A**2*XA+2*A*B*XA+B**2*XA-C**2*XA-D**2*XA+2*A*E*XA+
-     1     2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+D**2*XM-
-     1     2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA-D*F*YA+A*C*YM+
-     1     C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA+B*D*ZM+D*E*ZM+
-     1     C*F*ZM)*(A**2*XB+2*A*B*XB+B**2*XB-C**2*XB-D**2*XB+
-     1     2*A*E*XB+2*B*E*XB-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+
-     1     D**2*XM-2*A*E*XM-2*B*E*XM-A*C*YB-C*E*YB-D*F*YB+
-     1     A*C*YM+C*E*YM+D*F*YM-B*D*ZB-D*E*ZB-C*F*ZB+B*D*ZM+
-     1     D*E*ZM+C*F*ZM)/BOTTOM**3)/(2.0D0*MASS)
+     1      (-2*a/N-2*b/N-2*(ya-YM)*(yb-YM))/bottom-
+     1     top*(-2*a**2/N-4*a*b/N-2*b**2/N+2*c**2/N+
+     1     2*d**2/N-4*a*e/N-4*b*e/N+
+     1     8*a*(xa-XM)*(xb-XM)+8*b*(xa-XM)*(xb-XM)-
+     1     4*c*(xb-XM)*(ya-YM)-4*c*(xa-XM)*(yb-YM)-
+     1     2*a*(ya-YM)*(yb-YM)-2*e*(ya-YM)*(yb-YM)-
+     1     4*d*(xb-XM)*(za-ZM)-2*f*(yb-YM)*(za-ZM)-
+     1     4*d*(xa-XM)*(zb-ZM)-2*f*(ya-YM)*(zb-ZM)-
+     1     2*b*(za-ZM)*(zb-ZM)-2*e*(za-ZM)*(zb-ZM))/bottom**2-
+     1     4*(a*xb+b*xb-a*XM-b*XM-c*yb+c*YM)*
+     1     (a**2*xa+2*a*b*xa+b**2*xa-c**2*xa-d**2*xa+2*a*e*xa+
+     1     2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+d**2*XM-
+     1     2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya-d*f*ya+a*c*YM+
+     1     c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za+b*d*ZM+d*e*ZM+
+     1     c*f*ZM)/bottom**2-
+     1     4*(a*xa+b*xa-a*XM-b*XM-c*ya+c*YM)*
+     1     (a**2*xb+2*a*b*xb+b**2*xb-c**2*xb-d**2*xb+2*a*e*xb+
+     1     2*b*e*xb-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+d**2*XM-
+     1     2*a*e*XM-2*b*e*XM-a*c*yb-c*e*yb-d*f*yb+a*c*YM+
+     1     c*e*YM+d*f*YM-b*d*zb-d*e*zb-c*f*zb+b*d*ZM+d*e*ZM+
+     1     c*f*ZM)/bottom**2+
+     1     8*top*(a**2*xa+2*a*b*xa+b**2*xa-c**2*xa-d**2*xa+2*a*e*xa+
+     1     2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+d**2*XM-
+     1     2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya-d*f*ya+a*c*YM+
+     1     c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za+b*d*ZM+d*e*ZM+
+     1     c*f*ZM)*(a**2*xb+2*a*b*xb+b**2*xb-c**2*xb-d**2*xb+
+     1     2*a*e*xb+2*b*e*xb-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+
+     1     d**2*XM-2*a*e*XM-2*b*e*XM-a*c*yb-c*e*yb-d*f*yb+
+     1     a*c*YM+c*e*YM+d*f*YM-b*d*zb-d*e*zb-c*f*zb+b*d*ZM+
+     1     d*e*ZM+c*f*ZM)/bottom**3)/(2.0D0*MASS)
             HESS(J4+1,J3+1)=HESS(J3+1,J4+1)
 
             HESS(J3+2,J4+2)=HESS(J3+2,J4+2)+ZJ**2*(
-     &      (-2*B/N-2*E/N-2*(XA-XM)*(XB-XM))/BOTTOM-
-     &  TOP*(-4*A*B/N-2*B**2/N+2*C**2/N-4*A*E/N-
-     &      4*B*E/N-2*E**2/N+2*F**2/N-
-     &      2*A*(XA-XM)*(XB-XM)-2*E*(XA-XM)*(XB-XM)-
-     &      4*C*(XB-XM)*(YA-YM)-4*C*(XA-XM)*(YB-YM)+
-     &      8*B*(YA-YM)*(YB-YM)+8*E*(YA-YM)*(YB-YM)-
-     &      2*D*(XB-XM)*(ZA-ZM)-4*F*(YB-YM)*(ZA-ZM)-
-     &      2*D*(XA-XM)*(ZB-ZM)-4*F*(YA-YM)*(ZB-ZM)-
-     &      2*A*(ZA-ZM)*(ZB-ZM)-2*B*(ZA-ZM)*(ZB-ZM))/BOTTOM**2+
-     &  8*TOP*(A*C*XA+C*E*XA+D*F*XA-A*C*XM-C*E*XM-D*F*XM-
-     &      2*A*B*YA-B**2*YA+C**2*YA-2*A*E*YA-2*B*E*YA-E**2*YA+
-     &      F**2*YA+2*A*B*YM+B**2*YM-C**2*YM+2*A*E*YM+2*B*E*YM+
-     &      E**2*YM-F**2*YM+C*D*ZA+A*F*ZA+B*F*ZA-C*D*ZM-A*F*ZM-
-     &      B*F*ZM)*(A*C*XB+C*E*XB+D*F*XB-A*C*XM-C*E*XM-D*F*XM-
-     &      2*A*B*YB-B**2*YB+C**2*YB-2*A*E*YB-2*B*E*YB-E**2*YB+
-     &      F**2*YB+2*A*B*YM+B**2*YM-C**2*YM+2*A*E*YM+2*B*E*YM+
-     &      E**2*YM-F**2*YM+C*D*ZB+A*F*ZB+B*F*ZB-C*D*ZM-A*F*ZM-
-     &      B*F*ZM)/BOTTOM**3+
-     &  4*(C*XB-C*XM-B*YB-E*YB+B*YM+E*YM)*
-     &    (-(A*C*XA)-C*E*XA-D*F*XA+A*C*XM+C*E*XM+D*F*XM+
-     &      2*A*B*YA+B**2*YA-C**2*YA+2*A*E*YA+2*B*E*YA+E**2*YA-
-     &      F**2*YA-2*A*B*YM-B**2*YM+C**2*YM-2*A*E*YM-2*B*E*YM-
-     &      E**2*YM+F**2*YM-C*D*ZA-A*F*ZA-B*F*ZA+C*D*ZM+A*F*ZM+
-     &      B*F*ZM)/BOTTOM**2+
-     &  4*(C*XA-C*XM-B*YA-E*YA+B*YM+E*YM)*
-     &    (-(A*C*XB)-C*E*XB-D*F*XB+A*C*XM+C*E*XM+D*F*XM+
-     &      2*A*B*YB+B**2*YB-C**2*YB+2*A*E*YB+2*B*E*YB+E**2*YB-
-     &      F**2*YB-2*A*B*YM-B**2*YM+C**2*YM-2*A*E*YM-2*B*E*YM-
-     &      E**2*YM+F**2*YM-C*D*ZB-A*F*ZB-B*F*ZB+C*D*ZM+A*F*ZM+
-     &      B*F*ZM)/BOTTOM**2)/(2.0D0*MASS)
+     &      (-2*b/N-2*e/N-2*(xa-XM)*(xb-XM))/bottom-
+     &  top*(-4*a*b/N-2*b**2/N+2*c**2/N-4*a*e/N-
+     &      4*b*e/N-2*e**2/N+2*f**2/N-
+     &      2*a*(xa-XM)*(xb-XM)-2*e*(xa-XM)*(xb-XM)-
+     &      4*c*(xb-XM)*(ya-YM)-4*c*(xa-XM)*(yb-YM)+
+     &      8*b*(ya-YM)*(yb-YM)+8*e*(ya-YM)*(yb-YM)-
+     &      2*d*(xb-XM)*(za-ZM)-4*f*(yb-YM)*(za-ZM)-
+     &      2*d*(xa-XM)*(zb-ZM)-4*f*(ya-YM)*(zb-ZM)-
+     &      2*a*(za-ZM)*(zb-ZM)-2*b*(za-ZM)*(zb-ZM))/bottom**2+
+     &  8*top*(a*c*xa+c*e*xa+d*f*xa-a*c*XM-c*e*XM-d*f*XM-
+     &      2*a*b*ya-b**2*ya+c**2*ya-2*a*e*ya-2*b*e*ya-e**2*ya+
+     &      f**2*ya+2*a*b*YM+b**2*YM-c**2*YM+2*a*e*YM+2*b*e*YM+
+     &      e**2*YM-f**2*YM+c*d*za+a*f*za+b*f*za-c*d*ZM-a*f*ZM-
+     &      b*f*ZM)*(a*c*xb+c*e*xb+d*f*xb-a*c*XM-c*e*XM-d*f*XM-
+     &      2*a*b*yb-b**2*yb+c**2*yb-2*a*e*yb-2*b*e*yb-e**2*yb+
+     &      f**2*yb+2*a*b*YM+b**2*YM-c**2*YM+2*a*e*YM+2*b*e*YM+
+     &      e**2*YM-f**2*YM+c*d*zb+a*f*zb+b*f*zb-c*d*ZM-a*f*ZM-
+     &      b*f*ZM)/bottom**3+
+     &  4*(c*xb-c*XM-b*yb-e*yb+b*YM+e*YM)*
+     &    (-(a*c*xa)-c*e*xa-d*f*xa+a*c*XM+c*e*XM+d*f*XM+
+     &      2*a*b*ya+b**2*ya-c**2*ya+2*a*e*ya+2*b*e*ya+e**2*ya-
+     &      f**2*ya-2*a*b*YM-b**2*YM+c**2*YM-2*a*e*YM-2*b*e*YM-
+     &      e**2*YM+f**2*YM-c*d*za-a*f*za-b*f*za+c*d*ZM+a*f*ZM+
+     &      b*f*ZM)/bottom**2+
+     &  4*(c*xa-c*XM-b*ya-e*ya+b*YM+e*YM)*
+     &    (-(a*c*xb)-c*e*xb-d*f*xb+a*c*XM+c*e*XM+d*f*XM+
+     &      2*a*b*yb+b**2*yb-c**2*yb+2*a*e*yb+2*b*e*yb+e**2*yb-
+     &      f**2*yb-2*a*b*YM-b**2*YM+c**2*YM-2*a*e*YM-2*b*e*YM-
+     &      e**2*YM+f**2*YM-c*d*zb-a*f*zb-b*f*zb+c*d*ZM+a*f*ZM+
+     &      b*f*ZM)/bottom**2)/(2.0D0*MASS)
             HESS(J4+2,J3+2)=HESS(J3+2,J4+2)
 
             HESS(J3+3,J4+3)=HESS(J3+3,J4+3)+ZJ**2*(
-     &   (-2*A/N-4*B/N-2*E/N+8*(ZA-ZM)*(ZB-ZM))/BOTTOM-  
-     &  TOP*(-2*A**2/N-4*A*B/N+2*D**2/N-4*A*E/N-
-     &      4*B*E/N-2*E**2/N+2*F**2/N-
-     &      2*B*(XA-XM)*(XB-XM)-2*E*(XA-XM)*(XB-XM)-
-     &      2*C*(XB-XM)*(YA-YM)-2*C*(XA-XM)*(YB-YM)-
-     &      2*A*(YA-YM)*(YB-YM)-2*B*(YA-YM)*(YB-YM)-
-     &      4*D*(XB-XM)*(ZA-ZM)-4*F*(YB-YM)*(ZA-ZM)-
-     &      4*D*(XA-XM)*(ZB-ZM)-4*F*(YA-YM)*(ZB-ZM)+
-     &      8*A*(ZA-ZM)*(ZB-ZM)+8*E*(ZA-ZM)*(ZB-ZM))/BOTTOM**2-
-     &  4*(A+2*B+E)*(ZB-ZM)*
-     &    (-(B*D*XA)-D*E*XA-C*F*XA+B*D*XM+D*E*XM+C*F*XM-C*D*YA-
-     &      A*F*YA-B*F*YA+C*D*YM+A*F*YM+B*F*YM+A**2*ZA+2*A*B*ZA-
-     &      D**2*ZA+2*A*E*ZA+2*B*E*ZA+E**2*ZA-F**2*ZA-A**2*ZM-
-     &      2*A*B*ZM+D**2*ZM-2*A*E*ZM-2*B*E*ZM-E**2*ZM+F**2*ZM)/
-     &   BOTTOM**2-4*(A+2*B+E)*(ZA-ZM)*
-     &    (-(B*D*XB)-D*E*XB-C*F*XB+B*D*XM+D*E*XM+C*F*XM-C*D*YB-
-     &      A*F*YB-B*F*YB+C*D*YM+A*F*YM+B*F*YM+A**2*ZB+2*A*B*ZB-
-     &      D**2*ZB+2*A*E*ZB+2*B*E*ZB+E**2*ZB-F**2*ZB-A**2*ZM-
-     &      2*A*B*ZM+D**2*ZM-2*A*E*ZM-2*B*E*ZM-E**2*ZM+F**2*ZM)/
-     &   BOTTOM**2+8*TOP*(-(B*D*XA)-D*E*XA-C*F*XA+B*D*XM+D*E*XM+
-     &      C*F*XM-C*D*YA-A*F*YA-B*F*YA+C*D*YM+A*F*YM+B*F*YM+
-     &      A**2*ZA+2*A*B*ZA-D**2*ZA+2*A*E*ZA+2*B*E*ZA+E**2*ZA-
-     &      F**2*ZA-A**2*ZM-2*A*B*ZM+D**2*ZM-2*A*E*ZM-2*B*E*ZM-
-     &      E**2*ZM+F**2*ZM)*(-(B*D*XB)-D*E*XB-C*F*XB+B*D*XM+
-     &      D*E*XM+C*F*XM-C*D*YB-A*F*YB-B*F*YB+C*D*YM+A*F*YM+
-     &      B*F*YM+A**2*ZB+2*A*B*ZB-D**2*ZB+2*A*E*ZB+2*B*E*ZB+
-     &      E**2*ZB-F**2*ZB-A**2*ZM-2*A*B*ZM+D**2*ZM-2*A*E*ZM-
-     &      2*B*E*ZM-E**2*ZM+F**2*ZM)/BOTTOM**3)/(2.0D0*MASS)
+     &   (-2*a/N-4*b/N-2*e/N+8*(za-ZM)*(zb-ZM))/bottom-  
+     &  top*(-2*a**2/N-4*a*b/N+2*d**2/N-4*a*e/N-
+     &      4*b*e/N-2*e**2/N+2*f**2/N-
+     &      2*b*(xa-XM)*(xb-XM)-2*e*(xa-XM)*(xb-XM)-
+     &      2*c*(xb-XM)*(ya-YM)-2*c*(xa-XM)*(yb-YM)-
+     &      2*a*(ya-YM)*(yb-YM)-2*b*(ya-YM)*(yb-YM)-
+     &      4*d*(xb-XM)*(za-ZM)-4*f*(yb-YM)*(za-ZM)-
+     &      4*d*(xa-XM)*(zb-ZM)-4*f*(ya-YM)*(zb-ZM)+
+     &      8*a*(za-ZM)*(zb-ZM)+8*e*(za-ZM)*(zb-ZM))/bottom**2-
+     &  4*(a+2*b+e)*(zb-ZM)*
+     &    (-(b*d*xa)-d*e*xa-c*f*xa+b*d*XM+d*e*XM+c*f*XM-c*d*ya-
+     &      a*f*ya-b*f*ya+c*d*YM+a*f*YM+b*f*YM+a**2*za+2*a*b*za-
+     &      d**2*za+2*a*e*za+2*b*e*za+e**2*za-f**2*za-a**2*ZM-
+     &      2*a*b*ZM+d**2*ZM-2*a*e*ZM-2*b*e*ZM-e**2*ZM+f**2*ZM)/
+     &   bottom**2-4*(a+2*b+e)*(za-ZM)*
+     &    (-(b*d*xb)-d*e*xb-c*f*xb+b*d*XM+d*e*XM+c*f*XM-c*d*yb-
+     &      a*f*yb-b*f*yb+c*d*YM+a*f*YM+b*f*YM+a**2*zb+2*a*b*zb-
+     &      d**2*zb+2*a*e*zb+2*b*e*zb+e**2*zb-f**2*zb-a**2*ZM-
+     &      2*a*b*ZM+d**2*ZM-2*a*e*ZM-2*b*e*ZM-e**2*ZM+f**2*ZM)/
+     &   bottom**2+8*top*(-(b*d*xa)-d*e*xa-c*f*xa+b*d*XM+d*e*XM+
+     &      c*f*XM-c*d*ya-a*f*ya-b*f*ya+c*d*YM+a*f*YM+b*f*YM+
+     &      a**2*za+2*a*b*za-d**2*za+2*a*e*za+2*b*e*za+e**2*za-
+     &      f**2*za-a**2*ZM-2*a*b*ZM+d**2*ZM-2*a*e*ZM-2*b*e*ZM-
+     &      e**2*ZM+f**2*ZM)*(-(b*d*xb)-d*e*xb-c*f*xb+b*d*XM+
+     &      d*e*XM+c*f*XM-c*d*yb-a*f*yb-b*f*yb+c*d*YM+a*f*YM+
+     &      b*f*YM+a**2*zb+2*a*b*zb-d**2*zb+2*a*e*zb+2*b*e*zb+
+     &      e**2*zb-f**2*zb-a**2*ZM-2*a*b*ZM+d**2*ZM-2*a*e*ZM-
+     &      2*b*e*ZM-e**2*ZM+f**2*ZM)/bottom**3)/(2.0D0*MASS)
             HESS(J4+3,J3+3)=HESS(J3+3,J4+3)
          ENDDO
       ENDDO
 C
-C  CASE III: SAME ATOM, DIFFERENT CARTESIAN COORDINATE
+C  Case III: same atom, different Cartesian coordinate
 C
       DO J1=1,N
          J3=3*(J1-1)
@@ -304,95 +304,95 @@ C
          YA=X(J3+2)
          ZA=X(J3+3)
          HESS(J3+1,J3+2)=HESS(J3+1,J3+2)+ZJ**2*(
-     &  (-2*C+2*C/N+2*XA*YA-2*XM*YA-2*XA*YM+2*XM*YM)/BOTTOM-
-     &  TOP*(-2*A*C*XOM-2*C*E*XOM-
-     &      2*D*F*XOM-4*C*(XA-XM)**2+
-     &      6*A*(XA-XM)*(YA-YM)+8*B*(XA-XM)*(YA-YM)+
-     &      6*E*(XA-XM)*(YA-YM)-4*C*(YA-YM)**2-
-     &      2*F*(XA-XM)*(ZA-ZM)-2*D*(YA-YM)*(ZA-ZM)-
-     &      2*C*(ZA-ZM)**2)/BOTTOM**2-
-     &  4*(A*XA+B*XA-A*XM-B*XM-C*YA+C*YM)*
-     &    (-(A*C*XA)-C*E*XA-D*F*XA+A*C*XM+C*E*XM+D*F*XM+
-     &      2*A*B*YA+B**2*YA-C**2*YA+2*A*E*YA+2*B*E*YA+E**2*YA-
-     &      F**2*YA-2*A*B*YM-B**2*YM+C**2*YM-2*A*E*YM-2*B*E*YM-
-     &      E**2*YM+F**2*YM-C*D*ZA-A*F*ZA-B*F*ZA+C*D*ZM+A*F*ZM+
-     &      B*F*ZM)/BOTTOM**2+
-     &  4*(C*XA-C*XM-B*YA-E*YA+B*YM+E*YM)*
-     &    (A**2*XA+2*A*B*XA+B**2*XA-C**2*XA-D**2*XA+2*A*E*XA+
-     &      2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+D**2*XM-
-     &      2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA-D*F*YA+A*C*YM+
-     &      C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA+B*D*ZM+D*E*ZM+
-     &      C*F*ZM)/BOTTOM**2+
-     &  8*TOP*(-(A*C*XA)-C*E*XA-D*F*XA+A*C*XM+C*E*XM+D*F*XM+
-     &      2*A*B*YA+B**2*YA-C**2*YA+2*A*E*YA+2*B*E*YA+E**2*YA-
-     &      F**2*YA-2*A*B*YM-B**2*YM+C**2*YM-2*A*E*YM-2*B*E*YM-
-     &      E**2*YM+F**2*YM-C*D*ZA-A*F*ZA-B*F*ZA+C*D*ZM+A*F*ZM+
-     &      B*F*ZM)*(A**2*XA+2*A*B*XA+B**2*XA-C**2*XA-D**2*XA+
-     &      2*A*E*XA+2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+
-     &      D**2*XM-2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA-D*F*YA+
-     &      A*C*YM+C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA+B*D*ZM+
-     &      D*E*ZM+C*F*ZM)/BOTTOM**3)/(2.0D0*MASS)
+     &  (-2*c+2*c/N+2*xa*ya-2*XM*ya-2*xa*YM+2*XM*YM)/bottom-
+     &  top*(-2*a*c*XOM-2*c*e*XOM-
+     &      2*d*f*XOM-4*c*(xa-XM)**2+
+     &      6*a*(xa-XM)*(ya-YM)+8*b*(xa-XM)*(ya-YM)+
+     &      6*e*(xa-XM)*(ya-YM)-4*c*(ya-YM)**2-
+     &      2*f*(xa-XM)*(za-ZM)-2*d*(ya-YM)*(za-ZM)-
+     &      2*c*(za-ZM)**2)/bottom**2-
+     &  4*(a*xa+b*xa-a*XM-b*XM-c*ya+c*YM)*
+     &    (-(a*c*xa)-c*e*xa-d*f*xa+a*c*XM+c*e*XM+d*f*XM+
+     &      2*a*b*ya+b**2*ya-c**2*ya+2*a*e*ya+2*b*e*ya+e**2*ya-
+     &      f**2*ya-2*a*b*YM-b**2*YM+c**2*YM-2*a*e*YM-2*b*e*YM-
+     &      e**2*YM+f**2*YM-c*d*za-a*f*za-b*f*za+c*d*ZM+a*f*ZM+
+     &      b*f*ZM)/bottom**2+
+     &  4*(c*xa-c*XM-b*ya-e*ya+b*YM+e*YM)*
+     &    (a**2*xa+2*a*b*xa+b**2*xa-c**2*xa-d**2*xa+2*a*e*xa+
+     &      2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+d**2*XM-
+     &      2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya-d*f*ya+a*c*YM+
+     &      c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za+b*d*ZM+d*e*ZM+
+     &      c*f*ZM)/bottom**2+
+     &  8*top*(-(a*c*xa)-c*e*xa-d*f*xa+a*c*XM+c*e*XM+d*f*XM+
+     &      2*a*b*ya+b**2*ya-c**2*ya+2*a*e*ya+2*b*e*ya+e**2*ya-
+     &      f**2*ya-2*a*b*YM-b**2*YM+c**2*YM-2*a*e*YM-2*b*e*YM-
+     &      e**2*YM+f**2*YM-c*d*za-a*f*za-b*f*za+c*d*ZM+a*f*ZM+
+     &      b*f*ZM)*(a**2*xa+2*a*b*xa+b**2*xa-c**2*xa-d**2*xa+
+     &      2*a*e*xa+2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+
+     &      d**2*XM-2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya-d*f*ya+
+     &      a*c*YM+c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za+b*d*ZM+
+     &      d*e*ZM+c*f*ZM)/bottom**3)/(2.0D0*MASS)
          HESS(J3+2,J3+1)=HESS(J3+1,J3+2)
 
          HESS(J3+1,J3+3)=HESS(J3+1,J3+3)+ZJ**2*(
-     & -(TOP*(-2*B*D*XOM-2*D*E*XOM-2*C*F*XOM-
-     &        4*D*(XA-XM)**2-2*F*(XA-XM)*(YA-YM)-2*D*(YA-YM)**2+
-     &        8*A*(XA-XM)*(ZA-ZM)+6*B*(XA-XM)*(ZA-ZM)+
-     &        6*E*(XA-XM)*(ZA-ZM)-2*C*(YA-YM)*(ZA-ZM)-
-     &        4*D*(ZA-ZM)**2)/BOTTOM**2)+4*(XA-XM)*(ZA-ZM)/BOTTOM-
-     &  4*(A+2*B+E)*(ZA-ZM)*
-     &    (A**2*XA+2*A*B*XA+B**2*XA-C**2*XA-D**2*XA+2*A*E*XA+
-     &      2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+D**2*XM-
-     &      2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA-D*F*YA+A*C*YM+
-     &      C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA+B*D*ZM+D*E*ZM+
-     &      C*F*ZM)/BOTTOM**2+
-     &  4*(A*XA+B*XA-A*XM-B*XM-C*YA+C*YM)*
-     &    (B*D*XA+D*E*XA+C*F*XA-B*D*XM-D*E*XM-C*F*XM+C*D*YA+
-     &      A*F*YA+B*F*YA-C*D*YM-A*F*YM-B*F*YM-A**2*ZA-2*A*B*ZA+
-     &      D**2*ZA-2*A*E*ZA-2*B*E*ZA-E**2*ZA+F**2*ZA+A**2*ZM+
-     &      2*A*B*ZM-D**2*ZM+2*A*E*ZM+2*B*E*ZM+E**2*ZM-F**2*ZM)/
-     &   BOTTOM**2+8*TOP*(A**2*XA+2*A*B*XA+B**2*XA-C**2*XA-
-     &      D**2*XA+2*A*E*XA+2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM+
-     &      C**2*XM+D**2*XM-2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA-
-     &      D*F*YA+A*C*YM+C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA+
-     &      B*D*ZM+D*E*ZM+C*F*ZM)*
-     &    (-(B*D*XA)-D*E*XA-C*F*XA+B*D*XM+D*E*XM+C*F*XM-C*D*YA-
-     &      A*F*YA-B*F*YA+C*D*YM+A*F*YM+B*F*YM+A**2*ZA+2*A*B*ZA-
-     &      D**2*ZA+2*A*E*ZA+2*B*E*ZA+E**2*ZA-F**2*ZA-A**2*ZM-
-     &      2*A*B*ZM+D**2*ZM-2*A*E*ZM-2*B*E*ZM-E**2*ZM+F**2*ZM)/
-     &   BOTTOM**3 )/(2.0D0*MASS)
+     & -(top*(-2*b*d*XOM-2*d*e*XOM-2*c*f*XOM-
+     &        4*d*(xa-XM)**2-2*f*(xa-XM)*(ya-YM)-2*d*(ya-YM)**2+
+     &        8*a*(xa-XM)*(za-ZM)+6*b*(xa-XM)*(za-ZM)+
+     &        6*e*(xa-XM)*(za-ZM)-2*c*(ya-YM)*(za-ZM)-
+     &        4*d*(za-ZM)**2)/bottom**2)+4*(xa-XM)*(za-ZM)/bottom-
+     &  4*(a+2*b+e)*(za-ZM)*
+     &    (a**2*xa+2*a*b*xa+b**2*xa-c**2*xa-d**2*xa+2*a*e*xa+
+     &      2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+d**2*XM-
+     &      2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya-d*f*ya+a*c*YM+
+     &      c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za+b*d*ZM+d*e*ZM+
+     &      c*f*ZM)/bottom**2+
+     &  4*(a*xa+b*xa-a*XM-b*XM-c*ya+c*YM)*
+     &    (b*d*xa+d*e*xa+c*f*xa-b*d*XM-d*e*XM-c*f*XM+c*d*ya+
+     &      a*f*ya+b*f*ya-c*d*YM-a*f*YM-b*f*YM-a**2*za-2*a*b*za+
+     &      d**2*za-2*a*e*za-2*b*e*za-e**2*za+f**2*za+a**2*ZM+
+     &      2*a*b*ZM-d**2*ZM+2*a*e*ZM+2*b*e*ZM+e**2*ZM-f**2*ZM)/
+     &   bottom**2+8*top*(a**2*xa+2*a*b*xa+b**2*xa-c**2*xa-
+     &      d**2*xa+2*a*e*xa+2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM+
+     &      c**2*XM+d**2*XM-2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya-
+     &      d*f*ya+a*c*YM+c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za+
+     &      b*d*ZM+d*e*ZM+c*f*ZM)*
+     &    (-(b*d*xa)-d*e*xa-c*f*xa+b*d*XM+d*e*XM+c*f*XM-c*d*ya-
+     &      a*f*ya-b*f*ya+c*d*YM+a*f*YM+b*f*YM+a**2*za+2*a*b*za-
+     &      d**2*za+2*a*e*za+2*b*e*za+e**2*za-f**2*za-a**2*ZM-
+     &      2*a*b*ZM+d**2*ZM-2*a*e*ZM-2*b*e*ZM-e**2*ZM+f**2*ZM)/
+     &   bottom**3 )/(2.0D0*MASS)
          HESS(J3+3,J3+1)=HESS(J3+1,J3+3)
 
          HESS(J3+2,J3+3)=HESS(J3+2,J3+3)+ZJ**2*(
-     &  -(TOP*(-2*C*D*XOM-2*A*F*XOM-2*B*F*XOM-
-     &        2*F*(XA-XM)**2-2*D*(XA-XM)*(YA-YM)-4*F*(YA-YM)**2-
-     &        2*C*(XA-XM)*(ZA-ZM)+6*A*(YA-YM)*(ZA-ZM)+
-     &        6*B*(YA-YM)*(ZA-ZM)+8*E*(YA-YM)*(ZA-ZM)-
-     &        4*F*(ZA-ZM)**2)/BOTTOM**2)+4*(YA-YM)*(ZA-ZM)/BOTTOM+   
-     &  4*(A+2*B+E)*(ZA-ZM)*
-     &    (A*C*XA+C*E*XA+D*F*XA-A*C*XM-C*E*XM-D*F*XM-2*A*B*YA-
-     &      B**2*YA+C**2*YA-2*A*E*YA-2*B*E*YA-E**2*YA+F**2*YA+
-     &      2*A*B*YM+B**2*YM-C**2*YM+2*A*E*YM+2*B*E*YM+E**2*YM-
-     &      F**2*YM+C*D*ZA+A*F*ZA+B*F*ZA-C*D*ZM-A*F*ZM-B*F*ZM)/
-     &   BOTTOM**2+4*(-(C*XA)+C*XM+B*YA+E*YA-B*YM-E*YM)*
-     &    (B*D*XA+D*E*XA+C*F*XA-B*D*XM-D*E*XM-C*F*XM+C*D*YA+
-     &      A*F*YA+B*F*YA-C*D*YM-A*F*YM-B*F*YM-A**2*ZA-2*A*B*ZA+
-     &      D**2*ZA-2*A*E*ZA-2*B*E*ZA-E**2*ZA+F**2*ZA+A**2*ZM+
-     &      2*A*B*ZM-D**2*ZM+2*A*E*ZM+2*B*E*ZM+E**2*ZM-F**2*ZM)/
-     &   BOTTOM**2+8*TOP*(-(A*C*XA)-C*E*XA-D*F*XA+A*C*XM+C*E*XM+
-     &      D*F*XM+2*A*B*YA+B**2*YA-C**2*YA+2*A*E*YA+2*B*E*YA+
-     &      E**2*YA-F**2*YA-2*A*B*YM-B**2*YM+C**2*YM-2*A*E*YM-
-     &      2*B*E*YM-E**2*YM+F**2*YM-C*D*ZA-A*F*ZA-B*F*ZA+
-     &      C*D*ZM+A*F*ZM+B*F*ZM)*
-     &    (-(B*D*XA)-D*E*XA-C*F*XA+B*D*XM+D*E*XM+C*F*XM-C*D*YA-
-     &      A*F*YA-B*F*YA+C*D*YM+A*F*YM+B*F*YM+A**2*ZA+2*A*B*ZA-
-     &      D**2*ZA+2*A*E*ZA+2*B*E*ZA+E**2*ZA-F**2*ZA-A**2*ZM-
-     &      2*A*B*ZM+D**2*ZM-2*A*E*ZM-2*B*E*ZM-E**2*ZM+F**2*ZM)/
-     &   BOTTOM**3 )/(2.0D0*MASS)
+     &  -(top*(-2*c*d*XOM-2*a*f*XOM-2*b*f*XOM-
+     &        2*f*(xa-XM)**2-2*d*(xa-XM)*(ya-YM)-4*f*(ya-YM)**2-
+     &        2*c*(xa-XM)*(za-ZM)+6*a*(ya-YM)*(za-ZM)+
+     &        6*b*(ya-YM)*(za-ZM)+8*e*(ya-YM)*(za-ZM)-
+     &        4*f*(za-ZM)**2)/bottom**2)+4*(ya-YM)*(za-ZM)/bottom+   
+     &  4*(a+2*b+e)*(za-ZM)*
+     &    (a*c*xa+c*e*xa+d*f*xa-a*c*XM-c*e*XM-d*f*XM-2*a*b*ya-
+     &      b**2*ya+c**2*ya-2*a*e*ya-2*b*e*ya-e**2*ya+f**2*ya+
+     &      2*a*b*YM+b**2*YM-c**2*YM+2*a*e*YM+2*b*e*YM+e**2*YM-
+     &      f**2*YM+c*d*za+a*f*za+b*f*za-c*d*ZM-a*f*ZM-b*f*ZM)/
+     &   bottom**2+4*(-(c*xa)+c*XM+b*ya+e*ya-b*YM-e*YM)*
+     &    (b*d*xa+d*e*xa+c*f*xa-b*d*XM-d*e*XM-c*f*XM+c*d*ya+
+     &      a*f*ya+b*f*ya-c*d*YM-a*f*YM-b*f*YM-a**2*za-2*a*b*za+
+     &      d**2*za-2*a*e*za-2*b*e*za-e**2*za+f**2*za+a**2*ZM+
+     &      2*a*b*ZM-d**2*ZM+2*a*e*ZM+2*b*e*ZM+e**2*ZM-f**2*ZM)/
+     &   bottom**2+8*top*(-(a*c*xa)-c*e*xa-d*f*xa+a*c*XM+c*e*XM+
+     &      d*f*XM+2*a*b*ya+b**2*ya-c**2*ya+2*a*e*ya+2*b*e*ya+
+     &      e**2*ya-f**2*ya-2*a*b*YM-b**2*YM+c**2*YM-2*a*e*YM-
+     &      2*b*e*YM-e**2*YM+f**2*YM-c*d*za-a*f*za-b*f*za+
+     &      c*d*ZM+a*f*ZM+b*f*ZM)*
+     &    (-(b*d*xa)-d*e*xa-c*f*xa+b*d*XM+d*e*XM+c*f*XM-c*d*ya-
+     &      a*f*ya-b*f*ya+c*d*YM+a*f*YM+b*f*YM+a**2*za+2*a*b*za-
+     &      d**2*za+2*a*e*za+2*b*e*za+e**2*za-f**2*za-a**2*ZM-
+     &      2*a*b*ZM+d**2*ZM-2*a*e*ZM-2*b*e*ZM-e**2*ZM+f**2*ZM)/
+     &   bottom**3 )/(2.0D0*MASS)
          HESS(J3+3,J3+2)=HESS(J3+2,J3+3)
       ENDDO
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: Different atoms and different Cartesian coordinates.
 C
       DO J1=1,N
          J3=3*(J1-1)
@@ -406,95 +406,95 @@ C
             YB=X(J4+2)
             ZB=X(J4+3)
             HESS(J3+1,J4+2)=HESS(J3+1,J4+2)+ZJ**2*(
-     & (2*C/N-2*(XB-XM)*(YA-YM)+4*(XA-XM)*(YB-YM))/BOTTOM- 
-     &  TOP*(2*A*C/N+2*C*E/N+2*D*F/N-
-     &      4*C*(XA-XM)*(XB-XM)-2*A*(XB-XM)*(YA-YM)-
-     &      2*E*(XB-XM)*(YA-YM)+8*A*(XA-XM)*(YB-YM)+
-     &      8*B*(XA-XM)*(YB-YM)+8*E*(XA-XM)*(YB-YM)-
-     &      4*C*(YA-YM)*(YB-YM)-2*F*(XB-XM)*(ZA-ZM)-
-     &      2*D*(YA-YM)*(ZB-ZM)-2*C*(ZA-ZM)*(ZB-ZM))/BOTTOM**2-
-     &  4*(A*XA+B*XA-A*XM-B*XM-C*YA+C*YM)*
-     &    (-(A*C*XB)-C*E*XB-D*F*XB+A*C*XM+C*E*XM+D*F*XM+
-     &      2*A*B*YB+B**2*YB-C**2*YB+2*A*E*YB+2*B*E*YB+E**2*YB-
-     &      F**2*YB-2*A*B*YM-B**2*YM+C**2*YM-2*A*E*YM-2*B*E*YM-
-     &      E**2*YM+F**2*YM-C*D*ZB-A*F*ZB-B*F*ZB+C*D*ZM+A*F*ZM+
-     &      B*F*ZM)/BOTTOM**2+
-     &  4*(C*XB-C*XM-B*YB-E*YB+B*YM+E*YM)*
-     &    (A**2*XA+2*A*B*XA+B**2*XA-C**2*XA-D**2*XA+2*A*E*XA+
-     &      2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+D**2*XM-
-     &      2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA-D*F*YA+A*C*YM+
-     &      C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA+B*D*ZM+D*E*ZM+
-     &      C*F*ZM)/BOTTOM**2+
-     &  8*TOP*(-(A*C*XB)-C*E*XB-D*F*XB+A*C*XM+C*E*XM+D*F*XM+
-     &      2*A*B*YB+B**2*YB-C**2*YB+2*A*E*YB+2*B*E*YB+E**2*YB-
-     &      F**2*YB-2*A*B*YM-B**2*YM+C**2*YM-2*A*E*YM-2*B*E*YM-
-     &      E**2*YM+F**2*YM-C*D*ZB-A*F*ZB-B*F*ZB+C*D*ZM+A*F*ZM+
-     &      B*F*ZM)*(A**2*XA+2*A*B*XA+B**2*XA-C**2*XA-D**2*XA+
-     &      2*A*E*XA+2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+
-     &      D**2*XM-2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA-D*F*YA+
-     &      A*C*YM+C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA+B*D*ZM+
-     &      D*E*ZM+C*F*ZM)/BOTTOM**3 )/(2.0D0*MASS)
+     & (2*c/N-2*(xb-XM)*(ya-YM)+4*(xa-XM)*(yb-YM))/bottom- 
+     &  top*(2*a*c/N+2*c*e/N+2*d*f/N-
+     &      4*c*(xa-XM)*(xb-XM)-2*a*(xb-XM)*(ya-YM)-
+     &      2*e*(xb-XM)*(ya-YM)+8*a*(xa-XM)*(yb-YM)+
+     &      8*b*(xa-XM)*(yb-YM)+8*e*(xa-XM)*(yb-YM)-
+     &      4*c*(ya-YM)*(yb-YM)-2*f*(xb-XM)*(za-ZM)-
+     &      2*d*(ya-YM)*(zb-ZM)-2*c*(za-ZM)*(zb-ZM))/bottom**2-
+     &  4*(a*xa+b*xa-a*XM-b*XM-c*ya+c*YM)*
+     &    (-(a*c*xb)-c*e*xb-d*f*xb+a*c*XM+c*e*XM+d*f*XM+
+     &      2*a*b*yb+b**2*yb-c**2*yb+2*a*e*yb+2*b*e*yb+e**2*yb-
+     &      f**2*yb-2*a*b*YM-b**2*YM+c**2*YM-2*a*e*YM-2*b*e*YM-
+     &      e**2*YM+f**2*YM-c*d*zb-a*f*zb-b*f*zb+c*d*ZM+a*f*ZM+
+     &      b*f*ZM)/bottom**2+
+     &  4*(c*xb-c*XM-b*yb-e*yb+b*YM+e*YM)*
+     &    (a**2*xa+2*a*b*xa+b**2*xa-c**2*xa-d**2*xa+2*a*e*xa+
+     &      2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+d**2*XM-
+     &      2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya-d*f*ya+a*c*YM+
+     &      c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za+b*d*ZM+d*e*ZM+
+     &      c*f*ZM)/bottom**2+
+     &  8*top*(-(a*c*xb)-c*e*xb-d*f*xb+a*c*XM+c*e*XM+d*f*XM+
+     &      2*a*b*yb+b**2*yb-c**2*yb+2*a*e*yb+2*b*e*yb+e**2*yb-
+     &      f**2*yb-2*a*b*YM-b**2*YM+c**2*YM-2*a*e*YM-2*b*e*YM-
+     &      e**2*YM+f**2*YM-c*d*zb-a*f*zb-b*f*zb+c*d*ZM+a*f*ZM+
+     &      b*f*ZM)*(a**2*xa+2*a*b*xa+b**2*xa-c**2*xa-d**2*xa+
+     &      2*a*e*xa+2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+
+     &      d**2*XM-2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya-d*f*ya+
+     &      a*c*YM+c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za+b*d*ZM+
+     &      d*e*ZM+c*f*ZM)/bottom**3 )/(2.0D0*MASS)
             HESS(J4+2,J3+1)=HESS(J3+1,J4+2)
 
             HESS(J3+1,J4+3)=HESS(J3+1,J4+3)+ZJ**2*(
-     &  -(TOP*(2*B*D/N+2*D*E/N+2*C*F/N-4*D*(XA-XM)*(XB-XM) -
-     &        2*F*(XB-XM)*(YA-YM)-2*D*(YA-YM)*(YB-YM) -
-     &        2*B*(XB-XM)*(ZA-ZM)-2*E*(XB-XM)*(ZA-ZM) -
-     &        2*C*(YB-YM)*(ZA-ZM)+8*A*(XA-XM)*(ZB-ZM) +
-     &        8*B*(XA-XM)*(ZB-ZM)+8*E*(XA-XM)*(ZB-ZM) -
-     &        4*D*(ZA-ZM)*(ZB-ZM))/BOTTOM**2) +
-     &  4*(XA-XM)*(ZB-ZM)/BOTTOM -
-     &  4*(A+2*B+E)*(ZB-ZM)*
-     &    (A**2*XA+2*A*B*XA+B**2*XA-C**2*XA-D**2*XA+2*A*E*XA +
-     &      2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM+C**2*XM+D**2*XM -
-     &      2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA-D*F*YA+A*C*YM +
-     &      C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA+B*D*ZM+D*E*ZM +
-     &      C*F*ZM)/BOTTOM**2 +
-     &  4*(A*XA+B*XA-A*XM-B*XM-C*YA+C*YM)*
-     &    (B*D*XB+D*E*XB+C*F*XB-B*D*XM-D*E*XM-C*F*XM+C*D*YB +
-     &      A*F*YB+B*F*YB-C*D*YM-A*F*YM-B*F*YM-A**2*ZB-2*A*B*ZB +
-     &      D**2*ZB-2*A*E*ZB-2*B*E*ZB-E**2*ZB+F**2*ZB+A**2*ZM +
-     &      2*A*B*ZM-D**2*ZM+2*A*E*ZM+2*B*E*ZM+E**2*ZM-F**2*ZM)/
-     &   BOTTOM**2+8*TOP*(A**2*XA+2*A*B*XA+B**2*XA-C**2*XA -
-     &      D**2*XA+2*A*E*XA+2*B*E*XA-A**2*XM-2*A*B*XM-B**2*XM +
-     &      C**2*XM+D**2*XM-2*A*E*XM-2*B*E*XM-A*C*YA-C*E*YA -
-     &      D*F*YA+A*C*YM+C*E*YM+D*F*YM-B*D*ZA-D*E*ZA-C*F*ZA +
-     &      B*D*ZM+D*E*ZM+C*F*ZM)*
-     &    (-(B*D*XB)-D*E*XB-C*F*XB+B*D*XM+D*E*XM+C*F*XM-C*D*YB -
-     &      A*F*YB-B*F*YB+C*D*YM+A*F*YM+B*F*YM+A**2*ZB+2*A*B*ZB -
-     &      D**2*ZB+2*A*E*ZB+2*B*E*ZB+E**2*ZB-F**2*ZB-A**2*ZM -
-     &      2*A*B*ZM+D**2*ZM-2*A*E*ZM-2*B*E*ZM-E**2*ZM+F**2*ZM)/
-     &   BOTTOM**3 )/(2.0D0*MASS)
+     &  -(top*(2*b*d/N+2*d*e/N+2*c*f/N-4*d*(xa-XM)*(xb-XM) -
+     &        2*f*(xb-XM)*(ya-YM)-2*d*(ya-YM)*(yb-YM) -
+     &        2*b*(xb-XM)*(za-ZM)-2*e*(xb-XM)*(za-ZM) -
+     &        2*c*(yb-YM)*(za-ZM)+8*a*(xa-XM)*(zb-ZM) +
+     &        8*b*(xa-XM)*(zb-ZM)+8*e*(xa-XM)*(zb-ZM) -
+     &        4*d*(za-ZM)*(zb-ZM))/bottom**2) +
+     &  4*(xa-XM)*(zb-ZM)/bottom -
+     &  4*(a+2*b+e)*(zb-ZM)*
+     &    (a**2*xa+2*a*b*xa+b**2*xa-c**2*xa-d**2*xa+2*a*e*xa +
+     &      2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM+c**2*XM+d**2*XM -
+     &      2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya-d*f*ya+a*c*YM +
+     &      c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za+b*d*ZM+d*e*ZM +
+     &      c*f*ZM)/bottom**2 +
+     &  4*(a*xa+b*xa-a*XM-b*XM-c*ya+c*YM)*
+     &    (b*d*xb+d*e*xb+c*f*xb-b*d*XM-d*e*XM-c*f*XM+c*d*yb +
+     &      a*f*yb+b*f*yb-c*d*YM-a*f*YM-b*f*YM-a**2*zb-2*a*b*zb +
+     &      d**2*zb-2*a*e*zb-2*b*e*zb-e**2*zb+f**2*zb+a**2*ZM +
+     &      2*a*b*ZM-d**2*ZM+2*a*e*ZM+2*b*e*ZM+e**2*ZM-f**2*ZM)/
+     &   bottom**2+8*top*(a**2*xa+2*a*b*xa+b**2*xa-c**2*xa -
+     &      d**2*xa+2*a*e*xa+2*b*e*xa-a**2*XM-2*a*b*XM-b**2*XM +
+     &      c**2*XM+d**2*XM-2*a*e*XM-2*b*e*XM-a*c*ya-c*e*ya -
+     &      d*f*ya+a*c*YM+c*e*YM+d*f*YM-b*d*za-d*e*za-c*f*za +
+     &      b*d*ZM+d*e*ZM+c*f*ZM)*
+     &    (-(b*d*xb)-d*e*xb-c*f*xb+b*d*XM+d*e*XM+c*f*XM-c*d*yb -
+     &      a*f*yb-b*f*yb+c*d*YM+a*f*YM+b*f*YM+a**2*zb+2*a*b*zb -
+     &      d**2*zb+2*a*e*zb+2*b*e*zb+e**2*zb-f**2*zb-a**2*ZM -
+     &      2*a*b*ZM+d**2*ZM-2*a*e*ZM-2*b*e*ZM-e**2*ZM+f**2*ZM)/
+     &   bottom**3 )/(2.0D0*MASS)
             HESS(J4+3,J3+1)=HESS(J3+1,J4+3)
 
             HESS(J3+2,J4+3)=HESS(J3+2,J4+3)+ZJ**2*(
-     &   -(TOP*(2*C*D/N+2*A*F/N+2*B*F/N-2*F*(XA-XM)*(XB-XM) -
-     &        2*D*(XA-XM)*(YB-YM)-4*F*(YA-YM)*(YB-YM) -
-     &        2*C*(XB-XM)*(ZA-ZM)-2*A*(YB-YM)*(ZA-ZM) -
-     &        2*B*(YB-YM)*(ZA-ZM)+8*A*(YA-YM)*(ZB-ZM) +
-     &        8*B*(YA-YM)*(ZB-ZM)+8*E*(YA-YM)*(ZB-ZM) -
-     &        4*F*(ZA-ZM)*(ZB-ZM))/BOTTOM**2) +
-     &  4*(YA-YM)*(ZB-ZM)/BOTTOM +
-     &  4*(A+2*B+E)*(ZB-ZM)*
-     &    (A*C*XA+C*E*XA+D*F*XA-A*C*XM-C*E*XM-D*F*XM-2*A*B*YA -
-     &      B**2*YA+C**2*YA-2*A*E*YA-2*B*E*YA-E**2*YA+F**2*YA +
-     &      2*A*B*YM+B**2*YM-C**2*YM+2*A*E*YM+2*B*E*YM+E**2*YM -
-     &      F**2*YM+C*D*ZA+A*F*ZA+B*F*ZA-C*D*ZM-A*F*ZM-B*F*ZM)/
-     &   BOTTOM**2+4*(-(C*XA)+C*XM+B*YA+E*YA-B*YM-E*YM)*
-     &    (B*D*XB+D*E*XB+C*F*XB-B*D*XM-D*E*XM-C*F*XM+C*D*YB +
-     &      A*F*YB+B*F*YB-C*D*YM-A*F*YM-B*F*YM-A**2*ZB-2*A*B*ZB +
-     &      D**2*ZB-2*A*E*ZB-2*B*E*ZB-E**2*ZB+F**2*ZB+A**2*ZM +
-     &      2*A*B*ZM-D**2*ZM+2*A*E*ZM+2*B*E*ZM+E**2*ZM-F**2*ZM)/
-     &   BOTTOM**2+8*TOP*(-(A*C*XA)-C*E*XA-D*F*XA+A*C*XM+C*E*XM +
-     &      D*F*XM+2*A*B*YA+B**2*YA-C**2*YA+2*A*E*YA+2*B*E*YA +
-     &      E**2*YA-F**2*YA-2*A*B*YM-B**2*YM+C**2*YM-2*A*E*YM -
-     &      2*B*E*YM-E**2*YM+F**2*YM-C*D*ZA-A*F*ZA-B*F*ZA +
-     &      C*D*ZM+A*F*ZM+B*F*ZM)*
-     &    (-(B*D*XB)-D*E*XB-C*F*XB+B*D*XM+D*E*XM+C*F*XM-C*D*YB -
-     &      A*F*YB-B*F*YB+C*D*YM+A*F*YM+B*F*YM+A**2*ZB+2*A*B*ZB -
-     &      D**2*ZB+2*A*E*ZB+2*B*E*ZB+E**2*ZB-F**2*ZB-A**2*ZM -
-     &      2*A*B*ZM+D**2*ZM-2*A*E*ZM-2*B*E*ZM-E**2*ZM+F**2*ZM)/
-     &   BOTTOM**3 )/(2.0D0*MASS)
+     &   -(top*(2*c*d/N+2*a*f/N+2*b*f/N-2*f*(xa-XM)*(xb-XM) -
+     &        2*d*(xa-XM)*(yb-YM)-4*f*(ya-YM)*(yb-YM) -
+     &        2*c*(xb-XM)*(za-ZM)-2*a*(yb-YM)*(za-ZM) -
+     &        2*b*(yb-YM)*(za-ZM)+8*a*(ya-YM)*(zb-ZM) +
+     &        8*b*(ya-YM)*(zb-ZM)+8*e*(ya-YM)*(zb-ZM) -
+     &        4*f*(za-ZM)*(zb-ZM))/bottom**2) +
+     &  4*(ya-YM)*(zb-ZM)/bottom +
+     &  4*(a+2*b+e)*(zb-ZM)*
+     &    (a*c*xa+c*e*xa+d*f*xa-a*c*XM-c*e*XM-d*f*XM-2*a*b*ya -
+     &      b**2*ya+c**2*ya-2*a*e*ya-2*b*e*ya-e**2*ya+f**2*ya +
+     &      2*a*b*YM+b**2*YM-c**2*YM+2*a*e*YM+2*b*e*YM+e**2*YM -
+     &      f**2*YM+c*d*za+a*f*za+b*f*za-c*d*ZM-a*f*ZM-b*f*ZM)/
+     &   bottom**2+4*(-(c*xa)+c*XM+b*ya+e*ya-b*YM-e*YM)*
+     &    (b*d*xb+d*e*xb+c*f*xb-b*d*XM-d*e*XM-c*f*XM+c*d*yb +
+     &      a*f*yb+b*f*yb-c*d*YM-a*f*YM-b*f*YM-a**2*zb-2*a*b*zb +
+     &      d**2*zb-2*a*e*zb-2*b*e*zb-e**2*zb+f**2*zb+a**2*ZM +
+     &      2*a*b*ZM-d**2*ZM+2*a*e*ZM+2*b*e*ZM+e**2*ZM-f**2*ZM)/
+     &   bottom**2+8*top*(-(a*c*xa)-c*e*xa-d*f*xa+a*c*XM+c*e*XM +
+     &      d*f*XM+2*a*b*ya+b**2*ya-c**2*ya+2*a*e*ya+2*b*e*ya +
+     &      e**2*ya-f**2*ya-2*a*b*YM-b**2*YM+c**2*YM-2*a*e*YM -
+     &      2*b*e*YM-e**2*YM+f**2*YM-c*d*za-a*f*za-b*f*za +
+     &      c*d*ZM+a*f*ZM+b*f*ZM)*
+     &    (-(b*d*xb)-d*e*xb-c*f*xb+b*d*XM+d*e*XM+c*f*XM-c*d*yb -
+     &      a*f*yb-b*f*yb+c*d*YM+a*f*YM+b*f*YM+a**2*zb+2*a*b*zb -
+     &      d**2*zb+2*a*e*zb+2*b*e*zb+e**2*zb-f**2*zb-a**2*ZM -
+     &      2*a*b*ZM+d**2*ZM-2*a*e*ZM-2*b*e*ZM-e**2*ZM+f**2*ZM)/
+     &   bottom**3 )/(2.0D0*MASS)
             HESS(J4+3,J3+2)=HESS(J3+2,J4+3)
             ENDIF
          ENDDO
@@ -503,7 +503,7 @@ C
       RETURN
       END
 C
-C  ENERGY FOR LINEAR SYSTEM
+C  Energy for linear system
 C
       SUBROUTINE EPANIC(X,N,ZJ,ROTE,FLAG,V,MASS)
       USE MODHESS
@@ -562,7 +562,7 @@ C           PRINT*,'J1,J2,HESS=',J1,J2,HESS(J1,J2)
      1                 XM, YM, ZM, TOP, BOTTOM, 
      2                 A, B, C, D, E, F, XT(N)
 C
-C  CALCULATE CENTRE OF MASS COMPONENTS XM, YM, ZM
+C  Calculate centre of mass components XM, YM, ZM
 C
       XM=0.0D0
       YM=0.0D0
@@ -576,7 +576,7 @@ C
       YM=YM/N
       ZM=ZM/N
 C
-C  CALCULATE CONSTANTS A, B, C, D, E, F
+C  Calculate constants A, B, C, D, E, F
 C
       A=0.0D0
       B=0.0D0
@@ -620,17 +620,17 @@ C        PRINT*,'PANIC ROTE, E, BOTTOM=',ROTE,E, BOTTOM
 C     ELSE
 C        IZINV=TOP/(MASS*BOTTOM)
 C        ROTE=ZJ**2*IZINV/2.0D0
-C        PRINT*,'NORMAL ROTE, BOTTOM=',ROTE, BOTTOM
+C        PRINT*,'normal ROTE, BOTTOM=',ROTE, BOTTOM
 C     ENDIF
       RETURN
       END
 C
 C**************************************************************************
 C
-C  SUBROUTINE ROTDERIV CALCULATES ANALYTICALLY THE CARTESIAN GRADIENT AND
-C  SECOND DERIVATIVE MATRIX DUE TO THE ROTATIONAL TERM ONLY AND INCREMENTS
-C  THE EXISTING MATRICES CONTAINING THE POTENTIAL CONTRIBUTIONS
-C  ACCORDINGLY.
+C  Subroutine ROTDERIV calculates analytically the cartesian gradient and
+C  second derivative matrix due to the ROTATIONAL TERM ONLY and increments
+C  the existing matrices containing the potential contributions
+C  accordingly.
 C
 C**************************************************************************
 C
@@ -641,7 +641,7 @@ C
       DOUBLE PRECISION X(3*N), 
      1                 V(3*N), MASS, AVEL, IZ
 C
-C  ANALYTIC GRADIENT:
+C  Analytic gradient:
 C
       DO J1 = 1, N
          DO J2 = 1, 2
@@ -650,7 +650,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE I: ENTIRELY DIAGONAL TERMS.
+C  Case I: entirely diagonal terms.
 C
       DO J1 = 1, N
          DO J2 = 1, 2
@@ -666,7 +666,7 @@ C
 C  THIS SUBROUTINE CALCULATES THE MOMENT OF INERTIA IZ ABOUT THE Z AXIS
 C  AND HENCE THE ROTATIONAL ENERGY
 C
-C  ENERGY = OMEGA^2 * I_{ZZ} / 2 
+C  ENERGY = omega^2 * I_{zz} / 2 
 C
 C*************************************************************************
 C

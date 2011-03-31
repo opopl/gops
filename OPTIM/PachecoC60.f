@@ -1,25 +1,25 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C       POTENTIAL ENERGY OF A (C60)N SYSTEM
 C       PACHECO-PRATES-RAMALHO POTENTIAL (PRL 1997)
 C
-C      X,Y,Z: VECTORS
+C      X,Y,Z: vectors
 
       SUBROUTINE PRC60(NATOMS,LCOORDS,V,EPPR,GTEST,SECT)
       USE MODHESS
@@ -30,19 +30,19 @@ C       PARAMETER(CAT=4752000.D0)
         INTEGER J1, J2, I, J, NATOMS
       DOUBLE PRECISION X(NATOMS),Y(NATOMS),Z(NATOMS),LCOORDS(3*NATOMS),V3B,V2B,EPPR,V(3*NATOMS)
       DOUBLE PRECISION MIJ,FIJ,WIJ,XIJ,YIJ,ZIJ,RIJ,RIJ2,VIJ,PMORSE,WTOT,RIJ23,
-     1                   FX(NATOMS),FY(NATOMS),FZ(NATOMS),ERMI,DWIJ,DFIJ,DMIJ
+     1                   fx(NATOMS),fy(NATOMS),fZ(NATOMS),ermi,dwij,dfij,dmij
         DOUBLE PRECISION DMU, DELTA
-      PARAMETER(DMU=10.05D0)
-      PARAMETER(DELTA=1.04D0)
+      parameter(dmu=10.05D0)
+      parameter(delta=1.04D0)
         DOUBLE PRECISION DM0, TAU, D0
-      PARAMETER(DM0=0.3D0)
-      PARAMETER(TAU=9.75D0)
-      PARAMETER(D0=10.3D0)
+      parameter(dM0=0.3D0)
+      parameter(tau=9.75D0)
+      parameter(D0=10.3D0)
         DOUBLE PRECISION C6, C8, C10, C12
-      PARAMETER(C6=75600.D0)
-      PARAMETER(C8=9122400.D0)
-      PARAMETER(C10=2.09D8)
-      PARAMETER(C12=7.78D10)
+      parameter(C6=75600.D0)
+      parameter(C8=9122400.D0)
+      parameter(C10=2.09D8)
+      parameter(C12=7.78D10)
         LOGICAL GTEST,SECT
 
         DO J1=1,NATOMS
@@ -56,78 +56,78 @@ C       PARAMETER(CAT=4752000.D0)
       V2B=0.D0
 
         IF (.NOT.GTEST) THEN
-      DO I=1,NATOMS
-         DO J=I+1,NATOMS
+      do i=1,NATOMS
+         do j=i+1,NATOMS
 C
-C       2-BODY INTERACTION
+C       2-body interaction
 C
-            XIJ=X(J)-X(I)
-            YIJ=Y(J)-Y(I)
-            ZIJ=Z(J)-Z(I)
-            RIJ2=XIJ*XIJ+YIJ*YIJ+ZIJ*ZIJ
-            RIJ=SQRT(RIJ2)
+            xij=x(j)-x(i)
+            yij=y(j)-y(i)
+            zij=z(j)-z(i)
+            rij2=xij*xij+yij*yij+zij*zij
+            rij=sqrt(rij2)
             
-            FIJ=1.0D0/(1.D0+EXP((RIJ-DMU)/DELTA))
-              PMORSE=EXP(TAU*(1.D0-RIJ/D0))
-            MIJ=DM0*PMORSE*(PMORSE-2.D0)
-            WIJ=-(C6+(C8+(C10+C12/RIJ2)/RIJ2)/RIJ2)/RIJ2**3
+            fij=1.0D0/(1.D0+exp((rij-dmu)/delta))
+              pmorse=exp(tau*(1.D0-rij/d0))
+            mij=dM0*pmorse*(pmorse-2.D0)
+            wij=-(C6+(C8+(C10+C12/rij2)/rij2)/rij2)/rij2**3
             
-            VIJ=FIJ*MIJ+(1.D0-FIJ)*WIJ
+            vij=fij*mij+(1.D0-fij)*wij
             
-            V2B=V2B+VIJ
-         ENDDO
-      ENDDO
+            v2b=v2b+vij
+         enddo
+      enddo
 
         ELSE
 
-      DO I=1,NATOMS
-           FX(I)=0.D0
-           FY(I)=0.D0
-           FZ(I)=0.D0
-        ENDDO
-      DO I=1,NATOMS
-         DO J=I+1,NATOMS
+      do i=1,NATOMS
+           fx(i)=0.D0
+           fy(i)=0.D0
+           fz(i)=0.D0
+        enddo
+      do i=1,NATOMS
+         do j=i+1,NATOMS
 C
-C       2-BODY INTERACTION
+C       2-body interaction
 C
-            XIJ=X(J)-X(I)
-            YIJ=Y(J)-Y(I)
-            ZIJ=Z(J)-Z(I)
-            RIJ2=XIJ*XIJ+YIJ*YIJ+ZIJ*ZIJ
-            RIJ=SQRT(RIJ2)
+            xij=x(j)-x(i)
+            yij=y(j)-y(i)
+            zij=z(j)-z(i)
+            rij2=xij*xij+yij*yij+zij*zij
+            rij=sqrt(rij2)
             
-              ERMI=EXP((RIJ-DMU)/DELTA)
-              FIJ=1.0D0/(1.D0+ERMI)
-              DFIJ=-ERMI/(DELTA*(1.D0+ERMI)**2)
+              ermi=exp((rij-dmu)/delta)
+              fij=1.0D0/(1.D0+ermi)
+              dfij=-ermi/(delta*(1.D0+ermi)**2)
 
-              PMORSE=EXP(TAU*(1.D0-RIJ/D0))
-            MIJ=DM0*PMORSE*(PMORSE-2.D0)
-              DMIJ=(2.D0*TAU*DM0*PMORSE*(1.D0-PMORSE))/D0
+              pmorse=exp(tau*(1.D0-rij/d0))
+            mij=dM0*pmorse*(pmorse-2.D0)
+              dmij=(2.D0*tau*dM0*pmorse*(1.D0-pmorse))/d0
 
-              RIJ23=RIJ2**3
-            WIJ=-(C6+(C8+(C10+C12/RIJ2)/RIJ2)/RIJ2)/RIJ23
-              DWIJ=(6*C6+(8*C8+(10*C10+12*C12/RIJ2)/RIJ2)/RIJ2)/(RIJ*RIJ23)
+              rij23=rij2**3
+            wij=-(C6+(C8+(C10+C12/rij2)/rij2)/rij2)/rij23
+              dwij=(6*C6+(8*C8+(10*C10+12*C12/rij2)/rij2)/rij2)/(rij*rij23)
             
-            VIJ=FIJ*MIJ+(1.D0-FIJ)*WIJ
+            vij=fij*mij+(1.D0-fij)*wij
             
-            V2B=V2B+VIJ
+            v2b=v2b+vij
 
-              WTOT=MIJ*DFIJ+FIJ*DMIJ+(1.D0-FIJ)*DWIJ-DFIJ*WIJ
-              WTOT=-WTOT
+              wtot=mij*dfij+fij*dmij+(1.D0-fij)*dwij-dfij*wij
+              wtot=-wtot
 
-              FX(I)=FX(I)+(X(I)-X(J))*WTOT/RIJ
-              FY(I)=FY(I)+(Y(I)-Y(J))*WTOT/RIJ
-              FZ(I)=FZ(I)+(Z(I)-Z(J))*WTOT/RIJ
+              fx(i)=fx(i)+(x(i)-x(j))*wtot/rij
+              fy(i)=fy(i)+(y(i)-y(j))*wtot/rij
+              fz(i)=fz(i)+(z(i)-z(j))*wtot/rij
 
-              FX(J)=FX(J)+(X(J)-X(I))*WTOT/RIJ
-              FY(J)=FY(J)+(Y(J)-Y(I))*WTOT/RIJ
-              FZ(J)=FZ(J)+(Z(J)-Z(I))*WTOT/RIJ
+              fx(j)=fx(j)+(x(j)-x(i))*wtot/rij
+              fy(j)=fy(j)+(y(j)-y(i))*wtot/rij
+              fz(j)=fz(j)+(z(j)-z(i))*wtot/rij
        
-         ENDDO
-      ENDDO
+         enddo
+      enddo
         ENDIF
       
-      EPPR=V2B
+      EPPR=v2b
 
         IF (GTEST) THEN
            DO J1=1,NATOMS
@@ -139,221 +139,221 @@ C             WRITE(*,'(A,I3,3F20.10)') 'J1,FX,FY,FZ=',J1,FX(J1),FY(J1),FZ(J1)
            ENDDO
         ENDIF
 
-        IF (SECT) CALL HESSIAN(X,Y,Z,NATOMS)
+        IF (SECT) CALL HESSIAN(x,y,z,NATOMS)
       
-      RETURN
-      END
+      return
+      end
 
-      SUBROUTINE HESSIAN(X,Y,Z,NSIZE)
+      subroutine HESSIAN(x,y,z,Nsize)
       USE MODHESS
       IMPLICIT NONE
-        INTEGER NSIZE,I,J
+        INTEGER nsize,i,j
       DOUBLE PRECISION X(NSIZE),Y(NSIZE),Z(NSIZE),WYZ,WXZ,WXY,WZZ,WYY,WXX,D2V,D2V2,DV2,DVDW,VDW
       DOUBLE PRECISION MIJ,DMIJ,FIJ,DFIJ,WIJ,DWIJ,XMORSE,XX,YY,ZZ,XY,XZ,YZ,XIJ,YIJ,ZIJ,RIJ2,RIJ,FERMI,DFERMI,DMORSE
       DOUBLE PRECISION D2MIJ,D2FIJ,D2WIJ,D2MORSE,D2FERMI,D2VDW
 
-      DO I=1,NSIZE
-         XX=0.0D0
-         YY=0.0D0
-         ZZ=0.0D0
-         XY=0.0D0
-         XZ=0.0D0
-         YZ=0.0D0
-         DO J=1,NSIZE
-            IF (I.NE.J) THEN
-         XIJ=X(J)-X(I)
-         YIJ=Y(J)-Y(I)
-         ZIJ=Z(J)-Z(I)
-         RIJ2=XIJ*XIJ+YIJ*YIJ+ZIJ*ZIJ
-         RIJ=DSQRT(RIJ2)
+      do i=1,Nsize
+         xx=0.0D0
+         yy=0.0D0
+         zz=0.0D0
+         xy=0.0D0
+         xz=0.0D0
+         yz=0.0D0
+         do j=1,Nsize
+            if (i.ne.j) then
+         xij=x(j)-x(i)
+         yij=y(j)-y(i)
+         zij=z(j)-z(i)
+         rij2=xij*xij+yij*yij+zij*zij
+         rij=dsqrt(rij2)
          
-         FIJ=FERMI(RIJ)
-         DFIJ=DFERMI(RIJ)
-         D2FIJ=D2FERMI(RIJ)
-         MIJ=XMORSE(RIJ)
-         DMIJ=DMORSE(RIJ)
-         D2MIJ=D2MORSE(RIJ)
-         WIJ=VDW(RIJ)
-         DWIJ=DVDW(RIJ)
-         D2WIJ=D2VDW(RIJ)
+         fij=fermi(rij)
+         dfij=dfermi(rij)
+         d2fij=d2fermi(rij)
+         mij=xmorse(rij)
+         dmij=dmorse(rij)
+         d2mij=d2morse(rij)
+         wij=vdw(rij)
+         dwij=dvdw(rij)
+         d2wij=d2vdw(rij)
          
-         DV2=MIJ*DFIJ+FIJ*DMIJ+(1.D0-FIJ)*DWIJ-DFIJ*WIJ
-         D2V2=D2FIJ*MIJ+2.D0*DFIJ*DMIJ+D2MIJ*FIJ
-         D2V2=D2V2+(1.D0-FIJ)*D2WIJ-D2FIJ*WIJ-2.D0*DFIJ*DWIJ
+         dv2=mij*dfij+fij*dmij+(1.D0-fij)*dwij-dfij*wij
+         d2v2=d2fij*mij+2.d0*dfij*dmij+d2mij*fij
+         d2v2=d2v2+(1.d0-fij)*d2wij-d2fij*wij-2.d0*dfij*dwij
 
-         D2V=DV2/RIJ-D2V2
+         d2v=dv2/rij-d2v2
 
-         WXX=-DV2/RIJ+XIJ**2*D2V/RIJ2
-         WYY=-DV2/RIJ+YIJ**2*D2V/RIJ2
-         WZZ=-DV2/RIJ+ZIJ**2*D2V/RIJ2
-         WXY=XIJ*YIJ*D2V/RIJ2
-         WXZ=XIJ*ZIJ*D2V/RIJ2
-         WYZ=YIJ*ZIJ*D2V/RIJ2
+         wxx=-dv2/rij+xij**2*d2v/rij2
+         wyy=-dv2/rij+yij**2*d2v/rij2
+         wzz=-dv2/rij+zij**2*d2v/rij2
+         wxy=xij*yij*d2v/rij2
+         wxz=xij*zij*d2v/rij2
+         wyz=yij*zij*d2v/rij2
 
-         HESS(3*I-2,3*J-2)=WXX
-         HESS(3*I-1,3*J-1)=WYY
-         HESS(3*I,3*J)    =WZZ
-         HESS(3*I-2,3*J-1)=WXY
-         HESS(3*I-2,3*J)=WXZ
-         HESS(3*I-1,3*J)=WYZ
-         HESS(3*I-1,3*J-2)=WXY
-         HESS(3*I,3*J-2)=WXZ
-         HESS(3*I,3*J-1)=WYZ
+         HESS(3*i-2,3*j-2)=wxx
+         HESS(3*i-1,3*j-1)=wyy
+         HESS(3*i,3*j)    =wzz
+         HESS(3*i-2,3*j-1)=wxy
+         HESS(3*i-2,3*j)=wxz
+         HESS(3*i-1,3*j)=wyz
+         HESS(3*i-1,3*j-2)=wxy
+         HESS(3*i,3*j-2)=wxz
+         HESS(3*i,3*j-1)=wyz
 
-         XX=XX+WXX
-         YY=YY+WYY
-         ZZ=ZZ+WZZ
-         XY=XY+WXY
-         XZ=XZ+WXZ
-         YZ=YZ+WYZ
+         xx=xx+wxx
+         yy=yy+wyy
+         zz=zz+wzz
+         xy=xy+wxy
+         xz=xz+wxz
+         yz=yz+wyz
 
-            ENDIF
+            endif
 
-         ENDDO
+         enddo
 
-         HESS(3*I-2,3*I-2)=-XX
-         HESS(3*I-1,3*I-1)=-YY
-         HESS(3*I,3*I)=-ZZ
-         HESS(3*I-2,3*I-1)=-XY
-         HESS(3*I-2,3*I)=-XZ
-         HESS(3*I-1,3*I)=-YZ
-         HESS(3*I-1,3*I-2)=-XY
-         HESS(3*I,3*I-2)=-XZ
-         HESS(3*I,3*I-1)=-YZ
+         HESS(3*i-2,3*i-2)=-xx
+         HESS(3*i-1,3*i-1)=-yy
+         HESS(3*i,3*i)=-zz
+         HESS(3*i-2,3*i-1)=-xy
+         HESS(3*i-2,3*i)=-xz
+         HESS(3*i-1,3*i)=-yz
+         HESS(3*i-1,3*i-2)=-xy
+         HESS(3*i,3*i-2)=-xz
+         HESS(3*i,3*i-1)=-yz
       
-      ENDDO
+      enddo
 
-      RETURN
-      END
+      return
+      end
 
-C__________________________________________________________________________
+c__________________________________________________________________________
 
-      FUNCTION FERMI(X)
+      function fermi(x)
       IMPLICIT NONE
       DOUBLE PRECISION DELTA, X, DMU, FERMI
-      PARAMETER(DMU=10.05D0)
-      PARAMETER(DELTA=1.04D0)
+      parameter(dmu=10.05D0)
+      parameter(delta=1.04D0)
 
-      FERMI=1.D0+DEXP((X-DMU)/DELTA)
-      FERMI=1.D0/FERMI
+      fermi=1.D0+dexp((x-dmu)/delta)
+      fermi=1.D0/fermi
 
-      RETURN
-      END
-C__________________________________________________________________________
+      return
+      end
+c__________________________________________________________________________
 
-      FUNCTION DFERMI(X)
+      function dfermi(x)
       IMPLICIT NONE
       DOUBLE PRECISION DELTA, X, DMU, ERMI, FERMI, DFERMI
-      PARAMETER(DMU=10.05D0)
-      PARAMETER(DELTA=1.04D0)
+      parameter(dmu=10.05D0)
+      parameter(delta=1.04D0)
 
-      ERMI=DEXP((X-DMU)/DELTA)
-      FERMI=1.D0+ERMI
-      DFERMI=-ERMI/DELTA
-      DFERMI=DFERMI/(FERMI**2)
+      ermi=dexp((x-dmu)/delta)
+      fermi=1.D0+ermi
+      dfermi=-ermi/delta
+      dfermi=dfermi/(fermi**2)
 
-      RETURN
-      END
-C__________________________________________________________________________
+      return
+      end
+c__________________________________________________________________________
 
-      FUNCTION D2FERMI(X)
+      function d2fermi(x)
       IMPLICIT NONE
       DOUBLE PRECISION DELTA, X, DMU, ERMI, FERMI, DFERMI, D2FERMI
-      PARAMETER(DMU=10.05D0)
-      PARAMETER(DELTA=1.04D0)
+      parameter(dmu=10.05D0)
+      parameter(delta=1.04D0)
 
-      ERMI=DEXP((X-DMU)/DELTA)
-      FERMI=1.D0+ERMI
-      DFERMI=ERMI*(ERMI-1.D0)/DELTA/DELTA
-      D2FERMI=DFERMI/(FERMI**3)
+      ermi=dexp((x-dmu)/delta)
+      fermi=1.D0+ermi
+      dfermi=ermi*(ermi-1.d0)/delta/delta
+      d2fermi=dfermi/(fermi**3)
 
-      RETURN
-      END
-C__________________________________________________________________________
+      return
+      end
+c__________________________________________________________________________
 
-      FUNCTION VDW(X)
+      function vdw(x)
       IMPLICIT NONE
       DOUBLE PRECISION C6,C8,C10,C12,X,VDW
-      PARAMETER(C6=75600.D0)
-      PARAMETER(C8=9122400.D0)
-      PARAMETER(C10=2.09D8)
-      PARAMETER(C12=7.78D10)
+      parameter(C6=75600.D0)
+      parameter(C8=9122400.D0)
+      parameter(C10=2.09D8)
+      parameter(C12=7.78D10)
 
-      VDW=-C6/X**6-C8/X**8-C10/X**10-C12/X**12
+      vdw=-C6/x**6-C8/x**8-C10/x**10-C12/x**12
 
-      RETURN
-      END
-C__________________________________________________________________________
+      return
+      end
+c__________________________________________________________________________
 
-      FUNCTION DVDW(X)
+      function dvdw(x)
       IMPLICIT NONE
       DOUBLE PRECISION C6,C8,C10,C12,X,DVDW
-      PARAMETER(C6=75600.D0)
-      PARAMETER(C8=9122400.D0)
-      PARAMETER(C10=2.09D8)
-      PARAMETER(C12=7.78D10)
+      parameter(C6=75600.D0)
+      parameter(C8=9122400.D0)
+      parameter(C10=2.09D8)
+      parameter(C12=7.78D10)
 
-      DVDW=6*C6/X**7+8*C8/X**9+10*C10/X**11+12*C12/X**13
+      dvdw=6*C6/x**7+8*C8/x**9+10*C10/x**11+12*C12/x**13
 
-      RETURN
-      END
-C__________________________________________________________________________
+      return
+      end
+c__________________________________________________________________________
 
-      FUNCTION D2VDW(X)
+      function d2vdw(x)
       IMPLICIT NONE
       DOUBLE PRECISION C6,C8,C10,C12,X,D2VDW
-      PARAMETER(C6=75600.D0)
-      PARAMETER(C8=9122400.D0)
-      PARAMETER(C10=2.09D8)
-      PARAMETER(C12=7.78D10)
+      parameter(C6=75600.D0)
+      parameter(C8=9122400.D0)
+      parameter(C10=2.09D8)
+      parameter(C12=7.78D10)
 
-      D2VDW=-42.D0*C6/X**8-72.D0*C8/X**10
-      D2VDW=D2VDW-110.D0*C10/X**12-156.D0*C12/X**14
+      d2vdw=-42.d0*C6/x**8-72.d0*C8/x**10
+      d2vdw=d2vdw-110.d0*C10/x**12-156.d0*C12/x**14
 
-      RETURN
-      END
-C__________________________________________________________________________
+      return
+      end
+c__________________________________________________________________________
 
-      FUNCTION XMORSE(X)
+      function xmorse(x)
       IMPLICIT NONE
       DOUBLE PRECISION DM0,TAU,D0,X,XMORSE
-      PARAMETER(DM0=0.3D0)
-      PARAMETER(TAU=9.75D0)
-      PARAMETER(D0=10.3D0)
+      parameter(dM0=0.3D0)
+      parameter(tau=9.75D0)
+      parameter(D0=10.3D0)
 
-      XMORSE=DEXP(TAU*(1.D0-X/D0))
-      XMORSE=DM0*XMORSE*(XMORSE-2.D0)
+      xmorse=dexp(tau*(1.D0-x/d0))
+      xmorse=dM0*xmorse*(xmorse-2.D0)
 
-      RETURN
-      END
-C__________________________________________________________________________
+      return
+      end
+c__________________________________________________________________________
 
-      FUNCTION DMORSE(X)
+      function dmorse(x)
       IMPLICIT NONE
       DOUBLE PRECISION DM0,TAU,D0,MORSE,X,DMORSE
-      PARAMETER(DM0=0.3D0)
-      PARAMETER(TAU=9.75D0)
-      PARAMETER(D0=10.3D0)
+      parameter(dM0=0.3D0)
+      parameter(tau=9.75D0)
+      parameter(D0=10.3D0)
 
-      MORSE=DEXP(TAU*(1.D0-X/D0))
-      DMORSE=2.D0*TAU*DM0*MORSE*(1.D0-MORSE)
-      DMORSE=DMORSE/D0
+      morse=dexp(tau*(1.D0-x/d0))
+      dmorse=2.D0*tau*dM0*morse*(1.D0-morse)
+      dmorse=dmorse/d0
 
-      RETURN
-      END
-C__________________________________________________________________________
+      return
+      end
+c__________________________________________________________________________
 
-      FUNCTION D2MORSE(X)
+      function d2morse(x)
       IMPLICIT NONE
       DOUBLE PRECISION DM0,TAU,D0,X,D2MORSE
-      PARAMETER(DM0=0.3D0)
-      PARAMETER(TAU=9.75D0)
-      PARAMETER(D0=10.3D0)
+      parameter(dM0=0.3D0)
+      parameter(tau=9.75D0)
+      parameter(D0=10.3D0)
       DOUBLE PRECISION MORSE,DMORSE
 
-      MORSE=DEXP(TAU*(1.D0-X/D0))
-      DMORSE=2.D0*TAU*TAU*DM0*MORSE*(2.D0*MORSE-1.D0)
-      D2MORSE=DMORSE/D0/D0
+      morse=dexp(tau*(1.D0-x/d0))
+      dmorse=2.D0*tau*tau*dM0*morse*(2.D0*morse-1.d0)
+      d2morse=dmorse/d0/d0
 
-      RETURN
-      END
+      return
+      end

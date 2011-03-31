@@ -1,323 +1,323 @@
-C     ------------------- OXY ----------------------
+c     ------------------- oxy ----------------------
 
-      SUBROUTINE OXY(MAXTAB,IRES, JSTRT,JFINS,PRO_CORD,F_CORD_OXY,
-     *               EQDIST,OXSCL,CHRLSCL,RAMASCL,
-     *               OXEXCLDV,NUMLNG,ILONG,NMRES,E)
+      subroutine oxy(maxtab,ires, jstrt,jfins,pro_cord,f_cord_oxy,
+     *               eqdist,oxscl,chrlscl,ramascl,
+     *               oxexcldv,numlng,ilong,nmres,E)
  
-C     --------------------------------------------------
+c     --------------------------------------------------
 
-C     OXY INCLUDES OXYGEN COORDINATES 
-C     ARGUMENTS:
+c     OXY includes oxygen coordinates 
+c     arguments:
 
-C        JSTRT - FIRST MODIFIED SITE (I)
-C        JFINS - LAST MODIFIES SITE (I)
-C        F_CORD_OXY- WORK ARRAY OF FORCES (O)
-C        AMHAMHMAXSIZ- MAXIMUM NUMBER OF RESIDUES (I)
+c        jstrt - first modified site (i)
+c        jfins - last modifies site (i)
+c        f_cord_oxy- work array of forces (o)
+c        AMHAMHmaxsiz- maximum number of residues (i)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-      USE AMHGLOBALS, ONLY:AMHMAXSIZ,MAXCNT,I_RAMA,OOEV_DIST,OEXCLDSCL,MAXCRD
-      USE AMH_INTERFACES, ONLY:RAMA
+      use amhglobals, only:AMHmaxsiz,maxcnt,i_rama,ooev_dist,oexcldscl,maxcrd
+      use amh_interfaces, only:rama
 
-      IMPLICIT NONE
-      DOUBLE PRECISION, INTENT(IN) :: PRO_CORD(AMHMAXSIZ,3,MAXCRD),EQDIST(:),OXSCL,CHRLSCL,RAMASCL
-      DOUBLE PRECISION, INTENT(OUT) :: F_CORD_OXY(AMHMAXSIZ,3,MAXCRD),E(:,:)
+      implicit none
+      double precision, intent(in) :: pro_cord(AMHmaxsiz,3,maxcrd),eqdist(:),oxscl,chrlscl,ramascl
+      double precision, intent(out) :: f_cord_oxy(AMHmaxsiz,3,maxcrd),E(:,:)
 
-      INTEGER, INTENT(IN):: MAXTAB,IRES(AMHMAXSIZ),JSTRT,JFINS,NUMLNG(0:AMHMAXSIZ,MAXTAB),ILONG(MAXCNT,2,4),NMRES
-      LOGICAL, INTENT(IN):: OXEXCLDV
+      integer, intent(in):: maxtab,ires(AMHmaxsiz),jstrt,jfins,numlng(0:AMHmaxsiz,maxtab),ilong(maxcnt,2,4),nmres
+      logical, intent(in):: oxexcldv
  
-C     INTERNAL VARIABLES:
-      DOUBLE PRECISION A(3), B(3), C(3),ANORM, BNORM, CNORM,AMNR(3),BMNR(3),CMNR(3),
-     * APRL(AMHMAXSIZ,3),BPRL(AMHMAXSIZ,3),CPRL(AMHMAXSIZ,3),NORM,EQPROD,F_CORD_OXY_RAMA(AMHMAXSIZ,3,MAXCRD),
-     * NITCORD(AMHMAXSIZ,3),CPRCORD(AMHMAXSIZ,3),DELTA(0:AMHMAXSIZ+1,6,3),DIST(AMHMAXSIZ,6),
-     * FAC1(0:AMHMAXSIZ+1,6), PROD(AMHMAXSIZ),RAMAPOT(AMHMAXSIZ),OXF,R_DEV,OXDIFF(MAXCNT),
-     * OYDIFF(MAXCNT),OZDIFF(MAXCNT),OXDIST(MAXCNT),CVAL1,CVAL2,CVAL3,NVAL1,NVAL2,NVAL3,XI,EXVMIN_MCP,FACTOR(3),DIFF(3),
-     * DISTMCP
+c     internal variables:
+      double precision a(3), b(3), c(3),anorm, bnorm, cnorm,amnr(3),bmnr(3),cmnr(3),
+     * aprl(AMHmaxsiz,3),bprl(AMHmaxsiz,3),cprl(AMHmaxsiz,3),norm,eqprod,f_cord_oxy_rama(AMHmaxsiz,3,maxcrd),
+     * nitcord(AMHmaxsiz,3),cprcord(AMHmaxsiz,3),delta(0:AMHmaxsiz+1,6,3),dist(AMHmaxsiz,6),
+     * fac1(0:AMHmaxsiz+1,6), prod(AMHmaxsiz),ramapot(AMHmaxsiz),oxf,r_dev,oxdiff(maxcnt),
+     * oydiff(maxcnt),ozdiff(maxcnt),oxdist(maxcnt),cval1,cval2,cval3,nval1,nval2,nval3,xi,exvmin_mcp,factor(3),diff(3),
+     * distmcp
 
-C        --- DO LOOP INDICES ---
-         INTEGER I501,I503,I504,I505,I506,I507,I_IXN,I_AXIS,I_RES,ISIT1,ISIT2
-         INTEGER I,J
+c        --- do loop indices ---
+         integer i501,i503,i504,i505,i506,i507,i_ixn,i_axis,i_res,isit1,isit2
+         integer i,j
 
-C     --------------------- BEGIN -----------------------
+c     --------------------- begin -----------------------
 
-C     ZERO FORCE AND ENERGY
-      F_CORD_OXY_RAMA=0.D0
-      F_CORD_OXY=0.0D0
+c     zero force and energy
+      f_cord_oxy_rama=0.D0
+      f_cord_oxy=0.0D0
       E(1,3)=0.0D0
       E=0.0D0
 
-       DO 610 I505=JSTRT,JFINS
-        DO 606 I506=1,3
-          FAC1(I505,I506)=0.0D0
-606     CONTINUE
-610     CONTINUE
+       do 610 i505=jstrt,jfins
+        do 606 i506=1,3
+          fac1(i505,i506)=0.0D0
+606     continue
+610     continue
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C        CALCULATE CHAIN CONNECTIVITY
-C        BETWEEN N-CB, CPRIME-CB, N-CPRIME 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c        Calculate Chain Connectivity
+c        between N-Cb, Cprime-Cb, N-Cprime 
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-C     LOOP OVER ALL AMINO ACIDS IN PROTEIN 
+c     loop over all amino acids in protein 
 
-       DO 500 I_RES=JSTRT+1,JFINS-1
+       do 500 i_res=jstrt+1,jfins-1
 
-C     CALCULATE NITROGEN, CPRIME POSITION
+c     calculate nitrogen, cprime position
 
-         CVAL1=0.444D0
-         CVAL2=0.235D0
-         CVAL3=0.321D0
+         cval1=0.444D0
+         cval2=0.235D0
+         cval3=0.321D0
 
-       CPRCORD(I_RES,1)=CVAL1*PRO_CORD(I_RES,1,1)+CVAL2*PRO_CORD(I_RES+1,1,1)+CVAL3*PRO_CORD(I_RES,1,3)
-       CPRCORD(I_RES,2)=CVAL1*PRO_CORD(I_RES,2,1)+CVAL2*PRO_CORD(I_RES+1,2,1)+CVAL3*PRO_CORD(I_RES,2,3)
-       CPRCORD(I_RES,3)=CVAL1*PRO_CORD(I_RES,3,1)+CVAL2*PRO_CORD(I_RES+1,3,1)+CVAL3*PRO_CORD(I_RES,3,3)
+       cprcord(i_res,1)=cval1*pro_cord(i_res,1,1)+cval2*pro_cord(i_res+1,1,1)+cval3*pro_cord(i_res,1,3)
+       cprcord(i_res,2)=cval1*pro_cord(i_res,2,1)+cval2*pro_cord(i_res+1,2,1)+cval3*pro_cord(i_res,2,3)
+       cprcord(i_res,3)=cval1*pro_cord(i_res,3,1)+cval2*pro_cord(i_res+1,3,1)+cval3*pro_cord(i_res,3,3)
 
-          NVAL1=0.483D0
-          NVAL2=0.703D0
-          NVAL3=-0.186D0
+          nval1=0.483D0
+          nval2=0.703D0
+          nval3=-0.186D0
 
-       NITCORD(I_RES,1)=NVAL1*PRO_CORD(I_RES-1,1,1)+NVAL2*PRO_CORD(I_RES,1,1)+NVAL3*PRO_CORD(I_RES-1,1,3)
-       NITCORD(I_RES,2)=NVAL1*PRO_CORD(I_RES-1,2,1)+NVAL2*PRO_CORD(I_RES,2,1)+NVAL3*PRO_CORD(I_RES-1,2,3)
-       NITCORD(I_RES,3)=NVAL1*PRO_CORD(I_RES-1,3,1)+NVAL2*PRO_CORD(I_RES,3,1)+NVAL3*PRO_CORD(I_RES-1,3,3)
+       nitcord(i_res,1)=nval1*pro_cord(i_res-1,1,1)+nval2*pro_cord(i_res,1,1)+nval3*pro_cord(i_res-1,1,3)
+       nitcord(i_res,2)=nval1*pro_cord(i_res-1,2,1)+nval2*pro_cord(i_res,2,1)+nval3*pro_cord(i_res-1,2,3)
+       nitcord(i_res,3)=nval1*pro_cord(i_res-1,3,1)+nval2*pro_cord(i_res,3,1)+nval3*pro_cord(i_res-1,3,3)
           
-C     CALCULATE DISTANCES        
+c     calculate distances        
 
-          DELTA(I_RES,1,1)=PRO_CORD(I_RES,1,2)-NITCORD(I_RES,1)
-          DELTA(I_RES,1,2)=PRO_CORD(I_RES,2,2)-NITCORD(I_RES,2)
-          DELTA(I_RES,1,3)=PRO_CORD(I_RES,3,2)-NITCORD(I_RES,3)
-          DELTA(I_RES,2,1)=PRO_CORD(I_RES,1,2)-CPRCORD(I_RES,1)
-          DELTA(I_RES,2,2)=PRO_CORD(I_RES,2,2)-CPRCORD(I_RES,2)
-          DELTA(I_RES,2,3)=PRO_CORD(I_RES,3,2)-CPRCORD(I_RES,3)
-          DELTA(I_RES,3,1)=CPRCORD(I_RES,1)-NITCORD(I_RES,1)
-          DELTA(I_RES,3,2)=CPRCORD(I_RES,2)-NITCORD(I_RES,2)
-          DELTA(I_RES,3,3)=CPRCORD(I_RES,3)-NITCORD(I_RES,3)
+          delta(i_res,1,1)=pro_cord(i_res,1,2)-nitcord(i_res,1)
+          delta(i_res,1,2)=pro_cord(i_res,2,2)-nitcord(i_res,2)
+          delta(i_res,1,3)=pro_cord(i_res,3,2)-nitcord(i_res,3)
+          delta(i_res,2,1)=pro_cord(i_res,1,2)-cprcord(i_res,1)
+          delta(i_res,2,2)=pro_cord(i_res,2,2)-cprcord(i_res,2)
+          delta(i_res,2,3)=pro_cord(i_res,3,2)-cprcord(i_res,3)
+          delta(i_res,3,1)=cprcord(i_res,1)-nitcord(i_res,1)
+          delta(i_res,3,2)=cprcord(i_res,2)-nitcord(i_res,2)
+          delta(i_res,3,3)=cprcord(i_res,3)-nitcord(i_res,3)
 
-          DIST(I_RES,1)=DSQRT( DELTA(I_RES,1,1)**2+DELTA(I_RES,1,2)**2+DELTA(I_RES,1,3)**2 )
-          DIST(I_RES,2)=DSQRT( DELTA(I_RES,2,1)**2+DELTA(I_RES,2,2)**2+DELTA(I_RES,2,3)**2 )
-          DIST(I_RES,3)=DSQRT( DELTA(I_RES,3,1)**2+DELTA(I_RES,3,2)**2+DELTA(I_RES,3,3)**2 )
+          dist(i_res,1)=dsqrt( delta(i_res,1,1)**2+delta(i_res,1,2)**2+delta(i_res,1,3)**2 )
+          dist(i_res,2)=dsqrt( delta(i_res,2,1)**2+delta(i_res,2,2)**2+delta(i_res,2,3)**2 )
+          dist(i_res,3)=dsqrt( delta(i_res,3,1)**2+delta(i_res,3,2)**2+delta(i_res,3,3)**2 )
 
-          FAC1(I_RES,1)=2.0D0*OXSCL*(EQDIST(1)-DIST(I_RES,1))/DIST(I_RES,1)
-          FAC1(I_RES,2)=2.0D0*OXSCL*(EQDIST(2)-DIST(I_RES,2))/DIST(I_RES,2)
-          FAC1(I_RES,3)=2.0D0*OXSCL*(EQDIST(3)-DIST(I_RES,3))/DIST(I_RES,3)
+          fac1(i_res,1)=2.0D0*oxscl*(eqdist(1)-dist(i_res,1))/dist(i_res,1)
+          fac1(i_res,2)=2.0D0*oxscl*(eqdist(2)-dist(i_res,2))/dist(i_res,2)
+          fac1(i_res,3)=2.0D0*oxscl*(eqdist(3)-dist(i_res,3))/dist(i_res,3)
 
-          IF (IRES(I_RES).EQ.8) THEN
-            FAC1(I_RES,1)=0.0D0
-            FAC1(I_RES,2)=0.0D0
-          ENDIF
-500    CONTINUE
+          if (ires(i_res).eq.8) then
+            fac1(i_res,1)=0.0D0
+            fac1(i_res,2)=0.0D0
+          endif
+500    continue
 
-       DO 504 I504=1,3
-        CPRCORD(JSTRT,I504)=CVAL1*PRO_CORD(JSTRT,I504,1)+CVAL2*PRO_CORD(JSTRT+1,I504,1)+CVAL3*PRO_CORD(JSTRT,I504,3)
-        NITCORD(JFINS,I504)=NVAL1*PRO_CORD(JFINS-1,I504,1)+NVAL2*PRO_CORD(JFINS,I504,1)+NVAL3*PRO_CORD(JFINS-1,I504,3)
+       do 504 i504=1,3
+        cprcord(jstrt,i504)=cval1*pro_cord(jstrt,i504,1)+cval2*pro_cord(jstrt+1,i504,1)+cval3*pro_cord(jstrt,i504,3)
+        nitcord(jfins,i504)=nval1*pro_cord(jfins-1,i504,1)+nval2*pro_cord(jfins,i504,1)+nval3*pro_cord(jfins-1,i504,3)
  
-          DELTA(JSTRT-1,1,I504)=0.0D0
-          DELTA(JSTRT-1,2,I504)=0.0D0
-          DELTA(JSTRT-1,3,I504)=0.0D0
+          delta(jstrt-1,1,i504)=0.0D0
+          delta(jstrt-1,2,i504)=0.0D0
+          delta(jstrt-1,3,i504)=0.0D0
 
-          DELTA(JSTRT,1,I504)=0.0D0
-          DELTA(JSTRT,2,I504)=PRO_CORD(JSTRT,I504,2)-CPRCORD(JSTRT,I504)
-          DELTA(JSTRT,3,I504)=0.0D0
-          DELTA(JFINS,1,I504)=PRO_CORD(JFINS,I504,2)-NITCORD(JFINS,I504)
-          DELTA(JFINS,2,I504)=0.0D0
-          DELTA(JFINS,3,I504)=0.0D0
+          delta(jstrt,1,i504)=0.0D0
+          delta(jstrt,2,i504)=pro_cord(jstrt,i504,2)-cprcord(jstrt,i504)
+          delta(jstrt,3,i504)=0.0D0
+          delta(jfins,1,i504)=pro_cord(jfins,i504,2)-nitcord(jfins,i504)
+          delta(jfins,2,i504)=0.0D0
+          delta(jfins,3,i504)=0.0D0
 
-          DELTA(JFINS+1,1,I504)=0.0D0
-          DELTA(JFINS+1,2,I504)=0.0D0
-          DELTA(JFINS+1,3,I504)=0.0D0
-504     CONTINUE
+          delta(jfins+1,1,i504)=0.0D0
+          delta(jfins+1,2,i504)=0.0D0
+          delta(jfins+1,3,i504)=0.0D0
+504     continue
 
-        DO 506 I506=1,3
-          FAC1(JSTRT-1,I506)=0.0D0
-          FAC1(JFINS+1,I506)=0.0D0
-506     CONTINUE
+        do 506 i506=1,3
+          fac1(jstrt-1,i506)=0.0D0
+          fac1(jfins+1,i506)=0.0D0
+506     continue
 
-         DIST(JSTRT,2)=DSQRT( DELTA(JSTRT,2,1)**2+DELTA(JSTRT,2,2)**2+DELTA(JSTRT,2,3)**2 )
-         DIST(JFINS,1)=DSQRT( DELTA(JFINS,1,1)**2+DELTA(JFINS,1,2)**2+DELTA(JFINS,1,3)**2 )
-         FAC1(JSTRT,1)=0.0D0
-         FAC1(JSTRT,2)=2.0D0*OXSCL*(EQDIST(2)-DIST(JSTRT,2))/DIST(JSTRT,2)
-         FAC1(JSTRT,3)=0.0D0
+         dist(jstrt,2)=dsqrt( delta(jstrt,2,1)**2+delta(jstrt,2,2)**2+delta(jstrt,2,3)**2 )
+         dist(jfins,1)=dsqrt( delta(jfins,1,1)**2+delta(jfins,1,2)**2+delta(jfins,1,3)**2 )
+         fac1(jstrt,1)=0.0D0
+         fac1(jstrt,2)=2.0D0*oxscl*(eqdist(2)-dist(jstrt,2))/dist(jstrt,2)
+         fac1(jstrt,3)=0.0D0
 
-         FAC1(JFINS,1)=2.0D0*OXSCL*(EQDIST(1)-DIST(JFINS,1))/DIST(JFINS,1)
-         FAC1(JFINS,2)=0.0D0
-         FAC1(JFINS,3)=0.0D0
+         fac1(jfins,1)=2.0D0*oxscl*(eqdist(1)-dist(jfins,1))/dist(jfins,1)
+         fac1(jfins,2)=0.0D0
+         fac1(jfins,3)=0.0D0
 
-         DO 666 I_RES = 1, JFINS
-          IF (IRES(I_RES).EQ.8) THEN
-            FAC1(I_RES,1)=0.0D0
-            FAC1(I_RES,2)=0.0D0
-          ENDIF
-666      CONTINUE
+         do 666 i_res = 1, jfins
+          if (ires(i_res).eq.8) then
+            fac1(i_res,1)=0.0D0
+            fac1(i_res,2)=0.0D0
+          endif
+666      continue
 
-C  ADD FORCES
+c  Add forces
 
-        DO 503 I503=1,3
-        DO 501 I501=JSTRT,JFINS
+        do 503 i503=1,3
+        do 501 i501=jstrt,jfins
 
-          F_CORD_OXY(I501,I503,1)=F_CORD_OXY(I501,I503,1)
-     *          +FAC1(I501,1)*DELTA(I501,1,I503)*(-NVAL2)               
-     *          +FAC1(I501+1,1)*DELTA(I501+1,1,I503)*(-NVAL1)
-     *          +FAC1(I501,2)*DELTA(I501,2,I503)*(-CVAL1)               
-     *          +FAC1(I501-1,2)*DELTA(I501-1,2,I503)*(-CVAL2)
-     *          +FAC1(I501+1,3)*DELTA(I501+1,3,I503)*(-NVAL1)     
-     *          +FAC1(I501,3)*DELTA(I501,3,I503)*(-NVAL2+CVAL1)
-     *          +FAC1(I501-1,3)*DELTA(I501-1,3,I503)*(CVAL2)
+          f_cord_oxy(i501,i503,1)=f_cord_oxy(i501,i503,1)
+     *          +fac1(i501,1)*delta(i501,1,i503)*(-nval2)               
+     *          +fac1(i501+1,1)*delta(i501+1,1,i503)*(-nval1)
+     *          +fac1(i501,2)*delta(i501,2,i503)*(-cval1)               
+     *          +fac1(i501-1,2)*delta(i501-1,2,i503)*(-cval2)
+     *          +fac1(i501+1,3)*delta(i501+1,3,i503)*(-nval1)     
+     *          +fac1(i501,3)*delta(i501,3,i503)*(-nval2+cval1)
+     *          +fac1(i501-1,3)*delta(i501-1,3,i503)*(cval2)
 
-          F_CORD_OXY(I501,I503,2)=F_CORD_OXY(I501,I503,2)
-     *          +FAC1(I501,1)*DELTA(I501,1,I503)               
-     *          +FAC1(I501,2)*DELTA(I501,2,I503)               
+          f_cord_oxy(i501,i503,2)=f_cord_oxy(i501,i503,2)
+     *          +fac1(i501,1)*delta(i501,1,i503)               
+     *          +fac1(i501,2)*delta(i501,2,i503)               
 
-          F_CORD_OXY(I501,I503,3)= F_CORD_OXY(I501,I503,3)+
-     *           FAC1(I501+1,1)*DELTA(I501+1,1,I503)*(-NVAL3)
-     *          +FAC1(I501,2)*DELTA(I501,2,I503)*(-CVAL3)               
-     *          +FAC1(I501+1,3)*DELTA(I501+1,3,I503)*(-NVAL3)           
-     *          +FAC1(I501,3)*DELTA(I501,3,I503)*(CVAL3)
+          f_cord_oxy(i501,i503,3)= f_cord_oxy(i501,i503,3)+
+     *           fac1(i501+1,1)*delta(i501+1,1,i503)*(-nval3)
+     *          +fac1(i501,2)*delta(i501,2,i503)*(-cval3)               
+     *          +fac1(i501+1,3)*delta(i501+1,3,i503)*(-nval3)           
+     *          +fac1(i501,3)*delta(i501,3,i503)*(cval3)
 
-501           CONTINUE
-503        CONTINUE
+501           continue
+503        continue
 
-C----------------------------------------------------
-C  E STORES POTENTIALS FOR OUTPUT AT INCMOV
-C---------------------------------------------------
+c----------------------------------------------------
+c  E stores potentials for output at incmov
+c---------------------------------------------------
 
-      IF (IRES(JSTRT).NE.8)  THEN
-        E(1,3)=E(1,3)+OXSCL*(EQDIST(2)-DIST(JSTRT,2))**2
-      ENDIF
+      if (ires(jstrt).ne.8)  then
+        E(1,3)=E(1,3)+oxscl*(eqdist(2)-dist(jstrt,2))**2
+      endif
 
-      IF (IRES(JFINS).NE.8)  THEN
-       E(1,3)=E(1,3)+OXSCL*(EQDIST(1)-DIST(JFINS,1))**2
-      ENDIF
+      if (ires(jfins).ne.8)  then
+       E(1,3)=E(1,3)+oxscl*(eqdist(1)-dist(jfins,1))**2
+      endif
 
-       DO 505 I505=JSTRT+1,JFINS-1
-         IF (IRES(I505).NE.8) THEN
-           E(1,3)=E(1,3)+OXSCL*((EQDIST(1)-DIST(I505,1))**2+(EQDIST(2)-DIST(I505,2))**2+(EQDIST(3)-DIST(I505,3))**2 )
-         ELSE
-           E(1,3)=E(1,3)+OXSCL*((EQDIST(3)-DIST(I505,3))**2)
-         ENDIF
-505    CONTINUE
+       do 505 i505=jstrt+1,jfins-1
+         if (ires(i505).ne.8) then
+           E(1,3)=E(1,3)+oxscl*((eqdist(1)-dist(i505,1))**2+(eqdist(2)-dist(i505,2))**2+(eqdist(3)-dist(i505,3))**2 )
+         else
+           E(1,3)=E(1,3)+oxscl*((eqdist(3)-dist(i505,3))**2)
+         endif
+505    continue
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C        CALCULATE OXYGEN EXCLUDED VOLUME IF NEEDED
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c        Calculate Oxygen Excluded Volume if Needed
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-       IF ( OXEXCLDV ) THEN
+       if ( oxexcldv ) then
 
-        XI=0.5D0
+        xi=0.5D0
 
-         DO I_IXN= 1,NUMLNG(NMRES,2)
-            I = ILONG(I_IXN,1,2)
-            J = ILONG(I_IXN,2,2)
-            IF((J-I).EQ.1) CYCLE
-          DIFF(:)=PRO_CORD(I,:,3)-PRO_CORD(J,:,3)  ! X,Y,Z
-          DISTMCP=DSQRT( DIFF(1)*DIFF(1) + DIFF(2)*DIFF(2) + DIFF(3)*DIFF(3) )
+         do i_ixn= 1,numlng(nmres,2)
+            i = ilong(i_ixn,1,2)
+            j = ilong(i_ixn,2,2)
+            if((j-i).eq.1) cycle
+          diff(:)=pro_cord(i,:,3)-pro_cord(j,:,3)  ! X,Y,Z
+          distmcp=dsqrt( diff(1)*diff(1) + diff(2)*diff(2) + diff(3)*diff(3) )
 
-          FACTOR(:)=(OEXCLDSCL/(2.0D0*XI))*(COSH((OOEV_DIST(I_IXN)-DISTMCP)/XI)**(-2)) *DIFF(:)/DISTMCP
+          factor(:)=(oexcldscl/(2.0D0*xi))*(cosh((ooev_dist(i_ixn)-distmcp)/xi)**(-2)) *diff(:)/distmcp
 
-          F_CORD_OXY(I,:,3)=F_CORD_OXY(I,:,3)+FACTOR(:)
-          F_CORD_OXY(J,:,3)=F_CORD_OXY(J,:,3)-FACTOR(:)
+          f_cord_oxy(i,:,3)=f_cord_oxy(i,:,3)+factor(:)
+          f_cord_oxy(j,:,3)=f_cord_oxy(j,:,3)-factor(:)
 
-          E(1,11)=E(1,11)+0.5D0*OEXCLDSCL*(1.0D0+TANH((OOEV_DIST(I_IXN)-DISTMCP)/XI))
-C         WRITE(6,*)'IJ E',J-I,0.5D0*OEXCLDSCL*(1.0D0+TANH((OOEV_DIST(I_IXN)-DISTMCP)/XI)) 
-        ENDDO
+          E(1,11)=E(1,11)+0.5D0*oexcldscl*(1.0D0+tanh((ooev_dist(i_ixn)-distmcp)/xi))
+c         write(6,*)'ij E',j-i,0.5D0*oexcldscl*(1.0D0+tanh((ooev_dist(i_ixn)-distmcp)/xi)) 
+        enddo
 
-       ENDIF
+       endif
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     CALL RAMA TO GET RAMACHANDRIAN POTENTIALS
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     call rama to get ramachandrian potentials
 
-          RAMAPOT=0.0D0
+          ramapot=0.0D0
 
-          IF (I_RAMA.EQ.1) THEN
-        CALL RAMA(IRES,JSTRT,JFINS,PRO_CORD,F_CORD_OXY_RAMA,RAMASCL,RAMAPOT,NITCORD,CPRCORD)
-          ENDIF
-          E(1,2)=E(1,2)+SUM(RAMAPOT(JSTRT:JFINS))
-          F_CORD_OXY=F_CORD_OXY+F_CORD_OXY_RAMA
+          if (i_rama.eq.1) then
+        call rama(ires,jstrt,jfins,pro_cord,f_cord_oxy_rama,ramascl,ramapot,nitcord,cprcord)
+          endif
+          E(1,2)=E(1,2)+sum(ramapot(jstrt:jfins))
+          f_cord_oxy=f_cord_oxy+f_cord_oxy_rama
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     COMPUTE CHIRAL FORCES
-C        EQPROD= -2.5      ! WAS ERRONEOUSLY EQPROD=-0.7698
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     compute chiral forces
+c        eqprod= -2.5      ! was erroneously eqprod=-0.7698
 
-         EQPROD= -0.83D0
+         eqprod= -0.83D0
 
-       DO 507 I507=JSTRT+1,JFINS-1
-         IF (IRES(I507).NE.8) THEN
-C     CALCULATE VECTORS
-            A(1)=PRO_CORD(I507,1,1)-NITCORD(I507,1)
-            B(1)=CPRCORD(I507,1)-PRO_CORD(I507,1,1)
-            C(1)=PRO_CORD(I507,1,2)-PRO_CORD(I507,1,1)
-            A(2)=PRO_CORD(I507,2,1)-NITCORD(I507,2)
-            B(2)=CPRCORD(I507,2)-PRO_CORD(I507,2,1)
-            C(2)=PRO_CORD(I507,2,2)-PRO_CORD(I507,2,1)
-            A(3)=PRO_CORD(I507,3,1)-NITCORD(I507,3)
-            B(3)=CPRCORD(I507,3)-PRO_CORD(I507,3,1)
-            C(3)=PRO_CORD(I507,3,2)-PRO_CORD(I507,3,1)
-C     CALCULATE MINORS
-            AMNR(1)=B(2)*C(3)-B(3)*C(2)
-            AMNR(2)=B(3)*C(1)-B(1)*C(3)
-            AMNR(3)=B(1)*C(2)-B(2)*C(1)
-            BMNR(1)=C(2)*A(3)-C(3)*A(2)
-            BMNR(2)=C(3)*A(1)-C(1)*A(3)
-            BMNR(3)=C(1)*A(2)-C(2)*A(1)
-            CMNR(1)=A(2)*B(3)-A(3)*B(2)
-            CMNR(2)=A(3)*B(1)-A(1)*B(3)
-            CMNR(3)=A(1)*B(2)-A(2)*B(1)
-C     CALCULATE PRODUCTS
-            ANORM=1.0D0/(A(1)*A(1)+A(2)*A(2)+A(3)*A(3))
-            BNORM=1.0D0/(B(1)*B(1)+B(2)*B(2)+B(3)*B(3))
-            CNORM=1.0D0/(C(1)*C(1)+C(2)*C(2)+C(3)*C(3))
-            NORM=DSQRT(ANORM*BNORM*CNORM)
-            PROD(I507)=(A(1)*AMNR(1)+A(2)*AMNR(2)+A(3)*AMNR(3))*NORM
-C     CALCULATE PARTIAL DERIVITIVES
-            APRL(I507,1)=NORM*AMNR(1)-A(1)*PROD(I507)*ANORM
-            APRL(I507,2)=NORM*AMNR(2)-A(2)*PROD(I507)*ANORM
-            APRL(I507,3)=NORM*AMNR(3)-A(3)*PROD(I507)*ANORM
-            BPRL(I507,1)=NORM*BMNR(1)-B(1)*PROD(I507)*BNORM
-            BPRL(I507,2)=NORM*BMNR(2)-B(2)*PROD(I507)*BNORM
-            BPRL(I507,3)=NORM*BMNR(3)-B(3)*PROD(I507)*BNORM
-            CPRL(I507,1)=NORM*CMNR(1)-C(1)*PROD(I507)*CNORM
-            CPRL(I507,2)=NORM*CMNR(2)-C(2)*PROD(I507)*CNORM
-            CPRL(I507,3)=NORM*CMNR(3)-C(3)*PROD(I507)*CNORM
-          END IF
-507     CONTINUE
+       do 507 i507=jstrt+1,jfins-1
+         if (ires(i507).ne.8) then
+c     calculate vectors
+            a(1)=pro_cord(i507,1,1)-nitcord(i507,1)
+            b(1)=cprcord(i507,1)-pro_cord(i507,1,1)
+            c(1)=pro_cord(i507,1,2)-pro_cord(i507,1,1)
+            a(2)=pro_cord(i507,2,1)-nitcord(i507,2)
+            b(2)=cprcord(i507,2)-pro_cord(i507,2,1)
+            c(2)=pro_cord(i507,2,2)-pro_cord(i507,2,1)
+            a(3)=pro_cord(i507,3,1)-nitcord(i507,3)
+            b(3)=cprcord(i507,3)-pro_cord(i507,3,1)
+            c(3)=pro_cord(i507,3,2)-pro_cord(i507,3,1)
+c     calculate minors
+            amnr(1)=b(2)*c(3)-b(3)*c(2)
+            amnr(2)=b(3)*c(1)-b(1)*c(3)
+            amnr(3)=b(1)*c(2)-b(2)*c(1)
+            bmnr(1)=c(2)*a(3)-c(3)*a(2)
+            bmnr(2)=c(3)*a(1)-c(1)*a(3)
+            bmnr(3)=c(1)*a(2)-c(2)*a(1)
+            cmnr(1)=a(2)*b(3)-a(3)*b(2)
+            cmnr(2)=a(3)*b(1)-a(1)*b(3)
+            cmnr(3)=a(1)*b(2)-a(2)*b(1)
+c     calculate products
+            anorm=1.0D0/(a(1)*a(1)+a(2)*a(2)+a(3)*a(3))
+            bnorm=1.0D0/(b(1)*b(1)+b(2)*b(2)+b(3)*b(3))
+            cnorm=1.0D0/(c(1)*c(1)+c(2)*c(2)+c(3)*c(3))
+            norm=dsqrt(anorm*bnorm*cnorm)
+            prod(i507)=(a(1)*amnr(1)+a(2)*amnr(2)+a(3)*amnr(3))*norm
+c     calculate partial derivitives
+            aprl(i507,1)=norm*amnr(1)-a(1)*prod(i507)*anorm
+            aprl(i507,2)=norm*amnr(2)-a(2)*prod(i507)*anorm
+            aprl(i507,3)=norm*amnr(3)-a(3)*prod(i507)*anorm
+            bprl(i507,1)=norm*bmnr(1)-b(1)*prod(i507)*bnorm
+            bprl(i507,2)=norm*bmnr(2)-b(2)*prod(i507)*bnorm
+            bprl(i507,3)=norm*bmnr(3)-b(3)*prod(i507)*bnorm
+            cprl(i507,1)=norm*cmnr(1)-c(1)*prod(i507)*cnorm
+            cprl(i507,2)=norm*cmnr(2)-c(2)*prod(i507)*cnorm
+            cprl(i507,3)=norm*cmnr(3)-c(3)*prod(i507)*cnorm
+          end if
+507     continue
 
-C     ADD POTENTIAL TO ACCUMULATOR IF AVERAGES ARE TO BE COMPUTED
+c     add potential to accumulator if averages are to be computed
 
-        DO 518 I_RES=JSTRT+1,JFINS-1
-        IF (IRES(I_RES).NE.8) THEN
-            E(1,4)=E(1,4)+CHRLSCL*(PROD(I_RES)-EQPROD)**2
-        ENDIF
-518     CONTINUE
+        do 518 i_res=jstrt+1,jfins-1
+        if (ires(i_res).ne.8) then
+            E(1,4)=E(1,4)+chrlscl*(prod(i_res)-eqprod)**2
+        endif
+518     continue
 
-C     ADD TERMS FOR EACH COORDINATE
+c     add terms for each coordinate
  
-      DO 509 I_AXIS=1,3
-        DO 510 I_RES=JSTRT+1,JFINS-1
-        IF (IRES(I_RES).NE.8) THEN
+      do 509 i_axis=1,3
+        do 510 i_res=jstrt+1,jfins-1
+        if (ires(i_res).ne.8) then
         
-          F_CORD_OXY(I_RES,I_AXIS,1)=F_CORD_OXY(I_RES,I_AXIS,1)
-     *        - 2.0D0*CHRLSCL*(PROD(I_RES)-EQPROD) * ( (NVAL1+NVAL3)*APRL(I_RES,I_AXIS)
-     *         -(CVAL2+CVAL3)*BPRL(I_RES,I_AXIS)-CPRL(I_RES,I_AXIS) )
+          f_cord_oxy(i_res,i_axis,1)=f_cord_oxy(i_res,i_axis,1)
+     *        - 2.0D0*chrlscl*(prod(i_res)-eqprod) * ( (nval1+nval3)*aprl(i_res,i_axis)
+     *         -(cval2+cval3)*bprl(i_res,i_axis)-cprl(i_res,i_axis) )
 
-          F_CORD_OXY(I_RES+1,I_AXIS,1)=F_CORD_OXY(I_RES+1,I_AXIS,1)
-     *        - 2.0D0*CHRLSCL*(PROD(I_RES)-EQPROD) * CVAL2*BPRL(I_RES,I_AXIS)
+          f_cord_oxy(i_res+1,i_axis,1)=f_cord_oxy(i_res+1,i_axis,1)
+     *        - 2.0D0*chrlscl*(prod(i_res)-eqprod) * cval2*bprl(i_res,i_axis)
 
-          F_CORD_OXY(I_RES-1,I_AXIS,1)=F_CORD_OXY(I_RES-1,I_AXIS,1)
-     *        + 2.0D0*CHRLSCL*(PROD(I_RES)-EQPROD) * NVAL1*APRL(I_RES,I_AXIS)
+          f_cord_oxy(i_res-1,i_axis,1)=f_cord_oxy(i_res-1,i_axis,1)
+     *        + 2.0D0*chrlscl*(prod(i_res)-eqprod) * nval1*aprl(i_res,i_axis)
 
-          F_CORD_OXY(I_RES,I_AXIS,2)=F_CORD_OXY(I_RES,I_AXIS,2)
-     *        - 2.0D0*CHRLSCL*(PROD(I_RES)-EQPROD) * CPRL(I_RES,I_AXIS)
+          f_cord_oxy(i_res,i_axis,2)=f_cord_oxy(i_res,i_axis,2)
+     *        - 2.0D0*chrlscl*(prod(i_res)-eqprod) * cprl(i_res,i_axis)
 
-          F_CORD_OXY(I_RES,I_AXIS,3)=F_CORD_OXY(I_RES,I_AXIS,3)
-     *        - 2.0D0*CHRLSCL*(PROD(I_RES)-EQPROD) * CVAL3*BPRL(I_RES,I_AXIS)
+          f_cord_oxy(i_res,i_axis,3)=f_cord_oxy(i_res,i_axis,3)
+     *        - 2.0D0*chrlscl*(prod(i_res)-eqprod) * cval3*bprl(i_res,i_axis)
 
-          F_CORD_OXY(I_RES-1,I_AXIS,3)=F_CORD_OXY(I_RES-1,I_AXIS,3)
-     *        - 2.0D0*CHRLSCL*(PROD(I_RES)-EQPROD)*(-NVAL3)*APRL(I_RES,I_AXIS) 
+          f_cord_oxy(i_res-1,i_axis,3)=f_cord_oxy(i_res-1,i_axis,3)
+     *        - 2.0D0*chrlscl*(prod(i_res)-eqprod)*(-nval3)*aprl(i_res,i_axis) 
 
-        ENDIF
+        endif
 
-510             CONTINUE
-509          CONTINUE
+510             continue
+509          continue
 
-C     ---------------------- DONE -----------------------
+c     ---------------------- done -----------------------
 
-      RETURN
+      return
 
-      END
+      end

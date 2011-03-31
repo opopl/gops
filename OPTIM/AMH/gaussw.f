@@ -1,94 +1,94 @@
 
-C     --------------------- GAUSSW ----------------------
+c     --------------------- gaussw ----------------------
 
-      SUBROUTINE GAUSSW(MAXS,DIST,DELTA,GAUSSP,RGRID)
+      subroutine gaussw(maxs,dist,delta,gaussp,rgrid)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-C     GAUSSV GENERATES A GUASSIAN CURVE CENTERED ABOUT 
-C            DIST WITH A 'STANDARD DEVIATION' OF DELTR
+c     GAUSSV generates a guassian curve centered about 
+c            dist with a 'standard deviation' of deltr
 
-C     ARGUMENTS:
+c     arguments:
 
-C        MAXS  - NUMBER OF POINTS THE GRID IS TO BE
-C                EVALUATED AT (I)
-C        DIST  - CENTER OR AVERAGE OF GAUSSIAN; 
-C                IT IS THE DISTANCE BETWEEN RESIDUES 
-C                I AND J (I)
-C        DELTA - WELL WIDTH (I)
-C        GAUSSP- GAUSSIAN AS A FUNCTION OF THE R-GRID
-C                IN RGRID (O)
-C        RGRID - GRID OF R POINTS FOR WHICH THE GAUSSIAN
-C                IS TO BE COMPUTED (I)        
+c        maxs  - number of points the grid is to be
+c                evaluated at (i)
+c        dist  - center or average of gaussian; 
+c                it is the distance between residues 
+c                i and j (i)
+c        delta - well width (i)
+c        gaussp- gaussian as a function of the r-grid
+c                in rgrid (o)
+c        rgrid - grid of r points for which the gaussian
+c                is to be computed (i)        
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-      IMPLICIT NONE
+      implicit none
 
-C     ARGUMENT DECLARATIONS:
+c     argument declarations:
 
-         INTEGER MAXS
+         integer maxs
 
-         DOUBLE PRECISION DIST,GAUSSP(MAXS),RGRID(MAXS),DELTA
+         double precision dist,gaussp(maxs),rgrid(maxs),delta
 
-C     INTERNAL VARIABLES:
+c     internal variables:
  
-         INTEGER I500,I501,I502,I503
+         integer i500,i501,i502,i503
 
-         DOUBLE PRECISION DELTR
+         double precision deltr
 
-C     --------------------- BEGIN -----------------------
+c     --------------------- begin -----------------------
 
-C     --- DIAGNOSTICS ---
+c     --- diagnostics ---
 
-C     ECHO INPUT
+c     echo input
  
-C      WRITE(OARCHV,100)MAXS,DIST,DELTR
-C  100 FORMAT('GAUSSW:MAXS ',I3,' DIST AND DELTR',
-C    *        2(1X,1PE10.3))
+c      write(oarchv,100)maxs,dist,deltr
+c  100 format('gaussw:maxs ',i3,' dist and deltr',
+c    *        2(1x,1pe10.3))
 
-C     --- END DIAGNOSTICS ---
+c     --- end diagnostics ---
 
-C     FIND (R - R(MEM))**2
+c     find (r - r(mem))**2
 
-      DO 500 I500=1,MAXS
-         GAUSSP(I500)=-( RGRID(I500) - DIST )**2
-  500 CONTINUE
+      do 500 i500=1,maxs
+         gaussp(i500)=-( rgrid(i500) - dist )**2
+  500 continue
 
-C     DIVIDE BY 'VARIANCE' OF WELL-WIDTH
+c     divide by 'variance' of well-width
             
-      DELTR=0.5/(DELTA**2)
-      DO 501 I501=1,MAXS
-         GAUSSP(I501)=GAUSSP(I501)*DELTR
-  501 CONTINUE
+      deltr=0.5/(delta**2)
+      do 501 i501=1,maxs
+         gaussp(i501)=gaussp(i501)*deltr
+  501 continue
 
-C     MAKE SURE UNDERFLOW DOESN'T OCCUR
+c     make sure underflow doesn't occur
 
-      DO 502 I502=1,MAXS
-         GAUSSP(I502)=MAX( GAUSSP(I502),-60.0D0 )
-  502 CONTINUE
+      do 502 i502=1,maxs
+         gaussp(i502)=max( gaussp(i502),-60.0D0 )
+  502 continue
 
-C     COMPUTE GAUSSIAN
+c     compute gaussian
 
-      DO 503 I503=1,MAXS
-         GAUSSP(I503)=EXP( GAUSSP(I503) )
-  503 CONTINUE
+      do 503 i503=1,maxs
+         gaussp(i503)=exp( gaussp(i503) )
+  503 continue
 
-C     --- DIAGNOSTICS ---
+c     --- diagnostics ---
 
-C     ECHO GAUSSIAN GRID
+c     echo gaussian grid
  
-C      WRITE(OARCHV,101)
-C  101 FORMAT(/'GAUSSIAN GRID ')
-C      DO 505 I505=1,MAXS
-C         WRITE(OARCHV,102)I505,GAUSSP(I505),RGRID(I505)
-C  102    FORMAT(I3,2(1X,1PE12.5))
-C  505 CONTINUE
-C      STOP
+c      write(oarchv,101)
+c  101 format(/'gaussian grid ')
+c      do 505 i505=1,maxs
+c         write(oarchv,102)i505,gaussp(i505),rgrid(i505)
+c  102    format(i3,2(1x,1pe12.5))
+c  505 continue
+c      stop
 
-C     --- END DIAGNOSTICS ---
+c     --- end diagnostics ---
 
-C     ---------------------- DONE -----------------------
+c     ---------------------- done -----------------------
  
-      RETURN
-      END
+      return
+      end

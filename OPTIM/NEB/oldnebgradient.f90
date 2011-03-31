@@ -1,20 +1,20 @@
-!   NEB MODULE IS AN IMPLEMENTATION OF THE NUDGED ELASTIC BAND METHOD FOR PERFORMING DOUBLE-ENDED PATHWAY SEARCHES.
-!   COPYRIGHT (C) 2003-2006 SEMEN A. TRYGUBENKO AND DAVID J. WALES
-!   THIS FILE IS PART OF NEB MODULE. NEB MODULE IS PART OF OPTIM.
+!   NEB module is an implementation of the nudged elastic band method for performing double-ended pathway searches.
+!   Copyright (C) 2003-2006 Semen A. Trygubenko and David J. Wales
+!   This file is part of NEB module. NEB module is part of OPTIM.
 !
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 SUBROUTINE OLDNEBGRADIENT
 USE KEYGRAD
@@ -30,10 +30,10 @@ INTEGER J1, J2
 DOUBLE PRECISION DUMMY1, DUMMY2
 
 !
-! IMAGE 1 IS START
-! MOVABLE IMAGES ARE NUMBERS 2 TO NIMAGE+1
-! IMAGE NIMAGE+2 IS FINISH
-! THE FOLLOWING ASSIGNMENTS ARE MADE AT THE START OF NEWNEB
+! Image 1 is START
+! Movable images are numbers 2 to NIMAGE+1
+! Image NIMAGE+2 is FINISH
+! The following assignments are made at the start of NEWNEB
 !
 ! X         => XYZ(NOPT+1:NOPT*(NIMAGE+1))
 ! EIMAGE    => EEE(2:NIMAGE+1)
@@ -45,21 +45,21 @@ DOUBLE PRECISION DUMMY1, DUMMY2
 ! EEE(1)=EINITIAL
 ! EEE(NIMAGE+2)=EFINAL
 ! 
-! TRUEPOTEG CALCULATES ENERGY AND GRADIENTS FOR IMAGES
-! COORDINATES ARE IN XYZ(1:NOPT*(NIMAGE+2))
-! GRADIENT IS IN GGG(1:NOPT*(NIMAGE+2)) AND ALSO SAVED IN TRUEGRAD(1:NOPT*(NIMAGE+2))
-! IMAGE POTENTIAL ENERGIES ARE IN EEE(1:NIMAGE+2)
+! TRUEPOTEG calculates energy and gradients for images
+! coordinates are in XYZ(1:NOPT*(NIMAGE+2))
+! gradient is in GGG(1:NOPT*(NIMAGE+2)) and also saved in TRUEGRAD(1:NOPT*(NIMAGE+2))
+! image potential energies are in EEE(1:NIMAGE+2)
 !
 CALL TRUEPOTEG(.TRUE.)
 !
-! MEPTANGENT CALCULATES TANGENT VECTOR ACCORDING TO HENKELMANN AND JONSSON, JCP, 113, 9978, 2000
-! AND STORES IT IN TANVEC(1:NOPT,1:NIMAGE)
-! THE TANGENT VECTOR FOR IMAGE J1 IS STORED IN TANVEC(:,J1-1)
+! MEPTANGENT calculates tangent vector according to Henkelmann and Jonsson, JCP, 113, 9978, 2000
+! and stores it in TANVEC(1:NOPT,1:NIMAGE)
+! The tangent vector for image J1 is stored in TANVEC(:,J1-1)
 !
 CALL MEPTANGENT        
 
 !
-!  GRADIENT OF THE POTENTIAL PERPENDICULAR TO THE TANGENT VECTOR.
+!  Gradient of the potential perpendicular to the tangent vector.
 !
 ETOTAL=0.0D0
 DO J1=2,NIMAGE+1
@@ -72,14 +72,14 @@ DO J1=2,NIMAGE+1
       RMS=RMS+GGG(J2+NOPT*(J1-1))**2
    ENDDO
    ETOTAL=ETOTAL+EEE(J1)
-   PRINT '(A,I6)','OLDNEBGRAD> GGG PERP FOR IMAGE ',J1
+   PRINT '(A,I6)','oldnebgrad> GGG perp for image ',J1
    PRINT '(6G20.10)',GGG(1+NOPT*(J1-1):J1*NOPT)
-!  PRINT '(A,I6)','OLDNEBGRAD> TANVEC FOR IMAGE ',J1
+!  PRINT '(A,I6)','oldnebgrad> tanvec for image ',J1
 !  PRINT '(6G20.10)',TANVEC(1:NOPT,J1-1)
 ENDDO
 RMS=SQRT(RMS/(NIMAGE*NOPT*1.0D0))
 !
-!  SPRING ENERGY DERIVATIVES.
+!  Spring energy derivatives.
 !
 DO J1=2,NIMAGE+1
    DUMMY1=0.0D0
@@ -115,11 +115,11 @@ DO J1=2,NIMAGE+1
    DO J2=1,NOPT
       GGG(J2+NOPT*(J1-1))=GGG(J2+NOPT*(J1-1))-(DUMMY1-DUMMY2)*TANVEC(J2,J1-1)
    ENDDO
-   PRINT '(A,I6)','OLDNEBGRAD> GGG G PERP + WITH PARALLEL SPRING DERIVATIVES FOR IMAGE ',J1
+   PRINT '(A,I6)','oldnebgrad> GGG g perp + with parallel spring derivatives for image ',J1
    PRINT '(6G20.10)',GGG(1+NOPT*(J1-1):J1*NOPT)
 ENDDO
 !   
-! SET GRADIENTS ON FROZEN ATOMS TO ZERO.
+! Set gradients on frozen atoms to zero.
 !   
 IF (FREEZE) THEN
    DO J1=1,NIMAGE+2

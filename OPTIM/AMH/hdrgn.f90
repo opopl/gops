@@ -1,214 +1,214 @@
 
-!     --------------------- HDRGN.F ----------------------
+!     --------------------- hdrgn.f ----------------------
 
-      SUBROUTINE HDRGN(PRO_CORD,F_CORD,TEMPAV,E)
+      subroutine hdrgn(pro_cord,f_cord,tempav,E)
  
 !     --------------------------------------------------
 
-!     HDRGN FINDS THE  POTENTIAL DUE TO HYDROGEN BONDS 
-!     BETWEEN N AND O     
+!     hdrgn finds the  potential due to hydrogen bonds 
+!     between N and O     
 
 !     ---------------------------------------------------
 
-      USE AMHGLOBALS,  ONLY: AMHMAXSIZ,HBSCL,NMRES,HO_ZERO,NO_ZERO,IRES,&
-                       SIGMA_NO,SIGMA_H,HBOND,MAXCRD
+      use amhglobals,  only: AMHmaxsiz,hbscl,nmres,ho_zero,NO_zero,ires,&
+                       sigma_NO,sigma_h,hbond,maxcrd
 
-      IMPLICIT NONE
+      implicit none
 
-!     ARGUMENT DECLARATIONS:
+!     argument declarations:
 
-       DOUBLE PRECISION, INTENT(IN):: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
-       DOUBLE PRECISION, INTENT(OUT):: F_CORD(AMHMAXSIZ,3,MAXCRD),E(:,:)
-       LOGICAL, INTENT(IN):: TEMPAV
+       double precision, intent(in):: pro_cord(AMHmaxsiz,3,maxcrd)
+       double precision, intent(out):: f_cord(AMHmaxsiz,3,maxcrd),E(:,:)
+       logical, intent(in):: tempav
           
-!     INTERNAL VARIABLES:
+!     internal variables:
 
-       INTEGER ISIT1,ISIT2,ADD,I_CLASS,I_RES
-       DOUBLE PRECISION DISTANCES(AMHMAXSIZ,AMHMAXSIZ,2),RNO(9),HPOT(9), &
-                        HPOT_TOT,NITCORD(AMHMAXSIZ,3),RHO(9),H_CORD(AMHMAXSIZ,3), &
-                        HVAL1,HVAL2,HVAL3,NVAL1,NVAL2,NVAL3
+       integer isit1,isit2,add,i_class,i_res
+       double precision distances(AMHmaxsiz,AMHmaxsiz,2),rNO(9),hpot(9), &
+                        hpot_tot,nitcord(AMHmaxsiz,3),rHO(9),h_cord(AMHmaxsiz,3), &
+                        hval1,hval2,hval3,nval1,nval2,nval3
 
-!         PARAMETER(SIGMA_H=1.732)  ! THORNTON = 0.19  
-!         PARAMETER(SIGMA_NO=0.71) ! THORNTON = 0.17
-!         PARAMETER(HO_ZERO=2.2)  ! THORNTON = 2.06
-!         PARAMETER(NO_ZERO=2.960) ! THORNTON = 2.98
+!         parameter(sigma_h=1.732)  ! Thornton = 0.19  
+!         parameter(sigma_NO=0.71) ! Thornton = 0.17
+!         parameter(ho_zero=2.2)  ! Thornton = 2.06
+!         parameter(NO_zero=2.960) ! Thornton = 2.98
 
-         EXTERNAL HFORCE
-!     --------------------- BEGIN -----------------------
+         external hforce
+!     --------------------- begin -----------------------
 
-!     ZERO FORCE AND ENERGY
+!     zero force and energy
 
-      F_CORD=0.0D0
+      f_cord=0.0D0
       E=0.0D0
 
 
-      NVAL1=0.483D0
-      NVAL2=0.703D0
-      NVAL3=0.186D0
+      nval1=0.483D0
+      nval2=0.703D0
+      nval3=0.186D0
 
-      HVAL1=0.8409657D0
-      HVAL2=0.8929599D0 
-      HVAL3=0.7339256D0
-
-
-!     CALCULATE COORDINATES AND DISTANCES
-
-          DO  I_RES=2,NMRES
-
-        NITCORD(I_RES,1)=NVAL1*PRO_CORD(I_RES-1,1,1) &
-                        +NVAL2*PRO_CORD(I_RES,1,1)  &
-                        -NVAL3*PRO_CORD(I_RES-1,1,3)
-
-        NITCORD(I_RES,2)=NVAL1*PRO_CORD(I_RES-1,2,1) &
-                        +NVAL2*PRO_CORD(I_RES,2,1)  &
-                        -NVAL3*PRO_CORD(I_RES-1,2,3)
-
-        NITCORD(I_RES,3)=NVAL1*PRO_CORD(I_RES-1,3,1) &
-                        +NVAL2*PRO_CORD(I_RES,3,1)  &
-                        -NVAL3*PRO_CORD(I_RES-1,3,3)
+      hval1=0.8409657D0
+      hval2=0.8929599D0 
+      hval3=0.7339256D0
 
 
-        H_CORD(I_RES,1) = HVAL1*PRO_CORD(I_RES-1,1,1) &
-                         +HVAL2*PRO_CORD(I_RES,1,1)  &
-                         -HVAL3*PRO_CORD(I_RES-1,1,3)
+!     calculate coordinates and distances
 
-        H_CORD(I_RES,2) = HVAL1*PRO_CORD(I_RES-1,2,1) &
-                         +HVAL2*PRO_CORD(I_RES,2,1)  &
-                         -HVAL3*PRO_CORD(I_RES-1,2,3)
+          do  i_res=2,nmres
 
-        H_CORD(I_RES,3) = HVAL1*PRO_CORD(I_RES-1,3,1) &
-                         +HVAL2*PRO_CORD(I_RES,3,1)  &
-                         -HVAL3*PRO_CORD(I_RES-1,3,3)
+        nitcord(i_res,1)=nval1*pro_cord(i_res-1,1,1) &
+                        +nval2*pro_cord(i_res,1,1)  &
+                        -nval3*pro_cord(i_res-1,1,3)
 
-   ENDDO
+        nitcord(i_res,2)=nval1*pro_cord(i_res-1,2,1) &
+                        +nval2*pro_cord(i_res,2,1)  &
+                        -nval3*pro_cord(i_res-1,2,3)
 
-
-        DO ISIT1 = 1,NMRES
-        DO ISIT2 = 1,NMRES
-
-        DISTANCES(ISIT1,ISIT2,1) = DSQRT (           &
-        (PRO_CORD(ISIT1,1,3)-NITCORD(ISIT2,1))**2 + &
-        (PRO_CORD(ISIT1,2,3)-NITCORD(ISIT2,2))**2 + &
-        (PRO_CORD(ISIT1,3,3)-NITCORD(ISIT2,3))**2 )
-
-        DISTANCES(ISIT1,ISIT2,2) = DSQRT(            &
-        (PRO_CORD(ISIT1,1,3)-H_CORD(ISIT2,1))**2 +  &
-        (PRO_CORD(ISIT1,2,3)-H_CORD(ISIT2,2))**2 +  &
-        (PRO_CORD(ISIT1,3,3)-H_CORD(ISIT2,3))**2 )
-
-        ENDDO
-        ENDDO
+        nitcord(i_res,3)=nval1*pro_cord(i_res-1,3,1) &
+                        +nval2*pro_cord(i_res,3,1)  &
+                        -nval3*pro_cord(i_res-1,3,3)
 
 
-        DO  ISIT1=3,NMRES-2
+        h_cord(i_res,1) = hval1*pro_cord(i_res-1,1,1) &
+                         +hval2*pro_cord(i_res,1,1)  &
+                         -hval3*pro_cord(i_res-1,1,3)
 
-        DO  ISIT2 = 3,NMRES-2
+        h_cord(i_res,2) = hval1*pro_cord(i_res-1,2,1) &
+                         +hval2*pro_cord(i_res,2,1)  &
+                         -hval3*pro_cord(i_res-1,2,3)
 
-        IF ((IRES(ISIT1) .NE. 15) .AND. (IRES(ISIT2) .NE. 15) ) THEN
-        IF (ABS(ISIT2-ISIT1) .GT. 2)  THEN
-        IF (DISTANCES(ISIT1,ISIT2,1) .LT. 7.0D0) THEN
+        h_cord(i_res,3) = hval1*pro_cord(i_res-1,3,1) &
+                         +hval2*pro_cord(i_res,3,1)  &
+                         -hval3*pro_cord(i_res-1,3,3)
 
-        RNO(1)=DISTANCES(ISIT1,ISIT2,1)
-        RHO(1)=DISTANCES(ISIT1,ISIT2,2)
-
-        RNO(2)=DISTANCES(ISIT1-1,ISIT2,1)
-        RHO(2)=DISTANCES(ISIT1-1,ISIT2,2)
-
-        RNO(3)=DISTANCES(ISIT1+1,ISIT2,1)
-        RHO(3)=DISTANCES(ISIT1+1,ISIT2,2)
-
-        RNO(4)=DISTANCES(ISIT1-2,ISIT2,1)
-        RHO(4)=DISTANCES(ISIT1-2,ISIT2,2)
-
-        RNO(5)=DISTANCES(ISIT1+2,ISIT2,1)
-        RHO(5)=DISTANCES(ISIT1+2,ISIT2,2)
-
-        RNO(6)=DISTANCES(ISIT1,ISIT2-1,1)
-        RHO(6)=DISTANCES(ISIT1,ISIT2-1,2)
-
-        RNO(7)=DISTANCES(ISIT1,ISIT2+1,1)
-        RHO(7)=DISTANCES(ISIT1,ISIT2+1,2)
-
-        RNO(8)=DISTANCES(ISIT1,ISIT2-2,1)
-        RHO(8)=DISTANCES(ISIT1,ISIT2-2,2)
-
-        RNO(9)=DISTANCES(ISIT1,ISIT2+2,1)
-        RHO(9)=DISTANCES(ISIT1,ISIT2+2,2)
+   enddo
 
 
-          I_CLASS = 3
-          IF (ABS(ISIT2-ISIT1) .LT. 13) I_CLASS = 2
-          IF (ABS(ISIT2-ISIT1) .LT. 5)  I_CLASS = 1
+        do isit1 = 1,nmres
+        do isit2 = 1,nmres
+
+        distances(isit1,isit2,1) = dsqrt (           &
+        (pro_cord(isit1,1,3)-nitcord(isit2,1))**2 + &
+        (pro_cord(isit1,2,3)-nitcord(isit2,2))**2 + &
+        (pro_cord(isit1,3,3)-nitcord(isit2,3))**2 )
+
+        distances(isit1,isit2,2) = dsqrt(            &
+        (pro_cord(isit1,1,3)-h_cord(isit2,1))**2 +  &
+        (pro_cord(isit1,2,3)-h_cord(isit2,2))**2 +  &
+        (pro_cord(isit1,3,3)-h_cord(isit2,3))**2 )
+
+        enddo
+        enddo
 
 
-          DO ADD = 1,9
+        do  isit1=3,nmres-2
 
-          HPOT(ADD)= -1.0D0*( EXP(-(RNO(ADD)-NO_ZERO)**2/(2.0D0*(SIGMA_NO**2)) - &
-          (RHO(ADD) - HO_ZERO)**2/(2.0D0*(SIGMA_H**2)) ) )
+        do  isit2 = 3,nmres-2
 
-          ENDDO 
+        if ((ires(isit1) .ne. 15) .and. (ires(isit2) .ne. 15) ) then
+        if (abs(isit2-isit1) .gt. 2)  then
+        if (distances(isit1,isit2,1) .lt. 7.0D0) then
 
-        HPOT_TOT = HPOT(1) 
+        rNO(1)=distances(isit1,isit2,1)
+        rHO(1)=distances(isit1,isit2,2)
 
-        DO ADD = 2,9
+        rNO(2)=distances(isit1-1,isit2,1)
+        rHO(2)=distances(isit1-1,isit2,2)
 
-        HPOT_TOT = HPOT_TOT + HPOT(1)*HPOT(ADD)
+        rNO(3)=distances(isit1+1,isit2,1)
+        rHO(3)=distances(isit1+1,isit2,2)
 
-        ENDDO
+        rNO(4)=distances(isit1-2,isit2,1)
+        rHO(4)=distances(isit1-2,isit2,2)
 
-        HPOT_TOT = HBSCL(I_CLASS)*HPOT_TOT
+        rNO(5)=distances(isit1+2,isit2,1)
+        rHO(5)=distances(isit1+2,isit2,2)
 
-        IF (TEMPAV)THEN
-          E(1,1)=E(1,1)+HPOT_TOT
-          E(1,13+I_CLASS)=E(1,13+I_CLASS)+HPOT_TOT
-        ENDIF
+        rNO(6)=distances(isit1,isit2-1,1)
+        rHO(6)=distances(isit1,isit2-1,2)
+
+        rNO(7)=distances(isit1,isit2+1,1)
+        rHO(7)=distances(isit1,isit2+1,2)
+
+        rNO(8)=distances(isit1,isit2-2,1)
+        rHO(8)=distances(isit1,isit2-2,2)
+
+        rNO(9)=distances(isit1,isit2+2,1)
+        rHO(9)=distances(isit1,isit2+2,2)
 
 
-!     FIND FORCE DUE TO HBONDS
+          i_class = 3
+          if (abs(isit2-isit1) .lt. 13) i_class = 2
+          if (abs(isit2-isit1) .lt. 5)  i_class = 1
 
-         IF (HBOND) THEN
+
+          do add = 1,9
+
+          hpot(add)= -1.0D0*( exp(-(rNO(add)-NO_zero)**2/(2.0D0*(sigma_NO**2)) - &
+          (rHO(add) - ho_zero)**2/(2.0D0*(sigma_h**2)) ) )
+
+          enddo 
+
+        hpot_tot = hpot(1) 
+
+        do add = 2,9
+
+        hpot_tot = hpot_tot + hpot(1)*hpot(add)
+
+        enddo
+
+        hpot_tot = hbscl(i_class)*hpot_tot
+
+        if (tempav)then
+          E(1,1)=E(1,1)+hpot_tot
+          E(1,13+i_class)=E(1,13+i_class)+hpot_tot
+        endif
 
 
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2,RNO(1),RHO(1),HPOT(1),1.0D0,I_CLASS,F_CORD)
+!     find force due to hbonds
 
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2,RNO(1),RHO(1),HPOT(1),HPOT(2),I_CLASS,F_CORD)
-        CALL HFORCE(H_CORD,NITCORD,ISIT1-1,ISIT2,RNO(2),RHO(2),HPOT(2),HPOT(1),I_CLASS,F_CORD)
+         if (hbond) then
 
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2,RNO(1),RHO(1),HPOT(1),HPOT(3),I_CLASS,F_CORD)
-        CALL HFORCE(H_CORD,NITCORD,ISIT1+1,ISIT2,RNO(3),RHO(3),HPOT(3),HPOT(1),I_CLASS,F_CORD) 
 
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2,RNO(1),RHO(1),HPOT(1),HPOT(4),I_CLASS,F_CORD) 
-        CALL HFORCE(H_CORD,NITCORD,ISIT1-2,ISIT2,RNO(4),RHO(4),HPOT(4),HPOT(1),I_CLASS,F_CORD)
+        call hforce(h_cord,nitcord,isit1,isit2,rNO(1),rHO(1),hpot(1),1.0D0,i_class,f_cord)
 
-        CALL HFORCE(H_CORD,NITCORD,ISIT1+2,ISIT2,RNO(1),RHO(1),HPOT(1),HPOT(5),I_CLASS,F_CORD)
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2-1,RNO(5),RHO(5),HPOT(5),HPOT(1),I_CLASS,F_CORD)
+        call hforce(h_cord,nitcord,isit1,isit2,rNO(1),rHO(1),hpot(1),hpot(2),i_class,f_cord)
+        call hforce(h_cord,nitcord,isit1-1,isit2,rNO(2),rHO(2),hpot(2),hpot(1),i_class,f_cord)
 
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2,RNO(1),RHO(1),HPOT(1),HPOT(6),I_CLASS,F_CORD)
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2-1,RNO(6),RHO(6),HPOT(6),HPOT(1),I_CLASS,F_CORD)
+        call hforce(h_cord,nitcord,isit1,isit2,rNO(1),rHO(1),hpot(1),hpot(3),i_class,f_cord)
+        call hforce(h_cord,nitcord,isit1+1,isit2,rNO(3),rHO(3),hpot(3),hpot(1),i_class,f_cord) 
 
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2,RNO(1),RHO(1),HPOT(1),HPOT(7),I_CLASS,F_CORD)
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2+1,RNO(7),RHO(7),HPOT(7),HPOT(1),I_CLASS,F_CORD)
+        call hforce(h_cord,nitcord,isit1,isit2,rNO(1),rHO(1),hpot(1),hpot(4),i_class,f_cord) 
+        call hforce(h_cord,nitcord,isit1-2,isit2,rNO(4),rHO(4),hpot(4),hpot(1),i_class,f_cord)
 
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2,RNO(1),RHO(1),HPOT(1),HPOT(8),I_CLASS,F_CORD)
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2-2,RNO(8),RHO(8),HPOT(8),HPOT(1),I_CLASS,F_CORD)
+        call hforce(h_cord,nitcord,isit1+2,isit2,rNO(1),rHO(1),hpot(1),hpot(5),i_class,f_cord)
+        call hforce(h_cord,nitcord,isit1,isit2-1,rNO(5),rHO(5),hpot(5),hpot(1),i_class,f_cord)
 
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2,RNO(1),RHO(1),HPOT(1),HPOT(9),I_CLASS,F_CORD)
-        CALL HFORCE(H_CORD,NITCORD,ISIT1,ISIT2+2,RNO(9),RHO(9),HPOT(9),HPOT(1),I_CLASS,F_CORD)
+        call hforce(h_cord,nitcord,isit1,isit2,rNO(1),rHO(1),hpot(1),hpot(6),i_class,f_cord)
+        call hforce(h_cord,nitcord,isit1,isit2-1,rNO(6),rHO(6),hpot(6),hpot(1),i_class,f_cord)
+
+        call hforce(h_cord,nitcord,isit1,isit2,rNO(1),rHO(1),hpot(1),hpot(7),i_class,f_cord)
+        call hforce(h_cord,nitcord,isit1,isit2+1,rNO(7),rHO(7),hpot(7),hpot(1),i_class,f_cord)
+
+        call hforce(h_cord,nitcord,isit1,isit2,rNO(1),rHO(1),hpot(1),hpot(8),i_class,f_cord)
+        call hforce(h_cord,nitcord,isit1,isit2-2,rNO(8),rHO(8),hpot(8),hpot(1),i_class,f_cord)
+
+        call hforce(h_cord,nitcord,isit1,isit2,rNO(1),rHO(1),hpot(1),hpot(9),i_class,f_cord)
+        call hforce(h_cord,nitcord,isit1,isit2+2,rNO(9),rHO(9),hpot(9),hpot(1),i_class,f_cord)
 
         
-        ENDIF ! ENDIF HBOND
+        endif ! endif hbond
 
-        ENDIF ! PROLINE (IRES = 15)
-        ENDIF ! DISTANCES CUT-OFF
-        ENDIF ! ISIT2-ISIT1 .GT. 2
+        endif ! proline (ires = 15)
+        endif ! distances cut-off
+        endif ! isit2-isit1 .gt. 2
 
-        ENDDO   ! ISIT2        
-
-
-        ENDDO  ! ISIT1
+        enddo   ! isit2        
 
 
-!     ----------------------- DONE -----------------------
+        enddo  ! isit1
 
-      RETURN
-      END
+
+!     ----------------------- done -----------------------
+
+      return
+      end

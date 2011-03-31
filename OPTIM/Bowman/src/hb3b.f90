@@ -1,69 +1,69 @@
 !==================================================!
-! THIS SUBROUTINE CALCULATES 3-BODY USING SKINNER'S!
-! FUNCTIONS.                                       !
+! This subroutine calculates 3-body using Skinner's!
+! functions.                                       !
 !==================================================!  
-SUBROUTINE POT_HB3B(NW,X,POT)
-  USE HB3B_COEF
-  INTEGER,INTENT(IN)::NW
-  REAL,DIMENSION(3,NW*3),INTENT(IN)::X
-  REAL,INTENT(OUT)::POT
+subroutine pot_hb3b(nw,x,pot)
+  use hb3b_coef
+  integer,intent(in)::nw
+  real,dimension(3,nw*3),intent(in)::x
+  real,intent(out)::pot
   !::::::::::::::::::::
-  REAL,DIMENSION(NW*2,NW)::RR,FF,GG,HH
-  INTEGER::FO,I,J,K,JO,KO,IH1,IH2,JH1,JH2,KH1,KH2
-  REAL::FA,FB,FC
-  INTEGER::NA,NB,NC
+  real,dimension(nw*2,nw)::rr,ff,gg,hh
+  integer::fo,i,j,k,jo,ko,ih1,ih2,jh1,jh2,kh1,kh2
+  real::fa,fb,fc
+  integer::na,nb,nc
 
-  FA=0.D0;FB=0.D0;FC=0.D0
-  FO=NW*2
-  RR=0.D0
+  fa=0.d0;fb=0.d0;fc=0.d0
+  fo=nw*2
+  rr=0.d0
 
-  ! H-BOND LENGTHES
-  DO I=1,NW*2
-     DO J=1,NW-1
-        JO=CONN(I,J)
-        RR(I,JO)=SQRT(SUM((X(:,I)-X(:,FO+JO))**2))
-     END DO
-  END DO
+  ! H-bond lengthes
+  do i=1,nw*2
+     do j=1,nw-1
+        jo=conn(i,j)
+        rr(i,jo)=sqrt(sum((x(:,i)-x(:,fo+jo))**2))
+     end do
+  end do
 
-  ! MORSE_VARIABLES
-  FF=EXP(-PARA_A2*RR)
-  GG=EXP(-PARA_B2*RR)
-  HH=EXP(-PARA_C2*RR)
+  ! Morse_variables
+  ff=exp(-para_a2*rr)
+  gg=exp(-para_b2*rr)
+  hh=exp(-para_c2*rr)
 
-  !TYPE-A
-  NA=0;NB=0;NC=0;
-  DO I=1,NW
-     IH1=I*2-1
-     IH2=I*2
-     DO J=1,NW-2
-        JO=CONN(IH1,J)
-        JH1=JO*2-1
-        JH2=JO*2
-        DO K=J+1,NW-1
-           KO=CONN(IH1,K)          
-           KH1=KO*2-1
-           KH2=KO*2
-           ! TYPE-A
-           FA=FA+FF(IH1,JO)*FF(IH2,KO)+FF(IH1,KO)*FF(IH2,JO)
+  !Type-A
+  na=0;nb=0;nc=0;
+  do i=1,nw
+     ih1=i*2-1
+     ih2=i*2
+     do j=1,nw-2
+        jo=conn(ih1,j)
+        jh1=jo*2-1
+        jh2=jo*2
+        do k=j+1,nw-1
+           ko=conn(ih1,k)          
+           kh1=ko*2-1
+           kh2=ko*2
+           ! Type-A
+           fa=fa+ff(ih1,jo)*ff(ih2,ko)+ff(ih1,ko)*ff(ih2,jo)
 
-           ! TYPE-B
-           FB=FB+GG(IH1,JO)*GG(JH1,KO)+GG(IH2,JO)*GG(JH1,KO)&
-                +GG(IH1,JO)*GG(JH2,KO)+GG(IH2,JO)*GG(JH2,KO)&
-                +GG(IH1,KO)*GG(KH1,JO)+GG(IH2,KO)*GG(KH1,JO)&
-                +GG(IH1,KO)*GG(KH2,JO)+GG(IH2,KO)*GG(KH2,JO)
+           ! Type-B
+           fb=fb+gg(ih1,jo)*gg(jh1,ko)+gg(ih2,jo)*gg(jh1,ko)&
+                +gg(ih1,jo)*gg(jh2,ko)+gg(ih2,jo)*gg(jh2,ko)&
+                +gg(ih1,ko)*gg(kh1,jo)+gg(ih2,ko)*gg(kh1,jo)&
+                +gg(ih1,ko)*gg(kh2,jo)+gg(ih2,ko)*gg(kh2,jo)
 
-           ! TYPE-C
-           FC=FC+HH(JH1,I)*HH(KH1,I)+HH(JH1,I)*HH(KH2,I)&
-                +HH(JH2,I)*HH(KH1,I)+HH(JH2,I)*HH(KH2,I)
+           ! Type-C
+           fc=fc+hh(jh1,i)*hh(kh1,i)+hh(jh1,i)*hh(kh2,i)&
+                +hh(jh2,i)*hh(kh1,i)+hh(jh2,i)*hh(kh2,i)
 
-!!$             NA=NA+2
-!!$             NB=NB+8
-!!$             NC=NC+4
-        END DO
-     END DO
-  END DO
+!!$             na=na+2
+!!$             nb=nb+8
+!!$             nc=nc+4
+        end do
+     end do
+  end do
 
-  POT=(FA*PARA_A1+FB*PARA_B1+FC*PARA_C1)*AUKJ
+  pot=(fa*para_a1+fb*para_b1+fc*para_c1)*aukj
 
-  RETURN
-END SUBROUTINE POT_HB3B
+  return
+end subroutine pot_hb3b

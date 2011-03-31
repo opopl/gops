@@ -1,92 +1,92 @@
-      SUBROUTINE WALESAMH_INITIAL()
+      subroutine walesamh_initial()
 
-      USE AMHGLOBALS,  ONLY:SO, NMTEMP,ITGRD,TEMGRD,TEMTUR,ICTEMP,CTEMP,
-     *  ISCLTAB,NMRES,OARCHV,NMSTEP,NUMPRO,IDIGNS,MAXPRO,MAXCRD,PRCORD,IRES,OCONV,
-     *  OMOVI,OMOVISEG,QUENCH,NQUENCH,QUENCH_CRD
+      use amhglobals,  only:SO, nmtemp,itgrd,temgrd,temtur,ictemp,ctemp,
+     *  iscltab,nmres,oarchv,nmstep,numpro,idigns,maxpro,maxcrd,prcord,ires,oconv,
+     *  omovi,omoviseg,quench,nquench,quench_crd
 
-      IMPLICIT NONE
+      implicit none
 
-C     SUBROUTINES REQUIRED BY MAIN PROGRAM
+c     subroutines required by main program
 
-       EXTERNAL GENTAB,INITIL,INTSTR,SCLTAB,ZERO_AMH
+       external gentab,initil,intstr,scltab,zero_amh
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     INTERNAL VARIABLES:
+cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     internal variables:
 
-         INTEGER JSTRT,JFINS,I_QUENCH,LEN,ISHKIT,NMDIFV
+         integer jstrt,jfins,i_quench,len,ishkit,nmdifv
 
-         CHARACTER*10 SAVE_NAME
+         character*10 save_name
 
-      CALL ZERO_AMH
+      call zero_amh
 
-C     --------------------- BEGIN -----------------------
+c     --------------------- begin -----------------------
 
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     OPEN REQUIRED FILES, READ INPUT PARAMETER FILE, AND GENERATE HEADER FILE
-C      CALL READ_INPUT_ALT() ! CALLED BEFORE INITIL : JOHAN
-      CALL INITIL
-C      CALL READ_ALTGAMMA()  ! CALLED AFTER  INITIL : JOHAN
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     open required files, read input parameter file, and generate header file
+c      call read_input_alt() ! called BEFORE initil : Johan
+      call initil
+c      call read_altgamma()  ! called AFTER  initil : Johan
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     SET UP TEMPERATURE-ANNEALING SCHEDULE
-C      CALL ANNSCH(NMTEMP,ITGRD,TEMGRD,TEMTUR,ICTEMP,CTEMP)
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     set up temperature-annealing schedule
+c      call annsch(nmtemp,itgrd,temgrd,temtur,ictemp,ctemp)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     GENERATE REQUISITE FORCE/POTENTIAL TABLES
-      CALL GENTAB
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     generate requisite force/potential tables
+      call gentab
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-C     SCALE TABLES
-      IF (ISCLTAB) WRITE(SO,*) 'IN SCLTAB'
-      IF (ISCLTAB) CALL SCLTAB
-      IF (ISCLTAB) WRITE(SO,*) 'OUT SCLTAB'
+c     scale tables
+      if (iscltab) write(SO,*) 'in scltab'
+      if (iscltab) call scltab
+      if (iscltab) write(SO,*) 'out scltab'
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     GENERATE INITIAL STRUCTURES
-      QUENCH_CRD=0.0D0
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     generate initial structures
+      quench_crd=0.0D0
     
-C      WRITE(6,*) 'IN INTSTR'
-      CALL INTSTR
-C      WRITE(6,*) 'OUT INTSTR'
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c      write(6,*) 'in intstr'
+      call intstr
+c      write(6,*) 'out intstr'
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
         
-        IF (.NOT. QUENCH) NQUENCH=1
-        DO I_QUENCH = 1,NQUENCH
-        PRCORD=QUENCH_CRD(:,:,:,:,I_QUENCH)
+        if (.not. quench) nquench=1
+        do i_quench = 1,nquench
+        prcord=quench_crd(:,:,:,:,i_quench)
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     SET INDICIES FOR THE FIRST AND LAST RESIDUES
-C     WHICH ARE NOT FIXED IN CRYSTAL CONFORMATION
-      JSTRT=1
-      JFINS=NMRES
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     set indicies for the first and last residues
+c     which are not fixed in crystal conformation
+      jstrt=1
+      jfins=nmres
 
-C     SET SUBSEGMENT LENGTH
-      LEN=JFINS - JSTRT + 1
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c     set subsegment length
+      len=jfins - jstrt + 1
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-C++++++++++++++++++++++++++++++JOHAN
-!       CALL READ_INPUT_ALT()
-!       CALL READ_ALTGAMMA() ! MUST BE CALLED AFTER INITIL
+c++++++++++++++++++++++++++++++johan
+!       call read_input_alt()
+!       call read_altgamma() ! must be called after initil
 
-C------------------------------JOHAN
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     --- DIAGNOSTICS ---
-C      WRITE(OARCHV,121)JSTRT,JFINS,LEN
-C  121 FORMAT(/' START ',I3,' END ',I3,' LENGTH ',I3)
-C      WRITE(OARCHV,122)JSTRT,JFINS,NMSTEP,NUMPRO
-C  122 FORMAT('JSTRT ',I3,' JFINS ',I3,' MUTATIONS/T ',
-C     *       I3,' NUMPRO ',I3)
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+c------------------------------johan
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     --- diagnostics ---
+c      write(oarchv,121)jstrt,jfins,len
+c  121 format(/' start ',i3,' end ',i3,' length ',i3)
+c      write(oarchv,122)jstrt,jfins,nmstep,numpro
+c  122 format('jstrt ',i3,' jfins ',i3,' mutations/T ',
+c     *       i3,' numpro ',i3)
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C     GENERATE INITIAL ENSEMBLE OF PROTEINS
-C     FIND CONFIGURATION WHICH SATISFIES THE CONSTRAINTS
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+c     generate initial ensemble of proteins
+c     find configuration which satisfies the constraints
 
-      IDIGNS=.FALSE.
+      idigns=.false.
 
-        ENDDO ! I_QUENCH
+        enddo ! i_quench
 
-      END
+      end

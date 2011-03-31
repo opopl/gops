@@ -1,39 +1,39 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C-----------------------------------------------------------------------* 
 C 
-C  ENERGY AND GRADIENT FOR THE DZUGUTOV POTENTIAL.  
+C  Energy and gradient for the Dzugutov potential.  
 C 
 C  16.02.2000
-C  SERGEI SIMDYANKIN <SSIM@NADA.KTH.SE>
+C  Sergei Simdyankin <ssim@nada.kth.se>
 C
-C CORRESPONDENCE WITH THE PARAMETERS IN THE FILE "POTENTIAL.F"
+C correspondence with the parameters in the file "potential.f"
 C V     = GRAD
 C EDZ   = EREAL
 C GTEST = GRADT
 C STEST 
 C
-C MEANING OF THE VARIABLES
-C DIST - DISTANCE
-C EDZ  - TOTAL INTERACTION ENERGY
-C G    - (N,N) STORAGE FOR GRADIENT INTERMEDIATE BITS
-C V    - (3*N) VECTOR - GRADIENT (FORCE ACTING ON A PARTICLE)
+C meaning of the variables
+C DIST - distance
+C EDZ  - total interaction energy
+C G    - (N,N) storage for gradient intermediate bits
+C V    - (3*N) vector - gradient (force acting on a particle)
 ! 
 C-----------------------------------------------------------------------*
       SUBROUTINE DZUGUTOV(NATOMS,X,V,EDZ,GTEST,STEST,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5,PARAM6,PARAM7)
@@ -55,7 +55,7 @@ C-----------------------------------------------------------------------*
             DO J2=J1+1,NATOMS
                J4=3*J2
                      DIST=(X(J3-2)-X(J4-2))**2+(X(J3-1)-X(J4-1))**2+(X(J3)-X(J4))**2
-               CALL DERPHI(DIST,DUMMY,DDUMMY,DDDUMMY,STEST,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5,PARAM6,PARAM7)
+               call derphi(DIST,DUMMY,DDUMMY,DDDUMMY,STEST,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5,PARAM6,PARAM7)
                EDZ=EDZ+DUMMY
                R2(J2,J1)=1.0D0/DIST
                R2(J1,J2)=R2(J2,J1)
@@ -73,7 +73,7 @@ C-----------------------------------------------------------------------*
             DO J2=J1+1,NATOMS
                J4=3*J2
                DIST=(X(J3-2)-X(J4-2))**2+(X(J3-1)-X(J4-1))**2+(X(J3)-X(J4))**2
-               CALL DERPHI(DIST,DUMMY,DDUMMY,DDDUMMY,STEST,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5,PARAM6,PARAM7)
+               call derphi(DIST,DUMMY,DDUMMY,DDDUMMY,STEST,PARAM1,PARAM2,PARAM3,PARAM4,PARAM5,PARAM6,PARAM7)
                EDZ=EDZ+DUMMY
             ENDDO
          ENDDO
@@ -100,7 +100,7 @@ C-----------------------------------------------------------------------*
 
       IF (.NOT.STEST) RETURN
 C
-C  NOW DO THE HESSIAN. FIRST ARE THE ENTIRELY DIAGONAL TERMS.
+C  Now do the hessian. First are the entirely diagonal terms.
 C
       DO J1=1,NATOMS
          DO J2=1,3
@@ -114,8 +114,8 @@ C
          ENDDO
       ENDDO
 C
-C  NEXT ARE THE TERMS WHERE X_I AND X_J ARE ON THE SAME ATOM
-C  BUT ARE DIFFERENT, E.G. Y AND Z.
+C  Next are the terms where x_i and x_j are on the same atom
+C  but are different, e.g. y and z.
 C
       DO J1=1,NATOMS
          DO J2=1,3
@@ -131,7 +131,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE III, DIFFERENT ATOMS, SAME CARTESIAN COORDINATE.
+C  Case III, different atoms, same cartesian coordinate.
 C
       DO J1=1,NATOMS
          DO J2=1,3
@@ -143,7 +143,7 @@ C
          ENDDO
       ENDDO
 C
-C  CASE IV: DIFFERENT ATOMS AND DIFFERENT CARTESIAN COORDINATES.
+C  Case IV: different atoms and different cartesian coordinates.
 C
       DO J1=1,NATOMS
          DO J2=1,3
@@ -160,7 +160,7 @@ C
          ENDDO
       ENDDO
 C
-C  SYMMETRISE HESSIAN
+C  Symmetrise Hessian
 C
       DO J1=1,3*NATOMS
          DO J2=J1+1,3*NATOMS
@@ -172,33 +172,33 @@ C
       END
 
 C%%%%%%%
-C VALUES OF THE POTENTIAL, FIRST, AND SECOND DERIVATIVES
-C IF SECDER = .FALSE. DDPHI = 0 ON OUTPUT
+C values of the potential, first, and second derivatives
+C if secder = .false. ddphi = 0 on output
 C%%%%%%%
 C-----------------------------------------------------------------------*
-      SUBROUTINE DERPHI(R2,PHI,DPHI,DDPHI,SECDER,M,A,C,AA,B,D,BB)
-      IMPLICIT NONE
+      subroutine derphi(r2,phi,dphi,ddphi,secder,m,A,c,aa,B,d,bb)
+      implicit none
       DOUBLE PRECISION R2, PHI, DPHI, DDPHI
-      LOGICAL SECDER
-      INTEGER M2
+      logical secder
+      integer m2
 
       DOUBLE PRECISION A, AA, B, BB, C, D, M
-C     PARAMETER(M=16, A=5.82D0, C=1.10D0, AA=1.87D0, B=1.28D0,  D=0.27D0, BB=1.94D0)
-C     PARAMETER(M=4,  A=3.00D0, C=0.52D0, AA=1.65D0, B=2.109D0, D=0.55D0, BB=1.94D0)
+C     parameter(m=16, A=5.82d0, c=1.10d0, aa=1.87d0, B=1.28d0,  d=0.27d0, bb=1.94d0)
+C     parameter(m=4,  A=3.00d0, c=0.52d0, aa=1.65d0, B=2.109d0, d=0.55d0, bb=1.94d0)
       DOUBLE PRECISION R, V1, DV1, DDV1, V2, DV2, DDV2, DUMMY
       DOUBLE PRECISION EXPO, EXPARG
 
-      M2=M/2
-      R = SQRT(R2)
+      m2=m/2
+      r = sqrt(r2)
 C
-C  INITIALIZATION NEEDED FOR SUN!
+C  Initialization needed for Sun!
 C
       V1=0.0D0
       V2=0.0D0
-      DV1=0.0D0
-      DDV1=0.0D0
-      DV2=0.0D0
-      DDV2=0.0D0
+      dV1=0.0D0
+      ddV1=0.0D0
+      dV2=0.0D0
+      ddV2=0.0D0
 
       IF (R .LT. BB) THEN
          EXPARG = D/(R-BB)
@@ -233,4 +233,4 @@ C           ENDIF
       IF (SECDER) DDPHI = DDV1 + DDV2
 
       RETURN
-      END                       
+      end                       

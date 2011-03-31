@@ -1,26 +1,26 @@
-C   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-C   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-C   THIS FILE IS PART OF OPTIM.
+C   OPTIM: A program for optimizing geometries and calculating reaction pathways
+C   Copyright (C) 1999-2006 David J. Wales
+C   This file is part of OPTIM.
 C
-C   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-C   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-C   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-C   (AT YOUR OPTION) ANY LATER VERSION.
+C   OPTIM is free software; you can redistribute it and/or modify
+C   it under the terms of the GNU General Public License as published by
+C   the Free Software Foundation; either version 2 of the License, or
+C   (at your option) any later version.
 C
-C   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-C   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-C   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-C   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+C   OPTIM is distributed in the hope that it will be useful,
+C   but WITHOUT ANY WARRANTY; without even the implied warranty of
+C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+C   GNU General Public License for more details.
 C
-C   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-C   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-C   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+C   You should have received a copy of the GNU General Public License
+C   along with this program; if not, write to the Free Software
+C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
 C*************************************************************************
 C
-C  HERE WE CALCULATE THE ANALYTIC GRADIENT AND HESSIAN FOR THE 
-C  AXILROD-TELLER TERM. THESE ARE ADDED TO THE EXISTING DERIVATIVES.
+C  Here we calculate the analytic gradient and Hessian for the 
+C  Axilrod-Teller term. These are added to the existing derivatives.
 C                                        
 C*************************************************************************
 C
@@ -58,7 +58,7 @@ C
 20    CONTINUE 
       IF (GTEST) THEN
 C
-C  FIRST THE GRADIENT.
+C  First the gradient.
 C
       DO 120 J1=1,N
          DO 110 J2=1,3
@@ -101,7 +101,7 @@ C           PRINT*,'K2,V=',3*(J1-1)+J2,V(3*(J1-1)+J2)
       
       IF (STEST) THEN
 C
-C  DIAGONAL BITS OF THE HESSIAN.
+C  Diagonal bits of the Hessian.
 C
       DO 160 J1=1,N
          DO 150 J2=1,3
@@ -146,7 +146,7 @@ C           PRINT*,'K2,A=',3*(J1-1)+J2,HESS(3*(J1-1)+J2,3*(J1-1)+J2)
 150      CONTINUE
 160   CONTINUE
 C
-C  SAME ATOM, DIFFERENT COMPONENT.
+C  Same atom, different component.
 C
       DO 210 J1=1,N
         DO 200 J2=1,3
@@ -197,7 +197,7 @@ C
 200   CONTINUE
 210   CONTINUE
 C
-C  DIFFERENT ATOMS, SAME COMPONENT.
+C  Different atoms, same component.
 C
       DO 260 J1=1,N
         DO 250 J2=1,3
@@ -246,7 +246,7 @@ C
 250     CONTINUE
 260   CONTINUE
 C
-C  DIFFERENT ATOMS AND DIFFERENT COMPONENTS
+C  Different atoms and different components
 C
       DO 310 J1=1,N
         DO 300 J2=1,3
@@ -339,7 +339,7 @@ C
 300     CONTINUE
 310   CONTINUE
 C
-C  SYMMETRISE
+C  Symmetrise
 C
       DO 1000 J1=1,3*N
          DO 1010 J2=J1+1,3*N

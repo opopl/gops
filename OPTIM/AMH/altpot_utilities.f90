@@ -1,138 +1,138 @@
 
 !                             DISTANCE             
-      SUBROUTINE CALC_XYZ(XYZ_DIST,XYZ_UNIT_VECT,PRO_CORD,NMRES)
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ,MAXCRD,TGSEQUENCES_AMW
-!        USE GLOBALS_ALT, ONLY : OB_DNS_COUNT,OUTFILE1_ALT
+      subroutine calc_xyz(xyz_dist,xyz_unit_vect,pro_cord,nmres)
+        use amhglobals,  only : AMHmaxsiz,maxcrd,tgsequences_amw
+!        use globals_alt, only : OB_dns_count,outfile1_alt
 
-        IMPLICIT NONE
-        INTEGER I,J,IATOM,JATOM
-        INTEGER, INTENT(IN) :: NMRES
-        DOUBLE PRECISION XYZ_DIST(AMHMAXSIZ,AMHMAXSIZ),XYZ_UNIT_VECT(AMHMAXSIZ,AMHMAXSIZ,3)
-         DOUBLE PRECISION, INTENT(IN):: PRO_CORD(AMHMAXSIZ,3,MAXCRD)
-        DOUBLE PRECISION DIST_TEMP
-        !      DOUBLE PRECISION DENS(AMHMAXSIZ)  !  DEBUGGING
+        implicit none
+        integer i,j,iatom,jatom
+        integer, intent(in) :: nmres
+        double precision xyz_dist(AMHmaxsiz,AMHmaxsiz),xyz_unit_vect(AMHmaxsiz,AMHmaxsiz,3)
+         double precision, intent(in):: pro_cord(AMHmaxsiz,3,maxcrd)
+        double precision dist_temp
+        !      double precision dens(AMHmaxsiz)  !  DEBUGGING
 
 
-        !      DENS=0.0  !  DEBUGGING
-        XYZ_DIST=0.0D0
-        XYZ_UNIT_VECT=0.0D0
-        DO I=1,NMRES-1   
-           DO J=I+1,NMRES
-              IATOM=2
-              JATOM=2
-!              IF (IRES(I) .EQ. 8) IATOM=1
-!              IF (IRES(J) .EQ. 8) JATOM=1
-!  BIT OF A HACK ONLY LOOK AT ISEQ 1              
-!              IF (TGSEQUENCES_AMW(I,ISEQ) .EQ. 8) IATOM=1
-!              IF (TGSEQUENCES_AMW(J,ISEQ) .EQ. 8) JATOM=1
-              IF (TGSEQUENCES_AMW(I,1) .EQ. 8) IATOM=1
-              IF (TGSEQUENCES_AMW(J,1) .EQ. 8) JATOM=1
+        !      dens=0.0  !  DEBUGGING
+        xyz_dist=0.0D0
+        xyz_unit_vect=0.0D0
+        do i=1,nmres-1   
+           do j=i+1,nmres
+              iatom=2
+              jatom=2
+!              if (ires(i) .eq. 8) iatom=1
+!              if (ires(j) .eq. 8) jatom=1
+!  bit of a hack only look at iseq 1              
+!              if (tgsequences_amw(i,iseq) .eq. 8) iatom=1
+!              if (tgsequences_amw(j,iseq) .eq. 8) jatom=1
+              if (tgsequences_amw(i,1) .eq. 8) iatom=1
+              if (tgsequences_amw(j,1) .eq. 8) jatom=1
 
-              XYZ_DIST(I,J)=SQRT (  &
-                   (PRO_CORD(J,1,JATOM)-PRO_CORD(I,1,IATOM))**2 + &
-                   (PRO_CORD(J,2,JATOM)-PRO_CORD(I,2,IATOM))**2 + &
-                   (PRO_CORD(J,3,JATOM)-PRO_CORD(I,3,IATOM))**2 )
-              DIST_TEMP=XYZ_DIST(I,J)
-              XYZ_UNIT_VECT(I,J,:)=(PRO_CORD(I,:,IATOM)-PRO_CORD(J,:,JATOM))/DIST_TEMP
-              XYZ_UNIT_VECT(J,I,:)=-XYZ_UNIT_VECT(I,J,:)
-              !          IF((DIST_TEMP.LT.6.5) .AND. (DIST_TEMP.GE.4.5))DENS(I)=DENS(I)+1.0 !  DEBUGGING
-              !          IF((DIST_TEMP.LT.6.5) .AND. (DIST_TEMP.GE.4.5))DENS(J)=DENS(J)+1.0 !  DEBUGGING
-           ENDDO
-        ENDDO
-!              WRITE(6,*)'DIST_TEMP CALC XYZ', DIST_TEMP
-!              WRITE(6,*)'PRO_CORD 1 2  ',PRO_CORD(1,1,1), PRO_CORD(2,1,1)
+              xyz_dist(i,j)=sqrt (  &
+                   (pro_cord(j,1,jatom)-pro_cord(i,1,iatom))**2 + &
+                   (pro_cord(j,2,jatom)-pro_cord(i,2,iatom))**2 + &
+                   (pro_cord(j,3,jatom)-pro_cord(i,3,iatom))**2 )
+              dist_temp=xyz_dist(i,j)
+              xyz_unit_vect(i,j,:)=(pro_cord(i,:,iatom)-pro_cord(j,:,jatom))/dist_temp
+              xyz_unit_vect(j,i,:)=-xyz_unit_vect(i,j,:)
+              !          if((dist_temp.lt.6.5) .and. (dist_temp.ge.4.5))dens(i)=dens(i)+1.0 !  DEBUGGING
+              !          if((dist_temp.lt.6.5) .and. (dist_temp.ge.4.5))dens(j)=dens(j)+1.0 !  DEBUGGING
+           enddo
+        enddo
+!              write(6,*)'dist_temp calc xyz', dist_temp
+!              write(6,*)'pro_cord 1 2  ',pro_cord(1,1,1), pro_cord(2,1,1)
 
-        !      IF(MOD(OB_DNS_COUNT,1000.).LT.0.5)WRITE(OUTFILE1_ALT(7),1000)'RESIDUE DENSITY',DENS  !  DEBUGGING
-        RETURN
-        ! 1000   FORMAT(A,200(1X,F6.3)) !  DEBUGGING
+        !      if(mod(OB_dns_count,1000.).lt.0.5)write(outfile1_alt(7),1000)'RESIDUE DENSITY',dens  !  DEBUGGING
+        return
+        ! 1000   format(a,200(1x,f6.3)) !  DEBUGGING
 
-      END SUBROUTINE CALC_XYZ
+      end subroutine calc_xyz
 
       !---------------------------
 
-      SUBROUTINE CALC_THETA_ALT(THETA, THETA_DOT, XYZ_DIST, RMIN, RMAX,KAPPA,NMRES,  I_WELL)
-        ! CALCULATES THETA FOR ALTERNATIVE POTENTIAL
-        ! E = THETA * [SIGMA(W)*GAMMA(W) + (1-SIGMA(W))*GAMMA(D)] 
+      subroutine calc_theta_alt(theta, theta_dot, xyz_dist, rmin, rmax,kappa,nmres,  i_well)
+        ! Calculates theta for alternative potential
+        ! E = theta * [sigma(w)*gamma(w) + (1-sigma(w))*gamma(d)] 
 
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ
-        USE GLOBALS_ALT, ONLY : MAX_WELL_ALT
+        use amhglobals,  only : AMHmaxsiz
+        use globals_alt, only : max_well_alt
 
-        !     KAPPA = STEEPNESS OF "STEPFUNCTION" TANH 
-        IMPLICIT NONE
-        INTEGER I,J,I_WELL,NMRES
-        DOUBLE PRECISION KAPPA,T_MIN,T_MAX,RMIN,RMAX
-        DOUBLE PRECISION THETA(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT),THETA_DOT(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
-        DOUBLE PRECISION XYZ_DIST(AMHMAXSIZ,AMHMAXSIZ)
+        !     kappa = steepness of "stepfunction" tanh 
+        implicit none
+        integer i,j,i_well,nmres
+        double precision kappa,t_min,t_max,rmin,rmax
+        double precision theta(AMHmaxsiz,AMHmaxsiz,max_well_alt),theta_dot(AMHmaxsiz,AMHmaxsiz,max_well_alt)
+        double precision xyz_dist(AMHmaxsiz,AMHmaxsiz)
 
-        THETA(:,:,I_WELL)=0.D0
-        THETA_DOT(:,:,I_WELL)=0.D0
+        theta(:,:,i_well)=0.D0
+        theta_dot(:,:,i_well)=0.D0
 
-!C              WRITE(6,*)'RMIN AND MAX I_WELL'RMIN,RMAX,I_WELL
+!C              write(6,*)'RMIN AND MAX I_WELL'rmin,rmax,i_well
                
-        DO I=1,NMRES-2   ! WORK OUT THETA VALUES BETWEEN ALL PAIRS
-           DO J=I+2,NMRES   ! THETA(IJ)=K*(1+TMIN)*(1+TMAX))
-              T_MIN=TANH(KAPPA*(XYZ_DIST(I,J)-RMIN))
+        do i=1,nmres-2   ! work out theta values between all pairs
+           do j=i+2,nmres   ! theta(ij)=k*(1+tmin)*(1+tmax))
+              t_min=tanh(kappa*(xyz_dist(i,j)-rmin))
                
-              T_MAX=TANH(KAPPA*(RMAX-XYZ_DIST(I,J) ))
-              THETA(I,J,I_WELL) = 0.25D0*( 1.0D0+T_MIN )*( 1.0D0+T_MAX ) 
-              THETA(J,I,I_WELL) =  THETA(I,J,I_WELL) 
-              THETA_DOT(I,J,I_WELL)=KAPPA*THETA(I,J,I_WELL)*(T_MAX-T_MIN)
-              THETA_DOT(J,I,I_WELL)=THETA_DOT(I,J,I_WELL)
-           ENDDO
-!           WRITE(6,*)'XYZDIST THETA CALC ',XYZ_DIST(I,J)
-        ENDDO
+              t_max=tanh(kappa*(rmax-xyz_dist(i,j) ))
+              theta(i,j,i_well) = 0.25D0*( 1.0D0+t_min )*( 1.0D0+t_max ) 
+              theta(j,i,i_well) =  theta(i,j,i_well) 
+              theta_dot(i,j,i_well)=kappa*theta(i,j,i_well)*(t_max-t_min)
+              theta_dot(j,i,i_well)=theta_dot(i,j,i_well)
+           enddo
+!           write(6,*)'xyzdist theta calc ',xyz_dist(i,j)
+        enddo
 
-        RETURN
-      END SUBROUTINE CALC_THETA_ALT
+        return
+      end subroutine calc_theta_alt
 
       !----------------------------
 
-      SUBROUTINE CALC_SUM_THETA_DOT_ALT(SUM_THETA_DOT,THETA_DOT,XYZ_UNIT_VECT,NMRES)
-        USE GLOBALS_ALT, ONLY : MAX_WELL_ALT
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ
+      subroutine calc_sum_theta_dot_alt(sum_theta_dot,theta_dot,xyz_unit_vect,nmres)
+        use globals_alt, only : max_well_alt
+        use amhglobals,  only : AMHmaxsiz
 
-        IMPLICIT NONE
-        INTEGER, INTENT(IN) ::  NMRES
-         DOUBLE PRECISION, INTENT(IN) ::  THETA_DOT(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT)
-         DOUBLE PRECISION, INTENT(IN) :: XYZ_UNIT_VECT(AMHMAXSIZ,AMHMAXSIZ,3)
-         DOUBLE PRECISION, INTENT(OUT) :: SUM_THETA_DOT(AMHMAXSIZ,3)
+        implicit none
+        integer, intent(in) ::  nmres
+         double precision, intent(in) ::  theta_dot(AMHmaxsiz,AMHmaxsiz,max_well_alt)
+         double precision, intent(in) :: xyz_unit_vect(AMHmaxsiz,AMHmaxsiz,3)
+         double precision, intent(out) :: sum_theta_dot(AMHmaxsiz,3)
 
-        INTEGER P,K
+        integer p,k
 
-        SUM_THETA_DOT=0.D0
+        sum_theta_dot=0.D0
 
-        DO K=1,NMRES-2,1     !CALCULATE DENSITIES, A
-           DO P=K+2,NMRES,1
-              SUM_THETA_DOT(K,:)=SUM_THETA_DOT(K,:)+THETA_DOT(P,K,1)*XYZ_UNIT_VECT(K,P,:)
-              SUM_THETA_DOT(P,:)=SUM_THETA_DOT(P,:)+THETA_DOT(K,P,1)*XYZ_UNIT_VECT(P,K,:)
-           ENDDO
-        ENDDO
+        do k=1,nmres-2,1     !calculate densities, A
+           do p=k+2,nmres,1
+              sum_theta_dot(k,:)=sum_theta_dot(k,:)+theta_dot(p,k,1)*xyz_unit_vect(k,p,:)
+              sum_theta_dot(p,:)=sum_theta_dot(p,:)+theta_dot(k,p,1)*xyz_unit_vect(p,k,:)
+           enddo
+        enddo
 
-        RETURN
-      END SUBROUTINE CALC_SUM_THETA_DOT_ALT
+        return
+      end subroutine calc_sum_theta_dot_alt
 
-      SUBROUTINE CALC_A_ALT(A,THETA,NMRES)
+      subroutine calc_A_alt(A,theta,nmres)
 
-        USE GLOBALS_ALT, ONLY : MAX_WELL_ALT
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ
+        use globals_alt, only : max_well_alt
+        use amhglobals,  only : AMHmaxsiz
 
-        IMPLICIT NONE
-        INTEGER I,J,NMRES
-        DOUBLE PRECISION THETA(AMHMAXSIZ,AMHMAXSIZ,MAX_WELL_ALT),A(AMHMAXSIZ)
+        implicit none
+        integer i,j,nmres
+        double precision theta(AMHmaxsiz,AMHmaxsiz,max_well_alt),A(AMHmaxsiz)
 
         A=0.D0
 
-        DO I=1,NMRES-2,1     !CALCULATE DENSITIES, A
-           DO J=I+2,NMRES,1
+        do i=1,nmres-2,1     !calculate densities, A
+           do j=i+2,nmres,1
               
-              A(I)=A(I)+THETA(I,J,1)
-              A(J)=A(J)+THETA(I,J,1)
-!              WRITE(6,*)'AI AJ THETA(I,J,1)',A(I),A(J),THETA(I,J,1)
-           ENDDO
-        ENDDO
+              A(i)=A(i)+theta(i,j,1)
+              A(j)=A(j)+theta(i,j,1)
+!              write(6,*)'Ai Aj theta(i,j,1)',A(i),A(j),theta(i,j,1)
+           enddo
+        enddo
 
-        RETURN
-      END SUBROUTINE CALC_A_ALT
+        return
+      end subroutine calc_A_alt
 
 
       !--------------------------------
@@ -140,70 +140,70 @@
 
 
 
-      SUBROUTINE CALC_SIGMA_ALT(SIGMA,A,TRESHOLD,KAPPA,NMRES)
-        ! CALCULATES SIGMA = WEIGHTING FUNCTIONS FOR ALTERNATIVE POTENTIAL
-        ! E = THETA * [SIGMA(W)*GAMMA(W) + SIGMA(D)*GAMMA(D)] 
+      subroutine calc_sigma_alt(sigma,A,treshold,kappa,nmres)
+        ! Calculates sigma = weighting functions for alternative potential
+        ! E = theta * [sigma(w)*gamma(w) + sigma(d)*gamma(d)] 
 
 
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ, CUTOFF_CONT_LOW
-!        USE GLOBALS_ALT, ONLY : MAX_WELL_ALT
+        use amhglobals,  only : AMHmaxsiz, CUTOFF_CONT_LOW
+!        use globals_alt, only : max_well_alt
 
-        IMPLICIT NONE
-        INTEGER I,J,NMRES
-        DOUBLE PRECISION G(AMHMAXSIZ),KAPPA,TRESHOLD
-        DOUBLE PRECISION SIGMA(AMHMAXSIZ,AMHMAXSIZ),A(AMHMAXSIZ)
-        DOUBLE PRECISION HEAVISIDE(AMHMAXSIZ)
+        implicit none
+        integer i,j,nmres
+        double precision g(AMHmaxsiz),kappa,treshold
+        double precision sigma(AMHmaxsiz,AMHmaxsiz),A(AMHmaxsiz)
+        double precision heaviside(AMHmaxsiz)
 
-        SIGMA=0.D0
+        sigma=0.D0
 
-        G=KAPPA*(A(:) - TRESHOLD) ! CALCULATE G
+        g=kappa*(A(:) - treshold) ! calculate g
 
-        HEAVISIDE=0.5D0*(1.0D0-TANH(G) )
-!      OPEN(UNIT=1383,FILE='ALT_SIGMA_DATA',STATUS='UNKNOWN',ACCESS='APPEND')
-!           WRITE(1383,*)'TRESHOLD KAPPA NMRES ' , TRESHOLD, KAPPA 
-!           WRITE(1383,*)'CUTOFF_CONT_LOW ', CUTOFF_CONT_LOW
-!           WRITE(1383,291) (SIGMA(32,J),J=1,NMRES)
-!           WRITE(1383,291) (SIGMA(32,J),J=1,NMRES)
+        heaviside=0.5D0*(1.0D0-tanh(g) )
+!      open(unit=1383,file='alt_sigma_data',status='unknown',access='append')
+!           write(1383,*)'treshold kappa nmres ' , treshold, kappa 
+!           write(1383,*)'CUTOFF_CONT_LOW ', CUTOFF_CONT_LOW
+!           write(1383,291) (sigma(32,j),j=1,nmres)
+!           write(1383,291) (sigma(32,j),j=1,nmres)
 
-        DO I=1,NMRES-CUTOFF_CONT_LOW,1
-           DO J=I+CUTOFF_CONT_LOW,NMRES,1
-              SIGMA(I,J)=HEAVISIDE(I)*HEAVISIDE(J)
-              SIGMA(J,I)=SIGMA(I,J)
-           ENDDO
-        ENDDO
+        do i=1,nmres-CUTOFF_CONT_LOW,1
+           do j=i+CUTOFF_CONT_LOW,nmres,1
+              sigma(i,j)=heaviside(i)*heaviside(j)
+              sigma(j,i)=sigma(i,j)
+           enddo
+        enddo
 
-!      OPEN(UNIT=1382,FILE='ALT_A_DATA',STATUS='UNKNOWN',ACCESS='APPEND')  
-!           WRITE(1382,291) (A(I),I=1,NMRES)
+!      open(unit=1382,file='alt_A_data',status='unknown',access='append')  
+!           write(1382,291) (A(i),i=1,nmres)
 
-!           WRITE(1383,291) (SIGMA(32,J),J=1,NMRES)
-!           WRITE(1383,291) (HEAVISIDE(J),J=1,NMRES)
-!           291 FORMAT(110(1X,E12.6))
+!           write(1383,291) (sigma(32,j),j=1,nmres)
+!           write(1383,291) (heaviside(j),j=1,nmres)
+!           291 format(110(1x,e12.6))
 
-!              CLOSE (1382)
-!             CLOSE (1383)
-
-
-        RETURN
-      END SUBROUTINE CALC_SIGMA_ALT
+!              close (1382)
+!             close (1383)
 
 
-      SUBROUTINE CALC_HEAVISIDE_ALT(HEAVISIDE,HEAVISIDE_DOT,A,TRESHOLD,KAPPA)
+        return
+      end subroutine calc_sigma_alt
 
-        USE AMHGLOBALS,  ONLY : AMHMAXSIZ
 
-        IMPLICIT NONE
-         DOUBLE PRECISION, INTENT(OUT) :: HEAVISIDE(AMHMAXSIZ), HEAVISIDE_DOT(AMHMAXSIZ)
-         DOUBLE PRECISION, INTENT(IN) :: KAPPA,TRESHOLD,A(AMHMAXSIZ)
+      subroutine calc_heaviside_alt(heaviside,heaviside_dot,A,treshold,kappa)
 
-        !LOCAL
-        DOUBLE PRECISION G(AMHMAXSIZ)
+        use amhglobals,  only : AMHmaxsiz
 
-        HEAVISIDE=0.D0
-        HEAVISIDE_DOT=0.D0
+        implicit none
+         double precision, intent(out) :: heaviside(AMHmaxsiz), heaviside_dot(AMHmaxsiz)
+         double precision, intent(in) :: kappa,treshold,A(AMHmaxsiz)
 
-        G=KAPPA*(A(:) - TRESHOLD) ! CALCULATE G
-        HEAVISIDE=0.5D0*(1.0D0-TANH(G) )
-        HEAVISIDE_DOT=-0.5D0*KAPPA*( 1.0D0 - TANH(G)*TANH(G) ) ! NOTE: GDOT IS EXPLICITLY CALCULATED BELOW
-        RETURN
-      END SUBROUTINE CALC_HEAVISIDE_ALT
+        !Local
+        double precision g(AMHmaxsiz)
+
+        heaviside=0.D0
+        heaviside_dot=0.D0
+
+        g=kappa*(A(:) - treshold) ! calculate g
+        heaviside=0.5D0*(1.0D0-tanh(g) )
+        heaviside_dot=-0.5D0*kappa*( 1.0D0 - tanh(g)*tanh(g) ) ! Note: gdot is explicitly calculated below
+        return
+      end subroutine calc_heaviside_alt
 

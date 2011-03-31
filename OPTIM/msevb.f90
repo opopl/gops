@@ -1,20 +1,20 @@
-!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!   THIS FILE IS PART OF OPTIM.
+!   OPTIM: A program for optimizing geometries and calculating reaction pathways
+!   Copyright (C) 1999-2006 David J. Wales
+!   This file is part of OPTIM.
 !   
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !   
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !   
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 !###################################################################
 !################# SUBROUTINE MSEVB ################################
@@ -22,214 +22,214 @@
 
 !###################################################################
 
-! 02/04/04 CHANGED JACOBI ROUTINE FOR LAPACK DSYEVR
-! INDIVIDUAL RESULTS ARE CONSISTENT TO 1E-12 BUT THERE SEEM TO BE DIFFERENCES IN MARKOV CHAINS NONE THE LESS
+! 02/04/04 Changed jacobi routine for LAPACK DSYEVR
+! Individual results are consistent to 1E-12 but there seem to be differences in Markov chains none the less
 
-     SUBROUTINE MSEVB(NCOORDS, SYSTEMCOORDS, ASSIGNVBSTATES, ENERGY, ONLYASSIGNSTATES)
-     USE COMMONS
-     USE MSEVB_COMMON
+     subroutine msevb(ncoords, systemCoords, assignVBstates, energy, onlyAssignStates)
+     use commons
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 
 !###################################################################
 !
-! PARAMETER SET USED IS FROM:
-!    U. SCHMITT AND G. A. VOTH, J. CHEM. PHYS. 111, 1999, 9361
-! AND NOT THE EARLIER SET, NOR THE LATER ONE, OR EVEN THE BUGGY ONE.
+! Parameter set used is from:
+!    U. Schmitt and G. A. Voth, J. Chem. Phys. 111, 1999, 9361
+! and not the earlier set, nor the later one, or even the buggy one.
 !
-! CALCULATE THE MSEVB ENERGY OF A GIVEN PROTONATED WATER CLUSTER.
+! Calculate the MSEVB energy of a given protonated water cluster.
 !
-! STEPS: (I) ASSIGN THE POSSIBLE EVB STATES IN THE CLUSTER, (II)
-! TRANSFER THE EVB BONDING ARRANGEMENTS INTO COORDINATE VECTORS
-! XX(I,J) ETC. (III) CALCULATE THE HAMILTONIAN ELEMENTS BY MEANS
-! OF ONLY THE NUCLEAR POSITIONS, AND FINALLY DIAGONALIZING THE
-! HAMILTONIAN TO YIELD THE EIGENVECTORS AND EIGENVALUES.
+! Steps: (i) assign the possible EVB states in the cluster, (ii)
+! transfer the EVB bonding arrangements into coordinate vectors
+! xx(i,j) etc. (iii) calculate the Hamiltonian elements by means
+! of only the nuclear positions, and finally diagonalizing the
+! Hamiltonian to yield the Eigenvectors and Eigenvalues.
 !
 !###################################################################
 
-! SUBROUTINE ARGUMENTS
+! Subroutine arguments
 
-     INTEGER, INTENT(IN) :: NCOORDS  
+     INTEGER, INTENT(IN) :: ncoords  
      DOUBLE PRECISION, INTENT(IN) :: SYSTEMCOORDS(NCOORDS)
-     LOGICAL, INTENT(IN) :: ASSIGNVBSTATES
+     LOGICAL, INTENT(IN) :: assignVBstates
      DOUBLE PRECISION, INTENT(OUT) :: ENERGY
-     LOGICAL, OPTIONAL, INTENT(IN) :: ONLYASSIGNSTATES   ! ONLY ASSIGN THE VB STATES, DO NOTHING ELSE
+     LOGICAL, OPTIONAL, INTENT(IN) :: onlyAssignStates   ! Only assign the VB states, do nothing else
 
-! LOCAL VARIABLES
+! Local variables
 
-     INTEGER I,J,NROT
+     integer i,j,nrot
 
        DOUBLE PRECISION MIN
 
-! VARIABLES FOR LAPACK ROUTINE
+! Variables for LAPACK routine
 
      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: D
      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: V, E
-!     INTEGER :: NUMEVFOUND
-!     INTEGER :: ISUPPZ(2)
-!     INTEGER :: LOCALSTATUS
+!     integer :: numEVfound
+!     integer :: ISUPPZ(2)
+!     integer :: localStatus
 !     DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: WORK
-!     INTEGER, ALLOCATABLE, DIMENSION(:) :: IWORK
+!     integer, allocatable, dimension(:) :: IWORK
 
 !     DOUBLE PRECISION :: DLAMCH ! EXTERNAL FUNCTION
 
-! STORE THE ATOM COORDINATES IN PSIX, PSIY, PSIZ RATHER THAN THE SINGLE ARRAY COORDS
+! Store the atom coordinates in psix, psiy, psiz rather than the single array coords
 
-     J = 0
+     j = 0
 
-     DO I = 1,NCOORDS,3
-        J = J + 1
-        PSIX(J) = SYSTEMCOORDS(I)
-        PSIY(J) = SYSTEMCOORDS(I+1)
-        PSIZ(J) = SYSTEMCOORDS(I+2)
-     ENDDO
+     do i = 1,ncoords,3
+        j = j + 1
+        psix(j) = systemCoords(i)
+        psiy(j) = systemCoords(i+1)
+        psiz(j) = systemCoords(i+2)
+     enddo
 
-! CALCULATE THE INTERATOMIC DISTANCES
+! Calculate the interatomic distances
 
-     CALL CALCINTERATOMICDISTANCES(NATOMS,PSIX,PSIY,PSIZ,INTERATOMICR)
+     call calcInterAtomicDistances(natoms,psix,psiy,psiz,interAtomicR)
 
 !###################################################################
-! CHECK THAT THERE IS NO ROO VECTORS SMALLER IN MAGNITUDE THAN
-! THE RCUT CUTOFF VALUE
+! Check that there is no Roo vectors smaller in magnitude than
+! the RCut cutoff value
 ! 
-!      DO I = 3,NATOMS-4,3
-!         DO J = I+3,NATOMS-1,3
-!            DX = PSIX(I) - PSIX(J) 
-!            DY = PSIY(I) - PSIY(J)   
-!            DZ = PSIZ(I) - PSIZ(J)   
-!            R = DSQRT(DX**2 + DY**2 + DZ**2)
-!            IF (R.LT.RCUT) THEN
-!            ENERGY = 1.0D03
+!      do i = 3,natoms-4,3
+!         do j = i+3,natoms-1,3
+!            dx = psix(i) - psix(j) 
+!            dy = psiy(i) - psiy(j)   
+!            dz = psiz(i) - psiz(j)   
+!            R = DSQRT(dx**2 + dy**2 + dz**2)
+!            if (R.lt.RCut) then
+!            energy = 1.0d03
 !            RETURN
-!            ENDIF
-!         ENDDO
-!      ENDDO
+!            endif
+!         enddo
+!      enddo
 ! 
 !###################################################################
-! ASSIGN THE VB STATES IF REQUIRED, ELSE USE THE ONES IN MEMORY
+! Assign the VB states if required, else use the ones in memory
 !
 !###################################################################
 
-      IF (ASSIGNVBSTATES) THEN
-        CALL ASSIGNVB3
-        IF (PRESENT(ONLYASSIGNSTATES).AND.ONLYASSIGNSTATES) RETURN
-     ENDIF
+      if (assignVBstates) then
+        call assignvb3
+        if (PRESENT(onlyAssignStates).and.onlyAssignStates) return
+     endif
 
-! ALLOCATE THE RELEVANT ARRAYS
+! Allocate the relevant arrays
 
-     ALLOCATE(XX(REDUCED_NUM_EIG,NATOMS), YY(REDUCED_NUM_EIG,NATOMS), ZZ(REDUCED_NUM_EIG,NATOMS))
-     ALLOCATE(AIJ(REDUCED_NUM_EIG,REDUCED_NUM_EIG))
-     ALLOCATE (D(REDUCED_NUM_EIG), V(REDUCED_NUM_EIG, REDUCED_NUM_EIG), E(REDUCED_NUM_EIG, REDUCED_NUM_EIG))
-!     ALLOCATE (D(REDUCED_NUM_EIG), V(REDUCED_NUM_EIG, 1), E(REDUCED_NUM_EIG, REDUCED_NUM_EIG))
+     ALLOCATE(xx(reduced_num_eig,natoms), yy(reduced_num_eig,natoms), zz(reduced_num_eig,natoms))
+     ALLOCATE(aij(reduced_num_eig,reduced_num_eig))
+     ALLOCATE (d(reduced_num_eig), v(reduced_num_eig, reduced_num_eig), e(reduced_num_eig, reduced_num_eig))
+!     ALLOCATE (d(reduced_num_eig), v(reduced_num_eig, 1), e(reduced_num_eig, reduced_num_eig))
 
-! VIJEXCH AND GRSTWFU ARE THE ONLY ARRAYS USED EXTERNALLY, ALL THE REST ARE DEALLOCATED AT THE END OF THE ROUTINE
+! vijexch and grstwfu are the only arrays used externally, all the rest are deallocated at the end of the routine
 
-     IF (ALLOCATED(VIJEXCH)) DEALLOCATE(VIJEXCH)
-     ALLOCATE(VIJEXCH(REDUCED_NUM_EIG,REDUCED_NUM_EIG))
+     if (ALLOCATED(vijexch)) DEALLOCATE(vijexch)
+     ALLOCATE(vijexch(reduced_num_eig,reduced_num_eig))
 
-     IF (ALLOCATED(GRSTWFU)) DEALLOCATE(GRSTWFU)
-     ALLOCATE (GRSTWFU(REDUCED_NUM_EIG))
+     if (ALLOCATED(grstwfu)) DEALLOCATE(grstwfu)
+     ALLOCATE (grstwfu(reduced_num_eig))
 
-! SOMETIMES WANT HAM FOR DEBUGGING
+! Sometimes want ham for debugging
 
-!     IF (ALLOCATED(HAM)) DEALLOCATE(HAM)
-     ALLOCATE(HAM(REDUCED_NUM_EIG,REDUCED_NUM_EIG))
+!     if (ALLOCATED(ham)) DEALLOCATE(ham)
+     ALLOCATE(ham(reduced_num_eig,reduced_num_eig))
 
 !###################################################################
-! ASSIGN THE CONFIGURATIONS TO XX, THE COORDINATE VECTOR USED IN
-! THE SUBSEQUENT CALCULATION OF THE HAMILTONIAN ELEMENTS
+! Assign the configurations to xx, the coordinate vector used in
+! the subsequent calculation of the Hamiltonian elements
 !
 !###################################################################
  
-     DO I = 1,REDUCED_NUM_EIG
-        DO J = 1,NATOMS
-           XX(I,J) = PSIX(ATMPL(I,J))
-           YY(I,J) = PSIY(ATMPL(I,J))
-           ZZ(I,J) = PSIZ(ATMPL(I,J))
-        ENDDO
-     ENDDO
+     do i = 1,reduced_num_eig
+        do j = 1,natoms
+           xx(i,j) = psix(atmpl(i,j))
+           yy(i,j) = psiy(atmpl(i,j))
+           zz(i,j) = psiz(atmpl(i,j))
+        enddo
+     enddo
 
 !###################################################################
-! BUILD THE HAMILTONIAN: CALL THE ROUTINES FOR CONSTRUCTING EACH 
-! ELEMENT HIJ
+! Build the Hamiltonian: call the routines for constructing each 
+! element Hij
 !
 !###################################################################
 
-     CALL BILDHAM
+     call bildham
 
-       DO I = 1,REDUCED_NUM_EIG
-          DO J = 1,REDUCED_NUM_EIG
-             E(I,J) = HAM(I,J)
-          ENDDO
-       ENDDO
+       do i = 1,reduced_num_eig
+          do j = 1,reduced_num_eig
+             e(i,j) = ham(i,j)
+          enddo
+       enddo
 
 !###################################################################
-! DIAGONALIZE THE HAMILTONIAN
+! Diagonalize the Hamiltonian
 !
-! FIND THE GROUND STATE ENERGY AND EIGENVECTOR. NOTE THE MONITORING
-! OF WHICH EVB STATE IS OCCUPIED IN THIS GEOMETRY
+! Find the Ground State energy and Eigenvector. Note the monitoring
+! of which EVB state is occupied in this geometry
 !
 !###################################################################
 
-      CALL JACOBI(E,REDUCED_NUM_EIG,D,V,NROT)
+      call jacobi(e,reduced_num_eig,d,v,nrot)
 
-! D CONTAINS THE EIGENVALUES
-! V CONTAINS THE EIGENVECTORS
+! d contains the eigenvalues
+! v contains the eigenvectors
 
-!----FIND THE LOWEST EIGENVALUE AND PRINT OUT THE GEOMETRY
-      MIN=1.0D10
-      GROUND_STATE = 3
-      DO I = 1,REDUCED_NUM_EIG
-         IF (D(I).LT.MIN) THEN
-            MIN = D(I)
-            GROUND_STATE = I
-         ENDIF 
-       ENDDO
+!----find the lowest eigenvalue and print out the geometry
+      min=1.0d10
+      ground_state = 3
+      do i = 1,reduced_num_eig
+         if (d(i).lt.min) then
+            min = d(i)
+            ground_state = i
+         endif 
+       enddo
 
-!----ASSIGN THE LOWEST ENERGY FROM THE LOWEST EIGENVALUE
-      ENERGY = MIN
+!----assign the lowest energy from the lowest eigenvalue
+      energy = min
 
-! RUN LAPACK ROUTINE WHICH CALCULATES ONLY THE LOWEST EIGENVALUE, RATHER THAN THE FULL SPECTRUM
-! ONLY NEED ONE TRIANGLE
-! ROUTINE OVERWRITES THE HAMILTONIAN WHICH IS WHY WE MUST PASS IT A COPY RATHER THAN THE ORIGINAL
+! Run LAPACK routine which calculates only the lowest eigenvalue, rather than the full spectrum
+! Only need one triangle
+! Routine overwrites the Hamiltonian which is why we must pass it a copy rather than the original
 
-!     DO I = 1,REDUCED_NUM_EIG
-!        DO J = 1,I
-!           E(I,J) = HAM(I,J)
-!        ENDDO
-!     ENDDO
+!     do i = 1,reduced_num_eig
+!        do j = 1,i
+!           e(i,j) = ham(i,j)
+!        enddo
+!     enddo
 
-!     ALLOCATE(WORK(33*REDUCED_NUM_EIG), IWORK(33*REDUCED_NUM_EIG))
+!     allocate(WORK(33*reduced_num_eig), IWORK(33*reduced_num_eig))
      
-!     CALL DSYEVR('V','I','L',REDUCED_NUM_EIG,E,REDUCED_NUM_EIG,0.0D0,0.0D0,1,1,DLAMCH('SAFE  MINIMUM'),NUMEVFOUND,
-!    &              D,V,REDUCED_NUM_EIG,ISUPPZ,WORK,SIZE(WORK),IWORK,SIZE(IWORK),LOCALSTATUS)
+!     call DSYEVR('V','I','L',reduced_num_eig,e,reduced_num_eig,0.0d0,0.0d0,1,1,DLAMCH('Safe  minimum'),numEVfound,
+!    &              d,v,reduced_num_eig,ISUPPZ,WORK,SIZE(WORK),IWORK,SIZE(IWORK),localStatus)
 
-!     DEALLOCATE(WORK,IWORK)
+!     deallocate(WORK,IWORK)
 
-! CHECK FOR PROBLEMS WITH LAPACK ROUTINE
+! Check for problems with LAPACK routine
 
-!     IF (LOCALSTATUS.NE.0 .OR. NUMEVFOUND.NE.1) THEN
-!        PRINT *, 'ERROR IN DSYEVR ROUTINE: RETURN STATUS:', LOCALSTATUS, 'NUM EVS FOUND:', NUMEVFOUND
-!        STOP
-!     ENDIF
+!     if (localStatus.ne.0 .or. numEVfound.ne.1) then
+!        print *, 'Error in DSYEVR routine: Return status:', localStatus, 'Num EVs found:', numEVfound
+!        stop
+!     endif
 
-! ASSIGN ENERGY AND GROUND STATE WAVEFUNCTION
+! Assign energy and ground state wavefunction
 
-!     ENERGY = D(1)
-!     GRSTWFU(:) = V(:,1)
+!     energy = d(1)
+!     grstwfu(:) = v(:,1)
 
 !###################################################################
-! ASSIGN THE GROUND STATE WAVEFUNCTION TO VARIABLE
+! Assign the ground state wavefunction to variable
 !###################################################################
-       DO I = 1,REDUCED_NUM_EIG
-          GRSTWFU(I) = V(I,GROUND_STATE)
-       ENDDO      
+       do i = 1,reduced_num_eig
+          grstwfu(i) = v(i,ground_state)
+       enddo      
 
-! DEALLOCATE MEMORY
+! Deallocate memory
 
-     DEALLOCATE(XX, YY, ZZ, AIJ)
-     DEALLOCATE(D, V, E)
-     DEALLOCATE(HAM)
+     DEALLOCATE(xx, yy, zz, aij)
+     DEALLOCATE(d, v, e)
+     DEALLOCATE(ham)
 
      RETURN
      END     
@@ -238,126 +238,126 @@
 !############### SUBROUTINE VH2OINTER #############################
 !###################################################################
 
-     SUBROUTINE VH2OINTER(VH2O_INTER)
-     USE COMMONS
-     USE MSEVB_COMMON
+     subroutine vh2ointer(vh2o_inter)
+     use commons
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 
 !################################################################### 
-! CALCULATE THE WATER INTERMOLECULAR INTERACTION
-! UNITS ARE KCAL/MOLE 
+! Calculate the Water Intermolecular interaction
+! Units are kcal/mole 
 !
 !################################################################### 
 
      DOUBLE PRECISION VH2O_INTER(REDUCED_NUM_EIG)
      DOUBLE PRECISION DX_OO,DY_OO,DZ_OO,ROO,ROO_6,ROO_12,LJ_TMP, &
-                COULOMB_TMP,COULOMB_MONO,LJ_TERM,DX,DY,DZ, &
-                RCOUL,QK,QJ,E_SQ,COULOMB,A,C
-     INTEGER II,I,J,KAS,KK,START,COUNT,COUNT_SUB,JJ,KASKAS
-     CHARACTER*1 DUMMY
+                coulomb_tmp,coulomb_mono,lj_term,dx,dy,dz, &
+                Rcoul,qk,qj,e_sq,coulomb,a,c
+     integer ii,i,j,kas,kk,start,count,count_sub,jj,kaskas
+     character*1 dummy
 
 !###################################################################
-! BEGIN LOOP OVER THE EIGENSTATES
+! Begin loop over the Eigenstates
 !
 !################################################################### 
-      DO 699 II = 1,REDUCED_NUM_EIG
-!----REINITIALIZE THE VARIABLES:
-        LJ_TMP = 0.0D0
-        LJ_TERM = 0.0D0
-        COULOMB = 0.0D0
-        COULOMB_TMP = 0.0D0
-        COULOMB_MONO = 0.0D0
+      do 699 ii = 1,reduced_num_eig
+!----reinitialize the variables:
+        lj_tmp = 0.0d0
+        lj_term = 0.0d0
+        coulomb = 0.0d0
+        coulomb_tmp = 0.0d0
+        coulomb_mono = 0.0d0
 
 !################################################################### 
-! DETERMINE THE LJ COMPONENT OF THE WATER INTERMOLECULAR INTERACTION
-! FOR THIS EIGENSTATE.
+! Determine the LJ component of the Water intermolecular interaction
+! for this Eigenstate.
 !
 !################################################################### 
-!     IF (QUICK) THEN
-        DO I = 6,(NATOMS-4),3
-           JJ = ATMPL(II,I) 
-           DO J = I+3,(NATOMS-1),3 
-              KASKAS = ATMPL(II,J)
-              LJ_TMP = LJR(JJ,KASKAS)
-              LJ_TERM = LJ_TMP + LJ_TERM
-           ENDDO
-        ENDDO
+!     if (QUICK) then
+        do i = 6,(natoms-4),3
+           jj = atmpl(ii,i) 
+           do j = i+3,(natoms-1),3 
+              kaskas = atmpl(ii,j)
+              lj_tmp = ljr(jj,kaskas)
+              lj_term = lj_tmp + lj_term
+           enddo
+        enddo
 
-!     ELSE
+!     else
 !
-!      DO I = 6,(NATOMS-4),3
-!        DO J = I+3,(NATOMS-1),3
-!           DX_OO = XX(II,I) - XX(II,J)
-!           DY_OO = YY(II,I) - YY(II,J)
-!           DZ_OO = ZZ(II,I) - ZZ(II,J)
-!           ROO = DSQRT(DX_OO*DX_OO + DY_OO*DY_OO + DZ_OO*DZ_OO)
-!            ROO = 3.1506D0/ROO
-!           ROO_6 = ROO**6
-!           ROO_12 = ROO_6*ROO_6
-!              LJ_TMP = (ALJ*ROO_12) - (CLJ*ROO_6)
-!            LJ_TMP = 4.0D0*(1.522D-01)*(ROO_12 - ROO_6)
-!           LJ_TERM = LJ_TMP + LJ_TERM
-!        ENDDO
-!      ENDDO
+!      do i = 6,(natoms-4),3
+!        do j = i+3,(natoms-1),3
+!           dx_oo = xx(ii,i) - xx(ii,j)
+!           dy_oo = yy(ii,i) - yy(ii,j)
+!           dz_oo = zz(ii,i) - zz(ii,j)
+!           Roo = DSQRT(dx_oo*dx_oo + dy_oo*dy_oo + dz_oo*dz_oo)
+!            Roo = 3.1506d0/Roo
+!           Roo_6 = Roo**6
+!           Roo_12 = Roo_6*Roo_6
+!              lj_tmp = (ALJ*Roo_12) - (CLJ*Roo_6)
+!            lj_tmp = 4.0d0*(1.522d-01)*(Roo_12 - Roo_6)
+!           lj_term = lj_tmp + lj_term
+!        enddo
+!      enddo
 !
-!     ENDIF
-!
-!################################################################### 
-! CALCULATE THE COULOMBIC COMPONENT OF THE WATER INTERMOLECULAR
-! INTERACTION FOR THIS EIGENSTATE. 
+!     endif
 !
 !################################################################### 
-     START = 5
+! Calculate the coulombic component of the Water intermolecular
+! interaction for this Eigenstate. 
+!
+!################################################################### 
+     start = 5
 
-       DO J = START,(NATOMS-3) 
-          IF (J.EQ.(START+3)) THEN
-               START = START + 3
-           ENDIF 
-          JJ = ATMPL(II,J)
-          DO KAS = START+3,NATOMS  
-               KASKAS = ATMPL(II,KAS)
-             COULOMB_MONO = WATER_INTER_COULOMB(JJ,KASKAS)
-             COULOMB_TMP = COULOMB_TMP + COULOMB_MONO            
-          ENDDO
-       ENDDO
+       do j = start,(natoms-3) 
+          if (j.eq.(start+3)) then
+               start = start + 3
+           endif 
+          jj = atmpl(ii,j)
+          do kas = start+3,natoms  
+               kaskas = atmpl(ii,kas)
+             coulomb_mono = water_inter_coulomb(jj,kaskas)
+             coulomb_tmp = coulomb_tmp + coulomb_mono            
+          enddo
+       enddo
   
-!     DO J = START,(NATOMS-3)
-!        IF (MOD(J,3).EQ.0) THEN
-!           QJ = -0.834D0
-!        ELSE
-!          QJ = 0.417D0
-!        ENDIF
-!        IF (J.EQ.(START+3)) THEN
-!           START = START + 3
-!        ENDIF
-!        DO KAS = START+3,NATOMS
-!          DX = XX(II,J) - XX(II,KAS)
-!           DY = YY(II,J) - YY(II,KAS)
-!          DZ = ZZ(II,J) - ZZ(II,KAS)
-!          RCOUL = DSQRT(DX*DX + DY*DY + DZ*DZ)
-!          IF (MOD(KAS,3).EQ.0) THEN
-!             QK = -0.834D0
-!          ELSE
-!             QK = 0.417D0
-!          ENDIF
-!              COULOMB_MONO = (QK*QJ*FOURPIEO)/(RCOUL)
-!             COULOMB_TMP = COULOMB_TMP + COULOMB_MONO
-!        ENDDO
-!     ENDDO
+!     do j = start,(natoms-3)
+!        if (mod(j,3).eq.0) then
+!           qj = -0.834d0
+!        else
+!          qj = 0.417d0
+!        endif
+!        if (j.eq.(start+3)) then
+!           start = start + 3
+!        endif
+!        do kas = start+3,natoms
+!          dx = xx(ii,j) - xx(ii,kas)
+!           dy = yy(ii,j) - yy(ii,kas)
+!          dz = zz(ii,j) - zz(ii,kas)
+!          Rcoul = DSQRT(dx*dx + dy*dy + dz*dz)
+!          if (mod(kas,3).eq.0) then
+!             qk = -0.834d0
+!          else
+!             qk = 0.417d0
+!          endif
+!              coulomb_mono = (qk*qj*fourpieo)/(Rcoul)
+!             coulomb_tmp = coulomb_tmp + coulomb_mono
+!        enddo
+!     enddo
 !
 !###################################################################
-! FINALLY WORK OUT THE WATER INTERMOLECULAR INTERACTION FOR THIS
-! EIGENSTATE
+! Finally work out the Water intermolecular interaction for this
+! Eigenstate
 !
 !###################################################################
 
-     VH2O_INTER(II) = COULOMB_TMP + LJ_TERM
+     vh2o_inter(ii) = coulomb_tmp + lj_term
 
 !###################################################################
-! END OF EIGENSTATE
+! End of Eigenstate
 
- 699     ENDDO             
+ 699     enddo             
 
      RETURN 
      END 
@@ -366,11 +366,11 @@
 !################### VH2OINTRA SUBROUTINE ##########################
 !###################################################################
 
-     SUBROUTINE VH2OINTRA(VH2O_INTRA)
-     USE COMMONS
-     USE MSEVB_COMMON
+     subroutine vh2ointra(vh2o_intra)
+     use commons
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 
 !###################################################################
 !
@@ -382,97 +382,97 @@
      DOUBLE PRECISION DX_ROH1,DY_ROH1,DZ_ROH1,DX_ROH2,DY_ROH2,DZ_ROH2
      DOUBLE PRECISION ROH(3),ALPHA
      DOUBLE PRECISION VH2O_INTRA_TMP,VH2O_INTRA_R,VH2O_INTRA_ALPHA &
-                ,VH2O_INTRA_RTMP,VH2O_INTRA_MONO
-     INTEGER I,J,L,M,N
-     CHARACTER*4 FORM
+                ,vh2o_intra_rtmp,vh2o_intra_mono
+     integer i,j,l,m,n
+     character*4 form
      DOUBLE PRECISION CHECKED_ACOS
 
-!----INTIALIZE VARIABLES
-     DO I = 1,REDUCED_NUM_EIG
-        VH2O_INTRA(I) = 0.0D0
-     ENDDO
+!----intialize variables
+     do i = 1,reduced_num_eig
+        vh2o_intra(i) = 0.0d0
+     enddo
         
 !################################################################### 
-! CALCULATE THE 2(O-H) BOND LENGTHS AND H-O-H BOND ANGLE IN EACH OF
-! THE WATER MOLECULES OF THE EIGENSTATE CONSIDERED
+! Calculate the 2(O-H) bond lengths and H-O-H bond angle in each of
+! the water molecules of the Eigenstate considered
 !
 !################################################################### 
-     FORM = 'TIP3'
-!----SUM OVER ALL EIGENSTATES
-     DO 799 I = 1,REDUCED_NUM_EIG
-        VH2O_INTRA_MONO = 0.0D00
-!----SUM OVER ALL THE WATER MOLECULES
-     DO N = 5,NATOMS-2,3
-!----INTIALIZE VARIABLES
-           ROH(1) = 0.0D00
-           ROH(2) = 0.0D00
-           ALPHA = 0.0D00
-!----DETERMINE THE ROH DISTANCES IN WATER
-        DX_ROH1 = PSIX(ATMPL(I,N)) - PSIX(ATMPL(I,N+1))
-        DY_ROH1 = PSIY(ATMPL(I,N)) - PSIY(ATMPL(I,N+1))
-           DZ_ROH1 = PSIZ(ATMPL(I,N)) - PSIZ(ATMPL(I,N+1))      
-        ROH(1) = DSQRT(DX_ROH1*DX_ROH1 + DY_ROH1*DY_ROH1 + DZ_ROH1*DZ_ROH1)
+     form = 'tip3'
+!----Sum over all Eigenstates
+     do 799 i = 1,reduced_num_eig
+        vh2o_intra_mono = 0.0d00
+!----Sum over all the water molecules
+     do n = 5,natoms-2,3
+!----intialize variables
+           roh(1) = 0.0d00
+           roh(2) = 0.0d00
+           alpha = 0.0d00
+!----determine the roh distances in water
+        dx_roh1 = psix(atmpl(i,n)) - psix(atmpl(i,n+1))
+        dy_roh1 = psiy(atmpl(i,n)) - psiy(atmpl(i,n+1))
+           dz_roh1 = psiz(atmpl(i,n)) - psiz(atmpl(i,n+1))      
+        roh(1) = dsqrt(dx_roh1*dx_roh1 + dy_roh1*dy_roh1 + dz_roh1*dz_roh1)
 
-        DX_ROH2 = PSIX(ATMPL(I,N+2)) - PSIX(ATMPL(I,N+1))
-        DY_ROH2 = PSIY(ATMPL(I,N+2)) - PSIY(ATMPL(I,N+1))   
-        DZ_ROH2 = PSIZ(ATMPL(I,N+2)) - PSIZ(ATMPL(I,N+1))   
-           ROH(2) = DSQRT(DX_ROH2*DX_ROH2 + DY_ROH2*DY_ROH2 + DZ_ROH2*DZ_ROH2)
+        dx_roh2 = psix(atmpl(i,n+2)) - psix(atmpl(i,n+1))
+        dy_roh2 = psiy(atmpl(i,n+2)) - psiy(atmpl(i,n+1))   
+        dz_roh2 = psiz(atmpl(i,n+2)) - psiz(atmpl(i,n+1))   
+           roh(2) = dsqrt(dx_roh2*dx_roh2 + dy_roh2*dy_roh2 + dz_roh2*dz_roh2)
 
-!----DETERMINE THE BENDING ANGLE, ALPHA
-        ALPHA = (DX_ROH1*DX_ROH2 + DY_ROH1*DY_ROH2 + DZ_ROH1*DZ_ROH2)
-        ALPHA = CHECKED_ACOS(ALPHA/(ROH(1)*ROH(2)))
+!----determine the bending angle, alpha
+        alpha = (dx_roh1*dx_roh2 + dy_roh1*dy_roh2 + dz_roh1*dz_roh2)
+        alpha = checked_acos(alpha/(roh(1)*roh(2)))
 
 !###################################################################
-! NOW DETERMINE THE BENDING AND STRETCHING TERMS TOGETHER BY LOOPING 
-! OVER THE 2 STRETCHED AND ONE ANGLE.
+! Now determine the Bending and Stretching terms together by looping 
+! over the 2 stretched and one angle.
 !
 !###################################################################
-        VH2O_INTRA_R = 0.0D00
-        VH2O_INTRA_ALPHA = 0.0D00
-        VH2O_INTRA_RTMP = 0.0D00
+        vh2o_intra_r = 0.0d00
+        vh2o_intra_alpha = 0.0d00
+        vh2o_intra_rtmp = 0.0d00
 
-        DO J=1,2
-           VH2O_INTRA_R = ROH(J) - H2OROHEQ
-           VH2O_INTRA_R = 0.5D0*H2OKB*(VH2O_INTRA_R*VH2O_INTRA_R) 
-              VH2O_INTRA_RTMP = VH2O_INTRA_RTMP + VH2O_INTRA_R
-        ENDDO
+        do j=1,2
+           vh2o_intra_r = roh(j) - h2oroheq
+           vh2o_intra_r = 0.5d0*h2okb*(vh2o_intra_r*vh2o_intra_r) 
+              vh2o_intra_rtmp = vh2o_intra_rtmp + vh2o_intra_r
+        enddo
 
-        VH2O_INTRA_ALPHA = ALPHA-THETAEQ
-        VH2O_INTRA_ALPHA = 0.5D0*H2OKTHETA*(VH2O_INTRA_ALPHA*VH2O_INTRA_ALPHA)
+        vh2o_intra_alpha = alpha-thetaeq
+        vh2o_intra_alpha = 0.5d0*h2oktheta*(vh2o_intra_alpha*vh2o_intra_alpha)
           
 !################################################################### 
-! DETERMINE THE CONTRIBUTION FROM THIS, SINGLE, WATER MOLECULE
+! Determine the contribution from this, single, water molecule
 !
 !################################################################### 
 
-        VH2O_INTRA_MONO = VH2O_INTRA_MONO + VH2O_INTRA_RTMP + VH2O_INTRA_ALPHA
+        vh2o_intra_mono = vh2o_intra_mono + vh2o_intra_rtmp + vh2o_intra_alpha
  
-!----CALC'ED THE ENERGY FOR 1 WATER IN 1 EIGENSTATE
-!    FINISHED THE LOOP OVER A WATER MOLECULE
-       ENDDO
+!----calc'ed the energy for 1 water in 1 eigenstate
+!    Finished the loop over a water molecule
+       enddo
 
-!----FINALLY ASSIGN THE VH2O_INTRA FOR EIGENSTATE (I) |I>
-        VH2O_INTRA(I) = VH2O_INTRA_MONO
- 799     ENDDO
+!----finally assign the vh2o_intra for eigenstate (i) |i>
+        vh2o_intra(i) = vh2o_intra_mono
+ 799     enddo
 
-     RETURN
-     END 
+     return
+     end 
 
 !#####################################################################
 !################## VH3OINTRA SUBROUTINE #############################
 !#####################################################################
 
-     SUBROUTINE VH3OINTRA(VH3O_INTRA)
-     USE COMMONS
-     USE MSEVB_COMMON
+     subroutine vh3ointra(vh3o_intra)
+     use commons
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 
 !###################################################################
-! DETERMINE THE CONTRIBUTION TO THE HAMILTONIAN FROM THE H3O+
-! INTERMOLECULAR INTERACTION
+! Determine the contribution to the Hamiltonian from the H3O+
+! Intermolecular interaction
 !
-! ONLY REQUIRES THE NUCLEAR COORDINATE VECTOR XX(I,J)
+! Only requires the nuclear coordinate vector xx(i,j)
 !
 !###################################################################
 
@@ -480,85 +480,85 @@
      DOUBLE PRECISION DX_ROH,DY_ROH,DZ_ROH,DX_HH,DY_HH,DZ_HH
      DOUBLE PRECISION ROH(3),ALPHA(3),HH(3)
      DOUBLE PRECISION VH3O_INTRA_TMP,VH3O_INTRA_R,VH3O_INTRA_ALPHA
-     INTEGER I,J,KEG,L,M
+     integer i,j,keg,l,m
      DOUBLE PRECISION CHECKED_ACOS
 
 !###################################################################
-! DETERMINE THE STRETCHING (3) AND BENDING (3) VECTORS
+! Determine the stretching (3) and bending (3) vectors
 !
 !###################################################################
 
-     DO 899 I = 1,REDUCED_NUM_EIG
-!----INTIALIZE VARIABLES
-     VH3O_INTRA_TMP = 0.0D0
-        DO KEG = 1,3
-           ROH(KEG) = 0.0D0
-           HH(KEG) = 0.0D0
-           ALPHA(KEG) = 0.0D0
-        ENDDO
-!----DETERMINE THE ROH DISTANCES IN HYDRONIUM
-        DX_ROH = XX(I,1) - XX(I,3)
-        DY_ROH = YY(I,1) - YY(I,3)
-        DZ_ROH = ZZ(I,1) - ZZ(I,3)
-        ROH(1) = DSQRT(DX_ROH*DX_ROH + DY_ROH*DY_ROH + DZ_ROH*DZ_ROH)
-        DX_ROH = XX(I,2) - XX(I,3)
-           DY_ROH = YY(I,2) - YY(I,3)
-        DZ_ROH = ZZ(I,2) - ZZ(I,3)
-           ROH(2) = DSQRT(DX_ROH*DX_ROH + DY_ROH*DY_ROH + DZ_ROH*DZ_ROH)
-        DX_ROH = XX(I,4) - XX(I,3)
-           DY_ROH = YY(I,4) - YY(I,3)
-           DZ_ROH = ZZ(I,4) - ZZ(I,3)
-           ROH(3) = DSQRT(DX_ROH*DX_ROH + DY_ROH*DY_ROH + DZ_ROH*DZ_ROH)
-!----DETERMINE THE BENDING ANGLES, ALPHA
-!------(A)FIRST DETERMINE THE HH DISTANCES
-        DX_HH = XX(I,1) - XX(I,2)
-        DY_HH = YY(I,1) - YY(I,2)
-           DZ_HH = ZZ(I,1) - ZZ(I,2)
-        HH(1) = DSQRT(DX_HH*DX_HH + DY_HH*DY_HH + DZ_HH*DZ_HH)
-        DX_HH = XX(I,2) - XX(I,4)
-           DY_HH = YY(I,2) - YY(I,4)
-           DZ_HH = ZZ(I,2) - ZZ(I,4)
-           HH(2) = DSQRT(DX_HH*DX_HH + DY_HH*DY_HH + DZ_HH*DZ_HH)
-        DX_HH = XX(I,4) - XX(I,1)
-           DY_HH = YY(I,4) - YY(I,1)
-           DZ_HH = ZZ(I,4) - ZZ(I,1)
-           HH(3) = DSQRT(DX_HH*DX_HH + DY_HH*DY_HH + DZ_HH*DZ_HH)
-!------(B)NOW DETERMINE THE ANGLES ALPHA
-        ALPHA(1) = (-(HH(1)*HH(1)) + (ROH(1)*ROH(1)) + (ROH(2)*ROH(2)))
-        ALPHA(1) = CHECKED_ACOS(ALPHA(1)/(2.0D0*ROH(1)*ROH(2)))
+     do 899 i = 1,reduced_num_eig
+!----intialize variables
+     vh3o_intra_tmp = 0.0d0
+        do keg = 1,3
+           roh(keg) = 0.0d0
+           hh(keg) = 0.0d0
+           alpha(keg) = 0.0d0
+        enddo
+!----determine the roh distances in hydronium
+        dx_roh = xx(i,1) - xx(i,3)
+        dy_roh = yy(i,1) - yy(i,3)
+        dz_roh = zz(i,1) - zz(i,3)
+        roh(1) = dsqrt(dx_roh*dx_roh + dy_roh*dy_roh + dz_roh*dz_roh)
+        dx_roh = xx(i,2) - xx(i,3)
+           dy_roh = yy(i,2) - yy(i,3)
+        dz_roh = zz(i,2) - zz(i,3)
+           roh(2) = dsqrt(dx_roh*dx_roh + dy_roh*dy_roh + dz_roh*dz_roh)
+        dx_roh = xx(i,4) - xx(i,3)
+           dy_roh = yy(i,4) - yy(i,3)
+           dz_roh = zz(i,4) - zz(i,3)
+           roh(3) = dsqrt(dx_roh*dx_roh + dy_roh*dy_roh + dz_roh*dz_roh)
+!----determine the bending angles, alpha
+!------(a)first determine the hh distances
+        dx_hh = xx(i,1) - xx(i,2)
+        dy_hh = yy(i,1) - yy(i,2)
+           dz_hh = zz(i,1) - zz(i,2)
+        hh(1) = dsqrt(dx_hh*dx_hh + dy_hh*dy_hh + dz_hh*dz_hh)
+        dx_hh = xx(i,2) - xx(i,4)
+           dy_hh = yy(i,2) - yy(i,4)
+           dz_hh = zz(i,2) - zz(i,4)
+           hh(2) = dsqrt(dx_hh*dx_hh + dy_hh*dy_hh + dz_hh*dz_hh)
+        dx_hh = xx(i,4) - xx(i,1)
+           dy_hh = yy(i,4) - yy(i,1)
+           dz_hh = zz(i,4) - zz(i,1)
+           hh(3) = dsqrt(dx_hh*dx_hh + dy_hh*dy_hh + dz_hh*dz_hh)
+!------(b)now determine the angles alpha
+        alpha(1) = (-(hh(1)*hh(1)) + (roh(1)*roh(1)) + (roh(2)*roh(2)))
+        alpha(1) = checked_acos(alpha(1)/(2.0d0*roh(1)*roh(2)))
 
-        ALPHA(2) = (-(HH(2)*HH(2)) + (ROH(2)*ROH(2)) + (ROH(3)*ROH(3)))
-        ALPHA(2) =  CHECKED_ACOS(ALPHA(2)/(2.0D0*ROH(2)*ROH(3)))
+        alpha(2) = (-(hh(2)*hh(2)) + (roh(2)*roh(2)) + (roh(3)*roh(3)))
+        alpha(2) =  checked_acos(alpha(2)/(2.0d0*roh(2)*roh(3)))
 
-        ALPHA(3) = (-(HH(3)*HH(3)) + (ROH(3)*ROH(3)) + (ROH(1)*ROH(1)))
-        ALPHA(3) = CHECKED_ACOS(ALPHA(3)/(2.0D0*ROH(3)*ROH(1)))
+        alpha(3) = (-(hh(3)*hh(3)) + (roh(3)*roh(3)) + (roh(1)*roh(1)))
+        alpha(3) = checked_acos(alpha(3)/(2.0d0*roh(3)*roh(1)))
 
 !###################################################################
-! NOW DETERMINE THE H3O+ INTERMOLECULAR ENERGY FOR THIS EIGENSTATE 
-! FROM THE BENDING AND STRETCHING TERMS.
+! Now determine the H3O+ intermolecular energy for this Eigenstate 
+! from the bending and stretching terms.
 !
 !###################################################################
-        VH3O_INTRA_R = 0.0D0
-        VH3O_INTRA_ALPHA = 0.0D0
-         VH3O_INTRA_TMP = 0.0D0
+        vh3o_intra_r = 0.0d0
+        vh3o_intra_alpha = 0.0d0
+         vh3o_intra_tmp = 0.0d0
       
-          DO J=1,3
-           VH3O_INTRA_R = (1.0D00 - DEXP(-1.0D0*AOHEQ*(ROH(J)-ROHEQ)))
-           VH3O_INTRA_R = DOH * (VH3O_INTRA_R*VH3O_INTRA_R)
-           VH3O_INTRA_ALPHA = ALPHA(J)-ALPHAEQ
-           VH3O_INTRA_ALPHA = 0.5D0*KALPHA*(VH3O_INTRA_ALPHA* VH3O_INTRA_ALPHA)
-           VH3O_INTRA_TMP = VH3O_INTRA_TMP + VH3O_INTRA_R + VH3O_INTRA_ALPHA
-        ENDDO
+          do j=1,3
+           vh3o_intra_r = (1.0d00 - DEXP(-1.0d0*aoheq*(roh(j)-roheq)))
+           vh3o_intra_r = doh * (vh3o_intra_r*vh3o_intra_r)
+           vh3o_intra_alpha = alpha(j)-alphaeq
+           vh3o_intra_alpha = 0.5d0*kalpha*(vh3o_intra_alpha* vh3o_intra_alpha)
+           vh3o_intra_tmp = vh3o_intra_tmp + vh3o_intra_r + vh3o_intra_alpha
+        enddo
 !###################################################################
-! FINALLY ASSIGN THE VH3O_INTRA FOR EIGENSTATE (I) |I>
+! Finally assign the vh3o_intra for eigenstate (i) |i>
 !
 !###################################################################
-        VH3O_INTRA(I) = VH3O_INTRA_TMP
+        vh3o_intra(i) = vh3o_intra_tmp
 
 !###################################################################
-! END OF LOOP OVER EIGENSTATES
+! End of loop over Eigenstates
 
- 899     ENDDO
+ 899     enddo
 
      RETURN
      END 
@@ -567,129 +567,129 @@
 !############### SUBROUTINE VINTER #################################
 !###################################################################
 
-     SUBROUTINE VINTER(V_INTER)
-     USE COMMONS
-     USE MSEVB_COMMON
+     subroutine vinter(v_inter)
+     use commons
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 
 !###################################################################
-! CALCULATION OF THE INTERMOLECULAR INTERACTION BETWEEN H3O+ AND H2O
+! Calculation of the Intermolecular interaction between H3O+ and H2O
 !
-! COULOMB, REPULSION AND LENNARD-JONES TERMS
+! Coulomb, Repulsion and Lennard-Jones Terms
 !
 !###################################################################
 
      DOUBLE PRECISION V_INTER(REDUCED_NUM_EIG)
      DOUBLE PRECISION DX,DY,DZ,ROO,DXQQ,DYQQ,DZQQ,RQQ,QII,QJJ,ROO_6,ROO_12
      DOUBLE PRECISION LJ_TERM,REPULSE,COULOMB
-     INTEGER I,II,JJ,KK,LL,III,JJJ
+     integer i,ii,jj,kk,ll,iii,jjj
      DOUBLE PRECISION LJ_TMP,REPULSE_TMP,COULOMB_TMP,QTIP3P_HY,QTIP3P_OX
-     CHARACTER*1 DUMMY
+     character*1 dummy
 
 !###################################################################
-! START OF LOOP OVER EIGENSTATES
+! Start of loop over Eigenstates
 
-     DO 599 LL = 1,REDUCED_NUM_EIG
-        LJ_TERM = 0.0D00
-!        LJ_TMP =0.0D0
-        COULOMB = 0.0D0
-!        COULOMB_TMP = 0.0D0
-        REPULSE = 0.0D0
-!        REPULSE_TMP = 0.0D0
+     do 599 ll = 1,reduced_num_eig
+        lj_term = 0.0d00
+!        lj_tmp =0.0d0
+        coulomb = 0.0d0
+!        coulomb_tmp = 0.0d0
+        repulse = 0.0d0
+!        repulse_tmp = 0.0d0
 
 !###################################################################
-! DETERMINATION OF THE LJ AND REPLUSIVE TERMS
+! Determination of the LJ and Replusive terms
 !
 !###################################################################
      
-        II = ATMPL(LL,3)     ! THE HYDRONIUM O ATOM IN THIS EIGENSTATE
+        ii = atmpl(ll,3)     ! The hydronium O atom in this eigenstate
 
-!     IF (QUICK) THEN
-        DO I = 6,(NATOMS-1),3
-           JJ = ATMPL(LL,I)        ! THE CURRENT H2O ATOM
-           REPULSE = REPULSE + REPULSE_INTER(II,JJ)
-           LJ_TERM = LJ_TERM + LJ_INTER(II,JJ)
-        ENDDO
+!     if (QUICK) then
+        do i = 6,(natoms-1),3
+           jj = atmpl(ll,i)        ! The current H2O atom
+           repulse = repulse + repulse_inter(ii,jj)
+           lj_term = lj_term + lj_inter(ii,jj)
+        enddo
 
-!     ELSE
+!     else
 !
-!     DO I = 6,(NATOMS-1),3 
-!        DX = XX(LL,3) - XX(LL,I)
-!         DY = YY(LL,3) - YY(LL,I)
-!        DZ = ZZ(LL,3) - ZZ(LL,I)
-!        ROO = DSQRT(DX*DX + DY*DY + DZ*DZ)
-!        REPULSE_TMP = BIG_B*(1.0D0-DTANH(SMALL_B*(ROO - DOOEQ)))
-!        ROO = SIGMA_MIX/ROO
-!         ROO = ROO * ROO
-!         ROO_6 = ROO**6 
-!         ROO_12 = ROO**12
-!        LJ_TMP = EPSILON_MIX*(ROO_12-ROO_6)
-!        LJ_TERM = LJ_TERM + LJ_TMP
-!        REPULSE = REPULSE + REPULSE_TMP
-!     ENDDO
+!     do i = 6,(natoms-1),3 
+!        dx = xx(ll,3) - xx(ll,i)
+!         dy = yy(ll,3) - yy(ll,i)
+!        dz = zz(ll,3) - zz(ll,i)
+!        Roo = DSQRT(dx*dx + dy*dy + dz*dz)
+!        repulse_tmp = big_b*(1.0d0-DTANH(small_b*(Roo - dooeq)))
+!        Roo = sigma_mix/Roo
+!         Roo = Roo * Roo
+!         Roo_6 = Roo**6 
+!         Roo_12 = Roo**12
+!        lj_tmp = epsilon_mix*(Roo_12-Roo_6)
+!        lj_term = lj_term + lj_tmp
+!        repulse = repulse + repulse_tmp
+!     enddo
 !
-!     ENDIF
+!     endif
 
 !###################################################################
-! DETERMINATION OF THE COULOMBIC TERMS
+! Determination of the Coulombic terms
 !
 !###################################################################
 
-!      IF (QUICK) THEN
-            DO II = 1,4
-             III = ATMPL(LL,II)
-             DO JJ = 5,NATOMS
-                JJJ = ATMPL(LL,JJ)
-                COULOMB = COULOMB + INTER_COULOMB(III,JJJ)
-             ENDDO
-          ENDDO
+!      if (QUICK) then
+            do ii = 1,4
+             iii = atmpl(ll,ii)
+             do jj = 5,natoms
+                jjj = atmpl(ll,jj)
+                coulomb = coulomb + inter_coulomb(iii,jjj)
+             enddo
+          enddo
  
-!      ELSE
+!      else
 !
-!     DO II = 1,4
-!        IF (II.EQ.3) THEN
-!            QII = QINTERO
-!        ELSE
-!            QII = QINTERH
-!        ENDIF
-!        DO JJ = 5,NATOMS
-!           DXQQ = XX(LL,II) - XX(LL,JJ) 
-!           DYQQ = YY(LL,II) - YY(LL,JJ)
-!           DZQQ = ZZ(LL,II) - ZZ(LL,JJ)
-!           RQQ = DSQRT(DXQQ*DXQQ+DYQQ*DYQQ+DZQQ*DZQQ)
-!           IF (MOD(JJ,3).EQ.0) THEN
-!             QJJ = QTIP3P_O
-!           ELSE
-!             QJJ = QTIP3P_H
-!           ENDIF
-!           COULOMB_TMP = DAMPCHGE*(FOURPIEO*QII*QJJ)/(RQQ)
-!           COULOMB = COULOMB + COULOMB_TMP
-!        ENDDO
-!     ENDDO
+!     do ii = 1,4
+!        if (ii.eq.3) then
+!            qii = qintero
+!        else
+!            qii = qinterh
+!        endif
+!        do jj = 5,natoms
+!           dxqq = xx(ll,ii) - xx(ll,jj) 
+!           dyqq = yy(ll,ii) - yy(ll,jj)
+!           dzqq = zz(ll,ii) - zz(ll,jj)
+!           Rqq = DSQRT(dxqq*dxqq+dyqq*dyqq+dzqq*dzqq)
+!           if (mod(jj,3).eq.0) then
+!             qjj = qtip3p_o
+!           else
+!             qjj = qtip3p_h
+!           endif
+!           coulomb_tmp = dampchge*(fourpieo*qii*qjj)/(Rqq)
+!           coulomb = coulomb + coulomb_tmp
+!        enddo
+!     enddo
 !
-!      ENDIF
+!      endif
 !
 !###################################################################
-! WORK OUT THE V_INTER() TERM FOR THIS EIGENSTATE FROM THE SUM OF 
-! COULOMB, LJ AND  REPULSIVE TERMS
+! Work out the v_inter() term for this Eigenstate from the sum of 
+! coulomb, LJ and  repulsive terms
 
-     V_INTER(LL) = LJ_TERM + COULOMB + REPULSE
+     v_inter(ll) = lj_term + coulomb + repulse
 
-!     PRINT *, 'EIGENSTATE:', LL
-!     PRINT *, 'HYDRONIUM O:', ATMPL(LL,3)
-!     PRINT *, 'LJ INTERACTION:', LJ_TERM
-!     PRINT *, 'COULOMB ATTRACTION:', COULOMB
-!     PRINT *, 'REPULSIVE TERM:', REPULSE
+!     print *, 'Eigenstate:', ll
+!     print *, 'Hydronium O:', atmpl(ll,3)
+!     print *, 'LJ interaction:', lj_term
+!     print *, 'Coulomb attraction:', coulomb
+!     print *, 'Repulsive term:', repulse
 
-!     LJ_VALUES(LL)=LJ_TERM
-!     COULOMB_VALUES(LL)=COULOMB
-!     REP_VALUES(LL)=REPULSE
+!     LJ_values(ll)=lj_term
+!     coulomb_values(ll)=coulomb
+!     rep_values(ll)=repulse
 
 !###################################################################
-! END OF LOOP OVER EIGENSTATES
+! End of loop over Eigenstates
 
- 599     ENDDO
+ 599     enddo
 
      RETURN
      END 
@@ -698,98 +698,98 @@
 !################# SUBROUTINE BILDHAM ##################################
 !####################################################################### 
 
-     SUBROUTINE BILDHAM
-     USE COMMONS
-     USE MSEVB_COMMON
+     subroutine bildham
+     use commons
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 
 !###################################################################
-! FORM THE NUMERICAL HAMILTONIAN FORMED BY THE NUCLEAR COORDINATES
+! Form the numerical Hamiltonian formed by the nuclear coordinates
 !
 !###################################################################
 
-     INTEGER I,J
+     integer i,j
      DOUBLE PRECISION VH2O_INTER(REDUCED_NUM_EIG),VH3O_INTRA(REDUCED_NUM_EIG)
         DOUBLE PRECISION VH2O_INTRA(REDUCED_NUM_EIG),V_INTER(REDUCED_NUM_EIG)
       
 !###################################################################
-! FROM ONLY THE NUCLEAR COORDINATE VECTORS, XX(I,J) ETC, CALCULATE
-! THE DIAGONAL AND THEN THE OFFDIAGONAL HAMILTONIAN ELEMENTS
+! From only the nuclear coordinate vectors, xx(i,j) etc, calculate
+! the diagonal and then the offdiagonal Hamiltonian elements
 !
-! PASS BACK FROM THESE ROUTINES THE ARRAY OF DIAGONAL ELEMENT 
-! COMPONENTS.
+! Pass back from these routines the array of diagonal element 
+! components.
 !
 !###################################################################
 
-     DO I = 1,REDUCED_NUM_EIG
-           VH3O_INTRA(I) = 0.0D0
-        VH2O_INTRA(I) = 0.0D0
-        V_INTER(I) = 0.0D0
-           VH2O_INTER(I) = 0.0D0
-     ENDDO
+     do i = 1,reduced_num_eig
+           vh3o_intra(i) = 0.0d0
+        vh2o_intra(i) = 0.0d0
+        v_inter(i) = 0.0d0
+           vh2o_inter(i) = 0.0d0
+     enddo
 
-     CALL VH3OINTRA(VH3O_INTRA)
-     CALL VH2OINTRA(VH2O_INTRA)
+     call vh3ointra(vh3o_intra)
+     call vh2ointra(vh2o_intra)
 
-! CALCULATE THE VARIOUS ENERGY COMPONENTS THAT ARE NEEDED
+! Calculate the various energy components that are needed
 
-     CALL CALCATOMICINTERACTIONS
+     call calcAtomicInteractions
               
-!----IS THERE MORE THAN ONE WATER MOLECULE?
-        IF (NUM_EIG.GT.2) CALL VH2OINTER(VH2O_INTER)
+!----is there more than one water molecule?
+        if (num_eig.gt.2) call vh2ointer(vh2o_inter)
 
-     CALL VOFFDIAG2
-     CALL VINTER(V_INTER)
+     call voffdiag2
+     call vinter(v_inter)
 
 !###################################################################
-! BUILD THE HAMILTONIAN BY USING THE ELEMENT COMPONENTS JUST 
-! DETERMINED
+! Build the Hamiltonian by using the element components just 
+! determined
 !
 !###################################################################
 
-     DO I = 1,REDUCED_NUM_EIG
-         HAM(I,I) = VH3O_INTRA(I) + VH2O_INTRA(I) + V_INTER(I) + VH2O_INTER(I)
-        IF (I.NE.REDUCED_NUM_EIG) THEN
-           DO J = I+1,REDUCED_NUM_EIG
-              HAM(I,J) = AIJ(I,J)
-              HAM(J,I) = AIJ(I,J)
-           ENDDO
-        ENDIF
+     do i = 1,reduced_num_eig
+         ham(i,i) = vh3o_intra(i) + vh2o_intra(i) + v_inter(i) + vh2o_inter(i)
+        if (i.ne.reduced_num_eig) then
+           do j = i+1,reduced_num_eig
+              ham(i,j) = aij(i,j)
+              ham(j,i) = aij(i,j)
+           enddo
+        endif
 
-! DEBUGGING
+! Debugging
 
-!        H3O_INTRA_ENERGY(I)=VH3O_INTRA(I)
-!        H2O_INTRA_ENERGY(I)=VH2O_INTRA(I)
-!        H3O_H2O_ENERGY(I)=V_INTER(I)
-!        H2O_H2O_ENERGY(I)=VH2O_INTER(I)
+!        h3o_intra_energy(i)=vh3o_intra(i)
+!        h2o_intra_energy(i)=vh2o_intra(i)
+!        h3o_h2o_energy(i)=v_inter(i)
+!        h2o_h2o_energy(i)=vh2o_inter(i)
 
-     ENDDO
+     enddo
 
-!     DO I=1, REDUCED_NUM_EIG-1
-!        DO J=I+1, REDUCED_NUM_EIG
-!           OFF_DIAG_ENERGIES(I,J)=HAM(I,J)
-!        ENDDO
-!     ENDDO
+!     do i=1, reduced_num_eig-1
+!        do j=i+1, reduced_num_eig
+!           off_diag_energies(i,j)=ham(i,j)
+!        enddo
+!     enddo
 
      RETURN
      END
 
 !#####################################################################
 
-! SEPARATE OUT THE CALCULATION OF THE ENERGY TERMS BECAUSE WE ARE GOING REUSE THEM
-! IN THE FORCE CALCULATIONS
+! Separate out the calculation of the energy terms because we are going reuse them
+! in the force calculations
 
-     SUBROUTINE CALCATOMICINTERACTIONS ()
+     subroutine calcAtomicInteractions ()
 
-     USE COMMONS
-     USE MSEVB_COMMON
+     use commons
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 
-! LOCAL VARIABLES
+! Local variables
 
-     INTEGER :: I, J
+     integer :: i, j
      DOUBLE PRECISION :: COULOMBPREFACTOR
      DOUBLE PRECISION :: QEXCH1, QWATER1, QH3O1, QEXCH2, QWATER2, QH3O2
      DOUBLE PRECISION :: R6,R12,R
@@ -799,1770 +799,1770 @@
      DOUBLE PRECISION, PARAMETER :: SIGMA12 = SIGMA6*SIGMA6
         DOUBLE PRECISION, PARAMETER :: TIP3P12 = TIP3P6*TIP3P6
 
-! CALCULATE COULOMBIC INTERACTIONS
+! Calculate Coulombic interactions
 
-     ATOM_COULOMB = 0.0D0
-     EACH_COULOMB = 0.0D0
-     WATER_INTER_COULOMB = 0.0D0
-     INTER_COULOMB = 0.0D0
+     atom_coulomb = 0.0d0
+     each_coulomb = 0.0d0
+     water_inter_coulomb = 0.0d0
+     inter_coulomb = 0.0d0
      
-     DO I = 1, NATOMS-1
+     do i = 1, natoms-1
 
-        IF (MOD(I,3).EQ.0) THEN
-           QEXCH1 = QEXCHO
-           QWATER1 = QTIP3P_O
-           QH3O1 = QINTERO
-        ELSE
-           QEXCH1 = QEXCHH
-           QWATER1 = QTIP3P_H
-           QH3O1 = QINTERH
-        ENDIF
+        if (MOD(i,3).eq.0) then
+           qexch1 = qexcho
+           qwater1 = qtip3p_o
+           qh3o1 = qintero
+        else
+           qexch1 = qexchh
+           qwater1 = qtip3p_h
+           qh3o1 = qinterh
+        endif
 
-        DO J = I+1, NATOMS
+        do j = i+1, natoms
 
-           COULOMBPREFACTOR = FOURPIEO/INTERATOMICR(I,J)
+           coulombPrefactor = fourpieo/interAtomicR(i,j)
 
-           IF (MOD(J,3).EQ.0) THEN
-           QEXCH2 = QEXCHO
-           QWATER2 = QTIP3P_O
-           QH3O2 = QINTERO
-           ELSE
-           QEXCH2 = QEXCHH
-           QWATER2 = QTIP3P_H
-           QH3O2 = QINTERH
-           ENDIF
+           if (MOD(j,3).eq.0) then
+           qexch2 = qexcho
+           qwater2 = qtip3p_o
+           qh3o2 = qintero
+           else
+           qexch2 = qexchh
+           qwater2 = qtip3p_h
+           qh3o2 = qinterh
+           endif
 
-           EACH_COULOMB(I,J) = QEXCH1*QWATER2*COULOMBPREFACTOR
-           ATOM_COULOMB(I) = ATOM_COULOMB(I) + EACH_COULOMB(I,J)
-           EACH_COULOMB(J,I) = QEXCH2*QWATER1*COULOMBPREFACTOR
-           ATOM_COULOMB(J) = ATOM_COULOMB(J) + EACH_COULOMB(J,I)
+           each_coulomb(i,j) = qexch1*qwater2*coulombPrefactor
+           atom_coulomb(i) = atom_coulomb(i) + each_coulomb(i,j)
+           each_coulomb(j,i) = qexch2*qwater1*coulombPrefactor
+           atom_coulomb(j) = atom_coulomb(j) + each_coulomb(j,i)
 
-           WATER_INTER_COULOMB(I,J) = QWATER1*QWATER2*COULOMBPREFACTOR
-           WATER_INTER_COULOMB(J,I) = WATER_INTER_COULOMB(I,J)
+           water_inter_coulomb(i,j) = qwater1*qwater2*coulombPrefactor
+           water_inter_coulomb(j,i) = water_inter_coulomb(i,j)
 
-           INTER_COULOMB(I,J) = DAMPCHGE*QH3O1*QWATER2*COULOMBPREFACTOR
-           INTER_COULOMB(J,I) = DAMPCHGE*QH3O2*QWATER1*COULOMBPREFACTOR      
-        ENDDO
-     ENDDO
+           inter_coulomb(i,j) = dampchge*qh3o1*qwater2*coulombPrefactor
+           inter_coulomb(j,i) = dampchge*qh3o2*qwater1*coulombPrefactor      
+        enddo
+     enddo
 
-! O-O TERMS
+! O-O terms
 
-     DO I = 3, NATOMS-4, 3             ! LOOP OVER O ATOMS
-        DO J = I+3, NATOMS-1, 3 
-           R = INTERATOMICR(I,J) 
-           R6 = 1.0D0/R**6
-           R12 = R6*R6
+     do i = 3, natoms-4, 3             ! Loop over O atoms
+        do j = i+3, natoms-1, 3 
+           R = interAtomicR(i,j) 
+           r6 = 1.0d0/R**6
+           r12 = r6*r6
 
-! H2O-H2O O-O LJ TERM
-           LJR(I,J) = 4.0D0*H2OINTEREPSILON*((TIP3P12*R12) - (TIP3P6*R6))
-           LJR(J,I) = LJR(I,J)
+! H2O-H2O O-O LJ term
+           ljr(i,j) = 4.0d0*h2ointerEpsilon*((tip3p12*r12) - (tip3p6*r6))
+           ljr(j,i) = ljr(i,j)
            
-! H2O-H3O LJ TERM
-           LJ_INTER(I,J) = EPSILON_MIX*((SIGMA12*R12) - (SIGMA6*R6))
-           LJ_INTER(J,I) = LJ_INTER(I,J)
+! H2O-H3O LJ term
+           lj_inter(i,j) = epsilon_mix*((sigma12*r12) - (sigma6*r6))
+           lj_inter(j,i) = lj_inter(i,j)
 
-! H2O-H3O REPULSION TERM
-           REPULSE_INTER(I,J) = BIG_B*(1.0D0-DTANH(SMALL_B*(R - DOOEQ)))  
-           REPULSE_INTER(J,I) = REPULSE_INTER(I,J)
-        ENDDO
-     ENDDO
+! H2O-H3O repulsion term
+           repulse_inter(i,j) = big_b*(1.0d0-DTANH(small_b*(R - dooeq)))  
+           repulse_inter(j,i) = repulse_inter(i,j)
+        enddo
+     enddo
 
-     RETURN
+     return
 
-     END SUBROUTINE
+     end subroutine
 
 !#####################################################################
 !################# SUBROUTINE JACOBI #################################
 !#####################################################################
      
-      SUBROUTINE JACOBI(A,N,D,V,NROT)
-     IMPLICIT NONE
+      SUBROUTINE jacobi(a,n,d,v,nrot)
+     implicit none
 
-      INTEGER N,NROT,NMAX
+      INTEGER n,nrot,NMAX
       DOUBLE PRECISION A(N,N),D(N),V(N,N)
       PARAMETER (NMAX=500)
-      INTEGER I,IP,IQ,J,RAC,MV
+      INTEGER i,ip,iq,j,rac,mv
       DOUBLE PRECISION C,G,H,S,SM,T,TAU,THETA,TRESH,B(NMAX),Z(NMAX)
 
-      DO 12 IP=1,N
-        DO 11 IQ=1,N
-          V(IP,IQ)=0.0D0
-11      CONTINUE
-        V(IP,IP)=1.0D0
-12    CONTINUE
-      DO 13 IP=1,N
-        B(IP)=A(IP,IP)
-        D(IP)=B(IP)
-        Z(IP)=0.0D0
-13    CONTINUE
-      NROT=0
-      DO 24 I=1,50
-        SM=0.0D0
-        DO 15 IP=1,N-1
-          DO 14 IQ=IP+1,N
-            SM=SM+ABS(A(IP,IQ))
-14        CONTINUE
-15      CONTINUE
-        IF(SM.EQ.0.0D0)RETURN
-        IF(I.LT.4)THEN
-          TRESH=0.2D0*SM/N**2
-        ELSE
-          TRESH=0.D0
-        ENDIF
-        DO 22 IP=1,N-1
-          DO 21 IQ=IP+1,N
-            G=100.D0*ABS(A(IP,IQ))
-            IF((I.GT.4).AND.(ABS(D(IP))+G.EQ.ABS(D(IP))).AND.(ABS(D(IQ))+G.EQ.ABS(D(IQ))))THEN
-              A(IP,IQ)=0.D0
-            ELSE IF(ABS(A(IP,IQ)).GT.TRESH)THEN
-              H=D(IQ)-D(IP)
-              IF(ABS(H)+G.EQ.ABS(H))THEN
-                T=A(IP,IQ)/H
-              ELSE
-                THETA=0.5D0*H/A(IP,IQ)
-                T=1./(ABS(THETA)+SQRT(1.+THETA**2))
-                IF(THETA.LT.0.D0)T=-T
-              ENDIF
-              C=1.D0/SQRT(1+T**2)
-              S=T*C
-              TAU=S/(1.D0+C)
-              H=T*A(IP,IQ)
-              Z(IP)=Z(IP)-H
-              Z(IQ)=Z(IQ)+H
-              D(IP)=D(IP)-H
-              D(IQ)=D(IQ)+H
-              A(IP,IQ)=0.D0
-              DO 16 J=1,IP-1
-                G=A(J,IP)
-                H=A(J,IQ)
-                A(J,IP)=G-S*(H+G*TAU)
-                A(J,IQ)=H+S*(G-H*TAU)
-16            CONTINUE
-              DO 17 J=IP+1,IQ-1
-                G=A(IP,J)
-                H=A(J,IQ)
-                A(IP,J)=G-S*(H+G*TAU)
-                A(J,IQ)=H+S*(G-H*TAU)
-17            CONTINUE
-              DO 18 J=IQ+1,N
-                G=A(IP,J)
-                H=A(IQ,J)
-                A(IP,J)=G-S*(H+G*TAU)
-                A(IQ,J)=H+S*(G-H*TAU)
-18            CONTINUE
-              DO 19 J=1,N
-                G=V(J,IP)
-                H=V(J,IQ)
-                V(J,IP)=G-S*(H+G*TAU)
-                V(J,IQ)=H+S*(G-H*TAU)
-19            CONTINUE
-              NROT=NROT+1
-            ENDIF
-21        CONTINUE
-22      CONTINUE
-        DO 23 IP=1,N
-          B(IP)=B(IP)+Z(IP)
-          D(IP)=B(IP)
-          Z(IP)=0.
-23      CONTINUE
-24    CONTINUE
-      PRINT *, 'TOO MANY ITERATIONS IN JACOBI -- ABORTING '
+      do 12 ip=1,n
+        do 11 iq=1,n
+          v(ip,iq)=0.0d0
+11      continue
+        v(ip,ip)=1.0d0
+12    continue
+      do 13 ip=1,n
+        b(ip)=a(ip,ip)
+        d(ip)=b(ip)
+        z(ip)=0.0d0
+13    continue
+      nrot=0
+      do 24 i=1,50
+        sm=0.0d0
+        do 15 ip=1,n-1
+          do 14 iq=ip+1,n
+            sm=sm+abs(a(ip,iq))
+14        continue
+15      continue
+        if(sm.eq.0.0d0)return
+        if(i.lt.4)then
+          tresh=0.2d0*sm/n**2
+        else
+          tresh=0.d0
+        endif
+        do 22 ip=1,n-1
+          do 21 iq=ip+1,n
+            g=100.d0*abs(a(ip,iq))
+            if((i.gt.4).and.(abs(d(ip))+g.eq.abs(d(ip))).and.(abs(d(iq))+g.eq.abs(d(iq))))then
+              a(ip,iq)=0.d0
+            else if(abs(a(ip,iq)).gt.tresh)then
+              h=d(iq)-d(ip)
+              if(abs(h)+g.eq.abs(h))then
+                t=a(ip,iq)/h
+              else
+                theta=0.5d0*h/a(ip,iq)
+                t=1./(abs(theta)+sqrt(1.+theta**2))
+                if(theta.lt.0.d0)t=-t
+              endif
+              c=1.d0/sqrt(1+t**2)
+              s=t*c
+              tau=s/(1.d0+c)
+              h=t*a(ip,iq)
+              z(ip)=z(ip)-h
+              z(iq)=z(iq)+h
+              d(ip)=d(ip)-h
+              d(iq)=d(iq)+h
+              a(ip,iq)=0.d0
+              do 16 j=1,ip-1
+                g=a(j,ip)
+                h=a(j,iq)
+                a(j,ip)=g-s*(h+g*tau)
+                a(j,iq)=h+s*(g-h*tau)
+16            continue
+              do 17 j=ip+1,iq-1
+                g=a(ip,j)
+                h=a(j,iq)
+                a(ip,j)=g-s*(h+g*tau)
+                a(j,iq)=h+s*(g-h*tau)
+17            continue
+              do 18 j=iq+1,n
+                g=a(ip,j)
+                h=a(iq,j)
+                a(ip,j)=g-s*(h+g*tau)
+                a(iq,j)=h+s*(g-h*tau)
+18            continue
+              do 19 j=1,n
+                g=v(j,ip)
+                h=v(j,iq)
+                v(j,ip)=g-s*(h+g*tau)
+                v(j,iq)=h+s*(g-h*tau)
+19            continue
+              nrot=nrot+1
+            endif
+21        continue
+22      continue
+        do 23 ip=1,n
+          b(ip)=b(ip)+z(ip)
+          d(ip)=b(ip)
+          z(ip)=0.
+23      continue
+24    continue
+      print *, 'too many iterations in jacobi -- aborting '
      STOP
 
-      RETURN
+      return
       END
 
 !#####################################################################
 !################## SUBROUTINE VOFFDIAG ##############################
 !#####################################################################
 
-     SUBROUTINE VOFFDIAG2
-     USE COMMONS
-     USE MSEVB_COMMON
+     subroutine voffdiag2
+     use commons
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 
 !================================================================
-!  R.CHRISTIE   10/11/98
+!  r.christie   10/11/98
 !
 ! DETERMINATION OF THE OFF-DIAGONAL ELEMENTS OF THE HAMILTONIAN
 !
 !================================================================
 
-     INTEGER I,J
+     integer i,j
      DOUBLE PRECISION ROH,ROO
      DOUBLE PRECISION ASYMM_COORD,F1,F2,F3
 
-! GLOBAL STORAGE OF THE ZUNDEL TERMS FOR REUSE IN THE FORCE CALCULATIONS
+! Global storage of the Zundel terms for reuse in the force calculations
 
-     ZUNDEL_F = 0.0D0
-     ZUNDEL_G = 0.0D0
+     zundel_f = 0.0d0
+     zundel_g = 0.0d0
 
-     DO I = 1,REDUCED_NUM_EIG
-        DO J = 1,REDUCED_NUM_EIG
-           VIJEXCH(I,J) = 0.0D0
-        ENDDO
-     ENDDO
+     do i = 1,reduced_num_eig
+        do j = 1,reduced_num_eig
+           vijexch(i,j) = 0.0d0
+        enddo
+     enddo
 
-     IF (NUM_EIG.GT.2) CALL EXCHANGE2
+     if (num_eig.gt.2) call exchange2
 
 !###################################################################
-! CALCULATE SIMPLE MOLECULAR MECHANICS FUNCTIONS IN OFF DIAGONAL
-! TERM. ONLY TWO VARIABLES: THE ASYMMETRIC STRETCH COORDINATE, AND
-! (II) THE R(OO) VECTOR IN THE H5O2+ DIMER CONSIDERED AS 
-! PARTICIPATING IN THE EXCHANGE CHARGE INTERACTION.
+! Calculate simple Molecular Mechanics functions in off diagonal
+! term. Only two variables: the asymmetric stretch coordinate, and
+! (ii) the R(OO) vector in the H5O2+ dimer considered as 
+! participating in the exchange charge interaction.
 
-     DO I = 1,(REDUCED_NUM_EIG-1)
-          DO J = (I+1),REDUCED_NUM_EIG
+     do i = 1,(reduced_num_eig-1)
+          do j = (i+1),reduced_num_eig
 
-           IF (STATESINTERACT(I,J)) THEN
+           if (statesInteract(i,j)) then
 
-!           PRINT *, 'STATES', I, 'AND', J, 'INTERACT'
+!           print *, 'States', i, 'and', j, 'interact'
 
-! ALREADY ASSIGNED A ZUNDEL SPECIES FOR THE INTERACTION OF THESE TWO 
-! STATES 
+! Already assigned a Zundel species for the interaction of these two 
+! states 
 
-           ROH = INTERATOMICR(ZUNDEL_SPECIES(I,J,4), ATMPL(I,3))
+           roh = interAtomicR(zundel_species(i,j,4), atmpl(i,3))
                                                                                        
-!----DETERMINE THE R(OO) SEPARATION BETWEEN THE CENTRAL HYDRONIUM
-!    IN STATE |I> AND THAT IN STATE |2>, AS IS NECESSARY IN THE
-!    EXCHANGE TERM
+!----Determine the R(OO) separation between the CENTRAL hydronium
+!    in state |i> and that in state |2>, as is necessary in the
+!    exchange term
 
-           ROO = INTERATOMICR(ATMPL(I,3), ATMPL(J,3))
+           roo = interAtomicR(atmpl(i,3), atmpl(j,3))
 
 !##################################################################
-! TWO VERSIONS OF DETERMINING THE ASYMMETRIC STRETCH COORDINATE
+! Two versions of determining the asymmetric stretch Coordinate
 ! ----------------------------------------------------------------
-! 1. UDO SCHMITT PRE-PRINT VERSION OF CALCULATING THE ASYMMETRIC
-!    STRETCH                                                    
-!----DETERMINE THE UNIT VECTOR EOO
-!             EOOX = (1.0D0/ROO)*OODX
-!            EOOY = (1.0D0/ROO)*OODY
-!            EOOZ = (1.0D0/ROO)*OODZ
-!----DETERMINE THE ASYMMETRIC STRETCH TERMS QI
-!             QX = ((OODX*0.5D0) - DX)*EOOX 
-!             QY = ((OODY*0.5D0) - DY)*EOOY
-!             QZ = ((OODZ*0.5D0) - DZ)*EOOZ
-!----DETERMINE THE MAGNITUDE OF THE ASYMMETRIC STRETCH
-!             ASYMM_COORD = (QX + QY + QZ)
+! 1. Udo Schmitt Pre-Print version of calculating the asymmetric
+!    stretch                                                    
+!----determine the unit vector eoo
+!             eoox = (1.0d0/roo)*oodx
+!            eooy = (1.0d0/roo)*oody
+!            eooz = (1.0d0/roo)*oodz
+!----determine the asymmetric stretch terms qi
+!             qx = ((oodx*0.5d0) - dx)*eoox 
+!             qy = ((oody*0.5d0) - dy)*eooy
+!             qz = ((oodz*0.5d0) - dz)*eooz
+!----determine the magnitude of the asymmetric stretch
+!             asymm_coord = (qx + qy + qz)
 !-----------------------------------------------------------------
-! 2. PLAIN OLD METHOD FOR DETERMINING THE ASYMMETRIC STRETCH
-!    COORDINATE                                              
-           ASYMM_COORD = 0.5D0*ROO - ROH
+! 2. Plain old method for determining the asymmetric stretch
+!    Coordinate                                              
+           asymm_coord = 0.5d0*roo - roh
 !#################################################################          
 
-           F1 = (1.00D0 + P*DEXP(-1.0D00*KEXP*(ROO-DOO)*(ROO-DOO)))
-           F2 = 0.50D0*(1.0D0-DTANH(BETA*(ROO - BIG_ROOEQ )))
-           F3 = 10.0D0*DEXP(-1.0D00*ALPHA_BLEH*(ROO - ROOEQ))
-           ZUNDEL_F(I,J) = F1*(F2+F3)
-           ZUNDEL_G(I,J) = DEXP(-1.0D00*GAMMA_MSEVB*ASYMM_COORD*ASYMM_COORD)
+           f1 = (1.00d0 + P*DEXP(-1.0d00*kexp*(roo-doo)*(roo-doo)))
+           f2 = 0.50d0*(1.0d0-DTANH(beta*(roo - big_rooeq )))
+           f3 = 10.0d0*DEXP(-1.0d00*alpha_bleh*(roo - rooeq))
+           zundel_f(i,j) = f1*(f2+f3)
+           zundel_g(i,j) = DEXP(-1.0d00*gamma_msevb*asymm_coord*asymm_coord)
 
-!           PRINT *, 'STATE 1:', I, 'STATE 2:', J
-!           PRINT *, 'COMPONENTS OF THE OFF DIAGONAL CONTRIBUTION TO THE ENERGY:'
-!           PRINT *, 'G:', G
-!           PRINT *, 'F=F1(F2+F3)'
-!           PRINT *, 'F1:', F1
-!           PRINT *, 'F2:', F2
-!           PRINT *, 'F3:', F3
-!           PRINT *, 'F:', F
-!           PRINT *, 'ROO:', ROO
-!           PRINT *, 'ROH:', ROH
-!           PRINT *, 'Q:', ASYMM_COORD
-!           PRINT *, 'VIJEXCH:', VIJEXCH(I,J)
+!           print *, 'State 1:', i, 'State 2:', j
+!           print *, 'Components of the off diagonal contribution to the energy:'
+!           print *, 'g:', g
+!           print *, 'f=f1(f2+f3)'
+!           print *, 'f1:', f1
+!           print *, 'f2:', f2
+!           print *, 'f3:', f3
+!           print *, 'f:', f
+!           print *, 'Roo:', roo
+!           print *, 'Roh:', roh
+!           print *, 'q:', asymm_coord
+!           print *, 'vijexch:', vijexch(i,j)
 
-!----ASSIGN THE MATRIX ELEMENT
-           AIJ(I,J) = (VIJ+VIJEXCH(I,J))*ZUNDEL_F(I,J)*ZUNDEL_G(I,J)
-!----HERMETIAN MATRIX MIND
-           AIJ(J,I) = AIJ(I,J)
+!----assign the matrix element
+           aij(i,j) = (vij+vijexch(i,j))*zundel_f(i,j)*zundel_g(i,j)
+!----hermetian matrix mind
+           aij(j,i) = aij(i,j)
 
-           ELSE
-           AIJ(I,J) = 0.0D0
-           AIJ(J,I) = 0.0D0
-           ENDIF
-         ENDDO
-      ENDDO
+           else
+           aij(i,j) = 0.0d0
+           aij(j,i) = 0.0d0
+           endif
+         enddo
+      enddo
 
-     RETURN 
-     END
+     return 
+     end
 
 ! ##################################################################################################
 
-        SUBROUTINE EXCHANGE2
+        subroutine exchange2
 
-     USE MSEVB_COMMON
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 !---------------------------------------------------------------------
-!  CALCULATION OF THE INTERACTION OF THE EXCHANGE CHARGE DISTRIBUTION 
-!  FOR THE H5O2+ DIMERS RESULTING FROM <I|J> WITH THE REST OF THE 
-!  TIP3P CHARGES ON THE REMAINING WATER MOLECULES
+!  calculation of the interaction of the exchange charge distribution 
+!  for the H5O2+ dimers resulting from <i|j> with the rest of the 
+!  TIP3P charges on the remaining water molecules
 !
 !---------------------------------------------------------------------
 
-! AT THIS POINT ATOM_COULOMB(I) HOLDS THE SUM OF EXCHANGE INTERACTIONS WITH ALL OTHER ATOMS,
-! WHERE I HOLDS THE EXCHANGE CHARGE AND THE OTHER ATOMS ARE ASSIGNED TIP3 CHARGES
-! NEED TO THEREFORE SUBTRACT THE INTERACTIONS WITH THE OTHER MEMBERS OF THE HYDRONIUM SPECIES
+! At this point atom_coulomb(i) holds the sum of exchange interactions with all other atoms,
+! where i holds the exchange charge and the other atoms are assigned TIP3 charges
+! Need to therefore subtract the interactions with the other members of the hydronium species
 
-     INTEGER I,J,K,L
+     integer i,j,k,l
 
-     DO I = 1,(REDUCED_NUM_EIG-1)
-        DO J = (I+1),REDUCED_NUM_EIG
+     do i = 1,(reduced_num_eig-1)
+        do j = (i+1),reduced_num_eig
 
-           VIJEXCH(I,J) = 0.0D0
+           vijexch(i,j) = 0.0D0
 
-           IF (STATESINTERACT(I,J)) THEN
+           if (statesInteract(i,j)) then
 
-           DO K=1,7
+           do k=1,7
 
-! SUM OF EXCHANGE CHARGE INTERACTIONS WITH ALL OTHER ATOMS
-              VIJEXCH(I,J) = VIJEXCH(I,J) + ATOM_COULOMB(ZUNDEL_SPECIES(I,J,K))
+! Sum of exchange charge interactions with all other atoms
+              vijexch(i,j) = vijexch(i,j) + atom_coulomb(zundel_species(i,j,k))
 
-! SUBTRACT THE INTERACTIONS WITH THE OTHER ZUNDEL ATOMS
-              DO L=1,7
-                 IF (L.EQ.K) CYCLE
-                 VIJEXCH(I,J) = VIJEXCH(I,J) - EACH_COULOMB(ZUNDEL_SPECIES(I,J,K),ZUNDEL_SPECIES(I,J,L))
-              ENDDO
-           ENDDO
-           ENDIF
-        ENDDO
-     ENDDO
+! Subtract the interactions with the other Zundel atoms
+              do l=1,7
+                 if (l.eq.k) cycle
+                 vijexch(i,j) = vijexch(i,j) - each_coulomb(zundel_species(i,j,k),zundel_species(i,j,l))
+              enddo
+           enddo
+           endif
+        enddo
+     enddo
 
         RETURN
      END
 
 !#############################################################################################
 
-! J CHEM PHYS 2002 VERSION OF THIS ALGORITHM
-! INCLUDING THE H-BOND ANGLE CUTOFF THAT THEY SAY DOESN`T MAKE ANY DIFFERENCE
-! 04/12/2003 MODIFIED (CORRECTED) SO THAT EACH O ATOM CAN NOW FORM PART OF MORE THAN ONE
-! HYDRONIUM SPECIES
+! J Chem Phys 2002 version of this algorithm
+! Including the H-bond angle cutoff that they say doesn`t make any difference
+! 04/12/2003 Modified (corrected) so that each O atom can now form part of more than one
+! hydronium species
 
-! EXPERIMENTAL MIN ROH RATHER THAN ROH^2 CODE
+! Experimental min roh rather than roh^2 code
 
-        SUBROUTINE ASSIGNVB3
+        subroutine assignvb3
 
-     USE COMMONS
-     USE MSEVB_COMMON
-     USE MSEVB_INTERFACES
+     use commons
+     use msevb_common
+     use msevb_interfaces
 
-     IMPLICIT NONE
+     implicit none
 
      DOUBLE PRECISION MINHBONDANGLERAD,HBONDANGLE
 
      DOUBLE PRECISION MINSUMROH,CURRENTSUMROH     
-     LOGICAL :: ASSIGNEDPIVOTSTATE
+     logical :: assignedPivotState
 
-     INTEGER :: GENERATORSTATE(MAXNUMVBSTATES)  ! VB STATE I WAS GENERATED FROM GENERATORSTATE(I)
+     integer :: generatorState(maxNumVBstates)  ! VB state i was generated from generatorState(i)
 
-! HOLDS THE CLOSEST H ATOMS FOR THE OS AND THE CLOSEST O ATOMS FOR THE HS
+! Holds the closest H atoms for the Os and the closest O atoms for the Hs
 
-     INTEGER PROXIMALATOMS(NATOMS,NUM_HYD)   
-     INTEGER NEIGHBOURCOUNTS(NATOMS)
+     integer proximalAtoms(natoms,num_hyd)   
+     integer neighbourCounts(natoms)
 
-     INTEGER CURRENTO, CURRENTH
+     integer currentO, currentH
 
-     INTEGER FIRSTVBSTATE, SECONDVBSTATE, CURRENTSHELLHCOUNT, NEXTSHELLHCOUNT, CURRENTSHELL
-     INTEGER CURRENTEXCHANGEH, NEWEIGENO, OLDVBSTATE
-     INTEGER, DIMENSION(:,:), ALLOCATABLE :: EXCHANGEHS
-     INTEGER, ALLOCATABLE :: FINGERPRINTS(:,:)
-     LOGICAL NEWFINGERPRINT
-     INTEGER O1POS,O2POS,CENTRALHPOS
-     INTEGER FIRSTSTATEO, SECONDSTATEO
+     integer firstVBstate, secondVBstate, currentShellHcount, nextShellHcount, currentShell
+     integer currentExchangeH, newEigenO, oldVBstate
+     integer, dimension(:,:), allocatable :: exchangeHs
+     integer, allocatable :: fingerprints(:,:)
+     logical newFingerprint
+     integer O1pos,O2pos,centralHpos
+     integer firstStateO, secondStateO
 
-! LOOP VARIABLES
+! Loop variables
 
-     INTEGER I,J,K,L,EIGEN_O
+     integer i,j,k,l,eigen_O
 
-! CONVERT MINIMUM H BOND ANGLE TO RADIANS
+! Convert minimum H bond angle to radians
 
-     MINHBONDANGLERAD = (MINHBONDANGLE/180.0D0)*PI
+     minHbondAngleRad = (minHbondAngle/180.0d0)*pi
 
-! ORDER THE O ATOMS IN TERMS OF THE DISTANCE FROM EACH H, ONLY CONSIDER THOSE WHICH ARE LESS THAN
-! THE CUTOFF DISTANCE APART
+! Order the O atoms in terms of the distance from each H, only consider those which are less than
+! the cutoff distance apart
 
-     NEIGHBOURCOUNTS = 0
+     neighbourCounts = 0
 
-     DO I = 1,NUM_HYD
+     do i = 1,num_hyd
 
-        CURRENTH = I + INT((I-1)/2)
+        currentH = i + INT((i-1)/2)
 
-        DO J = 1,NUM_EIG
-           CURRENTO = 3*J
-           IF (INTERATOMICR(CURRENTO,CURRENTH).LT.MAXHBONDLENGTH) THEN
-           NEIGHBOURCOUNTS(CURRENTH) = NEIGHBOURCOUNTS(CURRENTH) + 1
+        do j = 1,num_eig
+           currentO = 3*j
+           if (interAtomicR(currentO,currentH).lt.maxHbondLength) then
+           neighbourCounts(currentH) = neighbourCounts(currentH) + 1
 
-           DO K=1,NEIGHBOURCOUNTS(CURRENTH)
-              IF (K.EQ.NEIGHBOURCOUNTS(CURRENTH)) THEN
-                 PROXIMALATOMS(CURRENTH,K) = CURRENTO
-                 EXIT
-              ELSEIF (INTERATOMICR(CURRENTO,CURRENTH).LT.INTERATOMICR(PROXIMALATOMS(CURRENTH,K),CURRENTH)) THEN
-                 DO L=NEIGHBOURCOUNTS(CURRENTH),K+1,-1
-                 PROXIMALATOMS(CURRENTH,L)=PROXIMALATOMS(CURRENTH,L-1)
-                 ENDDO
-                 PROXIMALATOMS(CURRENTH,K) = CURRENTO
-                 EXIT
-              ENDIF
-           ENDDO
-           ENDIF
-        ENDDO
+           do k=1,neighbourCounts(currentH)
+              if (k.eq.neighbourCounts(currentH)) then
+                 proximalAtoms(currentH,k) = currentO
+                 exit
+              elseif (interAtomicR(currentO,currentH).lt.interAtomicR(proximalAtoms(currentH,k),currentH)) then
+                 do l=neighbourCounts(currentH),k+1,-1
+                 proximalAtoms(currentH,l)=proximalAtoms(currentH,l-1)
+                 enddo
+                 proximalAtoms(currentH,k) = currentO
+                 exit
+              endif
+           enddo
+           endif
+        enddo
 
-! CHECK WHETHER WE HAVE ASSIGNED AT LEAST ONE O 
+! Check whether we have assigned at least one O 
 
-        IF (NEIGHBOURCOUNTS(CURRENTH).EQ.0) THEN
-           PRINT *, 'WITHIN THE CUTOFF OF', MAXHBONDLENGTH, 'PROGRAM ASSIGNED ZERO O ATOMS TO H', CURRENTH
-           PRINT *, 'EACH H MUST BE ASSIGNED AT LEAST ONE O'
-           PRINT *, 'INCREASE CUTOFF OR EXAMINE YOUR GEOMETRY'
+        if (neighbourCounts(currentH).eq.0) then
+           print *, 'Within the cutoff of', maxHbondLength, 'program assigned zero O atoms to H', currentH
+           print *, 'Each H must be assigned at least one O'
+           print *, 'Increase cutoff or examine your geometry'
 
-           DO J=1, NATOMS
-           IF (MOD(J,3).EQ.0) THEN
-              PRINT *, 'O', PSIX(J), PSIY(J), PSIZ(J)
-           ELSE
-              PRINT *, 'H', PSIX(J), PSIY(J), PSIZ(J)
-           ENDIF
-           ENDDO
-           STOP
-        ENDIF
+           do j=1, NATOMS
+           if (MOD(j,3).eq.0) then
+              print *, 'O', psix(j), psiy(j), psiz(j)
+           else
+              print *, 'H', psix(j), psiy(j), psiz(j)
+           endif
+           enddo
+           stop
+        endif
 
-     ENDDO
+     enddo
 
-!     PRINT *, 'ASSIGNED OS:'
+!     print *, 'Assigned Os:'
 
-!     DO I=1, NUM_HYD
+!     do i=1, num_hyd
         
-!        PRINT *, 'H:', HPOSITION(I)
-!        DO J=1, ASSIGNEDOS(I)
-!           PRINT *, J, 3*NEIGHBOURINGOS(I,J)
-!        ENDDO
-!     ENDDO
+!        print *, 'H:', Hposition(i)
+!        do j=1, assignedOs(i)
+!           print *, j, 3*neighbouringOs(i,j)
+!        enddo
+!     enddo
 
-! TRY A SIMPLE VB ASSIGNMENT FIRST, IF THAT DOESN`T WORK TRY THE ITERATIVE PROCEDURE
+! Try a simple VB assignment first, if that doesn`t work try the iterative procedure
 
-     ASSIGNEDPIVOTSTATE = .FALSE.
-     REDUCED_NUM_EIG = 0
+     assignedPivotState = .FALSE.
+     reduced_num_eig = 0
 
-     CALL TRYSIMPLEVBASSIGNMENT(PROXIMALATOMS, NEIGHBOURCOUNTS, REDUCED_NUM_EIG, ATMPL(1:2,:))
+     call trySimpleVBAssignment(proximalAtoms, neighbourCounts, reduced_num_eig, atmpl(1:2,:))
 
-     IF (REDUCED_NUM_EIG.EQ.0) THEN
+     if (reduced_num_eig.eq.0) then
 
-        CALL ASSIGNPIVOTVBSTATE(PROXIMALATOMS, NEIGHBOURCOUNTS, ASSIGNEDPIVOTSTATE, ATMPL(1,:))
+        call assignPivotVBstate(proximalAtoms, neighbourCounts, assignedPivotState, atmpl(1,:))
 
-        IF (ASSIGNEDPIVOTSTATE) THEN
-           REDUCED_NUM_EIG = 1
-        ELSE
-           PRINT *, 'UNABLE TO ASSIGN PIVOT VB STATE'
-           PRINT *, 'SYSTEM:'
-           DO I = 1, NATOMS
-           IF (MOD(I,3).EQ.0) THEN
-              PRINT *, 'O', PSIX(I), PSIY(I), PSIZ(I)
-           ELSE
-              PRINT *, 'H', PSIX(I), PSIY(I), PSIZ(I)
-           ENDIF
-           ENDDO
-           STOP   
-        ENDIF
-     ENDIF
+        if (assignedPivotState) then
+           reduced_num_eig = 1
+        else
+           print *, 'Unable to assign pivot VB state'
+           print *, 'System:'
+           do i = 1, natoms
+           if (MOD(i,3).eq.0) then
+              print *, 'O', psix(i), psiy(i), psiz(i)
+           else
+              print *, 'H', psix(i), psiy(i), psiz(i)
+           endif
+           enddo
+           stop   
+        endif
+     endif
 
-     GENERATORSTATE(1:REDUCED_NUM_EIG) = -1    ! -1 INDICATES THAT THE STATES ARE PIVOT STATES
+     generatorState(1:reduced_num_eig) = -1    ! -1 indicates that the states are pivot states
      
-!     PRINT *, 'NUMBER OF PIVOT STATES ASSIGNED:', REDUCED_NUM_EIG
+!     print *, 'Number of pivot states assigned:', reduced_num_eig
      
-!     DO I=1,REDUCED_NUM_EIG
-!        PRINT *, '*** STATE', I, '***'
-!        DO J=1,NATOMS
-!           PRINT *, J, ATMPL(I,J)
-!        ENDDO
-!     ENDDO
+!     do i=1,reduced_num_eig
+!        print *, '*** State', i, '***'
+!        do j=1,natoms
+!           print *, j, atmpl(i,j)
+!        enddo
+!     enddo
 
-!     STOP
+!     stop
 
-     ALLOCATE(FINGERPRINTS(MAXNUMVBSTATES,NATOMS))
-     FINGERPRINTS = 0
+     allocate(fingerprints(maxNumVBstates,natoms))
+     fingerprints = 0
 
-     DO I=1,REDUCED_NUM_EIG
+     do i=1,reduced_num_eig
 
-        FINGERPRINTS(I,ATMPL(I,1)) = ATMPL(I,3)
-        FINGERPRINTS(I,ATMPL(I,2)) = ATMPL(I,3)
-        FINGERPRINTS(I,ATMPL(I,4)) = ATMPL(I,3)
+        fingerprints(i,atmpl(i,1)) = atmpl(i,3)
+        fingerprints(i,atmpl(i,2)) = atmpl(i,3)
+        fingerprints(i,atmpl(i,4)) = atmpl(i,3)
         
-        DO J=6, (3*NUM_EIG), 3
-           FINGERPRINTS(I,ATMPL(I,J-1))=ATMPL(I,J)
-           FINGERPRINTS(I,ATMPL(I,J+1))=ATMPL(I,J)
-        ENDDO
-     ENDDO
+        do j=6, (3*num_eig), 3
+           fingerprints(i,atmpl(i,j-1))=atmpl(i,j)
+           fingerprints(i,atmpl(i,j+1))=atmpl(i,j)
+        enddo
+     enddo
 
-! INITIALISE THE VB STATE INTERACTION MATRIX
+! Initialise the VB state interaction matrix
 
-     STATESINTERACT = .FALSE.
+     statesInteract = .FALSE.
 
-! ALLOCATE THE EXCHANGE HS ARRAY
+! Allocate the exchange Hs array
 
-     IF (SHELLSTOCOUNT.LT.2) THEN
-        ALLOCATE(EXCHANGEHS((REDUCED_NUM_EIG+2),2))
-     ELSE
-        ALLOCATE(EXCHANGEHS((REDUCED_NUM_EIG+2)*3*(2**(SHELLSTOCOUNT-2)), 2))
-     ENDIF
+     if (shellsToCount.lt.2) then
+        ALLOCATE(exchangeHs((reduced_num_eig+2),2))
+     else
+        ALLOCATE(exchangeHs((reduced_num_eig+2)*3*(2**(shellsToCount-2)), 2))
+     endif
 
-! RUN THROUGH THE HYDRATION SHELLS
+! Run through the hydration shells
 
-     IF (REDUCED_NUM_EIG.GT.1) THEN
+     if (reduced_num_eig.gt.1) then
 
-        CURRENTSHELLHCOUNT = 0
+        currentShellHcount = 0
 
-        FIRSTPIVOTSTATE: DO I = 1, 4
+        FirstPivotState: do i = 1, 4
 
-           IF (I.NE.3) THEN
+           if (i.ne.3) then
 
-! FOR SECOND AND SUBSEQUENT PIVOT STATES THE FOURTH ENTRY IS THE SYMMETRIC H
+! For second and subsequent pivot states the fourth entry is the symmetric H
            
-           DO SECONDVBSTATE = 2, REDUCED_NUM_EIG
+           do secondVBstate = 2, reduced_num_eig
 
-              IF (ATMPL(SECONDVBSTATE,4).EQ.ATMPL(1,I)) THEN
+              if (atmpl(secondVBstate,4).eq.atmpl(1,i)) then
 
-                 CALL ASSIGNZUNDELSPECIES(1,SECONDVBSTATE,ATMPL(1,I),.FALSE.,MINHBONDANGLERAD)
+                 call assignZundelSpecies(1,secondVBstate,atmpl(1,i),.false.,minHbondAngleRad)
 
-                 EXCHANGEHS(CURRENTSHELLHCOUNT+1,1) = ATMPL(SECONDVBSTATE,1)
-                 EXCHANGEHS(CURRENTSHELLHCOUNT+1,2) = SECONDVBSTATE
-                 EXCHANGEHS(CURRENTSHELLHCOUNT+2,1) = ATMPL(SECONDVBSTATE,2)
-                 EXCHANGEHS(CURRENTSHELLHCOUNT+2,2) = SECONDVBSTATE
+                 exchangeHs(currentShellHcount+1,1) = atmpl(secondVBstate,1)
+                 exchangeHs(currentShellHcount+1,2) = secondVBstate
+                 exchangeHs(currentShellHcount+2,1) = atmpl(secondVBstate,2)
+                 exchangeHs(currentShellHcount+2,2) = secondVBstate
 
-                 CURRENTSHELLHCOUNT = CURRENTSHELLHCOUNT+2
-                 CYCLE FIRSTPIVOTSTATE
-              ENDIF
-           ENDDO
+                 currentShellHcount = currentShellHcount+2
+                 cycle FirstPivotState
+              endif
+           enddo
 
-           CURRENTSHELLHCOUNT = CURRENTSHELLHCOUNT+1
-           EXCHANGEHS(CURRENTSHELLHCOUNT,1) = ATMPL(1,I)
-           EXCHANGEHS(CURRENTSHELLHCOUNT,2) = 1           
-           ENDIF
-        ENDDO FIRSTPIVOTSTATE
+           currentShellHcount = currentShellHcount+1
+           exchangeHs(currentShellHcount,1) = atmpl(1,i)
+           exchangeHs(currentShellHcount,2) = 1           
+           endif
+        enddo FirstPivotState
 
-     ELSE
-        CURRENTSHELLHCOUNT = 3
-        EXCHANGEHS(1,1) = ATMPL(REDUCED_NUM_EIG,1)
-        EXCHANGEHS(1,2) = REDUCED_NUM_EIG
-        EXCHANGEHS(2,1) = ATMPL(REDUCED_NUM_EIG,2)
-        EXCHANGEHS(2,2) = REDUCED_NUM_EIG
-        EXCHANGEHS(3,1) = ATMPL(REDUCED_NUM_EIG,4)
-        EXCHANGEHS(3,2) = REDUCED_NUM_EIG
-     ENDIF
+     else
+        currentShellHcount = 3
+        exchangeHs(1,1) = atmpl(reduced_num_eig,1)
+        exchangeHs(1,2) = reduced_num_eig
+        exchangeHs(2,1) = atmpl(reduced_num_eig,2)
+        exchangeHs(2,2) = reduced_num_eig
+        exchangeHs(3,1) = atmpl(reduced_num_eig,4)
+        exchangeHs(3,2) = reduced_num_eig
+     endif
      
-! LOOP THROUGH HYDRATION SHELLS, 3 AT PRESENT (SET IN MSEVB_COMMON MODULE)
-! ONLY ASSIGN NEW VB STATES FOR THE SPECIFIED NUMBER OF SHELLS
+! Loop through hydration shells, 3 at present (set in msevb_common module)
+! Only assign new VB states for the specified number of shells
 
-     DO CURRENTSHELL = 1, SHELLSTOCOUNT
+     do currentShell = 1, shellsToCount
 
-!          PRINT *, 'SHELL', CURRENTSHELL, CURRENTSHELLHCOUNT
+!          print *, 'Shell', currentShell, currentShellHcount
 
-!          PRINT *, 'EXCHANGING HS IN THIS SHELL'
-!          DO I = 1, CURRENTSHELLHCOUNT
-!             PRINT *, I, EXCHANGEHS(I,1)
-!          ENDDO
+!          print *, 'Exchanging Hs in this shell'
+!          do i = 1, currentShellHcount
+!             print *, i, exchangeHs(i,1)
+!          enddo
 
-        NEXTSHELLHCOUNT = 0
+        nextShellHcount = 0
 
-        CURRENTSHELLLOOP: DO I = 1, CURRENTSHELLHCOUNT
+        currentShellLoop: do i = 1, currentShellHcount
            
-           CURRENTEXCHANGEH = EXCHANGEHS(I,1)
+           currentExchangeH = exchangeHs(i,1)
 
-           IF (NEIGHBOURCOUNTS(CURRENTEXCHANGEH).GT.1) THEN
+           if (neighbourCounts(currentExchangeH).gt.1) then
 
-!             PRINT *, 'CURRENTLY CONSIDERING EXCHANGE H', CURRENTEXCHANGEH
-!             PRINT *, 'ASSIGNED O COUNT:', NEIGHBOURCOUNTS(CURRENTEXCHANGEH)
+!             print *, 'Currently considering exchange H', currentExchangeH
+!             print *, 'Assigned O count:', neighbourCounts(currentExchangeH)
 
-! AT MOST, EACH H CAN BE ASSIGNED TO TWO DIFFERENT HYDRONIUM SPECIES THEREFORE CHECK THE CLOSEST TWO OS
-! IF THE H WAS ONLY ASSIGNED ONE O THEN THIS HYDRONIUM HAS ALREADY BEEN TAKEN CARE OF
+! At most, each H can be assigned to two different hydronium species therefore check the closest two Os
+! If the H was only assigned one O then this hydronium has already been taken care of
         
-           FIRSTVBSTATE = EXCHANGEHS(I,2)
+           firstVBstate = exchangeHs(i,2)
 
-           IF (ATMPL(FIRSTVBSTATE,3).EQ.PROXIMALATOMS(CURRENTEXCHANGEH,1)) THEN
-              NEWEIGENO = PROXIMALATOMS(CURRENTEXCHANGEH,2)
-           ELSE
-              NEWEIGENO = PROXIMALATOMS(CURRENTEXCHANGEH,1)
-           ENDIF
+           if (atmpl(firstVBstate,3).eq.proximalAtoms(currentExchangeH,1)) then
+              newEigenO = proximalAtoms(currentExchangeH,2)
+           else
+              newEigenO = proximalAtoms(currentExchangeH,1)
+           endif
 
-! CHECK THE H BOND ANGLE
+! Check the H bond angle
 
-           O2POS = ATMPL(FIRSTVBSTATE,3)
+           O2pos = atmpl(firstVBstate,3)
 
-           HBONDANGLE = (PSIX(NEWEIGENO)-PSIX(CURRENTEXCHANGEH))*(PSIX(O2POS)-PSIX(CURRENTEXCHANGEH))+& 
-                             (PSIY(NEWEIGENO)-PSIY(CURRENTEXCHANGEH))*(PSIY(O2POS)-PSIY(CURRENTEXCHANGEH))+&
-                          (PSIZ(NEWEIGENO)-PSIZ(CURRENTEXCHANGEH))*(PSIZ(O2POS)-PSIZ(CURRENTEXCHANGEH))
+           hBondAngle = (psix(newEigenO)-psix(currentExchangeH))*(psix(O2pos)-psix(currentExchangeH))+& 
+                             (psiy(newEigenO)-psiy(currentExchangeH))*(psiy(O2pos)-psiy(currentExchangeH))+&
+                          (psiz(newEigenO)-psiz(currentExchangeH))*(psiz(O2pos)-psiz(currentExchangeH))
 
 
-           HBONDANGLE = DACOS(HBONDANGLE/(INTERATOMICR(NEWEIGENO,CURRENTEXCHANGEH) &
-                              * INTERATOMICR(O2POS,CURRENTEXCHANGEH)))
+           hbondAngle = DACOS(hbondAngle/(interAtomicR(newEigenO,currentExchangeH) &
+                              * interAtomicR(O2pos,currentExchangeH)))
               
-!              PRINT *, 'BOND ANGLE: ', O1POS, CENTRALHPOS, O2POS, ((HBONDANGLE/PI)*180D0)
+!              print *, 'Bond angle: ', O1pos, centralHpos, O2pos, ((hbondAngle/pi)*180d0)
               
-           IF (HBONDANGLE.GE.MINHBONDANGLERAD) THEN
+           if (hbondAngle.ge.minHbondAngleRad) then
 
-              REDUCED_NUM_EIG = REDUCED_NUM_EIG + 1
+              reduced_num_eig = reduced_num_eig + 1
 
-! CHECK WHETHER WE HAVE SEEN THIS VB STATE BEFORE - CAN HAPPEN WITH CYCLES
+! Check whether we have seen this VB state before - can happen with cycles
 
-              FINGERPRINTS(REDUCED_NUM_EIG,:)=FINGERPRINTS(FIRSTVBSTATE,:)
-              FINGERPRINTS(REDUCED_NUM_EIG,CURRENTEXCHANGEH)=NEWEIGENO
+              fingerprints(reduced_num_eig,:)=fingerprints(firstVBstate,:)
+              fingerprints(reduced_num_eig,currentExchangeH)=newEigenO
 
-              DO J=1,REDUCED_NUM_EIG-1
-                 IF (J.NE.FIRSTVBSTATE) THEN
+              do j=1,reduced_num_eig-1
+                 if (j.ne.firstVBstate) then
 
-                 NEWFINGERPRINT = .FALSE.
+                 newFingerprint = .FALSE.
 
-                 DO K=1, NATOMS
-                    IF (FINGERPRINTS(J,K).NE.FINGERPRINTS(REDUCED_NUM_EIG,K)) THEN
-                    NEWFINGERPRINT = .TRUE.
-                    EXIT
-                    ENDIF
-                 ENDDO
+                 do k=1, natoms
+                    if (fingerprints(j,k).ne.fingerprints(reduced_num_eig,k)) then
+                    newFingerprint = .TRUE.
+                    exit
+                    endif
+                 enddo
 
-                 IF (.NOT.NEWFINGERPRINT) THEN
-!                    PRINT *, 'SEEN THIS FINGERPRINT BEFORE', REDUCED_NUM_EIG, J
-!                    DO K=1, NATOMS
-!                    PRINT *, K, ATMPL(J,K)
-!                    ENDDO
-                    REDUCED_NUM_EIG = REDUCED_NUM_EIG - 1
-                    CYCLE CURRENTSHELLLOOP                   
-                 ENDIF
-                 ENDIF
-              ENDDO
+                 if (.not.newFingerprint) then
+!                    print *, 'Seen this fingerprint before', reduced_num_eig, j
+!                    do k=1, natoms
+!                    print *, k, atmpl(j,k)
+!                    enddo
+                    reduced_num_eig = reduced_num_eig - 1
+                    cycle currentShellLoop                   
+                 endif
+                 endif
+              enddo
               
-              ATMPL(REDUCED_NUM_EIG, 3) = NEWEIGENO
-              ATMPL(REDUCED_NUM_EIG, 4) = CURRENTEXCHANGEH                 
+              atmpl(reduced_num_eig, 3) = newEigenO
+              atmpl(reduced_num_eig, 4) = currentExchangeH                 
 
-!                   PRINT *, 'NEW EIGEN O:', NEWEIGENO
+!                   print *, 'New eigen O:', newEigenO
 
-              DO J=6, NATOMS, 3
-                 IF (ATMPL(FIRSTVBSTATE,J).EQ.NEWEIGENO) THEN
-                 ATMPL(REDUCED_NUM_EIG,1) = ATMPL(FIRSTVBSTATE,J-1)
-                 ATMPL(REDUCED_NUM_EIG,2) = ATMPL(FIRSTVBSTATE,J+1)
+              do j=6, natoms, 3
+                 if (atmpl(firstVBstate,j).eq.newEigenO) then
+                 atmpl(reduced_num_eig,1) = atmpl(firstVBstate,j-1)
+                 atmpl(reduced_num_eig,2) = atmpl(firstVBstate,j+1)
 
-! ADD THESE PROTONS TO THE POTENTIAL EXCHANGE LIST FOR THE NEXT SHELL
+! Add these protons to the potential exchange list for the next shell
 
-                 IF (CURRENTSHELL.NE.SHELLSTOCOUNT) THEN
+                 if (currentShell.ne.shellsToCount) then
 
-                    NEXTSHELLHCOUNT = NEXTSHELLHCOUNT + 1
-                    IF ((CURRENTSHELLHCOUNT+NEXTSHELLHCOUNT).GT.SIZE(EXCHANGEHS,1)) THEN
-                    PRINT *, 'TOO MANY HS IN EXCHANGE H LIST'
-                    PRINT *, 'INCREASE SIZE OF ARRAY'
-                    DO K = 1, NATOMS
-                       IF (MOD(K,3).EQ.0) THEN
-                          PRINT *, 'O', PSIX(K), PSIY(K), PSIZ(K)
-                       ELSE
-                          PRINT *, 'H', PSIX(K), PSIY(K), PSIZ(K)
-                       ENDIF
-                    ENDDO
-                    PRINT *, 'SIZE OF ARRAY:', SIZE(EXCHANGEHS,1)
-                    PRINT *, 'CURRENT SHELL:', CURRENTSHELL
-                    DO K=1,CURRENTSHELLHCOUNT
-                       PRINT *, K, EXCHANGEHS(K,1), EXCHANGEHS(K,2)
-                    ENDDO
-                    PRINT *, 'NEXT SHELL:', (CURRENTSHELL+1)
-                    DO K=CURRENTSHELLHCOUNT+1, CURRENTSHELLHCOUNT+NEXTSHELLHCOUNT-1
-                       PRINT *, K, EXCHANGEHS(K,1), EXCHANGEHS(K,2)
-                    ENDDO
-                    STOP
-                    ENDIF
-                    EXCHANGEHS(CURRENTSHELLHCOUNT+NEXTSHELLHCOUNT,1) = ATMPL(REDUCED_NUM_EIG,1)
-                    EXCHANGEHS(CURRENTSHELLHCOUNT+NEXTSHELLHCOUNT,2) = REDUCED_NUM_EIG
+                    nextShellHcount = nextShellHcount + 1
+                    if ((currentShellHcount+nextShellHcount).gt.SIZE(exchangeHs,1)) then
+                    print *, 'Too many Hs in exchange H list'
+                    print *, 'Increase size of array'
+                    do k = 1, natoms
+                       if (MOD(k,3).eq.0) then
+                          print *, 'O', psix(k), psiy(k), psiz(k)
+                       else
+                          print *, 'H', psix(k), psiy(k), psiz(k)
+                       endif
+                    enddo
+                    print *, 'Size of array:', SIZE(exchangeHs,1)
+                    print *, 'Current shell:', currentShell
+                    do k=1,currentShellHcount
+                       print *, k, exchangeHs(k,1), exchangeHs(k,2)
+                    enddo
+                    print *, 'Next shell:', (currentShell+1)
+                    do k=currentShellHcount+1, currentShellHcount+nextShellHcount-1
+                       print *, k, exchangeHs(k,1), exchangeHs(k,2)
+                    enddo
+                    stop
+                    endif
+                    exchangeHs(currentShellHcount+nextShellHcount,1) = atmpl(reduced_num_eig,1)
+                    exchangeHs(currentShellHcount+nextShellHcount,2) = reduced_num_eig
                  
-                    NEXTSHELLHCOUNT = NEXTSHELLHCOUNT + 1
-                    IF ((CURRENTSHELLHCOUNT+NEXTSHELLHCOUNT).GT.SIZE(EXCHANGEHS,1)) THEN
-                    PRINT *, 'TOO MANY HS IN EXCHANGE H LIST'
-                    PRINT *, 'INCREASE SIZE OF ARRAY'
-                    DO K = 1, NATOMS
-                       IF (MOD(K,3).EQ.0) THEN
-                          PRINT *, 'O', PSIX(K), PSIY(K), PSIZ(K)
-                       ELSE
-                          PRINT *, 'H', PSIX(K), PSIY(K), PSIZ(K)
-                       ENDIF
-                    ENDDO
-                    PRINT *, 'SIZE OF ARRAY:', SIZE(EXCHANGEHS,1)
-                    PRINT *, 'CURRENT SHELL:', CURRENTSHELL
-                    DO K=1,CURRENTSHELLHCOUNT
-                       PRINT *, K, EXCHANGEHS(K,1), EXCHANGEHS(K,2)
-                    ENDDO
-                    PRINT *, 'NEXT SHELL:', (CURRENTSHELL+1)
-                    DO K=CURRENTSHELLHCOUNT+1, CURRENTSHELLHCOUNT+NEXTSHELLHCOUNT-1
-                       PRINT *, K, EXCHANGEHS(K,1), EXCHANGEHS(K,2)
-                    ENDDO
-                    STOP
-                    ENDIF
-                    EXCHANGEHS(CURRENTSHELLHCOUNT+NEXTSHELLHCOUNT,1) = ATMPL(REDUCED_NUM_EIG,2)
-                    EXCHANGEHS(CURRENTSHELLHCOUNT+NEXTSHELLHCOUNT,2) = REDUCED_NUM_EIG
-                 ENDIF
-                 EXIT
-                 ENDIF
-              ENDDO
+                    nextShellHcount = nextShellHcount + 1
+                    if ((currentShellHcount+nextShellHcount).gt.SIZE(exchangeHs,1)) then
+                    print *, 'Too many Hs in exchange H list'
+                    print *, 'Increase size of array'
+                    do k = 1, natoms
+                       if (MOD(k,3).eq.0) then
+                          print *, 'O', psix(k), psiy(k), psiz(k)
+                       else
+                          print *, 'H', psix(k), psiy(k), psiz(k)
+                       endif
+                    enddo
+                    print *, 'Size of array:', SIZE(exchangeHs,1)
+                    print *, 'Current shell:', currentShell
+                    do k=1,currentShellHcount
+                       print *, k, exchangeHs(k,1), exchangeHs(k,2)
+                    enddo
+                    print *, 'Next shell:', (currentShell+1)
+                    do k=currentShellHcount+1, currentShellHcount+nextShellHcount-1
+                       print *, k, exchangeHs(k,1), exchangeHs(k,2)
+                    enddo
+                    stop
+                    endif
+                    exchangeHs(currentShellHcount+nextShellHcount,1) = atmpl(reduced_num_eig,2)
+                    exchangeHs(currentShellHcount+nextShellHcount,2) = reduced_num_eig
+                 endif
+                 exit
+                 endif
+              enddo
 
-! ADD THE OLD HYDRONIUM SPECIES, MINUS THE EXCHANGE PROTON
+! Add the old hydronium species, minus the exchange proton
 
-              ATMPL(REDUCED_NUM_EIG,6) = ATMPL(FIRSTVBSTATE, 3)
+              atmpl(reduced_num_eig,6) = atmpl(firstVBstate, 3)
            
-              IF (ATMPL(FIRSTVBSTATE,1).EQ.CURRENTEXCHANGEH) THEN
-                 ATMPL(REDUCED_NUM_EIG,5) = ATMPL(FIRSTVBSTATE,2)
-                 ATMPL(REDUCED_NUM_EIG,7) = ATMPL(FIRSTVBSTATE,4)
-              ELSE
-                 ATMPL(REDUCED_NUM_EIG,5) = ATMPL(FIRSTVBSTATE,1)            
+              if (atmpl(firstVBstate,1).eq.currentExchangeH) then
+                 atmpl(reduced_num_eig,5) = atmpl(firstVBstate,2)
+                 atmpl(reduced_num_eig,7) = atmpl(firstVBstate,4)
+              else
+                 atmpl(reduced_num_eig,5) = atmpl(firstVBstate,1)            
                  
-                 IF (ATMPL(FIRSTVBSTATE,2).EQ.CURRENTEXCHANGEH) THEN
-                 ATMPL(REDUCED_NUM_EIG,7) = ATMPL(FIRSTVBSTATE,4)                    
-                 ELSE
-                 ATMPL(REDUCED_NUM_EIG,7) = ATMPL(FIRSTVBSTATE,2)     
-                 ENDIF
-              ENDIF
+                 if (atmpl(firstVBstate,2).eq.currentExchangeH) then
+                 atmpl(reduced_num_eig,7) = atmpl(firstVBstate,4)                    
+                 else
+                 atmpl(reduced_num_eig,7) = atmpl(firstVBstate,2)     
+                 endif
+              endif
               
-! COPY ACROSS THE REMAINDER OF THE WATER SPECIES FROM THE OLD VB STATE, THESE WILL NOT HAVE CHANGED
+! Copy across the remainder of the water species from the old VB state, these will not have changed
 
-              K = 9
+              k = 9
 
-              DO J = 6, NATOMS-1, 3
-                 IF (ATMPL(FIRSTVBSTATE, J).EQ.ATMPL(REDUCED_NUM_EIG,3)) CYCLE
+              do j = 6, natoms-1, 3
+                 if (atmpl(firstVBstate, j).eq.atmpl(reduced_num_eig,3)) cycle
               
-                 ATMPL(REDUCED_NUM_EIG, K-1) = ATMPL(FIRSTVBSTATE,J-1)
-                 ATMPL(REDUCED_NUM_EIG, K) = ATMPL(FIRSTVBSTATE,J)
-                 ATMPL(REDUCED_NUM_EIG, K+1) = ATMPL(FIRSTVBSTATE,J+1)
+                 atmpl(reduced_num_eig, k-1) = atmpl(firstVBstate,j-1)
+                 atmpl(reduced_num_eig, k) = atmpl(firstVBstate,j)
+                 atmpl(reduced_num_eig, k+1) = atmpl(firstVBstate,j+1)
               
-                 K = K + 3
-              ENDDO
+                 k = k + 3
+              enddo
 
-!              IF (.NOT.NEWFINGERPRINT) THEN
-!                 PRINT *, 'NEW VB STATE:'
-!                 DO K= 1, NATOMS
-!                 PRINT *, K, ATMPL(REDUCED_NUM_EIG,K)
-!                 ENDDO
-!              ENDIF
+!              if (.not.newFingerprint) then
+!                 print *, 'New VB state:'
+!                 do k= 1, natoms
+!                 print *, k, atmpl(reduced_num_eig,k)
+!                 enddo
+!              endif
 
-! ASSIGN THE ZUNDEL SPECIES
+! Assign the Zundel species
 
-              CALL ASSIGNZUNDELSPECIES (FIRSTVBSTATE,REDUCED_NUM_EIG,CURRENTEXCHANGEH,.TRUE.,MINHBONDANGLERAD)
+              call assignZundelSpecies (firstVBstate,reduced_num_eig,currentExchangeH,.TRUE.,minHbondAngleRad)
 
- !                 PRINT *, 'NEW ZUNDEL SPECIES:'
- !                 DO K = 1, 7
- !                 PRINT *, K, ZUNDEL_SPECIES(FIRSTVBSTATE, REDUCED_NUM_EIG, K)
- !                 ENDDO
+ !                 print *, 'New zundel species:'
+ !                 do k = 1, 7
+ !                 print *, k, zundel_species(firstVBstate, reduced_num_eig, k)
+ !                 enddo
 
-              GENERATORSTATE(REDUCED_NUM_EIG) = FIRSTVBSTATE
+              generatorState(reduced_num_eig) = firstVBstate
 
-! CHECK WHETHER ANY OTHER VB STATES USE THIS FIRST VB STATE O AS THE HYDRONIUM WITH CURRENTEXCHANGEH AS ONE OF THE HS
-! ASSIGN INTERACTIONS IF THEY DO
+! Check whether any other VB states use this first VB state O as the hydronium with currentExchangeH as one of the Hs
+! Assign interactions if they do
 
-              DO J = 1, (REDUCED_NUM_EIG-1)
-                 IF (J.NE.FIRSTVBSTATE .AND. ATMPL(J,3).EQ.O2POS .AND. &
-                            (CURRENTEXCHANGEH.EQ.ATMPL(J,1) & 
-                            .OR. CURRENTEXCHANGEH.EQ.ATMPL(J,2) .OR. CURRENTEXCHANGEH.EQ.ATMPL(J,4))) THEN
+              do j = 1, (reduced_num_eig-1)
+                 if (j.ne.firstVBstate .and. atmpl(j,3).eq.O2pos .and. &
+                            (currentExchangeH.eq.atmpl(j,1) & 
+                            .or. currentExchangeH.eq.atmpl(j,2) .or. currentExchangeH.eq.atmpl(j,4))) then
 
-                 CALL ASSIGNZUNDELSPECIES(J,REDUCED_NUM_EIG,CURRENTEXCHANGEH,.TRUE.,MINHBONDANGLERAD)
+                 call assignZundelSpecies(j,reduced_num_eig,currentExchangeH,.TRUE.,minHbondAngleRad)
 
-!                     PRINT *, 'STATE', J, 'ALSO INTERACTS WITH THIS NEW STATE'
-!                     PRINT *, 'NEW ZUNDEL SPECIES:'
-!                     DO K = 1, 7
-!                     PRINT *, K, ZUNDEL_SPECIES(J, REDUCED_NUM_EIG, K)
-!                     ENDDO               
-                 ENDIF
-              ENDDO
+!                     print *, 'State', j, 'also interacts with this new state'
+!                     print *, 'New zundel species:'
+!                     do k = 1, 7
+!                     print *, k, zundel_species(j, reduced_num_eig, k)
+!                     enddo               
+                 endif
+              enddo
               
-           ENDIF
+           endif
  
-           ENDIF
+           endif
 
-        ENDDO CURRENTSHELLLOOP ! END OF LOOP OVER CURRENT SHELL
+        enddo currentShellLoop ! End of loop over current shell
 
-! UPDATE THE EXCHANGE H LIST
+! Update the exchange H list
 
-        DO I = 1, NEXTSHELLHCOUNT
-           EXCHANGEHS(I,1) = EXCHANGEHS(I+CURRENTSHELLHCOUNT,1)
-           EXCHANGEHS(I,2) = EXCHANGEHS(I+CURRENTSHELLHCOUNT,2)      
-        ENDDO
+        do i = 1, nextShellHcount
+           exchangeHs(i,1) = exchangeHs(i+currentShellHcount,1)
+           exchangeHs(i,2) = exchangeHs(i+currentShellHcount,2)      
+        enddo
        
-        CURRENTSHELLHCOUNT = NEXTSHELLHCOUNT
+        currentShellHcount = nextShellHcount
 
-     ENDDO
+     enddo
 
-! DEALLOCATE MEMORY
+! Deallocate memory
 
-     DEALLOCATE(EXCHANGEHS,FINGERPRINTS)
+     DEALLOCATE(exchangeHs,fingerprints)
 
-! CHECK FOR UNASSIGNED INTERACTIONS - THIS BIT WORKS IN TANDEM WITH THE IN LOOP CHECKING
-! THE IN LOOP CHECKING TAKES CARE OF EXTRA INTERACTIONS WITH STATES WHICH WERE ASSIGNED BEFORE THE CURRENT ONE
-! THIS BIT TAKES CARE OF EXTRA INTERACTIONS WITH STATES WHICH WERE ASSIGNED AFTER THE CURRENT ONE
-! SEE JOURNAL ENTRY 06/04/04
+! Check for unassigned interactions - this bit works in tandem with the in loop checking
+! The in loop checking takes care of extra interactions with states which were assigned before the current one
+! This bit takes care of extra interactions with states which were assigned after the current one
+! See journal entry 06/04/04
 
-     DO I = 2, REDUCED_NUM_EIG-1
-        IF (GENERATORSTATE(I).NE.-1) THEN
+     do i = 2, reduced_num_eig-1
+        if (generatorState(i).ne.-1) then
 
-           DO J = I+1, REDUCED_NUM_EIG
-           IF (J.NE.GENERATORSTATE(I) .AND. (.NOT.STATESINTERACT(I,J)) .AND. &
-                     ATMPL(J,3).EQ.ATMPL(GENERATORSTATE(I),3)) THEN
+           do j = i+1, reduced_num_eig
+           if (j.ne.generatorState(i) .and. (.not.statesInteract(i,j)) .and. &
+                     atmpl(j,3).eq.atmpl(generatorState(i),3)) then
 
-!              PRINT *, 'MISSED INTERACTION BETWEEN STATES', I, 'AND', J
+!              print *, 'Missed interaction between states', i, 'and', j
 
-! ATMPL(I,4) HOLDS THE EXCHANGE H WITH WHICH THIS STATE WAS INITIALLY GENERATED (EXCEPT FOR THE PIVOT STATE(S))
-              CALL ASSIGNZUNDELSPECIES (I,J,ATMPL(I,4),.TRUE.,MINHBONDANGLERAD)
+! atmpl(i,4) holds the exchange H with which this state was initially generated (except for the pivot state(s))
+              call assignZundelSpecies (i,j,atmpl(i,4),.TRUE.,minHbondAngleRad)
 
-!              PRINT *, 'NEW ZUNDEL SPECIES'
-!              DO K=1,7
-!                 PRINT *, K, ZUNDEL_SPECIES(I,J,K)
-!              ENDDO
+!              print *, 'New Zundel species'
+!              do k=1,7
+!                 print *, k, zundel_species(i,j,k)
+!              enddo
 
-           ENDIF
-           ENDDO
-        ENDIF
-     ENDDO
+           endif
+           enddo
+        endif
+     enddo
 
-     IF (REDUCED_NUM_EIG.GT.MAXNUMVBSTATES) THEN
-        PRINT *, 'NUMBER OF VB STATES GENERATED EXCEEDS HARD LIMIT'
-        STOP
-     ENDIF
+     if (reduced_num_eig.gt.maxNumVBstates) then
+        print *, 'Number of VB states generated exceeds hard limit'
+        stop
+     endif
 
-!      PRINT *, 'VB STATES ASSIGNED', REDUCED_NUM_EIG
+!      print *, 'VB states assigned', reduced_num_eig
 
-!       DO I=1, REDUCED_NUM_EIG
+!       do i=1, reduced_num_eig
 
-!          PRINT *, '*** STATE', I, '***'
+!          print *, '*** State', i, '***'
 
-!          DO J=1, NATOMS
-!             PRINT *, J, ATMPL(I,J)
-!          ENDDO
-!       ENDDO
+!          do j=1, natoms
+!             print *, j, atmpl(i,j)
+!          enddo
+!       enddo
 
-!     PRINT *, 'EXCHANGING H LIST'
+!     print *, 'Exchanging H list'
 
-!     DO I=1, (CURRENTSHELLSTARTH + CURRENTSHELLHCOUNT - 1)
-!        PRINT *, I, HPOSITION(EXCHANGEHS(I))
-!     ENDDO
+!     do i=1, (currentShellStartH + currentShellHcount - 1)
+!        print *, i, Hposition(exchangeHs(i))
+!     enddo
 
-!       PRINT *, 'ASSIGNED ZUNDEL SPECIES'
+!       print *, 'Assigned Zundel species'
 
-!       DO I = 1, (REDUCED_NUM_EIG-1)
-!          DO J = (I+1), REDUCED_NUM_EIG
-!             IF (STATESINTERACT(I,J)) THEN
-!             PRINT *, 'STATE 1:', I, 'STATE 2:', J
-!             DO K=1,7
-!                PRINT *, K, ZUNDEL_SPECIES(I,J,K)
-!             ENDDO
-!             ENDIF
-!          ENDDO
-!       ENDDO
+!       do i = 1, (reduced_num_eig-1)
+!          do j = (i+1), reduced_num_eig
+!             if (statesInteract(i,j)) then
+!             print *, 'State 1:', i, 'State 2:', j
+!             do k=1,7
+!                print *, k, zundel_species(i,j,k)
+!             enddo
+!             endif
+!          enddo
+!       enddo
 
-!     STOP
+!     stop
 
-     END SUBROUTINE
+     end subroutine
 
 ! ######################################################################################
 
-! ASSIGNS THE EXCHANGE SPECIES BETWEEN TWO HYDRONIUM SPECIES, CHECKING THE H BOND ANGLE
-! IF NECESSARY
+! Assigns the exchange species between two hydronium species, checking the H bond angle
+! if necessary
 
-     SUBROUTINE ASSIGNZUNDELSPECIES(FIRSTVBSTATE, SECONDVBSTATE, EXCHANGEH, CHECKEDHBOND, MINHBONDANGLERAD)
+     subroutine assignZundelSpecies(firstVBstate, secondVBstate, exchangeH, checkedHbond, minHbondAngleRad)
 
-     USE COMMONS
-     USE MSEVB_COMMON
+     use commons
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 
-     INTEGER, INTENT(IN) :: FIRSTVBSTATE, SECONDVBSTATE, EXCHANGEH
-     LOGICAL, INTENT(IN) :: CHECKEDHBOND
+     integer, intent(IN) :: firstVBstate, secondVBstate, exchangeH
+     logical, intent(IN) :: checkedHbond
      DOUBLE PRECISION, INTENT(IN) :: MINHBONDANGLERAD
      
-     INTEGER :: O1POS, O2POS, CENTRALHPOS
+     integer :: O1pos, O2pos, centralHpos
      DOUBLE PRECISION :: HBONDANGLE
-     INTEGER :: LOWERINDEX, HIGHERINDEX
+     integer :: lowerIndex, higherIndex
 
-! MAKE SURE THAT THE FIRST VB STATE HAS THE LOWER INDEX - MATRICES ARE UPPER-TRIANGULAR
+! Make sure that the first VB state has the lower index - matrices are upper-triangular
 
-     IF (FIRSTVBSTATE.LT.SECONDVBSTATE) THEN
-        LOWERINDEX = FIRSTVBSTATE
-        HIGHERINDEX = SECONDVBSTATE
-     ELSE
-        LOWERINDEX = SECONDVBSTATE
-        HIGHERINDEX = FIRSTVBSTATE
-     ENDIF
+     if (firstVBstate.lt.secondVBstate) then
+        lowerIndex = firstVBstate
+        higherIndex = secondVBstate
+     else
+        lowerIndex = secondVBstate
+        higherIndex = firstVBstate
+     endif
 
-     IF (.NOT.STATESINTERACT(LOWERINDEX,HIGHERINDEX)) THEN
+     if (.not.statesInteract(lowerIndex,higherIndex)) then
 
-! CHECK THE H BOND ANGLE IF NECESSARY
+! Check the H bond angle if necessary
 
-        IF (.NOT.CHECKEDHBOND) THEN
-           O1POS = ATMPL(FIRSTVBSTATE,3)
-           O2POS = ATMPL(SECONDVBSTATE,3)
+        if (.not.checkedHbond) then
+           O1pos = atmpl(firstVBstate,3)
+           O2pos = atmpl(secondVBstate,3)
 
-           HBONDANGLE = (PSIX(O1POS)-PSIX(EXCHANGEH))*(PSIX(O2POS)-PSIX(EXCHANGEH)) + &
-                          (PSIY(O1POS)-PSIY(EXCHANGEH))*(PSIY(O2POS)-PSIY(EXCHANGEH)) + &
-                       (PSIZ(O1POS)-PSIZ(EXCHANGEH))*(PSIZ(O2POS)-PSIZ(EXCHANGEH))
+           hBondAngle = (psix(O1pos)-psix(exchangeH))*(psix(O2pos)-psix(exchangeH)) + &
+                          (psiy(O1pos)-psiy(exchangeH))*(psiy(O2pos)-psiy(exchangeH)) + &
+                       (psiz(O1pos)-psiz(exchangeH))*(psiz(O2pos)-psiz(exchangeH))
 
-           HBONDANGLE = DACOS(HBONDANGLE/(INTERATOMICR(O1POS,EXCHANGEH)*INTERATOMICR(O2POS,EXCHANGEH))) 
+           hbondAngle = DACOS(hbondAngle/(interAtomicR(O1pos,exchangeH)*interAtomicR(O2pos,exchangeH))) 
               
-!              PRINT *, 'BOND ANGLE: ', O1POS, EXCHANGEH, O2POS, ((HBONDANGLE/PI)*180D0)
+!              print *, 'Bond angle: ', O1pos, exchangeH, O2pos, ((hbondAngle/pi)*180d0)
               
-           IF (HBONDANGLE.LT.MINHBONDANGLERAD) RETURN
-        ENDIF
+           if (hbondAngle.lt.minHbondAngleRad) return
+        endif
 
-        ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,3) = ATMPL(LOWERINDEX,3)  ! O
-        ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,4) = EXCHANGEH            ! EXCHANGING H
-        ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,6) = ATMPL(HIGHERINDEX,3) ! O
+        zundel_species(lowerIndex,higherIndex,3) = atmpl(lowerIndex,3)  ! O
+        zundel_species(lowerIndex,higherIndex,4) = exchangeH            ! Exchanging H
+        zundel_species(lowerIndex,higherIndex,6) = atmpl(higherIndex,3) ! O
            
-! SORT OUT THE OTHER PROTONS FROM THE FIRST HYDRONIUM SPECIES
+! Sort out the other protons from the first hydronium species
 
-        IF (ATMPL(LOWERINDEX,1).EQ.EXCHANGEH) THEN
-           ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,1) = ATMPL(LOWERINDEX,2)         
-           ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,2) = ATMPL(LOWERINDEX,4)
-        ELSE
-           ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,1) = ATMPL(LOWERINDEX,1)
+        if (atmpl(lowerIndex,1).eq.exchangeH) then
+           zundel_species(lowerIndex,higherIndex,1) = atmpl(lowerIndex,2)         
+           zundel_species(lowerIndex,higherIndex,2) = atmpl(lowerIndex,4)
+        else
+           zundel_species(lowerIndex,higherIndex,1) = atmpl(lowerIndex,1)
               
-           IF (ATMPL(LOWERINDEX,2).EQ.EXCHANGEH) THEN
-           ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,2) = ATMPL(LOWERINDEX,4)
-           ELSE
-           ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,2) = ATMPL(LOWERINDEX,2)
-           ENDIF
-        ENDIF
+           if (atmpl(lowerIndex,2).eq.exchangeH) then
+           zundel_species(lowerIndex,higherIndex,2) = atmpl(lowerIndex,4)
+           else
+           zundel_species(lowerIndex,higherIndex,2) = atmpl(lowerIndex,2)
+           endif
+        endif
 
-! AND THOSE FROM THE SECOND HYDRONIUM SPECIES
+! And those from the second hydronium species
               
-        IF (ATMPL(HIGHERINDEX,1).EQ.EXCHANGEH) THEN
-           ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,5) = ATMPL(HIGHERINDEX,2)    
-           ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,7) = ATMPL(HIGHERINDEX,4)
-        ELSE
-           ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,5) = ATMPL(HIGHERINDEX,1)
+        if (atmpl(higherIndex,1).eq.exchangeH) then
+           zundel_species(lowerIndex,higherIndex,5) = atmpl(higherIndex,2)    
+           zundel_species(lowerIndex,higherIndex,7) = atmpl(higherIndex,4)
+        else
+           zundel_species(lowerIndex,higherIndex,5) = atmpl(higherIndex,1)
            
-           IF (ATMPL(HIGHERINDEX,2).EQ.EXCHANGEH) THEN
-           ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,7) = ATMPL(HIGHERINDEX,4)
-           ELSE
-           ZUNDEL_SPECIES(LOWERINDEX,HIGHERINDEX,7) = ATMPL(HIGHERINDEX,2)
-           ENDIF
-        ENDIF
+           if (atmpl(higherIndex,2).eq.exchangeH) then
+           zundel_species(lowerIndex,higherIndex,7) = atmpl(higherIndex,4)
+           else
+           zundel_species(lowerIndex,higherIndex,7) = atmpl(higherIndex,2)
+           endif
+        endif
 
-! SET THE INTERACTION LABEL
+! Set the interaction label
 
-        STATESINTERACT(LOWERINDEX,HIGHERINDEX) = .TRUE.
+        statesInteract(lowerIndex,higherIndex) = .TRUE.
 
-     ENDIF
+     endif
 
-     RETURN
+     return
 
-     END SUBROUTINE
+     end subroutine
 
 ! ###############################################################################################
 
-! TRIES THE SIMPLEST POSSIBLE PIVOT VB ASSIGNMENT BY ASSIGNING EACH H TO THE NEAREST O
-! AND CHECKING WHETHER OR NOT THAT IS VIABLE
-! NOW CONSIDERS THE POSSIBILITY THAT THERE COULD BE TWO APPROXIMATELY EQUALLY GOOD 'PIVOT' STATES
-! IN THE CASE WHERE THE LOCAL GEOMETRY REPRESENTS A ZUNDEL SPECIES
+! Tries the simplest possible pivot VB assignment by assigning each H to the nearest O
+! and checking whether or not that is viable
+! Now considers the possibility that there could be two approximately equally good 'pivot' states
+! in the case where the local geometry represents a Zundel species
 
-     SUBROUTINE TRYSIMPLEVBASSIGNMENT(PROXIMALATOMS, NEIGHBOURCOUNTS, NUMSTATESASSIGNED, PIVOTVBSTATES)
+     subroutine trySimpleVBAssignment(proximalAtoms, neighbourCounts, numStatesAssigned, pivotVBstates)
 
-     USE COMMONS
-     USE MSEVB_COMMON
+     use commons
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 
-! SUBROUTINE ARGUMENTS
+! Subroutine arguments
 
-     INTEGER, INTENT(IN) :: PROXIMALATOMS(NATOMS, NUM_HYD)
-     INTEGER, INTENT(IN) :: NEIGHBOURCOUNTS(NATOMS)
-     INTEGER, INTENT(OUT) :: NUMSTATESASSIGNED
-     INTEGER, INTENT(OUT) :: PIVOTVBSTATES(2,NATOMS)
+     integer, intent(IN) :: proximalAtoms(natoms, num_hyd)
+     integer, intent(IN) :: neighbourCounts(natoms)
+     integer, intent(OUT) :: numStatesAssigned
+     integer, intent(OUT) :: pivotVBstates(2,natoms)
 
-! LOCAL VARIABLES
+! Local variables
 
-     INTEGER :: CURRENTATOM, NEARESTOREF, INSERTREF
-     INTEGER :: ASSIGNEDHCOUNTS(NUM_EIG)
-     INTEGER :: ASSIGNEDHS(NUM_EIG,3)
+     integer :: currentAtom, nearestOref, insertRef
+     integer :: assignedHcounts(num_eig)
+     integer :: assignedHs(num_eig,3)
 
-     LOGICAL :: PIVOTOASSIGNED
+     logical :: pivotOassigned
 
-     LOGICAL :: SYMMETRICH(NATOMS)
-     INTEGER :: CHECKH, SHAREDH, PIVOTO1REF, PIVOTO2REF
+     logical :: symmetricH(natoms)
+     integer :: checkH, sharedH, pivotO1ref, pivotO2ref
      DOUBLE PRECISION, PARAMETER :: EQUIDISTANCECUTOFF = 1.2D0
      DOUBLE PRECISION :: DISTANCERATIO
 
-! SEE IF WE CAN IDENTIFY A SYMMETRIC H ATOM
+! See if we can identify a symmetric H atom
 
-     SYMMETRICH = .FALSE.
+     symmetricH = .false.
 
-     DO CURRENTATOM = 1, NATOMS
-        IF ((MOD(CURRENTATOM,3).NE.0) .AND. (NEIGHBOURCOUNTS(CURRENTATOM).GT.1)) THEN
+     do currentAtom = 1, natoms
+        if ((MOD(currentAtom,3).ne.0) .and. (neighbourCounts(currentAtom).gt.1)) then
 
-           DISTANCERATIO = INTERATOMICR(CURRENTATOM,PROXIMALATOMS(CURRENTATOM,2))/ &
-                                  INTERATOMICR(CURRENTATOM,PROXIMALATOMS(CURRENTATOM,1))
+           distanceRatio = interAtomicR(currentAtom,proximalAtoms(currentAtom,2))/ &
+                                  interAtomicR(currentAtom,proximalAtoms(currentAtom,1))
 
-           IF (DISTANCERATIO.LE.EQUIDISTANCECUTOFF) SYMMETRICH(CURRENTATOM) = .TRUE.
-        ENDIF
-     ENDDO
+           if (distanceRatio.le.equidistanceCutoff) symmetricH(currentAtom) = .true.
+        endif
+     enddo
 
-! FIND THE NEAREST O ATOM TO EACH H
+! Find the nearest O atom to each H
 
-     NUMSTATESASSIGNED = 1
-     PIVOTOASSIGNED = .FALSE.
-     ASSIGNEDHCOUNTS = 0
-     PIVOTVBSTATES = 0
+     numStatesAssigned = 1
+     pivotOassigned = .FALSE.
+     assignedHcounts = 0
+     pivotVBstates = 0
 
-     DO CURRENTATOM = 1, NATOMS
-        IF (MOD(CURRENTATOM,3).NE.0) THEN
+     do currentAtom = 1, natoms
+        if (MOD(currentAtom,3).ne.0) then
 
-           NEARESTOREF = PROXIMALATOMS(CURRENTATOM,1)/3
+           nearestOref = proximalAtoms(currentAtom,1)/3
 
-           IF (ASSIGNEDHCOUNTS(NEARESTOREF).EQ.3) THEN
-           NUMSTATESASSIGNED = 0
-           EXIT
-           ELSE IF (ASSIGNEDHCOUNTS(NEARESTOREF).EQ.2) THEN
-           IF (PIVOTOASSIGNED) THEN
-              NUMSTATESASSIGNED = 0
-              EXIT
-           ELSE
-              ASSIGNEDHCOUNTS(NEARESTOREF) = ASSIGNEDHCOUNTS(NEARESTOREF) + 1
-              ASSIGNEDHS(NEARESTOREF,ASSIGNEDHCOUNTS(NEARESTOREF)) = CURRENTATOM
-              PIVOTOASSIGNED = .TRUE.    
-           ENDIF                
-           ELSE
-           ASSIGNEDHCOUNTS(NEARESTOREF) = ASSIGNEDHCOUNTS(NEARESTOREF) + 1
-           ASSIGNEDHS(NEARESTOREF,ASSIGNEDHCOUNTS(NEARESTOREF)) = CURRENTATOM
-           ENDIF
-        ENDIF
-     ENDDO
+           if (assignedHcounts(nearestOref).eq.3) then
+           numStatesAssigned = 0
+           exit
+           else if (assignedHcounts(nearestOref).eq.2) then
+           if (pivotOassigned) then
+              numStatesAssigned = 0
+              exit
+           else
+              assignedHcounts(nearestOref) = assignedHcounts(nearestOref) + 1
+              assignedHs(nearestOref,assignedHcounts(nearestOref)) = currentAtom
+              pivotOassigned = .TRUE.    
+           endif                
+           else
+           assignedHcounts(nearestOref) = assignedHcounts(nearestOref) + 1
+           assignedHs(nearestOref,assignedHcounts(nearestOref)) = currentAtom
+           endif
+        endif
+     enddo
 
-     IF (NUMSTATESASSIGNED.EQ.1) THEN
+     if (numStatesAssigned.eq.1) then
 
-! FILL THE VB ASSIGNMENT
+! Fill the VB assignment
 
-        INSERTREF = 6
+        insertRef = 6
 
-        DO CURRENTATOM = 1, NUM_EIG
-           IF (ASSIGNEDHCOUNTS(CURRENTATOM).EQ.3) THEN    ! H3O+ MOLECULE
-           PIVOTVBSTATES(NUMSTATESASSIGNED,1) = ASSIGNEDHS(CURRENTATOM,1)
-           PIVOTVBSTATES(NUMSTATESASSIGNED,2) = ASSIGNEDHS(CURRENTATOM,2)
-           PIVOTVBSTATES(NUMSTATESASSIGNED,3) = CURRENTATOM*3
-           PIVOTVBSTATES(NUMSTATESASSIGNED,4) = ASSIGNEDHS(CURRENTATOM,3)
-           ELSE    ! NORMAL H2O MOLECULE
-           PIVOTVBSTATES(NUMSTATESASSIGNED,INSERTREF-1) = ASSIGNEDHS(CURRENTATOM,1)
-           PIVOTVBSTATES(NUMSTATESASSIGNED,INSERTREF) = CURRENTATOM*3
-           PIVOTVBSTATES(NUMSTATESASSIGNED,INSERTREF+1) = ASSIGNEDHS(CURRENTATOM,2)
+        do currentAtom = 1, num_eig
+           if (assignedHcounts(currentAtom).eq.3) then    ! H3O+ molecule
+           pivotVBstates(numStatesAssigned,1) = assignedHs(currentAtom,1)
+           pivotVBstates(numStatesAssigned,2) = assignedHs(currentAtom,2)
+           pivotVBstates(numStatesAssigned,3) = currentAtom*3
+           pivotVBstates(numStatesAssigned,4) = assignedHs(currentAtom,3)
+           else    ! Normal H2O molecule
+           pivotVBstates(numStatesAssigned,insertRef-1) = assignedHs(currentAtom,1)
+           pivotVBstates(numStatesAssigned,insertRef) = currentAtom*3
+           pivotVBstates(numStatesAssigned,insertRef+1) = assignedHs(currentAtom,2)
 
-           INSERTREF = INSERTREF + 3
-           ENDIF
-        ENDDO
+           insertRef = insertRef + 3
+           endif
+        enddo
 
-! CHECK IF THERE IS ANOTHER, ALMOST EQUALLY GOOD PIVOT STATE WHICH NEEDS ASSIGNING
+! Check if there is another, almost equally good pivot state which needs assigning
 
-        PIVOTO1REF = PIVOTVBSTATES(1,3)/3
-        SHAREDH = -1
+        pivotO1ref = pivotVBstates(1,3)/3
+        sharedH = -1
 
-        DO CHECKH = 1, 3
-           IF (SYMMETRICH(ASSIGNEDHS(PIVOTO1REF,CHECKH))) THEN
-           IF (SHAREDH.EQ.-1) THEN
-              SHAREDH = CHECKH
-           ELSE 
-              SHAREDH = -1
-              EXIT
-           ENDIF
-           ENDIF
-        ENDDO
+        do checkH = 1, 3
+           if (symmetricH(assignedHs(pivotO1ref,checkH))) then
+           if (sharedH.eq.-1) then
+              sharedH = checkH
+           else 
+              sharedH = -1
+              exit
+           endif
+           endif
+        enddo
         
-        IF (SHAREDH.NE.-1) THEN
+        if (sharedH.ne.-1) then
 
-           PIVOTO2REF = PROXIMALATOMS(ASSIGNEDHS(PIVOTO1REF,SHAREDH),2)/3
-           NUMSTATESASSIGNED = NUMSTATESASSIGNED + 1
+           pivotO2ref = proximalAtoms(assignedHs(pivotO1ref,sharedH),2)/3
+           numStatesAssigned = numStatesAssigned + 1
 
-! ASSIGN ANOTHER PIVOT STATE
+! Assign another pivot state
 
-           PIVOTVBSTATES(NUMSTATESASSIGNED,1) = ASSIGNEDHS(PIVOTO2REF,1)
-           PIVOTVBSTATES(NUMSTATESASSIGNED,2) = ASSIGNEDHS(PIVOTO2REF,2)
-           PIVOTVBSTATES(NUMSTATESASSIGNED,3) = PIVOTO2REF*3
-           PIVOTVBSTATES(NUMSTATESASSIGNED,4) = ASSIGNEDHS(PIVOTO1REF,SHAREDH)
+           pivotVBstates(numStatesAssigned,1) = assignedHs(pivotO2ref,1)
+           pivotVBstates(numStatesAssigned,2) = assignedHs(pivotO2ref,2)
+           pivotVBstates(numStatesAssigned,3) = pivotO2ref*3
+           pivotVBstates(numStatesAssigned,4) = assignedHs(pivotO1ref,sharedH)
 
-           PIVOTVBSTATES(NUMSTATESASSIGNED,6) = PIVOTVBSTATES(1,3)
-           IF (SHAREDH.EQ.1) THEN
-           PIVOTVBSTATES(NUMSTATESASSIGNED,5) = ASSIGNEDHS(PIVOTO1REF,2)
-           PIVOTVBSTATES(NUMSTATESASSIGNED,7) = ASSIGNEDHS(PIVOTO1REF,3)
-           ELSE
-           PIVOTVBSTATES(NUMSTATESASSIGNED,5) = ASSIGNEDHS(PIVOTO1REF,1)
+           pivotVBstates(numStatesAssigned,6) = pivotVBstates(1,3)
+           if (sharedH.eq.1) then
+           pivotVBstates(numStatesAssigned,5) = assignedHs(pivotO1ref,2)
+           pivotVBstates(numStatesAssigned,7) = assignedHs(pivotO1ref,3)
+           else
+           pivotVBstates(numStatesAssigned,5) = assignedHs(pivotO1ref,1)
 
-           IF (SHAREDH.EQ.2) THEN
-              PIVOTVBSTATES(NUMSTATESASSIGNED,7) = ASSIGNEDHS(PIVOTO1REF,3)
-           ELSE
-              PIVOTVBSTATES(NUMSTATESASSIGNED,7) = ASSIGNEDHS(PIVOTO1REF,2)              
-           ENDIF
-           ENDIF
+           if (sharedH.eq.2) then
+              pivotVBstates(numStatesAssigned,7) = assignedHs(pivotO1ref,3)
+           else
+              pivotVBstates(numStatesAssigned,7) = assignedHs(pivotO1ref,2)              
+           endif
+           endif
 
-           INSERTREF = 9
+           insertRef = 9
 
-           DO CURRENTATOM = 1, NUM_EIG             
-           IF ((CURRENTATOM.NE.PIVOTO1REF) .AND. (CURRENTATOM.NE.PIVOTO2REF)) THEN
-              PIVOTVBSTATES(NUMSTATESASSIGNED,INSERTREF-1) = ASSIGNEDHS(CURRENTATOM,1)
-              PIVOTVBSTATES(NUMSTATESASSIGNED,INSERTREF) = CURRENTATOM*3
-              PIVOTVBSTATES(NUMSTATESASSIGNED,INSERTREF+1) = ASSIGNEDHS(CURRENTATOM,2)
-              INSERTREF = INSERTREF + 3
-           ENDIF
-           ENDDO
-        ENDIF
+           do currentAtom = 1, num_eig             
+           if ((currentAtom.ne.pivotO1ref) .and. (currentAtom.ne.pivotO2ref)) then
+              pivotVBstates(numStatesAssigned,insertRef-1) = assignedHs(currentAtom,1)
+              pivotVBstates(numStatesAssigned,insertRef) = currentAtom*3
+              pivotVBstates(numStatesAssigned,insertRef+1) = assignedHs(currentAtom,2)
+              insertRef = insertRef + 3
+           endif
+           enddo
+        endif
 
-     ENDIF
+     endif
 
-     RETURN
+     return
 
-     END SUBROUTINE
+     end subroutine
 
 ! ###############################################################################################
 
-! ASSIGN THE PIVOT VB STATE BY MINIMISING THE SUM OF BONDED OH DISTANCES
-! THE PIVOT O IS IDENTIFIED AS THE O WITH THE 3 CLOSEST HS
+! Assign the pivot VB state by minimising the sum of bonded OH distances
+! The pivot O is identified as the O with the 3 closest Hs
 
-     SUBROUTINE ASSIGNPIVOTVBSTATE(PROXIMALATOMS, NEIGHBOURCOUNTS, SUCCESS, PIVOTVBSTATE)
+     subroutine assignPivotVBstate(proximalAtoms, neighbourCounts, success, pivotVBstate)
 
-     USE COMMONS
-     USE MSEVB_COMMON
+     use commons
+     use msevb_common
 
-     IMPLICIT NONE
+     implicit none
 
-! SUBROUTINE ARGUMENTS
+! Subroutine arguments
 
-     INTEGER, INTENT(IN OUT) :: PROXIMALATOMS(NATOMS, NUM_HYD)
-     INTEGER, INTENT(IN OUT) :: NEIGHBOURCOUNTS(NATOMS)
-     LOGICAL, INTENT(OUT) :: SUCCESS
-     INTEGER, INTENT(OUT) :: PIVOTVBSTATE(NATOMS)
+     integer, intent(IN OUT) :: proximalAtoms(natoms, num_hyd)
+     integer, intent(IN OUT) :: neighbourCounts(natoms)
+     logical, intent(OUT) :: success
+     integer, intent(OUT) :: pivotVBstate(natoms)
 
-! LOCAL VARIABLES
+! Local variables
 
-     INTEGER :: I, J, K, L
-     INTEGER :: CURRENTO, CURRENTH, PIVOTOXYGEN
-     INTEGER :: ASSIGNEDOCOUNT
-     INTEGER :: OLIST(NUM_EIG)
+     integer :: i, j, k, l
+     integer :: currentO, currentH, pivotOxygen
+     integer :: assignedOcount
+     integer :: Olist(num_eig)
 
      DOUBLE PRECISION :: MINSUMROH, CURRENTSUMROH
 
-     LOGICAL :: USEDH(NATOMS), GOINGUP, FOUNDANH
-     INTEGER :: HCOUNTERS(NUM_EIG,3)
+     logical :: usedH(natoms), goingUp, foundAnH
+     integer :: Hcounters(num_eig,3)
 
-     SUCCESS = .TRUE.
+     success = .TRUE.
 
-! ORDER THE H ATOMS IN TERMS OF THE DISTANCE FROM EACH O, ONLY CONSIDER THOSE WHICH ARE LESS THAN
-! THE CUTOFF DISTANCE APART
+! Order the H atoms in terms of the distance from each O, only consider those which are less than
+! the cutoff distance apart
 
-     DO I=1,NUM_EIG
+     do i=1,num_eig
 
-        CURRENTO = 3*I
-        NEIGHBOURCOUNTS(CURRENTO) = 0   
+        currentO = 3*i
+        neighbourCounts(currentO) = 0   
 
-        DO J=1,NUM_HYD
+        do j=1,num_hyd
 
-           CURRENTH = J + INT((J-1)/2)
+           currentH = j + INT((j-1)/2)
 
-           IF (INTERATOMICR(CURRENTO,CURRENTH).LT.MAXHBONDLENGTH) THEN
-           NEIGHBOURCOUNTS(CURRENTO) = NEIGHBOURCOUNTS(CURRENTO) + 1
+           if (interAtomicR(currentO,currentH).lt.maxHbondLength) then
+           neighbourCounts(currentO) = neighbourCounts(currentO) + 1
 
-           DO K=1,NEIGHBOURCOUNTS(CURRENTO)
-              IF (K.EQ.NEIGHBOURCOUNTS(CURRENTO)) THEN
-                 PROXIMALATOMS(CURRENTO,K) = CURRENTH
-                 EXIT
-              ELSEIF (INTERATOMICR(CURRENTO,CURRENTH).LT.INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,K))) THEN
-                 DO L=NEIGHBOURCOUNTS(CURRENTO),K+1,-1
-                 PROXIMALATOMS(CURRENTO,L)=PROXIMALATOMS(CURRENTO,L-1)
-                 ENDDO
-                 PROXIMALATOMS(CURRENTO,K) = CURRENTH
-                 EXIT
-              ENDIF
-           ENDDO
-           ENDIF
-        ENDDO
+           do k=1,neighbourCounts(currentO)
+              if (k.eq.neighbourCounts(currentO)) then
+                 proximalAtoms(currentO,k) = currentH
+                 exit
+              elseif (interAtomicR(currentO,currentH).lt.interAtomicR(currentO,proximalAtoms(currentO,k))) then
+                 do l=neighbourCounts(currentO),k+1,-1
+                 proximalAtoms(currentO,l)=proximalAtoms(currentO,l-1)
+                 enddo
+                 proximalAtoms(currentO,k) = currentH
+                 exit
+              endif
+           enddo
+           endif
+        enddo
 
-! CHECK WHETHER WE HAVE ASSIGNED SUFFICIENT HS WITHIN THE CUTOFF TO FORM AT LEAST A WATER MOLECULE
+! Check whether we have assigned sufficient Hs within the cutoff to form at least a water molecule
 
-        IF (NEIGHBOURCOUNTS(CURRENTO).LT.2) THEN
-           PRINT *, 'WITHIN THE CUTOFF OF', MAXHBONDLENGTH, 'PROGRAM ASSIGNED', NEIGHBOURCOUNTS(CURRENTO), &
-                       'AS POSSIBLY BONDED TO O ATOM', CURRENTO
-           PRINT *, 'REQUIRE A MINIMUM OF 2 ASSIGNED HS TO FORM A WATER SPECIES'
-           PRINT *, 'INCREASE CUTOFF OR EXAMINE YOUR GEOMETRY'
-           SUCCESS = .FALSE.
-           RETURN
-        ENDIF
-     ENDDO
+        if (neighbourCounts(currentO).lt.2) then
+           print *, 'Within the cutoff of', maxHbondLength, 'program assigned', neighbourCounts(currentO), &
+                       'as possibly bonded to O atom', currentO
+           print *, 'Require a minimum of 2 assigned Hs to form a water species'
+           print *, 'Increase cutoff or examine your geometry'
+           success = .FALSE.
+           return
+        endif
+     enddo
 
-! FIND THE PIVOT OXYGEN, THE O ATOM WITH THE THREE CLOSEST HS
+! Find the pivot oxygen, the O atom with the three closest Hs
 
-     MINSUMROH = HUGE(MINSUMROH)
-     PIVOTOXYGEN = -1
+     minSumRoh = HUGE(minSumRoh)
+     pivotOxygen = -1
 
-     DO CURRENTO = 3, (NATOMS-1), 3
-        IF (NEIGHBOURCOUNTS(CURRENTO).GE.3) THEN
+     do currentO = 3, (natoms-1), 3
+        if (neighbourCounts(currentO).ge.3) then
 
-           CURRENTSUMROH = INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,1)) + &
-                           INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,2)) + &
-                              INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,3))
+           currentSumRoh = interAtomicR(currentO,proximalAtoms(currentO,1)) + &
+                           interAtomicR(currentO,proximalAtoms(currentO,2)) + &
+                              interAtomicR(currentO,proximalAtoms(currentO,3))
 
-           IF (CURRENTSUMROH.LT.MINSUMROH) THEN
-           PIVOTOXYGEN = CURRENTO
-           MINSUMROH = CURRENTSUMROH
-           ENDIF
-        ENDIF
-     ENDDO
+           if (currentSumRoh.lt.minSumRoh) then
+           pivotOxygen = currentO
+           minSumRoh = currentSumRoh
+           endif
+        endif
+     enddo
 
-! WE MUST HAVE ASSIGNED A PIVOT O BECAUSE EVERY H HAS BEEN ASSIGNED AT LEAST ONE O
-! ASSIGN THE REST OF THIS VB STATE
+! We must have assigned a pivot O because every H has been assigned at least one O
+! Assign the rest of this VB state
 
-     PIVOTVBSTATE = -1
+     pivotVBstate = -1
 
-! ORDER THE OTHER OXYGENS IN DECREASING PROXIMITY FROM THE HYDRONIUM O
-! THIS SHOULD BE A MORE EFFICIENT WAY OF FINDING THE BEST OVERALL BOND ASSIGNMENT
+! Order the other oxygens in decreasing proximity from the hydronium O
+! This should be a more efficient way of finding the best overall bond assignment
 
-     OLIST = -1
-     OLIST(1) = PIVOTOXYGEN
+     Olist = -1
+     Olist(1) = pivotOxygen
 
-     ASSIGNEDOCOUNT = 1
+     assignedOcount = 1
 
-     DO I=1,NUM_EIG
-        CURRENTO = 3*I
+     do i=1,num_eig
+        currentO = 3*i
 
-        IF (CURRENTO.EQ.PIVOTOXYGEN) CYCLE
+        if (currentO.eq.pivotOxygen) cycle
            
-        ASSIGNEDOCOUNT = ASSIGNEDOCOUNT + 1
+        assignedOcount = assignedOcount + 1
 
-        DO J=2,ASSIGNEDOCOUNT
+        do j=2,assignedOcount
            
-           IF (OLIST(J).EQ.-1) THEN
-           OLIST(J) = CURRENTO
-           EXIT
-           ELSEIF (INTERATOMICR(PIVOTOXYGEN,CURRENTO).LT.INTERATOMICR(PIVOTOXYGEN,OLIST(J))) THEN
+           if (Olist(j).eq.-1) then
+           Olist(j) = currentO
+           exit
+           elseif (interAtomicR(pivotOxygen,currentO).lt.interAtomicR(pivotOxygen,Olist(j))) then
            
-           DO K=ASSIGNEDOCOUNT,J+1,-1
-              OLIST(K) = OLIST(K-1)
-           ENDDO
+           do k=assignedOcount,j+1,-1
+              Olist(k) = Olist(k-1)
+           enddo
 
-           OLIST(J) = CURRENTO
-           EXIT                 
-           ENDIF
-        ENDDO
-     ENDDO
+           Olist(j) = currentO
+           exit                 
+           endif
+        enddo
+     enddo
 
-     USEDH = .FALSE.
+     usedH = .FALSE.
 
-! SET THE COUNTERS TO THEIR INITIAL VALUES
+! Set the counters to their initial values
 
-     HCOUNTERS(1,1) = 1
-     HCOUNTERS(1,2) = 2
-     HCOUNTERS(1,3) = 3
+     Hcounters(1,1) = 1
+     Hcounters(1,2) = 2
+     Hcounters(1,3) = 3
 
-     ASSIGNEDOCOUNT = 1
-     GOINGUP = .TRUE.
+     assignedOcount = 1
+     goingUp = .TRUE.
 
-! ASSIGN THE BEST VB SPECIES BY MINIMISING THE SUM OF THE DISTANCES BETWEEN BONDED ATOMS
+! Assign the best VB species by minimising the sum of the distances between bonded atoms
  
-! THREE HS WILL BE ASSOCIATED WITH THE PIVOT O AND TWO WITH EACH OF THE OTHERS
+! Three Hs will be associated with the pivot O and two with each of the others
 
-     MINSUMROH = HUGE(MINSUMROH)
-     CURRENTSUMROH = 0.0D0
+     minSumRoh = HUGE(minSumRoh)
+     currentSumRoh = 0.0D0
            
-     INFINITELOOP: DO
+     InfiniteLoop: do
         
-        CURRENTO = OLIST(ASSIGNEDOCOUNT)
+        currentO = Olist(assignedOcount)
 
-        IF (ASSIGNEDOCOUNT.EQ.1) THEN ! THE EIGEN O IN THIS STATE, WHICH HAS 3 ASSOCIATED HS
+        if (assignedOcount.eq.1) then ! The Eigen O in this state, which has 3 associated Hs
 
-! CHECK IF WE ARRIVED HERE AS A RESULT OF INCREASING OR DECREASING ASSIGNOCOUNT
+! Check if we arrived here as a result of increasing or decreasing assignOcount
               
-           IF (GOINGUP) THEN     ! INITIALISATION
-           USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1))) = .TRUE.
-           USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,2))) = .TRUE.
-           USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,3))) = .TRUE.
+           if (goingUp) then     ! Initialisation
+           usedH(proximalAtoms(currentO,Hcounters(assignedOcount,1))) = .TRUE.
+           usedH(proximalAtoms(currentO,Hcounters(assignedOcount,2))) = .TRUE.
+           usedH(proximalAtoms(currentO,Hcounters(assignedOcount,3))) = .TRUE.
 
-           CURRENTSUMROH = INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1)))+&
-                                    INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,2)))+& 
-                                 INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,3)))
+           currentSumRoh = interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,1)))+&
+                                    interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,2)))+& 
+                                 interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,3)))
 
-           ASSIGNEDOCOUNT = ASSIGNEDOCOUNT + 1
+           assignedOcount = assignedOcount + 1
 
-           ELSE          ! INCREMENT THE COUNTERS IF POSSIBLE, EXIT IF ALL ITERATIONS ARE DONE
+           else          ! Increment the counters if possible, exit if all iterations are done
 
-           IF (HCOUNTERS(ASSIGNEDOCOUNT,3).EQ.NEIGHBOURCOUNTS(CURRENTO)) THEN
+           if (Hcounters(assignedOcount,3).eq.neighbourCounts(currentO)) then
               
-              IF (HCOUNTERS(ASSIGNEDOCOUNT,2).EQ.(NEIGHBOURCOUNTS(CURRENTO)-1)) THEN
+              if (Hcounters(assignedOcount,2).eq.(neighbourCounts(currentO)-1)) then
                  
-                 IF (HCOUNTERS(ASSIGNEDOCOUNT,1).EQ.(NEIGHBOURCOUNTS(CURRENTO)-2)) THEN
-                 EXIT INFINITELOOP
-                 ELSE
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1))) = .FALSE.
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,2))) = .FALSE.
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,3))) = .FALSE.
-                 HCOUNTERS(ASSIGNEDOCOUNT,1) = HCOUNTERS(ASSIGNEDOCOUNT,1) + 1
-                 HCOUNTERS(ASSIGNEDOCOUNT,2) = HCOUNTERS(ASSIGNEDOCOUNT,1) + 1
-                 HCOUNTERS(ASSIGNEDOCOUNT,3) = HCOUNTERS(ASSIGNEDOCOUNT,2) + 1
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1))) = .TRUE.
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,2))) = .TRUE.
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,3))) = .TRUE.
+                 if (Hcounters(assignedOcount,1).eq.(neighbourCounts(currentO)-2)) then
+                 exit InfiniteLoop
+                 else
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,1))) = .FALSE.
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,2))) = .FALSE.
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,3))) = .FALSE.
+                 Hcounters(assignedOcount,1) = Hcounters(assignedOcount,1) + 1
+                 Hcounters(assignedOcount,2) = Hcounters(assignedOcount,1) + 1
+                 Hcounters(assignedOcount,3) = Hcounters(assignedOcount,2) + 1
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,1))) = .TRUE.
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,2))) = .TRUE.
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,3))) = .TRUE.
 
-                 CURRENTSUMROH = &
-                               INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1))) + &
-                               INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,2))) + &
-                               INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,3)))
+                 currentSumRoh = &
+                               interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,1))) + &
+                               interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,2))) + &
+                               interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,3)))
        
-                 IF (CURRENTSUMROH.GE.MINSUMROH) THEN
-                    GOINGUP = .FALSE.
-                 ELSE
-                    GOINGUP = .TRUE.
-                 ENDIF
-                 ENDIF
+                 if (currentSumRoh.ge.minSumRoh) then
+                    goingUp = .FALSE.
+                 else
+                    goingUp = .TRUE.
+                 endif
+                 endif
 
-              ELSE 
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,2))) = .FALSE.
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,3))) = .FALSE.
-                 HCOUNTERS(ASSIGNEDOCOUNT,2) = HCOUNTERS(ASSIGNEDOCOUNT,2) + 1
-                 HCOUNTERS(ASSIGNEDOCOUNT,3) = HCOUNTERS(ASSIGNEDOCOUNT,2) + 1
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,2))) = .TRUE.
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,3))) = .TRUE.
+              else 
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,2))) = .FALSE.
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,3))) = .FALSE.
+                 Hcounters(assignedOcount,2) = Hcounters(assignedOcount,2) + 1
+                 Hcounters(assignedOcount,3) = Hcounters(assignedOcount,2) + 1
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,2))) = .TRUE.
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,3))) = .TRUE.
 
-                 CURRENTSUMROH = &
-                            INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1))) + &
-                            INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,2))) + &
-                            INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,3)))
+                 currentSumRoh = &
+                            interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,1))) + &
+                            interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,2))) + &
+                            interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,3)))
 
-                 IF (CURRENTSUMROH.GE.MINSUMROH) THEN
-                 GOINGUP = .FALSE.
-                 ELSE
-                 GOINGUP = .TRUE.
-                 ENDIF
+                 if (currentSumRoh.ge.minSumRoh) then
+                 goingUp = .FALSE.
+                 else
+                 goingUp = .TRUE.
+                 endif
                  
-              ENDIF
-           ELSE 
-              USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,3))) = .FALSE.
-              HCOUNTERS(ASSIGNEDOCOUNT,3) = HCOUNTERS(ASSIGNEDOCOUNT,3) + 1
-              USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,3))) = .TRUE.       
+              endif
+           else 
+              usedH(proximalAtoms(currentO,Hcounters(assignedOcount,3))) = .FALSE.
+              Hcounters(assignedOcount,3) = Hcounters(assignedOcount,3) + 1
+              usedH(proximalAtoms(currentO,Hcounters(assignedOcount,3))) = .TRUE.       
 
-              CURRENTSUMROH = &
-                         INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1))) + &
-                         INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,2))) + &
-                         INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,3)))
+              currentSumRoh = &
+                         interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,1))) + &
+                         interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,2))) + &
+                         interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,3)))
 
-              IF (CURRENTSUMROH.GE.MINSUMROH) THEN
-                 GOINGUP = .FALSE.
-              ELSE
-                 GOINGUP = .TRUE.
-              ENDIF
+              if (currentSumRoh.ge.minSumRoh) then
+                 goingUp = .FALSE.
+              else
+                 goingUp = .TRUE.
+              endif
               
-           ENDIF
+           endif
 
-           IF (GOINGUP) ASSIGNEDOCOUNT = ASSIGNEDOCOUNT + 1
+           if (goingUp) assignedOcount = assignedOcount + 1
 
-           ENDIF
+           endif
 
-        ELSE               ! A WATER O, HAS 2 ASSOCIATED HS
+        else               ! A water O, has 2 associated Hs
 
-! CHECK WHETHER WE HAVE ARRIVED HERE AS A RESULT OF INCREASING OR DECREASING ASSIGNEDOCOUNT
+! Check whether we have arrived here as a result of increasing or decreasing assignedOcount
 
-           IF (GOINGUP) THEN ! INITIALISATION
+           if (goingUp) then ! Initialisation
 
-!           PRINT *, 'ADDING A NEW WATER O:', CURRENTO
-!                 PRINT *, 'ASSIGNMENT TO DATE:'
-!                 DO I=1,ASSIGNEDOCOUNT-1
-!                 PRINT *, 'O:', (3*OLIST(I))
-!                 IF (I.EQ.1) THEN
-!                    PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                               'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2))),
-!    &                             'H3:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,3)))
-!                 ELSE
-!                    PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                             'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2)))
-!                 ENDIF
-!                 ENDDO
+!           print *, 'Adding a new water O:', currentO
+!                 print *, 'Assignment to date:'
+!                 do i=1,assignedOcount-1
+!                 print *, 'O:', (3*Olist(i))
+!                 if (i.eq.1) then
+!                    print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                               'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2))),
+!    &                             'H3:', Hposition(neighbouringHs(Olist(i),Hcounters(i,3)))
+!                 else
+!                    print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                             'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2)))
+!                 endif
+!                 enddo
 
-!                 PRINT *, 'ROH_SQ TO DATE:', CURRENTSUMROHSQ
+!                 print *, 'roh_sq to date:', currentSumRohSq
 
-           FOUNDANH = .FALSE.
+           foundAnH = .FALSE.
 
-           FIRSTHLOOP: DO I=1, NEIGHBOURCOUNTS(CURRENTO)-1
+           FirstHLoop: do i=1, neighbourCounts(currentO)-1
 
-              IF (.NOT.USEDH(PROXIMALATOMS(CURRENTO,I))) THEN
+              if (.not.usedH(proximalAtoms(currentO,i))) then
 
-! IF ADDING THIS OH DISTANCE BRINGS THE TOTAL TO MORE THAN THE CURRENT MINIMUM THEN ANY SUBSEQUENT H WILL ALSO DO
-! SO SINCE THEY ARE ARRANGED IN ASCENDING DISTANCE FROM THE O
+! If adding this OH distance brings the total to more than the current minimum then any subsequent H will also do
+! so since they are arranged in ascending distance from the O
 
-                 IF ((CURRENTSUMROH+INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,I))).GE.MINSUMROH) THEN
-                 EXIT FIRSTHLOOP
-                 ELSE
+                 if ((currentSumRoh+interAtomicR(currentO,proximalAtoms(currentO,i))).ge.minSumRoh) then
+                 exit FirstHLoop
+                 else
 
-                 DO J = I+1, NEIGHBOURCOUNTS(CURRENTO)
-                    IF (.NOT.USEDH(PROXIMALATOMS(CURRENTO,J))) THEN
+                 do j = i+1, neighbourCounts(currentO)
+                    if (.not.usedH(proximalAtoms(currentO,j))) then
 
-                    IF ((CURRENTSUMROH + INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,I)) + &
-                                     INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,J))).GE.MINSUMROH) THEN
-                       EXIT FIRSTHLOOP
-                    ELSE
-                       HCOUNTERS(ASSIGNEDOCOUNT,1) = I
-                       USEDH(PROXIMALATOMS(CURRENTO,I)) = .TRUE.
-                       HCOUNTERS(ASSIGNEDOCOUNT,2) = J
-                       USEDH(PROXIMALATOMS(CURRENTO,J)) = .TRUE.
-                       FOUNDANH = .TRUE.
+                    if ((currentSumRoh + interAtomicR(currentO,proximalAtoms(currentO,i)) + &
+                                     interAtomicR(currentO,proximalAtoms(currentO,j))).ge.minSumRoh) then
+                       exit FirstHLoop
+                    else
+                       Hcounters(assignedOcount,1) = i
+                       usedH(proximalAtoms(currentO,i)) = .TRUE.
+                       Hcounters(assignedOcount,2) = j
+                       usedH(proximalAtoms(currentO,j)) = .TRUE.
+                       foundAnH = .TRUE.
 
-                       CURRENTSUMROH = CURRENTSUMROH + &
-                                        INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,I)) + &
-                                        INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,J))
-                       EXIT FIRSTHLOOP
-                    ENDIF
-                    ENDIF
-                 ENDDO
-                 ENDIF
-              ENDIF
-           ENDDO FIRSTHLOOP
+                       currentSumRoh = currentSumRoh + &
+                                        interAtomicR(currentO,proximalAtoms(currentO,i)) + &
+                                        interAtomicR(currentO,proximalAtoms(currentO,j))
+                       exit FirstHLoop
+                    endif
+                    endif
+                 enddo
+                 endif
+              endif
+           enddo FirstHLoop
 
-           IF (FOUNDANH) THEN
+           if (foundAnH) then
 
-!              PRINT *, 'SUCCESSFULLY ALLOCATED NEW HS'
-              IF (ASSIGNEDOCOUNT.EQ.NUM_EIG) THEN
+!              print *, 'Successfully allocated new Hs'
+              if (assignedOcount.eq.num_eig) then
 
-                 PIVOTVBSTATE(1) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,1))
-                 PIVOTVBSTATE(2) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,2))
-                 PIVOTVBSTATE(3) = PIVOTOXYGEN
-                 PIVOTVBSTATE(4) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,3))
+                 pivotVBstate(1) = proximalAtoms(pivotOxygen, Hcounters(1,1))
+                 pivotVBstate(2) = proximalAtoms(pivotOxygen, Hcounters(1,2))
+                 pivotVBstate(3) = pivotOxygen
+                 pivotVBstate(4) = proximalAtoms(pivotOxygen, Hcounters(1,3))
 
-                 I = 5
+                 i = 5
 
-                 DO J = 2, NUM_EIG
-                 PIVOTVBSTATE(I) = PROXIMALATOMS(OLIST(J),HCOUNTERS(J,1))
-                 PIVOTVBSTATE(I+1) = OLIST(J)
-                 PIVOTVBSTATE(I+2) = PROXIMALATOMS(OLIST(J),HCOUNTERS(J,2))
-                 I = I + 3
-                 ENDDO
+                 do j = 2, num_eig
+                 pivotVBstate(i) = proximalAtoms(Olist(j),Hcounters(j,1))
+                 pivotVBstate(i+1) = Olist(j)
+                 pivotVBstate(i+2) = proximalAtoms(Olist(j),Hcounters(j,2))
+                 i = i + 3
+                 enddo
 
-                 MINSUMROH = CURRENTSUMROH
+                 minSumRoh = currentSumRoh
 
-!                 PRINT *, 'NEW ASSIGNMENT:', MINSUMROH
-!                    DO I = 1,NUM_EIG
-!                    PRINT *, 'O:', (3*OLIST(I))
-!                    IF (I.EQ.1) THEN
-!                       PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                             'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2))),
-!    &                             'H3:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,3)))
-!                    ELSE
-!                       PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                                'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2)))
-!                    ENDIF
-!                    ENDDO
+!                 print *, 'New assignment:', minSumRoh
+!                    do i = 1,num_eig
+!                    print *, 'O:', (3*Olist(i))
+!                    if (i.eq.1) then
+!                       print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                             'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2))),
+!    &                             'H3:', Hposition(neighbouringHs(Olist(i),Hcounters(i,3)))
+!                    else
+!                       print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                                'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2)))
+!                    endif
+!                    enddo
 
-                 GOINGUP = .FALSE.
-              ELSE
-                 ASSIGNEDOCOUNT = ASSIGNEDOCOUNT + 1
-              ENDIF
-           ELSE
-!              PRINT *, 'COULD NOT ALLOCATE NEW HS, DROPPING A LEVEL'
-              ASSIGNEDOCOUNT = ASSIGNEDOCOUNT - 1
-              GOINGUP = .FALSE.
-           ENDIF   
-           ELSE 
+                 goingUp = .FALSE.
+              else
+                 assignedOcount = assignedOcount + 1
+              endif
+           else
+!              print *, 'Could not allocate new Hs, dropping a level'
+              assignedOcount = assignedOcount - 1
+              goingUp = .FALSE.
+           endif   
+           else 
 
-!           PRINT *, 'ATTEMPTING TO INCREMENT O:', CURRENTO
+!           print *, 'Attempting to increment O:', currentO
                  
-!                 PRINT *, 'ASSIGNMENT AT THIS POINT:'
+!                 print *, 'Assignment at this point:'
                  
-!                 DO I=1,ASSIGNEDOCOUNT
-!                 PRINT *, 'O:', (3*OLIST(I))
-!                 IF (I.EQ.1) THEN
-!                    PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                               'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2))),
-!    &                             'H3:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,3)))
-!                 ELSE
-!                    PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                             'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2)))
-!                 ENDIF
-!                 ENDDO
+!                 do i=1,assignedOcount
+!                 print *, 'O:', (3*Olist(i))
+!                 if (i.eq.1) then
+!                    print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                               'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2))),
+!    &                             'H3:', Hposition(neighbouringHs(Olist(i),Hcounters(i,3)))
+!                 else
+!                    print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                             'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2)))
+!                 endif
+!                 enddo
 
-!                 PRINT *, 'CURRENT SUM ROH_SQ:', CURRENTSUMROHSQ
+!                 print *, 'Current sum roh_sq:', currentSumRohSq
 
-! INCREMENT THE CURRENT COUNTER IF POSSIBLE, ELSE DROP DOWN ANOTHER LEVEL
+! Increment the current counter if possible, else drop down another level
 
-           CURRENTSUMROH = CURRENTSUMROH - &
-                      INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,2)))
+           currentSumRoh = currentSumRoh - &
+                      interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,2)))
 
-           USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,2))) = .FALSE.
+           usedH(proximalAtoms(currentO,Hcounters(assignedOcount,2))) = .FALSE.
 
-           IF (HCOUNTERS(ASSIGNEDOCOUNT,2).EQ.NEIGHBOURCOUNTS(CURRENTO)) THEN                 
-              IF (HCOUNTERS(ASSIGNEDOCOUNT,1).EQ.(NEIGHBOURCOUNTS(CURRENTO)-1)) THEN                 
+           if (Hcounters(assignedOcount,2).eq.neighbourCounts(currentO)) then                 
+              if (Hcounters(assignedOcount,1).eq.(neighbourCounts(currentO)-1)) then                 
 
-                 CURRENTSUMROH = CURRENTSUMROH - & 
-                            INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1)))
+                 currentSumRoh = currentSumRoh - & 
+                            interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,1)))
 
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1))) = .FALSE.
-!                    HCOUNTERS(ASSIGNEDOCOUNT,1) = 1
-!                    HCOUNTERS(ASSIGNEDOCOUNT,2) = 2
-                 ASSIGNEDOCOUNT = ASSIGNEDOCOUNT - 1
-              ELSE
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1))) = .FALSE.
-                 CURRENTSUMROH = CURRENTSUMROH - &
-                            INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1)))
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,1))) = .FALSE.
+!                    Hcounters(assignedOcount,1) = 1
+!                    Hcounters(assignedOcount,2) = 2
+                 assignedOcount = assignedOcount - 1
+              else
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,1))) = .FALSE.
+                 currentSumRoh = currentSumRoh - &
+                            interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,1)))
 
-! FIND A SUITABLE H ATOM FOR THE FIRST H ATOM
+! Find a suitable H atom for the first H atom
 
-                 FOUNDANH = .FALSE.
+                 foundAnH = .FALSE.
 
-                 FIRSTHLOOP2: DO I = HCOUNTERS(ASSIGNEDOCOUNT,1)+1, NEIGHBOURCOUNTS(CURRENTO)-1
-                    IF (.NOT.USEDH(PROXIMALATOMS(CURRENTO,I))) THEN
+                 FirstHLoop2: do i = Hcounters(assignedOcount,1)+1, neighbourCounts(currentO)-1
+                    if (.not.usedH(proximalAtoms(currentO,i))) then
 
-                    IF ((CURRENTSUMROH + INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,I))).GE.MINSUMROH) THEN
-                    EXIT FIRSTHLOOP2
-                    ELSE
-                    DO J = I+1, NEIGHBOURCOUNTS(CURRENTO) 
-                       IF (.NOT.USEDH(PROXIMALATOMS(CURRENTO,J))) THEN
+                    if ((currentSumRoh + interAtomicR(currentO,proximalAtoms(currentO,i))).ge.minSumRoh) then
+                    exit FirstHLoop2
+                    else
+                    do j = i+1, neighbourCounts(currentO) 
+                       if (.not.usedH(proximalAtoms(currentO,j))) then
                          
-                          IF ((CURRENTSUMROH + &
-                                           INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,I)) + &
-                                           INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,J))).GE.MINSUMROH) THEN
-                          EXIT FIRSTHLOOP2
-                          ELSE
-                          HCOUNTERS(ASSIGNEDOCOUNT,1) = I
-                          USEDH(PROXIMALATOMS(CURRENTO,I)) = .TRUE.
-                          HCOUNTERS(ASSIGNEDOCOUNT,2) = J
-                          USEDH(PROXIMALATOMS(CURRENTO,J)) = .TRUE.
-                          FOUNDANH = .TRUE.
+                          if ((currentSumRoh + &
+                                           interAtomicR(currentO,proximalAtoms(currentO,i)) + &
+                                           interAtomicR(currentO,proximalAtoms(currentO,j))).ge.minSumRoh) then
+                          exit FirstHLoop2
+                          else
+                          Hcounters(assignedOcount,1) = i
+                          usedH(proximalAtoms(currentO,i)) = .TRUE.
+                          Hcounters(assignedOcount,2) = j
+                          usedH(proximalAtoms(currentO,j)) = .TRUE.
+                          foundAnH = .TRUE.
 
-                          CURRENTSUMROH = CURRENTSUMROH + &
-                                              INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,I)) + &
-                                              INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,J))
+                          currentSumRoh = currentSumRoh + &
+                                              interAtomicR(currentO,proximalAtoms(currentO,i)) + &
+                                              interAtomicR(currentO,proximalAtoms(currentO,j))
 
-                          EXIT FIRSTHLOOP2
-                          ENDIF
-                       ENDIF
-                    ENDDO
-                    ENDIF
-                 ENDIF
-                 ENDDO FIRSTHLOOP2
+                          exit FirstHLoop2
+                          endif
+                       endif
+                    enddo
+                    endif
+                 endif
+                 enddo FirstHLoop2
 
-                 IF (FOUNDANH) THEN
-                 IF (ASSIGNEDOCOUNT.EQ.NUM_EIG) THEN
+                 if (foundAnH) then
+                 if (assignedOcount.eq.num_eig) then
 
-                    PIVOTVBSTATE(1) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,1))
-                    PIVOTVBSTATE(2) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,2))
-                    PIVOTVBSTATE(3) = PIVOTOXYGEN
-                    PIVOTVBSTATE(4) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,3))
+                    pivotVBstate(1) = proximalAtoms(pivotOxygen, Hcounters(1,1))
+                    pivotVBstate(2) = proximalAtoms(pivotOxygen, Hcounters(1,2))
+                    pivotVBstate(3) = pivotOxygen
+                    pivotVBstate(4) = proximalAtoms(pivotOxygen, Hcounters(1,3))
 
-                    I = 5
+                    i = 5
                        
-                    DO J = 2, NUM_EIG
-                    PIVOTVBSTATE(I) = PROXIMALATOMS(OLIST(J),HCOUNTERS(J,1))
-                    PIVOTVBSTATE(I+1) = OLIST(J)
-                    PIVOTVBSTATE(I+2) = PROXIMALATOMS(OLIST(J),HCOUNTERS(J,2))
-                    I = I + 3
-                    ENDDO
+                    do j = 2, num_eig
+                    pivotVBstate(i) = proximalAtoms(Olist(j),Hcounters(j,1))
+                    pivotVBstate(i+1) = Olist(j)
+                    pivotVBstate(i+2) = proximalAtoms(Olist(j),Hcounters(j,2))
+                    i = i + 3
+                    enddo
 
-                    MINSUMROH = CURRENTSUMROH
+                    minSumRoh = currentSumRoh
 
-!                    PRINT *, 'NEW ASSIGNMENT:', MINSUMROH
-!                       DO I = 1,NUM_EIG
-!                          PRINT *, 'O:', (3*OLIST(I))
-!                          IF (I.EQ.1) THEN
-!                          PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                                   'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2))),
-!    &                                   'H3:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,3)))
-!                          ELSE
-!                          PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                                      'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2)))
-!                          ENDIF
-!                       ENDDO
-                 ELSE
-                    ASSIGNEDOCOUNT = ASSIGNEDOCOUNT + 1
-                    GOINGUP = .TRUE.
-                 ENDIF
-                 ELSE 
+!                    print *, 'New assignment:', minSumRoh
+!                       do i = 1,num_eig
+!                          print *, 'O:', (3*Olist(i))
+!                          if (i.eq.1) then
+!                          print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                                   'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2))),
+!    &                                   'H3:', Hposition(neighbouringHs(Olist(i),Hcounters(i,3)))
+!                          else
+!                          print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                                      'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2)))
+!                          endif
+!                       enddo
+                 else
+                    assignedOcount = assignedOcount + 1
+                    goingUp = .TRUE.
+                 endif
+                 else 
 
-! DROP DOWN A LEVEL
-                 ASSIGNEDOCOUNT = ASSIGNEDOCOUNT - 1
-                 ENDIF
-              ENDIF
-           ELSE 
+! Drop down a level
+                 assignedOcount = assignedOcount - 1
+                 endif
+              endif
+           else 
 
-! CHECK FOR AN UNUSED H ATOM
+! Check for an unused H atom
                  
-              FOUNDANH = .FALSE.
+              foundAnH = .FALSE.
               
-              DO I = HCOUNTERS(ASSIGNEDOCOUNT,2)+1,NEIGHBOURCOUNTS(CURRENTO)
-                 IF (.NOT.USEDH(PROXIMALATOMS(CURRENTO,I))) THEN
+              do i = Hcounters(assignedOcount,2)+1,neighbourCounts(currentO)
+                 if (.not.usedH(proximalAtoms(currentO,i))) then
 
-                 IF ((CURRENTSUMROH + INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,I))).GE.MINSUMROH) THEN
-                    EXIT
-                 ELSE
-                    HCOUNTERS(ASSIGNEDOCOUNT,2) = I
-                    USEDH(PROXIMALATOMS(CURRENTO,I)) = .TRUE.
-                    FOUNDANH = .TRUE.
-                    CURRENTSUMROH = CURRENTSUMROH + INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,I))
-                    EXIT
-                 ENDIF
-                 ENDIF
-              ENDDO
+                 if ((currentSumRoh + interAtomicR(currentO,proximalAtoms(currentO,i))).ge.minSumRoh) then
+                    exit
+                 else
+                    Hcounters(assignedOcount,2) = i
+                    usedH(proximalAtoms(currentO,i)) = .TRUE.
+                    foundAnH = .TRUE.
+                    currentSumRoh = currentSumRoh + interAtomicR(currentO,proximalAtoms(currentO,i))
+                    exit
+                 endif
+                 endif
+              enddo
 
-              IF (FOUNDANH) THEN
+              if (foundAnH) then
 
-                 IF (ASSIGNEDOCOUNT.EQ.NUM_EIG) THEN
+                 if (assignedOcount.eq.num_eig) then
 
-                 PIVOTVBSTATE(1) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,1))
-                 PIVOTVBSTATE(2) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,2))
-                 PIVOTVBSTATE(3) = PIVOTOXYGEN
-                 PIVOTVBSTATE(4) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,3))
+                 pivotVBstate(1) = proximalAtoms(pivotOxygen, Hcounters(1,1))
+                 pivotVBstate(2) = proximalAtoms(pivotOxygen, Hcounters(1,2))
+                 pivotVBstate(3) = pivotOxygen
+                 pivotVBstate(4) = proximalAtoms(pivotOxygen, Hcounters(1,3))
 
-                 I = 5
+                 i = 5
 
-                 DO J = 2, NUM_EIG
-                    PIVOTVBSTATE(I) = PROXIMALATOMS(OLIST(J),HCOUNTERS(J,1))
-                    PIVOTVBSTATE(I+1) = OLIST(J)
-                    PIVOTVBSTATE(I+2) = PROXIMALATOMS(OLIST(J),HCOUNTERS(J,2))
-                    I = I + 3
-                 ENDDO
+                 do j = 2, num_eig
+                    pivotVBstate(i) = proximalAtoms(Olist(j),Hcounters(j,1))
+                    pivotVBstate(i+1) = Olist(j)
+                    pivotVBstate(i+2) = proximalAtoms(Olist(j),Hcounters(j,2))
+                    i = i + 3
+                 enddo
 
-                 MINSUMROH = CURRENTSUMROH
+                 minSumRoh = currentSumRoh
 
-!                 PRINT *, 'NEW ASSIGNMENT:', MINSUMROH
-!                    DO I = 1,NUM_EIG
-!                       PRINT *, 'O:', (3*OLIST(I))
+!                 print *, 'New assignment:', minSumRoh
+!                    do i = 1,num_eig
+!                       print *, 'O:', (3*Olist(i))
 
-!                       IF (I.EQ.1) THEN
-!                          PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                                         'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2))),
-!    &                                         'H3:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,3)))
-!                       ELSE
-!                          PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                                         'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2)))
-!                       ENDIF
-!                    ENDDO
-                 ELSE
-                 ASSIGNEDOCOUNT = ASSIGNEDOCOUNT + 1
-                 GOINGUP = .TRUE.
-                 ENDIF
+!                       if (i.eq.1) then
+!                          print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                                         'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2))),
+!    &                                         'H3:', Hposition(neighbouringHs(Olist(i),Hcounters(i,3)))
+!                       else
+!                          print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                                         'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2)))
+!                       endif
+!                    enddo
+                 else
+                 assignedOcount = assignedOcount + 1
+                 goingUp = .TRUE.
+                 endif
 
-! COULD NOT FIND AN ACCEPTABLE SECOND H, TRY RUNNING THROUGH THE FIRST H SELECTION IN TANDEM
+! Could not find an acceptable second H, try running through the first H selection in tandem
 
-              ELSE     
+              else     
 
-                 USEDH(PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1))) = .FALSE.
-                 CURRENTSUMROH = CURRENTSUMROH - &
-                            INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,HCOUNTERS(ASSIGNEDOCOUNT,1)))
+                 usedH(proximalAtoms(currentO,Hcounters(assignedOcount,1))) = .FALSE.
+                 currentSumRoh = currentSumRoh - &
+                            interAtomicR(currentO,proximalAtoms(currentO,Hcounters(assignedOcount,1)))
 
-                 FOUNDANH = .FALSE.
+                 foundAnH = .FALSE.
 
-                 FIRSTHLOOP3: DO I = HCOUNTERS(ASSIGNEDOCOUNT,1)+1, NEIGHBOURCOUNTS(CURRENTO)-1
-                    IF (.NOT.USEDH(PROXIMALATOMS(CURRENTO,I))) THEN
+                 FirstHLoop3: do i = Hcounters(assignedOcount,1)+1, neighbourCounts(currentO)-1
+                    if (.not.usedH(proximalAtoms(currentO,i))) then
 
-                    IF ((CURRENTSUMROH + INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,I))).GE.MINSUMROH) THEN
-                    EXIT FIRSTHLOOP3
-                    ELSE
+                    if ((currentSumRoh + interAtomicR(currentO,proximalAtoms(currentO,i))).ge.minSumRoh) then
+                    exit FirstHLoop3
+                    else
 
-                    DO J = I+1, NEIGHBOURCOUNTS(CURRENTO) 
-                       IF (.NOT.USEDH(PROXIMALATOMS(CURRENTO,J))) THEN
+                    do j = i+1, neighbourCounts(currentO) 
+                       if (.not.usedH(proximalAtoms(currentO,j))) then
 
-                          IF ((CURRENTSUMROH + &
-                                           INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,I)) + &
-                                           INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,J))).GE.MINSUMROH) THEN
-                          EXIT FIRSTHLOOP3
-                          ELSE
+                          if ((currentSumRoh + &
+                                           interAtomicR(currentO,proximalAtoms(currentO,i)) + &
+                                           interAtomicR(currentO,proximalAtoms(currentO,j))).ge.minSumRoh) then
+                          exit FirstHLoop3
+                          else
 
-                          HCOUNTERS(ASSIGNEDOCOUNT,1) = I
-                          USEDH(PROXIMALATOMS(CURRENTO,I)) = .TRUE.
-                          HCOUNTERS(ASSIGNEDOCOUNT,2) = J
-                          USEDH(PROXIMALATOMS(CURRENTO,J)) = .TRUE.
+                          Hcounters(assignedOcount,1) = i
+                          usedH(proximalAtoms(currentO,i)) = .TRUE.
+                          Hcounters(assignedOcount,2) = j
+                          usedH(proximalAtoms(currentO,j)) = .TRUE.
 
-                          CURRENTSUMROH = CURRENTSUMROH + &
-                                              INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,I)) + &
-                                              INTERATOMICR(CURRENTO,PROXIMALATOMS(CURRENTO,J))
-                          FOUNDANH = .TRUE.
-                          EXIT FIRSTHLOOP3
-                          ENDIF
-                       ENDIF
-                    ENDDO
-                    ENDIF
-                 ENDIF
-                 ENDDO FIRSTHLOOP3
+                          currentSumRoh = currentSumRoh + &
+                                              interAtomicR(currentO,proximalAtoms(currentO,i)) + &
+                                              interAtomicR(currentO,proximalAtoms(currentO,j))
+                          foundAnH = .TRUE.
+                          exit FirstHLoop3
+                          endif
+                       endif
+                    enddo
+                    endif
+                 endif
+                 enddo FirstHLoop3
 
-                 IF (FOUNDANH) THEN
-                 IF (ASSIGNEDOCOUNT.EQ.NUM_EIG) THEN
+                 if (foundAnH) then
+                 if (assignedOcount.eq.num_eig) then
 
-                    PIVOTVBSTATE(1) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,1))
-                    PIVOTVBSTATE(2) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,2))
-                    PIVOTVBSTATE(3) = PIVOTOXYGEN
-                    PIVOTVBSTATE(4) = PROXIMALATOMS(PIVOTOXYGEN, HCOUNTERS(1,3))
+                    pivotVBstate(1) = proximalAtoms(pivotOxygen, Hcounters(1,1))
+                    pivotVBstate(2) = proximalAtoms(pivotOxygen, Hcounters(1,2))
+                    pivotVBstate(3) = pivotOxygen
+                    pivotVBstate(4) = proximalAtoms(pivotOxygen, Hcounters(1,3))
 
-                    I = 5
+                    i = 5
 
-                    DO J = 2, NUM_EIG
-                    PIVOTVBSTATE(I) = PROXIMALATOMS(OLIST(J),HCOUNTERS(J,1))
-                    PIVOTVBSTATE(I+1) = OLIST(J)
-                    PIVOTVBSTATE(I+2) = PROXIMALATOMS(OLIST(J),HCOUNTERS(J,2))
-                    I = I + 3
-                    ENDDO
+                    do j = 2, num_eig
+                    pivotVBstate(i) = proximalAtoms(Olist(j),Hcounters(j,1))
+                    pivotVBstate(i+1) = Olist(j)
+                    pivotVBstate(i+2) = proximalAtoms(Olist(j),Hcounters(j,2))
+                    i = i + 3
+                    enddo
 
-                    MINSUMROH = CURRENTSUMROH
+                    minSumRoh = currentSumRoh
 
-!                    PRINT *, 'NEW ASSIGNMENT:', MINSUMROH
-!                       DO I = 1,NUM_EIG
-!                          PRINT *, 'O:', (3*OLIST(I))
-!                          IF (I.EQ.1) THEN
-!                          PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                                    'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2))),
-!    &                                      'H3:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,3)))
-!                          ELSE
-!                          PRINT *, 'H1:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,1))),
-!    &                                      'H2:', HPOSITION(NEIGHBOURINGHS(OLIST(I),HCOUNTERS(I,2)))
-!                          ENDIF
-!                       ENDDO
-                 ELSE
-                    ASSIGNEDOCOUNT = ASSIGNEDOCOUNT + 1                 
-                    GOINGUP = .TRUE.
-                 ENDIF
-                 ELSE 
+!                    print *, 'New assignment:', minSumRoh
+!                       do i = 1,num_eig
+!                          print *, 'O:', (3*Olist(i))
+!                          if (i.eq.1) then
+!                          print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                                    'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2))),
+!    &                                      'H3:', Hposition(neighbouringHs(Olist(i),Hcounters(i,3)))
+!                          else
+!                          print *, 'H1:', Hposition(neighbouringHs(Olist(i),Hcounters(i,1))),
+!    &                                      'H2:', Hposition(neighbouringHs(Olist(i),Hcounters(i,2)))
+!                          endif
+!                       enddo
+                 else
+                    assignedOcount = assignedOcount + 1                 
+                    goingUp = .TRUE.
+                 endif
+                 else 
 
-! DROP DOWN A LEVEL
+! Drop down a level
 
-                 ASSIGNEDOCOUNT = ASSIGNEDOCOUNT - 1
-                 ENDIF                 
-              ENDIF
-           ENDIF
-           ENDIF
-        ENDIF
-     ENDDO INFINITELOOP
+                 assignedOcount = assignedOcount - 1
+                 endif                 
+              endif
+           endif
+           endif
+        endif
+     enddo InfiniteLoop
 
-! CHECK ALSO THAT IT WAS POSSIBLE TO ASSIGN A COMPLETE VB STATE
+! Check also that it was possible to assign a complete VB state
 
-     DO I=1,NATOMS
-        IF (PIVOTVBSTATE(I).EQ.-1) THEN
-           PRINT *, 'UNABLE TO ASSIGN A COMPLETE VB STATE FOR PIVOT OXYGEN', PIVOTOXYGEN
-           PRINT *, 'CHECK GEOMETRY OR CUTOFF'
-           SUCCESS = .FALSE.
-           EXIT
-        ENDIF
-     ENDDO
+     do i=1,natoms
+        if (pivotVBstate(i).eq.-1) then
+           print *, 'Unable to assign a complete VB state for pivot oxygen', pivotOxygen
+           print *, 'Check geometry or cutoff'
+           success = .FALSE.
+           exit
+        endif
+     enddo
 
-     RETURN
+     return
 
-     END SUBROUTINE
+     end subroutine
 
 ! ###############################################################################################
 
-! CALCULATE INTERATOMIC DISTANCES - THESE WILL BE USED BY THE ENERGY/FORCE CALCULATIONS
+! Calculate interatomic distances - these will be used by the energy/force calculations
 
-     SUBROUTINE CALCINTERATOMICDISTANCES(NATOMS,XCOORDS,YCOORDS,ZCOORDS,SEPARATIONS)
-     IMPLICIT NONE
+     subroutine calcInterAtomicDistances(natoms,xcoords,ycoords,zcoords,separations)
+     implicit none
 
-! SUBROUTINE ARGUMENTS
+! Subroutine arguments
 
-     INTEGER, INTENT(IN) :: NATOMS
+     integer, intent(IN) :: natoms
      DOUBLE PRECISION, INTENT (IN) :: XCOORDS(NATOMS), YCOORDS(NATOMS), ZCOORDS(NATOMS)
      DOUBLE PRECISION, DIMENSION(NATOMS,NATOMS), INTENT (OUT) :: SEPARATIONS
 
-! LOCAL VARIABLES
+! Local variables
 
-     INTEGER ATOM1, ATOM2
+     integer atom1, atom2
 
-! INITIALISE
+! Initialise
 
-     SEPARATIONS = 0.0D0
+     separations = 0.0d0
 
-! CALCULATE THE UPPER TRIANGLE BUT EXPLICITLY FILL IN THE WHOLE MATRIX TO AVOID IN FUTURE HAVING TO WORK OUT
-! WHICH ATOM NUMBER IS LOWER
+! Calculate the upper triangle but explicitly fill in the whole matrix to avoid in future having to work out
+! which atom number is lower
 
-     DO ATOM1 = 1, (NATOMS-1)
-        DO ATOM2 = (ATOM1+1), NATOMS
-           SEPARATIONS(ATOM1,ATOM2) = DSQRT((XCOORDS(ATOM1)-XCOORDS(ATOM2))**2 + &
-                                               (YCOORDS(ATOM1)-YCOORDS(ATOM2))**2 + &
-                                               (ZCOORDS(ATOM1)-ZCOORDS(ATOM2))**2)
-           SEPARATIONS(ATOM2,ATOM1) = SEPARATIONS(ATOM1,ATOM2)
-        ENDDO
-     ENDDO
+     do atom1 = 1, (natoms-1)
+        do atom2 = (atom1+1), natoms
+           separations(atom1,atom2) = DSQRT((xcoords(atom1)-xcoords(atom2))**2 + &
+                                               (ycoords(atom1)-ycoords(atom2))**2 + &
+                                               (zcoords(atom1)-zcoords(atom2))**2)
+           separations(atom2,atom1) = separations(atom1,atom2)
+        enddo
+     enddo
 
-     RETURN
+     return
 
-     END SUBROUTINE
+     end subroutine
 
 ! ##################################################################################################     
 

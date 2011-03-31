@@ -9,7 +9,7 @@ DVOPTS=fflags "${FFLAGS}" prog $(PROGNAME) fc_full_name "${FULL_COMPILER_NAME}" 
 porfuncs.f90: $(PRF)
 	$(PRF) ${SWITCH} > $@
 
-display_version.f90: ${DV} 
+dv.f90: ${DV} 
 	${DV} ${DVOPTS} > $@
 
 header.f90: ${HEADER} 

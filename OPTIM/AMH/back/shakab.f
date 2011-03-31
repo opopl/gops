@@ -1,382 +1,382 @@
 
-C     --------------------- SHAKAB -----------------------
+c     --------------------- shakab -----------------------
 
-      SUBROUTINE SHAKAB(MAXSIZ,PRCORD,QRCORD,SRCORD,
-     *                  BONDLN,NUMPRO,JSTRT,JFINS,ZRCORD,
-     *                  MAXSHK,TOLSHK,BDSHAK,ISHKIT,
-     *                  MAXPRO,MAXCRD,MAXCNT,WORK1,WORK3,
-     *                  WORK4,OARCHV,IRES)
+      subroutine shakab(maxsiz,prcord,qrcord,srcord,
+     *                  bondln,numpro,jstrt,jfins,zrcord,
+     *                  maxshk,tolshk,bdshak,ishkit,
+     *                  maxpro,maxcrd,maxcnt,work1,work3,
+     *                  work4,oarchv,ires)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-C     SHAKAB ATTEMPTS TO SATISFY ALPHA-BETA DISTANCE 
-C            CONSTRAINTS USING THE ITERATIVE PROCEDURE 
-C            PROPOSED BY RYCKAERT ET AL., J. COMP. PHYS. 
-C            23, 327-341 (1977).
+c     SHAKAB attempts to satisfy alpha-beta distance 
+c            constraints using the iterative procedure 
+c            proposed by Ryckaert et al., J. Comp. Phys. 
+c            23, 327-341 (1977).
 
-C     ARGUMENTS:
+c     arguments:
 
-C        MAXSIZ- MAXIMUM NUMBER OF PROTEIN RESIDUES (I)
-C        PRCORD- UPDATED COORDINATES SATISFYING BOND
-C                CONSTRAINTS (I,O)
-C        QRCORD- PREVIOUS COORDINATES (I)
-C        SRCORD- SCRATCH SPACE (I)
-C        BONDLN- SPECIFIED BOND LENGTHS (I)
-C        NUMPRO- NUMBER OF CONFIGURATIONS (I)
-C        JSTRT - FIRST NONFIXED SITE (I)
-C        JFINS - LAST NONFIXED SITE (I)
-C        ZRCORD- WORK ARRAY (I)
-C        MAXSHK- MAXIMUM NUMBER OF SHAKE ITERATIONS (I)
-C        TOLSHK- SHAKE TOLERANCE (I)
-C        BDSHAK- FLAG TO ALERT DRIVER TO A INEFFECTIVE
-C                SHAKE (O)
-C        ISHKIT- FLAG USED TO TRACK NUMBER OF SHAKE 
-C                ITERATIONS (I)
-C        MAXPRO- MAXIMUM NUMBER OF PROTEINS (I)
-C        MAXCRD- MAXIMUM NUMBER OF COORDINATES (I)
+c        maxsiz- maximum number of protein residues (i)
+c        prcord- updated coordinates satisfying bond
+c                constraints (i,o)
+c        qrcord- previous coordinates (i)
+c        srcord- scratch space (i)
+c        bondln- specified bond lengths (i)
+c        numpro- number of configurations (i)
+c        jstrt - first nonfixed site (i)
+c        jfins - last nonfixed site (i)
+c        zrcord- work array (i)
+c        maxshk- maximum number of shake iterations (i)
+c        tolshk- shake tolerance (i)
+c        bdshak- flag to alert driver to a ineffective
+c                shake (o)
+c        ishkit- flag used to track number of shake 
+c                iterations (i)
+c        maxpro- maximum number of proteins (i)
+c        maxcrd- maximum number of coordinates (i)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-      IMPLICIT NONE
+      implicit none
 
-C     ARGUMENT DECLARATIONS:
+c     argument declarations:
 
-         INTEGER MAXSIZ,JSTRT,JFINS,NUMPRO,
-     *           MAXSHK,ISHKIT,MAXPRO,MAXCRD,MAXCNT,
-     *           OARCHV,IRES(MAXSIZ)
+         integer maxsiz,jstrt,jfins,numpro,
+     *           maxshk,ishkit,maxpro,maxcrd,maxcnt,
+     *           oarchv,ires(maxsiz)
 
-         REAL PRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
-     *        QRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
-     *        SRCORD(MAXSIZ,3,MAXPRO),
-     *        ZRCORD(MAXSIZ,3,MAXPRO),
-     *        BONDLN(MAXSIZ,MAXCRD),TOLSHK,
-     *        WORK1(MAXCNT),WORK3(MAXCNT),
-     *        WORK4(MAXCNT)
+         real prcord(maxsiz,3,maxpro,maxcrd),
+     *        qrcord(maxsiz,3,maxpro,maxcrd),
+     *        srcord(maxsiz,3,maxpro),
+     *        zrcord(maxsiz,3,maxpro),
+     *        bondln(maxsiz,maxcrd),tolshk,
+     *        work1(maxcnt),work3(maxcnt),
+     *        work4(maxcnt)
      
-C     INTERNAL VARIABLES:
+c     internal variables:
 
-         LOGICAL LBAD,BDSHAK
+         logical lbad,bdshak
 
-         CHARACTER*3 RES_TYPE
+         character*3 res_type
 
  
-C        --- IMPLIED DO LOOP INDICES ---
+c        --- implied do loop indices ---
 
-        INTEGER I_AXIS, I_PRO, I_RES, I_SHK_ITER,III,JJJ
+        integer i_axis, i_pro, i_res, i_shk_iter,iii,jjj
 
-         REAL DIFF
+         real diff
 
-C     REQUIRED SUBROUTINES
+c     required subroutines
 
-C     --------------------- BEGIN -----------------------
+c     --------------------- begin -----------------------
 
-C     --- DIAGNOSTICS ---
+c     --- diagnostics ---
 
-C      IF( IDIGNS )THEN
-C         
-CC        ECHO SCALAR ARGUMENT ARGUMENTS
-C
+c      if( idigns )then
+c         
+cc        echo scalar argument arguments
+c
 
-CC         CHECK THAT THERE IS ROOM FOR STORAGE OF R 
-CC         IN SRCORD(1,.,.)
-C
-C          IF( JSTRT.LE.0 )THEN
-C             WRITE(OARCHV,106)JSTRT
-C  106        FORMAT(/'SHAKE:JSTRT TOO BIG ',I3)
-C             STOP
-C          ENDIF
+cc         check that there is room for storage of r 
+cc         in srcord(1,.,.)
+c
+c          if( jstrt.le.0 )then
+c             write(oarchv,106)jstrt
+c  106        format(/'shake:jstrt too big ',i3)
+c             stop
+c          endif
 
-C        PRINT OUT CURRENT AND PREVIOUS BOND LENGTHS
+c        print out current and previous bond lengths
 
-C         WRITE(OARCHV,105)
-C  105    FORMAT(/'SHAKAB:PRCORD QRCORD')
-C        DO 539 I_RES=JSTRT,JFINS
-C           WORK1(1)=(PRCORD(I_RES,1,1,1)-
-C    *                PRCORD(I_RES,1,1,2))**2 +
-C    *               (PRCORD(I_RES,2,1,1)-
-C    *                PRCORD(I_RES,2,1,2))**2 +
-C    *               (PRCORD(I_RES,3,1,1)-
-C    *                PRCORD(I_RES,3,1,2))**2 
-C           WORK1(1)=SQRT(WORK1(1))
+c         write(oarchv,105)
+c  105    format(/'shakab:prcord qrcord')
+c        do 539 i_res=jstrt,jfins
+c           work1(1)=(prcord(i_res,1,1,1)-
+c    *                prcord(i_res,1,1,2))**2 +
+c    *               (prcord(i_res,2,1,1)-
+c    *                prcord(i_res,2,1,2))**2 +
+c    *               (prcord(i_res,3,1,1)-
+c    *                prcord(i_res,3,1,2))**2 
+c           work1(1)=sqrt(work1(1))
 
-C           WORK1(2)=(QRCORD(I_RES,1,1,1)-
-C    *                QRCORD(I_RES,1,1,2))**2 +
-C    *               (QRCORD(I_RES,2,1,1)-
-C    *                QRCORD(I_RES,2,1,2))**2 +
-C    *               (QRCORD(I_RES,3,1,1)-
-C    *                QRCORD(I_RES,3,1,2))**2 
-C           WORK1(2)=SQRT(WORK1(2))
+c           work1(2)=(qrcord(i_res,1,1,1)-
+c    *                qrcord(i_res,1,1,2))**2 +
+c    *               (qrcord(i_res,2,1,1)-
+c    *                qrcord(i_res,2,1,2))**2 +
+c    *               (qrcord(i_res,3,1,1)-
+c    *                qrcord(i_res,3,1,2))**2 
+c           work1(2)=sqrt(work1(2))
 
-C            WRITE(OARCHV,104)I_RES,
-C     *                      (PRCORD(I_RES,I1,1,1),I1=1,3),
-C     *                      (PRCORD(I_RES,I1,1,2),I1=1,3)
-C  104       FORMAT(I3,2(3(1X,1PE10.3),2X))
+c            write(oarchv,104)i_res,
+c     *                      (prcord(i_res,i1,1,1),i1=1,3),
+c     *                      (prcord(i_res,i1,1,2),i1=1,3)
+c  104       format(i3,2(3(1x,1pe10.3),2x))
 
-C            DIFF=ABS(BONDLN(I_RES,2)-WORK1(1))
-C            IF( (DIFF.GT.1.0) )
-C     *         WRITE(OARCHV,191)I_RES,WORK1(1),WORK1(2),
-C     *                          BONDLN(I_RES,2),DIFF
-C  191          FORMAT('FRONT SHAKE ',I3,1X,4(1PE12.5,1X))
+c            diff=abs(bondln(i_res,2)-work1(1))
+c            if( (diff.gt.1.0) )
+c     *         write(oarchv,191)i_res,work1(1),work1(2),
+c     *                          bondln(i_res,2),diff
+c  191          format('front shake ',i3,1x,4(1pe12.5,1x))
 
-C  539    CONTINUE
+c  539    continue
 
-CC        CHECK IF NEXT-NEAREST NEIGHBOR CONSTRAINTS ARE 
-CC        SATISFIED; IF NOT, THEN PRINT OUT OFFENDING SITES
-C
-C         CALL DIST2(MAXSIZ,JSTRT,JFINS,PRCORD,DIFF)
-C
-C      ENDIF
+cc        check if next-nearest neighbor constraints are 
+cc        satisfied; if not, then print out offending sites
+c
+c         call dist2(maxsiz,jstrt,jfins,prcord,diff)
+c
+c      endif
 
-C     --- END DIAGNOSTICS ---
+c     --- end diagnostics ---
 
-C     FIND THE R OF RYCKAERT ET AL.
+c     find the r of Ryckaert et al.
 
-      DO 521 I_PRO=1,NUMPRO
-         DO 520 I_AXIS=1,3
+      do 521 i_pro=1,numpro
+         do 520 i_axis=1,3
 
-C           COMPUTE R
+c           compute r
 
-            DO 513 I_RES=JSTRT,JFINS
-               IF( IRES(I_RES).NE.8 )THEN
-                 ZRCORD(I_RES,I_AXIS,I_PRO)=QRCORD(I_RES,I_AXIS,I_PRO,2)
-     *                                 - QRCORD(I_RES,I_AXIS,I_PRO,1)
-               ELSE
-                  ZRCORD(I_RES,I_AXIS,I_PRO)=0.0
-               ENDIF
-  513       CONTINUE
+            do 513 i_res=jstrt,jfins
+               if( ires(i_res).ne.8 )then
+                 zrcord(i_res,i_axis,i_pro)=qrcord(i_res,i_axis,i_pro,2)
+     *                                 - qrcord(i_res,i_axis,i_pro,1)
+               else
+                  zrcord(i_res,i_axis,i_pro)=0.0
+               endif
+  513       continue
 
-  520    CONTINUE
-  521 CONTINUE
+  520    continue
+  521 continue
 
 
         
-C     --- DIAGNOSTICS ---
+c     --- diagnostics ---
 
-C     ECHO R
+c     echo r
 
-C       WRITE(OARCHV,811)
-C 811   FORMAT(/'SHAKAB:  PROTEIN: ZRCORD')
-C      DO 522 I_RES=JSTRT,JFINS
-C         WRITE(30,135)I_RES,(ZRCORD(I_RES,I1,1),I1=1,3)
-C  13     FORMAT(I3,1X,3(1PE10.3,1X))
-C  52  CONTINUE
+c       write(oarchv,811)
+c 811   format(/'Shakab:  protein: zrcord')
+c      do 522 i_res=jstrt,jfins
+c         write(30,135)i_res,(zrcord(i_res,i1,1),i1=1,3)
+c  13     format(i3,1x,3(1pe10.3,1x))
+c  52  continue
 
-C     SET ARRAY WORK4 TO THE (BOND LENGTHS)**2
+c     set array work4 to the (bond lengths)**2
 
-      DO 530 I_RES=JSTRT,JFINS
-         WORK4(I_RES)=BONDLN(I_RES,2)**2
-  530 CONTINUE
+      do 530 i_res=jstrt,jfins
+         work4(i_res)=bondln(i_res,2)**2
+  530 continue
 
-C     LOOP OVER NUMPRO PROTEIN CONFIGURATIONS
+c     loop over numpro protein configurations
 
-      DO 501 I_PRO=1,NUMPRO
+      do 501 i_pro=1,numpro
 
-C        SET BETA-GLYCINE TO ALPHA-GLYCINE COORDINATES
+c        set beta-glycine to alpha-glycine coordinates
 
-         DO 534 I_RES=JSTRT,JFINS
-            IF( IRES(I_RES).EQ.8 )THEN
-               PRCORD(I_RES,1,I_PRO,2)=PRCORD(I_RES,1,I_PRO,1)
-               PRCORD(I_RES,2,I_PRO,2)=PRCORD(I_RES,2,I_PRO,1)
-               PRCORD(I_RES,3,I_PRO,2)=PRCORD(I_RES,3,I_PRO,1)
-            ENDIF
-  534    CONTINUE
+         do 534 i_res=jstrt,jfins
+            if( ires(i_res).eq.8 )then
+               prcord(i_res,1,i_pro,2)=prcord(i_res,1,i_pro,1)
+               prcord(i_res,2,i_pro,2)=prcord(i_res,2,i_pro,1)
+               prcord(i_res,3,i_pro,2)=prcord(i_res,3,i_pro,1)
+            endif
+  534    continue
 
-C        PERFORM MAXSHK ITERATIONS IN AN ATTEMPT TO SATISFY THE 
-C         NEAREST-NEIGHBOR DISTANCE CONSTRAINTS
+c        perform maxshk iterations in an attempt to satisfy the 
+c         nearest-neighbor distance constraints
  
-         DO 500 I_SHK_ITER=1,MAXSHK
+         do 500 i_shk_iter=1,maxshk
 
-C           PERFORM CHECKERBOARD BREAKUP, I.E., ANALYZE
-C           CONSTRAINTS INDEPENDENTLY OF ONE ANOTHER
+c           perform checkerboard breakup, i.e., analyze
+c           constraints independently of one another
 
-C           FIND R' OF RYCKAERT ET AL.
+c           find r' of Ryckaert et al.
 
-            DO 503 I_AXIS=1,3
-               DO 502 I_RES=JSTRT,JFINS
-                  SRCORD(I_RES,I_AXIS,I_PRO)=
-     *            PRCORD(I_RES,I_AXIS,I_PRO,2) -
-     *            PRCORD(I_RES,I_AXIS,I_PRO,1)
-  502          CONTINUE
-  503       CONTINUE
+            do 503 i_axis=1,3
+               do 502 i_res=jstrt,jfins
+                  srcord(i_res,i_axis,i_pro)=
+     *            prcord(i_res,i_axis,i_pro,2) -
+     *            prcord(i_res,i_axis,i_pro,1)
+  502          continue
+  503       continue
 
-C           FIND |R'|**2
+c           find |r'|**2
 
-            DO 504 I_RES=JSTRT,JFINS
-               WORK1(I_RES)=SRCORD(I_RES,1,I_PRO)**2 + 
-     *                     SRCORD(I_RES,2,I_PRO)**2 +
-     *                     SRCORD(I_RES,3,I_PRO)**2
-  504       CONTINUE
+            do 504 i_res=jstrt,jfins
+               work1(i_res)=srcord(i_res,1,i_pro)**2 + 
+     *                     srcord(i_res,2,i_pro)**2 +
+     *                     srcord(i_res,3,i_pro)**2
+  504       continue
 
-C           FIND D**2 - R'**2
+c           find d**2 - r'**2
 
-            DO 505 I_RES=JSTRT,JFINS
-               WORK1(I_RES)=WORK4(I_RES) - WORK1(I_RES)
-  505       CONTINUE
+            do 505 i_res=jstrt,jfins
+               work1(i_res)=work4(i_res) - work1(i_res)
+  505       continue
 
-C           CHECK IF DONE
+c           check if done
 
-            DO 506 I_RES=JSTRT,JFINS
+            do 506 i_res=jstrt,jfins
 
-C              IF ALL CONSTRAINTS NOT SATISFIED, THEN CONTINUE;
-C              OTHERWISE, CONSIDER NEXT CONFIGURATION
+c              if all constraints not satisfied, then continue;
+c              otherwise, consider next configuration
 
-               IF( (ABS(WORK1(I_RES)).GT.TOLSHK) )THEN
-                     GO TO 522
-               ENDIF
+               if( (abs(work1(i_res)).gt.tolshk) )then
+                     go to 522
+               endif
 
-  506       CONTINUE
+  506       continue
 
-C           DONE
+c           done
 
-C           INCREMENT VARIABLE USED TO TRACK THE NUMBER
-C           OF REQUIRED ITERATIONS
+c           increment variable used to track the number
+c           of required iterations
 
-            ISHKIT=ISHKIT + I_SHK_ITER - 1
-            GO TO 501
+            ishkit=ishkit + i_shk_iter - 1
+            go to 501
 
-  522       CONTINUE
+  522       continue
 
-C           FIND R.R'
+c           find r.r'
 
-            DO 507 I_RES=JSTRT,JFINS
+            do 507 i_res=jstrt,jfins
 
-               WORK3(I_RES)=ZRCORD(I_RES,1,I_PRO)*
-     *                     SRCORD(I_RES,1,I_PRO) +
-     *                     ZRCORD(I_RES,2,I_PRO)*
-     *                     SRCORD(I_RES,2,I_PRO) +
-     *                     ZRCORD(I_RES,3,I_PRO)*
-     *                     SRCORD(I_RES,3,I_PRO)
+               work3(i_res)=zrcord(i_res,1,i_pro)*
+     *                     srcord(i_res,1,i_pro) +
+     *                     zrcord(i_res,2,i_pro)*
+     *                     srcord(i_res,2,i_pro) +
+     *                     zrcord(i_res,3,i_pro)*
+     *                     srcord(i_res,3,i_pro)
 
-  507       CONTINUE
-
-
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C           --- DIAGNOSTICS ---
-C           PRINT WORK3 IF TOO SMALL
-C            DO 561 I_RES=JSTRT,JFINS
-C               IF( ABS(WORK3(I_RES)).LT.EPSILN )THEN
-C                  DIFF=0.25*WORK1(I_RES)/WORK3(I_RES)
-C                  WRITE(OARCHV,124)I_SHK_ITER,I_RES,WORK3(I_RES)
-C                  WRITE(OARCHV,711)
-C     *            (ZRCORD(I_RES,I1,I_PRO),I1=1,3),
-C     *            (SRCORD(I_RES,I1,I_PRO),I1=1,3)
-C  711             FORMAT('Z + S',6(1X,1PE10.3))
-C  124             FORMAT('SHAKE ITER ',I4,' SITE ',I3,
-C     *                   ' WORK3 ',1PE10.3,' G ',1PE10.3)
-C               ENDIF
-C  561       CONTINUE
-C           --- END DIAGNOSTICS ---
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+  507       continue
 
 
-C           COMPUTE G 
+cccccccccccccccccccccccccccccccccccccccccccccccccc
+c           --- diagnostics ---
+c           print work3 if too small
+c            do 561 i_res=jstrt,jfins
+c               if( abs(work3(i_res)).lt.epsiln )then
+c                  diff=0.25*work1(i_res)/work3(i_res)
+c                  write(oarchv,124)i_shk_iter,i_res,work3(i_res)
+c                  write(oarchv,711)
+c     *            (zrcord(i_res,i1,i_pro),i1=1,3),
+c     *            (srcord(i_res,i1,i_pro),i1=1,3)
+c  711             format('z + s',6(1x,1pe10.3))
+c  124             format('shake iter ',i4,' site ',i3,
+c     *                   ' work3 ',1pe10.3,' g ',1pe10.3)
+c               endif
+c  561       continue
+c           --- end diagnostics ---
+cccccccccccccccccccccccccccccccccccccccccccccccccc
 
-            DO 509 I_RES=JSTRT,JFINS
-               IF( IRES(I_RES).NE.8 )THEN
-                  WORK3(I_RES)=0.25*WORK1(I_RES)/WORK3(I_RES)
-               ELSE
-                  WORK3(I_RES)=0.0
-               ENDIF
-  509       CONTINUE 
+
+c           compute g 
+
+            do 509 i_res=jstrt,jfins
+               if( ires(i_res).ne.8 )then
+                  work3(i_res)=0.25*work1(i_res)/work3(i_res)
+               else
+                  work3(i_res)=0.0
+               endif
+  509       continue 
 
 
 
-C           UPDATE COORDINATES
+c           update coordinates
 
-            DO 511 I_AXIS=1,3
+            do 511 i_axis=1,3
 
-               DO 510 I_RES=JSTRT,JFINS
-                  PRCORD(I_RES,I_AXIS,I_PRO,2)=
-     *            PRCORD(I_RES,I_AXIS,I_PRO,2) +
-     *            ZRCORD(I_RES,I_AXIS,I_PRO)*WORK3(I_RES)
-  510          CONTINUE
+               do 510 i_res=jstrt,jfins
+                  prcord(i_res,i_axis,i_pro,2)=
+     *            prcord(i_res,i_axis,i_pro,2) +
+     *            zrcord(i_res,i_axis,i_pro)*work3(i_res)
+  510          continue
 
-               DO 524 I_RES=JSTRT,JFINS
-                  PRCORD(I_RES,I_AXIS,I_PRO,1)=
-     *            PRCORD(I_RES,I_AXIS,I_PRO,1) -
-     *            ZRCORD(I_RES,I_AXIS,I_PRO)*WORK3(I_RES)
-  524          CONTINUE
+               do 524 i_res=jstrt,jfins
+                  prcord(i_res,i_axis,i_pro,1)=
+     *            prcord(i_res,i_axis,i_pro,1) -
+     *            zrcord(i_res,i_axis,i_pro)*work3(i_res)
+  524          continue
  
-  511       CONTINUE
+  511       continue
 
-  500    CONTINUE
+  500    continue
 
-  501 CONTINUE
+  501 continue
 
-      CONTINUE
+      continue
 
-C     --- DIAGNOSTICS ---
+c     --- diagnostics ---
 
-      LBAD=.FALSE.
+      lbad=.false.
 
-C     DETERMINE WHICH IF ANY OF THE CONSTRAINTS
-C     ARE NOT SATISFIED
+c     determine which if any of the constraints
+c     are not satisfied
 
-      DO 512 I_PRO=1,NUMPRO
-         DO 514 I_AXIS=1,3
-            DO 523 I_RES=JSTRT,JFINS
-               SRCORD(I_RES,I_AXIS,I_PRO)=PRCORD(I_RES,I_AXIS,I_PRO,2)
-     *                              - PRCORD(I_RES,I_AXIS,I_PRO,1)
-  523       CONTINUE
-  514    CONTINUE
-         DO 515 I_RES=JSTRT,JFINS
-            WORK1(I_RES)=SRCORD(I_RES,1,I_PRO)**2 +
-     *                  SRCORD(I_RES,2,I_PRO)**2 +
-     *                  SRCORD(I_RES,3,I_PRO)**2
-  515    CONTINUE
-         DO 516 I_RES=JSTRT,JFINS
-            WORK1(I_RES)=SQRT(WORK1(I_RES))
-  516    CONTINUE
+      do 512 i_pro=1,numpro
+         do 514 i_axis=1,3
+            do 523 i_res=jstrt,jfins
+               srcord(i_res,i_axis,i_pro)=prcord(i_res,i_axis,i_pro,2)
+     *                              - prcord(i_res,i_axis,i_pro,1)
+  523       continue
+  514    continue
+         do 515 i_res=jstrt,jfins
+            work1(i_res)=srcord(i_res,1,i_pro)**2 +
+     *                  srcord(i_res,2,i_pro)**2 +
+     *                  srcord(i_res,3,i_pro)**2
+  515    continue
+         do 516 i_res=jstrt,jfins
+            work1(i_res)=sqrt(work1(i_res))
+  516    continue
 
 
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-         DO 517 I_RES=JSTRT,JFINS 
-            DIFF=ABS(WORK1(I_RES) - BONDLN(I_RES,2))
-            IF( DIFF.GT.TOLSHK )THEN
-               LBAD=.TRUE.
-               GO TO 519
-            ENDIF
-  517    CONTINUE
-  519    CONTINUE
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
+         do 517 i_res=jstrt,jfins 
+            diff=abs(work1(i_res) - bondln(i_res,2))
+            if( diff.gt.tolshk )then
+               lbad=.true.
+               go to 519
+            endif
+  517    continue
+  519    continue
+ccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc
 
            
-         IF( LBAD )THEN
+         if( lbad )then
 
 
-C           --- ALL CONSTRAINTS NOT SATISFIED 
-C               AFTER MAXSHK ITERATIONS ---
+c           --- all constraints not satisfied 
+c               after maxshk iterations ---
 
-            WRITE(OARCHV,103)
-  103       FORMAT(/'NOT ALL BONDS SATISFIED IN SHAKAB')
+            write(oarchv,103)
+  103       format(/'not all bonds satisfied in shakab')
 
-            DO 518 I_RES=JSTRT,JFINS 
-               DIFF=ABS(WORK1(I_RES) - BONDLN(I_RES,2))
-               IF( DIFF.GT.TOLSHK )THEN
-                  WRITE(OARCHV,110)I_PRO,I_RES,WORK1(I_RES),
-     *                             BONDLN(I_RES,2),DIFF
-  110             FORMAT('PRO ',I2,' SITE ',I3,' D(CAL) ',
-     *                   1PE10.3,' D(EXACT) ',1PE10.3,
-     *                   ' DIFF ',1PE10.3)
-               ENDIF
-  518       CONTINUE
+            do 518 i_res=jstrt,jfins 
+               diff=abs(work1(i_res) - bondln(i_res,2))
+               if( diff.gt.tolshk )then
+                  write(oarchv,110)i_pro,i_res,work1(i_res),
+     *                             bondln(i_res,2),diff
+  110             format('pro ',i2,' site ',i3,' d(cal) ',
+     *                   1pe10.3,' d(exact) ',1pe10.3,
+     *                   ' diff ',1pe10.3)
+               endif
+  518       continue
    
-            BDSHAK=.TRUE.
-            DO 533 I_AXIS=1,3
-               DO 525 I_RES=JSTRT,JFINS
-                  PRCORD(I_RES,I_AXIS,I_PRO,2)=
-     *            QRCORD(I_RES,I_AXIS,I_PRO,2)
-  525             CONTINUE
-  533       CONTINUE
-         ELSE
+            bdshak=.true.
+            do 533 i_axis=1,3
+               do 525 i_res=jstrt,jfins
+                  prcord(i_res,i_axis,i_pro,2)=
+     *            qrcord(i_res,i_axis,i_pro,2)
+  525             continue
+  533       continue
+         else
 
-         ENDIF
-  512 CONTINUE
+         endif
+  512 continue
  
-C     --- END DIAGNOSTICS ---
+c     --- end diagnostics ---
 
-C     ---------------------- DONE ----------------------
+c     ---------------------- done ----------------------
 
  
-      RETURN
-      END
+      return
+      end

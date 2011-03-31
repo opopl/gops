@@ -1,35 +1,35 @@
 !
-!     COORDSA BECOMES THE OPTIMAL ALIGNMENT OF THE OPTIMAL PERMUTATION(-INVERSION) ISOMER, BUT 
-!     WITHOUT THE PERMUTATIONS. DISTANCE IS THE RESIDUAL SQUARE DISTANCE FOR THE BEST ALIGNMENT WITH
-!     RESPECT TO PERMUTATION(-INVERSION)S AS WELL AS ORIENTATION AND CENTRE OF MASS.
+!     COORDSA becomes the optimal alignment of the optimal permutation(-inversion) isomer, but 
+!     without the permutations. DISTANCE is the residual square distance for the best alignment with
+!     respect to permutation(-inversion)s as well as orientation and centre of mass.
 !
-!     RBSITESORIENT IS CALLED FIRST FOR BOTH COORDSA AND COORDSB TO PUT THEM INTO A STANDARD
-!     ORIENTATION IN DUMMYA AND DUMMYB (WHICH BOTH HAVE THE CENTRE OF COORDINATES AT THE ORIGIN)
-!     WITH RESPECT TO THE SITES VIA ROTATIONS CORRESPONDING TO THE QUATERNIONS QA AND QB, 
-!     RESPECTIVELY. THE OBJECTIVE IS TO IDENTIFY PERMUTATION-INVERSION ISOMERS WITHOUT FAIL.
-!     HOWEVER, WE HAVE TO CYCLE OVER ALL EQUIVALENT RIGID BODIES IN TWO PARTICULAR ORBITS FOR DUMMYA
-!     TO ACHIEVE THIS.
-!     WE ITERATE PERMUTATIONS AND RBMINDIST MINIMISATIONS UP TO A MAXIMUM NUMBER OR UNTIL NO MORE
-!     PERMUTATIONS ARE REQUIRED FOR EACH INSTANCE OF DUMMYA ALIGNED ACCORDING TO NCHOOSE1 AND 
-!     NCHOOSE2 BY RBSITESORIENT. THE CUMULATIVE ROTATION THAT TAKES THE INITIAL DUMMYA TO THE ONE
-!     THAT ALIGNS BEST WITH DUMMYB IS SAVED IN THE QUATERNION QCUMUL.
+!     RBSITESORIENT is called first for both COORDSA and COORDSB to put them into a standard
+!     orientation in DUMMYA and DUMMYB (which both have the centre of coordinates at the origin)
+!     with respect to the sites via rotations corresponding to the quaternions QA and QB, 
+!     respectively. The objective is to identify permutation-inversion isomers without fail.
+!     However, we have to cycle over all equivalent rigid bodies in two particular orbits for DUMMYA
+!     to achieve this.
+!     We iterate permutations and rbmindist minimisations up to a maximum number or until no more
+!     permutations are required for each instance of DUMMYA aligned according to NCHOOSE1 and 
+!     NCHOOSE2 by RBSITESORIENT. The cumulative rotation that takes the initial DUMMYA to the one
+!     that aligns best with DUMMYB is saved in the quaternion QCUMUL.
 
-!     THEN, IF WE'VE NOT GOING WITH BULK, WE TRY AGAIN FOR THE INVERTED
-!     VERSION OF COORDSA. THE TRANSFORMATION CORRESPONDING TO THE MINIMUM DISTANCE
-!     IS SAVED WHENEVER IT IS IMPROVED - THE BEST ALIGNMENT INCLUDING PERMUTATIONS
-!     IS SAVED IN XBEST, AND THE LAST STEP IS TO ROTATE THIS BACK TO COINCIDE BEST
-!     WITH COORDSB (RATHER THAN DUMMYB) USING QBINV WHICH IS OBTAINED FROM QB. THIS GIVES SUITABLE
-!     FIXED END POINTS FOR DNEB.
+!     Then, if we've not going with BULK, we try again for the inverted
+!     version of COORDSA. The transformation corresponding to the minimum distance
+!     is saved whenever it is improved - the best alignment including permutations
+!     is saved in XBEST, and the last step is to rotate this back to coincide best
+!     with COORDSB (rather than DUMMYB) using QBINV which is obtained from QB. This gives suitable
+!     fixed end points for DNEB.
 
-!     FINALLY, WE TRANSFORM COORDSA TO BE IN OPTIMAL ALIGNMENT, BUT WITHOUT THE
-!     PERMUTATIONS IN XBEST. THE OVERALL TRANSFORMATION IS
+!     Finally, we transform COORDSA to be in optimal alignment, but without the
+!     permutations in XBEST. The overall transformation is
 !     COORDSA -> +/- QBINV QCUMUL QA (COORDSA - CMA) 
 !
-!     THE CORRESPONDENCE BETWEEN COORDSA AND DUMMYA AFTER DUMMYA HAS BEEN ALIGNED BY RBMINDIST IS
-!     +/- RMATCUMUL ROTA (COORDSA - CMA) = PERMUTATION(DUMMYA)
-!     WHERE +/- IS GIVEN BY THE VALUE OF INVERT WHICH CAN ASSUME +1 OR -1.
-!     THE CENTRES OF COORDINATES FOR COORDSA AND COORDSB CAN BE ANYWHERE. ON RETURN, THE
-!     CENTRE OF COORDINATES OF COORDSA WILL BE THE SAME AS FOR COORDSB.
+!     The correspondence between COORDSA and DUMMYA after DUMMYA has been aligned by rbmindist is
+!     +/- RMATCUMUL ROTA (COORDSA - CMA) = permutation(DUMMYA)
+!     where +/- is given by the value of INVERT which can assume +1 or -1.
+!     The centres of coordinates for COORDSA and COORDSB can be anywhere. On return, the
+!     centre of coordinates of COORDSA will be the same as for COORDSB.
 !
 !     ----------------------------------------------------------------------------------------------
  
@@ -73,7 +73,7 @@
       NATOMS = 2*NATOMS
 
       IF (SQRT(DIST2) <= GEOMDIFFTOL) THEN
-         IF (DEBUG) PRINT '(A)',' RBPERMDIST> MINPERMDISTRBCOM SUGGESTS IDENTICAL'
+         IF (DEBUG) PRINT '(A)',' rbpermdist> minpermdistrbcom suggests identical'
          CMAX = 0.0D0; CMAY = 0.0D0; CMAZ = 0.0D0
          CMBX = 0.0D0; CMBY = 0.0D0; CMBZ = 0.0D0
          DO J1 = 1, NATOMS/2
@@ -105,8 +105,8 @@
 
 100   CONTINUE
 
-      COORDSAS(1:3*NATOMS) = COORDSA(1:3*NATOMS) ! TO TRACE ERROR, SEE AT THE END
-      COORDSBS(1:3*NATOMS) = COORDSB(1:3*NATOMS) ! TO TRACE ERROR, SEE AT THE END
+      COORDSAS(1:3*NATOMS) = COORDSA(1:3*NATOMS) ! to trace error, see at the end
+      COORDSBS(1:3*NATOMS) = COORDSB(1:3*NATOMS) ! to trace error, see at the end
 
       NRB   = (NATOMS/2)
       IF (DBPTDT) THEN
@@ -123,9 +123,9 @@
        ENDDO
       CMBX = 2*CMBX/NATOMS; CMBY = 2*CMBY/NATOMS; CMBZ = 2*CMBZ/NATOMS
 !
-!     BRING COORDSB INTO STANDARD ORIENTATION WITH RESPECT TO THE SITE POSITION
-!     THE STANDARD ORIENTATION NEEDS TO BE DONE FOR THE SITES IF WE ARE GOING TO IDENTIFY
-!     PERMUTATION-INVERSION ISOMERS WITH RESPECT TO THE SITES METRIC!
+!     Bring COORDSB into standard orientation with respect to the site position
+!     The standard orientation needs to be done for the sites if we are going to identify
+!     permutation-inversion isomers with respect to the sites metric!
 !
 !     DUMMY(1:3*NATOMS)=DUMMYB(1:3*NATOMS)
 !     CALL RBSITESORIENT(DUMMY,DUMMYB,NORBIT1,1,NORBIT2,1,NATOMS,DEBUG,ROTB,ROTINVB)
@@ -133,15 +133,15 @@
 !     ----------------------------------------------------------------------------------------------
 !     !
 !     CALL POTENTIAL(COORDSB,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-!     PRINT '(2(A,F25.15))','BEFORE ENERGYB =',ENERGY,' RMS=',RMS
+!     PRINT '(2(A,F25.15))','before ENERGYB =',ENERGY,' RMS=',RMS
 !     CALL POTENTIAL(DUMMYB,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-!     PRINT '(2(A,F25.15))',' AFTER ENERGYB =',ENERGY,' RMS=',RMS
+!     PRINT '(2(A,F25.15))',' after ENERGYB =',ENERGY,' RMS=',RMS
 !     !
 !     ---------------------------------------------------------------------------------------------- 
 !
 !     CALL SITEPOS(DUMMYB,XB)
 !     WRITE(975,'(I6)') NRB*NRBSITES
-!     WRITE(975,'(A,F20.10)') 'B SITES 1'
+!     WRITE(975,'(A,F20.10)') 'B sites 1'
 !     WRITE(975,'(A,3F20.10)') ('LA ',XB(3*(J3-1)+1:3*(J3-1)+3),J3=1,NRB*NRBSITES)
 
       INVERT = 1
@@ -160,23 +160,23 @@
          NEWPERM(J1) = J1
       ENDDO
  
-!     THE OPTIMAL ALIGNMENT RETURNED BY MINPERDIST IS A LOCAL MINIMUM, BUT MAY NOT
-!     BE THE GLOBAL MINIMUM. CALLING RBORIENT FIRST SHOULD PUT PERMUTATIONAL ISOMERS
-!     INTO A STANDARD ALIGNMENT AND SPOT THE GLOBAL MINIMUM ZEDRO DISTANCE IN ONE
-!     GO. HOWEVER, WE ALSO NEED TO CYCLE OVER EQUIVALENT ATOMS IN ORBITS USING NCHOOSE2.
+!     The optimal alignment returned by minperdist is a local minimum, but may not
+!     be the global minimum. Calling RBORIENT first should put permutational isomers
+!     into a standard alignment and spot the global minimum zedro distance in one
+!     go. However, we also need to cycle over equivalent atoms in orbits using NCHOOSE2.
 !
-!     PROBLEMS CAN OCCUR IF WE DON'T USE ALL THE ATOMS SPECIFIED BY NORBIT1 AND NORBIT2
-!     BECAUSE OF THE NUMERICAL CUTOFFS EMPLOYED IN MYORIENT. WE COULD MISS THE
-!     RIGHT ORIENTATION! 
+!     Problems can occur if we don't use all the atoms specified by NORBIT1 and NORBIT2
+!     because of the numerical cutoffs employed in MYORIENT. We could miss the
+!     right orientation! 
 !
-!     IF WE USE RBORIENT TO PRODUCE PARTICULAR ORIENTATIONS THEN WE END UP ALIGNING 
-!     COORDSA NOT WITH COORDSB BUT WITH THE STANDARD ORIENTATION OF COORDSB IN DUMMYB.
-!     WE NOW DEAL WITH THIS BY TRACKING THE COMPLETE TRANSFORMATION, INCLUDING THE
-!     CONTRIBUTION OF MYORIENT USING ROTB AND ROTINVB.
+!     If we use RBORIENT to produce particular orientations then we end up aligning 
+!     COORDSA not with COORDSB but with the standard orientation of COORDSB in DUMMYB.
+!     We now deal with this by tracking the complete transformation, including the
+!     contribution of MYORIENT using ROTB and ROTINVB.
 !
 
 !      IF (INVERT.NE.1) THEN
-!         PRINT '(A)',' RBMINPERMDIST> ERROR *** INVERSION NOT YET PROGRAMMED'
+!         PRINT '(A)',' rbminpermdist> ERROR *** inversion not yet programmed'
 !         STOP
 !      ENDIF
 
@@ -188,14 +188,14 @@
       DUMMYC(1:3*NATOMS)=DUMMYB(1:3*NATOMS)
 
 !     CALL POTENTIAL(DUMMYA,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-!     PRINT '(2(A,F25.15))','BEFORE DUMMYA =',ENERGY,' RMS=',RMS
+!     PRINT '(2(A,F25.15))','before DUMMYA =',ENERGY,' RMS=',RMS
 
       CALL RBSITESORIENT(DUMMYC,DUMMY,NORBIT1,1,NORBIT2,1,NATOMS,QB,DEBUG)
 
       DUMMYB(1:3*NATOMS)=DUMMY(1:3*NATOMS)
 
 !     CALL POTENTIAL(DUMMYB,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-!     PRINT '(2(A,F25.15))','BEFORE DUMMYB =',ENERGY,' RMS=',RMS
+!     PRINT '(2(A,F25.15))','before DUMMYB =',ENERGY,' RMS=',RMS
 
 !     ----------------------------------------------------------------------------------------------
 !     !
@@ -212,7 +212,7 @@
 !     ----------------------------------------------------------------------------------------------
       
 !      IF (INVERT == -1) ROTA(:,:) = MATMUL(ROTA(:,:),RMATI(:,:))  
-!     RMATI WAS RETURNED ON INVERSION FOLLOWED BY ROTATION TO BRING ABOUT BEST SUPERPOSITION ON DUMMYB IN ONE GO
+!     RMATI was returned on inversion followed by rotation to bring about best superposition on DUMMYB in one go
 
       IF (INVERT == -1) THEN
          QTMP(1:4) = QI(1:4)
@@ -231,28 +231,28 @@
 !     ----------------------------------------------------------------------------------------------
 !     !
 !      WRITE(975,'(I6)') NRB*NRBSITES
-!      WRITE(975,'(A,2I6,A,F20.10)') 'A SITES BEFORE ROTATION'
+!      WRITE(975,'(A,2I6,A,F20.10)') 'A sites before rotation'
 !      WRITE(975,'(A,3F20.10)') ('LA ',XA(3*(J3-1)+1:3*(J3-1)+3),J3=1,NRB*NRBSITES)
 !      WRITE(975,'(I6)') NRB*NRBSITES
-!      WRITE(975,'(A,2I6,A,F20.10)') 'B SITES BEFORE ROTATION'
+!      WRITE(975,'(A,2I6,A,F20.10)') 'B sites before rotation'
 !      WRITE(975,'(A,3F20.10)') ('LA ',XB(3*(J3-1)+1:3*(J3-1)+3),J3=1,NRB*NRBSITES)
 !     !
 !     ----------------------------------------------------------------------------------------------
 
-      IF (DEBUG) PRINT '(A,G20.10)',' RBMINPERMDIST> AFTER INITIAL CALL TO RBSITESORIENT DISTANCE=',SQRT(DISTANCE)
+      IF (DEBUG) PRINT '(A,G20.10)',' rbminpermdist> after initial call to RBSITESORIENT distance=',SQRT(DISTANCE)
 !
-!     BIPARTITE MATCHING ROUTINE FOR PERMUTATIONS. COORDINATES IN DUMMYB DO NOT CHANGE
-!     BUT THE COORDINATES IN DUMMYA DO. DISTANCE IS THE DISTANCE IN THIS CASE.
-!     WE RETURN TO LABEL 10 AFTER EVERY ROUND OF PERMUTATIONAL/ORIENTATIONAL ALIGNMENT
-!     UNLESS WE HAVE CONVERGED TO THE IDENTITY PERMUTATION.
+!     Bipartite matching routine for permutations. Coordinates in DUMMYB do not change
+!     but the coordinates in DUMMYA do. DISTANCE is the distance in this case.
+!     We return to label 10 after every round of permutational/orientational alignment
+!     unless we have converged to the identity permutation.
 !
-!     ATOMS ARE NOT ALLOWED TO APPEAR IN MORE THAN ONE GROUP.
-!     THE MAXIMUM NUMBER OF PAIR EXCHANGES ASSOCIATED WITH A GROUP IS TWO.
+!     Atoms are not allowed to appear in more than one group.
+!     The maximum number of pair exchanges associated with a group is two.
 !
       NTRIES = 0
 !
-!     QCUMUL IS A QUATERNION CONTAINING THE INFORMATION OF ACCUMULATED ROTATION THAT RELATES THE  
-!     ORIGINAL DUMMYA OBTAINED FROM COORDSA TO THE FINAL ONE. INITIALIZE QCUMUL.
+!     QCUMUL is a quaternion containing the information of accumulated rotation that relates the  
+!     original DUMMYA obtained from COORDSA to the final one. Initialize QCUMUL.
 !
       QCUMUL(1:4) = (/1.D0, 0.D0, 0.D0, 0.D0/)
 
@@ -269,8 +269,8 @@
 
          PATOMS = NPERMSIZE(J1)
           IF (PATOMS.GT.NRB) THEN
-             PRINT '(A,I6,A,I6,A,I6)',' RBMINPERMDIST> ERROR *** NUMBER OF PERMUTABLE SITES IN GROUP ',J1,' IS ',PATOMS, &
-  &                                   ' WHICH EXCEEDS THE NUMBER OF RIGID BODIES ',NRB
+             PRINT '(A,I6,A,I6,A,I6)',' rbminpermdist> ERROR *** number of permutable sites in group ',J1,' is ',PATOMS, &
+  &                                   ' which exceeds the number of rigid bodies ',NRB
              STOP
          ENDIF
 
@@ -283,8 +283,8 @@
             PDUMMYB(3*(J2-1)+3) = DUMMYB(3*(PERMGROUP(NDUMMY+J2-1)-1)+3)
          ENDDO
 !
-!     ALL PERMUTATIONS WITHIN THIS GROUP OF SIZE NPERMSIZE(J1) ARE NOW TRIED.
-!     NOTE THAT WE ARE JUST USING A METRIC BASED ON THE RIGID BODY CENTRE OF MASS COORDINATES HERE!
+!     All permutations within this group of size NPERMSIZE(J1) are now tried.
+!     Note that we are just using a metric based on the rigid body centre of mass coordinates here!
 !
 
          CALL MINPERM(PATOMS, PDUMMYB, PDUMMYA, BOXLX, BOXLY, BOXLZ, BULKT, LPERM, LDISTANCE, DIST2, WORSTRAD)
@@ -293,10 +293,10 @@
             PERM(PERMGROUP(NDUMMY+J2-1)) = PERMGROUP(NDUMMY+LPERM(J2)-1)
          ENDDO
 !
-!  WILL THIS BRANCH EVER BE EXECUTED FOR RIGID BODIES?!
+!  Will this branch ever be executed for rigid bodies?!
 !
          IF (NSETS(J1).GT.0) THEN
-            PRINT '(A)',' RBPERM> ERROR *** ASSOCIATED ATOM SWAPS NOT ALLOWED FOR RIGID BODIES'
+            PRINT '(A)',' rbperm> ERROR *** associated atom swaps not allowed for rigid bodies'
             STOP
          ENDIF
 
@@ -304,18 +304,18 @@
 
       ENDDO
 !
-!     DUE TO POSSIBLE SWAPS ABOVE, WE NEED TO UPDATE THE OVERALL PERMUTATION HERE.
+!     Due to possible swaps above, we need to update the overall permutation here.
 !
       ALLPERM(1:NATOMS) = NEWPERM(1:NATOMS)
       DUMMY(1:3*NATOMS) = DUMMYA(1:3*NATOMS)
       NPERM    = 0
       DISTANCE = 0.0D0
 !
-!     NOW PERMUTE THE ROTATIONAL COORDINATES TO CORRESPOND TO THE CENTRE OF MASS COORDINATE PERMUTATION.
+!     Now permute the rotational coordinates to correspond to the centre of mass coordinate permutation.
 !
       DO J1 = (NATOMS/2)+1, NATOMS
          IF (PERM(J1).NE.J1) THEN
-            PRINT '(A,2I8)',' RBMINPERMDIST> ERROR - J1,PERM(J1) SHOULD BE EQUAL', J1,PERM(J1)
+            PRINT '(A,2I8)',' rbminpermdist> ERROR - J1,PERM(J1) should be equal', J1,PERM(J1)
          ENDIF
          PERM(J1) = PERM(J1-(NATOMS/2)) + (NATOMS/2)
       ENDDO
@@ -328,7 +328,7 @@
 
          IF (J3.NE.PERM(J3)) THEN
 
-            IF (DEBUG) WRITE(*,'(A,I5,A,I5)') ' RBPERMDIST> PERMUTE RIGID BODIES ',J3,' AND ',PERM(J3)
+            IF (DEBUG) WRITE(*,'(A,I5,A,I5)') ' rbpermdist> permute rigid bodies ',J3,' and ',PERM(J3)
             NPERM = NPERM + 1
             NEWPERM(J3) = ALLPERM(PERM(J3))
 
@@ -336,54 +336,54 @@
 
       ENDDO
 
-!     SITE-SITE DISTANCE
+!     Site-site distance
 
-      CALL SITEPOS(DUMMYA,XA)      ! DUMMYB REMAINED UNALTERED, SO AS XB.
+      CALL SITEPOS(DUMMYA,XA)      ! DUMMYB remained unaltered, so as XB.
 
 !     WRITE(975,'(I6)') NRB*NRBSITES
-!     WRITE(975,'(A,F20.10)') 'A SITES AFTER MINPERM'
+!     WRITE(975,'(A,F20.10)') 'A sites after MINPERM'
 !     WRITE(975,'(A,3F20.10)') ('LA ',XA(3*(J3-1)+1:3*(J3-1)+3),J3=1,NRB*NRBSITES)
 
       DO J1 = 1, 3*NSIZE
          DISTANCE = DISTANCE + (XA(J1) - XB(J1))**2
       ENDDO
 !
-!     UPDATE ALLPERM AGAIN. NEWPERM IS THE SAME AS ALLPERM AT THE START OF THE NEXT PASS.
+!     Update ALLPERM again. NEWPERM is the same as ALLPERM at the start of the next pass.
 !
       ALLPERM(1:NATOMS) = NEWPERM(1:NATOMS)
 
-      IF (DEBUG) WRITE(*,'(A,I6,A,G20.10)') ' RBMINPERMDIST> SITES DISTANCE AFTER PERMUTING ',NPERM,'    &
-     &                                        PAIRS OF RIGID BODIES=', SQRT(DISTANCE)
+      IF (DEBUG) WRITE(*,'(A,I6,A,G20.10)') ' rbminpermdist> sites distance after permuting ',NPERM,'    &
+     &                                        pairs of rigid bodies=', SQRT(DISTANCE)
 !
-!     FURTHER ALIGNMENT. COORDINATES IN DUMMYA ARE RESET BY RBMINDIST (SECOND ARGUMENT).
-!     MUST ALLOW AT LEAST ONE CALL TO RBMINDIST IN CASE THE STANDARD ORIENTATION RESULT IS TERRIBLE
-!     BUT GIVES ZERO PERMUTATIONS!
-!     WE TRY INTERNAL SYMMETRY OPERATIONS FIRST FOR EACH RIGID BODY, THEN MINIMISE THE
-!     DISTANCE FURTHER (IF POSSIBLE) .
+!     Further alignment. Coordinates in DUMMYA are reset by RBMINDIST (second argument).
+!     Must allow at least one call to RBMINDIST in case the standard orientation result is terrible
+!     but gives zero permutations!
+!     We try internal symmetry operations first for each rigid body, then minimise the
+!     distance further (if possible) .
 !  
       IF ((NPERM.NE.0) .OR. (NTRIES.EQ.1)) THEN 
 !
-!     NOW IF RBSYMT IS .TRUE. WE SHOULD MINIMISE THE DISTANCE METRIC FOR ALL THE RIGID BODIES
-!     BY CONSIDERING ALL THE ALLOWED SYMMETRY OPERATIONS FOR EACH RIGID BODY IN TURN.
-!     DO THIS BY ALTERING THE ORIENTATIONAL COORDINATES IN DUMMYA FOR EACH RIGID BODY IN TURN,
-!     AFTER SAVING THEM, CALCULATE THE NEW DISTANCE USING THE ALL SITES METRIC, AND ACCEPT THE
-!     NEW ORIENTATION IF THE DISTANCE IS LOWER.
-!     COULD GENERALISE TO MORE THAN ONE SORT OF RIGID BODY AS WELL.
+!     Now if RBSYMT is .TRUE. we should minimise the distance metric for all the rigid bodies
+!     by considering all the allowed symmetry operations for each rigid body in turn.
+!     Do this by altering the orientational coordinates in DUMMYA for each rigid body in turn,
+!     after saving them, calculate the new distance using the all sites metric, and accept the
+!     new orientation if the distance is lower.
+!     Could generalise to more than one sort of rigid body as well.
 ! 
          IF (RBSYMT) THEN
 !
-!     THIS CALL BLOCK DOES NOT DO ANY FURTHER ALIGNMENT SO AS NOT TO BREAK THE STANDARD REFERENCE GEOMETRY.
+!     This call block does not do any further alignment so as not to break the standard reference geometry.
 !
             CALL SITEPOS(DUMMYB,SITESB) 
             RBDISTANCE=1.0D10
             DO J1=1,NRB
                DO J2=1,NRBGROUP
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!DEBUG
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!debug
 !                  CALL SITEPOS(DUMMYA,SITESA)
 !                  WRITE(975,'(I6)') NRB*NRBSITES
-!                  WRITE(975,'(A,2I6,A,F20.10)') 'A SITES BEFORE ROTATION'
+!                  WRITE(975,'(A,2I6,A,F20.10)') 'A sites before rotation'
 !                  WRITE(975,'(A,3F20.10)') ('LA ',SITESA(3*(J3-1)+1:3*(J3-1)+3),J3=1,NRB*NRBSITES)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!DEBUG
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!debug
 
                   P(:)      = DUMMYA(3*(NRB+J1-1)+1:3*(NRB+J1-1)+3)
                   IF (J2 /= 1) THEN
@@ -397,12 +397,12 @@
                   ENDIF
                   DUMMYC(1:6*NRB) = DUMMYA(1:6*NRB)
                   DUMMYC(3*(NRB+J1-1)+1:3*(NRB+J1-1)+3) = P(1:3)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!DEBUG
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!debug
 !                  CALL POTENTIAL(DUMMYC,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-!                  PRINT '(A,I6,2(A,F25.15))',' RBMINPERMDIST> AFTER RBROT FOLLOWING INTERNAL SYMMETRY  & 
-!     &                                          OPERATION ',J2,' ENERGY FOR A=',  ENERGY,' RMS=',RMS
+!                  PRINT '(A,I6,2(A,F25.15))',' rbminpermdist> after RBROT following internal symmetry  & 
+!     &                                          operation ',J2,' energy for A=',  ENERGY,' RMS=',RMS
 !
-!     CALCULATE NEW DISTANCE BASED ON ALL SITES METRIC RATHER THAN JUST CENTRE-OF-MASS RIGID BODY COORDINATES.
+!     Calculate new distance based on all sites metric rather than just centre-of-mass rigid body coordinates.
 ! 
                   CALL SITEPOS(DUMMYC,SITESA)
                   SITEDIST=0.D0
@@ -410,22 +410,22 @@
                      SITEDIST=SITEDIST+(SITESA(J3)-SITESB(J3))**2
                   ENDDO
 !                  WRITE(975,'(I6)') NRB*NRBSITES
-!                  WRITE(975,'(A,2I6,A,F20.10)') 'C SITES FOR J1,J2=',J1,J2,' DISTANCE=',SQRT(SITEDIST)
+!                  WRITE(975,'(A,2I6,A,F20.10)') 'C sites for J1,J2=',J1,J2,' distance=',SQRT(SITEDIST)
 !                  WRITE(975,'(A,3F20.10)') ('LA ',SITESA(3*(J3-1)+1:3*(J3-1)+3),J3=1,NRB*NRBSITES)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!DEBUG
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!debug
 
                   IF (SITEDIST.LT.RBDISTANCE) THEN
                      RBDISTANCE=SITEDIST
                      BESTA(1:6*NRB)=DUMMYC(1:6*NRB)
                   ENDIF
-!                  PRINT '(A,2F20.10)',' RBPERMDIST> SITES DISTANCE, RBDISTANCE, =',SQRT(SITEDIST), SQRT(RBDISTANCE)
+!                  PRINT '(A,2F20.10)',' rbpermdist> sites distance, RBDISTANCE, =',SQRT(SITEDIST), SQRT(RBDISTANCE)
                ENDDO
                DUMMYA(1:6*NRB)=BESTA(1:6*NRB)
             ENDDO
 !
-!     THIS CALL ALIGNS THE OVERALL ORIENTATION WITH RESPECT TO THE SITES METRIC. WE SHOULD ALREADY
-!     HAVE IDENTIFIED PERMUTATION-INVERSION ISOMERS USING THE ALIGNMENT BASED ON CENTRES OF MASS
-!     ABOVE, IF APPLICABLE. WE NOW REPEAT BUT WITH AN ORIENTATIONAL ALIGNMENT WITH RESPECT TO SITES.
+!     This call aligns the overall orientation with respect to the sites metric. We should already
+!     have identified permutation-inversion isomers using the alignment based on centres of mass
+!     above, if applicable. We now repeat but with an orientational alignment with respect to sites.
 !
             CALL RBMINDIST2(DUMMYB,DUMMYA,NATOMS,DISTANCE,Q2,DEBUG)
  
@@ -434,7 +434,7 @@
             DO J1=1,NRB
                DO J2=1,NRBGROUP
 !
-!     MUST NOT USE RMAT HERE - BECAUSE RMAT IS ACCUMULATED BELOW.
+!     MUST NOT USE RMAT HERE - because RMAT is accumulated below.
 ! 
                   P(:)      = DUMMYA(3*(NRB+J1-1)+1:3*(NRB+J1-1)+3)
                   IF (J2 /= 1) THEN
@@ -450,17 +450,17 @@
                   DUMMYC(3*(NRB+J1-1)+1:3*(NRB+J1-1)+3) = P(1:3)
 !
 !                 CALL POTENTIAL(DUMMYC,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-!                 PRINT '(A,I6,2(A,F25.15))',' RBMINPERMDIST> AFTER RBROT FOLLOWING INTERNAL SYMMETRY 
-!                                              OPERATION ',J2,' ENERGY FOR A=', ENERGY,' RMS=',RMS
+!                 PRINT '(A,I6,2(A,F25.15))',' rbminpermdist> after RBROT following internal symmetry 
+!                                              operation ',J2,' energy for A=', ENERGY,' RMS=',RMS
 !
-!     CALCULATE NEW DISTANCE BASED ON ALL SITES METRIC RATHER THAN JUST CENTRE-OF-MASS RIGID BODY COORDINATES.
+!     Calculate new distance based on all sites metric rather than just centre-of-mass rigid body coordinates.
 ! 
                   CALL SITEPOS(DUMMYC,SITESA)
                   SITEDIST=0.D0
                   DO J3=1,3*NRB*NRBSITES
                      SITEDIST=SITEDIST+(SITESA(J3)-SITESB(J3))**2
                   ENDDO
-!                 PRINT '(A,2F20.10)',' RBMINPERMDIST> SITES DISTANCE^2,RBDISTANCE=',SITEDIST,RBDISTANCE
+!                 PRINT '(A,2F20.10)',' rbminpermdist> sites distance^2,RBDISTANCE=',SITEDIST,RBDISTANCE
                   IF (SITEDIST.LT.RBDISTANCE) THEN
                      RBDISTANCE=SITEDIST
                      BESTA(1:6*NRB)=DUMMYC(1:6*NRB)
@@ -470,8 +470,8 @@
             ENDDO
          ELSE
 !
-!     THIS CALL ALIGNS THE OVERALL ORIENTATION WITH RESPECT TO THE SITES METRIC.
-!     INTERNAL SYMMETRY OPERATIONS OF THE RIGID BODIES ARE NOT CONSIDERED.
+!     This call aligns the overall orientation with respect to the sites metric.
+!     Internal symmetry operations of the rigid bodies are not considered.
 !
             CALL RBMINDIST2(DUMMYB,DUMMYA,NATOMS,DISTANCE,Q2,DEBUG)
 
@@ -479,16 +479,16 @@
 
 !         DISTANCE  = DISTANCE*DISTANCE
 
-!     ACCUMULATE ROTATION
+!     accumulate rotation
          CALL QROTQ(Q2,QCUMUL)
 
          IF (NTRIES .LT. MAXIMUMTRIES) THEN
             GOTO 10
-         ELSE ! PREVENT INFINITE LOOP
+         ELSE ! prevent infinite loop
             IF (INVERT == -1) THEN
-               IF(DEBUG) PRINT '(A)',' RBMINPERMDIST> WARNING - NUMBER OF TRIES EXCEEDED, GIVING UP'
+               IF(DEBUG) PRINT '(A)',' rbminpermdist> WARNING - number of tries exceeded, giving up'
             ELSE
-               PRINT '(A)',' RBMINPERMDIST> WARNING - NUMBER OF TRIES EXCEEDED, GIVING UP'
+               PRINT '(A)',' rbminpermdist> WARNING - number of tries exceeded, giving up'
             ENDIF
          ENDIF
 
@@ -506,25 +506,25 @@
 
       ENDIF
 !
-! IF GEOMDIFFTOLL IS SET TOO SLOPPY WE COULD MISS THE BEST SOLUTION BY EXITING VIA THE LINE
-! BELOW WITHOUT TRYING OTHER ORBITS. TURN OFF THIS ESCAPE?!
-! THE TURN OFF SEEMS TO BE A BUG FOR NON-RBPERM RUNS. LJ38 TESTS FAIL WITH ALL COMPILERS, PRODUCING
-! A "DISTANCE IS ZERO: THIS SHOULD NOT HAPPEN" ERROR!!! DJW
-! PUT THE ESCAPE BACK IN FOR NOW.
+! If GEOMDIFFTOLL is set too sloppy we could miss the best solution by exiting via the line
+! below without trying other orbits. Turn off this escape?!
+! The turn off seems to be a bug for non-RBPERM runs. LJ38 tests fail with all compilers, producing
+! a "Distance is zero: this should not happen" error!!! DJW
+! Put the escape back in for now.
 !
       IF (SQRT(DBEST).LT.GEOMDIFFTOL) GOTO 50
       IF (NCHOOSE2.LT.NORBIT2) GOTO 30
       IF (NCHOOSE1.LT.NORBIT1) GOTO 65
       IF (EFIELDT) GOTO 50
 !
-50    DISTANCE = DBEST       ! SQUARED DISTANCE
+50    DISTANCE = DBEST       ! squared distance
 !
-!     XBEST CONTAINS THE BEST ALIGNMENT OF A COORDINATES FOR THE ORIENTATION OF B COORDINATES IN DUMMYB.
-!     ROTATE XBEST BY ROTINVBBEST TO PUT IN BEST CORRESPONDENCE WITH COORDSB, UNDOING THE REORIENTATION TO  
-!     DUMMYB FROM RBORIENT. 
-!     WE SHOULD GET THE SAME RESULT FOR ROTINVBBEST * RMATBEST * (COORDSA-CMA), 
-!     WHERE RMATBEST = +/- RMATCUMUL * ROTA FOR THE BEST ALIGNMENT 
-!     (ASIDE FROM A POSSIBLE PERMUTATION OF THE ATOM ORDERING)
+!     XBEST contains the best alignment of A coordinates for the orientation of B coordinates in DUMMYB.
+!     Rotate XBEST by ROTINVBBEST to put in best correspondence with COORDSB, undoing the reorientation to  
+!     DUMMYB from RBORIENT. 
+!     We should get the same result for ROTINVBBEST * RMATBEST * (COORDSA-CMA), 
+!     where RMATBEST = +/- RMATCUMUL * ROTA for the best alignment 
+!     (aside from a possible permutation of the atom ordering)
 !
       CALL RBROT(XBEST, XTMP, QBINV, NATOMS)
       XBEST(1:3*NATOMS) = XTMP(1:3*NATOMS)
@@ -535,7 +535,7 @@
          XBEST(3*(J1-1)+3) = XBEST(3*(J1-1)+3) + CMBZ
       ENDDO
 
-!     SITE-SITE DISTANCE
+!     Site-site distance
 
       CALL SITEPOS(XBEST,XA)
 
@@ -547,8 +547,8 @@
       ENDDO
 
       IF (ABS(SQRT(XDUMMY)-SQRT(DISTANCE)).GT.GEOMDIFFTOL) THEN
-          PRINT '(2(A,F20.10))','RBMINPERMDIST> ERROR *** DISTANCE BETWEEN TRANSFORMED XBEST AND COORDSB=',  &
-     &    SQRT(XDUMMY),  ' SHOULD BE ', SQRT(DISTANCE)
+          PRINT '(2(A,F20.10))','rbminpermdist> ERROR *** distance between transformed XBEST and COORDSB=',  &
+     &    SQRT(XDUMMY),  ' should be ', SQRT(DISTANCE)
           PRINT *, 'COORDSB'
           DO J1 = 1, NATOMS
              J2 = 3*J1
@@ -568,12 +568,12 @@
 
       CALL QROTMAT(QBEST,RMATBEST)
 
-      COORDSA(1:3*NATOMS)=XBEST(1:3*NATOMS) ! FINALLY, BEST COORDSA SHOULD INCLUDE PERMUTATIONS FOR DNEB INPUT!
+      COORDSA(1:3*NATOMS)=XBEST(1:3*NATOMS) ! finally, best COORDSA should include permutations for DNEB input!
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!DEBUG
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!debug
 !      CALL POTENTIAL(COORDSA,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-!      PRINT '(2(A,F25.15))',' FINALLY A ENERGY=',ENERGY,' RMS=',RMS
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!DEBUG
+!      PRINT '(2(A,F25.15))',' finally A energy=',ENERGY,' RMS=',RMS
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!debug
 
       DISTANCE=SQRT(DISTANCE)
 
@@ -594,7 +594,7 @@
       DOUBLE PRECISION :: Q(3*NATOMS), X(3*NTSITES), R(3), P(3), RM(3,3)
       DOUBLE PRECISION :: RBSITETD(4,3), SIGTD(4), SIGDB(2)
 
-!      PRINT '(A)','DEFTD IS MISSING - STOP'
+!      PRINT '(A)','DEFTD is missing - STOP'
 !      STOP
 
       IF (DBPTDT) CALL DEFTD(RBSITETD,SIGTD,SIGDB)
@@ -637,8 +637,8 @@
       USE COMMONS, ONLY: NRBSITES      
       USE KEY, ONLY : NTSITES, EFIELDT 
 !                        
-!     THIS SUBROUTINE PUTS PERMUTATIONAL ISOMERS OF A RIGID-BODY SYSTEM INTO A STANDARD ORIENTATION
-!     WITH RESPECT TO THE SITES
+!     This subroutine puts permutational isomers of a rigid-body system into a standard orientation
+!     with respect to the sites
 !
       IMPLICIT NONE
       INTEGER          :: NATOMS, I, J, J1, J2, JMAX1, JMAX2, NORBIT1, NCHOOSE1, NORBIT2, NCHOOSE2, OFFSET, NSIZE
@@ -656,7 +656,7 @@
 
       CALL SITEPOS(X, XS)
 !
-!     MOVE CENTRE OF MASS TO THE ORIGIN.
+!     Move centre of mass to the origin.
 !
       CMX = 0.D0; CMY = 0.D0; CMZ = 0.D0
       DO I = 1, NSIZE
@@ -682,7 +682,7 @@
          GOTO 100
       ENDIF
 !
-!     FIND THE RBSITE WHICH IS AT THE LARGEST DISTANCE FROM THE CENTRE OF MASS
+!     Find the rbsite which is at the largest distance from the centre of mass
 !
       DO J1 = 1, NSIZE
 
@@ -704,22 +704,22 @@
 
       ENDDO
 
-!     FOR TAGGED RBSITES, THE CHOICE OF THE FIRST RBSITE MATTERS IF IT BELONGS TO AN ORBIT OF SIZE > 1.
+!     For tagged rbsites, the choice of the first rbsite matters if it belongs to an orbit of size > 1.
 !
       IF ((ABS(XS(3*JMAX1-2)) < 1.D-08) .AND. (ABS(XS(3*JMAX1-1)) < 1.D-08)) THEN 
 !
-!     RB JMAX1 IS ALREADY ON THE Z AXIS!
+!     rb JMAX1 is already on the z axis!
 !
          IF (XS(3*(JMAX1-1)+3) > 0.D0) THEN
 
             T1S(1:3*NSIZE) = XS(1:3*NSIZE)
-            Q2(1:4)   = (/1.D0, 0.D0, 0.D0, 0.D0/)   ! IDENTITY OPERATION       
+            Q2(1:4)   = (/1.D0, 0.D0, 0.D0, 0.D0/)   ! Identity operation       
                   
-         ELSE  ! ROTATE ABOUT THE X-AXIS BY \PI, DO NOT INVERT!
+         ELSE  ! rotate about the x-axis by \pi, DO NOT INVERT!
 
 !            P(:) = (/4.D0*DATAN(1.D0), 0.D0, 0.D0/)
 !            CALL ROTMAT(P(:), ROTM(:,:))
-            Q2(1:4) = (/0.D0, 1.D0, 0.D0, 0.D0/)      ! THE CORRESPONDING QUATERNION
+            Q2(1:4) = (/0.D0, 1.D0, 0.D0, 0.D0/)      ! the corresponding quaternion
 
             DO J1 = 1, NATOMS/2
                J       = 3*J1
@@ -732,16 +732,16 @@
 
       ELSE
 !
-!     ROTATE ALL RB'S THROUGH AN ANGLE THETA ABOUT THE AXIS P(:), SO AS TO ROTATE THE RBSITE JMAX1 ONTO THE Z AXIS 
+!     Rotate all rb's through an angle THETA about the axis P(:), so as to rotate the rbsite JMAX1 onto the z axis 
 !
 !       THETA = DACOS(XS(3*JMAX1)/DMAX)
-!     FOR SLOPPY CUTOFFS WE CANNOT ASSUME THAT DMAX IS EXACTLY THE SAME FOR MEMBERS OF THE SAME ORBIT!
+!     For sloppy cutoffs we cannot assume that DMAX is exactly the same for members of the same orbit!
 
         THETA = DACOS(XS(3*JMAX1)/DIST(JMAX1))
 
-!     THE AXIS IS ON THE XY-PLANE AND PERPENDICULAR TO THE PROJECTION OF THE TRANSLATION VECTOR OF THE RB JMAX1
-!     ON THE XY-PLANE. THE AXIS IS SO CHOSEN THAT A RIGHT-HANDED ROTATION IN THE RIGHT-HANDED COORDINATE SYSTEM
-!     WILL RESULT IN THE REQUIRED TRANSFORMATION.
+!     The axis is on the xy-plane and perpendicular to the projection of the translation vector of the rb JMAX1
+!     on the xy-plane. The axis is so chosen that a right-handed rotation in the right-handed coordinate system
+!     will result in the required transformation.
 
          AX(3) = 0.D0
          FCT   = DSQRT(XS(3*JMAX1-2)**2 + XS(3*JMAX1-1)**2)
@@ -751,7 +751,7 @@
          CALL ROTMAT(AX(:), ROTM(:,:))
          THETAH  = 0.5D0*THETA
          AX(1:3) = AX(1:3)/SQRT(DOT_PRODUCT(AX(1:3),AX(1:3)))
-         Q2(1:4) = (/COS(THETAH), SIN(THETAH)*AX(1:3)/)          ! THE CORRESPONDING QUATERNION 
+         Q2(1:4) = (/COS(THETAH), SIN(THETAH)*AX(1:3)/)          ! the corresponding quaternion 
           
          DO J1 = 1, NSIZE
             J2 = 3*J1
@@ -761,7 +761,7 @@
       ENDIF
 
 !
-!     NOW FIND THE RBSITE WITH THE LARGEST DISTANCE FROM THE Z-AXIS 
+!     Now find the rbsite with the largest distance from the z-axis 
 !
 100   DMAX = -1.0D0
 
@@ -773,8 +773,8 @@
 
       DMAX2 = -1.0D100
 !
-!     PROJ IS THE SUM OF THE X COMPONENTS. USE T2S AS A DUMMY IN ORDER NOT TO 
-!     CHANGE T1 UNTIL WE HAVE DECIDED WHICH ATOM TO PUT IN THE XZ PLANE.
+!     PROJ is the sum of the x components. Use T2S as a dummy in order not to 
+!     change T1 until we have decided which atom to put in the xz plane.
 !
       DO J1 = 1, NSIZE
 
@@ -803,11 +803,11 @@
 
 !      PRINT '(A,I6,F20.10)', 'JMAX2,DMAX2=', JMAX2,DMAX2
 !
-!     AND NOW ROTATE IT INTO THE XZ PLANE.
+!     and now rotate it into the xz plane.
 !
       CALL RBSITESROTXZ(NSIZE, JMAX2, T1S, DTEMP, DIST, Q2, .TRUE.)
 
-!     NOW CHANGE THE COORDINATES BY THE ROTATION MATRIX CORRESPONDING TO THE NET TRANSFORMATION
+!     Now change the coordinates by the rotation matrix corresponding to the net transformation
 
       CALL RBROT(X, T1, Q2, NATOMS)
 
@@ -827,11 +827,11 @@
 
       J2     = 3*JDO
  
-      IF (ABS(T1S(J2-1)) < 1.0D-8) THEN            ! ALREADY ON THE XZ PLANE
+      IF (ABS(T1S(J2-1)) < 1.0D-8) THEN            ! already on the xz plane
 
          Q2(1:4) = (/1.D0, 0.D0, 0.D0, 0.D0/) 
 
-         IF (T1S(J2-2) < 0.D0) THEN                ! ROTATE ABOUT THE Z AXIS BY \PI, DO NOT INVERT!!
+         IF (T1S(J2-2) < 0.D0) THEN                ! rotate about the z axis by \pi, DO NOT INVERT!!
 
             Q2(1:4) = (/0.D0, 0.D0, 0.D0, 1.D0/) 
 
@@ -847,10 +847,10 @@
 
          COST   = T1S(J2-2)/DIST(JDO)       
          SINT   = T1S(J2-1)/DIST(JDO)
-         THETA  =-ATAN2(SINT,COST)              ! THE NEGATIVE SIGN APPEARS AS THE ROTATION IS REVERSED  
+         THETA  =-ATAN2(SINT,COST)              ! the negative sign appears as the rotation is reversed  
          THETAH = 0.5D0*THETA
-         Q2(1:4) = (/COS(THETAH), 0.D0, 0.D0, SIN(THETAH)/)     ! THE QUATERNION CORRESPONDING TO R_{Z}(-\THETA)
-         RM(1:3,1:3) = 0.D0                           ! THE ROTATION MATRIX FOR R_{Z}(-\THETA)
+         Q2(1:4) = (/COS(THETAH), 0.D0, 0.D0, SIN(THETAH)/)     ! the quaternion corresponding to R_{z}(-\theta)
+         RM(1:3,1:3) = 0.D0                           ! the rotation matrix for R_{z}(-\theta)
          RM(1,1) = COST
          RM(2,2) = COST
          RM(3,3) = 1.D0
@@ -895,7 +895,7 @@
 !     ----------------------------------------------------------------------------------------------
 
       SUBROUTINE INVMTRX(S, SINV)
-!     INVERTS A 3X3 MATRIX S
+!     inverts a 3x3 matrix S
 
       IMPLICIT NONE
 
@@ -922,8 +922,8 @@
 !     ----------------------------------------------------------------------------------------------
 
       SUBROUTINE RBROT(T, X, Q2, NATOMS)
-!     TAKES THE SET OF RIGID-BODY COORDINATES T AND RETURNS X AFTER ROTATION VIA THE QUATERNION Q2 
-!     ABOUT THE ORIGIN
+!     takes the set of rigid-body coordinates T and returns X after rotation via the quaternion Q2 
+!     about the origin
 
       IMPLICIT NONE
 
@@ -931,7 +931,7 @@
       DOUBLE PRECISION :: T(3*NATOMS), X(3*NATOMS), T1(1:3), Q2(4), P(3), RM(3,3) 
       DOUBLE PRECISION :: CMX, CMY, CMZ
 !
-!     MOVE CENTRE OF MASS TO THE ORIGIN.
+!     Move centre of mass to the origin.
 !
       CMX = 0.D0; CMY = 0.D0; CMZ = 0.D0
       DO I = 1, NATOMS/2
@@ -948,7 +948,7 @@
          X(J)   = T(J)   - CMZ
       ENDDO
 
-!     EXTRACT THE ROTATION MATRIX CORRESPONDING TO ROTATION VIA Q
+!     extract the rotation matrix corresponding to rotation via Q
 
       CALL QROTMAT(Q2,RM)
 
@@ -975,8 +975,8 @@
 
       SUBROUTINE QROTAA(Q2,P)
 
-!     TRANSFORMS THE ANGLE-AXIS VARIABLES P CORRESPONDING TO ROTATION VIA QUATERNION Q2 AND RETURNS 
-!     THE TRANSFORMED VARIABLES IN P
+!     transforms the angle-axis variables P corresponding to rotation via quaternion Q2 and returns 
+!     the transformed variables in P
 
       IMPLICIT NONE
 
@@ -1008,8 +1008,8 @@
 
       SUBROUTINE QROTQ(Q2,Q1)
 
-!     TRANSFORMS THE QUATERNION Q1 CORRESPONDING TO ROTATION VIA QUATERNION Q2 AND RETURNS THE
-!     TRANSFORMED VARIABLES IN Q1
+!     transforms the quaternion Q1 corresponding to rotation via quaternion Q2 and returns the
+!     transformed variables in Q1
 
       IMPLICIT NONE
 
@@ -1028,8 +1028,8 @@
 
       SUBROUTINE QROTMAT(Q,RM)
 
-!     PROVIDES THE ROTATION MATRIX RM CORRESPONDING TO QUATERNION Q
-!     RIGHT-HANDED ROTATION IN THE RIGHT-HANDED COORDINATE SYSTEM
+!     provides the rotation matrix RM corresponding to quaternion Q
+!     right-handed rotation in the right-handed coordinate system
 
       IMPLICIT NONE
 
@@ -1053,7 +1053,7 @@
       
       USE KEY, ONLY : EFIELDT 
 !                        
-!     THIS SUBROUTINE PUTS PERMUTATIONAL ISOMERS OF A RIGID-BODY SYSTEM INTO A STANDARD ORIENTATION.
+!     This subroutine puts permutational isomers of a rigid-body system into a standard orientation.
 !
       IMPLICIT NONE
       INTEGER          :: NATOMS, I, J, J1, J2, JMAX1, JMAX2, NORBIT1, NCHOOSE1, NORBIT2, NCHOOSE2, OFFSET
@@ -1066,7 +1066,7 @@
       OFFSET  = 3*NATOMS/2
       CUTOFF1 = 1.D-03
 !
-!     MOVE CENTRE OF MASS TO THE ORIGIN.
+!     Move centre of mass to the origin.
 !
       CMX = 0.D0; CMY = 0.D0; CMZ = 0.D0
       DO I = 1, NATOMS/2
@@ -1094,7 +1094,7 @@
 
       ENDIF
 !
-!     FIND THE RB WHICH IS AT THE LARGEST DISTANCE FROM THE CENTRE OF MASS
+!     Find the rb which is at the largest distance from the centre of mass
 !
       DO J1 = 1, NATOMS/2
 
@@ -1116,18 +1116,18 @@
 
       ENDDO
 
-!     FOR TAGGED RBS, THE CHOICE OF THE FIRST RB MATTERS IF IT BELONGS TO AN ORBIT OF SIZE > 1.
+!     For tagged rbs, the choice of the first rb matters if it belongs to an orbit of size > 1.
 !
       IF ((ABS(X(3*JMAX1-2)) < 1.D-08) .AND. (ABS(X(3*JMAX1-1)) < 1.D-08)) THEN 
 !
-!     RB JMAX1 IS ALREADY ON THE Z AXIS!
+!     rb JMAX1 is already on the z axis!
 !
          IF (X(3*(JMAX1-1)+3) > 0.D0) THEN
 
             T1(1:3*NATOMS) = X(1:3*NATOMS)
             Q2(1:4) = (/1.D0, 0.D0, 0.D0, 0.D0/)
  
-         ELSE  ! ROTATE ABOUT THE X-AXIS BY \PI, DO NOT INVERT!
+         ELSE  ! rotate about the x-axis by \pi, DO NOT INVERT!
 
             Q2(1:4) = (/0.D0, 1.D0, 0.D0, 0.D0/)
 
@@ -1142,15 +1142,15 @@
 
       ELSE
 !
-!     ROTATE ALL RB'S THROUGH AN ANGLE THETA ABOUT THE AXIS P(:), SO AS TO ROTATE THE RB JMAX1 ONTO THE Z AXIS 
+!     Rotate all rb's through an angle THETA about the axis P(:), so as to rotate the rb JMAX1 onto the z axis 
 !
-!     FOR SLOPPY CUTOFFS WE CANNOT ASSUME THAT DMAX IS EXACTLY THE SAME FOR MEMBERS OF THE SAME ORBIT!
+!     For sloppy cutoffs we cannot assume that DMAX is exactly the same for members of the same orbit!
 
         THETA = DACOS(X(3*JMAX1)/DIST(JMAX1))
 
-!     THE AXIS IS ON THE XY-PLANE AND PERPENDICULAR TO THE PROJECTION OF THE TRANSLATION VECTOR OF THE RB JMAX1
-!     ON THE XY-PLANE. THE AXIS IS SO CHOSEN THAT A RIGHT-HANDED ROTATION IN THE RIGHT-HANDED COORDINATE SYSTEM
-!     WILL RESULT IN THE REQUIRED TRANSFORMATION.
+!     The axis is on the xy-plane and perpendicular to the projection of the translation vector of the rb JMAX1
+!     on the xy-plane. The axis is so chosen that a right-handed rotation in the right-handed coordinate system
+!     will result in the required transformation.
 
          AX(3) = 0.D0
          FCT   = DSQRT(X(3*JMAX1-2)**2 + X(3*JMAX1-1)**2)
@@ -1161,14 +1161,14 @@
 
          THETAH  = 0.5D0*THETA
          AX(1:3) = AX(1:3)/SQRT(DOT_PRODUCT(AX(1:3),AX(1:3)))
-         Q2(1:4) = (/COS(THETAH), SIN(THETAH)*AX(1:3)/)          ! THE CORRESPONDING QUATERNION
+         Q2(1:4) = (/COS(THETAH), SIN(THETAH)*AX(1:3)/)          ! the corresponding quaternion
 
          CALL RBROT(X, T1, Q2, NATOMS)
 
       ENDIF
 
 !
-!     NOW FIND THE RB WITH THE LARGEST DISTANCE FROM THE Z-AXIS 
+!     Now find the rb with the largest distance from the z-axis 
 !
 100   DMAX = -1.0D0
 
@@ -1182,8 +1182,8 @@
 
       DMAX2 = -1.0D100
 !
-!     PROJ IS THE SUM OF THE X COMPONENTS. USE T2 AS A DUMMY IN ORDER NOT TO 
-!     CHANGE T1 UNTIL WE HAVE DECIDED WHICH ATOM TO PUT IN THE XZ PLANE.
+!     PROJ is the sum of the x components. Use T2 as a dummy in order not to 
+!     change T1 until we have decided which atom to put in the xz plane.
 !
       DO J1 = 1, NATOMS/2
 
@@ -1209,7 +1209,7 @@
 
       ENDDO
 !
-!     AND NOW ROTATE IT INTO THE XZ PLANE.
+!     and now rotate it into the xz plane.
 !
 !      CALL RBROTXZ(NATOMS, JMAX2, T1, DMAX2, DIST, ROTM, .TRUE.)
 
@@ -1237,13 +1237,13 @@
 
       X(1:3*NATOMS) = T1(1:3*NATOMS)
 
-      IF (ABS(T1(J2-1)) < 1.0D-8) THEN            ! ALREADY ON THE XZ PLANE
+      IF (ABS(T1(J2-1)) < 1.0D-8) THEN            ! already on the xz plane
 
          RM(:,:) = 0.D0
          RM(1,1) = 1.D0; RM(2,2) = 1.D0; RM(3,3) = 1.D0
          Q2(1:4) = (/1.D0, 0.D0, 0.D0, 0.D0/)
 
-         IF (T1(J2-2) < 0.D0) THEN                ! ROTATE ABOUT THE Z AXIS BY \PI, DO NOT INVERT!!
+         IF (T1(J2-2) < 0.D0) THEN                ! rotate about the z axis by \pi, DO NOT INVERT!!
 
             P(:) = (/0.D0, 0.D0, 4.D0*DATAN(1.D0)/)
             CALL ROTMAT(P(:), RM(:,:))
@@ -1261,10 +1261,10 @@
 
          COST   = T1(J2-2)/DIST(JDO)
          SINT   = T1(J2-1)/DIST(JDO)
-         THETA  =-ATAN2(SINT,COST)              ! THE NEGATIVE SIGN APPEARS AS THE ROTATION IS REVERSED
+         THETA  =-ATAN2(SINT,COST)              ! the negative sign appears as the rotation is reversed
          THETAH = 0.5D0*THETA
          Q2(1:4) = (/COS(THETAH), 0.D0, 0.D0, SIN(THETAH)/)
-         RM(:,:) = 0.D0                           ! THE ROTATION MATRIX FOR R_{Z}(-\THETA)
+         RM(:,:) = 0.D0                           ! the rotation matrix for R_{z}(-\theta)
          RM(1,1) = COST
          RM(2,2) = COST
          RM(3,3) = 1.D0
@@ -1289,7 +1289,7 @@
 !            CALL QROTQ(Q2,Q1)
          ENDIF
 
-!     NOW CHANGE THE ANGLE-AXIS COORDINATES VIA QUATERNION MULTIPLICATION EQUIVALENT TO ROTATION BY ROTM
+!     Now change the angle-axis coordinates via quaternion multiplication equivalent to rotation by ROTM
 
          CALL RBROT(T1, X, Q2, NATOMS)
 !         T1(3*NATOMS/2+1:3*NATOMS) = X(3*NATOMS/2+1:3*NATOMS)
@@ -1324,8 +1324,8 @@
       DOUBLE PRECISION :: Q(3*NATOMS)
 
       IF (DBPTDT) THEN
-         WRITE(55,'(I6)') (NATOMS/2-1)*NRBSITES + 4
-         WRITE(55,'(1X,A)') TRIM(ADJUSTL(C))
+         WRITE(55,'(i6)') (NATOMS/2-1)*NRBSITES + 4
+         WRITE(55,'(1x,a)') trim(adjustl(c))
          IF (J1 < NATOMS/2) THEN
             DO J2 = 1, NRBSITES - 1
                J3 = ((J1-1)*NRBSITES + (J2-1))*3
@@ -1352,8 +1352,8 @@
 
       ELSEIF (NTIPT) THEN
 
-         WRITE(55,'(I6)') (NATOMS/2)*(NRBSITES-1)
-         WRITE(55,'(1X,A)') TRIM(ADJUSTL(C))
+         WRITE(55,'(i6)') (NATOMS/2)*(NRBSITES-1)
+         WRITE(55,'(1x,a)') trim(adjustl(c))
          DO J1 = 1, NATOMS/2
             J2 = 4*(J1-1)*3 
             WRITE(55,'(A5,1X,3F20.10)') 'O ', XS(J2+1), XS(J2+2), XS(J2+3)
@@ -1363,8 +1363,8 @@
 
       ELSEIF (MSSTOCKT) THEN
 
-         WRITE(55,'(I6)') (NATOMS/2)*NRBSITES
-         WRITE(55,'(1X,A)') TRIM(ADJUSTL(C))
+         WRITE(55,'(i6)') (NATOMS/2)*NRBSITES
+         WRITE(55,'(1x,a)') trim(adjustl(c))
          DO J1 = 1, NATOMS/2
             DO J2 = 1, NRBSITES
                J3 = ((J1-1)*NRBSITES + (J2-1))*3
@@ -1374,8 +1374,8 @@
 
       ELSEIF (PAHAT) THEN 
 
-         WRITE(55,'(I6)') (NATOMS/2)*NRBSITES
-         WRITE(55,'(1X,A)') TRIM(ADJUSTL(C))
+         WRITE(55,'(i6)') (NATOMS/2)*NRBSITES
+         WRITE(55,'(1x,a)') trim(adjustl(c))
          DO J1 = 1, NATOMS/2
             DO J2 = 1, NRBSITES
                J3 = ((J1-1)*NRBSITES + (J2-1))*3
@@ -1389,8 +1389,8 @@
 
       ELSEIF (PATCHYDT) THEN
 
-         WRITE(55,'(I6)') (NATOMS/2)*(NRBSITES+1)
-         WRITE(55,'(1X,A)') TRIM(ADJUSTL(C))
+         WRITE(55,'(i6)') (NATOMS/2)*(NRBSITES+1)
+         WRITE(55,'(1x,a)') trim(adjustl(c))
          DO J1 = 1, NATOMS/2
             J3 = (J1-1)*3
             WRITE(55,'(A5,1X,3F20.10)') 'O ', Q(J3+1), Q(J3+2), Q(J3+3)
@@ -1407,8 +1407,8 @@
 !     ----------------------------------------------------------------------------------------------
 
       SUBROUTINE RBROTMAT(T, X, ROTMAT, NTSITES)
-!     TAKES THE SET OF RIGID-BODY COORDINATES T AND RETURNS X AFTER ROTATION VIA THE QUATERNION Q2
-!     ABOUT THE ORIGIN
+!     takes the set of rigid-body coordinates T and returns X after rotation via the quaternion Q2
+!     about the origin
 
       IMPLICIT NONE
 
@@ -1416,7 +1416,7 @@
       DOUBLE PRECISION :: T(3*NTSITES), X(3*NTSITES), T1(1:3), Q2(4), ROTMAT(3,3)
       DOUBLE PRECISION :: CMX, CMY, CMZ
 !
-!     MOVE CENTRE OF MASS TO THE ORIGIN.
+!     Move centre of mass to the origin.
 !
       CMX = 0.D0; CMY = 0.D0; CMZ = 0.D0
       DO I = 1, NTSITES
@@ -1433,7 +1433,7 @@
          X(J)   = T(J)   - CMZ
       ENDDO
 
-!     EXTRACT THE ROTATION MATRIX CORRESPONDING TO ROTATION VIA Q
+!     extract the rotation matrix corresponding to rotation via Q
 
 !      CALL QROTMAT(Q2,RM)
 

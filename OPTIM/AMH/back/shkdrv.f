@@ -1,186 +1,186 @@
 
-C     --------------------- SHKDRV  ----------------------
+c     --------------------- shkdrv  ----------------------
 
-      SUBROUTINE SHKDRV(PRCORD,QRCORD,SRCORD,
-     *                  ZRCORD,BONDLN,JSTRT,JFINS,TOLSHK,
-     *                  MAXSHK,BDSHAK,NUMPRO,ISHKIT,
-     *                  MAXPRO,MAXCRD,NUMCRD,
-     *                  OARCHV,WORK1,WORK3,WORK4,
-     *                  IRES)
+      subroutine shkdrv(prcord,qrcord,srcord,
+     *                  zrcord,bondln,jstrt,jfins,tolshk,
+     *                  maxshk,bdshak,numpro,ishkit,
+     *                  maxpro,maxcrd,numcrd,
+     *                  oarchv,work1,work3,work4,
+     *                  ires)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-C     SHKDRV DRIVER ROUTINE FOR PERFORMING SHAKE
-C            ALGORITHM ON DIFFERENT SETS OF
-C            COORDINATES
+c     SHKDRV driver routine for performing shake
+c            algorithm on different sets of
+c            coordinates
 
-C     ARGUMENTS:
+c     arguments:
 
-C        MAXSIZ- MAXIMUM NUMBER OF PROTEIN RESIDUES (I)
-C        PRCORD- NEW COORDINATES WHICH SATSIFY BOND 
-C                LENGTHS (O)
+c        maxsiz- maximum number of protein residues (i)
+c        prcord- new coordinates which satsify bond 
+c                lengths (o)
 
-C     ---------------------------------------------------
+c     ---------------------------------------------------
 
-      USE GLOBALS, ONLY:SO, MAXSIZ,MAXCNT
+      use globals, only:SO, maxsiz,maxcnt
 
-      IMPLICIT NONE
+      implicit none
 
 
-C     ARGUMENT DECLARATIONS:
+c     argument declarations:
 
-         LOGICAL BDSHAK
+         logical bdshak
 
-         INTEGER NUMPRO,JSTRT,JFINS,
-     *           MAXSHK,ISHKIT,MAXPRO,
-     *           MAXCRD,NUMCRD,OARCHV,
-     *           IRES(MAXSIZ),I1
+         integer numpro,jstrt,jfins,
+     *           maxshk,ishkit,maxpro,
+     *           maxcrd,numcrd,oarchv,
+     *           ires(maxsiz),i1
      
-         REAL PRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
-     *        QRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
-     *        SRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
-     *        ZRCORD(MAXSIZ,3,MAXPRO,MAXCRD),
-     *        BONDLN(MAXSIZ,MAXCRD),WORK1(MAXCNT),
-     *        WORK3(MAXCNT),WORK4(MAXCNT),TOLSHK
+         real prcord(maxsiz,3,maxpro,maxcrd),
+     *        qrcord(maxsiz,3,maxpro,maxcrd),
+     *        srcord(maxsiz,3,maxpro,maxcrd),
+     *        zrcord(maxsiz,3,maxpro,maxcrd),
+     *        bondln(maxsiz,maxcrd),work1(maxcnt),
+     *        work3(maxcnt),work4(maxcnt),tolshk
 
-C     INTERNAL VARIABLES:
+c     internal variables:
 
-C        --- DO LOOP INDICES ---
+c        --- do loop indices ---
 
-         INTEGER I507,I512,I517
+         integer i507,i512,i517
  
-         INTEGER NUMSHK
+         integer numshk
 
          
-         REAL DIFF(2,MAXSIZ),DIST(2)
+         real diff(2,maxsiz),dist(2)
 
-        CHARACTER*3 RES_TYPE
-
-
-C        --- IMPLIED DO LOOP INDICES ---
-
-        INTEGER III,JJJ
+        character*3 res_type
 
 
+c        --- implied do loop indices ---
+
+        integer iii,jjj
 
 
 
 
 
 
-C     REQUIRED SUBROUTINES
-
-        EXTERNAL SHAKE,SHAKAB,SHAKOX
 
 
-          DO 600 I1=1,MAXSIZ
-            DIFF(1,I1)=0.0
-            DIFF(2,I1)=0.0
-600          CONTINUE
-          DIST(1)=0.0
-          DIST(2)=0.0
+c     required subroutines
+
+        external shake,shakab,shakox
 
 
-C     --------------------- BEGIN -----------------------
+          do 600 i1=1,maxsiz
+            diff(1,i1)=0.0
+            diff(2,i1)=0.0
+600          continue
+          dist(1)=0.0
+          dist(2)=0.0
 
 
-C     ATTEMPT TO SATISFY BOND CONSTRAINTS 
-C     FOR EACH SET OF COORDINATES
-
-C     SET NUMBER OF SHAKE ITERATIONS TO ZERO
-
-      NUMSHK=0
-
-C     'DO WHILE' LOOP, I.E., WHILE BOTH SETS OF 
-C     CONSTRAINTS ARE NOT SATISFIED KEEP SHAKING
-
-  400 CONTINUE
-
-      NUMSHK=NUMSHK + 1
-C      WRITE(6,*)'NUMSHK ISHKDRV ',  NUMSHK
-
-C     IF THE NUMBER OF ITERATIONS HAVE EXCEEDED THE 
-C     MAXIMUM, THEN PRINT MESSAGE AND ABORT
-
-      IF( NUMSHK.GT.100 )THEN
-         WRITE(OARCHV,130)NUMSHK
-  130    FORMAT(/'SHKDRV: YOU GOT PROBLEMS BUD ',
-     *          '-- CONVERGENCE NOT OBTAINED W/ SHAKE')
-         STOP
-      ENDIF
-
-C     SHAKE ALPHA-ALPHA COORDINATES
-
-      CALL SHAKE(MAXSIZ,PRCORD,QRCORD,SRCORD,
-     *           BONDLN,NUMPRO,JSTRT+1,JFINS,ZRCORD,
-     *           MAXSHK,TOLSHK,BDSHAK,ISHKIT,MAXPRO,
-     *           MAXCRD,MAXCNT,WORK1,WORK3,WORK4,OARCHV)
-
-C     IF CONVERGENCE NOT OBTAINED, HANG IT UP;
-C     ALSO IF ONLY ONE COORDINATE TYPE RETURN
-
-      IF( BDSHAK.OR.(NUMCRD.EQ.1) )RETURN
-
-C     SHAKE ALPHA-BETA COORDINATES
-
-      CALL SHAKAB(MAXSIZ,PRCORD,QRCORD,SRCORD,
-     *            BONDLN,NUMPRO,JSTRT,JFINS,ZRCORD,
-     *            MAXSHK,TOLSHK,BDSHAK,ISHKIT,MAXPRO,
-     *            MAXCRD,MAXCNT,WORK1,WORK3,WORK4,OARCHV,
-     *            IRES)
-
-C     CONVERGENCE NOT OBTAINED, HANG IT UP
-
-          IF( BDSHAK ) THEN
-              WRITE(SO,*) "YEP IT DIED IN SHAKAB"          
-          ENDIF
+c     --------------------- begin -----------------------
 
 
-      IF( BDSHAK )RETURN
+c     attempt to satisfy bond constraints 
+c     for each set of coordinates
 
-         CALL SHAKOX(PRCORD,QRCORD,SRCORD,
-     *               NUMPRO,JSTRT,JFINS,
-     *               MAXSHK,TOLSHK,ISHKIT,
-     *               MAXPRO,MAXCRD)
+c     set number of shake iterations to zero
 
-C     DETERMINE WHICH, IF ANY, OF THE ALPHA-ALPHA 
-C     CONSTRAINTS ARE NOT SATISFIED
+      numshk=0
 
-C     FIND BOND DISTANCE
+c     'do while' loop, i.e., while both sets of 
+c     constraints are not satisfied keep shaking
 
-      DO 512 I512=1,NUMPRO
-            DO 507 I507=JSTRT+1,JFINS
-               DIST(1)=SQRT 
-     *       ( ( PRCORD(I507,1,I512,1) -
-     *           PRCORD(I507-1,1,I512,1) )**2
-     *       + ( PRCORD(I507,2,I512,1) -
-     *           PRCORD(I507-1,2,I512,1) )**2
-     *       + ( PRCORD(I507,3,I512,1) -
-     *           PRCORD(I507-1,3,I512,1) )**2 )
-               DIST(2)=SQRT 
-     *       ( ( PRCORD(I507,1,I512,2) -
-     *           PRCORD(I507,1,I512,1) )**2
-     *       + ( PRCORD(I507,2,I512,2) -
-     *           PRCORD(I507,2,I512,1) )**2
-     *       + ( PRCORD(I507,3,I512,2) -
-     *           PRCORD(I507,3,I512,1) )**2 )
-            DIFF(1,I507)=ABS(DIST(1) - BONDLN(I507,1))
-            DIFF(2,I507)=ABS(DIST(2) - BONDLN(I507,2))
-  507       CONTINUE
+  400 continue
 
-      DO 517 I517=JSTRT+1,JFINS
-            IF (IRES(I517).EQ.8) DIFF(2,I517)=0.0
-            IF( MAX(DIFF(1,I517),DIFF(2,I517)).GT.TOLSHK )THEN
-               GO TO 400
-            ENDIF
-  517       CONTINUE
-  512 CONTINUE
+      numshk=numshk + 1
+c      write(6,*)'numshk ishkdrv ',  numshk
+
+c     if the number of iterations have exceeded the 
+c     maximum, then print message and abort
+
+      if( numshk.gt.100 )then
+         write(oarchv,130)numshk
+  130    format(/'Shkdrv: You got problems bud ',
+     *          '-- convergence not obtained w/ shake')
+         stop
+      endif
+
+c     shake alpha-alpha coordinates
+
+      call shake(maxsiz,prcord,qrcord,srcord,
+     *           bondln,numpro,jstrt+1,jfins,zrcord,
+     *           maxshk,tolshk,bdshak,ishkit,maxpro,
+     *           maxcrd,maxcnt,work1,work3,work4,oarchv)
+
+c     if convergence not obtained, hang it up;
+c     also if only one coordinate type return
+
+      if( bdshak.or.(numcrd.eq.1) )return
+
+c     shake alpha-beta coordinates
+
+      call shakab(maxsiz,prcord,qrcord,srcord,
+     *            bondln,numpro,jstrt,jfins,zrcord,
+     *            maxshk,tolshk,bdshak,ishkit,maxpro,
+     *            maxcrd,maxcnt,work1,work3,work4,oarchv,
+     *            ires)
+
+c     convergence not obtained, hang it up
+
+          if( bdshak ) then
+              write(SO,*) "Yep it died in shakab"          
+          endif
+
+
+      if( bdshak )return
+
+         call shakox(prcord,qrcord,srcord,
+     *               numpro,jstrt,jfins,
+     *               maxshk,tolshk,ishkit,
+     *               maxpro,maxcrd)
+
+c     determine which, if any, of the alpha-alpha 
+c     constraints are not satisfied
+
+c     find bond distance
+
+      do 512 i512=1,numpro
+            do 507 i507=jstrt+1,jfins
+               dist(1)=sqrt 
+     *       ( ( prcord(i507,1,i512,1) -
+     *           prcord(i507-1,1,i512,1) )**2
+     *       + ( prcord(i507,2,i512,1) -
+     *           prcord(i507-1,2,i512,1) )**2
+     *       + ( prcord(i507,3,i512,1) -
+     *           prcord(i507-1,3,i512,1) )**2 )
+               dist(2)=sqrt 
+     *       ( ( prcord(i507,1,i512,2) -
+     *           prcord(i507,1,i512,1) )**2
+     *       + ( prcord(i507,2,i512,2) -
+     *           prcord(i507,2,i512,1) )**2
+     *       + ( prcord(i507,3,i512,2) -
+     *           prcord(i507,3,i512,1) )**2 )
+            diff(1,i507)=abs(dist(1) - bondln(i507,1))
+            diff(2,i507)=abs(dist(2) - bondln(i507,2))
+  507       continue
+
+      do 517 i517=jstrt+1,jfins
+            if (ires(i517).eq.8) diff(2,i517)=0.0
+            if( max(diff(1,i517),diff(2,i517)).gt.tolshk )then
+               go to 400
+            endif
+  517       continue
+  512 continue
 
 
 
-C     MISSION ACCOMPLISHED
+c     mission accomplished
            
-C     ---------------------- DONE -----------------------
+c     ---------------------- done -----------------------
 
-      RETURN
-      END
+      return
+      end

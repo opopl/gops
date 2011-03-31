@@ -1,27 +1,27 @@
-!   OPTIM: A PROGRAM FOR OPTIMIZING GEOMETRIES AND CALCULATING REACTION PATHWAYS
-!   COPYRIGHT (C) 1999-2006 DAVID J. WALES
-!   THIS FILE IS PART OF OPTIM.
+!   OPTIM: A program for optimizing geometries and calculating reaction pathways
+!   Copyright (C) 1999-2006 David J. Wales
+!   This file is part of OPTIM.
 !   
-!   OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!   IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!   THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!   (AT YOUR OPTION) ANY LATER VERSION.
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
 !   
-!   OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!   BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!   MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!   GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
 !   
-!   YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!   ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!   FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 SUBROUTINE GUESSPATH(START,FINISH,NCOORDS,EDIFFTOLLOCAL,NATOMS)
 USE KEY
 USE MODCHARMM
 USE MODGUESS
 USE MODUNRES
-USE PORFUNCS
+use porfuncs
 IMPLICIT NONE
 INTEGER, INTENT(IN) :: NCOORDS, NATOMS
 DOUBLE PRECISION, INTENT(IN) :: START(NCOORDS), FINISH(NCOORDS), EDIFFTOLLOCAL
@@ -39,15 +39,15 @@ LOGICAL :: SEQUENTIAL(NCOORDS), DOSEQ(NCOORDS)
 INTEGER :: NSEQ, J1, NCOUNT
 
 IF (CHRMMT) THEN
-   WRITE(*,'(A)') 'FOR CHARMM THERE MAY BE MORE INTERNAL COORDINATES THAN CARTESIANS AND THE DIMENSIONS NEED ATTENTION'
+   WRITE(*,'(A)') 'For CHARMM there may be more internal coordinates than Cartesians and the dimensions need attention'
    STOP
 ENDIF
 IF (UNRST) ALLOCATE(PEPCOORDS(3*NATOMS),SMALLSTEP(NCOORDS),LARGESTEP(NCOORDS),DELTA(NCOORDS))
 ALLOCATE(SHORTER(NCOORDS))
-! FIRST DETERMINE THE NUMBER OF COORDINATES TO BE TREATED SEQUENTIALLY ACCORDING TO GTHRESHOLD
+! first determine the number of coordinates to be treated sequentially according to GTHRESHOLD
 NSEQ=0
-! DEFINE THE ANGULAR STEP FOR THE SHORTEST AND LONGEST ANGULAR ROUTES BETWEEN START AND
-! FINISH FOR UNRES.
+! define the angular step for the shortest and longest angular routes between start and
+! finish for UNRES.
 IF (UNRST) THEN
    DO J1=1,NCOORDS
       IF (ABS(FINISH(J1)-START(J1)).LE.PI) THEN
@@ -89,62 +89,62 @@ ELSE
    ENDDO
 ENDIF
 IF (NSEQ.EQ.0) THEN
-   WRITE(*,'(A,F12.3)') ' NO SEQUENTIAL COORDINATES FOR A THRESHOLD OF ',GTHRESHOLD
+   WRITE(*,'(A,F12.3)') ' No sequential coordinates for a threshold of ',GTHRESHOLD
    NINTERP=0
    CALL FLUSH(6,ISTAT)
    RETURN
 ENDIF
-WRITE(*,'(2(A,I6))') ' NUMBER OF COORDINATES TO BE TREATED SEQUENTIALLY IN GUESSPATH=',NSEQ, &
-                     ' OUT OF ', NCOORDS
+WRITE(*,'(2(A,I6))') ' Number of coordinates to be treated sequentially in GUESSPATH=',NSEQ, &
+                     ' out of ', NCOORDS
 NINTERP=NSEQ*GSTEPS-1
 ALLOCATE(STEPORDER(NSEQ*GSTEPS),INTERPENERGY(NSEQ*GSTEPS),INTERPENERGYSAVE(NSEQ*GSTEPS))
 NCOUNT=0
-! INITIAL ORDER OF STEPS FOR SEQUENTIAL COORDINATES
+! initial order of steps for sequential coordinates
 DO J1=1,NCOORDS
    IF (SEQUENTIAL(J1)) THEN
       NCOUNT=NCOUNT+1
       STEPORDER(GSTEPS*(NCOUNT-1)+1:GSTEPS*NCOUNT)=J1
    ENDIF
 ENDDO
-! TO OPTIMISE THE ORDER OF THE STEPS WE NEED TO RECALCULATE INTERPENERGY FOR ALL CONFIGURATIONS
-! BETWEEN THE ELEMENTS OF STEPORDER THAT HAVE BEEN CHANGED, AND SAVE THE CURRENT OPTIMAL VALUES
-! OF THE HIGHEST CONFIGURATION AND SUM OF ENERGIES. 
+! to optimise the order of the steps we need to recalculate INTERPENERGY for all configurations
+! between the elements of STEPORDER that have been changed, and save the current optimal values
+! of the highest configuration and sum of energies. 
 ! 
-! THE ENERGY AT STEP NSEQ*GSTEPS IS JUST THE ENERGY OF THE MINIMUM IN FINISH - SHOULD NEVER CHANGE
+! The energy at step NSEQ*GSTEPS is just the energy of the minimum in FINISH - should never change
 
-CALL GENERGIES(1,NSEQ*GSTEPS,.FALSE.) ! FILL THE INITIAL INTERPENERGY VECTOR WITH INTERPOLATED ENERGIES
+CALL GENERGIES(1,NSEQ*GSTEPS,.FALSE.) ! fill the initial INTERPENERGY vector with interpolated energies
 INTERPENERGYSAVE(1:NSEQ*GSTEPS)=INTERPENERGY(1:NSEQ*GSTEPS)
 
 MAXE=MAXVAL(INTERPENERGY(1:NSEQ*GSTEPS-1))
-JMAXE=MAXLOC(INTERPENERGY(1:NSEQ*GSTEPS-1)) ! NOTE THAT MAXLOC RETURNS A VECTOR OF DIMENSION ONE, NOT A SCALAR
+JMAXE=MAXLOC(INTERPENERGY(1:NSEQ*GSTEPS-1)) ! note that MAXLOC returns a vector of dimension one, not a scalar
 SUME=SUM(INTERPENERGY(1:NSEQ*GSTEPS))
 
-WRITE(*,'(A,2G20.10)') 'MAXIMUM ENERGY AND  MEAN=',MAXE,SUME/(NSEQ*GSTEPS-1)
-WRITE(*,'(A,I6)') 'MAXIMUM IS AT LOCATION ',JMAXE(1)
-PRINT*,'ORDER OF COORDINATE STEPS, ENERGIES:'
+WRITE(*,'(A,2G20.10)') 'maximum energy and  mean=',MAXE,SUME/(NSEQ*GSTEPS-1)
+WRITE(*,'(A,I6)') 'maximum is at location ',JMAXE(1)
+PRINT*,'order of coordinate steps, energies:'
 WRITE(*,'(2I6,G20.10)') (J1,STEPORDER(J1),INTERPENERGY(J1),J1=1,NSEQ*GSTEPS)
-! TRY CHANGING THE STEP IN POSITION JMAXE(1) WITH ALL THE OTHERS IN TURN TO FIND THE LOWEST
-! MAXE THAT RESULTS
+! try changing the step in position JMAXE(1) with all the others in turn to find the lowest
+! MAXE that results
 DO 
    IMPROVED=.FALSE.
-! FOR UNRES FIRST TRY USING LARGESTEP INSTEAD OF SMALLSTEP FOR THE DEGREE OF FREEDOM
-! CORRESPONDING TO JMAXE(1). OR TRY SMALLSTEP INSTEAD OF LARGESTEP IF WE'VE CHANGED THIS
-! AN ODD NUMBER OF TIMES ALREADY!
+! For UNRES first try using LARGESTEP instead of SMALLSTEP for the degree of freedom
+! corresponding to JMAXE(1). Or try SMALLSTEP instead of LARGESTEP if we've changed this
+! an odd number of times already!
    IF (UNRST) THEN
       IF (SHORTER(STEPORDER(JMAXE(1)))) THEN
-         WRITE(*,'(A,I5)') ' TRYING LONGER INTERPOLATION FOR COORDINATE ',STEPORDER(JMAXE(1))
+         WRITE(*,'(A,I5)') ' trying longer interpolation for coordinate ',STEPORDER(JMAXE(1))
          DELTA(STEPORDER(JMAXE(1)))=LARGESTEP(STEPORDER(JMAXE(1)))
          SHORTER(STEPORDER(JMAXE(1)))=.FALSE.
       ELSE
-         WRITE(*,'(A,I5)') ' TRYING SHORTER INTERPOLATION FOR COORDINATE ',STEPORDER(JMAXE(1))
+         WRITE(*,'(A,I5)') ' trying shorter interpolation for coordinate ',STEPORDER(JMAXE(1))
          DELTA(STEPORDER(JMAXE(1)))=SMALLSTEP(STEPORDER(JMAXE(1)))
          SHORTER(STEPORDER(JMAXE(1)))=.TRUE.
       ENDIF
       CALL GENERGIES(1,NSEQ*GSTEPS-1,.FALSE.) 
       NEWMAXE=MAXVAL(INTERPENERGY(1:NSEQ*GSTEPS-1))
       NEWJMAXE=MAXLOC(INTERPENERGY(1:NSEQ*GSTEPS-1))
-      WRITE(*,'(A,G20.10,A,I6)') ' MAXIMUM ENERGY IS NOW ',NEWMAXE,' AT POSITION ',NEWJMAXE(1)
-      IF (MAXE-NEWMAXE.GT.EDIFFTOLLOCAL) THEN ! ACCEPT CHANGE
+      WRITE(*,'(A,G20.10,A,I6)') ' maximum energy is now ',NEWMAXE,' at position ',NEWJMAXE(1)
+      IF (MAXE-NEWMAXE.GT.EDIFFTOLLOCAL) THEN ! accept change
          MAXE=NEWMAXE
          INTERPENERGYSAVE(1:NSEQ*GSTEPS-1)=INTERPENERGY(1:NSEQ*GSTEPS-1)
          IMPROVED=.TRUE.
@@ -166,19 +166,19 @@ DO
       DO J1=1,NCOORDS
          IF (SEQUENTIAL(J1).AND.(J1.NE.STEPORDER(JMAXE(1)))) THEN
             IF (SHORTER(J1)) THEN
-               WRITE(*,'(A,I5)') ' TRYING LONGER INTERPOLATION FOR COORDINATE ',J1
+               WRITE(*,'(A,I5)') ' trying longer interpolation for coordinate ',J1
                DELTA(J1)=LARGESTEP(J1)
                SHORTER(J1)=.FALSE.
             ELSE
-               WRITE(*,'(A,I5)') ' TRYING SHORTER INTERPOLATION FOR COORDINATE ',J1
+               WRITE(*,'(A,I5)') ' trying shorter interpolation for coordinate ',J1
                DELTA(J1)=SMALLSTEP(J1)
                SHORTER(J1)=.TRUE.
             ENDIF
             CALL GENERGIES(1,NSEQ*GSTEPS-1,.FALSE.) 
             NEWMAXE=MAXVAL(INTERPENERGY(1:NSEQ*GSTEPS-1))
             NEWJMAXE=MAXLOC(INTERPENERGY(1:NSEQ*GSTEPS-1))
-            WRITE(*,'(A,G20.10,A,I6)') ' MAXIMUM ENERGY IS NOW ',NEWMAXE,' AT POSITION ',NEWJMAXE(1)
-            IF (MAXE-NEWMAXE.GT.EDIFFTOLLOCAL) THEN ! ACCEPT CHANGE
+            WRITE(*,'(A,G20.10,A,I6)') ' maximum energy is now ',NEWMAXE,' at position ',NEWJMAXE(1)
+            IF (MAXE-NEWMAXE.GT.EDIFFTOLLOCAL) THEN ! accept change
                MAXE=NEWMAXE
                INTERPENERGYSAVE(1:NSEQ*GSTEPS-1)=INTERPENERGY(1:NSEQ*GSTEPS-1)
                IMPROVED=.TRUE.
@@ -200,22 +200,22 @@ DO
       ENDDO
    ENDIF
 
-   WRITE(*,'(A,I6,A,G20.10,A,L3,A,G20.10)') ' TRY TOGGLING LINEAR/SEQUENTIAL INTERPOLATION FOR ELIGIBLE COORDINATES'
+   WRITE(*,'(A,I6,A,G20.10,A,L3,A,G20.10)') ' try toggling linear/sequential interpolation for eligible coordinates'
    DO J1=1,NCOORDS
       IF (SEQUENTIAL(J1)) THEN
          IF (DOSEQ(J1)) THEN
-            WRITE(*,'(A,I5)') ' TRYING LINEAR INTERPOLATION FOR COORDINATE ',J1
+            WRITE(*,'(A,I5)') ' trying linear interpolation for coordinate ',J1
             DOSEQ(J1)=.FALSE.
          ELSE
-            WRITE(*,'(A,I5)') ' TRYING SEQUENTIAL INTERPOLATION FOR COORDINATE ',J1
+            WRITE(*,'(A,I5)') ' trying sequential interpolation for coordinate ',J1
             DOSEQ(J1)=.TRUE.
          ENDIF
          CALL GENERGIES(1,NSEQ*GSTEPS-1,.FALSE.)
          NEWMAXE=MAXVAL(INTERPENERGY(1:NSEQ*GSTEPS-1))
          NEWJMAXE=MAXLOC(INTERPENERGY(1:NSEQ*GSTEPS-1))
-         WRITE(*,'(A,G20.10,A,I6)') ' MAXIMUM ENERGY IS NOW ',NEWMAXE,' AT POSITION ',NEWJMAXE(1)
-         IF (MAXE-NEWMAXE.GT.EDIFFTOLLOCAL) THEN ! ACCEPT CHANGE
-            PRINT*,'ACCEPTING LINEAR/SEQUENTIAL CHANGE'
+         WRITE(*,'(A,G20.10,A,I6)') ' maximum energy is now ',NEWMAXE,' at position ',NEWJMAXE(1)
+         IF (MAXE-NEWMAXE.GT.EDIFFTOLLOCAL) THEN ! accept change
+            PRINT*,'accepting linear/sequential change'
             MAXE=NEWMAXE
             INTERPENERGYSAVE(1:NSEQ*GSTEPS-1)=INTERPENERGY(1:NSEQ*GSTEPS-1)
             IMPROVED=.TRUE.
@@ -224,7 +224,7 @@ DO
                CYCLE
             ENDIF
          ELSE
-            PRINT*,'REJECTING LINEAR/SEQUENTIAL CHANGE'
+            PRINT*,'rejecting linear/sequential change'
             INTERPENERGY(1:NSEQ*GSTEPS-1)=INTERPENERGYSAVE(1:NSEQ*GSTEPS-1)
             IF (DOSEQ(J1)) THEN
                DOSEQ(J1)=.FALSE.
@@ -236,23 +236,23 @@ DO
    ENDDO
 
    IF (UNRST) THEN
-      WRITE(*,'(A,I6,A,G20.10,A,L3,A,G20.10)') ' STARTING SERIES OF EXCHANGES FOR STEP IN POSITION ',JMAXE(1), &
-                              ' HIGHEST ENERGY=',MAXE,' SHORTER=',SHORTER(STEPORDER(JMAXE(1))),' STEP=',DELTA(STEPORDER(JMAXE(1)))
+      WRITE(*,'(A,I6,A,G20.10,A,L3,A,G20.10)') ' starting series of exchanges for step in position ',JMAXE(1), &
+                              ' highest energy=',MAXE,' SHORTER=',SHORTER(STEPORDER(JMAXE(1))),' step=',DELTA(STEPORDER(JMAXE(1)))
    ELSE
-      WRITE(*,'(A,I6,A,G20.10,A,L3,A,G20.10)') ' STARTING SERIES OF EXCHANGES FOR STEP IN POSITION ',JMAXE(1), &
-                              ' HIGHEST ENERGY=',MAXE
+      WRITE(*,'(A,I6,A,G20.10,A,L3,A,G20.10)') ' starting series of exchanges for step in position ',JMAXE(1), &
+                              ' highest energy=',MAXE
    ENDIF
    DO J1=1,NSEQ*GSTEPS
       IF (J1.EQ.JMAXE(1)) CYCLE
       NDUMMY=STEPORDER(J1)
       STEPORDER(J1)=STEPORDER(JMAXE(1))
       STEPORDER(JMAXE(1))=NDUMMY
-      CALL GENERGIES(J1,JMAXE(1),.FALSE.) ! FILL THE INITIAL INTERPENERGY VECTOR WITH INTERPOLATED ENERGIES
+      CALL GENERGIES(J1,JMAXE(1),.FALSE.) ! fill the initial INTERPENERGY vector with interpolated energies
       NEWMAXE=MAXVAL(INTERPENERGY(1:NSEQ*GSTEPS-1))
       NEWJMAXE=MAXLOC(INTERPENERGY(1:NSEQ*GSTEPS-1))
-      WRITE(*,'(2(A,I6),A,G20.10,2(A,I6))') ' AFTER SWAPPING STEPS AT LOCATIONS ',J1,' AND ',JMAXE(1), &
-                            ' MAXIMUM ENERGY=',NEWMAXE,' AT POSITION ',NEWJMAXE(1),' COORDINATE ',STEPORDER(NEWJMAXE(1))
-      IF (MAXE-NEWMAXE.GT.EDIFFTOLLOCAL) THEN ! ACCEPT SWAP
+      WRITE(*,'(2(A,I6),A,G20.10,2(A,I6))') ' after swapping steps at locations ',J1,' and ',JMAXE(1), &
+                            ' maximum energy=',NEWMAXE,' at position ',NEWJMAXE(1),' coordinate ',STEPORDER(NEWJMAXE(1))
+      IF (MAXE-NEWMAXE.GT.EDIFFTOLLOCAL) THEN ! accept swap
          MAXE=NEWMAXE
          INTERPENERGYSAVE(1:NSEQ*GSTEPS-1)=INTERPENERGY(1:NSEQ*GSTEPS-1)
          IMPROVED=.TRUE.
@@ -260,7 +260,7 @@ DO
             JMAXE(1)=NEWJMAXE(1)
             EXIT
          ENDIF
-      ELSE ! UNDO SWAP
+      ELSE ! undo swap
          INTERPENERGY(1:NSEQ*GSTEPS-1)=INTERPENERGYSAVE(1:NSEQ*GSTEPS-1)
          NDUMMY=STEPORDER(J1)
          STEPORDER(J1)=STEPORDER(JMAXE(1))
@@ -271,11 +271,11 @@ DO
 ENDDO 
 
 SUME=SUM(INTERPENERGY(1:NSEQ*GSTEPS-1))
-WRITE(*,'(A,2G20.10)') 'MAXIMUM ENERGY AND MEAN=',MAXE,SUME/(NSEQ*GSTEPS-1)
-WRITE(*,'(A,I6)') 'MAXIMUM IS AT LOCATION ',JMAXE(1)
-PRINT*,'ORDER OF COORDINATE STEPS, ENERGIES:'
+WRITE(*,'(A,2G20.10)') 'maximum energy and mean=',MAXE,SUME/(NSEQ*GSTEPS-1)
+WRITE(*,'(A,I6)') 'maximum is at location ',JMAXE(1)
+PRINT*,'order of coordinate steps, energies:'
 WRITE(*,'(2I6,G20.10)') (J1,STEPORDER(J1),INTERPENERGY(J1),J1=1,NSEQ*GSTEPS)
-! DUMP XYZ PATH
+! dump xyz path
 CALL GENERGIES(1,NSEQ*GSTEPS,.TRUE.) 
 
 DEALLOCATE(STEPORDER,INTERPENERGY,INTERPENERGYSAVE,SHORTER)
@@ -288,33 +288,38 @@ CONTAINS
    INTEGER :: K1, K2, NDUMMY, LBOTTOM, LTOP, K3
    LOGICAL, INTENT(IN) :: DUMPPATH
    DOUBLE PRECISION :: X(3*NATOMS), RMS, GRAD(3*NATOMS)
-               ! THERE SHOULD BE A WAY OF NOT 
-               ! DECLARING THE HESSIAN UNLESS IT IS ACTUALLY NEEDED? USE (*,*) IN POTENTIAL
-               ! AND ROUTINES CALLED FROM IT?
+               ! there should be a way of not 
+               ! declaring the Hessian unless it is actually needed? Use (*,*) in potential
+               ! and routines called from it?
    DOUBLE PRECISION :: DPRAND, ENERGY
 
 
    IF (DUMPPATH) THEN
       IF (FILTH.EQ.0) THEN
-         OPEN(UNIT=7,FILE='GUESS.XYZ',STATUS='UNKNOWN')
+         OPEN(UNIT=7,FILE='guess.xyz',STATUS='UNKNOWN')
       ELSE
-         LFNAME='GUESS.XYZ.'//TRIM(ADJUSTL(FILTHSTR))
+         LFNAME='guess.xyz.'//TRIM(ADJUSTL(FILTHSTR))
          OPEN(UNIT=7,FILE=TRIM(ADJUSTL(LFNAME)),STATUS='UNKNOWN')
       ENDIF
       IF (UNRST) THEN
          IF (FILTH.EQ.0) THEN
-            OPEN(UNIT=8,FILE='GUESS.UNRES.XYZ',STATUS='UNKNOWN')
+            OPEN(UNIT=8,FILE='guess.unres.xyz',STATUS='UNKNOWN')
          ELSE
-            LFNAME='GUESS.UNRES.XYZ.'//TRIM(ADJUSTL(FILTHSTR))
+            LFNAME='guess.unres.xyz.'//TRIM(ADJUSTL(FILTHSTR))
             OPEN(UNIT=8,FILE=TRIM(ADJUSTL(LFNAME)),STATUS='UNKNOWN')
          ENDIF
+<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NCOORDS,START)
 !CALL CHAINBUILD
+=======
+         CALL var_to_geom(NCOORDS,START)
+         CALL chainbuild
+>>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
          DO K2=1,NRES
-            WRITE(7,'(3G20.10)') C(1,K2),C(2,K2),C(3,K2) ! BACKBONE
-            WRITE(7,'(3G20.10)') C(1,K2+NRES),C(2,K2+NRES),C(3,K2+NRES) ! SIDE CHAINS
+            WRITE(7,'(3G20.10)') C(1,K2),C(2,K2),C(3,K2) ! backbone
+            WRITE(7,'(3G20.10)') C(1,K2+NRES),C(2,K2+NRES),C(3,K2+NRES) ! side chains
          ENDDO
-         DO K2=1,(NATOMS/2)-1 ! JMC ADD PEPTIDE ATOMS...
+         DO K2=1,(NATOMS/2)-1 ! jmc add peptide atoms...
             DO K3=1,3
                PEPCOORDS(6*(K2-1)+K3)=(2.0D0*C(K3,K2)+C(K3,K2+1))/3.0D0
                PEPCOORDS(6*(K2-1)+K3+3)=(C(K3,K2)+2.0D0*C(K3,K2+1))/3.0D0
@@ -341,7 +346,7 @@ CONTAINS
       LTOP=NDUMMY
    ENDIF
    X(1:NCOORDS)=START(1:NCOORDS)
-! DO THE FIRST LBOTTOM STEPS - THE ORDER ONLY CHANGES BETWEEN LBOTTOM AND LTOP
+! Do the first LBOTTOM steps - the order only changes between LBOTTOM and LTOP
    IF (UNRST) THEN
       DO K1=1,LBOTTOM-1
          X(STEPORDER(K1))=X(STEPORDER(K1))+DELTA(STEPORDER(K1))/GSTEPS
@@ -351,7 +356,7 @@ CONTAINS
          X(STEPORDER(K1))=X(STEPORDER(K1))+(FINISH(STEPORDER(K1))-START(STEPORDER(K1)))/GSTEPS
       ENDDO
    ENDIF
-! REMOVE EXACT ATOM SUPERPOSITIONS USING SOME RANDOM NUMERICAL NOISE WITH DPRAND
+! Remove exact atom superpositions using some random numerical noise with DPRAND
    DO K1=LBOTTOM,LTOP
       IF (DOSEQ(STEPORDER(K1))) THEN
          IF (UNRST) THEN
@@ -361,7 +366,7 @@ CONTAINS
                (FINISH(STEPORDER(K1))-START(STEPORDER(K1)))/GSTEPS+(DPRAND()-1.0D0)*1.0D-20
          ENDIF
       ENDIF
-      DO K2=1,NCOORDS ! LINEAR INTERPOLATION
+      DO K2=1,NCOORDS ! linear interpolation
          IF (.NOT.SEQUENTIAL(K2).OR.(.NOT.DOSEQ(K2))) THEN
             IF (UNRST) THEN
                X(K2)=START(K2)+DELTA(K2)*K1/(NSEQ*GSTEPS)
@@ -371,16 +376,21 @@ CONTAINS
          ENDIF
       ENDDO
       IF (UNRST) THEN
+<<<<<<< HEAD
 !CALL VAR_TO_GEOM(NCOORDS,X)
 !CALL CHAINBUILD
+=======
+         CALL var_to_geom(NCOORDS,X)
+         CALL chainbuild
+>>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       ENDIF
       IF (DUMPPATH) THEN
          IF (UNRST) THEN
             DO K2=1,NRES
-               WRITE(7,'(3G20.10)') C(1,K2),C(2,K2),C(3,K2) ! BACKBONE
-               WRITE(7,'(3G20.10)') C(1,K2+NRES),C(2,K2+NRES),C(3,K2+NRES) ! SIDE CHAINS
+               WRITE(7,'(3G20.10)') C(1,K2),C(2,K2),C(3,K2) ! backbone
+               WRITE(7,'(3G20.10)') C(1,K2+NRES),C(2,K2+NRES),C(3,K2+NRES) ! side chains
             ENDDO
-            DO K2=1,(NATOMS/2)-1 ! JMC ADD PEPTIDE ATOMS...
+            DO K2=1,(NATOMS/2)-1 ! jmc add peptide atoms...
                DO K3=1,3
                   PEPCOORDS(6*(K2-1)+K3)=(2.0D0*C(K3,K2)+C(K3,K2+1))/3.0D0
                   PEPCOORDS(6*(K2-1)+K3+3)=(C(K3,K2)+2.0D0*C(K3,K2+1))/3.0D0

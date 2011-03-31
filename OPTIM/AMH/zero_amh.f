@@ -1,114 +1,114 @@
-      SUBROUTINE ZERO_AMH
+      subroutine zero_amh
 
-      USE AMHGLOBALS
+      use amhglobals
 
-      IMPLICIT NONE
+      implicit none
 
-C     SET HYDROPHOBICITY SCALE FOR EACH AMINO ACID
+c     set hydrophobicity scale for each amino acid
 
-      HYDSCL(0:21,1)=(/0.0D0,0.25D0,-1.8D0,-0.64D0,-0.72D0,
+      hydscl(0:21,1)=(/0.0D0,0.25D0,-1.8D0,-0.64D0,-0.72D0,
      *         0.04D0,-0.69D0,-0.62D0,0.16D0,-0.4D0,0.73D0,0.53D0,-1.1D0,
      *         0.26D0,0.61D0,-0.07D0,-0.26D0,-0.18D0,0.37D0,0.02D0,0.54D0,-1.1D0/)
 
-C     RANDOM ASSIGNMENT OF H SCALE
+c     random assignment of h scale
 
-      HYDSCL(0:21,2)=(/0.0D0,1.0D0,1.0D0,-1.0D0,1.0D0,
+      hydscl(0:21,2)=(/0.0D0,1.0D0,1.0D0,-1.0D0,1.0D0,
      *             1.0D0,-1.0D0,-1.0D0,0.0D0,1.0D0,1.0D0,-1.0D0,-1.0D0,
      *            -1.0D0,1.0D0,-1.0D0,1.0D0,1.0D0,-1.0D0,1.0D0,-1.0D0,-1.0D0/)
 
-       EQDIST=(/2.45798D0,2.50665D0,2.44973D0,2.42677D0,2.82146D0/)
+       eqdist=(/2.45798D0,2.50665D0,2.44973D0,2.42677D0,2.82146D0/)
 
-C     INPUT_AMH FILES
+c     input_amh files
 
-      ICON=31
-      IMAT=32
-      IHOMOL=33
-      IHBOND=34
-      IPHI=35
-      ICONTACTS=37
+      icon=31
+      imat=32
+      ihomol=33
+      ihbond=34
+      iphi=35
+      icontacts=37
 
-      INPUT_AMH=41
-      IMEMRI=43
-      IRAN=44
-      IPROLST=45
-      IPROLSTSCL=40 
-      IEVGAMMA=46
-      IEVBETA=47
-      IGAMMA=48
-      ISS_BIAS=49
-      ISS_STRUCT=50
-      ITARG_SEQ=51
-      IMEM_CONS=52
+      input_amh=41
+      imemri=43
+      iran=44
+      iprolst=45
+      iprolstscl=40 
+      ievgamma=46
+      ievbeta=47
+      igamma=48
+      iss_bias=49
+      iss_struct=50
+      itarg_seq=51
+      imem_cons=52
 
-C     OUTPUT FILES
+c     output files
 
-      OARCHV=230
-      OCONV=76
-      OMOVI=55
-      OHDRGN=60
-      OHDRGN_S=81
-      OHDRGN_M=82
-      OHDRGN_L=83
-      OHDRGN_SEQ=85
-      ONONADD=84
-      OCON_P_AP=86
-      OOBIASSEGA=57
-      OOBIASSEGB=58
+      oarchv=230
+      oconv=76
+      omovi=55
+      ohdrgn=60
+      ohdrgn_s=81
+      ohdrgn_m=82
+      ohdrgn_l=83
+      ohdrgn_seq=85
+      ononadd=84
+      ocon_P_AP=86
+      oobiassega=57
+      oobiassegb=58
 
-      ORAMA=61
-      OOXY=62
-      OCHIRAL=63
-      OAMH=64
-      OAMHSR=66
-      OPE_NO_BIAS=67
-      OPE_WITH_BIAS=87
-      OPE_PLUS_KE=88
-      OPE_BACKBONE=90
-      OAMHLR=68
-      OAMHMR=78
-      ORAN=70
-      OCCEV=71
-C     OBIAS=72
-      OBIAS_RG=77
-      OKE=73
-      OOEV=74
-      OMOVISEG=75
-      OREP=89
-      IBIASFILE=79
+      orama=61
+      ooxy=62
+      ochiral=63
+      oamh=64
+      oamhsr=66
+      oPE_no_bias=67
+      oPE_with_bias=87
+      oPE_plus_KE=88
+      oPE_backbone=90
+      oamhlr=68
+      oamhmr=78
+      oran=70
+      occev=71
+c     obias=72
+      obias_Rg=77
+      oKE=73
+      ooev=74
+      omoviseg=75
+      orep=89
+      ibiasfile=79
 
-      OVGASPOT=95
-      OVSCLTAB=96
-C      PNAMES=97
-      PDB=98
+      ovgaspot=95
+      ovscltab=96
+c      pnames=97
+      pdb=98
       SO=97
 
-      ITGRD=0
-      NMSTEP=0
-      INCMOV=0
+      itgrd=0
+      nmstep=0
+      incmov=0
 
-      T1=0.0D0
-      T2=0.0D0
-      T3=0.0D0
-      T4=0.0D0
-      T5=0.0D0
+      t1=0.0D0
+      t2=0.0D0
+      t3=0.0D0
+      t4=0.0D0
+      t5=0.0D0
 
-      NMTEMP=0
-      ICTEMP=.FALSE.
-      CTEMP=0.0D0
-      IRESRT=.FALSE.
-      MOVANAL=.FALSE.
+      nmtemp=0
+      ictemp=.false.
+      ctemp=0.0D0
+      iresrt=.false.
+      movanal=.false.
 
-      TEMTUR=0.0D0
-      TEMGRD=0.0D0
-      PRCORD=0.0D0
-      BONDLN=0.0D0
-      TARGET=0.0D0
-      ZRCORD=0.0D0
-      AVEP=0.0D0
-      CHRLSCL=0.0D0
-      OXSCL=0.0D0
-      RAMASCL=0.0D0
-      CCEV_DIST=0.0D0
+      temtur=0.0D0
+      temgrd=0.0D0
+      prcord=0.0D0
+      bondln=0.0D0
+      target=0.0D0
+      zrcord=0.0D0
+      avep=0.0D0
+      chrlscl=0.0D0
+      oxscl=0.0D0
+      ramascl=0.0D0
+      ccev_dist=0.0D0
 
-      END
+      end
       

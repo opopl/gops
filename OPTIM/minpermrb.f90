@@ -1,19 +1,19 @@
-!     COPYRIGHT (C) 1999-2008 DAVID J. WALES
-!  THIS FILE IS PART OF OPTIM.
+!     Copyright (C) 1999-2008 David J. Wales
+!  This file is part of OPTIM.
 !
-!  OPTIM IS FREE SOFTWARE; YOU CAN REDISTRIBUTE IT AND/OR MODIFY
-!  IT UNDER THE TERMS OF THE GNU GENERAL PUBLIC LICENSE AS PUBLISHED BY
-!  THE FREE SOFTWARE FOUNDATION; EITHER VERSION 2 OF THE LICENSE, OR
-!  (AT YOUR OPTION) ANY LATER VERSION.
+!  OPTIM is free software; you can redistribute it and/or modify
+!  it under the terms of the GNU General Public License as published by
+!  the Free Software Foundation; either version 2 of the License, or
+!  (at your option) any later version.
 !
-!  OPTIM IS DISTRIBUTED IN THE HOPE THAT IT WILL BE USEFUL,
-!  BUT WITHOUT ANY WARRANTY; WITHOUT EVEN THE IMPLIED WARRANTY OF
-!  MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  SEE THE
-!  GNU GENERAL PUBLIC LICENSE FOR MORE DETAILS.
+!  OPTIM is distributed in the hope that it will be useful,
+!  but WITHOUT ANY WARRANTY; without even the implied warranty of
+!  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!  GNU General Public License for more details.
 !
-!  YOU SHOULD HAVE RECEIVED A COPY OF THE GNU GENERAL PUBLIC LICENSE
-!  ALONG WITH THIS PROGRAM; IF NOT, WRITE TO THE FREE SOFTWARE
-!  FOUNDATION, INC., 59 TEMPLE PLACE, SUITE 330, BOSTON, MA  02111-1307  USA
+!  You should have received a copy of the GNU General Public License
+!  along with this program; if not, write to the Free Software
+!  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
@@ -51,43 +51,43 @@ SAVENSETS(1:NATOMS)=NSETS(1:NATOMS)
 SAVENATOMS=NATOMS
 DONEGROUP(1:NATOMS)=.FALSE.
 
-! OPEN(UNIT=876,FILE='COORDSA.XYZ',STATUS='UNKNOWN')
-! WRITE(876,'(I4)') SAVENATOMS
-! WRITE(876,'(A)') 'COORDSA INITIALLY'
-! WRITE(876,'(A1,1X,3F20.10)') (ZSYM((J1+2)/3),COORDSA(J1),COORDSA(J1+1),COORDSA(J1+2),J1=1,3*NATOMS,3)
-! OPEN(UNIT=774,FILE='COORDSB.XYZ',STATUS='UNKNOWN')
-! WRITE(774,'(I4)') SAVENATOMS
-! WRITE(774,'(A)') 'COORDSB INITIALLY'
-! WRITE(774,'(A1,1X,3F20.10)') (ZSYM((J1+2)/3),COORDSB(J1),COORDSB(J1+1),COORDSB(J1+2),J1=1,3*NATOMS,3)
+! OPEN(UNIT=876,FILE='coordsa.xyz',STATUS='UNKNOWN')
+! WRITE(876,'(i4)') SAVENATOMS
+! WRITE(876,'(A)') 'coordsa initially'
+! WRITE(876,'(A1,1X,3F20.10)') (ZSYM((j1+2)/3),COORDSA(J1),COORDSA(J1+1),COORDSA(J1+2),J1=1,3*NATOMS,3)
+! OPEN(UNIT=774,FILE='coordsb.xyz',STATUS='UNKNOWN')
+! WRITE(774,'(i4)') SAVENATOMS
+! WRITE(774,'(A)') 'coordsb initially'
+! WRITE(774,'(A1,1X,3F20.10)') (ZSYM((j1+2)/3),COORDSB(J1),COORDSB(J1+1),COORDSB(J1+2),J1=1,3*NATOMS,3)
 
 ! CALL POTENTIAL(COORDSA,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-! PRINT '(A,2F20.10)',' MINPERMRB> AT THE START FOR MIN A ENERGY AND RMS ARE: ',ENERGY, RMS
+! PRINT '(A,2F20.10)',' minpermrb> at the start for min A energy and RMS are: ',ENERGY, RMS
 ! CALL POTENTIAL(COORDSB,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-! PRINT '(A,2F20.10)',' MINPERMRB> AT THE START FOR MIN B ENERGY AND RMS ARE: ',ENERGY, RMS
+! PRINT '(A,2F20.10)',' minpermrb> at the start for min B energy and RMS are: ',ENERGY, RMS
 
 !
-! TRYING TO MERGE GROUPS WITH COMMON ATOMS MAY FIX SOME PROBLEM INTERPOLATIONS.
-! SET TRYMERGE TRUE TO USE THIS.
+! Trying to merge groups with common atoms may fix some problem interpolations.
+! Set TRYMERGE true to use this.
 !
 TRYMERGE=.TRUE.
 NDUMMY=1
 NRUNNING=0
-MAINLOOP: DO J1=1,SAVENPERMGROUP
+mainloop: DO J1=1,SAVENPERMGROUP
    IF (DONEGROUP(J1)) THEN
       NDUMMY=NDUMMY+SAVENPERMSIZE(J1)
-      CYCLE MAINLOOP
+      CYCLE mainloop
    ENDIF
 !
-! PERMUTABLE ATOMS ARE ONLY ALLOWED TO BE PART OF ONE RIGID BODY. OTHER ATOMS CAN BELONG TO
-! MORE THAN ONE. HENCE WE FIX ON THE FIRST OPTIMISED PERMUTATION, BUT ALLOW OTHER ATOMS TO
-! OVERLAP.
+! Permutable atoms are only allowed to be part of one rigid body. Other atoms can belong to
+! more than one. Hence we fix on the first optimised permutation, but allow other atoms to
+! overlap.
 !
    DO J2=1,SAVENPERMSIZE(J1)
       IF (RBASSIGNED(SAVEPERMGROUP(NDUMMY+J2-1))) THEN
          DONEGROUP(J1)=.TRUE.
-         IF (DEBUG) PRINT '(A,I6,A)',' MINPERMRB> ATOM ',SAVEPERMGROUP(NDUMMY+J2-1),' IS ALREADY IN AN RB GROUP'
+         IF (DEBUG) PRINT '(A,I6,A)',' minpermrb> Atom ',SAVEPERMGROUP(NDUMMY+J2-1),' is already in an RB group'
          NDUMMY=NDUMMY+SAVENPERMSIZE(J1)
-         CYCLE MAINLOOP
+         CYCLE mainloop
       ENDIF
    ENDDO
    DONEGROUP(J1)=.TRUE.
@@ -111,24 +111,24 @@ MAINLOOP: DO J1=1,SAVENPERMGROUP
    
    NCOUNT=SAVENPERMSIZE(J1)
    IF (SAVENSETS(J1).GT.0) THEN
-      PRINT '(A)',' MINPERMRB> ERROR *** ADDITIONAL ATOM SWAPS NOT ALLOWED FOR RIGID BODIES'
+      PRINT '(A)',' minpermrb> ERROR *** additional atom swaps not allowed for rigid bodies'
       STOP
    ENDIF
 
    NATOMS=PATOMS+2*SAVENSETS(J1)
    NSAVE=NATOMS
 !
-! NOW CHECK IF ANY OF THE ATOMS IN QUESTION LIE IN ADDITIONAL GROUPS THAT CAN BE PERMUTED,
-! SUCH AS THE TWO SETS OF METHYL HYDROGENS IN VALINE. IF SO, WE NEED TO ADD THIS PERMUTATION
-! INFORMATION. THIS SITUATION CAN ONLY OCCUR IF NSETS(1) > 0.
+! Now check if any of the atoms in question lie in additional groups that can be permuted,
+! such as the two sets of methyl hydrogens in valine. If so, we need to add this permutation
+! information. This situation can only occur if NSETS(1) > 0.
 !
    IF (NSETS(1).GT.0) THEN
       NNDUMMY=0
       NNNDUMMY=NPERMSIZE(1)
-      OUTER: DO J2=1,SAVENPERMGROUP
+      outer: DO J2=1,SAVENPERMGROUP
          IF (J2.EQ.J1) THEN
             NNDUMMY=NNDUMMY+SAVENPERMSIZE(J2)
-            CYCLE OUTER
+            CYCLE outer
          ENDIF
          DO J3=1,SAVENPERMSIZE(J2)
             DO J4=1,NATOMS
@@ -136,11 +136,11 @@ MAINLOOP: DO J1=1,SAVENPERMGROUP
                   NPERMGROUP=NPERMGROUP+1
                   NPERMSIZE(NPERMGROUP)=SAVENPERMSIZE(J2)
 !
-!  THERE CAN;T BE ANY SWAPS ASSOCIATED WITH THIS GROUP.
+!  There can;t be any swaps associated with this group.
 !
                   IF (SAVENSETS(J2).GT.0) THEN
-                     IF (DEBUG) PRINT '(A,I6,A,I6)','MINPERMRB> ERROR *** NUMBER OF SETS ASSOCIATED WITH GROUP ', & 
-  &                                                  J2,' IS ',SAVENSETS(J2)
+                     IF (DEBUG) PRINT '(A,I6,A,I6)','minpermrb> ERROR *** number of sets associated with group ', & 
+  &                                                  J2,' is ',SAVENSETS(J2)
                      STOP
                   ENDIF
                   NSETS(NPERMGROUP)=0
@@ -150,16 +150,16 @@ MAINLOOP: DO J1=1,SAVENPERMGROUP
                   NNNDUMMY=NNNDUMMY+SAVENPERMSIZE(J2)
                   NNDUMMY=NNDUMMY+SAVENPERMSIZE(J2)
                   DONEGROUP(J2)=.TRUE.
-                  CYCLE OUTER
+                  CYCLE outer
                ENDIF
             ENDDO
          ENDDO
          NNDUMMY=NNDUMMY+SAVENPERMSIZE(J2)
-      ENDDO OUTER
+      ENDDO outer
    ENDIF
 
    IF (DEBUG) THEN
-      PRINT '(A,I6,A,I6)',' MINPERMRB> NUMBER OF SETS OF PERMUTABLE ATOMS FOR GROUP ',J1, ' IS ',NPERMGROUP
+      PRINT '(A,I6,A,I6)',' minpermrb> Number of sets of permutable atoms for group ',J1, ' is ',NPERMGROUP
       NNDUMMY=1
       DO J2=1,NPERMGROUP
          IF (DEBUG) THEN
@@ -172,18 +172,18 @@ MAINLOOP: DO J1=1,SAVENPERMGROUP
       ENDDO
    ENDIF
 !
-! ADD ANY ATOMS THAT ARE OUTSIDE THE CURRENT PERMUTABLE GROUPS BUT ARE EQUIDISTANT FROM THE 
-! ATOMS THAT CAN BE PERMUTED.
-! FORBID MEMBERS OF OTHER PERMUTATIONAL GROUPS TO AVOID A SUBSET OF SUCH ATOMS BEING INCLUDED,
-! WHICH MAKES THE BOOKKEEPING TRICKY.
+! Add any atoms that are outside the current permutable groups but are equidistant from the 
+! atoms that can be permuted.
+! Forbid members of other permutational groups to avoid a subset of such atoms being included,
+! which makes the bookkeeping tricky.
 !
    NEXTRA=0
    SAVEDIST(1:SAVENATOMS)=-1.0D0
-   OUTER2: DO J2=1,SAVENATOMS
+   outer2: DO J2=1,SAVENATOMS
       NPERMTOTAL=0
       DO J4=1,SAVENPERMGROUP
          DO J5=1,SAVENPERMSIZE(J4)
-            IF (SAVEPERMGROUP(NPERMTOTAL+J5).EQ.J2) CYCLE OUTER2
+            IF (SAVEPERMGROUP(NPERMTOTAL+J5).EQ.J2) CYCLE outer2
          ENDDO
          NPERMTOTAL=NPERMTOTAL+SAVENPERMSIZE(J4)
       ENDDO
@@ -192,30 +192,30 @@ MAINLOOP: DO J1=1,SAVENPERMGROUP
   &                (COORDSA(3*(J2-1)+1)-PDUMMYA(3*(J4-1)+1))**2 &
   &               +(COORDSA(3*(J2-1)+2)-PDUMMYA(3*(J4-1)+2))**2 &
   &               +(COORDSA(3*(J2-1)+3)-PDUMMYA(3*(J4-1)+3))**2 )
-         IF (DISTA(J4).GT.RBCUTOFF) CYCLE OUTER2
+         IF (DISTA(J4).GT.RBCUTOFF) CYCLE outer2
          DISTB(J4)=SQRT( &
   &                (COORDSB(3*(J2-1)+1)-PDUMMYB(3*(J4-1)+1))**2 &
   &               +(COORDSB(3*(J2-1)+2)-PDUMMYB(3*(J4-1)+2))**2 &
   &               +(COORDSB(3*(J2-1)+3)-PDUMMYB(3*(J4-1)+3))**2 )
-         IF (DISTB(J4).GT.RBCUTOFF) CYCLE OUTER2
+         IF (DISTB(J4).GT.RBCUTOFF) CYCLE outer2
       ENDDO
 !
-! SORT THE DISTANCES FOR COMPARISON. THEY DO NOT HAVE TO BE EQUIDISTANT FROM THE
-! PERMUTABLE ATOMS IN THE TWO END POINTS. THIS ALLOWS ROTATION OF A WHOLE ARGININE.
-! TO REDUCE THE ALLOWED RB SIZE JUST REDUCE THE CUTOFF RADIUS RBCUTOFF.
+! Sort the distances for comparison. They do not have to be equidistant from the
+! permutable atoms in the two end points. This allows rotation of a whole arginine.
+! To reduce the allowed RB size just reduce the cutoff radius RBCUTOFF.
 !
       CALL RBSORT(NPERMSIZE(1),DISTA)
       CALL RBSORT(NPERMSIZE(1),DISTB)
       DO J4=1,NPERMSIZE(1)
-         IF (ABS(DISTA(J4)-DISTB(J4)).GT.LPDGEOMDIFFTOL) CYCLE OUTER2
+         IF (ABS(DISTA(J4)-DISTB(J4)).GT.LPDGEOMDIFFTOL) CYCLE outer2
       ENDDO
       
       XDUMMY=0.5D0*(SUM(DISTA(1:NPERMSIZE(1)))+SUM(DISTB(1:NPERMSIZE(1))))/NPERMSIZE(1)
-!     IF (DEBUG) PRINT '(A,I6,A,F15.5)',' MINPERMRB> ATOM ',J2,' SATISFIES EQUIDISTANCE CONDITION WITH MEAN DISTANCE ',XDUMMY
+!     IF (DEBUG) PRINT '(A,I6,A,F15.5)',' minpermrb> atom ',J2,' satisfies equidistance condition with mean distance ',XDUMMY
 !     IF (DEBUG) PRINT '(6F15.5)',DISTA(1:NPERMSIZE(1)),DISTB(1:NPERMSIZE(1))
 !
-!  MAKE AN ORDERED LIST WITH FURTHEST LAST SO THAT WE CAN REMOVE THE FURTHEST ATOMS
-!  ONE AT A TIME OF THE ALIGNMENT ISN;T GOOD ENOUGH.
+!  Make an ordered list with furthest last so that we can remove the furthest atoms
+!  one at a time of the alignment isn;t good enough.
 !
       IF ((NEXTRA.EQ.0).OR.(XDUMMY.GT.SAVEDIST(NEXTRA))) THEN
          NATOMS=NATOMS+1
@@ -225,9 +225,9 @@ MAINLOOP: DO J1=1,SAVENPERMGROUP
          NEXTRA=NEXTRA+1
          SAVEDIST(NEXTRA)=XDUMMY
       ELSE
-         REORDER: DO J4=NSAVE+1,NSAVE+NEXTRA
+         reorder: DO J4=NSAVE+1,NSAVE+NEXTRA
             IF (XDUMMY.LT.SAVEDIST(J4-NSAVE)) THEN
-               DO J5=NATOMS+1,J4+1,-1 ! MOVE THE OTHER ENTRIES UP ONE
+               DO J5=NATOMS+1,J4+1,-1 ! move the other entries up one
                   ATOMMAP(J5)=ATOMMAP(J5-1)
                   PDUMMYA(3*(J5-1)+1:3*(J5-1)+3)=PDUMMYA(3*(J5-2)+1:3*(J5-2)+3)
                   PDUMMYB(3*(J5-1)+1:3*(J5-1)+3)=PDUMMYB(3*(J5-2)+1:3*(J5-2)+3)
@@ -237,13 +237,13 @@ MAINLOOP: DO J1=1,SAVENPERMGROUP
                PDUMMYA(3*(J4-1)+1:3*(J4-1)+3)=COORDSA(3*(J2-1)+1:3*(J2-1)+3)
                PDUMMYB(3*(J4-1)+1:3*(J4-1)+3)=COORDSB(3*(J2-1)+1:3*(J2-1)+3)
                SAVEDIST(J4-NSAVE)=XDUMMY
-               EXIT REORDER
+               EXIT reorder
             ENDIF
-         ENDDO REORDER
+         ENDDO reorder
          NATOMS=NATOMS+1
          NEXTRA=NEXTRA+1
       ENDIF
-   ENDDO OUTER2
+   ENDDO outer2
 
 20 CONTINUE
    XDUMMY=GEOMDIFFTOL
@@ -251,12 +251,12 @@ MAINLOOP: DO J1=1,SAVENPERMGROUP
 !  GEOMDIFFTOL=LPDGEOMDIFFTOL
    PDUMMYASAVE(1:3*NATOMS)=PDUMMYA(1:3*NATOMS)
    IF (DEBUG) THEN
-      PRINT '(A,I6,A)',' MINPERMRB> CALLING MINPERMDIST FOR ',NATOMS,' ATOMS:'
+      PRINT '(A,I6,A)',' minpermrb> Calling minpermdist for ',NATOMS,' atoms:'
       DO J5=1,NATOMS
          WRITE(*,'(I6)',ADVANCE='NO') ATOMMAP(J5)
       ENDDO
       WRITE(*,'(A)') ' '
-      PRINT '(A,I6,A)',' MINPERMRB> DISTANCES OF ',NEXTRA,' EXTRA ATOMS:'
+      PRINT '(A,I6,A)',' minpermrb> Distances of ',NEXTRA,' extra atoms:'
       DO J5=1,NEXTRA
          WRITE(*,'(F15.5)',ADVANCE='NO') SAVEDIST(J5)
       ENDDO
@@ -265,7 +265,7 @@ MAINLOOP: DO J1=1,SAVENPERMGROUP
    CALL MINPERMDIST(PDUMMYB,PDUMMYA,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGID,RMATBEST)
    GEOMDIFFTOL=XDUMMY
 !
-! LPDGEOMDIFFTOL IS COMPARED TO THE LARGEST DIFFERENCE FOR A SINGLE ATOM IN THE ALIGNED STRUCTURES.
+! LPDGEOMDIFFTOL is compared to the largest difference for a single atom in the aligned structures.
 !
    XDUMMY=-1.0D0
    DO J2=1,NATOMS
@@ -276,18 +276,18 @@ MAINLOOP: DO J1=1,SAVENPERMGROUP
    ENDDO
    LDUMMY=SQRT(LDUMMY)
 
-   IF (DEBUG) PRINT '(A,I6,2(A,G14.4))',' MINPERMRB> DISTANCE FOR PERMUTABLE GROUP ',J1,' IS ',DISTANCE, &
-  &                                  ' LARGEST DISPLACEMENT ',LDUMMY
+   IF (DEBUG) PRINT '(A,I6,2(A,G14.4))',' minpermrb> Distance for permutable group ',J1,' is ',DISTANCE, &
+  &                                  ' largest displacement ',LDUMMY
 !  IF ((DISTANCE.GT.NPERMSIZE(1)*LPDGEOMDIFFTOL).AND.(NATOMS.GT.PATOMS+2*SAVENSETS(J1))) THEN
    IF ((LDUMMY.GT.LPDGEOMDIFFTOL).AND.(NATOMS.GT.PATOMS+2*SAVENSETS(J1))) THEN
       NATOMS=NATOMS-1
-      IF (DEBUG) PRINT '(A)',' MINPERMRB> DISTANCE IS TOO LARGE - REDUCE NUMBER OF EQUIDISTANT ATOMS BY ONE AND TRY AGAIN'
+      IF (DEBUG) PRINT '(A)',' minpermrb> Distance is too large - reduce number of equidistant atoms by one and try again'
       PDUMMYA(1:3*NATOMS)=PDUMMYASAVE(1:3*NATOMS)
       GOTO 20
    ENDIF
    PDUMMYA(1:3*SAVENATOMS)=COORDSA(1:3*SAVENATOMS)
    NRBGROUP=NRBGROUP+1
-   IF (DEBUG) PRINT '(A,I6,A,I6)',' MINPERMRB> ',NATOMS,' ATOMS ASSIGNED TO RIGID BODY GROUP ',NRBGROUP
+   IF (DEBUG) PRINT '(A,I6,A,I6)',' minpermrb> ',NATOMS,' atoms assigned to rigid body group ',NRBGROUP
    RBNINGROUP(NRBGROUP)=NATOMS
    DO J2=1,NATOMS
       RBASSIGNED(ATOMMAP(J2))=.TRUE.
@@ -309,20 +309,20 @@ MAINLOOP: DO J1=1,SAVENPERMGROUP
    COORDSA(1:3*SAVENATOMS)=PDUMMYA(1:3*SAVENATOMS)
 
    NDUMMY=NDUMMY+SAVENPERMSIZE(J1)
-ENDDO MAINLOOP
+ENDDO mainloop
 
 IF (.NOT.TRYMERGE) GOTO 111
 !
-! NOW CHECK IF WE CAN MERGE ANY OF THESE GROUPS. THIS COULD HAPPEN BECAUSE ONLY ONE PERMUTABLE 
-! SET IS INITIALLY ALLOWED IN EACH RIGID BODY. NOTE THAT THERE COULD BE OVERALPPING ATOMS BETWEEN
-! RIGID BODY GROUPS AS WELL.
-! ONLY ALLOW MERGING FOR OVERLAPPING GROUPS.
+! Now check if we can merge any of these groups. This could happen because only one permutable 
+! set is initially allowed in each rigid body. Note that there could be overalpping atoms between
+! rigid body groups as well.
+! Only allow merging for overlapping groups.
 !
 !       IF (DEBUG) THEN
-!           PRINT '(3(A,I6))',' MINPERMRB> ORIGINAL RBGROUP ENTRIES:'
+!           PRINT '(3(A,I6))',' minpermrb> Original RBGROUP entries:'
 !           NDUMMY=0
 !           DO J3=1,NRBGROUP
-!              PRINT '(A,I6)',' GROUP ',J3 
+!              PRINT '(A,I6)',' group ',J3 
 !              PRINT '(22I6)',RBGROUP(NDUMMY+1:NDUMMY+RBNINGROUP(J3))
 !              NDUMMY=NDUMMY+RBNINGROUP(J3)
 !           ENDDO
@@ -341,20 +341,20 @@ DO J1=1,NRBGROUP
    DO J2=J1+1,NRBGROUP
       NATOMS=RBNINGROUP(J1)
 !
-! CHECK FOR UNIQUE ATOMS IN SECOND GROUP.
+! Check for unique atoms in second group.
 !
-      G2ATOMS: DO J5=1,RBNINGROUP(J2)
+      g2atoms: DO J5=1,RBNINGROUP(J2)
          J3=RBGROUP(J5+NRUNNING2)
          DO J4=1,RBNINGROUP(J1)
-            IF (J3.EQ.RBGROUP(J4+NRUNNING1)) CYCLE G2ATOMS
+            IF (J3.EQ.RBGROUP(J4+NRUNNING1)) CYCLE g2atoms
          ENDDO
          NATOMS=NATOMS+1
          ATOMMAP(NATOMS)=J3
          PDUMMYA(3*(NATOMS-1)+1:3*(NATOMS-1)+3)=COORDSA(3*(J3-1)+1:3*(J3-1)+3)
          PDUMMYB(3*(NATOMS-1)+1:3*(NATOMS-1)+3)=COORDSB(3*(J3-1)+1:3*(J3-1)+3)
-      ENDDO G2ATOMS
+      ENDDO g2atoms
 !
-! ONLY TRY TO MERGE GROUPS THAT HAVE A COMMON ATOM.
+! Only try to merge groups that have a common atom.
 !
       IF (NATOMS.EQ.RBNINGROUP(J1)+RBNINGROUP(J2)) THEN
          NRUNNING2=NRUNNING2+RBNINGROUP(J2)
@@ -364,7 +364,7 @@ DO J1=1,NRBGROUP
       XDUMMY=GEOMDIFFTOL
       GEOMDIFFTOL=NPERMSIZE(1)*LPDGEOMDIFFTOL
 !     IF (DEBUG) THEN
-!        PRINT '(3(A,I6))',' MINPERMRB> CALLING MINPERMDIST FOR ',NATOMS,' ATOMS MERGED FROM GROUPS ',J1,' AND ',J2
+!        PRINT '(3(A,I6))',' minpermrb> Calling minpermdist for ',NATOMS,' atoms merged from groups ',J1,' and ',J2
 !        DO J5=1,NATOMS
 !           WRITE(*,'(I6)',ADVANCE='NO') ATOMMAP(J5)
 !        ENDDO
@@ -373,7 +373,7 @@ DO J1=1,NRBGROUP
       CALL MINPERMDIST(PDUMMYB,PDUMMYA,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGID,RMATBEST)
       GEOMDIFFTOL=XDUMMY
 !
-! LPDGEOMDIFFTOL IS COMPARED TO THE LARGEST DIFFERENCE FOR A SINGLE ATOM IN THE ALIGNED STRUCTURES.
+! LPDGEOMDIFFTOL is compared to the largest difference for a single atom in the aligned structures.
 !
       XDUMMY=-1.0D0
       DO J3=1,NATOMS
@@ -382,13 +382,13 @@ DO J1=1,NRBGROUP
   &             +(PDUMMYB(3*(J3-1)+3)-PDUMMYA(3*(J3-1)+3))**2
          IF (LDUMMY.GT.XDUMMY) XDUMMY=LDUMMY
       ENDDO
-      LDUMMY=SQRT(XDUMMY) ! BUG FIX 30/7/09 DJW
-!     IF (DEBUG) PRINT '(2(A,I6),2(A,G14.4))',' MINPERMRB> DISTANCE FOR MERGED GROUPS ',J1,' AND ',J2,' IS ',DISTANCE, &
-! &                                           ' LARGEST DISPLACEMENT ',LDUMMY
+      LDUMMY=SQRT(XDUMMY) ! bug fix 30/7/09 DJW
+!     IF (DEBUG) PRINT '(2(A,I6),2(A,G14.4))',' minpermrb> Distance for merged groups ',J1,' and ',J2,' is ',DISTANCE, &
+! &                                           ' largest displacement ',LDUMMY
 !
-! IF ALLOWED, ADD NON-DUPLICATE ENTRIES FOR J2 GROUP ONTO THE END OF J1 GROUP, MOVING THE REST OF ENTRIES UP
-! APPROPRIATELY. REDUCED NRBGROUP BY ONE, AND START ALL OVER AGAIN.
-! OTHERWISE, INCREMENT NRUNNING2 AND TRY MERGING WITH THE NEXT GROUP.
+! If allowed, add non-duplicate entries for J2 group onto the end of J1 group, moving the rest of entries up
+! appropriately. Reduced NRBGROUP by one, and start all over again.
+! Otherwise, increment NRUNNING2 and try merging with the next group.
 !
       IF (LDUMMY.LT.LPDGEOMDIFFTOL) THEN
          ALLOCATE(TEMPRBGROUP(RBATOMSMAX))
@@ -405,10 +405,10 @@ DO J1=1,NRBGROUP
          NCOUNT=NCOUNT+NATOMS
          RBNINGROUP(J1)=NATOMS
          TEMPRBNINGROUP(J1)=NATOMS
-         J3LOOP: DO J3=J1+1,NRBGROUP
+         j3loop: DO J3=J1+1,NRBGROUP
             IF (J3.EQ.J2) THEN
                NDUMMY=NDUMMY+RBNINGROUP(J3)
-               CYCLE J3LOOP
+               CYCLE j3loop
             ENDIF
             IF (J3.LT.J2) TEMPRBNINGROUP(J3)=RBNINGROUP(J3)
             IF (J3.GT.J2) TEMPRBNINGROUP(J3-1)=RBNINGROUP(J3)
@@ -417,17 +417,17 @@ DO J1=1,NRBGROUP
             ENDDO
             NCOUNT=NCOUNT+RBNINGROUP(J3)
             NDUMMY=NDUMMY+RBNINGROUP(J3)
-         ENDDO J3LOOP
+         ENDDO j3loop
          NRBGROUP=NRBGROUP-1
          RBGROUP(1:NCOUNT)=TEMPRBGROUP(1:NCOUNT)
          RBNINGROUP(1:NRBGROUP)=TEMPRBNINGROUP(1:NRBGROUP)
          DEALLOCATE(TEMPRBGROUP)
          IF (DEBUG) THEN
-            PRINT '(3(A,I6))',' MINPERMRB> AFTER MERGING GROUPS ',J1,' AND ',J2,' REMAINING GROUPS=',NRBGROUP
-            PRINT '(3(A,I6))',' MINPERMRB> NEW RBGROUP ENTRIES:'
+            PRINT '(3(A,I6))',' minpermrb> After merging groups ',J1,' and ',J2,' remaining groups=',NRBGROUP
+            PRINT '(3(A,I6))',' minpermrb> New RBGROUP entries:'
             NDUMMY=0
             DO J3=1,NRBGROUP
-               PRINT '(A,I6)',' GROUP ',J3 
+               PRINT '(A,I6)',' group ',J3 
                PRINT '(22I6)',RBGROUP(NDUMMY+1:NDUMMY+RBNINGROUP(J3))
                NDUMMY=NDUMMY+RBNINGROUP(J3)
             ENDDO
@@ -449,17 +449,17 @@ PERMGROUP(1:NATOMS)=SAVEPERMGROUP(1:NATOMS)
 NSETS(1:NATOMS)=SAVENSETS(1:NATOMS)
 
 !
-! ROUTINES LIKE CHECKPAIR ARE EXPECTING THE MINIMUM DISTANCE TO BE RETURNED.
-! HERE WE FIX THE PERMUTATIONS AND OPTIMISE WITH RESPECT TO THE OVERALL ORIENTATION USING
-! NEWMINDIST.
+! Routines like checkpair are expecting the minimum distance to be returned.
+! Here we fix the permutations and optimise with respect to the overall orientation using
+! newmindist.
 !
 CALL NEWMINDIST(COORDSB,COORDSA,NATOMS,DISTANCE,BULKT,TWOD,'AX    ',.TRUE.,RIGID,DEBUG,RMAT)
 
-! WRITE(876,'(I4)') SAVENATOMS
-! WRITE(876,'(A)') 'COORDSA FINALLY'
+! WRITE(876,'(i4)') SAVENATOMS
+! WRITE(876,'(A)') 'coordsa finally'
 ! WRITE(876,'(A1,1X,3F20.10)') (ZSYM((J1+2)/3),COORDSA(J1),COORDSA(J1+1),COORDSA(J1+2),J1=1,3*NATOMS,3)
-! WRITE(774,'(I4)') SAVENATOMS
-! WRITE(774,'(A)') 'COORDSB FINALLY '
+! WRITE(774,'(i4)') SAVENATOMS
+! WRITE(774,'(A)') 'coordsb finally '
 ! WRITE(774,'(A1,1X,3F20.10)') (ZSYM((J1+2)/3),COORDSB(J1),COORDSB(J1+1),COORDSB(J1+2),J1=1,3*NATOMS,3)
 ! CLOSE(876)
 ! CLOSE(774)
@@ -467,9 +467,9 @@ CALL NEWMINDIST(COORDSB,COORDSA,NATOMS,DISTANCE,BULKT,TWOD,'AX    ',.TRUE.,RIGID
 ! STOP
 
 ! CALL POTENTIAL(COORDSA,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-! PRINT '(A,2F20.10)',' MINPERMRB> AT THE END FOR MIN A ENERGY AND RMS ARE: ',ENERGY, RMS
+! PRINT '(A,2F20.10)',' minpermrb> at the end for min A energy and RMS are: ',ENERGY, RMS
 ! CALL POTENTIAL(COORDSB,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
-! PRINT '(A,2F20.10)',' MINPERMRB> AT THE END FOR MIN B ENERGY AND RMS ARE: ',ENERGY, RMS
+! PRINT '(A,2F20.10)',' minpermrb> at the end for min B energy and RMS are: ',ENERGY, RMS
 
 DISTANCE=SQRT(DISTANCE)
 
@@ -477,9 +477,9 @@ RETURN
 END SUBROUTINE MINPERMRB
 
 !
-!     THIS SUBPROGRAM PERFORMS A SORT ON THE INPUT DATA AND
-!     ARRANGES IT FROM SMALLEST TO BIGGEST. THE EXCHANGE-SORT
-!     ALGORITHM IS USED.
+!     This subprogram performs a sort on the input data and
+!     arranges it from smallest to biggest. The exchange-sort
+!     algorithm is used.
 !
 SUBROUTINE RBSORT(N,A)
 IMPLICIT NONE
