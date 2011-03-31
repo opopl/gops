@@ -48,15 +48,9 @@ C
          DMODEMOD=DMODE
       ENDIF
 
-<<<<<<< HEAD
 !CALL GEOM_TO_VAR(NVARU,PINT)
 C SO PINT NOW CONTAINS OLD UNRES INTERNAL COORDINATES (IN RADIANS!!). ORDER IS BACKBONE DIHEDRALS, 
 C BACKBONE BOND ANGLES, SC POLAR ANGLES THEN SC DIHEDRAL ANGLES (CALLED OMEGA IN UNRES!!!). 
-=======
-      CALL geom_to_var(nvaru,PINT)
-C so PINT now contains old unres internal coordinates (in radians!!). Order is backbone dihedrals, 
-C backbone bond angles, sc polar angles then sc dihedral angles (called omega in unres!!!). 
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 C
 C     print *,'tc ANGLE ',ANGLE
       IF(DMODEMOD.LE.NPHI) IICD=DMODEMOD
@@ -66,7 +60,6 @@ C     print *,'tc ANGLE ',ANGLE
 C     IF (PINT(IICD).LE.-3.141592654D0) PINT(IICD)=PINT(IICD)+2.0D0*3.141592654D0
 C     IF (PINT(IICD).GT.3.141592654D0) PINT(IICD)=PINT(IICD)-2.0D0*3.141592654D0
 
-<<<<<<< HEAD
       WRITE (*,'(A20,I3,A2,1X,F10.5,1X,A8)') 'TWISTING DIHEDRAL ',DMODEMOD,'BY',ANGLE,'RADIANS'
 
 C NOW UPDATE THE STORED INTERNAL COORDINATE ARRAYS AND THE CARTESIAN COORDINATES.
@@ -81,22 +74,6 @@ C JMC THEN X,Y,Z FOR THE SIDE CHAIN CENTROIDS
          X(2*J1)=C(1,J1+NRES)
          Y(2*J1)=C(2,J1+NRES)
          Z(2*J1)=C(3,J1+NRES)
-=======
-      WRITE (*,'(A20,I3,A2,1X,F10.5,1X,A8)') 'Twisting dihedral ',DMODEMOD,'by',ANGLE,'radians'
-
-C now update the stored internal coordinate arrays and the Cartesian coordinates.
-      CALL var_to_geom(nvaru,PINT)
-      CALL chainbuild
-      DO J1=1,nres
-C jmc coords contains x,y,z for all the Calphas
-         X(2*J1-1)=c(1,J1)
-         Y(2*J1-1)=c(2,J1)
-         Z(2*J1-1)=c(3,J1)
-C jmc then x,y,z for the side chain centroids
-         X(2*J1)=c(1,J1+nres)
-         Y(2*J1)=c(2,J1+nres)
-         Z(2*J1)=c(3,J1+nres)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       END DO
 
       RETURN
@@ -130,11 +107,7 @@ c     print *,'UNPMIN,UNPMAX,UNNMIN,UNNMAX in unrspertdihe',UNPMIN,UNPMAX,UNNMIN
 C initialise random number generator with input seed
       CALL SDPRND(ISEED)
 
-<<<<<<< HEAD
 !CALL GEOM_TO_VAR(NVARU,PINT)
-=======
-      CALL geom_to_var(nvaru,PINT)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 C
 C will be sent back to 192 if too many or too few dihedrals are altered
 C as determined by UNNMIN and UNNMAX
@@ -228,7 +201,6 @@ c              IF (PINT(IICD).GT.3.141592654D0) PINT(IICD)=PINT(IICD)-2.0D0*3.14
          ENDIF
       ENDDO
 
-<<<<<<< HEAD
 C NOW UPDATE THE STORED INTERNAL COORDINATE ARRAYS AND THE CARTESIAN COORDINATES.
 !CALL VAR_TO_GEOM(NVARU,PINT)
 !CALL CHAINBUILD
@@ -241,20 +213,6 @@ C JMC THEN X,Y,Z FOR THE SIDE CHAIN CENTROIDS
          X(2*J1)=C(1,J1+NRES)
          Y(2*J1)=C(2,J1+NRES)
          Z(2*J1)=C(3,J1+NRES)
-=======
-C now update the stored internal coordinate arrays and the Cartesian coordinates.
-      CALL var_to_geom(nvaru,PINT)
-      CALL chainbuild
-      DO J1=1,nres
-C jmc coords contains x,y,z for all the Calphas
-         X(2*J1-1)=c(1,J1)
-         Y(2*J1-1)=c(2,J1)
-         Z(2*J1-1)=c(3,J1)
-C jmc then x,y,z for the side chain centroids
-         X(2*J1)=c(1,J1+nres)
-         Y(2*J1)=c(2,J1+nres)
-         Z(2*J1)=c(3,J1+nres)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       END DO
 
 C jmc commented these lines out...
@@ -298,20 +256,13 @@ C
          DMODEMOD=DMODE
       ENDIF
 
-<<<<<<< HEAD
 !CALL GEOM_TO_VAR(NVARU,PINT)
 C SO PINT NOW CONTAINS OLD UNRES INTERNAL COORDINATES (IN RADIANS!!). ORDER IS BACKBONE DIHEDRALS, 
 C BACKBONE BOND ANGLES, SC POLAR ANGLES THEN SC DIHEDRAL ANGLES (CALLED OMEGA IN UNRES!!!). 
-=======
-      CALL geom_to_var(nvaru,PINT)
-C so PINT now contains old unres internal coordinates (in radians!!). Order is backbone dihedrals, 
-C backbone bond angles, sc polar angles then sc dihedral angles (called omega in unres!!!). 
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 C
 C     print *,'tc ANGLE ',ANGLE
 
       PINT(DMODEMOD)=PINT(DMODEMOD)+ANGLE
-<<<<<<< HEAD
 C JMC CALL TO VAR_TO_GEOM SORTS OUT PERIODICITIES FOR US, SO NO NEED TO IMPOSE RESTRICTIONS HERE.
 
       WRITE (*,'(A20,I3,A2,1X,F10.5,1X,A8)') 'TWISTING ANGLE ',DMODEMOD,' BY ',ANGLE,' RADIANS'
@@ -328,24 +279,6 @@ C JMC THEN X,Y,Z FOR THE SIDE CHAIN CENTROIDS
          X(2*J1)=C(1,J1+NRES)
          Y(2*J1)=C(2,J1+NRES)
          Z(2*J1)=C(3,J1+NRES)
-=======
-C jmc call to var_to_geom sorts out periodicities for us, so no need to impose restrictions here.
-
-      WRITE (*,'(A20,I3,A2,1X,F10.5,1X,A8)') 'Twisting angle ',DMODEMOD,' by ',ANGLE,' radians'
-
-C now update the stored internal coordinate arrays and the Cartesian coordinates.
-      CALL var_to_geom(nvaru,PINT)
-      CALL chainbuild
-      DO J1=1,nres
-C jmc coords contains x,y,z for all the Calphas
-         X(2*J1-1)=c(1,J1)
-         Y(2*J1-1)=c(2,J1)
-         Z(2*J1-1)=c(3,J1)
-C jmc then x,y,z for the side chain centroids
-         X(2*J1)=c(1,J1+nres)
-         Y(2*J1)=c(2,J1+nres)
-         Z(2*J1)=c(3,J1+nres)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       END DO
 
       RETURN

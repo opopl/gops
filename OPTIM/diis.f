@@ -96,13 +96,8 @@ C      ENDDO
          SINV(J1,J1)=1.0D0
       ENDDO
       SFLAG=.FALSE.
-<<<<<<< HEAD
 !CALL LUDCMP(BD,NDIIA+1,NDIIS+1,INDX,D,SFLAG)
       IF (SFLAG) PRINT*,'SINGULAR MATRIX'
-=======
-      CALL LUDCMP(BD,NDIIA+1,NDIIS+1,INDX,D,SFLAG)
-      IF (SFLAG) PRINT*,'Singular matrix'
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
       DO J=1,NDIIA+1
          D=D*BD(J,J)
       ENDDO

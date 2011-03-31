@@ -33,11 +33,7 @@ C
 
 C     CALL ASSIGNRAMACH(STEPNUMBER,REMAINDER,RUNNUMBER)
 
-<<<<<<< HEAD
 !CALL GEOM_TO_VAR(NVARU,XU)
-=======
-      CALL geom_to_var(nvaru,XU)
->>>>>>> parent of b1869bf... OPTIM: converted all fortran files to upper case
 
       PRINT *,'unrsetdihe: number of residues ',nres
       PRINT *,'unrsetdihe: number of virtual-bond dihedral angles ',nphi
