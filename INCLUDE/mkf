@@ -10,7 +10,7 @@ DVOPTS=fflags "${FFLAGS}" prog $(PROGNAME) fc_exec "${FC}" make_opts "${MAKE_OPT
 porfuncs.f90: $(PRF)
 	$(PRF) ${SWITCH} > $@
 
-read_cmd_args.f90: $(RCA)
+rca.f90: $(RCA)
 	$(RCA) $(PROGNAME) > $@
 
 dv.f90: ${DV} 

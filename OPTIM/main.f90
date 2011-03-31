@@ -1,26 +1,25 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
-C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
-C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
-C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-C
+!   OPTIM: A program for optimizing geometries and calculating reaction pathways
+!   !opyright (!) 1999-2006 David J. Wales
+!   This file is part of OPTIM.
+!
+!   OPTIM is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
+!
+!   OPTIM is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MER!HANTABILITY or FITNESS FOR A PARTI!ULAR PURPOSE.  See the
+!   GNU General Public License for more details.
+!
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!
       PROGRAM OPTIM4
 
       USE COMMONS
       USE PORFUNCS
-      !USE OPTIMHEADER
       USE KEY, ONLY: FILTHSTR,SEQ,NUMGLY,TARFL,CASTEPJOB,CP2KJOB,ONETEPJOB
       USE MODAMBER9, ONLY: AMBERSTR,AMBERSTR1,INPCRD,ATMASS1
 
@@ -28,8 +27,7 @@ C
 
       INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, J1
       LOGICAL VARIABLES,CASTEP,ONETEP,CP2K,DFTP,CPMD,END,CAT,SKIPBL,CLEAR,ECHO,AMBER,AMBERT,NABT,RINGPOLYMERT
-      COMMON /BUFINF/ ITEM, NITEMS, LOC(80), LINE, SKIPBL, CLEAR, NCR,
-     &                NERROR, IR, ECHO, LAST, CAT
+      COMMON /BUFINF/ ITEM, NITEMS, LOC(80), LINE, SKIPBL, CLEAR, NCR,NERROR, IR, ECHO, LAST, CAT
       DOUBLE PRECISION DUMMY
       CHARACTER ZDUM*5
       INTEGER J2, NELEMENTS, LSYS, NTYPE(105), IOS, NARG, FILTH, FILTH2
@@ -43,7 +41,6 @@ C
       LOGICAL AMH
       INTEGER :: NRES,I_RES,NOGLY
 
-      !CALL PRINTHEADER
       CASTEP=.FALSE.
       ONETEP=.FALSE.
       CP2K=.FALSE. 
@@ -56,13 +53,7 @@ C
 
       CALL READ_CMD_ARGS
 
-      IF (FILTH2.EQ.0) THEN
-         OPEN(5,FILE='odata',STATUS='OLD')
-      ELSE
-         WRITE(OTEMP,*) FILTH2
-         WRITE(OSTRING,'(A)') 'odata.' // TRIM(ADJUSTL(OTEMP))
-         OPEN(5,FILE=OSTRING,STATUS='OLD')
-      ENDIF
+      OPEN(5,FILE='odata',STATUS='OLD')
 
 190   CALL INPUT(END)
       IF (.NOT. END) CALL READU(WORD)
@@ -176,8 +167,8 @@ C
        ELSE IF(NITEMS==3) then
          CALL READA(amberstr)
          CALL READA(amberstr1)
-          WRITE(*,'(A)') ' getparams> input coordinates for AMBER9 system will be read from ', trim(adjustl(amberstr)),
-     &                         'type: ', trim(adjustl(amberstr1))
+          WRITE(*,'(A)') ' getparams> input coordinates for AMBER9 system will be read from ',&
+                                & trim(adjustl(amberstr)), 'type: ', trim(adjustl(amberstr1))
           IF(trim(adjustl(amberstr1)).EQ.'inpcrd') then
            inpcrd=amberstr
            WRITE(*,'(A)') ' getparams> reading AMBER inpcrd coordinate format'
@@ -237,7 +228,7 @@ C
             OPEN (UNIT=9,FILE=OSTRING,STATUS='OLD',IOSTAT=ios)
             if (ios == 0) THEN
          else
-            WRITE(*,'(2A)') 'Thanks to our new dynamic memory allocation overlords, there must be a charmm-format file called ',
+            WRITE(*,'(2A)') 'Thanks to our new dynamic memory allocation overlords, there must be a charmm-format file called ', &
      &    '"input.crd" for CHARMM to find out the number of atoms. Feel free to recode to enable any filename to work properly.'
             STOP
          ENDIF
@@ -270,7 +261,7 @@ C
             OPEN (UNIT=9,FILE=CSTRING,STATUS='OLD',IOSTAT=ios)
          ENDIF
          IF (ios /= 0) THEN
-            WRITE(*,'(2A)') 'Thanks to our new dynamic memory allocation overlords, there must be a coords file present ',
+            WRITE(*,'(2A)') 'Thanks to our new dynamic memory allocation overlords, there must be a coords file present ',&
      &    ' for OPTIM3 to find out the number of atoms for UNRES. Please make it so!'
             STOP
          ENDIF
@@ -292,18 +283,18 @@ C
          coordsloop: DO
             READ(7,'(A21)') DSTRING1
             CALL UPPERCASE(DSTRING1)
-C           WRITE(*,'(A21)') DSTRING1
+!           WRITE(*,'(A21)') DSTRING1
             IF (DSTRING1(1:16).EQ.'%BLOCK POSITIONS') THEN
                DO 
                   READ(7,'(A21)') DSTRING1
                   CALL UPPERCASE(DSTRING1)
-C                 WRITE(*,*) DSTRING1
+!                 WRITE(*,*) DSTRING1
                   IF (DSTRING1(1:19).EQ.'%ENDBLOCK POSITIONS') EXIT coordsloop
                   NATOMS=NATOMS+1
                ENDDO
             ENDIF
          ENDDO coordsloop
-C        WRITE(*,'(A,I4,A)') 'getparams> CASTEP run for ',NATOMS,' atoms'
+!        WRITE(*,'(A,I4,A)') 'getparams> CASTEP run for ',NATOMS,' atoms'
          CLOSE(7)
       ELSEIF (ONETEP) THEN
          FNAME=SYS(1:LSYS) // '.dat'
@@ -313,12 +304,12 @@ C        WRITE(*,'(A,I4,A)') 'getparams> CASTEP run for ',NATOMS,' atoms'
          coordsloop2: DO
             READ(7,'(A21)') DSTRING1
             CALL UPPERCASE(DSTRING1)
-C           WRITE(*,'(A21)') DSTRING1
+!           WRITE(*,'(A21)') DSTRING1
             IF (DSTRING1(1:16).EQ.'%BLOCK POSITIONS') THEN
                DO 
                   READ(7,'(A21)') DSTRING1
                   CALL UPPERCASE(DSTRING1)
-C                 WRITE(*,*) DSTRING1
+!                 WRITE(*,*) DSTRING1
                   IF (DSTRING1(1:19).EQ.'%ENDBLOCK POSITIONS') EXIT coordsloop2
                   NATOMS=NATOMS+1
                ENDDO
@@ -335,13 +326,13 @@ C                 WRITE(*,*) DSTRING1
             READ(7,'(A21)') DSTRING1
             DSTRING1=ADJUSTL(DSTRING1)
             CALL UPPERCASE(DSTRING1)
-C           WRITE(*,'(A21)') DSTRING1
+!           WRITE(*,'(A21)') DSTRING1
             IF (DSTRING1(1:6).EQ.'&COORD') THEN
                DO 
                   READ(7,'(A21)') DSTRING1
                   DSTRING1=ADJUSTL(DSTRING1)
                   CALL UPPERCASE(DSTRING1)
-C                 WRITE(*,*) DSTRING1
+!                 WRITE(*,*) DSTRING1
                   IF (DSTRING1(1:10).EQ.'&END COORD') EXIT coordsloop3
                   IF (DSTRING1(1:6).EQ.'SCALED') NATOMS=NATOMS-1
                   IF (DSTRING1(1:4).EQ.'UNIT') NATOMS=NATOMS-1
