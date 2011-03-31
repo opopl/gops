@@ -5,7 +5,7 @@ export this_script=` basename $0 `
 
 w0="write(file,10)"
 
-vars=( "prog" "fflags" "fc_full_name" "fc_exec" "make_opts" )
+vars=( "prog" "fflags" "fc_exec" "make_opts" )
 
 # get parameters, e.g, compiler etc., from command line 
 # {{{
@@ -48,7 +48,6 @@ $w0
 $w0 "Compilation time: ` date `"
 $w0 "Compiled by $USER@$HOSTNAME on ` uname -o` ` uname -m`"
 $w0
-$w0 "Compiler name:  $fc_full_name"
 $w0 "Compiler executable:  $fc_exec"
 !$w0 "Compiler flags: $fflags"
 $w0 "Command-line options passed to makefile: $make_opts "

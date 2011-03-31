@@ -94,10 +94,7 @@ C     COMMON /VN/ VNEW   !  common SV was also deleted
 !}}}
       ! }}}
 ! Subroutine body {{{
-! Print OPTIM version in the output
-      !VERSIONTEMP=SVNVERSION
-      !WRITE(*, '(A,I5)') ' OPTIM> version r',VERSIONTEMP
-C
+
 C  Dynamic memory allocation
 C
       ALLOCATE (FROZEN(NATOMS),ZSYM(NATOMS),NR(NATOMS),STPMAX(3*NATOMS))

@@ -16,7 +16,7 @@ C   You should have received a copy of the GNU General Public License
 C   along with this program; if not, write to the Free Software
 C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
-      PROGRAM OPTIM
+      PROGRAM OPTIM4
 
       USE COMMONS
       USE PORFUNCS
@@ -55,34 +55,6 @@ C
       NABT=.FALSE.
 
       CALL READ_CMD_ARGS
-C
-C  The function iargc returns the argument count
-C  The statement call getarg( k , arg ) gets the  kth  command-
-C  line argument and puts it into arg.
-C  The 0th argument is the command name.
-C
-C  This provides a new way to filthify OPTIM.
-C
-      CALL iargc_subr(NARG) ! SAT: subroutine interface to iargc
-      FILTH=0
-      FILTH2=0
-      IF (NARG.GT.0) THEN
-         CALL GETARG(1,ARGSTRING)
-C
-C  Both methods to convert the character to an integer seem to work.
-C
-C  It would be better to use ARGSTRING as a string, so that non-numerical
-C  extensions would work. This would require corresponding changes to Filthy_Phyllis.
-C  We could also remove the odata.read file if Filthy_Phyllis were changed to work
-C  with fork and wait!
-C
-C        FILTH2=ATOI(ARGSTRING)
-         READ(ARGSTRING,*) FILTH2
-         WRITE(*,'(A,I6,A)') ' Command line argument read, using extension number ',FILTH2,' for all I/O'
-         FILTH=FILTH2
-      ELSE
-         ARGSTRING=''
-      ENDIF
 
       IF (FILTH2.EQ.0) THEN
          OPEN(5,FILE='odata',STATUS='OLD')

@@ -49,9 +49,9 @@ v_main(){
 							;;
 							# }}}
 			OPTIM) # {{{	
-				base_files=( Makefile build.csh OPTIM.F symmetry.f path.f mylbfgs.f  \
+				base_files=( makefile OPTIM.F symmetry.f path.f mylbfgs.f  \
 				make_optimheader.sh key.f90 potential.f commons.f90 \
-				getparams.f read_cmd_args.f90 keywords.f minpermdist.f90 symmetry.f ) ;;
+				main.f keyword.f minpermdist.f90 symmetry.f ) ;;
 				# }}}
 			PATHSAMPLE) # {{{ 
 				base_files=( Makefile main.f minpermdist.f90 read_cmd_args.f90 \

@@ -1,16 +1,23 @@
 
 
 PRF=$(SPATH)/all/porfuncs.sh
+RCA=$(SPATH)/all/rca.sh
 DV=$(SPATH)/all/dv.sh
 HEADER=$(SPATH)/all/header.sh
 
-DVOPTS=fflags "${FFLAGS}" prog $(PROGNAME) fc_full_name "${FULL_COMPILER_NAME}" fc_exec "${FC}" make_opts "${MAKE_OPTS}" 
+DVOPTS=fflags "${FFLAGS}" prog $(PROGNAME) fc_exec "${FC}" make_opts "${MAKE_OPTS}" 
 
 porfuncs.f90: $(PRF)
 	$(PRF) ${SWITCH} > $@
+
+read_cmd_args.f90: $(RCA)
+	$(RCA) $(PROGNAME) > $@
 
 dv.f90: ${DV} 
 	${DV} ${DVOPTS} > $@
 
 header.f90: ${HEADER} 
 	${HEADER} > $@
+
+deps:
+	$(shell mkdep)

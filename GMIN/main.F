@@ -101,9 +101,6 @@ C
 !op226>}}} 
 #endif
 !op226> Allocate memory; open files; initialize different things  {{{ 
-! Add the GMIN version to the output - helps bug hunting :)
-      !WRITE(MYUNIT, '(A,I5)') 'GMIN version r',VERSIONTEMP
-!     CALL DISPLAY_VERSION(MYUNIT)
       CALL COUNTATOMS(MYUNIT)
       IF (CHRMMT) WRITE(MYUNIT,'(A,I8)') 'main> MAXAIM parameter for CHARMM MXATMS=',MXATMS
       CALL MODCOMMONINIT

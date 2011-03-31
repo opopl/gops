@@ -44,7 +44,7 @@ MODULE NOA
 !
 !  If the current working directory contains more than one of these files
 !  then the precedence is coords, then input.crd, then coords.amber
-!  OPTIM does this a bit better by calling getparams first to see if
+!  OPTIM does this a bit better by calling main.f first to see if
 !  we are actually doing AMBER or CHARMM. 
 !
       INQUIRE(FILE='pro.list',EXIST=YESNOAMH)
@@ -54,7 +54,13 @@ MODULE NOA
       INQUIRE(FILE='coords.inpcrd',EXIST=YESNOA9)
 
       NUMBER_OF_ATOMS=0
-
+      ! read in coordinate files:
+      ! coords  
+      ! pro.list        amh
+      ! input.crd       charmm
+      ! coords.inpcrd   amber
+      ! coords.amber    
+      !     {{{
       IF (YESNO) THEN
          OPEN(UNIT=7,FILE='coords',STATUS='OLD')
          DO
@@ -135,7 +141,7 @@ MODULE NOA
          PRINT '(A)','ERROR - no coords, input.crd, coords.inpcrd or coords.amber file'
          STOP
       ENDIF
-
+      ! }}}
       CLOSE(7)
 
 !     print *, Number_of_Atoms, ' atoms in the system'
