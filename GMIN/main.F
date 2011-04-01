@@ -20,15 +20,14 @@
       DOUBLE PRECISION POTEL
       DOUBLE PRECISION, ALLOCATABLE :: TMPCOORDS(:)
       INTEGER, ALLOCATABLE :: NDUMMY(:), NDUMMY2(:,:)
-      LOGICAL LOPEN
-
-      CHARACTER(LEN=130) ISTR
+      
       CHARACTER(LEN=40) :: ATOM1,ATOM2,ATOMPAIR
 
       COMMON /MYPOT/ POTEL
 
       CALL CPU_TIME(TSTART)
       CALL READ_CMD_ARGS
+
       NPAR=1
       MYNODE=0
       MDCRD_UNIT=20000
@@ -36,6 +35,7 @@
       
       LOG_FH=22979+1
       LOG_FN="GMIN.log"
+
       CALL OPENF(LOG_FH,">",LOG_FN)
 
       WRITE(LOG_FH,'(A)') "Starting serial execution" 
