@@ -72,6 +72,7 @@ C
       CALL OPENF(LOG_FH,">",LOG_FN)
 
       WRITE(LOG_FH,'(A)') "Starting serial execution" 
+
 !op226> Allocate memory; open files; initialize different things  {{{ 
 
       CALL COUNTATOMS(LOG_FH)
@@ -98,14 +99,9 @@ C
       ALLOCATE(ESAVE(NTAB,NPAR),XINSAVE(NTAB,NPAR))
       ALLOCATE(VEC(NVEC))
 
-
       IF (PAIRDISTT) THEN
          MYPUNIT=3000+MYNODE
-         IF (NPAR.GT.1) THEN
-            OPEN(MYPUNIT,FILE="pairdists."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-         ELSE
-            OPEN(MYPUNIT,FILE="pairdists",STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-         ENDIF
+         CALL OPENF(PAIRDIST_FH,">>","pairdists")
          WRITE(MYPUNIT,'(A10)',ADVANCE="NO") "Quench  "
          DO J1=1,NPAIRS
             WRITE(atom1,*) PAIRDIST(J1,1)
@@ -116,33 +112,13 @@ C
          WRITE(LOG_FH,'(A)') ""
       ENDIF
 
-!op226> TRACKDATAT {{{ 
-!
-!     csw34> TRACKDATA keyword prints the energy and markov energy 
-!     to files for viewing during a run. If RMS is also specified it
-!     prints the rmsd from the comparison structure into a file.
-!
       IF (TRACKDATAT) THEN
-         MYEUNIT=4000+MYNODE
-         MYMUNIT=6000+MYNODE
-         MYRUNIT=8000+MYNODE
-         MYBUNIT=10000+MYNODE
-         IF (NPAR.GT.1) THEN
-            OPEN(MYEUNIT,FILE="energy."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYMUNIT,FILE="markov."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYBUNIT,FILE="best."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-         ELSE
-            OPEN(MYEUNIT,FILE='energy',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYMUNIT,FILE='markov',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            IF (RMST) OPEN(MYRUNIT,FILE='rmsd',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYBUNIT,FILE='best',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            IF (A9INTET) THEN
-               OPEN(UNIT=3998,FILE='intE.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-               OPEN(UNIT=3999,FILE='bestintE.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-            ENDIF            
-         ENDIF
+         CALL OPENF(ENERGY_FH,">>","energy")
+         CALL OPENF(MARKOV_FH,">>","markov")
+         CALL OPENF(BEST_FH,">>","best")
+         IF (RMST) CALL OPENF(RMSD_FH,">>","rmsd")
       ENDIF
-!op226>}}} 
+      
       CALL FLUSH(6)
       CALL IO1
 !op226> CSMT {{{ 
@@ -171,11 +147,6 @@ C
       ENDIF
 !op226>}}} 
 
-!op226> VGW SEEDT {{{ 
-      IF(VGW) THEN
-        CALL INITIALIZE_VGWSP(NATOMS,LJSIGMA,LJEPSILON,TAUMAX,CPFACTORSG,CPS,VGWTOL)
-        CALL INITIALIZE_VGW(NATOMS,LJSIGMA,LJEPSILON,TAUMAXFULL,CPFACTORFG,CPF)
-      ENDIF
 
       IF (SEEDT) THEN
          CALL GSEED
@@ -190,7 +161,6 @@ C
             ENDDO
          ENDIF
       ENDIF
-!op226>}}} 
 
       IF (SUPERSTEP) NSUPERSTEP=0
       
@@ -200,48 +170,26 @@ C
       DO J1=1,NSAVE
          QMIN(J1)=1.0D10
       ENDDO
-!op226> End initializations and allocations }}} 
+! }}}
 
-!op226> Main program run
-      IF ((NRUNS.GT.0).OR.PTMC.OR.BSPT) CALL MCRUNS(SCREENC)
+      CALL MCRUNS(SCREENC)
 
-C     CALL SYSTEM('rm ssdump ssave >& /dev/null')
-
-!op226> Deallocate memory; close files {{{ 
       IF (ALLOCATED(FIN)) DEALLOCATE(FIN)
       IF (ALLOCATED(XICOM)) DEALLOCATE(XICOM)
       IF (ALLOCATED(PCOM)) DEALLOCATE(PCOM)
-      IF (ALLOCATED(GAUSSKK)) DEALLOCATE(GAUSSKK,GAUSSEE)
-C     deallocate dynamic memory for AMBER
-      IF (AMBERT) CALL AMBER_DEALLOCATE_STACKS
-      CALL MODCOMMONDEINIT
+      IF (ALLOCATED(ANV)) DEALLOCATE(ANV)
+
       CALL FLUSH(LOG_FH)
 
-      IF(VGW) THEN
-        CALL CLEANUP_VGWSP
-        CALL CLEANUP_VGW
-      ENDIF
-
       CLOSE(LOG_FH)
-! csw34> close pairdists.* files
-      IF (PAIRDISTT) CLOSE(MYPUNIT)
-!op226> closing files for: TRACKDATAT RMST A9INTET {{{ 
+      IF (PAIRDISTT) CLOSE(PAIRDIST_FH)
       IF (TRACKDATAT) THEN
-         CLOSE(MYEUNIT)
-         CLOSE(MYMUNIT)
-         IF (RMST) CLOSE(MYRUNIT)
-         CLOSE(MYBUNIT)
-         IF (A9INTET) THEN
-            CLOSE(3998)
-            CLOSE(3999)
-         ENDIF
+         CLOSE(ENERGY_FH)
+         CLOSE(MARKOV_FH)
+         IF (RMST) CLOSE(RMSD_FH)
+         CLOSE(BEST_FH)
       ENDIF
-!op226>}}} 
-#ifdef MPI
-      CALL MPI_FINALIZE(MPIERR)
-#endif
 
-!op226>}}} 
       STOP
 
       END

@@ -32,23 +32,7 @@ C
 
       INTEGER J1
 
-      IF (PTMC.OR.BSPT) THEN
-         CALL PTBASINSAMPLING
-         RETURN
-      ENDIF
-
-      INQUIRE(UNIT=1,OPENED=LOPEN)
-      IF (LOPEN) THEN
-         WRITE(*,'(A,I2,A)') 'mcruns> ERROR *** Unit ', 1, ' is not free '
-         STOP
-      ENDIF
-C
-C  NRUNS > 1 is an obsolete option! DJW
-C
-      DO J1=1,NRUNS
-         CALL MC(MCSTEPS(J1),TFAC(J1),SCREENC)
-      ENDDO
-
+      CALL MC(MCSTEPS(1),TFAC(1),SCREENC)
       CALL FINALQ
       CALL FINALIO
 
