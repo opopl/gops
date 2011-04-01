@@ -91,16 +91,6 @@ C
       ALLOCATE(FF(NSAVE),QMIN(NSAVE))
       ALLOCATE(QMINP(NSAVE,3*NATOMS))
 
-!op226> GAUSST {{{ 
-      IF (GAUSST) THEN
-         ALLOCATE(GAUSSKK(3*NATOMS,GMODES),GAUSSEE(GMODES),GKSMALL(3*NATOMS))
-         CALL KEGEN ! INITIAL SETUP 
-         DO J1=1,GMODES
-             PRINT *,J1,GAUSSEE(J1)
-         ENDDO
-      ENDIF
-!op226>}}} 
-
       QMINP(1:NSAVE,1:3*NATOMS)=0.0D0 ! to prevent reading from uninitialised memory
       COORDSO(1:3*NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
       FF(1:NSAVE)=0 ! to prevent reading from uninitialised memorY
@@ -108,20 +98,6 @@ C
       ALLOCATE(ESAVE(NTAB,NPAR),XINSAVE(NTAB,NPAR))
       ALLOCATE(VEC(NVEC))
 
-!op226> DUMPT {{{ 
-      IF (DUMPT) THEN
-         DUMPXYZUNIT=40
-         DUMPVUNIT=39
-         DO J1=1,NPAR
-            WRITE (ISTR,'(A5,I1,A4)') 'dump.',J1,'.xyz'
-            J2=DUMPXYZUNIT+J1
-            OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
-            WRITE (ISTR,'(A5,I1,A2)') 'dump.',J1,'.V'
-            J2=DUMPVUNIT-J1
-            OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
-         ENDDO
-      ENDIF
-!op226>}}} 
 
       IF (PAIRDISTT) THEN
          MYPUNIT=3000+MYNODE
