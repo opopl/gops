@@ -64,78 +64,32 @@ C
       CALL READ_CMD_ARGS
       NPAR=1
       MYNODE=0
-      MYUNIT=22979+1
       MDCRD_UNIT=20000
       MDINFO_UNIT=21000
-      AMBPDB_UNIT=18000
-      AMBFINALIO_NODE=1
-      IF (TRIM(ADJUSTL(INFILE)).EQ.'') THEN
-         MYFILENAME="GMIN_out"
-      ELSE
-         MYFILENAME=TRIM(ADJUSTL(INFILE))
-      ENDIF
-      OPEN(MYUNIT,FILE=MYFILENAME, STATUS="unknown", form="formatted")
-      WRITE(MYUNIT, '(A,I10,A,I10,A)') "Starting serial execution" 
+      
+      LOG_FH=22979+1
+      LOG_FN="GMIN.log"
+      CALL OPENF(LOG_FH,">",LOG_FN)
+
+      WRITE(LOG_FH,'(A)') "Starting serial execution" 
 !op226> Allocate memory; open files; initialize different things  {{{ 
 
-      CALL COUNTATOMS(MYUNIT)
-      IF (CHRMMT) WRITE(MYUNIT,'(A,I8)') 'main> MAXAIM parameter for CHARMM MXATMS=',MXATMS
-      CALL MODCOMMONINIT
- 
+      CALL COUNTATOMS(LOG_FH)
+      NATOMS = NUMBER_OF_ATOMS
+
+      ALLOCATE(ANV(NATOMS,NATOMS,3))         
+
       ALLOCATE(FIN(3*NATOMS))
       ALLOCATE(XICOM(3*NATOMS),PCOM(3*NATOMS))
       ALLOCATE(SCREENC(3*NATOMS))
       ALLOCATE(IATNUM(NATOMS), VT(NATOMS), ZSYM(NATOMS))
-      VT(1:NATOMS)=0.0D0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
-      IF (Q4T) CALL SHINIT
 
-      INQUIRE(UNIT=1,OPENED=LOPEN)
-      IF (LOPEN) THEN
-         WRITE(*,'(A,I2,A)') 'main> A ERROR *** Unit ', 1, ' is not free '
-         STOP
-      ENDIF
+      VT(1:NATOMS)=0.0D0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
 
       CALL KEYWORD
-
-      INQUIRE(UNIT=1,OPENED=LOPEN)
-      IF (LOPEN) THEN
-         WRITE(*,'(A,I2,A)') 'main> B ERROR *** Unit ', 1, ' is not free '
-         STOP
-      ENDIF
-
-!op226> RMST {{{ 
-      IF (RMST) THEN
-         ALLOCATE(RMSBEST(RMSSAVE,2),RMSCOOR(RMSSAVE,3*NATOMS))
-         RMSBEST(1:RMSSAVE,1)=RMSLIMIT+RMSTOL
-         RMSBEST(1:RMSSAVE,2)=0.D0
-         RMSCOOR(1:RMSSAVE,1:3*NATOMS)=0.D0
-         ALLOCATE(COORCOMP(1:3*NATOMS))
-!
-!        csw34> Need to add the read in for other file formats
-!        (crd,pdb). Still not sure how GMIN reads in the input.crd file
-!        for CHARMM. It appears to be reading into unit 7 in io1.f
-!        though - but only from xyz format! Is there a hidden
-!        conversion?
-!         
-         OPEN(UNIT=1,FILE='compare',STATUS='OLD')
-         READ(1,*) (COORCOMP(J1),J1=1,3*NATOMS)
-         CLOSE(1)
-      ENDIF
-!op226>}}} 
-
+      
       ALLOCATE(FF(NSAVE),QMIN(NSAVE))
       ALLOCATE(QMINP(NSAVE,3*NATOMS))
-
-!        csw34> ALLOCATE the interaction energy tracking arrays if A9INTE in data
-!op226> IF (A9INTET.AND.AMBERT) THEN  {{{
-      IF (A9INTET.AND.AMBERT) THEN 
-         ALLOCATE(INTEFF(NSAVEINTE),INTEQMIN(NSAVEINTE))
-         ALLOCATE(INTEQMINP(NSAVEINTE,3*NATOMS))
-         INTEQMIN(:)=1.0D10 
-         INTEQMINP(1:NSAVEINTE,1:3*NATOMS)=0.0D0 ! to prevent reading from uninitialised memory
-         INTEFF(1:NSAVEINTE)=0 ! to prevent reading from uninitialised memory
-      ENDIF  
-!op226>}}} 
 
 !op226> GAUSST {{{ 
       IF (GAUSST) THEN
@@ -183,7 +137,7 @@ C
             WRITE(atompair,*) TRIM(ADJUSTL(atom1))//"-"//TRIM(ADJUSTL(atom2))
             WRITE(MYPUNIT,'(A10)',ADVANCE="NO") TRIM(ADJUSTL(atompair))//"  " 
          ENDDO
-         WRITE(MYUNIT,'(A)') ""
+         WRITE(LOG_FH,'(A)') ""
       ENDIF
 
 !op226> TRACKDATAT {{{ 
@@ -285,14 +239,14 @@ C     CALL SYSTEM('rm ssdump ssave >& /dev/null')
 C     deallocate dynamic memory for AMBER
       IF (AMBERT) CALL AMBER_DEALLOCATE_STACKS
       CALL MODCOMMONDEINIT
-      CALL FLUSH(MYUNIT)
+      CALL FLUSH(LOG_FH)
 
       IF(VGW) THEN
         CALL CLEANUP_VGWSP
         CALL CLEANUP_VGW
       ENDIF
 
-      CLOSE(MYUNIT)
+      CLOSE(LOG_FH)
 ! csw34> close pairdists.* files
       IF (PAIRDISTT) CLOSE(MYPUNIT)
 !op226> closing files for: TRACKDATAT RMST A9INTET {{{ 
