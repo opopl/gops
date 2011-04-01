@@ -286,9 +286,11 @@ EOF
 							PATHSAMPLE/mold \
 							DISCONNECT/makefile \
 							INCLUDE/def \
+							INCLUDE/make.inc \ 
 							INCLUDE/targets \
 							INCLUDE/mkf )
 					d="$wg_dir"
+					#vim_opts="$vim_opts +'set ft=make'"
 				;;
 				# }}}
 				

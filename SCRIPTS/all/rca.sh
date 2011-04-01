@@ -3,9 +3,7 @@
 export shd="`dirname $(readlink -f $0)`"
 export this_script=` basename $0 `
 
-prog=$1
-
-rca_$prog 
+prog="$1"
 
 rca_GMIN(){
 # {{{
@@ -48,8 +46,6 @@ IF (NARGS.GT.0) THEN
 ENDIF
 
 END SUBROUTINE READ_CMD_ARGS
-
-
 EOF
 # }}}
 }
@@ -61,8 +57,7 @@ SUBROUTINE READ_CMD_ARGS
 
 USE PORFUNCS
 USE DV
-!USE COMMONS,ONLY : INFILE
-use commons, only: infile,pforce
+USE COMMONS,ONLY: RINDEX
 
 IMPLICIT NONE
 
@@ -81,22 +76,17 @@ IF (NARGS.GT.0) THEN
        case default
          CALL GETARG_SUBR(i+1,var)
          SELECTCASE(BFF)
-                CASE('-f')
-                        READ(VAR,*) PFORCE
-                        WRITE(*,*) 'FORCE:',PFORCE
+                CASE('-r')
+                        READ(VAR,*) RINDEX 
+                        WRITE(*,*) 'Run Index:',RINDEX
                 CASE DEFAULT
          ENDSELECT
-         !CALL MAKETEST(BFF)
-       !CASE DEFAULT
-         !INFILE=TRIM(ADJUSTL(BFF))
      ENDSELECT
          I=I+1
   ENDDO
 ENDIF
 
 END SUBROUTINE READ_CMD_ARGS
-
-
 EOF
 # }}}
 }
@@ -146,3 +136,5 @@ END SUBROUTINE READ_CMD_ARGS
 EOF
 # }}}
 }
+
+rca_"$prog" 

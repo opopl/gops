@@ -3,20 +3,35 @@
 .SUFFIXES: .o .f .F .f90
 
 .f90.o:
-	$(FC) $(FFLAGS) ${SEARCH_PATH} -c $<
+	$(FC) $(FFLAGS) $(SEARCH_PATH) -c $<
 .f.o:
-	$(FC) $(FFLAGS) ${SEARCH_PATH} -c $<
+	$(FC) $(FFLAGS) $(SEARCH_PATH) -c $<
 .F.f:
 	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
 .F90.f90:
 	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
 
-default: $(PROG)
+default: $(AUXF) $(DEPS) $(PROG)
+
+porfuncs.f90: $(PRF)
+	$(PRF) $(SWITCH) > $@
+
+rca.f90: $(RCA)
+	$(RCA) $(PROGNAME) > $@
+
+dv.f90: $(DV)
+	$(DV) $(DVOPTS) > $@
+
+header.f90: $(HEADER) 
+	$(HEADER) > $@
+
+$(DEPS): $(MKDEP)
+	$(MKDEP) $@
 
 $(PROGNAME): $(PROG)
 
-$(PROG): $(OBJS)  
-	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
+$(PROG): $(OBJS) 
+	$(FC) $(FFLAGS) $(SEARCH_PATH) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 
 cup:
 	rm -rf $(NOTUSEDSOURCE)
@@ -32,8 +47,8 @@ libmylapack.a: SAT-Ghost
 SAT-Ghost:
 
 clean:
-	rm -f $(PROG) $(OBJS) $(GENFFILES) *.mod
-
+	rm -f $(OBJS) $(AUXF) $(GENFFILES) *.mod
+ 
 cleanall:
 	rm -f $(PROG) $(OBJS) ${GENFFILES} *.o *.a *.mod *.lst
 	if test -d $(BLASPATH) ;  then cd $(BLASPATH) ; make clean ; fi

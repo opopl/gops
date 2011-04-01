@@ -21,4 +21,4 @@ libamh.a: SAT-Ghost
 
 libamh.a: amhglobals.o
 
-include deps
+include $(DEPS)

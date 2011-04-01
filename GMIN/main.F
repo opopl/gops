@@ -62,28 +62,6 @@ C
 
       CALL CPU_TIME(TSTART)
       CALL READ_CMD_ARGS
-#ifdef MPI
-!op226> MPI section {{{ 
-      CALL MPI_INIT(MPIERR)
-      CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NPAR,MPIERR)
-      CALL MPI_COMM_RANK(MPI_COMM_WORLD,MYNODE,MPIERR)
-      MYUNIT=22980+MYNODE
-      MDCRD_UNIT=20000+MYNODE
-      MDINFO_UNIT=21000+MYNODE
-      AMBPDB_UNIT=18000+MYNODE
-      AMBFINALIO_NODE=200+MYNODE
-      WRITE (ISTR, '(I10)') MYNODE+1
-      IF (TRIM(ADJUSTL(INFILE)).EQ.'') INFILE='GMIN_out'
-      IF (NPAR.GT.1) THEN 
-         MYFILENAME=TRIM(ADJUSTL(INFILE))//"."//TRIM(ADJUSTL(ISTR))
-      ELSE
-         MYFILENAME=TRIM(ADJUSTL(INFILE))
-      ENDIF
-      OPEN(MYUNIT,FILE=MYFILENAME, STATUS="unknown", form="formatted")
-      WRITE(MYUNIT, '(A,I10,A,I10)') "Starting parallel execution: Processor", mynode+1, " of ",NPAR
-!op226>}}} 
-#else
-!op226> Non-MPI section {{{ 
       NPAR=1
       MYNODE=0
       MYUNIT=22979+1
@@ -98,9 +76,8 @@ C
       ENDIF
       OPEN(MYUNIT,FILE=MYFILENAME, STATUS="unknown", form="formatted")
       WRITE(MYUNIT, '(A,I10,A,I10,A)') "Starting serial execution" 
-!op226>}}} 
-#endif
 !op226> Allocate memory; open files; initialize different things  {{{ 
+
       CALL COUNTATOMS(MYUNIT)
       IF (CHRMMT) WRITE(MYUNIT,'(A,I8)') 'main> MAXAIM parameter for CHARMM MXATMS=',MXATMS
       CALL MODCOMMONINIT
@@ -125,8 +102,6 @@ C
          WRITE(*,'(A,I2,A)') 'main> B ERROR *** Unit ', 1, ' is not free '
          STOP
       ENDIF
-
-      IF (CHRIGIDTRANST.OR.CHRIGIDROTT) CALL CHSETSEG
 
 !op226> RMST {{{ 
       IF (RMST) THEN
@@ -179,17 +154,8 @@ C
       ALLOCATE(ESAVE(NTAB,NPAR),XINSAVE(NTAB,NPAR))
       ALLOCATE(VEC(NVEC))
 
-!     IF (SYMMETRIZE.AND.(.NOT.CENT)) THEN
-!        PRINT '(A)','Probable input error - SYMMETRIZE true but CENT false'
-!        STOP
-!     ENDIF
-
 !op226> DUMPT {{{ 
       IF (DUMPT) THEN
-         IF (CHRMMT) THEN
-            OPEN(UNIT=719,FILE='dump.crd',STATUS='UNKNOWN')
-            OPEN(UNIT=720,FILE='dump.pdb',STATUS='UNKNOWN')
-         ENDIF
          DUMPXYZUNIT=40
          DUMPVUNIT=39
          DO J1=1,NPAR

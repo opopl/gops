@@ -33,10 +33,9 @@ FFLAGS+= -I $(PPATH)/NEB
 FFLAGS+= -I $(PPATH)/CONNECT 
 FFLAGS+= -I $(PPATH)/AMH  
 
-LIBS = -lnn  -lnc $(LLIBS) -lnc
+LIBS = -lnn -lnc $(LLIBS) -lnc
 
 include $(INCPATH)/targets
-include $(INCPATH)/mkf
 
 $(PROG): libnn.a libnc.a $(LLIBS)
 
@@ -51,4 +50,4 @@ libnn.a: modcharmm.o key.o commons.o modunres.o porfuncs.o modmec.o modguess.o e
 libnc.a: libnn.a key.o syminf.o modhess.o amhglobals.o
 libamh.a: amhglobals.o
 
-include deps
+include $(DEPS)

@@ -3,6 +3,7 @@ BINPATH=$(ROOTPATH)/BIN
 LAPACKPATH=$(ROOTPATH)/LAPACK
 BLASPATH=$(ROOTPATH)/BLAS
 SPATH=$(ROOTPATH)/SCRIPTS/
+SAPATH=$(SPATH)/all/
 
 PROG =	$(BINPATH)/$(PROGNAME)
 
@@ -20,6 +21,16 @@ SEARCH_PATH =  -I..
 
 DL=debug 
 #DEFS+=MPI
+
+PRF=$(SAPATH)/porfuncs.sh
+RCA=$(SAPATH)/rca.sh
+DV=$(SAPATH)/dv.sh
+HEADER=$(SAPATH)/header.sh
+MKDEP=$(SAPATH)/mkdep.pl
+DEPS=deps
+AUXF = dv.f90 rca.f90
+
+DVOPTS=fflags "$(FFLAGS)" prog $(PROGNAME) fc_exec "$(FC)" make_opts "$(MAKE_OPTS)" 
 
 # pgi {{{
 ifeq ($(FC),pgf90)
