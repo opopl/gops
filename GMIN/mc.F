@@ -3,13 +3,8 @@
 
       USE COMMONS
       USE qmodule , only : qmin, INTEQMIN
-      USE modcharmm
-      USE modamber9, only : mdstept,cisarray1,cisarray2,chiarray1,chiarray2,nocistransdna,nocistransrna,
-     &                      setchiral,amchpmax,doligmove,ligmovefreq, grouprott, grouprotfreq, dogrouprot,
-     &                      amchnmax
+
       USE porfuncs
-      USE AMHGLOBALS, ONLY: NMRES,OMOVI,AVEP,NUMPRO,IRES
-      USE AMH_INTERFACES, ONLY:E_WRITE
 
       IMPLICIT NONE
 
@@ -132,29 +127,14 @@ c  AMH
          STOP
       ENDIF
 
-#ifdef MPI
-      IF (MPIT) THEN 
-         IF (DEBUG) WRITE(MYUNIT,'(A,I6)') 'MPIERR=',MPIERR
-         CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NPAR,MPIERR)
-         IF (DEBUG) WRITE(MYUNIT, '(A,2I6)') 'NPAR,MPIERR=',NPAR,MPIERR
-         CALL MPI_COMM_RANK(MPI_COMM_WORLD,MYNODE,MPIERR)
-         JP=MYNODE+1
-         ITRAJ=MYNODE
-         IF (DEBUG) WRITE(MYUNIT, '(A,3I6)') 'In mc after MPI_MPI_COMM_RANK MPIERR,MYNODE,JP=',MPIERR,MYNODE,JP
-      ENDIF
-      NEACCEPT=0
-#endif
-
       NDONE=0
       IF (RESTORET) THEN
-#ifdef MPI
-         CALL RESTORESTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
-#else
-         DO JP=1,NPAR
+
+      DO JP=1,NPAR
             CALL RESTORESTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
-         ENDDO
-#endif
-         WRITE(MYUNIT, '(A,I10)') 'MC> restore NDONE=',NDONE
+      ENDDO
+      
+      WRITE(MYUNIT, '(A,I10)') 'MC> restore NDONE=',NDONE
 !     csw34> Sets the quench counter so that the GMIN_out file makes sense after using RESTORE!
 !         NQ(:)=NDONE
       ENDIF
