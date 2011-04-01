@@ -2,9 +2,9 @@
       SUBROUTINE MC(NSTEPS,SCALEFAC,SCREENC)
 
       USE COMMONS
-      USE qmodule , only : qmin, INTEQMIN
+      USE QMODULE , ONLY : QMIN, INTEQMIN
 
-      USE porfuncs
+      USE PORFUNCS
 
       IMPLICIT NONE
 
@@ -121,11 +121,6 @@ c  AMH
       snapcount=0
       NSTEPREN=0
       EVAPREJECT=.FALSE.
-      INQUIRE(UNIT=1,OPENED=LOPEN)
-      IF (LOPEN) THEN
-         WRITE(*,'(A,I2,A)') 'mc> B ERROR *** Unit ', 1, ' is not free '
-         STOP
-      ENDIF
 
       NDONE=0
       IF (RESTORET) THEN
@@ -139,22 +134,6 @@ c  AMH
 !         NQ(:)=NDONE
       ENDIF
       NQ(:)=NDONE
-
-C tvb requesting a basin-sampling MC run: {{{
-      
-      IF (BSWL.and.(.not.TETHER)) then
-         CALL BasinSampling
-         RETURN
-      ELSEIF (TETHER) THEN
-         CALL TetheredWL
-         RETURN
-      ENDIF
-C }}}
-
-#ifdef MPI
-      WRITE(MYUNIT, '(A,I10,A,I10,A)') "Processor", mynode+1, " of", NPAR, " speaking:"
-      WRITE(MYUNIT, '(A,I10)') 'Number of atoms', natoms
-#endif
 
       IF (NACCEPT.EQ.0) NACCEPT=NSTEPS+1
       NRMS=0

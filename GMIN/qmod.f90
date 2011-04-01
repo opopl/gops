@@ -20,7 +20,7 @@ MODULE QMODULE
       implicit none
       save
 
-      integer,allocatable :: FF(:),INTEFF(:) ! NSAVE
+      INTEGER,ALLOCATABLE :: FF(:),INTEFF(:) ! NSAVE
       DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(:) ! NSAVE
       DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(:,:)
 END MODULE QMODULE
