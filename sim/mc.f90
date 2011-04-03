@@ -171,7 +171,7 @@ C
 
                   SAVECOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
  
-                  CALL TAKESTEP(JP)
+                  CALL TAKESTEP
 ! Restore atom coordinates if atom is FROZEN or DONTMOVE as long as
 ! we're not taking internal coordinate moves in CHARMM or AMBER
                IF ((CHNMAX.LE.0.0D0).AND.(AMCHNMAX.LE.0.0D0)) THEN
@@ -185,22 +185,7 @@ C
  
                ENDIF
                
-                  IF (DUMPSTEPST) THEN
-                      WRITE(QUENCHNUM,*) NQ(JP)
-                      QUNAME='afterstep'//TRIM(ADJUSTL(QUENCHNUM))//'.rst'
-                      OPEN(UNIT=20,FILE=QUNAME,STATUS='UNKNOWN')  
-                      WRITE(20,'(a20)') QUNAME
-                      WRITE(20,'(i5)') NATOMS
-                      WRITE(20,'(6f12.7)') COORDS(:,JP) 
-                      CLOSE(20)
-! csw34> Dump to PDB using routine in amberinterface.f
-                      QUNAME='afterstep'//TRIM(ADJUSTL(QUENCHNUM))
-                      CALL A9DUMPPDB(COORDS(:,JP),QUNAME)
-                  ENDIF
-! END OF KEYWORD <DUMPSTEPS> BLOCK
-
-               NQ(JP)=NQ(JP)+1
-               IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
+               NQ=NQ+1
                CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)  
                NQTOT=NQTOT+1
  

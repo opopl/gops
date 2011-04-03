@@ -6,7 +6,7 @@
 !_TAG_PROGRAM_VERSION	5.8	//
 10	finalio.f90	/^10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)$/;"	l	subroutine:FINALIO	file:
 10	potential.f90	/^10    CONTINUE$/;"	l	subroutine:POTENTIAL	file:
-11	quench.f90	/^11    IF (WELCH) TOSI=.TRUE.$/;"	l	subroutine:QUENCH	file:
+10	takestep.f90	/^10       J2=3*J1$/;"	l	subroutine:TAKESTEP	file:
 12	keyword.f90	/^12       CONTINUE$/;"	l	subroutine:KEYWORD	file:
 190	keyword.f90	/^190   CALL INPUT(END)$/;"	l	subroutine:KEYWORD	file:
 1964	finalio.f90	/^1964        CONTINUE$/;"	l	subroutine:FINALIO	file:
@@ -17,6 +17,7 @@
 31	finalio.f90	/^31                FORMAT('AM',3G25.15)$/;"	l	subroutine:FINALIO	file:
 33	mc.f90	/^33                FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' EVAP,REJ')$/;"	l	subroutine:MC	file:
 332	mc.f90	/^332                  FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1x))$/;"	l	subroutine:MC	file:
+333	takestep.f90	/^333      CONTINUE$/;"	l	subroutine:TAKESTEP	file:
 334	finalio.f90	/^334      FORMAT(4(I8,1X),' NMRES NMCRD NUMPRO NMSNAP')$/;"	l	subroutine:FINALIO	file:
 334	mc.f90	/^334                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	subroutine:MC	file:
 34	mc.f90	/^34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	subroutine:MC	file:
@@ -34,6 +35,7 @@
 683	finalio.f90	/^683         FORMAT(3(I6,1X),F8.4,1X,I5,' STUCT SNAP T T TID')$/;"	l	subroutine:FINALIO	file:
 683	mc.f90	/^683                  FORMAT(3(i6,1x),f8.4,1x,i5,' stuct snap t T Tid')$/;"	l	subroutine:MC	file:
 73	mc.f90	/^73                   FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' TABOO')$/;"	l	subroutine:MC	file:
+8	takestep.f90	/^8        IF (NCORE(NP).GT.0) THEN$/;"	l	subroutine:TAKESTEP	file:
 A9INTET	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT, LOCALSAMPLET, CSMT, A9INTET,/;"	v	module:COMMONS
 ABTHRESH	commons.f90	/^     &                 TAUMAXFULL, CPFACTORSG, CPFACTORFG, VGWTOL, ABTHRESH,/;"	v	module:COMMONS
 ACCRAT	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP, ACCRAT,/;"	v	module:COMMONS
@@ -114,7 +116,7 @@ CHECKMARKOVT	commons.f90	/^     &        MULTPAHAT, TDHDT, WATERDCT, WATERKZT, C
 CHNRES	commons.f90	/^     &        NSUPER, NSACCEPT, NSUPERSTEP, GMODES, DUMPXYZUNIT, DUMPVUNIT, QUENCHFRQ, CHNRES,/;"	v	module:COMMONS
 CHRMMT	commons.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART, AVOID, NATBT, DIFFRACTT, CHRMMT,/;"	v	module:COMMONS
 CO	potential.f90	33;"	c	subroutine:POTENTIAL
-CO	quench.f90	20;"	c	subroutine:QUENCH
+CO	quench.f90	24;"	c	subroutine:QUENCH
 COLDFUSION	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT, LOCALSAMPLET, CSMT, A9INTET, INTERESTORE, COLDFUSION,/;"	v	module:COMMONS
 COLDFUSIONLIMIT	commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH, COLDFUSIONLIMIT,/;"	v	module:COMMONS
 COMMONS	commons.f90	/^      MODULE COMMONS$/;"	m
@@ -138,7 +140,7 @@ CPS	commons.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT, M
 CQMAX	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS, SCC, TOLB, T12FAC, XMOVERENORM, RESIZE, QTSALLIS, &$/;"	v	module:COMMONS
 CSMAV	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(/;"	v	module:COMMONS
 CSMAVVAL	potential.f90	52;"	c	subroutine:POTENTIAL
-CSMAVVAL	quench.f90	27;"	c	subroutine:QUENCH
+CSMAVVAL	quench.f90	31;"	c	subroutine:QUENCH
 CSMEPS	commons.f90	/^     &                 BSPTQMAX, BSPTQMIN, PFORCE, CSMNORM, CSMGUIDENORM, CSMEPS$/;"	v	module:COMMONS
 CSMGP	commons.f90	/^      CHARACTER(LEN=3) :: CSMGP,/;"	v	module:COMMONS
 CSMGPINDEX	commons.f90	/^     &        CPS, CPF, ACKLANDID, PATOM1, PATOM2, CSMGPINDEX,/;"	v	module:COMMONS
@@ -182,7 +184,7 @@ DIPOLE	commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE,/;"	v	mod
 DISTFAC	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP, DISTFAC,/;"	v	module:COMMONS
 DL_POLY	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46, NORESET, TABOOT, EVSTEPT, PACHECO, DL_POLY,/;"	v	module:COMMONS
 DMBLMT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT, PYGDPT, DBPT, DBPTDT, DBLPYT, DMBLMT,/;"	v	module:COMMONS
-DMIN	quench.f90	21;"	c	subroutine:QUENCH
+DMIN	quench.f90	25;"	c	subroutine:QUENCH
 DOMOVEREST	commons.f90	/^      LOGICAL :: DONTMOVET, DONTMOVEGROUPT, DONTMOVEREST, DONTMOVEALL, DOMOVEREST$/;"	v	module:COMMONS
 DONTMOVE	commons.f90	/^      LOGICAL, ALLOCATABLE :: DONTMOVE(/;"	v	module:COMMONS
 DONTMOVEALL	commons.f90	/^      LOGICAL :: DONTMOVET, DONTMOVEGROUPT, DONTMOVEREST, DONTMOVEALL,/;"	v	module:COMMONS
@@ -297,7 +299,7 @@ GBSIGNOT	commons.f90	/^     &                 EPSR, GBKAPPA, GBKAPPRM, GBMU,GBNU
 GBT	commons.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS, MODEL1T, NEWRESTART_MD, CHANGE_TEMP, NOCISTRANS, CHECKCHIRALITY, &$/;"	v	module:COMMONS
 GBWELLDEPTHR	commons.f90	/^     &                 GBANISOTROPYR,GBWELLDEPTHR,/;"	v	module:COMMONS
 GD	potential.f90	50;"	c	subroutine:POTENTIAL
-GD	quench.f90	23;"	c	subroutine:QUENCH
+GD	quench.f90	27;"	c	subroutine:QUENCH
 GEMRC	commons.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU, EFIELD, GEMRC,/;"	v	module:COMMONS
 GEMT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT,/;"	v	module:COMMONS
 GKSMALL	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: GAUSSEE(:), GKSMALL(/;"	v	module:COMMONS
@@ -342,6 +344,7 @@ JMT	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, 
 JUMPINT	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ, BLOCK, JUMPINT,/;"	v	module:COMMONS
 JUMPMOVE	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP, JUMPMOVE,/;"	v	module:COMMONS
 JUMPTO	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ, BLOCK, JUMPINT, JUMPTO,/;"	v	module:COMMONS
+KEEPSYM	takestep.f90	/^      SUBROUTINE KEEPSYM(/;"	s
 KEYWORD	keyword.f90	/^      SUBROUTINE KEYWORD$/;"	s
 KKJ	commons.f90	/^     &                 RHOCH10, RHOC20H, RHOCH20, ALPHACC, ALPHAHH, ALPHACH, DC6CC, DC6HH, DC6CH, KKJ,/;"	v	module:COMMONS
 LB2T	commons.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART, AVOID, NATBT, DIFFRACTT, CHRMMT, INTMINT, LB2T,/;"	v	module:COMMONS
@@ -432,7 +435,7 @@ MYMUNIT	commons.f90	/^     &        MYEUNIT, MYMUNIT,/;"	v	module:COMMONS
 MYNODE	commons.f90	/^     &        lhbins, sampledbins, MYNODE,/;"	v	module:COMMONS
 MYPOT	finalq.f90	37;"	c	subroutine:FINALQ
 MYPOT	main.f90	32;"	c	program:GMIN
-MYPOT	quench.f90	19;"	c	subroutine:QUENCH
+MYPOT	quench.f90	23;"	c	subroutine:QUENCH
 MYPOWER	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER,/;"	v	module:COMMONS
 MYPUNIT	commons.f90	/^     &        MYEUNIT, MYMUNIT, MYBUNIT, MYRUNIT, MYPUNIT$/;"	v	module:COMMONS
 MYRUNIT	commons.f90	/^     &        MYEUNIT, MYMUNIT, MYBUNIT, MYRUNIT,/;"	v	module:COMMONS
@@ -599,7 +602,7 @@ PYGT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT,/;"	v	mod
 PYOVERLAPTHRESH	commons.f90	/^     &                 PEPSILONATTR(2),PSIGMAATTR(2), PYOVERLAPTHRESH,/;"	v	module:COMMONS
 PYSIGNOT	commons.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF, INVKAP, ESA(3), LPRSQ, LSQDFR, GBDPMU, GBDPEPS, GBDPFCT, &$/;"	v	module:COMMONS
 PYSWAP	commons.f90	/^      INTEGER  NGBSITE, NPYSITE, PYBINARYTYPE1, PYSWAP(/;"	v	module:COMMONS
-Q4C	quench.f90	26;"	c	subroutine:QUENCH
+Q4C	quench.f90	30;"	c	subroutine:QUENCH
 Q4T	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID, Q4T,/;"	v	module:COMMONS
 QD2T	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT, MOVESHELLT, QDT, QD2T,/;"	v	module:COMMONS
 QDLIMIT	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP, NSYMINTERVAL, QDLIMIT,/;"	v	module:COMMONS
@@ -702,6 +705,7 @@ SaveNth	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, N
 SwapProb	commons.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb,/;"	v	module:COMMONS
 T12FAC	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS, SCC, TOLB, T12FAC,/;"	v	module:COMMONS
 TABOOT	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46, NORESET, TABOOT,/;"	v	module:COMMONS
+TAKESTEP	takestep.f90	/^      SUBROUTINE TAKESTEP$/;"	s
 TARGET	commons.f90	/^      LOGICAL DEBUG, TARGET,/;"	v	module:COMMONS
 TARGETS	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: TARGETS(/;"	v	module:COMMONS
 TAUMAX	commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH, COLDFUSIONLIMIT, NEWRES_TEMP, MINOMEGA, LJSIGMA, LJEPSILON, TAUMAX,/;"	v	module:COMMONS
@@ -758,7 +762,7 @@ ZETT2	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST
 ZSTAR	commons.f90	/^     &                 COULTEMP, APP, AMM, APM, XQP, XQM, ALPHAP, ALPHAM, ZSTAR,/;"	v	module:COMMONS
 ZSYM	commons.f90	/^      CHARACTER(LEN=2), ALLOCATABLE, DIMENSION(:) :: ZSYM /;"	v	module:COMMONS
 amberdump	finalio.f90	/^      SUBROUTINE amberdump(/;"	s
-ev	quench.f90	24;"	c	subroutine:QUENCH
+ev	quench.f90	28;"	c	subroutine:QUENCH
 hdistconstraint	commons.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb, hdistconstraint,/;"	v	module:COMMONS
 lhbins	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints, SaveNth, DumpEveryNthQuench, NSpline, Hwindows, & $/;"	v	module:COMMONS
 lnHarmFreq	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent, lnHarmFreq,/;"	v	module:COMMONS

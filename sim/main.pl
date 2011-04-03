@@ -364,7 +364,7 @@ my @kwds=keys %kwdh;
 # main part  {{{
 open LFILE, ">$logfile" or die "$!";
 
-	# read in the 'data' file
+# read in the "data" file
 &keyword;
 &mc;
 &finalq;

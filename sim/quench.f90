@@ -1,6 +1,5 @@
 
-      SUBROUTINE QUENCH(QTEST,NP,ITER,TIME,BRUN,QDONE,P)
-!op226> Declarations {{{ 
+      SUBROUTINE QUENCH(QTEST,ITER,TIME,BRUN,QDONE,P)
 
       USE COMMONS
       USE QMODULE
@@ -8,12 +7,17 @@
 
       IMPLICIT NONE
 
-      INTEGER I, J1, NSQSTEPS, NP, IFLAG, ITER, NOPT, J2, NDUMMY, J3, CSMIT
-      DOUBLE PRECISION P(3*NATOMS),POTEL,TIME,EREAL,RBCOORDS(18),TMPCOORDS(3*NATOMS), DIST, QE, QX, AVVAL, CSMRMS
-      LOGICAL QTEST, CFLAG, RES, COMPON, evapreject
+      LOGICAL QTEST
+      INTEGER ITER
+      DOUBLE PRECISION TIME
+      INTEGER BRUN,QDONE
+      DOUBLE PRECISION P(3*NATOMS)
+
+      INTEGER I, J1, NSQSTEPS, IFLAG, NOPT, J2, NDUMMY, J3, CSMIT
+      DOUBLE PRECISION POTEL,EREAL,RBCOORDS(18),TMPCOORDS(3*NATOMS), DIST, QE, QX, AVVAL, CSMRMS
+
+      LOGICAL CFLAG, RES, COMPON, EVAPREJECT
       DOUBLE PRECISION  GRAD(3*NATOMS), DUMMY, DUM(3*NATOMS), DISTMIN, SSAVE, DIST2, RMAT(3,3)
-C     DOUBLE PRECISION  WORK(60*NATOMS)
-      DOUBLE PRECISION, PARAMETER :: HALFPI=1.570796327D0
 
       CHARACTER(LEN=80) DSTRING
       COMMON /MYPOT/ POTEL
@@ -21,29 +25,17 @@ C     DOUBLE PRECISION  WORK(60*NATOMS)
       COMMON /DMIN/ DISTMIN
       LOGICAL GUIDECHANGET, GUIDET, CSMDOGUIDET
       COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
-      common /ev/ evapreject
+      COMMON /EV/ EVAPREJECT
       DOUBLE PRECISION QSTART, QFINISH
       COMMON /Q4C/ QSTART, QFINISH
       COMMON /CSMAVVAL/ AVVAL, CSMRMS, CSMIT
 
 C
-C   sf344> gradually changing parameters to prevent dissociation of PY ellipsoids with repulsive sites 
-C
-      DOUBLE PRECISION epssave(3)
-
-C
-C  Data for the screen saver.
-C
-      INTEGER BRUN, QDONE,ii
-!op226>}}} 
-C
 C  Turn on guiding potentials. These get turned off in potential.F when
 C  the RMS force is small enough.
 C
       SSAVE=STEP(NP)
-C
-C csw34 Reset the NFIX counter
-C
+
       NFIX=0
 
 C  QTEST is set for the final quenches with tighter convergence criteria.
@@ -60,7 +52,7 @@ C  QTEST is set for the final quenches with tighter convergence criteria.
 
       COMPON=.FALSE.
 
-      CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+      CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.)
       POTEL=EREAL
 
       IF (CFLAG) QDONE=1
@@ -75,7 +67,6 @@ C  QTEST is set for the final quenches with tighter convergence criteria.
       CALL MYCPU_TIME(TIME)
 
       RES=.FALSE.
-
 
       IF (.NOT.NORESET) THEN
          DO J1=1,3*(NATOMS-NSEED)

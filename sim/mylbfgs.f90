@@ -1,18 +1,27 @@
 
-      SUBROUTINE MYLBFGS(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET,NP)
-
+      SUBROUTINE MYLBFGS(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
+      
       USE COMMONS
       USE PORFUNCS
-
+      
       IMPLICIT NONE
-
-      INTEGER N,M,J1,ITMAX,ITDONE,NP,J2,J3,NFAIL,NDECREASE,NGUESS,NDUMMY
-      DOUBLE PRECISION XCOORDS(3*NATOMS),GRAD(3*NATOMS),SLENGTH,DDOT,EPLUS,EMINUS,DIFF,DUMMY,WTEMP(3*NATOMS)
+      
+      INTEGER N,M
+      DOUBLE PRECISION XCOORDS(3*NATOMS)
+      LOGICAL DIAGCO
+      DOUBLE PRECISION EPS
+      LOGICAL MFLAG
+      DOUBLE PRECISION ENERGY
+      INTEGER ITMAX,ITDONE
+      LOGICAL RESET
+      
+      integer J1,J2,J3,NFAIL,NDECREASE,NGUESS,NDUMMY
+      DOUBLE PRECISION GRAD(3*NATOMS),SLENGTH,DDOT,EPLUS,EMINUS,DIFF,DUMMY,WTEMP(3*NATOMS)
       DOUBLE PRECISION TMPANG(3*NATOMS), TMPCOORDS(3*NATOMS)
-      DOUBLE PRECISION EPS,ENERGY,ENEW,GNEW(3*NATOMS),OVERLAP,OLDX(3*NATOMS),OLDOLDX(3*NATOMS),VGUESS(3),
-     1                 X1, Y1, Z1, X2, Y2, Z2, TRY(3*NATOMS), D1, D2, RBCOORDS(18), DUMMY2, DIST, DIST1
+      DOUBLE PRECISION ENEW,GNEW(3*NATOMS),OVERLAP,OLDX(3*NATOMS),OLDOLDX(3*NATOMS),VGUESS(3),
+      1                 X1, Y1, Z1, X2, Y2, Z2, TRY(3*NATOMS), D1, D2, RBCOORDS(18), DUMMY2, DIST, DIST1
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W
-      LOGICAL DIAGCO, YESNO, RESET, NOTCALLED, CTEST, MFLAG
+      LOGICAL YESNO, NOTCALLED, CTEST
       DOUBLE PRECISION GNORM,STP,YS,YY,SQ,YR,BETA,POTEL,QSTART,QFINISH
       DOUBLE PRECISION OLDCART(3*NATOMS), DELTAQ(N),DELTACART(3*NATOMS),LEPSILON,DOT1,DOT2
       DOUBLE PRECISION LCART(3*NATOMS),OLDQ(N),NEWQ(N),OLDGINT(N),GINT(N),XINT(N),XSAVE(N),SMINKCURRENTP
@@ -74,33 +83,12 @@ C         ELSE IF (CHRMMT) THEN
             OLDGINT(1:N)=GINT(1:N) ! store gradient in internals
 C         ENDIF
       ENDIF
-C
-C  for CHRMMT:
-C  XCOORDS contains current Cartesians
-C  GRAD    contains current gradient
-C  XINT    contains current internals
-C  GINT    contains current gradient in internals
-C  OLDQ    contains internals for initial geometry
-C  OLDGINT contains gradient in internals for initial geometry
-C  OLDCART contains Cartesian coordinates for initial geometry
-C
+
       IF (EVAPREJECT) RETURN
       POTEL=ENERGY
 
       IF (DEBUG) WRITE(MYUNIT,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
 
-C
-C  Catch cold fusion for ionic potentials and discard.
-C
-      IF ((DBPT.OR.DBPTDT.OR.MSTBINT.OR.MSSTOCKT.OR.MULTPAHAT.OR.NPAHT.OR.PAHW99T.OR.PYGT.OR.TDHDT) .AND.(ENERGY.LT.-5.0D4)) THEN
-         WRITE(MYUNIT,'(A,G20.10)') 'ENERGY=',ENERGY
-         ENERGY=0.0D0
-         POTEL=0.0D0
-         RMS=1.0D0
-         WRITE(MYUNIT,'(A)') ' Cold fusion diagnosed - step discarded'
-         RETURN
-      ENDIF
-C
 C  Termination test. 
 C
 10    CALL FLUSH(MYUNIT)
@@ -123,11 +111,6 @@ C
       ENDIF
 
       IF (ITER.EQ.0) THEN
-         IF (N.LE.0.OR.M.LE.0) THEN
-            WRITE(MYUNIT,240)
- 240        FORMAT(' IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')
-            STOP
-         ENDIF
          POINT=0
          MFLAG=.FALSE.
          IF (DIAGCO) THEN
@@ -141,13 +124,6 @@ C
                ENDIF
             ENDDO
          ELSE
-C           INQUIRE(FILE='diag',EXIST=YESNO)
-C           IF (YESNO) THEN
-C              OPEN(UNIT=34,FILE='diag',STATUS='OLD')
-C              READ(34,*) (DIAG(J1),J1=1,N)
-C              PRINT*,'diag read in LBFGS'
-C              WRITE(*,'(6F15.5)') (DIAG(J1),J1=1,N)
-C           ELSE
             DO J1=1,N
                DIAG(J1)=DGUESS
             ENDDO
@@ -323,24 +299,6 @@ C
 
       CALL POTENTIAL(XCOORDS,GNEW,ENEW,.TRUE.,.FALSE.)
 
-      IF (EVAPREJECT) return
-C
-C  Catch cold fusion for ionic potentials and discard.
-C
-C  Changed EREAL for cold fusion to 1.0D6 rather than 0.0D0, which could result in steps being accepted
-C  for systems with positive energies. - khs26 26/11/09
-C
-
-C
-C  We need to transform the newly obtained Cartesian gradient for CHARMM and internals.
-C  NOCOOR is true because we dont need to transform the coordinates.
-C
-
-C
-C csw34 Force acceptance of step if FIXDIHEFLAG is TRUE
-C
-      IF (FIXDIHEFLAG) ENERGY=ENEW
-
       IF (((ENEW-ENERGY.LE.MAXERISE).OR.EVAP.OR.GUIDECHANGET.OR.SMINKCHANGET).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
          ITER=ITER+1
          ITDONE=ITDONE+1
@@ -404,9 +362,6 @@ C              XINT=OLDQ ! should be the same as subtracting the step
 !           DO J1=1,N
 !              XCOORDS(J1)=XCOORDS(J1)-0.5*STP*W(ISPT+POINT*N+J1)
 !           ENDDO 
-!
-! For Thomson try projection for the geometry after the step.
-!        
          ENDIF
          STP=STP/2.0D0
          NDECREASE=NDECREASE+1
