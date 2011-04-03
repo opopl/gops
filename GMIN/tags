@@ -2241,7 +2241,7 @@ COULSWAP	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG
 COULSWAP	commons.o.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP, DISTFAC, ODDCHARGE, COULQ, COULSWAP,/;"	v	module:COMMONS
 COULTEMP	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP, DISTFAC, ODDCHARGE, COULQ, COULSWAP, &$/;"	v	module:COMMONS
 COULTEMP	commons.o.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP, DISTFAC, ODDCHARGE, COULQ, COULSWAP, &$/;"	v	module:COMMONS
-COUNTATOMS	countatoms.f90	/^      SUBROUTINE COUNTATOMS(/;"	s	module:NOA
+COUNTATOMS	func.f90	/^SUBROUTINE COUNTATOMS$/;"	s	module:FUNC
 CPF	commons.f90	/^     &        CPS, CPF,/;"	v	module:COMMONS
 CPF	commons.o.f90	/^     &        CPS, CPF,/;"	v	module:COMMONS
 CPFACTORFG	commons.f90	/^     &                 TAUMAXFULL, CPFACTORSG, CPFACTORFG,/;"	v	module:COMMONS
@@ -2737,13 +2737,15 @@ FD5H	commons.f90	/^      DOUBLE PRECISION :: FOH, FIH, FTD, FD5H$/;"	v	module:CO
 FD5H	commons.o.f90	/^      DOUBLE PRECISION :: FOH, FIH, FTD, FD5H$/;"	v	module:COMMONS
 FDIST	ptgrp.f	/^      Double Precision FUNCTION FDIST(/;"	f
 FDM	fdm.f	/^      SUBROUTINE FDM(/;"	s
-FF	qmod.f90	/^      integer,allocatable :: FF(/;"	v	module:QMODULE
+FF	main.f90	/^      INTEGER,ALLOCATABLE :: FF(/;"	v	program:GMIN
+FF	qmod.f90	/^      INTEGER,ALLOCATABLE :: FF(/;"	v	module:QMODULE
 FIELDT	commons.f90	/^      LOGICAL :: FIELDT,/;"	v	module:COMMONS
 FIELDT	commons.o.f90	/^      LOGICAL :: FIELDT,/;"	v	module:COMMONS
 FIH	commons.f90	/^      DOUBLE PRECISION :: FOH, FIH,/;"	v	module:COMMONS
 FIH	commons.o.f90	/^      DOUBLE PRECISION :: FOH, FIH,/;"	v	module:COMMONS
 FILEEXISTS	io_sanity.f90	/^FUNCTION FILEEXISTS(/;"	f
 FILELENGTH	io_sanity.f90	/^FUNCTION FILELENGTH(/;"	f
+FIN	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: FIN(/;"	v	program:GMIN
 FINALCUTOFF	commons.f90	/^     &                 TRENORM, HISTMIN, HISTMAX, HISTFAC, EPSSPHERE, FINALCUTOFF,/;"	v	module:COMMONS
 FINALCUTOFF	commons.o.f90	/^     &                 TRENORM, HISTMIN, HISTMAX, HISTFAC, EPSSPHERE, FINALCUTOFF,/;"	v	module:COMMONS
 FINALIO	finalio.f	/^      SUBROUTINE FINALIO$/;"	s
@@ -2994,9 +2996,12 @@ INPUT	input.f	/^      SUBROUTINE INPUT(/;"	s
 INPUTI	input.f	/^      SUBROUTINE INPUTI(/;"	s
 INTEDUMPFILE	commons.f90	/^      CHARACTER(LEN=130) DUMPFILE, MYFILENAME, INTEDUMPFILE$/;"	v	module:COMMONS
 INTEDUMPFILE	commons.o.f90	/^      CHARACTER(LEN=130) DUMPFILE, MYFILENAME, INTEDUMPFILE$/;"	v	module:COMMONS
-INTEFF	qmod.f90	/^      integer,allocatable :: FF(:),INTEFF(/;"	v	module:QMODULE
+INTEFF	main.f90	/^      INTEGER,ALLOCATABLE :: FF(:),INTEFF(/;"	v	program:GMIN
+INTEFF	qmod.f90	/^      INTEGER,ALLOCATABLE :: FF(:),INTEFF(/;"	v	module:QMODULE
 INTEFINALIO	amber9dummy.f90	/^SUBROUTINE INTEFINALIO(/;"	s
+INTEQMIN	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(/;"	v	program:GMIN
 INTEQMIN	qmod.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(/;"	v	module:QMODULE
+INTEQMINP	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(/;"	v	program:GMIN
 INTEQMINP	qmod.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(/;"	v	module:QMODULE
 INTERESTORE	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT, LOCALSAMPLET, CSMT, A9INTET, INTERESTORE,/;"	v	module:COMMONS
 INTERESTORE	commons.o.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT, LOCALSAMPLET, CSMT, A9INTET, INTERESTORE,/;"	v	module:COMMONS
@@ -3364,7 +3369,7 @@ MYPOT	basinsampling.f90	50;"	c	subroutine:BASINSAMPLING
 MYPOT	bspt.F	75;"	c	subroutine:PTBASINSAMPLING
 MYPOT	cgmin.f	37;"	c	subroutine:CGMIN
 MYPOT	finalq.f	37;"	c	subroutine:FINALQ
-MYPOT	main.f90	27;"	c	program:GMIN
+MYPOT	main.f90	34;"	c	program:GMIN
 MYPOT	mc.F	1471;"	c	subroutine:REST
 MYPOT	mc.F	1618;"	c	subroutine:REN
 MYPOT	mc.F	1786;"	c	subroutine:NEWRES
@@ -3495,7 +3500,6 @@ NN	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN,/;"	v	mod
 NN	commons.o.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN,/;"	v	module:COMMONS
 NNBIPS	modamber9.f90	/^      integer ISGSTA,ISGEND,IPS,NNBIPST/;"	v	module:MODAMBER9
 NNBIPST	modamber9.f90	/^      integer ISGSTA,ISGEND,IPS,NNBIPST,/;"	v	module:MODAMBER9
-NOA	countatoms.f90	/^MODULE NOA$/;"	m
 NOCISTRANS	commons.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS, MODEL1T, NEWRESTART_MD, CHANGE_TEMP, NOCISTRANS,/;"	v	module:COMMONS
 NOCISTRANS	commons.o.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS, MODEL1T, NEWRESTART_MD, CHANGE_TEMP, NOCISTRANS,/;"	v	module:COMMONS
 NOCISTRANSDNA	modamber9.f90	/^      LOGICAL NOCISTRANSDNA,/;"	v	module:MODAMBER9
@@ -3586,7 +3590,8 @@ NTIPT	commons.o.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, L
 NTW_ANGLES	modamber9.f90	/^integer:: NTW_ANGLES /;"	v	module:MODAMBER9
 NTempPoints	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints,/;"	v	module:COMMONS
 NTempPoints	commons.o.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints,/;"	v	module:COMMONS
-NUMBER_OF_ATOMS	countatoms.f90	/^      INTEGER :: NUMBER_OF_ATOMS$/;"	v	module:NOA
+NUMBER_OF_ATOMS	func.f90	/^INTEGER :: NUMBER_OF_ATOMS$/;"	v	module:FUNC
+NUMBER_OF_ATOMS	main.f90	/^      INTEGER :: NUMBER_OF_ATOMS$/;"	v	program:GMIN
 NUMPRO	amhdummy.f	/^      INTEGER NUMPRO$/;"	v	module:AMHGLOBALS
 NUMPRO_AMH	commons.f90	/^      INTEGER NUMPRO_AMH,/;"	v	module:COMMONS
 NUMPRO_AMH	commons.o.f90	/^      INTEGER NUMPRO_AMH,/;"	v	module:COMMONS
@@ -3893,9 +3898,11 @@ QDT	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMov
 QDT	commons.o.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT, MOVESHELLT, QDT,/;"	v	module:COMMONS
 QDTEST	qdtest.f	/^      SUBROUTINE QDTEST(/;"	s
 QDTEST2	qdtest2.f	/^      SUBROUTINE QDTEST2(/;"	s
+QMIN	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMIN(/;"	v	program:GMIN
 QMIN	qmod.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMIN(/;"	v	module:QMODULE
 QMINAV	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(:,:), CSMAV(:), QMINAV(/;"	v	module:COMMONS
 QMINAV	commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(:,:), CSMAV(:), QMINAV(/;"	v	module:COMMONS
+QMINP	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(/;"	v	program:GMIN
 QMINP	qmod.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(/;"	v	module:QMODULE
 QMINPCSMAV	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(/;"	v	module:COMMONS
 QMINPCSMAV	commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(/;"	v	module:COMMONS
