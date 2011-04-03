@@ -354,7 +354,7 @@ be used for clusters.
 
 \ksec{ALGLUE}{\/}: specifies a glue potential for aluminium.
 
-\ksec{AMBER}{9 inpcrd inpcrdformat\/}: specifies a calculation with the interfaced
+\ksec{AMBER9}{inpcrd inpcrdformat\/}: specifies a calculation with the interfaced
 version of the Amber 9 program package. From this package the Amber force fields
 are being used, with small modifications ({\it e.g.} smooth cut-offs).
 Starting coordinates do not need to be specified in the {\it odata} file, they
@@ -373,7 +373,7 @@ To turn on smooth cutoffs for the Generalised Born force fields, the keyword
 When using the {\keyw{AMBER9}} keyword, any calculated second derivatives will be
 numerical. If one wants analytical second derivatives, the {\keyw{NAB}} keyword
 should be used instead, with the same syntax. 
-Additional keywords for the AMBER 9 runs are {\keyw{DUMP}STRUCTURES}, {\keyw{AMBERMDSTEPS}},
+Additional keywords for the AMBER 9 runs are {\keyw{DUMPSTRUCTURES}}, {\keyw{AMBERMDSTEPS}},
 {\keyw{LIGMOVE} (0.0-1.0) (x.x)} and {\keyw{MOVABLEATOMS}}.
 % missing AMH - put it in after merger
 
@@ -964,7 +964,7 @@ further documentation.
 
 \ksec{OSASA}{ \/}: order parameter---requires documentation.
 
-\ksec{P}{46\/}: specifies a 46-bead three-colour model polypeptide.
+\ksec{P46\/}: specifies a 46-bead three-colour model polypeptide.
 See also the {\keyw{BLN}} keyword, which implements this potential in a more
 general way and uses unit bond lengths.
 
@@ -1870,12 +1870,12 @@ desired, a coordinate file different from {\it coords.inpcrd} containing
 starting coordinates.
 To turn on smooth cutoffs for the Generalised Born force fields, the keyword 
 {\it ifswitch=1} has to be used in the {\it \&cntrl} namelist block of {\it min.in}.
-When using the {\keyw{AMBER}9} keyword, any calculated second derivatives will be 
+When using the {\keyw{AMBER9} keyword, any calculated second derivatives will be 
 numerical. If one wants analytical second derivatives, the {\keyw{NAB}} keyword 
 should be used instead, with the same syntax. The NAB interface does not 
 currently support smooth cutoffs, so analytical second derivatives are only 
 recommended for stationary points calculated with large cutoffs.
-Additional keywords for the AMBER 9 runs are {\keyw{NAB}} and {\keyw{DUMP}STRUCTURES}.
+Additional keywords for the AMBER 9 runs are {\keyw{NAB}} and {\keyw{DUMPSTRUCTURES}.
 
 \ksec{AMBERIC}{}: interpolation in bhinterp with internal coordinates. If BACKBONE specified additionally (AMBERIC BACKBONE) the protein backbone is also interpolated in internals. Does not work for polymers.
 
@@ -2850,7 +2850,7 @@ specifies parameters for the MSEVB potential.
 \subsection{N}
 \ksec{NAB}{ inpcrd inpcrdformat\/}: specifies a calculation with the interfaced
 version of the Nucleic Acid Builder program package. From this package the Amber force fields
-are being used only. The syntax is the same as for the {\keyw{AMBER}9} keyword. For energy 
+are being used only. The syntax is the same as for the {\keyw{AMBER9} keyword. For energy 
 and gradient evaluations the standard Amber 9 interface is being called. The NAB routines 
 are only called for analytical second derivative evaluations. The NAB interface does not 
 have smooth cutoffs implemented at the moment, therefore this keyword should only be used 

@@ -1,22 +1,6 @@
 #!/usr/bin/perl 
-#===============================================================================
-#
-#         FILE:  main.pl
-#
-#        USAGE:  ./main.pl  
-#
-#  DESCRIPTION:  GMIN main Perl file
-#
-#      OPTIONS:  ---
-# REQUIREMENTS:  ---
-#         BUGS:  ---
-#        NOTES:  ---
-#       AUTHOR:  O. Poplavskyy, 
-#      COMPANY:  
-#      VERSION:  1.0
-#      CREATED:  03/04/11 14:27:35
-#     REVISION:  ---
-#===============================================================================
+
+# Initial part {{{
 
 use strict;
 use warnings;
@@ -374,14 +358,25 @@ my %kwdh=(
 
 my @kwds=keys %kwdh;
 
+
+# }}}
+
+# main part  {{{
 open LFILE, ">$logfile" or die "$!";
 
 	# read in the 'data' file
 &keyword;
+&mc;
+&finalq;
+&finalio;
 
 close LFILE or die "can't close $: $!";;
 
-sub keyword{
+# }}}
+
+#subroutines {{{
+
+sub keyword {
 # {{{
 open FILE,"<data" or die "$!";
 
@@ -396,3 +391,13 @@ close FILE or die "can't close $: $!";;
 # }}}
 }
 
+sub mc {
+# {{{
+my ($nsteps,$scalefac,@screenc)=@_;
+
+print LFILE, "Starting MC run of",$nsteps," steps \n";
+print LFILE, "Temperature will be multiplied by ",$scalefac," at every step\n";
+#}}}
+}
+
+#}}}
