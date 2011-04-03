@@ -20,8 +20,6 @@
     
       DOUBLE PRECISION, ALLOCATABLE :: FIN(:)
 
-      INTEGER J1,J2, JP, MPIERR, NDUMMY3,NPTOTAL
-
       DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:)
 
       DOUBLE PRECISION POTEL
@@ -36,17 +34,12 @@
       CALL CPU_TIME(TSTART)
       CALL READ_CMD_ARGS
 
-      NPAR=1
-      MYNODE=0
-      
-      LOG_FH=22979+1
+      LOG_FH=10
       LOG_FN="GMIN.log"
 
       CALL OPENF(LOG_FH,">",LOG_FN)
 
       WRITE(LOG_FH,'(A)') "Starting serial execution" 
-
-      CALL COUNTATOMS
 
       ALLOCATE(ANV(NATOMS,NATOMS,3))         
 

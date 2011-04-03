@@ -28,6 +28,9 @@ header.f90: $(HEADER)
 $(DEPS): $(MKDEP)
 	$(MKDEP) $@
 
+tg:
+	ctags -R *.f *.f90 *.F
+
 $(PROGNAME): $(PROG)
 
 $(PROG): $(OBJS) 

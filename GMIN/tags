@@ -22,9 +22,6 @@
 1	quench.f	/^     1              POTEL,' steps=',ITER,' RMS force=',RMS$/;"	l	subroutine:QUENCH	file:
 1	sort.f	/^1     if(ir-l.lt.M)then$/;"	l	subroutine:Gsort	file:
 1	takestepmsgb.f90	/^1        IF (X .GE. XM) THEN$/;"	l	subroutine:BRENTMINGB	file:
-10	AMH/SLARNV.f	/^   10       CONTINUE$/;"	l	subroutine:SLARNV	file:
-10	AMH/SLARUV.f	/^   10 CONTINUE$/;"	l	subroutine:SLARUV	file:
-10	AMH/rep_contact.f90	/^10    continue$/;"	l	subroutine:rep_contact	file:
 10	Alglue.f	/^   10 i = 1$/;"	l	subroutine:seval	file:
 10	CSMinit.f90	/^10    CALL FLUSH(6)$/;"	l	subroutine:CSMMIN	file:
 10	EAMal.f	/^   10 i = 1$/;"	l	subroutine:seval1	file:
@@ -186,14 +183,6 @@
 10	welch.f	/^   10       if (dabs(det(1)) .ge. 1.0d0) go to 20$/;"	l	subroutine:dgedi	file:
 10	welch.f	/^   10 continue$/;"	l	subroutine:dgeco	file:
 10	zwischen.f	/^10    CONTINUE$/;"	l	subroutine:ZWISCHEN	file:
-100	AMH/Q_bias_seg_a.f	/^100     enddo    ! j$/;"	l	subroutine:Q_bias_seg_a	file:
-100	AMH/Q_bias_seg_b.f	/^100     enddo    ! j$/;"	l	subroutine:Q_bias_seg_b	file:
-100	AMH/Rg_bias.f90	/^100         format(a,2x,f12.8,f12.8)$/;"	l	subroutine:Rg_bias	file:
-100	AMH/altpot_io.f90	/^100     read (130,'(a)',err=99,end=999)str200                $/;"	l	subroutine:read_altgamma	file:
-100	AMH/altpot_io.f90	/^100     read(ninput,'(a)',end=999)str200$/;"	l	subroutine:read_input_alt	file:
-100	AMH/altpot_subroutines.f90	/^100        format(400(1x,e12.6))$/;"	l	subroutine:altpot_master	file:
-100	AMH/gentab.f	/^100     continue$/;"	l	subroutine:gentab	file:
-100	AMH/potind.f	/^100         continue$/;"	l	subroutine:potind	file:
 100	JM.f	/^100         CONTINUE$/;"	l	subroutine:JM3C	file:
 100	Q4.f	/^100   CONTINUE$/;"	l	function:FAC	file:
 100	bipartite.f90	/^100 CONTINUE$/;"	l	subroutine:BIPARTITE	file:
@@ -239,37 +228,12 @@
 100	tn.f	/^100   R = ZERO$/;"	l	subroutine:GETPTC	file:
 100	welch.f	/^  100    continue$/;"	l	subroutine:dgedi	file:
 100	welch.f	/^  100 continue$/;"	l	subroutine:dgeco	file:
-1000	AMH/E_write.f90	/^1000      format(i8,2x,100(f22.10,2x))$/;"	l	subroutine:E_write	file:
-1000	AMH/Rg_bias.f90	/^1000   format(a,2x,f9.3,2x,f9.3,2x,f9.3,2x,f9.3,2x,f9.3)$/;"	l	subroutine:Rg_bias	file:
-1000	AMH/altpot_io.f90	/^1000    format(i8,2x,200(f8.3,2x))$/;"	l	subroutine:send_output_alt	file:
-1000	AMH/gaspot.f	/^1000     format(a5)$/;"	l	subroutine:gaspot	file:
-1000	AMH/initil.f	/^1000     format(a5)$/;"	l	subroutine:initil	file:
-1000	AMH/scltab.f	/^1000     format(a5)$/;"	l	subroutine:scltab	file:
 1000	dgetrf.f	/^ 1000 CONTINUE$/;"	l	function:ILAENV	file:
 1000	minperm.f	/^ 1000 END$/;"	l	subroutine:JOVOSAP	file:
-1001	AMH/gentab.f	/^1001     enddo$/;"	l	subroutine:gentab	file:
-1001	AMH/lookup.f	/^1001   continue$/;"	l	subroutine:lookup	file:
-1001	AMH/potind.f	/^1001     continue$/;"	l	subroutine:potind	file:
 1001	input.f	/^1001    FORMAT ('0End of file while attempting to read a number')$/;"	l	subroutine:GETF	file:
 1001	input.f	/^1001    FORMAT$/;"	l	subroutine:GETA	file:
 1001	input.f	/^1001  FORMAT (80A1)$/;"	l	file:
-1002	AMH/gaspot.f	/^1002       format(10(i4))$/;"	l	subroutine:gaspot	file:
-101	AMH/gentab.f	/^101     continue$/;"	l	subroutine:gentab	file:
-101	AMH/getmem.f	/^  101 format(i5)$/;"	l	subroutine:getmem	file:
-101	AMH/initil.f	/^101      format(i5)$/;"	l	subroutine:initil	file:
 101	minperm.f	/^  101    T=T+1$/;"	l	subroutine:JOVOSAP	file:
-102	AMH/gaspot.f	/^102            format (i5)$/;"	l	subroutine:gaspot	file:
-102	AMH/gentab.f	/^102     continue$/;"	l	subroutine:gentab	file:
-103	AMH/getmem.f	/^  103 format(25(i2,1x))$/;"	l	subroutine:getmem	file:
-103	AMH/scltab.f	/^  103       format(\/4(2(1x,i3),1x,1pe9.2,2x))$/;"	l	subroutine:scltab	file:
-104	AMH/getmem.f	/^  104          format(8(f8.3,1x))$/;"	l	subroutine:getmem	file:
-1040	AMH/gentab.f	/^1040       format(4(i8,1x))$/;"	l	subroutine:gentab	file:
-105	AMH/rndcol.f	/^105      zprime(1)=(cprcord(i501,1)-prcord(i501,1,i503,1))$/;"	l	subroutine:rndcol	file:
-1050	AMH/gentab.f	/^1050       format(3x,3(1x,f8.4),2(4x,3(1x,f8.4)))$/;"	l	subroutine:gentab	file:
-106	AMH/initil.f	/^106      format(25(i2,1x))$/;"	l	subroutine:initil	file:
-106	AMH/scltab.f	/^  106       format(4(2(1x,3x),1x,1pe9.2,2x))$/;"	l	subroutine:scltab	file:
-107	AMH/initil.f	/^  107    format(\/'timstp ',1pe10.3)$/;"	l	subroutine:initil	file:
-11	AMH/savstr.f	/^11      continue$/;"	l	subroutine:savstr	file:
 11	Ackland_wrapper.f	/^11    CONTINUE$/;"	l	subroutine:ACK	file:
 11	EAMal.f	/^11    CONTINUE$/;"	l	subroutine:EAMal	file:
 11	Farkas.f	/^11    continue$/;"	l	subroutine:splinegmin	file:
@@ -297,9 +261,6 @@
 11	quench.f	/^11    IF (WELCH) TOSI=.TRUE.$/;"	l	subroutine:QUENCH	file:
 11	sort.f	/^11        continue$/;"	l	subroutine:Gsort	file:
 11	takestep.f	/^11       RANDOM=(DPRAND()-0.5D0)*2.0D0$/;"	l	subroutine:TAKESTEP	file:
-110	AMH/gaspot.f	/^  110          format(\/'test force: table number ',i3,$/;"	l	subroutine:gaspot	file:
-110	AMH/getmem.f	/^  110    format('Getmem: protein ',a5,' too large ',i4,$/;"	l	subroutine:getmem	file:
-110	AMH/rndcol.f	/^110            phi=ran_num*1.92D0+1.57D0$/;"	l	subroutine:rndcol	file:
 110	JM.f	/^110      CONTINUE$/;"	l	subroutine:JM3C	file:
 110	dgetrf.f	/^  110 CONTINUE$/;"	l	function:ILAENV	file:
 110	dlsode.f	/^  110    CONTINUE$/;"	l	subroutine:DGBFA	file:
@@ -337,20 +298,10 @@
 110	tn.f	/^110   IF (ABSR .GT. RTSMLL) P = ABSR*RTSMLL$/;"	l	subroutine:GETPTC	file:
 110	welch.f	/^  110       continue$/;"	l	subroutine:dgedi	file:
 110	welch.f	/^  110    continue$/;"	l	subroutine:dgeco	file:
-1100	AMH/altpot_pairpotential.f90	/^1100       format(400(1x,e12.6))$/;"	l	subroutine:calc_force_alt	file:
 1100	dgetrf.f	/^ 1100 CONTINUE$/;"	l	function:ILAENV	file:
-111	AMH/gaspot.f	/^  111    format('# proteins used in generating potential ',i3)$/;"	l	subroutine:gaspot	file:
 111	io1.f	/^111      READ(7,'(A)') FNAME$/;"	l	subroutine:IO1	file:
 111	ljcapsidmodule.f90	/^111 CONTINUE$/;"	l	subroutine:GAYBERNE	file:
-1111	AMH/gaspot.f	/^1111   endif$/;"	l	subroutine:gaspot	file:
-1111	AMH/scltab.f	/^1111  endif !end of writing out test potential$/;"	l	subroutine:scltab	file:
-112	AMH/gaspot.f	/^  112             format(i3,5(1x,1pe10.3))$/;"	l	subroutine:gaspot	file:
-114	AMH/gaspot.f	/^  114    format(5(a5,1x,i5,2x))$/;"	l	subroutine:gaspot	file:
-115	AMH/rndcol.f	/^115    zprime(1)=(prcord(i501+1,1,i503,1)-nitcord(i501+1,1))\/1.47D0$/;"	l	subroutine:rndcol	file:
 115	dlsode.f	/^ 115    RWORK(I+LYH-1) = Y(I)$/;"	l	subroutine:DLSODE	file:
-118	AMH/initil.f	/^  118    format(\/'Hard-Sphere Radii'\/)$/;"	l	subroutine:initil	file:
-119	AMH/initil.f	/^  119    format(5(a4,1x,f5.2,2x))$/;"	l	subroutine:initil	file:
-12	AMH/savstr.f	/^12      continue$/;"	l	subroutine:savstr	file:
 12	EAMal.f	/^12       CONTINUE   $/;"	l	subroutine:EAMal	file:
 12	Farkas.f	/^12    continue$/;"	l	subroutine:splinegmin	file:
 12	bspt.F	/^12       CALL POTENTIAL(COORDS(:,MYNODE+1),GRAD, POTEL, .TRUE., .FALSE.)$/;"	l	subroutine:PTBASINSAMPLING	file:
@@ -368,7 +319,6 @@
 12	ptgrp.f	/^   12   CONTINUE$/;"	l	subroutine:PIKSR2	file:
 12	sort.f	/^12      continue$/;"	l	subroutine:Gsort	file:
 12	takestep.f	/^12       RANDOM=(DPRAND()-0.5D0)*2.0D0$/;"	l	subroutine:TAKESTEP	file:
-120	AMH/rndcol.f	/^120            phi=ran_num*1.75D0+3.49D0$/;"	l	subroutine:rndcol	file:
 120	Farkas.f	/^120   continue$/;"	l	subroutine:ALINIT	file:
 120	Farkas.f	/^120   continue$/;"	l	subroutine:NIINIT	file:
 120	JM.f	/^120   CONTINUE$/;"	l	subroutine:JM3C	file:
@@ -420,7 +370,6 @@
 13	odesd.f	/^13    continue$/;"	l	subroutine:mmid	file:
 13	odesd.f	/^13    continue$/;"	l	subroutine:rkck	file:
 13	quench.f	/^13       READ(91,'(A1)',END=14) DUMMY$/;"	l	subroutine:QUENCH	file:
-130	AMH/scltab.f	/^  130    format('Table ',i2,1x,4(1pe10.3,1x))$/;"	l	subroutine:scltab	file:
 130	Farkas.f	/^130   lfembed=i-1$/;"	l	subroutine:ALINIT	file:
 130	Farkas.f	/^130   lfembed=i-1$/;"	l	subroutine:NIINIT	file:
 130	dlsode.f	/^  130 CONTINUE$/;"	l	subroutine:DGBFA	file:
@@ -445,7 +394,6 @@
 130	welch.f	/^  130    continue$/;"	l	subroutine:dgeco	file:
 130	welch.f	/^  130    continue$/;"	l	subroutine:dgedi	file:
 131	io1.f	/^131      CONTINUE$/;"	l	subroutine:IO1	file:
-132	AMH/scltab.f	/^  132 format(\/4(3x,'sites',9x,'V',2x))$/;"	l	subroutine:scltab	file:
 1334	mc.F	/^1334     format(4(i8,1x),' nmres nmcrd numpro nmsnap')$/;"	l	subroutine:MC	file:
 1346	Natb.f	/^ 1346              vect(ij)=val$/;"	l	subroutine:entots	file:
 14	EAMal.f	/^14        CONTINUE$/;"	l	subroutine:EAMal	file:
@@ -479,8 +427,6 @@
 140	tn.f	/^140   IF (XW .LT. ZERO) Q = -Q$/;"	l	subroutine:GETPTC	file:
 140	welch.f	/^  140    continue$/;"	l	subroutine:dgedi	file:
 140	welch.f	/^  140 continue$/;"	l	subroutine:dgeco	file:
-141	AMH/initil.f	/^  141    format('actual # protein memories ',i4)$/;"	l	subroutine:initil	file:
-15	AMH/rep_contact.f90	/^15      continue$/;"	l	subroutine:rep_contact	file:
 15	Ackland_wrapper.f	/^15          CONTINUE$/;"	l	subroutine:ACK	file:
 15	JM.f	/^15       CONTINUE$/;"	l	subroutine:JMEC	file:
 15	dlsode.f	/^ 15     EWT(I) = RTOL(1)*ABS(YCUR(I)) + ATOL(1)$/;"	l	subroutine:DEWSET	file:
@@ -496,7 +442,6 @@
 15	odesd.f	/^15    continue$/;"	l	subroutine:rkck	file:
 15	ptgrp.f	/^15       CONTINUE$/;"	l	subroutine:MATMUL	file:
 15	tn.f	/^15    CONTINUE$/;"	l	subroutine:CNVTST	file:
-150	AMH/getmem.f	/^  150       format(a5,' zzz')$/;"	l	subroutine:getmem	file:
 150	dlsode.f	/^ 150    CONTINUE$/;"	l	subroutine:DLSODE	file:
 150	dlsode.f	/^ 150  DO 155 I = 1,L$/;"	l	subroutine:DSTODE	file:
 150	ljcapsidmodule.f90	/^150   CONTINUE$/;"	l	subroutine:SVERT	file:
@@ -517,10 +462,7 @@
 150	tn.f	/^150   A1 = A$/;"	l	subroutine:GETPTC	file:
 150	welch.f	/^  150    continue$/;"	l	subroutine:dgeco	file:
 150	welch.f	/^  150 continue$/;"	l	subroutine:dgedi	file:
-151	AMH/getmem.f	/^  151       format(i5,' xxx')$/;"	l	subroutine:getmem	file:
-151	AMH/initil.f	/^  151    format(\/'POTENTIAL PARAMETERS'\/)$/;"	l	subroutine:initil	file:
 155	dlsode.f	/^ 155    EL(I) = ELCO(I,NQ)$/;"	l	subroutine:DSTODE	file:
-1595	AMH/lookup.f	/^ 1595     continue$/;"	l	subroutine:lookup	file:
 16	fedor.f	/^   16   continue                                           $/;"	l	function:ut0	file:
 16	fedor.f	/^   16   continue                                           $/;"	l	function:ut01	file:
 16	fedor.f	/^   16 C(4,1)=2.d0$/;"	l	subroutine:CUBSPL	file:
@@ -561,9 +503,7 @@
 170	mylapack.f	/^  170 CONTINUE$/;"	l	subroutine:SCHCK5	file:
 170	ptgrp.f	/^170   CONTINUE$/;"	l	subroutine:EIG	file:
 170	tn.f	/^170   IF (STEP .LE. ZERO) A1 = STEP$/;"	l	subroutine:GETPTC	file:
-1724	AMH/initil.f	/^1724    format('Many-body factor ngomb=',f6.3)$/;"	l	subroutine:initil	file:
 175	dlsode.f	/^ 175  RH = MIN(RH,RMAX)$/;"	l	subroutine:DSTODE	file:
-177	AMH/gaspot.f	/^  177    format(\/'target protein ',a5,1x,i5)$/;"	l	subroutine:gaspot	file:
 18	fedor.f	/^   18   continue     $/;"	l	function:ut0	file:
 18	fedor.f	/^   18   continue     $/;"	l	function:ut01	file:
 18	fedor.f	/^   18 IF(N.EQ.2) GO TO 25$/;"	l	subroutine:CUBSPL	file:
@@ -590,11 +530,7 @@
 190	ptgrp.f	/^190         FORMAT(' The unique rotational axis is ',I1,'.')$/;"	l	subroutine:PTGRP	file:
 190	tn.f	/^190   STEP = TOL$/;"	l	subroutine:GETPTC	file:
 195	ljcapsidmodule.f90	/^195       DO WHILE (OVRLPT)$/;"	l	subroutine:TAKESTEPELPSD	file:
-1964	AMH/walesamh_interface.f90	/^1964     continue$/;"	l	subroutine:walesamh_interface	file:
 1964	finalio.f	/^1964        CONTINUE$/;"	l	subroutine:FINALIO	file:
-199	AMH/gentab.f	/^199     format(i5)$/;"	l	subroutine:gentab	file:
-199	AMH/qchrgmk.f	/^199            if (read_status.ne.0) then$/;"	l	subroutine:qchrgmk	file:
-2	AMH/qchrgmk.f	/^2         continue$/;"	l	subroutine:qchrgmk	file:
 2	EAMal.f	/^2        CONTINUE$/;"	l	subroutine:EAMal	file:
 2	brent.f	/^2       IF(ABS(D).GE.TOL1) THEN$/;"	l	function:BRENT	file:
 2	fedor.f	/^    2 CONTINUE$/;"	l	function:ar2UT0	file:
@@ -606,8 +542,6 @@
 2	pyg.f90	/^2        IF (ABS(D) >= TOL1) THEN ! Arrive here with d computed either from parabolic fit, or$/;"	l	subroutine:BRENTMIN	file:
 2	sort.f	/^2         arr(i+1,np)=a$/;"	l	subroutine:Gsort	file:
 2	takestepmsgb.f90	/^2        IF (ABS(D) .GE. TOL1) THEN ! Arrive here with d computed either from parabolic fit, or$/;"	l	subroutine:BRENTMINGB	file:
-20	AMH/SLARNV.f	/^   20       CONTINUE$/;"	l	subroutine:SLARNV	file:
-20	AMH/rep_contact.f90	/^20    continue$/;"	l	subroutine:rep_contact	file:
 20	Alglue.f	/^   20 k = (i+j)\/2$/;"	l	subroutine:seval	file:
 20	CSMinit.f90	/^20    CALL CSMPOTGRAD(X,AA,ENEW,.TRUE.,GSAVE)$/;"	l	subroutine:CSMMIN	file:
 20	EAMal.f	/^   20 k = (i+j)\/2$/;"	l	subroutine:seval1	file:
@@ -715,7 +649,6 @@
 20	welch.f	/^   20       continue$/;"	l	subroutine:dgedi	file:
 20	welch.f	/^   20 continue$/;"	l	subroutine:dgeco	file:
 20	zwischen.f	/^20    CONTINUE$/;"	l	subroutine:ZWISCHEN	file:
-200	AMH/gentab.f	/^200     continue$/;"	l	subroutine:gentab	file:
 200	dgetrf.f	/^  200 CONTINUE$/;"	l	function:ILAENV	file:
 200	dlsode.f	/^ 200  FAC = DVNORM (N, SAVF, EWT)$/;"	l	subroutine:DPREPJ	file:
 200	dlsode.f	/^ 200  IF (ABS(RC-1.0D0) .GT. CCMAX) IPUP = MITER$/;"	l	subroutine:DSTODE	file:
@@ -729,11 +662,6 @@
 200	mylapack.f	/^  200 CONTINUE$/;"	l	subroutine:SCHCK4	file:
 200	mylapack.f	/^  200 CONTINUE$/;"	l	subroutine:SCHCK5	file:
 200	tn.f	/^200   E = B-A$/;"	l	subroutine:GETPTC	file:
-2000	AMH/altpot_io.f90	/^2000    format()$/;"	l	subroutine:send_output_alt	file:
-201	AMH/gentab.f	/^201     continue$/;"	l	subroutine:gentab	file:
-201	AMH/scltab.f	/^201        format (25(i2,1x))$/;"	l	subroutine:scltab	file:
-202	AMH/gentab.f	/^202     continue$/;"	l	subroutine:gentab	file:
-202	AMH/scltab.f	/^202           format(8(f8.3,1x))$/;"	l	subroutine:scltab	file:
 21	EAMal.f	/^21      CONTINUE$/;"	l	subroutine:EAMal	file:
 21	fedor.f	/^   21 IF(N.EQ.3.AND.IBCBEG.EQ.0) GO TO 22$/;"	l	subroutine:CUBSPL	file:
 21	mc.F	/^21          FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)$/;"	l	subroutine:MC	file:
@@ -788,8 +716,6 @@
 230	mylapack.f	/^  230 CONTINUE$/;"	l	subroutine:SCHCK1	file:
 230	mylapack.f	/^  230 CONTINUE$/;"	l	subroutine:SCHCK4	file:
 235	mylbfgs.f	/^ 235              FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',\/,$/;"	l	subroutine:MYLBFGS	file:
-236	AMH/initil.f	/^  236    format(\/'number of specified coordinate types ',i3,$/;"	l	subroutine:initil	file:
-237	AMH/initil.f	/^  237    format(\/'number of specified tables ',i3,$/;"	l	subroutine:initil	file:
 24	JM.f	/^24              CONTINUE$/;"	l	subroutine:JMEC	file:
 24	fedor.f	/^   24 C(2,N)=3.d0*C(4,N)+C(3,N)\/2.d0*C(2,N)$/;"	l	subroutine:CUBSPL	file:
 240	dlsode.f	/^ 240  J = 3$/;"	l	subroutine:DPREPJ	file:
@@ -801,7 +727,6 @@
 240	mylapack.f	/^  240 CONTINUE$/;"	l	subroutine:SCHCK4	file:
 240	mylbfgs.f	/^ 240        FORMAT(' IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')$/;"	l	subroutine:MYLBFGS	file:
 245	dlsode.f	/^ 245  HMX = ABS(TN) + ABS(H)$/;"	l	subroutine:DLSODE	file:
-25	AMH/gentab.f	/^25      format(25(i2,1x))$/;"	l	subroutine:gentab	file:
 25	Ackland_wrapper.f	/^25       CONTINUE$/;"	l	subroutine:ACK	file:
 25	JM.f	/^25    CONTINUE$/;"	l	subroutine:JMEC	file:
 25	dlsode.f	/^ 25     EWT(I) = RTOL(1)*ABS(YCUR(I)) + ATOL(I)$/;"	l	subroutine:DEWSET	file:
@@ -817,11 +742,7 @@
 250	mylapack.f	/^  250     CONTINUE$/;"	l	subroutine:SCHCK5	file:
 250	mylapack.f	/^  250 CONTINUE$/;"	l	subroutine:SCHCK4	file:
 250	ptgrp.f	/^250         IF (IREF.NE.0) THEN$/;"	l	subroutine:PTGRP	file:
-2501	AMH/gentab.f	/^2501      enddo$/;"	l	subroutine:gentab	file:
-2502	AMH/gentab.f	/^2502       enddo$/;"	l	subroutine:gentab	file:
 2504	Natb.f	/^ 2504              CONTINUE    $/;"	l	subroutine:entots	file:
-251	AMH/initil.f	/^  251    format(\/'nmdif too small:nmstep ',i5,$/;"	l	subroutine:initil	file:
-255	AMH/initil.f	/^255            enddo$/;"	l	subroutine:initil	file:
 255	ptgrp.f	/^255            IF (IREF.NE.0) THEN$/;"	l	subroutine:PTGRP	file:
 256	ptgrp.f	/^256               IF (IREF.EQ.0) THEN$/;"	l	subroutine:PTGRP	file:
 2570	Natb.f	/^ 2570              grad(K)=GRD$/;"	l	subroutine:entots	file:
@@ -842,14 +763,12 @@
 2605	Natb.f	/^ 2605                 KKK=KKK+K      $/;"	l	subroutine:entots	file:
 2610	Natb.f	/^ 2610            IDER=IDER+NBAT$/;"	l	subroutine:entots	file:
 265	ptgrp.f	/^265               FORMAT(' The principal axis has order ',i3,\/,$/;"	l	subroutine:PTGRP	file:
-266	AMH/initil.f	/^266           enddo$/;"	l	subroutine:initil	file:
 266	ptgrp.f	/^266               FORMAT(' The principal axis has order ',i3,\/,$/;"	l	subroutine:PTGRP	file:
 2660	Natb.f	/^ 2660              DJ(L)=0.D0$/;"	l	subroutine:entots	file:
 2670	Natb.f	/^ 2670         IDER=IDER+NBAT$/;"	l	subroutine:entots	file:
 2680	Natb.f	/^ 2680        CONTINUE$/;"	l	subroutine:entots	file:
 2682	Natb.f	/^ 2682           IJQ=IJQ+3$/;"	l	subroutine:entots	file:
 27	ptgrp.f	/^27      CONTINUE$/;"	l	subroutine:SIAZ	file:
-270	AMH/initil.f	/^  270    format(\/'number of coordinate types ',i2,$/;"	l	subroutine:initil	file:
 270	dlsode.f	/^ 270  IF (MITER .NE. 0) GO TO 350$/;"	l	subroutine:DSTODE	file:
 270	dlsode.f	/^ 270  TOLSF = UROUND*DVNORM (N, RWORK(LYH), RWORK(LEWT))$/;"	l	subroutine:DLSODE	file:
 270	mylapack.f	/^  270         CONTINUE$/;"	l	subroutine:SCHCK1	file:
@@ -857,7 +776,6 @@
 270	mylapack.f	/^  270     CONTINUE$/;"	l	subroutine:SCHCK5	file:
 270	mylapack.f	/^  270 CONTINUE$/;"	l	subroutine:SCHCK3	file:
 270	mylapack.f	/^  270 CONTINUE$/;"	l	subroutine:SCHCK4	file:
-271	AMH/initil.f	/^  271    format('Ixns: ',i2,' coordinates ',4('(',i2,',',i2,')'))$/;"	l	subroutine:initil	file:
 28	fedor.f	/^   28 G=-1.d0\/C(4,N-1)$/;"	l	subroutine:CUBSPL	file:
 28	ptgrp.f	/^28         CONTINUE$/;"	l	subroutine:SIAZ	file:
 280	dlsode.f	/^ 280  IF ((TN + H) .NE. TN) GO TO 290$/;"	l	subroutine:DLSODE	file:
@@ -881,10 +799,6 @@
 3	pyg.f90	/^3     XMIN = X ! Arrive here ready to exit with best values.$/;"	l	subroutine:BRENTMIN	file:
 3	sort.f	/^3       continue$/;"	l	subroutine:Gsort	file:
 3	takestepmsgb.f90	/^3     XMIN = X ! Arrive here ready to exit with best values.$/;"	l	subroutine:BRENTMINGB	file:
-30	AMH/SLARNV.f	/^   30       CONTINUE$/;"	l	subroutine:SLARNV	file:
-30	AMH/gentab.f	/^30          format(8(f8.3,1x))$/;"	l	subroutine:gentab	file:
-30	AMH/potind.f	/^30     continue   $/;"	l	subroutine:potind	file:
-30	AMH/rep_contact.f90	/^30    continue$/;"	l	subroutine:rep_contact	file:
 30	Alglue.f	/^   30 dx = u - x(i)$/;"	l	subroutine:seval	file:
 30	CSMinit.f90	/^30    NPT=POINT*N$/;"	l	subroutine:CSMMIN	file:
 30	EAMal.f	/^   30 dx = u - x(i)$/;"	l	subroutine:seval1	file:
@@ -985,9 +899,6 @@
 300	mylapack.f	/^  300 CONTINUE$/;"	l	subroutine:SCHCK1	file:
 300	mylapack.f	/^  300 CONTINUE$/;"	l	subroutine:SCHCK2	file:
 300	mylapack.f	/^  300 CONTINUE$/;"	l	subroutine:SCHCK5	file:
-301	AMH/potind.f	/^301     continue$/;"	l	subroutine:potind	file:
-301	AMH/rndcol.f	/^301                continue        $/;"	l	subroutine:rndcol	file:
-302	AMH/rndcol.f	/^302             continue$/;"	l	subroutine:rndcol	file:
 3030	Natb.f	/^ 3030              format( 3(2x,i3),3(2x,f10.6))$/;"	l	subroutine:entots	file:
 31	fedor.f	/^   31    IHI = ILO$/;"	l	subroutine:INTERV	file:
 31	finalio.f	/^31                FORMAT('AM',3G25.15)$/;"	l	subroutine:FINALIO	file:
@@ -1009,7 +920,6 @@
 320	mylapack.f	/^  320 CONTINUE$/;"	l	subroutine:SCHCK2	file:
 320	mylapack.f	/^  320 CONTINUE$/;"	l	subroutine:SCHCK5	file:
 320	ptgrp.f	/^320      CONTINUE$/;"	l	subroutine:PTGRP	file:
-322	AMH/getmem.f	/^  322       format(\/'Getmem: Warning ',a5,' has invalid',$/;"	l	subroutine:getmem	file:
 33	fedor.f	/^   33 continue$/;"	l	function:ut	file:
 33	mc.F	/^33                FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' EVAP,REJ')$/;"	l	subroutine:MC	file:
 330	dlsode.f	/^ 330  DO 340 I = 1,N$/;"	l	subroutine:DSOLSY	file:
@@ -1035,7 +945,6 @@
 340	mylapack.f	/^  340 CONTINUE$/;"	l	subroutine:SCHCK1	file:
 340	mylapack.f	/^  340 CONTINUE$/;"	l	subroutine:SCHCK4	file:
 340	ptgrp.f	/^340      ZANGS=180.D0\/(1.0D0*IHIGH)$/;"	l	subroutine:PTGRP	file:
-345	AMH/scltab.f	/^  345 format(\/'Target Energies and Scaling Factors ',1pe10.3)$/;"	l	subroutine:scltab	file:
 345	dlsode.f	/^ 345  HMX = ABS(TN) + ABS(H)$/;"	l	subroutine:DLSODE	file:
 35	dlsode.f	/^ 35     C = IC$/;"	l	subroutine:DINTDY	file:
 35	dlsode.f	/^ 35     EWT(I) = RTOL(I)*ABS(YCUR(I)) + ATOL(1)$/;"	l	subroutine:DEWSET	file:
@@ -1048,9 +957,6 @@
 350	mylapack.f	/^  350 AVIGR = MAX(AVIGR,REAL(IGR))$/;"	l	subroutine:SCHCK4	file:
 350	mylapack.f	/^  350 CONTINUE$/;"	l	subroutine:SCHCK3	file:
 350	ptgrp.f	/^350            FORMAT(' S',I3,' axis exists.')$/;"	l	subroutine:PTGRP	file:
-3501	AMH/gentab.f	/^3501      enddo$/;"	l	subroutine:gentab	file:
-3502	AMH/gentab.f	/^3502       enddo$/;"	l	subroutine:gentab	file:
-355	AMH/getmem.f	/^  355       format(20(i3,1x))$/;"	l	subroutine:getmem	file:
 36	mc.F	/^36                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' REJ')$/;"	l	subroutine:MC	file:
 36	supermc.f	/^36             FORMAT('Super RAN,SPOTEL,SEPREV,NSSUC,NSFAIL=',3F15.7,2I6,' REJ')$/;"	l	subroutine:SUPERMC	file:
 360	dlsode.f	/^ 360    Y(I) = H*SAVF(I) - (YH(I,2) + ACOR(I))$/;"	l	subroutine:DSTODE	file:
@@ -1066,30 +972,22 @@
 370	mylapack.f	/^  370 CONTINUE$/;"	l	subroutine:SCHCK1	file:
 370	mylapack.f	/^  370 CONTINUE$/;"	l	subroutine:SCHCK2	file:
 370	mylapack.f	/^  370 CONTINUE$/;"	l	subroutine:SCHCK5	file:
-376	AMH/initil.f	/^  376      format('chiral pot on: ',' scaling factor ',f8.3)$/;"	l	subroutine:initil	file:
-378	AMH/initil.f	/^  378    format('ox pot on: ',' oxy scl ',f8.3,' rma scl ',f8.3)$/;"	l	subroutine:initil	file:
-379	AMH/initil.f	/^  379    format('beta-carbons')$/;"	l	subroutine:initil	file:
 38	ptgrp.f	/^38         CONTINUE$/;"	l	subroutine:SIAZ	file:
 380	dlsode.f	/^ 380    Y(I) = YH(I,1) + EL(1)*ACOR(I)$/;"	l	subroutine:DSTODE	file:
 380	mylapack.f	/^  380    CONTINUE$/;"	l	subroutine:SCHCK1	file:
 380	mylapack.f	/^  380    CONTINUE$/;"	l	subroutine:SCHCK2	file:
 380	mylapack.f	/^  380    CONTINUE$/;"	l	subroutine:SCHCK5	file:
 380	mylapack.f	/^  380 CONTINUE$/;"	l	subroutine:SCHCK3	file:
-389	AMH/initil.f	/^  389    format('alpha-carbons')$/;"	l	subroutine:initil	file:
 390	dlsode.f	/^ 390  IERSL = 1$/;"	l	subroutine:DSOLSY	file:
 390	mylapack.f	/^  390    CONTINUE$/;"	l	subroutine:SCHCK3	file:
 390	mylapack.f	/^  390 CONTINUE$/;"	l	subroutine:SCHCK1	file:
 390	mylapack.f	/^  390 CONTINUE$/;"	l	subroutine:SCHCK2	file:
 390	mylapack.f	/^  390 CONTINUE$/;"	l	subroutine:SCHCK5	file:
 390	ptgrp.f	/^390         FORMAT(' Horizontal plane of symmetry found.')$/;"	l	subroutine:PTGRP	file:
-4	AMH/qchrgmk.f	/^4         continue$/;"	l	subroutine:qchrgmk	file:
 4	fedor.f	/^    4 CONTINUE$/;"	l	function:ar2UT0	file:
 4	fedor.f	/^    4 continue$/;"	l	function:ut	file:
 4	odesd.f	/^4     x=xnew$/;"	l	subroutine:bsstep	file:
 4	sort.f	/^4       continue$/;"	l	subroutine:Gsort	file:
-40	AMH/SLARNV.f	/^   40 CONTINUE$/;"	l	subroutine:SLARNV	file:
-40	AMH/potind.f	/^40     continue$/;"	l	subroutine:potind	file:
-40	AMH/rep_contact.f90	/^40    continue$/;"	l	subroutine:rep_contact	file:
 40	EAMal.f	/^40      CONTINUE$/;"	l	subroutine:EAMal	file:
 40	Farkas.f	/^40       CONTINUE$/;"	l	subroutine:FARKAS	file:
 40	JM.f	/^40       CONTINUE$/;"	l	subroutine:JM2C	file:
@@ -1164,7 +1062,6 @@
 400	mylapack.f	/^  400 CONTINUE$/;"	l	subroutine:SCHCK3	file:
 400	mylapack.f	/^  400 CONTINUE$/;"	l	subroutine:SCHCK5	file:
 400	ptgrp.f	/^400            CONTINUE$/;"	l	subroutine:PTGRP	file:
-401	AMH/potind.f	/^401     continue$/;"	l	subroutine:potind	file:
 401	Natb.f	/^ 401           CONTINUE$/;"	l	subroutine:entots	file:
 41	fedor.f	/^   41   ILO = IHI$/;"	l	subroutine:INTERV	file:
 41	input.f	/^41    SIGN=-1D0$/;"	l	subroutine:READF	file:
@@ -1199,7 +1096,6 @@
 440	mylapack.f	/^  440 CONTINUE$/;"	l	subroutine:SCHCK2	file:
 440	mylapack.f	/^  440 CONTINUE$/;"	l	subroutine:SCHCK3	file:
 440	ptgrp.f	/^440         FORMAT(' ORBIT MATRIX:',(F10.6,\/))$/;"	l	subroutine:PTGRP	file:
-444	AMH/qchrgmk.f	/^444        format(f8.4)$/;"	l	subroutine:qchrgmk	file:
 445	dlsode.f	/^ 445    CONTINUE$/;"	l	subroutine:DSTODE	file:
 45	dlsode.f	/^ 45     EWT(I) = RTOL(I)*ABS(YCUR(I)) + ATOL(I)$/;"	l	subroutine:DEWSET	file:
 45	fedor.f	/^   45 IF (X .GE. XT(LXT))              GO TO 110$/;"	l	subroutine:INTERV	file:
@@ -1209,7 +1105,6 @@
 450	mylapack.f	/^  450 CONTINUE$/;"	l	subroutine:SCHCK1	file:
 450	mylapack.f	/^  450 CONTINUE$/;"	l	subroutine:SCHCK2	file:
 450	mylapack.f	/^  450 CONTINUE$/;"	l	subroutine:SCHCK3	file:
-454	AMH/initil.f	/^454          format(i5)$/;"	l	subroutine:initil	file:
 46	seed.f	/^46       FORMAT('LB',3F20.10)$/;"	l	subroutine:GSEED	file:
 460	mylapack.f	/^  460        CONTINUE$/;"	l	subroutine:SCHCK5	file:
 460	mylapack.f	/^  460 CONTINUE$/;"	l	subroutine:SCHCK1	file:
@@ -1223,12 +1118,9 @@
 480	mylapack.f	/^  480           CONTINUE$/;"	l	subroutine:SCHCK5	file:
 480	mylapack.f	/^  480 CONTINUE$/;"	l	subroutine:SCHCK2	file:
 480	ptgrp.f	/^480            FORMAT(2I3)$/;"	l	subroutine:PTGRP	file:
-490	AMH/savstr.f	/^490     continue$/;"	l	subroutine:savstr	file:
 490	dlsode.f	/^ 490    YH(I,LMAX) = ACOR(I)$/;"	l	subroutine:DSTODE	file:
 490	mylapack.f	/^  490        CONTINUE$/;"	l	subroutine:SCHCK5	file:
 490	mylapack.f	/^  490 CONTINUE$/;"	l	subroutine:SCHCK2	file:
-491	AMH/savstr.f	/^491        continue$/;"	l	subroutine:savstr	file:
-492	AMH/savstr.f	/^492           continue$/;"	l	subroutine:savstr	file:
 5	dlsode.f	/^    5 IX = 1$/;"	l	function:MYDDOT	file:
 5	dlsode.f	/^    5 IX = 1$/;"	l	subroutine:MYDAXPY	file:
 5	fedor.f	/^    5 continue$/;"	l	function:ar2UT0	file:
@@ -1239,9 +1131,6 @@
 5	sort.f	/^5       arr(l,np)=arr(j,np)$/;"	l	subroutine:Gsort	file:
 5	tn.f	/^5        T = UP(I) - X(I)$/;"	l	subroutine:STPMAX	file:
 5	tn.f	/^5        TOL = 1.D1 * EPSMCH * (DABS(UP(I)) + 1.D0)$/;"	l	subroutine:MODZ	file:
-50	AMH/Q_bias_seg_a.f	/^50    enddo    ! i$/;"	l	subroutine:Q_bias_seg_a	file:
-50	AMH/Q_bias_seg_b.f	/^50    enddo    ! i$/;"	l	subroutine:Q_bias_seg_b	file:
-50	AMH/potind.f	/^50          continue$/;"	l	subroutine:potind	file:
 50	EAMal.f	/^50      CONTINUE$/;"	l	subroutine:EAMal	file:
 50	Farkas.f	/^50    CONTINUE$/;"	l	subroutine:FARKAS	file:
 50	JM.f	/^50    CONTINUE$/;"	l	subroutine:JM2C	file:
@@ -1300,19 +1189,6 @@
 50	welch.f	/^   50    continue$/;"	l	subroutine:dgeco	file:
 50	welch.f	/^   50    continue$/;"	l	subroutine:dgedi	file:
 50	welch.f	/^   50    continue$/;"	l	subroutine:dgefa	file:
-500	AMH/force.f	/^  500 continue                        ! End of loop over proteins$/;"	l	subroutine:force	file:
-500	AMH/gaussv.f	/^  500 continue$/;"	l	subroutine:gaussv	file:
-500	AMH/gaussw.f	/^  500 continue$/;"	l	subroutine:gaussw	file:
-500	AMH/gengrd.f	/^  500 continue$/;"	l	subroutine:gengrd	file:
-500	AMH/gentab.f	/^500     continue$/;"	l	subroutine:gentab	file:
-500	AMH/getmem.f	/^  500  continue$/;"	l	subroutine:getmem	file:
-500	AMH/hprofl.f	/^  500 continue$/;"	l	subroutine:hprofl	file:
-500	AMH/oxy.f	/^500    continue$/;"	l	subroutine:oxy	file:
-500	AMH/potind.f	/^  500 continue$/;"	l	subroutine:potind	file:
-500	AMH/pttarg.f	/^  500 continue$/;"	l	subroutine:pttarg	file:
-500	AMH/qchrgmk.f	/^500     continue$/;"	l	subroutine:qchrgmk	file:
-500	AMH/restrt.f	/^500       continue$/;"	l	subroutine:restrt	file:
-500	AMH/savstr.f	/^  500       continue$/;"	l	subroutine:savstr	file:
 500	dgetrf.f	/^  500 CONTINUE$/;"	l	function:ILAENV	file:
 500	dlsode.f	/^ 500  KFLAG = KFLAG - 1$/;"	l	subroutine:DSTODE	file:
 500	dlsode.f	/^ 500  ML = IWM(1)$/;"	l	subroutine:DPREPJ	file:
@@ -1320,94 +1196,14 @@
 500	mylapack.f	/^  500     CONTINUE$/;"	l	subroutine:SCHCK5	file:
 500	mylapack.f	/^  500 CONTINUE$/;"	l	subroutine:SCHCK2	file:
 500	ptgrp.f	/^500      CONTINUE$/;"	l	subroutine:PTGRP	file:
-501	AMH/gaussv.f	/^  501 continue$/;"	l	subroutine:gaussv	file:
-501	AMH/gaussw.f	/^  501 continue$/;"	l	subroutine:gaussw	file:
-501	AMH/gengrd.f	/^  501 continue$/;"	l	subroutine:gengrd	file:
-501	AMH/gentab.f	/^501      enddo$/;"	l	subroutine:gentab	file:
-501	AMH/getmem.f	/^  501    continue$/;"	l	subroutine:getmem	file:
-501	AMH/gomb.f	/^501     enddo$/;"	l	subroutine:gomb	file:
-501	AMH/hprofl.f	/^  501 continue$/;"	l	subroutine:hprofl	file:
-501	AMH/lookup.f	/^501    continue$/;"	l	subroutine:lookup	file:
-501	AMH/oxy.f	/^501           continue$/;"	l	subroutine:oxy	file:
-501	AMH/potind.f	/^501    continue$/;"	l	subroutine:potind	file:
-501	AMH/qchrgmk.f	/^501      continue$/;"	l	subroutine:qchrgmk	file:
-501	AMH/rama.f	/^501        continue$/;"	l	subroutine:rama	file:
-501	AMH/restrt.f	/^  501          continue$/;"	l	subroutine:restrt	file:
-502	AMH/gaussv.f	/^  502 continue$/;"	l	subroutine:gaussv	file:
-502	AMH/gaussw.f	/^  502 continue$/;"	l	subroutine:gaussw	file:
-502	AMH/gengrd.f	/^  502 continue$/;"	l	subroutine:gengrd	file:
-502	AMH/potind.f	/^  502 continue$/;"	l	subroutine:potind	file:
-502	AMH/pttarg.f	/^  502 continue$/;"	l	subroutine:pttarg	file:
-502	AMH/qchrgmk.f	/^502            continue$/;"	l	subroutine:qchrgmk	file:
-502	AMH/restrt.f	/^502     continue ! do 502 i502=1,numprr$/;"	l	subroutine:restrt	file:
-502	AMH/savstr.f	/^  502 continue$/;"	l	subroutine:savstr	file:
-502	AMH/scltab.f	/^502      continue$/;"	l	subroutine:scltab	file:
-503	AMH/gaspot.f	/^  503          continue$/;"	l	subroutine:gaspot	file:
-503	AMH/gaussv.f	/^  503 continue$/;"	l	subroutine:gaussv	file:
-503	AMH/gaussw.f	/^  503 continue$/;"	l	subroutine:gaussw	file:
-503	AMH/gengrd.f	/^  503 continue$/;"	l	subroutine:gengrd	file:
-503	AMH/initil.f	/^  503    continue$/;"	l	subroutine:initil	file:
-503	AMH/oxy.f	/^503        continue$/;"	l	subroutine:oxy	file:
-503	AMH/pttarg.f	/^  503    continue$/;"	l	subroutine:pttarg	file:
-503	AMH/qchrgmk.f	/^503              continue$/;"	l	subroutine:qchrgmk	file:
-503	AMH/rama.f	/^503    continue$/;"	l	subroutine:rama	file:
-503	AMH/rndcol.f	/^ 503   continue$/;"	l	subroutine:rndcol	file:
-504	AMH/gaspot.f	/^  504             continue$/;"	l	subroutine:gaspot	file:
-504	AMH/gengrd.f	/^  504 continue$/;"	l	subroutine:gengrd	file:
-504	AMH/gomb.f	/^504   enddo$/;"	l	subroutine:gomb	file:
-504	AMH/oxy.f	/^504     continue$/;"	l	subroutine:oxy	file:
-504	AMH/pttarg.f	/^  504       continue$/;"	l	subroutine:pttarg	file:
-504	AMH/qchrgmk.f	/^504    continue$/;"	l	subroutine:qchrgmk	file:
-504	AMH/rama.f	/^504      continue$/;"	l	subroutine:rama	file:
-504	AMH/scltab.f	/^  504 continue$/;"	l	subroutine:scltab	file:
-505	AMH/gomb.f	/^  505     continue$/;"	l	subroutine:gomb	file:
-505	AMH/initil.f	/^  505    continue$/;"	l	subroutine:initil	file:
-505	AMH/lookup.f	/^  505        continue$/;"	l	subroutine:lookup	file:
-505	AMH/oxy.f	/^505    continue$/;"	l	subroutine:oxy	file:
-505	AMH/pttarg.f	/^  505 continue$/;"	l	subroutine:pttarg	file:
-505	AMH/scltab.f	/^  505          continue$/;"	l	subroutine:scltab	file:
-506	AMH/gomb.f	/^506     continue$/;"	l	subroutine:gomb	file:
-506	AMH/lookup.f	/^  506     continue$/;"	l	subroutine:lookup	file:
-506	AMH/oxy.f	/^506     continue$/;"	l	subroutine:oxy	file:
-506	AMH/rndcol.f	/^506              continue$/;"	l	subroutine:rndcol	file:
-506	AMH/scltab.f	/^  506    continue$/;"	l	subroutine:scltab	file:
-507	AMH/gaspot.f	/^  507          continue$/;"	l	subroutine:gaspot	file:
-507	AMH/harm_spring.f	/^ 507         continue$/;"	l	subroutine:harm_spring	file:
-507	AMH/oxy.f	/^507     continue$/;"	l	subroutine:oxy	file:
-507	AMH/rndcol.f	/^507        continue$/;"	l	subroutine:rndcol	file:
-507	AMH/scltab.f	/^507          continue$/;"	l	subroutine:scltab	file:
-508	AMH/scltab.f	/^  508 continue$/;"	l	subroutine:scltab	file:
-509	AMH/gaspot.f	/^  509 continue                                ! End of loop over memories$/;"	l	subroutine:gaspot	file:
-509	AMH/gomb.f	/^509    continue$/;"	l	subroutine:gomb	file:
-509	AMH/oxy.f	/^509          continue$/;"	l	subroutine:oxy	file:
-509	AMH/scltab.f	/^  509    continue$/;"	l	subroutine:scltab	file:
 51	input.f	/^51    KXSIGN=-1$/;"	l	subroutine:READF	file:
 51	minperm.f	/^   51    CONTINUE$/;"	l	subroutine:JOVOSAP	file:
-510	AMH/gomb.f	/^510     continue$/;"	l	subroutine:gomb	file:
-510	AMH/oxy.f	/^510             continue$/;"	l	subroutine:oxy	file:
-510	AMH/pttarg.f	/^  510    continue$/;"	l	subroutine:pttarg	file:
-510	AMH/qchrgmk.f	/^510     continue$/;"	l	subroutine:qchrgmk	file:
 510	dlsode.f	/^ 510      YH1(I) = YH1(I) - YH1(I+NYH)$/;"	l	subroutine:DSTODE	file:
 510	dlsode.f	/^ 510  EWTI = RWORK(LEWT+I-1)$/;"	l	subroutine:DLSODE	file:
 510	mylapack.f	/^  510 CONTINUE$/;"	l	subroutine:SCHCK2	file:
 510	mylapack.f	/^  510 CONTINUE$/;"	l	subroutine:SCHCK5	file:
 510	ptgrp.f	/^510      FORMAT(' The smallest non-unit orbit contains ',i3,' members.',\/,$/;"	l	subroutine:PTGRP	file:
-511	AMH/pttarg.f	/^  511       continue$/;"	l	subroutine:pttarg	file:
-511	AMH/scltab.f	/^  511 continue$/;"	l	subroutine:scltab	file:
-512	AMH/pttarg.f	/^  512 continue$/;"	l	subroutine:pttarg	file:
-512	AMH/scltab.f	/^  512 continue$/;"	l	subroutine:scltab	file:
-513	AMH/walesamh_interface.f90	/^513    continue$/;"	l	subroutine:walesamh_interface	file:
-514	AMH/gaspot.f	/^  514   continue$/;"	l	subroutine:gaspot	file:
-515	AMH/gaspot.f	/^  515     continue$/;"	l	subroutine:gaspot	file:
-515	AMH/lookup.f	/^  515    continue$/;"	l	subroutine:lookup	file:
-515	AMH/scltab.f	/^  515           continue$/;"	l	subroutine:scltab	file:
-515	AMH/ynorm.f	/^  515 continue$/;"	l	subroutine:ynorm	file:
 515	dlsode.f	/^ 515    CONTINUE$/;"	l	subroutine:DSTODE	file:
-516	AMH/gaspot.f	/^516          continue$/;"	l	subroutine:gaspot	file:
-516	AMH/scltab.f	/^  516       continue$/;"	l	subroutine:scltab	file:
-518	AMH/gaspot.f	/^  518 continue$/;"	l	subroutine:gaspot	file:
-518	AMH/oxy.f	/^518     continue$/;"	l	subroutine:oxy	file:
-519	AMH/gaspot.f	/^  519    continue                        ! End of loop over interactions$/;"	l	subroutine:gaspot	file:
 52	EAMal.f	/^52       CONTINUE$/;"	l	subroutine:EAMal	file:
 52	input.f	/^52    I=I+1$/;"	l	file:
 52	input.f	/^52    STATE=5$/;"	l	subroutine:READF	file:
@@ -1416,12 +1212,6 @@
 520	dlsode.f	/^ 520  RHUP = 0.0D0$/;"	l	subroutine:DSTODE	file:
 520	mylapack.f	/^  520 CONTINUE$/;"	l	subroutine:SCHCK5	file:
 520	ptgrp.f	/^520      FORMAT(' Other members of this orbit are: ',100I4)$/;"	l	subroutine:PTGRP	file:
-521	AMH/scltab.f	/^ 521    continue$/;"	l	subroutine:scltab	file:
-522	AMH/gaspot.f	/^  522               continue$/;"	l	subroutine:gaspot	file:
-522	AMH/scltab.f	/^ 522      continue$/;"	l	subroutine:scltab	file:
-523	AMH/gaspot.f	/^  523               continue$/;"	l	subroutine:gaspot	file:
-523	AMH/scltab.f	/^ 523            continue$/;"	l	subroutine:scltab	file:
-525	AMH/scltab.f	/^525            continue$/;"	l	subroutine:scltab	file:
 526	finalio.f	/^526         CONTINUE$/;"	l	subroutine:FINALIO	file:
 53	EAMal.f	/^53     CONTINUE$/;"	l	subroutine:EAMal	file:
 53	fedor.f	/^   53      IHI = MIDDLE$/;"	l	subroutine:INTERV	file:
@@ -1430,14 +1220,10 @@
 530	dlsode.f	/^ 530    SAVF(I) = ACOR(I) - YH(I,LMAX)$/;"	l	subroutine:DSTODE	file:
 530	dlsode.f	/^ 530  MSG = 'DLSODE-  At T(=R1) and step size H(=R2), the error'$/;"	l	subroutine:DLSODE	file:
 530	ptgrp.f	/^530               CONTINUE$/;"	l	subroutine:PTGRP	file:
-532	AMH/gaspot.f	/^  532          continue$/;"	l	subroutine:gaspot	file:
-534	AMH/gaspot.f	/^  534    continue$/;"	l	subroutine:gaspot	file:
 54	EAMal.f	/^54     CONTINUE$/;"	l	subroutine:EAMal	file:
-540	AMH/restrt.f	/^540          continue  !   do 540 grid_num=1,4$/;"	l	subroutine:restrt	file:
 540	dlsode.f	/^ 540        WM(II+I) = (FTEM(I) - SAVF(I))*FAC$/;"	l	subroutine:DPREPJ	file:
 540	dlsode.f	/^ 540  EXSM = 1.0D0\/L$/;"	l	subroutine:DSTODE	file:
 540	dlsode.f	/^ 540  MSG = 'DLSODE-  At T (=R1) and step size H (=R2), the    '$/;"	l	subroutine:DLSODE	file:
-544	AMH/gaspot.f	/^  544       continue$/;"	l	subroutine:gaspot	file:
 55	dlsode.f	/^ 55   R = H**(-K)$/;"	l	subroutine:DINTDY	file:
 55	fedor.f	/^   55 continue$/;"	l	function:ut	file:
 550	dlsode.f	/^ 550      CONTINUE$/;"	l	subroutine:DPREPJ	file:
@@ -1459,13 +1245,9 @@
 580	dlsode.f	/^ 580  DO 590 I = 1,N$/;"	l	subroutine:DLSODE	file:
 580	dlsode.f	/^ 580  NEWQ = NQ - 1$/;"	l	subroutine:DSTODE	file:
 580	ptgrp.f	/^580                  FORMAT(' Axis of order ',I1,' identified.')$/;"	l	subroutine:PTGRP	file:
-588	AMH/gaspot.f	/^ 588               enddo$/;"	l	subroutine:gaspot	file:
-589	AMH/gaspot.f	/^ 589                enddo$/;"	l	subroutine:gaspot	file:
 590	dlsode.f	/^ 590    Y(I) = RWORK(I+LYH-1)$/;"	l	subroutine:DLSODE	file:
 590	dlsode.f	/^ 590  NEWQ = L$/;"	l	subroutine:DSTODE	file:
 590	ptgrp.f	/^590                           CONTINUE$/;"	l	subroutine:PTGRP	file:
-595	AMH/lookup.f	/^  595     continue$/;"	l	subroutine:lookup	file:
-6	AMH/qchrgmk.f	/^6         continue$/;"	l	subroutine:qchrgmk	file:
 6	EAMal.f	/^6       CONTINUE$/;"	l	subroutine:EAMal	file:
 60	EAMal.f	/^60    CONTINUE$/;"	l	subroutine:EAMal	file:
 60	dgetri.f	/^   60 CONTINUE$/;"	l	subroutine:DGETRI	file:
@@ -1518,9 +1300,6 @@
 60	welch.f	/^   60       continue$/;"	l	subroutine:dgeco	file:
 60	welch.f	/^   60    continue$/;"	l	subroutine:dgedi	file:
 60	welch.f	/^   60 continue$/;"	l	subroutine:dgefa	file:
-600	AMH/getmem.f	/^600    continue$/;"	l	subroutine:getmem	file:
-600	AMH/rama.f	/^600        continue$/;"	l	subroutine:rama	file:
-600	AMH/rndcol.f	/^600        continue$/;"	l	subroutine:rndcol	file:
 600	dgetrf.f	/^  600 CONTINUE $/;"	l	function:ILAENV	file:
 600	dlsode.f	/^ 600    YH(I,NEWQ+1) = ACOR(I)*R$/;"	l	subroutine:DSTODE	file:
 600	ptgrp.f	/^600            CONTINUE$/;"	l	subroutine:PTGRP	file:
@@ -1529,37 +1308,26 @@
 603	dlsode.f	/^ 603  MSG = 'DLSODE-  ISTATE .GT. 1 but DLSODE not initialized '$/;"	l	subroutine:DLSODE	file:
 604	dlsode.f	/^ 604  MSG = 'DLSODE-  NEQ (=I1) .LT. 1     '$/;"	l	subroutine:DLSODE	file:
 605	dlsode.f	/^ 605  MSG = 'DLSODE-  ISTATE = 3 and NEQ increased (I1 to I2)  '$/;"	l	subroutine:DLSODE	file:
-606	AMH/lookup.f	/^  606        continue$/;"	l	subroutine:lookup	file:
-606	AMH/oxy.f	/^606     continue$/;"	l	subroutine:oxy	file:
 606	dlsode.f	/^ 606  MSG = 'DLSODE-  ITOL (=I1) illegal   '$/;"	l	subroutine:DLSODE	file:
-607	AMH/harm_spring.f	/^ 607         continue$/;"	l	subroutine:harm_spring	file:
 607	dlsode.f	/^ 607  MSG = 'DLSODE-  IOPT (=I1) illegal   '$/;"	l	subroutine:DLSODE	file:
 608	dlsode.f	/^ 608  MSG = 'DLSODE-  MF (=I1) illegal     '$/;"	l	subroutine:DLSODE	file:
-609	AMH/scltab.f	/^609     continue$/;"	l	subroutine:scltab	file:
 609	dlsode.f	/^ 609  MSG = 'DLSODE-  ML (=I1) illegal.. .LT.0 or .GE.NEQ (=I2)'$/;"	l	subroutine:DLSODE	file:
 61	finalio.f	/^61      FORMAT('ATOM',4X,i3,2X,A2,2X,A3,3X,i3,4X,F8.3,F8.3,F8.3,2X,'1.00',2X,'0.00',6X,'TPDB',1x,I3)$/;"	l	subroutine:FINALIO	file:
 61	minperm.f	/^   61    T=T+1$/;"	l	subroutine:JOVOSAP	file:
 61	ptgrp.f	/^61          CONTINUE$/;"	l	subroutine:PTGRP	file:
-610	AMH/oxy.f	/^610     continue$/;"	l	subroutine:oxy	file:
-610	AMH/rama.f	/^610        continue$/;"	l	subroutine:rama	file:
 610	dlsode.f	/^ 610  IALTH = 3$/;"	l	subroutine:DSTODE	file:
 610	dlsode.f	/^ 610  MSG = 'DLSODE-  MU (=I1) illegal.. .LT.0 or .GE.NEQ (=I2)'$/;"	l	subroutine:DLSODE	file:
 610	ptgrp.f	/^610         CONTINUE$/;"	l	subroutine:PTGRP	file:
-611	AMH/gaspot.f	/^611                format('targ_cons ',a5,' too large ',i4,$/;"	l	subroutine:gaspot	file:
 611	dlsode.f	/^ 611  MSG = 'DLSODE-  MAXORD (=I1) .LT. 0  '$/;"	l	subroutine:DLSODE	file:
-612	AMH/gaspot.f	/^612                format('connmres',i5,' .ne. nmres ',i5,' 612 gaspot')$/;"	l	subroutine:gaspot	file:
 612	dlsode.f	/^ 612  MSG = 'DLSODE-  MXSTEP (=I1) .LT. 0  '$/;"	l	subroutine:DLSODE	file:
-613	AMH/lookup.f	/^  613      continue $/;"	l	subroutine:lookup	file:
 613	dlsode.f	/^ 613  MSG = 'DLSODE-  MXHNIL (=I1) .LT. 0  '$/;"	l	subroutine:DLSODE	file:
 614	dlsode.f	/^ 614  MSG = 'DLSODE-  TOUT (=R1) behind T (=R2)      '$/;"	l	subroutine:DLSODE	file:
 615	dlsode.f	/^ 615  MSG = 'DLSODE-  HMAX (=R1) .LT. 0.0  '$/;"	l	subroutine:DLSODE	file:
-616	AMH/lookup.f	/^  616    continue$/;"	l	subroutine:lookup	file:
 616	dlsode.f	/^ 616  MSG = 'DLSODE-  HMIN (=R1) .LT. 0.0  '$/;"	l	subroutine:DLSODE	file:
 617	dlsode.f	/^ 617  CONTINUE$/;"	l	subroutine:DLSODE	file:
 618	dlsode.f	/^ 618  CONTINUE$/;"	l	subroutine:DLSODE	file:
 619	dlsode.f	/^ 619  MSG = 'DLSODE-  RTOL(I1) is R1 .LT. 0.0        '$/;"	l	subroutine:DLSODE	file:
 62	minperm.f	/^   62    CONTINUE$/;"	l	subroutine:JOVOSAP	file:
-620	AMH/rama.f	/^620          continue$/;"	l	subroutine:rama	file:
 620	dlsode.f	/^ 620  IF ((KFLAG .EQ. 0) .AND. (RH .LT. 1.1D0)) GO TO 610$/;"	l	subroutine:DSTODE	file:
 620	dlsode.f	/^ 620  MSG = 'DLSODE-  ATOL(I1) is R1 .LT. 0.0        '$/;"	l	subroutine:DLSODE	file:
 620	ptgrp.f	/^620      CONTINUE$/;"	l	subroutine:PTGRP	file:
@@ -1571,7 +1339,6 @@
 626	dlsode.f	/^ 626  MSG = 'DLSODE-  At start of problem, too much accuracy   '$/;"	l	subroutine:DLSODE	file:
 627	dlsode.f	/^ 627  MSG = 'DLSODE-  Trouble in DINTDY.  ITASK = I1, TOUT = R1'$/;"	l	subroutine:DLSODE	file:
 63	minperm.f	/^   63    CONTINUE$/;"	l	subroutine:JOVOSAP	file:
-630	AMH/rama.f	/^630            continue$/;"	l	subroutine:rama	file:
 630	dlsode.f	/^ 630  NQ = NEWQ$/;"	l	subroutine:DSTODE	file:
 630	ptgrp.f	/^630   ANG=180.D0$/;"	l	subroutine:PTGRP	file:
 632	finalio.f	/^632            FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1X))$/;"	l	subroutine:FINALIO	file:
@@ -1595,26 +1362,11 @@
 653	ptgrp.f	/^653            FORMAT(A80)$/;"	l	subroutine:PTGRP	file:
 654	mc.F	/^654      CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)$/;"	l	subroutine:NEWRES	file:
 660	dlsode.f	/^ 660  KFLAG = -1$/;"	l	subroutine:DSTODE	file:
-664	AMH/rndcol.f	/^664     continue$/;"	l	subroutine:rndcol	file:
-665	AMH/rndcol.f	/^665    format('ATOM    ',i3,'  CA  ',a3,'   ',i3,'    ',3(f8.3),$/;"	l	subroutine:rndcol	file:
-665	AMH/savstr.f	/^665        format('ATOM    ',i3,'  N   ', a3, '   ',i3,'    ',3(f8.3),$/;"	l	subroutine:savstr	file:
-666	AMH/oxy.f	/^666      continue$/;"	l	subroutine:oxy	file:
-666	AMH/savstr.f	/^666        format('ATOM    ',i3,'  CA  ', a3, '   ',i3,'    ',3(f8.3),$/;"	l	subroutine:savstr	file:
 666	JM.f	/^666      CLOSE(33)$/;"	l	subroutine:JMEC	file:
-667	AMH/savstr.f	/^667        format('ATOM    ',i3,'  C   ', a3, '   ',i3,'    ',3(f8.3),$/;"	l	subroutine:savstr	file:
-668	AMH/rndcol.f	/^668     format('ATOM    ',i3,'  CB  ALA   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)$/;"	l	subroutine:rndcol	file:
-668	AMH/savstr.f	/^668        format('ATOM    ',i3,'  O   ', a3, '   ',i3,'    ',3(f8.3),$/;"	l	subroutine:savstr	file:
-669	AMH/rndcol.f	/^669     format('ATOM    ',i3,'  N   ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)$/;"	l	subroutine:rndcol	file:
-669	AMH/savstr.f	/^669        format('ATOM    ',i3,'  CB  ', a3, '   ',i3,'    ',3(f8.3),$/;"	l	subroutine:savstr	file:
-67	AMH/restrt.f	/^   67 format(4(i8,1x))$/;"	l	subroutine:restrt	file:
 67	input.f	/^67    IF (W .EQ. '#INCLUDE') THEN$/;"	l	file:
-670	AMH/gaspot.f	/^670           continue$/;"	l	subroutine:gaspot	file:
-670	AMH/rndcol.f	/^670     format('ATOM    ',i3,'  O   ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)$/;"	l	subroutine:rndcol	file:
 670	dlsode.f	/^ 670  KFLAG = -2$/;"	l	subroutine:DSTODE	file:
-671	AMH/rndcol.f	/^671   format('ATOM    ',i3,'  C   ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)$/;"	l	subroutine:rndcol	file:
 680	dlsode.f	/^ 680  KFLAG = -3$/;"	l	subroutine:DSTODE	file:
 680	ptgrp.f	/^680      FORMAT(' The molecule possesses an inversion center. ')$/;"	l	subroutine:PTGRP	file:
-683	AMH/restrt.f	/^683          format(3(i6,1x),f8.4,1x,i5,' stuct snap t T Tid')$/;"	l	subroutine:restrt	file:
 683	finalio.f	/^683         FORMAT(3(I6,1X),F8.4,1X,I5,' STUCT SNAP T T TID')$/;"	l	subroutine:FINALIO	file:
 683	mc.F	/^683                  FORMAT(3(i6,1x),f8.4,1x,i5,' stuct snap t T Tid')$/;"	l	subroutine:MC	file:
 690	dlsode.f	/^ 690  RMAX = 10.0D0$/;"	l	subroutine:DSTODE	file:
@@ -1670,37 +1422,18 @@
 700	dgetrf.f	/^  700 CONTINUE$/;"	l	function:ILAENV	file:
 700	dlsode.f	/^ 700  ISTATE = -3$/;"	l	subroutine:DLSODE	file:
 700	dlsode.f	/^ 700  R = 1.0D0\/TESCO(2,NQU)$/;"	l	subroutine:DSTODE	file:
-707	AMH/harm_spring.f	/^ 707         continue$/;"	l	subroutine:harm_spring	file:
 71	input.f	/^71    KXIMP=KXIMP-1$/;"	l	subroutine:READF	file:
 71	minperm.f	/^   71    CONTINUE$/;"	l	subroutine:JOVOSAP	file:
 710	dlsode.f	/^ 710    ACOR(I) = ACOR(I)*R$/;"	l	subroutine:DSTODE	file:
-711	AMH/pttarg.f	/^  711       format(11(i3,1x))$/;"	l	subroutine:pttarg	file:
 72	input.f	/^72    AD=I$/;"	l	subroutine:READF	file:
-720	AMH/initil.f	/^  720    format('nummem too large',2(1x,i3))$/;"	l	subroutine:initil	file:
 720	dlsode.f	/^ 720  HOLD = H$/;"	l	subroutine:DSTODE	file:
-721	AMH/initil.f	/^  721    format('numpro too large',2(1x,i3))$/;"	l	subroutine:initil	file:
-722	AMH/initil.f	/^  722    format('nmres too large',2(1x,i3))$/;"	l	subroutine:initil	file:
-724	AMH/initil.f	/^724       format('foldstrt_max_a too large',2(1x,i3))$/;"	l	subroutine:initil	file:
-725	AMH/initil.f	/^725                 format('foldstrt_max_b too large',2(1x,i3))$/;"	l	subroutine:initil	file:
-726	AMH/initil.f	/^  726    format('maxs too large',2(1x,i3))$/;"	l	subroutine:initil	file:
-728	AMH/initil.f	/^  728    format(\/'incmov too small ',i3)$/;"	l	subroutine:initil	file:
 73	mc.F	/^73                   FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' TABOO')$/;"	l	subroutine:MC	file:
 75	seed.f	/^75    FORMAT('Coordinates:')$/;"	l	subroutine:GSEED	file:
 750	ptgrp.f	/^750      FORMAT(' The full molecular point group is ',A4,'.')$/;"	l	subroutine:PTGRP	file:
-76	AMH/restrt.f	/^76     format(4x,3(f8.3,1x),4x,3(f8.3,1x),4x, 3(f8.3,1x))    $/;"	l	subroutine:restrt	file:
 760	ptgrp.f	/^760   FORMAT(' Distance tolerance=',F12.5,' Inertia tolerance=',F12.5,' Orbit tolerance=',F12.5)  $/;"	l	subroutine:PTGRP	file:
-764	AMH/rndcol.f	/^764     continue$/;"	l	subroutine:rndcol	file:
-764	AMH/walesamh_initial.f	/^764    continue$/;"	l	subroutine:walesamh_initial	file:
-764	AMH/walesamh_interface.f90	/^764    continue$/;"	l	subroutine:walesamh_interface	file:
-765	AMH/rndcol.f	/^765     format('ATOM    ',i3,'  CA  ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)$/;"	l	subroutine:rndcol	file:
-768	AMH/rndcol.f	/^768     format('ATOM    ',i3,'  CB  ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)$/;"	l	subroutine:rndcol	file:
-77	AMH/qchrgmk.f	/^77        format(20(f8.5,1x))$/;"	l	subroutine:qchrgmk	file:
-770	AMH/rndcol.f	/^770     format('ATOM    ',i3,'  O   ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)$/;"	l	subroutine:rndcol	file:
 770	ptgrp.f	/^770   FORMAT(80('*'))$/;"	l	subroutine:PTGRP	file:
-777	AMH/lookup.f	/^  777     continue$/;"	l	subroutine:lookup	file:
 7777	ptmc.F	/^7777        RANDOM=DPRAND()$/;"	l	subroutine:PARALLELTEMPERING	file:
 790	ptgrp.f	/^790   FORMAT(' The largest Abelian subgroup of the full molecular point group is ',A4,'.')$/;"	l	subroutine:PTGRP	file:
-8	AMH/qchrgmk.f	/^8         continue$/;"	l	subroutine:qchrgmk	file:
 8	takestep.f	/^8        IF (NCORE(NP).GT.0) THEN$/;"	l	subroutine:TAKESTEP	file:
 80	Farkas.f	/^80    lfpair=i-1$/;"	l	subroutine:ALINIT	file:
 80	Farkas.f	/^80    lfpair=i-1$/;"	l	subroutine:NIINIT	file:
@@ -1756,7 +1489,6 @@
 800	tn.f	/^800   FORMAT(\/\/' NIT   NF   CG', 9X, 'F', 21X, 'GTG',\/\/)$/;"	l	subroutine:LMQN	file:
 800	tn.f	/^800   FORMAT(\/\/,' WARNING: TN ERROR CODE =', I3)$/;"	l	subroutine:TN	file:
 800	tn.f	/^800   FORMAT(\/\/\/' OUTPUT FROM LINEAR SEARCH')$/;"	l	subroutine:LSOUT	file:
-807	AMH/harm_spring.f	/^ 807         continue$/;"	l	subroutine:harm_spring	file:
 81	input.f	/^81    IF (I .EQ. 10) I=0$/;"	l	subroutine:READF	file:
 810	tn.f	/^810   FORMAT('  TOL AND EPS'\/2D25.14)$/;"	l	subroutine:LSOUT	file:
 810	tn.f	/^810   FORMAT(' ',I3,1X,I4,1X,I4,1X,1PD22.15,2X,1PD15.8)$/;"	l	subroutine:LMQN	file:
@@ -1771,7 +1503,6 @@
 850	tn.f	/^850   FORMAT(' ',\/,8X,'MODLAN TRUNCATED AFTER ',I3,' ITERATIONS',$/;"	l	subroutine:MODLNP	file:
 860	tn.f	/^860   FORMAT('  NEW ESTIMATE'\/2D25.14)$/;"	l	subroutine:LSOUT	file:
 860	tn.f	/^860   FORMAT(' PRECONDITIONING NOT POSITIVE-DEFINITE')$/;"	l	subroutine:MODLNP	file:
-865	AMH/rndcol.f	/^865     format('ATOM    ',i3,'  XA  ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00     TPDB ',i3)$/;"	l	subroutine:rndcol	file:
 870	tn.f	/^870   FORMAT('  ILOC AND ITEST'\/2I3)$/;"	l	subroutine:LSOUT	file:
 88	Q4.f	/^88       CONTINUE$/;"	l	subroutine:SHINIT	file:
 888	bspt.F	/^888      DO K=1,NATOMS ! COORDS have to be resaved because we have to use noreset to be able to calc distance $/;"	l	subroutine:PTBASINSAMPLING	file:
@@ -1811,7 +1542,6 @@
 90	tn.f	/^90    TWOTOL = TOL + TOL$/;"	l	subroutine:GETPTC	file:
 90	welch.f	/^   90       continue$/;"	l	subroutine:dgedi	file:
 90	welch.f	/^   90    continue$/;"	l	subroutine:dgeco	file:
-900	AMH/altpot_io.f90	/^900     if(ioer.ne.0)then$/;"	l	subroutine:read_input_alt	file:
 900	dgetrf.f	/^  900 CONTINUE$/;"	l	function:ILAENV	file:
 900	input.f	/^900   IF (CAT) THEN$/;"	l	file:
 9001	mylapack.f	/^ 9001 FORMAT (' IN SUBPROGRAM ',A,\/,'  M =',I4,', N = ',I4,\/,' INCX = ',$/;"	l	subroutine:SCHCK4	file:
@@ -1819,8 +1549,6 @@
 9001	mylapack.f	/^ 9001 FORMAT (' IN SUBPROGRAM ',A,\/,' TESTS ACTIVE WITH OPTION = ',A,\/,$/;"	l	subroutine:SCHCK2	file:
 9001	mylapack.f	/^ 9001 FORMAT (' IN SUBPROGRAM ',A,\/,' TESTS ACTIVE WITH OPTION = ',A,\/,$/;"	l	subroutine:SCHCK5	file:
 9001	mylapack.f	/^ 9001 FORMAT (' IN SUBPROGRAM ',A,\/,' TESTS ACTIVE WITH OPTIONS = ',$/;"	l	subroutine:SCHCK3	file:
-901	AMH/getmem.f	/^901     format(i5)$/;"	l	subroutine:getmem	file:
-901	AMH/potind.f	/^  901    continue $/;"	l	subroutine:potind	file:
 9011	mylapack.f	/^ 9011 FORMAT (' IN SUBPROGRAM ',A,\/,' ARGUMENT ',I2,$/;"	l	subroutine:SCHCK1	file:
 9011	mylapack.f	/^ 9011 FORMAT (' IN SUBPROGRAM ',A,\/,' ARGUMENT ',I2,$/;"	l	subroutine:SCHCK2	file:
 9011	mylapack.f	/^ 9011 FORMAT (' IN SUBPROGRAM ',A,\/,' ARGUMENT ',I2,$/;"	l	subroutine:SCHCK3	file:
@@ -1831,19 +1559,16 @@
 9021	mylapack.f	/^ 9021 FORMAT (' IN SUBPROGRAM ',A,\/,' ARGUMENT ',I2,$/;"	l	subroutine:SCHCK3	file:
 9021	mylapack.f	/^ 9021 FORMAT (' IN SUBPROGRAM ',A,\/,' ARGUMENT ',I2,$/;"	l	subroutine:SCHCK4	file:
 9021	mylapack.f	/^ 9021 FORMAT (' IN SUBPROGRAM ',A,\/,' ARGUMENT ',I2,$/;"	l	subroutine:SCHCK5	file:
-903	AMH/getmem.f	/^903     format(25(i2,1x))$/;"	l	subroutine:getmem	file:
 9031	mylapack.f	/^ 9031 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'RECEIVED A LOSS GRADE OF ', $/;"	l	subroutine:SCHCK1	file:
 9031	mylapack.f	/^ 9031 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'RECEIVED A LOSS GRADE OF ', $/;"	l	subroutine:SCHCK2	file:
 9031	mylapack.f	/^ 9031 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'RECEIVED A LOSS GRADE OF ', $/;"	l	subroutine:SCHCK3	file:
 9031	mylapack.f	/^ 9031 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'RECEIVED A LOSS GRADE OF ', $/;"	l	subroutine:SCHCK4	file:
 9031	mylapack.f	/^ 9031 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'RECEIVED A LOSS GRADE OF ', $/;"	l	subroutine:SCHCK5	file:
-904	AMH/gaspot.f	/^  904          format(i4,1x,a3,2x,4(3(i2,1x),1x))$/;"	l	subroutine:gaspot	file:
 9041	mylapack.f	/^ 9041 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'FAILED.')$/;"	l	subroutine:SCHCK1	file:
 9041	mylapack.f	/^ 9041 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'FAILED.')$/;"	l	subroutine:SCHCK2	file:
 9041	mylapack.f	/^ 9041 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'FAILED.')$/;"	l	subroutine:SCHCK3	file:
 9041	mylapack.f	/^ 9041 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'FAILED.')$/;"	l	subroutine:SCHCK4	file:
 9041	mylapack.f	/^ 9041 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'FAILED.')$/;"	l	subroutine:SCHCK5	file:
-905	AMH/gaspot.f	/^  905       format(\/'2nd structures for ',a5,2x,a5)$/;"	l	subroutine:gaspot	file:
 9051	mylapack.f	/^ 9051 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'NOT TESTED.')$/;"	l	subroutine:SCHCK1	file:
 9051	mylapack.f	/^ 9051 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'NOT TESTED.')$/;"	l	subroutine:SCHCK2	file:
 9051	mylapack.f	/^ 9051 FORMAT (1X,I2,' SUBPROGRAM ',A,T24,'NOT TESTED.')$/;"	l	subroutine:SCHCK3	file:
@@ -1857,21 +1582,10 @@
 95	lwotp.f90	/^95       DO WHILE (OVRLPT)$/;"	l	subroutine:TAKESTEPLWOTP	file:
 95	multisitepy.f90	/^95 DO WHILE(OVERLAPT)$/;"	l	subroutine:TAKESTEPMULTISITEPY	file:
 950	input.f	/^950   CHAR(L)=SPACE$/;"	l	file:
-965	AMH/rndcol.f	/^965     format('ATOM    ',i3,'  X0  ',a3,'   ',i3,'    ',3(f8.3),'  1.00  0.00      TPDB ',i3)$/;"	l	subroutine:rndcol	file:
-98	AMH/Rg_bias.f90	/^98          format(a,2x,f16.8)$/;"	l	subroutine:Rg_bias	file:
 98	Q4.f	/^98       CONTINUE$/;"	l	subroutine:SHINIT	file:
-981	AMH/initil.f	/^  981    format(\/'mxtemp ',i6,' too small ',i6)$/;"	l	subroutine:initil	file:
-99	AMH/Rg_bias.f90	/^99          format(a,2x,f12.8,2x,f12.8,2x,f12.8,2x,f12.8,2x,f12.8,2x,f12.8,2x,f12.8)$/;"	l	subroutine:Rg_bias	file:
-99	AMH/altpot_io.f90	/^99      if(read_status.ne.0)then   $/;"	l	subroutine:read_altgamma	file:
-99	AMH/qchrgmk.f	/^99         if (read_status.ne.0) then$/;"	l	subroutine:qchrgmk	file:
 99	Q4.f	/^99    CONTINUE$/;"	l	subroutine:SHINIT	file:
 99	fedor.f	/^   99 PPVALU = PPSUM$/;"	l	function:PPVALU	file:
 99	input.f	/^99    IF (NERROR .LE. 1) THEN$/;"	l	subroutine:READF	file:
-991	AMH/gentab.f	/^991     format(a38)$/;"	l	subroutine:gentab	file:
-999	AMH/altpot_io.f90	/^999      write(6,*)$/;"	l	subroutine:read_input_alt	file:
-999	AMH/altpot_io.f90	/^999     close (130)$/;"	l	subroutine:read_altgamma	file:
-999	AMH/gaspot.f	/^999            format(25(i2,1x))$/;"	l	subroutine:gaspot	file:
-999	AMH/initil.f	/^999               format(25(i2,1x))$/;"	l	subroutine:initil	file:
 999	ljcapsidmodule.f90	/^999    CONTINUE      $/;"	l	subroutine:OLDPARAMONOV	file:
 999	ljcapsidmodule.f90	/^999 CONTINUE$/;"	l	subroutine:GAYBERNE	file:
 9999	dgetrf.f	/^ 9999 FORMAT( ' ** On entry to ', A6, ' parameter number ', I2, ' had ',$/;"	l	subroutine:XERBLA	file:
@@ -2016,7 +1730,6 @@ AXTELL	commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL,/;"	v	module
 AXTELL	commons.o.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL,/;"	v	module:COMMONS
 A_BLN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(/;"	v	module:COMMONS
 A_BLN	commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(/;"	v	module:COMMONS
-Alimits_OB	AMH/globals_alt.f90	/^        double precision Alimits_OB(/;"	v	module:globals_alt
 Arad	modamber9.f90	/^          skmin,skmax,vfac,gbneckscale,v11,v12,v22,kevb,evbt,Arad /;"	v	module:MODAMBER9
 B	modconsts.f90	/^      DOUBL/;"	v	module:consts
 B	modconsts_trans_97.f90	/^      DOUBL/;"	v	module:consts_trans_97
@@ -2114,7 +1827,6 @@ BUILD_V_SITE	Ackland_metals.f90	/^       SUBROUTINE BUILD_V_SITE(/;"	s
 B_BLN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(:), B_BLN(/;"	v	module:COMMONS
 B_BLN	commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(:), B_BLN(/;"	v	module:COMMONS
 B_FACTOR	molinfo.f90	/^        DOUBLE PRECISION   :: B_FACTOR /;"	k	type:ATOM
-C	makefile	/^	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" $/;"	m
 CALCULATEDDISTANCE	basinsampling.f90	/^      FUNCTION CALCULATEDDISTANCE(/;"	f	subroutine:BASINSAMPLING
 CALC_GRADIENTBLN	BLN.f	/^      SUBROUTINE CALC_GRADIENTBLN(/;"	s
 CALC_INT_COORDSBLN	BLN.f	/^      SUBROUTINE CALC_INT_COORDSBLN(/;"	s
@@ -2340,7 +2052,6 @@ CURRENTIMP	commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, N
 CURRENTIMP	commons.o.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE, SHELLMOVEMAX, HPTGRP, NFIX, CURRENTIMP,/;"	v	module:COMMONS
 CUTOFF	commons.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(120,3,3), GMAX, CUTOFF,/;"	v	module:COMMONS
 CUTOFF	commons.o.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(120,3,3), GMAX, CUTOFF,/;"	v	module:COMMONS
-CUTOFF_CONT_LOW	AMH/amhglobals.f	/^      integer, parameter:: CUTOFF_CONT_LOW=/;"	v	module:amhglobals
 CUTT	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT,/;"	v	module:COMMONS
 CUTT	commons.o.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT,/;"	v	module:COMMONS
 CV	vgw.f90	/^  DOUBLE PRECISION :: Q(3*N), RCM(3), CV(/;"	v
@@ -2603,13 +2314,8 @@ DZTEST	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGS
 DZTEST	commons.o.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST, DBRENTT, DZTEST,/;"	v	module:COMMONS
 D_BLN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(:), B_BLN(:), C_BLN(:), D_BLN(/;"	v	module:COMMONS
 D_BLN	commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(:), B_BLN(:), C_BLN(:), D_BLN(/;"	v	module:COMMONS
-D_rg	AMH/amhglobals.f	/^      double precision D_rg,/;"	v	module:amhglobals
 DumpEveryNthQuench	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints, SaveNth, DumpEveryNthQuench,/;"	v	module:COMMONS
 DumpEveryNthQuench	commons.o.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints, SaveNth, DumpEveryNthQuench,/;"	v	module:COMMONS
-E1	ackland_mishin_cu.h	/^       COMMON \/param_pot_eam\/h,E1,E2,R01,R02,alpha1,alpha2,   &$/;"	v
-E1	ackland_mishin_cu.h	/^      double precision h,E1,E2,R01,R02,alpha1,alpha2$/;"	v
-E2	ackland_mishin_cu.h	/^       COMMON \/param_pot_eam\/h,E1,E2,R01,R02,alpha1,alpha2,   &$/;"	v
-E2	ackland_mishin_cu.h	/^      double precision h,E1,E2,R01,R02,alpha1,alpha2$/;"	v
 EAMALT	commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW, SUPERSTEP, EAMLJT, PBGLUET, TRACKDATAT, &$/;"	v	module:COMMONS
 EAMALT	commons.o.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW, SUPERSTEP, EAMLJT, PBGLUET, TRACKDATAT, &$/;"	v	module:COMMONS
 EAMLJ	EAMLJ_sub.f	/^      SUBROUTINE EAMLJ(/;"	s
@@ -2699,22 +2405,12 @@ E_WRITE	amhdummy.f	/^	SUBROUTINE E_WRITE(/;"	s	module:AMH_INTERFACES
 E_WRITE	amhdummy.f	/^       SUBROUTINE E_WRITE(/;"	s
 E_ZERO	vgw.f90	/^     DOUBLE PRECISION :: E_ZERO,/;"	v	module:VGWSP
 E_ZERO	vgw.f90	/^     DOUBLE PRECISION, SAVE :: LJK(6), LJG(6), LJG2(6), E_ZERO,/;"	v	module:VGW
-E_harm_springs	AMH/amhglobals.f	/^      double precision E_temp, E_harm_springs$/;"	v	module:amhglobals
-E_temp	AMH/amhglobals.f	/^      double precision E_temp,/;"	v	module:amhglobals
-E_write	AMH/E_write.f90	/^      subroutine E_write(/;"	s
 EllipsoidsAAtoPolar	ljcapsidmodule.f90	/^SUBROUTINE EllipsoidsAAtoPolar(/;"	s
 Energy2Index	tetherfunc.f90	/^      function Energy2Index(/;"	f	module:tetherfunc
 ExtrapolationPercent	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent,/;"	v	module:COMMONS
 ExtrapolationPercent	commons.o.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent,/;"	v	module:COMMONS
-F0	ackland_mishin_cu.h	/^               beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2        $/;"	v
-F0	ackland_mishin_cu.h	/^      double precision beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2$/;"	v
 F1COM	modf1com.f90	/^MODULE F1COM$/;"	m
 F1DIM	f1dim.f	/^      FUNCTION F1DIM(/;"	f
-F2	ackland_mishin_cu.h	/^               beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2        $/;"	v
-F2	ackland_mishin_cu.h	/^      double precision beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2$/;"	v
-F90_OBJECTS	AMH/makefile	/^F90_OBJECTS = $(F90_SOURCES:%.f90=%.o)$/;"	m
-F90_RAW_SOURCES	AMH/makefile	/^F90_RAW_SOURCES = $(wildcard *.f90)$/;"	m
-F90_SOURCES	AMH/makefile	/^F90_SOURCES = $(filter-out $(FMODULES_SOURCES),$(F90_RAW_SOURCES))$/;"	m
 FAC	Q4.f	/^      DOUBLE PRECISION FUNCTION FAC(/;"	f
 FACTOR	commons.f90	/^       DOUBLE PRECISION :: SIGMASQ, RANGESQ, FACTOR /;"	v	module:COMMONS
 FACTOR	commons.o.f90	/^       DOUBLE PRECISION :: SIGMASQ, RANGESQ, FACTOR /;"	v	module:COMMONS
@@ -2770,9 +2466,6 @@ FIXT	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT,/;"	v	module:C
 FIXT	commons.o.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT,/;"	v	module:COMMONS
 FIXTEMP	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP,/;"	v	module:COMMONS
 FIXTEMP	commons.o.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP,/;"	v	module:COMMONS
-FMODULES	AMH/makefile	/^FMODULES = altpot_interfaces.mod altpot_interfaces.mod  amhglobals.mod globals_alt.mod $/;"	m
-FMODULES_OBJECTS	AMH/makefile	/^FMODULES_OBJECTS = altpot_interfaces.o  amh_interfaces.o  globals_alt.o amhglobals.o$/;"	m
-FMODULES_SOURCES	AMH/makefile	/^FMODULES_SOURCES = amhglobals.f altpot_interfaces.f90  amh_interfaces.f90  globals_alt.f90 $/;"	m
 FNI	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST, DBRENTT, DZTEST, FNI,/;"	v	module:COMMONS
 FNI	commons.o.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST, DBRENTT, DZTEST, FNI,/;"	v	module:COMMONS
 FOH	commons.f90	/^      DOUBLE PRECISION :: FOH,/;"	v	module:COMMONS
@@ -2807,9 +2500,6 @@ FTD	commons.o.f90	/^      DOUBLE PRECISION :: FOH, FIH, FTD,/;"	v	module:COMMONS
 FTRANS	modcharmm.f90	/^      INTEGER :: CHMDFREQ, CHFREQ, FTRANS,/;"	v	module:MODCHARMM
 FUDGE	modconsts_trans_97.f90	/^     &                 ALPHA,VECT(4),EPS(4),EPSs,EPSp,FUDGE$/;"	v	module:consts_trans_97
 FUNC	func.f90	/^MODULE FUNC$/;"	m
-F_OBJECTS	AMH/makefile	/^F_OBJECTS = $(F_SOURCES:%.f=%.o)$/;"	m
-F_RAW_SOURCES	AMH/makefile	/^F_RAW_SOURCES = $(wildcard *.f)$/;"	m
-F_SOURCES	AMH/makefile	/^F_SOURCES = $(filter-out $(FMODULES_SOURCES),$(F_RAW_SOURCES))$/;"	m
 Fembed	Ackland_metals.f90	/^        double precision function Fembed(/;"	f
 Fembed_d	Ackland_metals.f90	/^        double precision function Fembed_d(/;"	f
 Fembed_dd	Ackland_metals.f90	/^        double precision function Fembed_dd(/;"	f
@@ -2879,7 +2569,6 @@ GEMRC	commons.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, D
 GEMRC	commons.o.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU, EFIELD, GEMRC,/;"	v	module:COMMONS
 GEMT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT,/;"	v	module:COMMONS
 GEMT	commons.o.f90	/^     &        GBT, GBDT, GBDPT, GEMT,/;"	v	module:COMMONS
-GENFFILES	makefile	/^GENFFILES = porfuncs.f90 dv.f90 mc.f ptmc.f bspt.f main.f $/;"	m
 GETA	input.f	/^      SUBROUTINE GETA(/;"	s
 GETDISPLACEMENT	basinsampling.f90	/^      REAL(8) FUNCTION GETDISPLACEMENT(/;"	f	subroutine:BASINSAMPLING
 GETF	input.f	/^      SUBROUTINE GETF(/;"	s
@@ -2981,7 +2670,6 @@ IHT	commons.f90	/^      LOGICAL :: FIELDT, OHT, IHT,/;"	v	module:COMMONS
 IHT	commons.o.f90	/^      LOGICAL :: FIELDT, OHT, IHT,/;"	v	module:COMMONS
 ILAENV	dgetrf.f	/^      INTEGER          FUNCTION ILAENV(/;"	f
 INBLK	input.f	/^      BLOCK DATA INBLK$/;"	b
-INCPATH	makefile	/^INCPATH = $(PPATH)\/..\/INCLUDE\/$/;"	m
 INERTIA	ptgrp.f	/^      SUBROUTINE INERTIA(/;"	s
 INFILE	commons.f90	/^      CHARACTER(LEN=80) :: INFILE=/;"	v	module:COMMONS
 INFILE	commons.o.f90	/^      CHARACTER(LEN=80) :: INFILE=/;"	v	module:COMMONS
@@ -3058,7 +2746,6 @@ JMEC	JM.f	/^      SUBROUTINE JMEC(/;"	s
 JMT	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID, Q4T, MPIT, JMT,/;"	v	module:COMMONS
 JMT	commons.o.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID, Q4T, MPIT, JMT,/;"	v	module:COMMONS
 JOVOSAP	minperm.f	/^      SUBROUTINE JOVOSAP(/;"	s
-JP	main.f90	/^      INTEGER J1,J2, JP,/;"	v	program:GMIN
 JUMPINT	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ, BLOCK, JUMPINT,/;"	v	module:COMMONS
 JUMPINT	commons.o.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ, BLOCK, JUMPINT,/;"	v	module:COMMONS
 JUMPM	mc.F	/^      SUBROUTINE JUMPM(/;"	s
@@ -3293,7 +2980,6 @@ MOVABLEATOMST	commons.f90	/^     &        AMBERT, RANDOMSEEDT, PYGPERIODICT, LJC
 MOVABLEATOMST	commons.o.f90	/^     &        AMBERT, RANDOMSEEDT, PYGPERIODICT, LJCAPSIDT, PYBINARYT, SWAPMOVEST, MOVABLEATOMST,/;"	v	module:COMMONS
 MOVESHELLT	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT, MOVESHELLT,/;"	v	module:COMMONS
 MOVESHELLT	commons.o.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT, MOVESHELLT,/;"	v	module:COMMONS
-MPIERR	main.f90	/^      INTEGER J1,J2, JP, MPIERR,/;"	v	program:GMIN
 MPIT	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID, Q4T, MPIT,/;"	v	module:COMMONS
 MPIT	commons.o.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID, Q4T, MPIT,/;"	v	module:COMMONS
 MREQ	commons.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU, EFIELD, GEMRC, MREQ,/;"	v	module:COMMONS
@@ -3392,7 +3078,6 @@ MYSDT	commons.o.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT, MSTRANST, S
 MYUNIT	commons.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT, MYUNIT,/;"	v	module:COMMONS
 MYUNIT	commons.o.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT, MYUNIT,/;"	v	module:COMMONS
 MYUPCASE	input.f	/^      SUBROUTINE MYUPCASE(/;"	s
-M_rg	AMH/amhglobals.f	/^      double precision D_rg, T_rg, delR_rg, M_rg,/;"	v	module:amhglobals
 MaximalTemperature	commons.f90	/^     &                 MinimalTemperature, MaximalTemperature,/;"	v	module:COMMONS
 MaximalTemperature	commons.o.f90	/^     &                 MinimalTemperature, MaximalTemperature,/;"	v	module:COMMONS
 Mfunc	Ackland_metals.f90	/^	double precision function Mfunc(/;"	f
@@ -3437,7 +3122,7 @@ NDONTMOVE	commons.f90	/^      INTEGER :: NDONTMOVE,/;"	v	module:COMMONS
 NDONTMOVE	commons.o.f90	/^      INTEGER :: NDONTMOVE,/;"	v	module:COMMONS
 NDUMMY	main.f90	/^      INTEGER, ALLOCATABLE :: NDUMMY(/;"	v	program:GMIN
 NDUMMY2	main.f90	/^      INTEGER, ALLOCATABLE :: NDUMMY(:), NDUMMY2(/;"	v	program:GMIN
-NDUMMY3	main.f90	/^      INTEGER J1,J2, JP, MPIERR, NDUMMY3,/;"	v	program:GMIN
+NDUMMY3	main.f90	/^      INTEGER J1,J2,NDUMMY3,/;"	v	program:GMIN
 NEGVEC	tn.f	/^      SUBROUTINE NEGVEC(/;"	s
 NENRPER	commons.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER,/;"	v	module:COMMONS
 NENRPER	commons.o.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER,/;"	v	module:COMMONS
@@ -3510,8 +3195,6 @@ NOPHIPSIT	modcharmm.f90	/^      LOGICAL :: DAESTAT, NOPHIPSIT,/;"	v	module:MODCH
 NORESET	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46, NORESET,/;"	v	module:COMMONS
 NORESET	commons.o.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46, NORESET,/;"	v	module:COMMONS
 NORMAL	ptgrp.f	/^      SUBROUTINE NORMAL(/;"	s
-NOTUSEDSOURCE	makefile	/^NOTUSEDSOURCE= io_sanity.f90 molinfo.f90 transforms.f90$/;"	m
-NO_zero	AMH/amhglobals.f	/^        double precision sigma_h,sigma_NO,ho_zero,NO_zero$/;"	v	module:amhglobals
 NPAHT	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT,/;"	v	module:COMMONS
 NPAHT	commons.o.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT,/;"	v	module:COMMONS
 NPAIRS	commons.f90	/^      INTEGER :: NPAIRS$/;"	v	module:COMMONS
@@ -3526,7 +3209,7 @@ NPHIPSI	modamber9.f90	/^integer, dimension(:), allocatable :: NPHIPSI$/;"	v	modu
 NPHIPSI	modcharmm.f90	/^      INTEGER, DIMENSION(:), ALLOCATABLE  :: NPHIPSI,/;"	v	module:MODCHARMM
 NPS	commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS,/;"	v	module:COMMONS
 NPS	commons.o.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS,/;"	v	module:COMMONS
-NPTOTAL	main.f90	/^      INTEGER J1,J2, JP, MPIERR, NDUMMY3,NPTOTAL$/;"	v	program:GMIN
+NPTOTAL	main.f90	/^      INTEGER J1,J2,NDUMMY3,NPTOTAL$/;"	v	program:GMIN
 NPYSITE	commons.f90	/^      INTEGER  NGBSITE, NPYSITE,/;"	v	module:COMMONS
 NPYSITE	commons.o.f90	/^      INTEGER  NGBSITE, NPYSITE,/;"	v	module:COMMONS
 NQ	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ,/;"	v	module:COMMONS
@@ -3611,8 +3294,6 @@ NumberOfTrajectories	commons.f90	/^     &        NINTS, NumberOfTrajectories,/;"
 NumberOfTrajectories	commons.o.f90	/^     &        NINTS, NumberOfTrajectories,/;"	v	module:COMMONS
 OBJCTF	pyg.f90	/^      SUBROUTINE OBJCTF(/;"	s
 OBJCTFGB	takestepmsgb.f90	/^      SUBROUTINE OBJCTFGB(/;"	s
-OB_density	AMH/globals_alt.f90	/^        double precision OB_density(/;"	v	module:globals_alt
-OB_dns_count	AMH/globals_alt.f90	/^        double precision OB_density(max_letters,n_OB_wells),OB_dns_count$/;"	v	module:globals_alt
 OCCUPANCY	molinfo.f90	/^        DOUBLE PRECISION   :: OCCUPANCY /;"	k	type:ATOM
 ODDCHARGE	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP, DISTFAC, ODDCHARGE,/;"	v	module:COMMONS
 ODDCHARGE	commons.o.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP, DISTFAC, ODDCHARGE,/;"	v	module:COMMONS
@@ -3771,10 +3452,8 @@ POTDAT	Pbglue.f	294;"	c
 POTDAT	Pbglue.f	325;"	c
 POTEL	main.f90	/^      DOUBLE PRECISION POTEL$/;"	v	program:GMIN
 POTENTIAL	potential.f	/^      SUBROUTINE POTENTIAL(/;"	s
-PPATH	makefile	/^PPATH=$(PWD)$/;"	m
 PPVALU	fedor.f	/^      DOUBLE PRECISION FUNCTION PPVALU(/;"	f
 PRC60	PachecoC60.f	/^      SUBROUTINE PRC60(/;"	s
-PROGNAME	makefile	/^PROGNAME=GMIN$/;"	m
 PROGRESS	commons.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS,/;"	v	module:COMMONS
 PROGRESS	commons.o.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS,/;"	v	module:COMMONS
 PROJ	commons.f90	/^     &        FRAUSIT, ANGST, SELFT, STEPOUT, WENZEL, THRESHOLDT, THOMSONT, MULLERBROWNT, CHARMMENERGIES, &$/;"	v	module:COMMONS
@@ -3875,12 +3554,6 @@ PYSWAP	commons.o.f90	/^      INTEGER  NGBSITE, NPYSITE, PYBINARYTYPE1, PYSWAP(/;
 PerturbGeometry	tetherfunc.f90	/^      function PerturbGeometry(/;"	f	module:tetherfunc
 PrintXyz	tetherfunc.f90	/^      subroutine PrintXyz(/;"	s	module:tetherfunc
 Q	vgw.f90	/^  DOUBLE PRECISION :: Q(/;"	v
-Q0_a	AMH/amhglobals.f	/^     *           width_Qexp_a,Q0_a,/;"	v	module:amhglobals
-Q0_b	AMH/amhglobals.f	/^      double precision        width_Qexp_b, Q0_b,/;"	v	module:amhglobals
-Q0_inc_a	AMH/amhglobals.f	/^     *           Q0_safe_a, Q0_safe_b,$/;"	v	module:amhglobals
-Q0_inc_b	AMH/amhglobals.f	/^     *           Q0_inc_a,Q0_inc_b,/;"	v	module:amhglobals
-Q0_safe_a	AMH/amhglobals.f	/^     *           width_Qexp_a,Q0_a,Q_weight_a,Q_clip_a,$/;"	v	module:amhglobals
-Q0_safe_b	AMH/amhglobals.f	/^     *           Q0_safe_a, Q0_safe_b,/;"	v	module:amhglobals
 Q4	Q4.f	/^      DOUBLE PRECISION FUNCTION Q4(/;"	f
 Q4C	cgmin.f	39;"	c	subroutine:CGMIN
 Q4C	mc.F	40;"	c	subroutine:MC
@@ -3921,26 +3594,7 @@ QUENCHDOS	commons.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT, FST, DEC
 QUENCHDOS	commons.o.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT, FST, DECAY, COOP, FIXBIN, GAUSST, QUENCHDOS,/;"	v	module:COMMONS
 QUENCHFRQ	commons.f90	/^     &        NSUPER, NSACCEPT, NSUPERSTEP, GMODES, DUMPXYZUNIT, DUMPVUNIT, QUENCHFRQ,/;"	v	module:COMMONS
 QUENCHFRQ	commons.o.f90	/^     &        NSUPER, NSACCEPT, NSUPERSTEP, GMODES, DUMPXYZUNIT, DUMPVUNIT, QUENCHFRQ,/;"	v	module:COMMONS
-Q_bias_seg_a	AMH/Q_bias_seg_a.f	/^      subroutine Q_bias_seg_a(/;"	s
-Q_bias_seg_b	AMH/Q_bias_seg_b.f	/^      subroutine Q_bias_seg_b(/;"	s
-Q_clip_a	AMH/amhglobals.f	/^     *           width_Qexp_a,Q0_a,Q_weight_a,Q_clip_a,/;"	v	module:amhglobals
-Q_clip_b	AMH/amhglobals.f	/^      double precision        width_Qexp_b, Q0_b,Q_weight_b,Q_clip_b$/;"	v	module:amhglobals
-Q_ij_a	AMH/amhglobals.f	/^       double precision del_r_a(1:maxsiz),$/;"	v	module:amhglobals
-Q_ij_b	AMH/amhglobals.f	/^       double precision del_r_b(1:maxsiz),$/;"	v	module:amhglobals
-Q_weight_a	AMH/amhglobals.f	/^     *           width_Qexp_a,Q0_a,Q_weight_a,/;"	v	module:amhglobals
-Q_weight_b	AMH/amhglobals.f	/^      double precision        width_Qexp_b, Q0_b,Q_weight_b,/;"	v	module:amhglobals
-Qbiaspoly_a	AMH/amhglobals.f	/^     *           biaspoly(1:100),Qbiaspoly_a(/;"	v	module:amhglobals
-Qbiaspoly_b	AMH/amhglobals.f	/^      double precision   Qbiaspoly_b(/;"	v	module:amhglobals
-Qvalue_a	AMH/amhglobals.f	/^     *           Q0_inc_a,Q0_inc_b,Qvalue_a,/;"	v	module:amhglobals
-Qvalue_b	AMH/amhglobals.f	/^     *           Q0_inc_a,Q0_inc_b,Qvalue_a,Qvalue_b$/;"	v	module:amhglobals
 R	dist.f90	/^DOUBLE PRE/;"	v	module:distance
-R01	ackland_mishin_cu.h	/^       COMMON \/param_pot_eam\/h,E1,E2,R01,R02,alpha1,alpha2,   &$/;"	v
-R01	ackland_mishin_cu.h	/^      double precision h,E1,E2,R01,R02,alpha1,alpha2$/;"	v
-R02	ackland_mishin_cu.h	/^       COMMON \/param_pot_eam\/h,E1,E2,R01,R02,alpha1,alpha2,   &$/;"	v
-R02	ackland_mishin_cu.h	/^      double precision h,E1,E2,R01,R02,alpha1,alpha2$/;"	v
-R03	ackland_mishin_cu.h	/^               dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04,             &$/;"	v
-R03	ackland_mishin_cu.h	/^      double precision dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04$/;"	v
-R04	ackland_mishin_cu.h	/^               dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04,             &$/;"	v
 RAD	rad.f	/^      SUBROUTINE RAD(/;"	s
 RAD	vgw.f90	/^  DOUBLE PRECISION :: Q(3*N), RCM(3), CV(3), CR, RAD$/;"	v
 RADIFT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT,/;"	v	module:COMMONS
@@ -4085,23 +3739,7 @@ ROTPSELECT	modamber9.f90	/^      DOUBLE PRECISION :: ROTPSELECT,/;"	v	module:MOD
 ROTXZ	orient.f	/^      SUBROUTINE ROTXZ(/;"	s
 ROTZT	modcharmm.f90	/^      LOGICAL :: MAKEOLIGOT, MAKEOLIGOSTART, INITROT, TRANSXYT, ROTZT$/;"	v	module:MODCHARMM
 RPRO	modcharmm.f90	/^      DOUBLE PRECISION :: RPRO,/;"	v	module:MODCHARMM
-Rg_bias	AMH/Rg_bias.f90	/^      subroutine Rg_bias(/;"	s
-Rg_biaspoly	AMH/amhglobals.f	/^      double precision Rg_biaspoly(/;"	v	module:amhglobals
-Ro	ackland_sma.h	/^       COMMON \/param_ref_sma\/Ro,delta$/;"	v
-Ro	ackland_sma.h	/^       double precision Ro,delta,a_r,p,b_a,q,alpha$/;"	v
-Rs1	ackland_mishin_cu.h	/^               dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04,             &$/;"	v
-Rs1	ackland_mishin_cu.h	/^      double precision dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04$/;"	v
-Rs2	ackland_mishin_cu.h	/^               dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04,             &$/;"	v
-Rs2	ackland_mishin_cu.h	/^      double precision dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04$/;"	v
-Rs3	ackland_mishin_cu.h	/^               dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04,             &$/;"	v
-Rs3	ackland_mishin_cu.h	/^      double precision dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04$/;"	v
-S1	ackland_mishin_cu.h	/^               dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04,             &$/;"	v
-S1	ackland_mishin_cu.h	/^      double precision dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04$/;"	v
-S2	ackland_mishin_cu.h	/^               dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04,             &$/;"	v
-S2	ackland_mishin_cu.h	/^      double precision dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04$/;"	v
 S2	dist.f90	/^DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: R, S2,/;"	v	module:distance
-S3	ackland_mishin_cu.h	/^               dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04,             &$/;"	v
-S3	ackland_mishin_cu.h	/^      double precision dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04$/;"	v
 SACCRAT	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT,/;"	v	module:COMMONS
 SACCRAT	commons.o.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT,/;"	v	module:COMMONS
 SAVEBINSTRUCTURES	basinsampling.f90	/^    SUBROUTINE SAVEBINSTRUCTURES(/;"	s	subroutine:BASINSAMPLING
@@ -4180,8 +3818,6 @@ SITE	commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: SITE(/;"	v	module:CO
 SITEBF	multisitepy.f90	/^      SUBROUTINE SITEBF /;"	s
 SITECOORDS	pymodule.f90	/^       DOUBLE PRECISION, ALLOCATABLE :: PST(:,:),OST(:,:),ELLST1(:,:),ELLST2(:,:),ELLMAT(:,:,:),SITECOORDS(/;"	v	module:PYMODULE
 SKIPBL	input.f	/^      LOGICAL SKIPBL,/;"	v	block data:INBLK
-SLARNV	AMH/SLARNV.f	/^      SUBROUTINE SLARNV(/;"	s
-SLARUV	AMH/SLARUV.f	/^      SUBROUTINE SLARUV(/;"	s
 SMAKE	mylapack.f	/^      SUBROUTINE SMAKE(/;"	s
 SMESSG	mylapack.f	/^      SUBROUTINE SMESSG(/;"	s
 SMINATOMA	modamber9.f90	/^INTEGER :: SMINATOMA,/;"	v	module:MODAMBER9
@@ -4191,7 +3827,6 @@ SMINDISTSTART	modamber9.f90	/^DOUBLE PRECISION :: SMINK, SMINKINC, SMINDISTSTART
 SMINK	modamber9.f90	/^DOUBLE PRECISION :: SMINK,/;"	v	module:MODAMBER9
 SMINKCURRENT	modamber9.f90	/^DOUBLE PRECISION :: SMINK, SMINKINC, SMINDISTSTART, SMINDISTFINISH, SMINKCURRENT$/;"	v	module:MODAMBER9
 SMINKINC	modamber9.f90	/^DOUBLE PRECISION :: SMINK, SMINKINC,/;"	v	module:MODAMBER9
-SO	AMH/amhglobals.f	/^     *        omovi,omoviseg,SO,/;"	v	module:amhglobals
 SOPEN	mylapack.f	/^      SUBROUTINE SOPEN(/;"	s
 SORT3	sort3.f	/^      SUBROUTINE SORT3(/;"	s
 SORT4	sort4.f	/^      SUBROUTINE SORT4(/;"	s
@@ -4422,8 +4057,6 @@ TWOPLUS	commons.f90	/^     &        STAR, PLUS, TWOPLUS,/;"	v	module:COMMONS
 TWOPLUS	commons.o.f90	/^     &        STAR, PLUS, TWOPLUS,/;"	v	module:COMMONS
 TW_DIFFP	modamber9.f90	/^double precision, dimension(:), allocatable :: TW_DIFFP$/;"	v	module:MODAMBER9
 TW_SIDECHAIN	modamber9.f90	/^integer, dimension(:), allocatable :: TW_SIDECHAIN$/;"	v	module:MODAMBER9
-T_alt	AMH/globals_alt.f90	/^        double precision altgamma(max_letters,max_letters,n_altgamtypes,max_well_alt),T_alt$/;"	v	module:globals_alt
-T_rg	AMH/amhglobals.f	/^      double precision D_rg, T_rg,/;"	v	module:amhglobals
 TargetWL	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL,/;"	v	module:COMMONS
 TargetWL	commons.o.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL,/;"	v	module:COMMONS
 TetheredWL	tether.f90	/^      subroutine TetheredWL$/;"	s
@@ -4457,7 +4090,6 @@ VIEWPATCHYCURR	patchy.f90	/^SUBROUTINE VIEWPATCHYCURR(/;"	s
 VIEWTDHD	tetrahedra.f90	/^      SUBROUTINE VIEWTDHD(/;"	s
 VISITPROP	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP,/;"	v	module:COMMONS
 VISITPROP	commons.o.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP,/;"	v	module:COMMONS
-VPATH	makefile	/^VPATH = .:AMH:.$/;"	m
 VT	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: VT$/;"	v	module:COMMONS
 VT	commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: VT$/;"	v	module:COMMONS
 Vpot	Ackland_metals.f90	/^        double precision function Vpot(/;"	f
@@ -4518,37 +4150,17 @@ ZSYM	commons.f90	/^      CHARACTER(LEN=2), ALLOCATABLE, DIMENSION(:) :: ZSYM /;"
 ZSYM	commons.o.f90	/^      CHARACTER(LEN=2), ALLOCATABLE, DIMENSION(:) :: ZSYM /;"	v	module:COMMONS
 ZTIME	tn.f	/^      SUBROUTINE ZTIME(/;"	s
 ZWISCHEN	zwischen.f	/^      SUBROUTINE ZWISCHEN(/;"	s
-ZnFE	ackland_mendelev_fe.h	/^   double precision abohr, ZnFE,r1,r2,bFE0,bFE1,bFE2,bFE3, &$/;"	v
-a	ackland_mishin_cu.h	/^               dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04,             &$/;"	v
-a	ackland_mishin_cu.h	/^      double precision dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04$/;"	v
 a	modamb.f90	/^      INTEGER  a,/;"	v	module:MODAMBER
-a_r	ackland_sma.h	/^       COMMON \/param_pot_sma\/a_r,p,b_a,q,alpha       $/;"	v
-a_r	ackland_sma.h	/^       double precision Ro,delta,a_r,p,b_a,q,alpha$/;"	v
 aa1	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  aa1,/;"	v	module:MODAMBER
 aa2	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  aa1, aa2,/;"	v	module:MODAMBER
 aa3	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  aa1, aa2, aa3 /;"	v	module:MODAMBER
-ab_c_of_n_new	AMH/amhglobals.f	/^      logical alpha_c_of_n,ab_c_of_n_old,ab_c_of_n_new,/;"	v	module:amhglobals
-ab_c_of_n_old	AMH/amhglobals.f	/^      logical alpha_c_of_n,ab_c_of_n_old,/;"	v	module:amhglobals
-abohr	ackland_mendelev_fe.h	/^   double precision abohr, ZnFE,r1,r2,bFE0,bFE1,bFE2,bFE3, &$/;"	v
-accumulated_time	AMH/globals_alt.f90	/^         double precision, dimension(20) :: accumulated_time=/;"	v	module:globals_alt
 actualomega	modamb.f90	/^      DOUBLE PRECISION  seedphi(50), seedpsi(50), actualphi(50), actualpsi(50), actualomega(/;"	v	module:MODAMBER
 actualphi	modamb.f90	/^      DOUBLE PRECISION  seedphi(50), seedpsi(50), actualphi(/;"	v	module:MODAMBER
 actualpsi	modamb.f90	/^      DOUBLE PRECISION  seedphi(50), seedpsi(50), actualphi(50), actualpsi(/;"	v	module:MODAMBER
-additive_ev	AMH/additive_ev.f	/^      subroutine additive_ev(/;"	s
 ag	modamber9.f90	/^   double precision f,enmr,devdis,devang,devtor,ag,/;"	v	module:MODAMBER9
-allow_neg	AMH/amhglobals.f	/^      logical ran_force,ran_file,allow_neg$/;"	v	module:amhglobals
 alpb	modamber9.f90	/^      iwatpr,nsolw,igb,alpb,/;"	v	module:MODAMBER9
 alpha	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: alpha /;"	v	module:MODAMBER
-alpha1	ackland_mishin_cu.h	/^       COMMON \/param_pot_eam\/h,E1,E2,R01,R02,alpha1,alpha2,   &$/;"	v
-alpha1	ackland_mishin_cu.h	/^      double precision h,E1,E2,R01,R02,alpha1,alpha2$/;"	v
-alpha2	ackland_mishin_cu.h	/^       COMMON \/param_pot_eam\/h,E1,E2,R01,R02,alpha1,alpha2,   &$/;"	v
-alpha_c_of_n	AMH/amhglobals.f	/^      logical alpha_c_of_n,/;"	v	module:amhglobals
 alrh	Alglue.f	/^      SUBROUTINE alrh(/;"	s
-alt_prox_cut	AMH/amhglobals.f	/^      double precision alt_prox_cut$/;"	v	module:amhglobals
-altgamma	AMH/globals_alt.f90	/^        double precision altgamma(/;"	v	module:globals_alt
-altpot_interfaces	AMH/altpot_interfaces.f90	/^      module altpot_interfaces$/;"	m
-altpot_master	AMH/altpot_subroutines.f90	/^      subroutine altpot_master(/;"	s
-altpotflag	AMH/globals_alt.f90	/^        integer altpotflag(/;"	v	module:globals_alt
 aluu	Alglue.f	/^      SUBROUTINE aluu(/;"	s
 alv2	Alglue.f	/^      SUBROUTINE alv2(/;"	s
 amber_deallocate_stacks	amber9dummy.f90	/^subroutine amber_deallocate_stacks(/;"	s
@@ -4562,11 +4174,6 @@ ambfinalio_node	modamber9.f90	/^   integer :: myunitnew,myunit2,mdcrd_unit,mdinf
 ambpdb_unit	modamber9.f90	/^   integer :: myunitnew,myunit2,mdcrd_unit,mdinfo_unit,ambpdb_unit,/;"	v	module:MODAMBER9
 ambrst_unit	modamber9.f90	/^   integer :: myunitnew,myunit2,mdcrd_unit,mdinfo_unit,ambpdb_unit,ambxyz_unit,ambrst_unit,/;"	v	module:MODAMBER9
 ambxyz_unit	modamber9.f90	/^   integer :: myunitnew,myunit2,mdcrd_unit,mdinfo_unit,ambpdb_unit,ambxyz_unit,/;"	v	module:MODAMBER9
-amh_gse	AMH/amhglobals.f	/^      double precision vpotnt(0:maxr+1,maxcnt,maxtab),$/;"	v	module:amhglobals
-amh_interfaces	AMH/amh_interfaces.f90	/^      module amh_interfaces$/;"	m
-amhglobals	AMH/amhglobals.f	/^      Module amhglobals$/;"	m
-aminoa	AMH/amhglobals.f	/^      character aminoa(/;"	v	module:amhglobals
-aminoacids	AMH/globals_alt.f90	/^        character, dimension(20) ::  aminoacids*/;"	v	module:globals_alt
 ang	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,k,l,colin,fish,ans,rings,ang,/;"	v	module:MODAMBER
 angle	ljcapsidmodule.f90	/^ DOUBLE PRECISION :: angle,/;"	v	module:LJCAPSIDMODULE
 angle	pymodule.f90	/^ DOUBLE PRECISION :: angle,/;"	v	module:PYMODULE
@@ -4574,10 +4181,6 @@ angle2	ljcapsidmodule.f90	/^ DOUBLE PRECISION :: angle,angle2,/;"	v	module:LJCAP
 angle2	pymodule.f90	/^ DOUBLE PRECISION :: angle,angle2,/;"	v	module:PYMODULE
 ans	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,k,l,colin,fish,ans,/;"	v	module:MODAMBER
 answer	modamb.f90	/^      DOUBLE PRECISION  totenergy,benergy,tenergy,penergy,answer,/;"	v	module:MODAMBER
-anti_HB	AMH/amhglobals.f	/^        double precision :: anti_NHB(20,20,2),anti_HB(/;"	v	module:amhglobals
-anti_NHB	AMH/amhglobals.f	/^        double precision :: anti_NHB(/;"	v	module:amhglobals
-anti_one	AMH/amhglobals.f	/^     *                  para_HB(20,20,2),para_one(20),anti_one(/;"	v	module:amhglobals
-aps	AMH/amhglobals.f	/^      double precision aps(/;"	v	module:amhglobals
 ar2UT0	fedor.f	/^          DOUBLE PRECISION  FUNCTION ar2UT0(/;"	f
 arms	modamb.f90	/^      DOUBLE PRECISION arms$/;"	v	module:MODAMBER
 arnoenergy	fedor.f	/^      subroutine arnoenergy(/;"	s
@@ -4585,42 +4188,19 @@ atmass1	modamber9.f90	/^      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: coo
 atnum	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  atnum,/;"	v	module:MODAMBER
 atoms	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,/;"	v	module:MODAMBER
 attr	pymodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,sigma1(4),cut,ron,ron2,range2inv3,attr(/;"	v	module:PYMODULE
-ave_seq	AMH/amhglobals.f	/^      logical ave_seq,/;"	v	module:amhglobals
-ave_seq_amc	AMH/amhglobals.f	/^      logical ssweight,ave_seq_amw, ave_seq_amc$/;"	v	module:amhglobals
-ave_seq_amw	AMH/amhglobals.f	/^      logical ssweight,ave_seq_amw,/;"	v	module:amhglobals
-ave_seq_hb	AMH/amhglobals.f	/^      logical ave_seq,targ_cons, mem_cons,ave_seq_hb$/;"	v	module:amhglobals
-avep	AMH/amhglobals.f	/^     *     zrcord(maxsiz,3,maxpro,maxcrd),$/;"	v	module:amhglobals
-avepp	AMH/amhglobals.f	/^      double precision avepp(/;"	v	module:amhglobals
 ax	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,/;"	v	module:MODAMBER
 ay	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,cx,ay,/;"	v	module:MODAMBER
 az	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,cx,ay,by,cy,az,/;"	v	module:MODAMBER
 b	modamb.f90	/^      INTEGER  a,b,/;"	v	module:MODAMBER
-bFE0	ackland_mendelev_fe.h	/^   double precision abohr, ZnFE,r1,r2,bFE0,bFE1,bFE2,bFE3, &$/;"	v
-bFE1	ackland_mendelev_fe.h	/^   double precision abohr, ZnFE,r1,r2,bFE0,bFE1,bFE2,bFE3, &$/;"	v
-bFE2	ackland_mendelev_fe.h	/^   double precision abohr, ZnFE,r1,r2,bFE0,bFE1,bFE2,bFE3, &$/;"	v
-bFE3	ackland_mendelev_fe.h	/^   double precision abohr, ZnFE,r1,r2,bFE0,bFE1,bFE2,bFE3, &$/;"	v
-b_a	ackland_sma.h	/^       COMMON \/param_pot_sma\/a_r,p,b_a,q,alpha       $/;"	v
-b_a	ackland_sma.h	/^       double precision Ro,delta,a_r,p,b_a,q,alpha$/;"	v
 bc_lesi	modamber9.f90	/^integer bc_lesr,bc_lesi$/;"	v	module:MODAMBER9
 bc_lesr	modamber9.f90	/^integer bc_lesr,/;"	v	module:MODAMBER9
 bean	modamb.f90	/^      INTEGER  match,bean,/;"	v	module:MODAMBER
 belly	modamber9.f90	/^logical belly,/;"	v	module:MODAMBER9
 bellymask	modamber9.f90	/^character(len=256) restraintmask,bellymask,/;"	v	module:MODAMBER9
 benergy	modamb.f90	/^      DOUBLE PRECISION  totenergy,benergy,/;"	v	module:MODAMBER
-beta1	ackland_mishin_cu.h	/^               beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2        $/;"	v
-beta1	ackland_mishin_cu.h	/^      double precision beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2$/;"	v
-beta2	ackland_mishin_cu.h	/^               beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2        $/;"	v
-beta2	ackland_mishin_cu.h	/^      double precision beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2$/;"	v
-beta_c_of_n	AMH/amhglobals.f	/^      logical beta_c_of_n,/;"	v	module:amhglobals
 bg	modamber9.f90	/^   double precision f,enmr,devdis,devang,devtor,ag,bg,/;"	v	module:MODAMBER9
-bias_av	AMH/amhglobals.f	/^      double precision bias_weight,bias_av,/;"	v	module:amhglobals
-bias_prefactor	AMH/amhglobals.f	/^      double precision bias_weight,bias_av,bias_var,bias_prefactor,/;"	v	module:amhglobals
-bias_var	AMH/amhglobals.f	/^      double precision bias_weight,bias_av,bias_var,/;"	v	module:amhglobals
-bias_weight	AMH/amhglobals.f	/^      double precision bias_weight,/;"	v	module:amhglobals
-biaspoly	AMH/amhglobals.f	/^      double precision bias_weight,bias_av,bias_var,bias_prefactor,$/;"	v	module:amhglobals
 bondarray	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:,:) ::  bondarray /;"	v	module:MODAMBER
 bondedto	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  atnum, bondedto,/;"	v	module:MODAMBER
-bondln	AMH/amhglobals.f	/^      double precision temtur(mxtemp),temtur_quench(maxmov,maxmov),temgrd(5),$/;"	v	module:amhglobals
 bondnumber	modamb.f90	/^      INTEGER  match,bean,bondnumber,/;"	v	module:MODAMBER
 bonds	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:,:) :: bonds /;"	v	module:MODAMBER
 bottom	modamb.f90	/^      DOUBLE PRECISION  top,bottom,/;"	v	module:MODAMBER
@@ -4632,30 +4212,12 @@ bx	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,/;"	v	module:MODAMBER
 by	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,cx,ay,by,/;"	v	module:MODAMBER
 bz	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,cx,ay,by,cy,az,bz,/;"	v	module:MODAMBER
 c	modamb.f90	/^      INTEGER  a,b,c,/;"	v	module:MODAMBER
-c_of_m_dist	AMH/amhglobals.f	/^      double precision c_of_m_dist(/;"	v	module:amhglobals
-calc_A_alt	AMH/altpot_utilities.f90	/^      subroutine calc_A_alt(/;"	s
-calc_OB_density	AMH/altpot_onebody.f90	/^      subroutine calc_OB_density(/;"	s
-calc_ddA_onebody	AMH/altpot_onebody.f90	/^      double precision function calc_ddA_onebody(/;"	f
 calc_dyn	p46merdiff.f	/^        subroutine calc_dyn(/;"	s
 calc_energy	p46merdiff.f	/^        subroutine calc_energy(/;"	s
 calc_energyBLN	BLN.f	/^      subroutine calc_energyBLN(/;"	s
-calc_energy_alt	AMH/altpot_pairpotential.f90	/^      double precision function calc_energy_alt(/;"	f
-calc_force_alt	AMH/altpot_pairpotential.f90	/^      subroutine calc_force_alt(/;"	s
-calc_force_alt_1	AMH/altpot_pairpotential.f90	/^      subroutine calc_force_alt_1 /;"	s
-calc_force_alt_2	AMH/altpot_pairpotential.f90	/^      subroutine calc_force_alt_2 /;"	s
-calc_force_alt_3	AMH/altpot_pairpotential.f90	/^      subroutine calc_force_alt_3 /;"	s
 calc_gradient	p46merdiff.f	/^        subroutine calc_gradient(/;"	s
-calc_heaviside_alt	AMH/altpot_utilities.f90	/^      subroutine calc_heaviside_alt(/;"	s
 calc_int_coords	p46merdiff.f	/^        subroutine calc_int_coords(/;"	s
-calc_numerical_force_alt	AMH/altpot_subroutines.f90	/^      subroutine calc_numerical_force_alt /;"	s
-calc_onebody_force	AMH/altpot_onebody.f90	/^      subroutine calc_onebody_force(/;"	s
-calc_onebody_pot	AMH/altpot_onebody.f90	/^      double precision function calc_onebody_pot(/;"	f
-calc_sigma_alt	AMH/altpot_utilities.f90	/^      subroutine calc_sigma_alt(/;"	s
-calc_sum_theta_dot_alt	AMH/altpot_utilities.f90	/^      subroutine calc_sum_theta_dot_alt(/;"	s
-calc_theta_alt	AMH/altpot_utilities.f90	/^      subroutine calc_theta_alt(/;"	s
-calc_xyz	AMH/altpot_utilities.f90	/^      subroutine calc_xyz(/;"	s
 carrms	modamber9.f90	/^   double precision carrms$/;"	v	module:MODAMBER9
-ccev_dist	AMH/amhglobals.f	/^      double precision ccev_dist(/;"	v	module:amhglobals
 cfarkas	Farkas.f	157;"	c	subroutine:NIINIT
 cfarkas	Farkas.f	248;"	c	subroutine:ALINIT
 cfarkas	Farkas.f	39;"	c	subroutine:FARKAS
@@ -4669,33 +4231,21 @@ chiarray2	modamber9.f90	/^      INTEGER, DIMENSION(:), ALLOCATABLE :: cisarray1,
 chiral	modamb.f90	/^      INTEGER,ALLOCATABLE,DIMENSION(:) :: chiral$/;"	v	module:MODAMBER
 chiralarray	modamb.f90	/^      INTEGER,ALLOCATABLE,DIMENSION(:,:) :: chiralarray$/;"	v	module:MODAMBER
 chngmask	modamber9.f90	/^      fix_quad,  mpoltype,   induced,    frameon, chngmask,/;"	v	module:MODAMBER9
-chrlscl	AMH/amhglobals.f	/^      double precision chrlscl$/;"	v	module:amhglobals
 cisarray1	modamber9.f90	/^      INTEGER, DIMENSION(:), ALLOCATABLE :: cisarray1,/;"	v	module:MODAMBER9
 cisarray2	modamber9.f90	/^      INTEGER, DIMENSION(:), ALLOCATABLE :: cisarray1, cisarray2,/;"	v	module:MODAMBER9
 clambda	modamber9.f90	/^          gbalpha,gbbeta,gbgamma,cut_inner,clambda,/;"	v	module:MODAMBER9
-class_2	AMH/amhglobals.f	/^      integer class_of_res_2(maxsiz),sort_non_add(2,2,2,2,2),$/;"	v	module:amhglobals
-class_of_res_2	AMH/amhglobals.f	/^      integer class_of_res_2(/;"	v	module:amhglobals
 coef	qorderparam_blj.f90	/^	DOUBLE PRECISION function coef(/;"	f
 coef2	qorderparam_lj.f90	/^	DOUBLE PRECISION function coef2(/;"	f
 colin	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,k,l,colin,/;"	v	module:MODAMBER
 comp	modamber9.f90	/^double precision t,dt,temp0,tautp,pres0,comp,/;"	v	module:MODAMBER9
-con_local_a	AMH/amhglobals.f	/^      logical con_local_a,/;"	v	module:amhglobals
-con_local_a_cut	AMH/amhglobals.f	/^      integer con_local_a_cut,/;"	v	module:amhglobals
-con_local_b	AMH/amhglobals.f	/^      logical con_local_a, con_local_b$/;"	v	module:amhglobals
-con_local_b_cut	AMH/amhglobals.f	/^      integer con_local_a_cut, con_local_b_cut$/;"	v	module:amhglobals
-const_mode	AMH/amhglobals.f	/^      integer num_foldon_a,num_foldon_b,const_mode,/;"	v	module:amhglobals
 consts	modconsts.f90	/^MODULE consts$/;"	m
 consts_trans_97	modconsts_trans_97.f90	/^MODULE consts_trans_97 /;"	m
-contact_P_AP	AMH/contact_P_AP.f90	/^      subroutine  contact_P_AP(/;"	s
 coords	modamber9.f90	/^      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: coords1/;"	v	module:MODAMBER9
 coords1	modamber9.f90	/^      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: coords1,/;"	v	module:MODAMBER9
 count	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,k,l,colin,fish,ans,rings,ang,imp,count$/;"	v	module:MODAMBER
-count_alt	AMH/globals_alt.f90	/^        integer output_stepsize_alt , output_step_alt ,count_alt /;"	v	module:globals_alt
 cpin	modamber9.f90	/^      vecs, radii, freqe,redir(8),rstdip,mddip,inpdip,groups,gpes, &$/;"	v	module:MODAMBER9
 cpout	modamber9.f90	/^      cpin, cpout,/;"	v	module:MODAMBER9
 cprestrt	modamber9.f90	/^      cpin, cpout, cprestrt,/;"	v	module:MODAMBER9
-crdixn	AMH/amhglobals.f	/^     *        jres(maxres),$/;"	v	module:amhglobals
-ctemp	AMH/amhglobals.f	/^      double precision ctemp$/;"	v	module:amhglobals
 cut	ljcapsidmodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,sigma1,cut,/;"	v	module:LJCAPSIDMODULE
 cut	modamber9.f90	/^double precision box,cut,/;"	v	module:MODAMBER9
 cut	pymodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,sigma1(4),cut,/;"	v	module:PYMODULE
@@ -4703,15 +4253,12 @@ cut_inner	modamber9.f90	/^          gbalpha,gbbeta,gbgamma,cut_inner,/;"	v	modul
 cutcap	modamber9.f90	/^double precision box,cut,scnb,scee,dielc,rad,wel,radhb,welhb, &$/;"	v	module:MODAMBER9
 cx	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,cx,/;"	v	module:MODAMBER
 cy	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,cx,ay,by,cy,/;"	v	module:MODAMBER
-cyclic	AMH/amhglobals.f	/^      logical cyclic,/;"	v	module:amhglobals
 cz	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,cx,ay,by,cy,az,bz,cz,/;"	v	module:MODAMBER
 d	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,/;"	v	module:MODAMBER
 d	mododesd.f90	/^    do/;"	v	module:odesdsavear
 dEbydx	modamb.f90	/^                                                   & dtorsEbydx, dtorsEbydy, dtorsEbydz, dvdwEbydx, dvdwEbydy, dvdwEbydz,&$/;"	v	module:MODAMBER
 dEbydy	modamb.f90	/^                                                   & dEbydx, dEbydy,/;"	v	module:MODAMBER
 dEbydz	modamb.f90	/^                                                   & dEbydx, dEbydy, dEbydz,/;"	v	module:MODAMBER
-dQ_dr_ij_a	AMH/amhglobals.f	/^     *           Q_ij_a(0:n_divs_max,maxsiz),$/;"	v	module:amhglobals
-dQ_dr_ij_b	AMH/amhglobals.f	/^     *           Q_ij_b(0:n_divs_max,maxsiz),$/;"	v	module:amhglobals
 da1	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  da1,/;"	v	module:MODAMBER
 da2	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  da1, da2,/;"	v	module:MODAMBER
 da3	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  da1, da2, da3,/;"	v	module:MODAMBER
@@ -4723,23 +4270,11 @@ dbondEbydx	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: dbo
 dbondEbydy	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: dbondEbydx, dbondEbydy,/;"	v	module:MODAMBER
 dbondEbydz	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: dbondEbydx, dbondEbydy, dbondEbydz,/;"	v	module:MODAMBER
 dcoomm	myblas.f	/^      subroutine dcoomm(/;"	s
-dd	ackland_mishin_cu.h	/^               dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04,             &$/;"	v
-dd	ackland_mishin_cu.h	/^      double precision dd,Rs1,Rs2,Rs3,S1,S2,S3,a,R03,R04$/;"	v
 ddelta	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  dvn3, ddelta,/;"	v	module:MODAMBER
 ddelta2	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  dvn3, ddelta, ddelta2,/;"	v	module:MODAMBER
 ddelta3	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  dvn3, ddelta, ddelta2, ddelta3 /;"	v	module:MODAMBER
-debug_numer_forces	AMH/globals_alt.f90	/^        logical debug_numer_forces$/;"	v	module:globals_alt
-debugflag	AMH/globals_alt.f90	/^        integer max_well_alt,n_altgamtypes,max_letters,debugflag$/;"	v	module:globals_alt
-default_alt	AMH/altpot_io.f90	/^      subroutine default_alt(/;"	s
 degto	modamb.f90	/^      DOUBLE PRECISION kt(42,42,42),to(42,42,42),degto(/;"	v	module:MODAMBER
-delR_rg	AMH/amhglobals.f	/^      double precision D_rg, T_rg, delR_rg,/;"	v	module:amhglobals
-del_r_a	AMH/amhglobals.f	/^       double precision del_r_a(/;"	v	module:amhglobals
-del_r_b	AMH/amhglobals.f	/^       double precision del_r_b(/;"	v	module:amhglobals
-delta	AMH/amhglobals.f	/^      double precision delta,/;"	v	module:amhglobals
-delta	ackland_sma.h	/^       double precision Ro,delta,a_r,p,b_a,q,alpha$/;"	v
 delta_dirac	Ackland_metals.f90	/^        double precision function delta_dirac(/;"	f
-delte	AMH/amhglobals.f	/^      double precision delta,delte$/;"	v	module:amhglobals
-deltz	AMH/amhglobals.f	/^     *     forse(0:maxr+1,maxcnt,maxtab),$/;"	v	module:amhglobals
 denom	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,cx,ay,by,cy,az,bz,cz,mu,lambda,numer,denom,/;"	v	module:MODAMBER
 derphi	dzugutov.f	/^      subroutine derphi(/;"	s
 derphiz1	Zetterling.f	/^      subroutine derphiz1(/;"	s
@@ -4759,12 +4294,10 @@ dimpEbydz	modamb.f90	/^                                                   & dEby
 dipoles	fedor.f	/^        subroutine dipoles(/;"	s
 display_version	display_version.f90	/^subroutine display_version(/;"	s
 display_version	dv.f90	/^subroutine display_version(/;"	s	module:dv
-dist_cut	AMH/amhglobals.f	/^      logical beta_c_of_n,dist_cut$/;"	v	module:amhglobals
 distance	dist.f90	/^MODULE distance /;"	m
 dn	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  dn,/;"	v	module:MODAMBER
 dn2	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  dn, dn2,/;"	v	module:MODAMBER
 dn3	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  dn, dn2, dn3 /;"	v	module:MODAMBER
-do_send_output	AMH/globals_alt.f90	/^        logical do_send_output$/;"	v	module:globals_alt
 doligmove	modamber9.f90	/^      LOGICAL :: doligmove=/;"	v	module:MODAMBER9
 dparam	modamb.f90	/^      DOUBLE PRECISION rstar,epsilon,dparam$/;"	v	module:MODAMBER
 dphi	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  dphi,/;"	v	module:MODAMBER
@@ -4775,8 +4308,6 @@ drh	Pbglue.f	/^      SUBROUTINE drh /;"	s
 drjar	modamber9.f90	/^double precision scalm,pencut,ensave,tausw,ebdev,eadev,drjar$/;"	v	module:MODAMBER9
 drms	modamber9.f90	/^      tol,taur,dx0,drms,/;"	v	module:MODAMBER9
 dsplint	Farkas.f	/^      SUBROUTINE dsplint(/;"	s
-dssp_hdrgn_eastwood	AMH/dssp_hdrgn_eastwood.f	/^       subroutine dssp_hdrgn_eastwood(/;"	s
-dssp_hforce	AMH/dssp_hforce.f	/^       subroutine dssp_hforce(/;"	s
 dt	modamber9.f90	/^double precision t,dt,/;"	v	module:MODAMBER9
 dtorsEbydx	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: dbondEbydx, dbondEbydy, dbondEbydz, dangEbydx,dangEbydy, dangEbydz,& $/;"	v	module:MODAMBER
 dtorsEbydy	modamb.f90	/^                                                   & dtorsEbydx, dtorsEbydy,/;"	v	module:MODAMBER
@@ -4808,14 +4339,10 @@ entots	Natb.f	/^        SUBROUTINE entots(/;"	s
 epsilon	modamb.f90	/^      DOUBLE PRECISION rstar,epsilon,/;"	v	module:MODAMBER
 epsilon1	ljcapsidmodule.f90	/^ DOUBLE PRECISION, ALLOCATABLE :: PSCALEFAC1vec(:),PSCALEFAC2vec(:),epsilon1(/;"	v	module:LJCAPSIDMODULE
 epsilon1	pymodule.f90	/^ DOUBLE PRECISION, ALLOCATABLE :: PSCALEFAC1vec(:),PSCALEFAC2vec(:),epsilon1(/;"	v	module:PYMODULE
-eqdist	AMH/amhglobals.f	/^      double precision hydscl(0:21,2),hrdrad(0:21,2),eqdist(/;"	v	module:amhglobals
-eres	AMH/amhglobals.f	/^      double precision eres$/;"	v	module:amhglobals
 erstop	modamber9.f90	/^logical belly, erstop,/;"	v	module:MODAMBER9
 ev	mc.F	1287;"	c	subroutine:TRANSITION
 ev	mc.F	1517;"	c	subroutine:ACCREJ
 ev	tether.f90	63;"	c	subroutine:TetheredWL
-ev_gamma	AMH/ev_gamma.f90	/^      subroutine ev_gamma(/;"	s
-ev_set_up	AMH/ev_set_up.f90	/^      subroutine ev_set_up$/;"	s
 evbin	modamber9.f90	/^      cpin, cpout, cprestrt, evbin,/;"	v	module:MODAMBER9
 evbout	modamber9.f90	/^      cpin, cpout, cprestrt, evbin, evbout,/;"	v	module:MODAMBER9
 evbt	modamber9.f90	/^          skmin,skmax,vfac,gbneckscale,v11,v12,v22,kevb,evbt,/;"	v	module:MODAMBER9
@@ -4826,10 +4353,6 @@ extra_logical	modamber9.f90	65;"	c	module:MODAMBER9
 extraboxdim	modamber9.f90	/^double precision extraboxdim$/;"	v	module:MODAMBER9
 extrasamberdp	modamber9.f90	315;"	c	module:MODAMBER9
 extrasamberint	modamber9.f90	314;"	c	module:MODAMBER9
-exvmin	AMH/amhglobals.f	/^      double precision exvmin,/;"	v	module:amhglobals
-exvminS	AMH/amhglobals.f	/^      double precision exvmin,exvminS,/;"	v	module:amhglobals
-exvminS_beta	AMH/amhglobals.f	/^      double precision exvmin,exvminS,exvminS_beta(/;"	v	module:amhglobals
-exvmin_gamma	AMH/amhglobals.f	/^      double precision exvmin_gamma(/;"	v	module:amhglobals
 f	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,/;"	v	module:MODAMBER
 f	modamber9.f90	/^   double precision f,/;"	v	module:MODAMBER9
 facc	modamber9.f90	/^character owrite, facc$/;"	v	module:MODAMBER9
@@ -4841,19 +4364,11 @@ fenergy	fedor.f	/^      subroutine fenergy(/;"	s
 filename	modamb.f90	/^      CHARACTER(LEN=20)  filename$/;"	v	module:MODAMBER
 files	modamber9.f90	189;"	c	module:MODAMBER9
 fin	modperm.f90	/^    double precision, allocatable :: fin(/;"	v	module:PERMU
-finalize_alt	AMH/altpot_io.f90	/^        subroutine finalize_alt(/;"	s
 fish	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,k,l,colin,fish,/;"	v	module:MODAMBER
 fix_dip	modamber9.f90	/^      periodic,  use_pme,    opt_infl,   ischrgd, fix_dip,/;"	v	module:MODAMBER9
 fix_quad	modamber9.f90	/^      periodic,  use_pme,    opt_infl,   ischrgd, fix_dip, &$/;"	v	module:MODAMBER9
 flush	porfuncs.f90	/^subroutine flush(/;"	s	module:PORFUNCS
-foldstrt_max_a	AMH/amhglobals.f	/^      integer foldstrt_min_a(maxres),foldstrt_max_a(/;"	v	module:amhglobals
-foldstrt_max_b	AMH/amhglobals.f	/^      integer foldstrt_min_b(maxres),foldstrt_max_b(/;"	v	module:amhglobals
-foldstrt_min_a	AMH/amhglobals.f	/^      integer foldstrt_min_a(/;"	v	module:amhglobals
-foldstrt_min_b	AMH/amhglobals.f	/^      integer foldstrt_min_b(/;"	v	module:amhglobals
-force	AMH/force.f	/^      subroutine force(/;"	s
 fork_subr	porfuncs.f90	/^          subroutine fork_subr(/;"	s	module:PORFUNCS
-forse	AMH/amhglobals.f	/^     *     rincsq(maxcnt,maxtab),$/;"	v	module:amhglobals
-four_plus	AMH/amhglobals.f	/^        logical four_plus$/;"	v	module:amhglobals
 fphi	Ackland_metals.f90	/^       double precision function fphi(/;"	f
 fphi_d	Ackland_metals.f90	/^       double precision function fphi_d(/;"	f
 fphi_dd	Ackland_metals.f90	/^       double precision function fphi_dd(/;"	f
@@ -4873,69 +4388,39 @@ fvarphi_d	Ackland_metals.f90	/^       double precision function fvarphi_d /;"	f
 fvarphi_dd	Ackland_metals.f90	/^       double precision function fvarphi_dd /;"	f
 g	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,/;"	v	module:MODAMBER
 g46merdiff	g46merdiff.f	/^        subroutine g46merdiff(/;"	s
-gamma_contact_order	AMH/amhglobals.f	/^      double precision gamma_contact_order(/;"	v	module:amhglobals
 gamma_ln	modamber9.f90	/^          kappa,offset,surften,gamma_ln,/;"	v	module:MODAMBER9
-gamma_non_add	AMH/amhglobals.f	/^      double precision :: gamma_non_add(/;"	v	module:amhglobals
 gasdev	gauss.f	/^      FUNCTION gasdev(/;"	f
-gaspot	AMH/gaspot.f	/^      subroutine gaspot(/;"	s
-gaussv	AMH/gaussv.f	/^      subroutine gaussv(/;"	s
-gaussw	AMH/gaussw.f	/^      subroutine gaussw(/;"	s
 gbalpha	modamber9.f90	/^          kappa,offset,surften,gamma_ln,extdiel,intdiel,rdt,  & !32$/;"	v	module:MODAMBER9
 gbbeta	modamber9.f90	/^          gbalpha,gbbeta,/;"	v	module:MODAMBER9
 gbgamma	modamber9.f90	/^          gbalpha,gbbeta,gbgamma,/;"	v	module:MODAMBER9
 gbneckscale	modamber9.f90	/^          skmin,skmax,vfac,gbneckscale,/;"	v	module:MODAMBER9
 gbsa	modamber9.f90	/^      iwatpr,nsolw,igb,alpb,iyammp,           &!41$/;"	v	module:MODAMBER9
-gengrd	AMH/gengrd.f	/^      subroutine gengrd(/;"	s
 genimpparams	modamb.f90	/^      DOUBLE PRECISION midimpparams(4,6),genimpparams(/;"	v	module:MODAMBER
-gentab	AMH/gentab.f	/^      subroutine gentab$/;"	s
 gentorsparams	modamb.f90	/^      DOUBLE PRECISION gentorsparams(/;"	v	module:MODAMBER
-get_res_name	AMH/savstr.f	/^        subroutine get_res_name(/;"	s
 getarg_subr	porfuncs.f90	/^          subroutine getarg_subr(/;"	s	module:PORFUNCS
-getmem	AMH/getmem.f	/^      subroutine getmem(/;"	s
 getpid_subr	porfuncs.f90	/^          subroutine getpid_subr(/;"	s	module:PORFUNCS
 gfunc	Ackland_metals.f90	/^	double precision function gfunc(/;"	f
 gfunc_d	Ackland_metals.f90	/^	double precision function gfunc_d(/;"	f
 gfunc_dd	Ackland_metals.f90	/^	double precision function gfunc_dd(/;"	f
-globals_alt	AMH/globals_alt.f90	/^      module globals_alt$/;"	m
-gly_con	AMH/amhglobals.f	/^      logical i_alt_prox,i_3rd_is_contact,gly_con$/;"	v	module:amhglobals
-go_con	AMH/amhglobals.f	/^      logical go_con$/;"	v	module:amhglobals
-go_con_dist	AMH/amhglobals.f	/^      double precision    go_con_dist$/;"	v	module:amhglobals
-gomb	AMH/gomb.f	/^      subroutine gomb(/;"	s
 gparam_array	g46merdiff.f	/^        subroutine gparam_array(/;"	s
 gpes	modamber9.f90	/^      vecs, radii, freqe,redir(8),rstdip,mddip,inpdip,groups,gpes,/;"	v	module:MODAMBER9
 grnd	fedor.f	/^      subroutine grnd(/;"	s
 groupbuffer	modamber9.f90	/^character(len=4096) groupbuffer$/;"	v	module:MODAMBER9
 groups	modamber9.f90	/^      vecs, radii, freqe,redir(8),rstdip,mddip,inpdip,groups,/;"	v	module:MODAMBER9
-h	ackland_mishin_cu.h	/^       COMMON \/param_pot_eam\/h,E1,E2,R01,R02,alpha1,alpha2,   &$/;"	v
-h	ackland_mishin_cu.h	/^      double precision h,E1,E2,R01,R02,alpha1,alpha2$/;"	v
 h	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,/;"	v	module:MODAMBER
-harm_spring	AMH/harm_spring.f	/^      subroutine harm_spring(/;"	s
-hbond	AMH/amhglobals.f	/^        logical hbond,/;"	v	module:amhglobals
-hbscl	AMH/amhglobals.f	/^        double precision hbscl(/;"	v	module:amhglobals
 hdistconstraint	commons.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb, hdistconstraint,/;"	v	module:COMMONS
 hdistconstraint	commons.o.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb, hdistconstraint,/;"	v	module:COMMONS
-hdrgn	AMH/hdrgn.f90	/^      subroutine hdrgn(/;"	s
 hecl2ut0	fedor.f	/^      DOUBLE PRECISION function hecl2ut0(/;"	f
-hforce	AMH/hforce.f	/^      subroutine hforce(/;"	s
 hmat	fedor.f	/^      subroutine hmat(/;"	s
 hmatd	fedor.f	/^      subroutine hmatd(/;"	s
-ho_zero	AMH/amhglobals.f	/^        double precision sigma_h,sigma_NO,ho_zero,/;"	v	module:amhglobals
-homlfl	AMH/amhglobals.f	/^       character homlfl(/;"	v	module:amhglobals
-hp_scale	AMH/globals_alt.f90	/^         double precision, dimension(20) :: hp_scale /;"	v	module:globals_alt
-hprofl	AMH/hprofl.f	/^      subroutine hprofl(/;"	s
-hrdrad	AMH/amhglobals.f	/^      double precision hydscl(0:21,2),hrdrad(/;"	v	module:amhglobals
 hulp	modamber9.f90	77;"	c	module:MODAMBER9
-hydscl	AMH/amhglobals.f	/^      double precision hydscl(/;"	v	module:amhglobals
-hydseq	AMH/amhglobals.f	/^     *     ywork(maxres,3,maxcrd),$/;"	v	module:amhglobals
 i	modamb.f90	/^      INTEGER  a,b,c,io/;"	v	module:MODAMBER
 i01	modamber9.f90	/^      m02,m04,m06,m08,m10,m12,m14,m16,m18,i01,/;"	v	module:MODAMBER9
 i02	modamber9.f90	/^      mxsub,natyp,npdec,i02,/;"	v	module:MODAMBER9
 i04	modamber9.f90	/^      mxsub,natyp,npdec,i02,i04,/;"	v	module:MODAMBER9
 i06	modamber9.f90	/^      mxsub,natyp,npdec,i02,i04,i06,/;"	v	module:MODAMBER9
 i08	modamber9.f90	/^      mxsub,natyp,npdec,i02,i04,i06,i08,/;"	v	module:MODAMBER9
-i1	AMH/amhglobals.f	/^      integer i1,/;"	v	module:amhglobals
 i10	modamber9.f90	/^      mxsub,natyp,npdec,i02,i04,i06,i08,i10,/;"	v	module:MODAMBER9
-i2	AMH/amhglobals.f	/^      integer i1,i2$/;"	v	module:amhglobals
 i24	modamber9.f90	/^      iibh,ijbh,iicbh,iiba,ijba,iicba, &$/;"	v	module:MODAMBER9
 i26	modamber9.f90	/^      i24,i26,/;"	v	module:MODAMBER9
 i28	modamber9.f90	/^      i24,i26,i28,/;"	v	module:MODAMBER9
@@ -4950,28 +4435,8 @@ i44	modamber9.f90	/^      i42,i44,/;"	v	module:MODAMBER9
 i46	modamber9.f90	/^      i42,i44,i46,/;"	v	module:MODAMBER9
 i48	modamber9.f90	/^      i42,i44,i46,i48,/;"	v	module:MODAMBER9
 i50	modamber9.f90	/^      i42,i44,i46,i48,i50,/;"	v	module:MODAMBER9
-i502	AMH/amhglobals.f	/^      integer i502,/;"	v	module:amhglobals
-i503	AMH/amhglobals.f	/^      integer i502,i503,/;"	v	module:amhglobals
-i505	AMH/amhglobals.f	/^      integer i502,i503,i505,/;"	v	module:amhglobals
-i507	AMH/amhglobals.f	/^      integer i502,i503,i505,i507,/;"	v	module:amhglobals
-i508	AMH/amhglobals.f	/^      integer i502,i503,i505,i507,$/;"	v	module:amhglobals
-i509	AMH/amhglobals.f	/^     *        i508,i509,/;"	v	module:amhglobals
-i511	AMH/amhglobals.f	/^     *        i508,i509,i511,/;"	v	module:amhglobals
-i512	AMH/amhglobals.f	/^     *        i508,i509,i511,i512,/;"	v	module:amhglobals
-i513	AMH/amhglobals.f	/^     *        i508,i509,i511,i512,i513,/;"	v	module:amhglobals
-i514	AMH/amhglobals.f	/^     *        i508,i509,i511,i512,i513,i514,/;"	v	module:amhglobals
-i515	AMH/amhglobals.f	/^     *        i508,i509,i511,i512,i513,i514,i515,/;"	v	module:amhglobals
-i516	AMH/amhglobals.f	/^     *        i508,i509,i511,i512,i513,i514,i515,$/;"	v	module:amhglobals
-i518	AMH/amhglobals.f	/^     *        i516,i518,/;"	v	module:amhglobals
 i52	modamber9.f90	/^      i42,i44,i46,i48,i50,i52,/;"	v	module:MODAMBER9
-i521	AMH/amhglobals.f	/^     *        i516,i518,i521,/;"	v	module:amhglobals
-i523	AMH/amhglobals.f	/^     *        i516,i518,i521,i523,/;"	v	module:amhglobals
-i525	AMH/amhglobals.f	/^     *        i516,i518,i521,i523,i525,/;"	v	module:amhglobals
-i526	AMH/amhglobals.f	/^     *        i516,i518,i521,i523,i525,i526,/;"	v	module:amhglobals
-i527	AMH/amhglobals.f	/^     *        i516,i518,i521,i523,i525,i526,i527,/;"	v	module:amhglobals
-i528	AMH/amhglobals.f	/^     *        i516,i518,i521,i523,i525,i526,i527,i528,/;"	v	module:amhglobals
 i54	modamber9.f90	/^      i42,i44,i46,i48,i50,i52,i54,/;"	v	module:MODAMBER9
-i540	AMH/amhglobals.f	/^     *        i516,i518,i521,i523,i525,i526,i527,i528,$/;"	v	module:amhglobals
 i56	modamber9.f90	/^      i42,i44,i46,i48,i50,i52,i54,i56,/;"	v	module:MODAMBER9
 i58	modamber9.f90	/^      i42,i44,i46,i48,i50,i52,i54,i56,i58,/;"	v	module:MODAMBER9
 i64	modamber9.f90	/^      icnstrgp,itgtfitgp,itgtrmsgp,i64,/;"	v	module:MODAMBER9
@@ -4987,37 +4452,6 @@ i80	modamber9.f90	/^      i70,i72,i74,i76,i78,i79,i80,/;"	v	module:MODAMBER9
 i82	modamber9.f90	/^      i70,i72,i74,i76,i78,i79,i80,i82,/;"	v	module:MODAMBER9
 i84	modamber9.f90	/^      i70,i72,i74,i76,i78,i79,i80,i82,i84,/;"	v	module:MODAMBER9
 i86	modamber9.f90	/^      i70,i72,i74,i76,i78,i79,i80,i82,i84,i86,/;"	v	module:MODAMBER9
-i_3rd_is_contact	AMH/amhglobals.f	/^      logical i_alt_prox,i_3rd_is_contact,/;"	v	module:amhglobals
-i_Etim	AMH/amhglobals.f	/^      logical i_Etim$/;"	v	module:amhglobals
-i_Etim_step	AMH/amhglobals.f	/^      integer i_Etim_step$/;"	v	module:amhglobals
-i_Q_format_a	AMH/amhglobals.f	/^      integer nbiaspoly,n_Qbias_a,i_Q_format_a$/;"	v	module:amhglobals
-i_Q_format_b	AMH/amhglobals.f	/^      integer n_Qbias_b,i_Q_format_b$/;"	v	module:amhglobals
-i_Qbias_a	AMH/amhglobals.f	/^      logical ibiasgauss,ibiaspoly,i_Qbias_a,/;"	v	module:amhglobals
-i_Qbias_b	AMH/amhglobals.f	/^      logical i_Qbias_b,/;"	v	module:amhglobals
-i_Rg_bias	AMH/amhglobals.f	/^      logical i_Rg_bias$/;"	v	module:amhglobals
-i_V_test	AMH/amhglobals.f	/^      logical i_V_test$/;"	v	module:amhglobals
-i_alt_prox	AMH/amhglobals.f	/^      logical i_alt_prox,/;"	v	module:amhglobals
-i_atom_P_AP	AMH/amhglobals.f	/^      integer:: i_diff_P_AP,i_atom_P_AP$/;"	v	module:amhglobals
-i_bias_native_a	AMH/amhglobals.f	/^      logical ibiasgauss,ibiaspoly,i_Qbias_a,i_bias_native_a$/;"	v	module:amhglobals
-i_bias_native_b	AMH/amhglobals.f	/^      logical i_Qbias_b,i_bias_native_b$/;"	v	module:amhglobals
-i_con_P_AP	AMH/amhglobals.f	/^      logical:: i_con_P_AP$/;"	v	module:amhglobals
-i_contact_order	AMH/amhglobals.f	/^      logical i_contact_order$/;"	v	module:amhglobals
-i_contact_order_max	AMH/amhglobals.f	/^      integer i_contact_order_min(max_contact_order_terms),$/;"	v	module:amhglobals
-i_contact_order_min	AMH/amhglobals.f	/^      integer i_contact_order_min(/;"	v	module:amhglobals
-i_diff_P_AP	AMH/amhglobals.f	/^      integer:: i_diff_P_AP,/;"	v	module:amhglobals
-i_hbond_czong	AMH/amhglobals.f	/^        logical hbond,i_hbond_eastwood,i_hbond_czong$/;"	v	module:amhglobals
-i_hbond_eastwood	AMH/amhglobals.f	/^        logical hbond,i_hbond_eastwood,/;"	v	module:amhglobals
-i_ignore_chain_dirn	AMH/amhglobals.f	/^        logical i_ignore_chain_dirn,/;"	v	module:amhglobals
-i_ixn_Qbias_a	AMH/amhglobals.f	/^     *        numconst_b,i_ixn_Qbias_a(/;"	v	module:amhglobals
-i_ixn_Qbias_b	AMH/amhglobals.f	/^     *        numconst_a,i_ixn_Qbias_b(/;"	v	module:amhglobals
-i_non_add_contact	AMH/amhglobals.f	/^      logical :: i_non_add_contact$/;"	v	module:amhglobals
-i_rama	AMH/amhglobals.f	/^       integer i_rama$/;"	v	module:amhglobals
-i_rep	AMH/amhglobals.f	/^      logical i_rep,/;"	v	module:amhglobals
-i_rep_lambda_uniform	AMH/amhglobals.f	/^      logical i_rep,i_rep_lambda_uniform$/;"	v	module:amhglobals
-i_rg_corey	AMH/amhglobals.f	/^      logical i_rg_corey$/;"	v	module:amhglobals
-i_rg_first	AMH/amhglobals.f	/^      logical i_rg_garyk, i_rg_first$/;"	v	module:amhglobals
-i_rg_garyk	AMH/amhglobals.f	/^      logical i_rg_garyk,/;"	v	module:amhglobals
-i_type_ev_gamma	AMH/amhglobals.f	/^      integer i_type_ev_gamma$/;"	v	module:amhglobals
 ia1	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  ia1,/;"	v	module:MODAMBER
 ia2	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  ia1, ia2,/;"	v	module:MODAMBER
 ia3	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  ia1, ia2, ia3,/;"	v	module:MODAMBER
@@ -5026,46 +4460,29 @@ iargc_subr	porfuncs.f90	/^subroutine iargc_subr(/;"	s	module:PORFUNCS
 ibelly	modamber9.f90	/^      natc,nattgtfit,nattgtrms,ibelly,/;"	v	module:MODAMBER9
 ibellygp	modamber9.f90	/^      i42,i44,i46,i48,i50,i52,i54,i56,i58,ibellygp,/;"	v	module:MODAMBER9
 ibgwat	modamber9.f90	/^      ntmin,irest,jfastw,                &!33$/;"	v	module:MODAMBER9
-ibiasfile	AMH/amhglobals.f	/^     *        obias_Rg,oKE,ibiasfile,/;"	v	module:amhglobals
-ibiasgauss	AMH/amhglobals.f	/^      logical ibiasgauss,/;"	v	module:amhglobals
-ibiaspoly	AMH/amhglobals.f	/^      logical ibiasgauss,ibiaspoly,/;"	v	module:amhglobals
 icfe	modamber9.f90	/^      gbsa,vrand,iwrap,nrespa,irespa,nrespai,icfe,/;"	v	module:MODAMBER9
-iclassweight	AMH/amhglobals.f	/^      logical iclassweight$/;"	v	module:amhglobals
 icnstph	modamber9.f90	/^      idecomp,icnstph,/;"	v	module:MODAMBER9
 icnstrgp	modamber9.f90	/^      i42,i44,i46,i48,i50,i52,i54,i56,i58,ibellygp, &$/;"	v	module:MODAMBER9
-icon	AMH/amhglobals.f	/^     *        omovi,omoviseg,SO,input_amh,ievgamma,ievbeta,icon,/;"	v	module:amhglobals
 iconstreff	modamber9.f90	/^      rbornstat,ivcap,iconstreff,/;"	v	module:MODAMBER9
-icontacts	AMH/amhglobals.f	/^     *        ovgaspot,ovscltab,iphi,icontacts,/;"	v	module:amhglobals
 icphidx	modamber9.f90	/^      imask1,imask2,numadjst,mxadjmsk,icphidx,/;"	v	module:MODAMBER9
 icpptcnt	modamber9.f90	/^      icpstinf,icpresst,icptrsct, icpptcnt,/;"	v	module:MODAMBER9
 icpresst	modamber9.f90	/^      icpstinf,icpresst,/;"	v	module:MODAMBER9
 icpstinf	modamber9.f90	/^      i70,i72,i74,i76,i78,i79,i80,i82,i84,i86, &$/;"	v	module:MODAMBER9
 icptpair	modamber9.f90	/^      imask1,imask2,numadjst,mxadjmsk,icphidx,icptpair,/;"	v	module:MODAMBER9
 icptrsct	modamber9.f90	/^      icpstinf,icpresst,icptrsct,/;"	v	module:MODAMBER9
-ictemp	AMH/amhglobals.f	/^      logical ictemp$/;"	v	module:amhglobals
 idecomp	modamber9.f90	/^      neb,vv,tmode,ipol,iesp,ievb,nodeid,num_noshake,    &!59$/;"	v	module:MODAMBER9
 idelta	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  iphi, ivn, idelta,/;"	v	module:MODAMBER
-idigns	AMH/amhglobals.f	/^      logical idigns$/;"	v	module:amhglobals
 ienwat	modamber9.f90	/^      ibgwat,ienwat,/;"	v	module:MODAMBER9
 ier	modamber9.f90	/^integer ier$/;"	v	module:MODAMBER9
 iesp	modamber9.f90	/^      neb,vv,tmode,ipol,iesp,/;"	v	module:MODAMBER9
 ievb	modamber9.f90	/^      neb,vv,tmode,ipol,iesp,ievb,/;"	v	module:MODAMBER9
-ievbeta	AMH/amhglobals.f	/^     *        omovi,omoviseg,SO,input_amh,ievgamma,ievbeta,/;"	v	module:amhglobals
-ievgamma	AMH/amhglobals.f	/^     *        omovi,omoviseg,SO,input_amh,ievgamma,/;"	v	module:amhglobals
-iexcld	AMH/amhglobals.f	/^      logical iexcld$/;"	v	module:amhglobals
-iexcld_beta	AMH/amhglobals.f	/^      logical iexcld_gamma,iexcld_beta$/;"	v	module:amhglobals
-iexcld_gamma	AMH/amhglobals.f	/^      logical iexcld_gamma,/;"	v	module:amhglobals
 ifbox	modamber9.f90	/^integer ntb,ifbox,/;"	v	module:MODAMBER9
 ifcap	modamber9.f90	/^integer ntb,ifbox,numpk,nbit,ifcap,/;"	v	module:MODAMBER9
 ifpert	modamber9.f90	/^      lastpr,nbper,ngper,ndper,ifpert,/;"	v	module:MODAMBER9
 ifswitch	modamber9.f90	/^integer ifswitch,/;"	v	module:MODAMBER9
 ig	modamber9.f90	/^integer nrp,nspm,ig,/;"	v	module:MODAMBER9
-igamma	AMH/amhglobals.f	/^     *        iss_bias,ihbond,imoviein,igamma,/;"	v	module:amhglobals
 igb	modamber9.f90	/^      iwatpr,nsolw,igb,/;"	v	module:MODAMBER9
-igomb	AMH/amhglobals.f	/^      logical igomb$/;"	v	module:amhglobals
 ih	modamber9.f90	/^   character(len=4), dimension(:), allocatable :: ih$/;"	v	module:MODAMBER9
-ihbond	AMH/amhglobals.f	/^     *        iss_bias,ihbond,/;"	v	module:amhglobals
-ihomol	AMH/amhglobals.f	/^     *        iss_bias,ihbond,imoviein,igamma,itargseqs,ihomol,/;"	v	module:amhglobals
 ihwtnm	modamber9.f90	/^character(len=4) iwtnm,iowtnm,ihwtnm$/;"	v	module:MODAMBER9
 iiba	modamber9.f90	/^      iibh,ijbh,iicbh,iiba,/;"	v	module:MODAMBER9
 iibh	modamber9.f90	/^      mxsub,natyp,npdec,i02,i04,i06,i08,i10, &$/;"	v	module:MODAMBER9
@@ -5075,94 +4492,58 @@ iifstwr	modamber9.f90	/^      iifstwt,iifstwr,/;"	v	module:MODAMBER9
 iifstwt	modamber9.f90	/^      m02,m04,m06,m08,m10,m12,m14,m16,m18,i01, &$/;"	v	module:MODAMBER9
 ijba	modamber9.f90	/^      iibh,ijbh,iicbh,iiba,ijba,/;"	v	module:MODAMBER9
 ijbh	modamber9.f90	/^      iibh,ijbh,/;"	v	module:MODAMBER9
-ilong	AMH/amhglobals.f	/^      integer ilong(/;"	v	module:amhglobals
 imask1	modamber9.f90	/^      lastpr,nbper,ngper,ndper,ifpert,lpolp, ncopy, &$/;"	v	module:MODAMBER9
 imask2	modamber9.f90	/^      imask1,imask2,/;"	v	module:MODAMBER9
-imat	AMH/amhglobals.f	/^      integer imemri,iprolst,iprolstscl,iran,oarchv,oconv,oecorr,imat,/;"	v	module:amhglobals
-imem_cons	AMH/amhglobals.f	/^     *        omovi,omoviseg,SO,input_amh,ievgamma,ievbeta,icon,imem_cons,/;"	v	module:amhglobals
-imemri	AMH/amhglobals.f	/^      integer imemri,/;"	v	module:amhglobals
 imin	modamber9.f90	/^      ntrx,npscal,imin,/;"	v	module:MODAMBER9
-imoviein	AMH/amhglobals.f	/^     *        iss_bias,ihbond,imoviein,/;"	v	module:amhglobals
 imp	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,k,l,colin,fish,ans,rings,ang,imp,/;"	v	module:MODAMBER
 impenergy	modamb.f90	/^      DOUBLE PRECISION  totenergy,benergy,tenergy,penergy,answer,impenergy,/;"	v	module:MODAMBER
 in1	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  iphi, ivn, idelta, in1 /;"	v	module:MODAMBER
-incmov	AMH/amhglobals.f	/^      integer incmov$/;"	v	module:amhglobals
 induced	modamber9.f90	/^      fix_quad,  mpoltype,   induced,/;"	v	module:MODAMBER9
 init	fedor.f	2722;"	c	subroutine:ehecl2
 init	modamber9.f90	/^      ntxo,ntt,ntp,ntr,init,/;"	v	module:MODAMBER9
-init_onebody	AMH/altpot_onebody.f90	/^      subroutine init_onebody(/;"	s
-initil	AMH/initil.f	/^      subroutine initil$/;"	s
 inmr02	modamber9.f90	/^integer       intreq,irlreq,lnmr01,inmr02,/;"	v	module:MODAMBER9
 inpcrd	modamber9.f90	/^character(len=256) mdin, mdout, inpcrd,/;"	v	module:MODAMBER9
 inpdip	modamber9.f90	/^      vecs, radii, freqe,redir(8),rstdip,mddip,inpdip,/;"	v	module:MODAMBER9
-input_amh	AMH/amhglobals.f	/^     *        omovi,omoviseg,SO,input_amh,/;"	v	module:amhglobals
 intdiel	modamber9.f90	/^          kappa,offset,surften,gamma_ln,extdiel,intdiel,/;"	v	module:MODAMBER9
 intreq	modamber9.f90	/^integer       intreq,/;"	v	module:MODAMBER9
-intstr	AMH/intstr.f	/^      subroutine intstr$/;"	s
 iorwat	modamber9.f90	/^      ibgwat,ienwat,iorwat,/;"	v	module:MODAMBER9
 ios	modamb.f90	/^      INTEGER  a,b,c,ios,/;"	v	module:MODAMBER
 ioutfm	modamber9.f90	/^integer     ntpr,ntwr,ntwx,ntwv,ntwe,ntpp,ioutfm,/;"	v	module:MODAMBER9
 iowtnm	modamber9.f90	/^character(len=4) iwtnm,iowtnm,/;"	v	module:MODAMBER9
 ipairs	modamber9.f90	/^   integer, dimension(:), allocatable :: ix, ipairs$/;"	v	module:MODAMBER9
-iphi	AMH/amhglobals.f	/^     *        ovgaspot,ovscltab,iphi,/;"	v	module:amhglobals
 iphi	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  iphi,/;"	v	module:MODAMBER
 ipnlty	modamber9.f90	/^integer nmropt,iprint,noeskp,iscale,ipnlty,/;"	v	module:MODAMBER9
 ipol	modamber9.f90	/^      neb,vv,tmode,ipol,/;"	v	module:MODAMBER9
 iprint	modamber9.f90	/^integer nmropt,iprint,/;"	v	module:MODAMBER9
-iprolst	AMH/amhglobals.f	/^      integer imemri,iprolst,/;"	v	module:amhglobals
-iprolstscl	AMH/amhglobals.f	/^      integer imemri,iprolst,iprolstscl,/;"	v	module:amhglobals
 iprr	modamber9.f90	/^integer       intreq,irlreq,lnmr01,inmr02,iprr,/;"	v	module:MODAMBER9
 iprw	modamber9.f90	/^integer       intreq,irlreq,lnmr01,inmr02,iprr,iprw$/;"	v	module:MODAMBER9
-iran	AMH/amhglobals.f	/^      integer imemri,iprolst,iprolstscl,iran,/;"	v	module:amhglobals
 iredir	modamber9.f90	/^integer iredir(/;"	v	module:MODAMBER9
-ires	AMH/amhglobals.f	/^     *        numlng(0:maxsiz,maxtab),ires(/;"	v	module:amhglobals
 irespa	modamber9.f90	/^      gbsa,vrand,iwrap,nrespa,irespa,/;"	v	module:MODAMBER9
 irespa2	modamber9.f90	/^integer ifswitch, irespa2,/;"	v	module:MODAMBER9
-iresrt	AMH/amhglobals.f	/^      logical iresrt$/;"	v	module:amhglobals
 irest	modamber9.f90	/^      ntmin,irest,/;"	v	module:MODAMBER9
 irlreq	modamber9.f90	/^integer       intreq,irlreq,/;"	v	module:MODAMBER9
 iscale	modamber9.f90	/^integer nmropt,iprint,noeskp,iscale,/;"	v	module:MODAMBER9
 ischrgd	modamber9.f90	/^      periodic,  use_pme,    opt_infl,   ischrgd,/;"	v	module:MODAMBER9
-iscltab	AMH/amhglobals.f	/^      logical iscltab$/;"	v	module:amhglobals
-iseed_amh	AMH/amhglobals.f	/^      integer iseed_amh(/;"	v	module:amhglobals
 isftrp	modamber9.f90	/^integer ntb,ifbox,numpk,nbit,ifcap,natcap,isftrp$/;"	v	module:MODAMBER9
 ishake	modamber9.f90	/^      natc,nattgtfit,nattgtrms,ibelly,natbel,ishake,/;"	v	module:MODAMBER9
 isolvp	modamber9.f90	/^      ntcm,nscm,isolvp,/;"	v	module:MODAMBER9
-iss_bias	AMH/amhglobals.f	/^      integer imemri,iprolst,iprolstscl,iran,oarchv,oconv,oecorr,imat,$/;"	v	module:amhglobals
-iss_struct	AMH/amhglobals.f	/^     *        ovgaspot,ovscltab,iphi,icontacts,$/;"	v	module:amhglobals
-it1	AMH/amhglobals.f	/^      integer it1,/;"	v	module:amhglobals
-it2	AMH/amhglobals.f	/^      integer it1,it2,/;"	v	module:amhglobals
-it3	AMH/amhglobals.f	/^      integer it1,it2,it3,/;"	v	module:amhglobals
-it4	AMH/amhglobals.f	/^      integer it1,it2,it3,it4,/;"	v	module:amhglobals
-it5	AMH/amhglobals.f	/^      integer it1,it2,it3,it4,it5$/;"	v	module:amhglobals
-itarg_seq	AMH/amhglobals.f	/^     *        iss_struct,itarg_seq$/;"	v	module:amhglobals
-itargseqs	AMH/amhglobals.f	/^     *        iss_bias,ihbond,imoviein,igamma,itargseqs,/;"	v	module:amhglobals
-itgrd	AMH/amhglobals.f	/^      integer itgrd(/;"	v	module:amhglobals
 itgtfitgp	modamber9.f90	/^      icnstrgp,itgtfitgp,/;"	v	module:MODAMBER9
 itgtrmsgp	modamber9.f90	/^      icnstrgp,itgtfitgp,itgtrmsgp,/;"	v	module:MODAMBER9
 iuse	modamber9.f90	/^integer nmropt,iprint,noeskp,iscale,ipnlty,iuse,/;"	v	module:MODAMBER9
 ivcap	modamber9.f90	/^      rbornstat,ivcap,/;"	v	module:MODAMBER9
 ivn	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  iphi, ivn,/;"	v	module:MODAMBER
 iwatpr	modamber9.f90	/^      ibgwat,ienwat,iorwat,              &!36$/;"	v	module:MODAMBER9
-iwork	AMH/amhglobals.f	/^      integer iwork(/;"	v	module:amhglobals
 iwrap	modamber9.f90	/^      gbsa,vrand,iwrap,/;"	v	module:MODAMBER9
 iwtnm	modamber9.f90	/^character(len=4) iwtnm,/;"	v	module:MODAMBER9
 ix	modamber9.f90	/^   integer, dimension(:), allocatable :: ix,/;"	v	module:MODAMBER9
-ixn_from_site	AMH/amhglobals.f	/^      integer ixn_from_site(/;"	v	module:amhglobals
 iyammp	modamber9.f90	/^      iwatpr,nsolw,igb,alpb,iyammp,/;"	v	module:MODAMBER9
 j	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,/;"	v	module:MODAMBER
 jar	modamber9.f90	/^integer nmropt,iprint,noeskp,iscale,ipnlty,iuse,maxsub,jar$/;"	v	module:MODAMBER9
 jfastw	modamber9.f90	/^      ntmin,irest,jfastw,/;"	v	module:MODAMBER9
-jres	AMH/amhglobals.f	/^     *        tarpre(maxres,maxtab),mempre(maxres,maxtab),$/;"	v	module:amhglobals
 k	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,k,/;"	v	module:MODAMBER
 kappa	modamber9.f90	/^      tol,taur,dx0,drms,vlimit,rbtarg(9),tmass,tmassinv,  & !25$/;"	v	module:MODAMBER9
-kappa_OB	AMH/globals_alt.f90	/^        double precision kappa_OB$/;"	v	module:globals_alt
-kappa_alt	AMH/globals_alt.f90	/^        double precision kappa_alt,/;"	v	module:globals_alt
-kappa_rg	AMH/amhglobals.f	/^      double precision D_rg, T_rg, delR_rg, M_rg, kappa_rg$/;"	v	module:amhglobals
-kappa_well	AMH/globals_alt.f90	/^        double precision kappa_alt,treshold_alt,kappa_well$/;"	v	module:globals_alt
 kevb	modamber9.f90	/^          skmin,skmax,vfac,gbneckscale,v11,v12,v22,kevb,/;"	v	module:MODAMBER9
 klambda	modamber9.f90	/^      ntcm,nscm,isolvp,nsolut,klambda,/;"	v	module:MODAMBER9
-known	AMH/amhglobals.f	/^      logical known$/;"	v	module:amhglobals
 kr	modamb.f90	/^      DOUBLE PRECISION kr(/;"	v	module:MODAMBER
 kt	modamb.f90	/^      DOUBLE PRECISION kt(/;"	v	module:MODAMBER
 l	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,k,l,/;"	v	module:MODAMBER
@@ -5203,7 +4584,6 @@ l98	modamber9.f90	/^      lcrdr,l60,l65,lmass,l75,l80,l85,l90,l95,l96,l97,l98,/;
 l99	modamber9.f90	/^      lcrdr,l60,l65,lmass,l75,l80,l85,l90,l95,l96,l97,l98,l99,/;"	v	module:MODAMBER9
 label	modamb.f90	/^      CHARACTER, ALLOCATABLE, DIMENSION(:) ::  label$/;"	v	module:MODAMBER
 lambda	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,cx,ay,by,cy,az,bz,cz,mu,lambda,/;"	v	module:MODAMBER
-lambdaR	AMH/amhglobals.f	/^        double precision lambdaR$/;"	v	module:amhglobals
 lasth	modamber9.f90	/^      iifstwt,iifstwr,nrealb,nintb,nholb,npairb,lastr,lasti,lasth,/;"	v	module:MODAMBER9
 lasti	modamber9.f90	/^      iifstwt,iifstwr,nrealb,nintb,nholb,npairb,lastr,lasti,/;"	v	module:MODAMBER9
 lastpr	modamber9.f90	/^      iifstwt,iifstwr,nrealb,nintb,nholb,npairb,lastr,lasti,lasth, &$/;"	v	module:MODAMBER9
@@ -5212,7 +4592,6 @@ lcpcrg	modamber9.f90	/^      l165,l170,l175,l180,l185,l186,l187,l188,l189,l190, 
 lcpene	modamber9.f90	/^      lcpcrg,lcpene,/;"	v	module:MODAMBER9
 lcrd	modamber9.f90	/^      l15,lwinv,lpol,lcrd,/;"	v	module:MODAMBER9
 lcrdr	modamber9.f90	/^      l15,lwinv,lpol,lcrd,lforce,l36,lvel,lvel2,l45,l50, &$/;"	v	module:MODAMBER9
-lenfun	AMH/amhglobals.f	/^      integer lenfun$/;"	v	module:amhglobals
 lenic	modamber9.f90	/^integer:: lenic$/;"	v	module:MODAMBER9
 lesfac	modamber9.f90	/^double precision lesfac(/;"	v	module:MODAMBER9
 lesr	modamber9.f90	98;"	c	module:MODAMBER9
@@ -5232,8 +4611,6 @@ lnHarmFreq	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, Extrap
 lnHarmFreq	commons.o.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent, lnHarmFreq,/;"	v	module:COMMONS
 lnmr01	modamber9.f90	/^integer       intreq,irlreq,lnmr01,/;"	v	module:MODAMBER9
 lnsrch	dlnsrch.f	/^      SUBROUTINE lnsrch(/;"	s
-longscale	AMH/altpot_io.f90	/^      subroutine longscale(/;"	s
-lookup	AMH/lookup.f	/^      subroutine lookup(/;"	s
 loopatom	modamb.f90	/^      INTEGER loopatom(/;"	v	module:MODAMBER
 lpol	modamber9.f90	/^      l15,lwinv,lpol,/;"	v	module:MODAMBER9
 lpolp	modamber9.f90	/^      lastpr,nbper,ngper,ndper,ifpert,lpolp,/;"	v	module:MODAMBER9
@@ -5253,31 +4630,13 @@ m18	modamber9.f90	/^      m02,m04,m06,m08,m10,m12,m14,m16,m18,/;"	v	module:MODAM
 mass	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: mass /;"	v	module:MODAMBER
 master	modamber9.f90	/^logical master$/;"	v	module:MODAMBER9
 match	modamb.f90	/^      INTEGER  match,/;"	v	module:MODAMBER
-max_contact_order_terms	AMH/amhglobals.f	/^      integer, parameter:: max_contact_order_terms=/;"	v	module:amhglobals
-max_letters	AMH/amhglobals.f	/^      integer max_letters$/;"	v	module:amhglobals
-max_letters	AMH/globals_alt.f90	/^        integer max_well_alt,n_altgamtypes,max_letters,/;"	v	module:globals_alt
-max_well	AMH/amhglobals.f	/^        integer max_well$/;"	v	module:amhglobals
-max_well_alt	AMH/globals_alt.f90	/^        integer max_well_alt,/;"	v	module:globals_alt
-maxcnt	AMH/amhglobals.f	/^        integer maxcnt$/;"	v	module:amhglobals
-maxcrd	AMH/amhglobals.f	/^      integer maxcrd$/;"	v	module:amhglobals
 maxcyc	modamber9.f90	/^      ntrx,npscal,imin,maxcyc,/;"	v	module:MODAMBER9
 maxdup	modamber9.f90	/^      idecomp,icnstph,ntcnstph,maxdup,/;"	v	module:MODAMBER9
 maxles	modamber9.f90	/^integer maxles,/;"	v	module:MODAMBER9
 maxlesadj	modamber9.f90	/^integer maxles,maxlestyp,maxlesadj$/;"	v	module:MODAMBER9
 maxlestyp	modamber9.f90	/^integer maxles,maxlestyp,/;"	v	module:MODAMBER9
-maxmem	AMH/amhglobals.f	/^      integer maxmem$/;"	v	module:amhglobals
 maxmem	modamber9.f90	/^      nphia,nnb,ntypes,nconp,maxmem,/;"	v	module:MODAMBER9
-maxmov	AMH/amhglobals.f	/^      integer maxmov$/;"	v	module:amhglobals
-maxmr	AMH/amhglobals.f	/^      integer minmr,maxmr$/;"	v	module:amhglobals
-maxpro	AMH/amhglobals.f	/^      integer maxpro$/;"	v	module:amhglobals
-maxr	AMH/amhglobals.f	/^      integer maxr,/;"	v	module:amhglobals
-maxres	AMH/amhglobals.f	/^      integer maxres$/;"	v	module:amhglobals
-maxs	AMH/amhglobals.f	/^      integer maxr,maxs$/;"	v	module:amhglobals
-maxsec	AMH/amhglobals.f	/^      integer maxsec$/;"	v	module:amhglobals
-maxseq	AMH/amhglobals.f	/^      integer maxseq,/;"	v	module:amhglobals
-maxsiz	AMH/amhglobals.f	/^         integer maxsiz$/;"	v	module:amhglobals
 maxsub	modamber9.f90	/^integer nmropt,iprint,noeskp,iscale,ipnlty,iuse,maxsub,/;"	v	module:MODAMBER9
-maxtab	AMH/amhglobals.f	/^      integer maxtab$/;"	v	module:amhglobals
 mdcrd	modamber9.f90	/^      refc, mdvel, mden, mdcrd,/;"	v	module:MODAMBER9
 mdcrd_unit	modamber9.f90	/^   integer :: myunitnew,myunit2,mdcrd_unit,/;"	v	module:MODAMBER9
 mddip	modamber9.f90	/^      vecs, radii, freqe,redir(8),rstdip,mddip,/;"	v	module:MODAMBER9
@@ -5290,44 +4649,23 @@ mdout	modamber9.f90	/^character(len=256) mdin, mdout,/;"	v	module:MODAMBER9
 mdr	modamber9.f90	142;"	c	module:MODAMBER9
 mds	modamber9.f90	153;"	c	module:MODAMBER9
 mdvel	modamber9.f90	/^      refc, mdvel,/;"	v	module:MODAMBER9
-mem_cons	AMH/amhglobals.f	/^      logical ave_seq,targ_cons, mem_cons,/;"	v	module:amhglobals
 memory	modamber9.f90	216;"	c	module:MODAMBER9
-mempre	AMH/amhglobals.f	/^     *        tarpre(maxres,maxtab),mempre(/;"	v	module:amhglobals
 mgrh	Mgglue.f	/^      SUBROUTINE mgrh(/;"	s
 mguu	Mgglue.f	/^      SUBROUTINE mguu(/;"	s
 mgv2	Mgglue.f	/^      SUBROUTINE mgv2(/;"	s
 midimpparams	modamb.f90	/^      DOUBLE PRECISION midimpparams(/;"	v	module:MODAMBER
-min_seq_sep	AMH/amhglobals.f	/^      integer n_letters,min_seq_sep,/;"	v	module:amhglobals
 mincor	modamber9.f90	/^      refc, mdvel, mden, mdcrd, mdinfo, nmrf, mincor,/;"	v	module:MODAMBER9
-minmr	AMH/amhglobals.f	/^      integer minmr,/;"	v	module:amhglobals
 minperm	minperm.f	/^      subroutine minperm(/;"	s
-mismatch	AMH/amhglobals.f	/^        logical i_ignore_chain_dirn,mismatch$/;"	v	module:amhglobals
 mmid	odesd.f	/^      SUBROUTINE mmid(/;"	s
 mmtsb_setup_file	modamber9.f90	/^      cpin, cpout, cprestrt, evbin, evbout, mmtsb_setup_file$/;"	v	module:MODAMBER9
-movanal	AMH/amhglobals.f	/^      logical movanal$/;"	v	module:amhglobals
 mpoltype	modamber9.f90	/^      fix_quad,  mpoltype,/;"	v	module:MODAMBER9
 mu	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,cx,ay,by,cy,az,bz,cz,mu,/;"	v	module:MODAMBER
 mxadjmsk	modamber9.f90	/^      imask1,imask2,numadjst,mxadjmsk,/;"	v	module:MODAMBER9
-mxlevl	AMH/amhglobals.f	/^      integer mxlevl,/;"	v	module:amhglobals
-mxsct	AMH/amhglobals.f	/^      integer mxlevl,mxsct$/;"	v	module:amhglobals
 mxsub	modamber9.f90	/^      natc,nattgtfit,nattgtrms,ibelly,natbel,ishake,nmxrs, &$/;"	v	module:MODAMBER9
-mxtemp	AMH/amhglobals.f	/^      integer mxtemp,/;"	v	module:amhglobals
 mypot	tether.f90	61;"	c	subroutine:TetheredWL
 myunit2	modamber9.f90	/^   integer :: myunitnew,myunit2,/;"	v	module:MODAMBER9
 myunitnew	modamber9.f90	/^   integer :: myunitnew,/;"	v	module:MODAMBER9
-n_OB_wells	AMH/globals_alt.f90	/^        integer outfile1_alt(10),n_OB_wells,/;"	v	module:globals_alt
-n_Q_anneal_a	AMH/amhglobals.f	/^      integer n_Q_anneal_a,/;"	v	module:amhglobals
-n_Q_anneal_b	AMH/amhglobals.f	/^      integer n_Q_anneal_a,n_Q_anneal_b$/;"	v	module:amhglobals
-n_Qbias_a	AMH/amhglobals.f	/^      integer nbiaspoly,n_Qbias_a,/;"	v	module:amhglobals
-n_Qbias_b	AMH/amhglobals.f	/^      integer n_Qbias_b,/;"	v	module:amhglobals
-n_Rg_bias	AMH/amhglobals.f	/^      integer n_Rg_bias$/;"	v	module:amhglobals
-n_altgamtypes	AMH/globals_alt.f90	/^        integer max_well_alt,n_altgamtypes,/;"	v	module:globals_alt
 n_amb_calls	modamber9.f90	/^      INTEGER :: n_amb_calls=/;"	v	module:MODAMBER9
-n_contact_order_terms	AMH/amhglobals.f	/^      integer n_contact_order_terms$/;"	v	module:amhglobals
-n_divs_max	AMH/amhglobals.f	/^      integer n_divs_max$/;"	v	module:amhglobals
-n_letters	AMH/amhglobals.f	/^      integer n_letters,/;"	v	module:amhglobals
-n_letters_con	AMH/amhglobals.f	/^      integer n_letters,min_seq_sep,num_well,n_letters_con$/;"	v	module:amhglobals
-n_rep_con	AMH/amhglobals.f	/^      integer n_rep_con(/;"	v	module:amhglobals
 natbel	modamber9.f90	/^      natc,nattgtfit,nattgtrms,ibelly,natbel,/;"	v	module:MODAMBER9
 natc	modamber9.f90	/^      nphia,nnb,ntypes,nconp,maxmem,nwdvar,nparm, &$/;"	v	module:MODAMBER9
 natcap	modamber9.f90	/^integer ntb,ifbox,numpk,nbit,ifcap,natcap,/;"	v	module:MODAMBER9
@@ -5336,7 +4674,6 @@ natom	modamber9.f90	/^integer       natom,/;"	v	module:MODAMBER9
 nattgtfit	modamber9.f90	/^      natc,nattgtfit,/;"	v	module:MODAMBER9
 nattgtrms	modamber9.f90	/^      natc,nattgtfit,nattgtrms,/;"	v	module:MODAMBER9
 natyp	modamber9.f90	/^      mxsub,natyp,/;"	v	module:MODAMBER9
-nbiaspoly	AMH/amhglobals.f	/^      integer nbiaspoly,/;"	v	module:amhglobals
 nbin1	modamb.f90	/^      INTEGER nbin1,/;"	v	module:MODAMBER
 nbin2	modamb.f90	/^      INTEGER nbin1, nbin2,/;"	v	module:MODAMBER
 nbin3	modamb.f90	/^      INTEGER nbin1, nbin2, nbin3,/;"	v	module:MODAMBER
@@ -5357,26 +4694,19 @@ neb	modamber9.f90	/^      rbornstat,ivcap,iconstreff,        &!51$/;"	v	module:M
 neighbour	SiSW.f	/^      subroutine neighbour(/;"	s
 netfrc	modamber9.f90	/^integer verbose,netfrc,/;"	v	module:MODAMBER9
 newstyle	modamber9.f90	/^logical newstyle,/;"	v	module:MODAMBER9
-ngamma_non_add	AMH/amhglobals.f	/^      integer, parameter:: ngamma_non_add=/;"	v	module:amhglobals
-ngomb	AMH/amhglobals.f	/^      double precision ngomb$/;"	v	module:amhglobals
 ngper	modamber9.f90	/^      lastpr,nbper,ngper,/;"	v	module:MODAMBER9
 nhb	modamber9.f90	/^   integer numphi,nttyp,nhb$/;"	v	module:MODAMBER9
 nholb	modamber9.f90	/^      iifstwt,iifstwr,nrealb,nintb,nholb,/;"	v	module:MODAMBER9
 nintb	modamber9.f90	/^      iifstwt,iifstwr,nrealb,nintb,/;"	v	module:MODAMBER9
-nmdif	AMH/amhglobals.f	/^      integer nmdif$/;"	v	module:amhglobals
 nmr1amber	modamber9.f90	73;"	c	module:MODAMBER9
-nmres	AMH/amhglobals.f	/^      integer nmres$/;"	v	module:amhglobals
 nmrf	modamber9.f90	/^      refc, mdvel, mden, mdcrd, mdinfo, nmrf,/;"	v	module:MODAMBER9
 nmropt	modamber9.f90	/^integer nmropt,/;"	v	module:MODAMBER9
 nmrrdr	modamber9.f90	69;"	c	module:MODAMBER9
 nmrstf	modamber9.f90	299;"	c	module:MODAMBER9
-nmstep	AMH/amhglobals.f	/^      integer nmstep$/;"	v	module:amhglobals
-nmtemp	AMH/amhglobals.f	/^      integer mxtemp,nmtemp$/;"	v	module:amhglobals
 nmxrs	modamber9.f90	/^      natc,nattgtfit,nattgtrms,ibelly,natbel,ishake,nmxrs,/;"	v	module:MODAMBER9
 nnb	modamber9.f90	/^      nphia,nnb,/;"	v	module:MODAMBER9
 nodeid	modamber9.f90	/^      neb,vv,tmode,ipol,iesp,ievb,nodeid,/;"	v	module:MODAMBER9
 noeskp	modamber9.f90	/^integer nmropt,iprint,noeskp,/;"	v	module:MODAMBER9
-non_add_contact	AMH/non_add_contact.f90	/^      subroutine  non_add_contact(/;"	s
 noshake	modamber9.f90	/^      imask1,imask2,numadjst,mxadjmsk,icphidx,icptpair,lfsg,lvsg,noshake$/;"	v	module:MODAMBER9
 noshakemask	modamber9.f90	/^character(len=256) restraintmask,bellymask,tgtfitmask,tgtrmsmask,noshakemask$/;"	v	module:MODAMBER9
 npairb	modamber9.f90	/^      iifstwt,iifstwr,nrealb,nintb,nholb,npairb,/;"	v	module:MODAMBER9
@@ -5385,7 +4715,6 @@ npdec	modamber9.f90	/^      mxsub,natyp,npdec,/;"	v	module:MODAMBER9
 nphia	modamber9.f90	/^integer       natom,nres,nbonh,nbona,ntheth,ntheta,nphih, &$/;"	v	module:MODAMBER9
 nphih	modamber9.f90	/^integer       natom,nres,nbonh,nbona,ntheth,ntheta,nphih,/;"	v	module:MODAMBER9
 npscal	modamber9.f90	/^      ntrx,npscal,/;"	v	module:MODAMBER9
-nquench	AMH/amhglobals.f	/^      integer nquench$/;"	v	module:amhglobals
 nr	modamber9.f90	/^   integer native,nr3/;"	v	module:MODAMBER9
 nr3	modamber9.f90	/^   integer native,nr3,/;"	v	module:MODAMBER9
 nrc	modamber9.f90	/^      ntnb,nsnb,ndfmin,nstlim,nrc,/;"	v	module:MODAMBER9
@@ -5431,89 +4760,21 @@ ntwx	modamber9.f90	/^integer     ntpr,ntwr,ntwx,/;"	v	module:MODAMBER9
 ntx	modamber9.f90	/^integer nrp,nspm,ig,ntx,/;"	v	module:MODAMBER9
 ntxo	modamber9.f90	/^integer nrp,nspm,ig,ntx,ntcx,           &!5$/;"	v	module:MODAMBER9
 ntypes	modamber9.f90	/^      nphia,nnb,ntypes,/;"	v	module:MODAMBER9
-num_foldon_a	AMH/amhglobals.f	/^      integer num_foldon_a,/;"	v	module:amhglobals
-num_foldon_b	AMH/amhglobals.f	/^      integer num_foldon_a,num_foldon_b,/;"	v	module:amhglobals
 num_noshake	modamber9.f90	/^      neb,vv,tmode,ipol,iesp,ievb,nodeid,num_noshake,/;"	v	module:MODAMBER9
-num_to_char	AMH/num_to_char.f90	/^      subroutine num_to_char(/;"	s
-num_well	AMH/amhglobals.f	/^      integer n_letters,min_seq_sep,num_well,/;"	v	module:amhglobals
 numadjst	modamber9.f90	/^      imask1,imask2,numadjst,/;"	v	module:MODAMBER9
-numconst_a	AMH/amhglobals.f	/^      integer seglist_a(maxres), seglist_b(maxres),$/;"	v	module:amhglobals
-numconst_b	AMH/amhglobals.f	/^     *        numconst_a,i_ixn_Qbias_b(maxres,maxres),$/;"	v	module:amhglobals
-numcrd	AMH/amhglobals.f	/^      integer numcrd,/;"	v	module:amhglobals
 numer	modamb.f90	/^      DOUBLE PRECISION  top,bottom,ax,bx,cx,ay,by,cy,az,bz,cz,mu,lambda,numer,/;"	v	module:MODAMBER
 numexchg	modamber9.f90	/^      idecomp,icnstph,ntcnstph,maxdup,numexchg,/;"	v	module:MODAMBER9
-numlng	AMH/amhglobals.f	/^      integer ilong(maxcnt,2,maxtab),$/;"	v	module:amhglobals
-nummem	AMH/amhglobals.f	/^      integer nummem$/;"	v	module:amhglobals
 numphi	modamber9.f90	/^   integer numphi,/;"	v	module:MODAMBER9
 numpk	modamber9.f90	/^integer ntb,ifbox,numpk,/;"	v	module:MODAMBER9
-numpro	AMH/amhglobals.f	/^      integer numpro$/;"	v	module:amhglobals
-numseq	AMH/amhglobals.f	/^      integer maxseq,numseq,/;"	v	module:amhglobals
-numseq_amc	AMH/amhglobals.f	/^      integer numseq_amc$/;"	v	module:amhglobals
-numseq_amw	AMH/amhglobals.f	/^      integer maxseq,numseq,numseq_hb,numseq_amw$/;"	v	module:amhglobals
-numseq_hb	AMH/amhglobals.f	/^      integer maxseq,numseq,numseq_hb,/;"	v	module:amhglobals
-numtab	AMH/amhglobals.f	/^      integer numcrd,numtab$/;"	v	module:amhglobals
 numwatkeep	modamber9.f90	/^      idecomp,icnstph,ntcnstph,maxdup,numexchg,repcrd,numwatkeep /;"	v	module:MODAMBER9
 nwdvar	modamber9.f90	/^      nphia,nnb,ntypes,nconp,maxmem,nwdvar,/;"	v	module:MODAMBER9
-oKE	AMH/amhglobals.f	/^     *        obias_Rg,oKE,/;"	v	module:amhglobals
-oPE_backbone	AMH/amhglobals.f	/^     *        oPE_plus_KE,oPE_no_bias,oPE_with_bias,oPE_backbone,/;"	v	module:amhglobals
-oPE_backbone_norama	AMH/amhglobals.f	/^     *        oPE_plus_KE,oPE_no_bias,oPE_with_bias,oPE_backbone,oPE_backbone_norama,/;"	v	module:amhglobals
-oPE_no_bias	AMH/amhglobals.f	/^     *        oPE_plus_KE,oPE_no_bias,/;"	v	module:amhglobals
-oPE_plus_KE	AMH/amhglobals.f	/^     *        ohdrgn_m,ohdrgn_l,ohdrgn_seq,ononadd,ocon_P_AP,pdb,$/;"	v	module:amhglobals
-oPE_with_bias	AMH/amhglobals.f	/^     *        oPE_plus_KE,oPE_no_bias,oPE_with_bias,/;"	v	module:amhglobals
-o_exvmin	AMH/amhglobals.f	/^        double precision o_exvmin,/;"	v	module:amhglobals
-o_exvminS	AMH/amhglobals.f	/^        double precision o_exvmin,o_exvminS(/;"	v	module:amhglobals
-oamh	AMH/amhglobals.f	/^     *        ohdrgn,orama,ooxy,ochiral,oamh,/;"	v	module:amhglobals
-oamhlr	AMH/amhglobals.f	/^     *        oamhsr,oamhlr,/;"	v	module:amhglobals
-oamhmr	AMH/amhglobals.f	/^     *        oamhsr,oamhlr,oran,occev,ooev,oamhmr,/;"	v	module:amhglobals
-oamhsr	AMH/amhglobals.f	/^     *        ohdrgn,orama,ooxy,ochiral,oamh,orep,$/;"	v	module:amhglobals
-oarchv	AMH/amhglobals.f	/^      integer imemri,iprolst,iprolstscl,iran,oarchv,/;"	v	module:amhglobals
-obias_Rg	AMH/amhglobals.f	/^     *        oamhsr,oamhlr,oran,occev,ooev,oamhmr,$/;"	v	module:amhglobals
-occev	AMH/amhglobals.f	/^     *        oamhsr,oamhlr,oran,occev,/;"	v	module:amhglobals
-ochiral	AMH/amhglobals.f	/^     *        ohdrgn,orama,ooxy,ochiral,/;"	v	module:amhglobals
-ocon_P_AP	AMH/amhglobals.f	/^     *        ohdrgn_m,ohdrgn_l,ohdrgn_seq,ononadd,ocon_P_AP,/;"	v	module:amhglobals
-oconv	AMH/amhglobals.f	/^      integer imemri,iprolst,iprolstscl,iran,oarchv,oconv,/;"	v	module:amhglobals
 odesdsavear	mododesd.f90	/^MODULE odesdsavear$/;"	m
-oecorr	AMH/amhglobals.f	/^      integer imemri,iprolst,iprolstscl,iran,oarchv,oconv,oecorr,/;"	v	module:amhglobals
-oexcldscl	AMH/amhglobals.f	/^      double precision oexcldscl$/;"	v	module:amhglobals
 offset	modamber9.f90	/^          kappa,offset,/;"	v	module:MODAMBER9
-oharmspring	AMH/amhglobals.f	/^     *        oobiassega,oobiassegb,oharmspring,/;"	v	module:amhglobals
-ohdrgn	AMH/amhglobals.f	/^     *        omovi,omoviseg,SO,input_amh,ievgamma,ievbeta,icon,imem_cons,$/;"	v	module:amhglobals
-ohdrgn_l	AMH/amhglobals.f	/^     *        ohdrgn_m,ohdrgn_l,/;"	v	module:amhglobals
-ohdrgn_m	AMH/amhglobals.f	/^     *        obias_Rg,oKE,ibiasfile,ohdrgn_s,$/;"	v	module:amhglobals
-ohdrgn_s	AMH/amhglobals.f	/^     *        obias_Rg,oKE,ibiasfile,ohdrgn_s,/;"	v	module:amhglobals
-ohdrgn_seq	AMH/amhglobals.f	/^     *        ohdrgn_m,ohdrgn_l,ohdrgn_seq,/;"	v	module:amhglobals
 ok	modamber9.f90	/^logical newstyle,ok$/;"	v	module:MODAMBER9
-omovi	AMH/amhglobals.f	/^     *        iss_bias,ihbond,imoviein,igamma,itargseqs,ihomol,$/;"	v	module:amhglobals
-omoviseg	AMH/amhglobals.f	/^     *        omovi,omoviseg,/;"	v	module:amhglobals
 one_four	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:,:) :: one_four,/;"	v	module:MODAMBER
 one_three	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:,:) :: one_four, one_three /;"	v	module:MODAMBER
-onebody_gamma	AMH/globals_alt.f90	/^        double precision onebody_gamma(/;"	v	module:globals_alt
-onebody_type	AMH/globals_alt.f90	/^        integer onebodyflag,onebody_type /;"	v	module:globals_alt
-onebodyflag	AMH/globals_alt.f90	/^        integer onebodyflag,/;"	v	module:globals_alt
-ononadd	AMH/amhglobals.f	/^     *        ohdrgn_m,ohdrgn_l,ohdrgn_seq,ononadd,/;"	v	module:amhglobals
-oobiassega	AMH/amhglobals.f	/^     *        oPE_plus_KE,oPE_no_bias,oPE_with_bias,oPE_backbone,oPE_backbone_norama,$/;"	v	module:amhglobals
-oobiassegb	AMH/amhglobals.f	/^     *        oobiassega,oobiassegb,/;"	v	module:amhglobals
-ooev	AMH/amhglobals.f	/^     *        oamhsr,oamhlr,oran,occev,ooev,/;"	v	module:amhglobals
-ooev_dist	AMH/amhglobals.f	/^      double precision ccev_dist(1:maxcnt,1:maxtab),ooev_dist(/;"	v	module:amhglobals
-ooxy	AMH/amhglobals.f	/^     *        ohdrgn,orama,ooxy,/;"	v	module:amhglobals
-opnfil	AMH/opnfil.f	/^      subroutine opnfil(/;"	s
 opt_infl	modamber9.f90	/^      periodic,  use_pme,    opt_infl,/;"	v	module:MODAMBER9
-orama	AMH/amhglobals.f	/^     *        ohdrgn,orama,/;"	v	module:amhglobals
-oran	AMH/amhglobals.f	/^     *        oamhsr,oamhlr,oran,/;"	v	module:amhglobals
-orep	AMH/amhglobals.f	/^     *        ohdrgn,orama,ooxy,ochiral,oamh,orep,/;"	v	module:amhglobals
-outfile1_alt	AMH/globals_alt.f90	/^        integer outfile1_alt(/;"	v	module:globals_alt
-output_step_alt	AMH/globals_alt.f90	/^        integer output_stepsize_alt , output_step_alt /;"	v	module:globals_alt
-output_stepsize_alt	AMH/globals_alt.f90	/^        integer output_stepsize_alt /;"	v	module:globals_alt
-ovgaspot	AMH/amhglobals.f	/^     *        oobiassega,oobiassegb,oharmspring,$/;"	v	module:amhglobals
-ovscltab	AMH/amhglobals.f	/^     *        ovgaspot,ovscltab,/;"	v	module:amhglobals
 owrite	modamber9.f90	/^character owrite,/;"	v	module:MODAMBER9
-oxexcldv	AMH/amhglobals.f	/^        logical oxexcldv$/;"	v	module:amhglobals
-oxscl	AMH/amhglobals.f	/^      double precision oxscl$/;"	v	module:amhglobals
-oxy	AMH/oxy.f	/^      subroutine oxy(/;"	s
-p	ackland_sma.h	/^       COMMON \/param_pot_sma\/a_r,p,b_a,q,alpha       $/;"	v
-p	ackland_sma.h	/^       double precision Ro,delta,a_r,p,b_a,q,alpha$/;"	v
-para_HB	AMH/amhglobals.f	/^        double precision :: anti_NHB(20,20,2),anti_HB(20,20,2),$/;"	v	module:amhglobals
-para_one	AMH/amhglobals.f	/^     *                  para_HB(20,20,2),para_one(/;"	v	module:amhglobals
 param_array	p46merdiff.f	/^        subroutine param_array(/;"	s
 param_arrayBLN	BLN.f	/^      subroutine param_arrayBLN(/;"	s
 param_cut_off	Ackland_metals.f90	108;"	c	function:rho_pot_dd
@@ -5528,13 +4789,10 @@ param_cut_off	Ackland_metals.f90	62;"	c	function:rho_pot_d
 param_cut_off	Ackland_wrapper.f	32;"	c	subroutine:ACK
 parm	modamber9.f90	/^character(len=256) mdin, mdout, inpcrd, parm,/;"	v	module:MODAMBER9
 pcom	modf1com.f90	/^      double precision, allocatable :: xicom(:),pcom(/;"	v	module:F1COM
-pdb	AMH/amhglobals.f	/^     *        ohdrgn_m,ohdrgn_l,ohdrgn_seq,ononadd,ocon_P_AP,pdb,/;"	v	module:amhglobals
 pencut	modamber9.f90	/^double precision scalm,pencut,/;"	v	module:MODAMBER9
 penergy	modamb.f90	/^      DOUBLE PRECISION  totenergy,benergy,tenergy,penergy,/;"	v	module:MODAMBER
 periodic	modamber9.f90	/^integer verbose,netfrc,     ew_type,    vdwmeth, &$/;"	v	module:MODAMBER9
 permdist	minperm.f	/^      double precision function permdist(/;"	f
-pexcld	AMH/amhglobals.f	/^      double precision pexcld$/;"	v	module:amhglobals
-pexcld_gamma	AMH/amhglobals.f	/^      double precision pexcld_gamma$/;"	v	module:amhglobals
 phiatom1	modamb.f90	/^      INTEGER phiatom1(/;"	v	module:MODAMBER
 phiatom2	modamb.f90	/^      INTEGER phiatom1(50), phiatom2(/;"	v	module:MODAMBER
 pi	ljcapsidmodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,/;"	v	module:LJCAPSIDMODULE
@@ -5543,87 +4801,38 @@ plgndr	qorderparam_blj.f90	/^	DOUBLE PRECISION FUNCTION plgndr(/;"	f
 plgndr2	qorderparam_lj.f90	/^	DOUBLE PRECISION FUNCTION plgndr2(/;"	f
 points	fedor.f	1697;"	c	function:ut
 polegn	fedor.f	/^      subroutine polegn(/;"	s
-potind	AMH/potind.f	/^      subroutine potind(/;"	s
-prcord	AMH/amhglobals.f	/^     *     bondln(maxsiz,maxcrd),target(maxsiz,3,maxcrd),$/;"	v	module:amhglobals
 pres0	modamber9.f90	/^double precision t,dt,temp0,tautp,pres0,/;"	v	module:MODAMBER9
 prmtop	modamber9.f90	/^      CHARACTER(len=81) :: prmtop$/;"	v	module:MODAMBER9
-protnm	AMH/amhglobals.f	/^      character protnm(/;"	v	module:amhglobals
 psiatom1	modamb.f90	/^      INTEGER phiatom1(50), phiatom2(50), psiatom1(/;"	v	module:MODAMBER
 psiatom2	modamb.f90	/^      INTEGER phiatom1(50), phiatom2(50), psiatom1(50), psiatom2(/;"	v	module:MODAMBER
-pttarg	AMH/pttarg.f	/^      subroutine pttarg(/;"	s
 pzextr	odesd.f	/^      SUBROUTINE pzextr(/;"	s
-q	ackland_sma.h	/^       COMMON \/param_pot_sma\/a_r,p,b_a,q,alpha       $/;"	v
-q	ackland_sma.h	/^       double precision Ro,delta,a_r,p,b_a,q,alpha$/;"	v
 q	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: x, y, z, q /;"	v	module:MODAMBER
-q1	ackland_mishin_cu.h	/^               beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2        $/;"	v
-q1	ackland_mishin_cu.h	/^      double precision beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2$/;"	v
-q2	ackland_mishin_cu.h	/^               beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2        $/;"	v
-q2	ackland_mishin_cu.h	/^      double precision beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2$/;"	v
-q3	ackland_mishin_cu.h	/^               beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2        $/;"	v
-q3	ackland_mishin_cu.h	/^      double precision beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2$/;"	v
-q4	ackland_mishin_cu.h	/^               beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2        $/;"	v
-q4	ackland_mishin_cu.h	/^      double precision beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2$/;"	v
-qchrg	AMH/amhglobals.f	/^     *     hydseq(maxres,2,maxtab),$/;"	v	module:amhglobals
-qchrg2	AMH/amhglobals.f	/^     *     qchrg(21,21,20,20,max_well+2),$/;"	v	module:amhglobals
-qchrgmk	AMH/qchrgmk.f	/^      subroutine qchrgmk(/;"	s
 qcol	mododesd.f90	/^    double precision, allocatable :: qcol(/;"	v	module:odesdsavear
 qenergy	modamb.f90	/^      DOUBLE PRECISION  totenergy,benergy,tenergy,penergy,answer,impenergy,qenergy,/;"	v	module:MODAMBER
 qlist	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:,:) ::  qlist,/;"	v	module:MODAMBER
 qlistcount	modamb.f90	/^      INTEGER qlistcount,/;"	v	module:MODAMBER
 qpsander	modamber9.f90	/^logical belly, erstop, qsetup, qpsander$/;"	v	module:MODAMBER9
-qq1	ackland_mishin_cu.h	/^               beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2        $/;"	v
-qq1	ackland_mishin_cu.h	/^      double precision beta1,beta2,F0,F2,q1,q2,q3,q4,qq1,qq2$/;"	v
 qsetup	modamber9.f90	/^logical belly, erstop, qsetup,/;"	v	module:MODAMBER9
-quench	AMH/amhglobals.f	/^      logical alpha_c_of_n,ab_c_of_n_old,ab_c_of_n_new,quench$/;"	v	module:amhglobals
-quench_crd	AMH/amhglobals.f	/^     *     avep(maxpro,2,50),$/;"	v	module:amhglobals
 qx	modamb.f90	/^      DOUBLE PRECISION  qx(/;"	v	module:MODAMBER
 qy	modamb.f90	/^      DOUBLE PRECISION  qx(3),qy(/;"	v	module:MODAMBER
 qz	modamb.f90	/^      DOUBLE PRECISION  qx(3),qy(3),qz(/;"	v	module:MODAMBER
 r	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: r,/;"	v	module:MODAMBER
-r1	ackland_mendelev_fe.h	/^   double precision abohr, ZnFE,r1,r2,bFE0,bFE1,bFE2,bFE3, &$/;"	v
-r2	ackland_mendelev_fe.h	/^   double precision abohr, ZnFE,r1,r2,bFE0,bFE1,bFE2,bFE3, &$/;"	v
-r_cut_P_AP	AMH/amhglobals.f	/^       double precision :: weight_P_AP(3),r_cut_P_AP$/;"	v	module:amhglobals
-r_max	AMH/amhglobals.f	/^      double precision r_min(1:max_well),r_max(/;"	v	module:amhglobals
-r_max_contact_order	AMH/amhglobals.f	/^      double precision r_min_contact_order(max_contact_order_terms),$/;"	v	module:amhglobals
-r_min	AMH/amhglobals.f	/^      double precision r_min(/;"	v	module:amhglobals
-r_min_contact_order	AMH/amhglobals.f	/^      double precision r_min_contact_order(/;"	v	module:amhglobals
-r_ran	AMH/amhglobals.f	/^      double precision  r_ran,/;"	v	module:amhglobals
 rad	modamber9.f90	/^double precision box,cut,scnb,scee,dielc,rad,/;"	v	module:MODAMBER9
 radhb	modamber9.f90	/^double precision box,cut,scnb,scee,dielc,rad,wel,radhb,/;"	v	module:MODAMBER9
 radii	modamber9.f90	/^      vecs, radii,/;"	v	module:MODAMBER9
-rama	AMH/rama.f	/^      subroutine rama(/;"	s
-ramascl	AMH/amhglobals.f	/^      double precision ramascl$/;"	v	module:amhglobals
-ran_file	AMH/amhglobals.f	/^      logical ran_force,ran_file,/;"	v	module:amhglobals
-ran_force	AMH/amhglobals.f	/^      logical ran_force,/;"	v	module:amhglobals
-ran_min_seq_dist	AMH/amhglobals.f	/^      integer ran_min_seq_dist$/;"	v	module:amhglobals
 range2inv3	ljcapsidmodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,sigma1,cut,ron,ron2,range2inv3$/;"	v	module:LJCAPSIDMODULE
 range2inv3	pymodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,sigma1(4),cut,ron,ron2,range2inv3,/;"	v	module:PYMODULE
 rbornstat	modamber9.f90	/^      gbsa,vrand,iwrap,nrespa,irespa,nrespai,icfe,  &!48$/;"	v	module:MODAMBER9
 rbtarg	modamber9.f90	/^      tol,taur,dx0,drms,vlimit,rbtarg(/;"	v	module:MODAMBER9
-rcut	AMH/amhglobals.f	/^      double precision rcut,/;"	v	module:amhglobals
-rcutAMH	AMH/amhglobals.f	/^      double precision rcut,rcutAMH,/;"	v	module:amhglobals
 rdt	modamber9.f90	/^          kappa,offset,surften,gamma_ln,extdiel,intdiel,rdt,/;"	v	module:MODAMBER9
-read_altgamma	AMH/altpot_io.f90	/^      subroutine read_altgamma(/;"	s
-read_input_alt	AMH/altpot_io.f90	/^      subroutine read_input_alt(/;"	s
 readcoords	modamber9.f90	/^      LOGICAL MDSTEPT, readcoords,/;"	v	module:MODAMBER9
 redir	modamber9.f90	/^      vecs, radii, freqe,redir(/;"	v	module:MODAMBER9
 refc	modamber9.f90	/^character(len=256) mdin, mdout, inpcrd, parm, restrt, &$/;"	v	module:MODAMBER9
-rep_bias	AMH/rep_bias.f90	/^      subroutine rep_bias(/;"	s
-rep_con_2_res	AMH/amhglobals.f	/^      integer n_rep_con(maxsiz),rep_con_2_res(/;"	v	module:amhglobals
-rep_contact	AMH/rep_contact.f90	/^      subroutine rep_contact(/;"	s
-rep_cut_off	AMH/amhglobals.f	/^      double precision rep_phi_exp(maxsiz),rep_lambda(maxsiz),$/;"	v	module:amhglobals
-rep_lambda	AMH/amhglobals.f	/^      double precision rep_phi_exp(maxsiz),rep_lambda(/;"	v	module:amhglobals
-rep_phi_exp	AMH/amhglobals.f	/^      double precision rep_phi_exp(/;"	v	module:amhglobals
-rep_tol	AMH/amhglobals.f	/^     *   rep_cut_off,rep_tol$/;"	v	module:amhglobals
 repcrd	modamber9.f90	/^      idecomp,icnstph,ntcnstph,maxdup,numexchg,repcrd,/;"	v	module:MODAMBER9
 res	modamb.f90	/^      INTEGER phiatom1(50), phiatom2(50), psiatom1(50), psiatom2(50), res$/;"	v	module:MODAMBER
 restraint_wt	modamber9.f90	/^          solvph,rgbmax,fsmax,restraint_wt,/;"	v	module:MODAMBER9
 restraintmask	modamber9.f90	/^character(len=256) restraintmask,/;"	v	module:MODAMBER9
-restrt	AMH/restrt.f	/^      subroutine restrt(/;"	s
 restrt	modamber9.f90	/^character(len=256) mdin, mdout, inpcrd, parm, restrt,/;"	v	module:MODAMBER9
-rg_bounds	AMH/amhglobals.f	/^      double precision rg_bounds(/;"	v	module:amhglobals
-rg_scl	AMH/amhglobals.f	/^      double precision rg_scl$/;"	v	module:amhglobals
-rg_shift	AMH/amhglobals.f	/^      double precision rg_shift$/;"	v	module:amhglobals
 rgbmax	modamber9.f90	/^          solvph,rgbmax,/;"	v	module:MODAMBER9
 rgni	fedor.f	/^      subroutine rgni(/;"	s
 rgnii	fedor.f	/^      subroutine rgnii(/;"	s
@@ -5634,15 +4843,11 @@ rh1	EAMal.f	/^      SUBROUTINE rh1(/;"	s
 rho_pot	Ackland_metals.f90	/^        double precision function rho_pot(/;"	f
 rho_pot_d	Ackland_metals.f90	/^       double precision function rho_pot_d(/;"	f
 rho_pot_dd	Ackland_metals.f90	/^        double precision  function rho_pot_dd(/;"	f
-rinc	AMH/amhglobals.f	/^     *     amh_gse,$/;"	v	module:amhglobals
-rincinv	AMH/amhglobals.f	/^     *     rinc(maxcnt,maxtab),$/;"	v	module:amhglobals
-rincsq	AMH/amhglobals.f	/^     *     rincinv(maxcnt,maxtab),$/;"	v	module:amhglobals
 rings	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,k,l,colin,fish,ans,rings,/;"	v	module:MODAMBER
 rkck	odesd.f	/^      SUBROUTINE rkck(/;"	s
 rkqs	odesd.f	/^      SUBROUTINE rkqs(/;"	s
 rlist	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:,:) ::  qlist, rlist /;"	v	module:MODAMBER
 rlistcount	modamb.f90	/^      INTEGER qlistcount, rlistcount,/;"	v	module:MODAMBER
-rndcol	AMH/rndcol.f	/^      subroutine rndcol(/;"	s
 rndfles	modamber9.f90	/^double precision ekinles0,temp0les,rndfles,/;"	v	module:MODAMBER9
 ro	modamb.f90	/^      DOUBLE PRECISION kr(42,42),ro(/;"	v	module:MODAMBER
 ron	ljcapsidmodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,sigma1,cut,ron,/;"	v	module:LJCAPSIDMODULE
@@ -5654,101 +4859,60 @@ rstar	modamb.f90	/^      DOUBLE PRECISION rstar,/;"	v	module:MODAMBER
 rstdip	modamber9.f90	/^      vecs, radii, freqe,redir(8),rstdip,/;"	v	module:MODAMBER9
 rwell	modamber9.f90	/^      cutcap,xcap,ycap,zcap,fcap,rwell,/;"	v	module:MODAMBER9
 rzextr	odesd.f	/^      SUBROUTINE rzextr(/;"	s
-s_ran	AMH/amhglobals.f	/^      double precision  r_ran,s_ran$/;"	v	module:amhglobals
-sa	AMH/amhglobals.f	/^     *        numlng(0:maxsiz,maxtab),ires(maxsiz),$/;"	v	module:amhglobals
 saltcon	modamber9.f90	/^          gbalpha,gbbeta,gbgamma,cut_inner,clambda,saltcon,/;"	v	module:MODAMBER9
 sampledbins	commons.f90	/^     &        lhbins, sampledbins,/;"	v	module:COMMONS
 sampledbins	commons.o.f90	/^     &        lhbins, sampledbins,/;"	v	module:COMMONS
-savstr	AMH/savstr.f	/^      subroutine savstr(/;"	s
 scaldip	modamber9.f90	/^      fix_quad,  mpoltype,   induced,    frameon, chngmask, &$/;"	v	module:MODAMBER9
 scalm	modamber9.f90	/^double precision scalm,/;"	v	module:MODAMBER9
 scaltles	modamber9.f90	/^double precision scaltles,/;"	v	module:MODAMBER9
 scee	modamber9.f90	/^double precision box,cut,scnb,scee,/;"	v	module:MODAMBER9
-scltab	AMH/scltab.f	/^      subroutine scltab$/;"	s
 scnb	modamber9.f90	/^double precision box,cut,scnb,/;"	v	module:MODAMBER9
 sdfacles	modamber9.f90	/^double precision ekinles0,temp0les,rndfles,sdfacles$/;"	v	module:MODAMBER9
 seedphi	modamb.f90	/^      DOUBLE PRECISION  seedphi(/;"	v	module:MODAMBER
 seedpsi	modamb.f90	/^      DOUBLE PRECISION  seedphi(50), seedpsi(/;"	v	module:MODAMBER
-seglist_a	AMH/amhglobals.f	/^      integer seglist_a(/;"	v	module:amhglobals
-seglist_b	AMH/amhglobals.f	/^      integer seglist_a(maxres), seglist_b(/;"	v	module:amhglobals
-send_output_alt	AMH/altpot_io.f90	/^      subroutine send_output_alt(/;"	s
 seval	Alglue.f	/^      subroutine seval(/;"	s
 seval1	EAMal.f	/^      subroutine seval1(/;"	s
-shydro	AMH/amhglobals.f	/^     *     deltz(maxcnt,maxtab),shydro(/;"	v	module:amhglobals
 sigma1	ljcapsidmodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,sigma1,/;"	v	module:LJCAPSIDMODULE
 sigma1	pymodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,sigma1(/;"	v	module:PYMODULE
-sigma_NO	AMH/amhglobals.f	/^        double precision sigma_h,sigma_NO,/;"	v	module:amhglobals
-sigma_h	AMH/amhglobals.f	/^        double precision sigma_h,/;"	v	module:amhglobals
 skmax	modamber9.f90	/^          skmin,skmax,/;"	v	module:MODAMBER9
 skmin	modamber9.f90	/^          solvph,rgbmax,fsmax,restraint_wt, &  !42$/;"	v	module:MODAMBER9
 solvph	modamber9.f90	/^          gbalpha,gbbeta,gbgamma,cut_inner,clambda,saltcon,  & !38$/;"	v	module:MODAMBER9
-sort_non_add	AMH/amhglobals.f	/^      integer class_of_res_2(maxsiz),sort_non_add(/;"	v	module:amhglobals
 sortv	fedor.f	/^              subroutine sortv(/;"	s
 specimpparams	modamb.f90	/^      DOUBLE PRECISION gentorsparams(100,6),spectorsparams(100,14),specimpparams(/;"	v	module:MODAMBER
 spectorsparams	modamb.f90	/^      DOUBLE PRECISION gentorsparams(100,6),spectorsparams(/;"	v	module:MODAMBER
 splinegmin	Farkas.f	/^      SUBROUTINE splinegmin(/;"	s
 splint	Farkas.f	/^      SUBROUTINE splint(/;"	s
-srcut	AMH/amhglobals.f	/^      double precision rcut,rcutAMH,srcut$/;"	v	module:amhglobals
-srplr	AMH/amhglobals.f	/^      double precision srplr(/;"	v	module:amhglobals
-ss_a	AMH/amhglobals.f	/^      logical cyclic,ss_a,/;"	v	module:amhglobals
-ss_b	AMH/amhglobals.f	/^      logical cyclic,ss_a,ss_b$/;"	v	module:amhglobals
-ss_dist	AMH/amhglobals.f	/^      double precision ss_dist(/;"	v	module:amhglobals
-ss_pattern_a	AMH/amhglobals.f	/^      integer ss_pattern_a(/;"	v	module:amhglobals
-ss_pattern_b	AMH/amhglobals.f	/^      integer ss_pattern_a(maxres), ss_pattern_b(/;"	v	module:amhglobals
-ssweight	AMH/amhglobals.f	/^      logical ssweight,/;"	v	module:amhglobals
 surften	modamber9.f90	/^          kappa,offset,surften,/;"	v	module:MODAMBER9
 system_subr	porfuncs.f90	/^          subroutine system_subr(/;"	s	module:PORFUNCS
 t	modamb.f90	/^      INTEGER  matc/;"	v	module:MODAMBER
 t	modamber9.f90	/^double precision t,/;"	v	module:MODAMBER9
-t1	AMH/amhglobals.f	/^      double precision t1,/;"	v	module:amhglobals
-t2	AMH/amhglobals.f	/^      double precision t1,t2,/;"	v	module:amhglobals
-t3	AMH/amhglobals.f	/^      double precision t1,t2,t3,/;"	v	module:amhglobals
-t4	AMH/amhglobals.f	/^      double precision t1,t2,t3,t4,/;"	v	module:amhglobals
-t5	AMH/amhglobals.f	/^      double precision t1,t2,t3,t4,t5$/;"	v	module:amhglobals
 takestepamber	amber9dummy.f90	/^subroutine takestepamber(/;"	s
 takestepamm	amber9dummy.f90	/^subroutine takestepamm(/;"	s
-targ_cons	AMH/amhglobals.f	/^      logical ave_seq,targ_cons,/;"	v	module:amhglobals
-targ_dist	AMH/amhglobals.f	/^      double precision targ_dist(/;"	v	module:amhglobals
-target	AMH/amhglobals.f	/^     *     bondln(maxsiz,maxcrd),target(/;"	v	module:amhglobals
-tarpre	AMH/amhglobals.f	/^     *        sa(maxres),$/;"	v	module:amhglobals
 taup	modamber9.f90	/^double precision t,dt,temp0,tautp,pres0,comp,taup,/;"	v	module:MODAMBER9
 taur	modamber9.f90	/^      tol,taur,/;"	v	module:MODAMBER9
 tausw	modamber9.f90	/^double precision scalm,pencut,ensave,tausw,/;"	v	module:MODAMBER9
 tautp	modamber9.f90	/^double precision t,dt,temp0,tautp,/;"	v	module:MODAMBER9
-temgrd	AMH/amhglobals.f	/^      double precision temtur(mxtemp),temtur_quench(maxmov,maxmov),temgrd(/;"	v	module:amhglobals
 temp	modamber9.f90	/^double precision t,dt,temp0/;"	v	module:MODAMBER9
 temp0	modamber9.f90	/^double precision t,dt,temp0,/;"	v	module:MODAMBER9
 temp0les	modamber9.f90	/^double precision ekinles0,temp0les,/;"	v	module:MODAMBER9
 tempi	modamber9.f90	/^double precision t,dt,temp0,tautp,pres0,comp,taup,temp,tempi,/;"	v	module:MODAMBER9
 tempsules	modamber9.f90	/^double precision scaltles,tempsules,/;"	v	module:MODAMBER9
-temtur	AMH/amhglobals.f	/^      double precision temtur(/;"	v	module:amhglobals
-temtur_quench	AMH/amhglobals.f	/^      double precision temtur(mxtemp),temtur_quench(/;"	v	module:amhglobals
 tenergy	modamb.f90	/^      DOUBLE PRECISION  totenergy,/;"	v	module:MODAMBER
-test_site	AMH/amhglobals.f	/^      integer test_site(/;"	v	module:amhglobals
 tetherfunc	tetherfunc.f90	/^      module tetherfunc /;"	m
-tgsequences	AMH/amhglobals.f	/^      integer tgsequences(/;"	v	module:amhglobals
-tgsequences_amc	AMH/amhglobals.f	/^      integer tgsequences_amc(/;"	v	module:amhglobals
-tgsequences_amw	AMH/amhglobals.f	/^      integer tgsequences_amw(/;"	v	module:amhglobals
-tgsequences_hb	AMH/amhglobals.f	/^      integer tgsequences_hb(/;"	v	module:amhglobals
 tgtfitmask	modamber9.f90	/^character(len=256) restraintmask,bellymask,tgtfitmask,/;"	v	module:MODAMBER9
 tgtmdfrc	modamber9.f90	/^double precision tgtrmsd,tgtmdfrc$/;"	v	module:MODAMBER9
 tgtrmsd	modamber9.f90	/^double precision tgtrmsd,/;"	v	module:MODAMBER9
 tgtrmsmask	modamber9.f90	/^character(len=256) restraintmask,bellymask,tgtfitmask,tgtrmsmask,/;"	v	module:MODAMBER9
 theta	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) ::  theta /;"	v	module:MODAMBER
-timings_file_alt	AMH/globals_alt.f90	/^        integer outfile1_alt(10),n_OB_wells,timings_file_alt$/;"	v	module:globals_alt
-timstp	AMH/amhglobals.f	/^      double precision timstp$/;"	v	module:amhglobals
 tmass	modamber9.f90	/^      tol,taur,dx0,drms,vlimit,rbtarg(9),tmass,/;"	v	module:MODAMBER9
 tmassinv	modamber9.f90	/^      tol,taur,dx0,drms,vlimit,rbtarg(9),tmass,tmassinv,/;"	v	module:MODAMBER9
 tmd_real	modamber9.f90	303;"	c	module:MODAMBER9
 tmode	modamber9.f90	/^      neb,vv,tmode,/;"	v	module:MODAMBER9
 to	modamb.f90	/^      DOUBLE PRECISION kt(42,42,42),to(/;"	v	module:MODAMBER
 tol	modamber9.f90	/^double precision t,dt,temp0,tautp,pres0,comp,taup,temp,tempi, & !9$/;"	v	module:MODAMBER9
-tolshk	AMH/amhglobals.f	/^      double precision tolshk$/;"	v	module:amhglobals
 tomegac	modamber9.f90	/^logical:: tomegac$/;"	v	module:MODAMBER9
 top	modamb.f90	/^      DOUBLE PRECISION  top,/;"	v	module:MODAMBER
-totalssnorm	AMH/amhglobals.f	/^      integer num_foldon_a,num_foldon_b,const_mode, totalssnorm$/;"	v	module:amhglobals
 totenergy	modamb.f90	/^      DOUBLE PRECISION  totenergy,/;"	v	module:MODAMBER
-treshold_alt	AMH/globals_alt.f90	/^        double precision kappa_alt,treshold_alt,/;"	v	module:globals_alt
 twopi	ljcapsidmodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,/;"	v	module:LJCAPSIDMODULE
 twopi	pymodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,/;"	v	module:PYMODULE
 type	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  atnum, bondedto, type /;"	v	module:MODAMBER
@@ -5778,28 +4942,13 @@ vecsbf	pymodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,sigma1(4),cut,r
 verbose	modamber9.f90	/^integer verbose,/;"	v	module:MODAMBER9
 vfac	modamber9.f90	/^          skmin,skmax,vfac,/;"	v	module:MODAMBER9
 vlimit	modamber9.f90	/^      tol,taur,dx0,drms,vlimit,/;"	v	module:MODAMBER9
-vpotnt	AMH/amhglobals.f	/^      double precision vpotnt(/;"	v	module:amhglobals
 vrand	modamber9.f90	/^      gbsa,vrand,/;"	v	module:MODAMBER9
 vv	modamber9.f90	/^      neb,vv,/;"	v	module:MODAMBER9
 wait_subr	porfuncs.f90	/^          subroutine wait_subr(/;"	s	module:PORFUNCS
-walesamh_initial	AMH/walesamh_initial.f	/^      subroutine walesamh_initial(/;"	s
-walesamh_interface	AMH/walesamh_interface.f90	/^      subroutine walesamh_interface(/;"	s
-weight_P_AP	AMH/amhglobals.f	/^       double precision :: weight_P_AP(/;"	v	module:amhglobals
 wel	modamber9.f90	/^double precision box,cut,scnb,scee,dielc,rad,wel,/;"	v	module:MODAMBER9
 welhb	modamber9.f90	/^double precision box,cut,scnb,scee,dielc,rad,wel,radhb,welhb,/;"	v	module:MODAMBER9
-welscl	AMH/amhglobals.f	/^      logical welscl$/;"	v	module:amhglobals
-width_Qexp_a	AMH/amhglobals.f	/^     *           biaspoly(1:100),Qbiaspoly_a(1:100),$/;"	v	module:amhglobals
-width_Qexp_b	AMH/amhglobals.f	/^      double precision        width_Qexp_b,/;"	v	module:amhglobals
-work1	AMH/amhglobals.f	/^      double precision work1(/;"	v	module:amhglobals
-work2	AMH/amhglobals.f	/^      double precision work1(maxcnt),work2(/;"	v	module:amhglobals
-work3	AMH/amhglobals.f	/^      double precision work1(maxcnt),work2(maxcnt),work3(/;"	v	module:amhglobals
-work4	AMH/amhglobals.f	/^      double precision work1(maxcnt),work2(maxcnt),work3(maxcnt),$/;"	v	module:amhglobals
-work6	AMH/amhglobals.f	/^     *     work4(maxcnt),work6(/;"	v	module:amhglobals
-work8	AMH/amhglobals.f	/^     *     work4(maxcnt),work6(maxcnt),work8(/;"	v	module:amhglobals
 x	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: x,/;"	v	module:MODAMBER
 x	modamber9.f90	/^   double precision,  dimension(:), allocatable :: x$/;"	v	module:MODAMBER9
-x_int	AMH/amhglobals.f	/^      DOUBLE PRECISION x_int(/;"	v	module:amhglobals
-x_mcp	AMH/amhglobals.f	/^      DOUBLE PRECISION x_mcp(/;"	v	module:amhglobals
 xbar	modamb.f90	/^      DOUBLE PRECISION xbar,/;"	v	module:MODAMBER
 xbox0	modamber9.f90	/^      cutcap,xcap,ycap,zcap,fcap,rwell,xbox0,/;"	v	module:MODAMBER9
 xcap	modamber9.f90	/^      cutcap,xcap,/;"	v	module:MODAMBER9
@@ -5810,11 +4959,7 @@ y	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: x, y,/;"	v	m
 ybar	modamb.f90	/^      DOUBLE PRECISION xbar, ybar,/;"	v	module:MODAMBER
 ybox0	modamber9.f90	/^      cutcap,xcap,ycap,zcap,fcap,rwell,xbox0,ybox0,/;"	v	module:MODAMBER9
 ycap	modamber9.f90	/^      cutcap,xcap,ycap,/;"	v	module:MODAMBER9
-ynorm	AMH/ynorm.f	/^      subroutine ynorm(/;"	s
-ywork	AMH/amhglobals.f	/^     *     deltz(maxcnt,maxtab),shydro(maxres,2,maxtab),$/;"	v	module:amhglobals
 z	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: x, y, z,/;"	v	module:MODAMBER
 zbar	modamb.f90	/^      DOUBLE PRECISION xbar, ybar, zbar$/;"	v	module:MODAMBER
 zbox0	modamber9.f90	/^      cutcap,xcap,ycap,zcap,fcap,rwell,xbox0,ybox0,zbox0$/;"	v	module:MODAMBER9
 zcap	modamber9.f90	/^      cutcap,xcap,ycap,zcap,/;"	v	module:MODAMBER9
-zero_amh	AMH/zero_amh.f	/^      subroutine zero_amh$/;"	s
-zrcord	AMH/amhglobals.f	/^     *     prcord(maxsiz,3,maxpro,maxcrd),$/;"	v	module:amhglobals

@@ -6,7 +6,7 @@ export shd="`dirname $(readlink -f $0)`"
 export wg_dir="$shd/../../"
 source $shd/sh_header.sh
 
-d="$wg_dir/GMIN/source"
+d="$wg_dir/GMIN"
 p="GMIN"
 file="keyword.f"
 export p_arg="g"
@@ -230,7 +230,7 @@ while [ ! -z "$1" ]
 		 	 "g" | gmin | optim | "o" | pathsample | "ps" | "ds") 
 			 	p_arg="$1"
 				p=`pp $p_arg`
-				d="$wg_dir/$p/source"
+				d="$wg_dir/$p/"
 				select_file
 			;;
 			a) p_args=( gmin optim pathsample )

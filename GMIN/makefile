@@ -12,7 +12,6 @@ include $(INCPATH)/make.inc
 #
 #
 include $(INCPATH)/targets
-include $(INCPATH)/mkf
 
 $(PROG): $(LIBS)
 
