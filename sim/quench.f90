@@ -45,10 +45,7 @@
       IF (CFLAG) QDONE=1
 
       IF (.NOT.CFLAG) THEN
-         IF (FINALQUENCH) THEN
             WRITE(MYUNIT,'(A,I6,A)') 'WARNING - Final Quench ',NQ,'  did not converge'
-         ELSE
-         ENDIF
       ENDIF
 
       CALL MYCPU_TIME(TIME)

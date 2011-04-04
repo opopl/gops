@@ -2,6 +2,7 @@
 !> @name COMMONS
 !
 !> @brief Declarations for common variables 
+!
 MODULE COMMONS
 
 IMPLICIT NONE
@@ -10,6 +11,7 @@ SAVE
 !> @param MCSTEPS       (i)     length of a BH run   
 !> @param NATOMS        (i)     number of particles in the system
 !> @param NCORE         (i)     
+!> @param NQ            (i)     
 !> @param NSAVE         (i)     number of lowest energy geometries to be saved
 !> @param NSTEPS        (i)     
 !> @param STEP          (dp)    maximum step size in BH calculations
@@ -19,6 +21,7 @@ INTEGER :: NATOMS
 INTEGER :: NSAVE
 INTEGER :: ISTEP
 INTEGER :: NCORE
+INTEGER :: NQ
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS
 

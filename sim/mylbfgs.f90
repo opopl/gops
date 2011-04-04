@@ -224,11 +224,7 @@ C
       DOT2=SQRT(DDOT(N,WTEMP,1,WTEMP,1))
       OVERLAP=0.0D0
       IF (DOT1*DOT2.NE.0.0D0) THEN
-         IF (CHRMMT.AND.INTMINT) THEN
-            OVERLAP=DDOT(N,GINT,1,WTEMP,1)/(DOT1*DOT2)
-         ELSE
-            OVERLAP=DDOT(N,GRAD,1,WTEMP,1)/(DOT1*DOT2)
-        ENDIF
+                   OVERLAP=DDOT(N,GRAD,1,WTEMP,1)/(DOT1*DOT2)
       ENDIF
       IF (OVERLAP.GT.0.0D0) THEN
          IF (DEBUG) WRITE(MYUNIT,'(A)') 'Search direction has positive projection onto gradient - reversing step'

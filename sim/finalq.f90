@@ -1,26 +1,20 @@
 
 !> 
-!> \name FINALQ
-!> \brief Make sure the lowest minima are tightly converged and then sort them just to be on the safe side.
-!> 
+!> @name FINALQ
+!> @brief Make sure the lowest minima are tightly converged and then sort them just to be on the safe side.
+
       SUBROUTINE FINALQ
 
       USE COMMONS
-      use QMODULE
 
       IMPLICIT NONE
 
-      INTEGER J1, J2, ITERATIONS, BRUN,QDONE, J3
-      DOUBLE PRECISION POTEL, SCREENC(3*NATOMS), X(3*NATOMS), ENERGY, GRAD(3*NATOMS), TIME
-      DOUBLE PRECISION SAVECSMNORM, DUMMY2, DIST2, RMAT(3,3), AVVAL, CSMGRAD(3), XTEMP(1:3*NATOMS)
-      DOUBLE PRECISION DUMMY(3*NATOMS), AA(3)
+      INTEGER J1, J2, ITERATIONS, BRUN,QDONE,J3
+      DOUBLE PRECISION POTEL, TIME
 
       COMMON /MYPOT/ POTEL
  
-      CSMGUIDET=.FALSE.
-      SHELLMOVES(1:NPAR)=.FALSE.
-      SAVEQ=.FALSE.
-      NQ(1)=0
+      NQ=0
       MAXIT=MAXIT2
 
       DO J1=1,NSAVE
@@ -28,9 +22,9 @@
             DO J2=1,3*NATOMS
                COORDS(J2,1)=QMINP(J1,J2)
             ENDDO
-            NQ(1)=NQ(1)+1
+            NQ=NQ+1
             CALL QUENCH(.TRUE.,1,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
-            WRITE(MYUNIT,'(A,I6,A,F20.10,A,I5,A,F15.7,A,F12.2)') 'Final Quench ',NQ(1),' energy=',
+            WRITE(MYUNIT,'(A,I6,A,F20.10,A,I5,A,F15.7,A,F12.2)') 'Final Quench ',NQ,' energy=',
      1                POTEL,' steps=',ITERATIONS,' RMS force=',RMS,' time=',TIME-TSTART
 
             QMIN(J1)=POTEL
@@ -40,8 +34,9 @@
          ENDIF
       ENDDO
 
-      NSAVE=NQ(1)
-      CALL GSORT2(NSAVE,NATOMS)
+      NSAVE=NQ
+
+      CALL GSORT(NSAVE,NATOMS)
 
       RETURN
       END
