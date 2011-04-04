@@ -1,53 +1,40 @@
 
-      SUBROUTINE QUENCH(QTEST,ITER,TIME,BRUN,QDONE,P)
+      SUBROUTINE QUENCH(FINALQUENCH,ITER,TIME,BRUN,QDONE,P)
 
       USE COMMONS
-      USE QMODULE
       USE PORFUNCS
 
       IMPLICIT NONE
 
-      LOGICAL QTEST
+      ! SUBROUTINE PARAMETERS
+      LOGICAL FINALQUENCH
       INTEGER ITER
       DOUBLE PRECISION TIME
       INTEGER BRUN,QDONE
       DOUBLE PRECISION P(3*NATOMS)
 
-      INTEGER I, J1, NSQSTEPS, IFLAG, NOPT, J2, NDUMMY, J3, CSMIT
-      DOUBLE PRECISION POTEL,EREAL,RBCOORDS(18),TMPCOORDS(3*NATOMS), DIST, QE, QX, AVVAL, CSMRMS
+      ! LOCAL PARAMETERS 
+      DOUBLE PRECISION SSAVE
+      INTEGER NOPT
 
-      LOGICAL CFLAG, RES, COMPON, EVAPREJECT
-      DOUBLE PRECISION  GRAD(3*NATOMS), DUMMY, DUM(3*NATOMS), DISTMIN, SSAVE, DIST2, RMAT(3,3)
+!  Turn on guiding potentials. These get turned off in potential.F when the RMS force is small enough.
 
-      CHARACTER(LEN=80) DSTRING
-      COMMON /MYPOT/ POTEL
-      COMMON /CO/ COMPON
-      COMMON /DMIN/ DISTMIN
-      LOGICAL GUIDECHANGET, GUIDET, CSMDOGUIDET
-      COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
-      COMMON /EV/ EVAPREJECT
-      DOUBLE PRECISION QSTART, QFINISH
-      COMMON /Q4C/ QSTART, QFINISH
-      COMMON /CSMAVVAL/ AVVAL, CSMRMS, CSMIT
-
-C
-C  Turn on guiding potentials. These get turned off in potential.F when
-C  the RMS force is small enough.
-C
-      SSAVE=STEP(NP)
-
+      SSAVE=STEP
       NFIX=0
+      NOPT=3*NATOMS
 
-C  QTEST is set for the final quenches with tighter convergence criteria.
-      IF (QTEST) THEN
+!  FINALQUENCH is set for the final quenches with tighter convergence criteria.
+
+      IF (FINALQUENCH) THEN
          GMAX=CQMAX
       ELSE
          GMAX=BQMAX
       ENDIF
 
       QDONE=0
+
       DO I=1,3*NATOMS
-         P(I)=COORDS(I,NP)
+         P(I)=COORDS(I)
       ENDDO
 
       COMPON=.FALSE.
@@ -58,8 +45,8 @@ C  QTEST is set for the final quenches with tighter convergence criteria.
       IF (CFLAG) QDONE=1
 
       IF (.NOT.CFLAG) THEN
-         IF (QTEST) THEN
-            WRITE(MYUNIT,'(A,I6,A)') 'WARNING - Final Quench ',NQ(NP),'  did not converge'
+         IF (FINALQUENCH) THEN
+            WRITE(MYUNIT,'(A,I6,A)') 'WARNING - Final Quench ',NQ,'  did not converge'
          ELSE
          ENDIF
       ENDIF
@@ -70,10 +57,10 @@ C  QTEST is set for the final quenches with tighter convergence criteria.
 
       IF (.NOT.NORESET) THEN
          DO J1=1,3*(NATOMS-NSEED)
-            COORDS(J1,NP)=P(J1)
+            COORDS(J1)=P(J1)
          ENDDO
          DO J1=1,NATOMS
-            VAT(J1,NP)=VT(J1)
+            VAT(J1)=VT(J1)
          ENDDO
       ENDIF
 

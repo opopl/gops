@@ -68,7 +68,6 @@ C  AMH
       NUMCRD = 3
 
       ALLOCATE(DBNAME(NSAVE))
-
      
       DO J1=1,NSAVE
          WRITE(DBNUM,*) J1

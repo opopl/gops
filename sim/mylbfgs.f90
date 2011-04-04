@@ -15,7 +15,7 @@
       INTEGER ITMAX,ITDONE
       LOGICAL RESET
       
-      integer J1,J2,J3,NFAIL,NDECREASE,NGUESS,NDUMMY
+      INTEGER J1,J2,J3,NFAIL,NDECREASE,NGUESS,NDUMMY
       DOUBLE PRECISION GRAD(3*NATOMS),SLENGTH,DDOT,EPLUS,EMINUS,DIFF,DUMMY,WTEMP(3*NATOMS)
       DOUBLE PRECISION TMPANG(3*NATOMS), TMPCOORDS(3*NATOMS)
       DOUBLE PRECISION ENEW,GNEW(3*NATOMS),OVERLAP,OLDX(3*NATOMS),OLDOLDX(3*NATOMS),VGUESS(3),
@@ -60,31 +60,7 @@
 
       CALL POTENTIAL(XCOORDS,GRAD,ENERGY,.TRUE.,.FALSE.)
 
-C
-C  If INTMINT and CHRMMT need to transform to internal coordinates
-C  See COPTIM.2.3 for switching to internals from Cartesians using LIMINCUT.
-C
-      IF (INTMINT) THEN
-         OLDCART(1:3*NATOMS)=XCOORDS(1:3*NATOMS) ! store cartesians in OLDCART for both CHARMM and UNRES
-C         IF (UNRST) THEN
-CC
-CC store internals (in OLDQ) and update X to contain internals
-CC
-C            CALL geom_to_var(N,OLDQ)
-C            XCOORDS(1:N)=OLDQ(1:N)
-C         ELSE IF (CHRMMT) THEN
-            CALL GETKD(KD) ! get width of sparse band in G matrix KD
-            CALL GETNNZ(NNZ) ! get number of non-zero elements in B-matrix
-            NOCOOR=.FALSE. ! calculate internals therefore NOCOOR is false
-            GINT(1:N)=0.0D0 ! to prevent NaN's for Sun!
-            XINT(1:N)=0.0D0 ! to prevent NaN's for Sun!
-            CALL TRANSFORM(XCOORDS,GRAD,XINT,GINT,N,3*NATOMS,NNZ,NOCOOR,KD)
-            OLDQ(1:N)=XINT(1:N)    ! store internals
-            OLDGINT(1:N)=GINT(1:N) ! store gradient in internals
-C         ENDIF
-      ENDIF
-
-      IF (EVAPREJECT) RETURN
+         IF (EVAPREJECT) RETURN
       POTEL=ENERGY
 
       IF (DEBUG) WRITE(MYUNIT,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
@@ -106,7 +82,6 @@ C
       IF (ITDONE.EQ.ITMAX) THEN
          IF (DEBUG) FIXIMAGE=.FALSE.
          IF (DEBUG) WRITE(MYUNIT,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
-!        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
          RETURN
       ENDIF
 

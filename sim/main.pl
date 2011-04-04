@@ -1,21 +1,19 @@
 #!/usr/bin/perl 
 
-# Initial part {{{
-
 use strict;
 use warnings;
 use boolean;
 
 my @progs=( GMIN OPTIM PATHSAMPLE );
-
 my $prog=GMIN;
-	
-	# number of atoms in the system
+
+# Initial part {{{
+
 my $natoms;
 my @screenc;
 
-	# file names
 my %fname=(
+	# {{{
 	logfile			=>	$prog.log,
 	coords			=>	coords,
 	best			=>	best.dat,
@@ -23,7 +21,10 @@ my %fname=(
 	rmsd			=>	rmsd.dat,
 	pairdist		=>	pairdists,
 	data			=>	data
+	# }}}
 )
+
+#kwd {{{
 
 #my %kwdh=(
 ## {{{		=>,
@@ -321,6 +322,7 @@ my %kwddef=(
 	maxit			=>	"500 500",
 	orgyr			=>	"",
 	parallel		=>	"1",
+	save			=>	"10",
 	pull			=>	"1 46 0.01",
 	sloppyconv 		=>	"10E-3",
 	step			=>	"step astep ostep block",
@@ -358,6 +360,7 @@ my %kwdh=(
 
 my @kwds=keys %kwdh;
 
+# }}}
 
 # }}}
 
@@ -374,7 +377,7 @@ close LFILE or die "can't close $: $!";;
 
 # }}}
 
-#subroutines {{{
+# subroutines {{{
 
 sub keyword {
 # {{{
@@ -395,8 +398,14 @@ sub mc {
 # {{{
 my ($nsteps,$scalefac,@screenc)=@_;
 
+print LFILE, "Calculating initial energy\n";
+print LFILE, "Qu $nq E= $potel steps=$iterations RMS=$rms Markov E=$potel t=($time-$tstart) \n"; 
+
+$nqtot=$nqtot+1;
+
 print LFILE, "Starting MC run of",$nsteps," steps \n";
 print LFILE, "Temperature will be multiplied by ",$scalefac," at every step\n";
+&bhloop;
 #}}}
 }
 

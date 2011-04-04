@@ -5,21 +5,23 @@
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
 10	finalio.f90	/^10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)$/;"	l	subroutine:FINALIO	file:
+10	func.f90	/^10       CONTINUE$/;"	l	module:FUNC	file:
+10	func.f90	/^10       J2=3*J1$/;"	l	subroutine:TAKESTEP	file:
+10	mylbfgs.f90	/^10    CALL FLUSH(MYUNIT)$/;"	l	subroutine:MYLBFGS	file:
 10	potential.f90	/^10    CONTINUE$/;"	l	subroutine:POTENTIAL	file:
-10	takestep.f90	/^10       J2=3*J1$/;"	l	subroutine:TAKESTEP	file:
 12	keyword.f90	/^12       CONTINUE$/;"	l	subroutine:KEYWORD	file:
 190	keyword.f90	/^190   CALL INPUT(END)$/;"	l	subroutine:KEYWORD	file:
 1964	finalio.f90	/^1964        CONTINUE$/;"	l	subroutine:FINALIO	file:
 20	finalio.f90	/^20          FORMAT('Si',3F20.10)$/;"	l	subroutine:FINALIO	file:
+20	func.f90	/^20    CONTINUE$/;"	l	module:FUNC	file:
 21	mc.f90	/^21         FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)$/;"	l	subroutine:MC	file:
 23	mc.f90	/^23          CONTINUE$/;"	l	subroutine:MC	file:
+235	mylbfgs.f90	/^ 235              FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',\/,$/;"	l	subroutine:MYLBFGS	file:
 30	finalio.f90	/^30          FORMAT('LA ',3F20.10)$/;"	l	subroutine:FINALIO	file:
+30	mylbfgs.f90	/^30    NPT=POINT*N$/;"	l	subroutine:MYLBFGS	file:
 31	finalio.f90	/^31                FORMAT('AM',3G25.15)$/;"	l	subroutine:FINALIO	file:
 33	mc.f90	/^33                FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' EVAP,REJ')$/;"	l	subroutine:MC	file:
-332	mc.f90	/^332                  FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1x))$/;"	l	subroutine:MC	file:
-333	takestep.f90	/^333      CONTINUE$/;"	l	subroutine:TAKESTEP	file:
 334	finalio.f90	/^334      FORMAT(4(I8,1X),' NMRES NMCRD NUMPRO NMSNAP')$/;"	l	subroutine:FINALIO	file:
-334	mc.f90	/^334                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	subroutine:MC	file:
 34	mc.f90	/^34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	subroutine:MC	file:
 36	mc.f90	/^36                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' REJ')$/;"	l	subroutine:MC	file:
 37	mc.f90	/^37    CONTINUE$/;"	l	subroutine:MC	file:
@@ -33,738 +35,73 @@
 632	finalio.f90	/^632            FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1X))$/;"	l	subroutine:FINALIO	file:
 65	finalio.f90	/^65          FORMAT('AR ',3F20.10)$/;"	l	subroutine:FINALIO	file:
 683	finalio.f90	/^683         FORMAT(3(I6,1X),F8.4,1X,I5,' STUCT SNAP T T TID')$/;"	l	subroutine:FINALIO	file:
-683	mc.f90	/^683                  FORMAT(3(i6,1x),f8.4,1x,i5,' stuct snap t T Tid')$/;"	l	subroutine:MC	file:
-73	mc.f90	/^73                   FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' TABOO')$/;"	l	subroutine:MC	file:
-8	takestep.f90	/^8        IF (NCORE(NP).GT.0) THEN$/;"	l	subroutine:TAKESTEP	file:
-A9INTET	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT, LOCALSAMPLET, CSMT, A9INTET,/;"	v	module:COMMONS
-ABTHRESH	commons.f90	/^     &                 TAUMAXFULL, CPFACTORSG, CPFACTORFG, VGWTOL, ABTHRESH,/;"	v	module:COMMONS
-ACCRAT	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP, ACCRAT,/;"	v	module:COMMONS
-ACKLANDID	commons.f90	/^     &        CPS, CPF, ACKLANDID,/;"	v	module:COMMONS
-ACKLANDT	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT,/;"	v	module:COMMONS
-ACTHRESH	commons.f90	/^     &                 TAUMAXFULL, CPFACTORSG, CPFACTORFG, VGWTOL, ABTHRESH, ACTHRESH,/;"	v	module:COMMONS
-ALGLUET	commons.f90	/^     &        EAMALT, ALGLUET,/;"	v	module:COMMONS
-ALPHACC	commons.f90	/^     &                 RHOCH10, RHOC20H, RHOCH20, ALPHACC,/;"	v	module:COMMONS
-ALPHACH	commons.f90	/^     &                 RHOCH10, RHOC20H, RHOCH20, ALPHACC, ALPHAHH, ALPHACH,/;"	v	module:COMMONS
-ALPHAHH	commons.f90	/^     &                 RHOCH10, RHOC20H, RHOCH20, ALPHACC, ALPHAHH,/;"	v	module:COMMONS
-ALPHAM	commons.f90	/^     &                 COULTEMP, APP, AMM, APM, XQP, XQM, ALPHAP, ALPHAM,/;"	v	module:COMMONS
-ALPHAP	commons.f90	/^     &                 COULTEMP, APP, AMM, APM, XQP, XQM, ALPHAP,/;"	v	module:COMMONS
-AMBER	commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL, AMBER,/;"	v	module:COMMONS
-AMBERT	commons.f90	/^     &        PROJIT, PROJIHT, LEAPDIHE, DUMPQUT, PARAMONOVT, LJSITE, BLJSITE, LJSITEATTR, DUMPSTEPST, &$/;"	v	module:COMMONS
+ACCRAT	commons.f90	/^DOUBLE PRECISION TEMP, STEP, OSTEP, ASTEP, ACCRAT,/;"	v	module:COMMONS
 AMBWORD	keyword.f90	60;"	c	subroutine:KEYWORD
-AMHT	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT,/;"	v	module:COMMONS
-AMINOA	commons.f90	/^      CHARACTER AMINOA(/;"	v	module:COMMONS
-AMM	commons.f90	/^     &                 COULTEMP, APP, AMM,/;"	v	module:COMMONS
-ANGST	commons.f90	/^     &        FRAUSIT, ANGST,/;"	v	module:COMMONS
-ANV	commons.f90	/^      INTEGER,ALLOCATABLE :: ANV(/;"	v	module:COMMONS
-APM	commons.f90	/^     &                 COULTEMP, APP, AMM, APM,/;"	v	module:COMMONS
-APP	commons.f90	/^     &                 COULTEMP, APP,/;"	v	module:COMMONS
-ARGON	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON,/;"	v	module:COMMONS
-ARMA	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,/;"	v	module:COMMONS
-ARMB	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB,/;"	v	module:COMMONS
-ARMT	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT,/;"	v	module:COMMONS
-ARNO	commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL, AMBER, FIXIMAGE, BINARY, SHIFTCUT, ARNO,/;"	v	module:COMMONS
-ASAOOS	commons.f90	/^       LOGICAL :: PATCHY, ASAOOS$/;"	v	module:COMMONS
-ASTEP	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP,/;"	v	module:COMMONS
+ASTEP	commons.f90	/^DOUBLE PRECISION TEMP, STEP, OSTEP, ASTEP,/;"	v	module:COMMONS
 ATOM1	main.f90	/^      CHARACTER(LEN=40) :: ATOM1,/;"	v	program:GMIN
 ATOM2	main.f90	/^      CHARACTER(LEN=40) :: ATOM1,ATOM2,/;"	v	program:GMIN
 ATOMPAIR	main.f90	/^      CHARACTER(LEN=40) :: ATOM1,ATOM2,ATOMPAIR$/;"	v	program:GMIN
-AVOID	commons.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART, AVOID,/;"	v	module:COMMONS
-AVOIDDIST	commons.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST,/;"	v	module:COMMONS
-AXTELL	commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL,/;"	v	module:COMMONS
-A_BLN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(/;"	v	module:COMMONS
-BEADLETTER	commons.f90	/^      CHARACTER(LEN=1), ALLOCATABLE :: BEADLETTER(/;"	v	module:COMMONS
-BFGS	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS,/;"	v	module:COMMONS
 BIN	finalio.f90	44;"	c	subroutine:FINALIO
 BIN	keyword.f90	48;"	c	subroutine:KEYWORD
-BINARY	commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL, AMBER, FIXIMAGE, BINARY,/;"	v	module:COMMONS
-BINSTRUCTURES	commons.f90	/^     &        PTMC, BINSTRUCTURES,/;"	v	module:COMMONS
-BLJCLUSTER	commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL, AMBER, FIXIMAGE, BINARY, SHIFTCUT, ARNO, TUNNELT, TWOD, & $/;"	v	module:COMMONS
-BLJSITE	commons.f90	/^     &        PROJIT, PROJIHT, LEAPDIHE, DUMPQUT, PARAMONOVT, LJSITE, BLJSITE,/;"	v	module:COMMONS
-BLNSSTRUCT	commons.f90	/^      CHARACTER(LEN=1), ALLOCATABLE :: BEADLETTER(:), BLNSSTRUCT(/;"	v	module:COMMONS
-BLNT	commons.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT, MSTRANST, STOCKT, STICKYT, BLNT,/;"	v	module:COMMONS
-BLOCK	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ, BLOCK,/;"	v	module:COMMONS
-BOXLX	commons.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(120,3,3), GMAX, CUTOFF, PCUT, EXPFAC, EXPD, CENTX, CENTY, CENTZ, &$/;"	v	module:COMMONS
-BOXLY	commons.f90	/^     &                 BOXLX, BOXLY,/;"	v	module:COMMONS
-BOXLZ	commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ,/;"	v	module:COMMONS
-BQMAX	commons.f90	/^     &                 CQMAX, RADIUS, BQMAX,/;"	v	module:COMMONS
-BSMIN	commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN, BSMIN,/;"	v	module:COMMONS
 BSNEW	keyword.f90	53;"	c	subroutine:KEYWORD
-BSPT	commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN, BSMIN, PERMDIST, PERMOPT, BSWL, BSPT,/;"	v	module:COMMONS
-BSPTDUMPFRQ	commons.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT, MYUNIT, PRTFRQ, BSPTDUMPFRQ,/;"	v	module:COMMONS
-BSPTQMAX	commons.f90	/^     &                 MSTART,MFINISH,MBSTART1,MBFINISH1,MBSTART2,MBFINISH2,MBHEIGHT1,MBHEIGHT2,ME1,ME2,ME3, &$/;"	v	module:COMMONS
-BSPTQMIN	commons.f90	/^     &                 BSPTQMAX, BSPTQMIN,/;"	v	module:COMMONS
-BSPTRESTART	commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN, BSMIN, PERMDIST, PERMOPT, BSWL, BSPT, BSPTRESTART,/;"	v	module:COMMONS
-BSWL	commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN, BSMIN, PERMDIST, PERMOPT, BSWL,/;"	v	module:COMMONS
 BUFINF	keyword.f90	43;"	c	subroutine:KEYWORD
-B_BLN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(:), B_BLN(/;"	v	module:COMMONS
 CAPS	finalio.f90	50;"	c	subroutine:FINALIO
 CAPS	keyword.f90	55;"	c	subroutine:KEYWORD
-CAPSID	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT, SEEDT, CENT, TSALLIST, FREEZECORE, NEWJUMP, RENORM, CAPSID,/;"	v	module:COMMONS
 CAPSIDIO	finalio.f90	/^      SUBROUTINE CAPSIDIO(/;"	s
-CCKJ	commons.f90	/^     &                 RHOCH10, RHOC20H, RHOCH20, ALPHACC, ALPHAHH, ALPHACH, DC6CC, DC6HH, DC6CH, KKJ, CCKJ,/;"	v	module:COMMONS
-CEIG	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG,/;"	v	module:COMMONS
-CENT	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT, SEEDT, CENT,/;"	v	module:COMMONS
-CENTX	commons.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(120,3,3), GMAX, CUTOFF, PCUT, EXPFAC, EXPD, CENTX,/;"	v	module:COMMONS
-CENTXY	commons.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT, MSTRANST, STOCKT, STICKYT, BLNT, MYSDT, FREEZERES, CENTXY,/;"	v	module:COMMONS
-CENTY	commons.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(120,3,3), GMAX, CUTOFF, PCUT, EXPFAC, EXPD, CENTX, CENTY,/;"	v	module:COMMONS
-CENTZ	commons.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(120,3,3), GMAX, CUTOFF, PCUT, EXPFAC, EXPD, CENTX, CENTY, CENTZ,/;"	v	module:COMMONS
-CHANGE_TEMP	commons.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS, MODEL1T, NEWRESTART_MD, CHANGE_TEMP,/;"	v	module:COMMONS
-CHARMMENERGIES	commons.f90	/^     &        FRAUSIT, ANGST, SELFT, STEPOUT, WENZEL, THRESHOLDT, THOMSONT, MULLERBROWNT, CHARMMENERGIES,/;"	v	module:COMMONS
-CHECKCHIRALITY	commons.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS, MODEL1T, NEWRESTART_MD, CHANGE_TEMP, NOCISTRANS, CHECKCHIRALITY,/;"	v	module:COMMONS
-CHECKDT	commons.f90	/^     &        MULTPAHAT, TDHDT, WATERDCT, WATERKZT, CHECKDT,/;"	v	module:COMMONS
-CHECKMARKOVT	commons.f90	/^     &        MULTPAHAT, TDHDT, WATERDCT, WATERKZT, CHECKDT, CHECKMARKOVT,/;"	v	module:COMMONS
-CHNRES	commons.f90	/^     &        NSUPER, NSACCEPT, NSUPERSTEP, GMODES, DUMPXYZUNIT, DUMPVUNIT, QUENCHFRQ, CHNRES,/;"	v	module:COMMONS
-CHRMMT	commons.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART, AVOID, NATBT, DIFFRACTT, CHRMMT,/;"	v	module:COMMONS
 CO	potential.f90	33;"	c	subroutine:POTENTIAL
-CO	quench.f90	24;"	c	subroutine:QUENCH
-COLDFUSION	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT, LOCALSAMPLET, CSMT, A9INTET, INTERESTORE, COLDFUSION,/;"	v	module:COMMONS
-COLDFUSIONLIMIT	commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH, COLDFUSIONLIMIT,/;"	v	module:COMMONS
-COMMONS	commons.f90	/^      MODULE COMMONS$/;"	m
-COMP	commons.f90	/^     &                 COULTEMP, APP, AMM, APM, XQP, XQM, ALPHAP, ALPHAM, ZSTAR, COMP,/;"	v	module:COMMONS
-COMPRESST	commons.f90	/^     &        BLJCLUSTER, COMPRESST,/;"	v	module:COMMONS
-CONJG	commons.f90	/^     &        ZETT2, RESTART, CONJG,/;"	v	module:COMMONS
-COOP	commons.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT, FST, DECAY, COOP,/;"	v	module:COMMONS
-COOPCUT	commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP, SQUEEZER, SQUEEZED, COOPCUT,/;"	v	module:COMMONS
-COORDS	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS,/;"	v	module:COMMONS
-COORDSO	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS,COORDSO$/;"	v	module:COMMONS
-COREFRAC	commons.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb, hdistconstraint, COREFRAC,/;"	v	module:COMMONS
-COULN	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP, NSYMINTERVAL, QDLIMIT, COULN,/;"	v	module:COMMONS
-COULQ	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP, DISTFAC, ODDCHARGE, COULQ,/;"	v	module:COMMONS
-COULSWAP	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP, DISTFAC, ODDCHARGE, COULQ, COULSWAP,/;"	v	module:COMMONS
-COULTEMP	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP, DISTFAC, ODDCHARGE, COULQ, COULSWAP, &$/;"	v	module:COMMONS
-CPF	commons.f90	/^     &        CPS, CPF,/;"	v	module:COMMONS
-CPFACTORFG	commons.f90	/^     &                 TAUMAXFULL, CPFACTORSG, CPFACTORFG,/;"	v	module:COMMONS
-CPFACTORSG	commons.f90	/^     &                 TAUMAXFULL, CPFACTORSG,/;"	v	module:COMMONS
-CPMD	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST, DBRENTT, DZTEST, FNI, FAL, CPMD,/;"	v	module:COMMONS
-CPS	commons.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT, MYUNIT, PRTFRQ, BSPTDUMPFRQ, NPERMGROUP, NMOVABLEATOMS, &$/;"	v	module:COMMONS
-CQMAX	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS, SCC, TOLB, T12FAC, XMOVERENORM, RESIZE, QTSALLIS, &$/;"	v	module:COMMONS
-CSMAV	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(/;"	v	module:COMMONS
+COMMONS	commons.f90	/^MODULE COMMONS$/;"	m
+COORDS	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS$/;"	v	module:COMMONS
 CSMAVVAL	potential.f90	52;"	c	subroutine:POTENTIAL
-CSMAVVAL	quench.f90	31;"	c	subroutine:QUENCH
-CSMEPS	commons.f90	/^     &                 BSPTQMAX, BSPTQMIN, PFORCE, CSMNORM, CSMGUIDENORM, CSMEPS$/;"	v	module:COMMONS
-CSMGP	commons.f90	/^      CHARACTER(LEN=3) :: CSMGP,/;"	v	module:COMMONS
-CSMGPINDEX	commons.f90	/^     &        CPS, CPF, ACKLANDID, PATOM1, PATOM2, CSMGPINDEX,/;"	v	module:COMMONS
-CSMGUIDEGP	commons.f90	/^      CHARACTER(LEN=3) :: CSMGP, CSMGUIDEGP$/;"	v	module:COMMONS
-CSMGUIDEGPINDEX	commons.f90	/^     &        CPS, CPF, ACKLANDID, PATOM1, PATOM2, CSMGPINDEX, CSMGUIDEGPINDEX,/;"	v	module:COMMONS
-CSMGUIDENORM	commons.f90	/^     &                 BSPTQMAX, BSPTQMIN, PFORCE, CSMNORM, CSMGUIDENORM,/;"	v	module:COMMONS
-CSMGUIDET	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT, LOCALSAMPLET, CSMT, A9INTET, INTERESTORE, COLDFUSION, &$/;"	v	module:COMMONS
-CSMIMAGES	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: CSMIMAGES(/;"	v	module:COMMONS
-CSMMAXIT	commons.f90	/^     &        CPS, CPF, ACKLANDID, PATOM1, PATOM2, CSMGPINDEX, CSMGUIDEGPINDEX, CSMSTEPS, CSMQUENCHES, CSMMAXIT,/;"	v	module:COMMONS
-CSMNORM	commons.f90	/^     &                 BSPTQMAX, BSPTQMIN, PFORCE, CSMNORM,/;"	v	module:COMMONS
-CSMPMAT	commons.f90	/^     &                 TAUMAXFULL, CPFACTORSG, CPFACTORFG, VGWTOL, ABTHRESH, ACTHRESH, CSMPMAT(/;"	v	module:COMMONS
-CSMQUENCHES	commons.f90	/^     &        CPS, CPF, ACKLANDID, PATOM1, PATOM2, CSMGPINDEX, CSMGUIDEGPINDEX, CSMSTEPS, CSMQUENCHES,/;"	v	module:COMMONS
-CSMSTEPS	commons.f90	/^     &        CPS, CPF, ACKLANDID, PATOM1, PATOM2, CSMGPINDEX, CSMGUIDEGPINDEX, CSMSTEPS,/;"	v	module:COMMONS
-CSMT	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT, LOCALSAMPLET, CSMT,/;"	v	module:COMMONS
-CURRENTIMP	commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE, SHELLMOVEMAX, HPTGRP, NFIX, CURRENTIMP,/;"	v	module:COMMONS
-CUTOFF	commons.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(120,3,3), GMAX, CUTOFF,/;"	v	module:COMMONS
-CUTT	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT,/;"	v	module:COMMONS
-C_BLN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(:), B_BLN(:), C_BLN(/;"	v	module:COMMONS
-D5HT	commons.f90	/^      LOGICAL :: FIELDT, OHT, IHT, TDT, D5HT$/;"	v	module:COMMONS
-DBEPSAB	commons.f90	/^     &                 DBEPSBB, DBEPSAB,/;"	v	module:COMMONS
-DBEPSBB	commons.f90	/^     &                 LWRCUT, LWCNSTA, LWCNSTB, LWRCUTSQ, LWRCUT2SQ, DELRC, &    $/;"	v	module:COMMONS
-DBLPYT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT, PYGDPT, DBPT, DBPTDT, DBLPYT,/;"	v	module:COMMONS
-DBPMU	commons.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU,/;"	v	module:COMMONS
-DBPT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT, PYGDPT, DBPT,/;"	v	module:COMMONS
-DBPTDT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT, PYGDPT, DBPT, DBPTDT,/;"	v	module:COMMONS
-DBRENTT	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST, DBRENTT,/;"	v	module:COMMONS
-DBSIGAB	commons.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB,/;"	v	module:COMMONS
-DBSIGBB	commons.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB,/;"	v	module:COMMONS
-DC6CC	commons.f90	/^     &                 RHOCH10, RHOC20H, RHOCH20, ALPHACC, ALPHAHH, ALPHACH, DC6CC,/;"	v	module:COMMONS
-DC6CH	commons.f90	/^     &                 RHOCH10, RHOC20H, RHOCH20, ALPHACC, ALPHAHH, ALPHACH, DC6CC, DC6HH, DC6CH,/;"	v	module:COMMONS
-DC6HH	commons.f90	/^     &                 RHOCH10, RHOC20H, RHOCH20, ALPHACC, ALPHAHH, ALPHACH, DC6CC, DC6HH,/;"	v	module:COMMONS
-DEBUG	commons.f90	/^      LOGICAL DEBUG,/;"	v	module:COMMONS
-DECAY	commons.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT, FST, DECAY,/;"	v	module:COMMONS
-DECAYPARAM	commons.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS, DECAYPARAM,/;"	v	module:COMMONS
-DELRC	commons.f90	/^     &                 LWRCUT, LWCNSTA, LWCNSTB, LWRCUTSQ, LWRCUT2SQ, DELRC,/;"	v	module:COMMONS
-DF1T	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T,/;"	v	module:COMMONS
-DFTBT	commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT,/;"	v	module:COMMONS
-DGUESS	commons.f90	/^     &                 COULTEMP, APP, AMM, APM, XQP, XQM, ALPHAP, ALPHAM, ZSTAR, COMP, DGUESS,/;"	v	module:COMMONS
-DIFFRACTT	commons.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART, AVOID, NATBT, DIFFRACTT,/;"	v	module:COMMONS
-DIPOLE	commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE,/;"	v	module:COMMONS
-DISTFAC	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP, DISTFAC,/;"	v	module:COMMONS
-DL_POLY	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46, NORESET, TABOOT, EVSTEPT, PACHECO, DL_POLY,/;"	v	module:COMMONS
-DMBLMT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT, PYGDPT, DBPT, DBPTDT, DBLPYT, DMBLMT,/;"	v	module:COMMONS
-DMIN	quench.f90	25;"	c	subroutine:QUENCH
-DOMOVEREST	commons.f90	/^      LOGICAL :: DONTMOVET, DONTMOVEGROUPT, DONTMOVEREST, DONTMOVEALL, DOMOVEREST$/;"	v	module:COMMONS
-DONTMOVE	commons.f90	/^      LOGICAL, ALLOCATABLE :: DONTMOVE(/;"	v	module:COMMONS
-DONTMOVEALL	commons.f90	/^      LOGICAL :: DONTMOVET, DONTMOVEGROUPT, DONTMOVEREST, DONTMOVEALL,/;"	v	module:COMMONS
-DONTMOVECENTRE	commons.f90	/^      INTEGER :: NDONTMOVE, DONTMOVECENTRE$/;"	v	module:COMMONS
-DONTMOVEGROUPT	commons.f90	/^      LOGICAL :: DONTMOVET, DONTMOVEGROUPT,/;"	v	module:COMMONS
-DONTMOVEGROUPTYPE	commons.f90	/^      CHARACTER (LEN=2) :: DONTMOVEGROUPTYPE$/;"	v	module:COMMONS
-DONTMOVERADIUS	commons.f90	/^      DOUBLE PRECISION :: DONTMOVERADIUS$/;"	v	module:COMMONS
-DONTMOVERES	commons.f90	/^      LOGICAL, ALLOCATABLE :: DONTMOVE(:),DONTMOVERES(/;"	v	module:COMMONS
-DONTMOVEREST	commons.f90	/^      LOGICAL :: DONTMOVET, DONTMOVEGROUPT, DONTMOVEREST,/;"	v	module:COMMONS
-DONTMOVET	commons.f90	/^      LOGICAL :: DONTMOVET,/;"	v	module:COMMONS
-DPMU	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: SITE(:,:), RBUV(:,:), RBSTLA(:,:), STCHRG(:), DPMU(/;"	v	module:COMMONS
-DUMPFILE	commons.f90	/^      CHARACTER(LEN=130) DUMPFILE,/;"	v	module:COMMONS
-DUMPINT	commons.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT,/;"	v	module:COMMONS
-DUMPQUT	commons.f90	/^     &        PROJIT, PROJIHT, LEAPDIHE, DUMPQUT,/;"	v	module:COMMONS
-DUMPSTEPST	commons.f90	/^     &        PROJIT, PROJIHT, LEAPDIHE, DUMPQUT, PARAMONOVT, LJSITE, BLJSITE, LJSITEATTR, DUMPSTEPST,/;"	v	module:COMMONS
-DUMPSTRUCTURES	commons.f90	/^     &        AMBERT, RANDOMSEEDT, PYGPERIODICT, LJCAPSIDT, PYBINARYT, SWAPMOVEST, MOVABLEATOMST, LIGMOVET,DUMPSTRUCTURES,/;"	v	module:COMMONS
-DUMPT	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT,/;"	v	module:COMMONS
-DUMPVUNIT	commons.f90	/^     &        NSUPER, NSACCEPT, NSUPERSTEP, GMODES, DUMPXYZUNIT, DUMPVUNIT,/;"	v	module:COMMONS
-DUMPXYZUNIT	commons.f90	/^     &        NSUPER, NSACCEPT, NSUPERSTEP, GMODES, DUMPXYZUNIT,/;"	v	module:COMMONS
-DZP1	commons.f90	/^      DOUBLE PRECISION :: DZP1,/;"	v	module:COMMONS
-DZP2	commons.f90	/^      DOUBLE PRECISION :: DZP1, DZP2,/;"	v	module:COMMONS
-DZP3	commons.f90	/^      DOUBLE PRECISION :: DZP1, DZP2, DZP3,/;"	v	module:COMMONS
-DZP4	commons.f90	/^      DOUBLE PRECISION :: DZP1, DZP2, DZP3, DZP4,/;"	v	module:COMMONS
-DZP5	commons.f90	/^      DOUBLE PRECISION :: DZP1, DZP2, DZP3, DZP4, DZP5,/;"	v	module:COMMONS
-DZP6	commons.f90	/^      DOUBLE PRECISION :: DZP1, DZP2, DZP3, DZP4, DZP5, DZP6,/;"	v	module:COMMONS
-DZP7	commons.f90	/^      DOUBLE PRECISION :: DZP1, DZP2, DZP3, DZP4, DZP5, DZP6, DZP7$/;"	v	module:COMMONS
-DZTEST	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST, DBRENTT, DZTEST,/;"	v	module:COMMONS
-D_BLN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(:), B_BLN(:), C_BLN(:), D_BLN(/;"	v	module:COMMONS
-DumpEveryNthQuench	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints, SaveNth, DumpEveryNthQuench,/;"	v	module:COMMONS
-EAMALT	commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW, SUPERSTEP, EAMLJT, PBGLUET, TRACKDATAT, &$/;"	v	module:COMMONS
 EAMLJCOMM	keyword.f90	50;"	c	subroutine:KEYWORD
-EAMLJT	commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW, SUPERSTEP, EAMLJT,/;"	v	module:COMMONS
-EAMP	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP,/;"	v	module:COMMONS
-ECONV	commons.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS, DECAYPARAM, SYMTOL1, SYMTOL2, SYMTOL3, SYMTOL4, SYMTOL5, &$/;"	v	module:COMMONS
-EFAC	commons.f90	/^     &                 COULTEMP, APP, AMM, APM, XQP, XQM, ALPHAP, ALPHAM, ZSTAR, COMP, DGUESS, GUIDECUT, EFAC,/;"	v	module:COMMONS
-EFIELD	commons.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU, EFIELD,/;"	v	module:COMMONS
-EFIELDT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT, PYGDPT, DBPT, DBPTDT, DBLPYT, DMBLMT, EFIELDT,/;"	v	module:COMMONS
-ELLIPSOIDT	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT, NTIPT, PAHW99T, ELLIPSOIDT,/;"	v	module:COMMONS
-EPREV	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP, ACCRAT, EPREV /;"	v	module:COMMONS
-EPS11	commons.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU, EFIELD, GEMRC, MREQ, &$/;"	v	module:COMMONS
-EPS12	commons.f90	/^     &                 EPS11, EPS22, EPS12,/;"	v	module:COMMONS
-EPS22	commons.f90	/^     &                 EPS11, EPS22,/;"	v	module:COMMONS
-EPSNOT	commons.f90	/^     &                 SIGNOT, EPSNOT,/;"	v	module:COMMONS
-EPSR	commons.f90	/^     &                 TAUMAXFULL, CPFACTORSG, CPFACTORFG, VGWTOL, ABTHRESH, ACTHRESH, CSMPMAT(3,3), &$/;"	v	module:COMMONS
-EPSSPHERE	commons.f90	/^     &                 TRENORM, HISTMIN, HISTMAX, HISTFAC, EPSSPHERE,/;"	v	module:COMMONS
-EQUIL	commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE, NSYMQMAX, EQUIL,/;"	v	module:COMMONS
-ESA	commons.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF, INVKAP, ESA(/;"	v	module:COMMONS
-ESAVE	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: ESAVE(/;"	v	module:COMMONS
+EPREV	commons.f90	/^DOUBLE PRECISION TEMP, STEP, OSTEP, ASTEP, ACCRAT, EPREV$/;"	v	module:COMMONS
 EV	potential.f90	49;"	c	subroutine:POTENTIAL
-EVSTEPT	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46, NORESET, TABOOT, EVSTEPT,/;"	v	module:COMMONS
-EXCHPROB	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent, lnHarmFreq, PTEMIN, PTEMAX, PTTMIN, PTTMAX, EXCHPROB,/;"	v	module:COMMONS
-EXPD	commons.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(120,3,3), GMAX, CUTOFF, PCUT, EXPFAC, EXPD,/;"	v	module:COMMONS
-EXPFAC	commons.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(120,3,3), GMAX, CUTOFF, PCUT, EXPFAC,/;"	v	module:COMMONS
-ExtrapolationPercent	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent,/;"	v	module:COMMONS
-FACTOR	commons.f90	/^       DOUBLE PRECISION :: SIGMASQ, RANGESQ, FACTOR /;"	v	module:COMMONS
 FAIL	potential.f90	48;"	c	subroutine:POTENTIAL
-FAL	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST, DBRENTT, DZTEST, FNI, FAL,/;"	v	module:COMMONS
-FD5H	commons.f90	/^      DOUBLE PRECISION :: FOH, FIH, FTD, FD5H$/;"	v	module:COMMONS
+FF	commons.f90	/^INTEGER,ALLOCATABLE :: FF(/;"	v	module:COMMONS
 FF	main.f90	/^      INTEGER,ALLOCATABLE :: FF(/;"	v	program:GMIN
-FIELDT	commons.f90	/^      LOGICAL :: FIELDT,/;"	v	module:COMMONS
-FIH	commons.f90	/^      DOUBLE PRECISION :: FOH, FIH,/;"	v	module:COMMONS
 FIN	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: FIN(/;"	v	program:GMIN
-FINALCUTOFF	commons.f90	/^     &                 TRENORM, HISTMIN, HISTMAX, HISTFAC, EPSSPHERE, FINALCUTOFF,/;"	v	module:COMMONS
 FINALIO	finalio.f90	/^      SUBROUTINE FINALIO$/;"	s
 FINALQ	finalq.f90	/^      SUBROUTINE FINALQ$/;"	s
-FIX	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX,/;"	v	module:COMMONS
-FIXBIN	commons.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT, FST, DECAY, COOP, FIXBIN,/;"	v	module:COMMONS
-FIXBOTH	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH,/;"	v	module:COMMONS
-FIXCOM	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM,/;"	v	module:COMMONS
-FIXD	commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD,/;"	v	module:COMMONS
-FIXDIHEFLAG	commons.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT, FST, DECAY, COOP, FIXBIN, GAUSST, QUENCHDOS, FIXDIHEFLAG,/;"	v	module:COMMONS
-FIXIMAGE	commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL, AMBER, FIXIMAGE,/;"	v	module:COMMONS
-FIXSTEP	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP,/;"	v	module:COMMONS
-FIXT	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT,/;"	v	module:COMMONS
-FIXTEMP	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP,/;"	v	module:COMMONS
-FNI	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST, DBRENTT, DZTEST, FNI,/;"	v	module:COMMONS
-FOH	commons.f90	/^      DOUBLE PRECISION :: FOH,/;"	v	module:COMMONS
-FRAUSIT	commons.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT, FST, DECAY, COOP, FIXBIN, GAUSST, QUENCHDOS, FIXDIHEFLAG, &$/;"	v	module:COMMONS
-FREEZE	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT, SEEDT, CENT, TSALLIST, FREEZEC/;"	v	module:COMMONS
-FREEZEALL	commons.f90	/^     &        PARAMONOVPBCX, PARAMONOVPBCY, PARAMONOVPBCZ, PARAMONOVCUTOFF, GAYBERNEDCT, UNFREEZERES, FREEZEALL,/;"	v	module:COMMONS
-FREEZECORE	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT, SEEDT, CENT, TSALLIST, FREEZECORE,/;"	v	module:COMMONS
-FREEZEGROUPT	commons.f90	/^      LOGICAL :: FREEZEGROUPT$/;"	v	module:COMMONS
-FREEZEGROUPTYPE	commons.f90	/^      CHARACTER (LEN=2) :: FREEZEGROUPTYPE$/;"	v	module:COMMONS
-FREEZERES	commons.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT, MSTRANST, STOCKT, STICKYT, BLNT, MYSDT, FREEZERES,/;"	v	module:COMMONS
-FROZEN	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FROZEN /;"	v	module:COMMONS
-FROZENRES	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FROZENRES /;"	v	module:COMMONS
-FST	commons.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT, FST,/;"	v	module:COMMONS
-FTD	commons.f90	/^      DOUBLE PRECISION :: FOH, FIH, FTD,/;"	v	module:COMMONS
-FixedEndMoveT	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT,/;"	v	module:COMMONS
-G46	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46,/;"	v	module:COMMONS
-GAMMA	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA,/;"	v	module:COMMONS
-GATOM	commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM,/;"	v	module:COMMONS
-GAUSSEE	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: GAUSSEE(/;"	v	module:COMMONS
-GAUSSKK	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: GAUSSKK(/;"	v	module:COMMONS
-GAUSST	commons.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT, FST, DECAY, COOP, FIXBIN, GAUSST,/;"	v	module:COMMONS
-GAYBERNEDCT	commons.f90	/^     &        PARAMONOVPBCX, PARAMONOVPBCY, PARAMONOVPBCZ, PARAMONOVCUTOFF, GAYBERNEDCT,/;"	v	module:COMMONS
-GAYBERNET	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT, NTIPT, PAHW99T, ELLIPSOIDT, GAYBERNET,/;"	v	module:COMMONS
-GBANISOTROPYR	commons.f90	/^     &                 RHOCH10, RHOC20H, RHOCH20, ALPHACC, ALPHAHH, ALPHACH, DC6CC, DC6HH, DC6CH, KKJ, CCKJ, &$/;"	v	module:COMMONS
-GBCHI	commons.f90	/^     &                 EPSR, GBKAPPA, GBKAPPRM, GBMU,GBNU, GBSIGNOT, GBEPSNOT, GBCHI,/;"	v	module:COMMONS
-GBCHIPRM	commons.f90	/^     &                 EPSR, GBKAPPA, GBKAPPRM, GBMU,GBNU, GBSIGNOT, GBEPSNOT, GBCHI, GBCHIPRM,/;"	v	module:COMMONS
-GBDPEPS	commons.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF, INVKAP, ESA(3), LPRSQ, LSQDFR, GBDPMU, GBDPEPS,/;"	v	module:COMMONS
-GBDPFCT	commons.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF, INVKAP, ESA(3), LPRSQ, LSQDFR, GBDPMU, GBDPEPS, GBDPFCT,/;"	v	module:COMMONS
-GBDPMU	commons.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF, INVKAP, ESA(3), LPRSQ, LSQDFR, GBDPMU,/;"	v	module:COMMONS
-GBDPT	commons.f90	/^     &        GBT, GBDT, GBDPT,/;"	v	module:COMMONS
-GBDT	commons.f90	/^     &        GBT, GBDT,/;"	v	module:COMMONS
-GBEPSNOT	commons.f90	/^     &                 EPSR, GBKAPPA, GBKAPPRM, GBMU,GBNU, GBSIGNOT, GBEPSNOT,/;"	v	module:COMMONS
-GBKAPPA	commons.f90	/^     &                 EPSR, GBKAPPA,/;"	v	module:COMMONS
-GBKAPPRM	commons.f90	/^     &                 EPSR, GBKAPPA, GBKAPPRM,/;"	v	module:COMMONS
-GBMU	commons.f90	/^     &                 EPSR, GBKAPPA, GBKAPPRM, GBMU,/;"	v	module:COMMONS
-GBNU	commons.f90	/^     &                 EPSR, GBKAPPA, GBKAPPRM, GBMU,GBNU,/;"	v	module:COMMONS
-GBSIGNOT	commons.f90	/^     &                 EPSR, GBKAPPA, GBKAPPRM, GBMU,GBNU, GBSIGNOT,/;"	v	module:COMMONS
-GBT	commons.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS, MODEL1T, NEWRESTART_MD, CHANGE_TEMP, NOCISTRANS, CHECKCHIRALITY, &$/;"	v	module:COMMONS
-GBWELLDEPTHR	commons.f90	/^     &                 GBANISOTROPYR,GBWELLDEPTHR,/;"	v	module:COMMONS
+FUNC	func.f90	/^MODULE FUNC$/;"	m
 GD	potential.f90	50;"	c	subroutine:POTENTIAL
-GD	quench.f90	27;"	c	subroutine:QUENCH
-GEMRC	commons.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU, EFIELD, GEMRC,/;"	v	module:COMMONS
-GEMT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT,/;"	v	module:COMMONS
-GKSMALL	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: GAUSSEE(:), GKSMALL(/;"	v	module:COMMONS
-GMAX	commons.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(120,3,3), GMAX,/;"	v	module:COMMONS
 GMIN	main.f90	/^      PROGRAM GMIN$/;"	p
-GMODES	commons.f90	/^     &        NSUPER, NSACCEPT, NSUPERSTEP, GMODES,/;"	v	module:COMMONS
-GROUND	commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND,/;"	v	module:COMMONS
-GROUPCENTRE	commons.f90	/^      INTEGER :: GROUPCENTRE$/;"	v	module:COMMONS
-GROUPRADIUS	commons.f90	/^      DOUBLE PRECISION :: GROUPRADIUS$/;"	v	module:COMMONS
-GUIDECUT	commons.f90	/^     &                 COULTEMP, APP, AMM, APM, XQP, XQM, ALPHAP, ALPHAM, ZSTAR, COMP, DGUESS, GUIDECUT,/;"	v	module:COMMONS
-GUPTAT	commons.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT,/;"	v	module:COMMONS
-HARM_AMH	commons.f90	/^      INTEGER NUMPRO_AMH, NINT_AMH, SEED_AMH,HARM_AMH,/;"	v	module:COMMONS
-HBINS	commons.f90	/^     &        NEVL, NEVS, NVECTORS, MUPDATE, LSYS, NHSMOVE, NRENORM, NRELAX, NHSRESTART, NRENSTUCK,&$/;"	v	module:COMMONS
-HDIST	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: HDIST(/;"	v	module:COMMONS
-HESS	commons.f90	/^      DOUBLE PRECISION :: HESS(/;"	v	module:COMMONS
-HISTFAC	commons.f90	/^     &                 TRENORM, HISTMIN, HISTMAX, HISTFAC,/;"	v	module:COMMONS
-HISTFACMUL	commons.f90	/^     &                 TRENORM, HISTMIN, HISTMAX, HISTFAC, EPSSPHERE, FINALCUTOFF, SHELLPROB, RINGROTSCALE, &$/;"	v	module:COMMONS
-HISTMAX	commons.f90	/^     &                 TRENORM, HISTMIN, HISTMAX,/;"	v	module:COMMONS
-HISTMIN	commons.f90	/^     &                 TRENORM, HISTMIN,/;"	v	module:COMMONS
-HISTSMOOTH	commons.f90	/^     &        TETHER, HISTSMOOTH,/;"	v	module:COMMONS
-HISTVALS	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: HISTVALS,/;"	v	module:COMMONS
-HIT	commons.f90	/^     &        SORTT, HIT,/;"	v	module:COMMONS
-HPERCENT	commons.f90	/^     &                 HISTFACMUL, HPERCENT,/;"	v	module:COMMONS
-HPTGRP	commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE, SHELLMOVEMAX, HPTGRP,/;"	v	module:COMMONS
-HWEIGHT	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: HDIST(:), HWEIGHT(/;"	v	module:COMMONS
-Hwindows	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints, SaveNth, DumpEveryNthQuench, NSpline, Hwindows,/;"	v	module:COMMONS
-I1_AMH	commons.f90	/^      INTEGER NUMPRO_AMH, NINT_AMH, SEED_AMH,HARM_AMH, I1_AMH$/;"	v	module:COMMONS
-IATNUM	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  IATNUM /;"	v	module:COMMONS
-IGNOREBIN	commons.f90	/^      LOGICAL, ALLOCATABLE ::  IGNOREBIN(/;"	v	module:COMMONS
-IHT	commons.f90	/^      LOGICAL :: FIELDT, OHT, IHT,/;"	v	module:COMMONS
-INFILE	commons.f90	/^      CHARACTER(LEN=80) :: INFILE=/;"	v	module:COMMONS
-INTEDUMPFILE	commons.f90	/^      CHARACTER(LEN=130) DUMPFILE, MYFILENAME, INTEDUMPFILE$/;"	v	module:COMMONS
+INFIX	commons.f90	/^INTEGER :: INFIX$/;"	v	module:COMMONS
+INTEFF	commons.f90	/^INTEGER,ALLOCATABLE :: FF(:),INTEFF(/;"	v	module:COMMONS
 INTEFF	main.f90	/^      INTEGER,ALLOCATABLE :: FF(:),INTEFF(/;"	v	program:GMIN
+INTEQMIN	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(/;"	v	module:COMMONS
 INTEQMIN	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(/;"	v	program:GMIN
+INTEQMINP	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(/;"	v	module:COMMONS
 INTEQMINP	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(/;"	v	program:GMIN
-INTERESTORE	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT, LOCALSAMPLET, CSMT, A9INTET, INTERESTORE,/;"	v	module:COMMONS
-INTMINT	commons.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART, AVOID, NATBT, DIFFRACTT, CHRMMT, INTMINT,/;"	v	module:COMMONS
-INVKAP	commons.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF, INVKAP,/;"	v	module:COMMONS
-ISTEP	commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE, NSYMQMAX, EQUIL, TPAHA, ISTEP,/;"	v	module:COMMONS
-JDUMP	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP, JUMPMOVE, JDUMP,/;"	v	module:COMMONS
-JMT	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID, Q4T, MPIT, JMT,/;"	v	module:COMMONS
-JUMPINT	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ, BLOCK, JUMPINT,/;"	v	module:COMMONS
-JUMPMOVE	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP, JUMPMOVE,/;"	v	module:COMMONS
-JUMPTO	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ, BLOCK, JUMPINT, JUMPTO,/;"	v	module:COMMONS
-KEEPSYM	takestep.f90	/^      SUBROUTINE KEEPSYM(/;"	s
+ISTEP	commons.f90	/^INTEGER :: ISTEP$/;"	v	module:COMMONS
 KEYWORD	keyword.f90	/^      SUBROUTINE KEYWORD$/;"	s
-KKJ	commons.f90	/^     &                 RHOCH10, RHOC20H, RHOCH20, ALPHACC, ALPHAHH, ALPHACH, DC6CC, DC6HH, DC6CH, KKJ,/;"	v	module:COMMONS
-LB2T	commons.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART, AVOID, NATBT, DIFFRACTT, CHRMMT, INTMINT, LB2T,/;"	v	module:COMMONS
-LBFGST	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST,/;"	v	module:COMMONS
-LEAPDIHE	commons.f90	/^     &        PROJIT, PROJIHT, LEAPDIHE,/;"	v	module:COMMONS
-LHISTVALS	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: HISTVALS, LHISTVALS /;"	v	module:COMMONS
-LIGMOVET	commons.f90	/^     &        AMBERT, RANDOMSEEDT, PYGPERIODICT, LJCAPSIDT, PYBINARYT, SWAPMOVEST, MOVABLEATOMST, LIGMOVET,/;"	v	module:COMMONS
-LINRODT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT,/;"	v	module:COMMONS
-LJATT_BLN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(/;"	v	module:COMMONS
-LJCAPSIDT	commons.f90	/^     &        AMBERT, RANDOMSEEDT, PYGPERIODICT, LJCAPSIDT,/;"	v	module:COMMONS
-LJCOULT	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID, Q4T, MPIT, JMT, LJCOULT,/;"	v	module:COMMONS
-LJEPSILON	commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH, COLDFUSIONLIMIT, NEWRES_TEMP, MINOMEGA, LJSIGMA, LJEPSILON,/;"	v	module:COMMONS
-LJMFT	commons.f90	/^     &        OTPT, LJMFT,/;"	v	module:COMMONS
-LJREP_BLN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(/;"	v	module:COMMONS
-LJSIGMA	commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH, COLDFUSIONLIMIT, NEWRES_TEMP, MINOMEGA, LJSIGMA,/;"	v	module:COMMONS
-LJSITE	commons.f90	/^     &        PROJIT, PROJIHT, LEAPDIHE, DUMPQUT, PARAMONOVT, LJSITE,/;"	v	module:COMMONS
-LJSITEATTR	commons.f90	/^     &        PROJIT, PROJIHT, LEAPDIHE, DUMPQUT, PARAMONOVT, LJSITE, BLJSITE, LJSITEATTR,/;"	v	module:COMMONS
-LJSITECOORDS	commons.f90	/^     &                 PEPSILONATTR(2),PSIGMAATTR(2), PYOVERLAPTHRESH, LJSITECOORDS(/;"	v	module:COMMONS
-LJSITECOORDST	commons.f90	/^     &        AMBERT, RANDOMSEEDT, PYGPERIODICT, LJCAPSIDT, PYBINARYT, SWAPMOVEST, MOVABLEATOMST, LIGMOVET,DUMPSTRUCTURES, &$/;"	v	module:COMMONS
-LOCALSAMPLET	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT, LOCALSAMPLET,/;"	v	module:COMMONS
-LPRSQ	commons.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF, INVKAP, ESA(3), LPRSQ,/;"	v	module:COMMONS
-LSQDFR	commons.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF, INVKAP, ESA(3), LPRSQ, LSQDFR,/;"	v	module:COMMONS
-LSYS	commons.f90	/^     &        NEVL, NEVS, NVECTORS, MUPDATE, LSYS,/;"	v	module:COMMONS
-LWCNSTA	commons.f90	/^     &                 LWRCUT, LWCNSTA,/;"	v	module:COMMONS
-LWCNSTB	commons.f90	/^     &                 LWRCUT, LWCNSTA, LWCNSTB,/;"	v	module:COMMONS
-LWOTPT	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT,/;"	v	module:COMMONS
-LWRCUT	commons.f90	/^     &                 PYSIGNOT, PYEPSNOT, PYA1(3), PYA2(3), PYDPMU, PYDPEPS, PYDPFCT, &$/;"	v	module:COMMONS
-LWRCUT2SQ	commons.f90	/^     &                 LWRCUT, LWCNSTA, LWCNSTB, LWRCUTSQ, LWRCUT2SQ,/;"	v	module:COMMONS
-LWRCUTSQ	commons.f90	/^     &                 LWRCUT, LWCNSTA, LWCNSTB, LWRCUTSQ,/;"	v	module:COMMONS
-MASSES	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: MASSES(/;"	v	module:COMMONS
-MATDIFF	commons.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST, MAXERISE, MAXEFALL, TSTART, MATDIFF,/;"	v	module:COMMONS
-MAXBFGS	commons.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS,/;"	v	module:COMMONS
-MAXEFALL	commons.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST, MAXERISE, MAXEFALL,/;"	v	module:COMMONS
-MAXERISE	commons.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST, MAXERISE,/;"	v	module:COMMONS
-MAXINTERACTIONS	commons.f90	/^      INTEGER  NGBSITE, NPYSITE, PYBINARYTYPE1, PYSWAP(3), MAXINTERACTIONS$/;"	v	module:COMMONS
-MAXIT	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT,/;"	v	module:COMMONS
-MAXIT2	commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2,/;"	v	module:COMMONS
-MAXSAVE	commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE,/;"	v	module:COMMONS
-MBFINISH1	commons.f90	/^     &                 MSTART,MFINISH,MBSTART1,MBFINISH1,/;"	v	module:COMMONS
-MBFINISH2	commons.f90	/^     &                 MSTART,MFINISH,MBSTART1,MBFINISH1,MBSTART2,MBFINISH2,/;"	v	module:COMMONS
-MBHEIGHT1	commons.f90	/^     &                 MSTART,MFINISH,MBSTART1,MBFINISH1,MBSTART2,MBFINISH2,MBHEIGHT1,/;"	v	module:COMMONS
-MBHEIGHT2	commons.f90	/^     &                 MSTART,MFINISH,MBSTART1,MBFINISH1,MBSTART2,MBFINISH2,MBHEIGHT1,MBHEIGHT2,/;"	v	module:COMMONS
-MBSTART1	commons.f90	/^     &                 MSTART,MFINISH,MBSTART1,/;"	v	module:COMMONS
-MBSTART2	commons.f90	/^     &                 MSTART,MFINISH,MBSTART1,MBFINISH1,MBSTART2,/;"	v	module:COMMONS
 MC	mc.f90	/^      SUBROUTINE MC(/;"	s
-MCCycles	commons.f90	/^     &        NINTS, NumberOfTrajectories, &$/;"	v	module:COMMONS
-MCCyclesEquilibration	commons.f90	/^     &        MCCycles, MCCyclesEquilibration,/;"	v	module:COMMONS
 MCRUNS	mcruns.f90	/^      SUBROUTINE MCRUNS(/;"	s
-MCSTEPS	commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE, SHELLMOVEMAX, HPTGRP, NFIX, CURRENTIMP,&$/;"	v	module:COMMONS
-ME1	commons.f90	/^     &                 MSTART,MFINISH,MBSTART1,MBFINISH1,MBSTART2,MBFINISH2,MBHEIGHT1,MBHEIGHT2,ME1,/;"	v	module:COMMONS
-ME2	commons.f90	/^     &                 MSTART,MFINISH,MBSTART1,MBFINISH1,MBSTART2,MBFINISH2,MBHEIGHT1,MBHEIGHT2,ME1,ME2,/;"	v	module:COMMONS
-ME3	commons.f90	/^     &                 MSTART,MFINISH,MBSTART1,MBFINISH1,MBSTART2,MBFINISH2,MBHEIGHT1,MBHEIGHT2,ME1,ME2,ME3,/;"	v	module:COMMONS
-MFINISH	commons.f90	/^     &                 MSTART,MFINISH,/;"	v	module:COMMONS
-MGGLUET	commons.f90	/^     &        EAMALT, ALGLUET, MGGLUET,/;"	v	module:COMMONS
-MINOMEGA	commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH, COLDFUSIONLIMIT, NEWRES_TEMP, MINOMEGA,/;"	v	module:COMMONS
-MM	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM,/;"	v	module:COMMONS
-MMRSDPT	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT,/;"	v	module:COMMONS
-MODCOMMONDEINIT	commons.f90	/^      SUBROUTINE MODCOMMONDEINIT$/;"	s	module:COMMONS
-MODCOMMONINIT	commons.f90	/^      SUBROUTINE MODCOMMONINIT$/;"	s	module:COMMONS
-MODEL1T	commons.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS, MODEL1T,/;"	v	module:COMMONS
-MORSET	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET,/;"	v	module:COMMONS
-MOVABLEATOMLIST	commons.f90	/^      INTEGER,ALLOCATABLE,DIMENSION(:) :: MOVABLEATOMLIST /;"	v	module:COMMONS
-MOVABLEATOMLISTLOGICAL	commons.f90	/^      LOGICAL,ALLOCATABLE,DIMENSION(:) :: MOVABLEATOMLISTLOGICAL /;"	v	module:COMMONS
-MOVABLEATOMST	commons.f90	/^     &        AMBERT, RANDOMSEEDT, PYGPERIODICT, LJCAPSIDT, PYBINARYT, SWAPMOVEST, MOVABLEATOMST,/;"	v	module:COMMONS
-MOVESHELLT	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT, MOVESHELLT,/;"	v	module:COMMONS
-MPIT	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID, Q4T, MPIT,/;"	v	module:COMMONS
-MREQ	commons.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU, EFIELD, GEMRC, MREQ,/;"	v	module:COMMONS
-MRHO11	commons.f90	/^     &                 EPS11, EPS22, EPS12, MRHO11,/;"	v	module:COMMONS
-MRHO12	commons.f90	/^     &                 EPS11, EPS22, EPS12, MRHO11, MRHO22, MRHO12,/;"	v	module:COMMONS
-MRHO22	commons.f90	/^     &                 EPS11, EPS22, EPS12, MRHO11, MRHO22,/;"	v	module:COMMONS
-MSBCOORDS	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: MSBCOORDS(/;"	v	module:COMMONS
-MSBE	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: MSBE(/;"	v	module:COMMONS
-MSGBT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT, PYGDPT, DBPT, DBPTDT, DBLPYT, DMBLMT, EFIELDT, PAHAT, STOCKAAT, &$/;"	v	module:COMMONS
-MSORIGT	commons.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT, MSTRANST, STOCKT, STICKYT, BLNT, MYSDT, FREEZERES, CENTXY, &$/;"	v	module:COMMONS
-MSPYGT	commons.f90	/^     &        MSGBT, MSPYGT,/;"	v	module:COMMONS
-MSSTOCKT	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT,/;"	v	module:COMMONS
-MSTART	commons.f90	/^     &                 PEPSILONATTR(2),PSIGMAATTR(2), PYOVERLAPTHRESH, LJSITECOORDS(3), &$/;"	v	module:COMMONS
-MSTBINT	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT,/;"	v	module:COMMONS
-MSTRANST	commons.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT, MSTRANST,/;"	v	module:COMMONS
-MULLERBROWNT	commons.f90	/^     &        FRAUSIT, ANGST, SELFT, STEPOUT, WENZEL, THRESHOLDT, THOMSONT, MULLERBROWNT,/;"	v	module:COMMONS
-MULTISITEPYT	commons.f90	/^     &        CSMGUIDET, MULTISITEPYT$/;"	v	module:COMMONS
-MULTPAHAT	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT, NTIPT, PAHW99T, ELLIPSOIDT, GAYBERNET,& $/;"	v	module:COMMONS
-MUPDATE	commons.f90	/^     &        NEVL, NEVS, NVECTORS, MUPDATE,/;"	v	module:COMMONS
-MYBUNIT	commons.f90	/^     &        MYEUNIT, MYMUNIT, MYBUNIT,/;"	v	module:COMMONS
-MYEUNIT	commons.f90	/^     &        CPS, CPF, ACKLANDID, PATOM1, PATOM2, CSMGPINDEX, CSMGUIDEGPINDEX, CSMSTEPS, CSMQUENCHES, CSMMAXIT, &$/;"	v	module:COMMONS
-MYFILENAME	commons.f90	/^      CHARACTER(LEN=130) DUMPFILE, MYFILENAME,/;"	v	module:COMMONS
-MYMUNIT	commons.f90	/^     &        MYEUNIT, MYMUNIT,/;"	v	module:COMMONS
-MYNODE	commons.f90	/^     &        lhbins, sampledbins, MYNODE,/;"	v	module:COMMONS
-MYPOT	finalq.f90	37;"	c	subroutine:FINALQ
+MYLBFGS	mylbfgs.f90	/^      SUBROUTINE MYLBFGS(/;"	s
+MYPOT	finalq.f90	18;"	c	subroutine:FINALQ
 MYPOT	main.f90	32;"	c	program:GMIN
-MYPOT	quench.f90	23;"	c	subroutine:QUENCH
-MYPOWER	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER,/;"	v	module:COMMONS
-MYPUNIT	commons.f90	/^     &        MYEUNIT, MYMUNIT, MYBUNIT, MYRUNIT, MYPUNIT$/;"	v	module:COMMONS
-MYRUNIT	commons.f90	/^     &        MYEUNIT, MYMUNIT, MYBUNIT, MYRUNIT,/;"	v	module:COMMONS
-MYSDT	commons.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT, MSTRANST, STOCKT, STICKYT, BLNT, MYSDT,/;"	v	module:COMMONS
-MYUNIT	commons.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT, MYUNIT,/;"	v	module:COMMONS
-MaximalTemperature	commons.f90	/^     &                 MinimalTemperature, MaximalTemperature,/;"	v	module:COMMONS
-MinimalTemperature	commons.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST, MAXERISE, MAXEFALL, TSTART, MATDIFF, STICKYSIG, SDTOL, &$/;"	v	module:COMMONS
-NACCEPT	commons.f90	/^      INTEGER :: NATOMS, NACCEPT,/;"	v	module:COMMONS
-NATBT	commons.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART, AVOID, NATBT,/;"	v	module:COMMONS
-NATOMS	commons.f90	/^      INTEGER :: NATOMS,/;"	v	module:COMMONS
-NCAPT	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT,/;"	v	module:COMMONS
-NCARBON	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON,/;"	v	module:COMMONS
-NCMP	commons.f90	/^      INTEGER, ALLOCATABLE :: NCRBN(:), NCMP(/;"	v	module:COMMONS
-NCOOP	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP,/;"	v	module:COMMONS
-NCORE	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ, BLOCK, JUMPINT, JUMPTO, NCORE,/;"	v	module:COMMONS
-NCRBN	commons.f90	/^      INTEGER, ALLOCATABLE :: NCRBN(/;"	v	module:COMMONS
-NDONTMOVE	commons.f90	/^      INTEGER :: NDONTMOVE,/;"	v	module:COMMONS
+NATOMS	commons.f90	/^INTEGER :: NATOMS /;"	v	module:COMMONS
+NCORE	commons.f90	/^INTEGER :: NCORE$/;"	v	module:COMMONS
 NDUMMY	main.f90	/^      INTEGER, ALLOCATABLE :: NDUMMY(/;"	v	program:GMIN
 NDUMMY2	main.f90	/^      INTEGER, ALLOCATABLE :: NDUMMY(:), NDUMMY2(/;"	v	program:GMIN
-NENRPER	commons.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER,/;"	v	module:COMMONS
-NEON	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON,/;"	v	module:COMMONS
-NEQUIL	commons.f90	/^     &                 PTSTEPS, NEQUIL,/;"	v	module:COMMONS
-NEVL	commons.f90	/^     &        NSUPER, NSACCEPT, NSUPERSTEP, GMODES, DUMPXYZUNIT, DUMPVUNIT, QUENCHFRQ, CHNRES, &$/;"	v	module:COMMONS
-NEVS	commons.f90	/^     &        NEVL, NEVS,/;"	v	module:COMMONS
-NEWJUMP	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT, SEEDT, CENT, TSALLIST, FREEZECORE, NEWJUMP,/;"	v	module:COMMONS
-NEWRESTART	commons.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART,/;"	v	module:COMMONS
-NEWRESTART_MD	commons.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS, MODEL1T, NEWRESTART_MD,/;"	v	module:COMMONS
-NEWRES_TEMP	commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH, COLDFUSIONLIMIT, NEWRES_TEMP,/;"	v	module:COMMONS
-NFIX	commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE, SHELLMOVEMAX, HPTGRP, NFIX,/;"	v	module:COMMONS
-NFREEZE	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR, TIPID, PAHID, NSYMREM=0, NFREEZE,/;"	v	module:COMMONS
-NGBSITE	commons.f90	/^      INTEGER  NGBSITE,/;"	v	module:COMMONS
-NHSMOVE	commons.f90	/^     &        NEVL, NEVS, NVECTORS, MUPDATE, LSYS, NHSMOVE,/;"	v	module:COMMONS
-NHSRESTART	commons.f90	/^     &        NEVL, NEVS, NVECTORS, MUPDATE, LSYS, NHSMOVE, NRENORM, NRELAX, NHSRESTART,/;"	v	module:COMMONS
-NINTS	commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE, NSYMQMAX, EQUIL, TPAHA, ISTEP, &$/;"	v	module:COMMONS
-NINTV	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR, TIPID, PAHID, NSYMREM=0, NFREEZE, NSAVEINTE, &$/;"	v	module:COMMONS
-NINT_AMH	commons.f90	/^      INTEGER NUMPRO_AMH, NINT_AMH,/;"	v	module:COMMONS
-NMOVABLEATOMS	commons.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT, MYUNIT, PRTFRQ, BSPTDUMPFRQ, NPERMGROUP, NMOVABLEATOMS,/;"	v	module:COMMONS
-NMSBSAVE	commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE,/;"	v	module:COMMONS
-NN	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN,/;"	v	module:COMMONS
-NOCISTRANS	commons.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS, MODEL1T, NEWRESTART_MD, CHANGE_TEMP, NOCISTRANS,/;"	v	module:COMMONS
-NORESET	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46, NORESET,/;"	v	module:COMMONS
-NPAHT	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT,/;"	v	module:COMMONS
-NPAIRS	commons.f90	/^      INTEGER :: NPAIRS$/;"	v	module:COMMONS
-NPAR	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR,/;"	v	module:COMMONS
-NPERMGROUP	commons.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT, MYUNIT, PRTFRQ, BSPTDUMPFRQ, NPERMGROUP,/;"	v	module:COMMONS
-NPERMSIZE	commons.f90	/^      INTEGER, ALLOCATABLE :: NPERMSIZE(/;"	v	module:COMMONS
-NPS	commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS,/;"	v	module:COMMONS
-NPYSITE	commons.f90	/^      INTEGER  NGBSITE, NPYSITE,/;"	v	module:COMMONS
-NQ	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ,/;"	v	module:COMMONS
-NQUENCH	commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH,/;"	v	module:COMMONS
-NRBSITES	commons.f90	/^     &        HBINS, NRBSITES,/;"	v	module:COMMONS
-NRBSITES1	commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1,/;"	v	module:COMMONS
-NRELAX	commons.f90	/^     &        NEVL, NEVS, NVECTORS, MUPDATE, LSYS, NHSMOVE, NRENORM, NRELAX,/;"	v	module:COMMONS
-NRENORM	commons.f90	/^     &        NEVL, NEVS, NVECTORS, MUPDATE, LSYS, NHSMOVE, NRENORM,/;"	v	module:COMMONS
-NRENSTUCK	commons.f90	/^     &        NEVL, NEVS, NVECTORS, MUPDATE, LSYS, NHSMOVE, NRENORM, NRELAX, NHSRESTART, NRENSTUCK,/;"	v	module:COMMONS
-NRUNS	commons.f90	/^     &        MCSTEPS(3), NRUNS,/;"	v	module:COMMONS
-NS	commons.f90	/^     &        NINTV, NSE/;"	v	module:COMMONS
-NSACCEPT	commons.f90	/^     &        NSUPER, NSACCEPT,/;"	v	module:COMMONS
-NSAVE	commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE,/;"	v	module:COMMONS
-NSAVEINTE	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR, TIPID, PAHID, NSYMREM=0, NFREEZE, NSAVEINTE,/;"	v	module:COMMONS
-NSEED	commons.f90	/^     &        NINTV, NSEED,/;"	v	module:COMMONS
-NSETS	commons.f90	/^      INTEGER, ALLOCATABLE :: NSETS(/;"	v	module:COMMONS
-NSSTOP	commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP,/;"	v	module:COMMONS
-NSUPER	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP, NSYMINTERVAL, QDLIMIT, COULN, &$/;"	v	module:COMMONS
-NSUPERSTEP	commons.f90	/^     &        NSUPER, NSACCEPT, NSUPERSTEP,/;"	v	module:COMMONS
-NSURFMOVES	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ, BLOCK, JUMPINT, JUMPTO, NCORE, NSURFMOVES /;"	v	module:COMMONS
-NSYMINTERVAL	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP, NSYMINTERVAL,/;"	v	module:COMMONS
-NSYMQMAX	commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE, NSYMQMAX,/;"	v	module:COMMONS
-NSYMREM	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR, TIPID, PAHID, NSYMREM=/;"	v	module:COMMONS
-NSpline	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints, SaveNth, DumpEveryNthQuench, NSpline,/;"	v	module:COMMONS
-NT	commons.f90	/^      INTE/;"	v	module:COMMONS
-NTAB	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB,/;"	v	module:COMMONS
-NTARGETS	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS,/;"	v	module:COMMONS
-NTIPT	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT, NTIPT,/;"	v	module:COMMONS
-NTempPoints	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints,/;"	v	module:COMMONS
+NSAVE	commons.f90	/^INTEGER :: NSAVE$/;"	v	module:COMMONS
+NUMBER_OF_ATOMS	func.f90	/^INTEGER :: NUMBER_OF_ATOMS$/;"	v	module:FUNC
 NUMBER_OF_ATOMS	main.f90	/^      INTEGER :: NUMBER_OF_ATOMS$/;"	v	program:GMIN
-NUMPRO_AMH	commons.f90	/^      INTEGER NUMPRO_AMH,/;"	v	module:COMMONS
-NVAR	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR,/;"	v	module:COMMONS
-NVEC	commons.f90	/^     &        NINTV, NSEED, NVEC,/;"	v	module:COMMONS
-NVECTORS	commons.f90	/^     &        NEVL, NEVS, NVECTORS,/;"	v	module:COMMONS
-NumberOfTrajectories	commons.f90	/^     &        NINTS, NumberOfTrajectories,/;"	v	module:COMMONS
-ODDCHARGE	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP, DISTFAC, ODDCHARGE,/;"	v	module:COMMONS
-OHT	commons.f90	/^      LOGICAL :: FIELDT, OHT,/;"	v	module:COMMONS
-OMOVE	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP, JUMPMOVE, JDUMP, TMOVE, OMOVE /;"	v	module:COMMONS
-OSTEP	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP,/;"	v	module:COMMONS
-OTPT	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT, SEEDT, CENT, TSALLIST, FREEZECORE, NEWJUMP, RENORM, CAPSID, FREEZE, &$/;"	v	module:COMMONS
-P46	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46,/;"	v	module:COMMONS
-PACHECO	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46, NORESET, TABOOT, EVSTEPT, PACHECO,/;"	v	module:COMMONS
-PAHAT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT, PYGDPT, DBPT, DBPTDT, DBLPYT, DMBLMT, EFIELDT, PAHAT,/;"	v	module:COMMONS
-PAHID	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR, TIPID, PAHID,/;"	v	module:COMMONS
-PAHT	commons.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT,/;"	v	module:COMMONS
-PAHW99T	commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT, NTIPT, PAHW99T,/;"	v	module:COMMONS
-PAIRDIST	commons.f90	/^      INTEGER, ALLOCATABLE :: PAIRDIST(/;"	v	module:COMMONS
-PAIRDISTT	commons.f90	/^      LOGICAL :: PAIRDISTT$/;"	v	module:COMMONS
-PARALLELT	commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT,/;"	v	module:COMMONS
-PARAMB2	commons.f90	/^     &                 GBANISOTROPYR,GBWELLDEPTHR,PARAMa1,PARAMb1,PARAMc1,PARAMa2,PARAMB2,/;"	v	module:COMMONS
-PARAMONOVCUTOFF	commons.f90	/^     &        PARAMONOVPBCX, PARAMONOVPBCY, PARAMONOVPBCZ, PARAMONOVCUTOFF,/;"	v	module:COMMONS
-PARAMONOVPBCX	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT, MOVESHELLT, QDT, QD2T, &$/;"	v	module:COMMONS
-PARAMONOVPBCY	commons.f90	/^     &        PARAMONOVPBCX, PARAMONOVPBCY,/;"	v	module:COMMONS
-PARAMONOVPBCZ	commons.f90	/^     &        PARAMONOVPBCX, PARAMONOVPBCY, PARAMONOVPBCZ,/;"	v	module:COMMONS
-PARAMONOVT	commons.f90	/^     &        PROJIT, PROJIHT, LEAPDIHE, DUMPQUT, PARAMONOVT,/;"	v	module:COMMONS
-PARAMa1	commons.f90	/^     &                 GBANISOTROPYR,GBWELLDEPTHR,PARAMa1,/;"	v	module:COMMONS
-PARAMa2	commons.f90	/^     &                 GBANISOTROPYR,GBWELLDEPTHR,PARAMa1,PARAMb1,PARAMc1,PARAMa2,/;"	v	module:COMMONS
-PARAMb1	commons.f90	/^     &                 GBANISOTROPYR,GBWELLDEPTHR,PARAMa1,PARAMb1,/;"	v	module:COMMONS
-PARAMc1	commons.f90	/^     &                 GBANISOTROPYR,GBWELLDEPTHR,PARAMa1,PARAMb1,PARAMc1,/;"	v	module:COMMONS
-PARAMc2	commons.f90	/^     &                 GBANISOTROPYR,GBWELLDEPTHR,PARAMa1,PARAMb1,PARAMc1,PARAMa2,PARAMB2,PARAMc2,/;"	v	module:COMMONS
-PATCHY	commons.f90	/^       LOGICAL :: PATCHY,/;"	v	module:COMMONS
-PATOM1	commons.f90	/^     &        CPS, CPF, ACKLANDID, PATOM1,/;"	v	module:COMMONS
-PATOM2	commons.f90	/^     &        CPS, CPF, ACKLANDID, PATOM1, PATOM2,/;"	v	module:COMMONS
-PBGLUET	commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW, SUPERSTEP, EAMLJT, PBGLUET,/;"	v	module:COMMONS
+OPENF	func.f90	/^SUBROUTINE OPENF(/;"	s	module:FUNC
+OSTEP	commons.f90	/^DOUBLE PRECISION TEMP, STEP, OSTEP,/;"	v	module:COMMONS
 PCALL	keyword.f90	61;"	c	subroutine:KEYWORD
 PCALL	potential.f90	51;"	c	subroutine:POTENTIAL
-PCUT	commons.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(120,3,3), GMAX, CUTOFF, PCUT,/;"	v	module:COMMONS
-PCUTOFF	commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF,/;"	v	module:COMMONS
-PEPSILON0	commons.f90	/^     &                 GBANISOTROPYR,GBWELLDEPTHR,PARAMa1,PARAMb1,PARAMc1,PARAMa2,PARAMB2,PARAMc2,PSIGMA0(2),PEPSILON0,/;"	v	module:COMMONS
-PEPSILON1	commons.f90	/^     &                 GBANISOTROPYR,GBWELLDEPTHR,PARAMa1,PARAMb1,PARAMc1,PARAMa2,PARAMB2,PARAMc2,PSIGMA0(2),PEPSILON0,&$/;"	v	module:COMMONS
-PEPSILONATTR	commons.f90	/^     &                 PEPSILON1(3),PSCALEFAC1(2),PSCALEFAC2(2),PYA11(3),PYA21(3),PYA12(3),PYA22(3), &$/;"	v	module:COMMONS
-PERIODIC	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC,/;"	v	module:COMMONS
-PERMDIST	commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN, BSMIN, PERMDIST,/;"	v	module:COMMONS
-PERMGROUP	commons.f90	/^      INTEGER, ALLOCATABLE :: NPERMSIZE(:), PERMGROUP(/;"	v	module:COMMONS
-PERMOPT	commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN, BSMIN, PERMDIST, PERMOPT,/;"	v	module:COMMONS
-PERMUTE	commons.f90	/^      INTEGER, ALLOCATABLE :: PERMUTE(/;"	v	module:COMMONS
-PFORCE	commons.f90	/^     &                 BSPTQMAX, BSPTQMIN, PFORCE,/;"	v	module:COMMONS
-PLUS	commons.f90	/^     &        STAR, PLUS,/;"	v	module:COMMONS
-PNEWJUMP	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP,/;"	v	module:COMMONS
 POTEL	main.f90	/^      DOUBLE PRECISION POTEL$/;"	v	program:GMIN
 POTENTIAL	potential.f90	/^      SUBROUTINE POTENTIAL(/;"	s
-PROGRESS	commons.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS,/;"	v	module:COMMONS
-PROJ	commons.f90	/^     &        FRAUSIT, ANGST, SELFT, STEPOUT, WENZEL, THRESHOLDT, THOMSONT, MULLERBROWNT, CHARMMENERGIES, &$/;"	v	module:COMMONS
-PROJIHT	commons.f90	/^     &        PROJIT, PROJIHT,/;"	v	module:COMMONS
-PROJIT	commons.f90	/^     &        PARAMONOVPBCX, PARAMONOVPBCY, PARAMONOVPBCZ, PARAMONOVCUTOFF, GAYBERNEDCT, UNFREEZERES, FREEZEALL, &$/;"	v	module:COMMONS
-PRTFRQ	commons.f90	/^     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT, MYUNIT, PRTFRQ,/;"	v	module:COMMONS
-PSCALEFAC1	commons.f90	/^     &                 PEPSILON1(3),PSCALEFAC1(/;"	v	module:COMMONS
-PSCALEFAC2	commons.f90	/^     &                 PEPSILON1(3),PSCALEFAC1(2),PSCALEFAC2(/;"	v	module:COMMONS
-PSIGMA0	commons.f90	/^     &                 GBANISOTROPYR,GBWELLDEPTHR,PARAMa1,PARAMb1,PARAMc1,PARAMa2,PARAMB2,PARAMc2,PSIGMA0(/;"	v	module:COMMONS
-PSIGMAATTR	commons.f90	/^     &                 PEPSILONATTR(2),PSIGMAATTR(/;"	v	module:COMMONS
-PTEMAX	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent, lnHarmFreq, PTEMIN, PTEMAX,/;"	v	module:COMMONS
-PTEMIN	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent, lnHarmFreq, PTEMIN,/;"	v	module:COMMONS
-PTGP	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(:,:), CSMAV(:), QMINAV(:), PTGP(/;"	v	module:COMMONS
-PTGPGUIDE	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(:,:), CSMAV(:), QMINAV(:), PTGP(:,:,:), PTGPGUIDE(/;"	v	module:COMMONS
-PTGROUP	commons.f90	/^      CHARACTER(LEN=4), ALLOCATABLE, DIMENSION(:) :: PTGROUP /;"	v	module:COMMONS
-PTMC	commons.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART, AVOID, NATBT, DIFFRACTT, CHRMMT, INTMINT, LB2T, & $/;"	v	module:COMMONS
-PTSTEPS	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent, lnHarmFreq, PTEMIN, PTEMAX, PTTMIN, PTTMAX, EXCHPROB, &$/;"	v	module:COMMONS
-PTTMAX	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent, lnHarmFreq, PTEMIN, PTEMAX, PTTMIN, PTTMAX,/;"	v	module:COMMONS
-PTTMIN	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent, lnHarmFreq, PTEMIN, PTEMAX, PTTMIN,/;"	v	module:COMMONS
-PULLT	commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT,/;"	v	module:COMMONS
-PYA1	commons.f90	/^     &                 PYSIGNOT, PYEPSNOT, PYA1(/;"	v	module:COMMONS
-PYA11	commons.f90	/^     &                 PEPSILON1(3),PSCALEFAC1(2),PSCALEFAC2(2),PYA11(/;"	v	module:COMMONS
-PYA12	commons.f90	/^     &                 PEPSILON1(3),PSCALEFAC1(2),PSCALEFAC2(2),PYA11(3),PYA21(3),PYA12(/;"	v	module:COMMONS
-PYA1bin	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE     :: PYA1bin(/;"	v	module:COMMONS
-PYA2	commons.f90	/^     &                 PYSIGNOT, PYEPSNOT, PYA1(3), PYA2(/;"	v	module:COMMONS
-PYA21	commons.f90	/^     &                 PEPSILON1(3),PSCALEFAC1(2),PSCALEFAC2(2),PYA11(3),PYA21(/;"	v	module:COMMONS
-PYA22	commons.f90	/^     &                 PEPSILON1(3),PSCALEFAC1(2),PSCALEFAC2(2),PYA11(3),PYA21(3),PYA12(3),PYA22(/;"	v	module:COMMONS
-PYA2bin	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE     :: PYA1bin(:,:), PYA2bin(/;"	v	module:COMMONS
-PYBINARYT	commons.f90	/^     &        AMBERT, RANDOMSEEDT, PYGPERIODICT, LJCAPSIDT, PYBINARYT,/;"	v	module:COMMONS
-PYBINARYTYPE1	commons.f90	/^      INTEGER  NGBSITE, NPYSITE, PYBINARYTYPE1,/;"	v	module:COMMONS
-PYDPEPS	commons.f90	/^     &                 PYSIGNOT, PYEPSNOT, PYA1(3), PYA2(3), PYDPMU, PYDPEPS,/;"	v	module:COMMONS
-PYDPFCT	commons.f90	/^     &                 PYSIGNOT, PYEPSNOT, PYA1(3), PYA2(3), PYDPMU, PYDPEPS, PYDPFCT,/;"	v	module:COMMONS
-PYDPMU	commons.f90	/^     &                 PYSIGNOT, PYEPSNOT, PYA1(3), PYA2(3), PYDPMU,/;"	v	module:COMMONS
-PYEPSNOT	commons.f90	/^     &                 PYSIGNOT, PYEPSNOT,/;"	v	module:COMMONS
-PYGDPT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT, PYGDPT,/;"	v	module:COMMONS
-PYGPERIODICT	commons.f90	/^     &        AMBERT, RANDOMSEEDT, PYGPERIODICT,/;"	v	module:COMMONS
-PYGT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT,/;"	v	module:COMMONS
-PYOVERLAPTHRESH	commons.f90	/^     &                 PEPSILONATTR(2),PSIGMAATTR(2), PYOVERLAPTHRESH,/;"	v	module:COMMONS
-PYSIGNOT	commons.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF, INVKAP, ESA(3), LPRSQ, LSQDFR, GBDPMU, GBDPEPS, GBDPFCT, &$/;"	v	module:COMMONS
-PYSWAP	commons.f90	/^      INTEGER  NGBSITE, NPYSITE, PYBINARYTYPE1, PYSWAP(/;"	v	module:COMMONS
-Q4C	quench.f90	30;"	c	subroutine:QUENCH
-Q4T	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID, Q4T,/;"	v	module:COMMONS
-QD2T	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT, MOVESHELLT, QDT, QD2T,/;"	v	module:COMMONS
-QDLIMIT	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP, NSYMINTERVAL, QDLIMIT,/;"	v	module:COMMONS
-QDT	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT, MOVESHELLT, QDT,/;"	v	module:COMMONS
+QMIN	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE :: QMIN(/;"	v	module:COMMONS
 QMIN	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMIN(/;"	v	program:GMIN
-QMINAV	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(:,:), CSMAV(:), QMINAV(/;"	v	module:COMMONS
+QMINP	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE :: QMINP(/;"	v	module:COMMONS
 QMINP	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(/;"	v	program:GMIN
-QMINPCSMAV	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(/;"	v	module:COMMONS
-QTSALLIS	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS, SCC, TOLB, T12FAC, XMOVERENORM, RESIZE, QTSALLIS,/;"	v	module:COMMONS
-QUADT	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT,/;"	v	module:COMMONS
-QUCENTRE	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46, NORESET, TABOOT, EVSTEPT, PACHECO, DL_POLY, QUCENTRE,/;"	v	module:COMMONS
 QUENCH	quench.f90	/^      SUBROUTINE QUENCH(/;"	s
-QUENCHDOS	commons.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT, FST, DECAY, COOP, FIXBIN, GAUSST, QUENCHDOS,/;"	v	module:COMMONS
-QUENCHFRQ	commons.f90	/^     &        NSUPER, NSACCEPT, NSUPERSTEP, GMODES, DUMPXYZUNIT, DUMPVUNIT, QUENCHFRQ,/;"	v	module:COMMONS
-RADIFT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT,/;"	v	module:COMMONS
-RADIUS	commons.f90	/^     &                 CQMAX, RADIUS,/;"	v	module:COMMONS
-RANDOMSEEDT	commons.f90	/^     &        AMBERT, RANDOMSEEDT,/;"	v	module:COMMONS
-RANGESQ	commons.f90	/^       DOUBLE PRECISION :: SIGMASQ, RANGESQ,/;"	v	module:COMMONS
 RBIO	finalio.f90	/^      SUBROUTINE RBIO(/;"	s
-RBSTLA	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: SITE(:,:), RBUV(:,:), RBSTLA(/;"	v	module:COMMONS
-RBUV	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: SITE(:,:), RBUV(/;"	v	module:COMMONS
-RENORM	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT, SEEDT, CENT, TSALLIST, FREEZECORE, NEWJUMP, RENORM,/;"	v	module:COMMONS
-REQ11	commons.f90	/^     &                 EPS11, EPS22, EPS12, MRHO11, MRHO22, MRHO12, REQ11,/;"	v	module:COMMONS
-REQ12	commons.f90	/^     &                 EPS11, EPS22, EPS12, MRHO11, MRHO22, MRHO12, REQ11, REQ22, REQ12,/;"	v	module:COMMONS
-REQ22	commons.f90	/^     &                 EPS11, EPS22, EPS12, MRHO11, MRHO22, MRHO12, REQ11, REQ22,/;"	v	module:COMMONS
-RESIZE	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS, SCC, TOLB, T12FAC, XMOVERENORM, RESIZE,/;"	v	module:COMMONS
-RESIZET	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET,/;"	v	module:COMMONS
-RESTART	commons.f90	/^     &        ZETT2, RESTART,/;"	v	module:COMMONS
-RESTORET	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET,/;"	v	module:COMMONS
-RGCL2	commons.f90	/^     &        PROJ, RGCL2,/;"	v	module:COMMONS
-RHO	commons.f90	/^     DOUBLE PRECISION RHO,/;"	v	module:COMMONS
-RHOC10H	commons.f90	/^     &                 RHOCC0, RHOCC10, RHOCC20,  RHOHH0, RHOHH10, RHOHH20, RHOCH0, RHOC10H,/;"	v	module:COMMONS
-RHOC20H	commons.f90	/^     &                 RHOCH10, RHOC20H,/;"	v	module:COMMONS
-RHOCC0	commons.f90	/^     &                 EPS11, EPS22, EPS12, MRHO11, MRHO22, MRHO12, REQ11, REQ22, REQ12, &$/;"	v	module:COMMONS
-RHOCC10	commons.f90	/^     &                 RHOCC0, RHOCC10,/;"	v	module:COMMONS
-RHOCC20	commons.f90	/^     &                 RHOCC0, RHOCC10, RHOCC20,/;"	v	module:COMMONS
-RHOCH0	commons.f90	/^     &                 RHOCC0, RHOCC10, RHOCC20,  RHOHH0, RHOHH10, RHOHH20, RHOCH0,/;"	v	module:COMMONS
-RHOCH10	commons.f90	/^     &                 RHOCC0, RHOCC10, RHOCC20,  RHOHH0, RHOHH10, RHOHH20, RHOCH0, RHOC10H, &$/;"	v	module:COMMONS
-RHOCH20	commons.f90	/^     &                 RHOCH10, RHOC20H, RHOCH20,/;"	v	module:COMMONS
-RHOHH0	commons.f90	/^     &                 RHOCC0, RHOCC10, RHOCC20,  RHOHH0,/;"	v	module:COMMONS
-RHOHH10	commons.f90	/^     &                 RHOCC0, RHOCC10, RHOCC20,  RHOHH0, RHOHH10,/;"	v	module:COMMONS
-RHOHH20	commons.f90	/^     &                 RHOCC0, RHOCC10, RHOCC20,  RHOHH0, RHOHH10, RHOHH20,/;"	v	module:COMMONS
-RIGID	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID,/;"	v	module:COMMONS
-RINGROTSCALE	commons.f90	/^     &                 TRENORM, HISTMIN, HISTMAX, HISTFAC, EPSSPHERE, FINALCUTOFF, SHELLPROB, RINGROTSCALE,/;"	v	module:COMMONS
-RKMIN	commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN,/;"	v	module:COMMONS
-RK_R	commons.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb, hdistconstraint, COREFRAC, TSTAR, &$/;"	v	module:COMMONS
-RK_THETA	commons.f90	/^     &                 RK_R, RK_THETA,/;"	v	module:COMMONS
-RMS	commons.f90	/^     &                 TFAC(3), RMS,/;"	v	module:COMMONS
-SACCRAT	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT,/;"	v	module:COMMONS
-SAVEQ	commons.f90	/^     &        SORTT, HIT, SAVEQ,/;"	v	module:COMMONS
-SCC	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS, SCC,/;"	v	module:COMMONS
-SCEPS	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS,/;"	v	module:COMMONS
 SCREENC	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(/;"	v	program:GMIN
-SCT	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT,/;"	v	module:COMMONS
-SDTOL	commons.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST, MAXERISE, MAXEFALL, TSTART, MATDIFF, STICKYSIG, SDTOL,/;"	v	module:COMMONS
-SEEDT	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT, SEEDT,/;"	v	module:COMMONS
-SEED_AMH	commons.f90	/^      INTEGER NUMPRO_AMH, NINT_AMH, SEED_AMH,/;"	v	module:COMMONS
-SELFT	commons.f90	/^     &        FRAUSIT, ANGST, SELFT,/;"	v	module:COMMONS
-SETCENT	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID, Q4T, MPIT, JMT, LJCOULT, SETCENT,/;"	v	module:COMMONS
-SETS	commons.f90	/^      INTEGER, ALLOCATABLE :: SETS(/;"	v	module:COMMONS
-SHELLMOVEMAX	commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE, SHELLMOVEMAX,/;"	v	module:COMMONS
-SHELLMOVES	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: SHELLMOVES /;"	v	module:COMMONS
-SHELLPROB	commons.f90	/^     &                 TRENORM, HISTMIN, HISTMAX, HISTFAC, EPSSPHERE, FINALCUTOFF, SHELLPROB,/;"	v	module:COMMONS
-SHIFTCUT	commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL, AMBER, FIXIMAGE, BINARY, SHIFTCUT,/;"	v	module:COMMONS
-SIG	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG,/;"	v	module:COMMONS
-SIGMAF	commons.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF,/;"	v	module:COMMONS
-SIGMASQ	commons.f90	/^       DOUBLE PRECISION :: SIGMASQ,/;"	v	module:COMMONS
-SIGNOT	commons.f90	/^     &                 EPSR, GBKAPPA, GBKAPPRM, GBMU,GBNU, GBSIGNOT,/;"	v	module:COMMONS
-SITE	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: SITE(/;"	v	module:COMMONS
-SORTT	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP, RIGID, Q4T, MPIT, JMT, LJCOULT, SETCENT, &$/;"	v	module:COMMONS
-SQUEEZED	commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP, SQUEEZER, SQUEEZED,/;"	v	module:COMMONS
-SQUEEZER	commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP, SQUEEZER,/;"	v	module:COMMONS
-SQUEEZET	commons.f90	/^     &        MSORIGT, SQUEEZET,/;"	v	module:COMMONS
-STAR	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46, NORESET, TABOOT, EVSTEPT, PACHECO, DL_POLY, QUCENTRE, &$/;"	v	module:COMMONS
-STCHRG	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: SITE(:,:), RBUV(:,:), RBSTLA(:,:), STCHRG(/;"	v	module:COMMONS
-STEP	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP,/;"	v	module:COMMONS
-STEPOUT	commons.f90	/^     &        FRAUSIT, ANGST, SELFT, STEPOUT,/;"	v	module:COMMONS
-STICKYSIG	commons.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST, MAXERISE, MAXEFALL, TSTART, MATDIFF, STICKYSIG,/;"	v	module:COMMONS
-STICKYT	commons.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT, MSTRANST, STOCKT, STICKYT,/;"	v	module:COMMONS
-STOCKAAT	commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT, PYGDPT, DBPT, DBPTDT, DBLPYT, DMBLMT, EFIELDT, PAHAT, STOCKAAT,/;"	v	module:COMMONS
-STOCKLAMBDA	commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP, SQUEEZER, SQUEEZED, COOPCUT, STOCKMU, STOCKLAMBDA,/;"	v	module:COMMONS
-STOCKMU	commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP, SQUEEZER, SQUEEZED, COOPCUT, STOCKMU,/;"	v	module:COMMONS
-STOCKT	commons.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT, MSTRANST, STOCKT,/;"	v	module:COMMONS
-STRANDT	commons.f90	/^     &        OTPT, LJMFT, STRANDT,/;"	v	module:COMMONS
-SUPERSTEP	commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW, SUPERSTEP,/;"	v	module:COMMONS
-SUPSTEP	commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP,/;"	v	module:COMMONS
-SW	commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW,/;"	v	module:COMMONS
-SWAPMOVEST	commons.f90	/^     &        AMBERT, RANDOMSEEDT, PYGPERIODICT, LJCAPSIDT, PYBINARYT, SWAPMOVEST,/;"	v	module:COMMONS
-SWT	commons.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT,/;"	v	module:COMMONS
-SYMMETRIZE	commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN, BSMIN, PERMDIST, PERMOPT, BSWL, BSPT, BSPTRESTART, &$/;"	v	module:COMMONS
-SYMMETRIZECSM	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM,/;"	v	module:COMMONS
-SYMREM	commons.f90	/^     &                 ECONV, TOLD, TOLE, SYMREM(/;"	v	module:COMMONS
-SYMTOL1	commons.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS, DECAYPARAM, SYMTOL1,/;"	v	module:COMMONS
-SYMTOL2	commons.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS, DECAYPARAM, SYMTOL1, SYMTOL2,/;"	v	module:COMMONS
-SYMTOL3	commons.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS, DECAYPARAM, SYMTOL1, SYMTOL2, SYMTOL3,/;"	v	module:COMMONS
-SYMTOL4	commons.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS, DECAYPARAM, SYMTOL1, SYMTOL2, SYMTOL3, SYMTOL4,/;"	v	module:COMMONS
-SYMTOL5	commons.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS, DECAYPARAM, SYMTOL1, SYMTOL2, SYMTOL3, SYMTOL4, SYMTOL5,/;"	v	module:COMMONS
-SYS	commons.f90	/^      CHARACTER(LEN=80) :: SYS$/;"	v	module:COMMONS
-SaveNth	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints, SaveNth,/;"	v	module:COMMONS
-SwapProb	commons.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb,/;"	v	module:COMMONS
-T12FAC	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS, SCC, TOLB, T12FAC,/;"	v	module:COMMONS
-TABOOT	commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46, NORESET, TABOOT,/;"	v	module:COMMONS
-TAKESTEP	takestep.f90	/^      SUBROUTINE TAKESTEP$/;"	s
-TARGET	commons.f90	/^      LOGICAL DEBUG, TARGET,/;"	v	module:COMMONS
-TARGETS	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: TARGETS(/;"	v	module:COMMONS
-TAUMAX	commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH, COLDFUSIONLIMIT, NEWRES_TEMP, MINOMEGA, LJSIGMA, LJEPSILON, TAUMAX,/;"	v	module:COMMONS
-TAUMAXFULL	commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH, COLDFUSIONLIMIT, NEWRES_TEMP, MINOMEGA, LJSIGMA, LJEPSILON, TAUMAX, &$/;"	v	module:COMMONS
-TCOORDS	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: TCOORDS$/;"	v	module:COMMONS
-TDHDT	commons.f90	/^     &        MULTPAHAT, TDHDT,/;"	v	module:COMMONS
-TDT	commons.f90	/^      LOGICAL :: FIELDT, OHT, IHT, TDT,/;"	v	module:COMMONS
-TEMP	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP,/;"	v	module:COMMONS
-TEMPS	commons.f90	/^     &                 TFAC(3), RMS, TEMPS,/;"	v	module:COMMONS
-TETHER	commons.f90	/^     &        MULTPAHAT, TDHDT, WATERDCT, WATERKZT, CHECKDT, CHECKMARKOVT, & $/;"	v	module:COMMONS
-TFAC	commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP, SQUEEZER, SQUEEZED, COOPCUT, STOCKMU, STOCKLAMBDA, &$/;"	v	module:COMMONS
-THOMSONT	commons.f90	/^     &        FRAUSIT, ANGST, SELFT, STEPOUT, WENZEL, THRESHOLDT, THOMSONT,/;"	v	module:COMMONS
-THRESHOLDT	commons.f90	/^     &        FRAUSIT, ANGST, SELFT, STEPOUT, WENZEL, THRESHOLDT,/;"	v	module:COMMONS
-TIP	commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT, RESIZET, TIP,/;"	v	module:COMMONS
-TIPID	commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR, TIPID,/;"	v	module:COMMONS
+STEP	commons.f90	/^DOUBLE PRECISION TEMP, STEP,/;"	v	module:COMMONS
+TAKESTEP	func.f90	/^      SUBROUTINE TAKESTEP$/;"	s	module:FUNC
+TEMP	commons.f90	/^DOUBLE PRECISION TEMP,/;"	v	module:COMMONS
 TIPIO	finalio.f90	/^      SUBROUTINE TIPIO(/;"	s
-TMOVE	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP, JUMPMOVE, JDUMP, TMOVE,/;"	v	module:COMMONS
 TMPCOORDS	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: TMPCOORDS(/;"	v	program:GMIN
-TNT	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST, DBRENTT, DZTEST, FNI, FAL, CPMD, TNT,/;"	v	module:COMMONS
-TOLB	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS, SCC, TOLB,/;"	v	module:COMMONS
-TOLD	commons.f90	/^     &                 ECONV, TOLD,/;"	v	module:COMMONS
-TOLE	commons.f90	/^     &                 ECONV, TOLD, TOLE,/;"	v	module:COMMONS
-TOSI	commons.f90	/^     &        PROJ, RGCL2, TOSI,/;"	v	module:COMMONS
 TOT	potential.f90	56;"	c	subroutine:POTENTIAL
-TPAHA	commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE, NSYMQMAX, EQUIL, TPAHA,/;"	v	module:COMMONS
-TRACKDATAT	commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW, SUPERSTEP, EAMLJT, PBGLUET, TRACKDATAT,/;"	v	module:COMMONS
-TRENORM	commons.f90	/^     &                 COULTEMP, APP, AMM, APM, XQP, XQM, ALPHAP, ALPHAM, ZSTAR, COMP, DGUESS, GUIDECUT, EFAC,& $/;"	v	module:COMMONS
-TSALLIST	commons.f90	/^      LOGICAL DEBUG, TARGET, MORSET, CUTT, SEEDT, CENT, TSALLIST,/;"	v	module:COMMONS
-TSTAR	commons.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb, hdistconstraint, COREFRAC, TSTAR,/;"	v	module:COMMONS
-TSTART	commons.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST, MAXERISE, MAXEFALL, TSTART,/;"	v	module:COMMONS
-TUNNELT	commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL, AMBER, FIXIMAGE, BINARY, SHIFTCUT, ARNO, TUNNELT,/;"	v	module:COMMONS
-TWOD	commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL, AMBER, FIXIMAGE, BINARY, SHIFTCUT, ARNO, TUNNELT, TWOD,/;"	v	module:COMMONS
-TWOPLUS	commons.f90	/^     &        STAR, PLUS, TWOPLUS,/;"	v	module:COMMONS
-TargetWL	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL,/;"	v	module:COMMONS
-UNFREEZERES	commons.f90	/^     &        PARAMONOVPBCX, PARAMONOVPBCY, PARAMONOVPBCZ, PARAMONOVCUTOFF, GAYBERNEDCT, UNFREEZERES,/;"	v	module:COMMONS
-VAT	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) ::  VAT,/;"	v	module:COMMONS
-VATO	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) ::  VAT,  VATO /;"	v	module:COMMONS
-VEC	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: VEC(/;"	v	module:COMMONS
-VGW	commons.f90	/^     &        LJSITECOORDST, VGW,/;"	v	module:COMMONS
-VGWTOL	commons.f90	/^     &                 TAUMAXFULL, CPFACTORSG, CPFACTORFG, VGWTOL,/;"	v	module:COMMONS
-VISITPROP	commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP,/;"	v	module:COMMONS
-VT	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: VT$/;"	v	module:COMMONS
-WATERDCT	commons.f90	/^     &        MULTPAHAT, TDHDT, WATERDCT,/;"	v	module:COMMONS
-WATERKZT	commons.f90	/^     &        MULTPAHAT, TDHDT, WATERDCT, WATERKZT,/;"	v	module:COMMONS
-WELCH	commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH,/;"	v	module:COMMONS
-WENZEL	commons.f90	/^     &        FRAUSIT, ANGST, SELFT, STEPOUT, WENZEL,/;"	v	module:COMMONS
-XINSAVE	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: XINSAVE(/;"	v	module:COMMONS
-XMOVERENORM	commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS, SCC, TOLB, T12FAC, XMOVERENORM,/;"	v	module:COMMONS
-XMUL	commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,/;"	v	module:COMMONS
-XQM	commons.f90	/^     &                 COULTEMP, APP, AMM, APM, XQP, XQM,/;"	v	module:COMMONS
-XQP	commons.f90	/^     &                 COULTEMP, APP, AMM, APM, XQP,/;"	v	module:COMMONS
-ZETT1	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST, DBRENTT, DZTEST, FNI, FAL, CPMD, TNT, ZETT1,/;"	v	module:COMMONS
-ZETT2	commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT, BFGS, LBFGST, DBRENTT, DZTEST, FNI, FAL, CPMD, TNT, ZETT1, &$/;"	v	module:COMMONS
-ZSTAR	commons.f90	/^     &                 COULTEMP, APP, AMM, APM, XQP, XQM, ALPHAP, ALPHAM, ZSTAR,/;"	v	module:COMMONS
-ZSYM	commons.f90	/^      CHARACTER(LEN=2), ALLOCATABLE, DIMENSION(:) :: ZSYM /;"	v	module:COMMONS
 amberdump	finalio.f90	/^      SUBROUTINE amberdump(/;"	s
-ev	quench.f90	28;"	c	subroutine:QUENCH
-hdistconstraint	commons.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb, hdistconstraint,/;"	v	module:COMMONS
-lhbins	commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints, SaveNth, DumpEveryNthQuench, NSpline, Hwindows, & $/;"	v	module:COMMONS
-lnHarmFreq	commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent, lnHarmFreq,/;"	v	module:COMMONS
-sampledbins	commons.f90	/^     &        lhbins, sampledbins,/;"	v	module:COMMONS
-xvEX	commons.f90	/^      REAL, ALLOCATABLE :: xvEX(/;"	v	module:COMMONS
