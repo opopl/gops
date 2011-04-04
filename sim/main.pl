@@ -379,6 +379,29 @@ close LFILE or die "can't close $: $!";;
 
 # subroutines {{{
 
+sub finalio {
+# {{{
+
+open LOW,">lowest" or die "$!";
+
+for ( $iconf = 0; $iconf < $nsave; $iconf++){
+	print LOW, "$natoms\n";
+	print LOW, "Energy of minimum $iconf = $qmin[$iconf]  first found at step $ff[$iconf] \n";
+         WRITE(MYUNIT2,30) (QMINP(J1,J2),J2=1,3*(NATOMS-NS))
+30       FORMAT('LA ',3F20.10)
+	print LOW, "LA $qminp \n";
+}
+
+close LOW or die "can't close $: $!";;
+
+# }}}
+}
+
+sub finalq {
+# {{{
+# }}}
+}
+
 sub keyword {
 # {{{
 open FILE,"<data" or die "$!";
