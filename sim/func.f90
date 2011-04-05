@@ -8,8 +8,6 @@ INTEGER :: NUMBER_OF_ATOMS
 
 CONTAINS
 
-
-
 ! Doxygen RAD  {{{
 !
 !> @name RAD

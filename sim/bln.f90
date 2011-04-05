@@ -3,12 +3,12 @@
      IMPLICIT NONE
 
      CONTAINS
-
 !
 !> @brief Calculate the energy and gradient for a given configuration of a BLN polymer chain.
 !>
 !> @param[out] ENERGY
 !> @param[in] GRADT
+!
 
       SUBROUTINE BLN(QO,GRAD,ENERGY,GRADT)
 C{{{
@@ -38,27 +38,24 @@ C{{{
       YR(1:NATOMS,1:NATOMS)=0.0D0
       ZR(1:NATOMS,1:NATOMS)=0.0D0
 
-      CALL CALC_INT_COORDS_BLN(QO,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,COSTOR,
-     &                        SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
+      CALL CALC_INT_COORDS_BLN(QO,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,&
+                BOND_ANGLE,TOR_ANGLE,RADII,&
+                NATOMS,COSTOR,SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
 
       CALL CALC_ENERGY_BLN(QO,ENERGY,LJREP_BLN,LJATT_BLN,&
-        & A_BLN,B_BLN,C_BLN,D_BLN,
-        & X,Y,Z,
-        & XR,YR,ZR,
-        & DOT_PROD,
-        & X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,
-        NATOMS,
-        RK_R,RK_THETA,COSTOR)
+                A_BLN,B_BLN,C_BLN,D_BLN,&
+                X,Y,Z,& 
+                XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,&
+                NATOMS,RK_R,RK_THETA,COSTOR)
 
       IF (.NOT.GRADT) RETURN
  
-      CALL CALC_GRADIENT_BLN(QO,GRAD,LJREP_BLN,LJATT_BLN,
-         A_BLN,B_BLN,C_BLN,D_BLN,
-         X,Y,Z,
-         XR,YR,ZR,
-         DOT_PROD,
-     &   X_PROD,
-         BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,
+      CALL CALC_GRADIENT_BLN(QO,GRAD,LJREP_BLN,LJATT_BLN,&
+         A_BLN,B_BLN,C_BLN,D_BLN,&
+         X,Y,Z,&
+         XR,YR,ZR,&
+         DOT_PROD,X_PROD,&
+         BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,&
          RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
 
       RETURN
@@ -171,10 +168,10 @@ C }}}
          DFAC(i+1)=(A_BLN(i+1)+D_BLN(i+1)*( 1.0D0+1.0D0/DUMMY2 )*0.7071067811865475244D0-B_BLN(i+1)
      &              +C_BLN(i+1)*(12.0*costor(i+1)**2-3.0))/sqrt(x_prod(i+1)*x_prod(i))
 ! }}}
-      enddo
+      ENDDO
 
-      return
-      end
+      RETURN
+      END
 C }}}
 
 !> @brief Calculate the energy of a BLN chain
@@ -1106,17 +1103,19 @@ C }}}
 C {{{ 
 C declarations {{{
         USE MODHESS
+
         IMPLICIT NONE
-        logical gtest, stest
-        INTEGER ntype(46), N
+
+        LOGICAL GTEST, STEST
+        INTEGER NTYPE(46), N
         DOUBLE PRECISION QO(3*N), GRAD(3*N), ENERGY
         DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N),D_PARAM(N),
-     1                   c_param(n), rk_theta, rk_r, epsilon, sigma, theta_0, delta, rmass
-        parameter (rmass = 40.0, epsilon = 0.0100570)
-        parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
-        parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
+     1                   C_PARAM(N), RK_THETA, RK_R, EPSILON, SIGMA, THETA_0, DELTA, RMASS
+        PARAMETER (RMASS = 40.0, EPSILON = 0.0100570)
+        PARAMETER (SIGMA=3.4, DELTA=1.0D-6, THETA_0 = 1.8326)
+        PARAMETER (RK_R = 20.0*0.0100570, RK_THETA = 20.0*0.0100570)
         DOUBLE PRECISION X(N), Y(N), Z(N), XR(N,N), YR(N,N), ZR(N,N),
-     2                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
+     2                  DOT_PROD(N,3), X_PROD(N), BOND_ANGLE(N), TOR_ANGLE(N), RADII(N,N)
 C }}}
 C       common/work/a_param(n,n),
 C    1  b_param(n,n),ntype(46),
@@ -1172,11 +1171,11 @@ C}}}
 C {{{
 C Declarations {{{
         IMPLICIT NONE
-        logical connect(46,46)
+        LOGICAL CONNECT(46,46)
         INTEGER J, ICOUNT, I, J2, J1, N
         DOUBLE PRECISION NTYPE(46), A_PARAM(N,N), B_PARAM(N,N)
         DOUBLE PRECISION C_PARAM(N), D_PARAM(N), EPSILON
-        parameter (epsilon = 0.0100570)
+        PARAMETER (EPSILON = 0.0100570)
 C }}}
 C Specify amino acid types by filling in the array ntype(:) {{{
 
@@ -1409,15 +1408,15 @@ C }}}
         SUBROUTINE P46MERDIFF(QO, N, GRAD, ENERGY, GTEST)
 C {{{
         IMPLICIT NONE
-        INTEGER ntype(46),N
+        INTEGER NTYPE(46),N
         DOUBLE PRECISION RMASS, EPSILON,SIGMA,DELTA,THETA_0,RK_R,RK_THETA,QO(3*N),GRAD(3*N),ENERGY
-        parameter (rmass = 40.0, epsilon = 0.0100570)
-        parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
-        parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
-        logical gtest, stest
+        PARAMETER (RMASS = 40.0, EPSILON = 0.0100570)
+        PARAMETER (SIGMA=3.4, DELTA=1.0D-6, THETA_0 = 1.8326)
+        PARAMETER (RK_R = 20.0*0.0100570, RK_THETA = 20.0*0.0100570)
+        LOGICAL GTEST, STEST
         DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N), D_PARAM(N),C_PARAM(N),
-     1                  x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n),
-     2                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
+     1                  X(N), Y(N), Z(N), XR(N,N), YR(N,N), ZR(N,N),
+     2                  DOT_PROD(N,3), X_PROD(N), BOND_ANGLE(N), TOR_ANGLE(N), RADII(N,N)
 
 C       common/work/a_param(n,n),
 C    1  b_param(n,n),ntype(46),
@@ -1429,21 +1428,21 @@ C    6  bond_angle(n), stest, tor_angle(n), radii(n,n)
 
         STEST=.FALSE.
 
-        call param_array(a_param,b_param,c_param,d_param,n)
-        call calc_int_coords(qo,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     1                       bond_angle,tor_angle,radii,ntype)
-        call calc_energy(qo,energy,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     1                   bond_angle,tor_angle,radii,ntype)
+        CALL PARAM_ARRAY(A_PARAM,B_PARAM,C_PARAM,D_PARAM,N)
+        CALL CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+     1                       BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+        CALL CALC_ENERGY(QO,ENERGY,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+     1                   BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
         IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
-        call calc_gradient(qo,grad,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     1                     bond_angle,tor_angle,radii,ntype)
+        CALL CALC_GRADIENT(QO,GRAD,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+     1                     BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 
         IF (.NOT.STEST) RETURN
-        call calc_dyn(qo,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     1                bond_angle,tor_angle,radii,ntype)
+        CALL CALC_DYN(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+     1                BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 
-        return
-        end
+        RETURN
+        END
 C }}}
 C> Calculate the internal coordinates
 

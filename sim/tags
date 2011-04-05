@@ -4,66 +4,563 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.8	//
+1	bln.f90	/^     1                             BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)$/;"	l	subroutine:CALC_INT_COORDS	file:
+1	bln.f90	/^     1                            radii,ntype)$/;"	l	subroutine:G46MERDIFF	file:
+1	bln.f90	/^     1                           BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1                         BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)$/;"	l	subroutine:CALC_ENERGY	file:
+1	bln.f90	/^     1                       bond_angle,tor_angle,radii,ntype)$/;"	l	subroutine:CALC_DYN	file:
+1	bln.f90	/^     1                       bond_angle,tor_angle,radii,ntype)$/;"	l	subroutine:P46MERDIFF	file:
+1	bln.f90	/^     1                      BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)$/;"	l	subroutine:CALC_DYN	file:
+1	bln.f90	/^     1                     bond_angle,tor_angle,radii,ntype)$/;"	l	subroutine:CALC_DYN	file:
+1	bln.f90	/^     1                     bond_angle,tor_angle,radii,ntype)$/;"	l	subroutine:P46MERDIFF	file:
+1	bln.f90	/^     1                   A4, COEF, COEF1, COEF2, COEF3, A3, DEN2, A2, A1, DEN1, RNUM, DEN,$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1                   C_PARAM(N), RK_THETA, RK_R, EPSILON, SIGMA, THETA_0, DELTA, RMASS$/;"	l	subroutine:G46MERDIFF	file:
+1	bln.f90	/^     1                   QO(*), ENERGY, S6, E_NBOND, E_BOND, E_BANGLE$/;"	l	subroutine:CALC_ENERGY	file:
+1	bln.f90	/^     1                   bond_angle,tor_angle,radii,ntype)$/;"	l	subroutine:P46MERDIFF	file:
+1	bln.f90	/^     1                  x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n),$/;"	l	subroutine:CALC_ENERGY	file:
+1	bln.f90	/^     1                  x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n),$/;"	l	subroutine:P46MERDIFF	file:
+1	bln.f90	/^     1                  x(n), y(n),z(n),xr(n,n),yr(n,n),zr(n,n),$/;"	l	subroutine:CALC_DYN	file:
+1	bln.f90	/^     1                  x(n),y(n),z(n),xr(n,n), yr(n,n), zr(n,n),$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1                bond_angle,tor_angle,radii,ntype)$/;"	l	subroutine:P46MERDIFF	file:
+1	bln.f90	/^     1               dot_prod(i,2)*dot_prod(i,2)   $/;"	l	subroutine:CALC_INT_COORDS	file:
+1	bln.f90	/^     1               dsqrt(dot_prod(i+1,1)*dot_prod(i,1))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1              (b_param(i,j)*s6\/(rad7*radii(i,j))))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1              dsqrt(dot_prod(i,1)*dot_prod(i-1,1))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1         *dcos(tor_angle(i+1))-3.0))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1         *dot_prod(i,1))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1         *dot_prod(i-1,1))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1         dot_prod(i+1,1)*xr(i+2,i+3) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        ((dot_prod(i-2,2)\/dot_prod(i-1,1))*xr(i-1,i) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        ((dot_prod(i-2,2)\/dot_prod(i-1,1))*yr(i-1,i) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        ((dot_prod(i-2,2)\/dot_prod(i-1,1))*zr(i-1,i) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        (1.0D0\/x_prod(i))*(dot_prod(i+1,2)*dot_prod(i,2) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        (1.0D0\/x_prod(i))*(dot_prod(i,2)*dot_prod(i-1,2) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        (1.0D0\/x_prod(i-1))*(dot_prod(i,2)*dot_prod(i-1,2) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        (1.0D0\/x_prod(i-1))*(dot_prod(i-1,2)*dot_prod(i-2,2) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        (1.0D0\/x_prod(i-2))*(dot_prod(i-1,2)*dot_prod(i-2,2) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        (1.0D0\/x_prod(i-2))*(dot_prod(i-2,2)*dot_prod(i-3,2) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        *(1.0D0\/dsqrt(x_prod(i+1)*x_prod(i)))  $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        *dcos(tor_angle(i)) - $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        *dcos(tor_angle(i)) -3.0))*(1.0D0\/dsqrt(x_prod(i)*x_prod(i-1)))  $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        *dcos(tor_angle(i-1)) - $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        *dcos(tor_angle(i-2)) - $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        *dot_prod(i-1,1))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        *dsqrt(dot_prod(i+1,1)*dot_prod(i,1))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        *dsqrt(dot_prod(i,1)*dot_prod(i-1,1))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        *xr(i-1,i) + xr(i,i+1) - xr(i-1,i))\/den$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        *yr(i-1,i) + yr(i,i+1) - yr(i-1,i))\/den$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        *zr(i-1,i) + zr(i,i+1) - zr(i-1,i))\/den$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        - (1.0D0\/x_prod(i-2))*(dot_prod(i-2,2)*dot_prod(i-3,2) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        - dot_prod(i-2,1)*xr(i-3,i-2) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        - dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        - xr(i-2,i-1))\/den$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        - yr(i-2,i-1))\/den$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        - zr(i-2,i-1))\/den$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        2.0*dot_prod(i-2,3)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        2.0*dot_prod(i-2,3)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        2.0*dot_prod(i-2,3)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        3.0))*(1.0D0\/dsqrt(x_prod(i)*x_prod(i-1)))  $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        3.0))*(1.0D0\/dsqrt(x_prod(i+1)*x_prod(i)))  $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        3.0))*(1.0D0\/dsqrt(x_prod(i-1)*x_prod(i-2)))  $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        3.0))*(1.0D0\/dsqrt(x_prod(i-2)*x_prod(i-3)))  $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i+1,1)*xr(i+2,i+3) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i+1,1)*yr(i+2,i+3) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i+1,1)*zr(i+2,i+3) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,1))*xr(i,i+1) - xr(i+1,i+2))\/den1$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,1))*yr(i,i+1) - yr(i+1,i+2))\/den1$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,1))*zr(i,i+1) - zr(i+1,i+2))\/den1$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,1)*xr(i+1,i+2) + 2.0*dot_prod(i-1,3)*xr(i,i+1) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,1)*yr(i+1,i+2) + 2.0*dot_prod(i-1,3)*yr(i,i+1) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,1)*zr(i+1,i+2) + 2.0*dot_prod(i-1,3)*zr(i,i+1) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,2)*xr(i+1,i+2))) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,2)*xr(i+1,i+2)))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,2)*xr(i,i+1) - dot_prod(i,2)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,2)*yr(i+1,i+2))) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,2)*yr(i+1,i+2)))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,2)*yr(i,i+1) - dot_prod(i,2)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,2)*zr(i+1,i+2))) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,2)*zr(i,i+1) - dot_prod(i,2)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,3)*dot_prod(i+1,1))*(-dot_prod(i+1,1)*xr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,3)*dot_prod(i+1,1))*(-dot_prod(i+1,1)*yr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i,3)*dot_prod(i+1,1))*(-dot_prod(i+1,1)*zr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1))*xr(i-1,i) - xr(i-2,i-1))\/den1$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1))*xr(i-1,i) - xr(i-2,i-1))\/den2$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1))*yr(i-1,i) - yr(i-2,i-1))\/den1$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1))*yr(i-1,i) - yr(i-2,i-1))\/den2$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1))*zr(i-1,i) - zr(i-2,i-1))\/den1$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1))*zr(i-1,i) - zr(i-2,i-1))\/den2$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1)*xr(i,i+1) - dot_prod(i-1,2)*xr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1)*xr(i-2,i-1) - 2.0*dot_prod(i-2,3)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1)*yr(i,i+1) - dot_prod(i-1,2)*yr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1)*yr(i-2,i-1) - 2.0*dot_prod(i-2,3)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1)*zr(i,i+1) - dot_prod(i-1,2)*zr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,1)*zr(i-2,i-1) - 2.0*dot_prod(i-2,3)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,2)*xr(i-1,i)) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,2)*xr(i-1,i))) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,2)*xr(i-2,i-1) +  dot_prod(i-1,1)*xr(i-2,i-1) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,2)*yr(i-1,i)) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,2)*yr(i-1,i))) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,2)*yr(i-1,i)))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,2)*yr(i-2,i-1) +  dot_prod(i-1,1)*yr(i-2,i-1) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,2)*zr(i-1,i)) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,2)*zr(i-1,i))) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,2)*zr(i-2,i-1) +  dot_prod(i-1,1)*zr(i-2,i-1) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,3)*dot_prod(i,1))*(-dot_prod(i+1,1)*xr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,3)*dot_prod(i,1))*(-dot_prod(i+1,1)*yr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,3)*dot_prod(i,1))*(-dot_prod(i+1,1)*zr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,3)*dot_prod(i,1))*(dot_prod(i,1)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,3)*dot_prod(i,1))*(dot_prod(i,1)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-1,3)*dot_prod(i,1))*(dot_prod(i,1)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,1)*xr(i-3,i-2) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,1)*yr(i-3,i-2) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,1)*yr(i-3,i-2) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,1)*zr(i-3,i-2) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*xr(i-1,i) + dot_prod(i-1,2)*xr(i-2,i-1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*xr(i-1,i) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*xr(i-2,i-1)) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*xr(i-2,i-1))) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*yr(i-1,i) + dot_prod(i-1,2)*yr(i-2,i-1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*yr(i-1,i) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*yr(i-2,i-1)) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*yr(i-2,i-1))) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*zr(i-1,i) + dot_prod(i-1,2)*zr(i-2,i-1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*zr(i-1,i) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*zr(i-2,i-1)) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,2)*zr(i-2,i-1))) $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i,1)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i,1)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i,1)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i-2,1)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i-2,1)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i-2,1)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        radii(i,j)*radii(i,j)*radii(i,j)   $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        xr(i+1,i+2))\/den$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        yr(i+1,i+2))\/den$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1        zr(i+1,i+2))\/den$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1       dot_prod(1+1,1)*xr(1+2,1+3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1       x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n),$/;"	l	subroutine:CALC_INT_COORDS	file:
+1	bln.f90	/^     1      ((dot_prod(n-2,2)\/dot_prod(n-1,1))*xr(n-1,n) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      ((dot_prod(n-2,2)\/dot_prod(n-1,1))*yr(n-1,n) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      ((dot_prod(n-2,2)\/dot_prod(n-1,1))*zr(n-1,n) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(1))*(dot_prod(1+1,2)*dot_prod(1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(2))*(dot_prod(2+1,2)*dot_prod(2,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(2))*(dot_prod(2,2)*dot_prod(2-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(2))*(dot_prod(3,2)*dot_prod(2,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(2-1))*(dot_prod(2,2)*dot_prod(2-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(3))*(dot_prod(3+1,2)*dot_prod(3,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(3))*(dot_prod(3,2)*dot_prod(3-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(3-1))*(dot_prod(3,2)*dot_prod(3-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(3-1))*(dot_prod(3-1,2)*dot_prod(3-2,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(3-2))*(dot_prod(3-1,2)*dot_prod(3-2,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(i))*(dot_prod(i+1,2)*dot_prod(i,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(i))*(dot_prod(i,2)*dot_prod(i-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(i-1))*(dot_prod(i,2)*dot_prod(i-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(i-1))*(dot_prod(i-1,2)*dot_prod(i-2,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(i-2))*(dot_prod(i-1,2)*dot_prod(i-2,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(i-2))*(dot_prod(i-2,2)*dot_prod(i-3,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(n-1-1))*(dot_prod(n-1-1,2)*dot_prod(n-1-2,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(n-1-2))*(dot_prod(n-1-1,2)*dot_prod(n-1-2,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(n-1-2))*(dot_prod(n-1-2,2)*dot_prod(n-1-3,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(n-2))*(dot_prod(n-2,2)*dot_prod(n-2-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(n-2))*(dot_prod(n-2,2)*dot_prod(n-3,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(n-2-1))*(dot_prod(n-2,2)*dot_prod(n-2-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(n-2-1))*(dot_prod(n-2-1,2)*dot_prod(n-2-2,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(n-2-2))*(dot_prod(n-2-1,2)*dot_prod(n-2-2,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      (1.0\/x_prod(n-2-2))*(dot_prod(n-2-2,2)*dot_prod(n-2-3,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      *xr(2-1,2) + xr(2,2+1) - xr(2-1,2))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      *xr(i-1,i) + xr(i,i+1) - xr(i-1,i))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      *xr(n-1-1,n-1) + xr(n-1,n-1+1) - xr(n-1-1,n-1))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      *yr(2-1,2) + yr(2,2+1) - yr(2-1,2))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      *yr(i-1,i) + yr(i,i+1) - yr(i-1,i))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      *yr(n-1-1,n-1) + yr(n-1,n-1+1) - yr(n-1-1,n-1))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      *zr(2-1,2) + zr(2,2+1) - zr(2-1,2))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      *zr(i-1,i) + zr(i,i+1) - zr(i-1,i))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      *zr(n-1-1,n-1) + zr(n-1,n-1+1) - zr(n-1-1,n-1))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      - (1.0\/x_prod(n-2))*(dot_prod(n-2,2)*dot_prod(n-3,2) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      - dot_prod(n-2,1)*xr(n-3,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      - dot_prod(n-3,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*yr(n-1,n) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      - xr(n-2,n-1))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      - yr(n-2,n-1))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      - zr(n-2,n-1))\/den$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      2.0*dot_prod(n-1-2,3)*xr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      2.0*dot_prod(n-1-2,3)*yr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      2.0*dot_prod(n-1-2,3)*zr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(1+1,1)*yr(1+2,1+3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(1+1,1)*zr(1+2,1+3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(1,2)*xr(1+1,1+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(1,2)*yr(1+1,1+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(1,2)*zr(1+1,1+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(1,3)*dot_prod(1+1,1))*(-dot_prod(1+1,1)*xr(1,1+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(1,3)*dot_prod(1+1,1))*(-dot_prod(1+1,1)*yr(1,1+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(1,3)*dot_prod(1+1,1))*(-dot_prod(1+1,1)*zr(1,1+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2+1,1)*xr(2+2,2+3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,1)*xr(2+1,2+2) + 2.0*dot_prod(2-1,3)*xr(2,2+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,1)*yr(2+1,2+2) + 2.0*dot_prod(2-1,3)*yr(2,2+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,1)*zr(2+1,2+2) + 2.0*dot_prod(2-1,3)*zr(2,2+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,2)*xr(2+1,2+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,2)*xr(2,2+1) - dot_prod(2,2)*xr(2-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,2)*yr(2+1,2+2)))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,2)*yr(2,2+1) - dot_prod(2,2)*yr(2-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,2)*zr(2+1,2+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,2)*zr(2,2+1) - dot_prod(2,2)*zr(2-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,2)*zr(3,4))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,3)*dot_prod(2+1,1))*(-dot_prod(2+1,1)*xr(2,2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2,3)*dot_prod(3,1))*(-dot_prod(3,1)*zr(2,3) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,1)*xr(2,2+1) - dot_prod(2-1,2)*xr(2,2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,1)*yr(2,2+1) - dot_prod(2-1,2)*yr(2,2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,1)*zr(2,2+1) - dot_prod(2-1,2)*zr(2,2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,2)*xr(2-1,2)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,2)*yr(2-1,2)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,2)*zr(2-1,2)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,3)*dot_prod(2,1))*(-dot_prod(2+1,1)*xr(2,2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,3)*dot_prod(2,1))*(-dot_prod(2+1,1)*yr(2,2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,3)*dot_prod(2,1))*(-dot_prod(2+1,1)*zr(2,2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,3)*dot_prod(2,1))*(dot_prod(2,1)*xr(2-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,3)*dot_prod(2,1))*(dot_prod(2,1)*yr(2-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(2-1,3)*dot_prod(2,1))*(dot_prod(2,1)*zr(2-1,2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3+1,1)*xr(3+2,3+3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3+1,1)*yr(3+2,3+3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3+1,1)*zr(3+2,3+3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,1)*xr(3+1,3+2) + 2.0*dot_prod(3-1,3)*xr(3,3+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,1)*yr(3+1,3+2) + 2.0*dot_prod(3-1,3)*yr(3,3+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,1)*zr(3+1,3+2) + 2.0*dot_prod(3-1,3)*zr(3,3+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,1)*zr(4,5) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,2)*xr(3+1,3+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,2)*xr(3,3+1) - dot_prod(3,2)*xr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,2)*yr(3+1,3+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,2)*yr(3,3+1) - dot_prod(3,2)*yr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,2)*zr(3+1,3+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,2)*zr(3,3+1) - dot_prod(3,2)*zr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,3)*dot_prod(3+1,1))*(-dot_prod(3+1,1)*xr(3,3+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,3)*dot_prod(3+1,1))*(-dot_prod(3+1,1)*yr(3,3+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3,3)*dot_prod(3+1,1))*(-dot_prod(3+1,1)*zr(3,3+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,1)*xr(3,3+1) - dot_prod(3-1,2)*xr(3,3+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,1)*xr(3-2,3-1) - 2.0*dot_prod(3-2,3)*xr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,1)*yr(3,3+1) - dot_prod(3-1,2)*yr(3,3+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,1)*yr(3-2,3-1) - 2.0*dot_prod(3-2,3)*yr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,1)*zr(3,3+1) - dot_prod(3-1,2)*zr(3,3+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,1)*zr(3-2,3-1) - 2.0*dot_prod(3-2,3)*zr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,2)*xr(3-1,3)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,2)*xr(3-1,3))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,2)*yr(3-1,3)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,2)*yr(3-1,3)))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,2)*zr(3-1,3)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,2)*zr(3-1,3))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,3)*dot_prod(3,1))*(-dot_prod(3+1,1)*xr(3,3+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,3)*dot_prod(3,1))*(-dot_prod(3+1,1)*yr(3,3+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,3)*dot_prod(3,1))*(-dot_prod(3+1,1)*zr(3,3+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,3)*dot_prod(3,1))*(dot_prod(3,1)*xr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,3)*dot_prod(3,1))*(dot_prod(3,1)*yr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-1,3)*dot_prod(3,1))*(dot_prod(3,1)*zr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,2)*xr(3-1,3) + dot_prod(3-1,2)*xr(3-2,3-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,2)*xr(3-2,3-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,2)*yr(3-1,3) + dot_prod(3-1,2)*yr(3-2,3-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,2)*yr(3-2,3-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,2)*zr(3-1,3) + dot_prod(3-1,2)*zr(3-2,3-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,2)*zr(3-2,3-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3,1)*xr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3,1)*yr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3,1)*zr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3-2,1)*xr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3-2,1)*yr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(3-2,3)*dot_prod(3-1,1))*(dot_prod(3-2,1)*zr(3-1,3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i+1,1)*xr(i+2,i+3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i+1,1)*yr(i+2,i+3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i+1,1)*zr(i+2,i+3) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,1))*yr(i,i+1) - yr(i+1,i+2))\/den1$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,1))*zr(i,i+1) - zr(i+1,i+2))\/den1$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,1)*xr(i+1,i+2) + 2.0*dot_prod(i-1,3)*xr(i,i+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,1)*yr(i+1,i+2) + 2.0*dot_prod(i-1,3)*yr(i,i+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,1)*zr(i+1,i+2) + 2.0*dot_prod(i-1,3)*zr(i,i+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,2)*xr(i+1,i+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,2)*xr(i,i+1) - dot_prod(i,2)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,2)*yr(i+1,i+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,2)*yr(i,i+1) - dot_prod(i,2)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,2)*zr(i+1,i+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,2)*zr(i,i+1) - dot_prod(i,2)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,3)*dot_prod(i+1,1))*(-dot_prod(i+1,1)*xr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,3)*dot_prod(i+1,1))*(-dot_prod(i+1,1)*yr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i,3)*dot_prod(i+1,1))*(-dot_prod(i+1,1)*zr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,1))*yr(i-1,i) - yr(i-2,i-1))\/den2$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,1))*zr(i-1,i) - zr(i-2,i-1))\/den2$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,1)*xr(i,i+1) - dot_prod(i-1,2)*xr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,1)*xr(i-2,i-1) - 2.0*dot_prod(i-2,3)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,1)*yr(i,i+1) - dot_prod(i-1,2)*yr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,1)*yr(i-2,i-1) - 2.0*dot_prod(i-2,3)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,1)*zr(i,i+1) - dot_prod(i-1,2)*zr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,1)*zr(i-2,i-1) - 2.0*dot_prod(i-2,3)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,2)*xr(i-1,i)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,2)*xr(i-1,i))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,2)*yr(i-1,i)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,2)*yr(i-1,i))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,2)*zr(i-1,i)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,2)*zr(i-1,i))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,3)*dot_prod(i,1))*(-dot_prod(i+1,1)*xr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,3)*dot_prod(i,1))*(-dot_prod(i+1,1)*yr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,3)*dot_prod(i,1))*(-dot_prod(i+1,1)*zr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,3)*dot_prod(i,1))*(dot_prod(i,1)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,3)*dot_prod(i,1))*(dot_prod(i,1)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-1,3)*dot_prod(i,1))*(dot_prod(i,1)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,1)*xr(i-3,i-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,1)*yr(i-3,i-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,1)*zr(i-3,i-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,2)*xr(i-1,i) + dot_prod(i-1,2)*xr(i-2,i-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,2)*xr(i-2,i-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,2)*xr(i-2,i-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,2)*yr(i-1,i) + dot_prod(i-1,2)*yr(i-2,i-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,2)*yr(i-2,i-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,2)*yr(i-2,i-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,2)*zr(i-1,i) + dot_prod(i-1,2)*zr(i-2,i-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,2)*zr(i-2,i-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,2)*zr(i-2,i-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i,1)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i,1)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i-2,1)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i-2,1)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i-2,1)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*yr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*zr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-1,1))*xr(n-1-1,n-1) - xr(n-1-2,n-1-1))\/den1$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-1,1))*yr(n-1-1,n-1) - yr(n-1-2,n-1-1))\/den1$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-1,1))*zr(n-1-1,n-1) - zr(n-1-2,n-1-1))\/den1$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-1,1)*xr(n-1,n-1+1) - dot_prod(n-1-1,2)*xr(n-1,n-1+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-1,1)*zr(n-1,n-1+1) - dot_prod(n-1-1,2)*zr(n-1,n-1+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-1,2)*xr(n-1-1,n-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-1,2)*xr(n-1-2,n-1-1) +  dot_prod(n-1-1,1)*xr(n-1-2,n-1-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-1,2)*yr(n-1-1,n-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-1,2)*yr(n-1-2,n-1-1) +  dot_prod(n-1-1,1)*yr(n-1-2,n-1-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-1,2)*zr(n-1-1,n-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-1,2)*zr(n-1-2,n-1-1) +  dot_prod(n-1-1,1)*zr(n-1-2,n-1-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,1)*xr(n-1-3,n-1-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,1)*yr(n-1-3,n-1-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,1)*zr(n-1-3,n-1-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,2)*xr(n-1-1,n-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,2)*xr(n-1-2,n-1-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,2)*xr(n-1-2,n-1-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,2)*yr(n-1-1,n-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,2)*yr(n-1-2,n-1-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,2)*yr(n-1-2,n-1-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,2)*zr(n-1-1,n-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,2)*zr(n-1-2,n-1-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,2)*zr(n-1-2,n-1-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1,1)*xr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1,1)*yr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1,1)*zr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1-2,1)*xr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1-2,1)*yr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-2,3)*dot_prod(n-1-1,1))*(dot_prod(n-1-2,1)*zr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-3,3)*dot_prod(n-1-2,1))*(dot_prod(n-1-2,1)*xr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-3,3)*dot_prod(n-1-2,1))*(dot_prod(n-1-2,1)*yr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-1-3,3)*dot_prod(n-1-2,1))*(dot_prod(n-1-2,1)*zr(n-1-1,n-1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,1)*xr(n-2+1,n-2+2) + 2.0*dot_prod(n-2-1,3)*xr(n-2,n-2+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,1)*yr(n-2+1,n-2+2) + 2.0*dot_prod(n-2-1,3)*yr(n-2,n-2+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,1)*yr(n-3,n-2) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,1)*zr(n-2+1,n-2+2) + 2.0*dot_prod(n-2-1,3)*zr(n-2,n-2+1) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,1)*zr(n-3,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,2)*xr(n-2+1,n-2+2)))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,2)*xr(n-2,n-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,2)*xr(n-2,n-2+1) - dot_prod(n-2,2)*xr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,2)*yr(n-2+1,n-2+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,2)*yr(n-2,n-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,2)*yr(n-2,n-2+1) - dot_prod(n-2,2)*yr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,2)*zr(n-2+1,n-2+2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,2)*zr(n-2,n-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2,2)*zr(n-2,n-2+1) - dot_prod(n-2,2)*zr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,1)*xr(n-2,n-2+1) - dot_prod(n-2-1,2)*xr(n-2,n-2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,1)*xr(n-2-2,n-2-1) - 2.0*dot_prod(n-2-2,3)*xr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,1)*yr(n-2,n-2+1) - dot_prod(n-2-1,2)*yr(n-2,n-2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,1)*yr(n-2-2,n-2-1) - 2.0*dot_prod(n-2-2,3)*yr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,1)*zr(n-2,n-2+1) - dot_prod(n-2-1,2)*zr(n-2,n-2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,1)*zr(n-2-2,n-2-1) - 2.0*dot_prod(n-2-2,3)*zr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,2)*xr(n-2-1,n-2)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,2)*xr(n-2-1,n-2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,2)*yr(n-2-1,n-2)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,2)*yr(n-2-1,n-2)))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,2)*zr(n-2-1,n-2)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,2)*zr(n-2-1,n-2))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(-dot_prod(n-2+1,1)*xr(n-2,n-2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(-dot_prod(n-2+1,1)*yr(n-2,n-2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(-dot_prod(n-2+1,1)*zr(n-2,n-2+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*xr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*yr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-1,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*zr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,1)*xr(n-2-3,n-2-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,1)*yr(n-2-3,n-2-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,1)*zr(n-2-3,n-2-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,2)*xr(n-2-1,n-2) + dot_prod(n-2-1,2)*xr(n-2-2,n-2-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,2)*xr(n-2-2,n-2-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,2)*xr(n-2-2,n-2-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,2)*yr(n-2-1,n-2) + dot_prod(n-2-1,2)*yr(n-2-2,n-2-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,2)*yr(n-2-2,n-2-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,2)*yr(n-2-2,n-2-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,2)*zr(n-2-1,n-2) + dot_prod(n-2-1,2)*zr(n-2-2,n-2-1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,2)*zr(n-2-2,n-2-1)) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,2)*zr(n-2-2,n-2-1))) $/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2,1)*xr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2,1)*yr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2,1)*zr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2-2,1)*xr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2-2,1)*yr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-2,3)*dot_prod(n-2-1,1))*(dot_prod(n-2-2,1)*zr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-3,3)*dot_prod(n-2-2,1))*(dot_prod(n-2-2,1)*xr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-3,3)*dot_prod(n-2-2,1))*(dot_prod(n-2-2,1)*yr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-2-3,3)*dot_prod(n-2-2,1))*(dot_prod(n-2-2,1)*zr(n-2-1,n-2) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-3,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*xr(n-1,n) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1      dot_prod(n-3,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*zr(n-1,n) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1   dot_prod(i,1))*yr(i,i+1) - (dot_prod(i-1,2)\/dot_prod(i-1,1))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1   dot_prod(i,1))*zr(i,i+1) - (dot_prod(i-1,2)\/dot_prod(i-1,1))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1   dot_prod(n-1,1))*xr(n-1,n-1+1) - (dot_prod(n-1-1,2)\/dot_prod(n-1-1,1))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1   dot_prod(n-1,1))*yr(n-1,n-1+1) - (dot_prod(n-1-1,2)\/dot_prod(n-1-1,1))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1  (b_param(i,j)*s6\/rad6))$/;"	l	subroutine:CALC_ENERGY	file:
+1	bln.f90	/^     1  (radii(i,i+1)-sigma)$/;"	l	subroutine:CALC_ENERGY	file:
+1	bln.f90	/^     1  *(1.0D0\/dsqrt(x_prod(i+1)*x_prod(i)))  $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  *(bond_angle(i)-theta_0)$/;"	l	subroutine:CALC_ENERGY	file:
+1	bln.f90	/^     1  *dcos(tor_angle(i+1)) - $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  *dcos(tor_angle(i+1)) - 3.0))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  *dcos(tor_angle(i+1)) - 3.0))*(1.0D0\/dsqrt(x_prod(i+1)*x_prod(i)))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  *dot_prod(i+1,1)))$/;"	l	subroutine:CALC_INT_COORDS	file:
+1	bln.f90	/^     1  + d_param(i)*(1.0 + cos(3.0*tor_angle(i)))$/;"	l	subroutine:CALC_ENERGY	file:
+1	bln.f90	/^     1  + zr(i,j)*zr(i,j))$/;"	l	subroutine:CALC_INT_COORDS	file:
+1	bln.f90	/^     1  3.0))*(1.0D0\/dsqrt(x_prod(i-1)*x_prod(i-2)))  $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  3.0))*(1.0D0\/dsqrt(x_prod(i-2)*x_prod(i-3)))  $/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  dot_prod(2,1))*xr(2,2+1) - (dot_prod(2-1,2)\/dot_prod(2-1,1))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1  dot_prod(2,1))*yr(2,2+1) - (dot_prod(2-1,2)\/dot_prod(2-1,1))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1  dot_prod(2,1))*zr(2,2+1) - (dot_prod(2-1,2)\/dot_prod(2-1,1))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1  dot_prod(i,1))*xr(i,i+1) - (dot_prod(i-1,2)\/dot_prod(i-1,1))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  dot_prod(i,1))*xr(i,i+1) - (dot_prod(i-1,2)\/dot_prod(i-1,1))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1  dot_prod(i,1))*yr(i,i+1) - (dot_prod(i-1,2)\/dot_prod(i-1,1))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  dot_prod(i,1))*zr(i,i+1) - (dot_prod(i-1,2)\/dot_prod(i-1,1))$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  dot_prod(i,3)*dot_prod(i+1,1))\/dsqrt(x_prod(i)*x_prod(i+1))$/;"	l	subroutine:CALC_INT_COORDS	file:
+1	bln.f90	/^     1  dot_prod(i-1,1)*yr(i,i+1) - dot_prod(i-1,2)*yr(i,i+1) +$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i,1)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  dot_prod(i-2,3)*dot_prod(i-1,1))*(dot_prod(i,1)*xr(i-1,i) -$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1  dot_prod(n-1,1))*zr(n-1,n-1+1) - (dot_prod(n-1-1,2)\/dot_prod(n-1-1,1))$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1  dot_prod(n-1-1,1)*yr(n-1,n-1+1) - dot_prod(n-1-1,2)*yr(n-1,n-1+1) +$/;"	l	subroutine:CALC_GRADIENT_BLN	file:
+1	bln.f90	/^     1  fb_x(n),fb_y(n),fb_z(n)$/;"	l	subroutine:CALC_GRADIENT	file:
+1	bln.f90	/^     1  fq2(3*n)$/;"	l	subroutine:CALC_DYN	file:
+1	bln.f90	/^     1  radii(i,j)$/;"	l	subroutine:CALC_ENERGY	file:
+1	bln.f90	/^     1  zr(i,i+1)*zr(i+1,i+2)$/;"	l	subroutine:CALC_INT_COORDS	file:
+1	bln.f90	/^     1  zr(i,i+1)*zr(i+2,i+3)$/;"	l	subroutine:CALC_INT_COORDS	file:
+1	bln.f90	/^     1  zr(i,i+1)*zr(i,i+1)$/;"	l	subroutine:CALC_INT_COORDS	file:
+1	func.f90	/^     1                 ENERGY, DUMMYX, DUMMYY, DUMMYZ$/;"	l	subroutine:RAD	file:
+1	func.f90	/^     1                 ENERGY, DUMMYX, DUMMYY, DUMMYZ$/;"	l	subroutine:RADR	file:
 10	finalio.f90	/^10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)$/;"	l	subroutine:FINALIO	file:
-10	func.f90	/^10       CONTINUE$/;"	l	module:FUNC	file:
-10	func.f90	/^10       J2=3*J1$/;"	l	subroutine:TAKESTEP	file:
-10	mylbfgs.f90	/^10    CALL FLUSH(MYUNIT)$/;"	l	subroutine:MYLBFGS	file:
-10	potential.f90	/^10    CONTINUE$/;"	l	subroutine:POTENTIAL	file:
+10	func.f90	/^10       CONTINUE$/;"	l	subroutine:GSORT	file:
+10	func.f90	/^10       J2=3*J1$/;"	l	module:FUNC	file:
+10	lbfgs.f	/^   10    CONTINUE$/;"	l	subroutine:MCSRCH	file:
+10	lbfgs.f	/^   10 continue$/;"	l	function:ddot	file:
+10	lbfgs.f	/^   10 continue$/;"	l	subroutine:daxpy	file:
+10	lbfgs.f	/^  10  ITER= 0$/;"	l	subroutine:LBFGS	file:
+10	lbfgs.f	/^ 10   FORMAT('*************************************************')$/;"	l	subroutine:LB1	file:
+10	mylbfgs.f90	/^10    CALL FLUSH(LOG_FH)$/;"	l	subroutine:MYLBFGS	file:
+100	lbfgs.f	/^ 100  CONTINUE$/;"	l	subroutine:LBFGS	file:
+100	lbfgs.f	/^ 100  FORMAT(\/' THE MINIMIZATION TERMINATED WITHOUT DETECTING ERRORS.',$/;"	l	subroutine:LB1	file:
+101	mylbfgs.f90	/^101   FORMAT(A,F20.10,G20.10,A,I6,A)$/;"	l	subroutine:MYLBFGS	file:
+102	mylbfgs.f90	/^102   FORMAT(A,I10,A,I10,A)$/;"	l	subroutine:MYLBFGS	file:
+110	lbfgs.f	/^ 110    IF (DIAG(I).LE.ZERO) GO TO 195$/;"	l	subroutine:LBFGS	file:
+112	lbfgs.f	/^ 112  W(I)= -G(I)$/;"	l	subroutine:LBFGS	file:
 12	keyword.f90	/^12       CONTINUE$/;"	l	subroutine:KEYWORD	file:
+125	lbfgs.f	/^ 125  CONTINUE$/;"	l	subroutine:LBFGS	file:
+130	lbfgs.f	/^ 130  W(I)=DIAG(I)*W(I)$/;"	l	subroutine:LBFGS	file:
+145	lbfgs.f	/^ 145  CONTINUE$/;"	l	subroutine:LBFGS	file:
+15	lbfgs.f	/^   15    FORMAT(\/'  THE SEARCH DIRECTION IS NOT A DESCENT DIRECTION')$/;"	l	subroutine:MCSRCH	file:
+160	lbfgs.f	/^ 160   W(ISPT+POINT*N+I)= W(I)$/;"	l	subroutine:LBFGS	file:
+165	lbfgs.f	/^ 165  NFEV=0$/;"	l	subroutine:LBFGS	file:
+170	lbfgs.f	/^ 170  W(I)=G(I)$/;"	l	subroutine:LBFGS	file:
+172	lbfgs.f	/^ 172  CONTINUE$/;"	l	subroutine:LBFGS	file:
+175	lbfgs.f	/^ 175  W(IYPT+NPT+I)= G(I)-W(I)$/;"	l	subroutine:LBFGS	file:
 190	keyword.f90	/^190   CALL INPUT(END)$/;"	l	subroutine:KEYWORD	file:
-1964	finalio.f90	/^1964        CONTINUE$/;"	l	subroutine:FINALIO	file:
-20	finalio.f90	/^20          FORMAT('Si',3F20.10)$/;"	l	subroutine:FINALIO	file:
-20	func.f90	/^20    CONTINUE$/;"	l	module:FUNC	file:
+190	lbfgs.f	/^ 190  IFLAG=-1$/;"	l	subroutine:LBFGS	file:
+195	lbfgs.f	/^ 195  IFLAG=-2$/;"	l	subroutine:LBFGS	file:
+196	lbfgs.f	/^ 196  IFLAG= -3$/;"	l	subroutine:LBFGS	file:
+2	bln.f90	/^     2                   RVAR, FZZ, FYY, FXX, DF, RAD14, RAD7, S6, QO(3*n), theta_0$/;"	l	subroutine:CALC_GRADIENT	file:
+2	bln.f90	/^     2                  DOT_PROD(N,3), X_PROD(N), BOND_ANGLE(N), TOR_ANGLE(N), RADII(N,N)$/;"	l	subroutine:G46MERDIFF	file:
+2	bln.f90	/^     2                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), $/;"	l	subroutine:CALC_DYN	file:
+2	bln.f90	/^     2                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)$/;"	l	subroutine:CALC_ENERGY	file:
+2	bln.f90	/^     2                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)$/;"	l	subroutine:P46MERDIFF	file:
+2	bln.f90	/^     2       dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n),$/;"	l	subroutine:CALC_INT_COORDS	file:
+2	bln.f90	/^     2     dot_prod(n,3), x_prod(n),bond_angle(n),tor_angle(n), radii(n,n)$/;"	l	subroutine:CALC_GRADIENT	file:
+20	lbfgs.f	/^   20    CONTINUE$/;"	l	subroutine:MCSRCH	file:
+20	lbfgs.f	/^   20 m = mod(n,4)$/;"	l	subroutine:daxpy	file:
+20	lbfgs.f	/^   20 m = mod(n,5)$/;"	l	function:ddot	file:
+20	lbfgs.f	/^ 20   FORMAT('  N=',I5,'   NUMBER OF CORRECTIONS=',I2,$/;"	l	subroutine:LB1	file:
+200	lbfgs.f	/^ 200  FORMAT(\/' IFLAG= -1 ',\/' LINE SEARCH FAILED. SEE'$/;"	l	subroutine:LBFGS	file:
 21	mc.f90	/^21         FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)$/;"	l	subroutine:MC	file:
 23	mc.f90	/^23          CONTINUE$/;"	l	subroutine:MC	file:
+235	lbfgs.f	/^ 235  FORMAT(\/' IFLAG= -2',\/' THE',I5,'-TH DIAGONAL ELEMENT OF THE',\/,$/;"	l	subroutine:LBFGS	file:
 235	mylbfgs.f90	/^ 235              FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',\/,$/;"	l	subroutine:MYLBFGS	file:
-30	finalio.f90	/^30          FORMAT('LA ',3F20.10)$/;"	l	subroutine:FINALIO	file:
+240	lbfgs.f	/^ 240  FORMAT(\/' IFLAG= -3',\/' IMPROPER INPUT PARAMETERS (N OR M',$/;"	l	subroutine:LBFGS	file:
+245	lbfgs.f	/^ 245  FORMAT(\/'  GTOL IS LESS THAN OR EQUAL TO 1.D-04',$/;"	l	subroutine:LBFGS	file:
+3	bln.f90	/^     3                  radii(n,n)$/;"	l	subroutine:CALC_DYN	file:
+3	bln.f90	/^     3       COS_THETA, COS_PHI$/;"	l	subroutine:CALC_INT_COORDS	file:
+30	finalio.f90	/^30       FORMAT('LA ',3F20.10)$/;"	l	subroutine:FINALIO	file:
+30	lbfgs.f	/^   30 CONTINUE$/;"	l	subroutine:MCSRCH	file:
+30	lbfgs.f	/^   30 continue$/;"	l	function:ddot	file:
+30	lbfgs.f	/^   30 continue$/;"	l	subroutine:daxpy	file:
+30	lbfgs.f	/^ 30      IF (DIAG(I).LE.ZERO) GO TO 195$/;"	l	subroutine:LBFGS	file:
+30	lbfgs.f	/^ 30   FORMAT(' F= ',1PD10.3,'   GNORM= ',1PD10.3)$/;"	l	subroutine:LB1	file:
 30	mylbfgs.f90	/^30    NPT=POINT*N$/;"	l	subroutine:MYLBFGS	file:
-31	finalio.f90	/^31                FORMAT('AM',3G25.15)$/;"	l	subroutine:FINALIO	file:
-33	mc.f90	/^33                FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' EVAP,REJ')$/;"	l	subroutine:MC	file:
-334	finalio.f90	/^334      FORMAT(4(I8,1X),' NMRES NMCRD NUMPRO NMSNAP')$/;"	l	subroutine:FINALIO	file:
 34	mc.f90	/^34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	subroutine:MC	file:
 36	mc.f90	/^36                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' REJ')$/;"	l	subroutine:MC	file:
 37	mc.f90	/^37    CONTINUE$/;"	l	subroutine:MC	file:
-40	finalio.f90	/^40             FORMAT('Si',3F20.10)$/;"	l	subroutine:FINALIO	file:
-50	finalio.f90	/^50             FORMAT('LB',3F20.10)$/;"	l	subroutine:FINALIO	file:
-526	finalio.f90	/^526         CONTINUE$/;"	l	subroutine:FINALIO	file:
+40	lbfgs.f	/^   40       CONTINUE$/;"	l	subroutine:MCSRCH	file:
+40	lbfgs.f	/^   40 mp1 = m + 1$/;"	l	function:ddot	file:
+40	lbfgs.f	/^   40 mp1 = m + 1$/;"	l	subroutine:daxpy	file:
+40	lbfgs.f	/^ 40      DIAG(I)= 1.0D0$/;"	l	subroutine:LBFGS	file:
+40	lbfgs.f	/^ 40   FORMAT(' VECTOR X= ')$/;"	l	subroutine:LB1	file:
+45	lbfgs.f	/^   45    INFO=0$/;"	l	subroutine:MCSRCH	file:
+50	lbfgs.f	/^   50       CONTINUE$/;"	l	subroutine:MCSRCH	file:
+50	lbfgs.f	/^   50 continue$/;"	l	function:ddot	file:
+50	lbfgs.f	/^   50 continue$/;"	l	subroutine:daxpy	file:
+50	lbfgs.f	/^ 50   FORMAT(6(2X,1PD10.3))$/;"	l	subroutine:LB1	file:
+50	lbfgs.f	/^ 50   W(ISPT+I)= -G(I)*DIAG(I)$/;"	l	subroutine:LBFGS	file:
 56	keyword.f90	/^56          WRITE(MYUNIT,'(A,I6,A)') $/;"	l	subroutine:KEYWORD	file:
 57	keyword.f90	/^57          READ(34,*,END=56) DUMMY$/;"	l	subroutine:KEYWORD	file:
-60	finalio.f90	/^60          FORMAT('AR ',3F20.10)$/;"	l	subroutine:FINALIO	file:
-61	finalio.f90	/^61      FORMAT('ATOM',4X,i3,2X,A2,2X,A3,3X,i3,4X,F8.3,F8.3,F8.3,2X,'1.00',2X,'0.00',6X,'TPDB',1x,I3)$/;"	l	subroutine:FINALIO	file:
-632	finalio.f90	/^632            FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1X))$/;"	l	subroutine:FINALIO	file:
-65	finalio.f90	/^65          FORMAT('AR ',3F20.10)$/;"	l	subroutine:FINALIO	file:
-683	finalio.f90	/^683         FORMAT(3(I6,1X),F8.4,1X,I5,' STUCT SNAP T T TID')$/;"	l	subroutine:FINALIO	file:
+60	lbfgs.f	/^   60 ddot = dtemp$/;"	l	function:ddot	file:
+60	lbfgs.f	/^ 60   FORMAT(' GRADIENT VECTOR G= ')$/;"	l	subroutine:LB1	file:
+70	lbfgs.f	/^ 70   FORMAT(\/'   I   NFN',4X,'FUNC',8X,'GNORM',7X,'STEPLENGTH'\/)$/;"	l	subroutine:LB1	file:
+80	lbfgs.f	/^ 80   FORMAT(2(I4,1X),3X,3(1PD10.3,2X))$/;"	l	subroutine:LB1	file:
+80	lbfgs.f	/^ 80   ITER= ITER+1$/;"	l	subroutine:LBFGS	file:
+90	lbfgs.f	/^   90    DIAG(I)= YS\/YY$/;"	l	subroutine:LBFGS	file:
+90	lbfgs.f	/^ 90   FORMAT(' FINAL POINT X= ')$/;"	l	subroutine:LB1	file:
 ACCRAT	commons.f90	/^DOUBLE PRECISION TEMP, STEP, OSTEP, ASTEP, ACCRAT,/;"	v	module:COMMONS
-AMBWORD	keyword.f90	60;"	c	subroutine:KEYWORD
+AMBWORD	keyword.f90	27;"	c	subroutine:KEYWORD
 ASTEP	commons.f90	/^DOUBLE PRECISION TEMP, STEP, OSTEP, ASTEP,/;"	v	module:COMMONS
 ATOM1	main.f90	/^      CHARACTER(LEN=40) :: ATOM1,/;"	v	program:GMIN
 ATOM2	main.f90	/^      CHARACTER(LEN=40) :: ATOM1,ATOM2,/;"	v	program:GMIN
 ATOMPAIR	main.f90	/^      CHARACTER(LEN=40) :: ATOM1,ATOM2,ATOMPAIR$/;"	v	program:GMIN
-BIN	finalio.f90	44;"	c	subroutine:FINALIO
-BIN	keyword.f90	48;"	c	subroutine:KEYWORD
-BSNEW	keyword.f90	53;"	c	subroutine:KEYWORD
-BUFINF	keyword.f90	43;"	c	subroutine:KEYWORD
-CAPS	finalio.f90	50;"	c	subroutine:FINALIO
-CAPS	keyword.f90	55;"	c	subroutine:KEYWORD
-CAPSIDIO	finalio.f90	/^      SUBROUTINE CAPSIDIO(/;"	s
-CO	potential.f90	33;"	c	subroutine:POTENTIAL
+BIN	keyword.f90	17;"	c	subroutine:KEYWORD
+BLN	bln.f90	/^      SUBROUTINE BLN(/;"	s	module:BLN
+BLN	bln.f90	/^     MODULE BLN /;"	m
+BSNEW	keyword.f90	22;"	c	subroutine:KEYWORD
+BUFINF	keyword.f90	12;"	c	subroutine:KEYWORD
+CALC_DYN	bln.f90	/^        SUBROUTINE CALC_DYN(/;"	s	module:BLN
+CALC_ENERGY	bln.f90	/^        SUBROUTINE CALC_ENERGY(/;"	s	module:BLN
+CALC_ENERGY_BLN	bln.f90	/^      SUBROUTINE CALC_ENERGY_BLN(/;"	s	module:BLN
+CALC_GRADIENT	bln.f90	/^        SUBROUTINE CALC_GRADIENT(/;"	s	module:BLN
+CALC_GRADIENT_BLN	bln.f90	/^      SUBROUTINE CALC_GRADIENT_BLN(/;"	s	module:BLN
+CALC_INT_COORDS	bln.f90	/^        SUBROUTINE CALC_INT_COORDS(/;"	s	module:BLN
+CALC_INT_COORDS_BLN	bln.f90	/^      SUBROUTINE CALC_INT_COORDS_BLN(/;"	s	module:BLN
+CAPS	keyword.f90	24;"	c	subroutine:KEYWORD
 COMMONS	commons.f90	/^MODULE COMMONS$/;"	m
 COORDS	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS$/;"	v	module:COMMONS
-CSMAVVAL	potential.f90	52;"	c	subroutine:POTENTIAL
-EAMLJCOMM	keyword.f90	50;"	c	subroutine:KEYWORD
+EAMLJCOMM	keyword.f90	19;"	c	subroutine:KEYWORD
 EPREV	commons.f90	/^DOUBLE PRECISION TEMP, STEP, OSTEP, ASTEP, ACCRAT, EPREV$/;"	v	module:COMMONS
-EV	potential.f90	49;"	c	subroutine:POTENTIAL
-FAIL	potential.f90	48;"	c	subroutine:POTENTIAL
 FF	commons.f90	/^INTEGER,ALLOCATABLE :: FF(/;"	v	module:COMMONS
 FF	main.f90	/^      INTEGER,ALLOCATABLE :: FF(/;"	v	program:GMIN
 FIN	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: FIN(/;"	v	program:GMIN
 FINALIO	finalio.f90	/^      SUBROUTINE FINALIO$/;"	s
 FINALQ	finalq.f90	/^      SUBROUTINE FINALQ$/;"	s
 FUNC	func.f90	/^MODULE FUNC$/;"	m
-GD	potential.f90	50;"	c	subroutine:POTENTIAL
+G46MERDIFF	bln.f90	/^        SUBROUTINE G46MERDIFF(/;"	s	module:BLN
 GMIN	main.f90	/^      PROGRAM GMIN$/;"	p
+GPARAM_ARRAY	bln.f90	/^        SUBROUTINE GPARAM_ARRAY(/;"	s	module:BLN
+GSORT	func.f90	/^      SUBROUTINE GSORT(/;"	s
+GTOL	lbfgs.f	/^      DOUBLE PRECISION GTOL,/;"	v	block data:LB2
 INFIX	commons.f90	/^INTEGER :: INFIX$/;"	v	module:COMMONS
 INTEFF	commons.f90	/^INTEGER,ALLOCATABLE :: FF(:),INTEFF(/;"	v	module:COMMONS
 INTEFF	main.f90	/^      INTEGER,ALLOCATABLE :: FF(:),INTEFF(/;"	v	program:GMIN
@@ -73,22 +570,38 @@ INTEQMINP	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(/
 INTEQMINP	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(/;"	v	program:GMIN
 ISTEP	commons.f90	/^INTEGER :: ISTEP$/;"	v	module:COMMONS
 KEYWORD	keyword.f90	/^      SUBROUTINE KEYWORD$/;"	s
+LB1	lbfgs.f	/^      SUBROUTINE LB1(/;"	s
+LB2	lbfgs.f	/^      BLOCK DATA LB2$/;"	b
+LB3	lbfgs.f	187;"	c	subroutine:LBFGS
+LB3	lbfgs.f	444;"	c	subroutine:LB1
+LB3	lbfgs.f	511;"	c	block data:LB2
+LB3	lbfgs.f	627;"	c	subroutine:MCSRCH
+LBFGS	lbfgs.f	/^      SUBROUTINE LBFGS(/;"	s
+LP	lbfgs.f	/^      INTEGER LP,/;"	v	block data:LB2
 MC	mc.f90	/^      SUBROUTINE MC(/;"	s
 MCRUNS	mcruns.f90	/^      SUBROUTINE MCRUNS(/;"	s
+MCSRCH	lbfgs.f	/^      SUBROUTINE MCSRCH(/;"	s
+MCSTEP	lbfgs.f	/^      SUBROUTINE MCSTEP(/;"	s
+MP	lbfgs.f	/^      INTEGER LP,MP$/;"	v	block data:LB2
 MYLBFGS	mylbfgs.f90	/^      SUBROUTINE MYLBFGS(/;"	s
-MYPOT	finalq.f90	18;"	c	subroutine:FINALQ
+MYPOT	finalq.f90	15;"	c	subroutine:FINALQ
 MYPOT	main.f90	32;"	c	program:GMIN
+MYPOT	quench.f90	22;"	c	subroutine:QUENCH
+M_LBFGS	commons.f90	/^INTEGER :: M_LBFGS$/;"	v	module:COMMONS
 NATOMS	commons.f90	/^INTEGER :: NATOMS /;"	v	module:COMMONS
 NCORE	commons.f90	/^INTEGER :: NCORE$/;"	v	module:COMMONS
 NDUMMY	main.f90	/^      INTEGER, ALLOCATABLE :: NDUMMY(/;"	v	program:GMIN
 NDUMMY2	main.f90	/^      INTEGER, ALLOCATABLE :: NDUMMY(:), NDUMMY2(/;"	v	program:GMIN
+NQ	commons.f90	/^INTEGER :: NQ$/;"	v	module:COMMONS
 NSAVE	commons.f90	/^INTEGER :: NSAVE$/;"	v	module:COMMONS
 NUMBER_OF_ATOMS	func.f90	/^INTEGER :: NUMBER_OF_ATOMS$/;"	v	module:FUNC
 NUMBER_OF_ATOMS	main.f90	/^      INTEGER :: NUMBER_OF_ATOMS$/;"	v	program:GMIN
 OPENF	func.f90	/^SUBROUTINE OPENF(/;"	s	module:FUNC
 OSTEP	commons.f90	/^DOUBLE PRECISION TEMP, STEP, OSTEP,/;"	v	module:COMMONS
-PCALL	keyword.f90	61;"	c	subroutine:KEYWORD
-PCALL	potential.f90	51;"	c	subroutine:POTENTIAL
+P46MERDIFF	bln.f90	/^        SUBROUTINE P46MERDIFF(/;"	s	module:BLN
+PARAM_ARRAY	bln.f90	/^        SUBROUTINE PARAM_ARRAY(/;"	s	module:BLN
+PARAM_ARRAY_BLN	bln.f90	/^      SUBROUTINE PARAM_ARRAY_BLN(/;"	s	module:BLN
+PCALL	keyword.f90	28;"	c	subroutine:KEYWORD
 POTEL	main.f90	/^      DOUBLE PRECISION POTEL$/;"	v	program:GMIN
 POTENTIAL	potential.f90	/^      SUBROUTINE POTENTIAL(/;"	s
 QMIN	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE :: QMIN(/;"	v	module:COMMONS
@@ -96,12 +609,13 @@ QMIN	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMIN(/;"	v	program:GMIN
 QMINP	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE :: QMINP(/;"	v	module:COMMONS
 QMINP	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(/;"	v	program:GMIN
 QUENCH	quench.f90	/^      SUBROUTINE QUENCH(/;"	s
-RBIO	finalio.f90	/^      SUBROUTINE RBIO(/;"	s
+RAD	func.f90	/^      SUBROUTINE RAD(/;"	s	module:FUNC
+RADR	func.f90	/^      SUBROUTINE RADR(/;"	s	module:FUNC
 SCREENC	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(/;"	v	program:GMIN
 STEP	commons.f90	/^DOUBLE PRECISION TEMP, STEP,/;"	v	module:COMMONS
-TAKESTEP	func.f90	/^      SUBROUTINE TAKESTEP$/;"	s	module:FUNC
+STPMAX	lbfgs.f	/^      DOUBLE PRECISION GTOL,STPMIN,STPMAX$/;"	v	block data:LB2
+STPMIN	lbfgs.f	/^      DOUBLE PRECISION GTOL,STPMIN,/;"	v	block data:LB2
 TEMP	commons.f90	/^DOUBLE PRECISION TEMP,/;"	v	module:COMMONS
-TIPIO	finalio.f90	/^      SUBROUTINE TIPIO(/;"	s
 TMPCOORDS	main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: TMPCOORDS(/;"	v	program:GMIN
-TOT	potential.f90	56;"	c	subroutine:POTENTIAL
-amberdump	finalio.f90	/^      SUBROUTINE amberdump(/;"	s
+daxpy	lbfgs.f	/^      subroutine daxpy(/;"	s
+ddot	lbfgs.f	/^      double precision function ddot(/;"	f

@@ -1,41 +1,10 @@
-Cop226> GPL License info {{{
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
-C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
-C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
-C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-C
-Cop226> End GPL License info }}}
-!op226>=================================== <begin>
       SUBROUTINE KEYWORD
 !op226>=================================== 
 Cop226> Declarations {{{
-      !USE commons
-      use COMMONS
-      use MODMXATMS   ! NEEDED FOR charmm
-      USE modcharmm
-C       sf344> AMBER additions
-      USE modamber9, only : coords1,amberstr,amberstr1,mdstept,inpcrd,amberenergiest, nocistransdna, nocistransrna,
-     &                      uachiral, ligrotscale, setchiral, STEEREDMINT, SMINATOMA, SMINATOMB, SMINK, SMINKINC,
-     &                      SMINDISTSTART, SMINDISTFINISH, natomsina, natomsinb, natomsinc, atomsinalist, atomsinblist,
-     &                      atomsinclist, atomsinalistlogical, atomsinblistlogical, atomsinclistlogical, ligcartstep,
-     &                      ligtransstep, ligmovefreq, amchnmax, amchnmin, amchpmax, amchpmin, rotamert, rotmaxchange, 
-     &                      rotpselect, rotoccuw, rotcentre, rotcutoff, grouprott, grouprotfreq, 
-     &                      atomgroupnames, atomgroupaxis, atomgroupscaling, atomgroups, atomgrouppselect, ngroups
-      USE modamber
+
+      USE COMMONS
       USE PORFUNCS
+
       IMPLICIT NONE
 
       INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, IX, J1, JP, NPCOUNT, NTYPEA, NPCALL, NDUMMY, INDEX, J2, J3
@@ -54,8 +23,6 @@ C       sf344> AMBER additions
       DOUBLE PRECISION EPS2, RAD, HEIGHT
       COMMON /CAPS/ EPS2, RAD, HEIGHT
 
-C     LOGICAL IGNOREBIN(HISTBINMAX), FIXBIN
-C     COMMON /IG/ IGNOREBIN, FIXBIN
       DOUBLE PRECISION    PMAX,PMIN,NMAX,NMIN,SIDESTEP
       COMMON /AMBWORD/    PMAX,PMIN,NMAX,NMIN,SIDESTEP
       COMMON /PCALL/ NPCALL
@@ -71,15 +38,8 @@ C
       DOUBLE PRECISION LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN,
      &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN
 
-!     DC430 >
       DOUBLE PRECISION :: LPL, LPR
 
-C
-C       sf344> added stuff
-C
-      CHARACTER(LEN=10) check1
-      CHARACTER(LEN=1) readswitch
-      INTEGER iostatus, groupsize, groupatom,groupoffset,axis1,axis2
 Cop226> End declarations </begin> }}}
 !op226>=================================== 
 Cop226> Initializations <init> {{{
@@ -92,7 +52,7 @@ Cop226> Initializations <init> {{{
       SAVEQ=.TRUE.
       NSAVE=5
       NSAVEINTE=0
-      TFAC(:)=1.0D0
+      TFAC=1.0D0
       RESIZET=.FALSE.
       STEPOUT=.FALSE.
       SUPERSTEP=.FALSE.
@@ -597,9 +557,9 @@ Cop226> End initializations </init>  }}}
 !op226>         loop
 !op226>=================================== 
 !op226> <read> {{{ 
-      OPEN (5,FILE='data',STATUS='OLD')
 
-C190   CALL INPUT(END,5)
+      CALL OPENF(DATA_FH,"<","data")
+
 190   CALL INPUT(END)
       IF (.NOT. END) THEN
         CALL READU(WORD)
@@ -607,36 +567,6 @@ C190   CALL INPUT(END,5)
 
 !op226> IF (END .OR. WORD .EQ. 'STOP') THEN {{{
       IF (END .OR. WORD .EQ. 'STOP') THEN
-
-         IF (NPCOUNT.LT.NPAR) THEN
-            DO J1=NPCOUNT+1,NPAR
-               STEP(J1)=STEP(1)
-               ASTEP(J1)=ASTEP(1)
-               OSTEP(J1)=OSTEP(1)
-               BLOCK(J1)=BLOCK(1)
-            ENDDO
-         ENDIF
-!op226> read in chmd.par{{{
-! th368: 20-10-2009 Read parameter file containing CHARMM DYNAmics 
-! parameters if either CHARMM/MD or CHARMM/NEWRESTART_MD was
-! requested terminate if file is not found
-
-         IF(CHMDT .OR. ( CHRMMT .AND. NEWRESTART_MD)) THEN
-
-           INQUIRE(FILE='chmd.par',EXIST=YESNO)
-
-           IF (YESNO) THEN
-              OPEN(99,file='chmd.par')
-              READ(99,'(A)') CHMDPAR
-              CLOSE(99)
-           ELSE
-              WRITE(*,*) 'keywords> File chmd.par has to be provided.'
-              STOP
-           ENDIF
-         ENDIF
-! end th368: 20-10-2009
-!op226> }}}
-
         RETURN
       ENDIF
 !op226>}}} 
