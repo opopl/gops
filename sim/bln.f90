@@ -4,21 +4,24 @@
 
      CONTAINS
 
+!
 !> @brief Calculate the energy and gradient for a given configuration of a BLN polymer chain.
+!>
+!> @param[out] ENERGY
+!> @param[in] GRADT
 
       SUBROUTINE BLN(QO,GRAD,ENERGY,GRADT)
 C{{{
       USE COMMONS
+
       IMPLICIT NONE
       DOUBLE PRECISION QO(3*NATOMS), GRAD(3*NATOMS)
       LOGICAL GRADT
-      INTEGER N
       DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS), XR(NATOMS,NATOMS), YR(NATOMS,NATOMS), 
      &                 ZR(NATOMS,NATOMS), DOT_PROD(NATOMS,3),
      &                 X_PROD(NATOMS), BOND_ANGLE(NATOMS), TOR_ANGLE(NATOMS), RADII(NATOMS,NATOMS), 
      &                 ENERGY, COSTOR(NATOMS), DFAC(NATOMS), SINBOND(NATOMS)
 
-      N=NATOMS
 !
 ! Without these initialisations the NAG compiler fills in random numbers for
 ! unassigned elements with optimisation turned on.
@@ -35,27 +38,43 @@ C{{{
       YR(1:NATOMS,1:NATOMS)=0.0D0
       ZR(1:NATOMS,1:NATOMS)=0.0D0
 
-      CALL CALC_INT_COORDSBLN(QO,N,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,COSTOR,
+      CALL CALC_INT_COORDS_BLN(QO,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,COSTOR,
      &                        SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
-      CALL CALC_ENERGYBLN(QO,ENERGY,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,X,Y,Z,XR,YR,ZR,DOT_PROD,
-     &                    X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,RK_R,RK_THETA,COSTOR)
+
+      CALL CALC_ENERGY_BLN(QO,ENERGY,LJREP_BLN,LJATT_BLN,&
+        & A_BLN,B_BLN,C_BLN,D_BLN,
+        & X,Y,Z,
+        & XR,YR,ZR,
+        & DOT_PROD,
+        & X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,
+        NATOMS,
+        RK_R,RK_THETA,COSTOR)
+
       IF (.NOT.GRADT) RETURN
  
-      CALL CALC_GRADIENTBLN(QO,GRAD,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,X,Y,Z,XR,YR,ZR,DOT_PROD,
-     &                      X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
+      CALL CALC_GRADIENT_BLN(QO,GRAD,LJREP_BLN,LJATT_BLN,
+         A_BLN,B_BLN,C_BLN,D_BLN,
+         X,Y,Z,
+         XR,YR,ZR,
+         DOT_PROD,
+     &   X_PROD,
+         BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,
+         RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
 
       RETURN
       END
 C }}}
 
-!> @brief Calculate the internal coordinates
+!> @brief Calculate the internal coordinates of a BLN chain
 
-      SUBROUTINE CALC_INT_COORDSBLN(QO,N,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NATOMS, 
+      SUBROUTINE CALC_INT_COORDS_BLN(QO,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NATOMS, 
      &                              COSTOR,SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
-C {{{
-C Declarations {{{
-      implicit NONE
-      INTEGER I, N, J, NATOMS
+! {{{
+! Declarations {{{
+      IMPLICIT NONE
+
+      INTEGER I, J, N
+
       DOUBLE PRECISION COS_PHI, COS_THETA, DUMMY, DUMMY2
       DOUBLE PRECISION QO(3*NATOMS)
       DOUBLE PRECISION, PARAMETER :: TWOPI=6.283185307179586477D0
@@ -63,84 +82,86 @@ C Declarations {{{
      &  YR(NATOMS,NATOMS), ZR(NATOMS,NATOMS), DOT_PROD(NATOMS,3), COSTOR(NATOMS), D_BLN(NATOMS), 
      &  A_BLN(NATOMS), B_BLN(NATOMS), X_PROD(NATOMS), BOND_ANGLE(NATOMS), TOR_ANGLE(NATOMS), 
      &  RADII(NATOMS,NATOMS), SINBOND(NATOMS), C_BLN(NATOMS)
-C }}}
-      do i = 1, n
-         j = (i-1)*3
-         x(i) = qo((i-1)*3+1)
-         y(i) = qo((i-1)*3+2)
-         z(i) = qo((i-1)*3+3)
-      enddo
-C
-C Inter-particle distances {{{
-C
-      do i = 1, n-1
-         do j = i+1, n
-C        do j = 1, n
-            xr(i,j) = x(j) - x(i)
-            yr(i,j) = y(j) - y(i)
-            zr(i,j) = z(j) - z(i)
-            radii(i,j) = sqrt(xr(i,j)*xr(i,j) + yr(i,j)*yr(i,j) + zr(i,j)*zr(i,j))
-            radii(j,i) = radii(i,j)
-         enddo
-      enddo
-C }}}
-C
-C Dot products between bond vectors {{{
-C
+! }}}
 
-      do i = 1, n-3
-         dot_prod(i,1) = xr(i,i+1)*xr(i,i+1) + yr(i,i+1)*yr(i,i+1) + zr(i,i+1)*zr(i,i+1)
-         dot_prod(i,2) = xr(i,i+1)*xr(i+1,i+2)+yr(i,i+1)*yr(i+1,i+2)+ zr(i,i+1)*zr(i+1,i+2)
-         dot_prod(i,3) = xr(i,i+1)*xr(i+2,i+3)+yr(i,i+1)*yr(i+2,i+3)+ zr(i,i+1)*zr(i+2,i+3)
-      enddo
+      N=NATOMS
 
-!     i = n-2
-      dot_prod(n-2,1) = xr(n-2,n-2+1)*xr(n-2,n-2+1) + yr(n-2,n-2+1)*yr(n-2,n-2+1) + zr(n-2,n-2+1)*zr(n-2,n-2+1)
-      dot_prod(n-2,2) = xr(n-2,n-2+1)*xr(n-2+1,n-2+2)+yr(n-2,n-2+1)*yr(n-2+1,n-2+2)+ zr(n-2,n-2+1)*zr(n-2+1,n-2+2)
-!     i = n-1
-      dot_prod(n-1,1) = xr(n-1,n-1+1)*xr(n-1,n-1+1) + yr(n-1,n-1+1)*yr(n-1,n-1+1) + zr(n-1,n-1+1)*zr(n-1,n-1+1)
+      DO I = 1, N
+         J = (I-1)*3
+         X(I) = QO((I-1)*3+1)
+         Y(I) = QO((I-1)*3+2)
+         Z(I) = QO((I-1)*3+3)
+      ENDDO
+!
+! Inter-particle distances {{{
+
+      DO I = 1, N-1
+         DO J = I+1, N
+            XR(I,J) = X(J) - X(I)
+            YR(I,J) = Y(J) - Y(I)
+            ZR(I,J) = Z(J) - Z(I)
+            RADII(I,J) = SQRT(XR(I,J)*XR(I,J) + YR(I,J)*YR(I,J) + ZR(I,J)*ZR(I,J))
+            RADII(J,I) = RADII(I,J)
+         ENDDO
+      ENDDO
 C }}}
-C Cross-products between adjacent bond vectors {{{
+
+! Dot products between bond vectors {{{
+
+      DO I = 1, N-3
+         DOT_PROD(I,1) = XR(I,I+1)*XR(I,I+1) + YR(I,I+1)*YR(I,I+1) + ZR(I,I+1)*ZR(I,I+1)
+         DOT_PROD(I,2) = XR(I,I+1)*XR(I+1,I+2)+YR(I,I+1)*YR(I+1,I+2)+ ZR(I,I+1)*ZR(I+1,I+2)
+         DOT_PROD(I,3) = XR(I,I+1)*XR(I+2,I+3)+YR(I,I+1)*YR(I+2,I+3)+ ZR(I,I+1)*ZR(I+2,I+3)
+      ENDDO
+
+!     I = N-2
+      DOT_PROD(N-2,1) = XR(N-2,N-2+1)*XR(N-2,N-2+1) + YR(N-2,N-2+1)*YR(N-2,N-2+1) + ZR(N-2,N-2+1)*ZR(N-2,N-2+1)
+      DOT_PROD(N-2,2) = XR(N-2,N-2+1)*XR(N-2+1,N-2+2)+YR(N-2,N-2+1)*YR(N-2+1,N-2+2)+ ZR(N-2,N-2+1)*ZR(N-2+1,N-2+2)
+!     I = N-1
+      DOT_PROD(N-1,1) = XR(N-1,N-1+1)*XR(N-1,N-1+1) + YR(N-1,N-1+1)*YR(N-1,N-1+1) + ZR(N-1,N-1+1)*ZR(N-1,N-1+1)
+! }}}
+
+! Cross-products between adjacent bond vectors {{{
 
       do i = 1, n-2
          x_prod(i) = dot_prod(i,1)*dot_prod(i+1,1) - dot_prod(i,2)*dot_prod(i,2)   
       enddo
-C }}}
-C Bond angles {{{
+! }}}
+! Bond angles {{{
 
       do i = 1, n-2
          cos_theta=-dot_prod(i,2)/(sqrt(dot_prod(i,1)*dot_prod(i+1,1)))
          bond_angle(i+1) = dacos(cos_theta)
          SINBOND(i+1)=SIN(bond_angle(i+1))*SQRT(dot_prod(i,1)*dot_prod(i+1,1))
       enddo
-C }}}
-C Torsional angles {{{
+! }}}
+! Torsional angles {{{
 
       do i = 1, n-3
          cos_phi = (dot_prod(i,2)*dot_prod(i+1,2) - dot_prod(i,3)*dot_prod(i+1,1))/sqrt(x_prod(i)*x_prod(i+1))
          IF (ABS(cos_phi).GT.1.0D0) cos_phi=SIGN(1.0D0,cos_phi)
          tor_angle(i+1) = dacos(cos_phi)
-C }}}
-C
-C tor_angle is returned in the range 0 to Pi.
-C dummy should take the opposite sign from the dihedral angle. Negative
-C values of the dihedral should be subtracted from 2*pi.
-C This is only necessary when the potential contains cos(phi+pi/4) terms because
-C the gradient is discontinuous when phi goes through pi for such terms if phi
-C is restricted to 0 < phi < pi.
-C {{{
-C        dummy=xr(i+2,i+3)*(yr(i+1,i)*zr(i+1,i+2)-yr(i+1,i+2)*zr(i+1,i))+
-C    &         yr(i+2,i+3)*(xr(i+1,i+2)*zr(i+1,i)-xr(i+1,i)*zr(i+1,i+2))+
-C    &         zr(i+2,i+3)*(xr(i+1,i)*yr(i+1,i+2)-xr(i+1,i+2)*yr(i+1,i))
+! }}}
+!
+! tor_angle is returned in the range 0 to Pi.
+! dummy should take the opposite sign from the dihedral angle. Negative
+! values of the dihedral should be subtracted from 2*pi.
+! This is only necessary when the potential contains cos(phi+pi/4) terms because
+! the gradient is discontinuous when phi goes through pi for such terms if phi
+! is restricted to 0 < phi < pi.
+! {{{
+!        dummy=xr(i+2,i+3)*(yr(i+1,i)*zr(i+1,i+2)-yr(i+1,i+2)*zr(i+1,i))+
+!    &         yr(i+2,i+3)*(xr(i+1,i+2)*zr(i+1,i)-xr(i+1,i)*zr(i+1,i+2))+
+!    &         zr(i+2,i+3)*(xr(i+1,i)*yr(i+1,i+2)-xr(i+1,i+2)*yr(i+1,i))
          dummy=xr(i+2,i+3)*(-yr(i,i+1)*zr(i+1,i+2)+yr(i+1,i+2)*zr(i,i+1))+
      &         yr(i+2,i+3)*(-xr(i+1,i+2)*zr(i,i+1)+xr(i,i+1)*zr(i+1,i+2))+
      &         zr(i+2,i+3)*(-xr(i,i+1)*yr(i+1,i+2)+xr(i+1,i+2)*yr(i,i+1))
          IF (DUMMY.GT.0.0D0) tor_angle(i+1)=TWOPI-tor_angle(i+1)
          COSTOR(i+1)=COS(tor_angle(i+1))
-C }}}
-C  This is an ugly hack to prevent division by zero. There will be a loss of precision
-C  if a dihedral is 0, PI, 2*PI, if D_BLN is non-zero.
-C {{{
+! }}}
+!  This is an ugly hack to prevent division by zero. There will be a loss of precision
+!  if a dihedral is 0, PI, 2*PI, if D_BLN is non-zero.
+! {{{
          IF (TAN(tor_angle(i+1)).EQ.0.0D0) THEN
             PRINT '(A,I8,A,G20.10)','WARNING in BLN, dihedral angle ',i+1,' is ',tor_angle(i+1)
             tor_angle(i+1)=tor_angle(i+1)+1.0D-10
@@ -149,26 +170,26 @@ C {{{
          DUMMY2=TAN(tor_angle(i+1))
          DFAC(i+1)=(A_BLN(i+1)+D_BLN(i+1)*( 1.0D0+1.0D0/DUMMY2 )*0.7071067811865475244D0-B_BLN(i+1)
      &              +C_BLN(i+1)*(12.0*costor(i+1)**2-3.0))/sqrt(x_prod(i+1)*x_prod(i))
-C }}}
+! }}}
       enddo
 
       return
       end
 C }}}
 
-!> @brief Calculate the energy
+!> @brief Calculate the energy of a BLN chain
 
-      subroutine calc_energyBLN(qo,energy,n,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     &  bond_angle,tor_angle,radii,natoms,rk_r,rk_theta,COSTOR)
+      SUBROUTINE CALC_ENERGY_BLN(QO,ENERGY,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+     &  BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,RK_R,RK_THETA,COSTOR)
 C {{{
-      implicit NONE
+      IMPLICIT NONE
       INTEGER NATOMS, N, I, J
       DOUBLE PRECISION, parameter :: theta_0 = 1.8326D0, PI4=0.7853981633974483096D0 ! 1.8326 radians is 105 degrees
-      DOUBLE PRECISION qo(3*NATOMS), ENERGY
-      DOUBLE PRECISION x(NATOMS), y(NATOMS), z(NATOMS), xr(NATOMS,NATOMS), 
-     &  yr(NATOMS,NATOMS), zr(NATOMS,NATOMS), dot_prod(NATOMS,3), COSTOR(NATOMS),
-     &  x_prod(NATOMS), bond_angle(NATOMS), tor_angle(NATOMS), radii(NATOMS,NATOMS)
-      DOUBLE PRECISION RK_R, RK_THETA, e_nbond, e_bond, e_bangle, e_tangle, rad6
+      DOUBLE PRECISION QO(3*NATOMS), ENERGY
+      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS), XR(NATOMS,NATOMS), 
+     &  YR(NATOMS,NATOMS), ZR(NATOMS,NATOMS), DOT_PROD(NATOMS,3), COSTOR(NATOMS),
+     &  X_PROD(NATOMS), BOND_ANGLE(NATOMS), TOR_ANGLE(NATOMS), RADII(NATOMS,NATOMS)
+      DOUBLE PRECISION RK_R, RK_THETA, E_NBOND, E_BOND, E_BANGLE, E_TANGLE, RAD6
       DOUBLE PRECISION LJREP_BLN(NATOMS,NATOMS),LJATT_BLN(NATOMS,NATOMS),C_BLN(NATOMS),A_BLN(NATOMS),B_BLN(NATOMS),D_BLN(NATOMS)
 
       e_nbond=0.0D0
@@ -209,7 +230,7 @@ C }}}
 
 !> @brief Calculate the gradients
 
-      SUBROUTINE CALC_GRADIENTBLN(QO,FQ,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,
+      SUBROUTINE CALC_GRADIENT_BLN(QO,FQ,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,
      &                            X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
      &                            BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
 C {{{
@@ -971,43 +992,43 @@ C }}}
 
 !> @brief  Fill the parameter arrays
 
-      subroutine param_arrayBLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
+      SUBROUTINE PARAM_ARRAY_BLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
      &   LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, 
-     &   HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN, n)
+     &   HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN, N)
 C {{{
-C Declarations {{{
-      implicit NONE
+C DECLARATIONS {{{
+      IMPLICIT NONE
       INTEGER N
-      INTEGER ntype(n), J1, i, j, icount
-      DOUBLE PRECISION LJREP_BLN(n,n), LJATT_BLN(n,n), A_BLN(n), B_BLN(n), C_BLN(N), D_BLN(N),
+      INTEGER NTYPE(N), J1, I, J, ICOUNT
+      DOUBLE PRECISION LJREP_BLN(N,N), LJATT_BLN(N,N), A_BLN(N), B_BLN(N), C_BLN(N), D_BLN(N),
      &                 LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, 
      &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN
       CHARACTER(LEN=1) BEADLETTER(N), BLNSSTRUCT(N)
 C }}}
-C Amino Acid types {{{
+C AMINO ACID TYPES {{{
 C B=1 L=2 N=3
 C
       DO J1=1,N
          IF (BEADLETTER(J1).EQ.'B') THEN
-            ntype(J1)=1
+            NTYPE(J1)=1
          ELSEIF (BEADLETTER(J1).EQ.'L') THEN
-            ntype(J1)=2
+            NTYPE(J1)=2
          ELSEIF (BEADLETTER(J1).EQ.'N') THEN
-            ntype(J1)=3
+            NTYPE(J1)=3
          ELSE
-            PRINT '(A,A1)','ERROR in param_arrayBLN, unrecognised bead type: ',BEADLETTER(J1)
+            PRINT '(A,A1)','ERROR IN PARAM_ARRAYBLN, UNRECOGNISED BEAD TYPE: ',BEADLETTER(J1)
             STOP
          ENDIF
       ENDDO
 
 C }}}
 
-C Parameters for the dihedral angle potential 
-C The end bonds have no dihedral term, so the total number of terms
-C is N-3 (e.g. 4 atoms, 1 dihedral). Non-zero terms for
-C 2 to 3, 3 to 4, 4 to 5, ... , N-3 to N-2, N-2 to N-1. The
-C H, E and T parameters are defined for the first bead of each edge,
-C i.e. for 2, 3, 4, ..., N-2.
+C PARAMETERS FOR THE DIHEDRAL ANGLE POTENTIAL 
+C THE END BONDS HAVE NO DIHEDRAL TERM, SO THE TOTAL NUMBER OF TERMS
+C IS N-3 (E.G. 4 ATOMS, 1 DIHEDRAL). NON-ZERO TERMS FOR
+C 2 TO 3, 3 TO 4, 4 TO 5, ... , N-3 TO N-2, N-2 TO N-1. THE
+C H, E AND T PARAMETERS ARE DEFINED FOR THE FIRST BEAD OF EACH EDGE,
+C I.E. FOR 2, 3, 4, ..., N-2.
 C {{{
 
       A_BLN(1:N)=0.0D0
@@ -1031,38 +1052,38 @@ C {{{
             C_BLN(I+1)=TCBLN
             D_BLN(I+1)=TDBLN
          ELSE
-            PRINT '(A,A1)','ERROR in param_arrayBLN, unrecognised SS type: ',BLNSSTRUCT(J1)
+            PRINT '(A,A1)','ERROR IN PARAM_ARRAYBLN, UNRECOGNISED SS TYPE: ',BLNSSTRUCT(J1)
             STOP
          ENDIF
-C        PRINT '(A,I6,A,A1,A,4F12.4)','I+1=',I+1,' symbol=',BLNSSTRUCT(I),' A,B,C,D=',A_BLN(I+1),B_BLN(I+1),C_BLN(I+1),D_BLN(I+1)
+C        PRINT '(A,I6,A,A1,A,4F12.4)','I+1=',I+1,' SYMBOL=',BLNSSTRUCT(I),' A,B,C,D=',A_BLN(I+1),B_BLN(I+1),C_BLN(I+1),D_BLN(I+1)
       ENDDO
 C }}}
-C  Parameters for the L-J interaction between non-bonded particles {{{
+C  PARAMETERS FOR THE L-J INTERACTION BETWEEN NON-BONDED PARTICLES {{{
 
-      do i = 1, n-1
-         do j = i+1, n
-            if (ntype(i) .eq. 3 .or. ntype(j) .eq. 3) then
-               LJREP_BLN(i,j) = LJREPNN
-               LJATT_BLN(i,j) = LJATTNN
-               LJREP_BLN(j,i) = LJREPNN
-               LJATT_BLN(j,i) = LJATTNN
-            else if (ntype(i) .eq. 1 .and. ntype(j) .eq. 1) then
-               LJREP_BLN(i,j) = LJREPBB
-               LJATT_BLN(i,j) = LJATTBB
-               LJREP_BLN(j,i) = LJREPBB
-               LJATT_BLN(j,i) = LJATTBB
-            else
-               LJREP_BLN(i,j) = LJREPLL
-               LJATT_BLN(i,j) = LJATTLL
-               LJREP_BLN(j,i) = LJREPLL
-               LJATT_BLN(j,i) = LJATTLL
-            endif
-         enddo
-      enddo
+      DO I = 1, N-1
+         DO J = I+1, N
+            IF (NTYPE(I) .EQ. 3 .OR. NTYPE(J) .EQ. 3) THEN
+               LJREP_BLN(I,J) = LJREPNN
+               LJATT_BLN(I,J) = LJATTNN
+               LJREP_BLN(J,I) = LJREPNN
+               LJATT_BLN(J,I) = LJATTNN
+            ELSE IF (NTYPE(I) .EQ. 1 .AND. NTYPE(J) .EQ. 1) THEN
+               LJREP_BLN(I,J) = LJREPBB
+               LJATT_BLN(I,J) = LJATTBB
+               LJREP_BLN(J,I) = LJREPBB
+               LJATT_BLN(J,I) = LJATTBB
+            ELSE
+               LJREP_BLN(I,J) = LJREPLL
+               LJATT_BLN(I,J) = LJATTLL
+               LJREP_BLN(J,I) = LJREPLL
+               LJATT_BLN(J,I) = LJATTLL
+            ENDIF
+         ENDDO
+      ENDDO
 C }}}
 
-      return
-      end
+      RETURN
+      END
 C }}}
 !------------------------------------------------------------
 ! Doxygen: G46MERDIFF {{{
