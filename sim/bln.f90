@@ -10,52 +10,54 @@
 !> @param[in] GRADT
 !
 
-      SUBROUTINE BLN(QO,GRAD,ENERGY,GRADT)
+      SUBROUTINE BLN(N,QO,GRAD,ENERGY,GRADT)
 C{{{
       USE COMMONS
 
       IMPLICIT NONE
-      DOUBLE PRECISION QO(3*NATOMS), GRAD(3*NATOMS)
+
+      INTEGER,INTENT(IN) :: N
+      DOUBLE PRECISION QO(3*N), GRAD(3*N)
       LOGICAL GRADT
-      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS), XR(NATOMS,NATOMS), YR(NATOMS,NATOMS), 
-     &                 ZR(NATOMS,NATOMS), DOT_PROD(NATOMS,3),
-     &                 X_PROD(NATOMS), BOND_ANGLE(NATOMS), TOR_ANGLE(NATOMS), RADII(NATOMS,NATOMS), 
-     &                 ENERGY, COSTOR(NATOMS), DFAC(NATOMS), SINBOND(NATOMS)
+      DOUBLE PRECISION X(N), Y(N), Z(N), XR(N,N), YR(N,N), 
+     &                 ZR(N,N), DOT_PROD(N,3),
+     &                 X_PROD(N), BOND_ANGLE(N), TOR_ANGLE(N), RADII(N,N), 
+     &                 ENERGY, COSTOR(N), DFAC(N), SINBOND(N)
 
 !
 ! Without these initialisations the NAG compiler fills in random numbers for
 ! unassigned elements with optimisation turned on.
 !
-      BOND_ANGLE(1:NATOMS)=0.0D0
-      TOR_ANGLE(1:NATOMS)=0.0D0
-      COSTOR(1:NATOMS)=0.0D0
-      DFAC(1:NATOMS)=0.0D0
-      SINBOND(1:NATOMS)=0.0D0
-      DOT_PROD(1:NATOMS,1:3)=0.0D0
-      X_PROD(1:NATOMS)=0.0D0
-      RADII(1:NATOMS,1:NATOMS)=0.0D0
-      XR(1:NATOMS,1:NATOMS)=0.0D0
-      YR(1:NATOMS,1:NATOMS)=0.0D0
-      ZR(1:NATOMS,1:NATOMS)=0.0D0
+      BOND_ANGLE(1:N)=0.0D0
+      TOR_ANGLE(1:N)=0.0D0
+      COSTOR(1:N)=0.0D0
+      DFAC(1:N)=0.0D0
+      SINBOND(1:N)=0.0D0
+      DOT_PROD(1:N,1:3)=0.0D0
+      X_PROD(1:N)=0.0D0
+      RADII(1:N,1:N)=0.0D0
+      XR(1:N,1:N)=0.0D0
+      YR(1:N,1:N)=0.0D0
+      ZR(1:N,1:N)=0.0D0
 
-      CALL CALC_INT_COORDS_BLN(QO,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,&
+      CALL CALC_INT_COORDS_BLN(N,QO,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,&
                 BOND_ANGLE,TOR_ANGLE,RADII,&
-                NATOMS,COSTOR,SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
+                COSTOR,SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
 
-      CALL CALC_ENERGY_BLN(QO,ENERGY,LJREP_BLN,LJATT_BLN,&
+      CALL CALC_ENERGY_BLN(N,QO,ENERGY,LJREP_BLN,LJATT_BLN,&
                 A_BLN,B_BLN,C_BLN,D_BLN,&
                 X,Y,Z,& 
                 XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,&
-                NATOMS,RK_R,RK_THETA,COSTOR)
+                RK_R,RK_THETA,COSTOR)
 
       IF (.NOT.GRADT) RETURN
  
-      CALL CALC_GRADIENT_BLN(QO,GRAD,LJREP_BLN,LJATT_BLN,&
+      CALL CALC_GRADIENT_BLN(N,QO,GRAD,LJREP_BLN,LJATT_BLN,&
          A_BLN,B_BLN,C_BLN,D_BLN,&
          X,Y,Z,&
          XR,YR,ZR,&
          DOT_PROD,X_PROD,&
-         BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,&
+         BOND_ANGLE,TOR_ANGLE,RADII,&
          RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
 
       RETURN
@@ -64,40 +66,46 @@ C }}}
 
 !> @brief Calculate the internal coordinates of a BLN chain
 
-      SUBROUTINE CALC_INT_COORDS_BLN(QO,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NATOMS, 
+      SUBROUTINE CALC_INT_COORDS_BLN(N,QO,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII, 
      &                              COSTOR,SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
 ! {{{
 ! Declarations {{{
       IMPLICIT NONE
 
-      INTEGER I, J, N
-
-      DOUBLE PRECISION COS_PHI, COS_THETA, DUMMY, DUMMY2
-      DOUBLE PRECISION QO(3*NATOMS)
+      ! subroutine parameters 
+      INTEGER N
+      DOUBLE PRECISION QO(3*N)
       DOUBLE PRECISION, PARAMETER :: TWOPI=6.283185307179586477D0
-      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS), XR(NATOMS,NATOMS), DFAC(NATOMS),
-     &  YR(NATOMS,NATOMS), ZR(NATOMS,NATOMS), DOT_PROD(NATOMS,3), COSTOR(NATOMS), D_BLN(NATOMS), 
-     &  A_BLN(NATOMS), B_BLN(NATOMS), X_PROD(NATOMS), BOND_ANGLE(NATOMS), TOR_ANGLE(NATOMS), 
-     &  RADII(NATOMS,NATOMS), SINBOND(NATOMS), C_BLN(NATOMS)
-! }}}
+      ! R  => output vector of internal coordinates
+      DOUBLE PRECISION, DIMENSION(N,3), INTENT(OUT) :: R
+      ! DR => output vector of particle distances 
+      DOUBLE PRECISION, DIMENSION(N,N,3), INTENT(OUT) :: DR
+      DOUBLE PRECISION, DIMENSION(N) :: X_PROD, COSTOR
+      DOUBLE PRECISION, DIMENSION(N,4) :: A
+      DOUBLE PRECISION, DIMENSION(N) :: BOND_ANGLE, TOR_ANGLE, SINBOND
+      DOUBLE PRECISION DFAC
+      DOUBLE PRECISION, DIMENSION(N,N) ::  RADII
+      DOUBLE PRECISION DOT_PROD(N,3), COSTOR(N) 
 
-      N=NATOMS
+      ! local parameters 
+      INTEGER I,J,K
+      DOUBLE PRECISION COS_PHI, COS_THETA, DUMMY, DUMMY2
+
+! }}}
 
       DO I = 1, N
          J = (I-1)*3
-         X(I) = QO((I-1)*3+1)
-         Y(I) = QO((I-1)*3+2)
-         Z(I) = QO((I-1)*3+3)
+         DO K=1,3
+	         R(I,1) = QO((I-1)*3+K)
+         ENDDO
       ENDDO
 !
 ! Inter-particle distances {{{
 
       DO I = 1, N-1
          DO J = I+1, N
-            XR(I,J) = X(J) - X(I)
-            YR(I,J) = Y(J) - Y(I)
-            ZR(I,J) = Z(J) - Z(I)
-            RADII(I,J) = SQRT(XR(I,J)*XR(I,J) + YR(I,J)*YR(I,J) + ZR(I,J)*ZR(I,J))
+            DR(I,J,1:3) = R(J,1:3) - R(I,1:3)
+            RADII(I,J) = SQRT( DR(I,J,1)**2 + DR(I,J,2)**2 + DR(I,J,3)**2 )
             RADII(J,I) = RADII(I,J)
          ENDDO
       ENDDO
@@ -106,7 +114,7 @@ C }}}
 ! Dot products between bond vectors {{{
 
       DO I = 1, N-3
-         DOT_PROD(I,1) = XR(I,I+1)*XR(I,I+1) + YR(I,I+1)*YR(I,I+1) + ZR(I,I+1)*ZR(I,I+1)
+         DOT_PROD(I,1) = DR(I,I+1,1)*DR(I,I+1,1) + DR(I,I+1,2)*DR(I,I+1,2) + DR(I,I+1,3)*DR(I,I+1,3)
          DOT_PROD(I,2) = XR(I,I+1)*XR(I+1,I+2)+YR(I,I+1)*YR(I+1,I+2)+ ZR(I,I+1)*ZR(I+1,I+2)
          DOT_PROD(I,3) = XR(I,I+1)*XR(I+2,I+3)+YR(I,I+1)*YR(I+2,I+3)+ ZR(I,I+1)*ZR(I+2,I+3)
       ENDDO
@@ -176,77 +184,98 @@ C }}}
 
 !> @brief Calculate the energy of a BLN chain
 
-      SUBROUTINE CALC_ENERGY_BLN(QO,ENERGY,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
-     &  BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,RK_R,RK_THETA,COSTOR)
+      SUBROUTINE CALC_ENERGY_BLN(N,QO,ENERGY,   &
+                LJREP_BLN,LJATT_BLN,            &
+                A,        &
+                BOND_ANGLE,TOR_ANGLE,RADII,RK_R,RK_THETA,COSTOR)
 C {{{
       IMPLICIT NONE
-      INTEGER NATOMS, N, I, J
-      DOUBLE PRECISION, parameter :: theta_0 = 1.8326D0, PI4=0.7853981633974483096D0 ! 1.8326 radians is 105 degrees
-      DOUBLE PRECISION QO(3*NATOMS), ENERGY
-      DOUBLE PRECISION X(NATOMS), Y(NATOMS), Z(NATOMS), XR(NATOMS,NATOMS), 
-     &  YR(NATOMS,NATOMS), ZR(NATOMS,NATOMS), DOT_PROD(NATOMS,3), COSTOR(NATOMS),
-     &  X_PROD(NATOMS), BOND_ANGLE(NATOMS), TOR_ANGLE(NATOMS), RADII(NATOMS,NATOMS)
-      DOUBLE PRECISION RK_R, RK_THETA, E_NBOND, E_BOND, E_BANGLE, E_TANGLE, RAD6
-      DOUBLE PRECISION LJREP_BLN(NATOMS,NATOMS),LJATT_BLN(NATOMS,NATOMS),C_BLN(NATOMS),A_BLN(NATOMS),B_BLN(NATOMS),D_BLN(NATOMS)
 
-      e_nbond=0.0D0
-      e_bond=0.0D0
-      e_bangle=0.0D0
-      e_tangle=0.0D0
+      ! subroutine parameters 
+      INTEGER N
+      
+      DOUBLE PRECISION,INTENT(IN):: QO(3*N)
+      DOUBLE PRECISION,INTENT(OUT):: ENERGY
+      DOUBLE PRECISION,DIMENSION(N) :: COSTOR,BOND_ANGLE,TOR_ANGLE
+      ! A => array A, B, C, D coefficients for the generic BLN model
+      DOUBLE PRECISION, DIMENSION(N,4) :: A
+      DOUBLE PRECISION, DIMENSION(N,N) :: RADII
+      ! LJREP => repulsion
+      ! LJATT => attraction
+      DOUBLE PRECISION, DIMENSION(N,N) :: LJREP,LJATT
+      DOUBLE PRECISION RK_R, RK_THETA
 
-      do i = 1, n-2
-         do j = i+2, n
-            rad6 = radii(i,j)**6
-            e_nbond = e_nbond + (LJREP_BLN(i,j)/rad6 + LJATT_BLN(i,j))/rad6
-         enddo
-      enddo
-      e_nbond=e_nbond*4.0D0
+      ! local parameters 
+      !         i,j => particle indices
+      INTEGER I, J
+      DOUBLE PRECISION E_NBOND, E_BOND, E_BANGLE, E_TANGLE, RAD6
+      DOUBLE PRECISION, PARAMETER :: THETA_0 = 1.8326D0, PI4=0.7853981633974483096D0 ! 1.8326 RADIANS IS 105 DEGREES
 
-      do i = 1, n-1
-         e_bond = e_bond + (radii(i,i+1)-1.0D0)**2
-      enddo
-      e_bond=e_bond*rk_r/2.0D0
+      E_NBOND=0.0D0
+      E_BOND=0.0D0
+      E_BANGLE=0.0D0
+      E_TANGLE=0.0D0
 
-      do i = 2, n-1
-         e_bangle = e_bangle + (bond_angle(i)-theta_0)**2
-      enddo
-      e_bangle=e_bangle*rk_theta/2.0D0
+      DO I = 1, N-2
+         DO J = I+2, N
+            RAD6 = RADII(I,J)**6
+            E_NBOND = E_NBOND + (LJREP(I,J)/RAD6 + LJATT(I,J))/RAD6
+         ENDDO
+      ENDDO
+      E_NBOND=E_NBOND*4.0D0
 
-      do i = 2, n-2
-         e_tangle = e_tangle + A_BLN(i)*(1.0D0 + costor(i)) + C_BLN(i)*(1.0 + cos(3.0*tor_angle(i)))
-     &                       + B_BLN(i)*(1.0D0 - costor(i)) + D_BLN(i)*(1.0 + cos(tor_angle(i)+PI4))
-      enddo
+      DO I = 1, N-1
+         E_BOND = E_BOND + (RADII(I,I+1)-1.0D0)**2
+      ENDDO
+      E_BOND=E_BOND*RK_R/2.0D0
 
-      energy = e_nbond + e_bond + e_bangle + e_tangle
+      DO I = 2, N-1
+         E_BANGLE = E_BANGLE + (BOND_ANGLE(I)-THETA_0)**2
+      ENDDO
+      E_BANGLE=E_BANGLE*RK_THETA/2.0D0
 
-C     write(*,'(A,4F20.10)') 'nbond,bond,bangle,tangle=',e_nbond,e_bond,e_bangle,e_tangle
+      DO I = 2, N-2
+         E_TANGLE = E_TANGLE + A(I,1)*(1.0D0 + COSTOR(I)) + A(I,3)*(1.0 + COS(3.0*TOR_ANGLE(I))) &
+                             + A(I,2)*(1.0D0 - COSTOR(I)) + A(I,4)*(1.0 + COS(TOR_ANGLE(I)+PI4))
+      ENDDO
 
-      return
-      end
+      ENERGY = E_NBOND + E_BOND + E_BANGLE + E_TANGLE
+
+      RETURN
+      END
 C }}}
 
 !> @brief Calculate the gradients
 
-      SUBROUTINE CALC_GRADIENT_BLN(QO,FQ,N,LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,
+      SUBROUTINE CALC_GRADIENT_BLN(N,QO,FQ,LJREP,LJATT,A,
      &                            X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
-     &                            BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
+     &                            BOND_ANGLE,TOR_ANGLE,RADII,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
 C {{{
 C Declarations {{{
-      USE COMMONS,ONLY : MYUNIT
       IMPLICIT NONE
-      INTEGER NATOMS, N, I, J
-      DOUBLE PRECISION, parameter :: theta_0 = 1.8326D0
-      DOUBLE PRECISION qo(3*NATOMS),fq(3*NATOMS),fx(NATOMS),fy(NATOMS), fz(NATOMS), DFAC(NATOMS), SINBOND(NATOMS)
-      DOUBLE PRECISION fnb_x(NATOMS),fnb_y(NATOMS),fnb_z(NATOMS), fb_x(NATOMS),fb_y(NATOMS)
-      DOUBLE PRECISION fb_z(NATOMS),fba_x(NATOMS),fba_y(NATOMS),fba_z(NATOMS), COSTOR(NATOMS)
-      DOUBLE PRECISION fta_x(NATOMS),fta_y(NATOMS),fta_z(NATOMS), a3, coef, coef1, coef2, coef3, a4
-      DOUBLE PRECISION RK_R, RK_THETA, rad7, rad14, df, fxx, fzz, fyy, rvar, den, rnum, den1, a1, a2, den2
 
-      DOUBLE PRECISION x(NATOMS), y(NATOMS), z(NATOMS), xr(NATOMS,NATOMS), 
-     &  yr(NATOMS,NATOMS), zr(NATOMS,NATOMS), dot_prod(NATOMS,3), 
-     &  x_prod(NATOMS), bond_angle(NATOMS), tor_angle(NATOMS), radii(NATOMS,NATOMS)
+      ! subroutine parameters 
 
-      DOUBLE PRECISION LJREP_BLN(NATOMS,NATOMS), LJATT_BLN(NATOMS,NATOMS),C_BLN(NATOMS),A_BLN(NATOMS),B_BLN(NATOMS),D_BLN(NATOMS)
+      INTEGER N
+
+      DOUBLE PRECISION QO(3*N),FQ(3*N)
+      DOUBLE PRECISION DFAC, SINBOND
+      DOUBLE PRECISION COSTOR(N)
+      DOUBLE PRECISION RK_R, RK_THETA
+
+      DOUBLE PRECISION, DIMENSION(N) :: X,Y,Z
+      DOUBLE PRECISION, DIMENSION(N,N) :: XR,YR,ZR,RADII
+      DOUBLE PRECISION DOT_PROD(N,3),X_PROD(N),BOND_ANGLE(N),TOR_ANGLE(N)
+
+      DOUBLE PRECISION LJREP(N,N), LJATT(N,N)
+      DOUBLE PRECISION, DIMENSION(N,4) :: A
+
+      ! local parameters 
+      DOUBLE PRECISION, PARAMETER :: THETA_0 = 1.8326D0
+      DOUBLE PRECISION, DIMENSION(N,3) :: F, FNB, FB, FBA, FTA
+      INTEGER I, J
+      DOUBLE PRECISION RAD7, RAD14, DF, FXX, FZZ, FYY, RVAR, DEN, RNUM, DEN1, A1, A2, DEN2
+      DOUBLE PRECISION A3, COEF, COEF1, COEF2, COEF3, A4
 C }}}
 C
 C Gradients of potential
@@ -989,17 +1018,21 @@ C }}}
 
 !> @brief  Fill the parameter arrays
 
-      SUBROUTINE PARAM_ARRAY_BLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
+      SUBROUTINE PARAM_ARRAY_BLN(LJREP,LJATT,A,BEADLETTER,BLNSSTRUCT,
      &   LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, 
      &   HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN, N)
 C {{{
 C DECLARATIONS {{{
       IMPLICIT NONE
+
       INTEGER N
       INTEGER NTYPE(N), J1, I, J, ICOUNT
-      DOUBLE PRECISION LJREP_BLN(N,N), LJATT_BLN(N,N), A_BLN(N), B_BLN(N), C_BLN(N), D_BLN(N),
+      DOUBLE PRECISION, DIMENSION(N,N) :: LJREP,LJATT
+      DOUBLE PRECISION, DIMENSION(N,4) :: A
+
      &                 LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, 
      &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN
+
       CHARACTER(LEN=1) BEADLETTER(N), BLNSSTRUCT(N)
 C }}}
 C AMINO ACID TYPES {{{
@@ -1102,7 +1135,6 @@ C }}}
         SUBROUTINE G46MERDIFF(QO, N, GRAD, ENERGY, GTEST)
 C {{{ 
 C declarations {{{
-        USE MODHESS
 
         IMPLICIT NONE
 
@@ -1123,40 +1155,21 @@ C    1  d_param(n),c_param(n)
 
         STEST=.FALSE.
 
-        call gparam_array(a_param,b_param,c_param,d_param,n)
-        call calc_int_coords(qo,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
-     1                            radii,ntype)
-        call calc_energy(qo,energy,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
-     1                            radii,ntype)
+        CALL GPARAM_ARRAY(A_PARAM,B_PARAM,C_PARAM,D_PARAM,N)
+        CALL CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+     1                            RADII,NTYPE)
+        CALL CALC_ENERGY(QO,ENERGY,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+     1                            RADII,NTYPE)
         IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
-        call calc_gradient(qo,grad,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
-     1                            radii,ntype)
-
-C commented section {{{
-C        DIF=1.0D-4
-C        DO J1=1,3*N
-C           TEMP1=QO(J1)
-C           QO(J1)=QO(J1)+DIF
-C           call calc_int_coords(qo,n)
-C           call calc_energy(qo,V1,n)
-C           QO(J1)=QO(J1)-2.0D0*DIF
-C           call calc_int_coords(qo,n)
-C           call calc_energy(qo,V2,n)
-C           tgrad(J1)=(V1-V2)/(2.0D0*DIF)
-C           QO(J1)=TEMP1
-C        ENDDO
-C        call calc_int_coords(qo,n)
-
-C       PRINT*,'Analytical/Numerical first derivatives:'
-C       WRITE(*,'(3G20.10)') (GRAD(J1)/TGRAD(J1),J1=1,3*N)
-C }}}
+        CALL CALC_GRADIENT(QO,GRAD,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+     1                            RADII,NTYPE)
 
         IF (.NOT.STEST) RETURN
-        call calc_dyn(qo,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
-     1                            radii,ntype)
+        CALL CALC_DYN(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+     1                            RADII,NTYPE)
 
-        return
-        end
+        RETURN
+        END
 C }}}
 C
 C Doxygen: gparam_array {{{
