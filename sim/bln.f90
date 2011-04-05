@@ -14,15 +14,7 @@
 !{{{
       USE COMMONS
 
-      IMPLICIT NONE
-
-      INTEGER,INTENT(IN) :: N
-      DOUBLE PRECISION QO(3*N), GRAD(3*N)
-      LOGICAL GRADT
-      DOUBLE PRECISION X(N), Y(N), Z(N), XR(N,N), YR(N,N), 
-     &                 ZR(N,N), DOT_PROD(N,3),
-     &                 X_PROD(N), BOND_ANGLE(N), TOR_ANGLE(N), RADII(N,N), 
-     &                 ENERGY, COSTOR(N), DFAC(N), SINBOND(N)
+include "blnvars.inc.f90"
 
 !
 ! Without these initialisations the NAG compiler fills in random numbers for
@@ -69,34 +61,11 @@
       SUBROUTINE CALC_INT_COORDS_BLN(N,QO,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII, 
      &                              COSTOR,SINBOND,A,DFAC)
 ! {{{
-! Declarations {{{
-      IMPLICIT NONE
-
-      ! subroutine parameters 
-      INTEGER N
-      DOUBLE PRECISION QO(3*N)
-      DOUBLE PRECISION, PARAMETER :: TWOPI=6.283185307179586477D0
-      ! R  => output vector of internal coordinates
-      DOUBLE PRECISION, DIMENSION(N,3), INTENT(OUT) :: R
-      ! DR => output vector of particle distances 
-      DOUBLE PRECISION, DIMENSION(N,N,3), INTENT(OUT) :: DR
-      DOUBLE PRECISION, DIMENSION(N) :: X_PROD, COSTOR
-      DOUBLE PRECISION, DIMENSION(N,4) :: A
-      DOUBLE PRECISION, DIMENSION(N) :: BOND_ANGLE, TOR_ANGLE, SINBOND
-      DOUBLE PRECISION DFAC
-      DOUBLE PRECISION, DIMENSION(N,N) ::  RADII
-      DOUBLE PRECISION DOT_PROD(N,3), COSTOR(N) 
-
-      ! local parameters 
-      INTEGER I,J,K
-      DOUBLE PRECISION COS_PHI, COS_THETA, DUMMY, DUMMY2
-
-! }}}
 
       DO I = 1, N
          J = (I-1)*3
          DO K=1,3
-	         R(I,1) = QO((I-1)*3+K)
+                R(I,1) = QO((I-1)*3+K)
          ENDDO
       ENDDO
 !
@@ -230,28 +199,9 @@ include "blnvars.inc.f90"
      &                            BOND_ANGLE,TOR_ANGLE,RADII,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
 ! {{{
 ! Declarations {{{
-      IMPLICIT NONE
-
-      ! subroutine parameters 
-
-      INTEGER N
-
-      DOUBLE PRECISION QO(3*N),FQ(3*N)
-      DOUBLE PRECISION DFAC, SINBOND
-      DOUBLE PRECISION COSTOR(N)
-      DOUBLE PRECISION RK_R, RK_THETA
-
-      DOUBLE PRECISION, DIMENSION(N) :: X,Y,Z
-      DOUBLE PRECISION, DIMENSION(N,N) :: DR,RADII
-      DOUBLE PRECISION DOT_PROD(N,3),X_PROD(N),BOND_ANGLE(N),TOR_ANGLE(N)
-
-      DOUBLE PRECISION LJREP(N,N), LJATT(N,N)
-      DOUBLE PRECISION, DIMENSION(N,4) :: A
-
+   
       ! local parameters 
-      DOUBLE PRECISION, PARAMETER :: THETA_0 = 1.8326D0
       DOUBLE PRECISION, DIMENSION(N,3) :: F, FNB, FB, FBA, FTA
-      INTEGER I, J
       DOUBLE PRECISION RAD7, RAD14, DF, FXX, FZZ, FYY, RVAR, DEN, RNUM, DEN1, A1, A2, DEN2
       DOUBLE PRECISION A3, COEF, COEF1, COEF2, COEF3, A4
 ! }}}
@@ -1001,15 +951,18 @@ include "blnvars.inc.f90"
      &   HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN, N)
 ! {{{
 ! DECLARATIONS {{{
-      IMPLICIT NONE
 
-      INTEGER N
-      INTEGER NTYPE(N), J1, I, J, ICOUNT
+include  "blnvars.inc.f90"
+
+      INTEGER J1, ICOUNT
+
       DOUBLE PRECISION, DIMENSION(N,N) :: LJREP,LJATT
       DOUBLE PRECISION, DIMENSION(N,4) :: A
 
-     &                 LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, 
-     &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN
+      DOUBLE PRECISION LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN
+      DOUBLE PRECISION HABLN, HBBLN, HCBLN, HDBLN
+      DOUBLE PRECISION EABLN, EBBLN, ECBLN, EDBLN
+      DOUBLE PRECISION TABLN, TBBLN, TCBLN, TDBLN
 
       CHARACTER(LEN=1) BEADLETTER(N), BLNSSTRUCT(N)
 ! }}}
@@ -1024,7 +977,7 @@ include "blnvars.inc.f90"
          ELSEIF (BEADLETTER(J1).EQ.'N') THEN
             NTYPE(J1)=3
          ELSE
-            PRINT '(A,A1)','ERROR IN PARAM_ARRAYBLN, UNRECOGNISED BEAD TYPE: ',BEADLETTER(J1)
+            PRINT '(A,A1)','ERROR IN PARAM_ARRAY_BLN, UNRECOGNISED BEAD TYPE: ',BEADLETTER(J1)
             STOP
          ENDIF
       ENDDO
@@ -1494,8 +1447,8 @@ include "blnvars.inc.f90"
 
 ! }}} 
 !> Calculate the energy
-        SUBROUTINE CALC_ENERGY(N,QO,ENERGY,PARAM,R,DR,DOT_PROD,X_PROD,
-     1                         BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+        SUBROUTINE CALC_ENERGY(N,QO,ENERGY,PARAM,R,& 
+                        DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 ! {{{
         IMPLICIT NONE
         INTEGER I,J,N
