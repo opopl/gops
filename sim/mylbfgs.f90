@@ -111,7 +111,7 @@
       DOUBLE PRECISION LCART(3*NATOMS),OLDQ(N),NEWQ(N),OLDGINT(N),GINT(N),XINT(N),XSAVE(N),SMINKCURRENTP
       DOUBLE PRECISION, ALLOCATABLE :: FRAMES(:,:), PE(:), MODGRAD(:)
       LOGICAL NOCOOR, FAILED, COREDONE
-      INTEGER ITER,POINT,BOUND,NPT,CP,INMC,IYCN,ISCN
+      INTEGER POINT,BOUND,NPT,CP,INMC,IYCN,ISCN
       INTEGER KD, NNZ
       COMMON /MYPOT/ POTEL
       COMMON /Q4C/ QSTART, QFINISH
@@ -123,10 +123,12 @@
       IF (.NOT.ALLOCATED(DIAG)) ALLOCATE(DIAG(N))       ! SAVE doesn't work otherwise for Sun
       IF (.NOT.ALLOCATED(W)) ALLOCATE(W(N*(2*M+1)+2*M)) ! SAVE doesn't work otherwise for Sun
 
-      IF (SIZE(W,1).NE.N*(2*M+1)+2*M) THEN ! mustn't call mylbfgs with changing number of variables!!!
-         WRITE(LOG_FH, '(A,I10,A,I10,A)') 'ERROR, dimension of W=',SIZE(W,1),' but N*(2*M+1)+2*M=',N*(2*M+1)+2*M,' in mylbfgs'
-         call exit(10)
+      ! mustn't call mylbfgs with changing number of variables {{{ 
+      IF (SIZE(W,1).NE.N*(2*M+1)+2*M) THEN 
+         WRITE(LOG_FH,102) 'ERROR, dimension of W=',SIZE(W,1),' but N*(2*M+1)+2*M=',N*(2*M+1)+2*M,' in mylbfgs'
+         CALL EXIT(10)
       ENDIF
+      }}}
 
       COREDONE=.FALSE.
       SMINKCHANGET=.FALSE.
@@ -143,21 +145,23 @@
 
       CALL POTENTIAL(XCOORDS,GRAD,ENERGY,.TRUE.,.FALSE.)
 
-         IF (EVAPREJECT) RETURN
+      IF (EVAPREJECT) RETURN
       POTEL=ENERGY
 
-      IF (DEBUG) WRITE(LOG_FH,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
+      IF (DEBUG) WRITE(LOG_FH,101) ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
+101   FORMAT(A,F20.10,G20.10,A,I6,A)
+102   FORMAT(A,I10,A,I10,A)
 
 C  Termination test. 
 C
 10    CALL FLUSH(LOG_FH)
       MFLAG=.FALSE.
       IF (RMS.LE.EPS) THEN
-                     MFLAG=.TRUE.
-         IF (EVAP) MFLAG=.FALSE. ! do not allow convergence if we happen to have a small RMS and EVAP is true'
+        MFLAG=.TRUE.
+        IF (EVAP) MFLAG=.FALSE. ! do not allow convergence if we happen to have a small RMS and EVAP is true'
          IF (MFLAG) THEN
             FIXIMAGE=.FALSE.
-            IF (DEBUG) WRITE(LOG_FH,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
+            IF (DEBUG) WRITE(LOG_FH,101) ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
             RETURN
          ENDIF
       ENDIF
@@ -169,6 +173,7 @@ C
       ENDIF
 
       IF (ITER.EQ.0) THEN
+         ! {{{
          POINT=0
          MFLAG=.FALSE.
          IF (DIAGCO) THEN
@@ -212,7 +217,9 @@ C
 C  Make the first guess for the step length cautious.
 C
          STP=MIN(1.0D0/GNORM,GNORM)
+         ! }}}
       ELSE 
+         ! {{{
          BOUND=ITER
          IF (ITER.GT.M) BOUND=M
          YS= DDOT(N,W(IYPT+NPT+1),1,W(ISPT+NPT+1),1)
@@ -281,6 +288,7 @@ C
             IF (CP.EQ.M) CP=0
          ENDDO
          STP=1.0D0  
+         ! }}}
       ENDIF
 C
 C  Store the new search direction
