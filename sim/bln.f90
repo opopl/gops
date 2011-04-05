@@ -40,22 +40,22 @@
       YR(1:N,1:N)=0.0D0
       ZR(1:N,1:N)=0.0D0
 
-      CALL CALC_INT_COORDS_BLN(N,QO,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,&
+      CALL CALC_INT_COORDS_BLN(N,QO,R,DR,DOT_PROD,X_PROD,&
                 BOND_ANGLE,TOR_ANGLE,RADII,&
                 COSTOR,SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
 
-      CALL CALC_ENERGY_BLN(N,QO,ENERGY,LJREP_BLN,LJATT_BLN,&
+      CALL CALC_ENERGY_BLN(N,QO,ENERGY,LJREP,LJATT,&
                 A_BLN,B_BLN,C_BLN,D_BLN,&
-                X,Y,Z,& 
-                XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,&
+                R,& 
+                DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,&
                 RK_R,RK_THETA,COSTOR)
 
       IF (.NOT.GRADT) RETURN
  
-      CALL CALC_GRADIENT_BLN(N,QO,GRAD,LJREP_BLN,LJATT_BLN,&
+      CALL CALC_GRADIENT_BLN(N,QO,GRAD,LJREP,LJATT,&
          A_BLN,B_BLN,C_BLN,D_BLN,&
-         X,Y,Z,&
-         XR,YR,ZR,&
+         R,&
+         DR,&
          DOT_PROD,X_PROD,&
          BOND_ANGLE,TOR_ANGLE,RADII,&
          RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
@@ -66,8 +66,8 @@
 
 !> @brief Calculate the internal coordinates of a BLN chain
 
-      SUBROUTINE CALC_INT_COORDS_BLN(N,QO,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII, 
-     &                              COSTOR,SINBOND,A_BLN,B_BLN,C_BLN,D_BLN,DFAC)
+      SUBROUTINE CALC_INT_COORDS_BLN(N,QO,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII, 
+     &                              COSTOR,SINBOND,A,DFAC)
 ! {{{
 ! Declarations {{{
       IMPLICIT NONE
@@ -184,32 +184,10 @@
 
 !> @brief Calculate the energy of a BLN chain
 
-      SUBROUTINE CALC_ENERGY_BLN(N,QO,ENERGY,   &
-                LJREP_BLN,LJATT_BLN,            &
-                A,        &
-                BOND_ANGLE,TOR_ANGLE,RADII,RK_R,RK_THETA,COSTOR)
+      SUBROUTINE CALC_ENERGY_BLN(N,QO,ENERGY,LJREP,LJATT,            &
+                A,BOND_ANGLE,TOR_ANGLE,RADII,RK_R,RK_THETA,COSTOR)
 ! {{{
-      IMPLICIT NONE
-
-      ! subroutine parameters 
-      INTEGER N
-      
-      DOUBLE PRECISION,INTENT(IN):: QO(3*N)
-      DOUBLE PRECISION,INTENT(OUT):: ENERGY
-      DOUBLE PRECISION,DIMENSION(N) :: COSTOR,BOND_ANGLE,TOR_ANGLE
-      ! A => array A, B, C, D coefficients for the generic BLN model
-      DOUBLE PRECISION, DIMENSION(N,4) :: A
-      DOUBLE PRECISION, DIMENSION(N,N) :: RADII
-      ! LJREP => repulsion
-      ! LJATT => attraction
-      DOUBLE PRECISION, DIMENSION(N,N) :: LJREP,LJATT
-      DOUBLE PRECISION RK_R, RK_THETA
-
-      ! local parameters 
-      !         i,j => particle indices
-      INTEGER I, J
-      DOUBLE PRECISION E_NBOND, E_BOND, E_BANGLE, E_TANGLE, RAD6
-      DOUBLE PRECISION, PARAMETER :: THETA_0 = 1.8326D0, PI4=0.7853981633974483096D0 ! 1.8326 RADIANS IS 105 DEGREES
+include "blnvars.inc.f90"
 
       E_NBOND=0.0D0
       E_BOND=0.0D0
@@ -248,7 +226,7 @@
 !> @brief Calculate the gradients
 
       SUBROUTINE CALC_GRADIENT_BLN(N,QO,FQ,LJREP,LJATT,A,
-     &                            X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+     &                            R,DR,DOT_PROD,X_PROD,
      &                            BOND_ANGLE,TOR_ANGLE,RADII,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
 ! {{{
 ! Declarations {{{
@@ -264,7 +242,7 @@
       DOUBLE PRECISION RK_R, RK_THETA
 
       DOUBLE PRECISION, DIMENSION(N) :: X,Y,Z
-      DOUBLE PRECISION, DIMENSION(N,N) :: XR,YR,ZR,RADII
+      DOUBLE PRECISION, DIMENSION(N,N) :: DR,RADII
       DOUBLE PRECISION DOT_PROD(N,3),X_PROD(N),BOND_ANGLE(N),TOR_ANGLE(N)
 
       DOUBLE PRECISION LJREP(N,N), LJATT(N,N)
@@ -312,7 +290,7 @@
             rad7 = radii(i,j)*radii(i,j)*radii(i,j)*radii(i,j)*radii(i,j)*radii(i,j)*radii(i,j)   
             rad14 = rad7*rad7 
 
-            df = -24.0*((2.0*LJREP_BLN(i,j)/rad14) + (LJATT_BLN(i,j)/(rad7*radii(i,j))))
+            df = -24.0*((2.0*LJREP(i,j)/rad14) + (LJATT(i,j)/(rad7*radii(i,j))))
 
             fxx = df*xr(i,j) 
             fyy = df*yr(i,j) 
@@ -1093,20 +1071,20 @@
       DO I = 1, N-1
          DO J = I+1, N
             IF (NTYPE(I) .EQ. 3 .OR. NTYPE(J) .EQ. 3) THEN
-               LJREP_BLN(I,J) = LJREPNN
-               LJATT_BLN(I,J) = LJATTNN
-               LJREP_BLN(J,I) = LJREPNN
-               LJATT_BLN(J,I) = LJATTNN
+               LJREP(I,J) = LJREPNN
+               LJATT(I,J) = LJATTNN
+               LJREP(J,I) = LJREPNN
+               LJATT(J,I) = LJATTNN
             ELSE IF (NTYPE(I) .EQ. 1 .AND. NTYPE(J) .EQ. 1) THEN
-               LJREP_BLN(I,J) = LJREPBB
-               LJATT_BLN(I,J) = LJATTBB
-               LJREP_BLN(J,I) = LJREPBB
-               LJATT_BLN(J,I) = LJATTBB
+               LJREP(I,J) = LJREPBB
+               LJATT(I,J) = LJATTBB
+               LJREP(J,I) = LJREPBB
+               LJATT(J,I) = LJATTBB
             ELSE
-               LJREP_BLN(I,J) = LJREPLL
-               LJATT_BLN(I,J) = LJATTLL
-               LJREP_BLN(J,I) = LJREPLL
-               LJATT_BLN(J,I) = LJATTLL
+               LJREP(I,J) = LJREPLL
+               LJATT(I,J) = LJATTLL
+               LJREP(J,I) = LJREPLL
+               LJATT(J,I) = LJATTLL
             ENDIF
          ENDDO
       ENDDO
@@ -1132,41 +1110,23 @@
 !> \param ENERGY     energy
 ! }}}
 !------------------------------------------------------------
-        SUBROUTINE G46MERDIFF(QO, N, GRAD, ENERGY, GTEST)
+        SUBROUTINE G46MERDIFF(N,QO,GRAD,ENERGY,GTEST)
 ! {{{ 
-! declarations {{{
 
-        IMPLICIT NONE
+include "blnvars.inc.f90"
 
         LOGICAL GTEST, STEST
-        INTEGER NTYPE(46), N
-        DOUBLE PRECISION QO(3*N), GRAD(3*N), ENERGY
-        DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N),D_PARAM(N),
-     1                   C_PARAM(N), RK_THETA, RK_R, EPSILON, SIGMA, THETA_0, DELTA, RMASS
-        PARAMETER (RMASS = 40.0, EPSILON = 0.0100570)
-        PARAMETER (SIGMA=3.4, DELTA=1.0D-6, THETA_0 = 1.8326)
-        PARAMETER (RK_R = 20.0*0.0100570, RK_THETA = 20.0*0.0100570)
-        DOUBLE PRECISION X(N), Y(N), Z(N), XR(N,N), YR(N,N), ZR(N,N),
-     2                  DOT_PROD(N,3), X_PROD(N), BOND_ANGLE(N), TOR_ANGLE(N), RADII(N,N)
-! }}}
-!       common/work/a_param(n,n),
-!    1  b_param(n,n),ntype(46),
-!    1  d_param(n),c_param(n)
 
         STEST=.FALSE.
 
-        CALL GPARAM_ARRAY(PARAM,N)
-        CALL CALC_INT_COORDS(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
-     1                            RADII,NTYPE)
-        CALL CALC_ENERGY(QO,ENERGY,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
-     1                            RADII,NTYPE)
+        CALL GPARAM_ARRAY(N,AB,CD)
+        CALL CALC_INT_COORDS(N,QO,PARAM,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+        CALL CALC_ENERGY(N,QO,ENERGY,PARAM,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
         IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
-        CALL CALC_GRADIENT(QO,GRAD,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
-     1                            RADII,NTYPE)
+        CALL CALC_GRADIENT(N,QO,GRAD,PARAM,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 
         IF (.NOT.STEST) RETURN
-        CALL CALC_DYN(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
-     1                            RADII,NTYPE)
+        CALL CALC_DYN(N,QO,PARAM,R,DR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 
         RETURN
         END
@@ -1180,7 +1140,7 @@
 !> \param c_param \param d_param - dihedral angle potential
 !>
 !}}}
-        SUBROUTINE GPARAM_ARRAY(PARAM,N)
+        SUBROUTINE GPARAM_ARRAY(N,PARAM)
 ! {{{
 ! Declarations {{{
         IMPLICIT NONE
@@ -1418,48 +1378,30 @@
 ! }}}
 !------------------------------------------------------------
 
-        SUBROUTINE P46MERDIFF(QO, N, GRAD, ENERGY, GTEST)
+        SUBROUTINE P46MERDIFF(N,QO,GRAD,ENERGY,GTEST)
 ! {{{
-        IMPLICIT NONE
-        INTEGER NTYPE(46),N
-        DOUBLE PRECISION RMASS, EPSILON,SIGMA,DELTA,THETA_0,RK_R,RK_THETA,QO(3*N),GRAD(3*N),ENERGY
-        PARAMETER (RMASS = 40.0, EPSILON = 0.0100570)
-        PARAMETER (SIGMA=3.4, DELTA=1.0D-6, THETA_0 = 1.8326)
-        PARAMETER (RK_R = 20.0*0.0100570, RK_THETA = 20.0*0.0100570)
-        LOGICAL GTEST, STEST
-        DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N), D_PARAM(N),C_PARAM(N),
-     1                  X(N), Y(N), Z(N), XR(N,N), YR(N,N), ZR(N,N),
-     2                  DOT_PROD(N,3), X_PROD(N), BOND_ANGLE(N), TOR_ANGLE(N), RADII(N,N)
 
-!       common/work/a_param(n,n),
-!    1  b_param(n,n),ntype(46),
-!    2  d_param(n),c_param(n),
-!    3  x(n), y(n), z(n), 
-!    4  xr(n,n), yr(n,n), zr(n,n), 
-!    5  dot_prod(n,3), x_prod(n), 
-!    6  bond_angle(n), stest, tor_angle(n), radii(n,n)
+include "blnvars.inc.f90"
+
+        LOGICAL GTEST, STEST
 
         STEST=.FALSE.
 
-        CALL PARAM_ARRAY(PARAM,N)
-        CALL CALC_INT_COORDS(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
-     1                       BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
-        CALL CALC_ENERGY(QO,ENERGY,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
-     1                   BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+        CALL PARAM_ARRAY(N,AB,CD)
+        CALL CALC_INT_COORDS(N,QO,PARAM,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+        CALL CALC_ENERGY(N,QO,ENERGY,PARAM,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
         IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
-        CALL CALC_GRADIENT(QO,GRAD,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
-     1                     BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+        CALL CALC_GRADIENT(N,QO,GRAD,PARAM,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 
         IF (.NOT.STEST) RETURN
-        CALL CALC_DYN(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
-     1                BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+        CALL CALC_DYN(N,QO,PARAM,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 
         RETURN
         END
 ! }}}
 !> Calculate the internal coordinates
 
-        SUBROUTINE CALC_INT_COORDS(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+        SUBROUTINE CALC_INT_COORDS(N,QO,PARAM,R,DR,DOT_PROD,X_PROD,
      1                             BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 ! {{{
         IMPLICIT NONE
@@ -1552,7 +1494,7 @@
 
 ! }}} 
 !> Calculate the energy
-        SUBROUTINE CALC_ENERGY(QO,ENERGY,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+        SUBROUTINE CALC_ENERGY(N,QO,ENERGY,PARAM,R,DR,DOT_PROD,X_PROD,
      1                         BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 ! {{{
         IMPLICIT NONE
@@ -2434,42 +2376,27 @@
 ! }}}
 !> Calculate the second derivative matrix (two-sided numerical approach)
 
-        SUBROUTINE CALC_DYN(N,QO,PARAM,R,DR,DOT_PROD,X_PROD, 
+        SUBROUTINE CALC_DYN(N,QO,AB,CD,R,DR,DOT_PROD,X_PROD, 
      1                      BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 ! {{{
-! Declarations {{{
 
-        IMPLICIT NONE
+include "blnvars.inc.f90"
 
-        INTEGER N
-
-        DOUBLE PRECISION RMASS, EPSILON, SIGMA, DELTA, THETA_0, RK_R, RK_THETA
-        PARAMETER (RMASS = 40.0, EPSILON = 0.0100570)
+        DOUBLE PRECISION RMASS, EPSILON, SIGMA, DELTA, THETA_0
         PARAMETER (SIGMA=3.4 ,DELTA=1.0D-4, THETA_0 = 1.8326)
         PARAMETER (RK_R = 20.0*0.0100570, RK_THETA = 20.0*0.0100570)
-        INTEGER NTYPE(46), N, I, J
-        DOUBLE PRECISION QO(3*N), FQ1(3*N), FQ2(3*N)
-        DOUBLE PRECISION, DIMENSION(N,4) PARAM
-        DOUBLE PRECISION, DIMENSION(N,3) :: R
-        DOUBLE PRECISION, DIMENSION(N,N,3) :: DR
-        DOUBLE PRECISION, DIMENSION(N,N) :: RADII
-        DOUBLE PRECISION, DIMENSION(N) :: X_PROD, BOND_ANGLE, TOR_ANGLE
-        DOUBLE PRECISION, DIMENSION(N,3) :: DOT_PROD 
-! }}}
+        DOUBLE PRECISION FQ1(3*N), FQ2(3*N)
+
 ! Fill in the Hessian matrix
 ! {{{
 
         DO J = 1, 3*N
             QO(J) = QO(J) + DELTA
-            CALL CALC_INT_COORDS(N,QO,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
-         1                       BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
-            CALL CALC_GRADIENT(N,QO,FQ2,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
-         1                     BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+            CALL CALC_INT_COORDS(N,QO,AB,CD,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+            CALL CALC_GRADIENT(N,QO,FQ2,AB,CD,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
             QO(J) = QO(J) - 2.0*DELTA
-            CALL CALC_INT_COORDS(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
-         1                       BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
-            CALL CALC_GRADIENT(QO,FQ1,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
-         1                     BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+            CALL CALC_INT_COORDS(N,QO,AB,CD,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+            CALL CALC_GRADIENT(N,QO,FQ1,AB,CD,R,DR,DOT_PROD,X_PROD,BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
             QO(J) = QO(J) + DELTA
     
             DO I = J, 3*N
@@ -2484,14 +2411,14 @@
 ! }}}
 !> Fill the parameter arrays
 
-        SUBROUTINE PARAM_ARRAY(PARAM,N)
+        SUBROUTINE PARAM_ARRAY(N,AB,CD)
 ! {{{
 ! Declarations {{{
-        implicit NONE
-        INTEGER ntype(46), N, ICOUNT, J, I
-        DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N), EPSILON
-        DOUBLE PRECISION C_PARAM(N), D_PARAM(N)
-        parameter (epsilon = 0.0100570D0)
+        IMPLICIT NONE
+
+        INTEGER NTYPE(46), N, ICOUNT, J, I
+        DOUBLE PRECISION EPSILON
+        PARAMETER (EPSILON = 0.0100570D0)
 ! }}}
 ! Firstly, specify amino acid types by filling in array ntype(:)
 ! 1 -> Hydrophobic (B)
