@@ -11,7 +11,7 @@
 !
 
       SUBROUTINE BLN(N,QO,GRAD,ENERGY,GRADT)
-C{{{
+!{{{
       USE COMMONS
 
       IMPLICIT NONE
@@ -62,7 +62,7 @@ C{{{
 
       RETURN
       END
-C }}}
+! }}}
 
 !> @brief Calculate the internal coordinates of a BLN chain
 
@@ -109,7 +109,7 @@ C }}}
             RADII(J,I) = RADII(I,J)
          ENDDO
       ENDDO
-C }}}
+! }}}
 
 ! Dot products between bond vectors {{{
 
@@ -180,7 +180,7 @@ C }}}
 
       RETURN
       END
-C }}}
+! }}}
 
 !> @brief Calculate the energy of a BLN chain
 
@@ -188,7 +188,7 @@ C }}}
                 LJREP_BLN,LJATT_BLN,            &
                 A,        &
                 BOND_ANGLE,TOR_ANGLE,RADII,RK_R,RK_THETA,COSTOR)
-C {{{
+! {{{
       IMPLICIT NONE
 
       ! subroutine parameters 
@@ -243,15 +243,15 @@ C {{{
 
       RETURN
       END
-C }}}
+! }}}
 
 !> @brief Calculate the gradients
 
       SUBROUTINE CALC_GRADIENT_BLN(N,QO,FQ,LJREP,LJATT,A,
      &                            X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
      &                            BOND_ANGLE,TOR_ANGLE,RADII,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
-C {{{
-C Declarations {{{
+! {{{
+! Declarations {{{
       IMPLICIT NONE
 
       ! subroutine parameters 
@@ -276,10 +276,10 @@ C Declarations {{{
       INTEGER I, J
       DOUBLE PRECISION RAD7, RAD14, DF, FXX, FZZ, FYY, RVAR, DEN, RNUM, DEN1, A1, A2, DEN2
       DOUBLE PRECISION A3, COEF, COEF1, COEF2, COEF3, A4
-C }}}
-C
-C Gradients of potential
-C {{{
+! }}}
+!
+! Gradients of potential
+! {{{
       do i = 1,n
 
          fnb_x(i) = 0.0  
@@ -303,9 +303,9 @@ C {{{
          fz(i)= 0.0 
 
       enddo
-C }}}
-C ..... Non-bonded interaction forces ..... 
-C {{{
+! }}}
+! ..... Non-bonded interaction forces ..... 
+! {{{
       do i = 1, n-2
          do j = i+2, n
 
@@ -328,9 +328,9 @@ C {{{
 
          enddo
       enddo
-C }}}
-C ... Bond interaction forces ... 
-C {{{
+! }}}
+! ... Bond interaction forces ... 
+! {{{
       do i = 1, n-1
 
          rvar = 1.0D0/radii(i,i+1) 
@@ -349,10 +349,10 @@ C {{{
          fb_z(i+1) = -fzz + fb_z(i+1)
 
       enddo
-C }}}
-C bond angle forces  particle 1
-C particles 1,2,n-1, and n done outside of the loop
-C {{{
+! }}}
+! bond angle forces  particle 1
+! particles 1,2,n-1, and n done outside of the loop
+! {{{
 !     i = 1
       den = sinbond(1+1)
       rnum = rk_theta*(bond_angle(1+1) - theta_0)
@@ -363,9 +363,9 @@ C {{{
 
       fba_z(1) = -rnum*((dot_prod(1,2)/dot_prod(1,1))*zr(1,1+1) - zr(1+1,1+2))/den
 
-C }}}
-C particle 2
-C {{{
+! }}}
+! particle 2
+! {{{
 !     i = 2
       den = sinbond(2)
       den1 = sinbond(3)
@@ -394,9 +394,9 @@ C {{{
 
       fba_z(2) = a1 + a2 
 
-C }}}
-C particles 3 thru n-2 
-C {{{
+! }}}
+! particles 3 thru n-2 
+! {{{
       do i = 3, n-2
 
          den = sinbond(i)
@@ -438,9 +438,9 @@ C {{{
          fba_z(i) = a1 + a2 + a3 
 
       enddo
-C }}}
-C particle n-1 
-C {{{
+! }}}
+! particle n-1 
+! {{{
 !     i = n-1
       den = sinbond(n-1)
       den1 = sinbond(n-1-1)
@@ -471,9 +471,9 @@ C {{{
      1      dot_prod(n-1-1,1))*zr(n-1-1,n-1) - zr(n-1-2,n-1-1))/den1
 
       fba_z(n-1) = a1 + a2
-C }}}
-C particle n
-C {{{
+! }}}
+! particle n
+! {{{
 !     i = n
       den = sinbond(n-1)
 
@@ -489,11 +489,11 @@ C {{{
      1      ((dot_prod(n-2,2)/dot_prod(n-1,1))*zr(n-1,n) 
      1      - zr(n-2,n-1))/den
 
-C }}}
-C Torsional angle forces
-C particles 1, 2, 3, n-2, n-1, and n are done outside of the loop
-C particle 1
-C {{{
+! }}}
+! Torsional angle forces
+! particles 1, 2, 3, n-2, n-1, and n are done outside of the loop
+! particle 1
+! {{{
 !     i = 1
       coef =DFAC(1+1)
 
@@ -515,9 +515,9 @@ C {{{
      1      dot_prod(1,3)*dot_prod(1+1,1))*(-dot_prod(1+1,1)*zr(1,1+1) +
      1      dot_prod(1,2)*zr(1+1,1+2))) 
 
-C }}}
-C particle 2
-C {{{
+! }}}
+! particle 2
+! {{{
 !     i = 2
       coef =DFAC(2+1)
 
@@ -580,9 +580,9 @@ C {{{
 
       fta_z(2) = a1 + a2 
 !     WRITE(MYUNIT,'(A,I6,4G15.5)') 'z i,a1,a2,coef,coef1=',2,a1,a2,coef,coef1
-C }}}
-C particle 3
-C {{{
+! }}}
+! particle 3
+! {{{
 !     i = 3
       coef=DFAC(3+1)
 
@@ -679,9 +679,9 @@ C {{{
      1      dot_prod(3-1,2)*zr(3-1,3))) 
 
       fta_z(3) = a1 + a2 + a3 
-C }}}
-C particles 4 to n-3
-C {{{
+! }}}
+! particles 4 to n-3
+! {{{
       do i = 4, n-3
 
          coef=DFAC(i+1)
@@ -801,9 +801,9 @@ C {{{
          fta_z(i) = a1 + a2 + a3 + a4 
 
       enddo
-C }}}
-C particle n-2
-C {{{
+! }}}
+! particle n-2
+! {{{
 !     i = n-2
       coef1=DFAC(n-2)
 
@@ -901,9 +901,9 @@ C {{{
      1      dot_prod(n-2-2,2)*zr(n-2-2,n-2-1))) 
 
       fta_z(n-2) = a1 + a2 + a3 
-C }}}
-C particle n-1
-C {{{
+! }}}
+! particle n-1
+! {{{
 !     i = n-1
       coef2=DFAC(n-1-1)
 
@@ -968,9 +968,9 @@ C {{{
      1      dot_prod(n-1-2,2)*zr(n-1-2,n-1-1))) 
 
       fta_z(n-1) = a1 + a2 
-C }}} 
-C particle n
-C {{{
+! }}} 
+! particle n
+! {{{
 !     i = n
       coef3=DFAC(n-2)
 
@@ -991,9 +991,9 @@ C {{{
      1      (1.0/x_prod(n-2))*(dot_prod(n-2,2)*dot_prod(n-3,2) -
      1      dot_prod(n-3,3)*dot_prod(n-2,1))*(dot_prod(n-2,1)*zr(n-1,n) -
      1      dot_prod(n-2,2)*zr(n-2,n-1))) 
-C }}}
-C Total up the gradients
-C {{{
+! }}}
+! Total up the gradients
+! {{{
       do i = 1, n
 !        IF (I.EQ.2) THEN
 !           WRITE(MYUNIT,'(A,I6,4F15.5)') 'i,fnbx,fbx,fbax,ftax=',i,fnb_x(i),fb_x(i),fba_x(i),fta_x(i)
@@ -1011,18 +1011,18 @@ C {{{
          fq(j+2) = -fy(i)
          fq(j+3) = -fz(i)
       enddo
-C }}}
+! }}}
       return
       end
-C }}}
+! }}}
 
 !> @brief  Fill the parameter arrays
 
       SUBROUTINE PARAM_ARRAY_BLN(LJREP,LJATT,A,BEADLETTER,BLNSSTRUCT,
      &   LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, 
      &   HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN, N)
-C {{{
-C DECLARATIONS {{{
+! {{{
+! DECLARATIONS {{{
       IMPLICIT NONE
 
       INTEGER N
@@ -1034,10 +1034,10 @@ C DECLARATIONS {{{
      &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN
 
       CHARACTER(LEN=1) BEADLETTER(N), BLNSSTRUCT(N)
-C }}}
-C AMINO ACID TYPES {{{
-C B=1 L=2 N=3
-C
+! }}}
+! AMINO ACID TYPES {{{
+! B=1 L=2 N=3
+!
       DO J1=1,N
          IF (BEADLETTER(J1).EQ.'B') THEN
             NTYPE(J1)=1
@@ -1051,15 +1051,15 @@ C
          ENDIF
       ENDDO
 
-C }}}
+! }}}
 
-C PARAMETERS FOR THE DIHEDRAL ANGLE POTENTIAL 
-C THE END BONDS HAVE NO DIHEDRAL TERM, SO THE TOTAL NUMBER OF TERMS
-C IS N-3 (E.G. 4 ATOMS, 1 DIHEDRAL). NON-ZERO TERMS FOR
-C 2 TO 3, 3 TO 4, 4 TO 5, ... , N-3 TO N-2, N-2 TO N-1. THE
-C H, E AND T PARAMETERS ARE DEFINED FOR THE FIRST BEAD OF EACH EDGE,
-C I.E. FOR 2, 3, 4, ..., N-2.
-C {{{
+! PARAMETERS FOR THE DIHEDRAL ANGLE POTENTIAL 
+! THE END BONDS HAVE NO DIHEDRAL TERM, SO THE TOTAL NUMBER OF TERMS
+! IS N-3 (E.G. 4 ATOMS, 1 DIHEDRAL). NON-ZERO TERMS FOR
+! 2 TO 3, 3 TO 4, 4 TO 5, ... , N-3 TO N-2, N-2 TO N-1. THE
+! H, E AND T PARAMETERS ARE DEFINED FOR THE FIRST BEAD OF EACH EDGE,
+! I.E. FOR 2, 3, 4, ..., N-2.
+! {{{
 
       A_BLN(1:N)=0.0D0
       B_BLN(1:N)=0.0D0
@@ -1085,10 +1085,10 @@ C {{{
             PRINT '(A,A1)','ERROR IN PARAM_ARRAYBLN, UNRECOGNISED SS TYPE: ',BLNSSTRUCT(J1)
             STOP
          ENDIF
-C        PRINT '(A,I6,A,A1,A,4F12.4)','I+1=',I+1,' SYMBOL=',BLNSSTRUCT(I),' A,B,C,D=',A_BLN(I+1),B_BLN(I+1),C_BLN(I+1),D_BLN(I+1)
+!        PRINT '(A,I6,A,A1,A,4F12.4)','I+1=',I+1,' SYMBOL=',BLNSSTRUCT(I),' A,B,C,D=',A_BLN(I+1),B_BLN(I+1),C_BLN(I+1),D_BLN(I+1)
       ENDDO
-C }}}
-C  PARAMETERS FOR THE L-J INTERACTION BETWEEN NON-BONDED PARTICLES {{{
+! }}}
+!  PARAMETERS FOR THE L-J INTERACTION BETWEEN NON-BONDED PARTICLES {{{
 
       DO I = 1, N-1
          DO J = I+1, N
@@ -1110,11 +1110,11 @@ C  PARAMETERS FOR THE L-J INTERACTION BETWEEN NON-BONDED PARTICLES {{{
             ENDIF
          ENDDO
       ENDDO
-C }}}
+! }}}
 
       RETURN
       END
-C }}}
+! }}}
 !------------------------------------------------------------
 ! Doxygen: G46MERDIFF {{{
 !
@@ -1133,8 +1133,8 @@ C }}}
 ! }}}
 !------------------------------------------------------------
         SUBROUTINE G46MERDIFF(QO, N, GRAD, ENERGY, GTEST)
-C {{{ 
-C declarations {{{
+! {{{ 
+! declarations {{{
 
         IMPLICIT NONE
 
@@ -1148,49 +1148,49 @@ C declarations {{{
         PARAMETER (RK_R = 20.0*0.0100570, RK_THETA = 20.0*0.0100570)
         DOUBLE PRECISION X(N), Y(N), Z(N), XR(N,N), YR(N,N), ZR(N,N),
      2                  DOT_PROD(N,3), X_PROD(N), BOND_ANGLE(N), TOR_ANGLE(N), RADII(N,N)
-C }}}
-C       common/work/a_param(n,n),
-C    1  b_param(n,n),ntype(46),
-C    1  d_param(n),c_param(n)
+! }}}
+!       common/work/a_param(n,n),
+!    1  b_param(n,n),ntype(46),
+!    1  d_param(n),c_param(n)
 
         STEST=.FALSE.
 
-        CALL GPARAM_ARRAY(A_PARAM,B_PARAM,C_PARAM,D_PARAM,N)
-        CALL CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+        CALL GPARAM_ARRAY(PARAM,N)
+        CALL CALC_INT_COORDS(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
      1                            RADII,NTYPE)
-        CALL CALC_ENERGY(QO,ENERGY,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+        CALL CALC_ENERGY(QO,ENERGY,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
      1                            RADII,NTYPE)
         IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
-        CALL CALC_GRADIENT(QO,GRAD,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+        CALL CALC_GRADIENT(QO,GRAD,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
      1                            RADII,NTYPE)
 
         IF (.NOT.STEST) RETURN
-        CALL CALC_DYN(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
+        CALL CALC_DYN(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE,
      1                            RADII,NTYPE)
 
         RETURN
         END
-C }}}
-C
-C Doxygen: gparam_array {{{
-C>
-C> \brief Fill the parameter arrays which specify interaction potentials
-C> \param N INTEGER  - number of particles
-C> \param a_param \param b_param - LJ interaction between non-bonded particles 
-C> \param c_param \param d_param - dihedral angle potential
-C>
-C}}}
-        SUBROUTINE GPARAM_ARRAY(A_PARAM,B_PARAM,C_PARAM,D_PARAM,N)
-C {{{
-C Declarations {{{
+! }}}
+!
+! Doxygen: gparam_array {{{
+!>
+!> \brief Fill the parameter arrays which specify interaction potentials
+!> \param N INTEGER  - number of particles
+!> \param a_param \param b_param - LJ interaction between non-bonded particles 
+!> \param c_param \param d_param - dihedral angle potential
+!>
+!}}}
+        SUBROUTINE GPARAM_ARRAY(PARAM,N)
+! {{{
+! Declarations {{{
         IMPLICIT NONE
         LOGICAL CONNECT(46,46)
         INTEGER J, ICOUNT, I, J2, J1, N
         DOUBLE PRECISION NTYPE(46), A_PARAM(N,N), B_PARAM(N,N)
         DOUBLE PRECISION C_PARAM(N), D_PARAM(N), EPSILON
         PARAMETER (EPSILON = 0.0100570)
-C }}}
-C Specify amino acid types by filling in the array ntype(:) {{{
+! }}}
+! Specify amino acid types by filling in the array ntype(:) {{{
 
         ntype(1) = 1
         ntype(2) = 1
@@ -1239,9 +1239,9 @@ C Specify amino acid types by filling in the array ntype(:) {{{
         ntype(45) = 1
         ntype(46) = 2
      
-C }}}
-C Go-like model connectivities: fill in array CONNECT(:,:) {{{
-C
+! }}}
+! Go-like model connectivities: fill in array CONNECT(:,:) {{{
+!
         DO J1=1,46
            DO J2=J1,46
               CONNECT(J2,J1)=.FALSE.
@@ -1342,8 +1342,8 @@ C
         CONNECT(30, 39)=.TRUE.
         CONNECT(32, 37)=.TRUE.
 
-C }}}
-C Parameters for the dihedral angle potential: fill in arrays c_param(:,:), d_param(:,:) {{{
+! }}}
+! Parameters for the dihedral angle potential: fill in arrays c_param(:,:), d_param(:,:) {{{
 
         do i = 1, n-3
         icount = 0
@@ -1365,10 +1365,10 @@ C Parameters for the dihedral angle potential: fill in arrays c_param(:,:), d_pa
         icount = 0
 
         enddo
-C }}}
-C Parameters for the L-J interaction between non-bonded particles:
-C arrays a_param(:,:), b_param(:,:)
-C {{{
+! }}}
+! Parameters for the L-J interaction between non-bonded particles:
+! arrays a_param(:,:), b_param(:,:)
+! {{{
 
         do i = 1, n-1
            do j = i+1, n
@@ -1397,10 +1397,10 @@ C {{{
    
            enddo
         enddo
-C }}}
+! }}}
         return
         end
-C }}}
+! }}}
 !------------------------------------------------------------
 ! Doxygen - P46MERDIFF {{{
 !
@@ -1419,7 +1419,7 @@ C }}}
 !------------------------------------------------------------
 
         SUBROUTINE P46MERDIFF(QO, N, GRAD, ENERGY, GTEST)
-C {{{
+! {{{
         IMPLICIT NONE
         INTEGER NTYPE(46),N
         DOUBLE PRECISION RMASS, EPSILON,SIGMA,DELTA,THETA_0,RK_R,RK_THETA,QO(3*N),GRAD(3*N),ENERGY
@@ -1431,37 +1431,37 @@ C {{{
      1                  X(N), Y(N), Z(N), XR(N,N), YR(N,N), ZR(N,N),
      2                  DOT_PROD(N,3), X_PROD(N), BOND_ANGLE(N), TOR_ANGLE(N), RADII(N,N)
 
-C       common/work/a_param(n,n),
-C    1  b_param(n,n),ntype(46),
-C    2  d_param(n),c_param(n),
-C    3  x(n), y(n), z(n), 
-C    4  xr(n,n), yr(n,n), zr(n,n), 
-C    5  dot_prod(n,3), x_prod(n), 
-C    6  bond_angle(n), stest, tor_angle(n), radii(n,n)
+!       common/work/a_param(n,n),
+!    1  b_param(n,n),ntype(46),
+!    2  d_param(n),c_param(n),
+!    3  x(n), y(n), z(n), 
+!    4  xr(n,n), yr(n,n), zr(n,n), 
+!    5  dot_prod(n,3), x_prod(n), 
+!    6  bond_angle(n), stest, tor_angle(n), radii(n,n)
 
         STEST=.FALSE.
 
-        CALL PARAM_ARRAY(A_PARAM,B_PARAM,C_PARAM,D_PARAM,N)
-        CALL CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+        CALL PARAM_ARRAY(PARAM,N)
+        CALL CALC_INT_COORDS(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
      1                       BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
-        CALL CALC_ENERGY(QO,ENERGY,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+        CALL CALC_ENERGY(QO,ENERGY,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
      1                   BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
         IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
-        CALL CALC_GRADIENT(QO,GRAD,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+        CALL CALC_GRADIENT(QO,GRAD,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
      1                     BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 
         IF (.NOT.STEST) RETURN
-        CALL CALC_DYN(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+        CALL CALC_DYN(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
      1                BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
 
         RETURN
         END
-C }}}
-C> Calculate the internal coordinates
+! }}}
+!> Calculate the internal coordinates
 
-        SUBROUTINE CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+        SUBROUTINE CALC_INT_COORDS(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
      1                             BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
-C {{{
+! {{{
         IMPLICIT NONE
         INTEGER ntype(46),I,J,N
         DOUBLE PRECISION QO(3*N)
@@ -1470,13 +1470,13 @@ C {{{
      2       dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n),
      3       COS_THETA, COS_PHI
 
-C       common/work/a_param(n,n),
-C    1  b_param(n,n),ntype(46),
-C    2  d_param(n),c_param(n),
-C    3  x(n), y(n), z(n),
-C    4  xr(n,n), yr(n,n), zr(n,n),
-C    5  dot_prod(n,3), x_prod(n),
-C    6  bond_angle(n), tor_angle(n), radii(n,n)
+!       common/work/a_param(n,n),
+!    1  b_param(n,n),ntype(46),
+!    2  d_param(n),c_param(n),
+!    3  x(n), y(n), z(n),
+!    4  xr(n,n), yr(n,n), zr(n,n),
+!    5  dot_prod(n,3), x_prod(n),
+!    6  bond_angle(n), tor_angle(n), radii(n,n)
 
         do i = 1, n
         j = (i-1)*3
@@ -1485,7 +1485,7 @@ C    6  bond_angle(n), tor_angle(n), radii(n,n)
         z(i) = qo(j+3)
         enddo
 
-C Inter-particle distances
+! Inter-particle distances
 
         do i = 1, n-1
         do j = i+1, n
@@ -1498,7 +1498,7 @@ C Inter-particle distances
         enddo
         enddo
 
-C Dot products between bond vectors
+! Dot products between bond vectors
 
         do i = 1, n-3
         dot_prod(i,1) = xr(i,i+1)*xr(i,i+1) + yr(i,i+1)*yr(i,i+1) +
@@ -1522,14 +1522,14 @@ C Dot products between bond vectors
         dot_prod(i,1) = xr(i,i+1)*xr(i,i+1) + yr(i,i+1)*yr(i,i+1) +
      1  zr(i,i+1)*zr(i,i+1)
 
-C Cross-products between adjacent bond vectors
+! Cross-products between adjacent bond vectors
 
         do i = 1, n-2
         x_prod(i) = dot_prod(i,1)*dot_prod(i+1,1) -
      1               dot_prod(i,2)*dot_prod(i,2)   
         enddo
 
-C Bond angles
+! Bond angles
 
         do i = 1, n-2
         cos_theta=-dot_prod(i,2)/(dsqrt(dot_prod(i,1)
@@ -1537,24 +1537,24 @@ C Bond angles
         bond_angle(i+1) = dacos(cos_theta)
         enddo
 
-C Torsional angles
+! Torsional angles
 
         do i = 1, n-3
         cos_phi = (dot_prod(i,2)*dot_prod(i+1,2) -
      1  dot_prod(i,3)*dot_prod(i+1,1))/dsqrt(x_prod(i)*x_prod(i+1))
         IF (ABS(cos_phi).GT.1.0D0) cos_phi=cos_phi/abs(cos_phi)
         tor_angle(i+1) = dacos(cos_phi)
-C       WRITE(*,'(A,I4,4F20.10)') 'i,tor_angle,cos_phi,dacos=',i,tor_angle(i+1),cos_phi,dacos(cos_phi)
+!       WRITE(*,'(A,I4,4F20.10)') 'i,tor_angle,cos_phi,dacos=',i,tor_angle(i+1),cos_phi,dacos(cos_phi)
         enddo
 
         return
         end
 
-C }}} 
-C> Calculate the energy
-        SUBROUTINE CALC_ENERGY(QO,ENERGY,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+! }}} 
+!> Calculate the energy
+        SUBROUTINE CALC_ENERGY(QO,ENERGY,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
      1                         BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
-C {{{
+! {{{
         IMPLICIT NONE
         INTEGER I,J,N
         DOUBLE PRECISION RMASS, EPSILON, SIGMA, DELTA, THETA_0, RK_R, RK_THETA, RAD6, E_TANGLE,
@@ -1567,13 +1567,13 @@ C {{{
      1                  x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n),
      2                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
 
-C       common/work/a_param(n,n),
-C    1  b_param(n,n),ntype(46),
-C    2  d_param(n),c_param(n),
-C    3  x(n), y(n), z(n),
-C    4  xr(n,n), yr(n,n), zr(n,n),
-C    5  dot_prod(n,3), x_prod(n),
-C    6  bond_angle(n), tor_angle(n), radii(n,n)
+!       common/work/a_param(n,n),
+!    1  b_param(n,n),ntype(46),
+!    2  d_param(n),c_param(n),
+!    3  x(n), y(n), z(n),
+!    4  xr(n,n), yr(n,n), zr(n,n),
+!    5  dot_prod(n,3), x_prod(n),
+!    6  bond_angle(n), tor_angle(n), radii(n,n)
 
         s6 = sigma*sigma*sigma*sigma*sigma*sigma
         e_nbond=0.0D0
@@ -1616,17 +1616,17 @@ C    6  bond_angle(n), tor_angle(n), radii(n,n)
         enddo
 
         energy = e_nbond + e_bond + e_bangle + e_tangle
-C       WRITE(*,'(A,4F20.10)') 'nbond,bond,bangle,tangle=',e_nbond,e_bond,e_bangle,e_tangle
+!       WRITE(*,'(A,4F20.10)') 'nbond,bond,bangle,tangle=',e_nbond,e_bond,e_bangle,e_tangle
 
         return
         end
-C }}}
-C Calculate the gradients
+! }}}
+! Calculate the gradients
 
-        SUBROUTINE CALC_GRADIENT(QO,FQ,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, 
+        SUBROUTINE CALC_GRADIENT(N,QO,FQ,PARAM,R,DR,DOT_PROD,X_PROD, 
      1                           BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
-C {{{
-C Declarations {{{
+! {{{
+! Declarations {{{
         IMPLICIT NONE
         INTEGER I, J, N
         DOUBLE PRECISION RMASS, EPSILON, SIGMA, DELTA, RK_R, RK_THETA,
@@ -1643,19 +1643,19 @@ C Declarations {{{
      1  fb_x(n),fb_y(n),fb_z(n)
         DOUBLE PRECISION FBA_X(N),FBA_Y(N),FBA_Z(N), FX(N),FY(N),FZ(N)
         DOUBLE PRECISION FTA_X(N),FTA_Y(N),FTA_Z(N), FQ(3*N)
-C }}}
-C       common/work/a_param(n,n),
-C    1  b_param(n,n),ntype(46),
-C    2  d_param(n),c_param(n),
-C    3  x(n), y(n), z(n),
-C    4  xr(n,n), yr(n,n), zr(n,n),
-C    5  dot_prod(n,3), x_prod(n),
-C    6  bond_angle(n), tor_angle(n), radii(n,n)
+! }}}
+!       common/work/a_param(n,n),
+!    1  b_param(n,n),ntype(46),
+!    2  d_param(n),c_param(n),
+!    3  x(n), y(n), z(n),
+!    4  xr(n,n), yr(n,n), zr(n,n),
+!    5  dot_prod(n,3), x_prod(n),
+!    6  bond_angle(n), tor_angle(n), radii(n,n)
 
         s6 = sigma*sigma*sigma*sigma*sigma*sigma
 
-C Gradients of potential
-C {{{
+! Gradients of potential
+! {{{
 
         do i = 1,n
 
@@ -1680,8 +1680,8 @@ C {{{
         fz(i)= 0.0 
 
         enddo
-C }}}
-C ..... Non-bonded interaction forces ..... {{{
+! }}}
+! ..... Non-bonded interaction forces ..... {{{
 
         do i = 1, n-2
         do j = i+2, n
@@ -1707,8 +1707,8 @@ C ..... Non-bonded interaction forces ..... {{{
 
         enddo
         enddo
-C }}}
-C ... Bond interaction forces ... {{{
+! }}}
+! ... Bond interaction forces ... {{{
 
         do i = 1, n-1
 
@@ -1728,10 +1728,10 @@ C ... Bond interaction forces ... {{{
         fb_z(i+1) = -fzz + fb_z(i+1)
 
         enddo
-C }}}
-C bond angle forces  particle 1
-C particles 1,2,n-1, and n done outside of the loop
-C {{{
+! }}}
+! bond angle forces  particle 1
+! particles 1,2,n-1, and n done outside of the loop
+! {{{
         i = 1
         den = dsin(bond_angle(i+1))
      1        *dsqrt(dot_prod(i+1,1)*dot_prod(i,1))
@@ -1746,7 +1746,7 @@ C {{{
         fba_z(i) = -rnum*((dot_prod(i,2)/dot_prod(i,1))*zr(i,i+1) -
      1        zr(i+1,i+2))/den
 
-C particle 2
+! particle 2
 
         i = 2
         den = dsin(bond_angle(i))
@@ -1781,7 +1781,7 @@ C particle 2
 
         fba_z(i) = a1 + a2 
 
-C particles 3 thru n-2 
+! particles 3 thru n-2 
 
         do i = 3, n-2
 
@@ -1830,7 +1830,7 @@ C particles 3 thru n-2
 
         enddo
 
-C particle n-1 
+! particle n-1 
 
         i = n-1
         den = dsin(bond_angle(i))*
@@ -1865,7 +1865,7 @@ C particle n-1
 
         fba_z(i) = a1 + a2
 
-C particle n
+! particle n
 
         i = n
         den = dsin(bond_angle(i-1))*dsqrt(dot_prod(i-2,1)
@@ -1882,10 +1882,10 @@ C particle n
         fba_z(i) = rk_theta*(bond_angle(i-1) - theta_0)*
      1        ((dot_prod(i-2,2)/dot_prod(i-1,1))*zr(i-1,i) 
      1        - zr(i-2,i-1))/den
-C }}}
-C Torsional angle forces
-C particles 1, 2, 3, n-2, n-1, and n are done outside of the loop
-C particle 1
+! }}}
+! Torsional angle forces
+! particles 1, 2, 3, n-2, n-1, and n are done outside of the loop
+! particle 1
 
         i = 1
              coef =(c_param(i+1)+d_param(i+1)*(12.0*dcos(tor_angle(i+1))
@@ -1911,7 +1911,7 @@ C particle 1
      1        dot_prod(i,2)*zr(i+1,i+2))) 
 
 
-C particle 2
+! particle 2
 
         i = 2
         coef =(c_param(i+1)+d_param(i+1)*(12.0*dcos(tor_angle(i+1))
@@ -1979,7 +1979,7 @@ C particle 2
 
         fta_z(i) = a1 + a2 
 
-C particle 3
+! particle 3
 
         i = 3
         coef=(c_param(i+1)+d_param(i+1)*(12.0*dcos(tor_angle(i+1))
@@ -2084,7 +2084,7 @@ C particle 3
 
         fta_z(i) = a1 + a2 + a3 
 
-C particles 4 to n-3
+! particles 4 to n-3
 
         do i = 4, n-3
 
@@ -2212,7 +2212,7 @@ C particles 4 to n-3
 
         enddo
 
-C particle n-2
+! particle n-2
 
         i = n-2
         coef1=(c_param(i)+d_param(i)*(12.0*dcos(tor_angle(i))
@@ -2318,7 +2318,7 @@ C particle n-2
 
         fta_z(i) = a1 + a2 + a3 
 
-C particle n-1
+! particle n-1
 
         i = n-1
         coef2=(c_param(i-1)+d_param(i-1)*(12.0*dcos(tor_angle(i-1))
@@ -2389,7 +2389,7 @@ C particle n-1
 
         fta_z(i) = a1 + a2 
  
-C particle n
+! particle n
 
         i = n
         coef3=(c_param(i-2)+d_param(i-2)*(12.0*dcos(tor_angle(i-2))
@@ -2414,7 +2414,7 @@ C particle n
      1        dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*zr(i-1,i) -
      1        dot_prod(i-2,2)*zr(i-2,i-1))) 
 
-C Total up the gradients
+! Total up the gradients
 
         do i = 1, n
         fx(i) = fnb_x(i) + fb_x(i) + fba_x(i) + fta_x(i) 
@@ -2431,72 +2431,73 @@ C Total up the gradients
 
         return
         end
-C }}}
-C> Calculate the second derivative matrix (two-sided numerical approach)
+! }}}
+!> Calculate the second derivative matrix (two-sided numerical approach)
 
-        SUBROUTINE CALC_DYN(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, 
+        SUBROUTINE CALC_DYN(N,QO,PARAM,R,DR,DOT_PROD,X_PROD, 
      1                      BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
-C {{{
-C Declarations {{{
-        USE MODHESS
+! {{{
+! Declarations {{{
+
         IMPLICIT NONE
+
+        INTEGER N
+
         DOUBLE PRECISION RMASS, EPSILON, SIGMA, DELTA, THETA_0, RK_R, RK_THETA
-        parameter (rmass = 40.0, epsilon = 0.0100570)
-        parameter (sigma=3.4 ,delta=1.0d-4, theta_0 = 1.8326)
-        parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
-        INTEGER ntype(46), N, I, J
-        DOUBLE PRECISION QO(3*N), FQ1(3*N), 
-     1  fq2(3*n)
-        DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N), D_PARAM(N),C_PARAM(N),
-     1                  x(n), y(n),z(n),xr(n,n),yr(n,n),zr(n,n),
-     2                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), 
-     3                  radii(n,n)
-C }}}
-C Fill in the Hessian matrix
-C {{{
+        PARAMETER (RMASS = 40.0, EPSILON = 0.0100570)
+        PARAMETER (SIGMA=3.4 ,DELTA=1.0D-4, THETA_0 = 1.8326)
+        PARAMETER (RK_R = 20.0*0.0100570, RK_THETA = 20.0*0.0100570)
+        INTEGER NTYPE(46), N, I, J
+        DOUBLE PRECISION QO(3*N), FQ1(3*N), FQ2(3*N)
+        DOUBLE PRECISION, DIMENSION(N,4) PARAM
+        DOUBLE PRECISION, DIMENSION(N,3) :: R
+        DOUBLE PRECISION, DIMENSION(N,N,3) :: DR
+        DOUBLE PRECISION, DIMENSION(N,N) :: RADII
+        DOUBLE PRECISION, DIMENSION(N) :: X_PROD, BOND_ANGLE, TOR_ANGLE
+        DOUBLE PRECISION, DIMENSION(N,3) :: DOT_PROD 
+! }}}
+! Fill in the Hessian matrix
+! {{{
 
-        do j = 1, 3*n
+        DO J = 1, 3*N
+            QO(J) = QO(J) + DELTA
+            CALL CALC_INT_COORDS(N,QO,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+         1                       BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+            CALL CALC_GRADIENT(N,QO,FQ2,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+         1                     BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+            QO(J) = QO(J) - 2.0*DELTA
+            CALL CALC_INT_COORDS(QO,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+         1                       BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+            CALL CALC_GRADIENT(QO,FQ1,N,PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD,
+         1                     BOND_ANGLE,TOR_ANGLE,RADII,NTYPE)
+            QO(J) = QO(J) + DELTA
+    
+            DO I = J, 3*N
+                HESS(I,J) = (FQ2(I) -  FQ1(I))/(2.0*DELTA)
+                HESS(J,I) = HESS(I,J)
+            ENDDO
+        ENDDO
 
-        qo(j) = qo(j) + delta
-        call calc_int_coords(qo,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     1                       bond_angle,tor_angle,radii,ntype)
-        call calc_gradient(qo,fq2,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     1                     bond_angle,tor_angle,radii,ntype)
-        qo(j) = qo(j) - 2.0*delta
-        call calc_int_coords(qo,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     1                       bond_angle,tor_angle,radii,ntype)
-        call calc_gradient(qo,fq1,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
-     1                     bond_angle,tor_angle,radii,ntype)
-        qo(j) = qo(j) + delta
+! }}}
+        RETURN
+        END
+! }}}
+!> Fill the parameter arrays
 
-        do i = j, 3*n
-
-        HESS(i,j) = (fq2(i) -  fq1(i))/(2.0*delta)
-        HESS(j,i) = HESS(i,j)
-
-        enddo
-        enddo
-
-C }}}
-        return
-        end
-C }}}
-C> Fill the parameter arrays
-
-        SUBROUTINE PARAM_ARRAY(A_PARAM,B_PARAM,C_PARAM,D_PARAM,N)
-C {{{
-C Declarations {{{
+        SUBROUTINE PARAM_ARRAY(PARAM,N)
+! {{{
+! Declarations {{{
         implicit NONE
         INTEGER ntype(46), N, ICOUNT, J, I
         DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N), EPSILON
         DOUBLE PRECISION C_PARAM(N), D_PARAM(N)
         parameter (epsilon = 0.0100570D0)
-C }}}
-C Firstly, specify amino acid types by filling in array ntype(:)
-C 1 -> Hydrophobic (B)
-C 2 -> Hydrophilic (L)
-C 3 -> Neutral (N)
-C {{{
+! }}}
+! Firstly, specify amino acid types by filling in array ntype(:)
+! 1 -> Hydrophobic (B)
+! 2 -> Hydrophilic (L)
+! 3 -> Neutral (N)
+! {{{
         ntype(1) = 1
         ntype(2) = 1
         ntype(3) = 1
@@ -2543,11 +2544,11 @@ C {{{
         ntype(44) = 2
         ntype(45) = 1
         ntype(46) = 2
-C }}}
-C Specify parameters for the dihedral angle potential.
-C       These are stored in arrays 
-C       c_param(:), d_param(:) 
-C {{{
+! }}}
+! Specify parameters for the dihedral angle potential.
+!       These are stored in arrays 
+!       c_param(:), d_param(:) 
+! {{{
 
         do i = 1, n-3
         icount = 0
@@ -2570,10 +2571,10 @@ C {{{
 
         enddo
 !}}}
-C Specify parameters for the L-J interaction between non-bonded particles.
-C       These are stored in arrays 
-C       a_param(:,:), b_param(:,:) 
-C {{{
+! Specify parameters for the L-J interaction between non-bonded particles.
+!       These are stored in arrays 
+!       a_param(:,:), b_param(:,:) 
+! {{{
 
         do i = 1, n-1
         do j = i+1, n
@@ -2604,6 +2605,6 @@ C {{{
 !}}}
         return
         end
-C }}}
+! }}}
 
         ENDMODULE
