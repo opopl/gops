@@ -1042,8 +1042,8 @@ include "blnvars.inc.f90"
 ! }}}
 ! Go-like model connectivities: fill in array CONNECT(:,:) {{{
 !
-        DO J1=1,46
-           DO J2=J1,46
+        DO J1=1,N
+           DO J2=J1,N
               CONNECT(J2,J1)=.FALSE.
            ENDDO
         ENDDO
@@ -1154,7 +1154,7 @@ include "blnvars.inc.f90"
             ENDIF
           ENDDO
 
-          IF(ICOUNT .GE. 2)THEN
+          IF (ICOUNT .GE. 2) THEN
             CD(I+1,1:2) = (/ 0.0, 0.2*EPSILON /)
           ELSE
             CD(I+1,1:2) = 1.2*EPSILON
@@ -1528,7 +1528,7 @@ include "blnvars.inc.f90"
      1        DOT_PROD(I,3)*DOT_PROD(I+1,1))*(-DOT_PROD(I+1,1)*DR(I,I+1,1) +
      1        DOT_PROD(I,2)*DR(I+1,I+2,1))) 
 
-        FTA_Y(I) = -COEF*(-DOT_PROD(I+1,2)*DR(I+1,I+2,2) +
+        FTA(I,2) = -COEF*(-DOT_PROD(I+1,2)*DR(I+1,I+2,2) +
      1        DOT_PROD(I+1,1)*DR(I+2,I+3,2) -
      1        (1.0D0/X_PROD(I))*(DOT_PROD(I+1,2)*DOT_PROD(I,2) -
      1        DOT_PROD(I,3)*DOT_PROD(I+1,1))*(-DOT_PROD(I+1,1)*DR(I,I+1,2) +
@@ -1588,7 +1588,7 @@ include "blnvars.inc.f90"
      1        DOT_PROD(I-1,3)*DOT_PROD(I,1))*(-DOT_PROD(I+1,1)*DR(I,I+1,2) +
      1        DOT_PROD(I,2)*DR(I+1,I+2,2)))
 
-        FTA_Y(I) = A1 + A2 
+        FTA(I,2) = A1 + A2 
         
         A1 = -COEF*(-DOT_PROD(I+1,2)*DR(I+1,I+2,3) +
      1        DOT_PROD(I+1,1)*DR(I+2,I+3,3) -
@@ -1722,7 +1722,7 @@ include "blnvars.inc.f90"
 
         DO I = 4, N-3
           DO K=1,4
-            COEF(K) = CD(I-K+2,1) + CD(I-K+2,2)*(12.0*DCOS(ANG(I-K+2,2))*DCOS(ANG(I-K+2,2)) - 3.0)
+            COEF(K) = CD(I-K+2,1) + CD(I-K+2,2)*(12.0*DCOS(ANG(I-K+2,2))**2-3.0)
             COEF(K) = COEF(K)*XPD(I+1-K)
           ENDDO
 
@@ -1832,18 +1832,16 @@ include "blnvars.inc.f90"
      1        DOT_PROD(I-3,3)*DOT_PROD(I-2,1))*(DOT_PROD(I-2,1)*DR(I-1,I,3) -
      1        DOT_PROD(I-2,2)*DR(I-2,I-1,3))) 
 
-        FTA(I,3) = sum(AA)  
+        FTA(I,3) = SUM(AA)  
 
         ENDDO
 
 ! PARTICLE N-2
 
         I = N-2
-        COEF1=(CD(I,1)+CD(I,2)*(12.0*DCOS(ANG(I,2))
-     1        *DCOS(ANG(I,2)) - 
-     1        3.0))*(1.0D0/DSQRT(X_PROD(I)*X_PROD(I-1)))  
+        COEF(1)=(CD(I,1)+CD(I,2)*(12.0*DCOS(ANG(I,2))**2-3.0)*XPD(I-1)
 
-        COEF2=(CD(I-1,1)+CD(I-1,2)*(12.0*DCOS(ANG(I-1,2))
+        COEF(2)=(CD(I-1,1)+CD(I-1,2)*(12.0*DCOS(ANG(I-1,2))
      1        *DCOS(ANG(I-1,2)) - 
      1        3.0))*(1.0D0/DSQRT(X_PROD(I-1)*X_PROD(I-2)))  
 
@@ -1880,7 +1878,7 @@ include "blnvars.inc.f90"
      1        DOT_PROD(I-3,3)*DOT_PROD(I-2,1))*(DOT_PROD(I-2,1)*DR(I-1,I,1) -
      1        DOT_PROD(I-2,2)*DR(I-2,I-1,1))) 
 
-        FTA_X(I) = A1 + A2 + A3 
+        FTA(I,1) = sum(AA(1:3)) 
 
         A1 =  -COEF1*(-DOT_PROD(I-1,2)*DR(I+1,I+2,2) +  
      1        DOT_PROD(I,2)*DR(I,I+1,2) - DOT_PROD(I,2)*DR(I-1,I,2) -
@@ -1910,9 +1908,9 @@ include "blnvars.inc.f90"
      1        DOT_PROD(I-3,3)*DOT_PROD(I-2,1))*(DOT_PROD(I-2,1)*DR(I-1,I,2) -
      1        DOT_PROD(I-2,2)*DR(I-2,I-1,2))) 
 
-        FTA_Y(I) = A1 + A2 + A3 
+        FTA(I,2) = sum(AA(1:3)) 
  
-        A1 = -COEF1*(-DOT_PROD(I-1,2)*DR(I+1,I+2,3) +  
+        AA(1) = -COEF1*(-DOT_PROD(I-1,2)*DR(I+1,I+2,3) +  
      1        DOT_PROD(I,2)*DR(I,I+1,3) - DOT_PROD(I,2)*DR(I-1,I,3) -
      1        DOT_PROD(I,1)*DR(I+1,I+2,3) + 2.0*DOT_PROD(I-1,3)*DR(I,I+1,3) -
      1        (1.0D0/X_PROD(I-1))*(DOT_PROD(I,2)*DOT_PROD(I-1,2) -
@@ -1923,7 +1921,7 @@ include "blnvars.inc.f90"
      1        DOT_PROD(I-1,3)*DOT_PROD(I,1))*(-DOT_PROD(I+1,1)*DR(I,I+1,3) +
      1        DOT_PROD(I,2)*DR(I+1,I+2,3))) 
 
-        A2 = -COEF2*(DOT_PROD(I-2,2)*DR(I,I+1,3) -
+        AA(2) = -COEF2*(DOT_PROD(I-2,2)*DR(I,I+1,3) -
      1        DOT_PROD(I-2,2)*DR(I-1,I,3) + DOT_PROD(I-1,2)*DR(I-2,I-1,3) +
      1        DOT_PROD(I-1,1)*DR(I-2,I-1,3) - 2.0*DOT_PROD(I-2,3)*DR(I-1,I,3) -
      1        (1.0D0/X_PROD(I-2))*(DOT_PROD(I-1,2)*DOT_PROD(I-2,2) -
@@ -1934,13 +1932,13 @@ include "blnvars.inc.f90"
      1        DOT_PROD(I-1,1)*DR(I,I+1,3) - DOT_PROD(I-1,2)*DR(I,I+1,3) +
      1        DOT_PROD(I-1,2)*DR(I-1,I,3))) 
 
-        A3 = -COEF3*(DOT_PROD(I-3,2)*DR(I-2,I-1,3) -
+        AA(3) = -COEF3*(DOT_PROD(I-3,2)*DR(I-2,I-1,3) -
      1        DOT_PROD(I-2,1)*DR(I-3,I-2,3) -
      1        (1.0D0/X_PROD(I-2))*(DOT_PROD(I-2,2)*DOT_PROD(I-3,2) -
      1        DOT_PROD(I-3,3)*DOT_PROD(I-2,1))*(DOT_PROD(I-2,1)*DR(I-1,I,3) -
      1        DOT_PROD(I-2,2)*DR(I-2,I-1,3))) 
 
-        FTA_Z(I) = A1 + A2 + A3 
+        FTA(I,3) = sum(AA(1:3)) 
 
 ! PARTICLE N-1
 
@@ -1971,7 +1969,7 @@ include "blnvars.inc.f90"
      1        DOT_PROD(I-3,3)*DOT_PROD(I-2,1))*(DOT_PROD(I-2,1)*DR(I-1,I,1) -
      1        DOT_PROD(I-2,2)*DR(I-2,I-1,1))) 
 
-        FTA_X(I) = A1 + A2  
+        FTA(I,1) = sum(AA(1:2))  
 
         A1 = -COEF2*(DOT_PROD(I-2,2)*DR(I,I+1,2) - 
      1        DOT_PROD(I-2,2)*DR(I-1,I,2) +
@@ -1991,7 +1989,7 @@ include "blnvars.inc.f90"
      1        DOT_PROD(I-3,3)*DOT_PROD(I-2,1))*(DOT_PROD(I-2,1)*DR(I-1,I,2) -
      1        DOT_PROD(I-2,2)*DR(I-2,I-1,2))) 
 
-        FTA_Y(I) = A1 + A2  
+        FTA(I,2) = sum(AA(1:2))  
 
         A1 = -COEF2*(DOT_PROD(I-2,2)*DR(I,I+1,3) - 
      1        DOT_PROD(I-2,2)*DR(I-1,I,3) +
@@ -2011,7 +2009,7 @@ include "blnvars.inc.f90"
      1        DOT_PROD(I-3,3)*DOT_PROD(I-2,1))*(DOT_PROD(I-2,1)*DR(I-1,I,3) -
      1        DOT_PROD(I-2,2)*DR(I-2,I-1,3))) 
 
-        FTA_Z(I) = A1 + A2 
+        FTA(I,3) = sum(AA(1:2))  
  
 ! PARTICLE N
 
