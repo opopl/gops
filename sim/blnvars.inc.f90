@@ -25,6 +25,10 @@
         DOUBLE PRECISION, DIMENSION(N,N,3) :: DR
         DOUBLE PRECISION, DIMENSION(N,N) :: RADII
         DOUBLE PRECISION, DIMENSION(N) :: X_PROD, COSTOR, BOND_ANGLE, TOR_ANGLE, SINBOND, DFAC
+        ! 1=> bond angles
+        ! 2=> torsion (dihedral) angles
+        DOUBLE PRECISION, DIMENSION(N,2) :: ANG 
+
         DOUBLE PRECISION, DIMENSION(N,3) :: DOT_PROD, FBA, FNB, FTA, F
         
         CHARACTER(LEN=*) :: PTYPE
@@ -54,4 +58,20 @@
 
         DOUBLE PRECISION  A4, COEF, COEF1, COEF2, COEF3, A3, DEN2, A2, A1, &
                 DEN1, RNUM, DEN, RVAR, FRR(3), DF, RAD(15), S(15)
-     
+
+                ! 1 => non-bonded  
+                ! 2 => bonded 
+                ! 3 => bond angles 
+                ! 4 => torsional angles
+        DOUBLE PRECISION, DIMENSION(4) :: E
+        
+        LOGICAL GTEST, STEST
+        LOGICAL CONNECT(N,N)
+
+        INTEGER J1,J2
+
+        DOUBLE PRECISION FQ1(3*N), FQ2(3*N)
+        DOUBLE PRECISION, DIMENSION(N,3) :: F, FNB, FB, FBA, FTA
+      DOUBLE PRECISION RAD7, RAD14, DF, FXX, FZZ, FYY, RVAR, DEN, RNUM, DEN1, A1, A2, DEN2
+      DOUBLE PRECISION A3, COEF, COEF1, COEF2, COEF3, A4
+
