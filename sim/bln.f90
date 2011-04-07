@@ -36,7 +36,7 @@ include bln.vars.inc.f90
 
         IF (.NOT.STEST) RETURN
 
-        CALL CALC_HESS(N,QO,AB,CD,R,DR,DPD,XPD,ANG,LEN_DR)
+        CALL CALC_HESS(N,QO,HESS,AB,CD)
 
         RETURN
         END
@@ -163,7 +163,7 @@ include bln.grad.end.inc.f90
 !> @param[in] QO
 ! }}}
 
-        SUBROUTINE CALC_HESS(N,QO,AB,CD,R,DR,DPD,XPD,ANG,LEN_DR,NTYPE)
+        SUBROUTINE CALC_HESS(N,QO,HESS,AB,CD)
 include bln.vars.inc.f90
 include bln.hess.inc.f90
         RETURN
