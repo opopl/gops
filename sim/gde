@@ -1,0 +1,11 @@
+#/bin/bash
+
+files=( ../BIN/ ../GMIN/a ../GMIN/aa ../GMIN/deps ../OPTIM/GMIN_out
+../OPTIM/deps ../OPTIM/dv.f90 ../OPTIM/fs ../OPTIM/getopt.f
+../OPTIM/getopt.f.tmp.29696 ../OPTIM/porfuncs.f90 ../OPTIM/rca.f90
+../SCRIPTS/all/deps ../SCRIPTS/op/tags ../gta deps )
+
+rm -rf ${files[@]}
+
+
+

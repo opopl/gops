@@ -11,7 +11,7 @@
 
         DOUBLE PRECISION ENERGY
 
-        ! A => array A, B, C, D coefficients for the generic BLN model
+        ! A     =>      array A, B, C, D coefficients for the generic BLN model
         DOUBLE PRECISION, DIMENSION(N,4) :: A
 
         ! AB(,1)=>A_PARAM(N,N)
@@ -37,7 +37,7 @@
         ! inverse cross products
         DOUBLE PRECISION, DIMENSION(N) :: IXPD
         ! bond vectors lengths
-        DOUBLE PRECISION, DIMENSION(N) :: LEN_BV
+        DOUBLE PRECISION, DIMENSION(N) :: LEN_BVR
         ! bond vectors, BVR_i => DR(i,i+1) => R_{i+1}-R_i 
         DOUBLE PRECISION, DIMENSION(N) :: BVR
 
