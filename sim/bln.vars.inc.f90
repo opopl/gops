@@ -21,18 +21,34 @@
         DOUBLE PRECISION, DIMENSION(N,N,2) AB
         DOUBLE PRECISION, DIMENSION(N,2)   CD
 
+        ! particle positions R=>(X,Y,Z)
+        ! particle relative positions DR_{ij} =>  R_i-R_j 
+        ! distances between particles LEN_DR_ij=>|| DR_ij ||
         DOUBLE PRECISION, DIMENSION(N,3) :: R
         DOUBLE PRECISION, DIMENSION(N,N,3) :: DR
-        DOUBLE PRECISION, DIMENSION(N,N) :: RADII
-        DOUBLE PRECISION, DIMENSION(N) :: X_PROD, COSTOR, BOND_ANGLE, TOR_ANGLE, SINBOND, DFAC
+        DOUBLE PRECISION, DIMENSION(N,N) :: LEN_DR
+        !
+        DOUBLE PRECISION, DIMENSION(N) :: COSTOR, SINBOND, DFAC
         ! 1=> bond angles
         ! 2=> torsion (dihedral) angles
         DOUBLE PRECISION, DIMENSION(N,2) :: ANG 
+        ! cross products, squared
+        DOUBLE PRECISION, DIMENSION(N) :: XPD_2
+        ! inverse cross products
+        DOUBLE PRECISION, DIMENSION(N) :: IXPD
+        ! bond vectors lengths
+        DOUBLE PRECISION, DIMENSION(N) :: LEN_BV
+        ! bond vectors, BVR_i => DR(i,i+1) => R_{i+1}-R_i 
+        DOUBLE PRECISION, DIMENSION(N) :: BVR
 
-        DOUBLE PRECISION, DIMENSION(N,3) :: DOT_PROD, FBA, FNB, FTA, F
+        DOUBLE PRECISION, DIMENSION(N-1,3) :: DPD
+        DOUBLE PRECISION, DIMENSION(N,3) :: FBA, FNB, FTA, F
         
+        ! type of BLN potential
+        !       GO   Go-like
+        !       WT   Wild-type
         CHARACTER(LEN=*) :: PTYPE
-        INTEGER NTYPE(N), I, J, JMAX, K, ICOUNT
+        INTEGER NTYPE(N), I, J, JMAX, K, KMAX, ICOUNT
         DOUBLE PRECISION RK_R, RK_THETA
 
         DOUBLE PRECISION COS_PHI, COS_THETA, DUMMY, DUMMY2
