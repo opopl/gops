@@ -1,521 +1,553 @@
 
-! Torsional angle forces
+! torsional angle forces
 ! particles 1, 2, 3, n-2, n-1, and n are done outside of the loop
 
-        DO I=1,N
-           IXPD(I)=1.0D0/SQRT(XPD_2(I+1)*XPD_2(I)) 
-        ENDDO
+        do i=1,n
+           ixpd(i)=1.0d0/sqrt(xpd_2(i+1)*xpd_2(i)) 
+        enddo
 
+! {{{
 ! particle 1
 ! {{{
 
-        I = 1
-             COEF =(CD(I+1,1)+CD(I+1,2)*(12.0*COS(ANG(I+1,2))
-     1         *COS(ANG(I+1,2))-3.0))
-     1  *(1.0D0/SQRT(XPD(I+1)*XPD(I)))  
+        i = 1
+             coef =(cd(i+1,1)+cd(i+1,2)*(12.0*cos(ang(i+1,2))
+     1         *cos(ang(i+1,2))-3.0))
+     1  *(1.0d0/sqrt(xpd(i+1)*xpd(i)))  
 
-        FTA_X(I) = -COEF*(-DPD(I+1,2)*DR(I+1,I+2,1) +
-     1         DPD(I+1,1)*DR(I+2,I+3,1) -
-     1        (1.0D0/XPD(I))*(DPD(I+1,2)*DPD(I,2) -
-     1        DPD(I,3)*DPD(I+1,1))*(-DPD(I+1,1)*DR(I,I+1,1) +
-     1        DPD(I,2)*DR(I+1,I+2,1))) 
+        fta_x(i) = -coef*(-dpd(i+1,2)*dr(i+1,i+2,1) +
+     1         dpd(i+1,1)*dr(i+2,i+3,1) -
+     1        (1.0d0/xpd(i))*(dpd(i+1,2)*dpd(i,2) -
+     1        dpd(i,3)*dpd(i+1,1))*(-dpd(i+1,1)*dr(i,i+1,1) +
+     1        dpd(i,2)*dr(i+1,i+2,1))) 
 
-        FTA(I,2) = -COEF*(-DPD(I+1,2)*DR(I+1,I+2,2) +
-     1        DPD(I+1,1)*DR(I+2,I+3,2) -
-     1        (1.0D0/XPD(I))*(DPD(I+1,2)*DPD(I,2) -
-     1        DPD(I,3)*DPD(I+1,1))*(-DPD(I+1,1)*DR(I,I+1,2) +
-     1        DPD(I,2)*DR(I+1,I+2,2))) 
+        fta(i,2) = -coef*(-dpd(i+1,2)*dr(i+1,i+2,2) +
+     1        dpd(i+1,1)*dr(i+2,i+3,2) -
+     1        (1.0d0/xpd(i))*(dpd(i+1,2)*dpd(i,2) -
+     1        dpd(i,3)*dpd(i+1,1))*(-dpd(i+1,1)*dr(i,i+1,2) +
+     1        dpd(i,2)*dr(i+1,i+2,2))) 
 
-        FTA_Z(I) = -COEF*(-DPD(I+1,2)*DR(I+1,I+2,3) +
-     1        DPD(I+1,1)*DR(I+2,I+3,3) -
-     1        (1.0D0/XPD(I))*(DPD(I+1,2)*DPD(I,2) -
-     1        DPD(I,3)*DPD(I+1,1))*(-DPD(I+1,1)*DR(I,I+1,3) +
-     1        DPD(I,2)*DR(I+1,I+2,3))) 
+        fta_z(i) = -coef*(-dpd(i+1,2)*dr(i+1,i+2,3) +
+     1        dpd(i+1,1)*dr(i+2,i+3,3) -
+     1        (1.0d0/xpd(i))*(dpd(i+1,2)*dpd(i,2) -
+     1        dpd(i,3)*dpd(i+1,1))*(-dpd(i+1,1)*dr(i,i+1,3) +
+     1        dpd(i,2)*dr(i+1,i+2,3))) 
 
 ! }}}
-! PARTICLE 2
+! particle 2
 ! {{{
-        I = 2
-        COEF =(CD(I+1,1)+CD(I+1,2)*(12.0*COS(ANG(I+1,2))
-     1  *COS(ANG(I+1,2)) - 3.0))
-     1        *(1.0D0/SQRT(XPD(I+1)*XPD(I)))  
+        i = 2
+        coef =(cd(i+1,1)+cd(i+1,2)*(12.0*cos(ang(i+1,2))
+     1  *cos(ang(i+1,2)) - 3.0))
+     1        *(1.0d0/sqrt(xpd(i+1)*xpd(i)))  
 
-             COEF1 = (CD(I,1) + CD(I,2)*(12.0*COS(ANG(I,2))
-     1        *COS(ANG(I,2)) - 
-     1        3.0))*(1.0D0/SQRT(XPD(I)*XPD(I-1)))  
+             coef1 = (cd(i,1) + cd(i,2)*(12.0*cos(ang(i,2))
+     1        *cos(ang(i,2)) - 
+     1        3.0))*(1.0d0/sqrt(xpd(i)*xpd(i-1)))  
 
-        A1 =  -COEF*(-DPD(I+1,2)*DR(I+1,I+2,1) +
-     1        DPD(I+1,1)*DR(I+2,I+3,1) -
-     1        (1.0D0/XPD(I))*(DPD(I+1,2)*DPD(I,2) -
-     1        DPD(I,3)*DPD(I+1,1))*(-DPD(I+1,1)*DR(I,I+1,1) +
-     1        DPD(I,2)*DR(I+1,I+2,1))) 
+        a1 =  -coef*(-dpd(i+1,2)*dr(i+1,i+2,1) +
+     1        dpd(i+1,1)*dr(i+2,i+3,1) -
+     1        (1.0d0/xpd(i))*(dpd(i+1,2)*dpd(i,2) -
+     1        dpd(i,3)*dpd(i+1,1))*(-dpd(i+1,1)*dr(i,i+1,1) +
+     1        dpd(i,2)*dr(i+1,i+2,1))) 
 
-        A2 = -COEF1*(-DPD(I-1,2)*DR(I+1,I+2,1) +
-     1        DPD(I,2)*DR(I,I+1,1) - DPD(I,2)*DR(I-1,I,1) -
-     1        DPD(I,1)*DR(I+1,I+2,1) + 2.0*DPD(I-1,3)*DR(I,I+1,1) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,1) -
-     1        DPD(I-1,1)*DR(I,I+1,1) - DPD(I-1,2)*DR(I,I+1,1) +
-     1        DPD(I-1,2)*DR(I-1,I,1)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,1) +
-     1        DPD(I,2)*DR(I+1,I+2,1))) 
+        a2 = -coef1*(-dpd(i-1,2)*dr(i+1,i+2,1) +
+     1        dpd(i,2)*dr(i,i+1,1) - dpd(i,2)*dr(i-1,i,1) -
+     1        dpd(i,1)*dr(i+1,i+2,1) + 2.0*dpd(i-1,3)*dr(i,i+1,1) -
+     1        (1.0d0/xpd(i-1))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(dpd(i,1)*dr(i-1,i,1) -
+     1        dpd(i-1,1)*dr(i,i+1,1) - dpd(i-1,2)*dr(i,i+1,1) +
+     1        dpd(i-1,2)*dr(i-1,i,1)) -
+     1        (1.0d0/xpd(i))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(-dpd(i+1,1)*dr(i,i+1,1) +
+     1        dpd(i,2)*dr(i+1,i+2,1))) 
 
-        FTA_X(I) = A1 + A2 
+        fta_x(i) = a1 + a2 
 
-        A1 = -COEF*(-DPD(I+1,2)*DR(I+1,I+2,2) +
-     1        DPD(I+1,1)*DR(I+2,I+3,2) -
-     1        (1.0D0/XPD(I))*(DPD(I+1,2)*DPD(I,2) -
-     1        DPD(I,3)*DPD(I+1,1))*(-DPD(I+1,1)*DR(I,I+1,2) +
-     1        DPD(I,2)*DR(I+1,I+2,2))) 
+        a1 = -coef*(-dpd(i+1,2)*dr(i+1,i+2,2) +
+     1        dpd(i+1,1)*dr(i+2,i+3,2) -
+     1        (1.0d0/xpd(i))*(dpd(i+1,2)*dpd(i,2) -
+     1        dpd(i,3)*dpd(i+1,1))*(-dpd(i+1,1)*dr(i,i+1,2) +
+     1        dpd(i,2)*dr(i+1,i+2,2))) 
 
-        A2 = -COEF1*(-DPD(I-1,2)*DR(I+1,I+2,2) +
-     1        DPD(I,2)*DR(I,I+1,2) - DPD(I,2)*DR(I-1,I,2) -
-     1        DPD(I,1)*DR(I+1,I+2,2) + 2.0*DPD(I-1,3)*DR(I,I+1,2) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,2) -
-     1        DPD(I-1,1)*DR(I,I+1,2) - DPD(I-1,2)*DR(I,I+1,2) +
-     1        DPD(I-1,2)*DR(I-1,I,2)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,2) +
-     1        DPD(I,2)*DR(I+1,I+2,2)))
+        a2 = -coef1*(-dpd(i-1,2)*dr(i+1,i+2,2) +
+     1        dpd(i,2)*dr(i,i+1,2) - dpd(i,2)*dr(i-1,i,2) -
+     1        dpd(i,1)*dr(i+1,i+2,2) + 2.0*dpd(i-1,3)*dr(i,i+1,2) -
+     1        (1.0d0/xpd(i-1))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(dpd(i,1)*dr(i-1,i,2) -
+     1        dpd(i-1,1)*dr(i,i+1,2) - dpd(i-1,2)*dr(i,i+1,2) +
+     1        dpd(i-1,2)*dr(i-1,i,2)) -
+     1        (1.0d0/xpd(i))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(-dpd(i+1,1)*dr(i,i+1,2) +
+     1        dpd(i,2)*dr(i+1,i+2,2)))
 
-        FTA(I,2) = A1 + A2 
+        fta(i,2) = a1 + a2 
         
-        A1 = -COEF*(-DPD(I+1,2)*DR(I+1,I+2,3) +
-     1        DPD(I+1,1)*DR(I+2,I+3,3) -
-     1        (1.0D0/XPD(I))*(DPD(I+1,2)*DPD(I,2) -
-     1        DPD(I,3)*DPD(I+1,1))*(-DPD(I+1,1)*DR(I,I+1,3) +
-     1        DPD(I,2)*DR(I+1,I+2,3))) 
+        a1 = -coef*(-dpd(i+1,2)*dr(i+1,i+2,3) +
+     1        dpd(i+1,1)*dr(i+2,i+3,3) -
+     1        (1.0d0/xpd(i))*(dpd(i+1,2)*dpd(i,2) -
+     1        dpd(i,3)*dpd(i+1,1))*(-dpd(i+1,1)*dr(i,i+1,3) +
+     1        dpd(i,2)*dr(i+1,i+2,3))) 
 
-        A2 = -COEF1*(-DPD(I-1,2)*DR(I+1,I+2,3) +
-     1        DPD(I,2)*DR(I,I+1,3) - DPD(I,2)*DR(I-1,I,3) -
-     1        DPD(I,1)*DR(I+1,I+2,3) + 2.0*DPD(I-1,3)*DR(I,I+1,3) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,3) -
-     1        DPD(I-1,1)*DR(I,I+1,3) - DPD(I-1,2)*DR(I,I+1,3) +
-     1        DPD(I-1,2)*DR(I-1,I,3)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,3) +
-     1        DPD(I,2)*DR(I+1,I+2,3))) 
+        a2 = -coef1*(-dpd(i-1,2)*dr(i+1,i+2,3) +
+     1        dpd(i,2)*dr(i,i+1,3) - dpd(i,2)*dr(i-1,i,3) -
+     1        dpd(i,1)*dr(i+1,i+2,3) + 2.0*dpd(i-1,3)*dr(i,i+1,3) -
+     1        (1.0d0/xpd(i-1))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(dpd(i,1)*dr(i-1,i,3) -
+     1        dpd(i-1,1)*dr(i,i+1,3) - dpd(i-1,2)*dr(i,i+1,3) +
+     1        dpd(i-1,2)*dr(i-1,i,3)) -
+     1        (1.0d0/xpd(i))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(-dpd(i+1,1)*dr(i,i+1,3) +
+     1        dpd(i,2)*dr(i+1,i+2,3))) 
 
-        FTA_Z(I) = A1 + A2 
+        fta_z(i) = a1 + a2 
 ! }}}
-! PARTICLE 3
+! particle 3
 ! {{{
-        I = 3
-        COEF=(CD(I+1,1)+CD(I+1,2)*(12.0*COS(ANG(I+1,2))
-     1  *COS(ANG(I+1,2)) - 
-     1        3.0))*(1.0D0/SQRT(XPD(I+1)*XPD(I)))  
+        i = 3
+        coef=(cd(i+1,1)+cd(i+1,2)*(12.0*cos(ang(i+1,2))
+     1  *cos(ang(i+1,2)) - 
+     1        3.0))*(1.0d0/sqrt(xpd(i+1)*xpd(i)))  
 
-        COEF1=(CD(I,1)+CD(I,2)*(12.0*COS(ANG(I,2))
-     1        *COS(ANG(I,2)) - 
-     1        3.0))*(1.0D0/SQRT(XPD(I)*XPD(I-1)))  
+        coef1=(cd(i,1)+cd(i,2)*(12.0*cos(ang(i,2))
+     1        *cos(ang(i,2)) - 
+     1        3.0))*(1.0d0/sqrt(xpd(i)*xpd(i-1)))  
 
-        COEF2=(CD(I-1,1)+CD(I-1,2)*(12.0*COS(ANG(I-1,2))
-     1        *COS(ANG(I-1,2)) - 
-     1        3.0))*(1.0D0/SQRT(XPD(I-1)*XPD(I-2)))  
+        coef2=(cd(i-1,1)+cd(i-1,2)*(12.0*cos(ang(i-1,2))
+     1        *cos(ang(i-1,2)) - 
+     1        3.0))*(1.0d0/sqrt(xpd(i-1)*xpd(i-2)))  
 
-        A1 = -COEF*(-DPD(I+1,2)*DR(I+1,I+2,1) +
-     1        DPD(I+1,1)*DR(I+2,I+3,1) -
-     1        (1.0D0/XPD(I))*(DPD(I+1,2)*DPD(I,2) -
-     1        DPD(I,3)*DPD(I+1,1))*(-DPD(I+1,1)*DR(I,I+1,1) +
-     1        DPD(I,2)*DR(I+1,I+2,1))) 
+        a1 = -coef*(-dpd(i+1,2)*dr(i+1,i+2,1) +
+     1        dpd(i+1,1)*dr(i+2,i+3,1) -
+     1        (1.0d0/xpd(i))*(dpd(i+1,2)*dpd(i,2) -
+     1        dpd(i,3)*dpd(i+1,1))*(-dpd(i+1,1)*dr(i,i+1,1) +
+     1        dpd(i,2)*dr(i+1,i+2,1))) 
 
-        A2 = -COEF1*(-DPD(I-1,2)*DR(I+1,I+2,1) +
-     1        DPD(I,2)*DR(I,I+1,1) - DPD(I,2)*DR(I-1,I,1) -
-     1        DPD(I,1)*DR(I+1,I+2,1) + 2.0*DPD(I-1,3)*DR(I,I+1,1) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,1) -
-     1        DPD(I-1,1)*DR(I,I+1,1) - DPD(I-1,2)*DR(I,I+1,1) +
-     1        DPD(I-1,2)*DR(I-1,I,1)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,1) +
-     1        DPD(I,2)*DR(I+1,I+2,1))) 
+        a2 = -coef1*(-dpd(i-1,2)*dr(i+1,i+2,1) +
+     1        dpd(i,2)*dr(i,i+1,1) - dpd(i,2)*dr(i-1,i,1) -
+     1        dpd(i,1)*dr(i+1,i+2,1) + 2.0*dpd(i-1,3)*dr(i,i+1,1) -
+     1        (1.0d0/xpd(i-1))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(dpd(i,1)*dr(i-1,i,1) -
+     1        dpd(i-1,1)*dr(i,i+1,1) - dpd(i-1,2)*dr(i,i+1,1) +
+     1        dpd(i-1,2)*dr(i-1,i,1)) -
+     1        (1.0d0/xpd(i))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(-dpd(i+1,1)*dr(i,i+1,1) +
+     1        dpd(i,2)*dr(i+1,i+2,1))) 
 
-        A3 = -COEF2*(DPD(I-2,2)*DR(I,I+1,1) -
-     1        DPD(I-2,2)*DR(I-1,I,1) + DPD(I-1,2)*DR(I-2,I-1,1) +
-     1        DPD(I-1,1)*DR(I-2,I-1,1) - 2.0*DPD(I-2,3)*DR(I-1,I,1) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,1) -
-     1        DPD(I-2,2)*DR(I-2,I-1,1)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,1) -
-     1        DPD(I-1,1)*DR(I,I+1,1) - DPD(I-1,2)*DR(I,I+1,1) +
-     1        DPD(I-1,2)*DR(I-1,I,1))) 
+        a3 = -coef2*(dpd(i-2,2)*dr(i,i+1,1) -
+     1        dpd(i-2,2)*dr(i-1,i,1) + dpd(i-1,2)*dr(i-2,i-1,1) +
+     1        dpd(i-1,1)*dr(i-2,i-1,1) - 2.0*dpd(i-2,3)*dr(i-1,i,1) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*dr(i-1,i,1) -
+     1        dpd(i-2,2)*dr(i-2,i-1,1)) -
+     1        (1.0d0/xpd(i-1))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*dr(i-1,i,1) -
+     1        dpd(i-1,1)*dr(i,i+1,1) - dpd(i-1,2)*dr(i,i+1,1) +
+     1        dpd(i-1,2)*dr(i-1,i,1))) 
 
-        FTA(I,1) = SUM(AA(1:3))
+        fta(i,1) = sum(aa(1:3))
  
-        A1 = -COEF*(-DPD(I+1,2)*DR(I+1,I+2,2) +
-     1        DPD(I+1,1)*DR(I+2,I+3,2) -
-     1        (1.0D0/XPD(I))*(DPD(I+1,2)*DPD(I,2) -
-     1        DPD(I,3)*DPD(I+1,1))*(-DPD(I+1,1)*DR(I,I+1,2) +
-     1        DPD(I,2)*DR(I+1,I+2,2))) 
+        a1 = -coef*(-dpd(i+1,2)*dr(i+1,i+2,2) +
+     1        dpd(i+1,1)*dr(i+2,i+3,2) -
+     1        (1.0d0/xpd(i))*(dpd(i+1,2)*dpd(i,2) -
+     1        dpd(i,3)*dpd(i+1,1))*(-dpd(i+1,1)*dr(i,i+1,2) +
+     1        dpd(i,2)*dr(i+1,i+2,2))) 
         
-        A2 = -COEF1*(-DPD(I-1,2)*DR(I+1,I+2,2) +
-     1        DPD(I,2)*DR(I,I+1,2) - DPD(I,2)*DR(I-1,I,2) -
-     1        DPD(I,1)*DR(I+1,I+2,2) + 2.0*DPD(I-1,3)*DR(I,I+1,2) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,2) -
-     1        DPD(I-1,1)*DR(I,I+1,2) - DPD(I-1,2)*DR(I,I+1,2) +
-     1        DPD(I-1,2)*DR(I-1,I,2)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,2) +
-     1        DPD(I,2)*DR(I+1,I+2,2))) 
+        a2 = -coef1*(-dpd(i-1,2)*dr(i+1,i+2,2) +
+     1        dpd(i,2)*dr(i,i+1,2) - dpd(i,2)*dr(i-1,i,2) -
+     1        dpd(i,1)*dr(i+1,i+2,2) + 2.0*dpd(i-1,3)*dr(i,i+1,2) -
+     1        (1.0d0/xpd(i-1))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(dpd(i,1)*dr(i-1,i,2) -
+     1        dpd(i-1,1)*dr(i,i+1,2) - dpd(i-1,2)*dr(i,i+1,2) +
+     1        dpd(i-1,2)*dr(i-1,i,2)) -
+     1        (1.0d0/xpd(i))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(-dpd(i+1,1)*dr(i,i+1,2) +
+     1        dpd(i,2)*dr(i+1,i+2,2))) 
 
-        A3 = -COEF2*(DPD(I-2,2)*DR(I,I+1,2) -
-     1        DPD(I-2,2)*DR(I-1,I,2) + DPD(I-1,2)*DR(I-2,I-1,2) +
-     1        DPD(I-1,1)*DR(I-2,I-1,2) - 2.0*DPD(I-2,3)*DR(I-1,I,2) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,2) -
-     1        DPD(I-2,2)*DR(I-2,I-1,2)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,2) -
-     1        DPD(I-1,1)*DR(I,I+1,2) - DPD(I-1,2)*DR(I,I+1,2) +
-     1        DPD(I-1,2)*DR(I-1,I,2)))
+        a3 = -coef2*(dpd(i-2,2)*dr(i,i+1,2) -
+     1        dpd(i-2,2)*dr(i-1,i,2) + dpd(i-1,2)*dr(i-2,i-1,2) +
+     1        dpd(i-1,1)*dr(i-2,i-1,2) - 2.0*dpd(i-2,3)*dr(i-1,i,2) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*dr(i-1,i,2) -
+     1        dpd(i-2,2)*dr(i-2,i-1,2)) -
+     1        (1.0d0/xpd(i-1))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*dr(i-1,i,2) -
+     1        dpd(i-1,1)*dr(i,i+1,2) - dpd(i-1,2)*dr(i,i+1,2) +
+     1        dpd(i-1,2)*dr(i-1,i,2)))
 
-        FTA(I,2) = SUM(AA(1:3))
+        fta(i,2) = sum(aa(1:3))
  
-        A1 = -COEF*(-DPD(I+1,2)*DR(I+1,I+2,3) +
-     1        DPD(I+1,1)*DR(I+2,I+3,3) -
-     1        (1.0D0/XPD(I))*(DPD(I+1,2)*DPD(I,2) -
-     1        DPD(I,3)*DPD(I+1,1))*(-DPD(I+1,1)*DR(I,I+1,3) +
-     1        DPD(I,2)*DR(I+1,I+2,3))) 
+        a1 = -coef*(-dpd(i+1,2)*dr(i+1,i+2,3) +
+     1        dpd(i+1,1)*dr(i+2,i+3,3) -
+     1        (1.0d0/xpd(i))*(dpd(i+1,2)*dpd(i,2) -
+     1        dpd(i,3)*dpd(i+1,1))*(-dpd(i+1,1)*dr(i,i+1,3) +
+     1        dpd(i,2)*dr(i+1,i+2,3))) 
 
-        A2 =  -COEF1*(-DPD(I-1,2)*DR(I+1,I+2,3) +
-     1        DPD(I,2)*DR(I,I+1,3) - DPD(I,2)*DR(I-1,I,3) -
-     1        DPD(I,1)*DR(I+1,I+2,3) + 2.0*DPD(I-1,3)*DR(I,I+1,3) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,3) -
-     1        DPD(I-1,1)*DR(I,I+1,3) - DPD(I-1,2)*DR(I,I+1,3) +
-     1        DPD(I-1,2)*DR(I-1,I,3)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,3) +
-     1        DPD(I,2)*DR(I+1,I+2,3))) 
+        a2 =  -coef1*(-dpd(i-1,2)*dr(i+1,i+2,3) +
+     1        dpd(i,2)*dr(i,i+1,3) - dpd(i,2)*dr(i-1,i,3) -
+     1        dpd(i,1)*dr(i+1,i+2,3) + 2.0*dpd(i-1,3)*dr(i,i+1,3) -
+     1        (1.0d0/xpd(i-1))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(dpd(i,1)*dr(i-1,i,3) -
+     1        dpd(i-1,1)*dr(i,i+1,3) - dpd(i-1,2)*dr(i,i+1,3) +
+     1        dpd(i-1,2)*dr(i-1,i,3)) -
+     1        (1.0d0/xpd(i))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(-dpd(i+1,1)*dr(i,i+1,3) +
+     1        dpd(i,2)*dr(i+1,i+2,3))) 
 
-        A3 = -COEF2*(DPD(I-2,2)*DR(I,I+1,3) -
-     1        DPD(I-2,2)*DR(I-1,I,3) + DPD(I-1,2)*DR(I-2,I-1,3) +
-     1        DPD(I-1,1)*DR(I-2,I-1,3) - 2.0*DPD(I-2,3)*DR(I-1,I,3) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,3) -
-     1        DPD(I-2,2)*DR(I-2,I-1,3)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,3) -
-     1        DPD(I-1,1)*DR(I,I+1,3) - DPD(I-1,2)*DR(I,I+1,3) +
-     1        DPD(I-1,2)*DR(I-1,I,3))) 
+        a3 = -coef2*(dpd(i-2,2)*dr(i,i+1,3) -
+     1        dpd(i-2,2)*dr(i-1,i,3) + dpd(i-1,2)*dr(i-2,i-1,3) +
+     1        dpd(i-1,1)*dr(i-2,i-1,3) - 2.0*dpd(i-2,3)*dr(i-1,i,3) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*dr(i-1,i,3) -
+     1        dpd(i-2,2)*dr(i-2,i-1,3)) -
+     1        (1.0d0/xpd(i-1))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*dr(i-1,i,3) -
+     1        dpd(i-1,1)*dr(i,i+1,3) - dpd(i-1,2)*dr(i,i+1,3) +
+     1        dpd(i-1,2)*dr(i-1,i,3))) 
 
-        FTA(I,3) = SUM(AA(1:3))
+        fta(i,3) = sum(aa(1:3))
 ! }}}
-! PARTICLES 4 TO N-3
+! particle n-2
 ! {{{
+        i = n-2
+        coef(1)=(cd(i,1)+cd(i,2)*(12.0*cos(ang(i,2))**2-3.0)*ixpd(i-1)
 
-        DO I = 4, N-3
-          DO K=1,4
-            COEF(K) = CD(I-K+2,1) + CD(I-K+2,2)*(12.0*COS(ANG(I-K+2,2))**2-3.0)
-            COEF(K) = COEF(K)*IXPD(I+1-K)
-          ENDDO
+        coef(2)=(cd(i-1,1)+cd(i-1,2)*(12.0*cos(ang(i-1,2))
+     1        *cos(ang(i-1,2)) - 
+     1        3.0))*(1.0d0/sqrt(xpd(i-1)*xpd(i-2)))  
 
-        AA(1) = -DPD(I+1,2)*BVR(I+1,1)+DPD(I+1,1)*BVR(I+2,1) 
+        coef3=(cd(i-2,1)+cd(i-2,2)*(12.0*cos(ang(i-2,2))
+     1        *cos(ang(i-2,2)) - 
+     1  3.0))*(1.0d0/sqrt(xpd(i-2)*xpd(i-3)))  
 
-        aa0=1.0D0/xpd_2(i)
-        aa1= -dpd(i+1,1)*bvr(i,1) + dpd(i,2)*bvr(i+1,1)
+        a1 = -coef1*(-dpd(i-1,2)*dr(i+1,i+2,1) + 
+     1        dpd(i,2)*dr(i,i+1,1) - dpd(i,2)*dr(i-1,i,1) -
+     1        dpd(i,1)*dr(i+1,i+2,1) + 2.0*dpd(i-1,3)*dr(i,i+1,1) -
+     1        (1.0d0/xpd(i-1))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(dpd(i,1)*dr(i-1,i,1) -
+     1        dpd(i-1,1)*dr(i,i+1,1) - dpd(i-1,2)*dr(i,i+1,1) +
+     1        dpd(i-1,2)*dr(i-1,i,1)) -
+     1        (1.0d0/xpd(i))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(-dpd(i+1,1)*dr(i,i+1,1) +
+     1        dpd(i,2)*dr(i+1,i+2,1)))
 
-        AA(1) = AA(1) - (1.0D0/XPD_2(I))*(DPD(I+1,2)*DPD(I,2)-DPD(I,3)*DPD(I+1,1))*AA0*AA1
 
-AA(1)=-COEF(1)*AA(1)
-
-        AA(2) = -COEF(2)*(-DPD(I-1,2)*DR(I+1,I+2,1) +
-     1        DPD(I,2)*DR(I,I+1,1) - DPD(I,2)*DR(I-1,I,1) -
-     1        DPD(I,1)*DR(I+1,I+2,1) + 2.0*DPD(I-1,3)*DR(I,I+1,1) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,1) -
-     1        DPD(I-1,1)*DR(I,I+1,1) - DPD(I-1,2)*DR(I,I+1,1) +
-     1        DPD(I-1,2)*DR(I-1,I,1)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,1) +
-     1        DPD(I,2)*DR(I+1,I+2,1))) 
-
-        AA(3) = -COEF(3)*(DPD(I-2,2)*DR(I,I+1,1) -
-     1        DPD(I-2,2)*DR(I-1,I,1) + DPD(I-1,2)*DR(I-2,I-1,1) +
-     1        DPD(I-1,1)*DR(I-2,I-1,1) - 2.0*DPD(I-2,3)*DR(I-1,I,1) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,1) -
-     1        DPD(I-2,2)*DR(I-2,I-1,1)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1  DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,1) -
-     1        DPD(I-1,1)*DR(I,I+1,1) - DPD(I-1,2)*DR(I,I+1,1) +
-     1        DPD(I-1,2)*DR(I-1,I,1))) 
-
-        AA(4) = -COEF3*(DPD(I-3,2)*DR(I-2,I-1,1) -
-     1        DPD(I-2,1)*DR(I-3,I-2,1) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-2,2)*DPD(I-3,2) -
-     1        DPD(I-3,3)*DPD(I-2,1))*(DPD(I-2,1)*DR(I-1,I,1) -
-     1        DPD(I-2,2)*DR(I-2,I-1,1))) 
-
-        FTA(I,1) =sum(AA)
-
-        AA(1) = -COEF*(-DPD(I+1,2)*DR(I+1,I+2,2) +
-     1        DPD(I+1,1)*DR(I+2,I+3,2) -
-     1        (1.0D0/XPD(I))*(DPD(I+1,2)*DPD(I,2) -
-     1        DPD(I,3)*DPD(I+1,1))*(-DPD(I+1,1)*DR(I,I+1,2) +
-     1        DPD(I,2)*DR(I+1,I+2,2))) 
-
-        AA(2) = -COEF1*(-DPD(I-1,2)*DR(I+1,I+2,2) +
-     1        DPD(I,2)*DR(I,I+1,2) - DPD(I,2)*DR(I-1,I,2) -
-     1        DPD(I,1)*DR(I+1,I+2,2) + 2.0*DPD(I-1,3)*DR(I,I+1,2) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,2) -
-     1        DPD(I-1,1)*DR(I,I+1,2) - DPD(I-1,2)*DR(I,I+1,2) +
-     1        DPD(I-1,2)*DR(I-1,I,2)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,2) +
-     1        DPD(I,2)*DR(I+1,I+2,2))) 
-
-        AA(3) = -COEF2*(DPD(I-2,2)*DR(I,I+1,2) -
-     1        DPD(I-2,2)*DR(I-1,I,2) + DPD(I-1,2)*DR(I-2,I-1,2) +
-     1        DPD(I-1,1)*DR(I-2,I-1,2) - 2.0*DPD(I-2,3)*DR(I-1,I,2) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,2) -
-     1        DPD(I-2,2)*DR(I-2,I-1,2)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,2) -
-     1        DPD(I-1,1)*DR(I,I+1,2) - DPD(I-1,2)*DR(I,I+1,2) +
-     1        DPD(I-1,2)*DR(I-1,I,2))) 
-
-        AA(4) = -COEF3*(DPD(I-3,2)*DR(I-2,I-1,2) -
-     1        DPD(I-2,1)*DR(I-3,I-2,2) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-2,2)*DPD(I-3,2) -
-     1        DPD(I-3,3)*DPD(I-2,1))*(DPD(I-2,1)*DR(I-1,I,2) -
-     1        DPD(I-2,2)*DR(I-2,I-1,2))) 
-
-        FTA(I,2) = sum(AA) 
-
-        AA(1) = -COEF*(-DPD(I+1,2)*DR(I+1,I+2,3) +
-     1        DPD(I+1,1)*DR(I+2,I+3,3) -
-     1        (1.0D0/XPD(I))*(DPD(I+1,2)*DPD(I,2) -
-     1        DPD(I,3)*DPD(I+1,1))*(-DPD(I+1,1)*DR(I,I+1,3) +
-     1        DPD(I,2)*DR(I+1,I+2,3))) 
-
-        AA(2) = -COEF1*(-DPD(I-1,2)*DR(I+1,I+2,3) +
-     1        DPD(I,2)*DR(I,I+1,3) - DPD(I,2)*DR(I-1,I,3) -
-     1        DPD(I,1)*DR(I+1,I+2,3) + 2.0*DPD(I-1,3)*DR(I,I+1,3) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,3) -
-     1        DPD(I-1,1)*DR(I,I+1,3) - DPD(I-1,2)*DR(I,I+1,3) +
-     1        DPD(I-1,2)*DR(I-1,I,3)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,3) +
-     1        DPD(I,2)*DR(I+1,I+2,3))) 
-
-        AA(3) = -COEF2*(DPD(I-2,2)*DR(I,I+1,3) -
-     1        DPD(I-2,2)*DR(I-1,I,3) + DPD(I-1,2)*DR(I-2,I-1,3) +
-     1        DPD(I-1,1)*DR(I-2,I-1,3) - 2.0*DPD(I-2,3)*DR(I-1,I,3) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,3) -
-     1        DPD(I-2,2)*DR(I-2,I-1,3)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,3) -
-     1        DPD(I-1,1)*DR(I,I+1,3) - DPD(I-1,2)*DR(I,I+1,3) +
-     1        DPD(I-1,2)*DR(I-1,I,3))) 
+        a2 = -coef2*(dpd(i-2,2)*dr(i,i+1,1) -
+     1        dpd(i-2,2)*dr(i-1,i,1) + dpd(i-1,2)*dr(i-2,i-1,1) +
+     1        dpd(i-1,1)*dr(i-2,i-1,1) - 2.0*dpd(i-2,3)*dr(i-1,i,1) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*dr(i-1,i,1) -
+     1        dpd(i-2,2)*dr(i-2,i-1,1)) -
+     1        (1.0d0/xpd(i-1))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*dr(i-1,i,1) -
+     1        dpd(i-1,1)*dr(i,i+1,1) - dpd(i-1,2)*dr(i,i+1,1) +
+     1        dpd(i-1,2)*dr(i-1,i,1))) 
         
-        AA(4) = -COEF3*(DPD(I-3,2)*DR(I-2,I-1,3) -
-     1        DPD(I-2,1)*DR(I-3,I-2,3) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-2,2)*DPD(I-3,2) -
-     1        DPD(I-3,3)*DPD(I-2,1))*(DPD(I-2,1)*DR(I-1,I,3) -
-     1        DPD(I-2,2)*DR(I-2,I-1,3))) 
+        a3 = -coef3*(dpd(i-3,2)*dr(i-2,i-1,1) -
+     1        dpd(i-2,1)*dr(i-3,i-2,1) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-2,2)*dpd(i-3,2) -
+     1        dpd(i-3,3)*dpd(i-2,1))*(dpd(i-2,1)*dr(i-1,i,1) -
+     1        dpd(i-2,2)*dr(i-2,i-1,1))) 
 
-        FTA(I,3) = SUM(AA)  
+        fta(i,1) = sum(aa(1:3)) 
 
-        ENDDO
-! }}}
-! PARTICLE N-2
-! {{{
-        I = N-2
-        COEF(1)=(CD(I,1)+CD(I,2)*(12.0*COS(ANG(I,2))**2-3.0)*IXPD(I-1)
+        a1 =  -coef1*(-dpd(i-1,2)*dr(i+1,i+2,2) +  
+     1        dpd(i,2)*dr(i,i+1,2) - dpd(i,2)*dr(i-1,i,2) -
+     1        dpd(i,1)*dr(i+1,i+2,2) + 2.0*dpd(i-1,3)*dr(i,i+1,2) -
+     1        (1.0d0/xpd(i-1))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(dpd(i,1)*dr(i-1,i,2) -
+     1        dpd(i-1,1)*dr(i,i+1,2) - dpd(i-1,2)*dr(i,i+1,2) +
+     1        dpd(i-1,2)*dr(i-1,i,2)) -
+     1        (1.0d0/xpd(i))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(-dpd(i+1,1)*dr(i,i+1,2) +
+     1        dpd(i,2)*dr(i+1,i+2,2))) 
 
-        COEF(2)=(CD(I-1,1)+CD(I-1,2)*(12.0*COS(ANG(I-1,2))
-     1        *COS(ANG(I-1,2)) - 
-     1        3.0))*(1.0D0/SQRT(XPD(I-1)*XPD(I-2)))  
+        a2 =  -coef2*(dpd(i-2,2)*dr(i,i+1,2) -
+     1        dpd(i-2,2)*dr(i-1,i,2) + dpd(i-1,2)*dr(i-2,i-1,2) +
+     1        dpd(i-1,1)*dr(i-2,i-1,2) - 2.0*dpd(i-2,3)*dr(i-1,i,2) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*dr(i-1,i,2) -
+     1        dpd(i-2,2)*dr(i-2,i-1,2)) -
+     1        (1.0d0/xpd(i-1))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*dr(i-1,i,2) -
+     1        dpd(i-1,1)*dr(i,i+1,2) - dpd(i-1,2)*dr(i,i+1,2) +
+     1        dpd(i-1,2)*dr(i-1,i,2)))
 
-        COEF3=(CD(I-2,1)+CD(I-2,2)*(12.0*COS(ANG(I-2,2))
-     1        *COS(ANG(I-2,2)) - 
-     1  3.0))*(1.0D0/SQRT(XPD(I-2)*XPD(I-3)))  
+        a3 = -coef3*(dpd(i-3,2)*dr(i-2,i-1,2) -
+     1        dpd(i-2,1)*dr(i-3,i-2,2) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-2,2)*dpd(i-3,2) -
+     1        dpd(i-3,3)*dpd(i-2,1))*(dpd(i-2,1)*dr(i-1,i,2) -
+     1        dpd(i-2,2)*dr(i-2,i-1,2))) 
 
-        A1 = -COEF1*(-DPD(I-1,2)*DR(I+1,I+2,1) + 
-     1        DPD(I,2)*DR(I,I+1,1) - DPD(I,2)*DR(I-1,I,1) -
-     1        DPD(I,1)*DR(I+1,I+2,1) + 2.0*DPD(I-1,3)*DR(I,I+1,1) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,1) -
-     1        DPD(I-1,1)*DR(I,I+1,1) - DPD(I-1,2)*DR(I,I+1,1) +
-     1        DPD(I-1,2)*DR(I-1,I,1)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,1) +
-     1        DPD(I,2)*DR(I+1,I+2,1)))
-
-
-        A2 = -COEF2*(DPD(I-2,2)*DR(I,I+1,1) -
-     1        DPD(I-2,2)*DR(I-1,I,1) + DPD(I-1,2)*DR(I-2,I-1,1) +
-     1        DPD(I-1,1)*DR(I-2,I-1,1) - 2.0*DPD(I-2,3)*DR(I-1,I,1) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,1) -
-     1        DPD(I-2,2)*DR(I-2,I-1,1)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,1) -
-     1        DPD(I-1,1)*DR(I,I+1,1) - DPD(I-1,2)*DR(I,I+1,1) +
-     1        DPD(I-1,2)*DR(I-1,I,1))) 
-        
-        A3 = -COEF3*(DPD(I-3,2)*DR(I-2,I-1,1) -
-     1        DPD(I-2,1)*DR(I-3,I-2,1) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-2,2)*DPD(I-3,2) -
-     1        DPD(I-3,3)*DPD(I-2,1))*(DPD(I-2,1)*DR(I-1,I,1) -
-     1        DPD(I-2,2)*DR(I-2,I-1,1))) 
-
-        FTA(I,1) = sum(AA(1:3)) 
-
-        A1 =  -COEF1*(-DPD(I-1,2)*DR(I+1,I+2,2) +  
-     1        DPD(I,2)*DR(I,I+1,2) - DPD(I,2)*DR(I-1,I,2) -
-     1        DPD(I,1)*DR(I+1,I+2,2) + 2.0*DPD(I-1,3)*DR(I,I+1,2) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,2) -
-     1        DPD(I-1,1)*DR(I,I+1,2) - DPD(I-1,2)*DR(I,I+1,2) +
-     1        DPD(I-1,2)*DR(I-1,I,2)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,2) +
-     1        DPD(I,2)*DR(I+1,I+2,2))) 
-
-        A2 =  -COEF2*(DPD(I-2,2)*DR(I,I+1,2) -
-     1        DPD(I-2,2)*DR(I-1,I,2) + DPD(I-1,2)*DR(I-2,I-1,2) +
-     1        DPD(I-1,1)*DR(I-2,I-1,2) - 2.0*DPD(I-2,3)*DR(I-1,I,2) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,2) -
-     1        DPD(I-2,2)*DR(I-2,I-1,2)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,2) -
-     1        DPD(I-1,1)*DR(I,I+1,2) - DPD(I-1,2)*DR(I,I+1,2) +
-     1        DPD(I-1,2)*DR(I-1,I,2)))
-
-        A3 = -COEF3*(DPD(I-3,2)*DR(I-2,I-1,2) -
-     1        DPD(I-2,1)*DR(I-3,I-2,2) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-2,2)*DPD(I-3,2) -
-     1        DPD(I-3,3)*DPD(I-2,1))*(DPD(I-2,1)*DR(I-1,I,2) -
-     1        DPD(I-2,2)*DR(I-2,I-1,2))) 
-
-        FTA(I,2) = sum(AA(1:3)) 
+        fta(i,2) = sum(aa(1:3)) 
  
-        AA(1) = -COEF1*(-DPD(I-1,2)*DR(I+1,I+2,3) +  
-     1        DPD(I,2)*DR(I,I+1,3) - DPD(I,2)*DR(I-1,I,3) -
-     1        DPD(I,1)*DR(I+1,I+2,3) + 2.0*DPD(I-1,3)*DR(I,I+1,3) -
-     1        (1.0D0/XPD(I-1))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(DPD(I,1)*DR(I-1,I,3) -
-     1        DPD(I-1,1)*DR(I,I+1,3) - DPD(I-1,2)*DR(I,I+1,3) +
-     1        DPD(I-1,2)*DR(I-1,I,3)) -
-     1        (1.0D0/XPD(I))*(DPD(I,2)*DPD(I-1,2) -
-     1        DPD(I-1,3)*DPD(I,1))*(-DPD(I+1,1)*DR(I,I+1,3) +
-     1        DPD(I,2)*DR(I+1,I+2,3))) 
+        aa(1) = -coef1*(-dpd(i-1,2)*dr(i+1,i+2,3) +  
+     1        dpd(i,2)*dr(i,i+1,3) - dpd(i,2)*dr(i-1,i,3) -
+     1        dpd(i,1)*dr(i+1,i+2,3) + 2.0*dpd(i-1,3)*dr(i,i+1,3) -
+     1        (1.0d0/xpd(i-1))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(dpd(i,1)*dr(i-1,i,3) -
+     1        dpd(i-1,1)*dr(i,i+1,3) - dpd(i-1,2)*dr(i,i+1,3) +
+     1        dpd(i-1,2)*dr(i-1,i,3)) -
+     1        (1.0d0/xpd(i))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(-dpd(i+1,1)*dr(i,i+1,3) +
+     1        dpd(i,2)*dr(i+1,i+2,3))) 
 
-        AA(2) = -COEF2*(DPD(I-2,2)*DR(I,I+1,3) -
-     1        DPD(I-2,2)*DR(I-1,I,3) + DPD(I-1,2)*DR(I-2,I-1,3) +
-     1        DPD(I-1,1)*DR(I-2,I-1,3) - 2.0*DPD(I-2,3)*DR(I-1,I,3) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,3) -
-     1        DPD(I-2,2)*DR(I-2,I-1,3)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,3) -
-     1        DPD(I-1,1)*DR(I,I+1,3) - DPD(I-1,2)*DR(I,I+1,3) +
-     1        DPD(I-1,2)*DR(I-1,I,3))) 
+        aa(2) = -coef2*(dpd(i-2,2)*dr(i,i+1,3) -
+     1        dpd(i-2,2)*dr(i-1,i,3) + dpd(i-1,2)*dr(i-2,i-1,3) +
+     1        dpd(i-1,1)*dr(i-2,i-1,3) - 2.0*dpd(i-2,3)*dr(i-1,i,3) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*dr(i-1,i,3) -
+     1        dpd(i-2,2)*dr(i-2,i-1,3)) -
+     1        (1.0d0/xpd(i-1))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*dr(i-1,i,3) -
+     1        dpd(i-1,1)*dr(i,i+1,3) - dpd(i-1,2)*dr(i,i+1,3) +
+     1        dpd(i-1,2)*dr(i-1,i,3))) 
 
-        AA(3) = -COEF3*(DPD(I-3,2)*DR(I-2,I-1,3) -
-     1        DPD(I-2,1)*DR(I-3,I-2,3) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-2,2)*DPD(I-3,2) -
-     1        DPD(I-3,3)*DPD(I-2,1))*(DPD(I-2,1)*DR(I-1,I,3) -
-     1        DPD(I-2,2)*DR(I-2,I-1,3))) 
+        aa(3) = -coef3*(dpd(i-3,2)*dr(i-2,i-1,3) -
+     1        dpd(i-2,1)*dr(i-3,i-2,3) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-2,2)*dpd(i-3,2) -
+     1        dpd(i-3,3)*dpd(i-2,1))*(dpd(i-2,1)*dr(i-1,i,3) -
+     1        dpd(i-2,2)*dr(i-2,i-1,3))) 
 
-        FTA(I,3) = sum(AA(1:3)) 
+        fta(i,3) = sum(aa(1:3)) 
 ! }}}
-! PARTICLE N-1
+! particle n-1
 ! {{{
 
-        I = N-1
-        COEF2=(CD(I-1,1)+CD(I-1,2)*(12.0*COS(ANG(I-1,2))
-     1        *COS(ANG(I-1,2)) - 
-     1        3.0))*(1.0D0/SQRT(XPD(I-1)*XPD(I-2)))  
+        i = n-1
+        coef2=(cd(i-1,1)+cd(i-1,2)*(12.0*cos(ang(i-1,2))
+     1        *cos(ang(i-1,2)) - 
+     1        3.0))*(1.0d0/sqrt(xpd(i-1)*xpd(i-2)))  
 
-        COEF3=(CD(I-2,1)+CD(I-2,2)*(12.0*COS(ANG(I-2,2))
-     1        *COS(ANG(I-2,2)) - 
-     1        3.0))*(1.0D0/SQRT(XPD(I-2)*XPD(I-3)))  
+        coef3=(cd(i-2,1)+cd(i-2,2)*(12.0*cos(ang(i-2,2))
+     1        *cos(ang(i-2,2)) - 
+     1        3.0))*(1.0d0/sqrt(xpd(i-2)*xpd(i-3)))  
 
-        A1 = -COEF2*(DPD(I-2,2)*DR(I,I+1,1) - 
-     1        DPD(I-2,2)*DR(I-1,I,1) +
-     1        DPD(I-1,2)*DR(I-2,I-1,1) +  DPD(I-1,1)*DR(I-2,I-1,1) -
-     1        2.0*DPD(I-2,3)*DR(I-1,I,1) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,1) -
-     1        DPD(I-2,2)*DR(I-2,I-1,1)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,1) -
-     1        DPD(I-1,1)*DR(I,I+1,1) - DPD(I-1,2)*DR(I,I+1,1) +
-     1        DPD(I-1,2)*DR(I-1,I,1))) 
+        a1 = -coef2*(dpd(i-2,2)*dr(i,i+1,1) - 
+     1        dpd(i-2,2)*dr(i-1,i,1) +
+     1        dpd(i-1,2)*dr(i-2,i-1,1) +  dpd(i-1,1)*dr(i-2,i-1,1) -
+     1        2.0*dpd(i-2,3)*dr(i-1,i,1) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*dr(i-1,i,1) -
+     1        dpd(i-2,2)*dr(i-2,i-1,1)) -
+     1        (1.0d0/xpd(i-1))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*dr(i-1,i,1) -
+     1        dpd(i-1,1)*dr(i,i+1,1) - dpd(i-1,2)*dr(i,i+1,1) +
+     1        dpd(i-1,2)*dr(i-1,i,1))) 
 
-        A2 = -COEF3*(DPD(I-3,2)*DR(I-2,I-1,1) - 
-     1        DPD(I-2,1)*DR(I-3,I-2,1) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-2,2)*DPD(I-3,2) -
-     1        DPD(I-3,3)*DPD(I-2,1))*(DPD(I-2,1)*DR(I-1,I,1) -
-     1        DPD(I-2,2)*DR(I-2,I-1,1))) 
+        a2 = -coef3*(dpd(i-3,2)*dr(i-2,i-1,1) - 
+     1        dpd(i-2,1)*dr(i-3,i-2,1) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-2,2)*dpd(i-3,2) -
+     1        dpd(i-3,3)*dpd(i-2,1))*(dpd(i-2,1)*dr(i-1,i,1) -
+     1        dpd(i-2,2)*dr(i-2,i-1,1))) 
 
-        FTA(I,1) = sum(AA(1:2))  
+        fta(i,1) = sum(aa(1:2))  
 
-        A1 = -COEF2*(DPD(I-2,2)*DR(I,I+1,2) - 
-     1        DPD(I-2,2)*DR(I-1,I,2) +
-     1        DPD(I-1,2)*DR(I-2,I-1,2) +  DPD(I-1,1)*DR(I-2,I-1,2) -
-     1        2.0*DPD(I-2,3)*DR(I-1,I,2) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,2) -
-     1        DPD(I-2,2)*DR(I-2,I-1,2)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,2) -
-     1  DPD(I-1,1)*DR(I,I+1,2) - DPD(I-1,2)*DR(I,I+1,2) +
-     1        DPD(I-1,2)*DR(I-1,I,2))) 
+        a1 = -coef2*(dpd(i-2,2)*dr(i,i+1,2) - 
+     1        dpd(i-2,2)*dr(i-1,i,2) +
+     1        dpd(i-1,2)*dr(i-2,i-1,2) +  dpd(i-1,1)*dr(i-2,i-1,2) -
+     1        2.0*dpd(i-2,3)*dr(i-1,i,2) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*dr(i-1,i,2) -
+     1        dpd(i-2,2)*dr(i-2,i-1,2)) -
+     1        (1.0d0/xpd(i-1))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*dr(i-1,i,2) -
+     1  dpd(i-1,1)*dr(i,i+1,2) - dpd(i-1,2)*dr(i,i+1,2) +
+     1        dpd(i-1,2)*dr(i-1,i,2))) 
 
-        A2 = -COEF3*(DPD(I-3,2)*DR(I-2,I-1,2) - 
-     1        DPD(I-2,1)*DR(I-3,I-2,2) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-2,2)*DPD(I-3,2) -
-     1        DPD(I-3,3)*DPD(I-2,1))*(DPD(I-2,1)*DR(I-1,I,2) -
-     1        DPD(I-2,2)*DR(I-2,I-1,2))) 
+        a2 = -coef3*(dpd(i-3,2)*dr(i-2,i-1,2) - 
+     1        dpd(i-2,1)*dr(i-3,i-2,2) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-2,2)*dpd(i-3,2) -
+     1        dpd(i-3,3)*dpd(i-2,1))*(dpd(i-2,1)*dr(i-1,i,2) -
+     1        dpd(i-2,2)*dr(i-2,i-1,2))) 
 
-        FTA(I,2) = sum(AA(1:2))  
+        fta(i,2) = sum(aa(1:2))  
 
-        A1 = -COEF2*(DPD(I-2,2)*DR(I,I+1,3) - 
-     1        DPD(I-2,2)*DR(I-1,I,3) +
-     1        DPD(I-1,2)*DR(I-2,I-1,3) +  DPD(I-1,1)*DR(I-2,I-1,3) -
-     1        2.0*DPD(I-2,3)*DR(I-1,I,3) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I-2,1)*DR(I-1,I,3) -
-     1        DPD(I-2,2)*DR(I-2,I-1,3)) -
-     1        (1.0D0/XPD(I-1))*(DPD(I-1,2)*DPD(I-2,2) -
-     1        DPD(I-2,3)*DPD(I-1,1))*(DPD(I,1)*DR(I-1,I,3) -
-     1        DPD(I-1,1)*DR(I,I+1,3) - DPD(I-1,2)*DR(I,I+1,3) +
-     1        DPD(I-1,2)*DR(I-1,I,3))) 
+        a1 = -coef2*(dpd(i-2,2)*dr(i,i+1,3) - 
+     1        dpd(i-2,2)*dr(i-1,i,3) +
+     1        dpd(i-1,2)*dr(i-2,i-1,3) +  dpd(i-1,1)*dr(i-2,i-1,3) -
+     1        2.0*dpd(i-2,3)*dr(i-1,i,3) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*dr(i-1,i,3) -
+     1        dpd(i-2,2)*dr(i-2,i-1,3)) -
+     1        (1.0d0/xpd(i-1))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*dr(i-1,i,3) -
+     1        dpd(i-1,1)*dr(i,i+1,3) - dpd(i-1,2)*dr(i,i+1,3) +
+     1        dpd(i-1,2)*dr(i-1,i,3))) 
 
-        A2 = -COEF3*(DPD(I-3,2)*DR(I-2,I-1,3) - 
-     1        DPD(I-2,1)*DR(I-3,I-2,3) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-2,2)*DPD(I-3,2) -
-     1        DPD(I-3,3)*DPD(I-2,1))*(DPD(I-2,1)*DR(I-1,I,3) -
-     1        DPD(I-2,2)*DR(I-2,I-1,3))) 
+        a2 = -coef3*(dpd(i-3,2)*dr(i-2,i-1,3) - 
+     1        dpd(i-2,1)*dr(i-3,i-2,3) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-2,2)*dpd(i-3,2) -
+     1        dpd(i-3,3)*dpd(i-2,1))*(dpd(i-2,1)*dr(i-1,i,3) -
+     1        dpd(i-2,2)*dr(i-2,i-1,3))) 
 
-        FTA(I,3) = SUM(AA(1:2))  
+        fta(i,3) = sum(aa(1:2))  
 ! }}} 
-! PARTICLE N
+! particle n
 ! {{{
 
-        I = N
-        COEF3=(CD(I-2,1)+CD(I-2,2)*(12.0*COS(ANG(I-2,2))
-     1        *COS(ANG(I-2,2)) - 
-     1        3.0))*(1.0D0/SQRT(XPD(I-2)*XPD(I-3)))  
+        i = n
+        coef3=(cd(i-2,1)+cd(i-2,2)*(12.0*cos(ang(i-2,2))
+     1        *cos(ang(i-2,2)) - 
+     1        3.0))*(1.0d0/sqrt(xpd(i-2)*xpd(i-3)))  
 
-        FTA(I,1:3) = -COEF3*(DPD(I-3,2)*DR(I-2,I-1,1:3) 
-     1        - DPD(I-2,1)*DR(I-3,I-2,1:3) -
-     1        (1.0D0/XPD(I-2))*(DPD(I-2,2)*DPD(I-3,2) -
-     1        DPD(I-3,3)*DPD(I-2,1))*(DPD(I-2,1)*DR(I-1,I,1) -
-     1        DPD(I-2,2)*DR(I-2,I-1,1:3))) 
+        fta(i,1:3) = -coef3*(dpd(i-3,2)*dr(i-2,i-1,1:3) 
+     1        - dpd(i-2,1)*dr(i-3,i-2,1:3) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-2,2)*dpd(i-3,2) -
+     1        dpd(i-3,3)*dpd(i-2,1))*(dpd(i-2,1)*dr(i-1,i,1) -
+     1        dpd(i-2,2)*dr(i-2,i-1,1:3))) 
+! }}}
+! }}}
+! particles 4 to n-3
+!
+! define bb0 coef {{{
+!
+        do i = 4, n-3
+          bb0(i)=1.0/xpd_2(i)
+          do k=1,4
+            coef(k) = cd(i-k+2,1) + cd(i-k+2,2)*(12.0*cos(ang(i-k+2,2))**2-3.0)
+            coef(k) = coef(k)*ixpd(i+1-k)
+          enddo
+
+! }}}
+! aa(1) {{{
+        ! 2 terms summed 
+        aa(1) = -dpd(i+1,2)*bvr(i+1,1)+dpd(i+1,1)*bvr(i+2,1) 
+
+        B1= -dpd(i+1,1)*bvr(i,1) + dpd(i,2)*bvr(i+1,1)
+        B2=  dpd(i+1,2)*dpd(i,2) - dpd(i,3)*dpd(i+1,1) 
+
+        aa(1) = aa(1) - bb0(i)*B1*B2
+! }}}
+! aa(2) {{{
+        ! 5 terms summed 
+        aa(2) = -dpd(i-1,2)*bvr(i+1,1)  &
+                +dpd(i,2)*bvr(i,1)      &
+                +2.0*dpd(i-1,3)*bvr(i,1) &
+                -dpd(i,2)*bvr(i-1,1)    &
+                -dpd(i,1)*bvr(i+1,1)    
+
+        aa(2) = aa(2) &
+                - bb0(i-1)&     ! 2  {{{
+                 *(                     &
+                   dpd(i,2)*dpd(i-1,2)  &
+                   - dpd(i-1,3)*dpd(i,1)    &
+                  ) &
+                 *( 
+                    dpd(i,1)*dr(i-1,i,1)  &
+                    - dpd(i-1,1)*dr(i,i+1,1) &
+                    - dpd(i-1,2)*dr(i,i+1,1) & 
+                    + dpd(i-1,2)*dr(i-1,i,1) &
+                  ) &           ! }}}
+                - bb0(i)&       ! ( 2 )( 2 ) {{{
+                 *(                         &
+                   dpd(i,2)*dpd(i-1,2)      &
+                   - dpd(i-1,3)*dpd(i,1)    &
+                  )                         &
+                 *(                         &
+                   -dpd(i+1,1)*dr(i,i+1,1)  &
+                   + dpd(i,2)*dr(i+1,i+2,1) &
+                  )
+                                ! }}}
+
+! aa(3) {{{
+        aa(3) = -dpd(i-2,2)*bvr(i,1) -
+     1        dpd(i-2,2)*bvr(i-1,1) + dpd(i-1,2)*bvr(i-2,1) +
+     1        dpd(i-1,1)*bvr(i-2,1) - 2.0*dpd(i-2,3)*bvr(i-1,1) -
+     1        bb0(i-2)*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*bvr(i-1,1) -
+     1        dpd(i-2,2)*bvr(i-2,1)) -
+     1        bb0(i-1)*(dpd(i-1,2)*dpd(i-2,2) -
+     1  dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*bvr(i-1,1) -
+     1        dpd(i-1,1)*bvr(i,1) - dpd(i-1,2)*bvr(i,1) +
+     1        dpd(i-1,2)*bvr(i-1,1))
+! }}}
+! aa(4) {{{
+        aa(4) = -dpd(i-3,2)*dr(i-2,i-1,1) -
+     1        dpd(i-2,1)*dr(i-3,i-2,1) -
+     1        bb0(i-2)*(dpd(i-2,2)*dpd(i-3,2) -
+     1        dpd(i-3,3)*dpd(i-2,1))*(dpd(i-2,1)*dr(i-1,i,1) -
+     1        dpd(i-2,2)*dr(i-2,i-1,1))
+! }}}
+
+aa=-coef*aa
+
+! }}}
+        fta(i,1) = sum(aa)
+! {{{
+        aa(1) = -coef*(-dpd(i+1,2)*dr(i+1,i+2,2) +
+     1        dpd(i+1,1)*dr(i+2,i+3,2) -
+     1        (1.0d0/xpd(i))*(dpd(i+1,2)*dpd(i,2) -
+     1        dpd(i,3)*dpd(i+1,1))*(-dpd(i+1,1)*dr(i,i+1,2) +
+     1        dpd(i,2)*dr(i+1,i+2,2))) 
+
+        aa(2) = -coef1*(-dpd(i-1,2)*dr(i+1,i+2,2) +
+     1        dpd(i,2)*dr(i,i+1,2) - dpd(i,2)*dr(i-1,i,2) -
+     1        dpd(i,1)*dr(i+1,i+2,2) + 2.0*dpd(i-1,3)*dr(i,i+1,2) -
+     1        (1.0d0/xpd(i-1))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(dpd(i,1)*dr(i-1,i,2) -
+     1        dpd(i-1,1)*dr(i,i+1,2) - dpd(i-1,2)*dr(i,i+1,2) +
+     1        dpd(i-1,2)*dr(i-1,i,2)) -
+     1        (1.0d0/xpd(i))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(-dpd(i+1,1)*dr(i,i+1,2) +
+     1        dpd(i,2)*dr(i+1,i+2,2))) 
+
+        aa(3) = -coef2*(dpd(i-2,2)*dr(i,i+1,2) -
+     1        dpd(i-2,2)*dr(i-1,i,2) + dpd(i-1,2)*dr(i-2,i-1,2) +
+     1        dpd(i-1,1)*dr(i-2,i-1,2) - 2.0*dpd(i-2,3)*dr(i-1,i,2) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*dr(i-1,i,2) -
+     1        dpd(i-2,2)*dr(i-2,i-1,2)) -
+     1        (1.0d0/xpd(i-1))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*dr(i-1,i,2) -
+     1        dpd(i-1,1)*dr(i,i+1,2) - dpd(i-1,2)*dr(i,i+1,2) +
+     1        dpd(i-1,2)*dr(i-1,i,2))) 
+
+        aa(4) = -coef3*(dpd(i-3,2)*dr(i-2,i-1,2) -
+     1        dpd(i-2,1)*dr(i-3,i-2,2) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-2,2)*dpd(i-3,2) -
+     1        dpd(i-3,3)*dpd(i-2,1))*(dpd(i-2,1)*dr(i-1,i,2) -
+     1        dpd(i-2,2)*dr(i-2,i-1,2))) 
+! }}}
+        fta(i,2) = sum(aa) 
+! {{{
+
+        aa(1) = -coef*(-dpd(i+1,2)*dr(i+1,i+2,3) +
+     1        dpd(i+1,1)*dr(i+2,i+3,3) -
+     1        (1.0d0/xpd(i))*(dpd(i+1,2)*dpd(i,2) -
+     1        dpd(i,3)*dpd(i+1,1))*(-dpd(i+1,1)*dr(i,i+1,3) +
+     1        dpd(i,2)*dr(i+1,i+2,3))) 
+
+        aa(2) = -coef1*(-dpd(i-1,2)*dr(i+1,i+2,3) +
+     1        dpd(i,2)*dr(i,i+1,3) - dpd(i,2)*dr(i-1,i,3) -
+     1        dpd(i,1)*dr(i+1,i+2,3) + 2.0*dpd(i-1,3)*dr(i,i+1,3) -
+     1        (1.0d0/xpd(i-1))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(dpd(i,1)*dr(i-1,i,3) -
+     1        dpd(i-1,1)*dr(i,i+1,3) - dpd(i-1,2)*dr(i,i+1,3) +
+     1        dpd(i-1,2)*dr(i-1,i,3)) -
+     1        (1.0d0/xpd(i))*(dpd(i,2)*dpd(i-1,2) -
+     1        dpd(i-1,3)*dpd(i,1))*(-dpd(i+1,1)*dr(i,i+1,3) +
+     1        dpd(i,2)*dr(i+1,i+2,3))) 
+
+        aa(3) = -coef2*(dpd(i-2,2)*dr(i,i+1,3) -
+     1        dpd(i-2,2)*dr(i-1,i,3) + dpd(i-1,2)*dr(i-2,i-1,3) +
+     1        dpd(i-1,1)*dr(i-2,i-1,3) - 2.0*dpd(i-2,3)*dr(i-1,i,3) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i-2,1)*dr(i-1,i,3) -
+     1        dpd(i-2,2)*dr(i-2,i-1,3)) -
+     1        (1.0d0/xpd(i-1))*(dpd(i-1,2)*dpd(i-2,2) -
+     1        dpd(i-2,3)*dpd(i-1,1))*(dpd(i,1)*dr(i-1,i,3) -
+     1        dpd(i-1,1)*dr(i,i+1,3) - dpd(i-1,2)*dr(i,i+1,3) +
+     1        dpd(i-1,2)*dr(i-1,i,3))) 
+        
+        aa(4) = -coef3*(dpd(i-3,2)*dr(i-2,i-1,3) -
+     1        dpd(i-2,1)*dr(i-3,i-2,3) -
+     1        (1.0d0/xpd(i-2))*(dpd(i-2,2)*dpd(i-3,2) -
+     1        dpd(i-3,3)*dpd(i-2,1))*(dpd(i-2,1)*dr(i-1,i,3) -
+     1        dpd(i-2,2)*dr(i-2,i-1,3))) 
+! }}}
+        fta(i,3) = sum(aa)  
+
+        enddo
 ! }}}
 

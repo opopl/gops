@@ -141,7 +141,7 @@ include bln.vars.inc.f90
 ! }}}
 ! Calculate the gradients
 
-        SUBROUTINE CALC_GRADIENT(N,FQ,AB,CD,DR,DPD,XPD,ANG,LEN_DR)
+        SUBROUTINE CALC_GRADIENT(N,GRAD,AB,CD,DR,DPD,XPD,ANG,LEN_DR)
 ! {{{
 include bln.vars.inc.f90 
 include bln.grad.start.inc.f90
