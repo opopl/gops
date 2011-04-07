@@ -16,7 +16,7 @@
 !!{{{
       !USE COMMONS
 
-!include "blnvars.inc.f90"
+!include "bln.vars.inc.f90"
 
 !!
 !! Without these initialisations the NAG compiler fills in random numbers for
@@ -50,7 +50,7 @@
       !SUBROUTINE CALC_INT_COORDS_BLN(N,QO,R,DR,DOT_PROD,X_PROD,ANG,RADII, 
      !&                              COSTOR,SINBOND,A,DFAC)
 !! {{{
-!include "blnvars.inc.f90"
+!include "bln.vars.inc.f90"
 
       !DO I = 1, N
          !J = (I-1)*3
@@ -146,7 +146,7 @@
 
       !SUBROUTINE CALC_ENERGY_BLN(N,QO,ENERGY,LJREP,LJATT,A,ANG,RADII,RK_R,RK_THETA,COSTOR)
 !! {{{
-!include "blnvars.inc.f90"
+!include "bln.vars.inc.f90"
 
       !E= 0.0D0  
       !DO I = 1, N-2
@@ -183,7 +183,7 @@
       !SUBROUTINE CALC_GRADIENT_BLN(N,QO,FQ,LJREP,LJATT,A,R,DR,DOT_PROD,X_PROD,
      !&                            ANG,RADII,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
 !! {{{
-!include "blnvars.inc.f90" 
+!include "bln.vars.inc.f90" 
 !!
 !! Gradients of potential
 !! {{{
@@ -892,7 +892,7 @@
 !! {{{
 !! DECLARATIONS {{{
 
-!include  "blnvars.inc.f90"
+!include  "bln.vars.inc.f90"
 
       !INTEGER J1, ICOUNT
 
@@ -1007,8 +1007,7 @@
 !------------------------------------------------------------
         SUBROUTINE G46MERDIFF(N,QO,GRAD,ENERGY,GTEST)
 ! {{{ 
-
-include "blnvars.inc.f90"
+include bln.vars.inc.f90
 
         STEST=.FALSE.
 
@@ -1034,163 +1033,16 @@ include "blnvars.inc.f90"
 !>
 !}}}
         SUBROUTINE GPARAM_ARRAY(N,AB,CD)
-! {{{
-include "blnvars.inc.f90" 
+include bln.vars.inc.f90 
+include bln.ntype.inc.f90
+include bln.go.connect.inc.f90
+! Parameters for the L-J interaction between non-bonded particles: array AB(:,1:2)
+include bln.go.ab.inc.f90
+! Parameters for the dihedral angle potential: array CD(:,1:2)
+include bln.go.cd.inc.f90
 
-! Specify amino acid types by filling in the array ntype(:) {{{
-     
-! }}}
-! Go-like model connectivities: fill in array CONNECT(:,:) {{{
-!
-        DO J1=1,N
-           DO J2=J1,N
-              CONNECT(J2,J1)=.FALSE.
-           ENDDO
-        ENDDO
-        CONNECT(20, 1)=.TRUE.
-        CONNECT(24, 1)=.TRUE.
-        CONNECT(45, 1)=.TRUE.
-        CONNECT(24, 2)=.TRUE.
-        CONNECT(43, 2)=.TRUE.
-        CONNECT(45, 2)=.TRUE.
-        CONNECT(18, 3)=.TRUE.
-        CONNECT(20, 3)=.TRUE.
-        CONNECT(25, 3)=.TRUE.
-        CONNECT(26, 3)=.TRUE.
-        CONNECT(43, 3)=.TRUE.
-        CONNECT(26, 4)=.TRUE.
-        CONNECT(41, 4)=.TRUE.
-        CONNECT(16, 5)=.TRUE.
-        CONNECT(18, 5)=.TRUE.
-        CONNECT(26, 5)=.TRUE.
-        CONNECT(27, 5)=.TRUE.
-        CONNECT(28, 5)=.TRUE.
-        CONNECT(41, 5)=.TRUE.
-        CONNECT(28, 6)=.TRUE.
-        CONNECT(39, 6)=.TRUE.
-        CONNECT(16, 7)=.TRUE.
-        CONNECT(28, 7)=.TRUE.
-        CONNECT(29, 7)=.TRUE.
-        CONNECT(30, 7)=.TRUE.
-        CONNECT(39, 7)=.TRUE.
-        CONNECT(30, 8)=.TRUE.
-        CONNECT(37, 8)=.TRUE.
-        CONNECT(14, 9)=.TRUE.
-        CONNECT(30, 9)=.TRUE.
-        CONNECT(31, 9)=.TRUE.
-        CONNECT(32, 9)=.TRUE.
-        CONNECT(37, 9)=.TRUE.
-        CONNECT(30, 14)=.TRUE.
-        CONNECT(31, 14)=.TRUE.
-        CONNECT(28, 16)=.TRUE.
-        CONNECT(29, 16)=.TRUE.
-        CONNECT(26, 18)=.TRUE.
-        CONNECT(24, 20)=.TRUE.
-        CONNECT(25, 20)=.TRUE.
-        CONNECT(45, 24)=.TRUE.
-        CONNECT(41, 26)=.TRUE.
-        CONNECT(43, 26)=.TRUE.
-        CONNECT(39, 28)=.TRUE.
-        CONNECT(41, 28)=.TRUE.
-        CONNECT(39, 30)=.TRUE.
-        CONNECT(37, 32)=.TRUE.
-        CONNECT(1, 20)=.TRUE.
-        CONNECT(1, 24)=.TRUE.
-        CONNECT(1, 45)=.TRUE.
-        CONNECT(2, 24)=.TRUE.
-        CONNECT(2, 43)=.TRUE.
-        CONNECT(2, 45)=.TRUE.
-        CONNECT(3, 18)=.TRUE.
-        CONNECT(3, 20)=.TRUE.
-        CONNECT(3, 25)=.TRUE.
-        CONNECT(3, 26)=.TRUE.
-        CONNECT(3, 43)=.TRUE.
-        CONNECT(4, 26)=.TRUE.
-        CONNECT(4, 41)=.TRUE.
-        CONNECT(5, 16)=.TRUE.
-        CONNECT(5, 18)=.TRUE.
-        CONNECT(5, 26)=.TRUE.
-        CONNECT(5, 27)=.TRUE.
-        CONNECT(5, 28)=.TRUE.
-        CONNECT(5, 41)=.TRUE.
-        CONNECT(6, 28)=.TRUE.
-        CONNECT(6, 39)=.TRUE.
-        CONNECT(7, 16)=.TRUE.
-        CONNECT(7, 28)=.TRUE.
-        CONNECT(7, 29)=.TRUE.
-        CONNECT(7, 30)=.TRUE.
-        CONNECT(7, 39)=.TRUE.
-        CONNECT(8, 30)=.TRUE.
-        CONNECT(8, 37)=.TRUE.
-        CONNECT(9, 14)=.TRUE.
-        CONNECT(9, 30)=.TRUE.
-        CONNECT(9, 31)=.TRUE.
-        CONNECT(9, 32)=.TRUE.
-        CONNECT(9, 37)=.TRUE.
-        CONNECT(14, 30)=.TRUE.
-        CONNECT(14, 31)=.TRUE.
-        CONNECT(16, 28)=.TRUE.
-        CONNECT(16, 29)=.TRUE.
-        CONNECT(18, 26)=.TRUE.
-        CONNECT(20, 24)=.TRUE.
-        CONNECT(20, 25)=.TRUE.
-        CONNECT(24, 45)=.TRUE.
-        CONNECT(26, 41)=.TRUE.
-        CONNECT(26, 43)=.TRUE.
-        CONNECT(28, 39)=.TRUE.
-        CONNECT(28, 41)=.TRUE.
-        CONNECT(30, 39)=.TRUE.
-        CONNECT(32, 37)=.TRUE.
-
-! }}}
-! Parameters for the dihedral angle potential: fill in arrays c_param(:,:), d_param(:,:) {{{
-
-        DO I = 1, N-3
-          ICOUNT = 0
-
-          DO J = 0,3
-            IF(NTYPE(I+J) .EQ. 3)THEN
-              ICOUNT = ICOUNT + 1
-            ENDIF
-          ENDDO
-
-          IF (ICOUNT .GE. 2) THEN
-            CD(I+1,1:2) = (/ 0.0, 0.2*EPSILON /)
-          ELSE
-            CD(I+1,1:2) = 1.2*EPSILON
-        ENDIF
-
-        ICOUNT = 0
-
-        ENDDO
-! }}}
-! Parameters for the L-J interaction between non-bonded particles:
-! arrays a_param(:,:), b_param(:,:)
-! {{{
-
-        DO I = 1, N
-           DO J = 1, N
-
-           IF (NTYPE(I) .EQ. 3 .OR. NTYPE(J) .EQ. 3) THEN
-             AB(I,J,1) = 1.0*EPSILON 
-             AB(I,J,2) = 0.0 
-           ELSEIF (NTYPE(I) .EQ. 1 .AND. NTYPE(J) .EQ. 1)THEN
-             AB(I,J,1) =  EPSILON
-             IF (CONNECT(I,J)) THEN
-                AB(I,J,2) = -EPSILON 
-             ELSE
-                AB(I,J,2) = 0.0D0
-             ENDIF
-           ELSE
-             AB(I,J,1:2) = EPSILON*2.0/3.0 
-           ENDIF
-   
-           ENDDO
-        ENDDO
-! }}}
         RETURN
         END
-! }}}
 !------------------------------------------------------------
 ! Doxygen - P46MERDIFF {{{
 !
@@ -1210,8 +1062,7 @@ include "blnvars.inc.f90"
 
         SUBROUTINE P46MERDIFF(N,QO,GRAD,ENERGY,GTEST)
 ! {{{
-
-include "blnvars.inc.f90"
+include bln.vars.inc.f90
 
         STEST=.FALSE.
 
@@ -1234,7 +1085,7 @@ include "blnvars.inc.f90"
 
         SUBROUTINE CALC_INT_COORDS(N,QO,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII,NTYPE)
 ! {{{
-include "blnvars.inc.f90" 
+include bln.vars.inc.f90
 
         DO I = 1, N
           J = (I-1)*3
@@ -1297,7 +1148,7 @@ include "blnvars.inc.f90"
 !> Calculate the energy
         SUBROUTINE CALC_ENERGY(N,QO,ENERGY,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII,NTYPE)
 ! {{{
-       include "blnvars.inc.f90"   
+include bln.vars.inc.f90  
 
        S(6)=SIGMA**6; E=0.0D0 
         
@@ -1333,7 +1184,7 @@ include "blnvars.inc.f90"
 
         SUBROUTINE CALC_GRADIENT(N,QO,FQ,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII,NTYPE)
 ! {{{
-include "blnvars.inc.f90" 
+include bln.vars.inc.f90 
 
       S(6)=S(1)**6 ; S(12)=S(6)**2
 
@@ -2039,98 +1890,39 @@ include "blnvars.inc.f90"
         END
 ! }}}
 
+! Doxygen - CALC_DYN {{{
+!> @name CALC_DYN
 !> @brief Calculate the second derivative matrix (two-sided numerical approach)
+!
+!> @param[in] N        INTEGER         Number of particles
+!> @param[in] QO
+! }}}
 
         SUBROUTINE CALC_DYN(N,QO,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII,NTYPE)
-! {{{
-
-include "blnvars.inc.f90"
-
-! Fill in the Hessian matrix
-! {{{
-
-        DO J = 1, 3*N
-            QO(J) = QO(J) + DELTA
-
-            CALL CALC_INT_COORDS(N,QO,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII,NTYPE)
-            CALL CALC_GRADIENT(N,QO,FQ2,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII,NTYPE)
-
-            QO(J) = QO(J) - 2.0*DELTA
-
-            CALL CALC_INT_COORDS(N,QO,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII,NTYPE)
-            CALL CALC_GRADIENT(N,QO,FQ1,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII,NTYPE)
-
-            QO(J) = QO(J) + DELTA
-    
-            DO I = J, 3*N
-                HESS(I,J) = (FQ2(I) -  FQ1(I))/(2.0*DELTA)
-                HESS(J,I) = HESS(I,J)
-            ENDDO
-        ENDDO
-
-! }}}
+include bln.vars.inc.f90
+include bln.hess.inc.f90
         RETURN
         END
+
+! Doxygen - PARAM_ARRAY {{{
+!> @name PARAM_ARRAY
+!>
+!> @brief Fill the parameter arrays for the wild-type (WT) BLN model 
+!
+!> @param[in]   N  INTEGER              Number of particles 
+!> @param[out] AB  DP, DIMENSION(N,N,2) Parameters for the L-J interaction between non-bonded particles. 
+!> @param[out] CD  DP, DIMENSION(N,2)   Parameters for the dihedral angle potential. 
+!
 ! }}}
-!> Fill the parameter arrays
 
         SUBROUTINE PARAM_ARRAY(N,AB,CD,PTYPE)
-! {{{
-include blnvars.inc.f90
-! Firstly, specify amino acid types by filling in array NTYPE(:)
-! 1 => Hydrophobic (B);  2 => Hydrophilic (L); 3 => Neutral (N)
-! {{{
-        NTYPE(1:9) = 1
-        NTYPE(10:12) = 3
-        NTYPE(13:19:2) = 2
-        NTYPE(14:20:2) = 1
-        NTYPE(21:23) = 3
-        NTYPE(24:32) = 1
-        NTYPE(33:35) = 3
-        NTYPE(36:46:2) = 2
-        NTYPE(37:45:2) = 1
-             ! }}}
-! Specify parameters for the dihedral angle potential.
-!       These are stored in arrays 
-!       c_param(:), d_param(:) 
-! {{{
-
-        DO I = 1, N-3
-          ICOUNT = 0
-          DO J = 0,3
-            IF(NTYPE(I+J) .EQ. 3) THEN
-              ICOUNT = ICOUNT + 1
-            ENDIF
-          ENDDO
-
-          IF(ICOUNT .GE. 2) THEN
-            CD(I+1,1:2) = (/ 0.0 0.2*EPSILON /)
-          ELSE
-            CD(I+1,1:2) = 1.2*EPSILON
-          ENDIF
-
-          ICOUNT = 0
-        ENDDO
-!}}}
+include bln.vars.inc.f90
+include bln.ntype.inc.f90
 ! Specify parameters for the L-J interaction between non-bonded particles.
-!       These are stored in arrays 
-!       a_param(:,:), b_param(:,:) 
-! {{{
-
-        DO I = 1, N
-          DO J = 1, N
-            IF (NTYPE(I) .EQ. 3 .OR. NTYPE(J) .EQ. 3)THEN
-              AB(I,J,1:2) = (/ 1.0*EPSILON, 0.0D0  /) 
-            ELSEIF (NTYPE(I) .EQ. 1 .AND. NTYPE(J) .EQ. 1)THEN
-              AB(I,J,1:2)= EPSILON*(/ 1.0D0, -1.0D0 /) 
-            ELSE
-              AB(I,J,1:2) = EPSILON*2.0/3.0 
-            ENDIF
-          ENDDO
-        ENDDO
-!}}}
+include bln.wt.ab.inc.f90
+! Dihedral angle potential
+include bln.go.cd.inc.f90
         RETURN
         END
-! }}}
 
         ENDMODULE
