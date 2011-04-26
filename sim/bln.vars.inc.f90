@@ -5,32 +5,32 @@
         INTEGER, INTENT(IN) :: N
 
         ! input vector of coordinates
-        DOUBLE PRECISION, DIMENSION(3*N) :: QO,FQ
+        DOUBLE PRECISION, DIMENSION(3*N) :: QO, FQ
         
         LOGICAL GRADT
 
         DOUBLE PRECISION ENERGY
 
-        ! A     =>      array A, B, C, D coefficients for the generic BLN model
+        ! A       =>  array A, B, C, D coefficients for the generic BLN model
         DOUBLE PRECISION, DIMENSION(N,4) :: A
 
-        ! AB(,1)=>A_PARAM(N,N)
-        ! AB(,2)=>B_PARAM(N,N)
-        ! CD(,1)=>C_PARAM(N)
-        ! CD(,2)=>D_PARAM(N)
+        ! AB(,1)  =>  A_PARAM(N,N)
+        ! AB(,2)  =>  B_PARAM(N,N)
+        ! CD(,1)  =>  C_PARAM(N)
+        ! CD(,2)  =>  D_PARAM(N)
         DOUBLE PRECISION, DIMENSION(N,N,2) AB
         DOUBLE PRECISION, DIMENSION(N,2)   CD
 
-        ! particle positions R=>(X,Y,Z)
+        ! particle positions R => (X,Y,Z)
         ! particle relative positions DR_{ij} =>  R_i-R_j 
-        ! distances between particles LEN_DR_ij=>|| DR_ij ||
+        ! distances between particles LEN_DR_ij => || DR_ij ||
         DOUBLE PRECISION, DIMENSION(N,3) :: R
         DOUBLE PRECISION, DIMENSION(N,N,3) :: DR
         DOUBLE PRECISION, DIMENSION(N,N) :: LEN_DR
         !
         DOUBLE PRECISION, DIMENSION(N) :: COSTOR, SINBOND, DFAC
-        ! 1=> bond angles
-        ! 2=> torsion (dihedral) angles
+        ! 1 => bond angles
+        ! 2 => torsion (dihedral) angles
         DOUBLE PRECISION, DIMENSION(N,2) :: ANG 
         ! cross products, squared
         DOUBLE PRECISION, DIMENSION(N) :: XPD_2
@@ -64,9 +64,11 @@
       
         ! LJREP => repulsion
         ! LJATT => attraction
-        DOUBLE PRECISION, DIMENSION(N,N) :: LJREP,LJATT
+
+        DOUBLE PRECISION, DIMENSION(N,N) :: LJREP, LJATT
 
         ! 1.8326 RADIANS IS 105 DEGREES
+
         DOUBLE PRECISION, PARAMETER :: TWOPI=6.283185307179586477D0
         DOUBLE PRECISION, PARAMETER :: THETA_0 = 1.8326D0, PI4=0.7853981633974483096D0 
         PARAMETER (RMASS = 40.0, EPSILON = 0.0100570)
@@ -91,6 +93,6 @@
 
         DOUBLE PRECISION FQ_PLUS(3*N), FQ_MINUS(3*N)
         DOUBLE PRECISION, DIMENSION(N,3) :: F, FNB, FB, FBA, FTA
-      DOUBLE PRECISION RAD7, RAD14, DF, FXX, FZZ, FYY, RVAR, DEN, RNUM, DEN1, A1, A2, DEN2
-      DOUBLE PRECISION A3, COEF, COEF1, COEF2, COEF3, A4
+        DOUBLE PRECISION RAD7, RAD14, DF, RVAR, DEN, RNUM, DEN1, A1, A2, DEN2
+        DOUBLE PRECISION A3, COEF, COEF1, COEF2, COEF3, A4
 

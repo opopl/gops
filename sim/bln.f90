@@ -41,7 +41,7 @@ include bln.vars.inc.f90
         RETURN
         END
 ! }}}
-!> Calculate the internal coordinates
+!> @brief Calculate the internal coordinates
 
         SUBROUTINE CALC_INT_COORDS(N,QO,R,DR,BVR,LEN_DR,LEN_BVR,DPD,XPD_2,ANG)
 ! {{{
@@ -104,7 +104,7 @@ include bln.vars.inc.f90
         END
 
 ! }}} 
-!> Calculate the energy
+!> @brief Calculate the energy
         SUBROUTINE CALC_ENERGY(N,ENERGY,AB,CD,LEN_DR,LEN_BVR,ANG)
 ! {{{
 include bln.vars.inc.f90  
@@ -139,7 +139,7 @@ include bln.vars.inc.f90
         RETURN
         END
 ! }}}
-! Calculate the gradients
+!> @brief Calculate the gradients
 
         SUBROUTINE CALC_GRADIENT(N,GRAD,AB,CD,DR,DPD,XPD,ANG,LEN_DR)
 ! {{{
@@ -187,9 +187,9 @@ include bln.hess.inc.f90
 
         SELECTCASE(PTYPE)
                 CASE("GO")
-			include bln.go.connect.inc.f90
-			include bln.go.ab.inc.f90
-			include bln.go.cd.inc.f90
+      include bln.go.connect.inc.f90
+      include bln.go.ab.inc.f90
+      include bln.go.cd.inc.f90
                 CASE("WT")
                         include bln.wt.ab.inc.f90       ! L-J interaction between non-bonded particles.
                         include bln.go.cd.inc.f90       ! Dihedral angle potential

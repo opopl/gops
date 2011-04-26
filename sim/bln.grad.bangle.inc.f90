@@ -6,8 +6,9 @@
         den = sin(ang(i+1,1))*sqrt(dpd(i+1,1)*dpd(i,1))
         rnum = rk_theta*(ang(i+1,1) - theta_0)
         fba(i,1:3)=-rnum*((dpd(i,2)/dpd(i,1))*dr(i,i+1,1:3)-dr(i+1,i+2,1:3))/den
-
+! }}}
      ! particle 2
+! {{{
 
         i = 2
         den = sin(bond_angle(i))
@@ -42,7 +43,8 @@
 
         fba_z(i) = a1 + a2 
 
-! particles 3 thru n-2 
+! }}}
+! particles 3 thru n-2 !{{{
 
         do i = 3, n-2
 
@@ -90,9 +92,8 @@
         fba_z(i) = a1 + a2 + a3 
 
         enddo
-
-! particle n-1 
-
+!}}}
+! particle n-1 {{{
         i = n-1
         den = sin(bond_angle(i))*
      1              dsqrt(dot_prod(i,1)*dot_prod(i-1,1))
@@ -125,8 +126,8 @@
      1        dot_prod(i-1,1))*zr(i-1,i) - zr(i-2,i-1))/den1
 
         fba_z(i) = a1 + a2
-
-! particle n
+!}}}
+! particle n!{{{
 
         i = n
         den = sin(bond_angle(i-1))*dsqrt(dot_prod(i-2,1)
@@ -142,6 +143,6 @@
 
         fba_z(i) = rk_theta*(bond_angle(i-1) - theta_0)*
      1        ((dot_prod(i-2,2)/dot_prod(i-1,1))*zr(i-1,i) 
-     1        - zr(i-2,i-1))/den
+     1        - zr(i-2,i-1))/den!}}}
 ! }}}
 

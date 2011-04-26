@@ -2,11 +2,11 @@
 ! torsional angle forces
 ! particles 1, 2, 3, n-2, n-1, and n are done outside of the loop
 
-        do i=1,n
-           ixpd(i)=1.0d0/sqrt(xpd_2(i+1)*xpd_2(i)) 
-        enddo
+        DO I=1,N
+           IXPD(I)=1.0D0/SQRT(XPD_2(I+1)*XPD_2(I)) 
+        ENDDO
 
-! {{{
+! extra {{{
 ! particle 1
 ! {{{
 
@@ -412,7 +412,7 @@
 ! }}}
 ! aa(1) {{{
         ! 2 terms summed 
-        aa(1) = -dpd(i+1,2)*bvr(i+1,1)+dpd(i+1,1)*bvr(i+2,1) 
+        aa(1) = -dpd(i+1,2)*bvr(i+1,1) + dpd(i+1,1)*bvr(i+2,1) 
 
         B1= -dpd(i+1,1)*bvr(i,1) + dpd(i,2)*bvr(i+1,1)
         B2=  dpd(i+1,2)*dpd(i,2) - dpd(i,3)*dpd(i+1,1) 

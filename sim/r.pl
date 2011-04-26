@@ -5,6 +5,7 @@ use warnings;
 use boolean;
 
 my %rex=(
+# {{{
 	"dr\(i,i+1,([:0-9^,]+)\)"		=>	"bvr(i,\1)",
 	"dr\(i+1,i+2,([:0-9^,]+)\)"		=>	"bvr(i+1,\1)",
 	"dr\(i-1,i,([:0-9^,]+)\)"		=>	"bvr(i-1,\1)",
@@ -21,4 +22,8 @@ my %rex=(
 	"fta_z\([^()]*\)"				=>	"fta(\1,3)",
 	"<++>"							=>	"<++>"
 	"<++>"							=>	"<++>"
+# }}}
 );
+
+# Isolate and extract IF ELSEIF statements
+~= /(if|elseif)\([^\(\)]*\)//i;
