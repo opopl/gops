@@ -11,9 +11,6 @@
 
         DOUBLE PRECISION ENERGY
 
-        ! A       =>  array A, B, C, D coefficients for the generic BLN model
-        DOUBLE PRECISION, DIMENSION(N,4) :: A
-
         ! AB(,1)  =>  A_PARAM(N,N)
         ! AB(,2)  =>  B_PARAM(N,N)
         ! CD(,1)  =>  C_PARAM(N)
