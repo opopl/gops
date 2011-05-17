@@ -36,7 +36,7 @@
         ! bond vectors lengths
         DOUBLE PRECISION, DIMENSION(N) :: LEN_BVR
         ! bond vectors, BVR_i => DR(i,i+1) => R_{i+1}-R_i 
-        DOUBLE PRECISION, DIMENSION(N) :: BVR
+        DOUBLE PRECISION, DIMENSION(N-1) :: BVR
 
         DOUBLE PRECISION, DIMENSION(N-1,3) :: DPD
         DOUBLE PRECISION, DIMENSION(N,3) :: FBA, FNB, FTA, F

@@ -41,57 +41,74 @@ include bln.vars.inc.f90
         RETURN
         END
 ! }}}
+! Doxygen: CALC_INT_COORDS {{{
+!
+!> @name CALC_INT_COORDS
+!>
 !> @brief Calculate the internal coordinates
-
+!>
+!> @param[in] N         integer                 - number of coordinates
+!> @param[in] QO        double precision (3N)   - vector input coordinates
+!
+!> @param[out]     R    double precision (N,3)    - output vector with Cartesian coordinates
+!> @param[out]     DR   DOUBLE PRECISION (N,N,3)  - vector of coordinate differences
+!> @param[out]     BVR  DOUBLE PRECISION (N-1,3)  - bond vectors, BVR(i)=R(i)-R(i+1), i=1,N
+!
+!> @param[out]     LEN_DR    DOUBLE PRECISION(N,N,3)    - lengths of coordinate differences  
+!> @param[out]     LEN_BVR   DOUBLE PRECISION(N-1,3)    - lengths of the bond vectors 
+!>
+!}}}
         SUBROUTINE CALC_INT_COORDS(N,QO,R,DR,BVR,LEN_DR,LEN_BVR,DPD,XPD_2,ANG)
 ! {{{
 include bln.vars.inc.f90
 
+! QO => R{{{
         DO I = 1, N
           J = (I-1)*3
           DO K=1,3
             R(I,K) = QO(J+K)
           ENDDO
         ENDDO
-
-! INTER-PARTICLE DISTANCES
+! }}}
+! INTER-PARTICLE DISTANCES: DR, LEN_DR; BOND VECTORS: BVR {{{
 
         DO I = 1, N-1
           DO J = I+1, N
             DR(I,J,1:3) = R(J,1:3) - R(I,1:3)
+            DR(J,I,1:3) = -DR(I,J,1:3)
             LEN_DR(I,J) = SQRT(SUM(DR(I,J,1:3)**2))
             LEN_DR(J,I) = LEN_DR(I,J)
           ENDDO
             BVR(I,1:3)=DR(I,I+1,1:3)
         ENDDO
-
-! DOT PRODUCTS BETWEEN BOND VECTORS
+! }}}
+! DOT PRODUCTS BETWEEN BOND VECTORS: DPD, LEN_BVR  {{{
 
       DO I = 1, N-1
         IF ( I .LE. N-3 ) THEN KMAX=3
         IF ( I .EQ. N-2 ) THEN KMAX=2
         IF ( I .LE. N-1 ) THEN KMAX=1
-        DO J=1,KMAX
+        DO K=1,KMAX
          J=I+K-1
          DPD(I,K) = SUM(BVR(I,1:3)*BVR(J,1:3))
         ENDDO
-        LEN_BV(I)=DPD(I,1)
+        LEN_BVR(I)=DPD(I,1)
       ENDDO
-
-! Squared cross-products between adjacent bond vectors i and i+1 
+! }}}
+! Squared cross-products between adjacent bond vectors i and i+1: XPD_2 {{{
 
         DO I = 1, N-2
            XPD_2(I) = DPD(I,1)*DPD(I+1,1)-DPD(I,2)**2 
         ENDDO
-
-! BOND ANGLES
+! }}}
+! BOND ANGLES: ANG(I,1), I=2,...,N-1 {{{
 
         DO I = 1, N-2
             COS_THETA=-DPD(I,2)/(LEN_BV(I)*LEN_BV(I+1))
             ANG(I+1,1) = ACOS(COS_THETA)
         ENDDO
-
-! TORSIONAL ANGLES
+! }}}
+! TORSIONAL ANGLES: ANG(I,2), I=2,...,N-2 {{{
 
         DO I = 1, N-3
             COS_PHI = (DPD(I,2)*DPD(I+1,2)-DPD(I,3)*DPD(I+1,1))
@@ -99,7 +116,7 @@ include bln.vars.inc.f90
             IF (ABS(COS_PHI).GT.1.0D0) COS_PHI=COS_PHI/ABS(COS_PHI)
             ANG(I+1,2) = ACOS(COS_PHI)
         ENDDO
-
+! }}}
         RETURN
         END
 
@@ -111,7 +128,7 @@ include bln.vars.inc.f90
 
             E=0.0D0 
         
-! non-bonded
+! non-bonded: E(1) {{{
 
         DO I = 1, N-2
           DO J = I+2, N
@@ -121,24 +138,26 @@ include bln.vars.inc.f90
             E(1) = E(1) + 4.0*AB(I,J,2)*S(6)/RAD(6)
           ENDDO
         ENDDO
-
-! bonded
+! }}}
+! bonded: E(2) {{{
 
         DO I = 1, N-1
           E(2) = E(2) + 0.5*RK_R*(LEN_BVR(I)-SIGMA)**2
         ENDDO
+! }}}
+! bond angles: E(3) {{{
 
-! bond angles 
         DO I = 2, N-1
           E(3) = E(3) + 0.5*RK_THETA*(ANG(I,1)-THETA_0)**2
         ENDDO
+! }}}
+! torsional angles: E(4) {{{
 
-! torsional angles 
         DO I = 2, N-2
           E(4) = E(4) + CD(I,1)*(1.0 + COS(ANG(I,2)))
           E(4) = E(4) + CD(I,2)*(1.0 + COS(3.0*ANG(I,2)))
         ENDDO
-
+! }}}
         ENERGY=SUM(E)
 
         RETURN
