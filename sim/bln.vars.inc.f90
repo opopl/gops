@@ -44,6 +44,7 @@
         ! type of BLN potential
         !       GO   Go-like
         !       WT   Wild-type
+
         CHARACTER(LEN=*) :: PTYPE
         INTEGER NTYPE(N), I, J, JMAX, K, KMAX, ICOUNT
         DOUBLE PRECISION RK_R, RK_THETA
@@ -51,6 +52,7 @@
         DOUBLE PRECISION COS_PHI, COS_THETA, DUMMY, DUMMY2
 
         ! Hessian - (N,N) matrix of second-order derivatives
+
         DOUBLE PRECISION, ALLOCATABLE, DIMENSION(N,N) :: HESS
 
         DOUBLE PRECISION E_NBOND, E_BOND, E_BANGLE, E_TANGLE, RAD6
@@ -89,7 +91,19 @@
         INTEGER J1,J2
 
         DOUBLE PRECISION FQ_PLUS(3*N), FQ_MINUS(3*N)
+        ! F, FNB, FB, FBA, FTA: vectors used in the gradient calculations
+        ! 
+        !       F       => total gradient
+        !       FNB     => non-bonded
+        !       FB     =>  bonded
+        !       FBA     => bond angles
+        !       FTA     => torsional angles
+        !
         DOUBLE PRECISION, DIMENSION(N,3) :: F, FNB, FB, FBA, FTA
         DOUBLE PRECISION RAD7, RAD14, DF, RVAR, DEN, RNUM, DEN1, A1, A2, DEN2
         DOUBLE PRECISION A3, COEF, COEF1, COEF2, COEF3, A4
+
+        S(1)=SIGMA
+        S(6)=S(1)**6 
+        S(12)=S(6)**2
 

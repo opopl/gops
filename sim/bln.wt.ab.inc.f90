@@ -1,3 +1,4 @@
+
         DO I = 1, N
           DO J = 1, N
             IF (NTYPE(I) .EQ. 3 .OR. NTYPE(J) .EQ. 3)THEN

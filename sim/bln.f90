@@ -109,17 +109,21 @@ include bln.vars.inc.f90
 ! {{{
 include bln.vars.inc.f90  
 
-       S(6)=SIGMA**6; E=0.0D0 
+            E=0.0D0 
         
 ! non-bonded
+
         DO I = 1, N-2
           DO J = I+2, N
-            RAD(6)=LEN_DR(I,J)**6
-            E(1) = E(1) + 4.0*((AB(I,J,1)*S(12)/(RAD(12))) + (AB(I,J,2)*S(6)/RAD(6)))
+            RAD(6)=LEN_DR(I,J)**6; 
+            RAD(12)=RAD(6)**2
+            E(1) = E(1) + 4.0*AB(I,J,1)*S(12)/RAD(12)
+            E(1) = E(1) + 4.0*AB(I,J,2)*S(6)/RAD(6)
           ENDDO
         ENDDO
 
 ! bonded
+
         DO I = 1, N-1
           E(2) = E(2) + 0.5*RK_R*(LEN_BVR(I)-SIGMA)**2
         ENDDO
@@ -131,7 +135,8 @@ include bln.vars.inc.f90
 
 ! torsional angles 
         DO I = 2, N-2
-          E(4) = E(4) + CD(I,1)*(1.0 + COS(ANG(I,2)))+CD(I,2)*(1.0+COS(3.0*ANG(I,2)))
+          E(4) = E(4) + CD(I,1)*(1.0 + COS(ANG(I,2)))
+          E(4) = E(4) + CD(I,2)*(1.0 + COS(3.0*ANG(I,2)))
         ENDDO
 
         ENERGY=SUM(E)

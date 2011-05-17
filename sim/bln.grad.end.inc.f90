@@ -1,4 +1,4 @@
-
+        
              F=FNB+FB+FBA+FTA 
 
         DO I = 1, N
