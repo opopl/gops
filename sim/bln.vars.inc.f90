@@ -102,8 +102,10 @@
         DOUBLE PRECISION, DIMENSION(N,3) :: F, FNB, FB, FBA, FTA
         DOUBLE PRECISION RAD7, RAD14, DF, RVAR, DEN, RNUM, DEN1, A1, A2, DEN2
         DOUBLE PRECISION A3, COEF, COEF1, COEF2, COEF3, A4
+        ! old vars
+        double precision, dimension(n): fba_x,fba_y,fba_z 
 
         S(1)=SIGMA
         S(6)=S(1)**6 
         S(12)=S(6)**2
-
+        
