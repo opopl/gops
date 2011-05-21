@@ -92,7 +92,7 @@ include bln.vars.inc.f90
          J=I+K-1
          DPD(I,K) = SUM(BVR(I,1:3)*BVR(J,1:3))
         ENDDO
-        LEN_BVR(I)=DPD(I,1)
+        LEN_BVR(I)=SQRT(DPD(I,1))
       ENDDO
 ! }}}
 ! Squared cross-products between adjacent bond vectors i and i+1: XPD_2 {{{
@@ -104,7 +104,7 @@ include bln.vars.inc.f90
 ! BOND ANGLES: ANG(I,1), I=2,...,N-1 {{{
 
         DO I = 1, N-2
-            COS_THETA=-DPD(I,2)/(LEN_BV(I)*LEN_BV(I+1))
+            COS_THETA=-DPD(I,2)/(LEN_BVR(I)*LEN_BVR(I+1))
             ANG(I+1,1) = ACOS(COS_THETA)
         ENDDO
 ! }}}

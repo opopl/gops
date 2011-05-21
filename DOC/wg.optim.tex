@@ -1,0 +1,2632 @@
+\chapter{OPTIM}
+\renewcommand{\pname}{OPTIM}
+
+\section{Introduction}
+\label{sec:intro}
+
+{\tt OPTIM} is the program for 
+locating stationary points on potential energy 
+surfaces and calculating reaction pathways. \cite{Wales03}
+
+It's latest version is 4.0.
+
+A number of changes have been introduced from OPTIM.2.3.
+In particular, it is no longer necessary to recompile the program to treat larger systems, since
+the dynamic memory features of fortran90 have now been used throughout.
+
+The default build target for the Makefile is OPTIM, but three other targets are now
+possible, namely COPTIM, UNOPTIM, AMOPTIM, and AMB9OPTIM, which produce corresponding executables interfaced 
+to the CHARMM,\cite{mackerellbbdeffgghjkklmmnnprrsssswwyk98,lazaridisk99}
+UNRES, AMBER95\cite{cornellcbgmfsfck95} and AMBER 9 potentials, respectively.
+
+Separate directories containing libraries built from modified CHARMM, UNRES and AMBER 9 sources must 
+be present to build the corresponding COPTIM, UNOPTIM and AMB9OPTIM executables.
+
+The optimisation algorithms include:
+\begin{itemize}
+  \item eigenvector-following,
+\cite{Pancir74,cerjanm81,simonsjto83,onealts84,banerjeeass85,baker86,baker87};
+\item steepest-descent (Page-McIver second order; Bulirsch-Stoer, Runga-Kutta, or 
+Barzilai-Borwein-Raydan\cite{BB-IMAJNA-1988,Raydan-SIAMJO-1997} for first order);
+\item conjugate gradient and hybrids thereof.
+\end{itemize}
+
+Pathways can be calculated in several ways, and it is also possible to
+use a "fictitious" kinetic metric,
+usually referred to as "mass-weighted" coordinates.
+There is provision to treat rigid body systems; the
+TIPS family of rigid molecule, effective pair potentials for H$_2$O are known to
+the program and employ centre-of-mass and Euler angle coordinates. An older
+version of the eigenvector-following optimiser is present in the ORIENT3 program, which can treat 
+arbitrary mixtures of atoms and rigid molecules using distributed multipoles to
+describe the electrostatic energy.\cite{stone81,stonea85}\
+
+These optimisation algorithms can also be
+very effective in solving fitting problems, especially if analytic derivatives 
+can be obtained.
+
+The main new keywords that were introduced in
+OPTIM.3.0 are \keyw{NEWCONNECT} and \keyw{NEWNEB};
+the {\keyw{CONNECT}} and \keyw{NEB} keywords remain available, but the new algorithms
+will probably be more effective. The \keyw{NEWNEB} keyword specifies a
+doubly-nudged elastic band (DNEB) algorithm for double-ended searches,\cite{TrygubenkoW04}
+while \keyw{NEWCONNECT} provides a more sophisticated way to link local minima
+that are likely to be connected by pathways involving a number of transition states.
+The \keyw{GROWSTRING} and \keyw{EVOLVESTRING} keywords provide implementations of the
+growing string and evolving string methods.\cite{ERV02,PetersHBC04}
+A new framework has also been introduced for treating rigid bodies that interact
+via isotropic site-site potentials using angle/axis coordinates.\cite{Wales05}
+
+Also new from OPTIM.3.0 onwards is the ability to specify a file extension when OPTIM is invoked on the
+command line. For example, running 
+{\obeylines {\tt OPTIM} \qquad 2 \qquad $>$\& }
+\noindent will result in all other output files having the 
+extension `.2', e.g.~{\tt odata.new.2, points.final.2, output.2 } etc.
+In contrast to the use of the {\keyw{FILTH}} keyword, when OPTIM is invoked in this way
+it will also assume that all input files carry the same extension, e.g.~{\tt odata.2, finish.2}.
+The intention is to retire the {\keyw{FILTH}} keyword as soon as the Filthy\_Phyllis program
+has been rewritten appropriately. It will then be possible to use non-integer file extensions;
+at the moment only integers between 1 and 999 can be handled.
+
+The OPTIM program has analytic first and second energy derivatives coded for dozens of
+empirical potentials and can also read derivatives from disc so that it can be run
+iteratively in tandem with {\it ab initio\/} or other packages. 
+The only file that you need to start simple calculations is {\tt odata}. 
+Each call to OPTIM performs one or more steps of various kinds.
+The updated coordinates after every step are saved in order
+in file {\tt points}. The coordinates after the final step are also written to file
+{\tt points.final} and a new input file for OPTIM based upon this geometry is written
+to {\tt odata.new}. This file also contains the energy for the last step and
+the point group (if it was evaluated) as \keyw{COMMENT} statements.
+
+
+\section{Building}
+
+\section{Source code}
+
+OPTIM source code is located in OPTIM/source/ subdirectory. The following files
+are responsible for building: Makefile build.csh
+
+\section{The {\tt odata} file}
+\label{sec:odata}
+\hypertarget{odata}
+Input is keyword driven.
+The last keyword will usually be \keyw{POINTS}, after which 
+the starting geometry is specified, one atom per line, by the atomic symbol (case
+insensitive) and the corresponding $x$, $y$ and $z$ coordinates. For potentials that
+are coded within OPTIM there will always be an assumed unit system.
+OPTIM usually determines the potential to be used from the atomic
+symbol of the last atom, and various symbols have evolved for different systems, as
+described in \S\ref{sec:potentials}. Free format may be used within each line. Blank lines are ignored,
+but there {\bf must not} be any blank lines after the \keyw{POINTS} keyword.
+The maximum line length permitted has now been increased to 132 characters.
+
+\section{Keywords}
+\label{sec:keywords}
+\label{sect:keywords}
+
+The following keywords are recognised, where {\it n\/}, {\it x\/} and {\it exec\/} are integer,
+real and character data, respectively.
+\smallskip
+% </intro>
+% <kwd>
+%\begin{itemize}
+\ksec{2D}: restrict the system to the $x-y$ plane.
+\subsection{A}
+
+\ksec{ACE}{ n}: for use with CHARMM runs that employ the ACE implicit solvent model. 
+{\it n} specifies the number of calls to the CHARMM energy and gradient for which lists
+are held fixed. The default value of {\it n} is 50. 
+Note: {\keyw{ENDNUMHESS}} must be used with the ACE solvent model. 
+Otherwise {\tt OPTIM} will attempt to use incorrect second derivatives.
+{\keyw{ENDNUMHESS}} will be needed in the {\tt odata.start}, {\tt odata.finish}
+and {\tt odata.connect} files. 
+For {\tt odata.start} and {\tt odata.finish} the keyword {\keyw{ENDHESS}}
+must also be included.
+
+\ksec{A}{Ackland id\/}: specifies an Ackland embedded atom metal potential% \cite{} 
+coded by Dr Mihai-Cosmin Marinica.
+{\it id} specifies the particular metal: 1 is ?, 2 is ?, 3 is ?, 4 is ?, 5 is iron, 6 is a different iron,
+7 is tungsten.
+Positive values for {\it id} specify periodic boundary conditions, where box lengths must be
+specified by the {\keyw{PERIODIC}\/} keyword. 
+% Negative values for {\it id\/} specify a cluster calculation. A {\keyw{CUTOFF}\/} value can also
+% be used for clusters.
+
+\ksec{ADM}{ n}: will cause the
+interatomic distance matrix to be printed every {\it n\/} cycles;
+the default for {\it n\/} is 20. This matrix is not printed by default.
+
+\ksec{ALPHA}{}: sets exponent value for averaged Gaussian and Morse potentials,
+default value is 6.
+
+\ksec{ALLPOINTS}{}: turns on printing of coordinates to file {\tt points} for
+all intermediate configurations. Default is false.
+
+\ksec{AMBER}{}: specifies a calculation with the AMBER potential. This requires
+      auxiliary files {\tt amber.dat} and {\tt coords.amber} in the same directory.
+
+\ksec{AMBER}{9 inpcrd inpcrdformat\/}: specifies a calculation with the interfaced 
+version of the Amber 9 program package. From this package the Amber force fields 
+are being used, with small modifications ({\it e.g.} smooth cut-offs). 
+Starting coordinates do not need to be specified in the {\tt odata} file, they
+are read from {\it inpcrd} instead (default {\it coords.inpcrd}), in Amber inpcrd 
+file format specified by the second optional argument {\it inpcrdformat}.
+If the second argument is missing, it is assumed that {\it inpcrd} contains
+only three columns with the xyz coordinates of all atoms, in the same order 
+as in the topology file. To start a run with this interface, 
+several auxiliary files are required in the same directory: input coordinate file
+{\it coords.inpcrd}, parameter topology file {\it coords.prmtop}, 
+input file to Amber containing force field specifications {\it min.in}, and, if 
+desired, a coordinate file different from {\it coords.inpcrd} containing 
+starting coordinates.
+To turn on smooth cutoffs for the Generalised Born force fields, the keyword 
+{\it ifswitch=1} has to be used in the {\it \&cntrl} namelist block of {\it min.in}.
+When using the {\keyw{AMBER9} keyword, any calculated second derivatives will be 
+numerical. If one wants analytical second derivatives, the {\keyw{NAB}} keyword 
+should be used instead, with the same syntax. The NAB interface does not 
+currently support smooth cutoffs, so analytical second derivatives are only 
+recommended for stationary points calculated with large cutoffs.
+Additional keywords for the AMBER 9 runs are {\keyw{NAB}} and {\keyw{DUMPSTRUCTURES}.
+
+\ksec{AMBERIC}{}: interpolation in bhinterp with internal coordinates. If BACKBONE specified additionally (AMBERIC BACKBONE) the protein backbone is also interpolated in internals. Does not work for polymers.
+
+\ksec{AMBERSTEP}{}: perturbation/twisting in bhinterp done with internal coordinates
+
+\ksec{AMBPERTONLY}{ n}:only perturb angles for which the difference between the start and end configuration before the interpolation was greater than n (i.e. n= 30.0 - 30 degree). Probability of perturbation depends on this likelihood (and on position in chain)
+
+\ksec{AMBPERTOLD}{}: use original perturbation scheme. Now angles depend on position in chain - larger perturbation if at the end.
+
+\ksec{ANGLEAXIS}{}: specifies angle/axis coordinates for rigid body TIP potentials.
+
+\ksec{ARCTOL}{ tol\/}: specifies the accuracy tolerance for computing the
+  inverse arc length used in the cubic spline interpolated string methods for
+  double-ended transition state searches. The default is $10^{-4}$.
+
+\ksec{AXIS}{ n}: specifies the highest symmetry axis to search for in
+routine {\bf symmetry}; default is six.
+
+
+
+\subsection{B}
+\ksec{BBCART}{\/}: use Cartesian coordinates for all backbone atoms and for
+  prolines. Right now, only works for natural internals.
+
+\ksec{BBRSDM}{ gamma epsilon sigma1 sigma2 M alpha gmax nstep}: specifies
+the steepest-descent minimiser introduced by Barzilai and Borwein \cite{BB-IMAJNA-1988}
+and modified by Raydan \cite{Raydan-SIAMJO-1997} for a maximum of $nstep$ iterations
+in a pathway calculation. The method uses 
+gradient only information with the convergence criterion $gmax$ for the RMS force
+and does not guarantee descent in the objective function in each iteration.
+The input parameters include an integer $M \ge 0$, $\gamma \in (0,1)$, 
+$0 < \sigma_{1} < \sigma_{2} < 1$, and an initial value for $\alpha$. Raydan reported
+with $\gamma = 10^{-4}, \epsilon = 10^{-10},
+\sigma_{1} = 0.1, \sigma_{2} = 0.5, \alpha_{0} = 1.0$, and $M = 10$.   
+
+\ksec{BFGSCONV}{ gmax\/}: 
+{\it gmax\/} is the convergence criterion
+for the root-mean-square gradient, default $0.001$.
+This is also the convergence criterion
+for the subspace minimisations in hybrid EF/BFGS transition state searches, for use with {\keyw{BFGSTS}}.
+
+\ksec{BFGSMIN}{\/ gmax}: instructs the program to perform an LBFGS minimisation. 
+{\it gmax\/} is the convergence criterion
+for the root-mean-square gradient, default $0.001$. 
+
+\ksec{BFGSSTEP}{\/}: instructs the program to step off a saddle point along the
+eigenvector corresponding to the smallest negative eigenvalue without
+diagonalizing the Hessian to find this eigenvector. It is possible to step off
+parallel and antiparallel to this eigenvector by specifying positive or negative values
+for the {\keyw{MODE}} parameter. {\keyw{BFGSTS}} need not be set, but see also
+\keyw{PATH} and \keyw{CONNECT}. After taking the first step the program switches to
+energy minimisation using whichever algorithm is specified, e.g.~{\keyw{BFGSMIN}},
+{\keyw{SEARCH} 0}, {\keyw{SEARCH} 6}, {\keyw{RKMIN}}, {\keyw{BSMIN}}, etc.
+
+\ksec{BFGSSTEPS}{ n\/}: sets the maximum number of steps allowed in LBFGS minimisations.
+Default value is the value of the {\keyw{STEPS}} parameter.
+However, for \keyw{NEWNEB} this parameter is specified via the \keyw{NEWCONNECT} or
+\keyw{NEWNEB} line.
+
+\ksec{BFGSTS}{\/ nevs ncgmax1 ncgmax2 ceig nevl}: instructs the program to perform a
+hybrid BFGS/eigenvector-following transition state search.
+{\it nevs\/} is an integer that defines the largest number of iterations allowed in the
+calculation of the smallest Hessian eigenvalue; default 500.
+{\it ncgmax1\/} is an integer that defines the largest number of BFGS steps
+allowed in the subspace minimisation before the eigenvalue is deemed to have converged; default 10.
+{\it ncgmax2\/} is an integer that defines the largest number of BFGS steps
+allowed in the subspace minimisation after the eigenvalue is deemed to have converged; default 100.
+This parameter is ignored if {\keyw{NOIT}} is set.
+The eigenvalue is deemed to be converged if the modulus of the overlap between the corresponding
+eigenvector and that saved from the previous step exceeds 0.999 and we have the right number of
+negative eigenvalues.
+{\it ceig\/} is a double precision parameter that sets the convergence criterion for
+the calculation of the smallest non-zero Hessian eigenvalue.
+If {\keyw{NOHESS}} is set {\it ceig\/} is compared to the RMS `force' corresponding to the
+Rayleigh-Ritz expectation value that is minimised to get the smallest eigenvalue.
+If the Hessian is used via iteration or {\keyw{NOIT}}
+then {\it ceig\/} is compared to the percentage change in the eigenvalue between successive
+steps. The default value is 1.0, which is more appropriate to the latter case. Smaller
+values are probably necessary in BFGS/BFGS calculations.
+{\it nevl\/} is an integer that defines the largest number of iterations allowed in the
+calculation of the largest Hessian eigenvalue; default 100. Not needed if {\keyw{NOHESS}}
+of {\keyw{NOIT}} is set. 
+
+\ksec{BHDEBUG}{\/ }: printing localised debugging output for {\keyw{BHINTERP}}
+ 
+\ksec{BHINTERP}{\/ dthresh maxe bhsteps conv T stepsize accrat K sfrac ICINTERP}: interpolation
+between minima in double-ended searches using \keyw{CONNECT} is changed to search
+for likely intermediate minima. The interpolation is performed for pairs of minima
+separated by a minimum distance more than {\it dthresh\/}. 
+Intermediate minima are only accepted if their energy is below {\it maxe}.
+A basin-hopping global optimisation run of {\it bhsteps} is run for each pair of
+end point minima within {\it dthresh\/} using an RMS gradient convergence criterion
+of {\it conv\/}, a temperature parameter of {\it T\/}, and a maximum step size for
+perturbations of {\it stepsize\/}. The step size is adjusted dynamically towards an
+acceptance ratio target of {\it accrat\/}. 
+The objective function consists of the energy of the minimum on the potential energy surface
+plus the energy corresponding to harmonic springs of force constant {\it K\/}
+stretched to displacements corresponding to the minimum distance between the new minimum
+and the end points.
+{\it sfrac\/} is used in the initial interpolation: a value of 0.5 will put the initial
+guess half-way between the end points, and in general the geometry will be {\it sfrac\/} times one 
+end point plus $(1-${\it sfrac\/}$)$ times the other. 
+For large distances, using a value other than a half may be helpful.
+If {\it ICINTERP\/} is present then amino acid side chains are interpolated using
+internal coordinates for CHARMM runs.
+The step size is interpreted in degrees for CHARMM, where the perturbations used 
+to step between minima are performed using dihedral angle twists.
+The algorithm is applied recursively between minima as new minima are found.
+A new minimum will not be accepted if both distances to the minima we are
+currently trying to interpolate between are greater than the minimum distance
+between these minima.
+
+\ksec{BHINTERPUSELOWEST}{\/ CHECKENER bhstepsmin}: take the minimum with the lowest potential energy
+as the best intervening structure, rather than the one with the lowest potential energy
+plus spring energy. The accept/reject procedure in the {\keyw{BHINTERP}} procedure
+is still based on the potential energy plus spring energy.
+CHECKENER is an optional argument. If it is set, for each accepted BHSTEP it is checked whether
+the potential energy of the best intervening structure is smaller than {\it maxe}, which
+is determined together with the {\keyw{BHINTERP}} keyword.  
+If so, and if at least {\it bhstepsmin} BHINTERP steps have been executed,
+the BHINTERP run for the current pair of endpoints is stopped.
+This procedure ensures some dynamic adjustment of BHINTERP to the distance between the 
+two endpoints in question. If CHECKENER is not given, {\keyw{BHINTERP}} performs
+{\it bhsteps} steps (see above). {\it bhstepsmin} is an optional argument, whose default is 1. 
+
+\ksec{BINARY}{ ntypea epsab epsbb sigmaab sigmabb\/}: specifies a binary Lennard-Jones
+system for use with the LP or LS atom types. {\it ntypea\/} is the number of type
+A atoms---the rest are assumed to be type B and appear at the end of the list
+of coordinates. $\epsilon_{\rm AA}=\sigma_{\rm AA}=1$ define the units of energy and length,
+and {\it epsab\/}=$\epsilon_{\rm AB}$, {\it epsbb\/}=$\epsilon_{\rm BB}$,
+{\it sigmaab\/}=$\sigma_{\rm AB}$, {\it sigmabb\/}=$\sigma_{\rm BB}$.
+
+\ksec{BISECT}{ dthresh maxe bisectsteps attempts ICINTERP\/}: specifies 
+the {\keyw{BISECT}} interpolation option,
+where no transition state searches are run. 
+This option is intended for use with {\keyw{DUMMYTS}} in {\tt PATHSAMPLE}.
+The distance threshold parameter specifies that bisection between consecutive minima
+should occur if their minimum distance is greater than {\it dthresh}.
+The interpolated geometry is minimised and compared with the starting structures.
+New minima are only accepted if their energy is below {\it maxe}; they are added to the
+current list of known minima between the two starting structures originally supplied to OPTIM. 
+{\it bisectsteps\/} is the maximum number of bisection steps, and
+{\it attempts} is the number of attempts per step for a given pair.
+If minimisation leads to one of the end points the interpolation is changed to use
+fractions of the two structures that become increasingly skewed, as for
+the adjustment of {\it sfrac\/} with {\keyw{BHINTERP}}, above.
+If {\it ICINTERP\/} is present then amino acid side chains are interpolated using
+internal coordinates for CHARMM runs.
+
+\ksec{BLN}{ rkr rkt\/}: general BLN protein bead model.\cite{SorensonH00,BrownFH03}
+{\it rkr} and {\it rkt} are the spring constants for bond length and bond angle terms.
+An auxiliary file {\tt BLNsequence} is required to specify all the other parameters and
+the sequence, along with a code to define the secondary structure template that changes
+some of the parameters.
+For example, the format of {\tt BLNsequence} for protein L is:
+{\obeylines
+comment: LJREP\_BLN >0  and LJATT\_BLN <0 for B-B, L-L and L-B, N-L and N-B and N-N
+1.0D0 -1.0D0
+0.33333333333333D0 0.33333333333333D0
+1.0D0 0.0D0
+comment: coefficients A, B, C, D of $1+\cos\phi$, $1-\cos\phi$, $1+\cos3\phi$ and $1+\cos(\phi +\pi/4)$
+comment: for Helical, Extended and Turn residues in order, four per line
+0.0D0 1.2D0 1.2D0 1.2D0
+0.9D0 0.0D0 1.2D0 0.0D0
+0.0D0 0.0D0 0.2D0 0.0D0
+LBLBLBLBBNNNBBBLBLBBBNNNLLBLLBBLLBNBLBLBLBLNNNLBBLBLBBBL
+EEEEEETEHTHEEEEEEEEHHEHHHHHHHHHHEHTEEEEEEETTTEEEEEEEE
+}
+
+\ksec{BOND}{ a1 a2\/}: Specifies an extra bond to add to the structure when
+  using internal coordinates. Adding a bond between ligand and protein allows the generation of a complete set
+  of natural
+  internal coordinates. The bond should be between two atoms numbered
+  relatively close together to avoid KD getting too large. The recommended
+  method of dealing with a ligand is still to use Cartesian coordinates for it
+  with {\keyw{CARTRESSTART}} instead.
+ 
+\ksec{BSMIN}{ gmax eps\/}: calculates a steepest-descent path using gradient only
+      information with convergence criterion {\it gmax\/} for the RMS force and initial
+      precision {\it eps\/}. The Bulirsch-Stoer algorithm is used.
+
+\ksec{BULK}{\/}: specifies that a periodically repeated supercell is being used.
+
+
+
+\subsection{C}
+
+\ksec{CADPAC}{ system exec\/}: tells the program to read derivative information in
+CADPAC format. {\it system\/} is a string to identify the system and {\it exec\/} is
+the name of an executable that will generate a CADPAC input deck from a points file.
+If {\it exec\/} is omitted its name is assumed to be {\it editit.system}.
+
+\ksec{CALCDIHE}{\/}: calculates an order parameter for CHARMM and UNRES with respect to
+a reference structure in file {\tt ref.crd}.
+
+\ksec{CALCRATES}{ temp h\/}: rate constants will be calculated for each transition state
+found in a \keyw{CONNECT} or \keyw{PATH} run, or using saved information in an
+old {\tt path.info} file if {\keyw{READPATH}} is specified. Both forward and backward canonical
+rate constants are calculated from transition state theory at temperature {\it temp\/} (default
+{\it temp\/}=1), and values are given
+for both quantum and classical harmonic vibrational partition functions. {\it h\/} is the
+value of Planck's constant in suitable reduced units for the corresponding potential (default value 1).
+
+% \subsection {\it CANDIDATES} % unknown
+
+\ksec{CAPSID}{ rho eps r h}: specifies a potential for rigid pentagonal pyramids with
+Morse parameter {\it rho}, repulsive strength {\it eps}, radius {\it r}, and height {\it h} (in
+units of {\it r}).
+{\it h} may be omitted, in which case it defaults to 0.5.
+
+\ksec{CARTRESSTART}{ n}: When using internal coordinates, specifies that
+  Cartesian coordinates are to be used for all
+  residues starting with the $n^{\mbox{th}}$. Useful for molecules with a
+  non-peptide ligand at the end of the structure. Warning!: if any of the
+  residues numbered n or above are covalently bonded to the prior structure,
+  this may cause trouble. Right now, this keyword can only be used together
+  with {\keyw{NATINT}}
+
+\ksec{CASTEP}{ job system\/}: tells the program to use the new {\tt CASTEP} 
+executable to calculate energies and
+forces with input files based on the system name {\it system\/}. Periodic boundary 
+conditions are assumed, so projection is not performed to remove overall rotation.
+{\it job} is a string in quotes that specifies the system call required to run 
+the {\tt CASTEP} executable. 
+OPTIM will add a line with `elec\_restore\_file' to the {\tt param} file after the
+first call to obtain the CASTEP energy and gradient.
+This saves a great deal of cpu time in subsequent CASTEP steps.
+However, it means that the final param file is altered, and you will need
+to remove the elec\_restore\_file line from the {\tt param} file to restart
+the job if valid wavefunction files are not present in the working directory.
+CASTEP will fail and stop if the wavefunction read fails.
+Note that you cannot restart a job with a different number of nodes using
+saved wavefunctions!
+It is also necessary to specify the atoms in order of increasing atomic number,
+since otherwise they are reordered by {\tt CASTEP}.
+There is now a check for this in {\tt OPTIM}.
+The {\keyw{PARALLEL}} keyword is no longer needed, since
+the number of processors can be specified in {\it job} if necessary. Examples for mek-quake, darwin and zippo:
+
+{\obeylines
+CASTEP 'mpirun /home/wales/bin/castep' 'NH2Fe'
+CASTEP 'mpirun -np 64 -machinefile machine.file /home/dw34/bin/castep.mpi /home/dw34/bin/castep.mpi' 'NH2Fe'
+CASTEP 'srun -p sca -n 36 /home/wales/bin/castep' 'NH2Fe'
+}
+For a {\it CASTEP\/} normal mode analysis set
+{\keyw{STEPS} 0\/}, {\keyw{MASS}}, {\keyw{ENDHESS}}, and {\keyw{ENDNUMHESS}} in {\tt odata}. 
+The Hessian eigenvalues and normal mode frequencies are printed to standard output automatically.
+Check {\tt pertable.f} first to make sure that the atomic mass is known for all the
+elements in your system. The frequency conversion assumes that the units of energy and
+distance are electron volts and \AA.
+If {\keyw{DUMPVECTOR} ALLVECTORS\/} is set in {\tt odata} then all
+the normal mode eigenvector components will be transformed to the Cartesian basis from the
+mass-weighted Cartesian basis.
+The components printed in the {\tt vector.dump} file for normal mode $\gamma$
+are then $A_{\alpha\gamma}/\sqrt{m_\alpha}$ with $1\le \alpha \le 3N$ for $N$
+atoms. Here we follow the notation in `Energy Landscapes' around 
+p.~141: the matrix ${\bf A}$ diagonalises the mass-weighted Hessian {\bf h},
+and the corresponding eigenvectors of {\bf h} are orthonormal.
+As shown in equation (2.51) of `Energy Landscapes', the relative displacements
+for Cartesian coordinate $X_\alpha$ are then $A_{\alpha\gamma}/\sqrt{m_\alpha}$,
+as printed in the {\tt vector.dump} file. Hence, to put kinetic energy of
+magnitude $k_\gamma$ into motion corresponding to normal mode $\gamma$ requires
+Cartesian velocities $\dot{X}_\alpha = \pm A_{\alpha\gamma} \sqrt{2k_\gamma/m_\alpha}$,
+choosing either the plus or minus sign consistently for  a given mode $\gamma$.
+
+\ksec{CASTEPC}{ job system\/}: tells the program to use the new {\tt CASTEP} to calculate energies and
+forces with input files based on the system name {\it system\/}.
+In this case the system is assumed to be a cluster, so that both translational and rotational
+degrees of freedom correspond to zero Hessian eigenvalues at a stationary point.
+{\it job} is a string in quotes that specifies the system call required to run 
+the {\tt CASTEP} executable. 
+If {\keyw{MASS}} and {\keyw{DUMPVECTOR} ALLVECTORS\/} are set in {\tt odata} then
+the normal mode frequencies will be printed in wavenumbers, and the
+normal mode eigenvector components will be transformed to the Cartesian basis from the
+mass-weighted Cartesian basis.
+It is necessary to specify the atoms in order of increasing atomic number,
+since otherwise they are reordered by {\tt CASTEP}.
+There is now a check for this in {\tt OPTIM}.
+The {\keyw{PARALLEL}} keyword is no longer needed, since
+the number of processors can be specified in {\it job} if necessary. 
+Examples for mek-quake, darwin and zippo:
+
+{\obeylines
+CASTEPC 'mpirun /home/wales/bin/castep' 'qge'
+CASTEPC 'mpirun -np 64 -machinefile machine.file /home/dw34/bin/castep.mpi /home/dw34/bin/castep.mpi' 'qge'
+CASTEPC 'srun -p sca -n 36 /home/wales/bin/castep' 'qge'
+}
+
+For a {\it CASTEP\/} or {\it ONETEP} normal mode analysis set
+{\keyw{STEPS} 0\/}, {\keyw{MASS}}, {\keyw{ENDHESS}}, and {\keyw{ENDNUMHESS}} in {\tt odata}. 
+The Hessian eigenvalues and normal mode frequencies are printed to standard output automatically.
+Check {\tt pertable.f} first to make sure that the atomic mass is known for all the
+elements in your system. The frequency conversion assumes that the units of energy and
+distance are electron volts and \AA.
+If {\keyw{DUMPVECTOR} ALLVECTORS\/} is set in {\tt odata} then all
+the normal mode eigenvector components will be transformed to the Cartesian basis from the
+mass-weighted Cartesian basis.
+The components printed in the {\tt vector.dump} file for normal mode $\gamma$
+are then $A_{\alpha\gamma}/\sqrt{m_\alpha}$ with $1\le \alpha \le 3N$ for $N$
+atoms. Here we follow the notation in `Energy Landscapes' around
+p.~141: the matrix ${\bf A}$ diagonalises the mass-weighted Hessian {\bf h},
+and the corresponding eigenvectors of {\bf h} are orthonormal.
+As shown in equation (2.51) of `Energy Landscapes', the relative displacements
+for Cartesian coordinate $X_\alpha$ are then $A_{\alpha\gamma}/\sqrt{m_\alpha}$,
+as printed in the {\tt vector.dump} file. Hence, to put kinetic energy of
+magnitude $k_\gamma$ into motion corresponding to normal mode $\gamma$ requires
+Cartesian velocities $\dot{X}_\alpha = \pm A_{\alpha\gamma} \sqrt{2k_\gamma/m_\alpha}$,
+choosing either the plus or minus sign consistently for  a given mode $\gamma$.
+
+\ksec{CHARMM}{\/}: specifies that the CHARMM potential is used. An auxiliary file 
+{\tt input.crd} is required. \keyw{CHARMM} must be the last OPTIM directive in the 
+{\tt odata} file. The remaining content of {\tt odata} consists of CHARMM keywords and
+setup information.
+
+\ksec{CHARMMTYPE}{ topfile paramfile\/}:  {\it topfile} and {\it paramfile} are the 
+common CHARMM top and param files , e.g., `toph19\_eef1\_perm.inp' and `param19\_eef1\_perm.inp'.
+
+\ksec{CHDEBUG}{ EDEBUG\/}: produces more CHARMM related printing. Turned off by default.
+If EDEBUG is given as argument, after each CHARMM energy call the energy is decomposed
+and the components printed. Produces a lot of output!
+
+\ksec{CHECKINDEX}{ nevs ceig nevl\/}: instructs the program to check the Hessian
+index after a BFGS minimisation or BFGS hybrid transition
+state search. This keyword also works with {\keyw{NOHESS}}.
+The parameters are the same as for {\keyw{BFGSTS}} below, and need not be set
+if they have already been specified by that keyword.
+
+\ksec{CHECKCHIRALITY}{\/}: checks that no inversion of a chiral centre happens.
+Residues can be L or D, but should remain in the same enantiomeric state during 
+the simulation. CHECKCHIRALITY is always turned on for CHARMM, i.e. this line
+is not needed in the {\it odata} file. 
+
+\ksec{CHECKCONT}{\/}: if {\keyw{CHECKINDEX}} is specified then {\keyw{CHECKCONT}}
+instructs the program to take a pushoff and continue if convergence to a stationary
+point with the wrong Hessian index is detected. 
+
+\ksec{CHINTERPOLATE}{ bint sint DNEB\/}: specifies the interpolation between endpoints
+for CHARMM. Following specifications are possible: CHINTERPOLATE BC SC does the 
+interpolation for BHINTERP in Cartesians for the backbone and sidechains. 
+That's the default for BHINTERP, which in this case also works without that line.
+CHINTERPOLATE BC SI does the interpolation for BHINTERP in Cartesians for
+the backbone and in Internals for the sidechains.
+CHINTERPOLATE BI SI does the interpolation for BHINTERP in Internals for
+the backbone and sidechains.
+CHINTERPOLATE BC SC DNEB does the interpolation for DNEB in Cartesians for
+the backbone and sidechains. That's the default for DNEB, which
+in this case also works without that line.
+CHINTERPOLATE BC SI DNEB does the interpolation for DNEB in Cartesians for
+the backbone and in Internals for the sidechains.
+CHINTERPOLATE BI SI DNEB does the interpolation for DNEB in Internals for
+the backbone and sidechains.
+The Internals are the primitive CHARMM internal coordinates. If you would rather like to
+use the natural internals, you have to use the INTINTERP keyword
+
+\ksec{CISTRANS}{\/}: allows cis-trans isomerisations for CHARMM.
+
+\ksec{COLDFUSION}{ thresh\/}: if the energy falls below threshold {\it thresh} then
+cold fusion is assumed to have occurred and geometry optimisation stops.
+
+\ksec{COMMENT}{\/} or {\it NOTE\/}: the rest of the line is ignored.
+
+\ksec{CONNECT}{ n\/}: find a min-sad-min-$\cdots$-min sequence connecting
+%the initial minimum in {\tt odata}  
+the initial minimum in \hyperlink{odata}{odata}  
+(or auxiliary files for CHARMM, UNRES, etc.) to the final minimum in {\tt finish},
+giving up if more than {\it n\/} transition states are needed (default {\it n\/}=100). \keyw{CONNECT}
+generally needs to be augmented by other keywords to specify how the transition
+state geometries should be guessed (\keyw{NEB}, \keyw{NEWNEB}, {\keyw{FIXD}}
+or {\keyw{GUESSTS}}), how the transition
+state searches should be performed ({\keyw{SEARCH} 2\/} or {\keyw{BFGSTS}}, with or
+without {\keyw{NOHESS}}, {\keyw{NOIT}} etc.), and how that pathways should be
+calculated ({\keyw{SEARCH} 0,\/} 6 or 7, {\keyw{BFGSMIN}}, {\keyw{RKMIN}} or {\keyw{BSMIN}}).
+A summary file will be produced if {\keyw{DUMPPATH}} or {\keyw{DUMPALLPATHS}} is specified. An xyz file
+for the overall path will be printed to {\tt path.xyz} and the energy as a
+function of the path length is printed to {\tt EofS}. The corresponding xyz and energy
+files for the individual steps in the path are numbered path.$n$.xyz and EofS.$n$ for
+transition state $n$.
+
+\ksec{CONSEC}{ nstart nend nstart nend etc.\/}: construct linearly interpolated, internal coordinate
+transition state guesses and apply the stopping criterion in a \keyw{CONNECT} run over a chosen
+segment of protein specified by pairs of residue numbers
+({\it nstart,nend\/}).  Up to ten distinct sections can be chosen.
+
+\ksec{CONVERGE}{ x y NOINDEX\/}: change the default convergence conditions
+for eigenvector-following and second order steepest-descent calculations 
+described in \S\ref{sec:second}. If one number is supplied then convergence depends only upon
+the maximum unscaled step falling below the specified value (and the right number
+of negative Hessian eigenvalues). If two numbers are supplied the second is the 
+required threshold for the RMS force which must also be satisfied.
+If the string {\it NOINDEX\/} is present then the Hessian index isn't checked.
+
+\ksec{COPYRIGHT}{\/}: prints copyright information.
+
+\ksec{CPMD}{ system\/}: tells the program to use CPMD to calculate energies and
+forces with input file {\it system\/}; bulk boundary conditions.
+
+\ksec{CPMDC}{ system\/}: tells the program to use CPMD to calculate energies and
+forces with input file {\it system\/}; cluster boundary conditions.
+
+\ksec{CUBIC}{\/}: if the three box lengths are equal to start with in a {\keyw{PV}} run,
+and the keyword {\keyw{CUBIC} \/} is included, then a cubic box is maintained. 
+
+\ksec{CUBSPL}{\/}: For the growing string or evolving string double-ended
+  transition state search methods, use a cubic spline interpolation between
+  the image points.
+
+
+
+
+\subsection{D}
+\ksec{D}{5H x\/}: add a decahedral field of strength {\it x} to the potential.
+
+\ksec{DCHECK}{ ON/OFF\/}: turns on/off warning messages when atoms
+approach to within $0.5$ distance units. Default is {\it ON\/}.
+
+\ksec{DEBUG}{\/}: causes unscaled steps, gradients, Hessian eigenvalues and
+summary information to be printed every cycle for \keyw{SEARCH} 0--7 runs. Turned off by default.
+Also produces much more printing for individual steps in \keyw{CONNECT} runs.
+
+\ksec{DESMAXAVGE}{ E\/}: specifies a maximum average energy, such that
+  double-ended search methods will not stop until the average energy of the
+  images is below {\it E\/}. 
+
+\ksec{DESMAXEJUMP}{ E\/}: specifies a maximum energy jump, such that a
+  particular image step in a double-ended search method is skipped if the
+  starting energy of that image is below $0$ and the energy increases by more
+  than $E$. Particularly useful when the {\keyw{DESMINT}} keyword is
+  set. Recommended value $1.0\times10^4$.
+
+\ksec{DESMDEBUG}{\/}: Produces extra printing for the double-ended
+  transition state search method runs (DNEB, GS or ES).
+
+\ksec{DF}{1\/}: specifies a binary 2D potential.
+The first $N/2$ atoms have unit radius and the rest 
+have radius 1.4, with a cutoff for each pair type at the
+average radius.
+The keyword {\keyw{2D}} must also be specified, along with a 
+{\keyw{PARAMS}} line to specify two box-lengths.
+Initial work uses box lengths of 3.31437171 for a number density of 0.9.
+
+\ksec{DFTB}{\/}: specifies that the tight-binding code of Walsh and Wales\cite{WalshW98}
+      is used.
+
+\ksec{DGUESS}{ dguess1 dguess2 dguess3 dguess4\/}: initial guess for diagonal elements of the inverse
+      Hessian, used whenever the BFGS optimiser is reset. {\it dguess1\/} is used in
+      geometry optimisations, {\it dguess2\/} is used for minimisation in
+      eigenvalue calculations, {\it dguess3\/} is used for DNEB optimisation
+      steps, and {\it dguess4\/} is used for string method optimisation steps.
+%     When a Hessian is
+%     available (i.e.~for an EF/BFGS calculation) {\it dguess1\/} is estimated by the
+%     program. Otherwise 
+      The default values are {\it dguess1=dguess2}=0.1, {\it dguess3=dguess4}=0.001
+
+\ksec{DIJKSTRA}{ [EXP/n] [INTERP x EXP/n]\/}: specifies that the missing connection
+Dijkstra-based algorithm\cite{CarrTW05} should be used to choose minima for connection in cycles
+of \keyw{NEWCONNECT}.
+The edge weights are based on the smallest distance between minima exponentiated (for {\it EXP}) or
+raised to the integer power {\it n}.
+Alternatively, the additional keyword {\it INTERP\/} specifies an edge weight based on
+the highest energy difference found by a linear interpolation between the minima at regular spacings
+of {\it x}. 
+The final {\it EXP\/} or integer {\it n} specifies whether this highest energy is exponentiated
+or raised to the power {\it n} to obtain the edge weight.
+
+\ksec{DOUBLE}{\/}: adds a double-well potential as per {\it J.~Chem.~Phys.\/},
+        {\bf 110}, 6617, 1999. The
+        energy and derivatives add to the potential specified by the atom
+        type. Only atom type
+        `LS' (not binary) has the 1,2 interaction removed as well.
+        At low density some atoms may not interact with any others and
+        problems result due to additional zero eigenvalues.
+
+\ksec{DQAGKEY}{ n}: n (integer between 1 and 6) indicates the number of local 
+integration points used for calculating cubic spline arc lengths in the string methods. 
+Default value is 6, which corresponds to 30-61 points. 
+
+\ksec{DRAG}{\/}: obsolete method that transforms one end point into another
+by progressively increasing a spring potential that attracts the system to the
+final geometry.
+
+\ksec{DUMPALLPATHS}{\/}: prints a summary of every min-sad-min path 
+found during a {\keyw{CONNECT}} or \keyw{NEWCONNECT} run to
+file {\tt path.info}. For each stationary point the energy, point group order and symbol, 
+Hessian eigenvalues and coordinates are given. Hessian eigenvalues are computed
+for all stationary points. This min-sad-min format corresponds to the {\keyw{TRIPLES}\/}
+keyword in the {\tt PATHSAMPLE} program.
+
+\ksec{DUMPDATA}{\/}: creates a file in {\tt PATHSAMPLE} {\tt min.data} format for the minimum found
+following a minimisation. Useful for a discrete path sampling initial path run to
+create entries for the two endpoints.
+
+\ksec{DUMPMODE}{ n1 n2 etc\/}: must be used with and below {\keyw{DUMPVECTOR} ALLVECTORS MWVECTORS}. Produces PDB files {\tt mode.n1.pdb, mode.n2.pdb} etc containing information on the relative per atom and per residue displacement caused by that mode. This information can be visualised in VMD by colouring with the {\tt Beta} (per residue) or {\tt Occupancy} (per atom) options.
+
+\ksec{DUMPNEBEOS}{\/}: creates the file {\tt EofS.neb} for DNEB runs. This file is
+also created if {\keyw{DEBUG}} is set; the default is false.
+
+\ksec{DUMPNEBPTS}{\/}: saves points for DNEB every iteration.
+
+\ksec{DUMPNEBXYZ}{\/}: creates the file {\tt neb.xyz} for DNEB runs. This file is
+also created if {\keyw{DEBUG}} is set; the default is false.
+
+\ksec{DUMPPATH}{\/}: prints a summary of the min-sad-min-$\cdots$-min path produced by {\keyw{CONNECT}} 
+or \keyw{NEWCONNECT} to
+file {\tt path.info}. For each stationary point the energy, point group order and symbol, 
+Hessian eigenvalues and coordinates are given. Hessian eigenvalues are computed
+for all stationary points.
+Note that the {\tt PATHSAMPLE} program needs to be told if {\tt OPTIM} is using
+the {\keyw{DUMPPATH}} or {\keyw{DUMPALLPATHS}} format.
+
+\ksec{DUMPSP}{\/}: specifies that information for all the stationary points located
+should be dumped in 
+{\tt PATHSAMPLE} {\tt min.data}/{\tt ts.data} format.
+
+\ksec{DUMPSTRUCTURES}{\/}: specifies that final structures should be dumped for the Amber 9 
+runs into pdb, Amber restart and xyz formats.
+
+\ksec{DUMPVECTOR}{ [ALLSTEPS] [ALLVECTORS [MWVECTORS]]}: if present the Hessian eigenvectors 
+will be written to file {\tt vector.dump} after each OPTIMisation step,
+preceded by the corresponding eigenvalue for each one. The
+eigenvectors corresponding to zero eigenvalues are excluded. For hybrid eigenvector-following/BFGS
+transition state searches only the results corresponding to the smallest non-zero
+eigenvalue are dumped. The default is to dump only the vector corresponding
+to the smallest non-zero eigenvalue for the last step. If {\it ALLSTEPS\/} is
+present then vectors are dumped at every step. If {\it ALLVECTORS\/} is present
+then all the vectors corresponding to non-zero eigenvalues are dumped, rather
+than just one of them. If {\it MWVECTORS\/} is also specified, the vectors dumped are the normal modes, 
+using appropriate mass weighting and the {\tt vector.dump} file will contain the vibrational frequencies (in wavenumbers) rather than the eigenvalues. Two additional output PDB files are also be produced. {\tt totalmodes.pdb} contains per atom and per residue displacement information resulting from a vector sum of ALL normal modes of non-zero frequency. {\tt weightedmodes.pdb} contains similar information for a Boltzmann weighted (by frequency) vector sum of all normal modes. See {\keyw{DUMPMODE}} for information on how to visualise this data. Note that the Boltmann weighting is done with kT=207.11 cm$^{-1}$ (corresponding to room temperature) unless otherwise specified by the {\keyw{KTWN}} keyword. A third output file is also produced if {\keyw{KTWN}} is specified. {\it ALLSTEPS\/} and {\it ALLVECTORS\/} can be present in
+either order. 
+
+
+
+
+\subsection{E}
+\ksec{EDIFFTOL}{ x\/}: specifies the energy difference used to identify permutational isomers
+in \keyw{CONNECT} and \keyw{NEWCONNECT} runs. Default is {\it x}$=10^{-9}$.
+
+\ksec{EFIELD}{ x\/}: specifies that an electric field along the $z$ axis
+should be included with magnitude {\it x}\,V/\AA. For use with TIPnP potentials.
+
+\ksec{EFSTEPS}{ n\/}: prints the unscaled steps in the Hessian
+eigenvector basis every {\it n\/} steps---turned off by default.
+
+\ksec{ENDHESS}{ n\/}: calculate analytical Hessian and normal mode
+frequencies at end of run. To obtain frequencies for {\keyw{UNRES}},
+{\it CASTEP\/} and {\it ONETEP} you must
+specify both {\keyw{ENDHESS}} and {\keyw{ENDNUMHESS}}.
+% {\keyw{ENDHESS}} is only intended for use in single geometry optimisations, and
+% should not be needed for \keyw{CONNECT} or \keyw{PATH} runs if {\keyw{DUMPPATH}}
+% is specified.
+For an eigenvalue analysis, with no geometry optimisation, specify {\keyw{STEPS} 0\/}.
+To have the Hessian eigenvalues printed to standard output you must specify the 
+{\keyw{DEBUG}} keyword, except for {\keyw{AMH}}, {\it CASTEP\/} and {\it ONETEP\/}, where they are printed
+automatically. {\it n\/} specifies the number of Hessian eigenvalues to be calculated 
+(starting from the lowest), which defaults to all.
+
+\ksec{ENDNUMHESS}{\/}: calculate numerical Hessian and normal mode
+frequencies at end of run.
+Required if {\keyw{DUMPPATH}} {\it or ENDHESS\/} is specified for an {\keyw{UNRES}} run,
+in which case it's an internal coordinate Hessian.
+Also required for a {\it CASTEP\/} or {\it ONETEP} normal mode analysis, which
+also requires {\keyw{STEPS} 0\/} and {\keyw{ENDHESS}} to be set.
+To have the Hessian eigenvalues printed to standard output you must specify the 
+{\keyw{DEBUG}} keyword, except for {\keyw{AMH}} and {\it CASTEP\/}, where they are printed
+automatically. 
+
+\ksec{ERROREXIT}{\/}: indicates that the program should halt on error.
+
+\ksec{EVCUT}{ x\/}: sets a cutoff value for eigenvalues. Eigenvalues
+of magnitude less than $x$ are treated as zeros and steps along such directions
+are omitted.
+
+\ksec{EVOLVESTRING}{\/}: use the evolving string method based on the
+  zero-temperature string method of E et al \cite{ERV02} for double-ended
+  transition state searches. Should be used in conjunction with the {\it %
+  GROWSTRING} keyword to set parameters. 
+
+\ksec{EXTRASTEPS}{ x\/}: obsolete; extra minimisation steps are allowed
+for \keyw{CHARMM} runs proportional to the separation between two minima
+multiplied by {\it x\/}.
+
+\subsection{F}
+\ksec{FAKEWATER}{\/}: specifies that implicit water should be used in an AMBER
+calculation via an effective dielectric constant.
+ 
+\ksec{FILTH}{ n\/}: specifies an integer variable, {\it n}, to distinguish output files in
+parallel landscape jobs. This keyword will be retired shortly in favour of the new
+command line specification of file name extensions.
+
+\ksec{FIXAFTER}{ n\/}: specifies that {\it FIXIMAGE\/} should be set permanently after step      
+      {\it n\/}. This effectively freezes the interacting images in different supercells
+      for calculations with periodic boundary conditions.
+
+\ksec{FIXATMS}{ \/}: For the GS and ES double-ended transition state search
+  methods, avoid overall translation and rotation by fixing all three
+  coordinates of one atom, confining another atom to a line, and a third atom
+  to a plane for all steps.
+
+\ksec{FIXD}{ t12fac dthresh\/}: transition state search using hard sphere moves. A random
+velocity vector is assigned and the first hard sphere collision is located. If {\it t12fac\/}$\le1$
+then the system is moved through a fraction {\it t12fac\/} of this first collision time; the
+default value is 1. If 
+{\it t12fac\/}$>1$ then the two atoms are moved half way between the entrance and exit of their
+collision, but their separation is rescaled to unity. See also RANSEED.
+Used in \keyw{CONNECT} procedure only if {\keyw{FIXD}} is set and the two
+minima to be connected are closer than {\it dthresh}.
+
+\ksec{FRACTIONAL}{\/}: specifies fractional coordinates to be used in box length
+      optimisation for constant pressure runs using {\keyw{PV}}.
+
+\ksec{FREEZE}{ n1 n2 etc.\/}: specifies that atoms {\it n1, n2,\/} etc.~should be frozen.
+Only works for LBFGS minimisation and BFGSTS if 3 or more non-linear atoms are frozen.
+
+\ksec{FREEZERES}{ n1 n2 etc.\/}: specifies that residues {\it n1, n2,\/} etc.~should be frozen.
+
+\ksec{FREEZEGROUP}{ centreatom radius mode\/}: specifies that all atoms outside ({\it mode = GT\/}, the default) 
+or within ({\it mode = LT\/}) a sphere of radius {\it radius\/} centred on atom {\it centreatom\/} should be frozen.
+Also produces a file {\it frozen.dat\/} containing the corresponding single atom FREEZE commands. 
+
+\ksec{FREEZENODES}{ tol\/}: For the double-ended transition state search
+  methods (NEB, GS, ES), at each step freeze those nodes for which the RMS
+  perpendicular force, as a fraction of the RMS force over all the images, is
+  less than {\it tol\/}.  over all the images.
+
+\subsection{G}
+\ksec{GAMESS}{-UK system exec\/}: potential will be generated by GAMESS-UK.
+{\it system\/} is a string to identify the system and {\it exec\/} is
+the name of an executable that will generate a GAMESS-US input deck from a points file.
+If {\it exec\/} is omitted its name is assumed to be {\it editit.system}.
+ 
+\ksec{GAMESS}{-US system exec\/}: potential will be generated by GAMESS-US.
+{\it system\/} is a string to identify the system and {\it exec\/} is
+the name of an executable that will generate a GAMESS-US input deck from a points file.
+If {\it exec\/} is omitted its name is assumed to be {\it editit.system}.
+
+\ksec{GAUSSIAN}{\/}: tells the program to read derivative information in
+Gaussian92 format. This is unlikely to be working at the moment, since we 
+are not allowed access to the GAUSSIAN program.
+
+\ksec{GDIIS}{ x y z\/}: initiates geometry direct inversion of the
+invariant subspace. This option always seems to give poorer convergence
+if analytic second derivatives are available at every step. It requires
+three real parameters, which are read after the {\keyw{GDIIS}} keyword. The
+first is the RMS force below which GDIIS will be used, the second is the 
+dimension of the DIIS problem to solve and the third is the interval between
+GDIIS steps. 
+
+\ksec{GEOMDIFFTOL}{ x\/}: specifies the distance criterion used to identify identical isomers
+in \keyw{CONNECT} and \keyw{NEWCONNECT} runs. Default is {\it x}$=10^{-3}$.
+
+\ksec{GOT}{\/}: Paul Whitford's G\={o} model potential.
+
+\ksec{GRADIENTS}{ n\/}: causes the gradients along the Hessian
+eigenvectors to be printed every {\it n\/} cycles. Gradient printing is turned off by default.
+
+\ksec{GRADSQ}{ gsthresh nspecial nallow\/} specifies optimisation of the modulus gradient
+with {\it nallow\/} second order steps at intervals of {\it nspecial\/} 
+if the RMS force lies below {\it gsthresh\/}.
+
+\ksec{GREATCIRCLE}{ gcmxstp gcmxstp gcsteps gcconv\/}: obsolete;
+interpolation between two end points using a great circle in $3N$-dimensional
+space.
+
+\ksec{GROWSTRING}{ nimage iterd reparamtol growtol convtol mxstp\/}:
+  specifies that double-ended transition state searches will be done using
+  either the evolving string method (based on that described by E et
+  al\cite{ERV02}) or the growing string method (based on that described by
+  Peters et al\cite{PetersHBC04}). The default is growing strings; if the
+  separate keyword \keyw{EVOLVESTRING} is also specified, the evolving string
+  method will be used instead. {\it nimage\/} and {\it iterd\/} specify the
+  number of images and the maximal iterations per image to be used in the
+  first connect run; for all subsequent connections these parameters are
+  determined from the \keyw{NEWCONNECT} line. In the growing string case, the
+  iteration density affects only the maximum iterations allowed after the
+  string is fully populated with images. The string is reparametrised and the
+  images redistributed whenever the ratio of actual inter-image distance to
+  the desired distance falls below {\it reparamtol\/} for at least one
+  segment.  For growing strings, a new image is added to one side of the
+  string whenever the RMS perpendicular force on one of the frontier images
+  falls below {\it growtol\/}. The string is deemed to have converged if the
+  RMS perpendicular force over all the images falls below {\it convtol\/}.
+  {\it mxstp\/} refers to the maximum allowed step for each image during the
+  optimisation. The default is a linear interpolation between image points;
+  use the {\keyw{CUBSPL}} keyword to switch this to a cubic spline interpolation.
+
+\ksec{GSMAXTOTITD}{ itd\/}: Set the maximum total iteration density for the
+  growing string method. This specifies the maximum evolution iterations allowed per
+  total image number, including the iterations while the string is still
+  growing. If {\it itd\/} is less than 0, then this parameter is turned off
+  and there is no limit on the total iterations (this is the default).
+
+\ksec{GUESSPATH}{ gsteps maxgcycles gthreshold maxinte\/}:
+obsolete;
+try to guess an interpolated path for sequential coordinate changes.
+{\it gsteps\/} is the number of step to be tried for each sequential coordinate.
+{\it maxgcycles\/} is the number of sweeps through pairwise exchanges
+{\it gthreshold\/} is the coordinate change above which sequential changes are considered.
+{\it maxinte is\/} the convergence criterion for the maximum allowed interpolated energy.
+
+\ksec{GUESSTS}{ guessthresh\/}: use dihedral twisting in place of \keyw{NEB} for 
+transition state guesses with \keyw{CONNECT} for CHARMM and UNRES.
+
+\subsection{H-K}
+\ksec{HESSGRAD}{\/}: For the growing string or evolving string double-ended
+  transition state search method, use the method described in the appendix of
+  Peters et al\cite{PetersHBC04} to calculate the Newton-Raphson search
+  direction. Namely, the Hessian is approximated based on changes in the
+  gradient, and the tangential component of $-\mathbf{Hf^\perp}$ is projected
+  out. By default, the Hessian used is actually an approximation to the
+  derivative matrix of $f^\perp$ rather than the gradient.
+
+\ksec{HIGHESTIMAGE}{\/}: obsolete; 
+only use the highest non-endpoint image in a double-ended {\keyw{MECCANO}} run.
+
+\ksec{HUPDATE}{ nstart ninterval phi\/}: uses a Hessian update 
+procedure instead
+of calculating the analytic second derivatives at every step. 
+{\it nstart\/} is the first step at which analytic derivatives will be calculated; by
+default {\it nstart\/}=0, the Hessian is initialised to the identity and no
+analytic second derivatives are ever calculated. {\it ninterval\/} is the interval
+at which analytic Hessians are calculated; the default is 0, which means that no
+additional analytic Hessians are ever found. A transition state search starting from
+a minimum seems unlikely to work unless we calculate analytic Hessians at regular
+intervals including the first step. Update applied is
+{\it phi\/} times Powell\cite{powell71} plus (1-{\it phi}) times Murtagh-Sargent.
+(See Bofill and Comajuan, J.~Comp.~Chem., 11, 1326, 1995.)
+
+
+\ksec{HYBRIDMIN}{\/ nevs ncgmax1 ncgmax2 ceig mxstp nsteps evmax method nevl}: instructs the 
+program to calculate pathways using hybrid minimisation.
+{\it nevs\/} is an integer that defines the largest number of iterations allowed in the
+calculation of the smallest Hessian eigenvalue; default 500.
+{\it ncgmax1\/} is an integer that defines the largest number of BFGS steps
+allowed in the subspace minimisation before the eigenvalue is deemed to have converged; default 10.
+{\it ncgmax2\/} is an integer that defines the largest number of BFGS steps
+allowed in the subspace minimisation after the eigenvalue is deemed to have converged; default 100.
+This parameter is ignored if {\keyw{NOIT}} is set.
+The eigenvalue is deemed to be converged if the modulus of the overlap between the corresponding
+eigenvector and that saved from the previous step exceeds 0.999 and we have the right number of
+negative eigenvalues.
+{\it ceig\/} is a double precision parameter that sets the convergence criterion for
+the calculation of the smallest non-zero Hessian eigenvalue.
+If {\keyw{NOHESS}} is set {\it ceig\/} is compared to the RMS `force' corresponding to the
+Rayleigh-Ritz expectation value that is minimised to get the smallest eigenvalue.
+If the Hessian is used via iteration or {\keyw{NOIT}}
+then {\it ceig\/} is compared to the percentage change in the eigenvalue between successive
+steps. The default value is 1.0, which is more appropriate to the latter case. Smaller
+values are probably necessary in BFGS/BFGS calculations.
+{\it mxstep\/} is the maximum initial step size allowed for the step along
+Hessian eigenvectors; it is adjusted dynamically using a trust radius scheme (see {\keyw{TRAD}}).
+{\it nsteps\/} is the maximum number of steps before returning and switching to LBFGS
+minimisation. 
+The routine will also exit and switch to LBFGS if the smallest non-zero Hessian
+eigenvalue exceeds {\it evmax\/}.
+{\it method\/} can be either `EF' or `PM', specifying eigenvector-following or
+Page-McIver steps.
+The number of non-zero Hessian eigenvalues and corresponding eigenvectors determined
+is one by default, but any value can be specified using {\keyw{USEEV}}.
+
+{\it nevl\/} is an integer that defines the largest number of iterations allowed in the
+calculation of the largest Hessian eigenvalue; default 100. Not needed if {\keyw{NOHESS}}
+of {\keyw{NOIT}} is set. 
+
+\ksec{IH}{ x\/}: add an icosahedral field of strength {\it x} to the potential.
+
+\ksec{INDEX}{ n\/}: initiates a search for a saddle of index {\it n\/} if
+      \keyw{SEARCH} 2 is specified. See also {\keyw{KEEPINDEX}}. Also works with {\keyw{BFGSTS}}
+      up to a maximum of index 50, but {\keyw{NOIT}} must be set and a Hessian is needed.
+
+\ksec{INTEPSILON}{ x\/}: specifies the value of the $\epsilon$ parameter
+for diagonal shifts in the sparse internal coordinate transformation.
+The default is $x=10^{-6}$.
+
+\ksec{INTERPBACKTCUT}{ c\/}: the internal coordinate back-transformation
+  convergence cutoff used for interpolations. Default
+  value is $1.0\times10^{-8}$
+
+\ksec{INTERPCHOICE}{\/}: when used with the {\keyw{INTINTERP}} keyword,
+  specifies that linear interpolations between endpoints are done with both
+  internal and Cartesian coordinates. The interpolated path with the lower
+  maximum energy is then used to start the double-ended search method.
+
+\ksec{INTERPSIMPLE}{\/}: when used with the {\keyw{INTINTERP}} keyword,
+  specifies that an internal coordinate interpolation is done with the same
+  number of image points as desired for the double-ended search methods. The
+  resulting image points are converted directly to Cartesians. The Cartesian
+  images will not necessarily be evenly distributed along the path.
+
+\ksec{INTINTERP}{ nim\/}: specifies that internal coordinates are to be
+  used for interpolating between
+  endpoints. Automatically uses natural internal coordinates. Does a linear
+  interpolation with {\it nim\/} images, then places the required number of
+  Cartesian image points at approximately equal arclengths along the resulting
+  path. Default value of {\it nim\/} is $100$. Turns off the {\keyw{DESMINT}} keyword.
+
+\ksec{INTMIN}{\/}: specifies that internal coordinates be used in calls to {\bf mylbfgs},
+including minimisation in the tangent subspace for hybrid eigenvector-following.
+The algorithm used is that of N\'emeth {\it et al.\/}\cite{NemethCMA00}
+Not recommended.
+
+\ksec{INTMINPERM}{\/}: when aligning endpoint structures, permute the
+  permutable atoms to minimise the distance in individual torsion angles. Use
+  only with {\keyw{INTINTERP}} or {\keyw{DESMINT}}.
+
+\ksec{INTPARFILE}{ file\/}: Use a parameter file to specify the internal
+  coordinates for amino acids, rather than generating them automatically. 
+
+\ksec{KEEPINDEX}{ \/}: specifies that {\keyw{INDEX}} is set equal to
+      the number of negative Hessian eigenvalues at the initial point.
+
+\ksec{KTWN}{ x \/}: for use with {\keyw{DUMPVECTOR} ALLVECTORS MWVECTORS} - sets kT in cm$^{-1}$ to x. The default value is 207.11 cm$^{-1}$. If KTWN is specified, an additional output file, {\tt thermalmodes.pdb} is produced during a normal mode analysis containing per atom and per residue displacement information resulting from a Boltzmann weighted (by frequency) vector sum of all normal modes whose frequencies are less than kT. This information can be visualised as described for {\keyw{DUMPMODE}}.
+
+
+
+
+\subsection{L-M}
+\ksec{LANCZOS}{ \/}: obsolete; specifies that a Lanczos procedure should be used to
+find eigenvalues and eigenvectors. 
+Lapack routine {\tt DSYEVR} is now used throughout instead.
+
+
+\ksec{LOCALPERMDIST}{ thresh cutoff\/}: minimise distances between end points
+prior to DNEB interpolation using local alignment.
+{\it thresh} is used to define the tolerance for a `perfect' alignment
+in routine {\bf minpermdist}, which is called for subsets of atoms
+rather than all at the same time for {\keyw{PERMDIST}}.
+The threshold used is actually the number of atoms in the permutable
+group in question times {\it thresh\/}.
+The routine {\bf minpermrb} cycles through the permutable groups,
+calling {\bf minpermdist} for each one, augmented by any other permutable
+groups that overlap, as for any groups with additional pair swaps, such
+as valine and arginine.
+Atoms that are equidistant from the permutable atoms in the two end points
+are also added to the set if the distance lies within a cutoff
+radius {\it cutoff\/}.
+They are added in increasing distance order, and removed one at a time 
+if the resulting subsets of atoms cannot be aligned `perfectly' between
+the two endpoints.
+Using cutoffs of 2.5 and 5\,\AA\ gives different internal rotations for
+an arginine group, but with similar barriers. 
+The default values are 0.1 and 5.0 for {\it thresh} and {\it cutoff\/},
+respectively.
+Requires the auxiliary file {\tt perm.allow} to specify permutable atoms, otherwise
+all atoms are assumed to be permutable. The absence of a {\tt perm.allow}
+file is considered a mistake for \keyw{CHARMM} runs.
+
+The first line of the {\tt perm.allow} file must contain an integer
+that specifies the number of primary groups of interchangeable atoms.
+The groups then follow, each one introduced by a line with two integers $p$ and $s$
+that specify the number of permutable atoms in the primary group and the number of other sets
+of permutable atoms associated with the primary set.
+$s$ may be zero.
+Each secondary set of permutable atoms has $p$ members.
+The following line contains the indices of the $p$ permutable atoms 
+in the primary set and then
+the indices of the atoms in each of the $s$ secondary sets, one set at 
+a time.
+
+Scripts to generate allowed permutations automatically for CHARMM and AMBER are available from
+the group web site. It is essential to use symmetrised versions of the corresponding
+force fields! See the {\keyw{PERMDIST}\/} keyword for example {\tt perm.allow} file entries.
+
+\ksec{LOWESTFRQ}{\/}: specifies that the lowest positive eigenvalues associated
+with the Hessian and mass-weighted Hessian should be calculated and written to {\tt min.data.info\/}.
+These eigenvalues can then be used in combination with {\keyw{DUMMYTS}\/} in {\tt PATHSAMPLE}
+to estimate the energy and frequency factor associated with dummy transition states.
+The {\keyw{LOWESTFRQ}} keyword must appear in {\tt odata.bhinterp} or {\tt odata.bisect} for
+such jobs, along with {\keyw{DUMPDATA}} and {\keyw{BHINTERP}} or {\keyw{BISECT}}.
+
+\ksec{MACHINE}{\/}: specifies that points should be saved in binary (machine) format instead 
+of human-readable xyz. Default false.
+
+\ksec{MASS}{\/}: specifies the use of mass weighting for the steps; the 
+output coordinates are not mass weighted.
+
+\ksec{MAXBARRIER}{ x\/}: {\it x\/} specifies the maximum value for the smaller barrier height that 
+is allowed to constitute a connection during the
+{\keyw{DIJKSTRA} \/}connection procedure.
+See also {\keyw{MAXMAXBARRIER}} to restrict the larger barrier height.
+
+\ksec{MAXBFGS}{ x1 x2 x3 x4\/}: {\it x\/} specifies the maximum allowed step length in LBFGS
+minimisations, {\it x1\/} for  normal minimisations, {\it x2\/} for Rayleigh-Ritz ratio
+minimisation, {\it x3\/} for putting structures in closest coincidence with
+{\bf ministd}, and {\it x4\/} for NEB minimisations. Default values all 0.2.
+
+\ksec{MAXERISE}{ x1 x2\/}: {\it x1} is the maximum energy increase above which
+{\bf mylbfgs} will reject a proposed step. The default is {\it x}$=10^{-10}$, but
+a much larger value may be needed for CASTEP runs.
+{\it x2\/} performs the same function for the maximum rise in the Rayleigh-Ritz ratio
+during minimisation in {\bf xmylbfgs}.
+
+\ksec{MAXFAIL}{ n\/}: maximum number of failures 
+to lower the energy allowed in a minimisation before giving up.
+
+\ksec{MAXGROWSTEPS}{ n\/}: For the growing string double-ended connection
+  method, specify a maximum number of steps allowed before another image is
+  added to the growing string. Default is 1000. 
+
+\ksec{MAXLENPERIM}{ x\/}: will stop the entire job if the total string
+  length for the growing strings or evolving strings method goes above {\it x}
+  times the total number of images. This usually means that something is going
+  wrong with the string. Default is 1000. 
+
+\ksec{MAXMAX}{ x\/}: specifies the maximum value that the maximum step size 
+is allowed to rise to. The default value is $0.5$.
+{\keyw{MAXMAX}} is also used as the uphill step size in hybrid eigenvector-following
+transition state searches if the eigenvalue of the direction being followed is positive.
+
+\ksec{MAXMAXBARRIER}{ x\/}: {\it x\/} specifies the maximum value for the larger barrier height that 
+is allowed to constitute a connection during the
+{\keyw{DIJKSTRA} \/}connection procedure. 
+See also {\keyw{MAXBARRIER}} to restrict the smaller barrier height.
+
+\ksec{MAXSTEP}{ x1 x2\/}: specifies the maximum step size for eigenvector-following and
+steepest-descent calculations, default value 0.2. The precise
+implementation of this constraint depends upon the step scaling method employed (see \S\ref{sec:scaling}).
+
+\ksec{MAXTSENERGY}{ x\/}: maximum ts energy that is allowed to constitute a connection during the
+Dijkstra connection procedure. Paths are not calculated for transition states above
+this threshold, and entries are not created in the {\tt path.info} file.
+Useful for \keyw{CHARMM} to ignore unphysical stationary points.
+
+\ksec{MECCANO}{ mecimdens mecmaximages mecitdens mecmaxit meclambda mecdist mecrmstol 
+mecstep mecdguess mecupdate\/}: obsolete; an interpolation between 
+end points via rigid rods of variable length.
+
+\ksec{MINBACKTCUT}{ c\/}: The internal coordinate back-transformation
+  convergence cutoff used in all cases except for interpolations. Default
+  value is $1.0\times10^{-4}$
+
+\ksec{MINMAX}{ x\/}: specifies the minimum value that the maximum step size 
+is allowed to fall to. The default value is $0.01$.
+
+\ksec{MODE}{ n1 n2\/}: specifies the eigenvector to be followed uphill in an eigenvector-following 
+transition state search,
+where 1 means the softest mode, 2 means the next softest, and so on.
+Setting {\it n1\/} to 0 means that the softest mode is followed uphill at every step,
+otherwise a maximum overlap criterion is used to determine the mode followed after the
+first step. The sign of {\it n1\/} is used to determine the direction in which we
+step along the eigenvector if we are starting from a stationary point. This provides a way
+to start transition state searches from minima along any of the eigendirections in
+either sense. If a minimisation is started from a converged transition state then setting
+{\it n1\/} to $\pm1$ enables the program to walk down the two sides of the pathway. This is true for
+runs based on LBFGS techniques too if the keyword {\keyw{BFGSSTEP}} is used.
+{\keyw{MODE}} is now also used in EF/LBFGS searches so long as an analytical Hessian is
+calculated. {\it n1\/} is used for the first step and {\it n2} for subsequent steps. The
+default is 0 for both parameters. Note that {\it n2\/} must be explicitly set equal to
+{\it n1\/} to follow the same mode (as judged by overlap) in following steps.
+
+\ksec{MORPH}{ morphmxstp mnbfgsmax1 mnbfgsmax2 morphemax morpherise msteps\/}:
+attempt to morph between endpoints by taking steps either towards or away from the
+endpoint specified in {\tt finish}, and minimising in the tangent space.
+{\it morphmxstp\/} is the maximum step size.
+{\it mnbfgsmax1\/} is the maximum number of minimisation steps taken in the tangent
+space when the distance from the {\tt finish} endpoint is greater than the 
+step size convergence criterion.
+{\it mnbfgsmax2\/} is the maximum number of minimisation steps taken in the tangent
+space when the distance from the {\tt finish} endpoint is less than the
+step size convergence criterion.
+{\it morphemax\/} is the maximum energy allowed during the interpolation; 
+if this threshold is exceeded the algorithm toggles between stepping away/towards
+the {\tt finish} endpoint.
+{\it morpherise\/} is the maximum energy rise permitted in a step.
+{\it msteps\/} is the maximum number of {\keyw{MORPH}} steps allowed.
+Used successfully with the general BLN model for protein L, where linear
+interpolation leads to strands crossing.
+
+\ksec{MOVIE}{\/}: a movie will be dumped in xyz format for the {\keyw{AMBER}} potential.
+
+\ksec{MSEVBPARAMS}{ shellsToCount maxHbondLength minHbondAngle OOclash\_sq\/}: 
+specifies parameters for the MSEVB potential.
+
+\subsection{N}
+\ksec{NAB}{ inpcrd inpcrdformat\/}: specifies a calculation with the interfaced
+version of the Nucleic Acid Builder program package. From this package the Amber force fields
+are being used only. The syntax is the same as for the {\keyw{AMBER9} keyword. For energy 
+and gradient evaluations the standard Amber 9 interface is being called. The NAB routines 
+are only called for analytical second derivative evaluations. The NAB interface does not 
+have smooth cutoffs implemented at the moment, therefore this keyword should only be used 
+for systems where the cutoff is large. 
+
+\ksec{NATB}{\/}: specifies a tight-binding potential for sodium, silver and lithium.
+
+\ksec{NATINT}{\/}: use Pulay's natural internal coordinates\cite{PulayFPB79, FogarasiZTP92}
+  wherever internal coordinates are used. These coordinates can be generated
+  automatically or with a parameter file (using the {\keyw{INTPARFILE}}
+  keyword). If using the automatically generated coordinates, the user must
+  specify separately any rings that are not part of PRO, PHE, TYR, TRP, or HIS
+  residues (use the {\keyw{RING}} keyword).
+
+\ksec{NEB}{ nsteps nimage rmsneb\/}: specifies a nudged elastic band pathway 
+calculation\cite{HenkelmanJ00,HenkelmanUJ00} using a maximum of {\it nsteps\/} steps with
+{\it nimage\/} images and RMS convergence criterion {\it rmsneb\/}. The default values are
+{\it nsteps\/}=100, {\it nimage\/}=10, {\it rmsneb\/}=0.1.
+
+\ksec{NEBK}{ nebk\/}: specifies the value of the force constant for NEB and 
+DNEB runs. The default is 100, which may be larger than the optimal
+value for some systems.
+
+\ksec{NEBREADGUESS}{ file \/}: initial images for DNEB are read from file {\it file} 
+in xyz format, as dumped by {\keyw{DUMP}NEBXYZ\/}, to allow for restart from the last 
+step, if {\keyw{DUMP}NEBXYZ 1\/} is set. 
+
+\ksec{NEWCONNECT}{ NConMax NTriesMax ImageDensity IterDensity ImageMax ImageIncr RMStol\/}: 
+specifies the new connection algorithm described by Trygubenko and Wales.\cite{TrygubenkoW04}
+A {\tt finish} file containing the coordinates of a second minimum is required in the
+current working directory, as for \keyw{CONNECT}.
+{\it NConMax\/} is the maximum number of cycles allowed, default=100. 
+{\it NTriesMax\/} is the maximum number of connection attempts for any pair of
+local minima in the stationary point database, default=3. 
+{\it ImageDensity\/} is a real variable specifying the number of DNEB images to be used for
+the first connection attempt for any pair of minima, default=10.0. 
+An image density is specified, so that the actual number of images is {\it ImageDensity\/}$\times$the
+separation between the two minima.
+If {\it NTriesMax}$>1$ then 
+the image density is increased by {\it ImageIncr\/} for each attempt, up to
+a maximum of {\it ImageMax\/} images in total. 
+The default values for {\it ImageIncr\/} and {\it ImageMax\/} are 0.5 and 400, respectively.
+{\it IterDensity\/} specifies the maximum number of iterations used to optimise the
+DNEB in terms of a density. The actual value used is {\it IterDensity\/}$\times$the
+number of images.
+% separation between the two minima. 
+The default value of {\it IterDensity\/} is 30.0.
+{\keyw{RMS}tol\/} is the convergence condition for the RMS DNEB force on all the
+images. 
+
+\ksec{NEWNEB}{ Nimage NIterMax RMSTol\/}:
+specifies that the DNEB algorithm\cite{TrygubenkoW04} 
+should be used for a double-ended transition state search.
+{\it Nimage\/}, {\it NIterMax\/} and {\keyw{RMS}Tol} are the number of images, the maximum
+number of iterations and the RMS force convergence condition, respectively. 
+The default value for {\it Nimage\/} is 2 and there are no defaults for the other parameters.
+If \keyw{NEWCONNECT} is also specified then these values are used for the first \keyw{NEWCONNECT}
+cycle only. However, if \keyw{CONNECT} is specified they are used for every cycle.
+
+\ksec{NGUESS}{ n\/}: {\it n\/} is the number of transition state guesses to be tried in 
+{\bf guessts} for CHARMM or UNRES before switching back to \keyw{NEB} or \keyw{NEWNEB}.
+
+\ksec{NOCISTRANS}{ minomega\/}: used in \keyw{CONNECT}
+and \keyw{NEWCONNECT} runs to reject transition states
+that connect two minima with different omega angles, i.e.~to prevent cis-trans peptide
+isomerisation. Checks that all residues besides proline are in the 
+trans state and rejects transition states and minima that are not, 
+i.e.~with $|\omega|<${\it minomega}. {\it minomega\/} defaults to 150 degrees. 
+For proline every $\omega$ is allowed. NOCISTRANS is the default for
+CHARMM, i.e., no need to specify this line in the {\it odata} file. If you
+want to allow for cis-trans isomerisation, you have to specify the CISTRANS 
+keyword.
+
+\ksec{NOFRQS}{\/}: specifies that frequencies are not present in {\tt path.info} files.
+Used for very large systems where frequency calculations are not feasible in conjunction
+with the same {\tt PATHSAMPLE} keyword.
+
+\ksec{NOHESS}{\/}: no Hessian should be calculated during geometry optimisation.
+Hybrid EF/LBFGS transition state searches are therefore conducted without a
+Hessian. The smallest eigenvalue and the corresponding eigenvector are found from a separate
+Rayleigh-Ritz minimisation problem for every combined EF/BFGS step.
+
+\ksec{NOINTNEWT}{\/}: when doing the back transformation from internal to
+  Cartesian coordinates, solve the linear problem only. Do not do the
+  Newton's-method iterations. This was the default in previous versions of
+  OPTIM.
+
+\ksec{NOIT}{\/}: for use with hybrid eigenvector-following runs when a Hessian is available.
+                    Specifies that the required lowest eigenvalue and eigenvector be found using
+                    LAPACK routine {\bf DSYEVR} instead of by iteration.
+
+\ksec{NOLBFGS}{\/}: For the growing string or evolving string double-ended
+  transition state search methods, instead of using L-BFGS optimisation to
+  evolve the strings, simply take steps in the direction of the perpendicular force.
+
+\ksec{NONEBMIND}{\/}: do not put end point structures supplied to DNEB into 
+closest coincidence.
+
+\ksec{NONLOCAL}{ x y z\/}: factors for averaged Gaussian, Morse type 1 and Morse
+type 2 potentials.
+
+\ksec{NOPOINTS}{\/}: printing of coordinates to file {\tt points} for intermediate steps
+is turned off. The default is true.
+
+\ksec{NORANDOM}{ randomcutoff\/}: used in CHARMM transition state guessing procedure
+together with {\keyw{TWISTTYPE}}. Setting {\it randomcutoff\/} very large prevents random
+steps, and is recommended.
+
+\ksec{NORESET}{\/}: specifies that periodic images should not be returned to the
+primary supercell for calculations involving periodic boundary conditions. (May be
+useful for calculating transport properties with kinetic Monte Carlo).
+
+\ksec{NOTE}{\/}: has the same effect as \keyw{COMMENT}, i.e.~the rest of the line
+is ignored.
+
+\subsection{O-P}
+\ksec{ODIHE}{\/}: for use with \keyw{CHARMM}. Specifies calculation of
+a dihedral-angle order parameter using the reference structure supplied in {\tt ref.crd}.
+
+\ksec{OH}{\/}: add an octahedral field of strength {\it x} to the potential.
+
+\ksec{ONETEP}{ job system\/}: tells the program to use a {\tt ONETEP} 
+executable to calculate energies and
+forces with input files based on the system name {\it system\/}. Periodic boundary 
+conditions are not assumed, so projection or shifting is performed to remove overall translation and rotation.
+{\it job} is a string in quotes that specifies the system call required to run 
+the {\tt ONETEP} executable. 
+The line `print\_qc : TRUE' is needed in the {\tt system.dat} file
+so that the total energy is printed in a form that {\tt OPTIM} can grep for.
+OPTIM will change the line with `read\_denskern' in the {\tt system.dat} file 
+to TRUE after the first call to obtain the ONETEP energy and gradient.
+This saves a great deal of cpu time in subsequent CASTEP steps.
+However, it means that the final dat file is altered, and you will need
+to change read\_denskern to FALSE to restart
+the job if a valid {\tt system.dkn} file is not present in the working directory.
+ONETEP will fail and stop if the wavefunction read fails.
+Note that you may not be able to restart a job with a different number of nodes using
+a saved density (not tested).
+% It is also necessary to specify the atoms in order of increasing atomic number,
+% since otherwise they are reordered by {\tt CASTEP}.
+% There is now a check for this in {\tt OPTIM}.
+The {\keyw{PARALLEL}} keyword is not needed, since
+the number of processors can be specified in {\it job} if necessary. Example for volkhan:
+
+{\obeylines
+ONETEP 'mpirun /home/wales/bin/onetep' 'ethene'
+}
+
+For a {\it CASTEP\/} or {\it ONETEP} normal mode analysis set
+{\keyw{STEPS} 0\/}, {\keyw{MASS}}, {\keyw{ENDHESS}}, and {\keyw{ENDNUMHESS}} in {\tt odata}.
+The Hessian eigenvalues and normal mode frequencies are printed to standard output automatically.
+Check {\tt pertable.f} first to make sure that the atomic mass is known for all the
+elements in your system. The frequency conversion assumes that the units of energy and
+distance are electron volts and \AA.
+If {\keyw{DUMPVECTOR} ALLVECTORS\/} is set in {\tt odata} then all
+the normal mode eigenvector components will be transformed to the Cartesian basis from the
+mass-weighted Cartesian basis.
+
+
+\ksec{OPTIMIZETS}{\/}: optimise transition states at the end of each DNEB run.
+Default false. Set to true by \keyw{NEWCONNECT}.
+
+\ksec{ORT}{\/}: remove overall rotation and translation for DNEB runs. Default false.
+
+\ksec{OSASA}{ rpro\/}: for use with \keyw{CHARMM}. Specifies calculation of
+a solvent accessible surface area order parameter using probe radius {\it rpro\/}.
+
+\ksec{PARALLEL}{ nproc\/}: specifies that auxiliary programs such as {\tt GAMESS} and
+{\tt CPMD} use {\it nproc\/} processors. Not required for {\tt CASTEP}.
+
+\ksec{PARAMS}{\/}: enables additional parameters to be set for
+specific potentials, e.g.~$Z^*$ for LJAT, $\rho_0$ for Morse, {\it n\/}, {\it m\/}, the
+box lengths $L_x$, $L_y$ and $L_z$ and the cutoff for ME, the
+box lengths $L_x$, $L_y$ and $L_z$ and the cutoff for JM, SC and P6,
+and $\epsilon$, $c$ and $\sigma$ for Au, Ag and Ni. Note that all the
+numbers are read as real.
+
+\ksec{PATH}{ n\/}: requests calculation of the pathway connecting two minima from the transition
+state specified in odata. {\it n\/} is the number of intermediate points files to save on either
+side, default {\it n\/}=3. 
+To choose which frames are dumped in the {\tt path.xyz} file a stochastic method is employed.
+All three stationary points are always included. 
+Other frames are dumped with a probability proportional to {\it n\/}. 
+If {\it n\/} exceeds the number of frames in the path then they will all be dumped, up to a 
+maximum of 100.
+The complete xyz file is printed to {\tt path.xyz} and the energy as a function of
+path length is printed to file {\tt EofS}. A summary of the path characteristics such as barrier heights,
+path lengths and cooperativity indices is printed at the end. If {\it READVEC\/} is present in
+{\tt odata} then the required eigenvector corresponding to the displacement direction will
+be read from {\tt vector.dump}, otherwise it will be calculated by diagonalizing a Hessian (for
+{\keyw{SEARCH} 2\/}) or using an iterative approach (for {\keyw{BFGSTS}} with or without 
+{\keyw{NOHESS}}; {\keyw{NOIT}} can also be used with {\keyw{BFGSTS}}.) 
+After the initial step the energy will be minimised by whichever first or second
+order method is specified in {\tt odata}, i.e.~eigenvector-following or second-order Page-McIver
+for {\keyw{SEARCH} 0\/} and 6 and 7, LBFGS for {\keyw{BFGSMIN}}, and first order steepest-descent
+for {\keyw{BSMIN}} and {\keyw{RKMIN}}. 
+A hybrid method can be specified using {\keyw{HYBRIDMIN}}.
+See also {\keyw{DUMPPATH}} and {\keyw{PATH}SDSTEPS\/.}.
+
+\ksec{PATHSDSTEPS}{ n\/}: specifies the maximum number of minimisation steps
+in a pathway calculation before switching to LBFGS. Can be used with search types
+\keyw{SEARCH} 0, 6 and 7, {\keyw{HYBRIDMIN}}, {\keyw{BSMIN}} and {\keyw{RKMIN}}.
+
+\ksec{PERMDIST}{\/}: minimise distances between stationary points with respect to
+permutational isomerisation.
+Requires the auxiliary file {\tt perm.allow} to specify permutable atoms, otherwise
+all atoms are assumed to be permutable. The absence of a {\tt perm.allow}
+file is considered a mistake for \keyw{CHARMM} runs.
+
+The first line of the {\tt perm.allow} file must contain an integer
+that specifies the number of primary groups of interchangeable atoms.
+The groups then follow, each one introduced by a line with two integers $p$ and $s$
+that specify the number of permutable atoms in the primary group and the number of other sets
+of permutable atoms associated with the primary set.
+$s$ may be zero.
+Each secondary set of permutable atoms has $p$ members.
+The following line contains the indices of the $p$ permutable atoms 
+in the primary set and then
+the indices of the atoms in each of the $s$ secondary sets, one set at 
+a time.
+
+\begin{figure}[hH]
+\centerline{\includegraphics[width=0.5\textwidth]{PHE.eps}}
+\end{figure}
+
+For the phenylalanine example illustrated above we must allow three other pairs of
+atoms to exchange if we swap 7 and 8. Hence a suitable {\tt perm.allow} entry is
+{\obeylines
+1
+2 3
+7 8 5 6 1 2 3 4
+}
+Here $n=2$ and $s=3$: if we exchange 7 and 8 then we must also exchange 5 and 6,
+1 and 2, and 3 and 4. There are two atoms in each of the three secondary sets, 
+since we have specified 7 and 8 as the two primary atoms.
+
+Here is an example {\tt perm.allow} file for a water trimer using
+the flexible {\keyw{QTIP4PF}} potential, where the energy is invariant to permutations
+of water molecules and to exchanges of hydrogens in the same molecule. However,
+hydrogens cannot exchange between different oxygens:
+{\obeylines
+4
+3 2
+1 4 7 2 3 5 6 8 9
+2 0 
+2 3
+2 0 
+5 6
+2 0 
+8 9
+}
+The first group of three oxygens has two atoms that must move with each oxygen,
+i.e.~atoms 2 and 3 for oxygen 1, etc. Hydrogen permutations for each oxygen are
+allowed by the three following groups. This scheme allows atoms to appear in more 
+than one group. There must be a group containing each complete set of permutations
+in order for permutation-inversion isomers to be recognised. The format
+is compatible with an older scheme, where only pair swaps were allowed for
+associated atoms, but now allows for more general permutations.
+
+Scripts to generate allowed permutations automatically for CHARMM and AMBER are available from
+the group web site. It is essential to use symmetrised versions of the corresponding
+force fields! 
+
+\ksec{PERTDIHE}{ chpmax chnmin chnmax iseed\/}: CHARMM 
+and UNRES dihedral angle perturbation specification.
+Performs random, {\tt GMIN}-style twists before starting optimisation.
+
+\ksec{POINTS}{\/}: this is usually the last keyword and introduces the
+coordinate information, which is read one atom per line. Each line must consist
+of the atomic symbol of the atom followed by its three Cartesian coordinates.
+Leading spaces before the atomic symbol should be avoided. For calculations
+involving CHARMM, UNRES, AMBER and CPMD the coordinates are obtained from auxiliary files, 
+and \keyw{POINTS} will be the last OPTIM directive in the {\tt odata} file, or
+is not used (CHARMM and UNRES).
+
+\ksec{PREROTATE}{\/}: For the GS and ES double-ended transition state
+  search methods, if using {\keyw{FIXATMS}} to zero some coordinates of the
+  forces to avoid overall translation and rotation, this keyword will rotate
+  the start and end points so that those coordinates are zero in both.
+The default is true.
+
+\ksec{PRESSURE}{\/}: if present 
+tells the program to perform a constant zero pressure optimisation
+for bulk SC, ME, MP, MS and P6. Normally a constant volume optimisation takes place. 
+
+\ksec{PRINT}{ n\/}: sets the print level. The default value is zero. Use
+of this option is not recommended, since more specific print control is possible.
+
+\ksec{PRINTCOEFFICIENTS}{\/}: prints ground state coefficients for the MSEVB potential.
+
+\ksec{PULL}{ a1 a2 f\/}: apply a static force to the potential, equivalent to adding
+the term $V_{\rm pull}=-f(z_{a1}-z_{a2})$. Here $z_{a1}$ and $z_{a2}$ are the $z$
+coordinates for atoms $a1$ and $a2$, and $f$ specifies the force.
+This potential is designed to simulate a pulling experiment with static force where
+a molecule is pulled along the $z$ axis from atoms $a1$ and $a2$.
+
+\ksec{PUSHCUT}{ x\/}: sets the threshold for the RMS force below which the
+system may apply a {\keyw{PUSHOFF}} to escape from a stationary point of the wrong Hessian
+index. Default value is 0.00001. Using a negative value prevents pushoffs from
+occurring.
+
+\ksec{PUSHOFF}{ x\/}: sets the magnitude of a step away from a stationary
+point of the wrong Hessian index (see \S\ref{sec:scaling} for default action). Default value is 0.01.
+Formally used as the step size in hybrid eigenvector-following
+transition state searches if the eigenvalue of the direction being followed is positive.
+{\keyw{MAXMAX}} has now replaced {\keyw{PUSHOFF}} in this role.
+
+\ksec{PV}{ press gtol grad steps\/}: specifies an approximate constant pressure optimisation with
+pressure {\it press\/} and convergence criterion {\it gtol\/} for the gradients with
+respect to the box lengths. If any box length gradient is larger in magnitude than
+{\it grad\/} then up to a maximum of {\it steps\/} optimisation steps for the box lengths
+are performed.
+If the three box lengths are equal to start with and the keyword {\keyw{CUBIC} \/} is included,
+then a cubic box is maintained. 
+Will not work with atom types MP, ME and MS.
+Default values, {\it press\/}=0, {\it gtol\/}=0.001, {\it grad\/}$=10^{60}$, {\it steps\/}=100.
+
+\ksec{PVTS}{ press gtol grad nboxts\/}: as for {\keyw{PV}} but searches for a transition
+state with respect to box length {\it nboxts\/}, where {\it nboxts\/}=1, 2 and 3 specify the
+$x$, $y$ and $z$ box lengths, respectively. {\it nboxts\/} defaults to 1.
+
+\subsection{Q-R}
+\ksec{QTIP}{4PF\/}: flexible water potential from  Habershon {\it et al.}~[{\it J.~Chem.~Phys.\/}, 
+{\bf 131}, 024501 (2009)] coded by Dr Javier Hern\'andez-Rojas.
+The units of length and energy are \AA\ and kcal/mol. The atoms must be entered in the
+order O, H, H, O, H, H, etc.
+
+\ksec{QSPCFW}{\/}: flexible water potential from  Paesani {\it et al.}~[{\it J.~Chem.~Phys.\/},
+{\bf 125}, 184507 (2006)] coded by Dr Javier Hern\'andez-Rojas.
+The units of length and energy are \AA\ and kcal/mol. The atoms must be entered in the
+order O, H, H, O, H, H, etc.
+
+\ksec{RADIUS}{ x\/}: specifies that atoms should not be allowed to move beyond a 
+distance {\it x\/} from the origin.
+
+\ksec{RANSEED}{ n\/}: specifies the initial seed for random number generation, as used in 
+hard sphere moves with {\keyw{FIXD}}.
+
+\ksec{RATIOS}{\/}: specifies that the pathway parameters needed to calculate catastrophe
+ratios should be printed in a \keyw{PATH} run.
+
+\ksec{RBSYM}{\/}: specifies that internal symmetry operations exist that permute
+identical sites for rigid body building blocks. 
+The operations are read in as the corresponding $3\times3$ matrices from a file
+{\tt rbsymops}, which must exist in the working directory.
+The first line of the file is an integer that specifies the number of operations; 
+the matrix elements are then read in one at a time in free format.
+This keyword can be combined with {\keyw{PERMDIST}\/} so that structures are aligned and
+a distance metric considered based on permutations of identical rigid
+bodies and any internal symmetry operation of each rigid body that is a symmetry
+of the potential energy function.
+We plan to extend this capability to assemblies containing more than one 
+type of decorated rigid body.
+
+\ksec{READPATH}{\/}: if specified with {\keyw{CALCRATES}} then rate constants will be
+calculated for the transition states found in {\tt path.info} and no stationary point
+searches will be performed.
+
+\ksec{READSP}{\/}: instructs {\tt OPTIM} to read minima and 
+transition state data in the {\tt PATHSAMPLE} format.
+This has not been implemented yet!
+
+\ksec{READHESS}{\/}: Hessian will be read from file {\tt derivs} at first step.
+
+\ksec{READVEC}{\/}: if present the Hessian eigenvector
+corresponding to the smallest eigenvalue 
+will be read from file {\tt vector.dump}. The latter file can be generated using the
+{\keyw{DUMPVECTOR}} keyword in a previous run.
+
+\ksec{REDOPATH}{\/}: instructs {\tt OPTIM} to read transition state coordinates
+successively from the file {\tt redopoints} during a \keyw{NEWCONNECT} run.
+Can be used to generate movie files from stationary point sequences calculated
+by {\tt PATHSAMPLE}. The correct start and finish coordinates for the minima
+must be present in the {\tt odata} and {\tt finish} files.
+
+\ksec{REDOPATHXYZ}{\/}: as for {\keyw{REDOPATH}} above, except that existing
+{\tt path.n.xyz\/} files are read instead of actually calculating pathways for the
+transition states.
+
+\ksec{REDUCEDBONDLENGTH}{ blfactor CB\/}: rescales the bond lengths by a factor
+of {\it blfactor} in the side chains of proteins, if modelled by one of the CHARMM
+potentials. {\it blfactor} has to be specified, and its default value is one.
+{\it CB} is an optional argument. When set, the bond length between the C$_{\alpha}$
+and C$_{\beta}$ atoms is rescaled by {\it blfactor} as well, otherwise not.
+
+\ksec{REOPT}{\/}: specifies that the eigenvector to be followed should be reoptimised
+      in a BFGSTS search after the EF step and before the tangent space minimisation.
+This is probably not a good idea. Default is false.
+
+\ksec{REOPTIMISEENDPOINTS}{\/}: specifies that endpoint minima should be reoptimised
+if their RMS force lies above the convergence threshold. Useful in connection 
+runs where failure is guaranteed if one or more of the endpoints is not identified
+as a minimum. A large RMS force at the beginning of a connection run driven
+by {\tt PATHSAMPLE} should be investigated because it suggests a problem, e.g.~with
+\keyw{CHARMM} permutational isomerisations.
+Default is false.
+
+\ksec{REPELTS}{\/}: specifies that the transition state search direction should
+be orthogonalised to the coordinates in file {\tt points.repel}.
+
+\ksec{RESIZE}{ x\/}: scales all the coordinates by {\it x}
+before the first step is taken. 
+
+\ksec{RING}{ a1 a2...}: When using natural internal coordinates, specifies
+  a ring that's not part of a PRO, PHE, TYR, TRP, or HIS residue. {\it a1,
+  a2}, etc. are the atom numbers for the ring in consecutive order. Only rings
+  of size 5 or 6 are permitted.
+
+\ksec{RKMIN}{ gmax eps\/}: calculates a steepest-descent path using gradient only
+      information with convergence criterion {\it gmax\/} for the RMS force and initial
+      precision {\it eps\/}. A fifth order Runga-Kutta algorithm is used.
+
+\ksec{ROT}{\/}: if present a rotational kinetic energy term is
+added to the Hamiltonian. Either constant angular momentum ({\keyw{ROT} JZ x\/}) or
+constant angular velocity ({\keyw{ROT} OMEGA x\/}) may be used to specify $J_z$
+or $\omega_z$.
+
+% \subsection {\keyw{SAVE}CANDIDATES\/}: % unknown
+
+\subsection{S}
+\ksec{SCALE}{ n\/}: sets the scaling algorithm for eigenvector-following
+steps, as described in \S\ref{sec:scaling}. The default is {\it n\/}=10.
+
+\ksec{SCORE}{\_QUEUE\/}: specifies an Score parallel environment. 
+Currently not used on group clusters.
+
+\ksec{SEARCH}{ n\/}: specifies the search type for eigenvector-following and
+steepest-descent calculations based on second derivatives and Hessian diagonalisation, default is type 0.
+The most common options are 0, a minimisation, and 2, a transition state search. See
+\S\ref{sec:second} for full details.
+
+\ksec{SHIFT}{ x\/}: specifies the shift applied to eigenvectors corresponding
+to normal modes that conserve the energy. The default is $10^6$. The shift {\it must\/} be
+large enough to move the eigenvalues in question to the top of the spectrum.
+
+\ksec{SQVV}{ NIterSQVVGuessMax SQVVGuessRMSTol\/}:
+specifies that the first {\it NIterSQVVGuessMax\/} DNEB refinements should be
+done using the SQVV algorithm, rather than LBFGS.\cite{TrygubenkoW04}
+The DNEB optimisation will switch to LBFGS minimisation after {\it NIterSQVVGuessMax\/}
+steps or if the RMS force falls below {\it SQVVGuessRMSTol\/}.
+The default values for {\it NIterSQVVGuessMax\/} and {\it SQVVGuessRMSTol\/}
+are 300 and 2.0, respectively.
+
+\ksec{STEPMIN}{ n\/}: sets the minimum number of optimisation steps before convergence
+will be tested. The default is zero.
+
+\ksec{STEPS}{ n\/}: sets the maximum number of optimisation steps per call
+to {\tt OPTIM}. The default is {\it n\/}=1. Setting {\it n\/} to zero at the start of a run
+means that only a point group analysis is performed.
+
+\ksec{STOCK}{ $\mu$ $\lambda$}: sets the dipole moment strength and attraction prefactor
+in the Stockmayer potential,
+\begin{displaymath}
+V_{ij} = 4\left(r_{ij}^{-12}-\lambda r_{ij}^{-6}\right) + \frac{\mu^2}{r_{ij}^3}
+\left[\hat{\pmb\mu}_i\cdot\hat{\pmb\mu}_j-\frac{3}{r_{ij}^2}
+(\hat{\pmb\mu}_i\cdot{\bf r}_{ij})(\hat{\pmb\mu}_j\cdot{\bf r}_{ij})\right].
+\end{displaymath}
+See also {\keyw{STOCK}SPIN}.
+
+\ksec{STOCKSPIN}{ x n}: Activates checking for alignment of dipoles with the $z$ axis in
+the Stockmayer potential.  Such alignment makes the polar angle $\phi$ for the dipole
+redundant, leading to extra zero Hessian eigenvalues and associated problems.  If alignment
+is detected at any step in an optimisation then the orientation of the cluster is randomised
+and a warning is printed.
+$x$ is the amount by which $|\cos\theta|$ may differ from 1 for the dipole to be counted as
+aligned with the $z$ axis.  $n$ is the maximum number of attempts to remove aligned dipoles
+by random rotation.  Values of $10^{-4}$ and 10, respectively, are a sensible starting point.
+
+\ksec{STOPDIST}{ x\/}: in a \keyw{CONNECT} run, stop as soon as the distance between
+the initial ({\it x}$>0$) or final ({\it x}$<0$) minimum and the furthest connected minimum
+exceeds $|x|$.
+
+\ksec{STOPFIRST}{\/}: in a \keyw{CONNECT} run, stop as soon as the initial minimum has a transition state
+connection.
+
+\ksec{SUMMARY}{ n\/}: prints a summary of the steps and derivatives
+every {\it n\/} steps. The default is $n=20$.
+
+\ksec{SYMCUT}{ x\/}: specifies the RMS force below which the point
+group symmetry subroutine will be called. The default is {\it x\/}=0.001.
+
+
+
+
+\subsection{T-Z}
+\ksec{TAG}{ num massfac\/}:
+allows atoms to be tagged. Atom number {\it num\/} has its mass increased
+by a factor {\it massfac\/} for point group symmetry assignment only.
+To tag more than one atom use additional {\keyw{TAG}} lines in {\tt odata}.
+
+\ksec{TD}{\/}: add a tetrahedral field of strength {\it x} to the potential.
+
+\ksec{TOLD}{ x\/}: sets the initial distance tolerance for points
+to be considered the same after rotations and reflections in point
+group determination. The default is 0.0001.
+
+\ksec{TIMELIMIT}{ x\/}: {\tt OPTIM} will stop if the accumulated cpu
+time exceeds {\it x} seconds. The default value is infinity.
+
+\ksec{TOLD}{ x\/}: initial distance tolerance in symmetry subroutine.
+The default is 0.0001.
+
+\ksec{TOLE}{ x\/}: sets the initial tolerance for eigenvalues
+of the inertia tensor to be considered equivalent in point
+group determination. The default is 0.0001.
+
+\ksec{TOMEGA}{\/}: includes omega angles in the {\keyw{TWISTDIHE}} list.
+
+\ksec{TOSI}{ $A_{++}\ A_{--}\ A_{+-}\ \rho$\/}: specifies a Born-Mayer potential
+with the parameters indicated (see \S\ref{sec:potentials}).
+
+\ksec{TOSIC}{6 c6pp c6mm c6pm\/}: specifies additional C6 dispersion coefficients
+for the {\keyw{TOSI}\/} potential. {\it c6pp, c6mm\/}, and  {\it c6pm\/} should be the values of the C6
+parameters between positive ions, negative ions and positive and negative ions in atomic units
+(see \S\ref{sec:potentials}).
+
+\ksec{TOSIPOL}{ alphap alpham damp\/}: specifies cation and anion polarisabilities in atomic units
+and a damping parameter for the {\keyw{TOSI}\/} potential (see \S\ref{sec:potentials}).
+
+\ksec{TRAD}{ x\/}: sets the trust radius (see \S\ref{sec:scaling}). The default value is 2.0.
+
+\ksec{TRAP}{ k n\/}: general trapped ion potential coded by Ersin Yurtsever. 
+The form of the potential is 
+\begin{displaymath}
+V=\frac{k}{2}\sum_i r_i^n + \sum_{i<j} \frac{1}{r_{ij}},
+\end{displaymath}
+where $r_i$ is the distance of ion $i$ from the origin and
+$r_{ij}$ is the distance between ions $i$ and $j$.
+
+\ksec{TSIDECHAIN}{\/}: includes sidechain angles in the {\keyw{TWISTDIHE}} list.
+
+\ksec{TWISTDIHE}{ nmode xpert\/}: twist phi/psi dihedral angle {\it nmode\/} by 
+{\it xpert\/} degrees before starting optimisation.
+
+\ksec{TWISTTYPE}{ n\/}: integer {\it n\/} specifies the type of dihedral angle twisting
+used to  guess transition states in {\bf guessts} for CHARMM and UNRES.
+The recommended value is {\it n}=5. See also {\keyw{NORANDOM}}.
+
+\ksec{TWOENDS}{ fstart finc ntwo rmstwo ntwoiter twoeval\/}: obsolete: specifies a double-ended transition
+state search. {\it fstart\/} is the initial force constant pulling the coordinates towards the final
+geometry which is read from a file named {\tt final}. {\it finc\/} is the increment for the force 
+constant after each cycle. {\it ntwo\/} is the maximum number of minimisation steps taken after each
+increment of the force constant, and {\it rmstwo\/} is the convergence condition on the RMS force
+for these minimisations. {\it ntwoiter\/} is the total number of force constant increments allowed
+and {\it twoeval\/} is the value of the smallest Hessian eigenvalue below which the program will
+shift to a transition state search.
+
+\ksec{UACHIRAL}{\/}: MUST be included when using ff03ua, the AMBER united atom forcefield. It ensures the correct impropers are used to define sidechain 
+chirality when HB hydrogen is missing.
+
+\ksec{UNRES}{\/}: specifies the UNRES potential, which requires an UNOPTIM executable.
+An auxiliary file {\tt coords} is required. {\keyw{UNRES}} must be the last OPTIM directive in the
+{\tt odata} file. The remaining content of {\tt odata} consists of UNRES keywords and
+setup information.
+
+\ksec{UPDATES}{ mupdate1 mupdate2 mupdate3 mupdate4\/}: 
+specifies the number of updates in the LBFGS routine before
+      resetting. 
+{\it mupdate1\/} is used for energy minimisation, 
+{\it mupdate2\/} is currently ignored by {\bf mind},
+{\it mupdate3\/} is used in Rayleigh-Ritz eigenvalue calculations, and 
+{\it mupdate4\/} is used in NEB and DNEB optimisation. 
+{\it mupdate5\/} is used in string method optimisation. 
+The default value is 4 for all five parameters.
+
+\ksec{USEDIAG}{ n\/}: allows different approximations to be used for the 
+eigenvalue in a Rayleigh-Ritz {\keyw{BFGSTS}} calculation. $n=1$ is the default behaviour
+with lower truncation error,
+while $n=2$ uses a formula that minimises the rounding error, which may
+work better for numerically large values of the energy.
+
+\ksec{USEEV}{ n \/}: specifies the number of non-zero (lowest) eigenvalues and
+eigenvectors to be calculated by LAPACK routine DSYEVR in {\bf efol.f},
+{\bf bfgsts.f} or {\bf hybridmin.f}.
+If this value is not specified than full diagonalisation is performed in 
+{\bf efol.f} using LAPACK routine DSYEV, while the default is a single
+eigenvalue/eigenvector for {\bf bfgsts.f} and {\bf hybridmin.f}.
+
+\ksec{VALUES}{ n\/}: prints the Hessian eigenvalues every {\it n\/} steps.
+The default is {\it n\/}=20.
+
+\ksec{VARIABLES}{\/}: optimises a general function (which must be specified in
+{\bf potential}. The initial values of the variables are read one per line after the \keyw{POINTS}
+keyword in {\tt odata}.
+
+\ksec{VECTORS}{ n\/}: prints the Hessian eigenvectors every {\it n\/}
+steps. Eigenvector printing is turned off by default.
+
+\ksec{WARRANTY}{\/}: print warranty information.
+
+\ksec{WELCH}{ $A_{++}\ A_{--}\ A_{+-}\ \rho\ Q_+\ Q_-\ \alpha_+\ \alpha_-$\/}: specifies a Welch binary
+salt potential with the parameters indicated (see \S\ref{sec:potentials}).
+
+\ksec{ZEROS}{ n\/}: sets the number of zero Hessian eigenvalues to be
+assumed---useful for general optimisation problems specified by {\keyw{VARIABLES}}. 
+%\end{itemize}
+% </kwd>
+
+\section{Specification of Potentials}
+\label{sec:potentials}
+There follows a list of some of the 
+potentials that the program understands. These are introduced according to the atom
+type by which they are identified.
+
+\subsection{AR}Lennard-Jones potential with $\sigma$ appropriate for Ar,
+i.e.~$3.4\,$\AA. Hence, input is expected in Angstrom and energies are calculated
+for $\epsilon=1$. Subroutines used: {\bf ljdiff}.
+
+\subsection{AU, AG and NI}These types specify Sutton-Chen potentials of the appropriate
+form.\cite{suttonc90}\ 
+Three additional real parameters must be specified using the {\keyw{PARAMS}} keyword
+in the {\tt odata} file,
+namely Sutton and Chen's $\epsilon$, $c$ and $a$, in this order.
+The nearest neighbour distance in the prevailing unit system is $a/\sqrt{2}$. Hence,
+using $a=\sqrt{2}$ corresponds to a unit system where the bulk nearest-neighbour distance is 1.
+Subroutines used: {\bf scdiff}.
+
+\subsection{AX}Lennard-Jones potential plus a variable quantity of the Axilrod-Teller
+triple-dipole term\cite{wales90c,doyew92}\ with units $\sigma=\epsilon=1$. 
+The pre-multiplication factor for
+the three-body term, $Z^*$, is specified by the {\keyw{PARAMS}} keyword.
+If a multiplier of $0.0$ is specified the Axilrod-Teller derivatives
+and energy are not calculated, thus providing a route to the pure Lennard-Jones potential
+in reduced units. Subroutines used: {\bf ardiff}, {\bf apairs}, {\bf axdiff}, {\bf axpairs}.
+
+\subsection{AZ}Aziz argon potential from {\it J.~Chem.~Phys.\/}, {\bf 99}, 4518, 1993.
+Input coordinates are assumed to be in units of $\sigma$ and the energy is given in
+units of $\epsilon$.
+
+\subsection{BC}Binary Lennard-Jones system, as for atom type LS, but without periodic
+boundary conditions. Subroutine used: {\bf ljpshiftbinc}.
+
+\subsection{BE}This specifies a trapped ion potential.\cite{walesl93}\
+Subroutines used: {\bf etrap}, {\bf dtrap}.
+
+\subsection{C1}A ten-bead model produced by cutting down the usual P46 potential specified
+by atom type PL. Subroutine used: {\bf c10}.
+
+\subsection{C6}This type specifies Girifalco's C$_{60}$ intermolecular potential.\cite{girifalco92}\
+The energy is returned in units of the pair well depth; distances are in units of $3.4690\,$\AA.
+Subroutines used: {\bf c60diff}.
+
+\subsection{CADPAC}If keyword {\keyw{CADPAC}} is set in {\tt odata} then
+OPTIM will try to read the derivatives from file {\tt derivs} in the
+standard CADPAC\cite{CADPAC}\ punch format. 
+It will also try to read the energy for the geometry
+corresponding to these derivatives from a file called {\tt cadenergy}, which is optional.
+
+\subsection{CC}This uses the two- plus three-body potential of Balm \etal\ for carbon.\cite{balmakm91} 
+Subroutines used: {\bf jmecc}, {\bf jm2cc}, {\bf jm3cc}.
+
+\subsection{CD}Specifies a potential for rigid-body pentagonal pyramids. In this case the
+rigid body coordinates are three centre-of-mass parameters and three components of a 
+vector that specifies a rotation axis and magnitude. The orientational coordinates are stored
+after all the centre-of-mass coordinates. Subroutine used: {\bf capsid}.
+
+% \subsection{CL}This is used to specify a Born-Meyer potential for $\rm (KCl)_n$ clusters
+% using the same parameters as Rose and Berry.\cite1\ 
+% \endnote{J.~P.~Rose and R.~S.~Berry}{\jcp}{96}{517}{1992}
+% The atoms must be in the order K, Cl,
+% K etc. Atomic units are assumed. Subroutines used: {\bf kdiff}, {\bf kpairs}.
+
+\subsection{CK}Specifies a two-dimensional trapped-ion cluster. Subroutines used:
+{\bf ectrap} and {\bf dctrap}.
+
+\subsection{DZ}Dzugutov potential:\cite{Dzugutov92,Dzugutov93b}
+\begin{eqnarray}
+V(r)&=&A(r^{-m}-B) \exp\left( {c\over r-a}\right) \Theta(a-r) + 
+    B \exp\left({d\over r-b}\right) \Theta(b-r). \nonumber
+\end{eqnarray}
+Seven parameters must by specified by a {\keyw{PARAMS}} line in the {\tt odata} file,
+i.e.~$m$, $A$, $c$, $a$, $B$, $d$, and $b$.
+
+\subsection{FH}Will read derivatives from file {\tt fhderivs} generated by the Fenske-Hall approximate
+SCF package.\cite{hallf72}
+
+\subsection{GAUSSIAN}If keyword {\keyw{GAUSSIAN}} is set in {\tt odata} then
+OPTIM will try to read the derivatives from file {\tt derivs} in the
+standard GAUSSIAN punch format.
+It will also try to read the energy for the geometry
+corresponding to these derivatives from a file called {\tt cadenergy}, which is optional.
+
+\subsection{GL}This type specifies a G\={o}-type model\cite{uedatg78} for the
+46-bead three-colour model polypeptide specified by atom type Pl below. 
+All the attractive $1/R^6$ terms are turned off except for those between
+native contacts in the global minimum, which are unchanged.
+Subroutines used: {\bf g46merdiff}.
+
+\subsection{GO}Paul Whitford's G\={o} BLN-type potential.
+
+\subsection{IN}This is used to specify a shielded Born-Meyer potential binary ionic clusters with
+anions and cations having the same magnitude charge.
+The atoms must be in the order cation, anion, cation, anion, etc. The energy is:
+$$ E = \sum_{i<j} \left[ {q_iq_j\over r_{ij}} e^{-\gamma r_{ij}} + A_{ij}e^{-r_{ij}/\rho_{ij}} \right]. $$
+The parameters that can
+be specified with {\keyw{PARAMS}} are $\gamma$, the magnitude of the ionic charges, a single
+value of $\rho$, assumed to be the same for all interactions, and $A_{++}$, $A_{--}$ and
+$A_{+-}$, in order. Default values for KCl are set for all parameters except $\gamma$.
+Atomic units are assumed. Subroutines used: {\bf ions}.
+
+\subsection{JC}This uses Murrell's two- plus three-body 
+potential.\cite{murrellm90,murrellr90,alderzijmr91,eggenjlm92,fengjm93} 
+A file {\tt JMparams} must
+exist in the current directory containing the parameters $c_0,\ c_1,\ldots,\ c_{10},\ r_e,\ 
+D,\ a_2$ and $a_3$. Subroutines used: {\bf jmec}, {\bf jm2c}, {\bf jm3c}.
+
+\subsection{JM}This uses Murrell's two- plus three-body 
+potential\cite{murrellm90,murrellr90,alderzijmr91,eggenjlm92,fengjm93} with periodic boundary
+conditions (minimum image convention.\cite{allent87} 
+A {\tt JMparams} file must exist as for type JC. (In previous versions the 
+first three lines of {\tt JMparams} were assumed to contain
+the square roots of 2, 3 and 6). Four additional real parameters must be given after the
+search type and maximum step size specification, these being the $x$, $y$ and $z$ dimensions
+of the periodic cell and the cutoff, respectively. I do not think the code has been tested
+for any non-cubic unit cells. The cutoff should not be greater than half the box length.\cite{allent87}
+Subroutines used: {\bf jmep}, {\bf jm2p}, {\bf jm3p}.
+
+\subsection{LM}Specifies a Mason-Schamp potential\cite{Mason58} for a rare gas--alkali metal ion cluster
+such as Ar$_{N}$Li$^+$. The three parameters $\epsilon$, $R_m$ and $\gamma$
+must be set using the {\keyw{PARAMS}} keyword in {\tt odata}.
+
+\subsection{LP}This type specifies the Lennard-Jones potential with 
+periodic boundary conditions (minimum image convention.\cite{allent87}
+The box lengths in the $x$, $y$ and $z$ 
+directions and the cutoff (as a fraction of the smallest box length)
+must be specified using the {\keyw{PARAMS}} keyword in the {\tt odata} file.
+Setting a negative value for the cutoff fraction means that all minimum
+images are included.
+Subroutines used: {\bf ljpdiff}.
+If the {\keyw{BINARY}} keyword is specified then a binary Lennard-Jones
+potential is used\cite{sastryds98} along with subroutine {\bf ljpbin} or {\bf ljpshift}.
+
+\subsection{LS}This type specifies shifted, truncated Lennard-Jones potential with 
+periodic boundary conditions as for LP above. The {\keyw{BINARY}} keyword must also be 
+specified.
+
+\subsection{LC}This type specifies shifted, truncated Lennard-Jones potential with 
+periodic boundary conditions, as for LS above, except that the neighbour list is not
+updated when FIXIMAGE is set. The {\keyw{BINARY}} keyword must also be 
+specified. See also {\keyw{FIXAFTER}}.
+
+\subsection{LM}Lennard-Jones potential with a mean-field long range correction.
+
+\subsection{M}This specifies a Morse potential with $D=r_e=1$. 
+The remaining range parameter,\cite{braierbw90} $\rho_0$, must be specified using the {\keyw{PARAMS}} keyword
+in the {\tt odata} file.
+Subroutines used: {\bf mpairs}, {\bf mdiff}.
+
+\subsection{ME}Specifies the generic Mie potential with periodic boundary conditions (minimum
+image convention). Six extra parameters must be specified in the {\tt odata} file using the
+{\keyw{PARAMS}} keyword;
+in order these are the exponents {\it n\/} (repulsive) and $m$ (attractive), the three box
+lengths and the cutoff. If keyword {\keyw{PRESSURE}} is set in {\tt odata}
+then a constant pressure type optimisation is performed
+using golden section minimisation, as described for SC. Note that
+{\it n\/} and {\it m\/} should both be entered as reals. Subroutines used: {\bf emie}, {\bf mied}
+and {\bf miel}. 
+
+\subsection{MP}This type specifies the Morse potential with 
+periodic boundary conditions (minimum image convention\cite{allent87}). 
+The range parameter, $\rho_0$, the box lengths in the $x$, $y$ and $z$ 
+directions and the cutoff (as a fraction of the smallest box length)
+must be specified using the {\keyw{PARAMS}} keyword in the {\tt odata} file.
+If the keyword {\keyw{PRESSURE}} is set in the {\tt odata} file
+then a constant pressure optimisation is performed
+with the energy being minimised by eigenvector-following with respect to the 
+box lengths at every step. 
+The cutoff is automatically changed in proportion to the change in box size.
+Otherwise the optimisations are performed at constant volume, with no 
+relaxation of the unit cell. 
+Subroutines used: {\bf mpdiff}, {\bf mlatmin}.
+
+\subsection{MS}This type specifies the Morse potential with 2-dimensional
+periodic boundary conditions.
+The free surfaces are perpendicular to the $z$ direction at the top and bottom
+of the cell.
+The range parameter, $\rho_0$, the box lengths in the $x$ and $y$ 
+directions and the cutoff (as a fraction of the smallest box length)
+must be specified using the {\keyw{PARAMS}} keyword in the {\tt odata} file.
+If the keyword {\keyw{PRESSURE}} is set in the {\tt odata} file
+then a constant pressure optimisation is performed
+with the energy being minimised by eigenvector-following with respect to the 
+box lengths at every step. 
+The cutoff is automatically changed in proportion to the change in box size.
+Otherwise the optimisations are performed at constant volume, with no 
+relaxation of the unit cell. 
+Subroutines used: {\bf msdiff}, {\bf mslatmin}.
+
+\subsection{P6}This type specifies Girifalco's C$_{60}$ intermolecular potential\cite{girifalco92}
+with periodic boundary conditions (minimum image convention\cite{allent87}). If keyword
+{\keyw{PRESSURE}} is specified in {\tt odata}
+then a constant pressure type optimisation is performed,
+as described for SC, above. However, in this case the lattice constant optimisation is
+achieved by eigenvector-following. As for SC, the cutoff is changed in proportion to
+the box size. Four extra parameters must be specified in the {\tt odata} file using the
+{\keyw{PARAMS}} keyword,
+as for SC. Subroutines used: {\bf latmin}, {\bf c60p}.
+
+\subsection{PL}This type specifies a 46-bead three-colour model polypeptide. 
+See also the corresponding G\={o} model potential.
+Subroutines used: {\bf p46merdiff}.
+
+\subsection{PR}This type specifies the Pacheco-Ramelho C$_{60}$ intermolecular potential\cite{pachecor97}
+The value of the Axilrod-Teller parameter should be specified as the first argument to the
+PARAMS keyword.
+
+\subsection{SC}This type specifies the Sutton-Chen potential\cite{suttonc90} with periodic boundary
+conditions (minimum image convention\cite{allent87}). 
+If no file named {\tt SCparams} exists in the current 
+directory the 12\mydash6 potential for gold is used. Otherwise the Sutton-Chen
+parameters $n,\ m,\ \epsilon,\ c$ and $a$ are read from this file in order. If the
+keyword {\keyw{PRESSURE}} is set in the {\tt odata} file
+then a constant pressure optimisation is performed
+with the energy being minimised by golden section with respect to the cubic box size before taking another
+step. The cutoff is automatically changed in proportion to the change in box size.
+Otherwise the optimisations are performed at constant volume, with no relaxation of the
+unit cell. The bulk fcc nearest neighbour distance in the prevailing unit system is $a/\sqrt{2}$,
+as above.
+Subroutines used: {\bf escp}, {\bf dscp}.
+
+\subsection{SI}This uses Murrell's two- plus three-body potential for Si\cite{lijm92}.
+Subroutines used: {\bf jme}, {\bf jm2}, {\bf jm3}.
+
+\subsection{SM} Specifies the Stillinger-Weber two- plus three-body potential for Si\cite{stillingerw85}
+with the three-body part increased by 50\%.
+Subroutines used: {\bf SWtwo}, {\bf SWthree}, {\bf SWlatmin}.
+
+\subsection{SW} Specifies the Stillinger-Weber two- plus three-body potential for Si\cite{stillingerw85}.
+Subroutines used: {\bf SWtwo}, {\bf SWthree}, {\bf SWlatmin}.
+
+\subsection{Tosi}This keyword specifies a Born-Mayer potential of the form
+$$ E = \sum_{i<j}\left[ {q_i q_j\over r_{ij}} + A_{ij}\exp(-r_{ij}/\rho) \right]. $$
+The sum runs over all ions. Tosi-Fumi\cite{tosif64} parameters in atomic units should be
+entered after the Tosi keyword in the order $A_{++}$, $A_{--}$, $A_{+-}$, $\rho$.
+The ions are then specified using atom types PL and MI for plus and minus, respectively,
+and can be in any order. There need not be equal numbers of positive and negative ions.
+C6 dispersion coefficients can be optionally added with the keyword {\keyw{TOSI}C6 c6pp c6mm c6pm\/},
+where {\it c6pp, c6mm\/}, and  {\it c6pm\/} should be the values of the C6 parameters between positive ions,
+negative ions and positive and negative ions in atomic units. First order induction energy
+can be added with the keyword {\keyw{TOSIPOL} alphap alpham damp\/} where {\keyw{ALPHA}P\/} and
+{\keyw{ALPHA}M \/} are the cation and anion polarisabilities in atomic units and {\it DAMP\/}
+is the damping parameter, without which cold fusion is likely. Note that the Welch potential
+has been fitted to include ion polarisabilities and is described below.
+
+% \subsection{TB}Tersoff-Brenner potential for carbon\cite1---numerical second derivatives only.
+% \endnote{D.~W.~Brenner}{J.~Phys.~Rev.~B}{42}{9458}{1990}
+% Subroutines used: {\bf tbe}, {\bf tbdiff}.
+
+\subsection{TH} Specifies the Thomson problem. Two times the number of ions
+must be divisible by three.
+
+\subsection{TT} Specifies a tight-binding potential. 
+Subroutines used: {\bf tighte}, {\bf secsi}.
+
+\subsection{Welch}This keyword specifies a Welch potential\cite{welchld76,phillipscb91} of the form
+\begin{eqnarray*}
+E &= \sum_{i<j}\Bigg[ {\D q_i q_j\over\D  r_{ij}} + A_{ij}\exp(-r_{ij}^{\rm eff}/\rho) 
+              -{\D q_i({\bf \mu}_j\cdot{\bf r}_{ij})\over\D  r_{ij}^3} 
+              -{\D q_j({\bf \mu}_i\cdot{\bf r}_{ji})\over\D  r_{ij}^3} \\
+             &-3{\D   ({\bf \mu}_i\cdot{\bf r}_{ij})
+                   ({\bf \mu}_j\cdot{\bf r}_{ij})\over\D  r_{ij}^5} 
+              +{\D  {\bf \mu}_i\cdot{\bf \mu}_j\over\D  r_{ij}^3}\Bigg] 
+              +\sum_i {\D \mu_i^2\over\D 2\alpha_i}, \\
+\end{eqnarray*}
+where 
+$$ {\bf r}_{ij}^{\rm eff}={\bf r}_{ij}+{{\bf\mu}_i\over Q_i}-{{\bf \mu}_j\over Q_j}, 
+    \qquad r_{ij}^{\rm eff}=\left|{\bf r}_{ij}^{\rm eff}\right|. $$
+Welch parameters in atomic units should be
+entered after the Welch keyword in the order $A_{++}$, $A_{--}$, $A_{+-}$, $\rho$, $Q_+$,
+$Q_-$, $\alpha_+$, $\alpha_-$.
+The ions are then specified using atom types PL and MI for plus and minus, respectively,
+and can be in any order. There need not be equal numbers of positive and negative ions.
+
+\subsection{W1, W2, W3, W4}Specifies that each {\tt odata} entry gives the centre of mass coordinates
+of a rigid water molecule to be described by a TIPS potential\cite{jorgensen81} of type 1, 2, 3 or 4.
+The Euler angles then follow all the centre of mass coordinates, again three per line.
+Subroutines used: {\bf h2o}.
+
+\subsection{Z1, Z2}These are the two forms of the Zetterling potential:\cite{DoyeWZD03}
+\begin{equation}
+V(r)=a {e^{\alpha r}\over r^3} \cos(2k_F r)+b\left({\sigma\over r}\right)^{n}+V_0.
+\end{equation}
+Subroutines used: {\bf Z1} and {\bf Z2} etc.
+If three parameters are specified by the {\keyw{PARAMS}} keyword they are interpreted 
+as box lengths for a periodic system.
+
+% \subsection{A1, A2, A3, A4}Used for a benzene-Ar$_n$ cluster with four slightly different
+% potentials. In each case the benzene molecule has a fixed geometry which is not read in.
+% Potentials for A1 and A3 include the induction energy, while A2 and A4 do not. Potentials
+% A1 and A2 use one set of Lennard-Jones parameters while A3 and A4 use a different set\cite1.
+% \endnote{D.~J.~Wales}{\molphys}{74}{1}{1991}
+% Subroutines used: {\bf bzgeom}, {\bf bzarlj}, {\bf ljdiff}, {\bf bzarin}, {\bf indiff}.
+
+\subsection{Rotating Clusters}If keyword {\keyw{ROT}} is set in 
+{\tt odata} then additional terms will be added to the
+energy and the derivatives corresponding to the kinetic energy for rigid body rotation
+about the space fixed $z$ axis. Either the angular momentum or the angular velocity
+may be fixed using {\keyw{ROT} J2Z\/} or {\keyw{ROT} OMEGA2\/} followed by the value.
+
+\section{Second-Derivative Based Searches}
+\label{sec:second}
+At present there are eight possible single-ended search types 
+that employ Hessian calculation (or update) and full diagonalisation. They are specified by
+the \keyw{SEARCH} keyword with a parameter 
+represented by the internal integer variable INR, with allowed values ranging from 0 to 7. 
+The two most common
+types are 0, for minimisation, and 2, for transition state searching. The steps have
+the same form in both cases,\cite{wales94a} except that we go downhill in every direction when
+minimising, and uphill in one direction when looking for a transition state. For these
+search types convergence to stationary points with the wrong Hessian index (i.e.~not
+0 or 1 negative Hessian eigenvalues, respectively) is detected and countermeasures are
+taken as specified below. 
+
+The eigenvector to be followed `uphill'
+in an eigenvector-following transition state search is specified by an integer following the keyword 
+{\keyw{MODE}} in {\tt odata}.  We count up from the eigenvector corresponding to 
+the smallest eigenvalue, the one corresponding to the second smallest eigenvalue 
+etc.~using values 1, 2 and so on. The value specified by {\keyw{MODE}} is only
+effective on the first step: for subsequent steps the critical eigenvector is 
+chosen by a maximum overlap criterion using the dot product with the eigenvector 
+that was followed at the previous step.  Using {\keyw{MODE}} 0 means that the 
+eigenvector corresponding to the smallest Hessian eigenvalue is chosen at every step. 
+
+Quite often, especially if we are taking large steps in a region far from convergence,
+the largest modulus dot product may fall well below unity and give rise to ambiguity.
+At present the program takes the following action if the maximum overlap is less than
+0.7. The chosen eigenvector is simply set to the same one that was followed in the last
+step, where the eigenvectors are numbered in terms of the corresponding eigenvalues arranged in
+ascending order. Zero eigenvalues are excluded from the counting. The same action is
+taken if the maximum overlap is with an eigenvector lying more than 8 places above
+the one followed at the previous step, when arranged according to ascending eigenvalue.
+
+The behaviour for other search types is as follows. \keyw{SEARCH} 1
+specifies a pseudo-Newton-Raphson search where the formula for the steps is the same
+as the eigenvector-following step for search types 0 and 2, but we search uphill or
+downhill depending only upon the sign of the eigenvalue corresponding to the direction
+in question.\cite{wales94a}
+Of course, this step tends to the conventional Newton-Raphson step
+near a stationary point. For \keyw{SEARCH} 1 convergence to stationary points of any Hessian 
+index is allowed.
+
+Search types 3 and 4 are the same as 0 and 2 except that a pseudo-third derivative
+correction is applied to the step\cite{wales94a}. These search types are now {\bf redundant}
+because dynamic scaling using a trust radius and separate maximum step sizes for each
+direction seems to work much better (see \S\ref{sec:scaling}).
+
+Search type 5 is the same as type 0 except that the system is rotated into principal
+axes first.
+
+Search types 6 and 7 are for steepest-descent energy minimisations using the Page-McIver
+method\cite{pagem88} with analytic first and second derivatives at each step. 
+Search type 7 can converge to a saddle point, search type 6 can only converge to a true minimum.
+
+Search type 8 is a steepest-ascent transition state search using a modification of
+the Page-McIver steepest-descent algorithm.
+
+Search types 0, 6 and 7 can be used as minimisers for pathway calculations.
+In this case it is possible to use a subset of eigenvalues and eigenvectors
+by supplying {\keyw{USEEV} n \/} in {\tt odata}.
+The number of second derivative-based minimisation steps can be controlled
+with {\keyw{PATH}SDSTEPS n\/}, after which {\tt OPTIM} will switch to LBFGS.
+
+\section{Gradient-Only and Hybrid Searches}
+\label{sec:gradient}
+It is generally much more efficient to carry out energy minimisation, including
+pathway calculations, using the LBFGS gradient-only routine specified by
+{\keyw{BFGSMIN}}. Steepest-descent
+paths or minimisations can also be calculated by Runge-Kutta or Bulirsch-Stoer integration
+using the {\keyw{RKMIN}} and {\keyw{BSMIN}} keywords, respectively.
+
+A hybrid BFGS/eigenvector-following
+transition state search\cite{munrow99,kumedamw01} can be specified by {\keyw{BFGSTS}}. In this approach
+an eigenvector-following step is taken along the eigenvector corresponding to
+the smallest eigenvalue, which is determined by iteration if second derivatives are
+available, or a variational method if not ({\keyw{NOHESS}}). 
+LAPACK routine { DSYEVR} is used to find only the lowest required Hessian eigenvalues
+and eigenvectors if {\keyw{NOIT}} is specified.
+LBFGS minimisation is performed in the tangent space following uphill eigenvector-following
+steps, but it is not necessary for
+this optimisation to converge accurately except in the vicinity of the transition state.
+There are therefore two maximum values for the number of LBFGS steps
+allowed in the tangent space optimisation: one is used when the eigenvalue does
+not appear to have converged, the other when it has. See the {\keyw{BFGSTS}} keyword.
+If the Hessian is relatively cheap to calculate, but the system size is large, then
+Hessian diagonalisation should be avoided using {\keyw{BFGSTS}}.
+If the smallest eigenvalue is positive then the uphill step size is set to the value
+specified by the keyword {\keyw{MAXMAX}}.
+
+The Hessian index can be checked after an LBFGS or hybrid search by calculating 
+eigenvalues iteratively until the smallest positive eigenvalue is found. Checking is
+turned on by the keyword {\keyw{CHECKINDEX}}. This keyword now works with {\keyw{NOHESS}}.
+
+Pathways can be calculated by stepping off a transition state using an eigenvector-following
+step along the eigenvector corresponding to the smallest Hessian eigenvalue calculated
+by iteration, followed by LBFGS minimisation. The keyword {\keyw{BFGSSTEP}}
+must be specified to do this. If the {\keyw{PUSHOFF}}
+parameter is set then it is used in the usual way. The sign of the {\keyw{MODE}} parameter,
+if set, specifies whether the initial step is parallel or antiparallel to the
+eigenvector located. However, the \keyw{PATH} keyword now provides a much simpler way
+to calculate complete paths.
+
+\subsection{Eigenvalue Shifting}In versions of OPTIM prior to 1999
+projection was used to remove displacements corresponding to 
+overall translations and rotations where necessary.\cite{bakerh91,wales93d}
+From April 1999 projection was replaced by eigenvalue shifting where the
+eigenvalues corresponding to eigenvectors which conserve the energy
+are moved to the top of the spectrum. This procedure seems to be simpler
+and more efficient, especially in terms of memory. A new keyword {\keyw{SHIFT}}
+was introduced, which enables the upward shift to be adjusted if required.
+For systems involving periodic boundary conditions no shifting should really be
+needed, but there is little overhead for doing so and the program is simpler.
+For trapped ion clusters
+rotation-only shifting is used. If keyword {\keyw{ROT}} is specified then shifting is performed
+only for the eigenvalues corresponding to
+rotations around the space-fixed $z$-axis. Otherwise shifting is applied to the
+eigenvalues corresponding to both $z$ translation and rotation.
+
+The program can cope with linear molecules (including diatomics) so long as all the atoms
+are not in the $z=0$ plane. However, linear molecules and {\keyw{ROT}} will not work.
+
+\section{Running OPTIM}
+\label{sec:running}
+Any number of optimisation steps can be run with a
+single call to OPTIM, as specified by the keyword {\keyw{STEPS}}.
+The default convergence criteria for eigenvector-following and steepest-descent runs are
+that the maximum unscaled step size for
+any coordinate (or eigenvector, depending upon the scaling criterion) is less
+than $10^{-5}$ and the RMS force is also less than $10^{-5}$.
+The number of negative Hessian eigenvalues must also agree with the search type requested.
+These convergence criteria can be overruled by the 
+{\keyw{CONVERGE}} keyword, as described in \S\ref{sec:keywords}.
+
+\section{Step Scaling Criteria}
+\label{sec:scaling}
+Once an eigenvector-following step of whatever
+type has been calculated it will generally need to be scaled down. Five methods
+are available for doing this, as set by the keyword {\keyw{SCALE}}. 
+
+For {\keyw{SCALE}} 0 the `step length' is taken to be the total step length in the multidimensional
+space of Cartesian coordinates. For {\keyw{SCALE}} 1 we scale according to the largest displacement
+in Cartesian coordinates. For {\keyw{SCALE}} 2 we scale according to the largest displacement
+in the Hessian eigenvector basis. For {\keyw{SCALE}} 3 we scale according to the total step size
+called for by the steepest-descent routine. The default for all other \keyw{SEARCH} types is now
+{\keyw{SCALE}} 10 for which a different trust ratio is calculated for each eigendirection and used 
+to adjust the maximum allowed step for each eigenvector. This
+is described in more detail below.\cite{walesw96}
+
+{\keyw{SCALE}} 10 employs a trust radius whose default value is 4.0. This value can be changed
+using the keyword {\keyw{TRAD}}.
+{\it Appropriate values for the maximum initial step size and the trust radius
+for different systems may need to be found by experimentation\/}. After the first step the
+program compares the predicted value of the Hessian eigenvalue for a given eigendirection,
+as calculated by finite difference of the present and previous component of the gradient in
+this direction, with the actual eigenvalue. The trust ratio for a particular eigendirection
+is the modulus of this predicted value minus the actual value, divided by the actual value. 
+If the trust ratio is less than the trust radius then the maximum step allowed in this
+direction is increased by a factor of $1.1$ (up to a maximum of 0.5); if it is more
+than the trust radius the maximum allowed step in this direction is divided by $1.1$ (down
+to a minimum allowed value of $0.005$). The maximum allowed step for each direction is
+initialised at the value read from the {\tt odata} file. 
+
+The trust ratio is not used in a transition state search for the uphill direction if the 
+corresponding eigenvalue is positive; the step size is instead set to the value
+of the {\keyw{MAXMAX}} parameter.
+
+This trust ratio approach assumes that all the eigenvectors are in correspondence for the present and
+previous geometries when they are arranged according to the eigenvalues in ascending or
+descending order. When large steps are being taken some eigendirections are likely to cross
+over, and it might be better to use an overlap criterion for all the present and previous
+eigenvectors. However, this has not proved to be necessary to date.
+
+Scaling of the above sort does not apply in :BFGS minimisations, although the
+trust radius approach described above for {\keyw{SCALE}} 10 is used for the eigenvector-following
+step in hybrid transition state searches.
+
+For \keyw{SEARCH} 0, 2, 3 and 4 OPTIM detects convergence to stationary points with the
+wrong Hessian index and steps away from them. The test is triggered when the RMS force
+falls below the value specified by {\keyw{PUSHCUT}} (default $10^{-5}$)
+in the prevailing units. The test is only applied at the first step and every fourth step. 
+If a transition state search converges to (or starts from) a minimum
+a step is taken in the direction specified by {\keyw{MODE}} of magnitude {\keyw{PUSHOFF}}.
+If {\keyw{PUSHOFF}} has not been set then the displacement is one tenth of the
+current maximum step size allowed for the eigenmode in question.
+If a transition state
+search converges to (or starts from) a higher index saddle then the action depends upon the
+value of {\keyw{MODE}}. For {\keyw{MODE}} 0 displacements are taken for all the eigenmodes
+with negative eigenvalues except for the one with the most negative eigenvalue. The magnitude
+of the displacement is determined in the same way as above.
+For {\keyw{MODE}} $n\not=0$ a displacement is applied only along the specified value of {\keyw{MODE}}.
+For search types 0 and 3 similar action is taken. If the search converges to (or starts from)
+a stationary point that is not a minimum then if {\keyw{MODE}} 0 displacements are applied
+for all the eigenmodes with negative eigenvalues. If {\keyw{MODE}} $n\not=0$ then a displacement
+is only applied in the direction specified by {\keyw{MODE}}.
+
+\section{Point Group Determination}
+\label{sec:symmetry}
+The eigenvalues
+of the moment of inertia tensor are first inspected to see if there should be a principal
+rotation axis of order 3 or more. Degeneracy is assumed if the difference between two principal
+moments of inertia, divided by the trace of the inertia tensor, is less than some tolerance,
+which is initially set to $0.005$. This tolerance can be changed with the keyword {\keyw{TOLE}}.
+Symmetry elements are then sought depending upon this first
+result, and are diagnosed when rotation or reflection operations produce the same geometry
+correct to $0.01$ in each Cartesian coordinate. This tolerance can be changed with the
+keyword {\keyw{TOLD}}. If symmetry elements expected for the
+calculated principal moments of inertia are not found then the first tolerance is divided by
+ten and the whole procedure repeated with a warning message about `accidental degeneracy'. 
+If the first tolerance falls below $10^{-7}$ the routine gives up.
+
+Point group determination should work for small molecules belonging to all point groups with 
+principal axes of order less than 6. Higher order rotation axes can be sought using the
+keyword {\keyw{AXIS}}. Problems due to the tolerances occur for larger molecules,
+particularly those with high symmetry. 
+
+\section{Calculating Pathways}
+\label{sec:pathways}
+Having found a transition state it is possible to
+find the corresponding minima (and pathway) by displacing the transition state along
+the transition vector in both senses and starting minimisations for each point. To make
+a complete path the data from one of these searches must be reversed and the results
+for the other side of the path appended to it. Shell scripts to do this automatically
+for all the transition states in a given directory, and to perform miscellaneous analysis
+of the pathways, exist for various potentials. The \keyw{PATH} keyword should now be
+used to calculate complete pathways given a transition state geometry in {\tt odata}.
+Characteristics of the path, such as barrier heights, distances and the cooperativity index,
+are then produced automatically, along with a file containing the energy as a function
+of integrated path length (in {\tt EofS}) and an xyz file containing the specified number
+of frames on each side of the path (in {\tt path.xyz}).
+
+Pathways are calculated by starting a minimisation of some sort after stepping off the
+transition state specified in {\tt odata}.
+Using {\keyw{MODE}} values of 1 and $-1$ will give the two sides of the path.
+With \keyw{SEARCH} 0 (or 3) or LBFGS minimisation 
+the resulting pathway will only be an approximation to a true
+gradient line. For search type 6 (or 7) and {\keyw{RKMIN}} or {\keyw{BSMIN}} 
+the results should be close to the true steepest-descent
+path. Note that gradient lines are properties of the potential energy surface alone, and
+do not depend upon masses. Mass weighting, or calculating pathways in the fictitious
+space with a kinetic metric,\cite{banerjeea92} has now been implemented, but not in the BFGS
+minimisation or hybrid EF/BFGS routines.
+
+\section{Double-Ended Searches}
+\label{sec:double}
+OPTIM.2.3 introduced two keywords to provide double-ended pathway searches.
+The first is \keyw{NEB}, 
+an implementation of the revised nudged elastic band approach.\cite{HenkelmanJ00,HenkelmanUJ00}
+The second is \keyw{CONNECT}, which can also find pathways connecting two minima using a different
+strategy. In both cases the coordinates of the starting minimum are specified in the {\tt odata} file,
+and the coordinates of the final minimum are specified in the file {\tt finish}.
+\keyw{CONNECT} builds up a complete min-sad-min-$\cdots$-min sequence by systematically 
+searching for transition
+states and calculating pathways. The \keyw{PATH} keyword is not needed, but can be used to change the
+number of points files saved in the {\tt path.$n$.xyz} files, which are saved for each transition state, $n$.
+The energy profiles are saved in files EofS.$n$.
+
+If \keyw{CONNECT} needs to connect permutational isomers of the same minimum in the
+course of a run then the initial guess for the transition state geometry is generated
+using the \keyw{NEB} routine with just two images, to avoid cold fusion problems.
+
+\keyw{CONNECT} generally needs to be augmented by other keywords to specify how the transition
+state geometries should be guessed (\keyw{NEB},
+\keyw{NEWNEB} or {\keyw{FIXD}}), how the transition
+state searches should be performed ({\keyw{SEARCH} 2\/} or {\keyw{BFGSTS}}, with or
+without {\keyw{NOHESS}}, {\keyw{NOIT}} etc.), and how that pathways should be
+calculated ({\keyw{SEARCH} 0,\/} 6 or 7, {\keyw{BFGSMIN}}, {\keyw{RKMIN}} or {\keyw{BSMIN}}).
+Most of these combinations should work together.
+A summary file will be produced if {\keyw{DUMPPATH}} is specified. An xyz file
+for the overall path will be printed to {\tt path.xyz} and the energy as a
+function of path length is printed to {\tt EofS}. The corresponding xyz and energy
+files for the individual steps in the path are numbered path.$n$.xyz and EofS.$n$ for
+transition state $n$.
+
+When \keyw{NEB} is used in a \keyw{CONNECT} run its function is merely to produce a
+starting guess for the transition state geometry, from which a transition state search
+of some kind is then initiated. It seems that the higher energy parts of a path converge 
+faster than the lower regions in \keyw{NEB} calculations, and so it is possible to generate
+a transition state guess using only a few images and sloppy convergence in the \keyw{NEB}
+part of the calculation.
+
+In the latest OPTIM the \keyw{NEB} and \keyw{CONNECT} keywords are augmented by new algorithms,
+which are selected using \keyw{NEWNEB} and \keyw{NEWCONNECT}. \keyw{NEWNEB} can work on its
+own and with both \keyw{CONNECT} and \keyw{NEWCONNECT}. However, \keyw{NEWCONNECT}
+cannot be used with the old \keyw{NEB}.
+The new algorithms are based on the doubly-nudged elastic band approach and a 
+more sophisticated connection algorithm.\cite{TrygubenkoW04}
+
+The latest double-ended search methods to be implemented correspond to the
+\keyw{GROWSTRING} and \keyw{EVOLVESTRING} keywords, which provide implementations of the
+growing string and evolving string methods.\cite{ERV02,PetersHBC04}
+
+\section{Output}
+\label{sec:output}
+The amount of information printed can be controlled
+through the keywords {\keyw{GRADIENTS},\ VECTORS,\ EFSTEPS,\ VALUES,\ SUMMARY,\/}
+and {\keyw{DEBUG}} as described in \S\ref{sec:keywords}.
+Some useful aliases to interrogate output files are:
+
+\medskip
+\begin{tabular}{l}
+alias energy $'$grep $''$Energy for last$''$ output!$\star$$'$ \\
+alias unscaled $'$grep unscaled output!$\star$$'$ \\
+alias RMS $'$grep RMS output!$\star$$'$ \\
+alias pgroup $'$grep group output!$\star$$'$ \\
+alias negative $'$grep negative output!$\star$$'$ \\
+\end{tabular}
+
+\section{Auxiliary Programs}
+\label{sec:auxiliary}
+As mentioned above there exist numerous shell scripts
+and fortran programs designed to do specific tasks such as analysis of pathways,
+finding transition states for a given minimum or for a directory full of minima and
+calculating pathways for a transition state or a directory full of transition states.
+Some of these were superceded from OPTIM.2.3 onwards by new keywords like \keyw{PATH}
+and \keyw{CONNECT}, which allow OPTIM to perform multiple stationary point searches 
+in one call. The Filthy\_Phyllis program can be used to build up a connected database of
+transition states and local minima, and generally lives up to her name.
+PATHSAMPLE is a program that employs OPTIM to perform discrete path sampling
+calcualtions.\cite{Wales02,Wales03}
+
+\section{Example {\tt odata} Files}
+\label{sec:examples}
+The first example is for an eigenvector-following 
+transition state search with maximum step size and  trust radius different from the default
+values. The eigenvector corresponding to the second-lowest non-zero eigenvalue is followed
+uphill at the first step, with subsequent uphill directions being determined by the overlap
+condition. The convergence criteria are an unscaled maximum step size of 0.005 and an RMS
+gradient tolerance of 0.000001. 
+
+\medskip
+\begin{tabular}{ll}
+ SEARCH & 2  \\
+ MODE & 2 \\
+ MAXSTEP & 0.1  \\
+ TRAD & 2.0  \\
+ STEPS & 100  \\
+ CONVERGE & 0.005 0.000001  \\
+ POINTS  \\
+ etc.  \\
+\end{tabular}
+\medskip
+
+\noindent The next dataset is the same as above except that we perform an eigenvector-following
+minimisation and set an initial displacement from the assumed transition state of
+0.05 units.
+
+\medskip
+\begin{tabular}{ll}
+ SEARCH & 0 \\
+ PUSHOFF & 0.05 \\
+ MAXSTEP & 0.1 \\
+ TRAD & 2.0 \\
+ STEPS & 100 \\
+ CONVERGE & 0.005 0.000001 \\
+ POINTS \\
+ etc. \\
+\end{tabular}
+\medskip
+
+\noindent Next is an LBFGS energy minimisation with a maximum of 100 steps and
+convergence conditions of 0.00001 for the RMS gradient.
+There follows a check of the Hessian index using iteration to calculate 
+eigenvalues to an accuracy of 0.01 with 200 and 50 iterations maximum for the smallest
+and largest eigenvalues, respectively. A Hessian will be calculated in order to 
+perform the check. {\keyw{NOIT}} could be used, in which case the lowest ten Hessian
+eigenvalues will be calculated. If {\keyw{NOHESS}} is specfified then the smallest
+non-zero Hessian eigenvalue will be calculated variationally.
+
+\medskip
+\begin{tabular}{ll}
+ STEPS & 100 \\
+ BFGSMIN & 0.00001 \\
+ CHECKINDEX & 200 0.01 50 \\
+ POINTS \\
+ etc. \\
+\end{tabular}
+\medskip
+
+\noindent Next is a transition state search using the hybrid EF/BFGS method. The maximum EF
+step and trust radius are 0.1 and 2.0, respectively,
+and the maximum step in the LBFGS tangent space minimisation is 0.2. The maximum number of combined
+EF/BFGS steps is 100. The maximum number of iterations allowed is
+200 for the smallest and 50 for the largest eigenvalue. A maximum of 20 BFGS steps 
+is permitted in
+the orthogonal subspace after each eigenvector-following step until the eigenvalue
+appears to have converged, when the maximum jumps to 100 steps.
+The convergence criterion
+for the Hessian eigenvalues is that the percentage change between steps is
+less than 0.01. The convergence criterion for each BFGS
+subspace minimisation 0.0001 for the RMS gradient.
+Setting {\keyw{PUSHOFF}} to 0.1 enables us to start from a converged minimum with
+a large step.
+Convergence is achieved when the maximum unscaled eigenvector-following step
+falls below 0.01, the total RMS force falls below 0.0001, and the previous subspace
+minimisation has converged. The smallest eigenvalue and the corresponding eigenvector
+are saved in file {\tt vector.dump}. The Hessian index is checked using iteration to
+calculate the eigenvalues with the same parameters as the {\keyw{BFGSTS}} keyword.
+Note: if the RMS tolerance specified by {\keyw{BFGSCONV}} is larger than that specfied by
+{\keyw{CONVERGE} \/} the algorithm cannot converge.
+
+\medskip
+\begin{tabular}{ll}
+ MAXSTEP & 0.1 \\
+ MAXMAX  & 0.1 \\
+ MAXBFGS & 0.2 \\
+ PUSHOFF & 0.1 \\
+ TRAD & 2.0 \\
+ STEPS & 100 \\
+ BFGSTS & 200 20 100 0.01 50 \\
+ BFGSCONV & 0.0001 \\
+ CONVERGE & 0.01 0.0001 \\
+ DUMPVECTOR \\
+ CHECKINDEX \\
+ POINTS \\
+ etc. \\
+\end{tabular}
+\medskip
+
+\noindent The following {\tt odata} file is the same as above, except that no Hessian is
+available. A maximum of 30 steps is permitted in the BFGS Rayleigh-Ritz
+minimisation, which is designed to produce the lowest eigenvalue, and the
+convergence condition on this eigenvalue is that the RMS force in the variational BFGS
+minimisation falls below 0.1.
+Otherwise the parameters have the same meanings as above.
+The maximum step size in the Rayleigh-Ritz minimisation is set to 0.2 by the
+{\keyw{MAXBFGS}} keyword.
+
+\medskip
+\begin{tabular}{ll}
+ MAXSTEP & 0.1 \\
+ MAXMAX  & 0.1 \\
+ MAXBFGS & 0.2 0.2 0.2 \\
+ PUSHOFF & 0.1 \\
+ TRAD & 2.0 \\
+ STEPS & 100 \\
+ NOHESS \\
+ BFGSTS & 30 20 100 0.1 \\
+ BFGSCONV & 0.0001 \\
+ CONVERGE & 0.01 0.0001 \\
+ DUMPVECTOR \\
+ CHECKINDEX \\
+ POINTS \\
+ etc. \\
+\end{tabular}
+\medskip
+
+\noindent Next we calculate the part of the reaction pathway
+resulting from a displacement of 0.05 antiparallel to the transition
+vector saved in file {\tt vector.dump}. 
+The calculation reverts to a pure LBFGS minimisation after the first step.
+
+\medskip
+\begin{tabular}{ll}
+ MAXSTEP & 0.1 \\
+ MAXBFGS & 0.1 \\
+ TRAD & 2.0 \\
+ STEPS & 100 \\
+ PUSHOFF & 0.05 \\
+ MODE & $-1$ \\
+ READVEC \\
+ BFGSSTEP \\
+ BFGSCONV & 0.0001 \\
+ CONVERGE & 0.01 0.001 \\
+ POINTS \\
+ etc. \\
+\end{tabular}
+
+\noindent The next example shows how to calculate a complete pathway from the transition state geometry
+specified in {\tt odata} reading the eigenvector from file {\tt vector.dump}. 
+{\keyw{NOIT}} or {\keyw{NOHESS}} could also be specified in conjunction with {\keyw{BFGSTS}}. 
+Alternatively, {\it READVECTOR\/} would cause the required eigenvector to be read from 
+file {\tt vector.dump}; in this case either {\keyw{BFGSSTEP}} or {\keyw{BFGSTS}} must
+also be present in {\tt odata}.
+The maximum LBFGS step is set to 0.05; this setting
+helps to make the path smoother and generally gives a closer approximation to the true steepest-descent
+path. The LBFGS convergence criterion is that the RMS force falls below 0.000001. {\keyw{BFGSMIN}}
+could be replaced by {\keyw{RKMIN}} or {\keyw{BSMIN}} to obtain more accurate steepest-descent paths.
+
+\medskip
+\begin{tabular}{ll}
+PATH & \\
+MAXBFGS & 0.05 \\
+STEPS & 500 \\
+BFGSTS & 500 10 10 0.01 500 \\
+PUSHOFF & 0.04 \\
+BFGSMIN & 0.000001 \\
+DUMPPATH \\
+POINTS & \\
+ etc. \\
+\end{tabular}
+
+\noindent Pathways can also be calculated using entirely second derivative based steepest-descent methods:
+
+\medskip
+\begin{tabular}{ll}
+PATH &\\
+CONVERGE& 0.01 0.000001\\
+STEPS&  500\\
+SEARCH& 5\\
+PUSHOFF&  0.04 \\
+DUMPPATH& \\
+POINTS& \\
+etc. & \\
+\end{tabular}
+
+\noindent Alternatively, the eigenvector for which a {\keyw{PUSHOFF}} is required can be calculated by a full
+diagonalisation of the Hessian followed by a gradient only based minimisation:
+
+\medskip
+\begin{tabular}{ll}
+PATH &\\
+CONVERGE& 0.01 0.000001\\
+STEPS&  500\\
+SEARCH& 0\\
+BFGSMIN & 0.00001 \\
+PUSHOFF&  0.04 \\
+DUMPPATH& \\
+POINTS& \\
+etc. & \\
+\end{tabular}
+
+\noindent A more complicated example for a \keyw{CONNECT} run using \keyw{NEB} to generate transition
+state guesses and {\keyw{BFGSTS}} for transition state searches. {\keyw{NOIT}}  or 
+{\keyw{NOHESS}} could also be used in conjunction with {\keyw{BFGSTS}}. The maximum number of 
+transition state searches allowed is 20, and {\keyw{BFGSTS}} searches are started from 
+guesses generated by \keyw{NEB} using a small number of images and a sloppy convergence
+criterion. Pathways will be calculated by LBFGS energy minimisation with 2000 steps allowed, 
+whereas only 300 steps are allowed in the transition state searches.
+
+\medskip
+\begin{tabular}{ll}
+CONNECT &  20 \\
+NEB     &  100 5 0.02 \\
+PATH    &  3 \\
+BFGSTS  &  100 3 20 0.01  \\
+BFGSMIN & 0.000001 \\
+PUSHOFF  & 0.05 \\
+BFGSSTEPS & 2000 \\
+STEPS     & 300 \\
+POINTS & \\
+etc. & \\
+\end{tabular}
+
+\noindent In the next example hard sphere moves are used for the initial transition state guesses, using a 
+displacement vector based upon the initial and final geometries of the two minima in question 
+at the given step, if they are initially less than 2.5 distance units
+apart. Steepest-descent pathways are calculated by Runge-Kutta integration.
+
+\medskip
+\begin{tabular}{ll}
+CONNECT & 30 \\
+PATH   &  3 \\
+FIXD & 0.70 2.5 \\
+BFGSTS  & 100 3 20 0.01 \\
+BFGSCONV & 0.000001 \\
+RKMIN & 0.00001 0.1 \\
+NOIT & \\
+PUSHOFF & 0.05 \\
+STEPS     & 2000 \\
+POINTS & \\
+etc. & \\
+\end{tabular}
+
+\noindent The pathways can also be calculated using the Page-McIver second-order steepest-descent approach:
+
+\medskip
+\begin{tabular}{ll}
+CONNECT & \\
+NEB     &  100 5 0.02 \\
+PATH    &  3 \\
+SEARCH & 6 \\
+MAXSTEP & 0.05 \\
+MAXMAX  & 0.1 \\
+TRAD & 1.0 \\
+BFGSTS  & 100 3 20 0.01  \\
+BFGSCONV & 0.000001 \\
+NOIT & \\
+PUSHOFF & 0.05 \\
+STEPS   &  2000 \\
+POINTS & \\
+etc. & \\
+\end{tabular}
+
+\noindent A collection of example {\tt odata} and the corresponding output files can be
+found in the {\tt newtests} directory.
+
+
+

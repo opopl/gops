@@ -42,8 +42,10 @@
         DOUBLE PRECISION, DIMENSION(N,3) :: FBA, FNB, FTA, F
         
         ! type of BLN potential
+        !
         !       GO   Go-like
         !       WT   Wild-type
+        !
 
         CHARACTER(LEN=*) :: PTYPE
         INTEGER NTYPE(N), I, J, JMAX, K, KMAX, ICOUNT
@@ -83,6 +85,7 @@
                 ! 2 => bonded 
                 ! 3 => bond angles 
                 ! 4 => torsional angles
+
         DOUBLE PRECISION, DIMENSION(4) :: E
         
         LOGICAL GTEST, STEST
@@ -95,7 +98,7 @@
         ! 
         !       F       => total gradient
         !       FNB     => non-bonded
-        !       FB     =>  bonded
+        !       FB      => bonded
         !       FBA     => bond angles
         !       FTA     => torsional angles
         !
