@@ -135,56 +135,7 @@
 %\input{wg.optim}
 %\input{wg.pathsample}
 %\input{wg.disconnect}
-
-\chapter{Models}
-
-\section{Off-lattice BLN model and its modifications}
-
-\paragraph{Bond vectors}
-
-Bond vectors $\v{b}_i$ are defined as 
-\begin{equation}
-  \v{b}_i=\v{r}_i-\v{r}_{i+1},\quad i=1,\ldots,N-1,
-  \label{bln-def-bv}
-\end{equation}
-where $\v{r}_i,\quad i=1,\ldots,N$ denote the particle coordinates. We define
-a \emph{dot-product array} $\DPD(i,j),\quad i=1,\ldots, N-1;\quad j=1,\ldots,3$ as
-\begin{align}
-  \nonumber\DPD(i,1)=(\v{b}_i,\v{b}_i)\equiv |\v{b}_i|^2\equiv b_i^2,\\
-  \nonumber\DPD(i,2)=(\v{b}_i,\v{b}_{i+1})\\
-  \DPD(i,3)=(\v{b}_i,\v{b}_{i+2})
-  \label{bln-def-dpd}
-\end{align}
-with the bond vector length $b_i\equiv|\v{b}_i|$.
-
-\paragraph{Bond angles}
-
-\begin{equation}
-  \cos\theta_i=\frac{\DPD(i,2)}{b_ib_{i+1}},\qquad i=2,\ldots,N-1  
-  \label{bln-bangle}
-\end{equation};
-
-\paragraph{Torsional angles}
-
-Torsional angle $\phi$ is defined through the dot-product of two normal vectors,
-\begin{equation}
-  \cos\phi_i=-(\v{n}_i,\v{n}_{i+1})
-\end{equation}
-with
-\begin{equation}
-  \v{n}_i=\frac{(\bb_i\times\bb_{i+1})}{P_x(i,2)},\qquad
-  \v{n}_{i+1}=\frac{(\bb_{i+1}\times\bb_{i+2})}{P_x(i+1,2)}
-\end{equation}
-\begin{align}
-  \nonumber
-  \cos\phi_i=P_d(i,2)P_d(i+1,2)-P_d(i,3)P_d(i+1,1)=\\
-  \nonumber
-  (\bb_i,\bb_{i+1})(\bb_{i+1},\bb_{i+2})-(\bb_i,\bb_{i+2})(\bb_{i+1},\bb_{i+1})=
-  \bb_i[\bb_{i+1}(\bb_{i+1},\bb_{i+2})-\bb_{i+2}(\bb_{i+1},\bb_{i+1})]
-  \label{bln-def-tangle}
-\end{align}
-
-\subsection{Determination of the global minimum}
+\input{wg.mod}
 
 \end{document}
 

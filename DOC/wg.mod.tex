@@ -1,0 +1,109 @@
+\chapter{Models}
+
+\section{Off-lattice BLN model and its modifications}
+
+\paragraph{Bond vectors}
+
+Bond vectors $\v{b}_i$ are defined as 
+\begin{equation}
+  \v{b}_i=\v{r}_i-\v{r}_{i+1},\quad i=1,\ldots,N-1,
+  \label{bln-def-bv}
+\end{equation}
+where $\v{r}_i,\quad i=1,\ldots,N$ denote the particle coordinates. We define
+a \emph{dot-product array} $\DPD(i,j),\quad i=1,\ldots, N-1;\quad j=1,\ldots,3$ as
+\begin{align}
+  \nn\DPD(i,1)&=(\v{b}_i,\v{b}_i)\equiv |\v{b}_i|^2\equiv b_i^2=r_i^2+r_{i+1}^2-2(\rr_i,\rr_{i+1}),\\
+  \nn\DPD(i,2)&=(\v{b}_i,\v{b}_{i+1})=(\rr_i-\rr_{i+1},\rr_{i+1}-\rr_{i+2})\\
+\nn&=\rr_i\rr_{i+1}+\rr_{i+1}\rr_{i+2}-\rr_i\rr_{i+2}-r_{i+1}^2\\
+  \DPD(i,3)&=(\v{b}_i,\v{b}_{i+2})=(\rr_i-\rr_{i+1},\rr_{i+2}-\rr_{i+3})\\
+\nn&=\rr_i\rr_{i+2}+\rr_{i+1}\rr_{i+3}-\rr_{i}\rr_{i+3}-\rr_{i+1}\rr_{i+2}
+  \label{bln-def-dpd}
+\end{align}
+with the bond vector length $b_i\equiv|\v{b}_i|,\ i=1,\ldots,N-1$, 
+and the radius-vector length $r_i\equiv|\v{r}_i|,\ i=1,\ldots,N$. 
+In what follows, we will need here the derivatives 
+of $\DPD(i,j)$ with respect to the radius-vectors $\rr_i,\quad i=1,\ldots,N$.
+\begin{align}
+  \frac{\partial\DPD(i,1)}{\partial \rr_i}&=2(\rr_i-\rr_{i+1})=2\bb_i\\
+  \frac{\partial\DPD(i,1)}{\partial \rr_{i+1}}&=-2\bb_i\\
+  \frac{\partial\DPD(i,2)}{\partial \rr_i}&=2(\rr_i-\rr_{i+1})=2\bb_i\\
+\end{align}
+
+\paragraph{Bond angles}
+
+\begin{equation}
+  \cos\theta_i=\frac{\DPD(i,2)}{b_ib_{i+1}},\qquad i=2,\ldots,N-1  
+  \label{bln-bangle}
+\end{equation};
+
+\paragraph{Torsional angles}
+
+Torsional angle $\phi$ is defined through the dot-product of two normal vectors,
+\begin{equation}
+  \cos\phi_{i+1}=-(\v{n}_i,\v{n}_{i+1}),\quad i=1,\ldots,N-3
+\end{equation}
+with
+\begin{equation}
+  \v{n}_i=\frac{(\bb_i\times\bb_{i+1})}{P_x(i,2)},\qquad
+  \v{n}_{i+1}=\frac{(\bb_{i+1}\times\bb_{i+2})}{P_x(i+1,2)}
+\end{equation}
+Then,
+\begin{align}
+\nn&((\bb_i\times\bb_{i+1}),(\bb_{i+1}\times\bb_{i+2}))=
+(\bb_{i+2},((\bb_i\times\bb_{i+1})\times\bb_{i+1}))\\
+\nn=&\quad(\bb_{i+2},\bb_{i+1}(\bb_i,\bb_{i+1})-\bb_ib_{i+1}^2)\\
+\nn=&\quad(\bb_i,\bb_{i+1})(\bb_{i+1},\bb_{i+2})-b_{i+1}^2(\bb_i,\bb_{i+2})\\
+=&\quad\DPD(i,2)\DPD(i+1,2)-\DPD(i+1,1)\DPD(i,3).
+\end{align}
+Thus
+\begin{equation}
+  \cos\phi_{i+1}=\frac{\DPD(i,2)\DPD(i+1,2)-\DPD(i+1,1)\DPD(i,3)}{\XPD(i)\XPD(i+1)},
+  \quad\ i=1,\ldots,N-3.
+  \label{bln-def-tangle}
+\end{equation}
+It is possible to obtain $\XPD$ through $\DPD$:
+\begin{equation}
+  \XPD^2(i)\equiv\ (\bb_i\times\bb_{i+1})^2
+  =b_i^2b_{i+1}^2-(\bb_i,\bb_{i+1})^2
+  =\DPD(i,1)\DPD(i+1,1)-\DPD(i,2)^2.
+\end{equation}
+Then the product $\XPD(i)\XPD(i+1)$ is expanded as
+\begin{align}
+  \nn\XPD(i)\XPD(i+1)&=\sqrt{(\DPD(i,1)\DPD(i+1,1)-\DPD(i,2)^2)}\\
+  \nn&\times\sqrt{(\DPD(i+1,1)\DPD(i+2,1)-\DPD(i+1,2)^2)}=\\
+  \sqrt{}
+\end{align}
+In particular, for 
+\begin{enumerate}
+  \item $i=1$. 
+    \begin{equation}
+      \cos\phi_2=\frac
+      {\DPD(1,2)\DPD(2,2)-\DPD(2,1)\DPD(1,3)}
+      {\sqrt{\DPD(1,1)\DPD(2,1)-\DPD(1,2)^2}}
+    \end{equation}
+\end{enumerate}
+
+\paragraph{Gradient}
+
+\begin{equation}
+  V[\phi]=\sum_{i=2}^{N-2}C_i(1+\cos{\phi_i})+D_i(1+\cos{3\phi_i})
+\end{equation}
+\begin{equation}
+  \v{F}_i=-\frac{\partial V}{\partial \v{r}_i}.
+\end{equation}
+\begin{enumerate}
+  \item $i=1$ Only $\phi_2$ depends on $\v{r}_1$, so
+    \begin{equation}
+      \frac{\partial V}{\partial \v{r}_1}=
+      {\frac{\partial V}{\partial\phi_2}}
+      {\frac{\partial\phi_2}{\partial\v{r}_1}}
+    \end{equation}
+  \item $i=2$
+  \item $i=3,\ldots,N-2$
+  \item $i=N-1$
+  \item $i=N$
+\end{enumerate}
+
+\subsection{Determination of the global minimum}
+
+
