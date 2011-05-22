@@ -206,7 +206,7 @@ include bln.hess.inc.f90
 ! }}}
 
         SUBROUTINE PARAM_ARRAY(N,AB,CD,PTYPE)
-
+! {{{
         include bln.vars.inc.f90
         include bln.ntype.inc.f90
 
@@ -219,8 +219,11 @@ include bln.hess.inc.f90
                         include bln.wt.ab.inc.f90       ! L-J interaction between non-bonded particles.
                         include bln.go.cd.inc.f90       ! Dihedral angle potential
         ENDSELECT
-
+! }}}
         RETURN
         END
+
+!subroutine cosba()
+
 
         ENDMODULE
