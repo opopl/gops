@@ -1,0 +1,59 @@
+In what follows, we will need here the derivatives 
+of $\DPD(i,j)$ with respect to the radius-vectors $\rr_i,\quad i=1,\ldots,N$.
+\begin{itemize}
+\item $\DPD(i,1),\quad i=3,\ldots,N-2$ 
+\begin{align}
+  \frac{\partial\DPD(i,1)}{\partial \rr_i}&=2(\rr_i-\rr_{i+1})=2\bb_i\\
+  \frac{\partial\DPD(i-1,1)}{\partial \rr_{i}}&=-2\bb_{i-1}
+  %\frac{\partial\DPD(i,1)}{\partial \rr_{i+1}}&=-2\bb_i\\
+\end{align}
+\item $\DPD(i,2),\quad i=3,\ldots,N-2$ 
+  \begin{align}
+  \frac{\partial\DPD(i,2)}{\partial \rr_i}&=(\rr_{i+1}-\rr_{i+2})=\bb_{i+1}\\
+  \frac{\partial\DPD(i-1,2)}{\partial \rr_{i+1}}&=(\rr_{i+1}-\rr_{i+2})=\bb_{i+1}\\
+  \frac{\partial\DPD(i-2,2)}{\partial \rr_{i+2}}&=(\rr_{i+1}-\rr_{i+2})=\bb_{i+1}
+  \end{align}
+\item $\DPD(i,3),\quad i=3,\ldots,N-2$ 
+  \begin{align}
+  \frac{\partial\DPD(i,3)}{\partial \rr_i}&=(\rr_{i+1}-\rr_{i+2})=\bb_{i+1}\\
+  \frac{\partial\DPD(i,3)}{\partial \rr_{i+1}}&=(\rr_{i+1}-\rr_{i+2})=\bb_{i+1}\\
+  \frac{\partial\DPD(i,3)}{\partial \rr_{i+2}}&=(\rr_{i+1}-\rr_{i+2})=\bb_{i+1}\\
+  \frac{\partial\DPD(i,3)}{\partial \rr_{i+3}}&=(\rr_{i+1}-\rr_{i+2})=\bb_{i+1}
+\end{align}
+\end{itemize}
+
+
+\begin{table}[ht]
+  \centering
+  \caption{$i=2$}
+  \begin{tabular}{|p{2cm}|p{3cm}|p{4cm}|p{2cm}|}
+\hline
+    DP			& $\rr_2$-dependent 	& not-$\rr_2$-dependent & derivative \\
+   \hline 
+    $(2,1)$ 	& $r_2^2-2\rr_2\rr_{3}$ 	
+    		& $r_{3}^2$ 
+		& $2\bb_2$ \\
+    \hline
+    $(2,2)$ 	& $\rr_2\rr_{3}-\rr_2\rr_{4}$  
+    		& $\rr_{3}\rr_{4}-r_{3}^2$ 
+		& $\bb_{3}$ \\
+    \hline
+   $(2,3)$		& $\rr_2\rr_{4}-\rr_{2}\rr_{5}$	
+    			& $\rr_{3}\rr_{5}-\rr_{3}\rr_{4}$ 
+			& $\bb_{4}$ \\
+    \hline
+    $(1,1)$ 	& $r_{2}^2-2\rr_{2}\rr_{1}$	
+    		& $r_{1}^2$ 
+		& $-2\bb_{1}$\\
+    \hline
+    $(1,2)$ 	& $\rr_2\rr_{1}+\rr_2\rr_{3}-\rr_{2}^2$ 
+    		& $-\rr_{1}\rr_{3}$ 
+    		& $\bb_{1}-\bb_2$ \\
+    \hline
+   $(1,3)$		& $\rr_2\rr_{4}-\rr_2\rr_{3} $   	
+    			& $\rr_{1}\rr_{3}-\rr_{1}\rr_{4}$ 
+			& $-\bb_{3}$ \\
+\hline
+  \end{tabular}
+\end{table}
+

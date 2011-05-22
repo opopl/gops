@@ -99,6 +99,7 @@ include bln.vars.inc.f90
 
         DO I = 1, N-2
            XPD_2(I) = DPD(I,1)*DPD(I+1,1)-DPD(I,2)**2 
+           XPD(I)=SQRT(XPD_2(I))
         ENDDO
 ! }}}
 ! BOND ANGLES: ANG(I,1), I=2,...,N-1 {{{
@@ -112,7 +113,7 @@ include bln.vars.inc.f90
 
         DO I = 1, N-3
             COS_PHI = (DPD(I,2)*DPD(I+1,2)-DPD(I,3)*DPD(I+1,1))
-            COS_PHI = COS_PHI/SQRT(XPD_2(I)*XPD_2(I+1))
+            COS_PHI = COS_PHI/(XPD(I)*XPD(I+1))
             IF (ABS(COS_PHI).GT.1.0D0) COS_PHI=COS_PHI/ABS(COS_PHI)
             ANG(I+1,2) = ACOS(COS_PHI)
         ENDDO

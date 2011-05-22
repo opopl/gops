@@ -29,8 +29,8 @@
         ! 1 => bond angles
         ! 2 => torsion (dihedral) angles
         DOUBLE PRECISION, DIMENSION(N,2) :: ANG 
-        ! cross products, squared
-        DOUBLE PRECISION, DIMENSION(N) :: XPD_2
+        ! cross products lengths, squared and not
+        DOUBLE PRECISION, DIMENSION(N) :: XPD_2, XPD
         ! inverse cross products
         DOUBLE PRECISION, DIMENSION(N) :: IXPD
         ! bond vectors lengths
