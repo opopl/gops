@@ -4,13 +4,15 @@
         DO J = 1, 3*N
             QO(J) = QO(J) + DELTA
 
-            CALL CALC_INT_COORDS(N,QO,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII)
-            CALL CALC_GRADIENT(N,QO,FQ_PLUS,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII)
+            include bln.cic.inc.f90
+            include bln.grad.inc.f90
+            FQ_PLUS=GRAD
 
             QO(J) = QO(J) - 2.0*DELTA
 
-            CALL CALC_INT_COORDS(N,QO,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII)
-            CALL CALC_GRADIENT(N,QO,FQ_MINUS,AB,CD,R,DR,DOT_PROD,X_PROD,ANG,RADII)
+            include bln.cic.inc.f90
+            include bln.grad.inc.f90
+            FQ_MINUS=GRAD
 
             QO(J) = QO(J) + DELTA
     
