@@ -1,6 +1,8 @@
 \chapter{Models}
 
-\section{Off-lattice BLN model and its modifications}
+\section{BLN model}
+
+\subsection{Geometry}
 
 \subsubsection{Bond vectors}
 
@@ -199,27 +201,16 @@ of $\DPD(i,j)$ with respect to the radius-vectors $\rr_i,\quad i=1,\ldots,N$.
 
 Torsional angle $\phi$ is defined through the dot-product of two normal vectors,
 \begin{equation}
-  \cos\phi_{i}=-(\v{n}_{i-1},\v{n}_{i}),\quad i=2,\ldots,N-2
+  \cos\phi_{i}=-(\HVXPD(i-1),\HVXPD(i)),\quad i=2,\ldots,N-2,
 \end{equation}
-with
+where
 \begin{equation}
-  %\v{n}_i=\frac{(\bb_i\times\bb_{i+1})}{P_x(i)},\qquad
-  %\v{n}_{i+1}=\frac{(\bb_{i+1}\times\bb_{i+2})}{P_x(i+1)},
-  \v{n}_{i-1}=\frac{(\bb_{i-1}\times\bb_{i})}{P_x(i-1)},\qquad
-  \v{n}_{i}=\frac{(\bb_{i}\times\bb_{i+1})}{P_x(i)},
+\VXPD(i)\equiv (\bb_i\times\bb_{i+1}),\quad
+\XPD(i)\equiv|(\bb_i\times\bb_{i+1})|,
 \end{equation}
-where $\XPD(i)\equiv|(\bb_i\times\bb_{i+1})|$.
-
-\paragraph{Torsional angles}
-
-Torsional angle $\phi$ is defined through the dot-product of two normal vectors,
+and
 \begin{equation}
-  \cos\phi_{i+1}=-(\v{n}_i,\v{n}_{i+1}),\quad i=1,\ldots,N-3
-\end{equation}
-with
-\begin{equation}
-  \v{n}_i=\frac{(\bb_i\times\bb_{i+1})}{P_x(i,2)},\qquad
-  \v{n}_{i+1}=\frac{(\bb_{i+1}\times\bb_{i+2})}{P_x(i+1,2)}
+  \hv{n}\equiv \frac{\v{n}}{|\v{n}|}.
 \end{equation}
 Then,
 \begin{align}
@@ -281,6 +272,29 @@ $i$ 	& 	torsional angles \\
 Thus, the cases $i=1,\ 2,\ 3$ and $i=N,\ N-1,\ N-2$ are special, since the number
 of involved torsional angles is less than $4$. 
 
+
+\subsubsection{Torsion angles vs $i, j, k, l$ variables }
+
+\begin{table}
+  \centering
+  \caption{Torsional angles vs. $i, j, k, l$ variables}
+  \begin{tabular}{|*{6}{c|}}
+\hline
+TA 		& $\rr_{ij}$ 	& $\rr_{kj}$ 	& $\rr_{kl}$	& $\v{m}$	& $\v{n}$	  	\\
+\hline
+$\phi_2$	& $\bb_1$	& $-\bb_2$ 	& $\bb_3$	& 		& 	\\
+$\phi_3$	& $\bb_2$	& $-\bb_3$	& $\bb_4$		\\
+$\phi_4$	& $\bb_3$	& $-\bb_4$	& $\bb_5$		\\
+$\phi_i$	& $\bb_{i-1}$	& $-\bb_i$	& $\bb_{i+1}$		\\
+$\phi_{N-4}$	& $\bb_{N-5}$	& $-\bb_{N-4}$	& $\bb_{N-3}$		\\
+$\phi_{N-3}$	& $\bb_{N-4}$	& $-\bb_{N-3}$	& $\bb_{N-2}$		\\
+$\phi_{N-2}$	& $\bb_{N-3}$	& $-\bb_{N-2}$	& $\bb_{N-1}$		\\
+\hline
+  \end{tabular}
+\end{table}
+
+
+
 \subsubsection{Bekker formulas}
 
 We will also need \cite{Bekker95}
@@ -295,6 +309,36 @@ We will also need \cite{Bekker95}
 \v{m}\quad\equiv&\quad\v{r}_{ij}\times\v{r}_{kj}\\
 \v{n}\quad\equiv&\quad\v{r}_{kj}\times\v{r}_{kl}
 \end{align}
+
+\subsubsection{Torsion angles vs gradients }
+
+For $a=2,\ldots,N-2$
+\begin{align}
+  \Gi(\phi_a)&=\HVXPD(a-1)\frac{b_{a+1}}{\XPD(a-1)}  \\
+  \Gj(\phi_a)&=\\
+  \Gk(\phi_a)&=\\
+  \Gl(\phi_a)&=\\
+\end{align}
+
+%\begin{table}
+  %\centering
+  %\caption{Torsional angles vs. gradients (without the potential derivative)}
+  %\begin{tabular}{|*{5}{c|}}
+%\hline
+%TA 		& $\Gi$ 	& $\Gj$ 	& $\Gk$	&	$\Gl$	 	\\
+%\hline
+%$\phi_2$	& $\HVXPD(1)\frac{b_2}{\XPD(1)}$\\ 
+%%$\phi_3$	
+%%$\phi_4$	
+%%$\phi_i$	
+%%$\phi_{N-4}$	
+%%$\phi_{N-3}$	
+%%$\phi_{N-2}$	
+%\hline
+  %\end{tabular}
+%\end{table}
+
+
 
 \subsubsection{Gradients vs torsional angles}
 
@@ -312,13 +356,16 @@ We will also need \cite{Bekker95}
   \GG{N}=&\Gl(\phi_{N-2})
 \end{align}
 
+
+
+
 \subsubsection{Gradients for the BLN model}
 
 For $V(\phi)=A(1+\cos\phi)+B(1+\cos{3\phi})$, this yields:
 \begin{itemize}
 \item $i=1$ 
 \begin{align}
-  \nn\GG(\rr_1)=& -(-A\sin\phi_2-3B\sin{3\phi_2})
+  \nn\GG{1}=& -(-A\sin\phi_2-3B\sin{3\phi_2})
   b_2\frac{\bb_1\times\bb_2}{|\bb_1\times\bb_2|^2}\\
   =&\quad\VXPD(1)\frac{b_2(A\sin\phi_2+3B\sin(3\phi_2))}{\XPD(1)^2}
 \end{align}
