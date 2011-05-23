@@ -58,7 +58,7 @@ include bln.vars.inc.f90
 !> @param[out]     LEN_BVR   DOUBLE PRECISION(N-1,3)    - lengths of the bond vectors 
 !>
 !}}}
-        SUBROUTINE CALC_INT_COORDS(N,QO,R,DR,BVR,LEN_DR,LEN_BVR,DPD,XPD_2,ANG)
+        SUBROUTINE CALC_INT_COORDS(N,QO,R,DR,BVR,LEN_DR,LEN_BVR,DPD,XPD,ANG)
 ! {{{
 include bln.vars.inc.f90
 
@@ -99,7 +99,7 @@ include bln.vars.inc.f90
 
         DO I = 1, N-2
            XPD_2(I) = DPD(I,1)*DPD(I+1,1)-DPD(I,2)**2 
-           XPD(I)=SQRT(XPD_2(I))
+           LEN_XPD(I)=SQRT(XPD_2(I))
         ENDDO
 ! }}}
 ! BOND ANGLES: ANG(I,1), I=2,...,N-1 {{{
@@ -224,6 +224,7 @@ include bln.hess.inc.f90
         END
 
 !subroutine cosba()
+!subroutine cosba(i,j,ii,k,l,rn,nn, mut, m.dml.dm2,ddm) E
 
 
         ENDMODULE

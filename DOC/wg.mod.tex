@@ -2,7 +2,7 @@
 
 \section{Off-lattice BLN model and its modifications}
 
-\paragraph{Bond vectors}
+\subsubsection{Bond vectors}
 
 Bond vectors $\v{b}_i$ are defined as 
 \begin{equation}
@@ -179,14 +179,14 @@ $(N-3,3)$	& $-\rr_N\rr_{N-3}+\rr_N\rr_{N-2}$
   \end{tabular}
 \end{table}
 
-\paragraph{Bond angles}
+\subsubsection{Bond angles}
 
 \begin{equation}
   \cos\theta_i=\frac{\DPD(i,2)}{b_ib_{i+1}},\qquad i=2,\ldots,N-1  
   \label{bln-bangle}
 \end{equation}
 
-\paragraph{Torsional angles}
+\subsubsection{Torsional angles}
 
 Torsional angle $\phi$ is defined through the dot-product of two normal vectors,
 \begin{equation}
@@ -234,46 +234,79 @@ Then the product $\XPD(i)\XPD(i+1)$ is expanded as
 Thus, $\XPD(i-2),\XPD(i-1)$ and $\XPD(i)$ depend on $\rr_i$, 
 whereas $\XPD(i+j),\ j\ge\ 1$ does not. 
 Also, $\phi_{i-1},\ \phi_i,\ \phi_{i+1}$ depends on $\rr_i$. 
-\begin{tabular}[ht]{cc}
-  $i$ 	& 	torsional angles \\
+\begin{table}
+  \centering
+  \caption{Radius-vector indices vs. torsional angles}
+  \begin{tabular}{|p{3cm}|p{5cm}|}
+\hline
+$i$ 	& 	torsional angles \\
+\hline
   $1$	&	$\phi_2$ \\
   $2$	&	$\phi_2,\ \phi_3$ \\
-  $3,\ldots N-3$	&	$\phi_{i-1},\ \phi_i,\ \phi_{i+1}$ \\
-  $N-2$		&	\\
-  $N-1$		&	\\
-  $N$		&	\\
-\end{tabular}
-For $i=1$, only $\phi_2$ counts;
-In particular, for 
-\begin{enumerate}
-  \item $i=1$. 
-    \begin{equation}
-      \cos\phi_2=\frac
-      {\DPD(1,2)\DPD(2,2)-\DPD(2,1)\DPD(1,3)}
-      {\sqrt{\DPD(1,1)\DPD(2,1)-\DPD(1,2)^2}}
-    \end{equation}
-\end{enumerate}
+  $3$	&	$\phi_2,\ \phi_3,\ \phi_4$ \\
+  $4$	&	$\phi_2,\ \phi_3,\ \phi_4,\ \phi_5$ \\
+  $4,\ldots N-3$	&	$\phi_{i-2},\ \phi_{i-1},\ \phi_i,\ \phi_{i+1}$ \\
+  $N-3$		& $\phi_{N-5},\ \phi_{N-4},\ \phi_{N-3},\ \phi_{N-2}$	\\
+  $N-2$		& $\phi_{N-4},\ \phi_{N-3},\ \phi_{N-2}$	\\
+  $N-1$		& $\phi_{N-3},\ \phi_{N-2}$			\\
+  $N$		& $\phi_{N-2}$		\\
+  $(1,2,3,4)$	& $\phi_2$ \\
+  $(2,3,4,5)$	& $\phi_3$ \\
+  $(3,4,5,6)$	& $\phi_4$ \\
+  $(4,5,6,7)$	& $\phi_5$ \\
+\hline
+  \end{tabular}
+\end{table}
+Thus, the cases $i=1,\ 2,\ 3$ and $i=N,\ N-1,\ N-2$ are special, since the number
+of involved torsional angles is less than $4$. 
 
-\paragraph{Gradient}
+\subsubsection{Bekker formulas}
 
-\begin{equation}
-  V[\phi]=\sum_{i=2}^{N-2}C_i(1+\cos{\phi_i})+D_i(1+\cos{3\phi_i})
-\end{equation}
-\begin{equation}
-  \v{F}_i=-\frac{\partial V}{\partial \v{r}_i}.
-\end{equation}
-\begin{enumerate}
-  \item $i=1$ Only $\phi_2$ depends on $\v{r}_1$, so
-    \begin{equation}
-      \frac{\partial V}{\partial \v{r}_1}=
-      {\frac{\partial V}{\partial\phi_2}}
-      {\frac{\partial\phi_2}{\partial\v{r}_1}}
-    \end{equation}
-  \item $i=2$
-  \item $i=3,\ldots,N-2$
-  \item $i=N-1$
-  \item $i=N$
-\end{enumerate}
+We will also need \cite{Bekker95}
+\begin{align}
+  \Gi\quad=&\quad \frac{dV(\phi)}{d\phi}r_{kj}\frac{\v{m}}{|\v{m}|^2}\\
+  \Gl\quad=&\quad-\frac{dV(\phi)}{d\phi}r_{kj}\frac{\v{n}}{|\v{n}|^2}\\
+\Gj\quad=&\quad-\Gi +\left(\frac{\v{r}_{ij}\cdot{\v{r}_{kj}}}{r_{kj}^2}\right)\Gi
+  -\left(\frac{\v{r}_{kl}\cdot{\v{r}_{kj}}}{r_{kj}^2}\right)\Gl\\
+  \Gk\quad=&\quad-\Gl
+  -\left(\frac{\v{r}_{ij}\cdot{\v{r}_{kj}}}{r_{kj}^2}\right)\Gi
+  +\left(\frac{\v{r}_{kl}\cdot{\v{r}_{kj}}}{r_{kj}^2}\right)\Gl\\
+\v{m}\quad\equiv&\quad\v{r}_{ij}\times\v{r}_{kj}\\
+\v{n}\quad\equiv&\quad\v{r}_{kj}\times\v{r}_{kl}
+\end{align}
+
+\subsubsection{Gradients vs torsional angles}
+
+\begin{align}
+  \nn\GG{1}=&\Gi(\phi_2)\\
+  \nn\GG{2}=&\Gi(\phi_3)+\Gj(\phi_2)\\
+  \nn\GG{3}=&\Gi(\phi_4)+\Gj(\phi_3)+\Gk(\phi_2)\\
+  \nn\GG{4}=&\Gi(\phi_5)+\Gj(\phi_4)+\Gk(\phi_3)+\Gl(\phi_2)\\
+  \nn\ldots\\
+  \nn\GG{i}=&\Gi(\phi_{i+1})+\Gj(\phi_i)+\Gk(\phi_{i-1})+\Gl(\phi_{i-2}),\quad i=4,\ldots,N-3\\
+  \nn\ldots\\
+  \nn\GG{N-3}=&\Gi(\phi_{N-2})+\Gj(\phi_{N-3})+\Gk(\phi_{N-4})+\Gl(\phi_{N-5})\\
+  \nn\GG{N-2}=&\Gj(\phi_{N-2})+\Gk(\phi_{N-3})+\Gl(\phi_{N-4})\\
+  \nn\GG{N-1}=&\Gk(\phi_{N-2})+\Gl(\phi_{N-3})\\
+  \GG{N}=&\Gl(\phi_{N-2})
+\end{align}
+
+\subsubsection{Gradients for the BLN model}
+
+For $V(\phi)=A(1+\cos\phi)+B(1+\cos{3\phi})$, this yields:
+\begin{itemize}
+\item $i=1$ 
+\begin{align}
+  \nn\GG(\rr_1)=& -(-A\sin\phi_2-3B\sin{3\phi_2})
+  b_2\frac{\bb_1\times\bb_2}{|\bb_1\times\bb_2|^2}\\
+  =&\quad\VXPD(1)\frac{b_2(A\sin\phi_2+3B\sin(3\phi_2))}{\XPD(1)^2}
+\end{align}
+\item $i=2$. We have
+  \begin{align}
+    \Gi(\phi_3)&=\quad\VXPD(2)\frac{b_3(A\sin\phi_3+3B\sin(3\phi_3))}{\XPD(2)^2}\\
+    \Gj(\phi_2)&=\quad -\Gi(\phi_2)+
+  \end{align}
+\end{itemize}
 
 \subsection{Determination of the global minimum}
 
