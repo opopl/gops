@@ -273,28 +273,6 @@ Thus, the cases $i=1,\ 2,\ 3$ and $i=N,\ N-1,\ N-2$ are special, since the numbe
 of involved torsional angles is less than $4$. 
 
 
-\subsubsection{Torsion angles vs $i, j, k, l$ variables }
-
-\begin{table}
-  \centering
-  \caption{Torsional angles vs. $i, j, k, l$ variables}
-  \begin{tabular}{|*{6}{c|}}
-\hline
-TA 		& $\rr_{ij}$ 	& $\rr_{kj}$ 	& $\rr_{kl}$	& $\v{m}$	& $\v{n}$	  	\\
-\hline
-$\phi_2$	& $\bb_1$	& $-\bb_2$ 	& $\bb_3$	& 		& 	\\
-$\phi_3$	& $\bb_2$	& $-\bb_3$	& $\bb_4$		\\
-$\phi_4$	& $\bb_3$	& $-\bb_4$	& $\bb_5$		\\
-$\phi_i$	& $\bb_{i-1}$	& $-\bb_i$	& $\bb_{i+1}$		\\
-$\phi_{N-4}$	& $\bb_{N-5}$	& $-\bb_{N-4}$	& $\bb_{N-3}$		\\
-$\phi_{N-3}$	& $\bb_{N-4}$	& $-\bb_{N-3}$	& $\bb_{N-2}$		\\
-$\phi_{N-2}$	& $\bb_{N-3}$	& $-\bb_{N-2}$	& $\bb_{N-1}$		\\
-\hline
-  \end{tabular}
-\end{table}
-
-
-
 \subsubsection{Bekker formulas}
 
 We will also need \cite{Bekker95}
@@ -310,36 +288,45 @@ We will also need \cite{Bekker95}
 \v{n}\quad\equiv&\quad\v{r}_{kj}\times\v{r}_{kl}
 \end{align}
 
+\clearpage
+\subsubsection{Torsion angles vs $i, j, k, l$ variables }
+
+\begin{table}
+  \centering
+  \caption{Torsional angles vs. $i, j, k, l$ variables}
+  \begin{tabular}{|*{6}{c|}}
+\hline
+TA 		& $\rr_{ij}$ 	& $\rr_{kj}$ 	& $\rr_{kl}$	& $\v{m}$	& $\v{n}$	  	\\
+\hline
+$\phi_2$	& $\bb_1$	& $-\bb_2$ 	& $\bb_3$	& $-\VXPD(1)$ 	& $-\VXPD(2)$ 		\\
+$\phi_3$	& $\bb_2$	& $-\bb_3$	& $\bb_4$		\\
+$\phi_4$	& $\bb_3$	& $-\bb_4$	& $\bb_5$		\\
+$\phi_a$	& $\bb_{a-1}$	& $-\bb_a$	& $\bb_{a+1}$	& $-\VXPD(a-1)$ & $-\VXPD(a)$ 		\\
+$\phi_{N-4}$	& $\bb_{N-5}$	& $-\bb_{N-4}$	& $\bb_{N-3}$		\\
+$\phi_{N-3}$	& $\bb_{N-4}$	& $-\bb_{N-3}$	& $\bb_{N-2}$		\\
+$\phi_{N-2}$	& $\bb_{N-3}$	& $-\bb_{N-2}$	& $\bb_{N-1}$		\\
+\hline
+  \end{tabular}
+\end{table}
+
+\clearpage
 \subsubsection{Torsion angles vs gradients }
 
 For $a=2,\ldots,N-2$
 \begin{align}
-  \Gi(\phi_a)&=\HVXPD(a-1)\frac{b_{a+1}}{\XPD(a-1)}  \\
-  \Gj(\phi_a)&=\\
-  \Gk(\phi_a)&=\\
-  \Gl(\phi_a)&=\\
+  \Gi(\phi_a)&=-\HVXPD(a-1)\frac{b_{a}}{\XPD(a-1)}  \\
+  \Gl(\phi_a)&=\HVXPD(a)\frac{b_{a}}{\XPD(a)} \\
+  \Gj(\phi_a)&=-\HVXPD(a-1)\frac{b_{a}}{\XPD(a-1)}
+  \left(-1+\frac{\DPD(a-1,2)}{b_a^2}\right)\\
+  &+\frac{\DPD(a,2)}{b_a^2}\Gl(\phi_a)\\
+  &=\HVXPD(a-1)\frac{b_{a}}{\XPD(a-1)}\left(1-\frac{\DPD(a-1,2)}{b_a^2}\right)\\
+  &+\HVXPD(a)\frac{\DPD(a,2)}{b_a\XPD(a)}\\
+  \Gk(\phi_a)&=\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}+\left(1-\frac{\DPD(a,2)}{b_a^2}\right)\Gl(\phi_a)\\
+  &=\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}+
+  \HVXPD(a)\frac{b_{a}}{\XPD(a)}\left(1-\frac{\DPD(a,2)}{b_a^2}\right)
 \end{align}
 
-%\begin{table}
-  %\centering
-  %\caption{Torsional angles vs. gradients (without the potential derivative)}
-  %\begin{tabular}{|*{5}{c|}}
-%\hline
-%TA 		& $\Gi$ 	& $\Gj$ 	& $\Gk$	&	$\Gl$	 	\\
-%\hline
-%$\phi_2$	& $\HVXPD(1)\frac{b_2}{\XPD(1)}$\\ 
-%%$\phi_3$	
-%%$\phi_4$	
-%%$\phi_i$	
-%%$\phi_{N-4}$	
-%%$\phi_{N-3}$	
-%%$\phi_{N-2}$	
-%\hline
-  %\end{tabular}
-%\end{table}
-
-
-
+\clearpage
 \subsubsection{Gradients vs torsional angles}
 
 \begin{align}
@@ -355,9 +342,6 @@ For $a=2,\ldots,N-2$
   \nn\GG{N-1}=&\Gk(\phi_{N-2})+\Gl(\phi_{N-3})\\
   \GG{N}=&\Gl(\phi_{N-2})
 \end{align}
-
-
-
 
 \subsubsection{Gradients for the BLN model}
 

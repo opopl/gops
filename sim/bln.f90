@@ -99,7 +99,8 @@ include bln.vars.inc.f90
 
         DO I = 1, N-2
            XPD_2(I) = DPD(I,1)*DPD(I+1,1)-DPD(I,2)**2 
-           LEN_XPD(I)=SQRT(XPD_2(I))
+           XPD(I)=SQRT(XPD_2(I))
+           !XPD
         ENDDO
 ! }}}
 ! BOND ANGLES: ANG(I,1), I=2,...,N-1 {{{

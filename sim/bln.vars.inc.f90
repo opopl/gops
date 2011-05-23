@@ -33,10 +33,10 @@
         ! cross products:
         !
         ! XPD_2 - squared cross product 
-        ! LEN_XPD - length of cross product 
-        ! XPD - cross product vector
-        DOUBLE PRECISION, DIMENSION(N-1) :: XPD_2, LEN_XPD
-        DOUBLE PRECISION, DIMENSION(N-1,3) :: XPD        
+        ! XPD - length of cross product 
+        ! VXPD - cross product vector
+        DOUBLE PRECISION, DIMENSION(N-1) :: XPD_2, XPD
+        DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD        
         ! inverse cross products
         DOUBLE PRECISION, DIMENSION(N) :: IXPD
         ! bond vectors lengths
