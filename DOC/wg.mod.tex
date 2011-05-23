@@ -179,6 +179,15 @@ $(N-3,3)$	& $-\rr_N\rr_{N-3}+\rr_N\rr_{N-2}$
   \end{tabular}
 \end{table}
 
+and the radius-vector length $r_i\equiv|\v{r}_i|,\ i=1,\ldots,N$. 
+In what follows, we will need here the derivatives 
+of $\DPD(i,j)$ with respect to the radius-vectors $\rr_i,\quad i=1,\ldots,N$.
+\begin{align}
+  \frac{\partial\DPD(i,1)}{\partial \rr_i}&=2(\rr_i-\rr_{i+1})=2\bb_i\\
+  \frac{\partial\DPD(i,1)}{\partial \rr_{i+1}}&=-2\bb_i\\
+  \frac{\partial\DPD(i,2)}{\partial \rr_i}&=2(\rr_i-\rr_{i+1})=2\bb_i\\
+\end{align}
+
 \subsubsection{Bond angles}
 
 \begin{equation}
@@ -200,6 +209,18 @@ with
   \v{n}_{i}=\frac{(\bb_{i}\times\bb_{i+1})}{P_x(i)},
 \end{equation}
 where $\XPD(i)\equiv|(\bb_i\times\bb_{i+1})|$.
+
+\paragraph{Torsional angles}
+
+Torsional angle $\phi$ is defined through the dot-product of two normal vectors,
+\begin{equation}
+  \cos\phi_{i+1}=-(\v{n}_i,\v{n}_{i+1}),\quad i=1,\ldots,N-3
+\end{equation}
+with
+\begin{equation}
+  \v{n}_i=\frac{(\bb_i\times\bb_{i+1})}{P_x(i,2)},\qquad
+  \v{n}_{i+1}=\frac{(\bb_{i+1}\times\bb_{i+2})}{P_x(i+1,2)}
+\end{equation}
 Then,
 \begin{align}
 \nn&((\bb_i\times\bb_{i+1}),(\bb_{i+1}\times\bb_{i+2}))=
@@ -210,10 +231,10 @@ Then,
 \end{align}
 Thus
 \begin{equation}
-  %\cos\phi_{i+1}=\frac{\DPD(i,2)\DPD(i+1,2)-\DPD(i+1,1)\DPD(i,3)}{\XPD(i)\XPD(i+1)},
-  %\quad\ i=1,\ldots,N-3.
   \cos\phi_{i}=\frac{\DPD(i,2)\DPD(i-1,2)-\DPD(i,1)\DPD(i-1,3)}{\XPD(i)\XPD(i-1)},
   \quad\ i=2,\ldots,N-2.
+  %\cos\phi_{i+1}=\frac{\DPD(i,2)\DPD(i+1,2)-\DPD(i+1,1)\DPD(i,3)}{\XPD(i)\XPD(i+1)},
+  %\quad\ i=1,\ldots,N-3.
   \label{bln-def-tangle}
 \end{equation}
 It is possible to obtain $\XPD$ through $\DPD$:
@@ -232,7 +253,7 @@ Then the product $\XPD(i)\XPD(i+1)$ is expanded as
   &-\DPD(i+1,1)\DPD(i+2,1)\DPD(i,2)^2
 \end{align}
 Thus, $\XPD(i-2),\XPD(i-1)$ and $\XPD(i)$ depend on $\rr_i$, 
-whereas $\XPD(i+j),\ j\ge\ 1$ does not. 
+whereas $\XPD(i+j),\ j\ge\ 1$ do not. 
 Also, $\phi_{i-1},\ \phi_i,\ \phi_{i+1}$ depends on $\rr_i$. 
 \begin{table}
   \centering

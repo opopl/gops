@@ -48,8 +48,10 @@
         DOUBLE PRECISION, DIMENSION(N,3) :: FBA, FNB, FTA, F
         
         ! type of BLN potential
+        !
         !       GO   Go-like
         !       WT   Wild-type
+        !
 
         CHARACTER(LEN=*) :: PTYPE
         INTEGER NTYPE(N), I, J, JMAX, K, KMAX, ICOUNT
@@ -89,6 +91,7 @@
                 ! 2 => bonded 
                 ! 3 => bond angles 
                 ! 4 => torsional angles
+
         DOUBLE PRECISION, DIMENSION(4) :: E
         
         LOGICAL GTEST, STEST
@@ -101,15 +104,17 @@
         ! 
         !       F       => total gradient
         !       FNB     => non-bonded
-        !       FB     =>  bonded
+        !       FB      => bonded
         !       FBA     => bond angles
         !       FTA     => torsional angles
         !
         DOUBLE PRECISION, DIMENSION(N,3) :: F, FNB, FB, FBA, FTA
         DOUBLE PRECISION RAD7, RAD14, DF, RVAR, DEN, RNUM, DEN1, A1, A2, DEN2
         DOUBLE PRECISION A3, COEF, COEF1, COEF2, COEF3, A4
+        ! old vars
+        double precision, dimension(n): fba_x,fba_y,fba_z 
 
         S(1)=SIGMA
         S(6)=S(1)**6 
         S(12)=S(6)**2
-
+        
