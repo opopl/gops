@@ -48,7 +48,8 @@
         !
         ! XPD_2 - squared cross product 
         ! XPD - length of cross product 
-        ! VXPD - cross product vector/XPD_2
+        ! VXPD - cross product vector
+        ! HVXPD - cross product direction
         DOUBLE PRECISION, DIMENSION(N-1) :: XPD_2, XPD
         DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD, HVXPD, pp
         ! inverse cross products
@@ -83,7 +84,7 @@
 
         ! Hessian - (N,N) matrix of second-order derivatives
 
-        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(N,N) :: HESS
+        DOUBLE PRECISION, DIMENSION(N,N) :: HESS
 
         DOUBLE PRECISION E_NBOND, E_BOND, E_BANGLE, E_TANGLE, RAD6
         DOUBLE PRECISION RMASS, SIGMA, EPSILON, DELTA
