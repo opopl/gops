@@ -248,11 +248,11 @@ Then the product $\XPD(i)\XPD(i+1)$ is expanded as
 
 We will also need \cite{Bekker95}
 \begin{align}
-  \Gi\quad=&\quad \frac{dV(\phi)}{d\phi}r_{kj}\frac{\v{m}}{|\v{m}|^2}\\
-  \Gl\quad=&\quad-\frac{dV(\phi)}{d\phi}r_{kj}\frac{\v{n}}{|\v{n}|^2}\\
+  \label{Bekker-Gi}\Gi\quad=&\quad \frac{dV(\phi)}{d\phi}r_{kj}\frac{\v{m}}{|\v{m}|^2}\\
+  \label{Bekker-Gl}\Gl\quad=&\quad-\frac{dV(\phi)}{d\phi}r_{kj}\frac{\v{n}}{|\v{n}|^2}\\
 \Gj\quad=&\quad-\Gi +\left(\frac{\v{r}_{ij}\cdot{\v{r}_{kj}}}{r_{kj}^2}\right)\Gi
   -\left(\frac{\v{r}_{kl}\cdot{\v{r}_{kj}}}{r_{kj}^2}\right)\Gl\\
-  \Gk\quad=&\quad-\Gl
+  \label{Bekker-Gk}\Gk\quad=&\quad-\Gl
   -\left(\frac{\v{r}_{ij}\cdot{\v{r}_{kj}}}{r_{kj}^2}\right)\Gi
   +\left(\frac{\v{r}_{kl}\cdot{\v{r}_{kj}}}{r_{kj}^2}\right)\Gl\\
 \v{m}\quad\equiv&\quad\v{r}_{ij}\times\v{r}_{kj}\\
@@ -285,16 +285,32 @@ $\phi_{N-2}$	& $\bb_{N-3}$	& $-\bb_{N-2}$	& $\bb_{N-1}$		\\
 
 For $a=2,\ldots,N-2$
 \begin{align}
+  \label{my-Gi}
   \Gi(\phi_a)&=-\HVXPD(a-1)\frac{b_{a}}{\XPD(a-1)}  \\
+  \label{my-Gl}
   \Gl(\phi_a)&=\HVXPD(a)\frac{b_{a}}{\XPD(a)} \\
-  \Gj(\phi_a)&=-\HVXPD(a-1)\frac{b_{a}}{\XPD(a-1)}
+  \nn\Gj(\phi_a)&=-\HVXPD(a-1)\frac{b_{a}}{\XPD(a-1)}
   \left(-1+\frac{\DPD(a-1,2)}{b_a^2}\right)\\
-  &+\frac{\DPD(a,2)}{b_a^2}\Gl(\phi_a)\\
-  &=\HVXPD(a-1)\frac{b_{a}}{\XPD(a-1)}\left(1-\frac{\DPD(a-1,2)}{b_a^2}\right)\\
-  &+\HVXPD(a)\frac{\DPD(a,2)}{b_a\XPD(a)}\\
-  \Gk(\phi_a)&=\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}+\left(1-\frac{\DPD(a,2)}{b_a^2}\right)\Gl(\phi_a)\\
-  &=\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}+
-  \HVXPD(a)\frac{b_{a}}{\XPD(a)}\left(1-\frac{\DPD(a,2)}{b_a^2}\right)
+  \nn&+\frac{\DPD(a,2)}{b_a^2}\Gl(\phi_a)\\
+  \label{my-Gj}
+  &=\HVXPD(a-1)\frac{b_{a}}{\XPD(a-1)}\left(1-\frac{\DPD(a-1,2)}{b_a^2}\right)
+  +\HVXPD(a)\frac{\DPD(a,2)}{b_a\XPD(a)}\\
+  \nn\Gk(\phi_a)&=\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}-\left(1+\frac{\DPD(a,2)}{b_a^2}\right)\Gl(\phi_a)\\
+  \label{my-Gk}
+  &=\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}-
+  \HVXPD(a)\frac{b_{a}}{\XPD(a)}\left(1+\frac{\DPD(a,2)}{b_a^2}\right)
+\end{align}
+
+\subsubsection{Gradient sum rule}
+Let us check that the sum rule is satisfied:
+\begin{equation}
+  \Gi(\phi_a)+\Gj(\phi_a)+\Gl(\phi_a)+\Gk(\phi_a)=0
+\end{equation}
+\begin{align}
+\Gi(\phi_a)+\Gj(\phi_a)&=\HVXPD(a)\frac{\DPD(a,2)}{b_a\XPD(a)}-
+\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}\\
+\Gl(\phi_a)+\Gk(\phi_a)&=-\HVXPD(a)\frac{\DPD(a,2)}{b_a\XPD(a)}+
+\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}
 \end{align}
 
 \clearpage
@@ -306,7 +322,7 @@ For $a=2,\ldots,N-2$
   \nn\GG{3}=&\Gi(\phi_4)+\Gj(\phi_3)+\Gk(\phi_2)\\
   \nn\GG{4}=&\Gi(\phi_5)+\Gj(\phi_4)+\Gk(\phi_3)+\Gl(\phi_2)\\
   \nn\ldots\\
-  \nn\GG{i}=&\Gi(\phi_{i+1})+\Gj(\phi_i)+\Gk(\phi_{i-1})+\Gl(\phi_{i-2}),\quad i=4,\ldots,N-3\\
+  \nn\GG{a}=&\Gi(\phi_{a+1})+\Gj(\phi_a)+\Gk(\phi_{a-1})+\Gl(\phi_{a-2}),\quad a=4,\ldots,N-3\\
   \nn\ldots\\
   \nn\GG{N-3}=&\Gi(\phi_{N-2})+\Gj(\phi_{N-3})+\Gk(\phi_{N-4})+\Gl(\phi_{N-5})\\
   \nn\GG{N-2}=&\Gj(\phi_{N-2})+\Gk(\phi_{N-3})+\Gl(\phi_{N-4})\\
@@ -316,20 +332,87 @@ For $a=2,\ldots,N-2$
 
 \subsubsection{Gradients for the BLN model}
 
-For $V(\phi)=A(1+\cos\phi)+B(1+\cos{3\phi})$, this yields:
-\begin{itemize}
-\item $i=1$ 
+We will denote $f_a\equiv dV(\phi)/d\phi|_{\phi=\phi_a}$.
+
+%For $V(\phi)=A(1+\cos\phi)+B(1+\cos{3\phi})$, this yields:
+\paragraph{$a=1$}
 \begin{align}
-  \nn\GG{1}=& -(-A\sin\phi_2-3B\sin{3\phi_2})
-  b_2\frac{\bb_1\times\bb_2}{|\bb_1\times\bb_2|^2}\\
-  =&\quad\VXPD(1)\frac{b_2(A\sin\phi_2+3B\sin(3\phi_2))}{\XPD(1)^2}
+  \nn\GG{1}&=-f_2\HVXPD(1)\frac{b_2}{\XPD(1)}\\
+	&=-\pp_1f_2b_2
 \end{align}
-\item $i=2$. We have
+\paragraph{$a=2$} 
   \begin{align}
-    \Gi(\phi_3)&=\quad\VXPD(2)\frac{b_3(A\sin\phi_3+3B\sin(3\phi_3))}{\XPD(2)^2}\\
-    \Gj(\phi_2)&=\quad -\Gi(\phi_2)+
+    \nn\GG{2}&=-f_3\HVXPD(2)\frac{b_3}{\XPD(2)}+\HVXPD(1)f_2\frac{b_2}{\XPD(1)}
+    \left(1-\frac{\DPD(1,2)}{b_2^2}\right)+
+    f_2\HVXPD(2)\frac{\DPD(2,2)}{b_2\XPD(2)}\\
+    \nn&=\HVXPD(2)\left(\frac{f_2\DPD(2,2)}{b_2\XPD(2)}-\frac{f_3b_3}{\XPD(2)}\right)
+    +\HVXPD(1)\frac{f_2b_2}{\XPD(1)}\left(1-\frac{\DPD(1,2)}{b_2^2}\right)\\
+    &=\pp_2\left[ -f_3b_3+\DPD(2,2)\frac{f_2}{b_2}\right]\\
+    &+\pp_1\left[f_2b_2-\DPD(1,2)\frac{f_2}{b_2}\right]
   \end{align}
-\end{itemize}
+\paragraph{$a=3$}
+  \begin{align}
+    \nn\GG{3}&=
+    \HVXPD(3)\left(\frac{f_3\DPD(3,2)}{b_3\XPD(3)}-\frac{f_4b_4}{\XPD(3)}\right)
+    +\HVXPD(2)\frac{f_3b_3}{\XPD(2)}\left(1-\frac{\DPD(2,2)}{b_3^2}\right)\\
+    &+\HVXPD(1)\frac{f_2\DPD(1,2)}{b_2\XPD(1)}
+    -\HVXPD(2)\frac{f_2b_{2}}{\XPD(2)}\left(1+\frac{\DPD(2,2)}{b_2^2}\right)\\
+    &= \pp_3
+    \left(\frac{f_3\DPD(3,2)}{b_3}-f_4b_4\right)\\
+    &+\pp_2\left[b_3f_3-b_2f_2-
+    \DPD(2,2)\left(\frac{f_3}{b_3}+\frac{f_2}{b_2}\right)\right]\\
+    &+\pp_1\frac{f_2\DPD(1,2)}{b_2},
+  \end{align}
+  where
+  \begin{equation}
+    \pp_a\equiv\frac{\VXPD(a)}{\XPD(a)^2},\quad a=1,\ldots,N-2
+  \end{equation}
+
+\paragraph{General formula for $a$}. 
+
+We will need the formula for $\Gl$, \eqref{my-Gl}
+  \begin{align}
+    %\nn\GG{a}&=\GG{a-1}+\Gl(\phi_{a-2})-\Gl(\phi_{a-3})
+    \nn\Gl(\phi_{a-2})=\pp_{a-2}b_{a-2}
+\end{align}
+so the general formula for all $a\in[1,N]$ reads
+\begin{align}
+  \GG{a}&=
+  \pp_a
+    \left(\DPD(a,2)\frac{f_a}{b_a}-f_{a+1}b_{a+1}\right)\\
+    &+\pp_{a-1}\left[b_{a}f_a-b_{a-1}f_{a-1}-
+    \DPD({a-1},2)\left(\frac{f_a}{b_a}+\frac{f_{a-1}}{b_{a-1}}\right)\right]\\
+    &+\pp_{a-2}\left[\DPD(a-2,2)\frac{f_{a-1}}{b_{a-1}}+f_{a-2}b_{a-2}\right],
+\end{align}
+with an additional convention that $f_{-1}=f_0=f_1=f_{N-1}=f_N=0$.
+From this, we infer the gradients for the remaining cases $a=N-2,\ N-1,\ N$.
+
+\paragraph{$a=N-2$}
+
+  \begin{align}
+    \nn\GG{N-2}&=
+    \pp_{N-2}
+    \DPD(N-2,2)\frac{f_{N-2}}{b_{N-2}}\\
+    &+\pp_{N-3}\left[b_{N-2}f_{N-2}-b_{N-3}f_{N-3}-
+    \DPD(N-3,2)\left(\frac{f_{N-2}}{b_{N-2}}+\frac{f_{N-3}}{b_{N-3}}\right)\right]\\
+    &+\pp_{N-4}\left(\DPD(N-4,2)\frac{f_{N-3}}{b_{N-3}}+f_{N-4}b_{N-4}\right),
+  \end{align}
+
+\paragraph{$a=N-1$}
+
+  \begin{align}
+    \nn\GG{N-1}&=
+    \pp_{N-2}\left[-b_{N-2}f_{N-2}-
+    \DPD(N-2,2)\left(\frac{f_{N-2}}{b_{N-2}}\right)\right]\\
+    &+\pp_{N-3}\left(\DPD(N-3,2)\frac{f_{N-2}}{b_{N-2}}+f_{N-3}b_{N-3}\right),
+  \end{align}
+
+\paragraph{$a=N$}
+ \begin{align}
+    \nn\GG{N}&=
+    \pp_{N-2}f_{N-2}b_{N-2},
+  \end{align}
+
 
 \subsection{Determination of the global minimum}
 

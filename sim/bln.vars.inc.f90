@@ -29,23 +29,45 @@
         ! 1 => bond angles
         ! 2 => torsion (dihedral) angles
         DOUBLE PRECISION, DIMENSION(N,2) :: ANG 
+        ! F => d(potential)/d(angle)
+        ! a - index variable
+        integer a
+        DOUBLE PRECISION, DIMENSION(-1:N+1,2) :: F
+        ! ==============================
+        ! for torsional angles:
+        ! 
+        ! FB(:,1) => F*B
+        ! FB(:,2) => F/B
+        ! 
+        ! ==============================
+        DOUBLE PRECISION, DIMENSION(N,2) :: FB
+        ! AN temporary angle variable
+        DOUBLE PRECISION ::     AN
         ! 
         ! cross products:
         !
         ! XPD_2 - squared cross product 
         ! XPD - length of cross product 
-        ! VXPD - cross product vector
+        ! VXPD - cross product vector/XPD_2
         DOUBLE PRECISION, DIMENSION(N-1) :: XPD_2, XPD
-        DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD, HVXPD        
+        DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD, HVXPD, pp
         ! inverse cross products
         DOUBLE PRECISION, DIMENSION(N) :: IXPD
-        ! bond vectors lengths
-        DOUBLE PRECISION, DIMENSION(N) :: LEN_BVR
+        ! B(:) =>  bond vectors lengths
+        DOUBLE PRECISION, DIMENSION(N) :: B
         ! bond vectors, BVR_i => DR(i,i+1) => R_{i+1}-R_i 
-        DOUBLE PRECISION, DIMENSION(N-1) :: BVR
+        DOUBLE PRECISION, DIMENSION(N-1,3) :: BVR
 
-        DOUBLE PRECISION, DIMENSION(N-1,3) :: DPD
-        DOUBLE PRECISION, DIMENSION(N,3) :: FBA, FNB, FTA, F
+        DOUBLE PRECISION, DIMENSION(N-1) :: DPD
+        ! G, GNB, GB, GBA, GTA: vectors used in the gradient calculations
+        ! 
+        !       G       => total gradient
+        !       GNB     => non-bonded
+        !       GB      => bonded
+        !       GBA     => bond angles
+        !       GTA     => torsional angles
+        !
+        DOUBLE PRECISION, DIMENSION(N,3) :: GBA, GNB, GTA, G
         
         ! type of BLN potential
         !
@@ -57,7 +79,7 @@
         INTEGER NTYPE(N), I, J, JMAX, K, KMAX, ICOUNT
         DOUBLE PRECISION RK_R, RK_THETA
 
-        DOUBLE PRECISION COS_PHI, COS_THETA, DUMMY, DUMMY2
+        DOUBLE PRECISION COS_PHI, COS_THETA
 
         ! Hessian - (N,N) matrix of second-order derivatives
 
@@ -67,7 +89,7 @@
         DOUBLE PRECISION RMASS, SIGMA, EPSILON, DELTA
         DOUBLE PRECISION THETA_0
 
-        DOUBLE PRECISION GRAD(3*N)
+        DOUBLE PRECISION, DIMENSION(3*N) :: GRAD,GRADIENT
       
         ! LJREP => repulsion
         ! LJATT => attraction
@@ -84,9 +106,6 @@
 
         DOUBLE PRECISION, DIMENSION(15) :: RAD, S   
 
-        DOUBLE PRECISION  A4, COEF, COEF1, COEF2, COEF3, A3, DEN2, A2, A1, &
-                DEN1, RNUM, DEN, RVAR, FRR(3), DF, RAD(15), S(15)
-
                 ! 1 => non-bonded  
                 ! 2 => bonded 
                 ! 3 => bond angles 
@@ -100,19 +119,6 @@
         INTEGER J1,J2
 
         DOUBLE PRECISION FQ_PLUS(3*N), FQ_MINUS(3*N)
-        ! F, FNB, FB, FBA, FTA: vectors used in the gradient calculations
-        ! 
-        !       F       => total gradient
-        !       FNB     => non-bonded
-        !       FB      => bonded
-        !       FBA     => bond angles
-        !       FTA     => torsional angles
-        !
-        DOUBLE PRECISION, DIMENSION(N,3) :: F, FNB, FB, FBA, FTA
-        DOUBLE PRECISION RAD7, RAD14, DF, RVAR, DEN, RNUM, DEN1, A1, A2, DEN2
-        DOUBLE PRECISION A3, COEF, COEF1, COEF2, COEF3, A4
-        ! old vars
-        double precision, dimension(n): fba_x,fba_y,fba_z 
 
         S(1)=SIGMA
         S(6)=S(1)**6 
