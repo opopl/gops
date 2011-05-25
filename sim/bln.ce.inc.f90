@@ -14,7 +14,7 @@
 ! bonded: E(2) {{{
 
         DO I = 1, N-1
-          E(2) = E(2) + 0.5*RK_R*(LEN_BVR(I)-SIGMA)**2
+          E(2) = E(2) + 0.5*RK_R*(B(I)-SIGMA)**2
         ENDDO
 ! }}}
 ! bond angles: E(3) {{{
