@@ -57,10 +57,10 @@
         ! B(:) =>  bond vectors lengths
         DOUBLE PRECISION, DIMENSION(N) :: B
         ! bond vectors, BVR_i => DR(i,i+1) => R_{i+1}-R_i 
-        DOUBLE PRECISION, DIMENSION(N-1,3) :: BVR
+        DOUBLE PRECISION, DIMENSION(N-1,3) :: BVR, EB
 
         DOUBLE PRECISION, DIMENSION(N-1) :: DPD
-        ! G, GNB, GB, GBA, GTA: vectors used in the gradient calculations
+        ! G, GNB, GB, GBA, GTA: vectors representing gradients of different kinds
         ! 
         !       G       => total gradient
         !       GNB     => non-bonded
@@ -68,8 +68,9 @@
         !       GBA     => bond angles
         !       GTA     => torsional angles
         !
-        DOUBLE PRECISION, DIMENSION(N,3) :: GBA, GNB, GTA, G
-        
+        DOUBLE PRECISION, DIMENSION(N,3) :: GBA, GNB, GTA, G, 
+        DOUBLE PRECISION, DIMENSION(N,3) :: GTA_I, GTA_J, GTA_K, GTA_L
+        DOUBLE PRECISION, DIMENSION(N,3) :: GBA_I, GBA_J, GBA_K
         ! type of BLN potential
         !
         !       GO   Go-like

@@ -23,10 +23,11 @@
 
       DO I = 1, N-1
         B(I)= SUM(BVR(I,1:3)**2)
+        EB(I,1:3)=BVR(I,1:3)/B(I)
         DPD(I)= SUM(BVR(I,1:3)*BVR(I+1,1:3))
       ENDDO
 ! }}}
-! Squared cross-products between adjacent bond vectors i and i+1: XPD_2 {{{
+! Cross-products between adjacent bond vectors i and i+1 {{{
 
         DO I = 1, N-2
            XPD_2(I) = B(I)*B(I+1)-DPD(I)**2 
@@ -41,9 +42,10 @@
 ! }}}
 ! BOND ANGLES: ANG(I,1), I=2,...,N-1 {{{
 
-        DO I = 1, N-2
-            COS_THETA=-DPD(I,2)/(B(I)*B(I+1))
-            ANG(I+1,1) = ACOS(COS_THETA)
+        DO I = 2, N-1
+            COS_THETA=-DPD(I-1)/(B(I-1)*B(I))
+            ANG(I,1) = ACOS(COS_THETA)
+            F(I,1)=2.0D0*RK_THETA*(ANG(I,1)-THETA_0)
         ENDDO
 ! }}}
 ! TORSIONAL ANGLES: ANG(I,2), I=2,...,N-2 {{{
