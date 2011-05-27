@@ -5,7 +5,7 @@
         INTEGER, INTENT(IN) :: N
 
         ! input vector of coordinates
-        DOUBLE PRECISION, DIMENSION(3*N) :: QO, FQ
+        !DOUBLE PRECISION, DIMENSION(N,3) :: QO, FQ
         
         ! calculate the gradient if GRADT=.TRUE.
         ! calculate the Hessian if HESST=.TRUE. 
@@ -58,13 +58,13 @@
         DOUBLE PRECISION, DIMENSION(N-1) :: DPD
         ! G, GNB, GB, GBA, GTA: vectors representing gradients of different kinds
         ! 
-        !       G       => total gradient
+        !       GRAD    => total gradient
         !       GNB     => non-bonded
         !       GB      => bonded
         !       GBA     => bond angles
         !       GTA     => torsional angles
         !
-        DOUBLE PRECISION, DIMENSION(N,3) :: GBA, GNB, GTA, G, GB 
+        DOUBLE PRECISION, DIMENSION(N,3) :: GBA, GNB, GTA, GB 
         DOUBLE PRECISION, DIMENSION(N,3) :: GTA_I, GTA_J, GTA_K, GTA_L
         DOUBLE PRECISION, DIMENSION(N,3) :: GBA_I, GBA_J, GBA_K
         DOUBLE PRECISION ::     DF, FRR(3)
@@ -83,10 +83,12 @@
         ! Hessian - (N,N) matrix of second-order derivatives
 
         DOUBLE PRECISION, DIMENSION(N,N) :: HESS
+        ! IK,JK,KJ,KI - used for Hessian calculation
+        DOUBLE PRECISION ::     IK,JK,KI,KJ,IH,JH,KH
 
         DOUBLE PRECISION RMASS, SIGMA, EPSILON, DELTA, THETA_0
 
-        DOUBLE PRECISION, DIMENSION(3*N) :: GRAD, GRADIENT
+        DOUBLE PRECISION, DIMENSION(N,3) :: GRAD, GRADIENT
       
         ! LJREP => repulsion
         ! LJATT => attraction
@@ -115,7 +117,7 @@
 
         INTEGER J1,J2
 
-        DOUBLE PRECISION FQ_PLUS(3*N), FQ_MINUS(3*N)
+        DOUBLE PRECISION GRAD_MIN(N,3), GRAD_PLUS(N,3)
 
         S(1)=SIGMA
         S(6)=S(1)**6 

@@ -36,10 +36,7 @@
       ENDIF
 
       QDONE=0
-
-      DO I=1,3*NATOMS
-         P(I)=COORDS(I)
-      ENDDO
+      P=COORDS
 
       COMPON=.FALSE.
 

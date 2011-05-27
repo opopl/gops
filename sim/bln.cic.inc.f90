@@ -1,12 +1,4 @@
 
-! QO => R{{{
-        DO I = 1, N
-          J = (I-1)*3
-          DO K=1,3
-            R(I,K) = QO(J+K)
-          ENDDO
-        ENDDO
-! }}}
 ! INTER-PARTICLE DISTANCES: DR, LEN_DR; BOND VECTORS: BVR {{{
 
         DO I = 1, N-1
@@ -59,8 +51,5 @@
             FB(I,1)=F(I,2)*B(I)
             FB(I,2)=F(I,2)/B(I)
         ENDDO
-
-        F(-1:1,1:2)=0.0D0
-        F(N+1,1:2)=0.0D0
 ! }}}
 

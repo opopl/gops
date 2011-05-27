@@ -18,7 +18,7 @@
 !
 ! }}}
 !------------------------------------------------------------
-        SUBROUTINE EBLN(N,QO,GRADIENT,ENERGY,HESS,PTYPE,GRADT,HESST)
+        SUBROUTINE EBLN(N,R,GRADIENT,ENERGY,HESS,PTYPE,GRADT,HESST)
 ! {{{
 
 include bln.vars.inc.f90        ! variables
@@ -33,7 +33,6 @@ include bln.hess.inc.f90        ! calculate Hessian
 
         RETURN
         END
-! }}}
 ! }}} 
 
         ENDMODULE

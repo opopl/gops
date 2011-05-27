@@ -88,9 +88,9 @@
       !
       ! }}}
       ! ====================================
-      ! subroutine parameters 
+      ! subroutine parameters  {{{
       INTEGER, INTENT(IN) :: N,M
-      DOUBLE PRECISION, INTENT(INOUT) XCOORDS(3*NATOMS)
+      DOUBLE PRECISION, INTENT(INOUT) XCOORDS(NATOMS,3)
       LOGICAL,INTENT(IN) :: DIAGCO
       DOUBLE PRECISION,INTENT(IN) :: EPS
       LOGICAL,INTENT(OUT) :: MFLAG
@@ -98,8 +98,10 @@
       INTEGER,INTENT(IN) :: ITMAX
       INTEGER,INTENT(OUT) :: ITDONE
       LOGICAL,INTENT(IN) RESET
+      ! }}}
 
-      ! local parameters 
+      ! local parameters {{{
+
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W
       INTEGER ITER
       SAVE W,DIAG,ITER
@@ -126,6 +128,7 @@
       COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
       COMMON /EV/ EVAP, EVAPREJECT
       SAVE POINT, ISPT, IYPT, NPT
+      !   }}}
 
       IF (.NOT.ALLOCATED(DIAG)) ALLOCATE(DIAG(N))       ! SAVE doesn't work otherwise for Sun
       IF (.NOT.ALLOCATED(W)) ALLOCATE(W(N*(2*M+1)+2*M)) ! SAVE doesn't work otherwise for Sun
@@ -136,27 +139,27 @@
       CALL POTENTIAL(XCOORDS,GRAD,ENERGY,.TRUE.,.FALSE.)
       POTEL=ENERGY
 
-      IF (DEBUG) WRITE(LOG_FH,101) ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
+      IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
 101   FORMAT(A,F20.10,G20.10,A,I6,A)
 102   FORMAT(A,I10,A,I10,A)
 
 C  Termination test. 
 C
-10    CALL FLUSH(LOG_FH)
+10    CALL FLUSH(LFH)
       MFLAG=.FALSE.
       IF (RMS.LE.EPS) THEN
         MFLAG=.TRUE.
         IF (EVAP) MFLAG=.FALSE. ! do not allow convergence if we happen to have a small RMS and EVAP is true'
          IF (MFLAG) THEN
             FIXIMAGE=.FALSE.
-            IF (DEBUG) WRITE(LOG_FH,101) ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
+            IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
             RETURN
          ENDIF
       ENDIF
 
       IF (ITDONE.EQ.ITMAX) THEN
          IF (DEBUG) FIXIMAGE=.FALSE.
-         IF (DEBUG) WRITE(LOG_FH,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
+         IF (DEBUG) WRITE(LFH,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
          RETURN
       ENDIF
 
@@ -165,10 +168,10 @@ C
          POINT=0
          MFLAG=.FALSE.
          IF (DIAGCO) THEN
-            WRITE(LOG_FH,'(A)') 'using estimate of the inverse diagonal elements'
+            WRITE(LFH,'(A)') 'using estimate of the inverse diagonal elements'
             DO J1=1,N
                IF (DIAG(J1).LE.0.0D0) THEN
-                  WRITE(LOG_FH,235) J1
+                  WRITE(LFH,235) J1
  235              FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',/,
      1                   ' INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE')
                   STOP
@@ -217,11 +220,11 @@ C
          IF (.NOT.DIAGCO) THEN
             YY= DDOT(N,W(IYPT+NPT+1),1,W(IYPT+NPT+1),1)
             IF (YY.EQ.0.0D0) THEN
-               WRITE(LOG_FH,'(A)') 'WARNING, resetting YY to one in mylbfgs'
+               WRITE(LFH,'(A)') 'WARNING, resetting YY to one in mylbfgs'
                YY=1.0D0
             ENDIF
             IF (YS.EQ.0.0D0) THEN
-               WRITE(LOG_FH,'(A)') 'WARNING, resetting YS to one in mylbfgs'
+               WRITE(LFH,'(A)') 'WARNING, resetting YS to one in mylbfgs'
                YS=1.0D0
             ENDIF
 C           WRITE(*,'(A,2F20.10)') 'YS/YY,STP=',YS/YY,STP
@@ -230,10 +233,10 @@ C              DIAG(J1)= ABS(YS/YY) ! messes up after step reversals!
                DIAG(J1)= YS/YY
             ENDDO
          ELSE
-            WRITE(LOG_FH,'(A)') 'using estimate of the inverse diagonal elements'
+            WRITE(LFH,'(A)') 'using estimate of the inverse diagonal elements'
             DO J1=1,N
                IF (DIAG(J1).LE.0.0D0) THEN
-                  WRITE(LOG_FH,235) J1
+                  WRITE(LFH,235) J1
                   STOP
                ENDIF
             ENDDO
@@ -306,7 +309,7 @@ C
                    OVERLAP=DDOT(N,GRAD,1,WTEMP,1)/(DOT1*DOT2)
       ENDIF
       IF (OVERLAP.GT.0.0D0) THEN
-         IF (DEBUG) WRITE(LOG_FH,'(A)') 'Search direction has positive projection onto gradient - reversing step'
+         IF (DEBUG) WRITE(LFH,'(A)') 'Search direction has positive projection onto gradient - reversing step'
          DO J1=1,N
             W(ISPT+POINT*N+J1)= -W(J1)  !!! DJW, reverses step
          ENDDO
@@ -344,7 +347,7 @@ C
          SMINKCURRENT=MIN(SMINKCURRENT+SMINKINC,SMINK)
          IF (SMINKCURRENT.NE.SMINKCURRENTP) SMINKCHANGET=.TRUE.
 ! a bit of useful debug printing         
-        IF (DEBUG) WRITE(LOG_FH,'(A,2F20.10,L5)') 'SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET=',SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET
+        IF (DEBUG) WRITE(LFH,'(A,2F20.10,L5)') 'SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET=',SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET
       ENDIF
 
       CALL POTENTIAL(XCOORDS,GNEW,ENEW,.TRUE.,.FALSE.)
@@ -356,7 +359,7 @@ C
          DO J1=1,3*NATOMS
             GRAD(J1)=GNEW(J1)
          ENDDO
-         IF (DEBUG) WRITE(LOG_FH,'(A,F20.10,G20.10,A,I6,A,F13.10)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,
+         IF (DEBUG) WRITE(LFH,'(A,F20.10,G20.10,A,I6,A,F13.10)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,
      1           ' LBFGS steps, step:',STP*SLENGTH
 
 C  May want to prevent the PE from falling too much if we are trying to visit all the
@@ -368,7 +371,7 @@ C  Energy decreased too much - try again with a smaller step size
 C
          IF (NDECREASE.GT.5) THEN
             NFAIL=NFAIL+1
-            WRITE(LOG_FH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find an energy in the required range, NFAIL=',NFAIL
+            WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find an energy in the required range, NFAIL=',NFAIL
       !
 ! Resetting to XSAVE should be the same as subtracting the step. 
 ! If we have tried PROJI with Thomson then the projection is non-linear
@@ -379,7 +382,7 @@ C
 
             ITER=0   !  try resetting
             IF (NFAIL.GT.20) THEN
-               WRITE(LOG_FH,'(A)') ' Too many failures - giving up '
+               WRITE(LFH,'(A)') ' Too many failures - giving up '
                FIXIMAGE=.FALSE.
                RETURN
             ENDIF
@@ -398,7 +401,7 @@ C
          ENDIF
          STP=STP/2.0D0
          NDECREASE=NDECREASE+1
-         IF (DEBUG) WRITE(LOG_FH,'(A,F19.10,A,F16.10,A,F15.8)') 
+         IF (DEBUG) WRITE(LFH,'(A,F19.10,A,F16.10,A,F15.8)') 
      1                      ' energy decreased too much from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
          
          FIXIMAGE=.TRUE.
@@ -409,7 +412,7 @@ C  Energy increased - try again with a smaller step size
 C
          IF (NDECREASE.GT.10) THEN ! DJW
             NFAIL=NFAIL+1
-            WRITE(LOG_FH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find a lower energy, NFAIL=',NFAIL
+            WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find a lower energy, NFAIL=',NFAIL
             !
 ! Resetting to XSAVE should be the same as subtracting the step. 
 ! If we have tried PROJI with Thomson then the projection is non-linear
@@ -423,7 +426,7 @@ C
 !              ENDDO
             ITER=0   !  try resetting
              IF (NFAIL.GT.5) THEN         
-               WRITE(LOG_FH,'(A)') ' Too many failures - giving up '
+               WRITE(LFH,'(A)') ' Too many failures - giving up '
                FIXIMAGE=.FALSE.
 !              STOP
 !              IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
@@ -444,7 +447,7 @@ C
          ENDIF
          STP=STP/1.0D1
          NDECREASE=NDECREASE+1
-         IF (DEBUG) WRITE(LOG_FH,'(A,F20.10,A,F20.10,A,F20.10)') 
+         IF (DEBUG) WRITE(LFH,'(A,F20.10,A,F20.10,A,F20.10)') 
      1                      ' energy increased from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
          FIXIMAGE=.TRUE.
          GOTO 20

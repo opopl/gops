@@ -21,7 +21,7 @@
     
       DOUBLE PRECISION, ALLOCATABLE :: FIN(:)
 
-      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:)
+      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:,:)
 
       DOUBLE PRECISION POTEL
       DOUBLE PRECISION, ALLOCATABLE :: TMPCOORDS(:)
@@ -43,9 +43,9 @@
 
       ALLOCATE(ANV(NATOMS,NATOMS,3))         
 
-      ALLOCATE(FIN(3*NATOMS))
-      ALLOCATE(XICOM(3*NATOMS),PCOM(3*NATOMS))
-      ALLOCATE(SCREENC(3*NATOMS))
+      ALLOCATE(FIN(NATOMS,3))
+      ALLOCATE(XICOM(NATOMS,3),PCOM(NATOMS,3))
+      ALLOCATE(SCREENC(NATOMS,3))
       ALLOCATE(IATNUM(NATOMS), VT(NATOMS), ZSYM(NATOMS))
 
       VT(1:NATOMS)=0.0D0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
@@ -56,9 +56,9 @@
       ALLOCATE(QMINP(NSAVE,3*NATOMS))
 
       QMINP(1:NSAVE,1:3*NATOMS)=0.0D0 ! to prevent reading from uninitialised memory
-      COORDSO(1:3*NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
-      FF(1:NSAVE)=0 ! to prevent reading from uninitialised memorY
-      VATO(1:NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
+      COORDSO=0.0D0 ! to prevent reading from uninitialised memory
+      FF=0 ! to prevent reading from uninitialised memorY
+      VATO=0.0D0 ! to prevent reading from uninitialised memory
       ALLOCATE(ESAVE(NTAB,NPAR),XINSAVE(NTAB,NPAR))
       ALLOCATE(VEC(NVEC))
 
@@ -75,7 +75,7 @@
       CALL IO1
       CALL FLUSH(6)
 
-      CALL CENTRE2(COORDS(1:3*NATOMS,J1))
+      CALL CENTRE2(COORDS)
 
       NQ(1)=1
 
@@ -91,7 +91,6 @@
       IF (ALLOCATED(ANV)) DEALLOCATE(ANV)
 
       CALL FLUSH(LFH)
-
       CLOSE(LFH)
 
       IF (PAIRDISTT) CLOSE(PAIRDIST_FH)

@@ -8,6 +8,8 @@ MODULE COMMONS
 IMPLICIT NONE
 SAVE
 
+! Doxygen {{{
+!> @param RMASS(3)      (dp)    center-of-mass coordinates
 !> @param MCSTEPS       (i)     length of a basin-hopping (BH) run   
 !> @param NATOMS        (i)     number of particles in the system
 !> @param NCORE         (i)     
@@ -27,6 +29,9 @@ SAVE
 !                              ...
 ! @param NQ             (i)     quench number
 ! @param ARATIO         (dp)    acceptance ratio
+! @param COORDS         dp(N,3) coordinates
+!}}}
+!
 INTEGER :: NATOMS 
 INTEGER :: NSAVE
 INTEGER :: ISTEP
@@ -37,6 +42,11 @@ INTEGER :: LFH
 INTEGER :: ENERGY_FH, MARKOV_FH, BEST_FH, PAIRDIST_FH
 CHARACTER(LEN=100) LFN
 PARAMETER(LFH=10,LFN="GMIN.log")
+! Index variables
+! 1\le IA\le NATOMS
+!       JA=3*IA
+INTEGER IA, JA
+DOUBLE PRECISION ::     RND(3)  
 ! =========== 
 ! FILES {{{
 ! ===========
@@ -59,8 +69,9 @@ PARAMETER(LFH=10,LFN="GMIN.log")
 ! }}}
 ! =========== 
 
-DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS, COORDSO, VAT, VATO
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: HESS
+DOUBLE PRECISION ::     RMASS(3)
 !DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: GRAD
 
 INTEGER,ALLOCATABLE :: FF(:),INTEFF(:) ! NSAVE
