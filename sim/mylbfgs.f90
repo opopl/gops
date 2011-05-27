@@ -10,6 +10,13 @@
 !>             number of variables. It is not altered by the routine.
 !>             Restriction: N>0.
 !
+!> @param[in] M   
+!>             is an INTEGER variable that must be set by the user to
+!>             the number of corrections used in the BFGS update. It
+!>             is not altered by the routine. Values of M less than 3 are
+!>             not recommended; large values of M will result in excessive
+!>             computing time. 3<= M <=7 is recommended. Restriction: M>0.
+!
 !> @param[in] DIAGCO 
 !>             is a LOGICAL variable that must be set to .TRUE. if the
 !>             user wishes to provide the diagonal matrix Hk0 at each
@@ -110,7 +117,7 @@
       DOUBLE PRECISION OLDCART(3*NATOMS), DELTAQ(N),DELTACART(3*NATOMS),LEPSILON,DOT1,DOT2
       DOUBLE PRECISION LCART(3*NATOMS),OLDQ(N),NEWQ(N),OLDGINT(N),GINT(N),XINT(N),XSAVE(N),SMINKCURRENTP
       DOUBLE PRECISION, ALLOCATABLE :: FRAMES(:,:), PE(:), MODGRAD(:)
-      LOGICAL NOCOOR, FAILED, COREDONE
+      LOGICAL NOCOOR, FAILED
       INTEGER POINT,BOUND,NPT,CP,INMC,IYCN,ISCN
       INTEGER KD, NNZ
       COMMON /MYPOT/ POTEL
@@ -123,29 +130,10 @@
       IF (.NOT.ALLOCATED(DIAG)) ALLOCATE(DIAG(N))       ! SAVE doesn't work otherwise for Sun
       IF (.NOT.ALLOCATED(W)) ALLOCATE(W(N*(2*M+1)+2*M)) ! SAVE doesn't work otherwise for Sun
 
-      ! mustn't call mylbfgs with changing number of variables {{{ 
-      IF (SIZE(W,1).NE.N*(2*M+1)+2*M) THEN 
-         WRITE(LOG_FH,102) 'ERROR, dimension of W=',SIZE(W,1),' but N*(2*M+1)+2*M=',N*(2*M+1)+2*M,' in mylbfgs'
-         CALL EXIT(10)
-      ENDIF
-      }}}
-
-      COREDONE=.FALSE.
-      SMINKCHANGET=.FALSE.
-      SMINKCURRENT=0.0D0
-      SMINKCURRENTP=0.0D0
-      LOCALSTEEREDMINT=.FALSE.
-      IF (STEEREDMINT) LOCALSTEEREDMINT=.TRUE.
-
       NFAIL=0
-      IF (GUIDECHANGET) ITER=0
-      IF (RESET) ITER=0
       ITDONE=0
-      FIXIMAGE=.FALSE.
 
       CALL POTENTIAL(XCOORDS,GRAD,ENERGY,.TRUE.,.FALSE.)
-
-      IF (EVAPREJECT) RETURN
       POTEL=ENERGY
 
       IF (DEBUG) WRITE(LOG_FH,101) ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'

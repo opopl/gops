@@ -24,13 +24,40 @@ SAVE
 !>             is not altered by the routine. Values of M less than 3 are
 !>             not recommended; large values of M will result in excessive
 !>             computing time. 3<= M <=7 is recommended. Restriction: M_LBFGS>0.
-!>                              ...
+!                              ...
+! @param NQ             (i)     quench number
+! @param ARATIO         (dp)    acceptance ratio
 INTEGER :: NATOMS 
 INTEGER :: NSAVE
 INTEGER :: ISTEP
 INTEGER :: NCORE
 INTEGER :: NQ
 INTEGER :: M_LBFGS
+INTEGER :: LFH
+INTEGER :: ENERGY_FH, MARKOV_FH, BEST_FH, PAIRDIST_FH
+CHARACTER(LEN=100) LFN
+PARAMETER(LFH=10,LFN="GMIN.log")
+! =========== 
+! FILES {{{
+! ===========
+! --- Filehandle variables 
+!       All filehandle variables end with _FH or FH
+!
+!> @param LFH                 (i)     the output log file
+!> @param ENERGY_FH           (i)     energy.dat
+!> @param MARKOV_FH           (i)     markov.dat
+!> @param BEST_FH             (i)     best.dat
+!> @param PAIRDIST_FH         (i)     pairdist.dat
+!
+!
+! --- File names
+!
+!> @param LFN           (s)     name for the output log file 
+!
+! --- Values
+!
+! }}}
+! =========== 
 
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: HESS
@@ -40,7 +67,7 @@ INTEGER,ALLOCATABLE :: FF(:),INTEFF(:) ! NSAVE
 DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(:) ! NSAVE
 DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(:,:)
 
-DOUBLE PRECISION TEMP, STEP, OSTEP, ASTEP, ACCRAT, EPREV
+DOUBLE PRECISION TEMP, STEP, OSTEP, ASTEP, ACCRAT, EPREV, ARATIO
 
 INTEGER :: INFIX
 ! for pulling 

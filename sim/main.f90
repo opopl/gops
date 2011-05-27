@@ -1,10 +1,11 @@
       
-!> \name GMIN
-!> \brief Main program file for GMIN
-!> \param SCREENC
+!> @name GMIN
+!
+!> @brief Main program file for GMIN
+!
 
       PROGRAM GMIN
-
+! declarations {{{
       USE COMMONS
       USE PORFUNCS
       USE FUNC
@@ -30,16 +31,15 @@
       CHARACTER(LEN=40) :: ATOM1,ATOM2,ATOMPAIR
 
       COMMON /MYPOT/ POTEL
+! }}}
 
+! init {{{
       CALL CPU_TIME(TSTART)
       CALL READ_CMD_ARGS
 
-      LOG_FH=10
-      LOG_FN="GMIN.log"
+      CALL OPENF(LFH,">",LFN)
 
-      CALL OPENF(LOG_FH,">",LOG_FN)
-
-      WRITE(LOG_FH,'(A)') "Starting serial execution" 
+      WRITE(LFH,'(A)') "Starting serial execution" 
 
       ALLOCATE(ANV(NATOMS,NATOMS,3))         
 
@@ -62,19 +62,8 @@
       ALLOCATE(ESAVE(NTAB,NPAR),XINSAVE(NTAB,NPAR))
       ALLOCATE(VEC(NVEC))
 
-      IF (PAIRDISTT) THEN
-         PAIRDIST_FH=3000+MYNODE
-         CALL OPENF(PAIRDIST_FH,">>","pairdists")
-         WRITE(PAIRDIST_FH,'(A10)',ADVANCE="NO") "Quench  "
-         DO J1=1,NPAIRS
-            WRITE(ATOM1,*) PAIRDIST(J1,1)
-            WRITE(ATOM2,*) PAIRDIST(J1,2)
-            WRITE(ATOMPAIR,*) TRIM(ADJUSTL(ATOM1))//"-"//TRIM(ADJUSTL(ATOM2))
-            WRITE(PAIRDIST_FH,'(A10)',ADVANCE="NO") TRIM(ADJUSTL(ATOMPAIR))//"  " 
-         ENDDO
-         WRITE(LOG_FH,'(A)') ""
-      ENDIF
-
+      include main.pairdist.inc.f90
+      
       IF (TRACKDATAT) THEN
          CALL OPENF(ENERGY_FH,">>","energy")
          CALL OPENF(MARKOV_FH,">>","markov")
@@ -93,17 +82,18 @@
       DO J1=1,NSAVE
          QMIN(J1)=1.0D10
       ENDDO
-
+! }}}
       CALL MCRUNS(SCREENC)
-
+! end {{{
       IF (ALLOCATED(FIN)) DEALLOCATE(FIN)
       IF (ALLOCATED(XICOM)) DEALLOCATE(XICOM)
       IF (ALLOCATED(PCOM)) DEALLOCATE(PCOM)
       IF (ALLOCATED(ANV)) DEALLOCATE(ANV)
 
-      CALL FLUSH(LOG_FH)
+      CALL FLUSH(LFH)
 
-      CLOSE(LOG_FH)
+      CLOSE(LFH)
+
       IF (PAIRDISTT) CLOSE(PAIRDIST_FH)
       IF (TRACKDATAT) THEN
          CLOSE(ENERGY_FH)
@@ -111,6 +101,7 @@
          IF (RMST) CLOSE(RMSD_FH)
          CLOSE(BEST_FH)
       ENDIF
+! }}}
 
       STOP
 

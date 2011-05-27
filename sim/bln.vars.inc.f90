@@ -7,7 +7,9 @@
         ! input vector of coordinates
         DOUBLE PRECISION, DIMENSION(3*N) :: QO, FQ
         
-        LOGICAL GRADT
+        ! calculate the gradient if GRADT=.TRUE.
+        ! calculate the Hessian if HESST=.TRUE. 
+        LOGICAL GRADT, HESST
 
         DOUBLE PRECISION ENERGY
 
