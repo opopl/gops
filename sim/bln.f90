@@ -34,9 +34,4 @@ include bln.hess.inc.f90        ! calculate Hessian
 ! }}}
 ! }}} 
 
-
- !subroutine cosba()
-!subroutine cosba(i,j,ii,k,l,rn,nn, mut, m.dml.dm2,ddm) E
-
-
         ENDMODULE

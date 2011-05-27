@@ -1,4 +1,4 @@
-! Fill in the Hessian matrix
+! Fill in the Hessian matrix (two-sided numerical approach)
 ! {{{
 
         DO J = 1, 3*N

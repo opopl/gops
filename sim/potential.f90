@@ -1,4 +1,8 @@
 
+!> @param[in]  X        dp(3*N)    input coordinates 
+!> @param[out] GRAD     dp(3*N)    gradient 
+!> @param[out] EREAL    dp(3*N)    energy 
+
       SUBROUTINE POTENTIAL(X,GRAD,EREAL,GRADT,SECT,PTYPE)
 
       USE COMMONS
@@ -10,25 +14,21 @@
       ! subroutine parameters 
 
       DOUBLE PRECISION,INTENT(OUT) :: EREAL, GRAD(*)
-      DOUBLE PRECISION, INTENT(IN) :: X(*)
+      DOUBLE PRECISION,INTENT(IN) :: X(*)
       LOGICAL GRADT,SECT
 
       ! potential type
 
       CHARACTER(LEN=*) PTYPE
-     
-      SELECTCASE(PTYPE)
-        CASE("P46") ; CALL P46MERDIFF(X,NATOMS,GRAD,EREAL,GRADT)
-        CASE("G46") ; CALL G46MERDIFF(X,NATOMS,GRAD,EREAL,GRADT)
-        CASE("BLN") ; CALL BLN(X,GRAD,EREAL,GRADT)
-      ENDSELECT
+    
+      CALL EBLN(N,QO,GRAD,ENERGY,HESS,PTYPE)
 
 C  --------------- End of possible potentials - now add fields if required ------------------------------
 
       IF (PULLT) THEN
-         EREAL=EREAL-PFORCE*(X(3*(PATOM1-1)+3)-X(3*(PATOM2-1)+3))
-         GRAD(3*(PATOM1-1)+3)=GRAD(3*(PATOM1-1)+3)-PFORCE
-         GRAD(3*(PATOM2-1)+3)=GRAD(3*(PATOM2-1)+3)+PFORCE
+         EREAL=EREAL-PFORCE*X(3*PATOM1)-PFORCE*X(3*PATOM2)
+         GRAD(3*PATOM1)=GRAD(3*PATOM1)-PFORCE
+         GRAD(3*PATOM2)=GRAD(3*PATOM2)+PFORCE
       ENDIF
 
       RETURN

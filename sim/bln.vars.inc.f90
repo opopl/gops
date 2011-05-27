@@ -24,14 +24,10 @@
         DOUBLE PRECISION, DIMENSION(N,3) :: R
         DOUBLE PRECISION, DIMENSION(N,N,3) :: DR
         DOUBLE PRECISION, DIMENSION(N,N) :: LEN_DR
-        !
-        DOUBLE PRECISION, DIMENSION(N) :: COSTOR, SINBOND, DFAC
         ! 1 => bond angles
         ! 2 => torsion (dihedral) angles
         DOUBLE PRECISION, DIMENSION(N,2) :: ANG 
         ! F => d(potential)/d(angle)
-        ! a - index variable
-        integer a
         DOUBLE PRECISION, DIMENSION(-1:N+1,2) :: F
         ! ==============================
         ! for torsional angles:
@@ -42,7 +38,7 @@
         ! ==============================
         DOUBLE PRECISION, DIMENSION(N,2) :: FB
         ! AN temporary angle variable
-        DOUBLE PRECISION ::     AN
+        DOUBLE PRECISION   AN
         ! 
         ! cross products:
         !
@@ -52,8 +48,6 @@
         ! HVXPD - cross product direction
         DOUBLE PRECISION, DIMENSION(N-1) :: XPD_2, XPD
         DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD, HVXPD, pp
-        ! inverse cross products
-        DOUBLE PRECISION, DIMENSION(N) :: IXPD
         ! B(:) =>  bond vectors lengths
         DOUBLE PRECISION, DIMENSION(N) :: B
         ! bond vectors, BVR_i => DR(i,i+1) => R_{i+1}-R_i 
@@ -68,9 +62,10 @@
         !       GBA     => bond angles
         !       GTA     => torsional angles
         !
-        DOUBLE PRECISION, DIMENSION(N,3) :: GBA, GNB, GTA, G, 
+        DOUBLE PRECISION, DIMENSION(N,3) :: GBA, GNB, GTA, G, GB 
         DOUBLE PRECISION, DIMENSION(N,3) :: GTA_I, GTA_J, GTA_K, GTA_L
         DOUBLE PRECISION, DIMENSION(N,3) :: GBA_I, GBA_J, GBA_K
+        DOUBLE PRECISION ::     DF, FRR(3)
         ! type of BLN potential
         !
         !       GO   Go-like
@@ -87,11 +82,9 @@
 
         DOUBLE PRECISION, DIMENSION(N,N) :: HESS
 
-        DOUBLE PRECISION E_NBOND, E_BOND, E_BANGLE, E_TANGLE, RAD6
-        DOUBLE PRECISION RMASS, SIGMA, EPSILON, DELTA
-        DOUBLE PRECISION THETA_0
+        DOUBLE PRECISION RMASS, SIGMA, EPSILON, DELTA, THETA_0
 
-        DOUBLE PRECISION, DIMENSION(3*N) :: GRAD,GRADIENT
+        DOUBLE PRECISION, DIMENSION(3*N) :: GRAD, GRADIENT
       
         ! LJREP => repulsion
         ! LJATT => attraction

@@ -11,15 +11,15 @@
 
         DO I = 1, N-1
           DO J = I+1, N
-            DR(I,J,1:3) = R(J,1:3) - R(I,1:3)
+            DR(I,J,1:3) = R(I,1:3) - R(J,1:3)
             DR(J,I,1:3) = -DR(I,J,1:3)
             LEN_DR(I,J) = SQRT(SUM(DR(I,J,1:3)**2))
             LEN_DR(J,I) = LEN_DR(I,J)
           ENDDO
-            BVR(I,1:3)=DR(I,I+1,1:3)
+            BVR(I,1:3)=DR(I+1,I,1:3)
         ENDDO
 ! }}}
-! DOT PRODUCTS BETWEEN BOND VECTORS: DPD, B  {{{
+! BOND VECTORS: DPD, B, EB  {{{
 
       DO I = 1, N-1
         B(I)= SUM(BVR(I,1:3)**2)

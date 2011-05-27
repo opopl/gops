@@ -14,8 +14,8 @@
             DF=-24.0*DF/RAD(2)
 
             FRR(1:3) = DF*DR(I,J,1:3) 
-            FNB(I,1:3) = FRR(1:3) + FNB(I,1:3)
-            FNB(J,1:3) = -FRR(1:3) + FNB(J,1:3)
+            GNB(I,1:3) = FRR(1:3) + GNB(I,1:3)
+            GNB(J,1:3) = -FRR(1:3) + GNB(J,1:3)
 
           ENDDO
         ENDDO
