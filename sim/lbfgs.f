@@ -6,7 +6,7 @@ C     LBFGS SUBROUTINE
 C     ****************
 C
       SUBROUTINE LBFGS(N,M,X,F,G,DIAGCO,DIAG,IPRINT,EPS,XTOL,W,IFLAG)
-C
+C declarations {{{
       INTEGER N,M,IPRINT(2),IFLAG
       DOUBLE PRECISION X(N),G(N),DIAG(N),W(N*(2*M+1)+2*M)
       DOUBLE PRECISION F,EPS,XTOL
@@ -234,6 +234,8 @@ C
 C
       SAVE
       DATA ONE,ZERO/1.0D+0,0.0D+0/
+! }}}
+! body {{{
 C
 C     INITIALIZE
 C     ----------
@@ -410,7 +412,7 @@ C
  196  IFLAG= -3
       IF(LP.GT.0) WRITE(LP,240)
 C
-C     FORMATS
+C     FORMATS {{{
 C     -------
 C
  200  FORMAT(/' IFLAG= -1 ',/' LINE SEARCH FAILED. SEE'
@@ -424,12 +426,15 @@ C
      .       ' ARE NOT POSITIVE)')
  245  FORMAT(/'  GTOL IS LESS THAN OR EQUAL TO 1.D-04',
      .       / ' IT HAS BEEN RESET TO 9.D-01')
+C }}}
+! }}}
       RETURN
       END
 C
 C     LAST LINE OF SUBROUTINE LBFGS
 C
 C
+! other {{{
       SUBROUTINE LB1(IPRINT,ITER,NFUN,
      *                     GNORM,N,M,X,F,G,STP,FINISH)
 C
@@ -1153,4 +1158,4 @@ C
 C     LAST LINE OF SUBROUTINE MCSTEP.
 C
       END
-
+! }}}

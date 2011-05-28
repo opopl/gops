@@ -1,10 +1,11 @@
       
-!> \name GMIN
-!> \brief Main program file for GMIN
-!> \param SCREENC
+!> @name GMIN
+!
+!> @brief Main program file for GMIN
+!
 
       PROGRAM GMIN
-
+! declarations {{{
       USE COMMONS
       USE PORFUNCS
       USE FUNC
@@ -20,7 +21,7 @@
     
       DOUBLE PRECISION, ALLOCATABLE :: FIN(:)
 
-      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:)
+      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:,:)
 
       DOUBLE PRECISION POTEL
       DOUBLE PRECISION, ALLOCATABLE :: TMPCOORDS(:)
@@ -30,22 +31,21 @@
       CHARACTER(LEN=40) :: ATOM1,ATOM2,ATOMPAIR
 
       COMMON /MYPOT/ POTEL
+! }}}
 
+! init {{{
       CALL CPU_TIME(TSTART)
       CALL READ_CMD_ARGS
 
-      LOG_FH=10
-      LOG_FN="GMIN.log"
+      CALL OPENF(LFH,">",LFN)
 
-      CALL OPENF(LOG_FH,">",LOG_FN)
-
-      WRITE(LOG_FH,'(A)') "Starting serial execution" 
+      WRITE(LFH,'(A)') "Starting serial execution" 
 
       ALLOCATE(ANV(NATOMS,NATOMS,3))         
 
-      ALLOCATE(FIN(3*NATOMS))
-      ALLOCATE(XICOM(3*NATOMS),PCOM(3*NATOMS))
-      ALLOCATE(SCREENC(3*NATOMS))
+      ALLOCATE(FIN(NATOMS,3))
+      ALLOCATE(XICOM(NATOMS,3),PCOM(NATOMS,3))
+      ALLOCATE(SCREENC(NATOMS,3))
       ALLOCATE(IATNUM(NATOMS), VT(NATOMS), ZSYM(NATOMS))
 
       VT(1:NATOMS)=0.0D0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
@@ -56,25 +56,14 @@
       ALLOCATE(QMINP(NSAVE,3*NATOMS))
 
       QMINP(1:NSAVE,1:3*NATOMS)=0.0D0 ! to prevent reading from uninitialised memory
-      COORDSO(1:3*NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
-      FF(1:NSAVE)=0 ! to prevent reading from uninitialised memorY
-      VATO(1:NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
+      COORDSO=0.0D0 ! to prevent reading from uninitialised memory
+      FF=0 ! to prevent reading from uninitialised memorY
+      VATO=0.0D0 ! to prevent reading from uninitialised memory
       ALLOCATE(ESAVE(NTAB,NPAR),XINSAVE(NTAB,NPAR))
       ALLOCATE(VEC(NVEC))
 
-      IF (PAIRDISTT) THEN
-         PAIRDIST_FH=3000+MYNODE
-         CALL OPENF(PAIRDIST_FH,">>","pairdists")
-         WRITE(PAIRDIST_FH,'(A10)',ADVANCE="NO") "Quench  "
-         DO J1=1,NPAIRS
-            WRITE(ATOM1,*) PAIRDIST(J1,1)
-            WRITE(ATOM2,*) PAIRDIST(J1,2)
-            WRITE(ATOMPAIR,*) TRIM(ADJUSTL(ATOM1))//"-"//TRIM(ADJUSTL(ATOM2))
-            WRITE(PAIRDIST_FH,'(A10)',ADVANCE="NO") TRIM(ADJUSTL(ATOMPAIR))//"  " 
-         ENDDO
-         WRITE(LOG_FH,'(A)') ""
-      ENDIF
-
+      include main.pairdist.inc.f90
+      
       IF (TRACKDATAT) THEN
          CALL OPENF(ENERGY_FH,">>","energy")
          CALL OPENF(MARKOV_FH,">>","markov")
@@ -86,24 +75,24 @@
       CALL IO1
       CALL FLUSH(6)
 
-      CALL CENTRE2(COORDS(1:3*NATOMS,J1))
+      CALL CENTRE2(COORDS)
 
       NQ(1)=1
 
       DO J1=1,NSAVE
          QMIN(J1)=1.0D10
       ENDDO
-
+! }}}
       CALL MCRUNS(SCREENC)
-
+! end {{{
       IF (ALLOCATED(FIN)) DEALLOCATE(FIN)
       IF (ALLOCATED(XICOM)) DEALLOCATE(XICOM)
       IF (ALLOCATED(PCOM)) DEALLOCATE(PCOM)
       IF (ALLOCATED(ANV)) DEALLOCATE(ANV)
 
-      CALL FLUSH(LOG_FH)
+      CALL FLUSH(LFH)
+      CLOSE(LFH)
 
-      CLOSE(LOG_FH)
       IF (PAIRDISTT) CLOSE(PAIRDIST_FH)
       IF (TRACKDATAT) THEN
          CLOSE(ENERGY_FH)
@@ -111,6 +100,7 @@
          IF (RMST) CLOSE(RMSD_FH)
          CLOSE(BEST_FH)
       ENDIF
+! }}}
 
       STOP
 

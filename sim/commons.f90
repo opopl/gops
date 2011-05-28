@@ -8,8 +8,10 @@ MODULE COMMONS
 IMPLICIT NONE
 SAVE
 
-!> @param MCSTEPS       (i)     length of a BH run   
-!> @param NATOMS        (i)     number of particles in the system
+! Doxygen {{{
+!> @param RMASS(3)      (dp)    center-of-mass coordinates
+!> @param MCSTEPS       (i)     length of a basin-hopping (BH) run   
+!> @param NA            (i)     number of particles in the system
 !> @param NCORE         (i)     
 !> @param NQ            (i)     
 !> @param NSAVE         (i)     number of lowest energy geometries to be saved
@@ -24,25 +26,73 @@ SAVE
 !>             is not altered by the routine. Values of M less than 3 are
 !>             not recommended; large values of M will result in excessive
 !>             computing time. 3<= M <=7 is recommended. Restriction: M_LBFGS>0.
-!>                              ...
-INTEGER :: NATOMS 
+!                              ...
+! @param NQ             (i)     quench number
+! @param ARATIO         (dp)    acceptance ratio
+! @param COORDS         dp(N,3) coordinates
+!}}}
+!
+! declarations {{{
+INTEGER :: NA
 INTEGER :: NSAVE
 INTEGER :: ISTEP
 INTEGER :: NCORE
 INTEGER :: NQ
 INTEGER :: M_LBFGS
+INTEGER :: MAXBFGS
+INTEGER :: LFH
+INTEGER :: ENERGY_FH, MARKOV_FH, BEST_FH, PAIRDIST_FH
+CHARACTER(LEN=100) LFN
+PARAMETER(LFH=10,LFN="GMIN.log")
+! Index variables
+! 1\le IA\le NATOMS
+!       JA=3*IA
+INTEGER IA, JA
+DOUBLE PRECISION ::     RND(3)  
+! =========== 
+! FILES {{{
+! ===========
+! --- Filehandle variables 
+!       All filehandle variables end with _FH or FH
+!
+!> @param LFH                 (i)     the output log file
+!> @param ENERGY_FH           (i)     energy.dat
+!> @param MARKOV_FH           (i)     markov.dat
+!> @param BEST_FH             (i)     best.dat
+!> @param PAIRDIST_FH         (i)     pairdist.dat
+!
+!
+! --- File names
+!
+!> @param LFN           (s)     name for the output log file 
+!
+! --- Values
+!
+! }}}
+! =========== 
 
-DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS, COORDSO, VAT, VATO
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: HESS
+DOUBLE PRECISION ::     RMASS(3)
+!DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: GRAD
 
 INTEGER,ALLOCATABLE :: FF(:),INTEFF(:) ! NSAVE
 DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(:) ! NSAVE
 DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(:,:)
 
-DOUBLE PRECISION TEMP, STEP, OSTEP, ASTEP, ACCRAT, EPREV
+DOUBLE PRECISION TEMP, STEP, OSTEP, ASTEP, ACCRAT, EPREV, ARATIO
 
 INTEGER :: INFIX
-
+! for pulling 
+INTEGER :: PATOM1
+INTEGER :: PATOM2
+! }}}
 PARAMETER (PI=3.141592654D0)
+
+SUBROUTINE INIT_PARS
+
+MAXBFGS=0.4D0
+
+END
 
 END MODULE COMMONS
