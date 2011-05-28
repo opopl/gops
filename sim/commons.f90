@@ -11,7 +11,7 @@ SAVE
 ! Doxygen {{{
 !> @param RMASS(3)      (dp)    center-of-mass coordinates
 !> @param MCSTEPS       (i)     length of a basin-hopping (BH) run   
-!> @param NATOMS        (i)     number of particles in the system
+!> @param NA            (i)     number of particles in the system
 !> @param NCORE         (i)     
 !> @param NQ            (i)     
 !> @param NSAVE         (i)     number of lowest energy geometries to be saved
@@ -32,12 +32,14 @@ SAVE
 ! @param COORDS         dp(N,3) coordinates
 !}}}
 !
-INTEGER :: NATOMS 
+! declarations {{{
+INTEGER :: NA
 INTEGER :: NSAVE
 INTEGER :: ISTEP
 INTEGER :: NCORE
 INTEGER :: NQ
 INTEGER :: M_LBFGS
+INTEGER :: MAXBFGS
 INTEGER :: LFH
 INTEGER :: ENERGY_FH, MARKOV_FH, BEST_FH, PAIRDIST_FH
 CHARACTER(LEN=100) LFN
@@ -84,7 +86,13 @@ INTEGER :: INFIX
 ! for pulling 
 INTEGER :: PATOM1
 INTEGER :: PATOM2
-
+! }}}
 PARAMETER (PI=3.141592654D0)
+
+SUBROUTINE INIT_PARS
+
+MAXBFGS=0.4D0
+
+END
 
 END MODULE COMMONS

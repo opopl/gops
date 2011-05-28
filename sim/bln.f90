@@ -18,7 +18,7 @@
 !
 ! }}}
 !------------------------------------------------------------
-        SUBROUTINE EBLN(N,R,GRADIENT,ENERGY,HESS,PTYPE,GRADT,HESST)
+        SUBROUTINE EBLN(N,R,GRAD,ENERGY,HESS,PTYPE,GRADT,HESST)
 ! {{{
 
 include bln.vars.inc.f90        ! variables
@@ -26,8 +26,8 @@ include bln.param.inc.f90       ! calculate BLN model parameters
 include bln.cic.inc.f90         ! calculate internal coordinates
 include bln.ce.inc.f90          ! calculate energies
 IF (.NOT. GRADT) RETURN
-include bln.grad.inc.f90        ! calculate gradients
-GRADIENT=GRAD
+include bln.grad.inc.f90        ! calculate gradient G
+GRAD=G
 IF (.NOT. HESST) RETURN
 include bln.hess.inc.f90        ! calculate Hessian
 

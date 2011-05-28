@@ -88,7 +88,7 @@
 
         DOUBLE PRECISION RMASS, SIGMA, EPSILON, DELTA, THETA_0
 
-        DOUBLE PRECISION, DIMENSION(N,3) :: GRAD, GRADIENT
+        DOUBLE PRECISION, DIMENSION(N,3) :: G, GRAD
       
         ! LJREP => repulsion
         ! LJATT => attraction

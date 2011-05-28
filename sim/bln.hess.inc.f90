@@ -7,13 +7,13 @@
 
             include bln.cic.inc.f90
             include bln.grad.inc.f90
-            GRAD_PLUS=GRAD
+            GRAD_PLUS=G
 
             R(JH,K) = R(JH,KH) - 2.0*DELTA
 
             include bln.cic.inc.f90
             include bln.grad.inc.f90
-            GRAD_MIN=GRAD
+            GRAD_MIN=G
 
             R(JH,KH) = R(JH,KH) + DELTA
     

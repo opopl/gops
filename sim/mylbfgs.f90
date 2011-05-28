@@ -47,8 +47,7 @@
 !
 ! }}}
 ! ------------------------------------------------------------------
-
-      SUBROUTINE MYLBFGS(N,M,R,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
+      SUBROUTINE MYLBFGS(R,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
       ! ====================================
      ! declarations {{{ 
       USE COMMONS
@@ -56,8 +55,7 @@
       
       IMPLICIT NONE
  ! subroutine parameters  {{{
-      INTEGER, INTENT(IN) :: N,M
-      DOUBLE PRECISION, INTENT(INOUT) R(NATOMS,3)
+      DOUBLE PRECISION, INTENT(INOUT) R(:,:)
       LOGICAL,INTENT(IN) :: DIAGCO
       DOUBLE PRECISION,INTENT(IN) :: EPS
       LOGICAL,INTENT(OUT) :: MFLAG
@@ -66,54 +64,22 @@
       INTEGER,INTENT(OUT) :: ITDONE
       LOGICAL,INTENT(IN) RESET
       ! }}}
-      ! ====================================
-      ! LBFGS comparisons
-      ! ====================================
-      ! {{{
-      !
-      ! LBFGS           MY
-      !
-      ! dp X(N)         dp R(3*NATOMS)
-      ! dp DIAG(N)      
-      ! i IPRINT
-      !                 i ITMAX, ITDONE
-      ! dp XTOL 
-      ! dp EPS          dp EPS
-      !                 dp ENERGY 
-      !                 L RESET 
-      !                 L MFLAG
-      ! L DIAGCO        L DIAGCO 
-      ! dp W(N)
-      !       
-      ! }}}
-      ! ====================================
-      ! original LBFGS declaration
-      ! ====================================
-      ! {{{
-      !
-      ! SUBROUTINE LBFGS(N,M,X,F,G,DIAGCO,DIAG,IPRINT,EPS,XTOL,W,IFLAG)
-      ! SUBROUTINE MY...(N,M,R,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
-      !
-      !
-
-      ! INTEGER N,M,IPRINT(2),IFLAG
-      ! DOUBLE PRECISION X(N),G(N),DIAG(N),W(N*(2*M+1)+2*M)
-      ! DOUBLE PRECISION F,EPS,XTOL
-      ! LOGICAL DIAGCO
-      !
-      ! }}}
-      ! ====================================
-      ! local parameters {{{
+       ! local parameters {{{
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W, WTEMP, GRAD, GNEW, RSAVE
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: ALPHA, RHO
+      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: X,XSAVE
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: WSS, WDG
       INTEGER ITER, NFAIL, CP
-      DOUBLE PRECISION :: SLENGTH,ENEW,YS,YY,SQ,YR,BETA,POTEL, DDOT, STP
+      DOUBLE PRECISION :: GNORM,SLENGTH,ENEW,YS,YY,SQ,YR,BETA,POTEL, DDOT, STP
+      DOUBLE PRECISION ::       DOT1,DOT2,OVERLAP
       SAVE W,DIAG,ITER
+      INTEGER :: N,M,K,IXMIN,IXMAX
+      ! 
+      N=NX
+      M=M_LBFGS
       !
       COMMON /MYPOT/ POTEL
       !   }}}
-      ! }}}
       ! ====================================
       ! Labels:  {{{
       !         10  - termination test
@@ -122,11 +88,16 @@
       ! ====================================
       ! subroutine body  {{{
 
-      ALLOCATE(RHO(M),ALPHA(M),W(N),WSS(N,M),WDG(N,M))
+      ALLOCATE(RHO(M),ALPHA(M),W(N),WSS(N,M),WDG(N,M),X(N))
 
-      NFAIL=0
-      ITER=0
-      ITDONE=0
+include R2X.inc.f90     ! R(NA,3) => X(NX)
+
+      NFAIL=0 ; ITDONE=0 ; IF (RESET) ITER=0 
+
+      IF (DEBUG) THEN
+         IF (RESET) WRITE(LFH,'(A)')            'mylbfgs> Resetting LBFGS minimiser'
+         IF (.NOT.RESET) WRITE(LFH,'(A)')       'mylbfgs> Not resetting LBFGS minimiser'
+      ENDIF
 
       CALL POTENTIAL(R,GRAD,ENERGY,.TRUE.,.FALSE.)
       POTEL=ENERGY
@@ -139,6 +110,7 @@
 !  Termination test. 
 !
 10    CALL FLUSH(LFH)
+
       MFLAG=.FALSE.
       IF (RMS.LE.EPS) THEN
         MFLAG=.TRUE.
@@ -177,18 +149,6 @@
             DIAG=DGUESS
          ENDIF
 !
-!     THE WORK VECTOR W IS DIVIDED AS FOLLOWS:
-!     ---------------------------------------
-!     THE FIRST N LOCATIONS ARE USED TO STORE THE GRADIENT AND
-!         OTHER TEMPORARY INFORMATION.
-!     LOCATIONS (N+1)...(N+M) STORE THE SCALARS RHO.
-!     LOCATIONS (N+M+1)...(N+2M) STORE THE NUMBERS ALPHA USED
-!         IN THE FORMULA THAT COMPUTES H*G.
-!     LOCATIONS (N+2M+1)...(N+2M+NM) STORE THE LAST M SEARCH
-!         STEPS.
-!     LOCATIONS (N+2M+NM+1)...(N+2M+2NM) STORE THE LAST M
-!         GRADIENT DIFFERENCES.
-!
 !     THE SEARCH STEPS AND GRADIENT DIFFERENCES ARE STORED IN A
 !     CIRCULAR ORDER CONTROLLED BY THE PARAMETER POINT.
 !
@@ -212,12 +172,12 @@
          ! {{{
          BOUND=ITER
          IF (ITER.GT.M) BOUND=M
-         YS= DDOT(N,WDG(1:N,1+POINT),1,WSS(1:N,1+POINT),1)
+         YS= DDOT(N,WDG(1,1+POINT),1,WSS(1,1+POINT),1)
 !
-!  Update estimate of diagonal inverse Hessian elements
+!  Update estimate of diagonal inverse Hessian elements {{{
 !
          IF (.NOT.DIAGCO) THEN
-            YY= DDOT(N,WDG(1:N,1+POINT),1,WDG(1:N,1+POINT),1)
+            YY= DDOT(N,WDG(1,1+POINT),1,WDG(1,1+POINT),1)
             IF (YY.EQ.0.0D0) THEN
                WRITE(LFH,'(A)') 'WARNING, resetting YY to one in mylbfgs'
                YY=1.0D0
@@ -236,6 +196,7 @@
                ENDIF
             ENDDO
          ENDIF
+! }}}
 !
 !     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980,
 !     "Updating quasi-Newton matrices with limited storage",
@@ -250,18 +211,18 @@
          DO J1= 1,BOUND
             CP=CP-1
             IF (CP.EQ.-1) CP=M-1
-            SQ=DDOT(N,WSS(1:N,CP+1),1,W,1)
+            SQ=DDOT(N,WSS(1,CP+1),1,W,1)
             ALPHA(CP+1)=RHO(CP+1)*SQ
-            CALL DAXPY(N,-ALPHA(CP+1),WDG(1:N,CP+1),1,W,1)
+            CALL DAXPY(N,-ALPHA(CP+1),WDG(1,CP+1),1,W,1)
          ENDDO
         
          W=DIAG*W
 
          DO J1=1,BOUND
-            YR=DDOT(N,W(1:N,CP+1),1,W(1:N),1)
+            YR=DDOT(N,W(1,CP+1),1,W,1)
             BETA=RHO(CP+1)*YR
             BETA=ALPHA(CP+1)-BETA
-            CALL DAXPY(N,BETA,WSS(1:N,CP+1),1,W,1)
+            CALL DAXPY(N,BETA,WSS(1,CP+1),1,W,1)
             CP=CP+1
             IF (CP.EQ.M) CP=0
          ENDDO
@@ -269,13 +230,13 @@
          ! }}}
       ENDIF
 !
-!  Store the new search direction
+!  Store the new search direction (160)
 !
       IF (ITER.GT.0) THEN
             WSS(:,1+POINT)=W
       ENDIF
 
-            DOT1=SQRT(DDOT(N,GRAD,1,GRAD,1))
+!  test for overlap {{{
 !
 !  Overflow has occasionally occurred here.
 !  We only need the sign of the overlap, so use a temporary array with
@@ -285,8 +246,10 @@
       DO J1=1,N
          IF (ABS(W(J1)).GT.DUMMY) DUMMY=ABS(W(J1))
       ENDDO
-         WTEMP=W/DUMMY
+      
+      WTEMP=W/DUMMY
 
+      DOT1=SQRT(DDOT(N,GRAD,1,GRAD,1))
       DOT2=SQRT(DDOT(N,WTEMP,1,WTEMP,1))
       OVERLAP=0.0D0
       IF (DOT1*DOT2.NE.0.0D0) THEN
@@ -296,6 +259,7 @@
          IF (DEBUG) WRITE(LFH,'(A)') 'Search direction has positive projection onto gradient - reversing step'
          WSS(1:N,1+POINT)=-W  !!! DJW, reverses step
       ENDIF
+! }}}
 
       W=GRAD
       SLENGTH=SQRT(SUM(WSS(:,1+POINT)**2))

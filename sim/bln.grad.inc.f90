@@ -7,5 +7,5 @@ include bln.grad.bond.inc.f90
 include bln.grad.bangle.inc.f90
 include bln.grad.tangle.inc.f90
 
-GRAD=GNB+GB+GBA+GTA 
+G=GNB+GB+GBA+GTA 
 

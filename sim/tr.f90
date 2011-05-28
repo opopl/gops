@@ -46,4 +46,42 @@
       ENDDO
 ! }}}
 
+     ! ====================================
+      ! LBFGS comparisons
+      ! ====================================
+      ! {{{
+      !
+      ! LBFGS           MY
+      !
+      ! dp X(N)         dp R(3*NATOMS)
+      ! dp DIAG(N)      
+      ! i IPRINT
+      !                 i ITMAX, ITDONE
+      ! dp XTOL 
+      ! dp EPS          dp EPS
+      !                 dp ENERGY 
+      !                 L RESET 
+      !                 L MFLAG
+      ! L DIAGCO        L DIAGCO 
+      ! dp W(N)
+      !       
+      ! }}}
+      ! ====================================
+      ! original LBFGS declaration
+      ! ====================================
+      ! {{{
+      !
+      ! SUBROUTINE LBFGS(N,M,X,F,G,DIAGCO,DIAG,IPRINT,EPS,XTOL,W,IFLAG)
+      ! SUBROUTINE MY...(N,M,R,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
+      !
+      !
+
+      ! INTEGER N,M,IPRINT(2),IFLAG
+      ! DOUBLE PRECISION X(N),G(N),DIAG(N),W(N*(2*M+1)+2*M)
+      ! DOUBLE PRECISION F,EPS,XTOL
+      ! LOGICAL DIAGCO
+      !
+      ! }}}
+      ! ====================================
+      ! }}}
 
