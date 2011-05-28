@@ -35,7 +35,7 @@
 !>
 !>             where ||.|| denotes the Euclidean norm.
 !
-!> @param[inout] XCOORDS is a DOUBLE PRECISION array of length N. On initial entry
+!> @param[inout] R is a vector of coordinates. On initial entry
 !>             it must be set by the user to the values of the initial
 !>             estimate of the solution vector. On exit with IFLAG=0, it
 !>             contains the values of the variables at the best point
@@ -45,12 +45,24 @@
 ! }}}
 ! ------------------------------------------------------------------
 
-      SUBROUTINE MYLBFGS(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
-      
+      SUBROUTINE MYLBFGS(N,M,R,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
+      ! ====================================
+     ! declarations {{{ 
       USE COMMONS
       USE PORFUNCS
       
       IMPLICIT NONE
+ ! subroutine parameters  {{{
+      INTEGER, INTENT(IN) :: N,M
+      DOUBLE PRECISION, INTENT(INOUT) R(NATOMS,3)
+      LOGICAL,INTENT(IN) :: DIAGCO
+      DOUBLE PRECISION,INTENT(IN) :: EPS
+      LOGICAL,INTENT(OUT) :: MFLAG
+      DOUBLE PRECISION,INTENT(OUT) :: ENERGY
+      INTEGER,INTENT(IN) :: ITMAX
+      INTEGER,INTENT(OUT) :: ITDONE
+      LOGICAL,INTENT(IN) RESET
+      ! }}}
       ! ====================================
       ! LBFGS comparisons
       ! ====================================
@@ -58,7 +70,7 @@
       !
       ! LBFGS           MY
       !
-      ! dp X(N)         dp XCOORDS(3*NATOMS)
+      ! dp X(N)         dp R(3*NATOMS)
       ! dp DIAG(N)      
       ! i IPRINT
       !                 i ITMAX, ITDONE
@@ -77,7 +89,7 @@
       ! {{{
       !
       ! SUBROUTINE LBFGS(N,M,X,F,G,DIAGCO,DIAG,IPRINT,EPS,XTOL,W,IFLAG)
-      ! SUBROUTINE MY...(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
+      ! SUBROUTINE MY...(N,M,R,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
       !
       !
 
@@ -88,26 +100,14 @@
       !
       ! }}}
       ! ====================================
-      ! subroutine parameters  {{{
-      INTEGER, INTENT(IN) :: N,M
-      DOUBLE PRECISION, INTENT(INOUT) XCOORDS(NATOMS,3)
-      LOGICAL,INTENT(IN) :: DIAGCO
-      DOUBLE PRECISION,INTENT(IN) :: EPS
-      LOGICAL,INTENT(OUT) :: MFLAG
-      DOUBLE PRECISION,INTENT(OUT) :: ENERGY
-      INTEGER,INTENT(IN) :: ITMAX
-      INTEGER,INTENT(OUT) :: ITDONE
-      LOGICAL,INTENT(IN) RESET
-      ! }}}
-
       ! local parameters {{{
 
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W
       INTEGER ITER
       SAVE W,DIAG,ITER
       !
-      integer   ISPT ! index for storage of search steps
-      integer   IYPT ! index for storage of gradient differences
+      integer   ISSS ! index for storage of search steps
+      integer   ISDG ! index for storage of gradient differences
       !
       INTEGER J1,J2,J3,NFAIL,NDECREASE,NGUESS,NDUMMY
       DOUBLE PRECISION GRAD(3*NATOMS),SLENGTH,DDOT,EPLUS,EMINUS,DIFF,DUMMY,WTEMP(3*NATOMS)
@@ -117,7 +117,7 @@
       LOGICAL YESNO, NOTCALLED, CTEST
       DOUBLE PRECISION GNORM,STP,YS,YY,SQ,YR,BETA,POTEL,QSTART,QFINISH
       DOUBLE PRECISION OLDCART(3*NATOMS), DELTAQ(N),DELTACART(3*NATOMS),LEPSILON,DOT1,DOT2
-      DOUBLE PRECISION LCART(3*NATOMS),OLDQ(N),NEWQ(N),OLDGINT(N),GINT(N),XINT(N),XSAVE(N),SMINKCURRENTP
+      DOUBLE PRECISION LCART(3*NATOMS),OLDQ(N),NEWQ(N),OLDGINT(N),GINT(N),XINT(N),RSAVE(N),SMINKCURRENTP
       DOUBLE PRECISION, ALLOCATABLE :: FRAMES(:,:), PE(:), MODGRAD(:)
       LOGICAL NOCOOR, FAILED
       INTEGER POINT,BOUND,NPT,CP,INMC,IYCN,ISCN
@@ -127,38 +127,38 @@
       LOGICAL EVAP, GUIDECHANGET, GUIDET, EVAPREJECT, SMINKCHANGET, CSMDOGUIDET
       COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
       COMMON /EV/ EVAP, EVAPREJECT
-      SAVE POINT, ISPT, IYPT, NPT
+      SAVE POINT, ISSS, ISDG, NPT
       !   }}}
-
+      ! }}}
+      ! ====================================
+      ! subroutine body  {{{
       IF (.NOT.ALLOCATED(DIAG)) ALLOCATE(DIAG(N))       ! SAVE doesn't work otherwise for Sun
       IF (.NOT.ALLOCATED(W)) ALLOCATE(W(N*(2*M+1)+2*M)) ! SAVE doesn't work otherwise for Sun
 
       NFAIL=0
       ITDONE=0
 
-      CALL POTENTIAL(XCOORDS,GRAD,ENERGY,.TRUE.,.FALSE.)
+      CALL POTENTIAL(R,GRAD,ENERGY,.TRUE.,.FALSE.)
       POTEL=ENERGY
 
-      IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
+      IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=', ENERGY,RMS, &
+                                ' after ',ITDONE,' LBFGS steps'
 101   FORMAT(A,F20.10,G20.10,A,I6,A)
 102   FORMAT(A,I10,A,I10,A)
 
-C  Termination test. 
-C
+!  Termination test. 
+!
 10    CALL FLUSH(LFH)
       MFLAG=.FALSE.
       IF (RMS.LE.EPS) THEN
         MFLAG=.TRUE.
-        IF (EVAP) MFLAG=.FALSE. ! do not allow convergence if we happen to have a small RMS and EVAP is true'
          IF (MFLAG) THEN
-            FIXIMAGE=.FALSE.
             IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
             RETURN
          ENDIF
       ENDIF
 
       IF (ITDONE.EQ.ITMAX) THEN
-         IF (DEBUG) FIXIMAGE=.FALSE.
          IF (DEBUG) WRITE(LFH,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
          RETURN
       ENDIF
@@ -198,8 +198,8 @@ C
 C     THE SEARCH STEPS AND GRADIENT DIFFERENCES ARE STORED IN A
 C     CIRCULAR ORDER CONTROLLED BY THE PARAMETER POINT.
 C
-         ISPT= N+2*M    ! index for storage of search steps
-         IYPT= ISPT+N*M ! index for storage of gradient differences
+         ISSS= N+2*M    ! index for storage of search steps
+         ISDG= ISSS+N*M ! index for storage of gradient differences
 C
 C  NR step for diagonal inverse Hessian
 C
@@ -213,12 +213,12 @@ C
          ! {{{
          BOUND=ITER
          IF (ITER.GT.M) BOUND=M
-         YS= DDOT(N,W(IYPT+NPT+1),1,W(ISPT+NPT+1),1)
+         YS= DDOT(N,W(ISDG+NPT+1),1,W(ISSS+NPT+1),1)
 C
 C  Update estimate of diagonal inverse Hessian elements
 C
          IF (.NOT.DIAGCO) THEN
-            YY= DDOT(N,W(IYPT+NPT+1),1,W(IYPT+NPT+1),1)
+            YY= DDOT(N,W(ISDG+NPT+1),1,W(ISDG+NPT+1),1)
             IF (YY.EQ.0.0D0) THEN
                WRITE(LFH,'(A)') 'WARNING, resetting YY to one in mylbfgs'
                YY=1.0D0
@@ -257,9 +257,9 @@ C
          DO J1= 1,BOUND
             CP=CP-1
             IF (CP.EQ.-1) CP=M-1
-            SQ=DDOT(N,W(ISPT+CP*N+1),1,W,1)
+            SQ=DDOT(N,W(ISSS+CP*N+1),1,W,1)
             INMC=N+M+CP+1
-            IYCN=IYPT+CP*N
+            IYCN=ISDG+CP*N
             W(INMC)=W(N+CP+1)*SQ
             CALL DAXPY(N,-W(INMC),W(IYCN+1),1,W,1)
          ENDDO
@@ -269,11 +269,11 @@ C
          ENDDO
 
          DO J1=1,BOUND
-            YR= DDOT(N,W(IYPT+CP*N+1),1,W,1)
+            YR= DDOT(N,W(ISDG+CP*N+1),1,W,1)
             BETA= W(N+CP+1)*YR
             INMC=N+M+CP+1
             BETA= W(INMC)-BETA
-            ISCN=ISPT+CP*N
+            ISCN=ISSS+CP*N
             CALL DAXPY(N,BETA,W(ISCN+1),1,W,1)
             CP=CP+1
             IF (CP.EQ.M) CP=0
@@ -286,7 +286,7 @@ C  Store the new search direction
 C
       IF (ITER.GT.0) THEN
          DO J1=1,N
-            W(ISPT+POINT*N+J1)= W(J1)
+            W(ISSS+POINT*N+J1)= W(J1)
          ENDDO
       ENDIF
 
@@ -311,7 +311,7 @@ C
       IF (OVERLAP.GT.0.0D0) THEN
          IF (DEBUG) WRITE(LFH,'(A)') 'Search direction has positive projection onto gradient - reversing step'
          DO J1=1,N
-            W(ISPT+POINT*N+J1)= -W(J1)  !!! DJW, reverses step
+            W(ISSS+POINT*N+J1)= -W(J1)  !!! DJW, reverses step
          ENDDO
       ENDIF
 
@@ -319,20 +319,18 @@ C
             W(J1)=GRAD(J1)
          ENDDO
       SLENGTH=0.0D0
-      DO J1=1,N
-         SLENGTH=SLENGTH+W(ISPT+POINT*N+J1)**2
-      ENDDO
+         SLENGTH=SUM(W(ISSS+,4+POINT+J1)**2)
       SLENGTH=SQRT(SLENGTH)
       IF (STP*SLENGTH.GT.MAXBFGS) STP=MAXBFGS/SLENGTH
 C
 C  We now have the proposed step.
 C
-! Save XCOORDS here so that we can undo the step reliably including the
+! Save R here so that we can undo the step reliably including the
 ! non-linear projection for Thomson for the angular coordinates.
 !
-         XSAVE(1:N)=XCOORDS(1:N) 
+         RSAVE=R
          DO J1=1,N
-            XCOORDS(J1)=XCOORDS(J1)+STP*W(ISPT+POINT*N+J1)
+            R(J1)=R(J1)+STP*SUM(W(,4+POINT))
          ENDDO 
 C
 C  For charmm internals must transform and back-transform!
@@ -340,27 +338,19 @@ C
       NDECREASE=0
       LEPSILON=1.0D-6
 
+      CALL POTENTIAL(R,GNEW,ENEW,.TRUE.,.FALSE.)
 
-! csw34> INCREMENT THE FORCE CONSTANT FOR STEERED MINIMISATION
-      SMINKCHANGET=.FALSE.
-      IF (LOCALSTEEREDMINT) THEN
-         SMINKCURRENT=MIN(SMINKCURRENT+SMINKINC,SMINK)
-         IF (SMINKCURRENT.NE.SMINKCURRENTP) SMINKCHANGET=.TRUE.
-! a bit of useful debug printing         
-        IF (DEBUG) WRITE(LFH,'(A,2F20.10,L5)') 'SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET=',SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET
-      ENDIF
-
-      CALL POTENTIAL(XCOORDS,GNEW,ENEW,.TRUE.,.FALSE.)
-
-      IF (((ENEW-ENERGY.LE.MAXERISE).OR.EVAP.OR.GUIDECHANGET.OR.SMINKCHANGET).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
+      IF ((ENEW-ENERGY.LE.MAXERISE).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
          ITER=ITER+1
          ITDONE=ITDONE+1
          ENERGY=ENEW
-         DO J1=1,3*NATOMS
-            GRAD(J1)=GNEW(J1)
-         ENDDO
-         IF (DEBUG) WRITE(LFH,'(A,F20.10,G20.10,A,I6,A,F13.10)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,
-     1           ' LBFGS steps, step:',STP*SLENGTH
+         GRAD=GNEW
+
+      IF (DEBUG) WRITE(LFH,103) ' Energy and RMS force=', ENERGY,RMS, &
+                                ' after ',ITDONE,' LBFGS steps, ', &
+                                ' step:',STP*SLENGTH
+
+103   FORMAT(A,F20.10,G20.10,A,I6,A,A,F13.10)
 
 C  May want to prevent the PE from falling too much if we are trying to visit all the
 C  PE bins. Halve the step size until the energy decrease is in range.
@@ -371,14 +361,15 @@ C  Energy decreased too much - try again with a smaller step size
 C
          IF (NDECREASE.GT.5) THEN
             NFAIL=NFAIL+1
-            WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find an energy in the required range, NFAIL=',NFAIL
+            WRITE(LFH,'(A,A,G20.10)')   ' in mylbfgs LBFGS step cannot find an energy in the required range, ',&
+                                        '    NFAIL=',NFAIL
       !
-! Resetting to XSAVE should be the same as subtracting the step. 
+! Resetting to RSAVE should be the same as subtracting the step. 
 ! If we have tried PROJI with Thomson then the projection is non-linear
-! and we need to reset to XSAVE. This should always be reliable!
+! and we need to reset to RSAVE. This should always be reliable!
 !
-               XCOORDS(1:N)=XSAVE(1:N)
-               GRAD(1:N)=GNEW(1:N) ! GRAD contains the gradient at the lowest energy point
+               R=RSAVE
+               GRAD=GNEW ! GRAD contains the gradient at the lowest energy point
 
             ITER=0   !  try resetting
             IF (NFAIL.GT.20) THEN
@@ -389,14 +380,14 @@ C
             GOTO 30
          ENDIF
 !
-! Resetting to XSAVE and adding half the step should be the same as subtracting 
+! Resetting to RSAVE and adding half the step should be the same as subtracting 
 ! half the step. 
 ! If we have tried PROJI with Thomson then the projection is non-linear
-! and we need to reset to XSAVE. This should always be reliable!
+! and we need to reset to RSAVE. This should always be reliable!
 !
-            XCOORDS(1:N)=XSAVE(1:N)
+            R=RSAVE
             DO J1=1,N
-               XCOORDS(J1)=XCOORDS(J1)+0.5*STP*W(ISPT+POINT*N+J1)
+               R=R+0.5*STP*W(ISSS+POINT*N+J1)
             ENDDO 
          ENDIF
          STP=STP/2.0D0
@@ -414,15 +405,15 @@ C
             NFAIL=NFAIL+1
             WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find a lower energy, NFAIL=',NFAIL
             !
-! Resetting to XSAVE should be the same as subtracting the step. 
+! Resetting to RSAVE should be the same as subtracting the step. 
 ! If we have tried PROJI with Thomson then the projection is non-linear
-! and we need to reset to XSAVE. This should always be reliable!
+! and we need to reset to RSAVE. This should always be reliable!
 !
-               XCOORDS(1:N)=XSAVE(1:N)
+               R(1:N)=RSAVE(1:N)
                GRAD(1:N)=GNEW(1:N) ! GRAD contains the gradient at the lowest energy point
 !              DO J1=1,N
 !                 GRAD(J1)=GNEW(J1) ! GRAD contains the gradient at the lowest energy point
-!                 XCOORDS(J1)=XCOORDS(J1)-STP*W(ISPT+POINT*N+J1)
+!                 R(J1)=R(J1)-STP*W(ISSS+POINT*N+J1)
 !              ENDDO
             ITER=0   !  try resetting
              IF (NFAIL.GT.5) THEN         
@@ -435,14 +426,14 @@ C
             GOTO 30
          ENDIF
       !
-! Resetting to XSAVE and adding 0.1 of the step should be the same as subtracting 
+! Resetting to RSAVE and adding 0.1 of the step should be the same as subtracting 
 ! 0.9 of the step. 
 ! If we have tried PROJI with Thomson then the projection is non-linear
-! and we need to reset to XSAVE. This should always be reliable!
+! and we need to reset to RSAVE. This should always be reliable!
 !
-            XCOORDS(1:N)=XSAVE(1:N)
+            R=RSAVE
             DO J1=1,N
-               XCOORDS(J1)=XCOORDS(J1)+0.1D0*STP*W(ISPT+POINT*N+J1)
+               R(J1)=R(J1)+0.1D0*STP*W(ISSS+POINT*N+J1)
             ENDDO 
          ENDIF
          STP=STP/1.0D1
@@ -458,15 +449,15 @@ C
 30    NPT=POINT*N
 
          DO J1=1,N
-            W(ISPT+NPT+J1)= STP*W(ISPT+NPT+J1) ! save the step taken
-            W(IYPT+NPT+J1)= GRAD(J1)-W(J1)     ! save gradient difference: W(1:N) contains the old gradient
+            W(ISSS+NPT+J1,POINT)= STP*W(ISSS+NPT+J1) ! save the step taken
+            W(ISDG+NPT+J1,POINT)= GRAD-W     ! save gradient difference: W(1:N) contains the old gradient
          ENDDO
       POINT=POINT+1
       IF (POINT.EQ.M) POINT=0
       FIXIMAGE=.FALSE.
-            IF (CENT) CALL CENTRE2(XCOORDS)
+            IF (CENT) CALL CENTRE2(R)
       SMINKCURRENTP=SMINKCURRENT
       GOTO 10
-
+! }}}
       RETURN
       END
