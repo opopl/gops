@@ -6,16 +6,25 @@
 
       IMPLICIT NONE
 
-      ! SUBROUTINE PARAMETERS
+      ! SUBROUTINE PARAMETERS {{{
+
       LOGICAL,INTENT(IN) :: FINALQUENCH
       INTEGER ITER
       DOUBLE PRECISION TIME
       INTEGER BRUN,QDONE
       DOUBLE PRECISION P(3*NATOMS)
 
-      ! LOCAL PARAMETERS 
+      ! }}}
+
+      ! LOCAL PARAMETERS  {{{
+
       DOUBLE PRECISION SSAVE
       INTEGER NOPT
+
+      ! CFLAG - test convergence
+      LOGICAL CFLAG
+
+      ! }}}
       
       DOUBLE PRECISION POTEL
       
