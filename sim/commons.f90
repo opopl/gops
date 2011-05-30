@@ -3,7 +3,7 @@
 !
 !> @brief Declarations for common variables 
 !
-MODULE COMMONS
+MODULE GMIN_COMMONS
 
 IMPLICIT NONE
 SAVE
@@ -11,7 +11,7 @@ SAVE
 ! Doxygen {{{
 !> @param RMASS(3)      (dp)    center-of-mass coordinates
 !> @param MCSTEPS       (i)     length of a basin-hopping (BH) run   
-!> @param NA            (i)     number of particles in the system
+!> @param NATOMS        (i)     number of particles in the system
 !> @param NCORE         (i)     
 !> @param NQ            (i)     
 !> @param NSAVE         (i)     number of lowest energy geometries to be saved
@@ -33,7 +33,7 @@ SAVE
 !}}}
 !
 ! declarations {{{
-INTEGER :: NA
+INTEGER :: NATOMS
 INTEGER :: NSAVE
 INTEGER :: ISTEP
 INTEGER :: NCORE

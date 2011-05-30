@@ -6,9 +6,9 @@
 
       PROGRAM GMIN
 ! declarations {{{
-      USE COMMONS
-      USE PORFUNCS
-      USE FUNC
+      USE GMIN_COMMONS
+      USE GMIN_PORFUNCS
+      USE GMIN_FUNC
       
       IMPLICIT NONE
       
@@ -35,6 +35,7 @@
 
 ! init {{{
       CALL CPU_TIME(TSTART)
+      CALL KEYWORD
       CALL READ_CMD_ARGS
 
       CALL OPENF(LFH,">",LFN)
@@ -50,7 +51,6 @@
 
       VT(1:NATOMS)=0.0D0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
 
-      CALL KEYWORD
       
       ALLOCATE(FF(NSAVE),QMIN(NSAVE))
       ALLOCATE(QMINP(NSAVE,3*NATOMS))
