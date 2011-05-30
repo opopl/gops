@@ -16,1068 +16,1068 @@
 !   along with this program; if not, write to the Free Software
 !   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-module rigidbody
+MODULE RIGIDBODY
 
-  use mathsconstants
+  USE MATHSCONSTANTS
 
-  implicit none
-
-! #####################################################################################################
-
-! Define a new structure type
-! This will make it easier if we want to have more than one type of rigid body
-! in the same system
-
-  type rigidbodyPotential
-
-     integer :: nSites
-     integer :: nPhysicalSites        ! For the purposes of calculating path lengths etc
-
-! Reference geometry
-     real (kind=kind(0.0d0)), allocatable :: SITE(:,:)
-
-! Site symbols for output
-
-     character(5), allocatable :: siteLabel(:)
-
-! Masses for calculating rotational constants etc
-
-     real (kind=kind(0.0d0)), allocatable :: mass(:)
-
-! Atomic numbers - not sure why we need these and only valid for atomic models anyway
-
-     integer, allocatable :: atomicNumber(:)
-
-! Partial charges
-     real (kind=kind(0.0d0)), allocatable :: CHARGE(:)
-
-! LJ parameters
-     real (kind=kind(0.0d0)), allocatable :: C6(:)
-     real (kind=kind(0.0d0)), allocatable :: C12(:)
-
-! Morse parameters - epsilon, rho, Re
-
-     real (kind=kind(0.0d0)), allocatable :: morseParameters(:,:)    
-
-! Conversion factor for normal mode frequencies
-
-     real (kind=kind(0.0d0)) :: freqConvFactor = 0.0d0
-
-! Conversion factor for Coulomb energies 
-
-     real (kind=kind(0.0d0)) :: coulombConversionFactor = 1.0d0
-
-! Conversion factor for electric field interactions
-
-     real (kind=kind(0.0d0)) :: efieldConversionFactor = 1.0d0     
-
-  end type rigidbodyPotential
+  IMPLICIT NONE
 
 ! #####################################################################################################
 
-! Store the definition of a virus capsomer
+! DEFINE A NEW STRUCTURE TYPE
+! THIS WILL MAKE IT EASIER IF WE WANT TO HAVE MORE THAN ONE TYPE OF RIGID BODY
+! IN THE SAME SYSTEM
 
-  type capsomer
-     integer :: nBasalSites
-     real (kind=kind(0.0d0)) :: rho, radius, height
-     real (kind=kind(0.0d0)) :: epsilonRep   ! Repulsive as a fraction of epsilon_Morse
-  end type capsomer
+  TYPE RIGIDBODYPOTENTIAL
+
+     INTEGER :: NSITES
+     INTEGER :: NPHYSICALSITES        ! FOR THE PURPOSES OF CALCULATING PATH LENGTHS ETC
+
+! REFERENCE GEOMETRY
+     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: SITE(:,:)
+
+! SITE SYMBOLS FOR OUTPUT
+
+     CHARACTER(5), ALLOCATABLE :: SITELABEL(:)
+
+! MASSES FOR CALCULATING ROTATIONAL CONSTANTS ETC
+
+     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: MASS(:)
+
+! ATOMIC NUMBERS - NOT SURE WHY WE NEED THESE AND ONLY VALID FOR ATOMIC MODELS ANYWAY
+
+     INTEGER, ALLOCATABLE :: ATOMICNUMBER(:)
+
+! PARTIAL CHARGES
+     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: CHARGE(:)
+
+! LJ PARAMETERS
+     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: C6(:)
+     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: C12(:)
+
+! MORSE PARAMETERS - EPSILON, RHO, RE
+
+     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: MORSEPARAMETERS(:,:)    
+
+! CONVERSION FACTOR FOR NORMAL MODE FREQUENCIES
+
+     REAL (KIND=KIND(0.0D0)) :: FREQCONVFACTOR = 0.0D0
+
+! CONVERSION FACTOR FOR COULOMB ENERGIES 
+
+     REAL (KIND=KIND(0.0D0)) :: COULOMBCONVERSIONFACTOR = 1.0D0
+
+! CONVERSION FACTOR FOR ELECTRIC FIELD INTERACTIONS
+
+     REAL (KIND=KIND(0.0D0)) :: EFIELDCONVERSIONFACTOR = 1.0D0     
+
+  END TYPE RIGIDBODYPOTENTIAL
 
 ! #####################################################################################################
 
-  save
+! STORE THE DEFINITION OF A VIRUS CAPSOMER
 
-  integer :: numRBtypes
-  type (capsomer), allocatable :: capsomerDefs(:)
+  TYPE CAPSOMER
+     INTEGER :: NBASALSITES
+     REAL (KIND=KIND(0.0D0)) :: RHO, RADIUS, HEIGHT
+     REAL (KIND=KIND(0.0D0)) :: EPSILONREP   ! REPULSIVE AS A FRACTION OF EPSILON_MORSE
+  END TYPE CAPSOMER
 
-  type(rigidbodyPotential) :: rbPotential
-  logical, allocatable :: sitesInteract(:,:,:)
+! #####################################################################################################
 
-! Small angle below which approximations to trigonometric functions are employed
+  SAVE
 
-  real (kind=kind(0.0d0)), parameter :: smallAngle = 1D-5 
+  INTEGER :: NUMRBTYPES
+  TYPE (CAPSOMER), ALLOCATABLE :: CAPSOMERDEFS(:)
+
+  TYPE(RIGIDBODYPOTENTIAL) :: RBPOTENTIAL
+  LOGICAL, ALLOCATABLE :: SITESINTERACT(:,:,:)
+
+! SMALL ANGLE BELOW WHICH APPROXIMATIONS TO TRIGONOMETRIC FUNCTIONS ARE EMPLOYED
+
+  REAL (KIND=KIND(0.0D0)), PARAMETER :: SMALLANGLE = 1D-5 
   
-contains
+CONTAINS
 
 ! #####################################################################################################
 
-! Initialise known rigid body models
+! INITIALISE KNOWN RIGID BODY MODELS
 
-  subroutine initialiseRigidBody (atomType, nbodies, systemMasses, systemAtNumbers)
+  SUBROUTINE INITIALISERIGIDBODY (ATOMTYPE, NBODIES, SYSTEMMASSES, SYSTEMATNUMBERS)
 
-    implicit none
-    character(5), intent(IN) :: atomType
-    integer, intent(IN), optional :: nbodies
-    real (kind=kind(0.0d0)), pointer, dimension(:), optional :: systemMasses
-    integer, pointer, dimension(:), optional :: systemAtNumbers
+    IMPLICIT NONE
+    CHARACTER(5), INTENT(IN) :: ATOMTYPE
+    INTEGER, INTENT(IN), OPTIONAL :: NBODIES
+    REAL (KIND=KIND(0.0D0)), POINTER, DIMENSION(:), OPTIONAL :: SYSTEMMASSES
+    INTEGER, POINTER, DIMENSION(:), OPTIONAL :: SYSTEMATNUMBERS
 
-    integer :: currentBody, currentSite
-    real (kind=kind(0.0d0)) :: currentAngle
+    INTEGER :: CURRENTBODY, CURRENTSITE
+    REAL (KIND=KIND(0.0D0)) :: CURRENTANGLE
 
-    select case (atomType(1:1))
+    SELECT CASE (ATOMTYPE(1:1))
 
-! TIPnP family of potentials
-    case ('W')
-       rbPotential%nPhysicalSites = 3
+! TIPNP FAMILY OF POTENTIALS
+    CASE ('W')
+       RBPOTENTIAL%NPHYSICALSITES = 3
 
-       allocate(rbPotential%siteLabel(rbPotential%nPhysicalSites))
-       allocate(rbPotential%mass(rbPotential%nPhysicalSites))
-       allocate(rbPotential%atomicNumber(rbPotential%nPhysicalSites))
+       ALLOCATE(RBPOTENTIAL%SITELABEL(RBPOTENTIAL%NPHYSICALSITES))
+       ALLOCATE(RBPOTENTIAL%MASS(RBPOTENTIAL%NPHYSICALSITES))
+       ALLOCATE(RBPOTENTIAL%ATOMICNUMBER(RBPOTENTIAL%NPHYSICALSITES))
 
-       rbPotential%siteLabel = (/'O', 'H', 'H'/)
-       rbPotential%mass = (/16.0d0, 1.0d0, 1.0d0/)       ! Pure H2O, not isotopic abundance weighted
-       rbPotential%atomicNumber = (/8, 1, 1/)
+       RBPOTENTIAL%SITELABEL = (/'O', 'H', 'H'/)
+       RBPOTENTIAL%MASS = (/16.0D0, 1.0D0, 1.0D0/)       ! PURE H2O, NOT ISOTOPIC ABUNDANCE WEIGHTED
+       RBPOTENTIAL%ATOMICNUMBER = (/8, 1, 1/)
 
-       rbPotential%freqConvFactor = 1d3/(2.99792458d0*2.0d0*pi)    ! Converts frequencies to wavenumbers
-                                                                   ! See journal reference 01/07/05
+       RBPOTENTIAL%FREQCONVFACTOR = 1D3/(2.99792458D0*2.0D0*PI)    ! CONVERTS FREQUENCIES TO WAVENUMBERS
+                                                                   ! SEE JOURNAL REFERENCE 01/07/05
 
-       rbPotential%coulombConversionFactor = 1389.354848D0
-       rbPotential%efieldConversionFactor = 96.4847D0 ! eV to kJ/mol conversion, input field in V/A
+       RBPOTENTIAL%COULOMBCONVERSIONFACTOR = 1389.354848D0
+       RBPOTENTIAL%EFIELDCONVERSIONFACTOR = 96.4847D0 ! EV TO KJ/MOL CONVERSION, INPUT FIELD IN V/A
 
-! Initialise known system types
+! INITIALISE KNOWN SYSTEM TYPES
 
-       select case (atomType(2:2))
-       case ('1')
-          rbPotential%nSites = 3
-          allocate(rbPotential%site(rbPotential%nSites,3),rbPotential%CHARGE(rbPotential%nSites))
-          allocate(rbPotential%C6(rbPotential%nSites),rbPotential%C12(rbPotential%nSites))
+       SELECT CASE (ATOMTYPE(2:2))
+       CASE ('1')
+          RBPOTENTIAL%NSITES = 3
+          ALLOCATE(RBPOTENTIAL%SITE(RBPOTENTIAL%NSITES,3),RBPOTENTIAL%CHARGE(RBPOTENTIAL%NSITES))
+          ALLOCATE(RBPOTENTIAL%C6(RBPOTENTIAL%NSITES),RBPOTENTIAL%C12(RBPOTENTIAL%NSITES))
           
-          rbPotential%site(1,:) = 0.0d0
-          rbPotential%site(2,:) = (/0.2785156560837814d0, -0.6990486725944498d0, 0.5916010671560346d0/)
-          rbPotential%site(3,:) = (/-0.0640734628674161d0, -0.4219928632410997D0, -0.8567662777734411D0/)
+          RBPOTENTIAL%SITE(1,:) = 0.0D0
+          RBPOTENTIAL%SITE(2,:) = (/0.2785156560837814D0, -0.6990486725944498D0, 0.5916010671560346D0/)
+          RBPOTENTIAL%SITE(3,:) = (/-0.0640734628674161D0, -0.4219928632410997D0, -0.8567662777734411D0/)
 
-          rbPotential%CHARGE = (/-0.8D0, 0.4D0, 0.4D0/)
+          RBPOTENTIAL%CHARGE = (/-0.8D0, 0.4D0, 0.4D0/)
 
-! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
-          rbPotential%C6 = (/2510.4D0, 0.0d0, 0.0d0/) 
-          rbPotential%C12 = (/2426720.0D0, 0.0d0, 0.0d0/)
+! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
+          RBPOTENTIAL%C6 = (/2510.4D0, 0.0D0, 0.0D0/) 
+          RBPOTENTIAL%C12 = (/2426720.0D0, 0.0D0, 0.0D0/)
 
-       case ('2')
-          rbPotential%nSites = 4
-          allocate(rbPotential%site(rbPotential%nSites,3),rbPotential%CHARGE(rbPotential%nSites))
-          allocate(rbPotential%C6(rbPotential%nSites),rbPotential%C12(rbPotential%nSites))
+       CASE ('2')
+          RBPOTENTIAL%NSITES = 4
+          ALLOCATE(RBPOTENTIAL%SITE(RBPOTENTIAL%NSITES,3),RBPOTENTIAL%CHARGE(RBPOTENTIAL%NSITES))
+          ALLOCATE(RBPOTENTIAL%C6(RBPOTENTIAL%NSITES),RBPOTENTIAL%C12(RBPOTENTIAL%NSITES))
           
-          rbPotential%site(1,:) = 0.0d0
-          rbPotential%site(2,:) = (/0.2785156560837814d0, -0.6990486725944498d0, 0.5916010671560346d0/)
-          rbPotential%site(3,:) = (/-0.0640734628674161d0, -0.4219928632410997D0, -0.8567662777734411D0/)
-          rbPotential%site(4,:) = (/0.0274511879486426D0, -0.1435068418061116D0, -0.0339443461425310D0/)
+          RBPOTENTIAL%SITE(1,:) = 0.0D0
+          RBPOTENTIAL%SITE(2,:) = (/0.2785156560837814D0, -0.6990486725944498D0, 0.5916010671560346D0/)
+          RBPOTENTIAL%SITE(3,:) = (/-0.0640734628674161D0, -0.4219928632410997D0, -0.8567662777734411D0/)
+          RBPOTENTIAL%SITE(4,:) = (/0.0274511879486426D0, -0.1435068418061116D0, -0.0339443461425310D0/)
 
-          rbPotential%CHARGE = (/0.0d0, 0.535D0, 0.535D0, -1.07D0/)
+          RBPOTENTIAL%CHARGE = (/0.0D0, 0.535D0, 0.535D0, -1.07D0/)
 
-! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
-          rbPotential%C6 = (/2510.4D0, 0.0d0, 0.0d0, 0.0d0/) 
-          rbPotential%C12 = (/2907880.0D0, 0.0d0, 0.0d0, 0.0d0/)
+! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
+          RBPOTENTIAL%C6 = (/2510.4D0, 0.0D0, 0.0D0, 0.0D0/) 
+          RBPOTENTIAL%C12 = (/2907880.0D0, 0.0D0, 0.0D0, 0.0D0/)
 
-       case ('3')
-          rbPotential%nSites = 3
-          allocate(rbPotential%site(rbPotential%nSites,3),rbPotential%CHARGE(rbPotential%nSites))
-          allocate(rbPotential%C6(rbPotential%nSites),rbPotential%C12(rbPotential%nSites))
+       CASE ('3')
+          RBPOTENTIAL%NSITES = 3
+          ALLOCATE(RBPOTENTIAL%SITE(RBPOTENTIAL%NSITES,3),RBPOTENTIAL%CHARGE(RBPOTENTIAL%NSITES))
+          ALLOCATE(RBPOTENTIAL%C6(RBPOTENTIAL%NSITES),RBPOTENTIAL%C12(RBPOTENTIAL%NSITES))
           
-          rbPotential%site(1,:) = 0.0d0
-          rbPotential%site(2,:) = (/0.2785156560837814d0, -0.6990486725944498d0, 0.5916010671560346d0/)
-          rbPotential%site(3,:) = (/-0.0640734628674161d0, -0.4219928632410997D0, -0.8567662777734411D0/)
+          RBPOTENTIAL%SITE(1,:) = 0.0D0
+          RBPOTENTIAL%SITE(2,:) = (/0.2785156560837814D0, -0.6990486725944498D0, 0.5916010671560346D0/)
+          RBPOTENTIAL%SITE(3,:) = (/-0.0640734628674161D0, -0.4219928632410997D0, -0.8567662777734411D0/)
 
-          rbPotential%CHARGE = (/-0.834D0, 0.417D0, 0.417D0/)
+          RBPOTENTIAL%CHARGE = (/-0.834D0, 0.417D0, 0.417D0/)
 
-! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
-          rbPotential%C6 = (/2489.48D0, 0.0d0, 0.0d0/)             ! 2489.71000D0 
-          rbPotential%C12 = (/2435088.0D0, 0.0d0, 0.0d0/)          ! 2435099.13639D0
+! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
+          RBPOTENTIAL%C6 = (/2489.48D0, 0.0D0, 0.0D0/)             ! 2489.71000D0 
+          RBPOTENTIAL%C12 = (/2435088.0D0, 0.0D0, 0.0D0/)          ! 2435099.13639D0
 
-       case ('4')
-          rbPotential%nSites = 4
-          allocate(rbPotential%site(rbPotential%nSites,3),rbPotential%CHARGE(rbPotential%nSites))
-          allocate(rbPotential%C6(rbPotential%nSites),rbPotential%C12(rbPotential%nSites))
+       CASE ('4')
+          RBPOTENTIAL%NSITES = 4
+          ALLOCATE(RBPOTENTIAL%SITE(RBPOTENTIAL%NSITES,3),RBPOTENTIAL%CHARGE(RBPOTENTIAL%NSITES))
+          ALLOCATE(RBPOTENTIAL%C6(RBPOTENTIAL%NSITES),RBPOTENTIAL%C12(RBPOTENTIAL%NSITES))
           
-          rbPotential%site(1,:) = 0.0d0
-          rbPotential%site(2,:) = (/0.2785156560837814d0, -0.6990486725944498d0, 0.5916010671560346d0/)
-          rbPotential%site(3,:) = (/-0.0640734628674161d0, -0.4219928632410997D0, -0.8567662777734411D0/)
-          rbPotential%site(4,:) = (/0.0274511879486426D0, -0.1435068418061116D0, -0.0339443461425310D0/)
+          RBPOTENTIAL%SITE(1,:) = 0.0D0
+          RBPOTENTIAL%SITE(2,:) = (/0.2785156560837814D0, -0.6990486725944498D0, 0.5916010671560346D0/)
+          RBPOTENTIAL%SITE(3,:) = (/-0.0640734628674161D0, -0.4219928632410997D0, -0.8567662777734411D0/)
+          RBPOTENTIAL%SITE(4,:) = (/0.0274511879486426D0, -0.1435068418061116D0, -0.0339443461425310D0/)
 
-          rbPotential%CHARGE = (/0.0d0, 0.52D0, 0.52D0, -1.04D0/)
+          RBPOTENTIAL%CHARGE = (/0.0D0, 0.52D0, 0.52D0, -1.04D0/)
 
-! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
-          rbPotential%C6 = (/2552.24D0, 0.0d0, 0.0d0, 0.0d0/)       ! 2551.90393D0
-          rbPotential%C12 = (/2510.4D3, 0.0d0, 0.0d0, 0.0d0/)       ! 2510413.58406D0      
+! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
+          RBPOTENTIAL%C6 = (/2552.24D0, 0.0D0, 0.0D0, 0.0D0/)       ! 2551.90393D0
+          RBPOTENTIAL%C12 = (/2510.4D3, 0.0D0, 0.0D0, 0.0D0/)       ! 2510413.58406D0      
 
-       case ('5')
-          rbPotential%nSites = 5
-          allocate(rbPotential%site(rbPotential%nSites,3),rbPotential%CHARGE(rbPotential%nSites))
-          allocate(rbPotential%C6(rbPotential%nSites),rbPotential%C12(rbPotential%nSites))
+       CASE ('5')
+          RBPOTENTIAL%NSITES = 5
+          ALLOCATE(RBPOTENTIAL%SITE(RBPOTENTIAL%NSITES,3),RBPOTENTIAL%CHARGE(RBPOTENTIAL%NSITES))
+          ALLOCATE(RBPOTENTIAL%C6(RBPOTENTIAL%NSITES),RBPOTENTIAL%C12(RBPOTENTIAL%NSITES))
           
-          rbPotential%site(1,:) = 0.0d0
-!          rbPotential%site(2,:) = (/0.75695032726366118236d0,0.0d0,-0.58588227661829495041d0/)
-!          rbPotential%site(3,:) = (/-0.75695032726366118236d0,0.0d0,-0.58588227661829495041d0/)
-!          rbPotential%site(4,:) = (/0.0d0,0.57154330164408195802d0,0.40415127656087129759d0/)
-!          rbPotential%site(5,:) = (/0.0d0,-0.57154330164408195802d0,0.40415127656087129759d0/)
+          RBPOTENTIAL%SITE(1,:) = 0.0D0
+!          RBPOTENTIAL%SITE(2,:) = (/0.75695032726366118236D0,0.0D0,-0.58588227661829495041D0/)
+!          RBPOTENTIAL%SITE(3,:) = (/-0.75695032726366118236D0,0.0D0,-0.58588227661829495041D0/)
+!          RBPOTENTIAL%SITE(4,:) = (/0.0D0,0.57154330164408195802D0,0.40415127656087129759D0/)
+!          RBPOTENTIAL%SITE(5,:) = (/0.0D0,-0.57154330164408195802D0,0.40415127656087129759D0/)
          
-          rbPotential%site(2,:) = (/0.2785156560837814d0, -0.6990486725944498d0, 0.5916010671560346d0/)
-          rbPotential%site(3,:) = (/-0.0640734628674161d0, -0.4219928632410997D0, -0.8567662777734411D0/)
-          rbPotential%site(4,:) = (/0.4728396101454916D0, 0.5159942465174050D0, -0.0131392784579428d0/)
-          rbPotential%site(5,:) = (/-0.6207653788462422D0, 0.2573187309647155D0, 0.1960546227983159d0/)
+          RBPOTENTIAL%SITE(2,:) = (/0.2785156560837814D0, -0.6990486725944498D0, 0.5916010671560346D0/)
+          RBPOTENTIAL%SITE(3,:) = (/-0.0640734628674161D0, -0.4219928632410997D0, -0.8567662777734411D0/)
+          RBPOTENTIAL%SITE(4,:) = (/0.4728396101454916D0, 0.5159942465174050D0, -0.0131392784579428D0/)
+          RBPOTENTIAL%SITE(5,:) = (/-0.6207653788462422D0, 0.2573187309647155D0, 0.1960546227983159D0/)
 
-          rbPotential%CHARGE = (/0.0d0, 0.241D0, 0.241D0, -0.241D0, -0.241D0/)
+          RBPOTENTIAL%CHARGE = (/0.0D0, 0.241D0, 0.241D0, -0.241D0, -0.241D0/)
 
-! LJ coefficients in kJ/mol Angstrom**6 or Angstrom**12
-          rbPotential%C6 = (/2470.012857D0, 0.0d0, 0.0d0, 0.0d0, 0.0d0/) 
-          rbPotential%C12 = (/2278383.244D0, 0.0d0, 0.0d0, 0.0d0, 0.0d0/)
+! LJ COEFFICIENTS IN KJ/MOL ANGSTROM**6 OR ANGSTROM**12
+          RBPOTENTIAL%C6 = (/2470.012857D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0/) 
+          RBPOTENTIAL%C12 = (/2278383.244D0, 0.0D0, 0.0D0, 0.0D0, 0.0D0/)
 
-       case default
-          print *, 'Unrecognised atom type passed to rigid body initialisation:', atomType
-          STOP ! call exit(1)
+       CASE DEFAULT
+          PRINT *, 'UNRECOGNISED ATOM TYPE PASSED TO RIGID BODY INITIALISATION:', ATOMTYPE
+          STOP ! CALL EXIT(1)
 
-       end select
+       END SELECT
 
-! PAH molecule
-    case ('P')
-       rbPotential%nSites = 36
-       ALLOCATE(rbPotential%site(rbPotential%nSites,3), rbPotential%charge(rbPotential%nSites))
+! PAH MOLECULE
+    CASE ('P')
+       RBPOTENTIAL%NSITES = 36
+       ALLOCATE(RBPOTENTIAL%SITE(RBPOTENTIAL%NSITES,3), RBPOTENTIAL%CHARGE(RBPOTENTIAL%NSITES))
 
-       rbPotential%site(:,3) = 0.0d0
+       RBPOTENTIAL%SITE(:,3) = 0.0D0
 
-       rbPotential%site( 1,1)=1.42d0
-       rbPotential%site( 1,2)=0.0d0
-       rbPotential%CHARGE( 1)=-0.0066d0
+       RBPOTENTIAL%SITE( 1,1)=1.42D0
+       RBPOTENTIAL%SITE( 1,2)=0.0D0
+       RBPOTENTIAL%CHARGE( 1)=-0.0066D0
 
-       rbPotential%site( 2,1)=0.71d0
-       rbPotential%site( 2,2)=1.229755d0
-       rbPotential%CHARGE( 2)=-0.0066d0
+       RBPOTENTIAL%SITE( 2,1)=0.71D0
+       RBPOTENTIAL%SITE( 2,2)=1.229755D0
+       RBPOTENTIAL%CHARGE( 2)=-0.0066D0
 
-       rbPotential%site( 3,1)=-0.71d0
-       rbPotential%site( 3,2)=1.229755d0
-       rbPotential%CHARGE( 3)=-0.0066d0
+       RBPOTENTIAL%SITE( 3,1)=-0.71D0
+       RBPOTENTIAL%SITE( 3,2)=1.229755D0
+       RBPOTENTIAL%CHARGE( 3)=-0.0066D0
 
-       rbPotential%site( 4,1)=-1.42d0
-       rbPotential%site( 4,2)=0.0d0
-       rbPotential%CHARGE( 4)=-0.0066D0
+       RBPOTENTIAL%SITE( 4,1)=-1.42D0
+       RBPOTENTIAL%SITE( 4,2)=0.0D0
+       RBPOTENTIAL%CHARGE( 4)=-0.0066D0
 
-       rbPotential%site( 5,1)=-0.71d0
-       rbPotential%site( 5,2)=-1.229755d0
-       rbPotential%CHARGE( 5)=-0.0066D0
+       RBPOTENTIAL%SITE( 5,1)=-0.71D0
+       RBPOTENTIAL%SITE( 5,2)=-1.229755D0
+       RBPOTENTIAL%CHARGE( 5)=-0.0066D0
 
-       rbPotential%site( 6,1)=0.71d0
-       rbPotential%site( 6,2)=-1.229755d0
-       rbPotential%CHARGE( 6)=-0.0066D0
+       RBPOTENTIAL%SITE( 6,1)=0.71D0
+       RBPOTENTIAL%SITE( 6,2)=-1.229755D0
+       RBPOTENTIAL%CHARGE( 6)=-0.0066D0
 
-       rbPotential%site( 7,1)=2.838d0
-       rbPotential%site( 7,2)=0.0d0
-       rbPotential%CHARGE( 7)=0.0158d0
+       RBPOTENTIAL%SITE( 7,1)=2.838D0
+       RBPOTENTIAL%SITE( 7,2)=0.0D0
+       RBPOTENTIAL%CHARGE( 7)=0.0158D0
 
-       rbPotential%site( 8,1)=1.419d0
-       rbPotential%site( 8,2)=2.457779d0
-       rbPotential%CHARGE( 8)=0.0158d0
+       RBPOTENTIAL%SITE( 8,1)=1.419D0
+       RBPOTENTIAL%SITE( 8,2)=2.457779D0
+       RBPOTENTIAL%CHARGE( 8)=0.0158D0
 
-       rbPotential%site( 9,1)=-1.419d0
-       rbPotential%site( 9,2)=2.457779d0
-       rbPotential%CHARGE( 9)=0.0158d0
+       RBPOTENTIAL%SITE( 9,1)=-1.419D0
+       RBPOTENTIAL%SITE( 9,2)=2.457779D0
+       RBPOTENTIAL%CHARGE( 9)=0.0158D0
 
-       rbPotential%site(10,1)=-2.838d0
-       rbPotential%site(10,2)=0.0d0
-       rbPotential%CHARGE(10)=0.0158d0
+       RBPOTENTIAL%SITE(10,1)=-2.838D0
+       RBPOTENTIAL%SITE(10,2)=0.0D0
+       RBPOTENTIAL%CHARGE(10)=0.0158D0
 
-       rbPotential%site(11,1)=-1.419d0
-       rbPotential%site(11,2)=-2.45779d0
-       rbPotential%CHARGE(11)=0.0158d0
+       RBPOTENTIAL%SITE(11,1)=-1.419D0
+       RBPOTENTIAL%SITE(11,2)=-2.45779D0
+       RBPOTENTIAL%CHARGE(11)=0.0158D0
 
-       rbPotential%site(12,1)=1.419d0
-       rbPotential%site(12,2)=-2.45779d0
-       rbPotential%CHARGE(12)=0.0158d0
+       RBPOTENTIAL%SITE(12,1)=1.419D0
+       RBPOTENTIAL%SITE(12,2)=-2.45779D0
+       RBPOTENTIAL%CHARGE(12)=0.0158D0
 
-       rbPotential%site(13,1)=3.523366d0
-       rbPotential%site(13,2)=1.248219d0
-       rbPotential%CHARGE(13)=-0.0986d0
+       RBPOTENTIAL%SITE(13,1)=3.523366D0
+       RBPOTENTIAL%SITE(13,2)=1.248219D0
+       RBPOTENTIAL%CHARGE(13)=-0.0986D0
 
-       rbPotential%site(14,1)=2.842673d0
-       rbPotential%site(14,2)=2.427211d0
-       rbPotential%CHARGE(14)=-0.0986d0
+       RBPOTENTIAL%SITE(14,1)=2.842673D0
+       RBPOTENTIAL%SITE(14,2)=2.427211D0
+       RBPOTENTIAL%CHARGE(14)=-0.0986D0
 
-       rbPotential%site(15,1)=0.680706d0
-       rbPotential%site(15,2)=3.675430d0
-       rbPotential%CHARGE(15)=-0.0986d0
+       RBPOTENTIAL%SITE(15,1)=0.680706D0
+       RBPOTENTIAL%SITE(15,2)=3.675430D0
+       RBPOTENTIAL%CHARGE(15)=-0.0986D0
 
-       rbPotential%site(16,1)=-0.680677d0
-       rbPotential%site(16,2)=3.675437d0
-       rbPotential%CHARGE(16)=-0.0986d0
+       RBPOTENTIAL%SITE(16,1)=-0.680677D0
+       RBPOTENTIAL%SITE(16,2)=3.675437D0
+       RBPOTENTIAL%CHARGE(16)=-0.0986D0
 
-       rbPotential%site(17,1)=-2.842673d0
-       rbPotential%site(17,2)=2.427211d0
-       rbPotential%CHARGE(17)=-0.0986D0
+       RBPOTENTIAL%SITE(17,1)=-2.842673D0
+       RBPOTENTIAL%SITE(17,2)=2.427211D0
+       RBPOTENTIAL%CHARGE(17)=-0.0986D0
 
-       rbPotential%site(18,1)=-3.523366D0
-       rbPotential%site(18,2)=1.248219D0
-       rbPotential%CHARGE(18)=-0.0986D0
+       RBPOTENTIAL%SITE(18,1)=-3.523366D0
+       RBPOTENTIAL%SITE(18,2)=1.248219D0
+       RBPOTENTIAL%CHARGE(18)=-0.0986D0
 
-       rbPotential%site(19,1)=-3.523366D0
-       rbPotential%site(19,2)=-1.248219D0
-       rbPotential%CHARGE(19)=-0.0986D0
+       RBPOTENTIAL%SITE(19,1)=-3.523366D0
+       RBPOTENTIAL%SITE(19,2)=-1.248219D0
+       RBPOTENTIAL%CHARGE(19)=-0.0986D0
 
-       rbPotential%site(20,1)=-2.842673D0
-       rbPotential%site(20,2)=-2.427211D0
-       rbPotential%CHARGE(20)=-0.0986D0
+       RBPOTENTIAL%SITE(20,1)=-2.842673D0
+       RBPOTENTIAL%SITE(20,2)=-2.427211D0
+       RBPOTENTIAL%CHARGE(20)=-0.0986D0
 
-       rbPotential%site(21,1)=-0.680677D0
-       rbPotential%site(21,2)=-3.675437D0
-       rbPotential%CHARGE(21)=-0.0986D0
+       RBPOTENTIAL%SITE(21,1)=-0.680677D0
+       RBPOTENTIAL%SITE(21,2)=-3.675437D0
+       RBPOTENTIAL%CHARGE(21)=-0.0986D0
 
-       rbPotential%site(22,1)=0.680706D0
-       rbPotential%site(22,2)=-3.675437D0
-       rbPotential%CHARGE(22)=-0.0986D0
+       RBPOTENTIAL%SITE(22,1)=0.680706D0
+       RBPOTENTIAL%SITE(22,2)=-3.675437D0
+       RBPOTENTIAL%CHARGE(22)=-0.0986D0
 
-       rbPotential%site(23,1)=2.842673D0
-       rbPotential%site(23,2)=-2.427211D0
-       rbPotential%CHARGE(23)=-0.0986D0
+       RBPOTENTIAL%SITE(23,1)=2.842673D0
+       RBPOTENTIAL%SITE(23,2)=-2.427211D0
+       RBPOTENTIAL%CHARGE(23)=-0.0986D0
 
-       rbPotential%site(24,1)=3.523366D0
-       rbPotential%site(24,2)=-1.248219D0
-       rbPotential%CHARGE(24)=-0.0986D0
+       RBPOTENTIAL%SITE(24,1)=3.523366D0
+       RBPOTENTIAL%SITE(24,2)=-1.248219D0
+       RBPOTENTIAL%CHARGE(24)=-0.0986D0
 
-       rbPotential%site(25,1)=4.602048D0
-       rbPotential%site(25,2)=1.274393D0
-       rbPotential%CHARGE(25)=0.094D0
+       RBPOTENTIAL%SITE(25,1)=4.602048D0
+       RBPOTENTIAL%SITE(25,2)=1.274393D0
+       RBPOTENTIAL%CHARGE(25)=0.094D0
 
-       rbPotential%site(26,1)=3.404682D0
-       rbPotential%site(26,2)=3.348290D0
-       rbPotential%CHARGE(26)=0.094D0
+       RBPOTENTIAL%SITE(26,1)=3.404682D0
+       RBPOTENTIAL%SITE(26,2)=3.348290D0
+       RBPOTENTIAL%CHARGE(26)=0.094D0
 
-       rbPotential%site(27,1)=1.197383D0
-       rbPotential%site(27,2)=4.622681D0
-       rbPotential%CHARGE(27)=0.094D0
+       RBPOTENTIAL%SITE(27,1)=1.197383D0
+       RBPOTENTIAL%SITE(27,2)=4.622681D0
+       RBPOTENTIAL%CHARGE(27)=0.094D0
 
-       rbPotential%site(28,1)=-1.197347D0
-       rbPotential%site(28,2)=4.622693D0
-       rbPotential%CHARGE(28)=0.094D0
+       RBPOTENTIAL%SITE(28,1)=-1.197347D0
+       RBPOTENTIAL%SITE(28,2)=4.622693D0
+       RBPOTENTIAL%CHARGE(28)=0.094D0
 
-       rbPotential%site(29,1)=-3.404682D0
-       rbPotential%site(29,2)=3.348290D0
-       rbPotential%CHARGE(29)=0.094D0
+       RBPOTENTIAL%SITE(29,1)=-3.404682D0
+       RBPOTENTIAL%SITE(29,2)=3.348290D0
+       RBPOTENTIAL%CHARGE(29)=0.094D0
 
-       rbPotential%site(30,1)=-4.602048D0
-       rbPotential%site(30,2)=1.274393D0
-       rbPotential%CHARGE(30)=0.094D0
+       RBPOTENTIAL%SITE(30,1)=-4.602048D0
+       RBPOTENTIAL%SITE(30,2)=1.274393D0
+       RBPOTENTIAL%CHARGE(30)=0.094D0
 
-       rbPotential%site(31,1)=-4.602048D0
-       rbPotential%site(31,2)=-1.274393D0
-       rbPotential%CHARGE(31)=0.094D0
+       RBPOTENTIAL%SITE(31,1)=-4.602048D0
+       RBPOTENTIAL%SITE(31,2)=-1.274393D0
+       RBPOTENTIAL%CHARGE(31)=0.094D0
 
-       rbPotential%site(32,1)=-3.404682D0
-       rbPotential%site(32,2)=-3.348290D0
-       rbPotential%CHARGE(32)=0.094D0
+       RBPOTENTIAL%SITE(32,1)=-3.404682D0
+       RBPOTENTIAL%SITE(32,2)=-3.348290D0
+       RBPOTENTIAL%CHARGE(32)=0.094D0
 
-       rbPotential%site(33,1)=-1.197347D0
-       rbPotential%site(33,2)=-4.622693D0
-       rbPotential%CHARGE(33)=0.094D0
+       RBPOTENTIAL%SITE(33,1)=-1.197347D0
+       RBPOTENTIAL%SITE(33,2)=-4.622693D0
+       RBPOTENTIAL%CHARGE(33)=0.094D0
 
-       rbPotential%site(34,1)=1.197383D0
-       rbPotential%site(34,2)=-4.622681D0
-       rbPotential%CHARGE(34)=0.094D0
+       RBPOTENTIAL%SITE(34,1)=1.197383D0
+       RBPOTENTIAL%SITE(34,2)=-4.622681D0
+       RBPOTENTIAL%CHARGE(34)=0.094D0
 
-       rbPotential%site(35,1)=3.404682D0
-       rbPotential%site(35,2)=-3.348290D0
-       rbPotential%CHARGE(35)=0.094D0
+       RBPOTENTIAL%SITE(35,1)=3.404682D0
+       RBPOTENTIAL%SITE(35,2)=-3.348290D0
+       RBPOTENTIAL%CHARGE(35)=0.094D0
 
-       rbPotential%site(36,1)=4.602048D0
-       rbPotential%site(36,2)=-1.274393D0
-       rbPotential%CHARGE(36)=0.094D0
+       RBPOTENTIAL%SITE(36,1)=4.602048D0
+       RBPOTENTIAL%SITE(36,2)=-1.274393D0
+       RBPOTENTIAL%CHARGE(36)=0.094D0
 
-    case ('C')
-       if (numRBtypes.ne.1) then
-          print *, 'Multiple capsid types not yet initialised'
-          stop
-       endif
+    CASE ('C')
+       IF (NUMRBTYPES.NE.1) THEN
+          PRINT *, 'MULTIPLE CAPSID TYPES NOT YET INITIALISED'
+          STOP
+       ENDIF
 
-       rbPotential%nSites = capsomerDefs(1)%nBasalSites + 1
-       rbPotential%nPhysicalSites = rbPotential%nSites
+       RBPOTENTIAL%NSITES = CAPSOMERDEFS(1)%NBASALSITES + 1
+       RBPOTENTIAL%NPHYSICALSITES = RBPOTENTIAL%NSITES
        
-       allocate(rbPotential%site(rbPotential%nSites,3), rbPotential%siteLabel(rbPotential%nSites))
-       allocate(rbPotential%C6(rbPotential%nSites), rbPotential%C12(rbPotential%nSites))
-       allocate(rbPotential%morseParameters(rbPotential%nSites,3))
-       allocate(rbPotential%mass(rbPotential%nSites))
+       ALLOCATE(RBPOTENTIAL%SITE(RBPOTENTIAL%NSITES,3), RBPOTENTIAL%SITELABEL(RBPOTENTIAL%NSITES))
+       ALLOCATE(RBPOTENTIAL%C6(RBPOTENTIAL%NSITES), RBPOTENTIAL%C12(RBPOTENTIAL%NSITES))
+       ALLOCATE(RBPOTENTIAL%MORSEPARAMETERS(RBPOTENTIAL%NSITES,3))
+       ALLOCATE(RBPOTENTIAL%MASS(RBPOTENTIAL%NSITES))
 
-       rbPotential%C6 = 0.0d0
-       rbPotential%C12 = 0.0d0
+       RBPOTENTIAL%C6 = 0.0D0
+       RBPOTENTIAL%C12 = 0.0D0
 
-! Sites around the base
-! Morse parameters are in the order epsilon, rho, Re
-! At the moment epsilon and Re are implicitly the units of energy and distance, respectively
+! SITES AROUND THE BASE
+! MORSE PARAMETERS ARE IN THE ORDER EPSILON, RHO, RE
+! AT THE MOMENT EPSILON AND RE ARE IMPLICITLY THE UNITS OF ENERGY AND DISTANCE, RESPECTIVELY
 
-       do currentSite = 1, capsomerDefs(1)%nBasalSites
-          currentAngle = (currentSite-1)*twopi/(1.0d0*capsomerDefs(1)%nBasalSites)
+       DO CURRENTSITE = 1, CAPSOMERDEFS(1)%NBASALSITES
+          CURRENTANGLE = (CURRENTSITE-1)*TWOPI/(1.0D0*CAPSOMERDEFS(1)%NBASALSITES)
 
-          rbPotential%site(currentSite,:) = (/capsomerDefs(1)%radius*cos(currentAngle), &
-                                              capsomerDefs(1)%radius*sin(currentAngle), &
-                                              0.0d0/)
+          RBPOTENTIAL%SITE(CURRENTSITE,:) = (/CAPSOMERDEFS(1)%RADIUS*COS(CURRENTANGLE), &
+                                              CAPSOMERDEFS(1)%RADIUS*SIN(CURRENTANGLE), &
+                                              0.0D0/)
           
-          rbPotential%siteLabel(currentSite) = 'C';
-          rbPotential%morseParameters(currentSite,:) = (/1.0d0,capsomerDefs(1)%rho,1.0d0/)
-          rbPotential%mass(currentSite) = 0.6d0
-       enddo
+          RBPOTENTIAL%SITELABEL(CURRENTSITE) = 'C';
+          RBPOTENTIAL%MORSEPARAMETERS(CURRENTSITE,:) = (/1.0D0,CAPSOMERDEFS(1)%RHO,1.0D0/)
+          RBPOTENTIAL%MASS(CURRENTSITE) = 0.6D0
+       ENDDO
 
-! Then the repulsive site at the apex
-! epsilon_repulsive is specified as a fraction of epsilon_Morse
+! THEN THE REPULSIVE SITE AT THE APEX
+! EPSILON_REPULSIVE IS SPECIFIED AS A FRACTION OF EPSILON_MORSE
 
-       rbPotential%site(rbPotential%nSites,:) = (/0.0d0, 0.0d0, capsomerDefs(1)%height/)
-       rbPotential%siteLabel(rbPotential%nSites) = 'O';
-       rbPotential%C12(rbPotential%nSites) = &
-         capsomerDefs(1)%epsilonRep*1.0d0*(1.0d0+capsomerDefs(1)%radius*sqrt((sqrt(5.0d0)+5.0d0)/2.0d0))**12
-       rbPotential%morseParameters(rbPotential%nSites,:) = 0.0d0
-       rbPotential%mass(rbPotential%nSites) = 3d0
+       RBPOTENTIAL%SITE(RBPOTENTIAL%NSITES,:) = (/0.0D0, 0.0D0, CAPSOMERDEFS(1)%HEIGHT/)
+       RBPOTENTIAL%SITELABEL(RBPOTENTIAL%NSITES) = 'O';
+       RBPOTENTIAL%C12(RBPOTENTIAL%NSITES) = &
+         CAPSOMERDEFS(1)%EPSILONREP*1.0D0*(1.0D0+CAPSOMERDEFS(1)%RADIUS*SQRT((SQRT(5.0D0)+5.0D0)/2.0D0))**12
+       RBPOTENTIAL%MORSEPARAMETERS(RBPOTENTIAL%NSITES,:) = 0.0D0
+       RBPOTENTIAL%MASS(RBPOTENTIAL%NSITES) = 3D0
 
-       rbPotential%freqConvFactor = 1d0    ! No frequency conversion just yet
+       RBPOTENTIAL%FREQCONVFACTOR = 1D0    ! NO FREQUENCY CONVERSION JUST YET
 
-!       do currentSite = 1, rbPotential%nSites
-!          print *, rbPotential%site(currentSite,1), rbPotential%site(currentSite,2), rbPotential%site(currentSite,3)
-!       enddo
-!       stop
-    case default
-       print *, 'Unrecognised atom type passed to rigid body initialisation:', atomType
-       STOP ! call exit(1)
+!       DO CURRENTSITE = 1, RBPOTENTIAL%NSITES
+!          PRINT *, RBPOTENTIAL%SITE(CURRENTSITE,1), RBPOTENTIAL%SITE(CURRENTSITE,2), RBPOTENTIAL%SITE(CURRENTSITE,3)
+!       ENDDO
+!       STOP
+    CASE DEFAULT
+       PRINT *, 'UNRECOGNISED ATOM TYPE PASSED TO RIGID BODY INITIALISATION:', ATOMTYPE
+       STOP ! CALL EXIT(1)
 
-    end select
+    END SELECT
 
-! Optional specification of system masses and atomic numbers
-! OPTIM uses this but GMIN doesn`t
+! OPTIONAL SPECIFICATION OF SYSTEM MASSES AND ATOMIC NUMBERS
+! OPTIM USES THIS BUT GMIN DOESN`T
 
-    if (.not.allocated(rbPotential%mass)) then
-       print *, 'initialiseRigidBody> No masses specified so initialising to default value (1.0)'
-       allocate(rbPotential%mass(rbPotential%nPhysicalSites))
-       rbPotential%mass = 1.0d0
-    endif
+    IF (.NOT.ALLOCATED(RBPOTENTIAL%MASS)) THEN
+       PRINT *, 'INITIALISERIGIDBODY> NO MASSES SPECIFIED SO INITIALISING TO DEFAULT VALUE (1.0)'
+       ALLOCATE(RBPOTENTIAL%MASS(RBPOTENTIAL%NPHYSICALSITES))
+       RBPOTENTIAL%MASS = 1.0D0
+    ENDIF
  
-    if (.not.allocated(rbPotential%atomicNumber)) then
-       print *, 'initialiseRigidBody> No atomic numbers specified so initialising to default value (0)'
-       allocate(rbPotential%atomicNumber(rbPotential%nPhysicalSites))
-       rbPotential%atomicNumber = 0
-    endif
+    IF (.NOT.ALLOCATED(RBPOTENTIAL%ATOMICNUMBER)) THEN
+       PRINT *, 'INITIALISERIGIDBODY> NO ATOMIC NUMBERS SPECIFIED SO INITIALISING TO DEFAULT VALUE (0)'
+       ALLOCATE(RBPOTENTIAL%ATOMICNUMBER(RBPOTENTIAL%NPHYSICALSITES))
+       RBPOTENTIAL%ATOMICNUMBER = 0
+    ENDIF
       
-    if (present(systemMasses)) then
-       if (.not.present(nbodies)) then
-          print *, 'initialiseRigidBody> Must specify number of bodies if you wish to initialise system masses'
-          STOP ! call exit(1)
-       endif
+    IF (PRESENT(SYSTEMMASSES)) THEN
+       IF (.NOT.PRESENT(NBODIES)) THEN
+          PRINT *, 'INITIALISERIGIDBODY> MUST SPECIFY NUMBER OF BODIES IF YOU WISH TO INITIALISE SYSTEM MASSES'
+          STOP ! CALL EXIT(1)
+       ENDIF
 
-       allocate(systemMasses(nbodies*rbPotential%nPhysicalSites))
+       ALLOCATE(SYSTEMMASSES(NBODIES*RBPOTENTIAL%NPHYSICALSITES))
 
-       do currentBody = 1, nbodies
-          systemMasses((currentBody-1)*rbPotential%nPhysicalSites+1:currentBody*rbPotential%nPhysicalSites) = &
-               rbPotential%mass
-       enddo
-    endif
+       DO CURRENTBODY = 1, NBODIES
+          SYSTEMMASSES((CURRENTBODY-1)*RBPOTENTIAL%NPHYSICALSITES+1:CURRENTBODY*RBPOTENTIAL%NPHYSICALSITES) = &
+               RBPOTENTIAL%MASS
+       ENDDO
+    ENDIF
 
-    if (present(systemAtNumbers)) then
-       if (.not.present(nbodies)) then
-          print *, 'initialiseRigidBody> Must specify number of bodies if you wish to initialise system atomic numbers'
-          STOP ! call exit(1)
-       endif
+    IF (PRESENT(SYSTEMATNUMBERS)) THEN
+       IF (.NOT.PRESENT(NBODIES)) THEN
+          PRINT *, 'INITIALISERIGIDBODY> MUST SPECIFY NUMBER OF BODIES IF YOU WISH TO INITIALISE SYSTEM ATOMIC NUMBERS'
+          STOP ! CALL EXIT(1)
+       ENDIF
 
-       allocate(systemAtNumbers(nbodies*rbPotential%nPhysicalSites))
-       do currentBody = 1, nbodies
-          systemAtNumbers((currentBody-1)*rbPotential%nPhysicalSites+1:currentBody*rbPotential%nPhysicalSites) = &
-               rbPotential%atomicNumber
-       enddo
-    endif
+       ALLOCATE(SYSTEMATNUMBERS(NBODIES*RBPOTENTIAL%NPHYSICALSITES))
+       DO CURRENTBODY = 1, NBODIES
+          SYSTEMATNUMBERS((CURRENTBODY-1)*RBPOTENTIAL%NPHYSICALSITES+1:CURRENTBODY*RBPOTENTIAL%NPHYSICALSITES) = &
+               RBPOTENTIAL%ATOMICNUMBER
+       ENDDO
+    ENDIF
 
-    call initialiseInteractionMap
+    CALL INITIALISEINTERACTIONMAP
 
-  end subroutine initialiseRigidBody
-
-! #####################################################################################################
-
-! Saves us having to check explicitly in the potential evaluation routine
-
-  subroutine initialiseInteractionMap
-    implicit none
-
-    integer :: site1, site2
-
-    if (allocated(sitesInteract)) then
-       if (size(sitesInteract,1).ne.rbPotential%nSites .or. size(sitesInteract,2).ne.rbPotential%nSites) then
-          deallocate(sitesInteract)
-          allocate(sitesInteract(rbPotential%nSites, rbPotential%nSites, 4))
-       endif
-    else
-       allocate(sitesInteract(rbPotential%nSites,rbPotential%nSites, 4))
-    endif
-
-    sitesInteract = .false.
-
-    do site1 = 1, rbPotential%nSites
-       do site2 = 1, rbPotential%nSites
-
-! Coulomb interaction
-
-          if (allocated(rbPotential%charge)) then
-             if (rbPotential%charge(site1).ne.0.0d0 .and. rbPotential%charge(site2).ne.0.0d0) then
-                sitesInteract(site1, site2, 1) = .true.
-                sitesInteract(site1, site2, 2) = .true.   
-             endif
-          endif
-
-! LJ interaction
-
-          if (allocated(rbPotential%C6) .and. allocated(rbPotential%C12)) then
-              if ((rbPotential%C6(site1).ne.0.0d0 .or. rbPotential%C12(site1).ne.0.0d0) .and. &
-                   (rbPotential%C6(site2).ne.0.0d0 .or. rbPotential%C12(site2).ne.0.0d0)) then
-                 sitesInteract(site1, site2, 1) = .true.
-                 sitesInteract(site1, site2, 3) = .true.
-              endif
-          endif
-
-! Morse interaction
-
-          if (allocated(rbPotential%morseParameters)) then
-              if (rbPotential%morseParameters(site1,1).ne.0.0d0 .and. &
-                   rbPotential%morseParameters(site2,1).ne.0.0d0) then
-                 sitesInteract(site1, site2, 1) = .true.
-                 sitesInteract(site1, site2, 4) = .true.
-              endif
-          endif
-       enddo
-    enddo
-
-  end subroutine initialiseInteractionMap
+  END SUBROUTINE INITIALISERIGIDBODY
 
 ! #####################################################################################################
 
-! Return allocated memory on request
+! SAVES US HAVING TO CHECK EXPLICITLY IN THE POTENTIAL EVALUATION ROUTINE
 
-  subroutine cleanRigidBodies
-    implicit none
+  SUBROUTINE INITIALISEINTERACTIONMAP
+    IMPLICIT NONE
+
+    INTEGER :: SITE1, SITE2
+
+    IF (ALLOCATED(SITESINTERACT)) THEN
+       IF (SIZE(SITESINTERACT,1).NE.RBPOTENTIAL%NSITES .OR. SIZE(SITESINTERACT,2).NE.RBPOTENTIAL%NSITES) THEN
+          DEALLOCATE(SITESINTERACT)
+          ALLOCATE(SITESINTERACT(RBPOTENTIAL%NSITES, RBPOTENTIAL%NSITES, 4))
+       ENDIF
+    ELSE
+       ALLOCATE(SITESINTERACT(RBPOTENTIAL%NSITES,RBPOTENTIAL%NSITES, 4))
+    ENDIF
+
+    SITESINTERACT = .FALSE.
+
+    DO SITE1 = 1, RBPOTENTIAL%NSITES
+       DO SITE2 = 1, RBPOTENTIAL%NSITES
+
+! COULOMB INTERACTION
+
+          IF (ALLOCATED(RBPOTENTIAL%CHARGE)) THEN
+             IF (RBPOTENTIAL%CHARGE(SITE1).NE.0.0D0 .AND. RBPOTENTIAL%CHARGE(SITE2).NE.0.0D0) THEN
+                SITESINTERACT(SITE1, SITE2, 1) = .TRUE.
+                SITESINTERACT(SITE1, SITE2, 2) = .TRUE.   
+             ENDIF
+          ENDIF
+
+! LJ INTERACTION
+
+          IF (ALLOCATED(RBPOTENTIAL%C6) .AND. ALLOCATED(RBPOTENTIAL%C12)) THEN
+              IF ((RBPOTENTIAL%C6(SITE1).NE.0.0D0 .OR. RBPOTENTIAL%C12(SITE1).NE.0.0D0) .AND. &
+                   (RBPOTENTIAL%C6(SITE2).NE.0.0D0 .OR. RBPOTENTIAL%C12(SITE2).NE.0.0D0)) THEN
+                 SITESINTERACT(SITE1, SITE2, 1) = .TRUE.
+                 SITESINTERACT(SITE1, SITE2, 3) = .TRUE.
+              ENDIF
+          ENDIF
+
+! MORSE INTERACTION
+
+          IF (ALLOCATED(RBPOTENTIAL%MORSEPARAMETERS)) THEN
+              IF (RBPOTENTIAL%MORSEPARAMETERS(SITE1,1).NE.0.0D0 .AND. &
+                   RBPOTENTIAL%MORSEPARAMETERS(SITE2,1).NE.0.0D0) THEN
+                 SITESINTERACT(SITE1, SITE2, 1) = .TRUE.
+                 SITESINTERACT(SITE1, SITE2, 4) = .TRUE.
+              ENDIF
+          ENDIF
+       ENDDO
+    ENDDO
+
+  END SUBROUTINE INITIALISEINTERACTIONMAP
+
+! #####################################################################################################
+
+! RETURN ALLOCATED MEMORY ON REQUEST
+
+  SUBROUTINE CLEANRIGIDBODIES
+    IMPLICIT NONE
     
-    if (allocated(rbPotential%site)) deallocate(rbPotential%site)
-    if (allocated(rbPotential%siteLabel)) deallocate(rbPotential%siteLabel)
-    if (allocated(rbPotential%mass)) deallocate(rbPotential%mass)
-    if (allocated(rbPotential%atomicNumber)) deallocate(rbPotential%atomicNumber)
-    if (allocated(rbPotential%CHARGE)) deallocate(rbPotential%CHARGE)
-    if (allocated(rbPotential%C6)) deallocate(rbPotential%C6)
-    if (allocated(rbPotential%C12)) deallocate(rbPotential%C12)
-    if (allocated(rbPotential%morseParameters)) deallocate(rbPotential%morseParameters)
+    IF (ALLOCATED(RBPOTENTIAL%SITE)) DEALLOCATE(RBPOTENTIAL%SITE)
+    IF (ALLOCATED(RBPOTENTIAL%SITELABEL)) DEALLOCATE(RBPOTENTIAL%SITELABEL)
+    IF (ALLOCATED(RBPOTENTIAL%MASS)) DEALLOCATE(RBPOTENTIAL%MASS)
+    IF (ALLOCATED(RBPOTENTIAL%ATOMICNUMBER)) DEALLOCATE(RBPOTENTIAL%ATOMICNUMBER)
+    IF (ALLOCATED(RBPOTENTIAL%CHARGE)) DEALLOCATE(RBPOTENTIAL%CHARGE)
+    IF (ALLOCATED(RBPOTENTIAL%C6)) DEALLOCATE(RBPOTENTIAL%C6)
+    IF (ALLOCATED(RBPOTENTIAL%C12)) DEALLOCATE(RBPOTENTIAL%C12)
+    IF (ALLOCATED(RBPOTENTIAL%MORSEPARAMETERS)) DEALLOCATE(RBPOTENTIAL%MORSEPARAMETERS)
 
-    if (allocated(sitesInteract)) deallocate(sitesInteract)
+    IF (ALLOCATED(SITESINTERACT)) DEALLOCATE(SITESINTERACT)
 
-  end subroutine cleanRigidBodies
-
-! #####################################################################################################
-
-! Moves the center of mass of the reference geometry to the origin
-! This is necessary for some implementations of the normal mode analysis
-
-  subroutine CoMtoOrigin ()
-
-    implicit none
-
-    real (kind=kind(0.0d0)) :: initialCoM(3)
-    integer :: currentSite
-
-! Check we have relevant data
-
-    if (.not.allocated(rbPotential%site)) then
-       print *, 'Cannot perform CoM calculation without specified sites'
-       STOP ! call exit(1)
-    else if (.not.allocated(rbPotential%mass)) then
-       print *, 'Cannot perform CoM calculation without specified masses'
-       STOP ! call exit(1)
-    endif
-
-! Calculate initial CoM - use only physical sites
-
-    initialCoM = 0.0d0
-
-    do currentSite = 1, rbPotential%nPhysicalSites
-       initialCoM = initialCoM + rbPotential%mass(currentSite)*rbPotential%site(currentSite,:)
-    enddo
-
-    initialCoM = initialCoM/monomerMass()
-
-! Correct all sites
-
-    do currentSite = 1, rbPotential%nSites
-       rbPotential%site(currentSite,:) = rbPotential%site(currentSite,:) - initialCoM
-    enddo
-
-    return
-
-  end subroutine CoMtoOrigin
+  END SUBROUTINE CLEANRIGIDBODIES
 
 ! #####################################################################################################
 
-! Cartesian generation routines
+! MOVES THE CENTER OF MASS OF THE REFERENCE GEOMETRY TO THE ORIGIN
+! THIS IS NECESSARY FOR SOME IMPLEMENTATIONS OF THE NORMAL MODE ANALYSIS
 
-  function cartesianX (refSite,xCoC,px,py,pz)
-    implicit none
-    real (kind=kind(0.0d0)) :: cartesianX
-    real (kind=kind(0.0d0)), intent(IN) :: refSite(3),xCoC,px,py,pz 
+  SUBROUTINE COMTOORIGIN ()
 
-   real (kind=kind(0.0d0)) :: angle, cos_angle, cos_factor, sin_factor 
+    IMPLICIT NONE
 
-! Normalise the rotational variables
+    REAL (KIND=KIND(0.0D0)) :: INITIALCOM(3)
+    INTEGER :: CURRENTSITE
 
-    angle = DSQRT(px**2 + py**2 + pz**2)
-    cos_angle = cos(angle)
+! CHECK WE HAVE RELEVANT DATA
 
-    if (angle.lt.smallAngle) then
-!       print *, 'Small angle approximation in cartesianX'
-       cos_factor = 0.5d0 - (angle**2)/24.0d0
-       sin_factor = 1.0d0 - (angle**2)/6.0d0
-    else
-       cos_factor = (1.0d0-cos_angle)/(angle**2)
-       sin_factor = sin(angle)/angle
-    endif
+    IF (.NOT.ALLOCATED(RBPOTENTIAL%SITE)) THEN
+       PRINT *, 'CANNOT PERFORM COM CALCULATION WITHOUT SPECIFIED SITES'
+       STOP ! CALL EXIT(1)
+    ELSE IF (.NOT.ALLOCATED(RBPOTENTIAL%MASS)) THEN
+       PRINT *, 'CANNOT PERFORM COM CALCULATION WITHOUT SPECIFIED MASSES'
+       STOP ! CALL EXIT(1)
+    ENDIF
 
-    cartesianX =  xCoC + refSite(1)*cos_angle + &
-                  px*(px*refSite(1)+py*refSite(2)+pz*refSite(3))*cos_factor + &
-                  (refSite(2)*pz - refSite(3)*py)*sin_factor
-    return
-  end function cartesianX
+! CALCULATE INITIAL COM - USE ONLY PHYSICAL SITES
 
-! #####################################################################################################
+    INITIALCOM = 0.0D0
 
-  function cartesianY (refSite,yCoC,px,py,pz)
-    implicit none
-    real (kind=kind(0.0d0)) :: cartesianY
-    real (kind=kind(0.0d0)), intent(IN) :: refSite(3),yCoC,px,py,pz 
+    DO CURRENTSITE = 1, RBPOTENTIAL%NPHYSICALSITES
+       INITIALCOM = INITIALCOM + RBPOTENTIAL%MASS(CURRENTSITE)*RBPOTENTIAL%SITE(CURRENTSITE,:)
+    ENDDO
 
-    real (kind=kind(0.0d0)) :: angle, cos_angle, cos_factor, sin_factor
+    INITIALCOM = INITIALCOM/MONOMERMASS()
 
-! Normalise the rotational variables
+! CORRECT ALL SITES
 
-    angle = DSQRT(px**2 + py**2 + pz**2)
-    cos_angle = cos(angle)   
+    DO CURRENTSITE = 1, RBPOTENTIAL%NSITES
+       RBPOTENTIAL%SITE(CURRENTSITE,:) = RBPOTENTIAL%SITE(CURRENTSITE,:) - INITIALCOM
+    ENDDO
 
-    if (angle.lt.smallAngle) then
-!       print *, 'Small angle approximation in cartesianY'
-       cos_factor = 0.5d0 - (angle**2)/24.0d0
-       sin_factor = 1.0d0 - (angle**2)/6.0d0
-    else
-       cos_factor = (1.0d0-cos_angle)/(angle**2)
-       sin_factor = sin(angle)/angle
-    endif
+    RETURN
 
-    cartesianY = yCoC + refSite(2)*cos_angle + &
-                 py*(px*refSite(1)+py*refSite(2)+pz*refSite(3))*cos_factor + &
-                 (refSite(3)*px - refSite(1)*pz)*sin_factor
-
-    return
-  end function cartesianY
+  END SUBROUTINE COMTOORIGIN
 
 ! #####################################################################################################
 
-  function cartesianZ (refSite,zCoC,px,py,pz)
-    implicit none
-    real (kind=kind(0.0d0)) :: cartesianZ
-    real (kind=kind(0.0d0)), intent(IN) :: refSite(3),zCoC,px,py,pz 
+! CARTESIAN GENERATION ROUTINES
 
-    real (kind=kind(0.0d0)) :: angle, cos_angle, cos_factor, sin_factor
+  FUNCTION CARTESIANX (REFSITE,XCOC,PX,PY,PZ)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: CARTESIANX
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: REFSITE(3),XCOC,PX,PY,PZ 
 
-! Normalise the rotational variables
+   REAL (KIND=KIND(0.0D0)) :: ANGLE, COS_ANGLE, COS_FACTOR, SIN_FACTOR 
 
-    angle = DSQRT(px**2 + py**2 + pz**2)
-    cos_angle = cos(angle)   
+! NORMALISE THE ROTATIONAL VARIABLES
 
-    if (angle.lt.smallAngle) then
-!       print *, 'Small angle approximation in cartesianZ'
-       cos_factor = 0.5d0 - (angle**2)/24.0d0
-       sin_factor = 1.0d0 - (angle**2)/6.0d0
-    else
-       cos_factor = (1.0d0-cos_angle)/(angle**2)
-       sin_factor = sin(angle)/angle
-    endif
+    ANGLE = DSQRT(PX**2 + PY**2 + PZ**2)
+    COS_ANGLE = COS(ANGLE)
 
-    cartesianZ = zCoC + refSite(3)*cos_angle + &
-                 pz*(px*refSite(1)+py*refSite(2)+pz*refSite(3))*cos_factor + &
-                 (refSite(1)*py - refSite(2)*px)*sin_factor
-    return
-  end function cartesianZ
+    IF (ANGLE.LT.SMALLANGLE) THEN
+!       PRINT *, 'SMALL ANGLE APPROXIMATION IN CARTESIANX'
+       COS_FACTOR = 0.5D0 - (ANGLE**2)/24.0D0
+       SIN_FACTOR = 1.0D0 - (ANGLE**2)/6.0D0
+    ELSE
+       COS_FACTOR = (1.0D0-COS_ANGLE)/(ANGLE**2)
+       SIN_FACTOR = SIN(ANGLE)/ANGLE
+    ENDIF
+
+    CARTESIANX =  XCOC + REFSITE(1)*COS_ANGLE + &
+                  PX*(PX*REFSITE(1)+PY*REFSITE(2)+PZ*REFSITE(3))*COS_FACTOR + &
+                  (REFSITE(2)*PZ - REFSITE(3)*PY)*SIN_FACTOR
+    RETURN
+  END FUNCTION CARTESIANX
 
 ! #####################################################################################################
 
-  function cartesianSeparation(refSite1,xCoC1,yCoC1,zCoC1,px1,py1,pz1, &
-                               refSite2,xCoC2,yCoC2,zCoC2,px2,py2,pz2)
+  FUNCTION CARTESIANY (REFSITE,YCOC,PX,PY,PZ)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: CARTESIANY
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: REFSITE(3),YCOC,PX,PY,PZ 
 
-    implicit none
+    REAL (KIND=KIND(0.0D0)) :: ANGLE, COS_ANGLE, COS_FACTOR, SIN_FACTOR
 
-    real (kind=kind(0.0d0)) :: cartesianSeparation
-    real (kind=kind(0.0d0)), intent(IN) :: refSite1(3),xCoC1,yCoC1,zCoC1,px1,py1,pz1
-    real (kind=kind(0.0d0)), intent(IN) :: refSite2(3),xCoC2,yCoC2,zCoC2,px2,py2,pz2
+! NORMALISE THE ROTATIONAL VARIABLES
+
+    ANGLE = DSQRT(PX**2 + PY**2 + PZ**2)
+    COS_ANGLE = COS(ANGLE)   
+
+    IF (ANGLE.LT.SMALLANGLE) THEN
+!       PRINT *, 'SMALL ANGLE APPROXIMATION IN CARTESIANY'
+       COS_FACTOR = 0.5D0 - (ANGLE**2)/24.0D0
+       SIN_FACTOR = 1.0D0 - (ANGLE**2)/6.0D0
+    ELSE
+       COS_FACTOR = (1.0D0-COS_ANGLE)/(ANGLE**2)
+       SIN_FACTOR = SIN(ANGLE)/ANGLE
+    ENDIF
+
+    CARTESIANY = YCOC + REFSITE(2)*COS_ANGLE + &
+                 PY*(PX*REFSITE(1)+PY*REFSITE(2)+PZ*REFSITE(3))*COS_FACTOR + &
+                 (REFSITE(3)*PX - REFSITE(1)*PZ)*SIN_FACTOR
+
+    RETURN
+  END FUNCTION CARTESIANY
+
+! #####################################################################################################
+
+  FUNCTION CARTESIANZ (REFSITE,ZCOC,PX,PY,PZ)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: CARTESIANZ
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: REFSITE(3),ZCOC,PX,PY,PZ 
+
+    REAL (KIND=KIND(0.0D0)) :: ANGLE, COS_ANGLE, COS_FACTOR, SIN_FACTOR
+
+! NORMALISE THE ROTATIONAL VARIABLES
+
+    ANGLE = DSQRT(PX**2 + PY**2 + PZ**2)
+    COS_ANGLE = COS(ANGLE)   
+
+    IF (ANGLE.LT.SMALLANGLE) THEN
+!       PRINT *, 'SMALL ANGLE APPROXIMATION IN CARTESIANZ'
+       COS_FACTOR = 0.5D0 - (ANGLE**2)/24.0D0
+       SIN_FACTOR = 1.0D0 - (ANGLE**2)/6.0D0
+    ELSE
+       COS_FACTOR = (1.0D0-COS_ANGLE)/(ANGLE**2)
+       SIN_FACTOR = SIN(ANGLE)/ANGLE
+    ENDIF
+
+    CARTESIANZ = ZCOC + REFSITE(3)*COS_ANGLE + &
+                 PZ*(PX*REFSITE(1)+PY*REFSITE(2)+PZ*REFSITE(3))*COS_FACTOR + &
+                 (REFSITE(1)*PY - REFSITE(2)*PX)*SIN_FACTOR
+    RETURN
+  END FUNCTION CARTESIANZ
+
+! #####################################################################################################
+
+  FUNCTION CARTESIANSEPARATION(REFSITE1,XCOC1,YCOC1,ZCOC1,PX1,PY1,PZ1, &
+                               REFSITE2,XCOC2,YCOC2,ZCOC2,PX2,PY2,PZ2)
+
+    IMPLICIT NONE
+
+    REAL (KIND=KIND(0.0D0)) :: CARTESIANSEPARATION
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: REFSITE1(3),XCOC1,YCOC1,ZCOC1,PX1,PY1,PZ1
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: REFSITE2(3),XCOC2,YCOC2,ZCOC2,PX2,PY2,PZ2
     
-    cartesianSeparation = DSQRT((cartesianX(refSite1,xCoC1,px1,py1,pz1) -     &
-                                 cartesianX(refSite2,xCoC2,px2,py2,pz2))**2 + &
-                                (cartesianY(refSite1,yCoC1,px1,py1,pz1) -     &
-                                 cartesianY(refSite2,yCoC2,px2,py2,pz2))**2 + &
-                                (cartesianZ(refSite1,zCoC1,px1,py1,pz1) -     &
-                                 cartesianZ(refSite2,zCoC2,px2,py2,pz2))**2)
+    CARTESIANSEPARATION = DSQRT((CARTESIANX(REFSITE1,XCOC1,PX1,PY1,PZ1) -     &
+                                 CARTESIANX(REFSITE2,XCOC2,PX2,PY2,PZ2))**2 + &
+                                (CARTESIANY(REFSITE1,YCOC1,PX1,PY1,PZ1) -     &
+                                 CARTESIANY(REFSITE2,YCOC2,PX2,PY2,PZ2))**2 + &
+                                (CARTESIANZ(REFSITE1,ZCOC1,PX1,PY1,PZ1) -     &
+                                 CARTESIANZ(REFSITE2,ZCOC2,PX2,PY2,PZ2))**2)
     
-    return
-  end function cartesianSeparation
+    RETURN
+  END FUNCTION CARTESIANSEPARATION
 
 ! #####################################################################################################
 
-! Convert to Cartesians for the purposes of calculating path lengths etc
-! Assumes that the physical sites are specified first in the list
+! CONVERT TO CARTESIANS FOR THE PURPOSES OF CALCULATING PATH LENGTHS ETC
+! ASSUMES THAT THE PHYSICAL SITES ARE SPECIFIED FIRST IN THE LIST
 
-  subroutine monomerToCartesians (xCoC,yCoC,zCoC,px,py,pz,cartesians)
-    implicit none
+  SUBROUTINE MONOMERTOCARTESIANS (XCOC,YCOC,ZCOC,PX,PY,PZ,CARTESIANS)
+    IMPLICIT NONE
 
-! Subroutine arguments
+! SUBROUTINE ARGUMENTS
 
-    real (kind=kind(0.0d0)), intent(IN) :: xCoC,yCoC,zCoC,px,py,pz
-    real (kind=kind(0.0d0)), intent(OUT) :: cartesians (3*rbPotential%nPhysicalSites)
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: XCOC,YCOC,ZCOC,PX,PY,PZ
+    REAL (KIND=KIND(0.0D0)), INTENT(OUT) :: CARTESIANS (3*RBPOTENTIAL%NPHYSICALSITES)
     
-! Local variables
+! LOCAL VARIABLES
 
-    integer :: currentSite
-    real (kind=kind(0.0d0)) :: angle, pdotX0, cos_angle, cos_factor, sin_factor  
+    INTEGER :: CURRENTSITE
+    REAL (KIND=KIND(0.0D0)) :: ANGLE, PDOTX0, COS_ANGLE, COS_FACTOR, SIN_FACTOR  
 
-! Work out the angle, this only needs to be done once
+! WORK OUT THE ANGLE, THIS ONLY NEEDS TO BE DONE ONCE
 
-    angle = DSQRT(px**2 + py**2 + pz**2)
-    cos_angle = cos(angle)
+    ANGLE = DSQRT(PX**2 + PY**2 + PZ**2)
+    COS_ANGLE = COS(ANGLE)
 
-    if (angle.lt.smallAngle) then
-!       print *, 'Small angle approximation in monomerToCartesians'
-       cos_factor = 0.5d0 - (angle**2)/24.0d0
-       sin_factor = 1.0d0 - (angle**2)/6.0d0
-    else
-       cos_factor = (1.0d0-cos_angle)/(angle**2)
-       sin_factor = sin(angle)/angle
-    endif
+    IF (ANGLE.LT.SMALLANGLE) THEN
+!       PRINT *, 'SMALL ANGLE APPROXIMATION IN MONOMERTOCARTESIANS'
+       COS_FACTOR = 0.5D0 - (ANGLE**2)/24.0D0
+       SIN_FACTOR = 1.0D0 - (ANGLE**2)/6.0D0
+    ELSE
+       COS_FACTOR = (1.0D0-COS_ANGLE)/(ANGLE**2)
+       SIN_FACTOR = SIN(ANGLE)/ANGLE
+    ENDIF
 
-! Run through the sites
+! RUN THROUGH THE SITES
 
-    do currentSite=1, rbPotential%nPhysicalSites
-       pdotX0 = px*rbPotential%site(currentSite,1)+py*rbPotential%site(currentSite,2)+pz*rbPotential%site(currentSite,3)
+    DO CURRENTSITE=1, RBPOTENTIAL%NPHYSICALSITES
+       PDOTX0 = PX*RBPOTENTIAL%SITE(CURRENTSITE,1)+PY*RBPOTENTIAL%SITE(CURRENTSITE,2)+PZ*RBPOTENTIAL%SITE(CURRENTSITE,3)
 
-       cartesians(3*currentSite-2) =  xCoC + rbPotential%site(currentSite,1)*cos_angle + &
-            px*pdotX0*cos_factor + &
-            (rbPotential%site(currentSite,2)*pz - rbPotential%site(currentSite,3)*py)*sin_factor
+       CARTESIANS(3*CURRENTSITE-2) =  XCOC + RBPOTENTIAL%SITE(CURRENTSITE,1)*COS_ANGLE + &
+            PX*PDOTX0*COS_FACTOR + &
+            (RBPOTENTIAL%SITE(CURRENTSITE,2)*PZ - RBPOTENTIAL%SITE(CURRENTSITE,3)*PY)*SIN_FACTOR
 
-       cartesians(3*currentSite-1) = yCoC + rbPotential%site(currentSite,2)*cos_angle + &
-                 py*pdotX0*cos_factor + &
-                 (rbPotential%site(currentSite,3)*px - rbPotential%site(currentSite,1)*pz)*sin_factor
+       CARTESIANS(3*CURRENTSITE-1) = YCOC + RBPOTENTIAL%SITE(CURRENTSITE,2)*COS_ANGLE + &
+                 PY*PDOTX0*COS_FACTOR + &
+                 (RBPOTENTIAL%SITE(CURRENTSITE,3)*PX - RBPOTENTIAL%SITE(CURRENTSITE,1)*PZ)*SIN_FACTOR
 
-       cartesians(3*currentSite) = zCoC + rbPotential%site(currentSite,3)*cos_angle + &
-                 pz*pdotX0*cos_factor + &
-                 (rbPotential%site(currentSite,1)*py - rbPotential%site(currentSite,2)*px)*sin_factor
+       CARTESIANS(3*CURRENTSITE) = ZCOC + RBPOTENTIAL%SITE(CURRENTSITE,3)*COS_ANGLE + &
+                 PZ*PDOTX0*COS_FACTOR + &
+                 (RBPOTENTIAL%SITE(CURRENTSITE,1)*PY - RBPOTENTIAL%SITE(CURRENTSITE,2)*PX)*SIN_FACTOR
 
-!       cartesians(3*currentSite-2) = cartesianX(rbPotential%site(currentSite,:),xCoC,px,py,pz) 
-!       cartesians(3*currentSite-1) = cartesianY(rbPotential%site(currentSite,:),yCoC,px,py,pz)
-!       cartesians(3*currentSite) =   cartesianZ(rbPotential%site(currentSite,:),zCoC,px,py,pz)
-    enddo
+!       CARTESIANS(3*CURRENTSITE-2) = CARTESIANX(RBPOTENTIAL%SITE(CURRENTSITE,:),XCOC,PX,PY,PZ) 
+!       CARTESIANS(3*CURRENTSITE-1) = CARTESIANY(RBPOTENTIAL%SITE(CURRENTSITE,:),YCOC,PX,PY,PZ)
+!       CARTESIANS(3*CURRENTSITE) =   CARTESIANZ(RBPOTENTIAL%SITE(CURRENTSITE,:),ZCOC,PX,PY,PZ)
+    ENDDO
 
-  end subroutine monomerToCartesians
+  END SUBROUTINE MONOMERTOCARTESIANS
 
 ! #####################################################################################################
 
-  subroutine systemToCartesians (nbodies, angleAxisCoords, cartesianCoords)
-    implicit none
+  SUBROUTINE SYSTEMTOCARTESIANS (NBODIES, ANGLEAXISCOORDS, CARTESIANCOORDS)
+    IMPLICIT NONE
 
-! Subroutine arguments
+! SUBROUTINE ARGUMENTS
 
-    integer, intent(IN) :: nbodies
-    real (kind=kind(0.0d0)), intent(IN) :: angleAxisCoords(6*nbodies)
-    real (kind=kind(0.0d0)), intent(OUT) :: cartesianCoords(nbodies*rbPotential%nPhysicalSites*3)  
+    INTEGER, INTENT(IN) :: NBODIES
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: ANGLEAXISCOORDS(6*NBODIES)
+    REAL (KIND=KIND(0.0D0)), INTENT(OUT) :: CARTESIANCOORDS(NBODIES*RBPOTENTIAL%NPHYSICALSITES*3)  
     
-! Local variables
+! LOCAL VARIABLES
 
-    integer :: currentBody
+    INTEGER :: CURRENTBODY
 
-    cartesianCoords = 0.0d0
+    CARTESIANCOORDS = 0.0D0
 
-    do currentBody = 1, nbodies
-       call monomerToCartesians(angleAxisCoords(3*currentBody-2), &
-                                angleAxisCoords(3*currentBody-1), &
-                                angleAxisCoords(3*currentBody), &
-                                angleAxisCoords(3*(currentBody+nbodies)-2), &
-                                angleAxisCoords(3*(currentBody+nbodies)-1), &
-                                angleAxisCoords(3*(currentBody+nbodies)), &
-         cartesianCoords((currentBody-1)*rbPotential%nPhysicalSites*3+1:currentBody*rbPotential%nPhysicalSites*3))
-    enddo
+    DO CURRENTBODY = 1, NBODIES
+       CALL MONOMERTOCARTESIANS(ANGLEAXISCOORDS(3*CURRENTBODY-2), &
+                                ANGLEAXISCOORDS(3*CURRENTBODY-1), &
+                                ANGLEAXISCOORDS(3*CURRENTBODY), &
+                                ANGLEAXISCOORDS(3*(CURRENTBODY+NBODIES)-2), &
+                                ANGLEAXISCOORDS(3*(CURRENTBODY+NBODIES)-1), &
+                                ANGLEAXISCOORDS(3*(CURRENTBODY+NBODIES)), &
+         CARTESIANCOORDS((CURRENTBODY-1)*RBPOTENTIAL%NPHYSICALSITES*3+1:CURRENTBODY*RBPOTENTIAL%NPHYSICALSITES*3))
+    ENDDO
 
-  end subroutine systemToCartesians
-
-! #####################################################################################################
-
-  subroutine writeToCartesianStream (writeUnit, nbodies, angleAxisCoords, comment)
-
-    implicit none
-
-! Subroutine arguments
-
-    integer, intent(IN) :: writeUnit
-    integer, intent(IN) :: nbodies
-    real (kind=kind(0.0d0)), intent(IN) :: angleAxisCoords(6*nbodies)
-    character(*), intent(IN) :: comment
-
-! Local variables
-
-    real (kind=kind(0.0d0)) :: cartesians(3*nbodies*rbPotential%nPhysicalSites)
-    integer :: nCartPoints, i
-
-! Convert to Cartesians and write to specified unit
-
-    call systemToCartesians(nbodies, angleAxisCoords, cartesians)
-
-    nCartPoints = nbodies*rbPotential%nPhysicalSites
-    write(writeUnit, *) nCartPoints
-    write(writeUnit, *) trim(comment)
-
-    do i = 1, nCartPoints
-       WRITE(writeUnit,'(A5,4X,3g20.10)') rbPotential%siteLabel(MOD(i-1,rbPotential%nPhysicalSites)+1), &
-            cartesians(3*(i-1)+1), cartesians(3*(i-1)+2), cartesians(3*(i-1)+3)
-    enddo
-
-  end subroutine writeToCartesianStream
+  END SUBROUTINE SYSTEMTOCARTESIANS
 
 ! #####################################################################################################
 
-! Converts a single monomer from Cartesians to angle-axis coordinates
+  SUBROUTINE WRITETOCARTESIANSTREAM (WRITEUNIT, NBODIES, ANGLEAXISCOORDS, COMMENT)
 
-  subroutine monomerToAA (cartesians, AAtrans, AArot)
+    IMPLICIT NONE
 
-    implicit none
+! SUBROUTINE ARGUMENTS
 
-    real (kind=kind(0.0d0)), intent(IN) :: cartesians(rbPotential%nPhysicalSites,3)
-    real (kind=kind(0.0d0)), intent(OUT) :: AAtrans(3), AArot(3)    
+    INTEGER, INTENT(IN) :: WRITEUNIT
+    INTEGER, INTENT(IN) :: NBODIES
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: ANGLEAXISCOORDS(6*NBODIES)
+    CHARACTER(*), INTENT(IN) :: COMMENT
 
-    real (kind=kind(0.0d0)) :: fittingRMSD    
-    real (kind=kind(0.0d0)) :: rmsdTol = 1D-4
-    integer :: i, j  
+! LOCAL VARIABLES
 
-! Simply uses the quaternion fitting method to determine the necessary parameters, not very efficient
+    REAL (KIND=KIND(0.0D0)) :: CARTESIANS(3*NBODIES*RBPOTENTIAL%NPHYSICALSITES)
+    INTEGER :: NCARTPOINTS, I
 
-    call quaternionMatch(rbPotential%nPhysicalSites, cartesians, rbPotential%site(1:rbPotential%nPhysicalSites,:), &
-                         fittingRMSD, AArot, AAtrans)
+! CONVERT TO CARTESIANS AND WRITE TO SPECIFIED UNIT
 
-    if (fittingRMSD.gt.rmsdTol) then
-       print *, 'Error in attempting to convert Cartesians to angle-axis coordinates: RMSD is too high', fittingRMSD
-!       STOP ! call exit(1)
-    endif
+    CALL SYSTEMTOCARTESIANS(NBODIES, ANGLEAXISCOORDS, CARTESIANS)
 
-  end subroutine monomerToAA
+    NCARTPOINTS = NBODIES*RBPOTENTIAL%NPHYSICALSITES
+    WRITE(WRITEUNIT, *) NCARTPOINTS
+    WRITE(WRITEUNIT, *) TRIM(COMMENT)
+
+    DO I = 1, NCARTPOINTS
+       WRITE(WRITEUNIT,'(A5,4X,3G20.10)') RBPOTENTIAL%SITELABEL(MOD(I-1,RBPOTENTIAL%NPHYSICALSITES)+1), &
+            CARTESIANS(3*(I-1)+1), CARTESIANS(3*(I-1)+2), CARTESIANS(3*(I-1)+3)
+    ENDDO
+
+  END SUBROUTINE WRITETOCARTESIANSTREAM
 
 ! #####################################################################################################
 
-  subroutine systemToAA (nbodies, cartesians, AAcoords)
+! CONVERTS A SINGLE MONOMER FROM CARTESIANS TO ANGLE-AXIS COORDINATES
 
-    implicit none
+  SUBROUTINE MONOMERTOAA (CARTESIANS, AATRANS, AAROT)
+
+    IMPLICIT NONE
+
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: CARTESIANS(RBPOTENTIAL%NPHYSICALSITES,3)
+    REAL (KIND=KIND(0.0D0)), INTENT(OUT) :: AATRANS(3), AAROT(3)    
+
+    REAL (KIND=KIND(0.0D0)) :: FITTINGRMSD    
+    REAL (KIND=KIND(0.0D0)) :: RMSDTOL = 1D-4
+    INTEGER :: I, J  
+
+! SIMPLY USES THE QUATERNION FITTING METHOD TO DETERMINE THE NECESSARY PARAMETERS, NOT VERY EFFICIENT
+
+    CALL QUATERNIONMATCH(RBPOTENTIAL%NPHYSICALSITES, CARTESIANS, RBPOTENTIAL%SITE(1:RBPOTENTIAL%NPHYSICALSITES,:), &
+                         FITTINGRMSD, AAROT, AATRANS)
+
+    IF (FITTINGRMSD.GT.RMSDTOL) THEN
+       PRINT *, 'ERROR IN ATTEMPTING TO CONVERT CARTESIANS TO ANGLE-AXIS COORDINATES: RMSD IS TOO HIGH', FITTINGRMSD
+!       STOP ! CALL EXIT(1)
+    ENDIF
+
+  END SUBROUTINE MONOMERTOAA
+
+! #####################################################################################################
+
+  SUBROUTINE SYSTEMTOAA (NBODIES, CARTESIANS, AACOORDS)
+
+    IMPLICIT NONE
     
-! Subroutine arguments
+! SUBROUTINE ARGUMENTS
 
-    integer, intent(IN) :: nbodies
-    real (kind=kind(0.0d0)), intent(IN) :: cartesians(rbPotential%nPhysicalSites*nbodies,3)
-    real (kind=kind(0.0d0)), intent(OUT) :: AAcoords(6*nbodies)
+    INTEGER, INTENT(IN) :: NBODIES
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: CARTESIANS(RBPOTENTIAL%NPHYSICALSITES*NBODIES,3)
+    REAL (KIND=KIND(0.0D0)), INTENT(OUT) :: AACOORDS(6*NBODIES)
 
-! Local variables
+! LOCAL VARIABLES
 
-    integer :: currentBody
+    INTEGER :: CURRENTBODY
 
-    do currentBody=1,nbodies
-       call monomerToAA(cartesians(rbPotential%nPhysicalSites*(currentBody-1)+1:rbPotential%nPhysicalSites*currentBody,:), &
-                        AAcoords(3*currentBody-2:3*currentBody), &
-                        AAcoords(3*(currentBody+nbodies)-2:3*(currentBody+nbodies)))
-    enddo
+    DO CURRENTBODY=1,NBODIES
+       CALL MONOMERTOAA(CARTESIANS(RBPOTENTIAL%NPHYSICALSITES*(CURRENTBODY-1)+1:RBPOTENTIAL%NPHYSICALSITES*CURRENTBODY,:), &
+                        AACOORDS(3*CURRENTBODY-2:3*CURRENTBODY), &
+                        AACOORDS(3*(CURRENTBODY+NBODIES)-2:3*(CURRENTBODY+NBODIES)))
+    ENDDO
     
-  end subroutine systemToAA
+  END SUBROUTINE SYSTEMTOAA
 
 ! #####################################################################################################
 
-  function monomerMass ()
+  FUNCTION MONOMERMASS ()
 
-    implicit none
+    IMPLICIT NONE
 
-    real (kind=kind(0.0d0)) :: monomerMass
+    REAL (KIND=KIND(0.0D0)) :: MONOMERMASS
  
-    monomerMass = SUM(rbPotential%mass)
-    return
+    MONOMERMASS = SUM(RBPOTENTIAL%MASS)
+    RETURN
 
-  end function monomerMass
-
-! #####################################################################################################
-
-! Interaction functions and derivatives, note no unit conversion is attempted
+  END FUNCTION MONOMERMASS
 
 ! #####################################################################################################
 
-! Lennard-Jones interactions
-
-  function fLJ(k12,k6,distance)
-    implicit none
-    real (kind=kind(0.0d0)) :: fLJ
-    real (kind=kind(0.0d0)), intent(IN) :: k12, k6    ! C12 and C6 coefficients 
-    real (kind=kind(0.0d0)), intent(IN) :: distance
-
-    real (kind=kind(0.0d0)) :: invR6
-
-    invR6 = 1.0d0/(distance**6)
-    fLJ = invR6*(k12*invR6 - k6)
-
-    return
-
-  end function fLJ
+! INTERACTION FUNCTIONS AND DERIVATIVES, NOTE NO UNIT CONVERSION IS ATTEMPTED
 
 ! #####################################################################################################
 
-  function dfLJdR(k12,k6,distance)
-    implicit none
-    real (kind=kind(0.0d0)) :: dfLJdR
-    real (kind=kind(0.0d0)), intent(IN) :: k12, k6    ! C12 and C6 coefficients 
-    real (kind=kind(0.0d0)), intent(IN) :: distance
+! LENNARD-JONES INTERACTIONS
 
-    real (kind=kind(0.0d0)) :: invR, invR6
+  FUNCTION FLJ(K12,K6,DISTANCE)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: FLJ
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: K12, K6    ! C12 AND C6 COEFFICIENTS 
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: DISTANCE
 
-    invR = 1.0d0/distance
-    invR6 = invR**6
+    REAL (KIND=KIND(0.0D0)) :: INVR6
 
-    dfLJdR = -6.0D0*(-k6+2.0D0*k12*invR6)*invR*invR6
-!    dfLJdR = -6.0D0*(-k6+2.0D0*k12/(distance**6))/(distance**7)
+    INVR6 = 1.0D0/(DISTANCE**6)
+    FLJ = INVR6*(K12*INVR6 - K6)
 
-    return
+    RETURN
 
-  end function dfLJdR
-
-! #####################################################################################################
-
-  function d2fLJdR2(k12,k6,distance)
-    implicit none
-    real (kind=kind(0.0d0)) :: d2fLJdR2
-    real (kind=kind(0.0d0)), intent(IN) :: k12, k6    ! C12 and C6 coefficients 
-    real (kind=kind(0.0d0)), intent(IN) :: distance
-
-    real (kind=kind(0.0d0)) :: invR2, invR6
-
-    invR2 = 1.0d0/(distance**2)
-    invR6 = invR2**3
-
-    d2fLJdR2 = 6.0D0*(26.0d0*k12*invR6 - 7.0d0*k6)*invR2*invR6
-!    d2fLJdR2 = 6.0D0*(26.0d0*k12/distance**6 - 7.0d0*k6)/distance**8
-    return
-
-  end function d2fLJdR2
+  END FUNCTION FLJ
 
 ! #####################################################################################################
 
-! Coulombic interactions
+  FUNCTION DFLJDR(K12,K6,DISTANCE)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: DFLJDR
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: K12, K6    ! C12 AND C6 COEFFICIENTS 
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: DISTANCE
 
-  function fCoulomb (q1, q2, distance)
-    implicit none
-    real (kind=kind(0.0d0)) :: fCoulomb
-    real (kind=kind(0.0d0)), intent(IN) :: q1, q2
-    real (kind=kind(0.0d0)), intent(IN) :: distance
+    REAL (KIND=KIND(0.0D0)) :: INVR, INVR6
 
-    fCoulomb = q1*q2/distance
+    INVR = 1.0D0/DISTANCE
+    INVR6 = INVR**6
 
-    return
-  end function fCoulomb
+    DFLJDR = -6.0D0*(-K6+2.0D0*K12*INVR6)*INVR*INVR6
+!    DFLJDR = -6.0D0*(-K6+2.0D0*K12/(DISTANCE**6))/(DISTANCE**7)
 
-! #####################################################################################################
+    RETURN
 
-  function dfCoulombdR (q1, q2, distance)
-    implicit none
-    real (kind=kind(0.0d0)) :: dfCoulombdR
-    real (kind=kind(0.0d0)), intent(IN) :: q1, q2
-    real (kind=kind(0.0d0)), intent(IN) :: distance
-
-    dfCoulombdR = -q1*q2/(distance**2)
-
-    return
-  end function dfCoulombdR
+  END FUNCTION DFLJDR
 
 ! #####################################################################################################
 
-  function d2fCoulombdR2 (q1, q2, distance)
-    implicit none
-    real (kind=kind(0.0d0)) :: d2fCoulombdR2
-    real (kind=kind(0.0d0)), intent(IN) :: q1, q2
-    real (kind=kind(0.0d0)), intent(IN) :: distance
+  FUNCTION D2FLJDR2(K12,K6,DISTANCE)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: D2FLJDR2
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: K12, K6    ! C12 AND C6 COEFFICIENTS 
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: DISTANCE
 
-    d2fCoulombdR2 = 2.0d0*q1*q2/(distance**3)
+    REAL (KIND=KIND(0.0D0)) :: INVR2, INVR6
 
-    return
-  end function d2fCoulombdR2
+    INVR2 = 1.0D0/(DISTANCE**2)
+    INVR6 = INVR2**3
 
-! #####################################################################################################
+    D2FLJDR2 = 6.0D0*(26.0D0*K12*INVR6 - 7.0D0*K6)*INVR2*INVR6
+!    D2FLJDR2 = 6.0D0*(26.0D0*K12/DISTANCE**6 - 7.0D0*K6)/DISTANCE**8
+    RETURN
 
-! Note this Morse function is shifted down by epsilon
-
-  function fMorse(epsilon, rho, Re, distance)
-    implicit none
-    real (kind=kind(0.0d0)) :: fMorse
-    real (kind=kind(0.0d0)), intent(IN) :: epsilon, rho, Re   ! Morse parameters
-    real (kind=kind(0.0d0)), intent(IN) :: distance    
-
-    fMorse = epsilon*((1.0d0-exp(rho*(1.0d0 - distance/Re)))**2 - 1.0d0)
-
-  end function fMorse
+  END FUNCTION D2FLJDR2
 
 ! #####################################################################################################
 
-  function dfMorsedR(epsilon, rho, Re, distance)
-    implicit none
-    real (kind=kind(0.0d0)) :: dfMorsedR
-    real (kind=kind(0.0d0)), intent(IN) :: epsilon, rho, Re   ! Morse parameters
-    real (kind=kind(0.0d0)), intent(IN) :: distance 
+! COULOMBIC INTERACTIONS
 
-    real (kind=kind(0.0d0)) :: expFactor
+  FUNCTION FCOULOMB (Q1, Q2, DISTANCE)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: FCOULOMB
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: Q1, Q2
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: DISTANCE
 
-    expFactor = exp(rho*(1.0d0-distance/Re))
+    FCOULOMB = Q1*Q2/DISTANCE
 
-    dfMorsedR = 2.0d0*epsilon*rho*(1.0d0 - expFactor)*expFactor/Re
-
-  end function dfMorsedR
-
-! #####################################################################################################
-
-  function d2fMorsedR2(epsilon, rho, Re, distance)
-    implicit none
-    real (kind=kind(0.0d0)) :: d2fMorsedR2
-    real (kind=kind(0.0d0)), intent(IN) :: epsilon, rho, Re   ! Morse parameters
-    real (kind=kind(0.0d0)), intent(IN) :: distance 
-
-    real (kind=kind(0.0d0)) :: expFactor
-
-    expFactor = exp(rho*(1.0d0-distance/Re))
-
-    d2fMorsedR2 = 2.0d0*epsilon*(rho**2)*expFactor*(2.0d0*expFactor - 1.0d0)/(Re**2)
-
-  end function d2fMorsedR2
+    RETURN
+  END FUNCTION FCOULOMB
 
 ! #####################################################################################################
 
-  subroutine updateC12(newValue) 
+  FUNCTION DFCOULOMBDR (Q1, Q2, DISTANCE)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: DFCOULOMBDR
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: Q1, Q2
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: DISTANCE
 
-    implicit none
+    DFCOULOMBDR = -Q1*Q2/(DISTANCE**2)
 
-    real (kind=kind(0.0d0)), intent(IN) :: newValue
-    integer :: currentSite
+    RETURN
+  END FUNCTION DFCOULOMBDR
+
+! #####################################################################################################
+
+  FUNCTION D2FCOULOMBDR2 (Q1, Q2, DISTANCE)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: D2FCOULOMBDR2
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: Q1, Q2
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: DISTANCE
+
+    D2FCOULOMBDR2 = 2.0D0*Q1*Q2/(DISTANCE**3)
+
+    RETURN
+  END FUNCTION D2FCOULOMBDR2
+
+! #####################################################################################################
+
+! NOTE THIS MORSE FUNCTION IS SHIFTED DOWN BY EPSILON
+
+  FUNCTION FMORSE(EPSILON, RHO, RE, DISTANCE)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: FMORSE
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: EPSILON, RHO, RE   ! MORSE PARAMETERS
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: DISTANCE    
+
+    FMORSE = EPSILON*((1.0D0-EXP(RHO*(1.0D0 - DISTANCE/RE)))**2 - 1.0D0)
+
+  END FUNCTION FMORSE
+
+! #####################################################################################################
+
+  FUNCTION DFMORSEDR(EPSILON, RHO, RE, DISTANCE)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: DFMORSEDR
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: EPSILON, RHO, RE   ! MORSE PARAMETERS
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: DISTANCE 
+
+    REAL (KIND=KIND(0.0D0)) :: EXPFACTOR
+
+    EXPFACTOR = EXP(RHO*(1.0D0-DISTANCE/RE))
+
+    DFMORSEDR = 2.0D0*EPSILON*RHO*(1.0D0 - EXPFACTOR)*EXPFACTOR/RE
+
+  END FUNCTION DFMORSEDR
+
+! #####################################################################################################
+
+  FUNCTION D2FMORSEDR2(EPSILON, RHO, RE, DISTANCE)
+    IMPLICIT NONE
+    REAL (KIND=KIND(0.0D0)) :: D2FMORSEDR2
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: EPSILON, RHO, RE   ! MORSE PARAMETERS
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: DISTANCE 
+
+    REAL (KIND=KIND(0.0D0)) :: EXPFACTOR
+
+    EXPFACTOR = EXP(RHO*(1.0D0-DISTANCE/RE))
+
+    D2FMORSEDR2 = 2.0D0*EPSILON*(RHO**2)*EXPFACTOR*(2.0D0*EXPFACTOR - 1.0D0)/(RE**2)
+
+  END FUNCTION D2FMORSEDR2
+
+! #####################################################################################################
+
+  SUBROUTINE UPDATEC12(NEWVALUE) 
+
+    IMPLICIT NONE
+
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: NEWVALUE
+    INTEGER :: CURRENTSITE
     
-    if (allocated(rbPotential%C12)) then
-       do currentSite = 1, rbPotential%nSites
-          if (rbPotential%C12(currentSite).ne.0.0d0) rbPotential%C12(currentSite) = newValue
-       enddo
-    endif
+    IF (ALLOCATED(RBPOTENTIAL%C12)) THEN
+       DO CURRENTSITE = 1, RBPOTENTIAL%NSITES
+          IF (RBPOTENTIAL%C12(CURRENTSITE).NE.0.0D0) RBPOTENTIAL%C12(CURRENTSITE) = NEWVALUE
+       ENDDO
+    ENDIF
 
-    call initialiseInteractionMap
+    CALL INITIALISEINTERACTIONMAP
 
-  end subroutine updateC12
+  END SUBROUTINE UPDATEC12
 
 ! #####################################################################################################
 
-  subroutine updateC6(newValue) 
+  SUBROUTINE UPDATEC6(NEWVALUE) 
 
-    implicit none
+    IMPLICIT NONE
 
-    real (kind=kind(0.0d0)), intent(IN) :: newValue
-    integer :: currentSite
+    REAL (KIND=KIND(0.0D0)), INTENT(IN) :: NEWVALUE
+    INTEGER :: CURRENTSITE
     
-    if (.not.allocated(rbPotential%C6)) then
-       allocate(rbPotential%C6(rbPotential%nSites))
-       rbPotential%C6 = 0.0d0
-    endif
+    IF (.NOT.ALLOCATED(RBPOTENTIAL%C6)) THEN
+       ALLOCATE(RBPOTENTIAL%C6(RBPOTENTIAL%NSITES))
+       RBPOTENTIAL%C6 = 0.0D0
+    ENDIF
 
-    rbPotential%C6(rbPotential%nSites) = newValue
+    RBPOTENTIAL%C6(RBPOTENTIAL%NSITES) = NEWVALUE
 
-    call initialiseInteractionMap
+    CALL INITIALISEINTERACTIONMAP
 
-  end subroutine updateC6
+  END SUBROUTINE UPDATEC6
 
 ! #####################################################################################################
 
-end module rigidbody
+END MODULE RIGIDBODY

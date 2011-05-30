@@ -2896,6 +2896,8 @@ ATOMGROUPNAMES	optim.modamber9.f90	/^      CHARACTER(LEN=10), ALLOCATABLE :: ATO
 ATOMGROUPPSELECT	optim.modamber9.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: ATOMGROUPSCALING(:),ATOMGROUPPSELECT(/;"	v	module:modamber9
 ATOMGROUPS	optim.modamber9.f90	/^      LOGICAL, ALLOCATABLE :: ATOMGROUPS(/;"	v	module:modamber9
 ATOMGROUPSCALING	optim.modamber9.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: ATOMGROUPSCALING(/;"	v	module:modamber9
+ATOMICNUMBER	pathsample.rigidbody.f90	/^     INTEGER, ALLOCATABLE :: ATOMICNUMBER(/;"	k	type:RIGIDBODYPOTENTIAL
+ATOMICNUMBER	pathsample.rigidbodymod.f90	/^     INTEGER, ALLOCATABLE :: ATOMICNUMBER(/;"	k	type:RIGIDBODYPOTENTIAL
 ATOMINGROUP	mc.vars.inc.f90	/^      LOGICAL CHIRALFAIL,AMIDEFAIL,GOODSTRUCTURE, LOGDUMMY, DISTOK, ATOMINGROUP(/;"	v
 ATOMLABEL	pathsample.common.f90	/^      CHARACTER(LEN=4), ALLOCATABLE :: RESLABEL(:), ATOMLABEL(/;"	v
 ATOMPAIR	gmin.main.f90	/^      CHARACTER(LEN=40) :: ATOM1,ATOM2,ATOMPAIR$/;"	v	program:GMIN
@@ -3098,10 +3100,10 @@ BZ	optim.modamber.f90	/^      DOUBLE PRECISION  TOP,BOTTOM,AX,BX,CX,AY,BY,CY,AZ,
 B_BLN	optim.key.f90	/^      DOUBLE PRECISION ,ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(:), B_BLN(/;"	v	module:KEY
 BinaryIO	optim.binaryio.f90	/^MODULE BinaryIO$/;"	m
 C	optim.modunres.f90	/^      DOUBLE PRECI/;"	v	module:MODUNRES
-C12	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)), allocatable :: C12(/;"	k	type:rigidbodyPotential
-C12	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, allocatable :: C12(/;"	k	type:rigidbodyPotential
-C6	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)), allocatable :: C6(/;"	k	type:rigidbodyPotential
-C6	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, allocatable :: C6(/;"	k	type:rigidbodyPotential
+C12	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: C12(/;"	k	type:RIGIDBODYPOTENTIAL
+C12	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, ALLOCATABLE :: C12(/;"	k	type:RIGIDBODYPOTENTIAL
+C6	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: C6(/;"	k	type:RIGIDBODYPOTENTIAL
+C6	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, ALLOCATABLE :: C6(/;"	k	type:RIGIDBODYPOTENTIAL
 C60DIFF	optim.c60diff.f	/^      SUBROUTINE C60DIFF(/;"	s
 C60P	optim.c60p.f	/^      SUBROUTINE C60P(/;"	s
 C60PE	optim.latmin.f	/^      SUBROUTINE C60PE(/;"	s
@@ -3136,9 +3138,21 @@ CAPS	optim.keyword.f	116;"	c	subroutine:KEYWORD
 CAPS	optim.newcapsid.f90	16;"	c	subroutine:NEWCAPSID
 CAPS	optim.path.f	73;"	c	subroutine:PATH
 CAPSIDIO	optim.dumpit.f	/^      SUBROUTINE CAPSIDIO(/;"	s
+CAPSOMER	pathsample.rigidbody.f90	/^  TYPE CAPSOMER$/;"	t	module:RIGIDBODY
+CAPSOMER	pathsample.rigidbodymod.f90	/^  TYPE CAPSOMER$/;"	t	module:RIGIDBODYMOD
+CAPSOMERDEFS	pathsample.rigidbody.f90	/^  TYPE (CAPSOMER), ALLOCATABLE :: CAPSOMERDEFS(/;"	v	module:RIGIDBODY
+CAPSOMERDEFS	pathsample.rigidbodymod.f90	/^  TYPE (CAPSOMER), ALLOCATABLE :: CAPSOMERDEFS(/;"	v	module:RIGIDBODYMOD
 CART2INT	optim.intcoords.f90	/^   SUBROUTINE CART2INT(/;"	s	module:INTCUTILS
 CARTATMS	optim.intcommons.f90	/^       & IMPDIH(:,:), CARTATMS(/;"	v	module:INTCOMMONS
 CARTATMSTART	optim.intcommons.f90	/^  INTEGER :: CARTRESSTART = -1, CARTATMSTART /;"	v	module:INTCOMMONS
+CARTESIANSEPARATION	pathsample.rigidbody.f90	/^  FUNCTION CARTESIANSEPARATION(/;"	f	module:RIGIDBODY
+CARTESIANSEPARATION	pathsample.rigidbodymod.f90	/^  FUNCTION CARTESIANSEPARATION(/;"	f	module:RIGIDBODYMOD
+CARTESIANX	pathsample.rigidbody.f90	/^  FUNCTION CARTESIANX /;"	f	module:RIGIDBODY
+CARTESIANX	pathsample.rigidbodymod.f90	/^  FUNCTION CARTESIANX /;"	f	module:RIGIDBODYMOD
+CARTESIANY	pathsample.rigidbody.f90	/^  FUNCTION CARTESIANY /;"	f	module:RIGIDBODY
+CARTESIANY	pathsample.rigidbodymod.f90	/^  FUNCTION CARTESIANY /;"	f	module:RIGIDBODYMOD
+CARTESIANZ	pathsample.rigidbody.f90	/^  FUNCTION CARTESIANZ /;"	f	module:RIGIDBODY
+CARTESIANZ	pathsample.rigidbodymod.f90	/^  FUNCTION CARTESIANZ /;"	f	module:RIGIDBODYMOD
 CARTRESSTART	optim.intcommons.f90	/^  INTEGER :: CARTRESSTART /;"	v	module:INTCOMMONS
 CAS	optim.Clatmin.f	25;"	c	subroutine:CLATMIN
 CAS	optim.fetchz.f	45;"	c	subroutine:FETCHZ
@@ -3171,8 +3185,8 @@ CHANGE_TEMP	optim.commons.f90	/^      LOGICAL TAGT, CHANGE_TEMP$/;"	v	module:COM
 CHAR	optim.input.f	/^      CHARA/;"	v	block data:INBLK
 CHAR	pathsample.input.f	/^      CHARA/;"	v	block data:INBLK
 CHARGE	optim.key.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: CHARGE /;"	v	module:KEY
-CHARGE	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)), allocatable :: CHARGE(/;"	k	type:rigidbodyPotential
-CHARGE	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, allocatable :: CHARGE(/;"	k	type:rigidbodyPotential
+CHARGE	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: CHARGE(/;"	k	type:RIGIDBODYPOTENTIAL
+CHARGE	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, ALLOCATABLE :: CHARGE(/;"	k	type:RIGIDBODYPOTENTIAL
 CHARGECON	optim.ttm3f.f90	/^double precision, parameter :: CHARGECON /;"	v	module:ttm3f_mod
 CHARMMBILDC	optim.amber9dummy.f90	/^subroutine CHARMMBILDC(/;"	s
 CHARMMDUMP	optim.chdummy.f	/^      SUBROUTINE CHARMMDUMP(/;"	s
@@ -3239,6 +3253,8 @@ CHSETUP	optim.chdummy.f	/^      SUBROUTINE CHSETUP(/;"	s
 CHSETZSYMATMASS	optim.chdummy.f	/^      SUBROUTINE CHSETZSYMATMASS$/;"	s
 CH_SEED	optim.charmmBildc.f	/^      SUBROUTINE CH_SEED(/;"	s
 CLATMIN	optim.Clatmin.f	/^      SUBROUTINE CLATMIN(/;"	s
+CLEANRIGIDBODIES	pathsample.rigidbody.f90	/^  SUBROUTINE CLEANRIGIDBODIES$/;"	s	module:RIGIDBODY
+CLEANRIGIDBODIES	pathsample.rigidbodymod.f90	/^  SUBROUTINE CLEANRIGIDBODIES$/;"	s	module:RIGIDBODYMOD
 CLEANUP	optim.connect.f	/^      SUBROUTINE CLEANUP(/;"	s
 CLEAR	optim.input.f	/^      LOGICAL SKIPBL, CLEAR,/;"	v	block data:INBLK
 CLEAR	optim.main.f90	/^      LOGICAL VARIABLES,CASTEP,ONETEP,CP2K,DFTP,CPMD,END,CAT,SKIPBL,CLEAR,/;"	v	program:OPTIM4
@@ -3257,6 +3273,8 @@ COL_INDTEMP	pathsample.NGTmem.f90	/^   INTEGER, ALLOCATABLE :: COL_IND(:), COL_I
 COMMONS	optim.commons.f90	/^MODULE COMMONS$/;"	m
 COMPARE2	optim.utils.f	/^      SUBROUTINE COMPARE2(/;"	s
 COMPLETEGRAPHTRANSFORMATION	pathsample.GT2.save.f90	/^     SUBROUTINE COMPLETEGRAPHTRANSFORMATION$/;"	s	module:GRAPHTRANSFORMATIONMODULE
+COMTOORIGIN	pathsample.rigidbody.f90	/^  SUBROUTINE COMTOORIGIN /;"	s	module:RIGIDBODY
+COMTOORIGIN	pathsample.rigidbodymod.f90	/^  SUBROUTINE COMTOORIGIN /;"	s	module:RIGIDBODYMOD
 CONACTIVE	optim.key.f90	/^      LOGICAL, ALLOCATABLE :: CONACTIVE(/;"	v	module:KEY
 CONACTIVE	pathsample.common.f90	/^      LOGICAL, ALLOCATABLE :: CONACTIVE(/;"	v
 CONDISTREF	optim.key.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: CONDISTREF(/;"	v	module:KEY
@@ -3328,6 +3346,8 @@ COPYOPTIMT	pathsample.common.f90	/^     &        EXPCOSTFUNCTION, COPYOPTIMT,/;"
 COSTFUNCTIONPOWER	pathsample.common.f90	/^     &        STARTMINA, STARTMINB, WHICHMIN, SECONDMIN, WHICHTS, MAXATTEMPT, COSTFUNCTIONPOWER,/;"	v
 COS_PHI	bln.vars.inc.f90	/^        DOUBLE PRECISION COS_PHI,/;"	v
 COS_THETA	bln.vars.inc.f90	/^        DOUBLE PRECISION COS_PHI, COS_THETA$/;"	v
+COULOMBCONVERSIONFACTOR	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)) :: COULOMBCONVERSIONFACTOR /;"	k	type:RIGIDBODYPOTENTIAL
+COULOMBCONVERSIONFACTOR	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: COULOMBCONVERSIONFACTOR /;"	k	type:RIGIDBODYPOTENTIAL
 COUNT	optim.modamber.f90	/^      INTEGER ATOMS,ANG,IMP,COUNT,/;"	v	module:MODAMBER
 COUNTER	optim.modunres.f90	/^      INTEGER COUNTER$/;"	v	module:MODUNRES
 CP2K	optim.key.f90	/^     &        GAUSSIAN, CADPAC, PRESSURE, FTEST, DCHECK, CP2K,/;"	v	module:KEY
@@ -3376,13 +3396,17 @@ CYCLE2	pathsample.cycle2.f90	/^SUBROUTINE CYCLE2$/;"	s
 CZ	optim.modamber.f90	/^      DOUBLE PRECISION  TOP,BOTTOM,AX,BX,CX,AY,BY,CY,AZ,BZ,CZ,/;"	v	module:MODAMBER
 C_BLN	optim.key.f90	/^      DOUBLE PRECISION ,ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(:), B_BLN(:), C_BLN(/;"	v	module:KEY
 Calculation of the torsional angles gradient	grad.tangle.tex	/^\\subsection{Calculation of the torsional angles gradient}$/;"	u
-CoMtoOrigin	pathsample.rigidbody.f90	/^  subroutine CoMtoOrigin /;"	s	module:rigidbody
-CoMtoOrigin	pathsample.rigidbodymod.f90	/^  subroutine CoMtoOrigin /;"	s	module:rigidbodymod
 Copyright	optim.wc.f90	/^          subroutine Copyright$/;"	s	module:WC
 D1	optim.rigidfuncs.f	/^      DOUBLE PRECISION FUNCTION D1(/;"	f
 D1INIT	optim.key.f90	/^     &        REDOK, REDOFRAC, D1INIT,/;"	v	module:KEY
 D1MACH	optim.dqag.f	/^      DOUBLE PRECISION FUNCTION D1MACH /;"	f
 D2	optim.rigidfuncs.f	/^      DOUBLE PRECISION FUNCTION D2(/;"	f
+D2FCOULOMBDR2	pathsample.rigidbody.f90	/^  FUNCTION D2FCOULOMBDR2 /;"	f	module:RIGIDBODY
+D2FCOULOMBDR2	pathsample.rigidbodymod.f90	/^  FUNCTION D2FCOULOMBDR2 /;"	f	module:RIGIDBODYMOD
+D2FLJDR2	pathsample.rigidbody.f90	/^  FUNCTION D2FLJDR2(/;"	f	module:RIGIDBODY
+D2FLJDR2	pathsample.rigidbodymod.f90	/^  FUNCTION D2FLJDR2(/;"	f	module:RIGIDBODYMOD
+D2FMORSEDR2	pathsample.rigidbody.f90	/^  FUNCTION D2FMORSEDR2(/;"	f	module:RIGIDBODY
+D2FMORSEDR2	pathsample.rigidbodymod.f90	/^  FUNCTION D2FMORSEDR2(/;"	f	module:RIGIDBODYMOD
 D2INIT	optim.key.f90	/^     &        REDOK, REDOFRAC, D1INIT, D2INIT,/;"	v	module:KEY
 D3	optim.rigidfuncs.f	/^      DOUBLE PRECISION FUNCTION D3(/;"	f
 D4	optim.rigidfuncs.f	/^      DOUBLE PRECISION FUNCTION D4(/;"	f
@@ -3554,7 +3578,13 @@ DF	bln.vars.inc.f90	/^        DOUBLE PRECISION ::     DF,/;"	v
 DF1T	optim.key.f90	/^     &        GAUSSIAN, CADPAC, PRESSURE, FTEST, DCHECK, CP2K, DFTP, CPMD, CPMDC, FREEZERES, DF1T,/;"	v	module:KEY
 DF1grad	optim.DF1.f	/^      SUBROUTINE DF1grad(/;"	s
 DF1hess	optim.DF1.f	/^      subroutine DF1hess(/;"	s
+DFCOULOMBDR	pathsample.rigidbody.f90	/^  FUNCTION DFCOULOMBDR /;"	f	module:RIGIDBODY
+DFCOULOMBDR	pathsample.rigidbodymod.f90	/^  FUNCTION DFCOULOMBDR /;"	f	module:RIGIDBODYMOD
 DFDERIV1	optim.dftb.f	/^      SUBROUTINE DFDERIV1(/;"	s
+DFLJDR	pathsample.rigidbody.f90	/^  FUNCTION DFLJDR(/;"	f	module:RIGIDBODY
+DFLJDR	pathsample.rigidbodymod.f90	/^  FUNCTION DFLJDR(/;"	f	module:RIGIDBODYMOD
+DFMORSEDR	pathsample.rigidbody.f90	/^  FUNCTION DFMORSEDR(/;"	f	module:RIGIDBODY
+DFMORSEDR	pathsample.rigidbodymod.f90	/^  FUNCTION DFMORSEDR(/;"	f	module:RIGIDBODYMOD
 DFTB	optim.dftb.f	/^      SUBROUTINE DFTB(/;"	s
 DFTBT	optim.key.f90	/^     &        TOSIC6, TOSIPOL, FIXIMAGE, DFTBT,/;"	v	module:KEY
 DFTP	optim.key.f90	/^     &        GAUSSIAN, CADPAC, PRESSURE, FTEST, DCHECK, CP2K, DFTP,/;"	v	module:KEY
@@ -3787,6 +3817,8 @@ EDITIT	optim.key.f90	/^      CHARACTER(LEN=20) :: EDITIT$/;"	v	module:KEY
 EDITRGYR	optim.chdummy.f	/^      SUBROUTINE EDITRGYR(/;"	s
 EDOUBLE	optim.double.f	/^      DOUBLE PRECISION X(3*N), VD(6), R2, EDOUBLE,/;"	v
 EFIELD	optim.key.f90	/^      DOUBLE PRECISION :: EFIELD /;"	v	module:KEY
+EFIELDCONVERSIONFACTOR	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)) :: EFIELDCONVERSIONFACTOR /;"	k	type:RIGIDBODYPOTENTIAL
+EFIELDCONVERSIONFACTOR	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: EFIELDCONVERSIONFACTOR /;"	k	type:RIGIDBODYPOTENTIAL
 EFIELDT	optim.key.f90	/^     &        RBAAT, DBPT, DBPTDT, LWOTPT, GBT, GBDT, MSSTOCKT, NCAPT, NTIPT, PAHAT, PATCHYDT, PYGT, RADIFT, UNIAXT, STOCKAAT, &$/;"	v	module:KEY
 EFIELDT	pathsample.common.f90	/^     &        DBPT, DBPTDT, EFIELDT,/;"	v
 EFOL	optim.efol.f90	/^      SUBROUTINE EFOL(/;"	s	module:MODEFOL
@@ -3819,6 +3851,8 @@ EPREV	commons.f90	/^DOUBLE PRECISION TEMP, STEP, OSTEP, ASTEP, ACCRAT, EPREV,/;"
 EPSALPHA	optim.key.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: EPSALPHA(/;"	v	module:KEY
 EPSILON	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS, SIGMA, EPSILON,/;"	v
 EPSILON	optim.modamber.f90	/^      DOUBLE PRECISION RSTAR,EPSILON$/;"	v	module:MODAMBER
+EPSILONREP	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)) :: EPSILONREP /;"	k	type:CAPSOMER
+EPSILONREP	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: EPSILONREP /;"	k	type:CAPSOMER
 EPSILON_MIX	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: EPSILON_MIX /;"	v	module:msevb_common
 EPSILON_MSEVB	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: EPSILON_MSEVB /;"	v	module:msevb_common
 EPSSAVE	mc.vars.inc.f90	/^      DOUBLE PRECISION ::       EBEST,RMSD,EPPREV,TIME,ELASTSYM,EPSSAVE,/;"	v
@@ -3866,6 +3900,8 @@ FAILT	optim.modcharmm.f90	/^      LOGICAL :: FAILT,/;"	v	module:modcharmm
 FAKEWATER	optim.modamber.f90	/^      LOGICAL FAKEWATER$/;"	v	module:MODAMBER
 FB	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,2) :: FB$/;"	v
 FCAPSID	optim.capsid.f	/^      SUBROUTINE FCAPSID(/;"	s
+FCOULOMB	pathsample.rigidbody.f90	/^  FUNCTION FCOULOMB /;"	f	module:RIGIDBODY
+FCOULOMB	pathsample.rigidbodymod.f90	/^  FUNCTION FCOULOMB /;"	f	module:RIGIDBODYMOD
 FD	optim.fd.f	/^      SUBROUTINE FD(/;"	s
 FD5H	optim.key.f90	/^     &        OMEGA, GALPHA, MALPHA1, FOH, FIH, FTD, FD5H,/;"	v	module:KEY
 FDUMP	optim.dqag.f	/^      SUBROUTINE FDUMP$/;"	s
@@ -3924,6 +3960,10 @@ FIXIMAGE	optim.key.f90	/^     &        TOSIC6, TOSIPOL, FIXIMAGE,/;"	v	module:KE
 FLAG	mc.vars.inc.f90	/^      LOGICAL CHANGEDE, EXCHANGEACCEPT, EXCHANGE, FLAG /;"	v
 FLDMINDIST	optim.rigidb.f90	/^      SUBROUTINE FLDMINDIST(/;"	s
 FLDMINDIST	pathsample.rigidb.f90	/^      SUBROUTINE FLDMINDIST(/;"	s
+FLJ	pathsample.rigidbody.f90	/^  FUNCTION FLJ(/;"	f	module:RIGIDBODY
+FLJ	pathsample.rigidbodymod.f90	/^  FUNCTION FLJ(/;"	f	module:RIGIDBODYMOD
+FMORSE	pathsample.rigidbody.f90	/^  FUNCTION FMORSE(/;"	f	module:RIGIDBODY
+FMORSE	pathsample.rigidbodymod.f90	/^  FUNCTION FMORSE(/;"	f	module:RIGIDBODYMOD
 FNAME	mc.vars.inc.f90	/^      CHARACTER FNAME*/;"	v
 FNAME	optim.main.f90	/^      CHARACTER FNAME*/;"	v	program:OPTIM4
 FNORM2	optim.gsdata.f90	/^     DOUBLE PRECISION :: TNORM, FNORM2,/;"	k	type:IMGNODE
@@ -3946,6 +3986,8 @@ FREEZE	pathsample.common.f90	/^     &        BARRIERSHORT, FREEZE,/;"	v
 FREEZENODEST	optim.key.f90	/^     &        GREATCIRCLET, DESMDEBUG, GROWSTRINGT, FREEZENODEST,/;"	v	module:KEY
 FREEZERES	optim.key.f90	/^     &        GAUSSIAN, CADPAC, PRESSURE, FTEST, DCHECK, CP2K, DFTP, CPMD, CPMDC, FREEZERES,/;"	v	module:KEY
 FREEZETOL	optim.key.f90	/^     &        INTEPSILON, FRAMEEDIFF, MORPHERISE, MORPHEMAX, MORPHMXSTP, MAXTSENERGY, MAXBARRIER, GCMXSTP, GCSCALE, &$/;"	v	module:KEY
+FREQCONVFACTOR	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)) :: FREQCONVFACTOR /;"	k	type:RIGIDBODYPOTENTIAL
+FREQCONVFACTOR	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: FREQCONVFACTOR /;"	k	type:RIGIDBODYPOTENTIAL
 FRICTIONFAC	pathsample.frictionfac.f90	/^DOUBLE PRECISION FUNCTION FRICTIONFAC(/;"	f
 FRICTIONT	pathsample.common.f90	/^     &        SLURMT, INDEXCOSTFUNCTION, CVT, DOST, IMFRQT, CLOSEFILEST, PULLT, FRICTIONT,/;"	v
 FRINGS	optim.intcommons.f90	/^  INTEGER, ALLOCATABLE :: CENTERS(:,:), RINGS(:,:), FRINGS(/;"	v	module:INTCOMMONS
@@ -4189,6 +4231,8 @@ H2OROHEQ	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: H2OROHEQ /;"	
 HAM	optim.msevb_common.f90	/^  DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: HAM,/;"	v	module:msevb_common
 HAMCCA	optim.dftb.f	/^      SUBROUTINE HAMCCA(/;"	s
 HAMCCB	optim.dftb.f	/^      SUBROUTINE HAMCCB(/;"	s
+HEIGHT	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)) :: RHO, RADIUS, HEIGHT$/;"	k	type:CAPSOMER
+HEIGHT	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: RHO, RADIUS, HEIGHT$/;"	k	type:CAPSOMER
 HESS	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,N) :: HESS$/;"	v
 HESS	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: HESS$/;"	v	module:GMIN_COMMONS
 HESS	optim.modhess.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: HESS /;"	v	module:MODHESS
@@ -4281,7 +4325,11 @@ INERTIA	optim.inertia.f	/^      SUBROUTINE INERTIA(/;"	s
 INERTIA	pathsample.inertia.f	/^      SUBROUTINE INERTIA(/;"	s
 INERTIA2	optim.inertia.f	/^      SUBROUTINE INERTIA2(/;"	s
 INFIX	commons.f90	/^INTEGER :: INFIX$/;"	v	module:GMIN_COMMONS
+INITIALISEINTERACTIONMAP	pathsample.rigidbody.f90	/^  SUBROUTINE INITIALISEINTERACTIONMAP$/;"	s	module:RIGIDBODY
+INITIALISEINTERACTIONMAP	pathsample.rigidbodymod.f90	/^  SUBROUTINE INITIALISEINTERACTIONMAP$/;"	s	module:RIGIDBODYMOD
 INITIALISEPYGPERIODIC	optim.ljcapsidmodule.f90	/^SUBROUTINE INITIALISEPYGPERIODIC$/;"	s
+INITIALISERIGIDBODY	pathsample.rigidbody.f90	/^  SUBROUTINE INITIALISERIGIDBODY /;"	s	module:RIGIDBODY
+INITIALISERIGIDBODY	pathsample.rigidbodymod.f90	/^  SUBROUTINE INITIALISERIGIDBODY /;"	s	module:RIGIDBODYMOD
 INITIATE_RANDOM	optim.specialfuncts.f90	/^  SUBROUTINE INITIATE_RANDOM(/;"	s	module:SPFUNCTS
 INPUT	optim.input.f	/^      SUBROUTINE INPUT(/;"	s
 INPUT	pathsample.input.f	/^      SUBROUTINE INPUT(/;"	s
@@ -4679,6 +4727,8 @@ MARKOV_FH	commons.f90	/^INTEGER :: ENERGY_FH, MARKOV_FH,/;"	v	module:GMIN_COMMON
 MASS	optim.H2O.pjt2.f	8;"	c	subroutine:POTV
 MASS	optim.modamber.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION (:) ::  MASS$/;"	v	module:MODAMBER
 MASS	pathsample.common.f90	/^      DOUBLE PRECISION, POINTER :: MASS(/;"	v
+MASS	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: MASS(/;"	k	type:RIGIDBODYPOTENTIAL
+MASS	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, ALLOCATABLE :: MASS(/;"	k	type:RIGIDBODYPOTENTIAL
 MASSES	optim.modunres.f90	/^      DOUBLE PRECISION :: MASSES(/;"	v	module:MODUNRES
 MASSFILE	pathsample.main.F	/^      LOGICAL MASSFILE$/;"	v	program:PATHSAMPLE
 MASSFILE	pathsample.main.f90	/^      LOGICAL MASSFILE$/;"	v	program:PATHSAMPLE
@@ -4847,6 +4897,12 @@ MODMXATMS	optim.modmxatms.f90	/^MODULE MODMXATMS$/;"	m
 MODNEB	optim.modneb.f90	/^MODULE MODNEB$/;"	m
 MODTWOEND	optim.modtwoend.f90	/^MODULE MODTWOEND$/;"	m
 MODUNRES	optim.modunres.f90	/^MODULE MODUNRES$/;"	m
+MONOMERMASS	pathsample.rigidbody.f90	/^  FUNCTION MONOMERMASS /;"	f	module:RIGIDBODY
+MONOMERMASS	pathsample.rigidbodymod.f90	/^  FUNCTION MONOMERMASS /;"	f	module:RIGIDBODYMOD
+MONOMERTOAA	pathsample.rigidbody.f90	/^  SUBROUTINE MONOMERTOAA /;"	s	module:RIGIDBODY
+MONOMERTOAA	pathsample.rigidbodymod.f90	/^  SUBROUTINE MONOMERTOAA /;"	s	module:RIGIDBODYMOD
+MONOMERTOCARTESIANS	pathsample.rigidbody.f90	/^  SUBROUTINE MONOMERTOCARTESIANS /;"	s	module:RIGIDBODY
+MONOMERTOCARTESIANS	pathsample.rigidbodymod.f90	/^  SUBROUTINE MONOMERTOCARTESIANS /;"	s	module:RIGIDBODYMOD
 MORPH	optim.morph.f	/^      SUBROUTINE MORPH(/;"	s
 MORPHDATA	optim.greatcirc.f	44;"	c	subroutine:GCLBFGS
 MORPHDATA	optim.morph.f	46;"	c	subroutine:MORPH
@@ -4856,6 +4912,8 @@ MORPHERISE	optim.key.f90	/^     &        INTEPSILON, FRAMEEDIFF, MORPHERISE,/;"	
 MORPHMXSTP	optim.key.f90	/^     &        INTEPSILON, FRAMEEDIFF, MORPHERISE, MORPHEMAX, MORPHMXSTP,/;"	v	module:KEY
 MORPHT	optim.key.f90	/^     &        REPEL,UNRST, NATBT, ANGLEAXIS, DUMPALLPATHS, GOT, REOPTIMISEENDPOINTS, DUMPDATAT, MORPHT,/;"	v	module:KEY
 MORSE	optim.morse.f	/^      SUBROUTINE MORSE /;"	s
+MORSEPARAMETERS	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: MORSEPARAMETERS(/;"	k	type:RIGIDBODYPOTENTIAL
+MORSEPARAMETERS	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, ALLOCATABLE :: MORSEPARAMETERS(/;"	k	type:RIGIDBODYPOTENTIAL
 MOVIE	optim.key.f90	/^     &        ALLSTEPS, ALLVECTORS, MWVECTORS, WELCH, BINARY, AMBER, READHESS, MOVIE,/;"	v	module:KEY
 MP	lbfgs.f	/^      INTEGER LP,MP$/;"	v	block data:LB2
 MPDIFF	optim.mpdiff.f	/^      SUBROUTINE MPDIFF(/;"	s
@@ -4926,6 +4984,8 @@ NATOMSINB	optim.modamber9.f90	/^INTEGER :: NATOMSINA, NATOMSINB$/;"	v	module:mod
 NATTEMPT	pathsample.common.f90	/^     &        NATOMS, MAXLENGTH, CONNECTIONS, HORDER, ERROR, MINSEP, NRWREACTANT, &$/;"	v
 NAVAIL	pathsample.main.F	/^      INTEGER J1, NSIZE, NWORST, NAVAIL,/;"	v	program:PATHSAMPLE
 NAVAIL	pathsample.main.f90	/^      INTEGER J1, NSIZE, NWORST, NAVAIL,/;"	v	program:PATHSAMPLE
+NBASALSITES	pathsample.rigidbody.f90	/^     INTEGER :: NBASALSITES$/;"	k	type:CAPSOMER
+NBASALSITES	pathsample.rigidbodymod.f90	/^     INTEGER :: NBASALSITES$/;"	k	type:CAPSOMER
 NBDS	optim.intcommons.f90	/^  INTEGER :: NBDS,/;"	v	module:INTCOMMONS
 NBFGSMAX1	optim.key.f90	/^     &        NDIIA, NINTV, NGRADIENTS, NZERO, NPOWER, NBFGSMAX1,/;"	v	module:KEY
 NBFGSMAX2	optim.key.f90	/^     &        NDIIA, NINTV, NGRADIENTS, NZERO, NPOWER, NBFGSMAX1, NBFGSMAX2,/;"	v	module:KEY
@@ -5137,6 +5197,8 @@ NPHI	optim.modunres.f90	/^      INTEGER :: NRES,NRES0,IALPH,IVAR,NTHETA,NPHI,/;"
 NPHIPSI	optim.modamber9.f90	/^integer, dimension(:), allocatable :: NPHIPSI$/;"	v	module:modamber9
 NPHIPSI	optim.modcharmm.f90	/^      INTEGER, DIMENSION(:), ALLOCATABLE  :: NPHIPSI,/;"	v	module:modcharmm
 NPHIPSITOT	optim.modcharmm.f90	/^      INTEGER :: NPHIPSITOT,/;"	v	module:modcharmm
+NPHYSICALSITES	pathsample.rigidbody.f90	/^     INTEGER :: NPHYSICALSITES /;"	k	type:RIGIDBODYPOTENTIAL
+NPHYSICALSITES	pathsample.rigidbodymod.f90	/^     INTEGER :: NPHYSICALSITES /;"	k	type:RIGIDBODYPOTENTIAL
 NPOWER	optim.key.f90	/^     &        NDIIA, NINTV, NGRADIENTS, NZERO, NPOWER,/;"	v	module:KEY
 NPROC	optim.key.f90	/^      CHARACTER(LEN=4) :: NPROC$/;"	v	module:KEY
 NQ	commons.f90	/^INTEGER :: NQ$/;"	v	module:GMIN_COMMONS
@@ -5182,6 +5244,8 @@ NSIDE	optim.modunres.f90	/^      INTEGER :: NRES,NRES0,IALPH,IVAR,NTHETA,NPHI,NS
 NSIDECHAIN	optim.modamber9.f90	/^integer, dimension(:), allocatable :: NSIDECHAIN$/;"	v	module:modamber9
 NSIDECHAIN	optim.modcharmm.f90	/^      INTEGER, DIMENSION(:), ALLOCATABLE  :: NPHIPSI,NOMEGAC,NSIDECHAIN,/;"	v	module:modcharmm
 NSIDECHAINTOT	optim.modcharmm.f90	/^      INTEGER :: NPHIPSITOT,NOMEGACTOT,NSIDECHAINTOT,/;"	v	module:modcharmm
+NSITES	pathsample.rigidbody.f90	/^     INTEGER :: NSITES$/;"	k	type:RIGIDBODYPOTENTIAL
+NSITES	pathsample.rigidbodymod.f90	/^     INTEGER :: NSITES$/;"	k	type:RIGIDBODYPOTENTIAL
 NSIZE	pathsample.main.F	/^      INTEGER J1, NSIZE,/;"	v	program:PATHSAMPLE
 NSIZE	pathsample.main.f90	/^      INTEGER J1, NSIZE,/;"	v	program:PATHSAMPLE
 NSTART	pathsample.nodes.f90	/^     INTEGER NSTART,/;"	v	module:NODES
@@ -5222,6 +5286,8 @@ NUMBER_OF_ATOMS	gmin.main.f90	/^      INTEGER :: NUMBER_OF_ATOMS$/;"	v	program:G
 NUMER	optim.modamber.f90	/^      DOUBLE PRECISION  TOP,BOTTOM,AX,BX,CX,AY,BY,CY,AZ,BZ,CZ,MU,LAMBDA,NUMER,/;"	v	module:MODAMBER
 NUMERICALZEROLIMIT	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: NUMERICALZEROLIMIT /;"	v	module:msevb_common
 NUMGLY	optim.key.f90	/^      INTEGER :: SEQ(500),NUMGLY$/;"	v	module:KEY
+NUMRBTYPES	pathsample.rigidbody.f90	/^  INTEGER :: NUMRBTYPES$/;"	v	module:RIGIDBODY
+NUMRBTYPES	pathsample.rigidbodymod.f90	/^  INTEGER :: NUMRBTYPES$/;"	v	module:RIGIDBODYMOD
 NUMSEC	optim.modunres.f90	/^      INTEGER :: STARTRES(10),ENDRES(10),NUMSEC$/;"	v	module:MODUNRES
 NUNIQUE	optim.commons.f90	/^      INTEGER :: NUNIQUE,/;"	v	module:COMMONS
 NUP	optim.zwk.f90	/^       INTEGER :: NUP$/;"	v	module:ZWK
@@ -5607,6 +5673,8 @@ RAD	gmin.func.f90	/^      SUBROUTINE RAD(/;"	s	module:FUNC
 RAD	optim.rad.f	/^      SUBROUTINE RAD(/;"	s
 RADIFT	optim.key.f90	/^     &        RBAAT, DBPT, DBPTDT, LWOTPT, GBT, GBDT, MSSTOCKT, NCAPT, NTIPT, PAHAT, PATCHYDT, PYGT, RADIFT,/;"	v	module:KEY
 RADIUS	optim.key.f90	/^      DOUBLE PRECISION :: TRAD, RESIZE, JZ, PUSHOFF, TOLD, TOLE, PCUT, DAMP, RADIUS,/;"	v	module:KEY
+RADIUS	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)) :: RHO, RADIUS,/;"	k	type:CAPSOMER
+RADIUS	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: RHO, RADIUS,/;"	k	type:CAPSOMER
 RADR	func.f90	/^      SUBROUTINE RADR(/;"	s	module:GMIN
 RADR	gmin.func.f90	/^      SUBROUTINE RADR(/;"	s	module:FUNC
 RADS	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: RADS /;"	v	module:msevb_common
@@ -5641,6 +5709,8 @@ RBOPS	optim.key.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: RBOPS(/;"	v	module:
 RBOPS	pathsample.common.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: RBOPS(/;"	v
 RBORIENT	optim.rbperm.f90	/^      SUBROUTINE RBORIENT(/;"	s
 RBORIENT	pathsample.rbperm.f90	/^      SUBROUTINE RBORIENT(/;"	s
+RBPOTENTIAL	pathsample.rigidbody.f90	/^  TYPE(RIGIDBODYPOTENTIAL) :: RBPOTENTIAL$/;"	v	module:RIGIDBODY
+RBPOTENTIAL	pathsample.rigidbodymod.f90	/^  TYPE(RIGIDBODYPOTENTIAL) :: RBPOTENTIAL$/;"	v	module:RIGIDBODYMOD
 RBROT	optim.rbperm.f90	/^      SUBROUTINE RBROT(/;"	s
 RBROT	pathsample.rbperm.f90	/^      SUBROUTINE RBROT(/;"	s
 RBROTMAT	optim.rbperm.f90	/^      SUBROUTINE RBROTMAT(/;"	s
@@ -5787,6 +5857,8 @@ REWEIGHT	pathsample.reweight.f	/^      SUBROUTINE REWEIGHT$/;"	s
 REWEIGHTT	pathsample.common.f90	/^     &        BARRIERSHORT, FREEZE, RATESHORT, DUMMYRUNT, REWEIGHTT,/;"	v
 RF	optim.gsdata.f90	/^     LOGICAL :: LF, RF /;"	k	type:IMGNODE
 RHO	optim.commons.f90	/^      DOUBLE PRECISION :: ZSTAR, RHO,/;"	v	module:COMMONS
+RHO	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)) :: RHO,/;"	k	type:CAPSOMER
+RHO	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: RHO,/;"	k	type:CAPSOMER
 RHOC10H	optim.key.f90	/^     &        RHOCC0, RHOCC10, RHOCC20,  RHOHH0, RHOHH10, RHOHH20, RHOCH0, RHOC10H,/;"	v	module:KEY
 RHOC20H	optim.key.f90	/^     &        RHOCC0, RHOCC10, RHOCC20,  RHOHH0, RHOHH10, RHOHH20, RHOCH0, RHOC10H, RHOCH10, RHOC20H,/;"	v	module:KEY
 RHOCC0	optim.key.f90	/^     &        DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU, MAXMAXBARRIER, &$/;"	v	module:KEY
@@ -5804,6 +5876,10 @@ RHO_POT_DD	optim.Ackland_metals.f90	/^        DOUBLE PRECISION  FUNCTION RHO_POT
 RIGHTFRONT	optim.gsdata.f90	/^  TYPE(IMGNODE), POINTER :: FIRST, LAST, LEFTFRONT, RIGHTFRONT$/;"	k	type:IMGNODE
 RIGIDBODY	optim.key.f90	/^     &        INDEXT, LANCZOST, NOSHIFT, GAMESSUS, GAMESSUK, PVTS, RIGIDBODY,/;"	v	module:KEY
 RIGIDBODY	pathsample.common.f90	/^     &        PERMDIST, PERMISOMER, RIGIDBODY,/;"	v
+RIGIDBODY	pathsample.rigidbody.f90	/^MODULE RIGIDBODY$/;"	m
+RIGIDBODYMOD	pathsample.rigidbodymod.f90	/^MODULE RIGIDBODYMOD$/;"	m
+RIGIDBODYPOTENTIAL	pathsample.rigidbody.f90	/^  TYPE RIGIDBODYPOTENTIAL$/;"	t	module:RIGIDBODY
+RIGIDBODYPOTENTIAL	pathsample.rigidbodymod.f90	/^  TYPE RIGIDBODYPOTENTIAL$/;"	t	module:RIGIDBODYMOD
 RINDEX	optim.commons.f90	/^      INTEGER :: RINDEX /;"	v	module:COMMONS
 RINGPOLYMERT	optim.key.f90	/^     &        LOCALPERMDIST, DOCROSSCHECK, REDOKADD, REDOPATH1, REDOPATH2, ANGLEAXIS2, &$/;"	v	module:KEY
 RINGPOLYMERT	optim.main.f90	/^      LOGICAL VARIABLES,CASTEP,ONETEP,CP2K,DFTP,CPMD,END,CAT,SKIPBL,CLEAR,ECHO,AMBER,AMBERT,NABT,RINGPOLYMERT$/;"	v	program:OPTIM4
@@ -5972,15 +6048,21 @@ SISBETA	pathsample.common.f90	/^      DOUBLE PRECISION :: SISMU, SISKAPPA, SISBE
 SISKAPPA	pathsample.common.f90	/^      DOUBLE PRECISION :: SISMU, SISKAPPA,/;"	v
 SISMU	pathsample.common.f90	/^      DOUBLE PRECISION :: SISMU,/;"	v
 SIST	pathsample.common.f90	/^      LOGICAL :: SIST$/;"	v
-SITE	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)), allocatable :: SITE(/;"	k	type:rigidbodyPotential
-SITE	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, allocatable :: SITE(/;"	k	type:rigidbodyPotential
+SITE	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: SITE(/;"	k	type:RIGIDBODYPOTENTIAL
+SITE	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, ALLOCATABLE :: SITE(/;"	k	type:RIGIDBODYPOTENTIAL
+SITELABEL	pathsample.rigidbody.f90	/^     CHARACTER(5), ALLOCATABLE :: SITELABEL(/;"	k	type:RIGIDBODYPOTENTIAL
+SITELABEL	pathsample.rigidbodymod.f90	/^     CHARACTER(5), ALLOCATABLE :: SITELABEL(/;"	k	type:RIGIDBODYPOTENTIAL
 SITEPOS	optim.rbperm.f90	/^      SUBROUTINE SITEPOS(/;"	s
 SITEPOS	pathsample.rbperm.f90	/^      SUBROUTINE SITEPOS(/;"	s
+SITESINTERACT	pathsample.rigidbody.f90	/^  LOGICAL, ALLOCATABLE :: SITESINTERACT(/;"	v	module:RIGIDBODY
+SITESINTERACT	pathsample.rigidbodymod.f90	/^  LOGICAL, ALLOCATABLE :: SITESINTERACT(/;"	v	module:RIGIDBODYMOD
 SKIPBL	optim.input.f	/^      LOGICAL SKIPBL,/;"	v	block data:INBLK
 SKIPBL	optim.main.f90	/^      LOGICAL VARIABLES,CASTEP,ONETEP,CP2K,DFTP,CPMD,END,CAT,SKIPBL,/;"	v	program:OPTIM4
 SKIPBL	pathsample.input.f	/^      LOGICAL SKIPBL,/;"	v	block data:INBLK
 SLURMT	pathsample.common.f90	/^     &        DUMMYTST, DOCKT, DSTAGE(6), USEPAIRST, LOWESTFRQT, BISECTT, NGTDISCONNECTALL, ANGLEAXIS2, TFOLDT, &$/;"	v
 SMAKE	optim.mylapack.f	/^      SUBROUTINE SMAKE(/;"	s
+SMALLANGLE	pathsample.rigidbody.f90	/^  REAL (KIND=KIND(0.0D0)), PARAMETER :: SMALLANGLE /;"	v	module:RIGIDBODY
+SMALLANGLE	pathsample.rigidbodymod.f90	/^  DOUBLE PRECISION, PARAMETER :: SMALLANGLE /;"	v	module:RIGIDBODYMOD
 SMALL_B	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: SMALL_B /;"	v	module:msevb_common
 SMAX	pathsample.common.f90	/^      INTEGER :: SMAX,/;"	v
 SMESSG	optim.mylapack.f	/^      SUBROUTINE SMESSG(/;"	s
@@ -6109,6 +6191,10 @@ SYS	optim.oldneb.f	41;"	c	subroutine:OLDNEB
 SYS	optim.path.f	93;"	c	subroutine:PATH
 SYS	optim.unresconnectsections.f	558;"	c	subroutine:UNRESGUESSMINSEC
 SYS	optim.unresguessts.f	438;"	c	subroutine:UNRESGUESSMIN
+SYSTEMTOAA	pathsample.rigidbody.f90	/^  SUBROUTINE SYSTEMTOAA /;"	s	module:RIGIDBODY
+SYSTEMTOAA	pathsample.rigidbodymod.f90	/^  SUBROUTINE SYSTEMTOAA /;"	s	module:RIGIDBODYMOD
+SYSTEMTOCARTESIANS	pathsample.rigidbody.f90	/^  SUBROUTINE SYSTEMTOCARTESIANS /;"	s	module:RIGIDBODY
+SYSTEMTOCARTESIANS	pathsample.rigidbodymod.f90	/^  SUBROUTINE SYSTEMTOCARTESIANS /;"	s	module:RIGIDBODYMOD
 SortC	optim.sortc.f	/^      SUBROUTINE SortC /;"	s
 T	optim.SD.f90	/^pure function T(/;"	f	module:SDwater
 T	optim.modamber.f90	/^      INTE/;"	v	module:MODAMBER
@@ -6290,6 +6376,10 @@ UNRSTWISTALL	optim.unrestwist.f	/^      SUBROUTINE UNRSTWISTALL(/;"	s
 UNRSTWISTDIHE	optim.unrestwist.f	/^      SUBROUTINE UNRSTWISTDIHE(/;"	s
 UNTRAPT	pathsample.common.f90	/^     &        EXPCOSTFUNCTION, COPYOPTIMT, CALCORDERT, CONNECTREGIONT, SHORTCUTT, MERGEDBT, UNTRAPT,/;"	v
 UPCASE	pathsample.input.f	/^      SUBROUTINE UPCASE(/;"	s
+UPDATEC12	pathsample.rigidbody.f90	/^  SUBROUTINE UPDATEC12(/;"	s	module:RIGIDBODY
+UPDATEC12	pathsample.rigidbodymod.f90	/^  SUBROUTINE UPDATEC12(/;"	s	module:RIGIDBODYMOD
+UPDATEC6	pathsample.rigidbody.f90	/^  SUBROUTINE UPDATEC6(/;"	s	module:RIGIDBODY
+UPDATEC6	pathsample.rigidbodymod.f90	/^  SUBROUTINE UPDATEC6(/;"	s	module:RIGIDBODYMOD
 UPDATEDC	optim.unresoptim.f	/^      SUBROUTINE UPDATEDC$/;"	s
 UPDATENBONDS	optim.chdummy.f	/^      SUBROUTINE UPDATENBONDS(/;"	s
 UPPERCASE	optim.input.f	/^      SUBROUTINE UPPERCASE(/;"	s
@@ -6362,6 +6452,8 @@ WORD	optim.main.f90	/^      CHARACTER WORD*/;"	v	program:OPTIM4
 WORKINGDIRECTORY	pathsample.nodes.f90	/^     CHARACTER(LEN=100) :: WORKINGDIRECTORY$/;"	v	module:NODES
 WPROTEIN	pathsample.dock.f90	/^double precision, allocatable :: WLIGAND(:), WCOMPLEX(:), WPROTEIN(/;"	v	module:DOCKMODULE
 WRITEPROFILE	optim.intlbfgs.f90	/^SUBROUTINE WRITEPROFILE(/;"	s
+WRITETOCARTESIANSTREAM	pathsample.rigidbody.f90	/^  SUBROUTINE WRITETOCARTESIANSTREAM /;"	s	module:RIGIDBODY
+WRITETOCARTESIANSTREAM	pathsample.rigidbodymod.f90	/^  SUBROUTINE WRITETOCARTESIANSTREAM /;"	s	module:RIGIDBODYMOD
 Warranty	optim.wc.f90	/^          subroutine Warranty$/;"	s	module:WC
 WriteOutFile	optim.binaryio.f90	/^     subroutine WriteOutFile(/;"	s	module:BinaryIO
 X	optim.double.f	/^      DOUBLE PRECISION X(/;"	v
@@ -6467,8 +6559,6 @@ assignvb3	optim.msevb.f90	/^        subroutine assignvb3$/;"	s
 atmass1	optim.modamber9.f90	/^      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: coords1, coords, atmass1$/;"	v	module:modamber9
 atmpl	optim.msevb_common.f90	/^  INTEGER, ALLOCATABLE, DIMENSION(:,:) :: atmpl /;"	v	module:msevb_common
 atnum	optim.modamber.f90	/^      INTEGER, ALLOCATABLE, DIMENSION (:) :: atnum,/;"	v	module:MODAMBER
-atomicNumber	pathsample.rigidbody.f90	/^     integer, allocatable :: atomicNumber(/;"	k	type:rigidbodyPotential
-atomicNumber	pathsample.rigidbodymod.f90	/^     integer, allocatable :: atomicNumber(/;"	k	type:rigidbodyPotential
 attr	optim.pymodule.f90	/^ DOUBLE PRECISION :: BOXLX,BOXLY,BOXLZ,angle,angle2,pi,twopi,sigma1(4),cut,ron,ron2,range2inv3,attr(/;"	v	module:PYMODULE
 ave_seq	optim.amhglobals.f	/^      logical ave_seq,/;"	v	module:amhglobals
 ave_seq_amc	optim.amhglobals.f	/^      logical ssweight,ave_seq_amw, ave_seq_amc$/;"	v	module:amhglobals
@@ -6539,19 +6629,7 @@ calc_int_coordsBLN	optim.BLN.f	/^      subroutine calc_int_coordsBLN(/;"	s
 calculateH2OinterForces	optim.fmsevb.f90	/^	subroutine calculateH2OinterForces /;"	s
 cand	pathsample.kshortestpaths.f90	/^   TYPE(path), POINTER :: cand /;"	k	type:node
 candidate_paths	pathsample.kshortestpaths.f90	/^TYPE(path), TARGET, ALLOCATABLE :: shortest_paths(:,:), candidate_paths(/;"	v	module:GRAPH
-capsomer	pathsample.rigidbody.f90	/^  type capsomer$/;"	t	module:rigidbody
-capsomer	pathsample.rigidbodymod.f90	/^  type capsomer$/;"	t	module:rigidbodymod
-capsomerDefs	pathsample.rigidbody.f90	/^  type (capsomer), allocatable :: capsomerDefs(/;"	v	module:rigidbody
-capsomerDefs	pathsample.rigidbodymod.f90	/^  type (capsomer), allocatable :: capsomerDefs(/;"	v	module:rigidbodymod
 carrms	optim.modamber9.f90	/^   double precision carrms$/;"	v	module:modamber9
-cartesianSeparation	pathsample.rigidbody.f90	/^  function cartesianSeparation(/;"	f	module:rigidbody
-cartesianSeparation	pathsample.rigidbodymod.f90	/^  function cartesianSeparation(/;"	f	module:rigidbodymod
-cartesianX	pathsample.rigidbody.f90	/^  function cartesianX /;"	f	module:rigidbody
-cartesianX	pathsample.rigidbodymod.f90	/^  function cartesianX /;"	f	module:rigidbodymod
-cartesianY	pathsample.rigidbody.f90	/^  function cartesianY /;"	f	module:rigidbody
-cartesianY	pathsample.rigidbodymod.f90	/^  function cartesianY /;"	f	module:rigidbodymod
-cartesianZ	pathsample.rigidbody.f90	/^  function cartesianZ /;"	f	module:rigidbody
-cartesianZ	pathsample.rigidbodymod.f90	/^  function cartesianZ /;"	f	module:rigidbodymod
 cbasis	optim.ttm3f.f90	/^double precision, dimension(245) :: c5zA, cbasis,/;"	v	module:mnasa_mod
 ccev_dist	optim.amhglobals.f	/^      double precision ccev_dist(/;"	v	module:amhglobals
 ccore	optim.ttm3f.f90	/^double precision, dimension(245) :: c5zA, cbasis, ccore,/;"	v	module:mnasa_mod
@@ -6578,8 +6656,6 @@ clambda	optim.modamber9.f90	/^          gbalpha,gbbeta,gbgamma,cut_inner,clambda
 class_2	optim.amhglobals.f	/^      integer class_of_res_2(AMHmaxsiz),sort_non_add(2,2,2,2,2),$/;"	v	module:amhglobals
 class_of_res_2	optim.amhglobals.f	/^      integer class_of_res_2(/;"	v	module:amhglobals
 cleanMemory	optim.cleanmemory.f90	/^SUBROUTINE cleanMemory /;"	s
-cleanRigidBodies	pathsample.rigidbody.f90	/^  subroutine cleanRigidBodies$/;"	s	module:rigidbody
-cleanRigidBodies	pathsample.rigidbodymod.f90	/^  subroutine cleanRigidBodies$/;"	s	module:rigidbodymod
 cmass	optim.ttm3f.f90	/^double precision, dimension(9) :: cmass /;"	v	module:mnasa_mod
 coefD	optim.ttm3f.f90	/^double precision, dimension(84) :: coefD$/;"	v	module:mnasa_mod
 colin	optim.modamber.f90	/^      INTEGER  a,b,ios,d,e,f,g,h,i,j,k,l,colin,/;"	v	module:MODAMBER
@@ -6591,8 +6667,6 @@ con_local_b_cut	optim.amhglobals.f	/^      integer con_local_a_cut, con_local_b_
 const_mode	optim.amhglobals.f	/^       integer num_foldon_a,num_foldon_b,const_mode,/;"	v	module:amhglobals
 coords	optim.modamber9.f90	/^      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: coords1/;"	v	module:modamber9
 coords1	optim.modamber9.f90	/^      DOUBLE PRECISION, DIMENSION(:), ALLOCATABLE :: coords1,/;"	v	module:modamber9
-coulombConversionFactor	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)) :: coulombConversionFactor /;"	k	type:rigidbodyPotential
-coulombConversionFactor	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: coulombConversionFactor /;"	k	type:rigidbodyPotential
 cpin	optim.modamber9.f90	/^      vecs, radii, freqe,redir(8),rstdip,mddip,inpdip,groups,gpes, &$/;"	v	module:modamber9
 cpout	optim.modamber9.f90	/^      cpin, cpout,/;"	v	module:modamber9
 cprestrt	optim.modamber9.f90	/^      cpin, cpout, cprestrt,/;"	v	module:modamber9
@@ -6609,12 +6683,6 @@ cyclic	optim.amhglobals.f	/^      logical cyclic,/;"	v	module:amhglobals
 d	optim.modamber.f90	/^      INTEGER  a,b,ios,d,/;"	v	module:MODAMBER
 d	pathsample.GT2data.f90	/^          integer :: de/;"	k	type:Node
 d2RijdXrb1dXrb2	optim.rigidfuncs.f	/^      function d2RijdXrb1dXrb2(/;"	f
-d2fCoulombdR2	pathsample.rigidbody.f90	/^  function d2fCoulombdR2 /;"	f	module:rigidbody
-d2fCoulombdR2	pathsample.rigidbodymod.f90	/^  function d2fCoulombdR2 /;"	f	module:rigidbodymod
-d2fLJdR2	pathsample.rigidbody.f90	/^  function d2fLJdR2(/;"	f	module:rigidbody
-d2fLJdR2	pathsample.rigidbodymod.f90	/^  function d2fLJdR2(/;"	f	module:rigidbodymod
-d2fMorsedR2	pathsample.rigidbody.f90	/^  function d2fMorsedR2(/;"	f	module:rigidbody
-d2fMorsedR2	pathsample.rigidbodymod.f90	/^  function d2fMorsedR2(/;"	f	module:rigidbodymod
 d2fermi	optim.PachecoC60.f	/^      function d2fermi(/;"	f
 d2morse	optim.PachecoC60.f	/^      function d2morse(/;"	f
 d2vdw	optim.PachecoC60.f	/^      function d2vdw(/;"	f
@@ -6663,12 +6731,6 @@ destruct	optim.SD.f90	/^subroutine destruct(/;"	s	module:SDwater
 devang	optim.modamber9.f90	/^   double precision f,enmr,devdis,devang,/;"	v	module:modamber9
 devdis	optim.modamber9.f90	/^   double precision f,enmr,devdis,/;"	v	module:modamber9
 devtor	optim.modamber9.f90	/^   double precision f,enmr,devdis,devang,devtor,/;"	v	module:modamber9
-dfCoulombdR	pathsample.rigidbody.f90	/^  function dfCoulombdR /;"	f	module:rigidbody
-dfCoulombdR	pathsample.rigidbodymod.f90	/^  function dfCoulombdR /;"	f	module:rigidbodymod
-dfLJdR	pathsample.rigidbody.f90	/^  function dfLJdR(/;"	f	module:rigidbody
-dfLJdR	pathsample.rigidbodymod.f90	/^  function dfLJdR(/;"	f	module:rigidbodymod
-dfMorsedR	pathsample.rigidbody.f90	/^  function dfMorsedR(/;"	f	module:rigidbody
-dfMorsedR	pathsample.rigidbodymod.f90	/^  function dfMorsedR(/;"	f	module:rigidbodymod
 dfermi	optim.PachecoC60.f	/^      function dfermi(/;"	f
 dgeco	optim.projh.f	/^      subroutine dgeco(/;"	s
 dgedi	optim.projh.f	/^      subroutine dgedi(/;"	s
@@ -6731,8 +6793,6 @@ e	optim.modamber.f90	/^      INTEGER  a,b,ios,d,e,/;"	v	module:MODAMBER
 eadev	optim.modamber9.f90	/^double precision scalm,pencut,ensave,tausw,ebdev,eadev,/;"	v	module:modamber9
 ebdev	optim.modamber9.f90	/^double precision scalm,pencut,ensave,tausw,ebdev,/;"	v	module:modamber9
 edge	pathsample.kshortestpaths.f90	/^TYPE edge$/;"	t	module:GRAPH
-efieldConversionFactor	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)) :: efieldConversionFactor /;"	k	type:rigidbodyPotential
-efieldConversionFactor	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: efieldConversionFactor /;"	k	type:rigidbodyPotential
 eigensort_val_asc	optim.eigensort.f90	/^subroutine eigensort_val_asc(/;"	s
 eigensort_val_asc	pathsample.quaternionmatch.f90	/^subroutine eigensort_val_asc(/;"	s
 ekeles	optim.modamber9.f90	/^double precision scaltles,tempsules,ekeles,/;"	v	module:modamber9
@@ -6746,8 +6806,6 @@ entots	optim.Natb.f	/^        SUBROUTINE entots(/;"	s
 epair	optim.Z2faster.f	/^      real*8 function epair(/;"	f
 epsilon1	optim.ljcapsidmodule.f90	/^ DOUBLE PRECISION, ALLOCATABLE :: PSCALEFAC1vec(:),PSCALEFAC2vec(:),epsilon1(/;"	v	module:LJCAPSIDMODULE
 epsilon1	optim.pymodule.f90	/^ DOUBLE PRECISION, ALLOCATABLE :: PSCALEFAC1vec(:),PSCALEFAC2vec(:),epsilon1(/;"	v	module:PYMODULE
-epsilonRep	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)) :: epsilonRep /;"	k	type:capsomer
-epsilonRep	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: epsilonRep /;"	k	type:capsomer
 eqdist	optim.amhglobals.f	/^      double precision hydscl(0:21,2),hrdrad(0:21,2),eqdist(/;"	v	module:amhglobals
 eres	optim.amhglobals.f	/^      double precision eres$/;"	v	module:amhglobals
 erstop	optim.modamber9.f90	/^logical belly, erstop,/;"	v	module:modamber9
@@ -6772,16 +6830,10 @@ f	pathsample.GT2data.f90	/^          type(IntegerList),pointer :: f,/;"	k	type:I
 f	pathsample.GT2data.f90	/^          type(NodeList),pointer :: f,/;"	k	type:NodeList
 f	pathsample.GT2data.f90	/^          type(RealList),pointer :: f,/;"	k	type:RealList
 f5z	optim.ttm3f.f90	/^double precision :: f5z,/;"	v	module:mnasa_mod
-fCoulomb	pathsample.rigidbody.f90	/^  function fCoulomb /;"	f	module:rigidbody
-fCoulomb	pathsample.rigidbodymod.f90	/^  function fCoulomb /;"	f	module:rigidbodymod
 fH	optim.ttm3f.f90	/^integer :: fO, lO, fH,/;"	v	module:ttm3f_mod
 fH3	optim.ttm3f.f90	/^integer :: fO, lO, fH, lH, fM, lM, fO3, lO3, fH3,/;"	v	module:ttm3f_mod
-fLJ	pathsample.rigidbody.f90	/^  function fLJ(/;"	f	module:rigidbody
-fLJ	pathsample.rigidbodymod.f90	/^  function fLJ(/;"	f	module:rigidbodymod
 fM	optim.ttm3f.f90	/^integer :: fO, lO, fH, lH, fM,/;"	v	module:ttm3f_mod
 fM3	optim.ttm3f.f90	/^integer :: fO, lO, fH, lH, fM, lM, fO3, lO3, fH3, lH3, fM3,/;"	v	module:ttm3f_mod
-fMorse	pathsample.rigidbody.f90	/^  function fMorse(/;"	f	module:rigidbody
-fMorse	pathsample.rigidbodymod.f90	/^  function fMorse(/;"	f	module:rigidbodymod
 fO	optim.ttm3f.f90	/^integer :: fO,/;"	v	module:ttm3f_mod
 fO3	optim.ttm3f.f90	/^integer :: fO, lO, fH, lH, fM, lM, fO3,/;"	v	module:ttm3f_mod
 facc	optim.modamber9.f90	/^character owrite, facc$/;"	v	module:modamber9
@@ -6824,8 +6876,6 @@ fphi	optim.Ackland_metals.f90	/^       double precision function fphi(/;"	f
 fphi_d	optim.Ackland_metals.f90	/^       double precision function fphi_d(/;"	f
 fphi_dd	optim.Ackland_metals.f90	/^       double precision function fphi_dd(/;"	f
 frameon	optim.modamber9.f90	/^      fix_quad,  mpoltype,   induced,    frameon,/;"	v	module:modamber9
-freqConvFactor	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)) :: freqConvFactor /;"	k	type:rigidbodyPotential
-freqConvFactor	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: freqConvFactor /;"	k	type:rigidbodyPotential
 freqe	optim.modamber9.f90	/^      vecs, radii, freqe,/;"	v	module:modamber9
 frest	optim.ttm3f.f90	/^double precision :: f5z,fbasis,fcore,frest$/;"	v	module:mnasa_mod
 from	pathsample.kshortestpaths.f90	/^   TYPE(node), POINTER :: from /;"	k	type:edge
@@ -6880,8 +6930,6 @@ hairyimp	optim.amber.f	/^      SUBROUTINE hairyimp(/;"	s
 hairyimphell	optim.amber.f	/^      SUBROUTINE hairyimphell(/;"	s
 hbond	optim.amhglobals.f	/^        logical hbond,/;"	v	module:amhglobals
 hbscl	optim.amhglobals.f	/^        double precision hbscl(/;"	v	module:amhglobals
-height	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)) :: rho, radius, height$/;"	k	type:capsomer
-height	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: rho, radius, height$/;"	k	type:capsomer
 hell	optim.modamber.f90	/^     &                 imphell,/;"	v	module:MODAMBER
 hellcount	optim.modamber.f90	/^      INTEGER hellcount$/;"	v	module:MODAMBER
 ho_zero	optim.amhglobals.f	/^        double precision sigma_h,sigma_NO,ho_zero,/;"	v	module:amhglobals
@@ -7065,10 +7113,6 @@ induced	optim.modamber9.f90	/^      fix_quad,  mpoltype,   induced,/;"	v	module:
 inertiaWrapper	pathsample.inertia.f	/^      subroutine inertiaWrapper(/;"	s
 init	optim.modamber9.f90	/^      ntxo,ntt,ntp,ntr,init,/;"	v	module:modamber9
 init_ttm3f	optim.ttm3f.f90	/^subroutine init_ttm3f(/;"	s
-initialiseInteractionMap	pathsample.rigidbody.f90	/^  subroutine initialiseInteractionMap$/;"	s	module:rigidbody
-initialiseInteractionMap	pathsample.rigidbodymod.f90	/^  subroutine initialiseInteractionMap$/;"	s	module:rigidbodymod
-initialiseRigidBody	pathsample.rigidbody.f90	/^  subroutine initialiseRigidBody /;"	s	module:rigidbody
-initialiseRigidBody	pathsample.rigidbodymod.f90	/^  subroutine initialiseRigidBody /;"	s	module:rigidbodymod
 inmr02	optim.modamber9.f90	/^integer       intreq,irlreq,lnmr01,inmr02,/;"	v	module:modamber9
 inpcrd	optim.modamber9.f90	/^character(len=256) mdin, mdout, inpcrd,/;"	v	module:modamber9
 inpdip	optim.modamber9.f90	/^      vecs, radii, freqe,redir(8),rstdip,mddip,inpdip,/;"	v	module:modamber9
@@ -7228,8 +7272,6 @@ m14	optim.modamber9.f90	/^      m02,m04,m06,m08,m10,m12,m14,/;"	v	module:modambe
 m16	optim.modamber9.f90	/^      m02,m04,m06,m08,m10,m12,m14,m16,/;"	v	module:modamber9
 m18	optim.modamber9.f90	/^      m02,m04,m06,m08,m10,m12,m14,m16,m18,/;"	v	module:modamber9
 mark	pathsample.GT2data.f90	/^          logical :: FH,mark$/;"	k	type:Node
-mass	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)), allocatable :: mass(/;"	k	type:rigidbodyPotential
-mass	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, allocatable :: mass(/;"	k	type:rigidbodyPotential
 master	optim.modamber9.f90	/^logical master$/;"	v	module:modamber9
 match	optim.modamber.f90	/^      INTEGER  match,/;"	v	module:MODAMBER
 mathsConstants	pathsample.mathsconstants.f90	/^MODULE mathsConstants$/;"	m
@@ -7283,14 +7325,6 @@ mmtsb_setup_file	optim.modamber9.f90	/^      cpin, cpout, cprestrt, evbin, evbou
 mnasa_mod	optim.ttm3f.f90	/^module mnasa_mod$/;"	m
 modamber9	optim.modamber9.f90	/^      MODULE modamber9 /;"	m
 modcharmm	optim.modcharmm.f90	/^MODULE modcharmm$/;"	m
-monomerMass	pathsample.rigidbody.f90	/^  function monomerMass /;"	f	module:rigidbody
-monomerMass	pathsample.rigidbodymod.f90	/^  function monomerMass /;"	f	module:rigidbodymod
-monomerToAA	pathsample.rigidbody.f90	/^  subroutine monomerToAA /;"	s	module:rigidbody
-monomerToAA	pathsample.rigidbodymod.f90	/^  subroutine monomerToAA /;"	s	module:rigidbodymod
-monomerToCartesians	pathsample.rigidbody.f90	/^  subroutine monomerToCartesians /;"	s	module:rigidbody
-monomerToCartesians	pathsample.rigidbodymod.f90	/^  subroutine monomerToCartesians /;"	s	module:rigidbodymod
-morseParameters	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)), allocatable :: morseParameters(/;"	k	type:rigidbodyPotential
-morseParameters	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION, allocatable :: morseParameters(/;"	k	type:rigidbodyPotential
 movanal	optim.amhglobals.f	/^      logical movanal$/;"	v	module:amhglobals
 mpoltype	optim.modamber9.f90	/^      fix_quad,  mpoltype,/;"	v	module:modamber9
 msevb	optim.msevb.f90	/^     subroutine msevb(/;"	s
@@ -7303,12 +7337,6 @@ mxsub	optim.modamber9.f90	/^      natc,nattgtfit,nattgtrms,ibelly,natbel,ishake,
 mxtemp	optim.amhglobals.f	/^      integer mxtemp,/;"	v	module:amhglobals
 my_dijkstra	pathsample.kshortestpaths.f90	/^SUBROUTINE my_dijkstra(/;"	s
 n	pathsample.GT2FibonacciHeap.f90	/^     int/;"	v	module:FibonacciHeapModule
-nBasalSites	pathsample.rigidbody.f90	/^     integer :: nBasalSites$/;"	k	type:capsomer
-nBasalSites	pathsample.rigidbodymod.f90	/^     integer :: nBasalSites$/;"	k	type:capsomer
-nPhysicalSites	pathsample.rigidbody.f90	/^     integer :: nPhysicalSites /;"	k	type:rigidbodyPotential
-nPhysicalSites	pathsample.rigidbodymod.f90	/^     integer :: nPhysicalSites /;"	k	type:rigidbodyPotential
-nSites	pathsample.rigidbody.f90	/^     integer :: nSites$/;"	k	type:rigidbodyPotential
-nSites	pathsample.rigidbodymod.f90	/^     integer :: nSites$/;"	k	type:rigidbodyPotential
 n_Q_anneal_a	optim.amhglobals.f	/^      integer n_Q_anneal_a,/;"	v	module:amhglobals
 n_Q_anneal_b	optim.amhglobals.f	/^      integer n_Q_anneal_a,n_Q_anneal_b$/;"	v	module:amhglobals
 n_Qbias_a	optim.amhglobals.f	/^      integer nbiaspoly,n_Qbias_a,/;"	v	module:amhglobals
@@ -7422,8 +7450,6 @@ ntwx	optim.modamber9.f90	/^integer     ntpr,ntwr,ntwx,/;"	v	module:modamber9
 ntx	optim.modamber9.f90	/^integer nrp,nspm,ig,ntx,/;"	v	module:modamber9
 ntxo	optim.modamber9.f90	/^integer nrp,nspm,ig,ntx,ntcx,           &!5$/;"	v	module:modamber9
 ntypes	optim.modamber9.f90	/^      nphia,nnb,ntypes,/;"	v	module:modamber9
-numRBtypes	pathsample.rigidbody.f90	/^  integer :: numRBtypes$/;"	v	module:rigidbody
-numRBtypes	pathsample.rigidbodymod.f90	/^  integer :: numRBtypes$/;"	v	module:rigidbodymod
 num_eig	optim.msevb_common.f90	/^  INTEGER :: num_hyd,num_eig,/;"	v	module:msevb_common
 num_foldon_a	optim.amhglobals.f	/^       integer num_foldon_a,/;"	v	module:amhglobals
 num_foldon_b	optim.amhglobals.f	/^       integer num_foldon_a,num_foldon_b,/;"	v	module:amhglobals
@@ -7575,16 +7601,12 @@ rad	optim.modamber9.f90	/^double precision box,cut,scnb,scee,dielc,rad,/;"	v	mod
 radhb	optim.modamber9.f90	/^double precision box,cut,scnb,scee,dielc,rad,wel,radhb,/;"	v	module:modamber9
 radiansToDegrees	pathsample.mathsconstants.f90	/^  REAL (kind=KIND(0.0d0)), PARAMETER :: radiansToDegrees /;"	v	module:mathsConstants
 radii	optim.modamber9.f90	/^      vecs, radii,/;"	v	module:modamber9
-radius	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)) :: rho, radius,/;"	k	type:capsomer
-radius	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: rho, radius,/;"	k	type:capsomer
 ramascl	optim.amhglobals.f	/^      double precision ramascl$/;"	v	module:amhglobals
 ran_file	optim.amhglobals.f	/^      logical ran_force,ran_file,/;"	v	module:amhglobals
 ran_force	optim.amhglobals.f	/^      logical ran_force,/;"	v	module:amhglobals
 ran_min_seq_dist	optim.amhglobals.f	/^      integer ran_min_seq_dist$/;"	v	module:amhglobals
 range2inv3	optim.ljcapsidmodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,sigma1,cut,ron,ron2,range2inv3$/;"	v	module:LJCAPSIDMODULE
 range2inv3	optim.pymodule.f90	/^ DOUBLE PRECISION :: BOXLX,BOXLY,BOXLZ,angle,angle2,pi,twopi,sigma1(4),cut,ron,ron2,range2inv3,/;"	v	module:PYMODULE
-rbPotential	pathsample.rigidbody.f90	/^  type(rigidbodyPotential) :: rbPotential$/;"	v	module:rigidbody
-rbPotential	pathsample.rigidbodymod.f90	/^  type(rigidbodyPotential) :: rbPotential$/;"	v	module:rigidbodymod
 rbornstat	optim.modamber9.f90	/^      gbsa,vrand,iwrap,nrespa,irespa,nrespai,icfe,  &!48$/;"	v	module:modamber9
 rbtarg	optim.modamber9.f90	/^      tol,taur,dx0,drms,vlimit,rbtarg(/;"	v	module:modamber9
 rcut	optim.amhglobals.f	/^      double precision rcut,/;"	v	module:amhglobals
@@ -7609,13 +7631,7 @@ rg_bounds	optim.amhglobals.f	/^      double precision rg_bounds(/;"	v	module:amh
 rg_scl	optim.amhglobals.f	/^      double precision rg_scl$/;"	v	module:amhglobals
 rg_shift	optim.amhglobals.f	/^      double precision rg_shift$/;"	v	module:amhglobals
 rgbmax	optim.modamber9.f90	/^          solvph,rgbmax,/;"	v	module:modamber9
-rho	pathsample.rigidbody.f90	/^     real (kind=kind(0.0d0)) :: rho,/;"	k	type:capsomer
-rho	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: rho,/;"	k	type:capsomer
 right	pathsample.GT2data.f90	/^          type(Node),pointer :: left,right,/;"	k	type:Node
-rigidbody	pathsample.rigidbody.f90	/^module rigidbody$/;"	m
-rigidbodyPotential	pathsample.rigidbody.f90	/^  type rigidbodyPotential$/;"	t	module:rigidbody
-rigidbodyPotential	pathsample.rigidbodymod.f90	/^  type rigidbodyPotential$/;"	t	module:rigidbodymod
-rigidbodymod	pathsample.rigidbodymod.f90	/^module rigidbodymod$/;"	m
 rinc	optim.amhglobals.f	/^      double precision vpotnt(0:maxr+1,maxcnt,maxtab),amh_gse,$/;"	v	module:amhglobals
 rincinv	optim.amhglobals.f	/^     *     rinc(maxcnt,maxtab),$/;"	v	module:amhglobals
 rincsq	optim.amhglobals.f	/^     *     rincinv(maxcnt,maxtab),$/;"	v	module:amhglobals
@@ -7657,14 +7673,8 @@ sigma1	optim.ljcapsidmodule.f90	/^ DOUBLE PRECISION :: angle,angle2,pi,twopi,sig
 sigma1	optim.pymodule.f90	/^ DOUBLE PRECISION :: BOXLX,BOXLY,BOXLZ,angle,angle2,pi,twopi,sigma1(/;"	v	module:PYMODULE
 sigma_NO	optim.amhglobals.f	/^        double precision sigma_h,sigma_NO,/;"	v	module:amhglobals
 sigma_h	optim.amhglobals.f	/^        double precision sigma_h,/;"	v	module:amhglobals
-siteLabel	pathsample.rigidbody.f90	/^     character(5), allocatable :: siteLabel(/;"	k	type:rigidbodyPotential
-siteLabel	pathsample.rigidbodymod.f90	/^     character(5), allocatable :: siteLabel(/;"	k	type:rigidbodyPotential
-sitesInteract	pathsample.rigidbody.f90	/^  logical, allocatable :: sitesInteract(/;"	v	module:rigidbody
-sitesInteract	pathsample.rigidbodymod.f90	/^  logical, allocatable :: sitesInteract(/;"	v	module:rigidbodymod
 skmax	optim.modamber9.f90	/^          skmin,skmax,/;"	v	module:modamber9
 skmin	optim.modamber9.f90	/^          solvph,rgbmax,fsmax,restraint_wt, &  !42$/;"	v	module:modamber9
-smallAngle	pathsample.rigidbody.f90	/^  real (kind=kind(0.0d0)), parameter :: smallAngle /;"	v	module:rigidbody
-smallAngle	pathsample.rigidbodymod.f90	/^  DOUBLE PRECISION, parameter :: smallAngle /;"	v	module:rigidbodymod
 smear01	optim.ttm3f.f90	/^subroutine smear01(/;"	s
 smear1	optim.ttm3f.f90	/^subroutine smear1(/;"	s
 smear2	optim.ttm3f.f90	/^subroutine smear2(/;"	s
@@ -7685,10 +7695,6 @@ statesInteract	optim.msevb_common.f90	/^  LOGICAL, ALLOCATABLE, DIMENSION(:,:) :
 succ	pathsample.kshortestpaths.f90	/^   TYPE(edge), POINTER :: succ /;"	k	type:node
 surften	optim.modamber9.f90	/^          kappa,offset,surften,/;"	v	module:modamber9
 symmetrize	optim.finite_differences.f90	/^subroutine symmetrize(/;"	s	module:finite_differences
-systemToAA	pathsample.rigidbody.f90	/^  subroutine systemToAA /;"	s	module:rigidbody
-systemToAA	pathsample.rigidbodymod.f90	/^  subroutine systemToAA /;"	s	module:rigidbodymod
-systemToCartesians	pathsample.rigidbody.f90	/^  subroutine systemToCartesians /;"	s	module:rigidbody
-systemToCartesians	pathsample.rigidbodymod.f90	/^  subroutine systemToCartesians /;"	s	module:rigidbodymod
 t	optim.modamber9.f90	/^double precision t,/;"	v	module:modamber9
 t	pathsample.GT2data.f90	/^          characte/;"	k	type:Node
 t1	optim.amhglobals.f	/^      double precision t1,/;"	v	module:amhglobals
@@ -7752,10 +7758,6 @@ typechc	optim.modamber.f90	/^      CHARACTER(LEN=2)  typechb,typechc,/;"	v	modul
 typechd	optim.modamber.f90	/^      CHARACTER(LEN=2)  typechb,typechc,typechd,/;"	v	module:MODAMBER
 typeche	optim.modamber.f90	/^      CHARACTER(LEN=2)  typechb,typechc,typechd,typeche$/;"	v	module:MODAMBER
 typenumber	optim.amber.f	/^      SUBROUTINE typenumber(/;"	s
-updateC12	pathsample.rigidbody.f90	/^  subroutine updateC12(/;"	s	module:rigidbody
-updateC12	pathsample.rigidbodymod.f90	/^  subroutine updateC12(/;"	s	module:rigidbodymod
-updateC6	pathsample.rigidbody.f90	/^  subroutine updateC6(/;"	s	module:rigidbody
-updateC6	pathsample.rigidbodymod.f90	/^  subroutine updateC6(/;"	s	module:rigidbodymod
 use_pme	optim.modamber9.f90	/^      periodic,  use_pme,/;"	v	module:modamber9
 utils	pathsample.utils.f90	/^module utils$/;"	m
 v11	optim.modamber9.f90	/^          skmin,skmax,vfac,gbneckscale,v11,/;"	v	module:modamber9
@@ -7799,8 +7801,6 @@ work3	optim.amhglobals.f	/^      double precision work1(maxcnt),work2(maxcnt),wo
 work4	optim.amhglobals.f	/^      double precision work1(maxcnt),work2(maxcnt),work3(maxcnt),$/;"	v	module:amhglobals
 work6	optim.amhglobals.f	/^     *     work4(maxcnt),work6(/;"	v	module:amhglobals
 work8	optim.amhglobals.f	/^     *     work4(maxcnt),work6(maxcnt),$/;"	v	module:amhglobals
-writeToCartesianStream	pathsample.rigidbody.f90	/^  subroutine writeToCartesianStream /;"	s	module:rigidbody
-writeToCartesianStream	pathsample.rigidbodymod.f90	/^  subroutine writeToCartesianStream /;"	s	module:rigidbodymod
 x	optim.modamber9.f90	/^   double precision,  dimension(:), allocatable :: x$/;"	v	module:modamber9
 x2n	optim.dimer.f	/^       function x2n(/;"	f
 x_int	optim.amhglobals.f	/^      DOUBLE PRECISION x_int(/;"	v	module:amhglobals

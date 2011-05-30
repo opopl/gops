@@ -36,8 +36,8 @@ C
       PROGRAM PATHSAMPLE
       USE COMMON
       USE NODES, ONLY: SSHPARALLEL
-      USE dockmodule
-      use rigidBodymod, only: initialiseRigidBody, cleanRigidBodies
+      USE DOCKMODULE
+      USE RIGIDBODYMOD, ONLY: INITIALISERIGIDBODY, CLEANRIGIDBODIES
       IMPLICIT NONE
       INTEGER J1, NSIZE, NWORST, NAVAIL, NMINSAVE, VERSIONTEMP
       INTEGER, ALLOCATABLE :: MINMAP(:)
@@ -76,7 +76,7 @@ C
       TCONNECTDIST=0.0D0
       TGT=0.0D0
       PRINT '(A,I5)','PATHSAMPLE version r',VERSIONTEMP
-      CALL KEYWORD
+      CALL KEYWORD("PATHSAMPLE")
       IF ((PERMDIST.OR.PERMISOMER).AND.(CHARMMT).AND.(NPERMGROUP.EQ.NATOMS)) THEN
          PRINT '(A)','main> Likely error in input - PERM set without perm.allow file for CHARMM potential'
          STOP

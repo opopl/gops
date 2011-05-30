@@ -299,6 +299,8 @@ C  Add the minima and transition= states in path.info.<PATHNAME>
 C  to an existing database. The end points are NOT assumed to
 C  belong to the A and B sets.
 C
+
+include pathsample.keyword.addpath.inc.f90
       ELSE IF (WORD.EQ.'ADDPATH') THEN
          ADDPATH=.TRUE.
          CALL READA(PATHNAME)
