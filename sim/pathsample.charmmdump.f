@@ -48,36 +48,6 @@ C     COMMON /CHARMMLABEL/ RESLABEL, ATOMLABEL, RESNUMBER
       close (iunit)
       end
 
-C dae 
-C get coordinates from external file 'coords'
-C which is CHARMM format but use standard fortran
-C reading commands, unlike CHARMM which has a limit
-C on total line length and does involved procedure with strings
-C
-      SUBROUTINE READREF(FNAME)
-      use utils
-      USE COMMON
-      IMPLICIT NONE
-  
-      CHARACTER(LEN=*) FNAME
-      INTEGER I,I1
- 
-C     CHARACTER(LEN=4) RESLABEL(NATOMS),ATOMLABEL(NATOMS)
-C     INTEGER RESNUMBER(NATOMS)
-C     COMMON /CHARMMLABEL/ RESLABEL, ATOMLABEL, RESNUMBER
-
-      OPEN(UNIT=19,FILE=FNAME,STATUS='OLD',iostat=I)
-      call openiostat(I,fname,'readref')
-      READ (19,*)
-      DO I=1,NATOMS
-         READ (19,*) I1,RESNUMBER(I),RESLABEL(I),ATOMLABEL(I)
-      ENDDO
-  
-      CLOSE(19)
-
-      RETURN
-      END
-
 
 C get coordinates from external file 
 C which is CHARMM format but use standard fortran

@@ -628,6 +628,7 @@ C
 !     Optional change of reactant minima set via reweighting.
 !
       IF (REWEIGHTT) THEN
+         ! {{{
          ALLOCATE(CANDIDATES(NMIN))
          IF (DIRECTION.EQ.'AB') THEN
             ALLOCATE(NEWPFMIN(NMINB))
@@ -713,6 +714,7 @@ C
             PRINT '(A,I8,A)','setup> there are now ',NMINA,' minima of type A'
          ENDIF
          DEALLOCATE(NEWPFMIN,CANDIDATES)
+         ! }}}
       ENDIF
 C
 C  Load transition states.
@@ -720,7 +722,7 @@ C
       DO J1=1,NMIN
          TOPPOINTER(J1)=-1
       ENDDO
-      INQUIRE(FILE='ts.data',EXIST=YESNO)
+      CALL INQF('ts.data',YESNO)
       IF (YESNO.AND.DIJINITSTARTT) THEN
          IF (.NOT.DUMMYTST) THEN
             CALL MYSYSTEM(STATUS,DEBUG,'mv ts.data ts.data.save')
@@ -730,7 +732,7 @@ C
       ENDIF
       
       IF (YESNO) THEN
-         OPEN(UNIT=UTSDATA,FILE='ts.data',STATUS='OLD')
+         CALL OPENF(UTSDATA,'O','ts.data')
          J1=0
          DO 
             J1=J1+1

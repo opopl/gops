@@ -1,25 +1,7 @@
-C   OPTIM: A program for optimizing geometries and calculating reaction pathways
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of OPTIM.
-C
-C   OPTIM is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
-C
-C   OPTIM is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
-C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-C
-C  INPUT  E3   ( 11:41:40 Tuesday 7 September 1993 )
  
       SUBROUTINE INPUT(END)
-      use porfuncs
+      ! {{{
+      USE PORFUNCS
  
 C  Read next input record from unit IR into buffer, and analyse for data
 C  items, null items (enclosed by commas), and comment (enclosed in
@@ -270,12 +252,11 @@ C  Revert to previous input
       NITEM=-1
       END=.TRUE.
       RETURN
- 
+! }}} 
       END
  
-C-----------------------------------------------------------------------
- 
       BLOCK DATA INBLK
+      ! {{{
 
       CHARACTER CHAR
       COMMON /BUFFER/ CHAR(800)
@@ -286,25 +267,11 @@ C-----------------------------------------------------------------------
       DATA ITEM /0/, NITEM /0/, CHAR /800*' '/, LOC /132*0/, LINE /0/
       DATA SKIPBL /.FALSE./, CLEAR /.TRUE./, NCR /0/, NERROR /0/
       DATA IR /5/, ECHO /.FALSE./
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
- 
-C     SUBROUTINE STREAM(N)
- 
-C  Set the input stream for subsequent data to be N.
- 
-C     LOGICAL SKIPBL, CLEAR, ECHO, CAT
-C     COMMON /BUFINF/ ITEM, NITEM, LOC(132), LINE, SKIPBL, CLEAR, NCR,
-C    &                NERROR, IR, ECHO, LAST, CAT
-C
-C     IR=N
-C     RETURN
-C     END
- 
-C-----------------------------------------------------------------------
- 
       SUBROUTINE READF(A)
+      ! {{{
       use porfuncs
  
 C  Read the next item from the buffer as a real number
@@ -435,23 +402,21 @@ C  Error
       A=SIGN*B*(TEN**KX)
  
 110   RETURN
- 
+! }}} 
       END
  
-C-----------------------------------------------------------------------
- 
       SUBROUTINE INPUTI(I)
+      ! {{{
       DOUBLE PRECISION A
       A=I
       CALL READF(A)
       I=A
       RETURN
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
- 
       SUBROUTINE READK(C,M,N,K)
- 
+! {{{ 
 C  The arrays C, M and N comprise a tree, each node of which consists of
 C  a character C(I) and two integers M(I) and N(I). Initially I=1. The
 C  character C(I) is tested against the current character in the input.
@@ -529,11 +494,11 @@ C  Matched -- advance tree pointer to next character of command
 C  Last character of keyword found.
 70    K=-TP
       RETURN
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
-
       SUBROUTINE READA(M)
+      ! {{{
       IMPLICIT NONE
  
 C  Read characters and pack them into the character variable M.
@@ -599,11 +564,11 @@ C     IF (QUOTE .AND. CHAR(L+K) .NE. TERM) GO TO 10
          M(I:I)=SPACE
       ENDDO
       RETURN
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
- 
       SUBROUTINE READU(M)
+      ! {{{
       CHARACTER*(*) M
  
       CALL READA(M)
@@ -614,12 +579,11 @@ C-----------------------------------------------------------------------
       CALL READA(M)
       CALL LOCASE(M)
       RETURN
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
- 
       SUBROUTINE READCH(M)
- 
+! {{{ 
 C  Read a single character from the next (or the current) data item.
 C  No account is taken of special characters.
  
@@ -637,12 +601,12 @@ C  No account is taken of special characters.
       M=CHAR(L+NCR)
       NCR=NCR+1
       RETURN
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
- 
       SUBROUTINE GETF(A)
-      use porfuncs
+      ! {{{
+      USE PORFUNCS
 C  Read the next item as a double-precision number, reading new data
 C  records if necessary
       DOUBLE PRECISION A
@@ -667,11 +631,11 @@ C  records if necessary
       ENDIF
       GO TO 10
  
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
- 
       SUBROUTINE GETS(S)
+      ! {{{
 C  Get a single-precision number
       DOUBLE PRECISION A
       REAL S
@@ -679,23 +643,24 @@ C  Get a single-precision number
       CALL GETF(A)
       S=A
       RETURN
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
- 
       SUBROUTINE GETI(I)
+      ! {{{
 C  Get an integer
       DOUBLE PRECISION A
       A=I
       CALL GETF(A)
       I=A
       RETURN
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
  
       SUBROUTINE GETA(M)
-      use porfuncs
+      ! {{{
+      USE PORFUNCS
 C  Get a character string
       CHARACTER*(*) M
 
@@ -719,12 +684,11 @@ C  Get a character string
         STOP
       ENDIF
       GO TO 10
- 
+      ! }}} 
       END
  
-C-----------------------------------------------------------------------
- 
       SUBROUTINE READSNGL(S)
+      ! {{{
 C  Read a number from the current record into the single-precision
 C  variable S
       DOUBLE PRECISION A
@@ -733,23 +697,22 @@ C  variable S
       CALL READF(A)
       S=A
       RETURN
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
- 
       SUBROUTINE READI(I)
+      ! {{{
 C  Read an integer from the current record
       DOUBLE PRECISION A
       A=I
       CALL READF(A)
       I=A
       RETURN
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
- 
       SUBROUTINE REREAD(K)
- 
+      ! {{{ 
 C  K>0  Reread from item K
 C  K<0  Go back |K| items
 C  K=0  Same as K=-1, i.e. reread last item.
@@ -766,11 +729,11 @@ C  K=0  Same as K=-1, i.e. reread last item.
       IF (ITEM .LT. 0) ITEM=0
       NCR=0
       RETURN
+      ! }}}
       END
  
-C-----------------------------------------------------------------------
- 
       SUBROUTINE UPPERCASE(WORD)
+      ! {{{
       CHARACTER WORD*(*)
  
       CHARACTER UC*26, LC*26
@@ -790,11 +753,11 @@ C-----------------------------------------------------------------------
       IF (K .NE. 0) WORD(I:I)=LC(K:K)
 20    CONTINUE
       RETURN
- 
+      ! }}} 
       END
-C  REPORT  B1  ( 16:10:41 Thursday 30 April 1992 )
 
       SUBROUTINE REPORT(C,REFLCT)
+      ! declarations {{{
 
       CHARACTER C*(*)
       LOGICAL REFLCT
@@ -811,6 +774,8 @@ C  REPORT  B1  ( 16:10:41 Thursday 30 April 1992 )
       EQUIVALENCE (ONLINE, SWITCH(4))
 
       CHARACTER(LEN=3) S1, S2
+      ! }}}
+      ! subroutine body {{{
 
       PRINT '(1X,A)', C
       IF (REFLCT) THEN
@@ -828,4 +793,5 @@ C    &      'L =', L, '   LAST =', LAST, '   I1 =', I1, '   I2 =', I2
         PRINT '(4X,132A1)', (' ', I=I1,L), '*'
       ENDIF
 C     IF (.NOT. ONLINE) STOP
+      ! }}}
       END

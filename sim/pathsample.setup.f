@@ -1,39 +1,20 @@
-! GPL LIcense Info {{{
-!   PATHSAMPLE: A driver for OPTIM to create stationary point databases using discrete path sampling and perform kinetic analysis
-!   Copyright (C) 1999-2009 David J. Wales
-!   This file is part of PATHSAMPLE.
-!
-!   PATHSAMPLE is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
-!
-!   PATHSAMPLE is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
-!
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-!
-! }}}
 
-C
-CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC
-C
-C>  Read in databases of A and B minima, calculate partition functions, rate constants
-C>  and sums of rate constants for all the transition states in the database.
-C
-C>  We need pre-existing databases to specify which minima are A and which are B.
-C
+!>  Read in databases of A and B minima, calculate partition functions, rate constants
+!>  and sums of rate constants for all the transition states in the database.
+!
+!>  We need pre-existing databases to specify which minima are A and which are B.
+!
       SUBROUTINE SETUP
       ! Declarations: Modules and Variables {{{
-      USE PORFUNCS
+
       USE UTILS
       USE KEY
-      USE COMMON
+      USE COMMONS
+      USE PORFUNCS
+      USE FUNC
+
       IMPLICIT NONE
+
       INTEGER J1, J2, STATUS, J3, NDUMMY, NRANDOM, NCOUNT, NMINREMOVE, NTSREMOVE, NMINRETAIN, NTSRETAIN, ISTAT, J4
       DOUBLE PRECISION LOCALPOINTS(3*NATOMS), IXM, IYM, IZM, LOCALPOINTS2(3*NATOMS), DISTANCE, RMAT(3,3), DIST2, DPRAND
       DOUBLE PRECISION PFNORM1, PFNORM2
@@ -44,120 +25,15 @@ C
       DOUBLE PRECISION :: CUT_UNDERFLOW=-300.0D0
       LOGICAL DEADTS
       INTEGER NEWHORDERMIN!}}}
+! subroutine body {{{
+      IF (CHARMMT.AND..NOT.MACHINE) CALL READREF('INPUT.CRD')
+      
+      CALL OPENF(UMIN,"DA",'points.min')
+      CALL OPENF(UTS,"DA",'points.ts')
 
-      IF (CHARMMT.and..not.machine) CALL READREF('input.crd')
+include ps.setup.extractmin.inc.f90
+include ps.setup.extractts.inc.f90
 
-      OPEN(UNIT=UMIN,FILE='points.min',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*3*NATOMS) 
-      OPEN(UNIT=UTS,FILE='points.ts',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*3*NATOMS) 
-
-      !op226> EXTRACTMINT  {{{
-
-      IF (EXTRACTMINT) THEN
-         OPEN(UNIT=1,FILE='extractedmin', STATUS='UNKNOWN')
-         IF (WHICHMIN.EQ.-123) THEN
-            NDUMMY=0
-            PRINT '(A)', 'setup> rewriting binary points.min file from extractedmin file'
-            CALL MYSYSTEM(STATUS,DEBUG,'cp points.min points.min.save')
-            DO 
-               NDUMMY=NDUMMY+1
-               READ(1,*,END=777) (LOCALPOINTS(J2),J2=1,3*NATOMS)
-               WRITE(UMIN,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,3*NATOMS)
-            ENDDO
-777         NDUMMY=NDUMMY-1
-            PRINT '(A,I6)','setup> number of minima extracted=',NDUMMY
-         ELSEIF (WHICHMIN.LE.0) THEN
-            NDUMMY=0
-            PRINT '(A)', 'setup> extracting all minima '
-            DO 
-               NDUMMY=NDUMMY+1
-               READ(UMIN,REC=NDUMMY,ERR=877) (LOCALPOINTS(J2),J2=1,3*NATOMS)
-               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,3*NATOMS)
-            ENDDO
-877         NDUMMY=NDUMMY-1
-            PRINT '(A,I6)','setup> number of minima extracted=',NDUMMY
-         ELSE
-            PRINT '(A,I6)', 'setup> extracting minimum ',WHICHMIN
-            READ(UMIN,REC=WHICHMIN) (LOCALPOINTS(J2),J2=1,3*NATOMS)
-
-!           IF (AMHT) THEN
-!              CALL AMHDUMP(LOCALPOINTS,'amhmin.pdb')
-!  
-!              IF (AMHQT)THEN
-!                 CALL AMHQ(WHICHMIN)
-!              ENDIF
-!  
-!              IF (AMHQCONTT)THEN
-!                 CALL AMHQCONT(WHICHMIN,QCONTCUT)
-!              ENDIF
-!  
-!              IF (AMHRMSDT)THEN
-!                 CALL AMHRMSD(WHICHMIN)
-!              ENDIF
-!  
-!              IF (AMHRELQT)THEN
-!                 CALL AMHRELQ(QRELONE, QRELTWO)
-!              ENDIF
-!  
-!              IF (AMH_RELCOT)THEN
-!                 CALL AMH_RELCO(WHICHMIN, RELCOCUT)
-!              ENDIF
-!  
-!              IF (AMHALLATOMMINT)THEN
-!                 CALL AMHALLATOMMIN
-!              ENDIF
-!           ELSE
-               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,3*NATOMS)
-               IF (CHARMMT) CALL CHARMMDUMP(LOCALPOINTS,'extractedmin.crd')
-!           ENDIF
-
-         ENDIF
-         CLOSE(1)
-         STOP
-      ENDIF
-      !op226 }}}
-
-      !op226> EXTRACTTST  {{{
-
-      IF (EXTRACTTST) THEN
-         OPEN(UNIT=1,FILE='extractedts', STATUS='UNKNOWN')
-         IF (WHICHTS.EQ.-123) THEN
-            NDUMMY=0
-            PRINT '(A)', 'setup> rewriting binary points.ts file from extractedts file'
-            CALL MYSYSTEM(STATUS,DEBUG,'cp points.ts points.ts.save')
-            DO
-               NDUMMY=NDUMMY+1
-               READ(1,*,END=778) (LOCALPOINTS(J2),J2=1,3*NATOMS)
-               WRITE(UTS,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,3*NATOMS)
-            ENDDO
-778         NDUMMY=NDUMMY-1
-            PRINT '(A,I6)','setup> number of ts extracted=',NDUMMY
-         ELSEIF (WHICHTS.LE.0) THEN
-            NDUMMY=0
-            PRINT '(A)', 'setup> extracting all ts '
-            DO
-               NDUMMY=NDUMMY+1
-               READ(UTS,REC=NDUMMY,ERR=878) (LOCALPOINTS(J2),J2=1,3*NATOMS)
-               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,3*NATOMS)
-            ENDDO
-878         NDUMMY=NDUMMY-1
-            PRINT '(A,I6)','setup> number of ts extracted=',NDUMMY
-         ELSE
-            PRINT '(A,I6)', 'setup> extracting ts ',WHICHTS
-            READ(UTS,REC=WHICHTS) (LOCALPOINTS(J2),J2=1,3*NATOMS)
-
-!           IF (AMHT) THEN
-!              CALL AMHDUMP(LOCALPOINTS,'amhts.pdb')
-!           ELSE
-               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,3*NATOMS)
-               IF (CHARMMT) CALL CHARMMDUMP(LOCALPOINTS,'extractedts.crd')
-!          ENDIF
-         ENDIF
-         CLOSE(1)
-         STOP
-      ENDIF
-
-      !op226 }}}
-!
 !  In this case we try to connect two minima, whose coordinates are in
 !  files odata.start and odata.finish for a DIJINITSTARTT run. We set up min.data as 
 !  well as min.A and min.B, with entries 1 1 and 1 2.
@@ -274,10 +150,10 @@ C
      &                                                  DISTANCE,DIST2,RIGIDBODY,RMAT,INTERPCOSTFUNCTION)
                MINDISTMIN(1)=DISTANCE
                MINDISTMIN(2)=DISTANCE
-C
-C  Must create an entry in ts.data in this case.
-C  ETS,FVIBTS,HORDERTS,PLUS,MINUS,IXTS,IYTS,IZTS
-C
+!
+!  Must create an entry in ts.data in this case.
+!  ETS,FVIBTS,HORDERTS,PLUS,MINUS,IXTS,IYTS,IZTS
+!
                INQUIRE(FILE='ts.data',EXIST=YESNO)
                IF (YESNO) THEN
                   PRINT '(A)','setup> - file ts.data already exists. Copying to ts.data.save'
@@ -299,13 +175,14 @@ C
       !op226 }}}
 
       !op226 IF (STARTFROMPATH) THEN {{{
+
       IF (STARTFROMPATH) THEN
-C
-C  Get all the necessary information about the A and B minima from the <PATHNAME> file.
-C  The assumption is that we have just one A minimum and one B in this case.
-C  Use GETNEWPATH or GETALLPATHS to do the bookkeeping.
-C  Detect presence of existing min.data file and STOP if found to prevent overwriting.
-C
+!
+!  Get all the necessary information about the A and B minima from the <PATHNAME> file.
+!  The assumption is that we have just one A minimum and one B in this case.
+!  Use GETNEWPATH or GETALLPATHS to do the bookkeeping.
+!  Detect presence of existing min.data file and STOP if found to prevent overwriting.
+!
          INQUIRE(FILE='min.data',EXIST=YESNO)
          IF (YESNO) THEN
             PRINT '(A)','ERROR - file min.data already exists. Will not overwrite.'
@@ -395,9 +272,9 @@ C
       IF (PRINTT) WRITE(*,'(A,I6,A)') 'setup> locations read for ',NMINB,' min of type B'
 
       !op226 }}}
-C
-C  Load the minima.
-C
+!
+!  Load the minima.
+!
       !op226 open min.data; load the minima {{{
 
       INQUIRE(FILE='min.data',EXIST=YESNO)
@@ -426,8 +303,6 @@ C
       
 30    IF (YESNO) CLOSE(UMINDATA) ! SAT need to reopen this file
       IF (PRINTT) WRITE(*,'(A,I7,A)') 'setup> parameters read for ',NMIN,' min'
-!     IF (DEBUG) WRITE(*,'(I6,2F17.7,I6,3F15.5)') (J1,EMIN(J1),FVIBMIN(J1),HORDERMIN(J1),
-!    1                                         IXMIN(J1),IYMIN(J1),IZMIN(J1),J1=1,NMIN)
       DO J1=1,NMINA
          IF (LOCATIONA(J1).GT.NMIN) THEN
             PRINT '(3(A,I8))','setup> ERROR - A minimum ',J1,' is number ',LOCATIONA(J1),' but total minima=',NMIN
@@ -445,14 +320,15 @@ C
          STOP
       ENDIF
       IF (NMIN.GT.0) THEN
-         OPEN(UNIT=UMINDATA,FILE='min.data',STATUS='OLD',POSITION="APPEND",ACTION="READWRITE") ! read used in Dijkstra
+         CALL OPENF(UMINDATA,">>","min.data")
+         !OPEN(UNIT=UMINDATA,FILE='min.data',STATUS='OLD',POSITION="APPEND",ACTION="READWRITE") ! read used in Dijkstra
       ENDIF
       IF ((NMIN.EQ.0).AND.(READMINT.OR.MERGEDBT)) THEN
          OPEN(UNIT=UMINDATA,FILE='min.data',STATUS='UNKNOWN',POSITION="APPEND") ! for READMIN and MERGEDB startup
       ENDIF
-C
-C  Check that the necessary coordinates are in fact present. 
-C
+!
+!  Check that the necessary coordinates are in fact present. 
+!
       !op226{{{
       IF ((.NOT.NOPOINTS).AND.(NATTEMPT.GT.0)) THEN
           IF (AMHT) THEN
@@ -461,7 +337,7 @@ C
            DO J1=1,NMIN
             READ(UMIN,REC=J1) (LOCALPOINTS(J2),J2=1,3*NATOMS)
             CALL INERTIAWRAPPER(LOCALPOINTS,NATOMS,angleAxis,IXM,IYM,IZM)
-C           IF (PRINTT) WRITE(*,'(2F20.10,I6,3F20.10)') EMIN(J1),FVIBMIN(J1),HORDERMIN(J1),IXM,IYM,IZM
+!           IF (PRINTT) WRITE(*,'(2F20.10,I6,3F20.10)') EMIN(J1),FVIBMIN(J1),HORDERMIN(J1),IXM,IYM,IZM
             IF ((ABS(IXM-IXMIN(J1)).GT.IDIFFTOL).OR.
      1          (ABS(IYM-IYMIN(J1)).GT.IDIFFTOL).OR.
      1          (ABS(IZM-IZMIN(J1)).GT.IDIFFTOL)) THEN
@@ -552,17 +428,17 @@ C           IF (PRINTT) WRITE(*,'(2F20.10,I6,3F20.10)') EMIN(J1),FVIBMIN(J1),HOR
       !op226 }}}
 
       IF (CLOSEFILEST) CLOSE(UNIT=UMINDATA)
-C
-C  Set all FVIBMIN to ln(2 pi) if NOFRQS is true for consistency.
-C  May be useful for running REGROUPFREE on the basis of potential energy only.
-C  Won;t work with FREEPAIRS unless the OPTIM runs are also run with NOFRQS.
-C
+!
+!  Set all FVIBMIN to ln(2 pi) if NOFRQS is true for consistency.
+!  May be useful for running REGROUPFREE on the basis of potential energy only.
+!  Won;t work with FREEPAIRS unless the OPTIM runs are also run with NOFRQS.
+!
       IF (NOFRQS) FVIBMIN(1:NMIN)=4.675754133D0 ! 2 ln(2pi) +1
-C
-C  Calculate partition functions for minima. Note that the total partition function
-C  is not needed, just the totals for A and B. Since A and B sets are fixed here
-C  we don;t need to change the totals.
-C
+!
+!  Calculate partition functions for minima. Note that the total partition function
+!  is not needed, just the totals for A and B. Since A and B sets are fixed here
+!  we don;t need to change the totals.
+!
 !     PFMEAN=0.0D0
       PFMEAN=-HUGE(1.0D0)
 !     PFNORM1=0.0D0 ! use this to calculate ratios without the pe factor
@@ -714,9 +590,9 @@ C
          ENDIF
          DEALLOCATE(NEWPFMIN,CANDIDATES)
       ENDIF
-C
-C  Load transition states.
-C
+!
+!  Load transition states.
+!
       DO J1=1,NMIN
          TOPPOINTER(J1)=-1
       ENDDO
@@ -847,9 +723,9 @@ C
          OPEN(UNIT=UTSDATA,FILE='ts.data',STATUS='NEW')
          NTS=0
       ENDIF
-C
-C  Create a ts entry for DUMMYTS runs if there are minima that seem to lack such entries.
-C
+!
+!  Create a ts entry for DUMMYTS runs if there are minima that seem to lack such entries.
+!
       IF (DUMMYTST) THEN
          PRINT '(A)',' setup> shortest distances for local minima:'
          DO J1=1,NMIN
@@ -864,10 +740,10 @@ C
                   IF ((DISTANCE.LT.MINDISTMIN(J1)).OR.(DISTANCE.LT.MINDISTMIN(J3))) THEN
                      IF (DISTANCE.LT.MINDISTMIN(J1)) MINDISTMIN(J1)=DISTANCE
                      IF (DISTANCE.LT.MINDISTMIN(J3)) MINDISTMIN(J3)=DISTANCE
-C
-C  Must create an entry in ts.data in this case.
-C  ETS,FVIBTS,HORDERTS,PLUS,MINUS,IXTS,IYTS,IZTS
-C
+!
+!  Must create an entry in ts.data in this case.
+!  ETS,FVIBTS,HORDERTS,PLUS,MINUS,IXTS,IYTS,IZTS
+!
                      IF (IMFRQT) THEN
                         PRINT '()', "setup> ERROR: can''t guess negative eigenvalue - don''t use DUMMYTS and IMFRQ"
                         STOP
@@ -889,9 +765,9 @@ C
                      MINUS(NTS)=J1
                      IF (DIJKSTRAT .OR. KSHORTESTPATHST) TSATTEMPT(NTS)=0
                      IF (DEBUG) WRITE(*,'(A,I6,A)') 'setup> dummy ts ',NTS,' writing parameters to file ts.data'
-C
-C  Update ts pointers.
-C
+!
+!  Update ts pointers.
+!
                      POINTERP(NTS)=-1
                      POINTERM(NTS)=-1
                      IF (TOPPOINTER(PLUS(NTS)).GT.0) POINTERP(NTS)=TOPPOINTER(PLUS(NTS))
@@ -904,10 +780,10 @@ C
             PRINT '(A,I8,A,G20.10)',' setup> shortest distance for minimum ',J1,' is ',MINDISTMIN(J1)
          ENDDO
       ENDIF
-C
-C  Set transition state vibrational product to unity for consistency if NOFRQS is true.
-C  Won;t work with FREEPAIRS unless the OPTIM runs are also run with NOFRQS.
-C
+!
+!  Set transition state vibrational product to unity for consistency if NOFRQS is true.
+!  Won;t work with FREEPAIRS unless the OPTIM runs are also run with NOFRQS.
+!
       IF (NOFRQS) THEN
          FVIBTS(1:NTS)=1.0D0
          NEGEIG(1:NTS)=-1.0D0
@@ -1154,9 +1030,9 @@ C
          PRINT '(A,I8,A)','setup> ',NDUMMY,' transition states retained'
          STOP
       ENDIF
-C
-C  Rate constants.
-C
+!
+!  Rate constants.
+!
 !op226 {{{
 !     KMEAN=0.0D0
       IF (ENSEMBLE.EQ.'T') THEN
@@ -1196,9 +1072,9 @@ C
       !op226 }}}
 !     IF (NTS.GT.0) KMEAN=KMEAN/(2.0D0*NTS)
 !     PRINT '(A,G20.10)', 'setup> Mean log rate constant=', KMEAN
-C
-C  Sums of rates out of the intermediate minima
-C
+!
+!  Sums of rates out of the intermediate minima
+!
 !op226 {{{
 !       DO J1=1,NMIN
 !          KSUM(J1)=0.0D0
@@ -1221,10 +1097,10 @@ C
          CALL MERGEDB
          STOP
       ENDIF
-C
-C  Add transition states and minima from the <PATHNAME> file.
-C  Use GETNEWPATH to do the bookkeeping.
-C
+!
+!  Add transition states and minima from the <PATHNAME> file.
+!  Use GETNEWPATH to do the bookkeeping.
+!
 !op226 {{{
       IF (ADDPATH) THEN
          CALL MYSYSTEM(STATUS,DEBUG,'cp ' // TRIM(ADJUSTL(PATHNAME)) // ' path.info')
@@ -1263,9 +1139,9 @@ C
 !           PRINT '(6G20.10)',GPFOLD(1:NMIN)
          ENDIF
       ENDIF
-C
-C  Read in the pairs of minima previously searched in pairs.data exists.
-C
+!
+!  Read in the pairs of minima previously searched in pairs.data exists.
+!
 !{{{
       ALLOCATE(PAIR1(MAXPAIRS),PAIR2(MAXPAIRS))
       INQUIRE(FILE='pairs.data',EXIST=YESNO)
@@ -1288,9 +1164,9 @@ C
          PRINT '(A,I8,A)','setup> ',NPAIRDONE,' pairs of minima already searched read from pairs.data'
       ENDIF
 ! }}}
-C
-C  Read in the minima previously searched in UNTRAP runs.
-C
+!
+!  Read in the minima previously searched in UNTRAP runs.
+!
 ! {{{
       ALLOCATE(MINDONE(MAXDONE))
       INQUIRE(FILE='min.done',EXIST=YESNO)
@@ -1309,10 +1185,10 @@ C
          PRINT '(A,I8,A)','setup> ',NMINDONE,' minima already searched read from min.done'
       ENDIF
 ! }}}
-C
-C  Initialise PAIRDIST array for use in making an intial connection.
-C  PAIRDIST should contain zero if the two minima are linked by a transition state.
-C
+!
+!  Initialise PAIRDIST array for use in making an intial connection.
+!  PAIRDIST should contain zero if the two minima are linked by a transition state.
+!
 ! {{{
       IF (DIJINITT) THEN
          IF (.NOT.INDEXCOSTFUNCTION) THEN
@@ -1342,7 +1218,7 @@ C
             PAIRDIST(MAX(PAIR1(J1),PAIR2(J1))*(MAX(PAIR1(J1),PAIR2(J1))-1)/2+MIN(PAIR1(J1),PAIR2(J1)))=HUGE(1.0D0)
          ENDDO
          DO J1=1,NTS
-C JMC n.b. don't apply the nconnmin criteria at this point, hence the huge(1) 's in place of NCONN() for the plus and minus minima.
+! JMC n.b. don't apply the nconnmin criteria at this point, hence the huge(1) 's in place of NCONN() for the plus and minus minima.
             CALL CHECKTS(ETS(J1),EMIN(PLUS(J1)),EMIN(MINUS(J1)),KPLUS(J1),KMINUS(J1),HUGE(1),HUGE(1), 
      &                   PLUS(J1),MINUS(J1),.TRUE.,CUT_UNDERFLOW,DEADTS)
             IF (.NOT. DEADTS) THEN
@@ -1358,10 +1234,10 @@ C JMC n.b. don't apply the nconnmin criteria at this point, hence the huge(1) 's
 !
       ENDIF
 ! }}}
-C
-C If USEPAIRST is true then read the sequence of minima from file USEPAIRSFILE
-C USEPAIRSFILE must be formatted as a single Epath file
-C
+!
+! If USEPAIRST is true then read the sequence of minima from file USEPAIRSFILE
+! USEPAIRSFILE must be formatted as a single Epath file
+!
       IF (USEPAIRST) THEN
          OPEN(UNIT=1,FILE=TRIM(ADJUSTL(USEPAIRSFILE)),STATUS='OLD')
          NUSEPAIRS=0
@@ -1393,36 +1269,36 @@ C
             CALL TSSEARCH(J1,0)
          ENDDO
       ENDIF
-
+! }}}
       RETURN 
       END
 
       DOUBLE PRECISION FUNCTION TSEGUESS(E1,E2,C1,C2,DISTANCE)
       IMPLICIT NONE
       DOUBLE PRECISION E1, E2, DISTANCE, C1, C2, ARGUMENT
-C
-C  Double fold formulation.!{{{
-C      
-C     ARGUMENT=c1*c2*distance**2 - 6*(c1 - c2)*(e1 - e2)
-C     IF (ARGUMENT.LT.0.0D0) ARGUMENT=0.0D0
-C     IF (C1.EQ.C2) THEN
-C        TSEGUESS=((c1*distance**2 + 6*e1 - 6*e2)**2/(4.*c1*distance**2) + 6*e2)/6.
-C     ELSE
-C        TSEGUESS=(c1*c2*(c1 + c2)*distance**2 - 2*c1*c2*distance*Sqrt(ARGUMENT)
-C    &             + 6*(c1 - c2)*(-(c2*e1) + c1*e2))/(6.*(c1 - c2)**2)
-C     ENDIF
-C     IF (TSEGUESS.LT.MAX(E1,E2)) TSEGUESS=MAX(E1,E2)+ABS(E1-E2)!}}}
-C
-C  Double quadratic formulation.!{{{
-C      
-C     ARGUMENT=c1*c2*distance**2 - 2*(c1 - c2)*(e1 - e2)
-C     IF (ARGUMENT.LT.0.0D0) ARGUMENT=0.0D0
-C     IF (C1.EQ.C2) THEN
-C        TSEGUESS=((c1*distance**2)/4. + e1 + (e1 - e2)**2/(c1*distance**2) + e2)/2.
-C     ELSE
-C        TSEGUESS=(c1*c2*(c1 + c2)*distance**2 - 2*c1*c2*distance*
-C    &     Sqrt(ARGUMENT) + 2*(c1 - c2)*(-(c2*e1) + c1*e2))/(2.*(c1 - c2)**2)
-C     ENDIF!}}}
+!
+!  Double fold formulation.!{{{
+!      
+!     ARGUMENT=c1*c2*distance**2 - 6*(c1 - c2)*(e1 - e2)
+!     IF (ARGUMENT.LT.0.0D0) ARGUMENT=0.0D0
+!     IF (C1.EQ.C2) THEN
+!        TSEGUESS=((c1*distance**2 + 6*e1 - 6*e2)**2/(4.*c1*distance**2) + 6*e2)/6.
+!     ELSE
+!        TSEGUESS=(c1*c2*(c1 + c2)*distance**2 - 2*c1*c2*distance*Sqrt(ARGUMENT)
+!    &             + 6*(c1 - c2)*(-(c2*e1) + c1*e2))/(6.*(c1 - c2)**2)
+!     ENDIF
+!     IF (TSEGUESS.LT.MAX(E1,E2)) TSEGUESS=MAX(E1,E2)+ABS(E1-E2)!}}}
+!
+!  Double quadratic formulation.!{{{
+!      
+!     ARGUMENT=c1*c2*distance**2 - 2*(c1 - c2)*(e1 - e2)
+!     IF (ARGUMENT.LT.0.0D0) ARGUMENT=0.0D0
+!     IF (C1.EQ.C2) THEN
+!        TSEGUESS=((c1*distance**2)/4. + e1 + (e1 - e2)**2/(c1*distance**2) + e2)/2.
+!     ELSE
+!        TSEGUESS=(c1*c2*(c1 + c2)*distance**2 - 2*c1*c2*distance*
+!    &     Sqrt(ARGUMENT) + 2*(c1 - c2)*(-(c2*e1) + c1*e2))/(2.*(c1 - c2)**2)
+!     ENDIF!}}}
 
       TSEGUESS=MAX(E1,E2)+DISTANCE
       
@@ -1432,15 +1308,15 @@ C     ENDIF!}}}
       IMPLICIT NONE
       DOUBLE PRECISION E1, E2, FVIB1,FVIB2, MINF1, MINF2
       INTEGER NATOMS
-C
-C  The conversion factor for CHARMM and AMBER is included in the MINFRQ2 values read from min.data.info
-C  The MINFRQ2 values are read as the ln from min.data.info
-C
-C     IF (E1.GT.E2) THEN
-C        TSFVIBGUESS=FVIB1-MINF1
-C     ELSE
-C        TSFVIBGUESS=FVIB2-MINF2
-C     ENDIF
+!
+!  The conversion factor for CHARMM and AMBER is included in the MINFRQ2 values read from min.data.info
+!  The MINFRQ2 values are read as the ln from min.data.info
+!
+!     IF (E1.GT.E2) THEN
+!        TSFVIBGUESS=FVIB1-MINF1
+!     ELSE
+!        TSFVIBGUESS=FVIB2-MINF2
+!     ENDIF
       IF (E1.GT.E2) THEN
          TSFVIBGUESS=FVIB1*(3*NATOMS-7)/(3*NATOMS-6)
       ELSE

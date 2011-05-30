@@ -1,4 +1,5 @@
-!   PATHSAMPLE: A driver for OPTIM to create stationary point databases using discrete path sampling and perform kinetic analysis
+
+!   PATHSAMPLE: A driver for OPTIM to create stationary point databases using discrete path sampling and perform kinetic analysis!{{{
 !   Copyright (C) 1999-2009 David J. Wales
 !   This file is part of PATHSAMPLE.
 !
@@ -16,20 +17,24 @@
 !   along with this program; if not, write to the Free Software
 !   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
-
+!}}}
 !
 !  Subroutine to provide candidate pairs of minima based on Dijkstra analysis
 !  of the current database.
 !
 SUBROUTINE GETDPAIR(NAVAIL,NUSED,MINS,MINF,SPOINTS,FPOINTS)
-USE COMMON, ONLY: UMIN, NATOMS, DMIN1, DMIN2, DIJINITT, NCPU, NPAIRFRQ, NATTEMPT, NMIN, DIJINITFLYT, &
+
+USE COMMONS, ONLY: UMIN, NATOMS, DMIN1, DMIN2, DIJINITT, NCPU, NPAIRFRQ, NATTEMPT, NMIN, DIJINITFLYT, &
   &  PAIR1, PAIR2, NPAIRDONE, MAXPAIRS
+
 IMPLICIT NONE
+
 INTEGER NUSED, MINS, MINF, NAVAIL, PAIRSTODO, MINMAP(NMIN), NMINSAVE, J1
 DOUBLE PRECISION SPOINTS(3*NATOMS), FPOINTS(3*NATOMS)
 
 10 CONTINUE
 IF (NAVAIL.EQ.0) THEN
+  ! {{{
    IF (DIJINITT) THEN 
       CALL DIJINIT(NAVAIL)
    ELSE IF (DIJINITFLYT) THEN 
@@ -55,14 +60,18 @@ IF (NAVAIL.EQ.0) THEN
       STOP
    ENDIF
    NUSED=0
+   ! }}}
 ENDIF
+
 NUSED=NUSED+1
 NAVAIL=NAVAIL-1
 MINS=DMIN1(NUSED)
 MINF=DMIN2(NUSED)
 WRITE(*,'(4(A,I8))') 'getdpair> connecting minima ',MINS,' and ',MINF, ' pairs used=',NUSED,' remaining=',NAVAIL
 NPAIRDONE=NPAIRDONE+1
+
 IF (NPAIRDONE.GT.MAXPAIRS) CALL PAIRDOUBLE
+
 PAIR1(NPAIRDONE)=DMIN1(NUSED)
 PAIR2(NPAIRDONE)=DMIN2(NUSED)
 READ(UMIN,REC=MINS) SPOINTS(1:3*NATOMS)

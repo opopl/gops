@@ -1,4 +1,5 @@
-!   PATHSAMPLE: A driver for OPTIM to create stationary point databases using discrete path sampling and perform kinetic analysis
+
+!   PATHSAMPLE: A driver for OPTIM to create stationary point databases using discrete path sampling and perform kinetic analysis!{{{
 !   Copyright (C) 1999-2009 David J. Wales
 !   This file is part of PATHSAMPLE.
 !
@@ -16,11 +17,14 @@
 !   along with this program; if not, write to the Free Software
 !   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
+!}}}
 
 SUBROUTINE PFOLD
-   USE COMMON, ONLY: NMIN,NTS,MAXMIN,MAXTS,PLUS,MINUS,GPFOLD,OMEGA,DEBUG,KPLUS,KMINUS,MAXBARRIER, &
+! declarations {{{
+   USE COMMONS, ONLY: NMIN,NTS,MAXMIN,MAXTS,PLUS,MINUS,GPFOLD,OMEGA,DEBUG,KPLUS,KMINUS,MAXBARRIER, &
   &                  NPFOLD,TPFOLD,DIRECTION,NMINA,NMINB,LOCATIONA,LOCATIONB,NCONNMIN,ETS,EMIN
    IMPLICIT NONE
+
    INTEGER J1, J2, J3, NDMAX, JMAX, NZERO, NCONNECTED, PNCONNECTED
    INTEGER LNCONN(MAXMIN), NDIST(NMIN), NCYCLE, DMIN, DMAX, NUNCON
    INTEGER NCOL(NMIN)
@@ -30,7 +34,8 @@ SUBROUTINE PFOLD
    INTEGER NCOLPREV, ROW_PTR(NMIN+1), NCOUNT, NONZERO
    INTEGER, ALLOCATABLE :: COL_IND(:), NVAL(:,:)
    DOUBLE PRECISION, ALLOCATABLE :: DVEC(:), DMATMC(:,:)
-
+   ! }}}
+! subroutine body {{{
    CALL CPU_TIME(ELAPSED)
 !
 !  Record the number of connections for each minimum in LNCONN.
@@ -208,11 +213,12 @@ SUBROUTINE PFOLD
    ENDDO
    ROW_PTR(NMIN+1)=NONZERO+1
 !
-!  Main P^fold loop.
+!  Main Pfold loop. 
 !  OMEGA is the damping factor for successive overrelaxation method (SOR)
 !  OMEGA=1 is pure Gauss-Seidel. OMEGA should be < 2
 !
    itloop: DO J1=1,NPFOLD
+   ! {{{
       DO J3=1,NMIN
          IF (NCOL(J3).EQ.0) CYCLE
          LDUMMY=0.0D0
@@ -227,6 +233,7 @@ SUBROUTINE PFOLD
 !        GPFOLD(J3)=MAX(MIN(OMEGA*LDUMMY+(1.0D0-OMEGA)*GPFOLD(J3),1.0D0),0.0D0)  ! SOR
       ENDDO
 !     PRINT '(A,I8,F20.10)','J1,GPFOLD(2) ',J1,GPFOLD(2)
+! }}}
    ENDDO itloop
 !  PRINT '(A)','final PFOLD values in PFOLD:'
 !  PRINT '(6G20.10)',GPFOLD(1:NMIN)
@@ -237,7 +244,7 @@ SUBROUTINE PFOLD
    TPFOLD=TPFOLD+TNEW-ELAPSED
 
    RETURN
-
+! }}}
 END SUBROUTINE PFOLD
 
 !
@@ -245,9 +252,13 @@ END SUBROUTINE PFOLD
 ! iterative first step type analysis as for Pfold.
 !
 SUBROUTINE TFOLD
-USE COMMON
+! declarations {{{
+
+USE COMMONS
 USE PORFUNCS
+
 IMPLICIT NONE
+
 INTEGER J1, J2, J3, NDMAX, JMAX, NZERO, NCONNECTED, PNCONNECTED, J4, M1, M2, ISTAT, STEPMIN,NAVAIL
 INTEGER LNCONN(MAXMIN), NDIST(NMIN), NCYCLE, DMIN, DMAX, NUNCON
 INTEGER NCOL(NMIN)
@@ -258,7 +269,8 @@ INTEGER NDEAD, NDISTA(NMIN), NDISTB(NMIN), NUNCONA, NUNCONB, NLEFT, MINMAP(NMIN)
 INTEGER NCOLPREV, ROW_PTR(NMIN+1), NCOUNT, NONZERO
 INTEGER, ALLOCATABLE :: COL_IND(:), NVAL(:,:)
 DOUBLE PRECISION, ALLOCATABLE :: DVEC(:), PBRANCH(:,:)
-
+! }}}
+! subroutine body {{{
 CALL CPU_TIME(ELAPSED)
 !
 !  REGROUP and REGROUPFREE change NMINA, NMINB, LOCATIONA, LOCATIONB, so save the values and reset
@@ -634,10 +646,11 @@ CALL CPU_TIME(TNEW)
 TTFOLD=TTFOLD+TNEW-ELAPSED
 
 RETURN
-
+! }}}
 END SUBROUTINE TFOLD
 
 SUBROUTINE MAKED2(DMAT0,NCOL,NDMAX,NVAL,DEADTS,KSUM)
+! {{{
 !
 !  Construct DMATMC, which contains branching probabilities with minima in
 !  regions A and B acting as sinks, i.e. no escape probability, except for
@@ -650,8 +663,10 @@ SUBROUTINE MAKED2(DMAT0,NCOL,NDMAX,NVAL,DEADTS,KSUM)
 !
 !  Degenerate rearrangements are excluded.
 !
-   USE COMMON
+   USE COMMONS
+
    IMPLICIT NONE
+
    INTEGER NCOL(NMIN), NDMAX, J1, M1, M2, NVAL(NDMAX,NMIN), OTHER
    LOGICAL DEADTS(NTS), MATCHED, ALLOWED
    DOUBLE PRECISION :: DMAT0(NDMAX,NMIN), KSUM(NMIN)
@@ -671,6 +686,7 @@ SUBROUTINE MAKED2(DMAT0,NCOL,NDMAX,NVAL,DEADTS,KSUM)
    ENDDO
 
    fromloop: DO M2=1,NMIN   
+   ! {{{
       IF ((DIRECTION.EQ.'AB').AND.ISA(M2)) THEN
          CYCLE fromloop ! no escape from A
       ELSEIF ((DIRECTION.EQ.'BA').AND.ISB(M2)) THEN
@@ -734,8 +750,9 @@ SUBROUTINE MAKED2(DMAT0,NCOL,NDMAX,NVAL,DEADTS,KSUM)
          J1=POINTERM(J1)
       ENDIF
       IF (J1.GT.0) GOTO 11
+      ! }}}
    ENDDO fromloop
 
    RETURN
-
+! }}}
 END SUBROUTINE MAKED2

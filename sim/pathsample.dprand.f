@@ -1,24 +1,6 @@
-!   PATHSAMPLE: A driver for OPTIM to create stationary point databases using discrete path sampling and perform kinetic analysis
-!   Copyright (C) 1999-2009 David J. Wales
-!   This file is part of PATHSAMPLE.
-!
-!   PATHSAMPLE is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
-!
-!   PATHSAMPLE is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
-!
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-!
-
 
         FUNCTION DPRAND()
+        ! declarations {{{
         DOUBLE PRECISION XMOD, YMOD, XMOD2, XMOD4, TINY, POLY(101),
      1    OTHER, OFFSET, X, Y, DPRAND
         PARAMETER (XMOD = 1000009711.0D0, YMOD = 33554432.0D0,
@@ -29,6 +11,8 @@
         SAVE INITAL
         COMMON /RANDDP/ POLY, OTHER, OFFSET, INDEX
         DATA INITAL/.TRUE./
+        ! }}}
+        ! subroutine body {{{
 C
 C   This returns a uniform (0,1) random number, with extremely good
 C   uniformity properties.  It assumes that double precision provides
@@ -71,4 +55,5 @@ C
         X = X/XMOD+OTHER
         IF (X .GE. 1.0D0) X = X-1.0D0
         DPRAND = X+TINY
+        ! }}}
         END
