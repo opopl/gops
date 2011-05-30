@@ -6,9 +6,9 @@
 
       PROGRAM GMIN
 ! declarations {{{
-      USE GMIN_COMMONS
-      USE GMIN_PORFUNCS
-      USE GMIN_FUNC
+      USE COMMONS
+      USE PORFUNCS
+      USE FUNC
       
       IMPLICIT NONE
       
@@ -35,7 +35,7 @@
 
 ! init {{{
       CALL CPU_TIME(TSTART)
-      CALL KEYWORD
+      CALL KEYWORD(1)
       CALL READ_CMD_ARGS
 
       CALL OPENF(LFH,">",LFN)
@@ -50,7 +50,6 @@
       ALLOCATE(IATNUM(NATOMS), VT(NATOMS), ZSYM(NATOMS))
 
       VT(1:NATOMS)=0.0D0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
-
       
       ALLOCATE(FF(NSAVE),QMIN(NSAVE))
       ALLOCATE(QMINP(NSAVE,3*NATOMS))
@@ -62,13 +61,13 @@
       ALLOCATE(ESAVE(NTAB,NPAR),XINSAVE(NTAB,NPAR))
       ALLOCATE(VEC(NVEC))
 
-      include main.pairdist.inc.f90
+      include gmin.main.pairdist.inc.f90
       
       IF (TRACKDATAT) THEN
-         CALL OPENF(ENERGY_FH,">>","energy")
-         CALL OPENF(MARKOV_FH,">>","markov")
-         CALL OPENF(BEST_FH,">>","best")
-         IF (RMST) CALL OPENF(RMSD_FH,">>","rmsd")
+         CALL OPENF(ENERGY_FH,">>","energy.dat")
+         CALL OPENF(MARKOV_FH,">>","markov.dat")
+         CALL OPENF(BEST_FH,">>","best.dat")
+         IF (RMST) CALL OPENF(RMSD_FH,">>","rmsd.dat")
       ENDIF
       
       CALL FLUSH(6)

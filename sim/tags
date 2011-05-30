@@ -848,7 +848,6 @@
 12	g.fedor.f	/^   12    continue                     $/;"	l	function:ut01	file:
 12	g.fedor.f	/^   12 C(4,1)=C(3,3)$/;"	l	subroutine:CUBSPL	file:
 12	g.input.f	/^12    C=CHAR(P)$/;"	l	subroutine:READF	file:
-12	g.keyword.f	/^12       CONTINUE$/;"	l	subroutine:KEYWORD	file:
 12	g.odesd.f	/^12        continue$/;"	l	subroutine:bsstep	file:
 12	g.odesd.f	/^12      continue$/;"	l	subroutine:mmid	file:
 12	g.odesd.f	/^12      continue$/;"	l	subroutine:pzextr	file:
@@ -1564,7 +1563,6 @@
 19	optim.mylbfgs.f	/^ 19   CONTINUE$/;"	l	subroutine:MYLBFGS	file:
 190	g.dlsode.f	/^ 190    RWORK(I+LF0-1) = H0*RWORK(I+LF0-1)$/;"	l	subroutine:DLSODE	file:
 190	g.io1.f	/^190      FORMAT('System will be squeezed into the shape defined by the '$/;"	l	subroutine:IO1	file:
-190	g.keyword.f	/^190   CALL INPUT(END)$/;"	l	subroutine:KEYWORD	file:
 190	g.mylapack.f	/^  190 CONTINUE$/;"	l	subroutine:SCHCK1	file:
 190	g.mylapack.f	/^  190 CONTINUE$/;"	l	subroutine:SCHCK2	file:
 190	g.mylapack.f	/^  190 CONTINUE$/;"	l	subroutine:SCHCK3	file:
@@ -3564,7 +3562,6 @@
 557	pathsample.NGT.f	/^557      CONTINUE$/;"	l	subroutine:NGT	file:
 558	pathsample.NGT.f	/^558   CONTINUE ! JMC jump to here after disconnection of I minima using the compressed-row storage scheme$/;"	l	subroutine:NGT	file:
 56	g.EAMal.f	/^56     CONTINUE$/;"	l	subroutine:EAMal	file:
-56	g.keyword.f	/^56          WRITE(MYUNIT,'(A,I6,A)') $/;"	l	subroutine:KEYWORD	file:
 56	keyword.f90	/^56          WRITE(MYUNIT,'(A,I6,A)') $/;"	l	subroutine:KEYWORD	file:
 56	optim.dqag.f	/^   56    CONTINUE$/;"	l	subroutine:XERPRN	file:
 56	pathsample.amhdump.f90	/^56       FORMAT('ATOM',4X,I3,2X,'N ',2X,A3,1X,'A',1X,I3,4X,F8.3,F8.3,F8.3, &$/;"	l	subroutine:AMHDUMP	file:
@@ -3575,7 +3572,6 @@
 560	optim.symmetry.f	/^560                  FORMAT(' PLAYING WITH ATOMS ',I3,' AND ',I3)$/;"	l	subroutine:SYMMETRY	file:
 561	optim.potential.f	/^561            WRITE(*,'(A)') 'CELL not found in input data set - quit'$/;"	l	subroutine:POTENTIAL	file:
 567	optim.potential.f	/^567            CONTINUE$/;"	l	subroutine:POTENTIAL	file:
-57	g.keyword.f	/^57          READ(34,*,END=56) DUMMY$/;"	l	subroutine:KEYWORD	file:
 57	g.tn.f	/^57    CONTINUE$/;"	l	subroutine:MSLV	file:
 57	keyword.f90	/^57          READ(34,*,END=56) DUMMY$/;"	l	subroutine:KEYWORD	file:
 570	g.dlsode.f	/^ 570    CONTINUE$/;"	l	subroutine:DLSODE	file:
@@ -4561,7 +4557,6 @@ AMBRST_UNIT	optim.modamber9.f90	/^       INTEGER MYUNITNEW, MDINFO_UNIT, MDCRD_U
 AMBSTEPT	g.modamber9.f90	/^logical:: AMBERICT, AMBSTEPT,/;"	v	module:MODAMBER9
 AMBSTEPT	optim.modamber9.f90	/^logical:: AMBERICT, AMBSTEPT,/;"	v	module:modamber9
 AMBTRANSFORM	optim.ambnatintern_extras.f90	/^      SUBROUTINE AMBTRANSFORM(/;"	s
-AMBWORD	g.keyword.f	60;"	c	subroutine:KEYWORD
 AMB_GETBACKBONE	optim.amb_natinterns.f90	/^      SUBROUTINE AMB_GETBACKBONE$/;"	s
 AMB_GETBEENAT	optim.amb_natinterns.f90	/^      SUBROUTINE AMB_GETBEENAT(/;"	s
 AMB_GETKDNAT	optim.ambnatintern_extras.f90	/^      SUBROUTINE AMB_GETKDNAT(/;"	s
@@ -4823,7 +4818,6 @@ BIN	g.bspt.F	74;"	c	subroutine:PTBASINSAMPLING
 BIN	g.finalio.f	44;"	c	subroutine:FINALIO
 BIN	g.hsmove.f	27;"	c	subroutine:HSMOVE
 BIN	g.io1.f	36;"	c	subroutine:IO1
-BIN	g.keyword.f	48;"	c	subroutine:KEYWORD
 BIN	g.ljpbin.f	51;"	c	subroutine:LJPBIN
 BIN	g.ljpshift.f	49;"	c	subroutine:LJPSHIFT
 BIN	g.modamb.f90	/^      LOGICAL BIN$/;"	v	module:MODAMBER
@@ -4912,7 +4906,6 @@ BRUN	mc.vars.inc.f90	/^      INTEGER ITERATIONS,JACCPREV,BRUN,/;"	v
 BSMIN	g.commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN, BSMIN,/;"	v	module:COMMONS
 BSMIN	g.commons.o.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN, BSMIN,/;"	v	module:COMMONS
 BSMIN	optim.key.f90	/^     &        DOUBLET, REOPT, PARALLEL, LINEMIN, FIXD, KEEPINDEX, BSMIN,/;"	v	module:KEY
-BSNEW	g.keyword.f	53;"	c	subroutine:KEYWORD
 BSNEW	g.odesd.f	29;"	c	subroutine:ODESD
 BSNEW	optim.keyword.f	92;"	c	subroutine:KEYWORD
 BSNEW	optim.odesd.f	31;"	c	subroutine:ODESD
@@ -4990,7 +4983,6 @@ BUFINF	g.input.f	804;"	c	subroutine:GETA
 BUFINF	g.input.f	864;"	c	subroutine:REREAD
 BUFINF	g.input.f	908;"	c	subroutine:REPORT
 BUFINF	g.io1.f	44;"	c	subroutine:IO1
-BUFINF	g.keyword.f	43;"	c	subroutine:KEYWORD
 BUFINF	optim.changep.f	29;"	c	subroutine:CHANGEP
 BUFINF	optim.fetchz.f	65;"	c	subroutine:FETCHZ
 BUFINF	optim.input.f	24;"	c	subroutine:INPUT
@@ -5073,7 +5065,6 @@ CAP	g.modamb.f90	/^      LOGICAL AMBERSEED, CAP$/;"	v	module:MODAMBER
 CAPS	g.capsid.f	38;"	c	subroutine:FCAPSID
 CAPS	g.finalio.f	50;"	c	subroutine:FINALIO
 CAPS	g.io1.f	41;"	c	subroutine:IO1
-CAPS	g.keyword.f	55;"	c	subroutine:KEYWORD
 CAPS	g.newcapsid.f90	16;"	c	subroutine:NEWCAPSID
 CAPS	optim.capsid.f	63;"	c	subroutine:FCAPSID
 CAPS	optim.dumpit.f	33;"	c	subroutine:DUMPIT
@@ -6233,7 +6224,6 @@ EAMALT	g.commons.o.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTB
 EAMLJ	g.EAMLJ_sub.f	/^      SUBROUTINE EAMLJ(/;"	s
 EAMLJCOMM	g.EAMLJ_sub.f	124;"	c	function:func
 EAMLJCOMM	g.EAMLJ_sub.f	35;"	c	subroutine:EAMLJ
-EAMLJCOMM	g.keyword.f	50;"	c	subroutine:KEYWORD
 EAMLJT	g.commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW, SUPERSTEP, EAMLJT,/;"	v	module:COMMONS
 EAMLJT	g.commons.o.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW, SUPERSTEP, EAMLJT,/;"	v	module:COMMONS
 EAMP	g.commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP,/;"	v	module:COMMONS
@@ -7441,7 +7431,6 @@ KEXP	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: KEXP /;"	v	module
 KEY	optim.key.f90	/^MODULE KEY$/;"	m
 KEY	pathsample.key.f90	/^MODULE KEY /;"	m
 KEYINTPRINT	optim.intcoords.f90	/^   SUBROUTINE KEYINTPRINT$/;"	s	module:INTCUTILS
-KEYWORD	g.keyword.f	/^      SUBROUTINE KEYWORD$/;"	s
 KEYWORD	keyword.f90	/^      SUBROUTINE KEYWORD(/;"	s
 KEYWORD	optim.keyword.f	/^      SUBROUTINE KEYWORD(/;"	s
 KEYWORD	pathsample.keyword.f90	/^      SUBROUTINE KEYWORD$/;"	s
@@ -8958,7 +8947,6 @@ PBRANCHTEMP	pathsample.NGTmem.f90	/^   DOUBLE PRECISION, ALLOCATABLE :: PBRANCH(
 PBRANCHTMP	pathsample.NGTmem.f90	/^   DOUBLE PRECISION, ALLOCATABLE ::  PBRANCHTMP(/;"	v	module:NGTMEM
 PBTHRESH	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH,/;"	v	module:COMMONS
 PCALL	g.io1.f	39;"	c	subroutine:IO1
-PCALL	g.keyword.f	61;"	c	subroutine:KEYWORD
 PCALL	g.potential.f	51;"	c	subroutine:POTENTIAL
 PCALL	g.saveit.f	105;"	c	subroutine:A9INTESAVEIT
 PCALL	g.saveit.f	29;"	c	subroutine:GSAVEIT
