@@ -378,12 +378,14 @@ C
 !       to (0,0,0) before taking the next step (improve this so that you
 !       can specify where to move the centre like SETCENTRE?
             IF (QUCENTRE) THEN 
+              ! {{{
 !       csw34> David mentioned a possible compiler bug causing problems
 !       when you just pass a part of the COORDS array so reading the
 !       right bit into TEMPCOORDS first and then back out.
                TEMPCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
                CALL CENTRE2(TEMPCOORDS)
                COORDS(1:3*NATOMS,JP)=TEMPCOORDS(1:3*NATOMS)
+               ! }}}
             ENDIF
             IF (RIGID.AND.(BLOCK(JP).GT.0)) THEN
                IF (MOD(J1-1,BLOCK(JP)).EQ.0) THEN

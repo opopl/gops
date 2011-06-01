@@ -2,8 +2,8 @@
 !  Sanity check to make sure the Markov energy agrees with COORDSO. 
 !  Stop if not true.
 !
-               IF (DEBUG.OR.CHECKMARKOVT) THEN
-                  CALL POTENTIAL(COORDSO(:),GRAD,OPOTEL,.FALSE.,.FALSE.)
+IF (DEBUG) THEN
+                  CALL POTENTIAL(COORDSO,GRAD,OPOTEL,.FALSE.,.FALSE.)
                   IF (ABS(OPOTEL-EPREV).GT.ECONV) THEN
                      IF (EVAP) THEN
                         WRITE(LFH,22) 

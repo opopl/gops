@@ -10,16 +10,7 @@ include mc.vars.inc.f90 ! Variable declarations
 include fmt.inc.f90     ! Formats
 include mc.cien.inc.f90 ! Calculate the initial energy and save in EPREV
 include mc.bh.inc.f90   ! Main basin-hopping loop
-
-! write to LFH: Quench number, Energy, Steps, RMS, Markov E, t (elapsed time) {{{
-
-WRITE(LFH,111)  ' Qu ',         NQ,	&
-                ' E=',          E,	&
-                ' steps=',      ITERATIONS,	&
-                ' RMS=',        RMS,	&
-                ' Markov E=',   E,	&
-                ' Time t=',     TIME-TSTART
-! }}}
+include write.111.inc.f90 ! write to LFH: Qu, E, Steps, RMS, Markov E, t (elapsed time)
 
 WRITE(LFH,21)   ' Acceptance ratio for run=',  ARATIO,	&
                 ' Step=',                      STEP, 	&
@@ -74,7 +65,7 @@ RETURN
 ! }}}
 END
 
-      SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,RANDOM,MCTEMP)
+      SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,MCTEMP)
 ! {{{
       IMPLICIT NONE
 

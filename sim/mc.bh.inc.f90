@@ -12,31 +12,24 @@ DO ISTEP=1,NSTEPS
   ENDDO
 
   NQ=NQ+1
-
   CALL QUENCH(SCREENC,ITERATIONS,TIME,QDONE)  
 
-include write.111.inc.f90
+  include write.111.inc.f90
 
-include mc.bh.pairdist.inc.f90
-include mc.bh.trackdata.inc.f90
+  include mc.bh.pairdist.inc.f90
+  include mc.bh.trackdata.inc.f90
 
-CALL TRANSITION(E,EPREV,ATEST,RANDOM,MCTEMP)
+  CALL TRANSITION(E,EPREV,ATEST,MCTEMP)
 
-include mc.bh.checkmarkov.inc.f90
+  include mc.bh.checkmarkov.inc.f90
 
-! Accept or reject step
-include mc.bh.accrej.inc.f90
-! Check the acceptance ratio.
-IF ( (MOD(ISTEP,NACCEPT).EQ.0) CALL ACCREJ(NSUCCESS,NFAIL,NSUCCESST,NFAILT)
-
-TEMP=TEMP*SCALEFAC
-IF (HIT) GOTO 37
-IF (DUMPINT.GT.0) THEN
-IF (MOD(ISTEP,DUMPINT).EQ.0) THEN
-CALL DUMPSTATE(ISTEP,EBEST,BESTCOORDS,JBEST)
-ENDIF
-ENDIF
-IF (NQ.GT.NSTEPS) GOTO 37
+  ! Accept or reject step
+  include mc.bh.accrej.inc.f90
+  ! Check the acceptance ratio every NACCEPT steps 
+  IF ( (MOD(ISTEP,NACCEPT).EQ.0) CALL ACCREJ(NSUCCESS,NFAIL,NSUCCESST,NFAILT)
+    TEMP=TEMP*SCALEFAC
+  ENDIF
+  IF (NQ.GT.NSTEPS) GOTO 37
 
 ENDDO
 
