@@ -1,4 +1,4 @@
-C   GMIN: A program for finding global minima
+C   GMIN: A program for finding global minima!{{{
 C   Copyright (C) 1999-2006 David J. Wales
 C   This file is part of GMIN.
 C
@@ -15,8 +15,9 @@ C
 C   You should have received a copy of the GNU General Public License
 C   along with this program; if not, write to the Free Software
 C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-C
+C!}}}
       SUBROUTINE IO1
+      ! {{{
       USE commons
       USE modamber
       use qmodule
@@ -43,8 +44,9 @@ C
       INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST
       COMMON /BUFINF/ ITEM, NITEMS, LOC(80), LINE, SKIPBL, CLEAR, NCR,
      &                NERROR, IR, ECHO, LAST, CAT
-
+! }}}
       IF (DL_POLY) THEN
+        ! {{{
          OPEN(UNIT=91,FILE='CONFIG',STATUS='OLD')
          READ(91,'(A1)') DUMMY
          READ(91,'(A1)') DUMMY
@@ -57,9 +59,11 @@ C        WRITE(MYUNIT,'(3G20.10)') COORDS(3*(NATOMS-1)+1,1),COORDS(3*(NATOMS-1)+
          GOTO 13
 14       CONTINUE
          CLOSE(91)
+         ! }}}
       ELSEIF (AMHT) THEN
           write(MYUNIT,'(A)')'DUMMY    '
       ELSEIF (.NOT.(AMBERT.OR.AMBER.OR.CPMD.OR.CHRMMT)) THEN
+      ! {{{
          CLOSE(7)
          OPEN(UNIT=7,FILE='coords',STATUS='OLD')
          IF (MOD(NATOMS,NPAR).NE.0) THEN
@@ -75,6 +79,7 @@ C        WRITE(MYUNIT,'(3G20.10)') COORDS(3*(NATOMS-1)+1,1),COORDS(3*(NATOMS-1)+
          ENDIF
          IF (TSALLIST.AND.(QTSALLIS.EQ.0)) QTSALLIS=1.0D0+1.0D0/(3*NATOMS)
          IF (DFTBT.OR.TOSI.OR.WELCH) THEN
+           ! {{{
             IR=7
 C           REWIND(7) ! this seems to be needed now?
             DO JP=1,NPAR
@@ -98,7 +103,9 @@ C           REWIND(7) ! this seems to be needed now?
                   CALL READF(COORDS(J2+3,JP))
                ENDDO
             ENDDO
+            ! }}}
          ELSE
+           ! {{{
             rewind(7)
             DO JP=1,NPAR
                DO J1=1,NATOMS
@@ -106,15 +113,18 @@ C           REWIND(7) ! this seems to be needed now?
                    READ(7,*) COORDS(J2+1,JP), COORDS(J2+2,JP), COORDS(J2+3,JP)
                ENDDO
             ENDDO
+            ! }}}
          ENDIF
          CLOSE(7)
 C      ELSE IF (AMBERT) THEN
 C         DO JP=1,NPAR
 C             COORDS(:,JP)=COORDS(:,1)   ! we have already read the coordinates for AMBER runs into this array
 C         END DO
+         ! }}}
       ENDIF
 
       IF (CPMD) THEN
+        ! {{{
          FNAME=SYS(1:LSYS)
          WRITE(MYUNIT,'(A,A)') ' Reading coordinates from file ',FNAME
          OPEN(UNIT=7,FILE=FNAME,STATUS='OLD')
@@ -156,6 +166,7 @@ C         END DO
                COORDS(J1,1)=COORDS(J1,1)*1.889726164D0
             ENDDO
          ENDIF
+         ! }}}
       ENDIF
 
       IF (RESIZET) THEN
@@ -546,6 +557,7 @@ C         END DO
           ENDIF
       ENDIF
       IF (BSPT) THEN
+        ! {{{
           WRITE(MYUNIT,'(A)') '------------------------------------------------------------------------------------'
           WRITE(MYUNIT,'(A)') 'S T A R T I N G   P T   B A S I N   S A M P L I N G   R U N:'
           WRITE(MYUNIT, '(A)') 'Parallel tempering basin-sampling run'
@@ -557,8 +569,10 @@ C         END DO
           WRITE(MYUNIT,'(A,F15.1)')   'Number of equilibration steps=',NEQUIL
           WRITE(MYUNIT,'(A,I15)')   'Interval between quenches=',QUENCHFRQ
           WRITE(MYUNIT,'(A)') '-------------------------------------------------------------------------------------'
+          ! }}}
       ENDIF
       IF (BSWL) THEN
+          ! {{{
           WRITE(MYUNIT,'(A)') '------------------------------------------------------------------------------------'
           WRITE(MYUNIT,'(A)') 'S T A R T I N G   W L  B A S I N   S A M P L I N G   R U N:'
           WRITE(MYUNIT, '(A)') 'A zero-temperature histogram-based MC sampling of the energy density of local minima'
@@ -578,8 +592,10 @@ C         END DO
 C
 C  There is printing in keyword.f if hist.minlist or hist.old are used.
 C
+          ! }}}
       ENDIF
       IF (RADIUS.EQ.0.0D0) THEN
+        ! {{{
 C        RADIUS=1.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0) ! this container is too small for angular moves
          RADIUS=2.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0)
          IF (MORSET) THEN
@@ -650,6 +666,7 @@ C           RADIUS=4.0D0*RADIUS*2.0D0**(1.0D0/6.0D0)
          ELSE 
             RADIUS=RADIUS*2.0D0**(1.0D0/6.0D0)
          ENDIF
+         ! }}}
       ENDIF
       IF ((.NOT.PERIODIC).AND.(.NOT.AMBER).AND.(.NOT.BLNT).AND.(.NOT.MULLERBROWNT).AND.(.NOT.MODEL1T)) 
      1                    WRITE(MYUNIT,'(A,F20.10)') 'Container radius=',RADIUS
@@ -674,7 +691,9 @@ C           RADIUS=4.0D0*RADIUS*2.0D0**(1.0D0/6.0D0)
       IF (NEWJUMP) WRITE(MYUNIT,'(A,F12.3)') 
      1   'Jumping based only on current energies (parallel tempering) attempt probability=',PNEWJUMP
       WRITE(MYUNIT,'(A,F15.10)') 'Sloppy quench tolerances for RMS gradient ',BQMAX
+
       IF ((.NOT.BSPT).AND.(.NOT.PTMC)) THEN
+        ! {{{
          DO JP=1,NPAR
             IF (RIGID.AND.(BLOCK(NPAR).GT.0)) WRITE(MYUNIT,'(A,I6,A)') 
      1     'Rigid body translations and orientational displacements will be made separately in blocks of ',
@@ -724,6 +743,7 @@ C           RADIUS=4.0D0*RADIUS*2.0D0**(1.0D0/6.0D0)
      1            'In run ',JP,' number of hard sphere collision moves will be adjusted. Initial value=',NHSMOVE
             ENDIF
          ENDDO 
+         ! }}}
       ENDIF
       IF (EFAC.NE.0.0D0) WRITE(MYUNIT,'(A,F12.4)') 'Exponential factor for proposed steps=',EFAC
       IF (NORESET) THEN
@@ -751,6 +771,7 @@ C           RADIUS=4.0D0*RADIUS*2.0D0**(1.0D0/6.0D0)
       ENDIF
       IF (PERIODIC) WRITE(MYUNIT,'(A,3F15.7)') 'Periodic boundary conditions, box lengths: ',BOXLX,BOXLY,BOXLZ
       IF (CUTT) WRITE(MYUNIT,'(A,F15.7)') 'Cutoff=',CUTOFF
+      ! Minimizer - BFGS, LBFGS {{{
       IF (BFGS) THEN
          WRITE (MYUNIT,'(A)') 'BFGS minimization'
       ELSE IF (LBFGST) THEN
@@ -761,6 +782,8 @@ C           RADIUS=4.0D0*RADIUS*2.0D0**(1.0D0/6.0D0)
       ELSE
          WRITE (MYUNIT,'(A)') 'Conjugate gradient minimization'
       ENDIF
+      ! }}}
+
       WRITE(MYUNIT,'(A,F15.10)') 'Final quench tolerance for RMS gradient ',CQMAX
       WRITE(MYUNIT,'(A,F15.10)') 'Energy difference criterion for minima=',ECONV
       WRITE(MYUNIT,'(A,I5,A,I5)') 'Maximum number of iterations: sloppy quenches ',MAXIT,' final quenches ',MAXIT2
@@ -788,6 +811,7 @@ C           RADIUS=4.0D0*RADIUS*2.0D0**(1.0D0/6.0D0)
          WRITE(MYUNIT,'(A)') ' '
       ENDIF
       IF (SQUEEZET) THEN
+         ! {{{
           WRITE(MYUNIT, '(A)') 'squeeze option currently commented'
          STOP
          OPEN (UNIT=7,FILE='vectors',STATUS='OLD')
@@ -811,7 +835,9 @@ C           RADIUS=4.0D0*RADIUS*2.0D0**(1.0D0/6.0D0)
          WRITE(MYUNIT,210) SQUEEZER, SQUEEZED
 210      FORMAT('Initial smallest radius=',F15.5,' with shrink factor='
      1          ,F15.5)
+         ! }}}
       ENDIF
+
       IF (RENORM) THEN
          XMOVERENORM=MIN(XMOVERENORM,NATOMS*0.9D0)
          IF (XMOVERENORM.GT.3.0D0) THEN
@@ -834,6 +860,7 @@ C           RADIUS=4.0D0*RADIUS*2.0D0**(1.0D0/6.0D0)
          WRITE(MYUNIT,'(A,F10.2,A,I6,A)') 'Runs will be reseeded if the current minimum comes within ',
      1             AVOIDDIST,' of up to ',MAXSAVE,' previous minima'
       ENDIF
+      ! ssdump  {{{
 C
 C  Look for the file that contains interrupted screen saver restart information.
 C  Current minimum in the Markov chain. COORDS
@@ -862,6 +889,6 @@ C
          YESNO=.FALSE.
       ENDIF
 
-
+      ! }}}
       RETURN
       END

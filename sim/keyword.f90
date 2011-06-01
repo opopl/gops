@@ -71,6 +71,8 @@
                 NTARGETS=NARGS-1
                 ALLOCATE(TARGETS(NTARGETS))
     	        CALL READ(BUFFER, *, IOSTAT=IOS) TARGETS(1:NTARGETS)
+              CASE('TRACKDATA')
+                TRACKDATAT=.TRUE.
               CASE(DEFAULT)
     	         CALL REPORT('Unrecognized command '//BUFFER,.TRUE.)
     	         STOP
