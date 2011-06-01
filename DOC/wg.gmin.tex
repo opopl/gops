@@ -250,8 +250,8 @@ potential.
 a neutral, cationic or electronically excited argon cluster. See also
 {\keyw{GROUND}\/}, {\keyw{PLUS}\/}, {\keyw{TWOPLUS}\/} and {\keyw{STAR}\/}.
 
-\ksec{ARM}{ arma armb}: use the acceptance-ratio method (Bouzida et al., {\it Phys.~Rev.~A},
-{\bf 45}, 8894, 1992)  to adjust the step size to achieve the requested 
+\ksec{ARM}{ arma armb\/}: Use the acceptance-ratio method 
+\cite{Bouzida92} to adjust the step size to achieve the requested 
 acceptance ratio. A scaling factor is calculated and applied to {\it step}, {\it rotmax},
 and/or {\it transmax}. The scaling factor is calculated according to 
 $\log(arma*P_{\rm t}+armb)/\log(arma*P_0+armb)$, where $P_{\rm t}$ defines the
@@ -274,7 +274,7 @@ on the untransformed surface). {\it bgmax\/} is the convergence threshold
 on the RMS force in the basin-hopping
 quenches. If this criterion is too strict then the run time will be greatly increased.
 If it is too sloppy then the performance of the algorithm is impaired. Different values
-are needed for different potentials. {\it SLOPPYCONV} can be used instead.
+are needed for different potentials. \keyw{SLOPPYCONV} can be used instead.
 
 \ksec{BFGS}{}: specifies that the full BFGS minimiser should be used. Inefficient compared to LBFGS.
 
@@ -809,7 +809,7 @@ keyword turns off the resetting so that the geometry varies continuously.
 
 \ksec{NOTE}{ \/}: the rest of the line is ignored.
 
-\subsection{O-P}
+\subsection{O-Q}
 \ksec{ODIHE}{ \/}: order parameter---requires documentation.
 
 \ksec{OEINT}{ \/}: interaction energy between 2 peptides will be used as an order parameter---requires 
@@ -947,7 +947,7 @@ a molecule is pulled along the $z$ axis from atoms $a1$ and $a2$.
 RMS force in the final set of quenches that are used to produce
 the output for file {\tt lowest}. The default is 
 {\it cgmax\/}$=10^{-3}$, but the appropriate value depends upon the system in question.
-{\it TIGHTCONV} can be used instead.
+\keyw{TIGHTCONV} can be used instead.
 
 \ksec{QUAD}{\/}: requires documentation.
 
@@ -1034,7 +1034,7 @@ on the untransformed surface). {\it bgmax\/} is the convergence criterion
 for the RMS force in the basin-hopping
 quenches. If this criterion is too strict then the run time will be greatly increased.
 If it is too sloppy then the performance of the algorithm is impaired. Different values
-are needed for different potentials. {\it BASIN} can be used instead.
+are needed for different potentials.{\keyw{BASIN} can be used instead.
 
 \ksec{SORT}{}: for pairwise potentials the atoms can be sorted from most to least
 strongly bound. The {\keyw{SORT}} keyword enables this sorting for the coordinates printed
@@ -1133,7 +1133,7 @@ therefore be different from all the other unit charges and is read as a real num
 RMS force in the final set of quenches that are used to produce
 the output for file {\tt lowest}. The default is
 {\it cgmax\/}$=10^{-3}$, but the appropriate values depend upon the system in question.
-{\it QMAX} can be used instead.
+\keyw{QMAX} can be used instead.
 
 \ksec{TIP}{ n\/}: specifies a TIP{\it n\/}P intermolecular potential for rigid body water molecules.
 $\ \le n \le 5$.

@@ -1,248 +1,175 @@
 \chapter{Models}
 
-\section{BLN model}
+\subsection{Bond angles}
 
-\subsection{Geometry}
-
-\subsubsection{Bond vectors}
-
-Bond vectors $\v{b}_i$ are defined as 
+The definition of the bond angle is the following,
+%, see \ref{def-bangle}.
 \begin{equation}
-  \v{b}_i=\v{r}_i-\v{r}_{i+1},\quad i=1,\ldots,N-1,
-  \label{bln-def-bv}
+  \cos\theta_{ijk}=\left[\frac{\rij\cdot\rkj}{r_{ij}r_{kj}}\right].
+  \label{def-bangle}
 \end{equation}
-where $\v{r}_i,\quad i=1,\ldots,N$ denote the particle coordinates. We define
-a \emph{dot-product array} $\DPD(i,j),\quad i=1,\ldots, N-1;\quad j=1,\ldots,3$ as
+where $\rr_{ij}\equiv\rr_i-\rr_j,\quad r_{ij}\equiv|\rr_{ij}|$.
+For a bond angle $\theta_a=\theta_{ijk},\quad a=2,\ldots,N-1$, 
+one has $\rij=-\bb_{a-1},\quad\rkj=\bb_a$. Thus,
+\begin{equation}
+  \cos\theta_a=-\frac{\DPD(a-1)}{b_{a-1}b_{a}},\qquad a=2,\ldots,N-1  
+  \label{def-bangle-a}
+\end{equation}
+where one defines the cross-product 
+$\DPD(a)\equiv (\bb_a\cdot\bb_{a+1})$ for $a=1,\ldots,N-1$.
+Then, the gradients read
 \begin{align}
-  \nn\DPD(i,1)&=(\v{b}_i,\v{b}_i)\equiv |\v{b}_i|^2\equiv b_i^2=r_i^2+r_{i+1}^2-2(\rr_i,\rr_{i+1}),\\
-  \nn\DPD(i,2)&=(\v{b}_i,\v{b}_{i+1})=(\rr_i-\rr_{i+1},\rr_{i+1}-\rr_{i+2})\\
-\nn&=\rr_i\rr_{i+1}+\rr_{i+1}\rr_{i+2}-\rr_i\rr_{i+2}-r_{i+1}^2\\
-  \DPD(i,3)&=(\v{b}_i,\v{b}_{i+2})=(\rr_i-\rr_{i+1},\rr_{i+2}-\rr_{i+3})\\
-\nn&=\rr_i\rr_{i+2}+\rr_{i+1}\rr_{i+3}-\rr_{i}\rr_{i+3}-\rr_{i+1}\rr_{i+2}
-  \label{bln-def-dpd}
+  \nn\Gi(\theta_a)&=-\frac{1}{b_{a-1}}f_a\frac{\mi}{|\mi|},\\
+\nn\Gk(\theta_a)&=-\frac{1}{b_{a}}
+  f_a\frac{\mk}{|\mk|},\\
+  \Gj(\theta_a)&=-\Gi(\theta_a)-\Gk(\theta_a).
 \end{align}
-with the bond vector length $b_i\equiv|\v{b}_i|,\ i=1,\ldots,N-1$, 
-and the radius-vector length $r_i\equiv|\v{r}_i|,\ i=1,\ldots,N$.
-We note that $\DPD(i,j)$ depends on vectors with indices $i,\ldots,i+j$. Thus,
-the following DPs (nine in total) depend explicitly on the radius-vector $\rr_i$, for $i=3,\ldots,N-2$:
-\begin{align*}
- \DPD(i,1),&\quad\DPD(i-1,1),\quad\DPD(i,2),\quad\DPD(i-1,2),\quad\DPD(i-2,2),\\ 
- \DPD(i,3),&\quad\DPD(i-1,3),\quad\DPD(i-2,3),\quad\DPD(i-3,3)
-\end{align*}
-For the special cases $i=1,2$ and $i=N-1,N$, the number of DPs which 
-depend on $\rr_i$ is smaller. 
-\begin{table}
-  \centering
-  \begin{tabular}{ccc}
-   $i$ 		& Number of DPs		&	DPs \\ 
-   $1$		& 3			&	$\DPD(1,1),\DPD(1,2),\DPD(1,3)$ \\
-   $2$		& 6			&	$\DPD(2,1),\DPD(1,1),\DPD(2,2),\DPD(1,2),\DPD(2,3),\DPD(1,3)$ \\
-   $N-1$	& 6			&	$\DPD(N-1,1),\DPD(N-2,1)$
-						$\DPD(N-2,2),\DPD(N-3,2)$,
-						$\DPD(N-3,3),\DPD(N-4,3)$	\\	
-   $N$		& 3			&	$\DPD(N-1,1),\DPD(N-2,2),\DPD(N-3,3)$ \\
-  \end{tabular}
-\end{table}
-Let us write all the DPs explicitly,
-\begin{table}[ht]
-  \caption{$i=3,\ldots,N-2$}
-  \centering
-  \begin{tabular}{|p{2cm}|p{3cm}|p{4cm}|p{2cm}|}
-\hline
-    DP			& $\rr_i$-dependent 	& not-$\rr_i$-dependent & derivative \\
-   \hline 
-    $(i,1)$ 	& $r_i^2-2\rr_i\rr_{i+1}$ 	
-    		& $r_{i+1}^2$ 
-		& $2\bb_i$ \\
-    \hline
-    $(i-1,1)$ 	& $r_{i}^2-2\rr_{i}\rr_{i-1}$	
-    		& $r_{i-1}^2$ 
-		& $-2\bb_{i-1}$\\
-    \hline
-    $(i,2)$ 	& $\rr_i\rr_{i+1}-\rr_i\rr_{i+2}$  
-    		& $\rr_{i+1}\rr_{i+2}-r_{i+1}^2$ 
-		& $\bb_{i+1}$ \\
-    \hline
-    $(i-1,2)$ 	& $\rr_i\rr_{i-1}+\rr_i\rr_{i+1}-\rr_{i}^2$ 
-    		& $-\rr_{i-1}\rr_{i+1}$ 
-    		& $\bb_{i-1}-\bb_i$ \\
-    \hline
-    $(i-2,2)$ 	& $-\rr_i\rr_{i-2}+\rr_i\rr_{i-1}$ 
-    		& $\rr_{i-2}\rr_{i-1}-r_{i-1}^2$ 
-		& $-\bb_{i-2}$\\
-    \hline
-    $(i,3)$		& $\rr_i\rr_{i+2}-\rr_{i}\rr_{i+3}$	
-    			& $\rr_{i+1}\rr_{i+3}-\rr_{i+1}\rr_{i+2}$ 
-			& $\bb_{i+2}$ \\
-    \hline
-    $(i-1,3)$		& $\rr_i\rr_{i+2}-\rr_i\rr_{i+1} $   	
-    			& $\rr_{i-1}\rr_{i+1}-\rr_{i-1}\rr_{i+2}$ 
-			& $-\bb_{i+1}$ \\
-    \hline
-    $(i-2,3)$		& $\rr_i\rr_{i-2}-\rr_i\rr_{i-1}$ 	
-    			& $\rr_{i+1}\rr_{i-2}+\rr_{i-1}\rr_{i+1}$ 
-			& $\bb_{i-2}$ \\
-    \hline
-    $(i-3,3)$		& $-\rr_i\rr_{i-3}+\rr_i\rr_{i-2}$ 
-    			& $\rr_{i-3}\rr_{i-1}-\rr_{i-1}\rr_{i-2}$
-			& $-\bb_{i-3}$	\\
-\hline
-  \end{tabular}
-\end{table}
-\clearpage
-\begin{table}[ht]
-  \centering
-  \caption{$i=1,2,N-1,N$}
-  \small
-  \begin{tabular}{|p{2cm}|p{4cm}|p{4cm}|p{2.5cm}|}
-\hline
-    DP			& $\rr_i$-dependent 	& not-$\rr_i$-dependent & derivative \\
-\hline
-\multicolumn{4}{|c|}{$i=1$} \\ 
-   \hline 
-    $(1,1)$ 	& $r_1^2-2\rr_1\rr_{2}$ 	
-    		& $r_{2}^2$ &
-		$2\bb_1$ \\
-    \hline
-    $(1,2)$ 	& $\rr_1\rr_{2}-\rr_1\rr_{3}$  
-    		& $\rr_{2}\rr_{3}-r_{2}^2$ 
-		& $\bb_{2}$ \\
-    \hline
-    $(1,3)$		& $\rr_1\rr_{3}-\rr_{1}\rr_{4}$	
-    			& $\rr_{2}\rr_{4}-\rr_{2}\rr_{3}$ 
-			& $\bb_{3}$ \\
-\hline
-\multicolumn{4}{|c|}{$i=2$} \\ 
-\hline
-    $(2,1)$ 	& $r_2^2-2\rr_2\rr_{3}$ 	
-    		& $r_{3}^2$ 
-		& $2\bb_2$ \\
-    \hline
-    $(2,2)$ 	& $\rr_2\rr_{3}-\rr_2\rr_{4}$  
-    		& $\rr_{3}\rr_{4}-r_{3}^2$ 
-		& $\bb_{3}$ \\
-    \hline
-   $(2,3)$		& $\rr_2\rr_{4}-\rr_{2}\rr_{5}$	
-    			& $\rr_{3}\rr_{5}-\rr_{3}\rr_{4}$ 
-			& $\bb_{4}$ \\
-    \hline
-    $(1,1)$ 	& $r_{2}^2-2\rr_{2}\rr_{1}$	
-    		& $r_{1}^2$ 
-		& $-2\bb_{1}$\\
-    \hline
-    $(1,2)$ 	& $\rr_2\rr_{1}+\rr_2\rr_{3}-\rr_{2}^2$ 
-    		& $-\rr_{1}\rr_{3}$ 
-    		& $\bb_{1}-\bb_2$ \\
-    \hline
-   $(1,3)$		& $\rr_2\rr_{4}-\rr_2\rr_{3} $   	
-    			& $\rr_{1}\rr_{3}-\rr_{1}\rr_{4}$ 
-			& $-\bb_{3}$ \\
-\hline
-\multicolumn{4}{|c|}{$i=N-1$} \\ 
-\hline
-    $(N-1,1)$ 	& $r_{N-1}^2-2\rr_{N-1}\rr_{N}$ 	
-    		& $r_{N}^2$ 
-		& $2\bb_{N-1}$ \\
-    \hline
-    $(N-2,1)$ 	& $r_{N-1}^2-2\rr_{N-1}\rr_{N-2}$	
-    		& $r_{N-2}^2$ 
-		& $-2\bb_{N-2}$\\
-    \hline
-    $(N-2,2)$ 	& $\rr_{N-1}\rr_{N-2}+\rr_{N-1}\rr_{N}-\rr_{N-1}^2$ 
-    		& $-\rr_{N-2}\rr_{N}$ 
-		& $\bb_{N-2}-\bb_{N-1}$ \\
-    \hline
-    $(N-3,2)$ 	& $-\rr_{N-1}\rr_{N-3}+\rr_{N-1}\rr_{N-2}$ 
-    		& $\rr_{N-3}\rr_{N-2}-r_{N-2}^2$ 
-		& $-\bb_{N-3}$\\
-    \hline
-    $(N-3,3)$		& $\rr_{N-1}\rr_{N-3}-\rr_{N-1}\rr_{N-2}$ 	
-    			& $\rr_{N}\rr_{N-3}+\rr_{N-2}\rr_{N}$ 
-			& $\bb_{N-3}$ \\
-    \hline
-    $(N-4,3)$		& $-\rr_{N-1}\rr_{N-4}+\rr_{N-1}\rr_{N-3}$ 
-    			& $\rr_{N-4}\rr_{N-2}-\rr_{N-2}\rr_{N-3}$
-			& $-\bb_{N-4}$	\\
-\hline
-\multicolumn{4}{|c|}{$i=N$} \\ 
-\hline
-$(N-1,1)$ 	& $r_{N}^2-2\rr_{N}\rr_{N-1}$	
-    		& $r_{N-1}^2$ 
-		& $-2\bb_{N-1}$\\
-\hline
-$(N-2,2)$ 	& $-\rr_N\rr_{N-2}+\rr_N\rr_{N-1}$ 
-    		& $\rr_{N-2}\rr_{N-1}-r_{N-1}^2$ 
-		& $-\bb_{N-2}$\\
-\hline
-$(N-3,3)$	& $-\rr_N\rr_{N-3}+\rr_N\rr_{N-2}$ 
-    		& $\rr_{N-3}\rr_{N-1}-\rr_{N-1}\rr_{N-2}$
-		& $-\bb_{N-3}$	\\
-\hline
-  \end{tabular}
-\end{table}
-
-and the radius-vector length $r_i\equiv|\v{r}_i|,\ i=1,\ldots,N$. 
-In what follows, we will need here the derivatives 
-of $\DPD(i,j)$ with respect to the radius-vectors $\rr_i,\quad i=1,\ldots,N$.
+where the vectors $\mi$ and $\mk$ are defined as  
 \begin{align}
-  \frac{\partial\DPD(i,1)}{\partial \rr_i}&=2(\rr_i-\rr_{i+1})=2\bb_i\\
-  \frac{\partial\DPD(i,1)}{\partial \rr_{i+1}}&=-2\bb_i\\
-  \frac{\partial\DPD(i,2)}{\partial \rr_i}&=2(\rr_i-\rr_{i+1})=2\bb_i\\
+ \mi\equiv\rij\times(\rkj\times\rij)=-\bb_{a-1}\times(\bb_{a-1}\times\bb_{a}), \\
+  \mk\equiv\rkj\times(\rij\times\rkj)=-\bb_a\times(\bb_{a-1}\times\bb_a).
+\label{def-mi-mk}
+\end{align}
+Simplifying the vector products by using the vector identity
+$\v{A}\times(\v{B}\times\v{C})=\v{B}(\v{C}\cdot{\v{A}})-\v{C}(\v{B}\cdot{\v{A}})$, 
+one obtains for the vectors $\mi$ and $\mk$,
+\begin{align}
+  -\mi&=\bb_{a-1}\DPD(a-1)-\bb_a b_{a-1}^2=-b_ab_{a-1}^2({\v{e}_{a-1}}\cos\theta_a+\v{e}_a)\\
+  -\mk&=\bb_{a-1}b_a^2-\bb_a\DPD(a-1)=b_a^2b_{a-1}(\v{e}_{a-1}+\v{e}_a\cos\theta_a)\\
+  |\mi|&=b_{a-1}\XPD(a-1)=b_{a-1}^2b_a\sin\theta_a\\
+  |\mk|&=b_{a}\XPD(a-1)= b_{a}^2b_{a-1}\sin\theta_a
+\end{align}
+with $\v{e}_a\equiv\bb_a/b_a$. 
+After substituting $\XPD(a-1)=b_ab_{a-1}\sin\theta_a,\quad \DPD(a-1)=-b_ab_{a-1}\cos\theta_a$,
+the gradients read
+\begin{align}
+  \Gi(\theta_a)&=-\frac{1}{b_{a-1}}\frac{f_a}{\sin\theta_a}(\ee_{a-1}\cos\theta_a+\ee_a),\\
+  \Gk(\theta_a)&=\frac{1}{b_{a}}\frac{f_a}{\sin\theta_a}(\ee_{a-1}+\ee_a\cos\theta_a).
 \end{align}
 
-\subsubsection{Bond angles}
+\subsubsection{Gradients}
 
-\begin{equation}
-  \cos\theta_i=\frac{\DPD(i,2)}{b_ib_{i+1}},\qquad i=2,\ldots,N-1  
-  \label{bln-bangle}
-\end{equation}
+The connection between the 
+bond angle gradients expressed through the Cartesian and the local 
+coordinate systems is given by
+\begin{align}
+  \nn\GG{1}=&\Gi(\theta_2)\\
+  \nn\GG{2}=&\Gi(\theta_3)+\Gj(\theta_2)\\
+  \nn\GG{3}=&\Gi(\theta_4)+\Gj(\theta_3)+\Gk(\theta_2)\\
+  \nn\ldots\\
+  \nn\GG{a}=&\Gi(\theta_{a+1})+\Gj(\theta_a)+\Gk(\theta_{a-1}),\quad a=3,\ldots,N-2\\
+  \nn\ldots\\
+  \nn\GG{N-2}=&\Gi(\theta_{N-1})+\Gj(\theta_{N-2})+\Gk(\theta_{N-3})\\
+  \nn\GG{N-1}=&\Gj(\theta_{N-1})+\Gk(\theta_{N-2})\\
+  \GG{N}=&\Gk(\theta_{N-1})
+\end{align}
+
+\subsubsection{Formulas for Bond Angle Gradients}
+
+%\paragraph{$a=1$}
+%\begin{align}
+  %\nn\GG{1}&=\Gi(\theta_2)=
+%\end{align}
+%\paragraph{$a=2$} 
+  %\begin{align}
+    %\nn\GG{2}&=-f_3\HVXPD(2)\frac{b_3}{\XPD(2)}+\HVXPD(1)f_2\frac{b_2}{\XPD(1)}
+    %\left(1-\frac{\DPD(1)}{b_2^2}\right)+
+    %f_2\HVXPD(2)\frac{\DPD(2)}{b_2\XPD(2)}\\
+    %\nn&=\HVXPD(2)\left(\frac{f_2\DPD(2)}{b_2\XPD(2)}-\frac{f_3b_3}{\XPD(2)}\right)
+    %+\HVXPD(1)\frac{f_2b_2}{\XPD(1)}\left(1-\frac{\DPD(1)}{b_2^2}\right)\\
+    %&=\pp_2\left[ -f_3b_3+\DPD(2)\frac{f_2}{b_2}\right]\\
+    %&+\pp_1\left[f_2b_2-\DPD(1)\frac{f_2}{b_2}\right]
+  %\end{align}
+%\paragraph{$a=3$}
+  %\begin{align}
+    %\nn\GG{4}&=
+    %\HVXPD(3)\left(\frac{f_3\DPD(3)}{b_3\XPD(3)}-\frac{f_4b_4}{\XPD(3)}\right)
+    %+\HVXPD(2)\frac{f_3b_3}{\XPD(2)}\left(1-\frac{\DPD(2)}{b_3^2}\right)\\
+    %&+\HVXPD(1)\frac{f_2\DPD(1)}{b_2\XPD(1)}
+    %-\HVXPD(2)\frac{f_2b_{2}}{\XPD(2)}\left(1+\frac{\DPD(2)}{b_2^2}\right)\\
+    %&= \pp_3
+    %\left(\frac{f_3\DPD(3)}{b_3}-f_4b_4\right)\\
+    %&+\pp_2\left[b_3f_3-b_2f_2-
+    %\DPD(2)\left(\frac{f_3}{b_3}+\frac{f_2}{b_2}\right)\right]\\
+    %&+\pp_1\frac{f_2\DPD(1)}{b_2},
+  %\end{align}
+  %where
+  %\begin{equation}
+    %\pp_a\equiv\frac{\VXPD(a)}{\XPD(a)^2},\quad a=1,\ldots,N-2
+  %\end{equation}
+
+%\paragraph{General formula for $a$}. 
+
+%We will need the formula for $\Gl$, \eqref{my-Gl}
+  %\begin{align}
+    %%\nn\GG{a}&=\GG{a-1}+\Gl(\phi_{a-2})-\Gl(\phi_{a-3})
+    %\nn\Gl(\phi_{a-2})=\pp_{a-2}b_{a-2}
+%\end{align}
+%so the general formula for all $a\in[1,N]$ reads
+%\begin{align}
+  %\GG{a}&=
+  %\pp_a
+    %\left(\DPD(a)\frac{f_a}{b_a}-f_{a+1}b_{a+1}\right)\\
+    %&+\pp_{a-1}\left[b_{a}f_a-b_{a-1}f_{a-1}-
+    %\DPD(a-1)\left(\frac{f_a}{b_a}+\frac{f_{a-1}}{b_{a-1}}\right)\right]\\
+    %&+\pp_{a-2}\left[\DPD(a-2)\frac{f_{a-1}}{b_{a-1}}+f_{a-2}b_{a-2}\right],
+%\end{align}
+%with an additional convention that $f_{-1}=f_0=f_1=f_{N-1}=f_N=0$.
+%From this, we infer the gradients for the remaining cases $a=N-2,\ N-1,\ N$.
+
+%\paragraph{$a=N-2$}
+
+  %\begin{align}
+    %\nn\GG{N-2}&=
+    %\pp_{N-2}
+    %\DPD(N-2)\frac{f_{N-2}}{b_{N-2}}\\
+    %&+\pp_{N-3}\left[b_{N-2}f_{N-2}-b_{N-3}f_{N-3}-
+    %\DPD(N-3)\left(\frac{f_{N-2}}{b_{N-2}}+\frac{f_{N-3}}{b_{N-3}}\right)\right]\\
+    %&+\pp_{N-4}\left(\DPD(N-4)\frac{f_{N-3}}{b_{N-3}}+f_{N-4}b_{N-4}\right),
+  %\end{align}
+
+%\paragraph{$a=N-1$}
+
+  %\begin{align}
+    %\nn\GG{N-1}&=
+    %\pp_{N-2}\left[-b_{N-2}f_{N-2}-
+    %\DPD(N-2)\left(\frac{f_{N-2}}{b_{N-2}}\right)\right]\\
+    %&+\pp_{N-3}\left(\DPD(N-3)\frac{f_{N-2}}{b_{N-2}}+f_{N-3}b_{N-3}\right),
+  %\end{align}
+
+%\paragraph{$a=N$}
+ %\begin{align}
+    %\nn\GG{N}&=
+    %\pp_{N-2}f_{N-2}b_{N-2},
+  %\end{align}
+
+
+
+
+\subsection{Torsion angles}
 
 \subsubsection{Torsional angles}
 
 Torsional angle $\phi$ is defined through the dot-product of two normal vectors,
 \begin{equation}
-  \cos\phi_{i}=-(\HVXPD(i-1),\HVXPD(i)),\quad i=2,\ldots,N-2,
+  \cos\phi_{a}=-(\HVXPD(a-1),\HVXPD(a)),\quad a=2,\ldots,N-2,
 \end{equation}
 where
 \begin{equation}
-\VXPD(i)\equiv (\bb_i\times\bb_{i+1}),\quad
-\XPD(i)\equiv|(\bb_i\times\bb_{i+1})|,
+\VXPD(a)\equiv (\bb_a\times\bb_{a+1}),\quad
+\XPD(a)\equiv|(\bb_a\times\bb_{a+1})|,
 \end{equation}
 and
 \begin{equation}
   \hv{n}\equiv \frac{\v{n}}{|\v{n}|}.
 \end{equation}
-Then,
-\begin{align}
-\nn&((\bb_i\times\bb_{i+1}),(\bb_{i+1}\times\bb_{i+2}))=
-(\bb_{i+2},((\bb_i\times\bb_{i+1})\times\bb_{i+1}))\\
-\nn=&\quad(\bb_{i+2},\bb_{i+1}(\bb_i,\bb_{i+1})-\bb_ib_{i+1}^2)\\
-\nn=&\quad(\bb_i,\bb_{i+1})(\bb_{i+1},\bb_{i+2})-b_{i+1}^2(\bb_i,\bb_{i+2})\\
-=&\quad\DPD(i,2)\DPD(i+1,2)-\DPD(i+1,1)\DPD(i,3).
-\end{align}
-Thus
-\begin{equation}
-  \cos\phi_{i}=\frac{\DPD(i,2)\DPD(i-1,2)-\DPD(i,1)\DPD(i-1,3)}{\XPD(i)\XPD(i-1)},
-  \quad\ i=2,\ldots,N-2.
-  %\cos\phi_{i+1}=\frac{\DPD(i,2)\DPD(i+1,2)-\DPD(i+1,1)\DPD(i,3)}{\XPD(i)\XPD(i+1)},
-  %\quad\ i=1,\ldots,N-3.
-  \label{bln-def-tangle}
-\end{equation}
-It is possible to obtain $\XPD$ through $\DPD$:
+
+It is possible to express $\XPD$ through $\DPD$:
 \begin{equation}
   \XPD^2(i)\equiv\ (\bb_i\times\bb_{i+1})^2
   =b_i^2b_{i+1}^2-(\bb_i,\bb_{i+1})^2
-  =\DPD(i,1)\DPD(i+1,1)-\DPD(i,2)^2.
+  =b_i^2b_{i+1}^2-\DPD(i)^2.
 \end{equation}
-Then the product $\XPD(i)\XPD(i+1)$ is expanded as
-\begin{align}
-  \nn\XPD^2(i)\XPD^2(i+1)&={(\DPD(i,1)\DPD(i+1,1)-\DPD(i,2)^2)}\\
-  \nn&\times{(\DPD(i+1,1)\DPD(i+2,1)-\DPD(i+1,2)^2)}\\
-  \nn&=\DPD(i,2)^2\DPD(i+1,2)^2\\
-  \nn&+\DPD(i,1)\DPD(i+2,1)\DPD(i+1,1)^2\\
-  \nn&-\DPD(i,1)\DPD(i+1,1)\DPD(i+1,2)^2\\
-  &-\DPD(i+1,1)\DPD(i+2,1)\DPD(i,2)^2
-\end{align}
 
 \subsubsection{Bekker formulas}
 
@@ -260,27 +187,6 @@ We will also need \cite{Bekker95}
 \end{align}
 
 \clearpage
-\subsubsection{Torsion angles vs $i, j, k, l$ variables }
-
-\begin{table}
-  \centering
-  \caption{Torsional angles vs. $i, j, k, l$ variables}
-  \begin{tabular}{|*{6}{c|}}
-\hline
-TA 		& $\rr_{ij}$ 	& $\rr_{kj}$ 	& $\rr_{kl}$	& $\v{m}$	& $\v{n}$	  	\\
-\hline
-$\phi_2$	& $\bb_1$	& $-\bb_2$ 	& $\bb_3$	& $-\VXPD(1)$ 	& $-\VXPD(2)$ 		\\
-$\phi_3$	& $\bb_2$	& $-\bb_3$	& $\bb_4$		\\
-$\phi_4$	& $\bb_3$	& $-\bb_4$	& $\bb_5$		\\
-$\phi_a$	& $\bb_{a-1}$	& $-\bb_a$	& $\bb_{a+1}$	& $-\VXPD(a-1)$ & $-\VXPD(a)$ 		\\
-$\phi_{N-4}$	& $\bb_{N-5}$	& $-\bb_{N-4}$	& $\bb_{N-3}$		\\
-$\phi_{N-3}$	& $\bb_{N-4}$	& $-\bb_{N-3}$	& $\bb_{N-2}$		\\
-$\phi_{N-2}$	& $\bb_{N-3}$	& $-\bb_{N-2}$	& $\bb_{N-1}$		\\
-\hline
-  \end{tabular}
-\end{table}
-
-\clearpage
 \subsubsection{Torsion angles vs gradients }
 
 For $a=2,\ldots,N-2$
@@ -290,15 +196,15 @@ For $a=2,\ldots,N-2$
   \label{my-Gl}
   \Gl(\phi_a)&=\HVXPD(a)\frac{b_{a}}{\XPD(a)} \\
   \nn\Gj(\phi_a)&=-\HVXPD(a-1)\frac{b_{a}}{\XPD(a-1)}
-  \left(-1+\frac{\DPD(a-1,2)}{b_a^2}\right)\\
-  \nn&+\frac{\DPD(a,2)}{b_a^2}\Gl(\phi_a)\\
+  \left(-1+\frac{\DPD(a-1)}{b_a^2}\right)\\
+  \nn&+\frac{\DPD(a)}{b_a^2}\Gl(\phi_a)\\
   \label{my-Gj}
-  &=\HVXPD(a-1)\frac{b_{a}}{\XPD(a-1)}\left(1-\frac{\DPD(a-1,2)}{b_a^2}\right)
-  +\HVXPD(a)\frac{\DPD(a,2)}{b_a\XPD(a)}\\
-  \nn\Gk(\phi_a)&=\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}-\left(1+\frac{\DPD(a,2)}{b_a^2}\right)\Gl(\phi_a)\\
+  &=\HVXPD(a-1)\frac{b_{a}}{\XPD(a-1)}\left(1-\frac{\DPD(a-1)}{b_a^2}\right)
+  +\HVXPD(a)\frac{\DPD(a)}{b_a\XPD(a)}\\
+  \nn\Gk(\phi_a)&=\HVXPD(a-1)\frac{\DPD(a-1)}{b_a\XPD(a-1)}-\left(1+\frac{\DPD(a)}{b_a^2}\right)\Gl(\phi_a)\\
   \label{my-Gk}
-  &=\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}-
-  \HVXPD(a)\frac{b_{a}}{\XPD(a)}\left(1+\frac{\DPD(a,2)}{b_a^2}\right)
+  &=\HVXPD(a-1)\frac{\DPD(a-1)}{b_a\XPD(a-1)}-
+  \HVXPD(a)\frac{b_{a}}{\XPD(a)}\left(1+\frac{\DPD(a)}{b_a^2}\right)
 \end{align}
 
 \subsubsection{Gradient sum rule}
@@ -307,10 +213,10 @@ Let us check that the sum rule is satisfied:
   \Gi(\phi_a)+\Gj(\phi_a)+\Gl(\phi_a)+\Gk(\phi_a)=0
 \end{equation}
 \begin{align}
-\Gi(\phi_a)+\Gj(\phi_a)&=\HVXPD(a)\frac{\DPD(a,2)}{b_a\XPD(a)}-
-\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}\\
-\Gl(\phi_a)+\Gk(\phi_a)&=-\HVXPD(a)\frac{\DPD(a,2)}{b_a\XPD(a)}+
-\HVXPD(a-1)\frac{\DPD(a-1,2)}{b_a\XPD(a-1)}
+\Gi(\phi_a)+\Gj(\phi_a)&=\HVXPD(a)\frac{\DPD(a)}{b_a\XPD(a)}-
+\HVXPD(a-1)\frac{\DPD(a-1)}{b_a\XPD(a-1)}\\
+\Gl(\phi_a)+\Gk(\phi_a)&=-\HVXPD(a)\frac{\DPD(a)}{b_a\XPD(a)}+
+\HVXPD(a-1)\frac{\DPD(a-1)}{b_a\XPD(a-1)}
 \end{align}
 
 \clearpage
@@ -330,7 +236,7 @@ Let us check that the sum rule is satisfied:
   \GG{N}=&\Gl(\phi_{N-2})
 \end{align}
 
-\subsubsection{Gradients for the BLN model}
+\subsubsection{Formulas for Torsion Gradients}
 
 We will denote $f_a\equiv dV(\phi)/d\phi|_{\phi=\phi_a}$.
 
@@ -343,25 +249,25 @@ We will denote $f_a\equiv dV(\phi)/d\phi|_{\phi=\phi_a}$.
 \paragraph{$a=2$} 
   \begin{align}
     \nn\GG{2}&=-f_3\HVXPD(2)\frac{b_3}{\XPD(2)}+\HVXPD(1)f_2\frac{b_2}{\XPD(1)}
-    \left(1-\frac{\DPD(1,2)}{b_2^2}\right)+
-    f_2\HVXPD(2)\frac{\DPD(2,2)}{b_2\XPD(2)}\\
-    \nn&=\HVXPD(2)\left(\frac{f_2\DPD(2,2)}{b_2\XPD(2)}-\frac{f_3b_3}{\XPD(2)}\right)
-    +\HVXPD(1)\frac{f_2b_2}{\XPD(1)}\left(1-\frac{\DPD(1,2)}{b_2^2}\right)\\
-    &=\pp_2\left[ -f_3b_3+\DPD(2,2)\frac{f_2}{b_2}\right]\\
-    &+\pp_1\left[f_2b_2-\DPD(1,2)\frac{f_2}{b_2}\right]
+    \left(1-\frac{\DPD(1)}{b_2^2}\right)+
+    f_2\HVXPD(2)\frac{\DPD(2)}{b_2\XPD(2)}\\
+    \nn&=\HVXPD(2)\left(\frac{f_2\DPD(2)}{b_2\XPD(2)}-\frac{f_3b_3}{\XPD(2)}\right)
+    +\HVXPD(1)\frac{f_2b_2}{\XPD(1)}\left(1-\frac{\DPD(1)}{b_2^2}\right)\\
+    &=\pp_2\left[ -f_3b_3+\DPD(2)\frac{f_2}{b_2}\right]\\
+    &+\pp_1\left[f_2b_2-\DPD(1)\frac{f_2}{b_2}\right]
   \end{align}
 \paragraph{$a=3$}
   \begin{align}
-    \nn\GG{3}&=
-    \HVXPD(3)\left(\frac{f_3\DPD(3,2)}{b_3\XPD(3)}-\frac{f_4b_4}{\XPD(3)}\right)
-    +\HVXPD(2)\frac{f_3b_3}{\XPD(2)}\left(1-\frac{\DPD(2,2)}{b_3^2}\right)\\
-    &+\HVXPD(1)\frac{f_2\DPD(1,2)}{b_2\XPD(1)}
-    -\HVXPD(2)\frac{f_2b_{2}}{\XPD(2)}\left(1+\frac{\DPD(2,2)}{b_2^2}\right)\\
+    \nn\GG{4}&=
+    \HVXPD(3)\left(\frac{f_3\DPD(3)}{b_3\XPD(3)}-\frac{f_4b_4}{\XPD(3)}\right)
+    +\HVXPD(2)\frac{f_3b_3}{\XPD(2)}\left(1-\frac{\DPD(2)}{b_3^2}\right)\\
+    &+\HVXPD(1)\frac{f_2\DPD(1)}{b_2\XPD(1)}
+    -\HVXPD(2)\frac{f_2b_{2}}{\XPD(2)}\left(1+\frac{\DPD(2)}{b_2^2}\right)\\
     &= \pp_3
-    \left(\frac{f_3\DPD(3,2)}{b_3}-f_4b_4\right)\\
+    \left(\frac{f_3\DPD(3)}{b_3}-f_4b_4\right)\\
     &+\pp_2\left[b_3f_3-b_2f_2-
-    \DPD(2,2)\left(\frac{f_3}{b_3}+\frac{f_2}{b_2}\right)\right]\\
-    &+\pp_1\frac{f_2\DPD(1,2)}{b_2},
+    \DPD(2)\left(\frac{f_3}{b_3}+\frac{f_2}{b_2}\right)\right]\\
+    &+\pp_1\frac{f_2\DPD(1)}{b_2},
   \end{align}
   where
   \begin{equation}
@@ -379,10 +285,10 @@ so the general formula for all $a\in[1,N]$ reads
 \begin{align}
   \GG{a}&=
   \pp_a
-    \left(\DPD(a,2)\frac{f_a}{b_a}-f_{a+1}b_{a+1}\right)\\
+    \left(\DPD(a)\frac{f_a}{b_a}-f_{a+1}b_{a+1}\right)\\
     &+\pp_{a-1}\left[b_{a}f_a-b_{a-1}f_{a-1}-
-    \DPD({a-1},2)\left(\frac{f_a}{b_a}+\frac{f_{a-1}}{b_{a-1}}\right)\right]\\
-    &+\pp_{a-2}\left[\DPD(a-2,2)\frac{f_{a-1}}{b_{a-1}}+f_{a-2}b_{a-2}\right],
+    \DPD(a-1)\left(\frac{f_a}{b_a}+\frac{f_{a-1}}{b_{a-1}}\right)\right]\\
+    &+\pp_{a-2}\left[\DPD(a-2)\frac{f_{a-1}}{b_{a-1}}+f_{a-2}b_{a-2}\right],
 \end{align}
 with an additional convention that $f_{-1}=f_0=f_1=f_{N-1}=f_N=0$.
 From this, we infer the gradients for the remaining cases $a=N-2,\ N-1,\ N$.
@@ -392,10 +298,10 @@ From this, we infer the gradients for the remaining cases $a=N-2,\ N-1,\ N$.
   \begin{align}
     \nn\GG{N-2}&=
     \pp_{N-2}
-    \DPD(N-2,2)\frac{f_{N-2}}{b_{N-2}}\\
+    \DPD(N-2)\frac{f_{N-2}}{b_{N-2}}\\
     &+\pp_{N-3}\left[b_{N-2}f_{N-2}-b_{N-3}f_{N-3}-
-    \DPD(N-3,2)\left(\frac{f_{N-2}}{b_{N-2}}+\frac{f_{N-3}}{b_{N-3}}\right)\right]\\
-    &+\pp_{N-4}\left(\DPD(N-4,2)\frac{f_{N-3}}{b_{N-3}}+f_{N-4}b_{N-4}\right),
+    \DPD(N-3)\left(\frac{f_{N-2}}{b_{N-2}}+\frac{f_{N-3}}{b_{N-3}}\right)\right]\\
+    &+\pp_{N-4}\left(\DPD(N-4)\frac{f_{N-3}}{b_{N-3}}+f_{N-4}b_{N-4}\right),
   \end{align}
 
 \paragraph{$a=N-1$}
@@ -403,8 +309,8 @@ From this, we infer the gradients for the remaining cases $a=N-2,\ N-1,\ N$.
   \begin{align}
     \nn\GG{N-1}&=
     \pp_{N-2}\left[-b_{N-2}f_{N-2}-
-    \DPD(N-2,2)\left(\frac{f_{N-2}}{b_{N-2}}\right)\right]\\
-    &+\pp_{N-3}\left(\DPD(N-3,2)\frac{f_{N-2}}{b_{N-2}}+f_{N-3}b_{N-3}\right),
+    \DPD(N-2)\left(\frac{f_{N-2}}{b_{N-2}}\right)\right]\\
+    &+\pp_{N-3}\left(\DPD(N-3)\frac{f_{N-2}}{b_{N-2}}+f_{N-3}b_{N-3}\right),
   \end{align}
 
 \paragraph{$a=N$}

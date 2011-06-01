@@ -84,7 +84,7 @@ include ps.main.nfstart.inc.f90
 
 include ps.main.write.inc.f90
 
-            IF (REGROUPT.AND.(NATTEMPT.GT.0)) THEN
+      IF (REGROUPT.AND.(NATTEMPT.GT.0)) THEN
          PRINT '(A)','ERROR - regroup can only be called once, set CYCLES=0'
 !        STOP
       ENDIF

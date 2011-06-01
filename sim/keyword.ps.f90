@@ -1,3 +1,4 @@
+        CASE(3) ! PATHSAMPLE {{{
 !   PATHSAMPLE: A driver for OPTIM to create stationary point databases using discrete path sampling and perform kinetic analysis
 !   Copyright (C) 1999-2009 David J. Wales                      {{{
 !   This file is part of PATHSAMPLE.
@@ -18,7 +19,6 @@
 !
 !                                                                }}}
 !op226 <begin>
-      SUBROUTINE KEYWORD
       ! Declarations 
       ! {{{
       ! Modules {{{
@@ -28,7 +28,6 @@
       USE COMMON
       USE RIGIDBODYMOD, ONLY: CAPSOMER, NUMRBTYPES, CAPSOMERDEFS
         ! }}}
-      IMPLICIT NONE
 
       ! Variables {{{
       INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, ISTAT, NDUMMY2, LAST
@@ -239,29 +238,6 @@ C     Sem: end GT2 controls
       INTCONSEP=10000
       CHECKCONINT=.FALSE.
       MAXCONUSE=3
-!
-! LJ interpolation potential parameters
-!
-      INTLJT=.FALSE.
-      INTLJDEL=0.1D0
-      INTLJEPS=1.0D0
-C
-C
-C sf344> docking stuff
-C
-      DOCKT=.FALSE.
-      DSTAGE(:)=.TRUE.
-!
-! SIS epidemiological model
-! 
-      SIST=.FALSE.
-      SMAX=0
-      IMAX=0
-      POPSS=0
-      SISMU=0.0D0
-      SISKAPPA=0.0D0
-      SISBETA=0.0D0
-
 !op226 </init>
 !op226 }}}
 !op226 Open and read pathdata {{{
@@ -301,18 +277,104 @@ C  belong to the A and B sets.
 C
 
 include pathsample.keyword.addpath.inc.f90
-include pathsample.keyword.addperm.inc.f90
-include pathsample.keyword.addtriples.inc.f90
-include pathsample.keyword.angleaxis.inc.f90
-include pathsample.keyword.amber9.inc.f90
-include pathsample.keyword.nab.inc.f90
-include pathsample.keyword.amh.inc.f90
-include pathsample.keyword.amhq.inc.f90
-include pathsample.keyword.amhqcont.inc.f90
-include pathsample.keyword.amhqrmsd.inc.f90
-include pathsample.keyword.amhqrelq.inc.f90
-include pathsample.keyword.amhq_relco.inc.f90
-            
+      ELSE IF (WORD.EQ.'ADDPATH') THEN
+         ADDPATH=.TRUE.
+         CALL READA(PATHNAME)
+C
+C  ADDPT determines whether we call ADDPERM to add permutational isomers of every stationary point to the
+C  min.data and ts.data databases. Speeds up 2DLJ7! For other tagged atom situations the number of isomers
+C  will equal the number of atoms for C1 symmetry, so this is probably a bad idea.
+C
+      ELSE IF (WORD.EQ.'ADDPERM') THEN
+         ADDPT=.TRUE.
+C
+C  STARTTRIPLES and ADDTRIPLES specify the triples format for
+C  path.info files read using the STARTFROM and ADDPATH keywords.
+C
+      ELSE IF (WORD.EQ.'ADDTRIPLES') THEN
+         ADDTRIPLES=.TRUE.
+C
+C  Use the angle-axis system for rigid bodies
+
+      ELSE IF (WORD.EQ.'ANGLEAXIS') THEN
+         ANGLEAXIS=.TRUE.
+      ELSE IF (WORD.EQ.'ANGLEAXIS2') THEN
+         ANGLEAXIS2=.TRUE.
+C
+C  sf344> Set AMBER9 potential.
+C
+       ELSE IF (WORD.EQ.'AMBER9') THEN
+          AMBERT=.TRUE.
+       ELSE IF (WORD.EQ.'NAB') THEN
+          AMBERT=.TRUE.
+C
+C  Set AMH potential.
+C
+       ELSE IF (WORD.EQ.'AMH') THEN
+          AMHT=.TRUE.
+
+C
+C  Calculated  Q between minima and native .
+C
+      ELSE IF (WORD.EQ.'AMHQ') THEN
+         AMHQT=.TRUE.
+         CALL READI(WHICHMIN)
+          PRINT '(A,I6,A,I6)','keywords> Calculate AMH Q  ',WHICHMIN
+         IF (NITEMS.GT.2) THEN
+          PRINT '(A)','keywords> ERROR - AMHQ '
+          STOP
+         ENDIF
+C
+C  Calculated  Q_contact  between minima and native .
+C
+      ELSE IF (WORD.EQ.'AMHQCONT') THEN
+         AMHQCONTT=.TRUE.
+         CALL READI(WHICHMIN)
+         CALL READF(QCONTCUT)
+          PRINT '(A,I6)','keywords> Calculate AMH Q CONTACT ',WHICHMIN
+          PRINT '(A,G3.2)','keywords> Within a distance cutoff ',QCONTCUT
+         IF (NITEMS.GT.3) THEN
+          PRINT '(A)','keywords> ERROR - AMH Q CONTACT '
+          STOP
+         ENDIF
+C
+C  Calculated  RMSD between minima and native .
+C
+      ELSE IF (WORD.EQ.'AMHRMSD') THEN
+         AMHRMSDT=.TRUE.
+         CALL READI(WHICHMIN)
+          PRINT '(A,I6,A,I6)','keywords> Calculate AMH RMSD  ',WHICHMIN
+         IF (NITEMS.GT.2) THEN
+          PRINT '(A)','keywords> ERROR - AMHRMSD '
+          STOP
+         ENDIF
+C
+C  Calculated Relative Qs between minima.
+C
+      ELSE IF (WORD.EQ.'AMHRELQ') THEN
+         AMHRELQT=.TRUE.
+         CALL READI(QRELONE)
+         CALL READI(QRELTWO)
+          PRINT '(A,I6,A,I6)','keywords> AMHRELQ min 1 ',QRELONE,' min 2',QRELTWO
+         IF (NITEMS.GT.3) THEN
+          PRINT '(A)','keywords> ERROR - AMHRELQ GT 2'
+          STOP
+         ENDIF
+
+C
+C  Calculated Relative Contact Order
+C
+       ELSE IF (WORD.EQ.'AMH_RELCO') THEN
+         AMH_RELCOT=.TRUE.
+         CALL READI(WHICHMIN)
+         CALL READF(RELCOCUT)
+          PRINT '(A,I6)','keywords> Calculate AMH Relative Contact Order ',WHICHMIN
+          PRINT '(A,G20.10)','keywords> Within a distance cutoff ',RELCOCUT
+
+         IF (NITEMS.GT.3) THEN
+          PRINT '(A)','keywords> ERROR - RELCO GT 2'
+          STOP
+         ENDIF
 
 C
 C  Output AMH all-atom MIN .
@@ -1526,3 +1588,5 @@ C
       END
       !op226 </end>
       !op226 }}}
+          ! }}}
+

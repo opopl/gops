@@ -186,6 +186,7 @@ include ps.setup.readmin.inc.f90
 ! ====================================
 ! If USEPAIRST is true then read the sequence of minima from file USEPAIRSFILE
 ! USEPAIRSFILE must be formatted as a single Epath file
+! ====================================
         include ps.setup.usepairs.inc.f90
       
       IF (DOST) CALL DOS
