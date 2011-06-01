@@ -1,6 +1,6 @@
 
       SUBROUTINE MC(NSTEPS,SCALEFAC,SCREENC)
-
+      ! declarations {{{
       USE COMMONS
       USE QMODULE , ONLY : QMIN, INTEQMIN
 

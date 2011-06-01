@@ -1,14 +1,13 @@
 
       SUBROUTINE MC(NSTEPS,SCALEFAC,SCREENC)
-
+! {{{
       USE COMMONS
       USE PORFUNCS
 
       IMPLICIT NONE
+
 include mc.vars.inc.f90
-
 include fmt.inc.f90
-
 include mc.cien.inc.f90 ! Calculate the initial energy and save in EPREV
 include mc.bh.inc.f90   ! Main basin-hopping loop
 
@@ -16,7 +15,7 @@ include mc.bh.inc.f90   ! Main basin-hopping loop
 
 ARATIO=NSUCCESST*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST+NFAILT))
 
-WRITE(LFH,111)  'Qu ',          NQ,	&
+WRITE(LFH,111)  ' Qu ',         NQ,	&
                 ' E=',          POTEL,	&
                 ' steps=',      ITERATIONS,	&
                 ' RMS=',        RMS,	&
@@ -28,11 +27,11 @@ WRITE(LFH,21)   ' Acceptance ratio for run=',  ARATIO,	&
                 ' Angular step factor=',       ASTEP,	&
                 ' T=',                         TEMP	&
 RETURN
-
+! }}}
 END
 
 SUBROUTINE ACCREJ(NSUCCESS,NFAIL,NSUCCESST,NFAILT)
-
+! {{{
 USE COMMONS
 
 IMPLICIT NONE
@@ -73,11 +72,11 @@ NSUCCESS=0
 NFAIL=0 
 !
 RETURN
-
+! }}}
 END
 
       SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,RANDOM,MCTEMP)
-
+! {{{
       IMPLICIT NONE
 
       DOUBLE PRECISION ENEW, EOLD, DPRAND, RANDOM, MCTEMP
@@ -101,5 +100,6 @@ END
          ENDIF
 
       RETURN 
+      ! }}}
       END 
 

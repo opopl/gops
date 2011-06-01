@@ -19,6 +19,7 @@ SAVE
 !> @param NSTEPS        (i)     number of basin-hopping steps
 !> @param STEP          (dp)    maximum step size in BH calculations
 !> @param ISTEP         (i)     run index during a BH calculation, 1+NDONE ... NSTEPS 
+!> @param TEMP          (dp)    temperature
 !> @param TFAC          (dp)    specifies the annealing protocol - temperature TEMP is multiplied by TFAC after every MC step
 !> @param M_LBFGS       (i)     used in LBFGS ( used there as M )
 !>                              ...
@@ -35,9 +36,20 @@ SAVE
 !
 ! declarations {{{
 
-
 ! LOGICALS
-LOGICAL PULLT, P46, G46, BLNT
+LOGICAL PULLT=.TRUE.
+LOGICAL P46=.FALSE.
+LOGICAL G46=.FALSE.
+LOGICAL BLNT=.FALSE.
+LOGICAL TARGET=.FALSE.
+
+! reading the data file/command-line
+
+INTEGER, PARAMETER :: SLEN=100
+INTEGER, PARAMETER :: MAXNARGS=20
+
+INTEGER NARGS
+CHARACTER(LEN=SLEN),DIMENSION(MAXNARGS) :: ARGS
 
 ! pairdist vars
 INTEGER :: NPAIRS
@@ -46,9 +58,16 @@ LOGICAL :: PAIRDISTT
 
 DOUBLE PRECISION :: TFAC=1.0D0
 DOUBLE PRECISION :: ECONV=0.02D0
+DOUBLE PRECISION :: ACCRAT=0.5D0
+DOUBLE PRECISION :: TEMP=0.035D0
+
+! sloppy quenches
+DOUBLE PRECISION :: SQMAX
+! final quenches
+DOUBLE PRECISION :: FQMAX
 
 INTEGER :: NACCEPT=50
-INTEGER :: NATOMS
+INTEGER :: NATOMS=46
 INTEGER :: MCSTEPS=10000
 INTEGER :: NSAVE=10
 INTEGER :: ISTEP

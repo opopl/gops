@@ -1,4 +1,4 @@
-
+      ! local {{{
       INTEGER :: NSYMCALL=0
       LOGICAL CHANGEDE, EXCHANGEACCEPT, EXCHANGE, FLAG 
       LOGICAL CHIRALFAIL,AMIDEFAIL,GOODSTRUCTURE, LOGDUMMY, DISTOK, ATOMINGROUP(NATOMS)
@@ -13,8 +13,8 @@
 !  EPREV saves the previous energy in the Markov chain.
 !  EBEST and JBEST record the lowest energy since the last reseeding and the
 !  step it was attained at. BESTCOORDS contains the corresponding coordinates.
-
-      ! subroutine
+      ! }}}
+      ! subroutine {{{
       INTEGER NSTEPS
       DOUBLE PRECISION :: SCALEFAC, SCREENC(NATOMS,3)
       ! local
@@ -31,5 +31,6 @@
       NFAIL=0
       NSUCCESST=0
       NFAILT=0
+      ! }}}
 
 
