@@ -1,5 +1,5 @@
 
-      SUBROUTINE QUENCH(FINALQUENCH,ITER,TIME,BRUN,QDONE,P)
+      SUBROUTINE QUENCH(P,ITER,TIME,QDONE)
 
       USE COMMONS
       USE PORFUNCS
@@ -8,11 +8,16 @@
 
       ! SUBROUTINE PARAMETERS {{{
 
-      LOGICAL,INTENT(IN) :: FINALQUENCH
-      INTEGER ITER
-      DOUBLE PRECISION TIME
-      INTEGER BRUN,QDONE
-      DOUBLE PRECISION P(3*NATOMS)
+      ! number of iterations spent in the computation
+      INTEGER,INTENT(OUT) :: ITER
+      ! time spent in computation 
+      DOUBLE PRECISION, INTENT(OUT) :: TIME
+      ! exit code:
+      !         QDONE=0 if convergence achieved
+      !         QDONE=1 otherwise
+      INTEGER,INTENT(OUT) :: QDONE
+      ! coordinate array used in minimizations 
+      DOUBLE PRECISION,INTENT(INOUT) :: P(3*NATOMS)
 
       ! }}}
 
@@ -30,26 +35,30 @@
       
       COMMON /MYPOT/ POTEL
 
-!  Turn on guiding potentials. These get turned off in potential.F when the RMS force is small enough.
+!  FQFLAG is set for the final quenches with tighter convergence criteria.
 
-      SSAVE=STEP
-      NFIX=0
-      NOPT=3*NATOMS
-
-!  FINALQUENCH is set for the final quenches with tighter convergence criteria.
-
-      IF (FINALQUENCH) THEN
-         GMAX=CQMAX
+      IF (FQFLAG) THEN
+         GMAX=FQMAX
       ELSE
-         GMAX=BQMAX
+         GMAX=SQMAX
       ENDIF
 
-      QDONE=0
+      QDONE=1
       P=COORDS
 
-      COMPON=.FALSE.
-
+      ! Invoking LBFGS:
+      !         P                       input coordinates
+      !         DIAGCO=.FALSE           don't provide Hk0 at each iteration
+      !         GMAX                    = EPS in LBFGS
+      !         CFLAG                   convergence
+      !         EREAL                   returns energy
+      !         MAXIT                   = ITMAX in LBFGS
+      !         ITER                    = ITDONE in LBFGS
+      !                                 (number of iterations needed to obtain convergence)
+      !         RESET=.TRUE.            Reset ITER=0 in LBFGS
+      !
       CALL MYLBFGS(P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.)
+
       POTEL=EREAL
 
       IF (CFLAG) QDONE=1
@@ -59,17 +68,6 @@
       ENDIF
 
       CALL MYCPU_TIME(TIME)
-
-      RES=.FALSE.
-
-      IF (.NOT.NORESET) THEN
-         DO J1=1,3*(NATOMS-NSEED)
-            COORDS(J1)=P(J1)
-         ENDDO
-         DO J1=1,NATOMS
-            VAT(J1)=VT(J1)
-         ENDDO
-      ENDIF
 
       RETURN
 

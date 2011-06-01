@@ -99,6 +99,7 @@ include R2X.inc.f90     ! R(NA,3) => X(NX)
          IF (.NOT.RESET) WRITE(LFH,'(A)')       'mylbfgs> Not resetting LBFGS minimiser'
       ENDIF
 
+      ! evaluate energy and gradient (.TRUE.) but not Hessian (.FALSE.)
       CALL POTENTIAL(R,GRAD,ENERGY,.TRUE.,.FALSE.)
       POTEL=ENERGY
 

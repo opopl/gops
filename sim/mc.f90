@@ -6,12 +6,10 @@
 
       IMPLICIT NONE
 
-include mc.vars.inc.f90
-include fmt.inc.f90
+include mc.vars.inc.f90 ! Variable declarations 
+include fmt.inc.f90     ! Formats
 include mc.cien.inc.f90 ! Calculate the initial energy and save in EPREV
 include mc.bh.inc.f90   ! Main basin-hopping loop
-
-37    CONTINUE
 
 ARATIO=NSUCCESST*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST+NFAILT))
 

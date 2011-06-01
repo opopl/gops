@@ -6,8 +6,6 @@ WRITE(LFH,'(A,F15.8,A)') 'Temperature will be multiplied by ',SCALEFAC,' at ever
          CALL FLUSH(LFH)
          MCTEMP = TEMP
 
-23       CONTINUE
-
          SAVECOORDS=COORDS
  
          DO IA=1,NATOMS
@@ -17,10 +15,8 @@ WRITE(LFH,'(A,F15.8,A)') 'Temperature will be multiplied by ',SCALEFAC,' at ever
               
          NQ=NQ+1
 
-CALL QUENCH(.FALSE.,ITERATIONS,TIME,BRUN,QDONE,SCREENC)  
+CALL QUENCH(SCREENC,ITERATIONS,TIME,QDONE)  
 
-NQTOT=NQTOT+1
- 
 WRITE(LFH,111)  'Qu ',          NQ,	&
                 ' E=',          POTEL,	&
                 ' steps=',      ITERATIONS,	&
@@ -34,20 +30,16 @@ include mc.bh.trackdata.inc.f90
 
             ELSE
                ATEST=.TRUE. 
-
-                      COLDFUSION=.FALSE.
-               IF ((QDONE.EQ.0).AND.TIP) THEN
+               IF (QDONE.EQ.0) THEN
                   ATEST=.FALSE.
                ELSEIF (ATEST) THEN
                   CALL TRANSITION(POTEL,EPREV,ATEST,RANDOM,MCTEMP)
                ENDIF
 include mc.bh.checkmarkov.inc.f90
 
-! accept or reject step
+! Accept or reject step
 include mc.bh.accrej.inc.f90
-!
-!  Check the acceptance ratio.
-! 
+! Check the acceptance ratio.
             IF ( (MOD(ISTEP,NACCEPT).EQ.0) CALL ACCREJ(NSUCCESS,NFAIL,NSUCCESST,NFAILT)
 
             TEMP=TEMP*SCALEFAC
