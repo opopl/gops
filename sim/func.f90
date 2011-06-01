@@ -195,7 +195,7 @@ SUBROUTINE TAKESTEP
       IMPLICIT NONE
 
       DO IA=1,NATOMS
-         CALL GET_RND(RND,3,-1.0D0,1.0D0)
+         CALL GETRND(RND,3,-1.0D0,1.0D0)
          COORDS(IA,1:3)=COORDS(IA,1:3)+STEP*RND(1:3)
       ENDDO
       
@@ -260,8 +260,8 @@ C
 ! }}}
       END
 
-! doxygen - GET_RND {{{
-!> @name         GET_RND
+! doxygen - GETRND {{{
+!> @name         GETRND
 ! 
 !> @brief        Get an array of random numbers inside the interval [XMIN,XMAX]
 !
@@ -270,7 +270,7 @@ C
 !> @param[in]    XMIN,XMAX      
 !
 ! }}}
-SUBROUTINE GET_RND(RND,N,XMIN,XMAX)
+SUBROUTINE GETRND(RND,N,XMIN,XMAX)
 ! {{{
 IMPLICIT NONE
 

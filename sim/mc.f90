@@ -11,19 +11,20 @@ include fmt.inc.f90     ! Formats
 include mc.cien.inc.f90 ! Calculate the initial energy and save in EPREV
 include mc.bh.inc.f90   ! Main basin-hopping loop
 
-ARATIO=NSUCCESST*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST+NFAILT))
+! write to LFH: Quench number, Energy, Steps, RMS, Markov E, t (elapsed time) {{{
 
 WRITE(LFH,111)  ' Qu ',         NQ,	&
-                ' E=',          POTEL,	&
+                ' E=',          E,	&
                 ' steps=',      ITERATIONS,	&
                 ' RMS=',        RMS,	&
-                ' Markov E=',   POTEL,	&
-                ' t=',          TIME-TSTART	
+                ' Markov E=',   E,	&
+                ' Time t=',     TIME-TSTART
+! }}}
 
 WRITE(LFH,21)   ' Acceptance ratio for run=',  ARATIO,	&
-                ' Step=',                      STEP,     	&
+                ' Step=',                      STEP, 	&
                 ' Angular step factor=',       ASTEP,	&
-                ' T=',                         TEMP	&
+                ' Temperature T=',             TEMP	&
 RETURN
 ! }}}
 END
@@ -34,13 +35,13 @@ USE COMMONS
 
 IMPLICIT NONE
 
-INTEGER NSUCCESS, NFAIL, NFAILT, NSUCCESST, J1, J2 
-DOUBLE PRECISION HWMAX,P0,FAC
+INTEGER,INTENT(INOUT) : NSUCCESS, NFAIL, NFAILT, NSUCCESST
+DOUBLE PRECISION ARATIO,FAC
 COMMON /EV/ EVAP, EVAPREJECT
 
-P0=1.D0*NSUCCESS/(1.D0*(NSUCCESS+NFAIL))
+ARATIO=1.D0*NSUCCESS/(1.D0*(NSUCCESS+NFAIL))
 
-IF (P0.GT.ACCRAT) THEN
+IF (ARATIO.GT.ACCRAT) THEN
 	FAC=1.05D0
 ELSE
 	FAC=1.D0/1.05D0
@@ -56,7 +57,7 @@ OSTEP=MIN(OSTEP,1.0D3)
 ASTEP=MIN(ASTEP,1.0D3)
 !
 WRITE(LFH,23) 'Acceptance ratio for previous ',        NACCEPT,	&
-                ' steps=',                               P0,	&
+                ' steps=',                             ARATIO,	&
                 '  FAC=',                                FAC
 
 WRITE(LFH,'(A)',ADVANCE='NO') 'Steps are now:'
@@ -77,10 +78,11 @@ END
 ! {{{
       IMPLICIT NONE
 
-      DOUBLE PRECISION ENEW, EOLD, DPRAND, RANDOM, MCTEMP
+      DOUBLE PRECISION,INTENT(IN) :: ENEW, EOLD, MCTEMP
+      LOGICAL,INTENT(OUT) :: ATEST
+      DOUBLE PRECISION, INTENT(OUT) :: RANDOM
 
-      DOUBLE PRECISION ::       DE,T 
-      LOGICAL ATEST
+      DOUBLE PRECISION :: DE,T 
 
       DE=ENEW-EOLD
       T=MAX(MCTEMP,1.0D-100)

@@ -1506,6 +1506,7 @@ C
  
  
       SUBROUTINE ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
+      ! {{{
       USE commons
       USE modcharmm
       IMPLICIT NONE
@@ -1519,6 +1520,7 @@ C     COMMON /MOVE/ TMOVE, OMOVE
       P0=1.D0*NSUCCESS(JP)/(1.D0*(NSUCCESS(JP)+NFAIL(JP)))
       
       IF (P0.GT.ACCRAT(JP)) THEN
+        ! {{{
          IF(ARMT) THEN
            FAC=LOG(ARMA*ACCRAT(JP)+ARMB)/LOG(ARMA*P0+ARMB)
          ELSE
@@ -1542,7 +1544,9 @@ C     COMMON /MOVE/ TMOVE, OMOVE
             ENDIF
             ASTEP(JP)=ASTEP(JP)*1.05D0
          ENDIF
+         ! }}}
       ELSE
+        ! {{{
          IF(ARMT) THEN
            FAC=LOG(ARMA*ACCRAT(JP)+ARMB)/LOG(ARMA*P0+ARMB)
          ELSE
@@ -1566,6 +1570,7 @@ C     COMMON /MOVE/ TMOVE, OMOVE
             ENDIF
             ASTEP(JP)=ASTEP(JP)/1.05D0
          ENDIF
+         ! }}}
       ENDIF
 C
 C Prevent steps from growing out of bounds. The value of 1000 seems sensible, until
@@ -1604,6 +1609,7 @@ C
       NFAIL(JP)=0 
 C
       RETURN
+      ! }}}
       END
 
 C

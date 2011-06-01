@@ -7,7 +7,7 @@
                   IF ((ISTEP-JACCPREV.GT.NRELAX).AND.ABS(POTEL-EPREV).GT.ECONV) THEN
                      JACCPREV=ISTEP
                   ENDIF
-                  IF (QDONE.EQ.1) THEN
+                  IF (QDONE.EQ.0) THEN
                      NSUCCESS=NSUCCESS+1
                   ELSE
                      NFAIL=NFAIL+1

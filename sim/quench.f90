@@ -20,7 +20,6 @@
       DOUBLE PRECISION,INTENT(INOUT) :: P(3*NATOMS)
 
       ! }}}
-
       ! LOCAL PARAMETERS  {{{
 
       DOUBLE PRECISION SSAVE
@@ -28,13 +27,12 @@
 
       ! CFLAG - test convergence
       LOGICAL CFLAG
+      ! E - energy 
+      DOUBLE PRECISION E
+      COMMON /MYPOT/ E
 
       ! }}}
       
-      DOUBLE PRECISION POTEL
-      
-      COMMON /MYPOT/ POTEL
-
 !  FQFLAG is set for the final quenches with tighter convergence criteria.
 
       IF (FQFLAG) THEN
@@ -44,7 +42,6 @@
       ENDIF
 
       QDONE=1
-      P=COORDS
 
       ! Invoking LBFGS:
       !         P                       input coordinates
@@ -57,11 +54,9 @@
       !                                 (number of iterations needed to obtain convergence)
       !         RESET=.TRUE.            Reset ITER=0 in LBFGS
       !
-      CALL MYLBFGS(P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.)
+      CALL MYLBFGS(P,.FALSE.,GMAX,CFLAG,E,MAXIT,ITER,.TRUE.)
 
-      POTEL=EREAL
-
-      IF (CFLAG) QDONE=1
+      IF (CFLAG) QDONE=0
 
       IF (.NOT.CFLAG) THEN
             WRITE(MYUNIT,'(A,I6,A)') 'WARNING - Final Quench ',NQ,'  did not converge'
