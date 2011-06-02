@@ -43,7 +43,7 @@
     	      CASE('FQMAX','TIGHTCONV')
     	         CALL READ(BUFFER, *, IOSTAT=IOS) FQMAX
               CASE('EDIFF')
-    	         READ(BUFFER, *, IOSTAT=IOS) ECONV
+    	         READ(BUFFER, *, IOSTAT=IOS) EDIFF
               CASE('G46')
                  G46=.TRUE.
                  BLNT=.TRUE.
@@ -63,6 +63,8 @@
               CASE('PULL')
                  PULLT=.TRUE.
     	         READ(BUFFER, *, IOSTAT=IOS) PATOM1,PATOM2,PFORCE
+              CASE('RADIUS')
+    	         READ(BUFFER, *, IOSTAT=IOS) RADIUS
     	      CASE('SQMAX','BASIN','SLOPPYCONV')
     	         CALL READ(BUFFER, *, IOSTAT=IOS) SQMAX
               CASE('STEPS')

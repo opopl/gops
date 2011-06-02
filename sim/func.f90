@@ -21,7 +21,7 @@ CONTAINS
       SUBROUTINE RAD(X,V,ENERGY,GTEST)
       ! {{{
 
-      USE COMMONS
+      USE V
 
       IMPLICIT NONE
       LOGICAL GTEST
@@ -78,7 +78,7 @@ C           X(J3)=-X(J3)*0.8D0
 
       SUBROUTINE IO
 ! {{{
-      INTEGER IA,K
+      INTEGER IA,J,K
 
       CALL OPENF(COORDS_FH,'O','coords')
       REWIND(COORDS_FH)
@@ -98,15 +98,15 @@ C           X(J3)=-X(J3)*0.8D0
       enddo
 
       IF (P46) THEN
-         WRITE(MYUNIT,'(I4,A)') NATOMS,' 3-COLOUR, 46 BEAD MODEL POLYPEPTIDE'
+         WRITE(LFH,'(I4,A)') NATOMS,' 3-COLOUR, 46 BEAD MODEL POLYPEPTIDE'
       IF (BLNT) THEN
-         WRITE(MYUNIT,'(I4,A)') NATOMS,' BEAD BLN MODEL'
+         WRITE(LFH,'(I4,A)') NATOMS,' BEAD BLN MODEL'
       ENDIF
       
       IF (RADIUS.EQ.0.0D0) THEN
         RADIUS=2.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0)
         IF (P46) THEN
-                    RADIUS=RADIUS*3.0D0
+           RADIUS=RADIUS*3.0D0
         ENDIF
       ENDIF
 
@@ -117,9 +117,9 @@ C           X(J3)=-X(J3)*0.8D0
          WRITE(LFH,'(A,G12.4)') 'Guess for initial diagonal elements in LBFGS=',DGUESS
       ENDIF
 
-      WRITE(LFH,'(A,F15.10)') 'Final quench tolerance for RMS gradient ',CQMAX
-      WRITE(LFH,'(A,F15.10)') 'Energy difference criterion for minima=',ECONV
-      WRITE(LFH,'(A,I5,A,I5)') 'Maximum number of iterations: sloppy quenches ',MAXIT,' final quenches ',MAXIT2
+      WRITE(LFH,'(A,F15.10)') 'Final quench tolerance for RMS gradient ',FQMAX
+      WRITE(LFH,'(A,F15.10)') 'Energy difference criterion for minima=',EDIFF
+      WRITE(LFH,'(A,I5)') 'Maximum number of iterations (sloppy and final quenches)  ',MAXIT
 
       IF (DEBUG) THEN
          WRITE(LFH,160) 
@@ -130,7 +130,7 @@ C           X(J3)=-X(J3)*0.8D0
 
       IF (TARGET) THEN
          WRITE(LFH,'(A)',ADVANCE='NO') 'Target energies: '
-         WRITE(LFH,'(F20.10)',ADVANCE='NO') (TARGETS(J1),J1=1,NTARGETS)
+         WRITE(LFH,'(F20.10)',ADVANCE='NO') (TARGETS(J),J=1,NTARGETS)
          WRITE(LFH,'(A)') ' '
       ENDIF
 ! }}}
@@ -139,7 +139,7 @@ C           X(J3)=-X(J3)*0.8D0
 !  For rigid-body angle-axis coordinates, just move the fixed site
       SUBROUTINE RADR(X,V,ENERGY,GTEST)
       ! {{{
-      USE COMMONS
+      USE V
       IMPLICIT NONE
       LOGICAL GTEST
       INTEGER J1, J3
@@ -227,7 +227,7 @@ END SUBROUTINE MYSYSTEM
 SUBROUTINE INQF(FILENAME,YESNO)
 ! {{{
 LOGICAL,INTENT(OUT) :: YESNO
-INTEGER,INTENT(IN) :: FILEHANDLE
+CHARACTER(LEN=*),INTENT(IN) :: FILENAME
 
 FILENAME=TRIM(ADJUSTL(FILENAME))
 INQUIRE(FILE=FILENAME,EXIST=YESNO)
@@ -237,8 +237,8 @@ END SUBROUTINE INQF
 SUBROUTINE OPENF(FILEHANDLE,MODE,FILENAME)
 ! {{{
 
-INTEGER FILEHANDLE
-CHARACTER (LEN=*) MODE,FILENAME
+INTEGER, INTENT(IN) :: FILEHANDLE
+CHARACTER (LEN=*), INTENT(IN) :: MODE,FILENAME
 
 FILENAME=TRIM(ADJUSTL(FILENAME))
 
@@ -262,7 +262,7 @@ ENDSUBROUTINE OPENF
 
 SUBROUTINE MYRESET(NATOMS,NSEED)
 ! {{{
-USE COMMONS,ONLY : COORDS,COORDSO,VAT,VATO
+USE V,ONLY : COORDS,COORDSO,VAT,VATO
 
 IMPLICIT NONE
 
@@ -278,7 +278,7 @@ END
 SUBROUTINE TAKESTEP
       ! {{{
 
-      USE COMMONS
+      USE V
 
       IMPLICIT NONE
 
@@ -293,17 +293,18 @@ END SUBROUTINE
 
 SUBROUTINE CENTRE2(R)
 ! {{{
-USE COMMONS
+USE V
 
 IMPLICIT NONE
 
-DOUBLE PRECISION RMASS(3), R(NATOMS,3)
+DOUBLE PRECISION, INTENT(INOUT) :: R(NATOMS,3)
+DOUBLE PRECISION RMASS(3)
 INTEGER I,K
 
 RMASS=SUM(R,DIM=1)/NATOMS
 
 do K=1,3
-R(:,K)=R(:,K)-RMASS(K)
+        R(:,K)=R(:,K)-RMASS(K)
 ENDDO
 
 IF (DEBUG) WRITE(LFH,'(A,3G20.10)') 'centre2> centre of mass reset to the origin from ',&                                                   (RMASS(I),I=1,3)
@@ -1290,7 +1291,7 @@ FUNCTION DPRAND()
       ! {{{
 
       USE UTILS
-      USE COMMONS
+      USE V
 
       IMPLICIT NONE
   

@@ -6,7 +6,7 @@
 
       PROGRAM GMIN
 ! declarations {{{
-      USE COMMONS
+      USE V
       USE PORFUNCS
       USE FUNC
       
