@@ -3,9 +3,7 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.8	//
-1	func.f90	/^     1                 ENERGY, DUMMYX, DUMMYY, DUMMYZ$/;"	l	subroutine:RAD	file:
-1	func.f90	/^     1                 ENERGY, DUMMYX, DUMMYY, DUMMYZ$/;"	l	subroutine:RADR	file:
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
 1	func.f90	/^     1        DBLE(IZ)\/30323.0D0,1.0D0)$/;"	l	subroutine:SDPRND	file:
 1	func.f90	/^     1    OTHER, OFFSET, X, Y$/;"	l	function:DPRAND	file:
 1	func.f90	/^     1    XMOD2 = 2000019422.0D0, XMOD4 = 4000038844.0D0,$/;"	l	function:DPRAND	file:
@@ -60,13 +58,6 @@
 10	func.f90	/^   10   Y = 37.0D0*OTHER+OFFSET$/;"	l	function:DPRAND	file:
 10	func.f90	/^  10    CONTINUE$/;"	l	subroutine:SDPRND	file:
 10	func.f90	/^10       CONTINUE$/;"	l	subroutine:GSORT	file:
-10	func.f90	/^10    CONTINUE$/;"	l	subroutine:READA	file:
-10	func.f90	/^10    CONTINUE$/;"	l	subroutine:UPPERCASE	file:
-10	func.f90	/^10    IF (ITEM .LT. NITEM) THEN$/;"	l	subroutine:GETA	file:
-10	func.f90	/^10    IF (ITEM .LT. NITEM) THEN$/;"	l	subroutine:GETF	file:
-10	func.f90	/^10    M=1$/;"	l	file:
-10	func.f90	/^10    P=P+1$/;"	l	subroutine:READF	file:
-10	func.f90	/^10    P=P+1$/;"	l	subroutine:READK	file:
 10	g.Alglue.f	/^   10 i = 1$/;"	l	subroutine:seval	file:
 10	g.CSMinit.f90	/^10    CALL FLUSH(6)$/;"	l	subroutine:CSMMIN	file:
 10	g.EAMal.f	/^   10 i = 1$/;"	l	subroutine:seval1	file:
@@ -462,8 +453,6 @@
 10	pathsample.sort.f	/^10       CONTINUE$/;"	l	subroutine:SORT	file:
 10	pathsample.sort.f	/^10       CONTINUE$/;"	l	subroutine:SORT2	file:
 10	pathsample.sort.f	/^10       CONTINUE$/;"	l	subroutine:SORT4	file:
-100	func.f90	/^100   IF (NULL .OR. XNULL) GO TO 99$/;"	l	subroutine:READF	file:
-100	func.f90	/^100   L=L+1$/;"	l	file:
 100	g.JM.f	/^100         CONTINUE$/;"	l	subroutine:JM3C	file:
 100	g.Q4.f	/^100   CONTINUE$/;"	l	function:FAC	file:
 100	g.bipartite.f90	/^100 CONTINUE$/;"	l	subroutine:BIPARTITE	file:
@@ -605,9 +594,6 @@
 1000	pathsample.amhdump.f90	/^1000          FORMAT(A5)$/;"	l	subroutine:AMHRMSD	file:
 1000	pathsample.amhdump.f90	/^1000          FORMAT(A5)$/;"	l	subroutine:AMH_RELCO	file:
 1000	pathsample.minperm.f	/^ 1000 END$/;"	l	subroutine:JOVOSAP	file:
-1001	func.f90	/^1001    FORMAT ('0End of file while attempting to read a number')$/;"	l	subroutine:GETF	file:
-1001	func.f90	/^1001    FORMAT$/;"	l	subroutine:GETA	file:
-1001	func.f90	/^1001  FORMAT (132A1)$/;"	l	file:
 1001	g.input.f	/^1001    FORMAT ('0End of file while attempting to read a number')$/;"	l	subroutine:GETF	file:
 1001	g.input.f	/^1001    FORMAT$/;"	l	subroutine:GETA	file:
 1001	g.input.f	/^1001  FORMAT (80A1)$/;"	l	file:
@@ -634,7 +620,6 @@
 104	mylbfgs.f90	/^104 FORMAT(A,F20.10,A,F20.10,A,F20.10) $/;"	l	subroutine:MYLBFGS	file:
 105	mylbfgs.f90	/^105 FORMAT(A,F19.10,A,F16.10,A,F15.8) $/;"	l	subroutine:MYLBFGS	file:
 1092	optim.adm.f	/^1092   FORMAT(' Interatomic distance matrix ')$/;"	l	subroutine:ADM	file:
-11	func.f90	/^11    IF (L+K .GT. LAST) GO TO 50$/;"	l	subroutine:READA	file:
 11	g.Ackland_wrapper.f	/^11    CONTINUE$/;"	l	subroutine:ACK	file:
 11	g.EAMal.f	/^11    CONTINUE$/;"	l	subroutine:EAMal	file:
 11	g.Farkas.f	/^11    continue$/;"	l	subroutine:splinegmin	file:
@@ -711,7 +696,6 @@
 11	pathsample.reweight.f	/^   11   CONTINUE$/;"	l	subroutine:ASORT	file:
 11	pathsample.tssearch.f	/^11             CONTINUE$/;"	l	subroutine:TSSEARCH	file:
 11	ps.main.f90	/^11    DO J1=1,NMIN$/;"	l	subroutine:GETNCONN	file:
-110	func.f90	/^110   RETURN$/;"	l	subroutine:READF	file:
 110	g.JM.f	/^110      CONTINUE$/;"	l	subroutine:JM3C	file:
 110	g.dgetrf.f	/^  110 CONTINUE$/;"	l	function:ILAENV	file:
 110	g.dlsode.f	/^  110    CONTINUE$/;"	l	subroutine:DGBFA	file:
@@ -815,7 +799,7 @@
 110	pathsample.setup_sis.f	/^110         CLOSE(1)$/;"	l	subroutine:SETUP_SIS	file:
 110	ps.setup.read.commitdata.inc.f90	/^110         CLOSE(1)$/;"	l	file:
 1100	g.dgetrf.f	/^ 1100 CONTINUE$/;"	l	function:ILAENV	file:
-111	fmt.inc.f90	/^111 format(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)$/;"	l	file:
+111	fmt.i.f90	/^111 format(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)$/;"	l	file:
 111	g.io1.f	/^111      READ(7,'(A)') FNAME$/;"	l	subroutine:IO1	file:
 111	g.ljcapsidmodule.f90	/^111 CONTINUE$/;"	l	subroutine:GAYBERNE	file:
 111	optim.amber.f	/^111     CONTINUE$/;"	l	subroutine:AMBERS	file:
@@ -840,7 +824,6 @@
 113	optim.amber.f	/^113                  CONTINUE$/;"	l	subroutine:AMBERS	file:
 113	optim.h2o.f	/^113   CONTINUE$/;"	l	subroutine:H2O	file:
 115	g.dlsode.f	/^ 115    RWORK(I+LYH-1) = Y(I)$/;"	l	subroutine:DLSODE	file:
-12	func.f90	/^12    C=CHAR(P)$/;"	l	subroutine:READF	file:
 12	g.EAMal.f	/^12       CONTINUE   $/;"	l	subroutine:EAMal	file:
 12	g.Farkas.f	/^12    continue$/;"	l	subroutine:splinegmin	file:
 12	g.bspt.F	/^12       CALL POTENTIAL(COORDS(:,MYNODE+1),GRAD, POTEL, .TRUE., .FALSE.)$/;"	l	subroutine:PTBASINSAMPLING	file:
@@ -1380,6 +1363,7 @@
 16	optim.odesd.f	/^16    CONTINUE$/;"	l	subroutine:RKCK	file:
 16	optim.unmeccano.f90	/^16 FORMAT(A,27X,F20.10,A)$/;"	l	subroutine:UNMECBFGS	file:
 16	pathsample.mind.f	/^16    FORMAT(A,27X,F20.10,A)$/;"	l	subroutine:MMYLBFGS	file:
+160	func.f90	/^160      FORMAT('Debug printing is on')$/;"	l	subroutine:IO	file:
 160	g.dlsode.f	/^ 160  IF (H .EQ. HOLD) GO TO 200$/;"	l	subroutine:DSTODE	file:
 160	g.dlsode.f	/^ 160  TOL = MAX(TOL,100.0D0*UROUND)$/;"	l	subroutine:DLSODE	file:
 160	g.io1.f	/^160      FORMAT('Debug printing is on')$/;"	l	subroutine:IO1	file:
@@ -1399,7 +1383,6 @@
 160	g.ptgrp.f	/^160   B(MU,J)=W2$/;"	l	subroutine:EIG	file:
 160	g.tn.f	/^160   IF ((A .NE. ZERO .OR. XW .GE. ZERO) .AND. (B .NE. ZERO .OR.$/;"	l	subroutine:GETPTC	file:
 160	g.welch.f	/^  160 continue$/;"	l	subroutine:dgeco	file:
-160	io.f90	/^160      FORMAT('Debug printing is on')$/;"	l	file:
 160	lbfgs.f	/^ 160   W(ISPT+POINT*N+I)= W(I)$/;"	l	subroutine:LBFGS	file:
 160	optim.EYtrap.f	/^160         CONTINUE$/;"	l	subroutine:EYDTRAP	file:
 160	optim.JM.f	/^160         CONTINUE$/;"	l	subroutine:JM2	file:
@@ -1620,10 +1603,7 @@
 2	g.takestepmsgb.f90	/^2        IF (ABS(D) .GE. TOL1) THEN ! Arrive here with d computed either from parabolic fit, or$/;"	l	subroutine:BRENTMINGB	file:
 2	optim.odesd.f	/^2     DO 17 K=1,KMAX$/;"	l	subroutine:BSSTEP	file:
 2	optim.pyg.f90	/^2        IF (ABS(D) >= TOL1) THEN ! Arrive here with d computed either from parabolic fit, or$/;"	l	subroutine:BRENTMIN	file:
-20	func.f90	/^20    CONTINUE$/;"	l	subroutine:READF	file:
-20	func.f90	/^20    CONTINUE$/;"	l	subroutine:UPPERCASE	file:
-20	func.f90	/^20    IF (P .LE. LAST) GO TO 30$/;"	l	subroutine:READK	file:
-20	func.f90	/^20    LAST=M+131$/;"	l	file:
+20	func.f90	/^20    FORMAT('Initial coordinates:')$/;"	l	subroutine:IO	file:
 20	g.Alglue.f	/^   20 k = (i+j)\/2$/;"	l	subroutine:seval	file:
 20	g.CSMinit.f90	/^20    CALL CSMPOTGRAD(X,AA,ENEW,.TRUE.,GSAVE)$/;"	l	subroutine:CSMMIN	file:
 20	g.EAMal.f	/^   20 k = (i+j)\/2$/;"	l	subroutine:seval1	file:
@@ -1917,7 +1897,6 @@
 20	pathsample.sort.f	/^20    CONTINUE$/;"	l	subroutine:SORT2	file:
 20	pathsample.sort.f	/^20    CONTINUE$/;"	l	subroutine:SORT4	file:
 20	pathsample.tssearch.f	/^20      TTSSEARCH=TTSSEARCH+TNEW-TINIT$/;"	l	subroutine:TSSEARCH	file:
-200	func.f90	/^200   TERM=SPACE$/;"	l	file:
 200	g.dgetrf.f	/^  200 CONTINUE$/;"	l	function:ILAENV	file:
 200	g.dlsode.f	/^ 200  FAC = DVNORM (N, SAVF, EWT)$/;"	l	subroutine:DPREPJ	file:
 200	g.dlsode.f	/^ 200  IF (ABS(RC-1.0D0) .GT. CCMAX) IPUP = MITER$/;"	l	subroutine:DSTODE	file:
@@ -1977,7 +1956,7 @@
 206	pathsample.amhdump.f90	/^206        CONTINUE$/;"	l	subroutine:AMHQ	file:
 206	pathsample.amhdump.f90	/^206        CONTINUE$/;"	l	subroutine:AMHQCONT	file:
 206	pathsample.amhdump.f90	/^206        CONTINUE$/;"	l	subroutine:AMHRELQ	file:
-21	fmt.inc.f90	/^21 FORMAT(A,F12.5,A,F12.5,A,F12.5,A,F12.5) $/;"	l	file:
+21	fmt.i.f90	/^21 FORMAT(A,F12.5,A,F12.5,A,F12.5,A,F12.5) $/;"	l	file:
 21	g.EAMal.f	/^21      CONTINUE$/;"	l	subroutine:EAMal	file:
 21	g.fedor.f	/^   21 IF(N.EQ.3.AND.IBCBEG.EQ.0) GO TO 22$/;"	l	subroutine:CUBSPL	file:
 21	g.mc.F	/^21          FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)$/;"	l	subroutine:MC	file:
@@ -2035,7 +2014,7 @@
 211	optim.miel.f	/^211   CONTINUE$/;"	l	subroutine:MIEL	file:
 211	optim.read.odata.inc.f90	/^211      CONTINUE$/;"	l	file:
 215	g.dlsode.f	/^ 215    CONTINUE$/;"	l	subroutine:DSTODE	file:
-22	fmt.inc.f90	/^22 FORMAT((3(A,G20.10)))$/;"	l	file:
+22	fmt.i.f90	/^22 FORMAT((3(A,G20.10)))$/;"	l	file:
 22	g.Alglue.f	/^22    CONTINUE$/;"	l	subroutine:ALGLUE	file:
 22	g.EAMal.f	/^22         CONTINUE$/;"	l	subroutine:EAMal	file:
 22	g.Farkas.f	/^22    CONTINUE$/;"	l	subroutine:FARKAS	file:
@@ -2100,7 +2079,7 @@
 222	pathsample.keyword.f90	/^222      CONTINUE$/;"	l	subroutine:KEYWORD	file:
 223	g.Natb.f	/^ 223           CONTINUE$/;"	l	subroutine:entots	file:
 223	optim.Natb.f	/^ 223           CONTINUE$/;"	l	subroutine:entots	file:
-23	fmt.inc.f90	/^23 FORMAT (A,I6,A,F8.4,A,F8.4)$/;"	l	file:
+23	fmt.i.f90	/^23 FORMAT (A,I6,A,F8.4,A,F8.4)$/;"	l	file:
 23	g.Alglue.f	/^23       CONTINUE$/;"	l	subroutine:ALGLUE	file:
 23	g.Farkas.f	/^23       CONTINUE$/;"	l	subroutine:FARKAS	file:
 23	g.JM.f	/^23       CONTINUE$/;"	l	subroutine:JMEC	file:
@@ -2430,9 +2409,7 @@
 3	optim.odesd.f	/^3     RED=MIN(RED,REDMIN)$/;"	l	subroutine:BSSTEP	file:
 3	optim.pyg.f90	/^3     XMIN = X ! Arrive here ready to exit with best values.$/;"	l	subroutine:BRENTMIN	file:
 30	finalio.f90	/^30       FORMAT('LA ',3F20.10)$/;"	l	subroutine:FINALIO	file:
-30	func.f90	/^30    CALL UPPERCASE(CHAR(P))$/;"	l	subroutine:READK	file:
-30	func.f90	/^30    IF (CHAR(LAST) .EQ. SPACE) THEN$/;"	l	file:
-30	func.f90	/^30    STATE=3$/;"	l	subroutine:READF	file:
+30	func.f90	/^30    FORMAT(3F20.10)$/;"	l	subroutine:IO	file:
 30	g.Alglue.f	/^   30 dx = u - x(i)$/;"	l	subroutine:seval	file:
 30	g.CSMinit.f90	/^30    NPT=POINT*N$/;"	l	subroutine:CSMMIN	file:
 30	g.EAMal.f	/^   30 dx = u - x(i)$/;"	l	subroutine:seval1	file:
@@ -2779,7 +2756,7 @@
 334	g.mc.F	/^334                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	subroutine:MC	file:
 334	g.mc.sim.f90	/^334                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	subroutine:MC	file:
 334	pathsample.amhdump.f90	/^334         FORMAT(4(I8,1X),' NMRES NMCRD NUMPRO NMSNAP')$/;"	l	subroutine:AMHDUMP	file:
-34	fmt.inc.f90	/^34 FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	file:
+34	fmt.i.f90	/^34 FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	file:
 34	g.mc.F	/^34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	subroutine:MC	file:
 34	g.mc.sim.f90	/^34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	subroutine:MC	file:
 34	g.supermc.f	/^34             FORMAT('Super RAN,SPOTEL,SEPREV,NSSUC,NSFAIL=',3F15.7,2I6,' ACC')$/;"	l	subroutine:SUPERMC	file:
@@ -2899,8 +2876,6 @@
 4	optim.mlatmin.f	/^4       CONTINUE$/;"	l	subroutine:MLATDIFF	file:
 4	optim.mslatmin.f	/^4       CONTINUE$/;"	l	subroutine:MSLATDIFF	file:
 4	optim.odesd.f	/^4     X=XNEW$/;"	l	subroutine:BSSTEP	file:
-40	func.f90	/^40      IF (CHAR(M) .EQ. CONCAT(L:L)) THEN$/;"	l	file:
-40	func.f90	/^40    IF(CHAR(P) .EQ. C(TP)) GO TO 50$/;"	l	subroutine:READK	file:
 40	g.EAMal.f	/^40      CONTINUE$/;"	l	subroutine:EAMal	file:
 40	g.Farkas.f	/^40       CONTINUE$/;"	l	subroutine:FARKAS	file:
 40	g.JM.f	/^40       CONTINUE$/;"	l	subroutine:JM2C	file:
@@ -3063,7 +3038,6 @@
 40	pathsample.reweight.f	/^   40 CONTINUE$/;"	l	subroutine:DLACON	file:
 40	pathsample.setup.f	/^40       CLOSE(UTSDATA) ! SAT need to reopen this file$/;"	l	subroutine:SETUP	file:
 40	ps.setup.read.tsdata.inc.f90	/^40       CLOSE(UTSDATA) ! SAT need to reopen this file$/;"	l	file:
-400	func.f90	/^400   NEST=1$/;"	l	file:
 400	g.dgetrf.f	/^  400 CONTINUE$/;"	l	function:ILAENV	file:
 400	g.dlsode.f	/^ 400  DO 410 I = 1,N$/;"	l	subroutine:DLSODE	file:
 400	g.dlsode.f	/^ 400  IF (M .NE. 0) CRATE = MAX(0.2D0*CRATE,DEL\/DELP)$/;"	l	subroutine:DSTODE	file:
@@ -3087,7 +3061,6 @@
 400	pathsample.input.f	/^400   NEST=1$/;"	l	file:
 401	g.Natb.f	/^ 401           CONTINUE$/;"	l	subroutine:entots	file:
 401	optim.Natb.f	/^ 401           CONTINUE$/;"	l	subroutine:entots	file:
-41	func.f90	/^41    SIGN=-1D0$/;"	l	subroutine:READF	file:
 41	g.fedor.f	/^   41   ILO = IHI$/;"	l	subroutine:INTERV	file:
 41	g.input.f	/^41    SIGN=-1D0$/;"	l	subroutine:READF	file:
 41	g.minperm.f	/^   41 L0=L$/;"	l	subroutine:JOVOSAP	file:
@@ -3108,7 +3081,6 @@
 41	pathsample.setup_sis.f	/^41       CONTINUE$/;"	l	subroutine:SETUP_SIS	file:
 41	pathsample.tssearch.f	/^41             CONTINUE$/;"	l	subroutine:TSSEARCH	file:
 41	ps.setup.read.tsdata.inc.f90	/^41          CONTINUE$/;"	l	file:
-410	func.f90	/^410   L=L+1$/;"	l	file:
 410	g.dlsode.f	/^ 410    WM(I+2) = 0.0D0$/;"	l	subroutine:DPREPJ	file:
 410	g.dlsode.f	/^ 410    Y(I) = RWORK(I+LYH-1)$/;"	l	subroutine:DLSODE	file:
 410	g.dlsode.f	/^ 410  IF (MITER .EQ. 0 .OR. JCUR .EQ. 1) GO TO 430$/;"	l	subroutine:DSTODE	file:
@@ -3126,7 +3098,6 @@
 410	optim.symmetry.f	/^410         FORMAT(' The molecule belongs to a point group with doubly', $/;"	l	subroutine:SYMMETRY	file:
 410	pathsample.amhdump.f90	/^410       CONTINUE$/;"	l	subroutine:AMH_RELCO	file:
 410	pathsample.input.f	/^410   L=L+1$/;"	l	file:
-42	func.f90	/^42    STATE=2$/;"	l	subroutine:READF	file:
 42	g.input.f	/^42    STATE=2$/;"	l	subroutine:READF	file:
 42	g.minperm.f	/^   42 CONTINUE$/;"	l	subroutine:JOVOSAP	file:
 42	optim.input.f	/^42    STATE=2$/;"	l	subroutine:READF	file:
@@ -3280,9 +3251,6 @@
 5	pathsample.make_conpot.f90	/^5 CHANGED=.FALSE.$/;"	l	subroutine:MAKE_CONPOT	file:
 5	pathsample.regroupfree2.f90	/^5    CHANGED=.FALSE.$/;"	l	subroutine:REGROUPFREE2	file:
 5	pathsample.remove_unconnected.f90	/^5     CHANGED=.FALSE.$/;"	l	subroutine:REMOVE_UNCONNECTED	file:
-50	func.f90	/^50    IF (K .EQ. 0) RETURN$/;"	l	subroutine:READA	file:
-50	func.f90	/^50    L=L+1$/;"	l	file:
-50	func.f90	/^50    TP=M(TP)$/;"	l	subroutine:READK	file:
 50	g.EAMal.f	/^50      CONTINUE$/;"	l	subroutine:EAMal	file:
 50	g.Farkas.f	/^50    CONTINUE$/;"	l	subroutine:FARKAS	file:
 50	g.JM.f	/^50    CONTINUE$/;"	l	subroutine:JM2C	file:
@@ -3450,7 +3418,6 @@
 500	optim.mylapack.f	/^  500     CONTINUE$/;"	l	subroutine:SCHCK5	file:
 500	optim.mylapack.f	/^  500 CONTINUE$/;"	l	subroutine:SCHCK2	file:
 500	optim.symmetry.f	/^500      CONTINUE$/;"	l	subroutine:SYMMETRY	file:
-51	func.f90	/^51    KXSIGN=-1$/;"	l	subroutine:READF	file:
 51	g.input.f	/^51    KXSIGN=-1$/;"	l	subroutine:READF	file:
 51	g.minperm.f	/^   51    CONTINUE$/;"	l	subroutine:JOVOSAP	file:
 51	optim.input.f	/^51    KXSIGN=-1$/;"	l	subroutine:READF	file:
@@ -3486,8 +3453,6 @@
 510	optim.symmetry.f	/^510      FORMAT(' The smallest orbit contains ',i3,' members.',\/,$/;"	l	subroutine:SYMMETRY	file:
 511	pathsample.kshortestpaths.f90	/^511   CHANGED=.FALSE.$/;"	l	subroutine:KSHORTESTPATHS	file:
 515	g.dlsode.f	/^ 515    CONTINUE$/;"	l	subroutine:DSTODE	file:
-52	func.f90	/^52    I=I+1$/;"	l	file:
-52	func.f90	/^52    STATE=5$/;"	l	subroutine:READF	file:
 52	g.EAMal.f	/^52       CONTINUE$/;"	l	subroutine:EAMal	file:
 52	g.input.f	/^52    I=I+1$/;"	l	file:
 52	g.input.f	/^52    STATE=5$/;"	l	subroutine:READF	file:
@@ -3598,8 +3563,6 @@
 599	optim.msevb.f90	/^ 599     enddo$/;"	l	subroutine:vinter	file:
 6	g.EAMal.f	/^6       CONTINUE$/;"	l	subroutine:EAMal	file:
 6	optim.amber.f	/^6           CONTINUE$/;"	l	subroutine:AMBERS	file:
-60	func.f90	/^60    L=L+1$/;"	l	file:
-60	func.f90	/^60    STATE=4$/;"	l	subroutine:READF	file:
 60	g.EAMal.f	/^60    CONTINUE$/;"	l	subroutine:EAMal	file:
 60	g.dgetri.f	/^   60 CONTINUE$/;"	l	subroutine:DGETRI	file:
 60	g.dlsode.f	/^   60       CONTINUE$/;"	l	subroutine:DGBFA	file:
@@ -3802,8 +3765,6 @@
 640	g.ptgrp.f	/^640         FORMAT(' Reflection in plane ',i2,' is a valid symmetry operation.')$/;"	l	subroutine:PTGRP	file:
 640	optim.symmetry.f	/^640         FORMAT(' Reflection in plane ',i2,' is a valid ',$/;"	l	subroutine:SYMMETRY	file:
 645	g.dlsode.f	/^ 645    Y(I) = YH(I,1)$/;"	l	subroutine:DSTODE	file:
-65	func.f90	/^65    DO I=K+1,LEN(M)$/;"	l	subroutine:READA	file:
-65	func.f90	/^65    IF (L .GT. LAST .OR. CHAR(L) .EQ. TERM) GO TO 67$/;"	l	file:
 65	g.cgmin.f	/^65          FORMAT('AR ',3F20.10)$/;"	l	subroutine:CGMIN	file:
 65	g.finalio.f	/^65          FORMAT('AR ',3F20.10)$/;"	l	subroutine:FINALIO	file:
 65	g.input.f	/^65    DO 70 I=K+1,LEN(M)$/;"	l	subroutine:READA	file:
@@ -3855,7 +3816,6 @@
 666	optim.potential.f	/^666   WRITE(*,'(A)') ' potential> Error reading CADPAC or GAMES output'$/;"	l	subroutine:POTENTIAL	file:
 666	pathsample.connect.f	/^666   CLOSE(1)$/;"	l	subroutine:CONNECT	file:
 666	pathsample.newconn.f	/^666      CONTINUE$/;"	l	subroutine:NEWCONN	file:
-67	func.f90	/^67    IF (W .EQ. '#INCLUDE') THEN$/;"	l	file:
 67	g.input.f	/^67    IF (W .EQ. '#INCLUDE') THEN$/;"	l	file:
 67	optim.input.f	/^67    IF (W .EQ. '#INCLUDE') THEN$/;"	l	file:
 67	pathsample.input.f	/^67    IF (W .EQ. '#INCLUDE') THEN$/;"	l	file:
@@ -3873,9 +3833,6 @@
 690	optim.symmetry.f	/^690   FORMAT ('Symmetry bits: ',3(1X,I3))$/;"	l	subroutine:SYMMETRY	file:
 699	optim.msevb.f90	/^ 699     enddo             $/;"	l	subroutine:vh2ointer	file:
 7	g.fedor.f	/^    7 COEF(1,K,J)=ENF(N1+K-1)$/;"	l	function:ar2UT0	file:
-70	func.f90	/^70    ITEM=0$/;"	l	file:
-70	func.f90	/^70    K=-TP$/;"	l	subroutine:READK	file:
-70	func.f90	/^70    STATE=2$/;"	l	subroutine:READF	file:
 70	g.Farkas.f	/^70    continue$/;"	l	subroutine:ALINIT	file:
 70	g.Farkas.f	/^70    continue$/;"	l	subroutine:NIINIT	file:
 70	g.dlsode.f	/^   70          CONTINUE$/;"	l	subroutine:DGBFA	file:
@@ -3999,7 +3956,6 @@
 700	g.dgetrf.f	/^  700 CONTINUE$/;"	l	function:ILAENV	file:
 700	g.dlsode.f	/^ 700  ISTATE = -3$/;"	l	subroutine:DLSODE	file:
 700	g.dlsode.f	/^ 700  R = 1.0D0\/TESCO(2,NQU)$/;"	l	subroutine:DSTODE	file:
-71	func.f90	/^71    KXIMP=KXIMP-1$/;"	l	subroutine:READF	file:
 71	g.input.f	/^71    KXIMP=KXIMP-1$/;"	l	subroutine:READF	file:
 71	g.minperm.f	/^   71    CONTINUE$/;"	l	subroutine:JOVOSAP	file:
 71	optim.input.f	/^71    KXIMP=KXIMP-1$/;"	l	subroutine:READF	file:
@@ -4008,7 +3964,6 @@
 71	pathsample.input.f	/^71    KXIMP=KXIMP-1$/;"	l	subroutine:READF	file:
 71	pathsample.minperm.f	/^   71    CONTINUE$/;"	l	subroutine:JOVOSAP	file:
 710	g.dlsode.f	/^ 710    ACOR(I) = ACOR(I)*R$/;"	l	subroutine:DSTODE	file:
-72	func.f90	/^72    AD=I$/;"	l	subroutine:READF	file:
 72	g.input.f	/^72    AD=I$/;"	l	subroutine:READF	file:
 72	optim.input.f	/^72    AD=I$/;"	l	subroutine:READF	file:
 72	optim.unrescalcdihe.f	/^ 72   FORMAT(\/' RGYR:  Mass weighted results:'\/)$/;"	l	subroutine:UEDITRGYR	file:
@@ -4050,8 +4005,6 @@
 799	optim.msevb.f90	/^ 799     enddo$/;"	l	subroutine:vh2ointra	file:
 8	g.takestep.f	/^8        IF (NCORE(NP).GT.0) THEN$/;"	l	subroutine:TAKESTEP	file:
 8	optim.dqag.f	/^    8   IF(ERROR2.GT.ERROR1) GO TO 10$/;"	l	subroutine:DQAGE	file:
-80	func.f90	/^80    STATE=5$/;"	l	subroutine:READF	file:
-80	func.f90	/^80    TCOMMA=.TRUE.$/;"	l	file:
 80	g.Farkas.f	/^80    lfpair=i-1$/;"	l	subroutine:ALINIT	file:
 80	g.Farkas.f	/^80    lfpair=i-1$/;"	l	subroutine:NIINIT	file:
 80	g.dftb.f	/^80       FORMAT(3F15.5)$/;"	l	subroutine:DFTB	file:
@@ -4165,7 +4118,6 @@
 80	pathsample.reweight.f	/^   80    CONTINUE$/;"	l	subroutine:DLATRS	file:
 80	pathsample.reweight.f	/^   80 CONTINUE$/;"	l	subroutine:DLACN2	file:
 80	pathsample.reweight.f	/^   80 CONTINUE$/;"	l	subroutine:DLACON	file:
-800	func.f90	/^800   IF (SKIPBL .AND. NITEM .EQ. 0) GO TO 10$/;"	l	file:
 800	g.dgetrf.f	/^  800 CONTINUE$/;"	l	function:ILAENV	file:
 800	g.dlsode.f	/^ 800  MSG = 'DLSODE-  Run aborted.. apparent infinite loop     '$/;"	l	subroutine:DLSODE	file:
 800	g.input.f	/^800   IF (SKIPBL .AND. NITEM .EQ. 0) GO TO 10$/;"	l	file:
@@ -4180,7 +4132,6 @@
 800	optim.symmetry.f	/^800      CONTINUE$/;"	l	subroutine:SYMMETRY	file:
 800	pathsample.KMCcommit.f	/^800   CONTINUE$/;"	l	subroutine:KMCCOMMIT	file:
 800	pathsample.input.f	/^800   IF (SKIPBL .AND. NITEM .EQ. 0) GO TO 10$/;"	l	file:
-81	func.f90	/^81    IF (I .EQ. 10) I=0$/;"	l	subroutine:READF	file:
 81	g.input.f	/^81    IF (I .EQ. 10) I=0$/;"	l	subroutine:READF	file:
 81	optim.input.f	/^81    IF (I .EQ. 10) I=0$/;"	l	subroutine:READF	file:
 81	optim.sortc.f	/^ 81   CONTINUE$/;"	l	subroutine:SortC	file:
@@ -4211,7 +4162,6 @@
 890	optim.potential.f	/^890      CONTINUE$/;"	l	subroutine:POTENTIAL	file:
 899	optim.msevb.f90	/^ 899     enddo$/;"	l	subroutine:vh3ointra	file:
 9	g.takestep.f	/^9        RANATOM=NINT(0.5D0+NATOMS*DPRAND())$/;"	l	subroutine:TAKESTEP	file:
-90	func.f90	/^90    BLANK=.TRUE.$/;"	l	file:
 90	g.dlsode.f	/^   90       CONTINUE$/;"	l	subroutine:DGBFA	file:
 90	g.dlsode.f	/^   90    CONTINUE$/;"	l	subroutine:DGBSL	file:
 90	g.dlsode.f	/^   90    CONTINUE$/;"	l	subroutine:DGESL	file:
@@ -4307,7 +4257,6 @@
 90	pathsample.reweight.f	/^   90 CONTINUE$/;"	l	subroutine:DGEEQU	file:
 90	pathsample.reweight.f	/^   90 CONTINUE$/;"	l	subroutine:DLACN2	file:
 90	pathsample.reweight.f	/^   90 CONTINUE$/;"	l	subroutine:DLACON	file:
-900	func.f90	/^900   IF (CAT) THEN$/;"	l	file:
 900	g.dgetrf.f	/^  900 CONTINUE$/;"	l	function:ILAENV	file:
 900	g.input.f	/^900   IF (CAT) THEN$/;"	l	file:
 900	optim.input.f	/^900   IF (CAT) THEN$/;"	l	file:
@@ -4404,7 +4353,6 @@
 98	g.Q4.f	/^98       CONTINUE$/;"	l	subroutine:SHINIT	file:
 98	optim.diis.f	/^ 98       FORMAT(10G13.6)$/;"	l	subroutine:DIIS	file:
 987	pathsample.regroupfree2.f90	/^987         CONTINUE$/;"	l	subroutine:REGROUPFREE2	file:
-99	func.f90	/^99    IF (NERROR .LE. 1) THEN$/;"	l	subroutine:READF	file:
 99	g.Q4.f	/^99    CONTINUE$/;"	l	subroutine:SHINIT	file:
 99	g.fedor.f	/^   99 PPVALU = PPSUM$/;"	l	function:PPVALU	file:
 99	g.input.f	/^99    IF (NERROR .LE. 1) THEN$/;"	l	subroutine:READF	file:
@@ -4443,9 +4391,9 @@ ABSC	optim.cubsplstring.f90	/^  DOUBLE PRECISION, ALLOCATABLE, TARGET :: COEFF(:
 ABTHRESH	g.commons.f90	/^     &                 TAUMAXFULL, CPFACTORSG, CPFACTORFG, VGWTOL, ABTHRESH,/;"	v	module:COMMONS
 ABTHRESH	g.commons.o.f90	/^     &                 TAUMAXFULL, CPFACTORSG, CPFACTORFG, VGWTOL, ABTHRESH,/;"	v	module:COMMONS
 ACCLAN	optim.key.f90	/^     &        MFRACTION1, MFRACTION2, MALPHA2, ACCLAN,/;"	v	module:KEY
-ACCRAT	commons.f90	/^DOUBLE PRECISION :: ACCRAT=/;"	v	module:COMMONS
 ACCRAT	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP, ACCRAT,/;"	v	module:COMMONS
 ACCRAT	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP, ACCRAT,/;"	v	module:COMMONS
+ACCRAT	v.mc.i.f90	/^     DOUBLE PRECISION :: ACCRAT=/;"	v
 ACCREJ	g.mc.F	/^      SUBROUTINE ACCREJ(/;"	s
 ACCREJ	mc.f90	/^SUBROUTINE ACCREJ(/;"	s
 ACESOLV	g.modcharmm.f90	/^      LOGICAL :: DAESTAT, NOPHIPSIT, OMEGAT, NEWCONFT, SELECTT, ACESOLV$/;"	v	module:MODCHARMM
@@ -4625,7 +4573,7 @@ AREPCC	g.dftb.f	/^      SUBROUTINE AREPCC(/;"	s
 AREPCC	optim.dftb.f	/^      SUBROUTINE AREPCC(/;"	s
 ARGON	g.commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON,/;"	v	module:COMMONS
 ARGON	g.commons.o.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON,/;"	v	module:COMMONS
-ARGS	commons.f90	/^CHARACTER(LEN=SLEN),DIMENSION(MAXNARGS)/;"	v	module:COMMONS
+ARGS	v.f90	/^CHARACTER(LEN=SLEN),DIMENSION(MAXNARGS)/;"	v	module:V
 ARGSTRING	optim.main.f90	/^      CHARACTER(LEN=80) ARGSTRING,/;"	v	program:OPTIM4
 ARG_SWAP	optim.intcoords.f90	/^      SUBROUTINE ARG_SWAP(/;"	s	module:INTCUTILS
 ARMA	g.commons.f90	/^     &                 RK_R, RK_THETA,ARMA,/;"	v	module:COMMONS
@@ -4652,7 +4600,6 @@ ASAOOSPOT	g.asaoos.f90	/^SUBROUTINE ASAOOSPOT /;"	s
 ASAR1	g.fedor.f	/^           SUBROUTINE ASAR1(/;"	s
 ASHE1	g.fedor.f	/^           SUBROUTINE ASHE1(/;"	s
 ASORT	pathsample.reweight.f	/^      SUBROUTINE ASORT(/;"	s
-ASTEP	commons.f90	/^DOUBLE PRECISION :: ASTEP=/;"	v	module:COMMONS
 ASTEP	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP,/;"	v	module:COMMONS
 ASTEP	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP,/;"	v	module:COMMONS
 ATGRAD	g.AT.f	/^      SUBROUTINE ATGRAD(/;"	s
@@ -4747,7 +4694,7 @@ BEENUM	optim.unrestransform.f	/^      SUBROUTINE BEENUM(/;"	s
 BEIG	optim.beig.f	/^      SUBROUTINE BEIG(/;"	s
 BENERGY	optim.modamber.f90	/^      DOUBLE PRECISION  TOTENERGY,BENERGY,/;"	v	module:MODAMBER
 BESTPERM	optim.key.f90	/^      INTEGER, ALLOCATABLE :: BESTPERM(/;"	v	module:KEY
-BEST_FH	commons.f90	/^INTEGER :: BEST_FH=/;"	v	module:COMMONS
+BEST_FH	v.files.i.f90	/^INTEGER :: BEST_FH=/;"	v
 BETA	g.modconsts.f90	/^      DOUBLE PRECISION CHI,BETA,/;"	v	module:consts
 BETA	g.modconsts_trans_97.f90	/^      DOUBLE PRECISION CHI,BETA,/;"	v	module:consts_trans_97
 BETA	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: BETA /;"	v	module:msevb_common
@@ -4826,7 +4773,6 @@ BLN	optim.BLN.f	/^      SUBROUTINE BLN(/;"	s
 BLNSSTRUCT	g.commons.f90	/^      CHARACTER(LEN=1), ALLOCATABLE :: BEADLETTER(:), BLNSSTRUCT(/;"	v	module:COMMONS
 BLNSSTRUCT	g.commons.o.f90	/^      CHARACTER(LEN=1), ALLOCATABLE :: BEADLETTER(:), BLNSSTRUCT(/;"	v	module:COMMONS
 BLNSSTRUCT	optim.key.f90	/^      CHARACTER(LEN=1), ALLOCATABLE :: BEADLETTER(:), BLNSSTRUCT(/;"	v	module:KEY
-BLNT	commons.f90	/^LOGICAL BLNT=/;"	v	module:COMMONS
 BLNT	g.commons.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT, MSTRANST, STOCKT, STICKYT, BLNT,/;"	v	module:COMMONS
 BLNT	g.commons.o.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT, SWT, MSTRANST, STOCKT, STICKYT, BLNT,/;"	v	module:COMMONS
 BLNT	optim.key.f90	/^     &        VARIABLES, FIELDT, OHT, IHT, TDT, D5HT, TWOENDS, PV, FRACTIONAL, BLNT,/;"	v	module:KEY
@@ -4880,16 +4826,6 @@ BSPTRESTART	g.commons.o.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, 
 BSSTEP	optim.odesd.f	/^      SUBROUTINE BSSTEP(/;"	s
 BSWL	g.commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN, BSMIN, PERMDIST, PERMOPT, BSWL,/;"	v	module:COMMONS
 BSWL	g.commons.o.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT, FIXD, RKMIN, BSMIN, PERMDIST, PERMOPT, BSWL,/;"	v	module:COMMONS
-BUFFER	func.f90	1016;"	c	subroutine:READCH
-BUFFER	func.f90	1040;"	c	subroutine:GETF
-BUFFER	func.f90	1092;"	c	subroutine:GETA
-BUFFER	func.f90	1145;"	c	subroutine:REREAD
-BUFFER	func.f90	1190;"	c	subroutine:REPORT
-BUFFER	func.f90	447;"	c	subroutine:INPUT
-BUFFER	func.f90	687;"	c	block data:INBLK
-BUFFER	func.f90	708;"	c	subroutine:READF
-BUFFER	func.f90	880;"	c	subroutine:READK
-BUFFER	func.f90	939;"	c	subroutine:READA
 BUFFER	g.input.f	105;"	c	subroutine:INPUT
 BUFFER	g.input.f	343;"	c	block data:INBLK
 BUFFER	g.input.f	377;"	c	subroutine:READF
@@ -4920,16 +4856,6 @@ BUFFER	pathsample.input.f	646;"	c	subroutine:GETF
 BUFFER	pathsample.input.f	697;"	c	subroutine:GETA
 BUFFER	pathsample.input.f	752;"	c	subroutine:REREAD
 BUFFER	pathsample.input.f	797;"	c	subroutine:REPORT
-BUFINF	func.f90	1018;"	c	subroutine:READCH
-BUFINF	func.f90	1042;"	c	subroutine:GETF
-BUFINF	func.f90	1094;"	c	subroutine:GETA
-BUFINF	func.f90	1147;"	c	subroutine:REREAD
-BUFINF	func.f90	1192;"	c	subroutine:REPORT
-BUFINF	func.f90	449;"	c	subroutine:INPUT
-BUFINF	func.f90	689;"	c	block data:INBLK
-BUFINF	func.f90	710;"	c	subroutine:READF
-BUFINF	func.f90	882;"	c	subroutine:READK
-BUFINF	func.f90	941;"	c	subroutine:READA
 BUFINF	g.input.f	107;"	c	subroutine:INPUT
 BUFINF	g.input.f	345;"	c	block data:INBLK
 BUFINF	g.input.f	379;"	c	subroutine:READF
@@ -5058,7 +4984,6 @@ CAS	optim.potential.f	75;"	c	subroutine:POTENTIAL
 CASTEP	optim.key.f90	/^     &        INDEXT, LANCZOST, NOSHIFT, GAMESSUS, GAMESSUK, PVTS, RIGIDBODY, CASTEP,/;"	v	module:KEY
 CASTEP	optim.main.f90	/^      LOGICAL VARIABLES,CASTEP,/;"	v	program:OPTIM4
 CASTEPJOB	optim.key.f90	/^      CHARACTER(LEN=120) :: CASTEPJOB,/;"	v	module:KEY
-CAT	func.f90	/^      LOGICAL SKIPBL, CLEAR, ECHO, CAT$/;"	v	block data:INBLK
 CAT	g.input.f	/^      LOGICAL SKIPBL, CLEAR, ECHO, CAT$/;"	v	block data:INBLK
 CAT	optim.input.f	/^      LOGICAL SKIPBL, CLEAR, ECHO, CAT$/;"	v	block data:INBLK
 CAT	optim.main.f90	/^      LOGICAL VARIABLES,CASTEP,ONETEP,CP2K,DFTP,CPMD,END,CAT,/;"	v	program:OPTIM4
@@ -5109,7 +5034,6 @@ CHANGEP	optim.changep.f	/^      SUBROUTINE CHANGEP$/;"	s
 CHANGE_TEMP	g.commons.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS, MODEL1T, NEWRESTART_MD, CHANGE_TEMP,/;"	v	module:COMMONS
 CHANGE_TEMP	g.commons.o.f90	/^     &        PTMC, BINSTRUCTURES, PROGRESS, MODEL1T, NEWRESTART_MD, CHANGE_TEMP,/;"	v	module:COMMONS
 CHANGE_TEMP	optim.commons.f90	/^      LOGICAL TAGT, CHANGE_TEMP$/;"	v	module:COMMONS
-CHAR	func.f90	/^      CHARA/;"	v	block data:INBLK
 CHAR	g.input.f	/^      CHARA/;"	v	block data:INBLK
 CHAR	optim.input.f	/^      CHARA/;"	v	block data:INBLK
 CHAR	pathsample.input.f	/^      CHARA/;"	v	block data:INBLK
@@ -5223,7 +5147,6 @@ CLEANRIGIDBODIES	pathsample.rigidbodymod.f90	/^  SUBROUTINE CLEANRIGIDBODIES$/;"
 CLEANUP	optim.connect.f	/^      SUBROUTINE CLEANUP(/;"	s
 CLEANUP_VGW	g.vgw.f90	/^SUBROUTINE CLEANUP_VGW$/;"	s
 CLEANUP_VGWSP	g.vgw.f90	/^SUBROUTINE CLEANUP_VGWSP$/;"	s
-CLEAR	func.f90	/^      LOGICAL SKIPBL, CLEAR,/;"	v	block data:INBLK
 CLEAR	g.input.f	/^      LOGICAL SKIPBL, CLEAR,/;"	v	block data:INBLK
 CLEAR	optim.input.f	/^      LOGICAL SKIPBL, CLEAR,/;"	v	block data:INBLK
 CLEAR	optim.main.f90	/^      LOGICAL VARIABLES,CASTEP,ONETEP,CP2K,DFTP,CPMD,END,CAT,SKIPBL,CLEAR,/;"	v	program:OPTIM4
@@ -5245,7 +5168,6 @@ COLDFUSIONLIMIT	g.commons.o.f90	/^     &                 PTSTEPS, NEQUIL, NQUENC
 COLDFUSIONLIMIT	optim.key.f90	/^      DOUBLE PRECISION :: COLDFUSIONLIMIT$/;"	v	module:KEY
 COL_IND	pathsample.NGTmem.f90	/^   INTEGER, ALLOCATABLE :: COL_IND(/;"	v	module:NGTMEM
 COL_INDTEMP	pathsample.NGTmem.f90	/^   INTEGER, ALLOCATABLE :: COL_IND(:), COL_INDTEMP(/;"	v	module:NGTMEM
-COMMONS	commons.f90	/^MODULE COMMONS$/;"	m
 COMMONS	g.commons.f90	/^      MODULE COMMONS$/;"	m
 COMMONS	g.commons.o.f90	/^      MODULE COMMONS$/;"	m
 COMMONS	optim.commons.f90	/^MODULE COMMONS$/;"	m
@@ -5317,16 +5239,14 @@ COORD	optim.intlbfgs.f90	/^     DOUBLE PRECISION,POINTER :: COORD(/;"	k	type:TSF
 COORD	optim.intlbfgs.f90	/^   DOUBLE PRECISION,POINTER :: COORD(/;"	k	type:MINFOUNDTYPE
 COORD	optim.intlbfgslj.f90	/^     DOUBLE PRECISION,POINTER :: COORD(/;"	k	type:TSFOUNDTYPE
 COORD	optim.intlbfgslj.f90	/^   DOUBLE PRECISION,POINTER :: COORD(/;"	k	type:MINFOUNDTYPE
-COORDS	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS,/;"	v	module:COMMONS
 COORDS	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS,/;"	v	module:COMMONS
 COORDS	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS,/;"	v	module:COMMONS
 COORDSCOMPLEX	pathsample.dock.f90	/^double precision, allocatable :: COORDSLIGAND(:,:), COORDSCOMPLEX(/;"	v	module:DOCKMODULE
 COORDSLIGAND	pathsample.dock.f90	/^double precision, allocatable :: COORDSLIGAND(/;"	v	module:DOCKMODULE
-COORDSO	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS, COORDSO,/;"	v	module:COMMONS
 COORDSO	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS,COORDSO$/;"	v	module:COMMONS
 COORDSO	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS,COORDSO$/;"	v	module:COMMONS
 COORDSPROTEIN	pathsample.dock.f90	/^double precision, allocatable :: COORDSLIGAND(:,:), COORDSCOMPLEX(:,:), COORDSPROTEIN(/;"	v	module:DOCKMODULE
-COORDS_FH	commons.f90	/^INTEGER :: COORDS_FH=/;"	v	module:COMMONS
+COORDS_FH	v.files.i.f90	/^INTEGER :: COORDS_FH=/;"	v
 COREFRAC	g.commons.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb, hdistconstraint, COREFRAC,/;"	v	module:COMMONS
 COREFRAC	g.commons.o.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb, hdistconstraint, COREFRAC,/;"	v	module:COMMONS
 COS_PHI	bln.vars.inc.f90	/^        DOUBLE PRECISION COS_PHI,/;"	v
@@ -5490,7 +5410,7 @@ C_BLN	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJA
 C_BLN	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(:), B_BLN(:), C_BLN(/;"	v	module:COMMONS
 C_BLN	optim.key.f90	/^      DOUBLE PRECISION ,ALLOCATABLE :: LJREP_BLN(:,:), LJATT_BLN(:,:), A_BLN(:), B_BLN(:), C_BLN(/;"	v	module:KEY
 CalculatedDistance	g.tetherfunc.f90	/^      function CalculatedDistance(/;"	f	module:tetherfunc
-Calculation of the torsional angles gradient	grad.tangle.tex	/^\\subsection{Calculation of the torsional angles gradient}$/;"	b
+Calculation of the torsional angles gradient	grad.tangle.tex	/^\\subsection{Calculation of the torsional angles gradient}$/;"	u
 CheckFlatness	g.tetherfunc.f90	/^      function CheckFlatness(/;"	f	module:tetherfunc
 Copyright	optim.wc.f90	/^          subroutine Copyright$/;"	s	module:WC
 D	g.modconsts.f90	/^      DO/;"	v	module:consts
@@ -5683,7 +5603,6 @@ DDISTFUNC	pathsample.mindist.f	/^      SUBROUTINE DDISTFUNC(/;"	s
 DDT	optim.ttm3f.f90	/^double precision, dimension(:,:), allocatable :: DDT$/;"	v	module:ttm3f_mod
 DEADEND	pathsample.GT2.f90	/^     FUNCTION DEADEND(/;"	f	module:GRAPHTRANSFORMATIONMODULE
 DEADEND	pathsample.GT2.save.f90	/^     FUNCTION DEADEND(/;"	f	module:GRAPHTRANSFORMATIONMODULE
-DEBUG	commons.f90	/^LOGICAL DEBUG=/;"	v	module:COMMONS
 DEBUG	g.commons.f90	/^      LOGICAL DEBUG,/;"	v	module:COMMONS
 DEBUG	g.commons.o.f90	/^      LOGICAL DEBUG,/;"	v	module:COMMONS
 DEBUG	optim.key.f90	/^     &        PGRAD, VALUEST, ADMT, BFGSMINT, BFGSTST, CHECKINDEX, TOSI, CONTAINER, DEBUG,/;"	v	module:KEY
@@ -5910,7 +5829,7 @@ DMBLMT	g.commons.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADI
 DMBLMT	g.commons.o.f90	/^     &        GBT, GBDT, GBDPT, GEMT, LINRODT, PYGT, RADIFT, PYGDPT, DBPT, DBPTDT, DBLPYT, DMBLMT,/;"	v	module:COMMONS
 DMBLTD	g.dbptd.f90	/^      SUBROUTINE DMBLTD /;"	s
 DMBLTD	optim.dbptd.f90	/^      SUBROUTINE DMBLTD /;"	s
-DMIN	g.mc.F	1285;"	c	subroutine:TRANSITION
+DMIN	g.mc.F	1293;"	c	subroutine:TRANSITION
 DN	optim.amber.f	2915;"	c	subroutine:anglesecderivs
 DN	optim.modamber.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION (:) :: DN,/;"	v	module:MODAMBER
 DN2	optim.modamber.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION (:) :: DN,DN2,/;"	v	module:MODAMBER
@@ -6119,7 +6038,7 @@ DumpEveryNthQuench	g.commons.f90	/^     &        MCCycles, MCCyclesEquilibration
 DumpEveryNthQuench	g.commons.o.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints, SaveNth, DumpEveryNthQuench,/;"	v	module:COMMONS
 E	bln.vars.inc.f90	/^        DOUBLE /;"	v
 E	gmin.main.f90	/^      DOUBLE /;"	v	program:GMIN
-E	mc.vars.inc.f90	/^      DOUBLE /;"	v
+E	mc.vars.i.f90	/^      DOUBLE /;"	v
 E	optim.gsdata.f90	/^     DOUBLE /;"	k	type:IMGNODE
 E	optim.intlbfgs.f90	/^     DOUBLE /;"	k	type:TSFOUNDTYPE
 E	optim.intlbfgs.f90	/^   DOUBLE /;"	k	type:MINFOUNDTYPE
@@ -6138,20 +6057,18 @@ EAMP	g.commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, 
 EAMP	g.commons.o.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP, EAMP,/;"	v	module:COMMONS
 EAMal	g.EAMal.f	/^      SUBROUTINE EAMal(/;"	s
 EB	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N-1,3) :: BVR, EB$/;"	v
-EBEST	mc.vars.inc.f90	/^      DOUBLE PRECISION :: EBEST,/;"	v
 EBLN	bln.f90	/^        SUBROUTINE EBLN(/;"	s	module:BLN
 ECF	g.ljcapsidmodule.f90	/^SUBROUTINE ECF(/;"	s
 ECFDC	g.takestepmsgb.f90	/^      SUBROUTINE ECFDC /;"	s
-ECHO	func.f90	/^      LOGICAL SKIPBL, CLEAR, ECHO,/;"	v	block data:INBLK
 ECHO	g.input.f	/^      LOGICAL SKIPBL, CLEAR, ECHO,/;"	v	block data:INBLK
 ECHO	optim.input.f	/^      LOGICAL SKIPBL, CLEAR, ECHO,/;"	v	block data:INBLK
 ECHO	optim.main.f90	/^      LOGICAL VARIABLES,CASTEP,ONETEP,CP2K,DFTP,CPMD,END,CAT,SKIPBL,CLEAR,ECHO,/;"	v	program:OPTIM4
 ECHO	pathsample.input.f	/^      LOGICAL SKIPBL, CLEAR, ECHO,/;"	v	block data:INBLK
-ECONV	commons.f90	/^DOUBLE PRECISION :: ECONV=/;"	v	module:COMMONS
 ECONV	g.commons.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS, DECAYPARAM, SYMTOL1, SYMTOL2, SYMTOL3, SYMTOL4, SYMTOL5, &$/;"	v	module:COMMONS
 ECONV	g.commons.o.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS, DECAYPARAM, SYMTOL1, SYMTOL2, SYMTOL3, SYMTOL4, SYMTOL5, &$/;"	v	module:COMMONS
 ECTRAP	optim.ectrap.f	/^      SUBROUTINE ECTRAP /;"	s
 EDEBUG	optim.modcharmm.f90	/^      LOGICAL :: TRYNEB, ACESOLV, CHDEBUG, EDEBUG$/;"	v	module:modcharmm
+EDIFF	v.mc.i.f90	/^     DOUBLE PRECISION :: EDIFF=/;"	v
 EDIFFTOL	optim.key.f90	/^     &        FREEZETOL, DESMAXEJUMP, DESMAXAVGE, STOCKMU, STOCKLAMBDA, EDIFFTOL,/;"	v	module:KEY
 EDITIT	optim.key.f90	/^      CHARACTER(LEN=20) :: EDITIT$/;"	v	module:KEY
 EDITRGYR	optim.chdummy.f	/^      SUBROUTINE EDITRGYR(/;"	s
@@ -6196,12 +6113,12 @@ ENERGIESLIGAND	pathsample.dock.f90	/^double precision, allocatable :: ENERGIESLI
 ENERGIESPROTEIN	pathsample.dock.f90	/^double precision, allocatable :: ENERGIESLIGAND(:), ENERGIESCOMPLEX(:), ENERGIESPROTEIN(/;"	v	module:DOCKMODULE
 ENERGY	bln.vars.inc.f90	/^        DOUBLE PRECISION ENERGY$/;"	v
 ENERGY2INDEX	g.basinsampling.f90	/^      FUNCTION ENERGY2INDEX(/;"	f	subroutine:BASINSAMPLING
-ENERGY_FH	commons.f90	/^INTEGER :: ENERGY_FH=/;"	v	module:COMMONS
+ENERGY_FH	v.files.i.f90	/^INTEGER :: ENERGY_FH=/;"	v
 ENUMERATE	g.enumerate.f90	/^SUBROUTINE ENUMERATE(/;"	s
 EPANIC	optim.rotd.f	/^      SUBROUTINE EPANIC(/;"	s
 EPREV	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP, ACCRAT, EPREV /;"	v	module:COMMONS
 EPREV	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP, ACCRAT, EPREV /;"	v	module:COMMONS
-EPREV	mc.vars.inc.f90	/^      DOUBLE PRECISION :: EBEST,EPREV,/;"	v
+EPREV	mc.vars.i.f90	/^      DOUBLE PRECISION ::       TIME,E,EPREV$/;"	v
 EPS	g.modconsts_trans_97.f90	/^     &                 ALPHA,VECT(4),EPS(/;"	v	module:consts_trans_97
 EPS11	g.commons.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU, EFIELD, GEMRC, MREQ, &$/;"	v	module:COMMONS
 EPS11	g.commons.o.f90	/^     &                 DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU, EFIELD, GEMRC, MREQ, &$/;"	v	module:COMMONS
@@ -6297,6 +6214,7 @@ F	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(-1:N+1,2) :: F$/;"	v
 F1COM	g.modf1com.f90	/^MODULE F1COM$/;"	m
 F1DIM	g.f1dim.f	/^      FUNCTION F1DIM(/;"	f
 FAC	g.Q4.f	/^      DOUBLE PRECISION FUNCTION FAC(/;"	f
+FAC0	v.mc.i.f90	/^     DOUBLE PRECISION :: FAC0=/;"	v
 FACTOR	g.commons.f90	/^       DOUBLE PRECISION :: SIGMASQ, RANGESQ, FACTOR /;"	v	module:COMMONS
 FACTOR	g.commons.o.f90	/^       DOUBLE PRECISION :: SIGMASQ, RANGESQ, FACTOR /;"	v	module:COMMONS
 FAIL	g.MSorig.f	41;"	c	subroutine:MSORIG
@@ -6336,10 +6254,9 @@ FEMBED_D	optim.Ackland_metals.f90	/^        DOUBLE PRECISION FUNCTION FEMBED_D(/
 FEMBED_DD	optim.Ackland_metals.f90	/^        DOUBLE PRECISION FUNCTION FEMBED_DD(/;"	f
 FEPROTEIN	pathsample.dock.f90	/^double precision, allocatable :: FELIGAND(:), FECOMPLEX(:), FEPROTEIN(/;"	v	module:DOCKMODULE
 FETCHZ	optim.fetchz.f	/^      SUBROUTINE FETCHZ(/;"	s
-FF	commons.f90	/^INTEGER,ALLOCATABLE :: FF(/;"	v	module:COMMONS
 FF	g.qmodule.f90	/^      INTEGER,ALLOCATABLE :: FF(/;"	v	module:QMODULE
-FH	commons.f90	/^INTEGER :: FH=/;"	v	module:COMMONS
 FH	pathsample.GT2data.f90	/^          logical :: FH,/;"	k	type:Node
+FH	v.files.i.f90	/^INTEGER :: FH=/;"	v
 FHcascadingCut	pathsample.GT2FibonacciHeap.f90	/^     recursive subroutine FHcascadingCut(/;"	s	module:FibonacciHeapModule
 FHconcatenate	pathsample.GT2FibonacciHeap.f90	/^     subroutine FHconcatenate(/;"	s	module:FibonacciHeapModule
 FHconsolidate	pathsample.GT2FibonacciHeap.f90	/^     subroutine FHconsolidate$/;"	s	module:FibonacciHeapModule
@@ -6404,6 +6321,7 @@ FIXDIHEFLAG	g.commons.o.f90	/^     &        EAMALT, ALGLUET, MGGLUET, GUPTAT, FS
 FIXIMAGE	g.commons.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL, AMBER, FIXIMAGE,/;"	v	module:COMMONS
 FIXIMAGE	g.commons.o.f90	/^     &        PROJ, RGCL2, TOSI, WELCH, AXTELL, AMBER, FIXIMAGE,/;"	v	module:COMMONS
 FIXIMAGE	optim.key.f90	/^     &        TOSIC6, TOSIPOL, FIXIMAGE,/;"	v	module:KEY
+FIXOPT	v.mc.i.f90	/^     CHARACTER(LEN=100) :: FIXOPT=/;"	v
 FIXSTEP	g.commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP,/;"	v	module:COMMONS
 FIXSTEP	g.commons.o.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP,/;"	v	module:COMMONS
 FIXT	g.commons.f90	/^     &        BLJCLUSTER, COMPRESST, FIX, FIXT,/;"	v	module:COMMONS
@@ -6431,8 +6349,6 @@ FPGRP	optim.syminf.f90	/^      CHARACTER(LEN=4) :: FPGRP,/;"	v	module:SYMINF
 FPSI	optim.Ackland_metals.f90	/^       DOUBLE PRECISION FUNCTION FPSI(/;"	f
 FPSI_D	optim.Ackland_metals.f90	/^       DOUBLE PRECISION FUNCTION FPSI_D(/;"	f
 FPSI_DD	optim.Ackland_metals.f90	/^       DOUBLE PRECISION FUNCTION FPSI_DD(/;"	f
-FQFLAG	commons.f90	/^LOGICAL :: FQFLAG=/;"	v	module:COMMONS
-FQMAX	commons.f90	/^DOUBLE PRECISION :: FQMAX$/;"	v	module:COMMONS
 FRACTIONAL	optim.key.f90	/^     &        VARIABLES, FIELDT, OHT, IHT, TDT, D5HT, TWOENDS, PV, FRACTIONAL,/;"	v	module:KEY
 FRAMEEDIFF	optim.key.f90	/^     &        INTEPSILON, FRAMEEDIFF,/;"	v	module:KEY
 FRAUSI	g.frausi.f	/^      SUBROUTINE FRAUSI(/;"	s
@@ -6510,7 +6426,6 @@ G2	optim.mylbfgs.f	69;"	c	subroutine:MYLBFGS
 G2	optim.odesd.f	36;"	c	subroutine:ODESD
 G2	optim.oldneb.f	313;"	c	subroutine:NEBBFGS
 G2SPECIAL	optim.g2special.f	/^      SUBROUTINE G2SPECIAL(/;"	s
-G46	commons.f90	/^LOGICAL G46=/;"	v	module:COMMONS
 G46	g.commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46,/;"	v	module:COMMONS
 G46	g.commons.o.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46,/;"	v	module:COMMONS
 GALPHA	optim.key.f90	/^     &        OMEGA, GALPHA,/;"	v	module:KEY
@@ -6622,7 +6537,6 @@ GEOM	pathsample.mindist.f	40;"	c	subroutine:MINDIST
 GEOM	pathsample.mindist.f	714;"	c	subroutine:MMYLBFGS
 GEOMDIFFTOL	optim.key.f90	/^     &        FREEZETOL, DESMAXEJUMP, DESMAXAVGE, STOCKMU, STOCKLAMBDA, EDIFFTOL, GEOMDIFFTOL,/;"	v	module:KEY
 GEOPT	optim.geopt.f	/^      SUBROUTINE GEOPT(/;"	s
-GETA	func.f90	/^      SUBROUTINE GETA(/;"	s
 GETA	g.input.f	/^      SUBROUTINE GETA(/;"	s
 GETA	optim.input.f	/^      SUBROUTINE GETA(/;"	s
 GETA	pathsample.input.f	/^      SUBROUTINE GETA(/;"	s
@@ -6639,13 +6553,11 @@ GETDISPLACEMENT	g.basinsampling.f90	/^      REAL(8) FUNCTION GETDISPLACEMENT(/;"
 GETDPAIR	pathsample.getdpair.f90	/^SUBROUTINE GETDPAIR(/;"	s
 GETENERG	optim.greatcirc.f	/^      SUBROUTINE GETENERG(/;"	s
 GETETERM	optim.chdummy.f	/^      SUBROUTINE GETETERM(/;"	s
-GETF	func.f90	/^      SUBROUTINE GETF(/;"	s
 GETF	g.input.f	/^      SUBROUTINE GETF(/;"	s
 GETF	optim.input.f	/^      SUBROUTINE GETF(/;"	s
 GETF	pathsample.input.f	/^      SUBROUTINE GETF(/;"	s
 GETFREEBARRIER	pathsample.getfreebarrier.f90	/^SUBROUTINE GETFREEBARRIER(/;"	s
 GETFREEPAIR	pathsample.getfreepair.f90	/^SUBROUTINE GETFREEPAIR(/;"	s
-GETI	func.f90	/^      SUBROUTINE GETI(/;"	s
 GETI	g.input.f	/^      SUBROUTINE GETI(/;"	s
 GETI	optim.input.f	/^      SUBROUTINE GETI(/;"	s
 GETI	pathsample.input.f	/^      SUBROUTINE GETI(/;"	s
@@ -6674,7 +6586,6 @@ GETRESID	optim.ambnatintern_extras.f90	/^      SUBROUTINE GETRESID(/;"	s
 GETRESNUM	optim.chdummy.f	/^      SUBROUTINE GETRESNUM(/;"	s
 GETRND	func.f90	/^SUBROUTINE GETRND(/;"	s
 GETRPAIR	pathsample.getrpair.f90	/^SUBROUTINE GETRPAIR(/;"	s
-GETS	func.f90	/^      SUBROUTINE GETS(/;"	s
 GETS	g.input.f	/^      SUBROUTINE GETS(/;"	s
 GETS	optim.input.f	/^      SUBROUTINE GETS(/;"	s
 GETS	pathsample.input.f	/^      SUBROUTINE GETS(/;"	s
@@ -6718,7 +6629,7 @@ GOODSTRUCTURE2	g.modamber9.f90	/^      LOGICAL MDSTEPT, readcoords, NOCISTRANSRN
 GOODSTRUCTURE2	optim.modamber9.f90	/^      LOGICAL GOODSTRUCTURE1, GOODSTRUCTURE2,/;"	v	module:modamber9
 GOT	optim.key.f90	/^     &        REPEL,UNRST, NATBT, ANGLEAXIS, DUMPALLPATHS, GOT,/;"	v	module:KEY
 GRAD	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,3) :: G, GRAD$/;"	v
-GRAD	mc.vars.inc.f90	/^      DOUBLE PRECISION, DIMENSION(NATOMS,3) ::  GRAD$/;"	v
+GRAD	mc.vars.i.f90	/^      DOUBLE PRECISION, DIMENSION(NATOMS,3) ::  GRAD$/;"	v
 GRAD	optim.gsdata.f90	/^     DOUBLE PRECISION, POINTER :: XYZ(:), GRAD(/;"	k	type:IMGNODE
 GRAD4T	optim.key.f90	/^     &        RINGPOLYMERT, SDT, BOWMANT, PULLT, RBSYMT, CONPOTT, GRAD4T,/;"	v	module:KEY
 GRADC	optim.modunres.f90	/^     &                    DCDV,DXDV,DXDS,GRADX,GRADC,/;"	v	module:MODUNRES
@@ -6760,7 +6671,7 @@ GSIMGDENSITY	optim.gsdata.f90	/^  DOUBLE PRECISION :: GSIMGDENSITY,/;"	k	type:IM
 GSITERDENSITY	optim.gsdata.f90	/^  DOUBLE PRECISION :: GSIMGDENSITY, GSITERDENSITY,/;"	k	type:IMGNODE
 GSMAXTOTITD	optim.gsdata.f90	/^  DOUBLE PRECISION :: GSMXSTP, GSMAXTOTITD$/;"	k	type:IMGNODE
 GSMXSTP	optim.gsdata.f90	/^  DOUBLE PRECISION :: GSMXSTP,/;"	k	type:IMGNODE
-GSORT	func.f90	/^      SUBROUTINE GSORT(/;"	s
+GSORT	func.f90	/^SUBROUTINE GSORT(/;"	s
 GSORT	gmin.func.f90	/^      SUBROUTINE GSORT(/;"	s
 GSORT2	g.sort2.f	/^      SUBROUTINE GSORT2(/;"	s
 GSTEPS	optim.modguess.f90	/^      INTEGER :: GSTEPS,/;"	v	module:MODGUESS
@@ -6822,7 +6733,6 @@ HDIST	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: HDIST(/;"	v	modul
 HEIGHT	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)) :: RHO, RADIUS, HEIGHT$/;"	k	type:CAPSOMER
 HEIGHT	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: RHO, RADIUS, HEIGHT$/;"	k	type:CAPSOMER
 HESS	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,N) :: HESS$/;"	v
-HESS	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: HESS$/;"	v	module:COMMONS
 HESS	g.commons.f90	/^      DOUBLE PRECISION :: HESS(/;"	v	module:COMMONS
 HESS	g.commons.o.f90	/^      DOUBLE PRECISION :: HESS(/;"	v	module:COMMONS
 HESS	g.modhess.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: HESS /;"	v	module:MODHESS
@@ -6893,7 +6803,7 @@ I3	g.ljcapsidmodule.f90	/^ DOUBLE PRECISION ::I3(/;"	v	module:LJCAPSIDMODULE
 I3	g.pymodule.f90	/^ DOUBLE PRECISION :: I3(/;"	v	module:PYMODULE
 I3	optim.ljcapsidmodule.f90	/^ DOUBLE PRECISION ::I3(/;"	v	module:LJCAPSIDMODULE
 I3	optim.pymodule.f90	/^ DOUBLE PRECISION ::I3(/;"	v	module:PYMODULE
-IA	commons.f90	/^INTEGER IA,/;"	v	module:COMMONS
+IA	v.f90	/^INTEGER IA,/;"	v	module:V
 IALPH	optim.modunres.f90	/^      INTEGER :: NRES,NRES0,IALPH,/;"	v	module:MODUNRES
 IATEL_E	optim.modunres.f90	/^     &           IATSC_E,IATEL_S,IATEL_E,/;"	v	module:MODUNRES
 IATEL_S	optim.modunres.f90	/^     &           IATSC_E,IATEL_S,/;"	v	module:MODUNRES
@@ -6944,7 +6854,6 @@ IN	optim.h2o.f	314;"	c	subroutine:LC1
 IN	optim.h2o.f	608;"	c	subroutine:DRVTV
 IN	optim.h2o.f	88;"	c	subroutine:H2O
 IN1	optim.modamber.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION (:) :: IPHI,IVN,IDELTA,IN1$/;"	v	module:MODAMBER
-INBLK	func.f90	/^      BLOCK DATA INBLK$/;"	b
 INBLK	g.input.f	/^      BLOCK DATA INBLK$/;"	b
 INBLK	optim.input.f	/^      BLOCK DATA INBLK$/;"	b
 INBLK	pathsample.input.f	/^      BLOCK DATA INBLK$/;"	b
@@ -6969,11 +6878,9 @@ INITIATE_RANDOM	optim.specialfuncts.f90	/^  SUBROUTINE INITIATE_RANDOM(/;"	s	mod
 INITP3	g.tn.f	/^      SUBROUTINE INITP3(/;"	s
 INITPC	g.tn.f	/^      SUBROUTINE INITPC(/;"	s
 INITROT	g.modcharmm.f90	/^      LOGICAL :: MAKEOLIGOT, MAKEOLIGOSTART, INITROT,/;"	v	module:MODCHARMM
-INPUT	func.f90	/^      SUBROUTINE INPUT(/;"	s
 INPUT	g.input.f	/^      SUBROUTINE INPUT(/;"	s
 INPUT	optim.input.f	/^      SUBROUTINE INPUT(/;"	s
 INPUT	pathsample.input.f	/^      SUBROUTINE INPUT(/;"	s
-INPUTI	func.f90	/^      SUBROUTINE INPUTI(/;"	s
 INPUTI	g.input.f	/^      SUBROUTINE INPUTI(/;"	s
 INPUTI	optim.input.f	/^      SUBROUTINE INPUTI(/;"	s
 INPUTI	pathsample.input.f	/^      SUBROUTINE INPUTI(/;"	s
@@ -7001,13 +6908,10 @@ INTDISTANCE	optim.intcoords.f90	/^      SUBROUTINE INTDISTANCE(/;"	s	module:INTC
 INTDISTANCET	optim.intcommons.f90	/^  LOGICAL :: INTDISTANCET /;"	v	module:INTCOMMONS
 INTEDUMPFILE	g.commons.f90	/^      CHARACTER(LEN=130) DUMPFILE, MYFILENAME, INTEDUMPFILE$/;"	v	module:COMMONS
 INTEDUMPFILE	g.commons.o.f90	/^      CHARACTER(LEN=130) DUMPFILE, MYFILENAME, INTEDUMPFILE$/;"	v	module:COMMONS
-INTEFF	commons.f90	/^INTEGER,ALLOCATABLE :: FF(:),INTEFF(/;"	v	module:COMMONS
 INTEFF	g.qmodule.f90	/^      INTEGER,ALLOCATABLE :: FF(:),INTEFF(/;"	v	module:QMODULE
 INTEFINALIO	g.amber9dummy.f90	/^SUBROUTINE INTEFINALIO(/;"	s
 INTEPSILON	optim.key.f90	/^     &        APP, AMM, APM, XQP,XQM, ALPHAP, ALPHAM, PHIG, SHIFTV, SHIFTL(6), DGUESS, XDGUESS, TIMELIMIT, TSTART, &$/;"	v	module:KEY
-INTEQMIN	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(/;"	v	module:COMMONS
 INTEQMIN	g.qmodule.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(/;"	v	module:QMODULE
-INTEQMINP	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(/;"	v	module:COMMONS
 INTEQMINP	g.qmodule.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(/;"	v	module:QMODULE
 INTERACT	optim.modunres.f90	73;"	c	module:MODUNRES
 INTERATOMICR	optim.msevb_common.f90	/^  DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: INTERATOMICR$/;"	v	module:msevb_common
@@ -7074,6 +6978,7 @@ INVKAP	g.commons.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF, INVKAP,/;"
 INVKAP	g.commons.o.f90	/^     &                 SIGNOT, EPSNOT, SIGMAF, INVKAP,/;"	v	module:COMMONS
 INVMTRX	optim.rbperm.f90	/^      SUBROUTINE INVMTRX(/;"	s
 INVMTRX	pathsample.rbperm.f90	/^      SUBROUTINE INVMTRX(/;"	s
+IO	func.f90	/^SUBROUTINE IO$/;"	s	module:FUNC
 IO1	g.io1.f	/^      SUBROUTINE IO1$/;"	s
 ION	g.Natb.f	28;"	c	subroutine:NATB
 ION	g.Natb.f	77;"	c	subroutine:entots
@@ -7113,9 +7018,9 @@ ISSIDECHAIN	optim.modcharmm.f90	/^      LOGICAL, DIMENSION(:), ALLOCATABLE :: IS
 ISTART	optim.modunres.f90	/^      INTEGER :: NNT,NCT,NINT_GR,ISTART,/;"	v	module:MODUNRES
 ISTATUS	optim.commons.f90	/^      INTEGER :: ISTATUS$/;"	v	module:COMMONS
 ISTCRT	optim.commons.f90	/^      INTEGER :: NUNIQUE, NOPT, IPRNT, INR, IVEC, IVEC2, ISTCRT,/;"	v	module:COMMONS
-ISTEP	commons.f90	/^INTEGER :: ISTEP$/;"	v	module:COMMONS
 ISTEP	g.commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE, NSYMQMAX, EQUIL, TPAHA, ISTEP,/;"	v	module:COMMONS
 ISTEP	g.commons.o.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE, NSYMQMAX, EQUIL, TPAHA, ISTEP,/;"	v	module:COMMONS
+ISTEP	v.f90	/^INTEGER :: ISTEP$/;"	v	module:V
 ISTR	g.main.F	/^      CHARACTER(LEN=130) ISTR$/;"	v	program:GMIN
 IS_DIGIT	stringmod.f90	/^FUNCTION IS_DIGIT(/;"	f	module:strings
 IS_LETTER	stringmod.f90	/^FUNCTION IS_LETTER(/;"	f	module:strings
@@ -7125,7 +7030,7 @@ ITEIG	optim.bfgsts.f	/^      SUBROUTINE ITEIG(/;"	s
 ITEIGN	optim.bfgsts.f	/^      SUBROUTINE ITEIGN(/;"	s
 ITEL	optim.modunres.f90	/^      INTEGER :: NNT,NCT,NINT_GR,ISTART,IEND,ITYPE,MAXINT_GR,EXPON,EXPON2, &$/;"	v	module:MODUNRES
 ITEM	optim.main.f90	/^      INTEGER ITEM,/;"	v	program:OPTIM4
-ITERATIONS	mc.vars.inc.f90	/^      INTEGER ITERATIONS,/;"	v
+ITERATIONS	mc.vars.i.f90	/^      INTEGER ITERATIONS,/;"	v
 ITERD	optim.gsdata.f90	/^  DOUBLE PRECISION :: IMGD, ITERD /;"	k	type:IMGNODE
 ITOA	g.ptgrp.f	/^       CHARACTER*(*) FUNCTION ITOA(/;"	f
 ITOA	optim.utils.f	/^       CHARACTER*(*) FUNCTION ITOA(/;"	f
@@ -7186,10 +7091,8 @@ J6	g.ljcapsidmodule.f90	/^ INTEGER          :: I, J, J1, J2, J3, J4, J5, J6,/;"	
 J6	g.pymodule.f90	/^ INTEGER          :: I, J, J1, J2, J3, J4, J5, J6,/;"	v	module:PYMODULE
 J6	optim.ljcapsidmodule.f90	/^ INTEGER          :: I, J, J1, J2, J3, J4, J5, J6,/;"	v	module:LJCAPSIDMODULE
 J6	optim.pymodule.f90	/^ INTEGER          :: I, J, J1, J2, J3, J4, J5, J6,/;"	v	module:PYMODULE
-JA	commons.f90	/^INTEGER IA, JA$/;"	v	module:COMMONS
+JA	v.f90	/^INTEGER IA, JA$/;"	v	module:V
 JAC	g.vgw.f90	/^SUBROUTINE JAC$/;"	s
-JACCPREV	mc.vars.inc.f90	/^      INTEGER ITERATIONS,JACCPREV,/;"	v
-JBEST	mc.vars.inc.f90	/^      INTEGER JBEST$/;"	v
 JBJB	optim.modamber9.f90	/^integer, allocatable:: IBIB(:),JBJB(/;"	v	module:modamber9
 JDUMP	g.commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP, JUMPMOVE, JDUMP,/;"	v	module:COMMONS
 JDUMP	g.commons.o.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP, JUMPMOVE, JDUMP,/;"	v	module:COMMONS
@@ -7335,8 +7238,8 @@ LEGZO	optim.specialfuncts.f90	/^    SUBROUTINE LEGZO(/;"	s	module:SPFUNCTS
 LEN_DR	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,N) :: LEN_DR$/;"	v
 LEU_SWAP	optim.intcoords.f90	/^      SUBROUTINE LEU_SWAP(/;"	s	module:INTCUTILS
 LF	optim.gsdata.f90	/^     LOGICAL :: LF,/;"	k	type:IMGNODE
-LFH	commons.f90	/^INTEGER :: LFH=/;"	v	module:COMMONS
-LFN	commons.f90	/^CHARACTER(LEN=100) LFN$/;"	v	module:COMMONS
+LFH	v.files.i.f90	/^INTEGER :: LFH=/;"	v
+LFN	v.files.i.f90	/^CHARACTER(LEN=100) LFN$/;"	v
 LHISTVALS	g.commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: HISTVALS, LHISTVALS /;"	v	module:COMMONS
 LHISTVALS	g.commons.o.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: HISTVALS, LHISTVALS /;"	v	module:COMMONS
 LIGMOVET	g.commons.f90	/^     &        AMBERT, RANDOMSEEDT, PYGPERIODICT, LJCAPSIDT, PYBINARYT, SWAPMOVEST, MOVABLEATOMST, LIGMOVET,/;"	v	module:COMMONS
@@ -7456,7 +7359,6 @@ LOCALSAMPLET	g.commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF
 LOCALSAMPLET	g.commons.o.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT, LOCALSAMPLET,/;"	v	module:COMMONS
 LOCALSTEEREDMINT	g.modamber9.f90	/^LOGICAL :: STEEREDMINT, LOCALSTEEREDMINT$/;"	v	module:MODAMBER9
 LOCALSTEEREDMINT	optim.modamber9.f90	/^LOGICAL STEEREDMINT, LOCALSTEEREDMINT$/;"	v	module:modamber9
-LOCASE	func.f90	/^      ENTRY LOCASE(/;"	e	subroutine:UPPERCASE
 LOCASE	g.input.f	/^      ENTRY LOCASE(/;"	e	subroutine:MYUPCASE
 LOCASE	optim.input.f	/^      ENTRY LOCASE(/;"	e	subroutine:UPPERCASE
 LOCASE	pathsample.input.f	/^      ENTRY LOCASE(/;"	e	subroutine:UPCASE
@@ -7519,7 +7421,7 @@ MAKE_CONPOT	optim.make_conpot.f90	/^SUBROUTINE MAKE_CONPOT(/;"	s
 MAKE_CONPOT	pathsample.make_conpot.f90	/^SUBROUTINE MAKE_CONPOT(/;"	s
 MALPHA1	optim.key.f90	/^     &        OMEGA, GALPHA, MALPHA1,/;"	v	module:KEY
 MALPHA2	optim.key.f90	/^     &        MFRACTION1, MFRACTION2, MALPHA2,/;"	v	module:KEY
-MARKOV_FH	commons.f90	/^INTEGER :: MARKOV_FH=/;"	v	module:COMMONS
+MARKOV_FH	v.files.i.f90	/^INTEGER :: MARKOV_FH=/;"	v
 MASS	optim.H2O.pjt2.f	8;"	c	subroutine:POTV
 MASS	optim.modamber.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION (:) ::  MASS$/;"	v	module:MODAMBER
 MASS	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)), ALLOCATABLE :: MASS(/;"	k	type:RIGIDBODYPOTENTIAL
@@ -7540,7 +7442,6 @@ MATMULV	g.ptgrp.f	/^      SUBROUTINE MATMULV(/;"	s
 MATMULV	optim.utils.f	/^      SUBROUTINE MATMULV(/;"	s
 MATRIX_TRANSFORM	g.transforms.f90	/^    FUNCTION MATRIX_TRANSFORM(/;"	f	module:TRANSFORMS
 MAXBARRIER	optim.key.f90	/^     &        INTEPSILON, FRAMEEDIFF, MORPHERISE, MORPHEMAX, MORPHMXSTP, MAXTSENERGY, MAXBARRIER,/;"	v	module:KEY
-MAXBFGS	commons.f90	/^INTEGER :: MAXBFGS=/;"	v	module:COMMONS
 MAXBFGS	g.commons.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS,/;"	v	module:COMMONS
 MAXBFGS	g.commons.o.f90	/^     &                 CQMAX, RADIUS, BQMAX,  MAXBFGS,/;"	v	module:COMMONS
 MAXBFGS	optim.key.f90	/^     &        MINMAX, MAXMAX, C6PP, C6MM, C6PM, PUSHCUT, MAXBFGS,/;"	v	module:KEY
@@ -7558,6 +7459,7 @@ MAXERISE	g.commons.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST,
 MAXERISE	g.commons.o.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST, MAXERISE,/;"	v	module:COMMONS
 MAXERISE	optim.gsdata.f90	/^  DOUBLE PRECISION :: MAXERISE /;"	k	type:IMGNODE
 MAXERISE	optim.key.f90	/^     &        OMEGA, GALPHA, MALPHA1, FOH, FIH, FTD, FD5H, T12FAC, PRESS, MAXERISE,/;"	v	module:KEY
+MAXERISE	v.mc.i.f90	/^     DOUBLE PRECISION ::     MAXERISE$/;"	v
 MAXGCYCLES	optim.modguess.f90	/^      INTEGER :: GSTEPS, MAXGCYCLES /;"	v	module:MODGUESS
 MAXGROWSTEPS	optim.gsdata.f90	/^  INTEGER :: GSUPDATE, MAXGROWSTEPS$/;"	k	type:IMGNODE
 MAXHBONDLENGTH	optim.msevb_common.f90	/^  DOUBLE PRECISION :: MAXHBONDLENGTH,/;"	v	module:msevb_common
@@ -7578,7 +7480,7 @@ MAXLENPERIM	optim.gsdata.f90	/^  DOUBLE PRECISION :: MAXLENPERIM$/;"	k	type:IMGN
 MAXMAX	optim.key.f90	/^     &        MINMAX, MAXMAX,/;"	v	module:KEY
 MAXMAXBARRIER	optim.key.f90	/^     &        DBEPSBB, DBEPSAB, DBSIGBB, DBSIGAB, DBPMU, MAXMAXBARRIER,/;"	v	module:KEY
 MAXMBFGS	optim.key.f90	/^     &        MINMAX, MAXMAX, C6PP, C6MM, C6PM, PUSHCUT, MAXBFGS, MAXXBFGS, MAXMBFGS,/;"	v	module:KEY
-MAXNARGS	commons.f90	/^INTEGER, PARAMETER :: MAXNARGS=/;"	v	module:COMMONS
+MAXNARGS	v.f90	/^INTEGER, PARAMETER :: MAXNARGS=/;"	v	module:V
 MAXNEBBFGS	optim.key.f90	/^     &        MINMAX, MAXMAX, C6PP, C6MM, C6PM, PUSHCUT, MAXBFGS, MAXXBFGS, MAXMBFGS, MAXNEBBFGS,/;"	v	module:KEY
 MAXSAVE	g.commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE,/;"	v	module:COMMONS
 MAXSAVE	g.commons.o.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE,/;"	v	module:COMMONS
@@ -7604,7 +7506,7 @@ MBSTART2	g.commons.f90	/^     &                 MSTART,MFINISH,MBSTART1,MBFINISH
 MBSTART2	g.commons.o.f90	/^     &                 MSTART,MFINISH,MBSTART1,MBFINISH1,MBSTART2,/;"	v	module:COMMONS
 MC	g.mc.F	/^      SUBROUTINE MC(/;"	s
 MC	g.mc.sim.f90	/^      SUBROUTINE MC(/;"	s
-MC	mc.f90	/^      SUBROUTINE MC(/;"	s
+MC	mc.f90	/^SUBROUTINE MC(/;"	s
 MCCycles	g.commons.f90	/^     &        NINTS, NumberOfTrajectories, &$/;"	v	module:COMMONS
 MCCycles	g.commons.o.f90	/^     &        NINTS, NumberOfTrajectories, &$/;"	v	module:COMMONS
 MCCyclesEquilibration	g.commons.f90	/^     &        MCCycles, MCCyclesEquilibration,/;"	v	module:COMMONS
@@ -7614,7 +7516,6 @@ MCRUNS	g.mcruns.f	/^      SUBROUTINE MCRUNS(/;"	s
 MCRUNS	mcruns.f90	/^      SUBROUTINE MCRUNS(/;"	s
 MCSRCH	lbfgs.f	/^      SUBROUTINE MCSRCH(/;"	s
 MCSTEP	lbfgs.f	/^      SUBROUTINE MCSTEP(/;"	s
-MCSTEPS	commons.f90	/^INTEGER :: MCSTEPS=/;"	v	module:COMMONS
 MCSTEPS	g.commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE, SHELLMOVEMAX, HPTGRP, NFIX, CURRENTIMP,&$/;"	v	module:COMMONS
 MCSTEPS	g.commons.o.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE, SHELLMOVEMAX, HPTGRP, NFIX, CURRENTIMP,&$/;"	v	module:COMMONS
 MCY	optim.VRTMCY5f.f90	/^module MCY$/;"	m
@@ -7897,9 +7798,9 @@ MYPOT	g.bspt.F	75;"	c	subroutine:PTBASINSAMPLING
 MYPOT	g.cgmin.f	37;"	c	subroutine:CGMIN
 MYPOT	g.finalq.f	37;"	c	subroutine:FINALQ
 MYPOT	g.main.F	58;"	c	program:GMIN
-MYPOT	g.mc.F	1471;"	c	subroutine:REST
-MYPOT	g.mc.F	1618;"	c	subroutine:REN
-MYPOT	g.mc.F	1786;"	c	subroutine:NEWRES
+MYPOT	g.mc.F	1483;"	c	subroutine:REST
+MYPOT	g.mc.F	1635;"	c	subroutine:REN
+MYPOT	g.mc.F	1805;"	c	subroutine:NEWRES
 MYPOT	g.mc.F	38;"	c	subroutine:MC
 MYPOT	g.mylbfgs.f	47;"	c	subroutine:MYLBFGS
 MYPOT	g.ptmc.F	52;"	c	subroutine:PARALLELTEMPERING
@@ -7907,7 +7808,7 @@ MYPOT	g.symmetry.f90	56;"	c	subroutine:SYMMETRY
 MYPOT	g.symmetry2.f90	49;"	c	subroutine:SYMMETRY2
 MYPOT	g.symmetrycsm.f90	39;"	c	subroutine:SYMMETRYCSM
 MYPOT	gmin.main.f90	21;"	c	program:GMIN
-MYPOT	mc.vars.inc.f90	3;"	c
+MYPOT	mc.vars.i.f90	3;"	c
 MYPOT	mylbfgs.old.f90	47;"	c	subroutine:MYLBFGS
 MYPOT	quench.f90	32;"	c	subroutine:QUENCH
 MYPOWER	g.commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER,/;"	v	module:COMMONS
@@ -7931,7 +7832,6 @@ MYUNRESDUMP	optim.unresdump.f	/^      SUBROUTINE MYUNRESDUMP(/;"	s
 MYUNRESDUMP	pathsample.unresdump.f	/^      SUBROUTINE MYUNRESDUMP(/;"	s
 MYUPCASE	g.input.f	/^      SUBROUTINE MYUPCASE(/;"	s
 MYWAIT	pathsample.mywait.f90	/^SUBROUTINE MYWAIT(/;"	s
-M_LBFGS	commons.f90	/^INTEGER :: M_LBFGS=/;"	v	module:COMMONS
 M_rg	optim.amhglobals.f	/^      double precision D_rg, T_rg, delR_rg, M_rg,/;"	v	module:amhglobals
 MaxDegree	pathsample.GT2FibonacciHeap.f90	/^     integer,parameter :: MaxDegree=/;"	v	module:FibonacciHeapModule
 MaximalTemperature	g.commons.f90	/^     &                 MinimalTemperature, MaximalTemperature,/;"	v	module:COMMONS
@@ -7954,14 +7854,13 @@ N3_ATOM	g.vgw.f90	/^     INTEGER, SAVE :: N_ATOM, N3_ATOM,/;"	v	module:VGWSP
 NA	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: NA /;"	v	module:msevb_common
 NABT	optim.key.f90	/^     &        BBRSDMT, AMBERT, NABT,/;"	v	module:KEY
 NABT	optim.main.f90	/^      LOGICAL VARIABLES,CASTEP,ONETEP,CP2K,DFTP,CPMD,END,CAT,SKIPBL,CLEAR,ECHO,AMBER,AMBERT,NABT,/;"	v	program:OPTIM4
-NACCEPT	commons.f90	/^INTEGER :: NACCEPT=/;"	v	module:COMMONS
 NACCEPT	g.commons.f90	/^      INTEGER :: NATOMS, NACCEPT,/;"	v	module:COMMONS
 NACCEPT	g.commons.o.f90	/^      INTEGER :: NATOMS, NACCEPT,/;"	v	module:COMMONS
 NADM	optim.key.f90	/^      INTEGER :: NSUMMARY, NADM,/;"	v	module:KEY
 NAG	pathsample.nag.f90	/^MODULE NAG$/;"	m
 NAMES	optim.modunres.f90	65;"	c	module:MODUNRES
 NARG	optim.main.f90	/^      INTEGER J2, NELEMENTS, LSYS, NTYPE(105), IOS, NARG,/;"	v	program:OPTIM4
-NARGS	commons.f90	/^INTEGER NARGS$/;"	v	module:COMMONS
+NARGS	v.f90	/^INTEGER NARGS$/;"	v	module:V
 NATB	g.Natb.f	/^        SUBROUTINE NATB(/;"	s
 NATB	optim.Natb.f	/^        SUBROUTINE NATB(/;"	s
 NATBT	g.commons.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART, AVOID, NATBT,/;"	v	module:COMMONS
@@ -7969,7 +7868,6 @@ NATBT	g.commons.o.f90	/^     &        ZETT2, RESTART, CONJG, NEWRESTART, AVOID, 
 NATBT	optim.key.f90	/^     &        REPEL,UNRST, NATBT,/;"	v	module:KEY
 NATINT	optim.intcommons.f90	/^  LOGICAL :: NATINT /;"	v	module:INTCOMMONS
 NATINTSETUP	optim.intcoords.f90	/^     SUBROUTINE NATINTSETUP$/;"	s	module:INTCUTILS
-NATOMS	commons.f90	/^INTEGER :: NATOMS=/;"	v	module:COMMONS
 NATOMS	g.commons.f90	/^      INTEGER :: NATOMS,/;"	v	module:COMMONS
 NATOMS	g.commons.o.f90	/^      INTEGER :: NATOMS,/;"	v	module:COMMONS
 NATOMS	optim.commons.f90	/^      INTEGER :: NATOMS$/;"	v	module:COMMONS
@@ -8008,9 +7906,9 @@ NCONSTRAINT	optim.key.f90	/^     &        NNREPULSIVE, NEBRESEEDPOW1, NEBRESEEDP
 NCONSTRAINTON	optim.key.f90	/^     &        INTCONSEP, PATOM1, PATOM2, INTREPSEP, NCONSTRAINTON,/;"	v	module:KEY
 NCOOP	g.commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP,/;"	v	module:COMMONS
 NCOOP	g.commons.o.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP,/;"	v	module:COMMONS
-NCORE	commons.f90	/^INTEGER :: NCORE$/;"	v	module:COMMONS
 NCORE	g.commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ, BLOCK, JUMPINT, JUMPTO, NCORE,/;"	v	module:COMMONS
 NCORE	g.commons.o.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ, BLOCK, JUMPINT, JUMPTO, NCORE,/;"	v	module:COMMONS
+NCORE	v.f90	/^INTEGER :: NCORE$/;"	v	module:V
 NCPCONMAX	optim.key.f90	/^      INTEGER :: INTCONMAX=10, NCPCONMAX=/;"	v	module:KEY
 NCPCONSTRAINT	optim.key.f90	/^     &        NCPREPULSIVE, NCPCONSTRAINT,/;"	v	module:KEY
 NCPREPMAX	optim.key.f90	/^      INTEGER :: NREPMAX=10, NCPREPMAX=/;"	v	module:KEY
@@ -8029,7 +7927,7 @@ NDIHEDRALS	g.modamb.f90	/^      INTEGER  match,bean,bondnumber,t, NDIHEDRALS$/;"
 NDIHEDRALS	optim.modamber.f90	/^      INTEGER NDIHEDRALS$/;"	v	module:MODAMBER
 NDIIA	optim.key.f90	/^     &        FIXAFTER, NBOXTS, NREPELTS, REPELFROM, BHSTEPS, BHSTEPSMIN, KADJUSTFRQ, GUPTATYPE, &$/;"	v	module:KEY
 NDIIS	optim.gdiis.f90	/^      INTEGER, PARAMETER :: NDIIS=/;"	v	module:GDIIS
-NDONE	mc.vars.inc.f90	/^      INTEGER ITERATIONS,JACCPREV,QDONE,NDONE$/;"	v
+NDONE	mc.vars.i.f90	/^      INTEGER ITERATIONS,QDONE,NDONE$/;"	v
 NDONTMOVE	g.commons.f90	/^      INTEGER :: NDONTMOVE,/;"	v	module:COMMONS
 NDONTMOVE	g.commons.o.f90	/^      INTEGER :: NDONTMOVE,/;"	v	module:COMMONS
 NDUMMY	g.main.F	/^      INTEGER, ALLOCATABLE :: NDUMMY(/;"	v	program:GMIN
@@ -8120,9 +8018,9 @@ NEWROTGEOMSTOCK	optim.newmindist.f90	/^SUBROUTINE NEWROTGEOMSTOCK(/;"	s
 NEWTIP	g.newtip.f90	/^      SUBROUTINE NEWTIP(/;"	s
 NEWTIP	optim.newtip.f90	/^      SUBROUTINE NEWTIP /;"	s
 NEXT	optim.gsdata.f90	/^     TYPE(IMGNODE), POINTER :: NEXT$/;"	k	type:IMGNODE
-NFAIL	mc.vars.inc.f90	/^      INTEGER NFAIL,/;"	v
+NFAIL	mc.vars.i.f90	/^      INTEGER NFAIL,/;"	v
 NFAILMAX	optim.key.f90	/^     &        MMUPDATE, NEBMUPDATE, INTMUPDATE, FILTH, FILTH2, NFAILMAX,/;"	v	module:KEY
-NFAILT	mc.vars.inc.f90	/^      INTEGER NFAIL, NFAILT,/;"	v
+NFAILT	mc.vars.i.f90	/^      INTEGER NFAIL, NFAILT,/;"	v
 NFINISH	pathsample.nodes.f90	/^     INTEGER NSTART, NFINISH,/;"	v	module:NODES
 NFINISH2	pathsample.nodes.f90	/^     INTEGER NSTART, NFINISH, NSTART2, NFINISH2,/;"	v	module:NODES
 NFIX	g.commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE, SHELLMOVEMAX, HPTGRP, NFIX,/;"	v	module:COMMONS
@@ -8245,7 +8143,6 @@ NOSHIFT	optim.key.f90	/^     &        INDEXT, LANCZOST, NOSHIFT,/;"	v	module:KEY
 NO_zero	optim.amhglobals.f	/^        double precision sigma_h,sigma_NO,ho_zero,NO_zero$/;"	v	module:amhglobals
 NPAHT	g.commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT,/;"	v	module:COMMONS
 NPAHT	g.commons.o.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT,/;"	v	module:COMMONS
-NPAIRS	commons.f90	/^INTEGER :: NPAIRS$/;"	v	module:COMMONS
 NPAIRS	g.commons.f90	/^      INTEGER :: NPAIRS$/;"	v	module:COMMONS
 NPAIRS	g.commons.o.f90	/^      INTEGER :: NPAIRS$/;"	v	module:COMMONS
 NPAR	g.commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR,/;"	v	module:COMMONS
@@ -8272,7 +8169,6 @@ NPS	g.commons.o.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS,/;"	v	module
 NPTOTAL	g.main.F	/^      INTEGER J1,J2, JP, MPIERR, NDUMMY3,NPTOTAL,/;"	v	program:GMIN
 NPYSITE	g.commons.f90	/^      INTEGER  NGBSITE, NPYSITE,/;"	v	module:COMMONS
 NPYSITE	g.commons.o.f90	/^      INTEGER  NGBSITE, NPYSITE,/;"	v	module:COMMONS
-NQ	commons.f90	/^INTEGER :: NQ$/;"	v	module:COMMONS
 NQ	g.commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ,/;"	v	module:COMMONS
 NQ	g.commons.o.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NT, NQ,/;"	v	module:COMMONS
 NQUENCH	g.commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH,/;"	v	module:COMMONS
@@ -8312,9 +8208,9 @@ NS	g.commons.f90	/^     &        NINTV, NSE/;"	v	module:COMMONS
 NS	g.commons.o.f90	/^     &        NINTV, NSE/;"	v	module:COMMONS
 NSACCEPT	g.commons.f90	/^     &        NSUPER, NSACCEPT,/;"	v	module:COMMONS
 NSACCEPT	g.commons.o.f90	/^     &        NSUPER, NSACCEPT,/;"	v	module:COMMONS
-NSAVE	commons.f90	/^INTEGER :: NSAVE=/;"	v	module:COMMONS
 NSAVE	g.commons.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE,/;"	v	module:COMMONS
 NSAVE	g.commons.o.f90	/^     &        NINTV, NSEED, NVEC, NS, NSSTOP, MAXIT2, NSAVE,/;"	v	module:COMMONS
+NSAVE	v.f90	/^INTEGER :: NSAVE=/;"	v	module:V
 NSAVEINTE	g.commons.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR, TIPID, PAHID, NSYMREM=0, NFREEZE, NSAVEINTE,/;"	v	module:COMMONS
 NSAVEINTE	g.commons.o.f90	/^      INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR, TIPID, PAHID, NSYMREM=0, NFREEZE, NSAVEINTE,/;"	v	module:COMMONS
 NSCP_GR	optim.modunres.f90	/^     &           ITEL,ITYPRO,IELSTART,IELEND,NSCP_GR,/;"	v	module:MODUNRES
@@ -8343,11 +8239,11 @@ NSTART2	pathsample.nodes.f90	/^     INTEGER NSTART, NFINISH, NSTART2,/;"	v	modul
 NSTEP	g.vgw.f90	/^     INTEGER, SAVE :: N_ATOM, N3_ATOM, CONPOT, NSTEP$/;"	v	module:VGWSP
 NSTEPMIN	optim.key.f90	/^     &        NEVL, NEVS, NHCHECK, NHUP=0, NSTHUP, INTHUP, XMUL, NSTEPMIN,/;"	v	module:KEY
 NSTEPNEB	optim.modneb.f90	/^      INTEGER :: NSTEPNEB,/;"	v	module:MODNEB
-NSTEPS	mc.vars.inc.f90	/^      INTEGER,INTENT(IN) :: NSTEPS$/;"	v
+NSTEPS	mc.vars.i.f90	/^      INTEGER, INTENT(IN) :: NSTEPS$/;"	v
 NSTEPS	optim.key.f90	/^      INTEGER :: NSUMMARY, NADM, MSTEPS, BFGSSTEPS, NSTEPS,/;"	v	module:KEY
 NSTHUP	optim.key.f90	/^     &        NEVL, NEVS, NHCHECK, NHUP=0, NSTHUP,/;"	v	module:KEY
-NSUCCESS	mc.vars.inc.f90	/^      INTEGER NFAIL, NFAILT, NSUCCESS,/;"	v
-NSUCCESST	mc.vars.inc.f90	/^      INTEGER NFAIL, NFAILT, NSUCCESS, NSUCCESST$/;"	v
+NSUCCESS	mc.vars.i.f90	/^      INTEGER NFAIL, NFAILT, NSUCCESS,/;"	v
+NSUCCESST	mc.vars.i.f90	/^      INTEGER NFAIL, NFAILT, NSUCCESS, NSUCCESST$/;"	v
 NSUMMARY	optim.key.f90	/^      INTEGER :: NSUMMARY,/;"	v	module:KEY
 NSUPER	g.commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP, NSYMINTERVAL, QDLIMIT, COULN, &$/;"	v	module:COMMONS
 NSUPER	g.commons.o.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP, NSYMINTERVAL, QDLIMIT, COULN, &$/;"	v	module:COMMONS
@@ -8388,7 +8284,6 @@ NTYPE	optim.main.f90	/^      INTEGER J2, NELEMENTS, LSYS, NTYPE(/;"	v	program:OP
 NTempPoints	g.commons.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints,/;"	v	module:COMMONS
 NTempPoints	g.commons.o.f90	/^     &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints,/;"	v	module:COMMONS
 NUBONDS	optim.intcommons.f90	/^  INTEGER :: NUBONDS=/;"	v	module:INTCOMMONS
-NUMBER_OF_ATOMS	func.f90	/^INTEGER :: NUMBER_OF_ATOMS$/;"	v	module:FUNC
 NUMBER_OF_ATOMS	g.countatoms.f90	/^      INTEGER :: NUMBER_OF_ATOMS$/;"	v	module:NOA
 NUMBER_OF_ATOMS	g.func.f90	/^INTEGER :: NUMBER_OF_ATOMS$/;"	v	module:FUNC
 NUMBER_OF_ATOMS	gmin.func.f90	/^INTEGER :: NUMBER_OF_ATOMS$/;"	v	module:FUNC
@@ -8497,7 +8392,6 @@ OPENF	func.f90	/^SUBROUTINE OPENF(/;"	s	module:FUNC
 OPENF	g.func.f90	/^SUBROUTINE OPENF(/;"	s	module:FUNC
 OPENF	gmin.func.f90	/^SUBROUTINE OPENF(/;"	s	module:FUNC
 OPENINPUT	g.io_sanity.f90	/^FUNCTION OPENINPUT(/;"	f
-OPENIOSTAT	func.f90	/^     SUBROUTINE OPENIOSTAT(/;"	s
 OPENIOSTAT	pathsample.utils.f90	/^     SUBROUTINE OPENIOSTAT(/;"	s	module:UTILS
 OPTIM	optim.OPTIM.F	/^      SUBROUTINE OPTIM(/;"	s
 OPTIM	optim.func.f90	/^      SUBROUTINE OPTIM(/;"	s
@@ -8527,7 +8421,6 @@ ORTHOGTH	optim.thomson.f	/^      SUBROUTINE ORTHOGTH(/;"	s
 OSASAT	g.modcharmm.f90	/^      LOGICAL :: OSASAT,/;"	v	module:MODCHARMM
 OSASAT	optim.modcharmm.f90	/^      LOGICAL :: CALCDIHE,OSASAT,/;"	v	module:modcharmm
 OST	g.pymodule.f90	/^       DOUBLE PRECISION, ALLOCATABLE :: PST(:,:),OST(/;"	v	module:PYMODULE
-OSTEP	commons.f90	/^DOUBLE PRECISION :: OSTEP=/;"	v	module:COMMONS
 OSTEP	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP,/;"	v	module:COMMONS
 OSTEP	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP,/;"	v	module:COMMONS
 OSTRING	optim.main.f90	/^      CHARACTER(LEN=20) OTEMP, OSTRING,/;"	v	program:OPTIM4
@@ -8542,7 +8435,6 @@ OVERL	g.frausi.f	/^      SUBROUTINE OVERL(/;"	s
 P	optim.msevb_common.f90	/^  DOUBLE PR/;"	v	module:msevb_common
 P	pathsample.GT2data.f90	/^          type(RealList),pointer :: P$/;"	k	type:Node
 P	pathsample.GT2data.f90	/^     double precision,dimension(:,:),allocatable :: P$/;"	v	module:DataModule
-P46	commons.f90	/^LOGICAL P46=/;"	v	module:COMMONS
 P46	g.commons.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46,/;"	v	module:COMMONS
 P46	g.commons.o.f90	/^     &        SYMMETRIZE, SYMMETRIZECSM, DUMPT, NEON, ARGON, P46,/;"	v	module:COMMONS
 P46MERDIFF	g.p46merdiff.f	/^        SUBROUTINE P46MERDIFF(/;"	s
@@ -8566,14 +8458,12 @@ PAHT	g.commons.o.f90	/^     &        OTPT, LJMFT, STRANDT, PAHT,/;"	v	module:COM
 PAHW99	g.pahw99.f90	/^      SUBROUTINE PAHW99(/;"	s
 PAHW99T	g.commons.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT, NTIPT, PAHW99T,/;"	v	module:COMMONS
 PAHW99T	g.commons.o.f90	/^     &        MSGBT, MSPYGT, MSTBINT, MMRSDPT, MSSTOCKT, LWOTPT, NCAPT, NPAHT, NTIPT, PAHW99T,/;"	v	module:COMMONS
-PAIRDIST	commons.f90	/^INTEGER, ALLOCATABLE :: PAIRDIST(/;"	v	module:COMMONS
 PAIRDIST	g.commons.f90	/^      INTEGER, ALLOCATABLE :: PAIRDIST(/;"	v	module:COMMONS
 PAIRDIST	g.commons.o.f90	/^      INTEGER, ALLOCATABLE :: PAIRDIST(/;"	v	module:COMMONS
 PAIRDISTANCE	g.operations.f90	/^FUNCTION PAIRDISTANCE(/;"	f
-PAIRDISTT	commons.f90	/^LOGICAL :: PAIRDISTT$/;"	v	module:COMMONS
 PAIRDISTT	g.commons.f90	/^      LOGICAL :: PAIRDISTT$/;"	v	module:COMMONS
 PAIRDISTT	g.commons.o.f90	/^      LOGICAL :: PAIRDISTT$/;"	v	module:COMMONS
-PAIRDIST_FH	commons.f90	/^INTEGER :: PAIRDIST_FH=/;"	v	module:COMMONS
+PAIRDIST_FH	v.files.i.f90	/^INTEGER :: PAIRDIST_FH=/;"	v
 PAIRDOUBLE	pathsample.pairdouble.f90	/^SUBROUTINE PAIRDOUBLE$/;"	s
 PARALLEL	optim.key.f90	/^     &        DOUBLET, REOPT, PARALLEL,/;"	v	module:KEY
 PARALLELT	g.commons.f90	/^     &        SORTT, HIT, SAVEQ, PARALLELT,/;"	v	module:COMMONS
@@ -8869,7 +8759,6 @@ PTTMAX	g.commons.o.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, Extrap
 PTTMIN	g.commons.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent, lnHarmFreq, PTEMIN, PTEMAX, PTTMIN,/;"	v	module:COMMONS
 PTTMIN	g.commons.o.f90	/^     &                 RK_R, RK_THETA,ARMA,ARMB, ExtrapolationPercent, lnHarmFreq, PTEMIN, PTEMAX, PTTMIN,/;"	v	module:COMMONS
 PTYPE	bln.vars.inc.f90	/^        CHARACTER(LEN=*) :: PTYPE$/;"	v
-PULLT	commons.f90	/^LOGICAL PULLT=/;"	v	module:COMMONS
 PULLT	g.commons.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT,/;"	v	module:COMMONS
 PULLT	g.commons.o.f90	/^     &        LJSITECOORDST, VGW, ACKLANDT, G46, DF1T, PULLT,/;"	v	module:COMMONS
 PULLT	optim.key.f90	/^     &        RINGPOLYMERT, SDT, BOWMANT, PULLT,/;"	v	module:KEY
@@ -8986,7 +8875,7 @@ QD2T	g.commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEnd
 QD2T	g.commons.o.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT, MOVESHELLT, QDT, QD2T,/;"	v	module:COMMONS
 QDLIMIT	g.commons.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP, NSYMINTERVAL, QDLIMIT,/;"	v	module:COMMONS
 QDLIMIT	g.commons.o.f90	/^     &        MCSTEPS(3), NRUNS, NVAR, MYPOWER, XMUL,  NTAB, NCARBON, NCOOP, NSYMINTERVAL, QDLIMIT,/;"	v	module:COMMONS
-QDONE	mc.vars.inc.f90	/^      INTEGER ITERATIONS,JACCPREV,QDONE,/;"	v
+QDONE	mc.vars.i.f90	/^      INTEGER ITERATIONS,QDONE,/;"	v
 QDT	g.commons.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT, MOVESHELLT, QDT,/;"	v	module:COMMONS
 QDT	g.commons.o.f90	/^     &        TETHER, HISTSMOOTH, VISITPROP, ARMT, FixedEndMoveT, FIXCOM, RESTORET, QUADT, AMHT, MOVESHELLT, QDT,/;"	v	module:COMMONS
 QDTEST	g.qdtest.f	/^      SUBROUTINE QDTEST(/;"	s
@@ -8996,11 +8885,9 @@ QEXCHH	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: QEXCHH /;"	v	mo
 QEXCHO	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: QEXCHO /;"	v	module:msevb_common
 QINTERH	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: QINTERH /;"	v	module:msevb_common
 QINTERO	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: QINTERO /;"	v	module:msevb_common
-QMIN	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE :: QMIN(/;"	v	module:COMMONS
 QMIN	g.qmodule.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMIN(/;"	v	module:QMODULE
 QMINAV	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(:,:), CSMAV(:), QMINAV(/;"	v	module:COMMONS
 QMINAV	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(:,:), CSMAV(:), QMINAV(/;"	v	module:COMMONS
-QMINP	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE :: QMINP(/;"	v	module:COMMONS
 QMINP	g.qmodule.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(/;"	v	module:QMODULE
 QMINPCSMAV	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(/;"	v	module:COMMONS
 QMINPCSMAV	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINPCSMAV(/;"	v	module:COMMONS
@@ -9050,7 +8937,6 @@ R	optim.double.f	/^     1                 V(3*N), R,/;"	v
 R	optim.modamber.f90	/^      DOUBLE PRE/;"	v	module:MODAMBER
 R2	optim.double.f	/^      DOUBLE PRECISION X(3*N), VD(6), R2,/;"	v
 RAD	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(15) :: RAD,/;"	v
-RAD	func.f90	/^      SUBROUTINE RAD(/;"	s	module:FUNC
 RAD	g.rad.f	/^      SUBROUTINE RAD(/;"	s
 RAD	g.vgw.f90	/^  DOUBLE PRECISION :: Q(3*N), RCM(3), CV(3), CR, RAD$/;"	v
 RAD	gmin.func.f90	/^      SUBROUTINE RAD(/;"	s	module:FUNC
@@ -9063,11 +8949,11 @@ RADIUS	g.commons.o.f90	/^     &                 CQMAX, RADIUS,/;"	v	module:COMMO
 RADIUS	optim.key.f90	/^      DOUBLE PRECISION :: TRAD, RESIZE, JZ, PUSHOFF, TOLD, TOLE, PCUT, DAMP, RADIUS,/;"	v	module:KEY
 RADIUS	pathsample.rigidbody.f90	/^     REAL (KIND=KIND(0.0D0)) :: RHO, RADIUS,/;"	k	type:CAPSOMER
 RADIUS	pathsample.rigidbodymod.f90	/^     DOUBLE PRECISION :: RHO, RADIUS,/;"	k	type:CAPSOMER
-RADR	func.f90	/^      SUBROUTINE RADR(/;"	s	module:FUNC
+RADIUS	v.mc.i.f90	/^     DOUBLE PRECISION :: RADIUS=/;"	v
 RADR	g.rad.f	/^      SUBROUTINE RADR(/;"	s
 RADR	gmin.func.f90	/^      SUBROUTINE RADR(/;"	s	module:FUNC
 RADS	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: RADS /;"	v	module:msevb_common
-RANDDP	func.f90	328;"	c	subroutine:SDPRND
+RANDDP	func.f90	281;"	c	subroutine:SDPRND
 RANDDP	g.dprand.f	18;"	c	subroutine:SDPRND
 RANDDP	g.dprand.f	62;"	c	function:DPRAND
 RANDDP	optim.dprand.f	12;"	c	subroutine:SDPRND
@@ -9145,43 +9031,34 @@ RCONSTKOB	optim.ljpkob.f	264;"	c	subroutine:LJPKOBG
 RCONSTKOB	optim.ljpkob.f	326;"	c	subroutine:LJPKOBS
 RCONSTKOB	optim.ljpkob.f	54;"	c	subroutine:LJPKOB
 RCUTOFF	g.modamb.f90	/^      DOUBLE PRECISION  QCUTOFF, RCUTOFF,/;"	v	module:MODAMBER
-READA	func.f90	/^      SUBROUTINE READA(/;"	s
 READA	g.input.f	/^      SUBROUTINE READA(/;"	s
 READA	optim.input.f	/^      SUBROUTINE READA(/;"	s
 READA	pathsample.input.f	/^      SUBROUTINE READA(/;"	s
-READCH	func.f90	/^      SUBROUTINE READCH(/;"	s
 READCH	g.input.f	/^      SUBROUTINE READCH(/;"	s
 READCH	optim.input.f	/^      SUBROUTINE READCH(/;"	s
 READCH	pathsample.input.f	/^      SUBROUTINE READCH(/;"	s
-READF	func.f90	/^      SUBROUTINE READF(/;"	s
 READF	g.input.f	/^      SUBROUTINE READF(/;"	s
 READF	optim.input.f	/^      SUBROUTINE READF(/;"	s
 READF	pathsample.input.f	/^      SUBROUTINE READF(/;"	s
 READHESS	optim.key.f90	/^     &        ALLSTEPS, ALLVECTORS, MWVECTORS, WELCH, BINARY, AMBER, READHESS,/;"	v	module:KEY
-READI	func.f90	/^      SUBROUTINE READI(/;"	s
 READI	g.input.f	/^      SUBROUTINE READI(/;"	s
 READI	optim.input.f	/^      SUBROUTINE READI(/;"	s
 READI	pathsample.input.f	/^      SUBROUTINE READI(/;"	s
 READINPUT	pathsample.GT2input.f90	/^     SUBROUTINE READINPUT(/;"	s	module:INPUTMODULE
-READK	func.f90	/^      SUBROUTINE READK(/;"	s
 READK	g.input.f	/^      SUBROUTINE READK(/;"	s
 READK	optim.input.f	/^      SUBROUTINE READK(/;"	s
 READK	pathsample.input.f	/^      SUBROUTINE READK(/;"	s
-READL	func.f90	/^      ENTRY READL(/;"	e	subroutine:READU
 READL	g.input.f	/^      ENTRY READL(/;"	e	subroutine:READU
 READL	optim.input.f	/^      ENTRY READL(/;"	e	subroutine:READU
 READL	pathsample.input.f	/^      ENTRY READL(/;"	e	subroutine:READU
 READMINIMA	pathsample.dock.f90	/^SUBROUTINE READMINIMA$/;"	s	module:DOCKMODULE
-READREF	func.f90	/^      SUBROUTINE READREF(/;"	s
 READREF	optim.chdummy.f	/^      SUBROUTINE READREF(/;"	s
 READRST	g.io_sanity.f90	/^FUNCTION READRST(/;"	f
-READSNGL	func.f90	/^      SUBROUTINE READSNGL(/;"	s
 READSNGL	g.input.f	/^      SUBROUTINE READSNGL(/;"	s
 READSNGL	optim.input.f	/^      SUBROUTINE READSNGL(/;"	s
 READSNGL	pathsample.input.f	/^      SUBROUTINE READSNGL(/;"	s
 READSP	optim.key.f90	/^     &        TOSIC6, TOSIPOL, FIXIMAGE, DFTBT, CHECKCONT, SHIFTED, READSP,/;"	v	module:KEY
 READTOBUFFER	g.io_sanity.f90	/^FUNCTION READTOBUFFER(/;"	f
-READU	func.f90	/^      SUBROUTINE READU(/;"	s
 READU	g.input.f	/^      SUBROUTINE READU(/;"	s
 READU	optim.input.f	/^      SUBROUTINE READU(/;"	s
 READU	pathsample.input.f	/^      SUBROUTINE READU(/;"	s
@@ -9259,7 +9136,6 @@ REPELTS	optim.key.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: R
 REPELTST	optim.key.f90	/^     &        DOUBLET, REOPT, PARALLEL, LINEMIN, FIXD, KEEPINDEX, BSMIN, PRINTPTS, RKMIN, REPELTST,/;"	v	module:KEY
 REPI	optim.key.f90	/^      INTEGER, ALLOCATABLE :: REPI(/;"	v	module:KEY
 REPJ	optim.key.f90	/^      INTEGER, ALLOCATABLE :: REPI(:), REPJ(/;"	v	module:KEY
-REPORT	func.f90	/^      SUBROUTINE REPORT(/;"	s
 REPORT	g.input.f	/^      SUBROUTINE REPORT(/;"	s
 REPORT	optim.input.f	/^      SUBROUTINE REPORT(/;"	s
 REPORT	pathsample.input.f	/^      SUBROUTINE REPORT(/;"	s
@@ -9274,7 +9150,6 @@ REQ12	g.commons.f90	/^     &                 EPS11, EPS22, EPS12, MRHO11, MRHO22
 REQ12	g.commons.o.f90	/^     &                 EPS11, EPS22, EPS12, MRHO11, MRHO22, MRHO12, REQ11, REQ22, REQ12,/;"	v	module:COMMONS
 REQ22	g.commons.f90	/^     &                 EPS11, EPS22, EPS12, MRHO11, MRHO22, MRHO12, REQ11, REQ22,/;"	v	module:COMMONS
 REQ22	g.commons.o.f90	/^     &                 EPS11, EPS22, EPS12, MRHO11, MRHO22, MRHO12, REQ11, REQ22,/;"	v	module:COMMONS
-REREAD	func.f90	/^      SUBROUTINE REREAD(/;"	s
 REREAD	g.input.f	/^      SUBROUTINE REREAD(/;"	s
 REREAD	optim.input.f	/^      SUBROUTINE REREAD(/;"	s
 REREAD	pathsample.input.f	/^      SUBROUTINE REREAD(/;"	s
@@ -9375,7 +9250,6 @@ RK_THETA	g.commons.o.f90	/^     &                 RK_R, RK_THETA,/;"	v	module:CO
 RK_THETA	optim.key.f90	/^     &        OMEGA, GALPHA, MALPHA1, FOH, FIH, FTD, FD5H, T12FAC, PRESS, MAXERISE, RK_R, RK_THETA,/;"	v	module:KEY
 RM	optim.ttm3f.f90	/^double precision, dimension(:,:), allocatable :: RM$/;"	v	module:ttm3f_mod
 RMASS	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS,/;"	v
-RMASS	commons.f90	/^DOUBLE PRECISION ::     RMASS(/;"	v	module:COMMONS
 RMAT	optim.vars.f90	/^DOUBLE PRECISION :: RMAT(/;"	v	module:VARS
 RMDFAS	optim.rigidb.f90	/^      SUBROUTINE RMDFAS(/;"	s
 RMDRVT	g.rigidbaa.f90	/^      SUBROUTINE RMDRVT(/;"	s
@@ -9394,7 +9268,7 @@ RMSSAVE	g.modcharmm.f90	/^      INTEGER :: CHMDFREQ, CHFREQ, FTRANS, FROT, RMSSA
 RMST	g.modcharmm.f90	/^      LOGICAL :: GCHARMMFAIL,CHRIGIDTRANST, CHRIGIDROTT, BOXT, RMST,/;"	v	module:MODCHARMM
 RMSTOL	g.modcharmm.f90	/^      DOUBLE PRECISION :: PTRANS,PROT,TRANSMAX,ROTMAX,RMSLIMIT,RMSTOL,/;"	v	module:MODCHARMM
 RMSTWO	optim.modtwoend.f90	/^      DOUBLE PRECISION :: FSTART, FINC, RMSTWO,/;"	v	module:MODTWOEND
-RND	commons.f90	/^DOUBLE PRECISION ::     RND(/;"	v	module:COMMONS
+RND	v.f90	/^DOUBLE PRECISION ::     RND(/;"	v	module:V
 RO	optim.modamber.f90	/^      DOUBLE PRECISION KR(42,42),RO(/;"	v	module:MODAMBER
 ROHEQ	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: ROHEQ /;"	v	module:msevb_common
 ROOEQ	optim.msevb_common.f90	/^  DOUBLE PRECISION, PARAMETER :: ROOEQ /;"	v	module:msevb_common
@@ -9459,8 +9333,6 @@ RUNTYPE	optim.meccano.f90	263;"	c	subroutine:MECBFGS
 RUNTYPE	optim.mylbfgs.f	72;"	c	subroutine:MYLBFGS
 RUNTYPE	optim.path.f	88;"	c	subroutine:PATH
 RUNTYPE	optim.unmeccano.f90	229;"	c	subroutine:UNMECBFGS
-RVAT	mc.vars.inc.f90	/^      DOUBLE PRECISION, DIMENSION(NATOMS) :: RVAT,/;"	v
-RVATO	mc.vars.inc.f90	/^      DOUBLE PRECISION, DIMENSION(NATOMS) :: RVAT, RVATO$/;"	v
 RWG	optim.intlbfgs.f90	/^SUBROUTINE RWG(/;"	s
 RZEXTR	optim.odesd.f	/^      SUBROUTINE RZEXTR(/;"	s
 ReadInpFile	optim.binaryio.f90	/^     subroutine ReadInpFile(/;"	s	module:BinaryIO
@@ -9481,7 +9353,7 @@ SAVESTATE	pathsample.savestate.f90	/^MODULE SAVESTATE$/;"	m
 SBEG	g.mylapack.f	/^      FUNCTION SBEG(/;"	f
 SBEG	optim.mylapack.f	/^      FUNCTION SBEG(/;"	f
 SC	g.sc.f	/^      SUBROUTINE SC(/;"	s
-SCALEFAC	mc.vars.inc.f90	/^      DOUBLE PRECISION,INTENT(IN) :: SCALEFAC /;"	v
+SCALEFAC	mc.vars.i.f90	/^      DOUBLE PRECISION, INTENT(IN) :: SCALEFAC /;"	v
 SCC	g.commons.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS, SCC,/;"	v	module:COMMONS
 SCC	g.commons.o.f90	/^     DOUBLE PRECISION RHO, GAMMA, SIG, SCEPS, SCC,/;"	v	module:COMMONS
 SCDIFF	optim.scdiff.f	/^      SUBROUTINE SCDIFF(/;"	s
@@ -9503,7 +9375,7 @@ SCLOCAL	optim.modunres.f90	51;"	c	module:MODUNRES
 SCORE_QUEUE	optim.key.f90	/^      LOGICAL :: SCORE_QUEUE$/;"	v	module:KEY
 SCREENC	g.main.F	/^      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(/;"	v	program:GMIN
 SCREENC	gmin.main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(/;"	v	program:GMIN
-SCREENC	mc.vars.inc.f90	/^      DOUBLE PRECISION, INTENT(INOUT) :: SCREENC(/;"	v
+SCREENC	mc.vars.i.f90	/^      DOUBLE PRECISION, INTENT(INOUT) :: SCREENC(/;"	v
 SCT	g.commons.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT,/;"	v	module:COMMONS
 SCT	g.commons.o.f90	/^     &        MSORIGT, SQUEEZET, PERIODIC, SCT,/;"	v	module:COMMONS
 SDCHARGE	optim.key.f90	/^     &        NRBTRIES, REDOTSIM, REDOBFGSSTEPS, RPIMAGES, RPDOF, SDOXYGEN, SDHYDROGEN, SDCHARGE,/;"	v	module:KEY
@@ -9511,7 +9383,7 @@ SDHYDROGEN	optim.key.f90	/^     &        NRBTRIES, REDOTSIM, REDOBFGSSTEPS, RPIM
 SDIFF	g.mylapack.f	/^      FUNCTION SDIFF(/;"	f
 SDIFF	optim.mylapack.f	/^      FUNCTION SDIFF(/;"	f
 SDOXYGEN	optim.key.f90	/^     &        NRBTRIES, REDOTSIM, REDOBFGSSTEPS, RPIMAGES, RPDOF, SDOXYGEN,/;"	v	module:KEY
-SDPRND	func.f90	/^     SUBROUTINE SDPRND /;"	s
+SDPRND	func.f90	/^SUBROUTINE SDPRND /;"	s
 SDPRND	g.dprand.f	/^        SUBROUTINE SDPRND /;"	s
 SDPRND	optim.dprand.f	/^        SUBROUTINE SDPRND /;"	s
 SDPRND	pathsample.sdprnd.f	/^        SUBROUTINE SDPRND(/;"	s
@@ -9625,12 +9497,11 @@ SITEPOS	optim.rbperm.f90	/^      SUBROUTINE SITEPOS(/;"	s
 SITEPOS	pathsample.rbperm.f90	/^      SUBROUTINE SITEPOS(/;"	s
 SITESINTERACT	pathsample.rigidbody.f90	/^  LOGICAL, ALLOCATABLE :: SITESINTERACT(/;"	v	module:RIGIDBODY
 SITESINTERACT	pathsample.rigidbodymod.f90	/^  LOGICAL, ALLOCATABLE :: SITESINTERACT(/;"	v	module:RIGIDBODYMOD
-SKIPBL	func.f90	/^      LOGICAL SKIPBL,/;"	v	block data:INBLK
 SKIPBL	g.input.f	/^      LOGICAL SKIPBL,/;"	v	block data:INBLK
 SKIPBL	optim.input.f	/^      LOGICAL SKIPBL,/;"	v	block data:INBLK
 SKIPBL	optim.main.f90	/^      LOGICAL VARIABLES,CASTEP,ONETEP,CP2K,DFTP,CPMD,END,CAT,SKIPBL,/;"	v	program:OPTIM4
 SKIPBL	pathsample.input.f	/^      LOGICAL SKIPBL,/;"	v	block data:INBLK
-SLEN	commons.f90	/^INTEGER, PARAMETER :: SLEN=/;"	v	module:COMMONS
+SLEN	v.f90	/^INTEGER, PARAMETER :: SLEN=/;"	v	module:V
 SMAKE	g.mylapack.f	/^      SUBROUTINE SMAKE(/;"	s
 SMAKE	optim.mylapack.f	/^      SUBROUTINE SMAKE(/;"	s
 SMALLANGLE	pathsample.rigidbody.f90	/^  REAL (KIND=KIND(0.0D0)), PARAMETER :: SMALLANGLE /;"	v	module:RIGIDBODY
@@ -9676,7 +9547,6 @@ SPFUNCTS	optim.specialfuncts.f90	/^MODULE SPFUNCTS$/;"	m
 SPHERERAD	g.modcharmm.f90	/^      DOUBLE PRECISION :: PTRANS,PROT,TRANSMAX,ROTMAX,RMSLIMIT,RMSTOL,NCWALL,BOXSIZE,SPHERERAD$/;"	v	module:MODCHARMM
 SPHERET	g.modcharmm.f90	/^      LOGICAL :: GCHARMMFAIL,CHRIGIDTRANST, CHRIGIDROTT, BOXT, RMST, SPHERET,/;"	v	module:MODCHARMM
 SPLIT	stringmod.f90	/^SUBROUTINE SPLIT(/;"	s	module:strings
-SQMAX	commons.f90	/^DOUBLE PRECISION :: SQMAX$/;"	v	module:COMMONS
 SQUEEZED	g.commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP, SQUEEZER, SQUEEZED,/;"	v	module:COMMONS
 SQUEEZED	g.commons.o.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP, SQUEEZER, SQUEEZED,/;"	v	module:COMMONS
 SQUEEZER	g.commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP, SQUEEZER,/;"	v	module:COMMONS
@@ -9724,7 +9594,6 @@ STD_ORIENT	optim.connect.f	/^      SUBROUTINE STD_ORIENT(/;"	s
 STD_ORIENT2D	optim.connect.f	/^      SUBROUTINE STD_ORIENT2D(/;"	s
 STEEREDMINT	g.modamber9.f90	/^LOGICAL :: STEEREDMINT,/;"	v	module:MODAMBER9
 STEEREDMINT	optim.modamber9.f90	/^LOGICAL STEEREDMINT,/;"	v	module:modamber9
-STEP	commons.f90	/^DOUBLE PRECISION :: STEP=/;"	v	module:COMMONS
 STEP	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP,/;"	v	module:COMMONS
 STEP	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP,/;"	v	module:COMMONS
 STEP1	g.tn.f	/^      DOUBLE PRECISION FUNCTION STEP1(/;"	f
@@ -9914,12 +9783,11 @@ TAKESTEPPARAM	g.ljcapsidmodule.f90	/^SUBROUTINE TAKESTEPPARAM(/;"	s
 TAKESTEPSWAPMOVES	g.ljcapsidmodule.f90	/^SUBROUTINE TAKESTEPSWAPMOVES(/;"	s
 TANTYPE	optim.gsdata.f90	/^  INTEGER :: TANTYPE$/;"	k	type:IMGNODE
 TARFL	optim.key.f90	/^      CHARACTER(LEN=5) :: TARFL$/;"	v	module:KEY
-TARGET	commons.f90	/^LOGICAL TARGET=/;"	v	module:COMMONS
 TARGET	g.commons.f90	/^      LOGICAL DEBUG, TARGET,/;"	v	module:COMMONS
 TARGET	g.commons.o.f90	/^      LOGICAL DEBUG, TARGET,/;"	v	module:COMMONS
-TARGETS	commons.f90	/^DOUBLE PRECISION, DIMENSION(:) :: TARGETS$/;"	v	module:COMMONS
 TARGETS	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: TARGETS(/;"	v	module:COMMONS
 TARGETS	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: TARGETS(/;"	v	module:COMMONS
+TARGETS	v.mc.i.f90	/^     DOUBLE PRECISION, DIMENSION(:) :: TARGETS$/;"	v
 TAU	g.vgw.f90	/^     DOUBLE PRECISION, ALLOCATABLE, SAVE :: MASSARRY(:), TAU(/;"	v	module:VGWSP
 TAUMAX	g.commons.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH, COLDFUSIONLIMIT, NEWRES_TEMP, MINOMEGA, LJSIGMA, LJEPSILON, TAUMAX,/;"	v	module:COMMONS
 TAUMAX	g.commons.o.f90	/^     &                 PTSTEPS, NEQUIL, NQUENCH, COLDFUSIONLIMIT, NEWRES_TEMP, MINOMEGA, LJSIGMA, LJEPSILON, TAUMAX,/;"	v	module:COMMONS
@@ -9937,9 +9805,9 @@ TDT	g.commons.o.f90	/^      LOGICAL :: FIELDT, OHT, IHT, TDT,/;"	v	module:COMMON
 TDT	optim.key.f90	/^     &        VARIABLES, FIELDT, OHT, IHT, TDT,/;"	v	module:KEY
 TEIPS	g.modamber9.f90	/^      LOGICAL TSGLD,TLANGV,TEIPS,/;"	v	module:MODAMBER9
 TEIPS	optim.modamber9.f90	/^      LOGICAL TSGLD,TLANGV,TEIPS,/;"	v	module:modamber9
-TEMP	commons.f90	/^DOUBLE PRECISION :: TEMP=/;"	v	module:COMMONS
 TEMP	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP,/;"	v	module:COMMONS
 TEMP	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP,/;"	v	module:COMMONS
+TEMP	v.mc.i.f90	/^     DOUBLE PRECISION :: TEMP=/;"	v
 TEMPPARAM	g.modamber9.f90	/^      DOUBLE PRECISION, PARAMETER :: TEMPPARAM /;"	v	module:MODAMBER9
 TEMPPARAM	optim.modamber9.f90	/^      DOUBLE PRECISION, PARAMETER :: TEMPPARAM /;"	v	module:modamber9
 TEMPS	g.commons.f90	/^     &                 TFAC(3), RMS, TEMPS,/;"	v	module:COMMONS
@@ -9953,9 +9821,9 @@ TESTSYMOP	g.ptgrp.f	/^      SUBROUTINE TESTSYMOP(/;"	s
 TETHER	g.commons.f90	/^     &        MULTPAHAT, TDHDT, WATERDCT, WATERKZT, CHECKDT, CHECKMARKOVT, & $/;"	v	module:COMMONS
 TETHER	g.commons.o.f90	/^     &        MULTPAHAT, TDHDT, WATERDCT, WATERKZT, CHECKDT, CHECKMARKOVT, & $/;"	v	module:COMMONS
 TETRAHEDRA	g.tetrahedra.f90	/^      SUBROUTINE TETRAHEDRA /;"	s
-TFAC	commons.f90	/^DOUBLE PRECISION :: TFAC=/;"	v	module:COMMONS
 TFAC	g.commons.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP, SQUEEZER, SQUEEZED, COOPCUT, STOCKMU, STOCKLAMBDA, &$/;"	v	module:COMMONS
 TFAC	g.commons.o.f90	/^     &                 BOXLX, BOXLY, BOXLZ, PCUTOFF, SUPSTEP, SQUEEZER, SQUEEZED, COOPCUT, STOCKMU, STOCKLAMBDA, &$/;"	v	module:COMMONS
+TFAC	v.mc.i.f90	/^     DOUBLE PRECISION :: TFAC=/;"	v
 TFGRAD	optim.tosifumi.f	/^      SUBROUTINE TFGRAD(/;"	s
 TFIND	optim.tosifumi.f	/^      SUBROUTINE TFIND(/;"	s
 TFOLD	pathsample.Pfold.f90	/^SUBROUTINE TFOLD$/;"	s
@@ -9978,7 +9846,7 @@ THRESHOLDT	g.commons.o.f90	/^     &        FRAUSIT, ANGST, SELFT, STEPOUT, WENZE
 TIGHTE	optim.tight.f	/^      SUBROUTINE TIGHTE(/;"	s
 TIGHTG	optim.tight.f	/^      SUBROUTINE TIGHTG(/;"	s
 TIM	optim.gsdata.f90	/^  INTEGER :: TIM /;"	k	type:IMGNODE
-TIME	mc.vars.inc.f90	/^      DOUBLE PRECISION :: EBEST,EPREV,TIME,/;"	v
+TIME	mc.vars.i.f90	/^      DOUBLE PRECISION ::       TIME,/;"	v
 TIMELIMIT	optim.key.f90	/^     &        APP, AMM, APM, XQP,XQM, ALPHAP, ALPHAM, PHIG, SHIFTV, SHIFTL(6), DGUESS, XDGUESS, TIMELIMIT,/;"	v	module:KEY
 TINY	g.modamb.f90	/^      DOUBLE PRECISION TINY$/;"	v	module:MODAMBER
 TINY	optim.gsdata.f90	/^  DOUBLE PRECISION, PARAMETER :: TINY=/;"	k	type:IMGNODE
@@ -10026,8 +9894,8 @@ TOSIFUMIC6	optim.tosifumi.f	/^      SUBROUTINE TOSIFUMIC6(/;"	s
 TOSIFUMIPOL	optim.tosifumi.f	/^      SUBROUTINE TOSIFUMIPOL(/;"	s
 TOSIPOL	optim.key.f90	/^     &        TOSIC6, TOSIPOL,/;"	v	module:KEY
 TOT	g.io1.f	39;"	c	subroutine:IO1
-TOT	g.mc.F	1472;"	c	subroutine:REST
-TOT	g.mc.F	1619;"	c	subroutine:REN
+TOT	g.mc.F	1484;"	c	subroutine:REST
+TOT	g.mc.F	1636;"	c	subroutine:REN
 TOT	g.mc.F	39;"	c	subroutine:MC
 TOT	g.potential.f	56;"	c	subroutine:POTENTIAL
 TOT	g.saveit.f	104;"	c	subroutine:A9INTESAVEIT
@@ -10044,17 +9912,16 @@ TOTRES	optim.intcommons.f90	/^  INTEGER :: TOTBOND, TOTANG, TOTDIH, TOTRES!/;"	v
 TOTSTEPS	optim.gsdata.f90	/^  INTEGER :: MAXTOTSTEPS,/;"	k	type:IMGNODE
 TPAHA	g.commons.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE, NSYMQMAX, EQUIL, TPAHA,/;"	v	module:COMMONS
 TPAHA	g.commons.o.f90	/^     &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE, NSYMQMAX, EQUIL, TPAHA,/;"	v	module:COMMONS
-TRACKDATAT	commons.f90	/^LOGICAL TRACKDATAT=/;"	v	module:COMMONS
 TRACKDATAT	g.commons.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW, SUPERSTEP, EAMLJT, PBGLUET, TRACKDATAT,/;"	v	module:COMMONS
 TRACKDATAT	g.commons.o.f90	/^     &        STAR, PLUS, TWOPLUS, GROUND, DIPOLE, DFTBT, SW, SUPERSTEP, EAMLJT, PBGLUET, TRACKDATAT,/;"	v	module:COMMONS
 TRAD	optim.key.f90	/^      DOUBLE PRECISION :: TRAD,/;"	v	module:KEY
+TRAN	mc.f90	/^SUBROUTINE TRAN(/;"	s
 TRANS	g.trans.f	/^      DOUBLE PRECISION FUNCTION TRANS(/;"	f
 TRANSBACK	optim.chdummy.f	/^      SUBROUTINE TRANSBACK(/;"	s
 TRANSBACKDELTA	optim.chdummy.f	/^      SUBROUTINE TRANSBACKDELTA(/;"	s
 TRANSFORM	optim.chdummy.f	/^      SUBROUTINE TRANSFORM(/;"	s
 TRANSFORMS	g.transforms.f90	/^MODULE TRANSFORMS$/;"	m
 TRANSITION	g.mc.F	/^      SUBROUTINE TRANSITION(/;"	s
-TRANSITION	mc.f90	/^      SUBROUTINE TRANSITION(/;"	s
 TRANSLATE	g.transforms.f90	/^    FUNCTION TRANSLATE(/;"	f	module:TRANSFORMS
 TRANSMAX	g.modcharmm.f90	/^      DOUBLE PRECISION :: PTRANS,PROT,TRANSMAX,/;"	v	module:MODCHARMM
 TRANSMAX	optim.modcharmm.f90	/^      DOUBLE PRECISION :: RPRO,PTRANS,TRANSMAX,/;"	v	module:modcharmm
@@ -10083,7 +9950,6 @@ TSSEARCH	optim.connect.f	/^      SUBROUTINE TSSEARCH(/;"	s
 TSSEARCH	pathsample.tssearch.f	/^      SUBROUTINE TSSEARCH(/;"	s
 TSTAR	g.commons.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb, hdistconstraint, COREFRAC, TSTAR,/;"	v	module:COMMONS
 TSTAR	g.commons.o.f90	/^     &                 MinimalTemperature, MaximalTemperature, SwapProb, hdistconstraint, COREFRAC, TSTAR,/;"	v	module:COMMONS
-TSTART	commons.f90	/^DOUBLE PRECISION :: TSTART$/;"	v	module:COMMONS
 TSTART	g.commons.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST, MAXERISE, MAXEFALL, TSTART,/;"	v	module:COMMONS
 TSTART	g.commons.o.f90	/^     &                 HISTFACMUL, HPERCENT, AVOIDDIST, MAXERISE, MAXEFALL, TSTART,/;"	v	module:COMMONS
 TSTART	optim.key.f90	/^     &        APP, AMM, APM, XQP,XQM, ALPHAP, ALPHAM, PHIG, SHIFTV, SHIFTL(6), DGUESS, XDGUESS, TIMELIMIT, TSTART,/;"	v	module:KEY
@@ -10165,7 +10031,6 @@ UPDATEC6	pathsample.rigidbody.f90	/^  SUBROUTINE UPDATEC6(/;"	s	module:RIGIDBODY
 UPDATEC6	pathsample.rigidbodymod.f90	/^  SUBROUTINE UPDATEC6(/;"	s	module:RIGIDBODYMOD
 UPDATEDC	optim.unresoptim.f	/^      SUBROUTINE UPDATEDC$/;"	s
 UPDATENBONDS	optim.chdummy.f	/^      SUBROUTINE UPDATENBONDS(/;"	s
-UPPERCASE	func.f90	/^      SUBROUTINE UPPERCASE(/;"	s
 UPPERCASE	optim.input.f	/^      SUBROUTINE UPPERCASE(/;"	s
 UREFCOORD	optim.modunres.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: UREFCOORD,/;"	v	module:MODUNRES
 UREFPPSANGLE	optim.modunres.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: UREFCOORD,UREFPPSANGLE /;"	v	module:MODUNRES
@@ -10176,6 +10041,7 @@ USERNAME	pathsample.nodes.f90	/^     CHARACTER(LEN=80) :: USERNAME$/;"	v	module:
 UTILS	pathsample.utils.f90	/^MODULE UTILS$/;"	m
 UTN	g.fedor.f	/^                 DOUBLE PRECISION FUNCTION UTN(/;"	f
 V	optim.double.f	/^      DOUBLE PRECISION X(3*N), VD/;"	v
+V	v.f90	/^MODULE V$/;"	m
 VADD	g.ptgrp.f	/^      SUBROUTINE VADD(/;"	s
 VADD	optim.utils.f	/^      SUBROUTINE VADD(/;"	s
 VALUEST	optim.key.f90	/^     &        PGRAD, VALUEST,/;"	v	module:KEY
@@ -10184,10 +10050,8 @@ VARIABLE	optim.gsdata.f90	/^    LOGICAL :: VARIABLE /;"	k	type:IMGNODE
 VARIABLES	optim.key.f90	/^     &        GAUSSIAN, CADPAC, PRESSURE, FTEST, DCHECK, CP2K, DFTP, CPMD, CPMDC, FREEZERES, DF1T, &$/;"	v	module:KEY
 VARIABLES	optim.main.f90	/^      LOGICAL VARIABLES,/;"	v	program:OPTIM4
 VARS	optim.vars.f90	/^MODULE VARS$/;"	m
-VAT	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS, COORDSO, VAT,/;"	v	module:COMMONS
 VAT	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) ::  VAT,/;"	v	module:COMMONS
 VAT	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) ::  VAT,/;"	v	module:COMMONS
-VATO	commons.f90	/^DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS, COORDSO, VAT, VATO$/;"	v	module:COMMONS
 VATO	g.commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) ::  VAT,  VATO /;"	v	module:COMMONS
 VATO	g.commons.o.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) ::  VAT,  VATO /;"	v	module:COMMONS
 VBL	optim.modunres.f90	/^      DOUBLE PRECISION :: DSC,VBL,/;"	v	module:MODUNRES
@@ -10863,8 +10727,8 @@ eqdist	optim.amhglobals.f	/^      double precision hydscl(0:21,2),hrdrad(0:21,2)
 eres	optim.amhglobals.f	/^      double precision eres$/;"	v	module:amhglobals
 erstop	g.modamber9.f90	/^logical belly, erstop,/;"	v	module:MODAMBER9
 erstop	optim.modamber9.f90	/^logical belly, erstop,/;"	v	module:modamber9
-ev	g.mc.F	1287;"	c	subroutine:TRANSITION
-ev	g.mc.F	1517;"	c	subroutine:ACCREJ
+ev	g.mc.F	1295;"	c	subroutine:TRANSITION
+ev	g.mc.F	1530;"	c	subroutine:ACCREJ
 ev	g.tether.f90	63;"	c	subroutine:TetheredWL
 evbin	g.modamber9.f90	/^      cpin, cpout, cprestrt, evbin,/;"	v	module:MODAMBER9
 evbin	optim.modamber9.f90	/^      cpin, cpout, cprestrt, evbin,/;"	v	module:modamber9
@@ -10935,7 +10799,9 @@ files	g.modamber9.f90	189;"	c	module:MODAMBER9
 files	optim.modamber9.f90	205;"	c	module:modamber9
 fin	g.modperm.f90	/^    double precision, allocatable :: fin(/;"	v	module:PERMU
 finalio	main.pl	/^sub finalio {$/;"	s
+finalio	main.pl~	/^sub finalio {$/;"	s
 finalq	main.pl	/^sub finalq {$/;"	s
+finalq	main.pl~	/^sub finalq {$/;"	s
 finite_differences	optim.finite_differences.f90	/^module finite_differences$/;"	m
 finter	optim.fmsevb.f90	/^	subroutine finter(/;"	s
 fish	g.modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,k,l,colin,fish,/;"	v	module:MODAMBER
@@ -11440,6 +11306,7 @@ kc8	precmod.f90	/^integer, parameter :: kc8 /;"	v
 kevb	g.modamber9.f90	/^          skmin,skmax,vfac,gbneckscale,v11,v12,v22,kevb,/;"	v	module:MODAMBER9
 kevb	optim.modamber9.f90	/^          skmin,skmax,vfac,gbneckscale,v11,v12,v22,kevb,/;"	v	module:modamber9
 keyword	main.pl	/^sub keyword {$/;"	s
+keyword	main.pl~	/^sub keyword {$/;"	s
 ki4	precmod.f90	/^integer, parameter :: ki4 /;"	v
 ki8	precmod.f90	/^integer, parameter :: ki8 /;"	v
 klambda	g.modamber9.f90	/^      ntcm,nscm,isolvp,nsolut,klambda,/;"	v	module:MODAMBER9
@@ -11656,6 +11523,7 @@ maxsub	g.modamber9.f90	/^integer nmropt,iprint,noeskp,iscale,ipnlty,iuse,maxsub,
 maxsub	optim.modamber9.f90	/^integer nmropt,iprint,noeskp,iscale,ipnlty,iuse,maxsub,/;"	v	module:modamber9
 maxtab	optim.amhglobals.f	/^      integer maxtab$/;"	v	module:amhglobals
 mc	main.pl	/^sub mc {$/;"	s
+mc	main.pl~	/^sub mc {$/;"	s
 mdcrd	g.modamber9.f90	/^      refc, mdvel, mden, mdcrd,/;"	v	module:MODAMBER9
 mdcrd	optim.modamber9.f90	/^      refc, mdvel, mden, mdcrd,/;"	v	module:modamber9
 mdcrd_unit	g.modamber9.f90	/^   integer :: myunitnew,myunit2,mdcrd_unit,/;"	v	module:MODAMBER9

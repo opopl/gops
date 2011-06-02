@@ -14,12 +14,12 @@ DO ISTEP=1,NSTEPS
   NQ=NQ+1
   CALL QUENCH(SCREENC,ITERATIONS,TIME,QDONE)  
 
-  include write.111.inc.f90
+  include mc.w.111.i.f90
 
   include mc.bh.pairdist.inc.f90
   include mc.bh.trackdata.inc.f90
 
-  CALL TRANSITION(E,EPREV,ATEST,MCTEMP)
+  CALL TRAN(E,EPREV,ATEST,MCTEMP)
 
   include mc.bh.checkmarkov.inc.f90
 

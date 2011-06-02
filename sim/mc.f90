@@ -6,11 +6,11 @@ SUBROUTINE MC(NSTEPS,SCALEFAC,SCREENC)
 
       IMPLICIT NONE
 
-include mc.vars.inc.f90 ! Variable declarations 
-include fmt.inc.f90     ! Formats
-include mc.cien.inc.f90 ! Calculate the initial energy and save in EPREV
-include mc.bh.inc.f90   ! Main basin-hopping loop
-include write.111.inc.f90 ! write to LFH: Qu, E, Steps, RMS, Markov E, t (elapsed time)
+include mc.vars.i.f90 ! Variable declarations 
+include fmt.i.f90     ! Formats
+include mc.cien.i.f90 ! Calculate the initial energy and save in EPREV
+include mc.bh.i.f90   ! Main basin-hopping loop
+include mc.w.111.i.f90 ! write to LFH: Qu, E, Steps, RMS, Markov E, t (elapsed time)
 
 WRITE(LFH,21)   ' Acceptance ratio for run=',  ARATIO,	&
                 ' Step=',                      STEP, 	&
@@ -64,13 +64,13 @@ RETURN
 ! }}}
 END
 
-SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,MCTEMP)
+SUBROUTINE TRAN(ENEW,EOLD,ATEST,MCTEMP)
 ! {{{
       IMPLICIT NONE
 
       DOUBLE PRECISION,INTENT(IN) :: ENEW, EOLD, MCTEMP
       LOGICAL,INTENT(OUT) :: ATEST
-      DOUBLE PRECISION, INTENT(OUT) :: RANDOM
+      DOUBLE PRECISION :: RN
 
       DOUBLE PRECISION :: DE,T 
 
@@ -78,11 +78,11 @@ SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,MCTEMP)
       T=MAX(MCTEMP,1.0D-100)
 
          IF (ENEW.LT.EOLD) THEN
-            RANDOM=0.0D0
+            RN=0.0D0
             ATEST=.TRUE.
          ELSE
-            RANDOM=DPRAND()
-            IF (DEXP(-DE/T).GT.RANDOM) THEN
+            RN=DPRAND()
+            IF (DEXP(-DE/T).GT.RN) THEN
                ATEST=.TRUE.
             ELSE
                ATEST=.FALSE.

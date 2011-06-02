@@ -1,7 +1,7 @@
 
       SUBROUTINE QUENCH(P,ITER,TIME,QDONE)
-
-      USE COMMONS
+! declarations {{{
+      USE V
       USE PORFUNCS
 
       IMPLICIT NONE
@@ -32,7 +32,8 @@
       COMMON /MYPOT/ E
 
       ! }}}
-      
+     ! }}} 
+      ! body {{{
 !  FQFLAG is set for the final quenches with tighter convergence criteria.
 
       IF (FQFLAG) THEN
@@ -65,5 +66,6 @@
       CALL MYCPU_TIME(TIME)
 
       RETURN
+      ! }}}
 
       END

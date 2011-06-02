@@ -8,7 +8,7 @@
      ! Maximum BFGS step size
      DOUBLE PRECISION :: MAXBFGS=0.4D0
 
-     ! maximal number of iterations
+     ! maximal number of iterations (for sloppy and final quenches)
      INTEGER MAXIT=500
      
      ! sloppy quenches
