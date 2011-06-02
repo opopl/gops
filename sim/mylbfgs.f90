@@ -47,7 +47,7 @@
 !
 ! }}}
 ! ------------------------------------------------------------------
-      SUBROUTINE MYLBFGS(R,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
+      SUBROUTINE MYLBFGS(X,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
       ! ====================================
      ! declarations {{{ 
       USE COMMONS
@@ -55,7 +55,7 @@
       
       IMPLICIT NONE
  ! subroutine parameters  {{{
-      DOUBLE PRECISION, INTENT(INOUT) R(:,:)
+      DOUBLE PRECISION, INTENT(INOUT) :: X(:)
       LOGICAL,INTENT(IN) :: DIAGCO
       DOUBLE PRECISION,INTENT(IN) :: EPS
       LOGICAL,INTENT(OUT) :: MFLAG
@@ -65,15 +65,17 @@
       LOGICAL,INTENT(IN) RESET
       ! }}}
        ! local parameters {{{
-      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W, WTEMP, GRAD, GNEW, RSAVE
+      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W, WTEMP, GRAD, GNEW, XSAVE
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: ALPHA, RHO
-      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: X,XSAVE
-      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: WSS, WDG
+      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: XSAVE
+      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: WSS,WDG
       INTEGER ITER, NFAIL, CP
-      DOUBLE PRECISION :: GNORM,SLENGTH,ENEW,YS,YY,SQ,YR,BETA,POTEL, DDOT, STP
-      DOUBLE PRECISION ::       DOT1,DOT2,OVERLAP
+      DOUBLE PRECISION :: GNORM,SLENGTH,E,ENEW,YS,YY,SQ,YR,BETA,POTEL, DDOT, STP
+      DOUBLE PRECISION ::       DOT1,DOT2,OVERLAP, DUMMY
+
+      INTEGER :: N,M,K,IX,IXMIN,IXMAX
+
       SAVE W,DIAG,ITER
-      INTEGER :: N,M,K,IXMIN,IXMAX
       ! 
       N=NX
       M=M_LBFGS
@@ -88,9 +90,9 @@
       ! ====================================
       ! subroutine body  {{{
 
-      ALLOCATE(RHO(M),ALPHA(M),W(N),WSS(N,M),WDG(N,M),X(N))
+      ! initializations {{{
 
-include R2X.inc.f90     ! R(NA,3) => X(NX)
+      ALLOCATE(RHO(M),ALPHA(M),W(N),WSS(N,M),WDG(N,M),X(N))
 
       NFAIL=0 ; ITDONE=0 ; IF (RESET) ITER=0 
 
@@ -100,16 +102,17 @@ include R2X.inc.f90     ! R(NA,3) => X(NX)
       ENDIF
 
       ! evaluate energy and gradient (.TRUE.) but not Hessian (.FALSE.)
-      CALL POTENTIAL(R,GRAD,ENERGY,.TRUE.,.FALSE.)
-      POTEL=ENERGY
+      CALL POTENTIAL(X,GRAD,E,.TRUE.,.FALSE.)
 
-      IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=', ENERGY,RMS, &
+      IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=', E,RMS, &
                                 ' after ',ITDONE,' LBFGS steps'
 101   FORMAT(A,F20.10,G20.10,A,I6,A)
 102   FORMAT(A,I10,A,I10,A)
 
-!  Termination test. 
-!
+! }}}
+
+!  10 Termination test {{{
+
 10    CALL FLUSH(LFH)
 
       MFLAG=.FALSE.
@@ -125,6 +128,7 @@ include R2X.inc.f90     ! R(NA,3) => X(NX)
          IF (DEBUG) WRITE(LFH,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
          RETURN
       ENDIF
+      ! }}}
 
       IF (ITER.EQ.0) THEN
          ! {{{
@@ -163,6 +167,12 @@ include R2X.inc.f90     ! R(NA,3) => X(NX)
 !
 !  NR step for diagonal inverse Hessian
 !
+     DO IX=1,N
+            DUMMY=-GRAD(IX)*DIAG(IX)
+            WSS(IX,1)=DUMMY
+            W=DUMMY(IX)
+     ENDDO
+     GNORM=DSQRT(DDOT(N,GRAD,1,GRAD,1))
 
 !
 !  Make the first guess for the step length cautious.
@@ -171,8 +181,7 @@ include R2X.inc.f90     ! R(NA,3) => X(NX)
          ! }}}
       ELSE 
          ! {{{
-         BOUND=ITER
-         IF (ITER.GT.M) BOUND=M
+         BOUND=MIN(ITER,M) 
          YS= DDOT(N,WDG(1,1+POINT),1,WSS(1,1+POINT),1)
 !
 !  Update estimate of diagonal inverse Hessian elements {{{
@@ -244,8 +253,8 @@ include R2X.inc.f90     ! R(NA,3) => X(NX)
 !  reduced elements.
 !
       DUMMY=1.0D0
-      DO J1=1,N
-         IF (ABS(W(J1)).GT.DUMMY) DUMMY=ABS(W(J1))
+      DO IX=1,N
+         IF (ABS(W(IX)).GT.DUMMY) DUMMY=ABS(W(IX))
       ENDDO
       
       WTEMP=W/DUMMY
@@ -268,18 +277,18 @@ include R2X.inc.f90     ! R(NA,3) => X(NX)
 !
 !  We now have the proposed step.
 !
-! Save R here so that we can undo the step reliably including the
+! Save X here so that we can undo the step reliably including the
 ! non-linear projection for Thomson for the angular coordinates.
 !
-         RSAVE=R
-         R=R+STP*WSS(:,1+POINT)
+         XSAVE=X
+         X=X+STP*WSS(:,1+POINT)
 !
 !  For charmm internals must transform and back-transform!
 !
       NDECREASE=0
       LEPSILON=1.0D-6
 
-      CALL POTENTIAL(R,GNEW,ENEW,.TRUE.,.FALSE.)
+      CALL POTENTIAL(X,GNEW,ENEW,.TRUE.,.FALSE.)
 
       IF ((ENEW-ENERGY.LE.MAXERISE).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
          ITER=ITER+1
@@ -305,11 +314,11 @@ include R2X.inc.f90     ! R(NA,3) => X(NX)
             WRITE(LFH,'(A,A,G20.10)')   ' in mylbfgs LBFGS step cannot find an energy in the required range, ',&
                                         '    NFAIL=',NFAIL
       !
-! Resetting to RSAVE should be the same as subtracting the step. 
+! Resetting to XSAVE should be the same as subtracting the step. 
 ! If we have tried PROJI with Thomson then the projection is non-linear
-! and we need to reset to RSAVE. This should always be reliable!
+! and we need to reset to XSAVE. This should always be reliable!
 !
-               R=RSAVE
+               X=XSAVE
                GRAD=GNEW ! GRAD contains the gradient at the lowest energy point
 
             ITER=0   !  try resetting
@@ -321,11 +330,11 @@ include R2X.inc.f90     ! R(NA,3) => X(NX)
             GOTO 30
          ENDIF
 !
-! Resetting to RSAVE and adding half the step should be the same as subtracting 
+! Resetting to XSAVE and adding half the step should be the same as subtracting 
 ! half the step. 
 !
-         R=RSAVE
-         R=R+0.5*STP*WSS(:,1+POINT)
+         X=XSAVE
+         X=R+0.5*STP*WSS(:,1+POINT)
          ENDIF
          STP=STP/2.0D0
          NDECREASE=NDECREASE+1
@@ -346,11 +355,11 @@ include R2X.inc.f90     ! R(NA,3) => X(NX)
             NFAIL=NFAIL+1
             WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find a lower energy, NFAIL=',NFAIL
             !
-! Resetting to RSAVE should be the same as subtracting the step. 
+! Resetting to XSAVE should be the same as subtracting the step. 
 ! If we have tried PROJI with Thomson then the projection is non-linear
-! and we need to reset to RSAVE. This should always be reliable!
+! and we need to reset to XSAVE. This should always be reliable!
 !
-            R=RSAVE
+            X=XSAVE
             GRAD=GNEW ! GRAD contains the gradient at the lowest energy point
             ITER=0   !  try resetting
              IF (NFAIL.GT.5) THEN         
@@ -361,13 +370,13 @@ include R2X.inc.f90     ! R(NA,3) => X(NX)
             GOTO 30
          ENDIF
       !
-! Resetting to RSAVE and adding 0.1 of the step should be the same as subtracting 
+! Resetting to XSAVE and adding 0.1 of the step should be the same as subtracting 
 ! 0.9 of the step. 
 ! If we have tried PROJI with Thomson then the projection is non-linear
-! and we need to reset to RSAVE. This should always be reliable!
+! and we need to reset to XSAVE. This should always be reliable!
 !
-            R=RSAVE
-            R=R+0.1D0*STP*SUM(WSS(:,1+POINT))
+            X=XSAVE
+            X=X+0.1D0*STP*SUM(WSS(:,1+POINT))
          ENDIF
          STP=STP/1.0D1
          NDECREASE=NDECREASE+1

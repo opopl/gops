@@ -7,6 +7,8 @@
      DOUBLE PRECISION :: RADIUS=0.0D0
      ! Maximum allowed energy rise during a minimisation
      DOUBLE PRECISION ::     MAXERISE
+     ! Maximum allowed energy fall during a minimisation
+     DOUBLE PRECISION ::     MAXEFALL
      ! Used in ACCREJ
      DOUBLE PRECISION :: FAC0=1.05D0
      ! "Fixing" option (regarding STEP, TEMP and accept ratio for quenches) 
