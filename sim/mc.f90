@@ -1,5 +1,5 @@
 
-      SUBROUTINE MC(NSTEPS,SCALEFAC,SCREENC)
+SUBROUTINE MC(NSTEPS,SCALEFAC,SCREENC)
 ! {{{
       USE COMMONS
       USE PORFUNCS
@@ -15,7 +15,7 @@ include write.111.inc.f90 ! write to LFH: Qu, E, Steps, RMS, Markov E, t (elapse
 WRITE(LFH,21)   ' Acceptance ratio for run=',  ARATIO,	&
                 ' Step=',                      STEP, 	&
                 ' Angular step factor=',       ASTEP,	&
-                ' Temperature T=',             TEMP	&
+                ' Temperature T=',             TEMP	
 RETURN
 ! }}}
 END
@@ -33,20 +33,19 @@ COMMON /EV/ EVAP, EVAPREJECT
 ARATIO=1.D0*NSUCCESS/(1.D0*(NSUCCESS+NFAIL))
 
 IF (ARATIO.GT.ACCRAT) THEN
-	FAC=1.05D0
+	FAC=FAC0
 ELSE
-	FAC=1.D0/1.05D0
+	FAC=1.D0/FAC0
 ENDIF
-	STEP=FAC*STEP
-	ASTEP=ASTEP*FAC
-!
-! Prevent steps from growing out of bounds. The value of 1000 seems sensible, until
-! we do something with such huge dimensions?!
+        SELECTCASE(FIXOPT)
+               CASE('T') ! fix temperature, but adjust step(s)
+	                STEP=FAC*STEP
+	                ASTEP=ASTEP*FAC
+               CASE('S') ! fix step(s), but adjust temperature
+                        TEMP=TEMP/FAC
+               CASE('TS') ! fix both steps and temperature
+        ENDSELECT
 
-STEP=MIN(STEP,1.0D3)
-OSTEP=MIN(OSTEP,1.0D3)
-ASTEP=MIN(ASTEP,1.0D3)
-!
 WRITE(LFH,23) 'Acceptance ratio for previous ',        NACCEPT,	&
                 ' steps=',                             ARATIO,	&
                 '  FAC=',                                FAC
@@ -65,7 +64,7 @@ RETURN
 ! }}}
 END
 
-      SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,MCTEMP)
+SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,MCTEMP)
 ! {{{
       IMPLICIT NONE
 
@@ -92,5 +91,5 @@ END
 
       RETURN 
       ! }}}
-      END 
+END 
 

@@ -1169,6 +1169,7 @@ C
 !> \author Chris Whittleston, csw34@cam.ac.uk
 !
       SUBROUTINE A9INTEDUMPLOWEST()
+      ! {{{
       USE COMMONS
       USE QMODULE
       IMPLICIT NONE
@@ -1179,9 +1180,12 @@ C
       CLOSE(20)
 C     csw34> Dump to PDB using routine in amberinterface.f
       CALL A9DUMPPDB(INTEQMINP(1,:),"bestintE")
+      ! }}}
       END SUBROUTINE A9INTEDUMPLOWEST
 ! csw34> Subroutine to work out the interaction energy INTE between residue RESLIG for geometry INTECOORDS
+
       SUBROUTINE A9INTE(INTECOORDS,INTE)
+      ! {{{
       USE PORFUNCS
       USE COMMONS, ONLY : NATOMS
       IMPLICIT NONE
@@ -1199,17 +1203,19 @@ C     csw34> Dump to PDB using routine in amberinterface.f
       OPEN(UNIT=20,FILE="intE",STATUS='OLD')
       READ(20,*) INTE
       CLOSE(20)
+      ! }}}
       END SUBROUTINE A9INTE
 
-!
+!!{{{
 !> \brief Subroutine to check the  distance 
 !> \brief between groups of atoms defined in the movableatoms file.
 !> Checks the A->B and A->C distances,
 !> and if they are greater than the A(B/C)THRESH values defined
 !> in the data file, the routine returns DISTOK=.FALSE.
 !> \author Chris Whittleston, csw34@cam.ac.uk
-!
+!!}}}
       SUBROUTINE A9DISTCHECK(COORDS,DISTOK)
+      ! {{{
       USE MODAMBER9, ONLY : NATOMSINA,NATOMSINB,NATOMSINC,ATOMSINALIST,ATOMSINBLIST,ATOMSINCLIST
       USE COMMONS, ONLY : NATOMS,ABTHRESH,ACTHRESH,DEBUG
       IMPLICIT NONE
@@ -1271,11 +1277,11 @@ C     csw34> Dump to PDB using routine in amberinterface.f
       IF ((ABDIST.LT.ABTHRESH).AND.(ACDIST.LT.ACTHRESH)) DISTOK=.TRUE.
 ! more debug printing
       IF (DEBUG) WRITE(*,*) 'DISTOK=',DISTOK
- 
+      ! }}} 
       END SUBROUTINE A9DISTCHECK
 
-
       SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,NP,RANDOM,MCTEMP)
+      ! {{{
       USE COMMONS
       USE QMODULE
       IMPLICIT NONE
@@ -1332,9 +1338,11 @@ C
       ENDIF 
 
       RETURN 
+      ! }}}
       END 
 
       SUBROUTINE JUMPM(RANNJ,J1,JP,EPPREV)
+      ! {{{
       USE commons
       IMPLICIT NONE
       INTEGER J1, JP, J2, UNT, NDUM, ITERATIONS, BRUN, QDONE
@@ -1446,9 +1454,11 @@ C        WRITE(UNT,'(3F20.10)') (COORDS(J2,JP),J2=1,3*NATOMS)
 C     ENDIF
 
       RETURN
+      ! }}}
       END
 
       SUBROUTINE MYRESET(JP,NATOMS,NPAR,NSEED)
+      ! {{{
       USE COMMONS,ONLY : MYUNIT,COORDS,COORDSO,VAT,VATO
       IMPLICIT NONE
       INTEGER JP, NSEED, J2, NATOMS, NPAR
@@ -1461,11 +1471,11 @@ C     ENDIF
       ENDDO
 
       RETURN
+      ! }}}
       END
  
- 
- 
       SUBROUTINE REST(ITERATIONS,TIME,J1,RCOORDS,RMIN,RVAT,JACCPREV)
+      ! {{{
       USE commons
       IMPLICIT NONE
       INTEGER ITERATIONS, J2, JACCPREV, J1, NQTOT, BRUN, QDONE
@@ -1503,15 +1513,15 @@ C
       RMIN=POTEL
 
       RETURN
+      ! }}}
       END
- 
- 
  
       SUBROUTINE ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
       ! {{{
       USE commons
       USE modcharmm
       IMPLICIT NONE
+
       INTEGER NSUCCESS(NPAR), NFAIL(NPAR), JP, NFAILT(NPAR), NSUCCESST(NPAR), J1, J2, NDUMMY
       LOGICAL evap, evapreject
       DOUBLE PRECISION DUMMY, DUMMY2, DUMMY3, DUMMY4, HWMAX,P0,FAC
@@ -1530,7 +1540,7 @@ C     COMMON /MOVE/ TMOVE, OMOVE
          ENDIF
          IF (FIXBOTH(JP)) THEN
          ELSE IF (FIXSTEP(JP)) THEN
-            IF (.NOT.FIXTEMP(JP)) TEMP(JP)=TEMP(JP)/1.05D0
+                IF (.NOT.FIXTEMP(JP)) TEMP(JP)=TEMP(JP)/1.05D0
          ELSE
             IF (FIXD) THEN
                NHSMOVE=NHSMOVE+1 
@@ -1614,9 +1624,8 @@ C
       ! }}}
       END
 
-C
-C
       SUBROUTINE REN(J1,RMIN,RCOORDS,RVAT,NREN,RMINO,RCOORDSO,RVATO,ITERATIONS,TIME,NLAST,JACCPREV,NSTEPREN)
+      ! {{{
       USE commons
       IMPLICIT NONE
       LOGICAL STAY, REJECT, METROPOLIS
@@ -1761,8 +1770,9 @@ C
       ENDIF
 
       RETURN
+      ! }}}
       END
-C
+C!{{{
 C  Reseed if the energy has not improved by more than ECONV over the
 C  last NRELAX mc steps.
 C  If AVOID is true then save the energy and coordinates of the lowest
@@ -1776,9 +1786,10 @@ C  Would it be possible to just use the energy and inertia components to identif
 C  permutation-inversion isomers instead of MINPERM and MIND?
 C  This would be like using a small value of AVOIDDIST, which doesn;t seem to be
 C  as good.
-C
+C!}}}
       SUBROUTINE NEWRES(J1,JP,JBEST,EBEST,BESTCOORDS,EPPREV,POTEL,ITERATIONS,TIME,RCOORDS,
      1                  RMIN,RVAT,BRUN,SCREENC,QDONE,JACCPREV,NSUCCESS,NFAIL,NFAILT,NSUCCESST)
+      ! {{{
       USE commons
       USE modamber9, only : mdstept 
       
@@ -2001,4 +2012,5 @@ C         IF (CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
       ENDIF
 
       RETURN
+      ! }}}
       END

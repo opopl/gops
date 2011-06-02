@@ -25,7 +25,10 @@ DO ISTEP=1,NSTEPS
 
   ! Accept or reject step
   include mc.bh.accrej.inc.f90
-  ! Check the acceptance ratio every NACCEPT steps 
+  ! Check the acceptance ratio every NACCEPT steps and update:
+  !     NSUCCESST (the total number of accepted moves)
+  !     NFAILT (the total number of rejected moves)
+
   IF ( (MOD(ISTEP,NACCEPT).EQ.0) CALL ACCREJ(NSUCCESS,NFAIL,NSUCCESST,NFAILT)
     TEMP=TEMP*SCALEFAC
   ENDIF
