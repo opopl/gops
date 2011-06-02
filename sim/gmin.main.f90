@@ -42,25 +42,14 @@
          IF (RMST) CALL OPENF(RMSD_FH,">>","rmsd.dat")
       ENDIF
       
-      CALL FLUSH(6)
-      CALL IO1
-      CALL FLUSH(6)
-
+      CALL IO
       CALL CENTRE2(COORDS)
 
-      NQ(1)=1
+      NQ=1
 
-      DO J1=1,NSAVE
-         QMIN(J1)=1.0D10
-      ENDDO
 ! }}}
       CALL MCRUNS(SCREENC)
 ! end {{{
-      IF (ALLOCATED(FIN)) DEALLOCATE(FIN)
-      IF (ALLOCATED(XICOM)) DEALLOCATE(XICOM)
-      IF (ALLOCATED(PCOM)) DEALLOCATE(PCOM)
-      IF (ALLOCATED(ANV)) DEALLOCATE(ANV)
-
       CALL FLUSH(LFH)
       CLOSE(LFH)
 

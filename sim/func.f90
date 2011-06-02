@@ -76,8 +76,67 @@ C           X(J3)=-X(J3)*0.8D0
       RETURN
       END
 
-!  For rigid-body angle-axis coordinates, just move the fixed site
+      SUBROUTINE IO
+! {{{
+      INTEGER IA,K
 
+      CALL OPENF(COORDS_FH,'O','coords')
+      REWIND(COORDS_FH)
+
+      DO IA=1,NATOMS
+              READ(COORDS_FH,*) COORDS(IA,1:3)
+      ENDDO
+
+      CLOSE(COORDS_FH)
+
+      WRITE(LFH,20) 
+20    FORMAT('Initial coordinates:')
+30    FORMAT(3F20.10)
+
+      DO IA=1,NATOMS
+              WRITE(LFH,30) COORDS(IA,1:3)
+      enddo
+
+      IF (P46) THEN
+         WRITE(MYUNIT,'(I4,A)') NATOMS,' 3-COLOUR, 46 BEAD MODEL POLYPEPTIDE'
+      IF (BLNT) THEN
+         WRITE(MYUNIT,'(I4,A)') NATOMS,' BEAD BLN MODEL'
+      ENDIF
+      
+      IF (RADIUS.EQ.0.0D0) THEN
+        RADIUS=2.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0)
+        IF (P46) THEN
+                    RADIUS=RADIUS*3.0D0
+        ENDIF
+      ENDIF
+
+      if (LBFGST) then
+         WRITE(LFH,'(A)') 'Nocedal LBFGS minimization'
+         WRITE(LFH,'(A,I6)') 'Number of updates before reset in LBFGS=',MUPDATE
+         WRITE(LFH,'(A,F20.10)') 'Maximum step size=',MAXBFGS
+         WRITE(LFH,'(A,G12.4)') 'Guess for initial diagonal elements in LBFGS=',DGUESS
+      ENDIF
+
+      WRITE(LFH,'(A,F15.10)') 'Final quench tolerance for RMS gradient ',CQMAX
+      WRITE(LFH,'(A,F15.10)') 'Energy difference criterion for minima=',ECONV
+      WRITE(LFH,'(A,I5,A,I5)') 'Maximum number of iterations: sloppy quenches ',MAXIT,' final quenches ',MAXIT2
+
+      IF (DEBUG) THEN
+         WRITE(LFH,160) 
+160      FORMAT('Debug printing is on')
+      ENDIF
+       
+      WRITE(LFH, '(A,G20.10)') 'Maximum allowed energy rise during a minimisation=',MAXERISE
+
+      IF (TARGET) THEN
+         WRITE(LFH,'(A)',ADVANCE='NO') 'Target energies: '
+         WRITE(LFH,'(F20.10)',ADVANCE='NO') (TARGETS(J1),J1=1,NTARGETS)
+         WRITE(LFH,'(A)') ' '
+      ENDIF
+! }}}
+      END SUBROUTINE  
+
+!  For rigid-body angle-axis coordinates, just move the fixed site
       SUBROUTINE RADR(X,V,ENERGY,GTEST)
       ! {{{
       USE COMMONS

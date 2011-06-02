@@ -44,6 +44,7 @@ LOGICAL BLNT=.FALSE.
 LOGICAL TARGET=.FALSE.
 LOGICAL TRACKDATAT=.FALSE.
 LOGICAL DEBUG=.FALSE.
+LOGICAL LBFGST=.TRUE.
 ! whether we are doing a final quench
 LOGICAL :: FQFLAG=.FALSE.
 ! }}}
@@ -69,6 +70,9 @@ DOUBLE PRECISION :: TEMP=0.035D0
 
 ! initial time
 DOUBLE PRECISION :: TSTART
+
+! maximal number of iterations
+INTEGER MAXIT=500
 
 ! sloppy quenches
 DOUBLE PRECISION :: SQMAX

@@ -49,6 +49,8 @@
                  BLNT=.TRUE.
                  ! }}}
                  ! M-S {{{
+              CASE('MAXIT')
+    	         READ(BUFFER, *, IOSTAT=IOS) MAXIT
               CASE('M_LBFGS')
     	         READ(BUFFER, *, IOSTAT=IOS) M_LBFGS
               CASE('NACCEPT')
