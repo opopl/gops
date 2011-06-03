@@ -25,7 +25,6 @@
 30	func.f90	/^30    FORMAT(3F20.10)$/;"	l	subroutine:IO	file:
 30	mylbfgs.f90	/^30    NPT=POINT*N$/;"	l	subroutine:MYLBFGS	file:
 36	mc.bh.accrej.inc.f90	/^36                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' REJ')$/;"	l	file:
-ACCRAT	v.mc.i.f90	/^     DOUBLE PRECISION :: ACCRAT=/;"	v
 ACCREJ	mc.f90	/^SUBROUTINE ACCREJ(/;"	s
 AN	bln.vars.inc.f90	/^        DOUBLE PRECISION   AN$/;"	v
 ANG	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,2) :: ANG /;"	v
@@ -45,6 +44,7 @@ COORDS_FH	v.files.i.f90	/^INTEGER :: COORDS_FH=/;"	v
 COS_PHI	bln.vars.inc.f90	/^        DOUBLE PRECISION COS_PHI,/;"	v
 COS_THETA	bln.vars.inc.f90	/^        DOUBLE PRECISION COS_PHI, COS_THETA$/;"	v
 COUNTATOMS	func.f90	/^SUBROUTINE COUNTATOMS$/;"	s	module:FUNC
+DATA_FH	v.files.i.f90	/^INTEGER :: DATA_FH=/;"	v
 DELTA	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS, SIGMA, EPSILON, DELTA,/;"	v
 DF	bln.vars.inc.f90	/^        DOUBLE PRECISION ::     DF,/;"	v
 DPD	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N-1) :: DPD$/;"	v
@@ -55,16 +55,13 @@ E	gmin.main.f90	/^      DOUBLE /;"	v	program:GMIN
 E	mc.vars.i.f90	/^      DOUBLE /;"	v
 EB	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N-1,3) :: BVR, EB$/;"	v
 EBLN	bln.f90	/^        SUBROUTINE EBLN(/;"	s	module:BLN
-EDIFF	v.mc.i.f90	/^     DOUBLE PRECISION :: EDIFF=/;"	v
 ENERGY	bln.vars.inc.f90	/^        DOUBLE PRECISION ENERGY$/;"	v
 ENERGY_FH	v.files.i.f90	/^INTEGER :: ENERGY_FH=/;"	v
 EPREV	mc.vars.i.f90	/^      DOUBLE PRECISION ::       TIME,E,EPREV$/;"	v
 EPSILON	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS, SIGMA, EPSILON,/;"	v
 F	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(-1:N+1,2) :: F$/;"	v
-FAC0	v.mc.i.f90	/^     DOUBLE PRECISION :: FAC0=/;"	v
 FB	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,2) :: FB$/;"	v
 FH	v.files.i.f90	/^INTEGER :: FH=/;"	v
-FIXOPT	v.mc.i.f90	/^     CHARACTER(LEN=100) :: FIXOPT=/;"	v
 FRR	bln.vars.inc.f90	/^        DOUBLE PRECISION ::     DF, FRR(/;"	v
 FUNC	func.f90	/^MODULE FUNC$/;"	m
 G	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,3) :: G,/;"	v
@@ -92,7 +89,6 @@ HESS	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,N) :: HESS$/;"	v
 HESST	bln.vars.inc.f90	/^        LOGICAL GRADT, HESST$/;"	v
 HVXPD	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD, HVXPD,/;"	v
 I	bln.vars.inc.f90	/^        IN/;"	v
-IA	v.f90	/^INTEGER IA,/;"	v	module:V
 ICOUNT	bln.vars.inc.f90	/^        INTEGER NTYPE(N), I, J, JMAX, K, KMAX, ICOUNT$/;"	v
 IH	bln.vars.inc.f90	/^        DOUBLE PRECISION ::     IK,JK,KI,KJ,IH,/;"	v
 IK	bln.vars.inc.f90	/^        DOUBLE PRECISION ::     IK,/;"	v
@@ -105,7 +101,6 @@ ITERATIONS	mc.vars.i.f90	/^      INTEGER ITERATIONS,/;"	v
 J	bln.vars.inc.f90	/^        INTEGER NTYPE(N), I, J,/;"	v
 J1	bln.vars.inc.f90	/^        INTEGER J1,/;"	v
 J2	bln.vars.inc.f90	/^        INTEGER J1,J2$/;"	v
-JA	v.f90	/^INTEGER IA, JA$/;"	v	module:V
 JH	bln.vars.inc.f90	/^        DOUBLE PRECISION ::     IK,JK,KI,KJ,IH,JH,/;"	v
 JK	bln.vars.inc.f90	/^        DOUBLE PRECISION ::     IK,JK,/;"	v
 JMAX	bln.vars.inc.f90	/^        INTEGER NTYPE(N), I, J, JMAX,/;"	v
@@ -121,8 +116,6 @@ LFN	v.files.i.f90	/^CHARACTER(LEN=100) LFN$/;"	v
 LJATT	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,N) :: LJREP, LJATT$/;"	v
 LJREP	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,N) :: LJREP,/;"	v
 MARKOV_FH	v.files.i.f90	/^INTEGER :: MARKOV_FH=/;"	v
-MAXEFALL	v.mc.i.f90	/^     DOUBLE PRECISION ::     MAXEFALL$/;"	v
-MAXERISE	v.mc.i.f90	/^     DOUBLE PRECISION ::     MAXERISE$/;"	v
 MAXNARGS	v.f90	/^INTEGER, PARAMETER :: MAXNARGS=/;"	v	module:V
 MC	mc.f90	/^SUBROUTINE MC(/;"	s
 MCRUNS	mcruns.f90	/^      SUBROUTINE MCRUNS(/;"	s
@@ -149,18 +142,17 @@ PARSE	stringmod.f90	/^SUBROUTINE PARSE(/;"	s	module:strings
 PI	v.const.i.f90	/^DOUBLE PRECISION :: PI,/;"	v
 PI4	bln.vars.inc.f90	/^        DOUBLE PRECISION, PARAMETER :: THETA_0 = 1.8326D0, PI4=/;"	v
 POTENTIAL	potential.f90	/^      SUBROUTINE POTENTIAL(/;"	s
+PRECISION	v.mc.i.f90	/^     DOUBLE PRECISION /;"	v
 PTYPE	bln.vars.inc.f90	/^        CHARACTER(LEN=*) :: PTYPE$/;"	v
 QDONE	mc.vars.i.f90	/^      INTEGER ITERATIONS,QDONE,/;"	v
 QUENCH	quench.f90	/^      SUBROUTINE QUENCH(/;"	s
 R	bln.vars.inc.f90	/^        DOUBLE PRE/;"	v
 RAD	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(15) :: RAD,/;"	v
-RADIUS	v.mc.i.f90	/^     DOUBLE PRECISION :: RADIUS=/;"	v
 RANDDP	func.f90	284;"	c	subroutine:SDPRND
 REMOVEBKSL	stringmod.f90	/^SUBROUTINE REMOVEBKSL(/;"	s	module:strings
 RK_R	bln.vars.inc.f90	/^        DOUBLE PRECISION RK_R,/;"	v
 RK_THETA	bln.vars.inc.f90	/^        DOUBLE PRECISION RK_R, RK_THETA$/;"	v
 RMASS	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS,/;"	v
-RND	v.f90	/^DOUBLE PRECISION ::     RND(/;"	v	module:V
 S	bln.vars.inc.f90	/^        DOUBLE PRECISI/;"	v
 SCALEFAC	mc.vars.i.f90	/^      DOUBLE PRECISION, INTENT(IN) :: SCALEFAC /;"	v
 SCREENC	gmin.main.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(/;"	v	program:GMIN
@@ -171,9 +163,7 @@ SLEN	v.f90	/^INTEGER, PARAMETER :: SLEN=/;"	v	module:V
 SPLIT	stringmod.f90	/^SUBROUTINE SPLIT(/;"	s	module:strings
 STEST	bln.vars.inc.f90	/^        LOGICAL GTEST, STEST$/;"	v
 TAKESTEP	func.f90	/^SUBROUTINE TAKESTEP$/;"	s
-TARGETS	v.mc.i.f90	/^     DOUBLE PRECISION, DIMENSION(:) :: TARGETS$/;"	v
-TEMP	v.mc.i.f90	/^     DOUBLE PRECISION :: TEMP=/;"	v
-TFAC	v.mc.i.f90	/^     DOUBLE PRECISION :: TFAC=/;"	v
+TARGETSOUBLE	v.mc.i.f90	/^     DOUBLE PRECISION, DIMENSION(:) :: TARGETS$/;"	v
 THETA_0	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS, SIGMA, EPSILON, DELTA, THETA_0$/;"	v
 THETA_0	bln.vars.inc.f90	/^        DOUBLE PRECISION, PARAMETER :: THETA_0 /;"	v
 TIME	mc.vars.i.f90	/^      DOUBLE PRECISION ::       TIME,/;"	v

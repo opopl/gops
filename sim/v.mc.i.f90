@@ -13,7 +13,7 @@
      DOUBLE PRECISION :: FAC0=1.05D0
      ! "Fixing" option (regarding STEP, TEMP and accept ratio for quenches) 
      CHARACTER(LEN=100) :: FIXOPT='T'
-p
+
      DOUBLE PRECISION :: STEP=0.3D0
      DOUBLE PRECISION :: OSTEP=0.3D0
      DOUBLE PRECISION :: ASTEP=0.3D0
