@@ -662,13 +662,13 @@ cd -
 run_doxygen(){
 #{{{
 
+ip_start=-1
 desc=( "GMIN - A Program for Finding Global Minima by Basin-Hopping" \
 	"OPTIM" "PATHSAMPLE" "DISCONNECT" )
 
 case "$1" in # choose which programs to document ? {{{
-  	"" | "all") 
+  	"all") 
 		progs=( "GMIN" "OPTIM" "PATHSAMPLE" "DISCONNECT" ) 
-		ip_start=-1
 		;;
 	g | gmin | o | optim | ps | pathsample | ds)
  	case "$1" in
@@ -678,6 +678,7 @@ case "$1" in # choose which programs to document ? {{{
     		ds) progs=( DISCONNECT ) ; ip_start=2 ;;
 	esac
 	;;
+	*) progs=( $* ) ;;
 esac # }}}
 
 svn_rev=`$shd/sv v` 
@@ -698,7 +699,7 @@ for p in "${progs[@]}"
 	  mkdir -p $dx_dir
 	  echo "Making Doxygen documentation for: $p..."
 	  echo "Output directory: $dx_dir"
-	  source_dir="$wg_dir/$p/source"
+	  source_dir="$wg_dir/$p"
 	  cd $source_dir
 
 cat >& $source_dir/Doxyfile << EOF
@@ -1645,7 +1646,9 @@ while [ ! -z "$1" ]; do
 	arg=$1
 			case "$1" in # read command-line arguments {{{
 				  ex) exists $2 ;;
-				  vm) $shd/vff $this_script ;;
+				  #vm) $shd/vff $this_script ;;
+				  vm) $v $0 ;;
+				  -g) v="$v -g" ;;
 				  prefix) PREFIX=$2 ;;
 				  install) bu_install ;;
 			  	  dx | charmm | gmin | optim | pathsample | bsx | tgz ) build_bu_target $* ;;
