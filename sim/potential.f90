@@ -1,9 +1,10 @@
 
-!> @param[in]  X        dp(N,3)    input coordinates 
-!> @param[out] GRAD     dp(N,3)    gradient 
+!> @param[in]  X        dp(N)    input coordinates 
+!> @param[out] GRADX     dp(N)    gradient 
 !> @param[out] EREAL    dp         energy 
+!> @param[out] RMS      dp         RMS 
 
-      SUBROUTINE POTENTIAL(R,GRAD,EREAL,GRADT,SECT,PTYPE)
+      SUBROUTINE POTENTIAL(X,GRADX,EREAL,RMS,GRADT,SECT)
 
       USE COMMONS
       USE PORFUNCS
@@ -13,16 +14,23 @@
 
       ! subroutine parameters 
 
-      DOUBLE PRECISION,INTENT(OUT) :: EREAL, GRAD(:,3)
-      DOUBLE PRECISION,INTENT(IN) :: R(:,3)
+      DOUBLE PRECISION,INTENT(OUT) :: EREAL, GRADX(:)
+      DOUBLE PRECISION,INTENT(IN) :: X(:)
+      INTEGER NX,NR
+      DOUBLE PRECISION :: R(:,3)
+      DOUBLE PRECISION :: RMS
 
       LOGICAL GRADT,SECT
 
-      ! potential type
+      NX=SIZE(X)
+      NR=NX/3
+      R=RESHAPE(X,(/ NR,3 /))
 
-      CHARACTER(LEN=*) PTYPE
-    
-      CALL EBLN(N,R,GRAD,ENERGY,HESS,PTYPE,.TRUE.,.TRUE.)
+
+      IF (BLNT .OR. PULLT) THEN 
+        CALL EBLN(N,R,GRAD,ENERGY,HESS,PTYPE,GRADT,SECT)
+      ENDIF
+
 
       IF (PULLT) THEN
          EREAL=EREAL-PFORCE*R(PATOM1,3)+PFORCE*R(PATOM2,3)
@@ -30,7 +38,9 @@
          GRAD(PATOM2,3)=GRAD(PATOM2,3)+PFORCE
       ENDIF
 
-      RMS=MAX(DSQRT(SUM(GRAD**2)/(3*NATOMS)),1.0D-100)
+      X=RESHAPE(R,NX)
+      GRADX=RESHAPE(GRAD,NX)
+      RMS=MAX(DSQRT(SUM(GRADX**2)/NX),1.0D-100)
 
       RETURN
 

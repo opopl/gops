@@ -6,4 +6,7 @@
      ! initial time
      DOUBLE PRECISION :: TSTART, TFINISH
      INTEGER :: NATOMS=46
+
+     ! potential type
+     CHARACTER(LEN=SLEN) PTYPE
      

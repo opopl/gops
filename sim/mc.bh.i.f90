@@ -2,7 +2,9 @@
 WRITE(LFH,'(A,I10,A)') 'Starting MC run of ',NSTEPS,' steps'
 WRITE(LFH,'(A,F15.8,A)') 'Temperature will be multiplied by ',SCALEFAC,' at every step'
 
-DO ISTEP=1,NSTEPS 
+! main basin hopping loop 
+
+bhloop: DO ISTEP=1,NSTEPS 
   MCTEMP = TEMP
   CALL TAKESTEP
 
@@ -25,9 +27,8 @@ DO ISTEP=1,NSTEPS
 
   IF ( (MOD(ISTEP,NACCEPT).EQ.0) CALL ACCREJ(NSUCCESS,NFAIL,NSUCCESST,NFAILT)
     TEMP=TEMP*SCALEFAC
-  ENDIF
   IF (NQ.GT.NSTEPS) GOTO 37
 
-ENDDO
+ENDDO bhloop
 
 
