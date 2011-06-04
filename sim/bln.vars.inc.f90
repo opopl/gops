@@ -49,7 +49,7 @@
         ! VXPD - cross product vector
         ! HVXPD - cross product direction
         DOUBLE PRECISION, DIMENSION(N-1) :: XPD_2, XPD
-        DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD, HVXPD, pp
+        DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD, HVXPD, PP
         ! B(:) =>  bond vectors lengths
         DOUBLE PRECISION, DIMENSION(N) :: B
         ! bond vectors, BVR_i => DR(i,i+1) => R_{i+1}-R_i 

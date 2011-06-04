@@ -54,7 +54,7 @@
       USE PORFUNCS
       
       IMPLICIT NONE
- ! subroutine parameters  {{{
+! subroutine parameters  {{{
       DOUBLE PRECISION, INTENT(INOUT) :: X(:)
       LOGICAL,INTENT(IN) :: DIAGCO
       DOUBLE PRECISION,INTENT(IN) :: EPS
@@ -65,7 +65,7 @@
       LOGICAL,INTENT(IN) RESET
       ! }}}
        ! local parameters {{{
-      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W, WTEMP, GRAD, GNEW, XSAVE
+      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W, WTEMP, GRADX, GNEW, XSAVE
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: ALPHA, RHO
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: XSAVE
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: WSS,WDG
@@ -92,7 +92,7 @@
 
       ! initializations {{{
 
-      ALLOCATE(RHO(M),ALPHA(M),W(N),WSS(N,M),WDG(N,M),X(N))
+      ALLOCATE(RHO(M),ALPHA(M),W(N),WSS(N,M),WDG(N,M))
 
       NFAIL=0 ; ITDONE=0 ; IF (RESET) ITER=0 
 
@@ -101,8 +101,8 @@
          IF (.NOT.RESET) WRITE(LFH,'(A)')       'mylbfgs> Not resetting LBFGS minimiser'
       ENDIF
 
-      ! evaluate energy and gradient (.TRUE.) but not Hessian (.FALSE.)
-      CALL POTENTIAL(X,GRAD,E,.TRUE.,.FALSE.)
+      !        evaluate gradient (.TRUE.) but not Hessian (.FALSE.)
+      CALL POTENTIAL(X,GRADX,E,RMS,.TRUE.,.FALSE.)
 
       IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=', E,RMS, &
                                 ' after ',ITDONE,' LBFGS steps'
