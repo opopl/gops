@@ -8,10 +8,13 @@
       CHARACTER(LEN=100) :: BUFFER, LABEL
       INTEGER :: POS, LINE
       INTEGER, PARAMETER :: DATA_FH = 15
-      INTEGER :: IOS = 0
+      INTEGER :: IOS=0
 
-      COMMON /BUFINF/ BUFFER,POS,LABEL,IOS
+      COMMON /BUFINF/ BUFFER,POS,LABEL
+!,IOS
       ! }}}
+
+      !IOS=0
 
       SELECTCASE(PROG)
         CASE(1) ! GMIN {{{
@@ -39,7 +42,7 @@
     	         RETURN
                  ! A-L {{{
     	      CASE('ACCRAT')
-    	         CALL READ(BUFFER, *, IOSTAT=IOS) ACCRAT
+                     CALL READ(BUFFER,*,IOSTAT=IOS) ACCRAT
     	      CASE('FQMAX','TIGHTCONV')
     	         CALL READ(BUFFER, *, IOSTAT=IOS) FQMAX
               CASE('EDIFF')

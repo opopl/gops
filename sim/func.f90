@@ -44,7 +44,7 @@ SUBROUTINE IO
 
       if (LBFGST) then
          WRITE(LFH,'(A)') 'Nocedal LBFGS minimization'
-         WRITE(LFH,'(A,I6)') 'Number of updates before reset in LBFGS=',MUPDATE
+         WRITE(LFH,'(A,I6)') 'Number of updates before reset in LBFGS=',M_LBFGS
          WRITE(LFH,'(A,F20.10)') 'Maximum step size=',MAXBFGS
          WRITE(LFH,'(A,G12.4)') 'Guess for initial diagonal elements in LBFGS=',DGUESS
       ENDIF
@@ -121,19 +121,26 @@ SUBROUTINE INQF(FILENAME,YESNO)
 ! {{{
 LOGICAL,INTENT(OUT) :: YESNO
 CHARACTER(LEN=*),INTENT(IN) :: FILENAME
+CHARACTER(LEN=100) :: FLN
 
-FILENAME=TRIM(ADJUSTL(FILENAME))
-INQUIRE(FILE=FILENAME,EXIST=YESNO)
+FLN=TRIM(ADJUSTL(FILENAME))
+INQUIRE(FILE=FLN,EXIST=YESNO)
 ! }}}
 END SUBROUTINE INQF
+
+
+!> @name OPENF
+!! @brief open files 
 
 SUBROUTINE OPENF(FILEHANDLE,MODE,FILENAME)
 ! {{{
 
 INTEGER, INTENT(IN) :: FILEHANDLE
-CHARACTER (LEN=*), INTENT(IN) :: MODE,FILENAME
+CHARACTER (LEN=*), INTENT(IN) :: FILENAME
+CHARACTER (LEN=*), INTENT(IN) :: MODE
+CHARACTER (LEN=100) :: FLN
 
-FILENAME=TRIM(ADJUSTL(FILENAME))
+FLN=TRIM(ADJUSTL(FILENAME))
 
 SELECTCASE(MODE)
         CASE(">")
@@ -178,8 +185,7 @@ USE V
 
 IMPLICIT NONE
 
-DOUBLE PRECISION, INTENT(INOUT) :: R(:,3)
-DOUBLE PRECISION RMASS(3)
+DOUBLE PRECISION, INTENT(INOUT) :: R(:,:)
 INTEGER I,K
 
 RMASS=SUM(R,DIM=1)/SIZE(R,DIM=1)
@@ -188,47 +194,10 @@ do K=1,3
         R(:,K)=R(:,K)-RMASS(K)
 ENDDO
 
-IF (DEBUG) WRITE(LFH,'(A,3G20.10)') 'centre2> centre of mass reset to the origin from ',&                                                   (RMASS(I),I=1,3)
-RETURN
+IF (DEBUG) WRITE(LFH,'(A,3G20.10)') 'centre2> centre of mass reset to the origin from ',RMASS
+
 ! }}}
-END
-
-!> @name GSORT
-!> @brief This subprogram performs a sort on the input data and
-!> arranges it from smallest to biggest. The exchange-sort algorithm is used.
-!
-SUBROUTINE GSORT(N,NATOMS)
-! {{{
-
-      IMPLICIT NONE
-
-      INTEGER, INTENT(IN) :: NATOMS,N
-      !DOUBLE PRECISION(:), INTENT(INOUT) ::
- 
-      INTEGER J1, L, J3, J2, NTEMP
-      DOUBLE PRECISION TEMP, C
-C
-      DO 20 J1=1,N-1
-         L=J1
-         DO 10 J2=J1+1,N
-            IF (QMIN(L).GT.QMIN(J2)) L=J2
-10       CONTINUE
-         TEMP=QMIN(L)
-         QMIN(L)=QMIN(J1)
-         QMIN(J1)=TEMP
-         NTEMP=FF(L)
-         FF(L)=FF(J1)
-         FF(J1)=NTEMP
-         DO J2=1,3*NATOMS
-            C=QMINP(L,J2)
-            QMINP(L,J2)=QMINP(J1,J2)
-            QMINP(J1,J2)=C
-         ENDDO
-      ENDDO
-
-      RETURN
-! }}}
-END
+END SUBROUTINE
 
 ! doxygen - GETRND {{{
 !> @name         GETRND
@@ -257,7 +226,7 @@ ENDDO
 
 RETURN
 ! }}}
-END 
+END SUBROUTINE 
 
 SUBROUTINE SDPRND (ISEED)
         ! declarations {{{
@@ -295,22 +264,21 @@ SUBROUTINE SDPRND (ISEED)
             IX = MOD(171*IX,30269)
             IY = MOD(172*IY,30307)
             IZ = MOD(170*IZ,30323)
-            X = MOD(DBLE(IX)/30269.0D0+DBLE(IY)/30307.0D0+
-     1        DBLE(IZ)/30323.0D0,1.0D0)
+            X = MOD(DBLE(IX)/30269.0D0+DBLE(IY)/30307.0D0+DBLE(IZ)/30323.0D0,1.0D0)
   10    CONTINUE
         OTHER = AINT(YMOD*X)/YMOD
         OFFSET = 1.0D0/YMOD
         INDEX = 1
         ! }}}
-END
+END SUBROUTINE
 
 FUNCTION DPRAND()
         ! DECLARATIONS {{{
-        DOUBLE PRECISION XMOD, YMOD, XMOD2, XMOD4, TINY, POLY(101), DPRAND,
-     1    OTHER, OFFSET, X, Y
-        PARAMETER (XMOD = 1000009711.0D0, YMOD = 33554432.0D0,
-     1    XMOD2 = 2000019422.0D0, XMOD4 = 4000038844.0D0,
-     2    TINY = 1.0D-17)
+        DOUBLE PRECISION XMOD, YMOD, XMOD2, XMOD4, TINY, POLY(101), DPRAND, &
+         OTHER, OFFSET, X, Y
+        PARAMETER (XMOD = 1000009711.0D0, YMOD = 33554432.0D0, &
+        XMOD2 = 2000019422.0D0, XMOD4 = 4000038844.0D0,&
+        TINY = 1.0D-17)
         INTEGER INDEX, N
         LOGICAL INITAL
         SAVE INITAL
@@ -361,7 +329,7 @@ FUNCTION DPRAND()
         IF (X .GE. 1.0D0) X = X-1.0D0
         DPRAND = X+TINY
         ! }}}
-END
+END FUNCTION
  
 ENDMODULE
 

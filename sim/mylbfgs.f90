@@ -50,7 +50,7 @@
       SUBROUTINE MYLBFGS(X,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
       ! ====================================
      ! declarations {{{ 
-      USE COMMONS
+      USE V
       USE PORFUNCS
       
       IMPLICIT NONE

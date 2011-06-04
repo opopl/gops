@@ -13,12 +13,6 @@
       IMPLICIT NONE
       
       DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:,:)
-      DOUBLE PRECISION E
-
-      ! USED IN WRITING TO PAIRDIST      
-      CHARACTER(LEN=40) :: ATOM1,ATOM2,ATOMPAIR
-
-      COMMON /MYPOT/ E
 ! }}}
 
 ! init {{{
@@ -33,13 +27,14 @@
 
       ALLOCATE(SCREENC(NATOMS,3))
       
-      include gmin.main.pairdist.inc.f90
+      !include "gmin.main.pairdist.inc.f90"
       
       IF (TRACKDATAT) THEN
          CALL OPENF(ENERGY_FH,">>","energy.dat")
          CALL OPENF(MARKOV_FH,">>","markov.dat")
          CALL OPENF(BEST_FH,">>","best.dat")
-         IF (RMST) CALL OPENF(RMSD_FH,">>","rmsd.dat")
+         !IF (RMST) 
+        CALL OPENF(RMSD_FH,">>","rmsd.dat")
       ENDIF
       
       CALL IO
