@@ -78,7 +78,7 @@ main(){
 case "$1" in
   a) ffiles=( ` ls *.f90 *.f *.F ` )
   	for f in ${ffiles[@]}; do
-	  	cp $f ../sim/pathsample.$f
+		  #m $f ../ps/.$f
   	done
   ;;
   *)

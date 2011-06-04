@@ -4,7 +4,7 @@ WRITE(LFH,'(A,F15.8,A)') 'Temperature will be multiplied by ',SCALEFAC,' at ever
 
 ! main basin hopping loop 
 
-bhloop: DO ISTEP=1,NSTEPS 
+bhloop: DO ISTEP=NDONE+1,NSTEPS 
   MCTEMP = TEMP
   CALL TAKESTEP
 

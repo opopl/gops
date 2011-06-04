@@ -8,8 +8,10 @@ SUBROUTINE MC(NSTEPS,SCALEFAC,SCREENC)
 
 include mc.vars.i.f90 ! Variable declarations 
 include fmt.i.f90     ! Formats
+include mc.init.i.f90 ! Initializations 
 include mc.cien.i.f90 ! Calculate the initial energy and save in EPREV
 include mc.bh.i.f90   ! Main basin-hopping loop
+37 CONTINUE
 include mc.w.111.i.f90 ! write to LFH: Qu, E, Steps, RMS, Markov E, t (elapsed time)
 
 WRITE(LFH,21)   ' Acceptance ratio for run=',  ARATIO,	&

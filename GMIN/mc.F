@@ -125,13 +125,13 @@ c  AMH
       NDONE=0
       IF (RESTORET) THEN
 
-      DO JP=1,NPAR
-            CALL RESTORESTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
-      ENDDO
-      
-      WRITE(MYUNIT, '(A,I10)') 'MC> restore NDONE=',NDONE
-!     csw34> Sets the quench counter so that the GMIN_out file makes sense after using RESTORE!
-!         NQ(:)=NDONE
+	      DO JP=1,NPAR
+	            CALL RESTORESTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
+	      ENDDO
+	      
+	      WRITE(MYUNIT, '(A,I10)') 'MC> restore NDONE=',NDONE
+	!     csw34> Sets the quench counter so that the GMIN_out file makes sense after using RESTORE!
+	!         NQ(:)=NDONE
       ENDIF
       NQ(:)=NDONE
 
@@ -197,7 +197,6 @@ C        seed the random number generator with system time  + MYNODE (for MPI ru
       ENDIF
 
 C  Calculate the initial energy and save in EPREV
-!op226>{{{ 
 #ifdef MPI
 !op226> MPI section {{{ 
       WRITE(MYUNIT, '(A)')  'Calculating initial energy'
@@ -257,6 +256,7 @@ C  step it was attained at. BESTCOORDS contains the corresponding coordinates.
 
 !op226>}}} 
 #else
+! {{{
       WRITE(MYUNIT,'(A)') 'Calculating initial energy'
       EPSSAVE=EPSSPHERE
       EPSSPHERE=0.0D0
@@ -301,8 +301,8 @@ C  step it was attained at. BESTCOORDS contains the corresponding coordinates.
          VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
       ENDDO
       EPSSPHERE=EPSSAVE
+      ! }}}
 #endif
-!op226>}}} 
 
 !op226> IF (THOMSONT) THEN - Thomson problem {{{
       IF (THOMSONT) THEN
