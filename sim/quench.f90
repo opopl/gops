@@ -28,8 +28,8 @@
       ! CFLAG - test convergence
       LOGICAL CFLAG
       ! E - energy 
-      DOUBLE PRECISION E
-      COMMON /MYPOT/ E
+      DOUBLE PRECISION QE
+      COMMON /MYPOT/ QE
 
       ! }}}
      ! }}} 
@@ -55,7 +55,7 @@
       !                                 (number of iterations needed to obtain convergence)
       !         RESET=.TRUE.            Reset ITER=0 in LBFGS
       !
-      CALL MYLBFGS(P,.FALSE.,GMAX,CFLAG,E,MAXIT,ITER,.TRUE.)
+      CALL MYLBFGS(P,.FALSE.,GMAX,CFLAG,QE,MAXIT,ITER,.TRUE.)
 
       IF (CFLAG) QDONE=0
 

@@ -1,8 +1,3 @@
-      ! local {{{
-
-      COMMON /MYPOT/ E
-    
-      ! }}}
       ! subroutine {{{
 
       INTEGER, INTENT(IN) :: NSTEPS
@@ -11,11 +6,22 @@
 
       ! local
 
+      ! ATEST: .TRUE. if the move is accepted; .FALSE. otherwise
+      LOGICAL :: ATEST
       INTEGER NFAIL, NFAILT, NSUCCESS, NSUCCESST
       INTEGER ITERATIONS,QDONE,NDONE
+      !
+      ! JACCPREV: the index of the last step when the move 
+      !           was accepted
       INTEGER JACCPREV
       DOUBLE PRECISION, DIMENSION(NATOMS,3) ::  GRAD
-      DOUBLE PRECISION ::       TIME,E,EPREV
+      DOUBLE PRECISION ::       TIME
+      ! QE       - energy after each quench
+      ! QEPREV   - energy from the previous quench
+      ! DQE=QE-QEPREV
+      DOUBLE PRECISION :: QE, QEPPREV, DQE
+
+      COMMON /MYPOT/ QE
 
       ! }}}
 

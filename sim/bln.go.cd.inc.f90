@@ -14,9 +14,9 @@
           IF (ICOUNT .GE. 2) THEN
             ! if there are two or more neutral residues involved 
             ! in the definition of the dihedral angle, then...
-            CD(I+1,1:2) = (/ 0.0, 0.2*EPSILON /)
-          ELSE
-            ! ... otherwise
+            CD(I+1,1:2) = (/ 0.0D0, 0.2D0*EPSILON /)
+            ELSE
+              ! ... otherwise
             CD(I+1,1:2) = 1.2*EPSILON
           ENDIF
 

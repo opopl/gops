@@ -15,7 +15,7 @@ bhloop: DO ISTEP=NDONE+1,NSTEPS
   include mc.bh.pairdist.inc.f90
   include mc.bh.trackdata.inc.f90
 
-  CALL TRAN(E,EPREV,ATEST,MCTEMP)
+  CALL TRAN(QE,QEPREV,ATEST,MCTEMP)
 
   include mc.bh.checkmarkov.inc.f90
 
