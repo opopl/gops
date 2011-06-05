@@ -7,6 +7,7 @@
       PROGRAM GMIN
 ! declarations {{{
       USE V
+      USE KW
       USE PORFUNCS
       USE FUNC
       

@@ -1,4 +1,13 @@
 
+MODULE KW
+
+uSE V
+uSE FUNC
+
+IMPLICIT NONE
+
+CONTAINS
+
       SUBROUTINE KEYWORD(PROG)
       ! declarations {{{
       INTEGER PROG
@@ -13,7 +22,7 @@
       COMMON /BUFINF/ BUFFER,POS,LABEL
 !,IOS
       ! }}}
-
+! body {{{
       !IOS=0
 
       SELECTCASE(PROG)
@@ -42,45 +51,45 @@
     	         RETURN
                  ! A-L {{{
     	      CASE('ACCRAT')
-                     CALL READ(BUFFER,*,IOSTAT=IOS) ACCRAT
+                     READ(BUFFER, *) ACCRAT
     	      CASE('FQMAX','TIGHTCONV')
-    	         CALL READ(BUFFER, *, IOSTAT=IOS) FQMAX
+    	             READ(BUFFER, *) FQMAX
               CASE('EDIFF')
-    	         READ(BUFFER, *, IOSTAT=IOS) EDIFF
+    	         READ(BUFFER, *) EDIFF
               CASE('G46')
                  G46=.TRUE.
                  BLNT=.TRUE.
                  ! }}}
                  ! M-S {{{
               CASE('MAXIT')
-    	         READ(BUFFER, *, IOSTAT=IOS) MAXIT
+    	         READ(BUFFER, *) MAXIT
               CASE('M_LBFGS')
-    	         READ(BUFFER, *, IOSTAT=IOS) M_LBFGS
+    	         READ(BUFFER, *) M_LBFGS
               CASE('NACCEPT')
-    	         READ(BUFFER, *, IOSTAT=IOS) NACCEPT
+    	         READ(BUFFER, *) NACCEPT
               CASE('NSAVE')
-    	         READ(BUFFER, *, IOSTAT=IOS) NSAVE
+    	         READ(BUFFER, *) NSAVE
               CASE('P46')
                  P46=.TRUE.
                  BLNT=.TRUE.
               CASE('PULL')
                  PULLT=.TRUE.
-    	         READ(BUFFER, *, IOSTAT=IOS) PATOM1,PATOM2,PFORCE
+    	         READ(BUFFER, *) PATOM1,PATOM2,PFORCE
               CASE('RADIUS')
-    	         READ(BUFFER, *, IOSTAT=IOS) RADIUS
+    	         READ(BUFFER, *) RADIUS
     	      CASE('SQMAX','BASIN','SLOPPYCONV')
-    	         CALL READ(BUFFER, *, IOSTAT=IOS) SQMAX
+    	         READ(BUFFER, *) SQMAX
               CASE('STEPS')
-    	         READ(BUFFER, *, IOSTAT=IOS) MCSTEPS,TFAC
-                 ! }}}
+    	         READ(BUFFER, *) MCSTEPS,TFAC
+                 ! }}} 
               CASE('TARGET')
                 TARGET=.TRUE.
                 NTARGETS=NARGS-1
                 ALLOCATE(TARGETS(NTARGETS))
-    	        CALL READ(BUFFER, *, IOSTAT=IOS) TARGETS(1:NTARGETS)
+    	        READ(BUFFER, *) TARGETS(1:NTARGETS)
               CASE('TRACKDATA')
                 TRACKDATAT=.TRUE.
-              CASE(DEFAULT)
+              CASE DEFAULT
     	         CALL REPORT('Unrecognized command '//BUFFER,.TRUE.)
     	         STOP
                  ! }}}
@@ -91,5 +100,7 @@
       ENDSELECT
 
       RETURN
-      END
+      ! }}}
+      END SUBROUTINE
 
+ENDMODULE

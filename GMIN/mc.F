@@ -27,7 +27,7 @@
 c  AMH 
       INTEGER :: gly_count,iii,i2,i500,snapcount, DUMMYINT
       DOUBLE PRECISION prcord(NATOMS,3,3,3)
-      DOUBLE PRECISION :: mctemp
+      DOUBLE PRECISION :: MCTEMP
 !  csw34> PAIRDIST variables
       INTEGER :: PAIRCOUNTER
       DOUBLE PRECISION, EXTERNAL :: PAIRDISTANCE

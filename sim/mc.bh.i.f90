@@ -11,21 +11,21 @@ bhloop: DO ISTEP=NDONE+1,NSTEPS
   NQ=NQ+1
   CALL QUENCH(SCREENC,ITERATIONS,TIME,QDONE)  
 
-  include mc.w.111.i.f90
-  include mc.bh.pairdist.inc.f90
-  include mc.bh.trackdata.inc.f90
+  include "mc.w.111.i.f90"
+  !include "mc.bh.pairdist.inc.f90"
+  !include "mc.bh.trackdata.inc.f90"
 
   CALL TRAN(QE,QEPREV,ATEST,MCTEMP)
 
-  include mc.bh.checkmarkov.inc.f90
+  !include "mc.bh.checkmarkov.inc.f90"
 
   ! Accept or reject step
-  include mc.bh.accrej.inc.f90
+  include "mc.bh.accrej.inc.f90"
   ! Check the acceptance ratio every NACCEPT steps and update:
   !     NSUCCESST (the total number of accepted moves)
   !     NFAILT (the total number of rejected moves)
 
-  IF ( (MOD(ISTEP,NACCEPT).EQ.0) CALL ACCREJ(NSUCCESS,NFAIL,NSUCCESST,NFAILT)
+  IF ( (MOD(ISTEP,NACCEPT).EQ.0)) CALL ACCREJ(NSUCCESS,NFAIL,NSUCCESST,NFAILT)
     TEMP=TEMP*SCALEFAC
   IF (NQ.GT.NSTEPS) GOTO 37
 

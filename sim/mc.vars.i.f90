@@ -14,12 +14,15 @@
       ! JACCPREV: the index of the last step when the move 
       !           was accepted
       INTEGER JACCPREV
-      DOUBLE PRECISION, DIMENSION(NATOMS,3) ::  GRAD
       DOUBLE PRECISION ::       TIME
       ! QE       - energy after each quench
       ! QEPREV   - energy from the previous quench
       ! DQE=QE-QEPREV
       DOUBLE PRECISION :: QE, QEPPREV, DQE
+      DOUBLE PRECISION :: MCTEMP
+
+      DOUBLE PRECISION :: EBEST
+      INTEGER :: JBEST
 
       COMMON /MYPOT/ QE
 

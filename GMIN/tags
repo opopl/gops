@@ -3,7 +3,7 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+!_TAG_PROGRAM_VERSION	5.8	//
 1	EAMal.f	/^1       CONTINUE$/;"	l	subroutine:EAMal	file:
 1	brent.f	/^1       IF(X.GE.XM) THEN$/;"	l	function:BRENT	file:
 1	fedor.f	/^    1 continue$/;"	l	function:ar2UT0	file:
@@ -3779,7 +3779,6 @@ PN2	modamb.f90	/^      INTEGER PN,IDIVF,PN2,/;"	v	module:MODAMBER
 PN3	modamb.f90	/^      INTEGER PN,IDIVF,PN2,PN3,/;"	v	module:MODAMBER
 PNEWJUMP	commons.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP,/;"	v	module:COMMONS
 PNEWJUMP	commons.o.f90	/^     &                 TFAC(3), RMS, TEMPS, SACCRAT, CEIG, PNEWJUMP,/;"	v	module:COMMONS
-PORFUNCS	porfuncs.f90	/^MODULE PORFUNCS$/;"	m
 POTDAT	Pbglue.f	121;"	c	block data:PB
 POTDAT	Pbglue.f	294;"	c
 POTDAT	Pbglue.f	325;"	c
@@ -4747,6 +4746,7 @@ debug_numer_forces	AMH/globals_alt.f90	/^        logical debug_numer_forces$/;"	
 debugflag	AMH/globals_alt.f90	/^        integer max_well_alt,n_altgamtypes,max_letters,debugflag$/;"	v	module:globals_alt
 default_alt	AMH/altpot_io.f90	/^      subroutine default_alt(/;"	s
 define_base_dirs	cpsim	/^define_base_dirs(){$/;"	f
+define_base_dirs	cpsim~	/^define_base_dirs(){$/;"	f
 degto	modamb.f90	/^      DOUBLE PRECISION kt(42,42,42),to(42,42,42),degto(/;"	v	module:MODAMBER
 delR_rg	AMH/amhglobals.f	/^      double precision D_rg, T_rg, delR_rg,/;"	v	module:amhglobals
 del_r_a	AMH/amhglobals.f	/^       double precision del_r_a(/;"	v	module:amhglobals
@@ -4774,6 +4774,7 @@ dimpEbydy	modamb.f90	/^                                                   & dEby
 dimpEbydz	modamb.f90	/^                                                   & dEbydx, dEbydy, dEbydz, dimpEbydx, dimpEbydy, dimpEbydz,/;"	v	module:MODAMBER
 dipoles	fedor.f	/^        subroutine dipoles(/;"	s
 display_help	cpsim	/^display_help(){$/;"	f
+display_help	cpsim~	/^display_help(){$/;"	f
 display_version	display_version.f90	/^subroutine display_version(/;"	s
 display_version	dv.f90	/^subroutine display_version(/;"	s	module:dv
 dist_cut	AMH/amhglobals.f	/^      logical beta_c_of_n,dist_cut$/;"	v	module:amhglobals
@@ -4862,13 +4863,11 @@ finalize_alt	AMH/altpot_io.f90	/^        subroutine finalize_alt(/;"	s
 fish	modamb.f90	/^      INTEGER  a,b,c,ios,atoms,d,e,f,g,h,i,j,k,l,colin,fish,/;"	v	module:MODAMBER
 fix_dip	modamber9.f90	/^      periodic,  use_pme,    opt_infl,   ischrgd, fix_dip,/;"	v	module:MODAMBER9
 fix_quad	modamber9.f90	/^      periodic,  use_pme,    opt_infl,   ischrgd, fix_dip, &$/;"	v	module:MODAMBER9
-flush	porfuncs.f90	/^subroutine flush(/;"	s	module:PORFUNCS
 foldstrt_max_a	AMH/amhglobals.f	/^      integer foldstrt_min_a(maxres),foldstrt_max_a(/;"	v	module:amhglobals
 foldstrt_max_b	AMH/amhglobals.f	/^      integer foldstrt_min_b(maxres),foldstrt_max_b(/;"	v	module:amhglobals
 foldstrt_min_a	AMH/amhglobals.f	/^      integer foldstrt_min_a(/;"	v	module:amhglobals
 foldstrt_min_b	AMH/amhglobals.f	/^      integer foldstrt_min_b(/;"	v	module:amhglobals
 force	AMH/force.f	/^      subroutine force(/;"	s
-fork_subr	porfuncs.f90	/^          subroutine fork_subr(/;"	s	module:PORFUNCS
 forse	AMH/amhglobals.f	/^     *     rincsq(maxcnt,maxtab),$/;"	v	module:amhglobals
 four_plus	AMH/amhglobals.f	/^        logical four_plus$/;"	v	module:amhglobals
 fphi	Ackland_metals.f90	/^       double precision function fphi(/;"	f
@@ -4907,9 +4906,7 @@ genimpparams	modamb.f90	/^      DOUBLE PRECISION midimpparams(4,6),genimpparams(
 gentab	AMH/gentab.f	/^      subroutine gentab$/;"	s
 gentorsparams	modamb.f90	/^      DOUBLE PRECISION gentorsparams(/;"	v	module:MODAMBER
 get_res_name	AMH/savstr.f	/^        subroutine get_res_name(/;"	s
-getarg_subr	porfuncs.f90	/^          subroutine getarg_subr(/;"	s	module:PORFUNCS
 getmem	AMH/getmem.f	/^      subroutine getmem(/;"	s
-getpid_subr	porfuncs.f90	/^          subroutine getpid_subr(/;"	s	module:PORFUNCS
 gfunc	Ackland_metals.f90	/^	double precision function gfunc(/;"	f
 gfunc_d	Ackland_metals.f90	/^	double precision function gfunc_d(/;"	f
 gfunc_dd	Ackland_metals.f90	/^	double precision function gfunc_dd(/;"	f
@@ -5039,7 +5036,6 @@ ia1	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  ia1,/;"	v	module:M
 ia2	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  ia1, ia2,/;"	v	module:MODAMBER
 ia3	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  ia1, ia2, ia3,/;"	v	module:MODAMBER
 ia4	modamb.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) ::  ia1, ia2, ia3, ia4 /;"	v	module:MODAMBER
-iargc_subr	porfuncs.f90	/^subroutine iargc_subr(/;"	s	module:PORFUNCS
 ibelly	modamber9.f90	/^      natc,nattgtfit,nattgtrms,ibelly,/;"	v	module:MODAMBER9
 ibellygp	modamber9.f90	/^      i42,i44,i46,i48,i50,i52,i54,i56,i58,ibellygp,/;"	v	module:MODAMBER9
 ibgwat	modamber9.f90	/^      ntmin,irest,jfastw,                &!33$/;"	v	module:MODAMBER9
@@ -5269,6 +5265,7 @@ m14	modamber9.f90	/^      m02,m04,m06,m08,m10,m12,m14,/;"	v	module:MODAMBER9
 m16	modamber9.f90	/^      m02,m04,m06,m08,m10,m12,m14,m16,/;"	v	module:MODAMBER9
 m18	modamber9.f90	/^      m02,m04,m06,m08,m10,m12,m14,m16,m18,/;"	v	module:MODAMBER9
 main	cpsim	/^main(){$/;"	f
+main	cpsim~	/^main(){$/;"	f
 mass	modamb.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: mass /;"	v	module:MODAMBER
 master	modamber9.f90	/^logical master$/;"	v	module:MODAMBER9
 match	modamb.f90	/^      INTEGER  match,/;"	v	module:MODAMBER
@@ -5692,6 +5689,7 @@ seglist_a	AMH/amhglobals.f	/^      integer seglist_a(/;"	v	module:amhglobals
 seglist_b	AMH/amhglobals.f	/^      integer seglist_a(maxres), seglist_b(/;"	v	module:amhglobals
 send_output_alt	AMH/altpot_io.f90	/^      subroutine send_output_alt(/;"	s
 set_base_vars	cpsim	/^set_base_vars(){$/;"	f
+set_base_vars	cpsim~	/^set_base_vars(){$/;"	f
 seval	Alglue.f	/^      subroutine seval(/;"	s
 seval1	EAMal.f	/^      subroutine seval1(/;"	s
 shydro	AMH/amhglobals.f	/^     *     deltz(maxcnt,maxtab),shydro(/;"	v	module:amhglobals
@@ -5717,7 +5715,6 @@ ss_pattern_a	AMH/amhglobals.f	/^      integer ss_pattern_a(/;"	v	module:amhgloba
 ss_pattern_b	AMH/amhglobals.f	/^      integer ss_pattern_a(maxres), ss_pattern_b(/;"	v	module:amhglobals
 ssweight	AMH/amhglobals.f	/^      logical ssweight,/;"	v	module:amhglobals
 surften	modamber9.f90	/^          kappa,offset,surften,/;"	v	module:MODAMBER9
-system_subr	porfuncs.f90	/^          subroutine system_subr(/;"	s	module:PORFUNCS
 t	modamb.f90	/^      INTEGER  matc/;"	v	module:MODAMBER
 t	modamber9.f90	/^double precision t,/;"	v	module:MODAMBER9
 t1	AMH/amhglobals.f	/^      double precision t1,/;"	v	module:amhglobals
@@ -5801,7 +5798,6 @@ vlimit	modamber9.f90	/^      tol,taur,dx0,drms,vlimit,/;"	v	module:MODAMBER9
 vpotnt	AMH/amhglobals.f	/^      double precision vpotnt(/;"	v	module:amhglobals
 vrand	modamber9.f90	/^      gbsa,vrand,/;"	v	module:MODAMBER9
 vv	modamber9.f90	/^      neb,vv,/;"	v	module:MODAMBER9
-wait_subr	porfuncs.f90	/^          subroutine wait_subr(/;"	s	module:PORFUNCS
 walesamh_initial	AMH/walesamh_initial.f	/^      subroutine walesamh_initial(/;"	s
 walesamh_interface	AMH/walesamh_interface.f90	/^      subroutine walesamh_interface(/;"	s
 weight_P_AP	AMH/amhglobals.f	/^       double precision :: weight_P_AP(/;"	v	module:amhglobals
