@@ -62,25 +62,23 @@
       DOUBLE PRECISION,INTENT(OUT) :: ENERGY
       INTEGER,INTENT(IN) :: ITMAX
       INTEGER,INTENT(OUT) :: ITDONE
-      LOGICAL,INTENT(IN) RESET
+      LOGICAL,INTENT(IN) :: RESET
       ! }}}
        ! local parameters {{{
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W, WTEMP, GRADX, GNEW, XSAVE
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: ALPHA, RHO
-      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: XSAVE
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: WSS,WDG
       INTEGER ITER, NFAIL, CP
       DOUBLE PRECISION :: GNORM,SLENGTH,E,ENEW,YS,YY,SQ,YR,BETA,POTEL, DDOT, STP
       DOUBLE PRECISION ::       DOT1,DOT2,OVERLAP, DUMMY
 
       INTEGER :: N,M,K,IX,IXMIN,IXMAX
+      COMMON /MYPOT/ QE
 
       SAVE W,DIAG,ITER
       ! 
-      N=NX
       M=M_LBFGS
       !
-      COMMON /MYPOT/ POTEL
       !   }}}
       ! ====================================
       ! Labels:  {{{
@@ -145,8 +143,8 @@
             DO J1=1,N
                IF (DIAG(J1).LE.0.0D0) THEN
                   WRITE(LFH,235) J1
- 235              FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',/,
-     1                   ' INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE')
+ 235              FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',/,&
+                ' INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE')
                   STOP
                ENDIF
             ENDDO

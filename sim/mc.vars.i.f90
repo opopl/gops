@@ -15,6 +15,7 @@
       !           was accepted
       INTEGER JACCPREV
       DOUBLE PRECISION ::       TIME
+      DOUBLE PRECISION ::       ARATIO
       ! QE       - energy after each quench
       ! QEPREV   - energy from the previous quench
       ! DQE=QE-QEPREV

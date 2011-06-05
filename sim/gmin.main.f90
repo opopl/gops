@@ -10,6 +10,7 @@
       USE KW
       USE PORFUNCS
       USE FUNC
+      USE MC
       
       IMPLICIT NONE
       
@@ -44,7 +45,9 @@
       NQ=1
 
 ! }}}
-      CALL MCRUNS(SCREENC)
+
+      CALL MCRUN(MCSTEPS,TFAC,SCREENC)
+
 ! end {{{
       CALL FLUSH(LFH)
       CLOSE(LFH)

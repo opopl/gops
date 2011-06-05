@@ -10,9 +10,6 @@
      ! potential type
      CHARACTER(LEN=SLEN) PTYPE
 
-
-     NATOMS=46
-
      INTEGER :: NSEED
 
      DOUBLE PRECISION ::       RMS
