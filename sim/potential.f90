@@ -4,7 +4,7 @@
 !> @param[out] EREAL    dp         energy 
 !> @param[out] RMS      dp         RMS 
 
-      SUBROUTINE POTENTIAL(X,GRADX,EREAL,RMS,GRADT,SECT)
+      SUBROUTINE POTENTIAL(X,EREAL,GRADX,RMS,GRADT,SECT)
 
       USE V
       USE PORFUNCS
@@ -26,11 +26,9 @@
       NR=NX/3
       R=RESHAPE(X,(/ NR,3 /))
 
-
       IF (BLNT .OR. PULLT) THEN 
-        CALL EBLN(N,R,GRAD,ENERGY,HESS,PTYPE,GRADT,SECT)
+        CALL EBLN(N,R,ENERGY,GRAD,HESS,PTYPE,GRADT,SECT)
       ENDIF
-
 
       IF (PULLT) THEN
          EREAL=EREAL-PFORCE*R(PATOM1,3)+PFORCE*R(PATOM2,3)

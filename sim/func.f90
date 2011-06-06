@@ -128,6 +128,7 @@ INQUIRE(FILE=FLN,EXIST=YESNO)
 ! }}}
 END SUBROUTINE INQF
 
+include "mylbfgs.i.f90"
 
 !> @name OPENF
 !! @brief open files 

@@ -244,7 +244,10 @@ sub MakeDependsf90 {
 	 ($objfile = $file) =~ s/\.[^.]+$/.o/;
 	 # for each object file, print relevant dependencies 
 	 # ONLY those object files which are in the root directory
-	 if ( $objfile !~ /^(.*)\// ){
+	 if ( ( $objfile !~ /^(.*)\// ) 
+		 && ( $objfile !~ /.*\.(inc|i)\..*/ ) # don't print include files
+		 && ( $objfile !~ /.*\.(ref)\..*/ ) # don't print "reference" files, i.e. files included from other code
+	 ) {
 	 print MAKEFILE "$objfile: ";
 	 undef @dependencies;
 	 foreach $module (@modules) {
