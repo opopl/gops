@@ -68,7 +68,7 @@
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W, WTEMP, GRADX, GNEW, XSAVE
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: ALPHA, RHO
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: WSS,WDG
-      INTEGER ITER, NFAIL, CP
+      INTEGER ITER, NFAIL, CP, NDECREASE
       DOUBLE PRECISION :: GNORM,SLENGTH,E,ENEW,YS,YY,SQ,YR,BETA,POTEL, DDOT, STP
       DOUBLE PRECISION ::       DOT1,DOT2,OVERLAP, DUMMY
 
@@ -168,7 +168,7 @@
      DO IX=1,N
             DUMMY=-GRAD(IX)*DIAG(IX)
             WSS(IX,1)=DUMMY
-            W=DUMMY(IX)
+            W(IX)=DUMMY
      ENDDO
      GNORM=DSQRT(DDOT(N,GRAD,1,GRAD,1))
 
@@ -280,15 +280,10 @@
 !
          XSAVE=X
          X=X+STP*WSS(:,1+POINT)
-!
-!  For charmm internals must transform and back-transform!
-!
-      NDECREASE=0
-      LEPSILON=1.0D-6
-
       CALL POTENTIAL(X,GNEW,ENEW,RMS,.TRUE.,.FALSE.)
 
       IF ((ENEW-ENERGY.LE.MAXERISE).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
+        ! {{{;
          ITER=ITER+1
          ITDONE=ITDONE+1
          ENERGY=ENEW
@@ -303,7 +298,9 @@
 !  May want to prevent the PE from falling too much if we are trying to visit all the
 !  PE bins. Halve the step size until the energy decrease is in range.
 !
+! }}}
       ELSEIF (ENEW-ENERGY.LE.MAXEFALL) THEN
+      ! {{{
 !
 !  Energy decreased too much - try again with a smaller step size
 !
@@ -332,7 +329,7 @@
 ! half the step. 
 !
          X=XSAVE
-         X=R+0.5*STP*WSS(:,1+POINT)
+         X=X+0.5*STP*WSS(:,1+POINT)
          ENDIF
          STP=STP/2.0D0
          NDECREASE=NDECREASE+1

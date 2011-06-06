@@ -626,6 +626,7 @@ C
       IF ((TOSI.OR.WELCH.OR.RGCL2.OR.AMBER.OR.ARNO.OR.PACHECO.OR.TIP.OR.CHRMMT.OR.AMBERT 
      &   .OR.PYGPERIODICT.OR.PYBINARYT.OR.JMT)
      &   .AND.(ENEW.LT.COLDFUSIONLIMIT)) THEN
+      ! {{{
          ENERGY=0.0D6
          ENEW=0.0D6
          POTEL=0.0D6
@@ -635,14 +636,17 @@ C
          COLDFUSION=.TRUE.
 !        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
          RETURN
+         ! }}}
       ENDIF
       IF ((DBPT.OR.DBPTDT.OR.MSTBINT.OR.MSSTOCKT.OR.MULTPAHAT.OR.NPAHT.OR.PAHW99T.OR.PYGT.OR.TDHDT) .AND.(ENEW.LT.-5.0D4)) THEN
+        ! {{{
          ENERGY=0.0D0
          ENEW=0.0D0
          POTEL=0.0D0
          RMS=1.0D0
          WRITE(MYUNIT,'(A)') ' Cold fusion diagnosed - step discarded'
          RETURN
+         ! }}}
       ENDIF
 
 
@@ -655,7 +659,7 @@ C
          CALL TRANSFORM(XCOORDS,GNEW,XINT,GINT,N,3*NATOMS,NNZ,NOCOOR,KD)
       ENDIF
 
-C     IF (TIP) THEN
+C     IF (TIP) THEN!{{{
 C           WRITE(DUMPXYZUNIT+NP,'(I6)') (NATOMS/2)*3
 C           WRITE(DUMPXYZUNIT+NP,'(A,I5,A,F20.10)') 'LBFGS iteration ',ITER,' energy =',ENEW
 C           DO J2=1,NATOMS/2
@@ -669,13 +673,14 @@ C     ENDIF
 
 C     WRITE(*,'(A,F20.10)') 'ENEW=',ENEW
 C     WRITE(*,'(I6,F20.10)') (J1,GNEW(J1),J1=1,N)
-
+!}}}
 C
 C csw34 Force acceptance of step if FIXDIHEFLAG is TRUE
 C
       IF (FIXDIHEFLAG) ENERGY=ENEW
 
       IF (((ENEW-ENERGY.LE.MAXERISE).OR.EVAP.OR.GUIDECHANGET.OR.SMINKCHANGET).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
+        ! {{{
          ITER=ITER+1
          ITDONE=ITDONE+1
          ENERGY=ENEW
@@ -765,11 +770,14 @@ C
 C  May want to prevent the PE from falling too much if we are trying to visit all the
 C  PE bins. Halve the step size until the energy decrease is in range.
 C
+         ! }}}
       ELSEIF (ENEW-ENERGY.LE.MAXEFALL) THEN
+      ! {{{
 C
 C  Energy decreased too much - try again with a smaller step size
 C
          IF (NDECREASE.GT.5) THEN
+           ! {{{
             NFAIL=NFAIL+1
             WRITE(MYUNIT,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find an energy in the required range, NFAIL=',NFAIL
             IF (CHRMMT.AND.INTMINT) THEN ! need to reset X, XINT, G, GINT to original values
@@ -801,13 +809,17 @@ C              XINT=OLDQ ! should be the same as subtracting the step
                RETURN
             ENDIF
             GOTO 30
+            ! }}}
          ENDIF
          IF (CHRMMT.AND.INTMINT) THEN
+           ! {{{
             DO J1=1,N
                XINT(J1)=XINT(J1)-0.5*STP*W(ISPT+POINT*N+J1)
                DELTAQ(J1)=STP*W(ISPT+POINT*N+J1)*0.5D0
             ENDDO
+            ! }}}
          ELSE
+           ! {{{
 !
 ! Resetting to XSAVE and adding half the step should be the same as subtracting 
 ! half the step. 
@@ -825,6 +837,7 @@ C              XINT=OLDQ ! should be the same as subtracting the step
 ! For Thomson try projection for the geometry after the step.
 !        
             IF (PROJIT) THEN
+              ! {{{
                IF (THOMSONT) THEN
                   TMPCOORDS(1:N)=XCOORDS(1:N)
                   CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
@@ -836,8 +849,10 @@ C              XINT=OLDQ ! should be the same as subtracting the step
                   CALL PROJI(TMPCOORDS,NATOMS)
                   XCOORDS(1:N)=TMPCOORDS(1:N)
                ENDIF
+               ! }}}
             ENDIF
             IF (PROJIHT) THEN
+              ! {{{
                IF (THOMSONT) THEN
                   TMPCOORDS(1:N)=XCOORDS(1:N)
                   CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
@@ -849,8 +864,10 @@ C              XINT=OLDQ ! should be the same as subtracting the step
                   CALL PROJIH(TMPCOORDS,NATOMS)
                   XCOORDS(1:N)=TMPCOORDS(1:N)
                ENDIF
+               ! }}}
             ENDIF
 
+            ! }}}
          ENDIF
          STP=STP/2.0D0
          NDECREASE=NDECREASE+1
@@ -859,7 +876,9 @@ C              XINT=OLDQ ! should be the same as subtracting the step
          
          FIXIMAGE=.TRUE.
          GOTO 20
+         ! }}}
       ELSE
+        ! {{{
 C
 C  Energy increased - try again with a smaller step size
 C
@@ -953,6 +972,7 @@ C              XINT=OLDQ ! should be the same as subtracting the step
      1                      ' energy increased from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
          FIXIMAGE=.TRUE.
          GOTO 20
+         ! }}}
       ENDIF
 C
 C     Compute the new step and gradient change
