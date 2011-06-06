@@ -305,6 +305,7 @@
 !  Energy decreased too much - try again with a smaller step size
 !
          IF (NDECREASE.GT.5) THEN
+           ! {{{
             NFAIL=NFAIL+1
             WRITE(LFH,'(A,A,G20.10)')   ' in mylbfgs LBFGS step cannot find an energy in the required range, ',&
                                         '    NFAIL=',NFAIL
@@ -323,6 +324,7 @@
                RETURN
             ENDIF
             GOTO 30
+            ! }}}
          ENDIF
 !
 ! Resetting to XSAVE and adding half the step should be the same as subtracting 
@@ -330,7 +332,6 @@
 !
          X=XSAVE
          X=X+0.5*STP*WSS(:,1+POINT)
-         ENDIF
          STP=STP/2.0D0
          NDECREASE=NDECREASE+1
          IF (DEBUG) WRITE(LFH,105) &
@@ -342,11 +343,14 @@
 
          FIXIMAGE=.TRUE.
          GOTO 20
+         ! }}}
       ELSE
+        ! {{{
 !
 !  Energy increased - try again with a smaller step size
 !
          IF (NDECREASE.GT.10) THEN ! DJW
+           ! {{{
             NFAIL=NFAIL+1
             WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find a lower energy, NFAIL=',NFAIL
             !
@@ -363,6 +367,7 @@
                RETURN
             ENDIF
             GOTO 30
+            ! }}}
          ENDIF
       !
 ! Resetting to XSAVE and adding 0.1 of the step should be the same as subtracting 
@@ -372,7 +377,8 @@
 !
             X=XSAVE
             X=X+0.1D0*STP*SUM(WSS(:,1+POINT))
-         ENDIF
+            ! }}}
+      ENDIF
          STP=STP/1.0D1
          NDECREASE=NDECREASE+1
          IF (DEBUG) WRITE(LFH,104) ' energy increased from ',ENERGY,&
