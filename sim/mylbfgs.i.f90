@@ -73,7 +73,7 @@ DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: ALPHA, RHO
 DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: WSS,WDG
 INTEGER ITER, NFAIL, CP, NDECREASE
 DOUBLE PRECISION :: GNORM,SLENGTH,E,ENEW,YS,YY,SQ,YR,BETA,POTEL, DDOT, STP
-DOUBLE PRECISION :: DOT1,DOT2,OVERLAP, DUMMY
+DOUBLE PRECISION :: DOT1,DOT2,OVERLAP, DUMMY, QE
 
 INTEGER :: BOUND, POINT
 
@@ -137,26 +137,28 @@ ENDIF
 IF (ITER.EQ.0) THEN
 	! {{{
 	IF (N.LE.0.OR.M.LE.0) THEN
-	WRITE(LFH,240)
-	240        FORMAT(' IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')
-	STOP
+    	WRITE(LFH,240)
+	    240        FORMAT(' IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')
+	    STOP
 	ENDIF
 	
 	POINT=0
 	MFLAG=.FALSE.
+    ! Set the DIAG matrix depending on DIAGCO {{{
 	IF (DIAGCO) THEN
-	WRITE(LFH,'(A)') 'using estimate of the inverse diagonal elements'
-	DO IX=1,N
-		IF (DIAG(IX).LE.0.0D0) THEN
-	    	WRITE(LFH,235) IX
-		    235              FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',/,&
-		                    ' INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE')
-		    STOP
-	ENDIF
-	ENDDO
+	    WRITE(LFH,'(A)') 'using estimate of the inverse diagonal elements'
+	    DO IX=1,N
+		    IF (DIAG(IX).LE.0.0D0) THEN
+	    	    WRITE(LFH,235) IX
+		        235 FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',/,' INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE')
+		        STOP
+	        ENDIF
+	    ENDDO
 	ELSE
-	DIAG=DGUESS
+	    DIAG=DGUESS
 	ENDIF
+    ! }}}
+    ! Rules for storage: {{{
 	!
 	!     THE SEARCH STEPS AND GRADIENT DIFFERENCES ARE STORED IN A
 	!     CIRCULAR ORDER CONTROLLED BY THE PARAMETER POINT.
@@ -167,21 +169,19 @@ IF (ITER.EQ.0) THEN
 	! ALPHA =>      N+M+1,...,N+2M
 	! WSS   =>      storage of the last M steps 
 	! WDG   =>      storage of the last M gradient differences 
+    ! }}}
 	
-	!
 	!  NR step for diagonal inverse Hessian
-	!
-	DO IX=1,N
-	DUMMY=-GRAD(IX)*DIAG(IX)
-	WSS(IX,1)=DUMMY
-	W(IX)=DUMMY
-	ENDDO
-	GNORM=DSQRT(DDOT(N,GRAD,1,GRAD,1))
 	
-	!
-	!  Make the first guess for the step length cautious.
-	!
-	STP=MIN(1.0D0/GNORM,GNORM)
+	DO IX=1,N
+		DUMMY=-GRADX(IX)*DIAG(IX)
+		WSS(IX,1)=DUMMY
+		W(IX)=DUMMY
+	ENDDO
+
+	GNORM=DSQRT(DDOT(N,GRADX,1,GRADX,1))
+    !  Guess for the step length
+	STP=MIN(1.0D0/GNORM,GNORM)              
 	! }}}
 ELSE 
 	! {{{
@@ -191,26 +191,27 @@ ELSE
 	!  Update estimate of diagonal inverse Hessian elements {{{
 	!
 	IF (.NOT.DIAGCO) THEN
-	YY= DDOT(N,WDG(1,1+POINT),1,WDG(1,1+POINT),1)
-	IF (YY.EQ.0.0D0) THEN
-	WRITE(LFH,'(A)') 'WARNING, resetting YY to one in mylbfgs'
-	YY=1.0D0
-	ENDIF
-	IF (YS.EQ.0.0D0) THEN
-	WRITE(LFH,'(A)') 'WARNING, resetting YS to one in mylbfgs'
-	YS=1.0D0
-	ENDIF
-	DIAG= YS/YY
+		YY= DDOT(N,WDG(1,1+POINT),1,WDG(1,1+POINT),1)
+		IF (YY.EQ.0.0D0) THEN
+			WRITE(LFH,'(A)') 'WARNING, resetting YY to one in mylbfgs'
+			YY=1.0D0
+	    ENDIF
+		IF (YS.EQ.0.0D0) THEN
+		    WRITE(LFH,'(A)') 'WARNING, resetting YS to one in mylbfgs'
+		    YS=1.0D0
+		ENDIF
+	    DIAG= YS/YY
 	ELSE
-	WRITE(LFH,'(A)') 'using estimate of the inverse diagonal elements'
-	DO IX=1,N
-	IF (DIAG(IX).LE.0.0D0) THEN
-	    WRITE(LFH,235) IX
-	    STOP
-	ENDIF
-	ENDDO
+		WRITE(LFH,'(A)') 'using estimate of the inverse diagonal elements'
+		DO IX=1,N
+			IF (DIAG(IX).LE.0.0D0) THEN
+			    WRITE(LFH,235) IX
+			    STOP
+	    	ENDIF
+	    ENDDO
 	ENDIF
 	! }}}
+    ! -HG computation {{{
 	!
 	!     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980,
 	!     "Updating quasi-Newton matrices with limited storage",
@@ -221,31 +222,33 @@ ELSE
 	IF (POINT.EQ.0) CP=M
 	RHO(CP)= 1.0D0/YS
 	W= -GRAD
+
 	CP= POINT
 	DO IX= 1,BOUND
-	CP=CP-1
-	IF (CP.EQ.-1) CP=M-1
-	SQ=DDOT(N,WSS(1,CP+1),1,W,1)
-	ALPHA(CP+1)=RHO(CP+1)*SQ
-	CALL DAXPY(N,-ALPHA(CP+1),WDG(1,CP+1),1,W,1)
+		CP=CP-1
+		IF (CP.EQ.-1) CP=M-1
+		SQ=DDOT(N,WSS(1,CP+1),1,W,1)
+		ALPHA(CP+1)=RHO(CP+1)*SQ
+		CALL DAXPY(N,-ALPHA(CP+1),WDG(1,CP+1),1,W,1)
 	ENDDO
 	
 	W=DIAG*W
 	
 	DO IX=1,BOUND
-	YR=DDOT(N,W(1,CP+1),1,W,1)
-	BETA=RHO(CP+1)*YR
-	BETA=ALPHA(CP+1)-BETA
-	CALL DAXPY(N,BETA,WSS(1,CP+1),1,W,1)
-	CP=CP+1
-	IF (CP.EQ.M) CP=0
+		YR=DDOT(N,WSS(1,CP+1),1,W,1)
+		BETA=RHO(CP+1)*YR
+		BETA=ALPHA(CP+1)-BETA
+		CALL DAXPY(N,BETA,WSS(1,CP+1),1,W,1)
+		CP=CP+1
+		IF (CP.EQ.M) CP=0
 	ENDDO
 	STP=1.0D0  
+    ! }}}
 	! }}}
 ENDIF
-!
+
 !  Store the new search direction (160)
-!
+
 IF (ITER.GT.0) THEN
     WSS(:,1+POINT)=W
 ENDIF
