@@ -1,21 +1,17 @@
 
      ! LOGICALS {{{
     
-     ! declarations {{{ 
-     LOGICAL :: PULLT=.TRUE.
-     LOGICAL :: P46=.FALSE.
-     LOGICAL :: G46=.FALSE.
-     LOGICAL :: BLNT=.FALSE.
-     LOGICAL :: TARGET=.FALSE.
-     LOGICAL :: TRACKDATAT=.FALSE.
-     LOGICAL :: DEBUG=.FALSE.
-     LOGICAL :: LBFGST=.TRUE.
-     LOGICAL :: RMST=.FALSE.
+     LOGICAL :: PULLT
+     LOGICAL :: P46
+     LOGICAL :: G46
+     LOGICAL :: BLNT
+     LOGICAL :: TARGET
+     LOGICAL :: TRACKDATAT
+     LOGICAL :: DEBUG
+     LOGICAL :: LBFGST
+     LOGICAL :: RMST
      ! whether we are doing a final quench
-     LOGICAL :: FQFLAG=.FALSE.
-     ! }}}
-     ! assignments {{{
-     ! }}}
+     LOGICAL :: FQFLAG
 
      ! }}}
      

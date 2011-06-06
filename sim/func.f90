@@ -69,6 +69,69 @@ SUBROUTINE IO
 ! }}}
 END SUBROUTINE  
 
+SUBROUTINE INITVARS
+! logicals {{{
+PULLT=.TRUE.
+P46=.FALSE.
+G46=.FALSE.
+BLNT=.FALSE.
+TARGET=.FALSE.
+TRACKDATAT=.FALSE.
+DEBUG=.FALSE.
+LBFGST=.TRUE.
+RMST=.FALSE.
+! whether we are doing a final quench
+FQFLAG=.FALSE.
+! }}}
+! files {{{
+LFH=FH+1
+ENERGY_FH=FH+2
+MARKOV_FH=FH+3
+BEST_FH=FH+4
+PAIRDIST_FH=FH+5
+COORDS_FH=FH+6
+DATA_FH=FH+7
+RMSD_FH=FH+8
+! }}}
+! {{{
+NSAVE=10
+MAXNARGS=20
+! Number of LBFGS updates
+M_LBFGS=4
+! Maximum BFGS step size
+MAXBFGS=0.4D0
+DGUESS=0.1D0
+BFGS=.FALSE.
+LBFGST=.TRUE.
+
+! DGUESS: Guess for initial diagonal elements in LBFGS
+DGUESS=0.0D0
+
+TFAC=1.0D0
+EDIFF=0.02D0
+ACCRAT=0.5D0
+TEMP=0.035D0
+RADIUS=0.0D0
+! Maximum allowed energy rise during a minimisation
+MAXERISE=1.0D-10
+! Maximum allowed energy fall during a minimisation
+MAXEFALL=-HUGE(ONE)
+! Used in ACCREJ
+FAC0=1.05D0
+! "Fixing" option (regarding STEP, TEMP and accept ratio for quenches) 
+FIXOPT='T'
+
+STEP=0.3D0
+OSTEP=0.3D0
+ASTEP=0.3D0
+
+MCSTEPS=10000
+          
+NACCEPT=50
+NRELAX=0
+! }}}
+END SUBROUTINE
+
 SUBROUTINE COUNTATOMS
 ! Declarations {{{ 
       IMPLICIT NONE

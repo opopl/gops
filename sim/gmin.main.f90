@@ -18,7 +18,11 @@
 ! }}}
 
 ! init {{{
+      ! initialize variables
+      CALL INITVARS
+
       CALL CPU_TIME(TSTART)
+
       CALL COUNTATOMS
       CALL KEYWORD(1)
       CALL READ_CMD_ARGS
