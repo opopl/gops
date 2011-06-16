@@ -93,7 +93,6 @@ COORDS_FH=FH+6
 DATA_FH=FH+7
 RMSD_FH=FH+8
 ! }}}
-! {{{
 NSAVE=10
 MAXNARGS=20
 ! Number of LBFGS updates
