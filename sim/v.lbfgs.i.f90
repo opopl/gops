@@ -15,3 +15,5 @@
      DOUBLE PRECISION :: SQMAX
      ! final quenches
      DOUBLE PRECISION :: FQMAX
+     ! GMAX 
+     DOUBLE PRECISION :: GMAX

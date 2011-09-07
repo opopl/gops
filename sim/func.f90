@@ -94,13 +94,13 @@ DATA_FH=FH+7
 RMSD_FH=FH+8
 ! }}}
 NSAVE=10
-MAXNARGS=20
+!MAXNARGS=20
 ! Number of LBFGS updates
 M_LBFGS=4
 ! Maximum BFGS step size
 MAXBFGS=0.4D0
 DGUESS=0.1D0
-BFGS=.FALSE.
+BFGST=.FALSE.
 LBFGST=.TRUE.
 
 ! DGUESS: Guess for initial diagonal elements in LBFGS

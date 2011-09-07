@@ -5,7 +5,7 @@
 !> @param[out] RMS      dp         RMS 
 
       SUBROUTINE POTENTIAL(X,EREAL,GRADX,RMS,GRADT,SECT)
-
+! {{{
       USE V
       USE PORFUNCS
       USE BLN
@@ -17,17 +17,17 @@
       DOUBLE PRECISION,INTENT(OUT) :: EREAL, GRADX(:)
       DOUBLE PRECISION,INTENT(IN) :: X(:)
       INTEGER NX,NR
-      DOUBLE PRECISION :: R(:,3)
+      DOUBLE PRECISION :: R(:,:)
       DOUBLE PRECISION :: RMS
 
-      LOGICAL GRADT,SECT
+      LOGICAL GRADT, SECT
 
       NX=SIZE(X)
       NR=NX/3
       R=RESHAPE(X,(/ NR,3 /))
 
       IF (BLNT .OR. PULLT) THEN 
-        CALL EBLN(N,R,ENERGY,GRAD,HESS,PTYPE,GRADT,SECT)
+            CALL EBLN(N,R,ENERGY,GRAD,HESS,PTYPE,GRADT,SECT)
       ENDIF
 
       IF (PULLT) THEN
@@ -41,5 +41,5 @@
       RMS=MAX(DSQRT(SUM(GRADX**2)/NX),1.0D-100)
 
       RETURN
-
+! }}}
       END

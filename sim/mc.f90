@@ -70,14 +70,14 @@ SUBROUTINE QUENCH(P,ITER,TIME,QDONE)
       IF (CFLAG) QDONE=0
 
       IF (.NOT.CFLAG) THEN
-            WRITE(MYUNIT,'(A,I6,A)') 'WARNING - Final Quench ',NQ,'  did not converge'
+            WRITE(LFH,'(A,I6,A)') 'WARNING - Final Quench ',NQ,'  did not converge'
       ENDIF
 
       CALL MYCPU_TIME(TIME)
 
       RETURN
       ! }}}
-END
+END SUBROUTINE
 
 SUBROUTINE MCRUN(NSTEPS,SCALEFAC,SCREENC)
 ! {{{
