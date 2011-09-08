@@ -1,8 +1,8 @@
 
-BINPATH=$(ROOTPATH)/BIN
-LAPACKPATH=$(ROOTPATH)/LAPACK
-BLASPATH=$(ROOTPATH)/BLAS
-SPATH=$(ROOTPATH)/SCRIPTS/
+BINPATH=$(ROOTPATH)/bin
+LAPACKPATH=$(ROOTPATH)/lapack
+BLASPATH=$(ROOTPATH)/blas
+SPATH=$(ROOTPATH)/scripts/
 SAPATH=$(SPATH)/all/
 
 PROG =	$(BINPATH)/$(PROGNAME)
@@ -103,7 +103,8 @@ endif
 
 ifeq ($(FC),gfortran)
 
-F0=-ffree-form
+#F0=-ffree-form
+F0=
 
 FFLAGS= -ffixed-line-length-265 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic
 FFLAGS= -ffixed-line-length-none -O0 
@@ -122,7 +123,7 @@ endif
 
 NOOPT= -O0 -ffixed-line-length-132
 SWITCH=gfortran
-LDFLAGS = -LBLAS -LLAPACK
+LDFLAGS = -lblas -llapack
 FREEFORMAT_FLAG= -ffree-form
 EXTRA_FLAGS=-I
 FFLAGS=$(F0) -I.

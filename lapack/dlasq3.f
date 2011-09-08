@@ -82,7 +82,7 @@
       EXTERNAL           DLASQ4, DLASQ5, DLASQ6
 *     ..
 *     .. External Function ..
-      DOUBLE PRECISION   DLAMCH, DMIN3
+      DOUBLE PRECISION   DLAMCH, DMIN3, dmin4
       EXTERNAL           DLAMCH
 *     ..
 *     .. Intrinsic Functions ..
@@ -188,9 +188,12 @@
                Z( 4*N0-PP ) = Z( 4*I0-PP )
             END IF
             DMIN2 = MIN( DMIN2, Z( 4*N0+PP-1 ) )
-            DMIN3 = MIN(Z( 4*I0+PP-1 ), Z( 4*I0+PP+3 ))
+            DMIN3 = MIN( Z( 4*I0+PP-1 ), Z( 4*I0+PP+3 ))
+            DMIN4=  min( Z( 4*I0-PP ), Z( 4*I0-PP+4 ) )
             Z( 4*N0+PP-1 ) = MIN( Z( 4*N0+PP-1 ), DMIN3)
-            Z( 4*N0-PP ) = MIN( Z( 4*N0-PP ), Z( 4*I0-PP ), Z( 4*I0-PP+4 ) )
+            !Z( 4*N0-PP ) = MIN( Z( 4*N0-PP ), Z( 4*I0-PP ), Z( 4*I0-PP+4 ) )
+            dmin4 = MIN( Z( 4*I0-PP ), Z( 4*I0-PP+4 ) )
+            Z( 4*N0-PP ) = MIN( Z( 4*N0-PP ), dmin4 )
             QMAX = MAX( QMAX, Z( 4*I0+PP-3 ), Z( 4*I0+PP+1 ) )
             DMIN = -ZERO
          END IF

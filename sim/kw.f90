@@ -1,8 +1,9 @@
 
 MODULE KW
-
+! {{{
 USE V
 uSE FUNC
+uSE STRINGS
 
 IMPLICIT NONE
 
@@ -35,6 +36,7 @@ CONTAINS
 ! ios>0 error 
 
       DO WHILE (IOS == 0)
+      ! {{{
         READ(DATA_FH, '(A)', IOSTAT=IOS) BUFFER
         IF (IOS == 0) THEN
 
@@ -90,11 +92,13 @@ CONTAINS
               CASE('TRACKDATA')
                 TRACKDATAT=.TRUE.
               CASE DEFAULT
-    	         CALL REPORT('Unrecognized command '//BUFFER,.TRUE.)
+                 !CALL REPORT('Unrecognized command '//BUFFER,.TRUE.)
+                 write(*,*) "Unrecognized command"
     	         STOP
                  ! }}}
           ENDSELECT
        END IF
+       ! }}}
       END DO
 ! }}}
       ENDSELECT
@@ -102,5 +106,5 @@ CONTAINS
       RETURN
       ! }}}
       END SUBROUTINE
-
+! }}}
 ENDMODULE
