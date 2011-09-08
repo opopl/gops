@@ -12,6 +12,7 @@ CONTAINS
       SUBROUTINE KEYWORD(PROG)
       ! declarations {{{
       INTEGER PROG
+      LOGICAL YESNO
 
       ! INPUT RELATED VARIABLES
 
