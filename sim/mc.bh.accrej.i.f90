@@ -15,6 +15,6 @@
                   QEPREV=QE
                ELSE
                   NFAIL=NFAIL+1
-                  CALL MYRESET(NATOMS,NSEED)
+                  !CALL MYRESET(NATOMS,NSEED)
                ENDIF
 

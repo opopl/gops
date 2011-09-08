@@ -1,11 +1,11 @@
 #vim:ft=make
 
-PROGNAME=GMIN
+PROGNAME=gmin
 GENFFILES = porfuncs.f90 dv.f90 
 #
 #
 PPATH=$(PWD)
-INCPATH = $(PPATH)/../INCLUDE/
+INCPATH = $(PPATH)/../include/
 include $(INCPATH)/make.inc
 #
 #

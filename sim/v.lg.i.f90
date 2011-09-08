@@ -9,6 +9,7 @@
      LOGICAL :: TRACKDATAT
      LOGICAL :: DEBUG
      LOGICAL :: LBFGST
+     LOGICAL :: BFGST
      LOGICAL :: RMST
      ! whether we are doing a final quench
      LOGICAL :: FQFLAG

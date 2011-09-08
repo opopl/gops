@@ -1,4 +1,5 @@
-module strings
+
+MODULE STRINGS
 
 use precision
 
@@ -650,7 +651,7 @@ CHARACTER :: CH
 LOGICAL :: RES
 
 SELECT CASE(CH)
-CASE('A':'Z','A':'Z')
+CASE('a':'z','A':'Z')
   RES=.TRUE.
 CASE DEFAULT
   RES=.FALSE.

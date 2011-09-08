@@ -51,7 +51,7 @@ EOF
 }
 
 
-rca_GMIN(){
+rca_gmin(){
 # {{{
 cat << EOF
 SUBROUTINE READ_CMD_ARGS
@@ -97,7 +97,7 @@ EOF
 # }}}
 }
 
-rca_OPTIM(){
+rca_optim(){
 # {{{
 cat << EOF
 SUBROUTINE READ_CMD_ARGS
@@ -138,7 +138,7 @@ EOF
 # }}}
 }
 
-rca_PATHSAMPLE(){
+rca_pathsample(){
 # {{{
 cat << EOF
 SUBROUTINE READ_CMD_ARGS

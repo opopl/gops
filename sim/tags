@@ -37,16 +37,16 @@ ACCREJ	mc.f90	/^SUBROUTINE ACCREJ(/;"	s	module:MC
 AN	bln.vars.inc.f90	/^        DOUBLE PRECISION   AN$/;"	v
 ANG	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,2) :: ANG /;"	v
 ARATIO	mc.vars.i.f90	/^      DOUBLE PRECISION ::       ARATIO$/;"	v
-ARGS	v.f90	/^CHARACTER(LEN=SLEN),DIMENSION(MAXNARGS)/;"	v	module:V
+ARGS	v.f90	/^CHARACTER(LEN=SLEN), DIMENSION(MAXNARGS)/;"	v	module:V
 ATEST	mc.vars.i.f90	/^      LOGICAL :: ATEST$/;"	v
 B	bln.vars.inc.f90	/^        DOUBL/;"	v
 BEST_FH	v.files.i.f90	/^INTEGER :: BEST_FH$/;"	v
 BLN	bln.f90	/^     MODULE BLN /;"	m
-BUFINF	kw.f90	22;"	c	subroutine:KEYWORD
+BUFINF	kw.f90	23;"	c	subroutine:KEYWORD
 BVR	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N-1,3) :: BVR,/;"	v
 CD	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,2)   :: CD$/;"	v
 CENTRE2	func.f90	/^SUBROUTINE CENTRE2(/;"	s
-COMPACT	stringmod.f90	/^SUBROUTINE COMPACT(/;"	s	module:strings
+COMPACT	strings.f90	/^SUBROUTINE COMPACT(/;"	s	module:STRINGS
 CONNECT	bln.vars.inc.f90	/^        LOGICAL CONNECT(/;"	v
 COORDS_FH	v.files.i.f90	/^INTEGER :: COORDS_FH$/;"	v
 COS_PHI	bln.vars.inc.f90	/^        DOUBLE PRECISION COS_PHI,/;"	v
@@ -100,13 +100,13 @@ I	bln.vars.inc.f90	/^        IN/;"	v
 ICOUNT	bln.vars.inc.f90	/^        INTEGER NTYPE(N), I, J, JMAX, K, KMAX, ICOUNT$/;"	v
 IH	bln.vars.inc.f90	/^        INTEGER ::     IK,JK,KI,KJ,IH,/;"	v
 IK	bln.vars.inc.f90	/^        INTEGER ::     IK,/;"	v
-INCPATH	makefile	/^INCPATH = $(PPATH)\/..\/INCLUDE\/$/;"	m
+INCPATH	makefile	/^INCPATH = $(PPATH)\/..\/include\/$/;"	m
 INITVARS	func.f90	/^SUBROUTINE INITVARS$/;"	s	module:FUNC
 INQF	func.f90	/^SUBROUTINE INQF(/;"	s	module:FUNC
 IO	func.f90	/^SUBROUTINE IO$/;"	s	module:FUNC
 ISTEP	v.f90	/^INTEGER :: ISTEP$/;"	v	module:V
-IS_DIGIT	stringmod.f90	/^FUNCTION IS_DIGIT(/;"	f	module:strings
-IS_LETTER	stringmod.f90	/^FUNCTION IS_LETTER(/;"	f	module:strings
+IS_DIGIT	strings.f90	/^FUNCTION IS_DIGIT(/;"	f	module:STRINGS
+IS_LETTER	strings.f90	/^FUNCTION IS_LETTER(/;"	f	module:STRINGS
 ITERATIONS	mc.vars.i.f90	/^      INTEGER ITERATIONS,/;"	v
 J	bln.vars.inc.f90	/^        INTEGER NTYPE(N), I, J,/;"	v
 J1	bln.vars.inc.f90	/^        INTEGER J1,/;"	v
@@ -129,7 +129,7 @@ LFN	v.files.i.f90	/^CHARACTER(LEN=100) LFN$/;"	v
 LJATT	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,N) :: LJREP, LJATT$/;"	v
 LJREP	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,N) :: LJREP,/;"	v
 MARKOV_FH	v.files.i.f90	/^INTEGER :: MARKOV_FH$/;"	v
-MAXNARGS	v.f90	/^INTEGER, PARAMETER :: MAXNARGS$/;"	v	module:V
+MAXNARGS	v.f90	/^INTEGER,PARAMETER :: MAXNARGS=/;"	v	module:V
 MC	mc.f90	/^MODULE MC$/;"	m
 MCRUN	mc.f90	/^SUBROUTINE MCRUN(/;"	s	module:MC
 MCRUNS	mcruns.f90	/^      SUBROUTINE MCRUNS(/;"	s
@@ -155,7 +155,7 @@ NTYPE	bln.vars.inc.f90	/^        INTEGER NTYPE(/;"	v
 ONE	v.const.i.f90	/^DOUBLE PRECISION :: PI,ZERO,ONE$/;"	v
 OPENF	func.f90	/^SUBROUTINE OPENF(/;"	s	module:FUNC
 PAIRDIST_FH	v.files.i.f90	/^INTEGER :: PAIRDIST_FH$/;"	v
-PARSE	stringmod.f90	/^SUBROUTINE PARSE(/;"	s	module:strings
+PARSE	strings.f90	/^SUBROUTINE PARSE(/;"	s	module:STRINGS
 PI	v.const.i.f90	/^DOUBLE PRECISION :: PI,/;"	v
 PI4	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS, SIGMA, THETA_0, EPSILON, DELTA, PI4,/;"	v
 PORFUNCS	porfuncs.f90	/^MODULE PORFUNCS$/;"	m
@@ -163,7 +163,7 @@ POTENTIAL	potential.f90	/^      SUBROUTINE POTENTIAL(/;"	s
 PP	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD, HVXPD, PP$/;"	v
 PPATH	makefile	/^PPATH=$(PWD)$/;"	m
 PRECISION	v.mc.i.f90	/^     DOUBLE PRECISION /;"	v
-PROGNAME	makefile	/^PROGNAME=GMIN$/;"	m
+PROGNAME	makefile	/^PROGNAME=gmin$/;"	m
 PTYPE	bln.vars.inc.f90	/^        CHARACTER(LEN=*) :: PTYPE$/;"	v
 Q4C	mylbfgs.ref.f90	48;"	c	subroutine:MYLBFGS
 QDONE	mc.vars.i.f90	/^      INTEGER ITERATIONS,QDONE,/;"	v
@@ -172,10 +172,10 @@ QEPPREV	mc.vars.i.f90	/^      DOUBLE PRECISION :: QE, QEPPREV,/;"	v
 QUENCH	mc.f90	/^SUBROUTINE QUENCH(/;"	s	module:MC
 R	bln.vars.inc.f90	/^        DOUBLE PRE/;"	v
 RAD	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(15) :: RAD,/;"	v
-RANDDP	func.f90	303;"	c	subroutine:SDPRND
-RANDDP	func.f90	350;"	c	function:DPRAND
+RANDDP	func.f90	302;"	c	subroutine:SDPRND
+RANDDP	func.f90	349;"	c	function:DPRAND
 READ_CMD_ARGS	rca.f90	/^SUBROUTINE READ_CMD_ARGS$/;"	s
-REMOVEBKSL	stringmod.f90	/^SUBROUTINE REMOVEBKSL(/;"	s	module:strings
+REMOVEBKSL	strings.f90	/^SUBROUTINE REMOVEBKSL(/;"	s	module:STRINGS
 RK_R	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS, SIGMA, THETA_0, EPSILON, DELTA, PI4, TWOPI, RK_R,/;"	v
 RK_THETA	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS, SIGMA, THETA_0, EPSILON, DELTA, PI4, TWOPI, RK_R, RK_THETA$/;"	v
 RMASS	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS,/;"	v
@@ -188,8 +188,9 @@ SCREENC	mc.vars.i.f90	/^      DOUBLE PRECISION, INTENT(INOUT) :: SCREENC(/;"	v
 SDPRND	func.f90	/^SUBROUTINE SDPRND /;"	s
 SIGMA	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS, SIGMA,/;"	v
 SLEN	v.const.i.f90	/^INTEGER ::      SLEN$/;"	v
-SPLIT	stringmod.f90	/^SUBROUTINE SPLIT(/;"	s	module:strings
+SPLIT	strings.f90	/^SUBROUTINE SPLIT(/;"	s	module:STRINGS
 STEST	bln.vars.inc.f90	/^        LOGICAL GTEST, STEST$/;"	v
+STRINGS	strings.f90	/^MODULE STRINGS$/;"	m
 TFACOUBLE	v.mc.i.f90	/^     DOUBLE PRECISION :: TFAC$/;"	v
 THETA_0	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS, SIGMA, THETA_0,/;"	v
 TIME	mc.vars.i.f90	/^      DOUBLE PRECISION ::       TIME$/;"	v
@@ -200,8 +201,8 @@ VXPD	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD,/;"	v
 XPD	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N-1) :: XPD_/;"	v
 XPD_2	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N-1) :: XPD_2,/;"	v
 ZERO	v.const.i.f90	/^DOUBLE PRECISION :: PI,ZERO,/;"	v
-delall	stringmod.f90	/^subroutine delall(/;"	s	module:strings
-delsubstr	stringmod.f90	/^subroutine delsubstr(/;"	s	module:strings
+delall	strings.f90	/^subroutine delall(/;"	s	module:STRINGS
+delsubstr	strings.f90	/^subroutine delsubstr(/;"	s	module:STRINGS
 display_version	dv.f90	/^subroutine display_version(/;"	s	module:dv
 dv	dv.f90	/^module dv$/;"	m
 flush	porfuncs.f90	/^subroutine flush(/;"	s	module:PORFUNCS
@@ -209,32 +210,31 @@ fork_subr	porfuncs.f90	/^          subroutine fork_subr(/;"	s	module:PORFUNCS
 getarg_subr	porfuncs.f90	/^          subroutine getarg_subr(/;"	s	module:PORFUNCS
 getpid_subr	porfuncs.f90	/^          subroutine getpid_subr(/;"	s	module:PORFUNCS
 iargc_subr	porfuncs.f90	/^subroutine iargc_subr(/;"	s	module:PORFUNCS
-insertstr	stringmod.f90	/^subroutine insertstr(/;"	s	module:strings
+insertstr	strings.f90	/^subroutine insertstr(/;"	s	module:STRINGS
 kc4	precmod.f90	/^integer, parameter :: kc4 /;"	v
 kc8	precmod.f90	/^integer, parameter :: kc8 /;"	v
 ki4	precmod.f90	/^integer, parameter :: ki4 /;"	v
 ki8	precmod.f90	/^integer, parameter :: ki8 /;"	v
 kr4	precmod.f90	/^integer, parameter :: kr4 /;"	v
 kr8	precmod.f90	/^integer, parameter :: kr8 /;"	v
-lowercase	stringmod.f90	/^function lowercase(/;"	f	module:strings
-match	stringmod.f90	/^subroutine match(/;"	s	module:strings
-readline	stringmod.f90	/^subroutine readline(/;"	s	module:strings
-removesp	stringmod.f90	/^subroutine removesp(/;"	s	module:strings
-shiftstr	stringmod.f90	/^subroutine shiftstr(/;"	s	module:strings
-strings	stringmod.f90	/^module strings$/;"	m
+lowercase	strings.f90	/^function lowercase(/;"	f	module:STRINGS
+match	strings.f90	/^subroutine match(/;"	s	module:STRINGS
+readline	strings.f90	/^subroutine readline(/;"	s	module:STRINGS
+removesp	strings.f90	/^subroutine removesp(/;"	s	module:STRINGS
+shiftstr	strings.f90	/^subroutine shiftstr(/;"	s	module:STRINGS
 system_subr	porfuncs.f90	/^          subroutine system_subr(/;"	s	module:PORFUNCS
-trimzero	stringmod.f90	/^subroutine trimzero(/;"	s	module:strings
-uppercase	stringmod.f90	/^function uppercase(/;"	f	module:strings
-value_di	stringmod.f90	/^subroutine value_di(/;"	s	module:strings
-value_dr	stringmod.f90	/^subroutine value_dr(/;"	s	module:strings
-value_si	stringmod.f90	/^subroutine value_si(/;"	s	module:strings
-value_sr	stringmod.f90	/^subroutine value_sr(/;"	s	module:strings
+trimzero	strings.f90	/^subroutine trimzero(/;"	s	module:STRINGS
+uppercase	strings.f90	/^function uppercase(/;"	f	module:STRINGS
+value_di	strings.f90	/^subroutine value_di(/;"	s	module:STRINGS
+value_dr	strings.f90	/^subroutine value_dr(/;"	s	module:STRINGS
+value_si	strings.f90	/^subroutine value_si(/;"	s	module:STRINGS
+value_sr	strings.f90	/^subroutine value_sr(/;"	s	module:STRINGS
 wait_subr	porfuncs.f90	/^          subroutine wait_subr(/;"	s	module:PORFUNCS
-write_di	stringmod.f90	/^subroutine write_di(/;"	s	module:strings
-write_dr	stringmod.f90	/^subroutine write_dr(/;"	s	module:strings
-write_si	stringmod.f90	/^subroutine write_si(/;"	s	module:strings
-write_sr	stringmod.f90	/^subroutine write_sr(/;"	s	module:strings
-writeq_di	stringmod.f90	/^subroutine writeq_di(/;"	s	module:strings
-writeq_dr	stringmod.f90	/^subroutine writeq_dr(/;"	s	module:strings
-writeq_si	stringmod.f90	/^subroutine writeq_si(/;"	s	module:strings
-writeq_sr	stringmod.f90	/^subroutine writeq_sr(/;"	s	module:strings
+write_di	strings.f90	/^subroutine write_di(/;"	s	module:STRINGS
+write_dr	strings.f90	/^subroutine write_dr(/;"	s	module:STRINGS
+write_si	strings.f90	/^subroutine write_si(/;"	s	module:STRINGS
+write_sr	strings.f90	/^subroutine write_sr(/;"	s	module:STRINGS
+writeq_di	strings.f90	/^subroutine writeq_di(/;"	s	module:STRINGS
+writeq_dr	strings.f90	/^subroutine writeq_dr(/;"	s	module:STRINGS
+writeq_si	strings.f90	/^subroutine writeq_si(/;"	s	module:STRINGS
+writeq_sr	strings.f90	/^subroutine writeq_sr(/;"	s	module:STRINGS
