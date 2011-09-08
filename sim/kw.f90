@@ -12,6 +12,7 @@ CONTAINS
       SUBROUTINE KEYWORD(PROG)
       ! declarations {{{
       INTEGER PROG
+      LOGICAL YESNO
 
       ! INPUT RELATED VARIABLES
 
@@ -29,7 +30,14 @@ CONTAINS
       SELECTCASE(PROG)
         CASE(1) ! GMIN {{{
 
-      CALL OPENF(DATA_FH,"<","data")
+      CALL INQF('data',YESNO)
+
+      IF (YESNO) THEN 
+         CALL OPENF(DATA_FH,"<","data")
+      ELSE
+         PRINT '(A)','ERROR - no data file'
+         STOP
+      ENDIF
 
 ! ios<0 end of file;
 ! ios=0 
