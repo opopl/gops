@@ -70,6 +70,7 @@ SUBROUTINE IO
 END SUBROUTINE  
 
 SUBROUTINE INITVARS
+! subroutine body {{{
 ! logicals {{{
 PULLT=.TRUE.
 P46=.FALSE.
@@ -138,7 +139,7 @@ SUBROUTINE COUNTATOMS
       INTEGER :: EOF
       LOGICAL :: YESNO
 ! }}} 
-! {{{
+! subroutine body {{{
       CALL INQF('coords',YESNO)
 
       IF (YESNO) THEN

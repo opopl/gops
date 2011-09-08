@@ -5,6 +5,7 @@ WRITE(LFH,'(A,F15.8,A)') 'Temperature will be multiplied by ',SCALEFAC,' at ever
 ! main basin hopping loop 
 
 bhloop: DO ISTEP=NDONE+1,NSTEPS 
+
   MCTEMP = TEMP
   CALL TAKESTEP
 
@@ -20,7 +21,7 @@ bhloop: DO ISTEP=NDONE+1,NSTEPS
   !include "mc.bh.checkmarkov.inc.f90"
 
   ! Accept or reject step
-  include "mc.bh.accrej.inc.f90"
+  include "mc.bh.accrej.i.f90"
   ! Check the acceptance ratio every NACCEPT steps and update:
   !     NSUCCESST (the total number of accepted moves)
   !     NFAILT (the total number of rejected moves)
