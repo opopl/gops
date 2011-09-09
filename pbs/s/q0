@@ -31,6 +31,7 @@ n_en=5
 pull_start=1
 pull_end=46
 force=0.0
+m_lbfgs=50
 #sys=G46
 #nsteps=10000
 #nst=4
@@ -63,7 +64,7 @@ for force in ${forces[@]}; do
 cat >& data << EOF
 SLOPPYCONV 0.0001
 TIGHTCONV  0.0000001
-UPDATES 50 
+UPDATES $m_lbfgs
 DGUESS  10.0
 PULL $pull_start $pull_end $force
 SAVE 10
@@ -99,6 +100,7 @@ rancoords # >& /dev/null
 cp newcoords coords
 
 time_start=`date_in_secs`
+date_start=`date_dmy_hms`
 $exe
 time_finish=`date_in_secs`
 time_spent=$(($time_finish-$time_start))
@@ -114,7 +116,7 @@ gm_energy="${low_en[0]}"
 gme=$( echo "scale=10; ($gm_energy-($gs_energy))/($gs_energy)" | bc )
 
 outf=$output_dir/ef.dat
-#echo "` printvar 'float' $force` $gme $gm_energy $time_spent" >>  $outf
+#echo "` printvar 'float' $force` $gme $gm_energy $time_spent $date_start" >>  $outf
 echo "` printvar 'float' $force` $gm_energy $time_spent" >> $outf
 # formats: force_long
 

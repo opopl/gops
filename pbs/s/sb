@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export sys=G46
-export sb_mode=2
+export sb_mode=1
 let nst=4
 
 force=0.02
@@ -12,8 +12,12 @@ queue=s1
 		
 cat << EOF
 
-sb_mode=$sb_mode"
+Variables:
+
+sb_mode=$sb_mode
 queue=$queue
+force=$force
+sys=$sys
 
 EOF
 

@@ -8,6 +8,7 @@ vim_opts="-n -p"
 files_dir="./"
 
 if [ -z "$*" ]; then 
+  #{{{
 cat << EOF
 ==========================================================
 SCRIPT NAME: $this_script
@@ -20,9 +21,9 @@ REMARKS:
 	base files are $files
 ==========================================================
 EOF
-
+#}}}
 else
-
+  #{{{
 while [ ! -z "$1" ] 
 	do
 		case "$1" in
@@ -35,6 +36,6 @@ done
 cd $files_dir
 vim $vim_opts $files
 cd -
-
+#}}}
 fi
 
