@@ -221,7 +221,7 @@ ELSE
 	CP= POINT
 	IF (POINT.EQ.0) CP=M
 	RHO(CP)= 1.0D0/YS
-	W= -GRAD
+	W= -GRADX
 
 	CP= POINT
 	DO IX= 1,BOUND
@@ -278,7 +278,7 @@ IF (OVERLAP.GT.0.0D0) THEN
 ENDIF
 ! }}}
 
-W=GRAD
+W=GRADX
 SLENGTH=SQRT(SUM(WSS(:,1+POINT)**2))
 IF (STP*SLENGTH.GT.MAXBFGS) STP=MAXBFGS/SLENGTH
 
@@ -293,7 +293,7 @@ IF ((ENEW-ENERGY.LE.MAXERISE).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
 	ITER=ITER+1
 	ITDONE=ITDONE+1
 	ENERGY=ENEW
-	GRAD=GNEW
+	GRADX=GNEW
 	
 	IF (DEBUG) WRITE(LFH,103) ' Energy and RMS force=', ENERGY,RMS, &
 	' after ',ITDONE,' LBFGS steps, ', &
@@ -321,7 +321,7 @@ ELSEIF (ENEW-ENERGY.LE.MAXEFALL) THEN
 	! and we need to reset to XSAVE. This should always be reliable!
 	!
 	X=XSAVE
-	GRAD=GNEW ! GRAD contains the gradient at the lowest energy point
+	GRADX=GNEW ! GRAD contains the gradient at the lowest energy point
 	
 	ITER=0   !  try resetting
 	IF (NFAIL.GT.20) THEN
@@ -363,7 +363,7 @@ ELSE
 		! and we need to reset to XSAVE. This should always be reliable!
 		!
 		X=XSAVE
-		GRAD=GNEW ! GRAD contains the gradient at the lowest energy point
+		GRADX=GNEW ! GRAD contains the gradient at the lowest energy point
 		ITER=0   !  try resetting
 		IF (NFAIL.GT.5) THEN         
 			WRITE(LFH,'(A)') ' Too many failures - giving up '
@@ -394,7 +394,7 @@ IF (DEBUG) WRITE(LFH,104) ' energy increased from ',ENERGY,&
 !     Compute the new step and gradient change
 
 30 WSS(:,1+POINT)=STP*WSS(:,1+POINT)     ! save the step taken
-WDG(:,1+POINT)=GRAD-W                 ! save gradient difference: W contains the old gradient
+WDG(:,1+POINT)=GRADX-W                 ! save gradient difference: W contains the old gradient
 POINT=POINT+1
 IF (POINT.EQ.M) POINT=0
 

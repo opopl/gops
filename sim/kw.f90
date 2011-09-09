@@ -69,6 +69,7 @@ CONTAINS
               CASE('G46')
                  G46=.TRUE.
                  BLNT=.TRUE.
+                 WRITE(*,*) "P46 BLN model - Go-like model"
                  ! }}}
                  ! M-S {{{
               CASE('MAXIT')

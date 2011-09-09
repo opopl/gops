@@ -19,7 +19,7 @@
 !
 ! }}}
 !------------------------------------------------------------
-        SUBROUTINE EBLN(N,R,GRAD,ENERGY,HESS,PTYPE,GRADT,HESST)
+        SUBROUTINE EBLN(N,R,ENERGY,GRAD,HESS,PTYPE,GRADT,HESST)
 ! {{{
 
 include "bln.vars.inc.f90"        ! variables

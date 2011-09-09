@@ -3,15 +3,22 @@
         
         ! number of particles
         INTEGER, INTENT(IN) :: N
+        ! energies
+        DOUBLE PRECISION, DIMENSION(4) :: E
+        DOUBLE PRECISION ENERGY
 
         ! input vector of coordinates
         !DOUBLE PRECISION, DIMENSION(N,3) :: QO, FQ
         
         ! calculate the gradient if GRADT=.TRUE.
         ! calculate the Hessian if HESST=.TRUE. 
-        LOGICAL GRADT, HESST
 
-        DOUBLE PRECISION ENERGY
+        LOGICAL GRADT, HESST
+  
+        LOGICAL GTEST, STEST
+        LOGICAL CONNECT(N,N)
+
+        INTEGER J1,J2
 
         ! AB, CD - BLN model coefficients {{{
         ! AB(,1)  =>  A_PARAM(N,N)
@@ -21,7 +28,6 @@
         DOUBLE PRECISION, DIMENSION(N,N,2) :: AB
         DOUBLE PRECISION, DIMENSION(N,2)   :: CD
         ! }}}
-
         ! R DR LEN_DR - particle positions and distances {{{
         ! particle positions R => (X,Y,Z)
         ! particle relative positions DR_{ij} =>  R_i-R_j 
@@ -30,7 +36,6 @@
         DOUBLE PRECISION, DIMENSION(N,N,3) :: DR
         DOUBLE PRECISION, DIMENSION(N,N) :: LEN_DR
         ! }}}
-
         ! Angles {{{
         ! 1 => bond angles
         ! 2 => torsion (dihedral) angles
@@ -48,7 +53,6 @@
         ! AN temporary angle variable
         DOUBLE PRECISION   AN
         ! }}}
-        ! 
         ! cross products {{{
         !
         ! XPD_2 - squared cross product 
@@ -75,35 +79,38 @@
         !       GBA     => bond angles
         !       GTA     => torsional angles
         !
+        DOUBLE PRECISION GRAD_MIN(N,3), GRAD_PLUS(N,3)
         DOUBLE PRECISION, DIMENSION(N,3) :: GBA, GNB, GTA, GB 
         DOUBLE PRECISION, DIMENSION(N,3) :: GTA_I, GTA_J, GTA_K, GTA_L
         DOUBLE PRECISION, DIMENSION(N,3) :: GBA_I, GBA_J, GBA_K
         DOUBLE PRECISION ::     DF, FRR(3)
+        DOUBLE PRECISION, DIMENSION(N,3) :: G, GRAD
         ! }}}
-        ! type of BLN potential
+        ! PTYPE: type of BLN potential {{{
         !
         !       GO   Go-like
         !       WT   Wild-type
         !
-
         CHARACTER(LEN=*) :: PTYPE
+        ! }}}
         INTEGER NTYPE(N), I, J, JMAX, K, KMAX, ICOUNT
 
         DOUBLE PRECISION COS_PHI, COS_THETA
 
+        ! Hessian {{{
         ! Hessian - (N,N) matrix of second-order derivatives
 
         DOUBLE PRECISION, DIMENSION(N,N) :: HESS
         ! IK,JK,KJ,KI - used for Hessian calculation
         INTEGER ::     IK,JK,KI,KJ,IH,JH,KH
-
-        DOUBLE PRECISION, DIMENSION(N,3) :: G, GRAD
+        ! }}}
       
         ! LJREP => repulsion
         ! LJATT => attraction
 
         DOUBLE PRECISION, DIMENSION(N,N) :: LJREP, LJATT
 
+        ! Other constants {{{
         ! 1.8326 RADIANS IS 105 DEGREES
 
         DOUBLE PRECISION RMASS, SIGMA, THETA_0, EPSILON, DELTA, PI4, TWOPI, RK_R, RK_THETA
@@ -120,15 +127,7 @@
                 ! 2 => bonded 
                 ! 3 => bond angles 
                 ! 4 => torsional angles
-
-        DOUBLE PRECISION, DIMENSION(4) :: E
-        
-        LOGICAL GTEST, STEST
-        LOGICAL CONNECT(N,N)
-
-        INTEGER J1,J2
-
-        DOUBLE PRECISION GRAD_MIN(N,3), GRAD_PLUS(N,3)
+        ! }}}
 
         S(1)=SIGMA
         S(6)=S(1)**6 

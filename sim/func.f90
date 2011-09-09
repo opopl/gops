@@ -2,12 +2,69 @@
 MODULE FUNC
 
 USE V
+USE BLN
 
 IMPLICIT NONE
 
 SAVE
 
 CONTAINS
+
+! doxygen - POTENTIAL   {{{
+!> @param[in]  X        dp(N)    input coordinates 
+!> @param[out] GRADX    dp(N)    gradient 
+!> @param[out] EREAL    dp         energy 
+!> @param[out] RMS      dp         RMS 
+! }}}
+      SUBROUTINE POTENTIAL(X,EREAL,GRADX,RMS,DOGRAD,DOHESS)
+! declarations {{{
+
+      IMPLICIT NONE
+
+      ! subroutine parameters  {{{
+
+      DOUBLE PRECISION, INTENT(OUT) :: EREAL, GRADX(:)
+      DOUBLE PRECISION, INTENT(IN) :: X(:)
+      LOGICAL DOGRAD, DOHESS
+      DOUBLE PRECISION RMS
+      ! }}}
+      ! local parameters  {{{
+
+      INTEGER NX,NR
+
+      DOUBLE PRECISION,ALLOCATABLE :: R(:,:)
+      DOUBLE PRECISION,ALLOCATABLE :: GRAD(:,:)
+      ! }}}
+      ! }}}
+! subroutine body {{{
+
+      ! NX is the number of atoms X dimension
+      ! NR is the number of atoms
+      NX=SIZE(X)
+      NR=NX/3
+
+      ALLOCATE(R(NR,3),GRAD(NR,3))
+
+      R=RESHAPE(X,(/ NR,3 /))
+
+      IF (BLNT .OR. PULLT) THEN 
+            CALL EBLN(NR,R,EREAL,GRAD,HESS,PTYPE,DOGRAD,DOHESS)
+      ENDIF
+
+      IF (PULLT) THEN
+         EREAL=EREAL-PFORCE*R(PATOM1,3)+PFORCE*R(PATOM2,3)
+         GRAD(PATOM1,3)=GRAD(PATOM1,3)-PFORCE
+         GRAD(PATOM2,3)=GRAD(PATOM2,3)+PFORCE
+      ENDIF
+
+      GRADX=PACK(GRAD,.TRUE.)
+      RMS=DSQRT(SUM(GRADX**2)/NX)
+
+      DEALLOCATE(R,GRAD)
+
+      RETURN
+! }}}
+      END SUBROUTINE 
 
 SUBROUTINE IO
 ! {{{
@@ -69,6 +126,7 @@ SUBROUTINE IO
 ! }}}
 END SUBROUTINE  
 
+! initialize variables
 SUBROUTINE INITVARS
 ! subroutine body {{{
 ! logicals {{{
@@ -397,8 +455,3 @@ FUNCTION DPRAND()
 END FUNCTION
  
 ENDMODULE
-
-
-
-
-

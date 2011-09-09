@@ -20,7 +20,7 @@ include "v.pairdist.i.f90"
 
 ! reading the data file/command-line
 
-INTEGER,PARAMETER :: MAXNARGS=20
+!INTEGER,PARAMETER :: MAXNARGS=20
 
 INTEGER NARGS
 CHARACTER(LEN=SLEN), DIMENSION(MAXNARGS) :: ARGS
