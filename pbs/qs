@@ -1,3 +1,3 @@
 #!/bin/bash
 
-qstat -q > i; showq >> i; vi i
+qstat -q > i; showq >> i; vim i
