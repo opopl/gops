@@ -1,5 +1,0 @@
-#!/bin/bash
-
-case "$1" in
-  t) rm -r outT* ;;
-esac 

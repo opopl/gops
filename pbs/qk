@@ -1,5 +1,0 @@
-#!/bin/bash
-
-jobid=` showq | grep $USER | awk '{ print $1 }' `
-qdel $jobid
-
