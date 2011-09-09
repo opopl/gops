@@ -10,7 +10,12 @@ queue=s1
 # depending on sb_mode, define: nm cmd
 # {{{
 		
-echo "sb_mode=$sb_mode"
+cat << EOF
+
+sb_mode=$sb_mode"
+queue=$queue
+
+EOF
 
 case "$sb_mode" in
  	1) # GO and WT in force ranges 0-3 {{{
