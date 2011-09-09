@@ -1,0 +1,131 @@
+
+server: mek-quake
+
+Queue            Memory CPU Time Walltime Node  Run Que Lm  State
+---------------- ------ -------- -------- ----  --- --- --  -----
+h1                 --      --    336:00:0   --   27   0 --   E R
+h16                --      --    336:00:0   --    0   0 --   E R
+h2                 --      --    336:00:0   --    0   0 --   E R
+h32                --      --    336:00:0   --    0   0 --   E R
+h4                 --      --    336:00:0   --    0   0 --   E R
+h8                 --      --    336:00:0   --    0   0 --   E R
+h8gb               --      --    336:00:0   --    0   0 --   E R
+l1                 --      --    168:00:0   --   34   0 --   E R
+l16                --      --    168:00:0   --    0   0 --   E R
+l2                 --      --    168:00:0   --   17   0 --   E R
+l32                --      --    168:00:0   --    0   0 --   E R
+l4                 --      --    168:00:0   --    4   0 --   E R
+l8                 --      --    168:00:0   --    0   0 --   E R
+s1                 --      --    24:00:00   --    0   0 --   E R
+s16                --      --    24:00:00   --    1   0 --   E R
+s2                 --      --    24:00:00   --    0   0 --   E R
+s32                --      --    24:00:00   --    1   0 --   E R
+s4                 --      --    24:00:00   --    0   0 --   E R
+s8                 --      --    24:00:00   --    0   0 --   E R
+t1                 --      --    00:30:00   --    0   0 --   E R
+t2                 --      --    00:30:00   --    0   0 --   E R
+t4                 --      --    00:30:00   --    0   0 --   E R
+                                               ----- -----
+                                                  84     0
+ACTIVE JOBS--------------------
+JOBNAME            USERNAME      STATE  PROC   REMAINING            STARTTIME
+
+383077                em427    Running     2     7:04:34  Fri Sep  2 23:20:58
+383201                swo24    Running    32    20:21:47  Fri Sep  9 12:38:11
+383202                swo24    Running    16    20:23:43  Fri Sep  9 12:40:07
+383078                em427    Running     2  1:06:35:59  Sat Sep  3 22:52:23
+383082                hk286    Running     1  3:01:39:58  Mon Sep  5 17:56:22
+383083                hk286    Running     1  3:01:47:42  Mon Sep  5 18:04:06
+383084                hk286    Running     1  3:01:47:47  Mon Sep  5 18:04:11
+383086                hk286    Running     1  3:01:47:58  Mon Sep  5 18:04:22
+383087                hk286    Running     1  3:01:48:03  Mon Sep  5 18:04:27
+383088                hk286    Running     1  3:01:48:08  Mon Sep  5 18:04:32
+383090                hk286    Running     1  3:01:48:18  Mon Sep  5 18:04:42
+383091                hk286    Running     1  3:01:48:23  Mon Sep  5 18:04:47
+383094                hk286    Running     1  3:01:48:38  Mon Sep  5 18:05:02
+383096                hk286    Running     1  3:01:48:48  Mon Sep  5 18:05:12
+383097                hk286    Running     1  3:01:48:54  Mon Sep  5 18:05:18
+383098                hk286    Running     1  3:01:48:59  Mon Sep  5 18:05:23
+383099                hk286    Running     1  3:01:49:04  Mon Sep  5 18:05:28
+383102                hk286    Running     1  3:01:49:19  Mon Sep  5 18:05:43
+383139                hk286    Running     1  3:23:07:12  Tue Sep  6 15:23:36
+383140                hk286    Running     1  3:23:08:48  Tue Sep  6 15:25:12
+383141                hk286    Running     1  3:23:08:54  Tue Sep  6 15:25:18
+383142                em427    Running     2  3:23:35:36  Tue Sep  6 15:52:00
+383143                em427    Running     2  3:23:37:56  Tue Sep  6 15:54:20
+383144                em427    Running     2  3:23:40:19  Tue Sep  6 15:56:43
+383145                em427    Running     4  3:23:58:01  Tue Sep  6 16:14:25
+383146                em427    Running     2  3:23:59:49  Tue Sep  6 16:16:13
+383147                hk286    Running     1  4:00:25:25  Tue Sep  6 16:41:49
+383148                hk286    Running     1  4:00:25:30  Tue Sep  6 16:41:54
+383149                hk286    Running     1  4:00:25:35  Tue Sep  6 16:41:59
+383151                hk286    Running     1  4:00:25:45  Tue Sep  6 16:42:09
+383152                hk286    Running     1  4:00:25:50  Tue Sep  6 16:42:14
+383153                hk286    Running     1  4:00:25:55  Tue Sep  6 16:42:19
+383154                hk286    Running     1  4:00:26:00  Tue Sep  6 16:42:24
+383155                hk286    Running     1  4:00:26:06  Tue Sep  6 16:42:30
+383157                hk286    Running     1  4:00:26:16  Tue Sep  6 16:42:40
+383158                hk286    Running     1  4:00:26:21  Tue Sep  6 16:42:45
+383159                hk286    Running     1  4:00:26:26  Tue Sep  6 16:42:50
+383160                hk286    Running     1  4:00:26:31  Tue Sep  6 16:42:55
+383161                hk286    Running     1  4:00:26:36  Tue Sep  6 16:43:00
+383163                hk286    Running     1  4:00:26:46  Tue Sep  6 16:43:10
+383165                hk286    Running     1  4:00:26:57  Tue Sep  6 16:43:21
+383167                em427    Running     2  4:07:08:23  Tue Sep  6 23:24:47
+383168                em427    Running     3  4:07:10:53  Tue Sep  6 23:27:17
+383169                em427    Running     2  4:07:12:36  Tue Sep  6 23:29:00
+383170                em427    Running     2  4:07:13:58  Tue Sep  6 23:30:22
+383171                em427    Running     2  4:07:16:18  Tue Sep  6 23:32:42
+383172                em427    Running     2  4:07:17:30  Tue Sep  6 23:33:54
+383173                em427    Running     1  4:07:26:25  Tue Sep  6 23:42:49
+383174                em427    Running     3  4:07:28:38  Tue Sep  6 23:45:02
+383175                em427    Running     2  4:07:30:08  Tue Sep  6 23:46:32
+383179                em427    Running     2  5:06:35:13  Wed Sep  7 22:51:37
+383180                em427    Running     2  5:07:05:49  Wed Sep  7 23:22:13
+383182                em427    Running     3  5:23:01:45  Thu Sep  8 15:18:09
+383183                em427    Running     2  5:23:05:07  Thu Sep  8 15:21:31
+383187                em427    Running     1  6:07:19:59  Thu Sep  8 23:36:23
+383188                em427    Running     2  6:07:20:59  Thu Sep  8 23:37:23
+383203                em427    Running     2  6:21:11:13  Fri Sep  9 13:27:37
+383103                dc392    Running     1 10:05:10:55  Mon Sep  5 21:27:19
+383104                dc392    Running     1 10:05:11:44  Mon Sep  5 21:28:08
+383105                dc392    Running     1 10:05:27:46  Mon Sep  5 21:44:10
+383106                dc392    Running     1 10:05:27:48  Mon Sep  5 21:44:12
+383107                dc392    Running     1 10:05:27:50  Mon Sep  5 21:44:14
+383108                dc392    Running     1 10:05:27:52  Mon Sep  5 21:44:16
+383109                dc392    Running     1 10:05:27:54  Mon Sep  5 21:44:18
+383110                dc392    Running     1 10:05:31:41  Mon Sep  5 21:48:05
+383111                dc392    Running     1 10:05:31:43  Mon Sep  5 21:48:07
+383112                dc392    Running     1 10:05:31:45  Mon Sep  5 21:48:09
+383113                dc392    Running     1 10:05:31:47  Mon Sep  5 21:48:11
+383114                dc392    Running     1 10:05:31:49  Mon Sep  5 21:48:13
+383115                dc392    Running     1 10:05:36:40  Mon Sep  5 21:53:04
+383116                dc392    Running     1 10:05:36:42  Mon Sep  5 21:53:06
+383117                dc392    Running     1 10:05:36:44  Mon Sep  5 21:53:08
+383118                dc392    Running     1 10:05:36:46  Mon Sep  5 21:53:10
+383119                dc392    Running     1 10:05:36:48  Mon Sep  5 21:53:12
+383120                dc392    Running     1 10:05:42:53  Mon Sep  5 21:59:17
+383121                dc392    Running     1 10:05:42:55  Mon Sep  5 21:59:19
+383122                dc392    Running     1 10:05:42:57  Mon Sep  5 21:59:21
+383123                dc392    Running     1 10:05:42:59  Mon Sep  5 21:59:23
+383124                dc392    Running     1 10:05:43:01  Mon Sep  5 21:59:25
+383125                dc392    Running     1 10:05:51:53  Mon Sep  5 22:08:17
+383126                dc392    Running     1 10:05:51:55  Mon Sep  5 22:08:19
+383127                dc392    Running     1 10:05:51:57  Mon Sep  5 22:08:21
+383128                dc392    Running     1 10:05:51:59  Mon Sep  5 22:08:23
+383129                dc392    Running     1 10:05:52:01  Mon Sep  5 22:08:25
+
+    84 Active Jobs     156 of  232 Processors Active (67.24%)
+                        45 of   58 Nodes Active      (77.59%)
+
+IDLE JOBS----------------------
+JOBNAME            USERNAME      STATE  PROC     WCLIMIT            QUEUETIME
+
+
+0 Idle Jobs
+
+BLOCKED JOBS----------------
+JOBNAME            USERNAME      STATE  PROC     WCLIMIT            QUEUETIME
+
+
+Total Jobs: 84   Active Jobs: 84   Idle Jobs: 0   Blocked Jobs: 0

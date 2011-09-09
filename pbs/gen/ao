@@ -1,0 +1,52 @@
+#!/bin/bash
+
+source f.sh
+
+if [ -z "$1" ]; then
+cat << EOF
+=================================
+SCRIPT NAME: ao
+PURPOSE: make a copy of the output directory (which default name is 'out')
+USAGE: ao [ OPTS ]
+REMARKS:	dir_name	means the target directory
+				base target dir is out_DATE, with DATE is format
+								dm-hm
+					info about copy is added to ao.log
+					incrementing  ao_count by one
+					ao.log can be viewed by invoking vo
+					(amond many other output files)
+OPTS:
+			print this help message
+	-n name		append name to dir_name 
+	-d		dir_name=out_\$date, 
+				where date is in format dm-hm	
+	-ns nsteps	dir_name=out_nsteps-\$nsteps, with nsteps the number of MC steps
+=================================
+EOF
+	else	
+		 dn=` date_dm_hm ` ; dn="out_"$dn
+		 while [ ! -z "$1" ]; do 
+  			case "$1" in
+    				"-n") dn=$dn"_$2" ;;
+				"-d") dn=` date_dm_hm ` ; dn="out-"$dn ;;
+				"-ns") dn=$dn"_nsteps-"$2 ;;
+  			esac
+			shift
+  		 done
+		dir_name=$dn
+
+		cp -r out $dn
+
+		if [ -f ao_count ]; then 
+			let ao_count=` cat ao_count `
+      		else
+			touch ao_count	
+			let ao_count=1
+		fi
+
+		echo "$ao_count $dn" >> ao.log
+		let ao_count=$(($ao_count+1))
+		echo "$ao_count" >& ao_count
+fi
+
+

@@ -1,0 +1,6 @@
+#!/bin/bash
+
+case "$1" in
+  	1) qa | awk '{ print $1 }'  ;;
+  	*) showq | awk '/op226/' ;;
+esac

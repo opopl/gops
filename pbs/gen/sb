@@ -1,0 +1,67 @@
+#!/bin/bash
+
+export sys=G46
+export sb_mode=2
+let nst=4
+
+force=0.02
+queue=s1
+
+# depending on sb_mode, define: nm cmd
+# {{{
+		
+echo "sb_mode=$sb_mode"
+
+case "$sb_mode" in
+ 	1) # GO and WT in force ranges 0-3 {{{
+		let nm=8
+		cmd="sleep 3"
+ 		echo "GO and WT in force ranges 0-3"
+		;;
+		# }}}
+	2)	# force increment run within a single force range {{{
+		nm=1
+		echo "force increment run within a single force range"
+		# }}}
+	;;
+esac
+# }}}
+
+for ((n=0;n<$nm;n++)); do 
+# {{{
+# depending on sb_mode, pass to q0 the n-dependent parameters
+# also, change the queue name, if necessary
+#{{{
+case "$sb_mode" in 
+  	1) # Go and WT in force ranges 0-3 {{{
+		n1=$(($n%2)) 
+		n2=$(($n/2)) 
+		
+		case "$n2" in
+			0) fr=( 0.0001 0.001 ) ;;
+			1) fr=( 0.001 0.01 ) ;;
+			2) fr=( 0.01 0.1 ) ;;
+			3) fr=( 0.1 1.0 ) ;;
+		esac
+		
+		case "$n1" in
+			0) sys="G46" ; od="go$n2" ; queue=s1 ;;
+			1) sys="P46" ; od="wt$n2" ; queue=s1 ;;
+		esac
+		
+		let nf=9
+		let nst=5
+		;;
+	      # }}}	
+	2) fr=( $force ) ; let nst=4; let nf=1 ; od="out" ;;
+esac
+
+export force_min="${fr[0]}"
+export force_max="${fr[1]}"
+export force_i=$( echo "scale=10; ($force_max-$force_min)/$nf" | bc )
+export nsteps=$( echo "10^$nst" | bc ) 
+#}}}
+  
+qsub -V q0 -q $queue ; $cmd ; 
+# }}}
+done

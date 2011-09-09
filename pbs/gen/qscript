@@ -1,0 +1,167 @@
+#!/bin/bash 
+## pbs stuff {{{
+## PBS -q s16
+#PBS -q s2
+#PBS -j oe
+#PBS -N gmGof
+##PBS -l walltime=72:00:00
+# Needed for clust, not mek-quake
+#PBS -W x=NACCESSPOLICY:SINGLEJOB
+##PBS -l nodes=16
+cd $PBS_O_WORKDIR
+wc $PBS_NODEFILE > nodes.info
+cat $PBS_NODEFILE >> nodes.info
+echo $USER >> nodes.info
+echo "" >& out
+# }}}
+# preset defaults {{{
+
+# don't append gm.xyz, create a new one every time
+# we restart 
+append_gm=false
+# get forces by incrementing
+#get_force="increment"
+
+#
+# for incrementing force:
+#
+# force_min 	starting point
+# force_i		increment
+# force_max		end point
+#
+
+force_min=0.0
+force_i=0.01
+force_max=0.5
+
+#get_force="array"
+get_force="increment"
+
+# }}}
+# commandline parameters {{{
+
+echo "run> reading commandline arguments" >> out
+
+while [ ! -z "$1" ] 
+	do
+		case "$1" in
+			"-h") print_help=true ;;
+			"-agm") append_gm=true ;;
+			"-if") 
+				get_force="increment" 
+				force_min="$2"
+				force_i="$3"
+				force_max="$4"	
+				;;
+			"-af") get_force="array" ;;
+		esac
+		shift
+done
+
+# }}}
+mkdir -p tmp
+mkdir -p xyz
+# 1. Obtain the energy of the global minimum configuration as a function of applied force {{{
+
+# define the array of pulling forces {{{
+
+echo "run> define the array of forces" >> out
+
+case "$get_force" in 
+		"increment")
+			echo "run> get_force=$get_force" >> out
+			echo "run> force_min=$force_min, force_i=$force_i, force_max=$force_max" >> out
+			#echo "run> " >> out
+			f=$force_min
+			let i=0
+			fbelow=true
+
+			while ( $fbelow )
+				do
+					F=$( echo "$F + $force_i" | bc );
+					forces[$i]=$F;
+					fbelow=$( echo "$F < $force_max" | bc )
+					let i=$(($i+1));
+			done
+		;;
+		"array") forces=( 0.0 0.01 0.02 0.1 0.5 1.0 ) ;;
+esac
+
+# }}}
+# other parameters{{{
+
+pull_start=1
+pull_end=46
+nsteps=30
+#nsteps=9000000
+# }}}
+# adjust parameters {{{
+
+change pull_start $pull_start
+change pull_end $pull_end
+change nsteps $nsteps
+change force 0.0
+change temperature 0.03
+
+# number of lowest energies
+n_en=3
+# }}}
+# reset gm.xyz {{{
+
+if [ ! $append_gm ]
+   		then	
+			echo "" > xyz/gm.xyz
+fi
+
+# }}}
+# loop over the array of the pulling forces {{{
+
+echo "run> iterate over forces"
+
+for f in ${forces[@]}
+	do
+		dn=f-$f
+		echo $f >& out
+		change force $f
+		stats.csh $dn 1
+		cd $dn
+		cp lowest ../xyz/lowest-f-$f.xyz
+		# Extract energies from the file lowest,
+		# 		and place them into the file ef.tex
+		#low_en=( ` grep 'Energy' lowest | sed 's/^[a-zA-Z 0-9]*=//; s/f[a-z 0-9]*$//' | sort | head -$n_en | sort ` )
+		low_en=( ` grep 'Energy' lowest | sed 's/^[a-zA-Z 0-9]*=//; s/f[a-z 0-9]*$//' | head -$n_en ` )
+		#gm_energy=
+		echo "$f        ${low_en[@]}" >> ../ef.tex
+		#
+		# Now, place the GM conformation in a separate file called gm.xyz
+		#
+		tmpxyz="../tmp/gm-temp.xyz"
+		head -1 lowest > $tmpxyz
+		# 	In the temporary XYZ file, we will need to include information about: 
+		#		1) global minimum energy 
+		#		2) value of the force
+		# 		3) maybe other parameters (like time/date etc.?) if necessary
+		gm_energy_s="GM energy= ${low_en[0]}"
+		force_s="force= $f"
+		steps_s="MC steps= $nsteps"
+		#other_s=" time= ` date +\%H:\%M:\%S ` " 
+		xyz_comment_string="$gm_energy_s $force_s $steps_s"
+		# Replace the comment (the second one) line in the temporary XYZ file, with a new one:
+		echo "$xyz_comment_string" >> $tmpxyz
+		sed -n '3,48 p' lowest >> $tmpxyz
+		# Now we may append the tmpxyz file to the gm.xyz
+		cat $tmpxyz >> ../xyz/gm.xyz
+		cd -
+done
+
+# }}}
+
+# process the gm.xyz file
+
+# }}}
+
+echo
+qstat -f ${PBS_JOBID}@clust
+echo
+
+# vim:fdm=marker:ff=unix:noet:ts=4:sw=4:nowrap

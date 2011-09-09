@@ -1,0 +1,61 @@
+#!/bin/bash
+
+mkdir -p out
+rm -f cmd_args
+cp data.old data.G46
+
+source f.sh
+
+source set_base_pars.sh
+source set_pbs_pars.sh
+source set_runs.sh
+
+add_run_opts=""
+r_mode="qsub"
+
+echo "$@" > cmd_args
+
+if [ -z "$*" ]; then 
+		source qsub.sh 
+      else
+		#{{{
+		while [ ! -z "$1" ]; do 
+		case "$1" in
+		  	"-hr") r_mode="runr" ; run_opts="-h runs" ;;
+	  		"-h")  r_mode="help"
+				case "$2" in
+				  	"" | "all" ) 	help_switch="all" ;;
+					"runs" )  	help_switch="runs" ;;
+			      	esac
+				source print_help.sh ;;
+			"-q" | "--pbs_queue_name") 	export queue_name="$2" ;;
+			"-wt" | "--pbs_wall_time") 	export wall_time="$2" ;;
+			"--pbs_job_name")   		export job_name="$2" ;;
+			"-t-gmgof") task="gmgof" ;;
+			# RUNS
+			"-r")  
+				#source reset_files.sh
+				run_index="$2" 
+				run_opts="${runs[$run_index]}"	
+				shift; shift;
+				add_run_opts="$@"
+			echo "========================" >& pre.log
+			echo "RUN: $run_index" >> pre.log
+			echo "RUN CMDS: $run_opts  " >> pre.log
+			echo "ADDITIONAL CMDS: $add_run_opts  " >> pre.log
+			echo "START DATE: ` date_dm_hm ` " >> pre.log
+			r_mode="runr"
+		       ;;	
+			*)	;;
+		esac
+		shift
+	        done
+
+		case "$r_mode" in
+		 	"qsub") source qsub.sh ;;
+			"runr") ./r $run_opts $add_run_opts ;;
+		esac
+	  #}}}
+fi
+
+# vim:set ft=sh
