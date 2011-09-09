@@ -3,7 +3,7 @@
 export shd="`dirname $(readlink -f $0)`"
 source $shd/sh_header.sh
 
-files="vf q0 sb"
+files="vf q0 sb c"
 vim_opts="-n -p" 
 files_dir="./"
 
