@@ -42,7 +42,7 @@ ATEST	mc.vars.i.f90	/^      LOGICAL :: ATEST$/;"	v
 B	bln.vars.inc.f90	/^        DOUBL/;"	v
 BEST_FH	v.files.i.f90	/^INTEGER :: BEST_FH$/;"	v
 BLN	bln.f90	/^     MODULE BLN /;"	m
-BUFINF	kw.f90	23;"	c	subroutine:KEYWORD
+BUFINF	kw.f90	24;"	c	subroutine:KEYWORD
 BVR	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N-1,3) :: BVR,/;"	v
 CD	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(N,2)   :: CD$/;"	v
 CENTRE2	func.f90	/^SUBROUTINE CENTRE2(/;"	s
@@ -132,11 +132,11 @@ MARKOV_FH	v.files.i.f90	/^INTEGER :: MARKOV_FH$/;"	v
 MAXNARGS	v.f90	/^INTEGER,PARAMETER :: MAXNARGS=/;"	v	module:V
 MC	mc.f90	/^MODULE MC$/;"	m
 MCRUN	mc.f90	/^SUBROUTINE MCRUN(/;"	s	module:MC
-MCRUNS	mcruns.f90	/^      SUBROUTINE MCRUNS(/;"	s
+MCRUNS	mc.f90	/^SUBROUTINE MCRUNS(/;"	s	module:MC
 MCTEMP	mc.vars.i.f90	/^      DOUBLE PRECISION :: MCTEMP$/;"	v
 MYLBFGS	mylbfgs.i.f90	/^SUBROUTINE MYLBFGS(/;"	s
 MYLBFGS	mylbfgs.ref.f90	/^      SUBROUTINE MYLBFGS(/;"	s
-MYPOT	mc.f90	42;"	c	subroutine:QUENCH
+MYPOT	mc.f90	58;"	c	subroutine:QUENCH
 MYPOT	mc.vars.i.f90	28;"	c
 MYPOT	mylbfgs.i.f90	81;"	c	subroutine:MYLBFGS
 MYPOT	mylbfgs.ref.f90	47;"	c	subroutine:MYLBFGS
@@ -172,8 +172,8 @@ QEPPREV	mc.vars.i.f90	/^      DOUBLE PRECISION :: QE, QEPPREV,/;"	v
 QUENCH	mc.f90	/^SUBROUTINE QUENCH(/;"	s	module:MC
 R	bln.vars.inc.f90	/^        DOUBLE PRE/;"	v
 RAD	bln.vars.inc.f90	/^        DOUBLE PRECISION, DIMENSION(15) :: RAD,/;"	v
-RANDDP	func.f90	302;"	c	subroutine:SDPRND
-RANDDP	func.f90	349;"	c	function:DPRAND
+RANDDP	func.f90	303;"	c	subroutine:SDPRND
+RANDDP	func.f90	350;"	c	function:DPRAND
 READ_CMD_ARGS	rca.f90	/^SUBROUTINE READ_CMD_ARGS$/;"	s
 REMOVEBKSL	strings.f90	/^SUBROUTINE REMOVEBKSL(/;"	s	module:STRINGS
 RK_R	bln.vars.inc.f90	/^        DOUBLE PRECISION RMASS, SIGMA, THETA_0, EPSILON, DELTA, PI4, TWOPI, RK_R,/;"	v

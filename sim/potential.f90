@@ -6,9 +6,6 @@
 
       SUBROUTINE POTENTIAL(X,EREAL,GRADX,RMS,GRADT,SECT)
 ! declarations {{{
-      !USE V
-      !USE PORFUNCS
-      !USE BLN
 
       IMPLICIT NONE
 
@@ -23,8 +20,8 @@
 
       INTEGER NX,NR
 
-      DOUBLE PRECISION,allocatable :: R(:,:)
-      DOUBLE PRECISION,allocatable :: GRAD(:,:)
+      DOUBLE PRECISION,ALLOCATABLE :: R(:,:)
+      DOUBLE PRECISION,ALLOCATABLE :: GRAD(:,:)
       ! }}}
       ! }}}
 
