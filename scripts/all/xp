@@ -23,6 +23,7 @@ mkdir -p $pics_dir
 if [ -z "$1" ]; then
   		use print_help
 	else
+	  #{{{
 	  cmd_args=( "$@" ) 
 	  use read_cmd_args
 
@@ -60,4 +61,5 @@ if [ -z "$1" ]; then
 
 	  source "$this_script"_loop_over_frames.sh	  
 	  cp $old_full_file $full_file
+	 #}}}
 fi
