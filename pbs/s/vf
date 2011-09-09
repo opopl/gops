@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+  
+export shd="`dirname $(readlink -f $0)`"
+source $shd/sh_header.sh
+
+files="vf q0 sb"
+vim_opts="-n -p" 
+files_dir="./"
+
+if [ -z "$*" ]; then 
+cat << EOF
+==========================================================
+SCRIPT NAME: $this_script
+PURPOSE: view source files with vim
+USAGE: $this_script OPTS
+OPTS:
+		display this help message
+	b	base files 
+REMARKS:
+	base files are $files
+==========================================================
+EOF
+
+else
+
+while [ ! -z "$1" ] 
+	do
+		case "$1" in
+		  "b") files="$files *.sh" ;;
+		  *) exit ;;
+		esac
+		shift
+done 
+
+cd $files_dir
+vim $vim_opts $files
+cd -
+
+fi
+

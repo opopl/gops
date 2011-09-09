@@ -1,0 +1,126 @@
+#!/bin/bash
+
+##  pbs related stuff {{{
+
+#PBS -q s1
+#PBS -N ef
+#PBS -j oe
+
+cd $PBS_O_WORKDIR
+wc $PBS_NODEFILE > nodes.info
+cat $PBS_NODEFILE >> nodes.info
+echo $USER >> nodes.info
+
+pbs_job_id=` echo ${PBS_JOBID}  | sed "s/[\.a-zA-Z]*$//" `
+clust_id=` echo ${PBS_JOBID}  | sed "s/^[0-9]*\.//" `
+# }}}
+
+#export shd="`dirname $(readlink -f $0)`"
+#source $shd/sh_header.sh
+#source sh_header.sh
+#export shd="`dirname $(readlink -f $0)`"
+
+source f.sh
+
+# set initial parameters  {{{
+
+natoms=46
+radius=100.0
+seed=1
+n_en=5
+pull_start=1
+pull_end=46
+force=0.0
+#sys=G46
+#nsteps=10000
+#nst=4
+temp=0.03
+exe=GMIN
+gs_energy=-0.2936531215
+output_dir=$PWD
+outfiles=( ef.dat ) 
+
+#for f in ${outfiles[@]}
+	#do
+	  #echo "" >& $f
+#done
+#}}}
+
+dn=$pbs_job_id
+mkdir -p $dn
+cd $dn
+
+# define_forces_0.sh:
+# define array forces[] by using force_min, force_max, and force_i
+# {{{
+# echo "source define_forces_0.sh "
+source define_forces_0.sh 
+# }}}
+
+#force loop{{{
+for force in ${forces[@]}; do
+# parse 'data' file {{{
+cat >& data << EOF
+SLOPPYCONV 0.0001
+TIGHTCONV  0.0000001
+UPDATES 50 
+DGUESS  10.0
+PULL $pull_start $pull_end $force
+SAVE 10
+CENTRE
+COMMENT CHANGEACCEPT 50 
+COMMENT CHARMM
+COMMENT DUMP
+COMMENT DEBUG
+COMMENT SORT
+$sys
+EDIFF 0.001
+STEPS $nsteps 1.0
+MAXBFGS 1.0
+MAXIT 1000 1000
+STEP 1.9 0.0 
+TEMPERATURE $temp
+COMMENT TARGET $gs_energy
+TRACKDATA
+
+COMMENT ORGYR
+
+COMMENT HISTOGRAM
+
+COMMENT TETHER
+COMMENT BINSTRUCTURES 
+EOF
+# }}}
+
+# execute {{{
+
+echo $natoms $radius -$seed > randata
+rancoords # >& /dev/null
+cp newcoords coords
+
+$exe
+#}}}
+
+# extract energies; append force energy to ef.dat 
+#{{{
+
+low_en=( ` awk '/^Energy/ { print $5 }' lowest ` )
+
+gm_energy="${low_en[0]}"
+gme=$( echo "scale=10; ($gm_energy-($gs_energy))/($gs_energy)" | bc )
+
+outf=$output_dir/ef.dat
+echo "` printvar 'float' $force` $gme $gm_energy" >>  $outf
+# formats: force_long
+
+#}}}
+done
+#}}}
+
+echo
+qstat -f ${PBS_JOBID}@$HOSTNAME
+echo
+
+#vim:ft=sh:fdm=marker
+
+
