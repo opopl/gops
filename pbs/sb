@@ -1,0 +1,21 @@
+#!/bin/bash 
+
+export shd="`dirname $(readlink -f $0)`"
+source $shd/sh_header.sh
+
+sb_mode="$1"
+
+case "$sb_mode" in
+ 	1) # GO and WT in force ranges 0-3 {{{
+		for n in {0..7}
+			do
+			  	use if_loop
+				sleep 3
+		done
+		;;
+		# }}}
+	2)	# force increment run within a single force range {{{
+		use if_loop
+		# }}}
+	;;
+esac
