@@ -10,9 +10,8 @@ NOTUSEDSOURCE=$(wildcard *.inc.*)  \
 	$(wildcard *.old.*) \
 	$(wildcard *.other.*)
 
+#SOURCE=$(filter-out,$(filter-out $(NOTUSEDSOURCE),$(ALLSOURCE)),$(GENFFILES))
 SOURCE=$(filter-out $(NOTUSEDSOURCE),$(ALLSOURCE))
 OBJS := $(patsubst %.F,%.o,$(patsubst %.f,%.o,$(patsubst %.f90,%.o,$(SOURCE))))
-
-#OBJS+= dv.o rca.o
 
 LDFLAGS = -L.
