@@ -13,19 +13,25 @@
 
         DOUBLE PRECISION ENERGY
 
+        ! AB, CD - BLN model coefficients {{{
         ! AB(,1)  =>  A_PARAM(N,N)
         ! AB(,2)  =>  B_PARAM(N,N)
         ! CD(,1)  =>  C_PARAM(N)
         ! CD(,2)  =>  D_PARAM(N)
         DOUBLE PRECISION, DIMENSION(N,N,2) :: AB
         DOUBLE PRECISION, DIMENSION(N,2)   :: CD
+        ! }}}
 
+        ! R DR LEN_DR - particle positions and distances {{{
         ! particle positions R => (X,Y,Z)
         ! particle relative positions DR_{ij} =>  R_i-R_j 
         ! distances between particles LEN_DR_ij => || DR_ij ||
         DOUBLE PRECISION, DIMENSION(N,3) :: R
         DOUBLE PRECISION, DIMENSION(N,N,3) :: DR
         DOUBLE PRECISION, DIMENSION(N,N) :: LEN_DR
+        ! }}}
+
+        ! Angles {{{
         ! 1 => bond angles
         ! 2 => torsion (dihedral) angles
         DOUBLE PRECISION, DIMENSION(N,2) :: ANG 
@@ -41,8 +47,9 @@
         DOUBLE PRECISION, DIMENSION(N,2) :: FB
         ! AN temporary angle variable
         DOUBLE PRECISION   AN
+        ! }}}
         ! 
-        ! cross products:
+        ! cross products {{{
         !
         ! XPD_2 - squared cross product 
         ! XPD - length of cross product 
@@ -50,12 +57,16 @@
         ! HVXPD - cross product direction
         DOUBLE PRECISION, DIMENSION(N-1) :: XPD_2, XPD
         DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD, HVXPD, PP
+        ! }}}
+        ! Bond vectors {{{
         ! B(:) =>  bond vectors lengths
         DOUBLE PRECISION, DIMENSION(N) :: B
         ! bond vectors, BVR_i => DR(i,i+1) => R_{i+1}-R_i 
         DOUBLE PRECISION, DIMENSION(N-1,3) :: BVR, EB
 
         DOUBLE PRECISION, DIMENSION(N-1) :: DPD
+        ! }}}
+        ! Gradients {{{
         ! G, GNB, GB, GBA, GTA: vectors representing gradients of different kinds
         ! 
         !       GRAD    => total gradient
@@ -68,6 +79,7 @@
         DOUBLE PRECISION, DIMENSION(N,3) :: GTA_I, GTA_J, GTA_K, GTA_L
         DOUBLE PRECISION, DIMENSION(N,3) :: GBA_I, GBA_J, GBA_K
         DOUBLE PRECISION ::     DF, FRR(3)
+        ! }}}
         ! type of BLN potential
         !
         !       GO   Go-like

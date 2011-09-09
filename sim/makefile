@@ -13,4 +13,6 @@ include $(INCPATH)/targets
 
 $(PROG): $(LIBS)
 
+$(DEPS): rca.f90 dv.f90 porfuncs.f90
+
 include $(DEPS)
