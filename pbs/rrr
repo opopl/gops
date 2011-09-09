@@ -1,0 +1,151 @@
+#!/bin/bash
+#vim:set ft=sh
+
+source f.sh
+
+this_script=` basename $0 `
+
+source set_"$this_script"_pars.sh
+
+echo "" >& rrr.log
+
+echo "SCRIPT: rrr" >> rrr.log
+echo "DATE: ` date_dmy_hms `" >> rrr.log
+
+q=s16
+
+if [ -z "$1" ]; then
+  # help {{{
+cat << EOF
+===================================================
+NAME: $this_script
+USAGE: $this_script OPTS
+PURPOSE: 
+	submit jobs to many processors at the same time,
+		for different values of parameters.
+		Parameters which one can vary:
+OPTS:
+	-r 	rrr_mode
+			rr 	- base run, means compute and make output files
+			cp 	- copy all the output files 
+					to "out" directory
+			pem 		plot statistics contained in 
+						GMIN output files energy.dat, markov.dat
+			pemf	 - final pem: assemble enq.pdf maq.pdf,
+					and copy to leonov
+	-it	inner title
+	
+	m	switch mode part
+	
+	seta 	set arrays:
+			at, an, af, ar
+	
+	test1 	rrr seta setf 0 -r rr T14_N14_nrg1_R12_F0
+
+EXAMPLES:	
+	rrr -r rr test1
+	rrr -r cp test1 
+
+PARAMETERS:
+	-n nsteps
+	-f force
+	-nrg nrg
+	-rad radius
+	-q queue
+===================================================
+EOF
+# }}}
+else
+while [ ! -z "$1" ]
+  	do
+case "$1" in # cmd arg loop {{{
+  	"-r") rrr_mode="$2" ;;
+	"-it") bare_inner_title="$2" ;;
+
+	"setf") # set forces {{{
+
+	case "$2" in
+  		"11")	  
+	force_min=0.0
+	force_max=0.01
+	force_i=0.001
+		;;
+		"0") force_min=0.0 ; force_max=0.001 ; force_i=0.001 ;;
+	esac
+
+	source define_forces_0.sh	
+       
+	;;
+	# }}}
+	"seta") # set arrays {{f
+
+	at=( 0.03 0.3 3.0 )
+	ar=( 2.0 10.0 )
+	an=( 1000 10000 100000 1000000 )
+
+	# }}}
+       	;;	
+	# tests
+	#"1") rrr seta setf -r $rrr_mode  T14_N14_nrg1_R12_F0 ;; 
+	"test1") rrr seta setf -r $rrr_mode  T14_N14_nrg1_R12_F0 ;; 
+	"T14_N14_nrg1_R12_F0") # {{{
+
+	t_start=0
+	t_end=3
+
+	n_start=0
+	n_end=3
+
+	r_start=0
+	r_end=1
+
+	f_start=0
+	f_end=0
+
+	let total_index=0
+
+	for (( i_t=$t_start; i_t<=$t_end; i_t++ )); do
+	for (( i_n=$n_start; i_n<=$n_end; i_n++ )); do
+	for (( i_r=$r_start; i_r<=$r_end; i_r++ )); do
+	for (( i_f=$f_start; i_f<=$f_end; i_f++ )); do
+		temp=${at[$i_t]}	
+		radius=${ar[$i_r]}
+		nsteps=${an[$i_r]}
+		force=${forces[$i_r]}
+		case $total_index in
+			0-3) queue=s1 ;;
+			4-7) queue=s2 ;;
+			8-11) queue=s4 ;;
+			*) ;;
+		esac
+		rrr -n $nsteps -nrg 1 -rad $radius -force $force -q $queue -r $rrr_mode m
+		echo "Command: rrr -n $nsteps -nrg 1 -rad $radius -force $force -q $queue -r $rrr_mode m"  \
+			>> rrr.log
+		echo "total_index: $total_index; queue: $queue" \
+			>> rrr.log
+	total_index=$(($total_index+1))
+	done
+	total_index=$(($total_index+1))
+	done
+	total_index=$(($total_index+1))
+	done
+	total_index=$(($total_index+1))
+	done
+	echo "after all loops, total_index=$total_index" >> rrr.log
+	;;
+	# }}}
+	# pass parameters: -n, etc.. {{{
+
+	"-n") export nsteps="$2" ;; 
+	"-nrg") export nrg="$2" ;; 
+	"-force") export force="$2" ;; 
+	"-rad") export radius="$2" ;; 
+	"-q")  queue="$2" ;; 
+
+	# }}}
+
+  	"m") source rrr_switch_mode.sh ;;
+esac
+	shift
+done
+fi
