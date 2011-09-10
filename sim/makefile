@@ -1,6 +1,6 @@
 #vim:ft=make
 
-PROGNAME=gmin
+PROGNAME=gmi
 GENFFILES = porfuncs.f90 dv.f90 
 #
 #

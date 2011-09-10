@@ -50,6 +50,9 @@ EOF
 # }}}
 }
 
+rca_gmi(){
+rca_gmin
+}
 
 rca_gmin(){
 # {{{
