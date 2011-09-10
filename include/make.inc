@@ -8,6 +8,7 @@ NOTUSEDSOURCE=$(wildcard *.inc.*)  \
 	$(wildcard *.i.*) \
 	$(wildcard *.ref.*) \
 	$(wildcard *.old.*) \
+	$(wildcard *.o.*) \
 	$(wildcard *.other.*)
 
 #SOURCE=$(filter-out,$(filter-out $(NOTUSEDSOURCE),$(ALLSOURCE)),$(GENFFILES))

@@ -246,6 +246,7 @@ sub MakeDependsf90 {
 	 # ONLY those object files which are in the root directory
 	 if ( ( $objfile !~ /^(.*)\// ) 
 		 && ( $objfile !~ /.*\.(inc|i)\..*/ ) # don't print include files
+		 && ( $objfile !~ /.*\.(old|o)\..*/ ) # don't print old files
 		 && ( $objfile !~ /.*\.(ref)\..*/ ) # don't print "reference" files, i.e. files included from other code
 	 ) {
 	 print MAKEFILE "$objfile: ";
