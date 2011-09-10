@@ -33,7 +33,10 @@ tg:
 
 $(PROGNAME): $(PROG)
 
-$(PROG): $(OBJS) 
+bindir: 
+	mkdir -p $(BINPATH)
+
+$(PROG): $(OBJS) bindir
 	$(FC) $(FFLAGS) $(SEARCH_PATH) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 
 cup:

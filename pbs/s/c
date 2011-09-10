@@ -1,0 +1,26 @@
+#!/bin/bash
+
+dir_name=` basename $PWD `
+
+#rm -f cmd_args
+
+case "$1" in
+  	-h)
+cat << EOF
+SCRIPT NAME:	c
+PURPOSE:	clean files
+USAGE: c OPTS
+OPTS:
+	-h	display this help message
+	a	all
+EOF
+;;
+	a) rm -rf ef.o*
+	case $HOSTNAME in
+   		mek-quake) rm -rf *.mek*;;
+	  esac		
+	  rm -rf ef.dat
+	;;
+	esac
+
+#vim:set ft=sh
