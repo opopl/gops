@@ -5,7 +5,7 @@ dir_name=` basename $PWD `
 #rm -f cmd_args
 
 case "$1" in
-  	-h)
+  "")
 cat << EOF
 SCRIPT NAME:	c
 PURPOSE:	clean files

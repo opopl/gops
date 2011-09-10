@@ -27,9 +27,8 @@ unpackdir=$HOME/arch/unpacked
 
 set_base_vars(){
 # {{{
-s_purpose="view source files with vim"
-s_project="Wales group svn repository"
-s_project="~/scripts"
+s_purpose="plotting with gnuplot"
+s_project="~/gops/pbs/s"
 # }}}
 }
 
@@ -83,8 +82,39 @@ main(){
 
 case "$1" in
   m) 
+    dfiles=( markov best energy )  
+	gpf=0.gp
   	for wdir in ${wdirs[@]}; do 
-	  	cd $wdir 	
+	  	cd $wdir 
+
+		 for dfile in ${dfiles[@]}; do
+		 #plotting {{{
+
+		case $dfile in 
+	 		markov) 	  		;;
+	 		best) 	  		;;
+	 		energy)		;;
+	    esac		
+		title=$dfile
+		gp_opts="with points "
+
+cat >& $gpf << EOF
+
+		set term postscript enhanced
+		set output "$dfile.ps"
+		set title "$title"
+
+		set xlabel "STEP"
+		#set ylabel "$ylabel"
+
+		plot "$dfile" using 1:2 $gp_opts
+
+EOF
+#}}}
+		 done
+
+gnuplot $gpf	
+		~
   	done 
   ;;
   *)
