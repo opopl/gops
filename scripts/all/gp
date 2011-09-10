@@ -34,7 +34,7 @@ EOF
 		 	a)  source $tsd/gp_all.sh ;;
 			#vm) $v $0   ;;
 			#vm) find -name $this_script\* -exec $v '{}' \;  ;;
-			vm) $v ` find $tsd -name $this_script\* | sed '/~$/d'`  ;;
+			vm) $v $tsd/f.sh ` find $tsd -name $this_script\* | sed '/~$/d'`  ;;
 			-ef) 
 				a=$2 
 				prefix="ef"
