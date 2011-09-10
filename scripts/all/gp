@@ -18,6 +18,7 @@ print_file=1
 print_date=1
 
 if [ -z $1 ]; then
+  #{{{
 cat << EOF 
 ====================================================
 NAME: gp
@@ -28,7 +29,9 @@ OPTS:
 	-pd		print date
 ====================================================
 EOF
+#}}}
 	else
+	  #{{{
 	  while [ ! -z $1 ]; do 
 		case "$1" in
 		 	a)  source $tsd/gp_all.sh ;;
@@ -51,5 +54,6 @@ EOF
 		esac
 		shift
 	done
+  #}}}
 ################################
 fi

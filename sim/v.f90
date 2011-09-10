@@ -18,9 +18,10 @@ include "v.pull.i.f90"
 include "v.gen.i.f90"
 include "v.pairdist.i.f90"
 
-! reading the data file/command-line
+! main coordinates variable
+DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:)
 
-!INTEGER,PARAMETER :: MAXNARGS=20
+! reading the data file/command-line
 
 INTEGER NARGS
 CHARACTER(LEN=SLEN), DIMENSION(MAXNARGS) :: ARGS

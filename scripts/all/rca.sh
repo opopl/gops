@@ -60,6 +60,7 @@ cat << EOF
 SUBROUTINE READ_CMD_ARGS
 
 USE PORFUNCS
+USE FUNC, only: printvars, initvars, printhelp
 USE DV
 !USE COMMONS,ONLY : INFILE
 !USE V, ONLY: INFILE,PFORCE
@@ -78,6 +79,13 @@ IF (NARGS.GT.0) THEN
      SELECTCASE(BFF)
        CASE('-v')
          CALL DISPLAY_VERSION(0)
+         STOP
+       CASE('-pv')
+	     CALL INITVARS
+         CALL PRINTVARS
+         STOP
+       CASE('-h')
+         CALL PRINTHELP
          STOP
        case default
          CALL GETARG_SUBR(i+1,var)
