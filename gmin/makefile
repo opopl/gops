@@ -1,13 +1,13 @@
 #vim:ft=make
 
-PROGNAME=GMIN
+PROGNAME=gmin
 GENFFILES = porfuncs.f90 dv.f90 mc.f ptmc.f bspt.f main.f 
 NOTUSEDSOURCE= io_sanity.f90 molinfo.f90 transforms.f90
 VPATH = .:AMH:.
 #
 #
 PPATH=$(PWD)
-INCPATH = $(PPATH)/../INCLUDE/
+INCPATH = $(PPATH)/../include/
 include $(INCPATH)/make.inc
 #
 #
