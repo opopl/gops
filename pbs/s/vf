@@ -12,11 +12,13 @@ if [ -z "$*" ]; then
 cat << EOF
 ==========================================================
 SCRIPT NAME: $this_script
-PURPOSE: view source files with vim
+PURPOSE: view files (source and output) with vim
 USAGE: $this_script OPTS
 OPTS:
 		display this help message
 	b	base files 
+	o	output files:
+			ef.dat
 REMARKS:
 	base files are $files
 ==========================================================
@@ -28,6 +30,7 @@ while [ ! -z "$1" ]
 	do
 		case "$1" in
 		  "b") files="$files *.sh" ;;
+		  o) files="ef.dat" ;;
 		  *) exit ;;
 		esac
 		shift
