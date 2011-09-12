@@ -4,7 +4,7 @@
 !> @brief Main program file for GMIN
 !
 
-      PROGRAM GMIN
+      PROGRAM GMI
 ! declarations {{{
       USE V
       USE KW
@@ -14,7 +14,6 @@
       
       IMPLICIT NONE
       
-      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:,:)
 ! }}}
 
 ! init {{{
@@ -24,27 +23,21 @@
       CALL CPU_TIME(TSTART)
 
       CALL READ_CMD_ARGS
-      CALL COUNTATOMS
+      ! read the input 'data' file
       CALL KEYWORD(1)
+      ! set vars depending on the input provided
+      ! through KEYWORS and READ_CMD_ARGS
+      CALL SETVARS
 
+      ! open the output log file for writing
       CALL OPENF(LFH,">",LFN)
 
       WRITE(LFH,'(A)') "Starting serial execution" 
 
-      ALLOCATE(SCREENC(NATOMS,3))
-      
-      !include "gmin.main.pairdist.inc.f90"
-      
-      IF (TRACKDATAT) THEN
-         CALL OPENF(ENERGY_FH,">>","energy.dat")
-         CALL OPENF(MARKOV_FH,">>","markov.dat")
-         CALL OPENF(BEST_FH,">>","best.dat")
-         !IF (RMST) 
-        CALL OPENF(RMSD_FH,">>","rmsd.dat")
-      ENDIF
+      ALLOCATE(SCREENC(3*NATOMS))
       
       CALL IO
-      CALL CENTRE2(COORDS)
+      CALL CENTRE(SCREENC)
 
       NQ=1
 

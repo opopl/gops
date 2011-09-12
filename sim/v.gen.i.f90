@@ -13,6 +13,9 @@
 
      CHARACTER(LEN=SLEN) PTYPE
 
+     ! name for the model system
+     CHARACTER(LEN=100) MODEL
+
      INTEGER :: NSEED
 
      DOUBLE PRECISION ::       RMS

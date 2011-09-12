@@ -10,7 +10,38 @@ SAVE
 
 CONTAINS
 
+! doxygen RCOORDS {{{
+!> @name RCOORDS
+!> @brief Generate a random set of coordinates, based on:
+!> @param[in] NATOMS number of particles
+!> @param[in] RADIUS container radius
+!> @param[out] COORDS  randomly generated coordinates
+! }}}
+SUBROUTINE RCOORDS(NATOMS,RADIUS,COORDS)
+! declarations {{{
+! subroutine parameters 
+INTEGER, INTENT(IN) :: NATOMS,RADIUS
+DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: COORDS
+
+! local parameters 
+DOUBLE PRECISION :: SR3
+DOUBLE PRECISION, ALLOCATABLE :: RND(:)
+! }}}
+! {{{
+SR3=DSQRT(3.0D0)
+ALLOCATE(RND(3*NATOMS))
+CALL GETRND(RND,3*NATOMS,-1.0D0,1.0D0)
+COORDS=RADIUS*RND/SR3
+DEALLOCATE(RND)
+! }}}
+END SUBROUTINE RCOORDS
+
 ! doxygen - POTENTIAL   {{{
+!> @name POTENTIAL
+!> @brief Given the input coordinates X, calculate the energy (EREAL), the
+!> gradient (GRADX), the root-mean-square force (RMS). The logical flags DOGRAD
+!> and DOHESS control whether one needs to calculate the gradient and the Hessian
+!
 !> @param[in]  X        dp(N)    input coordinates 
 !> @param[out] GRADX    dp(N)    gradient 
 !> @param[out] EREAL    dp         energy 
@@ -70,22 +101,19 @@ SUBROUTINE IO
 ! {{{
       INTEGER IA,J,K
 
-      CALL OPENF(COORDS_FH,'O','coords')
-      REWIND(COORDS_FH)
-
-      DO IA=1,NATOMS
-              READ(COORDS_FH,*) COORDS(IA,1:3)
-      ENDDO
-
-      CLOSE(COORDS_FH)
+      IF (TRACKDATAT) THEN
+         CALL OPENF(ENERGY_FH,">>","energy.dat")
+         CALL OPENF(MARKOV_FH,">>","markov.dat")
+         CALL OPENF(BEST_FH,">>","best.dat")
+         !IF (RMST) 
+        CALL OPENF(RMSD_FH,">>","rmsd.dat")
+      ENDIF
 
       WRITE(LFH,20) 
 20    FORMAT('Initial coordinates:')
 30    FORMAT(3F20.10)
 
-      DO IA=1,NATOMS
-              WRITE(LFH,30) COORDS(IA,1:3)
-      ENDDO
+      WRITE(LFH,30) SCREENC
 
       IF (P46) THEN
          WRITE(LFH,'(I4,A)') NATOMS,' 3-COLOUR, 46 BEAD MODEL POLYPEPTIDE'
@@ -126,13 +154,28 @@ SUBROUTINE IO
 ! }}}
 END SUBROUTINE  
 
+SUBROUTINE GETMODEL
+! {{{
+
+if (P46) then 
+  model="P46 three-colour off-lattice protein model, wild-type"
+elseif(G46) then 
+  model="P46 three-colour off-lattice protein model, Go-like"
+elseif(BLNT) then
+  model="General BLN model"
+endif
+! }}}
+ENDSUBROUTINE GETMODEL
+
 ! initialize variables
 SUBROUTINE INITVARS
 ! subroutine body {{{
 ! logicals {{{
+BFGST=.FALSE.
+LBFGST=.TRUE.
 PULLT=.TRUE.
 P46=.FALSE.
-G46=.FALSE.
+G46=.TRUE.
 BLNT=.FALSE.
 TARGET=.FALSE.
 TRACKDATAT=.FALSE.
@@ -152,18 +195,10 @@ COORDS_FH=FH+6
 DATA_FH=FH+7
 RMSD_FH=FH+8
 ! }}}
-NSAVE=10
-!MAXNARGS=20
-! Number of LBFGS updates
-M_LBFGS=4
-! Maximum BFGS step size
-MAXBFGS=0.4D0
-DGUESS=0.1D0
-BFGST=.FALSE.
-LBFGST=.TRUE.
-
-! DGUESS: Guess for initial diagonal elements in LBFGS
-DGUESS=0.0D0
+NSAVE=10            ! number of saved lowest-energy geometries
+M_LBFGS=4           ! Number of LBFGS updates
+MAXBFGS=0.4D0       ! Maximum BFGS step size
+DGUESS=0.0D0        ! DGUESS: Guess for initial diagonal elements in LBFGS
 
 TFAC=1.0D0
 EDIFF=0.02D0
@@ -190,34 +225,60 @@ NRELAX=0
 ! }}}
 END SUBROUTINE
 
-SUBROUTINE COUNTATOMS
-! Declarations {{{ 
-      IMPLICIT NONE
+SUBROUTINE ECHO_S
+WRITE(*,'(A)') "**********************************************************************************************" 
+ENDSUBROUTINE
 
-      INTEGER :: EOF
-      LOGICAL :: YESNO
-! }}} 
-! subroutine body {{{
-      CALL INQF('coords',YESNO)
+SUBROUTINE PRINTVARS
+! {{{
+! vars                                                                       {{{
+character(20) fmt(10)
+integer i
+! }}}
+include '../include/fmt.inc'
 
-      IF (YESNO) THEN
-         CALL OPENF(COORDS_FH,'O','coords')
-         DO
-            READ(COORDS_FH,*,IOSTAT=EOF)
-            IF (EOF==0) THEN
-               NATOMS=NATOMS+1 
-            ELSE
-               EXIT
-            ENDIF
-         ENDDO
-      ELSE
-         PRINT '(A)','ERROR - no coords file'
-         STOP
-      ENDIF
+call echo_s
+write(*,10) "PARAMETER VALUES" !                                             {{{
+write(*,1)  "PARAMETER DESCRIPTION",         "NAME",                  "VALUE"
+! pd:general                                                                 {{{
+write(*,11) s_stars
+write(*,10) "GENERAL" 
+write(*,11) s_stars
+call getmodel
+write(*,1)  "Model                                                         ", "MODEL",      trim(model)
+write(*,3)  "Number of saved lowest energy geometries                ",     "NSAVE",      NSAVE
+write(*,3)  "Number of basin-hopping steps",                "MCSTEPS",    MCSTEPS
+write(*,2)  "Temperature",                                  "TEMP",       TEMP
+write(*,2)  "Acceptance ratio",                             "ACCRAT",     ACCRAT
+write(*,2)  "Energy difference criterion for minima",       "EDIFF",      EDIFF
+write(*,2)  "Final quench tolerance for RMS gradient ",     "FQMAX",      FQMAX
+write(*,3)  "Maximum number of iterations",   "MAXIT", MAXIT
+write(*,11) "(sloppy and final quenches)"
+write(*,2)  "",                                             "TFAC",       TFAC
+Write(*,3)  "",                                             "NACCEPT",    NACCEPT
+write(*,3)  "",                                             "NRELAX",     NRELAX
+write(*,11) s_stars !                                                        }}}
+! pd:lbfgs                                                                     {{{
+write(*,10) "LBFGS parameters"
+write(*,11) s_stars
+write(*,3) "Number of LBFGS updates",   "M_LBFGS",  M_LBFGS
+write(*,2) "Maximum BFGS step size",   "MAXBFGS",   MAXBFGS
+write(*,2) "Guess for initial diagonal elements in BFGS", "DGUESS", DGUESS
+write(*,11) s_stars
+! }}}
+! }}}
+call echo_s
+! }}}
+END SUBROUTINE PRINTVARS
 
-      CLOSE(COORDS_FH)
-! }}}      
-END SUBROUTINE COUNTATOMS
+SUBROUTINE PRINTHELP
+! {{{
+write(*,*) '======================='
+write(*,*) 'gmi - A program for finding global minima'
+write(*,*) ''
+write(*,*) '======================='
+! }}}
+END SUBROUTINE PRINTHELP
 
 SUBROUTINE MYSYSTEM(STATUS,DEBUG,JOBSTRING)
 ! {{{
@@ -302,23 +363,37 @@ SUBROUTINE TAKESTEP
       ! }}}
 END SUBROUTINE 
 
-SUBROUTINE CENTRE2(R)
+SUBROUTINE SETVARS
 ! {{{
-USE V
+IF (P46 .OR. G46) THEN
+  NATOMS=46
+ENDIF
+! }}}
+END SUBROUTINE SETVARS
+
+SUBROUTINE CENTRE(X)
+! {{{
 
 IMPLICIT NONE
 
-DOUBLE PRECISION, INTENT(INOUT) :: R(:,:)
-INTEGER I,K
+! subroutine parameters 
+DOUBLE PRECISION, INTENT(INOUT), DIMENSION(:) :: X
+! local parameters 
+DOUBLE PRECISION, DIMENSION(:,:),ALLOCATABLE :: R
+INTEGER I,K,NR
 
+NR=SIZE(X)
+
+allocate(R(NR,3))
+R=RESHAPE(X,(/ NR,3 /))
 RMASS=SUM(R,DIM=1)/SIZE(R,DIM=1)
 
 do K=1,3
         R(:,K)=R(:,K)-RMASS(K)
 ENDDO
 
-IF (DEBUG) WRITE(LFH,'(A,3G20.10)') 'centre2> centre of mass reset to the origin from ',RMASS
-
+IF (DEBUG) WRITE(LFH,'(A,3G20.10)') 'centre> centre of mass reset to the origin from ',RMASS
+DEALLOCATE(R)
 ! }}}
 END SUBROUTINE
 
