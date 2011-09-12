@@ -100,7 +100,7 @@
         ! Hessian {{{
         ! Hessian - (N,N) matrix of second-order derivatives
 
-        DOUBLE PRECISION, DIMENSION(N,N) :: HESS
+        DOUBLE PRECISION, DIMENSION(:,:) :: HESS
         ! IK,JK,KJ,KI - used for Hessian calculation
         INTEGER ::     IK,JK,KI,KJ,IH,JH,KH
         ! }}}

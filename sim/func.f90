@@ -11,6 +11,7 @@ SAVE
 CONTAINS
 
 ! doxygen - POTENTIAL   {{{
+!>
 !> @name POTENTIAL
 !> @brief Given the input coordinates X, calculate the energy (EREAL), the
 !> gradient (GRADX), the root-mean-square force (RMS). The logical flags DOGRAD
@@ -38,7 +39,7 @@ CONTAINS
       INTEGER NX,NR
 
       DOUBLE PRECISION,ALLOCATABLE :: R(:,:)
-      DOUBLE PRECISION,ALLOCATABLE :: GRAD(:,:)
+      DOUBLE PRECISION,ALLOCATABLE :: GRAD(:,:),HESS(:,:)
       ! }}}
       ! }}}
 ! subroutine body {{{
@@ -48,7 +49,7 @@ CONTAINS
       NX=SIZE(X)
       NR=NX/3
 
-      ALLOCATE(R(NR,3),GRAD(NR,3))
+      ALLOCATE(R(NR,3),GRAD(NR,3),HESS(NX,NX))
 
       R=RESHAPE(X,(/ NR,3 /))
 
@@ -65,7 +66,7 @@ CONTAINS
       GRADX=PACK(GRAD,.TRUE.)
       RMS=DSQRT(SUM(GRADX**2)/NX)
 
-      DEALLOCATE(R,GRAD)
+      DEALLOCATE(R,GRAD,HESS)
 
       RETURN
 ! }}}
@@ -288,6 +289,7 @@ OSTEP=0.3D0
 ASTEP=0.3D0
 
 MCSTEPS=10000
+MCSTEPS=1
           
 NACCEPT=50
 NRELAX=0
@@ -582,6 +584,7 @@ ENDIF
 
 !        evaluate gradient (.TRUE.) but not Hessian (.FALSE.)
 CALL POTENTIAL(X,QE,GRADX,RMS,.TRUE.,.FALSE.)
+write(*,*) 'after pot'
 
 IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=', E,RMS, &
     ' after ',ITDONE,' LBFGS steps'
