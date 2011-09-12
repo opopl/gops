@@ -117,7 +117,7 @@ gme=$( echo "scale=10; ($gm_energy-($gs_energy))/($gs_energy)" | bc )
 
 outf=$output_dir/ef.$sb_mode.dat
 #echo "` printvar 'float' $force` $gme $gm_energy $time_spent $date_start" >>  $outf
-echo "` printvar 'float' $force` $gm_energy $time_spent $pbs_jobid $sys $date_start " >> $outf
+echo "` printvar 'float' $force` $gm_energy $time_spent $pbs_job_id $sys $date_start " >> $outf
 # formats: force_long
 
 #}}}
@@ -129,5 +129,3 @@ qstat -f ${PBS_JOBID}@$HOSTNAME
 echo
 
 #vim:ft=sh:fdm=marker
-
-
