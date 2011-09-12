@@ -18,7 +18,7 @@ OPTS:
 		display this help message
 	b	base files 
 	o	output files:
-			ef.dat
+			ef*.dat
 REMARKS:
 	base files are $files
 ==========================================================
@@ -30,7 +30,7 @@ while [ ! -z "$1" ]
 	do
 		case "$1" in
 		  "b") files="$files *.sh" ;;
-		  o) files="ef.dat" ;;
+		  o) files="ef*.dat"  ;;
 		  *) exit ;;
 		esac
 		shift
