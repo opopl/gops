@@ -1,0 +1,66 @@
+#!/bin/bash
+
+export shd="`dirname $(readlink -f $0)`"
+source $shd/sh_header.sh
+
+if [ -z "$1" ]; then 
+  # help message {{{
+cat << EOF
+====================================
+SCRIPT NAME: $this_script
+PURPOSE: give helpful information
+USAGE: $this_script OPTS
+OPTS:
+	d	directories
+	s	scripts
+====================================
+EOF
+# }}}
+else
+  	while [ ! -z "$1" ]; do
+	 	case "$1" in 
+		  	d) # d - directories {{{
+data_dir_size=` dir_size $data_dir `
+root_dir_size=` dir_size $root_dir `
+shd_size=` dir_size $shd `
+output_dir_size=` dir_size $output_dir `
+
+od_subdirs=( `ls -l $output_dir | awk '/^d/{print $8}'` )
+
+cat << EOF
+==========================
+Directories
+===========
+This dir $shd, size: $shd_size 
+Root dir $root_dir, size: $root_dir_size
+Data dir $data_dir, size: $data_dir_size
+Base output directory: $base_output_dir
+
+Output dir: $output_dir
+Subdirs: ${od_subdirs[@]}
+EOF
+	;; # }}}
+			s) # info about scripts {{{
+cat << EOF
+====================================
+
+-----------------------
+Plotting/Visualizing:
+-----------------------
+
+pl, gp, xp 
+
+-----------------------
+Viewing
+-----------------------
+
+vo
+
+====================================
+EOF
+			;;
+			# }}}
+		esac
+		shift
+	done
+fi

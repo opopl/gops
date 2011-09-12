@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [ -z "$*" ]; then 
+cat << EOF
+======================
+SCRIPT NAME: rr
+USAGE: rr RUN_NAME OTHER_OPTS
+REMARKS: it is the same as 
+	r -r ...
+EXAMPLE: rr 1 -ap
+======================
+EOF
+	else
+		r -r "$@"
+fi

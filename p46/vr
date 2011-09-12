@@ -1,0 +1,3 @@
+#!/bin/bash
+
+vim -n -p set_runs.sh rrr rr0 rr

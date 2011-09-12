@@ -1,0 +1,67 @@
+#!/bin/bash
+  
+export shd="`dirname $(readlink -f $0)`"
+source $shd/sh_header.sh
+
+files="r q0 vo vf c ao rmo pl vpl"
+vim_opts="-n -p" 
+files_dir="./"
+
+if [ -z "$*" ]; then 
+cat << EOF
+==========================================================
+SCRIPT NAME: $this_script
+PURPOSE: view source files with vim
+USAGE: $this_script OPTS
+OPTS:
+		display this help message
+	b	base files 
+	m	edit me (i.e. this script)
+	pl	pl, plot_arg.sh, plot_energy_markov_dat.sh
+	r	set_runs.sh rrr rr0 rr
+	h	help 
+	o	vo + set_output_pars.sh
+	sh	sh_*.sh f.sh 
+	sb	sb + sb_*.sh files: for job submission
+	crg	for calculation of rgyr's (radii of gyration)
+	gp	gp, gp_loop_over_dat.sh gp_all.sh
+	xp	XYZ -> pics
+	sh	general sh files
+
+	awk
+
+REMARKS:
+	base files are $files
+==========================================================
+EOF
+
+else
+
+while [ ! -z "$1" ] 
+	do
+		case "$1" in
+		  "gp") files="gp gp_loop_over_dat.sh gp_all.sh gp_cat_gnuplot.sh" ;;
+		  "crg") files="crg crg_main.sh" ;;
+		  "b") files="$files *.sh ao inf" ;;
+		  "h") files="r_print_help*.sh" ;;
+		  "m") files="vf" ;;
+		  "xp") files="xp xp_*.sh xp_opt.txt" ;;
+		  "opt") files="optim.log odata points points.final odata.new" ; files_dir="optim" ;;
+		  "o") files="vo set_output_pars.sh" ;;
+		  "pl") files="pl vpl plot_arg.sh plot_energy_markov_dat.sh" ;;
+		  "r") files="set_runs.sh sub rrr.log rrr_switch_mode.sh define_forces_0.sh plot_energy_markov_dat.sh rrr.tex set_rrr_pars.sh rrr rr0 rr" ;;
+		  "awk") files="awk/*a"  ;;
+		  "sb") files="sb sb_*.sh define_forces_0.sh" ;;
+		  "sh") files="sh_*.sh f.sh" ;;
+		  *) exit ;;
+		esac
+		shift
+done 
+
+
+cd $files_dir
+vim $vim_opts $files
+cd -
+
+fi
+

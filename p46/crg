@@ -1,0 +1,69 @@
+#!/bin/bash
+
+this_script_dir="` dirname $(readlink -f $0)`"
+this_script=` basename $0 `
+
+source $this_script_dir/f.sh
+
+xyz_dir="$this_script_dir/xyz"
+rgyr_dir="$this_script_dir/rgyr"
+natoms=46
+
+mkdir -p $rgyr_dir
+
+eh0(){
+echo "$this_script.`date_dm_hm`> $*" >& crg.log
+}
+
+eh(){
+echo "$this_script.`date_dm_hm`> $*" >> crg.log
+}
+
+if [ -z "$1" ]; then 
+cat << EOF
+===========================
+SCRIPT: $this_script
+USAGE: 
+	$this_script OPTS FILE[.xyz]
+	With no commandline input, print this help message
+
+PURPOSE: 
+	compute radii of gyration from
+		an input xyz file(s)
+REMARKS:
+	rgyr's are stored in the directory rgyr_dir,
+	default value for which is rgyr
+	Program runtime output is written into file crg.log
+EXAMPLE:
+	$this_script 1		-	 takes 1.xyz in output directory xyz/
+					 and writes rgyr's into rgyr/rgyr_1.dat
+
+OPTS:
+	-d xyz_dir	directory for xyz files
+			default is xyz/
+
+	-a		loop over all *.xyz files in xyz_dir
+
+===========================
+EOF
+else
+  	eh0 "Start..."
+  	eh "Input XYZ directory: $xyz_dir"
+  	
+	while [ ! -z "$1" ]; do
+	  	case "$1" in
+		  	"-a")
+				for fxyz in ` ls $xyz_dir/*.xyz `
+			 		do
+					  	fn=` basename $fxyz `; fn=${fn%.xyz}
+						echo "Doing $fn..."
+						$this_script $fn 	>& crg.log
+				done	  
+			;;
+			"-d") ;;
+			*) source crg_main.sh ;;
+	      	esac
+		shift	  		
+	done
+fi
+# vim:set fdm=marker
