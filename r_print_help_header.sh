@@ -1,0 +1,7 @@
+
+cat << EOF
+FILENAME: r
+PURPOSE: 
+USAGE: r [ OPTIONS ]
+
+EOF
