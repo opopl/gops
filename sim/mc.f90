@@ -9,22 +9,6 @@ IMPLICIT NONE
 
 CONTAINS
 
-SUBROUTINE MCRUNS(SCREENC)
-! {{{
-
-DOUBLE PRECISION SCREENC(:,:)
-
-INTEGER J1
-
-CALL MCRUN(MCSTEPS,TFAC,SCREENC)
-
-!CALL FINALQ
-!CALL FINALIO
-
-RETURN
-! }}}
-END SUBROUTINE
-
 SUBROUTINE QUENCH(R,ITERS,TIME,CONVG)
 ! declarations {{{
 
@@ -60,7 +44,8 @@ SUBROUTINE QUENCH(R,ITERS,TIME,CONVG)
       ! body {{{
 !  FQFLAG is set for the final quenches with tighter convergence criteria.
 
-      ALLOCATE(X(3*NATOMS))
+      if (.not.allocated(X)) ALLOCATE(X(3*NATOMS))
+      !write(*,*) 'in QUENCH: allocate(X)'
 
       X=PACK(R,.true.)          ! R(NATOMS,3) => X(3*NATOMS)
 
@@ -83,14 +68,16 @@ SUBROUTINE QUENCH(R,ITERS,TIME,CONVG)
       !                                 (number of iterations needed to obtain convergence)
       !         RESET=.TRUE.            Reset ITER=0 in LBFGS
       !
+      write(*,*) 'invoking LBFGS'
       CALL MYLBFGS(X,.FALSE.,GMAX,CONVG,QE,MAXIT,ITERS,.TRUE.)
+      write(*,*) 'MYLBFGS done'
 
       IF (.NOT.CONVG) THEN
             WRITE(LFH,'(A,I6,A)') 'WARNING - Final Quench ',NQ,'  did not converge'
       ENDIF
 
       CALL CPU_TIME(TIME)
-      DEALLOCATE(X)
+      IF(ALLOCATED(X)) DEALLOCATE(X)
 
       RETURN
       ! }}}

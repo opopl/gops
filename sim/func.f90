@@ -31,7 +31,7 @@ CONTAINS
       DOUBLE PRECISION, INTENT(OUT) :: EREAL, GRADX(:)
       DOUBLE PRECISION, INTENT(IN) :: X(:)
       LOGICAL DOGRAD, DOHESS
-      DOUBLE PRECISION RMS
+      DOUBLE PRECISION, INTENT(OUT) :: RMS
       ! }}}
       ! local parameters  {{{
 
@@ -43,8 +43,8 @@ CONTAINS
       ! }}}
 ! subroutine body {{{
 
-      ! NX is the number of atoms X dimension
-      ! NR is the number of atoms
+      ! NX is the number of atoms multiplied by the dimension, i.e., NATOMS*3
+      ! NR is the number of atoms, i.e., NATOMS
       NX=SIZE(X)
       NR=NX/3
 
@@ -570,7 +570,8 @@ M=M_LBFGS
 
 ! Initializations {{{
 
-ALLOCATE(RHO(M),ALPHA(M),W(N),WSS(N,M),WDG(N,M))
+IF(.NOT.ALLOCATED(W)) ALLOCATE(W(N))
+ALLOCATE(RHO(M),ALPHA(M),WSS(N,M),WDG(N,M))
 
 NFAIL=0 ; ITDONE=0 ; IF (RESET) ITER=0 
 
@@ -871,6 +872,8 @@ WDG(:,1+POINT)=GRADX-W                 ! save gradient difference: W contains th
 POINT=POINT+1
 IF (POINT.EQ.M) POINT=0
 
+DEALLOCATE(RHO,ALPHA,WSS,WDG)
+
 GOTO 10           ! Go to the termination test
 ! }}}
 RETURN
@@ -914,17 +917,23 @@ END SUBROUTINE MYSYSTEM
 SUBROUTINE TAKESTEP
       ! {{{
 
-      USE V
-
       IMPLICIT NONE
 
       INTEGER IA
       DOUBLE PRECISION ::  RND(3)
+      DOUBLE PRECISION,ALLOCATABLE,DIMENSION(:,:) :: R
+
+      ALLOCATE(R(NATOMS,3))
+
+      R=RESHAPE(SCREENC,(/ NATOMS,3 /))
 
       DO IA=1,NATOMS
          CALL GETRND(RND,3,-1.0D0,1.0D0)
-         COORDS(IA,1:3)=COORDS(IA,1:3)+STEP*RND(1:3)
+         R(IA,1:3)=R(IA,1:3)+STEP*RND(1:3)
       ENDDO
+
+      SCREENC=PACK(R,.true.)
+      DEALLOCATE(R)
       
       RETURN
       ! }}}
@@ -941,9 +950,8 @@ DOUBLE PRECISION, INTENT(INOUT), DIMENSION(:) :: X
 DOUBLE PRECISION, DIMENSION(:,:),ALLOCATABLE :: R
 INTEGER I,K,NR
 
-NR=SIZE(X)
-
-allocate(R(NR,3))
+NR=SIZE(X)/3
+ALLOCATE(R(NR,3))
 R=RESHAPE(X,(/ NR,3 /))
 RMASS=SUM(R,DIM=1)/SIZE(R,DIM=1)
 

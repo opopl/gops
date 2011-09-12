@@ -38,18 +38,23 @@
       CALL OPENF(LFH,">",LFN)
 
       WRITE(LFH,'(A)') "Starting serial execution" 
+      WRITE(*,'(A)') "Starting serial execution" 
 
       ALLOCATE(SCREENC(3*NATOMS))
 
       CALL RCOORDS(NATOMS,RADIUS,SCREENC)
+      WRITE(*,'(A)') "RCOORDS done" 
       
       CALL IO
+      WRITE(*,'(A)') "IO done" 
       CALL CENTRE(SCREENC)
+      WRITE(*,'(A)') "CENTRE done" 
 
 
 ! }}}
 
       CALL MCRUN(MCSTEPS,TFAC,SCREENC)
+      WRITE(*,'(A)') "MCRUN done" 
 
 ! end {{{
       CALL FLUSH(LFH)

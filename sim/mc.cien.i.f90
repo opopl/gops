@@ -1,9 +1,11 @@
 
 WRITE(LFH,'(A)') 'Calculating initial energy'
+WRITE(*,'(A)') 'Calculating initial energy'
 
 FQFLAG=.FALSE.
 
 CALL QUENCH(SCREENC,ITERATIONS,TIME,CONVG)
+write(*,*) 'QUENCH done'
 
 include "mc.w.111.i.f90"
 
