@@ -1,5 +1,5 @@
 
-
+! GMI: MCRUNS {{{
 ! 'Qu ',NQ,' E=',POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',POTEL,' t=',TIME-TSTART
 111 format(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)
 
@@ -12,3 +12,4 @@
 34 FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')
 
 23 FORMAT (A,I6,A,F8.4,A,F8.4)
+! }}}

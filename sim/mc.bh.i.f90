@@ -10,7 +10,7 @@ bhloop: DO ISTEP=NDONE+1,NSTEPS
   CALL TAKESTEP
 
   NQ=NQ+1
-  CALL QUENCH(SCREENC,ITERATIONS,TIME,QDONE)  
+  CALL QUENCH(SCREENC,ITERATIONS,TIME,CONVG)  
 
   include "mc.w.111.i.f90"
   !include "mc.bh.pairdist.inc.f90"

@@ -57,10 +57,10 @@ rca_gmin
 rca_gmin(){
 # {{{
 cat << EOF
-SUBROUTINE READ_CMD_ARGS
-
+SUBROUTINE RCA
+! declarations {{{
 USE PORFUNCS
-USE FUNC, only: printvars, initvars, printhelp
+USE FUNC, ONLY: PRINTVARS, INITVARS, PRINTHELP
 USE DV
 !USE COMMONS,ONLY : INFILE
 !USE V, ONLY: INFILE,PFORCE
@@ -70,6 +70,8 @@ IMPLICIT NONE
 
 INTEGER NARGS, I
 CHARACTER(LEN=80) BFF,VAR
+! }}}
+! subroutine body {{{
 
 CALL IARGC_SUBR(NARGS)
 I=0
@@ -77,17 +79,10 @@ I=0
 IF (NARGS.GT.0) THEN
   DO WHILE(I.LT.NARGS) ; I=I+1 ; CALL GETARG_SUBR(I,BFF)
      SELECTCASE(BFF)
-       CASE('-v')
-         CALL DISPLAY_VERSION(0)
-         STOP
-       CASE('-pv')
-	     CALL INITVARS
-         CALL PRINTVARS
-         STOP
-       CASE('-h')
-         CALL PRINTHELP
-         STOP
-       case default
+       CASE('-v')  ; CALL DISPLAY_VERSION(0) ; STOP
+       CASE('-pv') ; CALL INITVARS ; CALL PRINTVARS ; STOP
+       CASE('-h')  ; CALL PRINTHELP ; STOP
+       CASE DEFAULT
          CALL GETARG_SUBR(i+1,var)
          SELECTCASE(BFF)
                 CASE('-f')
@@ -102,8 +97,8 @@ IF (NARGS.GT.0) THEN
          I=I+1
   ENDDO
 ENDIF
-
-END SUBROUTINE READ_CMD_ARGS
+! }}}
+END SUBROUTINE RCA
 EOF
 # }}}
 }
@@ -152,8 +147,8 @@ EOF
 rca_pathsample(){
 # {{{
 cat << EOF
-SUBROUTINE READ_CMD_ARGS
-
+SUBROUTINE RCA
+! declarations {{{
 USE PORFUNCS
 USE DV
 !USE COMMONS,ONLY : INFILE
@@ -163,7 +158,7 @@ IMPLICIT NONE
 
 INTEGER NARGS, I
 CHARACTER(LEN=80) BFF,VAR
-
+! }}}
 CALL IARGC_SUBR(NARGS)
 I=0
 
@@ -188,8 +183,7 @@ IF (NARGS.GT.0) THEN
          I=I+1
   ENDDO
 ENDIF
-
-END SUBROUTINE READ_CMD_ARGS
+END SUBROUTINE RCA
 
 EOF
 # }}}

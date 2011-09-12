@@ -3,13 +3,15 @@
       INTEGER, INTENT(IN) :: NSTEPS
       DOUBLE PRECISION, INTENT(IN) :: SCALEFAC 
       DOUBLE PRECISION, INTENT(INOUT) :: SCREENC(NATOMS,3)
+      ! }}}
 
-      ! local
+      ! local {{{
+      LOGICAL CONVG
 
       ! ATEST: .TRUE. if the move is accepted; .FALSE. otherwise
       LOGICAL :: ATEST
       INTEGER NFAIL, NFAILT, NSUCCESS, NSUCCESST
-      INTEGER ITERATIONS,QDONE,NDONE
+      INTEGER ITERATIONS,NDONE
       !
       ! JACCPREV: the index of the last step when the move 
       !           was accepted

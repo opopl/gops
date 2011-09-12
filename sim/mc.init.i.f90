@@ -1,5 +1,4 @@
 
-
       NDONE=0
       NQ=NDONE
       JACCPREV=0

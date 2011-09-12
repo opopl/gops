@@ -28,15 +28,16 @@ CONTAINS
       !IOS=0
 
       SELECTCASE(PROG)
-        CASE(1) ! GMIN {{{
+        CASE(1) ! GMI {{{
 
       CALL INQF('data',YESNO)
 
       IF (YESNO) THEN 
+         USEKW=.true.
          CALL OPENF(DATA_FH,"<","data")
       ELSE
-         PRINT '(A)','ERROR - no data file'
-         STOP
+         USEKW=.FALSE.
+         PRINT '(A)','No data file found. Using build-in values + command-line parameters...'
       ENDIF
 
 ! ios<0 end of file;
@@ -109,8 +110,12 @@ CONTAINS
        END IF
        ! }}}
       END DO
-! }}}
+      ! }}}
       ENDSELECT
+
+      IF (USEKW) THEN
+        CLOSE(DATA_FH)
+      ENDIF
 
       RETURN
       ! }}}

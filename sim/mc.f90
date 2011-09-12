@@ -25,25 +25,25 @@ RETURN
 ! }}}
 END SUBROUTINE
 
-SUBROUTINE QUENCH(P,ITER,TIME,QDONE)
+SUBROUTINE QUENCH(R,ITERS,TIME,CONVG)
 ! declarations {{{
-      USE V
-      USE PORFUNCS
 
       IMPLICIT NONE
 
       ! SUBROUTINE PARAMETERS {{{
 
       ! number of iterations spent in the computation
-      INTEGER,INTENT(OUT) :: ITER
+      INTEGER,INTENT(OUT) :: ITERS
       ! time spent in computation 
       DOUBLE PRECISION, INTENT(OUT) :: TIME
       ! exit code:
       !         QDONE=0 if convergence achieved
       !         QDONE=1 otherwise
-      INTEGER,INTENT(OUT) :: QDONE
-      ! coordinate array used in minimizations 
-      DOUBLE PRECISION,INTENT(INOUT) :: P(3*NATOMS)
+      LOGICAL,INTENT(OUT) :: CONVG
+      ! input/output coordinate array 
+      DOUBLE PRECISION,INTENT(INOUT) :: R(NATOMS,3)
+      ! coordinates used in the minimizations
+      DOUBLE PRECISION,ALLOCATABLE,DIMENSION(:) :: X
 
       ! }}}
       ! LOCAL PARAMETERS  {{{
@@ -51,8 +51,6 @@ SUBROUTINE QUENCH(P,ITER,TIME,QDONE)
       DOUBLE PRECISION SSAVE
       INTEGER NOPT
 
-      ! CFLAG - test convergence
-      LOGICAL CFLAG
       ! E - energy 
       DOUBLE PRECISION QE
       COMMON /MYPOT/ QE
@@ -62,34 +60,37 @@ SUBROUTINE QUENCH(P,ITER,TIME,QDONE)
       ! body {{{
 !  FQFLAG is set for the final quenches with tighter convergence criteria.
 
+      ALLOCATE(X(3*NATOMS))
+
+      X=PACK(R,.true.)          ! R(NATOMS,3) => X(3*NATOMS)
+
       IF (FQFLAG) THEN
          GMAX=FQMAX
       ELSE
          GMAX=SQMAX
       ENDIF
 
-      QDONE=1
+      CONVG=.FALSE.
 
       ! Invoking LBFGS:
-      !         P                       input coordinates
+      !         X                       input coordinates
       !         DIAGCO=.FALSE           don't provide Hk0 at each iteration
       !         GMAX                    = EPS in LBFGS
-      !         CFLAG                   convergence
+      !         CONVG                   convergence, MFLAG in LBFGS
       !         EREAL                   returns energy
       !         MAXIT                   = ITMAX in LBFGS
-      !         ITER                    = ITDONE in LBFGS
+      !         ITERS                    = ITDONE in LBFGS
       !                                 (number of iterations needed to obtain convergence)
       !         RESET=.TRUE.            Reset ITER=0 in LBFGS
       !
-      CALL MYLBFGS(P,.FALSE.,GMAX,CFLAG,QE,MAXIT,ITER,.TRUE.)
+      CALL MYLBFGS(X,.FALSE.,GMAX,CONVG,QE,MAXIT,ITERS,.TRUE.)
 
-      IF (CFLAG) QDONE=0
-
-      IF (.NOT.CFLAG) THEN
+      IF (.NOT.CONVG) THEN
             WRITE(LFH,'(A,I6,A)') 'WARNING - Final Quench ',NQ,'  did not converge'
       ENDIF
 
       CALL CPU_TIME(TIME)
+      DEALLOCATE(X)
 
       RETURN
       ! }}}

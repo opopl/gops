@@ -10,32 +10,6 @@ SAVE
 
 CONTAINS
 
-! doxygen RCOORDS {{{
-!> @name RCOORDS
-!> @brief Generate a random set of coordinates, based on:
-!> @param[in] NATOMS number of particles
-!> @param[in] RADIUS container radius
-!> @param[out] COORDS  randomly generated coordinates
-! }}}
-SUBROUTINE RCOORDS(NATOMS,RADIUS,COORDS)
-! declarations {{{
-! subroutine parameters 
-INTEGER, INTENT(IN) :: NATOMS,RADIUS
-DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: COORDS
-
-! local parameters 
-DOUBLE PRECISION :: SR3
-DOUBLE PRECISION, ALLOCATABLE :: RND(:)
-! }}}
-! {{{
-SR3=DSQRT(3.0D0)
-ALLOCATE(RND(3*NATOMS))
-CALL GETRND(RND,3*NATOMS,-1.0D0,1.0D0)
-COORDS=RADIUS*RND/SR3
-DEALLOCATE(RND)
-! }}}
-END SUBROUTINE RCOORDS
-
 ! doxygen - POTENTIAL   {{{
 !> @name POTENTIAL
 !> @brief Given the input coordinates X, calculate the energy (EREAL), the
@@ -95,7 +69,49 @@ END SUBROUTINE RCOORDS
 
       RETURN
 ! }}}
-      END SUBROUTINE 
+      END SUBROUTINE POTENTIAL
+
+SUBROUTINE GETMODEL
+! {{{
+
+IF (P46) THEN 
+  MODEL="P46 THREE-COLOUR OFF-LATTICE PROTEIN MODEL, WILD-TYPE"
+ELSEIF(G46) THEN 
+  MODEL="P46 THREE-COLOUR OFF-LATTICE PROTEIN MODEL, GO-LIKE"
+ELSEIF(BLNT) THEN
+  MODEL="GENERAL BLN MODEL"
+ENDIF
+! }}}
+ENDSUBROUTINE GETMODEL
+
+! RCOORDS IO PRINTVARS SETVARS INITVARS {{{
+ 
+! doxygen RCOORDS {{{
+!> @name RCOORDS
+!> @brief Generate a random set of coordinates, based on:
+!> @param[in] NATOMS number of particles
+!> @param[in] RADIUS container radius
+!> @param[out] COORDS  randomly generated coordinates
+! }}}
+SUBROUTINE RCOORDS(NATOMS,RADIUS,COORDS)
+! declarations {{{
+! subroutine parameters 
+INTEGER, INTENT(IN) :: NATOMS
+DOUBLE PRECISION,INTENT(IN) :: RADIUS 
+DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: COORDS
+
+! local parameters 
+DOUBLE PRECISION :: SR3
+DOUBLE PRECISION, ALLOCATABLE :: RND(:)
+! }}}
+! {{{
+SR3=DSQRT(3.0D0)
+ALLOCATE(RND(3*NATOMS))
+CALL GETRND(RND,3*NATOMS,-1.0D0,1.0D0)
+COORDS=RADIUS*RND/SR3
+DEALLOCATE(RND)
+! }}}
+END SUBROUTINE RCOORDS
 
 SUBROUTINE IO
 ! {{{
@@ -121,13 +137,6 @@ SUBROUTINE IO
          WRITE(LFH,'(I4,A)') NATOMS,' BEAD BLN MODEL'
       ENDIF
       
-      IF (RADIUS.EQ.0.0D0) THEN
-        RADIUS=2.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0)
-        IF (P46) THEN
-           RADIUS=RADIUS*3.0D0
-        ENDIF
-      ENDIF
-
       if (LBFGST) then
          WRITE(LFH,'(A)') 'Nocedal LBFGS minimization'
          WRITE(LFH,'(A,I6)') 'Number of updates before reset in LBFGS=',M_LBFGS
@@ -152,20 +161,77 @@ SUBROUTINE IO
          WRITE(LFH,'(A)') ' '
       ENDIF
 ! }}}
-END SUBROUTINE  
+END SUBROUTINE IO
 
-SUBROUTINE GETMODEL
+! print variables 
+SUBROUTINE PRINTVARS
 ! {{{
-
-if (P46) then 
-  model="P46 three-colour off-lattice protein model, wild-type"
-elseif(G46) then 
-  model="P46 three-colour off-lattice protein model, Go-like"
-elseif(BLNT) then
-  model="General BLN model"
-endif
+! vars                                                                       {{{
+character(100) fmt(10)
+character(40) s
+integer i
 ! }}}
-ENDSUBROUTINE GETMODEL
+include '../include/fmt.i.f90'
+
+CALL ECHO_S
+write(*,10) "PARAMETER VALUES" !                                             {{{
+write(*,1)  "PARAMETER DESCRIPTION",         "NAME",                  "VALUE"
+! pd:general                                                                 {{{
+write(*,11) s_stars
+write(*,10) "GENERAL" 
+write(*,11) s_stars
+
+call getmodel
+write(s,*) "Model" 
+!s=adjustl(s)
+!write(*,1)  "Model"                                         ,"Model",   trim(model)
+write(*,*)  trim(model)
+write(*,11) s_stars
+write(*,3)  "Number of particles",                          "NATOMS",     NATOMS
+write(*,3)  "Number of saved lowest energy geometries",     "NSAVE",      NSAVE
+write(*,3)  "Number of basin-hopping steps",                "MCSTEPS",    MCSTEPS
+write(*,2)  "Temperature",                                  "TEMP",       TEMP
+write(*,2)  "Acceptance ratio",                             "ACCRAT",     ACCRAT
+write(*,2)  "Energy difference criterion for minima",       "EDIFF",      EDIFF
+write(*,2)  "Final quench tolerance for RMS gradient ",     "FQMAX",      FQMAX
+write(*,3)  "Maximum number of iterations",   "MAXIT", MAXIT
+write(*,11) "(sloppy and final quenches)"
+write(*,2)  "",                                             "TFAC",       TFAC
+Write(*,3)  "",                                             "NACCEPT",    NACCEPT
+write(*,3)  "",                                             "NRELAX",     NRELAX
+write(*,11) s_stars !                                                        }}}
+! pd:lbfgs                                                                     {{{
+write(*,10) "LBFGS parameters"
+write(*,11) s_stars
+write(*,3) "Number of LBFGS updates",   "M_LBFGS",  M_LBFGS
+write(*,2) "Maximum BFGS step size",   "MAXBFGS",   MAXBFGS
+write(*,2) "Guess for initial diagonal elements in BFGS", "DGUESS", DGUESS
+write(*,11) s_stars
+! }}} 
+! }}}
+CALL ECHO_S
+! }}}
+END SUBROUTINE PRINTVARS
+
+! set variables 
+SUBROUTINE SETVARS
+! {{{
+IF (P46 .OR. G46) THEN
+  NATOMS=46
+ENDIF
+
+! radius {{{
+IF (RADIUS.EQ.0.0D0) THEN
+    RADIUS=2.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0)
+    IF (P46) THEN
+        RADIUS=RADIUS*3.0D0
+    ENDIF
+ENDIF
+! }}}
+
+
+! }}}
+END SUBROUTINE SETVARS
 
 ! initialize variables
 SUBROUTINE INITVARS
@@ -195,6 +261,7 @@ COORDS_FH=FH+6
 DATA_FH=FH+7
 RMSD_FH=FH+8
 ! }}}
+! other {{{
 NSAVE=10            ! number of saved lowest-energy geometries
 M_LBFGS=4           ! Number of LBFGS updates
 MAXBFGS=0.4D0       ! Maximum BFGS step size
@@ -205,6 +272,8 @@ EDIFF=0.02D0
 ACCRAT=0.5D0
 TEMP=0.035D0
 RADIUS=0.0D0
+! maximum number of iterations allowed in conjugate gradient searches
+MAXIT=500
 ! Maximum allowed energy rise during a minimisation
 MAXERISE=1.0D-10
 ! Maximum allowed energy fall during a minimisation
@@ -223,83 +292,10 @@ MCSTEPS=10000
 NACCEPT=50
 NRELAX=0
 ! }}}
-END SUBROUTINE
-
-SUBROUTINE ECHO_S
-WRITE(*,'(A)') "**********************************************************************************************" 
-ENDSUBROUTINE
-
-SUBROUTINE PRINTVARS
-! {{{
-! vars                                                                       {{{
-character(20) fmt(10)
-integer i
 ! }}}
-include '../include/fmt.inc'
-
-call echo_s
-write(*,10) "PARAMETER VALUES" !                                             {{{
-write(*,1)  "PARAMETER DESCRIPTION",         "NAME",                  "VALUE"
-! pd:general                                                                 {{{
-write(*,11) s_stars
-write(*,10) "GENERAL" 
-write(*,11) s_stars
-call getmodel
-write(*,1)  "Model                                                         ", "MODEL",      trim(model)
-write(*,3)  "Number of saved lowest energy geometries                ",     "NSAVE",      NSAVE
-write(*,3)  "Number of basin-hopping steps",                "MCSTEPS",    MCSTEPS
-write(*,2)  "Temperature",                                  "TEMP",       TEMP
-write(*,2)  "Acceptance ratio",                             "ACCRAT",     ACCRAT
-write(*,2)  "Energy difference criterion for minima",       "EDIFF",      EDIFF
-write(*,2)  "Final quench tolerance for RMS gradient ",     "FQMAX",      FQMAX
-write(*,3)  "Maximum number of iterations",   "MAXIT", MAXIT
-write(*,11) "(sloppy and final quenches)"
-write(*,2)  "",                                             "TFAC",       TFAC
-Write(*,3)  "",                                             "NACCEPT",    NACCEPT
-write(*,3)  "",                                             "NRELAX",     NRELAX
-write(*,11) s_stars !                                                        }}}
-! pd:lbfgs                                                                     {{{
-write(*,10) "LBFGS parameters"
-write(*,11) s_stars
-write(*,3) "Number of LBFGS updates",   "M_LBFGS",  M_LBFGS
-write(*,2) "Maximum BFGS step size",   "MAXBFGS",   MAXBFGS
-write(*,2) "Guess for initial diagonal elements in BFGS", "DGUESS", DGUESS
-write(*,11) s_stars
+END SUBROUTINE INITVARS
 ! }}}
-! }}}
-call echo_s
-! }}}
-END SUBROUTINE PRINTVARS
-
-SUBROUTINE PRINTHELP
-! {{{
-write(*,*) '======================='
-write(*,*) 'gmi - A program for finding global minima'
-write(*,*) ''
-write(*,*) '======================='
-! }}}
-END SUBROUTINE PRINTHELP
-
-SUBROUTINE MYSYSTEM(STATUS,DEBUG,JOBSTRING)
-! {{{
-USE PORFUNCS
-
-IMPLICIT NONE
-
-LOGICAL DEBUG
-INTEGER STATUS
-CHARACTER(LEN=*) JOBSTRING
-
-IF (DEBUG) WRITE(*,'(A)') 'mysystem> '//trim(adjustl(jobstring)) 
-CALL SYSTEM_SUBR(JOBSTRING,STATUS)
-
-! IF (DEBUG) PRINT '(A,I6)','command '//JOBSTRING//' exit status=',STATUS
-! IF (STATUS.NE.0) PRINT '(A,I8)','mysystem> WARNING - '//JOBSTRING//' exit status=',STATUS
-
-RETURN
-! }}}
-END SUBROUTINE MYSYSTEM
-
+! INQF OPENF {{{
 SUBROUTINE INQF(FILENAME,YESNO)
 ! {{{
 LOGICAL,INTENT(OUT) :: YESNO
@@ -311,11 +307,8 @@ INQUIRE(FILE=FLN,EXIST=YESNO)
 ! }}}
 END SUBROUTINE INQF
 
-include "mylbfgs.i.f90"
-
 !> @name OPENF
 !! @brief open files 
-
 SUBROUTINE OPENF(FILEHANDLE,MODE,FILENAME)
 ! {{{
 
@@ -343,59 +336,8 @@ SELECTCASE(MODE)
 ENDSELECT
 ! }}}
 ENDSUBROUTINE OPENF
-
-SUBROUTINE TAKESTEP
-      ! {{{
-
-      USE V
-
-      IMPLICIT NONE
-
-      INTEGER IA
-      DOUBLE PRECISION ::  RND(3)
-
-      DO IA=1,NATOMS
-         CALL GETRND(RND,3,-1.0D0,1.0D0)
-         COORDS(IA,1:3)=COORDS(IA,1:3)+STEP*RND(1:3)
-      ENDDO
-      
-      RETURN
-      ! }}}
-END SUBROUTINE 
-
-SUBROUTINE SETVARS
-! {{{
-IF (P46 .OR. G46) THEN
-  NATOMS=46
-ENDIF
 ! }}}
-END SUBROUTINE SETVARS
-
-SUBROUTINE CENTRE(X)
-! {{{
-
-IMPLICIT NONE
-
-! subroutine parameters 
-DOUBLE PRECISION, INTENT(INOUT), DIMENSION(:) :: X
-! local parameters 
-DOUBLE PRECISION, DIMENSION(:,:),ALLOCATABLE :: R
-INTEGER I,K,NR
-
-NR=SIZE(X)
-
-allocate(R(NR,3))
-R=RESHAPE(X,(/ NR,3 /))
-RMASS=SUM(R,DIM=1)/SIZE(R,DIM=1)
-
-do K=1,3
-        R(:,K)=R(:,K)-RMASS(K)
-ENDDO
-
-IF (DEBUG) WRITE(LFH,'(A,3G20.10)') 'centre> centre of mass reset to the origin from ',RMASS
-DEALLOCATE(R)
-! }}}
-END SUBROUTINE
+! GETRND SDPRND DPRAND {{{
 
 ! doxygen - GETRND {{{
 !> @name         GETRND
@@ -528,5 +470,490 @@ FUNCTION DPRAND()
         DPRAND = X+TINY
         ! }}}
 END FUNCTION
- 
-ENDMODULE
+! }}}
+! LBFGS {{{
+
+! Doxygen - MYLBFGS {{{
+!>
+!> @name MYLBFGS
+!
+!> @brief Adaptation of the original LBFGS routine
+!
+!> @param[in] N       
+!>             is an INTEGER variable that must be set by the user to the
+!>             number of variables. It is not altered by the routine.
+!>             Restriction: N>0.
+!
+!> @param[in] M   
+!>             is an INTEGER variable that must be set by the user to
+!>             the number of corrections used in the BFGS update. It
+!>             is not altered by the routine. Values of M less than 3 are
+!>             not recommended; large values of M will result in excessive
+!>             computing time. 3<= M <=7 is recommended. Restriction: M>0.
+!
+!> @param[out] MFLAG 
+!>             returns .TRUE. is the algorithm has converged; .FALSE. otherwise
+!
+!> @param[in] DIAGCO 
+!>             is a LOGICAL variable that must be set to .TRUE. if the
+!>             user wishes to provide the diagonal matrix Hk0 at each
+!>             iteration. Otherwise it should be set to .FALSE., in which
+!>             case  LBFGS will use a default value described below. If
+!>             DIAGCO is set to .TRUE. the routine will return at each
+!>             iteration of the algorithm with IFLAG=2, and the diagonal
+!>             matrix Hk0  must be provided in the array DIAG.
+!
+!> @param[in] EPS 
+!>             is a positive DOUBLE PRECISION variable that must be set by
+!>             the user, and determines the accuracy with which the solution
+!>             is to be found. The subroutine terminates when
+!>
+!>                         ||G|| < EPS max(1,||X||),
+!>
+!>             where ||.|| denotes the Euclidean norm.
+!
+!> @param[inout] R is a vector of coordinates. On initial entry
+!>             it must be set by the user to the values of the initial
+!>             estimate of the solution vector. On exit with IFLAG=0, it
+!>             contains the values of the variables at the best point
+!>             found (usually a solution).
+!
+!
+! }}}
+SUBROUTINE MYLBFGS(X,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
+! ====================================
+! declarations {{{ 
+USE V
+USE PORFUNCS
+
+IMPLICIT NONE
+! subroutine parameters  {{{
+DOUBLE PRECISION, INTENT(INOUT) :: X(:)
+LOGICAL,INTENT(IN) :: DIAGCO
+DOUBLE PRECISION,INTENT(IN) :: EPS
+LOGICAL,INTENT(OUT) :: MFLAG
+DOUBLE PRECISION,INTENT(OUT) :: ENERGY
+INTEGER,INTENT(IN) :: ITMAX
+INTEGER,INTENT(OUT) :: ITDONE
+LOGICAL,INTENT(IN) :: RESET
+! }}}
+! local parameters {{{
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W, WTEMP, GRADX, GNEW, XSAVE
+! ALPHA, RHO: M coefficients in the LBFGS algorithm
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: ALPHA, RHO
+! WSS - for storing step directions
+! WDG - for storing gradient differences
+DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: WSS,WDG
+INTEGER ITER, NFAIL, CP, NDECREASE
+DOUBLE PRECISION :: GNORM,SLENGTH,E,ENEW,YS,YY,SQ,YR,BETA,POTEL, DDOT, STP
+DOUBLE PRECISION :: DOT1,DOT2,OVERLAP, DUMMY, QE
+
+INTEGER :: BOUND, POINT
+
+INTEGER :: N,M,K,IX,IXMIN,IXMAX
+COMMON /MYPOT/ QE
+
+SAVE W,DIAG,ITER
+! 
+N=3*NATOMS
+M=M_LBFGS
+!
+!   }}}
+! }}}
+! ====================================
+! Labels:  {{{
+!         10  - termination test
+!         30  - compute the new step and gradient change
+! }}}
+! ====================================
+! subroutine body  {{{
+
+! Initializations {{{
+
+ALLOCATE(RHO(M),ALPHA(M),W(N),WSS(N,M),WDG(N,M))
+
+NFAIL=0 ; ITDONE=0 ; IF (RESET) ITER=0 
+
+IF (DEBUG) THEN
+    IF (RESET) WRITE(LFH,'(A)')            'mylbfgs> Resetting LBFGS minimiser'
+    IF (.NOT.RESET) WRITE(LFH,'(A)')       'mylbfgs> Not resetting LBFGS minimiser'
+ENDIF
+
+!        evaluate gradient (.TRUE.) but not Hessian (.FALSE.)
+CALL POTENTIAL(X,QE,GRADX,RMS,.TRUE.,.FALSE.)
+
+IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=', E,RMS, &
+    ' after ',ITDONE,' LBFGS steps'
+101   FORMAT(A,F20.10,G20.10,A,I6,A)
+102   FORMAT(A,I10,A,I10,A)
+
+! }}}
+!  Termination test (label 10){{{
+
+10    CALL FLUSH(LFH)
+
+MFLAG=.FALSE.
+IF (RMS.LE.EPS) THEN
+    MFLAG=.TRUE.
+    IF (MFLAG) THEN
+        IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
+        RETURN
+    ENDIF
+ENDIF
+
+IF (ITDONE.EQ.ITMAX) THEN
+    IF (DEBUG) WRITE(LFH,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
+    RETURN
+ENDIF
+! }}}
+
+IF (ITER.EQ.0) THEN
+	! {{{
+	IF (N.LE.0.OR.M.LE.0) THEN
+    	WRITE(LFH,240)
+	    240        FORMAT(' IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')
+	    STOP
+	ENDIF
+	
+	POINT=0
+	MFLAG=.FALSE.
+    ! Set the DIAG matrix depending on DIAGCO {{{
+	IF (DIAGCO) THEN
+	    WRITE(LFH,'(A)') 'using estimate of the inverse diagonal elements'
+	    DO IX=1,N
+		    IF (DIAG(IX).LE.0.0D0) THEN
+	    	    WRITE(LFH,235) IX
+		        235 FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',/,' INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE')
+		        STOP
+	        ENDIF
+	    ENDDO
+	ELSE
+	    DIAG=DGUESS
+	ENDIF
+    ! }}}
+    ! Rules for storage: {{{
+	!
+	!     THE SEARCH STEPS AND GRADIENT DIFFERENCES ARE STORED IN A
+	!     CIRCULAR ORDER CONTROLLED BY THE PARAMETER POINT.
+	!
+	
+	! W     =>      W 
+	! RHO   =>      N,...,N+M      
+	! ALPHA =>      N+M+1,...,N+2M
+	! WSS   =>      storage of the last M steps 
+	! WDG   =>      storage of the last M gradient differences 
+    ! }}}
+	
+	!  NR step for diagonal inverse Hessian
+	
+	DO IX=1,N
+		DUMMY=-GRADX(IX)*DIAG(IX)
+		WSS(IX,1)=DUMMY
+		W(IX)=DUMMY
+	ENDDO
+
+	GNORM=DSQRT(DDOT(N,GRADX,1,GRADX,1))
+    !  Guess for the step length
+	STP=MIN(1.0D0/GNORM,GNORM)              
+	! }}}
+ELSE 
+	! {{{
+	BOUND=MIN(ITER,M) 
+	YS= DDOT(N,WDG(1,1+POINT),1,WSS(1,1+POINT),1)
+	!
+	!  Update estimate of diagonal inverse Hessian elements {{{
+	!
+	IF (.NOT.DIAGCO) THEN
+		YY= DDOT(N,WDG(1,1+POINT),1,WDG(1,1+POINT),1)
+		IF (YY.EQ.0.0D0) THEN
+			WRITE(LFH,'(A)') 'WARNING, resetting YY to one in mylbfgs'
+			YY=1.0D0
+	    ENDIF
+		IF (YS.EQ.0.0D0) THEN
+		    WRITE(LFH,'(A)') 'WARNING, resetting YS to one in mylbfgs'
+		    YS=1.0D0
+		ENDIF
+	    DIAG= YS/YY
+	ELSE
+		WRITE(LFH,'(A)') 'using estimate of the inverse diagonal elements'
+		DO IX=1,N
+			IF (DIAG(IX).LE.0.0D0) THEN
+			    WRITE(LFH,235) IX
+			    STOP
+	    	ENDIF
+	    ENDDO
+	ENDIF
+	! }}}
+    ! -HG computation {{{
+	!
+	!     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980,
+	!     "Updating quasi-Newton matrices with limited storage",
+	!     Mathematics of Computation, Vol.24, No.151, pp. 773-782.
+	!     ---------------------------------------------------------
+	!
+	CP= POINT
+	IF (POINT.EQ.0) CP=M
+	RHO(CP)= 1.0D0/YS
+	W= -GRADX
+
+	CP= POINT
+	DO IX= 1,BOUND
+		CP=CP-1
+		IF (CP.EQ.-1) CP=M-1
+		SQ=DDOT(N,WSS(1,CP+1),1,W,1)
+		ALPHA(CP+1)=RHO(CP+1)*SQ
+		CALL DAXPY(N,-ALPHA(CP+1),WDG(1,CP+1),1,W,1)
+	ENDDO
+	
+	W=DIAG*W
+	
+	DO IX=1,BOUND
+		YR=DDOT(N,WSS(1,CP+1),1,W,1)
+		BETA=RHO(CP+1)*YR
+		BETA=ALPHA(CP+1)-BETA
+		CALL DAXPY(N,BETA,WSS(1,CP+1),1,W,1)
+		CP=CP+1
+		IF (CP.EQ.M) CP=0
+	ENDDO
+	STP=1.0D0  
+    ! }}}
+	! }}}
+ENDIF
+
+!  Store the new search direction (160)
+
+IF (ITER.GT.0) THEN
+    WSS(:,1+POINT)=W
+ENDIF
+
+!  test for overlap {{{
+!
+!  Overflow has occasionally occurred here.
+!  We only need the sign of the overlap, so use a temporary array with
+!  reduced elements.
+!
+DUMMY=1.0D0
+DO IX=1,N
+    IF (ABS(W(IX)).GT.DUMMY) DUMMY=ABS(W(IX))
+ENDDO
+
+WTEMP=W/DUMMY
+
+DOT1=SQRT(DDOT(N,GRAD,1,GRAD,1))
+DOT2=SQRT(DDOT(N,WTEMP,1,WTEMP,1))
+OVERLAP=0.0D0
+IF (DOT1*DOT2.NE.0.0D0) THEN
+    OVERLAP=DDOT(N,GRAD,1,WTEMP,1)/(DOT1*DOT2)
+ENDIF
+IF (OVERLAP.GT.0.0D0) THEN
+    IF (DEBUG) WRITE(LFH,'(A)') 'Search direction has positive projection onto gradient - reversing step'
+    WSS(1:N,1+POINT)=-W  !!! DJW, reverses step
+ENDIF
+! }}}
+
+W=GRADX
+SLENGTH=SQRT(SUM(WSS(:,1+POINT)**2))
+IF (STP*SLENGTH.GT.MAXBFGS) STP=MAXBFGS/SLENGTH
+
+! We now have the proposed step; save X here so that we can undo the step reliably.
+
+XSAVE=X; X=X+STP*WSS(:,1+POINT)
+
+CALL POTENTIAL(X,ENEW,GNEW,RMS,.TRUE.,.FALSE.)
+
+IF ((ENEW-ENERGY.LE.MAXERISE).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
+	! {{{
+	ITER=ITER+1
+	ITDONE=ITDONE+1
+	ENERGY=ENEW
+	GRADX=GNEW
+	
+	IF (DEBUG) WRITE(LFH,103) ' Energy and RMS force=', ENERGY,RMS, &
+	' after ',ITDONE,' LBFGS steps, ', &
+	' step:',STP*SLENGTH
+	
+	103   FORMAT(A,F20.10,G20.10,A,I6,A,A,F13.10)
+	
+	!  May want to prevent the PE from falling too much if we are trying to visit all the
+	!  PE bins. Halve the step size until the energy decrease is in range.
+	!
+	! }}}
+ELSEIF (ENEW-ENERGY.LE.MAXEFALL) THEN
+	! {{{
+	!
+	!  Energy decreased too much - try again with a smaller step size
+	!
+	IF (NDECREASE.GT.5) THEN
+	! {{{
+	NFAIL=NFAIL+1
+	WRITE(LFH,'(A,A,G20.10)')   ' in mylbfgs LBFGS step cannot find an energy in the required range, ',&
+	'    NFAIL=',NFAIL
+	!
+	! Resetting to XSAVE should be the same as subtracting the step. 
+	! If we have tried PROJI with Thomson then the projection is non-linear
+	! and we need to reset to XSAVE. This should always be reliable!
+	!
+	X=XSAVE
+	GRADX=GNEW ! GRAD contains the gradient at the lowest energy point
+	
+	ITER=0   !  try resetting
+	IF (NFAIL.GT.20) THEN
+	WRITE(LFH,'(A)') ' Too many failures - giving up '
+	RETURN
+	ENDIF
+	GOTO 30
+	! }}}
+	ENDIF
+	!
+	! Resetting to XSAVE and adding half the step should be the same as subtracting 
+	! half the step. 
+	!
+	X=XSAVE
+	X=X+0.5*STP*WSS(:,1+POINT)
+	STP=STP/2.0D0
+	NDECREASE=NDECREASE+1
+	IF (DEBUG) WRITE(LFH,105) &
+	' energy decreased too much from ',ENERGY,&
+	' to ',ENEW,&
+	' decreasing step to ', STP*SLENGTH
+	
+	105 FORMAT(A,F19.10,A,F16.10,A,F15.8) 
+	
+	!GOTO 20
+	! }}}
+ELSE
+	! {{{
+	!
+	!  Energy increased - try again with a smaller step size
+	!
+	IF (NDECREASE.GT.10) THEN ! DJW
+	! {{{
+		NFAIL=NFAIL+1
+		WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find a lower energy, NFAIL=',NFAIL
+		!
+		! Resetting to XSAVE should be the same as subtracting the step. 
+		! If we have tried PROJI with Thomson then the projection is non-linear
+		! and we need to reset to XSAVE. This should always be reliable!
+		!
+		X=XSAVE
+		GRADX=GNEW ! GRAD contains the gradient at the lowest energy point
+		ITER=0   !  try resetting
+		IF (NFAIL.GT.5) THEN         
+			WRITE(LFH,'(A)') ' Too many failures - giving up '
+			RETURN
+		ENDIF
+		GOTO 30
+		! }}}
+	ENDIF
+	!
+	! Resetting to XSAVE and adding 0.1 of the step should be the same as subtracting 
+	! 0.9 of the step. 
+	! If we have tried PROJI with Thomson then the projection is non-linear
+	! and we need to reset to XSAVE. This should always be reliable!
+	!
+	X=XSAVE
+	X=X+0.1D0*STP*SUM(WSS(:,1+POINT))
+	! }}}
+ENDIF
+
+STP=STP/1.0D1
+NDECREASE=NDECREASE+1
+IF (DEBUG) WRITE(LFH,104) ' energy increased from ',ENERGY,&
+    ' to ',ENEW,&
+    ' decreasing step to ',STP*SLENGTH
+104 FORMAT(A,F20.10,A,F20.10,A,F20.10) 
+
+!
+!     Compute the new step and gradient change
+
+30 WSS(:,1+POINT)=STP*WSS(:,1+POINT)     ! save the step taken
+WDG(:,1+POINT)=GRADX-W                 ! save gradient difference: W contains the old gradient
+POINT=POINT+1
+IF (POINT.EQ.M) POINT=0
+
+GOTO 10           ! Go to the termination test
+! }}}
+RETURN
+
+END SUBROUTINE
+! }}}
+
+SUBROUTINE ECHO_S
+WRITE(*,'(A)') "**********************************************************************************************" 
+ENDSUBROUTINE ECHO_S
+
+SUBROUTINE PRINTHELP
+! {{{
+write(*,*) '======================='
+write(*,*) 'gmi - A program for finding global minima'
+write(*,*) ''
+write(*,*) '======================='
+! }}}
+END SUBROUTINE PRINTHELP
+
+SUBROUTINE MYSYSTEM(STATUS,DEBUG,JOBSTRING)
+! {{{
+USE PORFUNCS
+
+IMPLICIT NONE
+
+LOGICAL DEBUG
+INTEGER STATUS
+CHARACTER(LEN=*) JOBSTRING
+
+IF (DEBUG) WRITE(*,'(A)') 'mysystem> '//trim(adjustl(jobstring)) 
+CALL SYSTEM_SUBR(JOBSTRING,STATUS)
+
+! IF (DEBUG) PRINT '(A,I6)','command '//JOBSTRING//' exit status=',STATUS
+! IF (STATUS.NE.0) PRINT '(A,I8)','mysystem> WARNING - '//JOBSTRING//' exit status=',STATUS
+
+RETURN
+! }}}
+END SUBROUTINE MYSYSTEM
+
+SUBROUTINE TAKESTEP
+      ! {{{
+
+      USE V
+
+      IMPLICIT NONE
+
+      INTEGER IA
+      DOUBLE PRECISION ::  RND(3)
+
+      DO IA=1,NATOMS
+         CALL GETRND(RND,3,-1.0D0,1.0D0)
+         COORDS(IA,1:3)=COORDS(IA,1:3)+STEP*RND(1:3)
+      ENDDO
+      
+      RETURN
+      ! }}}
+END SUBROUTINE TAKESTEP
+
+SUBROUTINE CENTRE(X)
+! {{{
+
+IMPLICIT NONE
+
+! subroutine parameters 
+DOUBLE PRECISION, INTENT(INOUT), DIMENSION(:) :: X
+! local parameters 
+DOUBLE PRECISION, DIMENSION(:,:),ALLOCATABLE :: R
+INTEGER I,K,NR
+
+NR=SIZE(X)
+
+allocate(R(NR,3))
+R=RESHAPE(X,(/ NR,3 /))
+RMASS=SUM(R,DIM=1)/SIZE(R,DIM=1)
+
+do K=1,3
+        R(:,K)=R(:,K)-RMASS(K)
+ENDDO
+
+IF (DEBUG) WRITE(LFH,'(A,3G20.10)') 'centre> centre of mass reset to the origin from ',RMASS
+DEALLOCATE(R)
+! }}}
+END SUBROUTINE CENTRE
+
+ENDMODULE FUNC

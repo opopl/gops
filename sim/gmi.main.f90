@@ -1,7 +1,7 @@
       
 !> @name GMIN
 !
-!> @brief Main program file for GMIN
+!> @brief Main program file for GMI
 !
 
       PROGRAM GMI
@@ -22,11 +22,16 @@
 
       CALL CPU_TIME(TSTART)
 
-      CALL READ_CMD_ARGS
+      ! read command-line arguments
+      CALL RCA
       ! read the input 'data' file
       CALL KEYWORD(1)
-      ! set vars depending on the input provided
-      ! through KEYWORS and READ_CMD_ARGS
+      ! SETVARS():
+      ! 
+      ! set variables depending on the input provided
+      ! after having called KEYWORD() and RCA()
+      ! the variables set are: 
+      !         NATOMS RADIUS
       CALL SETVARS
 
       ! open the output log file for writing
@@ -35,11 +40,12 @@
       WRITE(LFH,'(A)') "Starting serial execution" 
 
       ALLOCATE(SCREENC(3*NATOMS))
+
+      CALL RCOORDS(NATOMS,RADIUS,SCREENC)
       
       CALL IO
       CALL CENTRE(SCREENC)
 
-      NQ=1
 
 ! }}}
 
