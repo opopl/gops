@@ -1,0 +1,138 @@
+quad.o: commons.o.o
+MSorigc.o: commons.o.o dist.o modconsts.o
+symmetry.o: commons.o.o porfuncs.o
+finalq.o: commons.o.o modcharmm.o qmodule.o
+g46merdiff.o: modhess.o
+morse.o: commons.o.o
+supermc.o: commons.o.o
+io1.o: commons.o.o modamb.o modcharmm.o modperm.o porfuncs.o qmodule.o
+Ackland_metals.o: ackland_mendelev_fe.h ackland_mishin_cu.h ackland_sma.h
+EAMal.o: commons.o.o
+pygdp.o: commons.o.o
+gbddp.o: commons.o.o
+Mgglue.o: commons.o.o
+FS.o: commons.o.o
+DF1.o: commons.o.o
+mcruns.o: commons.o.o
+tosifumi.o: commons.o.o
+gbdiscotic.o: commons.o.o
+ptgrp.o: commons.o.o
+asaoos.o: commons.o.o
+newmindist.o: commons.o.o
+waterpkz.o: commons.o.o
+BLJcluster.o: commons.o.o
+sc.o: commons.o.o
+dzugutov.o: commons.o.o
+basinsampling.o: commons.o.o modcharmm.o
+Ackland_wrapper.o: commons.o.o
+taboo.o: commons.o.o
+mc.o: commons.o.o modamber9.o modcharmm.o porfuncs.o qmodule.o
+tip.o: commons.o.o
+capsid.o: commons.o.o
+takestepmspy.o: commons.o.o
+waterpdc.o: commons.o.o
+centre.o: commons.o.o
+MB.o: commons.o.o
+qorderparam_lj.o: commons.o.o
+pah.o: commons.o.o
+linrod.o: commons.o.o
+keyword.o: commons.o.o modamb.o modamber9.o modcharmm.o modmxatms.o \
+	porfuncs.o
+gauss.o: commons.o.o
+multisitepy.o: commons.o.o pymodule.o
+frausi.o: dist.o
+Gupta.o: commons.o.o
+saveit.o: commons.o.o qmodule.o
+pahw99.o: commons.o.o
+ddfpmin.o: commons.o.o
+sort2.o: commons.o.o qmodule.o
+minpermdist.o: commons.o.o porfuncs.o
+qdtest.o: commons.o.o
+msgayberne.o: commons.o.o
+multpaha.o: commons.o.o qmodule.o
+dbptd.o: commons.o.o qmodule.o
+MStrans.97.o: commons.o.o dist.o modconsts_trans_97.o
+linmin.o: commons.o.o modf1com.o
+qdtest2.o: commons.o.o
+convert.o: porfuncs.o
+vgw.o: vgw.o
+stock.o: commons.o.o
+newpah.o: commons.o.o
+ljcoulomb.o: commons.o.o
+bspt.o: commons.o.o modcharmm.o tetherfunc.o
+patchy.o: commons.o.o qmodule.o
+MSorig.o: commons.o.o dist.o modconsts.o
+mnbrak.o: commons.o.o
+getorbits.o: commons.o.o
+ljpbin.o: commons.o.o
+qorderparam_blj.o: commons.o.o
+seed.o: commons.o.o
+mc.sim.o: commons.o.o porfuncs.o qmodule.o
+stockaa.o: commons.o.o
+projI.o: commons.o.o
+welch.o: commons.o.o
+ptmc.o: commons.o.o modcharmm.o
+Zetterling.o: commons.o.o
+dmblmorse.o: commons.o.o qmodule.o
+lj.o: commons.o.o
+cgmin.o: commons.o.o
+takestep.o: commons.o.o
+centrecom.o: commons.o.o
+checkd.o: commons.o.o
+GMINdump.o: commons.o.o porfuncs.o qmodule.o
+strand.o: commons.o.o
+mylbfgs.o: commons.o.o modamb.o modamber9.o modcharmm.o porfuncs.o
+symmetrycsm.o: commons.o.o porfuncs.o
+grouprotation.o: commons.o.o
+mstbin.o: commons.o.o
+fd.o: commons.o.o
+main.o: commons.o.o func.o porfuncs.o
+newtip.o: commons.o.o qmodule.o
+gem.o: commons.o.o
+finalio.o: commons.o.o libamh.a modamb.o modamber9.o modcharmm.o pymodule.o \
+	qmodule.o
+lwotp.o: commons.o.o
+tether.o: commons.o.o tetherfunc.o
+multstock.o: commons.o.o
+p46merdiff.o: modhess.o
+PachecoC60.o: commons.o.o
+enumerate.o: commons.o.o
+hsmove.o: commons.o.o
+odesd.o: commons.o.o mododesd.o
+fedor.o: commons.o.o
+SW.o: commons.o.o
+ljpshift.o: commons.o.o
+dummyoptim.o: commons.o.o
+SiSW.o: commons.o.o
+pyg.o: commons.o.o
+CSMinit.o: commons.o.o porfuncs.o
+potential.o: commons.o.o modperm.o porfuncs.o qmodule.o
+mycpu_time.o: commons.o.o
+EAMLJ_sub.o: commons.o.o
+fdm.o: commons.o.o
+takestepmsgb.o: commons.o.o
+projIh.o: commons.o.o
+zwischen.o: commons.o.o modf1com.o
+model1.o: commons.o.o
+quench.o: commons.o.o porfuncs.o qmodule.o
+mysd.o: commons.o.o
+rad.o: commons.o.o
+newcapsid.o: commons.o.o
+Pbglue.o: commons.o.o
+compress.o: commons.o.o
+tetrahedra.o: commons.o.o qmodule.o
+symmetry2.o: commons.o.o porfuncs.o
+dftb.o: commons.o.o
+BLN.o: commons.o.o
+thomson.o: commons.o.o
+Alglue.o: commons.o.o
+dbpg.o: commons.o.o
+ljcapsidmodule.o: commons.o.o ljcapsidmodule.o modhess.o pymodule.o
+f1dim.o: commons.o.o modf1com.o
+read_cmd_args.o: commons.o.o dv.o porfuncs.o
+tetherfunc.o: commons.o.o modcharmm.o
+gbcalamitic.o: commons.o.o
+paha.o: commons.o.o
+quench.sim.o: commons.o.o porfuncs.o qmodule.o
+LB2.o: commons.o.o
+sticky.o: commons.o.o

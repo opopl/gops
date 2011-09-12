@@ -1,0 +1,127 @@
+!   PATHSAMPLE: A driver for OPTIM to create stationary point databases using discrete path sampling and perform kinetic analysis
+!   Copyright (C) 1999-2009 David J. Wales
+!   This file is part of PATHSAMPLE.
+!
+!   PATHSAMPLE is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
+!
+!   PATHSAMPLE is distributed in the hope that it will be useful,
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
+!
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!
+
+SUBROUTINE MINDOUBLE
+   USE COMMON
+   IMPLICIT NONE
+   DOUBLE PRECISION, ALLOCATABLE :: VDP(:)
+   INTEGER, ALLOCATABLE :: VINT(:)
+
+   PRINT '(A,I8)','mindouble> Increasing maximum number of minima to ',2*MAXMIN
+
+   ALLOCATE(VDP(MAXMIN),VINT(MAXMIN))
+
+   VDP(1:MAXMIN)=EMIN(1:MAXMIN)
+   DEALLOCATE(EMIN)
+   ALLOCATE(EMIN(2*MAXMIN))
+   EMIN(1:MAXMIN)=VDP(1:MAXMIN)
+
+   VDP(1:MAXMIN)=FVIBMIN(1:MAXMIN)
+   DEALLOCATE(FVIBMIN)
+   ALLOCATE(FVIBMIN(2*MAXMIN))
+   FVIBMIN(1:MAXMIN)=VDP(1:MAXMIN)
+
+!  VDP(1:MAXMIN)=KSUM(1:MAXMIN)
+!  DEALLOCATE(KSUM)
+!  ALLOCATE(KSUM(2*MAXMIN))
+!  KSUM(1:MAXMIN)=VDP(1:MAXMIN)
+
+   VDP(1:MAXMIN)=PFMIN(1:MAXMIN)
+   DEALLOCATE(PFMIN)
+   ALLOCATE(PFMIN(2*MAXMIN))
+   PFMIN(1:MAXMIN)=VDP(1:MAXMIN)
+
+   VDP(1:MAXMIN)=IXMIN(1:MAXMIN)
+   DEALLOCATE(IXMIN)
+   ALLOCATE(IXMIN(2*MAXMIN))
+   IXMIN(1:MAXMIN)=VDP(1:MAXMIN)
+
+   VDP(1:MAXMIN)=IYMIN(1:MAXMIN)
+   DEALLOCATE(IYMIN)
+   ALLOCATE(IYMIN(2*MAXMIN))
+   IYMIN(1:MAXMIN)=VDP(1:MAXMIN)
+
+   VDP(1:MAXMIN)=IZMIN(1:MAXMIN)
+   DEALLOCATE(IZMIN)
+   ALLOCATE(IZMIN(2*MAXMIN))
+   IZMIN(1:MAXMIN)=VDP(1:MAXMIN)
+
+   VDP(1:MAXMIN)=GPFOLD(1:MAXMIN)
+   DEALLOCATE(GPFOLD)
+   ALLOCATE(GPFOLD(2*MAXMIN))
+   GPFOLD(1:MAXMIN)=VDP(1:MAXMIN)
+
+   VINT(1:MAXMIN)=HORDERMIN(1:MAXMIN)
+   DEALLOCATE(HORDERMIN)
+   ALLOCATE(HORDERMIN(2*MAXMIN))
+   HORDERMIN(1:MAXMIN)=VINT(1:MAXMIN)
+
+   VINT(1:MAXMIN)=TOPPOINTER(1:MAXMIN)
+   DEALLOCATE(TOPPOINTER)
+   ALLOCATE(TOPPOINTER(2*MAXMIN))
+   TOPPOINTER(1:MAXMIN)=VINT(1:MAXMIN)
+
+   IF (DUMMYTST) THEN
+      VDP(1:MAXMIN)=MINDISTMIN(1:MAXMIN)
+      DEALLOCATE(MINDISTMIN)
+      ALLOCATE(MINDISTMIN(2*MAXMIN))
+      MINDISTMIN(1:MAXMIN)=VDP(1:MAXMIN)
+      MINDISTMIN(MAXMIN+1:2*MAXMIN)=HUGE(1.0D0)
+
+      VDP(1:MAXMIN)=MINCURVE(1:MAXMIN)
+      DEALLOCATE(MINCURVE)
+      ALLOCATE(MINCURVE(2*MAXMIN))
+      MINCURVE(1:MAXMIN)=VDP(1:MAXMIN)
+
+      VDP(1:MAXMIN)=MINFRQ2(1:MAXMIN)
+      DEALLOCATE(MINFRQ2)
+      ALLOCATE(MINFRQ2(2*MAXMIN))
+      MINFRQ2(1:MAXMIN)=VDP(1:MAXMIN)
+   ENDIF
+  
+!
+! If the PAIRDIST vector has not been zeroed in a MERGEDBT run executing the
+! next block can give a SIGFPE
+!
+   IF (DIJINITT.AND.(.NOT.MERGEDBT)) THEN
+      PRINT '(A,I20)','mindouble> Increasing pair distance array dimension to ',MAXMIN*(2*MAXMIN+1)
+      DEALLOCATE(VDP)
+      ALLOCATE(VDP(MAXMIN*(MAXMIN+1)/2))
+      VDP(1:MAXMIN*(MAXMIN+1)/2)=PAIRDIST(1:MAXMIN*(MAXMIN+1)/2)
+      DEALLOCATE(PAIRDIST)
+      ALLOCATE(PAIRDIST(MAXMIN*(2*MAXMIN+1)))
+      PAIRDIST(1:MAXMIN*(MAXMIN+1)/2)=VDP(1:MAXMIN*(MAXMIN+1)/2)
+   ENDIF
+
+   IF (.FALSE.) THEN
+      VINT(1:MAXMIN)=DMIN1(1:MAXMIN)
+      DEALLOCATE(DMIN1)
+      ALLOCATE(DMIN1(2*MAXMIN))
+      DMIN1(1:MAXMIN)=VINT(1:MAXMIN)
+
+      VINT(1:MAXMIN)=DMIN2(1:MAXMIN)
+      DEALLOCATE(DMIN2)
+      ALLOCATE(DMIN2(2*MAXMIN))
+      DMIN2(1:MAXMIN)=VINT(1:MAXMIN)
+   ENDIF
+
+   MAXMIN=2*MAXMIN
+   DEALLOCATE(VDP,VINT)
+
+END SUBROUTINE MINDOUBLE
