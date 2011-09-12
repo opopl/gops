@@ -1,7 +1,0 @@
-#!/bin/bash
-
-case "$1" in
-  	1) qa | awk '{ print $1 }'  ;;
-	n) qa | awk 'BEGIN {i=0} /op226/{++i}  END { print i }' ;;
-  	*) showq | awk '/op226/' ;;
-esac
