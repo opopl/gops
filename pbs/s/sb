@@ -86,7 +86,14 @@ export sys=G46
 export sb_mode=$1
 let nst=4
 
-force=$2
+if [ ! -z $2 ]; then 
+	force=$2
+fi
+if [ ! -z $3 ]; then 
+	nst=$3
+  else
+	nst=4
+fi
 queue=s1
 
 # depending on sb_mode, define: nm cmd
@@ -100,6 +107,7 @@ sb_mode=$sb_mode
 queue=$queue
 force=$force
 sys=$sys
+nst=$nst
 
 EOF
 
@@ -144,7 +152,7 @@ case "$sb_mode" in
 		let nst=5
 		;;
 	      # }}}	
-	2) fr=( $force ) ; let nst=4; let nf=1 ; od="out" ;;
+	2) fr=( $force ) ; let nf=1 ; od="out" ;;
 	3) fr=( 0.0 0.0001 ); export sys="G46"; let nst=4; let nf=10 ; od="out" ;;
 esac
 
