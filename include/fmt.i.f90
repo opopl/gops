@@ -18,8 +18,8 @@ s_stars="*****************************************"
 14 format(3a) 
 15 format(a20,a50) 
                 ! 2 - real
-!2 format(a40,a20,f20.5)
-2 format(a40,a20,d20.5)
+2 format(a40,a20,f20.5)
+!2 format(a40,a20,d20.5)
 21 format(a40,a20,e20.1)
                 ! 3 - integer
 3 format(a40,a20,i20)
