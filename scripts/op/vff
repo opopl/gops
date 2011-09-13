@@ -42,7 +42,7 @@ v_main(){
 		case "$p" in
 			GMIN) #{{{ 
 						#base_files=( Makefile main.F \
-				base_files=( main.F mc.F bspt.F \
+				base_files=( main.F main.f90 mc.F bspt.F \
 	modcharmm.f90 modamber9.f90 potential.f svn_revision.sh display_version.sh keyword.f \ 
 	read_cmd_args.f90 )
 				base_files=( ${base_files[@]} commons.f90 modf1com.f90 countatoms.f90 modperm.f90 qmod.f90 modamb.f90 modmxatms.f90 porfuncs.f90 )
@@ -205,7 +205,7 @@ EOF
 		cf) base_files=( cf ) ; d=$shd ;;
 		dv) base_files=( display_version.sh ); d=$wg_dir/SCRIPTS/all/ ;;
 			 	"m") # view m(yself), ie, this script {{{
-					base_files=( $me "$me"_*.sh sh_header.sh f.sh )  
+					base_files=( $me ` ls $me_*.sh ` sh_header.sh f.sh )  
 					d="$shd"
 			        ;;
 				#}}}	
