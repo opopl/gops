@@ -77,9 +77,10 @@ main(){
 # {{{
 
 case "$1" in
-  gmi) $v gmi.main.f90 func.f90 kw.f90 ../scripts/all/rca.sh ../include/fmt.i.f90 \
-  		`ls mc*.f90` v.f90 ../doc/wg.gmin.tex
+  gmi) $v $0 gmi.main.f90 func.f90 kw.f90 ../scripts/all/rca.sh ../include/fmt.i.f90 \
+  `ls mc*.f90` v.f90 ../doc/wg.gmin.tex ../doc/wg.gmin.topics.tex 
   ;;
+  m) $v makefile deps.mk ../include/inc.mk ../include/def.mk ../include/targets.mk  ;;
   *)
   ;;
 esac    # --- end of case ---
