@@ -87,83 +87,6 @@ ENDSUBROUTINE GETMODEL
 
 ! RCOORDS IO PRINTVARS SETVARS INITVARS {{{
  
-! doxygen RCOORDS {{{
-!> @name RCOORDS
-!> @brief Generate a random set of coordinates, based on:
-!> @param[in] NATOMS number of particles
-!> @param[in] RADIUS container radius
-!> @param[out] COORDS  randomly generated coordinates
-! }}}
-SUBROUTINE RCOORDS(NATOMS,RADIUS,COORDS)
-! declarations {{{
-! subroutine parameters 
-INTEGER, INTENT(IN) :: NATOMS
-DOUBLE PRECISION,INTENT(IN) :: RADIUS 
-DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: COORDS
-
-! local parameters 
-DOUBLE PRECISION :: SR3
-DOUBLE PRECISION, ALLOCATABLE :: RND(:)
-! }}}
-! {{{
-SR3=DSQRT(3.0D0)
-ALLOCATE(RND(3*NATOMS))
-CALL GETRND(RND,3*NATOMS,-1.0D0,1.0D0)
-COORDS=RADIUS*RND/SR3
-DEALLOCATE(RND)
-! }}}
-END SUBROUTINE RCOORDS
-
-SUBROUTINE IO
-! {{{
-      INTEGER IA,J,K
-
-      IF (TRACKDATAT) THEN
-         CALL OPENF(ENERGY_FH,">>","energy.dat")
-         CALL OPENF(MARKOV_FH,">>","markov.dat")
-         CALL OPENF(BEST_FH,">>","best.dat")
-         !IF (RMST) 
-        CALL OPENF(RMSD_FH,">>","rmsd.dat")
-      ENDIF
-
-      WRITE(LFH,20) 
-20    FORMAT('Initial coordinates:')
-30    FORMAT(3F20.10)
-
-      WRITE(LFH,30) SCREENC
-
-      IF (P46) THEN
-         WRITE(LFH,'(I4,A)') NATOMS,' 3-COLOUR, 46 BEAD MODEL POLYPEPTIDE'
-      ELSE IF (BLNT) THEN
-         WRITE(LFH,'(I4,A)') NATOMS,' BEAD BLN MODEL'
-      ENDIF
-      
-      if (LBFGST) then
-         WRITE(LFH,'(A)') 'Nocedal LBFGS minimization'
-         WRITE(LFH,'(A,I6)') 'Number of updates before reset in LBFGS=',M_LBFGS
-         WRITE(LFH,'(A,F20.10)') 'Maximum step size=',MAXBFGS
-         WRITE(LFH,'(A,G12.4)') 'Guess for initial diagonal elements in LBFGS=',DGUESS
-      ENDIF
-
-      WRITE(LFH,'(A,F15.10)') 'Final quench tolerance for RMS gradient ',FQMAX
-      WRITE(LFH,'(A,F15.10)') 'Energy difference criterion for minima=',EDIFF
-      WRITE(LFH,'(A,I5)') 'Maximum number of iterations (sloppy and final quenches)  ',MAXIT
-
-      IF (DEBUG) THEN
-         WRITE(LFH,160) 
-160      FORMAT('Debug printing is on')
-      ENDIF
-       
-      WRITE(LFH, '(A,G20.10)') 'Maximum allowed energy rise during a minimisation=',MAXERISE
-
-      IF (TARGET) THEN
-         WRITE(LFH,'(A)',ADVANCE='NO') 'Target energies: '
-         WRITE(LFH,'(F20.10)',ADVANCE='NO') (TARGETS(J),J=1,NTARGETS)
-         WRITE(LFH,'(A)') ' '
-      ENDIF
-! }}}
-END SUBROUTINE IO
-
 ! print variables 
 SUBROUTINE PRINTVARS
 ! {{{
@@ -195,6 +118,7 @@ write(*,2)  "Temperature",                                  "TEMP",       TEMP
 write(*,2)  "Acceptance ratio",                             "ACCRAT",     ACCRAT
 write(*,2)  "Energy difference criterion for minima",       "EDIFF",      EDIFF
 write(*,2)  "Final quench tolerance for RMS gradient ",     "FQMAX",      FQMAX
+write(*,2)  "Quench convergence criterion for RMS gradient ", "SQMAX",      SQMAX
 write(*,3)  "Maximum number of iterations",   "MAXIT", MAXIT
 write(*,11) "(sloppy and final quenches)"
 write(*,2)  "",                                             "TFAC",       TFAC
@@ -264,14 +188,21 @@ RMSD_FH=FH+8
 ! }}}
 ! other {{{
 NSAVE=10            ! number of saved lowest-energy geometries
+
+NATOMS=46
+
 M_LBFGS=4           ! Number of LBFGS updates
 MAXBFGS=0.4D0       ! Maximum BFGS step size
-DGUESS=0.0D0        ! DGUESS: Guess for initial diagonal elements in LBFGS
+DGUESS=0.1D0        ! DGUESS: Guess for initial diagonal elements in LBFGS
+
+FQMAX=1.0D-5        ! FQMAX: same meaning as for SQMAX, but for final quenches only.
+SQMAX=1.0D-3        ! SQMAX: convergence criterion for the RMS force in the basin-hopping quenches.
+                    ! note: used in QUENCH() 
 
 TFAC=1.0D0
 EDIFF=0.02D0
 ACCRAT=0.5D0
-TEMP=0.035D0
+TEMP=0.035D0        ! Temperature
 RADIUS=0.0D0
 ! maximum number of iterations allowed in conjugate gradient searches
 MAXIT=500
@@ -289,13 +220,93 @@ OSTEP=0.3D0
 ASTEP=0.3D0
 
 MCSTEPS=10000
-MCSTEPS=1
           
 NACCEPT=50
 NRELAX=0
 ! }}}
 ! }}}
 END SUBROUTINE INITVARS
+
+! doxygen RCOORDS {{{
+!> @name RCOORDS
+!> @brief Generate a random set of coordinates, based on:
+!> @param[in] NATOMS number of particles
+!> @param[in] RADIUS container radius
+!> @param[out] COORDS  randomly generated coordinates
+! }}}
+SUBROUTINE RCOORDS(NATOMS,RADIUS,COORDS)
+! declarations {{{
+! subroutine parameters 
+INTEGER, INTENT(IN) :: NATOMS
+DOUBLE PRECISION,INTENT(IN) :: RADIUS 
+DOUBLE PRECISION, DIMENSION(:,:), INTENT(OUT) :: COORDS
+
+! local parameters 
+DOUBLE PRECISION :: SR3
+DOUBLE PRECISION, ALLOCATABLE :: RND(:)
+! }}}
+! {{{
+SR3=DSQRT(3.0D0)
+ALLOCATE(RND(3*NATOMS))
+CALL GETRND(RND,3*NATOMS,-1.0D0,1.0D0)
+RND=RADIUS*RND/SR3
+COORDS=RESHAPE(RND,(/ NATOMS, 3 /))
+DEALLOCATE(RND)
+! }}}
+END SUBROUTINE RCOORDS
+
+SUBROUTINE IO
+! {{{
+      INTEGER IA,J,K
+
+      IF (TRACKDATAT) THEN
+         CALL OPENF(ENERGY_FH,">>","energy.dat")
+         CALL OPENF(MARKOV_FH,">>","markov.dat")
+         CALL OPENF(BEST_FH,">>","best.dat")
+         !IF (RMST) 
+        CALL OPENF(RMSD_FH,">>","rmsd.dat")
+      ENDIF
+
+      WRITE(LFH,20) 
+20    FORMAT('Initial coordinates:')
+30    FORMAT(3F20.10)
+
+      WRITE(LFH,30) SCREENC
+
+      IF (P46) THEN
+         WRITE(LFH,'(I4,A)') NATOMS,' 3-COLOUR, 46 BEAD MODEL POLYPEPTIDE'
+      ELSE IF (BLNT) THEN
+         WRITE(LFH,'(I4,A)') NATOMS,' BEAD BLN MODEL'
+      ENDIF
+      
+      if (LBFGST) then
+         WRITE(LFH,'(A)') 'Nocedal LBFGS minimization'
+         WRITE(LFH,'(A,I6)') 'Number of updates before reset in LBFGS=',M_LBFGS
+         WRITE(LFH,'(A,F20.10)') 'Maximum step size=',MAXBFGS
+         WRITE(LFH,'(A,G12.4)') 'Guess for initial diagonal elements in LBFGS=',DGUESS
+      ENDIF
+
+      WRITE(LFH,'(A,F15.10)') 'Final quench tolerance for RMS gradient ',FQMAX
+      WRITE(LFH,'(A,F15.10)') 'Energy difference criterion for minima=',EDIFF
+      WRITE(LFH,'(A,I5)') 'Maximum number of iterations (sloppy and final quenches)  ',MAXIT
+
+      IF (DEBUG) THEN
+         WRITE(LFH,160) 
+160      FORMAT('Debug printing is on')
+      ENDIF
+       
+      WRITE(LFH, '(A,G20.10)') 'Maximum allowed energy rise during a minimisation=',MAXERISE
+
+      IF (TARGET) THEN
+         WRITE(LFH,'(A)',ADVANCE='NO') 'Target energies: '
+         WRITE(LFH,'(F20.10)',ADVANCE='NO') (TARGETS(J),J=1,NTARGETS)
+         WRITE(LFH,'(A)') ' '
+      ENDIF
+! }}}
+END SUBROUTINE IO
+
+
+
 ! }}}
 ! INQF OPENF {{{
 SUBROUTINE INQF(FILENAME,YESNO)
@@ -924,38 +935,26 @@ SUBROUTINE TAKESTEP
 
       INTEGER IA
       DOUBLE PRECISION ::  RND(3)
-      DOUBLE PRECISION,ALLOCATABLE,DIMENSION(:,:) :: R
-
-      ALLOCATE(R(NATOMS,3))
-
-      R=RESHAPE(SCREENC,(/ NATOMS,3 /))
 
       DO IA=1,NATOMS
          CALL GETRND(RND,3,-1.0D0,1.0D0)
-         R(IA,1:3)=R(IA,1:3)+STEP*RND(1:3)
+         SCREENC(IA,1:3)=SCREENC(IA,1:3)+STEP*RND(1:3)
       ENDDO
-
-      SCREENC=PACK(R,.true.)
-      DEALLOCATE(R)
       
       RETURN
       ! }}}
 END SUBROUTINE TAKESTEP
 
-SUBROUTINE CENTRE(X)
+SUBROUTINE CENTRE(R)
 ! {{{
 
 IMPLICIT NONE
 
 ! subroutine parameters 
-DOUBLE PRECISION, INTENT(INOUT), DIMENSION(:) :: X
+DOUBLE PRECISION, INTENT(INOUT), DIMENSION(:,:) :: R
 ! local parameters 
-DOUBLE PRECISION, DIMENSION(:,:),ALLOCATABLE :: R
-INTEGER I,K,NR
+INTEGER I,K
 
-NR=SIZE(X)/3
-ALLOCATE(R(NR,3))
-R=RESHAPE(X,(/ NR,3 /))
 RMASS=SUM(R,DIM=1)/SIZE(R,DIM=1)
 
 do K=1,3
@@ -963,7 +962,6 @@ do K=1,3
 ENDDO
 
 IF (DEBUG) WRITE(LFH,'(A,3G20.10)') 'centre> centre of mass reset to the origin from ',RMASS
-DEALLOCATE(R)
 ! }}}
 END SUBROUTINE CENTRE
 

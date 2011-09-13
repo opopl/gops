@@ -29,7 +29,7 @@ CONTAINS
 
       SELECTCASE(PROG)
         CASE(1) ! GMI {{{
-
+          ! "data" file {{{
       CALL INQF('data',YESNO)
 
       IF (YESNO) THEN 
@@ -43,7 +43,7 @@ CONTAINS
 ! ios<0 end of file;
 ! ios=0 
 ! ios>0 error 
-
+      ! }}}
       DO WHILE (IOS == 0)
       ! {{{
         READ(DATA_FH, '(A)', IOSTAT=IOS) BUFFER

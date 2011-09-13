@@ -157,7 +157,7 @@ PARAMETER(LFN="gmi.log")
 ! general {{{
 
 ! main coordinates variable
-DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:)
+DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:,:)
 
 ! reading the data file/command-line
 
