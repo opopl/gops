@@ -1,8 +1,10 @@
       
-!> @name GMIN
+!> @name GMI
 !
 !> @brief Main program file for GMI
 !
+
+! conventions: SC
 
       PROGRAM GMI
 ! declarations {{{
@@ -15,8 +17,8 @@
       IMPLICIT NONE
       
 ! }}}
-
-! init {{{
+ 
+!  init {{{
       ! initialize variables
       CALL INITVARS
 
@@ -40,7 +42,7 @@
       WRITE(LFH,'(A)') "Starting serial execution" 
       WRITE(*,'(A)') "Starting serial execution" 
 
-      ALLOCATE(SCREENC(3*NATOMS))
+      ALLOCATE(SCREENC(NATOMS,3))
 
       CALL RCOORDS(NATOMS,RADIUS,SCREENC)
       WRITE(*,'(A)') "RCOORDS done" 
@@ -53,7 +55,7 @@
 
 ! }}}
 
-      CALL MCRUN(MCSTEPS,TFAC,SCREENC)
+      CALL MCRUN
       WRITE(*,'(A)') "MCRUN done" 
 
 ! end {{{

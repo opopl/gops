@@ -1,9 +1,3 @@
-      ! subroutine {{{
-
-      INTEGER, INTENT(IN) :: NSTEPS
-      DOUBLE PRECISION, INTENT(IN) :: SCALEFAC 
-      DOUBLE PRECISION, INTENT(INOUT) :: SCREENC(NATOMS,3)
-      ! }}}
 
       ! local {{{
       LOGICAL CONVG

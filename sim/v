@@ -78,7 +78,7 @@ main(){
 
 case "$1" in
   gmi) $v gmi.main.f90 func.f90 kw.f90 ../scripts/all/rca.sh ../include/fmt.i.f90 \
-  		`ls mc*.f90` v.f90
+  		`ls mc*.f90` v.f90 ../doc/wg.gmin.tex
   ;;
   *)
   ;;

@@ -1,13 +1,13 @@
 
-WRITE(LFH,'(A,I10,A)') 'Starting MC run of ',NSTEPS,' steps'
-WRITE(LFH,'(A,F15.8,A)') 'Temperature will be multiplied by ',SCALEFAC,' at every step'
+WRITE(LFH,'(A,I10,A)') 'Starting MC run of ',MCSTEPS,' steps'
+WRITE(LFH,'(A,F15.8,A)') 'Temperature will be multiplied by ',TFAC,' at every step'
 
-WRITE(*,'(A,I10,A)') 'Starting MC run of ',NSTEPS,' steps'
-WRITE(*,'(A,F15.8,A)') 'Temperature will be multiplied by ',SCALEFAC,' at every step'
+WRITE(*,'(A,I10,A)') 'Starting MC run of ',MCSTEPS,' steps'
+WRITE(*,'(A,F15.8,A)') 'Temperature will be multiplied by ',TFAC,' at every step'
 
 ! main basin hopping loop 
 
-bhloop: DO ISTEP=NDONE+1,NSTEPS 
+bhloop: DO ISTEP=NDONE+1,MCSTEPS 
 
   MCTEMP = TEMP
   CALL TAKESTEP
@@ -32,8 +32,8 @@ bhloop: DO ISTEP=NDONE+1,NSTEPS
   !     NFAILT (the total number of rejected moves)
 
   IF ( (MOD(ISTEP,NACCEPT).EQ.0)) CALL ACCREJ(NSUCCESS,NFAIL,NSUCCESST,NFAILT)
-    TEMP=TEMP*SCALEFAC
-  IF (NQ.GT.NSTEPS) GOTO 37
+    TEMP=TEMP*TFAC
+  IF (NQ.GT.MCSTEPS) GOTO 37
 
 ENDDO bhloop
 
