@@ -32,6 +32,7 @@ tg:
 	ctags -R *.f *.f90 *.F
 
 $(PROGNAME): $(PROG)
+	cp $(PROG) ./
 
 bindir: 
 	mkdir -p $(BINPATH)

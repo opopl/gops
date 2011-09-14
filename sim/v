@@ -8,6 +8,8 @@ export this_script=` basename $0 `
 vim_opts="-n -p"
 v="vim $vim_opts"
 repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
+salldir=$shd/../scripts/all/
+incdir=$shd/../include/
 
 define_base_dirs(){
 # {{{
@@ -83,7 +85,9 @@ case "$1" in
   m)
   [ -f makefile ] && mkf="makefile"
   [ -f Makefile ] && mkf="Makefile"
-  $v $mkf deps.mk ../include/inc.mk ../include/def.mk ../include/targets.mk  ;;
+  $v $mkf deps.mk ../include/inc.mk ../include/def.mk ../include/targets.mk  \
+ 		$salldir/rca.sh $salldir/dv.sh $salldir/mkdep.pl  ;;
+  bln) $v bln*.f90 ;;
   *)
   ;;
 esac    # --- end of case ---

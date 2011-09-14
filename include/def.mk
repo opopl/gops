@@ -1,4 +1,7 @@
 
+
+# definitions {{{
+
 BINPATH=$(ROOTPATH)/bin
 LAPACKPATH=$(ROOTPATH)/lapack
 BLASPATH=$(ROOTPATH)/blas
@@ -31,6 +34,7 @@ DEPS=deps.mk
 AUXF = dv.f90 rca.f90
 
 DVOPTS=fflags "$(FFLAGS)" prog $(PROGNAME) fc_exec "$(FC)" make_opts "$(MAKE_OPTS)" 
+#}}}
 
 # pgi {{{
 ifeq ($(FC),pgf90)
@@ -104,7 +108,7 @@ endif
 ifeq ($(FC),gfortran)
 
 #F0=-ffree-form
-F0=
+F0=-I.
 
 FFLAGS= -ffixed-line-length-265 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic
 FFLAGS= -ffixed-line-length-none -O0 
@@ -126,7 +130,7 @@ SWITCH=gfortran
 LDFLAGS = -lblas -llapack
 FREEFORMAT_FLAG= -ffree-form
 EXTRA_FLAGS=-I
-FFLAGS=$(F0) -I.
+#FFLAGS=$(F0) -I.
 
 
 endif

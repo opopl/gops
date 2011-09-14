@@ -22,10 +22,17 @@ clust_id=` echo ${PBS_JOBID}  | sed "s/^[0-9]*\.//" `
 
 source f.sh
 
+# vary
+ca=5
+nsteps=10000
+fqmax="1.0D-3"
+sqmax="1.0D-4"
+
 # set initial parameters  {{{
 
 natoms=46
-radius=100.0
+radius=10.0
+nrg=10
 seed=1
 n_en=5
 pull_start=1
@@ -40,6 +47,7 @@ exe=GMIN
 gs_energy=-0.2936531215
 output_dir=$PWD
 outfiles=( ef.dat ) 
+GMIN_ofiles=( GMIN_out lowest best markov energy data ) 
 
 #for f in ${outfiles[@]}
 	#do
@@ -62,43 +70,30 @@ source define_forces_0.sh
 for force in ${forces[@]}; do
 # parse 'data' file {{{
 cat >& data << EOF
-COMMENT SLOPPYCONV 0.0001
-COMMENT TIGHTCONV  0.0000001
-SLOPPYCONV 0.01
-TIGHTCONV  0.001
-COMMENT UPDATES $m_lbfgs
+SLOPPYCONV $sqmax
+TIGHTCONV  $fqmax
 UPDATES 10
 DGUESS  0.1
 PULL $pull_start $pull_end $force
 SAVE 10
-COMMENT CENTRE
-COMMENT CHANGEACCEPT 50 
-CHANGEACCEPT 5
-COMMENT CHARMM
-COMMENT DUMP
-COMMENT DEBUG
-COMMENT SORT
+CENTRE
+CHANGEACCEPT $ca
 $sys 
-EDIFF 0.0001
+EDIFF 0.001
 COMMENT EDIFF 0.02
-STEPS $nsteps 1.0
+COMMENT STEPS $nsteps 1.0
+STEPS $nsteps
 MAXBFGS 1.0
 MAXIT 1000 1000
 STEP 1.9 0.0 
 TEMPERATURE $temp
-COMMENT TARGET $gs_energy
-TRACKDATA
 
-COMMENT ORGYR
-
-COMMENT HISTOGRAM
-
-COMMENT TETHER
-COMMENT BINSTRUCTURES 
 EOF
 # }}}
 
 # execute {{{
+
+#for ((seed=1; seed<=$nrg; seed++)); do
 
 echo $natoms $radius -$seed > randata
 rancoords # >& /dev/null
@@ -107,6 +102,16 @@ cp newcoords coords
 time_start=`date_in_secs`
 date_start=`date_dmy_hms`
 $exe
+
+case $sb_mode in 
+	2) ;;
+	*)
+		for ofile in ${GMIN_ofiles[@]}; do
+			cp $ofile $ofile.f.$force
+		done 
+		;;
+esac
+
 time_finish=`date_in_secs`
 time_spent=$(($time_finish-$time_start))
 

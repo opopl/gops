@@ -26,8 +26,8 @@ VPATH = .:AMH:NEB:CONNECT:.
 NOTUSEDSOURCE=
 
 PPATH=$(PWD)
-INCPATH = $(PPATH)/../INCLUDE/
-include $(INCPATH)/make.inc
+INCPATH = $(PPATH)/../include/
+include $(INCPATH)/inc.mk
 
 FFLAGS+= -I $(PPATH)/NEB
 FFLAGS+= -I $(PPATH)/CONNECT 
@@ -35,7 +35,7 @@ FFLAGS+= -I $(PPATH)/AMH
 
 LIBS = -lnn -lnc $(LLIBS) -lnc
 
-include $(INCPATH)/targets
+include $(INCPATH)/targets.mk
 
 $(PROG): libnn.a libnc.a $(LLIBS)
 

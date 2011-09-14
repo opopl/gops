@@ -18,8 +18,8 @@
 #
 
 PPATH=$(PWD)/../
-INCPATH = $(PPATH)/../INCLUDE/
-include $(INCPATH)/make.inc
+INCPATH = $(PPATH)/../include/
+include $(INCPATH)/inc.mk
 
 VPATH = ../NEB:..:../CHARMM
 LIBNAME = ../libnc.a
