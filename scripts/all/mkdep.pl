@@ -31,12 +31,35 @@ sub wanted;
 
 # Traverse desired filesystems
 
+#sub wanted {
+    ##if ( $_ ~= /^.*\.(f90|F|f)\z/s ) { push(@fortranfiles,( "$name" ~= s/^\.\/// ) ); }
+    ##/^\.\/(.*)\.(f90|F|f)\z/s && push(@fortranfiles,"$1.$2"); 
+	##/^.*\.(f90|F|f)\z/s && push(@fortranfiles,"$name"); 
+	#if (  ( /^.*\.(f90|F|f)\z/s ) ){
+		##&& ( $name ~! /.*\.(old|o)\..*/ ) ){
+		##&& ( $_ ~! /.*\.(save)\..*/ )
+		##&& ( $_ ~! /.*\.(ref)\..*/ ) ) { 
+		#push(@fortranfiles,"$name"); 
+	#}
+    ##&& print("$name\n");
+#}
+
 sub wanted {
-    #if ( $_ ~= /^.*\.(f90|F|f)\z/s ) { push(@fortranfiles,( "$name" ~= s/^\.\/// ) ); }
-    #/^\.\/(.*)\.(f90|F|f)\z/s && push(@fortranfiles,"$1.$2"); 
-    /^.*\.(f90|F|f)\z/s && push(@fortranfiles,"$name"); 
+    my ($dev,$ino,$mode,$nlink,$uid,$gid);
+
+    (   
+        /^.*\.(f90|f|F)\z/s
+        #||
+        #/^.*\.f\z/s
+        #||
+        #/^.*\.F\z/s
+    ) &&
+    ($nlink || (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_))) &&
+    ! /^.*\.(save|o|old|ref)\..*\z/s
     #&& print("$name\n");
+	&& 	push(@fortranfiles,"$name"); 
 }
+
 
 File::Find::find({wanted => \&wanted}, '.')  ;
 
@@ -258,6 +281,7 @@ sub MakeDependsf90 {
 	 if ( ( $objfile !~ /^(.*)\// ) 
 		 && ( $objfile !~ /.*\.(inc|i)\..*/ ) # don't print include files
 		 && ( $objfile !~ /.*\.(old|o)\..*/ ) # don't print old files
+		 && ( $objfile !~ /.*\.(save)\..*/ ) # don't use save files
 		 && ( $objfile !~ /.*\.(ref)\..*/ ) # don't print "reference" files, i.e. files included from other code
 	 ) {
 	 print MAKEFILE "$objfile: ";
