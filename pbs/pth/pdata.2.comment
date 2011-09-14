@@ -1,0 +1,30 @@
+
+Starting from OPTIM min.data.info files
+
+p://www-wales.ch.cam.ac.uk/PATHSAMPLE.2.1.doc/node12.html
+
+It is also possible to start PATHSAMPLE runs without an existing connection
+between the end points of interest. See keywords DIJINITSTART and DIJINITCONT.
+In this example we set up PATHSAMPLE from min.data.info files for the two
+minima and use DIJINITCONT to continue the run and seek an initial connection
+using PATHSAMPLE.
+
+First, a minimisation was run for each minimum using OPTIM with the DUMPDATA
+keyword set. The ENDHESS keyword was used to produce frequencies after a
+BFGSMIN optimisation. In a clean directory, with no preexisting PATHSAMPLE
+files, two entries were created in min.data and points.min using the PATHSAMPLE
+READMIN keyword to read each of the min.data.info files in turn. min.A and
+min.B files were then created using vi with one entry in each, pointing to
+minima 1 and 2, respectively. After creating a suitable odata.connect file a
+single cycle of PATHSAMPLE was then run on one core to populate the database
+with enough minima to run on multiple cores in subsequent connection attempts.
+Since there is only one possible connection to try in the first cycle, it is
+necessary to use a single processor in this case along with the DIJINITCONT
+keyword in pathdata. A couple of cycles on eight cores then produced a
+connection for this bulk BLJ$_{60}$ example.
+
+... pathdata ... 
+
+The commented lines were used to read in the initial min.data.info files. A
+similar procedure can be used if an initial path.info file is available without
+a complete connection between the desired end points. 
