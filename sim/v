@@ -83,7 +83,10 @@ case "$1" in
   `ls mc*.f90` v.f90 ../doc/wg.gmin.tex ../doc/wg.gmin.topics.tex 
   ;;
   bln) $v bln*.f90 ;;
-  m) $v makefile old.mk deps.mk $incdir/inc.mk $incdir/def.mk $incdir/targets.mk \
+  m) 
+  [ -f makefile ] && mkf="makefile"
+  [ -f Makefile ] && mkf="Makefile"
+  $v $mkf old.mk deps.mk $incdir/inc.mk $incdir/def.mk $incdir/targets.mk \
  		$salldir/rca.sh $salldir/dv.sh $salldir/mkdep.pl ;;
   *)
   ;;
