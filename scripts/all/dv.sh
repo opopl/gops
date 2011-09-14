@@ -40,6 +40,7 @@ contains
 subroutine display_version(file)
 
 integer file
+character(100) fflags(10)
 
 $w0 "==========================================="
 $w0
@@ -49,12 +50,13 @@ $w0 "Compilation time: ` date `"
 $w0 "Compiled by $USER@$HOSTNAME on ` uname -o` ` uname -m`"
 $w0
 $w0 "Compiler executable:  $fc_exec"
-$w0 "Compiler flags: $fflags"
+! write(file,20) "Compiler flags:  ", "$fflags"
 $w0 "Command-line options passed to makefile: $make_opts "
 $w0
 $w0 "==========================================="
 
 10 format(a)
+20 format(2a)
 
 end subroutine
 

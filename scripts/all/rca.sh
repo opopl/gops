@@ -103,6 +103,14 @@ EOF
 # }}}
 }
 
+rca_OPTIM(){
+rca_optim
+}
+
+rca_PATHSAMPLE(){
+rca_pathsample
+}
+
 rca_optim(){
 # {{{
 cat << EOF

@@ -327,12 +327,12 @@ job changeaccept
 		TIGHTCONV  0.001 => 0.0001
 -0.2931862059 71
 
+\subsubsection{F=0.001}
 
 14:33:55 (Tue, 13-Sep-2011):
 	410
 	F=0.001
 	-0.0696378201
-
 
 14:35:49 (Tue, 13-Sep-2011):
 	11
@@ -343,3 +343,104 @@ job changeaccept
 	12
 	NSTEPS 100000
 -0.0864048378 615
+
+21:42:47 (Tue, 13-Sep-2011):
+	383610
+	NSTEPS 10000
+	SLOPPYCONV 0.001 => 0.01
+	TIGHTCONV  0.0001 => 0.001
+0.0162949455 10
+
+21:47:32 (Tue, 13-Sep-2011):
+	11
+	EDIFF 0.01 => 0.001
+	0.0219675666 9
+
+21:48:52 (Tue, 13-Sep-2011):
+	12
+	CHANGEACCEPT 50 => 5 
+-0.2223114354 16 
+
+
+21:53:45 (Tue, 13-Sep-2011):
+	13
+	CHANGEACCEPT 10
+-0.0695536092 8
+
+Ok, optimal CHANGEACCEPT is 5
+
+Decrease SLOPPYCONV and TIGHTCONV
+
+22:45:06 (Tue, 13-Sep-2011):
+383618
+SLOPPYCONV 0.0001
+TIGHTCONV  0.0000001
+CHANGEACCEPT 5
+STEPS 10000
+( F=0.001 )
+-0.2608259052 183 	************ GETS CLOSER! **************
+
+22:46:59 (Tue, 13-Sep-2011):
+19 F=0
+-0.2936531215 169  usual zero-force value 
+
+
+22:52:03 (Tue, 13-Sep-2011):
+	20
+	F=0.001
+	NSTEPS 10000 => 50000
+-0.2608259110 896
+
+23:01:21 (Tue, 13-Sep-2011):
+	383621 sb 4 - force loop in [ 0.0005,0.0015 ]
+
+
+23:10:57 (Tue, 13-Sep-2011):
+	383622 sb 5 force loop in [ 0.0015, 0.0025 ] 
+
+
+23:13:59 (Tue, 13-Sep-2011):
+	383623
+	N=10^5 sb 2 0.001
+
+
+\subsection{14-Sep-2011}
+
+N=10^5
+
+13:47:15 (Wed, 14-Sep-2011):
+383624 sb 4 
+383625 sb 5 
+CHANGEACCEPT 5 => 50
+
+13:55:47 (Wed, 14-Sep-2011):
+383626 sb 4
+383627 sb 5
+CHANGEACCEPT 10
+
+13:58:28 (Wed, 14-Sep-2011):
+383628 sb 4
+383629 sb 5
+CHANGEACCEPT 50
+
+
+15:38:08 (Wed, 14-Sep-2011):
+FIXBOTH
+SLOPPYCONV 0.001
+TIGHTCONV  0.0001
+EDIFF 0.001
+
+
+16:12:17 (Wed, 14-Sep-2011):
+383630 sb 4
+383631 sb 5
+CA 10
+
+
+16:13:31 (Wed, 14-Sep-2011):
+CA 5
+383632 sb 4
+383633 sb 5
+
+19:32:49 (Wed, 14-Sep-2011):
+comment TRACKDATA - too much space!
