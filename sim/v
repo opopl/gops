@@ -81,6 +81,7 @@ case "$1" in
   `ls mc*.f90` v.f90 ../doc/wg.gmin.tex ../doc/wg.gmin.topics.tex 
   ;;
   m) $v makefile deps.mk ../include/inc.mk ../include/def.mk ../include/targets.mk  ;;
+  bln) $v bln*.f90 ;;
   *)
   ;;
 esac    # --- end of case ---
