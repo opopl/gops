@@ -1,9 +1,10 @@
 #!/bin/bash
   	
-files="r q0 vo vf c ao rmo pl vpl"
+files="r q0 vo vf c ao rmo pl vpl data.old"
 vim_opts="-n -p" 
 
 if [ -z "$*" ]; then 
+  #{{{
 cat << EOF
 SCRIPT NAME: vf
 PURPOSE: view source files with vim
@@ -21,9 +22,9 @@ OPTS:
 REMARKS:
 	base files are $files
 EOF
-
+#}}}
 else
-
+  #{{{
 while [ ! -z "$1" ] 
 	do
 		case "$1" in
@@ -39,6 +40,6 @@ while [ ! -z "$1" ]
 done 
 
 vim $vim_opts $files
-
+#}}}
 fi
 

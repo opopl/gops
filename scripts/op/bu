@@ -34,8 +34,10 @@ FULL_INSTALL_DIR=$PREFIX/$INSTALL_DIR/
 
 charmm_dir=$wg_dir/CHARMM31/ 
 builds_dir=$wg_dir/BUILDS/
-inc_dir="$wg_dir/INCLUDE"
-scripts_dir=$wg_dir/SCRIPTS/
+#inc_dir="$wg_dir/INCLUDE"
+#scripts_dir=$wg_dir/SCRIPTS/
+scripts_dir=$wg_dir/scripts/
+inc_dir="$wg_dir/include"
 root_build_dir=$builds_dir/$bdir_index/
 prog_source_dir=$wg_dir/$prog/source
 prog_build_dir=$root_build_dir/$prog
@@ -156,6 +158,7 @@ case "$bu_target" in
 		eoo "Will try to use the compiler provided:"
 		eoo "$tab$compiler"
 		if [ $compiler_ex_exists -ne 0 ]; then
+		  #{{{
 		  	eoo "Compiler executable "$compiler_ex" not found in PATH..."
 			eoo "Checking whether 'modules' package exists..."
 			check_modules_exist
@@ -167,10 +170,11 @@ case "$bu_target" in
 			  	eooe "No modules package & no compiler in PATH - aborting..."
 				status="Failure to use modules + no compiler in PATH"
 			fi
+		  #}}}
 		else
 			eoo "Compiler executable $compiler_ex found."
 			loaded_compiler=true 
-	        fi
+	    fi
 
 		if $loaded_compiler; then  
 			  	make_prog $bu_target 
@@ -277,7 +281,7 @@ for prog_dir in ${prog_dirs[@]};  do
 	cd $wg_dir/$prog_dir/source
 	ctags -R *
 done
-cd $wg_dir/SCRIPTS/op/; ctags -R *
+cd $wg_dir/scripts/all; ctags -R *
 
 # }}}
 }

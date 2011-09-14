@@ -45,17 +45,14 @@ foreach (@fortranfiles){ s/^\.\/// };
 #}}}
 
 #here-doc{{{
-#my %opt;
-#@ARGV > 0 and getopts('n:s:m:', \%opt) and not (keys %opt > 1) or die 
-#+<< "USAGE";
-#Shows the biggest files residing in one or several directory trees.
-#usage: $0 [-n num] [-t size] [-m size] directory [directory ...]
-      #-n  show <num> files
-      #-s  show biggest files totalling <size>
-      #-m  show all files bigger than <size>
-		#use only one option at a time
-		 #default is 20 biggest files
-#USAGE
+my %opt;
+@ARGV > 0 and getopts('n:s:m:', \%opt) and not (keys %opt > 1) or die 
++<< "USAGE";
+=========================================================
+PURPOSE: Generate dependencies for a Fortran project
+USAGE: $0 FILE
+=========================================================
+USAGE
 #}}}
 
 my $depsfile="$ARGV[0]";
@@ -80,7 +77,21 @@ my @libdirs=keys %libs;
 
 foreach (@f90) { s/^/*./ };
 # Dependency listings
-#
+
+# Time stuff  {{{
+
+@months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+@weekDays = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
+($second, $minute, $hour, $dayOfMonth, $month, $yearOffset, $dayOfWeek, $dayOfYear, $daylightSavings) = localtime();
+$year = 1900 + $yearOffset;
+$theTime = "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $dayOfMonth, $year";
+
+print MAKEFILE "# $depsfile \n";
+print MAKEFILE "# Fortran dependency file \n";
+print MAKEFILE "# Created: $theTime \n";
+
+#}}}
+
 &MakeDependsf90();
 #&MakeDepends("*.f *.F", '^\s*include\s+["\']([^"\']+)["\']');
 &MakeDepends("*.c",     '^\s*#\s*include\s+["\']([^"\']+)["\']');
