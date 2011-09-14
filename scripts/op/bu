@@ -668,7 +668,7 @@ desc=( "GMIN - A Program for Finding Global Minima by Basin-Hopping" \
 
 case "$1" in # choose which programs to document ? {{{
   	"all") 
-		progs=( "GMIN" "OPTIM" "PATHSAMPLE" "DISCONNECT" ) 
+		progs=( "sim" "GMIN" "OPTIM" "PATHSAMPLE" "DISCONNECT" ) 
 		;;
 	g | gmin | o | optim | ps | pathsample | ds)
  	case "$1" in
