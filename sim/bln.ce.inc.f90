@@ -6,8 +6,8 @@
           DO J = I+2, N
             RAD(6)=LEN_DR(I,J)**6; 
             RAD(12)=RAD(6)**2
-            E(2) = E(2) + 4.0*AB(I,J,1)*S(12)/RAD(12)
-            E(2) = E(2) + 4.0*AB(I,J,2)*S(6)/RAD(6)
+            E(2) = E(2) + 4.0D0*AB(I,J,1)*S(12)/RAD(12)
+            E(2) = E(2) + 4.0D0*AB(I,J,2)*S(6)/RAD(6)
           ENDDO
         ENDDO
 ! }}}

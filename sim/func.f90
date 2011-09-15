@@ -74,9 +74,14 @@ CONTAINS
       GRADX=PACK(GRAD,.TRUE.)
       RMS=DSQRT(SUM(GRADX**2)/(1.0D0*NX))
       CALL ECHO_S
-      WRITE(*,*) NX,GRADX(1:10),RMS
+      WRITE(*,*) "potential> NX=  ",NX,"RMS= ",RMS 
+      write(*,*) "potential> Total energy: ",EA(1)
+      write(*,*) "potential> Non-bonded ",EA(2)
+      write(*,*) "potential> Bonded ",EA(3)
+      write(*,*) "potential> Bond angles ",EA(4)
+      write(*,*) "potential> Torsional angles ",EA(5)
+      write(*,*) "potential> Force term: -F*(z1-z2)=  ",EA(6)
       CALL ECHO_S
-      write(*,*) EA
 
       DEALLOCATE(R,GRAD,HESS)
 
@@ -204,6 +209,7 @@ write(s,*) "Model"
 write(*,*)  trim(model)
 write(*,11) s_stars
 write(*,3)  "Number of particles",                          "NATOMS",     NATOMS
+write(*,2)  "Container radius",                          "RADIUS",     RADIUS
 write(*,3)  "Number of saved lowest energy geometries",     "NSAVE",      NSAVE
 write(*,3)  "Number of basin-hopping steps",                "MCSTEPS",    MCSTEPS
 write(*,2)  "Temperature",                                  "TEMP",       TEMP
@@ -236,16 +242,19 @@ SUBROUTINE SETVARS
 IF (P46 .OR. G46) THEN
   NATOMS=46
 ENDIF
+IF (P46) PTYPE="WT"
+IF (G46) PTYPE="GO"
 
 NE=20
 
 ! radius {{{
-IF (RADIUS.EQ.0.0D0) THEN
+!IF (RADIUS.EQ.0.0D0) THEN
     RADIUS=2.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0)
     IF (P46) THEN
         RADIUS=RADIUS*3.0D0
     ENDIF
-ENDIF
+    RADIUS=10.0D0
+!ENDIF
 ! }}}
 
 

@@ -14,7 +14,7 @@
 ! BOND VECTORS: DPD, B, EB  {{{
 
       DO I = 1, N-1
-        B(I)= SUM(BVR(I,1:3)**2)
+        B(I)= SQRT(SUM(BVR(I,1:3)**2))
         EB(I,1:3)=BVR(I,1:3)/B(I)
         IF (I.LT.N-1) DPD(I)= SUM(BVR(I,1:3)*BVR(I+1,1:3))
       ENDDO
@@ -22,7 +22,7 @@
 ! Cross-products between adjacent bond vectors i and i+1 {{{
 
         DO I = 1, N-2
-           XPD_2(I) = B(I)*B(I+1)-DPD(I)**2 
+           XPD_2(I) = (B(I)*B(I+1))**2-DPD(I)**2 
            XPD(I)=SQRT(XPD_2(I))
            VXPD(I,1)=BVR(I,2)*BVR(I+1,3)-BVR(I,3)*BVR(I+1,2)
            VXPD(I,2)=BVR(I,3)*BVR(I+1,1)-BVR(I,1)*BVR(I+1,3)
