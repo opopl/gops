@@ -1264,3 +1264,68 @@ A similar procedure can be used if an initial {\tt path.info} file is available
 without a complete connection between the desired end points.
 
 
+
+\subsection{BLJ60 example setup (from GroupWiki) }
+
+In this example the objective was to link a crystal structure to a minimum from the amorphous region. OPTIM was first used to create min.data.info files using odata files such as:
+
+DUMPDATA 
+BFGSSTEPS 5000 
+BFGSMIN 
+ENDHESS 
+MAXBFGS 0.2 2.0 
+UPDATES 100 100 
+BFGSCONV 0.000001 
+BINARY 48 1.5 0.5 0.8 0.88 
+PARAMS 3.587037905 3.587037905 3.587037905 1.79 
+NORESET 
+POINTS 
+LS -11.46001238000000 5.188783135000000 10.47622879000000 
+LS -2.955568051000000 1.530923988000000 8.223564292000001 
+etc...
+
+This produced min.data.info.finish and min.data.info.start, which were copied to a clean directory and read into min.data and points.min using READMIN with this pathdata file:
+
+NATOMS 60 
+COPYFILES perm.allow 
+BULK 3.587037905 3.587037905 3.587037905 
+PERMDIST 
+SYSTEM LS 
+TEMPERATURE 0.71 
+CONNECTIONS 1 
+SEED 1 
+PERTURB 0.40 
+ETOL 1.0D-7 
+ITOL 0.01D0 
+DIRECTION AB 
+EXEC /home/wales/bin/OPTIM 
+TRIPLES 
+ADDTRIPLES 
+STARTTRIPLES 
+READMIN min.data.info.start 
+CYCLES 0 
+CPUS 1
+
+A single OPTIM connect run was then started for DIJINITCONT. This initial cycle is necessary before trying multiple cycles, because there is only one possible connection attempt with only two minima. The relevant pathdata lines were:
+
+DIJINITCONT EXP 
+CYCLES 100 
+JOBSPERNODE 1 
+PAIRLIST 1 
+
+With a qsub file:
+
+!/bin/csh
+PBS -N BLJ60.1.3.37
+PBS -q h8
+PBS -j oe
+PBS -l nodes=1:ppn=8
+cd $PBS_O_WORKDIR cat $PBS_NODEFILE >& output wc output > nodes.info cat $PBS_NODEFILE >> nodes.info echo $USER >> nodes.info echo $PBS_O_WORKDIR >> nodes.info
+
+/home/wales/bin/PATHSAMPLE >>& output
+
+echo qstat -f ${PBS_JOBID}@volkhan echo
+
+A subsequent run with CYCLES 100 on 8 cores found an initial path in five cycles, which took a few minutes wall clock time.
+Retrieved from "http://www-wales.ch.cam.ac.uk/groupwiki/index.php/BLJ60_example_setup"
+
