@@ -54,6 +54,10 @@ rca_gmi(){
 rca_gmin
 }
 
+rca_GMIN(){
+rca_gmin
+}
+
 rca_gmin(){
 # {{{
 cat << EOF

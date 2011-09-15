@@ -1,0 +1,335 @@
+# Introductory remarks {{{
+# 
+# Default target gives GMIN
+# binaries are now produced in the bin directory!
+# 'make chgmin' produces CGMIN
+# 'make AMBGMIN' produces AMBGMIN
+# 'make clean' removed all object and library files, and any binaries in the bin directory
+#
+#  DONT FORGET - mpirun
+#              - add MPI keyword to data to run with mpirun
+#              - change CHARMM library to the appropriate version
+#
+#  64 bit CGMIN openmpi executable works with BSPT LJ31. 
+#  
+#  Tried linking to CHARMM compiled with 64 bit openmpi. Reduced optimisation options.
+#  BSPT metenk run works fine on one node and more than one node when linked to openmpi charmm build.
+#  Also works when linked to 64 bit charmm library compiled with pgf90.
+#
+#  pgf90 7.1.6 works for 64 bit lam and openmpi
+#  pgf90 7.1.6 works for 64 bit openmpi with CHARMM library /home/wales/c31a2-sat39.openmpi.64
+#  pgf90 7.1.6 64 bit lam cannot be tested due to a dependency
+#
+#  openmpi works with ifort on mek-quake:
+#  ifort_em64t/10.0.025 mpi/openmpi/64/intel10/1.2.6 icc_em64t/10.0.023
+#
+#  openmpi fails on clust with module:
+#
+# ifort/64/10.1/015 icc/64/10.1/015 mpi/openmpi/64/intel10/1.2.6
+#
+# }}}
+
+GPROG =	../bin/GMIN
+CPROG = ../bin/CHGMIN
+AMHPROG = ../bin/AMHGMIN
+AMBPROG = ../bin/AMBGMIN
+
+GENF90FILES = porfuncs.f90
+CHDUM = chdummy.o
+AMHDUM = amhdummy.o
+AMB9DUM = amber9dummy.o
+VPATH = .:CHARMM:AMH:.
+LDFLAGS = -L.
+DEFS =
+# CPP = /usr/bin/cpp
+CPP = /lib/cpp
+CPFLAGS = -traditional -P
+
+# Pass the subversion revision number into the code to print it in the output
+   DEFS+=-DSVNVERSION="`./svn_revision.sh`"
+
+OBJS1 = porfuncs.o commons.o countatoms.o modamb.o modcharmm.o modmxatms.o modhess.o modamber9.o grouprotation.o
+OBJS2 =	centre.o finalio.o modconsts_trans_97.o modconsts.o dist.o\
+	io1.o keyword.o main.o mc.o mcruns.o morse.o \
+	potential.o quench.o rad.o dprand.o saveit.o seed.o \
+	sort.o sort2.o sort3.o sort4.o takestep.o mycpu_time.o trans.o \
+	finalq.o symmetry.o symmetrycsm.o ptgrp.o eigsrt.o SiSW.o taboo.o reseed.o newinertia.o supermc.o \
+	tosifumi.o ortho.o compress.o mylbfgs.o input.o ddfpmin.o dlnsrch.o cgmin.o linmin.o \
+	brent.o mnbrak.o dbrent.o f1dim.o zwischen.o hsmove.o PachecoC60.o AT.o EAMLJ_sub.o \
+	Pbglue.o wenzel.o odesd.o capsid.o rigidfuncs.o tip.o pah.o strand.o \
+	SW.o qmod.o ljpbin.o fdm.o dftb.o ljpshift.o dzugutov.o ljcoulomb.o \
+	fd.o fedor.o welch.o BLJcluster.o stock.o Farkas.o getorbits.o \
+	sc.o Zetterling.o MSorig.o MSorigc.o MStrans.97.o convert.o \
+	frausi.o p46merdiff.o g46merdiff.o lj.o modperm.o modf1com.o mododesd.o EAMal.o Alglue.o Mgglue.o \
+	Gupta.o orient.o Natb.o sticky.o enumerate.o minperm.o minpermdist.o LB2.o \
+	dgetrf.o dgetri.o reorient.o thomson.o Q4.o basinsampling.o tether.o tetherfunc.o BLN.o \
+	gauss.o newmindist.o centrecom.o qorderparam_blj.o qorderparam_lj.o bspt.o GMINdump.o quad.o \
+	rigidbaa.o checkd.o dbpg.o dbptd.o dmblmorse.o gbcalamitic.o gbdiscotic.o gem.o gbddp.o linrod.o \
+        lwotp.o	newcapsid.o newpah.o msgayberne.o mstbin.o multisitepy.o multstock.o paha.o pahw99.o pyg.o \
+        multpaha.o newtip.o pygdp.o stockaa.o tetrahedra.o waterpdc.o waterpkz.o takestepmsgb.o takestepmspy.o \
+	gay-berne.o JM.o projI.o projIh.o model1.o FS.o vgw.o \
+	mysd.o qdtest.o qdtest2.o MB.o dlsode.o dummyoptim.o Ackland_metals.o Ackland_wrapper.o DF1.o CSMinit.o \
+
+OBJS_op226=read_cmd_args.o display_version.o 
+
+OBJS = ${OBJS1} ${OBJS2} ${OBJS_op226}
+
+##### AMBER9 ##################### {{{
+AMB9SRC = ../../AMBER
+SANDERSRC = ../../AMBER/src/sander
+# }}}
+
+FC = pgf90
+# FC = mpif77  # for lam - don't forget to uncomment MPI!
+# FC = mpif90  # for mpich and openmpi - don't forget to uncomment MPI!
+# DEFS = -DMPI
+# The usual flags for AMBGMIN:
+FFLAGS= -Mextend -O3 -Mvect=assoc,cachesize:1024000,recog,transform
+# These are the CHARMM31 flags for mpif90 64 bit library.
+# It is ESSENTIAL to use the same flags as for the CHARMM build!!!!
+#
+FFLAGS= -Mextend -O3 -Munroll -Mnoframe 
+#  FFLAGS= -Mextend -O0 -Mnoframe
+#  FFLAGS= -Mextend -C -g -traceback
+#   DEBUGGING flags
+#  FFLAGS= -Mextend -C -g -gopt -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mcoff -Mdwarf1 -Mdwarf2 -Mdwarf3 -Melf -Mnodwarf -Mpgicoff -traceback
+
+# flags for AMBER9
+#
+FREEFORMAT_FLAG= -Mfree
+EXTRA_FLAGS=-module
+#
+NOOPT = -O0
+SEARCH_PATH =  -I..
+# the double reference to -lblas seems to be needed!
+LIBS = libmyblas.a libmylapack.a libmyblas.a
+LDFLAGS= -L.
+SWITCH=pgi
+
+
+.SUFFIXES: .o .f .F .f90
+
+.f90.o:
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -c $<
+.f.o:
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -c $<
+.F.f:
+	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
+
+default: $(GPROG)
+
+CHGMIN: $(CPROG)
+
+chgmin: $(CPROG)
+
+$(GPROG): $(CHDUM) $(AMHDUM) $(AMB9DUM) $(OBJS) $(EXTRAS) 
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(EXTRAS) $(OBJS) $(CHDUM) $(AMHDUM) $(AMB9DUM) $(LDFLAGS) $(LIBS)
+
+$(CPROG): $(AMHDUM) $(AMB9DUM) $(OBJS) $(EXTRAS) libcharmm.a 
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ ${CHOBJS31} $(EXTRAS) $(OBJS) $(AMHDUM) $(AMB9DUM) $(LDFLAGS) $(LIBS) \
+        ${CHLIBS31} ${CHLIBS31} ${CHLIBS31}
+
+AMBGMIN: $(AMBPROG) 
+
+$(AMBPROG): $(OBJS) $(EXTRAS) $(CHDUM) $(AMHDUM) libamber.a
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(OBJS) $(EXTRAS) $(CHDUM) $(AMHDUM) $(LDFLAGS) libamber.a $(LIBS) 
+
+AMHGMIN: $(AMHPROG)
+
+$(AMHPROG): $(OBJS) $(EXTRAS) $(CHDUM) $(AMB9DUM) libamh.a
+	$(FC) $(FFLAGS) ${SEARCH_PATH} -o $@ $(OBJS) $(EXTRAS) $(CHDUM) $(AMB9DUM) $(LDFLAGS) libamh.a $(LIBS) 
+
+clean:
+	rm -f ${GPROG} ${CPROG} $(AMHPROG) $(AMBPROG) $(OBJS) *.mod $(EXTRAS) *.lst *.o pref.dat prefx.msg nag.f90 FOR021.DAT porfuncs.f90 display_version.f90 mc.f ptmc.f bspt.f main.f *.a
+	if test -d ../../BLAS ;  then cd ../../BLAS ; make clean ; fi
+	if test -d ../../LAPACK ;  then cd ../../LAPACK ; make clean ; fi
+	if test -d CHARMMinterface ;  then cd CHARMMinterface ; make clean ; fi
+	if test -d AMH ;  then cd AMH ; make clean ; fi
+	if test -d $(SANDERSRC) ; then cd $(SANDERSRC) ; make clean ; fi
+
+cleanexe:
+	rm -f $(CPROG) $(GPROG) $(AMHPROG) $(AMBPROG)
+
+timing:
+	rm -f GMIN.2.0
+	$(FC) $(FFLAGS) -p $(OBJS) $(EXTRAS) -o $(GPROG) $(LIBS)
+
+feedback:
+	$(FC) $(FFLAGS) -xprofile=use:gmin.profile *.f -o $(GPROG)
+
+rebuild:
+	make clean
+	make
+
+rebuildamh:
+	make clean
+	make AMHGMIN
+
+libamber.a:
+	export SRCDIR=$(CURDIR);cd ${SANDERSRC}; make lib1 FC="${FC}" FFLAGS="${FFLAGS}" \
+	FREEFORMAT_FLAG="${FREEFORMAT_FLAG}" EXTRA_FLAGS="${EXTRA_FLAGS}"
+libamh.a: SAT-Ghost
+	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" 
+libmyblas.a: SAT-Ghost
+	cd ../../BLAS; make double FC="${FC}" FFLAGS="${FFLAGS}" BLAS_EXCLUDE_LIST="${BLAS_EXCLUDE_LIST}";\
+	cp libmyblas.a ../GMIN/source/
+libmylapack.a: SAT-Ghost
+	cd ../../LAPACK; make selection FC="${FC}" FFLAGS="${FFLAGS}" NOOPT="${NOOPT}";\
+	cp libmylapack.a ../GMIN/source/
+libcharmm.a: SAT-Ghost
+	cd CHARMMinterface; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" PREFLX="${PREFLX}" \
+	PREFDIR="${PREFDIR}" \
+	CTYPE="${CTYPE}" FCMDIR="${FCMDIR}" C31SRC="${C31SRC}" SRC31="${SRC31}"
+SAT-Ghost:
+
+porfuncs.f90: porfuncs.csh
+	./porfuncs.csh ${SWITCH} > porfuncs.f90
+
+display_version.f90: display_version.sh 
+	./display_version.sh fflags "${FFLAGS}" prog GMIN \
+	fc "${FULL_COMPILER_NAME}" make_opts "${MAKE_OPTS}" \
+	> display_version.f90
+
+
+${GPROG}: libmyblas.a libmylapack.a
+${CPROG}: libmyblas.a libmylapack.a libcharmm.a
+${AMHPROG}: commons.o libmyblas.a libmylapack.a libamh.a
+${AMBPROG}: libmyblas.a libmylapack.a libamber.a porfuncs.o
+libcharmm.a: commons.o modcharmm.o modmxatms.o
+libamber.a: commons.o modamber9.o porfuncs.o grouprotation.o
+${OBJS2}: ${OBJS1} ${OBJS_op226}
+
+Alglue.o:      commons.o
+BLJcluster.o:  commons.o
+EAMLJ_sub.o:   commons.o
+EAMal.o:       commons.o
+Gupta.o:       commons.o
+MSorig.o:      commons.o modconsts.o dist.o
+MSorigc.o:     commons.o modconsts.o dist.o
+MStrans.97.o:  commons.o modconsts_trans_97.o dist.o
+Mgglue.o:      commons.o
+PachecoC60.o:  commons.o
+Pbglue.o:      commons.o
+SW.o:          commons.o
+SiSW.o:        commons.o
+Zetterling.o:  commons.o
+amber.o:       commons.o modamb.o
+bmin.o:        commons.o modamb.o
+capsid.o:      commons.o
+centre.o:      commons.o
+centrecom.o:      commons.o
+cgmin.o:       commons.o
+checkd.o:      commons.o
+compress.o:    commons.o
+compress2.o:   commons.o
+countatoms.o:  modamber9.o
+dbpg.o:        commons.o
+dbptd.o:       commons.o
+dmblmorse.o:   commons.o
+ddfpmin.o:     commons.o
+dftb.o:        commons.o
+dzugutov.o:    commons.o
+evstep.o:      commons.o
+f1dim.o:       commons.o modf1com.o
+fd.o:          commons.o
+fdm.o:         commons.o
+finalio.o:     commons.o modamb.o qmod.o modcharmm.o AMH/amhglobals.o
+finalq.o:      commons.o qmod.o
+frausi.o:      dist.o
+gbcalamitic.o: commons.o
+gbdiscotic.o:  commons.o
+gbddp.o:       commons.o
+gem.o:         commons.o
+grnd.o:        commons.o
+hmat1n.o:      commons.o
+hmatd_.o:      commons.o
+hsmove.o:      commons.o
+io1.o:         commons.o modamb.o modperm.o qmod.o modcharmm.o porfuncs.o
+keyword.o:     commons.o modamb.o modcharmm.o porfuncs.o
+linmin.o:      commons.o modf1com.o
+linrod.o:      commons.o
+ljcoulomb.o:   commons.o
+lj.o:          commons.o
+ljpbin.o:      commons.o
+ljpshift.o:    commons.o
+lwotp.o:       commons.o
+newpah.o:      commons.o
+main.f: main.F
+main.o:        commons.o modf1com.o countatoms.o modperm.o qmod.o modamb.o modmxatms.o porfuncs.o read_cmd_args.o
+mcruns.o:      commons.o
+mf.o:          commons.o
+mnbrak.o:      commons.o
+commons.o:     countatoms.o
+dummyoptim.o:  commons.o
+morse.o:       commons.o
+mylbfgs.o:     commons.o modamb.o porfuncs.o
+mstbin.o:      commons.o
+multstock.o:   commons.o
+newtip.o:      commons.o
+odesd.o:       commons.o mododesd.o
+olami.o:       commons.o
+otp.o:         commons.o
+BLN.o:         commons.o
+pah.o:         commons.o
+multpaha.o:    commons.o qmod.o
+pahw99.o:      commons.o
+paha.o:        commons.o
+potential.o:   commons.o modperm.o qmod.o modcharmm.o porfuncs.o
+ptgrp.o:       commons.o
+pyg.o:         commons.o
+pygdp.o:       commons.o
+quench.o:      commons.o qmod.o porfuncs.o
+rad.o:         commons.o
+rdpot.o:       commons.o
+saveit.o:      commons.o qmod.o
+sc.o:          commons.o
+seed.o:        commons.o
+stockaa.o:     commons.o
+strand.o:      commons.o
+supermc.o:     commons.o
+symmetry.o:    commons.o porfuncs.o
+symmetrycsm.o:    commons.o porfuncs.o
+taboo.o:       commons.o
+takestep.o:    commons.o
+takestep2.o:   commons.o
+tetrahedra.o:  commons.o
+tip.o:         commons.o
+tosifumi.o:    commons.o
+welch.o:       commons.o
+waterpdc.o:    commons.o
+waterpkz.o:    commons.o
+zwischen.o:    commons.o modf1com.o 
+stock.o:       commons.o
+sticky.o:      commons.o
+tether.o:      tetherfunc.o
+mycpu_time.o:  commons.o
+gauss.o:       commons.o
+mc.o:          qmod.o modcharmm.o porfuncs.o mc.f mc.F AMH/amhglobals.o AMH/amh_interfaces.o AMH/E_write.o commons.o
+mc.f: mc.F
+ptmc.f: ptmc.F
+ptmc.o:          qmod.o modcharmm.o porfuncs.o ptmc.f ptmc.F
+bspt.f: bspt.F
+bspt.o:          qmod.o modcharmm.o porfuncs.o bspt.f bspt.F
+GMINdump.o: commons.o qmod.o porfuncs.o
+quad.o:        commons.o
+enumerate.o:  commons.o
+convert.o:  porfuncs.o
+getorbits.o: commons.o
+mysd.o: commons.o
+qdtest.o: commons.o
+MB.o: commons.o 
+sort2.o: qmod.o commons.o
+model1.o: commons.o
+FS.o: commons.o
+Ackland_wrapper.o: commons.o
+DF1.o: commons.o
+CSMinit.o: commons.o
+minpermdist.o: commons.o porfuncs.o
+grouprotation.o: commons.o
+
+# op226 
+read_cmd_args.o: display_version.o
+
+cat: |: No such file or directory
+cat: sed: No such file or directory
+cat: '/BLAS_EXCLUDE_LIST/d': No such file or directory
