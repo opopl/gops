@@ -1,19 +1,32 @@
 
         IMPLICIT NONE
         
+        ! subroutine parameters  {{{
+
         ! number of particles
         INTEGER, INTENT(IN) :: N
-        ! energies
-        DOUBLE PRECISION, DIMENSION(4) :: E
-        DOUBLE PRECISION ENERGY
 
-        ! input vector of coordinates
-        !DOUBLE PRECISION, DIMENSION(N,3) :: QO, FQ
-        
         ! calculate the gradient if GRADT=.TRUE.
         ! calculate the Hessian if HESST=.TRUE. 
-
         LOGICAL GRADT, HESST
+
+        DOUBLE PRECISION, DIMENSION(N,3) :: GRAD
+        DOUBLE PRECISION, DIMENSION(:,:) :: HESS
+
+        ! Energies are specified by array E(:) {{{
+        !
+        ! E(1) is the total energy.
+        !       Other energies:
+        !           E(2) - non-bonded
+        !           E(3) - bonded
+        !           E(4) - bond angles
+        !           E(5) - torsional angles
+        DOUBLE PRECISION, DIMENSION(5),INTENT(OUT) :: E
+        ! }}}
+
+        ! }}}
+
+        ! local parameters {{{
   
         LOGICAL GTEST, STEST
         LOGICAL CONNECT(N,N)
@@ -85,7 +98,7 @@
         DOUBLE PRECISION, DIMENSION(N,3) :: GTA_I, GTA_J, GTA_K, GTA_L
         DOUBLE PRECISION, DIMENSION(N,3) :: GBA_I, GBA_J, GBA_K
         DOUBLE PRECISION ::     DF, FRR(3)
-        DOUBLE PRECISION, DIMENSION(N,3) :: G, GRAD
+        DOUBLE PRECISION, DIMENSION(N,3) :: GRAD
         ! }}}
         ! PTYPE: type of BLN potential {{{
         !
@@ -101,7 +114,6 @@
         ! Hessian {{{
         ! Hessian - (N,N) matrix of second-order derivatives
 
-        DOUBLE PRECISION, DIMENSION(:,:) :: HESS
         ! IK,JK,KJ,KI - used for Hessian calculation
         INTEGER ::     IK,JK,KI,KJ,IH,JH,KH
         ! }}}
@@ -134,3 +146,4 @@
         S(6)=S(1)**6 
         S(12)=S(6)**2
        
+        ! }}}

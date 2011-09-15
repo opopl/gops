@@ -46,6 +46,9 @@ PARAMETER (ONE=1.0D0)
 PARAMETER (SLEN=100,MAXNARGS=100)
 ! }}}
      ! LOGICALS {{{
+
+     LOGICAL,PARAMETER :: DEBUG_LBFGS=.TRUE.
+     LOGICAL,PARAMETER :: DEBUG_EBLN=.TRUE.
     
      LOGICAL :: PULLT
      LOGICAL :: P46
@@ -149,12 +152,18 @@ PARAMETER(LFN="gmi.log")
 ! }}}
 ! pull {{{
 
+     ! start atom which is pulled, default 1
      INTEGER :: PATOM1
+     ! end atom which is pulled, default NATOMS
      INTEGER :: PATOM2
      DOUBLE PRECISION :: PFORCE
 
 ! }}}
 ! general {{{
+
+! energies
+DOUBLE PRECISION, DIMENSION(:) :: EA
+INTEGER NE
 
 ! main coordinates variable
 DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:,:)

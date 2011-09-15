@@ -64,7 +64,7 @@ USE FUNC, ONLY: PRINTVARS, INITVARS, PRINTHELP
 USE DV
 !USE COMMONS,ONLY : INFILE
 !USE V, ONLY: INFILE,PFORCE
-USE V, ONLY: PFORCE
+USE V, ONLY: PFORCE,DEBUG
 
 IMPLICIT NONE
 
@@ -88,6 +88,8 @@ IF (NARGS.GT.0) THEN
                 CASE('-f')
                         READ(VAR,*) PFORCE
                         WRITE(*,*) 'FORCE:',PFORCE
+				CASE('-g')
+				  		DEBUG=.TRUE.
                 CASE DEFAULT
          ENDSELECT
          !CALL MAKETEST(BFF)

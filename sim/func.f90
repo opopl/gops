@@ -2,6 +2,7 @@
 MODULE FUNC
 
 USE V
+USE PORFUNCS
 USE BLN
 
 IMPLICIT NONE
@@ -29,6 +30,10 @@ CONTAINS
 
       ! subroutine parameters  {{{
 
+      ! conventions for energies:
+      !     EREAL  - always total energy; 
+      !     EO - other energies
+
       DOUBLE PRECISION, INTENT(OUT) :: EREAL, GRADX(:)
       DOUBLE PRECISION, INTENT(IN) :: X(:)
       LOGICAL DOGRAD, DOHESS
@@ -40,6 +45,7 @@ CONTAINS
 
       DOUBLE PRECISION,ALLOCATABLE :: R(:,:)
       DOUBLE PRECISION,ALLOCATABLE :: GRAD(:,:),HESS(:,:)
+      DOUBLE PRECISION,DIMENSION(:),ALLOCATABLE :: E   
       ! }}}
       ! }}}
 ! subroutine body {{{
@@ -54,7 +60,8 @@ CONTAINS
       R=RESHAPE(X,(/ NR,3 /))
 
       IF (BLNT .OR. PULLT) THEN 
-            CALL EBLN(NR,R,EREAL,GRAD,HESS,PTYPE,DOGRAD,DOHESS)
+            CALL EBLN(NR,R,EA,GRAD,HESS,PTYPE,DOGRAD,DOHESS)
+            EREAL=EA(1)
       ENDIF
 
       IF (PULLT) THEN
@@ -64,7 +71,8 @@ CONTAINS
       ENDIF
 
       GRADX=PACK(GRAD,.TRUE.)
-      RMS=DSQRT(SUM(GRADX**2)/NX)
+      RMS=DSQRT(SUM(GRADX**2)/(1.0D0*NX))
+      write(*,*) NX,GRADX(1:10),RMS
 
       DEALLOCATE(R,GRAD,HESS)
 
@@ -86,7 +94,79 @@ ENDIF
 ENDSUBROUTINE GETMODEL
 
 ! RCOORDS IO PRINTVARS SETVARS INITVARS {{{
- 
+
+! initialize variables
+SUBROUTINE INITVARS
+! subroutine body {{{
+! logicals {{{
+BFGST=.FALSE.
+LBFGST=.TRUE.
+PULLT=.TRUE.
+P46=.FALSE.
+G46=.TRUE.
+BLNT=.FALSE.
+TARGET=.FALSE.
+TRACKDATAT=.FALSE.
+DEBUG=.FALSE.
+LBFGST=.TRUE.
+RMST=.FALSE.
+! whether we are doing a final quench
+FQFLAG=.FALSE.
+! }}}
+! files {{{
+LFH=FH+1
+ENERGY_FH=FH+2
+MARKOV_FH=FH+3
+BEST_FH=FH+4
+PAIRDIST_FH=FH+5
+COORDS_FH=FH+6
+DATA_FH=FH+7
+RMSD_FH=FH+8
+! }}}
+! other {{{
+NSAVE=10            ! number of saved lowest-energy geometries
+
+NATOMS=46
+
+PATOM1=1
+PATOM2=NATOMS
+
+M_LBFGS=4           ! Number of LBFGS updates
+MAXBFGS=0.4D0       ! Maximum BFGS step size
+DGUESS=0.1D0        ! DGUESS: Guess for initial diagonal elements in LBFGS
+
+FQMAX=1.0D-5        ! FQMAX: same meaning as for SQMAX, but for final quenches only.
+SQMAX=1.0D-3        ! SQMAX: convergence criterion for the RMS force in the basin-hopping quenches.
+                    ! note: used in QUENCH() 
+
+TFAC=1.0D0
+EDIFF=0.02D0
+ACCRAT=0.5D0
+TEMP=0.035D0        ! Temperature
+RADIUS=0.0D0
+! maximum number of iterations allowed in conjugate gradient searches
+MAXIT=500
+! Maximum allowed energy rise during a minimisation
+MAXERISE=1.0D-10
+! Maximum allowed energy fall during a minimisation
+MAXEFALL=-HUGE(ONE)
+! Used in ACCREJ
+FAC0=1.05D0
+! "Fixing" option (regarding STEP, TEMP and accept ratio for quenches) 
+FIXOPT='T'
+
+STEP=0.3D0
+OSTEP=0.3D0
+ASTEP=0.3D0
+
+MCSTEPS=10000
+          
+NACCEPT=50
+NRELAX=0
+! }}}
+! }}}
+END SUBROUTINE INITVARS
+
 ! print variables 
 SUBROUTINE PRINTVARS
 ! {{{
@@ -158,74 +238,6 @@ ENDIF
 ! }}}
 END SUBROUTINE SETVARS
 
-! initialize variables
-SUBROUTINE INITVARS
-! subroutine body {{{
-! logicals {{{
-BFGST=.FALSE.
-LBFGST=.TRUE.
-PULLT=.TRUE.
-P46=.FALSE.
-G46=.TRUE.
-BLNT=.FALSE.
-TARGET=.FALSE.
-TRACKDATAT=.FALSE.
-DEBUG=.FALSE.
-LBFGST=.TRUE.
-RMST=.FALSE.
-! whether we are doing a final quench
-FQFLAG=.FALSE.
-! }}}
-! files {{{
-LFH=FH+1
-ENERGY_FH=FH+2
-MARKOV_FH=FH+3
-BEST_FH=FH+4
-PAIRDIST_FH=FH+5
-COORDS_FH=FH+6
-DATA_FH=FH+7
-RMSD_FH=FH+8
-! }}}
-! other {{{
-NSAVE=10            ! number of saved lowest-energy geometries
-
-NATOMS=46
-
-M_LBFGS=4           ! Number of LBFGS updates
-MAXBFGS=0.4D0       ! Maximum BFGS step size
-DGUESS=0.1D0        ! DGUESS: Guess for initial diagonal elements in LBFGS
-
-FQMAX=1.0D-5        ! FQMAX: same meaning as for SQMAX, but for final quenches only.
-SQMAX=1.0D-3        ! SQMAX: convergence criterion for the RMS force in the basin-hopping quenches.
-                    ! note: used in QUENCH() 
-
-TFAC=1.0D0
-EDIFF=0.02D0
-ACCRAT=0.5D0
-TEMP=0.035D0        ! Temperature
-RADIUS=0.0D0
-! maximum number of iterations allowed in conjugate gradient searches
-MAXIT=500
-! Maximum allowed energy rise during a minimisation
-MAXERISE=1.0D-10
-! Maximum allowed energy fall during a minimisation
-MAXEFALL=-HUGE(ONE)
-! Used in ACCREJ
-FAC0=1.05D0
-! "Fixing" option (regarding STEP, TEMP and accept ratio for quenches) 
-FIXOPT='T'
-
-STEP=0.3D0
-OSTEP=0.3D0
-ASTEP=0.3D0
-
-MCSTEPS=10000
-          
-NACCEPT=50
-NRELAX=0
-! }}}
-! }}}
-END SUBROUTINE INITVARS
 
 ! doxygen RCOORDS {{{
 !> @name RCOORDS
@@ -535,12 +547,10 @@ END FUNCTION
 ! }}}
 SUBROUTINE MYLBFGS(X,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET)
 ! ====================================
-! declarations {{{ 
-USE V
-USE PORFUNCS
+! subroutine parameters  {{{
 
 IMPLICIT NONE
-! subroutine parameters  {{{
+
 DOUBLE PRECISION, INTENT(INOUT) :: X(:)
 LOGICAL,INTENT(IN) :: DIAGCO
 DOUBLE PRECISION,INTENT(IN) :: EPS
@@ -572,7 +582,6 @@ N=3*NATOMS
 M=M_LBFGS
 !
 !   }}}
-! }}}
 ! ====================================
 ! Labels:  {{{
 !         10  - termination test
@@ -584,6 +593,12 @@ M=M_LBFGS
 ! Initializations {{{
 
 IF(.NOT.ALLOCATED(W)) ALLOCATE(W(N))
+IF(.NOT.ALLOCATED(WTEMP)) ALLOCATE(WTEMP(N))
+IF(.NOT.ALLOCATED(GRADX)) ALLOCATE(GRADX(N))
+IF(.NOT.ALLOCATED(GNEW)) ALLOCATE(GNEW(N))
+IF(.NOT.ALLOCATED(DIAG)) ALLOCATE(DIAG(N))
+IF(.NOT.ALLOCATED(XSAVE)) ALLOCATE(XSAVE(N))
+
 ALLOCATE(RHO(M),ALPHA(M),WSS(N,M),WDG(N,M))
 
 NFAIL=0 ; ITDONE=0 ; IF (RESET) ITER=0 
@@ -595,7 +610,7 @@ ENDIF
 
 !        evaluate gradient (.TRUE.) but not Hessian (.FALSE.)
 CALL POTENTIAL(X,QE,GRADX,RMS,.TRUE.,.FALSE.)
-write(*,*) 'after pot'
+write(*,*) 'mylbfgs: init, after potential(), QE=',QE
 
 IF (DEBUG) WRITE(LFH,101) ' Energy and RMS force=', E,RMS, &
     ' after ',ITDONE,' LBFGS steps'
@@ -715,6 +730,8 @@ ELSE
 	DO IX= 1,BOUND
 		CP=CP-1
 		IF (CP.EQ.-1) CP=M-1
+        IF (DEBUG_LBFGS) WRITE(*,*) 'IX= ',IX,'CP= ',CP
+        IF (DEBUG_LBFGS) WRITE(*,*) "SQ=DDOT(N,WSS(1,CP+1),1,W,1)"
 		SQ=DDOT(N,WSS(1,CP+1),1,W,1)
 		ALPHA(CP+1)=RHO(CP+1)*SQ
 		CALL DAXPY(N,-ALPHA(CP+1),WDG(1,CP+1),1,W,1)
@@ -754,11 +771,11 @@ ENDDO
 
 WTEMP=W/DUMMY
 
-DOT1=SQRT(DDOT(N,GRAD,1,GRAD,1))
+DOT1=SQRT(DDOT(N,GRADX,1,GRADX,1))
 DOT2=SQRT(DDOT(N,WTEMP,1,WTEMP,1))
 OVERLAP=0.0D0
 IF (DOT1*DOT2.NE.0.0D0) THEN
-    OVERLAP=DDOT(N,GRAD,1,WTEMP,1)/(DOT1*DOT2)
+    OVERLAP=DDOT(N,GRADX,1,WTEMP,1)/(DOT1*DOT2)
 ENDIF
 IF (OVERLAP.GT.0.0D0) THEN
     IF (DEBUG) WRITE(LFH,'(A)') 'Search direction has positive projection onto gradient - reversing step'
@@ -775,6 +792,7 @@ IF (STP*SLENGTH.GT.MAXBFGS) STP=MAXBFGS/SLENGTH
 XSAVE=X; X=X+STP*WSS(:,1+POINT)
 
 CALL POTENTIAL(X,ENEW,GNEW,RMS,.TRUE.,.FALSE.)
+write(*,*) 'ENEW= ',ENEW
 
 IF ((ENEW-ENERGY.LE.MAXERISE).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
 	! {{{
@@ -809,7 +827,7 @@ ELSEIF (ENEW-ENERGY.LE.MAXEFALL) THEN
 	! and we need to reset to XSAVE. This should always be reliable!
 	!
 	X=XSAVE
-	GRADX=GNEW ! GRAD contains the gradient at the lowest energy point
+	GRADX=GNEW ! GRADX contains the gradient at the lowest energy point
 	
 	ITER=0   !  try resetting
 	IF (NFAIL.GT.20) THEN
@@ -903,6 +921,9 @@ SUBROUTINE PRINTHELP
 ! {{{
 write(*,*) '======================='
 write(*,*) 'gmi - A program for finding global minima'
+write(*,*) ''
+write(*,*) '-h      display help' 
+write(*,*) '-g      turn on debugging info' 
 write(*,*) ''
 write(*,*) '======================='
 ! }}}

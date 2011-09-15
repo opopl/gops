@@ -47,7 +47,8 @@
 
                 ! use Bekker formulas
                 GTA_J(i,1:3)=-GTA_I(i,1:3)*(1.0D0+DPD(i-1)/(B(i)**2)) & 
-                        -GTA_L(i,1:3)*DPD(i+1)/(B(i)**2)
+                        !-GTA_L(i,1:3)*DPD(i+1)/(B(i)**2)
+                        -GTA_L(i,1:3)*DPD(i)/(B(i)**2)
                         
                 GTA_K(i,1:3)=-GTA_I(i,1:3)-GTA_J(i,1:3)-GTA_L(i,1:3)
         enddo

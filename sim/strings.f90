@@ -737,6 +737,8 @@ END FUNCTION IS_DIGIT
 
 SUBROUTINE SPLIT(STR,DELIMS,BEFORE,SEP)
 ! {{{
+! declarations  {{{
+
 ! Routine finds the first instance of a character from 'delims' in the
 ! the string 'str'. The characters before the found delimiter are
 ! output in 'before'. The characters after the found delimiter are
@@ -745,12 +747,16 @@ SUBROUTINE SPLIT(STR,DELIMS,BEFORE,SEP)
 ! character if it is preceded by a backslash (\). If the backslash 
 ! character is desired in 'str', then precede it with another backslash.
 
+! subroutine 
 CHARACTER(LEN=*) :: STR,DELIMS,BEFORE
 CHARACTER,OPTIONAL :: SEP
+
+! local 
 LOGICAL :: PRES
 CHARACTER :: CH,CHA
-
 INTEGER LENSTR,K,IBSL,I,IPOS,IPOSA
+! }}}
+
 
 PRES=PRESENT(SEP)
 STR=ADJUSTL(STR)
@@ -768,7 +774,7 @@ DO I=1,LENSTR
       IBSL=0
       CYCLE
    END IF
-   IF(CH == '\') THEN          ! BACKSLASH WITH BACKSLASH INACTIVE
+   IF(CH == '\\') THEN          ! BACKSLASH WITH BACKSLASH INACTIVE
       K=K+1
       BEFORE(K:K)=CH
       IBSL=1
@@ -830,7 +836,7 @@ DO I=1,LENSTR
    IBSL=0
    CYCLE
   END IF
-  IF(CH == '\') THEN          ! BACKSLASH WITH BACKSLASH INACTIVE
+  IF(CH == '\\') THEN          ! BACKSLASH WITH BACKSLASH INACTIVE
    IBSL=1
    CYCLE
   END IF

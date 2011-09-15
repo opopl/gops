@@ -130,7 +130,7 @@ SWITCH=gfortran
 LDFLAGS = -lblas -llapack
 FREEFORMAT_FLAG= -ffree-form
 EXTRA_FLAGS=-I
-FFLAGS= -ffixed-line-length-132 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic
+FFLAGS= -ffixed-line-length-132 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic -Wall
 FFLAGS+=$(F0)
 
 

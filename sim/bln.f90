@@ -11,15 +11,17 @@
 !> @name EBLN
 !
 !> @brief
-!> Calculate the energy, gradient, and second
-!> derivatives for a given configuration of the 46 particle polymer chain.
-!> A configuration and number of particles is passed to the subroutine and
-!> the energy (ENERGY), gradient (GRADIENT), and 
-!> the matrix of second derivatives (HESS) are returned.
+!>      Calculate the energy, gradient, and second
+!>          derivatives for a given configuration of the 46 particle polymer chain.
+!>          A configuration and number of particles is passed to the subroutine and
+!>          the energy (ENERGY), gradient (GRADIENT), and 
+!>          the matrix of second derivatives (HESS) are returned.
 !
+!> @param[in]    integer N      number of particles
+!> @param[in]    dp R(:,:)  
 ! }}}
 !------------------------------------------------------------
-        SUBROUTINE EBLN(N,R,ENERGY,GRAD,HESS,PTYPE,GRADT,HESST)
+        SUBROUTINE EBLN(N,R,E,GRAD,HESS,PTYPE,GRADT,HESST)
 ! {{{
 
 include "bln.vars.inc.f90"        ! variables
