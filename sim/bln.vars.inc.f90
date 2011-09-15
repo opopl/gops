@@ -28,7 +28,6 @@
 
         ! local parameters {{{
   
-        LOGICAL GTEST, STEST
         LOGICAL CONNECT(N,N)
 
         INTEGER J1,J2
@@ -98,7 +97,7 @@
         DOUBLE PRECISION, DIMENSION(N,3) :: GTA_I, GTA_J, GTA_K, GTA_L
         DOUBLE PRECISION, DIMENSION(N,3) :: GBA_I, GBA_J, GBA_K
         DOUBLE PRECISION ::     DF, FRR(3)
-        DOUBLE PRECISION, DIMENSION(N,3) :: GRAD
+        DOUBLE PRECISION, DIMENSION(N,3) :: G
         ! }}}
         ! PTYPE: type of BLN potential {{{
         !
@@ -107,7 +106,7 @@
         !
         CHARACTER(LEN=*) :: PTYPE
         ! }}}
-        INTEGER NTYPE(N), I, J, JMAX, K, KMAX, ICOUNT
+        INTEGER NTYPE(N), I, J, K, ICOUNT
 
         DOUBLE PRECISION COS_PHI, COS_THETA
 
@@ -120,8 +119,7 @@
       
         ! LJREP => repulsion
         ! LJATT => attraction
-
-        DOUBLE PRECISION, DIMENSION(N,N) :: LJREP, LJATT
+        !DOUBLE PRECISION, DIMENSION(N,N) :: LJREP, LJATT
 
         ! Other constants {{{
         ! 1.8326 RADIANS IS 105 DEGREES

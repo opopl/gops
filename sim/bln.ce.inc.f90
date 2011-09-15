@@ -1,4 +1,4 @@
-            E=0.0D0 
+            E(1:5)=0.0D0 
         
 ! non-bonded: E(2) {{{
 
@@ -32,5 +32,5 @@
 ! }}}
 
         ! Now the total energy
-        E(1)=SUM(E)
+        E(1)=SUM(E(2:5))
 

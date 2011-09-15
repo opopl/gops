@@ -18,7 +18,18 @@
 !>          the matrix of second derivatives (HESS) are returned.
 !
 !> @param[in]    integer N      number of particles
-!> @param[in]    dp R(:,:)  
+!> @param[in]    dp R(:,:)      input coordinates
+!> @param[out]   dp E(:)        array of calculated energies:
+!>                      E(1)    total energy
+!>                      E(2)    non-bonded contribution
+!>                      E(3)    bonded
+!>                      E(4)    bond angles
+!>                      E(5)    torsional angles
+!> @param[in]    ch(*) PTYPE    model type. Values:
+!>                      GO      Go-like 
+!>                      WT      Wild-type 
+!> @param[in]    logical GRADT  Do we need to calculate the gradient?
+!> @param[in]    logical HESST  Do we need to calculate the Hessian?
 ! }}}
 !------------------------------------------------------------
         SUBROUTINE EBLN(N,R,E,GRAD,HESS,PTYPE,GRADT,HESST)

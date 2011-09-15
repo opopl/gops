@@ -42,7 +42,8 @@
       WRITE(LFH,'(A)') "Starting serial execution" 
       WRITE(*,'(A)') "Starting serial execution" 
 
-      ALLOCATE(SCREENC(NATOMS,3))
+      ! allocate memory
+      CALL AM 
 
       CALL RCOORDS(NATOMS,RADIUS,SCREENC)
       WRITE(*,'(A)') "RCOORDS done" 

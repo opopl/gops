@@ -162,7 +162,7 @@ PARAMETER(LFN="gmi.log")
 ! general {{{
 
 ! energies
-DOUBLE PRECISION, DIMENSION(:) :: EA
+DOUBLE PRECISION, DIMENSION(:),ALLOCATABLE :: EA
 INTEGER NE
 
 ! main coordinates variable
