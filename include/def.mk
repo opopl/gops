@@ -22,7 +22,7 @@ LLIBS = libmyblas.a libmylapack.a libmyblas.a
 LIBS=$(LLIBS)
 SEARCH_PATH =  -I..
 
-DL=debug 
+DL := debug 
 #DEFS+=MPI
 
 PRF=$(SAPATH)/porfuncs.sh
@@ -130,7 +130,8 @@ SWITCH=gfortran
 LDFLAGS = -lblas -llapack
 FREEFORMAT_FLAG= -ffree-form
 EXTRA_FLAGS=-I
-#FFLAGS=$(F0) -I.
+FFLAGS= -ffixed-line-length-132 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic
+FFLAGS+=$(F0)
 
 
 endif

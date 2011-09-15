@@ -32,13 +32,13 @@ tg:
 	ctags -R *.f *.f90 *.F
 
 $(PROGNAME): $(PROG)
-	cp $(PROG) ./
 
 bindir: 
 	mkdir -p $(BINPATH)
 
 $(PROG): $(OBJS) bindir
 	$(FC) $(FFLAGS) $(SEARCH_PATH) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
+	cp $(PROG) ./
 
 cup:
 	rm -rf $(NOTUSEDSOURCE)
