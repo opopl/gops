@@ -1,0 +1,21 @@
+
+The following pathdata file was used on a distributed memory machine. It loads an initial path from path.info.startup and creates min.A and min.B files containing the entries 1 and 9 and 1 and 16, respectively. 1000 iterations of the committor probabilities are performed every cycle, removing minima with one connection or fewer, and using a successive overrelaxation parameter of 1.99. Rate constants are calculated using graph transformation every 10 cycles, again removing minima with one connection or fewer.
+
+JOBSPERNODE 	2
+NATOMS 	56
+SYSTEM 	BL
+STARTFROMPATH 	startup 9 16
+COMMENT 	ADDPATH add
+GT 	1 10
+TEMPERATURE 	0.42
+DSCALE 	3.0
+PSCALE 	1.0
+PFOLD 	1000 1 1.99
+CYCLES 	500
+CONNECTIONS 	1
+SEED 	1
+PERTURB 	0.3D0
+ETOL 	0.0000005D0
+ITOL 	0.1
+DIRECTION 	AB
+EXEC 	/home/wales/bin/OPTIM.3.2

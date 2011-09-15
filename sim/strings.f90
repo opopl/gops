@@ -55,12 +55,14 @@ SUBROUTINE PARSE(STR,DELIMS,ARGS,NARGS)
 ! 'str' by a backslash (\) makes this particular instance not a delimiter.
 ! The integer output variable nargs contains the number of arguments found.
 
+! sub
 CHARACTER(LEN=*) :: STR,DELIMS
 CHARACTER(LEN=*),DIMENSION(:) :: ARGS
 INTEGER NARGS
 
+! loc
 CHARACTER(LEN=LEN_TRIM(STR)) :: STRSAV
-INTEGER NA,K,LENSTR
+INTEGER i,NA,K,LENSTR
 
 STRSAV=STR
 CALL COMPACT(STR)
@@ -90,11 +92,14 @@ SUBROUTINE COMPACT(STR)
 ! Converts multiple spaces and tabs to single spaces; deletes control characters;
 ! removes initial spaces.
 
+! sub
 CHARACTER(LEN=*):: STR
+
+! loc
 CHARACTER(LEN=1):: CH
 CHARACTER(LEN=LEN_TRIM(STR)):: OUTSTR
 
-INTEGER LENSTR,ISP,K,ICH
+INTEGER LENSTR,ISP,K,ICH,i
 
 STR=ADJUSTL(STR)
 LENSTR=LEN_TRIM(STR)
@@ -134,9 +139,13 @@ subroutine removesp(str)
 
 ! Removes spaces, tabs, and control characters in string str
 
+! sub
 character(len=*):: str
+
+! loc
 character(len=1):: ch
 character(len=len_trim(str))::outstr
+integer lenstr,k,i,ich
 
 str=adjustl(str)
 lenstr=len_trim(str)
@@ -165,9 +174,12 @@ subroutine value_dr(str,rnum,ios)
 
 ! Converts number string to a double precision real number
 
+! sub
 character(len=*)::str
 real(kr8)::rnum
 integer :: ios
+! loc
+INTEGER ::  ilen,ipos
 
 ilen=len_trim(str)
 ipos=scan(str,'Ee')
@@ -185,8 +197,12 @@ subroutine value_sr(str,rnum,ios)
 
 ! Converts number string to a single precision real number
 
+! sub
 character(len=*)::str
 real(kr4) :: rnum
+integer :: ios
+
+! local
 real(kr8) :: rnumd 
 
 call value_dr(str,rnumd,ios)
@@ -207,6 +223,9 @@ subroutine value_di(str,inum,ios)
 
 character(len=*)::str
 integer(ki8) :: inum
+integer ios
+
+
 real(kr8) :: rnum
 
 call value_dr(str,rnum,ios)
@@ -226,6 +245,7 @@ subroutine value_si(str,inum,ios)
 
 character(len=*)::str
 integer(ki4) :: inum
+integer :: ios
 real(kr8) :: rnum
 
 call value_dr(str,rnum,ios)
@@ -247,6 +267,8 @@ subroutine shiftstr(str,n)
 ! are replaced by spaces.
 
 character(len=*):: str
+integer, intent(in) :: n
+integer nabs,lenstr
 
 lenstr=len(str)
 nabs=iabs(n)
@@ -271,6 +293,7 @@ subroutine insertstr(str,strins,loc)
 
 character(len=*):: str,strins
 character(len=len(str))::tempstr
+integer loc,lenstrins
 
 lenstrins=len_trim(strins)
 tempstr=str(loc:)
@@ -289,7 +312,10 @@ subroutine delsubstr(str,substr)
 ! shifts characters left to fill hole. Trailing spaces or blanks are
 ! not considered part of 'substr'.
 
+! sub
 character(len=*):: str,substr
+! loc
+integer lensubstr,ipos
 
 lensubstr=len_trim(substr)
 ipos=index(str,substr)
@@ -310,7 +336,11 @@ subroutine delall(str,substr)
 ! Deletes all occurrences of substring 'substr' from string 'str' and
 ! shifts characters left to fill holes.
 
+! sub
 character(len=*):: str,substr
+
+! loc
+integer lensubstr,ipos
 
 lensubstr=len_trim(substr)
 do
@@ -332,8 +362,12 @@ function uppercase(str) result(ucstr)
 
 ! convert string to upper case
 
+! sub
 character (len=*):: str
 character (len=len_trim(str)):: ucstr
+
+! loc
+integer ilen,ioffset,iquote,i,iav,iqc
 
 ilen=len_trim(str)
 ioffset=iachar('A')-iachar('a')     
@@ -367,8 +401,12 @@ function lowercase(str) result(lcstr)
 
 ! convert string to lower case
 
+! sub
 character (len=*):: str
 character (len=len_trim(str)):: lcstr
+
+! local
+integer ilen,ioffset,iquote,i,iav,iqc
 
 ilen=len_trim(str)
 ioffset=iachar('A')-iachar('a')
@@ -403,7 +441,12 @@ subroutine readline(nunitr,line,ios)
 ! Reads line from unit=nunitr, ignoring blank lines
 ! and deleting comments beginning with an exclamation point(!)
 
+! sub
 character (len=*):: line
+integer :: ios,nunitr
+
+! local 
+integer ipos
 
 do  
   read(nunitr,'(a)', iostat=ios) line      ! read input line
@@ -425,12 +468,19 @@ subroutine match(str,ipos,imatch)
 ! Sets imatch to the position in string of the delimiter matching the delimiter
 ! in position ipos. Allowable delimiters are (), [], {}, <>.
 
+! subroutine
 character(len=*) :: str
+integer, intent(in) :: ipos
+integer, intent(out) :: imatch
+
+! local 
 character :: delim1,delim2,ch
+integer :: lenstr,i,idelim2,iend,istart,inc,isum
 
 lenstr=len_trim(str)
 delim1=str(ipos:ipos)
 select case(delim1)
+!{{{
    case('(')
       idelim2=iachar(delim1)+1
       istart=ipos+1
@@ -454,6 +504,7 @@ select case(delim1)
    case default
       write(*,*) delim1,' is not a valid delimiter'
       return
+      ! }}}
 end select
 if(istart < 1 .or. istart > lenstr) then
    write(*,*) delim1,' has no matching delimiter'
@@ -551,8 +602,11 @@ subroutine trimzero(str)
 ! string ends in a decimal point, one trailing zero is added.
 
 character(len=*) :: str
+
+! local
 character :: ch
 character(len=10) :: exp
+integer i,ipos,lstr
 
 ipos=scan(str,'eE')
 if(ipos>0) then

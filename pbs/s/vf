@@ -3,7 +3,14 @@
 export shd="`dirname $(readlink -f $0)`"
 source $shd/sh_header.sh
 
-files="vf q0 sb c log.tex"
+bfiles0=( vf q0 sb c log.tex )
+
+let i=0
+for f in ${bfiles0[@]}; do
+  bfiles[$i]=$shd/$f
+  let i=$(($i+1))
+done
+
 vim_opts="-n -p" 
 files_dir="./"
 
@@ -14,13 +21,16 @@ cat << EOF
 SCRIPT NAME: $this_script
 PURPOSE: view files (source and output) with vim
 USAGE: $this_script OPTS
+SCRIPT DIRECTORY:   $shd
 OPTS:
 		display this help message
 	b	base files 
 	o	output files:
 			ef*.dat
+	i   input files, try to open
+			pathdata odata data 
 REMARKS:
-	base files are $files
+	base files are ${bfiles0[@]}
 ==========================================================
 EOF
 #}}}
@@ -29,16 +39,15 @@ else
 while [ ! -z "$1" ] 
 	do
 		case "$1" in
-		  "b") files="$files *.sh" ;;
-		  o) files="ef*.dat"  ;;
+		  "b") files=( ${bfiles[@]} ` ls $shd/*.sh ` ) ;;
+		  o) files=( ` ls ef*.dat ` )  ;;
+		  i) files=( ` ls data* odata* pdata.* pathdata* path.info* | sed 's/~$//g'` ) ;;
 		  *) exit ;;
 		esac
 		shift
 done 
 
-cd $files_dir
-vim $vim_opts $files
-cd -
+vim $vim_opts "${files[@]}"
 #}}}
 fi
 

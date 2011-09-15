@@ -8,8 +8,6 @@ export this_script=` basename $0 `
 vim_opts="-n -p"
 v="vim $vim_opts"
 repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
-salldir=$shd/../scripts/all/
-incdir=$shd/../include/
 
 define_base_dirs(){
 # {{{
@@ -23,8 +21,8 @@ unpackdir=$HOME/arch/unpacked
 
 set_base_vars(){
 # {{{
-s_purpose="view source files with vim"
-s_project="~/gops/"
+s_purpose="start PATHSAMPLE jobs"
+s_project="~/gops/pbs/s"
 # }}}
 }
 
@@ -57,9 +55,6 @@ EOF
 # actual interesting part {{{
 cat << EOF
 
-		bln 
-		v
-		main
 
 EOF
 # }}}
@@ -79,15 +74,7 @@ main(){
 # {{{
 
 case "$1" in
-  gmi) $v $0 gmi.main.f90 func.f90 kw.f90 ../scripts/all/rca.sh ../include/fmt.i.f90 \
-  `ls mc*.f90` v.f90 ../doc/wg.gmin.tex ../doc/wg.gmin.topics.tex 
-  ;;
-  bln) $v bln*.f90 ;;
-  m) 
-  [ -f makefile ] && mkf="makefile"
-  [ -f Makefile ] && mkf="Makefile"
-  $v $mkf old.mk deps.mk $incdir/inc.mk $incdir/def.mk $incdir/targets.mk \
- 		$salldir/rca.sh $salldir/dv.sh $salldir/mkdep.pl ;;
+  [0-9]*) cp pdata.$1 pathdata; PATHSAMPLE ;;
   *)
   ;;
 esac    # --- end of case ---

@@ -55,10 +55,10 @@
         ! }}}
         ! cross products {{{
         !
-        ! XPD_2 - squared cross product 
-        ! XPD - length of cross product 
-        ! VXPD - cross product vector
-        ! HVXPD - cross product direction
+        !> @param XPD_2 - squared cross product 
+        !> @param XPD - length of cross product 
+        !> @param VXPD - cross product vector
+        !> @param HVXPD - cross product direction
         DOUBLE PRECISION, DIMENSION(N-1) :: XPD_2, XPD
         DOUBLE PRECISION, DIMENSION(N-1,3) :: VXPD, HVXPD, PP
         ! }}}
@@ -68,7 +68,8 @@
         ! bond vectors, BVR_i => DR(i,i+1) => R_{i+1}-R_i 
         DOUBLE PRECISION, DIMENSION(N-1,3) :: BVR, EB
 
-        DOUBLE PRECISION, DIMENSION(N-1) :: DPD
+        ! DPD(1:N-2) array of dot-products between the bond vectors BVR(i)
+        DOUBLE PRECISION, DIMENSION(N-2) :: DPD
         ! }}}
         ! Gradients {{{
         ! G, GNB, GB, GBA, GTA: vectors representing gradients of different kinds

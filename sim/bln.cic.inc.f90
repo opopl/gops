@@ -16,7 +16,7 @@
       DO I = 1, N-1
         B(I)= SUM(BVR(I,1:3)**2)
         EB(I,1:3)=BVR(I,1:3)/B(I)
-        DPD(I)= SUM(BVR(I,1:3)*BVR(I+1,1:3))
+        IF (I.LT.N-1) DPD(I)= SUM(BVR(I,1:3)*BVR(I+1,1:3))
       ENDDO
 ! }}}
 ! Cross-products between adjacent bond vectors i and i+1 {{{
