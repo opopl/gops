@@ -124,6 +124,7 @@ BLNT=.FALSE.
 TARGET=.FALSE.
 TRACKDATAT=.FALSE.
 DEBUG=.FALSE.
+NORESET=.FALSE.
 LBFGST=.TRUE.
 RMST=.FALSE.
 ! whether we are doing a final quench

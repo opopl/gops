@@ -40,7 +40,7 @@ while [ ! -z "$1" ]
 	do
 		case "$1" in
 		  "b") files=( ${bfiles[@]} ` ls $shd/*.sh ` ) ;;
-		  o) files=( ` ls ef*.dat ` )  ;;
+		  o) files=( ` ls ef*.tex ` )  ;;
 		  i) files=( ` ls data* odata* pdata.* pathdata* path.info* | sed 's/~$//g'` ) ;;
 		  *) exit ;;
 		esac

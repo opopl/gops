@@ -1,5 +1,38 @@
 #!/usr/bin/env bash
 
+set_base_vars(){
+# {{{
+s_purpose="submit PBS jobs"
+s_project="~/gops/pbs/s/"
+
+export sys=G46
+export nf=10
+export nm=1
+export od="out"
+export force=0.001
+export ca=5
+export nsteps=10000
+export m_lbfgs=10
+export fqmax="1.0D-3"
+export sqmax="1.0D-4"
+
+export natoms=46
+export radius=10.0
+export nrg=10
+export seed=1
+export n_en=5
+export pull_start=1
+export pull_end=46
+export force=0.0
+export temp=0.03
+export exe=GMIN
+export gs_energy=-0.2936531215
+
+allmodes=( 1 2 3 4 5 6 ) 
+queue=s1
+# }}}
+}
+
 # preliminary stuff {{{
 
 # directory where this script resides
@@ -11,6 +44,8 @@ vim_opts="-n -p"
 v="vim $vim_opts"
 repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
 
+set_base_vars
+
 define_base_dirs(){
 # {{{
 # main Wales group software directory
@@ -20,16 +55,7 @@ unpackdir=$HOME/arch/unpacked
 # }}}
 }
 
-
-set_base_vars(){
-# {{{
-s_purpose="view source files with vim"
-s_project="Wales group svn repository"
-s_project="~/scripts"
-# }}}
-}
-
-set_base_vars
+#}}}
 
 display_help(){
 # {{{
@@ -57,10 +83,20 @@ EOF
 # }}}
 # actual interesting part {{{
 cat << EOF
+		
+		a 				run over all modes
 
-		1				Go and WT in force ranges 0-3 
-		2	FORCE		Single force regime
-		3				G46, nst=4, nf=10, f=( 0.0 0.0001 )
+		-f FORCE		specify force 
+		-m MODE			submission mode:
+							1	Go and WT in force ranges 0-3 
+							2	Single force regime (need also specify force via -f switch)
+									default: $force
+							3 	0.0 0.0001 
+							4   0.0005 0.0015 
+							5   0.0016 0.0025 
+							6   0.0026 0.0035 
+		-nf NF			give number of force points. Default: $nf
+							
 
 EOF
 # }}}
@@ -75,43 +111,28 @@ EOF
 }
 
 [ -z "$*" ] && ( display_help; exit 0 )
-#}}}
 
 main(){
 # {{{
 
-case "$1" in
-  *)
-  #{{{
-export sys=G46
-export sb_mode=$1
-let nst=4
+while [ ! -z "$1" ]; do
+  # check other command-line arguments{{{
+	case "$1" in
+  		-f) export force=$2 ; shift ;;
+  		-nf) export nf=$2 ; shift ;;
+		a) for mode in ${allmodes[@]}; do
+				$0 -m $mode
+	  		done
+			;;
+		-m)  export sb_mode=$2; shift
+  	;;
+	esac    # --- end of case ---
+	shift
+  #}}}
+done
 
-if [ ! -z $2 ]; then 
-	force=$2
-fi
-if [ ! -z $3 ]; then 
-	nst=$3
-  else
-	nst=4
-fi
-queue=s1
-
-# depending on sb_mode, define: nm cmd
-# {{{
-		
-cat << EOF
-
-Variables:
-
-sb_mode=$sb_mode
-queue=$queue
-force=$force
-sys=$sys
-nst=$nst
-
-EOF
-
+# execution {{{
+# depending on sb_mode, define: nm cmd {{{
 case "$sb_mode" in
  	1) # GO and WT in force ranges 0-3 {{{
 		let nm=8
@@ -119,11 +140,12 @@ case "$sb_mode" in
  		echo "GO and WT in force ranges 0-3"
 		;;
 		# }}}
-	[2-9])	# force increment run within a single force range {{{
+	2)	# force increment run within a single force range {{{
 		nm=1
 		echo "force increment run within a single force range"
 		# }}}
 	;;
+	[3-9]) ;;
 esac
 # }}}
 
@@ -148,16 +170,13 @@ case "$sb_mode" in
 			0) export sys="G46" ; od="go$n2" ; queue=s1 ;;
 			1) export sys="P46" ; od="wt$n2" ; queue=s1 ;;
 		esac
-		
-		let nf=9
-		let nst=5
 		;;
 	      # }}}	
-	2) fr=( $force ) ; let nf=1 ; od="out" ;;
-	3) fr=( 0.0 0.0001 ); export sys="G46"; let nst=4; let nf=10 ; od="out" ;;
-	4) fr=( 0.0005 0.0015 ); export sys="G46"; let nst=4; let nf=10 ; od="out" ;;
-	5) fr=( 0.0015 0.0025 ); export sys="G46"; let nst=4; let nf=10 ; od="out" ;;
-	6) fr=( 0.0025 0.0035 ); export sys="G46"; let nst=4; let nf=10 ; od="out" ;;
+	2) fr=( $force ) ; let nf=1 ;;
+	3) fr=( 0.0 0.0001 ) ;;
+	4) fr=( 0.0005 0.0015 ) ;;
+	5) fr=( 0.0016 0.0025 ) ;;
+	6) fr=( 0.0026 0.0035 ) ;;
 esac
 
 export force_min="${fr[0]}"
@@ -170,8 +189,6 @@ qsub -V q0 -q $queue ; $cmd ;
 # }}}
 done
 #}}}
-  ;;
-esac    # --- end of case ---
 
 # }}}
 }

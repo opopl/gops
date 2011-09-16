@@ -79,6 +79,8 @@ CONTAINS
     	         READ(BUFFER, *) M_LBFGS
               CASE('NACCEPT')
     	         READ(BUFFER, *) NACCEPT
+              CASE('NORESET')
+    	         NORESET=.TRUE.
               CASE('NSAVE')
     	         READ(BUFFER, *) NSAVE
               CASE('P46')

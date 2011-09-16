@@ -36,9 +36,12 @@ sub get_unused{
 	#{{{
 	my @nused;
 	$nused_file="nu.mk";
- if ( open(NUF, $nused_file) ) {
+	my $nu_exist=1;
+  open(NUF, $nused_file) or $nu_exist=0; 
+  if ($nu_exist eq 1){
 	@nused=<NUF>;
-	foreach(@nused) { s/^\s+//; s/\s+$//; }
+	#foreach(@nused) { s/^\s+//; s/\s+$//; print MAKEFILE "$_\n"; }
+	foreach(@nused) { s/^\s+//; s/\s+$// }
 	chomp(@nused);
 	close(NUF);
 	}
@@ -54,9 +57,20 @@ sub wanted {
     ( ! /^.*\.(save|o|old|ref)\..*\z/s )
 	) {
 		$name =~ s/^\.\///; 
-		if ( ! grep { $_ eq $name } @nused ) {
+		$size_nused=@nused;
+		#if ( $size_nused gt 0 ){
+			#if ( ! grep { $_ eq $name } @nused ) {
+				#push(@fortranfiles,"$name"); 
+			#}
+		#} else {
+				#push(@fortranfiles,"$name"); 
+		#}
+
+			if ( ! grep { $_ eq $name } @nused ) {
 				push(@fortranfiles,"$name"); 
-		}	
+			}
+
+
 	}
 #}}}
 }

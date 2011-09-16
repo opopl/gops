@@ -15,56 +15,18 @@ pbs_job_id=` echo ${PBS_JOBID}  | sed "s/[\.a-zA-Z]*$//" `
 clust_id=` echo ${PBS_JOBID}  | sed "s/^[0-9]*\.//" `
 # }}}
 
-#export shd="`dirname $(readlink -f $0)`"
-#source $shd/sh_header.sh
-#source sh_header.sh
-#export shd="`dirname $(readlink -f $0)`"
-
 source f.sh
-
-# vary
-ca=5
-nsteps=10000
-fqmax="1.0D-3"
-sqmax="1.0D-4"
+source define_forces_0.sh
 
 # set initial parameters  {{{
-
-natoms=46
-radius=10.0
-nrg=10
-seed=1
-n_en=5
-pull_start=1
-pull_end=46
-force=0.0
-m_lbfgs=50
-#sys=G46
-#nsteps=10000
-#nst=4
-temp=0.03
-exe=GMIN
-gs_energy=-0.2936531215
 output_dir=$PWD
 outfiles=( ef.dat ) 
 GMIN_ofiles=( GMIN_out lowest best markov energy data ) 
-
-#for f in ${outfiles[@]}
-	#do
-	  #echo "" >& $f
-#done
 #}}}
 
 dn=$pbs_job_id
 mkdir -p $dn
 cd $dn
-
-# define_forces_0.sh:
-# define array forces[] by using force_min, force_max, and force_i
-# {{{
-# echo "source define_forces_0.sh "
-source define_forces_0.sh 
-# }}}
 
 #force loop{{{
 for force in ${forces[@]}; do
@@ -72,24 +34,24 @@ for force in ${forces[@]}; do
 cat >& data << EOF
 SLOPPYCONV $sqmax
 TIGHTCONV  $fqmax
-UPDATES 10
+UPDATES $m_lbfgs
 DGUESS  0.1
-PULL $pull_start $pull_end $force
 SAVE 10
 CENTRE
 CHANGEACCEPT $ca
 $sys 
 EDIFF 0.001
-COMMENT EDIFF 0.02
-COMMENT STEPS $nsteps 1.0
 STEPS $nsteps
 MAXBFGS 1.0
 MAXIT 1000 1000
 STEP 1.9 0.0 
 TEMPERATURE $temp
+PULL $pull_start $pull_end $force
 
 EOF
 # }}}
+
+#echo "NORESET" >> data
 
 # execute {{{
 
