@@ -33,17 +33,21 @@ sub wanted;
 sub get_unused;
 
 sub get_unused{
+	#{{{
+	my @nused;
 	$nused_file="nu.mk";
-	open(NUF, $nused_file) || die "Couldn't open $nused_file" ;
-@nused=<NUF>;
-foreach(@nused) { s/^\s+//; s/\s+$//; }
-chomp(@nused);
-close(NUF)
+ if ( open(NUF, $nused_file) ) {
+	@nused=<NUF>;
+	foreach(@nused) { s/^\s+//; s/\s+$//; }
+	chomp(@nused);
+	close(NUF);
+	}
+#}}}
 }
 
 sub wanted {
+	#{{{
     my ($dev,$ino,$mode,$nlink,$uid,$gid);
-	my $NotUse;
 
     if ( ( /^.*\.(f90|f|F)\z/s) &&
     ( $nlink || (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_)) ) &&
@@ -54,8 +58,8 @@ sub wanted {
 				push(@fortranfiles,"$name"); 
 		}	
 	}
+#}}}
 }
-
 
 #}}}
 

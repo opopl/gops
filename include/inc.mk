@@ -4,7 +4,7 @@ ROOTPATH=$(PPATH)/../
 include $(INCPATH)/def.mk
 
 ALLSOURCE := $(wildcard *.f) $(wildcard *.f90) $(wildcard *.F)
-NOTUSEDSOURCE := $(shell cat nu.mk )
+NOTUSEDSOURCE := $(shell test -f nu.mk && cat nu.mk )
 NOTUSEDSOURCE+=$(wildcard *.inc.*)  \
 	$(wildcard *.i.*) \
 	$(wildcard *.ref.*) \
