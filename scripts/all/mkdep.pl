@@ -1,5 +1,6 @@
 #!/usr/bin/perl
 #
+# start {{{
 # Changelog:
 #
 # Original makemake utility - Written by Michael Wester <wester@math.unm.edu> December 27, 1995
@@ -16,6 +17,7 @@ if 0; #$running_under_some_shell
 #use strict;
 use File::Find ();
 use Getopt::Std;
+#}}}
 
 # from find2perl {{{
 # Set the variable $File::Find::dont_use_nlink if you're using AFS,
@@ -28,42 +30,32 @@ use vars qw/*name *dir *prune/;
 *prune  = *File::Find::prune;
 
 sub wanted;
+sub get_unused;
 
-# Traverse desired filesystems
-
-#sub wanted {
-    ##if ( $_ ~= /^.*\.(f90|F|f)\z/s ) { push(@fortranfiles,( "$name" ~= s/^\.\/// ) ); }
-    ##/^\.\/(.*)\.(f90|F|f)\z/s && push(@fortranfiles,"$1.$2"); 
-	##/^.*\.(f90|F|f)\z/s && push(@fortranfiles,"$name"); 
-	#if (  ( /^.*\.(f90|F|f)\z/s ) ){
-		##&& ( $name ~! /.*\.(old|o)\..*/ ) ){
-		##&& ( $_ ~! /.*\.(save)\..*/ )
-		##&& ( $_ ~! /.*\.(ref)\..*/ ) ) { 
-		#push(@fortranfiles,"$name"); 
-	#}
-    ##&& print("$name\n");
-#}
+sub get_unused{
+	$nused_file="nu.mk";
+	open(NUF, $nused_file) || die "Couldn't open $nused_file" ;
+@nused=<NUF>;
+foreach(@nused) { s/^\s+//; s/\s+$//; }
+chomp(@nused);
+close(NUF)
+}
 
 sub wanted {
     my ($dev,$ino,$mode,$nlink,$uid,$gid);
+	my $NotUse;
 
-    (   
-        /^.*\.(f90|f|F)\z/s
-        #||
-        #/^.*\.f\z/s
-        #||
-        #/^.*\.F\z/s
-    ) &&
-    ($nlink || (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_))) &&
-    ! /^.*\.(save|o|old|ref)\..*\z/s
-    #&& print("$name\n");
-	&& 	push(@fortranfiles,"$name"); 
+    if ( ( /^.*\.(f90|f|F)\z/s) &&
+    ( $nlink || (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_)) ) &&
+    ( ! /^.*\.(save|o|old|ref)\..*\z/s )
+	) {
+		$name =~ s/^\.\///; 
+		if ( ! grep { $_ eq $name } @nused ) {
+				push(@fortranfiles,"$name"); 
+		}	
+	}
 }
 
-
-File::Find::find({wanted => \&wanted}, '.')  ;
-
-foreach (@fortranfiles){ s/^\.\/// };
 
 #}}}
 
@@ -80,6 +72,9 @@ USAGE
 
 my $depsfile="$ARGV[0]";
 open(MAKEFILE, ">$depsfile") or die $!; 
+
+get_unused;
+File::Find::find({wanted => \&wanted}, '.')  ;
 #
 # Allow Fortran 90 module source files to have extensions other than .f90
 #

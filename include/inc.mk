@@ -4,13 +4,14 @@ ROOTPATH=$(PPATH)/../
 include $(INCPATH)/def.mk
 
 ALLSOURCE := $(wildcard *.f) $(wildcard *.f90) $(wildcard *.F)
-NOTUSEDSOURCE=$(wildcard *.inc.*)  \
+NOTUSEDSOURCE := $(shell cat nu.mk )
+NOTUSEDSOURCE+=$(wildcard *.inc.*)  \
 	$(wildcard *.i.*) \
 	$(wildcard *.ref.*) \
 	$(wildcard *.old.*) \
 	$(wildcard *.o.*) \
 	$(wildcard *.other.*) \
-	$(wildcard *.save.*)
+	$(wildcard *.save.*) 
 
 #SOURCE=$(filter-out,$(filter-out $(NOTUSEDSOURCE),$(ALLSOURCE)),$(GENFFILES))
 SOURCE=$(filter-out $(NOTUSEDSOURCE),$(ALLSOURCE))

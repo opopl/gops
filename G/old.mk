@@ -156,10 +156,10 @@ endif
 ###################################### COMPILERS AND COMPILER FLAGS ###################################### {{{
 #
 ######## The Portland Group Compiler Technology Fortran 90 compiler {{
-#FC = pgf90
+FC = pgf90
 # FC = mpif77  # for lam - don't forget to uncomment MPI!
-FC = mpif90  # for mpich and openmpi - don't forget to uncomment MPI!
-DEFS = -DMPI
+#FC = mpif90  # for mpich and openmpi - don't forget to uncomment MPI!
+#DEFS = -DMPI
 # The usual flags for AMBGMIN:
 # FFLAGS= -Mextend -O3 -Mvect=assoc,cachesize:1024000,recog,transform
 # These are the CHARMM31 flags for mpif90 64 bit library.

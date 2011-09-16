@@ -86,7 +86,7 @@ case "$1" in
   m) 
   [ -f makefile ] && mkf="makefile"
   [ -f Makefile ] && mkf="Makefile"
-  $v $mkf old.mk deps.mk $incdir/inc.mk $incdir/def.mk $incdir/targets.mk \
+  $v $0 $mkf old.mk deps.mk nu.mk $incdir/inc.mk $incdir/def.mk $incdir/targets.mk \
  		$salldir/rca.sh $salldir/dv.sh $salldir/mkdep.pl ;;
   *)
   ;;
