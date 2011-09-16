@@ -1,4 +1,4 @@
-include ./make.inc
+include inc.mk
 # SAT: This version of BLAS was adapted from LAPACK distribution (version 3.0)
 #
 #######################################################################
@@ -64,7 +64,6 @@ clean:
 	rm -f *.o ${AMHLIB} ifc?????? *.lst *mod
 
 ################### DEPENDENCIES ######################################
-
 #walesamh_finalio.o: amhglobals.o 
 additive_ev.o: amhglobals.o
 dssp_hdrgn_eastwood.o:   amhglobals.o

@@ -9,12 +9,13 @@ export sys=G46
 export nf=10
 export nm=1
 export od="out"
-export force=0.001
+export force=0.00
 export ca=5
-export nsteps=10000
 export m_lbfgs=10
-export fqmax="1.0D-3"
-export sqmax="1.0D-4"
+export nsteps=50000
+export fqmax="1.0D-4"
+export sqmax="1.0D-3"
+export data_ext="tex"
 
 export natoms=46
 export radius=10.0
@@ -86,8 +87,20 @@ cat << EOF
 		
 		a 				run over all modes
 
-		-f FORCE		specify force 
-		-m MODE			submission mode:
+		-f force					specify force. Default: $force
+		-nf nf						give number of force points. Default: $nf
+		-p1 pull_start				start atom number. Default: $pull_start
+		-p2 end_start				end atom number. Default: $pull_end
+	
+		-N nsteps					number of basin-hopping steps. Default: $nsteps
+		-ca ca						NACCEPT in GMIN. Number of quenches, 
+										after which the acceptance is checked and adjusted.
+										Default: ca=$ca
+		-nrg nrg					specify the number of starting random geometries.
+										Default: nrg=$nrg
+
+
+		-m sb_mode		submission mode:
 							1	Go and WT in force ranges 0-3 
 							2	Single force regime (need also specify force via -f switch)
 									default: $force
@@ -95,7 +108,7 @@ cat << EOF
 							4   0.0005 0.0015 
 							5   0.0016 0.0025 
 							6   0.0026 0.0035 
-		-nf NF			give number of force points. Default: $nf
+							7	0.0036 0.01, nf=80
 							
 
 EOF
@@ -118,14 +131,20 @@ main(){
 while [ ! -z "$1" ]; do
   # check other command-line arguments{{{
 	case "$1" in
+		#pulling {{{
   		-f) export force=$2 ; shift ;;
+  		-p1) export pull_start=$2 ; shift ;;
+  		-p2) export pull_end=$2 ; shift ;;
+	     #}}}
   		-nf) export nf=$2 ; shift ;;
+  		-N) export nsteps=$2 ; shift ;;
+  		-ca) export ca=$2 ; shift ;;
+  		-nrg) export nrg=$2 ; shift ;;
 		a) for mode in ${allmodes[@]}; do
 				$0 -m $mode
 	  		done
 			;;
-		-m)  export sb_mode=$2; shift
-  	;;
+		-m)  export sb_mode=$2; shift ;;
 	esac    # --- end of case ---
 	shift
   #}}}
@@ -153,7 +172,6 @@ for ((n=0;n<$nm;n++)); do
 # {{{
 # depending on sb_mode, pass to q0 the n-dependent parameters
 # also, change the queue name, if necessary
-#{{{
 case "$sb_mode" in 
   	1) # Go and WT in force ranges 0-3 {{{
 		n1=$(($n%2)) 
@@ -177,13 +195,12 @@ case "$sb_mode" in
 	4) fr=( 0.0005 0.0015 ) ;;
 	5) fr=( 0.0016 0.0025 ) ;;
 	6) fr=( 0.0026 0.0035 ) ;;
+	7) fr=( 0.0036 0.01 ) ; nf=80 ;;
 esac
 
 export force_min="${fr[0]}"
 export force_max="${fr[1]}"
 export force_i=$( echo "scale=10; ($force_max-$force_min)/$nf" | bc )
-export nsteps=$( echo "10^$nst" | bc ) 
-#}}}
   
 qsub -V q0 -q $queue ; $cmd ; 
 # }}}

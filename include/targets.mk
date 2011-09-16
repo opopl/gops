@@ -1,4 +1,9 @@
 
+
+default: $(AUXF) $(DEPS) $(PROG)
+
+#SUFFIXES..., F => o {{{
+
 .SUFFIXES:
 .SUFFIXES: .o .f .F .f90
 
@@ -11,7 +16,8 @@
 .F90.f90:
 	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
 
-default: $(AUXF) $(DEPS) $(PROG)
+#}}}
+# porfuncs rca dv header {{{
 
 porfuncs.f90: $(PRF)
 	$(PRF) $(SWITCH) > $@
@@ -24,6 +30,9 @@ dv.f90: $(DV)
 
 header.f90: $(HEADER) 
 	$(HEADER) > $@
+
+#}}}
+
 
 $(DEPS): $(MKDEP)
 	$(MKDEP) $@
@@ -43,11 +52,14 @@ $(PROG): $(OBJS) bindir
 cup:
 	rm -rf $(NOTUSEDSOURCE)
 
-libmyblas.a: SAT-Ghost
+libamh.a: $(AMH_OBJS)
+	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" 
+
+libmyblas.a: $(BLAS_OBJS)
 	cd $(BLASPATH); make double FC="${FC}" FFLAGS="${FFLAGS}" BLAS_EXCLUDE_LIST="${BLAS_EXCLUDE_LIST}";\
 	cp $@ $(PPATH)
 
-libmylapack.a: SAT-Ghost
+libmylapack.a: $(LAPACK_OBJS)
 	cd $(LAPACKPATH); make selection FC="${FC}" FFLAGS="${FFLAGS}" NOOPT="${NOOPT}";\
 	cp $@ $(PPATH)
 

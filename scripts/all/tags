@@ -1,0 +1,74 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.5.4	//
+CASE	mkdep.pl	/^      CASE: {$/;"	l
+CASE	mkdep.pl~	/^      CASE: {$/;"	l
+File	mkdep.pl	/^File::Find::find({wanted => \\&wanted}, '.')  ;$/;"	l
+File	mkdep.pl~	/^File::Find::find({wanted => \\&wanted}, '.')  ;$/;"	l
+LanguageCompiler	mkdep.pl	/^sub LanguageCompiler {$/;"	s
+LanguageCompiler	mkdep.pl~	/^sub LanguageCompiler {$/;"	s
+MakeDepends	mkdep.pl	/^sub MakeDepends {$/;"	s
+MakeDepends	mkdep.pl~	/^sub MakeDepends {$/;"	s
+MakeDependsf90	mkdep.pl	/^sub MakeDependsf90 {$/;"	s
+MakeDependsf90	mkdep.pl~	/^sub MakeDependsf90 {$/;"	s
+PURPOSE	mkdep.pl	/^PURPOSE: Generate dependencies for a Fortran project$/;"	l
+PURPOSE	mkdep.pl~	/^PURPOSE: Generate dependencies for a Fortran project$/;"	l
+PrintWords	mkdep.pl	/^sub PrintWords {$/;"	s
+PrintWords	mkdep.pl~	/^sub PrintWords {$/;"	s
+USAGE	mkdep.pl	/^USAGE: $0 FILE$/;"	l
+USAGE	mkdep.pl~	/^USAGE: $0 FILE$/;"	l
+cpl	f.sh	/^cpl(){$/;"	f
+date_dm_hm	f.sh	/^date_dm_hm(){ # {{{$/;"	f
+date_dmy_hms	f.sh	/^date_dmy_hms(){ # {{{$/;"	f
+date_hms	f.sh	/^date_hms(){ # {{{$/;"	f
+date_in_secs	f.sh	/^date_in_secs(){ # {{{$/;"	f
+define_base_dirs	cpd	/^define_base_dirs(){$/;"	f
+dir_size	f.sh	/^dir_size(){$/;"	f
+display_help	cpd	/^display_help(){$/;"	f
+dvitopdf	f.sh	/^dvitopdf(){ # {{{$/;"	f
+eh	crg	/^eh(){$/;"	f
+eh0	crg	/^eh0(){$/;"	f
+eo	f.sh	/^eo(){ # {{{$/;"	f
+eo_s	f.sh	/^eo_s(){$/;"	f
+esl	f.sh	/^esl(){ $/;"	f
+get_unused	mkdep.pl	/^sub get_unused;$/;"	s
+get_unused	mkdep.pl	/^sub get_unused{$/;"	s
+get_unused	mkdep.pl~	/^sub get_unused;$/;"	s
+get_unused	mkdep.pl~	/^sub get_unused{$/;"	s
+main	cpd	/^main(){$/;"	f
+pdf_add	f.sh	/^pdf_add(){ # {{{$/;"	f
+pdf_merge	f.sh	/^pdf_merge(){ # {{{$/;"	f
+printvar	f.sh	/^printvar(){ # {{{$/;"	f
+ps_add	f.sh	/^ps_add(){ # {{{$/;"	f
+ps_merge	f.sh	/^ps_merge(){ # {{{$/;"	f
+rca_GMIN	rca.sh	/^rca_GMIN(){$/;"	f
+rca_OPTIM	rca.sh	/^rca_OPTIM(){$/;"	f
+rca_OPTIM	rca.sh~	/^rca_OPTIM(){$/;"	f
+rca_PATHSAMPLE	rca.sh	/^rca_PATHSAMPLE(){$/;"	f
+rca_PATHSAMPLE	rca.sh~	/^rca_PATHSAMPLE(){$/;"	f
+rca_gmi	rca.sh	/^rca_gmi(){$/;"	f
+rca_gmi	rca.sh~	/^rca_gmi(){$/;"	f
+rca_gmin	rca.sh	/^rca_gmin(){$/;"	f
+rca_gmin	rca.sh~	/^rca_gmin(){$/;"	f
+rca_lbfgs	rca.sh	/^rca_lbfgs(){$/;"	f
+rca_lbfgs	rca.sh~	/^rca_lbfgs(){$/;"	f
+rca_optim	rca.sh	/^rca_optim(){$/;"	f
+rca_optim	rca.sh~	/^rca_optim(){$/;"	f
+rca_pathsample	rca.sh	/^rca_pathsample(){$/;"	f
+rca_pathsample	rca.sh~	/^rca_pathsample(){$/;"	f
+set_base_vars	cpd	/^set_base_vars(){$/;"	f
+subs	xp_bln.sh	/^subs(){$/;"	f
+time_dhms	f.sh	/^time_dhms(){ # {{{$/;"	f
+toLower	mkdep.pl	/^sub toLower {$/;"	s
+toLower	mkdep.pl~	/^sub toLower {$/;"	s
+uniq	mkdep.pl	/^sub uniq {$/;"	s
+uniq	mkdep.pl~	/^sub uniq {$/;"	s
+use	f.sh	/^use(){$/;"	f
+use	xp	/^use(){$/;"	f
+wanted	mkdep.pl	/^sub wanted {$/;"	s
+wanted	mkdep.pl	/^sub wanted;$/;"	s
+wanted	mkdep.pl~	/^sub wanted {$/;"	s
+wanted	mkdep.pl~	/^sub wanted;$/;"	s

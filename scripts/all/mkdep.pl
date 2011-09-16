@@ -29,19 +29,24 @@ use vars qw/*name *dir *prune/;
 *dir    = *File::Find::dir;
 *prune  = *File::Find::prune;
 
+# array for not-used fortran files which are taken from 
+# file nu.mk
+my @nused;
+# does the nu.mk file exist? 0 for no, 1 for yes
+my $nu_exist;
+
 sub wanted;
 sub get_unused;
 
 sub get_unused{
 	#{{{
-	my @nused;
 	$nused_file="nu.mk";
-	my $nu_exist=1;
+	$nu_exist=1;
   open(NUF, $nused_file) or $nu_exist=0; 
   if ($nu_exist eq 1){
 	@nused=<NUF>;
 	#foreach(@nused) { s/^\s+//; s/\s+$//; print MAKEFILE "$_\n"; }
-	foreach(@nused) { s/^\s+//; s/\s+$// }
+	foreach(@nused) { s/^\s+//; s/\s+$//; }
 	chomp(@nused);
 	close(NUF);
 	}
@@ -91,7 +96,7 @@ USAGE
 my $depsfile="$ARGV[0]";
 open(MAKEFILE, ">$depsfile") or die $!; 
 
-get_unused;
+&get_unused;
 File::Find::find({wanted => \&wanted}, '.')  ;
 #
 # Allow Fortran 90 module source files to have extensions other than .f90

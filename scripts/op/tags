@@ -1,0 +1,198 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.5.4	//
+BIG	u/fsplit.c	36;"	d	file:
+FALSE	u/fsplit.c	43;"	d	file:
+NAMELENGTH	u/fsplit.c	46;"	d	file:
+TRUE	u/fsplit.c	39;"	d	file:
+blkdatano	u/fsplit.c	/^int blkdatano = 0;$/;"	v
+bu_install	bu	/^bu_install(){$/;"	f
+bu_install	bu~	/^bu_install(){$/;"	f
+build_bu_target	bu	/^build_bu_target(){$/;"	f
+build_bu_target	bu~	/^build_bu_target(){$/;"	f
+cat_makefile_parts	bu	/^cat_makefile_parts(){$/;"	f
+cat_makefile_parts	bu~	/^cat_makefile_parts(){$/;"	f
+check_kwd_existence	cf	/^check_kwd_existence(){$/;"	f
+check_modules_exist	bu	/^check_modules_exist(){$/;"	f
+check_modules_exist	bu~	/^check_modules_exist(){$/;"	f
+compare	u/fsplit.c	/^int compare ( char **s0, char *t )$/;"	f
+compose_makefile	bu	/^compose_makefile(){$/;"	f
+compose_makefile	bu~	/^compose_makefile(){$/;"	f
+cpl	f.sh	/^cpl(){$/;"	f
+cpr	bu	/^cpr(){$/;"	f
+cpr	bu~	/^cpr(){$/;"	f
+cpr	cpf	/^cpr(){$/;"	f
+date_dm_hm	f.sh	/^date_dm_hm(){ # {{{$/;"	f
+date_dmy_hms	f.sh	/^date_dmy_hms(){ # {{{$/;"	f
+date_hms	f.sh	/^date_hms(){ # {{{$/;"	f
+date_in_secs	f.sh	/^date_in_secs(){ # {{{$/;"	f
+define_base_dirs	bug	/^define_base_dirs(){$/;"	f
+define_base_dirs	buo	/^define_base_dirs(){$/;"	f
+define_base_dirs	bup	/^define_base_dirs(){$/;"	f
+define_base_dirs	cpf	/^define_base_dirs(){$/;"	f
+define_base_dirs	decom	/^define_base_dirs(){$/;"	f
+define_base_dirs	gop	/^define_base_dirs(){$/;"	f
+define_base_dirs	iwg	/^define_base_dirs(){$/;"	f
+define_base_dirs	n-bug	/^define_base_dirs(){$/;"	f
+define_base_dirs	n-gop	/^define_base_dirs(){$/;"	f
+define_base_dirs	templates/sh_template.sh	/^define_base_dirs(){$/;"	f
+define_dirs	bu	/^define_dirs(){$/;"	f
+define_dirs	bu~	/^define_dirs(){$/;"	f
+dir_size	f.sh	/^dir_size(){$/;"	f
+display_help	bu	/^display_help(){$/;"	f
+display_help	bug	/^display_help(){$/;"	f
+display_help	buo	/^display_help(){$/;"	f
+display_help	bup	/^display_help(){$/;"	f
+display_help	buu	/^display_help(){$/;"	f
+display_help	bu~	/^display_help(){$/;"	f
+display_help	cpf	/^display_help(){$/;"	f
+display_help	decom	/^display_help(){$/;"	f
+display_help	gop	/^display_help(){$/;"	f
+display_help	h	/^display_help(){$/;"	f
+display_help	iwg	/^display_help(){$/;"	f
+display_help	n-bug	/^display_help(){$/;"	f
+display_help	n-gop	/^display_help(){$/;"	f
+display_help	sv	/^display_help(){$/;"	f
+display_help	templates/sh_template.sh	/^display_help(){$/;"	f
+display_help_message	cf	/^display_help_message(){$/;"	f
+do_rm	bu	/^do_rm(){$/;"	f
+do_rm	bu~	/^do_rm(){$/;"	f
+do_v	bu	/^do_v(){$/;"	f
+do_v	bu~	/^do_v(){$/;"	f
+dvitopdf	f.sh	/^dvitopdf(){ # {{{$/;"	f
+endcard	u/fsplit.c	/^int endcard ( char *s )$/;"	f
+eo	bu	/^eo(){$/;"	f
+eo	buu	/^eo(){$/;"	f
+eo	bu~	/^eo(){$/;"	f
+eo	f.sh	/^eo(){ # {{{$/;"	f
+eo_fc	bu	/^eo_fc(){ $/;"	f
+eo_fc	buu	/^  eo_fc(){$/;"	f
+eo_fc	bu~	/^eo_fc(){ $/;"	f
+eo_fo	bu	/^eo_fo(){ $/;"	f
+eo_fo	buu	/^eo_fo(){$/;"	f
+eo_fo	bu~	/^eo_fo(){ $/;"	f
+eo_s	f.sh	/^eo_s(){$/;"	f
+eoo	f.sh	/^eoo(){$/;"	f
+eoo_opts	bu	/^eoo_opts(){$/;"	f
+eoo_opts	bu~	/^eoo_opts(){$/;"	f
+eooe	f.sh	/^eooe(){$/;"	f
+eoof	f.sh	/^eoof(){$/;"	f
+eoos	f.sh	/^eoos(){$/;"	f
+eos	bu	/^eos(){$/;"	f
+eos	bu~	/^eos(){$/;"	f
+esl	f.sh	/^esl(){ $/;"	f
+exists	f.sh	/^exists(){$/;"	f
+fill_files	n-vff	/^fill_files(){$/;"	f
+fill_files	vff	/^fill_files(){$/;"	f
+fill_files	vff~	/^fill_files(){$/;"	f
+fill_mk_INCLUDE	n-vff	/^fill_mk_INCLUDE(){$/;"	f
+fill_mk_INCLUDE	vff	/^fill_mk_INCLUDE(){$/;"	f
+fill_mk_INCLUDE	vff~	/^fill_mk_INCLUDE(){$/;"	f
+get_compiler	bu	/^get_compiler(){$/;"	f
+get_compiler	bu~	/^get_compiler(){$/;"	f
+get_compiler_short_name	bu	/^get_compiler_short_name(){$/;"	f
+get_compiler_short_name	bu~	/^get_compiler_short_name(){$/;"	f
+get_compiler_version	bu	/^get_compiler_version(){$/;"	f
+get_compiler_version	bu~	/^get_compiler_version(){$/;"	f
+get_mav	bu	/^get_mav(){$/;"	f
+get_mav	bu~	/^get_mav(){$/;"	f
+get_name	u/fsplit.c	/^void get_name ( char *s, char *f )$/;"	f
+get_prog_name	bu	/^get_prog_name(){$/;"	f
+get_prog_name	bu~	/^get_prog_name(){$/;"	f
+h_kw	h	/^h_kw(){$/;"	f
+load_compiler	bu	/^load_compiler(){$/;"	f
+load_compiler	bu~	/^load_compiler(){$/;"	f
+main	bug	/^main(){$/;"	f
+main	buo	/^main(){$/;"	f
+main	bup	/^main(){$/;"	f
+main	buu	/^main(){$/;"	f
+main	cpf	/^main(){$/;"	f
+main	decom	/^main(){$/;"	f
+main	gop	/^main(){$/;"	f
+main	iwg	/^main(){$/;"	f
+main	n-bug	/^main(){$/;"	f
+main	n-gop	/^main(){$/;"	f
+main	templates/sh_template.sh	/^main(){$/;"	f
+main	u/fsplit.c	/^int main ( int argc, char **argv )$/;"	f
+make_base	bu	/^make_base(){$/;"	f
+make_base	bu~	/^make_base(){$/;"	f
+make_bsx	bu	/^make_bsx(){$/;"	f
+make_bsx	bu~	/^make_bsx(){$/;"	f
+make_charmm	bu	/^make_charmm(){$/;"	f
+make_charmm	bu~	/^make_charmm(){$/;"	f
+make_dx	bu	/^make_dx(){$/;"	f
+make_dx	bu~	/^make_dx(){$/;"	f
+make_optim	bu	/^make_optim(){$/;"	f
+make_optim	bu~	/^make_optim(){$/;"	f
+make_pathsample	bu	/^make_pathsample(){$/;"	f
+make_pathsample	bu~	/^make_pathsample(){$/;"	f
+make_prog	bu	/^make_prog(){$/;"	f
+make_prog	bu~	/^make_prog(){$/;"	f
+make_tags	bu	/^make_tags(){$/;"	f
+make_tags	bu~	/^make_tags(){$/;"	f
+make_tgz	bu	/^make_tgz(){$/;"	f
+make_tgz	bu~	/^make_tgz(){$/;"	f
+mhelp	bu	/^mhelp(){$/;"	f
+mhelp	bu~	/^mhelp(){$/;"	f
+mlist	bu	/^mlist(){$/;"	f
+mlist	bu~	/^mlist(){$/;"	f
+mload	bu	/^mload(){$/;"	f
+mload	bu~	/^mload(){$/;"	f
+mload_prelim	bu	/^mload_prelim(){$/;"	f
+mload_prelim	bu~	/^mload_prelim(){$/;"	f
+module	bu	/^module(){ $/;"	f
+module	bu~	/^module(){ $/;"	f
+munload	bu	/^munload(){$/;"	f
+munload	bu~	/^munload(){$/;"	f
+mymake	bu	/^mymake(){$/;"	f
+mymake	bu~	/^mymake(){$/;"	f
+pdf_add	f.sh	/^pdf_add(){ # {{{$/;"	f
+pdf_merge	f.sh	/^pdf_merge(){ # {{{$/;"	f
+pp	cf	/^pp(){$/;"	f
+print_code	cf	/^print_code(){$/;"	f
+print_kwd_info	cf	/^print_kwd_info(){$/;"	f
+printvar	f.sh	/^printvar(){ # {{{$/;"	f
+process_opt	cf	/^process_opt(){$/;"	f
+ps_add	f.sh	/^ps_add(){ # {{{$/;"	f
+ps_merge	f.sh	/^ps_merge(){ # {{{$/;"	f
+rmr	bu	/^rmr(){$/;"	f
+rmr	bu~	/^rmr(){$/;"	f
+run_doxygen	bu	/^run_doxygen(){$/;"	f
+run_doxygen	bu~	/^run_doxygen(){$/;"	f
+select_debug_level	bu	/^select_debug_level(){$/;"	f
+select_debug_level	bu~	/^select_debug_level(){$/;"	f
+select_file	cf	/^select_file(){$/;"	f
+set_base_vars	cpf	/^set_base_vars(){$/;"	f
+set_base_vars	gop	/^set_base_vars(){$/;"	f
+set_base_vars	n-gop	/^set_base_vars(){$/;"	f
+set_base_vars	n-vff	/^set_base_vars(){$/;"	f
+set_base_vars	templates/sh_template.sh	/^set_base_vars(){$/;"	f
+set_base_vars	vff	/^set_base_vars(){$/;"	f
+set_base_vars	vff~	/^set_base_vars(){$/;"	f
+set_compiler_ex	bu	/^set_compiler_ex(){$/;"	f
+set_compiler_ex	bu~	/^set_compiler_ex(){$/;"	f
+set_default_compiler	bu	/^set_default_compiler(){$/;"	f
+set_default_compiler	bu~	/^set_default_compiler(){$/;"	f
+set_man_path	h	/^set_man_path(){$/;"	f
+set_mod_home	bu	/^set_mod_home(){$/;"	f
+set_mod_home	bu~	/^set_mod_home(){$/;"	f
+set_mpi_ex	bu	/^set_mpi_ex(){$/;"	f
+set_mpi_ex	bu~	/^set_mpi_ex(){$/;"	f
+split_compiler_name	bu	/^split_compiler_name(){$/;"	f
+split_compiler_name	bu~	/^split_compiler_name(){$/;"	f
+split_file	u/fsplit.c	/^void split_file ( FILE *file_input )$/;"	f
+split_file_re	cf	/^split_file_re(){$/;"	f
+svn_commit	sv	/^svn_commit(){$/;"	f
+svn_revision	sv	/^svn_revision(){$/;"	f
+svn_update	sv	/^svn_update(){$/;"	f
+time_dhms	f.sh	/^time_dhms(){ # {{{$/;"	f
+tti	f.sh	/^tti(){$/;"	f
+uppercase	bu	/^uppercase(){$/;"	f
+uppercase	bu~	/^uppercase(){$/;"	f
+use	f.sh	/^use(){$/;"	f
+v_main	n-vff	/^v_main(){$/;"	f
+v_main	vff	/^v_main(){$/;"	f
+v_main	vff~	/^v_main(){$/;"	f

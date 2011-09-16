@@ -1,4 +1,4 @@
-include ./make.inc
+include inc.mk
 # SAT: The contents of this directory was adapted from LAPACK distribution version 3.0
 #
 #######################################################################
