@@ -34,6 +34,15 @@ queue=s1
 # }}}
 }
 
+
+set_v(){
+#{{{
+case "$1" in 
+  	ca) echo "5 10 50 100" ;;
+esac
+#}}}
+}
+
 # preliminary stuff {{{
 
 # directory where this script resides
@@ -109,6 +118,11 @@ cat << EOF
 							5   0.0016 0.0025 
 							6   0.0026 0.0035 
 							7	0.0036 0.01, nf=80
+
+		-v ID				vary identifier ID over a set of values. Values are:
+								ID		VALUES
+
+								ca	 	` set_v ca` 
 							
 
 EOF
@@ -127,28 +141,55 @@ EOF
 
 main(){
 # {{{
+export doid=0
+export printid=0
+export doa=0
 
 while [ ! -z "$1" ]; do
   # check other command-line arguments{{{
 	case "$1" in
+		#a -v {{{
+		a) doa=1 ;;
+		-v) export idin=$2; export doid=1 ;;
+		-doid)  export doid=1 ;;
+	  #}}}
+	  *)
+	  	case "$1" in 
 		#pulling {{{
-  		-f) export force=$2 ; shift ;;
-  		-p1) export pull_start=$2 ; shift ;;
-  		-p2) export pull_end=$2 ; shift ;;
+  		-f) export force=$2 ;;
+  		-p1) export pull_start=$2 ;;
+  		-p2) export pull_end=$2 ;;
 	     #}}}
-  		-nf) export nf=$2 ; shift ;;
-  		-N) export nsteps=$2 ; shift ;;
-  		-ca) export ca=$2 ; shift ;;
-  		-nrg) export nrg=$2 ; shift ;;
-		a) for mode in ${allmodes[@]}; do
-				$0 -m $mode
-	  		done
-			;;
-		-m)  export sb_mode=$2; shift ;;
+  		-nf) export nf=$2 ;;
+  		-N) export nsteps=$2 ;;
+  		-ca) export ca=$2 ;;
+  		-nrg) export nrg=$2 ;  ;;
+		-m)  export sb_mode=$2 ;;
+		-idin)  export printid=1; export idin=$2 ;;
+	  	esac
+		args=( ${args[@]} $1 $2 ); shift ;;
 	esac    # --- end of case ---
 	shift
   #}}}
 done
+
+# id {{{
+if [ $doid -eq 1 ]; then 
+	  		idvals=( ` set_v $idin ` ) 
+				for val in ${idvals[@]}; do
+				  $0 -$idin $val -idin $idin ${args[@]}
+				done
+				exit
+fi
+#}}}
+# a {{{
+if [ $doa -eq 1 ]; then 
+	for mode in ${allmodes[@]}; do
+				$0 -m $mode $args
+	done
+	exit
+fi
+#}}}
 
 # execution {{{
 # depending on sb_mode, define: nm cmd {{{

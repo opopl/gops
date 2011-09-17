@@ -55,6 +55,9 @@ cup:
 libamh.a: $(AMH_OBJS)
 	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" 
 
+blas: libmyblas.a
+lapack: libmylapack.a
+
 libmyblas.a: $(BLAS_OBJS)
 	cd $(BLASPATH); make double FC="${FC}" FFLAGS="${FFLAGS}" BLAS_EXCLUDE_LIST="${BLAS_EXCLUDE_LIST}";\
 	cp $@ $(PPATH)

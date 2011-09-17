@@ -1,0 +1,55 @@
+#!/usr/bin/perl -w
+#
+
+use strict;
+use File::Find ();
+use File::Basename;
+use Getopt::Std;
+
+my ($this_script,$shd)=fileparse($0);
+
+##here-doc{{{
+#my %opt;
+#@ARGV > 0 and getopts('n:s:m:', \%opt) and not (keys %opt > 1) or die 
+#+<< "USAGE";
+#=========================================================
+#PURPOSE: Clean source code files from IF...ELSE...ENDIF clauses
+#USAGE: $this_script OPTIONS
+
+	#OPTIONS
+
+		#-f FILE		file to process
+	
+#=========================================================
+#USAGE
+##}}}
+
+my(@true,@false,@ifs);
+my $dir="/home/op226/gops/G/";
+# init file
+#my $ifile="$dir/keyword.f";
+my $ifile="$dir/keyword.init.i.f";
+my $true_file="$dir/true.in";
+my $false_file="$dir/false.in";
+
+open(TF,">$true_file") or die $!;
+open(FF,">$false_file") or die $!;
+
+open(IFILE,"$ifile") or die $!;
+while(<IFILE>){
+	if ( m/^[\t\s]*([a-zA-Z0-9_]*)=[\t\s]*\.(TRUE)\./i ) { push(@true,$1); print TF "$1\n"; }
+	if ( m/^[\t\s]*([a-zA-Z0-9_]*)=[\t\s]*\.(FALSE)\./i ) { push(@false,$1); print FF "$1\n"; }
+}
+
+close IFILE;
+close TF;
+close FF;
+
+## file to process
+$file="/home/op226/gops/G/mc.F";
+open(FILE,"$file") or die $!;
+while(<FILE>){
+	if ( m/^[\t\s]*IF[\t\s]*\((\w)\)[THEN]?/i ) { push(@true,$1); print TF "$1\n"; }
+}
+#close FILE;
+
