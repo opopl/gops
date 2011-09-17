@@ -21,7 +21,7 @@ while [ ! -z "$*"  ]; do
 done
 
 case "$prog" in
-  	gmi|gmin) prog_full="A program for finding global minima" ;;
+  	G|gmi|gmin) prog_full="A program for finding global minima" ;;
 	opti|optim) prog_full="A program for optimizing geometries and calculating reaction pathways" ;;
 	pths|pathsample) prog_full="A driver for optim to create stationary point databases and perform kinetic analysis"
 	;;

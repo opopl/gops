@@ -1,16 +1,19 @@
 #vim:ft=make
 
-PROGNAME=GMIN
+PROGNAME=G
 GENFFILES = porfuncs.f90 dv.f90 
 #
 #
 PPATH=$(PWD)
 INCPATH = $(PPATH)/../include/
 
+#include file
 include $(INCPATH)/inc.mk
+include inc.mk
 #
-#
-include $(INCPATH)/targets.mk
+# targets
+include $(INCPATH)/t.mk
+include t.mk
 
 $(PROG): $(LIBS)
 

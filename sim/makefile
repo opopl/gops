@@ -9,7 +9,7 @@ INCPATH = $(PPATH)/../include/
 include $(INCPATH)/inc.mk
 #
 #
-include $(INCPATH)/targets.mk
+include $(INCPATH)/t.mk
 
 $(PROG): $(LIBS)
 

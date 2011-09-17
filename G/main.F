@@ -61,7 +61,7 @@ C
 !op226>=================================== 
 
       CALL CPU_TIME(TSTART)
-      CALL READ_CMD_ARGS
+      CALL RCA
 #ifdef MPI
 !op226> MPI section {{{ 
       CALL MPI_INIT(MPIERR)

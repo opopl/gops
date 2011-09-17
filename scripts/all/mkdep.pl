@@ -44,7 +44,13 @@ sub get_unused{
 	$nu_exist=1;
   open(NUF, $nused_file) or $nu_exist=0; 
   if ($nu_exist eq 1){
-	@nused=<NUF>;
+	  foreach $line (<NUF>){
+		  chomp($line);
+		if( $line !~ /^#/g ){
+	push(@nused,$line);
+	}
+# }}}
+}
 	#foreach(@nused) { s/^\s+//; s/\s+$//; print MAKEFILE "$_\n"; }
 	foreach(@nused) { s/^\s+//; s/\s+$//; }
 	chomp(@nused);
