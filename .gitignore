@@ -45,15 +45,12 @@ DISCONNECT/source/disconnectionDPS
 G/bspt.f
 G/deps.mk
 G/dv.f90
-G/false.in
-G/inc.mk
 G/main.f
 G/mc.f
 G/porfuncs.f90
 G/rca.f90
 G/t.mk
 G/tags
-G/true.in
 GMIN/deps.mk
 GMIN/porfuncs.f90
 OPTIM/deps.mk
