@@ -42,10 +42,11 @@ case "$1" in
       #ca) echo "5 10 50 100" ;;
 	ca)
 		let i=1
+		let inc=1
 		let j=0
 		while [ $i -lt 100 ]; do
 			vars[$j]=$i
-			let i=$(($i+5))
+			let i=$(($i+$inc))
 			let j=$(($j+1))
 		done
 		echo "${vars[@]}"
