@@ -96,7 +96,7 @@ if [ $printid -eq 1 ]; then
 	esac
 fi
 
-echo "` printvar 'float' $force` $varid $gm_energy $time_spent $pbs_job_id $sys $date_start " >> $outf
+echo "` printvar 'float' $force` $gm_energy $varid $time_spent $pbs_job_id $sys $date_start " >> $outf
 # formats: force_long
 
 #}}}

@@ -290,13 +290,28 @@ sub MakeDependsf90 {
    # {{{
    foreach $file (@fortranfiles) {
       open(FILE, $file);
-      while (<FILE>) {
-	 if ( $_ =~ /^\s*include\s+["\']([^"\']+)["\']/i ){ 
-	   if ( !exists $excluded{$1} ){
-     	     push(@incs, $1); 
-	   }
-	 }
-	 /^\s*use\s+([^\s,!]+)/i && push(@modules, &toLower($1));
+	  @flines=<FILE>;
+	  #get_use();
+      foreach (@flines) {
+		#{{{
+	  		chomp;	  
+	  		#include files {{{	  
+	 		if ( $_ =~ /^\s*include\s+["\']([^"\']+)["\']/i ){ 
+	   			if ( !exists $excluded{$1} ){
+     	     		push(@incs, $1); 
+			 		# now use those statements in that file
+			 		# specified after the include ... statement
+			 		my $include_file=$1;
+			 		open(IFILE,$include_file);
+			 		while(<IFILE>){
+	 					/^\s*use\s+([^\s,!]+)/i && push(@modules, &toLower($1));
+			 		}
+					close IFILE;
+	   			}
+	 		}
+     		#}}}
+	 	/^\s*use\s+([^\s,!]+)/i && push(@modules, &toLower($1));
+ 	 	#}}}
 	 }
       if (defined @incs || defined @modules) {
 	 ($objfile = $file) =~ s/\.[^.]+$/.o/;

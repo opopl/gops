@@ -87,7 +87,9 @@ case "$1" in
   [ -f makefile ] && mkf="makefile"
   [ -f Makefile ] && mkf="Makefile"
   $v $0 $mkf old.mk deps.mk nu.mk $incdir/inc.mk inc.mk $incdir/def.mk $incdir/t.mk t.mk \
- 		$salldir/rca.sh $salldir/dv.sh $salldir/mkdep.pl ;;
+ 		$salldir/rca.sh $salldir/dv.sh $salldir/mkdep.pl \
+		base_source.in 
+		;;
   *)
   ;;
 esac    # --- end of case ---

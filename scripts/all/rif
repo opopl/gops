@@ -31,9 +31,11 @@ my $dir="/home/op226/gops/G/";
 my $ifile="$dir/keyword.init.i.f";
 my $true_file="$dir/true.in";
 my $false_file="$dir/false.in";
+my $data_file="$dir/data.in";
 
 open(TF,">$true_file") or die $!;
 open(FF,">$false_file") or die $!;
+open(DATA,">$data_file") or die $!;
 
 open(IFILE,"$ifile") or die $!;
 while(<IFILE>){
@@ -44,6 +46,7 @@ while(<IFILE>){
 close IFILE;
 close TF;
 close FF;
+close DATA;
 
 ## file to process
 $file="/home/op226/gops/G/mc.F";

@@ -37,8 +37,19 @@ queue=s1
 
 set_v(){
 #{{{
+
 case "$1" in 
-  	ca) echo "5 10 50 100" ;;
+      #ca) echo "5 10 50 100" ;;
+	ca)
+		let i=1
+		let j=0
+		while [ $i -lt 100 ]; do
+			vars[$j]=$i
+			let i=$(($i+5))
+			let j=$(($j+1))
+		done
+		echo "${vars[@]}"
+	;;
 esac
 #}}}
 }
