@@ -6,8 +6,13 @@ use File::Find ();
 use File::Basename;
 use Getopt::Std;
 use Cwd;
+use Fcntl qw/:seek/;
 
 my ($this_script,$shd)=fileparse($0);
+
+my $delim="====================\n";
+my $fld_open="{{{";
+my $fld_close="}}}";
 
 # Time stuff  {{{
 
@@ -57,11 +62,14 @@ open(OUT,">$out_file") or die $!;
 print OUT "Time: $theTime\n";
 #}}}
 
+#
 # Steps:
+#
 #   1. Read input from 'data' file, write values of relevant logicals into @true @false
 #	2. Read in logical values from $ifile and write their values into @true @false
 # 	3. Get the list of source files and not needed modules
 #	4. Cleanup source files using @true @false @num
+#
 
 # 1. Read in data file, set logicals using $if_file {{{
 
@@ -78,43 +86,51 @@ print SV << "head";
 subroutine setvars
 head
 
-#my @data=<DATA>;
-my @ifelse=<IFELSE>;
+my @data=<DATA>;
+print OUT "Input Data file:\n";
+print OUT "$delim";
+print OUT @data;
+print OUT "$delim";
+seek DATA,0,SEEK_SET;
 #}}}
 
-foreach (<DATA>){
+while (<DATA>){
 	#{{{
 	chomp;
 	next if /^\s*$/;
-		#{{{
 	my($word,@vals)=split;
-	print OUT "$_\n";
-	#foreach (@ifelse) {
-	foreach (<IFELSE>) {
+	my $c=0;
+	my $first=1;
+	seek IFELSE,0,SEEK_SET;
+	while (<IFELSE>) {
+		#{{{
 		chomp;
 		next if /^\s*$/;
-		( my $s = $_ ) =~ s/\s+//g; 
-		print OUT "$word\n";
-        ( $s =~ m/^[ELSE]?IF\(WORD\.EQ\.\'$word\'\)/i ) && print OUT "$s\n";
-	}
-   			#if (
-                   #( (  m/^[\t\s]*[ELSE]?[\t\s]*IF\(WORD\.EQ\.\'$word\'\)/i ) ||
-				  #(  m/^[\t\s]*[ELSE]?[\t\s]*IF\(.\.OR\.\(WORD\.EQ\.\'$word\'\) \)/i ) ||
-				  #(  m/^[\t\s]*[ELSE]?[\t\s]*IF\(\(WORD\.EQ\.\'$word\'\)\.OR\..\)/i ) ) 
-			#...
-					 #( m/^[\t\s]*[ELSE]?[\t\s]*IF\(WORD\.EQ\.\'\w\'.\)/i )
-				#){
-					#my $s =~ s/\s+//g;
-					#( $s =~ /^(\w+)=/i ) && push(@usedvars,$1);
-					#( $s =~ /^(\w+)[\(\w\)]?=\.TRUE\./i ) && push(@true,$1);
-					#( $s =~ /^(\w+)[\(\w\)]?=\.FALSE\./i ) && push(@false,$1);
-					## if there are no further assignments for the logical variables,
-					## print the rest of the block into SV	
-					#if ( $s !~ /^.=\.(FALSE|TRUE)\./i ){
-						#print SV "$_\n";
-					#}
-				#}
+		( my $s = $_ ) =~ s/\s+//g;
+	    if ( $s =~ /^(ELSE)?IF\(WORD\.EQ\.\'$word\'\)/i ){ $c=1;$first=1; next; }
+		if ( ( $s =~ /^(ELSE)?IF\(WORD\.EQ\.\'\w*\'.*\)/i ) && ( $c == 1 ) ){ 
+			$c=0; print SV "! $word $fld_close\n"; next;
+		}
+		if ( $c == 1 ){
+					if ($first==1){ print SV "! $word $fld_open\n"; $first=0; }
+					( $s =~ /^(\w+)=/i ) && push(@usedvars,$2);
+					# logicals
+					if ( $s =~ /^(\w+)(\(\w+\))?=\.TRUE\./i ){ push(@true,$1); }
+						elsif( $s =~ /^(\w+)(\(\w+\))?=\.FALSE\./i ) { push(@false,$1);}
+								# reading in variables:
+								# A strings, I integers, F floats
+						elsif( $s =~ /^CALLREAD(A|I|F)\((\w+)\)/i ){
+							push(@usedvars,$2);
+							print SV "$2=$vals[0]\n";
+						}
+							# if there are no further variable assignments
+							# print the rest of the block into SV	
+						elsif( $s !~ /^(!|C)+/ ){
+							print SV "$_\n";
+						}
+		}
 			#}}}
+	}
 #}}}
 }
 
