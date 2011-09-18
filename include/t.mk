@@ -1,5 +1,4 @@
 
-
 default: $(AUXF) $(DEPS) $(PROG)
 
 #SUFFIXES..., F => o {{{
@@ -33,7 +32,8 @@ header.f90: $(HEADER)
 
 #}}}
 
-
+#deps tg prog bindir cup {{{
+ 
 $(DEPS): $(MKDEP)
 	$(MKDEP) $@
 
@@ -51,9 +51,12 @@ $(PROG): $(OBJS) bindir
 
 cup:
 	rm -rf $(NOTUSEDSOURCE)
+#}}}
 
 libamh.a: $(AMH_OBJS)
 	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" 
+
+#blas lapack {{{
 
 blas: libmyblas.a
 lapack: libmylapack.a
@@ -67,6 +70,9 @@ libmylapack.a: $(LAPACK_OBJS)
 	cp $@ $(PPATH)
 
 SAT-Ghost:
+#}}}
+
+#clean cleanall{{{
 
 clean:
 	rm -f $(OBJS) $(AUXF) $(GENFFILES) *.mod $(DEPS)
@@ -79,3 +85,4 @@ cleanall:
 	if test -d CONNECT ;  then cd CONNECT ; make clean ; fi
 	if test -d AMH ;  then cd AMH ; make clean ; fi
 
+#}}}

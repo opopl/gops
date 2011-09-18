@@ -1,6 +1,6 @@
 #vim:ft=make
 
-PROGNAME=G
+PROGNAME=$(shell basename $(PWD)  )
 GENFFILES = porfuncs.f90 dv.f90 
 #
 #

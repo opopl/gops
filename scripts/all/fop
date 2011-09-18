@@ -1,0 +1,154 @@
+#!/usr/bin/env bash
+ 
+# directory where this script resides
+export shd="`dirname $(readlink -f $0)`"
+# name of this script 
+export this_script=` basename $0 `
+
+vim_opts="-n -p"
+v="vim $vim_opts"
+repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
+
+define_base_dirs(){
+# {{{
+# main Wales group software directory
+export gopsdir="$shd/../../"
+packdir=$HOME/arch/packed
+unpackdir=$HOME/arch/unpacked
+# }}}
+}
+
+
+set_base_vars(){
+# {{{
+s_purpose="fork a project"
+s_project="~/gops/scripts/all"
+# }}}
+}
+
+set_base_vars
+
+display_help(){
+# {{{
+# general beginning part {{{
+cat << EOF
+=============================================
+SCRIPT NAME: $this_script 
+PROJECT: $s_project
+PURPOSE: $s_purpose
+USAGE: $this_script [ OPTIONS ] 
+
+	OPTIONS:
+
+	============
+	General
+	============
+
+			display the help message
+
+	vm		v(iew) m(yself), i.e., edit this script
+	-g		gvim invocation
+	
+	============
+EOF
+# }}}
+# actual interesting part {{{
+cat << EOF
+
+	
+
+EOF
+# }}}
+# final general part {{{
+cat << EOF
+REMARKS:
+AUTHOR: O. Poplavskyy
+=============================================
+EOF
+# }}}
+# }}}
+}
+
+[ -z "$*" ] && ( display_help; exit 0 )
+
+main(){
+# read cmd line args{{{
+
+while [ ! -z "$1" ]; do
+		case "$1" in
+		  "") ;;
+		  # -b name of the base project
+		  -b) base=$2; shift ;;
+		  # -f name of the fork project
+		  -f) fork=$2; shift ;;
+		  *) $0 -b G -f $1; exit ;;
+		esac
+		shift
+done 
+
+#}}}
+#do the forking  {{{
+ffork=$base$fork
+fdir=$gopsdir/$ffork
+bdir=$gopsdir/$base; cd $bdir; 
+mkfiles=( makefile inc.mk t.mk nu.mk old.mk )
+# ${base_files[@]} base files {{{
+base_files=( ` cat base_source.in ` )
+for ff in ` cat base_source.in ` ; do
+  	ffname=${ff%.*}
+    base_files=( ${base_files[@]} ` ls $ffname.*i.* 2> /dev/null | sed '/~$/d' ` )
+done
+#}}}
+# ${ffiles[@]} forked project files {{{
+ffiles=( ` cat "$fork"_source.in ` )
+for ff in `cat "$fork"_source.in` ; do
+  	ffname=${ff%.*}
+    ffiles=( ${ffiles[@]} ` ls $ffname.*i.* 2> /dev/null | sed '/~$/d'` )
+done
+#}}}
+
+#*.num => not used modules (in the fork); num => Not Used Modules
+
+cat "$fork_source".in base_source.in > $fdir/source.in
+exts=( num data )
+
+for ext in ${exts[@]}; do  
+	f=$fork.$ext
+	if [ -f $f ]; then
+	 	 cp $f $fdir/$ext
+		 echo "$this_script> Copied $f"
+	fi
+done 
+
+files=( ${mkfiles[@]} ${base_files[@]} ${ffiles[@]} )
+
+mkdir -p $fdir
+for f in ${files[@]}; do
+	cp $gopsdir/$base/$f $fdir/
+done
+cp $shd/rca.$base.i.sh $shd/rca.$ffork.i.sh
+
+# }}}
+}
+
+# main part 
+# {{{
+
+script_opts=( $* )
+define_base_dirs
+
+while [ ! -z "$1" ]; do
+  	case "$1" in
+		  #{{{
+	  	vm) $v $0; exit ;;
+		h) display_help $*; exit ;;
+		-g) v="$v -g" ;;
+	  	*) main $* && exit 0 ;;
+	esac
+  	shift
+        #}}}
+done
+
+# }}}
+
+

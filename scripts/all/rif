@@ -5,6 +5,7 @@ use strict;
 use File::Find ();
 use File::Basename;
 use Getopt::Std;
+use Cwd;
 
 my ($this_script,$shd)=fileparse($0);
 
@@ -25,7 +26,7 @@ my ($this_script,$shd)=fileparse($0);
 ##}}}
 
 my(@true,@false,@ifs);
-my $dir="/home/op226/gops/G/";
+my $dir=&cwd();
 # init file
 #my $ifile="$dir/keyword.f";
 my $ifile="$dir/keyword.init.i.f";
@@ -48,11 +49,22 @@ close TF;
 close FF;
 close DATA;
 
-## file to process
-$file="/home/op226/gops/G/mc.F";
+# file to process
+$file="$dir/mc.F";
 open(FILE,"$file") or die $!;
 while(<FILE>){
-	if ( m/^[\t\s]*IF[\t\s]*\((\w)\)[THEN]?/i ) { push(@true,$1); print TF "$1\n"; }
+	# 	@opened => contains "opened" IF statements, i.e.  {{{
+	# while it contains those, we are still inside this IF statement;
+	# once we go to the point when we reach the ENDIF corresponding to this
+	# IF statement, we remove that string from @opened. Thus, the array @opened
+	# has the structure:
+	# 		Uppermost IF statement, then level-below statement etc.
+    # if we are not inside any IF statement, @opened is empty.	
+	#}}}
+	if ( m/^[\t\s]*IF[\t\s]*\((.)\)[THEN]?/i ) { 
+			$ifcondition=$1;
+			push(@opened,$ifcondition); 
+		}
 }
-#close FILE;
+close FILE;
 
