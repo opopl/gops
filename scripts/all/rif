@@ -50,6 +50,13 @@ close FF;
 close DATA;
 
 # file to process
+
+# $sflist - file which lists the used source files 
+my $sflist="source.in";
+open(SFILE,"$sflist") or die $!;
+@source_files=<SFILE>;
+
+foreach $source_file 
 $file="$dir/mc.F";
 open(FILE,"$file") or die $!;
 while(<FILE>){

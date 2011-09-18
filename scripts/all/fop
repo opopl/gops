@@ -78,7 +78,8 @@ while [ ! -z "$1" ]; do
 		case "$1" in
 		  "") ;;
 		  # -b name of the base project
-		  -b) base=$2; shift ;;
+		  -b) base=$2; shift 
+		  ;;
 		  # -f name of the fork project
 		  -f) fork=$2; shift ;;
 		  *) $0 -b G -f $1; exit ;;
@@ -90,11 +91,18 @@ done
 #do the forking  {{{
 ffork=$base$fork
 fdir=$gopsdir/$ffork
-bdir=$gopsdir/$base; cd $bdir; 
+bdir=$gopsdir/$base; 
 mkfiles=( makefile inc.mk t.mk nu.mk old.mk )
+
+echo "$this_script> Base project: $base"
+echo -e "$this_script> Base directory: \n $bdir"
+echo "$this_script> Fork project: $ffork"
+echo -e "$this_script> Fork directory: \n $fdir"
+
+cd $bdir; 
 # ${base_files[@]} base files {{{
-base_files=( ` cat base_source.in ` )
-for ff in ` cat base_source.in ` ; do
+base_files=( ` cat $bdir/base_source.in ` )
+for ff in ` cat $bdir/base_source.in ` ; do
   	ffname=${ff%.*}
     base_files=( ${base_files[@]} ` ls $ffname.*i.* 2> /dev/null | sed '/~$/d' ` )
 done
@@ -109,7 +117,8 @@ done
 
 #*.num => not used modules (in the fork); num => Not Used Modules
 
-cat "$fork_source".in base_source.in > $fdir/source.in
+cat "$fork"_source.in base_source.in > $fdir/source.in
+echo "$this_script> In fork dir: Created source.in"
 exts=( num data )
 
 for ext in ${exts[@]}; do  
@@ -126,7 +135,10 @@ mkdir -p $fdir
 for f in ${files[@]}; do
 	cp $gopsdir/$base/$f $fdir/
 done
-cp $shd/rca.$base.i.sh $shd/rca.$ffork.i.sh
+
+rcaf=rca.$ffork.i.sh
+cp $shd/rca.$base.i.sh $shd/$rcaf
+echo "$this_script> In scripts dir: Created $rcaf"
 
 # }}}
 }
