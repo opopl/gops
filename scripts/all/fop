@@ -1,32 +1,22 @@
 #!/usr/bin/env bash
- 
+
+# set_base_vars {{{
+set_base_vars(){
+# {{{
 # directory where this script resides
 export shd="`dirname $(readlink -f $0)`"
 # name of this script 
 export this_script=` basename $0 `
-
+export gopsdir="$shd/../../"
 vim_opts="-n -p"
 v="vim $vim_opts"
-repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
-
-define_base_dirs(){
-# {{{
-# main Wales group software directory
-export gopsdir="$shd/../../"
-packdir=$HOME/arch/packed
-unpackdir=$HOME/arch/unpacked
-# }}}
-}
-
-
-set_base_vars(){
-# {{{
 s_purpose="fork a project"
 s_project="~/gops/scripts/all"
 # }}}
 }
 
 set_base_vars
+#}}}
 
 display_help(){
 # {{{
@@ -89,8 +79,9 @@ done
 
 #}}}
 #do the forking  {{{
+
 ffork=$base$fork
-fdir=$gopsdir/$ffork
+fdir=$gopsdir/$ffork ; mkdir -p $fdir
 bdir=$gopsdir/$base; 
 mkfiles=( makefile inc.mk t.mk nu.mk old.mk )
 
@@ -124,14 +115,13 @@ exts=( num data )
 for ext in ${exts[@]}; do  
 	f=$fork.$ext
 	if [ -f $f ]; then
-	 	 cp $f $fdir/$ext
+	 	 cp $f $fdir/$ext.in
 		 echo "$this_script> Copied $f"
 	fi
 done 
 
 files=( ${mkfiles[@]} ${base_files[@]} ${ffiles[@]} )
 
-mkdir -p $fdir
 for f in ${files[@]}; do
 	cp $gopsdir/$base/$f $fdir/
 done
@@ -145,9 +135,6 @@ echo "$this_script> In scripts dir: Created $rcaf"
 
 # main part 
 # {{{
-
-script_opts=( $* )
-define_base_dirs
 
 while [ ! -z "$1" ]; do
   	case "$1" in

@@ -133,11 +133,13 @@ foreach (@f90) { s/^/*./ };
 $year = 1900 + $yearOffset;
 $theTime = "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $dayOfMonth, $year";
 
-print MAKEFILE "# $depsfile \n";
-print MAKEFILE "# Fortran dependency file \n";
-print MAKEFILE "# Created: $theTime \n";
-
 #}}}
+
+print MAKEFILE << "head";
+# $depsfile
+# Fortran dependency file
+# Created: $theTime
+head
 
 &MakeDependsf90();
 #&MakeDepends("*.f *.F", '^\s*include\s+["\']([^"\']+)["\']');

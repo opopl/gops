@@ -1,6 +1,6 @@
 #!/usr/bin/perl -w
-#
 
+# aux {{{
 use strict;
 use File::Find ();
 use File::Basename;
@@ -8,6 +8,16 @@ use Getopt::Std;
 use Cwd;
 
 my ($this_script,$shd)=fileparse($0);
+
+# Time stuff  {{{
+
+my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+my @weekDays = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
+my ($second, $minute, $hour, $dayOfMonth, $month, $yearOffset, $dayOfWeek, $dayOfYear, $daylightSavings) = localtime();
+my $year = 1900 + $yearOffset;
+my $theTime = "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $dayOfMonth, $year";
+
+#}}}
 
 ##here-doc{{{
 #my %opt;
@@ -24,54 +34,145 @@ my ($this_script,$shd)=fileparse($0);
 #=========================================================
 #USAGE
 ##}}}
+	#}}}
 
-my(@true,@false,@ifs);
+my(@true,@false,@ifs,@usedvars,@source_files,@num);
 my $dir=&cwd();
-# init file
-#my $ifile="$dir/keyword.f";
-my $ifile="$dir/keyword.init.i.f";
+
+# files {{{
+my $i_file="$dir/keyword.init.i.f";
+my $if_file="$dir/keyword.if.i.f";
 my $true_file="$dir/true.in";
 my $false_file="$dir/false.in";
 my $data_file="$dir/data.in";
+	# $sflist - file which lists the used source files 
+my $sflist="$dir/source.in";
+	# $numlist - not used modules 
+my $numlist="$dir/num.in";
+	# $sv_file - new file, which contains SETVARS subroutine
+my $sv_file="$dir/n.sv.f90";
+	# output log file
+my $out_file="$dir/$this_script.log";
+open(OUT,">$out_file") or die $!;
+print OUT "Time: $theTime\n";
+#}}}
+
+# Steps:
+#   1. Read input from 'data' file, write values of relevant logicals into @true @false
+#	2. Read in logical values from $ifile and write their values into @true @false
+# 	3. Get the list of source files and not needed modules
+#	4. Cleanup source files using @true @false @num
+
+# 1. Read in data file, set logicals using $if_file {{{
+
+#get @data and @ifelse; header for sv {{{
+
+open(DATA,"$data_file") or die $!;
+open(IFELSE,"$if_file") or die $!;
+open(SV,">$sv_file") or die $!;
+
+print SV << "head";
+! $sv_file
+! File with variable initializations
+! Created: $theTime
+subroutine setvars
+head
+
+#my @data=<DATA>;
+my @ifelse=<IFELSE>;
+#}}}
+
+foreach (<DATA>){
+	#{{{
+	chomp;
+	next if /^\s*$/;
+		#{{{
+	my($word,@vals)=split;
+	print OUT "$_\n";
+	#foreach (@ifelse) {
+	foreach (<IFELSE>) {
+		chomp;
+		next if /^\s*$/;
+		( my $s = $_ ) =~ s/\s+//g; 
+		print OUT "$word\n";
+        ( $s =~ m/^[ELSE]?IF\(WORD\.EQ\.\'$word\'\)/i ) && print OUT "$s\n";
+	}
+   			#if (
+                   #( (  m/^[\t\s]*[ELSE]?[\t\s]*IF\(WORD\.EQ\.\'$word\'\)/i ) ||
+				  #(  m/^[\t\s]*[ELSE]?[\t\s]*IF\(.\.OR\.\(WORD\.EQ\.\'$word\'\) \)/i ) ||
+				  #(  m/^[\t\s]*[ELSE]?[\t\s]*IF\(\(WORD\.EQ\.\'$word\'\)\.OR\..\)/i ) ) 
+			#...
+					 #( m/^[\t\s]*[ELSE]?[\t\s]*IF\(WORD\.EQ\.\'\w\'.\)/i )
+				#){
+					#my $s =~ s/\s+//g;
+					#( $s =~ /^(\w+)=/i ) && push(@usedvars,$1);
+					#( $s =~ /^(\w+)[\(\w\)]?=\.TRUE\./i ) && push(@true,$1);
+					#( $s =~ /^(\w+)[\(\w\)]?=\.FALSE\./i ) && push(@false,$1);
+					## if there are no further assignments for the logical variables,
+					## print the rest of the block into SV	
+					#if ( $s !~ /^.=\.(FALSE|TRUE)\./i ){
+						#print SV "$_\n";
+					#}
+				#}
+			#}}}
+#}}}
+}
+
+close DATA;
+close IFELSE;
+print SV "end subroutine\n";
+close SV;
+
+# }}}
+
+# 2. extract logicals from init file and write into true.in, false.in {{{
 
 open(TF,">$true_file") or die $!;
 open(FF,">$false_file") or die $!;
-open(DATA,">$data_file") or die $!;
 
-open(IFILE,"$ifile") or die $!;
+open(IFILE,"$i_file") or die $!;
 while(<IFILE>){
-	if ( m/^[\t\s]*([a-zA-Z0-9_]*)=[\t\s]*\.(TRUE)\./i ) { push(@true,$1); print TF "$1\n"; }
-	if ( m/^[\t\s]*([a-zA-Z0-9_]*)=[\t\s]*\.(FALSE)\./i ) { push(@false,$1); print FF "$1\n"; }
+	if ( m/^[\t\s]*([a-zA-Z0-9_]*)=[\t\s]*\.TRUE\./i ) { push(@true,$1); print TF "$1\n"; }
+	if ( m/^[\t\s]*([a-zA-Z0-9_]*)=[\t\s]*\.FALSE\./i ) { push(@false,$1); print FF "$1\n"; }
 }
 
 close IFILE;
 close TF;
 close FF;
-close DATA;
+#}}}
 
-# file to process
-
-# $sflist - file which lists the used source files 
-my $sflist="source.in";
+# get list of source files, and not used modules {{{
 open(SFILE,"$sflist") or die $!;
+open(NUMFILE,"$numlist") or die $!;
 @source_files=<SFILE>;
+@num=<NUMFILE>;
 
-foreach $source_file 
-$file="$dir/mc.F";
-open(FILE,"$file") or die $!;
-while(<FILE>){
-	# 	@opened => contains "opened" IF statements, i.e.  {{{
-	# while it contains those, we are still inside this IF statement;
-	# once we go to the point when we reach the ENDIF corresponding to this
-	# IF statement, we remove that string from @opened. Thus, the array @opened
-	# has the structure:
-	# 		Uppermost IF statement, then level-below statement etc.
-    # if we are not inside any IF statement, @opened is empty.	
-	#}}}
-	if ( m/^[\t\s]*IF[\t\s]*\((.)\)[THEN]?/i ) { 
-			$ifcondition=$1;
+close SFILE; 
+close NUMFILE;
+#}}}
+
+# process source files {{{
+
+foreach (@source_files){
+	my @opened;
+	chomp;
+	open(FILE,"$_") or die $!;
+	while(<FILE>){
+		# 	@opened => contains "opened" IF statements, i.e.  {{{
+		# while it contains those, we are still inside this IF statement;
+		# once we go to the point when we reach the ENDIF corresponding to this
+		# IF statement, we remove that string from @opened. Thus, the array @opened
+		# has the structure:
+		# 		Uppermost IF statement, then level-below statement etc.
+	    # if we are not inside any IF statement, @opened is empty.	
+		#}}}
+		if ( m/^[\t\s]*IF[\t\s]*\((.)\)[THEN]?/i ) { 
+			my $ifcondition=$1;
 			push(@opened,$ifcondition); 
 		}
+	}
+	close FILE;
 }
-close FILE;
+#}}}
 
+close OUT;
