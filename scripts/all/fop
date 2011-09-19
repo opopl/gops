@@ -106,11 +106,12 @@ for ff in `cat "$fork"_source.in` ; do
 done
 #}}}
 
-#*.num => not used modules (in the fork); num => Not Used Modules
+#*.num => not used modules (in the fork); num => Not Used Modules; nuv => Not Used Variables;
+# nus => not used subroutines
 
 cat "$fork"_source.in base_source.in > $fdir/source.in
 echo "$this_script> In fork dir: Created source.in"
-exts=( num data )
+exts=( num nuv nus data )
 
 for ext in ${exts[@]}; do  
 	f=$fork.$ext
