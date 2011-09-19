@@ -14,13 +14,18 @@
 my(@true,@false,@ifs,@usedvars,@source_files,@num,@nus,@nuv);
 my %logvars;
 my $dir=&cwd();
-my $re_c=qr/^\s*(!|C)+/i;
+my $re_c=qr/(^\s*!|^C)/i;
 my $re_el=qr/^\s+$/i;
 my $re_if_gen=qr/^IF\((.)\)(THEN)?/i;
-my $re_else_gen=qr/^ELSE\((.)\)(THEN)?/i;
+my $re_elseif_gen=qr/^ELSEIF\((.)\)(THEN)?/i;
+my $re_else=qr/^ELSE$/i;
 my $re_use_mod=qr/^\s*use\s+(\w+)(\s*,\s*only)?/i;
 my $re_sub=qr/^(subroutine|function)(\w+)/i;
 my $re_sub_end=qr/^end(subroutine|function)?/i;
+
+#my $re_nuv_gen=qr/$nuv(\w+)/i;
+#my $re_nuv_if=qr/$nuv(\w+)/i;
+#my $re_nuv_elseif=qr/$nuv(\w+)/i;
 
 my @npar_vars=qw( MCSTEPS FIXSTEP FIXTEMP FIXBOTH TEMP ACCRAT STEP ASTEP OSTEP BLOCK NT
 JUMPMOVE JUMPINT JDUMP SHELLMOVES PTGROUP NSURFMOVES NCORE );
@@ -354,7 +359,7 @@ print OUT "$this_script> Processing source files...\n";
 
 foreach my $source_file (@source_files){
 	#intro {{{{
-	my($s,$iflev,$sublev,$sub,@opened,$c,$print,$nsf);
+	my($s,$dolev,$iflev,$sublev,$sub,@opened,$c,$print,$nsf);
 		# @subnuv - not used variables within a specific subroutine
 	my @subnuv;
 		# $iftype - type of the IF THEN statement:
@@ -363,6 +368,15 @@ foreach my $source_file (@source_files){
 			#			In the latter case, the logical statement is not simplified,
 			#			and is printed in the un-transformed form 
 	my $iftype;
+	# $reason - reason why the line isn't printed:
+	#				if* 	- we are inside an IF...THEN clause which is evaluated false
+	#				ifnuv	- because logical variable is unused 
+	#				iflog	- because logical variable is false 
+	#				else
+	#				nus		- not used subroutine
+	#				none	- initialize
+	my $reason="none";
+	my @ifnames=();
 	my $reset=1;
 	chomp $source_file;
 	$nsf="n.$source_file";
@@ -376,7 +390,7 @@ foreach my $source_file (@source_files){
 		! Created: $theTime
 pNSF
 	#}}}
-	while(<FILE>){
+	L_FILE: while(<FILE>){
 		#{{{
 		#{{{
 		chomp;  
@@ -386,34 +400,51 @@ pNSF
 		( my $s = $line ) =~ s/\s+//g;
 		if ( $reset == 1 ){ $print=1; }
 		#}}}
-			# subroutines{{{
 		if( $s =~ /$re_sub/ ){
+			# subroutines{{{
 			#{{{
-			$sublev++; $sub=$2;
+			$sublev++; $sub=$2; @subnuv=();
 			print OUT "sub: $sub\n";
 				# check if this subroutine is not in the list of not used ones,
 				#	i.e. in @nus?
-			if ( grep { $_ eq $sub } @nus ){ $print=0; $reset=0; next; } 
+			if ( grep { $_ eq $sub } @nus ){ 
+				$print=0; $reset=0; $reason="nus"; next L_FILE; 
+			} 
 				# from nuv.in, retrieve a list of not-used variables, specific
 				# to this subroutine
 				open(NUV,"$nuv_file");
-			while(<NUV>){
+				while(<NUV>){
 					chomp; next if /^!+/; 
-					/^$sub\.(\w+)/i && push(@subnuv,$1);
+					if ( /^$sub\.(\w+)/i ){ 
+						push(@subnuv,$1);
+					}
 				}
 				close NUV;
 			#}}}
 		}
 		elsif( ( $sublev gt 0 ) && ( $s =~ /$re_sub_end/ ) ){
 			$sublev--;
-			if ( grep { $_ eq $sub } @nus ){ $print=0; $reset=1; next; } 
+			if (( grep { $_ eq $sub } @nus ) && ( $iflev==0 )){ $print=0; $reset=1; next L_FILE; } 
 		}
 	#}}}
 		else{
 			#{{{
-			# firstly, cleanup not-used variables
+			# firstly, cleanup not-used variables 
 			foreach my $nuv (@subnuv) {
-				if ( $line =~ m/[^\w]$nuv[^\w]/i ){ $print=0;$reset=1; }
+				#{{{
+				if ( /\W+$nuv\W+/i ){
+					$print=0; $reset=0; 
+					if 		( $s =~ /^ELSEIF(.*)\W$nuv/i ) { 
+						$reason="ifnuv";
+						print OUT "iflev= $iflev\n";
+						$ifnames[$iflev]="nuv"; }
+					elsif 	( $s =~ /^IF(.*)\W$nuv/i ){	
+						$iflev++;
+						$reason="ifnuv"; $ifnames[$iflev]="nuv";  }
+					else { $reset=1; }
+					next L_FILE
+				}
+			#}}}
 			}
 			# now, proceed analyzing the IF..ELSE statements
 			# IF THEN clauses {{{{
@@ -439,10 +470,16 @@ pNSF
 				#}}}
 				next;
 			}
-			elsif ( $s =~ /$re_else_gen/ ) { 
-				if ( $print==1 ){ $print=0; }else{ $print=1; }
-			}
+			elsif ( 
+				( $s =~ /$re_else/ ) && 
+				( $reason eq "ifnuv" ) && 
+				( $ifnames[$iflev] eq "nuv")  && 
+				( $print==0 )) { 
+					$print=1; $reset=1; print NSF "$line\n"; next L_FILE 
+				}
 			elsif( $s =~ /^ENDIF/i ){  $iflev--; }
+			elsif( $s =~ /^DO/i ){  $dolev++; }
+			elsif( $s =~ /^ENDDO/i ){  $dolev--; }
 			elsif( $line =~ /$re_use_mod/ ){ 
 				#modules {{{
 				#print OUT "$line\n";
@@ -459,9 +496,8 @@ pNSF
 		
 	#}}}
 		if( $print==1 ){ print NSF "$line\n"; } 
-		}
-	close FILE;
-	close NSF;
+	}
+	close FILE; close NSF;
 }
 #}}}
 
@@ -482,4 +518,4 @@ close FF;
 		#}}}
 
 
-	#}}}
+#}}}
