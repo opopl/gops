@@ -44,6 +44,9 @@ my $theTime = "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $day
 my(@true,@false,@ifs,@usedvars,@source_files,@num);
 my $dir=&cwd();
 
+my @npar_vars=qw( FIXSTEP FIXTEMP FIXBOTH TEMP ACCRAT STEP ASTEP OSTEP BLOCK NT JUMPMOVE JUMPINT
+JDUMP SHELLMOVES PTGROUP NSURFMOVES NCORE );
+
 # files {{{
 my $i_file="$dir/keyword.init.i.f";
 my $if_file="$dir/keyword.if.i.f";
@@ -228,8 +231,9 @@ close NUMFILE;
 # process source files {{{
 
 foreach (@source_files){
-	my($s,$iflev,@opened,$c);
+	my($s,$iflev,@opened,$c,$print);
 	$iflev=0;
+	$print=1;
 	chomp;
 	open(FILE,"$_") or die $!;
 	while(<FILE>){
@@ -245,12 +249,30 @@ foreach (@source_files){
 	    # if we are not inside any IF statement, @opened is empty.	
 		#}}}
 		if ( $s =~ /^IF\((.)\)(THEN)?/i ) { 
+			#{{{
 			$c=1;
 			my $cs=$1;
+			push(@opened,$cs); 
 			$iflev++;
-			push(@opened,$ifcondition); 
-		elsif ( $s =~ /^ENDIF\((.)\)(THEN)?/i ) { 
-		}elsif(){
+			my @orlogs=split /\.OR\./i, $cs;
+			foreach my $orlog (@orlogs){
+				$orlog =~ s/^\(//g; $orlog =~ s/\)$//g; 
+
+				if ( grep { $_ eq $orlog } @true ) {
+					$print=1;
+					#.true., no need to check the rest, exit from
+					#the loop
+				}else{
+					$print=0;
+				}
+			}
+			#}}}
+		}
+		elsif ( $s =~ /^ELSE\((.)\)(THEN)?/i ) { 
+			if ( $print==1 ){ $print=0; }else{ $print=1; }
+		}
+		elsif( $s =~ /^ENDIF/i ){  $iflev--; }
+		elsif(){
 		}
 	}
 	close FILE;
