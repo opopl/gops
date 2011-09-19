@@ -20,6 +20,7 @@ my $re_if_gen=qr/^IF\((.)\)(THEN)?/i;
 my $re_else_gen=qr/^ELSE\((.)\)(THEN)?/i;
 my $re_use_mod=qr/^\s*use\s+(\w+)(\s*,\s*only)?/i;
 my $re_sub=qr/^(subroutine|function)(\w+)/i;
+my $re_sub_end=qr/^end(subroutine|function)?/i;
 
 my @npar_vars=qw( MCSTEPS FIXSTEP FIXTEMP FIXBOTH TEMP ACCRAT STEP ASTEP OSTEP BLOCK NT
 JUMPMOVE JUMPINT JDUMP SHELLMOVES PTGROUP NSURFMOVES NCORE );
@@ -384,15 +385,6 @@ pNSF
 		$c=0;
 		( my $s = $line ) =~ s/\s+//g;
 		if ( $reset == 1 ){ $print=1; }
-		# @opened expl. {{{
-		# 	@opened => contains "opened" IF statements, i.e. 
-		# while it contains those, we are still inside this IF statement;
-		# once we go to the point when we reach the ENDIF corresponding to this
-		# IF statement, we remove that string from @opened. Thus, the array @opened
-		# has the structure:
-		# 		Uppermost IF statement, then level-below statement etc.
-	    # if we are not inside any IF statement, @opened is empty.	
-		#}}}
 		#}}}
 			# subroutines{{{
 		if( $s =~ /$re_sub/ ){
@@ -401,7 +393,7 @@ pNSF
 			print OUT "sub: $sub\n";
 				# check if this subroutine is not in the list of not used ones,
 				#	i.e. in @nus?
-			if ( grep { $_ eq $sub } @nus ){ $print=0; next; } 
+			if ( grep { $_ eq $sub } @nus ){ $print=0; $reset=0; next; } 
 				# from nuv.in, retrieve a list of not-used variables, specific
 				# to this subroutine
 				open(NUV,"$nuv_file");
@@ -412,7 +404,7 @@ pNSF
 				close NUV;
 			#}}}
 		}
-		elsif( ( $sublev gt 0 ) && ( $s =~ /^end(subroutine|function)?/i) ){
+		elsif( ( $sublev gt 0 ) && ( $s =~ /$re_sub_end/ ) ){
 			$sublev--;
 			if ( grep { $_ eq $sub } @nus ){ $print=0; $reset=1; next; } 
 		}
@@ -478,3 +470,16 @@ close OUT;
 close TF;
 close FF;
 #}}}
+#Trash {{{
+		# @opened expl. {{{
+		# 	@opened => contains "opened" IF statements, i.e. 
+		# while it contains those, we are still inside this IF statement;
+		# once we go to the point when we reach the ENDIF corresponding to this
+		# IF statement, we remove that string from @opened. Thus, the array @opened
+		# has the structure:
+		# 		Uppermost IF statement, then level-below statement etc.
+	    # if we are not inside any IF statement, @opened is empty.	
+		#}}}
+
+
+	#}}}
