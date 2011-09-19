@@ -1,0 +1,8 @@
+      
+      PROGRAM GMIN
+      USE MODMXATMS
+      USE NOA
+      USE COMMONS
+      USE QMODULE
+      USE PERMU
+      USE F1COM

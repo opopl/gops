@@ -349,7 +349,14 @@ foreach my $source_file (@source_files){
 			}
 		#}}}
 		}	
-		
+		#modules {{{{
+		elsif( $line =~ /^\s*use\s+(\w+)(,\s*only)?/i ){ 
+			my $mod=$1; 
+			if ( grep { $_ eq $mod } @num ){
+				if ( $print == 1 ){ $print=0;}
+			}
+		}
+		#}}}
 		if( $print==1 ){ print NSF "$line\n"; } 
 	}
 	close FILE;

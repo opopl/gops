@@ -1,0 +1,120 @@
+#!/usr/bin/env bash
+ 
+# directory where this script resides
+export shd="`dirname $(readlink -f $0)`"
+# name of this script 
+export this_script=` basename $0 `
+
+vim_opts="-n -p"
+v="vim $vim_opts"
+repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
+salldir=$shd/../scripts/all/
+incdir=$shd/../include/
+
+define_base_dirs(){
+# {{{
+# main Wales group software directory
+export wg_dir="$shd/../../"
+packdir=$HOME/arch/packed
+unpackdir=$HOME/arch/unpacked
+# }}}
+}
+
+
+set_base_vars(){
+# {{{
+s_purpose="view source files with vim"
+s_project="~/gops/"
+# }}}
+}
+
+set_base_vars
+
+display_help(){
+# {{{
+# general beginning part {{{
+cat << EOF
+=============================================
+SCRIPT NAME: $this_script 
+PROJECT: $s_project
+PURPOSE: $s_purpose
+USAGE: $this_script [ OPTIONS ] 
+
+	OPTIONS:
+
+	============
+	General
+	============
+
+			display the help message
+
+	vm		v(iew) m(yself), i.e., edit this script
+	-g		gvim invocation
+	
+	============
+EOF
+# }}}
+# actual interesting part {{{
+cat << EOF
+
+		bln 
+		v
+		main
+
+EOF
+# }}}
+# final general part {{{
+cat << EOF
+REMARKS:
+AUTHOR: O. Poplavskyy
+=============================================
+EOF
+# }}}
+# }}}
+}
+
+[ -z "$*" ] && ( display_help; exit 0 )
+
+main(){
+# {{{
+
+case "$1" in
+  gmi) $v $0 gmi.main.f90 func.f90 kw.f90 ../scripts/all/rca.sh ../include/fmt.i.f90 \
+  `ls mc*.f90` v.f90 ../doc/wg.gmin.tex ../doc/wg.gmin.topics.tex .gdbinit
+  ;;
+  bln) $v bln*.f90 ;;
+  m) 
+  [ -f makefile ] && mkf="makefile"
+  [ -f Makefile ] && mkf="Makefile"
+  $v $0 $mkf old.mk deps.mk nu.mk $incdir/inc.mk inc.mk $incdir/def.mk $incdir/t.mk t.mk \
+ 		$salldir/rca.sh $salldir/dv.sh $salldir/mkdep.pl \
+		base_source.in 
+		;;
+  o)
+  $v ` ls n.* | sed '/~$/d' ` keyword*.f true.in false.in num.in nuv.in nus.in source.in data.in rif.log ;;
+esac    # --- end of case ---
+
+# }}}
+}
+
+# main part 
+# {{{
+
+script_opts=( $* )
+define_base_dirs
+
+while [ ! -z "$1" ]; do
+  	case "$1" in
+		  #{{{
+	  	vm) $v $0; exit ;;
+		h) display_help $*; exit ;;
+		-g) v="$v -g" ;;
+	  	*) main $* && exit 0 ;;
+	esac
+  	shift
+        #}}}
+done
+
+# }}}
+
+
