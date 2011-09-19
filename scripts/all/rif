@@ -1,5 +1,30 @@
 #!/usr/bin/perl -w
 
+# Doc {{{
+#
+# 	Steps: 
+#
+#   1. Read input from 'data' file, write values of relevant logicals into @true @false
+#	2. Read in logical values from $ifile and write their values into @true @false
+# 	3. Get the list of source files and not needed modules
+#	4. Cleanup source files using @true @false @num
+#
+#}}}
+# vars {{{
+my(@true,@false,@ifs,@usedvars,@source_files,@num,@nus,@nuv);
+my %logvars;
+my $dir=&cwd();
+my $re_c=qr/^\s*(!|C)+/i;
+my $re_el=qr/^\s+$/i;
+my $re_if_gen=qr/^IF\((.)\)(THEN)?/i;
+my $re_else_gen=qr/^ELSE\((.)\)(THEN)?/i;
+my $re_use_mod=qr/^\s*use\s+(\w+)(\s*,\s*only)?/i;
+my $re_sub=qr/^(subroutine|function)(\w+)/i;
+
+my @npar_vars=qw( MCSTEPS FIXSTEP FIXTEMP FIXBOTH TEMP ACCRAT STEP ASTEP OSTEP BLOCK NT
+JUMPMOVE JUMPINT JDUMP SHELLMOVES PTGROUP NSURFMOVES NCORE );
+my $data_r1=qr//;
+#}}}
 # aux {{{
 use strict;
 use File::Find ();
@@ -40,12 +65,33 @@ my $theTime = "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $day
 #USAGE
 ##}}}
 	#}}}
+# functions {{{
 
-my(@true,@false,@ifs,@usedvars,@source_files,@num,@nus,@nuv);
-my $dir=&cwd();
+# rgive(): return a regexp based on input {{{
+sub rgive(){
+	my ($re,$word);
+	my $opt="$_[0]";
+	if (defined($_[1])){ $word="$_[1]"};
+	if 	  ( $opt eq "if_WORD_EQ_word" ){ 
+		$re=qr/^(ELSE)?IF\(WORD\.EQ\.\'$word\'\)/i; 
+	}
+	elsif ( $opt eq "if_WORD_EQ" )	   { $re=qr/^(ELSE)?IF\(WORD\.EQ\.\'\w*\'.*\)/i; }
+	return $re;
+}
+#}}}
+# cleanline() - clean input lines {{{
+sub cleanline(){
+  my $line=$_[0];
+  chomp $line;
+  foreach(@npar_vars){
+		my $var=$_;
+		$line =~ s/($var)\(.*\)/$1/gi;
+  }
+  return $line;
+}
+#}}}
 
-my @npar_vars=qw( FIXSTEP FIXTEMP FIXBOTH TEMP ACCRAT STEP ASTEP OSTEP BLOCK NT JUMPMOVE JUMPINT
-JDUMP SHELLMOVES PTGROUP NSURFMOVES NCORE );
+#}}}
 
 # files {{{
 my $i_file="$dir/keyword.init.i.f";
@@ -68,7 +114,6 @@ my $out_file="$dir/$this_script.log";
 open(OUT,">$out_file") or die $!;
 print OUT "Time: $theTime\n";
 #}}}
-
 # sv{{{
 open(SV,">$sv_file") or die $!;
 print SV << "head";
@@ -79,40 +124,41 @@ subroutine setvars
 head
 #}}}
 
-# Steps: {{{{
-#
-#   1. Read input from 'data' file, write values of relevant logicals into @true @false
-#	2. Read in logical values from $ifile and write their values into @true @false
-# 	3. Get the list of source files and not needed modules
-#	4. Cleanup source files using @true @false @num
-#}}}
-#
 # 1. extract logicals from init file and write into true.in, false.in {{{
 
 open(TF,">$true_file") or die $!;
 open(FF,">$false_file") or die $!;
 
 open(IFILE,"$i_file") or die $!;
-print SV "! From $i_file\n";
-print SV "! $delim\n";
-print SV "! $fld_open\n";
+print SV << "sv_ifile";
+! From $i_file
+! $delim
+! $fld_open
+sv_ifile
+
 #Headers for true.in and false.in {{{
 print TF << "printTF";
 ! True.in. This file contains name of those logical variables 
 ! which are set to .true.
 ! Created: $theTime
+! $delim
+! From $i_file
+! $delim
 printTF
 print FF << "printFF";
 ! False.in. This file contains name of those logical variables 
 ! which are set to .false.
 ! Created: $theTime
+! $delim
+! From $i_file
+! $delim
 printFF
 #}}}
 while(<IFILE>){
 	chomp; next if /^\s*$/;
 	( my $s = $_ ) =~ s/\s+//g;
-	if ( $s =~ /^(\w+)=\.true\./i ) { push(@true,$1); print TF "$1\n"; }
-	elsif( $s =~ /^(\w+)=\.false\./i ) { push(@false,$1); print FF "$1\n"; }
+	if ( $s =~ /^(\w+)=\.true\./i ) { push(@true,$1); $logvars{$1}=1; print TF "$1\n"; }
+	elsif( $s =~ /^(\w+)=\.false\./i ) { push(@false,$1); $logvars{$1}=0; print FF "$1\n"; }
 	elsif( $s !~ /^(!|C)+/i ){
 		print SV "$_\n";
 	}
@@ -121,10 +167,7 @@ print SV "! $fld_close\n";
 print SV "! $delim\n";
 
 close IFILE;
-close TF;
-close FF;
 #}}}
-
 # 2. Read in data file, set logicals using $if_file {{{
 
 #get @data and @ifelse; header for sv {{{
@@ -139,51 +182,90 @@ print OUT @data;
 print OUT "$delim\n";
 seek DATA,0,SEEK_SET;
 #}}}
+#Print info for SV TF FF {{{
+
+print SV << "sv_data";
+! From $data_file
+! $delim
+! $fld_open
+sv_data
+
+print TF << "printFF";
+! $delim
+! From $data_file
+! $delim
+printFF
+
+print FF << "printFF";
+! $delim
+! From $data_file
+! $delim
+printFF
+#}}}
 
 while (<DATA>){
 	#{{{
+	#intro {{{
 	chomp;
 	next if /^\s*$/;
 	my($word,@vals)=split;
 	my $c=0;
-	# $iflev: if-level depth
+			# $iflev: if-level depth
 	my $iflev=0;
-	# $first: whether we can print the header info for each block
+			# $first: whether we can print the header info for each block
 	my $first=1;
-	# $print: controls printing into SV; 
-	#	=1 can print, if other conditions are true
-	#	=0 can't print, regardless of other conditions
+			# $print: controls printing into SV; 
+			#	=1 can print, if other conditions are true
+			#	=0 can't print, regardless of other conditions
 	my $print=1;
 	seek IFELSE,0,SEEK_SET;
+	#}}}
 	while (<IFELSE>) {
-		#{{{
-		chomp;
-		next if /^\s*$/;
+		# before the block {{{
 		my %assignments;
+		my $line=&cleanline($_);
+		chomp; 
+		# discard empty lines (re_el) and comments (re_c)
+		next if ( /$re_el/ || /$re_c/ );  
 		( my $s = $_ ) =~ s/\s+//g;
-	    if ( $s =~ /^(ELSE)?IF\(WORD\.EQ\.\'$word\'\)/i ){ $c=1;$first=1; next; }
-		if ( ( $s =~ /^(ELSE)?IF\(WORD\.EQ\.\'\w*\'.*\)/i ) && ( $c == 1 ) ){ 
+		# 
+		my $ifword=&rgive("if_WORD_EQ_word","$word");
+		my $ifnext=&rgive("if_WORD_EQ");
+		#
+	    if ( $s =~ $ifword ){ $c=1; $first=1; next; }
+		if ( ( $s =~ $ifnext  ) && ( $c == 1 ) ){ 
 			$c=0; --$iflev; print SV "! $word $fld_close\n"; next;
 		}
+		#}}}
 		if ( $c == 1 ){
 					#we are now inside the block corresponding for each $word {{{
 					++$iflev;
 					if ($first==1){ print SV "! $word $fld_open\n"; $first=0; }
-					# logicals
-					if ( $s =~ /^(\w+)(\(\w+\))?=\.TRUE\./i ){ push(@true,$1); }
-						elsif( $s =~ /^(\w+)(\(\w+\))?=\.FALSE\./i ) { push(@false,$1);}
-								# reading in variables:
+					# logicals {{{
+					if ( $s =~ /^(\w+)(\(\w+\))?=\.TRUE\./i ){ 
+							push(@true,$1); 
+							$logvars{$1}=1; 
+							print TF "$1\n";
+						}
+					elsif( $s =~ /^(\w+)(\(\w+\))?=\.FALSE\./i ) { 
+								push(@false,$1); 
+								$logvars{$1}=0; 
+								print FF "$1\n";
+							}
+						#}}}
+								# reading in variables {{{
 								# A strings, I integers, F floats
-						elsif ( $s =~ /^(\w+)=(\w+)/i ){ 
+					elsif ( $s =~ /^(\w+)=(\w+)/i ){ 
 							push(@usedvars,$1);
 							$assignments{$1}=$2;
 							}
-						elsif ( $s =~ /^CALLREAD(A|I|F)\((\w+)\)/i ){
+					elsif ( $s =~ /^CALLREAD(A|I|F)\((\w+)\)/i ){
 							push(@usedvars,$2);
 							print SV "$2=$vals[0]\n";
 						}
+					#}}}
 						# additional if statements  {{{
-						elsif( $s =~ /^IF\((.*)\)/i ){ 
+					elsif( $s =~ /^IF\((.*)\)/i ){ 
 							# $cs contains the logical expression which we 
 							#		need to un-bundle and analyze against those values
 							#		already in the arrays @true and @false
@@ -197,16 +279,16 @@ while (<DATA>){
 								}
 							}
 						}
-						elsif( ( $s =~ /^ENDIF/i ) && ( $s !~ /^ELSEIF\(WORD\.EQ\./i ) ){ 
+					elsif( ( $s =~ /^ENDIF/i ) && ( $s !~ /^ELSEIF\(WORD\.EQ\./i ) ){ 
 									$iflev--;
 						}
-						elsif( ( $s =~ /^ELSE/i ) && ( $s !~ /^ELSEIF\(WORD\.EQ\./i ) ){ 
+					elsif( ( $s =~ /^ELSE/i ) && ( $s !~ /^ELSEIF\(WORD\.EQ\./i ) ){ 
 								if ( $print == 1 ){ $print=0; }
 						}
 						#}}}
 							# if there are no further variable assignments
 							# print the rest of the block into SV	
-						elsif( ( $s !~ /^(!|C)+/ ) && ( $print==1 ) ){
+					elsif( ( $s !~ /^(!|C)+/ ) && ( $print==1 ) ){
 							print SV "$_\n";
 						}
 					#}}}
@@ -216,18 +298,21 @@ while (<DATA>){
 #}}}
 }
 
+#Print closing statements; close files {{{
+print SV "! $fld_close\n";
+print SV "! $delim\n";
+print SV "end subroutine\n";
+
 close DATA;
 close IFELSE;
-print SV "end subroutine\n";
 close SV;
-
+#}}}
 # }}}
-
-# 3. get list of source files (source.in), not used:
-# 	modules		(num), 
-# 	subroutines (nus), 
-#	variables 	(nuv) 
-# {{{
+# 3. Get source files, num, nus, nuv {{{
+#   get list of source files (source.in), not used: 
+# 		modules		(num), 
+# 		subroutines (nus), 
+#		variables 	(nuv) 
 
 open(SFILE,"$sflist") or die $!;
 open(NUM,"$num_file") or die $!;
@@ -262,7 +347,6 @@ close SFILE;
 close NUM;
 close NUS;
 #}}}
-
 # 4. process source files {{{
 
 print OUT "$this_script> Processing source files...\n";
@@ -286,15 +370,22 @@ foreach my $source_file (@source_files){
 	open(FILE,"<$source_file") or die $!;
 	open(NSF,">$nsf") or die $!;
 	print OUT "$this_script> Processing: $source_file, output file is: $nsf \n";
+	print NSF << "pNSF";
+		! File: $nsf
+		! Created: $theTime
+pNSF
 	#}}}
 	while(<FILE>){
+		#{{{
+		#{{{
 		chomp;  
-		next if ( /^\s*(!|C)+/i );
+		next if ( /$re_c/ );
 		my $line=$_;
 		$c=0;
 		( my $s = $line ) =~ s/\s+//g;
 		if ( $reset == 1 ){ $print=1; }
-		# 	@opened => contains "opened" IF statements, i.e.  {{{
+		# @opened expl. {{{
+		# 	@opened => contains "opened" IF statements, i.e. 
 		# while it contains those, we are still inside this IF statement;
 		# once we go to the point when we reach the ENDIF corresponding to this
 		# IF statement, we remove that string from @opened. Thus, the array @opened
@@ -302,38 +393,9 @@ foreach my $source_file (@source_files){
 		# 		Uppermost IF statement, then level-below statement etc.
 	    # if we are not inside any IF statement, @opened is empty.	
 		#}}}
-		# IF THEN clauses {{{{
-		if ( $s =~ /^IF\((.)\)(THEN)?/i ) { 
-			#{{{
-			$c=1;
-			my $cs=$1;
-			push(@opened,$cs); 
-			$iflev++;
-			my @orlogs=split /\.OR\./i, $cs;
-			foreach my $orlog (@orlogs){
-				$orlog =~ s/^\(//g; $orlog =~ s/\)$//g; 
-
-				if ( grep { $_ eq $orlog } @true ) {
-					$print=1; $iftype="flag";
-					#.true., no need to check the rest, exit from
-					#the loop
-				}
-				elsif ( grep { $_ eq $orlog } @false ){
-					$print=0; $iftype="flag";
-				}
-			}
-			#}}}
-			next;
-		}
-		elsif ( $s =~ /^ELSE\((.)\)(THEN)?/i ) { 
-			if ( $print==1 ){ $print=0; }else{ $print=1; }
-		}
-		elsif( $s =~ /^ENDIF/i ){  $iflev--; }
-		elsif ( $s =~ /^ELSE\((.)\)(THEN)?/i ) { 
-		}
-			#}}}
+		#}}}
 			# subroutines{{{
-		elsif( $s =~ /^(subroutine|function)(\w+)/i ){
+		if( $s =~ /$re_sub/ ){
 			#{{{
 			$sublev++; $sub=$2;
 			print OUT "sub: $sub\n";
@@ -343,7 +405,7 @@ foreach my $source_file (@source_files){
 				# from nuv.in, retrieve a list of not-used variables, specific
 				# to this subroutine
 				open(NUV,"$nuv_file");
-				while(<NUV>){
+			while(<NUV>){
 					chomp; next if /^!+/; 
 					/^$sub\.(\w+)/i && push(@subnuv,$1);
 				}
@@ -352,28 +414,67 @@ foreach my $source_file (@source_files){
 		}
 		elsif( ( $sublev gt 0 ) && ( $s =~ /^end(subroutine|function)?/i) ){
 			$sublev--;
-			}
-		#}}}
-		#modules {{{
-		elsif( $line =~ /^\s*use\s+(\w+)(\s*,\s*only)?/i ){ 
-			#print OUT "$line\n";
-			( my $mod=$1 ) =~ tr/A-Z/a-z/; 
-			if ( grep { $_ eq $mod } @num ){
-			#print OUT "$source_file.$mod\n";
-				if ( $print == 1 ){ $print=0;$reset=1;}
-			}
+			if ( grep { $_ eq $sub } @nus ){ $print=0; $reset=1; next; } 
 		}
-		#}}}
-		elsif( $sublev gt 0 ){
+	#}}}
+		else{
+			#{{{
+			# firstly, cleanup not-used variables
 			foreach my $nuv (@subnuv) {
 				if ( $line =~ m/[^\w]$nuv[^\w]/i ){ $print=0;$reset=1; }
 			}
+			# now, proceed analyzing the IF..ELSE statements
+			# IF THEN clauses {{{{
+			if ( $s =~ /$re_if_gen/ ) { 
+				#{{{
+				$c=1;
+				my $cs=$1;
+				push(@opened,$cs); 
+				$iflev++;
+				my @orlogs=split /\.OR\./i, $cs;
+				foreach my $orlog (@orlogs){
+					$orlog =~ s/^\(//g; $orlog =~ s/\)$//g; 
+	
+					if ( grep { $_ eq $orlog } @true ) {
+						$print=1; $iftype="flag";
+						#.true., no need to check the rest, exit from
+						#the loop
+					}
+					elsif ( grep { $_ eq $orlog } @false ){
+						$print=0; $iftype="flag";
+					}
+				}
+				#}}}
+				next;
+			}
+			elsif ( $s =~ /$re_else_gen/ ) { 
+				if ( $print==1 ){ $print=0; }else{ $print=1; }
+			}
+			elsif( $s =~ /^ENDIF/i ){  $iflev--; }
+			elsif( $line =~ /$re_use_mod/ ){ 
+				#modules {{{
+				#print OUT "$line\n";
+				( my $mod=$1 ) =~ tr/A-Z/a-z/; 
+				if ( grep { $_ eq $mod } @num ){
+					#print OUT "$source_file.$mod\n";
+					if ( $print == 1 ){ $print=0;$reset=1;}
+				}
+				#}}}
+			}
+		#}}}
 		}
+			#}}}
+		
+	#}}}
 		if( $print==1 ){ print NSF "$line\n"; } 
-	}
+		}
 	close FILE;
 	close NSF;
 }
 #}}}
 
+# Final part {{{
 close OUT;
+close TF;
+close FF;
+#}}}

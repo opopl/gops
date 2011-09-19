@@ -91,7 +91,7 @@ case "$1" in
 		base_source.in 
 		;;
   o)
-  $v ` ls n.*.f90 ` keyword*.f true.in false.in num.in source.in data.in rif.log ;;
+  $v ` ls n.*.f90 n.*.f n.*.F ` keyword*.f true.in false.in num.in source.in data.in rif.log ;;
 esac    # --- end of case ---
 
 # }}}
