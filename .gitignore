@@ -8,6 +8,7 @@ ef.*
 *.mod
 *.o
 *.a
+n.*.*
 BUILDS/
 GMIN/source/porfuncs.f90
 DISCONNECT/source/manipulate
@@ -51,6 +52,7 @@ G/porfuncs.f90
 G/rca.f90
 G/t.mk
 G/tags
+G/G
 GMIN/deps.mk
 GMIN/porfuncs.f90
 OPTIM/deps.mk
