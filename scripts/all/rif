@@ -245,11 +245,18 @@ while(<NUS>){
 	push(@nus,$_);
 }
 
+#num{{{
+print OUT "$this_script> Not Used Modules:\n";
+print OUT "$delim\n";
 while(<NUM>){
 	chomp; 
 	next if /^(!|#)+ /; 
+	tr/A-Z/a-z/;
 	push(@num,$_);
+	print OUT "$_\n";
 }
+print OUT "$delim\n";
+#}}}
 
 close SFILE; 
 close NUM;
@@ -271,6 +278,7 @@ foreach my $source_file (@source_files){
 			#			In the latter case, the logical statement is not simplified,
 			#			and is printed in the un-transformed form 
 	my $iftype;
+	my $reset=1;
 	chomp $source_file;
 	$nsf="n.$source_file";
 	$iflev=0; $sublev=0;
@@ -285,6 +293,7 @@ foreach my $source_file (@source_files){
 		my $line=$_;
 		$c=0;
 		( my $s = $line ) =~ s/\s+//g;
+		if ( $reset == 1 ){ $print=1; }
 		# 	@opened => contains "opened" IF statements, i.e.  {{{
 		# while it contains those, we are still inside this IF statement;
 		# once we go to the point when we reach the ENDIF corresponding to this
@@ -323,10 +332,11 @@ foreach my $source_file (@source_files){
 		elsif ( $s =~ /^ELSE\((.)\)(THEN)?/i ) { 
 		}
 			#}}}
-			# subroutines{{{{
-		elsif( $s =~ /^(subroutine|function)(\w)/i ){
+			# subroutines{{{
+		elsif( $s =~ /^(subroutine|function)(\w+)/i ){
 			#{{{
 			$sublev++; $sub=$2;
+			print OUT "sub: $sub\n";
 				# check if this subroutine is not in the list of not used ones,
 				#	i.e. in @nus?
 			if ( grep { $_ eq $sub } @nus ){ $print=0; next; } 
@@ -343,20 +353,22 @@ foreach my $source_file (@source_files){
 		elsif( ( $sublev gt 0 ) && ( $s =~ /^end(subroutine|function)?/i) ){
 			$sublev--;
 			}
-		elsif( $sublev gt 0 ){
-			foreach my $nuv (@subnuv) {
-				if ( $line =~ m/[^\w]$nuv[^\w]/i ){ $print=0; }
-			}
 		#}}}
-		}	
-		#modules {{{{
-		elsif( $line =~ /^\s*use\s+(\w+)(,\s*only)?/i ){ 
-			my $mod=$1; 
+		#modules {{{
+		elsif( $line =~ /^\s*use\s+(\w+)(\s*,\s*only)?/i ){ 
+			#print OUT "$line\n";
+			( my $mod=$1 ) =~ tr/A-Z/a-z/; 
 			if ( grep { $_ eq $mod } @num ){
-				if ( $print == 1 ){ $print=0;}
+			#print OUT "$source_file.$mod\n";
+				if ( $print == 1 ){ $print=0;$reset=1;}
 			}
 		}
 		#}}}
+		elsif( $sublev gt 0 ){
+			foreach my $nuv (@subnuv) {
+				if ( $line =~ m/[^\w]$nuv[^\w]/i ){ $print=0;$reset=1; }
+			}
+		}
 		if( $print==1 ){ print NSF "$line\n"; } 
 	}
 	close FILE;

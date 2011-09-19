@@ -1,6 +1,6 @@
 ! True.in. This file contains name of those logical variables 
 ! which are set to .true.
-! Created: 4:38:22, Mon Sep 19, 2011
+! Created: 6:16:23, Mon Sep 19, 2011
 SAVEQ
 FREEZECORE
 CHECKCHIRALITY
