@@ -16,12 +16,13 @@ my %logvars;
 my $dir=&cwd();
 my $re_c=qr/(^\s*!|^C)/i;
 my $re_el=qr/^\s+$/i;
-my $re_if_gen=qr/^IF\((.)\)(THEN)?/i;
-my $re_elseif_gen=qr/^ELSEIF\((.)\)(THEN)?/i;
+my $re_if_gen=qr/^IF\((.*)\)(THEN)?/i;
+my $re_elseif_gen=qr/^ELSEIF\((.*)\)(THEN)?/i;
 my $re_else=qr/^ELSE$/i;
 my $re_use_mod=qr/^\s*use\s+(\w+)(\s*,\s*only)?/i;
 my $re_sub=qr/^(subroutine|function)(\w+)/i;
 my $re_sub_end=qr/^end(subroutine|function)?/i;
+my $re_vardec=qr/^(LOGICAL|REAL|DOUBLE|INTEGER|CHARACTER)/i;
 
 #my $re_nuv_gen=qr/$nuv(\w+)/i;
 #my $re_nuv_if=qr/$nuv(\w+)/i;
@@ -428,32 +429,37 @@ pNSF
 		}
 	#}}}
 		else{
-			#{{{
-			# firstly, cleanup not-used variables 
+			# {{{
 			foreach my $nuv (@subnuv) {
 				#{{{
 				if ( /\W+$nuv\W+/i ){
-					$print=0; $reset=0; 
-					if 		( $s =~ /^ELSEIF(.*)\W$nuv/i ) { 
-						$reason="ifnuv";
-						print OUT "iflev= $iflev\n";
-						$ifnames[$iflev]="nuv"; }
-					elsif 	( $s =~ /^IF(.*)\W$nuv/i ){	
-						$iflev++;
-						$reason="ifnuv"; $ifnames[$iflev]="nuv";  }
-					else { $reset=1; }
-					next L_FILE
+					if ( $s !~ /$re_vardec/ ){
+						#{{{
+						$print=0; $reset=0; 
+						if 		( $s =~ /^ELSEIF(.*)\W$nuv/i ) { 
+							$reason="ifnuv";
+							print OUT "iflev= $iflev\n";
+							$ifnames[$iflev]="nuv"; }
+						elsif 	( $s =~ /^IF(.*)\W$nuv/i ){	
+							$iflev++;
+							$reason="ifnuv"; $ifnames[$iflev]="nuv";  }
+						else { $reset=1; }
+						#}}}
+					}
+					elsif( $s =~ /,$nuv(,|$)/i ){
+						$line =~ s/,\s*$nuv(\W)/$1/g; 
+						#print NSF "$line\n"; 
+					}
 				}
 			#}}}
 			}
-			# now, proceed analyzing the IF..ELSE statements
-			# IF THEN clauses {{{{
 			if ( $s =~ /$re_if_gen/ ) { 
 				#{{{
 				$c=1;
 				my $cs=$1;
 				push(@opened,$cs); 
 				$iflev++;
+				print OUT "iflev incr\n";
 				my @orlogs=split /\.OR\./i, $cs;
 				foreach my $orlog (@orlogs){
 					$orlog =~ s/^\(//g; $orlog =~ s/\)$//g; 
@@ -468,7 +474,7 @@ pNSF
 					}
 				}
 				#}}}
-				next;
+				next L_FILE;
 			}
 			elsif ( 
 				( $s =~ /$re_else/ ) && 
@@ -482,18 +488,14 @@ pNSF
 			elsif( $s =~ /^ENDDO/i ){  $dolev--; }
 			elsif( $line =~ /$re_use_mod/ ){ 
 				#modules {{{
-				#print OUT "$line\n";
 				( my $mod=$1 ) =~ tr/A-Z/a-z/; 
 				if ( grep { $_ eq $mod } @num ){
-					#print OUT "$source_file.$mod\n";
 					if ( $print == 1 ){ $print=0;$reset=1;}
 				}
 				#}}}
 			}
 		#}}}
 		}
-			#}}}
-		
 	#}}}
 		if( $print==1 ){ print NSF "$line\n"; } 
 	}
