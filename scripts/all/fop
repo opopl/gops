@@ -127,8 +127,11 @@ for f in ${files[@]}; do
 done
 
 rcaf=rca.$ffork.i.sh
+
 cp $shd/rca.$base.i.sh $shd/$rcaf
 echo "$this_script> In scripts dir: Created $rcaf"
+cp $gopsdir/sim/v $fdir/v
+echo "$this_script> Copied v "
 
 # }}}
 }
