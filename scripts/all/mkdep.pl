@@ -58,16 +58,16 @@ open(DP, ">$dpfile") or die $!;
 print DP "# Project dir: $projdir\n";
 
 #}}}
-## here-doc{{{
-#my %opt;
-#@ARGV > 0 and getopts('n:s:m:', \%opt) and not (keys %opt > 1) or die 
-#+<< "USAGE";
-#=========================================================
-#PURPOSE: Generate dependencies for a Fortran project
-#USAGE: $0 FILE
-#=========================================================
-#USAGE
-##}}}
+# here-doc{{{
+my %opt;
+@ARGV > 0 and getopts('n:s:m:', \%opt) and not (keys %opt > 1) or die 
++<< "USAGE";
+=========================================================
+PURPOSE: Generate dependencies for a Fortran project
+USAGE: $0 FILE
+=========================================================
+USAGE
+#}}}
 # Time stuff  {{{
 
 my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
@@ -92,11 +92,12 @@ sub get_unused{
   if ($nu_exist eq 1){
 	  while(<NUF>){
 		chomp;
-		if( $_ !~ /^(#|d:)/g ){
+		if( ! /^(#|d:)/ ){
 			push(@nused,$_);
 		}
-		elsif( /^d\:(\w+)/g ){
+		elsif( /^d:(\w+)/g ){
 			push(@nu_dirs,$1);
+			print DP "# Not used dir: $1\n";
 		}
 }
 	foreach(@nused) { s/^\s+//; s/\s+$//; }
@@ -120,8 +121,6 @@ sub wanted {
 		if ( ! grep { $_ eq $name } @nused ) {
 				push(@fortranfiles,"$name"); 
 			}
-
-
 	}
 #}}}
 }
@@ -339,7 +338,6 @@ sub MakeDependsf90 {
 # main {{{
 
 &get_unused;
-print DP @nu_dirs;
 File::Find::find({wanted => \&wanted}, '.')  ;
 @f90 = uniq("F","f","f90");
 foreach (@f90) { s/^/*./ };
