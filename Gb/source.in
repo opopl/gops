@@ -12,3 +12,4 @@ potential.f
 finalq.f
 finalio.f 
 modhess.f90
+qmod.f90

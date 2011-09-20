@@ -2,6 +2,7 @@ main.F
 mc.F
 io1.f 
 keyword.f 
+centre.f
 countatoms.f90 
 commons.f90 
 input.f 
@@ -12,3 +13,4 @@ potential.f
 finalq.f
 finalio.f 
 modhess.f90
+qmod.f90

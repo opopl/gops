@@ -1,0 +1,22 @@
+! True.in. This file contains name of those logical variables 
+! which are set to .true.
+! Created: 15:35:27, Tue Sep 20, 2011
+! ====================
+! From /home/op226/gops/Gb/keyword.init.i.f
+! ====================
+SAVEQ
+FREEZECORE
+CHECKCHIRALITY
+NOCISTRANS
+CAP
+LBFGST
+AVOIDRESEEDT
+! ====================
+! From /home/op226/gops/Gb/data.in
+! ====================
+CENT
+G46
+BLNT
+TRACKDATAT
+PAIRDISTT
+PAIRDISTT

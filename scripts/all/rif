@@ -322,8 +322,8 @@ close SV;
 #		variables 	(nuv) 
 
 open(SFILE,"$sflist") or die $!;
-open(NUM,"$num_file") or die $!;
-open(NUS,"$nus_file") or die $!;
+open(NUM,"$num_file") or print "No num file\n";
+open(NUS,"$nus_file") or print "No nus file\n";
 
 while(<SFILE>){
 	chomp; 

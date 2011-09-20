@@ -25,13 +25,13 @@ C
 !> \brief Produce final quenches  
 !op226>=================================== 
 !op226> Declarations {{{ 
-      USE commons
-      use modamber
-      use modamber9, only : coords1,lcrd,ih,m04,natom,ambfinalio_node
-      use pymodule, only : SITECOORDS,ELLST1,ELLMAT
-      use qmodule
-      USE modcharmm
-      USE AMHGLOBALS, ONLY:NMRES,IRES
+      USE COMMONS
+      !use modamber
+      !use modamber9, only : coords1,lcrd,ih,m04,natom,ambfinalio_node
+      !USE PYMODULE, ONLY : SITECOORDS,ELLST1,ELLMAT
+      USE QMODULE
+      !USE modcharmm
+      !USE AMHGLOBALS, ONLY:NMRES,IRES
 
       IMPLICIT NONE
 
@@ -53,13 +53,13 @@ C   MCP
       CHARACTER(LEN=20) :: MYFILENAME2, ISTR, DBNUM, MYFILENAME3
       CHARACTER(LEN=15), ALLOCATABLE :: DBNAME(:) 
 
-C  AMH 
-      CHARACTER(LEN=3) :: RES_TYPE
-      CHARACTER(LEN=2) :: ATOM_TYPE
-      CHARACTER*1 COUNTTT
-      INTEGER COUNTT
-      DOUBLE PRECISION  PPPCORD(NMRES*3*3,3,3,5)
-      EXTERNAL NUM_TO_CHAR
+!C  AMH 
+      !CHARACTER(LEN=3) :: RES_TYPE
+      !CHARACTER(LEN=2) :: ATOM_TYPE
+      !CHARACTER*1 COUNTTT
+      !INTEGER COUNTT
+      !DOUBLE PRECISION  PPPCORD(NMRES*3*3,3,3,5)
+      !EXTERNAL NUM_TO_CHAR
 !op226> End declarations }}} 
 ! subroutine body {{{
       PI = 4.D0*DATAN(1.D0)
@@ -1224,7 +1224,7 @@ C         OPEN(UNIT=26,FILE="ellipsoid.xyz",STATUS='UNKNOWN')
       RETURN
       END
 
-      include "finalio.amberdump.i.f"
-      include "finalio.capsidio.i.f"
-      include "finalio.rbio.i.f"
-      include "finalio.tipio.i.f"
+      !include "finalio.amberdump.i.f"
+      !include "finalio.capsidio.i.f"
+      !include "finalio.rbio.i.f"
+      !include "finalio.tipio.i.f"

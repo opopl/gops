@@ -67,6 +67,8 @@ EOF
 cat << EOF
 REMARKS:
 AUTHOR: O. Poplavskyy
+SCRIPT LOCATION: 
+	$shd/$this_script
 =============================================
 EOF
 # }}}

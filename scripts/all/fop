@@ -92,39 +92,57 @@ echo -e "$this_script> Fork directory: \n $fdir"
 
 cd $bdir; 
 # ${base_files[@]} base files {{{
-base_files=( ` cat $bdir/base_source.in ` )
-for ff in ` cat $bdir/base_source.in ` ; do
+bsrc=$bdir/base_source.in
+base_files=( ` cat $bsrc ` )
+for ff in ` cat $bsrc ` ; do
   	ffname=${ff%.*}
     base_files=( ${base_files[@]} ` ls $ffname.*i.* 2> /dev/null | sed '/~$/d' ` )
 done
 #}}}
 # ${ffiles[@]} forked project files {{{
-ffiles=( ` cat "$fork"_source.in ` )
-for ff in `cat "$fork"_source.in` ; do
-  	ffname=${ff%.*}
-    ffiles=( ${ffiles[@]} ` ls $ffname.*i.* 2> /dev/null | sed '/~$/d'` )
-done
+fsrc=$bdir/"$fork_source".in
+if [ -f $fsrc ]; then
+	ffiles=( ` cat $fsrc ` )
+	for ff in `cat $fsrc ` ; do
+  		ffname=${ff%.*}
+    	ffiles=( ${ffiles[@]} ` ls $ffname.*i.* 2> /dev/null | sed '/~$/d'` )
+	done
+fi
 #}}}
 
 #*.num => not used modules (in the fork); num => Not Used Modules; nuv => Not Used Variables;
 # nus => not used subroutines
 
-cat "$fork"_source.in base_source.in > $fdir/source.in
+cat $bsrc > $fdir/source."in"
+
+if [ -f $fsrc ]; then 
+	cat $fsrc  >> $fdir/source."in"
+fi
+
 echo "$this_script> In fork dir: Created source.in"
 exts=( num nuv nus data )
 
 for ext in ${exts[@]}; do  
 	f=$fork.$ext
 	if [ -f $f ]; then
-	 	 cp $f $fdir/$ext.in
+	 	 cp $f $fdir/$ext."in"
 		 echo "$this_script> Copied $f"
 	fi
 done 
 
-files=( ${mkfiles[@]} ${base_files[@]} ${ffiles[@]} )
+files=( ${base_files[@]} ${ffiles[@]} )
+echo "${files[@]}"
 
+# copy source files: the base and the fork ones
 for f in ${files[@]}; do
-	cp $gopsdir/$base/$f $fdir/
+  	fname=${f%.*}
+	fext=${f##*.}
+	#cp $bdir/$f $fdir/$fname.o.$fext
+	cp $bdir/$f $fdir
+done
+# copy make files
+for f in ${mkfiles[@]}; do
+	cp $bdir/$f $fdir/
 done
 
 rcaf=rca.$ffork.i.sh
