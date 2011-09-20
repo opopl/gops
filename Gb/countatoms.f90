@@ -28,7 +28,6 @@ MODULE NOA
                EXIT
             ENDIF
          ENDDO
-        ELSEIF (YESNOAMH) THEN
       ELSE
          PRINT '(A)','ERROR - no coords, input.crd, coords.inpcrd or coords.amber file'
          STOP

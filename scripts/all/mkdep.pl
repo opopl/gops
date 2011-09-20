@@ -1,5 +1,5 @@
-#!/usr/bin/perl
-#
+#!/usr/bin/perl -w
+
 # start {{{
 # Changelog:
 #
@@ -17,98 +17,19 @@ if 0; #$running_under_some_shell
 #use strict;
 use File::Find ();
 use Getopt::Std;
-#}}}
+use Cwd;
 
-# from find2perl {{{
-# Set the variable $File::Find::dont_use_nlink if you're using AFS,
-# since AFS cheats.
-
+# Set the variable $File::Find::dont_use_nlink if you're using AFS, since AFS cheats.
 # for the convenience of &wanted calls, including -eval statements:
 use vars qw/*name *dir *prune/;
 *name   = *File::Find::name;
 *dir    = *File::Find::dir;
 *prune  = *File::Find::prune;
 
-# array for not-used fortran files which are taken from 
-# file nu.mk
-my @nused;
-# does the nu.mk file exist? 0 for no, 1 for yes
-my $nu_exist;
-
-sub wanted;
-sub get_unused;
-
-sub get_unused{
-	#{{{
-	$nused_file="nu.mk";
-	$nu_exist=1;
-  open(NUF, $nused_file) or $nu_exist=0; 
-  if ($nu_exist eq 1){
-	  foreach $line (<NUF>){
-		  chomp($line);
-		if( $line !~ /^#/g ){
-	push(@nused,$line);
-	}
-# }}}
-}
-	#foreach(@nused) { s/^\s+//; s/\s+$//; print MAKEFILE "$_\n"; }
-	foreach(@nused) { s/^\s+//; s/\s+$//; }
-	chomp(@nused);
-	close(NUF);
-	}
 #}}}
-}
+# vars {{{
 
-sub wanted {
-	#{{{
-    my ($dev,$ino,$mode,$nlink,$uid,$gid);
-
-    if ( ( /^.*\.(f90|f|F)\z/s) &&
-    ( $nlink || (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_)) ) &&
-    ( ! /^.*\.(save|o|old|ref)\..*\z/s )
-	) {
-		$name =~ s/^\.\///; 
-		$size_nused=@nused;
-		#if ( $size_nused gt 0 ){
-			#if ( ! grep { $_ eq $name } @nused ) {
-				#push(@fortranfiles,"$name"); 
-			#}
-		#} else {
-				#push(@fortranfiles,"$name"); 
-		#}
-
-			if ( ! grep { $_ eq $name } @nused ) {
-				push(@fortranfiles,"$name"); 
-			}
-
-
-	}
-#}}}
-}
-
-#}}}
-
-#here-doc{{{
-my %opt;
-@ARGV > 0 and getopts('n:s:m:', \%opt) and not (keys %opt > 1) or die 
-+<< "USAGE";
-=========================================================
-PURPOSE: Generate dependencies for a Fortran project
-USAGE: $0 FILE
-=========================================================
-USAGE
-#}}}
-
-my $depsfile="$ARGV[0]";
-open(MAKEFILE, ">$depsfile") or die $!; 
-
-&get_unused;
-File::Find::find({wanted => \&wanted}, '.')  ;
-#
-# Allow Fortran 90 module source files to have extensions other than .f90
-#
-@f90 = uniq(F,f,f90);
-
+# %excluded %libs {{{
 my %excluded=(
 	"mpif.h" =>	"",
 	"MPIF.H" =>	""
@@ -120,48 +41,131 @@ my %libs=(
 	"AMH"		=> "libamh.a",
 	"libbowman.a"	=> "libbowman.a"
       );
+  #}}}
+
 my @libdirs=keys %libs;
 
-foreach (@f90) { s/^/*./ };
-# Dependency listings
+# array for not-used fortran files which are taken from file nu.mk
+my @nused;
+# does the nu.mk file exist? 0 for no, 1 for yes
+my $nu_exist;
 
-# Time stuff  {{{
+my $nu_dir;
 
-@months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
-@weekDays = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
-($second, $minute, $hour, $dayOfMonth, $month, $yearOffset, $dayOfWeek, $dayOfYear, $daylightSavings) = localtime();
-$year = 1900 + $yearOffset;
-$theTime = "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $dayOfMonth, $year";
+my $projdir=&cwd();
+my $dpfile="$projdir/$ARGV[0]";
+open(DP, ">$dpfile") or die $!; 
+print DP "# Project dir: $projdir\n";
 
 #}}}
+## here-doc{{{
+#my %opt;
+#@ARGV > 0 and getopts('n:s:m:', \%opt) and not (keys %opt > 1) or die 
+#+<< "USAGE";
+#=========================================================
+#PURPOSE: Generate dependencies for a Fortran project
+#USAGE: $0 FILE
+#=========================================================
+#USAGE
+##}}}
+# Time stuff  {{{
 
-print MAKEFILE << "head";
-# $depsfile
-# Fortran dependency file
-# Created: $theTime
-head
+my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+my @weekDays = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
+my ($second, $minute, $hour, $dayOfMonth, $month, $yearOffset, $dayOfWeek, $dayOfYear, $daylightSavings) = localtime();
+my $year = 1900 + $yearOffset;
+my $theTime = "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $dayOfMonth, $year";
 
-&MakeDependsf90();
-#&MakeDepends("*.f *.F", '^\s*include\s+["\']([^"\']+)["\']');
-&MakeDepends("*.c",     '^\s*#\s*include\s+["\']([^"\']+)["\']');
+#}}}
+# Subroutines  {{{
 
-#system("sort $depsfile > n; mv n $depsfile");
+# wanted() get_unused() {{{
 
-#Subroutines  {{{
+sub wanted;
+sub get_unused;
 
-# &PrintWords(current output column, extra tab?, word list); --- print words nicely
+sub get_unused{
+	#{{{
+	my $nused_file="nu.mk";
+	$nu_exist=1;
+  open(NUF, $nused_file) or $nu_exist=0; 
+  if ($nu_exist eq 1){
+	  while(<NUF>){
+		chomp;
+		if( $_ !~ /^(#|d:)/g ){
+			push(@nused,$_);
+		}
+		elsif( /^d\:(\w+)/g ){
+			push(@nu_dirs,$1);
+		}
+}
+	foreach(@nused) { s/^\s+//; s/\s+$//; }
+	close(NUF);
+	}
+# }}}
+}
+
+sub wanted {
+	#{{{
+    my ($dev,$ino,$mode,$nlink,$uid,$gid);
+	( my $dirname = $File::Find::dir ) =~ s/$projdir//g;
+	$dirname =~ s/^(\.|\/)+//g;
+
+    if ( ( /^.*\.(f90|f|F)\z/s) &&
+    ( $nlink || (($dev,$ino,$mode,$nlink,$uid,$gid) = lstat($_)) ) &&
+    ( ! /^.*\.(save|o|old|ref)\..*\z/s ) &&
+	( ! grep { $_ eq $dirname } @nu_dirs )
+	) {
+		$name =~ s/^\.\///; 
+		if ( ! grep { $_ eq $name } @nused ) {
+				push(@fortranfiles,"$name"); 
+			}
+
+
+	}
+#}}}
+}
+
+#}}}
+#Subs: MakeDepends PrintWords LanguageCompiler toLower uniq {{{
+
+sub MakeDepends{
+# {{{
+# &MakeDepends(language pattern, include file sed pattern); --- dependency maker
+  my $subname = (caller(0))[3];
+   local(@incs);
+   local($lang) = $_[0];
+   local($pattern) = $_[1];
+   #
+   foreach $file (<${lang}>) {
+      open(FILE, $file) || warn "Cannot open $file: $!\n";
+      while (<FILE>) {
+	 /$pattern/i && push(@incs, $1);
+	 }
+      if (defined @incs) {
+	 $file =~ s/\.[^.]+$/.o/;
+	 print DP "$file: ";
+	 &PrintWords(length($file) + 2, 0, @incs);
+	 print DP "\n";
+	 undef @incs;
+	 }
+      }
+# }}}
+}
+
 sub PrintWords {
   # {{{
+# &PrintWords(current output column, extra tab?, word list); --- print words nicely
    local($columns) = 78 - shift(@_);
    local($extratab) = shift(@_);
    local($wordlength);
    #
-   print MAKEFILE @_[0];
+   print DP $_[0];
    $columns -= length(shift(@_));
    foreach $word (@_) {
       $wordlength = length($word);
       if ($wordlength + 1 < $columns) {
-	 print MAKEFILE " $word";
+	 print DP " $word";
 	 $columns -= $wordlength + 1;
 	 }
       else {
@@ -169,19 +173,17 @@ sub PrintWords {
 	 # Continue onto a new line
 	 #
 	 if ($extratab) {
-	    print MAKEFILE " \\\n\t\t$word";
+	    print DP " \\\n\t\t$word";
 	    $columns = 62 - $wordlength;
 	    }
 	 else {
-	    print MAKEFILE " \\\n\t$word";
+	    print DP " \\\n\t$word";
 	    $columns = 70 - $wordlength;
 	    }
 	 }
       }
 # }}}
 }
-
-#Subs: LanguageCompiler toLower uniq {{{
 
 # &LanguageCompiler(compiler, sources); --- determine the correct language
 #    compiler
@@ -213,7 +215,7 @@ sub LanguageCompiler {
 
 # &toLower(string); --- convert string into lower case
 sub toLower {
-   local($string) = @_[0];
+   local($string) = $_[0];
    $string =~ tr/A-Z/a-z/;
    $string;
 }
@@ -225,9 +227,10 @@ sub uniq {
 # {{{
    local(@words);
    foreach $word (@_) {
-      if ($word ne $words[$#words]) {
-	 push(@words, $word);
-	 }
+      #if ( ( (defined($word)) && ($word ne $words[$#words])) || ( $#words==0 )) {
+      if ( $word ne $words[$#words]) {
+	 	push(@words, $word);
+	 	}
       }
    @words;
 #}}}
@@ -235,35 +238,9 @@ sub uniq {
 
 #}}}
 
-# &MakeDepends(language pattern, include file sed pattern); --- dependency
-#    maker
-#
-sub MakeDepends {
-# {{{
-  my $subname = (caller(0))[3];
-   local(@incs);
-   local($lang) = @_[0];
-   local($pattern) = @_[1];
-   #
-   foreach $file (<${lang}>) {
-      open(FILE, $file) || warn "Cannot open $file: $!\n";
-      while (<FILE>) {
-	 /$pattern/i && push(@incs, $1);
-	 }
-      if (defined @incs) {
-	 $file =~ s/\.[^.]+$/.o/;
-	 print MAKEFILE "$file: ";
-	 &PrintWords(length($file) + 2, 0, @incs);
-	 print MAKEFILE "\n";
-	 undef @incs;
-	 }
-      }
-# }}}
-}
-
-# &MakeDependsf90(f90 compiler); --- FORTRAN 90 dependency maker
 sub MakeDependsf90 {
 #{{{
+# &MakeDependsf90(f90 compiler); --- FORTRAN 90 dependency maker
   my $subname = (caller(0))[3];
    local(@dependencies);
    local(%filename);
@@ -325,7 +302,7 @@ sub MakeDependsf90 {
 		 && ( $objfile !~ /.*\.(save)\..*/ ) # don't use save files
 		 && ( $objfile !~ /.*\.(ref)\..*/ ) # don't print "reference" files, i.e. files included from other code
 	 ) {
-	 print MAKEFILE "$objfile: ";
+	 print DP "$objfile: ";
 	 undef @dependencies;
 	 foreach $module (@modules) {
 	   if (defined $filename{$module})
@@ -347,7 +324,7 @@ sub MakeDependsf90 {
 	 @dependencies = &uniq(sort(@dependencies));
 	 &PrintWords(length($objfile) + 2, 0,
 		     @dependencies, &uniq(sort(@incs)));
-	 print MAKEFILE "\n";
+	 print DP "\n";
 	 }
 	 #
 	 undef @incs;
@@ -358,5 +335,22 @@ sub MakeDependsf90 {
 # }}}
 }
 
-
 # }}}
+# main {{{
+
+&get_unused;
+print DP @nu_dirs;
+File::Find::find({wanted => \&wanted}, '.')  ;
+@f90 = uniq("F","f","f90");
+foreach (@f90) { s/^/*./ };
+
+print DP << "head";
+# $dpfile
+# Fortran dependency file
+# Created: $theTime
+head
+
+&MakeDependsf90();
+
+close DP;
+#}}}

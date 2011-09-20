@@ -10,7 +10,7 @@
       IF (.NOT. END) CALL READU(WORD)
 
       include "keyword.endstop.i.f"
-      include "keyword.r.chmd.i.f"
+      !include "keyword.r.chmd.i.f"
       include "keyword.if.i.f"
       
       CALL FLUSH(MYUNIT)

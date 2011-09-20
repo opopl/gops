@@ -9,7 +9,8 @@ ALLSOURCE := $(wildcard *.f) $(wildcard *.f90) $(wildcard *.F)
 #NOTUSEDSOURCE := $(filter-out $(shell cat nu.mk ),$(wildcard #*) ) 
 #NOTUSEDSOURCE := $(shell echo `cat nu.mk | sed '/^#/d'`  ) 
 NOTUSEDSOURCE := $(shell cat nu.mk ) 
-NOTUSEDSOURCE+=$(wildcard *.inc.*)  \
+NOTUSEDSOURCE += $(shell find old -name \*.f -o -name \*.f90 -o -name \*.F ) 
+NOTUSEDSOURCE += $(wildcard *.inc.*)  \
 	$(wildcard *.i.*) \
 	$(wildcard *.ref.*) \
 	$(wildcard *.old.*) \
