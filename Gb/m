@@ -1,0 +1,6 @@
+
+f=( ` find -name m.\*.\* | sed 's/^\.\///g; /~$/d'  ` )
+
+for g in ${f[@]}; do 
+  	gn=`echo "$g" | sed 's/^m\.//g'`; mv $g $gn
+done

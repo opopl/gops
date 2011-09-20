@@ -1,57 +1,25 @@
-!op226>=================================== 
-!op226> GPL License Info {{{ 
-!   GMIN: A program for finding global minima
-!   Copyright (C) 1999-2006 David J. Wales
-!   This file is part of GMIN.
-!
-!   GMIN is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
-!
-!   GMIN is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
-!
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-!
-!op226>}}} 
-!op226>=================================== 
-! Doxygen {{{
-!> \name MC
-!> \brief This subroutine ...
-!> \param NSTEPS
-!> \param SCALEFAC
-!> \param SCREENC
-! }}}
-!op226>=================================== 
+
       SUBROUTINE MC(NSTEPS,SCALEFAC,SCREENC)
 !op226> Declarations {{{ 
+
       USE COMMONS
-      USE qmodule , only : qmin, QMINP, INTEQMIN
-      USE modcharmm
-      USE modamber9, only : mdstept,cisarray1,cisarray2,chiarray1,chiarray2,nocistransdna,nocistransrna,
-     &                      setchiral,amchpmax,doligmove,ligmovefreq, amchnmax
-      USE porfuncs
-      USE AMHGLOBALS, ONLY: NMRES,OMOVI,AVEP,NUMPRO,IRES
-      USE AMH_INTERFACES, ONLY:E_WRITE
+      USE QMODULE , ONLY : QMIN, QMINP, INTEQMIN
+      USE PORFUNCS
 
       IMPLICIT NONE
-#ifdef MPI
-      INTEGER  MPIERR
-      INCLUDE 'mpif.h'
-      INTEGER IS(MPI_STATUS_SIZE)
-#endif
+
+      ! subroutine
+      INTEGER ::    NSTEPS
+      DOUBLE PRECISION ::   SCALEFAC,SCREENC(3*NATOMS)
+
+      ! local
 
       INTEGER J1, NSUCCESS(NPAR), NFAIL(NPAR), NFAILT(NPAR), NSUCCESST(NPAR), J2, NSTEPS, JP, J5, 
      1        UNT, ITERATIONS, NSUPERCOUNT, NQTOT, JACCPREV, NREN, NLAST, NSTEPREN, BRUN,QDONE,JBEST(NPAR),
      2        NRMS, NDONE, I, RNDSEED, J, NTOT, IMESG, ITRAJ, ITRAJO, NEACCEPT, J3, J4, ISTAT, LOCALCOUNT
       INTEGER :: NSYMCALL=0
-      DOUBLE PRECISION POTEL, SCALEFAC, RANDOM, DPRAND, SAVECOORDS(3*NATOMS), TEMPCOORDS(3*NATOMS),
-     1                 TIME, SPOTEL(NSUPER), SCOORDS(3*NATOMS,NSUPER), SCREENC(3*NATOMS),
+      DOUBLE PRECISION POTEL, RANDOM, DPRAND, SAVECOORDS(3*NATOMS), TEMPCOORDS(3*NATOMS),
+     1                 TIME, SPOTEL(NSUPER), SCOORDS(3*NATOMS,NSUPER), 
      2                 EPPREV(NPAR), QSTART, QFINISH, RANNJ, RMIN, RMINO, RCOORDS(3*NATOMS),ELASTSYM(NPAR),
      3                 RCOORDSO(3*NATOMS), RVAT(NATOMS), RVATO(NATOMS), EPSSAVE, EBEST(NPAR),
      4                 BESTCOORDS(3*NATOMS,NPAR), endtime, RMSD, VINIT, CTE, TEMPTRAJ(0:NPAR-1),
@@ -63,10 +31,6 @@
       CHARACTER (LEN= 3)  ISTR
       CHARACTER (LEN=20) QUENCHNUM, QUNAME, DUMMYCHAR
       CHARACTER (LEN=20) BESTNAME, CURRENTBESTNAME
-c  AMH 
-      INTEGER :: gly_count,iii,i2,i500,snapcount, DUMMYINT
-      DOUBLE PRECISION prcord(NATOMS,3,3,3)
-      DOUBLE PRECISION :: mctemp
 !  csw34> PAIRDIST variables
       INTEGER :: PAIRCOUNTER
       DOUBLE PRECISION, EXTERNAL :: PAIRDISTANCE
@@ -85,71 +49,6 @@ c  AMH
 !op226>}}} 
 !op226> Subroutine body {{{ 
 
-! Write a list of FROZEN atoms for use in an (o)data file
-!op226> IF (FREEZEGROUPT) THEN {{{
-      IF (FREEZEGROUPT) THEN
-         OPEN(UNIT=4431,FILE='frozen.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-         DO J6=1,NATOMS
-!
-! Work out the distance from GROUPCENTRE to the current atom J1
-! 
-            DISTGROUPX2=(COORDS(3*GROUPCENTRE-2,1)-COORDS(3*J6-2,1))**2
-            DISTGROUPY2=(COORDS(3*GROUPCENTRE-1,1)-COORDS(3*J6-1,1))**2
-            DISTGROUPZ2=(COORDS(3*GROUPCENTRE  ,1)-COORDS(3*J6  ,1))**2
-            DISTGROUPCENTRE=SQRT(DISTGROUPX2+DISTGROUPY2+DISTGROUPZ2)
-! If working in GT mode (default), FREEZE all atoms >GROUPRADIUS from the GROUPCENTRE atom
-            IF((FREEZEGROUPTYPE=="GT").AND.(DISTGROUPCENTRE.GT.GROUPRADIUS)) THEN
-               NFREEZE=NFREEZE+1
-               FROZEN(J6)=.TRUE.
-               WRITE(4431,'(A,I6)') 'FREEZE ',J6
-! If working in LT mode, FREEZE all atoms <GROUPRADIUS from the GROUPCENTRE atom
-            ELSE IF((FREEZEGROUPTYPE=="LT").AND.(DISTGROUPCENTRE.LT.GROUPRADIUS)) THEN
-               NFREEZE=NFREEZE+1
-               FROZEN(J6)=.TRUE.
-               WRITE(4431,'(A,I6)') 'FREEZE ',J6
-            END IF
-         END DO
-         CLOSE(4431)
-! Prevent it doing this again
-         FREEZEGROUPT=.FALSE.     
-      ENDIF
-!op226>}}} 
-
-! Write a list of DONTMOVE atoms for use in an (o)data file
-!op226> IF (DONTMOVEGROUPT) THEN {{{
-      IF (DONTMOVEGROUPT) THEN
-              OPEN(UNIT=4431,FILE='dontmove.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-         DO J6=1,NATOMS
-!
-! Work out the distance from DONTMOVECENTRE to the current atom J1
-! 
-            DISTGROUPX2=(COORDS(3*DONTMOVECENTRE-2,1)-COORDS(3*J6-2,1))**2
-            DISTGROUPY2=(COORDS(3*DONTMOVECENTRE-1,1)-COORDS(3*J6-1,1))**2
-            DISTGROUPZ2=(COORDS(3*DONTMOVECENTRE  ,1)-COORDS(3*J6  ,1))**2
-            DISTGROUPCENTRE=SQRT(DISTGROUPX2+DISTGROUPY2+DISTGROUPZ2)
-! If working in GT mode (default), DONTMOVE all atoms >GROUPRADIUS from the DONTMOVECENTRE atom
-            IF((DONTMOVEGROUPTYPE=="GT").AND.(DISTGROUPCENTRE.GT.GROUPRADIUS)) THEN
-               NDONTMOVE=NDONTMOVE+1
-               DONTMOVE(J6)=.TRUE.
-               WRITE(4431,'(A,I6)') 'DONTMOVE ',J6
-! IF working in LT mode, DONTMOVE all atoms <GROUPRADIUS from the DONTMOVECENTRE atom
-       ELSE IF((DONTMOVEGROUPTYPE=="LT").AND.(DISTGROUPCENTRE.LT.GROUPRADIUS)) THEN
-               NDONTMOVE=NDONTMOVE+1
-               DONTMOVE(J6)=.TRUE.
-               WRITE(4431,'(A,I6)') 'DONTMOVE ',J6
-            END IF
-         END DO
-         CLOSE(4431)
-! Prevent it doing this again
-         DONTMOVEGROUPT=.FALSE.     
-      ENDIF
-!op226>}}} 
-      
-!     csw34> Added defaults to prevent accidentaly discarding
-!     structures for AMH      
-
-      CHIRALFAIL=.FALSE.
-      AMIDEFAIL=.FALSE.
       INQUIRE(UNIT=1,OPENED=LOPEN)
       IF (LOPEN) THEN
          WRITE(*,'(A,I2,A)') 'mc> A ERROR *** Unit ', 1, ' is not free '
@@ -166,51 +65,11 @@ c  AMH
          STOP
       ENDIF
 
-#ifdef MPI
-      IF (MPIT) THEN 
-         IF (DEBUG) WRITE(MYUNIT,'(A,I6)') 'MPIERR=',MPIERR
-         CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NPAR,MPIERR)
-         IF (DEBUG) WRITE(MYUNIT, '(A,2I6)') 'NPAR,MPIERR=',NPAR,MPIERR
-         CALL MPI_COMM_RANK(MPI_COMM_WORLD,MYNODE,MPIERR)
-         JP=MYNODE+1
-         ITRAJ=MYNODE
-         IF (DEBUG) WRITE(MYUNIT, '(A,3I6)') 'In mc after MPI_MPI_COMM_RANK MPIERR,MYNODE,JP=',MPIERR,MYNODE,JP
-      ENDIF
-      NEACCEPT=0
-#endif
-
       NDONE=0
-      IF (RESTORET) THEN
-#ifdef MPI
-         CALL RESTORESTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
-#else
-         DO JP=1,NPAR
-            CALL RESTORESTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
-         ENDDO
-#endif
-         WRITE(MYUNIT, '(A,I10)') 'MC> restore NDONE=',NDONE
-!     csw34> Sets the quench counter so that the GMIN_out file makes sense after using RESTORE!
-!         NQ(:)=NDONE
-      ENDIF
       NQ(:)=NDONE
 
-! tvb requesting a basin-sampling MC run: {{{
-      
-      IF (BSWL.and.(.not.TETHER)) then
-         CALL BasinSampling
-         RETURN
-      ELSEIF (TETHER) THEN
-         CALL TetheredWL
-         RETURN
-      ENDIF
-! }}}
-
-#ifdef MPI
-      WRITE(MYUNIT, '(A,I10,A,I10,A)') "Processor", mynode+1, " of", NPAR, " speaking:"
-      WRITE(MYUNIT, '(A,I10)') 'Number of atoms', natoms
-#endif
-
       IF (NACCEPT.EQ.0) NACCEPT=NSTEPS+1
+
       NRMS=0
       NLAST=0
       STAY=.FALSE.
@@ -219,10 +78,8 @@ c  AMH
       RMINO=1.0D100
       RMIN=1.0D100
       NREN=NRENORM
-#ifdef MPI
-#else
+
       DO JP=1,NPAR 
-#endif
          TMOVE(JP)=.TRUE.
          OMOVE(JP)=.TRUE.
          NSUCCESS(JP)=0
@@ -237,39 +94,15 @@ c  AMH
             UNT=70+NPAR+JP
             OPEN(UNIT=UNT,FILE=FNAME,STATUS='UNKNOWN')
          ENDIF
-#ifdef MPI
-#else
       ENDDO
-#endif
 
-      IF (AMHT) THEN
-         write(omovi,1334)nmres,3,1,INT(real(NSTEPS)/real(NINT_AMH))
-1334     format(4(i8,1x),' nmres nmcrd numpro nmsnap')
-      ENDIF
-    
-      IF (.NOT.RESTORET) THEN
-!       csw34> Set the centre of mass to be at the specified location
-!       contained in the SETCENTRE X Y Z keyword
          IF (SETCENT) CALL SETCENTRE(COORDS)
 !
 ! For MAKEOLIGOT and MAKEOLIGOSTART=TRUE: generate oligomers by placing new segments.
-         IF (CHRMMT.AND.MAKEOLIGOT.AND.MAKEOLIGOSTART) THEN
-#ifdef MPI
-!        seed the random number generator with system time  + MYNODE (for MPI runs)
-             IF (RANDOMSEEDT) THEN
-                CALL DATE_AND_TIME(datechar,timechar,zonechar,values)
-                itime1= values(6)*60 + values(7)
-                CALL SDPRND(itime1+MYNODE)
-             ENDIF
-             CALL CHMAKEOLIGOMER(JP)
-             call flush(6)
-#else
              DO JP=1,NPAR
                 CALL CHMAKEOLIGOMER(JP)
              ENDDO
-#endif
          ENDIF
-      ENDIF
 
 !  Calculate the initial energy and save in EPREV
 !op226>{{{ 
@@ -1276,11 +1109,6 @@ c  AMH
 ! }}}
 
 37    CONTINUE
-#ifdef MPI
-      WRITE(MYUNIT,10) NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),STEP(JP),ASTEP(JP),TEMP(JP)
-10    FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)
-      IF (RIGID) WRITE(MYUNIT,'(A,F12.5)') 'Rigid body orientational step=',OSTEP(JP)
-#else
       DO JP=1,NPAR
          IF (NPAR.GT.1) THEN
             WRITE(MYUNIT,20) JP,NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),
@@ -1293,169 +1121,44 @@ c  AMH
          ENDIF
          IF (RIGID) WRITE(MYUNIT,'(A,F12.5)') 'Rigid body orientational step=',OSTEP(JP)
       ENDDO
-#endif
 !mo361>Deallocating these arrays to cope with multiple runs of this subroutine in GA
       DEALLOCATE(TMOVE)
       DEALLOCATE(OMOVE)
       RETURN
 !op226>}}} 
       END
-C
-C
-! csw34> Subroutine to dump the current lowest interaction energy structure 
-!> \brief Subroutine to dump the current lowest interaction energy structure 
-!> \author Chris Whittleston, csw34@cam.ac.uk
-!
-      SUBROUTINE A9INTEDUMPLOWEST()
-      USE COMMONS
-      USE QMODULE
-      IMPLICIT NONE
-      OPEN(UNIT=20,FILE="bestintE.rst",STATUS='UNKNOWN')  
-      WRITE(20,'(g20.10,i5)') INTEQMIN(1), INTEFF(1)
-      WRITE(20,'(i5)') NATOMS
-      WRITE(20,'(6f12.7)') INTEQMINP(1,:) 
-      CLOSE(20)
-!    csw34> Dump to PDB using routine in amberinterface.f
-      CALL A9DUMPPDB(INTEQMINP(1,:),"bestintE")
-      END SUBROUTINE A9INTEDUMPLOWEST
-! csw34> Subroutine to work out the interaction energy INTE between residue RESLIG for geometry INTECOORDS
-      SUBROUTINE A9INTE(INTECOORDS,INTE)
-      USE PORFUNCS
-      USE COMMONS, ONLY : NATOMS
-      IMPLICIT NONE
-      DOUBLE PRECISION :: INTECOORDS(3*NATOMS), INTE
-      INTEGER ISTAT
-! Dump current coordinates to file for SANDER to read in
-      OPEN(UNIT=20,FILE='coords.intres',STATUS='UNKNOWN')
-      WRITE(20,'(a20)') 'intE coordinates'
-      WRITE(20,'(i5)') NATOMS
-      WRITE(20,'(6f12.7)') INTECOORDS(:)
-      CLOSE(20)
-! Run the script that does the interaction energy calculation (downloadable from the group website)
-      CALL SYSTEM_SUBR('bash AMBGMINintE.sh',ISTAT)
-! Read interaction energy in from the file called intE
-      OPEN(UNIT=20,FILE="intE",STATUS='OLD')
-      READ(20,*) INTE
-      CLOSE(20)
-      END SUBROUTINE A9INTE
 
-!
-!> \brief Subroutine to check the  distance 
-!> \brief between groups of atoms defined in the movableatoms file.
-!> Checks the A->B and A->C distances,
-!> and if they are greater than the A(B/C)THRESH values defined
-!> in the data file, the routine returns DISTOK=.FALSE.
-!> \author Chris Whittleston, csw34@cam.ac.uk
-!
-      SUBROUTINE A9DISTCHECK(COORDS,DISTOK)
-      USE MODAMBER9, ONLY : NATOMSINA,NATOMSINB,NATOMSINC,ATOMSINALIST,ATOMSINBLIST,ATOMSINCLIST
-      USE COMMONS, ONLY : NATOMS,ABTHRESH,ACTHRESH,DEBUG
-      IMPLICIT NONE
-      LOGICAL :: DISTOK
-      INTEGER :: I,J
-      DOUBLE PRECISION :: COORDS(3*NATOMS)
-      DOUBLE PRECISION :: CENTREOFA(3),CENTREOFB(3),CENTREOFC(3)  
-      DOUBLE PRECISION :: ABDIST,ACDIST 
-! initialise variables
-      CENTREOFA(:)=0.0D0
-      CENTREOFB(:)=0.0D0
-      CENTREOFC(:)=0.0D0
-      ABDIST=0.0D0
-      ACDIST=0.0D0
-! find centre of ligand (group A)
-      DO I=1,NATOMSINA
-         J=ATOMSINALIST(I)
-         CENTREOFA(1)=CENTREOFA(1)+COORDS(3*J-2)
-         CENTREOFA(2)=CENTREOFA(2)+COORDS(3*J-1)
-         CENTREOFA(3)=CENTREOFA(3)+COORDS(3*J  )
-      END DO
-      CENTREOFA(:) = CENTREOFA(:)/NATOMSINA
-! find centre of group B 
-      DO I=1,NATOMSINB
-         J=ATOMSINBLIST(I)
-         CENTREOFB(1)=CENTREOFB(1)+COORDS(3*J-2)
-         CENTREOFB(2)=CENTREOFB(2)+COORDS(3*J-1)
-         CENTREOFB(3)=CENTREOFB(3)+COORDS(3*J  )
-      END DO
-      CENTREOFB(:) = CENTREOFB(:)/NATOMSINB
-! find centre of group B 
-      DO I=1,NATOMSINC
-         J=ATOMSINCLIST(I)
-         CENTREOFC(1)=CENTREOFC(1)+COORDS(3*J-2)
-         CENTREOFC(2)=CENTREOFC(2)+COORDS(3*J-1)
-         CENTREOFC(3)=CENTREOFC(3)+COORDS(3*J  )
-      END DO
-      CENTREOFC(:) = CENTREOFC(:)/NATOMSINC
-! calculate A->B distance
-      ABDIST=SQRT((CENTREOFA(1)-CENTREOFB(1))**2+(CENTREOFA(2)-CENTREOFB(2))**2+(CENTREOFA(3)-CENTREOFB(3))**2)
-! calculate A->C distance
-      ACDIST=SQRT((CENTREOFA(1)-CENTREOFC(1))**2+(CENTREOFA(2)-CENTREOFC(2))**2+(CENTREOFA(3)-CENTREOFC(3))**2)
-! some DEBUG printing
-      IF (DEBUG) THEN
-         WRITE(*,*) 'AB distance=',ABDIST
-         WRITE(*,*) 'AC distance=',ACDIST
-         IF (ABDIST.LT.ABTHRESH) THEN
-            WRITE(*,*) 'A->B condition met! :)'
-         ELSE 
-            WRITE(*,*) 'A->B condition broken :('
-         ENDIF   
-         IF (ACDIST.LT.ACTHRESH) THEN
-            WRITE(*,*) 'A->C condition met! :)'
-         ELSE 
-            WRITE(*,*) 'A->C condition broken :('
-         ENDIF   
-      ENDIF
-! do the check for both conditions
-      IF ((ABDIST.LT.ABTHRESH).AND.(ACDIST.LT.ACTHRESH)) DISTOK=.TRUE.
-! more debug printing
-      IF (DEBUG) WRITE(*,*) 'DISTOK=',DISTOK
- 
-      END SUBROUTINE A9DISTCHECK
 
 
       SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,NP,RANDOM,MCTEMP)
+      ! declarations {{{
       USE COMMONS
       USE QMODULE
+
       IMPLICIT NONE
-      DOUBLE PRECISION ENEW, EOLD, DUMMY, DPRAND, RANDOM, EREF, TEOLD, TENEW, RATIO,MCTEMP
+
+      ! subroutine 
+
+      DOUBLE PRECISION ENEW, EOLD,  MCTEMP, RANDOM
+      LOGICAL ATEST
+      INTEGER NP
+
+      ! local
+
+      DOUBLE PRECISION ::   DUMMY, DPRAND, EREF, TEOLD, TENEW, RATIO
       DOUBLE PRECISION TRANS, DISTMIN, DISTMINOLD
-      LOGICAL ATEST, FLAT, evap, evapreject
-      INTEGER NP,INDEXOLD, INDEXNEW, J1, NDUMMY
+      LOGICAL FLAT, evap, evapreject
+      INTEGER INDEXOLD, INDEXNEW, J1, NDUMMY
       DATA DISTMINOLD /0.0D0/
       COMMON /DMIN/ DISTMIN
-!     COMMON /IG/ IGNOREBIN, FIXBIN
       common /ev/ evap, evapreject
-
-      IF (DISTMINOLD.EQ.0.0D0) DISTMINOLD=DISTMIN  ! this should allow for the first step
-      IF (TUNNELT) THEN
-         TEOLD=TRANS(EOLD,QMIN(1),GAMMA)
-         TENEW=TRANS(ENEW,QMIN(1),GAMMA)
-!        WRITE(MYUNIT,'(A,4F20.10)') 'TEOLD,TENEW,QMIN(1),GAMMA=',TEOLD,TENEW,QMIN(1),GAMMA
-      ELSE
+      ! }}}
+      ! body {{{
          TEOLD=EOLD
          TENEW=ENEW
-      ENDIF
 
-      IF (TSALLIST) THEN
-         EREF=QMIN(NP)*1.1D0
-         DUMMY=(1.0D0-(1.0D0-QTSALLIS)*(TENEW-EREF)/MCTEMP)/(1.0D0-(1.0D0-QTSALLIS)*(TEOLD-EREF)/MCTEMP)
-         DUMMY=DUMMY**(QTSALLIS/(1.0D0-QTSALLIS))
-!        WRITE(MYUNIT,'(A,4F20.10)') 'TENEW,TEOLD,EREF,DUMMY=',TENEW,TEOLD,EREF,DUMMY
-         IF (DUMMY.GE.1.0D0) THEN
-            RANDOM=0.0D0
-            ATEST=.TRUE.
-         ELSE
-            RANDOM=DPRAND()
-            IF (DUMMY.GT.RANDOM) THEN
-               ATEST=.TRUE.
-            ELSE
-               ATEST=.FALSE.
-            ENDIF
-         ENDIF
-      ELSE
-!
 !  Standard canonical sampling.
-!
+
          IF (TENEW.LT.TEOLD) THEN
             RANDOM=0.0D0
             ATEST=.TRUE.
@@ -1467,13 +1170,15 @@ C
                ATEST=.FALSE.
             ENDIF
          ENDIF
-      ENDIF 
 
       RETURN 
+      ! }}}
       END 
 
       SUBROUTINE JUMPM(RANNJ,J1,JP,EPPREV)
-      USE commons
+
+      USE COMMONS
+
       IMPLICIT NONE
       INTEGER J1, JP, J2, UNT, NDUM, ITERATIONS, BRUN, QDONE
       DOUBLE PRECISION RANNJ, RANDOM, DPRAND, EPPREV(NPAR), DUMMY, TIME, EJ, SCREENC(3*NATOMS)
@@ -1643,18 +1348,22 @@ C
       RETURN
       END
  
- 
- 
       SUBROUTINE ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
-      USE commons
-      USE modcharmm
+      ! declarations {{{
+      USE COMMONS
+
       IMPLICIT NONE
-      INTEGER NSUCCESS(NPAR), NFAIL(NPAR), JP, NFAILT(NPAR), NSUCCESST(NPAR), J1, J2, NDUMMY
+
+      ! subroutine 
+      INTEGER NSUCCESS(NPAR), NFAIL(NPAR), JP, NFAILT(NPAR), NSUCCESST(NPAR)
+
+      ! local 
+      INTEGER ::, J1, J2, NDUMMY
       LOGICAL evap, evapreject
       DOUBLE PRECISION DUMMY, DUMMY2, DUMMY3, DUMMY4, HWMAX,P0,FAC
-!     COMMON /IG/ IGNOREBIN, FIXBIN
-!     COMMON /MOVE/ TMOVE, OMOVE
       common /ev/ evap, evapreject
+      ! }}}
+      ! body {{{
 
       P0=1.D0*NSUCCESS(JP)/(1.D0*(NSUCCESS(JP)+NFAIL(JP)))
       
@@ -1676,15 +1385,10 @@ C
                   IF (OMOVE(JP)) OSTEP(JP)=OSTEP(JP)*1.05D0
                ELSE
                   STEP(JP)=FAC*STEP(JP)
-                  IF(CHRIGIDTRANST.AND.CHRMMT) TRANSMAX=FAC*TRANSMAX
-                  IF(CHRIGIDROTT.AND.CHRMMT) ROTMAX=FAC*ROTMAX  
                ENDIF
             ENDIF
             ASTEP(JP)=ASTEP(JP)*1.05D0
 ! jwrm2> limit step size for percolation to the cutoff distance for determining connectivity
-            IF (PERCOLATET .AND. ( STEP(JP) .GT. PERCCUT))  STEP(JP) = PERCCUT
-            IF (PERCOLATET .AND. (ASTEP(JP) .GT. PERCCUT)) ASTEP(JP) = PERCCUT
-            IF (PERCOLATET .AND. (OSTEP(JP) .GT. PERCCUT)) OSTEP(JP) = PERCCUT
          ENDIF
       ELSE
          IF(ARMT) THEN
@@ -1696,18 +1400,7 @@ C
          ELSE IF (FIXSTEP(JP)) THEN
             IF (.NOT.FIXTEMP(JP)) TEMP(JP)=TEMP(JP)*1.05D0
          ELSE
-            IF (FIXD) THEN
-               NHSMOVE=MAX(1,NHSMOVE-1)
-            ELSE
-               IF (RIGID) THEN
-                  IF (TMOVE(JP)) STEP(JP)=STEP(JP)/1.05D0
-                  IF (OMOVE(JP)) OSTEP(JP)=OSTEP(JP)/1.05D0
-               ELSE
-                  STEP(JP)=FAC*STEP(JP)
-                  IF(CHRIGIDTRANST.AND.CHRMMT) TRANSMAX=FAC*TRANSMAX
-                  IF(CHRIGIDROTT.AND.CHRMMT) ROTMAX=FAC*ROTMAX
-               ENDIF
-            ENDIF
+            STEP(JP)=FAC*STEP(JP)
             ASTEP(JP)=ASTEP(JP)/1.05D0
          ENDIF
       ENDIF
@@ -1748,13 +1441,15 @@ C
       NFAIL(JP)=0 
 C
       RETURN
+      ! }}}
       END
 
-C
-C
       SUBROUTINE REN(J1,RMIN,RCOORDS,RVAT,NREN,RMINO,RCOORDSO,RVATO,ITERATIONS,TIME,NLAST,JACCPREV,NSTEPREN)
-      USE commons
+
+      USE COMMONS
+
       IMPLICIT NONE
+
       LOGICAL STAY, REJECT, METROPOLIS
       INTEGER J1, J2, NREN, ITERATIONS, NQTOT, NLAST, JACCPREV, NSTEPREN, J3, BRUN, QDONE
       DOUBLE PRECISION POTEL, RMIN, RCOORDS(3*NATOMS), RVAT(NATOMS), RANDOM, DPRAND, RMINO, RCOORDSO(3*NATOMS), RVATO(NATOMS),
@@ -1915,8 +1610,8 @@ C
 !
       SUBROUTINE NEWRES(J1,JP,JBEST,EBEST,BESTCOORDS,EPPREV,POTEL,ITERATIONS,TIME,RCOORDS,
      1                  RMIN,RVAT,BRUN,SCREENC,QDONE,JACCPREV,NSUCCESS,NFAIL,NFAILT,NSUCCESST)
-      USE commons
-      USE modamber9, only : mdstept 
+
+      USE COMMONS
       
       IMPLICIT NONE
       INTEGER J1, JP, JBEST(NPAR), ITERATIONS, J2, JACCPREV, BRUN, QDONE, J3, PERM(NATOMS), NPERM, NTRIES
@@ -2040,14 +1735,8 @@ C
 ! th368: 20-10-2009 Extending MD-Reseeding to the CHARMM interface
 ! terminate if neither AMBER nor CHARMM was requested in the data file
 
-             IF (AMBERT) THEN
-               CALL TAKESTEPAMBER(JP,COORDS(:,JP),movableatomlist,nmovableatoms,ligmovet,mdstept,randomseedt)
-             ELSEIF (CHRMMT) THEN
-               CALL CHMD(JP)
-             ELSE
                WRITE(MYUNIT,'(A,I8,A)') 'newres> Molecular Dynamics reseeding is available for AMBER or CHARMM runs only.'
                STOP
-             ENDIF
 ! end th368: 20-10-2009
 
             CHANGE_TEMP = .false.
@@ -2125,7 +1814,6 @@ C
 !  to change COORDSO and VATO. Should reset EBEST and BESTCOORDS as well.
 !
 !  next line should be uncommented if routine is made available to use with CHARMM
-!         IF (CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
 654      CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
          IF (RMS.GT.BQMAX) THEN
             WRITE(MYUNIT,'(A)') 'newres> Quench from reseeded geometry failed - try again'
