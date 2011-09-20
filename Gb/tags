@@ -3,26 +3,30 @@
 !_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.5.4	//
+!_TAG_PROGRAM_VERSION	5.8	//
+1	mc.f	/^1                 TIME, SPOTEL(NSUPER), SCOORDS(3*NATOMS,NSUPER), $/;"	l	subroutine:MC	file:
+1	quench.f	/^     1                                     EREAL, EPREV(NP), DISTMIN, EPSSPHERE$/;"	l	subroutine:QUENCH	file:
+1	quench.f	/^     1              P(3*(NATOMS\/2+J2-1)+1),P(3*(NATOMS\/2+J2-1)+2),P(3*(NATOMS\/2+J2-1)+3),RBCOORDS)$/;"	l	subroutine:QUENCH	file:
+1	quench.f	/^     1              POTEL,' steps=',ITER,' RMS force=',RMS$/;"	l	subroutine:QUENCH	file:
 10	finalio.f	/^10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)$/;"	l	subroutine:FINALIO	file:
-10	mc.f	/^10       IF ((XMOVERENORM.GT.3.0D0).OR.FIXD) THEN$/;"	l	subroutine:REN	file:
-10	mc.f	/^10    CALL HSMOVE(COORDS(1:3*NATOMS,1:NPAR),1,NHSRESTART)$/;"	l	subroutine:REST	file:
-10	mc.f	/^10    FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)$/;"	l	subroutine:MC	file:
+10	mc1.f	/^10       IF ((XMOVERENORM.GT.3.0D0).OR.FIXD) THEN$/;"	l	subroutine:REN	file:
+10	mc1.f	/^10    CALL HSMOVE(COORDS(1:3*NATOMS,1:NPAR),1,NHSRESTART)$/;"	l	subroutine:REST	file:
 10	mylbfgs.f	/^10    CALL FLUSH(MYUNIT)$/;"	l	subroutine:MYLBFGS	file:
 10	potential.f	/^10    CONTINUE$/;"	l	subroutine:POTENTIAL	file:
+10	quench.f	/^10    IF (PERMOPT) THEN ! lb415$/;"	l	subroutine:QUENCH	file:
 10	takestep.f	/^10       J2=3*J1$/;"	l	subroutine:TAKESTEP	file:
 11	mylbfgs.f	/^11          FORMAT(1X,'QUENCH NUMBER ',I6,' initial points in mylbfgs')$/;"	l	subroutine:MYLBFGS	file:
+11	quench.f	/^11    IF (WELCH) TOSI=.TRUE.$/;"	l	subroutine:QUENCH	file:
 12	keyword.if.i.f	/^12       CONTINUE$/;"	l	file:
 120	io1.f	/^120         FORMAT('Run ',I3,': ',I9,' steps with temperature scaled by ',E15.8)$/;"	l	subroutine:IO1	file:
-1334	mc.f	/^1334     format(4(i8,1x),' nmres nmcrd numpro nmsnap')$/;"	l	subroutine:MC	file:
+13	quench.f	/^13       READ(91,'(A1)',END=14) DUMMY$/;"	l	subroutine:QUENCH	file:
+14	quench.f	/^14       CONTINUE$/;"	l	subroutine:QUENCH	file:
 160	io1.f	/^160      FORMAT('Debug printing is on')$/;"	l	subroutine:IO1	file:
 190	keyword.f	/^190   CALL INPUT(END)$/;"	l	subroutine:KEYWORD	file:
 20	io1.f	/^20       FORMAT('Initial coordinates:')$/;"	l	subroutine:IO1	file:
-20	mc.f	/^20          CONTINUE$/;"	l	subroutine:REN	file:
-20	mc.f	/^20          FORMAT('[',I2,']Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)$/;"	l	subroutine:MC	file:
-20	mc.f	/^20    CONTINUE $/;"	l	subroutine:NEWRES	file:
+20	mc1.f	/^20    CONTINUE $/;"	l	file:
 20	mylbfgs.f	/^20    IF (INTMINT) THEN$/;"	l	subroutine:MYLBFGS	file:
-21	mc.f	/^21          FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)$/;"	l	subroutine:MC	file:
+21	mc.f	/^21       FORMAT('ACCEPTANCE RATIO FOR RUN=',F12.5,' STEP=',F12.5,' ANGULAR STEP FACTOR=',F12.5,' T=',F12.5)$/;"	l	subroutine:MC	file:
 23	mc.f	/^23          CONTINUE$/;"	l	subroutine:MC	file:
 235	mylbfgs.f	/^ 235              FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',\/,$/;"	l	subroutine:MYLBFGS	file:
 240	mylbfgs.f	/^ 240        FORMAT(' IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')$/;"	l	subroutine:MYLBFGS	file:
@@ -30,26 +34,28 @@
 30	io1.f	/^30             FORMAT(3F20.10)$/;"	l	subroutine:IO1	file:
 30	mylbfgs.f	/^30    NPT=POINT*N$/;"	l	subroutine:MYLBFGS	file:
 33	mc.f	/^33                FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' EVAP,REJ')$/;"	l	subroutine:MC	file:
-332	mc.f	/^332                  FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1x))$/;"	l	subroutine:MC	file:
-334	mc.f	/^334                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	subroutine:MC	file:
 34	mc.f	/^34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')$/;"	l	subroutine:MC	file:
 36	mc.f	/^36                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' REJ')$/;"	l	subroutine:MC	file:
 37	mc.f	/^37    CONTINUE$/;"	l	subroutine:MC	file:
 56	keyword.if.i.f	/^56          WRITE(MYUNIT,'(A,I6,A)') $/;"	l	file:
 57	keyword.if.i.f	/^57          READ(34,*,END=56) DUMMY$/;"	l	file:
 65	mylbfgs.f	/^65          FORMAT('AR ',3F20.10)$/;"	l	subroutine:MYLBFGS	file:
-654	mc.f	/^654      CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)$/;"	l	subroutine:NEWRES	file:
-683	mc.f	/^683                  FORMAT(3(i6,1x),f8.4,1x,i5,' stuct snap t T Tid')$/;"	l	subroutine:MC	file:
-73	mc.f	/^73                   FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' TABOO')$/;"	l	subroutine:MC	file:
-A9DISTCHECK	mc.f	/^      SUBROUTINE A9DISTCHECK(/;"	s
-A9INTE	mc.f	/^      SUBROUTINE A9INTE(/;"	s
-A9INTEDUMPLOWEST	mc.f	/^      SUBROUTINE A9INTEDUMPLOWEST(/;"	s
+65	quench.f	/^65          FORMAT('AR ',3F20.10)$/;"	l	subroutine:QUENCH	file:
+654	mc1.f	/^654      CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)$/;"	l	file:
+70	quench.f	/^70          FORMAT(1X,'QUENCH NUMBER ',I6,' final energy=',F20.10,' RMS force=',E20.10)$/;"	l	subroutine:QUENCH	file:
+80	quench.f	/^80          FORMAT(A2,3F20.10)$/;"	l	subroutine:QUENCH	file:
+ACCRAT	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP, ACCRAT,/;"	v	module:COMMONS
 ACCREJ	mc.f	/^      SUBROUTINE ACCREJ(/;"	s
 AMBWORD	keyword.dec.i.f	39;"	c
+ANV	commons.f90	/^      INTEGER,ALLOCATABLE :: ANV(/;"	v	module:COMMONS
+ASTEP	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP,/;"	v	module:COMMONS
 ATOM1	main.f	/^      CHARACTER(LEN=40) :: ATOM1,/;"	v	program:GMIN
 ATOM2	main.f	/^      CHARACTER(LEN=40) :: ATOM1,ATOM2,/;"	v	program:GMIN
 ATOMPAIR	main.f	/^      CHARACTER(LEN=40) :: ATOM1,ATOM2,ATOMPAIR$/;"	v	program:GMIN
+BEADLETTER	commons.f90	/^     CHARACTER(LEN=1), ALLOCATABLE :: BEADLETTER(/;"	v	module:COMMONS
 BIN	keyword.dec.i.f	27;"	c
+BLNSSTRUCT	commons.f90	/^     CHARACTER(LEN=1), ALLOCATABLE :: BEADLETTER(:), BLNSSTRUCT(/;"	v	module:COMMONS
+BQMAX	commons.f90	/^     DOUBLE PRECISION :: RADIUS,BQMAX,/;"	v	module:COMMONS
 BSNEW	keyword.dec.i.f	32;"	c
 BUFINF	keyword.dec.i.f	22;"	c
 CAPS	keyword.dec.i.f	34;"	c
@@ -61,13 +67,17 @@ CHZ	keyword.dec.i.f	/^      DOUBLE PRECISION, ALLOCATABLE :: CHX(:), CHY(:), CHZ
 CLEAR	keyword.dec.i.f	/^      LOGICAL END, SKIPBL, CLEAR,/;"	v
 CO	potential.f	33;"	c	subroutine:POTENTIAL
 COMMONS	commons.f90	/^      MODULE COMMONS$/;"	m
+COORDS	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS,/;"	v	module:COMMONS
+COORDSO	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: COORDS,COORDSO$/;"	v	module:COMMONS
 COUNTATOMS	countatoms.f90	/^      SUBROUTINE COUNTATOMS(/;"	s	module:NOA
 CSMAVVAL	potential.f	52;"	c	subroutine:POTENTIAL
-DMIN	mc.f	1425;"	c	subroutine:TRANSITION
+DGUESS	commons.f90	/^     DOUBLE PRECISION :: TFAC(3),RMS,DGUESS,/;"	v	module:COMMONS
+DMIN	mc.f	374;"	c	subroutine:TRANSITION
 DMODE	keyword.dec.i.f	/^      INTEGER NATOM, DMODE,/;"	v
 DUMMY	keyword.dec.i.f	/^      DOUBLE PRECISION EAMLJA0, EAMLJBETA, EAMLJZ0, DUMMY$/;"	v
 DUMMYCH	keyword.dec.i.f	/^      CHARACTER(LEN=1) DUMMYCH$/;"	v
-DUMPJ	mc.f	/^      SUBROUTINE DUMPJ(/;"	s
+DUMPFILE	commons.f90	/^     CHARACTER(LEN=130) DUMPFILE,/;"	v	module:COMMONS
+DUMPJ	mc1.f	/^      SUBROUTINE DUMPJ(/;"	s
 EABLN	keyword.dec.i.f	/^     &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN,/;"	v
 EAMLJA0	keyword.dec.i.f	/^      DOUBLE PRECISION EAMLJA0,/;"	v
 EAMLJBETA	keyword.dec.i.f	/^      DOUBLE PRECISION EAMLJA0, EAMLJBETA,/;"	v
@@ -76,22 +86,31 @@ EAMLJZ0	keyword.dec.i.f	/^      DOUBLE PRECISION EAMLJA0, EAMLJBETA, EAMLJZ0,/;"
 EBBLN	keyword.dec.i.f	/^     &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN,/;"	v
 ECBLN	keyword.dec.i.f	/^     &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN,/;"	v
 ECHO	keyword.dec.i.f	/^      LOGICAL END, SKIPBL, CLEAR, ECHO$/;"	v
+ECONV	commons.f90	/^     DOUBLE PRECISION :: RADIUS,BQMAX,MAXBFGS,ECONV,/;"	v	module:COMMONS
 EDBLN	keyword.dec.i.f	/^     &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN,/;"	v
 END	keyword.dec.i.f	/^      LOGICAL END,/;"	v
+EPREV	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP, ASTEP, ACCRAT, EPREV /;"	v	module:COMMONS
 EPS	keyword.dec.i.f	/^      DOUBLE PRECISION SLENGTH, EPS$/;"	v
 EPS2	keyword.dec.i.f	/^      DOUBLE PRECISION EPS2,/;"	v
 EPSAB	keyword.dec.i.f	/^      DOUBLE PRECISION XX, EPSAB,/;"	v
 EPSBB	keyword.dec.i.f	/^      DOUBLE PRECISION XX, EPSAB, EPSBB,/;"	v
-EV	mc.f	76;"	c	subroutine:MC
+EPSSPHERE	commons.f90	/^     DOUBLE PRECISION :: TFAC(3),RMS,DGUESS,EPSSPHERE$/;"	v	module:COMMONS
+ESAVE	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: ESAVE(/;"	v	module:COMMONS
 EV	mylbfgs.f	51;"	c	subroutine:MYLBFGS
 EV	potential.f	49;"	c	subroutine:POTENTIAL
 FAIL	potential.f	48;"	c	subroutine:POTENTIAL
 FF	qmod.f90	/^      integer,allocatable :: FF(/;"	v	module:QMODULE
 FINALIO	finalio.f	/^      SUBROUTINE FINALIO$/;"	s
 FINALQ	finalq.f	/^      SUBROUTINE FINALQ$/;"	s
+FIXBOTH	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH,/;"	v	module:COMMONS
+FIXSTEP	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP,/;"	v	module:COMMONS
+FIXTEMP	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP,/;"	v	module:COMMONS
 GD	mylbfgs.f	50;"	c	subroutine:MYLBFGS
 GD	potential.f	50;"	c	subroutine:POTENTIAL
+GMAX	commons.f90	/^     DOUBLE PRECISION :: RADIUS,BQMAX,MAXBFGS,ECONV,GMAX$/;"	v	module:COMMONS
 GMIN	main.f	/^      PROGRAM GMIN$/;"	p
+GOFACTOR	commons.f90	/^      DOUBLE PRECISION :: GOFACTOR=/;"	v	module:COMMONS
+GOTYPE	commons.f90	/^      LOGICAL :: GOTYPE=/;"	v	module:COMMONS
 HABLN	keyword.dec.i.f	/^      DOUBLE PRECISION LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN,$/;"	v
 HBBLN	keyword.dec.i.f	/^     &                 HABLN, HBBLN,/;"	v
 HCBLN	keyword.dec.i.f	/^     &                 HABLN, HBBLN, HCBLN,/;"	v
@@ -99,6 +118,7 @@ HDBLN	keyword.dec.i.f	/^     &                 HABLN, HBBLN, HCBLN, HDBLN,/;"	v
 HEIGHT	keyword.dec.i.f	/^      DOUBLE PRECISION EPS2, RAD, HEIGHT$/;"	v
 HESS	modhess.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: HESS /;"	v	module:MODHESS
 INDEX	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, IX, J1, JP, NPCOUNT, NTYPEA, NPCALL, NDUMMY, INDEX,/;"	v
+INTEDUMPFILE	commons.f90	/^     CHARACTER(LEN=130) DUMPFILE, MYFILENAME, INTEDUMPFILE$/;"	v	module:COMMONS
 INTEFF	qmod.f90	/^      integer,allocatable :: FF(:),INTEFF(/;"	v	module:QMODULE
 INTEQMIN	qmod.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(/;"	v	module:QMODULE
 INTEQMINP	qmod.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(/;"	v	module:QMODULE
@@ -112,9 +132,11 @@ J1	main.f	/^      INTEGER J1,/;"	v	program:GMIN
 J2	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, IX, J1, JP, NPCOUNT, NTYPEA, NPCALL, NDUMMY, INDEX, J2,/;"	v
 J2	main.f	/^      INTEGER J1,J2,/;"	v	program:GMIN
 J3	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, IX, J1, JP, NPCOUNT, NTYPEA, NPCALL, NDUMMY, INDEX, J2, J3$/;"	v
+JDUMP	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP, JUMPMOVE, JDUMP,/;"	v	module:COMMONS
 JP	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, IX, J1, JP,/;"	v
 JP	main.f	/^      INTEGER J1,J2, JP,/;"	v	program:GMIN
-JUMPM	mc.f	/^      SUBROUTINE JUMPM(/;"	s
+JUMPM	mc1.f	/^      SUBROUTINE JUMPM(/;"	s
+JUMPMOVE	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP, JUMPMOVE,/;"	v	module:COMMONS
 KEYWORD	keyword.f	/^      SUBROUTINE KEYWORD$/;"	s
 LAST	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST,/;"	v
 LINE	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE,/;"	v
@@ -134,28 +156,39 @@ LOC	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC,/;"	v
 LOPEN	main.f	/^      LOGICAL LOPEN$/;"	v	program:GMIN
 LPL	keyword.dec.i.f	/^      DOUBLE PRECISION :: LPL,/;"	v
 LPR	keyword.dec.i.f	/^      DOUBLE PRECISION :: LPL, LPR$/;"	v
+MASSES	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: MASSES(/;"	v	module:COMMONS
+MAXBFGS	commons.f90	/^     DOUBLE PRECISION :: RADIUS,BQMAX,MAXBFGS,/;"	v	module:COMMONS
+MAXEFALL	commons.f90	/^     DOUBLE PRECISION :: MAXERISE,MAXEFALL$/;"	v	module:COMMONS
+MAXERISE	commons.f90	/^     DOUBLE PRECISION :: MAXERISE,/;"	v	module:COMMONS
 MAXIT	commons.f90	/^     INTEGER :: NATOMS,NS,NACCEPT,MAXIT,/;"	v	module:COMMONS
 MC	mc.f	/^      SUBROUTINE MC(/;"	s
+MCRUNS	mcruns.f	/^      SUBROUTINE MCRUNS(/;"	s
 MCSTEPS	commons.f90	/^     INTEGER :: NATOMS,NS,NACCEPT,MAXIT,NTARGETS,NSEED,NSAVE,MCSTEPS(/;"	v	module:COMMONS
-MODCOMMONDEINIT	commons.f90	/^      SUBROUTINE MODCOMMONDEINIT$/;"	s
+MODCOMMONDEINIT	commons.f90	/^      SUBROUTINE MODCOMMONDEINIT$/;"	s	module:COMMONS
+MODCOMMONINIT	commons.f90	/^      SUBROUTINE MODCOMMONINIT$/;"	s	module:COMMONS
 MODHESS	modhess.f90	/^MODULE MODHESS$/;"	m
 MOVABLEATOMINDEX	keyword.dec.i.f	/^      INTEGER MOVABLEATOMINDEX$/;"	v
 MPIERR	main.f	/^      INTEGER J1,J2, JP, MPIERR,/;"	v	program:GMIN
-MUPDATE	commons.f90	/^     INTEGER :: NATOMS,NS,NACCEPT,MAXIT,NTARGETS,NSEED,NSAVE,MCSTEPS(3),NRUNS,MUPDATE,/;"	v	module:COMMONS
+MUPDATE	commons.f90	/^     INTEGER :: NRUNS,MUPDATE,/;"	v	module:COMMONS
+MYBUNIT	commons.f90	/^     INTEGER :: MYEUNIT, MYMUNIT, MYBUNIT,/;"	v	module:COMMONS
+MYEUNIT	commons.f90	/^     INTEGER :: MYEUNIT,/;"	v	module:COMMONS
+MYFILENAME	commons.f90	/^     CHARACTER(LEN=130) DUMPFILE, MYFILENAME,/;"	v	module:COMMONS
 MYLBFGS	mylbfgs.f	/^      SUBROUTINE MYLBFGS(/;"	s
+MYMUNIT	commons.f90	/^     INTEGER :: MYEUNIT, MYMUNIT,/;"	v	module:COMMONS
+MYNODE	commons.f90	/^     INTEGER :: MYEUNIT, MYMUNIT, MYBUNIT, MYRUNIT, MYPUNIT, MYNODE /;"	v	module:COMMONS
 MYPOT	finalq.f	37;"	c	subroutine:FINALQ
 MYPOT	main.f	24;"	c	program:GMIN
-MYPOT	mc.f	1611;"	c	subroutine:REST
-MYPOT	mc.f	1762;"	c	subroutine:REN
-MYPOT	mc.f	1930;"	c	subroutine:NEWRES
-MYPOT	mc.f	77;"	c	subroutine:MC
+MYPOT	mc1.f	124;"	c	subroutine:REST
 MYPOT	mylbfgs.f	47;"	c	subroutine:MYLBFGS
+MYPUNIT	commons.f90	/^     INTEGER :: MYEUNIT, MYMUNIT, MYBUNIT, MYRUNIT, MYPUNIT,/;"	v	module:COMMONS
 MYRESET	mc.f	/^      SUBROUTINE MYRESET(/;"	s
-MYUNIT	commons.f90	/^     INTEGER :: NATOMS,NS,NACCEPT,MAXIT,NTARGETS,NSEED,NSAVE,MCSTEPS(3),NRUNS,MUPDATE,NRELAX,MYUNIT,/;"	v	module:COMMONS
+MYRUNIT	commons.f90	/^     INTEGER :: MYEUNIT, MYMUNIT, MYBUNIT, MYRUNIT,/;"	v	module:COMMONS
+MYUNIT	commons.f90	/^     INTEGER :: NRUNS,MUPDATE,NRELAX,MYUNIT$/;"	v	module:COMMONS
 NACCEPT	commons.f90	/^     INTEGER :: NATOMS,NS,NACCEPT,/;"	v	module:COMMONS
 NATOM	keyword.dec.i.f	/^      INTEGER NATOM,/;"	v
 NATOMS	commons.f90	/^     INTEGER :: NATOMS,/;"	v	module:COMMONS
 NBAD	keyword.dec.i.f	/^      INTEGER NOK, NBAD$/;"	v
+NCORE	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NQ, NCORE /;"	v	module:COMMONS
 NCR	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE, NCR,/;"	v
 NDUM	keyword.dec.i.f	/^      INTEGER NATOM, DMODE, NDUM$/;"	v
 NDUMMY	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, IX, J1, JP, NPCOUNT, NTYPEA, NPCALL, NDUMMY,/;"	v
@@ -163,23 +196,28 @@ NDUMMY	main.f	/^      INTEGER, ALLOCATABLE :: NDUMMY(/;"	v	program:GMIN
 NDUMMY2	main.f	/^      INTEGER, ALLOCATABLE :: NDUMMY(:), NDUMMY2(/;"	v	program:GMIN
 NDUMMY3	main.f	/^      INTEGER J1,J2, JP, MPIERR, NDUMMY3,/;"	v	program:GMIN
 NERROR	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR,/;"	v
-NEWRES	mc.f	/^      SUBROUTINE NEWRES(/;"	s
 NITEMS	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS,/;"	v
 NMAX	keyword.dec.i.f	/^      DOUBLE PRECISION    PMAX,PMIN,NMAX,/;"	v
 NMIN	keyword.dec.i.f	/^      DOUBLE PRECISION    PMAX,PMIN,NMAX,NMIN,/;"	v
 NOA	countatoms.f90	/^MODULE NOA$/;"	m
 NOK	keyword.dec.i.f	/^      INTEGER NOK,/;"	v
+NPAIRS	commons.f90	/^     INTEGER :: NPAIRS$/;"	v	module:COMMONS
 NPCALL	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, IX, J1, JP, NPCOUNT, NTYPEA, NPCALL,/;"	v
 NPCOUNT	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, IX, J1, JP, NPCOUNT,/;"	v
 NPTOTAL	main.f	/^      INTEGER J1,J2, JP, MPIERR, NDUMMY3,NPTOTAL$/;"	v	program:GMIN
-NRELAX	commons.f90	/^     INTEGER :: NATOMS,NS,NACCEPT,MAXIT,NTARGETS,NSEED,NSAVE,MCSTEPS(3),NRUNS,MUPDATE,NRELAX,/;"	v	module:COMMONS
-NRUNS	commons.f90	/^     INTEGER :: NATOMS,NS,NACCEPT,MAXIT,NTARGETS,NSEED,NSAVE,MCSTEPS(3),NRUNS,/;"	v	module:COMMONS
+NQ	commons.f90	/^      INTEGER, ALLOCATABLE, DIMENSION(:) :: NQ,/;"	v	module:COMMONS
+NRELAX	commons.f90	/^     INTEGER :: NRUNS,MUPDATE,NRELAX,/;"	v	module:COMMONS
+NRUNS	commons.f90	/^     INTEGER :: NRUNS,/;"	v	module:COMMONS
 NS	commons.f90	/^     INTEGER :: NATOMS,NS,/;"	v	module:COMMONS
 NSAVE	commons.f90	/^     INTEGER :: NATOMS,NS,NACCEPT,MAXIT,NTARGETS,NSEED,NSAVE,/;"	v	module:COMMONS
 NSEED	commons.f90	/^     INTEGER :: NATOMS,NS,NACCEPT,MAXIT,NTARGETS,NSEED,/;"	v	module:COMMONS
 NTARGETS	commons.f90	/^     INTEGER :: NATOMS,NS,NACCEPT,MAXIT,NTARGETS,/;"	v	module:COMMONS
 NTYPEA	keyword.dec.i.f	/^      INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, IX, J1, JP, NPCOUNT, NTYPEA,/;"	v
 NUMBER_OF_ATOMS	countatoms.f90	/^      INTEGER :: NUMBER_OF_ATOMS$/;"	v	module:NOA
+OMOVE	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP, JUMPMOVE, JDUMP, TMOVE, OMOVE /;"	v	module:COMMONS
+OSTEP	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP, OSTEP,/;"	v	module:COMMONS
+PAIRDIST	commons.f90	/^     INTEGER, ALLOCATABLE :: PAIRDIST(/;"	v	module:COMMONS
+PAIRDISTT	commons.f90	/^     LOGICAL :: PAIRDISTT$/;"	v	module:COMMONS
 PARFILE	keyword.dec.i.f	/^      CHARACTER(LEN=100) TOPFILE,PARFILE$/;"	v
 PBC	keyword.dec.i.f	/^      CHARACTER WORD*16,PBC*/;"	v
 PCALL	io1.f	14;"	c	subroutine:IO1
@@ -190,46 +228,55 @@ PMAX	keyword.dec.i.f	/^      DOUBLE PRECISION    PMAX,/;"	v
 PMIN	keyword.dec.i.f	/^      DOUBLE PRECISION    PMAX,PMIN,/;"	v
 POTEL	main.f	/^      DOUBLE PRECISION POTEL$/;"	v	program:GMIN
 POTENTIAL	potential.f	/^      SUBROUTINE POTENTIAL(/;"	s
-Q4C	mc.f	79;"	c	subroutine:MC
 Q4C	mylbfgs.f	48;"	c	subroutine:MYLBFGS
 QMIN	qmod.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMIN(/;"	v	module:QMODULE
 QMINP	qmod.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: QMINP(/;"	v	module:QMODULE
 QMODULE	qmod.f90	/^MODULE QMODULE$/;"	m
+QUENCH	quench.f	/^      SUBROUTINE QUENCH(/;"	s
 RAD	keyword.dec.i.f	/^      DOUBLE PRECISION EPS2, RAD,/;"	v
-REN	mc.f	/^      SUBROUTINE REN(/;"	s
-REST	mc.f	/^      SUBROUTINE REST(/;"	s
+RADIUS	commons.f90	/^     DOUBLE PRECISION :: RADIUS,/;"	v	module:COMMONS
+REN	mc1.f	/^      SUBROUTINE REN(/;"	s
+REST	mc1.f	/^      SUBROUTINE REST(/;"	s
+RMS	commons.f90	/^     DOUBLE PRECISION :: TFAC(3),RMS,/;"	v	module:COMMONS
 SCREENC	main.f	/^      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(/;"	v	program:GMIN
 SIDESTEP	keyword.dec.i.f	/^      DOUBLE PRECISION    PMAX,PMIN,NMAX,NMIN,SIDESTEP$/;"	v
 SIGAB	keyword.dec.i.f	/^      DOUBLE PRECISION XX, EPSAB, EPSBB, SIGAB,/;"	v
 SIGBB	keyword.dec.i.f	/^      DOUBLE PRECISION XX, EPSAB, EPSBB, SIGAB, SIGBB$/;"	v
 SKIPBL	keyword.dec.i.f	/^      LOGICAL END, SKIPBL,/;"	v
 SLENGTH	keyword.dec.i.f	/^      DOUBLE PRECISION SLENGTH,/;"	v
+STEP	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP, STEP,/;"	v	module:COMMONS
+SYS	commons.f90	/^     CHARACTER(LEN=80) :: SYS$/;"	v	module:COMMONS
 TABLN	keyword.dec.i.f	/^     &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN,/;"	v
 TAKESTEP	takestep.f	/^      SUBROUTINE TAKESTEP(/;"	s
+TARGETS	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: TARGETS(/;"	v	module:COMMONS
 TBBLN	keyword.dec.i.f	/^     &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN,/;"	v
 TCBLN	keyword.dec.i.f	/^     &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN,/;"	v
+TCOORDS	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: TCOORDS$/;"	v	module:COMMONS
 TDBLN	keyword.dec.i.f	/^     &                 HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN$/;"	v
+TEMP	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: TEMP,/;"	v	module:COMMONS
+TFAC	commons.f90	/^     DOUBLE PRECISION :: TFAC(/;"	v	module:COMMONS
+TMOVE	commons.f90	/^      LOGICAL, ALLOCATABLE, DIMENSION(:) :: FIXBOTH, FIXTEMP, FIXSTEP, JUMPMOVE, JDUMP, TMOVE,/;"	v	module:COMMONS
 TMPCOORDS	main.f	/^      DOUBLE PRECISION, ALLOCATABLE :: TMPCOORDS(/;"	v	program:GMIN
 TOPFILE	keyword.dec.i.f	/^      CHARACTER(LEN=100) TOPFILE,/;"	v
 TOT	io1.f	13;"	c	subroutine:IO1
-TOT	mc.f	1612;"	c	subroutine:REST
-TOT	mc.f	1763;"	c	subroutine:REN
-TOT	mc.f	78;"	c	subroutine:MC
+TOT	mc1.f	125;"	c	subroutine:REST
 TOT	potential.f	56;"	c	subroutine:POTENTIAL
 TRANSITION	mc.f	/^      SUBROUTINE TRANSITION(/;"	s
 UNSTRING	keyword.dec.i.f	/^      CHARACTER(LEN=9) UNSTRING$/;"	v
+VAT	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) ::  VAT,/;"	v	module:COMMONS
+VATO	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) ::  VAT,  VATO /;"	v	module:COMMONS
+VT	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: VT$/;"	v	module:COMMONS
 WORD	keyword.dec.i.f	/^      CHARACTER WORD*/;"	v
 WORD2	keyword.dec.i.f	/^      CHARACTER WORD*16,PBC*3,WORD2*/;"	v
+XINSAVE	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: XINSAVE(/;"	v	module:COMMONS
 XX	keyword.dec.i.f	/^      DOUBLE PRECISION XX,/;"	v
 YESNO	keyword.dec.i.f	/^      LOGICAL CAT, YESNO,/;"	v
 axis1	keyword.dec.i.f	/^      INTEGER iostatus, groupsize, groupatom,groupoffset,axis1,/;"	v
 axis2	keyword.dec.i.f	/^      INTEGER iostatus, groupsize, groupatom,groupoffset,axis1,axis2$/;"	v
 check1	keyword.dec.i.f	/^      CHARACTER(LEN=10) check1$/;"	v
-ev	mc.f	1427;"	c	subroutine:TRANSITION
-ev	mc.f	1657;"	c	subroutine:ACCREJ
+ev	mc.f	375;"	c	subroutine:TRANSITION
 groupatom	keyword.dec.i.f	/^      INTEGER iostatus, groupsize, groupatom,/;"	v
 groupoffset	keyword.dec.i.f	/^      INTEGER iostatus, groupsize, groupatom,groupoffset,/;"	v
 groupsize	keyword.dec.i.f	/^      INTEGER iostatus, groupsize,/;"	v
 iostatus	keyword.dec.i.f	/^      INTEGER iostatus,/;"	v
 readswitch	keyword.dec.i.f	/^      CHARACTER(LEN=1) readswitch$/;"	v
-setvars	n.sv.f90	/^subroutine setvars$/;"	s

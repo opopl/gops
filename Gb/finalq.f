@@ -1,33 +1,11 @@
-!op226>=================================== 
-!op226> GPL License Info {{{ 
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
-C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
-C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
-C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-C
-!op226>}}} 
-!op226>=================================== 
-      SUBROUTINE FINALQ
-!op226>=================================== 
-!op226> Declarations {{{ 
-      USE COMMONS
-      use QMODULE
-      USE MODCHARMM, ONLY: ACESOLV,NCHENCALLS,ACEUPSTEP
-      IMPLICIT NONE
 
+      SUBROUTINE FINALQ
+!op226> Declarations {{{ 
+
+      USE COMMONS
+      USE QMODULE
+
+      IMPLICIT NONE
 
       INTEGER J1, J2, ITERATIONS, BRUN,QDONE, J3
       DOUBLE PRECISION POTEL, SCREENC(3*NATOMS), X(3*NATOMS), ENERGY, GRAD(3*NATOMS), TIME
@@ -36,25 +14,16 @@ C
 
       COMMON /MYPOT/ POTEL
 !op226> End declarations }}} 
-!op226>=================================== 
  
-C
-C  Make sure the lowest minima are tightly converged and then sort
-C  them just to be on the safe side.
-C
-      CSMGUIDET=.FALSE.
-      SHELLMOVES(1:NPAR)=.FALSE.
-      IF (CUTT) CUTOFF=FINALCUTOFF
       SAVEQ=.FALSE.
       NQ(1)=0
-      IF (FIELDT) FIELDT=.FALSE.
       IF (SEEDT) THEN
          SEEDT=.FALSE.
          NSEED=0
       ENDIF
-      IF (SQUEEZET) SQUEEZET=.FALSE.
       MAXIT=MAXIT2
       DO J1=1,NSAVE
+      ! {{{
          IF (QMIN(J1).LT.1.0D10) THEN
             DO J2=1,3*NATOMS
                COORDS(J2,1)=QMINP(J1,J2)
@@ -127,18 +96,12 @@ C
             ENDIF
 !op226>}}} 
          ENDIF
+         ! }}}
       ENDDO
-C
-C       sf344> sometimes we can have a lower number of minima found than NSAVE. Resetting
-C              NSAVE to the number of minima found should get rid of entries with null 
-C              coordinates in the file 'lowest' (and other final output files)
-C
-C  DJW - this may not work because we may not have found enough minima considered 
-C        different according to the EDIFF criterion.
-C
+
       NSAVE=NQ(1)
       CALL GSORT2(NSAVE,NATOMS)
-C
+
 C  Optionally sort the atoms from most bound to least bound according to VAT. {{{
 C
        
@@ -163,19 +126,5 @@ C
 
 !op226>}}} 
 
-C     IF (DEBUG) THEN
-         IF (TABOOT) THEN
-            IF (NPAR.GT.1) THEN
-               WRITE(MYUNIT,'(A)') 'Taboo lists:'
-               DO J1=1,NPAR
-                  WRITE(MYUNIT,'(A,G20.10)') 'Parallel run ',J1
-                  WRITE(MYUNIT,'(6F15.7)') (ESAVE(J2,J1),J2=1,NT(J1))
-               ENDDO
-            ELSE
-               WRITE(MYUNIT,'(A)') 'Taboo list:'
-               WRITE(MYUNIT,'(6F15.7)') (ESAVE(J2,1),J2=1,NT(1))
-            ENDIF
-         ENDIF
-C     ENDIF
       RETURN
       END
