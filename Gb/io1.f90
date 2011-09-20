@@ -8,6 +8,8 @@
       IMPLICIT NONE
 
       LOGICAL END, YESNO 
+      INTEGER :: NQTOT,NPCALL
+      INTEGER ::    J1,J2,jp
 
       ! look ssdump
       COMMON /TOT/ NQTOT
@@ -39,11 +41,13 @@
          WRITE(MYUNIT,'(I4,A)') NATOMS,' bead BLN model'
       ENDIF
 
-      IF (DEBUG.OR.CHECKMARKOVT) WRITE(MYUNIT,'(A,I6,A)') 'io1> checking the energy of the saved coordinates in the chain'
+      IF (DEBUG.OR.CHECKMARKOVT) THEN 
+         WRITE(MYUNIT,'(A,I6,A)') 'io1> checking the energy of the saved coordinates in the chain'
+      ENDIF
 
       IF (RADIUS.EQ.0.0D0) THEN
          RADIUS=2.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0)
-         ELSE IF (P46) THEN
+         IF (P46) THEN
             RADIUS=RADIUS*3.0D0
          ELSE 
             RADIUS=RADIUS*2.0D0**(1.0D0/6.0D0)
@@ -57,32 +61,37 @@
       ! check FIXBOTH STEPOUT FIXSTEP FIXTEMP {{{
       DO JP=1,NPAR
             IF (FIXBOTH(JP)) THEN
-               WRITE(MYUNIT,'(A,I3,A,F12.4,A,2F12.4,A)') 
-     1                 'In run ',JP,' temperature=',TEMP(JP),' step size and angular threshold=',
-     1                  STEP(JP),ASTEP(JP),' all fixed'
+               WRITE(MYUNIT,'(A,I3,A,F12.4,A,2F12.4,A)') 'In run ',JP,&
+                & ' temperature=',TEMP(JP),&
+                & ' step size and angular threshold=', STEP(JP),ASTEP(JP),&
+                ' all fixed'
             ELSE IF (FIXSTEP(JP)) THEN
-               WRITE(MYUNIT,'(A,I3,A,2F12.4)') 'In run ',JP,' step size and angular threshold fixed at ',
-     1                                    STEP(JP),ASTEP(JP)
+               WRITE(MYUNIT,'(A,I3,A,2F12.4)') 'In run ',JP,&
+                & ' step size and angular threshold fixed at ',&
+                & STEP(JP),ASTEP(JP)
                IF (.NOT.FIXTEMP(JP)) THEN
-                  WRITE(MYUNIT,'(A,F12.4,A,F12.4)') 
-     1                    'Temperature will be adjusted for acceptance ratio ',ACCRAT(JP),' initial value=',TEMP(JP)
+                  WRITE(MYUNIT,'(A,F12.4,A,F12.4)') 'Temperature will be &
+                    adjusted for acceptance ratio ',& 
+                    ACCRAT(JP),' initial value=',TEMP(JP)
                ELSE
                   WRITE(MYUNIT,'(A,I1,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
                ENDIF
             ELSE IF (STEPOUT) THEN
-               WRITE(MYUNIT,'(A,I3,A,2F12.4,A,2F12.4)') 
-     1   'In run ',JP,' step size and angular threshold will be adjusted to escape from basins. Initial values=',
-     1                  STEP(JP),ASTEP(JP)
+               WRITE(MYUNIT,'(A,I3,A,2F12.4,A,2F12.4)') 'In run ',& 
+                    & JP,' step size and angular &
+                    threshold will be adjusted to &
+                    escape from basins. Initial values=',&
+                   STEP(JP),ASTEP(JP)
                IF (.NOT.FIXTEMP(JP)) THEN
-                  WRITE(MYUNIT,'(A,F12.4,A,F12.4)') 
-     1                    'Temperature will be adjusted for acceptance ratio ',ACCRAT(JP),' initial value=',TEMP(JP)
+                  WRITE(MYUNIT,'(A,F12.4,A,F12.4)') & 
+     &                    'Temperature will be adjusted for acceptance ratio ',ACCRAT(JP),' initial value=',TEMP(JP)
                ELSE
                   WRITE(MYUNIT,'(A,I1,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
                ENDIF
             ELSE 
                WRITE(MYUNIT,'(A,I3,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
-               WRITE(MYUNIT,'(A,F12.4,A,2F12.4)') 'Step size and angular threshold will be adjusted for acceptance ratio ',
-     1                ACCRAT(JP),' initial values=',STEP(JP),ASTEP(JP)
+               WRITE(MYUNIT,'(A,F12.4,A,2F12.4)') 'Step size and angular threshold will be adjusted for acceptance ratio ',&
+     &                ACCRAT(JP),' initial values=',STEP(JP),ASTEP(JP)
             ENDIF
         ENDDO 
         ! }}}
@@ -90,19 +99,15 @@
       ! NORESET {{{
       IF (NORESET.OR.BSPT) THEN
          WRITE(MYUNIT,'(A)') 'Configuration will not be reset to quench geometry'
-         IF (CENT) THEN
-            WRITE(MYUNIT,'(A)') 'WARNING CENTRE can lead to atoms leaving '
-            WRITE(MYUNIT,'(A)') 'the container after takestep when the centre of mass is moved.'
-!           STOP
-         ENDIF
       ELSE
          WRITE(MYUNIT,'(A)') 'Configuration will be reset to quench geometry'
       ENDIF
       ! }}}
 
-      IF (CENT .AND. FIXCOM) THEN
-          WRITE(MYUNIT,'(A)') 'WARNING: keywords CENTRE (fixing centre of coordinates) and FIXCOM (fixing centre of mass) 
-     1                    are incompatible'
+      IF (CENT .AND. FIXCOM) THEN  
+           WRITE(MYUNIT,'(A)') "WARNING: " 
+           write(myunit,'(a)') "keywords CENTRE (fixing centre of coordinates) "
+           write(myunit,'(a)') "and FIXCOM (fixing centre of mass) are incompatible"
           STOP
       ENDIF
 
@@ -144,13 +149,13 @@
       ENDIF
                   
       ! ssdump  {{{
-C  Look for the file that contains interrupted screen saver restart information.
-C  Current minimum in the Markov chain. COORDS
-C  Number of steps done. NQTOT/NPAR should be close enough!
-C  The current lowest minima. QMIN has the energies, QMINP has the points.
-C  The current values of the temperature, acceptance ratio and step length,
-C  TEMP(JP), ACCRAT(JP), STEP(JP), ASTEP(JP) and OSTEP(JP)
-C  which can get changed dynamically.
+!  Look for the file that contains interrupted screen saver restart information.
+!  Current minimum in the Markov chain. COORDS
+!  Number of steps done. NQTOT/NPAR should be close enough!
+!  The current lowest minima. QMIN has the energies, QMINP has the points.
+!  The current values of the temperature, acceptance ratio and step length,
+!  TEMP(JP), ACCRAT(JP), STEP(JP), ASTEP(JP) and OSTEP(JP)
+!  which can get changed dynamically.
 
       INQUIRE(FILE='ssdump',EXIST=YESNO)
       IF (YESNO) THEN

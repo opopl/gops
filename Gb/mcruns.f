@@ -32,23 +32,11 @@ C
 
       INTEGER J1
 
-      IF (PTMC.OR.BSPT) THEN
-         CALL PTBASINSAMPLING
-         RETURN
-      ENDIF
-
       INQUIRE(UNIT=1,OPENED=LOPEN)
+
       IF (LOPEN) THEN
          WRITE(*,'(A,I2,A)') 'mcruns> ERROR *** Unit ', 1, ' is not free '
          STOP
-      ENDIF
-C
-C  NRUNS > 1 is an obsolete option! DJW
-C
-
-C jwrm2> If checking derivates, call CHECKD, which then exits
-      IF(CHECKDT) THEN
-        CALL CHECKD(COORDS)
       ENDIF
 
       DO J1=1,NRUNS

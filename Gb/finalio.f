@@ -11,7 +11,6 @@
       INTEGER MYUNIT2,J1,J2,J3
 
 ! subroutine body {{{
-      PI = 4.D0*DATAN(1.D0)
 
       MYUNIT2=25 
       OPEN(MYUNIT2,FILE='lowest',STATUS='UNKNOWN')
@@ -28,6 +27,7 @@
             WRITE(MYUNIT2,30) (QMINP(J1,J2),J2=1,3*(NATOMS-NS))
 30          FORMAT('LA ',3F20.10)
          ENDIF
+      ENDDO
       CLOSE(MYUNIT2)
 
       ! }}}

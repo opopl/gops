@@ -31,8 +31,8 @@
       NPAR=1
       MYNODE=0
       MYUNIT=22979+1
-      MDCRD_UNIT=20000
-      MDINFO_UNIT=21000
+      !MDCRD_UNIT=20000
+      !MDINFO_UNIT=21000
       MYFILENAME="GMIN_out"
       OPEN(MYUNIT,FILE=MYFILENAME, STATUS="unknown", form="formatted")
       WRITE(MYUNIT, '(A,I10,A,I10,A)') "Starting serial execution"
@@ -73,22 +73,22 @@
       FF(1:NSAVE)=0 ! to prevent reading from uninitialised memorY
       VATO(1:NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
 
-      ALLOCATE(ESAVE(NTAB,NPAR),XINSAVE(NTAB,NPAR))
-      ALLOCATE(VEC(NVEC))
+      !ALLOCATE(ESAVE(NTAB,NPAR),XINSAVE(NTAB,NPAR))
+      !ALLOCATE(VEC(NVEC))
 
 !op226> DUMPT {{{ 
-      IF (DUMPT) THEN
-         DUMPXYZUNIT=40
-         DUMPVUNIT=39
-         DO J1=1,NPAR
-            WRITE (ISTR,'(A5,I1,A4)') 'dump.',J1,'.xyz'
-            J2=DUMPXYZUNIT+J1
-            OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
-            WRITE (ISTR,'(A5,I1,A2)') 'dump.',J1,'.V'
-            J2=DUMPVUNIT-J1
-            OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
-         ENDDO
-      ENDIF
+!      IF (DUMPT) THEN
+         !DUMPXYZUNIT=40
+         !DUMPVUNIT=39
+         !DO J1=1,NPAR
+            !WRITE (ISTR,'(A5,I1,A4)') 'dump.',J1,'.xyz'
+            !J2=DUMPXYZUNIT+J1
+            !OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
+            !WRITE (ISTR,'(A5,I1,A2)') 'dump.',J1,'.V'
+            !J2=DUMPVUNIT-J1
+            !OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
+         !ENDDO
+      !ENDIF
 !op226>}}} 
 
       ! PAIRDISTT {{{
@@ -119,7 +119,7 @@
          MYBUNIT=10000+MYNODE
             OPEN(MYEUNIT,FILE='energy',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
             OPEN(MYMUNIT,FILE='markov',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            IF (RMST) OPEN(MYRUNIT,FILE='rmsd',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            !IF (RMST) OPEN(MYRUNIT,FILE='rmsd',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
             OPEN(MYBUNIT,FILE='best',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
       ENDIF
 !op226>}}} 
@@ -130,22 +130,22 @@
 
 !op226> SEEDT {{{ 
 
-      IF (SEEDT) THEN
-         CALL GSEED
-      ELSE
-         IF ((.NOT.FIELDT).AND.CENT) THEN
-            DO J1=1,NPAR
-               IF (.NOT.SEEDT) CALL CENTRE2(COORDS(1:3*NATOMS,J1))
-            ENDDO
-         ELSEIF ((.NOT.FIELDT).AND.FIXCOM) THEN
-            DO J1=1,NPAR
-               IF (.NOT.SEEDT) CALL CENTRECOM(COORDS(1:3*NATOMS,J1))
-            ENDDO
-         ENDIF
-      ENDIF
+!      IF (SEEDT) THEN
+         !CALL GSEED
+      !ELSE
+         !IF ((.NOT.FIELDT).AND.CENT) THEN
+            !DO J1=1,NPAR
+               !IF (.NOT.SEEDT) CALL CENTRE2(COORDS(1:3*NATOMS,J1))
+            !ENDDO
+         !ELSEIF ((.NOT.FIELDT).AND.FIXCOM) THEN
+            !DO J1=1,NPAR
+               !IF (.NOT.SEEDT) CALL CENTRECOM(COORDS(1:3*NATOMS,J1))
+            !ENDDO
+         !ENDIF
+      !ENDIF
 !op226>}}} 
 
-      IF (SUPERSTEP) NSUPERSTEP=0
+      !IF (SUPERSTEP) NSUPERSTEP=0
       
       DO JP=1,NPAR
          NQ(JP)=1
@@ -158,9 +158,9 @@
       CALL MCRUNS(SCREENC)
 
 !op226> Deallocate memory; close files {{{ 
-      IF (ALLOCATED(FIN)) DEALLOCATE(FIN)
-      IF (ALLOCATED(XICOM)) DEALLOCATE(XICOM)
-      IF (ALLOCATED(PCOM)) DEALLOCATE(PCOM)
+!      IF (ALLOCATED(FIN)) DEALLOCATE(FIN)
+      !IF (ALLOCATED(XICOM)) DEALLOCATE(XICOM)
+      !IF (ALLOCATED(PCOM)) DEALLOCATE(PCOM)
       CALL MODCOMMONDEINIT
       CALL FLUSH(MYUNIT)
 
@@ -171,12 +171,7 @@
       IF (TRACKDATAT) THEN
          CLOSE(MYEUNIT)
          CLOSE(MYMUNIT)
-         IF (RMST) CLOSE(MYRUNIT)
          CLOSE(MYBUNIT)
-         IF (A9INTET) THEN
-            CLOSE(3998)
-            CLOSE(3999)
-         ENDIF
       ENDIF
 !op226>}}} 
 
