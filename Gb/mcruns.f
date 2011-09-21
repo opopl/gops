@@ -18,9 +18,7 @@
          STOP
       ENDIF
 
-      DO J1=1,NRUNS
-         CALL MC(MCSTEPS(J1),TFAC(J1),SCREENC)
-      ENDDO
+      CALL MC(MCSTEPS,TFAC,SCREENC)
 
       CALL FINALQ
       CALL FINALIO

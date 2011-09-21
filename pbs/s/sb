@@ -27,6 +27,7 @@ export pull_end=46
 export force=0.0
 export temp=0.03
 export exe=GMIN
+export exe=Gb
 export gs_energy=-0.2936531215
 
 allmodes=( 1 2 3 4 5 6 ) 

@@ -75,9 +75,9 @@ CONTAINS
                  ! M-S {{{
               CASE('MAXIT')
     	         READ(BUFFER, *) MAXIT
-              CASE('MUPDATE')
+              CASE('UPDATES','MUPDATE')
     	         READ(BUFFER, *) MUPDATE
-              CASE('NACCEPT')
+              CASE('NACCEPT','CHANGEACCEPT')
     	         READ(BUFFER, *) NACCEPT
               CASE('NORESET')
     	         NORESET=.TRUE.

@@ -102,7 +102,6 @@ CLOSE(7)
 ! }}}
 END SUBROUTINE COUNTATOMS
 
-
 ! initialize variables
 SUBROUTINE INITVARS
 ! declarations {{{
@@ -149,7 +148,7 @@ RMSD_FH=FH+8
       NS=0
       NSSTOP=0
       NSAVE=5
-      TFAC(:)=1.0D0
+      TFAC=1.0D0
 
             DUMPT=.FALSE.
       NTARGETS=0
@@ -194,7 +193,7 @@ RMSD_FH=FH+8
       CHECKMARKOVT=.FALSE.
       ! }}}
 !strings {{{
-D_FILE="data.in"
+D_FILE="data"
 C_FILE="coords"
 E_FILE="e.tex"
 LE_FILE="lowest"
@@ -226,6 +225,7 @@ TEMP=0.035D0        ! Temperature
 RADIUS=0.0D0
 ! maximum number of iterations allowed in conjugate gradient searches
 MAXIT=500
+MAXIT2=500
 ! Maximum allowed energy rise during a minimisation
 MAXERISE=1.0D-10
 ! Maximum allowed energy fall during a minimisation
@@ -522,4 +522,18 @@ SUBROUTINE ECHO_S
 WRITE(*,'(A)') "**********************************************************************************************" 
 ENDSUBROUTINE ECHO_S
 
+FUNCTION PAIRDISTANCE(ATOM1,ATOM2)
+IMPLICIT NONE
+! PAIRDISTANCE is defined as it is the function name and hence the returned
+! value
+DOUBLE PRECISION :: PAIRDISTANCE
+DOUBLE PRECISION, INTENT(IN) :: ATOM1(3),ATOM2(3)
+
+PAIRDISTANCE=DSQRT((ATOM1(1)-ATOM2(1))**2+(ATOM1(2)-ATOM2(2))**2+(ATOM1(3)-ATOM2(3))**2)
+RETURN
+END FUNCTION PAIRDISTANCE
+
 ENDMODULE FUNC
+
+
+

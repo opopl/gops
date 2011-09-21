@@ -5,28 +5,28 @@
 # Not used dir: nu
 # /home/op226/gops/Gb/deps.mk
 # Fortran dependency file
-# Created: 15:18:21, Wed Sep 21, 2011
+# Created: 17:46:49, Wed Sep 21, 2011
+centre.o: commons.o
+potential.o: commons.o porfuncs.o qmod.o
+countatoms.o: commons.o
+mc.o: commons.o func.o porfuncs.o qmod.o
+io1.o: commons.o porfuncs.o qmod.o
+centrecom.o: commons.o
+quench.o: commons.o porfuncs.o qmod.o
+BLN.o: commons.o
+mcruns.o: commons.o mc.o
+sort2.o: qmod.o
+takestep.o: commons.o
+mycpu_time.o: commons.o
 output.o: commons.o file_manager.o
+func.o: commons.o porfuncs.o
+kw.o: commons.o func.o strings.o
+main.o: commons.o func.o kw.o mc.o porfuncs.o qmod.o
+strings.o: precmod.o
+finalio.o: commons.o qmod.o
 GMINdump.o: commons.o output.o porfuncs.o qmod.o
 finalq.o: commons.o qmod.o
-strings.o: precmod.o
-mcruns.o: commons.o mc.o
-countatoms.o: commons.o
-rca.o: commons.o dv.o func.o porfuncs.o
-centre.o: commons.o
-quench.o: commons.o porfuncs.o qmod.o
-io1.o: commons.o porfuncs.o qmod.o
-kw.o: commons.o func.o strings.o
-func.o: commons.o porfuncs.o
-sort2.o: qmod.o
-mc.o: commons.o porfuncs.o qmod.o
-centrecom.o: commons.o
-BLN.o: commons.o
 p46merdiff.o: modhess.o
-mylbfgs.o: commons.o porfuncs.o
-finalio.o: commons.o qmod.o
-mycpu_time.o: commons.o
-potential.o: commons.o porfuncs.o qmod.o
 g46merdiff.o: modhess.o
-main.o: commons.o func.o kw.o mc.o porfuncs.o qmod.o
-takestep.o: commons.o
+mylbfgs.o: commons.o porfuncs.o
+rca.o: commons.o dv.o func.o porfuncs.o
