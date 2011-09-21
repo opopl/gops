@@ -63,6 +63,7 @@ CONTAINS
                  ! A-L {{{
     	      CASE('ACCRAT') ; READ(BUFFER, *) ACCRAT
     	      CASE('CENTRE') ; CENT=.TRUE.
+              CASE('DEBUG') ; DEBUG=.TRUE.
               CASE('DGUESS') ; READ(BUFFER, *) DGUESS
               CASE('EDIFF') ;  READ(BUFFER, *) EDIFF
     	      CASE('FQMAX','TIGHTCONV')
@@ -88,7 +89,7 @@ CONTAINS
                  PULLT=.TRUE.
     	         READ(BUFFER, *) PATOM1,PATOM2,PFORCE
               CASE('RADIUS');  READ(BUFFER, *) RADIUS
-              CASE('STEP');  READ(BUFFER, *) STEP ASTEP
+              CASE('STEP');  READ(BUFFER, *) STEP, ASTEP
     	      CASE('SQMAX','BASIN','SLOPPYCONV') ; READ(BUFFER, *) SQMAX
               CASE('STEPS') ; READ(BUFFER, *) MCSTEPS,TFAC
                  ! }}} 

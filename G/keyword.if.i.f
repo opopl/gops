@@ -1,5 +1,5 @@
 
-      IF (WORD.EQ.'    '.OR.WORD.EQ.'NOTE'.OR.WORD.EQ.'COMMENT'
+      IF (WORD.EQ.'    '.OR.WORD.EQ.'NOTE'.OR.WORD.EQ.'COMMENT'.OR.WORD.EQ.'!'
      &                          .OR. WORD .EQ. '\\') THEN 
          GOTO 190
 C  Remaining documented keywords should be in alphabetical order.

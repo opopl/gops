@@ -225,21 +225,21 @@ C
          STP=1.0D0  
          ! }}}
       ENDIF
-C
+
 C  Store the new search direction
-C
+
       IF (ITER.GT.0) THEN
          DO J1=1,N
             W(ISPT+POINT*N+J1)= W(J1)
          ENDDO
       ENDIF
 
-         DOT1=SQRT(DDOT(N,GRAD,1,GRAD,1))
-C
+      DOT1=SQRT(DDOT(N,GRAD,1,GRAD,1))
+
 C  Overflow has occasionally occurred here.
 C  We only need the sign of the overlap, so use a temporary array with
 C  reduced elements.
-C
+
       DUMMY=1.0D0
       DO J1=1,N
          IF (ABS(W(J1)).GT.DUMMY) DUMMY=ABS(W(J1))
@@ -495,7 +495,6 @@ C
       ENDIF
       IF (CENT) CALL CENTRE2(XCOORDS)
       GOTO 10
-!     IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
 
       RETURN
       ! }}}

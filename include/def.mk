@@ -20,11 +20,12 @@ CPP = /lib/cpp
 CPFLAGS = -traditional -P
 L=
 
+LBASE :=$(LIBAPATH)/baseG.a
 # LAPACK/BLAS Linear Algebra Libs
 LBLAS := $(LIBAPATH)/libmyblas.a
 LLAPACK := $(LIBAPATH)/libmylapack.a
 LLIBS := $(LBLAS) $(LLAPACK) $(LBLAS)
-LIBS  := $(LLIBS)
+LIBS  := $(LLIBS) $(LBASE)
 DEPS := deps.mk
 SEARCH_PATH =  -I..
 

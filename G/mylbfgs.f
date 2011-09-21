@@ -356,6 +356,8 @@ C
                WRITE(MYUNIT,'(A)') 'WARNING, resetting YS to one in mylbfgs'
                YS=1.0D0
             ENDIF
+            IF (DEBUG) WRITE(MYUNIT,'(A20,F20.5)') 'YY= ',YY
+            IF (DEBUG) WRITE(MYUNIT,'(A20,F20.5)') 'YS= ',YS
 C           WRITE(*,'(A,2F20.10)') 'YS/YY,STP=',YS/YY,STP
             DO J1=1,N
 C              DIAG(J1)= ABS(YS/YY) ! messes up after step reversals!
