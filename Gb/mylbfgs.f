@@ -40,6 +40,8 @@
       ! }}}
       ! subroutine body {{{
 
+      ! intro {{{
+
       IF (.NOT.ALLOCATED(DIAG)) ALLOCATE(DIAG(N))       ! SAVE doesn't work otherwise for Sun
       IF (.NOT.ALLOCATED(W)) ALLOCATE(W(N*(2*M+1)+2*M)) ! SAVE doesn't work otherwise for Sun
       IF (SIZE(W,1).NE.N*(2*M+1)+2*M) THEN ! mustn't call mylbfgs with changing number of variables!!!
@@ -70,18 +72,12 @@
       ENDIF
       CALL POTENTIAL(XCOORDS,GRAD,ENERGY,.TRUE.,.FALSE.)
 
-C  Catch cold fusion for ionic potentials and discard.
-C
-C  Changed EREAL for cold fusion to 1.0D6 rather than 0.0D0, which could result in steps being accepted
-C  for systems with positive energies. - khs26 26/11/09
-C
-
       IF (EVAPREJECT) RETURN
       POTEL=ENERGY
 
       IF (DEBUG) WRITE(LFH,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
-
-C  Termination test. 
+! }}}
+C  10 Termination test.  {{{
 
 10    CALL FLUSH(LFH)
       MFLAG=.FALSE.
@@ -101,6 +97,7 @@ C  Termination test.
          IF (DEBUG) WRITE(LFH,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
          RETURN
       ENDIF
+!}}}
 
       IF (ITER.EQ.0) THEN
         ! {{{
@@ -176,9 +173,7 @@ C
                WRITE(LFH,'(A)') 'WARNING, resetting YS to one in mylbfgs'
                YS=1.0D0
             ENDIF
-C           WRITE(*,'(A,2F20.10)') 'YS/YY,STP=',YS/YY,STP
             DO J1=1,N
-C              DIAG(J1)= ABS(YS/YY) ! messes up after step reversals!
                DIAG(J1)= YS/YY
             ENDDO
          ELSE

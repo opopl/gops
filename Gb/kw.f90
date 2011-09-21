@@ -88,7 +88,7 @@ CONTAINS
                  PULLT=.TRUE.
     	         READ(BUFFER, *) PATOM1,PATOM2,PFORCE
               CASE('RADIUS');  READ(BUFFER, *) RADIUS
-              CASE('STEP');  READ(BUFFER, *) STEP
+              CASE('STEP');  READ(BUFFER, *) STEP ASTEP
     	      CASE('SQMAX','BASIN','SLOPPYCONV') ; READ(BUFFER, *) SQMAX
               CASE('STEPS') ; READ(BUFFER, *) MCSTEPS,TFAC
                  ! }}} 
