@@ -137,18 +137,17 @@ echo "${files[@]}"
 for f in ${files[@]}; do
   	fname=${f%.*}
 	fext=${f##*.}
-	#cp $bdir/$f $fdir/$fname.o.$fext
-	cp $bdir/$f $fdir
+	cp $bdir/$f $fdir/$fname.o.$fext
+	#cp $bdir/$f $fdir
 done
 # copy make files
 for f in ${mkfiles[@]}; do
 	cp $bdir/$f $fdir/
 done
 
-rcaf=rca.$ffork.i.sh
-
-cp $shd/rca.$base.i.sh $shd/$rcaf
-echo "$this_script> In scripts dir: Created $rcaf"
+#rcaf=rca.$ffork.i.sh
+#cp $shd/rca.$base.i.sh $shd/$rcaf
+#echo "$this_script> In scripts dir: Created $rcaf"
 #cp $gopsdir/sim/v $fdir/v
 #echo "$this_script> Copied v "
 
