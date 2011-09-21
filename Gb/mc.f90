@@ -1,8 +1,16 @@
+      MODULE FUNC 
+
+      USE V 
+      USE QMODULE
+
+      IMPLICIT NONE
+
+      contains
 
       SUBROUTINE MC(NSTEPS,SCALEFAC,SCREENC)
 !OP226> DECLARATIONS {{{ 
 
-      USE COMMONS
+      USE V
       USE QMODULE , ONLY : QMIN, QMINP, INTEQMIN
       USE PORFUNCS
 
@@ -274,7 +282,8 @@
 !
 !  IF RESTART THEN RESEED IF WE HAVEN T ACCEPTED A STEP IN TWICE THE RELAXATION TIME.
 !
-            IF (RESTART.AND.(J1-JACCPREV.GT.1.1D0*NRELAX)) CALL REST(ITERATIONS,TIME,J1,RCOORDS,RMIN,RVAT,JACCPREV)
+            IF (RESTART.AND.(J2-JACCPREV.GT.1.1D0*NRELAX)) &
+                & CALL REST(ITERATIONS,TIME,J1,RCOORDS,RMIN,RVAT,JACCPREV)
 !
 !  CHECK THE ACCEPTANCE RATIO.
 ! 
@@ -307,15 +316,10 @@
       DEALLOCATE(OMOVE)
       RETURN
 !OP226>}}} 
-      END
+      END subroutine
 
       SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,NP,RANDOM,MCTEMP)
       ! declarations {{{
-      USE COMMONS
-      USE QMODULE
-
-      IMPLICIT NONE
-
       ! subroutine 
 
       DOUBLE PRECISION ENEW, EOLD,  MCTEMP, RANDOM
@@ -352,11 +356,11 @@
 
       RETURN 
       ! }}}
-      END 
+      END  SUBROUTINE
 
       SUBROUTINE ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
       ! declarations {{{
-      USE COMMONS
+      USE V
 
       IMPLICIT NONE
 
@@ -364,7 +368,7 @@
       INTEGER NSUCCESS(NPAR), NFAIL(NPAR), JP, NFAILT(NPAR), NSUCCESST(NPAR)
 
       ! local 
-      INTEGER ::, J1, J2
+      INTEGER :: J1, J2
       LOGICAL evap, evapreject
       DOUBLE PRECISION HWMAX,P0,FAC
       common /ev/ evap, evapreject
@@ -383,16 +387,7 @@
          ELSE IF (FIXSTEP(JP)) THEN
             IF (.NOT.FIXTEMP(JP)) TEMP(JP)=TEMP(JP)/1.05D0
          ELSE
-            IF (FIXD) THEN
-               NHSMOVE=NHSMOVE+1 
-            ELSE
-               IF (RIGID) THEN
-                  IF (TMOVE(JP)) STEP(JP)=STEP(JP)*1.05D0 
-                  IF (OMOVE(JP)) OSTEP(JP)=OSTEP(JP)*1.05D0
-               ELSE
-                  STEP(JP)=FAC*STEP(JP)
-               ENDIF
-            ENDIF
+            STEP(JP)=FAC*STEP(JP)
             ASTEP(JP)=ASTEP(JP)*1.05D0
 ! jwrm2> limit step size for percolation to the cutoff distance for determining connectivity
          ENDIF
@@ -417,7 +412,7 @@
       STEP(JP)=MIN(STEP(JP),1.0D3)
       OSTEP(JP)=MIN(OSTEP(JP),1.0D3)
       ASTEP(JP)=MIN(ASTEP(JP),1.0D3)
-C
+
       IF (NPAR.GT.1) THEN
          WRITE(MYUNIT,'(A,I2,A,I6,A,F8.4,A,F8.4)') '[',JP,']Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
       ELSE
@@ -434,26 +429,22 @@ C
          ENDIF
          WRITE(MYUNIT,'(A,F10.4)',ADVANCE='NO') '  STEP=',STEP(JP)    
          IF(ASTEP(JP).GT.0.D0) WRITE(MYUNIT,'(A,F10.4)',ADVANCE='NO')'  ASTEP=',ASTEP(JP) 
-         IF(CHRIGIDTRANST.AND.CHRMMT) WRITE(MYUNIT,'(A,F10.4)',ADVANCE='NO')'  TRANSMAX=',TRANSMAX
-         IF(CHRIGIDROTT.AND.CHRMMT) WRITE(MYUNIT,'(A,F10.4)')'  ROTMAX=',ROTMAX
          IF(.NOT.FIXTEMP(JP)) WRITE(MYUNIT,'(A,F10.4)') ' Temperature is now:',TEMP(JP)
-         IF (RIGID) WRITE(MYUNIT,'(A,F12.6,A,F12.6)') 'Maximum rigid body rotational move is now ',OSTEP(JP)
       ENDIF
-      IF (FIXD) WRITE(MYUNIT,'(A,I4)') 'hard sphere collision moves=',NHSMOVE
-C
+!
       NSUCCESST(JP)=NSUCCESST(JP)+NSUCCESS(JP)
       NFAILT(JP)=NFAILT(JP)+NFAIL(JP)
       NSUCCESS(JP)=0
       NFAIL(JP)=0 
-C
+!
       RETURN
       ! }}}
-      END
+      END SUBROUTINE
 
       SUBROUTINE MYRESET(JP,NATOMS,NPAR,NSEED)
       ! {{{
-      USE COMMONS,ONLY : MYUNIT,COORDS,COORDSO,VAT,VATO
       IMPLICIT NONE
+
       INTEGER JP, NSEED, J2, NATOMS, NPAR
 
       DO J2=1,3*(NATOMS-NSEED)
@@ -465,4 +456,6 @@ C
 
       RETURN
       ! }}}
-      END
+      END SUBROUTINE
+      
+      ENDMODULE

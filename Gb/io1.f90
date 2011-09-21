@@ -1,7 +1,7 @@
 
       SUBROUTINE IO1
 
-      USE COMMONS
+      USE V
       USE QMODULE
       USE PORFUNCS
 

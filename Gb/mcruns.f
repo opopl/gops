@@ -25,7 +25,7 @@ C
 !> \param SCREENC  
 !op226>=================================== 
       SUBROUTINE MCRUNS(SCREENC)
-      USE COMMONS
+      USE V
       IMPLICIT NONE
       LOGICAL LOPEN
       DOUBLE PRECISION SCREENC(3*NATOMS)

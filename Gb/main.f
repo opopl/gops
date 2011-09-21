@@ -2,7 +2,7 @@
       PROGRAM GMIN
 
       USE NOA
-      USE COMMONS
+      USE V
       USE QMODULE
       USE PORFUNCS
 

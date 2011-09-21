@@ -2,7 +2,7 @@
       SUBROUTINE FINALQ
 !op226> Declarations {{{ 
 
-      USE COMMONS
+      USE V
       USE QMODULE
 
       IMPLICIT NONE

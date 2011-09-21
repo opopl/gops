@@ -2,7 +2,7 @@
 
       SUBROUTINE FINALIO
 
-      USE COMMONS
+      USE V
       USE QMODULE
 
       IMPLICIT NONE

@@ -1,7 +1,7 @@
 
       SUBROUTINE MYLBFGS(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET,NP)
       ! declarations {{{
-      USE COMMONS
+      USE V
       USE PORFUNCS
 
       IMPLICIT NONE
@@ -13,7 +13,7 @@
       ! }}}
       ! local {{{
       INTEGER :: J1
-      DOUBLE PRECISION, DIMENSION(3*NATOMS) :: GRAD(3*NATOMS),SLENGTH,DDOT,EPLUS,EMINUS,DIFF,DUMMY,WTEMP(3*NATOMS)
+      DOUBLE PRECISION :: GRAD(3*NATOMS),SLENGTH,DDOT,EPLUS,EMINUS,DIFF,DUMMY,WTEMP(3*NATOMS)
       DOUBLE PRECISION TMPANG(3*NATOMS), TMPCOORDS(3*NATOMS)
       DOUBLE PRECISION EPS,ENERGY,ENEW,GNEW(3*NATOMS),OVERLAP,OLDX(3*NATOMS),OLDOLDX(3*NATOMS),VGUESS(3),
      1                 X1, Y1, Z1, X2, Y2, Z2, TRY(3*NATOMS), D1, D2, RBCOORDS(18), DUMMY2, DIST, DIST1
@@ -75,23 +75,6 @@ C
 C  Changed EREAL for cold fusion to 1.0D6 rather than 0.0D0, which could result in steps being accepted
 C  for systems with positive energies. - khs26 26/11/09
 C
-
-
-C
-C  If INTMINT and CHRMMT need to transform to internal coordinates
-C  See COPTIM.2.3 for switching to internals from Cartesians using LIMINCUT.
-C
-      IF (INTMINT) THEN
-         OLDCART(1:3*NATOMS)=XCOORDS(1:3*NATOMS) ! store cartesians in OLDCART for both CHARMM and UNRES
-            CALL GETKD(KD) ! get width of sparse band in G matrix KD
-            CALL GETNNZ(NNZ) ! get number of non-zero elements in B-matrix
-            NOCOOR=.FALSE. ! calculate internals therefore NOCOOR is false
-            GINT(1:N)=0.0D0 ! to prevent NaN's for Sun!
-            XINT(1:N)=0.0D0 ! to prevent NaN's for Sun!
-            CALL TRANSFORM(XCOORDS,GRAD,XINT,GINT,N,3*NATOMS,NNZ,NOCOOR,KD)
-            OLDQ(1:N)=XINT(1:N)    ! store internals
-            OLDGINT(1:N)=GINT(1:N) ! store gradient in internals
-      ENDIF
 
       IF (EVAPREJECT) RETURN
       POTEL=ENERGY
@@ -324,10 +307,6 @@ C  We need to transform the newly obtained Cartesian gradient for CHARMM and int
 C  NOCOOR is true because we dont need to transform the coordinates.
 C
 
-C csw34 Force acceptance of step if FIXDIHEFLAG is TRUE
-
-      IF (FIXDIHEFLAG) ENERGY=ENEW
-
       IF (((ENEW-ENERGY.LE.MAXERISE).OR.EVAP.OR.GUIDECHANGET).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
         ! {{{
          ITER=ITER+1
@@ -444,7 +423,6 @@ C
      1                      ' energy decreased too much from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
          
          FIXIMAGE=.TRUE.
-         GOTO 20
          ! }}}
       ELSE
         ! {{{
@@ -499,7 +477,6 @@ C  Energy increased - try again with a smaller step size
          IF (DEBUG) WRITE(MYUNIT,'(A,F20.10,A,F20.10,A,F20.10)') 
      1                      ' energy increased from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
          FIXIMAGE=.TRUE.
-         GOTO 20
          ! }}}
       ENDIF
 C
@@ -515,19 +492,11 @@ C
       IF (POINT.EQ.M) POINT=0
       FIXIMAGE=.FALSE.
       IF (DUMPT.AND.DEBUG) THEN
-         IF (AMBER) THEN
-            WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
-            WRITE(DUMPXYZUNIT+NP,'(A,I4,A,F15.5)') 'At step number ',ITER,' energy=',ENERGY
-            DO J2=1,NATOMS
-               WRITE(DUMPXYZUNIT+NP,'(A,3F20.10)') typech(J2)(1:1),(XCOORDS(3*(J2-1)+J3),J3=1,3)
-            ENDDO
-         ELSE
             WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
             WRITE(DUMPXYZUNIT+NP,'(A,I8,A,G20.10)') 'at step ',ITER,' energy=',ENERGY
             WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') ('LA ',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=1,NATOMS-NS)
             IF (NS.GT.0) WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') 
      1          ('LB',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=NATOMS-NS+1,NATOMS)
-         ENDIF
       ENDIF
       IF (CENT) CALL CENTRE2(XCOORDS)
       GOTO 10
