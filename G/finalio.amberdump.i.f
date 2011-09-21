@@ -1,7 +1,9 @@
 
-SUBROUTINE amberdump(J1,QMINP)
+      SUBROUTINE amberdump(J1,QMINP)
+
       USE commons
       USE modamber
+
       IMPLICIT NONE
 
 

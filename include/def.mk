@@ -2,7 +2,11 @@
 
 # definitions {{{
 
+FC=$(FC90)
+
 BINPATH=$(ROOTPATH)/bin
+LIBPATH=$(ROOTPATH)/lib/
+LIBAPATH=$(LIBPATH)/fc_$(FC)/
 LAPACKPATH=$(ROOTPATH)/lapack
 BLASPATH=$(ROOTPATH)/blas
 SPATH=$(ROOTPATH)/scripts/
@@ -16,9 +20,12 @@ CPP = /lib/cpp
 CPFLAGS = -traditional -P
 L=
 
-FC =$(FC90)
-LLIBS = libmyblas.a libmylapack.a libmyblas.a 
-LIBS=$(LLIBS)
+# LAPACK/BLAS Linear Algebra Libs
+LBLAS := $(LIBAPATH)/libmyblas.a
+LLAPACK := $(LIBAPATH)/libmylapack.a
+LLIBS := $(LBLAS) $(LLAPACK) $(LBLAS)
+LIBS  := $(LLIBS)
+DEPS := deps.mk
 SEARCH_PATH =  -I..
 
 DL := debug 
@@ -29,7 +36,6 @@ RCA=$(SAPATH)/rca.sh
 DV=$(SAPATH)/dv.sh
 HEADER=$(SAPATH)/header.sh
 MKDEP=$(SAPATH)/mkdep.pl
-DEPS=deps.mk
 AUXF = dv.f90 rca.f90
 
 DVOPTS=fflags "$(FFLAGS)" prog $(PROGNAME) fc_exec "$(FC)" make_opts "$(MAKE_OPTS)" 

@@ -95,6 +95,8 @@ PARAMETER(LFN="gmi.log")
 ! chr {{{
       ! name for the model system
       CHARACTER(LEN=100) MODEL
+      ! program name
+      CHARACTER(LEN=10), PARAMETER :: PNAME="Gb"
 
       CHARACTER(LEN=80) :: SYS
       CHARACTER(LEN=130) DUMPFILE, MYFILENAME, INTEDUMPFILE

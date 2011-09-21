@@ -62,16 +62,18 @@ libamh.a: $(AMH_OBJS)
 
 #blas lapack {{{
 
-blas: libmyblas.a
-lapack: libmylapack.a
+blas: $(LBLAS)
+lapack: $(LLAPACK)
 
-libmyblas.a: $(BLAS_OBJS)
+$(LBLAS): $(BLAS_OBJS)
 	cd $(BLASPATH); make double FC="${FC}" FFLAGS="${FFLAGS}" BLAS_EXCLUDE_LIST="${BLAS_EXCLUDE_LIST}";\
-	cp $@ $(PPATH)
+	mkdir -p $(LIBAPATH)
+	cp $(BLASPATH)/libmyblas.a $@
 
-libmylapack.a: $(LAPACK_OBJS)
+$(LLAPACK): $(LAPACK_OBJS)
 	cd $(LAPACKPATH); make selection FC="${FC}" FFLAGS="${FFLAGS}" NOOPT="${NOOPT}";\
-	cp $@ $(PPATH)
+	mkdir -p $(LIBAPATH)
+	cp $(LAPACKPATH)/libmylapack.a $@
 
 SAT-Ghost:
 #}}}
@@ -82,7 +84,7 @@ clean:
 	rm -f $(OBJS) $(AUXF) $(GENFFILES) *.mod $(DEPS)
  
 cleanall:
-	rm -f $(PROG) $(OBJS) ${GENFFILES} *.o *.a *.mod *.lst
+	rm -f $(PROG) $(OBJS) ${GENFFILES} $(LLIBS) *.o *.a *.mod *.lst
 	if test -d $(BLASPATH) ;  then cd $(BLASPATH) ; make clean ; fi
 	if test -d $(LAPACKPATH) ;  then cd $(LAPACKPATH) ; make clean ; fi
 	if test -d NEB ;  then cd NEB ; make clean ; fi

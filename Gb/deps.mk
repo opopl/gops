@@ -5,23 +5,23 @@
 # Not used dir: nu
 # /home/op226/gops/Gb/deps.mk
 # Fortran dependency file
-# Created: 17:46:49, Wed Sep 21, 2011
+# Created: 22:1:8, Wed Sep 21, 2011
 centre.o: commons.o
 potential.o: commons.o porfuncs.o qmod.o
 countatoms.o: commons.o
 mc.o: commons.o func.o porfuncs.o qmod.o
-io1.o: commons.o porfuncs.o qmod.o
 centrecom.o: commons.o
 quench.o: commons.o porfuncs.o qmod.o
 BLN.o: commons.o
 mcruns.o: commons.o mc.o
 sort2.o: qmod.o
 takestep.o: commons.o
+io.o: commons.o porfuncs.o qmod.o
 mycpu_time.o: commons.o
 output.o: commons.o file_manager.o
-func.o: commons.o porfuncs.o
 kw.o: commons.o func.o strings.o
 main.o: commons.o func.o kw.o mc.o porfuncs.o qmod.o
+func.o: commons.o porfuncs.o
 strings.o: precmod.o
 finalio.o: commons.o qmod.o
 GMINdump.o: commons.o output.o porfuncs.o qmod.o

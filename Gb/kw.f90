@@ -28,7 +28,7 @@ CONTAINS
       !IOS=0
 
       SELECTCASE(PROG)
-        CASE(1) ! GMI {{{
+        CASE(1) 
           ! "data" file {{{
       CALL INQF(D_FILE,YESNO)
 
@@ -61,12 +61,12 @@ CONTAINS
     	      CASE('STOP')
     	         RETURN
                  ! A-L {{{
-    	      CASE('ACCRAT')
-                     READ(BUFFER, *) ACCRAT
+    	      CASE('ACCRAT') ; READ(BUFFER, *) ACCRAT
+    	      CASE('CENTRE') ; CENT=.TRUE.
+              CASE('DGUESS') ; READ(BUFFER, *) DGUESS
+              CASE('EDIFF') ;  READ(BUFFER, *) EDIFF
     	      CASE('FQMAX','TIGHTCONV')
     	             READ(BUFFER, *) FQMAX
-              CASE('EDIFF')
-    	         READ(BUFFER, *) EDIFF
               CASE('G46')
                  G46=.TRUE.
                  BLNT=.TRUE.
@@ -75,14 +75,11 @@ CONTAINS
                  ! M-S {{{
               CASE('MAXIT')
     	         READ(BUFFER, *) MAXIT
-              CASE('UPDATES','MUPDATE')
-    	         READ(BUFFER, *) MUPDATE
-              CASE('NACCEPT','CHANGEACCEPT')
-    	         READ(BUFFER, *) NACCEPT
-              CASE('NORESET')
-    	         NORESET=.TRUE.
-              CASE('NSAVE')
-    	         READ(BUFFER, *) NSAVE
+              CASE('UPDATES','MUPDATE') ; READ(BUFFER, *) MUPDATE
+              CASE('MAXBFGS');  READ(BUFFER, *) MAXBFGS
+              CASE('NACCEPT','CHANGEACCEPT') ; READ(BUFFER, *) NACCEPT
+              CASE('NORESET') ; NORESET=.TRUE.
+              CASE('NSAVE','SAVE') ; READ(BUFFER, *) NSAVE
               CASE('P46')
                  P46=.TRUE.
                  BLNT=.TRUE.
@@ -90,30 +87,27 @@ CONTAINS
               CASE('PULL')
                  PULLT=.TRUE.
     	         READ(BUFFER, *) PATOM1,PATOM2,PFORCE
-              CASE('RADIUS')
-    	         READ(BUFFER, *) RADIUS
-    	      CASE('SQMAX','BASIN','SLOPPYCONV')
-    	         READ(BUFFER, *) SQMAX
-              CASE('STEPS')
-    	         READ(BUFFER, *) MCSTEPS,TFAC
+              CASE('RADIUS');  READ(BUFFER, *) RADIUS
+              CASE('STEP');  READ(BUFFER, *) STEP
+    	      CASE('SQMAX','BASIN','SLOPPYCONV') ; READ(BUFFER, *) SQMAX
+              CASE('STEPS') ; READ(BUFFER, *) MCSTEPS,TFAC
                  ! }}} 
               CASE('TARGET')
                 TARGET=.TRUE.
                 NTARGETS=NARGS-1
                 ALLOCATE(TARGETS(NTARGETS))
     	        READ(BUFFER, *) TARGETS(1:NTARGETS)
-              CASE('TRACKDATA')
-                TRACKDATAT=.TRUE.
+              CASE('TEMPERATURE'); READ(BUFFER, *) TEMP
+              CASE('TRACKDATA') ; TRACKDATAT=.TRUE.
               CASE DEFAULT
-                 !CALL REPORT('Unrecognized command '//BUFFER,.TRUE.)
-                 write(*,*) "Unrecognized command"
+                 write(*,'(A10,A1,A40,A20)') adjustr(PNAME),">","Unrecognized Keyword: ",LABEL
     	         STOP
                  ! }}}
           ENDSELECT
        END IF
        ! }}}
       END DO
-      ! }}}
+
       ENDSELECT
 
       IF (USEKW) THEN
