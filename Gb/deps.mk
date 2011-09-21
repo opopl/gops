@@ -5,7 +5,7 @@
 # Not used dir: nu
 # /home/op226/gops/Gb/deps.mk
 # Fortran dependency file
-# Created: 14:12:1, Wed Sep 21, 2011
+# Created: 14:43:53, Wed Sep 21, 2011
 output.o: commons.o file_manager.o
 GMINdump.o: commons.o output.o porfuncs.o qmod.o
 finalq.o: commons.o qmod.o
