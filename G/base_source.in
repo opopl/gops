@@ -1,3 +1,8 @@
+centre2.f
+sort2.f
+file_manager.f90
+output.f90
+GMIN_dump.f90
 main.F 
 mc.F
 io1.f 
