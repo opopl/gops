@@ -38,26 +38,26 @@
 !
 !  Bad idea to accept this quench configuration unconditionally - it could be unconvergeable.
 !
-      IF (POTEL-EPREV(1).GT.10.0D0*ABS(EPREV(1))) THEN
+      IF (POTEL-EPREV.GT.10.0D0*ABS(EPREV)) THEN
          DO J2=1,3*NATOMS
-            COORDS(J2,1)=COORDSO(J2,1)
+            COORDS(J2)=COORDSO(J2)
          ENDDO
          !GOTO 10
       ENDIF
       JACCPREV=J1
       NQTOT=NQTOT+1
       WRITE(LFH,'(A,I6,A)') ' Restarting using ',NHSRESTART,' hard sphere moves'
-      WRITE(LFH,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'Restart Qu ',NQ(1),' E=',&
+      WRITE(LFH,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'Restart Qu ',NQ,' E=',&
      &              POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME-TSTART
       DO J2=1,3*NATOMS
-         COORDSO(J2,1)=COORDS(J2,1)
-         RCOORDS(J2)=COORDS(J2,1)
+         COORDSO(J2)=COORDS(J2)
+         RCOORDS(J2)=COORDS(J2)
       ENDDO
       DO J2=1,NATOMS
-         VATO(J2,1)=VAT(J2,1)
-         RVAT(J2)=VAT(J2,1)
+         VATO(J2)=VAT(J2)
+         RVAT(J2)=VAT(J2)
       ENDDO
-      EPREV(1)=POTEL
+      EPREV=POTEL
       RMIN=POTEL
 
       RETURN
@@ -80,7 +80,7 @@
 
       ! LOCAL {{{
       INTEGER ::    ISTEP
-      INTEGER :: NSUCCESS(NPAR), NFAIL(NPAR), NFAILT(NPAR), NSUCCESST(NPAR)
+      INTEGER :: NSUCCESS, NFAIL, NFAILT, NSUCCESST
       INTEGER :: ITERATIONS
       INTEGER :: NQTOT,JACCPREV
 
@@ -88,10 +88,10 @@
       INTEGER BRUN 
       INTEGER QDONE,NDONE
       INTEGER J1, J2, JP, J5, I, J, J3, J4
-      INTEGER :: JBEST(NPAR) 
-      DOUBLE PRECISION,DIMENSION(NPAR) :: EBEST,EPPREV
+      INTEGER :: JBEST
+      DOUBLE PRECISION :: EBEST,EPPREV
       DOUBLE PRECISION,DIMENSION(3*NATOMS) :: GRAD,SAVECOORDS,TEMPCOORDS,RCOORDS,RCOORDSO
-      DOUBLE PRECISION,DIMENSION(3*NATOMS,NPAR) :: BESTCOORDS
+      DOUBLE PRECISION,DIMENSION(3*NATOMS) :: BESTCOORDS
       DOUBLE PRECISION,DIMENSION(NATOMS) :: RVAT,RVATO
       DOUBLE PRECISION ::   EPSSAVE
       DOUBLE PRECISION :: POTEL, RANDOM, DPRAND
@@ -119,8 +119,6 @@
          STOP
       ENDIF
 
-      ALLOCATE(TMOVE(NPAR), OMOVE(NPAR))
-
       EVAPREJECT=.FALSE.
 
       INQUIRE(UNIT=1,OPENED=LOPEN)
@@ -131,7 +129,7 @@
       ENDIF
 
       NDONE=0
-      NQ(:)=NDONE
+      NQ=NDONE
 
       IF (NACCEPT.EQ.0) NACCEPT=NSTEPS+1
 
@@ -140,14 +138,12 @@
       RMINO=1.0D100
       RMIN=1.0D100
 
-      DO JP=1,NPAR 
-         TMOVE(JP)=.TRUE.
-         OMOVE(JP)=.TRUE.
-         NSUCCESS(JP)=0
-         NFAIL(JP)=0
-         NSUCCESST(JP)=0
-         NFAILT(JP)=0
-      ENDDO
+         TMOVE=.TRUE.
+         OMOVE=.TRUE.
+         NSUCCESS=0
+         NFAIL=0
+         NSUCCESST=0
+         NFAILT=0
       ! }}}
 
 !  CALCULATE THE INITIAL ENERGY AND SAVE IN EPREV
@@ -159,7 +155,7 @@
          CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
          NQTOT=NQTOT+1
          WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') &
-            & 'QU ',NQ(JP),&
+            & 'QU ',NQ,&
             & ' E=',POTEL,&
             & ' STEPS=',ITERATIONS,&
             & ' RMS=',RMS,&
@@ -170,15 +166,15 @@
 !  EBEST AND JBEST RECORD THE LOWEST ENERGY SINCE THE LAST RESEEDING AND THE
 !  STEP IT WAS ATTAINED AT. BESTCOORDS CONTAINS THE CORRESPONDING COORDINATES.
  
-         EPREV(JP)=POTEL
-         EPPREV(JP)=0.0D0
-         EBEST(JP)=POTEL
-         BESTCOORDS(1:3*NATOMS,JP)=COORDS(1:3*NATOMS,JP)
-         JBEST(JP)=0
+         EPREV=POTEL
+         EPPREV=0.0D0
+         EBEST=POTEL
+         BESTCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS)
+         JBEST=0
          RMIN=POTEL
-         RCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,1)
-         COORDSO(1:3*NATOMS,JP)=COORDS(1:3*NATOMS,JP)
-         VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
+         RCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS)
+         COORDSO(1:3*NATOMS)=COORDS(1:3*NATOMS)
+         VATO(1:NATOMS)=VAT(1:NATOMS)
       ENDDO
 
       EPSSPHERE=EPSSAVE
@@ -204,24 +200,24 @@
 !           THE INITIALISATION SECTION ABOVE.  MCTEMP IS PASSED TO THE SUBROUTINE TRANSITION, WHERE
 !           THE ACCEPTANCE/REJECTION DECISION IS MADE.  HOWEVER, INDIVIDUAL MC MOVES CAN OVERRIDE
 !           THIS TEMPERATURE BY SETTING MCTEMP TO A DIFFERENT VALUE FOR THE CURRENT STEP.
-            MCTEMP = TEMP(JP)
+            MCTEMP = TEMP
 !  ORDINARY STEPS.
  
 23          CONTINUE
 !
 ! DON'T CALL SYMMETRY UNLESS THE MINIMUM IN THE MARKOV CHAIN HAS CHANGED.
 ! WE SHOULD REALLY CHECK IF THE MINIMUM HAS CHANGED SINCE THE LAST CALL TO SYMMETRY,
-! WHICH CAN BE DONE WITH ABS(ELASTSYM(JP)-EPREV(JP)) IF NSYMINTERVAL=1.
+! WHICH CAN BE DONE WITH ABS(ELASTSYM(JP)-EPREV) IF NSYMINTERVAL=1.
 !
 ! CSW34> COORDINATES ARE SAVED SO THAT MOVES CAN BE UNDONE
-           SAVECOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
-           CALL TAKESTEP(JP)
-           NQ(JP)=NQ(JP)+1
+           SAVECOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS)
+           CALL TAKESTEP
+           NQ=NQ+1
            CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)  
            NQTOT=NQTOT+1
 !  OUTPUT
-           WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'QU ',NQ(JP),' E=',&
-     &                 POTEL,' STEPS=',ITERATIONS,' RMS=',RMS,' MARKOV E=',EPREV(JP),' T=',TIME-TSTART
+           WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'QU ',NQ,' E=',&
+     &                 POTEL,' STEPS=',ITERATIONS,' RMS=',RMS,' MARKOV E=',EPREV,' T=',TIME-TSTART
           CALL FLUSH(LFH)
 
           ! PAIRDIST TRACKDATA {{{
@@ -230,11 +226,11 @@
 !     WRITE END OF PREVIOUS LINE AS USING ADVANCE="NO"
                 WRITE(MYPUNIT,*) " "
 !     WRITE CURRENT QUENCH NUMBER
-                WRITE(MYPUNIT,'(I10)',ADVANCE="NO") NQ(JP)
+                WRITE(MYPUNIT,'(I10)',ADVANCE="NO") NQ
 !     FOR EACH PAIR, ASSIGN ATOM1 AND ATOM2 ARRAYS CONTAINING COORDINATES
              DO PAIRCOUNTER=1,NPAIRS
-                ATOM1(:)=COORDS(3*PAIRDIST(PAIRCOUNTER,1)-2:3*PAIRDIST(PAIRCOUNTER,1),JP)
-                ATOM2(:)=COORDS(3*PAIRDIST(PAIRCOUNTER,2)-2:3*PAIRDIST(PAIRCOUNTER,2),JP)
+                ATOM1(:)=COORDS(3*PAIRDIST(PAIRCOUNTER,1)-2:3*PAIRDIST(PAIRCOUNTER,1))
+                ATOM2(:)=COORDS(3*PAIRDIST(PAIRCOUNTER,2)-2:3*PAIRDIST(PAIRCOUNTER,2))
 !     CALL PAIRDISTANCE WITH (X,Y,Z) FOR EACH ATOM
                 WRITE(MYPUNIT,'(F10.4)',ADVANCE="NO") PAIRDISTANCE(ATOM1,ATOM2) 
              ENDDO
@@ -245,7 +241,7 @@
           IF (TRACKDATAT) THEN
             ! {{{
              WRITE(MYEUNIT,'(I10,F20.10)') J1,POTEL
-             WRITE(MYMUNIT,'(I10,G20.10)') J1,EPREV(JP)
+             WRITE(MYMUNIT,'(I10,G20.10)') J1,EPREV
              WRITE(MYBUNIT,'(I10,G20.10)') J1,QMIN(1)
              CALL FLUSH(MYEUNIT)
              CALL FLUSH(MYMUNIT)
@@ -257,10 +253,10 @@
 !  CHECK FOR RESEEDING.
 
             IF (EVAP .AND. .NOT.EVAPREJECT) THEN
-               NFAIL(JP)=NFAIL(JP)+1
-               CALL MYRESET(JP,NATOMS,NPAR,NSEED)
+               NFAIL=NFAIL+1
+               CALL MYRESET(NATOMS,NSEED)
                IF (DEBUG) THEN
-                  WRITE(LFH,33) JP,J1,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+                  WRITE(LFH,33) JP,J1,POTEL,EPREV,NSUCCESS,NFAIL
 33                FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' EVAP,REJ')
                ENDIF
             ELSE
@@ -270,7 +266,7 @@
                ATEST=.TRUE. 
 
                IF (ATEST) THEN
-                  CALL TRANSITION(POTEL,EPREV(JP),ATEST,JP,RANDOM,MCTEMP)
+                  CALL TRANSITION(POTEL,EPREV,ATEST,JP,RANDOM,MCTEMP)
                ENDIF
 
 !  SANITY CHECK TO MAKE SURE THE MARKOV ENERGY AGREES WITH COORDSO. 
@@ -278,17 +274,17 @@
 
                IF (DEBUG.OR.CHECKMARKOVT) THEN 
                   ! {{{
-                  CALL POTENTIAL(COORDSO(:,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
-                  IF (ABS(OPOTEL-EPREV(JP)).GT.EDIFF) THEN
+                  CALL POTENTIAL(COORDSO(:),GRAD,OPOTEL,.FALSE.,.FALSE.)
+                  IF (ABS(OPOTEL-EPREV).GT.EDIFF) THEN
                      IF (EVAP) THEN
                         WRITE(LFH,'(3(A,G20.10))') &
                         & 'MC> WARNING - ENERGY FOR SAVED COORDINATES ',OPOTEL,&
-                        & ' DIFFERS FROM MARKOV ENERGY ',EPREV(JP),&
+                        & ' DIFFERS FROM MARKOV ENERGY ',EPREV,&
                         & ' BECAUSE AN ATOM MOVED OUTSIDE THE CONTAINER'
                      ELSE
                         WRITE(LFH,'(2(A,G20.10))') &
                         'MC> ERROR - ENERGY FOR COORDINATES IN COORDSO=',OPOTEL,&
-                        & ' BUT MARKOV ENERGY=',EPREV(JP)
+                        & ' BUT MARKOV ENERGY=',EPREV
                         STOP
                      ENDIF
                   ENDIF
@@ -304,34 +300,34 @@
                  ! {{{
 
                   IF (DEBUG) THEN
-                     WRITE(LFH,34) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+                     WRITE(LFH,34) JP,RANDOM,POTEL,EPREV,NSUCCESS,NFAIL
 34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')
                   ENDIF
 
-                  IF ((J1-JACCPREV.GT.NRELAX).AND.ABS(POTEL-EPREV(JP)).GT.EDIFF) THEN
+                  IF ((J1-JACCPREV.GT.NRELAX).AND.ABS(POTEL-EPREV).GT.EDIFF) THEN
 !                    NRELAX=J1-JACCPREV
 !                    IF (RESTART) WRITE(LFH,'(A,I6,A)') ' RELAXATION TIME SET TO ',NRELAX,' STEPS'
                      JACCPREV=J1
                   ENDIF
 
                   IF (QDONE.EQ.1) THEN
-                     NSUCCESS(JP)=NSUCCESS(JP)+1
+                     NSUCCESS=NSUCCESS+1
                   ELSE
-                     NFAIL(JP)=NFAIL(JP)+1
+                     NFAIL=NFAIL+1
                   ENDIF
 
-                  EPPREV(JP)=EPREV(JP)
-                  EPREV(JP)=POTEL
-                  COORDSO(1:3*NATOMS,JP)=COORDS(1:3*NATOMS,JP)
-                  VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
+                  EPPREV=EPREV
+                  EPREV=POTEL
+                  COORDSO(1:3*NATOMS)=COORDS(1:3*NATOMS)
+                  VATO(1:NATOMS)=VAT(1:NATOMS)
                   ! }}}
                ELSE
                   ! {{{
-                  NFAIL(JP)=NFAIL(JP)+1
-                  CALL MYRESET(JP,NATOMS,NPAR,NSEED)
+                  NFAIL=NFAIL+1
+                  CALL MYRESET(NATOMS,NSEED)
                   IF (DEBUG) THEN
-                     WRITE(LFH,36) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
-36                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' REJ')
+                     WRITE(LFH,36) RANDOM,POTEL,EPREV,NSUCCESS,NFAIL
+36                   FORMAT('RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' REJ')
                   ENDIF
                   ! }}}
                ENDIF
@@ -345,15 +341,15 @@
 !  CHECK THE ACCEPTANCE RATIO.
 ! 
             IF ((MOD(J1,NACCEPT).EQ.0).AND.(NSEED.EQ.0).AND.(.NOT.STAY)) & 
-                & CALL ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
+                & CALL ACCREJ(NSUCCESS,NFAIL,NSUCCESST,NFAILT)
 
-            TEMP(JP)=TEMP(JP)*SCALEFAC
+            TEMP=TEMP*SCALEFAC
             IF (DUMPINT.GT.0) THEN
                IF (MOD(J1,DUMPINT).EQ.0) THEN
-                  CALL DUMPSTATE(J1,EBEST,BESTCOORDS,JBEST,JP)
+                  CALL DUMPSTATE(J1,EBEST,BESTCOORDS,JBEST)
                ENDIF
             ENDIF
-           IF (NQ(JP).GT.NSTEPS) GOTO 37
+           IF (NQ.GT.NSTEPS) GOTO 37
          ENDDO
 !  ****************************** END OF LOOP OVER NPAR PARALLEL RUNS *****************************
 !
@@ -363,14 +359,9 @@
 ! }}}
 
 37    CONTINUE
-      DO JP=1,NPAR
-         WRITE(LFH,21) NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),&
-     &               STEP(JP),ASTEP(JP),TEMP(JP)
+         WRITE(LFH,21) NSUCCESST*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST+NFAILT)),&
+     &               STEP,ASTEP,TEMP
 21       FORMAT('ACCEPTANCE RATIO FOR RUN=',F12.5,' STEP=',F12.5,' ANGULAR STEP FACTOR=',F12.5,' T=',F12.5)
-      ENDDO
-!MO361>DEALLOCATING THESE ARRAYS TO COPE WITH MULTIPLE RUNS OF THIS SUBROUTINE IN GA
-      DEALLOCATE(TMOVE)
-      DEALLOCATE(OMOVE)
       RETURN
 !OP226>}}} 
       END subroutine
@@ -415,14 +406,14 @@
       ! }}}
       END  SUBROUTINE
 
-      SUBROUTINE ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
+      SUBROUTINE ACCREJ(NSUCCESS,NFAIL,NSUCCESST,NFAILT)
       ! declarations {{{
       USE COMMONS
 
       IMPLICIT NONE
 
       ! subroutine 
-      INTEGER NSUCCESS(NPAR), NFAIL(NPAR), JP, NFAILT(NPAR), NSUCCESST(NPAR)
+      INTEGER NSUCCESS, NFAIL, NFAILT, NSUCCESST
 
       ! local 
       INTEGER :: J1, J2
@@ -432,83 +423,75 @@
       ! }}}
       ! body {{{
 
-      P0=1.D0*NSUCCESS(JP)/(1.D0*(NSUCCESS(JP)+NFAIL(JP)))
+      P0=1.D0*NSUCCESS/(1.D0*(NSUCCESS+NFAIL))
       
-      IF (P0.GT.ACCRAT(JP)) THEN
+      IF (P0.GT.ACCRAT) THEN
          IF(ARMT) THEN
-           FAC=LOG(ARMA*ACCRAT(JP)+ARMB)/LOG(ARMA*P0+ARMB)
+           FAC=LOG(ARMA*ACCRAT+ARMB)/LOG(ARMA*P0+ARMB)
          ELSE
            FAC=1.05D0
          ENDIF
-         IF (FIXBOTH(JP)) THEN
-         ELSE IF (FIXSTEP(JP)) THEN
-            IF (.NOT.FIXTEMP(JP)) TEMP(JP)=TEMP(JP)/1.05D0
+         IF (FIXBOTH) THEN
+         ELSE IF (FIXSTEP) THEN
+            IF (.NOT.FIXTEMP) TEMP=TEMP/1.05D0
          ELSE
-            STEP(JP)=FAC*STEP(JP)
-            ASTEP(JP)=ASTEP(JP)*1.05D0
+            STEP=FAC*STEP
+            ASTEP=ASTEP*1.05D0
 ! jwrm2> limit step size for percolation to the cutoff distance for determining connectivity
          ENDIF
       ELSE
          IF(ARMT) THEN
-           FAC=LOG(ARMA*ACCRAT(JP)+ARMB)/LOG(ARMA*P0+ARMB)
+           FAC=LOG(ARMA*ACCRAT+ARMB)/LOG(ARMA*P0+ARMB)
          ELSE
            FAC=1.D0/1.05D0
          ENDIF
-         IF (FIXBOTH(JP)) THEN
-         ELSE IF (FIXSTEP(JP)) THEN
-            IF (.NOT.FIXTEMP(JP)) TEMP(JP)=TEMP(JP)*1.05D0
+         IF (FIXBOTH) THEN
+         ELSE IF (FIXSTEP) THEN
+            IF (.NOT.FIXTEMP) TEMP=TEMP*1.05D0
          ELSE
-            STEP(JP)=FAC*STEP(JP)
-            ASTEP(JP)=ASTEP(JP)/1.05D0
+            STEP=FAC*STEP
+            ASTEP=ASTEP/1.05D0
          ENDIF
       ENDIF
 !
 ! Prevent steps from growing out of bounds. The value of 1000 seems sensible, until
 ! we do something with such huge dimensions?!
 !
-      STEP(JP)=MIN(STEP(JP),1.0D3)
-      OSTEP(JP)=MIN(OSTEP(JP),1.0D3)
-      ASTEP(JP)=MIN(ASTEP(JP),1.0D3)
+      STEP=MIN(STEP,1.0D3)
+      OSTEP=MIN(OSTEP,1.0D3)
+      ASTEP=MIN(ASTEP,1.0D3)
 
-      IF (NPAR.GT.1) THEN
-         WRITE(LFH,'(A,I2,A,I6,A,F8.4,A,F8.4)') '[',JP,']Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
+      WRITE(LFH,'(A,I6,A,F8.4,A,F8.4)') 'Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
+      IF (FIXBOTH) THEN
+      ELSE IF (FIXSTEP) THEN
+         IF(.NOT.FIXTEMP) WRITE(LFH,'(A,F12.4)') 'Temperature is now:',TEMP
       ELSE
-         WRITE(LFH,'(A,I6,A,F8.4,A,F8.4)') 'Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
-      ENDIF
-      IF (FIXBOTH(JP)) THEN
-      ELSE IF (FIXSTEP(JP)) THEN
-         IF(.NOT.FIXTEMP(JP)) WRITE(LFH,'(A,F12.4)') 'Temperature is now:',TEMP(JP)
-      ELSE
-         IF (NPAR.GT.1) THEN
-            WRITE(LFH,'(A,I2,A)',ADVANCE='NO') '[',JP,']Steps are now:'
-         ELSE
-            WRITE(LFH,'(A)',ADVANCE='NO') 'Steps are now:'
-         ENDIF
-         WRITE(LFH,'(A,F10.4)',ADVANCE='NO') '  STEP=',STEP(JP)    
-         IF(ASTEP(JP).GT.0.D0) WRITE(LFH,'(A,F10.4)',ADVANCE='NO')'  ASTEP=',ASTEP(JP) 
-         IF(.NOT.FIXTEMP(JP)) WRITE(LFH,'(A,F10.4)') ' Temperature is now:',TEMP(JP)
+         WRITE(LFH,'(A)',ADVANCE='NO') 'Steps are now:'
+         WRITE(LFH,'(A,F10.4)',ADVANCE='NO') '  STEP=',STEP    
+         IF(ASTEP.GT.0.D0) WRITE(LFH,'(A,F10.4)',ADVANCE='NO')'  ASTEP=',ASTEP 
+         IF(.NOT.FIXTEMP) WRITE(LFH,'(A,F10.4)') ' Temperature is now:',TEMP
       ENDIF
 !
-      NSUCCESST(JP)=NSUCCESST(JP)+NSUCCESS(JP)
-      NFAILT(JP)=NFAILT(JP)+NFAIL(JP)
-      NSUCCESS(JP)=0
-      NFAIL(JP)=0 
+      NSUCCESST=NSUCCESST+NSUCCESS
+      NFAILT=NFAILT+NFAIL
+      NSUCCESS=0
+      NFAIL=0 
 !
       RETURN
       ! }}}
       END SUBROUTINE
 
-      SUBROUTINE MYRESET(JP,NATOMS,NPAR,NSEED)
+      SUBROUTINE MYRESET(NATOMS,NSEED)
       ! {{{
       IMPLICIT NONE
 
-      INTEGER JP, NSEED, J2, NATOMS, NPAR
+      INTEGER NSEED, J2, NATOMS
 
       DO J2=1,3*(NATOMS-NSEED)
-         COORDS(J2,JP)=COORDSO(J2,JP)
+         COORDS(J2)=COORDSO(J2)
       ENDDO
       DO J2=1,NATOMS
-         VAT(J2,JP)=VATO(J2,JP)
+         VAT(J2)=VATO(J2)
       ENDDO
 
       RETURN

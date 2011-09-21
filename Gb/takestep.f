@@ -1,5 +1,5 @@
 
-      SUBROUTINE TAKESTEP(NP)
+      SUBROUTINE TAKESTEP
 
       USE COMMONS
 
@@ -10,7 +10,7 @@
 
       DOUBLE PRECISION :: DUMMY
 
-      INTEGER J1, J2, JMAX, NP, J3, JMAX2
+      INTEGER J1, J2, JMAX, J3, JMAX2
       
 C  Calling CENTRE if NORESET is .TRUE. can lead to problems with COORDSO containing an atom
 C  outside the permitted radius. Then it may be impossible to take a step that keeps all the
@@ -21,14 +21,14 @@ C  atoms inside.
 ! these entries are changed by SYMMETRIZE or NEWRESET.
 !
 !     IF (.NOT.AMBERT) THEN
-!        IF (ABS(COORDSO(1,NP)-COORDS(1,NP)).GT.1.0D-3) THEN
-!           WRITE(LFH,'(A,2G20.10)'),'takestep> WARNING - coordso will be changed: ',COORDSO(1,NP),COORDS(1,NP)
+!        IF (ABS(COORDSO(1)-COORDS(1)).GT.1.0D-3) THEN
+!           WRITE(LFH,'(A,2G20.10)'),'takestep> WARNING - coordso will be changed: ',COORDSO(1),COORDS(1)
 !        ENDIF
 !        DO J1=1,3*(NATOMS-NSEED)
-!           COORDSO(J1,NP)=COORDS(J1,NP)
+!           COORDSO(J1)=COORDS(J1)
 !        ENDDO
 !        DO J1=1,NATOMS
-!           VATO(J1,NP)=VAT(J1,NP)
+!           VATO(J1)=VAT(J1)
 !        ENDDO
 !     ENDIF
 ! }}}
@@ -37,9 +37,9 @@ C	csw34> FIND CENTRE OF COORDINATES (should be made a function!)
 
       XMASS=0.0D0; YMASS=0.0D0; ZMASS=0.0D0
       DO J1=1,NATOMS
-         XMASS=XMASS+COORDS(3*(J1-1)+1,NP)
-         YMASS=YMASS+COORDS(3*(J1-1)+2,NP)
-         ZMASS=ZMASS+COORDS(3*(J1-1)+3,NP)
+         XMASS=XMASS+COORDS(3*(J1-1)+1)
+         YMASS=YMASS+COORDS(3*(J1-1)+2)
+         ZMASS=ZMASS+COORDS(3*(J1-1)+3)
       ENDDO
       XMASS=XMASS/NATOMS; YMASS=YMASS/NATOMS; ZMASS=ZMASS/NATOMS
 
@@ -55,18 +55,18 @@ C  DMAX (or CMMAX from CM of the cluster).
       CMMAX=-1.0D0
       DO J1=1,NATOMS
          J2=3*J1
-         DIST(J1)= DSQRT( COORDS(J2-2,NP)**2+        COORDS(J2-1,NP)**2+        COORDS(J2,NP)**2)
-         CMDIST(J1)=SQRT((COORDS(J2-2,NP)-XMASS)**2+(COORDS(J2-1,NP)-YMASS)**2+(COORDS(J2,NP)-ZMASS)**2)
-         IF ((CMDIST(J1).GT.CMMAX).AND.(J1.LE.NATOMS-NCORE(NP))) CMMAX=CMDIST(J1)
+         DIST(J1)= DSQRT( COORDS(J2-2)**2+        COORDS(J2-1)**2+        COORDS(J2)**2)
+         CMDIST(J1)=SQRT((COORDS(J2-2)-XMASS)**2+(COORDS(J2-1)-YMASS)**2+(COORDS(J2)-ZMASS)**2)
+         IF ((CMDIST(J1).GT.CMMAX).AND.(J1.LE.NATOMS-NCORE)) CMMAX=CMDIST(J1)
          IF (DIST(J1).GT.DMAX) DMAX=DIST(J1)
-            IF (VAT(J1,NP).GT.VMAX) THEN
-               VMAX=VAT(J1,NP)
+            IF (VAT(J1).GT.VMAX) THEN
+               VMAX=VAT(J1)
                JMAX=J1
-            ELSE IF ((VAT(J1,NP).LT.VMAX).AND.(VAT(J1,NP).GT.VMAX2)) THEN
-               VMAX2=VAT(J1,NP)
+            ELSE IF ((VAT(J1).LT.VMAX).AND.(VAT(J1).GT.VMAX2)) THEN
+               VMAX2=VAT(J1)
                JMAX2=J1
             ENDIF
-         IF (VAT(J1,NP).LT.VMIN) VMIN=VAT(J1,NP)
+         IF (VAT(J1).LT.VMIN) VMIN=VAT(J1)
       ENDDO
   
 
@@ -75,7 +75,7 @@ C	the z-coordinate of that atom. The y coordinate is then J2-1 and x is J2-2.
 
       DO J1=1,NATOMS-NSEED
 10       J2=3*J1
-         LOCALSTEP=STEP(NP)
+         LOCALSTEP=STEP
 
 C  Tried changing to scale steps according to distance from CM. Maximum
 C  allowed shift is linear with this distance. Worse.
@@ -85,27 +85,27 @@ C  Now try moving atoms according to how strongly bound they are.
            IF ((VMIN-VMAX.EQ.0.0D0).OR.(EFAC.EQ.0.0D0)) THEN
 C	csw34> MAKE BASIC RANDOM CARTESIAN DISPLACEMENT MOVE
                  RANDOM=(DPRAND()-0.5D0)*2.0D0
-                 COORDS(J2-2,NP)=COORDS(J2-2,NP)+LOCALSTEP*RANDOM
+                 COORDS(J2-2)=COORDS(J2-2)+LOCALSTEP*RANDOM
                  RANDOM=(DPRAND()-0.5D0)*2.0D0
-                 COORDS(J2-1,NP)=COORDS(J2-1,NP)+LOCALSTEP*RANDOM
+                 COORDS(J2-1)=COORDS(J2-1)+LOCALSTEP*RANDOM
                  RANDOM=(DPRAND()-0.5D0)*2.0D0
-                 COORDS(J2,NP)=COORDS(J2,NP)+LOCALSTEP*RANDOM
+                 COORDS(J2)=COORDS(J2)+LOCALSTEP*RANDOM
            ELSE 
               RANDOM=(DPRAND()-0.5D0)*2.0D0
-              DUMMY=2.0D0+EAMP*TANH(-2.0D0*EFAC*(VAT(J1,NP)-(VMAX+VMIN)/2.0D0)/(VMAX-VMIN))
-              COORDS(J2-2,NP)=COORDS(J2-2,NP)+LOCALSTEP*RANDOM*DUMMY
+              DUMMY=2.0D0+EAMP*TANH(-2.0D0*EFAC*(VAT(J1)-(VMAX+VMIN)/2.0D0)/(VMAX-VMIN))
+              COORDS(J2-2)=COORDS(J2-2)+LOCALSTEP*RANDOM*DUMMY
               RANDOM=(DPRAND()-0.5D0)*2.0D0
-              COORDS(J2-1,NP)=COORDS(J2-1,NP)+LOCALSTEP*RANDOM*DUMMY
+              COORDS(J2-1)=COORDS(J2-1)+LOCALSTEP*RANDOM*DUMMY
               RANDOM=(DPRAND()-0.5D0)*2.0D0
-              COORDS(J2,NP)=COORDS(J2,NP)+LOCALSTEP*RANDOM*DUMMY
+              COORDS(J2)=COORDS(J2)+LOCALSTEP*RANDOM*DUMMY
            ENDIF
                
       ENDDO
 
 C  Preserve centre of mass if required.
 
-      IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS,NP))
-      IF (FIXCOM.AND.(.NOT.SEEDT)) CALL CENTRECOM(COORDS(:3*NATOMS,NP))
+      IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS))
+      IF (FIXCOM.AND.(.NOT.SEEDT)) CALL CENTRECOM(COORDS(:3*NATOMS))
        
       RETURN
       END

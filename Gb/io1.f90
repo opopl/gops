@@ -21,7 +21,7 @@
             DO JP=1,NPAR
                DO J1=1,NATOMS
                   J2=3*(J1-1)
-                   READ(7,*) COORDS(J2+1,JP), COORDS(J2+2,JP), COORDS(J2+3,JP)
+                   READ(7,*) COORDS(J2+1), COORDS(J2+2), COORDS(J2+3)
                ENDDO
             ENDDO
          CLOSE(7)
@@ -30,7 +30,7 @@
          WRITE(LFH,20) 
 20       FORMAT('Initial coordinates:')
            DO JP=1,NPAR
-               WRITE(LFH,30) (COORDS(J1,JP),J1=1,3*NATOMS)
+               WRITE(LFH,30) (COORDS(J1),J1=1,3*NATOMS)
 30             FORMAT(3F20.10)
             ENDDO
       ENDIF
@@ -60,38 +60,38 @@
 
       ! check FIXBOTH STEPOUT FIXSTEP FIXTEMP {{{
       DO JP=1,NPAR
-            IF (FIXBOTH(JP)) THEN
+            IF (FIXBOTH) THEN
                WRITE(LFH,'(A,I3,A,F12.4,A,2F12.4,A)') 'In run ',JP,&
-                & ' temperature=',TEMP(JP),&
-                & ' step size and angular threshold=', STEP(JP),ASTEP(JP),&
+                & ' temperature=',TEMP,&
+                & ' step size and angular threshold=', STEP,ASTEP,&
                 ' all fixed'
-            ELSE IF (FIXSTEP(JP)) THEN
+            ELSE IF (FIXSTEP) THEN
                WRITE(LFH,'(A,I3,A,2F12.4)') 'In run ',JP,&
                 & ' step size and angular threshold fixed at ',&
-                & STEP(JP),ASTEP(JP)
-               IF (.NOT.FIXTEMP(JP)) THEN
+                & STEP,ASTEP
+               IF (.NOT.FIXTEMP) THEN
                   WRITE(LFH,'(A,F12.4,A,F12.4)') 'Temperature will be &
                     adjusted for acceptance ratio ',& 
-                    ACCRAT(JP),' initial value=',TEMP(JP)
+                    ACCRAT,' initial value=',TEMP
                ELSE
-                  WRITE(LFH,'(A,I1,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
+                  WRITE(LFH,'(A,I1,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP
                ENDIF
             ELSE IF (STEPOUT) THEN
                WRITE(LFH,'(A,I3,A,2F12.4,A,2F12.4)') 'In run ',& 
                     & JP,' step size and angular &
                     threshold will be adjusted to &
                     escape from basins. Initial values=',&
-                   STEP(JP),ASTEP(JP)
-               IF (.NOT.FIXTEMP(JP)) THEN
+                   STEP,ASTEP
+               IF (.NOT.FIXTEMP) THEN
                   WRITE(LFH,'(A,F12.4,A,F12.4)') & 
-     &                    'Temperature will be adjusted for acceptance ratio ',ACCRAT(JP),' initial value=',TEMP(JP)
+     &                    'Temperature will be adjusted for acceptance ratio ',ACCRAT,' initial value=',TEMP
                ELSE
-                  WRITE(LFH,'(A,I1,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
+                  WRITE(LFH,'(A,I1,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP
                ENDIF
             ELSE 
-               WRITE(LFH,'(A,I3,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
+               WRITE(LFH,'(A,I3,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP
                WRITE(LFH,'(A,F12.4,A,2F12.4)') 'Step size and angular threshold will be adjusted for acceptance ratio ',&
-     &                ACCRAT(JP),' initial values=',STEP(JP),ASTEP(JP)
+     &                ACCRAT,' initial values=',STEP,ASTEP
             ENDIF
         ENDDO 
         ! }}}
@@ -154,24 +154,24 @@
 !  Number of steps done. NQTOT/NPAR should be close enough!
 !  The current lowest minima. QMIN has the energies, QMINP has the points.
 !  The current values of the temperature, acceptance ratio and step length,
-!  TEMP(JP), ACCRAT(JP), STEP(JP), ASTEP(JP) and OSTEP(JP)
+!  TEMP, ACCRAT, STEP, ASTEP and OSTEP
 !  which can get changed dynamically.
 
       INQUIRE(FILE='ssdump',EXIST=YESNO)
       IF (YESNO) THEN
          OPEN(UNIT=88,FILE='ssdump',STATUS='UNKNOWN')
          WRITE(LFH,'(A)') 'reading dump information from file ssdump'
-         READ(88,'(3G20.10)') ((COORDS(J1,J2),J1=1,3*NATOMS),J2=1,NPAR)
+         READ(88,'(3G20.10)') (COORDS(J1),J1=1,3*NATOMS)
          READ(88,'(2I6)') NQTOT, NPCALL
          MCSTEPS(1)=MAX(MCSTEPS(1)-NQTOT*NPAR,1)
          NQTOT=NQTOT*NPAR
          READ(88,'(G20.10)') (QMIN(J1),J1=1,NSAVE)
          READ(88,'(3G20.10)') ((QMINP(J2,J1),J1=1,3*NATOMS),J2=1,NSAVE)
-         READ(88,'(G20.10)') (TEMP(J1),J1=1,NPAR)
-         READ(88,'(G20.10)') (ACCRAT(J1),J1=1,NPAR)
-         READ(88,'(G20.10)') (STEP(J1),J1=1,NPAR)
-         READ(88,'(G20.10)') (ASTEP(J1),J1=1,NPAR)
-         READ(88,'(G20.10)') (OSTEP(J1),J1=1,NPAR)
+         READ(88,'(G20.10)') TEMP
+         READ(88,'(G20.10)') ACCRAT 
+         READ(88,'(G20.10)') STEP
+         READ(88,'(G20.10)') ASTEP
+         READ(88,'(G20.10)') OSTEP
          CLOSE(88)
          YESNO=.FALSE.
       ENDIF

@@ -42,15 +42,15 @@ C
       IF (BRUN.EQ.1) THEN
          WRITE(LFH,'(A)' ) 'dumping restart file ssdump'
          OPEN(UNIT=88,FILE='ssdump',STATUS='UNKNOWN')
-         WRITE(88,'(3G20.10)') ((COORDS(J1,J2),J1=1,3*NATOMS),J2=1,NPAR)
+         WRITE(88,'(3G20.10)') (COORDS(J1),J1=1,3*NATOMS)
          WRITE(88,'(I6)') NQTOT/NPAR, NPCALL
          WRITE(88,'(G20.10)') (QMIN(J1),J1=1,NSAVE)
          WRITE(88,'(3G20.10)') ((QMINP(J2,J1),J1=1,3*NATOMS),J2=1,NSAVE)
-         WRITE(88,'(G20.10)') (TEMP(J1),J1=1,NPAR)
-         WRITE(88,'(G20.10)') (ACCRAT(J1),J1=1,NPAR)
-         WRITE(88,'(G20.10)') (STEP(J1),J1=1,NPAR)
-         WRITE(88,'(G20.10)') (ASTEP(J1),J1=1,NPAR)
-         WRITE(88,'(G20.10)') (OSTEP(J1),J1=1,NPAR)
+         WRITE(88,'(G20.10)') TEMP
+         WRITE(88,'(G20.10)') ACCRAT
+         WRITE(88,'(G20.10)') STEP
+         WRITE(88,'(G20.10)') ASTEP
+         WRITE(88,'(G20.10)') OSTEP
          CALL SYSTEM('rm ssave')
          STOP
       ENDIF

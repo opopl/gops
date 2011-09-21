@@ -33,11 +33,7 @@ MODULE OUTPUT
          END IF
          
          ! Write coords
-         IF (PRESENT(RUN_NUMBER)) THEN
-            WRITE(FILE_UNIT, FORMAT_SPEC) COORDS(:, RUN_NUMBER)
-         ELSE
-            WRITE(FILE_UNIT, FORMAT_SPEC) COORDS(:, 1)
-         END IF
+          WRITE(FILE_UNIT, FORMAT_SPEC) COORDS(:)
          
       END SUBROUTINE WRITE_COORDS
       
@@ -69,11 +65,7 @@ MODULE OUTPUT
          END IF
          
          ! Write coordso
-         IF (PRESENT(RUN_NUMBER)) THEN
-            WRITE(FILE_UNIT, FORMAT_SPEC) COORDSO(:, RUN_NUMBER)
-         ELSE
-            WRITE(FILE_UNIT, FORMAT_SPEC) COORDSO(:, 1)
-         END IF
+         WRITE(FILE_UNIT, FORMAT_SPEC) COORDSO(:)
          
       END SUBROUTINE WRITE_MARKOV_COORDS
       

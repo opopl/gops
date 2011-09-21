@@ -62,9 +62,9 @@
       ALLOCATE(QMINP(NSAVE,3*NATOMS))
 
       QMINP(1:NSAVE,1:3*NATOMS)=0.0D0 ! to prevent reading from uninitialised memory
-      COORDSO(1:3*NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
+      COORDSO(1:3*NATOMS)=0.0D0 ! to prevent reading from uninitialised memory
       FF(1:NSAVE)=0 ! to prevent reading from uninitialised memorY
-      VATO(1:NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
+      VATO(1:NATOMS)=0.0D0 ! to prevent reading from uninitialised memory
 
 !op226> DUMPT {{{ 
 !      IF (DUMPT) THEN
@@ -134,9 +134,7 @@
       !ENDIF
 !op226>}}} 
 
-      DO JP=1,NPAR
-         NQ(JP)=1
-      ENDDO
+         NQ=1
       DO J1=1,NSAVE
          QMIN(J1)=1.0D10
       ENDDO

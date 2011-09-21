@@ -157,10 +157,10 @@ ENDIF
    READ(MYUNIT2,*) DUMMYS
 ! Read in last minimum, which is also the last minimum in the Markov chain.
    READ(MYUNIT2,*) DUMMYS
-   READ(MYUNIT2,*) COORDS(1:3*NATOMS,JP)
+   READ(MYUNIT2,*) COORDS(1:3*NATOMS)
    IF ((.NOT.SEEDT)) THEN
       WRITE(LFH,'(A,I4)') 'Initial coordinates: process',JP
-      WRITE(LFH,'(3F20.10)') (COORDS(J1,JP),J1=1,3*NATOMS)
+      WRITE(LFH,'(3F20.10)') (COORDS(J1),J1=1,3*NATOMS)
    ENDIF
 ! step and temperature information
    READ(MYUNIT2,*) DUMMYS

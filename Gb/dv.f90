@@ -13,7 +13,7 @@ write(file,10) "==========================================="
 write(file,10)
 write(file,10) "Gb - "
 write(file,10) 
-write(file,10) "Compilation time: Wed Sep 21 14:43:53 BST 2011"
+write(file,10) "Compilation time: Wed Sep 21 15:18:21 BST 2011"
 write(file,10) "Compiled by op226@serenity on GNU/Linux x86_64"
 write(file,10)
 write(file,10) "Compiler executable:  gfortran"
