@@ -1,16 +1,74 @@
-      MODULE FUNC 
+      MODULE MCFUNC
 
-      USE V 
+      USE COMMONS 
       USE QMODULE
 
       IMPLICIT NONE
 
-      contains
+      CONTAINS
+
+      FUNCTION PAIRDISTANCE(ATOM1,ATOM2)
+		IMPLICIT NONE
+		! PAIRDISTANCE is defined as it is the function name and hence the returned
+		! value
+		DOUBLE PRECISION :: PAIRDISTANCE
+		DOUBLE PRECISION, INTENT(IN) :: ATOM1(3),ATOM2(3)
+		
+		PAIRDISTANCE=DSQRT((ATOM1(1)-ATOM2(1))**2+(ATOM1(2)-ATOM2(2))**2+(ATOM1(3)-ATOM2(3))**2)
+		RETURN
+    	END FUNCTION PAIRDISTANCE
+
+     ! REST {{{
+      SUBROUTINE REST(ITERATIONS,TIME,J1,RCOORDS,RMIN,RVAT,JACCPREV)
+        ! dec {{{
+      USE COMMONS
+
+      IMPLICIT NONE
+
+      INTEGER ITERATIONS, J2, JACCPREV, J1, NQTOT, BRUN, QDONE
+      DOUBLE PRECISION TIME, POTEL, RCOORDS(3*NATOMS), RMIN, RVAT(NATOMS), SCREENC(3*NATOMS)
+      COMMON /MYPOT/ POTEL
+      COMMON /TOT/ NQTOT
+      ! }}}
+      ! body {{{
+
+!10    CALL HSMOVE(COORDS(1:3*NATOMS,1:NPAR),1,NHSRESTART)
+!  next line should be uncommented if routine is made availabe to use with CHARMM
+      CALL QUENCH(.FALSE.,1,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
+!
+!  Bad idea to accept this quench configuration unconditionally - it could be unconvergeable.
+!
+      IF (POTEL-EPREV(1).GT.10.0D0*ABS(EPREV(1))) THEN
+         DO J2=1,3*NATOMS
+            COORDS(J2,1)=COORDSO(J2,1)
+         ENDDO
+         !GOTO 10
+      ENDIF
+      JACCPREV=J1
+      NQTOT=NQTOT+1
+      WRITE(MYUNIT,'(A,I6,A)') ' Restarting using ',NHSRESTART,' hard sphere moves'
+      WRITE(MYUNIT,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'Restart Qu ',NQ(1),' E=',&
+     &              POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME-TSTART
+      DO J2=1,3*NATOMS
+         COORDSO(J2,1)=COORDS(J2,1)
+         RCOORDS(J2)=COORDS(J2,1)
+      ENDDO
+      DO J2=1,NATOMS
+         VATO(J2,1)=VAT(J2,1)
+         RVAT(J2)=VAT(J2,1)
+      ENDDO
+      EPREV(1)=POTEL
+      RMIN=POTEL
+
+      RETURN
+      ! }}}
+      END SUBROUTINE
+     !     }}}
 
       SUBROUTINE MC(NSTEPS,SCALEFAC,SCREENC)
 !OP226> DECLARATIONS {{{ 
 
-      USE V
+      USE COMMONS
       USE QMODULE , ONLY : QMIN, QMINP, INTEQMIN
       USE PORFUNCS
 
@@ -43,7 +101,6 @@
       DOUBLE PRECISION :: OPOTEL  
 !  CSW34> PAIRDIST VARIABLES
       INTEGER :: PAIRCOUNTER
-      DOUBLE PRECISION, EXTERNAL :: PAIRDISTANCE
       DOUBLE PRECISION :: ATOM1(3),ATOM2(3)
 
       LOGICAL EVAP, ATEST, STAY, EVAPREJECT, LOPEN
@@ -360,7 +417,7 @@
 
       SUBROUTINE ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
       ! declarations {{{
-      USE V
+      USE COMMONS
 
       IMPLICIT NONE
 

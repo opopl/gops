@@ -33,7 +33,11 @@ header.f90: $(HEADER)
 #}}}
 
 #deps tg prog bindir cup {{{
- 
+
+deps: rmdep $(DEPS)
+rmdep:
+	rm $(DEPS)
+
 $(DEPS): $(MKDEP)
 	$(MKDEP) $@
 

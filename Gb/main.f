@@ -2,7 +2,8 @@
       PROGRAM GMIN
 
       USE NOA
-      USE V
+      USE COMMONS
+      USE MCFUNC
       USE QMODULE
       USE PORFUNCS
 
@@ -56,7 +57,7 @@
          STOP
       ENDIF
 
-      CALL KEYWORD
+      !CALL KEYWORD
 
       INQUIRE(UNIT=1,OPENED=LOPEN)
 

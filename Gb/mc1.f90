@@ -1,7 +1,7 @@
 !      ! JUMPM {{{
       !SUBROUTINE JUMPM(RANNJ,J1,JP,EPPREV)
       !! {{{
-      !USE V
+      !USE COMMONS
 
       !IMPLICIT NONE
 
@@ -75,56 +75,10 @@
       !! }}}
       !END
       !! }}}
-!!      ! REST {{{
-      !!SUBROUTINE REST(ITERATIONS,TIME,J1,RCOORDS,RMIN,RVAT,JACCPREV)
-        !!! dec {{{
-      !!USE V
-
-      !!IMPLICIT NONE
-
-      !!INTEGER ITERATIONS, J2, JACCPREV, J1, NQTOT, BRUN, QDONE
-      !!DOUBLE PRECISION TIME, POTEL, RCOORDS(3*NATOMS), RMIN, RVAT(NATOMS), SCREENC(3*NATOMS)
-      !!COMMON /MYPOT/ POTEL
-      !!COMMON /TOT/ NQTOT
-      !!! }}}
-      !!! body {{{
-
-!!10    CALL HSMOVE(COORDS(1:3*NATOMS,1:NPAR),1,NHSRESTART)
-!!!  next line should be uncommented if routine is made availabe to use with CHARMM
-      !!CALL QUENCH(.FALSE.,1,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
-!!!
-!!!  Bad idea to accept this quench configuration unconditionally - it could be unconvergeable.
-!!!
-      !!IF (POTEL-EPREV(1).GT.10.0D0*ABS(EPREV(1))) THEN
-         !!DO J2=1,3*NATOMS
-            !!COORDS(J2,1)=COORDSO(J2,1)
-         !!ENDDO
-         !!GOTO 10
-      !!ENDIF
-      !!JACCPREV=J1
-      !!NQTOT=NQTOT+1
-      !!WRITE(MYUNIT,'(A,I6,A)') ' Restarting using ',NHSRESTART,' hard sphere moves'
-      !!WRITE(MYUNIT,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'Restart Qu ',NQ(1),' E=',
-     !!1              POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME-TSTART
-      !!DO J2=1,3*NATOMS
-         !!COORDSO(J2,1)=COORDS(J2,1)
-         !!RCOORDS(J2)=COORDS(J2,1)
-      !!ENDDO
-      !!DO J2=1,NATOMS
-         !!VATO(J2,1)=VAT(J2,1)
-         !!RVAT(J2)=VAT(J2,1)
-      !!ENDDO
-      !!EPREV(1)=POTEL
-      !!RMIN=POTEL
-
-      !!RETURN
-      !!! }}}
-      !!END
-      !! }}}
       !! REN {{{
       !SUBROUTINE REN(J1,RMIN,RCOORDS,RVAT,NREN,RMINO,RCOORDSO,RVATO,ITERATIONS,TIME,NLAST,JACCPREV,NSTEPREN)
 
-      !USE V
+      !USE COMMONS
 
       !IMPLICIT NONE
 
@@ -261,7 +215,7 @@
      !1                  RMIN,RVAT,BRUN,SCREENC,QDONE,JACCPREV,NSUCCESS,NFAIL,NFAILT,NSUCCESST)
       !! {{{
 
-      !USE V
+      !USE COMMONS
       
       !IMPLICIT NONE
       !INTEGER J1, JP, JBEST(NPAR), ITERATIONS, J2, JACCPREV, BRUN, QDONE, J3, PERM(NATOMS), NPERM, NTRIES

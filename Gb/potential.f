@@ -2,7 +2,7 @@
       SUBROUTINE POTENTIAL(X,GRAD,EREAL,GRADT,SECT)
 !op226> Declarations {{{ 
 
-      USE V
+      USE COMMONS
       USE QMODULE
       USE PORFUNCS
 

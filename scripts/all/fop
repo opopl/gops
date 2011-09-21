@@ -141,9 +141,9 @@ for f in ${files[@]}; do
 	#cp $bdir/$f $fdir
 done
 # copy make files
-for f in ${mkfiles[@]}; do
-	cp $bdir/$f $fdir/
-done
+#for f in ${mkfiles[@]}; do
+	#cp $bdir/$f $fdir/
+#done
 
 #rcaf=rca.$ffork.i.sh
 #cp $shd/rca.$base.i.sh $shd/$rcaf

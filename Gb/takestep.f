@@ -1,7 +1,7 @@
 
       SUBROUTINE TAKESTEP(NP)
 
-      USE V
+      USE COMMONS
 
       IMPLICIT NONE
 
