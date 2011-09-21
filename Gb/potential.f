@@ -40,7 +40,7 @@ C
       ! ssdump {{{
 
       IF (BRUN.EQ.1) THEN
-         WRITE(MYUNIT,'(A)' ) 'dumping restart file ssdump'
+         WRITE(LFH,'(A)' ) 'dumping restart file ssdump'
          OPEN(UNIT=88,FILE='ssdump',STATUS='UNKNOWN')
          WRITE(88,'(3G20.10)') ((COORDS(J1,J2),J1=1,3*NATOMS),J2=1,NPAR)
          WRITE(88,'(I6)') NQTOT/NPAR, NPCALL

@@ -1,9 +1,10 @@
 
       PROGRAM GMIN
 
-      USE NOA
+      USE KW
       USE COMMONS
       USE MCFUNC
+      USE FUNC
       USE QMODULE
       USE PORFUNCS
 
@@ -27,29 +28,21 @@
       ! }}}
 
       CALL CPU_TIME(TSTART)
+
+      CALL INITVARS
       CALL RCA
 
-      NPAR=1
       MYNODE=0
-      MYUNIT=22979+1
-      !MDCRD_UNIT=20000
-      !MDINFO_UNIT=21000
-      MYFILENAME="GMIN_out"
-      OPEN(MYUNIT,FILE=MYFILENAME, STATUS="unknown", form="formatted")
-      WRITE(MYUNIT, '(A,I10,A,I10,A)') "Starting serial execution"
+      OPEN(LFH,FILE=LF_FILE, STATUS="unknown", form="formatted")
+      WRITE(LFH, '(A,I10,A,I10,A)') "Starting serial execution"
 
 !op226> Allocate memory; open files; initialize different things  {{{ 
 
-      CALL COUNTATOMS(MYUNIT)
-      CALL MODCOMMONINIT
+      CALL COUNTATOMS
+      CALL AM
+      CALL INITAMVARS
  
       ALLOCATE(SCREENC(3*NATOMS))
-
-      !ALLOCATE(FIN(3*NATOMS))
-      !ALLOCATE(XICOM(3*NATOMS),PCOM(3*NATOMS))
-      !ALLOCATE(IATNUM(NATOMS), VT(NATOMS), ZSYM(NATOMS))
-      !VT(1:NATOMS)=0.0D0 ! TO PREVENT READING FROM UNINITIALISED MEMORY
-
       INQUIRE(UNIT=1,OPENED=LOPEN)
 
       IF (LOPEN) THEN
@@ -57,7 +50,7 @@
          STOP
       ENDIF
 
-      !CALL KEYWORD
+      CALL KEYWORD(1)
 
       INQUIRE(UNIT=1,OPENED=LOPEN)
 
@@ -73,9 +66,6 @@
       COORDSO(1:3*NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
       FF(1:NSAVE)=0 ! to prevent reading from uninitialised memorY
       VATO(1:NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
-
-      !ALLOCATE(ESAVE(NTAB,NPAR),XINSAVE(NTAB,NPAR))
-      !ALLOCATE(VEC(NVEC))
 
 !op226> DUMPT {{{ 
 !      IF (DUMPT) THEN
@@ -103,7 +93,7 @@
             WRITE(ATOMPAIR,*) TRIM(ADJUSTL(ATOM1))//"-"//TRIM(ADJUSTL(ATOM2))
             WRITE(MYPUNIT,'(A10)',ADVANCE="NO") TRIM(ADJUSTL(ATOMPAIR))//"  " 
          ENDDO
-         WRITE(MYUNIT,'(A)') ""
+         WRITE(LFH,'(A)') ""
       ENDIF
       ! }}}
 
@@ -120,7 +110,6 @@
          MYBUNIT=10000+MYNODE
             OPEN(MYEUNIT,FILE='energy',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
             OPEN(MYMUNIT,FILE='markov',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            !IF (RMST) OPEN(MYRUNIT,FILE='rmsd',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
             OPEN(MYBUNIT,FILE='best',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
       ENDIF
 !op226>}}} 
@@ -146,8 +135,6 @@
       !ENDIF
 !op226>}}} 
 
-      !IF (SUPERSTEP) NSUPERSTEP=0
-      
       DO JP=1,NPAR
          NQ(JP)=1
       ENDDO
@@ -159,13 +146,11 @@
       CALL MCRUNS(SCREENC)
 
 !op226> Deallocate memory; close files {{{ 
-!      IF (ALLOCATED(FIN)) DEALLOCATE(FIN)
       !IF (ALLOCATED(XICOM)) DEALLOCATE(XICOM)
       !IF (ALLOCATED(PCOM)) DEALLOCATE(PCOM)
-      CALL MODCOMMONDEINIT
-      CALL FLUSH(MYUNIT)
+      CALL FLUSH(LFH)
 
-      CLOSE(MYUNIT)
+      CLOSE(LFH)
 ! csw34> close pairdists.* files
       IF (PAIRDISTT) CLOSE(MYPUNIT)
 !op226> closing files for: TRACKDATAT RMST A9INTET {{{ 

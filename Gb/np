@@ -1,0 +1,40 @@
+#!/usr/bin/perl -w
+
+eval 'exec /usr/bin/perl -S $0 ${1+"$@"}'
+if 0; #$running_under_some_shell
+use strict;
+use File::Find ();
+
+my @ffiles;
+my @npar_vars=qw( MCSTEPS FIXSTEP FIXTEMP FIXBOTH TEMP ACCRAT STEP ASTEP OSTEP BLOCK NT
+JUMPMOVE JUMPINT JDUMP SHELLMOVES PTGROUP NSURFMOVES NCORE );
+
+# Set the variable $File::Find::dont_use_nlink if you're using AFS,
+# since AFS cheats.
+
+# for the convenience of &wanted calls, including -eval statements:
+use vars qw/*name *dir *prune/;
+*name   = *File::Find::name;
+*dir    = *File::Find::dir;
+*prune  = *File::Find::prune;
+
+sub wanted;
+
+# Traverse desired filesystems
+#File::Find::find({wanted => \&wanted}, '.');
+
+sub wanted {
+    /^.*\.(f|f90)\z/s
+    && push(@ffiles,"$name\n");
+}
+
+open(S,"source.in"); 
+while(<S>){ chomp; s/\s+//g; push(@ffiles,$_);}
+close S;
+
+foreach my $f(@ffiles){
+	open(F,$f) || warn $! ;
+	
+	close(F);
+}
+

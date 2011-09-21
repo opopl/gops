@@ -28,7 +28,7 @@
             ENDDO
             NQ(1)=NQ(1)+1
             CALL QUENCH(.TRUE.,1,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
-            WRITE(MYUNIT,'(A,I6,A,F20.10,A,I5,A,F15.7,A,F12.2)') 'Final Quench ',NQ(1),' energy=',
+            WRITE(LFH,'(A,I6,A,F20.10,A,I5,A,F15.7,A,F12.2)') 'Final Quench ',NQ(1),' energy=',
      1                POTEL,' steps=',ITERATIONS,' RMS force=',RMS,' time=',TIME-TSTART
 
             QMIN(J1)=POTEL

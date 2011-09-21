@@ -11,7 +11,7 @@
          !UNT=70+JUMPTO(JP)
          !REWIND(UNT)           
          !NDUM=INT(DPRAND()*(NQ(JUMPTO(JP))-1))
-         !IF (DEBUG) WRITE(MYUNIT,'(A, G20.10)') 'Should be choosing buffer energy number ',NDUM
+         !IF (DEBUG) WRITE(LFH,'(A, G20.10)') 'Should be choosing buffer energy number ',NDUM
          !DO J2=1,NDUM
             !READ(UNT,*) EJ
          !ENDDO
@@ -23,7 +23,7 @@
 !!  Coordinates are only read if the jump is successful.
 !!
          !IF (DEXP((EPREV(JP)-EJ)*(1.0D0/TEMP(JP)-1.0D0/TEMP(JUMPTO(JP)))).GT.RANDOM) THEN
-            !WRITE(MYUNIT,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'Jump move from parallel run ',JP,
+            !WRITE(LFH,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'Jump move from parallel run ',JP,
      !1              ' energy ',EPREV(JP),' to run ',JUMPTO(JP),' energy ',EJ,' accepted before quench ',NQ(JP)
             !EPREV(JP)=EJ
             !UNT=70+NPAR+JUMPTO(JP)
@@ -45,14 +45,14 @@
                !COORDSO(J2,JP)=COORDS(J2,JP)
             !ENDDO
             !IF (DEBUG) THEN
-               !WRITE(MYUNIT,'(A)') 'Jump coordinates:'
-               !WRITE(MYUNIT,'(3F20.10)') (COORDS(J2,JP),J2=1,3*NATOMS)
+               !WRITE(LFH,'(A)') 'Jump coordinates:'
+               !WRITE(LFH,'(3F20.10)') (COORDS(J2,JP),J2=1,3*NATOMS)
             !ENDIF
             !DO J2=1,NATOMS*(NQ(JUMPTO(JP))-1)-NDUM*NATOMS
                !READ(UNT,*) DUMMY
             !ENDDO
          !ELSE
-            !WRITE(MYUNIT,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'Jump move from parallel run ',JP,
+            !WRITE(LFH,'(A,I2,A,F20.10,A,I2,A,F20.10,A,I6)') 'Jump move from parallel run ',JP,
      !              ' energy ',EPREV(JP),' to run ',JUMPTO(JP),' energy ',EJ,' rejected before quench ',NQ(JP)
          !ENDIF
 
@@ -107,7 +107,7 @@
             !RVAT(J2)=VAT(J2,1)
          !ENDDO
       !ENDIF
-      !IF (DEBUG) WRITE(MYUNIT,'(A,2G20.10)') 'RMIN,POTEL=',RMIN,POTEL
+      !IF (DEBUG) WRITE(LFH,'(A,2G20.10)') 'RMIN,POTEL=',RMIN,POTEL
 !!     PRINT*,'J1,JACCPREV+NRENSTUCK,NLAST+NREN=',J1,JACCPREV+NRENSTUCK,NLAST+NREN
       !IF ((J1.GE.JACCPREV+NRENSTUCK).OR.(J1.GE.NLAST+NREN)) THEN
          !JACCPREV=J1
@@ -119,7 +119,7 @@
 !!  Accept/reject for renormalised step
 !!
          !IF (METROPOLIS.AND.(.NOT.REJECT)) THEN
-            !IF (NSTEPREN.GT.0) WRITE(MYUNIT,'(A,G20.10,A,G20.10,A)') ' renorm step from ',RMINO,' to ',RMIN,' accepted'
+            !IF (NSTEPREN.GT.0) WRITE(LFH,'(A,G20.10,A,G20.10,A)') ' renorm step from ',RMINO,' to ',RMIN,' accepted'
             !NREN=MAX(NREN/1.1D0,NRENORM/2.0D0)
             !RMINO=RMIN
             !IF (.NOT.STAY) THEN
@@ -138,9 +138,9 @@
             !ENDIF
          !ELSE
             !IF (REJECT) THEN
-               !WRITE(MYUNIT,'(A,G20.10,A,G20.10,A)') ' renorm step from ',RMINO,' to ',RMIN,' rejected by taboo criterion'
+               !WRITE(LFH,'(A,G20.10,A,G20.10,A)') ' renorm step from ',RMINO,' to ',RMIN,' rejected by taboo criterion'
             !ELSE
-               !WRITE(MYUNIT,'(A,G20.10,A,G20.10,A)') ' renorm step from ',RMINO,' to ',RMIN,' rejected'
+               !WRITE(LFH,'(A,G20.10,A,G20.10,A)') ' renorm step from ',RMINO,' to ',RMIN,' rejected'
             !ENDIF
             !DO J2=1,3*NATOMS
                !COORDS(J2,1)=RCOORDSO(J2)
@@ -151,8 +151,8 @@
             !NREN=NREN*1.1D0
          !ENDIF
          !NSTEPREN=NSTEPREN+1
-         !IF (NSTEPREN.EQ.1) WRITE(MYUNIT,'(A,G20.10)') ' first renorm energy is ',RMIN
-         !WRITE(MYUNIT,'(A,I6)') ' renormalisation interval is now ',NREN
+         !IF (NSTEPREN.EQ.1) WRITE(LFH,'(A,G20.10)') ' first renorm energy is ',RMIN
+         !WRITE(LFH,'(A,I6)') ' renormalisation interval is now ',NREN
 !!
 !!  Longer renorm step
 !!
@@ -177,7 +177,7 @@
             !GOTO 10
          !ENDIF
          !NQTOT=NQTOT+1
-         !WRITE(MYUNIT,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'Renorm Qu ',NQ(1),' E=',
+         !WRITE(LFH,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'Renorm Qu ',NQ(1),' E=',
      !1        POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME-TSTART
          !DO J2=1,3*NATOMS
             !COORDSO(J2,1)=COORDS(J2,1)
@@ -197,7 +197,7 @@
       !! }}}
       !NEWRES {{{
 !!
-!!  Reseed if the energy has not improved by more than ECONV over the
+!!  Reseed if the energy has not improved by more than EDIFF over the
 !!  last NRELAX mc steps.
 !!  If AVOID is true then save the energy and coordinates of the lowest
 !!  minimum achieved before each restart and restart if we get too close
@@ -230,7 +230,7 @@
 
       !SR3=DSQRT(3.0D0)
       !IF (POTEL.LT.EBEST(JP)) THEN
-         !IF (EBEST(JP)-POTEL.GT.ECONV) JBEST(JP)=J1
+         !IF (EBEST(JP)-POTEL.GT.EDIFF) JBEST(JP)=J1
          !EBESTP=EBEST(JP)
          !BESTCOORDSP(1:3*NATOMS)=BESTCOORDS(1:3*NATOMS,JP) ! save previous BESTCOORDS for possible use
          !EBEST(JP)=POTEL ! reset ebest, but not necessarily jbest
@@ -247,7 +247,7 @@
 !!
       !RES1=.FALSE.
       !IF (J1-JBEST(JP).GT.NRELAX) RES1=.TRUE.
-!!     WRITE(MYUNIT,'(A,I5,2G17.7,3I5,L8)') 'J1,POTEL,EBEST,JBEST,J1-JBEST,NRELAX,RES1=',
+!!     WRITE(LFH,'(A,I5,2G17.7,3I5,L8)') 'J1,POTEL,EBEST,JBEST,J1-JBEST,NRELAX,RES1=',
 !!    1                                J1,POTEL,EBEST(JP),JBEST(JP),J1-JBEST(JP),NRELAX,RES1
       !RES2=.FALSE.
 !!     IF ((.NOT.RES1).AND.AVOID) THEN
@@ -260,14 +260,14 @@
 !!  but the coordinates in XMSB do. DISTANCE is the distance in this case.
 !!
 !! If the energy is lower no reseeding regardless of separation ? DJW
-!!           PRINT '(A,2G20.10,L8)','POTEL,MSBE(J2)-ECONV,POTEL.LT.MSBE(J2)-ECONV=',
-!!    1                              POTEL,MSBE(J2)-ECONV,POTEL.LT.MSBE(J2)-ECONV
-            !IF (POTEL.LT.MSBE(J2)-ECONV) CYCLE savedloop
+!!           PRINT '(A,2G20.10,L8)','POTEL,MSBE(J2)-EDIFF,POTEL.LT.MSBE(J2)-EDIFF=',
+!!    1                              POTEL,MSBE(J2)-EDIFF,POTEL.LT.MSBE(J2)-EDIFF
+            !IF (POTEL.LT.MSBE(J2)-EDIFF) CYCLE savedloop
             !XMSB(1:3*NATOMS)=MSBCOORDS(1:3*NATOMS,J2)
             !CALL MINPERMDIST(FCOORDS,XMSB,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,PERIODIC,TWOD,DISTANCE,DIST2,RIGID,RMAT)
             !IF (DISTANCE.LT.AVOIDDIST) THEN
                !RES2=.TRUE.
-               !WRITE(MYUNIT,'(A,G20.10,A,I6,A,G20.10,A,F10.3)') 'newres> Minimum energy ',POTEL,
+               !WRITE(LFH,'(A,G20.10,A,I6,A,G20.10,A,F10.3)') 'newres> Minimum energy ',POTEL,
      !&                                    ' is too close to saved structure ',
      !&                                 J2,' with energy ',MSBE(J2),' dist=',DISTANCE
                !GOTO 20
@@ -298,7 +298,7 @@
 
          !IF (RES2.AND.(.NOT.AVOIDRESEEDT)) THEN 
             !POTEL=MAX(1.0D10,10.0D0*POTEL) ! This should be enough to reject the step until we do a massive Thomson problem!
-            !WRITE(MYUNIT,'(A,I8,A)') 'newres> Resetting energy to a large value due to taboo condition'
+            !WRITE(LFH,'(A,I8,A)') 'newres> Resetting energy to a large value due to taboo condition'
             !RETURN
          !ELSEIF (RES1.OR.(RES2.AND.(DISTANCE.GT.0.1D0))) THEN ! new condition
             !NMSBSAVE=NMSBSAVE+1
@@ -311,7 +311,7 @@
 
             !MSBCOORDS(1:3*NATOMS,NPOSITION)=DUMMY(1:3*NATOMS)
 
-            !WRITE(MYUNIT,'(A,I6,A,G20.10)') 'newres> Moving current best minimum to position ',NPOSITION,
+            !WRITE(LFH,'(A,I6,A,G20.10)') 'newres> Moving current best minimum to position ',NPOSITION,
      !&                         ' in the AVOID list E=',EBEST(JP)
 !!           OPEN(UNIT=34,FILE='MSBdata',POSITION='APPEND')
 !!           WRITE(34,'(G20.10)') MSBE(NPOSITION) 
@@ -326,40 +326,40 @@
                !FCOORDS(1:3*NATOMS)=BESTCOORDSP(1:3*NATOMS)
                !CALL MYORIENT(FCOORDS,DUMMY,NORBIT1,1,NORBIT2,1,NATOMS,DEBUG,ROTA,ROTINVA,STOCKT)
                !MSBCOORDS(1:3*NATOMS,NPOSITION)=DUMMY(1:3*NATOMS)
-               !WRITE(MYUNIT,'(A,I6,A,G20.10)') 'newres> Moving previous best minimum to position ',NPOSITION,
+               !WRITE(LFH,'(A,I6,A,G20.10)') 'newres> Moving previous best minimum to position ',NPOSITION,
      !1                             ' in the AVOID list E=',EBESTP
 !!           ENDIF
          !ENDIF ! end new condition
 
          !IF (NEWRESTART_MD) THEN ! lb415
-            !IF (RES1) WRITE(MYUNIT,'(A,I8,A)') 'newres> Energy has not improved since step ',JBEST(JP),' - perturbing'
-            !WRITE(MYUNIT,'(A,I8,A)') 'newres> Reseeding via a short high temperature MD run'
+            !IF (RES1) WRITE(LFH,'(A,I8,A)') 'newres> Energy has not improved since step ',JBEST(JP),' - perturbing'
+            !WRITE(LFH,'(A,I8,A)') 'newres> Reseeding via a short high temperature MD run'
             !CHANGE_TEMP = .true.
 
 !! th368: 20-10-2009 Extending MD-Reseeding to the CHARMM interface
 !! terminate if neither AMBER nor CHARMM was requested in the data file
 
-               !WRITE(MYUNIT,'(A,I8,A)') 'newres> Molecular Dynamics reseeding is available for AMBER or CHARMM runs only.'
+               !WRITE(LFH,'(A,I8,A)') 'newres> Molecular Dynamics reseeding is available for AMBER or CHARMM runs only.'
                !STOP
 !! end th368: 20-10-2009
 
             !CHANGE_TEMP = .false.
          !ELSE
             !IF (NHSRESTART.GT.0) THEN
-               !IF (RES1) WRITE(MYUNIT,'(A,I8,A)') 'newres> Energy has not improved since step ',JBEST(JP),' - perturbing'
-               !IF (RES2) WRITE(MYUNIT,'(A,I8,A)') 'newres> Reseeding due to taboo condition'
-               !IF (SHELLMOVES(JP)) WRITE(MYUNIT,'(A)') 'newres> Turning off shell moves'
+               !IF (RES1) WRITE(LFH,'(A,I8,A)') 'newres> Energy has not improved since step ',JBEST(JP),' - perturbing'
+               !IF (RES2) WRITE(LFH,'(A,I8,A)') 'newres> Reseeding due to taboo condition'
+               !IF (SHELLMOVES(JP)) WRITE(LFH,'(A)') 'newres> Turning off shell moves'
                !SHELLMOVES(JP)=.FALSE.
                !CALL REST(ITERATIONS,TIME,J1,RCOORDS,RMIN,RVAT,JACCPREV)
             !ELSE
                !IF (RES1) THEN
                   !IF (AVOIDRESEEDT) THEN
-                     !WRITE(MYUNIT,'(A,I8,A)') 'newres> Energy has not improved since step ',JBEST(JP),' - reseeding'
+                     !WRITE(LFH,'(A,I8,A)') 'newres> Energy has not improved since step ',JBEST(JP),' - reseeding'
                   !ELSE
-                     !WRITE(MYUNIT,'(A,I8,A)') 'newres> Energy has not improved since step ',JBEST(JP)
+                     !WRITE(LFH,'(A,I8,A)') 'newres> Energy has not improved since step ',JBEST(JP)
                   !ENDIF
                !ENDIF
-               !IF (RES2) WRITE(MYUNIT,'(A,I8,A)') 'newres> Reseeding due to taboo condition'
+               !IF (RES2) WRITE(LFH,'(A,I8,A)') 'newres> Reseeding due to taboo condition'
                !HIGHEST=.TRUE.
                !DO J2=1,NPAR
                   !IF (J2.EQ.JP) CYCLE
@@ -369,16 +369,16 @@
                   !ENDIF
                !ENDDO
                !IF (HIGHEST) THEN
-                  !WRITE(MYUNIT,'(A,I6,A,F20.10)') 'newres> Parallel run ',JP,' has the highest energy ',EBEST(JP)
-                  !IF (NPAR.GT.1) WRITE(MYUNIT,'(6F20.10)') EBEST(1:NPAR)
+                  !WRITE(LFH,'(A,I6,A,F20.10)') 'newres> Parallel run ',JP,' has the highest energy ',EBEST(JP)
+                  !IF (NPAR.GT.1) WRITE(LFH,'(6F20.10)') EBEST(1:NPAR)
                   !IF (.NOT.AVOIDRESEEDT) THEN
-                     !WRITE(MYUNIT,'(A,I8,A)') 'newres> Resetting energy to a large value to reject this step (not reseeding)'
+                     !WRITE(LFH,'(A,I8,A)') 'newres> Resetting energy to a large value to reject this step (not reseeding)'
                      !JBEST(JP)=J1
                      !EBEST(JP)=POTEL ! this is communicated via common block MYPOT, which is in quench.f
                      !POTEL=MAX(1.0D10,10.0D0*POTEL) ! This should be enough to reject the step until we do a massive Thomson problem!
                      !RETURN
                   !ELSE
-                     !WRITE(MYUNIT,'(A)') 'newres> Full reseeding'
+                     !WRITE(LFH,'(A)') 'newres> Full reseeding'
                      !DO J2=1,3*NATOMS
                         !RANDOM=(DPRAND()-0.5D0)*2.0D0
                         !COORDS(J2,JP)=RANDOM*DSQRT(RADIUS)/SR3
@@ -391,14 +391,14 @@
 !!  Reseed everything if this is the lowest of a set of parallel runs, otherwise
 !!  just reseed the surface.
 !!         
-                  !WRITE(MYUNIT,'(A)') 'newres> Accepting an enforced surface reseeding'
+                  !WRITE(LFH,'(A)') 'newres> Accepting an enforced surface reseeding'
                   !DUMMY2=-1.0D0
                   !DO J2=NATOMS-NCORE(JP)+1, NATOMS
                      !DISTANCE=COORDS(3*(J2-1)+1,JP)**2+COORDS(3*(J2-1)+2,JP)**2+COORDS(3*(J2-1)+3,JP)**2
                      !IF (DISTANCE.GT.DUMMY2) DUMMY2=DISTANCE
                   !ENDDO
                   !DISTANCE=SQRT(DISTANCE)
-                  !WRITE(MYUNIT,'(A,F15.5)') 'newres> largest core radius=',DISTANCE
+                  !WRITE(LFH,'(A,F15.5)') 'newres> largest core radius=',DISTANCE
                   !DO J2=1,NATOMS-NCORE(JP)
                      !COORDS(3*(J2-1)+1,JP)=(DPRAND()-0.5D0)*2.0D0
                      !COORDS(3*(J2-1)+2,JP)=(DPRAND()-0.5D0)*2.0D0
@@ -419,8 +419,8 @@
 !!
 !!  next line should be uncommented if routine is made available to use with CHARMM
 !654      CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
-         !IF (RMS.GT.BQMAX) THEN
-            !WRITE(MYUNIT,'(A)') 'newres> Quench from reseeded geometry failed - try again'
+         !IF (RMS.GT.SQMAX) THEN
+            !WRITE(LFH,'(A)') 'newres> Quench from reseeded geometry failed - try again'
             !DO J2=1,3*NATOMS
                !RANDOM=(DPRAND()-0.5D0)*2.0D0
                !COORDS(J2,JP)=RANDOM*DSQRT(RADIUS)/SR3
@@ -441,7 +441,7 @@
 
          !IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS,JP))
          !COORDSO(1:3*(NATOMS-NSEED),JP)=COORDS(1:3*(NATOMS-NSEED),JP)
-!!        WRITE(MYUNIT,'(A,2G20.10)') 'newres> coordso changed: ',COORDSO(1,JP),COORDS(1,JP)
+!!        WRITE(LFH,'(A,2G20.10)') 'newres> coordso changed: ',COORDSO(1,JP),COORDS(1,JP)
          !VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
 
 !! end th368 20.10.2009

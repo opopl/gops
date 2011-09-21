@@ -27,22 +27,22 @@
          CLOSE(7)
       
       IF (.NOT.SEEDT) THEN
-         WRITE(MYUNIT,20) 
+         WRITE(LFH,20) 
 20       FORMAT('Initial coordinates:')
            DO JP=1,NPAR
-               WRITE(MYUNIT,30) (COORDS(J1,JP),J1=1,3*NATOMS)
+               WRITE(LFH,30) (COORDS(J1,JP),J1=1,3*NATOMS)
 30             FORMAT(3F20.10)
             ENDDO
       ENDIF
 
       IF (P46) THEN
-         WRITE(MYUNIT,'(I4,A)') NATOMS,' 3-colour, 46 bead model polypeptide'
+         WRITE(LFH,'(I4,A)') NATOMS,' 3-colour, 46 bead model polypeptide'
       ELSE IF (BLNT) THEN
-         WRITE(MYUNIT,'(I4,A)') NATOMS,' bead BLN model'
+         WRITE(LFH,'(I4,A)') NATOMS,' bead BLN model'
       ENDIF
 
       IF (DEBUG.OR.CHECKMARKOVT) THEN 
-         WRITE(MYUNIT,'(A,I6,A)') 'io1> checking the energy of the saved coordinates in the chain'
+         WRITE(LFH,'(A,I6,A)') 'io1> checking the energy of the saved coordinates in the chain'
       ENDIF
 
       IF (RADIUS.EQ.0.0D0) THEN
@@ -56,41 +56,41 @@
 
       RADIUS=RADIUS**2
 
-      WRITE(MYUNIT,'(A,F15.10)') 'Sloppy quench tolerance for RMS gradient ',BQMAX
+      WRITE(LFH,'(A,F15.10)') 'Sloppy quench tolerance for RMS gradient ',SQMAX
 
       ! check FIXBOTH STEPOUT FIXSTEP FIXTEMP {{{
       DO JP=1,NPAR
             IF (FIXBOTH(JP)) THEN
-               WRITE(MYUNIT,'(A,I3,A,F12.4,A,2F12.4,A)') 'In run ',JP,&
+               WRITE(LFH,'(A,I3,A,F12.4,A,2F12.4,A)') 'In run ',JP,&
                 & ' temperature=',TEMP(JP),&
                 & ' step size and angular threshold=', STEP(JP),ASTEP(JP),&
                 ' all fixed'
             ELSE IF (FIXSTEP(JP)) THEN
-               WRITE(MYUNIT,'(A,I3,A,2F12.4)') 'In run ',JP,&
+               WRITE(LFH,'(A,I3,A,2F12.4)') 'In run ',JP,&
                 & ' step size and angular threshold fixed at ',&
                 & STEP(JP),ASTEP(JP)
                IF (.NOT.FIXTEMP(JP)) THEN
-                  WRITE(MYUNIT,'(A,F12.4,A,F12.4)') 'Temperature will be &
+                  WRITE(LFH,'(A,F12.4,A,F12.4)') 'Temperature will be &
                     adjusted for acceptance ratio ',& 
                     ACCRAT(JP),' initial value=',TEMP(JP)
                ELSE
-                  WRITE(MYUNIT,'(A,I1,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
+                  WRITE(LFH,'(A,I1,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
                ENDIF
             ELSE IF (STEPOUT) THEN
-               WRITE(MYUNIT,'(A,I3,A,2F12.4,A,2F12.4)') 'In run ',& 
+               WRITE(LFH,'(A,I3,A,2F12.4,A,2F12.4)') 'In run ',& 
                     & JP,' step size and angular &
                     threshold will be adjusted to &
                     escape from basins. Initial values=',&
                    STEP(JP),ASTEP(JP)
                IF (.NOT.FIXTEMP(JP)) THEN
-                  WRITE(MYUNIT,'(A,F12.4,A,F12.4)') & 
+                  WRITE(LFH,'(A,F12.4,A,F12.4)') & 
      &                    'Temperature will be adjusted for acceptance ratio ',ACCRAT(JP),' initial value=',TEMP(JP)
                ELSE
-                  WRITE(MYUNIT,'(A,I1,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
+                  WRITE(LFH,'(A,I1,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
                ENDIF
             ELSE 
-               WRITE(MYUNIT,'(A,I3,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
-               WRITE(MYUNIT,'(A,F12.4,A,2F12.4)') 'Step size and angular threshold will be adjusted for acceptance ratio ',&
+               WRITE(LFH,'(A,I3,A,G12.4)') 'In run ',JP,' temperature fixed at ',TEMP(JP)
+               WRITE(LFH,'(A,F12.4,A,2F12.4)') 'Step size and angular threshold will be adjusted for acceptance ratio ',&
      &                ACCRAT(JP),' initial values=',STEP(JP),ASTEP(JP)
             ENDIF
         ENDDO 
@@ -98,54 +98,54 @@
 
       ! NORESET {{{
       IF (NORESET.OR.BSPT) THEN
-         WRITE(MYUNIT,'(A)') 'Configuration will not be reset to quench geometry'
+         WRITE(LFH,'(A)') 'Configuration will not be reset to quench geometry'
       ELSE
-         WRITE(MYUNIT,'(A)') 'Configuration will be reset to quench geometry'
+         WRITE(LFH,'(A)') 'Configuration will be reset to quench geometry'
       ENDIF
       ! }}}
 
       IF (CENT .AND. FIXCOM) THEN  
-           WRITE(MYUNIT,'(A)') "WARNING: " 
-           write(myunit,'(a)') "keywords CENTRE (fixing centre of coordinates) "
-           write(myunit,'(a)') "and FIXCOM (fixing centre of mass) are incompatible"
+           WRITE(LFH,'(A)') "WARNING: " 
+           write(LFH,'(a)') "keywords CENTRE (fixing centre of coordinates) "
+           write(LFH,'(a)') "and FIXCOM (fixing centre of mass) are incompatible"
           STOP
       ENDIF
 
-      WRITE(MYUNIT,'(A)') 'Sampling using Boltzmann weights'
+      WRITE(LFH,'(A)') 'Sampling using Boltzmann weights'
 
       ! lbfgs {{{
       IF (BFGS) THEN
-         WRITE (MYUNIT,'(A)') 'BFGS minimization'
+         WRITE (LFH,'(A)') 'BFGS minimization'
       ELSE IF (LBFGST) THEN
-         WRITE (MYUNIT,'(A)') 'Nocedal LBFGS minimization'
-         WRITE(MYUNIT,'(A,I6)') 'Number of updates before reset in LBFGS=',MUPDATE
-         WRITE(MYUNIT,'(A,F20.10)') 'Maximum step size=',MAXBFGS
-         WRITE(MYUNIT,'(A,G12.4)') 'Guess for initial diagonal elements in LBFGS=',DGUESS
+         WRITE (LFH,'(A)') 'Nocedal LBFGS minimization'
+         WRITE(LFH,'(A,I6)') 'Number of updates before reset in LBFGS=',MUPDATE
+         WRITE(LFH,'(A,F20.10)') 'Maximum step size=',MAXBFGS
+         WRITE(LFH,'(A,G12.4)') 'Guess for initial diagonal elements in LBFGS=',DGUESS
       ELSE
-         WRITE (MYUNIT,'(A)') 'Conjugate gradient minimization'
+         WRITE (LFH,'(A)') 'Conjugate gradient minimization'
       ENDIF
       ! }}}
 
-      WRITE(MYUNIT,'(A,F15.10)') 'Final quench tolerance for RMS gradient ',CQMAX
-      WRITE(MYUNIT,'(A,F15.10)') 'Energy difference criterion for minima=',ECONV
-      WRITE(MYUNIT,'(A,I5,A,I5)') 'Maximum number of iterations: sloppy quenches ',MAXIT,' final quenches ',MAXIT2
+      WRITE(LFH,'(A,F15.10)') 'Final quench tolerance for RMS gradient ',FQMAX
+      WRITE(LFH,'(A,F15.10)') 'Energy difference criterion for minima=',EDIFF
+      WRITE(LFH,'(A,I5,A,I5)') 'Maximum number of iterations: sloppy quenches ',MAXIT,' final quenches ',MAXIT2
 
          DO J1=1,NRUNS
-            WRITE(MYUNIT,120) J1, MCSTEPS(J1), TFAC(J1)
+            WRITE(LFH,120) J1, MCSTEPS(J1), TFAC(J1)
 120         FORMAT('Run ',I3,': ',I9,' steps with temperature scaled by ',E15.8)
          ENDDO
 
       IF (DEBUG) THEN
-         WRITE(MYUNIT,160) 
+         WRITE(LFH,160) 
 160      FORMAT('Debug printing is on')
       ENDIF
 
-      WRITE(MYUNIT, '(A,G20.10)') 'Maximum allowed energy rise during a minimisation=',MAXERISE
+      WRITE(LFH, '(A,G20.10)') 'Maximum allowed energy rise during a minimisation=',MAXERISE
 
       IF (TARGET) THEN
-         WRITE(MYUNIT,'(A)',ADVANCE='NO') 'Target energies: '
-         WRITE(MYUNIT,'(F20.10)',ADVANCE='NO') (TARGETS(J1),J1=1,NTARGETS)
-         WRITE(MYUNIT,'(A)') ' '
+         WRITE(LFH,'(A)',ADVANCE='NO') 'Target energies: '
+         WRITE(LFH,'(F20.10)',ADVANCE='NO') (TARGETS(J1),J1=1,NTARGETS)
+         WRITE(LFH,'(A)') ' '
       ENDIF
                   
       ! ssdump  {{{
@@ -160,7 +160,7 @@
       INQUIRE(FILE='ssdump',EXIST=YESNO)
       IF (YESNO) THEN
          OPEN(UNIT=88,FILE='ssdump',STATUS='UNKNOWN')
-         WRITE(MYUNIT,'(A)') 'reading dump information from file ssdump'
+         WRITE(LFH,'(A)') 'reading dump information from file ssdump'
          READ(88,'(3G20.10)') ((COORDS(J1,J2),J1=1,3*NATOMS),J2=1,NPAR)
          READ(88,'(2I6)') NQTOT, NPCALL
          MCSTEPS(1)=MAX(MCSTEPS(1)-NQTOT*NPAR,1)

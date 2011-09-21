@@ -46,8 +46,8 @@
       ENDIF
       JACCPREV=J1
       NQTOT=NQTOT+1
-      WRITE(MYUNIT,'(A,I6,A)') ' Restarting using ',NHSRESTART,' hard sphere moves'
-      WRITE(MYUNIT,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'Restart Qu ',NQ(1),' E=',&
+      WRITE(LFH,'(A,I6,A)') ' Restarting using ',NHSRESTART,' hard sphere moves'
+      WRITE(LFH,'(A,I7,A,F20.10,A,I5,A,G12.5,A,F20.10,A,F11.1)') 'Restart Qu ',NQ(1),' E=',&
      &              POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME-TSTART
       DO J2=1,3*NATOMS
          COORDSO(J2,1)=COORDS(J2,1)
@@ -152,13 +152,13 @@
 
 !  CALCULATE THE INITIAL ENERGY AND SAVE IN EPREV
 !OP226>{{{ 
-      WRITE(MYUNIT,'(A)') 'CALCULATING INITIAL ENERGY'
+      WRITE(LFH,'(A)') 'CALCULATING INITIAL ENERGY'
       EPSSAVE=EPSSPHERE
       EPSSPHERE=0.0D0
       DO JP=1,NPAR
          CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
          NQTOT=NQTOT+1
-         WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') &
+         WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') &
             & 'QU ',NQ(JP),&
             & ' E=',POTEL,&
             & ' STEPS=',ITERATIONS,&
@@ -185,8 +185,8 @@
 !OP226>}}} 
 
 !OP226> GMIN_OUT: STARTING MC RUN ...; TEMPERATURE WILL ... {{{ 
-      WRITE(MYUNIT,'(A,I10,A)') 'STARTING MC RUN OF ',NSTEPS,' STEPS'
-      WRITE(MYUNIT,'(A,F15.8,A)') 'TEMPERATURE WILL BE MULTIPLIED BY ',SCALEFAC,' AT EVERY STEP'
+      WRITE(LFH,'(A,I10,A)') 'STARTING MC RUN OF ',NSTEPS,' STEPS'
+      WRITE(LFH,'(A,F15.8,A)') 'TEMPERATURE WILL BE MULTIPLIED BY ',SCALEFAC,' AT EVERY STEP'
 !OP226>}}} 
 
 
@@ -195,7 +195,7 @@
       DO J1=NDONE+1,NSTEPS 
          ISTEP = J1
 
-         CALL FLUSH(MYUNIT)
+         CALL FLUSH(LFH)
 !
 !  ********************************* LOOP OVER NPAR PARALLEL RUNS ******************************
 !
@@ -220,9 +220,9 @@
            CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)  
            NQTOT=NQTOT+1
 !  OUTPUT
-           WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'QU ',NQ(JP),' E=',&
+           WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'QU ',NQ(JP),' E=',&
      &                 POTEL,' STEPS=',ITERATIONS,' RMS=',RMS,' MARKOV E=',EPREV(JP),' T=',TIME-TSTART
-          CALL FLUSH(MYUNIT)
+          CALL FLUSH(LFH)
 
           ! PAIRDIST TRACKDATA {{{
           IF (PAIRDISTT) THEN
@@ -260,7 +260,7 @@
                NFAIL(JP)=NFAIL(JP)+1
                CALL MYRESET(JP,NATOMS,NPAR,NSEED)
                IF (DEBUG) THEN
-                  WRITE(MYUNIT,33) JP,J1,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+                  WRITE(LFH,33) JP,J1,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
 33                FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' EVAP,REJ')
                ENDIF
             ELSE
@@ -279,14 +279,14 @@
                IF (DEBUG.OR.CHECKMARKOVT) THEN 
                   ! {{{
                   CALL POTENTIAL(COORDSO(:,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
-                  IF (ABS(OPOTEL-EPREV(JP)).GT.ECONV) THEN
+                  IF (ABS(OPOTEL-EPREV(JP)).GT.EDIFF) THEN
                      IF (EVAP) THEN
-                        WRITE(MYUNIT,'(3(A,G20.10))') &
+                        WRITE(LFH,'(3(A,G20.10))') &
                         & 'MC> WARNING - ENERGY FOR SAVED COORDINATES ',OPOTEL,&
                         & ' DIFFERS FROM MARKOV ENERGY ',EPREV(JP),&
                         & ' BECAUSE AN ATOM MOVED OUTSIDE THE CONTAINER'
                      ELSE
-                        WRITE(MYUNIT,'(2(A,G20.10))') &
+                        WRITE(LFH,'(2(A,G20.10))') &
                         'MC> ERROR - ENERGY FOR COORDINATES IN COORDSO=',OPOTEL,&
                         & ' BUT MARKOV ENERGY=',EPREV(JP)
                         STOP
@@ -304,13 +304,13 @@
                  ! {{{
 
                   IF (DEBUG) THEN
-                     WRITE(MYUNIT,34) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+                     WRITE(LFH,34) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
 34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')
                   ENDIF
 
-                  IF ((J1-JACCPREV.GT.NRELAX).AND.ABS(POTEL-EPREV(JP)).GT.ECONV) THEN
+                  IF ((J1-JACCPREV.GT.NRELAX).AND.ABS(POTEL-EPREV(JP)).GT.EDIFF) THEN
 !                    NRELAX=J1-JACCPREV
-!                    IF (RESTART) WRITE(MYUNIT,'(A,I6,A)') ' RELAXATION TIME SET TO ',NRELAX,' STEPS'
+!                    IF (RESTART) WRITE(LFH,'(A,I6,A)') ' RELAXATION TIME SET TO ',NRELAX,' STEPS'
                      JACCPREV=J1
                   ENDIF
 
@@ -330,7 +330,7 @@
                   NFAIL(JP)=NFAIL(JP)+1
                   CALL MYRESET(JP,NATOMS,NPAR,NSEED)
                   IF (DEBUG) THEN
-                     WRITE(MYUNIT,36) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+                     WRITE(LFH,36) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
 36                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' REJ')
                   ENDIF
                   ! }}}
@@ -358,13 +358,13 @@
 !  ****************************** END OF LOOP OVER NPAR PARALLEL RUNS *****************************
 !
  
-         CALL FLUSH(MYUNIT)
+         CALL FLUSH(LFH)
       ENDDO
 ! }}}
 
 37    CONTINUE
       DO JP=1,NPAR
-         WRITE(MYUNIT,21) NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),&
+         WRITE(LFH,21) NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),&
      &               STEP(JP),ASTEP(JP),TEMP(JP)
 21       FORMAT('ACCEPTANCE RATIO FOR RUN=',F12.5,' STEP=',F12.5,' ANGULAR STEP FACTOR=',F12.5,' T=',F12.5)
       ENDDO
@@ -471,22 +471,22 @@
       ASTEP(JP)=MIN(ASTEP(JP),1.0D3)
 
       IF (NPAR.GT.1) THEN
-         WRITE(MYUNIT,'(A,I2,A,I6,A,F8.4,A,F8.4)') '[',JP,']Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
+         WRITE(LFH,'(A,I2,A,I6,A,F8.4,A,F8.4)') '[',JP,']Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
       ELSE
-         WRITE(MYUNIT,'(A,I6,A,F8.4,A,F8.4)') 'Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
+         WRITE(LFH,'(A,I6,A,F8.4,A,F8.4)') 'Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
       ENDIF
       IF (FIXBOTH(JP)) THEN
       ELSE IF (FIXSTEP(JP)) THEN
-         IF(.NOT.FIXTEMP(JP)) WRITE(MYUNIT,'(A,F12.4)') 'Temperature is now:',TEMP(JP)
+         IF(.NOT.FIXTEMP(JP)) WRITE(LFH,'(A,F12.4)') 'Temperature is now:',TEMP(JP)
       ELSE
          IF (NPAR.GT.1) THEN
-            WRITE(MYUNIT,'(A,I2,A)',ADVANCE='NO') '[',JP,']Steps are now:'
+            WRITE(LFH,'(A,I2,A)',ADVANCE='NO') '[',JP,']Steps are now:'
          ELSE
-            WRITE(MYUNIT,'(A)',ADVANCE='NO') 'Steps are now:'
+            WRITE(LFH,'(A)',ADVANCE='NO') 'Steps are now:'
          ENDIF
-         WRITE(MYUNIT,'(A,F10.4)',ADVANCE='NO') '  STEP=',STEP(JP)    
-         IF(ASTEP(JP).GT.0.D0) WRITE(MYUNIT,'(A,F10.4)',ADVANCE='NO')'  ASTEP=',ASTEP(JP) 
-         IF(.NOT.FIXTEMP(JP)) WRITE(MYUNIT,'(A,F10.4)') ' Temperature is now:',TEMP(JP)
+         WRITE(LFH,'(A,F10.4)',ADVANCE='NO') '  STEP=',STEP(JP)    
+         IF(ASTEP(JP).GT.0.D0) WRITE(LFH,'(A,F10.4)',ADVANCE='NO')'  ASTEP=',ASTEP(JP) 
+         IF(.NOT.FIXTEMP(JP)) WRITE(LFH,'(A,F10.4)') ' Temperature is now:',TEMP(JP)
       ENDIF
 !
       NSUCCESST(JP)=NSUCCESST(JP)+NSUCCESS(JP)

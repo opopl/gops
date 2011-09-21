@@ -276,7 +276,9 @@ sub MakeDependsf90 {
 	  		#include files {{{	  
 	 		if ( $_ =~ /^\s*include\s+["\']([^"\']+)["\']/i ){ 
 	   			if ( !exists $excluded{$1} ){
-     	     		push(@incs, $1); 
+					# included files themselves not printed 
+					# in the DP file
+                    # push(@incs, $1); 
 			 		# now use those statements in that file
 			 		# specified after the include ... statement
 			 		my $include_file=$1;

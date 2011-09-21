@@ -9,7 +9,6 @@
       DOUBLE PRECISION :: DIST(3*NATOMS), DMAX, VMAX, VMIN, VMAX2, CMDIST(NATOMS), CMMAX
 
       DOUBLE PRECISION :: DUMMY
-      DOUBLE PRECISION,PARAMETER :: PI=3.141592654D0 
 
       INTEGER J1, J2, JMAX, NP, J3, JMAX2
       
@@ -23,7 +22,7 @@ C  atoms inside.
 !
 !     IF (.NOT.AMBERT) THEN
 !        IF (ABS(COORDSO(1,NP)-COORDS(1,NP)).GT.1.0D-3) THEN
-!           WRITE(MYUNIT,'(A,2G20.10)'),'takestep> WARNING - coordso will be changed: ',COORDSO(1,NP),COORDS(1,NP)
+!           WRITE(LFH,'(A,2G20.10)'),'takestep> WARNING - coordso will be changed: ',COORDSO(1,NP),COORDS(1,NP)
 !        ENDIF
 !        DO J1=1,3*(NATOMS-NSEED)
 !           COORDSO(J1,NP)=COORDS(J1,NP)
