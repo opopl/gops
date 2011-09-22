@@ -64,16 +64,19 @@ AUXF = dv.f90 rca.f90
 
 #}}}
 
-export DL := debug 
+export DL := "debug"
 
 # pgi {{{
 ifeq ($(FC),pgf90)
 
-#FFLAGS= -Mextend -O0 -Munroll -Mnoframe 
 F0:= -module $(MODPATH)
 FFLAGS:= $(F0)
-FFLAGS += -Mextend -O0 -Mnoframe 
+DFFLAGS:= $(F0)
 
+FFLAGS += -Mextend -O0 -Mnoframe -g -traceback
+DFFLAGS += -Mextend -C -g -gopt -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mcoff -Mdwarf1 -Mdwarf2 -Mdwarf3 -Melf -Mnodwarf -Mpgicoff -traceback
+
+#not working yet {{{
 ifeq ($(DL),debug)
 
 FFLAGS += -Mextend -C -g -gopt -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mcoff -Mdwarf1 -Mdwarf2 -Mdwarf3 -Melf -Mnodwarf -Mpgicoff -traceback
@@ -83,6 +86,7 @@ endif
 ifeq ($(DL),noopt)
 FFLAGS += -Mextend -O0 -Mnoframe 
 endif
+#}}}
 
 NOOPT = -O0 -Mextend
 LDFLAGS= -L.

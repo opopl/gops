@@ -1,0 +1,22 @@
+      MODULE MYFUNC
+
+      USE V 
+      USE COMMONS
+
+      IMPLICIT NONE 
+
+      CONTAINS
+
+      SUBROUTINE SETVARS
+
+      BLNTYPE="GO"
+
+      IF (P46) THEN
+        BLNTYPE="WT"
+      ELSEIF(G46)THEN
+        BLNTYPE="GO"
+      ENDIF
+
+      END SUBROUTINE SETVARS
+
+      END MODULE

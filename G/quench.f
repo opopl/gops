@@ -21,6 +21,7 @@ C
 C
 !op226>}}} 
 !op226>=================================== 
+      ! Doxygen {{{
 C  Conjugate gradient driver. 
 C  CFLAG convergence test
 C  CTEST checks for changes in chirality for AMBER runs
@@ -32,6 +33,7 @@ C
 !> \param BRUN INTEGER
 !> \param QDONE INTEGER
 !> \param P DOUBLE PRECISION(3*NATOMS)
+      ! }}}
       SUBROUTINE QUENCH(QTEST,NP,ITER,TIME,BRUN,QDONE,P)
 !op226> Declarations {{{ 
       use COMMONS
@@ -74,6 +76,8 @@ C  Turn on guiding potentials. These get turned off in potential.F when
 C  the RMS force is small enough.
 C
       SSAVE=STEP(NP)
+
+      ! {{{
 C
 C csw34 Reset the NFIX counter
 C
@@ -95,6 +99,7 @@ C
       NOPT=3*NATOMS
       IF (WENZEL) NOPT=2
       IF (MULLERBROWNT) NOPT=2
+      ! }}}
 C
 C  QTEST is set for the final quenches with tighter convergence criteria.
 C
@@ -108,8 +113,8 @@ C
       DO I=1,3*NATOMS
          P(I)=COORDS(I,NP)
       ENDDO
-C
-C     IF (TIP) THEN
+
+C     IF (TIP) THEN!{{{
 C        WRITE(DUMPXYZUNIT+NP,'(I6)') (NATOMS/2)*3
 C        WRITE(DUMPXYZUNIT+NP,70) NP,NQ(NP), EREAL, RMS
 C        DO J2=1,NATOMS/2
@@ -119,10 +124,8 @@ C           WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'O ',RBCOORDS(1),RBCOORDS(2),RB
 C           WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(4),RBCOORDS(5),RBCOORDS(6)
 C           WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(7),RBCOORDS(8),RBCOORDS(9)
 C        ENDDO
-C     ENDIF
-
-
-      IF (COMPRESST.AND.(.NOT.QTEST)) THEN
+C     ENDIF!}}}
+      IF (COMPRESST.AND.(.NOT.QTEST)) THEN!{{{
          COMPON=.TRUE.
          IF (PATCHY) THEN
            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,1.D1*GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
@@ -133,153 +136,157 @@ C     ENDIF
          IF (.NOT.CFLAG) WRITE(LFH,'(A,I7,A)') ' WARNING - compressed quench ',NQ(NP),'  did not converge'
          WRITE(LFH,'(A,I7,A,F20.10,A,I5,A,F15.7,A,I4,A,F12.2)') 'Comp Q ',NQ(NP),' energy=',
      1              POTEL,' steps=',ITER,' RMS force=',RMS
-      ENDIF
+      ENDIF!}}}
 
       IF (.NOT.PERCOLATET) COMPON=.FALSE.
 
+!10    IF (PERMOPT) THEN ! lb415!{{{
+!!{{{
+         !!IF ( NQ(NP) .eq. 1) THEN
+         !IF (DUMPT) THEN
+            !WRITE(DUMPXYZUNIT+NP,'(I6)') NDUMMY
+            !WRITE(DUMPXYZUNIT+NP,'(A,I6)') 'quench> initial points before quench ',NQ(NP)
+            !WRITE(DUMPXYZUNIT+NP,'(A,3G20.10)') ('LA ',P(3*(J2-1)+1),P(3*(J2-1)+2),P(3*(J2-1)+3),J2=1,NATOMS)
+         !ENDIF
+         !CALL POTENTIAL(P,GRAD,EREAL,.FALSE.,.FALSE.)
+         !CFLAG=.TRUE.
+!!        ITER=1
+!!        RMS=0.0D0
+         !RMS=CSMRMS
+         !ITER=CSMIT
+         !!ELSE
+         !!   CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP) ! minimize structure
+         !!   write(*,*) 'permdist mylbfgs', EREAL, ITER, RMS
+         !!   POTEL=EREAL
+         !!   IF (.NOT.CFLAG) WRITE(LFH,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
+         !!   DO II=1,NSAVE
+         !!      IF ( II .GE. NQ(NP) ) EXIT ! There's no need to check further, there's nothing
+         !!      CALL MINPERMDIST(P,QMINP(II,:),NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,PERIODIC,TWOD,DUMMY,DIST2,RIGID,RMAT)
+         !!      write(*,*) DUMMY, 'dummy',ii
+         !!      IF (DUMMY .LT. 0.5D0) THEN
+         !!         !DO NOT ACCEPT THIS QUENCH
+         !!         WRITE(LFH,*) 'This quench ended in a known minimum. It won`t be counted.'
+         !!         RETURN
+         !!      ENDIF
+         !!   ENDDO
+         !!ENDIF 
+      !ELSEIF (MODEL1T) THEN
+         !CALL MODEL1(P,GRAD,EREAL,QE,QX)
+         !EREAL=QE
+         !CFLAG=.TRUE.
+         !ITER=1
+         !RMS=0.0D0
+         !P(1)=QX
+      !ELSE IF (DL_POLY) THEN
+!C
+!C  Need to make DL_POLY input file for current coordinates.
+!C
+         !OPEN (UNIT=91,FILE='CONFIG',STATUS='OLD')
+         !OPEN (UNIT=92,FILE='config',STATUS='UNKNOWN')
+         !READ(91,'(A80)') DSTRING
+         !WRITE(92,'(A80)') DSTRING
+         !READ(91,'(A80)') DSTRING
+         !WRITE(92,'(A80)') DSTRING
+         !DO J1=1,NATOMS
+            !READ(91,'(A80)') DSTRING
+            !WRITE(92,'(A80)') DSTRING
+            !READ(91,'(A80)') DSTRING
+            !WRITE(92,'(3G20.10)') P(3*(J1-1)+1),P(3*(J1-1)+2),P(3*(J1-1)+3)
+            !READ(91,'(A80)') DSTRING
+            !WRITE(92,'(A80)') DSTRING
+            !READ(91,'(A80)') DSTRING
+            !WRITE(92,'(A80)') DSTRING
+         !ENDDO
+         !CLOSE(91)
+         !CLOSE(92)
+         !CALL SYSTEM('cp CONFIG CONFIG.old; cp config CONFIG')
+         !CALL SYSTEM('DLPOLY.X > output.DL_POLY ; tail -9 STATIS > energy')
+         !OPEN (UNIT=91,FILE='energy',STATUS='OLD')
+         !READ(91,*) EREAL
+         !WRITE(LFH,'(A,G20.10)') 'energy=',EREAL
+         !CLOSE(91)
+         !OPEN(UNIT=91,FILE='REVCON',STATUS='OLD')
+         !READ(91,'(A1)') DUMMY
+         !READ(91,'(A1)') DUMMY
+         !NATOMS=0
+!13       READ(91,'(A1)',END=14) DUMMY
+         !NATOMS=NATOMS+1
+         !READ(91,*) P(3*(NATOMS-1)+1),P(3*(NATOMS-1)+2),P(3*(NATOMS-1)+3)
+         !READ(91,'(A1)') DUMMY
+         !READ(91,'(A1)') DUMMY
+!C        WRITE(LFH,'(3G20.10)') P(3*(NATOMS-1)+1),P(3*(NATOMS-1)+2),P(3*(NATOMS-1)+3)
+         !GOTO 13
+!14       CONTINUE
+         !CLOSE(91)
+         !CFLAG=.TRUE.
+!C
+!C  Read the coordinates of the minimised geometry into vector P.
+!C
+!C     ELSE IF (BFGS .AND.(.NOT.QTEST)) THEN
+      !ELSE IF (BFGS) THEN
+!C        CALL CGMIN(100,P,CFLAG,ITER,EREAL,NP)
+         !CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,100,ITER,.TRUE.,NP)
+         !CALL DFPMIN(MAXIT,P,3*NATOMS,GMAX,ITER,EREAL,CFLAG)
+      !ELSEIF (TNT) THEN
+!C        CALL CGMIN(100,P,CFLAG,ITER,EREAL,NP)
+         !CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,100,ITER,.TRUE.,NP)
+          !WRITE(LFH, '(A)') 'subroutine tn does not compile with NAG/PG'
+         !STOP
+!C        CALL TN(IFLAG,3*NATOMS,P,EREAL,GRAD,WORK,60*NATOMS,GMAX,ITER,MAXIT,CFLAG,DEBUG)
+      !ELSEIF (CONJG) THEN
+         !CALL CGMIN(MAXIT,P,CFLAG,ITER,EREAL,NP)
+    !! 
+!! Compute quantum energy with Variation Gaussian Wavepacket.
+!! Coords are scaled by VGW LJ sigma (LJSIGMA) inputed with VGW params.
+!! Coords are then scaled back to unit sigma.
+!! 
+      !ELSEIF (VGW) THEN    
+        !IF(QTEST) THEN              
+          !CALL VGWQUENCH(P,EREAL,CFLAG)
+          !ELSE
+            !CALL VGWQUENCHSP(P,EREAL,CFLAG)
+        !ENDIF 
 
-10    IF (PERMOPT) THEN ! lb415
-         !IF ( NQ(NP) .eq. 1) THEN
-         IF (DUMPT) THEN
-            WRITE(DUMPXYZUNIT+NP,'(I6)') NDUMMY
-            WRITE(DUMPXYZUNIT+NP,'(A,I6)') 'quench> initial points before quench ',NQ(NP)
-            WRITE(DUMPXYZUNIT+NP,'(A,3G20.10)') ('LA ',P(3*(J2-1)+1),P(3*(J2-1)+2),P(3*(J2-1)+3),J2=1,NATOMS)
-         ENDIF
-         CALL POTENTIAL(P,GRAD,EREAL,.FALSE.,.FALSE.)
-         CFLAG=.TRUE.
-!        ITER=1
-!        RMS=0.0D0
-         RMS=CSMRMS
-         ITER=CSMIT
-         !ELSE
-         !   CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP) ! minimize structure
-         !   write(*,*) 'permdist mylbfgs', EREAL, ITER, RMS
-         !   POTEL=EREAL
-         !   IF (.NOT.CFLAG) WRITE(LFH,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
-         !   DO II=1,NSAVE
-         !      IF ( II .GE. NQ(NP) ) EXIT ! There's no need to check further, there's nothing
-         !      CALL MINPERMDIST(P,QMINP(II,:),NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,PERIODIC,TWOD,DUMMY,DIST2,RIGID,RMAT)
-         !      write(*,*) DUMMY, 'dummy',ii
-         !      IF (DUMMY .LT. 0.5D0) THEN
-         !         !DO NOT ACCEPT THIS QUENCH
-         !         WRITE(LFH,*) 'This quench ended in a known minimum. It won`t be counted.'
-         !         RETURN
-         !      ENDIF
-         !   ENDDO
-         !ENDIF 
-      ELSEIF (MODEL1T) THEN
-         CALL MODEL1(P,GRAD,EREAL,QE,QX)
-         EREAL=QE
-         CFLAG=.TRUE.
-         ITER=1
-         RMS=0.0D0
-         P(1)=QX
-      ELSE IF (DL_POLY) THEN
-C
-C  Need to make DL_POLY input file for current coordinates.
-C
-         OPEN (UNIT=91,FILE='CONFIG',STATUS='OLD')
-         OPEN (UNIT=92,FILE='config',STATUS='UNKNOWN')
-         READ(91,'(A80)') DSTRING
-         WRITE(92,'(A80)') DSTRING
-         READ(91,'(A80)') DSTRING
-         WRITE(92,'(A80)') DSTRING
-         DO J1=1,NATOMS
-            READ(91,'(A80)') DSTRING
-            WRITE(92,'(A80)') DSTRING
-            READ(91,'(A80)') DSTRING
-            WRITE(92,'(3G20.10)') P(3*(J1-1)+1),P(3*(J1-1)+2),P(3*(J1-1)+3)
-            READ(91,'(A80)') DSTRING
-            WRITE(92,'(A80)') DSTRING
-            READ(91,'(A80)') DSTRING
-            WRITE(92,'(A80)') DSTRING
-         ENDDO
-         CLOSE(91)
-         CLOSE(92)
-         CALL SYSTEM('cp CONFIG CONFIG.old; cp config CONFIG')
-         CALL SYSTEM('DLPOLY.X > output.DL_POLY ; tail -9 STATIS > energy')
-         OPEN (UNIT=91,FILE='energy',STATUS='OLD')
-         READ(91,*) EREAL
-         WRITE(LFH,'(A,G20.10)') 'energy=',EREAL
-         CLOSE(91)
-         OPEN(UNIT=91,FILE='REVCON',STATUS='OLD')
-         READ(91,'(A1)') DUMMY
-         READ(91,'(A1)') DUMMY
-         NATOMS=0
-13       READ(91,'(A1)',END=14) DUMMY
-         NATOMS=NATOMS+1
-         READ(91,*) P(3*(NATOMS-1)+1),P(3*(NATOMS-1)+2),P(3*(NATOMS-1)+3)
-         READ(91,'(A1)') DUMMY
-         READ(91,'(A1)') DUMMY
-C        WRITE(LFH,'(3G20.10)') P(3*(NATOMS-1)+1),P(3*(NATOMS-1)+2),P(3*(NATOMS-1)+3)
-         GOTO 13
-14       CONTINUE
-         CLOSE(91)
-         CFLAG=.TRUE.
-C
-C  Read the coordinates of the minimised geometry into vector P.
-C
-C     ELSE IF (BFGS .AND.(.NOT.QTEST)) THEN
-      ELSE IF (BFGS) THEN
-C        CALL CGMIN(100,P,CFLAG,ITER,EREAL,NP)
-         CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,100,ITER,.TRUE.,NP)
-         CALL DFPMIN(MAXIT,P,3*NATOMS,GMAX,ITER,EREAL,CFLAG)
-      ELSEIF (TNT) THEN
-C        CALL CGMIN(100,P,CFLAG,ITER,EREAL,NP)
-         CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,100,ITER,.TRUE.,NP)
-          WRITE(LFH, '(A)') 'subroutine tn does not compile with NAG/PG'
-         STOP
-C        CALL TN(IFLAG,3*NATOMS,P,EREAL,GRAD,WORK,60*NATOMS,GMAX,ITER,MAXIT,CFLAG,DEBUG)
-      ELSEIF (CONJG) THEN
-         CALL CGMIN(MAXIT,P,CFLAG,ITER,EREAL,NP)
-    ! 
-! Compute quantum energy with Variation Gaussian Wavepacket.
-! Coords are scaled by VGW LJ sigma (LJSIGMA) inputed with VGW params.
-! Coords are then scaled back to unit sigma.
-! 
-      ELSEIF (VGW) THEN    
-        IF(QTEST) THEN              
-          CALL VGWQUENCH(P,EREAL,CFLAG)
-          ELSE
-            CALL VGWQUENCHSP(P,EREAL,CFLAG)
-        ENDIF 
+      !ELSEIF (MYSDT) THEN
+         !CALL MYSD(MAXIT,P,CFLAG,ITER,EREAL)
+      !ELSEIF (RKMIN) THEN
+         !CALL ODESD(MAXIT,P,CFLAG,ITER,EREAL,NP)
+      !ELSEIF (BSMIN) THEN
+         !CALL ODESD(MAXIT,P,CFLAG,ITER,EREAL,NP)!}}}
+      !ELSE
+        !! {{{
+!!         IF (CHRMMT.AND.INTMINT) THEN
+            !!CALL MYLBFGS(NINTS,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+         !!ELSE IF (THOMSONT) THEN
+            !!TMPCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,NP)
+            !!CALL THOMSONCTOANG(TMPCOORDS,P,NATOMS)
+            !!CALL MYLBFGS(2*NATOMS,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+            !!CALL THOMSONANGTOC(P,NATOMS)
+!!! ni {{{
+!!!         ELSE IF(PYBINARYT) THEN
+!!!! sf344> trying out some sort of systematic parameter change to prevent particles from dissociating:
+!!!! first decrease repulsive epsilon values, converge, then gradually increase them
+!!!           epssave(:)=PEPSILON1(:)
+!!!          IF(.NOT.QTEST) THEN
+!!!           WRITE(LFH,*) 'first iteration: decreasing epsilon_rep values by a factor of 10000' 
+!!!           PEPSILON1(:)=PEPSILON1(:)/10000.0D0
+!!!            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+!!!           WRITE(LFH,*) 'second iteration: increasing epsilon_rep values by a factor of 100' 
+!!!           PEPSILON1(:)=PEPSILON1(:)*100.0D0
+!!!            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+!!!            WRITE(LFH,*) 'third iteration: increasing epsilon_rep values by a factor of 100' 
+!!!           PEPSILON1(:)=PEPSILON1(:)*100.0D0
+!!!            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+!!!          END IF!}}}
+         !!ELSE
+            !!CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+         !ENDIF
+         !IF (EVAPREJECT) RETURN
+         !! }}}
+      !ENDIF!}}}
 
-      ELSEIF (MYSDT) THEN
-         CALL MYSD(MAXIT,P,CFLAG,ITER,EREAL)
-      ELSEIF (RKMIN) THEN
-         CALL ODESD(MAXIT,P,CFLAG,ITER,EREAL,NP)
-      ELSEIF (BSMIN) THEN
-         CALL ODESD(MAXIT,P,CFLAG,ITER,EREAL,NP)
-      ELSE
-C        CALL CGMIN(5,P,CFLAG,ITER,EREAL,NP)
-         IF (CHRMMT.AND.INTMINT) THEN
-            CALL MYLBFGS(NINTS,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-         ELSE IF (THOMSONT) THEN
-            TMPCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,NP)
-            CALL THOMSONCTOANG(TMPCOORDS,P,NATOMS)
-            CALL MYLBFGS(2*NATOMS,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-            CALL THOMSONANGTOC(P,NATOMS)
-
-!         ELSE IF(PYBINARYT) THEN
-!! sf344> trying out some sort of systematic parameter change to prevent particles from dissociating:
-!! first decrease repulsive epsilon values, converge, then gradually increase them
-!           epssave(:)=PEPSILON1(:)
-!          IF(.NOT.QTEST) THEN
-!           WRITE(LFH,*) 'first iteration: decreasing epsilon_rep values by a factor of 10000' 
-!           PEPSILON1(:)=PEPSILON1(:)/10000.0D0
-!            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-!           WRITE(LFH,*) 'second iteration: increasing epsilon_rep values by a factor of 100' 
-!           PEPSILON1(:)=PEPSILON1(:)*100.0D0
-!            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-!            WRITE(LFH,*) 'third iteration: increasing epsilon_rep values by a factor of 100' 
-!           PEPSILON1(:)=PEPSILON1(:)*100.0D0
-!            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-!          END IF
-         ELSE
-            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-         ENDIF
-         IF (EVAPREJECT) RETURN
-      ENDIF
+10    CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+      IF (EVAPREJECT) RETURN
       POTEL=EREAL
 
       IF (CFLAG) QDONE=1
@@ -303,7 +310,7 @@ C        CALL CGMIN(5,P,CFLAG,ITER,EREAL,NP)
          IF (RES) GOTO 10
       ENDIF
 
-C     PRINT*,'Taboo lists:'
+C     PRINT*,'Taboo lists:'!{{{
 C     DO J1=1,NPAR
 C        PRINT*,'Parallel run ',J1
 C        WRITE(*,'(6F15.7)') (ESAVE(J2,J1),J2=1,NT(J1))
@@ -312,9 +319,8 @@ C     PRINT*,'Inertia lists:'
 C     DO J1=1,NPAR
 C        PRINT*,'Parallel run ',J1
 C        WRITE(LFH,'(6F15.7)') (XINSAVE(J2,J1),J2=1,NT(J1))
-C     ENDDO
-
-! csw34> CHIRALITY AND PEPTIDE BOND CHECKS - reports GOODSTRUCTURE
+C     ENDDO!}}}
+! csw34> CHIRALITY AND PEPTIDE BOND CHECKS - reports GOODSTRUCTURE!{{{
 !        If the checks pass (or are not done!), GSAVEIT is called to 
 !        add the quenches structure to QMIN and QMINP if low enough E
       GOODSTRUCTURE=.TRUE.
@@ -323,7 +329,7 @@ C     ENDDO
 !        is set to .FALSE. (in finalq.f) and so the checks are skipped.
       IF (SAVEQ) THEN
 !
-! csw34> CHARMM TESTS
+! csw34> CHARMM TESTS!{{{
 !
          IF(CHRMMT) THEN
 !
@@ -345,8 +351,8 @@ C     ENDDO
                WRITE(LFH,*) ' quench> PEPTIDE BOND CHECK FAILED - discarding structure'
             ENDIF
          ENDIF
-!
-! csw34> AMBER tests
+!!}}}
+! csw34> AMBER tests!{{{
 !        The AMBER tests are a bit fancier, they are designed to be
 !        check if the chirality and peptide bond geometry has been
 !        maintained from the starting structure, not just look at an
@@ -425,17 +431,17 @@ C     ENDDO
                ENDIF
             ENDIF
          ENDIF
-
-! jwrm2> Check percolation. If the structure is disconnected, don't save it.
+!}}}
+! jwrm2> Check percolation. If the structure is disconnected, don't save it.!{{{
          PERCT = .TRUE.
          IF (PERCOLATET) THEN
            CALL PERC(P,NATOMS,PERCCUT,PERCT,DEBUG,LFH,RIGID)
-         ENDIF
+         ENDIF!}}}
 
 ! csw34> If all tests have been passed, save the structure!        
          IF (GOODSTRUCTURE .AND. PERCT) CALL GSAVEIT(EREAL,P,NP)
-      ENDIF
 ! csw34> END OF CHIRALITY AND PEPTIDE BOND CHECKS
+      ENDIF!}}}
 
 
 !     IF (QDONE.EQ.0) THEN
@@ -460,9 +466,9 @@ C
 !        CALL MINDGMIN(P,DUM,NATOMS,DISTMIN,PERIODIC,TWOD)
          CALL NEWMINDIST(P,DUM,NATOMS,DISTMIN,PERIODIC,TWOD,'AX    ',.FALSE.,RIGID,DEBUG,RMAT)
       ENDIF
-C
-C  Deal with EPSSPHERE sampling.
-C
+
+C  Deal with EPSSPHERE sampling.!{{{
+
       IF (EPSSPHERE.NE.0.0D0) THEN
          IF ((DISTMIN.GT.EPSSPHERE).OR.(ABS(EREAL-EPREV(NP)).LE.ECONV)) THEN
             WRITE(LFH,'(A,F12.5,A,4F14.5)') 'step ',STEP(NP),' EREAL, EPREV, DISTMIN, EPSSPHERE=',
@@ -476,7 +482,7 @@ C
          ELSE
             WRITE(LFH,'(A,2F20.10)') 'valid step, DISTMIN, EPSSPHERE=',DISTMIN, EPSSPHERE
          ENDIF
-      ENDIF
+      ENDIF!}}}
 C
 C  If we are provided with target minimum coordinates in file coords.target then
 C  calculate the minimum distances. May be useful for algorithm development.
