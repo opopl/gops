@@ -7,4 +7,5 @@ mcruns.f
 quench.f
 io1.f
 v.f90
+func.f90
 potential.f

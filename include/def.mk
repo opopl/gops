@@ -1,9 +1,9 @@
 
-
 # definitions {{{
 
 FC=$(FC90)
 
+# directories  {{{
 BINPATH=$(ROOTPATH)/bin
 
 # general library path
@@ -19,8 +19,10 @@ LAPACKPATH=$(ROOTPATH)/lapack
 BLASPATH=$(ROOTPATH)/blas
 SPATH=$(ROOTPATH)/scripts/
 SAPATH=$(SPATH)/all/
-PROG=$(BINPATH)/$(PROGNAME)
 
+# }}}
+
+PROG=$(BINPATH)/$(PROGNAME)
 LDFLAGS = -L.
 DEFS =
 # CPP = /usr/bin/cpp
@@ -28,44 +30,63 @@ CPP = /lib/cpp
 CPFLAGS = -traditional -P
 L=
 
+F_LPU := $(INCPATH)/lpu_$(PROGNAME).mk
+F_NU := $(INCPATH)/nu_$(PROGNAME).mk
+
+# Libraries and related {{{
+
 ARCH = ar
 ARCHFLAGS = cr
 ARCHDELFLAGS = d
 RANLIB = ranlib
 
-F_LPU := $(INCPATH)/lpu_$(PROGNAME).mk
-F_NU := $(INCPATH)/nu_$(PROGNAME).mk
 LPBASE := $(LIBAPATH)/base_$(PROGNAME).a
 # LAPACK/BLAS Linear Algebra Libs
 LBLAS := $(LIBAPATH)/libmyblas.a
 LLAPACK := $(LIBAPATH)/libmylapack.a
 LLIBS := $(LBLAS) $(LLAPACK) $(LBLAS)
 LIBS  := $(LLIBS) $(LBASE)
+#}}}
+
 DEPS := deps.mk
 SEARCH_PATH =  -I.. -I$(MODPATH)
 
-DL := debug 
 #DEFS+=MPI
 
 PRF=$(SAPATH)/porfuncs.sh
 RCA=$(SAPATH)/rca.sh
 DV=$(SAPATH)/dv.sh
+DVOPTS=fflags "$(FFLAGS)" prog $(PROGNAME) fc_exec "$(FC)" make_opts "$(MAKE_OPTS)" 
 HEADER=$(SAPATH)/header.sh
 MKDEP=$(SAPATH)/mkdep.pl
+
 AUXF = dv.f90 rca.f90
 
-DVOPTS=fflags "$(FFLAGS)" prog $(PROGNAME) fc_exec "$(FC)" make_opts "$(MAKE_OPTS)" 
 #}}}
+
+export DL := debug 
 
 # pgi {{{
 ifeq ($(FC),pgf90)
 
 #FFLAGS= -Mextend -O0 -Munroll -Mnoframe 
-FFLAGS= -Mextend -O0 -Mnoframe -module $(MODPATH)
+F0:= -module $(MODPATH)
+FFLAGS:= $(F0)
+FFLAGS += -Mextend -O0 -Mnoframe 
+
+ifeq ($(DL),debug)
+
+FFLAGS += -Mextend -C -g -gopt -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mcoff -Mdwarf1 -Mdwarf2 -Mdwarf3 -Melf -Mnodwarf -Mpgicoff -traceback
+
+endif
+
+ifeq ($(DL),noopt)
+FFLAGS += -Mextend -O0 -Mnoframe 
+endif
+
 NOOPT = -O0 -Mextend
 LDFLAGS= -L.
 FREEFORMAT_FLAG= -Mfree
-EXTRA_FLAGS=-module
 SWITCH=pgi
 
 endif

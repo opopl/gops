@@ -84,6 +84,7 @@ Cop226> Initializations <init> {{{
       P46=.FALSE.
       G46=.FALSE.
       BLNT=.FALSE.
+      MYBLNT=.FALSE.
       CHAPERONINT=.FALSE.
       DFTBT=.FALSE.
       SW=.FALSE.

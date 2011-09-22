@@ -32,6 +32,7 @@ C
       USE NOA
       USE COMMONS
       USE V
+      USE MYFUNC
       USE QMODULE
       USE PERMU
       USE F1COM
@@ -119,6 +120,7 @@ C
 
       CALL KEYWORD
       !CALL KW
+      CALL SETVARS
 
       INQUIRE(UNIT=1,OPENED=LOPEN)
       IF (LOPEN) THEN
@@ -204,6 +206,7 @@ C
       ENDIF
 !op226>}}} 
 
+        ! PAIRDIST {{{
       IF (PAIRDISTT) THEN
          MYPUNIT=3000+MYNODE
          IF (NPAR.GT.1) THEN
@@ -220,6 +223,7 @@ C
          ENDDO
          WRITE(LFH,'(A)') ""
       ENDIF
+         ! }}}
 
 !op226> TRACKDATAT {{{ 
 !

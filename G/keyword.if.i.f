@@ -189,6 +189,8 @@ C BLJCLUSTER {{{
          CALL READF(CUTOFF)
 C }}}
 C BLN {{{
+      ELSE IF (WORD.EQ.'MYBLN') THEN
+         MYBLNT=.TRUE.
       ELSE IF (WORD.EQ.'BLN') THEN
          BLNT=.TRUE.
          CALL READF(RK_R)

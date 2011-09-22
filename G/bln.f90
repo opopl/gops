@@ -1,5 +1,5 @@
 
-     MODULE BLN 
+     MODULE MODBLN 
 
      IMPLICIT NONE
 
@@ -47,4 +47,4 @@ include "bln.hess.inc.f90"        ! calculate Hessian
         END SUBROUTINE
 ! }}} 
 
-        ENDMODULE
+        ENDMODULE MODBLN

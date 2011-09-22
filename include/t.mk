@@ -32,7 +32,7 @@ header.f90: $(HEADER)
 
 #}}}
 
-#deps tg prog bindir cup {{{
+#deps help tg prog bindir cup {{{
 
 deps: rmdep $(DEPS)
 rmdep:
@@ -42,7 +42,7 @@ $(DEPS): $(MKDEP)
 	$(MKDEP) $@
 
 tg:
-	ctags -R *.f *.f90 *.F
+	ctags -R $(SOURCE)
 
 $(PROGNAME): $(PROG)
 

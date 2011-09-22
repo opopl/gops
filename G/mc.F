@@ -167,6 +167,7 @@ c  AMH
       ENDIF
 
 #ifdef MPI
+      ! {{{
       IF (MPIT) THEN 
          IF (DEBUG) WRITE(LFH,'(A,I6)') 'MPIERR=',MPIERR
          CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NPAR,MPIERR)
@@ -177,6 +178,7 @@ c  AMH
          IF (DEBUG) WRITE(LFH, '(A,3I6)') 'In mc after MPI_MPI_COMM_RANK MPIERR,MYNODE,JP=',MPIERR,MYNODE,JP
       ENDIF
       NEACCEPT=0
+      ! }}}
 #endif
 
       NDONE=0
@@ -332,6 +334,7 @@ c  AMH
 
 !op226>}}} 
 #else
+      ! {{{
       WRITE(LFH,'(A)') 'Calculating initial energy'
       EPSSAVE=EPSSPHERE
       EPSSPHERE=0.0D0
@@ -376,6 +379,7 @@ c  AMH
          VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
       ENDDO
       EPSSPHERE=EPSSAVE
+      ! }}}
 #endif
 !op226>}}} 
 
