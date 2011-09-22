@@ -64,6 +64,7 @@ libamh.a: $(AMH_OBJS)
 
 blas: $(LBLAS)
 lapack: $(LLAPACK)
+base: $(LPBASE)
 
 $(LBLAS): $(BLAS_OBJS)
 	cd $(BLASPATH); make double FC="${FC}" FFLAGS="${FFLAGS}" BLAS_EXCLUDE_LIST="${BLAS_EXCLUDE_LIST}";\
@@ -75,10 +76,18 @@ $(LLAPACK): $(LAPACK_OBJS)
 	mkdir -p $(LIBAPATH)
 	cp $(LAPACKPATH)/libmylapack.a $@
 
+$(LPBASE): $(LPBASE_OBJS) 
+	mkdir -p $(LIBAPATH)
+	$(ARCH) $(ARCHFLAGS) $(LPBASE) $(LPBASE_OBJS) $^
+	$(RANLIB) $@ 
+
 SAT-Ghost:
 #}}}
 
 #clean cleanall{{{
+
+cbase:
+	rm -f $(LPBASE)
 
 clean:
 	rm -f $(OBJS) $(AUXF) $(GENFFILES) *.mod $(DEPS)

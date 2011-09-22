@@ -18,6 +18,7 @@ if 0; #$running_under_some_shell
 use File::Find ();
 use Getopt::Std;
 use Cwd;
+use File::Basename;
 
 # Set the variable $File::Find::dont_use_nlink if you're using AFS, since AFS cheats.
 # for the convenience of &wanted calls, including -eval statements:
@@ -52,10 +53,20 @@ my $nu_exist;
 
 my $nu_dir;
 
-my $projdir=&cwd();
-my $dpfile="$projdir/$ARGV[0]";
-open(DP, ">$dpfile") or die $!; 
-print DP "# Project dir: $projdir\n";
+# current project full path, e.g., /home/op226/gops/G
+my $PPATH=&cwd();
+# current program name, e.g., G
+my $PROGNAME=&basename($PPATH);
+# scripts/all/
+my $SAPATH=&dirname($0);
+# $HOME/gops/
+my $ROOTPATH="$SAPATH/../../";
+my $INCPATH="$ROOTPATH/include/";
+my $F_NU="$INCPATH/nu_$PROGNAME.mk";
+my $F_DP="$PPATH/$ARGV[0]";
+open(DP, ">$F_DP") or die $!; 
+print DP "# Project dir: $PPATH\n";
+print DP "# Program name: $PROGNAME\n";
 
 #}}}
 # here-doc{{{
@@ -86,9 +97,8 @@ sub get_unused;
 
 sub get_unused{
 	#{{{
-	my $nused_file="nu.mk";
 	$nu_exist=1;
-  open(NUF, $nused_file) or $nu_exist=0; 
+  open(NUF, $F_NU) or $nu_exist=0; 
   if ($nu_exist eq 1){
 	  while(<NUF>){
 		chomp;
@@ -109,7 +119,7 @@ sub get_unused{
 sub wanted {
 	#{{{
     my ($dev,$ino,$mode,$nlink,$uid,$gid);
-	( my $dirname = $File::Find::dir ) =~ s/$projdir//g;
+	( my $dirname = $File::Find::dir ) =~ s/$PPATH//g;
 	$dirname =~ s/^(\.|\/)+//g;
 
     if ( ( /^.*\.(f90|f|F)\z/s) &&
@@ -345,7 +355,7 @@ File::Find::find({wanted => \&wanted}, '.')  ;
 foreach (@f90) { s/^/*./ };
 
 print DP << "head";
-# $dpfile
+# $F_DP
 # Fortran dependency file
 # Created: $theTime
 head

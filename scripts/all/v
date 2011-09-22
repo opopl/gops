@@ -1,28 +1,30 @@
 #!/usr/bin/env bash
- 
+
+# set_base_vars set_base_dirs display_help  {{{
+
+set_base_dirs(){
+# {{{
+# main Wales group software directory
+export rootdir="$shd/../../"
+salldir=$rootdir/scripts/all/
+incdir=$rootdir/include/
+# }}}
+}
+
+set_base_vars(){
+# {{{
+
 # directory where this script resides
 export shd="`dirname $(readlink -f $0)`"
 # name of this script 
 export this_script=` basename $0 `
+# name of the current directory => program name
+export prg=` basename $PWD `
 
 vim_opts="-n -p"
 v="vim $vim_opts"
 repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
-salldir=$shd/../scripts/all/
-incdir=$shd/../include/
 
-define_base_dirs(){
-# {{{
-# main Wales group software directory
-export wg_dir="$shd/../../"
-packdir=$HOME/arch/packed
-unpackdir=$HOME/arch/unpacked
-# }}}
-}
-
-
-set_base_vars(){
-# {{{
 s_purpose="view source files with vim"
 s_project="~/gops/"
 # }}}
@@ -75,6 +77,8 @@ EOF
 # }}}
 }
 
+# }}}
+
 [ -z "$*" ] && ( display_help; exit 0 )
 
 main(){
@@ -88,12 +92,16 @@ case "$1" in
   m) 
   [ -f makefile ] && mkf="makefile"
   [ -f Makefile ] && mkf="Makefile"
-  $v $0 $mkf old.mk deps.mk nu.mk $incdir/inc.mk inc.mk $incdir/def.mk $incdir/t.mk t.mk \
+  $v $0 $mkf old.mk deps.mk $incdir/nu_$prg.mk $incdir/inc.mk inc.mk $incdir/def.mk $incdir/t.mk t.mk \
  		$salldir/rca.sh $salldir/dv.sh $salldir/mkdep.pl \
 		base_source.in 
 		;;
   o)
   $v ` ls n.*.f90 n.*.f n.*.F ` keyword*.f true.in false.in num.in source.in data.in rif.log ;;
+  mn)
+  $v main.f mcruns.f io.f90 mc.f90 kw.f90 func.f90 commons.f90 quench.f mylbfgs.f \
+  n/keyword.if.i.f ;;
+  lp) $v ` find $incdir -name lpu_\*.mk -o -name nu_\*.mk ` ;;
 esac    # --- end of case ---
 
 # }}}
@@ -103,7 +111,7 @@ esac    # --- end of case ---
 # {{{
 
 script_opts=( $* )
-define_base_dirs
+set_base_dirs
 
 while [ ! -z "$1" ]; do
   	case "$1" in

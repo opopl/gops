@@ -5,8 +5,12 @@
 FC=$(FC90)
 
 BINPATH=$(ROOTPATH)/bin
+
+# general library path
 LIBPATH=$(ROOTPATH)/lib/
+# library path for *.a compiled with $(FC)
 LIBAPATH=$(LIBPATH)/fc_$(FC)/
+
 LAPACKPATH=$(ROOTPATH)/lapack
 BLASPATH=$(ROOTPATH)/blas
 SPATH=$(ROOTPATH)/scripts/
@@ -20,7 +24,14 @@ CPP = /lib/cpp
 CPFLAGS = -traditional -P
 L=
 
-LBASE :=$(LIBAPATH)/baseG.a
+ARCH = ar
+ARCHFLAGS = cr
+ARCHDELFLAGS = d
+RANLIB = ranlib
+
+F_LPU := $(INCPATH)/lpu_$(PROGNAME).mk
+F_NU := $(INCPATH)/nu_$(PROGNAME).mk
+LPBASE := $(LIBAPATH)/base_$(PROGNAME).a
 # LAPACK/BLAS Linear Algebra Libs
 LBLAS := $(LIBAPATH)/libmyblas.a
 LLAPACK := $(LIBAPATH)/libmylapack.a
