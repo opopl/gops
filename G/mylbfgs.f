@@ -1,3 +1,4 @@
+      ! {{{
 C   GMIN: A program for finding global minima
 C   Copyright (C) 1999-2006 David J. Wales
 C   This file is part of GMIN.
@@ -23,7 +24,9 @@ C                        *** July 1990 ***
 C
 C        Line search removed plus small modifications, DJW 2001
 C
+      ! }}}
       SUBROUTINE MYLBFGS(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET,NP)
+      ! declarations {{{
       USE COMMONS
       USE MODAMBER
       USE MODAMBER9, ONLY : STEEREDMINT, LOCALSTEEREDMINT, SMINK, SMINKINC, SMINKCURRENT
@@ -50,7 +53,10 @@ C
       COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
       COMMON /EV/ EVAP, evapreject
       SAVE W, DIAG, ITER, POINT, ISPT, IYPT, NPT
+      ! }}}
+      ! subroutine body {{{
 
+      ! intro {{{
       IF (.NOT.ALLOCATED(DIAG)) ALLOCATE(DIAG(N))       ! SAVE doesn't work otherwise for Sun
       IF (.NOT.ALLOCATED(W)) ALLOCATE(W(N*(2*M+1)+2*M)) ! SAVE doesn't work otherwise for Sun
 !     IF (QUENCHDOS) ALLOCATE(FRAMES(N,ITMAX), PE(ITMAX), MODGRAD(ITMAX))
@@ -120,8 +126,10 @@ C
      1          ('LB',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=NATOMS-NS+1,NATOMS)
          ENDIF
       ENDIF
+      ! }}}
       CALL POTENTIAL(XCOORDS,GRAD,ENERGY,.TRUE.,.FALSE.)
-C
+    
+      ! intro2 {{{
 C  Catch cold fusion for ionic potentials and discard.
 C
 C  Changed EREAL for cold fusion to 1.0D6 rather than 0.0D0, which could result in steps being accepted
@@ -218,8 +226,9 @@ C
          WRITE(MYUNIT,'(A)') ' Cold fusion diagnosed - step discarded'
          RETURN
       ENDIF
+      ! }}}
 C
-C  Termination test. 
+C  Termination test.  {{{
 C
 10    CALL FLUSH(MYUNIT)
       MFLAG=.FALSE.
@@ -269,8 +278,10 @@ C
 !        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
          RETURN
       ENDIF
+         ! }}}
 
       IF (ITER.EQ.0) THEN
+        ! {{{
          IF (N.LE.0.OR.M.LE.0) THEN
             WRITE(MYUNIT,240)
  240        FORMAT(' IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')
@@ -339,7 +350,9 @@ C
 C  Make the first guess for the step length cautious.
 C
          STP=MIN(1.0D0/GNORM,GNORM)
+         ! }}}
       ELSE 
+        ! {{{
          BOUND=ITER
          IF (ITER.GT.M) BOUND=M
          YS= DDOT(N,W(IYPT+NPT+1),1,W(ISPT+NPT+1),1)
@@ -347,6 +360,7 @@ C
 C  Update estimate of diagonal inverse Hessian elements
 C
          IF (.NOT.DIAGCO) THEN
+           ! DIAG => YS/YY {{{
             YY= DDOT(N,W(IYPT+NPT+1),1,W(IYPT+NPT+1),1)
             IF (YY.EQ.0.0D0) THEN
                WRITE(MYUNIT,'(A)') 'WARNING, resetting YY to one in mylbfgs'
@@ -363,7 +377,9 @@ C           WRITE(*,'(A,2F20.10)') 'YS/YY,STP=',YS/YY,STP
 C              DIAG(J1)= ABS(YS/YY) ! messes up after step reversals!
                DIAG(J1)= YS/YY
             ENDDO
+            ! }}}
          ELSE
+            ! {{{
             WRITE(MYUNIT,'(A)') 'using estimate of the inverse diagonal elements'
             DO J1=1,N
                IF (DIAG(J1).LE.0.0D0) THEN
@@ -371,13 +387,14 @@ C              DIAG(J1)= ABS(YS/YY) ! messes up after step reversals!
                   STOP
                ENDIF
             ENDDO
+            ! }}}
          ENDIF
-C
-C     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980,
+
+C     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980, {{{
 C     "Updating quasi-Newton matrices with limited storage",
 C     Mathematics of Computation, Vol.24, No.151, pp. 773-782.
 C     ---------------------------------------------------------
-C
+
          CP= POINT
          IF (POINT.EQ.0) CP=M
          W(N+CP)= 1.0D0/YS
@@ -416,6 +433,8 @@ C
             IF (CP.EQ.M) CP=0
          ENDDO
          STP=1.0D0  
+         ! }}}
+      ! }}}
       ENDIF
 C
 C  Store the new search direction
@@ -1007,5 +1026,6 @@ C
       GOTO 10
 !     IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
 
+      ! }}}
       RETURN
       END

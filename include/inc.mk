@@ -25,6 +25,7 @@ OBJS := $(sort $(patsubst %.F,%.o,$(patsubst %.f,%.o,$(patsubst %.f90,%.o,$(SOUR
 LPUSED := $(strip $(shell cat $(F_LPU)))
 LPBASE_SOURCE := $(filter-out $(LPUSED),$(SOURCE))
 LPBASE_OBJS := $(sort $(patsubst %.F,%.o,$(patsubst %.f,%.o,$(patsubst %.f90,%.o,$(LPBASE_SOURCE)))))
+LPU_OBJS := $(sort $(patsubst %.F,%.o,$(patsubst %.f,%.o,$(patsubst %.f90,%.o,$(LPUSED)))))
 
 BLAS_SOURCE=$(shell find $(BLAS_PATH) -name \*.f )
 LAPACK_SOURCE=$(shell find $(LAPACK_PATH) -name \*.f )

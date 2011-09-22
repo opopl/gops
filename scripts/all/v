@@ -19,7 +19,7 @@ export shd="`dirname $(readlink -f $0)`"
 # name of this script 
 export this_script=` basename $0 `
 # name of the current directory => program name
-export prg=` basename $PWD `
+export PROGNAME=` basename $PWD `
 
 vim_opts="-n -p"
 v="vim $vim_opts"
@@ -92,7 +92,8 @@ case "$1" in
   m) 
   [ -f makefile ] && mkf="makefile"
   [ -f Makefile ] && mkf="Makefile"
-  $v $0 $mkf old.mk deps.mk $incdir/nu_$prg.mk $incdir/inc.mk inc.mk $incdir/def.mk $incdir/t.mk t.mk \
+  $v $0 $mkf old.mk deps.mk $incdir/nu_$PROGNAME.mk \
+ 		 $incdir/inc.mk inc.mk $incdir/def.mk $incdir/t.mk t.mk \
  		$salldir/rca.sh $salldir/dv.sh $salldir/mkdep.pl \
 		base_source.in 
 		;;
@@ -101,7 +102,8 @@ case "$1" in
   mn)
   $v main.f mcruns.f io.f90 mc.f90 kw.f90 func.f90 commons.f90 quench.f mylbfgs.f \
   n/keyword.if.i.f ;;
-  lp) $v ` find $incdir -name lpu_\*.mk -o -name nu_\*.mk ` ;;
+  lp) $v `cat $incdir/lpu_$PROGNAME.mk | sed '/^#/d' `  \
+  			` find $incdir -name lpu_\*.mk -o -name nu_\*.mk ` ;;
 esac    # --- end of case ---
 
 # }}}

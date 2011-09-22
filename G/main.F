@@ -62,6 +62,11 @@ C
 
       CALL CPU_TIME(TSTART)
       CALL RCA
+
+      MYFILENAME="out"
+      OPEN(MYUNIT,FILE=MYFILENAME, STATUS="unknown", form="formatted")
+      WRITE(MYUNIT, '(A,I10,A,I10,A)') "Starting serial execution"
+
 #ifdef MPI
 !op226> MPI section {{{ 
       CALL MPI_INIT(MPIERR)
@@ -73,13 +78,6 @@ C
       AMBPDB_UNIT=18000+MYNODE
       AMBFINALIO_NODE=200+MYNODE
       WRITE (ISTR, '(I10)') MYNODE+1
-      IF (TRIM(ADJUSTL(INFILE)).EQ.'') INFILE='GMIN_out'
-      IF (NPAR.GT.1) THEN 
-         MYFILENAME=TRIM(ADJUSTL(INFILE))//"."//TRIM(ADJUSTL(ISTR))
-      ELSE
-         MYFILENAME=TRIM(ADJUSTL(INFILE))
-      ENDIF
-      OPEN(MYUNIT,FILE=MYFILENAME, STATUS="unknown", form="formatted")
       WRITE(MYUNIT, '(A,I10,A,I10)') "Starting parallel execution: Processor", mynode+1, " of ",NPAR
 !op226>}}} 
 #else
@@ -91,12 +89,6 @@ C
       MDINFO_UNIT=21000
       AMBPDB_UNIT=18000
       AMBFINALIO_NODE=1
-      IF (TRIM(ADJUSTL(INFILE)).EQ.'') THEN
-         MYFILENAME="GMIN_out"
-      ELSE
-         MYFILENAME=TRIM(ADJUSTL(INFILE))
-      ENDIF
-      OPEN(MYUNIT,FILE=MYFILENAME, STATUS="unknown", form="formatted")
       WRITE(MYUNIT, '(A,I10,A,I10,A)') "Starting serial execution"
 !op226>}}} 
 #endif

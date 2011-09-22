@@ -1,5 +1,5 @@
 
-default: $(AUXF) $(DEPS) $(PROG)
+default: dirs $(AUXF) $(DEPS) $(PROG)
 
 #SUFFIXES..., F => o {{{
 
@@ -48,8 +48,18 @@ $(PROGNAME): $(PROG)
 
 bindir: 
 	mkdir -p $(BINPATH)
+moddir: 
+	mkdir -p $(MODPATH)
+libdir: 
+	mkdir -p $(LIBAPATH)
 
-$(PROG): $(OBJS) bindir
+dirs: bindir moddir libdir
+
+b$(PROGNAME): dirs $(OBJS) 
+	$(FC) $(FFLAGS) $(SEARCH_PATH) -o $@ $(LPU_OBJS) $(LDFLAGS) $(LPBASE) $(LIBS)
+	cp $@ $(BINPATH)
+
+$(PROG): dirs $(OBJS)  
 	$(FC) $(FFLAGS) $(SEARCH_PATH) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 	cp $(PROG) ./
 
@@ -90,10 +100,10 @@ cbase:
 	rm -f $(LPBASE)
 
 clean:
-	rm -f $(OBJS) $(AUXF) $(GENFFILES) *.mod $(DEPS)
+	rm -f $(OBJS) $(AUXF) $(GENFFILES) $(MODPATH)/*.mod $(DEPS)
  
 cleanall:
-	rm -f $(PROG) $(OBJS) ${GENFFILES} $(LLIBS) *.o *.a *.mod *.lst
+	rm -f $(PROG) $(OBJS) ${GENFFILES} $(LLIBS) *.o *.a *.lst
 	if test -d $(BLASPATH) ;  then cd $(BLASPATH) ; make clean ; fi
 	if test -d $(LAPACKPATH) ;  then cd $(LAPACKPATH) ; make clean ; fi
 	if test -d NEB ;  then cd NEB ; make clean ; fi

@@ -1,11 +1,12 @@
 # Project dir: /home/op226/gops/Gb
+# Program name: Gb
 # Not used dir: old
 # Not used dir: c
 # Not used dir: n
 # Not used dir: nu
 # /home/op226/gops/Gb/deps.mk
 # Fortran dependency file
-# Created: 23:29:43, Wed Sep 21, 2011
+# Created: 13:46:24, Thu Sep 22, 2011
 centre.o: commons.o
 potential.o: commons.o porfuncs.o qmod.o
 countatoms.o: commons.o

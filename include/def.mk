@@ -8,6 +8,10 @@ BINPATH=$(ROOTPATH)/bin
 
 # general library path
 LIBPATH=$(ROOTPATH)/lib/
+# general modules path
+MODGENPATH=$(ROOTPATH)/mod/$(PROGRAME)/
+# modules path for specific compiler
+MODPATH=$(ROOTPATH)/mod/$(PROGNAME)/fc_$(FC)/
 # library path for *.a compiled with $(FC)
 LIBAPATH=$(LIBPATH)/fc_$(FC)/
 
@@ -38,7 +42,7 @@ LLAPACK := $(LIBAPATH)/libmylapack.a
 LLIBS := $(LBLAS) $(LLAPACK) $(LBLAS)
 LIBS  := $(LLIBS) $(LBASE)
 DEPS := deps.mk
-SEARCH_PATH =  -I..
+SEARCH_PATH =  -I.. -I$(MODPATH)
 
 DL := debug 
 #DEFS+=MPI
@@ -57,7 +61,7 @@ DVOPTS=fflags "$(FFLAGS)" prog $(PROGNAME) fc_exec "$(FC)" make_opts "$(MAKE_OPT
 ifeq ($(FC),pgf90)
 
 #FFLAGS= -Mextend -O0 -Munroll -Mnoframe 
-FFLAGS= -Mextend -O0 -Mnoframe 
+FFLAGS= -Mextend -O0 -Mnoframe -module $(MODPATH)
 NOOPT = -O0 -Mextend
 LDFLAGS= -L.
 FREEFORMAT_FLAG= -Mfree

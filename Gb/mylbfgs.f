@@ -124,7 +124,7 @@ C  10 Termination test.  {{{
             ENDDO
          ENDIF
 C
-C     THE WORK VECTOR W IS DIVIDED AS FOLLOWS:
+C     THE WORK VECTOR W IS DIVIDED AS FOLLOWS: {{{
 C     ---------------------------------------
 C     THE FIRST N LOCATIONS ARE USED TO STORE THE GRADIENT AND
 C         OTHER TEMPORARY INFORMATION.
@@ -141,6 +141,7 @@ C     CIRCULAR ORDER CONTROLLED BY THE PARAMETER POINT.
 C
          ISPT= N+2*M    ! index for storage of search steps
          IYPT= ISPT+N*M ! index for storage of gradient differences
+         ! }}}
 C
 C  NR step for diagonal inverse Hessian
 C
@@ -164,6 +165,7 @@ C
 C  Update estimate of diagonal inverse Hessian elements
 C
          IF (.NOT.DIAGCO) THEN
+           ! DIAGCO = YS/YY {{{
             YY= DDOT(N,W(IYPT+NPT+1),1,W(IYPT+NPT+1),1)
             IF (YY.EQ.0.0D0) THEN
                WRITE(LFH,'(A)') 'WARNING, resetting YY to one in mylbfgs'
@@ -173,10 +175,14 @@ C
                WRITE(LFH,'(A)') 'WARNING, resetting YS to one in mylbfgs'
                YS=1.0D0
             ENDIF
+            IF (DEBUG) WRITE(LFH,'(A20,F20.5)') 'YY= ',YY
+            IF (DEBUG) WRITE(LFH,'(A20,F20.5)') 'YS= ',YS
             DO J1=1,N
                DIAG(J1)= YS/YY
             ENDDO
+            ! }}}
          ELSE
+           ! {{{
             WRITE(LFH,'(A)') 'using estimate of the inverse diagonal elements'
             DO J1=1,N
                IF (DIAG(J1).LE.0.0D0) THEN
@@ -184,13 +190,14 @@ C
                   STOP
                ENDIF
             ENDDO
+            ! }}}
          ENDIF
-C
-C     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980,
+
+C     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980, {{{
 C     "Updating quasi-Newton matrices with limited storage",
 C     Mathematics of Computation, Vol.24, No.151, pp. 773-782.
 C     ---------------------------------------------------------
-C
+
          CP= POINT
          IF (POINT.EQ.0) CP=M
          W(N+CP)= 1.0D0/YS
@@ -224,9 +231,10 @@ C
          ENDDO
          STP=1.0D0  
          ! }}}
+         ! }}}
       ENDIF
 
-C  Store the new search direction
+C  Store the new search direction {{{
 
       IF (ITER.GT.0) THEN
          DO J1=1,N
@@ -271,7 +279,8 @@ C        GOTO 10
       ENDDO
       SLENGTH=SQRT(SLENGTH)
       IF (STP*SLENGTH.GT.MAXBFGS) STP=MAXBFGS/SLENGTH
-C
+      ! }}}
+
 C  We now have the proposed step.
 C
 !
