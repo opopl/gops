@@ -51,7 +51,7 @@
 !  centre of coordinates of COORDSA will be the same as for COORDSB.
 !
 SUBROUTINE MINPERMDIST(COORDSB,COORDSA,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGID,RMATBEST)
-USE COMMONS,ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP, NSETS, SETS, CHRMMT, MYUNIT, STOCKT, NFREEZE, &
+USE COMMONS,ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP, NSETS, SETS, CHRMMT, LFH, STOCKT, NFREEZE, &
   & AMBERT, CSMGPINDEX, CSMT, ZSYM, PERIODIC, PERMDIST, PULLT, EFIELDT, OHCELLT
 USE PORFUNCS
 IMPLICIT NONE
@@ -144,7 +144,7 @@ OPNUM=0
 25 OPNUM=OPNUM+1 ! Point group operation counter for Oh supercell if OHCELLT is true.
 DUMMYB(1:3*NATOMS)=COORDSB(1:3*NATOMS)
 IF (OHCELLT) THEN
-   IF (DEBUG) WRITE(MYUNIT,'(A,I8)') 'minpermdist> Trying Oh symmetry operation number ',OPNUM
+   IF (DEBUG) WRITE(LFH,'(A,I8)') 'minpermdist> Trying Oh symmetry operation number ',OPNUM
    CALL OHOPS(COORDSA,DUMMYA,OPNUM,NATOMS)
 ELSE
    DUMMYA(1:3*NATOMS)=COORDSA(1:3*NATOMS)
@@ -180,7 +180,7 @@ IF ((NFREEZE.LE.0).AND.(.NOT.CSMT)) THEN
          RETURN
       ELSE
          CALL NEWMINDIST(DUMMYB,DUMMYA,NATOMS,DISTANCE,BULKT,TWOD,'AX    ',.FALSE.,RIGID,DEBUG,RMAT)
-         IF (DEBUG) WRITE(MYUNIT,'(A,G20.10)') 'minpermdist> after initial call to BULK/NEWMINDIST distance=',DISTANCE
+         IF (DEBUG) WRITE(LFH,'(A,G20.10)') 'minpermdist> after initial call to BULK/NEWMINDIST distance=',DISTANCE
          DISTANCE=DISTANCE**2 ! minperdist returns the distance squared for historical reasons
       ENDIF
    ELSEIF (STOCKT) THEN
@@ -217,7 +217,7 @@ IF ((NFREEZE.LE.0).AND.(.NOT.CSMT)) THEN
          DISTANCE=DISTANCE+(DUMMYA(J1)-DUMMYB(J1))**2
       ENDDO
    ENDIF
-   IF (DEBUG) WRITE(MYUNIT,'(A,G20.10)') 'minpermdist> after initial call to MYORIENT distance=',SQRT(DISTANCE)
+   IF (DEBUG) WRITE(LFH,'(A,G20.10)') 'minpermdist> after initial call to MYORIENT distance=',SQRT(DISTANCE)
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !  WRITE(10,'(I6)') NATOMS/2
@@ -238,10 +238,10 @@ ELSE
   ROTINVB(1:3,1:3)=0.0D0
   ROTINVB(1,1)=1.0D0; ROTINVB(2,2)=1.0D0; ROTINVB(3,3)=1.0D0
   CALL NEWMINDIST(DUMMYB,DUMMYA,NATOMS,DISTANCE,BULKT,TWOD,'AX    ',.FALSE.,RIGID,DEBUG,RMAT)
-  IF (DEBUG) WRITE(MYUNIT,'(A,G20.10)') 'minpermdist> after initial call to NEWMINDIST distance=',DISTANCE
+  IF (DEBUG) WRITE(LFH,'(A,G20.10)') 'minpermdist> after initial call to NEWMINDIST distance=',DISTANCE
   DISTANCE=DISTANCE**2 ! minpermdist returns the distance squared for historical reasons
 ENDIF
-IF (DEBUG) WRITE(MYUNIT,'(A,4I8)') 'minpermdist> size of orbits and selected atoms: ',NORBIT1,NORBIT2,NCHOOSE1,NCHOOSE2
+IF (DEBUG) WRITE(LFH,'(A,4I8)') 'minpermdist> size of orbits and selected atoms: ',NORBIT1,NORBIT2,NCHOOSE1,NCHOOSE2
 
 ! CALL POTENTIAL(DUMMYA,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
 ! PRINT '(2(A,F25.15))',' New initial energy=',ENERGY,' RMS=',RMS
@@ -366,7 +366,7 @@ ENDDO
 ! PRINT '(A,F25.15,A)',' Energy is now=',ENERGY,' kcal/mol'
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-IF (DEBUG) WRITE(MYUNIT,'(A,I6,A,G20.10)') 'minpermdist> distance after permuting ',NPERM,' pairs of atoms=',SQRT(DISTANCE)
+IF (DEBUG) WRITE(LFH,'(A,I6,A,G20.10)') 'minpermdist> distance after permuting ',NPERM,' pairs of atoms=',SQRT(DISTANCE)
 
 ! CALL OCHARMM(DUMMYA,VNEW,ENERGY,.FALSE.,.FALSE.)
 ! PRINT '(A,F25.15,A)',' Energy for last cycle=',ENERGY,' kcal/mol'
@@ -413,15 +413,15 @@ IF ((NPERM.NE.0).OR.(NTRIES.EQ.1)) THEN
    RMATCUMUL=MATMUL(RMAT,RMATCUMUL)
    DISTANCE=DISTANCE**2 ! we are using DISTANCE^2 further down
 
-   IF (DEBUG) WRITE(MYUNIT,'(A,G20.10,A,I6)')  'minpermdist> distance after NEWMINDIST=                     ',SQRT(DISTANCE), &
+   IF (DEBUG) WRITE(LFH,'(A,G20.10,A,I6)')  'minpermdist> distance after NEWMINDIST=                     ',SQRT(DISTANCE), &
   &           ' tries=',NTRIES  
-   CALL FLUSH(MYUNIT,ISTAT)
+   CALL FLUSH(LFH,ISTAT)
    IF ((NTRIES.LT.MAXIMUMTRIES).AND.(DISTANCE.LT.PDISTANCE)) THEN
-!     WRITE(MYUNIT,'(A,I6,2G20.10)') 'NTRIES,DISTANCE,PDISTANCE=',NTRIES,DISTANCE,PDISTANCE
+!     WRITE(LFH,'(A,I6,2G20.10)') 'NTRIES,DISTANCE,PDISTANCE=',NTRIES,DISTANCE,PDISTANCE
       PDISTANCE=DISTANCE
       GOTO 10
    ELSE ! prevent infinite loop
-      IF (DEBUG) WRITE(MYUNIT,'(A)') &
+      IF (DEBUG) WRITE(LFH,'(A)') &
   &              'minpermdist> WARNING - number of tries exceeded or distance increased with nonzero permutations'
    ENDIF
 ENDIF
@@ -458,7 +458,7 @@ IF ((NCHOOSE2.EQ.NORBIT2).AND.(NCHOOSE1.EQ.NORBIT1).AND.(INVERT.EQ.1)) THEN
 ! don't try inversion for bulk or charmm or amber or frozen atoms or CSM
 !
    IF (BULKT.OR.CHRMMT.OR.AMBERT.OR.(NFREEZE.GT.0).OR.CSMT) GOTO 50 
-   IF (DEBUG) WRITE(MYUNIT,'(A)') 'minpermdist> inverting geometry for comparison with target'
+   IF (DEBUG) WRITE(LFH,'(A)') 'minpermdist> inverting geometry for comparison with target'
    INVERT=-1
    GOTO 60
 ENDIF
@@ -510,7 +510,7 @@ ENDIF
       ENDDO
    ENDIF
    IF (ABS(SQRT(XDUMMY)-SQRT(DISTANCE)).GT.GEOMDIFFTOL) THEN
-      WRITE(MYUNIT,'(2(A,F20.10))') 'minpermdist> ERROR *** distance between transformed XBEST and COORDSB=',SQRT(XDUMMY), &
+      WRITE(LFH,'(2(A,F20.10))') 'minpermdist> ERROR *** distance between transformed XBEST and COORDSB=',SQRT(XDUMMY), &
   &                         ' should be ',SQRT(DISTANCE)
    ENDIF
 

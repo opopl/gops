@@ -130,8 +130,8 @@ C     ENDIF
            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
          END IF
          POTEL=EREAL
-         IF (.NOT.CFLAG) WRITE(MYUNIT,'(A,I7,A)') ' WARNING - compressed quench ',NQ(NP),'  did not converge'
-         WRITE(MYUNIT,'(A,I7,A,F20.10,A,I5,A,F15.7,A,I4,A,F12.2)') 'Comp Q ',NQ(NP),' energy=',
+         IF (.NOT.CFLAG) WRITE(LFH,'(A,I7,A)') ' WARNING - compressed quench ',NQ(NP),'  did not converge'
+         WRITE(LFH,'(A,I7,A,F20.10,A,I5,A,F15.7,A,I4,A,F12.2)') 'Comp Q ',NQ(NP),' energy=',
      1              POTEL,' steps=',ITER,' RMS force=',RMS
       ENDIF
 
@@ -155,14 +155,14 @@ C     ENDIF
          !   CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP) ! minimize structure
          !   write(*,*) 'permdist mylbfgs', EREAL, ITER, RMS
          !   POTEL=EREAL
-         !   IF (.NOT.CFLAG) WRITE(MYUNIT,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
+         !   IF (.NOT.CFLAG) WRITE(LFH,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
          !   DO II=1,NSAVE
          !      IF ( II .GE. NQ(NP) ) EXIT ! There's no need to check further, there's nothing
          !      CALL MINPERMDIST(P,QMINP(II,:),NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,PERIODIC,TWOD,DUMMY,DIST2,RIGID,RMAT)
          !      write(*,*) DUMMY, 'dummy',ii
          !      IF (DUMMY .LT. 0.5D0) THEN
          !         !DO NOT ACCEPT THIS QUENCH
-         !         WRITE(MYUNIT,*) 'This quench ended in a known minimum. It won`t be counted.'
+         !         WRITE(LFH,*) 'This quench ended in a known minimum. It won`t be counted.'
          !         RETURN
          !      ENDIF
          !   ENDDO
@@ -200,7 +200,7 @@ C
          CALL SYSTEM('DLPOLY.X > output.DL_POLY ; tail -9 STATIS > energy')
          OPEN (UNIT=91,FILE='energy',STATUS='OLD')
          READ(91,*) EREAL
-         WRITE(MYUNIT,'(A,G20.10)') 'energy=',EREAL
+         WRITE(LFH,'(A,G20.10)') 'energy=',EREAL
          CLOSE(91)
          OPEN(UNIT=91,FILE='REVCON',STATUS='OLD')
          READ(91,'(A1)') DUMMY
@@ -211,7 +211,7 @@ C
          READ(91,*) P(3*(NATOMS-1)+1),P(3*(NATOMS-1)+2),P(3*(NATOMS-1)+3)
          READ(91,'(A1)') DUMMY
          READ(91,'(A1)') DUMMY
-C        WRITE(MYUNIT,'(3G20.10)') P(3*(NATOMS-1)+1),P(3*(NATOMS-1)+2),P(3*(NATOMS-1)+3)
+C        WRITE(LFH,'(3G20.10)') P(3*(NATOMS-1)+1),P(3*(NATOMS-1)+2),P(3*(NATOMS-1)+3)
          GOTO 13
 14       CONTINUE
          CLOSE(91)
@@ -227,7 +227,7 @@ C        CALL CGMIN(100,P,CFLAG,ITER,EREAL,NP)
       ELSEIF (TNT) THEN
 C        CALL CGMIN(100,P,CFLAG,ITER,EREAL,NP)
          CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,100,ITER,.TRUE.,NP)
-          WRITE(MYUNIT, '(A)') 'subroutine tn does not compile with NAG/PG'
+          WRITE(LFH, '(A)') 'subroutine tn does not compile with NAG/PG'
          STOP
 C        CALL TN(IFLAG,3*NATOMS,P,EREAL,GRAD,WORK,60*NATOMS,GMAX,ITER,MAXIT,CFLAG,DEBUG)
       ELSEIF (CONJG) THEN
@@ -265,13 +265,13 @@ C        CALL CGMIN(5,P,CFLAG,ITER,EREAL,NP)
 !! first decrease repulsive epsilon values, converge, then gradually increase them
 !           epssave(:)=PEPSILON1(:)
 !          IF(.NOT.QTEST) THEN
-!           WRITE(MYUNIT,*) 'first iteration: decreasing epsilon_rep values by a factor of 10000' 
+!           WRITE(LFH,*) 'first iteration: decreasing epsilon_rep values by a factor of 10000' 
 !           PEPSILON1(:)=PEPSILON1(:)/10000.0D0
 !            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-!           WRITE(MYUNIT,*) 'second iteration: increasing epsilon_rep values by a factor of 100' 
+!           WRITE(LFH,*) 'second iteration: increasing epsilon_rep values by a factor of 100' 
 !           PEPSILON1(:)=PEPSILON1(:)*100.0D0
 !            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-!            WRITE(MYUNIT,*) 'third iteration: increasing epsilon_rep values by a factor of 100' 
+!            WRITE(LFH,*) 'third iteration: increasing epsilon_rep values by a factor of 100' 
 !           PEPSILON1(:)=PEPSILON1(:)*100.0D0
 !            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
 !          END IF
@@ -285,12 +285,12 @@ C        CALL CGMIN(5,P,CFLAG,ITER,EREAL,NP)
       IF (CFLAG) QDONE=1
       IF (.NOT.CFLAG) THEN
          IF (QTEST) THEN
-            WRITE(MYUNIT,'(A,I6,A)') 'WARNING - Final Quench ',NQ(NP),'  did not converge'
+            WRITE(LFH,'(A,I6,A)') 'WARNING - Final Quench ',NQ(NP),'  did not converge'
          ELSE
             IF (NPAR.GT.1) THEN
-               WRITE(MYUNIT,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
+               WRITE(LFH,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
             ELSE
-               WRITE(MYUNIT,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
+               WRITE(LFH,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
             ENDIF
          ENDIF
       ENDIF
@@ -311,7 +311,7 @@ C     ENDDO
 C     PRINT*,'Inertia lists:'
 C     DO J1=1,NPAR
 C        PRINT*,'Parallel run ',J1
-C        WRITE(MYUNIT,'(6F15.7)') (XINSAVE(J2,J1),J2=1,NT(J1))
+C        WRITE(LFH,'(6F15.7)') (XINSAVE(J2,J1),J2=1,NT(J1))
 C     ENDDO
 
 ! csw34> CHIRALITY AND PEPTIDE BOND CHECKS - reports GOODSTRUCTURE
@@ -333,7 +333,7 @@ C     ENDDO
             IF (CHECKCHIRALITY) CALL CHECKCHIRAL(P,FAIL)
             IF (FAIL) THEN
                GOODSTRUCTURE=.FALSE.
-               WRITE(MYUNIT,*) ' quench> CHIRALITY CHECK FAILED - discarding structure'
+               WRITE(LFH,*) ' quench> CHIRALITY CHECK FAILED - discarding structure'
             ENDIF
 !
 ! csw34> PEPTIDE BOND
@@ -342,7 +342,7 @@ C     ENDDO
             IF (NOCISTRANS) CALL CHECKOMEGA(P,FAIL)
             IF (FAIL) THEN
                GOODSTRUCTURE=.FALSE.
-               WRITE(MYUNIT,*) ' quench> PEPTIDE BOND CHECK FAILED - discarding structure'
+               WRITE(LFH,*) ' quench> PEPTIDE BOND CHECK FAILED - discarding structure'
             ENDIF
          ENDIF
 !
@@ -369,7 +369,7 @@ C     ENDDO
                      IF ((CHIARRAY1(J5)-CHIARRAY2(J5))/=0) FAIL=.TRUE.
                   ENDDO
                   IF (FAIL) THEN
-                     WRITE(MYUNIT,*) ' quench> WARNING: chirality differs from initial structure!'
+                     WRITE(LFH,*) ' quench> WARNING: chirality differs from initial structure!'
                      GOODSTRUCTURE=.FALSE.
                   ENDIF
 ! csw34> If SETCHIRAL is NOT specified
@@ -381,7 +381,7 @@ C     ENDDO
                ENDIF
 ! csw34> If either test fails, print a warning
                IF (FAIL.OR.(.NOT.PASS)) THEN 
-                  WRITE(MYUNIT,*) ' quench> CHIRALITY CHECK FAILED - discarding structure'
+                  WRITE(LFH,*) ' quench> CHIRALITY CHECK FAILED - discarding structure'
                ENDIF
             ENDIF
 !
@@ -415,13 +415,13 @@ C     ENDDO
                      IF ((CISARRAY1(J5)-CISARRAY2(J5))/=0) FAIL=.TRUE.
                   ENDDO
                   IF (FAIL) THEN
-                     WRITE(MYUNIT,*) ' quench> WARNING: cis/trans differs from initial structure!'
+                     WRITE(LFH,*) ' quench> WARNING: cis/trans differs from initial structure!'
                      GOODSTRUCTURE=.FALSE.
                   ENDIF
                ENDIF
 ! csw34> If either test fails, print a warning
                IF (FAIL.OR.(.NOT.PASS)) THEN 
-                  WRITE(MYUNIT,*) ' quench> CIS/TRANS CHECK FAILED - discarding structure'
+                  WRITE(LFH,*) ' quench> CIS/TRANS CHECK FAILED - discarding structure'
                ENDIF
             ENDIF
          ENDIF
@@ -429,7 +429,7 @@ C     ENDDO
 ! jwrm2> Check percolation. If the structure is disconnected, don't save it.
          PERCT = .TRUE.
          IF (PERCOLATET) THEN
-           CALL PERC(P,NATOMS,PERCCUT,PERCT,DEBUG,MYUNIT,RIGID)
+           CALL PERC(P,NATOMS,PERCCUT,PERCT,DEBUG,LFH,RIGID)
          ENDIF
 
 ! csw34> If all tests have been passed, save the structure!        
@@ -440,7 +440,7 @@ C     ENDDO
 
 !     IF (QDONE.EQ.0) THEN
 !        PRINT '(A)','WARNING quench did not converge from starting coodinates:'
-!        WRITE(MYUNIT,'(3G20.10)') (COORDS(J1,NP),J1=1,3*NATOMS)
+!        WRITE(LFH,'(3G20.10)') (COORDS(J1,NP),J1=1,3*NATOMS)
 !     ENDIF
 C
 C  If EPSSPHERE is non-zero we are presumably doing a calculation of the 
@@ -465,16 +465,16 @@ C  Deal with EPSSPHERE sampling.
 C
       IF (EPSSPHERE.NE.0.0D0) THEN
          IF ((DISTMIN.GT.EPSSPHERE).OR.(ABS(EREAL-EPREV(NP)).LE.ECONV)) THEN
-            WRITE(MYUNIT,'(A,F12.5,A,4F14.5)') 'step ',STEP(NP),' EREAL, EPREV, DISTMIN, EPSSPHERE=',
+            WRITE(LFH,'(A,F12.5,A,4F14.5)') 'step ',STEP(NP),' EREAL, EPREV, DISTMIN, EPSSPHERE=',
      1                                     EREAL, EPREV(NP), DISTMIN, EPSSPHERE
             DO J1=1,3*NATOMS
                COORDS(J1,NP)=COORDSO(J1,NP)
             ENDDO
             CALL TAKESTEP(NP)
-             WRITE(MYUNIT,'(A,G20.10)' ) 'reseeding step, maximum displacement reset to ',STEP(NP)
+             WRITE(LFH,'(A,G20.10)' ) 'reseeding step, maximum displacement reset to ',STEP(NP)
             GOTO 11
          ELSE
-            WRITE(MYUNIT,'(A,2F20.10)') 'valid step, DISTMIN, EPSSPHERE=',DISTMIN, EPSSPHERE
+            WRITE(LFH,'(A,2F20.10)') 'valid step, DISTMIN, EPSSPHERE=',DISTMIN, EPSSPHERE
          ENDIF
       ENDIF
 C
@@ -486,7 +486,7 @@ C
 !        DO J1=1,NTARGETS
 !           TMPCOORDS(1:3*NATOMS)=TCOORDS(J1,1:3*NATOMS)
 !           CALL MINPERMDIST(P,TMPCOORDS,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,PERIODIC,TWOD,DUMMY,DIST2,RIGID)
-!           WRITE(MYUNIT, '(A,I5,A,F15.3,A,F15.3,A,F20.10)') 'for target structure ',J1,' dist=',DUMMY,' dist2=',DIST2,' V=',POTEL
+!           WRITE(LFH, '(A,I5,A,F15.3,A,F15.3,A,F20.10)') 'for target structure ',J1,' dist=',DUMMY,' dist2=',DIST2,' V=',POTEL
 !        ENDDO
 !        DO J1=1,MIN(NMSBSAVE,MAXSAVE)
 !           TMPCOORDS(1:3*NATOMS)=MSBCOORDS(1:3*NATOMS,J1)
@@ -574,7 +574,7 @@ C           WRITE(DUMPXYZUNIT+NP,80) ('LB',P(3*(I-1)+1),P(3*(I-1)+2),P(3*(I-1)+3
       IF ((NQ(NP).GE.NSSTOP).AND.SEEDT) THEN
          SEEDT=.FALSE.
          NSEED=0
-         WRITE(MYUNIT,'(I6,A,G20.10)') NSSTOP,' quenches completed, setting coordinates to the lowest minimum, E=',QMIN(1)
+         WRITE(LFH,'(I6,A,G20.10)') NSSTOP,' quenches completed, setting coordinates to the lowest minimum, E=',QMIN(1)
          DO J1=1,3*NATOMS
             COORDS(J1,NP)=QMINP(1,J1)
          ENDDO

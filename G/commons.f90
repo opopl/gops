@@ -39,7 +39,7 @@
      &        HBINS, NRBSITES, NRBSITES1, NPS, GATOM, NMSBSAVE, MAXSAVE, NSYMQMAX, EQUIL, TPAHA, ISTEP, &
      &        NINTS, NumberOfTrajectories, &
      &        MCCycles, MCCyclesEquilibration, TargetWL, NTempPoints, SaveNth, DumpEveryNthQuench, NSpline, Hwindows, & 
-     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT, MYUNIT, PRTFRQ, BSPTDUMPFRQ, NPERMGROUP, NMOVABLEATOMS, &
+     &        lhbins, sampledbins, MYNODE, NENRPER, DUMPINT, LFH, PRTFRQ, BSPTDUMPFRQ, NPERMGROUP, NMOVABLEATOMS, &
      &        CPS, CPF, ACKLANDID, PATOM1, PATOM2, CSMGPINDEX, CSMGUIDEGPINDEX, CSMSTEPS, CSMQUENCHES, CSMMAXIT, &
      &        MYEUNIT, MYMUNIT, MYBUNIT, MYRUNIT, MYPUNIT
  

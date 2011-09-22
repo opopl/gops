@@ -27,7 +27,7 @@
 ! doesn't care what atomic symbol we give it.
 !
 SUBROUTINE NEWMINDIST(RA,RB,NATOMS,DIST,BULKT,TWOD,ZUSE,PRESERVET,RIGIDBODY,DEBUG,RMAT)
-USE COMMONS,ONLY : MYUNIT, MULLERBROWNT, BOXLX, BOXLY, BOXLZ, STOCKT, CSMT
+USE COMMONS,ONLY : LFH, MULLERBROWNT, BOXLX, BOXLY, BOXLZ, STOCKT, CSMT
 IMPLICIT NONE
 INTEGER J1, NATOMS, NSIZE, INFO, JINFO, JMIN
 INTEGER,PARAMETER :: LWORK=12
@@ -70,12 +70,12 @@ IF (ZUSE(1:1).EQ.'W') THEN
       XB(3*(J1-1)+3+3)=H2VEC(3)
    ENDDO
 ELSEIF (RIGIDBODY) THEN
-   WRITE(MYUNIT,'(A)') 'newmindist> New quaterion procedure not yet coded for general angle-axis variables'
+   WRITE(LFH,'(A)') 'newmindist> New quaterion procedure not yet coded for general angle-axis variables'
    STOP
 ELSEIF (TWOD) THEN
 !  ALLOCATE(XA(3*(NATOMS/2)*number of sites,XB(3*(NATOMS/2)*number of sites))
 !  NSIZE=(NATOMS/2)*number of sites
-   WRITE(MYUNIT,'(A)') 'newmindist> New quaterion procedure not yet coded for flatland'
+   WRITE(LFH,'(A)') 'newmindist> New quaterion procedure not yet coded for flatland'
 ! There is one unknown angle, so this should be trivial!'
    STOP
 ELSEIF (STOCKT) THEN
@@ -203,7 +203,7 @@ ELSE
    QMAT(2,1)=QMAT(1,2); QMAT(3,1)=QMAT(1,3); QMAT(3,2)=QMAT(2,3); QMAT(4,1)=QMAT(1,4); QMAT(4,2)=QMAT(2,4); QMAT(4,3)=QMAT(3,4)
 
    CALL DSYEV('V','U',4,QMAT,4,DIAG,TEMPA,LWORK,INFO)
-   IF (INFO.NE.0) WRITE(MYUNIT,'(A,I6,A)') 'newmindist> WARNING - INFO=',INFO,' in DSYEV'
+   IF (INFO.NE.0) WRITE(LFH,'(A,I6,A)') 'newmindist> WARNING - INFO=',INFO,' in DSYEV'
 
    MINV=1.0D100
    DO J1=1,4
@@ -216,13 +216,13 @@ ELSE
       IF (ABS(MINV).LT.1.0D-6) THEN
          MINV=0.0D0
       ELSE
-         WRITE(MYUNIT,'(A,G20.10,A)') 'newmindist> WARNING MINV is ',MINV,' change to absolute value'
+         WRITE(LFH,'(A,G20.10,A)') 'newmindist> WARNING MINV is ',MINV,' change to absolute value'
          MINV=-MINV
       ENDIF
    ENDIF
    DIST=SQRT(MINV)
 
-   IF (DEBUG) WRITE(MYUNIT,'(A,G20.10,A,I6)') 'newmindist> minimum residual is ',DIAG(JMIN),' for eigenvector ',JMIN
+   IF (DEBUG) WRITE(LFH,'(A,G20.10,A,I6)') 'newmindist> minimum residual is ',DIAG(JMIN),' for eigenvector ',JMIN
    Q1=QMAT(1,JMIN); Q2=QMAT(2,JMIN); Q3=QMAT(3,JMIN); Q4=QMAT(4,JMIN)
 !
 ! RMAT will contain the matrix that maps RB onto the best correspondence with RA
@@ -258,7 +258,7 @@ IF (.NOT.PRESERVET) THEN
   &                    RB(3*(NATOMS/2+J1-1)+1),RB(3*(NATOMS/2+J1-1)+2),RB(3*(NATOMS/2+J1-1)+3))
       ENDDO
    ELSEIF (RIGIDBODY) THEN
-      WRITE(MYUNIT,'(A)') 'newmindist> back transformation not programmed yet for rigid bodies'
+      WRITE(LFH,'(A)') 'newmindist> back transformation not programmed yet for rigid bodies'
    ENDIF
 !  
 !  Translate the RB coordinates to the centre of coordinates of RA.

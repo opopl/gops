@@ -144,9 +144,9 @@ C
 !
 !  Subroutine to convert Cartesians to theta, phi.
 !
-      SUBROUTINE THOMSONCTOANG(COORDS,P,NATOMS,MYUNIT)
+      SUBROUTINE THOMSONCTOANG(COORDS,P,NATOMS,LFH)
       IMPLICIT NONE
-      INTEGER NATOMS, J1, MYUNIT
+      INTEGER NATOMS, J1, LFH
       DOUBLE PRECISION COORDS(3*NATOMS), P(3*NATOMS), DIST
       DOUBLE PRECISION, PARAMETER :: HALFPI=1.570796327D0
 
@@ -157,7 +157,7 @@ C
          COORDS(3*(J1-1)+3)=COORDS(3*(J1-1)+3)/DIST
          P(2*(J1-1)+1)=ACOS(COORDS(3*(J1-1)+3))
          IF (ABS(COORDS(3*(J1-1)+3)-COS(P(2*(J1-1)+1))).GT.1.0D-10) THEN
-             WRITE(MYUNIT, '(A)') 'inconsistent conversion for z'
+             WRITE(LFH, '(A)') 'inconsistent conversion for z'
             STOP
          ENDIF
          IF (COORDS(3*(J1-1)+1).EQ.0.0D0) THEN
@@ -178,17 +178,17 @@ C
          IF (ABS(COORDS(3*(J1-1)+1)-SIN(P(2*(J1-1)+1))*COS(P(2*(J1-1)+2))).GT.1.0D-5) THEN
             P(2*(J1-1)+2)=P(2*(J1-1)+2)+2*HALFPI
             IF (ABS(COORDS(3*(J1-1)+1)-SIN(P(2*(J1-1)+1))*COS(P(2*(J1-1)+2))).GT.1.0D-5) THEN
-                WRITE(MYUNIT, '(A)') 'inconsistent conversion for x'
+                WRITE(LFH, '(A)') 'inconsistent conversion for x'
                STOP
             ENDIF
          ENDIF
          IF (ABS(COORDS(3*(J1-1)+2)-SIN(P(2*(J1-1)+1))*SIN(P(2*(J1-1)+2))).GT.1.0D-5) THEN
             P(2*(J1-1)+2)=-P(2*(J1-1)+2)
             IF (ABS(COORDS(3*(J1-1)+2)-SIN(P(2*(J1-1)+1))*SIN(P(2*(J1-1)+2))).GT.1.0D-5) THEN
-                WRITE(MYUNIT, '(A)') 'inconsistent conversion for y'
-                WRITE(MYUNIT, '(A,3G20.10)') 'x,y,z:      ',COORDS(3*(J1-1)+1),COORDS(3*(J1-1)+2),COORDS(3*(J1-1)+3)
-                WRITE(MYUNIT, '(A,3G20.10)') 'theta,phi: ',P(2*(J1-1)+1),P(2*(J1-1)+2)
-                WRITE(MYUNIT, '(A,3G20.10)') 'x,y,z calc: ',SIN(P(2*(J1-1)+1))*COS(P(2*(J1-1)+2)),
+                WRITE(LFH, '(A)') 'inconsistent conversion for y'
+                WRITE(LFH, '(A,3G20.10)') 'x,y,z:      ',COORDS(3*(J1-1)+1),COORDS(3*(J1-1)+2),COORDS(3*(J1-1)+3)
+                WRITE(LFH, '(A,3G20.10)') 'theta,phi: ',P(2*(J1-1)+1),P(2*(J1-1)+2)
+                WRITE(LFH, '(A,3G20.10)') 'x,y,z calc: ',SIN(P(2*(J1-1)+1))*COS(P(2*(J1-1)+2)),
      &                                            SIN(P(2*(J1-1)+1))*SIN(P(2*(J1-1)+2)),
      &                                            COS(P(2*(J1-1)+1))
                STOP

@@ -4,7 +4,7 @@
       include "keyword.dec.i.f"
       include "keyword.init.i.f"
 
-      OPEN (5,FILE='data',STATUS='OLD')
+      OPEN (5,FILE=D_FILE,STATUS='OLD')
 
 190   CALL INPUT(END)
       IF (.NOT. END) CALL READU(WORD)
@@ -13,7 +13,7 @@
       include "keyword.r.chmd.i.f"
       include "keyword.if.i.f"
       
-      CALL FLUSH(MYUNIT)
+      CALL FLUSH(LFH)
       GOTO 190
 
       RETURN

@@ -56,8 +56,8 @@ COMMON /TOT/ NQTOT
 SAVE NORBIT, LASTORBIT, NORDER
 
 NCORESAVE=NCORE(JP)
-MYUNIT2=NPAR+MYUNIT
-MYUNIT3=2*NPAR+MYUNIT+1
+MYUNIT2=NPAR+LFH
+MYUNIT3=2*NPAR+LFH+1
 IPRNT=0
 LDEBUG=DEBUG
 ! LDEBUG=.TRUE.
@@ -66,8 +66,8 @@ NSYMCALL=NSYMCALL+1   ! NSYMCALL should be the number of consecutive calls to sy
 IF (NSYMCALL.GT.1) THEN
 !  IF (NSYMCALL.GT.NORBIT-LASTORBIT+1) THEN
    IF (NSYMCALL.GT.1) THEN
-!     IF (LDEBUG) WRITE(MYUNIT, '(A,I5,A)') 'maximum calls to symmetry ',NORBIT-LASTORBIT,' exceeded for this minimum'
-      IF (LDEBUG) WRITE(MYUNIT, '(A)') 'maximum consecutive calls to symmetry reached for this minimum'
+!     IF (LDEBUG) WRITE(LFH, '(A,I5,A)') 'maximum calls to symmetry ',NORBIT-LASTORBIT,' exceeded for this minimum'
+      IF (LDEBUG) WRITE(LFH, '(A)') 'maximum consecutive calls to symmetry reached for this minimum'
       RETURN 
    ENDIF
 !  IF (NSYMCALL.GT.NORDER) THEN
@@ -117,7 +117,7 @@ cmloop: DO J1=1,200
                      (LCOORDS(3*(J-1)+2)-ORIGIN(2))**2+ &
                      (LCOORDS(3*(J-1)+3)-ORIGIN(3))**2)
    ENDDO
-   IF (LDEBUG) WRITE(MYUNIT, '(A,I5,3G20.10)') 'cycle, origin:',J1,ORIGIN(1:3)
+   IF (LDEBUG) WRITE(LFH, '(A,I5,3G20.10)') 'cycle, origin:',J1,ORIGIN(1:3)
    IF ((J1.GT.1).AND.(DUMMY.LT.1.0D-4)) EXIT cmloop 
 ENDDO cmloop
 
@@ -125,7 +125,7 @@ DO J=1,NATOMS
    NINDEX(J)=J
 ENDDO
 
-IF (LDEBUG) WRITE(MYUNIT, '(A,3F15.5)') 'initial centre of mass: ',ORIGIN(1:3)
+IF (LDEBUG) WRITE(LFH, '(A,3F15.5)') 'initial centre of mass: ',ORIGIN(1:3)
 SCOORDS(1:3*NATOMS)=LCOORDS(1:3*NATOMS)
 CALL PIKSR2(NATOMS,CMDIST,NINDEX) ! sorts CMDIST and NINDEX
 ! CALL GETORBITS(NORBIT,ORBDIST,CMDIST,NATOMS,ORBSIZE,SYMTOL1,LARGESIZE,NINDEX,LCOORDS,LDEBUG)
@@ -150,10 +150,10 @@ CMX(1)=CMX(1)/NDUMMY; CMY(1)=CMY(1)/NDUMMY; CMZ(1)=CMZ(1)/NDUMMY
 
 ! IF (LDEBUG) PRINT '(A,3F15.5)','origin will be moved to centre of mass for first orbit: ',CMX(1),CMY(1),CMZ(1)
 ! IF (LDEBUG) PRINT '(A,I6,A,F15.5,A)','orbit size: ',ORBSIZE(1),' distance ',ORBDIST(1),' members:'
-IF (LDEBUG) WRITE(MYUNIT, '(A,3F15.5)') 'origin will be moved to centre of mass for atoms up to biggest gap: ',CMX(1),CMY(1),CMZ(1)
-IF (LDEBUG) WRITE(MYUNIT, '(A,I6,A,F15.5,A)') 'number of atoms=',NDUMMY
+IF (LDEBUG) WRITE(LFH, '(A,3F15.5)') 'origin will be moved to centre of mass for atoms up to biggest gap: ',CMX(1),CMY(1),CMZ(1)
+IF (LDEBUG) WRITE(LFH, '(A,I6,A,F15.5,A)') 'number of atoms=',NDUMMY
 ORBSIZE(1)=NDUMMY
-IF (LDEBUG) WRITE(MYUNIT, '(12I5)')  (NINDEX(J1),J1=1,ORBSIZE(1))
+IF (LDEBUG) WRITE(LFH, '(12I5)')  (NINDEX(J1),J1=1,ORBSIZE(1))
 ORIGIN(1)=CMX(1)
 ORIGIN(2)=CMY(1)
 ORIGIN(3)=CMZ(1)
@@ -186,7 +186,7 @@ ENDIF
 IF (LARGESIZE.EQ.1) THEN
    IF (LDEBUG) THEN
       CALL MYCPU_TIME(TIME)
-      WRITE(MYUNIT, '(A,F15.2)') 'No nontrivial orbits - return from symmetry, time taken=',TIME-T0
+      WRITE(LFH, '(A,F15.2)') 'No nontrivial orbits - return from symmetry, time taken=',TIME-T0
    ENDIF
    RETURN
 ENDIF
@@ -208,7 +208,7 @@ symcore: DO J1=1,NORBIT
    IF (NATOMSCORE.GT.3) THEN
       DUMMY=MATDIFF
       CALL PTGRP(SCOORDS,NATOMSCORE,LDEBUG,SYMTOL1,SYMTOL2,SYMTOL3,GENMAT,IGEN,FPGRP,CM,DUMMY) ! SCOORDS is changed!
-      IF (LDEBUG) WRITE(MYUNIT, '(A,I5,A,I5,A,I4,A,A4,A,I6)') 'number of orbits=',J1,' number of atoms=',NATOMSCORE, &
+      IF (LDEBUG) WRITE(LFH, '(A,I5,A,I5,A,I4,A,A4,A,I6)') 'number of orbits=',J1,' number of atoms=',NATOMSCORE, &
                           ' number of generators=',IGEN,' point group= ',FPGRP,' order=',HPTGRP
       IF (HPTGRP.GE.HPTGRPSAVE) THEN
          HPTGRPSAVE=HPTGRP
@@ -225,21 +225,21 @@ symcore: DO J1=1,NORBIT
          ENDIF
       ELSEIF (HPTGRP.GE.1) THEN ! symmetry has decreased
          IF (NPAR.GT.1) THEN
-            WRITE(MYUNIT,'(A,I1,3A,I6,A,I6,A)') '[',JP,']symmetry2> highest symmetry ',POINTGROUP,' for ',NORBITSCORE, &
+            WRITE(LFH,'(A,I1,3A,I6,A,I6,A)') '[',JP,']symmetry2> highest symmetry ',POINTGROUP,' for ',NORBITSCORE, &
   &                        ' orbits and ',NCORE(JP),' atoms'
          ELSE
-            WRITE(MYUNIT,'(3A,I6,A,I6,A)') 'symmetry2> highest symmetry ',POINTGROUP,' for ',NORBITSCORE, &
+            WRITE(LFH,'(3A,I6,A,I6,A)') 'symmetry2> highest symmetry ',POINTGROUP,' for ',NORBITSCORE, &
   &                        ' orbits and ',NCORE(JP),' atoms'
          ENDIF
          EXIT symcore
       ENDIF
    ELSE
-      IF (LDEBUG) WRITE(MYUNIT, '(A,I5,A,I5)') 'number of orbits=',NORBITSCORE,' number of atoms=',NATOMSCORE
+      IF (LDEBUG) WRITE(LFH, '(A,I5,A,I5)') 'number of orbits=',NORBITSCORE,' number of atoms=',NATOMSCORE
    ENDIF
 ENDDO symcore
 
 IF (HPTGRPSAVE.EQ.1) THEN
-   IF (LDEBUG) WRITE(MYUNIT, '(A)') 'no symmetry detected'
+   IF (LDEBUG) WRITE(LFH, '(A)') 'no symmetry detected'
    NCORE(JP)=NCORESAVE
    RETURN
 ELSE
@@ -247,7 +247,7 @@ ELSE
       NCORE(JP)=NCORESAVE
       RETURN
    ENDIF
-!  WRITE(MYUNIT, '(A,A,A,I4)') 'symmetry analysis for point group ',TRIM(ADJUSTL(POINTGROUP)),' number of generators=',IGENSAVE
+!  WRITE(LFH, '(A,A,A,I4)') 'symmetry analysis for point group ',TRIM(ADJUSTL(POINTGROUP)),' number of generators=',IGENSAVE
 !  PRINT '(A,I5,A,I5,A)','this group was detected for the first ',ORBSYM,' orbits containing ',NCORE(JP),' atoms'
 ENDIF
 NCOREREAL=NCORE(JP)
@@ -296,23 +296,23 @@ LHESS(2,1)=LHESS(1,2); LHESS(3,1)=LHESS(1,3); LHESS(3,2)=LHESS(2,3) ! symmetrise
 CALL DGETRF(3,3,LHESS,3,IPIVOT,INFO) ! LHESS is modified!
 CALL DGETRI(3,LHESS,3,IPIVOT,WORK,3,INFO)
 IF (INFO.NE.0) THEN
-   WRITE(MYUNIT,'(A,I6)') 'ERROR - INFO after DGETRI in symmetry=',INFO
-   WRITE(MYUNIT,'(A)') 'CORECOORDS:'
-   WRITE(MYUNIT,'(3F20.10)') CORECOORDS(1:3*NCORE(JP))
-   WRITE(MYUNIT,'(A)') 'LHESS'
-   WRITE(MYUNIT,'(3F20.10)') LHESS
+   WRITE(LFH,'(A,I6)') 'ERROR - INFO after DGETRI in symmetry=',INFO
+   WRITE(LFH,'(A)') 'CORECOORDS:'
+   WRITE(LFH,'(3F20.10)') CORECOORDS(1:3*NCORE(JP))
+   WRITE(LFH,'(A)') 'LHESS'
+   WRITE(LFH,'(3F20.10)') LHESS
    STOP
 ENDIF 
 
 genloop: DO J1=1,IGENSAVE
 !  SYMOP(1+J1,1:3,1:3)=GENMATSAVE(J1,1:3,1:3)
    SYMOP1(1:3,1:3)=GENMATSAVE(J1,1:3,1:3)
-   IF (LDEBUG) WRITE(MYUNIT, '(A,I5,9F10.4)') 'NORDER,initial MAT: ',NORDER,GENMATSAVE(J1,1:3,1:3)
+   IF (LDEBUG) WRITE(LFH, '(A,I5,9F10.4)') 'NORDER,initial MAT: ',NORDER,GENMATSAVE(J1,1:3,1:3)
    CALL MATMULV(NEWQ,CORECOORDS,SYMOP1,NCORE(JP),3,3)
 !  CALL MINPERM(NCORE(JP),NEWQ,CORECOORDS,BOXLX,BOXLY,BOXLZ,PERIODIC,PERM,DUMMY,DIST2,WORSTRAD)
    CALL TESTSYMOP(NCORE(JP),NEWQ,CORECOORDS,PERM,LTOLD,DIST2,WORSTRAD)
    IF (DIST2.GT.LTOLD) THEN
-      WRITE(MYUNIT, '(A,2G20.10)') 'ERROR - genloop in symmetry, DIST2,LTOLD=',DIST2,LTOLD
+      WRITE(LFH, '(A,2G20.10)') 'ERROR - genloop in symmetry, DIST2,LTOLD=',DIST2,LTOLD
       cycle genloop
    ENDIF
 !  CALL BIPARTITE(NCORE(JP),NEWQ,CORECOORDS,PERM,DUMMY,DIST2,WORSTRAD)
@@ -324,7 +324,7 @@ genloop: DO J1=1,IGENSAVE
  &                     (CORECOORDS(3*(PERM(J2)-1)+2)-NEWQ(3*(J2-1)+2))**2+ &
  &                     (CORECOORDS(3*(PERM(J2)-1)+3)-NEWQ(3*(J2-1)+3))**2
       ENDDO
-      WRITE(MYUNIT, '(A,I5,G20.10)') 'operation,     error=',J1,SERROR
+      WRITE(LFH, '(A,I5,G20.10)') 'operation,     error=',J1,SERROR
       IF (SERROR.GT.0.5D0) STOP
    ENDIF
 !
@@ -339,7 +339,7 @@ genloop: DO J1=1,IGENSAVE
          ENDIF
       ENDDO newoploop
       IF (.NOT.NEWOP) THEN
-         IF (LDEBUG) WRITE(MYUNIT, '(2(A,I6))') 'generator ',J1,' appears to be the same as ',J2
+         IF (LDEBUG) WRITE(LFH, '(2(A,I6))') 'generator ',J1,' appears to be the same as ',J2
          CYCLE genloop
       ENDIF
    ENDDO
@@ -377,32 +377,32 @@ genloop: DO J1=1,IGENSAVE
 !!     CALL BIPARTITE(NCORE(JP),NEWQ,CORECOORDS,PERM2,DUMMY,DIST2,WORSTRAD)
 !      IF (DIST2.GT.1.0D2) THEN
 !         SERROR2=1.0D3
-!         WRITE(MYUNIT,'(A,2G20.10)') 'testsymop> ERROR - SERROR,SERROR2=',SERROR,SERROR2
+!         WRITE(LFH,'(A,2G20.10)') 'testsymop> ERROR - SERROR,SERROR2=',SERROR,SERROR2
 !         STOP
 !      ELSE
          SERROR2=0.0D0
-         WRITE(MYUNIT,*) 'NCORE(JP)=',NCORE(JP)
+         WRITE(LFH,*) 'NCORE(JP)=',NCORE(JP)
          PERM2(1:NCORE(JP))=PERM(1:NCORE(JP))
          DO J2=1,NCORE(JP)
-!           WRITE(MYUNIT,*) 'J2,PERM2=',J2,PERM2(J2)
+!           WRITE(LFH,*) 'J2,PERM2=',J2,PERM2(J2)
 !           IF (PERM2(J2).LT.1) THEN
-!              WRITE(MYUNIT,*) 'ERROR, PERM2 < 1'
+!              WRITE(LFH,*) 'ERROR, PERM2 < 1'
 !              STOP
 !           ENDIF
             SERROR2=SERROR2+(CORECOORDS(3*(PERM2(J2)-1)+1)-NEWQ(3*(J2-1)+1))**2+ &
  &                          (CORECOORDS(3*(PERM2(J2)-1)+2)-NEWQ(3*(J2-1)+2))**2+ &
  &                          (CORECOORDS(3*(PERM2(J2)-1)+3)-NEWQ(3*(J2-1)+3))**2
          ENDDO
-         WRITE(MYUNIT, '(A,I5,G20.10)') 'operation, new error=',J1,SERROR2
-         IF (SERROR2.GT.SERROR) WRITE(MYUNIT, '(A)') ' WARNING - error has increased - this should never happen'
+         WRITE(LFH, '(A,I5,G20.10)') 'operation, new error=',J1,SERROR2
+         IF (SERROR2.GT.SERROR) WRITE(LFH, '(A)') ' WARNING - error has increased - this should never happen'
 !      ENDIF
    ENDIF
    NORDER=NORDER+1
    SYMOP(NORDER,1:3,1:3)=SYMOP1(1:3,1:3)
    GENPERM(NORDER,1:NCORE(JP))=PERM(1:NCORE(JP))
    OPPERM(NORDER,1:NCORE(JP))=PERM(1:NCORE(JP))
-   IF (LDEBUG) WRITE(MYUNIT, '(A,I5,9F10.4)') 'NORDER,MAT: ',NORDER,SYMOP(NORDER,1:3,1:3)
-   IF (LDEBUG) WRITE(MYUNIT, '(20I6)') PERM(1:NCORE(JP))
+   IF (LDEBUG) WRITE(LFH, '(A,I5,9F10.4)') 'NORDER,MAT: ',NORDER,SYMOP(NORDER,1:3,1:3)
+   IF (LDEBUG) WRITE(LFH, '(20I6)') PERM(1:NCORE(JP))
 ENDDO genloop
 !
 ! End refinement of generators.
@@ -441,7 +441,7 @@ makegroup: DO
 
          NORDER=NORDER+1
          IF (NORDER.GT.120) THEN
-            WRITE(MYUNIT, '(A)') 'WARNING more than 120 operations case A!'
+            WRITE(LFH, '(A)') 'WARNING more than 120 operations case A!'
 !           STOP
             NORDER=120
             EXIT makegroup
@@ -457,15 +457,15 @@ ENDDO makegroup
 
 CALL MYCPU_TIME(TIME)
 IF (NPAR.GT.1) THEN
-   WRITE(MYUNIT, '(A,I1,A,I5,A,F15.2)') '[',JP,']symmetry3> using point group of order ',NORDER, &
+   WRITE(LFH, '(A,I1,A,I5,A,F15.2)') '[',JP,']symmetry3> using point group of order ',NORDER, &
   &                                ' constructed from generators, time taken=',TIME-T0
 ELSE
-   WRITE(MYUNIT, '(A,I5,A,F15.2)') 'symmetry3> using point group of order ',NORDER, &
+   WRITE(LFH, '(A,I5,A,F15.2)') 'symmetry3> using point group of order ',NORDER, &
   &                                ' constructed from generators, time taken=',TIME-T0
 ENDIF
 IF (LDEBUG) THEN
    DO J1=1,NORDER
-      WRITE(MYUNIT, '(A,I5,9F10.4)') 'J1,SYMOP: ',J1,SYMOP(J1,1:3,1:3)
+      WRITE(LFH, '(A,I5,9F10.4)') 'J1,SYMOP: ',J1,SYMOP(J1,1:3,1:3)
    ENDDO
 ENDIF
 ! test to check that we really have symmetry operations!
@@ -502,7 +502,7 @@ symother: DO J1=NORBITSCORE+1,NORBIT
    NLOST=0
    CHANGE=.FALSE.
    NTOTAL=NTOTAL+ORBSIZE(J1)
-   IF (LDEBUG) WRITE(MYUNIT, '(4(A,I5))') 'symmetry3> testing symmetry for orbit ',J1,' of ',ORBSIZE(J1), &
+   IF (LDEBUG) WRITE(LFH, '(4(A,I5))') 'symmetry3> testing symmetry for orbit ',J1,' of ',ORBSIZE(J1), &
   &                                   ' atoms, running total=',NTOTAL,' symmetry elements remaining=',NSYMOP
    DO J2=ISTART,ISTART+ORBSIZE(J1)-1
       ORBCOORDS(3*(J2-ISTART)+1:3*(J2-ISTART)+3)=LCOORDS(3*(NINDEX(J2)-1)+1:3*(NINDEX(J2)-1)+3)
@@ -534,7 +534,7 @@ symother: DO J1=NORBITSCORE+1,NORBIT
 !        IF (DIST2.GT.SYMTOL4) THEN
             SYMLOST(J3)=.TRUE.
             LASTORBIT=J1-1
-            IF (LDEBUG.AND.(.NOT.DOMISSING)) WRITE(MYUNIT, '(A,I5,A,2F15.5)') 'symmetry element ',J3,' lost, DUMMY,DIST2=', &
+            IF (LDEBUG.AND.(.NOT.DOMISSING)) WRITE(LFH, '(A,I5,A,2F15.5)') 'symmetry element ',J3,' lost, DUMMY,DIST2=', &
   &                              DUMMY,DIST2
             NSYMOP=NSYMOP-1
             NLOST=NLOST+1
@@ -573,26 +573,26 @@ symother: DO J1=NORBITSCORE+1,NORBIT
                      IF (DUMMY.LT.SYMTOL5) CYCLE transloop
                   ENDDO
                   IF (NMISSING(J1).EQ.120) THEN
-                     WRITE(MYUNIT, '(A)') 'warning - too many missing sites'
+                     WRITE(LFH, '(A)') 'warning - too many missing sites'
                      EXIT transloop
                   ENDIF
                   NMISSING(J1)=NMISSING(J1)+1
                   QMISSING(J1,3*(NMISSING(J1)-1)+1:3*(NMISSING(J1)-1)+3)=TRANSCOORDS(3*(J2-1)+1:3*(J2-1)+3)
-                  IF (LDEBUG) WRITE(MYUNIT, '(A,I5,A,I5,A,3F15.5)') 'orbit ',J1,' missing site ',NMISSING(J1), &
+                  IF (LDEBUG) WRITE(LFH, '(A,I5,A,I5,A,3F15.5)') 'orbit ',J1,' missing site ',NMISSING(J1), &
                               ' coords: ',TRANSCOORDS(3*(J2-1)+1:3*(J2-1)+3)
                ENDDO transloop
-               IF (LDEBUG) WRITE(MYUNIT, '(A,I5,A,2F15.5,A,I5)') 'symmetry element ',J3,' lost, dists=',DUMMY,DIST2, &
+               IF (LDEBUG) WRITE(LFH, '(A,I5,A,2F15.5,A,I5)') 'symmetry element ',J3,' lost, dists=',DUMMY,DIST2, &
                                                        ' missing sites=',NMISSING(J1)
             ENDIF
          ELSE
-            IF (LDEBUG) WRITE(MYUNIT, '(A,I5,A)') 'symmetry element ',J3,' retained'
+            IF (LDEBUG) WRITE(LFH, '(A,I5,A)') 'symmetry element ',J3,' retained'
          ENDIF
       ENDIF
    ENDDO
    IF (LDEBUG)  CLOSE(MYUNIT3)
    IF (CHANGE) LASTLOST=NLOST
    IF (NSYMOP.EQ.1) THEN
-      IF (LDEBUG) WRITE(MYUNIT, '(A,I5)') 'only the identity element remains for orbit ',J1
+      IF (LDEBUG) WRITE(LFH, '(A,I5)') 'only the identity element remains for orbit ',J1
       EXIT symother
    ENDIF
 ENDDO symother
@@ -607,10 +607,10 @@ IF (NSYMOP.GT.1) THEN ! the full structure still has some symmetry
 ENDIF
 
 IF (LASTLOST.EQ.0) THEN
-   WRITE(MYUNIT, '(2(A,I5))') 'symmetry3> symmetry of core is consistent with the overall symmetry'
+   WRITE(LFH, '(2(A,I5))') 'symmetry3> symmetry of core is consistent with the overall symmetry'
    RETURN
 ELSE
-   WRITE(MYUNIT, '(2(A,I5))') 'symmetry3> number of symmetry elements lost in last change for orbit ',LASTORBIT+1,' was ',LASTLOST
+   WRITE(LFH, '(2(A,I5))') 'symmetry3> number of symmetry elements lost in last change for orbit ',LASTORBIT+1,' was ',LASTLOST
 ENDIF
 
 IF (LDEBUG) THEN
@@ -647,7 +647,7 @@ IF (DOMISSING) THEN
                           (COORDS(3*(J4-1)+2,JP)-QMISSING(J2,3*(J3-1)+2))**2+ &
                           (COORDS(3*(J4-1)+3,JP)-QMISSING(J2,3*(J3-1)+3))**2)
                IF (DUMMY.LT.SYMTOL5) THEN
-                  WRITE(MYUNIT, '(3(A,I5))') 'missing site ',J3,' from orbit ',J2,' is too close to atom ',J4
+                  WRITE(LFH, '(3(A,I5))') 'missing site ',J3,' from orbit ',J2,' is too close to atom ',J4
                   CYCLE missloop
                ENDIF
             ENDDO
@@ -657,12 +657,12 @@ IF (DOMISSING) THEN
       ENDDO
 !     IF (NMISS.GT.12) EXIT missopt
       IF (NMISS.EQ.0) CYCLE missopt
-      IF (LDEBUG) WRITE(MYUNIT, '(A,I5,A)') 'filling ',NMISS,' missing sites'
+      IF (LDEBUG) WRITE(LFH, '(A,I5,A)') 'filling ',NMISS,' missing sites'
       
       NQTOT=NQTOT+1
       NQ(JP)=NQ(JP)+1
       CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
-      WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,30X,A,F11.1)') 'Qu ',NQ(JP),' E=',POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME
+      WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,30X,A,F11.1)') 'Qu ',NQ(JP),' E=',POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME
 ! Save the best structure
       IF (HIT) THEN
          EPREV(JP)=EBEST
@@ -690,7 +690,7 @@ IF (CHANGECLOSE.AND.(DPRAND().GT.0.5D0)) THEN ! change CLOSEOP to the closest lo
    MINDIST=1.0D100
    DUMMY=DPRAND()
    NCHOOSE=INT(DUMMY*(NORBIT-LASTORBIT+1))+LASTORBIT
-   WRITE(MYUNIT, '(A,I5)') 'changing CLOSEOP to the closest lost operation for orbit ',NCHOOSE
+   WRITE(LFH, '(A,I5)') 'changing CLOSEOP to the closest lost operation for orbit ',NCHOOSE
    NDUMMY=SUM(ORBSIZE(1:NCHOOSE-1))
    DO J2=NDUMMY+1,NDUMMY+ORBSIZE(NCHOOSE)
       ORBCOORDS(3*(J2-NDUMMY-1)+1:3*(J2-NDUMMY-1)+3)=LCOORDS(3*(NINDEX(J2)-1)+1:3*(NINDEX(J2)-1)+3)
@@ -730,7 +730,7 @@ IF (NSYMOP.GT.1) THEN ! the full structure still has some symmetry
             LOSTOP(LASTLOST,1:3,1:3)=SYMOP(J3,1:3,1:3)
          ENDIF
       ENDDO
-      WRITE(MYUNIT, '(3(A,I5))') 'after adding the remaining ',NSYMOP-1,' non-identity elements there are ',LASTLOST,' in total'
+      WRITE(LFH, '(3(A,I5))') 'after adding the remaining ',NSYMOP-1,' non-identity elements there are ',LASTLOST,' in total'
    ELSE ! or, with 0% probability, just use the full symmetry. In this case we will only permute single weakly bound atoms.
       LASTLOST=0
       DO J3=2,NORDER ! cycle over remaining point group operations - the identity is not needed
@@ -739,7 +739,7 @@ IF (NSYMOP.GT.1) THEN ! the full structure still has some symmetry
             LOSTOP(LASTLOST,1:3,1:3)=SYMOP(J3,1:3,1:3)
          ENDIF
       ENDDO
-      WRITE(MYUNIT, '(3(A,I5))') 'using the remaining ',NSYMOP-1,' non-identity elements'
+      WRITE(LFH, '(3(A,I5))') 'using the remaining ',NSYMOP-1,' non-identity elements'
    ENDIF
 !
 ! Need this line in case COORDS are not changed so that KEEPSYM works in TAKESTEP
@@ -800,7 +800,7 @@ IF (LASTLOST.GT.50) THEN
             ENDDO
             NSUB=NSUB+1
             IF (NSUB.GT.120) THEN
-               WRITE(MYUNIT, '(A)') 'WARNING more than 120 operations case B!'
+               WRITE(LFH, '(A)') 'WARNING more than 120 operations case B!'
                NSUB=120
 !              STOP
                EXIT makesub
@@ -813,10 +813,10 @@ IF (LASTLOST.GT.50) THEN
       EXIT makesub
    ENDDO makesub
 
-   WRITE(MYUNIT, '(A,I5,A)') 'using subgroup of order ',NSUB,' constructed from lost operation'
+   WRITE(LFH, '(A,I5,A)') 'using subgroup of order ',NSUB,' constructed from lost operation'
    IF (LDEBUG) THEN
       DO J1=1,NSUB
-         WRITE(MYUNIT, '(A,I5,9F10.4)') 'J1,SUBOP: ',J1,SUBOP(J1,1:3,1:3)
+         WRITE(LFH, '(A,I5,9F10.4)') 'J1,SUBOP: ',J1,SUBOP(J1,1:3,1:3)
       ENDDO
    ENDIF
 
@@ -864,7 +864,7 @@ weak: DO J1=1,NCORE(JP)
          OTHERVT(NFLOAT)=COREVT(J1)
          NMOVE=NMOVE+1
          MOVEINDEX(NMOVE)=J1
-         IF (LDEBUG) WRITE(MYUNIT, '(A,I5,A,2I5,A,F15.5)') 'weakly bound invariant atom ',J1, &
+         IF (LDEBUG) WRITE(LFH, '(A,I5,A,2I5,A,F15.5)') 'weakly bound invariant atom ',J1, &
                           ' added to floater list, NCORE(JP),NFLOAT=',NCORE(JP)-NMOVE,NFLOAT, &
                           ' pair energy=',COREVT(J1)
 !        PRINT '(A,I5,3F15.5)','moved atom coords: ',J1,CORECOORDS(3*(J1-1)+1:3*(J1-1)+3)
@@ -975,8 +975,8 @@ otherloop: DO J1=1,NATOMS-NCORE(JP)
    ENDIF
    IF (MATCHED.AND.(NCORETMP.GT.1)) THEN ! leave single atoms as floaters, otherwise move to core
       NCORENEW=NCORENEW+NCORETMP
-      IF (LDEBUG) WRITE(MYUNIT, '(A,I5,A,120I5)') 'moving ',NCORETMP,' atoms to the core: ',NEWCOREINDEX(1:NCORETMP)
-      IF (LDEBUG) WRITE(MYUNIT, '(A,I5)') 'number of core atoms=',NCORE(JP)+NCORENEW
+      IF (LDEBUG) WRITE(LFH, '(A,I5,A,120I5)') 'moving ',NCORETMP,' atoms to the core: ',NEWCOREINDEX(1:NCORETMP)
+      IF (LDEBUG) WRITE(LFH, '(A,I5)') 'number of core atoms=',NCORE(JP)+NCORENEW
       DO J2=1,NCORETMP
          MOVEDTOCORE(NEWCOREINDEX(J2))=.TRUE.
       ENDDO
@@ -987,7 +987,7 @@ otherloop: DO J1=1,NATOMS-NCORE(JP)
 
    NEWORB=NEWORB+1
    NEWORBSIZE(NEWORB)=NDUMMY
-   IF (LDEBUG) WRITE(MYUNIT, '(3(A,I6))') 'new orbit ',NEWORB,' of dimension ',NEWORBSIZE(NEWORB), &
+   IF (LDEBUG) WRITE(LFH, '(3(A,I6))') 'new orbit ',NEWORB,' of dimension ',NEWORBSIZE(NEWORB), &
                 ' generated from floater ',J1
 !  IF (NEWORB.GT.10) THEN
 !     PRINT '(A)','number of new orbits is too large - quitting symmetry'
@@ -1057,12 +1057,12 @@ IF (.TRUE.) THEN
          NDUMMY=NDUMMY+NCHOICE(J1)*NEWORBSIZE(J1)
       ENDDO
       IF (NDUMMY.NE.NFLOAT) THEN
-         WRITE(MYUNIT, '(A,2I5,A)') 'ERROR - NDUMMY,NFLOAT=',NDUMMY,NFLOAT,' in symmetry'
+         WRITE(LFH, '(A,2I5,A)') 'ERROR - NDUMMY,NFLOAT=',NDUMMY,NFLOAT,' in symmetry'
          STOP
       ENDIF
-      IF (LDEBUG) WRITE(MYUNIT, '(A)') 'NCHOICE:'
-      IF (LDEBUG) WRITE(MYUNIT, '(60I2)') NCHOICE(1:NEWORB)
-      IF (LDEBUG) WRITE(MYUNIT, '(A,2I5)') 'NDUMMY,NFLOAT=',NDUMMY,NFLOAT
+      IF (LDEBUG) WRITE(LFH, '(A)') 'NCHOICE:'
+      IF (LDEBUG) WRITE(LFH, '(60I2)') NCHOICE(1:NEWORB)
+      IF (LDEBUG) WRITE(LFH, '(A,2I5)') 'NDUMMY,NFLOAT=',NDUMMY,NFLOAT
       COORDS(1:3*NCORE(JP),JP)=CORECOORDS(1:3*NCORE(JP))
       NDUMMY=NCORE(JP)
       DO J1=1,NEWORB
@@ -1074,7 +1074,7 @@ IF (.TRUE.) THEN
       NQTOT=NQTOT+1
       NQ(JP)=NQ(JP)+1
       CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
-      WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,30X,A,F11.1)') 'Qu ',NQ(JP),' E=',POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME
+      WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,30X,A,F11.1)') 'Qu ',NQ(JP),' E=',POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME
    ! Save the best structure
       IF (EBEST-POTEL.GT.ECONV) THEN
          EBEST=POTEL
@@ -1128,9 +1128,9 @@ ELSE ! old enumeration
       ENDIF
       IF (NCHOICE(1).EQ.1) NDUMMY=NDUMMY+NEWORBSIZE(1)
       IF (NCHOICE(1).GT.1) EXIT perms
-      IF (LDEBUG) WRITE(MYUNIT, '(A)') 'NCHOICE:'
-      IF (LDEBUG) WRITE(MYUNIT, '(60I2)') NCHOICE(1:NEWORB)
-      IF (LDEBUG) WRITE(MYUNIT, '(A,2I5)') 'NDUMMY,NFLOAT=',NDUMMY,NFLOAT
+      IF (LDEBUG) WRITE(LFH, '(A)') 'NCHOICE:'
+      IF (LDEBUG) WRITE(LFH, '(60I2)') NCHOICE(1:NEWORB)
+      IF (LDEBUG) WRITE(LFH, '(A,2I5)') 'NDUMMY,NFLOAT=',NDUMMY,NFLOAT
       IF (NDUMMY.NE.NFLOAT) CYCLE perms
       IF (NCHOICE(1).GT.1) EXIT perms
       COORDS(1:3*NCORE(JP),JP)=CORECOORDS(1:3*NCORE(JP))
@@ -1142,13 +1142,13 @@ ELSE ! old enumeration
          ENDIF
       ENDDO
       IF (NDUMMY.NE.NATOMS) THEN
-         WRITE(MYUNIT, '(A,2I5)') 'ERROR - NDUMMY,NATOMS=',NDUMMY,NATOMS
+         WRITE(LFH, '(A,2I5)') 'ERROR - NDUMMY,NATOMS=',NDUMMY,NATOMS
          STOP
       ENDIF
       NQTOT=NQTOT+1
       NQ(JP)=NQ(JP)+1
       CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
-      WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,30X,A,F11.1)') 'Qu ',NQ(JP),' E=',POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME
+      WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,30X,A,F11.1)') 'Qu ',NQ(JP),' E=',POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',TIME
    ! Save the best structure
       IF (EBEST-POTEL.GT.ECONV) THEN
          EBEST=POTEL
@@ -1173,18 +1173,18 @@ IF (NCOREREAL.LE.NCORESAVE) THEN
    NCORE(JP)=NCORESAVE
    RETURN
 ENDIF
-IF (NCORE(JP).LT.NCOREREAL) WRITE(MYUNIT,'()') 'symmetry3> WARNING - NCOREREAL, NCORE(JP)=',NCOREREAL, NCORE(JP)
+IF (NCORE(JP).LT.NCOREREAL) WRITE(LFH,'()') 'symmetry3> WARNING - NCOREREAL, NCORE(JP)=',NCOREREAL, NCORE(JP)
 NCORE(JP)=NCOREREAL
 
 DO J1=1,NPAR
    IF (J1.EQ.JP) CYCLE
-!  WRITE(MYUNIT,*) 'symmetry2> J1,SHELLMOVES,PTGROUP,POINTGROUP=',J1,SHELLMOVES(J1),PTGROUP(J1),POINTGROUP
+!  WRITE(LFH,*) 'symmetry2> J1,SHELLMOVES,PTGROUP,POINTGROUP=',J1,SHELLMOVES(J1),PTGROUP(J1),POINTGROUP
    IF (.NOT.SHELLMOVES(J1)) CYCLE
    IF (POINTGROUP.EQ.PTGROUP(J1)) THEN
       IF (NPAR.GT.1) THEN
-         WRITE(MYUNIT,'(A,I1,3A,I6)') '[',JP,']symmetry2> point group ',POINTGROUP,' coincides with run ',J1
+         WRITE(LFH,'(A,I1,3A,I6)') '[',JP,']symmetry2> point group ',POINTGROUP,' coincides with run ',J1
       ELSE
-         WRITE(MYUNIT,'(3A,I6)') 'symmetry3> point group ',POINTGROUP,' coincides with run ',J1
+         WRITE(LFH,'(3A,I6)') 'symmetry3> point group ',POINTGROUP,' coincides with run ',J1
       ENDIF
       NCORE(JP)=0
       NSURFMOVES(JP)=0
@@ -1197,10 +1197,10 @@ SHELLMOVES(JP)=.TRUE.
 PTGROUP(JP)=POINTGROUP
 
 IF (NPAR.GT.1) THEN
-   WRITE(MYUNIT,'(A,I1,A,I8,A,I8,2A)') '[',JP,']symmetry2> starting a block of ',SHELLMOVEMAX,' moves with ', &
+   WRITE(LFH,'(A,I1,A,I8,A,I8,2A)') '[',JP,']symmetry2> starting a block of ',SHELLMOVEMAX,' moves with ', &
   &      NCORE(JP),' atoms unperturbed, core symmetry ',POINTGROUP
 ELSE     
-   WRITE(MYUNIT,'(A,I8,A,I8,2A)') 'symmetry2> starting a block of ',SHELLMOVEMAX,' moves with ', &
+   WRITE(LFH,'(A,I8,A,I8,2A)') 'symmetry2> starting a block of ',SHELLMOVEMAX,' moves with ', &
   &      NCORE(JP),' atoms unperturbed, core symmetry ',POINTGROUP
 ENDIF    
 
@@ -1216,7 +1216,7 @@ END SUBROUTINE SYMMETRY3
 !
 SUBROUTINE SMYLBFGS(X,EPS,MFLAG,ENERGY,ITMAX,ITDONE,COORDS,NATOMS,APARAM)
 USE porfuncs
-USE commons, only: myunit
+USE commons, only: LFH
 IMPLICIT NONE
 INTEGER N,M,J1,ITMAX,ITDONE,NFAIL,NATOMS
 PARAMETER (N=3,M=5)  !  MMUPDATE is actually ignored
@@ -1240,10 +1240,10 @@ DO J1=1,N
    G(J1)=GSAVE(J1)
 ENDDO
 
-IF (PTEST) WRITE(MYUNIT,'(A,2F20.10,A,I6,A)') ' func and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
+IF (PTEST) WRITE(LFH,'(A,2F20.10,A,I6,A)') ' func and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
 16    FORMAT(A,27X,F20.10,A)
 
-10    CALL FLUSH(MYUNIT,ISTAT)
+10    CALL FLUSH(LFH,ISTAT)
 MFLAG=.FALSE.
 IF (RMS.LE.EPS) THEN
    MFLAG=.TRUE.
@@ -1260,7 +1260,7 @@ ENDIF
 
 IF (ITER.EQ.0) THEN
    IF (N.LE.0.OR.M.LE.0) THEN
-      WRITE(MYUNIT,240)
+      WRITE(LFH,240)
  240        FORMAT(' IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')
       STOP
    ENDIF
@@ -1347,8 +1347,8 @@ IF (DOT1*DOT2.NE.0.0D0) OVERLAP=DDOT(N,G,1,W,1)/(DOT1*DOT2)
 !     PRINT*,'G . G=',DDOT(N,G,1,G,1)
 !     PRINT*,'W . W=',DDOT(N,W,1,W,1)
 IF (OVERLAP.GT.0.0D0) THEN
-   IF (PTEST) WRITE(MYUNIT,'(A)') 'Search direction has positive projection onto gradient - reversing step'
-!        IF (PTEST)  WRITE(MYUNIT,'(A)') 'Search direction has positive projection onto gradient - reset'
+   IF (PTEST) WRITE(LFH,'(A)') 'Search direction has positive projection onto gradient - reversing step'
+!        IF (PTEST)  WRITE(LFH,'(A)') 'Search direction has positive projection onto gradient - reset'
    DO I=1,N
       W(ISPT+POINT*N+I)= -W(I)
    ENDDO
@@ -1381,10 +1381,10 @@ ELSE
 !        IF (STP*SLENGTH.LT.1.0D-10) THEN
    IF (NDECREASE.GT.5) THEN
       NFAIL=NFAIL+1
-      WRITE(MYUNIT,'(A, G20.10)') ' in smylbfgs LBFGS step cannot find a lower distance, NFAIL=',NFAIL
+      WRITE(LFH,'(A, G20.10)') ' in smylbfgs LBFGS step cannot find a lower distance, NFAIL=',NFAIL
       ITER=0  !  try resetting
       IF (NFAIL.GT.20) THEN
-         WRITE(MYUNIT,'(A)') ' Too many failures - give up'
+         WRITE(LFH,'(A)') ' Too many failures - give up'
          RETURN
       ENDIF
       DO J1=1,N
@@ -1398,7 +1398,7 @@ ELSE
    NDECREASE=NDECREASE+1
    STP=STP/10.0D0
    IF (PTEST) &
-     &    WRITE(MYUNIT,'(A,F19.10,A,F16.10,A,F15.8)') ' func increased from ',ENERGY,' to ',ENEW, &
+     &    WRITE(LFH,'(A,F19.10,A,F16.10,A,F15.8)') ' func increased from ',ENERGY,' to ',ENEW, &
      &      ' decreasing step to ',STP*SLENGTH
    GOTO 20
 ENDIF
@@ -1408,7 +1408,7 @@ RMS=SQRT((GSAVE(1)**2+GSAVE(2)**2+GSAVE(3)**2)/3)
 DO J1=1,N
    G(J1)=GSAVE(J1)
 ENDDO
-IF (PTEST) WRITE(MYUNIT,'(A,2F20.10,A,I6,A,G15.5)') ' func and RMS force=',ENERGY,RMS,' after ',ITDONE, &
+IF (PTEST) WRITE(LFH,'(A,2F20.10,A,I6,A,G15.5)') ' func and RMS force=',ENERGY,RMS,' after ',ITDONE, &
      &        ' LBFGS steps, step:',STP*SLENGTH
 !     Compute the new step and gradient change
 30    NPT=POINT*N

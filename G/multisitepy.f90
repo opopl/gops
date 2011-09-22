@@ -555,8 +555,8 @@
       ! NPYSITE = number of sites per molecule
       ! NATOMS = number of lines in coords = twice the number of rigid bodies ("molecules")
       ! NSAVE = number of minima to save from data
-      ! MYUNIT = file unit for GMIN_out
-      USE COMMONS, ONLY: NPYSITE, NATOMS, NSAVE, MYUNIT 
+      ! LFH = file unit for GMIN_out
+      USE COMMONS, ONLY: NPYSITE, NATOMS, NSAVE, LFH 
 
       ! PST[site][xyz] = position of ellipsoid center relative to molecule position (ie, in body frame)
       ! OST[site][xyz] = p vector describing site rotation in body frame
@@ -628,7 +628,7 @@
             IF(      ELLST2(J1,1)==ELLST1(J1,1) &
              & .AND. ELLST2(J1,2)==ELLST1(J1,2) & 
              & .AND. ELLST2(J1,3)==ELLST1(J1,3)) THEN
-                  WRITE(MYUNIT,*) 'attr and rep semiaxes are same for &
+                  WRITE(LFH,*) 'attr and rep semiaxes are same for &
                    &site ', J1 
                   RADIFTARRAY(J1) = .FALSE.
             END IF
@@ -670,7 +670,7 @@
       SUBROUTINE DEFINELJMULTISITES
 
       ! See DEFINEPYMULTISITES for description of these variables
-      USE COMMONS, ONLY: NATOMS, NSAVE, MYUNIT 
+      USE COMMONS, ONLY: NATOMS, NSAVE, LFH 
 
       ! LJGSITECOORDS[site][xyz] = position of site in body frame
       ! ljattrp[site] = coefficient to adjust attractive contributions to energy
@@ -702,7 +702,7 @@
         ! Read the input from ljsites.xyz as per above syntax
         READ(300,*) LABEL, LJGSITECOORDS(J1,1), LJGSITECOORDS(J1,2), &
              & LJGSITECOORDS(J1,3), DUMMYLABEL1, ljrepp(J1), ljattrp(J1)
-        WRITE(MYUNIT,*) &
+        WRITE(LFH,*) &
            & 'defineljmultisites> rep and attr params for body ', J1, &
            & ' are: ' , ljrepp(J1), ' & ', ljattrp(J1)
 
@@ -789,7 +789,7 @@
 
       SUBROUTINE MULTISITEPY2 (X, G, ENERGY, GTEST)
 
-      ! NATOMS, NPYSITE, MYUNIT = cf DEFINEPYMULTISITES above
+      ! NATOMS, NPYSITE, LFH = cf DEFINEPYMULTISITES above
       ! PYSIGNOT = sigma_0 (eq 25)
       ! PYEPSNOT = epsilon_0 (eq 24)
       ! FROZEN[body] = logical if body is fixed through the run
@@ -800,7 +800,7 @@
       ! BOXLX = size of PBC box in x direction in absolute units
       ! PARAMONOVCUTOFF = logical if cutoff is used
       ! PCUTOFF = cutoff distance in absolute units
-      USE COMMONS, ONLY: NATOMS, NPYSITE, PYSIGNOT, PYEPSNOT, MYUNIT, FROZEN, &
+      USE COMMONS, ONLY: NATOMS, NPYSITE, PYSIGNOT, PYEPSNOT, LFH, FROZEN, &
             & LJGSITET, LJGSITEEPS, LJGSITESIGMA, &
             & PARAMONOVPBCX, PARAMONOVPBCY, PARAMONOVPBCZ, &
             & BOXLX, BOXLY, BOXLZ, &
@@ -1770,7 +1770,7 @@ DO J1 = 1, REALNATOMS - 1
                 COORDS(J3-2,NP)=COORDS(J3-2,NP)-SQRT(RADIUS)*NINT(COORDS(J3-2,NP)/SQRT(RADIUS))
                 COORDS(J3-1,NP)=COORDS(J3-1,NP)-SQRT(RADIUS)*NINT(COORDS(J3-1,NP)/SQRT(RADIUS))
                 COORDS(J3,NP)=COORDS(J3,NP)-SQRT(RADIUS)*NINT(COORDS(J3,NP)/SQRT(RADIUS))
-    WRITE(MYUNIT,'(A,2F20.10)') 'initial coordinate outside container -- bringing molecule back within the container radius'
+    WRITE(LFH,'(A,2F20.10)') 'initial coordinate outside container -- bringing molecule back within the container radius'
         END IF
 !     BEGIN INNER LOOP OVER PARTICLES
             IF (TMOVE(NP)) LOCALSTEP = STEP(NP)
@@ -1853,7 +1853,7 @@ DO J1 = 1, REALNATOMS - 1
                           ECFVAL = - FMIN
 !                     allow for a slight overlap 
                           IF (ECFVAL < PYOVERLAPTHRESH) THEN
-!                                WRITE(MYUNIT,*) '>> atoms overlapping ', J1, J2, ECFVAL, ABSRIJ
+!                                WRITE(LFH,*) '>> atoms overlapping ', J1, J2, ECFVAL, ABSRIJ
                              OVERLAPT = .TRUE.
                              GO TO 95
                           ENDIF
@@ -1947,7 +1947,7 @@ DO J1 = 1, REALNATOMS - 1
                           ECFVAL = - FMIN
 !                     allow for a slight overlap 
                           IF (ECFVAL < PYOVERLAPTHRESH) THEN
-!                                WRITE(MYUNIT,*) 'going back...'
+!                                WRITE(LFH,*) 'going back...'
                              OVERLAPT = .TRUE.
                              GO TO 95
                           ENDIF

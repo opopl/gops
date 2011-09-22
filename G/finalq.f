@@ -63,7 +63,7 @@ C
             IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
             IF(UNFREEZEFINALQ) FROZEN(:)=.FALSE.  ! unfreeze everything before the final quenches
             CALL QUENCH(.TRUE.,1,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
-            WRITE(MYUNIT,'(A,I6,A,F20.10,A,I5,A,F15.7,A,F12.2)') 'Final Quench ',NQ(1),' energy=',
+            WRITE(LFH,'(A,I6,A,F20.10,A,I5,A,F15.7,A,F12.2)') 'Final Quench ',NQ(1),' energy=',
      1                POTEL,' steps=',ITERATIONS,' RMS force=',RMS,' time=',TIME-TSTART
 
             QMIN(J1)=POTEL
@@ -120,9 +120,9 @@ C
                CSMNORM=2*CSMGPINDEX*CSMNORM
                CALL CSMPOTGRAD(CSMAV,AA,AVVAL,.TRUE.,CSMGRAD)
                CSMNORM=SAVECSMNORM
-               IF (DEBUG) WRITE(MYUNIT,'(A,G20.10)') 'finalq> CSM for averaged structure=',AVVAL
+               IF (DEBUG) WRITE(LFH,'(A,G20.10)') 'finalq> CSM for averaged structure=',AVVAL
                QMINAV(J1)=AVVAL
-               IF (DEBUG) WRITE(MYUNIT,'(A,I6,2G20.10)') 'finalq> J1,QMIN,QMINAV=',J1,QMIN(J1),QMINAV(J1)
+               IF (DEBUG) WRITE(LFH,'(A,I6,2G20.10)') 'finalq> J1,QMIN,QMINAV=',J1,QMIN(J1),QMINAV(J1)
                QMINPCSMAV(J1,1:3*NATOMS)=CSMAV(1:3*NATOMS)
             ENDIF
 !op226>}}} 
@@ -166,14 +166,14 @@ C
 C     IF (DEBUG) THEN
          IF (TABOOT) THEN
             IF (NPAR.GT.1) THEN
-               WRITE(MYUNIT,'(A)') 'Taboo lists:'
+               WRITE(LFH,'(A)') 'Taboo lists:'
                DO J1=1,NPAR
-                  WRITE(MYUNIT,'(A,G20.10)') 'Parallel run ',J1
-                  WRITE(MYUNIT,'(6F15.7)') (ESAVE(J2,J1),J2=1,NT(J1))
+                  WRITE(LFH,'(A,G20.10)') 'Parallel run ',J1
+                  WRITE(LFH,'(6F15.7)') (ESAVE(J2,J1),J2=1,NT(J1))
                ENDDO
             ELSE
-               WRITE(MYUNIT,'(A)') 'Taboo list:'
-               WRITE(MYUNIT,'(6F15.7)') (ESAVE(J2,1),J2=1,NT(1))
+               WRITE(LFH,'(A)') 'Taboo list:'
+               WRITE(LFH,'(6F15.7)') (ESAVE(J2,1),J2=1,NT(1))
             ENDIF
          ENDIF
 C     ENDIF

@@ -230,7 +230,7 @@ C
      &                            BOND_ANGLE,TOR_ANGLE,RADII,NATOMS,RK_R,RK_THETA,COSTOR,DFAC,SINBOND)
 C {{{
 C Declarations {{{
-      USE COMMONS,ONLY : MYUNIT
+      USE COMMONS,ONLY : LFH
       IMPLICIT NONE
       INTEGER NATOMS, N, I, J
       DOUBLE PRECISION, parameter :: theta_0 = 1.8326D0
@@ -528,7 +528,7 @@ C {{{
      1      dot_prod(2,2)*yr(2+1,2+2)))
 
       fta_y(2) = a1 + a2 
-!     WRITE(MYUNIT,'(A,I6,5G15.5)') 'y i,a1,a2,coef,coef1,fta_y=',2,a1,a2,coef,coef1,fta_y(2)
+!     WRITE(LFH,'(A,I6,5G15.5)') 'y i,a1,a2,coef,coef1,fta_y=',2,a1,a2,coef,coef1,fta_y(2)
       
       a1 = -coef*(-dot_prod(3,2)*zr(3,4) +
      1      dot_prod(3,1)*zr(4,5) -
@@ -548,7 +548,7 @@ C {{{
      1      dot_prod(2,2)*zr(2+1,2+2))) 
 
       fta_z(2) = a1 + a2 
-!     WRITE(MYUNIT,'(A,I6,4G15.5)') 'z i,a1,a2,coef,coef1=',2,a1,a2,coef,coef1
+!     WRITE(LFH,'(A,I6,4G15.5)') 'z i,a1,a2,coef,coef1=',2,a1,a2,coef,coef1
 C }}}
 C particle 3
 C {{{
@@ -965,9 +965,9 @@ C Total up the gradients
 C {{{
       do i = 1, n
 !        IF (I.EQ.2) THEN
-!           WRITE(MYUNIT,'(A,I6,4F15.5)') 'i,fnbx,fbx,fbax,ftax=',i,fnb_x(i),fb_x(i),fba_x(i),fta_x(i)
-!           WRITE(MYUNIT,'(A,I6,4F15.5)') 'i,fnby,fby,fbay,ftay=',i,fnb_y(i),fb_y(i),fba_y(i),fta_y(i)
-!           WRITE(MYUNIT,'(A,I6,4F15.5)') 'i,fnbz,fbz,fbaz,ftaz=',i,fnb_z(i),fb_z(i),fba_z(i),fta_z(i)
+!           WRITE(LFH,'(A,I6,4F15.5)') 'i,fnbx,fbx,fbax,ftax=',i,fnb_x(i),fb_x(i),fba_x(i),fta_x(i)
+!           WRITE(LFH,'(A,I6,4F15.5)') 'i,fnby,fby,fbay,ftay=',i,fnb_y(i),fb_y(i),fba_y(i),fta_y(i)
+!           WRITE(LFH,'(A,I6,4F15.5)') 'i,fnbz,fbz,fbaz,ftaz=',i,fnb_z(i),fb_z(i),fba_z(i),fta_z(i)
 !        ENDIF
          fx(i) = fnb_x(i) + fb_x(i) + fba_x(i) + fta_x(i) 
          fy(i) = fnb_y(i) + fb_y(i) + fba_y(i) + fta_y(i) 

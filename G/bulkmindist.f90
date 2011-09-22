@@ -17,7 +17,7 @@
 !   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 SUBROUTINE BULKMINDIST(DUMMYB,DUMMYA,NATOMS,DISTANCE,TWOD,DEBUG,BOXLX,BOXLY,BOXLZ,PITEST,RESETA)
-USE COMMONS,ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP, MYUNIT
+USE COMMONS,ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP, LFH
 
 IMPLICIT NONE
 INTEGER J1, NATOMS, NPMIN, NGMIN, J2, PERM(NATOMS), PBEST(NATOMS), NDUMMY, NMATCHED, PATOMS, J3, J4, NMBEST, ND1
@@ -52,7 +52,7 @@ ND1=0
 DO J1=1,NGMIN-1
    ND1=ND1+NPERMSIZE(J1)
 ENDDO
-IF (DEBUG) WRITE(MYUNIT,'(3(A,I6))') 'bulkmindist> Smallest group of permutable atoms is number ',NGMIN,' with ',NPMIN,' members'
+IF (DEBUG) WRITE(LFH,'(3(A,I6))') 'bulkmindist> Smallest group of permutable atoms is number ',NGMIN,' with ',NPMIN,' members'
 outer: DO J1=ND1+1,ND1+NPMIN
    J2=PERMGROUP(J1)
    XSHIFT=DUMMYA(3*(J2-1)+1)-DUMMYB(3*(ND1)+1)-BOXLX*NINT((DUMMYA(3*(J2-1)+1)-DUMMYB(3*(ND1)+1))/BOXLX)
@@ -82,7 +82,7 @@ outer: DO J1=ND1+1,ND1+NPMIN
                DMIN=DIST
                PERM(PERMGROUP(NDUMMY+J3-1))=PERMGROUP(NDUMMY+J4-1)
                IF (DIST.LT.GDSQ) THEN
-!                 WRITE(MYUNIT,'(A,I6,A,I6,A,G20.10)') ' match found between atom ',PERMGROUP(NDUMMY+J3-1), &
+!                 WRITE(LFH,'(A,I6,A,I6,A,G20.10)') ' match found between atom ',PERMGROUP(NDUMMY+J3-1), &
 ! &                                            ' and ',PERMGROUP(NDUMMY+J4-1),' DIST=',DIST
                   NMATCHED=NMATCHED+1
                   DTOTAL=DTOTAL+DMIN
@@ -92,16 +92,16 @@ outer: DO J1=ND1+1,ND1+NPMIN
             ENDIF
          ENDDO
          DTOTAL=DTOTAL+DMIN
-!        WRITE(MYUNIT,'(A,I6,A,G20.10,A,I6)') ' match failed for atom ',PERMGROUP(NDUMMY+J3-1),' DMIN=',DMIN,' J1=',J1
+!        WRITE(LFH,'(A,I6,A,G20.10,A,I6)') ' match failed for atom ',PERMGROUP(NDUMMY+J3-1),' DMIN=',DMIN,' J1=',J1
          CYCLE outer ! If we reached here then we don't have a permutational isomer because
                      ! the atom specified in the J3 loop does not have a partner.
       ENDDO loop1
       NDUMMY=NDUMMY+NPERMSIZE(J2)
    ENDDO
    IF (SAMEMIN) THEN
-      IF (DEBUG) WRITE(MYUNIT,'(A,G20.10)') 'bulkmindist> identical isomers identified, distance=',SQRT(DTOTAL)
+      IF (DEBUG) WRITE(LFH,'(A,G20.10)') 'bulkmindist> identical isomers identified, distance=',SQRT(DTOTAL)
    ELSE
-      IF (DEBUG) WRITE(MYUNIT,'(A,G20.10)') 'bulkmindist> permutational isomers identified, distance=',SQRT(DTOTAL)
+      IF (DEBUG) WRITE(LFH,'(A,G20.10)') 'bulkmindist> permutational isomers identified, distance=',SQRT(DTOTAL)
    ENDIF
    PITEST=.TRUE.
    DISTANCE=DTOTAL
@@ -116,7 +116,7 @@ outer: DO J1=ND1+1,ND1+NPMIN
    RETURN
 ENDDO outer
 
-IF (DEBUG) WRITE(MYUNIT,'(A)') 'bulkmindist> structures are not permutational isomers'
+IF (DEBUG) WRITE(LFH,'(A)') 'bulkmindist> structures are not permutational isomers'
 
 RETURN
 

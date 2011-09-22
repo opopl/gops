@@ -79,22 +79,22 @@
 !      CALL MPI_INIT(MPIERR)
       CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NDUMMY,MPIERR)
       IF ((NDUMMY.NE.NPAR).OR.(NDUMMY.NE.NTRAJ)) THEN
-         WRITE(MYUNIT,'(A)')  'Number of temperature trajectories does not correspond to the number  
+         WRITE(LFH,'(A)')  'Number of temperature trajectories does not correspond to the number  
      1           of processors. Stop.'
          RETURN
       ENDIF
       CALL MPI_COMM_RANK(MPI_COMM_WORLD,MYNODE,MPIERR)
 
-      WRITE(MYUNIT, '(A,I10,A,I10,A)') "Processor", mynode, " of", NPAR, " speaking:"
-      WRITE(MYUNIT, '(A,I10)') 'Number of atoms', natoms
+      WRITE(LFH, '(A,I10,A,I10,A)') "Processor", mynode, " of", NPAR, " speaking:"
+      WRITE(LFH, '(A,I10)') 'Number of atoms', natoms
       IF (PERIODIC) THEN
-         WRITE(MYUNIT, '(A,6G20.10)') 'Binary data', ntypea, epsab, epsbb, sigab, sigbb, cutoff
-         WRITE(MYUNIT, '(A,3G20.10)') 'Box data', boxlx, boxly, boxlz
+         WRITE(LFH, '(A,6G20.10)') 'Binary data', ntypea, epsab, epsbb, sigab, sigbb, cutoff
+         WRITE(LFH, '(A,3G20.10)') 'Box data', boxlx, boxly, boxlz
       ELSEIF(CHRMMT) THEN
-         WRITE(MYUNIT, '(A)') 'CHARMM job'
-         WRITE(MYUNIT, '(A,G20.10)') 'Starting stepsize ', STEP(MYNODE+1)
+         WRITE(LFH, '(A)') 'CHARMM job'
+         WRITE(LFH, '(A,G20.10)') 'Starting stepsize ', STEP(MYNODE+1)
       ELSE
-         WRITE(MYUNIT, '(A,G20.10)') 'Radius**2', radius
+         WRITE(LFH, '(A,G20.10)') 'Radius**2', radius
       ENDIF
 
       IF (CHRMMT) THEN
@@ -139,7 +139,7 @@
          Q(3,I)=Z(I)
       ENDDO
 
-      WRITE(MYUNIT, '(A,3G20.10)') 'xyz', x(1), y(1), z(1) 
+      WRITE(LFH, '(A,3G20.10)') 'xyz', x(1), y(1), z(1) 
  
       CTE=(LOG(PTTMAX/PTTMIN))/(NTRAJ-1)
       CTE=EXP(CTE)
@@ -159,7 +159,7 @@
       !   IF (BINSTRUCTURES) H(I)=H(I)*3.0
       ENDDO
 
-      WRITE(MYUNIT, '(A,2G20.10)') "Temp, H", TEMPTRAJ(MYNODE), H(MYNODE) 
+      WRITE(LFH, '(A,2G20.10)') "Temp, H", TEMPTRAJ(MYNODE), H(MYNODE) 
 
       CALL POTENTIAL(COORDS(:,MYNODE+1),GRAD, POTEL, .TRUE., .FALSE.)
       VINIT=POTEL
@@ -178,17 +178,17 @@
          CALL QORDER_LJ(Q,Q4,Q6)
       ENDIF
 
-      WRITE(MYUNIT, '(A, 2G20.10)') 'Temperature range', TEMPTRAJ(0), TEMPTRAJ(NTRAJ-1)
-      WRITE(MYUNIT, '(A, G20.10)') 'This temperature trajectory=', TEMPTRAJ(MYNODE)
-      WRITE(MYUNIT, '(A, G20.10)') 'Starting E=', VINIT
+      WRITE(LFH, '(A, 2G20.10)') 'Temperature range', TEMPTRAJ(0), TEMPTRAJ(NTRAJ-1)
+      WRITE(LFH, '(A, G20.10)') 'This temperature trajectory=', TEMPTRAJ(MYNODE)
+      WRITE(LFH, '(A, G20.10)') 'Starting E=', VINIT
       VMINPREV=VINIT
-      IF (PERIODIC) WRITE(MYUNIT, '(A, 2G20.10)') 'Starting Q4, Q6=', Q4, Q6
+      IF (PERIODIC) WRITE(LFH, '(A, 2G20.10)') 'Starting Q4, Q6=', Q4, Q6
       IF (CHRMMT) THEN
-        IF (OSASAT)  WRITE(MYUNIT, '(A, 2G20.10)') 'Starting Met-enk order params=', 
+        IF (OSASAT)  WRITE(LFH, '(A, 2G20.10)') 'Starting Met-enk order params=', 
      1                                         diheorderparam, SASAorderparam 
-        IF (ORGYT)  WRITE(MYUNIT, '(A, G20.10)') 'Starting Rgyr order params=', 
+        IF (ORGYT)  WRITE(LFH, '(A, G20.10)') 'Starting Rgyr order params=', 
      1                                          RGYR 
-        IF (OEINTT) WRITE(MYUNIT, '(A, G20.10)') 'Starting Eint order params=',
+        IF (OEINTT) WRITE(LFH, '(A, G20.10)') 'Starting Eint order params=',
      1                                          EINT
       ENDIF
 
@@ -197,7 +197,7 @@
       RNDSEED=2002+MYNODE
       CALL SDPRND(RNDSEED)
       RANDOM=DPRAND()
-      WRITE(MYUNIT, '(A, G20.10)') 'Starting random number=', RANDOM
+      WRITE(LFH, '(A, G20.10)') 'Starting random number=', RANDOM
 
       NTOT=0
 
@@ -316,8 +316,8 @@
                       interimCOORDS(3*(K-1)+3,1)=Z(K)
                    ENDDO
                interimCoords2=PerturbGeometry(interimCoords)
-!               WRITE(MYUNIT, '(I10, A)') j, ' step pert'
-!                  CALL FLUSH(MYUNIT)
+!               WRITE(LFH, '(I10, A)') j, ' step pert'
+!                  CALL FLUSH(LFH)
                    DO K=1,NATOMS
                       X(K)=interimCOORDS2(3*(K-1)+1,1)
                       Y(K)=interimCOORDS2(3*(K-1)+2,1)
@@ -432,7 +432,7 @@
                CALL QUENCH(.FALSE.,MYNODE+1,LBFGS_ITERATIONS, 
      1           DUMMY,NDUMMY,CONVERGED,COORDS(:,MYNODE+1),DOSSTATS)
              IF (CONVERGED.NE.1) THEN
-                WRITE(MYUNIT, '(A)') 'QUENCH DID NOT CONVERGE' 
+                WRITE(LFH, '(A)') 'QUENCH DID NOT CONVERGE' 
                 DO K=1, NATOMS
                     X(K)=XO(K)
                     Y(K)=YO(K)
@@ -446,9 +446,9 @@
                 WCOMP=DELTA*BETA(MYNODE)
                 W=MIN(1.0d0,EXP(-WCOMP))
                 RANDOM=DPRAND()
-               WRITE(MYUNIT, '(I10, A, A, G20.10, A, G20.10)') i, ' step ',
+               WRITE(LFH, '(I10, A, A, G20.10, A, G20.10)') i, ' step ',
      1          ' En= ', VMINNEW, ' Eo= ',VMINPREV
-                  CALL FLUSH(MYUNIT)
+                  CALL FLUSH(LFH)
                 IF (RANDOM.GT.W) THEN !reject move
                    ACCEPTED=.false.
                    DO K=1, NATOMS
@@ -793,9 +793,9 @@
       WRITE(1984,'(3G20.10)') MYNODE, VMIN(MYNODE),VMAX(MYNODE)
       CLOSE(1984)
 
-      WRITE(MYUNIT, '(G20.10,A,G20.10)') NACCEPTPT(MYNODE), ' steps accepted out of ', NSTAT
-      WRITE(MYUNIT, '(A,G20.10)') 'Final stepsize ', STEP(MYNODE+1)
-      WRITE(MYUNIT, '(G20.10,A,G20.10)') NEACCEPT, ' exchanges accepted out of ', NTOT
+      WRITE(LFH, '(G20.10,A,G20.10)') NACCEPTPT(MYNODE), ' steps accepted out of ', NSTAT
+      WRITE(LFH, '(A,G20.10)') 'Final stepsize ', STEP(MYNODE+1)
+      WRITE(LFH, '(G20.10,A,G20.10)') NEACCEPT, ' exchanges accepted out of ', NTOT
 
       DO K=1,NATOMS
          Q(1,K)=X(K)
@@ -885,5 +885,5 @@
 #endif
       END SUBROUTINE PTBASINSAMPLING
 
-                !CALL FLUSH(MYUNIT)
+                !CALL FLUSH(LFH)
                 !RETURN

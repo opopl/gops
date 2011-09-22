@@ -67,9 +67,9 @@ C        WRITE(*,'(I5,3F15.5)') (I,X(3*(I-1)+1),X(3*(I-1)+2),X(3*(I-1)+3),I=1,NA
             ENDDO
          ENDIF
       ENDIF
-      IF (DEBUG.AND.(.NOT.CENTXY)) WRITE(MYUNIT,'(A,3G20.10)') 'centre2> centre of mass reset to the origin from ',
+      IF (DEBUG.AND.(.NOT.CENTXY)) WRITE(LFH,'(A,3G20.10)') 'centre2> centre of mass reset to the origin from ',
      &                                                   XMASS,YMASS,ZMASS
-      IF (DEBUG.AND.CENTXY) WRITE(MYUNIT,'(A,3G20.10)') 'centre2> centre of mass reset to centre of xy plane from ',
+      IF (DEBUG.AND.CENTXY) WRITE(LFH,'(A,3G20.10)') 'centre2> centre of mass reset to centre of xy plane from ',
      &                                                   XMASS,YMASS,ZMASS
 C     PRINT*,'final coordinates in centre:'
 C     WRITE(*,'(I5,3F15.5)') (I,X(3*(I-1)+1),X(3*(I-1)+2),X(3*(I-1)+3),I=1,NATOMS)
@@ -136,7 +136,7 @@ C csw34> Then need to move the COM to the new centre via the origin
             X(3*(I-1)+3)=X(3*(I-1)+3)-ZMASS+CENTZ
          ENDDO
       ENDIF
-      IF (DEBUG) WRITE(MYUNIT,'(A,3F12.4)') 'centre of mass moved to ',CENTX,CENTY,CENTZ
+      IF (DEBUG) WRITE(LFH,'(A,3F12.4)') 'centre of mass moved to ',CENTX,CENTY,CENTZ
       RETURN
       END
 

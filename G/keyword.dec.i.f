@@ -1,6 +1,7 @@
 Cop226> Declarations {{{
       !USE commons
       use COMMONS
+      use V
       use MODMXATMS   ! NEEDED FOR charmm
       USE modcharmm
 C       sf344> AMBER additions

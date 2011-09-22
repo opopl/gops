@@ -27,10 +27,10 @@ MODULE NOA
 
       CONTAINS
 
-      SUBROUTINE COUNTATOMS(MYUNIT)
+      SUBROUTINE COUNTATOMS(LFH)
 !op226> Declarations {{{ 
       IMPLICIT NONE
-      INTEGER :: EOF,NRES,SEQ(500),I_RES,NOGLY,GLY, MYUNIT
+      INTEGER :: EOF,NRES,SEQ(500),I_RES,NOGLY,GLY, LFH
       LOGICAL :: YESNO, YESNOA, YESNOC, YESNOAMH, YESNOA9
       CHARACTER(LEN=5) TARFL
       CHARACTER(LEN=10)  CHECK
@@ -98,7 +98,7 @@ MODULE NOA
 
          inpcrd1='coords.inpcrd'
 !         inpcrd1=trim(adjustl(inpcrd1))
-         call amberinterface(Number_of_Atoms,1,inpcrd1,MYUNIT)
+         call amberinterface(Number_of_Atoms,1,inpcrd1,LFH)
 
       ELSEIF (YESNOC) THEN
          OPEN(UNIT=7,FILE='input.crd',STATUS='OLD')
@@ -116,7 +116,7 @@ MODULE NOA
 ! are passed between the two can be declared correctly. MXATMS is now stored in modmxatms.
 
          CALL GETMAXAIM
-         WRITE(MYUNIT,'(A,I8)') 'countatoms> Number_of_Atoms=',Number_of_Atoms
+         WRITE(LFH,'(A,I8)') 'countatoms> Number_of_Atoms=',Number_of_Atoms
       ELSEIF (YESNOA) THEN
          OPEN(UNIT=7,FILE='coords.amber',STATUS='OLD')
          do

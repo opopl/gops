@@ -39,7 +39,7 @@
       else
          Energy2Index=nint((CurrentPointEnergy-(BinLabelBottom-histint/2.0d0))/HistInt)+1
       endif
-!     WRITE(MYUNIT,'(A,3G20.10,I6)') 'Energy2Index> CurrentPointEnergy,BinLabelBottom,histint,Energy2Index=', &
+!     WRITE(LFH,'(A,3G20.10,I6)') 'Energy2Index> CurrentPointEnergy,BinLabelBottom,histint,Energy2Index=', &
 !    &                                              CurrentPointEnergy,BinLabelBottom,histint,Energy2Index
 
       end function Energy2Index

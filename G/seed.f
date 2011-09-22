@@ -36,11 +36,11 @@ C
          NSEED=NSEED+1
       ENDDO
 10    CLOSE(10)
-      WRITE(MYUNIT,'(A,I6,A)') 'Read core from file seed containing ',NSEED,' atoms'
+      WRITE(LFH,'(A,I6,A)') 'Read core from file seed containing ',NSEED,' atoms'
       IF (FREEZECORE) THEN
-         WRITE(MYUNIT,'(A,I8,A)') 'Core will be fixed during the first ',NSSTOP,' quenches'
+         WRITE(LFH,'(A,I8,A)') 'Core will be fixed during the first ',NSSTOP,' quenches'
       ELSE
-         WRITE(MYUNIT,'(A,I8,A)') 'Core will be relaxed but reset for the first ',NSSTOP,' quenches'
+         WRITE(LFH,'(A,I8,A)') 'Core will be relaxed but reset for the first ',NSSTOP,' quenches'
       ENDIF
 C
 C  Centre the seed.
@@ -120,9 +120,9 @@ C
             COORDS(3*J1,1)  =COORDS(3*J1,1)  *(AX+BX*DUMMY)/DUMMY
          ENDIF
       ENDDO
-      WRITE(MYUNIT,75)
+      WRITE(LFH,75)
 75    FORMAT('Coordinates:')
-      WRITE(MYUNIT,80) (COORDS(J1,1),J1=1,3*NATOMS)
+      WRITE(LFH,80) (COORDS(J1,1),J1=1,3*NATOMS)
 80    FORMAT(3F15.5)
       IF (DUMPT) THEN
          WRITE(40,*) NATOMS

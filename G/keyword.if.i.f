@@ -19,7 +19,7 @@ Cop226> {{{
 
       ELSE IF (WORD.EQ.'ACCEPTRATIO') THEN
          IF (NITEMS-1.GT.NPAR) THEN
-            WRITE(MYUNIT,'(A)') 'Number of acceptance ratios exceeds NPAR - quit'
+            WRITE(LFH,'(A)') 'Number of acceptance ratios exceeds NPAR - quit'
             STOP
          ENDIF
          DO J1=1,NITEMS-1
@@ -27,8 +27,8 @@ Cop226> {{{
          ENDDO
          IF (NITEMS-1.LT.NPAR) THEN
             IF (NPAR.GT.SIZE(ACCRAT)) THEN
-               WRITE(MYUNIT,'(A,I10,A,I10)') 'NPAR=',NPAR,' but SIZE(ACCRAT)=',SIZE(ACCRAT)
-               WRITE(MYUNIT,'(A,I10,A,I10)') 'Do you need to move the ACCRAT keyword before MPI in data file?'
+               WRITE(LFH,'(A,I10,A,I10)') 'NPAR=',NPAR,' but SIZE(ACCRAT)=',SIZE(ACCRAT)
+               WRITE(LFH,'(A,I10,A,I10)') 'Do you need to move the ACCRAT keyword before MPI in data file?'
                STOP
             ENDIF
             DO J1=NITEMS,NPAR
@@ -77,31 +77,31 @@ C
 
       ELSE IF (WORD.EQ.'AMCHPMAX') THEN
          CALL READF(AMCHPMAX)
-         WRITE(MYUNIT,'(A,F14.10)') 'AMCHPMAX=  ',AMCHPMAX
+         WRITE(LFH,'(A,F14.10)') 'AMCHPMAX=  ',AMCHPMAX
 
       ELSE IF (WORD.EQ.'AMCHPMIN') THEN
          CALL READF(AMCHPMIN)
-         WRITE(MYUNIT,'(A,F14.10)') 'AMCHPMIN=  ',AMCHPMIN
+         WRITE(LFH,'(A,F14.10)') 'AMCHPMIN=  ',AMCHPMIN
 
       ELSE IF (WORD.EQ.'AMCHNMAX') THEN
          CALL READF(AMCHNMAX)
-         WRITE(MYUNIT,'(A,F14.10)') 'AMCHNMAX=  ',AMCHNMAX
+         WRITE(LFH,'(A,F14.10)') 'AMCHNMAX=  ',AMCHNMAX
 
       ELSE IF (WORD.EQ.'AMCHNMIN') THEN
          CALL READF(AMCHNMIN)
-         WRITE(MYUNIT,'(A,F14.10)') 'AMCHNMIN=  ',AMCHNMIN
+         WRITE(LFH,'(A,F14.10)') 'AMCHNMIN=  ',AMCHNMIN
 
       ELSE IF (WORD.EQ.'AMH') THEN
          AMHT=.TRUE.
-         WRITE(MYUNIT,'(A)')'USING AMH ENERGIES FORCES'
-         WRITE(MYUNIT,'(A)')'CALCULATE ENERGY AND FORCE TABLES  '
+         WRITE(LFH,'(A)')'USING AMH ENERGIES FORCES'
+         WRITE(LFH,'(A)')'CALCULATE ENERGY AND FORCE TABLES  '
          CALL WALESAMH_INITIAL 
       ELSE IF (WORD.EQ.'NINT_AMH') THEN
          CALL READI(NINT_AMH)
-         WRITE(MYUNIT,*)'NINT_AMH' , NINT_AMH
+         WRITE(LFH,*)'NINT_AMH' , NINT_AMH
       ELSE IF (WORD.EQ.'HARM_AMH') THEN
          CALL READI(HARM_AMH)
-         WRITE(MYUNIT,*)'HARM_AMH' , HARM_AMH
+         WRITE(LFH,*)'HARM_AMH' , HARM_AMH
       ELSE IF (WORD.EQ.'ANGSTROM') THEN
          ANGST=.TRUE.
 
@@ -131,14 +131,14 @@ C
          IF (.NOT.ALLOCATED(MSBCOORDS)) THEN
             ALLOCATE(MSBCOORDS(3*NATOMS,MAXSAVE))
          ELSE
-            WRITE(MYUNIT,*) 'reallocating MSBCOORDS'
+            WRITE(LFH,*) 'reallocating MSBCOORDS'
             DEALLOCATE(MSBCOORDS)
             ALLOCATE(MSBCOORDS(3*NATOMS,MAXSAVE))
          ENDIF
          IF (.NOT.ALLOCATED(MSBE)) THEN
             ALLOCATE(MSBE(MAXSAVE))
          ELSE
-            WRITE(MYUNIT,*) 'reallocating MSBE'
+            WRITE(LFH,*) 'reallocating MSBE'
             DEALLOCATE(MSBE)
             ALLOCATE(MSBE(MAXSAVE))
          ENDIF
@@ -213,18 +213,18 @@ C BLN {{{
             READ(1,'(A1)',ADVANCE='NO') BLNSSTRUCT(J1)
          ENDDO
          CLOSE(1)
-         WRITE(MYUNIT,'(A,I8,A)') 'BLN sequence of ',NATOMS,' beads read:'
-         WRITE(MYUNIT,'(A1)',ADVANCE='NO') BEADLETTER(1:NATOMS)
-         WRITE(MYUNIT,'(A)') ' '
-         WRITE(MYUNIT,'(A,I8,A)') 'BLN dihedral types:'
-         WRITE(MYUNIT,'(A1)',ADVANCE='NO') BLNSSTRUCT(1:NATOMS-3)
-         WRITE(MYUNIT,'(A)') ' '
-         WRITE(MYUNIT,'(A,2F15.5)') 'B-B LJ coefficients: ',LJREPBB, LJATTBB
-         WRITE(MYUNIT,'(A,2F15.5)') 'L-L LJ coefficients: ',LJREPLL, LJATTLL
-         WRITE(MYUNIT,'(A,2F15.5)') 'N-N LJ coefficients: ',LJREPNN, LJATTNN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Helix    dihedral coefficients: ',HABLN,HBBLN,HCBLN,HDBLN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Extended dihedral coefficients: ',EABLN,EBBLN,ECBLN,EDBLN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Turn     dihedral coefficients: ',TABLN,TBBLN,TCBLN,TDBLN
+         WRITE(LFH,'(A,I8,A)') 'BLN sequence of ',NATOMS,' beads read:'
+         WRITE(LFH,'(A1)',ADVANCE='NO') BEADLETTER(1:NATOMS)
+         WRITE(LFH,'(A)') ' '
+         WRITE(LFH,'(A,I8,A)') 'BLN dihedral types:'
+         WRITE(LFH,'(A1)',ADVANCE='NO') BLNSSTRUCT(1:NATOMS-3)
+         WRITE(LFH,'(A)') ' '
+         WRITE(LFH,'(A,2F15.5)') 'B-B LJ coefficients: ',LJREPBB, LJATTBB
+         WRITE(LFH,'(A,2F15.5)') 'L-L LJ coefficients: ',LJREPLL, LJATTLL
+         WRITE(LFH,'(A,2F15.5)') 'N-N LJ coefficients: ',LJREPNN, LJATTNN
+         WRITE(LFH,'(A,4F15.5)') 'Helix    dihedral coefficients: ',HABLN,HBBLN,HCBLN,HDBLN
+         WRITE(LFH,'(A,4F15.5)') 'Extended dihedral coefficients: ',EABLN,EBBLN,ECBLN,EDBLN
+         WRITE(LFH,'(A,4F15.5)') 'Turn     dihedral coefficients: ',TABLN,TBBLN,TCBLN,TDBLN
          call param_arrayBLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
      &                       LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, 
      &                       HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN, NATOMS)
@@ -262,18 +262,18 @@ C BLN-Go Model {{{
             READ(1,'(A1)',ADVANCE='NO') BLNSSTRUCT(J1)
          ENDDO
          CLOSE(1)
-         WRITE(MYUNIT,'(A,I8,A)') 'BLN sequence of ',NATOMS,' beads read:'
-         WRITE(MYUNIT,'(A1)',ADVANCE='NO') BEADLETTER(1:NATOMS)
-         WRITE(MYUNIT,'(A)') ' '
-         WRITE(MYUNIT,'(A,I8,A)') 'BLN dihedral types:'
-         WRITE(MYUNIT,'(A1)',ADVANCE='NO') BLNSSTRUCT(1:NATOMS-3)
-         WRITE(MYUNIT,'(A)') ' '
-         WRITE(MYUNIT,'(A,2F15.5)') 'B-B LJ coefficients: ',LJREPBB, LJATTBB
-         WRITE(MYUNIT,'(A,2F15.5)') 'L-L LJ coefficients: ',LJREPLL, LJATTLL
-         WRITE(MYUNIT,'(A,2F15.5)') 'N-N LJ coefficients: ',LJREPNN, LJATTNN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Helix    dihedral coefficients: ',HABLN,HBBLN,HCBLN,HDBLN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Extended dihedral coefficients: ',EABLN,EBBLN,ECBLN,EDBLN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Turn     dihedral coefficients: ',TABLN,TBBLN,TCBLN,TDBLN
+         WRITE(LFH,'(A,I8,A)') 'BLN sequence of ',NATOMS,' beads read:'
+         WRITE(LFH,'(A1)',ADVANCE='NO') BEADLETTER(1:NATOMS)
+         WRITE(LFH,'(A)') ' '
+         WRITE(LFH,'(A,I8,A)') 'BLN dihedral types:'
+         WRITE(LFH,'(A1)',ADVANCE='NO') BLNSSTRUCT(1:NATOMS-3)
+         WRITE(LFH,'(A)') ' '
+         WRITE(LFH,'(A,2F15.5)') 'B-B LJ coefficients: ',LJREPBB, LJATTBB
+         WRITE(LFH,'(A,2F15.5)') 'L-L LJ coefficients: ',LJREPLL, LJATTLL
+         WRITE(LFH,'(A,2F15.5)') 'N-N LJ coefficients: ',LJREPNN, LJATTNN
+         WRITE(LFH,'(A,4F15.5)') 'Helix    dihedral coefficients: ',HABLN,HBBLN,HCBLN,HDBLN
+         WRITE(LFH,'(A,4F15.5)') 'Extended dihedral coefficients: ',EABLN,EBBLN,ECBLN,EDBLN
+         WRITE(LFH,'(A,4F15.5)') 'Turn     dihedral coefficients: ',TABLN,TBBLN,TCBLN,TDBLN
          call param_arrayBLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
      &                       LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN,
      &                       HABLN, HBBLN, HCBLN, HDBLN, EABLN, EBBLN, ECBLN, EDBLN, TABLN, TBBLN, TCBLN, TDBLN, NATOMS)
@@ -311,23 +311,23 @@ C End BLN }}}
             READ(1,'(A1)',ADVANCE='NO') BLNSSTRUCT(J1)
          ENDDO
          CLOSE(1)
-         WRITE(MYUNIT,'(A,I8,A)') 'BLN/CHAPERONIN sequence of ',NATOMS,' beads read:'
-         WRITE(MYUNIT,'(A1)',ADVANCE='NO') BEADLETTER(1:NATOMS)
-         WRITE(MYUNIT,'(A)') ' '
-         WRITE(MYUNIT,'(A,I8,A)') 'BLN/CHAPERONIN dihedral types:'
-         WRITE(MYUNIT,'(A1)',ADVANCE='NO') BLNSSTRUCT(1:NATOMS-3)
-         WRITE(MYUNIT,'(A)') ' '
-         WRITE(MYUNIT,'(A,F15.5)') 'Container radius:',RADIUS_CONTAINER
-         WRITE(MYUNIT,'(A,F15.5)') 'Hydrophobicity coefficient:',HYDROPHOBIC
-         WRITE(MYUNIT,'(A,2F15.5)') 'B-B LJ coefficients: ',LJREPBB, LJATTBB
-         WRITE(MYUNIT,'(A,2F15.5)') 'L-L LJ coefficients: ',LJREPLL, LJATTLL
-         WRITE(MYUNIT,'(A,2F15.5)') 'N-N LJ coefficients: ',LJREPNN, LJATTNN
-         WRITE(MYUNIT,'(A,2F15.5)') 'B-L LJ coefficients: ',LJREPBL, LJATTBN
-         WRITE(MYUNIT,'(A,2F15.5)') 'B-N LJ coefficients: ',LJREPBN, LJATTBN
-         WRITE(MYUNIT,'(A,2F15.5)') 'L-N LJ coefficients: ',LJREPLN, LJATTLN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Helix    dihedral coefficients: ',HABLN,HBBLN,HCBLN,HDBLN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Extended dihedral coefficients: ',EABLN,EBBLN,ECBLN,EDBLN
-         WRITE(MYUNIT,'(A,4F15.5)') 'Turn     dihedral coefficients: ',TABLN,TBBLN,TCBLN,TDBLN
+         WRITE(LFH,'(A,I8,A)') 'BLN/CHAPERONIN sequence of ',NATOMS,' beads read:'
+         WRITE(LFH,'(A1)',ADVANCE='NO') BEADLETTER(1:NATOMS)
+         WRITE(LFH,'(A)') ' '
+         WRITE(LFH,'(A,I8,A)') 'BLN/CHAPERONIN dihedral types:'
+         WRITE(LFH,'(A1)',ADVANCE='NO') BLNSSTRUCT(1:NATOMS-3)
+         WRITE(LFH,'(A)') ' '
+         WRITE(LFH,'(A,F15.5)') 'Container radius:',RADIUS_CONTAINER
+         WRITE(LFH,'(A,F15.5)') 'Hydrophobicity coefficient:',HYDROPHOBIC
+         WRITE(LFH,'(A,2F15.5)') 'B-B LJ coefficients: ',LJREPBB, LJATTBB
+         WRITE(LFH,'(A,2F15.5)') 'L-L LJ coefficients: ',LJREPLL, LJATTLL
+         WRITE(LFH,'(A,2F15.5)') 'N-N LJ coefficients: ',LJREPNN, LJATTNN
+         WRITE(LFH,'(A,2F15.5)') 'B-L LJ coefficients: ',LJREPBL, LJATTBN
+         WRITE(LFH,'(A,2F15.5)') 'B-N LJ coefficients: ',LJREPBN, LJATTBN
+         WRITE(LFH,'(A,2F15.5)') 'L-N LJ coefficients: ',LJREPLN, LJATTLN
+         WRITE(LFH,'(A,4F15.5)') 'Helix    dihedral coefficients: ',HABLN,HBBLN,HCBLN,HDBLN
+         WRITE(LFH,'(A,4F15.5)') 'Extended dihedral coefficients: ',EABLN,EBBLN,ECBLN,EDBLN
+         WRITE(LFH,'(A,4F15.5)') 'Turn     dihedral coefficients: ',TABLN,TBBLN,TCBLN,TDBLN
          call param_arrayCHAPERONIN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN
      $        ,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,LJREPBB, LJATTBB,
      $        LJREPLL, LJATTLL, LJREPNN, LJATTNN,LJREPBL, LJATTBL,
@@ -341,7 +341,7 @@ C End CHAPERONIN }}}
          BSMIN=.TRUE.
          IF (NITEMS.GT.1) CALL READF(GMAX)
          IF (NITEMS.GT.2) CALL READF(EPS)
-         WRITE(MYUNIT,'(A,2L5)') 'BSMIN branch RKMIN,BSMIN=',RKMIN,BSMIN
+         WRITE(LFH,'(A,2L5)') 'BSMIN branch RKMIN,BSMIN=',RKMIN,BSMIN
 C
 C Basin-sampling. {{{
 C
@@ -497,7 +497,7 @@ Cop226> {{{
 !op226>{{{ 
       ELSE IF (WORD.EQ.'AMBER9') THEN
         AMBERT=.TRUE.
-        WRITE(MYUNIT,'(A)') 'keyword> RADIUS set to 999 for AMBER9 run'
+        WRITE(LFH,'(A)') 'keyword> RADIUS set to 999 for AMBER9 run'
         RADIUS=999
 C
 C csw34> if residues are frozen with FREEZERES, call the amber routine
@@ -512,25 +512,25 @@ C
 
 ! sf344> file open unit used to conflict with AMBER's IO units (mdin opened with unit = 5),
 
-!               call amberinterface(natom,1,trim(adjustl(inpcrd)),MYUNIT)
+!               call amberinterface(natom,1,trim(adjustl(inpcrd)),LFH)
         IF(NITEMS==2) then
          inpcrd='coords.inpcrd'
          CALL READA(amberstr)
-         WRITE(MYUNIT,'(A)') 'keywords> input coordinates for AMBER9 system will be read from ', trim(adjustl(amberstr))
-               call amberinterface(natom,2,inpcrd,MYUNIT)
+         WRITE(LFH,'(A)') 'keywords> input coordinates for AMBER9 system will be read from ', trim(adjustl(amberstr))
+               call amberinterface(natom,2,inpcrd,LFH)
                CALL amber_readcoords(amberstr)
 
         ELSE IF(NITEMS==3) then
          CALL READA(amberstr)
          CALL READA(amberstr1)
-         WRITE(MYUNIT,'(A)') 'keywords> input coordinates for AMBER9 system will be read from ', trim(adjustl(amberstr)),
+         WRITE(LFH,'(A)') 'keywords> input coordinates for AMBER9 system will be read from ', trim(adjustl(amberstr)),
      &                              'type: ', trim(adjustl(amberstr1))
           IF(trim(adjustl(amberstr1)).EQ.'inpcrd') then
                inpcrd=amberstr
-               call amberinterface(natom,2,inpcrd,MYUNIT)
-           WRITE(MYUNIT,'(A)') 'keywords> reading AMBER inpcrd coordinate format'
+               call amberinterface(natom,2,inpcrd,LFH)
+           WRITE(LFH,'(A)') 'keywords> reading AMBER inpcrd coordinate format'
           ELSE
-           WRITE(MYUNIT,'(A)') 'keywords> ERROR - no other types defined currently than inpcrd'
+           WRITE(LFH,'(A)') 'keywords> ERROR - no other types defined currently than inpcrd'
            STOP
           END IF
         END IF
@@ -602,7 +602,7 @@ Cop226> ==============================================
 !        readswitch controls which part of movableatoms we're reading in i.e. 
 !        M=whole ligand, A=group A, B=group B, C=group C
          readswitch='M'
-           WRITE(MYUNIT,'(A)') ' keyword> list of movable atoms will be read from file <movableatoms>'
+           WRITE(LFH,'(A)') ' keyword> list of movable atoms will be read from file <movableatoms>'
            OPEN(unit=222,file='movableatoms',status='old')
                  do
                    read (unit=222,iostat=iostatus,fmt='(A6)') check1
@@ -653,7 +653,7 @@ Cop226> ==============================================
               do i=1,nmovableatoms
                  read (unit=222,iostat=iostatus,fmt='(I6)') MOVABLEATOMINDEX
                  IF ((MOVABLEATOMINDEX .LE. 0) .OR. (MOVABLEATOMINDEX .GT. NATOMS)) THEN
-                    WRITE(MYUNIT, '(A,I6,A,I6,A)') 'The index ', MOVABLEATOMINDEX, ' is out of bounds (NATOMS = ', NATOMS, ').'
+                    WRITE(LFH, '(A,I6,A,I6,A)') 'The index ', MOVABLEATOMINDEX, ' is out of bounds (NATOMS = ', NATOMS, ').'
                     STOP 'Error: movableatoms contains atom indices which are out of bounds.'
                  END IF
                  movableatomlist(i) = MOVABLEATOMINDEX
@@ -664,7 +664,7 @@ Cop226> ==============================================
                  do i=1,natomsina
                     read (unit=222,iostat=iostatus,fmt='(I6)') MOVABLEATOMINDEX
                     IF ((MOVABLEATOMINDEX .LE. 0) .OR. (MOVABLEATOMINDEX .GT. NATOMS)) THEN
-                       WRITE(MYUNIT, '(A,I6,A,I6,A)') 'The index ', MOVABLEATOMINDEX, ' is out of bounds (NATOMS = ', NATOMS, ').'
+                       WRITE(LFH, '(A,I6,A,I6,A)') 'The index ', MOVABLEATOMINDEX, ' is out of bounds (NATOMS = ', NATOMS, ').'
                        STOP 'Error: movableatoms contains atom indices which are out of bounds.'
                     END IF
                     atomsinalist(i) = MOVABLEATOMINDEX
@@ -675,7 +675,7 @@ Cop226> ==============================================
                  do i=1,natomsinb
                     read (unit=222,iostat=iostatus,fmt='(I6)') MOVABLEATOMINDEX
                     IF ((MOVABLEATOMINDEX .LE. 0) .OR. (MOVABLEATOMINDEX .GT. NATOMS)) THEN
-                       WRITE(MYUNIT, '(A,I6,A,I6,A)') 'The index ', MOVABLEATOMINDEX, ' is out of bounds (NATOMS = ', NATOMS, ').'
+                       WRITE(LFH, '(A,I6,A,I6,A)') 'The index ', MOVABLEATOMINDEX, ' is out of bounds (NATOMS = ', NATOMS, ').'
                        STOP 'Error: movableatoms contains atom indices which are out of bounds.'
                     END IF
                     atomsinblist(i) = MOVABLEATOMINDEX
@@ -686,7 +686,7 @@ Cop226> ==============================================
                  do i=1,natomsinc
                     read (unit=222,iostat=iostatus,fmt='(I6)') MOVABLEATOMINDEX
                     IF ((MOVABLEATOMINDEX .LE. 0) .OR. (MOVABLEATOMINDEX .GT. NATOMS)) THEN
-                       WRITE(MYUNIT, '(A,I6,A,I6,A)') 'The index ', MOVABLEATOMINDEX, ' is out of bounds (NATOMS = ', NATOMS, ').'
+                       WRITE(LFH, '(A,I6,A,I6,A)') 'The index ', MOVABLEATOMINDEX, ' is out of bounds (NATOMS = ', NATOMS, ').'
                        STOP 'Error: movableatoms contains atom indices which are out of bounds.'
                     END IF
                     atomsinclist(i) = MOVABLEATOMINDEX
@@ -711,10 +711,10 @@ Cop226> ==============================================
               end do
            endif
 ! write some output for the user
-           WRITE(MYUNIT,'(A15,I6,A46)') ' keyword> ligand defined with ',nmovableatoms,' atoms'
-           IF(natomsina.GT.0) WRITE(MYUNIT,'(A10,I6,A64)') ' keyword> ',natomsina,' atoms in group A'
-           IF(natomsinb.GT.0) WRITE(MYUNIT,'(A10,I6,A63)') ' keyword> ',natomsinb,' atoms in group B'
-           IF(natomsinc.GT.0) WRITE(MYUNIT,'(A10,I6,A63)') ' keyword> ',natomsinc,' atoms in group C'
+           WRITE(LFH,'(A15,I6,A46)') ' keyword> ligand defined with ',nmovableatoms,' atoms'
+           IF(natomsina.GT.0) WRITE(LFH,'(A10,I6,A64)') ' keyword> ',natomsina,' atoms in group A'
+           IF(natomsinb.GT.0) WRITE(LFH,'(A10,I6,A63)') ' keyword> ',natomsinb,' atoms in group B'
+           IF(natomsinc.GT.0) WRITE(LFH,'(A10,I6,A63)') ' keyword> ',natomsinc,' atoms in group C'
 ! sf344> keyword for taking moves between quenches in which one part of the molecule is moved
 ! csw34> updated on 29th September 2009 to allow local cartesian moves 
 !op226>}}} 
@@ -740,24 +740,24 @@ Cop226> ==============================================
 ! the moves.
            IF(ligmovefreq.EQ.0) THEN 
               LIGMOVET=.FALSE.
-              WRITE(MYUNIT,'(A)') ' keyword> WARNING: frequency of LIGMOVE moves set to 0 - moves DISABLED!'
+              WRITE(LFH,'(A)') ' keyword> WARNING: frequency of LIGMOVE moves set to 0 - moves DISABLED!'
            ENDIF
         ENDIF
 
 ! csw34> some user info about ligand moves 
         IF (ligrotscale.gt.0) THEN
-           WRITE(MYUNIT,'(A)') ' keyword> one part of the molecule (ligand) will be randomly rotated during MC steptaking moves'
-           WRITE(MYUNIT,'(A,G8.3)') ' keyword> ligand rotations scaled will be scaled by ',ligrotscale 
+           WRITE(LFH,'(A)') ' keyword> one part of the molecule (ligand) will be randomly rotated during MC steptaking moves'
+           WRITE(LFH,'(A,G8.3)') ' keyword> ligand rotations scaled will be scaled by ',ligrotscale 
         ENDIF
         IF (ligcartstep.gt.0) THEN 
-           WRITE(MYUNIT,'(A,G8.3,A)') ' keyword> cartesian perturbations of up to ',ligcartstep,' will be applied to the ligand' 
+           WRITE(LFH,'(A,G8.3,A)') ' keyword> cartesian perturbations of up to ',ligcartstep,' will be applied to the ligand' 
         ENDIF 
 
       ELSE IF (WORD.eq.'DUMPSTRUCTURES') THEN
         DUMPSTRUCTURES=.TRUE.
-        WRITE(MYUNIT,'(A)') ' keywords> Final structures will be dumped in different formats (.rst, .xyz, .pdb)'
+        WRITE(LFH,'(A)') ' keywords> Final structures will be dumped in different formats (.rst, .xyz, .pdb)'
       ELSE IF (WORD.eq.'RANDOMSEED') THEN
-        WRITE(MYUNIT,'(A)') ' keywords> The random number generator for the random steptaking moves will be seeded with system time'
+        WRITE(LFH,'(A)') ' keywords> The random number generator for the random steptaking moves will be seeded with system time'
         RANDOMSEEDT=.TRUE.
       ELSE IF (WORD.EQ.'CHANGEACCEPT') THEN
          CALL READI(IX)
@@ -778,9 +778,9 @@ Cop226> ==============================================
          INQUIRE(FILE='AMBGMINintE.sh',EXIST=YESNO)
          IF (YESNO) THEN
             A9INTET=.TRUE.
-            WRITE(MYUNIT,'(A)') ' keyword> The interaction enthalpy to the specified residue will be calculated after each quench'
+            WRITE(LFH,'(A)') ' keyword> The interaction enthalpy to the specified residue will be calculated after each quench'
          ELSE
-            WRITE(MYUNIT,'(A)') ' keyword> ERROR: NEED AMBGMINintE.sh SCRIPT TO USE A9INTE - see www-wales.ch.cam.ac.uk/software'
+            WRITE(LFH,'(A)') ' keyword> ERROR: NEED AMBGMINintE.sh SCRIPT TO USE A9INTE - see www-wales.ch.cam.ac.uk/software'
             STOP
          ENDIF
 
@@ -799,9 +799,9 @@ C FREEZEGROUP lets you freeze all atoms within or beyond a radius
          INQUIRE(FILE='PdbRotamerSearch',EXIST=YESNO)
          IF (YESNO) THEN
             ROTAMERT=.TRUE.
-            WRITE(MYUNIT,'(A)') ' keyword> AMBER rotamer moves enabled'
+            WRITE(LFH,'(A)') ' keyword> AMBER rotamer moves enabled'
          ELSE
-            WRITE(MYUNIT,'(A)') ' keyword> ERROR: NEED PdbRotamerSearch TO USE ROTAMER - see www-wales.ch.cam.ac.uk/software'
+            WRITE(LFH,'(A)') ' keyword> ERROR: NEED PdbRotamerSearch TO USE ROTAMER - see www-wales.ch.cam.ac.uk/software'
             STOP
          ENDIF
          CALL READI(ROTMAXCHANGE)
@@ -825,14 +825,14 @@ C
       ELSE IF (WORD.EQ.'CHARMM') THEN
          CHRMMT=.TRUE.
          IF (MXATMS.EQ.0) THEN
-            WRITE(MYUNIT,'(A)') 'keyword> ERROR *** MXATMS is zero'
+            WRITE(LFH,'(A)') 'keyword> ERROR *** MXATMS is zero'
             STOP
          ENDIF
-         CALL FLUSH(MYUNIT)
+         CALL FLUSH(LFH)
 
          IF (PERMDIST) THEN
             IF(NPERMSIZE(1).EQ.NATOMS) THEN
-            WRITE(MYUNIT,'(A)') 'keyword> ERROR - PERMDIST is specfied for CHARMM, but there is no perm.allow file present'
+            WRITE(LFH,'(A)') 'keyword> ERROR - PERMDIST is specfied for CHARMM, but there is no perm.allow file present'
             STOP
             ENDIF
          ENDIF
@@ -841,9 +841,9 @@ C
 
          CHX(1)=13.13d13 ! this way we will tell CHARMM to save it's coords into CH. arrays; otherwise it will
                          ! use input.crd only which is the default now
-         CALL FLUSH(MYUNIT)
+         CALL FLUSH(LFH)
          CALL CHSETUP(CHX,CHY,CHZ,CHMASS,NATOM,TOPFILE,PARFILE)
-         CALL FLUSH(MYUNIT)
+         CALL FLUSH(LFH)
          CALL CHSETZSYMATMASS
          CALL CHALLOCATE(NATOMS)
 C jmc49>         CALL CHSETDIHE
@@ -873,8 +873,8 @@ C and so will be done in charmmgmin.src
          CALL CHSETDIHE
          
          IF (NATOM /= NATOMS) THEN
-            WRITE(MYUNIT,'(A)') 'No. of atoms in "input.crd" and file specified in CHARMM part of data conflict'
-            WRITE(MYUNIT,'(A,2I8)') 'NATOM,NATOMS=',NATOM, NATOMS
+            WRITE(LFH,'(A)') 'No. of atoms in "input.crd" and file specified in CHARMM part of data conflict'
+            WRITE(LFH,'(A,2I8)') 'NATOM,NATOMS=',NATOM, NATOMS
             CALL EXIT(10)
          ENDIF
          IF (MPIT) THEN
@@ -965,31 +965,31 @@ C
 !op226>{{{ 
       ELSE IF (WORD.EQ.'CHPMAX') THEN
          CALL READF(CHPMAX)
-         WRITE(MYUNIT,'(A,F14.10)') 'CHPMAX=  ',CHPMAX
+         WRITE(LFH,'(A,F14.10)') 'CHPMAX=  ',CHPMAX
 
       ELSE IF (WORD.EQ.'CHPMIN') THEN
          CALL READF(CHPMIN)
-         WRITE(MYUNIT,'(A,F14.10)') 'CHPMIN=  ',CHPMIN
+         WRITE(LFH,'(A,F14.10)') 'CHPMIN=  ',CHPMIN
 
       ELSE IF (WORD.EQ.'CHNMAX') THEN
          CALL READF(CHNMAX)
-         WRITE(MYUNIT,'(A,F14.10)') 'CHNMAX=  ',CHNMAX
+         WRITE(LFH,'(A,F14.10)') 'CHNMAX=  ',CHNMAX
 
       ELSE IF (WORD.EQ.'CHNMIN') THEN
          CALL READF(CHNMIN)
-         WRITE(MYUNIT,'(A,F14.10)') 'CHNMIN=  ',CHNMIN
+         WRITE(LFH,'(A,F14.10)') 'CHNMIN=  ',CHNMIN
 
       ELSE IF (WORD.EQ.'NOPHIPSI') THEN
          NOPHIPSIT=.TRUE.
-         WRITE(MYUNIT,'(A)') 'NOPHIPSIT set : only sidechain dihedrals will be twisted'
+         WRITE(LFH,'(A)') 'NOPHIPSIT set : only sidechain dihedrals will be twisted'
 
       ELSE IF (WORD.EQ.'TOMEGA') THEN
          OMEGAT=.TRUE.
-         WRITE(MYUNIT,'(A)') 'TOMEGA set : peptide bonds will be twisted along with all other dihedrals'
+         WRITE(LFH,'(A)') 'TOMEGA set : peptide bonds will be twisted along with all other dihedrals'
 
       ELSE IF (WORD.EQ.'CHFREQ') THEN
          CALL READI(CHFREQ)
-         WRITE(MYUNIT,'(A,I4,A)') 'Every ',CHFREQ,' steps TAKESTEPCH is called'
+         WRITE(LFH,'(A,I4,A)') 'Every ',CHFREQ,' steps TAKESTEPCH is called'
 !op226>}}} 
 !op226>=================================== 
 !op226> CHRIGIDTRANS CHRIGIDROT FIXEDEND OSASA ODIHE OEINT
@@ -1021,13 +1021,13 @@ C
       ELSE IF (WORD.EQ.'OSASA') THEN
          OSASAT=.TRUE.
          CALL READF(RPRO)
-         WRITE(MYUNIT,'(A)') 'OSASA set: solvent accessible surface area order parameter will be calculated'
-         WRITE(MYUNIT,'(A,F3.1)') 'using probe radius ',RPRO
+         WRITE(LFH,'(A)') 'OSASA set: solvent accessible surface area order parameter will be calculated'
+         WRITE(LFH,'(A,F3.1)') 'using probe radius ',RPRO
 
       ELSE IF (WORD.EQ.'ODIHE') THEN
          ODIHET=.TRUE.
-         WRITE(MYUNIT,'(A)') 'ODIHE set: dihedral-angle order parameter will be calculated'
-         WRITE(MYUNIT,'(A)') 'using the reference structure supplied in ref.crd'
+         WRITE(LFH,'(A)') 'ODIHE set: dihedral-angle order parameter will be calculated'
+         WRITE(LFH,'(A)') 'using the reference structure supplied in ref.crd'
  
       ELSE IF (WORD.EQ.'OEINT') THEN
          OEINTT=.TRUE.
@@ -1035,7 +1035,7 @@ C
          CALL READI(MON1(2))
          CALL READI(MON2(1))
          CALL READI(MON2(2))
-         WRITE(MYUNIT,'(A)') 'OEINTT set: interaction energy between 2 peptides will be used as an order parameter'
+         WRITE(LFH,'(A)') 'OEINTT set: interaction energy between 2 peptides will be used as an order parameter'
 !op226>}}} 
 !op226>=================================== 
 !op226> ORGYR NORANDOM PERMDIHE 
@@ -1044,7 +1044,7 @@ C
 
       ELSE IF (WORD.EQ.'ORGYR') THEN
          ORGYT=.TRUE.
-         WRITE(MYUNIT,'(A)') 'ORGYT set: radius of gyration will be calculated as an order parameter'
+         WRITE(LFH,'(A)') 'ORGYT set: radius of gyration will be calculated as an order parameter'
 
 C     ELSE IF (WORD.EQ.'NORANDOM') THEN
 C        NORANDOM=.TRUE.
@@ -1088,7 +1088,7 @@ C
          IF (NITEMS.GT.1) THEN
             CALL READA(SYS)
          ELSE
-            WRITE(MYUNIT,'(A)') ' ERROR - no CPMD system specified'
+            WRITE(LFH,'(A)') ' ERROR - no CPMD system specified'
             STOP
          ENDIF
          DO J1=1,80
@@ -1182,23 +1182,23 @@ C
                PERMGROUP(J1)=J1
             ENDDO
          ENDIF
-         WRITE(MYUNIT,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
+         WRITE(LFH,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
          NDUMMY=1
          DO J1=1,NPERMGROUP
-            WRITE(MYUNIT) '(A,3(I6,A))',' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
+            WRITE(LFH) '(A,3(I6,A))',' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
      &                                                 NSETS(J1),' additional atom sets:'
-            WRITE(MYUNIT,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
+            WRITE(LFH,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
             IF (NSETS(J1).GT.0) THEN
                WRITE(*,'(A)',ADVANCE='NO') ' with '
                DO J2=1,NSETS(J1)
                   DO J3=NDUMMY,NDUMMY+NPERMSIZE(J1)-1
-                     WRITE(MYUNIT,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
+                     WRITE(LFH,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
                      IF (J3.LT.NDUMMY+NPERMSIZE(J1)-1) WRITE(*,'(A3)',ADVANCE='NO') ' / '
                   ENDDO
                   IF (J2.LT.NSETS(J1)) WRITE(*,'(A3)',ADVANCE='NO') ' ; '
                ENDDO
             ENDIF
-            WRITE(MYUNIT,*) ' '
+            WRITE(LFH,*) ' '
             NDUMMY=NDUMMY+NPERMSIZE(J1)
          ENDDO
       ELSE IF (WORD.EQ.'CUTOFF') THEN
@@ -1253,7 +1253,7 @@ C
       ELSE IF (WORD.EQ.'DIELEC') THEN
          CALL READF(XX)
          DPARAM=XX
-         WRITE(MYUNIT,'(A,F9.5)') ' Dielectric constant = ',DPARAM
+         WRITE(LFH,'(A,F9.5)') ' Dielectric constant = ',DPARAM
 C
 C  NOT DOCUMENTED - INTENTIONAL
 C
@@ -1379,9 +1379,9 @@ C
 
       ELSE IF (WORD.EQ.'FAKEWATER') THEN
          FAKEWATER=.TRUE.
-         WRITE (MYUNIT,'(A)') '**********************************************************'
-         WRITE (MYUNIT,'(A)') '* DISTANCE DEPENDENT DIELECTRIC BEING USED - FAKE WATER! *'
-         WRITE (MYUNIT,'(A)') '**********************************************************'
+         WRITE (LFH,'(A)') '**********************************************************'
+         WRITE (LFH,'(A)') '* DISTANCE DEPENDENT DIELECTRIC BEING USED - FAKE WATER! *'
+         WRITE (LFH,'(A)') '**********************************************************'
 
       ELSE IF (WORD.EQ.'FAL') THEN
          FAL=.TRUE.
@@ -1575,7 +1575,7 @@ C
          CALL READI(MYGA_TOURN_SIZE)
          IF (MYGA_TOURN_SIZE.LT.2) THEN
             MYGA_TOURN_SIZE=2
-            WRITE(MYUNIT,*) 'keyword> WARNING - GA tournament size must be at least 2.'
+            WRITE(LFH,*) 'keyword> WARNING - GA tournament size must be at least 2.'
          ENDIF
 C
 C NOT DOCUMENTED
@@ -1600,9 +1600,9 @@ C
          INQUIRE(FILE='atomgroups',EXIST=YESNO)
          IF (YESNO) THEN
             GROUPROTT=.TRUE.
-            WRITE(MYUNIT,'(A)') ' keyword> AMBER group rotation moves enabled'
+            WRITE(LFH,'(A)') ' keyword> AMBER group rotation moves enabled'
          ELSE
-            WRITE(MYUNIT,'(A)') ' keyword> ERROR: atom groups must be defined in atomgroups file'
+            WRITE(LFH,'(A)') ' keyword> ERROR: atom groups must be defined in atomgroups file'
             STOP
          ENDIF
          IF (NITEMS.GT.1) CALL READI(GROUPROTFREQ)
@@ -1610,7 +1610,7 @@ C
 ! a divide by 0!
          IF(GROUPROTFREQ.EQ.0) THEN 
             GROUPROTT=.FALSE.
-            WRITE(MYUNIT,'(A)') ' keyword> WARNING: frequency of GROUPROTATION moves set to 0 - moves DISABLED!'
+            WRITE(LFH,'(A)') ' keyword> WARNING: frequency of GROUPROTATION moves set to 0 - moves DISABLED!'
          ENDIF
          IF (NITEMS.GT.2) CALL READI(GROUPOFFSET)
 ! csw34> Figure out how many atom groups have been defined
@@ -1649,14 +1649,14 @@ C
 ! There are 4 atoms in the OME group. Rotations of -pi->+pi are to be scaled by 1.0. 
 ! Finally, the group members are specified one per line
          OPEN(UNIT=222,FILE='atomgroups',status='unknown')
-         WRITE(MYUNIT,*) 'keyword> Reading in atom groups for GROUPROTATION'
-         IF(GROUPOFFSET.NE.0) WRITE(MYUNIT,*) 'keyword> Group atom numbering offset by ',GROUPOFFSET
+         WRITE(LFH,*) 'keyword> Reading in atom groups for GROUPROTATION'
+         IF(GROUPOFFSET.NE.0) WRITE(LFH,*) 'keyword> Group atom numbering offset by ',GROUPOFFSET
          DO J1=1,NGROUPS
             READ(222,*) CHECK1,ATOMGROUPNAMES(J1),AXIS1,AXIS2,GROUPSIZE,ATOMGROUPSCALING(J1),
      &                       ATOMGROUPPSELECT(J1) 
             ATOMGROUPAXIS(J1,1)=AXIS1+GROUPOFFSET
             ATOMGROUPAXIS(J1,2)=AXIS2+GROUPOFFSET
-            CALL FLUSH(MYUNIT)
+            CALL FLUSH(LFH)
             IF (TRIM(ADJUSTL(CHECK1)).EQ.'GROUP') THEN
                DO J2=1,GROUPSIZE
                   READ(222,*) GROUPATOM
@@ -1664,18 +1664,18 @@ C
                   ATOMGROUPS(J1,GROUPATOM)=.TRUE. 
                END DO 
             ELSE
-               WRITE(MYUNIT,'(A)') ' keyword: ERROR! Group file not formatted correctly!'
+               WRITE(LFH,'(A)') ' keyword: ERROR! Group file not formatted correctly!'
                STOP
             ENDIF
-            WRITE(MYUNIT,'(3A)') '<GROUP ',TRIM(ADJUSTL(ATOMGROUPNAMES(J1))),'>'
-            WRITE(MYUNIT,'(A,I3)') 'Index: ',J1
-            WRITE(MYUNIT,'(A,I4)') 'Size: ',GROUPSIZE
-            WRITE(MYUNIT,'(A,2I5)') 'Atoms defining axis: ',ATOMGROUPAXIS(J1,1),ATOMGROUPAXIS(J1,2)
-            WRITE(MYUNIT,'(A,F4.2)') 'Rotation scaling: ',ATOMGROUPSCALING(J1)
-            WRITE(MYUNIT,'(A,F4.2)') 'Selection probablity: ',ATOMGROUPPSELECT(J1)
-            WRITE(MYUNIT,'(A)') 'Members:'
+            WRITE(LFH,'(3A)') '<GROUP ',TRIM(ADJUSTL(ATOMGROUPNAMES(J1))),'>'
+            WRITE(LFH,'(A,I3)') 'Index: ',J1
+            WRITE(LFH,'(A,I4)') 'Size: ',GROUPSIZE
+            WRITE(LFH,'(A,2I5)') 'Atoms defining axis: ',ATOMGROUPAXIS(J1,1),ATOMGROUPAXIS(J1,2)
+            WRITE(LFH,'(A,F4.2)') 'Rotation scaling: ',ATOMGROUPSCALING(J1)
+            WRITE(LFH,'(A,F4.2)') 'Selection probablity: ',ATOMGROUPPSELECT(J1)
+            WRITE(LFH,'(A)') 'Members:'
             DO J2=1,NATOMS
-               IF(ATOMGROUPS(J1,J2)) WRITE(MYUNIT,*) J2
+               IF(ATOMGROUPS(J1,J2)) WRITE(LFH,*) J2
             ENDDO
          ENDDO
          CLOSE(222)
@@ -1748,7 +1748,7 @@ C
       ELSE IF (WORD.EQ.'LJMF') THEN
          LJMFT=.TRUE.
 C        CALL LJPARAMMF
-         WRITE(MYUNIT,'(A)') 'LJMF not currently maintained'
+         WRITE(LFH,'(A)') 'LJMF not currently maintained'
          STOP
 
 C start = an N-oligomer is constructed by relocating NREPEAT units and placing them
@@ -1827,7 +1827,7 @@ C
             IF (TRIM(ADJUSTL(UNSTRING)).EQ.'ROTZ') ROTZT=.TRUE.
             IF (TRIM(ADJUSTL(UNSTRING)).EQ.'SCONLY') NOPHIPSIT=.TRUE.
          ELSE
-            WRITE(MYUNIT,'(A)') 'The first argument to MAKEOLIGO has to be START, INITROT or REFINE - quit.'
+            WRITE(LFH,'(A)') 'The first argument to MAKEOLIGO has to be START, INITROT or REFINE - quit.'
             STOP
          ENDIF
 
@@ -1943,18 +1943,18 @@ C
             CALL READF(NEWRES_TEMP)
          ELSE
             NEWRES_TEMP = 1000.0D0
-            WRITE(MYUNIT,'(A)') 'keyword> WARNING - temperature unspecified for NEWRESTART. Default for high T MD is 1000K'
+            WRITE(LFH,'(A)') 'keyword> WARNING - temperature unspecified for NEWRESTART. Default for high T MD is 1000K'
          ENDIF                                     ! lb415
          IF (.NOT.ALLOCATED(MSBE)) ALLOCATE(MSBE(MAXSAVE))
          IF (.NOT.ALLOCATED(MSBCOORDS)) ALLOCATE(MSBCOORDS(3*NATOMS,MAXSAVE))
 
       ELSE IF (WORD.EQ.'NMAX') THEN
          CALL READF(NMAX)
-         WRITE(MYUNIT,'(A,F14.10)') 'NMAX=  ',NMAX
+         WRITE(LFH,'(A,F14.10)') 'NMAX=  ',NMAX
 
       ELSE IF (WORD.EQ.'NMIN') THEN
          CALL READF(NMIN)
-         WRITE(MYUNIT,'(A,F14.10)') 'NMIN=  ',NMIN
+         WRITE(LFH,'(A,F14.10)') 'NMIN=  ',NMIN
  
       ELSE IF (WORD.EQ.'NOCHIRALCHECKS') THEN
          CHECKCHIRALITY=.FALSE.
@@ -1997,7 +1997,7 @@ C  Specify Oh supercell to allow box symmetries in permutational alignment.
 C
       ELSE IF (WORD.EQ.'OHCELL') THEN
          OHCELLT=.TRUE.
-         WRITE(MYUNIT,'(A)') 'Octahedral supercell specfied'
+         WRITE(LFH,'(A)') 'Octahedral supercell specfied'
 C
 C NOT DOCUMENTED
 C
@@ -2026,17 +2026,17 @@ C        CALL OTPPARAMMF
          IF (NITEMS.GT.1) THEN
 ! If arguements are specified, assume NITEMS/2 pairs on the line 
             PAIRDISTT=.TRUE.
-            WRITE(MYUNIT,'(A)') ' keyword> Pairwise atom distances will be output to pairdists*'
+            WRITE(LFH,'(A)') ' keyword> Pairwise atom distances will be output to pairdists*'
             NPAIRS=(NITEMS-1)/2
             ALLOCATE(PAIRDIST(NPAIRS,2))
             DO J1=1,NPAIRS
                CALL READI(PAIRDIST(J1,1))
                CALL READI(PAIRDIST(J1,2))
                IF (PAIRDIST(J1,1).GT.NATOMS) THEN
-                  WRITE(MYUNIT,'(A)') ' keyword> ERROR: PAIRDIST atom index larger than system specified!'
+                  WRITE(LFH,'(A)') ' keyword> ERROR: PAIRDIST atom index larger than system specified!'
                   STOP
                ELSEIF (PAIRDIST(J1,2).GT.NATOMS) THEN
-                  WRITE(MYUNIT,'(A)') ' keyword> ERROR: PAIRDIST atom index larger than system specified!'
+                  WRITE(LFH,'(A)') ' keyword> ERROR: PAIRDIST atom index larger than system specified!'
                   STOP
                ENDIF
             ENDDO
@@ -2047,10 +2047,10 @@ C        CALL OTPPARAMMF
             INQUIRE(FILE='pairdist',EXIST=YESNO)
             IF (YESNO) THEN
                PAIRDISTT=.TRUE.
-               WRITE(MYUNIT,'(A)') ' keyword> Pairwise atom distances will be output to pairdists*'
+               WRITE(LFH,'(A)') ' keyword> Pairwise atom distances will be output to pairdists*'
             ELSE
-               WRITE(MYUNIT,'(A)') ' keyword> ERROR: pairdist input file missing for PAIRDIST'
-               FLUSH(MYUNIT)
+               WRITE(LFH,'(A)') ' keyword> ERROR: pairdist input file missing for PAIRDIST'
+               FLUSH(LFH)
                STOP
             ENDIF
 ! Determine NPAIRS to allow allocation of the PAIRDIST array 
@@ -2074,9 +2074,9 @@ C        CALL OTPPARAMMF
             CLOSE(222)
          ENDIF
 ! Print list of pairs to GMIN output for checking
-         WRITE(MYUNIT,'(A)') ' keyword> Atom pair distances to monitor:'
+         WRITE(LFH,'(A)') ' keyword> Atom pair distances to monitor:'
          DO J1=1,NPAIRS
-            WRITE(MYUNIT,*) PAIRDIST(J1,:)
+            WRITE(LFH,*) PAIRDIST(J1,:)
          ENDDO
 
 C
@@ -2205,23 +2205,23 @@ C
                PERMGROUP(J1)=J1
             ENDDO
          ENDIF
-         WRITE(MYUNIT,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
+         WRITE(LFH,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
          NDUMMY=1
          DO J1=1,NPERMGROUP
-            WRITE(MYUNIT,'(A,3(I6,A))') ' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
+            WRITE(LFH,'(A,3(I6,A))') ' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
      &                                                 NSETS(J1),' additional atom sets:'
-            WRITE(MYUNIT,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
+            WRITE(LFH,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
             IF (NSETS(J1).GT.0) THEN
-               WRITE(MYUNIT,'(A)',ADVANCE='NO') ' with '
+               WRITE(LFH,'(A)',ADVANCE='NO') ' with '
                DO J2=1,NSETS(J1)
                   DO J3=NDUMMY,NDUMMY+NPERMSIZE(J1)-1
-                     WRITE(MYUNIT,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
+                     WRITE(LFH,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
                      IF (J3.LT.NDUMMY+NPERMSIZE(J1)-1) WRITE(*,'(A3)',ADVANCE='NO') ' / '
                   ENDDO
                   IF (J2.LT.NSETS(J1)) WRITE(*,'(A3)',ADVANCE='NO') ' ; '
                ENDDO
             ENDIF
-            WRITE(MYUNIT,'(A)') ' '
+            WRITE(LFH,'(A)') ' '
             NDUMMY=NDUMMY+NPERMSIZE(J1)
          ENDDO
 !
@@ -2291,23 +2291,23 @@ C
                PERMGROUP(J1)=J1
             ENDDO
          ENDIF
-         WRITE(MYUNIT,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
+         WRITE(LFH,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
          NDUMMY=1
          DO J1=1,NPERMGROUP
-            WRITE(MYUNIT,'(A,3(I6,A))') ' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
+            WRITE(LFH,'(A,3(I6,A))') ' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
      &                                                 NSETS(J1),' additional atom sets:'
-            WRITE(MYUNIT,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
+            WRITE(LFH,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
             IF (NSETS(J1).GT.0) THEN
-               WRITE(MYUNIT,'(A)',ADVANCE='NO') ' with '
+               WRITE(LFH,'(A)',ADVANCE='NO') ' with '
                DO J2=1,NSETS(J1)
                   DO J3=NDUMMY,NDUMMY+NPERMSIZE(J1)-1
-                     WRITE(MYUNIT,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
+                     WRITE(LFH,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
                      IF (J3.LT.NDUMMY+NPERMSIZE(J1)-1) WRITE(*,'(A3)',ADVANCE='NO') ' / '
                   ENDDO
                   IF (J2.LT.NSETS(J1)) WRITE(*,'(A3)',ADVANCE='NO') ' ; '
                ENDDO
             ENDIF
-            WRITE(MYUNIT,'(A)') ' '
+            WRITE(LFH,'(A)') ' '
             NDUMMY=NDUMMY+NPERMSIZE(J1)
          ENDDO
       ELSE IF (WORD.EQ.'PLUS') THEN
@@ -2315,7 +2315,7 @@ C
 
       ELSE IF (WORD.EQ.'PMAX') THEN
          CALL READF(PMAX)
-         WRITE(MYUNIT,'(A,F14.10)') 'PMAX=  ',PMAX
+         WRITE(LFH,'(A,F14.10)') 'PMAX=  ',PMAX
 
       ELSE IF (WORD.EQ.'PMIN') THEN
          CALL READF(PMIN)
@@ -2371,7 +2371,7 @@ C
          CALL READI(PATOM1)
          CALL READI(PATOM2)
          CALL READF(PFORCE)
-         WRITE(MYUNIT,'(A,I6,A,I6,A,G20.10)') ' keyword> Pulling atoms ',PATOM1,' and ',PATOM2,' force=',PFORCE
+         WRITE(LFH,'(A,I6,A,I6,A,G20.10)') ' keyword> Pulling atoms ',PATOM1,' and ',PATOM2,' force=',PFORCE
 C
 C Request calculation of structural order parameter Q4 on the fly 
 C NOT DOCUMENTED.
@@ -2422,7 +2422,7 @@ C
       ELSE IF (WORD.EQ.'RANSEED') THEN
          CALL READI(NDUMMY)
          CALL SDPRND(NDUMMY)
-         WRITE(MYUNIT,'(A,I8)') 'RANSEED: Random seed is ',NDUMMY
+         WRITE(LFH,'(A,I8)') 'RANSEED: Random seed is ',NDUMMY
 
       ELSE IF (WORD.EQ.'RCUTOFF') THEN
          AMCUT=.TRUE.
@@ -2436,7 +2436,7 @@ C
       ELSE IF (WORD.EQ.'READMSB') THEN
          INQUIRE(FILE='MSBdata',EXIST=YESNO)
          IF (.NOT.YESNO) THEN
-            WRITE(MYUNIT,'(A)') 'ERROR - READMSB specified, but no MSBdata data file found'
+            WRITE(LFH,'(A)') 'ERROR - READMSB specified, but no MSBdata data file found'
             STOP
          ELSE
             IF (.NOT.ALLOCATED(MSBCOORDS)) ALLOCATE(MSBCOORDS(3*NATOMS,MAXSAVE))
@@ -2447,7 +2447,7 @@ C
             MSBE(NMSBSAVE)=DUMMY
             READ(34,*) (MSBCOORDS(J1,NMSBSAVE),J1=1,3*NATOMS)
             IF (NMSBSAVE.LT.MAXSAVE) GOTO 57
-56          WRITE(MYUNIT,'(A,I6,A)') 
+56          WRITE(LFH,'(A,I6,A)') 
      1         'Energies and coordinates read for ',NMSBSAVE,' previous structures from MSBdata'
             CLOSE(34)
          ENDIF
@@ -2502,7 +2502,7 @@ C
          RKMIN=.TRUE.
          IF (NITEMS.GT.1) CALL READF(GMAX)
          IF (NITEMS.GT.2) CALL READF(EPS)
-         WRITE(MYUNIT,'(A,2L5)') 'RKMIN branch RKMIN,BSMIN=',RKMIN,BSMIN
+         WRITE(LFH,'(A,2L5)') 'RKMIN branch RKMIN,BSMIN=',RKMIN,BSMIN
 
       ELSE IF (WORD.EQ.'RMS') THEN
          RMST=.TRUE.
@@ -2517,7 +2517,7 @@ C
            SELECTT=.FALSE.
          ENDIF
          IF (J2.EQ.1) PROGRESS=.TRUE.
-         WRITE(MYUNIT,'(A)') 'RMST set'
+         WRITE(LFH,'(A)') 'RMST set'
 
       ELSE IF (WORD.EQ.'SAVE') THEN
          CALL READI(NSAVE)
@@ -2561,7 +2561,7 @@ C
 
       ELSE IF (WORD.EQ.'SIDESTEP') THEN
          CALL READF(SIDESTEP)
-         WRITE(MYUNIT,'(A,F14.10)') 'SIDESTEP=  ',SIDESTEP
+         WRITE(LFH,'(A,F14.10)') 'SIDESTEP=  ',SIDESTEP
 
       ELSE IF (WORD.EQ.'SORT') THEN
          SORTT=.TRUE.
@@ -2593,7 +2593,7 @@ C
       ELSE IF (WORD.EQ.'STEP') THEN
          NPCOUNT=NPCOUNT+1
          IF (NPCOUNT.GT.NPAR) THEN
-            WRITE(MYUNIT,'(A)') 'Number of STEP lines exceeds NPAR - quit'
+            WRITE(LFH,'(A)') 'Number of STEP lines exceeds NPAR - quit'
             STOP
          ENDIF
          CALL READF(STEP(NPCOUNT))
@@ -2649,15 +2649,15 @@ C
          RIGID=.TRUE.
          CALL READI(NRBSITES)
          CALL READF(STICKYSIG)
-!        WRITE(MYUNIT,*) 'NRBSITES=',NRBSITES 
-!        WRITE(MYUNIT,*) 'STICKYSIG=',STICKYSIG 
+!        WRITE(LFH,*) 'NRBSITES=',NRBSITES 
+!        WRITE(LFH,*) 'STICKYSIG=',STICKYSIG 
          ALLOCATE(SITE(NRBSITES,3))
          DO J1=1,NRBSITES
             READ(5,*) SITE(J1,1:3)
 C           CALL READF(SITE(J1,1))
 C           CALL READF(SITE(J1,2))
 C           CALL READF(SITE(J1,3))
-!           WRITE(MYUNIT,'(A,I5,3G20.10)') 'J1,site: ',J1,SITE(J1,1:3)
+!           WRITE(LFH,'(A,I5,3G20.10)') 'J1,site: ',J1,SITE(J1,1:3)
          ENDDO
 
       ELSE IF (WORD.EQ.'LJCOUL') THEN
@@ -3202,7 +3202,7 @@ C       Anisotropic potentials:
          IF (NITEMS.GT.3) THEN
             CALL READF(PCUTOFF)
             PARAMONOVCUTOFF=.TRUE.
-            WRITE(MYUNIT,*) "multisitepy cutoff: ", PCUTOFF
+            WRITE(LFH,*) "multisitepy cutoff: ", PCUTOFF
          ENDIF
 
          ! Specify periodic boundary conditions (PBCs)
@@ -3217,19 +3217,19 @@ C       Anisotropic potentials:
                 PARAMONOVPBCX=.TRUE.
                 CALL READF(BOXLX)
                 BOXLX = BOXLX*PCUTOFF
-                WRITE(MYUNIT,*) "PBC X:",BOXLX
+                WRITE(LFH,*) "PBC X:",BOXLX
             ENDIF
             IF (SCAN(PBC,'Yy').NE.0) THEN
                 PARAMONOVPBCY=.TRUE.
                 CALL READF(BOXLY)
                 BOXLY = BOXLY*PCUTOFF
-                WRITE(MYUNIT,*) "PBC Y:",BOXLY
+                WRITE(LFH,*) "PBC Y:",BOXLY
             ENDIF
             IF (SCAN(PBC,'Zz').NE.0) THEN
                 PARAMONOVPBCZ=.TRUE.
                 CALL READF(BOXLZ)
                 BOXLZ = BOXLZ*PCUTOFF
-                WRITE(MYUNIT,*) "PBC Z:",BOXLZ
+                WRITE(LFH,*) "PBC Z:",BOXLZ
             ENDIF
          ENDIF 
 
@@ -3265,7 +3265,7 @@ C       Anisotropic potentials:
             CALL READF(PCUTOFF)
             PARAMONOVCUTOFF=.TRUE.
             PCUTOFF=PCUTOFF*MAX(PSIGMA0(1),PSIGMA0(2))
-            write (MYUNIT,*) "PY Potential. PCutoff ON:",PCUTOFF
+            write (LFH,*) "PY Potential. PCutoff ON:",PCUTOFF
          ENDIF
          IF (NITEMS.GT.11) THEN
 ! control which dimensions have periodic boundaries with a string 'XYZ', always put x before y before z.            
@@ -3297,7 +3297,7 @@ C       Anisotropic potentials:
          ALLOCATE(SITE(NRBSITES,3))
       ELSE IF (WORD.EQ.'PYOVERLAPTHRESH') THEN
          CALL READF(PYOVERLAPTHRESH)
-         WRITE(MYUNIT,'(A,F8.3)') 'keyword> ellipsoids considered to overlap for an ECF value of ', PYOVERLAPTHRESH
+         WRITE(LFH,'(A,F8.3)') 'keyword> ellipsoids considered to overlap for an ECF value of ', PYOVERLAPTHRESH
       ELSE IF (WORD .EQ.'PYGPERIODIC') THEN
 
          PYGPERIODICT = .TRUE.
@@ -3331,7 +3331,7 @@ C       Anisotropic potentials:
             CALL READF(PCUTOFF)
             PARAMONOVCUTOFF=.TRUE.
             PCUTOFF=PCUTOFF*PYSIGNOT
-            write (MYUNIT,*) "PY Potential. PCutoff ON:",PCUTOFF
+            write (LFH,*) "PY Potential. PCutoff ON:",PCUTOFF
          ENDIF
          IF (NITEMS.GT.10) THEN
 ! control which dimensions have periodic boundaries with a string 'XYZ', always put x before y before z.
@@ -3382,7 +3382,7 @@ C       Anisotropic potentials:
           MAXINTERACTIONS=1
          IF(NITEMS.GT.3) THEN
           CALL READF(PSCALEFAC2(1))
-          WRITE(MYUNIT,'(A,3F8.3)') 'keyword> primary and secondary apex sites will be used, epsilon and heights: ', 
+          WRITE(LFH,'(A,3F8.3)') 'keyword> primary and secondary apex sites will be used, epsilon and heights: ', 
      &                              PEPSILON1(1), PSCALEFAC1(1), PSCALEFAC2(1)
           IF(.NOT.LJSITEATTR) THEN
                 MAXINTERACTIONS=3
@@ -3390,11 +3390,11 @@ C       Anisotropic potentials:
                 MAXINTERACTIONS=4
           END IF
          ELSE
-          WRITE(MYUNIT,'(A,2F8.3)') 'keyword> primary apex sites will be used, epsilon and height: ', PEPSILON1(1), PSCALEFAC1(1)
+          WRITE(LFH,'(A,2F8.3)') 'keyword> primary apex sites will be used, epsilon and height: ', PEPSILON1(1), PSCALEFAC1(1)
          END IF
          IF(NITEMS.GT.4) THEN           ! binary ellipsoidal clusters will be set up only for two apex sites, not one
            BLJSITE=.TRUE.               ! we also won't use the sigma parameter from now on, epsilon is enough for repulsive sites
-           WRITE(MYUNIT,'(A,3F8.3)') 'keyword> binary system with primary and secondary apex sites, ' //  
+           WRITE(LFH,'(A,3F8.3)') 'keyword> binary system with primary and secondary apex sites, ' //  
      &  'epsilon and heights for 2nd type particle: ', PEPSILON1(1), PSCALEFAC1(1), PSCALEFAC2(1)
 
            CALL READF(PEPSILON1(2))
@@ -3411,7 +3411,7 @@ C       Anisotropic potentials:
          CALL READF(PSIGMAATTR(2))
          CALL READF(PEPSILONATTR(2))
 
-         WRITE(MYUNIT,'(A,4F8.3)') 'keyword> primary and secondary apex sites '//
+         WRITE(LFH,'(A,4F8.3)') 'keyword> primary and secondary apex sites '//
      &                             'with normal LJ attraction, sigmas and epsilons: ', 
      &                             PSIGMAATTR(1), PEPSILONATTR(1), PSIGMAATTR(2), PEPSILONATTR(2)
          MAXINTERACTIONS=4
@@ -3427,7 +3427,7 @@ C       Anisotropic potentials:
                 PYSWAP(2) = PYBINARYTYPE1 + 1
                 PYSWAP(3) = 1
                 IF(NITEMS.GT.1) CALL READI(PYSWAP(3))
-                WRITE(MYUNIT,'(A,I5,A)') 'keyword> ',PYSWAP(3), ' pairs of atoms will be swapped at once'
+                WRITE(LFH,'(A,I5,A)') 'keyword> ',PYSWAP(3), ' pairs of atoms will be swapped at once'
          END IF
 
       ! Keyword for adding a general LJ site to PY ellipsoids
@@ -3442,7 +3442,7 @@ C       Anisotropic potentials:
           ! Read parameters from data file
           CALL READF(LJGSITESIGMA)
           CALL READF(LJGSITEEPS)
-          WRITE(MYUNIT,*) "keyword> adding LJ site(s)"
+          WRITE(LFH,*) "keyword> adding LJ site(s)"
 
       ELSE IF (WORD.EQ.'PYBINARY') THEN
          PYBINARYT=.TRUE.
@@ -3467,7 +3467,7 @@ C       Anisotropic potentials:
             CALL READF(PCUTOFF)
             PARAMONOVCUTOFF=.TRUE.
             PCUTOFF=PCUTOFF*PYSIGNOT
-            write (MYUNIT,*) "PY Potential. PCutoff ON:",PCUTOFF
+            write (LFH,*) "PY Potential. PCutoff ON:",PCUTOFF
          END IF
          IF(SWAPMOVEST) THEN
                 PYSWAP(1) = 1
@@ -3637,23 +3637,23 @@ C
                PERMGROUP(J1)=J1
             ENDDO
          ENDIF
-         WRITE(MYUNIT,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
+         WRITE(LFH,'(A,I6)') ' keyword> Number of groups of permutable atoms=',NPERMGROUP
          NDUMMY=1
          DO J1=1,NPERMGROUP
-            WRITE(MYUNIT,'(A,3(I6,A))') ' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
+            WRITE(LFH,'(A,3(I6,A))') ' keyword> group ',J1,' contains ',NPERMSIZE(J1),' atoms with ',
      &                                                 NSETS(J1),' additional atom sets:'
-            WRITE(MYUNIT,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
+            WRITE(LFH,'(22I6)',ADVANCE='NO') PERMGROUP(NDUMMY:NDUMMY+NPERMSIZE(J1)-1)
             IF (NSETS(J1).GT.0) THEN
-               WRITE(MYUNIT,'(A)',ADVANCE='NO') ' with '
+               WRITE(LFH,'(A)',ADVANCE='NO') ' with '
                DO J2=1,NSETS(J1)
                   DO J3=NDUMMY,NDUMMY+NPERMSIZE(J1)-1
-                     WRITE(MYUNIT,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
+                     WRITE(LFH,'(I6)',ADVANCE='NO') SETS(PERMGROUP(J3),J2)
                      IF (J3.LT.NDUMMY+NPERMSIZE(J1)-1) WRITE(*,'(A3)',ADVANCE='NO') ' / '
                   ENDDO
                   IF (J2.LT.NSETS(J1)) WRITE(*,'(A3)',ADVANCE='NO') ' ; '
                ENDDO
             ENDIF
-            WRITE(MYUNIT,'(A)') ' '
+            WRITE(LFH,'(A)') ' '
             NDUMMY=NDUMMY+NPERMSIZE(J1)
          ENDDO
 
@@ -3726,7 +3726,7 @@ C  NOT DOCUMENTED
 C
       ELSE IF (WORD.EQ.'THRESHOLD') THEN
          THRESHOLDT=.TRUE.
-!        WRITE(MYUNIT,*) 'keyword THRESHOLD doesnt appear to do anything at the moment'
+!        WRITE(LFH,*) 'keyword THRESHOLD doesnt appear to do anything at the moment'
          STOP
 
       ELSE IF (WORD.EQ.'TIP') THEN
@@ -3741,7 +3741,7 @@ C
          ALLOCATE(SITE(NRBSITES,3))
 C     ELSE IF (WORD.EQ.'TN') THEN
 C        TNT=.TRUE.
-C        WRITE(MYUNIT,'(A)') 'optimisation with tn no longer supported'
+C        WRITE(LFH,'(A)') 'optimisation with tn no longer supported'
 C        STOP
 
       ELSE IF (WORD.EQ.'TOLBRENT') THEN
@@ -3776,7 +3776,7 @@ C
 
       ELSE IF (WORD.EQ.'TWOPLUS') THEN
          TWOPLUS=.TRUE.
-         WRITE(MYUNIT,'(A,F14.10)') 'PMIN=  ',PMIN
+         WRITE(LFH,'(A,F14.10)') 'PMIN=  ',PMIN
 C
 C  Number of BFGS updates before resetting, default=4
 C

@@ -44,13 +44,13 @@ SUBROUTINE INITIALISEPYGPERIODIC
 
 use commons, only: BOXLX,BOXLY,BOXLZ,PARAMONOVPBCX,PARAMONOVPBCY,PARAMONOVPBCZ,PCUTOFF,PARAMONOVCUTOFF,&
                 &       natoms,pya1bin,pya2bin,pysignot,pyepsnot,radift,LJSITE,BLJSITE,PEPSILON1,&
-                &       PSCALEFAC1,PSCALEFAC2,MAXINTERACTIONS,PYBINARYT,PYBINARYTYPE1,MYUNIT,VT, &
+                &       PSCALEFAC1,PSCALEFAC2,MAXINTERACTIONS,PYBINARYT,PYBINARYTYPE1,LFH,VT, &
                 &       PEPSILONATTR, PSIGMAATTR, LJSITEATTR, LJSITECOORDST, LJSITECOORDS
 
 use pymodule
 
 implicit none
-   WRITE(MYUNIT,*) 'initialising variables for PY',NATOMS 
+   WRITE(LFH,*) 'initialising variables for PY',NATOMS 
 ! allocate arrays
 
     ALLOCATE(RMIvec(natoms/2,3,3),DPI1RMvec(natoms/2,3,3), DPI2RMvec(natoms/2,3,3), DPI3RMvec(natoms/2,3,3))
@@ -67,7 +67,7 @@ implicit none
 
     IF(LJSITECOORDST) THEN
         vecsbf(:)=LJSITECOORDS(:)
-        WRITE(MYUNIT,'(A,3F8.3)') 'repulsive LJ site coordinates will be ', LJSITECOORDS(:)
+        WRITE(LFH,'(A,3F8.3)') 'repulsive LJ site coordinates will be ', LJSITECOORDS(:)
     END IF
       I3(:,:)    = 0.D0
       AEZR1(:,:,:) = 0.D0
@@ -97,12 +97,12 @@ implicit none
 
 ! sanity checks
        IF(PYBINARYT.AND.LJSITE.AND..NOT.BLJSITE) THEN
-        WRITE(MYUNIT,*) 'ERROR --- for binary PY systems with extra LJ sites '// &
+        WRITE(LFH,*) 'ERROR --- for binary PY systems with extra LJ sites '// &
                         & 'you have to specify the parameters for both types separately (>3 arguments after EXTRALJSITE)! '
         STOP
        END IF
        IF(BLJSITE.AND..NOT.PYBINARYT) THEN
-        WRITE(MYUNIT,*) 'ERROR --- binary LJ sites specified, but no binary PY particles. '// &
+        WRITE(LFH,*) 'ERROR --- binary LJ sites specified, but no binary PY particles. '// &
                         & 'EXTRALJSITE should have only 3 arguments!'
         STOP
        END IF
@@ -160,7 +160,7 @@ END SUBROUTINE INITIALISEPYGPERIODIC
 
        use commons, only: BOXLX,BOXLY,BOXLZ,PARAMONOVPBCX,PARAMONOVPBCY,PARAMONOVPBCZ,PCUTOFF,PARAMONOVCUTOFF,&
                 &       natoms,pya1bin,pya2bin,pysignot,pyepsnot,radift,LJSITE,BLJSITE,PEPSILON1,& 
-                &       PSCALEFAC1,PSCALEFAC2,MAXINTERACTIONS,PYBINARYT,PYBINARYTYPE1,MYUNIT,VT,PEPSILONATTR,PSIGMAATTR,&
+                &       PSCALEFAC1,PSCALEFAC2,MAXINTERACTIONS,PYBINARYT,PYBINARYTYPE1,LFH,VT,PEPSILONATTR,PSIGMAATTR,&
                 &       FROZEN
 
        use pymodule
@@ -4187,7 +4187,7 @@ END SUBROUTINE TAKESTEPGB
                 COORDS(J2-2,NP)=COORDS(J2-2,NP)-SQRT(RADIUS)*NINT(COORDS(J2-2,NP)/SQRT(RADIUS))
                 COORDS(J2-1,NP)=COORDS(J2-1,NP)-SQRT(RADIUS)*NINT(COORDS(J2-1,NP)/SQRT(RADIUS))
                 COORDS(J2,NP)=COORDS(J2,NP)-SQRT(RADIUS)*NINT(COORDS(J2,NP)/SQRT(RADIUS))
-    WRITE(MYUNIT,'(A,2F20.10)') 'initial coordinate outside container -- bringing molecule back within the container radius'
+    WRITE(LFH,'(A,2F20.10)') 'initial coordinate outside container -- bringing molecule back within the container radius'
 
 !            WRITE(*,'(A,I5,5F20.10)') 'J1,RAD,R**2,x,y,z:', J1, RADIUS, DUMMY2, COORDS(J2-2,NP), &
 !                                       COORDS(J2-1,NP), COORDS(J2,NP)
@@ -4417,7 +4417,7 @@ END SUBROUTINE TAKESTEPGB
            CLOSESTATOMINDEX=K1
          END IF
         END DO
-        WRITE(MYUNIT,'(A,I6,A,F10.6,I6)') 'Atom ', J1, ' is dissociated, distance to the closest atom: ', &
+        WRITE(LFH,'(A,I6,A,F10.6,I6)') 'Atom ', J1, ' is dissociated, distance to the closest atom: ', &
         & MINDISTANCE, CLOSESTATOMINDEX
         DISSOC=.TRUE.
         ! move the dissociated atom closer to the closest atom
@@ -4521,7 +4521,7 @@ RETURN
       END SUBROUTINE TAKESTEPELPSD
 
 SUBROUTINE TAKESTEPSWAPMOVES(NP)
-use commons, only : NATOMS, COORDS, PYBINARYTYPE1,MYUNIT,SWAPMOVEST,PYSWAP
+use commons, only : NATOMS, COORDS, PYBINARYTYPE1,LFH,SWAPMOVEST,PYSWAP
 
 implicit none
 
@@ -4553,11 +4553,11 @@ DO J2=1,PYSWAP(3)
         END DO
 
         ! swap coordinates
-        WRITE(MYUNIT,*) 'Swapping atoms ', RANDOM1, RANDOM2
-        !WRITE(MYUNIT,*) COORDSSTORE(:,1)
-        !WRITE(MYUNIT,*) COORDSSTORE(:,3)
-        !WRITE(MYUNIT,*) COORDSSTORE(:,2)
-        !WRITE(MYUNIT,*) COORDSSTORE(:,4)
+        WRITE(LFH,*) 'Swapping atoms ', RANDOM1, RANDOM2
+        !WRITE(LFH,*) COORDSSTORE(:,1)
+        !WRITE(LFH,*) COORDSSTORE(:,3)
+        !WRITE(LFH,*) COORDSSTORE(:,2)
+        !WRITE(LFH,*) COORDSSTORE(:,4)
 
         DO J1=1,3
          COORDS(3*(RANDOM1-1)+J1,NP)=COORDSSTORE(J1,2)
@@ -4573,7 +4573,7 @@ DO J2=1,PYSWAP(3)
                 PYSWAP(2)=PYBINARYTYPE1+1
         END IF
         IF(PYSWAP(1)>PYBINARYTYPE1) THEN 
-              WRITE(MYUNIT,*) 'all atoms swapped, restarting'
+              WRITE(LFH,*) 'all atoms swapped, restarting'
 !      SWAPMOVEST=.FALSE.  
               PYSWAP(1)=1
               PYSWAP(2)=PYBINARYTYPE1+1
@@ -4632,11 +4632,11 @@ SUBROUTINE INITIALISELJCAPSIDMODEL
 
 use commons, only: BOXLX,BOXLY,BOXLZ,PARAMONOVPBCX,PARAMONOVPBCY,PARAMONOVPBCZ,PCUTOFF,PARAMONOVCUTOFF,&
                 &       natoms,pya1bin,pya2bin,pysignot,pyepsnot,radift,LJSITE,BLJSITE,PEPSILON1,&
-                &       PSCALEFAC1,PSCALEFAC2,MAXINTERACTIONS,PYBINARYT,PYBINARYTYPE1,MYUNIT,VT
+                &       PSCALEFAC1,PSCALEFAC2,MAXINTERACTIONS,PYBINARYT,PYBINARYTYPE1,LFH,VT
 use ljcapsidmodule 
 
 implicit none
-   WRITE(MYUNIT,*) 'initialising variables for LJ capsid model',NATOMS 
+   WRITE(LFH,*) 'initialising variables for LJ capsid model',NATOMS 
 ! allocate arrays
 
     ALLOCATE(RMIvec(natoms/2,3,3),DPI1RMvec(natoms/2,3,3), DPI2RMvec(natoms/2,3,3), DPI3RMvec(natoms/2,3,3))
@@ -4663,7 +4663,7 @@ END SUBROUTINE INITIALISELJCAPSIDMODEL
 
 SUBROUTINE LJCAPSIDMODEL (X, G, ENERGY, GTEST)
 use commons, only:  natoms,pysignot,pyepsnot,LJSITE,BLJSITE,PEPSILON1,&
-                &       PSCALEFAC1,PSCALEFAC2,MAXINTERACTIONS,PYBINARYT,PYBINARYTYPE1,MYUNIT,VT
+                &       PSCALEFAC1,PSCALEFAC2,MAXINTERACTIONS,PYBINARYT,PYBINARYTYPE1,LFH,VT
 use ljcapsidmodule
 
 implicit none

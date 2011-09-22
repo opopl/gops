@@ -1,5 +1,5 @@
 SUBROUTINE CSMINIT
-USE COMMONS,ONLY : CSMGP, NATOMS, CSMIMAGES, CSMGPINDEX, MYUNIT, COORDS, CSMNORM, QMINPCSMAV, CSMAV, NSAVE, QMINAV, PTGP, &
+USE COMMONS,ONLY : CSMGP, NATOMS, CSMIMAGES, CSMGPINDEX, LFH, COORDS, CSMNORM, QMINPCSMAV, CSMAV, NSAVE, QMINAV, PTGP, &
                    CSMGUIDET, CSMGUIDENORM, CSMGUIDEGPINDEX, CSMGUIDEGP, PTGPGUIDE
 IMPLICIT NONE
 INTEGER J1
@@ -103,14 +103,14 @@ ELSEIF (TRIM(ADJUSTL(CSMGP)).EQ.'T') THEN
 ELSEIF (TRIM(ADJUSTL(CSMGP)).EQ.'TH') THEN
    CSMGPINDEX=24
 ELSE
-   WRITE(MYUNIT,'(A,A)') 'CSMinit> ERROR *** point group not recognised: ',TRIM(ADJUSTL(CSMGP))
+   WRITE(LFH,'(A,A)') 'CSMinit> ERROR *** point group not recognised: ',TRIM(ADJUSTL(CSMGP))
    STOP
 ENDIF
 
 ALLOCATE(CSMIMAGES(3*NATOMS*CSMGPINDEX))
 ALLOCATE(QMINPCSMAV(NSAVE,3*NATOMS),CSMAV(3*NATOMS),QMINAV(NSAVE),PTGP(3,3,2*CSMGPINDEX)) 
 CSMNORM=2*CSMGPINDEX*CSMNORM
-WRITE(MYUNIT,'(A,I6,A,G20.10)') 'CSMinit> Calculating continuous symmetry measure for point group ' // TRIM(ADJUSTL(CSMGP)) &
+WRITE(LFH,'(A,I6,A,G20.10)') 'CSMinit> Calculating continuous symmetry measure for point group ' // TRIM(ADJUSTL(CSMGP)) &
   &  // ' order=',CSMGPINDEX,' normalisation=',CSMNORM
 
 CALL CSMGETOPS
@@ -204,19 +204,19 @@ ELSEIF (TRIM(ADJUSTL(CSMGUIDEGP)).EQ.'T') THEN
 ELSEIF (TRIM(ADJUSTL(CSMGUIDEGP)).EQ.'TH') THEN
    CSMGUIDEGPINDEX=24
 ELSE
-   WRITE(MYUNIT,'(A,A)') 'CSMinit> ERROR *** guide point group not recognised: ',TRIM(ADJUSTL(CSMGUIDEGP))
+   WRITE(LFH,'(A,A)') 'CSMinit> ERROR *** guide point group not recognised: ',TRIM(ADJUSTL(CSMGUIDEGP))
    STOP
 ENDIF
 
 IF (CSMGUIDEGPINDEX.GT.CSMGPINDEX) THEN
-   WRITE(MYUNIT,'(A,I6,A,I6,A)') 'CSMinit> ERROR *** size of guide point group ',CSMGUIDEGPINDEX,' for ' &
+   WRITE(LFH,'(A,I6,A,I6,A)') 'CSMinit> ERROR *** size of guide point group ',CSMGUIDEGPINDEX,' for ' &
   & // TRIM(ADJUSTL(CSMGUIDEGP)) // ' exceeds size ',CSMGPINDEX,' of ' // TRIM(ADJUSTL(CSMGP))
    STOP
 ENDIF
 
 ALLOCATE(PTGPGUIDE(3,3,2*CSMGUIDEGPINDEX)) 
 CSMGUIDENORM=CSMNORM*CSMGUIDEGPINDEX/CSMGPINDEX
-WRITE(MYUNIT,'(A,I6,A,G20.10)') 'CSMinit> Using guiding point group ' // TRIM(ADJUSTL(CSMGUIDEGP)) &
+WRITE(LFH,'(A,I6,A,G20.10)') 'CSMinit> Using guiding point group ' // TRIM(ADJUSTL(CSMGUIDEGP)) &
   &  // ' order=',CSMGUIDEGPINDEX,' normalisation=',CSMGUIDENORM
 
 ALLOCATE(PTGPSAVE(3,3,2*CSMGPINDEX))
@@ -339,7 +339,7 @@ END SUBROUTINE CSMGETOPS
 ! Could also set CSMAV for the closest structure with the required symmetry.
 !
 SUBROUTINE CSMMIN(X,ENERGY,RMS,ITDONE)
-USE COMMONS,ONLY : NATOMS, CSMGPINDEX, MYUNIT, CSMEPS, MAXBFGS, CSMPMAT, PTGP, DEBUG, CSMMAXIT
+USE COMMONS,ONLY : NATOMS, CSMGPINDEX, LFH, CSMEPS, MAXBFGS, CSMPMAT, PTGP, DEBUG, CSMMAXIT
 USE PORFUNCS
 IMPLICIT NONE
 DOUBLE PRECISION X(3*NATOMS), CSMVAL
@@ -366,7 +366,7 @@ AA(1)=DPRAND()*1.0D-3; AA(2)=DPRAND()*1.0D-3; AA(3)=DPRAND()*1.0D-3
 CALL CSMPOTGRAD(X,AA,ENERGY,.TRUE.,GSAVE)
 RMS=SQRT((GSAVE(1)**2+GSAVE(2)**2+GSAVE(3)**2)/3)
 G(1:N)=GSAVE(1:N)
-IF (PTEST) WRITE(MYUNIT,'(A,2F20.10,A,I6,A)') 'csmmin> CSM and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
+IF (PTEST) WRITE(LFH,'(A,2F20.10,A,I6,A)') 'csmmin> CSM and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
 10    CALL FLUSH(6)
 MFLAG=.FALSE.
 IF (RMS.LE.CSMEPS) THEN
@@ -379,7 +379,7 @@ IF (RMS.LE.CSMEPS) THEN
          XTEMP(3*(J1-1)+3)=CSMPMAT(3,1)*X(3*(J1-1)+1)+CSMPMAT(3,2)*X(3*(J1-1)+2)+CSMPMAT(3,3)*X(3*(J1-1)+3)
       ENDDO
       X(1:3*NATOMS)=XTEMP(1:3*NATOMS)
-!     WRITE(MYUNIT,'(A,3G20.10)') ' Optimal aa parameters: ',AA(1:3)
+!     WRITE(LFH,'(A,3G20.10)') ' Optimal aa parameters: ',AA(1:3)
       RETURN
    ENDIF
 ENDIF
@@ -392,7 +392,7 @@ IF (ITDONE.EQ.ITMAX) THEN
       XTEMP(3*(J1-1)+3)=CSMPMAT(3,1)*X(3*(J1-1)+1)+CSMPMAT(3,2)*X(3*(J1-1)+2)+CSMPMAT(3,3)*X(3*(J1-1)+3)
    ENDDO
    X(1:3*NATOMS)=XTEMP(1:3*NATOMS)
-!  WRITE(MYUNIT,'(A,3G20.10)') ' Optimal aa parameters: ',AA(1:3)
+!  WRITE(LFH,'(A,3G20.10)') ' Optimal aa parameters: ',AA(1:3)
    RETURN
 ENDIF
 
@@ -482,7 +482,7 @@ ENDIF
 
 OVERLAP=DDOT(N,G,1,W,1)/SQRT(DDOT(N,G,1,G,1)*DDOT(N,W,1,W,1))
 IF (OVERLAP.GT.0.0D0) THEN
-   IF (PTEST) WRITE(MYUNIT,'(A)') 'csmmin> Search direction has positive projection onto gradient - reversing step'
+   IF (PTEST) WRITE(LFH,'(A)') 'csmmin> Search direction has positive projection onto gradient - reversing step'
    DO I=1,N
       W(ISPT+POINT*N+I)= -W(I)
    ENDDO
@@ -516,17 +516,17 @@ ELSE
 !
 !        IF (STP*SLENGTH.LT.1.0D-10) THEN
    IF (NDECREASE.GT.5) THEN
-      WRITE(MYUNIT,*) 'csmmin> LBFGS step cannot find a lower CSM - try again'
+      WRITE(LFH,*) 'csmmin> LBFGS step cannot find a lower CSM - try again'
       NFAIL=NFAIL+1
       IF (NFAIL.GT.20) THEN
-         WRITE(MYUNIT,'(A)') ' Too many failures - give up'
+         WRITE(LFH,'(A)') ' Too many failures - give up'
          DO J1=1,NATOMS
             XTEMP(3*(J1-1)+1)=CSMPMAT(1,1)*X(3*(J1-1)+1)+CSMPMAT(1,2)*X(3*(J1-1)+2)+CSMPMAT(1,3)*X(3*(J1-1)+3)
             XTEMP(3*(J1-1)+2)=CSMPMAT(2,1)*X(3*(J1-1)+1)+CSMPMAT(2,2)*X(3*(J1-1)+2)+CSMPMAT(2,3)*X(3*(J1-1)+3)
             XTEMP(3*(J1-1)+3)=CSMPMAT(3,1)*X(3*(J1-1)+1)+CSMPMAT(3,2)*X(3*(J1-1)+2)+CSMPMAT(3,3)*X(3*(J1-1)+3)
          ENDDO
          X(1:3*NATOMS)=XTEMP(1:3*NATOMS)
-!        WRITE(MYUNIT,'(A,3G20.10)') ' Optimal aa parameters: ',AA(1:3)
+!        WRITE(LFH,'(A,3G20.10)') ' Optimal aa parameters: ',AA(1:3)
          RETURN
       ENDIF
       DO J1=1,N
@@ -539,13 +539,13 @@ ELSE
    ENDDO 
    NDECREASE=NDECREASE+1
    STP=STP/10.0D0
-   IF (PTEST) WRITE(MYUNIT,'(A,F19.10,A,F16.10,A,F15.8)') 'csmmin> CSM increased from ',ENERGY,' to ',ENEW,' decreasing step to ', &
+   IF (PTEST) WRITE(LFH,'(A,F19.10,A,F16.10,A,F15.8)') 'csmmin> CSM increased from ',ENERGY,' to ',ENEW,' decreasing step to ', &
   &                                                   STP*SLENGTH
       GOTO 20
    ENDIF
    RMS=SQRT((GSAVE(1)**2+GSAVE(2)**2+GSAVE(3)**2)/3)
    G(1:N)=GSAVE(1:N)
-   IF (PTEST) WRITE(MYUNIT,'(A,2F20.10,A,I6,A,G15.5)') 'csmmin> CSM and RMS force=',ENERGY,RMS,' after ',ITDONE, &
+   IF (PTEST) WRITE(LFH,'(A,2F20.10,A,I6,A,G15.5)') 'csmmin> CSM and RMS force=',ENERGY,RMS,' after ',ITDONE, &
   &        ' LBFGS steps, step:',STP*SLENGTH
 !
 !     Compute the new step and gradient change
@@ -571,7 +571,7 @@ END SUBROUTINE CSMMIN
 ! if GRADT is true. The constant term is omitted from CSMVAL.
 !
 SUBROUTINE CSMPOTGRAD(X,AA,CSMVAL,GRADT,GRAD)
-USE COMMONS,ONLY : NATOMS, CSMGPINDEX, CSMIMAGES, CSMNORM, CSMPMAT, PTGP, MYUNIT
+USE COMMONS,ONLY : NATOMS, CSMGPINDEX, CSMIMAGES, CSMNORM, CSMPMAT, PTGP, LFH
 IMPLICIT NONE
 DOUBLE PRECISION X(3*NATOMS), CSMVAL, GRAD(3), AA(3), DRM1(3,3), DRM2(3,3), DRM3(3,3)
 DOUBLE PRECISION TEMP(3,3), TEMP2(3,3), TEMP3(3,3,3), TEMP4(3,3,3)

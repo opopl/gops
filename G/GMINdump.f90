@@ -1,6 +1,6 @@
 SUBROUTINE DUMPSTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
 USE COMMONS,ONLY : NATOMS, COORDS, NPAR, STEP, ASTEP, OSTEP, TEMP, NMSBSAVE, MSBE, MSBCOORDS, DUMPFILE, &
-  &                NSAVE, MAXSAVE, MPIT, MYUNIT, AMHT, SEEDT, A9INTET, NSAVEINTE, COORDSO, EPREV
+  &                NSAVE, MAXSAVE, MPIT, LFH, AMHT, SEEDT, A9INTET, NSAVEINTE, COORDSO, EPREV
 USE QMODULE
 USE PORFUNCS
 USE OUTPUT, ONLY : WRITE_COORDS, WRITE_MARKOV_COORDS
@@ -16,7 +16,7 @@ COMMON /MYPOT/ POTEL
 IF (NPAR.GT.1) THEN
    WRITE (ISTR, '(i10)') JP
    MYUNIT2=JP+30000
-   call flush(myunit)
+   call flush(LFH)
 !   CALL SYSTEM('cp "GMIN.dump."//trim(adjustl(istr)) "GMIN.dump."//trim(adjustl(istr))//".save"')
    OPEN(MYUNIT2,FILE="GMIN.dump."//trim(adjustl(istr)),STATUS='UNKNOWN')
 ELSE
@@ -34,10 +34,10 @@ ENDIF
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !                  SAVEP=POTEL
 !                  CALL POTENTIAL(COORDSO(1:3*NATOMS,JP),DUMGRAD,OPOTEL,.FALSE.,.FALSE.)
-!                  WRITE(MYUNIT,'(3(A,G20.10))') 'dumpstate> energy for coordinates in COORDSO=',OPOTEL, &
+!                  WRITE(LFH,'(3(A,G20.10))') 'dumpstate> energy for coordinates in COORDSO=',OPOTEL, &
 !     &                                                 ' Markov energy=',EPREV(JP),' potel=',SAVEP
 !                  CALL POTENTIAL(COORDS(1:3*NATOMS,JP),DUMGRAD,OPOTEL,.FALSE.,.FALSE.)
-!                  WRITE(MYUNIT,'(3(A,G20.10))') 'dumpstate> energy for coordinates in COORDS= ',OPOTEL, &
+!                  WRITE(LFH,'(3(A,G20.10))') 'dumpstate> energy for coordinates in COORDS= ',OPOTEL, &
 !     &                                                 ' Markov energy=',EPREV(JP),' potel=',SAVEP
 !                  POTEL=SAVEP
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -105,7 +105,7 @@ END SUBROUTINE DUMPSTATE
 
 SUBROUTINE RESTORESTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
 USE COMMONS,ONLY : NATOMS, COORDS, NPAR, STEP, ASTEP, OSTEP, TEMP, NMSBSAVE, MSBE, MSBCOORDS, DUMPFILE, &
-  &                NSAVE, MAXSAVE, MPIT, MYUNIT, AMHT, SEEDT, A9INTET, NSAVEINTE, INTEDUMPFILE, INTERESTORE
+  &                NSAVE, MAXSAVE, MPIT, LFH, AMHT, SEEDT, A9INTET, NSAVEINTE, INTEDUMPFILE, INTERESTORE
 USE QMODULE
 IMPLICIT NONE
 INTEGER NDONE, JBEST(NPAR), JP, J1, OLDSAVE, MYUNIT2
@@ -130,8 +130,8 @@ ENDIF
    READ(MYUNIT2,*) DUMMYS
    READ(MYUNIT2,*) COORDS(1:3*NATOMS,JP)
    IF ((.NOT.SEEDT).AND.(.NOT.AMHT)) THEN
-      WRITE(MYUNIT,'(A,I4)') 'Initial coordinates: process',JP
-      WRITE(MYUNIT,'(3F20.10)') (COORDS(J1,JP),J1=1,3*NATOMS)
+      WRITE(LFH,'(A,I4)') 'Initial coordinates: process',JP
+      WRITE(LFH,'(3F20.10)') (COORDS(J1,JP),J1=1,3*NATOMS)
    ENDIF
 ! step and temperature information
    READ(MYUNIT2,*) DUMMYS

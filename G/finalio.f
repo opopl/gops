@@ -88,8 +88,8 @@ C  AMH
 
 
       IF (MPIT) THEN
-         WRITE (ISTR, '(I10)') MYUNIT-22980+1 
-         MYUNIT2=(MYUNIT-22980+1)+100
+         WRITE (ISTR, '(I10)') LFH-22980+1 
+         MYUNIT2=(LFH-22980+1)+100
          MYFILENAME2="lowest."//trim(adjustl(istr))
          OPEN(MYUNIT2,FILE=trim(adjustl(MYFILENAME2)), STATUS="unknown", form="formatted")
          IF (CHRMMT) THEN
@@ -99,7 +99,7 @@ C  AMH
             ENDDO
          ENDIF
          IF (CSMT.AND.(.NOT.SYMMETRIZECSM)) THEN
-            MYUNIT3=(MYUNIT+22980+2)+111
+            MYUNIT3=(LFH+22980+2)+111
             MYFILENAME3="CSMav."//trim(adjustl(istr))
          ENDIF
       ELSE
@@ -127,7 +127,7 @@ C  AMH
          ELSE
             WRITE(MYUNIT2,*) NATOMS
          ENDIF
-!        IF (CSMT.AND.DEBUG) WRITE(MYUNIT,'(A,I6,2G20.10)') 'finalio> J1,QMIN,QMINAV=',J1,QMIN(J1),QMINAV(J1)
+!        IF (CSMT.AND.DEBUG) WRITE(LFH,'(A,I6,2G20.10)') 'finalio> J1,QMIN,QMINAV=',J1,QMIN(J1),QMINAV(J1)
          WRITE(MYUNIT2,10) J1, QMIN(J1), FF(J1)
 10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)
          IF (MSORIGT.OR.FRAUSIT) THEN
@@ -442,8 +442,8 @@ C     Added the missing IF block to test for A9INTE 9/12/09 DJW
 C
       IF (A9INTET) THEN
          IF (MPIT) THEN
-            WRITE (ISTR, '(I10)') MYUNIT-22980+1
-            MYUNIT2=(MYUNIT-22980+1)+100
+            WRITE (ISTR, '(I10)') LFH-22980+1
+            MYUNIT2=(LFH-22980+1)+100
             MYFILENAME2="intelowest."//trim(adjustl(istr))
             OPEN(MYUNIT2,FILE=trim(adjustl(MYFILENAME2)), STATUS="unknown", form="formatted")
          ELSE
@@ -497,7 +497,7 @@ C
 !        IF (PROGRESS) THEN
 !           DCOORDS(1:3*NATOMS)=RMSCOOR(1,1:3*NATOMS)
 !           IF(RMSBEST(1,2)<0.D0) CALL CHARMMDUMP(DCOORDS,'closestrms')
-!           WRITE(MYUNIT,'(A9,F8.5)') 'RMSDmin= ',RMSBEST(1,1)
+!           WRITE(LFH,'(A9,F8.5)') 'RMSDmin= ',RMSBEST(1,1)
 !        ELSE      
 ! REMEMBER TO RE-INDENT THE BELOW IF UNCOMMENTING ABOVE!
          OPEN(UNIT=MYUNIT2,FILE='rmsbest',STATUS='UNKNOWN')
@@ -556,8 +556,8 @@ C              Use "O" atom type to highlight charged particles and "N" for the 
 !               WRITE(26,'(3F18.10)') QMINP(J1,3*(J2-1)+1),QMINP(J1,3*(J2-1)+2),QMINP(J1,3*(J2-1)+3)
 !            ENDDO
           IF (MPIT) THEN
-              WRITE (ISTR, '(I10)') MYUNIT-22980+1
-              MYUNIT2=(MYUNIT-22980+1)+100
+              WRITE (ISTR, '(I10)') LFH-22980+1
+              MYUNIT2=(LFH-22980+1)+100
               MYFILENAME2='coords.'//TRIM(ADJUSTL(J1CHAR2))//'.'//trim(adjustl(istr))
               OPEN(MYUNIT2,FILE=trim(adjustl(MYFILENAME2)), STATUS="unknown", form="formatted")
           ELSE 
@@ -579,8 +579,8 @@ C  clusters of ellipsoids of revolution
 C
 C         OPEN(UNIT=26,FILE="ellipsoid.xyz",STATUS='UNKNOWN')
       IF (MPIT) THEN
-         WRITE (ISTR, '(I10)') MYUNIT-22980+1
-         MYUNIT2=(MYUNIT-22980+1)+300
+         WRITE (ISTR, '(I10)') LFH-22980+1
+         MYUNIT2=(LFH-22980+1)+300
          MYFILENAME2="ellipsoid."//trim(adjustl(istr))//".xyz"
          OPEN(MYUNIT2,FILE=trim(adjustl(MYFILENAME2)), STATUS="unknown", form="formatted")
       ELSE

@@ -31,6 +31,7 @@ C
       USE MODMXATMS
       USE NOA
       USE COMMONS
+      USE V
       USE QMODULE
       USE PERMU
       USE F1COM
@@ -59,45 +60,48 @@ C
 !op226>  }}}
 !op226> End declarations }}}
 !op226>=================================== 
-
+! intro {{{
       CALL CPU_TIME(TSTART)
       CALL RCA
 
-      MYFILENAME="out"
-      OPEN(MYUNIT,FILE=MYFILENAME, STATUS="unknown", form="formatted")
-      WRITE(MYUNIT, '(A,I10,A,I10,A)') "Starting serial execution"
+      LFH=10
+      OPEN(LFH,FILE=O_FILE, STATUS="unknown", form="formatted")
+      WRITE(LFH, '(A,I10,A,I10,A)') "Starting serial execution"
 
+      write(*,'(2A20)') "Input data file:      ",D_FILE
+      write(*,'(2A20)') "Input coords file:    ",C_FILE
+      write(*,'(2A20)') "Output runtime file:  ",O_FILE
+      ! }}}
 #ifdef MPI
 !op226> MPI section {{{ 
       CALL MPI_INIT(MPIERR)
       CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NPAR,MPIERR)
       CALL MPI_COMM_RANK(MPI_COMM_WORLD,MYNODE,MPIERR)
-      MYUNIT=22980+MYNODE
+      !LFH=22980+MYNODE
       MDCRD_UNIT=20000+MYNODE
       MDINFO_UNIT=21000+MYNODE
       AMBPDB_UNIT=18000+MYNODE
       AMBFINALIO_NODE=200+MYNODE
       WRITE (ISTR, '(I10)') MYNODE+1
-      WRITE(MYUNIT, '(A,I10,A,I10)') "Starting parallel execution: Processor", mynode+1, " of ",NPAR
+      WRITE(LFH, '(A,I10,A,I10)') "Starting parallel execution: Processor", mynode+1, " of ",NPAR
 !op226>}}} 
 #else
 !op226> Non-MPI section {{{ 
       NPAR=1
       MYNODE=0
-      MYUNIT=22979+1
+      !LFH=22979+1
       MDCRD_UNIT=20000
       MDINFO_UNIT=21000
       AMBPDB_UNIT=18000
       AMBFINALIO_NODE=1
-      WRITE(MYUNIT, '(A,I10,A,I10,A)') "Starting serial execution"
 !op226>}}} 
 #endif
 !op226> Allocate memory; open files; initialize different things  {{{ 
 ! Add the GMIN version to the output - helps bug hunting :)
-      !WRITE(MYUNIT, '(A,I5)') 'GMIN version r',VERSIONTEMP
-!     CALL DISPLAY_VERSION(MYUNIT)
-      CALL COUNTATOMS(MYUNIT)
-      IF (CHRMMT) WRITE(MYUNIT,'(A,I8)') 'main> MAXAIM parameter for CHARMM MXATMS=',MXATMS
+      !WRITE(LFH, '(A,I5)') 'GMIN version r',VERSIONTEMP
+!     CALL DISPLAY_VERSION(LFH)
+      CALL COUNTATOMS(LFH)
+      IF (CHRMMT) WRITE(LFH,'(A,I8)') 'main> MAXAIM parameter for CHARMM MXATMS=',MXATMS
       CALL MODCOMMONINIT
  
       ALLOCATE(FIN(3*NATOMS))
@@ -114,6 +118,7 @@ C
       ENDIF
 
       CALL KEYWORD
+      !CALL KW
 
       INQUIRE(UNIT=1,OPENED=LOPEN)
       IF (LOPEN) THEN
@@ -213,7 +218,7 @@ C
             WRITE(atompair,*) TRIM(ADJUSTL(atom1))//"-"//TRIM(ADJUSTL(atom2))
             WRITE(MYPUNIT,'(A10)',ADVANCE="NO") TRIM(ADJUSTL(atompair))//"  " 
          ENDDO
-         WRITE(MYUNIT,'(A)') ""
+         WRITE(LFH,'(A)') ""
       ENDIF
 
 !op226> TRACKDATAT {{{ 
@@ -321,14 +326,14 @@ C     CALL SYSTEM('rm ssdump ssave >& /dev/null')
 C     deallocate dynamic memory for AMBER
       IF (AMBERT) CALL AMBER_DEALLOCATE_STACKS
       CALL MODCOMMONDEINIT
-      CALL FLUSH(MYUNIT)
+      CALL FLUSH(LFH)
 
       IF(VGW) THEN
         CALL CLEANUP_VGWSP
         CALL CLEANUP_VGW
       ENDIF
 
-      CLOSE(MYUNIT)
+      CLOSE(LFH)
 ! csw34> close pairdists.* files
       IF (PAIRDISTT) CLOSE(MYPUNIT)
 !op226> closing files for: TRACKDATAT RMST A9INTET {{{ 

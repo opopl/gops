@@ -37,8 +37,8 @@ C
                J2=3*J1
                DUMMY2=COORDS(J2-2,NP)**2+COORDS(J2-1,NP)**2+COORDS(J2,NP)**2
                IF (DUMMY2.GT.RADIUS) THEN
-                  WRITE(MYUNIT,'(A,I5,5F20.10)') 'J1,RAD,D2,x,y,z=',J1,RADIUS,DUMMY2,COORDS(J2-2,NP),COORDS(J2-1,NP),COORDS(J2,NP)
-                  WRITE(MYUNIT,'(A)') 'initial coordinate outside container - increase container radius'
+                  WRITE(LFH,'(A,I5,5F20.10)') 'J1,RAD,D2,x,y,z=',J1,RADIUS,DUMMY2,COORDS(J2-2,NP),COORDS(J2-1,NP),COORDS(J2,NP)
+                  WRITE(LFH,'(A)') 'initial coordinate outside container - increase container radius'
                   STOP
                ENDIF
             ENDIF
@@ -90,10 +90,10 @@ C
       NSURFMOVES=NSURFMOVES+1
       IF (DPRAND().GT.(1.0D0-SHELLPROB)) THEN 
          IF (NCORE.EQ.0) THEN
-            WRITE(MYUNIT,'(A)') 'takestep> ERROR - NCORE=0 - turning off surface moves'
+            WRITE(LFH,'(A)') 'takestep> ERROR - NCORE=0 - turning off surface moves'
             SHELLMOVES=.FALSE.
          ENDIF
-         WRITE(MYUNIT,'(A,I8)') 'takestep> shell move number ',NSURFMOVES
+         WRITE(LFH,'(A,I8)') 'takestep> shell move number ',NSURFMOVES
          XC=0.0D0; YC=0.0D0; ZC=0.0D0
          DO J1=1,NCORE
             XC=XC+COORDS(3*(J1-1)+1,NP)
@@ -101,7 +101,7 @@ C
             ZC=ZC+COORDS(3*(J1-1)+3,NP)
          ENDDO
          XC=XC/NCORE; YC=YC/NCORE; ZC=ZC/NCORE
-         IF (DEBUG) WRITE(MYUNIT,'(A,3F12.4)') 'takestep> centre of coordinates for frozen atoms: ',XC, YC, ZC
+         IF (DEBUG) WRITE(LFH,'(A,3F12.4)') 'takestep> centre of coordinates for frozen atoms: ',XC, YC, ZC
 
          RVEC(1)=(DPRAND()-0.5D0)*2.0D0
          RVEC(2)=(DPRAND()-0.5D0)*2.0D0
@@ -112,7 +112,7 @@ C
          COST=COS(ANGLE)
          SINT=SIN(ANGLE)
 
-         WRITE(MYUNIT,'(A,F10.2,A,3F12.4)') 'takestep> angle=',ANGLE,' axis: ',RVEC(1:3)
+         WRITE(LFH,'(A,F10.2,A,3F12.4)') 'takestep> angle=',ANGLE,' axis: ',RVEC(1:3)
 C
 C  Rotate all the non-core atoms through ANGLE about RVEC. Use rotation formula
 C  from Goldstein p. 165.
@@ -162,7 +162,7 @@ C
      &         (.NOT.DIFFRACTT).AND.(.NOT.GAUSST) 
      &        .AND.(.NOT.NORESET).AND.(.NOT.PERIODIC).AND.(.NOT.THOMSONT)) THEN
  
-            IF (DEBUG) WRITE(MYUNIT,'(A,I4,A,F12.4,A,F12.4,A,I4,A,F12.4)') 'angular move for atom ',J1, 
+            IF (DEBUG) WRITE(LFH,'(A,I4,A,F12.4,A,F12.4,A,I4,A,F12.4)') 'angular move for atom ',J1, 
      &           ' V=',VMAX,' Vmin=',VMIN,' next most weakly bound atom is ',JMAX2,' V=',VMAX2
 
            THETA=DPRAND()*PI
@@ -209,7 +209,7 @@ C
                  COORDS(J2-1,NP)=COORDSO(J2-1,NP)
                  COORDS(J2,NP)=COORDSO(J2,NP)
                  DUMMY2=COORDS(J2-2,NP)**2+COORDS(J2-1,NP)**2+COORDS(J2,NP)**2
-                 IF (DEBUG) WRITE(MYUNIT,'(A,I5,3F20.10)') 'J1,DUMMY,RADIUS=',J1,DUMMY,RADIUS,DUMMY2
+                 IF (DEBUG) WRITE(LFH,'(A,I5,3F20.10)') 'J1,DUMMY,RADIUS=',J1,DUMMY,RADIUS,DUMMY2
                  GOTO 10
               ENDIF
            ENDIF

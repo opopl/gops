@@ -1,0 +1,7 @@
+#!/bin/bash
+
+
+for f in ` ls *.bak `; do
+	fn=`echo $f | sed 's/.bak$//g'`; 
+	cp $f $fn
+done

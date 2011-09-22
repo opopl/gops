@@ -45,7 +45,7 @@ NSYMCALL=NSYMCALL+1   ! NSYMCALL should be the number of consecutive calls to sy
 ! PRINT '(A,5I)','NSYMCALL,NORDER,NORBIT,LASTORBIT,NORBIT-LASTORBIT+1=',NSYMCALL,NORDER,NORBIT,LASTORBIT,NORBIT-LASTORBIT+1
 ! IF (NSYMCALL.GT.1) THEN
 !    IF (NSYMCALL.GT.1) THEN
-!       IF (LDEBUG) WRITE(MYUNIT, '(A)') 'maximum consecutive calls to symmetry reached for this minimum'
+!       IF (LDEBUG) WRITE(LFH, '(A)') 'maximum consecutive calls to symmetry reached for this minimum'
 !       RETURN 
 !    ENDIF
 ! ENDIF
@@ -100,13 +100,13 @@ DO J2=1,CSMSTEPS
    CALL CSMMIN(LCOORDS,CSMVALUE,CSMRMS,CSMIT)
    IF (CSMVALUE.LT.CSMBEST) THEN
       CSMBEST=CSMVALUE
-      IF (LDEBUG) WRITE(MYUNIT,'(A,I6,A,G20.10,A,I6)') 'symmetrizecsm> accepted CSM geometry ',J2,' for CSM=', &
+      IF (LDEBUG) WRITE(LFH,'(A,I6,A,G20.10,A,I6)') 'symmetrizecsm> accepted CSM geometry ',J2,' for CSM=', &
  &                                                     CSMVALUE,' iterations=',CSMIT
       OLCOORDS(1:3*NATOMS)=LCOORDS(1:3*NATOMS)
       CSMIMAGESSAVE(1:3*NATOMS*CSMGPINDEX)=CSMIMAGES(1:3*NATOMS*CSMGPINDEX)
       CSMPMATSAVE(1:3,1:3)=CSMPMAT(1:3,1:3)
    ELSE
-      IF (LDEBUG) WRITE(MYUNIT,'(A,I6,A,G20.10,A,I6)') 'symmetrizecsm> rejected CSM geometry ',J2,' for CSM=', &
+      IF (LDEBUG) WRITE(LFH,'(A,I6,A,G20.10,A,I6)') 'symmetrizecsm> rejected CSM geometry ',J2,' for CSM=', &
  &                                                     CSMVALUE,' iterations=',CSMIT
       LCOORDS(1:3*NATOMS)=OLCOORDS(1:3*NATOMS)
    ENDIF
@@ -233,7 +233,7 @@ COORDS(1:3*NATOMS,JP)=CSMAV(1:3*NATOMS)
 ! CSMAVNEW(1:3*NATOMS)=CSMAVNEW(1:3*NATOMS)/CSMGPINDEX
 ! ! WRITE(3,'(I6)') NATOMS
 ! ! WRITE(3,'(A,2G20.10)') 'REaveraged coordinates, CSM=',CSMVALUE
-! ! WRITE(MYUNIT,'(A,3G20.10)') 'REaveraged coordinates, CSM=',CSMVALUE
+! ! WRITE(LFH,'(A,3G20.10)') 'REaveraged coordinates, CSM=',CSMVALUE
 ! ! WRITE(3,'(A3,3G20.10)') ('LA ',CSMAVNEW(3*(J1-1)+1),CSMAVNEW(3*(J1-1)+2),CSMAVNEW(3*(J1-1)+3),J1=1,NATOMS)
 ! CSMAV(1:3*NATOMS)=CSMAVNEW(1:3*NATOMS)
 ! IF (NDONE.LT.10) GOTO 5
@@ -254,10 +254,10 @@ DO J1=1,CSMQUENCHES
    CALL MYCPU_TIME(T0)
 
    IF (NPAR.GT.1) THEN
-      WRITE(MYUNIT,'(A,I1,A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,I5)') '[',JP,']Qu ',NQ(JP),' E=', &
+      WRITE(LFH,'(A,I1,A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,I5)') '[',JP,']Qu ',NQ(JP),' E=', &
   &        POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',T0-TSTART,' in CSM relaxation ',J1
    ELSE
-      WRITE(MYUNIT,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,I5)') 'Qu ',NQ(JP),' E=', &
+      WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,I5)') 'Qu ',NQ(JP),' E=', &
   &        POTEL,' steps=',ITERATIONS,' RMS=',RMS,' t=',T0-TSTART,' in CSM relaxation ',J1
    ENDIF
 !
@@ -277,7 +277,7 @@ ENDDO
 ASTEP(JP)=ASTEPSAVE ! restore angular step
 
 IF (EPREV(JP)-CSMEBEST.GT.ECONV) THEN
-   WRITE(MYUNIT,'(A,G20.10)') 'symmetrisecsm>     changing current minimum to energy ',CSMEBEST
+   WRITE(LFH,'(A,G20.10)') 'symmetrisecsm>     changing current minimum to energy ',CSMEBEST
    CHANGEDE=.TRUE. 
    EPREV(JP)=CSMEBEST
    POTEL=CSMEBEST
@@ -287,7 +287,7 @@ IF (EPREV(JP)-CSMEBEST.GT.ECONV) THEN
    COORDSO(1:3*(NATOMS-NSEED),JP)=COORDS(1:3*(NATOMS-NSEED),JP)
    VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
 ELSE
-   WRITE(MYUNIT,'(A,G20.10)') 'symmetrisecsm> not changing current minimum energy     ',EPREV(JP)
+   WRITE(LFH,'(A,G20.10)') 'symmetrisecsm> not changing current minimum energy     ',EPREV(JP)
    COORDS(1:3*NATOMS,JP)=QORIG(1:3*NATOMS)
 ENDIF
 

@@ -47,7 +47,7 @@ C Find centre of mass
 
       IF (PERIODIC) RETURN
 
-      IF (DEBUG) WRITE (MYUNIT,*) 'Compressing'
+      IF (DEBUG) WRITE (LFH,*) 'Compressing'
 
 C Loop over all bodies
       DO J1=1, NMOL

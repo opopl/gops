@@ -55,7 +55,7 @@
       CALL MPI_INIT(MPIERR)
       CALL MPI_COMM_SIZE(MPI_COMM_WORLD,NDUMMY,MPIERR)
       IF ((NDUMMY.NE.NPAR).OR.(NDUMMY.NE.NTRAJ)) THEN
-      WRITE (MYUNIT, '(A)')  'Number of temperature trajectories does not correspond to the number  
+      WRITE (LFH, '(A)')  'Number of temperature trajectories does not correspond to the number  
      1           of processors. Stop.'
          RETURN
       ENDIF
@@ -63,18 +63,18 @@
 
       WRITE (ISTR, '(i10)') MYNODE
       FILENAME="output."//trim(adjustl(istr))
-      WRITE(MYUNIT, '(A,I10,A,I10,A)') "In ptmc Processor", mynode, " of", NPAR, " speaking:"
-      WRITE(MYUNIT, '(A,I10)') 'Number of atoms', natoms
+      WRITE(LFH, '(A,I10,A,I10,A)') "In ptmc Processor", mynode, " of", NPAR, " speaking:"
+      WRITE(LFH, '(A,I10)') 'Number of atoms', natoms
       IF (PERIODIC) THEN
-         WRITE(MYUNIT, '(A,6G20.10)') 'Binary data', ntypea, epsab, epsbb, sigab, sigbb, cutoff
-         WRITE(MYUNIT, '(A,3G20.10)') 'Box data', boxlx, boxly, boxlz
+         WRITE(LFH, '(A,6G20.10)') 'Binary data', ntypea, epsab, epsbb, sigab, sigbb, cutoff
+         WRITE(LFH, '(A,3G20.10)') 'Box data', boxlx, boxly, boxlz
       ELSEIF(CHRMMT) THEN
-         WRITE(MYUNIT, '(A)') 'CHARRRMMM'
+         WRITE(LFH, '(A)') 'CHARRRMMM'
       ELSEIF (MODEL1T) THEN
-         WRITE(MYUNIT, '(A)') 'ptmc> 1D landscape model 1'
+         WRITE(LFH, '(A)') 'ptmc> 1D landscape model 1'
          RADIUS=1.0D100
       ELSE
-         WRITE(MYUNIT, '(A,G20.10)') 'Radius**2', radius
+         WRITE(LFH, '(A,G20.10)') 'Radius**2', radius
       ENDIF
 
       ITRAJ=MYNODE
@@ -93,7 +93,7 @@
          Q(3,I)=Z(I)
       ENDDO
 
-      WRITE(MYUNIT, '(A,3G20.10)') 'xyz', x(1), y(1), z(1) 
+      WRITE(LFH, '(A,3G20.10)') 'xyz', x(1), y(1), z(1) 
  
       CTE=(LOG(PTTMAX/PTTMIN))/(NTRAJ-1)
       CTE=EXP(CTE)
@@ -121,17 +121,17 @@
          CALL QORDER_LJ(Q,Q4,Q6)
       ENDIF
 
-      WRITE(MYUNIT, '(A, 2G20.10)') 'Temperature range', TEMPTRAJ(0), TEMPTRAJ(NTRAJ-1)
-      WRITE(MYUNIT, '(A, G20.10)') 'This temperature trajectory=', TEMPTRAJ(MYNODE)
-      WRITE(MYUNIT, '(A, G20.10)') 'Starting E=', VINIT
-      WRITE(MYUNIT, '(A, 2G20.10)') 'Starting Q4, Q6=', Q4, Q6
+      WRITE(LFH, '(A, 2G20.10)') 'Temperature range', TEMPTRAJ(0), TEMPTRAJ(NTRAJ-1)
+      WRITE(LFH, '(A, G20.10)') 'This temperature trajectory=', TEMPTRAJ(MYNODE)
+      WRITE(LFH, '(A, G20.10)') 'Starting E=', VINIT
+      WRITE(LFH, '(A, 2G20.10)') 'Starting Q4, Q6=', Q4, Q6
 
       ! Initialisation complete
 
       RNDSEED=2002+MYNODE
       CALL SDPRND(RNDSEED)
       RANDOM=DPRAND()
-      WRITE(MYUNIT, '(A, G20.10)') 'Starting random number=', RANDOM
+      WRITE(LFH, '(A, G20.10)') 'Starting random number=', RANDOM
 
       NTOT=0
 
@@ -451,8 +451,8 @@
       WRITE(1984,'(3G20.10)') MYNODE, VMIN(MYNODE),VMAX(MYNODE)
       CLOSE(1984)
 
-      WRITE(MYUNIT, '(G20.10,A,G20.10)') NACCEPTPT(MYNODE), ' steps accepted out of ', NSTAT
-      WRITE(MYUNIT, '(G20.10,A,G20.10)') NEACCEPT, ' exchanges accepted out of ', NTOT
+      WRITE(LFH, '(G20.10,A,G20.10)') NACCEPTPT(MYNODE), ' steps accepted out of ', NSTAT
+      WRITE(LFH, '(G20.10,A,G20.10)') NEACCEPT, ' exchanges accepted out of ', NTOT
 
       DO K=1,NATOMS
          Q(1,K)=X(K)

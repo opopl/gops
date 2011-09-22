@@ -61,7 +61,7 @@ C
       IF (.NOT.ALLOCATED(W)) ALLOCATE(W(N*(2*M+1)+2*M)) ! SAVE doesn't work otherwise for Sun
 !     IF (QUENCHDOS) ALLOCATE(FRAMES(N,ITMAX), PE(ITMAX), MODGRAD(ITMAX))
       IF (SIZE(W,1).NE.N*(2*M+1)+2*M) THEN ! mustn't call mylbfgs with changing number of variables!!!
-         WRITE(MYUNIT, '(A,I10,A,I10,A)') 'ERROR, dimension of W=',SIZE(W,1),' but N*(2*M+1)+2*M=',N*(2*M+1)+2*M,' in mylbfgs'
+         WRITE(LFH, '(A,I10,A,I10,A)') 'ERROR, dimension of W=',SIZE(W,1),' but N*(2*M+1)+2*M=',N*(2*M+1)+2*M,' in mylbfgs'
          call exit(10)
       ENDIF
       COREDONE=.FALSE.
@@ -80,8 +80,8 @@ C
       ITDONE=0
       FIXIMAGE=.FALSE.
       IF (DEBUG) THEN
-         IF (RESET.OR.GUIDECHANGET) WRITE(MYUNIT,'(A)') 'mylbfgs> Resetting LBFGS minimiser'
-         IF (.NOT.(RESET.OR.GUIDECHANGET)) WRITE(MYUNIT,'(A)') 'mylbfgs> Not resetting LBFGS minimiser'
+         IF (RESET.OR.GUIDECHANGET) WRITE(LFH,'(A)') 'mylbfgs> Resetting LBFGS minimiser'
+         IF (.NOT.(RESET.OR.GUIDECHANGET)) WRITE(LFH,'(A)') 'mylbfgs> Not resetting LBFGS minimiser'
       ENDIF
 
       IF (Q4T) CALL ORDERQ4(NATOMS,XCOORDS,QSTART)
@@ -138,11 +138,11 @@ C
       IF ((TOSI.OR.WELCH.OR.RGCL2.OR.AMBER.OR.ARNO.OR.PACHECO.OR.TIP.OR.CHRMMT.OR.AMBERT 
      &   .OR.PYGPERIODICT.OR.PYBINARYT.OR.MULTISITEPYT.OR.JMT) 
      &   .AND.(ENERGY.LT.COLDFUSIONLIMIT)) THEN
-         WRITE(MYUNIT,'(A,G20.10)') 'ENERGY=',ENERGY
+         WRITE(LFH,'(A,G20.10)') 'ENERGY=',ENERGY
          ENERGY=1.0D6
          POTEL=1.0D6
          RMS=1.0D0
-         WRITE(MYUNIT,'(A)') ' Cold fusion diagnosed - step discarded'
+         WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
 !     csw34> set COLDFUSION=.TRUE. so that ATEST=.FALSE. in MC
          COLDFUSION=.TRUE.
 !        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
@@ -171,7 +171,7 @@ C
 !     ENDIF
 
       IF (CHRMMT .AND. GCHARMMFAIL) THEN
-          WRITE(MYUNIT,'(A)') 'Failure in CHARMM energy/gradient evaluation - geometry discarded.'
+          WRITE(LFH,'(A)') 'Failure in CHARMM energy/gradient evaluation - geometry discarded.'
 !         IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
           RETURN
       ENDIF
@@ -212,25 +212,25 @@ C
       IF (EVAPREJECT) RETURN
       POTEL=ENERGY
 
-      IF (DEBUG) WRITE(MYUNIT,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
+      IF (DEBUG) WRITE(LFH,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
 
 C
 C  Catch cold fusion for ionic potentials and discard.
 C
       IF ((DBPT.OR.DBPTDT.OR.MSTBINT.OR.MSSTOCKT.OR.MULTPAHAT.OR.NPAHT.OR.PAHW99T.OR.PYGT.OR.TDHDT.OR.SILANET) 
      &   .AND.(ENERGY.LT.-5.0D4)) THEN
-         WRITE(MYUNIT,'(A,G20.10)') 'ENERGY=',ENERGY
+         WRITE(LFH,'(A,G20.10)') 'ENERGY=',ENERGY
          ENERGY=0.0D0
          POTEL=0.0D0
          RMS=1.0D0
-         WRITE(MYUNIT,'(A)') ' Cold fusion diagnosed - step discarded'
+         WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
          RETURN
       ENDIF
       ! }}}
 C
 C  Termination test.  {{{
 C
-10    CALL FLUSH(MYUNIT)
+10    CALL FLUSH(LFH)
       MFLAG=.FALSE.
       IF (RMS.LE.EPS) THEN
          IF (CHRMMT.AND.ACESOLV) THEN
@@ -244,7 +244,7 @@ C
          IF (EVAP) MFLAG=.FALSE. ! do not allow convergence if we happen to have a small RMS and EVAP is true'
          IF (MFLAG) THEN
             FIXIMAGE=.FALSE.
-            IF (DEBUG) WRITE(MYUNIT,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
+            IF (DEBUG) WRITE(LFH,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
 
 !             IF (QUENCHDOS) THEN
 !                DO J1=1,ITDONE+1
@@ -262,7 +262,7 @@ C
 !                   ELSE
 !                      DOSSTATS(J1,2)=0.0D0
 !                   ENDIF
-! !                 WRITE(MYUNIT,'(A,I6,4G18.8)') 'lbfgs> J1,MODGRAD,DIST,DOSSTATS(J1,2),DOSSTATS(J1,1)=',
+! !                 WRITE(LFH,'(A,I6,4G18.8)') 'lbfgs> J1,MODGRAD,DIST,DOSSTATS(J1,2),DOSSTATS(J1,1)=',
 ! !    &                      J1,MODGRAD(J1),DIST,DOSSTATS(J1,2),DOSSTATS(J1,1)
 !                ENDDO
 !                DEALLOCATE(FRAMES, PE, MODGRAD)
@@ -274,7 +274,7 @@ C
 
       IF (ITDONE.EQ.ITMAX) THEN
          IF (DEBUG) FIXIMAGE=.FALSE.
-         IF (DEBUG) WRITE(MYUNIT,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
+         IF (DEBUG) WRITE(LFH,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
 !        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
          RETURN
       ENDIF
@@ -283,17 +283,17 @@ C
       IF (ITER.EQ.0) THEN
         ! {{{
          IF (N.LE.0.OR.M.LE.0) THEN
-            WRITE(MYUNIT,240)
+            WRITE(LFH,240)
  240        FORMAT(' IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')
             STOP
          ENDIF
          POINT=0
          MFLAG=.FALSE.
          IF (DIAGCO) THEN
-            WRITE(MYUNIT,'(A)') 'using estimate of the inverse diagonal elements'
+            WRITE(LFH,'(A)') 'using estimate of the inverse diagonal elements'
             DO J1=1,N
                IF (DIAG(J1).LE.0.0D0) THEN
-                  WRITE(MYUNIT,235) J1
+                  WRITE(LFH,235) J1
  235              FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',/,
      1                   ' INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE')
                   STOP
@@ -363,15 +363,15 @@ C
            ! DIAG => YS/YY {{{
             YY= DDOT(N,W(IYPT+NPT+1),1,W(IYPT+NPT+1),1)
             IF (YY.EQ.0.0D0) THEN
-               WRITE(MYUNIT,'(A)') 'WARNING, resetting YY to one in mylbfgs'
+               WRITE(LFH,'(A)') 'WARNING, resetting YY to one in mylbfgs'
                YY=1.0D0
             ENDIF
             IF (YS.EQ.0.0D0) THEN
-               WRITE(MYUNIT,'(A)') 'WARNING, resetting YS to one in mylbfgs'
+               WRITE(LFH,'(A)') 'WARNING, resetting YS to one in mylbfgs'
                YS=1.0D0
             ENDIF
-            IF (DEBUG) WRITE(MYUNIT,'(A20,F20.5)') 'YY= ',YY
-            IF (DEBUG) WRITE(MYUNIT,'(A20,F20.5)') 'YS= ',YS
+            IF (DEBUG) WRITE(LFH,'(A20,F20.5)') 'YY= ',YY
+            IF (DEBUG) WRITE(LFH,'(A20,F20.5)') 'YS= ',YS
 C           WRITE(*,'(A,2F20.10)') 'YS/YY,STP=',YS/YY,STP
             DO J1=1,N
 C              DIAG(J1)= ABS(YS/YY) ! messes up after step reversals!
@@ -380,10 +380,10 @@ C              DIAG(J1)= ABS(YS/YY) ! messes up after step reversals!
             ! }}}
          ELSE
             ! {{{
-            WRITE(MYUNIT,'(A)') 'using estimate of the inverse diagonal elements'
+            WRITE(LFH,'(A)') 'using estimate of the inverse diagonal elements'
             DO J1=1,N
                IF (DIAG(J1).LE.0.0D0) THEN
-                  WRITE(MYUNIT,235) J1
+                  WRITE(LFH,235) J1
                   STOP
                ENDIF
             ENDDO
@@ -478,7 +478,7 @@ C     PRINT*,'W . W=',DDOT(N,W,1,W,1)
 C        IF (DEBUG) PRINT*,'Search direction has positive projection onto gradient - resetting'
 C        ITER=0
 C        GOTO 10
-         IF (DEBUG) WRITE(MYUNIT,'(A)') 'Search direction has positive projection onto gradient - reversing step'
+         IF (DEBUG) WRITE(LFH,'(A)') 'Search direction has positive projection onto gradient - reversing step'
          DO J1=1,N
             W(ISPT+POINT*N+J1)= -W(J1)  !!! DJW, reverses step
          ENDDO
@@ -607,7 +607,7 @@ C            CALL chainbuild ! get cartesians
          SMINKCURRENT=MIN(SMINKCURRENT+SMINKINC,SMINK)
          IF (SMINKCURRENT.NE.SMINKCURRENTP) SMINKCHANGET=.TRUE.
 ! a bit of useful debug printing         
-        IF (DEBUG) WRITE(MYUNIT,'(A,2F20.10,L5)') 'SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET=',SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET
+        IF (DEBUG) WRITE(LFH,'(A,2F20.10,L5)') 'SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET=',SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET
       ENDIF
 
       CALL POTENTIAL(XCOORDS,GNEW,ENEW,.TRUE.,.FALSE.)
@@ -635,7 +635,7 @@ C            CALL chainbuild ! get cartesians
 
       IF (EVAPREJECT) return
       IF (CHRMMT .AND. GCHARMMFAIL) THEN
-          WRITE(MYUNIT,'(A)') 'Failure in CHARMM energy/gradient evaluation - step discarded.'
+          WRITE(LFH,'(A)') 'Failure in CHARMM energy/gradient evaluation - step discarded.'
 !         IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
           RETURN
       ENDIF
@@ -652,7 +652,7 @@ C
          ENEW=1.0D6
          POTEL=1.0D6
          RMS=1.0D0
-         WRITE(MYUNIT,'(A)') ' Cold fusion diagnosed - step discarded'
+         WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
 !     csw34> set COLDFUSION=.TRUE. so that ATEST=.FALSE. in MC
          COLDFUSION=.TRUE.
 !        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
@@ -663,7 +663,7 @@ C
          ENEW=0.0D0
          POTEL=0.0D0
          RMS=1.0D0
-         WRITE(MYUNIT,'(A)') ' Cold fusion diagnosed - step discarded'
+         WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
          RETURN
       ENDIF
 
@@ -704,7 +704,7 @@ C
          DO J1=1,3*NATOMS
             GRAD(J1)=GNEW(J1)
          ENDDO
-         IF (DEBUG) WRITE(MYUNIT,'(A,F20.10,G20.10,A,I6,A,F13.10)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,
+         IF (DEBUG) WRITE(LFH,'(A,F20.10,G20.10,A,I6,A,F13.10)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,
      1           ' LBFGS steps, step:',STP*SLENGTH
 C
 C  Step finished so can reset OLDQ to new XINT, OLDCART to new LCART,
@@ -793,7 +793,7 @@ C  Energy decreased too much - try again with a smaller step size
 C
          IF (NDECREASE.GT.5) THEN
             NFAIL=NFAIL+1
-            WRITE(MYUNIT,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find an energy in the required range, NFAIL=',NFAIL
+            WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find an energy in the required range, NFAIL=',NFAIL
             IF (CHRMMT.AND.INTMINT) THEN ! need to reset X, XINT, G, GINT to original values
                XINT(1:N)=XINT(1:N)-STP*W(ISPT+POINT*N+1:ISPT+POINT*N+N)
 C              XINT=OLDQ ! should be the same as subtracting the step
@@ -816,7 +816,7 @@ C              XINT=OLDQ ! should be the same as subtracting the step
             ENDIF
             ITER=0   !  try resetting
             IF (NFAIL.GT.20) THEN
-               WRITE(MYUNIT,'(A)') ' Too many failures - giving up '
+               WRITE(LFH,'(A)') ' Too many failures - giving up '
                FIXIMAGE=.FALSE.
 !              STOP
 !              IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
@@ -876,7 +876,7 @@ C              XINT=OLDQ ! should be the same as subtracting the step
          ENDIF
          STP=STP/2.0D0
          NDECREASE=NDECREASE+1
-         IF (DEBUG) WRITE(MYUNIT,'(A,F19.10,A,F16.10,A,F15.8)') 
+         IF (DEBUG) WRITE(LFH,'(A,F19.10,A,F16.10,A,F15.8)') 
      1                      ' energy decreased too much from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
          
          FIXIMAGE=.TRUE.
@@ -887,7 +887,7 @@ C  Energy increased - try again with a smaller step size
 C
          IF (NDECREASE.GT.10) THEN ! DJW
             NFAIL=NFAIL+1
-            WRITE(MYUNIT,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find a lower energy, NFAIL=',NFAIL
+            WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find a lower energy, NFAIL=',NFAIL
             IF (CHRMMT.AND.INTMINT) THEN ! need to reset X, XINT, G, GINT to original values
                XINT(1:N)=XINT(1:N)-STP*W(ISPT+POINT*N+1:ISPT+POINT*N+N)
 C              XINT=OLDQ ! should be the same as subtracting the step
@@ -911,7 +911,7 @@ C              XINT=OLDQ ! should be the same as subtracting the step
 !            IF (NFAIL.GT.20) THEN
 ! bs360: smaller NFAIL 
              IF (NFAIL.GT.5) THEN         
-               WRITE(MYUNIT,'(A)') ' Too many failures - giving up '
+               WRITE(LFH,'(A)') ' Too many failures - giving up '
                FIXIMAGE=.FALSE.
 
 ! jwrm2> For testing: dumps coords and exits when failing
@@ -982,7 +982,7 @@ C              XINT=OLDQ ! should be the same as subtracting the step
          ENDIF
          STP=STP/1.0D1
          NDECREASE=NDECREASE+1
-         IF (DEBUG) WRITE(MYUNIT,'(A,F20.10,A,F20.10,A,F20.10)') 
+         IF (DEBUG) WRITE(LFH,'(A,F20.10,A,F20.10,A,F20.10)') 
      1                      ' energy increased from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
          FIXIMAGE=.TRUE.
          GOTO 20

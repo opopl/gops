@@ -51,18 +51,18 @@ COMMON /TOT/ NQTOT
 SAVE NORBIT
 
 ! DO J1=1,NPAR
-  ! WRITE(MYUNIT,*) 'symmetry2> J1,SHELLMOVES,PTGROUP',J1,SHELLMOVES(J1),PTGROUP(J1)
+  ! WRITE(LFH,*) 'symmetry2> J1,SHELLMOVES,PTGROUP',J1,SHELLMOVES(J1),PTGROUP(J1)
 ! ENDDO
 NCORESAVE=NCORE(JP)
 WRITE(JPSTRING,'(I6)') JP
-MYUNIT2=NPAR+MYUNIT
-MYUNIT3=2*NPAR+MYUNIT+1
+MYUNIT2=NPAR+LFH
+MYUNIT3=2*NPAR+LFH+1
 IPRNT=0
 LDEBUG=DEBUG
 NSYMCALL=NSYMCALL+1   ! NSYMCALL should be the number of consecutive calls to symmetry with this minimum
 IF (NSYMCALL.GT.2) THEN
-   IF (LDEBUG) WRITE(MYUNIT, '(A)') 'symmetry2> maximum consecutive calls to symmetry reached for this minimum'
-   WRITE(MYUNIT, '(A)') 'symmetry2> maximum consecutive calls to symmetry reached for this minimum'
+   IF (LDEBUG) WRITE(LFH, '(A)') 'symmetry2> maximum consecutive calls to symmetry reached for this minimum'
+   WRITE(LFH, '(A)') 'symmetry2> maximum consecutive calls to symmetry reached for this minimum'
    RETURN 
 ENDIF
 NSYMREM=0
@@ -82,7 +82,7 @@ LCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
 !   DO J2=1,NATOMS
 !      IF (VT(J2).NE.0.0D0) THEN
 !         IF (ABS((VT(J2)-VAT(J2,JP))/VT(J2)).GT.0.01D0) THEN
-!            WRITE(MYUNIT,'(A,I8,2F15.5)') 'symmetry2> A J2,VAT,VT(J2)=',J2,VAT(J2,JP),VT(J2)
+!            WRITE(LFH,'(A,I8,2F15.5)') 'symmetry2> A J2,VAT,VT(J2)=',J2,VAT(J2,JP),VT(J2)
 !            STOP
 !         ENDIF
 !      ENDIF
@@ -112,7 +112,7 @@ cmloop: DO J1=1,200
                      (LCOORDS(3*(J-1)+2)-ORIGIN(2))**2+ &
                      (LCOORDS(3*(J-1)+3)-ORIGIN(3))**2)
    ENDDO
-   IF (LDEBUG) WRITE(MYUNIT, '(A,I5,3G20.10)') 'symmetry2> cycle, origin:',J1,ORIGIN(1:3)
+   IF (LDEBUG) WRITE(LFH, '(A,I5,3G20.10)') 'symmetry2> cycle, origin:',J1,ORIGIN(1:3)
    IF ((J1.GT.1).AND.(DUMMY.LT.1.0D-4)) EXIT cmloop 
 ENDDO cmloop
 
@@ -120,7 +120,7 @@ DO J=1,NATOMS
    NINDEX(J)=J
 ENDDO
 
-IF (LDEBUG) WRITE(MYUNIT, '(A,3F15.5)') 'symmetry2> initial centre of mass: ',ORIGIN(1:3)
+IF (LDEBUG) WRITE(LFH, '(A,3F15.5)') 'symmetry2> initial centre of mass: ',ORIGIN(1:3)
 SCOORDS(1:3*NATOMS)=LCOORDS(1:3*NATOMS)
 CALL PIKSR2(NATOMS,CMDIST,NINDEX) ! sorts CMDIST and NINDEX
 ! CALL GETORBITS(NORBIT,ORBDIST,CMDIST,NATOMS,ORBSIZE,SYMTOL1,LARGESIZE,NINDEX,LCOORDS,LDEBUG)
@@ -141,11 +141,11 @@ DO J=2,NATOMS
 ENDDO
 CMX(1)=CMX(1)/NDUMMY; CMY(1)=CMY(1)/NDUMMY; CMZ(1)=CMZ(1)/NDUMMY
 
-IF (LDEBUG) WRITE(MYUNIT, '(A,3F15.5)') 'symmetry2> origin will be moved to centre of mass for atoms up to biggest gap: ', &
+IF (LDEBUG) WRITE(LFH, '(A,3F15.5)') 'symmetry2> origin will be moved to centre of mass for atoms up to biggest gap: ', &
   &                           CMX(1),CMY(1),CMZ(1)
-IF (LDEBUG) WRITE(MYUNIT, '(A,I6,A,F15.5,A)') 'symmetry2> number of atoms=',NDUMMY
+IF (LDEBUG) WRITE(LFH, '(A,I6,A,F15.5,A)') 'symmetry2> number of atoms=',NDUMMY
 ORBSIZE(1)=NDUMMY
-IF (LDEBUG) WRITE(MYUNIT, '(12I5)')  (NINDEX(J1),J1=1,ORBSIZE(1))
+IF (LDEBUG) WRITE(LFH, '(12I5)')  (NINDEX(J1),J1=1,ORBSIZE(1))
 ORIGIN(1)=CMX(1)
 ORIGIN(2)=CMY(1)
 ORIGIN(3)=CMZ(1)
@@ -178,7 +178,7 @@ ENDIF
 IF (LARGESIZE.EQ.1) THEN
    IF (LDEBUG) THEN
       CALL MYCPU_TIME(TIME)
-      WRITE(MYUNIT, '(A,F15.2)') 'symmetry2> No nontrivial orbits - return from symmetry2, time taken=',TIME-T0
+      WRITE(LFH, '(A,F15.2)') 'symmetry2> No nontrivial orbits - return from symmetry2, time taken=',TIME-T0
    ENDIF
    RETURN
 ENDIF
@@ -200,7 +200,7 @@ symcore: DO J1=1,NORBIT
    IF (NATOMSCORE.GT.3) THEN
       DUMMY=MATDIFF
       CALL PTGRP(SCOORDS,NATOMSCORE,LDEBUG,SYMTOL1,SYMTOL2,SYMTOL3,GENMAT,IGEN,FPGRP,CM,DUMMY) ! SCOORDS is changed!
-      IF (LDEBUG) WRITE(MYUNIT, '(A,I5,A,I5,A,I4,A,A4,A,I6)') 'symmetry2> number of orbits=',J1,' number of atoms=',NATOMSCORE, &
+      IF (LDEBUG) WRITE(LFH, '(A,I5,A,I5,A,I4,A,A4,A,I6)') 'symmetry2> number of orbits=',J1,' number of atoms=',NATOMSCORE, &
                           ' number of generators=',IGEN,' point group= ',FPGRP,' order=',HPTGRP
       IF (HPTGRP.GE.HPTGRPSAVE) THEN
          HPTGRPSAVE=HPTGRP
@@ -217,28 +217,28 @@ symcore: DO J1=1,NORBIT
          ENDIF
       ELSEIF (HPTGRP.GE.1) THEN ! symmetry has decreased
          IF (NPAR.GT.1) THEN
-            WRITE(MYUNIT,'(A,I1,3A,I6,A,I6,A)') '[',JP,']symmetry2> highest symmetry ',POINTGROUP,' for ',NORBITSCORE, &
+            WRITE(LFH,'(A,I1,3A,I6,A,I6,A)') '[',JP,']symmetry2> highest symmetry ',POINTGROUP,' for ',NORBITSCORE, &
   &                        ' orbits and ',NCORE(JP),' atoms'
          ELSE
-            WRITE(MYUNIT,'(3A,I6,A,I6,A)') 'symmetry2> highest symmetry ',POINTGROUP,' for ',NORBITSCORE, &
+            WRITE(LFH,'(3A,I6,A,I6,A)') 'symmetry2> highest symmetry ',POINTGROUP,' for ',NORBITSCORE, &
   &                        ' orbits and ',NCORE(JP),' atoms'
          ENDIF
          EXIT symcore
       ENDIF
    ELSE
-      IF (LDEBUG) WRITE(MYUNIT, '(A,I5,A,I5)') 'symmetry2> number of orbits=',NORBITSCORE,' number of atoms=',NATOMSCORE
+      IF (LDEBUG) WRITE(LFH, '(A,I5,A,I5)') 'symmetry2> number of orbits=',NORBITSCORE,' number of atoms=',NATOMSCORE
    ENDIF
 ENDDO symcore
 
 IF (HPTGRPSAVE.EQ.1) THEN
-   IF (LDEBUG) WRITE(MYUNIT, '(A)') 'symmetry2> no symmetry detected'
+   IF (LDEBUG) WRITE(LFH, '(A)') 'symmetry2> no symmetry detected'
    NCORE(JP)=NCORESAVE
    RETURN
 ELSE
    IF (NCORE(JP).EQ.NATOMS) THEN
       RETURN
    ENDIF
-!  WRITE(MYUNIT, '(A,A,A,I4)') 'symmetry2> symmetry analysis for point group ',TRIM(ADJUSTL(POINTGROUP)), &
+!  WRITE(LFH, '(A,A,A,I4)') 'symmetry2> symmetry analysis for point group ',TRIM(ADJUSTL(POINTGROUP)), &
 !   &                   ' number of generators=',IGENSAVE
 ENDIF
 
@@ -288,7 +288,7 @@ IF (LDEBUG) THEN
    CLOSE(MYUNIT2)
 ENDIF
 IF (NCORE(JP).EQ.NATOMS) RETURN
-! IF (LDEBUG) WRITE(MYUNIT,'(A,3I8)') 'symmetry2> NCORE(JP),NCORESAVE,NFLOAT=',NCORE(JP),NCORESAVE,NFLOAT
+! IF (LDEBUG) WRITE(LFH,'(A,3I8)') 'symmetry2> NCORE(JP),NCORESAVE,NFLOAT=',NCORE(JP),NCORESAVE,NFLOAT
 IF (NCORE(JP).LE.NCORESAVE) THEN
    NCORE(JP)=NCORESAVE
    RETURN
@@ -296,13 +296,13 @@ ENDIF
 
 DO J1=1,NPAR
    IF (J1.EQ.JP) CYCLE
-!  WRITE(MYUNIT,*) 'symmetry2> J1,SHELLMOVES,PTGROUP,POINTGROUP=',J1,SHELLMOVES(J1),PTGROUP(J1),POINTGROUP
+!  WRITE(LFH,*) 'symmetry2> J1,SHELLMOVES,PTGROUP,POINTGROUP=',J1,SHELLMOVES(J1),PTGROUP(J1),POINTGROUP
    IF (.NOT.SHELLMOVES(J1)) CYCLE
    IF (POINTGROUP.EQ.PTGROUP(J1)) THEN
       IF (NPAR.GT.1) THEN
-         WRITE(MYUNIT,'(A,I1,3A,I6)') '[',JP,']symmetry2> point group ',POINTGROUP,' coincides with run ',J1
+         WRITE(LFH,'(A,I1,3A,I6)') '[',JP,']symmetry2> point group ',POINTGROUP,' coincides with run ',J1
       ELSE
-         WRITE(MYUNIT,'(3A,I6)') 'symmetry2> point group ',POINTGROUP,' coincides with run ',J1
+         WRITE(LFH,'(3A,I6)') 'symmetry2> point group ',POINTGROUP,' coincides with run ',J1
       ENDIF
       NCORE(JP)=0
       NSURFMOVES(JP)=0
@@ -322,10 +322,10 @@ ENDDO
 VAT(1:NFLOAT,JP)=OTHERVT(1:NFLOAT)
 
 IF (NPAR.GT.1) THEN
-   WRITE(MYUNIT,'(A,I1,A,I8,A,I8,3A,I8,A)') '[',JP,']symmetry2> starting a block of ',SHELLMOVEMAX,' moves with ', &
+   WRITE(LFH,'(A,I1,A,I8,A,I8,3A,I8,A)') '[',JP,']symmetry2> starting a block of ',SHELLMOVEMAX,' moves with ', &
   &      NCORE(JP),' atoms unperturbed, core symmetry ',POINTGROUP,' after ',NQ(JP),' quenches'
 ELSE
-   WRITE(MYUNIT,'(A,I8,A,I8,3A,I8,A)') 'symmetry2> starting a block of ',SHELLMOVEMAX,' moves with ', &
+   WRITE(LFH,'(A,I8,A,I8,3A,I8,A)') 'symmetry2> starting a block of ',SHELLMOVEMAX,' moves with ', &
   &      NCORE(JP),' atoms unperturbed, core symmetry ',POINTGROUP,' after ',NQ(JP),' quenches'
 ENDIF
 IF (DEBUG) THEN ! check for overlaps
@@ -335,7 +335,7 @@ IF (DEBUG) THEN ! check for overlaps
                    +(COORDS(3*(J1-1)+2,JP)-COORDS(3*(J2-1)+2,JP))**2 &
                    +(COORDS(3*(J1-1)+3,JP)-COORDS(3*(J2-1)+3,JP))**2)
          IF (DUMMY.LT.SYMTOL5) THEN
-            WRITE(MYUNIT,'(A,I8,A,I8,A,G20.10)') 'symmetry2> ERROR - atoms ',J1,' and ',J2,' are separated by only ',DUMMY
+            WRITE(LFH,'(A,I8,A,I8,A,G20.10)') 'symmetry2> ERROR - atoms ',J1,' and ',J2,' are separated by only ',DUMMY
       WRITE(41,'(I4)') NATOMS
       WRITE(41,*) ' ' 
       WRITE(41,'(A2,3F20.10)') ('LA ',COORDS(3*(I-1)+1,JP),COORDS(3*(I-1)+2,JP),COORDS(3*(I-1)+3,JP),I=1,NCORE(JP))
@@ -353,7 +353,7 @@ ENDIF
 !   DO J2=1,NATOMS
 !      IF (VT(J2).NE.0.0D0) THEN
 !         IF (ABS((VT(J2)-VAT(J2,JP))/VT(J2)).GT.0.01D0) THEN
-!            WRITE(MYUNIT,'(A,I8,2F15.5)') 'symmetry2> A J2,VAT,VT(J2)=',J2,VAT(J2,JP),VT(J2)
+!            WRITE(LFH,'(A,I8,2F15.5)') 'symmetry2> A J2,VAT,VT(J2)=',J2,VAT(J2,JP),VT(J2)
 !            STOP
 !         ENDIF
 !      ENDIF

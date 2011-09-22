@@ -17,7 +17,7 @@ C   along with this program; if not, write to the Free Software
 C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
       SUBROUTINE MYSD(ITMAX,VARS,MFLAG,NSTP,ENERGY)
-      USE COMMONS,ONLY : NATOMS, MYUNIT, GMAX, FIXIMAGE, RMS, SDTOL, DEBUG
+      USE COMMONS,ONLY : NATOMS, LFH, GMAX, FIXIMAGE, RMS, SDTOL, DEBUG
       IMPLICIT NONE
       INTEGER NSTP, ITMAX, J1, NOPT
       LOGICAL MFLAG
@@ -31,7 +31,7 @@ C
 
 10    GNORM=DSQRT(DDOT(NOPT,GRAD,1,GRAD,1))
       IF (GNORM.LE.0.0D0) THEN
-         WRITE(MYUNIT,'(A)') 'mysd> ERROR - GNORM is zero'
+         WRITE(LFH,'(A)') 'mysd> ERROR - GNORM is zero'
          STOP
       ENDIF
       IF (NSTP.EQ.1) THEN
@@ -66,34 +66,34 @@ C
  
       CALL POTENTIAL(NEWVARS,NEWGRAD,ENEW,.TRUE.,.FALSE.)
       IF (ENEW-ENERGY.EQ.0.0D0) THEN
-         WRITE(MYUNIT,'(A,G20.10)') 'mysd> WARNING - ENEW=ENERGY=',ENERGY
+         WRITE(LFH,'(A,G20.10)') 'mysd> WARNING - ENEW=ENERGY=',ENERGY
          PERROR=0.0D0
       ELSE 
          PERROR=(EPRED-(ENEW-ENERGY))*100.0D0/(ENEW-ENERGY)
       ENDIF
       IF (PERROR.GT.SDTOL) THEN
          SLENGTH=SLENGTH/SFAC
-         IF (DEBUG) WRITE(MYUNIT,'(A,G20.10,A,G20.10)') 'mysd> % error=',PERROR,
+         IF (DEBUG) WRITE(LFH,'(A,G20.10,A,G20.10)') 'mysd> % error=',PERROR,
      &     ' exceeds tolerance, decreasing step length to',SLENGTH
          GOTO 11
       ELSEIF (PERROR.GT.SDTOL*0.66D0) THEN
          SLENGTH=SLENGTH/SFAC
-         IF (DEBUG) WRITE(MYUNIT,'(A,G20.10,A,G20.10)') 'mysd> % error=',PERROR,
+         IF (DEBUG) WRITE(LFH,'(A,G20.10,A,G20.10)') 'mysd> % error=',PERROR,
      &     ' decreasing step length to',SLENGTH
       ELSE
          SLENGTH=SLENGTH*SFAC
-         IF (DEBUG) WRITE(MYUNIT,'(A,G20.10,A,G20.10)') 'mysd> % error=',PERROR,
+         IF (DEBUG) WRITE(LFH,'(A,G20.10,A,G20.10)') 'mysd> % error=',PERROR,
      &     ' increasing step length to',SLENGTH
       ENDIF
       ENERGY=ENEW
       GRAD(1:NOPT)=NEWGRAD(1:NOPT)
       VARS(1:NOPT)=NEWVARS(1:NOPT)
 
-      IF (DEBUG) WRITE(MYUNIT,'(A,2F20.10,A,I6,A,G15.5)') 'mysd> E and RMS=',ENERGY,RMS,' after ',
+      IF (DEBUG) WRITE(LFH,'(A,2F20.10,A,I6,A,G15.5)') 'mysd> E and RMS=',ENERGY,RMS,' after ',
      &        NSTP,' SD cycles, step=',SLENGTH
 
       IF (SLENGTH.LT.1.0D-200) THEN
-         WRITE(MYUNIT,'(A)') 'mysd> Step size underflow - quit'
+         WRITE(LFH,'(A)') 'mysd> Step size underflow - quit'
          STOP
       ENDIF
       MFLAG=.FALSE.

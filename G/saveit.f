@@ -76,12 +76,12 @@ C
       DO J1=1,NTARGETS
          IF (EREAL-TARGETS(J1).LT.ECONV) THEN
             IF (NPAR.LT.2) THEN
-               WRITE(MYUNIT,'(2(A,I15),A)') 'saveit> Target hit after ',NQTOT,' quenches ',NPCALL,' function calls.'
-               WRITE(MYUNIT,'(2(A,F20.10))') 'saveit> Energy=',EREAL,' target=',TARGETS(J1)
+               WRITE(LFH,'(2(A,I15),A)') 'saveit> Target hit after ',NQTOT,' quenches ',NPCALL,' function calls.'
+               WRITE(LFH,'(2(A,F20.10))') 'saveit> Energy=',EREAL,' target=',TARGETS(J1)
             ELSE
-               WRITE(MYUNIT,'(A,I1,A,I2,2(A,I15),A)') '[',NP,']saveit> Target hit in parallel run ',NP,
+               WRITE(LFH,'(A,I1,A,I2,2(A,I15),A)') '[',NP,']saveit> Target hit in parallel run ',NP,
      1                    ' after ',NQTOT,' quenches ',NPCALL,' function calls.'
-               WRITE(MYUNIT,'(A,I1,2(A,F20.10))') '[',NP,']saveit> Energy=',EREAL,' target=',TARGETS(J1)
+               WRITE(LFH,'(A,I1,2(A,F20.10))') '[',NP,']saveit> Energy=',EREAL,' target=',TARGETS(J1)
             ENDIF
             HIT=.TRUE.
          ENDIF

@@ -6,7 +6,7 @@
 SUBROUTINE MYGA_RUN()
    USE MYGA_PARAMS
    USE MYGA_POPULATION
-   USE COMMONS, ONLY : MYUNIT,MCSTEPS,TSTART,HIT
+   USE COMMONS, ONLY : LFH,MCSTEPS,TSTART,HIT
    IMPLICIT NONE
    INTEGER I,J
    INTEGER CURR_STRUC
@@ -53,7 +53,7 @@ SUBROUTINE MYGA_RUN()
       CALL MYGA_REMOVE_DUPLICATES(REMOVED)
       CALL MYGA_OPTIMISE_POP(1,1,0,MYGA_CQMAX)
       CALL MYCPU_TIME(TIME)
-      WRITE(MYUNIT,'(A,I5,4(A,F15.6))') &
+      WRITE(LFH,'(A,I5,4(A,F15.6))') &
       "GA> Generation=",CURR_GEN,&
       " Best=",MYGA_POP_ENERGY(1),&
       " Mean=",MYGA_MEAN_ENERGY(),&
@@ -62,7 +62,7 @@ SUBROUTINE MYGA_RUN()
       !WRITE(*,*) "Generation",CURR_GEN
       !CALL MYGA_PRINT_POP()
       IF (HIT) THEN !Target hit
-         WRITE(MYUNIT,'(A,I5)')"Target hit at generation",CURR_GEN
+         WRITE(LFH,'(A,I5)')"Target hit at generation",CURR_GEN
          GOTO 10
       ENDIF
    ENDDO
@@ -78,7 +78,7 @@ END
 SUBROUTINE MYGA_SETUP
    USE MYGA_PARAMS
    USE MYGA_POPULATION
-   USE COMMONS , ONLY : NATOMS,MYUNIT,BQMAX,CQMAX,BLNT
+   USE COMMONS , ONLY : NATOMS,LFH,BQMAX,CQMAX,BLNT
    IMPLICIT NONE
    INTEGER I
    !Population arrays start at -2 to hold temporary structures.
@@ -108,18 +108,18 @@ SUBROUTINE MYGA_SETUP
    MYGA_BQMAX=BQMAX
    MYGA_CQMAX=CQMAX
    !Print search parameters
-   WRITE(MYUNIT,'(A,I5)')"GA> Population=",MYGA_NSTRUC
-   WRITE(MYUNIT,'(A,I5)')"GA> Offspring=",MYGA_NOFF
-   WRITE(MYUNIT,'(A,F10.3)')"GA> Mutation rate=",MYGA_MUT_RATE
+   WRITE(LFH,'(A,I5)')"GA> Population=",MYGA_NSTRUC
+   WRITE(LFH,'(A,I5)')"GA> Offspring=",MYGA_NOFF
+   WRITE(LFH,'(A,F10.3)')"GA> Mutation rate=",MYGA_MUT_RATE
    IF (MYGA_L_ROUL) THEN
-      WRITE(MYUNIT,'(A)')"GA> Roulette selection"
+      WRITE(LFH,'(A)')"GA> Roulette selection"
    ELSE
-      WRITE(MYUNIT,'(A,I5)')"GA> Tournament selection, size=",MYGA_TOURN_SIZE
+      WRITE(LFH,'(A,I5)')"GA> Tournament selection, size=",MYGA_TOURN_SIZE
    ENDIF
    IF (MYGA_L_EPOCH) THEN
-      WRITE(MYUNIT,'(A,D10.3,A,I5)')"GA> Epoch convergence threshold=",MYGA_EPOCH_THRESH," survival rate=",MYGA_EPOCH_SAVE
+      WRITE(LFH,'(A,D10.3,A,I5)')"GA> Epoch convergence threshold=",MYGA_EPOCH_THRESH," survival rate=",MYGA_EPOCH_SAVE
    ENDIF
-   WRITE(MYUNIT,'(A,D10.3)')"GA> Duplicate predator energy threshold=",MYGA_DUPLICATE_ETHRESH
+   WRITE(LFH,'(A,D10.3)')"GA> Duplicate predator energy threshold=",MYGA_DUPLICATE_ETHRESH
    RETURN
 END
 !
@@ -444,10 +444,10 @@ END
 SUBROUTINE MYGA_NEW_EPOCH()
    USE MYGA_PARAMS
    USE MYGA_POPULATION
-   USE COMMONS, ONLY : MYUNIT
+   USE COMMONS, ONLY : LFH
    IMPLICIT NONE
    INTEGER I
-   WRITE(MYUNIT,'(A)') "Population converged. Starting new epoch."
+   WRITE(LFH,'(A)') "Population converged. Starting new epoch."
    !Make new population od random structures
    DO I=MYGA_EPOCH_SAVE+1,MYGA_NSTRUC
       CALL MYGA_RANDOM_STRUC(I)
@@ -468,7 +468,7 @@ END
 SUBROUTINE MYGA_FINALIO()
    USE MYGA_PARAMS
    USE MYGA_POPULATION
-   USE COMMONS, ONLY :NATOMS,BEADLETTER,BLNT,MYUNIT
+   USE COMMONS, ONLY :NATOMS,BEADLETTER,BLNT,LFH
    IMPLICIT NONE
    INTEGER J1,J2,J3
    DOUBLE PRECISION TIME
@@ -490,7 +490,7 @@ SUBROUTINE MYGA_FINALIO()
       ENDIF
    ENDDO
    CALL MYCPU_TIME(TIME)
-   WRITE(MYUNIT,'(4(A,I12),A,F15.3)')&
+   WRITE(LFH,'(4(A,I12),A,F15.3)')&
    "GA> Run finished: Evaluations=",NPCALL,&
    " Minimisations=",MYGA_COUNT_MIN,&
    " Generations=",CURR_GEN,&

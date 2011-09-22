@@ -24,7 +24,7 @@ C  orientation. NATOMS is the number of atoms at the beginning of
 C  Q whose symmetry elements we seek.
 C
       SUBROUTINE PTGRP(Q,NATOMS,DEBUG,SYMTOL1,SYMTOL2,SYMTOL3,GENMAT,IGEN,FPGRP,CM,MATDIFF)
-      USE COMMONS,ONLY : MYUNIT,HPTGRP
+      USE COMMONS,ONLY : LFH,HPTGRP
       IMPLICIT NONE
       INTEGER NATOMS
       DOUBLE PRECISION IT(3,3),CM(3),IV(3,3),TOLD,QREF(3*NATOMS),DIST2,
@@ -145,11 +145,11 @@ C
          IT(3,3)=ATMP
       ENDIF
 
-      IF (IPRNT.GE.4) WRITE(MYUNIT,*)' Diagonalized inertia tensor '
-      IF (IPRNT.GE.4) WRITE(MYUNIT,50) ((IT(I,J),J=1,3),I = 1,3)
+      IF (IPRNT.GE.4) WRITE(LFH,*)' Diagonalized inertia tensor '
+      IF (IPRNT.GE.4) WRITE(LFH,50) ((IT(I,J),J=1,3),I = 1,3)
       CALL MATMULV(NEWQ,Q,IV,NATOMS,3,3)
-      IF (IPRNT.GE.4) WRITE(MYUNIT,*) ' Principal axis orientation for molecular system '
-      IF (IPRNT.GE.4) WRITE(MYUNIT,50) (NEWQ(I),I=1,3*NATOMS)
+      IF (IPRNT.GE.4) WRITE(LFH,*) ' Principal axis orientation for molecular system '
+      IF (IPRNT.GE.4) WRITE(LFH,50) (NEWQ(I),I=1,3*NATOMS)
       AGAIN=.TRUE.
 C
 C  Check handedness of inertial axes.
@@ -177,8 +177,8 @@ C  subsequent generators will be with respect to the new orientation.
 C
 C     CALL SORTXYZ(NEWQ,QSORT,NORD,TOLD,NATOMS)
       QSORT(1:3*NATOMS)=NEWQ(1:3*NATOMS)
-      IF (IPRNT.GE.4) WRITE(MYUNIT,*) ' SORTED COORDINATE VECTOR'
-      IF (IPRNT.GE.4) WRITE(MYUNIT,50) (QSORT(J),J=1,NATOMS*3)
+      IF (IPRNT.GE.4) WRITE(LFH,*) ' SORTED COORDINATE VECTOR'
+      IF (IPRNT.GE.4) WRITE(LFH,50) (QSORT(J),J=1,NATOMS*3)
 C
 C  Check to see if point group is Abelian - if so, skip to the Abelian
 C  operations block.
@@ -191,7 +191,7 @@ C
          X=Z
       ENDDO
       IF (IDEGEN.EQ.0) THEN
-         IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' The molecule belongs to an Abelian group.'
+         IF (IPRNT.GE.3) WRITE(LFH,'(A)') ' The molecule belongs to an Abelian group.'
          GOTO 630
       ENDIF
 C
@@ -205,14 +205,14 @@ C
 C  Use a different tolerance for zero moment of inertia checking.
 C
          FPGRP='   '
-         IF (IPRNT.GE.3) WRITE(MYUNIT,110)
+         IF (IPRNT.GE.3) WRITE(LFH,110)
 110      FORMAT(' The molecule belongs to a point group with doubly',
      1        ' degenerate representations.')
          DO I=1,3
             IF (ABS(IT(I,I)).LT.5.0D-2) ILINEAR=1
          ENDDO
          IF (ILINEAR.EQ.1) THEN
-            IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' The molecule is linear.'
+            IF (IPRNT.GE.3) WRITE(LFH,'(A)') ' The molecule is linear.'
             GOTO 630
          ENDIF
 C
@@ -227,9 +227,9 @@ C              CALL COMPARE2(SCRATCH,QSORT,NORD,ICOMP,TOLD,NATOMS,IPRNT)
 C              CALL MINPERM(NATOMS,QSORT,SCRATCH,0.0D0,0.0D0,0.0D0,.FALSE.,PERM,DUMMY,DIST2,WORSTRAD)
                CALL TESTSYMOP(NATOMS,QSORT,SCRATCH,PERM,TOLD,DIST2,WORSTRAD)
 C              CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
-C              IF (IPRNT.GE.4) WRITE(MYUNIT,*) ICOMP
+C              IF (IPRNT.GE.4) WRITE(LFH,*) ICOMP
 C              IF (ICOMP.EQ.0) THEN
-               IF (IPRNT.GE.4) WRITE(MYUNIT,'(A,I5,3F12.3)') 'IAXORD,DUMMY,DIST2,TOLD=',I,DUMMY,DIST2,TOLD
+               IF (IPRNT.GE.4) WRITE(LFH,'(A,I5,3F12.3)') 'IAXORD,DUMMY,DIST2,TOLD=',I,DUMMY,DIST2,TOLD
                IF (DIST2.LT.TOLD) THEN
                   IHIGH=I
                   IHIGHX=J
@@ -241,17 +241,17 @@ C                        IF (.NOT.NEW) GOTO 10
 C                     ENDDO
 C                     IGEN=IGEN+1
 CC                    PRINT*,'here A IGEN=',IGEN
-                     IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'axis ',J,' is a rotation axis of order ',I
+                     IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'axis ',J,' is a rotation axis of order ',I
 C
 C   Make the transformation matrix corresponding to the reference state in QREF
 C
-!                    IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient A'
+!                    IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'calling reorient A'
                      CALL REORIENT(NATOMS,SCRATCH,QREF,RMAT)
                      CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
                      CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
                      GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!                    IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here A IGEN=',IGEN,' new GENMAT:'
-!                    IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
+!                    IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'here A IGEN=',IGEN,' new GENMAT:'
+!                    IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 10                   CONTINUE
 C                  ENDIF
 C
@@ -273,19 +273,19 @@ C  e/values just happen to be very close - start all over again
 C  with smaller TOLE.
 C
          IF (IHIGH.EQ.0) THEN
-            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'Accidental degeneracy detected'
+            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'Accidental degeneracy detected'
             TOLE=TOLE/10.0D0
             IF (TOLE.GT.1.0D-7) THEN
                GOTO 651
             ELSE
-               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' The full molecular point group is undetermined'
+               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) ' The full molecular point group is undetermined'
                WRITE(GPSTRING,653) ' The full molecular point group is undetermined'
 653            FORMAT(A80)
                GOTO 652
             ENDIF
          ENDIF
 
-         IF (IPRNT.GE.3) WRITE(MYUNIT,160) IHIGH,IHIGHX
+         IF (IPRNT.GE.3) WRITE(LFH,160) IHIGH,IHIGHX
 160      FORMAT(' The highest order rotational axis is C',I2,' about ',I2)
 C
 C  If highest order axis is 2, and there is twofold degeneracy, the
@@ -320,17 +320,17 @@ C                 ENDDO
                ENDIF
             ENDDO
             IF (IHIGHX.EQ.0) THEN
-               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'Accidental degeneracy detected'
+               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'Accidental degeneracy detected'
                TOLE=TOLE/10.0D0
                IF (TOLE.GT.1.0D-7) THEN
                   GOTO 651
                ELSE
-                  IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' The full molecular point group is undetermined'
+                  IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) ' The full molecular point group is undetermined'
                   WRITE(GPSTRING,653) ' The full molecular point group is undetermined'
                   GOTO 652
                ENDIF
             ENDIF
-            IF (IPRNT.GE.3) WRITE(MYUNIT,190) IHIGHX
+            IF (IPRNT.GE.3) WRITE(LFH,190) IHIGHX
 190         FORMAT(' The unique rotational axis is ',I1,'.')
          ENDIF
 C
@@ -354,8 +354,8 @@ C  The principal axis order is IHIGH - this is only needed if
 C  IHIGH is odd.
 C
          IF (MOD(IHIGH,2).EQ.1) THEN
-            IF (IPRNT.GE.4) WRITE(MYUNIT,*)' Before rotation'
-            IF (IPRNT.GE.4) WRITE(MYUNIT,50) (NEWQ(J),J=1,NATOMS*3)
+            IF (IPRNT.GE.4) WRITE(LFH,*)' Before rotation'
+            IF (IPRNT.GE.4) WRITE(LFH,50) (NEWQ(J),J=1,NATOMS*3)
             CALL ZERO(SCRATCH,3*NATOMS*3)
             DO J=1,NATOMS
                NORD2(J)=J
@@ -363,7 +363,7 @@ C
                SCRATCH(J)=SQRT(MYDOT(NEWQ(IBOT),NEWQ(IBOT),3))
             ENDDO
             CALL PIKSR2(NATOMS,SCRATCH,NORD2)
-            IF (IPRNT.GE.3) WRITE(MYUNIT,440) (SCRATCH(J),J=1,NATOMS)
+            IF (IPRNT.GE.3) WRITE(LFH,440) (SCRATCH(J),J=1,NATOMS)
 440         FORMAT(' ORBIT MATRIX:',(F10.6,/))
             NORBIT=1
             IORBIT=1
@@ -382,10 +382,10 @@ C              IF (ABS(SCRATCH(J)-SCRATCH(J-1)).GT.TOLD) THEN
             ENDDO
 
             IF (IPRNT.GE.130) THEN
-                WRITE(MYUNIT,*)' SCRATCH VECTOR '
-                WRITE(MYUNIT,*) (SCRATCH(IK),IK=1,NATOMS)
-                WRITE(MYUNIT,*)' ORBIT DISTANCES: '
-                WRITE(MYUNIT,*) (SCRATCH(6*NATOMS+IK),IK=1,NORBIT)
+                WRITE(LFH,*)' SCRATCH VECTOR '
+                WRITE(LFH,*) (SCRATCH(IK),IK=1,NATOMS)
+                WRITE(LFH,*)' ORBIT DISTANCES: '
+                WRITE(LFH,*) (SCRATCH(6*NATOMS+IK),IK=1,NORBIT)
             ENDIF
             NUMB=0
             IREF=0
@@ -396,7 +396,7 @@ C  and we must find more self-consistent tolerances.
 C
             DO I=1,NORBIT
                NUMB=NORD2(NATOMS+I)+NUMB
-C              WRITE(MYUNIT,*) 'I,IHIGH,NORD2=',I,IHIGH,NORD2(NATOMS+I)
+C              WRITE(LFH,*) 'I,IHIGH,NORD2=',I,IHIGH,NORD2(NATOMS+I)
                IF (NORD2(NATOMS+I).EQ.IHIGH) THEN
                   MINORB=NORD2(NATOMS+I)
                   IREF=1+NUMB-NORD2(NATOMS+I)
@@ -404,11 +404,11 @@ C              WRITE(MYUNIT,*) 'I,IHIGH,NORD2=',I,IHIGH,NORD2(NATOMS+I)
                ENDIF
             ENDDO
 250         IF (IREF.NE.0) THEN
-               IF (IPRNT.GE.13) WRITE(MYUNIT,260) MINORB, NORD2(IREF) 
+               IF (IPRNT.GE.13) WRITE(LFH,260) MINORB, NORD2(IREF) 
 260            FORMAT(' The principal axis has order ',i3,/,
      1         ' Atom number ',i3,' belongs to an orbit of this order and', 
      2         ' will be used as a reference.')
-               IF (IPRNT.GE.13) WRITE(MYUNIT,520) (NORD2(IREF+J),J=1,MINORB-1)
+               IF (IPRNT.GE.13) WRITE(LFH,520) (NORD2(IREF+J),J=1,MINORB-1)
                ICOUNT=NORD2(IREF)
             ELSE
                NUMB=0
@@ -422,11 +422,11 @@ C              WRITE(MYUNIT,*) 'I,IHIGH,NORD2=',I,IHIGH,NORD2(NATOMS+I)
                   ENDIF
                ENDDO
 255            IF (IREF.NE.0) THEN
-                  IF (IPRNT.GE.13) WRITE(MYUNIT,265) MINORB, NORD2(IREF)
+                  IF (IPRNT.GE.13) WRITE(LFH,265) MINORB, NORD2(IREF)
 265               FORMAT(' The principal axis has order ',i3,/,
      1                   ' Atom number ',i3,' belongs to an orbit of twice this order', 
      2                   ' and will be used as a reference.')
-                  IF (IPRNT.GE.13) WRITE(MYUNIT,520) (NORD2(IREF+J),J=1,MINORB-1)
+                  IF (IPRNT.GE.13) WRITE(LFH,520) (NORD2(IREF+J),J=1,MINORB-1)
                   ICOUNT=NORD2(IREF)
                ELSE
                   NUMB=0
@@ -440,22 +440,22 @@ C              WRITE(MYUNIT,*) 'I,IHIGH,NORD2=',I,IHIGH,NORD2(NATOMS+I)
                      ENDIF
                   ENDDO
 256               IF (IREF.EQ.0) THEN
-                     IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(A,G20.10)')
+                     IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,'(A,G20.10)')
      &   'Orbit size inconsistent with axis order - try decreasing TOLD to ',TOLD/10.0D0
                      TOLD=TOLD/10.0D0
                      IF (TOLD.GT.1.0D-7) THEN
                         GOTO 651
                      ELSE
-                        IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' The full molecular point group is undetermined'
+                        IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) ' The full molecular point group is undetermined'
                         WRITE(GPSTRING,653) ' The full molecular point group is undetermined'
                         GOTO 652
                      ENDIF
                   ENDIF
-                  IF (IPRNT.GE.13) WRITE(MYUNIT,266) MINORB, NORD2(IREF)
+                  IF (IPRNT.GE.13) WRITE(LFH,266) MINORB, NORD2(IREF)
 266               FORMAT(' The principal axis has order ',i3,/,
      1' Atom number ',i3,' belongs to an orbit of four times this order'
      2            ,' and will be used as a reference.')
-                  IF (IPRNT.GE.13) WRITE(MYUNIT,520) (NORD2(IREF+J),J=1,MINORB-1)
+                  IF (IPRNT.GE.13) WRITE(LFH,520) (NORD2(IREF+J),J=1,MINORB-1)
                   ICOUNT=NORD2(IREF)
                ENDIF
             ENDIF
@@ -473,12 +473,12 @@ C   Cartesian axes
 C
          ISTART=3*(ICOUNT-1)
          IF (ICOUNT.LT.1) THEN
-            WRITE(MYUNIT,*) 'ERROR - ICOUNT=',ICOUNT
+            WRITE(LFH,*) 'ERROR - ICOUNT=',ICOUNT
          ENDIF
          DPROJ=SQRT( NEWQ(ISTART+1)**2 + NEWQ(ISTART+2)**2 +
      1        NEWQ(ISTART+3)**2 - NEWQ(ISTART+IHIGHX)**2 )
          IF (DPROJ.EQ.0.0D0) THEN
-            WRITE(MYUNIT,'(A)') 'WARNING in ptgrp, zero projection, this should never happen'
+            WRITE(LFH,'(A)') 'WARNING in ptgrp, zero projection, this should never happen'
             DPROJ=1.0D-3
          ENDIF
 C
@@ -520,11 +520,11 @@ C
 C        PRINT*,'NEWQ before transformation:'
 C        PRINT '(3G20.10)',NEWQ(1:3*NATOMS)
          CALL MATMULV(NEWQ,SCRATCH,RM,NATOMS,3,3) ! puts rotated structure in NEWQ
-         IF (IPRNT.GE.3) WRITE(MYUNIT,310) ANGL,IHIGHX
+         IF (IPRNT.GE.3) WRITE(LFH,310) ANGL,IHIGHX
 310      FORMAT(' Molecule rotated through ',F20.10,' degrees ',
      1        'about the ',i1,' axis.')
-         IF (IPRNT.GE.4) WRITE(MYUNIT,*)' After rotation:'
-         IF (IPRNT.GE.4) WRITE(MYUNIT,50) (NEWQ(J),J=1,NATOMS*3)
+         IF (IPRNT.GE.4) WRITE(LFH,*)' After rotation:'
+         IF (IPRNT.GE.4) WRITE(LFH,50) (NEWQ(J),J=1,NATOMS*3)
 
          DO 320 J1=1,3
             IF (J1.EQ.IHIGHX) GOTO 320
@@ -536,9 +536,9 @@ C        PRINT '(3G20.10)',NEWQ(1:3*NATOMS)
                CALL ROTM(IHIGHX,ANGL,1,RM)
                CALL ROTM(IHIGHX,-ANGL,1,RMINV)
                CALL MATMULV(NEWQ,SCRATCH,RM,NATOMS,3,3) ! puts transformed structure in NEWQ
-               IF (IPRNT.GE.3) WRITE(MYUNIT,310) ANGL,IHIGHX
-               IF (IPRNT.GE.4) WRITE(MYUNIT,*)' After rotation:'
-               IF (IPRNT.GE.4) WRITE(MYUNIT,50) (NEWQ(J),J=1,NATOMS*3)  
+               IF (IPRNT.GE.3) WRITE(LFH,310) ANGL,IHIGHX
+               IF (IPRNT.GE.4) WRITE(LFH,*)' After rotation:'
+               IF (IPRNT.GE.4) WRITE(LFH,50) (NEWQ(J),J=1,NATOMS*3)  
             ENDIF
 320      CONTINUE
 C
@@ -551,8 +551,8 @@ C     PRINT*,'B qsort:'
 C     PRINT '(3G20.10)',QSORT(1:3*NATOMS)
 C     PRINT*,'newq:'
 C     PRINT '(3G20.10)',NEWQ(1:3*NATOMS)
-         IF (IPRNT.GE.4) WRITE(MYUNIT,*) ' New sorted coordinates'
-         IF (IPRNT.GE.4) WRITE(MYUNIT,50) (QSORT(J),J=1,NATOMS*3)
+         IF (IPRNT.GE.4) WRITE(LFH,*) ' New sorted coordinates'
+         IF (IPRNT.GE.4) WRITE(LFH,50) (QSORT(J),J=1,NATOMS*3)
 C
 C   Check for sigma(v) planes now.
 C
@@ -584,7 +584,7 @@ C        CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
          IF (DIST2.LT.TOLD) THEN
             ISAXIS=1
             IF (IPRNT.GE.3) THEN
-               WRITE(MYUNIT,350) 2*IHIGH
+               WRITE(LFH,350) 2*IHIGH
 350            FORMAT(' S',I3,' axis exists.')
             ENDIF
             IF (IGEN.LT.100) THEN
@@ -594,7 +594,7 @@ C        CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
 C
 C   Make the transformation matrix corresponding to the reference state in QREF 
 C
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient F'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'calling reorient F'
                CALL REORIENT(NATOMS,SCRATCH,QREF,RMAT) 
                CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
                CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
@@ -604,8 +604,8 @@ C
                ENDDO
                IGEN=IGEN+1
                GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here F IGEN=',IGEN,' new GENMAT:'
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'here F IGEN=',IGEN,' new GENMAT:'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 61          CONTINUE
             ENDIF
          ENDIF
@@ -646,10 +646,10 @@ C           IF (ICOMP.EQ.0) JCOMP=JCOMP+1
 C           IF (ICOMPX.EQ.0) JCOMPX=JCOMPX+1
 360      CONTINUE
          IF (JCOMP.GE.1) THEN
-            IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' On-axis perpendicular C2 elements found.'
+            IF (IPRNT.GE.3) WRITE(LFH,'(A)') ' On-axis perpendicular C2 elements found.'
             IDGRP=1
          ELSEIF (JCOMPX.GE.1) THEN
-            IF (IPRNT.GE.3) WRITE(MYUNIT,'(A)') ' Off-axis perpendicular C2 elements found.'
+            IF (IPRNT.GE.3) WRITE(LFH,'(A)') ' Off-axis perpendicular C2 elements found.'
             IDGRP=1
          ENDIF
 C
@@ -665,7 +665,7 @@ C           CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
             IF (DIST2.LT.TOLD) THEN
                FPGRP='DNh'
                HPTGRP=4*IHIGH
-               IF (IPRNT.GE.3) WRITE(MYUNIT,390)
+               IF (IPRNT.GE.3) WRITE(LFH,390)
             ENDIF
          ELSE
             CALL REFLECT(NEWQ,SCRATCH,NATOMS,IHIGHX)
@@ -678,7 +678,7 @@ C           CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
             IF (DIST2.LT.TOLD) THEN
                FPGRP='CNh'
                HPTGRP=2*IHIGH
-               IF (IPRNT.GE.3) WRITE(MYUNIT,390)
+               IF (IPRNT.GE.3) WRITE(LFH,390)
             ELSE
                FPGRP='CN '
                HPTGRP=IHIGH
@@ -707,8 +707,8 @@ C
 C  *** End of IDEGEN=1 block. *** 
 C
       IF (IDEGEN.EQ.2) THEN
-         IF (IPRNT.GE.3) WRITE(MYUNIT,*) ' In cubic loop '
-         IF (IPRNT.GE.3) WRITE(MYUNIT,410)
+         IF (IPRNT.GE.3) WRITE(LFH,*) ' In cubic loop '
+         IF (IPRNT.GE.3) WRITE(LFH,410)
 410      FORMAT(' The molecule belongs to a point group with doubly', 
      1          ' and triply degenerate representations.')
 C
@@ -741,7 +741,7 @@ C
             SCRATCH(J)=SQRT(MYDOT(NEWQ(IBOT),NEWQ(IBOT),3))
          ENDDO
          CALL PIKSR2(NATOMS,SCRATCH,NORD2)
-         IF (IPRNT.GE.3) WRITE(MYUNIT,440) (SCRATCH(J),J=1,NATOMS)
+         IF (IPRNT.GE.3) WRITE(LFH,440) (SCRATCH(J),J=1,NATOMS)
 C
 C   Now count number of orbits; place pertinent info (distances) in top
 C   end of SCRATCH array and use top end of NORD2 to hold number
@@ -765,19 +765,19 @@ C           IF (ABS(SCRATCH(J)-SCRATCH(J-1)).GT.TOLD) THEN
          ENDDO
 
          IF (IPRNT.GE.130) THEN
-            WRITE(MYUNIT,*)' SCRATCH VECTOR '
-            WRITE(MYUNIT,*)(SCRATCH(IK),IK=1,NATOMS)
-            WRITE(MYUNIT,*)' ORBIT DISTANCES: '
-            WRITE(MYUNIT,*)(SCRATCH(6*NATOMS+IK),IK=1,NORBIT)
+            WRITE(LFH,*)' SCRATCH VECTOR '
+            WRITE(LFH,*)(SCRATCH(IK),IK=1,NATOMS)
+            WRITE(LFH,*)' ORBIT DISTANCES: '
+            WRITE(LFH,*)(SCRATCH(6*NATOMS+IK),IK=1,NORBIT)
          ENDIF
 C
 C   Debug print to make sure we've got all the orbits correct.
 C
          IF (IPRNT.GE.3) THEN
-            WRITE(MYUNIT,470) NORBIT
+            WRITE(LFH,470) NORBIT
 470         FORMAT(' Number of distinct orbits: ',i3,/,' Summary of orbit sizes:')
             DO I=1,NORBIT
-               WRITE(MYUNIT,480) I, NORD2(NATOMS+I)
+               WRITE(LFH,480) I, NORD2(NATOMS+I)
 480            FORMAT(2I3)
             ENDDO
          ENDIF
@@ -801,21 +801,21 @@ C
             ENDIF
 500      CONTINUE
          IF (IREF.EQ.0) THEN
-            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'Accidental degeneracy detected'
+            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'Accidental degeneracy detected'
             TOLE=TOLE/10.0D0
             IF (TOLE.GT.1.0D-7) THEN
                GOTO 651
             ELSE
-               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' The full molecular point group is undetermined'
+               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) ' The full molecular point group is undetermined'
                WRITE(GPSTRING,653) ' The full molecular point group is undetermined'
                GOTO 652
             ENDIF
          ENDIF
-         IF (IPRNT.GE.13) WRITE(MYUNIT,510) MINORB,NORD2(IREF)
+         IF (IPRNT.GE.13) WRITE(LFH,510) MINORB,NORD2(IREF)
 510      FORMAT(' The smallest non-unit orbit contains ',i3,' members.',/,
      1    ' Atom number ',i3,' belongs to this orbit and will be',
      2    ' used as a reference.')
-         IF (IPRNT.GE.13) WRITE(MYUNIT,520)(NORD2(IREF+J),J=1,MINORB-1)  
+         IF (IPRNT.GE.13) WRITE(LFH,520)(NORD2(IREF+J),J=1,MINORB-1)  
 520      FORMAT(' Other members of this orbit are: ',100I4)
          CALL ZERO(SCRATCH,9*NATOMS)
          IBOT=3*NORD2(IREF)-2
@@ -870,10 +870,10 @@ C   and use this vector as the "bisector". If
 C   it isn't done this way, the orientation fudging gets fudged up.
 C
          DO 620 ICOUNT=1,2
-            IF (IPRNT.GE.3) WRITE(MYUNIT,*)' PASS ',ICOUNT,' THROUGH ROT. FINDER '
+            IF (IPRNT.GE.3) WRITE(LFH,*)' PASS ',ICOUNT,' THROUGH ROT. FINDER '
             DO 610 J=1,MINORB-1
                IF (IDONE.EQ.1) GOTO 610
-               IF (IPRNT.GE.3) WRITE(MYUNIT,*)' ATOMS ',NORD2(IREF),NORD2(IREF+J)
+               IF (IPRNT.GE.3) WRITE(LFH,*)' ATOMS ',NORD2(IREF),NORD2(IREF+J)
                IBOT2=3*NORD2(IREF+J)-2
                CALL XVEC(NEWQ(IBOT),NEWQ(IBOT2),SCRATCH(1),0)
                DIST=SQRT(MYDOT(SCRATCH(1),SCRATCH(1),3))
@@ -890,7 +890,7 @@ C              IF (BILEN.LT.TOLD) THEN
                      IF (ISET.EQ.1) GOTO 530
                      INDEX=3*NORD2(IREF+LOOK)-2
                      TEST=MYDOT(NEWQ(IBOT),NEWQ(INDEX),3)
-                     IF (IPRNT.GT.13) WRITE(MYUNIT,*) TEST
+                     IF (IPRNT.GT.13) WRITE(LFH,*) TEST
 C                    IF (ABS(TEST).LT.TOLD) THEN
                      IF (ABS(TEST).LT.TOLO) THEN
                         CALL ZERO(SCRATCH,3)
@@ -958,7 +958,7 @@ C   Point group determination happens here, as well as orientation
 C   fudging.
 C
 C                 IF (IIAX.EQ.0) THEN
-                  IF (IPRNT.GT.4) WRITE(MYUNIT,'(A,I5,3F12.3)') 'IAXORD,DUMMY,DIST2,TOLD=',IAXORD,DUMMY,DIST2,TOLD
+                  IF (IPRNT.GT.4) WRITE(LFH,'(A,I5,3F12.3)') 'IAXORD,DUMMY,DIST2,TOLD=',IAXORD,DUMMY,DIST2,TOLD
 C                 PRINT*,'QSORT:'
 C                 PRINT '(3G20.10)',QSORT(1:3*NATOMS)
 C                 PRINT*,'SCRATCH(6*NATOMS+1):'
@@ -968,7 +968,7 @@ C                 PRINT '(3G20.10)',SCRATCH(6*NATOMS+1:9*NATOMS)
 C
 C   Make the transformation matrix corresponding to the reference state in QREF
 C
-!                       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient B'
+!                       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'calling reorient B'
                         CALL REORIENT(NATOMS,SCRATCH(6*NATOMS+1),QREF,RMAT)
                         CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
                         CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
@@ -978,11 +978,11 @@ C
                         ENDDO
                         IGEN=IGEN+1
                         GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!                       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here B IGEN=',IGEN,' new GENMAT:'
-!                       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
+!                       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'here B IGEN=',IGEN,' new GENMAT:'
+!                       IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 20                      CONTINUE
                      ENDIF
-                     IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,580) IAXORD
+                     IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,580) IAXORD
 580                  FORMAT(' Axis of order ',I1,' identified.')
                      IF (IAXORD.EQ.5) THEN
                         FPGRP='I  '
@@ -1063,12 +1063,12 @@ C                                CALL SORTXYZ(NEWQ,QSORT,NORD,TOLD,NATOMS)
 610         CONTINUE
 620      CONTINUE
          IF (FPGRP.EQ.'   ') THEN
-            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'Accidental degeneracy detected'
+            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'Accidental degeneracy detected'
             TOLE=TOLE/10.0D0
             IF (TOLE.GT.1.0D-7) THEN
                GOTO 651
             ELSE
-               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) ' The full molecular point group is undetermined'
+               IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) ' The full molecular point group is undetermined'
                WRITE(GPSTRING,653) ' The full molecular point group is undetermined'
                GOTO 652
             ENDIF
@@ -1100,7 +1100,7 @@ C        CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
 C
 C   Make the transformation matrix corresponding to the reference state in QREF 
 C
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient C'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'calling reorient C'
                CALL REORIENT(NATOMS,SCRATCH,QREF,RMAT) 
                CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
                CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
@@ -1110,11 +1110,11 @@ C
                ENDDO
                IGEN=IGEN+1
                GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here C IGEN=',IGEN,' new GENMAT:'
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'here C IGEN=',IGEN,' new GENMAT:'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 30             CONTINUE
             ENDIF
-            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,640) I
+            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,640) I
 640         FORMAT(' Reflection in plane ',i2,' is a valid symmetry operation.')
             IREF=IBTOR(IREF,2**I/2)
          ENDIF
@@ -1130,7 +1130,7 @@ C        CALL BIPARTITE(NATOMS,QSORT,SCRATCH,PERM,DUMMY,DIST2,WORSTRAD)
 C
 C   Make the transformation matrix corresponding to the reference state in QREF 
 C
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient D'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'calling reorient D'
                CALL REORIENT(NATOMS,SCRATCH,QREF,RMAT) 
                CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
                CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
@@ -1140,11 +1140,11 @@ C
                ENDDO
                IGEN=IGEN+1
                GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here D IGEN=',IGEN,' new GENMAT:'
-!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'here D IGEN=',IGEN,' new GENMAT:'
+!              IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 40             CONTINUE
             ENDIF
-            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,650) I
+            IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,650) I
 650         FORMAT(' C2 rotation about ',i2,' is a valid symmetry operation ')
             IROT=IBTOR(IROT,2**I/2)
          ENDIF
@@ -1164,7 +1164,7 @@ C
 C     PRINT '(A,I6,G20.10)','ISAXIS,DIST2=',ISAXIS,DIST2
 C     IF ((ISAXIS.EQ.1).OR.(DIST2.LT.TOLD)) THEN
       IF (DIST2.LT.TOLD) THEN
-         IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,680)
+         IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,680)
 680      FORMAT(' The molecule possesses an inversion center. ')
          IF (IGEN.LT.100) THEN
             DO J1=1,3
@@ -1176,7 +1176,7 @@ C     IF ((ISAXIS.EQ.1).OR.(DIST2.LT.TOLD)) THEN
 C
 C   Make the transformation matrix corresponding to the reference state in QREF 
 C
-!           IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'calling reorient E'
+!           IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'calling reorient E'
             CALL REORIENT(NATOMS,SCRATCH,QREF,RMAT) 
             CALL MYMATMUL(DUM,RM,RMAT,3,3,3)
             CALL MATMULV(DUM2,DUM,RMAT,3,3,3)
@@ -1186,8 +1186,8 @@ C
             ENDDO
             IGEN=IGEN+1
             GENMAT(IGEN,1:3,1:3)=DUM2(1:3,1:3)
-!           IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,*) 'here E IGEN=',IGEN,' new GENMAT:'
-!           IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
+!           IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,*) 'here E IGEN=',IGEN,' new GENMAT:'
+!           IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,'(9F12.4)') GENMAT(IGEN,1:3,1:3)
 60          CONTINUE
          ENDIF
          IF (ILINEAR.EQ.1) THEN
@@ -1220,7 +1220,7 @@ C
       IF (IROT.NE.0.AND.IREF.NE.0.AND.IINV.EQ.1) PGRP='C2h'
       IF (IROT.EQ.7.AND.IREF.EQ.0.AND.IINV.EQ.0) PGRP='D2 '
       IF (IROT.EQ.7.AND.IREF.EQ.7.AND.IINV.EQ.1) PGRP='D2h'
-      IF (IPRNT.GE.4) WRITE(MYUNIT,690) IREF,IROT,IINV
+      IF (IPRNT.GE.4) WRITE(LFH,690) IREF,IROT,IINV
 690   FORMAT ('Symmetry bits: ',3(1X,I3))
 C
 C   Put NEWQ into Q.
@@ -1231,7 +1231,7 @@ C
 
       IF (PGRP.EQ.'C2h') PGRP='C s'
 
-      IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,770)
+      IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,770)
 770   FORMAT(80('*'))
 C
 C  This should cope with anything we are likely to come up against,
@@ -1246,20 +1246,20 @@ C
       ENDIF
       FPGRP=JNKSTR
       IF (IDEGEN.GT.0) THEN
-         IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,750) FPGRP
+         IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,750) FPGRP
 750      FORMAT(' The full molecular point group is ',A4,'.')
          WRITE(GPSTRING,750) FPGRP
       ENDIF
       IF (IDEGEN.EQ.0) THEN
-         IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,750) STRING(BPGRP,IHIGH)
+         IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,750) STRING(BPGRP,IHIGH)
          FPGRP= STRING(BPGRP,IHIGH)
          WRITE(GPSTRING,750) STRING(BPGRP,IHIGH)
       ENDIF
-      IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,790) BPGRP
+      IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,790) BPGRP
 790   FORMAT(' The largest Abelian subgroup of the full molecular point group is ',A4,'.')
-      IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,760) TOLD, TOLE, TOLO
+      IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,760) TOLD, TOLE, TOLO
 760   FORMAT(' Distance tolerance=',F12.5,' Inertia tolerance=',F12.5,' Orbit tolerance=',F12.5)  
-      IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(MYUNIT,770)
+      IF (DEBUG.OR.(IPRNT.GE.3)) WRITE(LFH,770)
 
 652   CONTINUE
 
@@ -1382,7 +1382,7 @@ C
       END
 
       SUBROUTINE VADD(A,B,C,N,IP)
-      USE COMMONS,ONLY : MYUNIT
+      USE COMMONS,ONLY : LFH
       IMPLICIT NONE
       INTEGER N,IP,I
       DOUBLE PRECISION A(N),B(N),C(N)
@@ -2019,7 +2019,7 @@ C  vector Q2.
 C       Q1(i) <--> Q2(perm(i))
 C
       SUBROUTINE TESTSYMOP(NATOMS,Q1,Q2,PERM,TOLD,DIST2,WORSTRAD)
-      USE COMMONS,ONLY : MYUNIT,DEBUG
+      USE COMMONS,ONLY : LFH,DEBUG
       IMPLICIT NONE
       INTEGER NATOMS
       DOUBLE PRECISION Q1(3*NATOMS), Q2(3*NATOMS), TOLD, DIST2, DIST, TOLDSQ, WORSTRAD, DMIN
@@ -2038,7 +2038,7 @@ C
             DIST=(Q1(3*(J1-1)+1)-Q2(3*(J2-1)+1))**2+ 
      &           (Q1(3*(J1-1)+2)-Q2(3*(J2-1)+2))**2+ 
      &           (Q1(3*(J1-1)+3)-Q2(3*(J2-1)+3))**2
-C           IF (DEBUG) WRITE(MYUNIT,'(A,2I6,G20.10)') 'testsymop> J1,J2,DIST=',J1,J2,DIST
+C           IF (DEBUG) WRITE(LFH,'(A,2I6,G20.10)') 'testsymop> J1,J2,DIST=',J1,J2,DIST
             IF (DIST.LT.TOLDSQ) THEN
                PARTNER=.TRUE.
                PERM(J1)=J2
@@ -2047,12 +2047,12 @@ C           IF (DEBUG) WRITE(MYUNIT,'(A,2I6,G20.10)') 'testsymop> J1,J2,DIST=',J
                   DIST2=DIST
                   JWORST=J1
                ENDIF
-C              WRITE(MYUNIT,'(A,2I6,G20.10)') 'testsymop> match J1,J2,DIST=',J1,J2,DIST
+C              WRITE(LFH,'(A,2I6,G20.10)') 'testsymop> match J1,J2,DIST=',J1,J2,DIST
                EXIT innerloop
             ENDIF
          ENDDO innerloop
          IF (.NOT.PARTNER) THEN
-!           IF (DEBUG) WRITE(MYUNIT,'(A,I6)') 'testsymop> no partner for atom ',J1
+!           IF (DEBUG) WRITE(LFH,'(A,I6)') 'testsymop> no partner for atom ',J1
             DIST2=1.0D3
             RETURN
          ENDIF
