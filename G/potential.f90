@@ -21,7 +21,6 @@
 !op226>}}} 
 !op226>=================================== 
       SUBROUTINE POTENTIAL(X,GRAD,EREAL,GRADT,SECT)
-!op226>=================================== 
 !op226> Declarations {{{ 
       ! modules {{{
       USE COMMONS
@@ -33,9 +32,10 @@
       !}}}
       IMPLICIT NONE
       ! subroutine {{{
-      DOUBLE PRECISION, DIMENSION(:) :: X,GRAD
-      DOUBLE PRECISION :: EREAL
-      LOGICAL GRADT, SECT       
+      DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: X
+      DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: GRAD
+      DOUBLE PRECISION, INTENT(OUT) :: EREAL
+      LOGICAL, intent(in) :: GRADT, SECT       
       ! }}}
       ! local {{{
       INTEGER BRUN
@@ -43,7 +43,7 @@
       DOUBLE PRECISION :: EA(10)
       COMMON /EA/ EA
 
-      LOGICAL FTEST, EVAP, COMPON, YESNO, GUIDET, evapreject
+      LOGICAL FTEST, EVAP, COMPON, YESNO, evapreject
       INTEGER J1, J2, J3, NPCALL, PERM(NATOMS), NPERM, NORBIT1, NORBIT2, CSMIT
       CHARACTER FNAME*80, DUMM*4
       DOUBLE PRECISION DUMMY2, GEMAX, XG, YG, ZG, RMAT(3,3), XD, YD, ZD, XTEMP(3*NATOMS)
@@ -58,7 +58,7 @@
       INTEGER CSMGPINDEXSAVE
       DOUBLE PRECISION PTGPSAVE(3,3,2*CSMGPINDEX), CSMNORMSAVE, ENERGY, VNEW(3*NATOMS)
 
-      LOGICAL SOCOUPLE, GUIDECHANGET, CSMDOGUIDET
+      LOGICAL SOCOUPLE
       DOUBLE PRECISION EPLUS, EMINUS, GRADDUM(3*NATOMS), DIFF
 
       ! }}}
@@ -66,17 +66,13 @@
       COMMON /CO/ COMPON
       COMMON /FAIL/ FTEST
       COMMON /EV/ EVAP, EVAPREJECT
-      COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
       COMMON /PCALL/ NPCALL
       COMMON /CSMAVVAL/ AVVAL, CSMRMS, CSMIT
       COMMON /TOT/ NQTOT
 
       ! }}}
       ! }}}
-
-!op226> }}}
-!op226>=================================== 
-!op226>{{{ 
+!op226> potentials  {{{ 
       GUIDECHANGET=.FALSE.
       BRUN=0
 

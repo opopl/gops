@@ -1,4 +1,5 @@
 amhdummy_cmake.f
+bln.gen.f90
 blas.f
 bmin.f
 bsptsave.F

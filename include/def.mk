@@ -8,10 +8,12 @@ BINPATH=$(ROOTPATH)/bin
 
 # general library path
 LIBPATH=$(ROOTPATH)/lib/
+# path for the objects
+OBJSPATH=$(ROOTPATH)/obj/$(PROGNAME)/fc_$(FC)/
 # general modules path
-MODGENPATH=$(ROOTPATH)/mod/$(PROGRAME)/
+MODGENPATH=$(ROOTPATH)/mod/$(PROGNAME)/
 # modules path for specific compiler
-MODPATH=$(ROOTPATH)/mod/$(PROGNAME)/fc_$(FC)/
+MODPATH=$(MODGENPATH)/fc_$(FC)/
 # library path for *.a compiled with $(FC)
 LIBAPATH=$(LIBPATH)/fc_$(FC)/
 
@@ -24,7 +26,7 @@ SAPATH=$(SPATH)/all/
 
 PROG=$(BINPATH)/$(PROGNAME)
 LDFLAGS = -L.
-DEFS =
+DEFS=
 # CPP = /usr/bin/cpp
 CPP = /lib/cpp
 CPFLAGS = -traditional -P
@@ -69,11 +71,10 @@ export DL := "debug"
 # pgi {{{
 ifeq ($(FC),pgf90)
 
-F0:= -module $(MODPATH)
-FFLAGS:= $(F0)
+MODFLAG:= -module $(MODPATH)
 DFFLAGS:= $(F0)
 
-FFLAGS += -Mextend -O0 -Mnoframe -g -traceback
+FFLAGS := -Mextend -O0 -Mnoframe -g -traceback
 DFFLAGS += -Mextend -C -g -gopt -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mcoff -Mdwarf1 -Mdwarf2 -Mdwarf3 -Melf -Mnodwarf -Mpgicoff -traceback
 
 #not working yet {{{
@@ -99,19 +100,25 @@ endif
 
 ifeq ($(FC),nagfor)
 
-FFLAGS = -132 -maxcontin=3000 -C -g -kind=byte -mismatch_all
+## {{{
 
-ifeq ($(DL),noopt)
-FFLAGS = -132 -maxcontin=3000 -kind=byte -mismatch_all -O0
-endif
+#FFLAGS = -132 -maxcontin=3000 -C -g -kind=byte -mismatch_all
 
-ifeq ($(DL),opt)
-FFLAGS = -132 -maxcontin=3000 -kind=byte -mismatch_all -O3 
-endif
+#ifeq ($(DL),noopt)
+#FFLAGS = -132 -maxcontin=3000 -kind=byte -mismatch_all -O0
+#endif
 
-ifeq ($(DL),debug)
- FFLAGS = -132 -maxcontin=3000 -C=all -mtrace=all -gline -kind=byte
-endif
+#ifeq ($(DL),opt)
+#FFLAGS = -132 -maxcontin=3000 -kind=byte -mismatch_all -O3 
+#endif
+
+#ifeq ($(DL),debug)
+ #FFLAGS = -132 -maxcontin=3000 -C=all -mtrace=all -gline -kind=byte
+#endif# }}}
+
+MODFLAG= -mdir $(MODPATH)
+FFLAGS = -132 -maxcontin=3000 -C=all -mtrace=all -gline -kind=byte 
+FFLAGS = -132 -g90 
 
 NOOPT= -O0 -132  -kind=byte
 LDFLAGS= -L.
@@ -183,4 +190,6 @@ FFLAGS+=$(F0)
 
 endif
 # }}}
+#
+FFLAGS += $(MODFLAG) 
 

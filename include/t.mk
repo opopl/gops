@@ -6,14 +6,21 @@ default: dirs $(AUXF) $(DEPS) $(PROG)
 .SUFFIXES:
 .SUFFIXES: .o .f .F .f90
 
-.f90.o:
-	$(FC) $(FFLAGS) $(SEARCH_PATH) -c $<
-.f.o:
-	$(FC) $(FFLAGS) $(SEARCH_PATH) -c $<
+%.o: %.f90
+	@echo $< 
+	$(FC) $(FFLAGS) $(SEARCH_PATH) -c $< -o $@
+	cp $@ $(OBJSPATH)
+
+%.o: %.f
+	@echo $< 
+	$(FC) $(FFLAGS) $(SEARCH_PATH) -c $< -o $@
+	cp $@ $(OBJSPATH)
+
 .F.f:
 	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
 .F90.f90:
 	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
+
 
 #}}}
 # porfuncs rca dv header {{{
@@ -52,8 +59,10 @@ moddir:
 	mkdir -p $(MODPATH)
 libdir: 
 	mkdir -p $(LIBAPATH)
+objdir: 
+	mkdir -p $(OBJSPATH)
 
-dirs: bindir moddir libdir
+dirs: bindir moddir libdir objdir
 
 b$(PROGNAME): dirs $(OBJS) 
 	$(FC) $(FFLAGS) $(SEARCH_PATH) -o $@ $(LPU_OBJS) $(LDFLAGS) $(LPBASE) $(LIBS)
@@ -62,6 +71,7 @@ b$(PROGNAME): dirs $(OBJS)
 $(PROG): dirs $(OBJS)  
 	$(FC) $(FFLAGS) $(SEARCH_PATH) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 	cp $(PROG) ./
+	cp $(PROG) $(PROG)_$(FC)
 
 cup:
 	rm -rf $(NOTUSEDSOURCE)
