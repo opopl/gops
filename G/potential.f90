@@ -35,7 +35,7 @@
       DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: X
       DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: GRAD
       DOUBLE PRECISION, INTENT(OUT) :: EREAL
-      LOGICAL, intent(in) :: GRADT, SECT       
+      LOGICAL, INTENT(IN) :: GRADT, SECT       
       ! }}}
       ! local {{{
       INTEGER BRUN

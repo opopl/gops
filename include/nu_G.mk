@@ -1,3 +1,15 @@
+#
+#Ackland_metals.f90
+#Alglue.f
+#EAMal.f
+#Mgglue.f
+#Natb.f
+#dbrent.f
+#dlsode.f
+#eigsrt.f
+#f1dim.f
+#fedor.f
+#
 amhdummy_cmake.f
 blas.f
 bmin.f

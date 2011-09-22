@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+
+# set_base_vars set_base_dirs display_help {{{
+
+set_base_dirs(){
+# {{{
+export packdir=$HOME/arch/packed
+export unpackdir=$HOME/arch/unpacked
+export gopsdir="$shd/../../"
+# directory where this script resides
+export shd="`dirname $(readlink -f $0)`"
+# }}}
+}
+
+set_base_vars(){
+# {{{
+s_purpose="run gdb"
+s_project="~/scripts"
+
+# name of this script 
+export this_script=` basename $0 `
+
+vim_opts="-n -p"
+v="vim $vim_opts"
+repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
+
+# }}}
+}
+
+set_base_vars
+
+display_help(){
+# {{{
+# general beginning part {{{
+cat << EOF
+=============================================
+SCRIPT NAME: $this_script 
+PROJECT: $s_project
+PURPOSE: $s_purpose
+USAGE: $this_script [ OPTIONS ] 
+
+	OPTIONS:
+
+	============
+	General
+	============
+
+			display the help message
+
+	vm		v(iew) m(yself), i.e., edit this script
+	-g		gvim invocation
+	
+	============
+EOF
+# }}}
+# actual interesting part {{{
+cat << EOF
+
+
+EOF
+# }}}
+# final general part {{{
+cat << EOF
+REMARKS:
+AUTHOR: O. Poplavskyy
+SCRIPT LOCATION:
+    $shd/$this_script
+=============================================
+EOF
+# }}}
+# }}}
+}
+
+[ -z "$*" ] && ( display_help; exit 0 )
+
+#}}}
+
+main(){
+# {{{
+
+case "$1" in
+  "")
+  ;;
+  *) gdb -x $1.gdb ;;
+esac    # --- end of case ---
+
+# }}}
+}
+
+# main part 
+# {{{
+
+script_opts=( $* )
+set_base_dirs
+
+while [ ! -z "$1" ]; do
+  	case "$1" in
+		  #{{{
+	  	vm) $v $0 $hm/scripts/f.sh; exit ;;
+		h) display_help $*; exit ;;
+		-g) v="$v -g" ;;
+	  	*) main $* && exit 0 ;;
+	esac
+  	shift
+        #}}}
+done
+
+# }}}
+
+

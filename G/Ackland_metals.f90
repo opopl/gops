@@ -903,6 +903,7 @@
         double precision Rn(nat_up,ndir_max,3), rho_site(nat_up),    &
                           rho_temp,normR,R,Rtemp(3)
         integer ndir(nat_up),nat_up,ndir_max,ipot    
+        integer i,ni
 
   
        do i=1,nat_up  
@@ -926,6 +927,7 @@
         integer ndir(nat_up),nat_up,nat_max,ndir_max,ipot
 
   
+        integer i,ni
        do i=1,nat_up  
           V_temp=0.0D0
            do ni=1,ndir(i)	   
