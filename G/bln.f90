@@ -138,7 +138,7 @@
         DOUBLE PRECISION, DIMENSION(:,:), allocatable :: BVR, EB
 
         ! DPD(1:N-2) array of dot-products between the bond vectors BVR(i)
-        DOUBLE PRECISION, DIMENSION(:) :: DPD
+        DOUBLE PRECISION, DIMENSION(:),allocatable :: DPD
         ! }}}
         ! Gradients {{{
         ! G, GNB, GB, GBA, GTA: vectors representing gradients of different kinds
@@ -150,8 +150,9 @@
         !       GTA     => torsional angles
         !
         DOUBLE PRECISION GRAD_MIN(N,3), GRAD_PLUS(N,3)
-        DOUBLE PRECISION, DIMENSION(:,:),allocatable(:,:) :: GBA, GNB, GTA, GB, &
-         & GTA_I, GTA_J, GTA_K, GTA_L, GBA_I, GBA_J, GBA_K, G
+        DOUBLE PRECISION, DIMENSION(:,:),ALLOCATABLE :: GBA, GNB, GTA, GB, G
+        DOUBLE PRECISION, DIMENSION(:,:),ALLOCATABLE :: GTA_I, GTA_J, GTA_K, GTA_L
+        DOUBLE PRECISION, DIMENSION(:,:),ALLOCATABLE :: GBA_I, GBA_J, GBA_K
         DOUBLE PRECISION ::     DF, FRR(3)
         ! }}}
         ! Other {{{
@@ -198,13 +199,17 @@
         ! }}}
 ! am {{{
         ALLOCATE(R(N,3),GRAD(N,3))
+        r=0.0d0; grad=0.0d0
         ALLOCATE(CONNECT(N,N))
 
         ALLOCATE(AB(N,N,2))
-        ALLOCATE(CD(N,2))
+        !ALLOCATE(CD(2:N-2,2))
+        ALLOCATE(CD(N-2,2))
+        AB=0.0D0; CD=0.0D0
 
         ALLOCATE(DR(N-1,N-1,3))
         ALLOCATE(LEN_DR(N-1,N-1),B(N-1))
+        dr=0.0D0; len_dr=0.0d0
 
         ALLOCATE(ANG(N,2))
         ALLOCATE(F(-1:N+1,2))
@@ -216,6 +221,7 @@
         allocate(GBA(N,3))
         allocate(GB(N,3))
         allocate(GNB(N,3))
+        allocate(GTA(N,3))
         allocate(GTA_I(N,3))
         allocate(GTA_J(N,3))
         allocate(GTA_K(N,3))
@@ -229,7 +235,7 @@
         ! param (Parameters ) {{{
       include "bln.ntype.inc.f90"         ! specify bead types 
 
-        SELECTCASE(PTYPE)
+        SELECTCASE(trim(PTYPE))
                 CASE("GO")                ! Go-like model
       ! ==================================================
       include "bln.go.connect.inc.f90"    ! specify native contacts 
@@ -427,12 +433,18 @@ G=GNB+GB+GBA+GTA
 GRADX=PACK(G,.TRUE.)
 ! }}}
 !deam {{{
-deallocate(R,GRAD,CONNECT,AB,CD,DR,LEN_DR,ANG,F,FB,XPD_2,XPD)
-deallocate(VXPD,HVXPD,PP,BVR)
-deallocate(G,GB,GBA_I,GBA_J,GBA_K,GTA_I,GTA_J,GTA_K,GTA_L,GBA,GNB)
+DEALLOCATE(R,GRAD)
+deallocate(CONNECT)
+deallocate(AB)
+!if (allocated(CD)) deallocate(CD)
+!deallocate(DR,LEN_DR)
+!deallocate(ANG,F,FB)
+!deallocate(XPD_2,XPD)
+!DEALLOCATE(VXPD,HVXPD,PP,BVR,EB,B,ANG,DPD)
+!DEALLOCATE(G,GB,GBA_I,GBA_J,GBA_K,GTA,GTA_I,GTA_J,GTA_K,GTA_L,GBA,GNB)
 ! }}}
 
         RETURN
-        END SUBROUTINE
+        END SUBROUTINE EBLN
 
         ENDMODULE MODBLN
