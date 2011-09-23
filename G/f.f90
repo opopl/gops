@@ -20,6 +20,7 @@
 !}}}
       END SUBROUTINE SETVARS
 
+
       SUBROUTINE COUNTATOMS
 !op226> Declarations {{{ 
       USE COMMONS, ONLY : NATOMS

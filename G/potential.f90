@@ -104,18 +104,18 @@
          CALL G46MERDIFF(X,NATOMS,GRAD,EREAL,GRADT)
       ELSE IF (BLNT) THEN
          CALL BLN(X,GRAD,EREAL,GRADT)
-      ELSE
+      !ELSE
 !
 !  RAD must be called before the routine that calculates the potential or LBFGS
 !  will get confused even if EVAP is set .TRUE. correctly.
 !
-         CALL RAD(X,GRAD,EREAL,GRADT)
-         IF (EVAPREJECT) return
-         IF (CUTT) THEN
-            CALL LJCUT(X,GRAD,EREAL,GRADT,SECT)
-         ELSE
-            CALL LJ(X,GRAD,EREAL,GRADT,SECT)
-         ENDIF
+!        CALL RAD(X,GRAD,EREAL,GRADT)
+         !IF (EVAPREJECT) return
+         !IF (CUTT) THEN
+            !CALL LJCUT(X,GRAD,EREAL,GRADT,SECT)
+         !ELSE
+            !CALL LJ(X,GRAD,EREAL,GRADT,SECT)
+         !ENDIF
       ENDIF
       ! }}}
 ! }}}

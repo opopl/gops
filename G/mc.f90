@@ -321,7 +321,7 @@
 ! 
 !  Jump-moves.
 ! 
-            IF (JUMPMOVE(JP).AND.(MOD(J1,JUMPINT(JP)).EQ.0)) CALL JUMPM(RANNJ,J1,JP,EPPREV)
+            !IF (JUMPMOVE(JP).AND.(MOD(J1,JUMPINT(JP)).EQ.0)) CALL JUMPM(RANNJ,J1,JP,EPPREV)
 ! 
 !  Ordinary steps.
 ! 
@@ -333,42 +333,43 @@
 !
 !           IF (SYMMETRIZE.AND.(MOD(J1-1,NSYMINTERVAL).EQ.0).AND.(ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV)) THEN
 !           WRITE(LFH,'(A,3G20.10)') 'ELASTSYM,EPREV,diff=',ELASTSYM(JP),EPREV(JP),ABS(ELASTSYM(JP)-EPREV(JP))
-            IF (SYMMETRIZE.AND.(MOD(NQ(JP),NSYMINTERVAL).EQ.0).AND.&
-     &               ((SYMMETRIZECSM).OR.(ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV))) THEN
-               IF ((ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV)) NSYMCALL=0
-               ELASTSYM(JP)=EPREV(JP)
-!              IF ((.NOT.MOVESHELLT).OR.(NSURFMOVES(JP).LT.0)) THEN
-                  IF (SYMMETRIZECSM) THEN
-                     CALL SYMMETRYCSM(JP,SCREENC,QDONE,BRUN,ITERATIONS,TIME,CHANGEDE,NSYMCALL,  &
-     &                                J1,NSUCCESS,NFAIL,EBEST,BESTCOORDS,JBEST,EPPREV)
-                  ELSE
-                     CALL SYMMETRY(JP,SCREENC,QDONE,BRUN,ITERATIONS,TIME,CHANGEDE,NSYMCALL, &
-     &                                J1,EBEST,BESTCOORDS,JBEST,EPPREV)
-                  ENDIF
-                  IF (HIT) GOTO 37 
-!              ELSE
-!                 CALL SYMMETRY2(JP,SCREENC,QDONE,BRUN,ITERATIONS,TIME,CHANGEDE,NSYMCALL)
-!              ENDIF
-!              WRITE(LFH,'(A,I2,A,2I6)') '[',JP,']mc> NCORE: ',NCORE(1:NPAR)
-!              IF (HIT) GOTO 37 ! hit cannot change in symmetry2 
-!
-!  Check for reseeding.
-! 
-               POTEL=EPREV(JP) ! NEWRES assumes POTEL is the energy of the current structure in COORDS
-               IF (CHANGEDE.AND.NEWRESTART) THEN
-                  CALL NEWRES(J1,JP,JBEST,EBEST,BESTCOORDS,EPPREV,POTEL,ITERATIONS,TIME,RCOORDS,&
-     &                  RMIN,RVAT,BRUN,SCREENC,QDONE,JACCPREV,NSUCCESS,NFAIL,NFAILT,NSUCCESST)
-               ENDIF
-            ELSEIF (ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV) THEN ! Markov minimum has changed, but SYMMETRY not called
+            !IF (SYMMETRIZE.AND.(MOD(NQ(JP),NSYMINTERVAL).EQ.0).AND.&
+     !&               ((SYMMETRIZECSM).OR.(ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV))) THEN
+               !IF ((ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV)) NSYMCALL=0
+               !ELASTSYM(JP)=EPREV(JP)
+!!              IF ((.NOT.MOVESHELLT).OR.(NSURFMOVES(JP).LT.0)) THEN
+                  !IF (SYMMETRIZECSM) THEN
+                     !CALL SYMMETRYCSM(JP,SCREENC,QDONE,BRUN,ITERATIONS,TIME,CHANGEDE,NSYMCALL,  &
+     !&                                J1,NSUCCESS,NFAIL,EBEST,BESTCOORDS,JBEST,EPPREV)
+                  !ELSE
+                     !CALL SYMMETRY(JP,SCREENC,QDONE,BRUN,ITERATIONS,TIME,CHANGEDE,NSYMCALL, &
+     !&                                J1,EBEST,BESTCOORDS,JBEST,EPPREV)
+                  !ENDIF
+                  !IF (HIT) GOTO 37 
+!!              ELSE
+!!                 CALL SYMMETRY2(JP,SCREENC,QDONE,BRUN,ITERATIONS,TIME,CHANGEDE,NSYMCALL)
+!!              ENDIF
+!!              WRITE(LFH,'(A,I2,A,2I6)') '[',JP,']mc> NCORE: ',NCORE(1:NPAR)
+!!              IF (HIT) GOTO 37 ! hit cannot change in symmetry2 
+!!
+!!  Check for reseeding.
+!! 
+               !POTEL=EPREV(JP) ! NEWRES assumes POTEL is the energy of the current structure in COORDS
+               !IF (CHANGEDE.AND.NEWRESTART) THEN
+                  !CALL NEWRES(J1,JP,JBEST,EBEST,BESTCOORDS,EPPREV,POTEL,ITERATIONS,TIME,RCOORDS,&
+     !&                  RMIN,RVAT,BRUN,SCREENC,QDONE,JACCPREV,NSUCCESS,NFAIL,NFAILT,NSUCCESST)
+               !ENDIF
+            !ELSEIF (ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV) THEN ! Markov minimum has changed, but SYMMETRY not called
+            IF (ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV) THEN ! Markov minimum has changed, but SYMMETRY not called
                NSYMREM=0                                       ! Should therefore reset NSYMREM.
             ENDIF
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! START OF STEP TAKING CALLS!                                                                            
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! Set switch variables for moves that are not always performed
-               IF(GROUPROTT.AND.MOD(J1,GROUPROTFREQ).EQ.0) THEN
-                       DOGROUPROT=.TRUE.
-               ENDIF
+               !IF(GROUPROTT.AND.MOD(J1,GROUPROTFREQ).EQ.0) THEN
+                       !DOGROUPROT=.TRUE.
+               !ENDIF
 !
 ! csw34> Coordinates are saved so that moves can be undone
 !
@@ -436,7 +437,7 @@
                       CLOSE(20)
 ! csw34> Dump to PDB using routine in amberinterface.f
                       QUNAME='afterstep'//TRIM(ADJUSTL(QUENCHNUM))
-                      CALL A9DUMPPDB(COORDS(:,JP),QUNAME)
+                      !CALL A9DUMPPDB(COORDS(:,JP),QUNAME)
                   ENDIF
 ! END OF KEYWORD <DUMPSTEPS> BLOCK
 
@@ -525,10 +526,10 @@
 !     comparison structure to the file 'rmsd'. Which RMSD depends on the
 !     final arguement of the RMS keyword - see documentation!
 !
-             IF (RMST.AND.CHRMMT) THEN
-                WRITE(4428,'(I10,F15.5)') NQ(JP),RMSD
-                CALL FLUSH(4428)
-             ENDIF
+             !IF (RMST.AND.CHRMMT) THEN
+                !WRITE(4428,'(I10,F15.5)') NQ(JP),RMSD
+                !CALL FLUSH(4428)
+             !ENDIF
           ENDIF
 !!!!!!!!!!!!!!!!!!!!!!!!!!!1
 !                 CALL POTENTIAL(COORDSO(1:3*NATOMS,JP),DUMGRAD,DJWPOTEL,.FALSE.,.FALSE.)
@@ -604,42 +605,42 @@
 
 !     csw34> Dumping every quench in AMBER9 format - only dumps if no chiral problems found 
 !     Only for AMBER! DJW Otherwise we get the cis-trans message for every other potential!
-               IF (AMBERT) THEN
-!     csw34> Calculate interaction energy to residue specified in the AMBGMINintE.sh script
-                  IF (A9INTET.AND.ATEST) THEN
-                     CALL A9INTE(COORDS(:,JP),INTE)
-                     CALL A9INTESAVEIT(INTE,COORDS(:,JP),JP)
-                     CALL A9INTEDUMPLOWEST()
-                     IF (DEBUG) WRITE(LFH,*) 'intE=',INTE
-                     IF (TRACKDATAT) THEN
-                        WRITE(3998,'(I10,G20.10)') NQ(JP),INTE
-                        CALL FLUSH(3998)
-                     ENDIF
-                  ENDIF
-!     csw34> Dump the quench coordinates in AMBER pdb and rst format if DUMPQ is present and chirality checks satisfied
-                  IF (DUMPQUT.AND.ATEST) THEN
-                      WRITE(QUENCHNUM,*) NQ(JP)
-                      QUNAME='quench'//TRIM(ADJUSTL(QUENCHNUM))//'.rst'
-                      OPEN(UNIT=20,FILE=QUNAME,STATUS='UNKNOWN')  
-                      WRITE(20,'(a20)') QUNAME
-                      WRITE(20,'(i5)') NATOMS
-                      WRITE(20,'(6f12.7)') COORDS(:,JP) 
-                      CLOSE(20)
-!     csw34> Dump to PDB using routine in amberinterface.f
-                     QUNAME='quench'//TRIM(ADJUSTL(QUENCHNUM))
-                     CALL A9DUMPPDB(COORDS(:,JP),QUNAME)
-                  ELSEIF (DUMPQUT) THEN
-                      WRITE(*,'(A,I6)') 'DUMPQU> chirality/cis-trans problem detected, not dumping quench ',NQ(JP)
-                  ENDIF
-!     khs26> Dump current best structure to PDB using routine in amberinterface.f
-                  IF (DUMPBESTT) THEN
-                     WRITE(QUENCHNUM,*) NQ(JP)
-                     BESTNAME='best_'//TRIM(ADJUSTL(QUENCHNUM))
-                     CURRENTBESTNAME='current_best'
-                     CALL A9DUMPPDB(QMINP(1,:), BESTNAME)
-                     CALL A9DUMPPDB(QMINP(1,:), CURRENTBESTNAME)
-                  ENDIF
-               ENDIF
+               !IF (AMBERT) THEN
+!!     csw34> Calculate interaction energy to residue specified in the AMBGMINintE.sh script
+!!                  IF (A9INTET.AND.ATEST) THEN
+                     !!CALL A9INTE(COORDS(:,JP),INTE)
+                     !!CALL A9INTESAVEIT(INTE,COORDS(:,JP),JP)
+                     !!CALL A9INTEDUMPLOWEST()
+                     !!IF (DEBUG) WRITE(LFH,*) 'intE=',INTE
+                     !!IF (TRACKDATAT) THEN
+                        !!WRITE(3998,'(I10,G20.10)') NQ(JP),INTE
+                        !!CALL FLUSH(3998)
+                     !!ENDIF
+                  !!ENDIF
+!!     csw34> Dump the quench coordinates in AMBER pdb and rst format if DUMPQ is present and chirality checks satisfied
+                  !IF (DUMPQUT.AND.ATEST) THEN
+                      !WRITE(QUENCHNUM,*) NQ(JP)
+                      !QUNAME='quench'//TRIM(ADJUSTL(QUENCHNUM))//'.rst'
+                      !OPEN(UNIT=20,FILE=QUNAME,STATUS='UNKNOWN')  
+                      !WRITE(20,'(a20)') QUNAME
+                      !WRITE(20,'(i5)') NATOMS
+                      !WRITE(20,'(6f12.7)') COORDS(:,JP) 
+                      !CLOSE(20)
+!!     csw34> Dump to PDB using routine in amberinterface.f
+                     !QUNAME='quench'//TRIM(ADJUSTL(QUENCHNUM))
+                     !CALL A9DUMPPDB(COORDS(:,JP),QUNAME)
+                  !ELSEIF (DUMPQUT) THEN
+                      !WRITE(*,'(A,I6)') 'DUMPQU> chirality/cis-trans problem detected, not dumping quench ',NQ(JP)
+                  !ENDIF
+!!     khs26> Dump current best structure to PDB using routine in amberinterface.f
+                  !IF (DUMPBESTT) THEN
+                     !WRITE(QUENCHNUM,*) NQ(JP)
+                     !BESTNAME='best_'//TRIM(ADJUSTL(QUENCHNUM))
+                     !CURRENTBESTNAME='current_best'
+                     !CALL A9DUMPPDB(QMINP(1,:), BESTNAME)
+                     !CALL A9DUMPPDB(QMINP(1,:), CURRENTBESTNAME)
+                  !ENDIF
+               !ENDIF
 !     csw34> Check to see if LOCALSAMPLE constraints have been violated - if they have, reject the step
                IF (LOCALSAMPLET) THEN
                   DISTOK=.FALSE.

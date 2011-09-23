@@ -325,10 +325,10 @@
 !        checks and with by specifying SETCHIRAL for chirality checks
 !}}}
 ! jwrm2> Check percolation. If the structure is disconnected, don't save it.!{{{
-         PERCT = .TRUE.
-         IF (PERCOLATET) THEN
-           CALL PERC(P,NATOMS,PERCCUT,PERCT,DEBUG,LFH,RIGID)
-         ENDIF!}}}
+         !PERCT = .TRUE.
+         !IF (PERCOLATET) THEN
+           !CALL PERC(P,NATOMS,PERCCUT,PERCT,DEBUG,LFH,RIGID)
+         !ENDIF!}}}
 
 ! csw34> If all tests have been passed, save the structure!        
          IF (GOODSTRUCTURE .AND. PERCT) CALL GSAVEIT(EREAL,P,NP)
@@ -413,28 +413,29 @@
 !     IF ((.NOT.FIELDT).AND.(.NOT.SEEDT).AND.CENT) CALL CENTRE2(COORDS(1:3*NATOMS,NP))
 
       IF (DUMPT) THEN
-         IF (ARNO) THEN
-            WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS+2
-            WRITE(DUMPXYZUNIT+NP,70) NP,NQ(NP),EREAL,RMS
-            WRITE(DUMPXYZUNIT+NP,'(A,F20.10)') 'N 0.0 0.0 ', 0.577D0
-            WRITE(DUMPXYZUNIT+NP,'(A,F20.10)') 'O 0.0 0.0 ',-0.577D0
-            IF (NS.NE.0) WRITE(DUMPXYZUNIT+NP,65) (P(I),I=1,3*(NATOMS-NS))
-65          FORMAT('AR ',3F20.10)
-         ELSE IF (TIP) THEN
-            WRITE(DUMPVUNIT-NP,'(1X,F20.10,E20.10)') EREAL, POTEL
-            WRITE(DUMPXYZUNIT+NP,'(I6)') (NATOMS/2)*3
-            WRITE(DUMPXYZUNIT+NP,70) NP,NQ(NP), EREAL, RMS
-            DO J2=1,NATOMS/2
-               CALL TIPIO(P(3*(J2-1)+1),P(3*(J2-1)+2),P(3*(J2-1)+3),&
-     &              P(3*(NATOMS/2+J2-1)+1),P(3*(NATOMS/2+J2-1)+2),P(3*(NATOMS/2+J2-1)+3),RBCOORDS)
-               WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'O ',RBCOORDS(1),RBCOORDS(2),RBCOORDS(3)
-               WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(4),RBCOORDS(5),RBCOORDS(6)
-               WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(7),RBCOORDS(8),RBCOORDS(9)
-            ENDDO
-         ELSE IF (CHRMMT) THEN
-            CALL CHARMMDUMP3(P)
-            CALL CHARMMDUMP2(P,DUMPXYZUNIT+NP) ! xyz
-         ELSEIF (NCORE(NP).GT.0) THEN
+     !    IF (ARNO) THEN
+            !WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS+2
+            !WRITE(DUMPXYZUNIT+NP,70) NP,NQ(NP),EREAL,RMS
+            !WRITE(DUMPXYZUNIT+NP,'(A,F20.10)') 'N 0.0 0.0 ', 0.577D0
+            !WRITE(DUMPXYZUNIT+NP,'(A,F20.10)') 'O 0.0 0.0 ',-0.577D0
+            !IF (NS.NE.0) WRITE(DUMPXYZUNIT+NP,65) (P(I),I=1,3*(NATOMS-NS))
+!65          FORMAT('AR ',3F20.10)
+         !ELSE IF (TIP) THEN
+            !WRITE(DUMPVUNIT-NP,'(1X,F20.10,E20.10)') EREAL, POTEL
+            !WRITE(DUMPXYZUNIT+NP,'(I6)') (NATOMS/2)*3
+            !WRITE(DUMPXYZUNIT+NP,70) NP,NQ(NP), EREAL, RMS
+            !DO J2=1,NATOMS/2
+               !CALL TIPIO(P(3*(J2-1)+1),P(3*(J2-1)+2),P(3*(J2-1)+3),&
+     !&              P(3*(NATOMS/2+J2-1)+1),P(3*(NATOMS/2+J2-1)+2),P(3*(NATOMS/2+J2-1)+3),RBCOORDS)
+               !WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'O ',RBCOORDS(1),RBCOORDS(2),RBCOORDS(3)
+               !WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(4),RBCOORDS(5),RBCOORDS(6)
+               !WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(7),RBCOORDS(8),RBCOORDS(9)
+            !ENDDO
+         !ELSE IF (CHRMMT) THEN
+            !CALL CHARMMDUMP3(P)
+            !CALL CHARMMDUMP2(P,DUMPXYZUNIT+NP) ! xyz
+         !ELSEIF (NCORE(NP).GT.0) THEN
+         IF (NCORE(NP).GT.0) THEN
             WRITE(DUMPVUNIT-NP,'(1X,F20.10,E20.10)') EREAL, POTEL
             WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
             WRITE(DUMPXYZUNIT+NP,70) NQ(NP), EREAL, RMS

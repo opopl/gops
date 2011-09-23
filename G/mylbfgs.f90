@@ -176,14 +176,14 @@
 !            CALL geom_to_var(N,OLDQ)
 !            XCOORDS(1:N)=OLDQ(1:N)
 !         ELSE IF (CHRMMT) THEN
-            CALL GETKD(KD) ! get width of sparse band in G matrix KD
-            CALL GETNNZ(NNZ) ! get number of non-zero elements in B-matrix
-            NOCOOR=.FALSE. ! calculate internals therefore NOCOOR is false
-            GINT(1:N)=0.0D0 ! to prevent NaN's for Sun!
-            XINT(1:N)=0.0D0 ! to prevent NaN's for Sun!
-            CALL TRANSFORM(XCOORDS,GRAD,XINT,GINT,N,3*NATOMS,NNZ,NOCOOR,KD)
-            OLDQ(1:N)=XINT(1:N)    ! store internals
-            OLDGINT(1:N)=GINT(1:N) ! store gradient in internals
+!        CALL GETKD(KD) ! get width of sparse band in G matrix KD
+!            !CALL GETNNZ(NNZ) ! get number of non-zero elements in B-matrix
+!            !NOCOOR=.FALSE. ! calculate internals therefore NOCOOR is false
+!            !GINT(1:N)=0.0D0 ! to prevent NaN's for Sun!
+!            !XINT(1:N)=0.0D0 ! to prevent NaN's for Sun!
+!            !CALL TRANSFORM(XCOORDS,GRAD,XINT,GINT,N,3*NATOMS,NNZ,NOCOOR,KD)
+!            !OLDQ(1:N)=XINT(1:N)    ! store internals
+!            !OLDGINT(1:N)=GINT(1:N) ! store gradient in internals
 !         ENDIF
       ENDIF
 !
