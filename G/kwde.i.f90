@@ -1,19 +1,22 @@
-Cop226> Declarations {{{
+!op226> Declarations {{{
       !USE commons
       use COMMONS
-      use V
-      use MODMXATMS   ! NEEDED FOR charmm
-      USE modcharmm
-C       sf344> AMBER additions
-      USE modamber9, only : coords1,amberstr,amberstr1,mdstept,inpcrd,amberenergiest, nocistransdna, nocistransrna,
-     &                      uachiral, ligrotscale, setchiral, STEEREDMINT, SMINATOMA, SMINATOMB, SMINK, SMINKINC,
-     &                      SMINDISTSTART, SMINDISTFINISH, natomsina, natomsinb, natomsinc, atomsinalist, atomsinblist,
-     &                      atomsinclist, atomsinalistlogical, atomsinblistlogical, atomsinclistlogical, ligcartstep,
-     &                      ligtransstep, ligmovefreq, amchnmax, amchnmin, amchpmax, amchpmin, rotamert, rotmaxchange, 
-     &                      rotpselect, rotoccuw, rotcentre, rotcutoff 
-      USE modamber
+      USE V
       USE PORFUNCS
-      USE MYGA_PARAMS
+      ! comm {{{
+!      use MODMXATMS   ! NEEDED FOR charmm
+      !USE modcharmm
+!C       sf344> AMBER additions
+      !USE modamber9, only : coords1,amberstr,amberstr1,mdstept,inpcrd,amberenergiest, nocistransdna, nocistransrna,
+     !&                      uachiral, ligrotscale, setchiral, STEEREDMINT, SMINATOMA, SMINATOMB, SMINK, SMINKINC,
+     !&                      SMINDISTSTART, SMINDISTFINISH, natomsina, natomsinb, natomsinc, atomsinalist, atomsinblist,
+     !&                      atomsinclist, atomsinalistlogical, atomsinblistlogical, atomsinclistlogical, ligcartstep,
+     !&                      ligtransstep, ligmovefreq, amchnmax, amchnmin, amchpmax, amchpmin, rotamert, rotmaxchange, 
+     !&                      rotpselect, rotoccuw, rotcentre, rotcutoff 
+      !USE modamber
+      !USE PORFUNCS
+      !USE MYGA_PARAMS
+      ! }}}
 
       IMPLICIT NONE
 
@@ -34,16 +37,16 @@ C       sf344> AMBER additions
       DOUBLE PRECISION EPS2, RAD, HEIGHT
       COMMON /CAPS/ EPS2, RAD, HEIGHT
 
-C     LOGICAL IGNOREBIN(HISTBINMAX), FIXBIN
-C     COMMON /IG/ IGNOREBIN, FIXBIN
+!     LOGICAL IGNOREBIN(HISTBINMAX), FIXBIN
+!     COMMON /IG/ IGNOREBIN, FIXBIN
       DOUBLE PRECISION    PMAX,PMIN,NMAX,NMIN,SIDESTEP
       COMMON /AMBWORD/    PMAX,PMIN,NMAX,NMIN,SIDESTEP
       COMMON /PCALL/ NPCALL
 
       INTEGER NATOM, DMODE, NDUM
-C
-C These arrays should have dimension MXATMS
-C
+!
+! These arrays should have dimension MXATMS
+!
       DOUBLE PRECISION, ALLOCATABLE :: CHX(:), CHY(:), CHZ(:), CHMASS(:)
       CHARACTER(LEN=1) DUMMYCH
       CHARACTER(LEN=100) TOPFILE,PARFILE
@@ -55,11 +58,11 @@ C
 !     DC430 >
       DOUBLE PRECISION :: LPL, LPR
 
-C
-C       sf344> added stuff
-C
+!
+!       sf344> added stuff
+!
       CHARACTER(LEN=10) check1
       CHARACTER(LEN=1) readswitch
       INTEGER iostatus, groupsize, groupatom,groupoffset,axis1,axis2
-Cop226> End declarations </begin> }}}
+!op226> End declarations </begin> }}}
 

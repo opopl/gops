@@ -155,22 +155,7 @@
       ENDIF
 !op226>}}} 
       CALL FLUSH(6)
-      CALL IO1
-!op226> CSMT {{{ 
-!
-! If this is a CSM optimisation we now have to multiply the number of atoms by the number of
-! group operations and replicate some coordinates and allowed permutations.
-!
-      IF (CSMT) THEN
-         CALL CSMINIT
-         IF (SYMMETRIZECSM) THEN
-            IF (CSMMAXIT.EQ.0) CSMMAXIT=MAXIT
-         ELSE
-            CSMMAXIT=MAXIT
-         ENDIF
-      ENDIF
-!op226>}}} 
-
+      CALL IOM
       CALL FLUSH(6)
 
 !op226> SEEDT {{{ 

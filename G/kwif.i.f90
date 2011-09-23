@@ -191,6 +191,7 @@ C }}}
 C BLN {{{
       ELSE IF (WORD.EQ.'MYBLN') THEN
          MYBLNT=.TRUE.
+         BLNT=.TRUE.
       ELSE IF (WORD.EQ.'BLN') THEN
          BLNT=.TRUE.
          CALL READF(RK_R)

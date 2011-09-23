@@ -1,6 +1,7 @@
       MODULE V
 
       IMPLICIT NONE
+      SAVE
         
       LOGICAL ::  MYBLNT
       !LOGICAL ::  GUIDECHANGET,  CSMDOGUIDET, GUIDET
@@ -12,5 +13,8 @@
       parameter(C_FILE="coords",D_FILE="data")
       parameter(LE_FILE="lowest",E_FILE="e.tex")
       parameter(O_FILE="out")
+
+      ! from module PERMU
+      DOUBLE PRECISION, ALLOCATABLE :: FIN(:)
 
       ENDMODULE V
