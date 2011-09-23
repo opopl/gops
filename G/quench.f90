@@ -17,9 +17,10 @@
       ! mod {{{
       USE COMMONS
       USE F 
-      USE MODAMBER9, ONLY : CISARRAY1, CISARRAY2, CHIARRAY1, CHIARRAY2
-      USE MODAMBER9, ONLY : SETCHIRAL, NOCISTRANSDNA, NOCISTRANSRNA
-      USE QMODULE
+      USE V
+      !USE MODAMBER9, ONLY : CISARRAY1, CISARRAY2, CHIARRAY1, CHIARRAY2
+      !USE MODAMBER9, ONLY : SETCHIRAL, NOCISTRANSDNA, NOCISTRANSRNA
+      !USE QMODULE
       USE PORFUNCS
 
       IMPLICIT NONE
@@ -69,22 +70,24 @@
 !
       NFIX=0
 
-11    IF (WELCH) TOSI=.TRUE.
-      IF (PACHECO) AXTELL=.FALSE.
-      IF (CPMD) SCT=.TRUE.
-      IF (ZETT1.OR.ZETT2) THEN
-         MORSET=.TRUE.
-         RHO=6.0D0
-      ENDIF
-      IF (PERCOLATET) THEN
-        COMPON=.TRUE.
-      ENDIF
-      IF (NATBT.AND.GUPTAT) GUIDET=.TRUE.
-      IF (NATBT.AND.GUIDET) GUPTAT=.TRUE.
-      IF (CSMGUIDET) CSMDOGUIDET=.TRUE.
+11    continue
+
+      ! com {{{
+!11    IF (WELCH) TOSI=.TRUE. 
+      !IF (PACHECO) AXTELL=.FALSE.
+      !IF (CPMD) SCT=.TRUE.
+      !IF (ZETT1.OR.ZETT2) THEN
+         !MORSET=.TRUE.
+         !RHO=6.0D0
+      !ENDIF
+      !IF (PERCOLATET) THEN
+        !COMPON=.TRUE.
+      !ENDIF
+      !IF (NATBT.AND.GUPTAT) GUIDET=.TRUE.
+      !IF (NATBT.AND.GUIDET) GUPTAT=.TRUE.
+      !IF (CSMGUIDET) CSMDOGUIDET=.TRUE. }}}
+
       NOPT=3*NATOMS
-      IF (WENZEL) NOPT=2
-      IF (MULLERBROWNT) NOPT=2
       ! }}}
 !
 !  QTEST is set for the final quenches with tighter convergence criteria.
@@ -111,18 +114,18 @@
 !           WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(7),RBCOORDS(8),RBCOORDS(9)
 !        ENDDO
 !     ENDIF!}}}
-      IF (COMPRESST.AND.(.NOT.QTEST)) THEN!{{{
-         COMPON=.TRUE.
-         IF (PATCHY) THEN
-           CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,1.D1*GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-         ELSE
-           CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-         END IF
-         POTEL=EREAL
-         IF (.NOT.CFLAG) WRITE(LFH,'(A,I7,A)') ' WARNING - compressed quench ',NQ(NP),'  did not converge'
-         WRITE(LFH,'(A,I7,A,F20.10,A,I5,A,F15.7,A,I4,A,F12.2)') 'Comp Q ',NQ(NP),' energy=',&
-     &              POTEL,' steps=',ITER,' RMS force=',RMS
-      ENDIF!}}}
+!      IF (COMPRESST.AND.(.NOT.QTEST)) THEN!{{{
+         !COMPON=.TRUE.
+         !IF (PATCHY) THEN
+           !CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,1.D1*GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+         !ELSE
+           !CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+         !END IF
+         !POTEL=EREAL
+         !IF (.NOT.CFLAG) WRITE(LFH,'(A,I7,A)') ' WARNING - compressed quench ',NQ(NP),'  did not converge'
+         !WRITE(LFH,'(A,I7,A,F20.10,A,I5,A,F15.7,A,I4,A,F12.2)') 'Comp Q ',NQ(NP),' energy=',&
+     !&              POTEL,' steps=',ITER,' RMS force=',RMS
+      !ENDIF!}}}
 
       IF (.NOT.PERCOLATET) COMPON=.FALSE.
 
@@ -291,10 +294,10 @@
       CALL MYCPU_TIME(TIME)
 
       RES=.FALSE.
-      IF (TABOOT.AND.(.NOT.QTEST).AND.(.NOT.RENORM)) THEN
-         CALL TABOO(EREAL,POTEL,P,NP,RES)
-         IF (RES) GOTO 10
-      ENDIF
+      !IF (TABOOT.AND.(.NOT.QTEST).AND.(.NOT.RENORM)) THEN
+         !CALL TABOO(EREAL,POTEL,P,NP,RES)
+         !IF (RES) GOTO 10
+      !ENDIF
 
 !     PRINT*,'Taboo lists:'!{{{
 !     DO J1=1,NPAR
@@ -309,114 +312,17 @@
 ! csw34> CHIRALITY AND PEPTIDE BOND CHECKS - reports GOODSTRUCTURE!{{{
 !        If the checks pass (or are not done!), GSAVEIT is called to 
 !        add the quenches structure to QMIN and QMINP if low enough E
-      GOODSTRUCTURE=.TRUE.
+      !GOODSTRUCTURE=.TRUE.
 ! csw34> SAVEQ is .TRUE. for quenches, and so the checks will be
 !        applied, and structures possibly saved. For final quenches, it 
 !        is set to .FALSE. (in finalq.f) and so the checks are skipped.
       IF (SAVEQ) THEN
 !
-! csw34> CHARMM TESTS!{{{
-!
-         IF(CHRMMT) THEN
-!
-! csw34> CHIRALITY
-!
-            FAIL=.FALSE.
-            IF (CHECKCHIRALITY) CALL CHECKCHIRAL(P,FAIL)
-            IF (FAIL) THEN
-               GOODSTRUCTURE=.FALSE.
-               WRITE(LFH,*) ' quench> CHIRALITY CHECK FAILED - discarding structure'
-            ENDIF
-!
-! csw34> PEPTIDE BOND
-!
-            FAIL=.FALSE.
-            IF (NOCISTRANS) CALL CHECKOMEGA(P,FAIL)
-            IF (FAIL) THEN
-               GOODSTRUCTURE=.FALSE.
-               WRITE(LFH,*) ' quench> PEPTIDE BOND CHECK FAILED - discarding structure'
-            ENDIF
-         ENDIF
-!!}}}
-! csw34> AMBER tests!{{{
 !        The AMBER tests are a bit fancier, they are designed to be
 !        check if the chirality and peptide bond geometry has been
 !        maintained from the starting structure, not just look at an
 !        absolute value. This is done automatically for the cis/trans
 !        checks and with by specifying SETCHIRAL for chirality checks
-         IF(AMBERT) THEN
-!
-! csw34> CHIRALITY
-!
-            IF (CHECKCHIRALITY) THEN
-                  PASS=.TRUE.
-                  FAIL=.FALSE.
-               IF (SETCHIRAL) THEN 
-! csw34> First - if SETCHIRAL is specified
-                  CALL set_check_chiral(P,NATOMS,DUMMYL,chiarray2)
-                  DO J5=1,NATOMS
-! csw34> Compare the chiarrays, a change in sign will result in a non
-!        zero output and so signal a change in chirality from the
-!        initial structure. 
-                     IF ((CHIARRAY1(J5)-CHIARRAY2(J5))/=0) FAIL=.TRUE.
-                  ENDDO
-                  IF (FAIL) THEN
-                     WRITE(LFH,*) ' quench> WARNING: chirality differs from initial structure!'
-                     GOODSTRUCTURE=.FALSE.
-                  ENDIF
-! csw34> If SETCHIRAL is NOT specified
-               ELSE
-                  CALL check_chirality(P,NATOMS,PASS)
-                  IF (.NOT.PASS) THEN
-                     GOODSTRUCTURE=.FALSE.
-                  ENDIF
-               ENDIF
-! csw34> If either test fails, print a warning
-               IF (FAIL.OR.(.NOT.PASS)) THEN 
-                  WRITE(LFH,*) ' quench> CHIRALITY CHECK FAILED - discarding structure'
-               ENDIF
-            ENDIF
-!
-! csw34> PEPTIDE BOND
-!        There are seperate checks for DNA, RNA and proteins!
-!
-            IF (NOCISTRANS) THEN
-               PASS=.TRUE.
-               FAIL=.FALSE.
-! csw34> DNA
-               IF (NOCISTRANSDNA) THEN
-                  CALL CHECK_CISTRANS_DNA(P,NATOMS,ZSYM,PASS)
-                  IF (.NOT.PASS) THEN
-                     GOODSTRUCTURE=.FALSE.
-                  ENDIF
-! csw34> RNA
-               ELSEIF (NOCISTRANSRNA) THEN
-                  CALL CHECK_CISTRANS_RNA(P,NATOMS,ZSYM,PASS)
-                  IF (.NOT.PASS) THEN
-                     GOODSTRUCTURE=.FALSE.
-                  ENDIF
-! csw34> PROTEIN
-               ELSE
-! csw34> As before, AMBER stores the initial cis/trans setup and
-!        compares it to the current structure, flagging up any changes 
-                  CALL check_cistrans_protein(P,NATOMS,DUMMYL,MINOMEGA,cisarray2)
-                  DO J5=1,NATOMS
-! csw34> Compare the cisarrays, a change in sign will result in a non
-!        zero output and so signal a change in isomer from the
-!        initial structure. 
-                     IF ((CISARRAY1(J5)-CISARRAY2(J5))/=0) FAIL=.TRUE.
-                  ENDDO
-                  IF (FAIL) THEN
-                     WRITE(LFH,*) ' quench> WARNING: cis/trans differs from initial structure!'
-                     GOODSTRUCTURE=.FALSE.
-                  ENDIF
-               ENDIF
-! csw34> If either test fails, print a warning
-               IF (FAIL.OR.(.NOT.PASS)) THEN 
-                  WRITE(LFH,*) ' quench> CIS/TRANS CHECK FAILED - discarding structure'
-               ENDIF
-            ENDIF
-         ENDIF
 !}}}
 ! jwrm2> Check percolation. If the structure is disconnected, don't save it.!{{{
          PERCT = .TRUE.
@@ -499,8 +405,6 @@
             VAT(J1,NP)=VT(J1)
          ENDDO
       ENDIF
-
-      IF (Q4T) CALL ORDERQ4(NATOMS,P,QFINISH)
 !
 !  Calling CENTRE here without an evaporation check can put particles
 !  outside the container, and make a valid step in takestep impossible.

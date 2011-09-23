@@ -42,6 +42,7 @@
 	      DOUBLE PRECISION ::   EPS, ENERGY
           ! }}}
       ! loc {{{
+      integer i
       LOGICAL ::  GUIDECHANGET,  CSMDOGUIDET, GUIDET
       INTEGER J1,J2,J3,NFAIL,NDECREASE,NGUESS,NDUMMY
       DOUBLE PRECISION GRAD(3*NATOMS),SLENGTH,DDOT,EPLUS,EMINUS,DIFF,DUMMY,WTEMP(3*NATOMS)
@@ -80,11 +81,11 @@
          call exit(10)
       ENDIF
       COREDONE=.FALSE.
-      SMINKCHANGET=.FALSE.
-      SMINKCURRENT=0.0D0
-      SMINKCURRENTP=0.0D0
-      LOCALSTEEREDMINT=.FALSE.
-      IF (STEEREDMINT) LOCALSTEEREDMINT=.TRUE.
+      !SMINKCHANGET=.FALSE.
+      !SMINKCURRENT=0.0D0
+      !SMINKCURRENTP=0.0D0
+      !LOCALSTEEREDMINT=.FALSE.
+      !IF (STEEREDMINT) LOCALSTEEREDMINT=.TRUE.
 
       NFAIL=0
       IF (GUIDECHANGET) ITER=0
@@ -477,15 +478,15 @@
 !20    IF (INTMINT) THEN
       !ENDIF
 
-20
+20    continue
 ! csw34> INCREMENT THE FORCE CONSTANT FOR STEERED MINIMISATION
       SMINKCHANGET=.FALSE.
-      IF (LOCALSTEEREDMINT) THEN
-         SMINKCURRENT=MIN(SMINKCURRENT+SMINKINC,SMINK)
-         IF (SMINKCURRENT.NE.SMINKCURRENTP) SMINKCHANGET=.TRUE.
-! a bit of useful debug printing         
-        IF (DEBUG) WRITE(LFH,'(A,2F20.10,L5)') 'SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET=',SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET
-      ENDIF
+      !IF (LOCALSTEEREDMINT) THEN
+         !SMINKCURRENT=MIN(SMINKCURRENT+SMINKINC,SMINK)
+         !IF (SMINKCURRENT.NE.SMINKCURRENTP) SMINKCHANGET=.TRUE.
+!! a bit of useful debug printing         
+        !IF (DEBUG) WRITE(LFH,'(A,2F20.10,L5)') 'SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET=',SMINKCURRENT,SMINKCURRENTP,SMINKCHANGET
+      !ENDIF
 
       CALL POTENTIAL(XCOORDS,GNEW,ENEW,.TRUE.,.FALSE.)
 
@@ -728,20 +729,22 @@
          
          FIXIMAGE=.TRUE.
          GOTO 20
+         ! }}}
       ELSE
+        ! {{{
 !
 !  Energy increased - try again with a smaller step size
 !
          IF (NDECREASE.GT.10) THEN ! DJW
             NFAIL=NFAIL+1
             WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find a lower energy, NFAIL=',NFAIL
-            IF (CHRMMT.AND.INTMINT) THEN ! need to reset X, XINT, G, GINT to original values
-               XINT(1:N)=XINT(1:N)-STP*W(ISPT+POINT*N+1:ISPT+POINT*N+N)
-!              XINT=OLDQ ! should be the same as subtracting the step
-               GINT(1:N)=OLDGINT(1:N)
-               GRAD(1:3*NATOMS)=GNEW(1:3*NATOMS) ! here OPTIM uses GLAST ! DJW
-               XCOORDS(1:3*NATOMS)=OLDCART(1:3*NATOMS)
-            ELSE
+            !IF (CHRMMT.AND.INTMINT) THEN ! need to reset X, XINT, G, GINT to original values
+               !XINT(1:N)=XINT(1:N)-STP*W(ISPT+POINT*N+1:ISPT+POINT*N+N)
+!!              XINT=OLDQ ! should be the same as subtracting the step
+               !GINT(1:N)=OLDGINT(1:N)
+               !GRAD(1:3*NATOMS)=GNEW(1:3*NATOMS) ! here OPTIM uses GLAST ! DJW
+               !XCOORDS(1:3*NATOMS)=OLDCART(1:3*NATOMS)
+            !ELSE
 !
 ! Resetting to XSAVE should be the same as subtracting the step. 
 ! If we have tried PROJI with Thomson then the projection is non-linear
@@ -753,7 +756,7 @@
 !                 GRAD(J1)=GNEW(J1) ! GRAD contains the gradient at the lowest energy point
 !                 XCOORDS(J1)=XCOORDS(J1)-STP*W(ISPT+POINT*N+J1)
 !              ENDDO
-            ENDIF
+            !ENDIF
             ITER=0   !  try resetting
 !            IF (NFAIL.GT.20) THEN
 ! bs360: smaller NFAIL 
@@ -777,12 +780,12 @@
             ENDIF
             GOTO 30
          ENDIF
-         IF (CHRMMT.AND.INTMINT) THEN
-            DO J1=1,N
-               XINT(J1)=XINT(J1)-0.9*STP*W(ISPT+POINT*N+J1)
-               DELTAQ(J1)=STP*W(ISPT+POINT*N+J1)*0.1D0
-            ENDDO
-         ELSE
+         !IF (CHRMMT.AND.INTMINT) THEN
+            !DO J1=1,N
+               !XINT(J1)=XINT(J1)-0.9*STP*W(ISPT+POINT*N+J1)
+               !DELTAQ(J1)=STP*W(ISPT+POINT*N+J1)*0.1D0
+            !ENDDO
+         !ELSE
 !
 ! Resetting to XSAVE and adding 0.1 of the step should be the same as subtracting 
 ! 0.9 of the step. 
@@ -800,33 +803,33 @@
 !
 ! For Thomson try projection for the geometry after the step.
 !        
-            IF (PROJIT) THEN
-               IF (THOMSONT) THEN
-                  TMPCOORDS(1:N)=XCOORDS(1:N)
-                  CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
-                  CALL PROJI(TMPCOORDS,NATOMS)
-                  CALL THOMSONCTOANG(TMPCOORDS,TMPANG,NATOMS)
-                  XCOORDS(1:N)=TMPANG(1:N)
-               ELSE
-                  TMPCOORDS(1:N)=XCOORDS(1:N)
-                  CALL PROJI(TMPCOORDS,NATOMS)
-                  XCOORDS(1:N)=TMPCOORDS(1:N)
-               ENDIF
-            ENDIF
-            IF (PROJIHT) THEN
-               IF (THOMSONT) THEN
-                  TMPCOORDS(1:N)=XCOORDS(1:N)
-                  CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
-                  CALL PROJIH(TMPCOORDS,NATOMS)
-                  CALL THOMSONCTOANG(TMPCOORDS,TMPANG,NATOMS)
-                  XCOORDS(1:N)=TMPANG(1:N)
-               ELSE
-                  TMPCOORDS(1:N)=XCOORDS(1:N)
-                  CALL PROJIH(TMPCOORDS,NATOMS)
-                  XCOORDS(1:N)=TMPCOORDS(1:N)
-               ENDIF
-            ENDIF
-         ENDIF
+          !  IF (PROJIT) THEN
+               !IF (THOMSONT) THEN
+                  !TMPCOORDS(1:N)=XCOORDS(1:N)
+                  !CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
+                  !CALL PROJI(TMPCOORDS,NATOMS)
+                  !CALL THOMSONCTOANG(TMPCOORDS,TMPANG,NATOMS)
+                  !XCOORDS(1:N)=TMPANG(1:N)
+               !ELSE
+                  !TMPCOORDS(1:N)=XCOORDS(1:N)
+                  !CALL PROJI(TMPCOORDS,NATOMS)
+                  !XCOORDS(1:N)=TMPCOORDS(1:N)
+               !ENDIF
+            !ENDIF
+           ! IF (PROJIHT) THEN
+               !IF (THOMSONT) THEN
+                  !TMPCOORDS(1:N)=XCOORDS(1:N)
+                  !CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
+                  !CALL PROJIH(TMPCOORDS,NATOMS)
+                  !CALL THOMSONCTOANG(TMPCOORDS,TMPANG,NATOMS)
+                  !XCOORDS(1:N)=TMPANG(1:N)
+               !ELSE
+                  !TMPCOORDS(1:N)=XCOORDS(1:N)
+                  !CALL PROJIH(TMPCOORDS,NATOMS)
+                  !XCOORDS(1:N)=TMPCOORDS(1:N)
+               !ENDIF
+            !ENDIF
+         !ENDIF
          STP=STP/1.0D1
          NDECREASE=NDECREASE+1
          IF (DEBUG) WRITE(LFH,'(A,F20.10,A,F20.10,A,F20.10)') &
@@ -839,37 +842,37 @@
 !
 30    NPT=POINT*N
 
-      IF (CHRMMT.AND.INTMINT) THEN
-         DO I=1,N
-            W(ISPT+NPT+I)= STP*W(ISPT+NPT+I)
-            W(IYPT+NPT+I)= GINT(I)-W(I)
-         ENDDO
-      ELSE
+      !IF (CHRMMT.AND.INTMINT) THEN
+         !DO I=1,N
+            !W(ISPT+NPT+I)= STP*W(ISPT+NPT+I)
+            !W(IYPT+NPT+I)= GINT(I)-W(I)
+         !ENDDO
+      !ELSE
          DO J1=1,N
             W(ISPT+NPT+J1)= STP*W(ISPT+NPT+J1) ! save the step taken
             W(IYPT+NPT+J1)= GRAD(J1)-W(J1)     ! save gradient difference: W(1:N) contains the old gradient
          ENDDO
-      ENDIF
+      !ENDIF
       POINT=POINT+1
       IF (POINT.EQ.M) POINT=0
       FIXIMAGE=.FALSE.
       IF (DUMPT.AND.DEBUG) THEN
-         IF (AMBER) THEN
-            WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
-            WRITE(DUMPXYZUNIT+NP,'(A,I4,A,F15.5)') 'At step number ',ITER,' energy=',ENERGY
-            DO J2=1,NATOMS
-               WRITE(DUMPXYZUNIT+NP,'(A,3F20.10)') typech(J2)(1:1),(XCOORDS(3*(J2-1)+J3),J3=1,3)
-            ENDDO
-         ELSE
+       !  IF (AMBER) THEN
+            !WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
+            !WRITE(DUMPXYZUNIT+NP,'(A,I4,A,F15.5)') 'At step number ',ITER,' energy=',ENERGY
+            !DO J2=1,NATOMS
+               !WRITE(DUMPXYZUNIT+NP,'(A,3F20.10)') typech(J2)(1:1),(XCOORDS(3*(J2-1)+J3),J3=1,3)
+            !ENDDO
+         !ELSE
             WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
             WRITE(DUMPXYZUNIT+NP,'(A,I8,A,G20.10)') 'at step ',ITER,' energy=',ENERGY
             WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') ('LA ',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=1,NATOMS-NS)
             IF (NS.GT.0) WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') &
      &          ('LB',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=NATOMS-NS+1,NATOMS)
-         ENDIF
+         !ENDIF
       ENDIF
       IF (CENT) CALL CENTRE2(XCOORDS)
-      SMINKCURRENTP=SMINKCURRENT
+      !SMINKCURRENTP=SMINKCURRENT
       GOTO 10
 !     IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
 

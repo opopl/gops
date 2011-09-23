@@ -208,8 +208,8 @@ ljpshift.f
 mf.f
 #mind.f
 #minperm.f
-#mnbrak.f
-#morse.f
+mnbrak.f
+morse.f
 #myblas.f
 #mylapack.f
 #mysd.f
@@ -248,8 +248,8 @@ mf.f
 #takestep2.f
 thomson.f
 tip.f
-#tn.f
-#tosifumi.f
+tn.f
+tosifumi.f
 #trans.f
 welch.f
 wenzel.1D.f
@@ -300,3 +300,5 @@ wham_djw.f90
 # F files
 #mc.f
 #main.f
+ptmc.F
+ptmc.f

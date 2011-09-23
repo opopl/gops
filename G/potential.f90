@@ -6,8 +6,6 @@
       USE V
       USE F
       USE MODBLN
-      USE QMODULE
-      USE PERMU
       USE PORFUNCS
       !}}}
       IMPLICIT NONE

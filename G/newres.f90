@@ -15,7 +15,7 @@
 !
       SUBROUTINE NEWRES(J1,JP,JBEST,EBEST,BESTCOORDS,EPPREV,POTEL,ITERATIONS,TIME,RCOORDS,&
      &                  RMIN,RVAT,BRUN,SCREENC,QDONE,JACCPREV,NSUCCESS,NFAIL,NFAILT,NSUCCESST)
-      USE commons
+      USE COMMONS
       !USE modamber9, only : mdstept 
       
       IMPLICIT NONE
@@ -143,14 +143,14 @@
 ! th368: 20-10-2009 Extending MD-Reseeding to the CHARMM interface
 ! terminate if neither AMBER nor CHARMM was requested in the data file
 
-             IF (AMBERT) THEN
-               CALL TAKESTEPAMBER(JP,COORDS(:,JP),movableatomlist,nmovableatoms,ligmovet,mdstept,randomseedt)
-             ELSEIF (CHRMMT) THEN
-               CALL CHMD(JP)
-             ELSE
+            ! IF (AMBERT) THEN
+               !CALL TAKESTEPAMBER(JP,COORDS(:,JP),movableatomlist,nmovableatoms,ligmovet,mdstept,randomseedt)
+             !ELSEIF (CHRMMT) THEN
+               !CALL CHMD(JP)
+             !ELSE
                WRITE(LFH,'(A,I8,A)') 'newres> Molecular Dynamics reseeding is available for AMBER or CHARMM runs only.'
                STOP
-             ENDIF
+             !ENDIF
 ! end th368: 20-10-2009
 
             CHANGE_TEMP = .false.
