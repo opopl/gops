@@ -31,9 +31,6 @@
       USE COMMONS
       USE V
       USE F
-      USE MODAMBER
-      USE MODAMBER9, ONLY : STEEREDMINT, LOCALSTEEREDMINT, SMINK, SMINKINC, SMINKCURRENT
-      USE MODCHARMM
       USE PORFUNCS
 
       IMPLICIT NONE
@@ -89,9 +86,6 @@
       LOCALSTEEREDMINT=.FALSE.
       IF (STEEREDMINT) LOCALSTEEREDMINT=.TRUE.
 
-! for CHARMM: update nonbonded list at the start of each minimization
-      IF(CHRMMT) CALL UPDATENBONDS(XCOORDS)
-
       NFAIL=0
       IF (GUIDECHANGET) ITER=0
       IF (RESET) ITER=0
@@ -102,34 +96,10 @@
          IF (.NOT.(RESET.OR.GUIDECHANGET)) WRITE(LFH,'(A)') 'mylbfgs> Not resetting LBFGS minimiser'
       ENDIF
 
-      IF (Q4T) CALL ORDERQ4(NATOMS,XCOORDS,QSTART)
 
       IF (DUMPT) THEN
         ! {{{
-         IF (ARNO) THEN
-            WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS+2
-            WRITE(DUMPXYZUNIT+NP,11) NP,NQ(NP)
-            WRITE(DUMPXYZUNIT+NP,'(A,F20.10)') 'N 0.0 0.0 ', 0.577D0
-            WRITE(DUMPXYZUNIT+NP,'(A,F20.10)') 'O 0.0 0.0 ',-0.577D0
-            WRITE(DUMPXYZUNIT+NP,65) (XCOORDS(J1),J1=1,3*(NATOMS-NS))
-65          FORMAT('AR ',3F20.10)
-         ELSE IF (TIP) THEN
-            WRITE(DUMPXYZUNIT+NP,'(I6)') (NATOMS/2)*3
-            WRITE(DUMPXYZUNIT+NP,'(A,I5)') 'LBFGS iteration ',ITER
-            DO J2=1,NATOMS/2
-               CALL TIPIO(XCOORDS(3*(J2-1)+1),XCOORDS(3*(J2-1)+2),XCOORDS(3*(J2-1)+3),&
-     &              XCOORDS(3*(NATOMS/2+J2-1)+1),XCOORDS(3*(NATOMS/2+J2-1)+2),XCOORDS(3*(NATOMS/2+J2-1)+3),RBCOORDS)
-               WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'O ',RBCOORDS(1),RBCOORDS(2),RBCOORDS(3)
-               WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(4),RBCOORDS(5),RBCOORDS(6)
-               WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(7),RBCOORDS(8),RBCOORDS(9)
-            ENDDO
-         ELSE IF (AMBER) THEN
-            WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
-            WRITE(DUMPXYZUNIT+NP,11) NP,NQ(NP)
-            DO J2=1,NATOMS
-               WRITE(DUMPXYZUNIT+NP,'(A,3F20.10)') TYPECH(J2)(1:1),(XCOORDS(3*(J2-1)+J3),J3=1,3)
-            ENDDO
-         ELSEIF (NCORE(NP).GT.0) THEN
+         IF (NCORE(NP).GT.0) THEN
             WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
             WRITE(DUMPXYZUNIT+NP,11) NQ(NP)
             WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') ('LB',XCOORDS(3*(I-1)+1),XCOORDS(3*(I-1)+2),XCOORDS(3*(I-1)+3),&
@@ -192,12 +162,6 @@
 !        ENDIF
 !     ENDIF
 
-      IF (CHRMMT .AND. GCHARMMFAIL) THEN
-          WRITE(LFH,'(A)') 'Failure in CHARMM energy/gradient evaluation - geometry discarded.'
-!         IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
-          RETURN
-      ENDIF
-
 !
 !  If INTMINT and CHRMMT need to transform to internal coordinates
 !  See COPTIM.2.3 for switching to internals from Cartesians using LIMINCUT.
@@ -255,14 +219,7 @@
 10    CALL FLUSH(LFH)
       MFLAG=.FALSE.
       IF (RMS.LE.EPS) THEN
-         IF (CHRMMT.AND.ACESOLV) THEN
-            NCHENCALLS=ACEUPSTEP-1
-            CALL POTENTIAL(XCOORDS,GRAD,ENERGY,.TRUE.,.FALSE.)
-            IF (DEBUG) WRITE(*,'(A,2G20.10,A)') ' mylbfgs> Energy and RMS force=',ENERGY,RMS,' after ACE update'
-            IF (RMS.LE.EPS) MFLAG=.TRUE.
-         ELSE
-            MFLAG=.TRUE.
-         ENDIF
+         MFLAG=.TRUE.
          IF (EVAP) MFLAG=.FALSE. ! do not allow convergence if we happen to have a small RMS and EVAP is true'
          IF (MFLAG) THEN
             FIXIMAGE=.FALSE.
@@ -354,20 +311,12 @@
 !
 !  NR step for diagonal inverse Hessian
 !
-         IF (CHRMMT.AND.INTMINT) THEN
-            DO I=1,N
-               W(ISPT+I)= -GINT(I)*DIAG(I)
-               W(I)= -GINT(I)*DIAG(I)
-            ENDDO
-            GNORM= DSQRT(DDOT(N,GINT,1,GINT,1))
-         ELSE
             DO J1=1,N
                DUMMY=-GRAD(J1)*DIAG(J1)
                W(ISPT+J1)=DUMMY
                W(J1)=DUMMY
             ENDDO
             GNORM=DSQRT(DDOT(N,GRAD,1,GRAD,1))
-         ENDIF
 !
 !  Make the first guess for the step length cautious.
 !

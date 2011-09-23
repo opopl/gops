@@ -1,5 +1,5 @@
 
-      IF (WORD.EQ.'    '.OR.WORD.EQ.'NOTE'.OR.WORD.EQ.'COMMENT'.OR.WORD.EQ.'!'
+      IF (WORD.EQ.'    '.OR.WORD.EQ.'NOTE'.OR.WORD.EQ.'COMMENT'.OR.WORD.EQ.'!'&
      &                          .OR. WORD .EQ. '\\') THEN 
          GOTO 190
 

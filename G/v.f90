@@ -3,7 +3,7 @@
       IMPLICIT NONE
       SAVE
         
-      LOGICAL ::  MYBLNT
+      LOGICAL ::  MYBLNT, RMST
       !LOGICAL ::  GUIDECHANGET,  CSMDOGUIDET, GUIDET
       !COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
 
@@ -16,5 +16,17 @@
 
       ! from module PERMU
       DOUBLE PRECISION, ALLOCATABLE :: FIN(:)
+      ! from f1com
+      integer :: NCOM
+      double precision, allocatable :: xicom(:),pcom(:)
+      ! from modhess
+      DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: HESS  !  3*MXATMS,3*MXATMS
+
+      ! from qmodule
+      integer,allocatable :: FF(:),INTEFF(:) ! NSAVE
+      DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(:) ! NSAVE
+      DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(:,:)
+
+      INTEGER :: MXATMS=0
 
       ENDMODULE V

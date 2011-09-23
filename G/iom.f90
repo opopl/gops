@@ -2,7 +2,6 @@
       SUBROUTINE IOM
       ! modules {{{
       USE COMMONS
-      USE QMODULE
       USE V
       USE PORFUNCS
       ! }}}

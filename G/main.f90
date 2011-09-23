@@ -2,23 +2,14 @@
       PROGRAM GMIN
 !op226> Declarations {{{ 
       !op226> Modules {{{ 
-      USE MODMXATMS
       USE COMMONS
       USE V
       USE F 
-      USE QMODULE
-      USE PERMU
-      USE F1COM
-      USE MODAMBER
-      USE MODAMBER9, only : AMBFINALIO_NODE,MDCRD_UNIT,MDINFO_UNIT,AMBPDB_UNIT
-      USE MODCHARMM
       USE PORFUNCS
       !op226>  }}}
       !op226> Other {{{
       IMPLICIT NONE
       !EXTERNAL READ_CMD_ARGS
-
-
 
       INTEGER J1,J2, JP, MPIERR, NDUMMY3,NPTOTAL,VERSIONTEMP
       DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:)
@@ -46,10 +37,6 @@
       write(*,'(2A20)') "Output runtime file:  ",O_FILE
       NPAR=1
       MYNODE=0
-      MDCRD_UNIT=20000
-      MDINFO_UNIT=21000
-      AMBPDB_UNIT=18000
-      AMBFINALIO_NODE=1
       ! }}}
 !op226> Allocate memory; open files; initialize different things  {{{ 
       CALL COUNTATOMS
@@ -59,25 +46,25 @@
       !CALL KW
       CALL SETVARS
 
-!op226> RMST {{{ 
-      IF (RMST) THEN
-         ALLOCATE(RMSBEST(RMSSAVE,2),RMSCOOR(RMSSAVE,3*NATOMS))
-         RMSBEST(1:RMSSAVE,1)=RMSLIMIT+RMSTOL
-         RMSBEST(1:RMSSAVE,2)=0.D0
-         RMSCOOR(1:RMSSAVE,1:3*NATOMS)=0.D0
-         ALLOCATE(COORCOMP(1:3*NATOMS))
-!
-!        csw34> Need to add the read in for other file formats
-!        (crd,pdb). Still not sure how GMIN reads in the input.crd file
-!        for CHARMM. It appears to be reading into unit 7 in io1.f
-!        though - but only from xyz format! Is there a hidden
-!        conversion?
-!         
-         OPEN(UNIT=1,FILE='compare',STATUS='OLD')
-         READ(1,*) (COORCOMP(J1),J1=1,3*NATOMS)
-         CLOSE(1)
-      ENDIF
-!op226>}}} 
+!!op226> RMST {{{ 
+      !IF (RMST) THEN
+         !ALLOCATE(RMSBEST(RMSSAVE,2),RMSCOOR(RMSSAVE,3*NATOMS))
+         !RMSBEST(1:RMSSAVE,1)=RMSLIMIT+RMSTOL
+         !RMSBEST(1:RMSSAVE,2)=0.D0
+         !RMSCOOR(1:RMSSAVE,1:3*NATOMS)=0.D0
+         !ALLOCATE(COORCOMP(1:3*NATOMS))
+!!
+!!        csw34> Need to add the read in for other file formats
+!!        (crd,pdb). Still not sure how GMIN reads in the input.crd file
+!!        for CHARMM. It appears to be reading into unit 7 in io1.f
+!!        though - but only from xyz format! Is there a hidden
+!!        conversion?
+!!         
+         !OPEN(UNIT=1,FILE='compare',STATUS='OLD')
+         !READ(1,*) (COORCOMP(J1),J1=1,3*NATOMS)
+         !CLOSE(1)
+      !ENDIF
+!!op226>}}} 
 
       ALLOCATE(FF(NSAVE),QMIN(NSAVE))
       ALLOCATE(QMINP(NSAVE,3*NATOMS))
@@ -91,10 +78,6 @@
 
 !op226> DUMPT {{{ 
       IF (DUMPT) THEN
-         IF (CHRMMT) THEN
-            OPEN(UNIT=719,FILE='dump.crd',STATUS='UNKNOWN')
-            OPEN(UNIT=720,FILE='dump.pdb',STATUS='UNKNOWN')
-         ENDIF
          DUMPXYZUNIT=40
          DUMPVUNIT=39
          DO J1=1,NPAR
@@ -108,24 +91,24 @@
       ENDIF
 !op226>}}} 
 
-        ! PAIRDIST {{{
-      IF (PAIRDISTT) THEN
-         MYPUNIT=3000+MYNODE
-         IF (NPAR.GT.1) THEN
-            OPEN(MYPUNIT,FILE="pairdists."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-         ELSE
-            OPEN(MYPUNIT,FILE="pairdists",STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-         ENDIF
-         WRITE(MYPUNIT,'(A10)',ADVANCE="NO") "Quench  "
-         DO J1=1,NPAIRS
-            WRITE(atom1,*) PAIRDIST(J1,1)
-            WRITE(atom2,*) PAIRDIST(J1,2)
-            WRITE(atompair,*) TRIM(ADJUSTL(atom1))//"-"//TRIM(ADJUSTL(atom2))
-            WRITE(MYPUNIT,'(A10)',ADVANCE="NO") TRIM(ADJUSTL(atompair))//"  " 
-         ENDDO
-         WRITE(LFH,'(A)') ""
-      ENDIF
-         ! }}}
+!        ! PAIRDIST {{{
+      !IF (PAIRDISTT) THEN
+         !MYPUNIT=3000+MYNODE
+         !IF (NPAR.GT.1) THEN
+            !OPEN(MYPUNIT,FILE="pairdists."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+         !ELSE
+            !OPEN(MYPUNIT,FILE="pairdists",STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+         !ENDIF
+         !WRITE(MYPUNIT,'(A10)',ADVANCE="NO") "Quench  "
+         !DO J1=1,NPAIRS
+            !WRITE(atom1,*) PAIRDIST(J1,1)
+            !WRITE(atom2,*) PAIRDIST(J1,2)
+            !WRITE(atompair,*) TRIM(ADJUSTL(atom1))//"-"//TRIM(ADJUSTL(atom2))
+            !WRITE(MYPUNIT,'(A10)',ADVANCE="NO") TRIM(ADJUSTL(atompair))//"  " 
+         !ENDDO
+         !WRITE(LFH,'(A)') ""
+      !ENDIF
+         !! }}}
 
 !op226> TRACKDATAT {{{ 
 !

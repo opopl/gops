@@ -35,14 +35,9 @@
       ! modules {{{
       USE COMMONS
       USE F
-      USE qmodule , only : qmin, QMINP, INTEQMIN
-      USE modcharmm
-      USE MODAMBER9, ONLY : MDSTEPT,CISARRAY1,CISARRAY2,CHIARRAY1,CHIARRAY2,NOCISTRANSDNA,NOCISTRANSRNA
-      USE MODAMBER9, ONLY:  SETCHIRAL,AMCHPMAX,DOLIGMOVE,LIGMOVEFREQ, AMCHNMAX
+      USE V
       USE PORFUNCS
 
-      USE AMHGLOBALS, ONLY: NMRES,OMOVI,AVEP,NUMPRO,IRES
-      USE AMH_INTERFACES, ONLY:E_WRITE
       ! }}}
 
       IMPLICIT NONE
@@ -53,7 +48,9 @@
       DOUBLE PRECISION, DIMENSION(:) ::   SCREENC
       ! }}}
       ! local  {{{
-      INTEGER J1, NSUCCESS(NPAR), NFAIL(NPAR), NFAILT(NPAR), NSUCCESST(NPAR), J2, JP, J5, UNT
+      INTEGER J1, NSUCCESS(NPAR), NFAIL(NPAR), NFAILT(NPAR), NSUCCESST(NPAR), J2, JP, J5
+
+      INTEGER UNT
       integer ITERATIONS, NSUPERCOUNT, NQTOT, JACCPREV, NREN, NLAST, NSTEPREN, BRUN,QDONE,JBEST(NPAR)
       integer NRMS, NDONE, I, RNDSEED, J, NTOT, IMESG, ITRAJ, ITRAJO, NEACCEPT
       integer J3, J4, ISTAT, LOCALCOUNT
@@ -99,85 +96,84 @@
 
 ! Write a list of FROZEN atoms for use in an (o)data file
 !op226> IF (FREEZEGROUPT) THEN {{{
-      IF (FREEZEGROUPT) THEN
-         OPEN(UNIT=4431,FILE='frozen.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-         DO J6=1,NATOMS
-!
-! Work out the distance from GROUPCENTRE to the current atom J1
-! 
-            DISTGROUPX2=(COORDS(3*GROUPCENTRE-2,1)-COORDS(3*J6-2,1))**2
-            DISTGROUPY2=(COORDS(3*GROUPCENTRE-1,1)-COORDS(3*J6-1,1))**2
-            DISTGROUPZ2=(COORDS(3*GROUPCENTRE  ,1)-COORDS(3*J6  ,1))**2
-            DISTGROUPCENTRE=SQRT(DISTGROUPX2+DISTGROUPY2+DISTGROUPZ2)
-! If working in GT mode (default), FREEZE all atoms >GROUPRADIUS from the GROUPCENTRE atom
-            IF((FREEZEGROUPTYPE=="GT").AND.(DISTGROUPCENTRE.GT.GROUPRADIUS)) THEN
-               NFREEZE=NFREEZE+1
-               FROZEN(J6)=.TRUE.
-               WRITE(4431,'(A,I6)') 'FREEZE ',J6
-! If working in LT mode, FREEZE all atoms <GROUPRADIUS from the GROUPCENTRE atom
-            ELSE IF((FREEZEGROUPTYPE=="LT").AND.(DISTGROUPCENTRE.LT.GROUPRADIUS)) THEN
-               NFREEZE=NFREEZE+1
-               FROZEN(J6)=.TRUE.
-               WRITE(4431,'(A,I6)') 'FREEZE ',J6
-            END IF
-         END DO
-         CLOSE(4431)
-! Prevent it doing this again
-         FREEZEGROUPT=.FALSE.     
-      ENDIF
+      !IF (FREEZEGROUPT) THEN
+         !OPEN(UNIT=4431,FILE='frozen.dat',STATUS='UNKNOWN',FORM='FORMATTED')
+         !DO J6=1,NATOMS
+!!
+!! Work out the distance from GROUPCENTRE to the current atom J1
+!! 
+            !DISTGROUPX2=(COORDS(3*GROUPCENTRE-2,1)-COORDS(3*J6-2,1))**2
+            !DISTGROUPY2=(COORDS(3*GROUPCENTRE-1,1)-COORDS(3*J6-1,1))**2
+            !DISTGROUPZ2=(COORDS(3*GROUPCENTRE  ,1)-COORDS(3*J6  ,1))**2
+            !DISTGROUPCENTRE=SQRT(DISTGROUPX2+DISTGROUPY2+DISTGROUPZ2)
+!! If working in GT mode (default), FREEZE all atoms >GROUPRADIUS from the GROUPCENTRE atom
+            !IF((FREEZEGROUPTYPE=="GT").AND.(DISTGROUPCENTRE.GT.GROUPRADIUS)) THEN
+               !NFREEZE=NFREEZE+1
+               !FROZEN(J6)=.TRUE.
+               !WRITE(4431,'(A,I6)') 'FREEZE ',J6
+!! If working in LT mode, FREEZE all atoms <GROUPRADIUS from the GROUPCENTRE atom
+            !ELSE IF((FREEZEGROUPTYPE=="LT").AND.(DISTGROUPCENTRE.LT.GROUPRADIUS)) THEN
+               !NFREEZE=NFREEZE+1
+               !FROZEN(J6)=.TRUE.
+               !WRITE(4431,'(A,I6)') 'FREEZE ',J6
+            !END IF
+         !END DO
+         !CLOSE(4431)
+!! Prevent it doing this again
+         !FREEZEGROUPT=.FALSE.     
+      !ENDIF
 !op226>}}} 
 
 ! Write a list of DONTMOVE atoms for use in an (o)data file
-!op226> IF (DONTMOVEGROUPT) THEN {{{
-      IF (DONTMOVEGROUPT) THEN
-              OPEN(UNIT=4431,FILE='dontmove.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-         DO J6=1,NATOMS
-!
-! Work out the distance from DONTMOVECENTRE to the current atom J1
-! 
-            DISTGROUPX2=(COORDS(3*DONTMOVECENTRE-2,1)-COORDS(3*J6-2,1))**2
-            DISTGROUPY2=(COORDS(3*DONTMOVECENTRE-1,1)-COORDS(3*J6-1,1))**2
-            DISTGROUPZ2=(COORDS(3*DONTMOVECENTRE  ,1)-COORDS(3*J6  ,1))**2
-            DISTGROUPCENTRE=SQRT(DISTGROUPX2+DISTGROUPY2+DISTGROUPZ2)
-! If working in GT mode (default), DONTMOVE all atoms >GROUPRADIUS from the DONTMOVECENTRE atom
-            IF((DONTMOVEGROUPTYPE=="GT").AND.(DISTGROUPCENTRE.GT.GROUPRADIUS)) THEN
-               NDONTMOVE=NDONTMOVE+1
-               DONTMOVE(J6)=.TRUE.
-               WRITE(4431,'(A,I6)') 'DONTMOVE ',J6
-! IF working in LT mode, DONTMOVE all atoms <GROUPRADIUS from the DONTMOVECENTRE atom
-       ELSE IF((DONTMOVEGROUPTYPE=="LT").AND.(DISTGROUPCENTRE.LT.GROUPRADIUS)) THEN
-               NDONTMOVE=NDONTMOVE+1
-               DONTMOVE(J6)=.TRUE.
-               WRITE(4431,'(A,I6)') 'DONTMOVE ',J6
-            END IF
-         END DO
-         CLOSE(4431)
-! Prevent it doing this again
-         DONTMOVEGROUPT=.FALSE.     
-      ENDIF
-!op226>}}} 
+!!op226> IF (DONTMOVEGROUPT) THEN {{{
+      !IF (DONTMOVEGROUPT) THEN
+              !OPEN(UNIT=4431,FILE='dontmove.dat',STATUS='UNKNOWN',FORM='FORMATTED')
+         !DO J6=1,NATOMS
+!!
+!! Work out the distance from DONTMOVECENTRE to the current atom J1
+!! 
+            !DISTGROUPX2=(COORDS(3*DONTMOVECENTRE-2,1)-COORDS(3*J6-2,1))**2
+            !DISTGROUPY2=(COORDS(3*DONTMOVECENTRE-1,1)-COORDS(3*J6-1,1))**2
+            !DISTGROUPZ2=(COORDS(3*DONTMOVECENTRE  ,1)-COORDS(3*J6  ,1))**2
+            !DISTGROUPCENTRE=SQRT(DISTGROUPX2+DISTGROUPY2+DISTGROUPZ2)
+!! If working in GT mode (default), DONTMOVE all atoms >GROUPRADIUS from the DONTMOVECENTRE atom
+            !IF((DONTMOVEGROUPTYPE=="GT").AND.(DISTGROUPCENTRE.GT.GROUPRADIUS)) THEN
+               !NDONTMOVE=NDONTMOVE+1
+               !DONTMOVE(J6)=.TRUE.
+               !WRITE(4431,'(A,I6)') 'DONTMOVE ',J6
+!! IF working in LT mode, DONTMOVE all atoms <GROUPRADIUS from the DONTMOVECENTRE atom
+       !ELSE IF((DONTMOVEGROUPTYPE=="LT").AND.(DISTGROUPCENTRE.LT.GROUPRADIUS)) THEN
+               !NDONTMOVE=NDONTMOVE+1
+               !DONTMOVE(J6)=.TRUE.
+               !WRITE(4431,'(A,I6)') 'DONTMOVE ',J6
+            !END IF
+         !END DO
+         !CLOSE(4431)
+!! Prevent it doing this again
+         !DONTMOVEGROUPT=.FALSE.     
+      !ENDIF
+!!op226>}}} 
       
 !     csw34> Added defaults to prevent accidentaly discarding
 !     structures for AMH      
 
-      CHIRALFAIL=.FALSE.
-      AMIDEFAIL=.FALSE.
-      INQUIRE(UNIT=1,OPENED=LOPEN)
-      IF (LOPEN) THEN
-         WRITE(*,'(A,I2,A)') 'mc> A ERROR *** Unit ', 1, ' is not free '
-         STOP
-      ENDIF
+      !CHIRALFAIL=.FALSE.
+      !AMIDEFAIL=.FALSE.
+      !INQUIRE(UNIT=1,OPENED=LOPEN)
+      !IF (LOPEN) THEN
+         !WRITE(*,'(A,I2,A)') 'mc> A ERROR *** Unit ', 1, ' is not free '
+         !STOP
+      !ENDIF
 
       ALLOCATE(TMOVE(NPAR), OMOVE(NPAR))
-      snapcount=0
-      NSTEPREN=0
+      !snapcount=0
+      !NSTEPREN=0
       EVAPREJECT=.FALSE.
-      INQUIRE(UNIT=1,OPENED=LOPEN)
-      IF (LOPEN) THEN
-         WRITE(*,'(A,I2,A)') 'mc> B ERROR *** Unit ', 1, ' is not free '
-         STOP
-      ENDIF
-
+      !INQUIRE(UNIT=1,OPENED=LOPEN)
+      !IF (LOPEN) THEN
+         !WRITE(*,'(A,I2,A)') 'mc> B ERROR *** Unit ', 1, ' is not free '
+         !STOP
+      !ENDIF
 
       NDONE=0
       IF (RESTORET) THEN
@@ -200,7 +196,6 @@
          !RETURN
       !ENDIF
 !! }}}
-
 
       IF (NACCEPT.EQ.0) NACCEPT=NSTEPS+1
       NRMS=0
@@ -228,10 +223,10 @@
          ENDIF
       ENDDO
 
-      IF (AMHT) THEN
-         write(omovi,1334)nmres,3,1,INT(real(NSTEPS)/real(NINT_AMH))
-1334     format(4(i8,1x),' nmres nmcrd numpro nmsnap')
-      ENDIF
+      !IF (AMHT) THEN
+         !write(omovi,1334)nmres,3,1,INT(real(NSTEPS)/real(NINT_AMH))
+!1334     format(4(i8,1x),' nmres nmcrd numpro nmsnap')
+      !ENDIF
     
       IF (.NOT.RESTORET) THEN
 !       csw34> Set the centre of mass to be at the specified location
@@ -239,11 +234,6 @@
          IF (SETCENT) CALL SETCENTRE(COORDS)
 !
 ! For MAKEOLIGOT and MAKEOLIGOSTART=TRUE: generate oligomers by placing new segments.
-         IF (CHRMMT.AND.MAKEOLIGOT.AND.MAKEOLIGOSTART) THEN
-             DO JP=1,NPAR
-                CALL CHMAKEOLIGOMER(JP)
-             ENDDO
-         ENDIF
       ENDIF
 
 !  Calculate the initial energy and save in EPREV
@@ -263,20 +253,6 @@
      &           POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',POTEL,' t=',TIME-TSTART
          ENDIF
 
-
-! Added dump of the initial structure, this is very useful for flu! csw34
-      IF (CHRMMT) CALL CHARMMDUMP(COORDS,'initialmin')
-
-!     csw34> Added initial call to check_cistrans_protein to store cis/trans info for initial structure
-         IF (AMBERT.AND.NOCISTRANS.AND.(.NOT.NOCISTRANSDNA).AND.(.NOT.NOCISTRANSRNA)) THEN
-            WRITE(LFH,'(A)') ' mc> Storing cis/trans information for initial structure'
-            CALL check_cistrans_protein(COORDS(:,1),NATOMS,LOGDUMMY,MINOMEGA,cisarray1)
-         ENDIF
-!     abc> Added initial call to set_check_chiral for L/D info for initial structure
-         IF (AMBERT.AND.SETCHIRAL.AND.NOCISTRANS.AND.(.NOT.NOCISTRANSDNA).AND.(.NOT.NOCISTRANSRNA)) THEN
-            WRITE(LFH,'(A)') ' mc> Storing chiral information for initial structure'
-            CALL set_check_chiral(COORDS(:,1),NATOMS,LOGDUMMY,chiarray1)
-         ENDIF 
 !  EPREV saves the previous energy in the Markov chain.
 !  EBEST and JBEST record the lowest energy since the last reseeding and the
 !  step it was attained at. BESTCOORDS contains the corresponding coordinates.
@@ -296,60 +272,9 @@
       ! }}}
 !op226>}}} 
 
-!op226> IF (THOMSONT) THEN - Thomson problem {{{
-      IF (THOMSONT) THEN
-!
-! Scale maximum step size for the Thomson problem according to the mean nearest-neighbour 
-! distance after the first quench.
-!
-         DUMMY1=0.0D0
-         DO J1=1,NATOMS
-            DUMMY2=1.0D100
-            DO J2=1,NATOMS
-               IF (J2.EQ.J1) CYCLE
-               DUMMY3=(COORDS(3*(J1-1)+1,1)-COORDS(3*(J2-1)+1,1))**2 +  &
-     &                (COORDS(3*(J1-1)+2,1)-COORDS(3*(J2-1)+2,1))**2 + &
-     &                (COORDS(3*(J1-1)+3,1)-COORDS(3*(J2-1)+3,1))**2 
-               IF (DUMMY3.LT.DUMMY2) DUMMY2=DUMMY3
-            ENDDO
-            DUMMY1=DUMMY1+DUMMY2
-         ENDDO
-         DUMMY1=SQRT(DUMMY1/NATOMS)
-         DO J1=1,NPAR
-            STEP(J1)=STEP(J1)*DUMMY1
-         ENDDO
-         WRITE(LFH, '(2(A,G20.10))') 'Maximum step size scaled by mean nearest neighbour distance of ',DUMMY1,' to ',STEP(1)
-      ENDIF
-!op226>}}} 
-
-!op226> GMIN_out: Starting MC run ...; Temperature will ... {{{ 
-      IF (NPAR.EQ.1) THEN
-         WRITE(LFH,'(A,I10,A)') 'Starting MC run of ',NSTEPS,' steps'
-      ELSE
-         WRITE(LFH,'(A,I3,A,I10,A)') 'Starting ',NPAR,' parallel MC runs of ',NSTEPS,' steps'
-      ENDIF
+      WRITE(LFH,'(A,I10,A)') 'Starting MC run of ',NSTEPS,' steps'
       WRITE(LFH,'(A,F15.8,A)') 'Temperature will be multiplied by ',SCALEFAC,' at every step'
-!op226>}}} 
 
-!op226> csw34> IF (LOCALSAMPLET.AND.AMBERT) THEN  {{{
-! csw34> Before we start BH steps, 
-! check the structure satisfies the conditions in LOCALSAMPLE if specified
-!        This is important to prevent an infinite loop occuring!
-!        Also, make sure that the ligand has been specified in movableatoms
-      IF (LOCALSAMPLET.AND.AMBERT) THEN
-         IF(NMOVABLEATOMS==0) THEN
-            WRITE(LFH,*) 'must have MOVABLEATOMS specified when using LOCALSAMPLE' 
-            STOP
-         ENDIF
-         DISTOK=.FALSE.
-         CALL A9DISTCHECK(COORDS(:,JP),DISTOK)
-         IF (.NOT.DISTOK) THEN
-            WRITE(LFH,*) 'initial structure violates LOCALSAMPLE conditions - exiting!'
-            STOP
-         ENDIF
-         DISTOK=.FALSE.
-      ENDIF   
-!op226>}}} 
       NSUPERCOUNT=NSUPER
 
 !  Main basin-hopping loop 
@@ -454,212 +379,36 @@
 !                 CALL CHARMMDUMP(COORDS(:,JP),'beforemove')
 
 !
-! CHARMM STEP TAKING
-!
-               IF (CHRMMT) THEN
-                  IF (CHMDT.AND.MOD(J1,CHMDFREQ).EQ.0) THEN
-                     CALL CHMD(JP)
-                  ELSE
-!                    CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'beforestep')
-                     IF (CHRIGIDTRANST.AND.MOD(J1,FTRANS).EQ.0) CALL MKRIGIDTRANS(JP)
-                     IF (CHRIGIDROTT.AND.MOD(J1,FROT).EQ.0) CALL MKRIGIDROT(JP)
-                     IF (MOD(J1,CHFREQ).EQ.0) CALL TAKESTEPCH(JP)
-
-! bs360: check the perturbed structure prior minimization (for debugging reasons)
-!#ifdef MPI
-!                     CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'afterstep.'//TRIM(ADJUSTL(ISTR)))
-!#else
-!                     CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'afterstep')
-!#endif
-!               seed the random number generator with system time  + MYNODE (for MPI runs)
-                     IF (RANDOMSEEDT) THEN
-                         CALL DATE_AND_TIME(datechar,timechar,zonechar,values)
-                         itime1= values(6)*60 + values(7)
-                         CALL SDPRND(itime1+MYNODE)
-                     END IF
-                              
-! jmc49> only do this undoing if the steps are in Cartesians (i.e. CHNMAX <= 0.0D0), not internals, 
-!        in order to allow rigid-body movements of the frozen parts relative to each other when the moves 
-!        are in internals
-                  ENDIF
-! Do group rotation moves
-                  IF(GROUPROTT.AND.DOGROUPROT) CALL GROUPROTSTEP(JP) 
-!
-! ANISOTROPIC STEP TAKING
-!
-               ELSE IF (ELLIPSOIDT.AND..NOT.PYGPERIODICT.AND..NOT.PYBINARYT) THEN
-                CALL TAKESTEPELLIPSOIDS(JP) 
-
-               ELSE IF (GAYBERNEDCT) THEN
-                CALL TAKESTEPGB(JP)
-
-               ELSE IF (MULTISITEPYT) THEN
-!               seed the random number generator with system time + MYNODE (for MPI runs)
-                  IF(RANDOMSEEDT) THEN
-                     CALL DATE_AND_TIME(datechar,timechar,zonechar,values)
-                     itime1= values(6)*60 + values(7)
-                     CALL SDPRND(itime1+MYNODE)
-                  END IF
-                CALL TAKESTEPMULTISITEPY(JP)
-
-               ELSE IF (PYGPERIODICT.OR.PYBINARYT.OR.LJCAPSIDT) THEN
-!               seed the random number generator with system time + MYNODE (for MPI runs)
-                  IF(RANDOMSEEDT) THEN
-                     CALL DATE_AND_TIME(datechar,timechar,zonechar,values)
-                     itime1= values(6)*60 + values(7)
-                     CALL SDPRND(itime1+MYNODE)
-                  END IF
-                  IF(SWAPMOVEST) THEN
-                     CALL TAKESTEPSWAPMOVES(JP)
-                     CALL TAKESTEPELPSD(JP)
-                  ELSE
-                     CALL TAKESTEPELPSD(JP)
-                  END IF
-
-!               ELSE IF (DBPT) THEN
-!                  CALL TAKESTEPDB(JP)
-
-!
-! MARK'S MIXED CLUSTER STEP TAKING
-!
-!     MAM1000 >  Charged/neutral particle swaps for LJ+Coulomb mixed clusters
-               ELSE IF (LJCOULT) THEN
-                  RANDOM=DPRAND()
-                  IF (RANDOM < COULSWAP) THEN
-                     CALL TAKESTEPLJC(JP)
-                     MCTEMP = COULTEMP
-                  ELSE
-                     CALL TAKESTEP(JP)
-                  END IF
-
-!               ELSE IF (LWOTPT) THEN
-!                  CALL TAKESTEPLWOTP(JP)
-
-               ELSE IF (GBT .OR. GBDT .OR. GBDPT .OR. PYGT .OR. PYGDPT) THEN
-                  CALL TKSTDCELPSD(JP)
-      
-               ELSE IF (MSGBT) THEN
-                  CALL TAKESTEPMSGB(JP) 
-
-               ELSE IF (MSPYGT) THEN
-                  CALL TAKESTEPMSPY(JP)
-!
-! AMBER STEP TAKING
-!               
-               ELSE IF (AMBERT) THEN
-                  IF (.NOT.ALLOCATED(MOVABLEATOMLIST)) THEN 
-                     ALLOCATE(MOVABLEATOMLIST(NATOMS))
-                     NMOVABLEATOMS=NATOMS
-                  ENDIF
-                  DISTOK=.FALSE.
-                  LOCALCOUNT=0
-                  DO WHILE (.NOT.DISTOK)
-                     LOCALCOUNT=LOCALCOUNT+1
-                     IF (LIGMOVET.AND.MOD(J1,ligmovefreq).EQ.0) THEN
-                        doligmove=.TRUE.
-                     ENDIF
-                     
-                     IF (DEBUG) THEN
-                        WRITE(LFH, '(A)') '=== PRE-TAKESTEP COORDS ENERGY ==='
-                        CALL POTENTIAL(COORDS(:,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
-                        WRITE(LFH, '(A, F20.10)') 'Energy = ', OPOTEL
-                        WRITE(LFH, '(A)') '=== PRE-TAKESTEP COORDSO ENERGY ==='
-                        CALL POTENTIAL(COORDSO(:,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
-                        WRITE(LFH, '(A, F20.10)') 'Energy = ', OPOTEL
-
-                        OPEN(1473, FILE="prestepcoordsfile", POSITION="APPEND", STATUS="unknown", form="formatted")
-
-                        WRITE(1473, '(A)') '====================='
-                        WRITE(1473, '(A, I6)') 'Step ', NQ(JP)
-                        WRITE(1473, '(A)') '====================='
-                        WRITE(1473, '(A)') '====================='
-                        WRITE(1473, '(A)') 'coordso'
-                        WRITE(1473, '(A)') '====================='
-                        WRITE(1473, '(3F20.10)') COORDSO(:,JP)
-                        CLOSE(1473)
-                     END IF
-
-                     CALL TAKESTEPAMBER(JP,COORDS(:,JP),MOVABLEATOMLIST,NMOVABLEATOMS,LIGMOVET,MDSTEPT,RANDOMSEEDT)
-
-                     IF (DEBUG) THEN
-                        OPEN(1483, FILE="poststepcoordsfile", POSITION="APPEND", STATUS="unknown", form="formatted")
-                        WRITE(1483, '(A)') '====================='
-                        WRITE(1483, '(A, I6)') 'Step ', NQ(JP)
-                        WRITE(1483, '(A)') '====================='
-                        WRITE(1483, '(A)') '====================='
-                        WRITE(1483, '(A)') 'coordso'
-                        WRITE(1483, '(A)') '====================='
-                        WRITE(1483, '(3F20.10)') COORDSO(:,JP)
-                        CLOSE(1483)                    
- 
-                     
-                        WRITE(LFH, '(A)') '=== POST-TAKESTEP COORDS ENERGY ==='
-                        CALL POTENTIAL(COORDS(:,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
-                        WRITE(LFH, '(A, F20.10)') 'Energy = ', OPOTEL
-                        WRITE(LFH, '(A)') '=== POST-TAKESTEP COORDSO ENERGY ==='
-                        CALL POTENTIAL(COORDSO(:,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
-                        WRITE(LFH, '(A, F20.10)') 'Energy = ', OPOTEL
-                     END IF
-                     
-                     doligmove=.FALSE.
-!
-!  seed the random number generator with system time + MYNODE (for MPI runs)
-!
-                     IF (RANDOMSEEDT) THEN
-                        CALL DATE_AND_TIME(DATECHAR,TIMECHAR,ZONECHAR,VALUES)
-                        ITIME1= VALUES(6)*60 + VALUES(7)
-                        CALL SDPRND(ITIME1+MYNODE)
-                     ENDIF
-                     IF (AMCHPMAX.EQ.0) THEN
-                        CALL TAKESTEP(JP)
-                     ELSE
-!     msb50> New AMBER dihedral move routine
-                        CALL TAKESTEPAMM(COORDS(:,JP), DEBUG, STEP(JP))
-                     ENDIF
-! Do group rotation moves
-                     IF(GROUPROTT.AND.DOGROUPROT) CALL GROUPROTSTEP(JP) 
-!     csw34> Check distances for groups defined in movableatoms file
-!            If A->B > ABTHRESH or A->C > ACTHRESH, the step is discarded and we try again 
-                     IF (LOCALSAMPLET) THEN
-                        CALL A9DISTCHECK(COORDS(:,JP),DISTOK)
-                        IF (.NOT.DISTOK) COORDS(:,JP)=SAVECOORDS(:)
-                     ELSE
-                        DISTOK=.TRUE.
-                     ENDIF
-                  ENDDO
 !
 ! ALL OTHER STEP TAKING
 !
-               ELSE
- 
 !  These coordinates are overwritten if we try to call MPI_IPROBE
 !
 !                 WRITE(LFH,'(I6)') NATOMS
 !                 WRITE(LFH,'(A,G20.10)') 'eprev=',EPREV
 !                 WRITE(LFH,'(A,3G20.10)') ('LA ',COORDS(3*(J3-1)+1:3*(J3-1)+3,JP),J3=1,NATOMS)
                   CALL TAKESTEP(JP)
-               ENDIF
-! Restore atom coordinates if atom is FROZEN or DONTMOVE as long as
-! we're not taking internal coordinate moves in CHARMM or AMBER
-               IF ((CHNMAX.LE.0.0D0).AND.(AMCHNMAX.LE.0.0D0)) THEN
-                  IF(FREEZE) THEN
-                     DO J2=1,NATOMS
-                        IF (FROZEN(J2)) THEN
-                           COORDS(3*(J2-1)+1:3*(J2-1)+3,JP)=SAVECOORDS(3*(J2-1)+1:3*(J2-1)+3)
-                        ENDIF
-                     ENDDO
-                  ENDIF
-!
-! Same for DONTMOVE atoms
-! 
-                  IF(DONTMOVET) THEN
-                     DO J2=1,NATOMS
-                        IF (DONTMOVE(J2)) THEN
-                           COORDS(3*(J2-1)+1:3*(J2-1)+3,JP)=SAVECOORDS(3*(J2-1)+1:3*(J2-1)+3)
-                        ENDIF
-                     ENDDO
-                  ENDIF
-               ENDIF
+!! Restore atom coordinates if atom is FROZEN or DONTMOVE as long as
+!! we're not taking internal coordinate moves in CHARMM or AMBER
+               !IF ((CHNMAX.LE.0.0D0).AND.(AMCHNMAX.LE.0.0D0)) THEN
+                  !IF(FREEZE) THEN
+                     !DO J2=1,NATOMS
+                        !IF (FROZEN(J2)) THEN
+                           !COORDS(3*(J2-1)+1:3*(J2-1)+3,JP)=SAVECOORDS(3*(J2-1)+1:3*(J2-1)+3)
+                        !ENDIF
+                     !ENDDO
+                  !ENDIF
+!!
+!! Same for DONTMOVE atoms
+!! 
+                  !IF(DONTMOVET) THEN
+                     !DO J2=1,NATOMS
+                        !IF (DONTMOVE(J2)) THEN
+                           !COORDS(3*(J2-1)+1:3*(J2-1)+3,JP)=SAVECOORDS(3*(J2-1)+1:3*(J2-1)+3)
+                        !ENDIF
+                     !ENDDO
+                  !ENDIF
+               !ENDIF
  
 !
 ! Reset switch variables for steps not done every time
@@ -692,7 +441,6 @@
 ! END OF KEYWORD <DUMPSTEPS> BLOCK
 
                NQ(JP)=NQ(JP)+1
-               IF(CHRMMT.AND.ACESOLV) NCHENCALLS=ACEUPSTEP-1
                CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)  
                NQTOT=NQTOT+1
  
@@ -712,10 +460,6 @@
 !
 !  Output
 !
-               IF (NPAR.GT.1) THEN
-                  WRITE(LFH,'(A,I2,A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') '[',JP,']Qu ',NQ(JP),' E=',&
-     &                 POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',EPREV(JP),' t=',TIME-TSTART
-               ELSE
                   WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'Qu ',NQ(JP),' E=',&
      &                 POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',EPREV(JP),' t=',TIME-TSTART
 
@@ -731,65 +475,9 @@
 
 !     mp466>  writes structure and energetic data at regular increments
 !             to *plot and movie files for AMH potential
-!
-                  IF ((MOD(J1,NINT_AMH).EQ.0).AND.AMHT) THEN
-
-                     GLY_COUNT = 0
-                     SNAPCOUNT = SNAPCOUNT + 1
-
-                     DO III = 1,NMRES
-                        IF (IRES(III).EQ.8) THEN
-                           PRCORD(III,1,1,1) = COORDS(9*(III-1)+1- GLY_COUNT*3,JP) !  CA X
-                           PRCORD(III,2,1,1) = COORDS(9*(III-1)+2- GLY_COUNT*3,JP) !  CA Y
-                           PRCORD(III,3,1,1) = COORDS(9*(III-1)+3- GLY_COUNT*3,JP) !  CA Z
-!    SWAP  CA for CB
-                           PRCORD(III,1,1,2) = COORDS(9*(III-1)+1- GLY_COUNT*3,JP) !  CB X
-                           PRCORD(III,2,1,2) = COORDS(9*(III-1)+2- GLY_COUNT*3,JP) !  CB Y
-                           PRCORD(III,3,1,2) = COORDS(9*(III-1)+3- GLY_COUNT*3,JP) !  CB Z
-                           PRCORD(III,1,1,3) = COORDS(9*(III-1)+4- GLY_COUNT*3,JP) !  O X
-                           PRCORD(III,2,1,3) = COORDS(9*(III-1)+5- GLY_COUNT*3,JP) !  O Y
-                           PRCORD(III,3,1,3) = COORDS(9*(III-1)+6- GLY_COUNT*3,JP) !  O Z
-                           GLY_COUNT = GLY_COUNT +1
-                        ELSE
-                           PRCORD(III,1,1,1) = COORDS(9*(III-1)+1 - GLY_COUNT*3,JP) !  CA X
-                           PRCORD(III,2,1,1) = COORDS(9*(III-1)+2 - GLY_COUNT*3,JP) !  CA Y
-                           PRCORD(III,3,1,1) = COORDS(9*(III-1)+3 - GLY_COUNT*3,JP) !  CA Z
-                           PRCORD(III,1,1,2) = COORDS(9*(III-1)+4 - GLY_COUNT*3,JP) !  CB X
-                           PRCORD(III,2,1,2) = COORDS(9*(III-1)+5 - GLY_COUNT*3,JP) !  CB Y
-                           PRCORD(III,3,1,2) = COORDS(9*(III-1)+6 - GLY_COUNT*3,JP) !  CB Z
-                           PRCORD(III,1,1,3) = COORDS(9*(III-1)+7 - GLY_COUNT*3,JP) !  O X
-                           PRCORD(III,2,1,3) = COORDS(9*(III-1)+8 - GLY_COUNT*3,JP) !  O Y
-                           PRCORD(III,3,1,3) = COORDS(9*(III-1)+9 - GLY_COUNT*3,JP) !  O Z
-                        ENDIF
-                     ENDDO
-
-                     WRITE(OMOVI,683)1,SNAPCOUNT,1,TEMP(JP),1
-683                  FORMAT(3(i6,1x),f8.4,1x,i5,' stuct snap t T Tid')
-
-                     DO  I500=1,NMRES
-                         WRITE(OMOVI,332)(PRCORD(I500,I2,1,1),I2=1,3),(PRCORD(I500,I2,1,2),I2=1,3),(PRCORD(I500,I2,1,3),I2=1,3)
-                     ENDDO
-332                  FORMAT('CA: ',3(F8.3,1X),'CB: ',3(F8.3,1X),'OX: ', 3(F8.3,1x))
-
-                     !CALL E_WRITE(AVEP(:,:,:),TEMP(JP),NUMPRO,SNAPCOUNT)
-                  ENDIF  !                  IF (MOD(J1,NINT_AMH).EQ.0)
-               ENDIF     !                  IF (NPAR.GT.1)
                CALL FLUSH(LFH)
 
-!  RMS compared to reference structure 'compare'
-          IF (RMST.AND.CHRMMT) THEN
-             CALL CHRMS(JP,RMSD)
-             IF (DEBUG) WRITE(LFH,'(A,F15.5)')'RMSD = ',RMSD
-             IF (RMSD.LE.RMSLIMIT) CALL SAVERMS(JP,POTEL,RMSD)
-!                NRMS=NRMS+1
-!                WRITE(CNRMS,'(I6)') NRMS
-!                CALL CHARMMDUMP(COORDS(1:3*NATOMS,JP),'rms.'//TRIM(ADJUSTL(CNRMS)))
-!                OPEN(UNIT=20,FILE='rms.'//TRIM(ADJUSTL(CNRMS)),POSITION='APPEND',STATUS='OLD')
-!                WRITE(20,'(A,I6,A,F15.5,A,F15.5)') '*   Qu ',NQ(JP),' E=',POTEL,' RMSD=',RMSD
-!                CLOSE(20)
-!            ENDIF
-          ENDIF
-!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+          !!!!!!!!!!!!!!!!!!!!!!!!!!!1
 !                 CALL POTENTIAL(COORDSO(1:3*NATOMS,JP),DUMGRAD,DJWPOTEL,.FALSE.,.FALSE.)
 !                 WRITE(LFH,'(2(A,G20.10))') 'mc> B energy for coordinates in COORDSO=',DJWPOTEL, 
 !    &                                                 ' Markov energy=',EPREV(JP) 
@@ -856,14 +544,14 @@
 ! stat.acc which contains only accepted quenches and their energies
 ! used to analyse how many new minima are being found
  
-            IF (DAESTAT) THEN
-               PRINT*,'DAESTAT block in mc.f not implemented'
-               STOP
-!              CALL CALCMIND(JP,MIND)
-!              CALL CALCDIHE(DIHE)
-!              WRITE(LFH,'(A,I6,3F20.10)') 'NQALL POTEL',NQ(JP),POTEL,MIND,DIHE
-!              WRITE(36,'(I6,3F20.10)') NQ(JP),POTEL,MIND,DIHE
-            ENDIF
+            !IF (DAESTAT) THEN
+               !PRINT*,'DAESTAT block in mc.f not implemented'
+               !STOP
+!!              CALL CALCMIND(JP,MIND)
+!!              CALL CALCDIHE(DIHE)
+!!              WRITE(LFH,'(A,I6,3F20.10)') 'NQALL POTEL',NQ(JP),POTEL,MIND,DIHE
+!!              WRITE(36,'(I6,3F20.10)') NQ(JP),POTEL,MIND,DIHE
+            !ENDIF
  
 !  Check for reseeding.
  
@@ -1098,170 +786,4 @@
 !op226>}}} 
       END SUBROUTINE MC 
 
-      SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,NP,RANDOM,MCTEMP)
-      ! {{{
-      USE COMMONS
-      USE QMODULE
-      IMPLICIT NONE
-      DOUBLE PRECISION ENEW, EOLD, DUMMY, DPRAND, RANDOM, EREF, TEOLD, TENEW, RATIO,MCTEMP
-      DOUBLE PRECISION TRANS, DISTMIN, DISTMINOLD
-      LOGICAL ATEST, FLAT, evap, evapreject
-      INTEGER NP,INDEXOLD, INDEXNEW, J1, NDUMMY
-      DATA DISTMINOLD /0.0D0/
-      COMMON /DMIN/ DISTMIN
-      common /ev/ evap, evapreject
-
-      IF (DISTMINOLD.EQ.0.0D0) DISTMINOLD=DISTMIN  ! this should allow for the first step
-      IF (TUNNELT) THEN
-         TEOLD=TRANS(EOLD,QMIN(1),GAMMA)
-         TENEW=TRANS(ENEW,QMIN(1),GAMMA)
-!        WRITE(LFH,'(A,4F20.10)') 'TEOLD,TENEW,QMIN(1),GAMMA=',TEOLD,TENEW,QMIN(1),GAMMA
-      ELSE
-         TEOLD=EOLD
-         TENEW=ENEW
-      ENDIF
-
-      IF (TSALLIST) THEN
-         EREF=QMIN(NP)*1.1D0
-         DUMMY=(1.0D0-(1.0D0-QTSALLIS)*(TENEW-EREF)/MCTEMP)/(1.0D0-(1.0D0-QTSALLIS)*(TEOLD-EREF)/MCTEMP)
-         DUMMY=DUMMY**(QTSALLIS/(1.0D0-QTSALLIS))
-!        WRITE(LFH,'(A,4F20.10)') 'TENEW,TEOLD,EREF,DUMMY=',TENEW,TEOLD,EREF,DUMMY
-         IF (DUMMY.GE.1.0D0) THEN
-            RANDOM=0.0D0
-            ATEST=.TRUE.
-         ELSE
-            RANDOM=DPRAND()
-            IF (DUMMY.GT.RANDOM) THEN
-               ATEST=.TRUE.
-            ELSE
-               ATEST=.FALSE.
-            ENDIF
-         ENDIF
-      ELSE
-!
-!  Standard canonical sampling.
-!
-         IF (TENEW.LT.TEOLD) THEN
-            RANDOM=0.0D0
-            ATEST=.TRUE.
-         ELSE
-            RANDOM=DPRAND()
-            IF (DEXP(-(TENEW-TEOLD)/MAX(MCTEMP,1.0D-100)).GT.RANDOM) THEN
-               ATEST=.TRUE.
-            ELSE
-               ATEST=.FALSE.
-            ENDIF
-         ENDIF
-      ENDIF 
-
-      RETURN 
-      ! }}}
-      END 
-
-      SUBROUTINE ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
-      ! {{{
-      USE commons
-      USE modcharmm
-      IMPLICIT NONE
-      INTEGER NSUCCESS(NPAR), NFAIL(NPAR), JP, NFAILT(NPAR), NSUCCESST(NPAR), J1, J2, NDUMMY
-      LOGICAL evap, evapreject
-      DOUBLE PRECISION DUMMY, DUMMY2, DUMMY3, DUMMY4, HWMAX,P0,FAC
-!     COMMON /IG/ IGNOREBIN, FIXBIN
-!     COMMON /MOVE/ TMOVE, OMOVE
-      common /ev/ evap, evapreject
-
-      P0=1.D0*NSUCCESS(JP)/(1.D0*(NSUCCESS(JP)+NFAIL(JP)))
-      
-      IF (P0.GT.ACCRAT(JP)) THEN
-         IF(ARMT) THEN
-           FAC=LOG(ARMA*ACCRAT(JP)+ARMB)/LOG(ARMA*P0+ARMB)
-         ELSE
-           FAC=1.05D0
-         ENDIF
-         IF (FIXBOTH(JP)) THEN
-         ELSE IF (FIXSTEP(JP)) THEN
-            IF (.NOT.FIXTEMP(JP)) TEMP(JP)=TEMP(JP)/1.05D0
-         ELSE
-            IF (FIXD) THEN
-               NHSMOVE=NHSMOVE+1 
-            ELSE
-               IF (RIGID) THEN
-                  IF (TMOVE(JP)) STEP(JP)=STEP(JP)*1.05D0 
-                  IF (OMOVE(JP)) OSTEP(JP)=OSTEP(JP)*1.05D0
-               ELSE
-                  STEP(JP)=FAC*STEP(JP)
-                  IF(CHRIGIDTRANST.AND.CHRMMT) TRANSMAX=FAC*TRANSMAX
-                  IF(CHRIGIDROTT.AND.CHRMMT) ROTMAX=FAC*ROTMAX  
-               ENDIF
-            ENDIF
-            ASTEP(JP)=ASTEP(JP)*1.05D0
-! jwrm2> limit step size for percolation to the cutoff distance for determining connectivity
-            IF (PERCOLATET .AND. ( STEP(JP) .GT. PERCCUT))  STEP(JP) = PERCCUT
-            IF (PERCOLATET .AND. (ASTEP(JP) .GT. PERCCUT)) ASTEP(JP) = PERCCUT
-            IF (PERCOLATET .AND. (OSTEP(JP) .GT. PERCCUT)) OSTEP(JP) = PERCCUT
-         ENDIF
-      ELSE
-         IF(ARMT) THEN
-           FAC=LOG(ARMA*ACCRAT(JP)+ARMB)/LOG(ARMA*P0+ARMB)
-         ELSE
-           FAC=1.D0/1.05D0
-         ENDIF
-         IF (FIXBOTH(JP)) THEN
-         ELSE IF (FIXSTEP(JP)) THEN
-            IF (.NOT.FIXTEMP(JP)) TEMP(JP)=TEMP(JP)*1.05D0
-         ELSE
-            IF (FIXD) THEN
-               NHSMOVE=MAX(1,NHSMOVE-1)
-            ELSE
-               IF (RIGID) THEN
-                  IF (TMOVE(JP)) STEP(JP)=STEP(JP)/1.05D0
-                  IF (OMOVE(JP)) OSTEP(JP)=OSTEP(JP)/1.05D0
-               ELSE
-                  STEP(JP)=FAC*STEP(JP)
-                  IF(CHRIGIDTRANST.AND.CHRMMT) TRANSMAX=FAC*TRANSMAX
-                  IF(CHRIGIDROTT.AND.CHRMMT) ROTMAX=FAC*ROTMAX
-               ENDIF
-            ENDIF
-            ASTEP(JP)=ASTEP(JP)/1.05D0
-         ENDIF
-      ENDIF
-!
-! Prevent steps from growing out of bounds. The value of 1000 seems sensible, until
-! we do something with such huge dimensions?!
-!
-      STEP(JP)=MIN(STEP(JP),1.0D3)
-      OSTEP(JP)=MIN(OSTEP(JP),1.0D3)
-      ASTEP(JP)=MIN(ASTEP(JP),1.0D3)
-!
-      IF (NPAR.GT.1) THEN
-         WRITE(LFH,'(A,I2,A,I6,A,F8.4,A,F8.4)') '[',JP,']Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
-      ELSE
-         WRITE(LFH,'(A,I6,A,F8.4,A,F8.4)') 'Acceptance ratio for previous ',NACCEPT,' steps=',P0,'  FAC=',FAC
-      ENDIF
-      IF (FIXBOTH(JP)) THEN
-      ELSE IF (FIXSTEP(JP)) THEN
-         IF(.NOT.FIXTEMP(JP)) WRITE(LFH,'(A,F12.4)') 'Temperature is now:',TEMP(JP)
-      ELSE
-         IF (NPAR.GT.1) THEN
-            WRITE(LFH,'(A,I2,A)',ADVANCE='NO') '[',JP,']Steps are now:'
-         ELSE
-            WRITE(LFH,'(A)',ADVANCE='NO') 'Steps are now:'
-         ENDIF
-         WRITE(LFH,'(A,F10.4)',ADVANCE='NO') '  STEP=',STEP(JP)    
-         IF(ASTEP(JP).GT.0.D0) WRITE(LFH,'(A,F10.4)',ADVANCE='NO')'  ASTEP=',ASTEP(JP) 
-         IF(CHRIGIDTRANST.AND.CHRMMT) WRITE(LFH,'(A,F10.4)',ADVANCE='NO')'  TRANSMAX=',TRANSMAX
-         IF(CHRIGIDROTT.AND.CHRMMT) WRITE(LFH,'(A,F10.4)')'  ROTMAX=',ROTMAX
-         IF(.NOT.FIXTEMP(JP)) WRITE(LFH,'(A,F10.4)') ' Temperature is now:',TEMP(JP)
-         IF (RIGID) WRITE(LFH,'(A,F12.6,A,F12.6)') 'Maximum rigid body rotational move is now ',OSTEP(JP)
-      ENDIF
-      IF (FIXD) WRITE(LFH,'(A,I4)') 'hard sphere collision moves=',NHSMOVE
-!
-      NSUCCESST(JP)=NSUCCESST(JP)+NSUCCESS(JP)
-      NFAILT(JP)=NFAILT(JP)+NFAIL(JP)
-      NSUCCESS(JP)=0
-      NFAIL(JP)=0 
-!
-      RETURN
-      ! }}}
-      END
 

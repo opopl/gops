@@ -2,7 +2,6 @@
       SUBROUTINE FINALIO
 !op226> Declarations {{{ 
       USE COMMONS
-      USE QMODULE
       USE V
 
       IMPLICIT NONE
