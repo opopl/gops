@@ -128,7 +128,7 @@
       ENDIF
       ! }}}
       ! other {{{
-      IF (COMPON) CALL COMPRESS(X,GRAD,EREAL,GRADT)
+      !IF (COMPON) CALL COMPRESS(X,GRAD,EREAL,GRADT)
 
       IF (GRADT.OR.CSMT) THEN
           IF (FREEZE) THEN

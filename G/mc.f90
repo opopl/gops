@@ -556,16 +556,16 @@
  
 !  Check for reseeding.
  
-            IF (NEWRESTART.AND.(.NOT.SEEDT)) THEN 
-              CALL NEWRES(J1,JP,JBEST,EBEST,BESTCOORDS,EPPREV,POTEL,ITERATIONS,TIME,RCOORDS,RMIN,RVAT,BRUN,SCREENC,QDONE,&
-     &                    JACCPREV,NSUCCESS,NFAIL,NFAILT,NSUCCESST)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DJW
-!             IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS,JP))
-!             COORDSO(1:3*(NATOMS-NSEED),JP)=COORDS(1:3*(NATOMS-NSEED),JP)
-!             WRITE(LFH,'(A,2G20.10)'),'mc> coordso changed: ',COORDSO(1,JP),COORDS(1,JP)     
-!             VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DJW
-            ENDIF
+            !IF (NEWRESTART.AND.(.NOT.SEEDT)) THEN 
+              !CALL NEWRES(J1,JP,JBEST,EBEST,BESTCOORDS,EPPREV,POTEL,ITERATIONS,TIME,RCOORDS,RMIN,RVAT,BRUN,SCREENC,QDONE,&
+     !&                    JACCPREV,NSUCCESS,NFAIL,NFAILT,NSUCCESST)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DJW
+!!             IF (CENT.AND.(.NOT.SEEDT)) CALL CENTRE2(COORDS(1:3*NATOMS,JP))
+!!             COORDSO(1:3*(NATOMS-NSEED),JP)=COORDS(1:3*(NATOMS-NSEED),JP)
+!!             WRITE(LFH,'(A,2G20.10)'),'mc> coordso changed: ',COORDSO(1,JP),COORDS(1,JP)     
+!!             VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DJW
+            !ENDIF
             IF (STAY) THEN
             ELSE IF (EVAP .and. .not.evapreject) THEN
                NFAIL(JP)=NFAIL(JP)+1
@@ -642,11 +642,11 @@
                   !ENDIF
                !ENDIF
 !     csw34> Check to see if LOCALSAMPLE constraints have been violated - if they have, reject the step
-               IF (LOCALSAMPLET) THEN
-                  DISTOK=.FALSE.
-                  CALL A9DISTCHECK(COORDS(:,JP),DISTOK)
-                  IF (.NOT.DISTOK) ATEST=.FALSE.
-               ENDIF
+              ! IF (LOCALSAMPLET) THEN
+                  !DISTOK=.FALSE.
+                  !CALL A9DISTCHECK(COORDS(:,JP),DISTOK)
+                  !IF (.NOT.DISTOK) ATEST=.FALSE.
+               !ENDIF
 
                IF ((QDONE.EQ.0).AND.TIP) THEN
                   ATEST=.FALSE.
