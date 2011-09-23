@@ -10,6 +10,7 @@
 #f1dim.f
 #fedor.f
 #
+transforms.f90
 amhdummy_cmake.f
 blas.f
 bmin.f
