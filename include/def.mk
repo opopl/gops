@@ -1,7 +1,10 @@
 
 # definitions {{{
 
+# compilers 
+
 FC=$(FC90)
+FCN=$(FC)
 
 # directories  {{{
 BINPATH=$(ROOTPATH)/bin

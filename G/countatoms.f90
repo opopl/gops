@@ -23,14 +23,13 @@ MODULE NOA
       USE MODAMBER9 , ONLY : INPCRD
       IMPLICIT NONE
       SAVE
-      INTEGER :: NUMBER_OF_ATOMS
 
       CONTAINS
 
-      SUBROUTINE COUNTATOMS(LFH)
+      SUBROUTINE COUNTATOMS
 !op226> Declarations {{{ 
       IMPLICIT NONE
-      INTEGER :: EOF,NRES,SEQ(500),I_RES,NOGLY,GLY, LFH
+      INTEGER :: EOF,NRES,SEQ(500),I_RES,NOGLY,GLY
       LOGICAL :: YESNO, YESNOA, YESNOC, YESNOAMH, YESNOA9
       CHARACTER(LEN=5) TARFL
       CHARACTER(LEN=10)  CHECK
@@ -53,19 +52,19 @@ MODULE NOA
       INQUIRE(FILE='input.crd',EXIST=YESNOC)
       INQUIRE(FILE='coords.inpcrd',EXIST=YESNOA9)
 
-      NUMBER_OF_ATOMS=0
-
       IF (YESNO) THEN
+
          OPEN(UNIT=7,FILE='coords',STATUS='OLD')
          DO
             READ(7,*,IOSTAT=EOF)
             IF (EOF==0) THEN
-               NUMBER_OF_ATOMS = NUMBER_OF_ATOMS + 1
+               NATOMS = NATOMS + 1
             ELSE
                EXIT
             ENDIF
          ENDDO
-        ELSEIF (YESNOAMH) THEN
+        ELSEIF (YESNOAMH) THEN 
+        ! {{{
          open(unit=30,file='pro.list',status='old',form='formatted')
          read (30,1000)tarfl
 1000     format(a5)
@@ -131,6 +130,7 @@ MODULE NOA
             ENDIF
             Number_of_Atoms = Number_of_Atoms + 1
          enddo
+         ! }}}
       ELSE
          PRINT '(A)','ERROR - no coords, input.crd, coords.inpcrd or coords.amber file'
          STOP

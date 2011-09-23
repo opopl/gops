@@ -17,6 +17,6 @@ include t.mk
 
 $(PROG): $(LIBS)
 
-$(DEPS): rca.f90 dv.f90 porfuncs.f90 nu.mk
+$(DEPS): rca.f90 dv.f90 porfuncs.f90 $(F_NU)
 
 include $(DEPS)

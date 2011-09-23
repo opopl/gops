@@ -28,7 +28,6 @@
 !
 !op226>=================================== 
       MODULE COMMONS
-      USE NOA
       IMPLICIT NONE
       SAVE
       INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR, NPATCH, TIPID, PAHID, NSYMREM=0, NFREEZE, NSAVEINTE, &
@@ -218,18 +217,5 @@
       !BLN/Go parameters
       LOGICAL :: GOTYPE=.FALSE.
       DOUBLE PRECISION :: GOFACTOR=0D0
-      contains
 
-      SUBROUTINE MODCOMMONINIT
-         implicit none
-         
-         natoms = Number_of_Atoms
-         allocate( ANV(NATOMS,NATOMS,3))         
-      END SUBROUTINE MODCOMMONINIT
-
-      SUBROUTINE MODCOMMONDEINIT
-         implicit none
-         
-         IF (ALLOCATED(ANV)) DEALLOCATE(ANV)
-      END SUBROUTINE MODCOMMONDEINIT
 END MODULE COMMONS

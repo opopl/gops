@@ -1,4 +1,5 @@
-!  GMIN: A program for finding global minima
+
+!  GMIN: A program for finding global minima!{{{
 !  Copyright (C) 1999-2006 David J. Wales
 !  This file is part of GMIN.
 !
@@ -24,10 +25,13 @@
 ! samples of local minima rather than instantaneous configurations. (Tetyana Bogdan)
 ! T.V. Bogdan, D.J. Wales and F. Calvo, J. Chem. Phys., 124, 044102 (2006).
 !                                            
-!---======================================---
+!---======================================---!}}}
+
       SUBROUTINE BASINSAMPLING
+      ! dec {{{
 
       USE MODCHARMM
+      USE F
       USE COMMONS, ONLY: NATOMS,  COORDS, BSPTRESTART, HISTMIN, HISTMAX, HBINS, HISTFAC, TARGETWL, &
                          & HISTFACMUL, DEBUG, EQUIL , PERIODIC, TWOD, BINSTRUCTURES, SAVENTH, DUMPEVERYNTHQUENCH, &
                          & FIXEDENDMOVET, CHRMMT, RIGID, FIXCOM, MAXIT
@@ -50,6 +54,7 @@
       COMMON /MYPOT/ POTEL
 
       COMMON /EV/ EVAP, EVAPREJECT
+      ! }}}
 
 ! If the BS run is requested to be restarted the following files will be read in:
       

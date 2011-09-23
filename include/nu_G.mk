@@ -10,6 +10,10 @@
 #f1dim.f
 #fedor.f
 #
+mcruns.f90
+countatoms.f90
+#mylbfgs.f90
+#quench.f90
 amhdummy_cmake.f
 blas.f
 bmin.f

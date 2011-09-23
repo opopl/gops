@@ -1,25 +1,4 @@
-!op226>=================================== 
-!op226> GPL License info {{{ 
-!   GMIN: A program for finding global minima
-!   Copyright (C) 1999-2006 David J. Wales
-!   This file is part of GMIN.
-!
-!   GMIN is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
-!
-!   GMIN is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
-!
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-!
-!op226>}}} 
-!op226>=================================== 
+
       SUBROUTINE POTENTIAL(X,GRAD,EREAL,GRADT,SECT)
 !op226> Declarations {{{ 
       ! modules {{{
@@ -32,8 +11,10 @@
       !}}}
       IMPLICIT NONE
       ! subroutine {{{
-      DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: X
-      DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: GRAD
+      !DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: X
+      !DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: GRAD
+      !DOUBLE PRECISION ::   X(*),GRAD(*)
+      DOUBLE PRECISION, DIMENSION(:) :: X, GRAD
       DOUBLE PRECISION, INTENT(OUT) :: EREAL
       LOGICAL, INTENT(IN) :: GRADT, SECT       
       ! }}}
@@ -41,8 +22,8 @@
       INTEGER BRUN
       INTEGER NQTOT
       DOUBLE PRECISION :: EA(10)
-      COMMON /EA/ EA
 
+      LOGICAL GUIDECHANGET, GUIDET, CSMDOGUIDET
       LOGICAL FTEST, EVAP, COMPON, YESNO, evapreject
       INTEGER J1, J2, J3, NPCALL, PERM(NATOMS), NPERM, NORBIT1, NORBIT2, CSMIT
       CHARACTER FNAME*80, DUMM*4
@@ -63,6 +44,9 @@
 
       ! }}}
       ! common {{{
+      ! list of energies, EA(1) is the total one 
+      COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
+      COMMON /EA/ EA
       COMMON /CO/ COMPON
       COMMON /FAIL/ FTEST
       COMMON /EV/ EVAP, EVAPREJECT
@@ -72,7 +56,11 @@
 
       ! }}}
       ! }}}
+      ! body {{{
 !op226> potentials  {{{ 
+
+      WRITE(*,*)    X(1:10)
+      STOP
       GUIDECHANGET=.FALSE.
       BRUN=0
 
@@ -918,4 +906,6 @@
       ! }}}
 
       RETURN
-      END
+      ! }}}
+      END SUBROUTINE POTENTIAL
+

@@ -89,6 +89,7 @@ C
       IF (Q4T) CALL ORDERQ4(NATOMS,XCOORDS,QSTART)
 
       IF (DUMPT) THEN
+        ! {{{
          IF (ARNO) THEN
             WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS+2
             WRITE(DUMPXYZUNIT+NP,11) NP,NQ(NP)
@@ -127,6 +128,7 @@ C
             IF (NS.GT.0) WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') 
      1          ('LB',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=NATOMS-NS+1,NATOMS)
          ENDIF
+         ! }}}
       ENDIF
       ! }}}
 
