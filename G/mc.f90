@@ -50,7 +50,7 @@
       ! subroutine  {{{
       INTEGER ::    NSTEPS
       DOUBLE PRECISION ::   SCALEFAC
-      DOUBLE PRECISION, DIMENSION(3*NATOMS) ::   SCREENC
+      DOUBLE PRECISION, DIMENSION(:) ::   SCREENC
       ! }}}
       ! local  {{{
       INTEGER J1, NSUCCESS(NPAR), NFAIL(NPAR), NFAILT(NPAR), NSUCCESST(NPAR), J2, JP, J5, UNT
@@ -190,16 +190,16 @@
       ENDIF
       NQ(:)=NDONE
 
-! tvb requesting a basin-sampling MC run: {{{
+!! tvb requesting a basin-sampling MC run: {{{
       
-      IF (BSWL.and.(.not.TETHER)) then
-         CALL BasinSampling
-         RETURN
-      ELSEIF (TETHER) THEN
-         CALL TetheredWL
-         RETURN
-      ENDIF
-! }}}
+      !IF (BSWL.and.(.not.TETHER)) then
+         !CALL BasinSampling
+         !RETURN
+      !ELSEIF (TETHER) THEN
+         !CALL TetheredWL
+         !RETURN
+      !ENDIF
+!! }}}
 
 
       IF (NACCEPT.EQ.0) NACCEPT=NSTEPS+1
@@ -1096,7 +1096,7 @@
       DEALLOCATE(OMOVE)
       RETURN
 !op226>}}} 
-      END
+      END SUBROUTINE MC 
 
       SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,NP,RANDOM,MCTEMP)
       ! {{{
@@ -1109,7 +1109,6 @@
       INTEGER NP,INDEXOLD, INDEXNEW, J1, NDUMMY
       DATA DISTMINOLD /0.0D0/
       COMMON /DMIN/ DISTMIN
-!     COMMON /IG/ IGNOREBIN, FIXBIN
       common /ev/ evap, evapreject
 
       IF (DISTMINOLD.EQ.0.0D0) DISTMINOLD=DISTMIN  ! this should allow for the first step

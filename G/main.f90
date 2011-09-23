@@ -53,7 +53,7 @@
       ! }}}
 !op226> Allocate memory; open files; initialize different things  {{{ 
       CALL COUNTATOMS
-      ALLOCATE(SCREENC(3*NATOMS))
+      ALLOCATE(SCREENC(3*NATOMS),VT(NATOMS))
 
       CALL KEYWORD
       !CALL KW

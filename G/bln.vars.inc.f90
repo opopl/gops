@@ -20,8 +20,8 @@
         ! GRADX - output gradient
         !DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: X
         !DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: GRADX
-        DOUBLE PRECISION, DIMENSION(3*N), INTENT(IN) :: X
-        DOUBLE PRECISION, DIMENSION(3*N), INTENT(OUT) :: GRADX
+        DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: X
+        DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: GRADX
 
         ! Output Energies are specified by array E(:) {{{
         !
@@ -38,7 +38,8 @@
 
         ! local parameters {{{
   
-        LOGICAL CONNECT(N,N)
+        ! N, N
+        LOGICAL, DIMENSION(:,:),ALLOCATABLE :: CONNECT
 
         ! R GRAD HESS 
         DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: R, GRAD
@@ -51,22 +52,22 @@
         ! AB(,2)  =>  B_PARAM(N,N)
         ! CD(,1)  =>  C_PARAM(N)
         ! CD(,2)  =>  D_PARAM(N)
-        DOUBLE PRECISION, DIMENSION(N,N,2) :: AB
-        DOUBLE PRECISION, DIMENSION(N,2)   :: CD
+        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: AB
+        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:)   :: CD
         ! }}}
         ! R DR LEN_DR - particle positions and distances {{{
         ! particle positions R => (X,Y,Z)
         ! particle relative positions DR_{ij} =>  R_i-R_j 
         ! distances between particles LEN_DR_ij => || DR_ij ||
-        DOUBLE PRECISION, DIMENSION(N,N,3) :: DR
-        DOUBLE PRECISION, DIMENSION(N,N) :: LEN_DR
+        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: DR
+        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: LEN_DR
         ! }}}
         ! Angles {{{
         ! 1 => bond angles
         ! 2 => torsion (dihedral) angles
-        DOUBLE PRECISION, DIMENSION(N,2) :: ANG 
+        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: ANG 
         ! F => d(potential)/d(angle)
-        DOUBLE PRECISION, DIMENSION(-1:N+1,2) :: F
+        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: F
         ! ==============================
         ! for torsional angles:
         ! 
@@ -74,7 +75,7 @@
         ! FB(:,2) => F/B
         ! 
         ! ==============================
-        DOUBLE PRECISION, DIMENSION(N,2) :: FB
+        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: FB
         ! AN temporary angle variable
         DOUBLE PRECISION   AN
         ! }}}

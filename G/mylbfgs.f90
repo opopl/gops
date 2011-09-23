@@ -1,46 +1,58 @@
       ! {{{
-C   GMIN: A program for finding global minima
-C   Copyright (C) 1999-2006 David J. Wales
-C   This file is part of GMIN.
-C
-C   GMIN is free software; you can redistribute it and/or modify
-C   it under the terms of the GNU General Public License as published by
-C   the Free Software Foundation; either version 2 of the License, or
-C   (at your option) any later version.
-C
-C   GMIN is distributed in the hope that it will be useful,
-C   but WITHOUT ANY WARRANTY; without even the implied warranty of
-C   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-C   GNU General Public License for more details.
-C
-C   You should have received a copy of the GNU General Public License
-C   along with this program; if not, write to the Free Software
-C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-C
-C
-C        LIMITED MEMORY BFGS METHOD FOR LARGE SCALE OPTIMIZATION
-C                          JORGE NOCEDAL
-C                        *** July 1990 ***
-C
-C        Line search removed plus small modifications, DJW 2001
-C
+!   GMIN: A program for finding global minima
+!   Copyright (C) 1999-2006 David J. Wales
+!   This file is part of GMIN.
+!
+!   GMIN is free software; you can redistribute it and/or modify
+!   it under the terms of the GNU General Public License as published by
+!   the Free Software Foundation; either version 2 of the License, or
+!   (at your option) any later version.
+!
+!   GMIN is distributed in the hope that it will be useful,&
+!   but WITHOUT ANY WARRANTY; without even the implied warranty of
+!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+!   GNU General Public License for more details.
+!
+!   You should have received a copy of the GNU General Public License
+!   along with this program; if not, write to the Free Software
+!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+!
+!
+!        LIMITED MEMORY BFGS METHOD FOR LARGE SCALE OPTIMIZATION
+!                          JORGE NOCEDAL
+!                        *** July 1990 ***
+!
+!        Line search removed plus small modifications, DJW 2001
+!
       ! }}}
       SUBROUTINE MYLBFGS(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET,NP)
       ! declarations {{{
+      ! modules {{{ 
       USE COMMONS
       USE V
+      USE F
       USE MODAMBER
       USE MODAMBER9, ONLY : STEEREDMINT, LOCALSTEEREDMINT, SMINK, SMINKINC, SMINKCURRENT
       USE MODCHARMM
       USE PORFUNCS
+
       IMPLICIT NONE
-      INTEGER N,M,J1,ITMAX,ITDONE,NP,J2,J3,NFAIL,NDECREASE,NGUESS,NDUMMY
-      DOUBLE PRECISION XCOORDS(3*NATOMS),GRAD(3*NATOMS),SLENGTH,DDOT,EPLUS,EMINUS,DIFF,DUMMY,WTEMP(3*NATOMS)
+      ! }}}
+      ! sub {{{
+	      INTEGER :: N,M,ITMAX,ITDONE,NP
+	      DOUBLE PRECISION,DIMENSION(:) ::   XCOORDS
+	      LOGICAL :: DIAGCO,MFLAG,RESET
+	      DOUBLE PRECISION ::   EPS, ENERGY
+          ! }}}
+      ! loc {{{
+      LOGICAL ::  GUIDECHANGET,  CSMDOGUIDET, GUIDET
+      INTEGER J1,J2,J3,NFAIL,NDECREASE,NGUESS,NDUMMY
+      DOUBLE PRECISION GRAD(3*NATOMS),SLENGTH,DDOT,EPLUS,EMINUS,DIFF,DUMMY,WTEMP(3*NATOMS)
       DOUBLE PRECISION TMPANG(3*NATOMS), TMPCOORDS(3*NATOMS)
-      DOUBLE PRECISION EPS,ENERGY,ENEW,GNEW(3*NATOMS),OVERLAP,OLDX(3*NATOMS),OLDOLDX(3*NATOMS),VGUESS(3),
-     1                 X1, Y1, Z1, X2, Y2, Z2, TRY(3*NATOMS), D1, D2, RBCOORDS(18), DUMMY2, DIST, DIST1
+      DOUBLE PRECISION ENEW,GNEW(3*NATOMS),OVERLAP,OLDX(3*NATOMS),OLDOLDX(3*NATOMS),VGUESS(3),&
+     &                 X1, Y1, Z1, X2, Y2, Z2, TRY(3*NATOMS), D1, D2, RBCOORDS(18), DUMMY2, DIST, DIST1
       DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:) :: DIAG, W
-      LOGICAL DIAGCO, YESNO, RESET, NOTCALLED, CTEST, MFLAG
+      LOGICAL YESNO, NOTCALLED, CTEST
       DOUBLE PRECISION GNORM,STP,YS,YY,SQ,YR,BETA,POTEL,QSTART,QFINISH
       DOUBLE PRECISION OLDCART(3*NATOMS), DELTAQ(N),DELTACART(3*NATOMS),LEPSILON,DOT1,DOT2
       DOUBLE PRECISION LCART(3*NATOMS),OLDQ(N),NEWQ(N),OLDGINT(N),GINT(N),XINT(N),XSAVE(N),SMINKCURRENTP
@@ -48,13 +60,17 @@ C
       LOGICAL NOCOOR, FAILED, COREDONE
       INTEGER ITER,POINT,ISPT,IYPT,BOUND,NPT,CP,INMC,IYCN,ISCN
       INTEGER KD, NNZ
+      LOGICAL EVAP, EVAPREJECT, SMINKCHANGET
+      ! }}}
+      ! common {{{
+      COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
       COMMON /MYPOT/ POTEL
       COMMON /Q4C/ QSTART, QFINISH
-      LOGICAL EVAP, EVAPREJECT, SMINKCHANGET
       !LOGICAL ::    GUIDECHANGET, GUIDET, CSMDOGUIDET
       !COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
       COMMON /EV/ EVAP, evapreject
       SAVE W, DIAG, ITER, POINT, ISPT, IYPT, NPT
+      ! }}}
       ! }}}
       ! subroutine body {{{
 
@@ -101,8 +117,8 @@ C
             WRITE(DUMPXYZUNIT+NP,'(I6)') (NATOMS/2)*3
             WRITE(DUMPXYZUNIT+NP,'(A,I5)') 'LBFGS iteration ',ITER
             DO J2=1,NATOMS/2
-               CALL TIPIO(XCOORDS(3*(J2-1)+1),XCOORDS(3*(J2-1)+2),XCOORDS(3*(J2-1)+3),
-     1              XCOORDS(3*(NATOMS/2+J2-1)+1),XCOORDS(3*(NATOMS/2+J2-1)+2),XCOORDS(3*(NATOMS/2+J2-1)+3),RBCOORDS)
+               CALL TIPIO(XCOORDS(3*(J2-1)+1),XCOORDS(3*(J2-1)+2),XCOORDS(3*(J2-1)+3),&
+     &              XCOORDS(3*(NATOMS/2+J2-1)+1),XCOORDS(3*(NATOMS/2+J2-1)+2),XCOORDS(3*(NATOMS/2+J2-1)+3),RBCOORDS)
                WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'O ',RBCOORDS(1),RBCOORDS(2),RBCOORDS(3)
                WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(4),RBCOORDS(5),RBCOORDS(6)
                WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(7),RBCOORDS(8),RBCOORDS(9)
@@ -116,17 +132,17 @@ C
          ELSEIF (NCORE(NP).GT.0) THEN
             WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
             WRITE(DUMPXYZUNIT+NP,11) NQ(NP)
-            WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') ('LB',XCOORDS(3*(I-1)+1),XCOORDS(3*(I-1)+2),XCOORDS(3*(I-1)+3),
+            WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') ('LB',XCOORDS(3*(I-1)+1),XCOORDS(3*(I-1)+2),XCOORDS(3*(I-1)+3),&
      &                                               I=1,NATOMS-NCORE(NP))
-            IF (NCORE(NP).GT.0) WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') 
+            IF (NCORE(NP).GT.0) WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') &
      &            ('LA ',XCOORDS(3*(I-1)+1),XCOORDS(3*(I-1)+2),XCOORDS(3*(I-1)+3),I=NATOMS-NCORE(NP)+1,NATOMS)
          ELSE
             WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
             WRITE(DUMPXYZUNIT+NP,11) NQ(NP)
-11          FORMAT(1X,'QUENCH NUMBER ',I6,' initial points in mylbfgs')
+11          FORMAT(1X,'QUENCH NUMBER ',I6,' initial points in mylbfgs') 
             WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') ('LA ',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=1,NATOMS-NS)
-            IF (NS.GT.0) WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') 
-     1          ('LB',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=NATOMS-NS+1,NATOMS)
+            IF (NS.GT.0) WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') &
+     &          ('LB',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=NATOMS-NS+1,NATOMS)
          ENDIF
          ! }}}
       ENDIF
@@ -136,24 +152,24 @@ C
       CALL POTENTIAL(XCOORDS,GRAD,ENERGY,.TRUE.,.FALSE.)
     
       ! intro2 {{{
-C  Catch cold fusion for ionic potentials and discard.
-C
-C  Changed EREAL for cold fusion to 1.0D6 rather than 0.0D0, which could result in steps being accepted
-C  for systems with positive energies. - khs26 26/11/09
-C
-      IF ((TOSI.OR.WELCH.OR.RGCL2.OR.AMBER.OR.ARNO.OR.PACHECO.OR.TIP.OR.CHRMMT.OR.AMBERT 
-     &   .OR.PYGPERIODICT.OR.PYBINARYT.OR.MULTISITEPYT.OR.JMT) 
-     &   .AND.(ENERGY.LT.COLDFUSIONLIMIT)) THEN
-         WRITE(LFH,'(A,G20.10)') 'ENERGY=',ENERGY
-         ENERGY=1.0D6
-         POTEL=1.0D6
-         RMS=1.0D0
-         WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
-!     csw34> set COLDFUSION=.TRUE. so that ATEST=.FALSE. in MC
-         COLDFUSION=.TRUE.
-!        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
-         RETURN
-      ENDIF
+!  Catch cold fusion for ionic potentials and discard.
+!
+!  Changed EREAL for cold fusion to 1.0D6 rather than 0.0D0, which could result in steps being accepted
+!  for systems with positive energies. - khs26 26/11/09
+!
+!      IF ((TOSI.OR.WELCH.OR.RGCL2.OR.AMBER.OR.ARNO.OR.PACHECO.OR.TIP.OR.CHRMMT.OR.AMBERT 
+     !&   .OR.PYGPERIODICT.OR.PYBINARYT.OR.MULTISITEPYT.OR.JMT) 
+     !&   .AND.(ENERGY.LT.COLDFUSIONLIMIT)) THEN
+         !WRITE(LFH,'(A,G20.10)') 'ENERGY=',ENERGY
+         !ENERGY=1.0D6
+         !POTEL=1.0D6
+         !RMS=1.0D0
+         !WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
+!!     csw34> set COLDFUSION=.TRUE. so that ATEST=.FALSE. in MC
+         !COLDFUSION=.TRUE.
+!!        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
+         !RETURN
+      !ENDIF
 
 !     IF (QUENCHDOS) THEN
 !        MODGRAD(1)=DSQRT(DDOT(N,GRAD,1,GRAD,1))
@@ -182,19 +198,19 @@ C
           RETURN
       ENDIF
 
-C
-C  If INTMINT and CHRMMT need to transform to internal coordinates
-C  See COPTIM.2.3 for switching to internals from Cartesians using LIMINCUT.
-C
+!
+!  If INTMINT and CHRMMT need to transform to internal coordinates
+!  See COPTIM.2.3 for switching to internals from Cartesians using LIMINCUT.
+!
       IF (INTMINT) THEN
          OLDCART(1:3*NATOMS)=XCOORDS(1:3*NATOMS) ! store cartesians in OLDCART for both CHARMM and UNRES
-C         IF (UNRST) THEN
-CC
-CC store internals (in OLDQ) and update X to contain internals
-CC
-C            CALL geom_to_var(N,OLDQ)
-C            XCOORDS(1:N)=OLDQ(1:N)
-C         ELSE IF (CHRMMT) THEN
+!         IF (UNRST) THEN
+!C
+!C store internals (in OLDQ) and update X to contain internals
+!C
+!            CALL geom_to_var(N,OLDQ)
+!            XCOORDS(1:N)=OLDQ(1:N)
+!         ELSE IF (CHRMMT) THEN
             CALL GETKD(KD) ! get width of sparse band in G matrix KD
             CALL GETNNZ(NNZ) ! get number of non-zero elements in B-matrix
             NOCOOR=.FALSE. ! calculate internals therefore NOCOOR is false
@@ -203,39 +219,39 @@ C         ELSE IF (CHRMMT) THEN
             CALL TRANSFORM(XCOORDS,GRAD,XINT,GINT,N,3*NATOMS,NNZ,NOCOOR,KD)
             OLDQ(1:N)=XINT(1:N)    ! store internals
             OLDGINT(1:N)=GINT(1:N) ! store gradient in internals
-C         ENDIF
+!         ENDIF
       ENDIF
-C
-C  for CHRMMT:
-C  XCOORDS contains current Cartesians
-C  GRAD    contains current gradient
-C  XINT    contains current internals
-C  GINT    contains current gradient in internals
-C  OLDQ    contains internals for initial geometry
-C  OLDGINT contains gradient in internals for initial geometry
-C  OLDCART contains Cartesian coordinates for initial geometry
-C
+!
+!  for CHRMMT:
+!  XCOORDS contains current Cartesians
+!  GRAD    contains current gradient
+!  XINT    contains current internals
+!  GINT    contains current gradient in internals
+!  OLDQ    contains internals for initial geometry
+!  OLDGINT contains gradient in internals for initial geometry
+!  OLDCART contains Cartesian coordinates for initial geometry
+!
       IF (EVAPREJECT) RETURN
       POTEL=ENERGY
 
       IF (DEBUG) WRITE(LFH,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
 
-C
-C  Catch cold fusion for ionic potentials and discard.
-C
-      IF ((DBPT.OR.DBPTDT.OR.MSTBINT.OR.MSSTOCKT.OR.MULTPAHAT.OR.NPAHT.OR.PAHW99T.OR.PYGT.OR.TDHDT.OR.SILANET) 
-     &   .AND.(ENERGY.LT.-5.0D4)) THEN
-         WRITE(LFH,'(A,G20.10)') 'ENERGY=',ENERGY
-         ENERGY=0.0D0
-         POTEL=0.0D0
-         RMS=1.0D0
-         WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
-         RETURN
-      ENDIF
+!
+!  Catch cold fusion for ionic potentials and discard.
+!
+      !IF ((DBPT.OR.DBPTDT.OR.MSTBINT.OR.MSSTOCKT.OR.MULTPAHAT.OR.NPAHT.OR.PAHW99T.OR.PYGT.OR.TDHDT.OR.SILANET) 
+     !&   .AND.(ENERGY.LT.-5.0D4)) THEN
+         !WRITE(LFH,'(A,G20.10)') 'ENERGY=',ENERGY
+         !ENERGY=0.0D0
+         !POTEL=0.0D0
+         !RMS=1.0D0
+         !WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
+         !RETURN
+      !ENDIF
       ! }}}
-C
-C  Termination test.  {{{
-C
+!
+!  Termination test.  {{{
+!
 10    CALL FLUSH(LFH)
       MFLAG=.FALSE.
       IF (RMS.LE.EPS) THEN
@@ -268,7 +284,7 @@ C
 !                   ELSE
 !                      DOSSTATS(J1,2)=0.0D0
 !                   ENDIF
-! !                 WRITE(LFH,'(A,I6,4G18.8)') 'lbfgs> J1,MODGRAD,DIST,DOSSTATS(J1,2),DOSSTATS(J1,1)=',
+! !                 WRITE(LFH,'(A,I6,4G18.8)') 'lbfgs> J1,MODGRAD,DIST,DOSSTATS(J1,2),DOSSTATS(J1,1)=',&
 ! !    &                      J1,MODGRAD(J1),DIST,DOSSTATS(J1,2),DOSSTATS(J1,1)
 !                ENDDO
 !                DEALLOCATE(FRAMES, PE, MODGRAD)
@@ -300,44 +316,44 @@ C
             DO J1=1,N
                IF (DIAG(J1).LE.0.0D0) THEN
                   WRITE(LFH,235) J1
- 235              FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',/,
-     1                   ' INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE')
+ 235              FORMAT(' THE',I5,'-TH DIAGONAL ELEMENT OF THE',/,&
+     &                   ' INVERSE HESSIAN APPROXIMATION IS NOT POSITIVE')
                   STOP
                ENDIF
             ENDDO
          ELSE
-C           INQUIRE(FILE='diag',EXIST=YESNO)
-C           IF (YESNO) THEN
-C              OPEN(UNIT=34,FILE='diag',STATUS='OLD')
-C              READ(34,*) (DIAG(J1),J1=1,N)
-C              PRINT*,'diag read in LBFGS'
-C              WRITE(*,'(6F15.5)') (DIAG(J1),J1=1,N)
-C           ELSE
+!           INQUIRE(FILE='diag',EXIST=YESNO)
+!           IF (YESNO) THEN
+!              OPEN(UNIT=34,FILE='diag',STATUS='OLD')
+!              READ(34,*) (DIAG(J1),J1=1,N)
+!              PRINT*,'diag read in LBFGS'
+!              WRITE(*,'(6F15.5)') (DIAG(J1),J1=1,N)
+!           ELSE
             DO J1=1,N
                DIAG(J1)=DGUESS
             ENDDO
          ENDIF
-C
-C     THE WORK VECTOR W IS DIVIDED AS FOLLOWS:
-C     ---------------------------------------
-C     THE FIRST N LOCATIONS ARE USED TO STORE THE GRADIENT AND
-C         OTHER TEMPORARY INFORMATION.
-C     LOCATIONS (N+1)...(N+M) STORE THE SCALARS RHO.
-C     LOCATIONS (N+M+1)...(N+2M) STORE THE NUMBERS ALPHA USED
-C         IN THE FORMULA THAT COMPUTES H*G.
-C     LOCATIONS (N+2M+1)...(N+2M+NM) STORE THE LAST M SEARCH
-C         STEPS.
-C     LOCATIONS (N+2M+NM+1)...(N+2M+2NM) STORE THE LAST M
-C         GRADIENT DIFFERENCES.
-C
-C     THE SEARCH STEPS AND GRADIENT DIFFERENCES ARE STORED IN A
-C     CIRCULAR ORDER CONTROLLED BY THE PARAMETER POINT.
-C
+!
+!     THE WORK VECTOR W IS DIVIDED AS FOLLOWS:
+!     ---------------------------------------
+!     THE FIRST N LOCATIONS ARE USED TO STORE THE GRADIENT AND
+!         OTHER TEMPORARY INFORMATION.
+!     LOCATIONS (N+1)...(N+M) STORE THE SCALARS RHO.
+!     LOCATIONS (N+M+1)...(N+2M) STORE THE NUMBERS ALPHA USED
+!         IN THE FORMULA THAT COMPUTES H*G.
+!     LOCATIONS (N+2M+1)...(N+2M+NM) STORE THE LAST M SEARCH
+!         STEPS.
+!     LOCATIONS (N+2M+NM+1)...(N+2M+2NM) STORE THE LAST M
+!         GRADIENT DIFFERENCES.
+!
+!     THE SEARCH STEPS AND GRADIENT DIFFERENCES ARE STORED IN A
+!     CIRCULAR ORDER CONTROLLED BY THE PARAMETER POINT.
+!
          ISPT= N+2*M    ! index for storage of search steps
          IYPT= ISPT+N*M ! index for storage of gradient differences
-C
-C  NR step for diagonal inverse Hessian
-C
+!
+!  NR step for diagonal inverse Hessian
+!
          IF (CHRMMT.AND.INTMINT) THEN
             DO I=1,N
                W(ISPT+I)= -GINT(I)*DIAG(I)
@@ -352,9 +368,9 @@ C
             ENDDO
             GNORM=DSQRT(DDOT(N,GRAD,1,GRAD,1))
          ENDIF
-C
-C  Make the first guess for the step length cautious.
-C
+!
+!  Make the first guess for the step length cautious.
+!
          STP=MIN(1.0D0/GNORM,GNORM)
          ! }}}
       ELSE 
@@ -362,9 +378,9 @@ C
          BOUND=ITER
          IF (ITER.GT.M) BOUND=M
          YS= DDOT(N,W(IYPT+NPT+1),1,W(ISPT+NPT+1),1)
-C
-C  Update estimate of diagonal inverse Hessian elements
-C
+!
+!  Update estimate of diagonal inverse Hessian elements
+!
          IF (.NOT.DIAGCO) THEN
            ! DIAG => YS/YY {{{
             YY= DDOT(N,W(IYPT+NPT+1),1,W(IYPT+NPT+1),1)
@@ -378,9 +394,9 @@ C
             ENDIF
             IF (DEBUG) WRITE(LFH,'(A20,F20.5)') 'YY= ',YY
             IF (DEBUG) WRITE(LFH,'(A20,F20.5)') 'YS= ',YS
-C           WRITE(*,'(A,2F20.10)') 'YS/YY,STP=',YS/YY,STP
+!           WRITE(*,'(A,2F20.10)') 'YS/YY,STP=',YS/YY,STP
             DO J1=1,N
-C              DIAG(J1)= ABS(YS/YY) ! messes up after step reversals!
+!              DIAG(J1)= ABS(YS/YY) ! messes up after step reversals!
                DIAG(J1)= YS/YY
             ENDDO
             ! }}}
@@ -396,10 +412,10 @@ C              DIAG(J1)= ABS(YS/YY) ! messes up after step reversals!
             ! }}}
          ENDIF
 
-C     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980, {{{
-C     "Updating quasi-Newton matrices with limited storage",
-C     Mathematics of Computation, Vol.24, No.151, pp. 773-782.
-C     ---------------------------------------------------------
+!     COMPUTE -H*G USING THE FORMULA GIVEN IN: Nocedal, J. 1980, {{{
+!     "Updating quasi-Newton matrices with limited storage",&
+!     Mathematics of Computation, Vol.24, No.151, pp. 773-782.
+!     ---------------------------------------------------------
 
          CP= POINT
          IF (POINT.EQ.0) CP=M
@@ -442,9 +458,9 @@ C     ---------------------------------------------------------
          ! }}}
       ! }}}
       ENDIF
-C
-C  Store the new search direction
-C
+!
+!  Store the new search direction
+!
       IF (ITER.GT.0) THEN
          DO J1=1,N
             W(ISPT+POINT*N+J1)= W(J1)
@@ -456,11 +472,11 @@ C
       ELSE
          DOT1=SQRT(DDOT(N,GRAD,1,GRAD,1))
       ENDIF
-C
-C  Overflow has occasionally occurred here.
-C  We only need the sign of the overlap, so use a temporary array with
-C  reduced elements.
-C
+!
+!  Overflow has occasionally occurred here.
+!  We only need the sign of the overlap, so use a temporary array with
+!  reduced elements.
+!
       DUMMY=1.0D0
       DO J1=1,N
          IF (ABS(W(J1)).GT.DUMMY) DUMMY=ABS(W(J1))
@@ -477,13 +493,13 @@ C
             OVERLAP=DDOT(N,GRAD,1,WTEMP,1)/(DOT1*DOT2)
         ENDIF
       ENDIF
-C     PRINT*,'OVERLAP,DIAG(1)=',OVERLAP,DIAG(1)
-C     PRINT*,'GRAD . GRAD=',DDOT(N,GRAD,1,GRAD,1)
-C     PRINT*,'W . W=',DDOT(N,W,1,W,1)
+!     PRINT*,'OVERLAP,DIAG(1)=',OVERLAP,DIAG(1)
+!     PRINT*,'GRAD . GRAD=',DDOT(N,GRAD,1,GRAD,1)
+!     PRINT*,'W . W=',DDOT(N,W,1,W,1)
       IF (OVERLAP.GT.0.0D0) THEN
-C        IF (DEBUG) PRINT*,'Search direction has positive projection onto gradient - resetting'
-C        ITER=0
-C        GOTO 10
+!        IF (DEBUG) PRINT*,'Search direction has positive projection onto gradient - resetting'
+!        ITER=0
+!        GOTO 10
          IF (DEBUG) WRITE(LFH,'(A)') 'Search direction has positive projection onto gradient - reversing step'
          DO J1=1,N
             W(ISPT+POINT*N+J1)= -W(J1)  !!! DJW, reverses step
@@ -505,9 +521,9 @@ C        GOTO 10
       ENDDO
       SLENGTH=SQRT(SLENGTH)
       IF (STP*SLENGTH.GT.MAXBFGS) STP=MAXBFGS/SLENGTH
-C
-C  We now have the proposed step.
-C
+!
+!  We now have the proposed step.
+!
       IF (CHRMMT.AND.INTMINT) THEN
          DO J1=1,N
             XINT(J1)=XINT(J1)+STP*W(ISPT+POINT*N+J1)
@@ -552,9 +568,9 @@ C
             ENDIF
          ENDIF
       ENDIF
-C
-C  For charmm internals must transform and back-transform!
-C
+!
+!  For charmm internals must transform and back-transform!
+!
       NDECREASE=0
       LEPSILON=1.0D-6
 
@@ -562,48 +578,48 @@ C
          IF (CHRMMT) THEN
             NEWQ(1:N)=OLDQ(1:N)
             LCART(1:3*NATOMS)=OLDCART(1:3*NATOMS)
-C
-C Need to keep OLDQ constant for repeated back-transformations if first step size fails.
-C Therefore pass dummy array newq that can change.
-C Similarly with LCART and OLDCART.
-C
-C           CALL TRANSBACK(XINT,NEWQ,LCART,N,3*NATOMS,NNZ,KD)
+!
+! Need to keep OLDQ constant for repeated back-transformations if first step size fails.
+! Therefore pass dummy array newq that can change.
+! Similarly with LCART and OLDCART.
+!
+!           CALL TRANSBACK(XINT,NEWQ,LCART,N,3*NATOMS,NNZ,KD)
             CALL TRANSBACKDELTA(DELTAQ,DELTACART,LCART,N,3*NATOMS,NNZ,KD,FAILED,.FALSE.,LEPSILON) ! transform step to Cartesians
             IF (FAILED) THEN
-C              NCOUNT=NCOUNT+1
-C              IF (NCOUNT.GT.1) STOP
-C              LEPSILON=1.0D-5*DPRAND()
-C              GOTO 21
-C or
+!              NCOUNT=NCOUNT+1
+!              IF (NCOUNT.GT.1) STOP
+!              LEPSILON=1.0D-5*DPRAND()
+!              GOTO 21
+! or
                MFLAG=.FALSE.
 !              IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
                RETURN
             ENDIF
-C
-C now add DELTACART to LCART to get new cartesians. Put these in X.
-C
+!
+! now add DELTACART to LCART to get new cartesians. Put these in X.
+!
             LCART(1:3*NATOMS)=OLDCART(1:3*NATOMS)+DELTACART(1:3*NATOMS)
             XCOORDS(1:3*NATOMS)=OLDCART(1:3*NATOMS)+DELTACART(1:3*NATOMS)
-C
-C  for CHRMMT:
-C  LCART    contains new Cartesians (after step)
-C  XCOORDS contains new Cartesians (after step)
-C  XINT    contains new internals (after step)
-C  GRAD    contains old gradient
-C  GINT    contains old gradient in internals
-C  OLDQ    contains old internals
-C  OLDGINT contains old gradient in internals for the last successful geometry
-C  NEWQ    contains old internals for the last successful geometry
-C  OLDCART contains old Cartesians for the last successful geometry
-C
-C         ELSEIF (UNRST) THEN
-C            NEWQ(1:N)=X(1:N) ! store new internals in NEWQ
-CC
-CC need a temporary array NEWQ here as argument to var_to_geom to keep X unchanged in case we need to
-CC modify the step below.
-CC
-C            CALL var_to_geom(N,NEWQ) ! update internals
-C            CALL chainbuild ! get cartesians
+!
+!  for CHRMMT:
+!  LCART    contains new Cartesians (after step)
+!  XCOORDS contains new Cartesians (after step)
+!  XINT    contains new internals (after step)
+!  GRAD    contains old gradient
+!  GINT    contains old gradient in internals
+!  OLDQ    contains old internals
+!  OLDGINT contains old gradient in internals for the last successful geometry
+!  NEWQ    contains old internals for the last successful geometry
+!  OLDCART contains old Cartesians for the last successful geometry
+!
+!         ELSEIF (UNRST) THEN
+!            NEWQ(1:N)=X(1:N) ! store new internals in NEWQ
+!C
+!C need a temporary array NEWQ here as argument to var_to_geom to keep X unchanged in case we need to
+!C modify the step below.
+!C
+!            CALL var_to_geom(N,NEWQ) ! update internals
+!            CALL chainbuild ! get cartesians
          ENDIF
       ENDIF
 
@@ -645,62 +661,62 @@ C            CALL chainbuild ! get cartesians
 !         IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
           RETURN
       ENDIF
-C
-C  Catch cold fusion for ionic potentials and discard.
-C
-C  Changed EREAL for cold fusion to 1.0D6 rather than 0.0D0, which could result in steps being accepted
-C  for systems with positive energies. - khs26 26/11/09
-C
-      IF ((TOSI.OR.WELCH.OR.RGCL2.OR.AMBER.OR.ARNO.OR.PACHECO.OR.TIP.OR.CHRMMT.OR.AMBERT 
-     &   .OR.PYGPERIODICT.OR.PYBINARYT.OR.MULTISITEPYT.OR.JMT)
-     &   .AND.(ENEW.LT.COLDFUSIONLIMIT)) THEN
-         ENERGY=1.0D6
-         ENEW=1.0D6
-         POTEL=1.0D6
-         RMS=1.0D0
-         WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
-!     csw34> set COLDFUSION=.TRUE. so that ATEST=.FALSE. in MC
-         COLDFUSION=.TRUE.
-!        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
-         RETURN
-      ENDIF
-      IF ((DBPT.OR.DBPTDT.OR.MSTBINT.OR.MSSTOCKT.OR.MULTPAHAT.OR.NPAHT.OR.PAHW99T.OR.PYGT.OR.TDHDT) .AND.(ENEW.LT.-5.0D4)) THEN
-         ENERGY=0.0D0
-         ENEW=0.0D0
-         POTEL=0.0D0
-         RMS=1.0D0
-         WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
-         RETURN
-      ENDIF
+!
+!  Catch cold fusion for ionic potentials and discard.
+!
+!  Changed EREAL for cold fusion to 1.0D6 rather than 0.0D0, which could result in steps being accepted
+!  for systems with positive energies. - khs26 26/11/09
+!
+     ! IF ((TOSI.OR.WELCH.OR.RGCL2.OR.AMBER.OR.ARNO.OR.PACHECO.OR.TIP.OR.CHRMMT.OR.AMBERT 
+     !&   .OR.PYGPERIODICT.OR.PYBINARYT.OR.MULTISITEPYT.OR.JMT)
+     !&   .AND.(ENEW.LT.COLDFUSIONLIMIT)) THEN
+         !ENERGY=1.0D6
+         !ENEW=1.0D6
+         !POTEL=1.0D6
+         !RMS=1.0D0
+         !WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
+!!     csw34> set COLDFUSION=.TRUE. so that ATEST=.FALSE. in MC
+         !COLDFUSION=.TRUE.
+!!        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
+         !RETURN
+      !ENDIF
+      !IF ((DBPT.OR.DBPTDT.OR.MSTBINT.OR.MSSTOCKT.OR.MULTPAHAT.OR.NPAHT.OR.PAHW99T.OR.PYGT.OR.TDHDT) .AND.(ENEW.LT.-5.0D4)) THEN
+         !ENERGY=0.0D0
+         !ENEW=0.0D0
+         !POTEL=0.0D0
+         !RMS=1.0D0
+         !WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
+         !RETURN
+      !ENDIF
 
 
-C
-C  We need to transform the newly obtained Cartesian gradient for CHARMM and internals.
-C  NOCOOR is true because we dont need to transform the coordinates.
-C
+!
+!  We need to transform the newly obtained Cartesian gradient for CHARMM and internals.
+!  NOCOOR is true because we dont need to transform the coordinates.
+!
       IF (CHRMMT.AND.INTMINT) THEN
          NOCOOR=.TRUE.
          CALL TRANSFORM(XCOORDS,GNEW,XINT,GINT,N,3*NATOMS,NNZ,NOCOOR,KD)
       ENDIF
 
-C     IF (TIP) THEN
-C           WRITE(DUMPXYZUNIT+NP,'(I6)') (NATOMS/2)*3
-C           WRITE(DUMPXYZUNIT+NP,'(A,I5,A,F20.10)') 'LBFGS iteration ',ITER,' energy =',ENEW
-C           DO J2=1,NATOMS/2
-C              CALL TIPIO(XCOORDS(3*(J2-1)+1),XCOORDS(3*(J2-1)+2),XCOORDS(3*(J2-1)+3),
-C    1              XCOORDS(3*(NATOMS/2+J2-1)+1),XCOORDS(3*(NATOMS/2+J2-1)+2),XCOORDS(3*(NATOMS/2+J2-1)+3),RBCOORDS)
-C              WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'O ',RBCOORDS(1),RBCOORDS(2),RBCOORDS(3)
-C              WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(4),RBCOORDS(5),RBCOORDS(6)
-C              WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(7),RBCOORDS(8),RBCOORDS(9)
-C           ENDDO
-C     ENDIF
+!     IF (TIP) THEN
+!           WRITE(DUMPXYZUNIT+NP,'(I6)') (NATOMS/2)*3
+!           WRITE(DUMPXYZUNIT+NP,'(A,I5,A,F20.10)') 'LBFGS iteration ',ITER,' energy =',ENEW
+!           DO J2=1,NATOMS/2
+!              CALL TIPIO(XCOORDS(3*(J2-1)+1),XCOORDS(3*(J2-1)+2),XCOORDS(3*(J2-1)+3),&
+!    1              XCOORDS(3*(NATOMS/2+J2-1)+1),XCOORDS(3*(NATOMS/2+J2-1)+2),XCOORDS(3*(NATOMS/2+J2-1)+3),RBCOORDS)
+!              WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'O ',RBCOORDS(1),RBCOORDS(2),RBCOORDS(3)
+!              WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(4),RBCOORDS(5),RBCOORDS(6)
+!              WRITE(DUMPXYZUNIT+NP,'(A4,3F20.10)') 'H ',RBCOORDS(7),RBCOORDS(8),RBCOORDS(9)
+!           ENDDO
+!     ENDIF
 
-C     WRITE(*,'(A,F20.10)') 'ENEW=',ENEW
-C     WRITE(*,'(I6,F20.10)') (J1,GNEW(J1),J1=1,N)
+!     WRITE(*,'(A,F20.10)') 'ENEW=',ENEW
+!     WRITE(*,'(I6,F20.10)') (J1,GNEW(J1),J1=1,N)
 
-C
-C csw34 Force acceptance of step if FIXDIHEFLAG is TRUE
-C
+!
+! csw34 Force acceptance of step if FIXDIHEFLAG is TRUE
+!
       IF (FIXDIHEFLAG) ENERGY=ENEW
 
       IF (((ENEW-ENERGY.LE.MAXERISE).OR.EVAP.OR.GUIDECHANGET.OR.SMINKCHANGET).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
@@ -710,99 +726,99 @@ C
          DO J1=1,3*NATOMS
             GRAD(J1)=GNEW(J1)
          ENDDO
-         IF (DEBUG) WRITE(LFH,'(A,F20.10,G20.10,A,I6,A,F13.10)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,
-     1           ' LBFGS steps, step:',STP*SLENGTH
-C
-C  Step finished so can reset OLDQ to new XINT, OLDCART to new LCART,
-C  as well as the Cartesian and internal gradients.
-C
+         IF (DEBUG) WRITE(LFH,'(A,F20.10,G20.10,A,I6,A,F13.10)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,&
+     &           ' LBFGS steps, step:',STP*SLENGTH
+!
+!  Step finished so can reset OLDQ to new XINT, OLDCART to new LCART,&
+!  as well as the Cartesian and internal gradients.
+!
          IF (CHRMMT.AND.INTMINT) THEN
             OLDGINT(1:N)=GINT(1:N)
             OLDCART(1:3*NATOMS)=LCART(1:3*NATOMS)
-C
-C  Need to remake XINT because step was only projected in Cartesians?
-C  Actually, just setting OLDQ=XINT without this correction seems to
-C  be OK. Due to numerical imprecision, it might still be possible
-C  for X and XINT to get out of register. Perhaps this doesn't matter
-C  because the energy and gradient are always calculated in Cartesians.
-C
-C           IF (BFGSTST) CALL TRANSDELTA(DELTACART,DELTAQ,LCART,N,3*NATOMS,NNZ,KD)
-C           OLDQ(1:N)=OLDQ(1:N)+DELTAQ(1:N)
+!
+!  Need to remake XINT because step was only projected in Cartesians?
+!  Actually, just setting OLDQ=XINT without this correction seems to
+!  be OK. Due to numerical imprecision, it might still be possible
+!  for X and XINT to get out of register. Perhaps this doesn't matter
+!  because the energy and gradient are always calculated in Cartesians.
+!
+!           IF (BFGSTST) CALL TRANSDELTA(DELTACART,DELTAQ,LCART,N,3*NATOMS,NNZ,KD)
+!           OLDQ(1:N)=OLDQ(1:N)+DELTAQ(1:N)
             OLDQ(1:N)=XINT(1:N)
-C         ELSEIF (UNRST) THEN
-C!           TEST1(1:N)=X(1:N)
-C            CALL geom_to_var(N,X(1:N)) ! testing!!! - to put X back into register with the common block internals (and g)
-C!           CALL geom_to_var(N,TEST1(1:N))
-C!           do j1=1,N
-C!           if (abs((TEST1(j1)-x(j1))/x(j1))*100.0d0.gt.1.0D-6) print *,'hello coords ',J1
-C!           enddo
+!         ELSEIF (UNRST) THEN
+!!           TEST1(1:N)=X(1:N)
+!            CALL geom_to_var(N,X(1:N)) ! testing!!! - to put X back into register with the common block internals (and g)
+!!           CALL geom_to_var(N,TEST1(1:N))
+!!           do j1=1,N
+!!           if (abs((TEST1(j1)-x(j1))/x(j1))*100.0d0.gt.1.0D-6) print *,'hello coords ',J1
+!!           enddo
          ENDIF
-C
-C  Try to take an extra step using the two previous geometries.
-C 
-C          GOTO 112
-C          IF (MOD(ITDONE,3).EQ.0) THEN
-C             NGUESS=0
-C 111         CONTINUE
-C             DO J1=1,NATOMS
-C                X1=OLDX(3*(J1-1)+1)-OLDOLDX(3*(J1-1)+1)
-C                Y1=OLDX(3*(J1-1)+2)-OLDOLDX(3*(J1-1)+2)
-C                Z1=OLDX(3*(J1-1)+3)-OLDOLDX(3*(J1-1)+3)
-C                X2=XCOORDS(3*(J1-1)+1)-OLDX(3*(J1-1)+1)
-C                Y2=XCOORDS(3*(J1-1)+2)-OLDX(3*(J1-1)+2)
-C                Z2=XCOORDS(3*(J1-1)+3)-OLDX(3*(J1-1)+3)
-C                VGUESS(1)=(x2*(x1*x2 + y1*y2 + z1*z2))/(Sqrt(x1**2 + y1**2 + z1**2)*Sqrt(x2**2 + y2**2 + z2**2)) + 
-C      -  ((x2*(y1*y2 + z1*z2) - x1*(y2**2 + z2**2))*
-C      -     Sqrt(1 - (x1*x2 + y1*y2 + z1*z2)**2/((x1**2 + y1**2 + z1**2)*(x2**2 + y2**2 + z2**2))))/
-C      -   Sqrt((x2*y1 - x1*y2)**2 + (x2*z1 - x1*z2)**2 + (y2*z1 - y1*z2)**2)
-C                VGUESS(2)=(y2*(x1*x2 + y1*y2 + z1*z2))/(Sqrt(x1**2 + y1**2 + z1**2)*Sqrt(x2**2 + y2**2 + z2**2)) + 
-C      -  ((-(x2**2*y1) + x1*x2*y2 + z2*(y2*z1 - y1*z2))*
-C      -     Sqrt(1 - (x1*x2 + y1*y2 + z1*z2)**2/((x1**2 + y1**2 + z1**2)*(x2**2 + y2**2 + z2**2))))/
-C      -   Sqrt((x2*y1 - x1*y2)**2 + (x2*z1 - x1*z2)**2 + (y2*z1 - y1*z2)**2)
-C                VGUESS(3)=(z2*(x1*x2 + y1*y2 + z1*z2))/(Sqrt(x1**2 + y1**2 + z1**2)*Sqrt(x2**2 + y2**2 + z2**2)) + 
-C      -  ((-(x2**2*z1) + x1*x2*z2 + y2*(-(y2*z1) + y1*z2))*
-C      -     Sqrt(1 - (x1*x2 + y1*y2 + z1*z2)**2/((x1**2 + y1**2 + z1**2)*(x2**2 + y2**2 + z2**2))))/
-C      -   Sqrt((x2*y1 - x1*y2)**2 + (x2*z1 - x1*z2)**2 + (y2*z1 - y1*z2)**2)
-C                D1=SQRT(VGUESS(1)**2+VGUESS(2)**2+VGUESS(3)**2)
-C                IF (D1.LT.0.1) THEN
-C                   TRY(3*(J1-1)+1)=XCOORDS(3*(J1-1)+1)+VGUESS(1)*1.0D0
-C                   TRY(3*(J1-1)+2)=XCOORDS(3*(J1-1)+2)+VGUESS(2)*1.0D0
-C                   TRY(3*(J1-1)+3)=XCOORDS(3*(J1-1)+3)+VGUESS(3)*1.0D0
-C                ENDIF
-C             ENDDO
-C             CALL POTENTIAL(TRY,GNEW,EGUESS,.FALSE.,.FALSE.)
-C             WRITE(*,'(A,3G20.10)') 'ENEW,EGUESS,change=',ENEW,EGUESS,EGUESS-ENEW
-C             IF (EGUESS-ENEW.LT.0.0D0) THEN
-C                NGUESS=NGUESS+1
-C                ENEW=EGUESS
-C                DO J1=1,N
-C                   OLDOLDX(J1)=OLDX(J1)
-C                   OLDX(J1)=XCOORDS(J1)
-C                   XCOORDS(J1)=TRY(J1)
-C                ENDDO
-C                IF (NGUESS.LT.6) GOTO 111
-C             ENDIF
-C          ENDIF
-C          DO J1=1,N
-C             OLDOLDX(J1)=OLDX(J1)
-C             OLDX(J1)=XCOORDS(J1)
-C          ENDDO
-C 
-C 112      CONTINUE
-C
-C  May want to prevent the PE from falling too much if we are trying to visit all the
-C  PE bins. Halve the step size until the energy decrease is in range.
-C
+!
+!  Try to take an extra step using the two previous geometries.
+! 
+!          GOTO 112
+!          IF (MOD(ITDONE,3).EQ.0) THEN
+!             NGUESS=0
+! 111         CONTINUE
+!             DO J1=1,NATOMS
+!                X1=OLDX(3*(J1-1)+1)-OLDOLDX(3*(J1-1)+1)
+!                Y1=OLDX(3*(J1-1)+2)-OLDOLDX(3*(J1-1)+2)
+!                Z1=OLDX(3*(J1-1)+3)-OLDOLDX(3*(J1-1)+3)
+!                X2=XCOORDS(3*(J1-1)+1)-OLDX(3*(J1-1)+1)
+!                Y2=XCOORDS(3*(J1-1)+2)-OLDX(3*(J1-1)+2)
+!                Z2=XCOORDS(3*(J1-1)+3)-OLDX(3*(J1-1)+3)
+!                VGUESS(1)=(x2*(x1*x2 + y1*y2 + z1*z2))/(Sqrt(x1**2 + y1**2 + z1**2)*Sqrt(x2**2 + y2**2 + z2**2)) + 
+!      -  ((x2*(y1*y2 + z1*z2) - x1*(y2**2 + z2**2))*
+!      -     Sqrt(1 - (x1*x2 + y1*y2 + z1*z2)**2/((x1**2 + y1**2 + z1**2)*(x2**2 + y2**2 + z2**2))))/
+!      -   Sqrt((x2*y1 - x1*y2)**2 + (x2*z1 - x1*z2)**2 + (y2*z1 - y1*z2)**2)
+!                VGUESS(2)=(y2*(x1*x2 + y1*y2 + z1*z2))/(Sqrt(x1**2 + y1**2 + z1**2)*Sqrt(x2**2 + y2**2 + z2**2)) + 
+!      -  ((-(x2**2*y1) + x1*x2*y2 + z2*(y2*z1 - y1*z2))*
+!      -     Sqrt(1 - (x1*x2 + y1*y2 + z1*z2)**2/((x1**2 + y1**2 + z1**2)*(x2**2 + y2**2 + z2**2))))/
+!      -   Sqrt((x2*y1 - x1*y2)**2 + (x2*z1 - x1*z2)**2 + (y2*z1 - y1*z2)**2)
+!                VGUESS(3)=(z2*(x1*x2 + y1*y2 + z1*z2))/(Sqrt(x1**2 + y1**2 + z1**2)*Sqrt(x2**2 + y2**2 + z2**2)) + 
+!      -  ((-(x2**2*z1) + x1*x2*z2 + y2*(-(y2*z1) + y1*z2))*
+!      -     Sqrt(1 - (x1*x2 + y1*y2 + z1*z2)**2/((x1**2 + y1**2 + z1**2)*(x2**2 + y2**2 + z2**2))))/
+!      -   Sqrt((x2*y1 - x1*y2)**2 + (x2*z1 - x1*z2)**2 + (y2*z1 - y1*z2)**2)
+!                D1=SQRT(VGUESS(1)**2+VGUESS(2)**2+VGUESS(3)**2)
+!                IF (D1.LT.0.1) THEN
+!                   TRY(3*(J1-1)+1)=XCOORDS(3*(J1-1)+1)+VGUESS(1)*1.0D0
+!                   TRY(3*(J1-1)+2)=XCOORDS(3*(J1-1)+2)+VGUESS(2)*1.0D0
+!                   TRY(3*(J1-1)+3)=XCOORDS(3*(J1-1)+3)+VGUESS(3)*1.0D0
+!                ENDIF
+!             ENDDO
+!             CALL POTENTIAL(TRY,GNEW,EGUESS,.FALSE.,.FALSE.)
+!             WRITE(*,'(A,3G20.10)') 'ENEW,EGUESS,change=',ENEW,EGUESS,EGUESS-ENEW
+!             IF (EGUESS-ENEW.LT.0.0D0) THEN
+!                NGUESS=NGUESS+1
+!                ENEW=EGUESS
+!                DO J1=1,N
+!                   OLDOLDX(J1)=OLDX(J1)
+!                   OLDX(J1)=XCOORDS(J1)
+!                   XCOORDS(J1)=TRY(J1)
+!                ENDDO
+!                IF (NGUESS.LT.6) GOTO 111
+!             ENDIF
+!          ENDIF
+!          DO J1=1,N
+!             OLDOLDX(J1)=OLDX(J1)
+!             OLDX(J1)=XCOORDS(J1)
+!          ENDDO
+! 
+! 112      CONTINUE
+!
+!  May want to prevent the PE from falling too much if we are trying to visit all the
+!  PE bins. Halve the step size until the energy decrease is in range.
+!
       ELSEIF (ENEW-ENERGY.LE.MAXEFALL) THEN
-C
-C  Energy decreased too much - try again with a smaller step size
-C
+!
+!  Energy decreased too much - try again with a smaller step size
+!
          IF (NDECREASE.GT.5) THEN
             NFAIL=NFAIL+1
             WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find an energy in the required range, NFAIL=',NFAIL
             IF (CHRMMT.AND.INTMINT) THEN ! need to reset X, XINT, G, GINT to original values
                XINT(1:N)=XINT(1:N)-STP*W(ISPT+POINT*N+1:ISPT+POINT*N+N)
-C              XINT=OLDQ ! should be the same as subtracting the step
+!              XINT=OLDQ ! should be the same as subtracting the step
                GINT(1:N)=OLDGINT(1:N)
                GRAD(1:3*NATOMS)=GNEW(1:3*NATOMS) ! here OPTIM uses GLAST ! DJW
                XCOORDS(1:3*NATOMS)=OLDCART(1:3*NATOMS)
@@ -882,21 +898,21 @@ C              XINT=OLDQ ! should be the same as subtracting the step
          ENDIF
          STP=STP/2.0D0
          NDECREASE=NDECREASE+1
-         IF (DEBUG) WRITE(LFH,'(A,F19.10,A,F16.10,A,F15.8)') 
-     1                      ' energy decreased too much from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
+         IF (DEBUG) WRITE(LFH,'(A,F19.10,A,F16.10,A,F15.8)') &
+     &                      ' energy decreased too much from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
          
          FIXIMAGE=.TRUE.
          GOTO 20
       ELSE
-C
-C  Energy increased - try again with a smaller step size
-C
+!
+!  Energy increased - try again with a smaller step size
+!
          IF (NDECREASE.GT.10) THEN ! DJW
             NFAIL=NFAIL+1
             WRITE(LFH,'(A,G20.10)') ' in mylbfgs LBFGS step cannot find a lower energy, NFAIL=',NFAIL
             IF (CHRMMT.AND.INTMINT) THEN ! need to reset X, XINT, G, GINT to original values
                XINT(1:N)=XINT(1:N)-STP*W(ISPT+POINT*N+1:ISPT+POINT*N+N)
-C              XINT=OLDQ ! should be the same as subtracting the step
+!              XINT=OLDQ ! should be the same as subtracting the step
                GINT(1:N)=OLDGINT(1:N)
                GRAD(1:3*NATOMS)=GNEW(1:3*NATOMS) ! here OPTIM uses GLAST ! DJW
                XCOORDS(1:3*NATOMS)=OLDCART(1:3*NATOMS)
@@ -988,14 +1004,14 @@ C              XINT=OLDQ ! should be the same as subtracting the step
          ENDIF
          STP=STP/1.0D1
          NDECREASE=NDECREASE+1
-         IF (DEBUG) WRITE(LFH,'(A,F20.10,A,F20.10,A,F20.10)') 
-     1                      ' energy increased from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
+         IF (DEBUG) WRITE(LFH,'(A,F20.10,A,F20.10,A,F20.10)') &
+     &                      ' energy increased from ',ENERGY,' to ',ENEW,' decreasing step to ',STP*SLENGTH
          FIXIMAGE=.TRUE.
          GOTO 20
       ENDIF
-C
-C     Compute the new step and gradient change
-C
+!
+!     Compute the new step and gradient change
+!
 30    NPT=POINT*N
 
       IF (CHRMMT.AND.INTMINT) THEN
@@ -1023,8 +1039,8 @@ C
             WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
             WRITE(DUMPXYZUNIT+NP,'(A,I8,A,G20.10)') 'at step ',ITER,' energy=',ENERGY
             WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') ('LA ',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=1,NATOMS-NS)
-            IF (NS.GT.0) WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') 
-     1          ('LB',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=NATOMS-NS+1,NATOMS)
+            IF (NS.GT.0) WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') &
+     &          ('LB',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=NATOMS-NS+1,NATOMS)
          ENDIF
       ENDIF
       IF (CENT) CALL CENTRE2(XCOORDS)

@@ -4,6 +4,7 @@
       ! modules {{{
       USE COMMONS
       USE V
+      USE F
       USE MODBLN
       USE QMODULE
       USE PERMU
@@ -11,10 +12,8 @@
       !}}}
       IMPLICIT NONE
       ! subroutine {{{
-      !DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: X
-      !DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: GRAD
-      !DOUBLE PRECISION ::   X(*),GRAD(*)
-      DOUBLE PRECISION, DIMENSION(:) :: X, GRAD
+      DOUBLE PRECISION, DIMENSION(:),INTENT(IN) :: X
+      DOUBLE PRECISION, DIMENSION(:),INTENT(OUT) :: GRAD
       DOUBLE PRECISION, INTENT(OUT) :: EREAL
       LOGICAL, INTENT(IN) :: GRADT, SECT       
       ! }}}
@@ -59,8 +58,6 @@
       ! body {{{
 !op226> potentials  {{{ 
 
-      WRITE(*,*)    X(1:10)
-      STOP
       GUIDECHANGET=.FALSE.
       BRUN=0
 
