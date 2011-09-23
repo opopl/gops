@@ -13,7 +13,7 @@ write(file,10) "==========================================="
 write(file,10)
 write(file,10) "B - "
 write(file,10) 
-write(file,10) "Compilation time: Fri Sep 23 23:15:03 BST 2011"
+write(file,10) "Compilation time: Fri Sep 23 23:48:49 BST 2011"
 write(file,10) "Compiled by op226@mek-quake on GNU/Linux x86_64"
 write(file,10)
 write(file,10) "Compiler executable:  pgf90"

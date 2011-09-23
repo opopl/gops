@@ -65,6 +65,175 @@
 
       CONTAINS
 
+      ! trans gseed reseed pairdistance  {{{
+      DOUBLE PRECISION FUNCTION TRANS(X,XMIN,GAMMA)
+      IMPLICIT NONE
+      DOUBLE PRECISION X, XMIN, GAMMA
+
+      TRANS=1.0D0 - EXP(-GAMMA*(X-XMIN))
+
+      RETURN
+      END 
+
+      SUBROUTINE RESEED(NATOMS,P,RADIUS)
+      ! {{{
+      IMPLICIT NONE
+      INTEGER J1, NATOMS
+      DOUBLE PRECISION DPRAND, P(3*NATOMS), RADIUS, SR3, RANDOM
+      
+      SR3=DSQRT(3.0D0)
+      DO J1=1,NATOMS
+         RANDOM=(DPRAND()-0.5D0)*2.0D0
+         P(3*(J1-1)+1)=RANDOM*DSQRT(RADIUS)/SR3
+         RANDOM=(DPRAND()-0.5D0)*2.0D0
+         P(3*(J1-1)+2)=RANDOM*DSQRT(RADIUS)/SR3
+         RANDOM=(DPRAND()-0.5D0)*2.0D0
+         P(3*(J1-1)+3)=RANDOM*DSQRT(RADIUS)/SR3
+      ENDDO
+
+      RETURN
+      ! }}}
+      END
+
+!  The seed coordinates are at the end, not the beginning!!!!
+      SUBROUTINE GSEED
+      ! {{{
+      USE COMMONS
+      USE V
+
+      IMPLICIT NONE
+      
+      DOUBLE PRECISION XMASS, YMASS, ZMASS, DIST, DUMMY, DMAX, &
+     &                 DMIN, AX, BX
+      INTEGER J1, I, J2
+
+
+      OPEN(UNIT=10,FILE=SEED_FILE,STATUS='OLD')
+      NSEED=0
+      DO J1=1,NATOMS
+         READ(10,*,END=10) COORDS(3*(NATOMS-J1)+1,1),COORDS(3*(NATOMS-J1)+2,1),COORDS(3*(NATOMS-J1)+3,1)
+         NSEED=NSEED+1
+      ENDDO
+10    CLOSE(10)
+      WRITE(LFH,'(A,I6,A)') 'Read core from file seed containing ',NSEED,' atoms'
+      IF (FREEZECORE) THEN
+         WRITE(LFH,'(A,I8,A)') 'Core will be fixed during the first ',NSSTOP,' quenches'
+      ELSE
+         WRITE(LFH,'(A,I8,A)') 'Core will be relaxed but reset for the first ',NSSTOP,' quenches'
+      ENDIF
+!
+!  Centre the seed.
+!
+      IF (CENT) THEN
+         XMASS=0.0D0
+         YMASS=0.0D0
+         ZMASS=0.0D0
+         DO I=NATOMS,NATOMS-NSEED+1,-1
+            XMASS=XMASS+COORDS(3*(I-1)+1,1)
+            YMASS=YMASS+COORDS(3*(I-1)+2,1)
+            ZMASS=ZMASS+COORDS(3*(I-1)+3,1)
+         ENDDO
+         XMASS=XMASS/NSEED
+         YMASS=YMASS/NSEED
+         ZMASS=ZMASS/NSEED
+         DO I=NATOMS,NATOMS-NSEED+1,-1
+            COORDS(3*(I-1)+1,1)=COORDS(3*(I-1)+1,1)-XMASS
+            COORDS(3*(I-1)+2,1)=COORDS(3*(I-1)+2,1)-YMASS
+            COORDS(3*(I-1)+3,1)=COORDS(3*(I-1)+3,1)-ZMASS
+         ENDDO
+
+!
+!  Centre the other atoms.
+!
+         IF (NATOMS-NSEED.GT.1) THEN
+            XMASS=0.0D0
+            YMASS=0.0D0
+            ZMASS=0.0D0
+            DO I=1,NATOMS-NSEED
+               XMASS=XMASS+COORDS(3*(I-1)+1,1)
+               YMASS=YMASS+COORDS(3*(I-1)+2,1)
+               ZMASS=ZMASS+COORDS(3*(I-1)+3,1)
+            ENDDO
+!           PRINT*,'NATOMS-NSEED=',NATOMS-NSEED
+            XMASS=XMASS/(NATOMS-NSEED)
+            YMASS=YMASS/(NATOMS-NSEED)
+            ZMASS=ZMASS/(NATOMS-NSEED)
+            DO I=1,NATOMS-NSEED
+               COORDS(3*(I-1)+1,1)=COORDS(3*(I-1)+1,1)-XMASS
+               COORDS(3*(I-1)+2,1)=COORDS(3*(I-1)+2,1)-YMASS
+               COORDS(3*(I-1)+3,1)=COORDS(3*(I-1)+3,1)-ZMASS
+            ENDDO
+         ENDIF
+      ENDIF
+!
+!  Find the largest radius vector of the seed.
+!
+      DIST=0.0D0
+      DO J1=NATOMS,NATOMS-NSEED+1,-1
+         DUMMY=COORDS(3*J1-2,1)**2+COORDS(3*J1-1,1)**2+COORDS(3*J1,1)**2
+         IF (DUMMY.GT.DIST) DIST=DUMMY
+      ENDDO
+      DIST=DSQRT(DIST)
+!
+!  Shift the coordinates of the non-core atoms outside the core.
+!
+      DMAX=0.0D0
+      DMIN=1.0D20
+      DO J1=1,NATOMS-NSEED
+         DUMMY=DSQRT(COORDS(3*J1-2,1)**2+COORDS(3*J1-1,1)**2+COORDS(3*J1,1)**2)
+         IF (DUMMY.GT.DMAX) DMAX=DUMMY
+         IF (DUMMY.LT.DMIN) DMIN=DUMMY
+      ENDDO
+      IF (DABS(DMAX-DMIN).GT.1.0D-5) THEN
+         AX=1.2D0*DIST+DMIN*(1.2D0*DIST-DMIN-DMAX)/(DMAX-DMIN)
+         BX=(DMIN+DMAX-1.2D0*DIST)/(DMAX-DMIN)
+      ELSE
+         AX=1.2D0*DIST
+         BX=0.0D0
+      ENDIF
+      DO J1=1,NATOMS-NSEED
+         DUMMY=DSQRT(COORDS(3*J1-2,1)**2+COORDS(3*J1-1,1)**2+COORDS(3*J1,1)**2)
+         IF (DUMMY.LE.DIST) THEN
+            COORDS(3*J1-2,1)=COORDS(3*J1-2,1)*(AX+BX*DUMMY)/DUMMY
+            COORDS(3*J1-1,1)=COORDS(3*J1-1,1)*(AX+BX*DUMMY)/DUMMY
+            COORDS(3*J1,1)  =COORDS(3*J1,1)  *(AX+BX*DUMMY)/DUMMY
+         ENDIF
+      ENDDO
+      WRITE(LFH,75)
+75    FORMAT('Coordinates:')
+      WRITE(LFH,80) (COORDS(J1,1),J1=1,3*NATOMS)
+80    FORMAT(3F15.5)
+      IF (DUMPT) THEN
+         WRITE(40,*) NATOMS
+         WRITE(40,*) ' Initial coordinates'
+         WRITE(40,45) (COORDS(J2,1),J2=1,3*(NATOMS-NSEED))
+45       FORMAT('LA ',3F20.10)
+         WRITE(40,46) (COORDS(J2,1),J2=3*(NATOMS-NSEED)+1,3*NATOMS)
+46       FORMAT('LB',3F20.10)
+      ENDIF
+
+      DO J1=1,3*NATOMS
+         COORDSO(J1,1)=COORDS(J1,1)
+      ENDDO
+      
+      NS=NSEED
+
+      RETURN
+      ! }}}
+      END
+      
+		FUNCTION PAIRDISTANCE(ATOM1,ATOM2)
+		IMPLICIT NONE
+		! PAIRDISTANCE is defined as it is the function name and hence the returned
+		! value
+		DOUBLE PRECISION :: PAIRDISTANCE 
+		DOUBLE PRECISION, INTENT(IN) :: ATOM1(3),ATOM2(3)
+		   
+		PAIRDISTANCE=DSQRT((ATOM1(1)-ATOM2(1))**2+(ATOM1(2)-ATOM2(2))**2+(ATOM1(3)-ATOM2(3))**2)
+		RETURN 
+		END FUNCTION PAIRDISTANCE
+        ! }}}
+
       SUBROUTINE SETVARS
 !{{{
       USE COMMONS, ONLY : P46,G46
@@ -78,7 +247,6 @@
       ENDIF
 !}}}
       END SUBROUTINE SETVARS
-
 
       SUBROUTINE COUNTATOMS
 !op226> Declarations {{{ 
