@@ -7,8 +7,6 @@ C   damage or injury caused by use of this software and that this
 C   condition is passed onto all subsequent recipients of the software,
 C   whether modified or not.
 
-
-
         SUBROUTINE SDPRND (ISEED)
         DOUBLE PRECISION XMOD, YMOD, POLY(101), OTHER, OFFSET, X
         PARAMETER (XMOD = 1000009711.0D0, YMOD = 33554432.0D0)

@@ -1048,7 +1048,7 @@ C> Calculate the second derivative matrix (two-sided numerical approach)
      1                      bond_angle,tor_angle,radii,ntype)
 C {{{
 C Declarations {{{
-        USE MODHESS
+        use v,only: hess
         IMPLICIT NONE
         DOUBLE PRECISION RMASS, EPSILON, SIGMA, DELTA, THETA_0, RK_R, RK_THETA
         parameter (rmass = 40.0, epsilon = 0.0100570)

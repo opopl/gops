@@ -1,7 +1,10 @@
 
 # definitions {{{
 
+# compilers 
+
 FC=$(FC90)
+FCN=$(FC)
 
 # directories  {{{
 BINPATH=$(ROOTPATH)/bin
@@ -74,7 +77,8 @@ ifeq ($(FC),pgf90)
 MODFLAG:= -module $(MODPATH)
 DFFLAGS:= $(F0)
 
-FFLAGS := -Mextend -O0 -Mnoframe -g -traceback
+#FFLAGS := -Mextend -O0 -Mnoframe -g -traceback
+FFLAGS := -Mextend -O0 -Mnoframe 
 DFFLAGS += -Mextend -C -g -gopt -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mcoff -Mdwarf1 -Mdwarf2 -Mdwarf3 -Melf -Mnodwarf -Mpgicoff -traceback
 
 #not working yet {{{

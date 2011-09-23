@@ -38,13 +38,13 @@ C }}}
         subroutine g46merdiff(qo, n, grad, energy, gtest)
 C {{{ 
 C declarations {{{
-        USE MODHESS
+        USE V, ONLY : HESS
         IMPLICIT NONE
         logical gtest, stest
         INTEGER ntype(46), N
         DOUBLE PRECISION QO(3*N), GRAD(3*N), ENERGY
-        DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N),D_PARAM(N),
-     1                   c_param(n), rk_theta, rk_r, epsilon, sigma, theta_0, delta, rmass
+        DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N),D_PARAM(N)
+        DOUBLE PRECISION ::  c_param(n), rk_theta, rk_r, epsilon, sigma, theta_0, delta, rmass
         parameter (rmass = 40.0, epsilon = 0.0100570)
         parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
         parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)

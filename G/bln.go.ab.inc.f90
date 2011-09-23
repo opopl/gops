@@ -1,7 +1,6 @@
 
 ! Parameters for the non-bonded LJ interaction {{{
 
-
       AB=0.0D0
         DO I = 1, N
            DO J = 1, N

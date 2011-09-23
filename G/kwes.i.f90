@@ -1,5 +1,5 @@
 
-      IF (END .OR. WORD .EQ. 'STOP') THEN
+      IF (END .OR. (WORD .EQ. 'STOP')) THEN
 
          IF (NPCOUNT.LT.NPAR) THEN
             DO J1=NPCOUNT+1,NPAR

@@ -28,7 +28,6 @@
 !
 !op226>=================================== 
       MODULE COMMONS
-      USE NOA
       IMPLICIT NONE
       SAVE
       INTEGER :: NATOMS, NACCEPT, MAXIT, NTARGETS, NN, MM, NPAR, NPATCH, TIPID, PAHID, NSYMREM=0, NFREEZE, NSAVEINTE, &
@@ -152,7 +151,7 @@
       DATA (AMINOA(I1_AMH),I1_AMH=1,21)/'ALA','ARG','ASN','ASP','CYS','GLN','GLU','GLY', &
            'HIS','ILE','LEU','LYS','MET','PHE','PRO','SER','THR','TRP','TYR','VAL','INI'/
 
-      DOUBLE PRECISION :: HESS(1,1)
+      !DOUBLE PRECISION :: HESS(1,1)
 !     DOUBLE PRECISION HESS(3*MXATMS,3*MXATMS)
       CHARACTER(LEN=3) :: CSMGP, CSMGUIDEGP
 
@@ -218,18 +217,5 @@
       !BLN/Go parameters
       LOGICAL :: GOTYPE=.FALSE.
       DOUBLE PRECISION :: GOFACTOR=0D0
-      contains
 
-      SUBROUTINE MODCOMMONINIT
-         implicit none
-         
-         natoms = Number_of_Atoms
-         allocate( ANV(NATOMS,NATOMS,3))         
-      END SUBROUTINE MODCOMMONINIT
-
-      SUBROUTINE MODCOMMONDEINIT
-         implicit none
-         
-         IF (ALLOCATED(ANV)) DEALLOCATE(ANV)
-      END SUBROUTINE MODCOMMONDEINIT
 END MODULE COMMONS
