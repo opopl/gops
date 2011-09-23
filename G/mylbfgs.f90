@@ -416,11 +416,7 @@
          ENDDO
       ENDIF
 
-      IF (CHRMMT.AND.INTMINT) THEN
-         DOT1=SQRT(DDOT(N,GINT,1,GINT,1))
-      ELSE
          DOT1=SQRT(DDOT(N,GRAD,1,GRAD,1))
-      ENDIF
 !
 !  Overflow has occasionally occurred here.
 !  We only need the sign of the overlap, so use a temporary array with
@@ -436,11 +432,7 @@
       DOT2=SQRT(DDOT(N,WTEMP,1,WTEMP,1))
       OVERLAP=0.0D0
       IF (DOT1*DOT2.NE.0.0D0) THEN
-         IF (CHRMMT.AND.INTMINT) THEN
-            OVERLAP=DDOT(N,GINT,1,WTEMP,1)/(DOT1*DOT2)
-         ELSE
             OVERLAP=DDOT(N,GRAD,1,WTEMP,1)/(DOT1*DOT2)
-        ENDIF
       ENDIF
 !     PRINT*,'OVERLAP,DIAG(1)=',OVERLAP,DIAG(1)
 !     PRINT*,'GRAD . GRAD=',DDOT(N,GRAD,1,GRAD,1)
@@ -455,15 +447,9 @@
          ENDDO
       ENDIF
 
-      IF (CHRMMT.AND.INTMINT) THEN
-         DO I=1,N
-            W(I)=GINT(I)
-         ENDDO
-      ELSE
          DO J1=1,N
             W(J1)=GRAD(J1)
          ENDDO
-      ENDIF
       SLENGTH=0.0D0
       DO J1=1,N
          SLENGTH=SLENGTH+W(ISPT+POINT*N+J1)**2
@@ -473,12 +459,6 @@
 !
 !  We now have the proposed step.
 !
-      IF (CHRMMT.AND.INTMINT) THEN
-         DO J1=1,N
-            XINT(J1)=XINT(J1)+STP*W(ISPT+POINT*N+J1)
-            DELTAQ(J1)=STP*W(ISPT+POINT*N+J1)
-         ENDDO
-      ELSE
 !
 ! Save XCOORDS here so that we can undo the step reliably including the
 ! non-linear projection for Thomson for the angular coordinates.
@@ -488,90 +468,16 @@
             XCOORDS(J1)=XCOORDS(J1)+STP*W(ISPT+POINT*N+J1)
          ENDDO 
 !
-! For Thomson try projection for the geometry after the step.
-!
-         IF (PROJIT) THEN
-            IF (THOMSONT) THEN
-               TMPCOORDS(1:N)=XCOORDS(1:N)
-               CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
-               CALL PROJI(TMPCOORDS,NATOMS)
-               CALL THOMSONCTOANG(TMPCOORDS,TMPANG,NATOMS)
-               XCOORDS(1:N)=TMPANG(1:N)
-            ELSE
-               TMPCOORDS(1:N)=XCOORDS(1:N)
-               CALL PROJI(TMPCOORDS,NATOMS)
-               XCOORDS(1:N)=TMPCOORDS(1:N)
-            ENDIF
-         ENDIF
-         IF (PROJIHT) THEN
-            IF (THOMSONT) THEN
-               TMPCOORDS(1:N)=XCOORDS(1:N)
-               CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
-               CALL PROJIH(TMPCOORDS,NATOMS)
-               CALL THOMSONCTOANG(TMPCOORDS,TMPANG,NATOMS)
-               XCOORDS(1:N)=TMPANG(1:N)
-            ELSE
-               TMPCOORDS(1:N)=XCOORDS(1:N)
-               CALL PROJIH(TMPCOORDS,NATOMS)
-               XCOORDS(1:N)=TMPCOORDS(1:N)
-            ENDIF
-         ENDIF
-      ENDIF
 !
 !  For charmm internals must transform and back-transform!
 !
       NDECREASE=0
       LEPSILON=1.0D-6
 
-20    IF (INTMINT) THEN
-         IF (CHRMMT) THEN
-            NEWQ(1:N)=OLDQ(1:N)
-            LCART(1:3*NATOMS)=OLDCART(1:3*NATOMS)
-!
-! Need to keep OLDQ constant for repeated back-transformations if first step size fails.
-! Therefore pass dummy array newq that can change.
-! Similarly with LCART and OLDCART.
-!
-!           CALL TRANSBACK(XINT,NEWQ,LCART,N,3*NATOMS,NNZ,KD)
-            CALL TRANSBACKDELTA(DELTAQ,DELTACART,LCART,N,3*NATOMS,NNZ,KD,FAILED,.FALSE.,LEPSILON) ! transform step to Cartesians
-            IF (FAILED) THEN
-!              NCOUNT=NCOUNT+1
-!              IF (NCOUNT.GT.1) STOP
-!              LEPSILON=1.0D-5*DPRAND()
-!              GOTO 21
-! or
-               MFLAG=.FALSE.
-!              IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
-               RETURN
-            ENDIF
-!
-! now add DELTACART to LCART to get new cartesians. Put these in X.
-!
-            LCART(1:3*NATOMS)=OLDCART(1:3*NATOMS)+DELTACART(1:3*NATOMS)
-            XCOORDS(1:3*NATOMS)=OLDCART(1:3*NATOMS)+DELTACART(1:3*NATOMS)
-!
-!  for CHRMMT:
-!  LCART    contains new Cartesians (after step)
-!  XCOORDS contains new Cartesians (after step)
-!  XINT    contains new internals (after step)
-!  GRAD    contains old gradient
-!  GINT    contains old gradient in internals
-!  OLDQ    contains old internals
-!  OLDGINT contains old gradient in internals for the last successful geometry
-!  NEWQ    contains old internals for the last successful geometry
-!  OLDCART contains old Cartesians for the last successful geometry
-!
-!         ELSEIF (UNRST) THEN
-!            NEWQ(1:N)=X(1:N) ! store new internals in NEWQ
-!C
-!C need a temporary array NEWQ here as argument to var_to_geom to keep X unchanged in case we need to
-!C modify the step below.
-!C
-!            CALL var_to_geom(N,NEWQ) ! update internals
-!            CALL chainbuild ! get cartesians
-         ENDIF
-      ENDIF
+!20    IF (INTMINT) THEN
+      !ENDIF
 
+20
 ! csw34> INCREMENT THE FORCE CONSTANT FOR STEERED MINIMISATION
       SMINKCHANGET=.FALSE.
       IF (LOCALSTEEREDMINT) THEN
@@ -605,11 +511,6 @@
 !     ENDIF
 
       IF (EVAPREJECT) return
-      IF (CHRMMT .AND. GCHARMMFAIL) THEN
-          WRITE(LFH,'(A)') 'Failure in CHARMM energy/gradient evaluation - step discarded.'
-!         IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
-          RETURN
-      ENDIF
 !
 !  Catch cold fusion for ionic potentials and discard.
 !
@@ -638,15 +539,7 @@
          !RETURN
       !ENDIF
 
-
 !
-!  We need to transform the newly obtained Cartesian gradient for CHARMM and internals.
-!  NOCOOR is true because we dont need to transform the coordinates.
-!
-      IF (CHRMMT.AND.INTMINT) THEN
-         NOCOOR=.TRUE.
-         CALL TRANSFORM(XCOORDS,GNEW,XINT,GINT,N,3*NATOMS,NNZ,NOCOOR,KD)
-      ENDIF
 
 !     IF (TIP) THEN
 !           WRITE(DUMPXYZUNIT+NP,'(I6)') (NATOMS/2)*3
@@ -669,6 +562,7 @@
       IF (FIXDIHEFLAG) ENERGY=ENEW
 
       IF (((ENEW-ENERGY.LE.MAXERISE).OR.EVAP.OR.GUIDECHANGET.OR.SMINKCHANGET).AND.(ENEW-ENERGY.GT.MAXEFALL)) THEN
+        ! {{{
          ITER=ITER+1
          ITDONE=ITDONE+1
          ENERGY=ENEW
@@ -681,27 +575,7 @@
 !  Step finished so can reset OLDQ to new XINT, OLDCART to new LCART,&
 !  as well as the Cartesian and internal gradients.
 !
-         IF (CHRMMT.AND.INTMINT) THEN
-            OLDGINT(1:N)=GINT(1:N)
-            OLDCART(1:3*NATOMS)=LCART(1:3*NATOMS)
-!
-!  Need to remake XINT because step was only projected in Cartesians?
-!  Actually, just setting OLDQ=XINT without this correction seems to
-!  be OK. Due to numerical imprecision, it might still be possible
-!  for X and XINT to get out of register. Perhaps this doesn't matter
-!  because the energy and gradient are always calculated in Cartesians.
-!
-!           IF (BFGSTST) CALL TRANSDELTA(DELTACART,DELTAQ,LCART,N,3*NATOMS,NNZ,KD)
-!           OLDQ(1:N)=OLDQ(1:N)+DELTAQ(1:N)
-            OLDQ(1:N)=XINT(1:N)
-!         ELSEIF (UNRST) THEN
-!!           TEST1(1:N)=X(1:N)
-!            CALL geom_to_var(N,X(1:N)) ! testing!!! - to put X back into register with the common block internals (and g)
-!!           CALL geom_to_var(N,TEST1(1:N))
-!!           do j1=1,N
-!!           if (abs((TEST1(j1)-x(j1))/x(j1))*100.0d0.gt.1.0D-6) print *,'hello coords ',J1
-!!           enddo
-         ENDIF
+
 !
 !  Try to take an extra step using the two previous geometries.
 ! 
@@ -758,7 +632,9 @@
 !  May want to prevent the PE from falling too much if we are trying to visit all the
 !  PE bins. Halve the step size until the energy decrease is in range.
 !
+         ! }}
       ELSEIF (ENEW-ENERGY.LE.MAXEFALL) THEN
+      ! {{{
 !
 !  Energy decreased too much - try again with a smaller step size
 !
@@ -795,18 +671,18 @@
             ENDIF
             GOTO 30
          ENDIF
-         IF (CHRMMT.AND.INTMINT) THEN
-            DO J1=1,N
-               XINT(J1)=XINT(J1)-0.5*STP*W(ISPT+POINT*N+J1)
-               DELTAQ(J1)=STP*W(ISPT+POINT*N+J1)*0.5D0
-            ENDDO
-         ELSE
-!
-! Resetting to XSAVE and adding half the step should be the same as subtracting 
-! half the step. 
-! If we have tried PROJI with Thomson then the projection is non-linear
-! and we need to reset to XSAVE. This should always be reliable!
-!
+       !  IF (CHRMMT.AND.INTMINT) THEN
+            !DO J1=1,N
+               !XINT(J1)=XINT(J1)-0.5*STP*W(ISPT+POINT*N+J1)
+               !DELTAQ(J1)=STP*W(ISPT+POINT*N+J1)*0.5D0
+            !ENDDO
+         !ELSE
+!!
+!! Resetting to XSAVE and adding half the step should be the same as subtracting 
+!! half the step. 
+!! If we have tried PROJI with Thomson then the projection is non-linear
+!! and we need to reset to XSAVE. This should always be reliable!
+!!
             XCOORDS(1:N)=XSAVE(1:N)
             DO J1=1,N
                XCOORDS(J1)=XCOORDS(J1)+0.5*STP*W(ISPT+POINT*N+J1)
@@ -817,34 +693,34 @@
 !
 ! For Thomson try projection for the geometry after the step.
 !        
-            IF (PROJIT) THEN
-               IF (THOMSONT) THEN
-                  TMPCOORDS(1:N)=XCOORDS(1:N)
-                  CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
-                  CALL PROJI(TMPCOORDS,NATOMS)
-                  CALL THOMSONCTOANG(TMPCOORDS,TMPANG,NATOMS)
-                  XCOORDS(1:N)=TMPANG(1:N)
-               ELSE
-                  TMPCOORDS(1:N)=XCOORDS(1:N)
-                  CALL PROJI(TMPCOORDS,NATOMS)
-                  XCOORDS(1:N)=TMPCOORDS(1:N)
-               ENDIF
-            ENDIF
-            IF (PROJIHT) THEN
-               IF (THOMSONT) THEN
-                  TMPCOORDS(1:N)=XCOORDS(1:N)
-                  CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
-                  CALL PROJIH(TMPCOORDS,NATOMS)
-                  CALL THOMSONCTOANG(TMPCOORDS,TMPANG,NATOMS)
-                  XCOORDS(1:N)=TMPANG(1:N)
-               ELSE
-                  TMPCOORDS(1:N)=XCOORDS(1:N)
-                  CALL PROJIH(TMPCOORDS,NATOMS)
-                  XCOORDS(1:N)=TMPCOORDS(1:N)
-               ENDIF
-            ENDIF
+        !    IF (PROJIT) THEN
+               !IF (THOMSONT) THEN
+                  !TMPCOORDS(1:N)=XCOORDS(1:N)
+                  !CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
+                  !CALL PROJI(TMPCOORDS,NATOMS)
+                  !CALL THOMSONCTOANG(TMPCOORDS,TMPANG,NATOMS)
+                  !XCOORDS(1:N)=TMPANG(1:N)
+               !ELSE
+                  !TMPCOORDS(1:N)=XCOORDS(1:N)
+                  !CALL PROJI(TMPCOORDS,NATOMS)
+                  !XCOORDS(1:N)=TMPCOORDS(1:N)
+               !ENDIF
+            !ENDIF
+            !IF (PROJIHT) THEN
+               !IF (THOMSONT) THEN
+                  !TMPCOORDS(1:N)=XCOORDS(1:N)
+                  !CALL THOMSONANGTOC(TMPCOORDS,NATOMS)
+                  !CALL PROJIH(TMPCOORDS,NATOMS)
+                  !CALL THOMSONCTOANG(TMPCOORDS,TMPANG,NATOMS)
+                  !XCOORDS(1:N)=TMPANG(1:N)
+               !ELSE
+                  !TMPCOORDS(1:N)=XCOORDS(1:N)
+                  !CALL PROJIH(TMPCOORDS,NATOMS)
+                  !XCOORDS(1:N)=TMPCOORDS(1:N)
+               !ENDIF
+            !ENDIF
 
-         ENDIF
+         !ENDIF
          STP=STP/2.0D0
          NDECREASE=NDECREASE+1
          IF (DEBUG) WRITE(LFH,'(A,F19.10,A,F16.10,A,F15.8)') &
