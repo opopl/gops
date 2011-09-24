@@ -69,14 +69,7 @@ C
             ENDDO
          ENDIF
       ENDDO
-C
-C       sf344> sometimes we can have a lower number of minima found than NSAVE. Resetting
-C              NSAVE to the number of minima found should get rid of entries with null 
-C              coordinates in the file 'lowest' (and other final output files)
-C
-C  DJW - this may not work because we may not have found enough minima considered 
-C        different according to the EDIFF criterion.
-C
+
       NSAVE=NQ(1)
       CALL GSORT2(NSAVE,NATOMS)
 C

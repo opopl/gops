@@ -11,14 +11,15 @@
       ! loc 
       INTEGER J1, J2, NDUMMY
       LOGICAL evap, evapreject
-      DOUBLE PRECISION DUMMY, DUMMY2, DUMMY3, DUMMY4, HWMAX,P0,FAC
+      DOUBLE PRECISION P0,FAC
 !     COMMON /IG/ IGNOREBIN, FIXBIN
-!     COMMON /MOVE/ TMOVE, OMOVE
+     !COMMON /MOVE/ TMOVE, OMOVE
       common /ev/ evap, evapreject
 
       P0=1.D0*NSUCCESS(JP)/(1.D0*(NSUCCESS(JP)+NFAIL(JP)))
       
       IF (P0.GT.ACCRAT(JP)) THEN
+        ! {{{
          IF(ARMT) THEN
            FAC=LOG(ARMA*ACCRAT(JP)+ARMB)/LOG(ARMA*P0+ARMB)
          ELSE
@@ -39,12 +40,10 @@
                ENDIF
             ENDIF
             ASTEP(JP)=ASTEP(JP)*1.05D0
-! jwrm2> limit step size for percolation to the cutoff distance for determining connectivity
-            IF (PERCOLATET .AND. ( STEP(JP) .GT. PERCCUT))  STEP(JP) = PERCCUT
-            IF (PERCOLATET .AND. (ASTEP(JP) .GT. PERCCUT)) ASTEP(JP) = PERCCUT
-            IF (PERCOLATET .AND. (OSTEP(JP) .GT. PERCCUT)) OSTEP(JP) = PERCCUT
          ENDIF
+         ! }}}
       ELSE
+        ! {{{
          IF(ARMT) THEN
            FAC=LOG(ARMA*ACCRAT(JP)+ARMB)/LOG(ARMA*P0+ARMB)
          ELSE
@@ -54,18 +53,20 @@
          ELSE IF (FIXSTEP(JP)) THEN
             IF (.NOT.FIXTEMP(JP)) TEMP(JP)=TEMP(JP)*1.05D0
          ELSE
-            IF (FIXD) THEN
-               NHSMOVE=MAX(1,NHSMOVE-1)
-            ELSE
-               IF (RIGID) THEN
-                  IF (TMOVE(JP)) STEP(JP)=STEP(JP)/1.05D0
-                  IF (OMOVE(JP)) OSTEP(JP)=OSTEP(JP)/1.05D0
-               ELSE
-                  STEP(JP)=FAC*STEP(JP)
-               ENDIF
-            ENDIF
+            STEP(JP)=FAC*STEP(JP)
+            !IF (FIXD) THEN
+               !NHSMOVE=MAX(1,NHSMOVE-1)
+            !ELSE
+               !IF (RIGID) THEN
+                  !IF (TMOVE(JP)) STEP(JP)=STEP(JP)/1.05D0
+                  !IF (OMOVE(JP)) OSTEP(JP)=OSTEP(JP)/1.05D0
+               !ELSE
+                  !STEP(JP)=FAC*STEP(JP)
+               !ENDIF
+            !ENDIF
             ASTEP(JP)=ASTEP(JP)/1.05D0
          ENDIF
+         ! }}}
       ENDIF
 !
 ! Prevent steps from growing out of bounds. The value of 1000 seems sensible, until
