@@ -5,6 +5,8 @@
       USE COMMONS
       USE V
       USE F 
+      USE KW
+      USE DV
       USE PORFUNCS
       !op226>  }}}
       !op226> Other {{{
@@ -21,6 +23,9 @@
       CHARACTER(LEN=130) ISTR
       CHARACTER(LEN=40) :: atom1,atom2,atompair
 
+      INTEGER*4 TODAY(3), NOW(3)
+
+
       COMMON /MYPOT/ POTEL
 !op226>  }}}
 !op226> End declarations }}}
@@ -29,8 +34,18 @@
       CALL RCA
 
       LFH=10
+
+      call idate(today)   ! today(1)=day, (2)=month, (3)=year
+      call itime(now)     ! now(1)=hour, (2)=minute, (3)=second
+
       OPEN(LFH,FILE=O_FILE, STATUS="unknown", form="formatted")
+
       WRITE(LFH, '(A,I10,A,I10,A)') "Starting serial execution"
+      call ed(lfh) 
+      write (lfh, 1000 )  today(2), today(1), today(3), now
+1000 format ( 'Date ', i2.2, '/', i2.2, '/', i4.4, '; time ',&
+     &         i2.2, ':', i2.2, ':', i2.2 )
+      call display_version(lfh)
 
       write(*,'(2A20)') "Input data file:      ",D_FILE
       write(*,'(2A20)') "Input coords file:    ",C_FILE
@@ -42,7 +57,7 @@
       CALL COUNTATOMS
       ALLOCATE(SCREENC(3*NATOMS),VT(NATOMS))
 
-      CALL KEYWORD
+      CALL KEYWORD(1)
       !CALL KW
       CALL SETVARS
 

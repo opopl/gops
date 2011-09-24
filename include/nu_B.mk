@@ -4,7 +4,9 @@ model1.f90
 fdm.f
 odesd.f
 strand.f
-
+kwsim.f90
+funcsim.f90
+mylapack.f
 #GMINdump.f90
 #accrej.f90
 #centre.f

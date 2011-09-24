@@ -10,9 +10,6 @@
         subroutine finalq
         endsubroutine finalq
 
-        DOUBLE PRECISION FUNCTION DPRAND()
-        END FUNCTION DPRAND
-
         SUBROUTINE MYRESET(JP,NATOMS,NPAR,NSEED)
             INTEGER JP,NATOMS,NPAR,NSEED
         END SUBROUTINE MYRESET
@@ -71,6 +68,26 @@
 
       CONTAINS
 
+      subroutine wd(f,s,num)
+
+      integer,intent(in) :: f,num
+      character(len=*),intent(in) :: s
+      character(len=100) sl
+      integer i
+
+      sl=s
+      do i=1,num
+        sl=sl // s
+      enddo
+      write(f,'(a)') sl
+
+      endsubroutine wd
+
+      subroutine ed(f)
+      integer f
+      write(f,'(a)') "==========================================="
+      endsubroutine ed
+
       ! trans gseed reseed pairdistance  {{{
 
       DOUBLE PRECISION FUNCTION TRANS(X,XMIN,GAMMA)
@@ -80,7 +97,7 @@
       TRANS=1.0D0 - EXP(-GAMMA*(X-XMIN))
 
       RETURN
-      END 
+      END FUNCTION TRANS
 
       SUBROUTINE RESEED(NATOMS,P,RADIUS)
       ! {{{
@@ -100,7 +117,7 @@
 
       RETURN
       ! }}}
-      END
+      ENDSUBROUTINE
 
 !  The seed coordinates are at the end, not the beginning!!!!
       SUBROUTINE GSEED
@@ -227,7 +244,7 @@
 
       RETURN
       ! }}}
-      END
+      ENDSUBROUTINE
       
 		FUNCTION PAIRDISTANCE(ATOM1,ATOM2)
 		IMPLICIT NONE
@@ -377,6 +394,48 @@ FUNCTION DPRAND()
         DPRAND = X+TINY
         ! }}}
 END FUNCTION DPRAND
+! }}}
+! INQF OPENF {{{
+SUBROUTINE INQF(FILENAME,YESNO)
+! {{{
+LOGICAL,INTENT(OUT) :: YESNO
+CHARACTER(LEN=*),INTENT(IN) :: FILENAME
+CHARACTER(LEN=100) :: FLN
+
+FLN=TRIM(ADJUSTL(FILENAME))
+INQUIRE(FILE=FLN,EXIST=YESNO)
+! }}}
+END SUBROUTINE INQF
+
+!> @name OPENF
+!! @brief open files 
+SUBROUTINE OPENF(FILEHANDLE,MODE,FILENAME)
+! {{{
+
+INTEGER, INTENT(IN) :: FILEHANDLE
+CHARACTER (LEN=*), INTENT(IN) :: FILENAME
+CHARACTER (LEN=*), INTENT(IN) :: MODE
+CHARACTER (LEN=100) :: FLN
+
+FLN=TRIM(ADJUSTL(FILENAME))
+
+SELECTCASE(MODE)
+        CASE(">")
+                OPEN(UNIT=FILEHANDLE,FILE=FILENAME,STATUS="UNKNOWN",FORM="FORMATTED")
+        CASE("O")
+                OPEN(UNIT=FILEHANDLE,FILE=FILENAME,STATUS="OLD")
+        CASE("<")
+                OPEN(UNIT=FILEHANDLE,FILE=FILENAME,STATUS="OLD",ACTION="READ")
+        CASE(">>")
+                OPEN(FILEHANDLE,FILE=FILENAME,STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+        CASE("RW>>")
+                OPEN(FILEHANDLE,FILE=FILENAME,STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND',ACTION="READWRITE")
+        case("DA")
+                OPEN(FILEHANDLE,FILE=FILENAME,ACCESS="DIRECT",STATUS='UNKNOWN',FORM='UNFORMATTED',RECL=8*3*NATOMS)
+                
+ENDSELECT
+! }}}
+ENDSUBROUTINE OPENF
 ! }}}
 
       SUBROUTINE SETVARS

@@ -3,7 +3,7 @@
       IMPLICIT NONE
       SAVE
         
-      LOGICAL ::  MYBLNT, RMST
+      LOGICAL ::  MYBLNT, RMST, USEKW
       !LOGICAL ::  GUIDECHANGET,  CSMDOGUIDET, GUIDET
       !COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
 
@@ -17,6 +17,8 @@
 
       INTEGER NR
       ! }}}
+
+      INTEGER,PARAMETER :: DATA_FH=5
 
       ! from module PERMU
       DOUBLE PRECISION, ALLOCATABLE :: FIN(:)

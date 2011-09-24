@@ -1,7 +1,7 @@
 
       IF (WORD.EQ.'    '.OR.WORD.EQ.'NOTE'.OR.WORD.EQ.'COMMENT'.OR.WORD.EQ.'!'&
      &                          .OR. WORD .EQ. '\\') THEN 
-         GOTO 190
+         GOTO 100
 
          ! P46 G46 MYBLN BLN BLNGO {{{
       ELSE IF (WORD.EQ.'P46') THEN
@@ -16,8 +16,8 @@
       ELSE IF (WORD.EQ.'BLN') THEN
 !        ! BLN {{{
          !BLNT=.TRUE.
-         !CALL READF(RK_R)
-         !CALL READF(RK_THETA)
+         !READ(ARGS(2),*) RK_R
+         !READ(ARGS(2),*) RK_THETA
          !ALLOCATE(BEADLETTER(NATOMS),BLNSSTRUCT(NATOMS),
      !&            LJREP_BLN(NATOMS,NATOMS),LJATT_BLN(NATOMS,NATOMS),A_BLN(NATOMS),B_BLN(NATOMS),C_BLN(NATOMS),D_BLN(NATOMS))
          !OPEN(UNIT=1,FILE='BLNsequence',STATUS='OLD')
@@ -60,10 +60,10 @@
 !C BLN-Go Model {{{
          !GOTYPE=.TRUE.
          !BLNT=.TRUE.
-         !CALL READF(RK_R)
-         !CALL READF(RK_THETA)
+         !READ(ARGS(2),*) RK_R
+         !READ(ARGS(2),*) RK_THETA
          !IF (NITEMS.GT.3) THEN
-            !CALL READF(GOFACTOR)
+            !READ(ARGS(2),*) GOFACTOR
          !ENDIF
          !ALLOCATE(BEADLETTER(NATOMS),BLNSSTRUCT(NATOMS),
      !&            LJREP_BLN(NATOMS,NATOMS),LJATT_BLN(NATOMS,NATOMS),A_BLN(NATOMS),B_BLN(NATOMS),C_BLN(NATOMS),D_BLN(NATOMS))
@@ -108,71 +108,50 @@
          ! }}}
          ! EDIFF STEPS UPDATES {{{
       ELSE IF (WORD.EQ.'EDIFF') THEN
-         CALL READF(ECONV)
+          READ(ARGS(2),*) ECONV
       ELSE IF (WORD.EQ.'STEPS') THEN
-         NRUNS=1
-         CALL READI(IX)
-         MCSTEPS(1)=IX
-         IF (NITEMS.GT.2) THEN
-         CALL READF(XX)
-         TFAC(1)=XX
-         ENDIF
+          READ(ARGS(2),*) MCSTEPS(1)
+          READ(ARGS(3),*) TFAC(1)
       ELSE IF (WORD.EQ.'UPDATES') THEN
-         CALL READI(MUPDATE)
+          READ(ARGS(2),*) MUPDATE
          ! }}}
          ! SLOPPYCONV TIGHTCONV DGUESS  {{{
       ELSE IF ((WORD.EQ.'BASIN').OR.(WORD.EQ.'SLOPPYCONV')) THEN
-         IF (NITEMS.GT.1) CALL READF(BQMAX)
+          READ(ARGS(2),*) BQMAX
       ELSE IF ((WORD.EQ.'QMAX').OR.(WORD.EQ.'TIGHTCONV')) THEN
-         CALL READF(CQMAX)
+          READ(ARGS(2),*) CQMAX
       ELSE IF (WORD.EQ.'DGUESS') THEN
-         CALL READF(DGUESS)
+         READ(ARGS(2),*) DGUESS
          ! }}}
          ! SAVE DEBUG CENTRE CHANGEACCEPT MAXBFGS  MAXIT  {{{
       ELSE IF (WORD.EQ.'SAVE') THEN
-         CALL READI(NSAVE)
+         READ(ARGS(2),*) NSAVE
       ELSE IF (WORD.EQ.'DEBUG') THEN
          DEBUG=.TRUE.
       ELSE IF (WORD.EQ.'CENTRE') THEN
          CENT=.TRUE.
       ELSE IF (WORD.EQ.'CHANGEACCEPT') THEN
-         CALL READI(IX)
-         NACCEPT=IX
+         READ(ARGS(2),*) NACCEPT
       ELSE IF (WORD.EQ.'MAXBFGS') THEN
-         CALL READF(MAXBFGS)
+         READ(ARGS(2),*) MAXBFGS
       ELSE IF (WORD.EQ.'MAXIT') THEN
-         CALL READI(IX)
-         MAXIT=IX
-         IF (NITEMS.GT.2) THEN
-            CALL READI(IX)
-            MAXIT2=IX
+         READ(ARGS(2),*) MAXIT
+         IF (NARGS.GT.2) THEN
+            READ(ARGS(3),*) MAXIT2
          ENDIF
          ! }}}
          ! STEP TEMPERATURE  {{{
       ELSE IF (WORD.EQ.'STEP') THEN
-         NPCOUNT=NPCOUNT+1
-         IF (NPCOUNT.GT.NPAR) THEN
-            WRITE(LFH,'(A)') 'Number of STEP lines exceeds NPAR - quit'
-            STOP
-         ENDIF
-         CALL READF(STEP(NPCOUNT))
-         CALL READF(ASTEP(NPCOUNT))
-         IF (NITEMS.GT.3) CALL READF(OSTEP(NPCOUNT))
-         IF (NITEMS.GT.4) CALL READI(BLOCK(NPCOUNT))
+         READ(ARGS(2),*) STEP(1)
+         READ(ARGS(3),*) ASTEP(1)
+         IF (NARGS.GT.3) READ(ARGS(4),*) OSTEP(1)
+         IF (NARGS.GT.4) READ(ARGS(5),*) BLOCK(1)
       ELSE IF (WORD.EQ.'TEMPERATURE') THEN
-         DO J1=1,NITEMS-1
-            CALL READF(TEMP(J1))
-         ENDDO
-         IF (NITEMS-1.LT.NPAR) THEN
-            DO J1=NITEMS,NPAR
-               TEMP(J1)=TEMP(1)
-            ENDDO
-         ENDIF
-         ! }}}
+         READ(ARGS(2),*) TEMP(1)
+                  ! }}}
       ELSE IF (WORD.EQ.'TRACKDATA') THEN
          TRACKDATAT=.TRUE.     
       ELSE
-         CALL REPORT('Unrecognized command '//WORD,.TRUE.)
-         STOP
+        GOTO 100
       ENDIF
 

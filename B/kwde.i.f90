@@ -1,8 +1,8 @@
 !op226> Declarations {{{
       !USE commons
-      use COMMONS
-      USE V
-      USE PORFUNCS
+!      use COMMONS
+      !USE V
+      !USE PORFUNCS
       ! comm {{{
 !      use MODMXATMS   ! NEEDED FOR charmm
       !USE modcharmm
@@ -17,16 +17,14 @@
       !USE PORFUNCS
       !USE MYGA_PARAMS
       ! }}}
-
-      IMPLICIT NONE
       
-      COMMON /BUFINF/ ITEM, NITEMS, LOC(80), LINE, SKIPBL, CLEAR, NCR,&
-     &                NERROR, IR, ECHO, LAST, CAT
+      !COMMON /BUFINF/ ITEM, NITEMS, LOC(80), LINE, SKIPBL, CLEAR, NCR,&
+     !&                NERROR, IR, ECHO, LAST, CAT
 
-      INTEGER ITEM, NITEMS, LOC, LINE, NCR, NERROR, IR, LAST, IX, J1, JP, NPCOUNT, NTYPEA, NPCALL, NDUMMY, INDEX, J2, J3
-      LOGICAL END, SKIPBL, CLEAR, ECHO, yesno
+      INTEGER ITEM, NITEMS, LOC, NCR, NERROR, IR, LAST, IX, J1, JP, NPCOUNT, NTYPEA, NPCALL, NDUMMY, INDEX, J2, J3
+      LOGICAL END, SKIPBL, CLEAR, ECHO
       LOGICAL ::    CAT
-      CHARACTER WORD*16
+      !CHARACTER WORD*16
       DOUBLE PRECISION ::   XX
 
       !INTEGER MOVABLEATOMINDEX
