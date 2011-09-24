@@ -1,27 +1,4 @@
 
-
-!op226>=================================== 
-!op226> GPL License Info {{{ 
-!   GMIN: A program for finding global minima
-!   Copyright (C) 1999-2006 David J. Wales
-!   This file is part of GMIN.
-!
-!   GMIN is free software; you can redistribute it and/or modify
-!   it under the terms of the GNU General Public License as published by
-!   the Free Software Foundation; either version 2 of the License, or
-!   (at your option) any later version.
-!
-!   GMIN is distributed in the hope that it will be useful,
-!   but WITHOUT ANY WARRANTY; without even the implied warranty of
-!   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-!   GNU General Public License for more details.
-!
-!   You should have received a copy of the GNU General Public License
-!   along with this program; if not, write to the Free Software
-!   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-!
-!op226>}}} 
-!op226>=================================== 
 ! Doxygen {{{
 !> \name MC
 !> \brief This subroutine ...
@@ -48,47 +25,58 @@
       DOUBLE PRECISION, DIMENSION(:) ::   SCREENC
       ! }}}
       ! local  {{{
-      INTEGER J1, NSUCCESS(NPAR), NFAIL(NPAR), NFAILT(NPAR), NSUCCESST(NPAR), J2, JP, J5
-
-      INTEGER UNT
-      integer ITERATIONS, NSUPERCOUNT, NQTOT, JACCPREV, NREN, NLAST, NSTEPREN, BRUN,QDONE,JBEST(NPAR)
-      integer NRMS, NDONE, I, RNDSEED, J, NTOT, IMESG, ITRAJ, ITRAJO, NEACCEPT
-      integer J3, J4, ISTAT, LOCALCOUNT
-      INTEGER :: NSYMCALL=0
-      DOUBLE PRECISION POTEL, RANDOM, DPRAND, SAVECOORDS(3*NATOMS), TEMPCOORDS(3*NATOMS)
-      DOUBLE PRECISION :: TIME, SPOTEL(NSUPER), SCOORDS(3*NATOMS,NSUPER)
-      DOUBLE PRECISION :: EPPREV(NPAR), QSTART, QFINISH, RANNJ, RMIN
-      DOUBLE PRECISION :: RMINO, RCOORDS(3*NATOMS),ELASTSYM(NPAR)
-      DOUBLE PRECISION ::  RCOORDSO(3*NATOMS), RVAT(NATOMS), RVATO(NATOMS), EPSSAVE, EBEST(NPAR)
-      DOUBLE PRECISION ::  BESTCOORDS(3*NATOMS,NPAR), endtime, RMSD, VINIT, CTE, TEMPTRAJ(0:NPAR-1)
-      DOUBLE PRECISION ::  T, BETA(0:NPAR-1), GRAD(3*NATOMS), E, ER, W, DELTA, DBETA, A9ANGLE 
-      DOUBLE PRECISION ::  DUMMY1, DUMMY2, DUMMY3, INTE, OPOTEL, DUMGRAD(3*NATOMS), DJWPOTEL
-      LOGICAL CHANGEDE, EXCHANGEACCEPT, EXCHANGE, FLAG 
-      LOGICAL CHIRALFAIL,AMIDEFAIL, LOGDUMMY, DISTOK, ATOMINGROUP(NATOMS)
-      CHARACTER FNAME*9
-      CHARACTER (LEN= 3)  ISTR
-      CHARACTER (LEN=20) QUENCHNUM, QUNAME, DUMMYCHAR
-      CHARACTER (LEN=20) BESTNAME, CURRENTBESTNAME
-!  AMH 
-      INTEGER :: gly_count,iii,i2,i500,snapcount, DUMMYINT
-      DOUBLE PRECISION prcord(NATOMS,3,3,3)
-      DOUBLE PRECISION :: mctemp
-!  csw34> PAIRDIST variables
-      INTEGER :: PAIRCOUNTER
-      DOUBLE PRECISION :: ATOM1(3),ATOM2(3)
-
-      LOGICAL EVAP, ATEST, STAY, evapreject, LOPEN
-
-      character(len=10)       :: datechar,timechar,zonechar
-      integer                 :: values(8),itime1
-      double precision :: DISTGROUPX2,DISTGROUPY2,DISTGROUPZ2,DISTGROUPCENTRE,TESTANGLE
-      integer :: J6
-      ! }}}
-      ! common {{{
-      COMMON /EV/ EVAP, evapreject
+      INTEGER J1, J2, JP, J5
+      DOUBLE PRECISION :: MCTEMP
+      LOGICAL EVAP, ATEST, EVAPREJECT, STAY
+      INTEGER ITERATIONS,NQTOT,JACCPREV,BRUN,JBEST(NPAR)
+      INTEGER NDONE,QDONE
+      DOUBLE PRECISION ::   POTEL,RANDOM,DPRAND,EPSSAVE
+      DOUBLE PRECISION,DIMENSION(3*NATOMS) ::   SAVECOORDS,TEMPCOORDS,RCOORDS
+      DOUBLE PRECISION,DIMENSION(NPAR) ::  EPPREV,EBEST
+      INTEGER,DIMENSION(NPAR) :: NSUCCESS,NFAIL,NFAILT,NSUCCESST
+      DOUBLE PRECISION,DIMENSION(NATOMS) ::   RVAT,RVATO
+      DOUBLE PRECISION,DIMENSION(3*NATOMS,NPAR) ::   BESTCOORDS
+      DOUBLE PRECISION ::   TIME
+      DOUBLE PRECISION ::   ELASTSYM(NPAR)
+      DOUBLE PRECISION ::   RMIN,RMINO
+       ! common {{{
+      COMMON /EV/ EVAP, EVAPREJECT
       COMMON /MYPOT/ POTEL
       COMMON /TOT/ NQTOT
-      COMMON /Q4C/ QSTART, QFINISH
+      ! }}}
+
+      !INTEGER UNT
+      !integer ITERATIONS, NSUPERCOUNT, NQTOT, JACCPREV, NREN, NLAST, NSTEPREN, BRUN,QDONE,JBEST(NPAR)
+      !integer NRMS, NDONE, I, RNDSEED, J, NTOT, IMESG, ITRAJ, ITRAJO, NEACCEPT
+      !integer J3, J4, ISTAT, LOCALCOUNT
+      !INTEGER :: NSYMCALL=0
+      !DOUBLE PRECISION POTEL, RANDOM, DPRAND, SAVECOORDS(3*NATOMS), TEMPCOORDS(3*NATOMS)
+      !DOUBLE PRECISION :: TIME, SPOTEL(NSUPER), SCOORDS(3*NATOMS,NSUPER)
+      !DOUBLE PRECISION :: EPPREV(NPAR), QSTART, QFINISH, RANNJ, RMIN
+      !DOUBLE PRECISION :: RMINO, RCOORDS(3*NATOMS),ELASTSYM(NPAR)
+      !DOUBLE PRECISION ::  RCOORDSO(3*NATOMS), RVAT(NATOMS), RVATO(NATOMS), EPSSAVE, EBEST(NPAR)
+      !DOUBLE PRECISION ::  BESTCOORDS(3*NATOMS,NPAR), endtime, RMSD, VINIT, CTE, TEMPTRAJ(0:NPAR-1)
+      !DOUBLE PRECISION ::  T, BETA(0:NPAR-1), GRAD(3*NATOMS), E, ER, W, DELTA, DBETA, A9ANGLE 
+      !DOUBLE PRECISION ::  DUMMY1, DUMMY2, DUMMY3, INTE, OPOTEL, DUMGRAD(3*NATOMS), DJWPOTEL
+      !LOGICAL CHANGEDE, EXCHANGEACCEPT, EXCHANGE, FLAG 
+      !LOGICAL CHIRALFAIL,AMIDEFAIL, LOGDUMMY, DISTOK, ATOMINGROUP(NATOMS)
+      !CHARACTER FNAME*9
+      !CHARACTER (LEN= 3)  ISTR
+      !CHARACTER (LEN=20) QUENCHNUM, QUNAME, DUMMYCHAR
+      !CHARACTER (LEN=20) BESTNAME, CURRENTBESTNAME
+!!  AMH 
+      !INTEGER :: gly_count,iii,i2,i500,snapcount, DUMMYINT
+      !DOUBLE PRECISION prcord(NATOMS,3,3,3)
+!!  csw34> PAIRDIST variables
+      !INTEGER :: PAIRCOUNTER
+      !DOUBLE PRECISION :: ATOM1(3),ATOM2(3)
+
+      !LOGICAL EVAP, ATEST, STAY, evapreject, LOPEN
+
+      !character(len=10)       :: datechar,timechar,zonechar
+      !integer                 :: values(8),itime1
+      !double precision :: DISTGROUPX2,DISTGROUPY2,DISTGROUPZ2,DISTGROUPCENTRE,TESTANGLE
+      !integer :: J6
       ! }}}
 !op226>}}} 
 !op226> Subroutine body {{{ 
@@ -212,14 +200,14 @@
          NFAIL(JP)=0
          NSUCCESST(JP)=0
          NFAILT(JP)=0
-         IF (JDUMP(JP).AND.(.NOT.NEWJUMP)) THEN
-            WRITE(FNAME,'(A,I1)') 'ebuffer.',JP
-            UNT=70+JP
-            OPEN(UNIT=UNT,FILE=FNAME,STATUS='UNKNOWN')
-            WRITE(FNAME,'(A,I1)') 'cbuffer.',JP
-            UNT=70+NPAR+JP
-            OPEN(UNIT=UNT,FILE=FNAME,STATUS='UNKNOWN')
-         ENDIF
+         !IF (JDUMP(JP).AND.(.NOT.NEWJUMP)) THEN
+            !WRITE(FNAME,'(A,I1)') 'ebuffer.',JP
+            !UNT=70+JP
+            !OPEN(UNIT=UNT,FILE=FNAME,STATUS='UNKNOWN')
+            !WRITE(FNAME,'(A,I1)') 'cbuffer.',JP
+            !UNT=70+NPAR+JP
+            !OPEN(UNIT=UNT,FILE=FNAME,STATUS='UNKNOWN')
+         !ENDIF
       ENDDO
 
       !IF (AMHT) THEN
