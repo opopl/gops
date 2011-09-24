@@ -7,8 +7,21 @@
 
       ! interfaces  {{{
       INTERFACE
-        subroutine finalq
-        endsubroutine finalq
+
+!        ! p46merdiff g46merdiff  {{{
+        !SUBROUTINE P46MERDIFF(FH,DEB,QO, N, GRAD, ENERGY, GTEST)
+			!INTEGER,INTENT(IN) :: N
+			!LOGICAL,INTENT(IN) :: DEB
+			!INTEGER,INTENT(IN) :: FH
+			!DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
+			!DOUBLE PRECISION,DIMENSION(3*N),INTENT(OUT) :: GRAD
+			!DOUBLE PRECISION,INTENT(OUT) :: ENERGY
+            !LOGICAL,INTENT(IN) :: GTEST
+        !ENDSUBROUTINE P46MERDIFF
+        !!  }}}
+
+        SUBROUTINE FINALQ
+        ENDSUBROUTINE FINALQ
 
         SUBROUTINE MYRESET(JP,NATOMS,NPAR,NSEED)
             INTEGER JP,NATOMS,NPAR,NSEED

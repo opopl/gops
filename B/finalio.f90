@@ -28,7 +28,9 @@
                WRITE(MYUNIT2,'(2A1,1X,3F20.10)') BEADLETTER(J2),'L',(QMINP(J1,3*(J2-1)+J3),J3=1,3)
             ENDDO
          ELSE
-             WRITE(MYUNIT2,50) (QMINP(J1,J2),J2=3*(NATOMS-NS)+1,3*NATOMS)
+             !WRITE(MYUNIT2,50) (QMINP(J1,J2),J2=3*(NATOMS-NS)+1,3*NATOMS)
+             !WRITE(MYUNIT2,50) (QMINP(J1,1:NR),J2=1,NR)
+             WRITE(MYUNIT2,50) QMINP(J1,1:NR)
 50           FORMAT('LB',3F20.10)
          ENDIF
 

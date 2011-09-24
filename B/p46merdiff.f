@@ -28,15 +28,28 @@ C> the energy (ENERGY), gradient (GRAD), and
 C> the matrix of second derivatives are returned.
 C> Author: John Rose
 
-        SUBROUTINE P46MERDIFF(qo, n, grad, energy, gtest)
+        SUBROUTINE P46MERDIFF(FH,DEB,QO, N, GRAD, ENERGY, GTEST)
 C {{{
         IMPLICIT NONE
-        INTEGER ntype(46),N
-        DOUBLE PRECISION RMASS, EPSILON,SIGMA,DELTA,THETA_0,RK_R,RK_THETA,QO(3*N),GRAD(3*N),ENERGY
+        
+        ! sub 
+        INTEGER,INTENT(IN) :: N
+        LOGICAL,INTENT(IN) :: DEB
+        INTEGER,INTENT(IN) :: FH
+        DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
+        DOUBLE PRECISION,DIMENSION(3*N),INTENT(OUT) :: GRAD
+        DOUBLE PRECISION,INTENT(OUT) :: ENERGY
+        LOGICAL,INTENT(IN) :: GTEST
+
+        ! loc
+        INTEGER NCALLMAX
+        LOGICAL STEST
+
+        INTEGER ntype(46)
+        DOUBLE PRECISION RMASS, EPSILON,SIGMA,DELTA,THETA_0,RK_R,RK_THETA
         parameter (rmass = 40.0, epsilon = 0.0100570)
         parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
         parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
-        logical gtest, stest
         DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N), D_PARAM(N),C_PARAM(N),
      1                  x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n),
      2                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
@@ -54,7 +67,7 @@ C    6  bond_angle(n), stest, tor_angle(n), radii(n,n)
         call param_array(a_param,b_param,c_param,d_param,n)
         call calc_int_coords(qo,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
      1                       bond_angle,tor_angle,radii,ntype)
-        call calc_energy(qo,energy,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
+        call calc_energy(fh,deb,qo,energy,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
      1                   bond_angle,tor_angle,radii,ntype)
         IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
         call calc_gradient(qo,grad,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
@@ -65,7 +78,7 @@ C    6  bond_angle(n), stest, tor_angle(n), radii(n,n)
      1                bond_angle,tor_angle,radii,ntype)
 
         return
-        end
+        END SUBROUTINE P46MERDIFF
 C }}}
 C> Calculate the internal coordinates
 
@@ -162,20 +175,25 @@ C       WRITE(*,'(A,I4,4F20.10)') 'i,tor_angle,cos_phi,dacos=',i,tor_angle(i+1),
 
 C }}} 
 C> Calculate the energy
-        subroutine calc_energy(qo,energy,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
+        subroutine calc_energy(fh,deb,qo,energy,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod,
      1                         bond_angle,tor_angle,radii,ntype)
 C {{{
         IMPLICIT NONE
         INTEGER I,J,N
+        LOGICAL DEB
+        INTEGER FH,NCALLMAX
+        INTEGER, SAVE :: NCALL
+        !COMMON/C/NCALLMAX
         DOUBLE PRECISION RMASS, EPSILON, SIGMA, DELTA, THETA_0, RK_R, RK_THETA, RAD6, E_TANGLE,
      1                   QO(*), ENERGY, S6, E_NBOND, E_BOND, E_BANGLE
-        parameter (rmass = 40.0, epsilon = 0.0100570)
-        parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
-        parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
         INTEGER ntype(46)
         DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N), D_PARAM(N),C_PARAM(N),
      1                  x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n),
      2                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
+
+        parameter (rmass = 40.0, epsilon = 0.0100570)
+        parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
+        parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
 
 C       common/work/a_param(n,n),
 C    1  b_param(n,n),ntype(46),
@@ -184,6 +202,14 @@ C    3  x(n), y(n), z(n),
 C    4  xr(n,n), yr(n,n), zr(n,n),
 C    5  dot_prod(n,3), x_prod(n),
 C    6  bond_angle(n), tor_angle(n), radii(n,n)
+
+        NCALLMAX=100
+        IF (NCALL .LE. 0) THEN
+            NCALL=1
+          ELSE
+            NCALL=1+NCALL
+        ENDIF
+        IF (NCALL .GE. NCALLMAX) STOP
 
         s6 = sigma*sigma*sigma*sigma*sigma*sigma
         e_nbond=0.0D0
@@ -226,6 +252,21 @@ C    6  bond_angle(n), tor_angle(n), radii(n,n)
         enddo
 
         energy = e_nbond + e_bond + e_bangle + e_tangle
+        if (deb) then
+          write(fh,'(a)') '==============================='
+          write(fh,'(a,a20,i20)') 'calc_energy ','Call ',NCALL
+          write(fh,'(a)') '==============================='
+          write(fh,'(A20,F20.5)') 'Total BLN energy =', energy
+          write(fh,'(A20,F20.5)') 'Non-bonded =', e_nbond
+          write(fh,'(A20,F20.5)') 'bonded =', e_bond
+          write(fh,'(A20,F20.5)') 'bond angles =', e_bangle
+          write(fh,'(A20,F20.5)') 'dihedral angles =', e_tangle
+          !write(fh,'(A20,F20.5)') 'Total RMS =', RMS(1)
+          !write(fh,'(A20,F20.5)') 'Non-bonded =', RMS(2)
+          !write(fh,'(A20,F20.5)') 'bonded =', RMS(3)
+          !write(fh,'(A20,F20.5)') 'bond angles =', RMS(4)
+          !write(fh,'(A20,F20.5)') 'dihedral angles =', RMS(5)
+        endif
 C       WRITE(*,'(A,4F20.10)') 'nbond,bond,bangle,tangle=',e_nbond,e_bond,e_bangle,e_tangle
 
         return
@@ -254,13 +295,6 @@ C Declarations {{{
         DOUBLE PRECISION FBA_X(N),FBA_Y(N),FBA_Z(N), FX(N),FY(N),FZ(N)
         DOUBLE PRECISION FTA_X(N),FTA_Y(N),FTA_Z(N), FQ(3*N)
 C }}}
-C       common/work/a_param(n,n),
-C    1  b_param(n,n),ntype(46),
-C    2  d_param(n),c_param(n),
-C    3  x(n), y(n), z(n),
-C    4  xr(n,n), yr(n,n), zr(n,n),
-C    5  dot_prod(n,3), x_prod(n),
-C    6  bond_angle(n), tor_angle(n), radii(n,n)
 
         s6 = sigma*sigma*sigma*sigma*sigma*sigma
 
@@ -494,6 +528,7 @@ C particle n
      1        - zr(i-2,i-1))/den
 C }}}
 C Torsional angle forces
+        ! {{{
 C particles 1, 2, 3, n-2, n-1, and n are done outside of the loop
 C particle 1
 
@@ -817,6 +852,7 @@ C particles 4 to n-3
      1        (1.0D0/x_prod(i-2))*(dot_prod(i-2,2)*dot_prod(i-3,2) -
      1        dot_prod(i-3,3)*dot_prod(i-2,1))*(dot_prod(i-2,1)*zr(i-1,i) -
      1        dot_prod(i-2,2)*zr(i-2,i-1))) 
+        ! }}}
 
         fta_z(i) = a1 + a2 + a3 + a4 
 

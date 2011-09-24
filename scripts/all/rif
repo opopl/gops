@@ -1,5 +1,13 @@
 #!/usr/bin/perl -w
 
+# use {{{
+use strict;
+use File::Find ();
+use File::Basename;
+use Getopt::Std;
+use Cwd;
+use Fcntl qw/:seek/;
+#}}}
 # Doc {{{
 #
 # 	Steps: 
@@ -33,12 +41,6 @@ JUMPMOVE JUMPINT JDUMP SHELLMOVES PTGROUP NSURFMOVES NCORE );
 my $data_r1=qr//;
 #}}}
 # aux {{{
-use strict;
-use File::Find ();
-use File::Basename;
-use Getopt::Std;
-use Cwd;
-use Fcntl qw/:seek/;
 
 my ($this_script,$shd)=fileparse($0);
 
@@ -72,6 +74,27 @@ my $theTime = "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $day
 #USAGE
 ##}}}
 	#}}}
+# display help {{{
+if ( !@ARGV ){
+	display_help();
+	exit 1;
+}
+
+sub display_help(){
+# {{{
+print << "DH";
+==========================================
+SCRIPT NAME: $this_script
+USAGE: $this_script OPT 
+	
+	OPT specifies an option:
+		npar	- remove NPAR dep
+
+==========================================
+DH
+#}}}
+}
+#}}}
 # functions {{{
 
 # rgive(): return a regexp based on input {{{
@@ -99,7 +122,6 @@ sub cleanline(){
 #}}}
 
 #}}}
-
 # files {{{
 my $i_file="$dir/keyword.init.i.f";
 my $if_file="$dir/keyword.if.i.f";

@@ -32,7 +32,7 @@
 !> @param[in]    logical HESST  Do we need to calculate the Hessian?
 ! }}}
 !------------------------------------------------------------
-        SUBROUTINE EBLN(N,X,E,GRADX,HESS,PTYPE,GRADT,HESST)
+        SUBROUTINE EBLN(N,X,E,GRADX,HESS,PTYPE,GRADT,HESST,FH,DEB)
 ! vars {{{
 !commented  {{{
 !include "bln.vars.inc.f90"        ! variables
@@ -47,6 +47,8 @@
         ! }}}
         ! subroutine parameters  {{{
 
+        INTEGER,INTENT(IN) :: FH
+        LOGICAL,INTENT(IN) :: DEB
         ! N - number of particles
         INTEGER, INTENT(IN) :: N
         ! PTYPE: type of BLN potential {{{
@@ -66,6 +68,7 @@
         !DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: GRADX
         DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: X
         DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: GRADX
+        DOUBLE PRECISION, DIMENSION(:,:),INTENT(OUT) :: HESS
 
         ! Output Energies are specified by array E(:) {{{
         !
@@ -82,11 +85,14 @@
         ! local parameters {{{
         ! CONNECT GRAD R HESS J1 J2 {{{ 
         ! N, N
-        LOGICAL, DIMENSION(:,:),ALLOCATABLE :: CONNECT
+        !LOGICAL, DIMENSION(:,:),ALLOCATABLE :: CONNECT
+        LOGICAL, DIMENSION(N,N) :: CONNECT
 
         ! R GRAD HESS 
-        DOUBLE PRECISION, DIMENSION(:,:), ALLOCATABLE :: R, GRAD
-        DOUBLE PRECISION, DIMENSION(:,:) :: HESS
+        DOUBLE PRECISION, DIMENSION(N,3) :: R, GRAD
+        ! 
+        INTEGER NCALL
+        SAVE NCALL
 
         INTEGER J1,J2
         ! }}}
@@ -95,22 +101,22 @@
         ! AB(,2)  =>  B_PARAM(N,N)
         ! CD(,1)  =>  C_PARAM(N)
         ! CD(,2)  =>  D_PARAM(N)
-        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: AB
-        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:)   :: CD
+        DOUBLE PRECISION, DIMENSION(N,N,2) :: AB
+        DOUBLE PRECISION, DIMENSION(N,2)   :: CD
         ! }}}
         ! R DR LEN_DR - particle positions and distances {{{
         ! particle positions R => (X,Y,Z)
         ! particle relative positions DR_{ij} =>  R_i-R_j 
         ! distances between particles LEN_DR_ij => || DR_ij ||
-        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:,:) :: DR
-        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: LEN_DR
+        DOUBLE PRECISION, DIMENSION(N,N,3) :: DR
+        DOUBLE PRECISION, DIMENSION(N,N) :: LEN_DR
         ! }}}
         ! Angles {{{
         ! 1 => bond angles
         ! 2 => torsion (dihedral) angles
-        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: ANG 
+        DOUBLE PRECISION, DIMENSION(N-1,2) :: ANG 
         ! F => d(potential)/d(angle)
-        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: F
+        DOUBLE PRECISION, DIMENSION(N-1,2) :: F
         ! ==============================
         ! for torsional angles:
         ! 
@@ -118,7 +124,7 @@
         ! FB(:,2) => F/B
         ! 
         ! ==============================
-        DOUBLE PRECISION, ALLOCATABLE, DIMENSION(:,:) :: FB
+        DOUBLE PRECISION, DIMENSION(N-2,2) :: FB
         ! AN temporary angle variable
         DOUBLE PRECISION   AN
         ! }}}
@@ -128,17 +134,17 @@
         !> @param XPD - length of cross product 
         !> @param VXPD - cross product vector
         !> @param HVXPD - cross product direction
-        DOUBLE PRECISION, DIMENSION(:), allocatable :: XPD_2, XPD
-        DOUBLE PRECISION, DIMENSION(:,:), allocatable :: VXPD, HVXPD, PP
+        DOUBLE PRECISION, DIMENSION(N) :: XPD_2, XPD
+        DOUBLE PRECISION, DIMENSION(N,3) :: VXPD, HVXPD, PP
         ! }}}
         ! Bond vectors {{{
         ! B(:) =>  bond vectors lengths
-        DOUBLE PRECISION, allocatable ,DIMENSION(:) :: B
+        DOUBLE PRECISION ,DIMENSION(N-1) :: B
         ! bond vectors, BVR_i => DR(i,i+1) => R_{i+1}-R_i 
-        DOUBLE PRECISION, DIMENSION(:,:), allocatable :: BVR, EB
+        DOUBLE PRECISION, DIMENSION(N-1,3) :: BVR, EB
 
         ! DPD(1:N-2) array of dot-products between the bond vectors BVR(i)
-        DOUBLE PRECISION, DIMENSION(:),allocatable :: DPD
+        DOUBLE PRECISION, DIMENSION(N-2) :: DPD
         ! }}}
         ! Gradients {{{
         ! G, GNB, GB, GBA, GTA: vectors representing gradients of different kinds
@@ -150,15 +156,17 @@
         !       GTA     => torsional angles
         !
         DOUBLE PRECISION GRAD_MIN(N,3), GRAD_PLUS(N,3)
-        DOUBLE PRECISION, DIMENSION(:,:),ALLOCATABLE :: GBA, GNB, GTA, GB, G
-        DOUBLE PRECISION, DIMENSION(:,:),ALLOCATABLE :: GTA_I, GTA_J, GTA_K, GTA_L
-        DOUBLE PRECISION, DIMENSION(:,:),ALLOCATABLE :: GBA_I, GBA_J, GBA_K
+        DOUBLE PRECISION, DIMENSION(N,3) :: GBA, GNB, GTA, GB, G
+        DOUBLE PRECISION, DIMENSION(N,3) :: GTA_I, GTA_J, GTA_K, GTA_L
+        DOUBLE PRECISION, DIMENSION(N,3) :: GBA_I, GBA_J, GBA_K
         DOUBLE PRECISION ::     DF, FRR(3)
         ! }}}
         ! Other {{{
         INTEGER NTYPE(N), I, J, K, ICOUNT
 
         DOUBLE PRECISION COS_PHI, COS_THETA
+        INTEGER NR,NCALLMAX
+        DOUBLE PRECISION, dimension(10) :: RMS
 
         ! Hessian {{{
         ! Hessian - (N,N) matrix of second-order derivatives
@@ -190,48 +198,60 @@
                 ! 4 => torsional angles
         ! }}}
 
-        S(1)=SIGMA
-        S(6)=S(1)**6 
-        S(12)=S(6)**2
         ! }}}
        
         ! }}}
         ! }}}
-! am {{{
-        ALLOCATE(R(N,3),GRAD(N,3))
-        r=0.0d0; grad=0.0d0
-        ALLOCATE(CONNECT(N,N))
+        !intro {{{
+        S(1)=SIGMA
+        S(6)=S(1)**6 
+        S(12)=S(6)**2
 
-        ALLOCATE(AB(N,N,2))
-        !ALLOCATE(CD(2:N-2,2))
-        ALLOCATE(CD(N-2,2))
-        AB=0.0D0; CD=0.0D0
-
-        ALLOCATE(DR(N-1,N-1,3))
-        ALLOCATE(LEN_DR(N-1,N-1),B(N-1))
-        dr=0.0D0; len_dr=0.0d0
-
-        ALLOCATE(ANG(N,2))
-        ALLOCATE(F(-1:N+1,2))
-        ALLOCATE(FB(N,2))
-        ALLOCATE(XPD_2(N-1), XPD(N-1))
-        ALLOCATE(VXPD(N-1,3), HVXPD(N-1,3), PP(N-1,3))
-        allocate(BVR(N-1,3), EB(N-1,3))
-        allocate(DPD(N-2))
-        allocate(GBA(N,3))
-        allocate(GB(N,3))
-        allocate(GNB(N,3))
-        allocate(GTA(N,3))
-        allocate(GTA_I(N,3))
-        allocate(GTA_J(N,3))
-        allocate(GTA_K(N,3))
-        allocate(GTA_L(N,3))
-        allocate(GBA_I(N,3))
-        allocate(GBA_J(N,3))
-        allocate(GBA_K(N,3))
-        allocate(G(N,3))
-
+        NR=3*N
+        NCALLMAX=100
+        IF (NCALL .LE. 0) THEN
+            NCALL=1
+          ELSE
+            NCALL=1+NCALL
+        ENDIF
+        IF (NCALL .GE. NCALLMAX) STOP
         ! }}}
+
+!! am {{{
+        !ALLOCATE(R(N,3),GRAD(N,3))
+        !r=0.0d0; grad=0.0d0
+        !ALLOCATE(CONNECT(N,N))
+
+        !ALLOCATE(AB(N,N,2))
+        !!ALLOCATE(CD(2:N-2,2))
+        !ALLOCATE(CD(N-2,2))
+        !AB=0.0D0; CD=0.0D0
+
+        !ALLOCATE(DR(N-1,N-1,3))
+        !ALLOCATE(LEN_DR(N-1,N-1),B(N-1))
+        !dr=0.0D0; len_dr=0.0d0
+
+        !ALLOCATE(ANG(N,2))
+        !ALLOCATE(F(-1:N+1,2))
+        !ALLOCATE(FB(N,2))
+        !ALLOCATE(XPD_2(N-1), XPD(N-1))
+        !ALLOCATE(VXPD(N-1,3), HVXPD(N-1,3), PP(N-1,3))
+        !allocate(BVR(N-1,3), EB(N-1,3))
+        !allocate(DPD(N-2))
+        !allocate(GBA(N,3))
+        !allocate(GB(N,3))
+        !allocate(GNB(N,3))
+        !allocate(GTA(N,3))
+        !allocate(GTA_I(N,3))
+        !allocate(GTA_J(N,3))
+        !allocate(GTA_K(N,3))
+        !allocate(GTA_L(N,3))
+        !allocate(GBA_I(N,3))
+        !allocate(GBA_J(N,3))
+        !allocate(GBA_K(N,3))
+        !allocate(G(N,3))
+
+        !! }}}
         ! param (Parameters ) {{{
       include "bln.ntype.inc.f90"         ! specify bead types 
 
@@ -431,18 +451,44 @@ GNB= 0.0D0; GB= 0.0D0 ; GBA= 0.0D0 ; GTA= 0.0D0 ; GRAD= 0.0D0
 
 G=GNB+GB+GBA+GTA 
 GRADX=PACK(G,.TRUE.)
+
+
 ! }}}
-!deam {{{
-DEALLOCATE(R,GRAD)
-deallocate(CONNECT)
-deallocate(AB)
-!if (allocated(CD)) deallocate(CD)
-!deallocate(DR,LEN_DR)
-!deallocate(ANG,F,FB)
-!deallocate(XPD_2,XPD)
-!DEALLOCATE(VXPD,HVXPD,PP,BVR,EB,B,ANG,DPD)
-!DEALLOCATE(G,GB,GBA_I,GBA_J,GBA_K,GTA,GTA_I,GTA_J,GTA_K,GTA_L,GBA,GNB)
-! }}}
+        ! debug {{{
+        RMS(1)=SQRT(SUM(GRADX**2)/NR)
+        RMS(2)=SQRT(SUM(GNB**2)/NR)
+        RMS(3)=SQRT(SUM(GB**2)/NR)
+        RMS(4)=SQRT(SUM(GBA**2)/NR)
+        RMS(5)=SQRT(SUM(GTA**2)/NR)
+
+        IF(DEB) THEN
+          write(fh,'(a)') '==============================='
+          write(fh,'(a,a20,i20)') 'EBLN ','Call ',NCALL
+          write(fh,'(a)') '==============================='
+          write(fh,'(A20,F20.5)') 'Total BLN energy =', E(1)
+          write(fh,'(A20,F20.5)') 'Non-bonded =', E(2)
+          write(fh,'(A20,F20.5)') 'bonded =', E(3)
+          write(fh,'(A20,F20.5)') 'bond angles =', E(4)
+          write(fh,'(A20,F20.5)') 'dihedral angles =', E(5)
+          write(fh,'(A20,F20.5)') 'Total RMS =', RMS(1)
+          write(fh,'(A20,F20.5)') 'Non-bonded =', RMS(2)
+          write(fh,'(A20,F20.5)') 'bonded =', RMS(3)
+          write(fh,'(A20,F20.5)') 'bond angles =', RMS(4)
+          write(fh,'(A20,F20.5)') 'dihedral angles =', RMS(5)
+        endif
+        ! }}}
+
+!!deam {{{
+!DEALLOCATE(R,GRAD)
+!deallocate(CONNECT)
+!deallocate(AB)
+!!if (allocated(CD)) deallocate(CD)
+!!deallocate(DR,LEN_DR)
+!!deallocate(ANG,F,FB)
+!!deallocate(XPD_2,XPD)
+!!DEALLOCATE(VXPD,HVXPD,PP,BVR,EB,B,ANG,DPD)
+!!DEALLOCATE(G,GB,GBA_I,GBA_J,GBA_K,GTA,GTA_I,GTA_J,GTA_K,GTA_L,GBA,GNB)
+!! }}}
 
         RETURN
         END SUBROUTINE EBLN

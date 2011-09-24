@@ -35,14 +35,25 @@ C> \param QO         array of cartesian particle coordinates
 C> \param GRAD       array of gradients
 C> \param ENERGY     energy
 C }}}
-        subroutine g46merdiff(qo, n, grad, energy, gtest)
+        SUBROUTINE G46MERDIFF(FH,DEB,QO, N, GRAD, ENERGY, GTEST)
 C {{{ 
 C declarations {{{
         USE V, ONLY : HESS
         IMPLICIT NONE
-        logical gtest, stest
-        INTEGER ntype(46), N
-        DOUBLE PRECISION QO(3*N), GRAD(3*N), ENERGY
+
+        ! sub 
+        INTEGER,INTENT(IN) :: N
+        LOGICAL,INTENT(IN) :: DEB
+        INTEGER,INTENT(IN) :: FH
+        DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
+        DOUBLE PRECISION,DIMENSION(3*N),INTENT(OUT) :: GRAD
+        DOUBLE PRECISION,INTENT(OUT) :: ENERGY
+        LOGICAL,INTENT(IN) :: GTEST
+  
+        ! loc
+        logical stest
+        INTEGER ntype(46)
+        
         DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N),D_PARAM(N)
         DOUBLE PRECISION ::  c_param(n), rk_theta, rk_r, epsilon, sigma, theta_0, delta, rmass
         parameter (rmass = 40.0, epsilon = 0.0100570)
@@ -60,7 +71,7 @@ C    1  d_param(n),c_param(n)
         call gparam_array(a_param,b_param,c_param,d_param,n)
         call calc_int_coords(qo,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
      1                            radii,ntype)
-        call calc_energy(qo,energy,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
+        call calc_energy(fh,deb,qo,energy,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
      1                            radii,ntype)
         IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
         call calc_gradient(qo,grad,n,a_param,b_param,c_param,d_param,x,y,z,xr,yr,zr,dot_prod,x_prod, bond_angle,tor_angle,
@@ -90,7 +101,7 @@ C }}}
      1                            radii,ntype)
 
         return
-        end
+        END SUBROUTINE G46MERDIFF
 C }}}
 C
 C Doxygen: gparam_array {{{

@@ -31,7 +31,7 @@
 !op226> End declarations }}}
 ! intro {{{
       CALL CPU_TIME(TSTART)
-      CALL RCA
+      !CALL RCA
 
       LFH=10
 
@@ -58,6 +58,7 @@
       ALLOCATE(SCREENC(3*NATOMS),VT(NATOMS))
 
       CALL KEYWORD(1)
+      CALL RCA
       !CALL KW
       CALL SETVARS
 

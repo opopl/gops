@@ -2,6 +2,7 @@ SUBROUTINE RCA
 ! declarations {{{
 USE PORFUNCS
 USE DV
+USE V
 USE COMMONS
 
 IMPLICIT NONE
@@ -21,13 +22,18 @@ IF (NARGS.GT.0) THEN
        !CASE('-pv') ; CALL INITVARS ; CALL PRINTVARS ; STOP
        !CASE('-h')  ; CALL PRINTHELP ; STOP
        CASE DEFAULT
-         CALL GETARG_SUBR(i+1,var)
+         CALL GETARG_SUBR(I+1,VAR)
          SELECTCASE(BFF)
                 CASE('-f')
+                        PULLT=.TRUE.
                         READ(VAR,*) PFORCE
-                        WRITE(*,*) 'FORCE:',PFORCE
-				CASE('-g')
-				  		DEBUG=.TRUE.
+                        !WRITE(*,*) 'FORCE:',PFORCE
+				CASE('-ca') ; READ(VAR,*) NACCEPT 
+				CASE('-ediff') ; READ(VAR,*) ECONV
+				CASE('-g') ;  DEBUG=.TRUE.
+				CASE('-g46') ;  BLNT=.TRUE.; G46=.TRUE.
+				CASE('-p46') ;  BLNT=.TRUE.; P46=.TRUE.
+				CASE('-mbln') ; MYBLNT=.TRUE.
                 CASE DEFAULT
          ENDSELECT
          !CALL MAKETEST(BFF)
@@ -39,3 +45,4 @@ IF (NARGS.GT.0) THEN
 ENDIF
 ! }}}
 END SUBROUTINE RCA
+
