@@ -183,7 +183,6 @@
       ENDIF
 
 !  Calculate the initial energy and save in EPREV
-!op226>{{{ 
       ! {{{
       WRITE(LFH,'(A)') 'Calculating initial energy'
       EPSSAVE=EPSSPHERE
@@ -218,7 +217,6 @@
       ENDDO
       EPSSPHERE=EPSSAVE
       ! }}}
-!op226>}}} 
 
       WRITE(LFH,'(A,I10,A)') 'Starting MC run of ',NSTEPS,' steps'
       WRITE(LFH,'(A,F15.8,A)') 'Temperature will be multiplied by ',SCALEFAC,' at every step'
@@ -256,6 +254,7 @@
 
         CALL FLUSH(LFH)
 
+        ! trackdata {{{
         IF (TRACKDATAT) THEN
              WRITE(MYEUNIT,'(I10,F20.10)') J1,POTEL
              WRITE(MYMUNIT,'(I10,G20.10)') J1,EPREV(JP)
@@ -264,6 +263,7 @@
              CALL FLUSH(MYMUNIT)
              CALL FLUSH(MYBUNIT)
         ENDIF
+        ! }}}
         !IF (STAY) THEN
             IF (EVAP .and. .not.evapreject) THEN
                NFAIL(JP)=NFAIL(JP)+1
@@ -355,7 +355,10 @@
       DEALLOCATE(TMOVE)
       DEALLOCATE(OMOVE)
       RETURN
+!op226>}}} 
+      END SUBROUTINE MC 
 
+! com {{{
             ! com {{{
 !       csw34> If QUCENTRE is specified, move the centre of coordinates
 !       to (0,0,0) before taking the next step (improve this so that you
@@ -850,7 +853,5 @@
       !DEALLOCATE(OMOVE)
       !RETURN
       ! }}}
-!op226>}}} 
-      END SUBROUTINE MC 
 
 
