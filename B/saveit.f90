@@ -15,6 +15,7 @@
       DOUBLE PRECISION AVVAL, CSMRMS
 
       COMMON /TOT/ NQTOT
+      ! number of function calls
       COMMON /PCALL/ NPCALL
 !
 !  Save the lowest NSAVE distinguishable configurations.
@@ -64,14 +65,8 @@
 
       DO J1=1,NTARGETS
          IF (EREAL-TARGETS(J1).LT.ECONV) THEN
-            IF (NPAR.LT.2) THEN
-               WRITE(LFH,'(2(A,I15),A)') 'saveit> Target hit after ',NQTOT,' quenches ',NPCALL,' function calls.'
-               WRITE(LFH,'(2(A,F20.10))') 'saveit> Energy=',EREAL,' target=',TARGETS(J1)
-            ELSE
-               WRITE(LFH,'(A,I1,A,I2,2(A,I15),A)') '[',NP,']saveit> Target hit in parallel run ',NP,&
-     &                    ' after ',NQTOT,' quenches ',NPCALL,' function calls.'
-               WRITE(LFH,'(A,I1,2(A,F20.10))') '[',NP,']saveit> Energy=',EREAL,' target=',TARGETS(J1)
-            ENDIF
+            WRITE(LFH,'(2(A,I15),A)') 'saveit> Target hit after ',NQTOT,' quenches ',NPCALL,' function calls.'
+            WRITE(LFH,'(2(A,F20.10))') 'saveit> Energy=',EREAL,' target=',TARGETS(J1)
             HIT=.TRUE.
          ENDIF
       ENDDO

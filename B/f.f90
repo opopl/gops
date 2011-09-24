@@ -7,6 +7,8 @@
 
       ! interfaces  {{{
       INTERFACE
+        subroutine finalq
+        endsubroutine finalq
 
         DOUBLE PRECISION FUNCTION DPRAND()
         END FUNCTION DPRAND
@@ -16,9 +18,9 @@
         END SUBROUTINE MYRESET
 
         SUBROUTINE GSAVEIT(EREAL,P,NP)
-            INTEGER NP
-            DOUBLE PRECISION :: EREAL
-            DOUBLE PRECISION,DIMENSION(:) ::   P
+            INTEGER,intent(in) :: NP
+            DOUBLE PRECISION,intent(in) :: EREAL
+            DOUBLE PRECISION,intent(in), DIMENSION(:) ::   P
         END SUBROUTINE GSAVEIT
 
         SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,NP,RANDOM,MCTEMP)
@@ -50,7 +52,7 @@
 
         SUBROUTINE QUENCH(QTEST,NP,ITER,TIME,BRUN,QDONE,P)
 
-	      DOUBLE PRECISION, DIMENSION(:) :: P   
+	      DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: P   
 	      INTEGER NP,ITER,BRUN,QDONE
 	      LOGICAL QTEST
 	      DOUBLE PRECISION ::   TIME
