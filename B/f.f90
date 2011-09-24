@@ -238,6 +238,144 @@
 		RETURN 
 		END FUNCTION PAIRDISTANCE
         ! }}}
+! GETRND SDPRND DPRAND {{{
+
+! doxygen - GETRND {{{
+!> @name         GETRND
+! 
+!> @brief        Get an array of random numbers inside the interval [XMIN,XMAX]
+!
+!> @param[in]    N              - dimension of the array RND
+!> @param[out]   RND            - the generated array of random numbers 
+!> @param[in]    XMIN,XMAX      
+!
+! }}}
+SUBROUTINE GETRND(RND,N,XMIN,XMAX)
+! {{{
+IMPLICIT NONE
+
+! random number vector
+DOUBLE PRECISION,dimension(:),INTENT(OUT) :: RND
+! range
+DOUBLE PRECISION,INTENT(IN) :: XMIN,XMAX
+DOUBLE PRECISION :: DX
+! dimension of RND(:)
+INTEGER,INTENT(IN) :: N
+INTEGER I
+
+DX=XMAX-XMIN
+
+DO I=1,N 
+        RND(I)=XMAX-DX*DPRAND()
+ENDDO
+
+RETURN
+! }}}
+END SUBROUTINE 
+
+SUBROUTINE SDPRND (ISEED)
+        ! declarations {{{
+        DOUBLE PRECISION XMOD, YMOD, POLY(101), OTHER, OFFSET, X
+        PARAMETER (XMOD = 1000009711.0D0, YMOD = 33554432.0D0)
+        INTEGER ISEED, INDEX, IX, IY, IZ, I
+        LOGICAL INITAL
+        SAVE INITAL
+        COMMON /RANDDP/ POLY, OTHER, OFFSET, INDEX
+        DATA INITAL/.TRUE./
+        ! }}}
+        ! subroutine body {{{
+!
+!   ISEED should be set to an integer between 0 and 9999 inclusive;
+!   a value of 0 will initialise the generator only if it has not
+!   already been done.
+!
+        IF (INITAL .OR. ISEED .NE. 0) THEN
+            INITAL = .FALSE.
+        ELSE
+            RETURN
+        END IF
+!
+!   INDEX must be initialised to an integer between 1 and 101
+!   inclusive, POLY(1...N) to integers between 0 and 1000009710
+!   inclusive (not all 0), and OTHER to a non-negative proper fraction
+!   with denominator 33554432.  It uses the Wichmann-Hill generator to
+!   do this.
+!
+        IX = MOD(ABS(ISEED),10000)+1
+        IY = 2*IX+1
+        IZ = 3*IX+1
+        DO 10 I = -10,101
+            IF (I .GE. 1) POLY(I) = AINT(XMOD*X)
+            IX = MOD(171*IX,30269)
+            IY = MOD(172*IY,30307)
+            IZ = MOD(170*IZ,30323)
+            X = MOD(DBLE(IX)/30269.0D0+DBLE(IY)/30307.0D0+DBLE(IZ)/30323.0D0,1.0D0)
+  10    CONTINUE
+        OTHER = AINT(YMOD*X)/YMOD
+        OFFSET = 1.0D0/YMOD
+        INDEX = 1
+        ! }}}
+END SUBROUTINE SDPRND
+
+FUNCTION DPRAND()
+        ! DECLARATIONS {{{
+        DOUBLE PRECISION XMOD, YMOD, XMOD2, XMOD4, TINY, POLY(101), DPRAND, &
+         OTHER, OFFSET, X, Y
+        PARAMETER (XMOD = 1000009711.0D0, YMOD = 33554432.0D0, &
+        XMOD2 = 2000019422.0D0, XMOD4 = 4000038844.0D0,&
+        TINY = 1.0D-17)
+        INTEGER INDEX, N
+        LOGICAL INITAL
+        SAVE INITAL
+        COMMON /RANDDP/ POLY, OTHER, OFFSET, INDEX
+        DATA INITAL/.TRUE./
+        ! }}}
+        ! SUBROUTINE BODY {{{
+!
+!   THIS RETURNS A UNIFORM (0,1) RANDOM NUMBER, WITH EXTREMELY GOOD
+!   UNIFORMITY PROPERTIES.  IT ASSUMES THAT DOUBLE PRECISION PROVIDES
+!   AT LEAST 33 BITS OF ACCURACY, AND USES A POWER OF TWO BASE.
+!
+        IF (INITAL) THEN
+            CALL SDPRND (0)
+            INITAL = .FALSE.
+        END IF
+!
+!   SEE [KNUTH] FOR WHY THIS IMPLEMENTS THE ALGORITHM DESCRIBED IN
+!   THE PAPER.  NOTE THAT THIS CODE IS TUNED FOR MACHINES WITH FAST
+!   DOUBLE PRECISION, BUT SLOW MULTIPLY AND DIVIDE; MANY, MANY OTHER
+!   OPTIONS ARE POSSIBLE.
+!
+        N = INDEX-64
+        IF (N .LE. 0) N = N+101
+        X = POLY(INDEX)+POLY(INDEX)
+        X = XMOD4-POLY(N)-POLY(N)-X-X-POLY(INDEX)
+        IF (X .LT. 0.0D0) THEN
+            IF (X .LT. -XMOD) X = X+XMOD2
+            IF (X .LT. 0.0D0) X = X+XMOD
+        ELSE
+            IF (X .GE. XMOD2) THEN
+                X = X-XMOD2
+                IF (X .GE. XMOD) X = X-XMOD
+            END IF
+            IF (X .GE. XMOD) X = X-XMOD
+        END IF
+        POLY(INDEX) = X
+        INDEX = INDEX+1
+        IF (INDEX .GT. 101) INDEX = INDEX-101
+!
+!   ADD IN THE SECOND GENERATOR MODULO 1, AND FORCE TO BE NON-ZERO.
+!   THE RESTRICTED RANGES LARGELY CANCEL THEMSELVES OUT.
+!
+   10   Y = 37.0D0*OTHER+OFFSET
+        OTHER = Y-AINT(Y)
+        IF (OTHER .EQ. 0.0D0) GO TO 10
+        X = X/XMOD+OTHER
+        IF (X .GE. 1.0D0) X = X-1.0D0
+        DPRAND = X+TINY
+        ! }}}
+END FUNCTION DPRAND
+! }}}
 
       SUBROUTINE SETVARS
 !{{{
@@ -367,6 +505,8 @@
          PRINT '(A)','ERROR - no coords, input.crd, coords.inpcrd or coords.amber file'
          STOP
       ENDIF
+
+      NR=3*NATOMS
 
       CLOSE(7)
       ! }}}

@@ -34,7 +34,7 @@
       ! loc {{{ 
 
       INTEGER ii
-      INTEGER I, J1, NSQSTEPS, IFLAG, NOPT, J2, NDUMMY, J3, CSMIT, J5
+      INTEGER I, J1, NSQSTEPS, IFLAG, J2, NDUMMY, J3, CSMIT, J5
       DOUBLE PRECISION POTEL,EREAL,RBCOORDS(18),TMPCOORDS(3*NATOMS), DIST, QE, QX, AVVAL, CSMRMS
       LOGICAL CFLAG, RES, COMPON, evapreject, PASS, FAIL
       DOUBLE PRECISION  GRAD(3*NATOMS), DUMMY, DUM(3*NATOMS), DISTMIN, SSAVE, DIST2, RMAT(3,3)
@@ -72,22 +72,6 @@
 
 11    continue
 
-      ! com {{{
-!11    IF (WELCH) TOSI=.TRUE. 
-      !IF (PACHECO) AXTELL=.FALSE.
-      !IF (CPMD) SCT=.TRUE.
-      !IF (ZETT1.OR.ZETT2) THEN
-         !MORSET=.TRUE.
-         !RHO=6.0D0
-      !ENDIF
-      !IF (PERCOLATET) THEN
-        !COMPON=.TRUE.
-      !ENDIF
-      !IF (NATBT.AND.GUPTAT) GUIDET=.TRUE.
-      !IF (NATBT.AND.GUIDET) GUPTAT=.TRUE.
-      !IF (CSMGUIDET) CSMDOGUIDET=.TRUE. }}}
-
-      NOPT=3*NATOMS
       ! }}}
 !
 !  QTEST is set for the final quenches with tighter convergence criteria.
@@ -117,9 +101,9 @@
 !      IF (COMPRESST.AND.(.NOT.QTEST)) THEN!{{{
          !COMPON=.TRUE.
          !IF (PATCHY) THEN
-           !CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,1.D1*GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+           !CALL MYLBFGS(NR,MUPDATE,P,.FALSE.,1.D1*GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
          !ELSE
-           !CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+           !CALL MYLBFGS(NR,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
          !END IF
          !POTEL=EREAL
          !IF (.NOT.CFLAG) WRITE(LFH,'(A,I7,A)') ' WARNING - compressed quench ',NQ(NP),'  did not converge'
@@ -144,7 +128,7 @@
          !RMS=CSMRMS
          !ITER=CSMIT
          !!ELSE
-         !!   CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP) ! minimize structure
+         !!   CALL MYLBFGS(NR,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP) ! minimize structure
          !!   write(*,*) 'permdist mylbfgs', EREAL, ITER, RMS
          !!   POTEL=EREAL
          !!   IF (.NOT.CFLAG) WRITE(LFH,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
@@ -214,11 +198,11 @@
 !C     ELSE IF (BFGS .AND.(.NOT.QTEST)) THEN
       !ELSE IF (BFGS) THEN
 !C        CALL CGMIN(100,P,CFLAG,ITER,EREAL,NP)
-         !CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,100,ITER,.TRUE.,NP)
+         !CALL MYLBFGS(NR,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,100,ITER,.TRUE.,NP)
          !CALL DFPMIN(MAXIT,P,3*NATOMS,GMAX,ITER,EREAL,CFLAG)
       !ELSEIF (TNT) THEN
 !C        CALL CGMIN(100,P,CFLAG,ITER,EREAL,NP)
-         !CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,100,ITER,.TRUE.,NP)
+         !CALL MYLBFGS(NR,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,100,ITER,.TRUE.,NP)
           !WRITE(LFH, '(A)') 'subroutine tn does not compile with NAG/PG'
          !STOP
 !C        CALL TN(IFLAG,3*NATOMS,P,EREAL,GRAD,WORK,60*NATOMS,GMAX,ITER,MAXIT,CFLAG,DEBUG)
@@ -259,22 +243,22 @@
 !!!          IF(.NOT.QTEST) THEN
 !!!           WRITE(LFH,*) 'first iteration: decreasing epsilon_rep values by a factor of 10000' 
 !!!           PEPSILON1(:)=PEPSILON1(:)/10000.0D0
-!!!            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+!!!            CALL MYLBFGS(NR,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
 !!!           WRITE(LFH,*) 'second iteration: increasing epsilon_rep values by a factor of 100' 
 !!!           PEPSILON1(:)=PEPSILON1(:)*100.0D0
-!!!            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+!!!            CALL MYLBFGS(NR,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
 !!!            WRITE(LFH,*) 'third iteration: increasing epsilon_rep values by a factor of 100' 
 !!!           PEPSILON1(:)=PEPSILON1(:)*100.0D0
-!!!            CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+!!!            CALL MYLBFGS(NR,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
 !!!          END IF!}}}
          !!ELSE
-            !!CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+            !!CALL MYLBFGS(NR,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
          !ENDIF
          !IF (EVAPREJECT) RETURN
          !! }}}
       !ENDIF!}}}
 
-10    CALL MYLBFGS(NOPT,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
+10    CALL MYLBFGS(NR,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
       IF (EVAPREJECT) RETURN
       POTEL=EREAL
 
@@ -283,11 +267,7 @@
          IF (QTEST) THEN
             WRITE(LFH,'(A,I6,A)') 'WARNING - Final Quench ',NQ(NP),'  did not converge'
          ELSE
-            IF (NPAR.GT.1) THEN
-               WRITE(LFH,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
-            ELSE
-               WRITE(LFH,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
-            ENDIF
+            WRITE(LFH,'(A,I7,A)') 'WARNING - Quench ',NQ(NP),'  did not converge'
          ENDIF
       ENDIF
 
