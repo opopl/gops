@@ -7,30 +7,24 @@
 
       IMPLICIT NONE
       ! sub 
-      DOUBLE PRECISION ENEW, EOLD, RANDOM, MCTEMP
-      LOGICAL ATEST
-      INTEGER NP
+      DOUBLE PRECISION,INTENT(IN) :: ENEW, EOLD, RANDOM, MCTEMP
+      LOGICAL,INTENT(OUT) :: ATEST
+      INTEGER,INTENT(IN) :: NP
 
       ! loc
-      DOUBLE PRECISION :: DUMMY, DPRAND, EREF, TEOLD, TENEW, RATIO
+      DOUBLE PRECISION :: DUMMY, DPRAND, EREF
       DOUBLE PRECISION DISTMIN, DISTMINOLD
-      LOGICAL evap, evapreject
-      DATA DISTMINOLD /0.0D0/
-      COMMON /DMIN/ DISTMIN
-      common /ev/ evap, evapreject
-
-      IF (DISTMINOLD.EQ.0.0D0) DISTMINOLD=DISTMIN  ! this should allow for the first step
-         TEOLD=EOLD
-         TENEW=ENEW
+      LOGICAL EVAP, EVAPREJECT
+      COMMON /EV/ EVAP, EVAPREJECT
 
 !  Standard canonical sampling.
 !
-         IF (TENEW.LT.TEOLD) THEN
+         IF (ENEW.LT.EOLD) THEN
             RANDOM=0.0D0
             ATEST=.TRUE.
          ELSE
             RANDOM=DPRAND()
-            IF (DEXP(-(TENEW-TEOLD)/MAX(MCTEMP,1.0D-100)).GT.RANDOM) THEN
+            IF (DEXP(-(ENEW-EOLD)/MAX(MCTEMP,1.0D-100)).GT.RANDOM) THEN
                ATEST=.TRUE.
             ELSE
                ATEST=.FALSE.
