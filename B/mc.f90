@@ -26,7 +26,7 @@
       ! }}}
       ! local  {{{
       INTEGER J1, J2, JP, J5
-      DOUBLE PRECISION :: MCTEMP
+      DOUBLE PRECISION :: MCTEMP, OPOTEL
       LOGICAL EVAP, ATEST, EVAPREJECT, STAY
       INTEGER ITERATIONS,NQTOT,JACCPREV,BRUN,JBEST(NPAR)
       INTEGER NDONE,QDONE
@@ -36,9 +36,12 @@
       INTEGER,DIMENSION(NPAR) :: NSUCCESS,NFAIL,NFAILT,NSUCCESST
       DOUBLE PRECISION,DIMENSION(NATOMS) ::   RVAT,RVATO
       DOUBLE PRECISION,DIMENSION(3*NATOMS,NPAR) ::   BESTCOORDS
+      DOUBLE PRECISION,DIMENSION(3*NATOMS) :: RCOORDSO, GRAD
       DOUBLE PRECISION ::   TIME
       DOUBLE PRECISION ::   ELASTSYM(NPAR)
       DOUBLE PRECISION ::   RMIN,RMINO
+      INTEGER NRMS,NLAST,NREN,NSUPERCOUNT
+      DOUBLE PRECISION ::   RANNJ
        ! common {{{
       COMMON /EV/ EVAP, EVAPREJECT
       COMMON /MYPOT/ POTEL
@@ -81,6 +84,7 @@
 !op226>}}} 
 !op226> Subroutine body {{{ 
 
+      ! com {{{
 ! Write a list of FROZEN atoms for use in an (o)data file
 !op226> IF (FREEZEGROUPT) THEN {{{
       !IF (FREEZEGROUPT) THEN
@@ -140,27 +144,12 @@
          !DONTMOVEGROUPT=.FALSE.     
       !ENDIF
 !!op226>}}} 
-      
-!     csw34> Added defaults to prevent accidentaly discarding
-!     structures for AMH      
-
-      !CHIRALFAIL=.FALSE.
-      !AMIDEFAIL=.FALSE.
-      !INQUIRE(UNIT=1,OPENED=LOPEN)
-      !IF (LOPEN) THEN
-         !WRITE(*,'(A,I2,A)') 'mc> A ERROR *** Unit ', 1, ' is not free '
-         !STOP
-      !ENDIF
+      ! }}}
 
       ALLOCATE(TMOVE(NPAR), OMOVE(NPAR))
       !snapcount=0
       !NSTEPREN=0
       EVAPREJECT=.FALSE.
-      !INQUIRE(UNIT=1,OPENED=LOPEN)
-      !IF (LOPEN) THEN
-         !WRITE(*,'(A,I2,A)') 'mc> B ERROR *** Unit ', 1, ' is not free '
-         !STOP
-      !ENDIF
 
       NDONE=0
       IF (RESTORET) THEN
@@ -168,21 +157,8 @@
             CALL RESTORESTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
          ENDDO
          WRITE(LFH, '(A,I10)') 'MC> restore NDONE=',NDONE
-!     csw34> Sets the quench counter so that the GMIN_out file makes sense after using RESTORE!
-!         NQ(:)=NDONE
       ENDIF
       NQ(:)=NDONE
-
-!! tvb requesting a basin-sampling MC run: {{{
-      
-      !IF (BSWL.and.(.not.TETHER)) then
-         !CALL BasinSampling
-         !RETURN
-      !ELSEIF (TETHER) THEN
-         !CALL TetheredWL
-         !RETURN
-      !ENDIF
-!! }}}
 
       IF (NACCEPT.EQ.0) NACCEPT=NSTEPS+1
       NRMS=0
@@ -200,27 +176,10 @@
          NFAIL(JP)=0
          NSUCCESST(JP)=0
          NFAILT(JP)=0
-         !IF (JDUMP(JP).AND.(.NOT.NEWJUMP)) THEN
-            !WRITE(FNAME,'(A,I1)') 'ebuffer.',JP
-            !UNT=70+JP
-            !OPEN(UNIT=UNT,FILE=FNAME,STATUS='UNKNOWN')
-            !WRITE(FNAME,'(A,I1)') 'cbuffer.',JP
-            !UNT=70+NPAR+JP
-            !OPEN(UNIT=UNT,FILE=FNAME,STATUS='UNKNOWN')
-         !ENDIF
       ENDDO
-
-      !IF (AMHT) THEN
-         !write(omovi,1334)nmres,3,1,INT(real(NSTEPS)/real(NINT_AMH))
-!1334     format(4(i8,1x),' nmres nmcrd numpro nmsnap')
-      !ENDIF
     
       IF (.NOT.RESTORET) THEN
-!       csw34> Set the centre of mass to be at the specified location
-!       contained in the SETCENTRE X Y Z keyword
          IF (SETCENT) CALL SETCENTRE(COORDS)
-!
-! For MAKEOLIGOT and MAKEOLIGOSTART=TRUE: generate oligomers by placing new segments.
       ENDIF
 
 !  Calculate the initial energy and save in EPREV
@@ -232,13 +191,15 @@
       DO JP=1,NPAR
          CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)
          NQTOT=NQTOT+1
-         IF (NPAR.GT.1) THEN
-            WRITE(LFH,'(A,I2,A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') '[',JP,']Qu ',NQ(JP),' E=',&
-     &           POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',POTEL,' t=',TIME-TSTART
-         ELSE
-            WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'Qu ',NQ(JP),' E=',&
-     &           POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',POTEL,' t=',TIME-TSTART
-         ENDIF
+         WRITE(LFH,101) &
+             &   'Qu ',NQ(JP),	&
+             &   ' E=',POTEL,	&
+             &   ' steps=',ITERATIONS,	&
+             & ' RMS=',RMS,	&
+             & ' Markov E=',POTEL,	&
+             & ' t=',TIME-TSTART	
+
+101      format(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)
 
 !  EPREV saves the previous energy in the Markov chain.
 !  EBEST and JBEST record the lowest energy since the last reseeding and the
@@ -265,46 +226,167 @@
       NSUPERCOUNT=NSUPER
 
 !  Main basin-hopping loop 
-! {{{
+      JP=1
       DO J1=NDONE+1,NSTEPS 
+! {{{
          ISTEP = J1
 
          CALL FLUSH(LFH)
-         IF (NEWJUMP) RANNJ=DPRAND()
-!
-!  ********************************* Loop over NPAR parallel runs ******************************
-!
-         DO JP=1,NPAR 
-!       csw34> If QUCENTRE is specified, move the centre of coordinates
-!       to (0,0,0) before taking the next step (improve this so that you
-!       can specify where to move the centre like SETCENTRE?
-            IF (QUCENTRE) THEN 
-!       csw34> David mentioned a possible compiler bug causing problems
-!       when you just pass a part of the COORDS array so reading the
-!       right bit into TEMPCOORDS first and then back out.
-               TEMPCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
-               CALL CENTRE2(TEMPCOORDS)
-               COORDS(1:3*NATOMS,JP)=TEMPCOORDS(1:3*NATOMS)
+         MCTEMP = TEMP(JP)
+23       CONTINUE
+         SAVECOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
+         CALL TAKESTEP(JP)
+
+            IF (ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV) THEN ! Markov minimum has changed, but SYMMETRY not called
+               NSYMREM=0                                       ! Should therefore reset NSYMREM.
             ENDIF
-            IF (RIGID.AND.(BLOCK(JP).GT.0)) THEN
-               IF (MOD(J1-1,BLOCK(JP)).EQ.0) THEN
-                  IF (MOD((J1-1)/BLOCK(JP),2).EQ.0) THEN
-                     WRITE(LFH,'(A,I6,A)') 'Starting a block of ',BLOCK(JP),' rigid body translational moves'
-                     TMOVE(JP)=.TRUE.
-                     OMOVE(JP)=.FALSE.
-                  ELSE 
-                     WRITE(LFH,'(A,I6,A)') 'Starting a block of ',BLOCK(JP),' rigid body angular moves'
-                     OMOVE(JP)=.TRUE.
-                     TMOVE(JP)=.FALSE.
+
+            NQ(JP)=NQ(JP)+1
+            CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)  
+            NQTOT=NQTOT+1
+            WRITE(LFH,100) &
+                & 'Qu ',NQ(JP),&
+                & ' E=',POTEL,&
+                & ' steps=',ITERATIONS,&
+                & ' RMS=',RMS,&
+                & ' Markov E=',EPREV(JP),&
+                & ' t=',TIME-TSTART
+        
+        100 format(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)
+
+        CALL FLUSH(LFH)
+
+        IF (TRACKDATAT) THEN
+             WRITE(MYEUNIT,'(I10,F20.10)') J1,POTEL
+             WRITE(MYMUNIT,'(I10,G20.10)') J1,EPREV(JP)
+             WRITE(MYBUNIT,'(I10,G20.10)') J1,QMIN(1)
+             CALL FLUSH(MYEUNIT)
+             CALL FLUSH(MYMUNIT)
+             CALL FLUSH(MYBUNIT)
+        ENDIF
+        !IF (STAY) THEN
+            IF (EVAP .and. .not.evapreject) THEN
+               NFAIL(JP)=NFAIL(JP)+1
+               CALL MYRESET(JP,NATOMS,NPAR,NSEED)
+               IF (DEBUG) THEN
+                  WRITE(LFH,33) JP,J1,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+33                FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' EVAP,REJ')
+               ENDIF
+            ELSE
+              !ATEST=.TRUE.
+               IF (ATEST) THEN
+                  CALL TRANSITION(POTEL,EPREV(JP),ATEST,JP,RANDOM,MCTEMP)
+               ENDIF
+
+!  check: Markov energy agrees with COORDSO.{{{
+!  Stop if not true.
+!
+               IF (DEBUG.OR.CHECKMARKOVT) THEN
+                  CALL POTENTIAL(COORDSO(:,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
+                  IF (ABS(OPOTEL-EPREV(JP)).GT.ECONV) THEN
+                     IF (EVAP) THEN
+                        WRITE(LFH,'(3(A,G20.10))') 'mc> WARNING - energy for saved coordinates ',OPOTEL,&
+     &                     ' differs from Markov energy ',EPREV(JP),' because an atom moved outside the container'
+                     ELSE
+                        WRITE(LFH,'(2(A,G20.10))') 'mc> ERROR - energy for coordinates in COORDSO=',OPOTEL,&
+     &                                                 ' but Markov energy=',EPREV(JP) 
+                        STOP
+                     ENDIF
+                  ENDIF
+               ENDIF
+
+! }}}
+!Accept or reject step {{{
+!  If the quench did not converge then allow a
+! potenial move, but count it as a rejection in terms of NSUCCESS and
+! NFAIL. This way we will accept a lower minimum if found, but the steps won;t become so big.
+! However, for TIP5P some cold fusion events that had not actually reached the threshold for
+! rejection were actually accepted. Must prevent this!
+               IF (ATEST) THEN
+                  IF (DEBUG) THEN
+                     WRITE(LFH,34) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')
+                  ENDIF
+                  IF ((J1-JACCPREV.GT.NRELAX).AND.ABS(POTEL-EPREV(JP)).GT.ECONV) THEN
+!                    NRELAX=J1-JACCPREV
+!                    IF (RESTART) WRITE(LFH,'(A,I6,A)') ' relaxation time set to ',NRELAX,' steps'
+                     JACCPREV=J1
+                  ENDIF
+                  IF (QDONE.EQ.1) THEN
+                     NSUCCESS(JP)=NSUCCESS(JP)+1
+                  ELSE
+                     NFAIL(JP)=NFAIL(JP)+1
+                  ENDIF
+                  EPPREV(JP)=EPREV(JP)
+                  EPREV(JP)=POTEL
+                  COORDSO(1:3*NATOMS,JP)=COORDS(1:3*NATOMS,JP)
+                  VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
+               ELSE
+                  NFAIL(JP)=NFAIL(JP)+1
+                  CALL MYRESET(JP,NATOMS,NPAR,NSEED)
+                  IF (DEBUG) THEN
+                     WRITE(LFH,36) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+36                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' REJ')
                   ENDIF
                ENDIF
             ENDIF
+            ! }}}
+
+            IF ((MOD(J1,NACCEPT).EQ.0).AND.(NSEED.EQ.0).AND.(.NOT.STAY)) CALL ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
+            TEMP(JP)=TEMP(JP)*SCALEFAC
+            IF (HIT) GOTO 37
+            IF (DUMPINT.GT.0) THEN
+               IF (MOD(J1,DUMPINT).EQ.0) THEN
+                  CALL DUMPSTATE(J1,EBEST,BESTCOORDS,JBEST,JP)
+               ENDIF
+            ENDIF
+           IF (NQ(JP).GT.NSTEPS) GOTO 37
+
+         CALL FLUSH(LFH)
+         ! }}}
+         ENDDO
+37    CONTINUE
+
+      WRITE(LFH,21) NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),&
+     &               STEP(JP),ASTEP(JP),TEMP(JP)
+21    FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)
+!mo361>Deallocating these arrays to cope with multiple runs of this subroutine in GA
+
+      DEALLOCATE(TMOVE)
+      DEALLOCATE(OMOVE)
+      RETURN
+
+            ! com {{{
+!       csw34> If QUCENTRE is specified, move the centre of coordinates
+!       to (0,0,0) before taking the next step (improve this so that you
+!       can specify where to move the centre like SETCENTRE?
+            !IF (QUCENTRE) THEN 
+!!       csw34> David mentioned a possible compiler bug causing problems
+!!       when you just pass a part of the COORDS array so reading the
+!!       right bit into TEMPCOORDS first and then back out.
+               !TEMPCOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
+               !CALL CENTRE2(TEMPCOORDS)
+               !COORDS(1:3*NATOMS,JP)=TEMPCOORDS(1:3*NATOMS)
+            !ENDIF
+            !IF (RIGID.AND.(BLOCK(JP).GT.0)) THEN
+               !IF (MOD(J1-1,BLOCK(JP)).EQ.0) THEN
+                  !IF (MOD((J1-1)/BLOCK(JP),2).EQ.0) THEN
+                     !WRITE(LFH,'(A,I6,A)') 'Starting a block of ',BLOCK(JP),' rigid body translational moves'
+                     !TMOVE(JP)=.TRUE.
+                     !OMOVE(JP)=.FALSE.
+                  !ELSE 
+                     !WRITE(LFH,'(A,I6,A)') 'Starting a block of ',BLOCK(JP),' rigid body angular moves'
+                     !OMOVE(JP)=.TRUE.
+                     !TMOVE(JP)=.FALSE.
+                  !ENDIF
+               !ENDIF
+            !ENDIF
 !
 !  MAM1000> The default temperature used for the MC acceptance criterion is the one derived in
 !           the initialisation section above.  MCTEMP is passed to the subroutine TRANSITION, where
 !           the acceptance/rejection decision is made.  However, individual MC moves can override
 !           this temperature by setting MCTEMP to a different value for the current step.
-            MCTEMP = TEMP(JP)
+            !MCTEMP = TEMP(JP)
 ! 
 !  Jump-moves.
 ! 
@@ -312,7 +394,7 @@
 ! 
 !  Ordinary steps.
 ! 
-23          CONTINUE
+!23          CONTINUE
 !
 ! Don;t call symmetry unless the minimum in the Markov chain has changed.
 ! We should really check if the minimum has changed since the last call to SYMMETRY,
@@ -347,9 +429,8 @@
      !&                  RMIN,RVAT,BRUN,SCREENC,QDONE,JACCPREV,NSUCCESS,NFAIL,NFAILT,NSUCCESST)
                !ENDIF
             !ELSEIF (ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV) THEN ! Markov minimum has changed, but SYMMETRY not called
-            IF (ABS(ELASTSYM(JP)-EPREV(JP)).GT.ECONV) THEN ! Markov minimum has changed, but SYMMETRY not called
-               NSYMREM=0                                       ! Should therefore reset NSYMREM.
-            ENDIF
+            ! }}}
+            ! com {{{
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! START OF STEP TAKING CALLS!                                                                            
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -360,7 +441,7 @@
 !
 ! csw34> Coordinates are saved so that moves can be undone
 !
-                  SAVECOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
+                  !SAVECOORDS(1:3*NATOMS)=COORDS(1:3*NATOMS,JP)
 ! csw34> If you want to look at the effect of moves, you can dump out
 ! the structure BEFORE the move here.
 !                 CALL A9DUMPPDB(COORDS(:,JP),"beforemove")
@@ -375,7 +456,7 @@
 !                 WRITE(LFH,'(I6)') NATOMS
 !                 WRITE(LFH,'(A,G20.10)') 'eprev=',EPREV
 !                 WRITE(LFH,'(A,3G20.10)') ('LA ',COORDS(3*(J3-1)+1:3*(J3-1)+3,JP),J3=1,NATOMS)
-                  CALL TAKESTEP(JP)
+                  !CALL TAKESTEP(JP)
 !! Restore atom coordinates if atom is FROZEN or DONTMOVE as long as
 !! we're not taking internal coordinate moves in CHARMM or AMBER
                !IF ((CHNMAX.LE.0.0D0).AND.(AMCHNMAX.LE.0.0D0)) THEN
@@ -401,7 +482,7 @@
 !
 ! Reset switch variables for steps not done every time
 !
-                     dogrouprot=.FALSE.
+                     !DOGROUPROT=.FALSE.
                
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 ! END OF STEP TAKING CALLS!
@@ -414,43 +495,44 @@
             
 ! KEYWORD <DUMPSTEPS> BLOCK            
 ! csw34> Dump the coordinates after every step in AMBER pdb and rst format 
-                  IF (DUMPSTEPST) THEN
-                      WRITE(QUENCHNUM,*) NQ(JP)
-                      QUNAME='afterstep'//TRIM(ADJUSTL(QUENCHNUM))//'.rst'
-                      OPEN(UNIT=20,FILE=QUNAME,STATUS='UNKNOWN')  
-                      WRITE(20,'(a20)') QUNAME
-                      WRITE(20,'(i5)') NATOMS
-                      WRITE(20,'(6f12.7)') COORDS(:,JP) 
-                      CLOSE(20)
-! csw34> Dump to PDB using routine in amberinterface.f
-                      QUNAME='afterstep'//TRIM(ADJUSTL(QUENCHNUM))
-                      !CALL A9DUMPPDB(COORDS(:,JP),QUNAME)
-                  ENDIF
+               !   IF (DUMPSTEPST) THEN
+                      !WRITE(QUENCHNUM,*) NQ(JP)
+                      !QUNAME='afterstep'//TRIM(ADJUSTL(QUENCHNUM))//'.rst'
+                      !OPEN(UNIT=20,FILE=QUNAME,STATUS='UNKNOWN')  
+                      !WRITE(20,'(a20)') QUNAME
+                      !WRITE(20,'(i5)') NATOMS
+                      !WRITE(20,'(6f12.7)') COORDS(:,JP) 
+                      !CLOSE(20)
+!! csw34> Dump to PDB using routine in amberinterface.f
+                      !QUNAME='afterstep'//TRIM(ADJUSTL(QUENCHNUM))
+                      !!CALL A9DUMPPDB(COORDS(:,JP),QUNAME)
+                  !ENDIF
 ! END OF KEYWORD <DUMPSTEPS> BLOCK
 
-               NQ(JP)=NQ(JP)+1
-               CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)  
-               NQTOT=NQTOT+1
+               !NQ(JP)=NQ(JP)+1
+               !CALL QUENCH(.FALSE.,JP,ITERATIONS,TIME,BRUN,QDONE,SCREENC)  
+               !NQTOT=NQTOT+1
  
 !  Check for results of taboo list. SELFT is set in taboo.
  
-               IF (SELFT) THEN
-                  CALL MYRESET(JP,NATOMS,NPAR,NSEED)
-                  IF (DEBUG) THEN
-                     WRITE(LFH,'(A)') 'Taboo list:'
-                     WRITE(LFH,'(6F20.10)') (ESAVE(J2,1),J2=1,NT(1))
-                     WRITE(LFH,73) JP,J1,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
-73                   FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' TABOO')
-                  ENDIF
-                  GOTO 23
-               ENDIF
+!               IF (SELFT) THEN
+                  !CALL MYRESET(JP,NATOMS,NPAR,NSEED)
+                  !IF (DEBUG) THEN
+                     !WRITE(LFH,'(A)') 'Taboo list:'
+                     !WRITE(LFH,'(6F20.10)') (ESAVE(J2,1),J2=1,NT(1))
+                     !WRITE(LFH,73) JP,J1,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+!73                   FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' TABOO')
+                  !ENDIF
+                  !GOTO 23
+               !ENDIF
    
 !
 !  Output
 !
-                  WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'Qu ',NQ(JP),' E=',&
-     &                 POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',EPREV(JP),' t=',TIME-TSTART
-
+                  !WRITE(LFH,'(A,I10,A,F20.10,A,I5,A,G12.5,A,G20.10,A,F11.1)') 'Qu ',NQ(JP),' E=',&
+     !&                 POTEL,' steps=',ITERATIONS,' RMS=',RMS,' Markov E=',EPREV(JP),' t=',TIME-TSTART
+                  ! }}}
+!{{{
 !!!!!!!!!!!!!!!!!!!!!!!!!!!1
 !                 CALL POTENTIAL(COORDSO(1:3*NATOMS,JP),DUMGRAD,DJWPOTEL,.FALSE.,.FALSE.)
 !                 WRITE(LFH,'(2(A,G20.10))') 'mc> A energy for coordinates in COORDSO=',DJWPOTEL, 
@@ -463,7 +545,7 @@
 
 !     mp466>  writes structure and energetic data at regular increments
 !             to *plot and movie files for AMH potential
-               CALL FLUSH(LFH)
+               !CALL FLUSH(LFH)
 
           !!!!!!!!!!!!!!!!!!!!!!!!!!!1
 !                 CALL POTENTIAL(COORDSO(1:3*NATOMS,JP),DUMGRAD,DJWPOTEL,.FALSE.,.FALSE.)
@@ -478,36 +560,36 @@
 !     csw34> PAIRDIST prints the distance between specified atom pairs
 !     after each quench. 
 !
-          IF (PAIRDISTT) THEN
-!     Write end of previous line as using ADVANCE="NO"
-                WRITE(MYPUNIT,*) " "
-!     Write current quench number
-                WRITE(MYPUNIT,'(I10)',ADVANCE="NO") NQ(JP)
-!     For each pair, assign ATOM1 and ATOM2 arrays containing coordinates
-             DO PAIRCOUNTER=1,NPAIRS
-                ATOM1(:)=COORDS(3*PAIRDIST(PAIRCOUNTER,1)-2:3*PAIRDIST(PAIRCOUNTER,1),JP)
-                ATOM2(:)=COORDS(3*PAIRDIST(PAIRCOUNTER,2)-2:3*PAIRDIST(PAIRCOUNTER,2),JP)
-!     Call PAIRDISTANCE with (x,y,z) for each atom
-                WRITE(MYPUNIT,'(F10.4)',ADVANCE="NO") PAIRDISTANCE(ATOM1,ATOM2) 
-             ENDDO
-             FLUSH(MYPUNIT)
-          ENDIF
+      !    IF (PAIRDISTT) THEN
+!!     Write end of previous line as using ADVANCE="NO"
+                !WRITE(MYPUNIT,*) " "
+!!     Write current quench number
+                !WRITE(MYPUNIT,'(I10)',ADVANCE="NO") NQ(JP)
+!!     For each pair, assign ATOM1 and ATOM2 arrays containing coordinates
+             !DO PAIRCOUNTER=1,NPAIRS
+                !ATOM1(:)=COORDS(3*PAIRDIST(PAIRCOUNTER,1)-2:3*PAIRDIST(PAIRCOUNTER,1),JP)
+                !ATOM2(:)=COORDS(3*PAIRDIST(PAIRCOUNTER,2)-2:3*PAIRDIST(PAIRCOUNTER,2),JP)
+!!     Call PAIRDISTANCE with (x,y,z) for each atom
+                !WRITE(MYPUNIT,'(F10.4)',ADVANCE="NO") PAIRDISTANCE(ATOM1,ATOM2) 
+             !ENDDO
+             !FLUSH(MYPUNIT)
+          !ENDIF
           
 !
 !     csw34> TRACKDATA keyword prints the quench energy, markov energy
 !     and energy of the current lowest minimum to files for viewing during a run. 
 !
-          IF (TRACKDATAT) THEN
-             WRITE(MYEUNIT,'(I10,F20.10)') J1,POTEL
-             WRITE(MYMUNIT,'(I10,G20.10)') J1,EPREV(JP)
-             WRITE(MYBUNIT,'(I10,G20.10)') J1,QMIN(1)
-             CALL FLUSH(MYEUNIT)
-             CALL FLUSH(MYMUNIT)
-             CALL FLUSH(MYBUNIT)
-             IF (A9INTET.AND.(NQ(JP).GT.2)) THEN
-                WRITE(3999,'(I10,G20.10)') NQ(JP),INTEQMIN(1)
-                CALL FLUSH(3999)
-             ENDIF
+!          IF (TRACKDATAT) THEN
+             !WRITE(MYEUNIT,'(I10,F20.10)') J1,POTEL
+             !WRITE(MYMUNIT,'(I10,G20.10)') J1,EPREV(JP)
+             !WRITE(MYBUNIT,'(I10,G20.10)') J1,QMIN(1)
+             !CALL FLUSH(MYEUNIT)
+             !CALL FLUSH(MYMUNIT)
+             !CALL FLUSH(MYBUNIT)
+             !IF (A9INTET.AND.(NQ(JP).GT.2)) THEN
+                !WRITE(3999,'(I10,G20.10)') NQ(JP),INTEQMIN(1)
+                !CALL FLUSH(3999)
+             !ENDIF
 !
 !     csw34> if RMS is also specified, prints the RMSD from the
 !     comparison structure to the file 'rmsd'. Which RMSD depends on the
@@ -517,7 +599,7 @@
                 !WRITE(4428,'(I10,F15.5)') NQ(JP),RMSD
                 !CALL FLUSH(4428)
              !ENDIF
-          ENDIF
+          !ENDIF
 !!!!!!!!!!!!!!!!!!!!!!!!!!!1
 !                 CALL POTENTIAL(COORDSO(1:3*NATOMS,JP),DUMGRAD,DJWPOTEL,.FALSE.,.FALSE.)
 !                 WRITE(LFH,'(2(A,G20.10))') 'mc> C energy for coordinates in COORDSO=',DJWPOTEL, 
@@ -540,7 +622,8 @@
 !!              WRITE(LFH,'(A,I6,3F20.10)') 'NQALL POTEL',NQ(JP),POTEL,MIND,DIHE
 !!              WRITE(36,'(I6,3F20.10)') NQ(JP),POTEL,MIND,DIHE
             !ENDIF
- 
+ !}}}
+            ! {{{
 !  Check for reseeding.
  
             !IF (NEWRESTART.AND.(.NOT.SEEDT)) THEN 
@@ -553,42 +636,42 @@
 !!             VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! DJW
             !ENDIF
-            IF (STAY) THEN
-            ELSE IF (EVAP .and. .not.evapreject) THEN
-               NFAIL(JP)=NFAIL(JP)+1
-               CALL MYRESET(JP,NATOMS,NPAR,NSEED)
-               IF (DEBUG) THEN
-                  WRITE(LFH,33) JP,J1,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
-33                FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' EVAP,REJ')
-               ENDIF
-            ELSE
+        !    IF (STAY) THEN
+            !ELSE IF (EVAP .and. .not.evapreject) THEN
+               !NFAIL(JP)=NFAIL(JP)+1
+               !CALL MYRESET(JP,NATOMS,NPAR,NSEED)
+               !IF (DEBUG) THEN
+                  !WRITE(LFH,33) JP,J1,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+!33                FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' EVAP,REJ')
+               !ENDIF
+            !ELSE
 !     csw34> A series of tests start here to check if a structure should
 !     be allowed into the markov chain. If it fails a test, the ATEST
 !     variable will be set to .FALSE. 
-               ATEST=.TRUE. 
+               !ATEST=.TRUE. 
 !     csw34> Test for cold fusion in mylbfgs.f - if so, set ATEST to .FALSE.
-               IF (COLDFUSION) THEN
-                  ATEST=.FALSE.
-               ENDIF
-               COLDFUSION=.FALSE.
+!!              IF (COLDFUSION) THEN
+                  !ATEST=.FALSE.
+               !ENDIF
+               !COLDFUSION=.FALSE.
 
 !     jwrm2> If using percolation, and it's not a connected network, reject the step, unless no
 !            step has yet been connected.
 !            If this is the first step that's fully connected, set PERCACCEPTED to true.
-               IF (PERCOLATET) THEN
-                 IF(PERCACCEPTED .AND. (.NOT. PERCT)) THEN
-                   WRITE(LFH,*) 'perc> Disconnected atoms, rejecting step'
-                   ATEST=.FALSE.
-                 ELSE IF((.NOT. PERCACCEPTED) .AND. PERCT) THEN
-                   PERCACCEPTED=.TRUE.
-                   WRITE(LFH,*) 'perc> Found first connected configuration'
-                 ENDIF
-               ENDIF
+!               IF (PERCOLATET) THEN
+                 !IF(PERCACCEPTED .AND. (.NOT. PERCT)) THEN
+                   !WRITE(LFH,*) 'perc> Disconnected atoms, rejecting step'
+                   !ATEST=.FALSE.
+                 !ELSE IF((.NOT. PERCACCEPTED) .AND. PERCT) THEN
+                   !PERCACCEPTED=.TRUE.
+                   !WRITE(LFH,*) 'perc> Found first connected configuration'
+                 !ENDIF
+               !ENDIF
 
 !     csw34> If the chirality or peptide bond checks in quench.f have
 !            failed, GOODSTRUCTURE should be .FALSE. and we should set ATEST to
 !            .FALSE. to prevent these bad structures entering the markov chain!
-               IF (.NOT.GOODSTRUCTURE) ATEST=.FALSE.
+               !IF (.NOT.GOODSTRUCTURE) ATEST=.FALSE.
 
 !     csw34> Dumping every quench in AMBER9 format - only dumps if no chiral problems found 
 !     Only for AMBER! DJW Otherwise we get the cis-trans message for every other potential!
@@ -635,11 +718,11 @@
                   !IF (.NOT.DISTOK) ATEST=.FALSE.
                !ENDIF
 
-               IF ((QDONE.EQ.0).AND.TIP) THEN
-                  ATEST=.FALSE.
-               ELSEIF (ATEST) THEN
-                  CALL TRANSITION(POTEL,EPREV(JP),ATEST,JP,RANDOM,MCTEMP)
-               ENDIF
+               !IF ((QDONE.EQ.0).AND.TIP) THEN
+                  !ATEST=.FALSE.
+               !ELSEIF (ATEST) THEN
+                  !CALL TRANSITION(POTEL,EPREV(JP),ATEST,JP,RANDOM,MCTEMP)
+               !ENDIF
 !!!!!!!!!!!!!!!!!!!!!!!!!!!1
 !                 CALL POTENTIAL(COORDSO(1:3*NATOMS,JP),DUMGRAD,DJWPOTEL,.FALSE.,.FALSE.)
 !                 WRITE(LFH,'(2(A,G20.10))') 'mc> D energy for coordinates in COORDSO=',DJWPOTEL, 
@@ -649,55 +732,55 @@
 !    &                                                 ' Markov energy=',EPREV(JP) 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!1
 !
-!  Sanity check to make sure the Markov energy agrees with COORDSO. 
-!  Stop if not true.
-!
-               IF (DEBUG.OR.CHECKMARKOVT) THEN
-                  CALL POTENTIAL(COORDSO(:,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
-                  IF (ABS(OPOTEL-EPREV(JP)).GT.ECONV) THEN
-                     IF (EVAP) THEN
-                        WRITE(LFH,'(3(A,G20.10))') 'mc> WARNING - energy for saved coordinates ',OPOTEL,&
-     &                     ' differs from Markov energy ',EPREV(JP),' because an atom moved outside the container'
-                     ELSE
-                        WRITE(LFH,'(2(A,G20.10))') 'mc> ERROR - energy for coordinates in COORDSO=',OPOTEL,&
-     &                                                 ' but Markov energy=',EPREV(JP) 
-                        STOP
-                     ENDIF
-                  ENDIF
-               ENDIF
+!!  Sanity check to make sure the Markov energy agrees with COORDSO. 
+!!  Stop if not true.
+!!
+               !IF (DEBUG.OR.CHECKMARKOVT) THEN
+                  !CALL POTENTIAL(COORDSO(:,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
+                  !IF (ABS(OPOTEL-EPREV(JP)).GT.ECONV) THEN
+                     !IF (EVAP) THEN
+                        !WRITE(LFH,'(3(A,G20.10))') 'mc> WARNING - energy for saved coordinates ',OPOTEL,&
+     !&                     ' differs from Markov energy ',EPREV(JP),' because an atom moved outside the container'
+                     !ELSE
+                        !WRITE(LFH,'(2(A,G20.10))') 'mc> ERROR - energy for coordinates in COORDSO=',OPOTEL,&
+     !&                                                 ' but Markov energy=',EPREV(JP) 
+                        !STOP
+                     !ENDIF
+                  !ENDIF
+               !ENDIF
 ! Accept or reject step. If the quench did not converge then allow a
 ! potenial move, but count it as a rejection in terms of NSUCCESS and
 ! NFAIL. This way we will accept a lower minimum if found, but the steps won;t become so big.
 ! However, for TIP5P some cold fusion events that had not actually reached the threshold for
 ! rejection were actually accepted. Must prevent this!
-               IF (ATEST) THEN
-                  IF (DEBUG) THEN
-                     WRITE(LFH,34) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
-34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')
-                  ENDIF
-                  IF ((J1-JACCPREV.GT.NRELAX).AND.ABS(POTEL-EPREV(JP)).GT.ECONV) THEN
-!                    NRELAX=J1-JACCPREV
-!                    IF (RESTART) WRITE(LFH,'(A,I6,A)') ' relaxation time set to ',NRELAX,' steps'
-                     JACCPREV=J1
-                  ENDIF
-                  IF (QDONE.EQ.1) THEN
-                     NSUCCESS(JP)=NSUCCESS(JP)+1
-                  ELSE
-                     NFAIL(JP)=NFAIL(JP)+1
-                  ENDIF
-                  EPPREV(JP)=EPREV(JP)
-                  EPREV(JP)=POTEL
-                  COORDSO(1:3*NATOMS,JP)=COORDS(1:3*NATOMS,JP)
-                  VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
-               ELSE
-                  NFAIL(JP)=NFAIL(JP)+1
-                  CALL MYRESET(JP,NATOMS,NPAR,NSEED)
-                  IF (DEBUG) THEN
-                     WRITE(LFH,36) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
-36                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' REJ')
-                  ENDIF
-               ENDIF
-            ENDIF
+!               IF (ATEST) THEN
+                  !IF (DEBUG) THEN
+                     !WRITE(LFH,34) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+!34                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' ACC')
+                  !ENDIF
+                  !IF ((J1-JACCPREV.GT.NRELAX).AND.ABS(POTEL-EPREV(JP)).GT.ECONV) THEN
+!!                    NRELAX=J1-JACCPREV
+!!                    IF (RESTART) WRITE(LFH,'(A,I6,A)') ' relaxation time set to ',NRELAX,' steps'
+                     !JACCPREV=J1
+                  !ENDIF
+                  !IF (QDONE.EQ.1) THEN
+                     !NSUCCESS(JP)=NSUCCESS(JP)+1
+                  !ELSE
+                     !NFAIL(JP)=NFAIL(JP)+1
+                  !ENDIF
+                  !EPPREV(JP)=EPREV(JP)
+                  !EPREV(JP)=POTEL
+                  !COORDSO(1:3*NATOMS,JP)=COORDS(1:3*NATOMS,JP)
+                  !VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
+               !ELSE
+                  !NFAIL(JP)=NFAIL(JP)+1
+                  !CALL MYRESET(JP,NATOMS,NPAR,NSEED)
+                  !IF (DEBUG) THEN
+                     !WRITE(LFH,36) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
+!36                   FORMAT('JP,RAN,POTEL,EPREV,NSUC,NFAIL=',I2,3F15.7,2I6,' REJ')
+                  !ENDIF
+               !ENDIF
+            !ENDIF
 !           WRITE(LFH,'(A,4F20.10)') 'Q4 values ',QS,QF,QSTART,QFINISH
 !
 !  Dump coordinates and energy if another run is attempting to jump to this one.
@@ -718,7 +801,9 @@
 !                 WRITE(LFH,'(2(A,G20.10))') 'mc> E energy for coordinates in COORDS= ',DJWPOTEL, 
 !    &                                                 ' Markov energy=',EPREV(JP) 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!1
-            IF ((MOD(J1,NACCEPT).EQ.0).AND.(NSEED.EQ.0).AND.(.NOT.STAY)) CALL ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
+            ! }}}
+            ! {{{
+            !IF ((MOD(J1,NACCEPT).EQ.0).AND.(NSEED.EQ.0).AND.(.NOT.STAY)) CALL ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!1
 !                 CALL POTENTIAL(COORDSO(1:3*NATOMS,JP),DUMGRAD,DJWPOTEL,.FALSE.,.FALSE.)
 !                 WRITE(LFH,'(2(A,G20.10))') 'mc> F energy for coordinates in COORDSO=',DJWPOTEL, 
@@ -728,16 +813,16 @@
 !    &                                                 ' Markov energy=',EPREV(JP) 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!1
 
-            TEMP(JP)=TEMP(JP)*SCALEFAC
-            IF (HIT) GOTO 37
-            IF (DUMPINT.GT.0) THEN
-               IF (MOD(J1,DUMPINT).EQ.0) THEN
-                  CALL DUMPSTATE(J1,EBEST,BESTCOORDS,JBEST,JP)
-               ENDIF
-            ENDIF
-           IF (NQ(JP).GT.NSTEPS) GOTO 37
+!            TEMP(JP)=TEMP(JP)*SCALEFAC
+            !IF (HIT) GOTO 37
+            !IF (DUMPINT.GT.0) THEN
+               !IF (MOD(J1,DUMPINT).EQ.0) THEN
+                  !CALL DUMPSTATE(J1,EBEST,BESTCOORDS,JBEST,JP)
+               !ENDIF
+            !ENDIF
+           !IF (NQ(JP).GT.NSTEPS) GOTO 37
 
-         ENDDO
+         !ENDDO
 !
 !  ****************************** End of loop over NPAR parallel runs *****************************
 !
@@ -750,27 +835,21 @@
 !        IF (RENORM) CALL REN(J1,RMIN,RCOORDS,RVAT,NREN,RMINO,RCOORDSO,RVATO,ITERATIONS,TIME,NLAST,JACCPREV,NSTEPREN)
 !        IF (STAY) CALL MYRESET(1,NATOMS,NPAR,NSEED)
   
-         CALL FLUSH(LFH)
-      ENDDO
+         !CALL FLUSH(LFH)
+      !ENDDO
 ! }}}
 
-37    CONTINUE
-      DO JP=1,NPAR
-         IF (NPAR.GT.1) THEN
-            WRITE(LFH,20) JP,NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),&
-     &               STEP(JP),ASTEP(JP),TEMP(JP)
-20          FORMAT('[',I2,']Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)
-         ELSE
-            WRITE(LFH,21) NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),&
-     &               STEP(JP),ASTEP(JP),TEMP(JP)
-21          FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)
-         ENDIF
-         IF (RIGID) WRITE(LFH,'(A,F12.5)') 'Rigid body orientational step=',OSTEP(JP)
-      ENDDO
-!mo361>Deallocating these arrays to cope with multiple runs of this subroutine in GA
-      DEALLOCATE(TMOVE)
-      DEALLOCATE(OMOVE)
-      RETURN
+!37    CONTINUE
+
+      !WRITE(LFH,21) NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),&
+     !&               STEP(JP),ASTEP(JP),TEMP(JP)
+!21    FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)
+!!mo361>Deallocating these arrays to cope with multiple runs of this subroutine in GA
+
+      !DEALLOCATE(TMOVE)
+      !DEALLOCATE(OMOVE)
+      !RETURN
+      ! }}}
 !op226>}}} 
       END SUBROUTINE MC 
 
