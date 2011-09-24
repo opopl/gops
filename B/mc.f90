@@ -30,7 +30,7 @@
       LOGICAL EVAP, ATEST, EVAPREJECT, STAY
       INTEGER ITERATIONS,NQTOT,JACCPREV,BRUN,JBEST(NPAR)
       INTEGER NDONE,QDONE
-      DOUBLE PRECISION ::   POTEL,RANDOM,DPRAND,EPSSAVE
+      DOUBLE PRECISION ::   POTEL,RANDOM,EPSSAVE
       DOUBLE PRECISION,DIMENSION(3*NATOMS) ::   SAVECOORDS,TEMPCOORDS,RCOORDS
       DOUBLE PRECISION,DIMENSION(NPAR) ::  EPPREV,EBEST
       INTEGER,DIMENSION(NPAR) :: NSUCCESS,NFAIL,NFAILT,NSUCCESST
@@ -83,68 +83,6 @@
       ! }}}
 !op226>}}} 
 !op226> Subroutine body {{{ 
-
-      ! com {{{
-! Write a list of FROZEN atoms for use in an (o)data file
-!op226> IF (FREEZEGROUPT) THEN {{{
-      !IF (FREEZEGROUPT) THEN
-         !OPEN(UNIT=4431,FILE='frozen.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-         !DO J6=1,NATOMS
-!!
-!! Work out the distance from GROUPCENTRE to the current atom J1
-!! 
-            !DISTGROUPX2=(COORDS(3*GROUPCENTRE-2,1)-COORDS(3*J6-2,1))**2
-            !DISTGROUPY2=(COORDS(3*GROUPCENTRE-1,1)-COORDS(3*J6-1,1))**2
-            !DISTGROUPZ2=(COORDS(3*GROUPCENTRE  ,1)-COORDS(3*J6  ,1))**2
-            !DISTGROUPCENTRE=SQRT(DISTGROUPX2+DISTGROUPY2+DISTGROUPZ2)
-!! If working in GT mode (default), FREEZE all atoms >GROUPRADIUS from the GROUPCENTRE atom
-            !IF((FREEZEGROUPTYPE=="GT").AND.(DISTGROUPCENTRE.GT.GROUPRADIUS)) THEN
-               !NFREEZE=NFREEZE+1
-               !FROZEN(J6)=.TRUE.
-               !WRITE(4431,'(A,I6)') 'FREEZE ',J6
-!! If working in LT mode, FREEZE all atoms <GROUPRADIUS from the GROUPCENTRE atom
-            !ELSE IF((FREEZEGROUPTYPE=="LT").AND.(DISTGROUPCENTRE.LT.GROUPRADIUS)) THEN
-               !NFREEZE=NFREEZE+1
-               !FROZEN(J6)=.TRUE.
-               !WRITE(4431,'(A,I6)') 'FREEZE ',J6
-            !END IF
-         !END DO
-         !CLOSE(4431)
-!! Prevent it doing this again
-         !FREEZEGROUPT=.FALSE.     
-      !ENDIF
-!op226>}}} 
-
-! Write a list of DONTMOVE atoms for use in an (o)data file
-!!op226> IF (DONTMOVEGROUPT) THEN {{{
-      !IF (DONTMOVEGROUPT) THEN
-              !OPEN(UNIT=4431,FILE='dontmove.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-         !DO J6=1,NATOMS
-!!
-!! Work out the distance from DONTMOVECENTRE to the current atom J1
-!! 
-            !DISTGROUPX2=(COORDS(3*DONTMOVECENTRE-2,1)-COORDS(3*J6-2,1))**2
-            !DISTGROUPY2=(COORDS(3*DONTMOVECENTRE-1,1)-COORDS(3*J6-1,1))**2
-            !DISTGROUPZ2=(COORDS(3*DONTMOVECENTRE  ,1)-COORDS(3*J6  ,1))**2
-            !DISTGROUPCENTRE=SQRT(DISTGROUPX2+DISTGROUPY2+DISTGROUPZ2)
-!! If working in GT mode (default), DONTMOVE all atoms >GROUPRADIUS from the DONTMOVECENTRE atom
-            !IF((DONTMOVEGROUPTYPE=="GT").AND.(DISTGROUPCENTRE.GT.GROUPRADIUS)) THEN
-               !NDONTMOVE=NDONTMOVE+1
-               !DONTMOVE(J6)=.TRUE.
-               !WRITE(4431,'(A,I6)') 'DONTMOVE ',J6
-!! IF working in LT mode, DONTMOVE all atoms <GROUPRADIUS from the DONTMOVECENTRE atom
-       !ELSE IF((DONTMOVEGROUPTYPE=="LT").AND.(DISTGROUPCENTRE.LT.GROUPRADIUS)) THEN
-               !NDONTMOVE=NDONTMOVE+1
-               !DONTMOVE(J6)=.TRUE.
-               !WRITE(4431,'(A,I6)') 'DONTMOVE ',J6
-            !END IF
-         !END DO
-         !CLOSE(4431)
-!! Prevent it doing this again
-         !DONTMOVEGROUPT=.FALSE.     
-      !ENDIF
-!!op226>}}} 
-      ! }}}
 
       EVAPREJECT=.FALSE.
 
@@ -247,9 +185,9 @@
 33                FORMAT('JP,J1,POTEL,EPREV,NSUC,NFAIL=',I2,I6,2F15.7,2I6,' EVAP,REJ')
                ENDIF
             ELSE
-               IF (ATEST) THEN
-                  CALL TRANSITION(POTEL,EPREV(JP),ATEST,JP,RANDOM,MCTEMP)
-               ENDIF
+               CALL TRANSITION(POTEL,EPREV(JP),ATEST,JP,RANDOM,MCTEMP)
+               !IF (ATEST) THEN
+               !ENDIF
 
 !  check: Markov energy agrees with COORDSO.{{{
 !  Stop if not true.
@@ -323,10 +261,7 @@
       WRITE(LFH,21) NSUCCESST(JP)*1.0D0/MAX(1.0D0,1.0D0*(NSUCCESST(JP)+NFAILT(JP))),&
      &               STEP(JP),ASTEP(JP),TEMP(JP)
 21    FORMAT('Acceptance ratio for run=',F12.5,' Step=',F12.5,' Angular step factor=',F12.5,' T=',F12.5)
-!mo361>Deallocating these arrays to cope with multiple runs of this subroutine in GA
 
-      DEALLOCATE(TMOVE)
-      DEALLOCATE(OMOVE)
       RETURN
 !op226>}}} 
       END SUBROUTINE MC 
