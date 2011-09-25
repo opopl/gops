@@ -94,28 +94,17 @@
       
 10    CONTINUE
 
-      ! IF...THEN {{{
+      !IF...THEN {{{
       IF (MYBLNT) THEN 
          CALL EBLN(NATOMS,X,EA,GRAD,HESS,BLNTYPE,GRADT,SECT,EAFH,.TRUE.)
          EREAL=EA(1)
       ELSE IF (P46) THEN
-         CALL P46MERDIFF(EAFH,.TRUE.,X,NATOMS,GRAD,EREAL,GRADT)
+         CALL P46MERDIFF(EAFH,deb_bln,X,NATOMS,GRAD,EREAL,GRADT)
       ELSE IF (G46) THEN
-         CALL G46MERDIFF(EAFH,.TRUE.,X,NATOMS,GRAD,EREAL,GRADT)
+         CALL G46MERDIFF(EAFH,deb_bln,X,NATOMS,GRAD,EREAL,GRADT)
       ELSE IF (BLNT) THEN
          CALL BLN(X,GRAD,EREAL,GRADT)
-      !ELSE
-!
-!  RAD must be called before the routine that calculates the potential or LBFGS
-!  will get confused even if EVAP is set .TRUE. correctly.
-!
-!        CALL RAD(X,GRAD,EREAL,GRADT)
-         !IF (EVAPREJECT) return
-         !IF (CUTT) THEN
-            !CALL LJCUT(X,GRAD,EREAL,GRADT,SECT)
-         !ELSE
-            !CALL LJ(X,GRAD,EREAL,GRADT,SECT)
-         !ENDIF
+      ELSE
       ENDIF
       ! }}}
 ! }}}

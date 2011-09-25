@@ -1,0 +1,547 @@
+!
+      SUBROUTINE RBMINDIST(RA,RB,NATOMS,DIST,Q2,DEBUG)
+
+      USE COMMONS, ONLY: NTSITES, RBSITE, DBPT, DBPTDT, MSSTOCKT, STOCKAAT, EFIELDT
+
+      IMPLICIT NONE
+
+      INTEGER          :: J1, J2, J3, J4, NATOMS, NSIZE, JMIN, INFO
+      DOUBLE PRECISION :: RA(NR), RB(NR), DIST, QMAT(4,4), TEMPA(9*NATOMS), XM, YM, ZM, XP, YP, ZP
+      DOUBLE PRECISION :: DIAG(4), MINV, Q2(4), CMXA, CMYA, CMZA, CMXB, CMYB, CMZB
+      DOUBLE PRECISION :: R(3), P(3), RM(3,3) 
+      DOUBLE PRECISION, ALLOCATABLE :: XA(:), XB(:)
+      DOUBLE PRECISION :: ENERGY, VNEW(NR), RMS, DUMMY
+      LOGICAL          :: BULKT, PRESERVET, DEBUG
+
+      IF ((DBPT .AND. EFIELDT) .OR. (DBPTDT .AND. EFIELDT) .OR. (MSSTOCKT .AND. EFIELDT) .OR. (STOCKAAT .AND. EFIELDT)) THEN
+
+         CALL FLDMINDIST(RA,RB,NATOMS,DIST,DEBUG,Q2)
+         DIST=SQRT(DIST)
+         RETURN
+
+      ENDIF 
+
+      NSIZE = NTSITES
+      ALLOCATE(XA(3*NSIZE),XB(3*NSIZE))
+
+!     CONVERT TO THE CARTESIAN CORDINATES FOR THE SITES
+
+      CALL SITEPOS(RA,XA)
+
+      CALL SITEPOS(RB,XB)
+
+!     MOVE CENTRE OF COORDINATES OF XA AND XB TO THE ORIGIN
+
+      CMXA = 0.0D0; CMYA = 0.0D0; CMZA = 0.0D0
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         CMXA = CMXA + XA(J2+1)
+         CMYA = CMYA + XA(J2+2)
+         CMZA = CMZA + XA(J2+3)
+      ENDDO
+      CMXA = CMXA/NSIZE; CMYA = CMYA/NSIZE; CMZA = CMZA/NSIZE
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         XA(J2+1) = XA(J2+1) - CMXA
+         XA(J2+2) = XA(J2+2) - CMYA
+         XA(J2+3) = XA(J2+3) - CMZA
+      ENDDO
+
+      CMXB = 0.0D0; CMYB = 0.0D0; CMZB = 0.0D0
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         CMXB = CMXB + XB(J2+1)
+         CMYB = CMYB + XB(J2+2)
+         CMZB = CMZB + XB(J2+3)
+      ENDDO
+      CMXB = CMXB/NSIZE; CMYB = CMYB/NSIZE; CMZB = CMZB/NSIZE
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         XB(J2+1) = XB(J2+1) - CMXB
+         XB(J2+2) = XB(J2+2) - CMYB
+         XB(J2+3) = XB(J2+3) - CMZB
+      ENDDO
+
+      QMAT(1:4,1:4) = 0.0D0
+
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1) 
+         XM = XA(J2+1) - XB(J2+1)
+         YM = XA(J2+2) - XB(J2+2)
+         ZM = XA(J2+3) - XB(J2+3)
+         XP = XA(J2+1) + XB(J2+1)
+         YP = XA(J2+2) + XB(J2+2)
+         ZP = XA(J2+3) + XB(J2+3)
+         QMAT(1,1) = QMAT(1,1) + XM**2 + YM**2 + ZM**2
+         QMAT(1,2) = QMAT(1,2) - YP*ZM + YM*ZP
+         QMAT(1,3) = QMAT(1,3) - XM*ZP + XP*ZM
+         QMAT(1,4) = QMAT(1,4) - XP*YM + XM*YP
+         QMAT(2,2) = QMAT(2,2) + YP**2 + ZP**2 + XM**2
+         QMAT(2,3) = QMAT(2,3) + XM*YM - XP*YP
+         QMAT(2,4) = QMAT(2,4) + XM*ZM - XP*ZP
+         QMAT(3,3) = QMAT(3,3) + XP**2 + ZP**2 + YM**2
+         QMAT(3,4) = QMAT(3,4) + YM*ZM - YP*ZP
+         QMAT(4,4) = QMAT(4,4) + XP**2 + YP**2 + ZM**2
+      ENDDO
+
+      QMAT(2,1) = QMAT(1,2); QMAT(3,1) = QMAT(1,3); QMAT(3,2) = QMAT(2,3); QMAT(4,1) = QMAT(1,4) 
+      QMAT(4,2) = QMAT(2,4); QMAT(4,3) = QMAT(3,4)
+
+!      WRITE(*,*) QMAT
+
+      CALL DSYEV('V','U',4,QMAT,4,DIAG,TEMPA,9*NATOMS,INFO)
+
+      IF (INFO /= 0) PRINT '(A,I6,A)','newmindist> WARNING - INFO=',INFO,' in DSYEV'
+
+      MINV = 1.0D100
+      DO J1 = 1,4
+         IF (DIAG(J1).LT.MINV) THEN
+            JMIN = J1
+            MINV = DIAG(J1)
+         ENDIF
+      ENDDO
+      IF (MINV < 0.0D0) THEN
+         IF (ABS(MINV)< 1.0D-6) THEN
+            MINV = 0.0D0
+         ELSE
+            PRINT '(A,G20.10,A)','newmindist> WARNING MINV is ',MINV,' change to absolute value'
+            MINV = -MINV
+         ENDIF
+      ENDIF
+      DIST = SQRT(MINV)
+
+!     IF (DEBUG) PRINT '(A,G20.10,A,I6)',' rbmindist2> minimum residual is ',DIAG(JMIN),' for eigenvector ',JMIN
+
+      Q2(1) = QMAT(1,JMIN); Q2(2) = QMAT(2,JMIN); Q2(3) = QMAT(3,JMIN); Q2(4) = QMAT(4,JMIN)
+
+      DO J1 = 1, NATOMS/2
+         J2 = 3*(J1-1)
+         RB(J2+1) = RB(J2+1) - CMXB
+         RB(J2+2) = RB(J2+2) - CMYB
+         RB(J2+3) = RB(J2+3) - CMZB
+      ENDDO
+
+      CALL RBNEWROTGEOM(NATOMS,RB,Q2,RM,CMXA,CMYA,CMZA)
+
+      DEALLOCATE(XA,XB)
+      DIST=SQRT(DIST)
+
+      END SUBROUTINE RBMINDIST
+
+!     ----------------------------------------------------------------------------------------------
+
+      SUBROUTINE RBNEWROTGEOM(NATOMS,COORDS,Q2,RM,CX,CY,CZ)
+
+      IMPLICIT NONE
+
+      INTEGER          :: I, J, NATOMS
+      DOUBLE PRECISION :: COORDS(NR), RM(3,3), CX, CY, CZ, R(3), P(3), Q1(4), Q2(4), Q(4)
+      DOUBLE PRECISION :: THETA, THETAH, ST, FCT
+
+!     RMAT CONTAINS THE MATRIX THAT MAPS RB ONTO THE BEST CORRESPONDENCE WITH RA
+
+      CALL QROTMAT(Q2,RM)
+
+      DO I = 1, NATOMS/2
+  
+         J    = 3*(I-1)
+         R(:) = MATMUL(RM(:,:), COORDS(J+1:J+3))
+
+         COORDS(J+1) = R(1) + CX
+         COORDS(J+2) = R(2) + CY
+         COORDS(J+3) = R(3) + CZ
+      
+!     CONVERT THE ANGLE-AXIS COORDINATES
+
+         J      = NR/2 + J
+         P(:)   = COORDS(J+1:J+3)
+
+         CALL QROTAA(Q2,P)
+
+         COORDS(J+1:J+3) = P(1:3)
+
+      ENDDO
+
+      END SUBROUTINE RBNEWROTGEOM
+
+!     ----------------------------------------------------------------------------------------------
+
+      SUBROUTINE FLDMINDIST(RA,RB,NATOMS,DIST,DEBUG,Q2)
+
+      USE COMMONS, ONLY: NTSITES, RBSITE, STOCKAAT
+
+      IMPLICIT NONE
+
+      INTEGER          :: J1, J2, J3, J4, NATOMS, NSIZE, JMIN, INFO
+      DOUBLE PRECISION :: RA(NR), RB(NR), DIST, QMAT(2,2), XM, YM, ZM, XP, YP, ZP
+      DOUBLE PRECISION :: MINV, Q2(4), CMXA, CMYA, CMZA, CMXB, CMYB, CMZB
+      DOUBLE PRECISION :: R(3), P(3), RM(3,3) 
+      DOUBLE PRECISION, ALLOCATABLE :: XA(:), XB(:)
+      DOUBLE PRECISION :: ENERGY, VNEW(NR), RMS, DUMMY
+      LOGICAL          :: DEBUG
+
+      NSIZE = NTSITES
+      ALLOCATE(XA(3*NSIZE),XB(3*NSIZE))
+
+!     CONVERT TO THE CARTESIAN CORDINATES FOR THE SITES
+
+      IF (STOCKAAT) THEN
+
+         XA(:) = RA(:)
+         XB(:) = RB(:)
+   
+      ELSE
+
+         CALL SITEPOS(RA,XA)
+
+         CALL SITEPOS(RB,XB)
+
+      ENDIF
+
+!     MOVE CENTRE OF COORDINATES OF XA AND XB TO THE ORIGIN
+
+      CMXA = 0.0D0; CMYA = 0.0D0; CMZA = 0.0D0
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         CMXA = CMXA + XA(J2+1)
+         CMYA = CMYA + XA(J2+2)
+         CMZA = CMZA + XA(J2+3)
+      ENDDO
+      CMXA = CMXA/NSIZE; CMYA = CMYA/NSIZE; CMZA = CMZA/NSIZE
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         XA(J2+1) = XA(J2+1) - CMXA
+         XA(J2+2) = XA(J2+2) - CMYA
+         XA(J2+3) = XA(J2+3) - CMZA
+      ENDDO
+
+      CMXB = 0.0D0; CMYB = 0.0D0; CMZB = 0.0D0
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         CMXB = CMXB + XB(J2+1)
+         CMYB = CMYB + XB(J2+2)
+         CMZB = CMZB + XB(J2+3)
+      ENDDO
+      CMXB = CMXB/NSIZE; CMYB = CMYB/NSIZE; CMZB = CMZB/NSIZE
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         XB(J2+1) = XB(J2+1) - CMXB
+         XB(J2+2) = XB(J2+2) - CMYB
+         XB(J2+3) = XB(J2+3) - CMZB
+      ENDDO
+
+      QMAT(1:2,1:2) = 0.0D0
+
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1) 
+         XM = XA(J2+1) - XB(J2+1)
+         YM = XA(J2+2) - XB(J2+2)
+         ZM = XA(J2+3) - XB(J2+3)
+         XP = XA(J2+1) + XB(J2+1)
+         YP = XA(J2+2) + XB(J2+2)
+         ZP = XA(J2+3) + XB(J2+3)
+         QMAT(1,1) = QMAT(1,1) + XM**2 + YM**2 + ZM**2
+         QMAT(1,2) = QMAT(1,2) - XP*YM + XM*YP
+         QMAT(2,2) = QMAT(2,2) + XP**2 + YP**2 + ZM**2
+      ENDDO
+
+!     QMAT IS SYMMETRIC; QMAT(2,1) = QMAT(1,2)
+
+      MINV = 0.5D0*(QMAT(1,1) + QMAT(2,2) - SQRT(4.D0*QMAT(1,2)*QMAT(1,2) + (QMAT(1,1) - QMAT(2,2))**2.D0))
+
+!      IF (MINV < 0.0D0) THEN
+!          PRINT '(A,G20.10,A)','fldmindist> MINV is negative'
+!          PRINT *, MINV
+!          STOP
+!      ENDIF
+
+!      DIST = SQRT(MINV)
+
+!      Q2(1) = SQRT(QMAT(1,2)*QMAT(1,2)/((MINV-QMAT(1,1))**2.D0 + QMAT(1,2)*QMAT(1,2)))
+      Q2(1) = SQRT((MINV-QMAT(2,2))**2.D0/(QMAT(1,2)*QMAT(1,2) + (MINV-QMAT(2,2))**2.D0))
+      Q2(2) = 0.D0
+      Q2(3) = 0.D0
+!      Q2(4) = (MINV - QMAT(1,1))*Q2(1)/QMAT(1,2)
+      Q2(4) = QMAT(1,2)*Q2(1)/(MINV - QMAT(2,2))
+
+      IF (MINV < 0.0D0) THEN
+         IF (ABS(MINV)< 1.0D-6) THEN
+            MINV = 0.0D0
+         ELSE
+            PRINT '(A,G20.10,A)','newmindist> WARNING MINV is ',MINV,' change to absolute value'
+            MINV = -MINV
+         ENDIF
+      ENDIF
+      DIST = SQRT(MINV)
+  
+      DO J1 = 1, NATOMS/2
+         J2 = 3*(J1-1)
+         RB(J2+1) = RB(J2+1) - CMXB
+         RB(J2+2) = RB(J2+2) - CMYB
+         RB(J2+3) = RB(J2+3) - CMZB
+      ENDDO
+
+      CALL RBNEWROTGEOM(NATOMS,RB,Q2,RM,CMXA,CMYA,CMZA)
+
+      DEALLOCATE(XA,XB)
+
+      END SUBROUTINE FLDMINDIST
+
+!     ----------------------------------------------------------------------------------------------
+
+      SUBROUTINE RBCOMMINDIST(RA,RB,NATOMS,DIST,RM,DEBUG)
+
+      IMPLICIT NONE
+
+      INTEGER          :: J1, J2, J3, J4, NATOMS, NSIZE, JMIN, INFO
+      DOUBLE PRECISION :: RA(NR), RB(NR), DIST, QMAT(4,4), TEMPA(9*NATOMS), XM, YM, ZM, XP, YP, ZP
+      DOUBLE PRECISION :: DIAG(4), MINV, Q2(4), CMXA, CMYA, CMZA, CMXB, CMYB, CMZB
+      DOUBLE PRECISION :: R(3), P(3), RM(3,3) 
+      DOUBLE PRECISION, ALLOCATABLE :: XA(:), XB(:)
+      DOUBLE PRECISION :: ENERGY, VNEW(NR), RMS, DUMMY
+      LOGICAL          :: BULKT, PRESERVET, DEBUG 
+
+      NSIZE = NATOMS/2
+      ALLOCATE(XA(3*NSIZE),XB(3*NSIZE))
+      XA(1:3*NSIZE) = RA(1:3*NSIZE); XB(1:3*NSIZE) = RB(1:3*NSIZE)
+
+!     MOVE CENTRE OF COORDINATES OF XA AND XB TO THE ORIGIN
+
+      CMXA = 0.0D0; CMYA = 0.0D0; CMZA = 0.0D0
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         CMXA = CMXA + XA(J2+1)
+         CMYA = CMYA + XA(J2+2)
+         CMZA = CMZA + XA(J2+3)
+      ENDDO
+      CMXA = CMXA/NSIZE; CMYA = CMYA/NSIZE; CMZA = CMZA/NSIZE
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         XA(J2+1) = XA(J2+1) - CMXA
+         XA(J2+2) = XA(J2+2) - CMYA
+         XA(J2+3) = XA(J2+3) - CMZA
+      ENDDO
+
+      CMXB = 0.0D0; CMYB = 0.0D0; CMZB = 0.0D0
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         CMXB = CMXB + XB(J2+1)
+         CMYB = CMYB + XB(J2+2)
+         CMZB = CMZB + XB(J2+3)
+      ENDDO
+      CMXB = CMXB/NSIZE; CMYB = CMYB/NSIZE; CMZB = CMZB/NSIZE
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         XB(J2+1) = XB(J2+1) - CMXB
+         XB(J2+2) = XB(J2+2) - CMYB
+         XB(J2+3) = XB(J2+3) - CMZB
+      ENDDO
+
+      QMAT(1:4,1:4) = 0.0D0
+
+      DO J1 = 1, NSIZE
+         J2 = 3*(J1-1)
+         XM = XA(J2+1) - XB(J2+1)
+         YM = XA(J2+2) - XB(J2+2)
+         ZM = XA(J2+3) - XB(J2+3)
+         XP = XA(J2+1) + XB(J2+1)
+         YP = XA(J2+2) + XB(J2+2)
+         ZP = XA(J2+3) + XB(J2+3)
+         QMAT(1,1) = QMAT(1,1) + XM**2 + YM**2 + ZM**2
+         QMAT(1,2) = QMAT(1,2) - YP*ZM + YM*ZP 
+         QMAT(1,3) = QMAT(1,3) - XM*ZP + XP*ZM
+         QMAT(1,4) = QMAT(1,4) - XP*YM + XM*YP
+         QMAT(2,2) = QMAT(2,2) + YP**2 + ZP**2 + XM**2
+         QMAT(2,3) = QMAT(2,3) + XM*YM - XP*YP 
+         QMAT(2,4) = QMAT(2,4) + XM*ZM - XP*ZP
+         QMAT(3,3) = QMAT(3,3) + XP**2 + ZP**2 + YM**2
+         QMAT(3,4) = QMAT(3,4) + YM*ZM - YP*ZP 
+         QMAT(4,4) = QMAT(4,4) + XP**2 + YP**2 + ZM**2
+      ENDDO
+
+      QMAT(2,1) = QMAT(1,2); QMAT(3,1) = QMAT(1,3); QMAT(3,2) = QMAT(2,3); QMAT(4,1) = QMAT(1,4)
+      QMAT(4,2) = QMAT(2,4); QMAT(4,3) = QMAT(3,4)
+      CALL DSYEV('V','U',4,QMAT,4,DIAG,TEMPA,9*NATOMS,INFO)
+
+      IF (INFO /= 0) PRINT '(A,I6,A)','newmindist> WARNING - INFO=',INFO,' in DSYEV'
+
+      MINV = 1.0D100
+      DO J1 = 1,4
+         IF (DIAG(J1).LT.MINV) THEN
+            JMIN = J1
+            MINV = DIAG(J1)
+         ENDIF
+      ENDDO
+      IF (MINV < 0.0D0) THEN
+         IF (ABS(MINV)< 1.0D-6) THEN
+            MINV = 0.0D0
+         ELSE
+            PRINT '(A,G20.10,A)','newmindist> WARNING MINV is ',MINV,' change to absolute value'
+            MINV = -MINV
+         ENDIF
+      ENDIF
+      DIST = SQRT(MINV)
+
+      IF (DEBUG) PRINT '(A,G20.10,A,I6)',' rbmindist2> minimum residual is ',DIAG(JMIN),' for eigenvector ',JMIN
+
+      Q2(1) = QMAT(1,JMIN); Q2(2) = QMAT(2,JMIN); Q2(3) = QMAT(3,JMIN); Q2(4) = QMAT(4,JMIN)
+
+      DO J1 = 1, NATOMS/2
+         J2 = 3*(J1-1)
+         RB(J2+1) = RB(J2+1) - CMXB
+         RB(J2+2) = RB(J2+2) - CMYB
+         RB(J2+3) = RB(J2+3) - CMZB
+      ENDDO
+
+      CALL RBNEWROTGEOM(NATOMS,RB,Q2,RM,CMXA,CMYA,CMZA)
+
+      DEALLOCATE(XA,XB)
+
+      END SUBROUTINE RBCOMMINDIST
+
+!     ----------------------------------------------------------------------------------------------
+
+      SUBROUTINE ROTMAT(P, RM)
+
+      INTEGER          :: K
+      DOUBLE PRECISION :: P(3), PN(3), THETA, THETA2, CT, ST, I3(3,3), E(3,3), RM(3,3)
+
+      I3(:,:) = 0.D0
+      DO K = 1, 3
+         I3(K,K) = 1.D0
+      ENDDO
+
+      THETA2 = DOT_PRODUCT(P,P)
+
+      IF (THETA2 == 0.D0) THEN 
+
+         RM(:,:) = I3(:,:)
+
+      ELSE
+
+         THETA   = SQRT(THETA2)
+         CT      = COS(THETA)
+         ST      = SIN(THETA)
+         THETA   = 1.D0/THETA
+         PN(:)   = THETA*P(:)
+         E(:,:)  = 0.D0
+         E(1,2)  = -PN(3)
+         E(1,3)  =  PN(2)
+         E(2,3)  = -PN(1)
+         E(2,1)  = -E(1,2)
+         E(3,1)  = -E(1,3)
+         E(3,2)  = -E(2,3)
+
+         RM(:,:) = I3(:,:) + (1.D0-CT)*MATMUL(E(:,:),E(:,:)) + ST*E(:,:)
+
+      ENDIF
+
+      END SUBROUTINE ROTMAT
+
+!     ----------------------------------------------------------------------------------------------
+
+      SUBROUTINE DEFDUM(DBSIGBB)
+
+      USE COMMONS, ONLY: RBSITE
+
+      IMPLICIT NONE
+
+      DOUBLE PRECISION :: DBSIGAA, DBSIGBB
+
+      DBSIGAA = 1.D0
+
+      RBSITE(1,1) = 0.D0
+      RBSITE(1,2) = 0.D0
+      RBSITE(1,3) = 0.5D0*DBSIGAA
+
+      RBSITE(2,1) = 0.D0
+      RBSITE(2,2) = 0.D0
+      RBSITE(2,3) =-0.5D0*DBSIGBB
+
+      RBSITE(3,1) = 0.D0
+      RBSITE(3,2) = 0.D0
+      RBSITE(3,3) = 0.D0
+
+      END SUBROUTINE DEFDUM
+
+!     ----------------------------------------------------------------------------------------------
+
+      SUBROUTINE DEFMULTSTOCK()
+
+      USE COMMONS, ONLY: NRBSITES, RBSITE
+
+      IMPLICIT NONE
+
+      IF (NRBSITES == 4) THEN
+
+         RBSITE(1,:) = (/0.D0, 1.D0/DSQRT(3.D0), 0.D0/)
+         RBSITE(2,:) = (/0.5D0, -0.5D0/DSQRT(3.D0), 0.D0/)
+         RBSITE(3,:) = (/-0.5D0, -0.5D0/DSQRT(3.D0), 0.D0/)
+         RBSITE(4,:) = (/ 0.D0, 0.D0, 0.D0/)
+
+      ELSEIF (NRBSITES == 3) THEN
+
+         RBSITE(1,:) = (/0.D0, 1.D0/DSQRT(3.D0), 0.D0/)
+         RBSITE(2,:) = (/0.5D0, -0.5D0/DSQRT(3.D0), 0.D0/)
+         RBSITE(3,:) = (/-0.5D0, -0.5D0/DSQRT(3.D0), 0.D0/)
+
+      ENDIF
+
+      END SUBROUTINE DEFMULTSTOCK
+
+!     ----------------------------------------------------------------------------------------------
+
+      SUBROUTINE DEFBENZENE()
+
+      USE COMMONS, ONLY: RBSITE
+
+      IMPLICIT NONE
+
+!     C6H6
+
+      RBSITE(1,:)  = (/ 2.63923430843701,   0.00000000000000,   0.00000000000000/)        ! C1
+      RBSITE(2,:)  = (/ 1.31961715421850,  -2.28564395764590,   0.00000000000000/)        ! C2
+      RBSITE(3,:)  = (/-1.31961715421850,  -2.28564395764590,   0.00000000000000/)        ! C3
+      RBSITE(4,:)  = (/-2.63923430843701,   0.00000000000000,   0.00000000000000/)        ! C4
+      RBSITE(5,:)  = (/-1.31961715421850,   2.28564395764590,   0.00000000000000/)        ! C5
+      RBSITE(6,:)  = (/ 1.31961715421850,   2.28564395764590,   0.00000000000000/)        ! C6
+      RBSITE(7,:)  = (/ 4.69338981379532,   0.00000000000000,   0.00000000000000/)        ! H1
+      RBSITE(8,:)  = (/ 2.34669490689766,  -4.06459480860986,   0.00000000000000/)        ! H2
+      RBSITE(9,:)  = (/-2.34669490689766,  -4.06459480860986,   0.00000000000000/)        ! H3
+      RBSITE(10,:) = (/-4.69338981379532,   0.00000000000000,   0.00000000000000/)        ! H4
+      RBSITE(11,:) = (/-2.34669490689766,   4.06459480860986,   0.00000000000000/)        ! H5
+      RBSITE(12,:) = (/ 2.34669490689766,   4.06459480860986,   0.00000000000000/)        ! H6
+
+      END SUBROUTINE DEFBENZENE
+
+!     ----------------------------------------------------------------------------------------------
+
+      SUBROUTINE DEFTD(RBSITETD)
+
+      IMPLICIT NONE
+
+      DOUBLE PRECISION :: RBSITETD(4,3), FCTR
+
+
+      FCTR        = 1.D0/DSQRT(8.D0)
+      RBSITETD(1,:) = FCTR*(/ 1.D0, 1.D0, 1.D0/)
+      RBSITETD(2,:) = FCTR*(/-1.D0,-1.D0, 1.D0/)
+      RBSITETD(3,:) = FCTR*(/ 1.D0,-1.D0,-1.D0/)
+      RBSITETD(4,:) = FCTR*(/-1.D0, 1.D0,-1.D0/)
+
+      END SUBROUTINE DEFTD
+
+!     ----------------------------------------------------------------------------------------------
+
+      SUBROUTINE DEFPATCHYD()
+
+      USE COMMONS, ONLY: RBSITE
+
+      IMPLICIT NONE
+
+      RBSITE(1,:)= (5.D-1/SQRT(3.D0))*(/  1.D0,  1.D0,  1.D0/)
+      RBSITE(2,:)= (5.D-1/SQRT(3.D0))*(/ -1.D0, -1.D0,  1.D0/)
+      RBSITE(3,:)= (5.D-1/SQRT(3.D0))*(/ -1.D0,  1.D0, -1.D0/)
+      RBSITE(4,:)= (5.D-1/SQRT(3.D0))*(/  1.D0, -1.D0, -1.D0/)
+
+      END SUBROUTINE DEFPATCHYD

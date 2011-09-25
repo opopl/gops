@@ -20,6 +20,18 @@
             LOGICAL,INTENT(IN) :: GTEST
         ENDSUBROUTINE P46MERDIFF
         ! }}}
+        ! g46merdiff {{{
+        SUBROUTINE G46MERDIFF(FH,DEB,QO, N, GRAD, ENERGY, GTEST)
+	        IMPLICIT NONE
+	        INTEGER,INTENT(IN) :: N
+	        LOGICAL,INTENT(IN) :: DEB
+	        INTEGER,INTENT(IN) :: FH
+	        DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
+	        DOUBLE PRECISION,DIMENSION(3*N),INTENT(OUT) :: GRAD
+	        DOUBLE PRECISION,INTENT(OUT) :: ENERGY
+	        LOGICAL,INTENT(IN) :: GTEST
+        ENDSUBROUTINE G46MERDIFF
+        ! }}}
         ! calc_int_coords {{{
 
         SUBROUTINE CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,&
@@ -43,6 +55,27 @@
         ENDSUBROUTINE CALC_INT_COORDS       
 
         !  }}}
+        ! calc_energy {{{
+        SUBROUTINE CALC_ENERGY(FH,DEB,QO,ENERGY,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
+     &                         BOND_ANGLE,TOR_ANGLE,RADII,NTYPE,PTYPE)
+            IMPLICIT NONE
+            LOGICAL DEB
+            INTEGER,INTENT(IN) :: FH
+            DOUBLE PRECISION,INTENT(OUT) :: ENERGY
+            DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
+            INTEGER,INTENT(IN) :: N
+            DOUBLE PRECISION,DIMENSION(N,N),INTENT(IN) :: A_PARAM,B_PARAM
+            DOUBLE PRECISION,DIMENSION(N),INTENT(IN) :: C_PARAM,D_PARAM
+            DOUBLE PRECISION,DIMENSION(N),INTENT(IN) :: X,Y,Z
+            DOUBLE PRECISION,DIMENSION(N,N),INTENT(IN) :: XR,YR,ZR
+            DOUBLE PRECISION,DIMENSION(N,3),INTENT(IN) :: DOT_PROD
+            DOUBLE PRECISION,DIMENSION(N),INTENT(IN) :: X_PROD, BOND_ANGLE, TOR_ANGLE
+            DOUBLE PRECISION,DIMENSION(N,N),INTENT(IN) :: RADII 
+            INTEGER,DIMENSION(N),INTENT(IN) :: NTYPE
+            CHARACTER(LEN=*),INTENT(IN) :: PTYPE
+
+        ENDSUBROUTINE CALC_ENERGY
+        ! }}}
         ! calc_gradient {{{
          SUBROUTINE CALC_GRADIENT(FH,DEB,QO,FQ,N,&
                &  A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
@@ -72,7 +105,7 @@
     
             !LOGICAL DEB
             !INTEGER,INTENT(IN) :: FH
-            DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
+            DOUBLE PRECISION,DIMENSION(3*N),INTENT(INOUT) :: QO
             INTEGER,INTENT(IN) :: N
             DOUBLE PRECISION,DIMENSION(N,N),INTENT(IN) :: A_PARAM,B_PARAM
             DOUBLE PRECISION,DIMENSION(N),INTENT(IN) :: C_PARAM,D_PARAM
@@ -89,25 +122,30 @@
             ! param_array {{{
         SUBROUTINE PARAM_ARRAY(N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,NTYPE)
 	        INTEGER,INTENT(IN) :: N
-	        INTEGER,DIMENSION(N),INTENT(IN) :: NTYPE
+	        INTEGER,DIMENSION(N),INTENT(OUT) :: NTYPE
 	        DOUBLE PRECISION,DIMENSION(N,N),INTENT(OUT) :: A_PARAM,B_PARAM
 	        DOUBLE PRECISION,DIMENSION(N),INTENT(OUT) :: C_PARAM,D_PARAM
         ENDSUBROUTINE PARAM_ARRAY
         ! }}}
-
-        SUBROUTINE FINALQ
-        ENDSUBROUTINE FINALQ
-
-        SUBROUTINE MYRESET(JP,NATOMS,NPAR,NSEED)
-            INTEGER JP,NATOMS,NPAR,NSEED
-        END SUBROUTINE MYRESET
-
-        SUBROUTINE GSAVEIT(EREAL,P,NP)
-            INTEGER,intent(in) :: NP
-            DOUBLE PRECISION,intent(in) :: EREAL
-            DOUBLE PRECISION,intent(in), DIMENSION(:) ::   P
-        END SUBROUTINE GSAVEIT
-
+            ! gparam_array {{{
+        SUBROUTINE GPARAM_ARRAY(N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,NTYPE)
+            implicit none
+	        INTEGER,INTENT(IN) :: N
+	        INTEGER,DIMENSION(N),INTENT(OUT) :: NTYPE
+	        DOUBLE PRECISION,DIMENSION(N,N),INTENT(OUT) :: A_PARAM,B_PARAM
+	        DOUBLE PRECISION,DIMENSION(N),INTENT(OUT) :: C_PARAM,D_PARAM
+        ENDSUBROUTINE GPARAM_ARRAY
+        ! }}}
+        !dumpstate {{{
+        SUBROUTINE DUMPSTATE(NDONE,EBEST,BESTCOORDS,JBEST,JP)
+            USE COMMONS
+            USE V
+            IMPLICIT NONE
+            INTEGER,INTENT(IN) :: NDONE, JBEST(NPAR), JP
+            DOUBLE PRECISION,INTENT(IN) ::  EBEST(NPAR), BESTCOORDS(3*NATOMS,NPAR)
+        ENDSUBROUTINE
+        ! }}}
+        ! transition accrej mc {{{
         SUBROUTINE TRANSITION(ENEW,EOLD,ATEST,NP,RANDOM,MCTEMP)
 		      DOUBLE PRECISION,INTENT(IN) :: ENEW, EOLD, MCTEMP
 		      DOUBLE PRECISION,INTENT(OUT) :: RANDOM
@@ -126,15 +164,6 @@
 	      DOUBLE PRECISION, DIMENSION(:) ::   SCREENC
         END SUBROUTINE MC 
 
-        SUBROUTINE MYLBFGS(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET,NP)
-
-	      INTEGER :: N,M,ITMAX,ITDONE,NP
-	      DOUBLE PRECISION,DIMENSION(:) ::   XCOORDS
-	      LOGICAL DIAGCO,MFLAG,RESET
-	      DOUBLE PRECISION ::   EPS, ENERGY
-
-        END SUBROUTINE MYLBFGS
-
         SUBROUTINE QUENCH(QTEST,NP,ITER,TIME,BRUN,QDONE,P)
 
 	      DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: P   
@@ -144,6 +173,31 @@
 
         END SUBROUTINE QUENCH
 
+        ! }}}
+
+        SUBROUTINE FINALQ
+        ENDSUBROUTINE FINALQ
+
+        SUBROUTINE MYRESET(JP,NATOMS,NPAR,NSEED)
+            INTEGER JP,NATOMS,NPAR,NSEED
+        END SUBROUTINE MYRESET
+
+        SUBROUTINE GSAVEIT(EREAL,P,NP)
+            INTEGER,intent(in) :: NP
+            DOUBLE PRECISION,intent(in) :: EREAL
+            DOUBLE PRECISION,intent(in), DIMENSION(:) ::   P
+        END SUBROUTINE GSAVEIT
+
+        SUBROUTINE MYLBFGS(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET,NP)
+
+	      INTEGER :: N,M,ITMAX,ITDONE,NP
+	      DOUBLE PRECISION,DIMENSION(:) ::   XCOORDS
+	      LOGICAL DIAGCO,MFLAG,RESET
+	      DOUBLE PRECISION ::   EPS, ENERGY
+
+        END SUBROUTINE MYLBFGS
+
+        
       SUBROUTINE POTENTIAL(X,GRAD,EREAL,GRADT,SECT)
 	      DOUBLE PRECISION, DIMENSION(:),INTENT(IN) :: X
 	      DOUBLE PRECISION, DIMENSION(:),INTENT(OUT) :: GRAD
@@ -156,6 +210,7 @@
 
       CONTAINS
 
+      ! string subs {{{
       subroutine wd(f,s,num)
 
       integer,intent(in) :: f,num
@@ -175,6 +230,120 @@
       integer f
       write(f,'(a)') "==========================================="
       endsubroutine ed
+      ! }}}
+
+      ! check_file {{{
+	   FUNCTION CHECK_FILE(FILE_UNIT, FOR_READ, FOR_WRITE)
+	   IMPLICIT NONE
+	   ! Function
+	   LOGICAL             :: CHECK_FILE
+	   ! Arguments
+	   INTEGER, INTENT(IN) :: FILE_UNIT
+	   LOGICAL, INTENT(IN) :: FOR_READ, FOR_WRITE
+	   ! Local variables
+	   CHARACTER (LEN=7)   :: FILE_READABLE, FILE_WRITABLE
+	   LOGICAL             :: FILE_EXISTS, FILE_OPEN
+	   
+	   ! Initialise to .FALSE. (i.e. file isn't good for use)
+	   CHECK_FILE = .FALSE.
+	   
+	   INQUIRE(FILE_UNIT, EXIST=FILE_EXISTS, OPENED=FILE_OPEN, READ=FILE_READABLE, WRITE=FILE_WRITABLE)
+	   ! Did the file open correctly and connect to the unit?
+	   IF (.NOT. (FILE_EXISTS .AND. FILE_OPEN)) THEN
+	      RETURN
+	   END IF
+	   ! Can we read, if read access has been requested?
+	   IF (FOR_READ) THEN
+	      IF (FILE_READABLE .NE. 'YES') THEN
+	         RETURN
+	      END IF
+	   END IF
+	   ! Can we write, if write access has been requested?
+	   IF (FOR_WRITE) THEN
+	      IF (FILE_WRITABLE .NE. 'YES') THEN
+	         RETURN
+	      END IF
+	   END IF
+	   ! If all the other checks succeed, set CHECK_FILE to .TRUE., the file is ok
+	   CHECK_FILE = .TRUE.
+	   
+	   RETURN
+	   END FUNCTION CHECK_FILE
+       ! }}}
+      ! write_coords  {{{
+      SUBROUTINE WRITE_COORDS(FILE_UNIT, FORMAT_SPEC, RUN_NUMBER)
+         ! Does a sanity check and then writes COORDS to the specified unit with a 
+         ! specified format.  Optional check for run number if we're doing parallel stuff.
+         ! Commons
+         USE COMMONS, ONLY : COORDS, NPAR
+         IMPLICIT NONE
+         ! Arguments
+         INTEGER, INTENT(IN)           :: FILE_UNIT
+         CHARACTER (LEN=*), INTENT(IN) :: FORMAT_SPEC
+         ! Optional arguments
+         INTEGER, INTENT(IN), OPTIONAL :: RUN_NUMBER
+         ! Local variables
+         INTEGER                       :: COUNTER
+         
+         ! Some quick sanity checks to make sure that input makes sense
+         IF (PRESENT(RUN_NUMBER)) THEN
+            IF (RUN_NUMBER .GT. NPAR) THEN
+               STOP 'The run number is larger than the number of parallel runs.  Cannot write the output file.'
+            END IF
+         END IF
+         
+         ! Sanity checks on the file that we're writing to
+         IF (.NOT. CHECK_FILE(FILE_UNIT, FOR_READ=.FALSE., FOR_WRITE=.TRUE.)) THEN
+            STOP 'File did not open correctly.'
+         END IF
+         
+         ! Write coords
+         IF (PRESENT(RUN_NUMBER)) THEN
+            WRITE(FILE_UNIT, FORMAT_SPEC) COORDS(:, RUN_NUMBER)
+         ELSE
+            WRITE(FILE_UNIT, FORMAT_SPEC) COORDS(:, 1)
+         END IF
+         
+      END SUBROUTINE WRITE_COORDS
+      ! }}}
+      ! write_markov_coords {{{
+      
+      SUBROUTINE WRITE_MARKOV_COORDS(FILE_UNIT, FORMAT_SPEC, RUN_NUMBER)
+         ! Does a sanity check and then writes COORDSO (the Markov coords) to the specified 
+         ! unit with a specified format.  Optional check for run number if we're doing 
+         ! parallel stuff.
+         ! Commons
+         USE COMMONS, ONLY : COORDSO, NPAR
+         IMPLICIT NONE
+         ! Arguments
+         INTEGER, INTENT(IN)           :: FILE_UNIT
+         CHARACTER (LEN=*), INTENT(IN) :: FORMAT_SPEC
+         ! Optional arguments
+         INTEGER, INTENT(IN), OPTIONAL :: RUN_NUMBER
+         ! Local variables
+         INTEGER                       :: COUNTER
+      
+         ! Some quick sanity checks to make sure that input makes sense
+         IF (PRESENT(RUN_NUMBER)) THEN
+            IF (RUN_NUMBER .GT. NPAR) THEN
+               STOP 'The run number is larger than the number of parallel runs.  Cannot write the output file.'
+            END IF
+         END IF
+         
+         ! Sanity checks on the file that we're writing to
+         IF (.NOT. CHECK_FILE(FILE_UNIT, FOR_READ=.FALSE., FOR_WRITE=.TRUE.)) THEN
+            STOP 'File did not open correctly.'
+         END IF
+         
+         ! Write coordso
+         IF (PRESENT(RUN_NUMBER)) THEN
+            WRITE(FILE_UNIT, FORMAT_SPEC) COORDSO(:, RUN_NUMBER)
+         ELSE
+            WRITE(FILE_UNIT, FORMAT_SPEC) COORDSO(:, 1)
+         END IF
+         
+      END SUBROUTINE WRITE_MARKOV_COORDS
+      ! }}}
 
       ! trans gseed reseed pairdistance  {{{
 
@@ -525,6 +694,128 @@ ENDSELECT
 ! }}}
 ENDSUBROUTINE OPENF
 ! }}}
+        ! gsort2 sort3 centre2 centrecom {{{
+                ! gsort2 {{{ 
+!     This subprogram performs a sort on the input data and
+!     arranges it from smallest to biggest. The exchange-sort
+!     algorithm is used.
+!
+      SUBROUTINE GSORT2(N,NATOMS)
+      USE COMMONS, ONLY : QMINAV, QMINPCSMAV, CSMT
+      USE V
+      IMPLICIT NONE
+      INTEGER NATOMS
+      INTEGER J1, L, N, J3, J2, NTEMP
+      DOUBLE PRECISION TEMP, C
+!
+      DO 20 J1=1,N-1
+         L=J1
+         DO 10 J2=J1+1,N
+            IF (QMIN(L).GT.QMIN(J2)) L=J2
+10       CONTINUE
+         TEMP=QMIN(L)
+         QMIN(L)=QMIN(J1)
+         QMIN(J1)=TEMP
+         IF (CSMT) THEN
+            TEMP=QMINAV(L)
+            QMINAV(L)=QMINAV(J1)
+            QMINAV(J1)=TEMP
+         ENDIF
+         NTEMP=FF(L)
+         FF(L)=FF(J1)
+         FF(J1)=NTEMP
+         DO J2=1,3*NATOMS
+            C=QMINP(L,J2)
+            QMINP(L,J2)=QMINP(J1,J2)
+            QMINP(J1,J2)=C
+         ENDDO
+         IF (CSMT) THEN
+            DO J2=1,3*NATOMS
+               C=QMINPCSMAV(L,J2)
+               QMINPCSMAV(L,J2)=QMINPCSMAV(J1,J2)
+               QMINPCSMAV(J1,J2)=C
+            ENDDO
+         ENDIF
+20    CONTINUE
+      RETURN
+      END SUBROUTINE GSORT2
+      ! }}}
+      ! sort3 {{{
+!     This subprogram performs a sort on the input data and
+!     arranges it from smallest to biggest. The exchange-sort
+!     algorithm is used.
+!
+      SUBROUTINE SORT3(N,J3,A,B)
+      IMPLICIT NONE
+      INTEGER J1, L, N, J3, J2
+      DOUBLE PRECISION TEMP, A(J3), B(3*J3)
+!
+      DO 20 J1=1,N-1
+         L=J1
+         DO 10 J2=J1+1,N
+            IF (A(L).LT.A(J2)) L=J2
+10       CONTINUE
+         TEMP=A(L)
+         A(L)=A(J1)
+         A(J1)=TEMP
+         DO J2=0,2
+            TEMP=B(3*L-J2)
+            B(3*L-J2)=B(3*J1-J2)
+            B(3*J1-J2)=TEMP
+         ENDDO
+20    CONTINUE
+      RETURN
+      END SUBROUTINE
+      ! }}}
+      ! centre2 {{{
+      SUBROUTINE CENTRE2(X)
+
+      USE COMMONS
+      USE V
+
+      IMPLICIT NONE
+
+      INTEGER I
+      DOUBLE PRECISION,INTENT(INOUT),DIMENSION(NR) :: X
+      DOUBLE PRECISION ::   RMASS(3)
+      DOUBLE PRECISION ::   R(NATOMS,3)
+
+      R=RESHAPE(X,(/ NATOMS,3 /))
+      RMASS=SUM(R,DIM=1)/NATOMS
+      do i=1,3
+        R(1:NATOMS,i)=R(1:NATOMS,i)-RMASS(i)
+      enddo
+      X=PACK(R,.true.)
+      RETURN
+      END SUBROUTINE 
+      ! }}}
+      ! centrecom {{{
+      SUBROUTINE CENTRECOM(X)
+
+      USE COMMONS
+
+      IMPLICIT NONE
+
+      INTEGER I
+      DOUBLE PRECISION X(3*NATOMS), TOTMASS,rmass(3)
+      DOUBLE PRECISION ::   r(natoms,3)
+
+      R=RESHAPE(X,(/ NATOMS,3 /))
+      TOTMASS=SUM(MASSES)
+      DO I=1,3
+        RMASS(I)=SUM(R(1:NATOMS,I)*MASSES(1:NATOMS))/TOTMASS
+      ENDDO
+      do i=1,3
+        R(1:NATOMS,i)=R(1:NATOMS,i)-RMASS(i)
+      enddo
+      X=PACK(R,.true.)
+      
+      IF (DEBUG) WRITE(LFH,'(A,3F15.10)') 'centre of mass reset to the origin from ',RMASS
+
+      RETURN
+      ENDSUBROUTINE CENTRECOM
+      ! }}}
+      ! }}}
 
       SUBROUTINE SETVARS
 !{{{

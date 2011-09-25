@@ -17,10 +17,10 @@ C   along with this program; if not, write to the Free Software
 C   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 C
 C
-C     This subprogram performs a sort on the input data and
-C     arranges it from smallest to biggest. The exchange-sort
-C     algorithm is used.
-C
+!     This subprogram performs a sort on the input data and
+!     arranges it from smallest to biggest. The exchange-sort
+!     algorithm is used.
+!
       SUBROUTINE GSORT2(N,NATOMS)
       USE COMMONS, ONLY : QMINAV, QMINPCSMAV, CSMT
       USE V
@@ -28,7 +28,7 @@ C
       INTEGER NATOMS
       INTEGER J1, L, N, J3, J2, NTEMP
       DOUBLE PRECISION TEMP, C
-C
+!
       DO 20 J1=1,N-1
          L=J1
          DO 10 J2=J1+1,N

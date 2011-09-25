@@ -1,7 +1,20 @@
 
 MODULE S
 
-use precision
+! Real kinds
+
+integer, parameter :: kr4 = selected_real_kind(6,37)       ! single precision real
+integer, parameter :: kr8 = selected_real_kind(15,307)     ! double precision real
+
+! Integer kinds
+
+integer, parameter :: ki4 = selected_int_kind(9)           ! single precision integer
+integer, parameter :: ki8 = selected_int_kind(18)          ! double precision integer
+
+!Complex kinds
+
+integer, parameter :: kc4 = kr4                            ! single precision complex
+integer, parameter :: kc8 = kr8                            ! double precision complex
 
 private :: value_dr,value_sr,value_di,value_si
 private :: write_dr,write_sr,write_di,write_si

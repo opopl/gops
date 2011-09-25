@@ -4,6 +4,7 @@
       SAVE
         
       LOGICAL ::  MYBLNT, RMST, USEKW
+      LOGICAL ::    deb_bln=.false.
       !LOGICAL ::  GUIDECHANGET,  CSMDOGUIDET, GUIDET
       !COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
 
@@ -17,6 +18,7 @@
       parameter(EA_FILE="ea")
 
       INTEGER NR
+      INTEGER NRG
       ! }}}
 
       INTEGER,PARAMETER :: DATA_FH=5

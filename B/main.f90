@@ -42,7 +42,7 @@
       OPEN(EAFH,FILE=EA_FILE, STATUS="unknown", form="formatted")
 
       WRITE(LFH, '(A,I10,A,I10,A)') "Starting serial execution"
-      call ed(lfh) 
+      CALL ED(LFH) 
       write (lfh, 1000 )  today(2), today(1), today(3), now
 1000 format ( 'Date ', i2.2, '/', i2.2, '/', i4.4, '; time ',&
      &         i2.2, ':', i2.2, ':', i2.2 )
@@ -164,9 +164,7 @@
          CALL GSEED
       ELSE
          IF ((.NOT.FIELDT).AND.CENT) THEN
-            DO J1=1,NPAR
-               IF (.NOT.SEEDT) CALL CENTRE2(COORDS(1:3*NATOMS,J1))
-            ENDDO
+               IF (.NOT.SEEDT) CALL CENTRE2(COORDS(1:3*NATOMS,1))
          ELSEIF ((.NOT.FIELDT).AND.FIXCOM) THEN
             DO J1=1,NPAR
                IF (.NOT.SEEDT) CALL CENTRECOM(COORDS(1:3*NATOMS,J1))

@@ -1,6 +1,7 @@
 
 file B
 source init.gdb
+#break p46merdiff.f90:298
 #break mc.f:239
 #break quench.f:286
 #break mylbfgs.f:130
