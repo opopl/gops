@@ -30,6 +30,7 @@ esac
 
 # send to output: subroutine display_version(file)
 # {{{
+
 cat << EOF      
 module dv
 
@@ -50,7 +51,7 @@ $w0 "Compilation time: ` date `"
 $w0 "Compiled by $USER@$HOSTNAME on ` uname -o` ` uname -m`"
 $w0
 $w0 "Compiler executable:  $fc_exec"
-! write(file,20) "Compiler flags:  ", "$fflags"
+!write(file,20) "Compiler flags:  ", "$fflags"
 $w0 "Command-line options passed to makefile: $make_opts "
 $w0
 $w0 "==========================================="

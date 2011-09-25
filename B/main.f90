@@ -14,7 +14,6 @@
       !EXTERNAL READ_CMD_ARGS
 
       INTEGER J1,J2, JP, MPIERR, NDUMMY3,NPTOTAL,VERSIONTEMP
-      DOUBLE PRECISION, ALLOCATABLE :: SCREENC(:)
       DOUBLE PRECISION POTEL
       DOUBLE PRECISION, ALLOCATABLE :: TMPCOORDS(:)
       INTEGER, ALLOCATABLE :: NDUMMY(:), NDUMMY2(:,:)
@@ -56,10 +55,9 @@
       ! }}}
 !op226> Allocate memory; open files; initialize different things  {{{ 
       CALL COUNTATOMS
-      ALLOCATE(SCREENC(3*NATOMS),VT(NATOMS))
-
       CALL KEYWORD(1)
       CALL RCA
+      CALL AM("main")
       !CALL KW
       CALL SETVARS
 
@@ -82,11 +80,6 @@
          !CLOSE(1)
       !ENDIF
 !!op226>}}} 
-
-      ALLOCATE(FF(NSAVE),QMIN(NSAVE))
-      ALLOCATE(QMINP(NSAVE,3*NATOMS))
-
-!        csw34> ALLOCATE the interaction energy tracking arrays if A9INTE in data
 
       QMINP(1:NSAVE,1:3*NATOMS)=0.0D0 ! to prevent reading from uninitialised memory
       COORDSO(1:3*NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
@@ -182,9 +175,9 @@
 !op226> End initializations and allocations }}} 
 
 !op226> Main program run
-      !IF ((NRUNS.GT.0).OR.PTMC.OR.BSPT) CALL MCRUNS(SCREENC)
+      !IF ((NRUNS.GT.0).OR.PTMC.OR.BSPT) CALL MCRUNS(MSCREENC)
 
-      CALL MC(MCSTEPS(1),TFAC(1),SCREENC)
+      CALL MC(MCSTEPS(1),TFAC(1),MSCREENC)
 
       CALL FINALQ
       CALL FINALIO

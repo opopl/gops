@@ -5,6 +5,7 @@
         
       LOGICAL ::  MYBLNT, RMST, USEKW
       LOGICAL ::    deb_bln=.false.
+      DOUBLE PRECISION ::   dE_fz
       !LOGICAL ::  GUIDECHANGET,  CSMDOGUIDET, GUIDET
       !COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
 
@@ -23,6 +24,7 @@
 
       INTEGER,PARAMETER :: DATA_FH=5
       INTEGER,parameter :: EAFH=30
+      DOUBLE PRECISION, dimension(:), ALLOCATABLE :: MSCREENC
 
       ! from module PERMU
       DOUBLE PRECISION, ALLOCATABLE :: FIN(:)

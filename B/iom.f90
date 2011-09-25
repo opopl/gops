@@ -42,22 +42,7 @@
          WRITE(LFH,'(I4,A)') NATOMS,' atoms, general BLN model'
       ENDIF
       CALL ED(LFH) 
-     
-      IF (DEBUG.OR.CHECKMARKOVT) WRITE(LFH,'(A,I6,A)') 'io1> checking the energy of the saved coordinates in the chain'
-      IF (FIXCOM .AND. (.NOT. CHRMMT)) THEN
-          INQUIRE(FILE='masses',EXIST=EXISTS)
-          IF (EXISTS) THEN
-              OPEN(UNIT=1978,FILE="masses")
-              DO J2=1,NATOMS
-                 READ(1978,'(F12.5)') MASSES(J2)
-              ENDDO
-              CLOSE(1978)
-          ELSE
-             WRITE(LFH,'(A)') 'WARNING, FIXCOM is specified, but "masses" file is not present: setting all masses to unity.'
-             MASSES(1:NATOMS) = 1.0D0
-          ENDIF
-      ENDIF
-
+      
       IF (RADIUS.EQ.0.0D0) THEN
          RADIUS=2.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0)
          IF (P46) THEN
@@ -98,6 +83,13 @@
         WRITE(LFH,'(A,F15.10)') 'Energy difference criterion for minima=',ECONV
         WRITE(LFH,'(A,I5,A,I5)') 'Maximum number of iterations: sloppy quenches ',MAXIT,' final quenches ',MAXIT2
       CALL ED(LFH)
+        IF (PULLT) THEN
+            WRITE(LFH,'(A,/)') 'Pulling:'
+            WRITE(LFH,'(A,F15.10)') 'Force: ',PFORCE
+            WRITE(LFH,'(A,F15.10)') 'Atom 1: ',PATOM1
+            WRITE(LFH,'(A,F15.10)') 'Atom 2: ',PATOM2
+            CALL ED(LFH)
+        ENDIF
 
       WRITE(LFH,120) MCSTEPS(1), TFAC(1)
 120   FORMAT(I9,' steps with temperature scaled by ',E15.8)

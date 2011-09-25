@@ -28,6 +28,7 @@ export force=0.0
 export temp=0.03
 export exe=GMIN
 export exe=Gb
+export exe=B
 export gs_energy=-0.2936531215
 
 allmodes=( 1 2 3 4 5 6 ) 
@@ -177,6 +178,7 @@ while [ ! -z "$1" ]; do
   		-N) export nsteps=$2 ;;
   		-ca) export ca=$2 ;;
   		-nrg) export nrg=$2 ;  ;;
+  		-exe) export exe=$2 ;  ;;
 		-m)  export sb_mode=$2 ;;
 		-idin)  export printid=1; export idin=$2 ;;
 	  	esac

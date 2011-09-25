@@ -77,9 +77,11 @@ ifeq ($(FC),pgf90)
 MODFLAG:= -module $(MODPATH)
 DFFLAGS:= $(F0)
 
+#DFFLAGS += -Mextend -C -g -gopt -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mcoff -Mdwarf1 -Mdwarf2 -Mdwarf3 -Melf -Mnodwarf -Mpgicoff -traceback
 #FFLAGS := -Mextend -O0 -Mnoframe -g -traceback
-FFLAGS := -Mextend -O0 -Mnoframe 
-DFFLAGS += -Mextend -C -g -gopt -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mcoff -Mdwarf1 -Mdwarf2 -Mdwarf3 -Melf -Mnodwarf -Mpgicoff -traceback
+#FFLAGS := -Mextend -O0 -Mnoframe 
+#FFLAGS := -Mextend -O3 -Mnoframe 
+FFLAGS := -fast -Mipa=fast,inline -Msmartalloc
 
 #not working yet {{{
 ifeq ($(DL),debug)

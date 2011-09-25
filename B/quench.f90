@@ -62,17 +62,10 @@
 !  the RMS force is small enough.
 
       SSAVE=STEP(NP)
-
-      ! {{{
-
-      !NFIX=0
-
 11    continue
 
-      ! }}}
-!
 !  QTEST is set for the final quenches with tighter convergence criteria.
-!
+
       IF (QTEST) THEN
          GMAX=CQMAX
       ELSE

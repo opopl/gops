@@ -1,7 +1,8 @@
 
 
-        SUBROUTINE G46MERDIFF(FH,DEB,QO, N, GRAD, ENERGY, GTEST)
-! {{{! declarations {{{
+        SUBROUTINE EG46(FH,DEB,QO, N, GRAD, E, GTEST)
+! {{{
+! declarations {{{
         USE V, ONLY : HESS
         IMPLICIT NONE
         ! sub
@@ -10,7 +11,7 @@
         INTEGER,INTENT(IN) :: FH
         DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
         DOUBLE PRECISION,DIMENSION(3*N),INTENT(OUT) :: GRAD
-        DOUBLE PRECISION,INTENT(OUT) :: ENERGY
+        DOUBLE PRECISION,INTENT(OUT),DIMENSION(:) :: E
         LOGICAL,INTENT(IN) :: GTEST
         ! loc
         logical stest
@@ -24,13 +25,13 @@
         DOUBLE PRECISION X(N), Y(N), Z(N), XR(N,N), YR(N,N), ZR(N,N), &
      &                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
 ! }}}
-        ! {{{
+        ! body {{{
         STEST=.FALSE.
         PTYPE="GO"
         CALL GPARAM_ARRAY(A_PARAM,B_PARAM,C_PARAM,D_PARAM,N,NTYPE)
         CALL CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE, &
      &                            RADII,NTYPE,PTYPE)
-        CALL CALC_ENERGY(FH,DEB,QO,ENERGY,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE, &
+        CALL CALC_ENERGY(FH,DEB,QO,E,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE, &
      &                            RADII,NTYPE,PTYPE)
         IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
         CALL CALC_GRADIENT(FH,DEB,QO,GRAD,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE, &
@@ -40,7 +41,8 @@
      &                            RADII,NTYPE)
         return
         ! }}}
-        END SUBROUTINE G46MERDIFF
+        END SUBROUTINE EG46
+! }}}
 
         SUBROUTINE GPARAM_ARRAY(A_PARAM,B_PARAM,C_PARAM,D_PARAM,N,NTYPE)
 ! {{{

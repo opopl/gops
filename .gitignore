@@ -4,6 +4,7 @@ nodes.info
 0v
 GMIN_out
 ef.*
+*.oo
 *.mek*
 *.mod
 *.o
@@ -116,5 +117,22 @@ pbs/s/zf/out.diff
 scripts/all/false.in
 scripts/all/rca.Gbb.i.sh
 scripts/all/true.in
-
+B/c.iom.f90
+B/ea
+B/old/
+O/dv.f90
+O/porfuncs.f90
+O/rca.f90
+P/deps.mk
+P/dv.f90
+P/porfuncs.f90
+P/rca.f90
+pbs/s/ea
+pbs/s/zf/ea
+pbs/s/zf/fort.677218679
+pbs/s/zf/g46.ea
+pbs/s/zf/mbln.diff
+pbs/s/zf/mbln.ea
+pbs/s/zf/out.bln
+pbs/s/zf/out.mbln
 

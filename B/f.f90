@@ -8,29 +8,29 @@
       ! interfaces  {{{
       INTERFACE
 
-      ! p46merdiff {{{
-        SUBROUTINE P46MERDIFF(FH,DEB,QO, N, GRAD, ENERGY, GTEST)
+      ! ep46 {{{
+        SUBROUTINE EP46(FH,DEB,QO, N, GRAD, E, GTEST)
             IMPLICIT NONE
             INTEGER,INTENT(IN) :: N
             LOGICAL,INTENT(IN) :: DEB
             INTEGER,INTENT(IN) :: FH
             DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
             DOUBLE PRECISION,DIMENSION(3*N),INTENT(OUT) :: GRAD
-            DOUBLE PRECISION,INTENT(OUT) :: ENERGY
+            DOUBLE PRECISION,INTENT(OUT),DIMENSION(:) :: E
             LOGICAL,INTENT(IN) :: GTEST
-        ENDSUBROUTINE P46MERDIFF
+        ENDSUBROUTINE EP46
         ! }}}
-        ! g46merdiff {{{
-        SUBROUTINE G46MERDIFF(FH,DEB,QO, N, GRAD, ENERGY, GTEST)
+        ! eg46 {{{
+        SUBROUTINE EG46(FH,DEB,QO, N, GRAD, E, GTEST)
 	        IMPLICIT NONE
 	        INTEGER,INTENT(IN) :: N
 	        LOGICAL,INTENT(IN) :: DEB
 	        INTEGER,INTENT(IN) :: FH
 	        DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
 	        DOUBLE PRECISION,DIMENSION(3*N),INTENT(OUT) :: GRAD
-	        DOUBLE PRECISION,INTENT(OUT) :: ENERGY
+            DOUBLE PRECISION,INTENT(OUT),DIMENSION(:) :: E
 	        LOGICAL,INTENT(IN) :: GTEST
-        ENDSUBROUTINE G46MERDIFF
+        ENDSUBROUTINE EG46
         ! }}}
         ! calc_int_coords {{{
 
@@ -56,12 +56,12 @@
 
         !  }}}
         ! calc_energy {{{
-        SUBROUTINE CALC_ENERGY(FH,DEB,QO,ENERGY,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
+        SUBROUTINE CALC_ENERGY(FH,DEB,QO,E,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
      &                         BOND_ANGLE,TOR_ANGLE,RADII,NTYPE,PTYPE)
             IMPLICIT NONE
             LOGICAL DEB
             INTEGER,INTENT(IN) :: FH
-            DOUBLE PRECISION,INTENT(OUT) :: ENERGY
+            DOUBLE PRECISION,INTENT(OUT),DIMENSION(:) :: E
             DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
             INTEGER,INTENT(IN) :: N
             DOUBLE PRECISION,DIMENSION(N,N),INTENT(IN) :: A_PARAM,B_PARAM
@@ -182,11 +182,11 @@
             INTEGER JP,NATOMS,NPAR,NSEED
         END SUBROUTINE MYRESET
 
-        SUBROUTINE GSAVEIT(EREAL,P,NP)
-            INTEGER,intent(in) :: NP
-            DOUBLE PRECISION,intent(in) :: EREAL
-            DOUBLE PRECISION,intent(in), DIMENSION(:) ::   P
-        END SUBROUTINE GSAVEIT
+        !SUBROUTINE GSAVEIT(EREAL,P,NP)
+            !INTEGER,intent(in) :: NP
+            !DOUBLE PRECISION,intent(in) :: EREAL
+            !DOUBLE PRECISION,intent(in), DIMENSION(:) ::   P
+        !END SUBROUTINE GSAVEIT
 
         SUBROUTINE MYLBFGS(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET,NP)
 
@@ -344,7 +344,82 @@
          
       END SUBROUTINE WRITE_MARKOV_COORDS
       ! }}}
+      ! gsaveit {{{
+      SUBROUTINE GSAVEIT(EREAL,P,NP)
 
+      USE COMMONS
+      USE V
+
+      IMPLICIT NONE
+      ! sub 
+      INTEGER NP
+      DOUBLE PRECISION :: EREAL
+      DOUBLE PRECISION, DIMENSION(:) ::   P
+      ! loc
+
+      INTEGER J1, J2, J3,  NQTOT, NPCALL, CSMIT
+      DOUBLE PRECISION AVVAL, CSMRMS
+
+      COMMON /TOT/ NQTOT
+      ! number of function calls
+      COMMON /PCALL/ NPCALL
+!
+!  Save the lowest NSAVE distinguishable configurations.
+!
+!     WRITE(*,'(A,12E15.7)') 'EREAL,ECONV,QMIN',EREAL,ECONV,(QMIN(J1),J1=1,NSAVE)
+      DO J1=1,NSAVE
+         IF (DABS(EREAL-QMIN(J1)).LT.ECONV) THEN
+!
+!  These are probably the same - but just to make sure we save the 
+!  lowest.
+!
+            IF (EREAL.LT.QMIN(J1)) THEN
+               QMIN(J1)=EREAL
+               DO J2=1,3*NATOMS
+                  QMINP(J1,J2)=P(J2)
+               ENDDO
+            ENDIF
+            GOTO 10
+         ENDIF
+         IF (EREAL.LT.QMIN(J1)) THEN
+
+            J2=NSAVE
+20          CONTINUE
+      
+            IF (NSAVE.GT.1) THEN
+               QMIN(J2)=QMIN(J2-1)
+               FF(J2)=FF(J2-1)
+               DO J3=1,3*NATOMS
+                  QMINP(J2,J3)=QMINP(J2-1,J3)
+               ENDDO
+
+               J2=J2-1
+               IF (J2.GE.J1+1) GOTO 20
+            ENDIF
+
+            QMIN(J1)=EREAL
+            FF(J1)=NQ(NP)
+            DO J2=1,3*NATOMS
+               QMINP(J1,J2)=P(J2)
+            ENDDO
+
+            GOTO 10
+         ENDIF
+      ENDDO
+
+10    CONTINUE
+
+      DO J1=1,NTARGETS
+         IF (EREAL-TARGETS(J1).LT.ECONV) THEN
+            WRITE(LFH,'(2(A,I15),A)') 'saveit> Target hit after ',NQTOT,' quenches ',NPCALL,' function calls.'
+            WRITE(LFH,'(2(A,F20.10))') 'saveit> Energy=',EREAL,' target=',TARGETS(J1)
+            HIT=.TRUE.
+         ENDIF
+      ENDDO
+
+      RETURN
+      END
+      ! }}}
       ! trans gseed reseed pairdistance  {{{
 
       DOUBLE PRECISION FUNCTION TRANS(X,XMIN,GAMMA)
@@ -816,7 +891,7 @@ ENDSUBROUTINE OPENF
       ENDSUBROUTINE CENTRECOM
       ! }}}
       ! }}}
-
+      ! setvars r_coords countatoms printvars initvars {{{
       SUBROUTINE SETVARS
 !{{{
       USE COMMONS, ONLY : P46,G46
@@ -828,8 +903,49 @@ ENDSUBROUTINE OPENF
       ELSEIF(G46)THEN
         BLNTYPE="GO"
       ENDIF
+      ! hydrophobic - B 1
+      ! neutral N    3
+      ! hydrophilic L 2
+      BEADLETTER(1:9)="B"
+      BEADLETTER(10:12)="N"
+      BEADLETTER(13:19:2)="L"
+      BEADLETTER(14:20:2)="B"
+      BEADLETTER(21:23)="N"
+      BEADLETTER(24:32)="B"
+      BEADLETTER(33:35)="N"
+      BEADLETTER(36:46:2)="L"
+      BEADLETTER(37:45:2)="B"
+
 !}}}
       END SUBROUTINE SETVARS
+
+! doxygen RCOORDS {{{
+!> @name RCOORDS
+!> @brief Generate a random set of coordinates, based on:
+!> @param[in] NATOMS number of particles
+!> @param[in] RADIUS container radius
+!> @param[out] COORDS  randomly generated coordinates
+! }}}
+SUBROUTINE R_COORDS(NATOMS,RADIUS,COORDS)
+! declarations {{{
+! subroutine parameters 
+INTEGER, INTENT(IN) :: NATOMS
+DOUBLE PRECISION,INTENT(IN) :: RADIUS 
+DOUBLE PRECISION, DIMENSION(:,:), INTENT(OUT) :: COORDS
+
+! local parameters 
+DOUBLE PRECISION :: SR3
+DOUBLE PRECISION, ALLOCATABLE :: RND(:)
+! }}}
+! {{{
+SR3=DSQRT(3.0D0)
+ALLOCATE(RND(3*NATOMS))
+CALL GETRND(RND,3*NATOMS,-1.0D0,1.0D0)
+RND=RADIUS*RND/SR3
+COORDS=RESHAPE(RND,(/ NATOMS, 3 /))
+DEALLOCATE(RND)
+! }}}
+END SUBROUTINE R_COORDS
 
       SUBROUTINE COUNTATOMS
 !op226> Declarations {{{ 
@@ -951,5 +1067,146 @@ ENDSUBROUTINE OPENF
       CLOSE(7)
       ! }}}
       END SUBROUTINE COUNTATOMS
+
+!! initialize variables
+!SUBROUTINE INITVARS
+!! subroutine body {{{
+!! logicals {{{
+!BFGST=.FALSE.
+!LBFGST=.TRUE.
+!PULLT=.TRUE.
+!P46=.FALSE.
+!G46=.TRUE.
+!BLNT=.FALSE.
+!TARGET=.FALSE.
+!TRACKDATAT=.FALSE.
+!DEBUG=.FALSE.
+!NORESET=.FALSE.
+!LBFGST=.TRUE.
+!RMST=.FALSE.
+!! whether we are doing a final quench
+!FQFLAG=.FALSE.
+!! }}}
+!! files {{{
+!LFH=FH+1
+!ENERGY_FH=FH+2
+!MARKOV_FH=FH+3
+!BEST_FH=FH+4
+!PAIRDIST_FH=FH+5
+!COORDS_FH=FH+6
+!DATA_FH=FH+7
+!RMSD_FH=FH+8
+!! }}}
+!! other {{{
+!NSAVE=10            ! number of saved lowest-energy geometries
+
+!NATOMS=46
+
+!PATOM1=1
+!PATOM2=NATOMS
+
+!M_LBFGS=4           ! Number of LBFGS updates
+!MAXBFGS=0.4D0       ! Maximum BFGS step size
+!DGUESS=0.1D0        ! DGUESS: Guess for initial diagonal elements in LBFGS
+
+!FQMAX=1.0D-5        ! FQMAX: same meaning as for SQMAX, but for final quenches only.
+!SQMAX=1.0D-3        ! SQMAX: convergence criterion for the RMS force in the basin-hopping quenches.
+                    !! note: used in QUENCH() 
+
+!TFAC=1.0D0
+!EDIFF=0.02D0
+!ACCRAT=0.5D0
+!TEMP=0.035D0        ! Temperature
+!RADIUS=0.0D0
+!! maximum number of iterations allowed in conjugate gradient searches
+!MAXIT=500
+!! Maximum allowed energy rise during a minimisation
+!MAXERISE=1.0D-10
+!! Maximum allowed energy fall during a minimisation
+!MAXEFALL=-HUGE(ONE)
+!! Used in ACCREJ
+!FAC0=1.05D0
+!! "Fixing" option (regarding STEP, TEMP and accept ratio for quenches) 
+!FIXOPT='T'
+
+!STEP=0.3D0
+!OSTEP=0.3D0
+!ASTEP=0.3D0
+
+!MCSTEPS=10000
+          
+!NACCEPT=50
+!NRELAX=0
+!! }}}
+!CALL SETVARS
+!! }}}
+!END SUBROUTINE INITVARS
+
+!! print variables 
+!SUBROUTINE PRINTVARS
+!! {{{
+!! vars                                                                       {{{
+!character(100) fmt(10)
+!character(40) s
+!integer i
+!! }}}
+!include '../include/fmt.i.f90'
+
+!CALL ECHO_S
+!write(*,10) "PARAMETER VALUES" !                                             {{{
+!write(*,1)  "PARAMETER DESCRIPTION",         "NAME",                  "VALUE"
+!! pd:general                                                                 {{{
+!write(*,11) s_stars
+!write(*,10) "GENERAL" 
+!write(*,11) s_stars
+
+!call getmodel
+!write(s,*) "Model" 
+!!s=adjustl(s)
+!!write(*,1)  "Model"                                         ,"Model",   trim(model)
+!write(*,*)  trim(model)
+!write(*,11) s_stars
+!write(*,3)  "Number of particles",                          "NATOMS",     NATOMS
+!write(*,2)  "Container radius",                          "RADIUS",     RADIUS
+!write(*,3)  "Number of saved lowest energy geometries",     "NSAVE",      NSAVE
+!write(*,3)  "Number of basin-hopping steps",                "MCSTEPS",    MCSTEPS
+!write(*,2)  "Temperature",                                  "TEMP",       TEMP
+!write(*,2)  "Acceptance ratio",                             "ACCRAT",     ACCRAT
+!write(*,2)  "Energy difference criterion for minima",       "EDIFF",      EDIFF
+!write(*,2)  "Final quench tolerance for RMS gradient ",     "FQMAX",      FQMAX
+!write(*,2)  "Quench convergence criterion for RMS gradient ", "SQMAX",      SQMAX
+!write(*,3)  "Maximum number of iterations",   "MAXIT", MAXIT
+!write(*,11) "(sloppy and final quenches)"
+!write(*,2)  "",                                             "TFAC",       TFAC
+!Write(*,3)  "",                                             "NACCEPT",    NACCEPT
+!write(*,3)  "",                                             "NRELAX",     NRELAX
+!write(*,11) s_stars !                                                        }}}
+!! pd:lbfgs                                                                     {{{
+!write(*,10) "LBFGS parameters"
+!write(*,11) s_stars
+!write(*,3) "Number of LBFGS updates",   "M_LBFGS",  M_LBFGS
+!write(*,2) "Maximum BFGS step size",   "MAXBFGS",   MAXBFGS
+!write(*,2) "Guess for initial diagonal elements in BFGS", "DGUESS", DGUESS
+!write(*,11) s_stars
+!! }}} 
+!! }}}
+!CALL ECHO_S
+!! }}}
+!END SUBROUTINE PRINTVARS
+! }}}
+    ! am {{{
+    SUBROUTINE AM(S)
+        CHARACTER(LEN=*) S
+
+        selectcase(S)
+            case("main")
+               ALLOCATE(MSCREENC(3*NATOMS),VT(NATOMS))
+               ALLOCATE(BEADLETTER(NATOMS)) 
+               ALLOCATE(FF(NSAVE),QMIN(NSAVE))
+               ALLOCATE(QMINP(NSAVE,3*NATOMS))
+        endselect
+    ENDSUBROUTINE AM
+    ! }}}
+
 
       END MODULE F
