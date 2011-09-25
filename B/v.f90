@@ -4,7 +4,7 @@
       SAVE
         
       LOGICAL ::  MYBLNT, RMST, USEKW
-      LOGICAL ::    deb_bln=.false.
+      LOGICAL ::    DEB_BLN=.FALSE.
       DOUBLE PRECISION ::   dE_fz
       !LOGICAL ::  GUIDECHANGET,  CSMDOGUIDET, GUIDET
       !COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
