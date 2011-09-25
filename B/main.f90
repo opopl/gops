@@ -31,7 +31,7 @@
 !op226> End declarations }}}
 ! intro {{{
       CALL CPU_TIME(TSTART)
-      !CALL RCA
+      CALL RCA
 
       LFH=10
 
@@ -39,6 +39,7 @@
       call itime(now)     ! now(1)=hour, (2)=minute, (3)=second
 
       OPEN(LFH,FILE=O_FILE, STATUS="unknown", form="formatted")
+      OPEN(EAFH,FILE=EA_FILE, STATUS="unknown", form="formatted")
 
       WRITE(LFH, '(A,I10,A,I10,A)') "Starting serial execution"
       call ed(lfh) 
@@ -195,6 +196,7 @@
       CALL FLUSH(LFH)
 
       CLOSE(LFH)
+      CLOSE(EAFH)
 ! csw34> close pairdists.* files
       IF (PAIRDISTT) CLOSE(MYPUNIT)
 !op226> closing files for: TRACKDATAT RMST A9INTET {{{ 

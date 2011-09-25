@@ -208,13 +208,8 @@
         S(12)=S(6)**2
 
         NR=3*N
-        NCALLMAX=100
-        IF (NCALL .LE. 0) THEN
-            NCALL=1
-          ELSE
-            NCALL=1+NCALL
-        ENDIF
-        IF (NCALL .GE. NCALLMAX) STOP
+        include "ncallmax.i.f90"
+        include "fmt.i.f90"
         ! }}}
 
 !! am {{{
@@ -361,6 +356,7 @@
 
         ! Now the total energy
         E(1)=SUM(E(2:5))
+        include "deb.ebln_e.i.f90"
         ! }}}
 ! grad - Gradients {{{
 IF (.NOT. GRADT) THEN 
@@ -461,22 +457,8 @@ GRADX=PACK(G,.TRUE.)
         RMS(4)=SQRT(SUM(GBA**2)/NR)
         RMS(5)=SQRT(SUM(GTA**2)/NR)
 
-        IF(DEB) THEN
-          write(fh,'(a)') '==============================='
-          write(fh,'(a,a20,i20)') 'EBLN ','Call ',NCALL
-          write(fh,'(a)') '==============================='
-          write(fh,'(A20,F20.5)') 'Total BLN energy =', E(1)
-          write(fh,'(A20,F20.5)') 'Non-bonded =', E(2)
-          write(fh,'(A20,F20.5)') 'bonded =', E(3)
-          write(fh,'(A20,F20.5)') 'bond angles =', E(4)
-          write(fh,'(A20,F20.5)') 'dihedral angles =', E(5)
-          write(fh,'(A20,F20.5)') 'Total RMS =', RMS(1)
-          write(fh,'(A20,F20.5)') 'Non-bonded =', RMS(2)
-          write(fh,'(A20,F20.5)') 'bonded =', RMS(3)
-          write(fh,'(A20,F20.5)') 'bond angles =', RMS(4)
-          write(fh,'(A20,F20.5)') 'dihedral angles =', RMS(5)
-        endif
-        ! }}}
+        include "deb.ebln_g.i.f90"
+                ! }}}
 
 !!deam {{{
 !DEALLOCATE(R,GRAD)

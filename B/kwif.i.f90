@@ -7,9 +7,11 @@
       ELSE IF (WORD.EQ.'P46') THEN
          P46=.TRUE.
          BLNT=.TRUE.
+         BLNTYPE="WT"
       ELSE IF (WORD.EQ.'G46') THEN
          G46=.TRUE.
          BLNT=.TRUE.
+         BLNTYPE="GO"
       ELSE IF (WORD.EQ.'MYBLN') THEN
          MYBLNT=.TRUE.
          BLNT=.TRUE.

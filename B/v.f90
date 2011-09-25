@@ -8,17 +8,19 @@
       !COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
 
       ! files {{{
-      CHARACTER(LEN=130) C_FILE,D_FILE,O_FILE,LE_FILE,E_FILE,SEED_FILE
+      CHARACTER(LEN=130) C_FILE,D_FILE,O_FILE,LE_FILE,E_FILE,SEED_FILE,EA_FILE
       CHARACTER(LEN=130) BLNTYPE
 
       parameter(C_FILE="coords",D_FILE="data")
       parameter(LE_FILE="lowest",E_FILE="e.tex")
       parameter(O_FILE="out",SEED_FILE="seed")
+      parameter(EA_FILE="ea")
 
       INTEGER NR
       ! }}}
 
       INTEGER,PARAMETER :: DATA_FH=5
+      INTEGER,parameter :: EAFH=30
 
       ! from module PERMU
       DOUBLE PRECISION, ALLOCATABLE :: FIN(:)

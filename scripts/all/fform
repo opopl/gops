@@ -1,5 +1,7 @@
 #!/usr/bin/perl -w
 
+# intro {{{
+#use... deal with opt {{{
 use strict;
 use Pod::Usage;
 use Getopt::Long;
@@ -11,88 +13,94 @@ GetOptions("help", "man", "b")
   or pod2usage("Try '$0 --help' for more information");
 pod2usage(-verbose => 1) if $opt_help;
 pod2usage(-verbose => 2) if $opt_man;
-
+#}}}
+#vars {{{
 my $comment_char = '!';
 my $cont_char = '&';
 my $old = "";
 my $comment = "";
 my $in_string = 1;
-#
-# main loop
-#
+
+my $f77="$ARGV[0].f";
+my $f90="$ARGV[0].f90";
+my ($this_script,$shd)=&fileparse($0);
+open(N,">$f90");
+open(O,"<$f77");
+#}}}
 
 if ( @ARGV == 0 ) {
         show_help();
         exit 1;
 }
-
-my $f77="$ARGV[0].f";
-my $f90="$ARGV[0].f90";
-my ($this_script,$shd)=fileparse($0);
-open(N,">$f90");
-open(O,"<$f77");
+#}}}
 
 while (<O>) {
 	#{{{
     my $new = $_;
-#
-# Delete trailing blanks and tabs
-#
+# Delete trailing blanks and tabs {{{
+
     $new =~ s/[\s\t]*$//;
     #$new =~ s/^\s+$//;
-#
-# Save comments, converting to '!' comments.  Note that "comments"
+#}}}
+# Save comments, converting to '!' comments.  {{{
+#Note that "comments"
 # include C preprocessor lines and blank lines.
-#
+
     if ($new =~ /^[*c#!]|^$/i) {
-	if ($new =~ /^[*c]/i) {
-	    substr($new,0,1) = $comment_char;
-	}
-	$comment .= $new;
-	next;
+		if ($new =~ /^[*c]/i) {
+	    	substr($new,0,1) = $comment_char;
+		}
+		$comment .= $new;
+		next;
     }
-#
-# Replace tabs with spaces
-#
+#}}}
+# Replace tabs with spaces {{{
+
     $new =~ s/\t/        /g;
-#
-# Look for continues, make sure continuation is '&' if backward
+# }}}
+# Look for continues, {{{
+       #make sure continuation is '&' if backward
 # compatible or in a string
 #
     if (substr($new,5,1) ne " " and substr($new,5,1)) {
-	if ($opt_b || $in_string) {
-	    substr($new,5,1) = $cont_char;
-	} else {
-	    substr($new,5,1) = ' ';
-	}
+			substr($new,5,1) = $cont_char;
+		#if ($opt_b || $in_string) {
+			#substr($new,5,1) = $cont_char;
+		#} else {
+			#substr($new,5,1) = ' ';
+		#}
 
 #
 # Check for ! comments in previous line, put & in column 73 and before !
 #
-	my($pos, $pad, $len);
-	if ( ($pos = index($old,"!")) >= $[ ) {
-	    if ($opt_b && $pos < 72) {
-		$pad = 72 - $pos;
-	    } else {
-		$pad = 1;
-	    }
-	    substr($old,$pos,0) = ' ' x $pad . $cont_char;
-	} else {
-	    $len = length($old);     # includes a '\n'
-	    if ($opt_b && $len < 73) {
-		$pad = 73 - length($old);
-	    } else {
-		$pad = 1;
-	    }
-	    substr($old,$len-1,0) = ' ' x $pad . $cont_char;
-	}
+		my($pos, $posx, $pad, $len);
+		if ( ($pos = index($old,"!")) >= $[ ) {
+	    	if ($opt_b && $pos < 72) {
+				$pad = 72 - $pos;
+	    	} else {
+				$pad = 1;
+	    	}
+			$posx=$pos;
+	    	substr($old,$pos,0) = ' ' x $pad . $cont_char;
+		} else {
+	    	$len = length($old);     # includes a '\n'
+	    	if ($opt_b && $len < 73) {
+				$pad = 73 - length($old);
+	    	} else {
+				$pad = 1;
+	    	}
+			$posx=$len;
+		}
+	    	substr($old,$posx,0) = ' ' x $pad . $cont_char;
     }
+	#}}}
 #
 # Print $old and any "comments"
 #
     print N "$old\n";
-    print N "$comment\n";
+	if (  $comment !~ s/^[\s]*$// ) { print N "$comment\n"; } 
     $comment = "";
+	
     $old = $new;
 #}}}
 }

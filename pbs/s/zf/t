@@ -1,0 +1,13 @@
+#/bin/bash
+
+opts=( g46 mbln )
+
+b="ea"
+
+for f in ${opts[@]}; do 
+	B -$f; cp $b $f.$b
+done
+
+df=mbln.diff
+diff g46.$b mbln.$b > $df
+vim $df

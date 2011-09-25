@@ -1,5 +1,5 @@
 
-file G
+file B
 source init.gdb
 #break mc.f:239
 #break quench.f:286
