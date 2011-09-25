@@ -19,7 +19,8 @@
       ! }}}
       ! local {{{
       INTEGER BRUN
-      INTEGER NQTOT
+      INTEGER J1,J2,J3
+      INTEGER NQTOT,NPCALL
       DOUBLE PRECISION :: EA(10)
 
       LOGICAL GUIDECHANGET, GUIDET, CSMDOGUIDET
@@ -28,11 +29,7 @@
       ! list of energies, EA(1) is the total one 
       COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
       COMMON /EA/ EA
-      COMMON /CO/ COMPON
-      COMMON /FAIL/ FTEST
-      COMMON /EV/ EVAP, EVAPREJECT
       COMMON /PCALL/ NPCALL
-      COMMON /CSMAVVAL/ AVVAL, CSMRMS, CSMIT
       COMMON /TOT/ NQTOT
 
       ! }}}
@@ -100,27 +97,12 @@
       ENDIF
       ! }}}
       ! other {{{
-      !IF (COMPON) CALL COMPRESS(X,GRAD,EREAL,GRADT)
-
-      IF (GRADT.OR.CSMT) THEN
-          IF (FREEZE) THEN
-            DO J1=1,NATOMS
-               IF (FROZEN(J1)) THEN
-                  GRAD(3*(J1-1)+1)=0.0D0
-                  GRAD(3*(J1-1)+2)=0.0D0
-                  GRAD(3*(J1-1)+3)=0.0D0
-               ENDIF
-            ENDDO
-         ENDIF
-       ENDIF
-
+      
          IF (SEEDT.AND.FREEZECORE) THEN
             DO J3=3*(NATOMS-NSEED)+1,3*NATOMS
                GRAD(J3)=0.0D0
             ENDDO
          ENDIF
-         RMS=0.0D0
-         DUMMY2=0.0D0
 
          ! }}}
          RMS=MAX(DSQRT(SUM(GRAD**2)/3*NATOMS),1.0D-100)
