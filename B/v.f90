@@ -55,6 +55,7 @@
       ! from qmodule
       integer,allocatable :: FF(:),INTEFF(:) ! NSAVE
       DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(:) ! NSAVE
+      DOUBLE PRECISION, ALLOCATABLE :: EAMIN(:)! NSAVE
       DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(:,:)
 
       INTEGER :: MXATMS=0

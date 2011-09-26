@@ -979,6 +979,7 @@ EA_FILE="ea"
 IF (USESUF) THEN
 	LE_FILE=adjustr(SUF)//"le"
 	E_FILE=SUF//"e.tex"
+	EA_FILE=SUF//"ea"
 	O_FILE=adjustr(SUF)//"out"
 ENDIF
 
