@@ -21,7 +21,7 @@ SUBROUTINE CYCLE
 USE COMMONS
 USE PORFUNCS
 IMPLICIT NONE
-DOUBLE PRECISION SPOINTS(NR), FPOINTS(NR), RANDOM, DISTANCE, DPRAND, RMAT(3,3), DIST2
+DOUBLE PRECISION SPOINTS(3*NATOMS), FPOINTS(3*NATOMS), RANDOM, DISTANCE, DPRAND, RMAT(3,3), DIST2
 INTEGER J3, PID(NCPU), MINS(NCPU), MINF(NCPU), STATUS, NCYCLES, NMINOLD, NTSOLD, ISTAT, NREJ, J1
 LOGICAL KILLED(NCPU), NOJOB(NCPU), STOPCYCLE
 CHARACTER(LEN=10) CONNSTR
@@ -66,8 +66,8 @@ cycles: DO NCYCLES=1,NATTEMPT
             GOTO 20
          ENDIF
       ENDIF
-      READ(UMIN,REC=MINS(J3)) SPOINTS(1:NR)
-      READ(UMIN,REC=MINF(J3)) FPOINTS(1:NR)
+      READ(UMIN,REC=MINS(J3)) SPOINTS(1:3*NATOMS)
+      READ(UMIN,REC=MINF(J3)) FPOINTS(1:3*NATOMS)
       CALL MINPERMDIST(SPOINTS,FPOINTS,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY,RMAT,.FALSE.)
 !     CALL RANDOM_NUMBER(RANDOM)
       RANDOM=DPRAND()
@@ -114,22 +114,22 @@ cycles: DO NCYCLES=1,NATTEMPT
          WRITE(*,'(A,I6,A)') 'cycle> connection ',J3,' was unsuccessful'
 !
 !  Nevertheless, there could be a viable path.info file if DUMPALLPATHS is set in
-!  OPTIM and TRIPLES in pathsample. Give it a try?
+!  OPTIM. Give it a try?
 !
-         IF (TRIPLES) THEN
+!        IF (TRIPLES) THEN
             PRINT '(A)','cycle> attempting to analyse the path.info file nevertheless'
-         ELSE
-            CYCLE analyse_connect
-         ENDIF
+!        ELSE
+!           CYCLE analyse_connect
+!        ENDIF
       ENDIF
       WRITE(CONNSTR,'(I10)') PID(J3)
 !     CALL MYSYSTEM(STATUS,DEBUG,'cp OPTIM.connect.'//TRIM(ADJUSTL(CONNSTR))//' OPTIM.connect') ! not needed
       CALL MYSYSTEM(STATUS,DEBUG,'cp path.info.'//TRIM(ADJUSTL(CONNSTR))//' path.info')
-      IF (TRIPLES) THEN
+!     IF (TRIPLES) THEN
          CALL GETALLPATHS
-      ELSE
-         CALL GETNEWPATH(MINS(J3),MINF(J3))
-      ENDIF
+!     ELSE
+!        CALL GETNEWPATH(MINS(J3),MINF(J3))
+!     ENDIF
    ENDDO analyse_connect
 
    WRITE(*,'(A)')   '------------------------------------------------------------' // &
@@ -140,7 +140,7 @@ cycles: DO NCYCLES=1,NATTEMPT
   &                 '--------------------------------------------------'
    NMINOLD=NMIN; NTSOLD=NTS
 
-   IF (NPAIRDONE.GT.0) THEN
+   IF ((NPAIRDONE.GT.0).AND.(.NOT.DUMMYRUNT)) THEN
       OPEN(UNIT=1,FILE='pairs.data',STATUS='UNKNOWN')
       WRITE(1,'(2I8)') (PAIR1(J1),PAIR2(J1),J1=1,NPAIRDONE)
       CLOSE(1)

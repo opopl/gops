@@ -33,17 +33,17 @@ DOUBLE PRECISION LOCALEMIN1, LNPROD, PFTOTAL, DIST2
 INTEGER NEWNMINA, NEWNMINB, NCOUNT, NDUMMY, GROUPMAP(NMIN), LOCALP, LOCALM, NMINCONNECTED, LP
 LOGICAL ISA(NMIN), ISB(NMIN), CHANGED, GROUPA(NMIN), GROUPB(NMIN), TESTIT, NOMERGEAB
 DOUBLE PRECISION NEWEMIN(NMIN), NEWETS(NTS), NEWPFMIN(NMIN), NEWKPLUS(NTS), NEWKMINUS(NTS), BLIST(PAIRSTODO), BARRIER(NMIN)
-DOUBLE PRECISION POINTS1(NR), POINTS2(NR), DISTANCE, RMAT(3,3), GLOBALMIN, DLIST(PAIRSTODO)
+DOUBLE PRECISION POINTS1(3*NATOMS), POINTS2(3*NATOMS), DISTANCE, RMAT(3,3), GLOBALMIN, DLIST(PAIRSTODO)
 INTEGER NEWNMIN, NEWNTS, NEWPLUS(NTS), NEWMINUS(NTS), NMINGROUP(NMIN), NTSGROUP(NTS), CURRENTINDEX(NMIN)
 INTEGER GROUPCONN(2*NTS), GROUPTS(2*NTS), STARTGROUP(NMIN)
 INTEGER FREEMINLIST(NMIN), FREEMINPOINT(0:NMIN+1), FREETSLIST(NTS), FREETSPOINT(0:NTS), NAVAIL
 LOGICAL GETPAIRST, FIRSTPASS
 INTEGER TDMIN1(PAIRSTODO), TDMIN2(PAIRSTODO), GMIN1(PAIRSTODO), GMIN2(PAIRSTODO), TGMIN1(PAIRSTODO), TGMIN2(PAIRSTODO)
 DOUBLE PRECISION TBLIST(PAIRSTODO), TDLIST(PAIRSTODO), XRATIO, LOWESTPROD
-INTEGER NCOL(NMIN), NVAL(NCONNMAX,NMIN), NDISTA(NMIN), NDISTB(NMIN), NCYCLE, DMIN
+INTEGER NCOL(NMIN), NVAL(NCONNMAX,NMIN), NDISTA(NMIN), NDISTB(NMIN), NCYCLE, DMIN, TSMAP(NTS), NEWJ1
 INTEGER DMAX, NUNCONA, NUNCONB, NTRIED, NDEAD
 LOGICAL CHECKCONN
-DOUBLE PRECISION KSUM(NMIN)
+DOUBLE PRECISION KSUM(NMIN), HBARRIER(NTS)
 LOGICAL DEADTS(NTS), LREJECTTS
 DOUBLE PRECISION DMATMC(NCONNMAX,NMIN)
 DOUBLE PRECISION :: CUT_UNDERFLOW=-300.0D0
@@ -95,7 +95,7 @@ DO J1=1,NMIN
    IF (NDISTA(J1).EQ.1000000) NUNCONA=NUNCONA+1
 ENDDO 
 IF (CHANGED) GOTO 5
-PRINT '(3(A,I8))','Dijkstra> steps to A region converged in ',NCYCLE-1, &
+PRINT '(3(A,I8))','regroupfree2> steps to A region converged in ',NCYCLE-1, &
 &                    ' cycles; maximum=',DMAX,' disconnected=',NUNCONA
 !
 !  Calculate minimum number of steps of each minimum from the B set.
@@ -123,13 +123,13 @@ DO J1=1,NMIN
    IF (NDISTB(J1).EQ.1000000) NUNCONB=NUNCONB+1
 ENDDO
 IF (CHANGED) GOTO 51
-PRINT '(3(A,I8))','Dijkstra> steps to B region converged in ',NCYCLE-1, &
+PRINT '(3(A,I8))','regroupfree2> steps to B region converged in ',NCYCLE-1, &
 &                    ' cycles; maximum=',DMAX,' disconnected=',NUNCONB
 !
 !  This could happen if disconnected minima lie in the A or B region.
 !
 IF (NUNCONB.NE.NUNCONA) PRINT '(A)', &
-&                   'Dijkstra> WARNING - number of disconnected minima from A and B is different'
+&                   'regroupfree2> WARNING - number of disconnected minima from A and B is different'
 !
 !  Check that we actually have a connection between the A and B regions.
 !  If not, STOP.
@@ -151,7 +151,7 @@ ELSE
    ENDDO
 ENDIF
 IF (.NOT.CHECKCONN) THEN
-   PRINT '(A)','Dijkstra> There is no connection between the A and B regions'
+   PRINT '(A)','regroupfree2> There is no connection between the A and B regions'
 !  OPEN(UNIT=1,FILE='ts.attempts',STATUS='UNKNOWN')
 !  WRITE(1,'(I8)') TSATTEMPT(1:NTS)
 !  CLOSE(1)
@@ -307,20 +307,38 @@ CHANGED=.FALSE.
 DO J1=1,NEWNMIN
    CURRENTINDEX(J1)=J1 ! currentindex tracks where we move the groups to once they have merged
 ENDDO
+
+! Find the higher of the two barrier heights, in free energy, for each TS.
 DO J1=1,NEWNTS
-   LOCALP=CURRENTINDEX(NEWPLUS(J1))
-   LOCALM=CURRENTINDEX(NEWMINUS(J1))
+   HBARRIER(J1)=MAX( (NEWETS(J1)-NEWEMIN(NEWPLUS(J1))), (NEWETS(J1)-NEWEMIN(NEWMINUS(J1))) )
+   TSMAP(J1)=J1 ! also set this index-tracking array
+END DO
+
+! Order the TSs on the value of the higher barrier height, from small to large
+! (The higher barrier height is the controlling one for each TS, because the test applied below 
+! is that both barriers must lie below the threshold for grouping).
+CALL SORT5(NEWNTS,NEWNTS,HBARRIER(1:NEWNTS),TSMAP(1:NEWNTS))
+
+DO J1=1,NEWNTS
+!
+! The order in which we encounter TSs and test them as below can affect the outcome of grouping.
+! Now assessing TSs in order of low to high barrier height.
+!
+   NEWJ1=TSMAP(J1) ! NEWJ1 is the original index of the TS before the barrier-height reordering
+   LOCALP=CURRENTINDEX(NEWPLUS(NEWJ1))
+   LOCALM=CURRENTINDEX(NEWMINUS(NEWJ1))
    IF (LOCALP.EQ.LOCALM) CYCLE ! ignore intra-group rates
-   TESTIT=(NEWETS(J1)-NEWEMIN(NEWPLUS(J1)).LE.REGROUPFREETHRESH).AND.(NEWETS(J1)-NEWEMIN(NEWMINUS(J1)).LE.REGROUPFREETHRESH)
+   TESTIT=(NEWETS(NEWJ1)-NEWEMIN(NEWPLUS(NEWJ1)).LE.REGROUPFREETHRESH).AND. &
+         &(NEWETS(NEWJ1)-NEWEMIN(NEWMINUS(NEWJ1)).LE.REGROUPFREETHRESH)
    IF (NOMERGEAB) THEN ! don;t allow groups containing A and B minima to merge
       IF (GROUPA(LOCALP).AND.GROUPB(LOCALM)) TESTIT=.FALSE.
       IF (GROUPA(LOCALM).AND.GROUPB(LOCALP)) TESTIT=.FALSE.
    ENDIF
    IF (TESTIT) THEN
       CHANGED=.TRUE.
-      IF (DEBUG) PRINT '(4(A,I6),A,3G15.5)','regroupfree2> merging groups ',NEWPLUS(J1),' and ',NEWMINUS(J1),' now at ', &
-   &         LOCALP,' and ',LOCALM,' E ts,+,- ',NEWETS(J1), &
-   &         NEWEMIN(NEWPLUS(J1)),NEWEMIN(NEWMINUS(J1))
+      IF (DEBUG) PRINT '(4(A,I6),A,3G15.5)','regroupfree2> merging groups ',NEWPLUS(NEWJ1),' and ',NEWMINUS(NEWJ1),' now at ', &
+   &         LOCALP,' and ',LOCALM,' E ts,+,- ',NEWETS(NEWJ1), &
+   &         NEWEMIN(NEWPLUS(NEWJ1)),NEWEMIN(NEWMINUS(NEWJ1))
 !
 !  Move minima from group with higher index to group with lower index.
 !
@@ -334,11 +352,11 @@ DO J1=1,NEWNTS
          DO J2=1,NMIN
             IF (MINGROUP(J2).EQ.LOCALM) MINGROUP(J2)=LOCALP
          ENDDO
-         NDUMMY=CURRENTINDEX(NEWMINUS(J1))
+         NDUMMY=CURRENTINDEX(NEWMINUS(NEWJ1))
          DO J2=1,NEWNMIN
             IF (CURRENTINDEX(J2).EQ.NDUMMY) CURRENTINDEX(J2)=LOCALP
          ENDDO
-!        CURRENTINDEX(NEWMINUS(J1))=LOCALP ! Any CURRENTINDEX(J2) = CURRENTINDEX(NEWMINUS(J1))
+!        CURRENTINDEX(NEWMINUS(NEWJ1))=LOCALP ! Any CURRENTINDEX(J2) = CURRENTINDEX(NEWMINUS(NEWJ1))
 !                                          ! should also change to LOCALP ! DJW 11/1/08
       ELSE
          NMINGROUP(LOCALM)=NMINGROUP(LOCALM)+NMINGROUP(LOCALP)
@@ -350,11 +368,11 @@ DO J1=1,NEWNTS
          DO J2=1,NMIN
             IF (MINGROUP(J2).EQ.LOCALP) MINGROUP(J2)=LOCALM
          ENDDO
-         NDUMMY=CURRENTINDEX(NEWPLUS(J1))
+         NDUMMY=CURRENTINDEX(NEWPLUS(NEWJ1))
          DO J2=1,NEWNMIN
             IF (CURRENTINDEX(J2).EQ.NDUMMY) CURRENTINDEX(J2)=LOCALM
          ENDDO
-!        CURRENTINDEX(NEWPLUS(J1))=LOCALM ! Any CURRENTINDEX(J2) = CURRENTINDEX(NEWPLUS(J1))
+!        CURRENTINDEX(NEWPLUS(NEWJ1))=LOCALM ! Any CURRENTINDEX(J2) = CURRENTINDEX(NEWPLUS(NEWJ1))
 !                                         ! should also change to LOCALM ! DJW 11/1/08
       ENDIF
 !
@@ -817,7 +835,7 @@ IF (GETPAIRST) THEN
             NTRIED=0
             DO J4=FREEMINPOINT(J1),FREEMINPOINT(J1+1)-1
                MIN1=FREEMINLIST(J4)
-               READ(UMIN,REC=MIN1) POINTS1(1:NR)
+               READ(UMIN,REC=MIN1) POINTS1(1:3*NATOMS)
 !              IF (DEBUG) PRINT '(A,I8,A,I8)','regroupfree2> group J1 pe minimum is ',MIN1,' at position ',J4 ! DJW
                group2: DO J5=FREEMINPOINT(LP),FREEMINPOINT(LP+1)-1
                   MIN2=FREEMINLIST(J5)
@@ -826,7 +844,7 @@ IF (GETPAIRST) THEN
                      IF ((PAIR1(J6).EQ.MIN1).AND.(PAIR2(J6).EQ.MIN2)) CYCLE group2
                      IF ((PAIR1(J6).EQ.MIN2).AND.(PAIR2(J6).EQ.MIN1)) CYCLE group2
                   ENDDO 
-                  READ(UMIN,REC=MIN2) POINTS2(1:NR)
+                  READ(UMIN,REC=MIN2) POINTS2(1:3*NATOMS)
                   CALL MINPERMDIST(POINTS1,POINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY, &
   &                                RMAT,.FALSE.)
                   IF (INTERPCOSTFUNCTION) CALL MINPERMDIST(POINTS1,POINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD, &

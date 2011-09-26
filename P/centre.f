@@ -25,7 +25,7 @@ C
       SUBROUTINE CENTRE(T1)
       USE COMMONS
       IMPLICIT NONE
-      DOUBLE PRECISION CMX, CMY, CMZ, T1(NR)
+      DOUBLE PRECISION CMX, CMY, CMZ, T1(3*NATOMS)
       INTEGER I
 C
 C  Move centre of mass to the origin.

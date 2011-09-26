@@ -977,9 +977,9 @@ SEED_FILE="seed"
 EA_FILE="ea"
 
 IF (USESUF) THEN
-	LE_FILE=SUF//"le"
+	LE_FILE=adjustr(SUF)//"le"
 	E_FILE=SUF//"e.tex"
-	O_FILE=SUF//"out"
+	O_FILE=adjustr(SUF)//"out"
 ENDIF
 
 ! }}}
@@ -1236,6 +1236,7 @@ write(fh,*) '   -pv display default parameter values'
 write(fh,*) ''
 write(fh,*) '   -h  print this help message'
 write(fh,*) '   -s SUF Output files with suffix SUF, e.g., out => SUF.out'
+write(fh,*) '   -steps STEPS Number of Monte-Carlo steps'
 write(fh,*) ''
 CALL ED(FH)
 

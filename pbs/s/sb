@@ -6,13 +6,14 @@ s_purpose="submit PBS jobs"
 s_project="~/gops/pbs/s/"
 
 export sys=G46
+export sys=P46
 export nf=10
 export nm=1
 export od="out"
 export force=0.00
 export ca=50
-export m_lbfgs=50
-export nsteps=50000
+export m_lbfgs=10
+export nsteps=10000
 export fqmax="1.0D-4"
 export sqmax="1.0D-3"
 export data_ext="tex"
@@ -31,6 +32,9 @@ export exe=GMIN
 export exe=Gb
 export exe=B
 export gs_energy=-0.2936531215
+
+export le_file="lowest"
+
 
 allmodes=( 1 2 3 4 5 6 ) 
 queue=s1
@@ -188,6 +192,11 @@ while [ ! -z "$1" ]; do
 	shift
   #}}}
 done
+
+case $exe in 
+  	B) export le_file="le" ; export o_file="out" ;;
+  	GMIN) export le_file="lowest"; export o_file="GMIN_out" ;;
+esac
 
 # id {{{
 if [ $doid -eq 1 ]; then 

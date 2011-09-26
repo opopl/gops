@@ -25,7 +25,7 @@ C
       SUBROUTINE ORIENT(Q1,T1,NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2)
       USE COMMONS
       IMPLICIT NONE
-      DOUBLE PRECISION Q1(NR), DIST(NATOMS), DMAX, RVEC(3), T1(NR), CMX, CMY, CMZ,
+      DOUBLE PRECISION Q1(3*NATOMS), DIST(NATOMS), DMAX, RVEC(3), T1(3*NATOMS), CMX, CMY, CMZ,
      1                 COST, SINT, RDOTN, DMAX2, PROJ
       DOUBLE PRECISION, PARAMETER :: ORBDISTTOL=1.0D-2 ! used to be 0.001 - needs to be smaller for C60 to work
       INTEGER J1, I, JMAX1, JMAX2, NORBIT1, NCHOOSE1, NORBIT2, NCHOOSE2
@@ -71,7 +71,7 @@ C
 !     IF (DEBUG) PRINT*,'atom ',JMAX1,' will be moved onto the z axis, distance=',DMAX
       IF ((ABS(Q1(3*(JMAX1-1)+1)).LT.1.0D-8).AND.(ABS(Q1(3*(JMAX1-1)+2)).LT.1.0D-8)) THEN
          IF (Q1(3*(JMAX1-1)+3).GT.0.0D0) THEN
-            T1(1:NR)=Q1(1:NR)
+            T1(1:3*NATOMS)=Q1(1:3*NATOMS)
          ELSE  ! rotate about the x axis DO NOT INVERT!!
             DO J1=1,NATOMS
                T1(3*(J1-1)+1)=Q1(3*(J1-1)+1)
@@ -100,7 +100,7 @@ C        IF (DIST(J1).NE.0.0D0) THEN
 C        ENDIF
       ENDDO
 
-C     DO J1=1,NR
+C     DO J1=1,3*NATOMS
 C        Q1(J1)=T1(J1)
 C     ENDDO
 
@@ -144,7 +144,7 @@ C
       CALL ROTXZ(NATOMS,JMAX2,T1,DMAX2,DIST)
 
 C     IF (DEBUG) PRINT*,'after'
-C     IF (DEBUG) WRITE(*,'(3F20.10)') (T1(J1),J1=1,NR)
+C     IF (DEBUG) WRITE(*,'(3F20.10)') (T1(J1),J1=1,3*NATOMS)
 
       RETURN
       END
@@ -152,7 +152,7 @@ C     IF (DEBUG) WRITE(*,'(3F20.10)') (T1(J1),J1=1,NR)
       SUBROUTINE ROTXZ(NATOMS,JDO,T1,PROJ,DIST)
       IMPLICIT NONE
       INTEGER NATOMS, JDO, J1
-      DOUBLE PRECISION T1(NR), PROJ, DIST(NATOMS), RVEC(3), COST, SINT, RDOTN, TX, TY, TZ
+      DOUBLE PRECISION T1(3*NATOMS), PROJ, DIST(NATOMS), RVEC(3), COST, SINT, RDOTN, TX, TY, TZ
 
 C     PRINT '(I6)',NATOMS
 C     PRINT '(A,I6,G20.10)','before rotation'
@@ -210,7 +210,7 @@ C
       SUBROUTINE ORIENT2D(Q1,T1,NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2)
       USE COMMONS
       IMPLICIT NONE
-      DOUBLE PRECISION Q1(NR), DIST(NATOMS), DMAX, RVEC(3), T1(NR), CMX, CMY, CMZ,
+      DOUBLE PRECISION Q1(3*NATOMS), DIST(NATOMS), DMAX, RVEC(3), T1(3*NATOMS), CMX, CMY, CMZ,
      1                 COST, SINT, RDOTN, TX, TY, TZ
       DOUBLE PRECISION, PARAMETER :: ORBDISTTOL=1.0D-2
       INTEGER J1, I, JMAX2, NORBIT1, NCHOOSE1, NORBIT2, NCHOOSE2
@@ -237,15 +237,15 @@ C     PRINT*,'CMX,CMY,CMZ=',CMX,CMY,CMZ
       
       NORBIT1=1
 
-      DO J1=1,NR
+      DO J1=1,3*NATOMS
          T1(J1)=Q1(J1)
       ENDDO
 
 C     IF (DEBUG) THEN
 C        PRINT*,'before'
-C        WRITE(*,'(3F20.10)') (Q1(J1),J1=1,NR)
+C        WRITE(*,'(3F20.10)') (Q1(J1),J1=1,3*NATOMS)
 C        PRINT*,'after'
-C        WRITE(*,'(3F20.10)') (T1(J1),J1=1,NR)
+C        WRITE(*,'(3F20.10)') (T1(J1),J1=1,3*NATOMS)
 C     ENDIF
 C
 C  Find the atom with the largest distance from the z axis.
@@ -293,7 +293,7 @@ C     PRINT*,'COST,SINT=',COST,SINT
 20    CONTINUE
 
 C     IF (DEBUG) PRINT*,'after'
-C     IF (DEBUG) WRITE(*,'(3F20.10)') (T1(J1),J1=1,NR)
+C     IF (DEBUG) WRITE(*,'(3F20.10)') (T1(J1),J1=1,3*NATOMS)
 
       RETURN
       END

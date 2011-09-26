@@ -28,7 +28,7 @@
 ! are such that we have chosen to use the compressed row storage scheme for PBRANCH and NVAL
 ! (called DVEC and COL_IND, respectively, in the CR scheme)
 !
-      SUBROUTINE NGT_CRSTORAGE(GBMAX,DEADTS,PEMKSUM,EMKSUM,LKSUM,NCOL,KBA,KAB,MINMAP,LPFOLDAB,LPFOLDBA)
+      SUBROUTINE NGT_CRSTORAGE(GBMAX,DEADTS,PEMKSUM,EMKSUM,LKSUM,NCOL,KBA,KAB,MINMAP,LPFOLDAB,LPFOLDBA,LNCONN)
       USE PORFUNCS
       USE COMMONS
       USE NGTMEM
@@ -40,7 +40,7 @@
       DOUBLE PRECISION PEMKSUM(NMIN), MEANNCONN
       DOUBLE PRECISION DUMMYA, DUMMYB, KSSAB, KSSBA
       DOUBLE PRECISION LPFOLDAB(NMIN), LPFOLDBA(NMIN)
-      INTEGER NONZERO, NCOLPREV, NMIN_CONNECTED, NCONNTOT
+      INTEGER NONZERO, NCOLPREV, NMIN_CONNECTED, NCONNTOT, LNCONN(MAXMIN)
 
 !!!!!!!!!!!!!!!!!!!   NGT calculation  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 !
@@ -327,6 +327,7 @@ C
          IF (NCONN(J1).GT.NCONNMIN) NLEFT=NLEFT+1
       ENDDO
       PRINT '(A,I8)','NGT> Number of connected minima remaining with sufficient neighbours=',NLEFT
+      LNCONN(1:NMIN)=NCONN(1:NMIN) ! save the nconn values for use in the pfold calculation at the end.
 !
 !  Remove I minima from the bottom up, i.e. from NMIN down to NMINA+NMINB+1.
 !
@@ -396,6 +397,11 @@ C
          ENDIF
          LPFOLDAB(MINMAP(LOCATIONA(J1)))=DUMMYA
          LPFOLDBA(MINMAP(LOCATIONA(J1)))=DUMMYB
+         IF (DIRECTION.EQ.'AB') THEN
+            GPFOLD(LOCATIONA(J1))=DUMMYA
+         ELSE
+            GPFOLD(LOCATIONA(J1))=DUMMYB
+         END IF
       ENDDO
       PRINT '(A)',' '
       DO J1=1,NMINB
@@ -427,6 +433,11 @@ C
          ENDIF
          LPFOLDAB(MINMAP(LOCATIONB(J1)))=DUMMYA
          LPFOLDBA(MINMAP(LOCATIONB(J1)))=DUMMYB
+         IF (DIRECTION.EQ.'AB') THEN
+            GPFOLD(LOCATIONB(J1))=DUMMYA
+         ELSE
+            GPFOLD(LOCATIONB(J1))=DUMMYB
+         END IF
       ENDDO
       PRINT '(A)',' '
 

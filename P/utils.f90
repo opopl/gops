@@ -34,5 +34,27 @@ module utils
                if (present(subrid)) print *, 'STOP in '//trim(adjustl(subrid))
                stop
           endif
-     end subroutine openiostat
+end subroutine openiostat
+
+INTEGER FUNCTION GETUNIT()
+IMPLICIT NONE
+LOGICAL :: INUSE
+!
+! start checking for available units > 10, to avoid system default units
+!
+INTEGER :: UNITNUM
+
+INUSE=.TRUE.
+UNITNUM=11
+
+DO WHILE (INUSE)
+   INQUIRE(UNIT=UNITNUM,OPENED=INUSE)
+   IF (.NOT.INUSE) THEN
+      GETUNIT=UNITNUM 
+   ELSE     
+      UNITNUM=UNITNUM+1 
+   ENDIF
+ENDDO
+END FUNCTION GETUNIT
+
 end module utils

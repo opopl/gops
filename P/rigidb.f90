@@ -1,22 +1,26 @@
 !
       SUBROUTINE RBMINDIST(RA,RB,NATOMS,DIST,Q2,DEBUG)
 
+!     Follows the prescription of Kearsley, Acta Cryst. A, 45, 208-210, 1989, making necessary changes
+!     to conform to right-handed rotation in the right-handed coordinate system.
+
+!     Returns DIST as the actual distance, rather than the squared distance
+
       USE COMMONS, ONLY: NTSITES, RBSITE, DBPT, DBPTDT, MSSTOCKT, STOCKAAT, EFIELDT
 
       IMPLICIT NONE
 
       INTEGER          :: J1, J2, J3, J4, NATOMS, NSIZE, JMIN, INFO
-      DOUBLE PRECISION :: RA(NR), RB(NR), DIST, QMAT(4,4), TEMPA(9*NATOMS), XM, YM, ZM, XP, YP, ZP
+      DOUBLE PRECISION :: RA(3*NATOMS), RB(3*NATOMS), DIST, QMAT(4,4), TEMPA(9*NATOMS), XM, YM, ZM, XP, YP, ZP
       DOUBLE PRECISION :: DIAG(4), MINV, Q2(4), CMXA, CMYA, CMZA, CMXB, CMYB, CMZB
       DOUBLE PRECISION :: R(3), P(3), RM(3,3) 
       DOUBLE PRECISION, ALLOCATABLE :: XA(:), XB(:)
-      DOUBLE PRECISION :: ENERGY, VNEW(NR), RMS, DUMMY
+      DOUBLE PRECISION :: ENERGY, VNEW(3*NATOMS), RMS, DUMMY
       LOGICAL          :: BULKT, PRESERVET, DEBUG
 
       IF ((DBPT .AND. EFIELDT) .OR. (DBPTDT .AND. EFIELDT) .OR. (MSSTOCKT .AND. EFIELDT) .OR. (STOCKAAT .AND. EFIELDT)) THEN
 
          CALL FLDMINDIST(RA,RB,NATOMS,DIST,DEBUG,Q2)
-         DIST=SQRT(DIST)
          RETURN
 
       ENDIF 
@@ -87,8 +91,6 @@
       QMAT(2,1) = QMAT(1,2); QMAT(3,1) = QMAT(1,3); QMAT(3,2) = QMAT(2,3); QMAT(4,1) = QMAT(1,4) 
       QMAT(4,2) = QMAT(2,4); QMAT(4,3) = QMAT(3,4)
 
-!      WRITE(*,*) QMAT
-
       CALL DSYEV('V','U',4,QMAT,4,DIAG,TEMPA,9*NATOMS,INFO)
 
       IF (INFO /= 0) PRINT '(A,I6,A)','newmindist> WARNING - INFO=',INFO,' in DSYEV'
@@ -124,7 +126,6 @@
       CALL RBNEWROTGEOM(NATOMS,RB,Q2,RM,CMXA,CMYA,CMZA)
 
       DEALLOCATE(XA,XB)
-      DIST=SQRT(DIST)
 
       END SUBROUTINE RBMINDIST
 
@@ -135,7 +136,7 @@
       IMPLICIT NONE
 
       INTEGER          :: I, J, NATOMS
-      DOUBLE PRECISION :: COORDS(NR), RM(3,3), CX, CY, CZ, R(3), P(3), Q1(4), Q2(4), Q(4)
+      DOUBLE PRECISION :: COORDS(3*NATOMS), RM(3,3), CX, CY, CZ, R(3), P(3), Q1(4), Q2(4), Q(4)
       DOUBLE PRECISION :: THETA, THETAH, ST, FCT
 
 !     RMAT CONTAINS THE MATRIX THAT MAPS RB ONTO THE BEST CORRESPONDENCE WITH RA
@@ -153,7 +154,7 @@
       
 !     CONVERT THE ANGLE-AXIS COORDINATES
 
-         J      = NR/2 + J
+         J      = 3*NATOMS/2 + J
          P(:)   = COORDS(J+1:J+3)
 
          CALL QROTAA(Q2,P)
@@ -168,16 +169,18 @@
 
       SUBROUTINE FLDMINDIST(RA,RB,NATOMS,DIST,DEBUG,Q2)
 
+!     returns DIST as the actual distance, rather than the squared distance
+
       USE COMMONS, ONLY: NTSITES, RBSITE, STOCKAAT
 
       IMPLICIT NONE
 
       INTEGER          :: J1, J2, J3, J4, NATOMS, NSIZE, JMIN, INFO
-      DOUBLE PRECISION :: RA(NR), RB(NR), DIST, QMAT(2,2), XM, YM, ZM, XP, YP, ZP
+      DOUBLE PRECISION :: RA(3*NATOMS), RB(3*NATOMS), DIST, QMAT(2,2), XM, YM, ZM, XP, YP, ZP
       DOUBLE PRECISION :: MINV, Q2(4), CMXA, CMYA, CMZA, CMXB, CMYB, CMZB
       DOUBLE PRECISION :: R(3), P(3), RM(3,3) 
       DOUBLE PRECISION, ALLOCATABLE :: XA(:), XB(:)
-      DOUBLE PRECISION :: ENERGY, VNEW(NR), RMS, DUMMY
+      DOUBLE PRECISION :: ENERGY, VNEW(3*NATOMS), RMS, DUMMY
       LOGICAL          :: DEBUG
 
       NSIZE = NTSITES
@@ -249,14 +252,6 @@
 
       MINV = 0.5D0*(QMAT(1,1) + QMAT(2,2) - SQRT(4.D0*QMAT(1,2)*QMAT(1,2) + (QMAT(1,1) - QMAT(2,2))**2.D0))
 
-!      IF (MINV < 0.0D0) THEN
-!          PRINT '(A,G20.10,A)','fldmindist> MINV is negative'
-!          PRINT *, MINV
-!          STOP
-!      ENDIF
-
-!      DIST = SQRT(MINV)
-
 !      Q2(1) = SQRT(QMAT(1,2)*QMAT(1,2)/((MINV-QMAT(1,1))**2.D0 + QMAT(1,2)*QMAT(1,2)))
       Q2(1) = SQRT((MINV-QMAT(2,2))**2.D0/(QMAT(1,2)*QMAT(1,2) + (MINV-QMAT(2,2))**2.D0))
       Q2(2) = 0.D0
@@ -294,11 +289,11 @@
       IMPLICIT NONE
 
       INTEGER          :: J1, J2, J3, J4, NATOMS, NSIZE, JMIN, INFO
-      DOUBLE PRECISION :: RA(NR), RB(NR), DIST, QMAT(4,4), TEMPA(9*NATOMS), XM, YM, ZM, XP, YP, ZP
+      DOUBLE PRECISION :: RA(3*NATOMS), RB(3*NATOMS), DIST, QMAT(4,4), TEMPA(9*NATOMS), XM, YM, ZM, XP, YP, ZP
       DOUBLE PRECISION :: DIAG(4), MINV, Q2(4), CMXA, CMYA, CMZA, CMXB, CMYB, CMZB
       DOUBLE PRECISION :: R(3), P(3), RM(3,3) 
       DOUBLE PRECISION, ALLOCATABLE :: XA(:), XB(:)
-      DOUBLE PRECISION :: ENERGY, VNEW(NR), RMS, DUMMY
+      DOUBLE PRECISION :: ENERGY, VNEW(3*NATOMS), RMS, DUMMY
       LOGICAL          :: BULKT, PRESERVET, DEBUG 
 
       NSIZE = NATOMS/2
@@ -545,3 +540,53 @@
       RBSITE(4,:)= (5.D-1/SQRT(3.D0))*(/  1.D0, -1.D0, -1.D0/)
 
       END SUBROUTINE DEFPATCHYD
+
+!     ----------------------------------------------------------------------------------------------
+
+      SUBROUTINE DEFTIP4(M)
+!     TIP4P water
+
+      USE COMMONS, ONLY: NRBSITES, RBSITE
+
+      IMPLICIT NONE
+
+      INTEGER          :: J1
+      DOUBLE PRECISION :: M(NRBSITES), MASS, CM(3)
+      DOUBLE PRECISION :: THETA, ROH, ROM, PI
+
+      PI    = 4.D0*DATAN(1.D0)
+      ROH   = 0.9572D0
+      ROM   = 0.15D0
+      THETA = 104.52D0
+      THETA = PI*THETA/180.D0
+
+!     THE REFERENCE GEOMETRY IS ON THE Y-Z PLANE
+
+      RBSITE(1,1) = 0.D0
+      RBSITE(1,2) = 0.D0
+      RBSITE(1,3) = 0.D0
+
+      RBSITE(2,1) = 0.D0
+      RBSITE(2,2) = SIN(0.5D0*THETA)*ROH
+      RBSITE(2,3) = COS(0.5D0*THETA)*ROH
+
+      RBSITE(3,1) = 0.D0
+      RBSITE(3,2) = -SIN(0.5D0*THETA)*ROH
+      RBSITE(3,3) = COS(0.5D0*THETA)*ROH
+
+      RBSITE(4,1) = 0.D0
+      RBSITE(4,2) = 0.D0
+      RBSITE(4,3) = ROM
+
+      M(:)  = (/16.D0, 1.D0, 1.D0, 0.D0/)
+      CM(:) = 0.D0; MASS = 0.D0
+      DO J1 = 1, NRBSITES
+         CM(:) = CM(:) + M(J1)*RBSITE(J1,:)
+         MASS = MASS + M(J1)
+      ENDDO
+      CM(:) = CM(:)/MASS
+      DO J1 = 1, NRBSITES
+         RBSITE(J1,:) = RBSITE(J1,:) - CM(:)
+      ENDDO
+
+      END SUBROUTINE DEFTIP4

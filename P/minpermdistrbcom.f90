@@ -15,26 +15,25 @@
       INTEGER            :: NPERM, PATOMS, NTRIES, NSIZE, JMAX, LOCMAX(1), J1, J2, J3, INFO
       INTEGER            :: INVERT, NORBIT1, NORBIT2, PERM(NATOMS), NCHOOSE2, NDUMMY, LPERM(NATOMS), NCHOOSE1
       INTEGER            :: NEWPERM(NATOMS), ALLPERM(NATOMS), SAVEPERM(NATOMS)
-      DOUBLE PRECISION   :: COORDSA(NR), COORDSB(NR), DISTANCE, DISTWP, DIST2, TEMPA(9*NATOMS) 
-      DOUBLE PRECISION   :: DUMMYA(NR), DUMMYB(NR), DUMMY(NR), DUMMYWP(NR)
-!      DOUBLE PRECISION   :: XA(NR*NRBSITES/2),  XB(NR*NRBSITES/2), XBS(NR*NRBSITES/2)
-      DOUBLE PRECISION   :: XA(NR),  XB(NR), XBS(NR)
-      DOUBLE PRECISION   :: XTMP(NR)
-      DOUBLE PRECISION   :: RMAT(3,3), RMATI(3,3), ENERGY, VNEW(NR), DX, DY, DZ, RMS, DBEST, XBEST(NR)
+      DOUBLE PRECISION   :: COORDSA(3*NATOMS), COORDSB(3*NATOMS), DISTANCE, DISTWP, DIST2, TEMPA(9*NATOMS) 
+      DOUBLE PRECISION   :: DUMMYA(3*NATOMS), DUMMYB(3*NATOMS), DUMMY(3*NATOMS), DUMMYWP(3*NATOMS)
+!      DOUBLE PRECISION   :: XA(3*NATOMS*NRBSITES/2),  XB(3*NATOMS*NRBSITES/2), XBS(3*NATOMS*NRBSITES/2)
+      DOUBLE PRECISION   :: XA(3*NATOMS),  XB(3*NATOMS), XBS(3*NATOMS)
+      DOUBLE PRECISION   :: XTMP(3*NATOMS)
+      DOUBLE PRECISION   :: RMAT(3,3), RMATI(3,3), ENERGY, VNEW(3*NATOMS), DX, DY, DZ, RMS, DBEST, XBEST(3*NATOMS)
       DOUBLE PRECISION   :: ROTA(3,3), ROTINVA(3,3), ROTB(3,3), ROTBINV(3,3), RMATCUMUL(3,3), LMAT(3,3)
       DOUBLE PRECISION   :: ROTINVBBEST(3,3), ROTABEST(3,3), RMATBEST(3,3), RMATWP(3,3)
       DOUBLE PRECISION   :: CMAX, CMAY, CMAZ, CMBX, CMBY, CMBZ
-      DOUBLE PRECISION   :: PDUMMYA(NR), PDUMMYB(NR), LDISTANCE, XDUMMY, BOXLX, BOXLY, BOXLZ, WORSTRAD
+      DOUBLE PRECISION   :: PDUMMYA(3*NATOMS), PDUMMYB(3*NATOMS), LDISTANCE, XDUMMY, BOXLX, BOXLY, BOXLZ, WORSTRAD
       DOUBLE PRECISION   :: Q(4), Q1(4), Q2(4), AMAT(4,4), BMAT(4,4), DIAG(4), P(3)
-      DOUBLE PRECISION   :: ST, THETA, THETAH, FCT, DUMMYC(NR), DUMMYD(NR)
+      DOUBLE PRECISION   :: ST, THETA, THETAH, FCT, DUMMYC(3*NATOMS), DUMMYD(3*NATOMS)
       LOGICAL            :: DEBUG, BULKT
-      DOUBLE PRECISION   :: BESTA(NR), RBDISTANCE, PVEC(3), RTEMP1(3,3), RTEMP2(3,3), SITEDIST
+      DOUBLE PRECISION   :: BESTA(3*NATOMS), RBDISTANCE, PVEC(3), RTEMP1(3,3), RTEMP2(3,3), SITEDIST
       DOUBLE PRECISION   :: QCUMUL(4), QBEST(4), QA(4), QB(4), QBINV(4), QTMP(4), QI(4)
-      DOUBLE PRECISION   :: COORDSAS(NR), COORDSBS(NR), T(NR)
+      DOUBLE PRECISION   :: COORDSAS(3*NATOMS), COORDSBS(3*NATOMS), T(3*NATOMS)
 
-      COORDSAS(1:NR) = COORDSA(1:NR) ! to trace error, see at the end
-      COORDSBS(1:NR) = COORDSB(1:NR) ! to trace error, see at the end
-
+      COORDSAS(1:3*NATOMS) = COORDSA(1:3*NATOMS) ! to trace error, see at the end
+      COORDSBS(1:3*NATOMS) = COORDSB(1:3*NATOMS) ! to trace error, see at the end
 
       CMBX = 0.0D0; CMBY = 0.0D0; CMBZ = 0.0D0
       DO J1 = 1, NATOMS
@@ -60,11 +59,11 @@
 !
       INVERT = 1
 
-      DUMMYB(1:NR) = COORDSB(1:NR)
-      DUMMYC(1:NR) = DUMMYB(1:NR)
+      DUMMYB(1:3*NATOMS) = COORDSB(1:3*NATOMS)
+      DUMMYC(1:3*NATOMS) = DUMMYB(1:3*NATOMS)
       CALL ORIENTA(DUMMYC,DUMMY,NORBIT1,1,NORBIT2,1,NATOMS,QB,DEBUG)
       CALL QROTMAT(QB,ROTB)
-      DUMMYB(1:NR) = DUMMY(1:NR)
+      DUMMYB(1:3*NATOMS) = DUMMY(1:3*NATOMS)
 
       DBEST    = 1.0D100
 60    NCHOOSE1 = 0
@@ -72,7 +71,7 @@
 40    NCHOOSE2 = 0
 30    NCHOOSE2 = NCHOOSE2+1
 
-      DUMMYA(1:NR) = COORDSA(1:NR)
+      DUMMYA(1:3*NATOMS) = COORDSA(1:3*NATOMS)
 
       DO J1 = 1, NATOMS
          ALLPERM(J1) = J1
@@ -92,11 +91,11 @@
 !     We now deal with this by tracking the complete transformation, including the
 !     contribution of MYORIENT using ROTB and ROTINVB.
 !
-      DUMMYC(1:NR) = INVERT*DUMMYA(1:NR)
+      DUMMYC(1:3*NATOMS) = INVERT*DUMMYA(1:3*NATOMS)
 
       CALL ORIENTA(DUMMYC,DUMMY,NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2,NATOMS,QA,DEBUG)
       CALL QROTMAT(QA,ROTA)
-      DUMMYA(1:NR)=DUMMY(1:NR)
+      DUMMYA(1:3*NATOMS)=DUMMY(1:3*NATOMS)
 
 !      PRINT *, 'DUMMYA'
 !      PRINT *, DUMMYA
@@ -118,7 +117,7 @@
 !     ----------------------------------------------------------------------------------------------
       
       DISTANCE = 0.D0
-      DO J1 = 1, NR
+      DO J1 = 1, 3*NATOMS
          DISTANCE = DISTANCE + (DUMMYA(J1) - DUMMYB(J1))**2
       ENDDO
 
@@ -219,7 +218,7 @@
       ENDDO
 
       ALLPERM(1:NATOMS) = NEWPERM(1:NATOMS)
-      DUMMY(1:NR) = DUMMYA(1:NR)
+      DUMMY(1:3*NATOMS) = DUMMYA(1:3*NATOMS)
       NPERM    = 0
       DISTANCE = 0.0D0
 !
@@ -247,7 +246,7 @@
 
       ENDDO
 
-      DO J1 = 1, NR
+      DO J1 = 1, 3*NATOMS
          DISTANCE = DISTANCE + (DUMMYA(J1) - DUMMYB(J1))**2
       ENDDO
 !
@@ -296,7 +295,7 @@
       IF (DISTANCE .LT. DBEST) THEN
 
          DBEST                = DISTANCE
-         XBEST(1:NR)    = DUMMYA(1:NR)
+         XBEST(1:3*NATOMS)    = DUMMYA(1:3*NATOMS)
          QTMP(1:4)  = QA(1:4)
          CALL QROTQ(QCUMUL,QTMP)
          QBEST(1:4) = QTMP(1:4)
@@ -340,8 +339,9 @@
 !     where RMATBEST = +/- RMATCUMUL * ROTA for the best alignment 
 !     (aside from a possible permutation of the atom ordering)
 !
+!      CALL QROTMAT(QBINV, ROTBINV)
 
-      CALL QROTMAT(QBINV, ROTBINV)
+      ROTBINV = TRANSPOSE(ROTB)
 
       DO J1 = 1, NATOMS
          J2 = 3*J1
@@ -355,7 +355,7 @@
       ENDDO
 
       XDUMMY = 0.D0
-      DO J1 = 1, NR
+      DO J1 = 1, 3*NATOMS
          XDUMMY = XDUMMY + (XBEST(J1) - COORDSB(J1))**2
       ENDDO
 
@@ -381,7 +381,7 @@
 
       RMATBEST(:,:) = MATMUL(ROTBINV,RMATBEST)
 
-      COORDSA(1:NR)=XBEST(1:NR) ! finally, best COORDSA should include permutations for DNEB input!
+      COORDSA(1:3*NATOMS)=XBEST(1:3*NATOMS) ! finally, best COORDSA should include permutations for DNEB input!
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!debug
 !      CALL POTENTIAL(COORDSA,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
@@ -396,10 +396,12 @@
 
 !     This subroutine puts the configuration, X, of an atomic  system into a standard alignment, T1.
 !
+      USE COMMONS, ONLY: EFIELDT
+
       IMPLICIT NONE
       INTEGER          :: NATOMS, I, J, J1, J2, JMAX1, JMAX2, NORBIT1, NCHOOSE1, NORBIT2, NCHOOSE2
-      DOUBLE PRECISION :: X(NR), T1(NR)
-      DOUBLE PRECISION :: XS(NR), T1S(NR), T2S(NR), DIST(NATOMS)
+      DOUBLE PRECISION :: X(3*NATOMS), T1(3*NATOMS)
+      DOUBLE PRECISION :: XS(3*NATOMS), T1S(3*NATOMS), T2S(3*NATOMS), DIST(NATOMS)
       DOUBLE PRECISION :: AX(3), P(3), Q2(4), ROTM(3,3), ROTMINV(3,3)
       DOUBLE PRECISION :: THETA, THETAH, COST, SINT, COSTH, SINTH, ST, FCT
       DOUBLE PRECISION :: CMX, CMY, CMZ, DMAX, DUMMY, PROJ, DMAX2, CUTOFF1, DTEMP
@@ -427,6 +429,11 @@
 
       DMAX    = -1.D0
       NORBIT1 = 1
+
+      IF (EFIELDT) THEN
+         T1S(:) = XS(:)
+         GOTO 100
+      ENDIF
 
 !
 !     Find the atom which is at the largest distance from the centre of mass
@@ -460,7 +467,7 @@
 !
          IF (XS(3*(JMAX1-1)+3) > 0.D0) THEN
 
-            T1S(1:NR) = XS(1:NR)
+            T1S(1:3*NATOMS) = XS(1:3*NATOMS)
             Q2(1:4)   = (/1.D0, 0.D0, 0.D0, 0.D0/)   ! Identity operation       
                   
          ELSE  ! rotate about the x-axis by \pi, DO NOT INVERT!
@@ -506,7 +513,6 @@
          ENDDO   
 
       ENDIF
-
 !
 !     Now find the atom with the largest distance from the z-axis 
 !
@@ -527,7 +533,7 @@
 
          IF (ABS(DIST(J1) - DMAX) < CUTOFF1) THEN
 
-            T2S(1:NR) = T1S(1:NR)
+            T2S(1:3*NATOMS) = T1S(1:3*NATOMS)
 
             CALL ROTATMXZ(NATOMS, J1, T2S, PROJ, DIST, Q2, .FALSE.)
 
@@ -564,7 +570,7 @@
 
       IMPLICIT NONE
       INTEGER          :: NATOMS, JDO, I, J, J2
-      DOUBLE PRECISION :: T1S(NR), PROJ, DIST(NATOMS), THETA, THETAH, COST, SINT, ST
+      DOUBLE PRECISION :: T1S(3*NATOMS), PROJ, DIST(NATOMS), THETA, THETAH, COST, SINT, ST
       DOUBLE PRECISION :: COSTH, SINTH, FCT, P(3), Q2(4), Q1(4), RM(3,3), ROTM(3,3) 
       LOGICAL          :: ROTT
 
@@ -643,7 +649,7 @@
       IMPLICIT NONE
 
       INTEGER          :: I, J, NATOMS
-      DOUBLE PRECISION :: T(NR), X(NR), T1(1:3), Q2(4), RM(3,3) 
+      DOUBLE PRECISION :: T(3*NATOMS), X(3*NATOMS), T1(1:3), Q2(4), RM(3,3) 
       DOUBLE PRECISION :: CMX, CMY, CMZ
 !
 !     Move centre of mass to the origin.
@@ -679,18 +685,20 @@
 
 !     ----------------------------------------------------------------------------------------------
 
-      SUBROUTINE MINDISTA(RA,RB,NATOMS,DIST,RM,DEBUG)
+      SUBROUTINE MINDISTA(RA,RB,NATOMS,DIST,Q2,DEBUG)
 
-!     returns squared distance DIST
+!     Returns DIST as the actual distance, rather than the squared distance
 
+      USE COMMONS, ONLY: EFIELDT
+ 
       IMPLICIT NONE
 
       INTEGER          :: J1, J2, J3, J4, NATOMS, NSIZE, JMIN, INFO
-      DOUBLE PRECISION :: RA(NR), RB(NR), DIST, QMAT(4,4), TEMPA(9*NATOMS), XM, YM, ZM, XP, YP, ZP
+      DOUBLE PRECISION :: RA(3*NATOMS), RB(3*NATOMS), DIST, QMAT(4,4), TEMPA(9*NATOMS), XM, YM, ZM, XP, YP, ZP
       DOUBLE PRECISION :: DIAG(4), MINV, Q2(4), CMXA, CMYA, CMZA, CMXB, CMYB, CMZB
       DOUBLE PRECISION :: R(3), P(3), RM(3,3)
       DOUBLE PRECISION, ALLOCATABLE :: XA(:), XB(:)
-      DOUBLE PRECISION :: ENERGY, VNEW(NR), RMS, DUMMY
+      DOUBLE PRECISION :: ENERGY, VNEW(3*NATOMS), RMS, DUMMY
       LOGICAL          :: BULKT, PRESERVET, DEBUG
 
       NSIZE = NATOMS
@@ -739,42 +747,73 @@
          XP = XA(J2+1) + XB(J2+1)
          YP = XA(J2+2) + XB(J2+2)
          ZP = XA(J2+3) + XB(J2+3)
-         QMAT(1,1) = QMAT(1,1) + XM**2 + YM**2 + ZM**2
-         QMAT(1,2) = QMAT(1,2) - YP*ZM + YM*ZP
-         QMAT(1,3) = QMAT(1,3) - XM*ZP + XP*ZM
-         QMAT(1,4) = QMAT(1,4) - XP*YM + XM*YP
-         QMAT(2,2) = QMAT(2,2) + YP**2 + ZP**2 + XM**2
-         QMAT(2,3) = QMAT(2,3) + XM*YM - XP*YP
-         QMAT(2,4) = QMAT(2,4) + XM*ZM - XP*ZP
-         QMAT(3,3) = QMAT(3,3) + XP**2 + ZP**2 + YM**2
-         QMAT(3,4) = QMAT(3,4) + YM*ZM - YP*ZP
-         QMAT(4,4) = QMAT(4,4) + XP**2 + YP**2 + ZM**2
-      ENDDO
 
-      QMAT(2,1) = QMAT(1,2); QMAT(3,1) = QMAT(1,3); QMAT(3,2) = QMAT(2,3); QMAT(4,1) = QMAT(1,4)
-      QMAT(4,2) = QMAT(2,4); QMAT(4,3) = QMAT(3,4)
-      CALL DSYEV('V','U',4,QMAT,4,DIAG,TEMPA,9*NATOMS,INFO)
-
-      IF (INFO /= 0) PRINT '(A,I6,A)','mindista> WARNING - INFO=',INFO,' in DSYEV'
-
-      MINV = 1.0D100
-      DO J1 = 1,4
-         IF (DIAG(J1).LT.MINV) THEN
-            JMIN = J1
-            MINV = DIAG(J1)
-         ENDIF
-      ENDDO
-      IF (MINV < 0.0D0) THEN
-         IF (ABS(MINV)< 1.0D-6) THEN
-            MINV = 0.0D0
+         IF (EFIELDT) THEN
+            QMAT(1,1) = QMAT(1,1) + XM**2 + YM**2 + ZM**2
+            QMAT(1,2) = QMAT(1,2) - XP*YM + XM*YP
+            QMAT(2,2) = QMAT(2,2) + XP**2 + YP**2 + ZM**2
          ELSE
-            PRINT '(A,G20.10,A)','mindista> WARNING MINV is ',MINV,' change to absolute value'
-            MINV = -MINV
+            QMAT(1,1) = QMAT(1,1) + XM**2 + YM**2 + ZM**2
+            QMAT(1,2) = QMAT(1,2) - YP*ZM + YM*ZP
+            QMAT(1,3) = QMAT(1,3) - XM*ZP + XP*ZM
+            QMAT(1,4) = QMAT(1,4) - XP*YM + XM*YP
+            QMAT(2,2) = QMAT(2,2) + YP**2 + ZP**2 + XM**2
+            QMAT(2,3) = QMAT(2,3) + XM*YM - XP*YP
+            QMAT(2,4) = QMAT(2,4) + XM*ZM - XP*ZP
+            QMAT(3,3) = QMAT(3,3) + XP**2 + ZP**2 + YM**2
+            QMAT(3,4) = QMAT(3,4) + YM*ZM - YP*ZP
+            QMAT(4,4) = QMAT(4,4) + XP**2 + YP**2 + ZM**2
          ENDIF
-      ENDIF
-      DIST = MINV
+      ENDDO
 
-      Q2(1) = QMAT(1,JMIN); Q2(2) = QMAT(2,JMIN); Q2(3) = QMAT(3,JMIN); Q2(4) = QMAT(4,JMIN)
+      IF (EFIELDT) THEN
+
+!     QMAT IS SYMMETRIC; QMAT(2,1) = QMAT(1,2)
+
+         MINV = 0.5D0*(QMAT(1,1) + QMAT(2,2) - SQRT(4.D0*QMAT(1,2)*QMAT(1,2) + (QMAT(1,1) - QMAT(2,2))**2.D0))
+         Q2(1) = SQRT((MINV-QMAT(2,2))**2.D0/(QMAT(1,2)*QMAT(1,2) + (MINV-QMAT(2,2))**2.D0))
+         Q2(2) = 0.D0
+         Q2(3) = 0.D0
+         Q2(4) = QMAT(1,2)*Q2(1)/(MINV - QMAT(2,2))
+
+         IF (MINV < 0.0D0) THEN
+            IF (ABS(MINV)< 1.0D-6) THEN
+               MINV = 0.0D0
+            ELSE
+               PRINT '(A,G20.10,A)','newmindist> WARNING MINV is ',MINV,' change to absolute value'
+               MINV = -MINV
+            ENDIF
+         ENDIF
+
+      ELSE
+
+        QMAT(2,1) = QMAT(1,2); QMAT(3,1) = QMAT(1,3); QMAT(3,2) = QMAT(2,3); QMAT(4,1) = QMAT(1,4)
+        QMAT(4,2) = QMAT(2,4); QMAT(4,3) = QMAT(3,4)
+        CALL DSYEV('V','U',4,QMAT,4,DIAG,TEMPA,9*NATOMS,INFO)
+
+        IF (INFO /= 0) PRINT '(A,I6,A)','mindista> WARNING - INFO=',INFO,' in DSYEV'
+
+        MINV = 1.0D100
+        DO J1 = 1,4
+           IF (DIAG(J1).LT.MINV) THEN
+              JMIN = J1
+              MINV = DIAG(J1)
+           ENDIF
+        ENDDO
+        IF (MINV < 0.0D0) THEN
+           IF (ABS(MINV)< 1.0D-6) THEN
+              MINV = 0.0D0
+           ELSE
+              PRINT '(A,G20.10,A)','mindista> WARNING MINV is ',MINV,' change to absolute value'
+              MINV = -MINV
+           ENDIF
+        ENDIF
+
+        Q2(1) = QMAT(1,JMIN); Q2(2) = QMAT(2,JMIN); Q2(3) = QMAT(3,JMIN); Q2(4) = QMAT(4,JMIN)
+
+      ENDIF
+
+      DIST = SQRT(MINV)
 
       DO J1 = 1, NATOMS
          J2 = 3*(J1-1)
@@ -796,7 +835,7 @@
       IMPLICIT NONE
 
       INTEGER          :: I, J, NATOMS
-      DOUBLE PRECISION :: COORDS(NR), RM(3,3), CX, CY, CZ, R(3), P(3), Q1(4), Q2(4), Q(4)
+      DOUBLE PRECISION :: COORDS(3*NATOMS), RM(3,3), CX, CY, CZ, R(3), P(3), Q1(4), Q2(4), Q(4)
       DOUBLE PRECISION :: THETA, THETAH, ST, FCT
 
 !     RMAT CONTAINS THE MATRIX THAT MAPS RB ONTO THE BEST CORRESPONDENCE WITH RA

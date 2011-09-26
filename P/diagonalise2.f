@@ -24,8 +24,8 @@ C
 
       INTEGER I, J
 
-      LWORK=33*NR
-      ILWORK=33*NR
+      LWORK=33*3*NATOMS
+      ILWORK=33*3*NATOMS
       CALL CPU_TIME(ELAPSED)
 !
 !  REGROUP and REGROUPFREE change NMINA, NMINB, LOCATIONA, LOCATIONB, so save the values and reset

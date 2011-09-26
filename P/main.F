@@ -34,7 +34,7 @@ C SAT: BOUNDARYT variable is referenced but never set! Assume default value of .
 C SAT: SAVEALL variable is set to .True. in setup if 'paths' file exists and 'pathpointer' does not!
 C
       PROGRAM PATHSAMPLE
-      USE COMMON
+      USE COMMONS
       USE NODES, ONLY: SSHPARALLEL
       USE dockmodule
       use rigidBodymod, only: initialiseRigidBody, cleanRigidBodies
@@ -42,7 +42,7 @@ C
       INTEGER J1, NSIZE, NWORST, NAVAIL, NMINSAVE, VERSIONTEMP
       INTEGER, ALLOCATABLE :: MINMAP(:)
 !     INTEGER, ALLOCATABLE :: NSEED(:)
-      LOGICAL MASSFILE
+      LOGICAL MASSFILE, YESNOT
       DOUBLE PRECISION TINIT, TNEW, DUMMY1(1), DUMMY2(1)
 
 !     AMH LOCAL VARIABLES
@@ -88,13 +88,6 @@ C
          PRINT '(A)','main> Likely error in input - CHARMM potential specified without input.crd in COPYFILES'
          STOP
       ENDIF
-
-!     IF (NATTEMPT.EQ.0) NOPOINTS=.TRUE. ! don;t bother checking all the points are present in this case
-!     IF (SSHparallel.AND.(.NOT.TRIPLES)) THEN
-!        PRINT '(A)','ERROR - you must use TRIPLES input format for a distributed memory environment'
-!        PRINT '(A)','        don;t forget to put DUMPALLPATHS in the odata.connect and odata.path files!'
-!        STOP
-!     ENDIF
       ALLOCATE(FRQS(3*NATOMS),RESLABEL(NATOMS),
      &         ATOMLABEL(NATOMS),RESNUMBER(NATOMS),EMIN(MAXMIN),FVIBMIN(MAXMIN),PFMIN(MAXMIN), 
      &         IXMIN(MAXMIN),IYMIN(MAXMIN),IZMIN(MAXMIN),GPFOLD(MAXMIN),
@@ -109,7 +102,8 @@ C
       ENDIF
       IF (DIJKSTRAT .OR. KSHORTESTPATHST) ALLOCATE(TSATTEMPT(MAXTS))
       IF (DIJKSTRAT .OR. KSHORTESTPATHST) ALLOCATE(DMIN1(MAXMIN),DMIN2(MAXMIN))
-      IF (DIJINITT) ALLOCATE(PAIRDIST(MAXMIN*(MAXMIN+1)/2))
+!     IF (DIJINITT) ALLOCATE(PAIRDIST(MAXMIN*(MAXMIN+1)/2))
+      IF (DIJINITT) ALLOCATE(PAIRDIST(MAXMIN,PAIRDISTMAX),PAIRLIST(MAXMIN,PAIRDISTMAX))
       IF (CONNECTREGIONT) ALLOCATE(DMIN1(DMINMAX),DMIN2(DMINMAX))
       IF (UNTRAPT .AND. (.NOT. DIJKSTRAT) .AND. (.NOT. KSHORTESTPATHST)) ALLOCATE(DMIN1(DMINMAX),DMIN2(DMINMAX))
 
@@ -169,6 +163,9 @@ C
          NFFINISH=3*NATOMS-4
          KAPPA=3*NATOMS-4
       ELSE IF (BULKT) THEN
+         NFFINISH=3*NATOMS-3
+         KAPPA=3*NATOMS-3
+      ELSE IF (TRAPT) THEN
          NFFINISH=3*NATOMS-3
          KAPPA=3*NATOMS-3
       ELSE IF (FREEZE) THEN
@@ -332,21 +329,13 @@ c            WRITE(*,'(A,I5)') 'AMH GLY COUNT', NGLY
       ENDIF
       WRITE(*,'(A,I5,A)') 'Rate calculation will iteratively remove minima with ',NCONNMIN,' connections or fewer'
       IF (STARTFROMPATH) THEN
-         IF (STARTTRIPLES) THEN
-            WRITE(*,'(A)') 'Reading initial pathway from ' // TRIM(ADJUSTL(PATHNAME)) //' in min-sad-min format'
-         ELSE 
-            WRITE(*,'(A)') 'Reading initial pathway from ' // TRIM(ADJUSTL(PATHNAME)) //' in old format'
-         ENDIF
+         WRITE(*,'(A)') 'Reading initial pathway from ' // TRIM(ADJUSTL(PATHNAME)) //' in min-sad-min format'
          PRINT '(2(A,I8))','The A minimum is number ',STARTMINA,' and the B minimum is ',STARTMINB
       ENDIF
       IF (ADDPATH) THEN
-         IF (ADDTRIPLES) THEN
-            WRITE(*,'(A)') 'Adding stationary points from ' // TRIM(ADJUSTL(PATHNAME)) //' in min-sad-min format'
-         ELSE
-            WRITE(*,'(A)') 'Adding stationary points from ' // TRIM(ADJUSTL(PATHNAME)) // ' in old format'
-         ENDIF
+         WRITE(*,'(A)') 'Adding stationary points from ' // TRIM(ADJUSTL(PATHNAME)) //' in min-sad-min format'
       ENDIF
-      IF (TRIPLES) WRITE(*,'(A)') 'path.info files will be read as min-sad-min triples'
+      WRITE(*,'(A)') 'path.info files will be read as min-sad-min triples'
       IF (CONNECTREGIONT) THEN
          PRINT '(A,G12.3,A,2I8)','Pairs of minima will be chosen based upon pairs separated by less than ',  
      &               CONNECTDIST,' starting from minima ',CONNECTMIN1,CONNECTMIN2
@@ -360,6 +349,7 @@ c            WRITE(*,'(A,I5)') 'AMH GLY COUNT', NGLY
             WRITE(*,'(A,I4,A)') 'Using distance to the power ',CostFunctionPower,' for edge weights'
          ENDIF
          WRITE(*,'(A,G20.10)') 'Transition states will be rejected above threshold energy ',TSTHRESH
+         WRITE(*,'(A,I8)') 'Number of closest neighbours to save=',PAIRDISTMAX
       ELSEIF (DIJINITFLYT) THEN
          WRITE(*,'(A)') 'Performing Dijkstra analysis to perform initial connection with weights calculated on-the-fly'
          IF (EXPCOSTFUNCTION) THEN
@@ -368,6 +358,7 @@ c            WRITE(*,'(A,I5)') 'AMH GLY COUNT', NGLY
             WRITE(*,'(A,I4,A)') 'Using distance to the power ',CostFunctionPower,' for edge weights'
          ENDIF
          WRITE(*,'(A,G20.10)') 'Transition states will be rejected above threshold energy ',TSTHRESH
+         WRITE(*,'(A,I8)') 'Number of closest neighbours to save=',PAIRDISTMAX
       ELSEIF (DIJPAIRT) THEN
          WRITE(*,'(A)') 'Performing Dijkstra analysis to generate connnection pairs'
          IF (BARRIERSORT) THEN
@@ -465,6 +456,13 @@ c            WRITE(*,'(A,I5)') 'AMH GLY COUNT', NGLY
       WRITE(*,'(A,F15.5)') 'main> time spent in setup=',TNEW-TINIT
 
       IF (NATTEMPT.GT.0) THEN
+         IF (.NOT.(BHINTERPT.OR.BISECTT)) THEN
+            INQUIRE(FILE='odata.connect',EXIST=YESNOT)
+            IF (.NOT.YESNOT) THEN
+               WRITE(*,'(A)') 'main> ERROR - no odata.connect file present'
+               STOP
+            ENDIF
+         ENDIF
          IF (CONNECTIONS.GT.2) THEN
             CALL CYCLE
          ELSE
@@ -473,7 +471,7 @@ c            WRITE(*,'(A,I5)') 'AMH GLY COUNT', NGLY
          OPEN(UNIT=1,FILE='commit.data',STATUS='UNKNOWN')
          WRITE(1,'(G20.10)') GPFOLD(1:NMIN)
          CLOSE(1)
-         IF (NPAIRDONE.GT.0) THEN
+         IF ((NPAIRDONE.GT.0).AND.(.NOT.DUMMYRUNT)) THEN
             OPEN(UNIT=1,FILE='pairs.data',STATUS='UNKNOWN')
             WRITE(1,'(2I8)') (PAIR1(J1),PAIR2(J1),J1=1,NPAIRDONE)
             CLOSE(1)
@@ -624,7 +622,7 @@ C  connections for each minimum after pruning according to the value of
 C  NCONNMIN.
 C
       SUBROUTINE GETNCONN
-      USE COMMON, ONLY: NMIN,NTS,NCONN,PLUS,MINUS,NCONNMIN,NCONNMAX,MAXMIN,DEBUG,ETS, 
+      USE COMMONS, ONLY: NMIN,NTS,NCONN,PLUS,MINUS,NCONNMIN,NCONNMAX,MAXMIN,DEBUG,ETS, 
      &                  KPLUS, KMINUS, EMIN
       IMPLICIT NONE
       INTEGER J1, PNCONNECTED, NCONNECTED, NZERO, JMAX

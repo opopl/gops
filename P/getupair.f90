@@ -22,17 +22,17 @@
 !  to a target minimum. Designed to remove traps.
 !
 SUBROUTINE GETUPAIR(NAVAIL,NUSED,MINS,MINF,SPOINTS,FPOINTS)
-USE COMMONS, ONLY: UMIN,NR, NATOMS, DMIN1, DMIN2, NATTEMPT, NCPU, NMIN, PERMDIST, &
+USE COMMONS, ONLY: UMIN, NATOMS, DMIN1, DMIN2, NATTEMPT, NCPU, NMIN, PERMDIST, EDELTAMIN, &
   &               NPAIRFRQ, PAIR1, PAIR2, NPAIRFRQ, NPAIRDONE, MAXPAIRS, DMINMAX, DEBUG, LOCATIONA, LOCATIONB, BULKT, &
   &               ZSYM, TWOD, DIRECTION, PLUS, MINUS, NMINA, NMINB, EMIN, NTS, ETS, EUNTRAPTHRESH, EINC, DEBUG, ANGLEAXIS, &
   &               TSTHRESH, TOPPOINTER, POINTERP, POINTERM, BOXLX, BOXLY, BOXLZ, RIGIDBODY, INTERPCOSTFUNCTION
 USE PORFUNCS
 IMPLICIT NONE
 INTEGER NUSED, MINS, MINF, NAVAIL, PAIRSTODO, J1, J3, J4, CLOSEST(NMIN), MINVAL, OLDBASIN(NMIN), BASIN(NMIN), NBASIN, J2, NDONE
-INTEGER MAXNEIGHBOURS, NP, NNEIGH, JDOING
+INTEGER MAXNEIGHBOURS, NP, NNEIGH, JDOING, NTRIED
 INTEGER, ALLOCATABLE :: NEIGHBOURS(:), ITEMP(:)
 DOUBLE PRECISION, ALLOCATABLE :: BLIST(:)
-DOUBLE PRECISION SPOINTS(NR), FPOINTS(NR), BARRIER(NMIN), POINTS1(NR), POINTS2(NR), &
+DOUBLE PRECISION SPOINTS(3*NATOMS), FPOINTS(3*NATOMS), BARRIER(NMIN), POINTS1(3*NATOMS), POINTS2(3*NATOMS), &
   &              DISTANCE, RMAT(3,3), DIST2, LOWESTTARG, &
   &              HIGHESTTS, DUMMY, ETHRESH
 INTEGER, ALLOCATABLE :: VINT(:)
@@ -54,7 +54,19 @@ IF (NAVAIL.EQ.0) THEN
 ! Change to barrier divided by PE difference from lowest product minimum. 
 ! This is the PE analogue of the meric used by getfreepair.
 !
-      IF (EMIN(J1)-LOWESTTARG.NE.0.0D0) BARRIER(J1)=BARRIER(J1)/(EMIN(J1)-LOWESTTARG)
+! Take the absolute value of the energy difference otherwise all 
+! minima lower in energy than LOWESTTARG will lead to 
+! CYCLE in BARRIER test on next line and be excluded. 
+!
+! Deltamin is an optional argument for UNTRAP, to remove excessive 
+! weighting for minima very close in energy to LOWESTTARG.
+! Default value is TINY. 
+!      
+      IF (ABS(EMIN(J1)-LOWESTTARG).GT.EDELTAMIN) THEN
+        BARRIER(J1)=BARRIER(J1)/ABS(EMIN(J1)-LOWESTTARG)
+      ELSE  
+        BARRIER(J1)=BARRIER(J1)/ABS(EDELTAMIN)
+      ENDIF
       IF (BARRIER(J1).LT.0.0D0) CYCLE min
       IF (CLOSEST(J1).EQ.0) CYCLE min ! sanity check !
       DO J3=1,NPAIRDONE
@@ -97,7 +109,7 @@ IF (NAVAIL.EQ.0) THEN
    PRINT '(A)','getupair> saved minima pairs and barriers:'
    PRINT '(2I8,F20.10)',(DMIN1(J4),DMIN2(J4),BLIST(J4),J4=1,MINVAL)
 
-!   GOTO 20 ! go with the highest product minimum !
+!  GOTO 20 ! go with the highest product minimum !
 !
 ! Now try to find a closer minimum in the product superbasin for each of the chosen
 ! target minima. This approach assumes that the superbasin analysis is relatively
@@ -183,6 +195,7 @@ IF (NAVAIL.EQ.0) THEN
             IF (BASIN(LOCATIONB(J1)).GT.0) BASINT(BASIN(LOCATIONB(J1)))=.TRUE.
          ENDDO 
       ENDIF
+      NTRIED=0
       DO J1=1,MINVAL ! cycle over target minima
          JDOING=DMIN1(J1)
          IF (BASIN(DMIN1(J1)).EQ.0) CYCLE
@@ -223,9 +236,9 @@ IF (NAVAIL.EQ.0) THEN
                   STOP
                ENDIF
             ENDDO
-            PRINT '(A,I8,A,I8,A)','getupair> minimum ',JDOING,' has ',NNEIGH,' neighbours'
+!           PRINT '(A,I8,A,I8,A)','getupair> minimum ',JDOING,' has ',NNEIGH,' neighbours'
 
-            READ(UMIN,REC=DMIN1(J1)) POINTS1(1:NR)
+            READ(UMIN,REC=DMIN1(J1)) POINTS1(1:3*NATOMS)
 !
 !  Which product minimum should we try to connect to? Try the closest in the
 !  product superbasin before they merge within threshold EUNTRAPTHRESH.
@@ -250,27 +263,28 @@ IF (NAVAIL.EQ.0) THEN
                         IF ((PAIR1(J3).EQ.DMIN1(J1)).AND.(PAIR2(J3).EQ.J2)) CYCLE min2 ! do not repeat searches
                         IF ((PAIR1(J3).EQ.J2).AND.(PAIR2(J3).EQ.DMIN1(J1))) CYCLE min2 ! do not repeat searches
                      ENDDO
-                     READ(UMIN,REC=J2) POINTS2(1:NR)
-
+                     READ(UMIN,REC=J2) POINTS2(1:3*NATOMS)
+                     NTRIED=NTRIED+1 
                      CALL MINPERMDIST(POINTS1,POINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY, &
   &                                   RMAT,.FALSE.)
                      IF (INTERPCOSTFUNCTION) CALL MINPERMDIST(POINTS1,POINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD, &
   &                                                           DISTANCE,DIST2,RIGIDBODY,RMAT,INTERPCOSTFUNCTION)
                      IF (DISTANCE.LT.DUMMY) THEN
                         DUMMY=DISTANCE
-                        PRINT '(3(A,I6),A,G20.10,A,F12.2)','getupair> changing partner for min ',DMIN1(J1),' from ',DMIN2(J1), &
-  &                                                         ' to ',J2,' dist=', &
-  &                                                          DUMMY,' ediff=',EMIN(J2)-EMIN(DMIN1(J1))
+!                       PRINT '(3(A,I6),A,G20.10,A,F12.2)','getupair> changing partner for min ',DMIN1(J1),' from ',DMIN2(J1), &
+! &                                                         ' to ',J2,' dist=', &
+! &                                                          DUMMY,' ediff=',EMIN(J2)-EMIN(DMIN1(J1))
                         DMIN2(J1)=J2
                      ENDIF
                   ENDIF
                ENDIF
+               IF ((NTRIED.GT.1000).AND.(NAVAIL.GE.PAIRSTODO)) GOTO 987
             ENDDO min2
             DONE(J1)=.TRUE.
             NDONE=NDONE+1
-
          ENDIF
       ENDDO
+987   CONTINUE
       OLDBASIN(1:NMIN)=BASIN(1:NMIN)
       OLDBASINT(1:NMIN)=BASINT(1:NMIN)
       ETHRESH=ETHRESH+EINC
@@ -300,8 +314,8 @@ NPAIRDONE=NPAIRDONE+1
 IF (NPAIRDONE.GT.MAXPAIRS) CALL PAIRDOUBLE
 PAIR1(NPAIRDONE)=DMIN1(NUSED)
 PAIR2(NPAIRDONE)=DMIN2(NUSED)
-READ(UMIN,REC=MINS) SPOINTS(1:NR)
-READ(UMIN,REC=MINF) FPOINTS(1:NR)
+READ(UMIN,REC=MINS) SPOINTS(1:3*NATOMS)
+READ(UMIN,REC=MINF) FPOINTS(1:3*NATOMS)
 
 END SUBROUTINE GETUPAIR
 

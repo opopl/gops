@@ -21,7 +21,7 @@ source define_forces_0.sh
 # set initial parameters  {{{
 output_dir=$PWD
 outfiles=( ef.dat ) 
-GMIN_ofiles=( GMIN_out lowest best markov energy data ) 
+GMIN_ofiles=( $o_file $le_file best markov energy data ) 
 #}}}
 
 dn=$pbs_job_id
@@ -37,7 +37,7 @@ TIGHTCONV  $fqmax
 UPDATES $m_lbfgs
 DGUESS  0.1
 SAVE 10
-CENTRE
+! CENTRE
 CHANGEACCEPT $ca
 $sys 
 EDIFF 0.001
@@ -81,7 +81,7 @@ time_spent=$(($time_finish-$time_start))
 # extract energies; append force energy to ef.tex
 #{{{
 
-low_en=( ` awk '/^Energy/ { print $5 }' lowest ` )
+low_en=( ` awk '/^Energy/ { print $5 }' $le_file ` )
 
 gm_energy="${low_en[0]}"
 gme=$( echo "scale=10; ($gm_energy-($gs_energy))/($gs_energy)" | bc )

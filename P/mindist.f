@@ -41,8 +41,8 @@ C
       COMMON /MINDOM/ ROTMAT, OMEGATOT
       CHARACTER(LEN=5) ZUSE
 
-      ALLOCATE(RBSAVE(NR))
-      RBSAVE(1:NR)=RB(1:NR)
+      ALLOCATE(RBSAVE(3*NATOMS))
+      RBSAVE(1:3*NATOMS)=RB(1:3*NATOMS)
 C
 C  Initialise accumulated rotation matrix to the identity.
 C
@@ -57,7 +57,7 @@ C
       DSAVE=0.0D0
       IF (ZUSE(1:1).EQ.'W') THEN
          ALLOCATE(R(3,3*(NATOMS/2)),R0(3,3*(NATOMS/2)),R1(3,3*(NATOMS/2)),R1SAVE(3,3*(NATOMS/2)))
-C        NSIZE=NR
+C        NSIZE=3*NATOMS
          NSIZE=3*(NATOMS/2)
 C        DO J1=1,NATOMS
          DO J1=1,NATOMS/2
@@ -133,7 +133,7 @@ C
       DIST0=SQRT(DIST0)
       IF (BULKT) THEN
          DIST=DIST0
-         IF (PRESERVET) RB(1:NR)=RBSAVE(1:NR)
+         IF (PRESERVET) RB(1:3*NATOMS)=RBSAVE(1:3*NATOMS)
          DEALLOCATE(R, R0, R1, R1SAVE, RBSAVE)
          RETURN
       ENDIF
@@ -257,7 +257,7 @@ C    1              RA(3*(NATOMS/2+J1-1)+1),RA(3*(NATOMS/2+J1-1)+2),RA(3*(NATOMS
          ENDDO
       ENDDO
 
-      IF (PRESERVET) RB(1:NR)=RBSAVE(1:NR)
+      IF (PRESERVET) RB(1:3*NATOMS)=RBSAVE(1:3*NATOMS)
 
       DEALLOCATE(R, R0, R1, R1SAVE, RBSAVE)
 

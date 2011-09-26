@@ -24,6 +24,8 @@
 
       subroutine inertiaWrapper(Q, nCoordSites, angleAxis, ITX, ITY, ITZ)
 
+      USE COMMONS, ONLY: RBAAT
+
       use rigidBodymod
 
       implicit none
@@ -39,6 +41,11 @@
 
       integer :: numCartPoints
       real (kind=kind(0.0d0)), allocatable :: cartCoords(:)
+
+      IF (RBAAT) THEN
+         CALL RBINERTIA(Q, ITX, ITY, ITZ)
+         RETURN
+      ENDIF
 
       if (angleAxis) then
          numCartPoints = (nCoordSites/2)*rbPotential%nPhysicalSites
@@ -70,8 +77,6 @@ C
          print *, 'inertia> Size of MASS not equal to number of points'
          stop
       endif
-
-      IF (RBAAT) NATOMS = NATOMS/2
 
       CMX=0.0D0
       CMY=0.0D0
@@ -120,8 +125,6 @@ C     PRINT*,'MASST,CMX,CMY,CMZ=',MASST,CMX,CMY,CMZ
          Q(3*(J1-1)+2)=Q(3*(J1-1)+2)+CMY
          Q(3*(J1-1)+3)=Q(3*(J1-1)+3)+CMZ
       ENDDO
-
-      IF (RBAAT) NATOMS = 2*NATOMS
 
       RETURN
       END

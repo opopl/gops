@@ -29,12 +29,12 @@
       IMPLICIT NONE
       INTEGER M1, M2, J1, J2, J3, J4, MINMAP(NMIN), NLEFT, NDUMMY
       INTEGER NCOL(NMIN), NDEAD, NDISTA(NMIN), NDISTB(NMIN), NCYCLE, DMIN, DMAX, NUNCONA, NUNCONB
-      LOGICAL DEADTS(NTS), MATCHED, CHANGED
+      LOGICAL DEADTS(NTS), MATCHED, CHANGED  
       INTEGER ISTAT, MINPREV(NMIN)
       DOUBLE PRECISION LKSUM(NMIN)
       DOUBLE PRECISION TNEW, ELAPSED
       INTEGER, ALLOCATABLE :: NVAL(:,:)
-      DOUBLE PRECISION LOCALPOINTS(NR)
+      DOUBLE PRECISION LOCALPOINTS(3*NATOMS)
 
       CALL CPU_TIME(ELAPSED)
 
@@ -255,7 +255,19 @@
             IF ((NDISTA(J1).EQ.1000000).OR.(NDISTB(J1).EQ.1000000)) THEN
                NCONN(J1)=0
                NCOL(J1)=0
+               IF (DEBUG) PRINT '(A,I8,A)','minimum ',J1,' is disconnected from the A or B regions'
+            ENDIF
+         ELSEIF (TRIM(ADJUSTL(UNCONNECTEDS)).EQ.'AandB'.OR.TRIM(ADJUSTL(UNCONNECTEDS)).EQ.'AANDB') THEN
+            IF ((NDISTA(J1).EQ.1000000).AND.(NDISTB(J1).EQ.1000000)) THEN
+               NCONN(J1)=0
+               NCOL(J1)=0
                IF (DEBUG) PRINT '(A,I8,A)','minimum ',J1,' is disconnected from the A and B regions'
+            ENDIF
+         ELSEIF (TRIM(ADJUSTL(UNCONNECTEDS)).EQ.'AorB'.OR.TRIM(ADJUSTL(UNCONNECTEDS)).EQ.'AORB') THEN
+            IF ((NDISTA(J1).EQ.1000000).OR.(NDISTB(J1).EQ.1000000)) THEN
+               NCONN(J1)=0
+               NCOL(J1)=0
+               IF (DEBUG) PRINT '(A,I8,A)','minimum ',J1,' is disconnected from the A or B regions'
             ENDIF
          ENDIF
          IF (NCONN(J1).GT.NCONNMIN) NLEFT=NLEFT+1
@@ -264,7 +276,7 @@
 
       NDUMMY=0
       OPEN(UNIT=2,FILE='min.data.removed',STATUS='UNKNOWN')
-      OPEN(UNIT=4,FILE='points.min.removed',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*NR)
+      OPEN(UNIT=4,FILE='points.min.removed',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*3*NATOMS)
       minloop: DO J1=1,NMIN
          IF (NCONN(J1).LE.NCONNMIN) THEN
             IF (DEBUG) PRINT '(A,I8)','remove_unconnected> removing minimum ',J1
@@ -274,8 +286,8 @@
          NDUMMY=NDUMMY+1
          MINPREV(J1)=NDUMMY
          WRITE(2,'(2F20.10,I6,3F20.10)') EMIN(J1), FVIBMIN(J1), HORDERMIN(J1), IXMIN(J1), IYMIN(J1), IZMIN(J1)
-         READ(UMIN,REC=J1) (LOCALPOINTS(J2),J2=1,NR)
-         WRITE(4,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,NR)
+         READ(UMIN,REC=J1) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+         WRITE(4,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,3*NATOMS)
       ENDDO minloop
       PRINT '(3(A,I8))','remove_unconnected> ',NDUMMY,' of ',NMIN,' minima left after removing ',NMIN-NDUMMY
       CLOSE(2)
@@ -326,7 +338,7 @@
       CLOSE(2)
 
       OPEN(UNIT=3,FILE='ts.data.removed',STATUS='UNKNOWN')
-      OPEN(UNIT=5,FILE='points.ts.removed',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*NR)
+      OPEN(UNIT=5,FILE='points.ts.removed',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*3*NATOMS)
       NDUMMY=0
       tsloop: DO J1=1,NTS
          IF (MINPREV(PLUS(J1)).EQ.0) THEN
@@ -347,8 +359,8 @@
             WRITE(3,'(2F20.10,3I10,3F20.10)') ETS(J1),FVIBTS(J1),HORDERTS(J1),MINPREV(PLUS(J1)),MINPREV(MINUS(J1)), &
      &                                        IXTS(J1),IYTS(J1),IZTS(J1)
          ENDIF
-         READ(UTS,REC=J1) (LOCALPOINTS(J2),J2=1,NR)
-         WRITE(5,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,NR)
+         READ(UTS,REC=J1) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+         WRITE(5,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,3*NATOMS)
       ENDDO tsloop
       CLOSE(3); CLOSE(5)
       PRINT '(3(A,I8))','remove_unconnected> ',NDUMMY,' of ',NTS,' ts left after removing ',NTS-NDUMMY

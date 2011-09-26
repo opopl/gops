@@ -142,17 +142,15 @@
 
 !op226> SEEDT {{{ 
 
-      IF (SEEDT) THEN
-         CALL GSEED
-      ELSE
-         IF ((.NOT.FIELDT).AND.CENT) THEN
-               IF (.NOT.SEEDT) CALL CENTRE2(COORDS(1:3*NATOMS,1))
-         ELSEIF ((.NOT.FIELDT).AND.FIXCOM) THEN
-            DO J1=1,NPAR
-               IF (.NOT.SEEDT) CALL CENTRECOM(COORDS(1:3*NATOMS,J1))
-            ENDDO
-         ENDIF
-      ENDIF
+         !CALL GSEED
+         !IF ((.NOT.FIELDT).AND.CENT) THEN
+               !IF (.NOT.SEEDT) CALL CENTRE2(COORDS(1:3*NATOMS,1))
+         !ELSEIF ((.NOT.FIELDT).AND.FIXCOM) THEN
+            !DO J1=1,NPAR
+               !IF (.NOT.SEEDT) CALL CENTRECOM(COORDS(1:3*NATOMS,J1))
+            !ENDDO
+         !ENDIF
+      !ENDIF
 !op226>}}} 
       
          NQ=1

@@ -35,6 +35,8 @@
  
       SUBROUTINE RBMINPERMDIST(COORDSB,COORDSA,DISTANCE,DIST2,QBEST,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT)
 
+!     returns DISTANCE as the actual distance, rather than the squared distance
+
       USE COMMONS, ONLY : NATOMS, NRBSITES, NTSITES, NRBGROUP, RBSITE, RBOPS, EFIELDT, RBSYMT
       USE COMMONS,ONLY : NPERMGROUP, NPERMSIZE, PERMGROUP, NSETS, SETS, GEOMDIFFTOL
 
@@ -44,25 +46,25 @@
       INTEGER            :: NPERM, PATOMS, NTRIES, NSIZE, JMAX, LOCMAX(1), J1, J2, J3, INFO, NRB
       INTEGER            :: INVERT, NORBIT1, NORBIT2, PERM(NATOMS), NCHOOSE2, NDUMMY, LPERM(NATOMS), NCHOOSE1
       INTEGER            :: NEWPERM(NATOMS), ALLPERM(NATOMS)
-      DOUBLE PRECISION   :: COORDSA(NR), COORDSB(NR), DISTANCE, DISTWP, DIST2, TEMPA(9*NATOMS) 
-      DOUBLE PRECISION   :: DUMMYA(NR), DUMMYB(NR), DUMMY(NR), DUMMYWP(NR)
+      DOUBLE PRECISION   :: COORDSA(3*NATOMS), COORDSB(3*NATOMS), DISTANCE, DISTWP, DIST2, TEMPA(9*NATOMS) 
+      DOUBLE PRECISION   :: DUMMYA(3*NATOMS), DUMMYB(3*NATOMS), DUMMY(3*NATOMS), DUMMYWP(3*NATOMS)
       DOUBLE PRECISION   :: XA(3*NTSITES),  XB(3*NTSITES), XBS(3*NTSITES)
-      DOUBLE PRECISION   :: XTMP(NR)
+      DOUBLE PRECISION   :: XTMP(3*NATOMS)
       DOUBLE PRECISION   :: SITESA(3*NTSITES),  SITESB(3*NTSITES)
-      DOUBLE PRECISION   :: RMAT(3,3), RMATI(3,3), ENERGY, VNEW(NR), DX, DY, DZ, RMS, DBEST, XBEST(NR)
+      DOUBLE PRECISION   :: RMAT(3,3), RMATI(3,3), ENERGY, VNEW(3*NATOMS), DX, DY, DZ, RMS, DBEST, XBEST(3*NATOMS)
       DOUBLE PRECISION   :: ROTA(3,3), ROTINVA(3,3), ROTB(3,3), ROTINVB(3,3), RMATCUMUL(3,3), LMAT(3,3)
       DOUBLE PRECISION   :: ROTINVBBEST(3,3), ROTABEST(3,3), RMATBEST(3,3), RMATWP(3,3)
       DOUBLE PRECISION   :: CMAX, CMAY, CMAZ, CMBX, CMBY, CMBZ
-      DOUBLE PRECISION   :: PDUMMYA(NR), PDUMMYB(NR), LDISTANCE, XDUMMY, BOXLX, BOXLY, BOXLZ, WORSTRAD
+      DOUBLE PRECISION   :: PDUMMYA(3*NATOMS), PDUMMYB(3*NATOMS), LDISTANCE, XDUMMY, BOXLX, BOXLY, BOXLZ, WORSTRAD
       DOUBLE PRECISION   :: Q(4), Q1(4), Q2(4), AMAT(4,4), BMAT(4,4), DIAG(4), P(3)
-      DOUBLE PRECISION   :: ST, THETA, THETAH, FCT, DUMMYC(NR), DUMMYD(NR)
+      DOUBLE PRECISION   :: ST, THETA, THETAH, FCT, DUMMYC(3*NATOMS), DUMMYD(3*NATOMS)
       LOGICAL            :: DEBUG, BULKT
-      DOUBLE PRECISION   :: BESTA(NR), RBDISTANCE, PVEC(3), RTEMP1(3,3), RTEMP2(3,3), SITEDIST
+      DOUBLE PRECISION   :: BESTA(3*NATOMS), RBDISTANCE, PVEC(3), RTEMP1(3,3), RTEMP2(3,3), SITEDIST
       DOUBLE PRECISION   :: QCUMUL(4), QBEST(4), QA(4), QB(4), QBINV(4), QTMP(4), QI(4)
-      DOUBLE PRECISION   :: COORDSAS(NR), COORDSBS(NR), COORDSCOMA(NR/2), COORDSCOMB(NR/2)
+      DOUBLE PRECISION   :: COORDSAS(3*NATOMS), COORDSBS(3*NATOMS), COORDSCOMA(3*NATOMS/2), COORDSCOMB(3*NATOMS/2)
 
-      COORDSCOMA(:) = COORDSA(1:NR/2)
-      COORDSCOMB(:) = COORDSB(1:NR/2)
+      COORDSCOMA(:) = COORDSA(1:3*NATOMS/2)
+      COORDSCOMB(:) = COORDSB(1:3*NATOMS/2)
 
       NATOMS = NATOMS/2
 
@@ -70,7 +72,8 @@
 
       NATOMS = 2*NATOMS
 
-      IF (SQRT(DIST2) <= GEOMDIFFTOL) THEN
+      IF (SQRT(DISTANCE) <= GEOMDIFFTOL) THEN
+         DISTANCE = SQRT(DISTANCE)
          IF (DEBUG) PRINT '(A)',' rbpermdist> minpermdistrbcom suggests identical'
          CMAX = 0.0D0; CMAY = 0.0D0; CMAZ = 0.0D0
          CMBX = 0.0D0; CMBY = 0.0D0; CMBZ = 0.0D0
@@ -101,8 +104,8 @@
          RETURN
       ENDIF
 
-      COORDSAS(1:NR) = COORDSA(1:NR) ! to trace error, see at the end
-      COORDSBS(1:NR) = COORDSB(1:NR) ! to trace error, see at the end
+      COORDSAS(1:3*NATOMS) = COORDSA(1:3*NATOMS) ! to trace error, see at the end
+      COORDSBS(1:3*NATOMS) = COORDSB(1:3*NATOMS) ! to trace error, see at the end
 
       NRB   = (NATOMS/2)
       NSIZE = NTSITES
@@ -119,7 +122,7 @@
 !     The standard orientation needs to be done for the sites if we are going to identify
 !     permutation-inversion isomers with respect to the sites metric!
 !
-!     DUMMY(1:NR)=DUMMYB(1:NR)
+!     DUMMY(1:3*NATOMS)=DUMMYB(1:3*NATOMS)
 !     CALL RBSITESORIENT(DUMMY,DUMMYB,NORBIT1,1,NORBIT2,1,NATOMS,DEBUG,ROTB,ROTINVB)
 !
 !     ----------------------------------------------------------------------------------------------
@@ -144,8 +147,8 @@
 40    NCHOOSE2 = 0
 30    NCHOOSE2 = NCHOOSE2+1
 
-      DUMMYB(1:NR) = COORDSB(1:NR)
-      DUMMYA(1:NR) = COORDSA(1:NR)
+      DUMMYB(1:3*NATOMS) = COORDSB(1:3*NATOMS)
+      DUMMYA(1:3*NATOMS) = COORDSA(1:3*NATOMS)
 
       DO J1 = 1, NATOMS
          ALLPERM(J1) = J1
@@ -172,16 +175,16 @@
 !         STOP
 !      ENDIF
 
-      DUMMYC(1:NR) = DUMMYA(1:NR)
+      DUMMYC(1:3*NATOMS) = DUMMYA(1:3*NATOMS)
 
       CALL RBSITESORIENT(DUMMYC,DUMMY,NORBIT1,NCHOOSE1,NORBIT2,NCHOOSE2,NATOMS,QA,DEBUG)
 
-      DUMMYA(1:NR)=DUMMY(1:NR)
-      DUMMYC(1:NR)=DUMMYB(1:NR)
+      DUMMYA(1:3*NATOMS)=DUMMY(1:3*NATOMS)
+      DUMMYC(1:3*NATOMS)=DUMMYB(1:3*NATOMS)
 
       CALL RBSITESORIENT(DUMMYC,DUMMY,NORBIT1,1,NORBIT2,1,NATOMS,QB,DEBUG)
 
-      DUMMYB(1:NR)=DUMMY(1:NR)
+      DUMMYB(1:3*NATOMS)=DUMMY(1:3*NATOMS)
 
 !     ----------------------------------------------------------------------------------------------
 !     !
@@ -293,7 +296,7 @@
 !     Due to possible swaps above, we need to update the overall permutation here.
 !
       ALLPERM(1:NATOMS) = NEWPERM(1:NATOMS)
-      DUMMY(1:NR) = DUMMYA(1:NR)
+      DUMMY(1:3*NATOMS) = DUMMYA(1:3*NATOMS)
       NPERM    = 0
       DISTANCE = 0.0D0
 !
@@ -479,7 +482,7 @@
       IF (DISTANCE .LT. DBEST) THEN
 
          DBEST                = DISTANCE
-         XBEST(1:NR)    = DUMMYA(1:NR)
+         XBEST(1:3*NATOMS)    = DUMMYA(1:3*NATOMS)
          QTMP(1:4)  = QA(1:4)
          CALL QROTQ(QCUMUL,QTMP)
          QBEST(1:4) = QTMP(1:4)
@@ -508,7 +511,7 @@
 !     (aside from a possible permutation of the atom ordering)
 !
       CALL RBROT(XBEST, XTMP, QBINV, NATOMS)
-      XBEST(1:NR) = XTMP(1:NR)
+      XBEST(1:3*NATOMS) = XTMP(1:3*NATOMS)
 
       DO J1 = 1, (NATOMS/2)
          XBEST(3*(J1-1)+1) = XBEST(3*(J1-1)+1) + CMBX
@@ -547,7 +550,7 @@
 
       CALL QROTQ(QBINV,QBEST)
 
-      COORDSA(1:NR)=XBEST(1:NR) ! finally, best COORDSA should include permutations for DNEB input!
+      COORDSA(1:3*NATOMS)=XBEST(1:3*NATOMS) ! finally, best COORDSA should include permutations for DNEB input!
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!debug
 !      CALL POTENTIAL(COORDSA,ENERGY,VNEW,.TRUE.,.FALSE.,RMS,.FALSE.,.FALSE.)
@@ -569,7 +572,7 @@
       IMPLICIT NONE
 
       INTEGER :: J1, J2, J3, J4
-      DOUBLE PRECISION :: Q(NR), X(3*NTSITES), R(3), P(3), RM(3,3)
+      DOUBLE PRECISION :: Q(3*NATOMS), X(3*NTSITES), R(3), P(3), RM(3,3)
       DOUBLE PRECISION :: RBSITETD(4,3), SIGTD(4), SIGDB(2)
 
       IF (DBPTDT) CALL DEFTD(RBSITETD,SIGTD,SIGDB)
@@ -578,7 +581,7 @@
 
          J2   = 3*J1
          R(:) = Q(J2-2:J2)
-         J2   = NR/2 + J2
+         J2   = 3*NATOMS/2 + J2
          P(:) = Q(J2-2:J2)
 
          CALL ROTMAT(P, RM)
@@ -617,7 +620,7 @@
 !
       IMPLICIT NONE
       INTEGER          :: NATOMS, I, J, J1, J2, JMAX1, JMAX2, NORBIT1, NCHOOSE1, NORBIT2, NCHOOSE2, OFFSET, NSIZE
-      DOUBLE PRECISION :: X(NR), T1(NR)
+      DOUBLE PRECISION :: X(3*NATOMS), T1(3*NATOMS)
       DOUBLE PRECISION :: XS(3*NTSITES), T1S(3*NTSITES), T2S(3*NTSITES), DIST(NTSITES)
       DOUBLE PRECISION :: AX(3), P(3), Q2(4), ROTM(3,3), ROTMINV(3,3)
       DOUBLE PRECISION :: THETA, THETAH, COST, SINT, COSTH, SINTH, ST, FCT
@@ -625,7 +628,7 @@
       LOGICAL          :: DEBUG
 
       NSIZE   = NTSITES
-      OFFSET  = NR/2
+      OFFSET  = 3*NATOMS/2
       CUTOFF1 = 1.D-03
 
       CALL SITEPOS(X, XS)
@@ -902,7 +905,7 @@
       IMPLICIT NONE
 
       INTEGER          :: I, J, NATOMS
-      DOUBLE PRECISION :: T(NR), X(NR), T1(1:3), Q2(4), P(3), RM(3,3) 
+      DOUBLE PRECISION :: T(3*NATOMS), X(3*NATOMS), T1(1:3), Q2(4), P(3), RM(3,3) 
       DOUBLE PRECISION :: CMX, CMY, CMZ
 !
 !     Move centre of mass to the origin.
@@ -933,7 +936,7 @@
          X(J-2:J) = T1(1:3)  
 !     CONVERT THE ANGLE-AXIS COORDINATES
 
-         J        = NR/2 + J
+         J        = 3*NATOMS/2 + J
          P(:)     = T(J-2:J)
          CALL QROTAA(Q2,P)
          X(J-2:J) = P(1:3)
@@ -1028,13 +1031,13 @@
 !
       IMPLICIT NONE
       INTEGER          :: NATOMS, I, J, J1, J2, JMAX1, JMAX2, NORBIT1, NCHOOSE1, NORBIT2, NCHOOSE2, OFFSET
-      DOUBLE PRECISION :: X(NR), DIST(NATOMS), T1(NR), T2(NR)
+      DOUBLE PRECISION :: X(3*NATOMS), DIST(NATOMS), T1(3*NATOMS), T2(3*NATOMS)
       DOUBLE PRECISION :: RM(3,3), AX(3), P(3), Q1(4), Q2(4), Q(4), ROTM(3,3), ROTMINV(3,3)
       DOUBLE PRECISION :: THETA, THETAH, COST, SINT, COSTH, SINTH, ST, FCT
       DOUBLE PRECISION :: CMX, CMY, CMZ, DMAX, DUMMY, PROJ, DMAX2, CUTOFF1, DTEMP
       LOGICAL          :: DEBUG
 
-      OFFSET  = NR/2
+      OFFSET  = 3*NATOMS/2
       CUTOFF1 = 1.D-03
 !
 !     Move centre of mass to the origin.
@@ -1096,7 +1099,7 @@
 !
          IF (X(3*(JMAX1-1)+3) > 0.D0) THEN
 
-            T1(1:NR) = X(1:NR)
+            T1(1:3*NATOMS) = X(1:3*NATOMS)
             Q2(1:4) = (/1.D0, 0.D0, 0.D0, 0.D0/)
  
          ELSE  ! rotate about the x-axis by \pi, DO NOT INVERT!
@@ -1161,7 +1164,7 @@
 
          IF (ABS(DIST(J1) - DMAX) < CUTOFF1) THEN
 
-            T2(1:NR) = T1(1:NR)
+            T2(1:3*NATOMS) = T1(1:3*NATOMS)
             CALL RBROTXZ(NATOMS, J1, T2, PROJ, DIST, Q2, .FALSE.)
 
             IF (ABS(PROJ - DMAX2) < CUTOFF1) THEN
@@ -1195,14 +1198,14 @@
 
       IMPLICIT NONE
       INTEGER          :: NATOMS, JDO, I, J, J2, OFFSET
-      DOUBLE PRECISION :: T1(NR), X(NR), PROJ, DIST(NATOMS/2), THETA, THETAH, COST, SINT, ST
+      DOUBLE PRECISION :: T1(3*NATOMS), X(3*NATOMS), PROJ, DIST(NATOMS/2), THETA, THETAH, COST, SINT, ST
       DOUBLE PRECISION :: COSTH, SINTH, FCT, P(3), Q2(4), Q1(4), RM(3,3), ROTM(3,3), CMX, CMY, CMZ
       LOGICAL          :: ROTT
 
       J2     = 3*JDO
-      OFFSET = NR/2
+      OFFSET = 3*NATOMS/2
 
-      X(1:NR) = T1(1:NR)
+      X(1:3*NATOMS) = T1(1:3*NATOMS)
 
       IF (ABS(T1(J2-1)) < 1.0D-8) THEN            ! already on the xz plane
 
@@ -1251,16 +1254,12 @@
 
          IF (EFIELDT) THEN
             ROTM(:,:) = RM(:,:)
-         ELSE
-!            ROTM(:,:) = MATMUL(RM(:,:),ROTM(:,:))
-!            CALL QROTQ(Q2,Q1)
          ENDIF
 
 !     Now change the angle-axis coordinates via quaternion multiplication equivalent to rotation by ROTM
 
          CALL RBROT(T1, X, Q2, NATOMS)
-!         T1(NR/2+1:NR) = X(NR/2+1:NR)
-         T1(1:NR) = X(1:NR)
+         T1(1:3*NATOMS) = X(1:3*NATOMS)
 
       ELSE
 
@@ -1272,6 +1271,6 @@
 
       ENDIF
 
-      T1(1:NR) = X(1:NR)
+      T1(1:3*NATOMS) = X(1:3*NATOMS)
 
       END SUBROUTINE RBROTXZ

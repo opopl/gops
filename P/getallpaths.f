@@ -27,16 +27,17 @@ C
       USE PORFUNCS
       USE KEY
       USE COMMONS
+      USE UTILS,ONLY : GETUNIT
       IMPLICIT NONE
 
-      INTEGER J1, J2, ISTAT, NMINOLD, TSNUMBER, J3, NCOUNT, NMINSAVE, NTSSAVE
-      DOUBLE PRECISION LOCALPOINTS(NR), ENERGY, NEWEMIN, NEWETS, DISTANCE, RMAT(3,3),
-     1                 LPOINTSTS(NR), LPLUS(NR), LMINUS(NR), LOCALPOINTS2(NR)
+      INTEGER J1, J2, ISTAT, NMINOLD, TSNUMBER, J3, NCOUNT, NMINSAVE, NTSSAVE, J4, J5, LUNIT
+      DOUBLE PRECISION LOCALPOINTS(3*NATOMS), ENERGY, NEWEMIN, NEWETS, DISTANCE, RMAT(3,3),
+     1                 LPOINTSTS(3*NATOMS), LPLUS(3*NATOMS), LMINUS(3*NATOMS), LOCALPOINTS2(3*NATOMS)
       DOUBLE PRECISION DUMMY, DIST2 
-      DOUBLE PRECISION NEWFVIBMIN, NEWFVIBTS, NEWNEGEIG, NEWPOINTSMIN(NR), NEWPOINTSMINPLUS(NR), EPLUS,
-     1                 NEWPOINTSTS(NR), NEWIXMIN,  NEWIYMIN, NEWIZMIN, IXPLUS, IYPLUS, IZPLUS,
-     2                 NEWIXTS,  NEWIYTS, NEWIZTS, IXMINUS, IYMINUS, IZMINUS, FRICTIONFAC
-      INTEGER NEWHORDERMIN, NEWHORDERTS, NEWMIN, NEWTS, NTRIPLES
+      DOUBLE PRECISION NEWFVIBMIN, NEWFVIBTS, NEWNEGEIG, NEWPOINTSMIN(3*NATOMS), NEWPOINTSMINPLUS(3*NATOMS), EPLUS,
+     1                 NEWPOINTSTS(3*NATOMS), NEWIXMIN,  NEWIYMIN, NEWIZMIN, IXPLUS, IYPLUS, IZPLUS,
+     2                 NEWIXTS,  NEWIYTS, NEWIZTS, IXMINUS, IYMINUS, IZMINUS, FRICTIONFAC, TEMPD(PAIRDISTMAX)
+      INTEGER NEWHORDERMIN, NEWHORDERTS, NEWMIN, NEWTS, NTRIPLES, TEMPL(PAIRDISTMAX)
       LOGICAL TSISOLD, FAILED, MINPOLD, MINMOLD, BADTRIPLE
       CHARACTER(LEN=1) DUMMYSTRING
 
@@ -66,16 +67,17 @@ C
       IF (NOFRQS) THEN
          NTRIPLES=NCOUNT/(3*(NATOMS+2))
          J1=NTRIPLES*3*(NATOMS+2)
-         IF (DEBUG) PRINT '(2(A,I8))','getallpaths> number of triples=',NTRIPLES,' number of trailing lines=',J1-NCOUNT
+         IF (DEBUG) PRINT '(2(A,I8))','getallpaths> number of triples=',NTRIPLES,' number of trailing lines=',NCOUNT-J1
       ELSE
          NTRIPLES=NCOUNT/(3*(2*NATOMS-NGLY+2))
          J1=NTRIPLES*3*(2*NATOMS-NGLY+2)
-         IF (DEBUG) PRINT '(2(A,I8))','getallpaths> number of triples=',NTRIPLES,' number of trailing lines=',J1-NCOUNT
+         IF (DEBUG) PRINT '(2(A,I8))','getallpaths> number of triples=',NTRIPLES,' number of trailing lines=',NCOUNT-J1
       ENDIF
 
       TSISOLD=.TRUE.
       DO J1=1,NTRIPLES 
-         IF (DEBUG) PRINT '(A,I6,A,2I6)','getallpaths> doing triple number ',J1,' number of minima and ts=',NMIN,NTS
+         IF (DEBUG) PRINT '(A,I6,A,2I10)','getallpaths> doing triple number ',J1,' number of minima and ts=',NMIN,NTS
+         IF (DEBUG) CALL FLUSH(6,ISTAT)
          BADTRIPLE=.FALSE.
 C
 C  NMIN and NTS can be incremented locally within the loop, but are reset to
@@ -116,17 +118,17 @@ C
          NEWFVIBMIN=DUMMY
 
          IF (MACHINE) THEN
-            READ(1) (NEWPOINTSMIN(J2),J2=1,NR)  
+            READ(1) (NEWPOINTSMIN(J2),J2=1,3*NATOMS)  
          ELSE
-            READ(1,*) (NEWPOINTSMIN(J2),J2=1,NR)  
+            READ(1,*) (NEWPOINTSMIN(J2),J2=1,3*NATOMS)  
          ENDIF
-         LOCALPOINTS(1:NR)=NEWPOINTSMIN(1:NR)
+         LOCALPOINTS(1:3*NATOMS)=NEWPOINTSMIN(1:3*NATOMS)
          CALL INERTIAWRAPPER(LOCALPOINTS,NATOMS,angleAxis,NEWIXMIN,NEWIYMIN,NEWIZMIN)
          MINPOLD=.TRUE.
          DO J2=1,NMIN
             DISTANCE=1.0D100
             IF (ABS(NEWEMIN-EMIN(J2)).LT.EDIFFTOL) THEN
-               READ(UMIN,REC=J2) (LOCALPOINTS2(J3),J3=1,NR)  
+               READ(UMIN,REC=J2) (LOCALPOINTS2(J3),J3=1,3*NATOMS)  
                CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY, 
      &                          RMAT,.FALSE.)
             ENDIF
@@ -176,23 +178,53 @@ C
 C        WRITE(UMINDATA,'(2F20.10,I6,3F20.10)') EMIN(NMIN), FVIBMIN(NMIN), HORDERMIN(NMIN), IXMIN(NMIN), IYMIN(NMIN), IZMIN(NMIN)
 C        CALL FLUSH(UMINDATA,ISTAT)
 C
-         WRITE(UMIN,REC=NMIN) (NEWPOINTSMIN(J2),J2=1,NR)
+         WRITE(UMIN,REC=NMIN) (NEWPOINTSMIN(J2),J2=1,3*NATOMS)
          CALL FLUSH(UMIN,ISTAT)
 
          IF (DIJINITT) THEN
-            PAIRDIST(NMIN*(NMIN+1)/2)=0.0D0
+            PAIRDIST(NMIN,1:PAIRDISTMAX)=1.0D100
             DO J3=1,NMIN-1
-               READ(UMIN,REC=J3) (LOCALPOINTS(J2),J2=1,NR)
+               READ(UMIN,REC=J3) (LOCALPOINTS(J2),J2=1,3*NATOMS)
                CALL MINPERMDIST(LOCALPOINTS,NEWPOINTSMIN,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY, 
      &                          RMAT,.FALSE.)
                IF (INTERPCOSTFUNCTION) CALL MINPERMDIST(LOCALPOINTS,NEWPOINTSMIN,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,
      &                                 DISTANCE,DIST2,RIGIDBODY,RMAT,INTERPCOSTFUNCTION)
-               PAIRDIST(NMIN*(NMIN-1)/2+J3)=DISTANCE
+!
+! Maintain sorted list of nearest nodes according to the chosen interpolation metric.
+! 
+               sortloop: DO J4=1,PAIRDISTMAX
+                  IF (DISTANCE.LT.PAIRDIST(NMIN,J4)) THEN
+                     DO J5=PAIRDISTMAX,J4+1,-1
+                        PAIRDIST(NMIN,J5)=PAIRDIST(NMIN,J5-1)
+                        PAIRLIST(NMIN,J5)=PAIRLIST(NMIN,J5-1)
+                     ENDDO
+                     PAIRDIST(NMIN,J4)=DISTANCE
+                     PAIRLIST(NMIN,J4)=J3
+                     EXIT sortloop
+                  ENDIF
+               ENDDO sortloop
+               sortloop2: DO J4=1,PAIRDISTMAX
+                  IF (DISTANCE.LT.PAIRDIST(J3,J4)) THEN
+                     DO J5=PAIRDISTMAX,J4+1,-1
+                        PAIRDIST(J3,J5)=PAIRDIST(J3,J5-1)
+                        PAIRLIST(J3,J5)=PAIRLIST(J3,J5-1)
+                     ENDDO
+                     PAIRDIST(J3,J4)=DISTANCE
+                     PAIRLIST(J3,J4)=NMIN
+                     EXIT sortloop2
+                  ENDIF
+               ENDDO sortloop2
             ENDDO
+            PRINT '(A,I8)','getallpaths> Finished pair distance calculation for new minimum ',NMIN
+            IF (DEBUG) THEN
+               PRINT '(10G13.2)',PAIRDIST(NMIN,1:PAIRDISTMAX)
+               PRINT '(10I13)',PAIRLIST(NMIN,1:PAIRDISTMAX)
+            ENDIF
+            CALL FLUSH(6,ISTAT)
          ENDIF
 
 130      CONTINUE
-         NEWPOINTSMINPLUS(1:NR)=NEWPOINTSMIN(1:NR)
+         NEWPOINTSMINPLUS(1:3*NATOMS)=NEWPOINTSMIN(1:3*NATOMS)
          EPLUS=NEWEMIN
 C
 C  Read TS data.
@@ -231,11 +263,11 @@ C
 C  Now we store the transition state coordinates.
 C
          IF (MACHINE) THEN
-            READ(1) (NEWPOINTSTS(J2),J2=1,NR)  
+            READ(1) (NEWPOINTSTS(J2),J2=1,3*NATOMS)  
          ELSE
-            READ(1,*) (NEWPOINTSTS(J2),J2=1,NR)  
+            READ(1,*) (NEWPOINTSTS(J2),J2=1,3*NATOMS)  
          ENDIF
-         LOCALPOINTS(1:NR)=NEWPOINTSTS(1:NR)
+         LOCALPOINTS(1:3*NATOMS)=NEWPOINTSTS(1:3*NATOMS)
          CALL INERTIAWRAPPER(LOCALPOINTS,NATOMS,ANGLEAXIS,NEWIXTS,NEWIYTS,NEWIZTS)
          NEWFVIBTS=DUMMY
          NEWHORDERTS=HORDER
@@ -258,7 +290,7 @@ C
          DO J2=1,NTS
             DISTANCE=1.0D100
             IF (ABS(NEWETS-ETS(J2)).LT.EDIFFTOL) THEN
-               READ(UTS,REC=J2) (LOCALPOINTS2(J3),J3=1,NR)
+               READ(UTS,REC=J2) (LOCALPOINTS2(J3),J3=1,3*NATOMS)
                CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY, 
      &                          RMAT,.FALSE.)
             ENDIF
@@ -293,7 +325,7 @@ C
             WRITE(*,'(A,I6,A)') 'getallpaths> new intermediate ts ',NTS
          ENDIF
          PLUS(NTS)=NEWMIN
-         WRITE(UTS,REC=NTS) (NEWPOINTSTS(J2),J2=1,NR)
+         WRITE(UTS,REC=NTS) (NEWPOINTSTS(J2),J2=1,3*NATOMS)
          CALL FLUSH(UTS,ISTAT)
 120      CONTINUE
 C
@@ -328,17 +360,17 @@ C
          NEWFVIBMIN=DUMMY
 
          IF (MACHINE) THEN
-              READ(1) (NEWPOINTSMIN(J2),J2=1,NR)  
+              READ(1) (NEWPOINTSMIN(J2),J2=1,3*NATOMS)  
          ELSE
-              READ(1,*) (NEWPOINTSMIN(J2),J2=1,NR)  
+              READ(1,*) (NEWPOINTSMIN(J2),J2=1,3*NATOMS)  
          ENDIF
-         LOCALPOINTS(1:NR)=NEWPOINTSMIN(1:NR)
+         LOCALPOINTS(1:3*NATOMS)=NEWPOINTSMIN(1:3*NATOMS)
          CALL INERTIAWRAPPER(LOCALPOINTS,NATOMS,angleAxis,NEWIXMIN,NEWIYMIN,NEWIZMIN)
          MINMOLD=.TRUE.
          DO J2=1,NMIN
             DISTANCE=1.0D100
             IF (ABS(NEWEMIN-EMIN(J2)).LT.EDIFFTOL) THEN
-               READ(UMIN,REC=J2) (LOCALPOINTS2(J3),J3=1,NR)
+               READ(UMIN,REC=J2) (LOCALPOINTS2(J3),J3=1,3*NATOMS)
                CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY, 
      &                          RMAT,.FALSE.)
             ENDIF
@@ -388,19 +420,47 @@ C
 C        WRITE(UMINDATA,'(2F20.10,I6,3F20.10)') EMIN(NMIN), FVIBMIN(NMIN), HORDERMIN(NMIN), IXMIN(NMIN), IYMIN(NMIN), IZMIN(NMIN)
 C        CALL FLUSH(UMINDATA,ISTAT)
 C
-         WRITE(UMIN,REC=NMIN) (NEWPOINTSMIN(J2),J2=1,NR)
+         WRITE(UMIN,REC=NMIN) (NEWPOINTSMIN(J2),J2=1,3*NATOMS)
          CALL FLUSH(UMIN,ISTAT)
 
          IF (DIJINITT) THEN
-            PAIRDIST(NMIN*(NMIN+1)/2)=0.0D0
+            PAIRDIST(NMIN,1:PAIRDISTMAX)=1.0D100
             DO J3=1,NMIN-1
-               READ(UMIN,REC=J3) (LOCALPOINTS(J2),J2=1,NR)
-               CALL MINPERMDIST(LOCALPOINTS,NEWPOINTSMIN,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY,
+               READ(UMIN,REC=J3) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+               CALL MINPERMDIST(LOCALPOINTS,NEWPOINTSMIN,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY, 
      &                          RMAT,.FALSE.)
                IF (INTERPCOSTFUNCTION) CALL MINPERMDIST(LOCALPOINTS,NEWPOINTSMIN,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,
-     &                                                  DISTANCE,DIST2,RIGIDBODY,RMAT,INTERPCOSTFUNCTION)
-               PAIRDIST(NMIN*(NMIN-1)/2+J3)=DISTANCE
+     &                                 DISTANCE,DIST2,RIGIDBODY,RMAT,INTERPCOSTFUNCTION)
+!
+! Maintain sorted list of nearest nodes according to the chosen interpolation metric.
+! 
+               ssloop: DO J4=1,PAIRDISTMAX
+                  IF (DISTANCE.LT.PAIRDIST(NMIN,J4)) THEN
+                     DO J5=PAIRDISTMAX,J4+1,-1
+                        PAIRDIST(NMIN,J5)=PAIRDIST(NMIN,J5-1)
+                        PAIRLIST(NMIN,J5)=PAIRLIST(NMIN,J5-1)
+                     ENDDO
+                     PAIRDIST(NMIN,J4)=DISTANCE
+                     PAIRLIST(NMIN,J4)=J3
+                     EXIT ssloop
+                  ENDIF
+               ENDDO ssloop
+               ssloop2: DO J4=1,PAIRDISTMAX
+                  IF (DISTANCE.LT.PAIRDIST(J3,J4)) THEN
+                     DO J5=PAIRDISTMAX,J4+1,-1
+                        PAIRDIST(J3,J5)=PAIRDIST(J3,J5-1)
+                        PAIRLIST(J3,J5)=PAIRLIST(J3,J5-1)
+                     ENDDO
+                     PAIRDIST(J3,J4)=DISTANCE
+                     PAIRLIST(J3,J4)=NMIN
+                     EXIT ssloop2
+                  ENDIF
+               ENDDO ssloop2
             ENDDO
+            PRINT '(A,I8)','getallpaths> Finished pair distance calculation for new minimum ',NMIN
+            PRINT '(10G13.2)',PAIRDIST(NMIN,1:PAIRDISTMAX)
+            PRINT '(10I13)',PAIRLIST(NMIN,1:PAIRDISTMAX)
+            CALL FLUSH(6,ISTAT)
          ENDIF
 
 140      CONTINUE
@@ -493,11 +553,49 @@ C           PRINT '(A,2L5,2I6)','MINPOLD,MINMOLD,NMINSAVE,NMIN=',MINPOLD,MINMOLD
                ENDDO
                IF (CLOSEFILEST) CLOSE(UNIT=UMINDATA)
             ENDIF
-
+!
+! Insert zero entry into PAIRDIST for connected pair. 
+! Must remove any previous entry for this pair first.
+! Put the zero entry at position one, and move the others
+! along, unless we hit the same minmum, in which case we
+! can overwrite it and leave the rest of the sorted list
+! unchanged.
+!
             IF (DIJINITT) THEN
                J2=MAX(PLUS(NTS),MINUS(NTS))
                J3=MIN(PLUS(NTS),MINUS(NTS))
-               PAIRDIST(J2*(J2-1)/2+J3)=0.0D0
+
+               TEMPL(1:PAIRDISTMAX)=PAIRLIST(J2,1:PAIRDISTMAX)
+               TEMPD(1:PAIRDISTMAX)=PAIRDIST(J2,1:PAIRDISTMAX)
+               DO J5=2,PAIRDISTMAX
+                  IF (PAIRLIST(J2,J5-1).EQ.J3) EXIT
+                  TEMPL(J5)=PAIRLIST(J2,J5-1)
+                  TEMPD(J5)=PAIRDIST(J2,J5-1)
+               ENDDO
+               PAIRLIST(J2,2:PAIRDISTMAX)=TEMPL(2:PAIRDISTMAX)
+               PAIRDIST(J2,2:PAIRDISTMAX)=TEMPD(2:PAIRDISTMAX)
+               PAIRDIST(J2,1)=0.0D0
+               PAIRLIST(J2,1)=J3
+
+               TEMPL(1:PAIRDISTMAX)=PAIRLIST(J3,1:PAIRDISTMAX)
+               TEMPD(1:PAIRDISTMAX)=PAIRDIST(J3,1:PAIRDISTMAX)
+               DO J5=2,PAIRDISTMAX
+                  IF (PAIRLIST(J3,J5-1).EQ.J2) EXIT
+                  TEMPL(J5)=PAIRLIST(J3,J5-1)
+                  TEMPD(J5)=PAIRDIST(J3,J5-1)
+               ENDDO
+               PAIRLIST(J3,2:PAIRDISTMAX)=TEMPL(2:PAIRDISTMAX)
+               PAIRDIST(J3,2:PAIRDISTMAX)=TEMPD(2:PAIRDISTMAX)
+               PAIRDIST(J3,1)=0.0D0
+               PAIRLIST(J3,1)=J2
+
+               PRINT '(A,2I8)','getallpaths> Changed pair distance list for minima ',J2,J3
+               IF (DEBUG) THEN
+                  PRINT '(10G13.2)',PAIRDIST(J2,1:PAIRDISTMAX)
+                  PRINT '(10I13)',PAIRLIST(J2,1:PAIRDISTMAX)
+                  PRINT '(10G13.2)',PAIRDIST(J3,1:PAIRDISTMAX)
+                  PRINT '(10I13)',PAIRLIST(J3,1:PAIRDISTMAX)
+               ENDIF
             ENDIF
 C
 C  Update ts pointers.
@@ -574,12 +672,26 @@ C
 !              IF (PLUS(NTS).NE.MINUS(NTS)) KSUM(MINUS(NTS))=LOG(EXP(KSUM(MINUS(NTS))-KMEAN) + EXP(KMINUS(NTS)-KMEAN)) + KMEAN
 !           ENDIF
 
-            DO J2=1,NR
+            DO J2=1,3*NATOMS
                LPOINTSTS(J2)=NEWPOINTSTS(J2)
                LPLUS(J2)=NEWPOINTSMINPLUS(J2)
                LMINUS(J2)=NEWPOINTSMIN(J2)
             ENDDO
             IF (ADDPT) CALL ADDPERM(LPOINTSTS,LPLUS,LMINUS) ! this is untested!
+            IF (DIJINITT) THEN
+               IF ((NMIN.GT.NMINSAVE).OR.(NTS.GT.NTSSAVE)) THEN ! write new pairdist and pairlist files
+!
+! Must not use UNIT 1 here - it is already open!
+!
+                  LUNIT=GETUNIT()
+                  OPEN(UNIT=LUNIT,FILE='pairdist',STATUS='UNKNOWN')
+                  WRITE(LUNIT,'(10G20.10)') ((PAIRDIST(J3,J4),J4=1,PAIRDISTMAX),J3=1,NMIN)
+                  CLOSE(LUNIT)
+                  OPEN(UNIT=LUNIT,FILE='pairlist',STATUS='UNKNOWN')
+                  WRITE(LUNIT,'(10I10)') ((PAIRLIST(J3,J4),J4=1,PAIRDISTMAX),J3=1,NMIN)
+                  CLOSE(LUNIT)
+               ENDIF
+            ENDIF
          ELSE
 C
 C  Old ts or bad triple encountered. Either way, resetting to saved NTS and NMIN values should be safe.

@@ -27,12 +27,13 @@ C
       USE PORFUNCS
       USE KEY
       USE COMMONS
+      USE UTILS,ONLY : GETUNIT
       IMPLICIT NONE
 
-      INTEGER J1, J2, ISTAT, J3, MIN1, MIN2
-      DOUBLE PRECISION LOCALPOINTS(NR), NEWEMIN, DISTANCE, RMAT(3,3), LOCALPOINTS2(NR)
+      INTEGER J1, J2, ISTAT, J3, MIN1, MIN2, J4, J5, LUNIT
+      DOUBLE PRECISION LOCALPOINTS(3*NATOMS), NEWEMIN, DISTANCE, RMAT(3,3), LOCALPOINTS2(3*NATOMS)
       DOUBLE PRECISION DIST2 
-      DOUBLE PRECISION NEWFVIBMIN, NEWPOINTSMIN(NR), NEWIXMIN,  NEWIYMIN, NEWIZMIN, TSEGUESS, NEWMINCURVE, NEWMINFRQ2,
+      DOUBLE PRECISION NEWFVIBMIN, NEWPOINTSMIN(3*NATOMS), NEWIXMIN,  NEWIYMIN, NEWIZMIN, TSEGUESS, NEWMINCURVE, NEWMINFRQ2,
      &                 TSFVIBGUESS, ETSDUMMY, DUMMY, FRICTIONFAC
       INTEGER NEWHORDERMIN, NEWMIN, MINS, MINF, NMINSAVE
       LOGICAL MINISOLD, MATCHED, REWRITE
@@ -53,12 +54,12 @@ C
          ELSE
             READ(1,*,END=110) NEWEMIN,NEWFVIBMIN,NEWHORDERMIN,NEWIXMIN,NEWIYMIN,NEWIZMIN
          ENDIF
-         READ(1,*) (NEWPOINTSMIN(J2),J2=1,NR)  
+         READ(1,*) (NEWPOINTSMIN(J2),J2=1,3*NATOMS)  
          MINISOLD=.TRUE.
          DO J2=1,NMIN
             DISTANCE=1.0D100
             IF (ABS(NEWEMIN-EMIN(J2)).LT.EDIFFTOL) THEN
-               READ(UMIN,REC=J2) (LOCALPOINTS2(J3),J3=1,NR)  
+               READ(UMIN,REC=J2) (LOCALPOINTS2(J3),J3=1,3*NATOMS)  
                CALL MINPERMDIST(NEWPOINTSMIN,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2, 
      &                          RIGIDBODY,RMAT,.FALSE.)
             ENDIF
@@ -115,16 +116,16 @@ C
          ENDIF
          CALL FLUSH(UMINDATA,ISTAT)
          IF (CLOSEFILEST) CLOSE(UNIT=UMINDATA)
-         WRITE(UMIN,REC=NMIN) (NEWPOINTSMIN(J2),J2=1,NR)
+         WRITE(UMIN,REC=NMIN) (NEWPOINTSMIN(J2),J2=1,3*NATOMS)
 !        PRINT '(A,I8)','writing these coords to record ',NMIN
-!        PRINT '(3G20.10)',(NEWPOINTSMIN(J2),J2=1,NR)
+!        PRINT '(3G20.10)',(NEWPOINTSMIN(J2),J2=1,3*NATOMS)
 C
 C  Set partition functions and transition states for new minimum if DUMMYTST.AND.BHINTERPT.
 C
          IF (DUMMYTST.AND.BHINTERPT) THEN
             MINDISTMIN(NMIN)=HUGE(1.0D0)
             DO J3=1,NMIN-1
-               READ(UMIN,REC=J3) (LOCALPOINTS(J2),J2=1,NR)
+               READ(UMIN,REC=J3) (LOCALPOINTS(J2),J2=1,3*NATOMS)
                CALL MINPERMDIST(LOCALPOINTS,NEWPOINTSMIN,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE, 
      &                          DIST2,RIGIDBODY,RMAT,.FALSE.)
                IF ((DISTANCE.LT.MINDISTMIN(NMIN)).OR.(DISTANCE.LT.MINDISTMIN(J3))) THEN
@@ -196,22 +197,63 @@ C
          ENDIF
 
          IF (DIJINITT) THEN
-            PAIRDIST(NMIN*(NMIN+1)/2)=0.0D0
+            PAIRDIST(NMIN,1:PAIRDISTMAX)=1.0D100
             DO J3=1,NMIN-1
-               READ(UMIN,REC=J3) (LOCALPOINTS(J2),J2=1,NR)
-               CALL MINPERMDIST(LOCALPOINTS,NEWPOINTSMIN,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE, 
-     &                          DIST2,RIGIDBODY,RMAT,.FALSE.)
-               IF (INTERPCOSTFUNCTION) CALL MINPERMDIST(LOCALPOINTS,NEWPOINTSMIN,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE, 
-     &                          DIST2,RIGIDBODY,RMAT,INTERPCOSTFUNCTION)
-
-               PAIRDIST(NMIN*(NMIN-1)/2+J3)=DISTANCE
+               READ(UMIN,REC=J3) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+               CALL MINPERMDIST(LOCALPOINTS,NEWPOINTSMIN,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY,
+     &                          RMAT,.FALSE.)
+               IF (INTERPCOSTFUNCTION) CALL MINPERMDIST(LOCALPOINTS,NEWPOINTSMIN,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,
+     &                                 DISTANCE,DIST2,RIGIDBODY,RMAT,INTERPCOSTFUNCTION)
+!
+! Maintain sorted list of nearest nodes according to the chosen interpolation metric.
+! 
+               sortloop: DO J4=1,PAIRDISTMAX
+                  IF (DISTANCE.LT.PAIRDIST(NMIN,J4)) THEN
+                     DO J5=PAIRDISTMAX,J4+1,-1
+                        PAIRDIST(NMIN,J5)=PAIRDIST(NMIN,J5-1)
+                        PAIRLIST(NMIN,J5)=PAIRLIST(NMIN,J5-1)
+                     ENDDO
+                     PAIRDIST(NMIN,J4)=DISTANCE
+                     PAIRLIST(NMIN,J4)=J3
+                     EXIT sortloop
+                  ENDIF
+               ENDDO sortloop
+               sortloop2: DO J4=1,PAIRDISTMAX
+                  IF (DISTANCE.LT.PAIRDIST(J3,J4)) THEN
+                     DO J5=PAIRDISTMAX,J4+1,-1
+                        PAIRDIST(J3,J5)=PAIRDIST(J3,J5-1)
+                        PAIRLIST(J3,J5)=PAIRLIST(J3,J5-1)
+                     ENDDO
+                     PAIRDIST(J3,J4)=DISTANCE
+                     PAIRLIST(J3,J4)=NMIN
+                     EXIT sortloop2
+                  ENDIF
+               ENDDO sortloop2
             ENDDO
+            PRINT '(A,I8)','setup> Finished pair distance calculation for new minimum ',NMIN
+            PRINT '(10G13.2)',PAIRDIST(NMIN,1:PAIRDISTMAX)
+            PRINT '(10I13)',PAIRLIST(NMIN,1:PAIRDISTMAX)
+
          ENDIF
 
          CALL FLUSH(UMIN,ISTAT)
 130      CONTINUE
       ENDDO
 110   CLOSE(1)
+      IF (DIJINITT) THEN
+         IF (NMIN.GT.NMINSAVE) THEN ! write new pairdist and pairlist files
+!
+! Must not use UNIT 1 here - it is already open!
+!
+            LUNIT=GETUNIT()
+            OPEN(UNIT=LUNIT,FILE='pairdist',STATUS='UNKNOWN')
+            WRITE(LUNIT,'(10G20.10)') ((PAIRDIST(J3,J4),J4=1,PAIRDISTMAX),J3=1,NMIN)
+            CLOSE(LUNIT)
+            OPEN(UNIT=LUNIT,FILE='pairlist',STATUS='UNKNOWN')
+            WRITE(LUNIT,'(10I10)') ((PAIRLIST(J3,J4),J4=1,PAIRDISTMAX),J3=1,NMIN)
+            CLOSE(LUNIT)
+         ENDIF
+      ENDIF
 !
 !  If we found new minima between the original ones then adjust the barrier for MINS and MINF
 !  according to the sum of distances.
@@ -230,13 +272,13 @@ C
 !
 !  Add new ts.data items according to the order of the new minima. Assume connections in this order!
 !
-         READ(UMIN,REC=MINS) (NEWPOINTSMIN(J2),J2=1,NR)
+         READ(UMIN,REC=MINS) (NEWPOINTSMIN(J2),J2=1,3*NATOMS)
          DUMMY=0.0D0
          DO J3=NMINSAVE+1,NMIN+1
             IF (J3.EQ.NMIN+1) THEN
-               READ(UMIN,REC=MINF) (LOCALPOINTS(J2),J2=1,NR)
+               READ(UMIN,REC=MINF) (LOCALPOINTS(J2),J2=1,3*NATOMS)
             ELSE
-               READ(UMIN,REC=J3) (LOCALPOINTS(J2),J2=1,NR)
+               READ(UMIN,REC=J3) (LOCALPOINTS(J2),J2=1,3*NATOMS)
             ENDIF
             CALL MINPERMDIST(LOCALPOINTS,NEWPOINTSMIN,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY, 
      &                       RMAT,.FALSE.)
@@ -310,7 +352,7 @@ C
             IF (PLUS(NTS).EQ.MINUS(NTS)) KPLUS(NTS)=KPLUS(NTS)+LOG(2.0D0)
             IF (PLUS(NTS).EQ.MINUS(NTS)) KMINUS(NTS)=KMINUS(NTS)+LOG(2.0D0)
 
-            NEWPOINTSMIN(1:NR)=LOCALPOINTS(1:NR)
+            NEWPOINTSMIN(1:3*NATOMS)=LOCALPOINTS(1:3*NATOMS)
          ENDDO
 
          ETSDUMMY=TSEGUESS(EMIN(MINS),EMIN(MINF),MINCURVE(MINS),MINCURVE(MINF),DUMMY)

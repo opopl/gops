@@ -53,6 +53,7 @@
       DBPT     = .FALSE.
       DBPTDT   = .FALSE.
       MSSTOCKT = .FALSE.
+      NTIPT    = .FALSE.
       PAHAT    = .FALSE.
       PATCHYDT = .FALSE.
       STOCKAAT = .FALSE.
@@ -85,6 +86,7 @@
       AMBERT=.FALSE.
       AMHT=.FALSE.
       AMHQT=.FALSE.
+      AMHQENGMINT=.FALSE.
       AMHQCONTT=.FALSE.
       AMHRMSDT=.FALSE.
       AMHRELQT=.FALSE.
@@ -144,9 +146,6 @@ C     Sem: end GT2 controls
       EXECGMIN='UNDEFINED'
       PATHNAME='UNDEFINED'
       NOPOINTS=.FALSE.
-      TRIPLES=.FALSE.
-      STARTTRIPLES=.FALSE.
-      ADDTRIPLES=.FALSE.
       DIJKSTRAT=.FALSE.
       DIJKSTRAWAITT=.FALSE.
       DIJPAIRT=.FALSE.
@@ -157,6 +156,9 @@ C     Sem: end GT2 controls
       DIJINITFLYT=.FALSE.
       DIJINITSTARTT=.FALSE.
       DIJINITCONTT=.FALSE.
+      PAIRDISTMAX=10
+      PAIRDIST1=0
+      PAIRDIST2=0
       TSTHRESH=HUGE(1.0D0)
       MAXBARRIER=HUGE(1.0D0)
       MAXDOWNBARRIER=HUGE(1.0D0)
@@ -166,6 +168,7 @@ C     Sem: end GT2 controls
       COPYFILES=''
       COPYOPTIMT=.FALSE.
       NPFOLD=0
+      PFOLDCONV=1.0D-4
       TFOLDT=.FALSE.
       NTFOLD=1.0D4 ! real not integer !
       TOMEGA=1.0D0
@@ -226,6 +229,7 @@ C     Sem: end GT2 controls
       GAMMAFRICTION=0.0D0
       REMOVEUNCONNECTEDT=.FALSE.
       UNCONNECTEDS='AB'
+      OHCELLT=.FALSE.
 !
 ! Constraint potential
 !
@@ -262,6 +266,11 @@ C
       SISKAPPA=0.0D0
       SISBETA=0.0D0
 
+!
+! Optional UNTRAP argument
+!
+      EDELTAMIN=TINY(1.0D0)
+            
 !op226 </init>
 !op226 }}}
 !op226 Open and read pathdata {{{
@@ -310,12 +319,6 @@ C
       ELSE IF (WORD.EQ.'ADDPERM') THEN
          ADDPT=.TRUE.
 C
-C  STARTTRIPLES and ADDTRIPLES specify the triples format for
-C  path.info files read using the STARTFROM and ADDPATH keywords.
-C
-      ELSE IF (WORD.EQ.'ADDTRIPLES') THEN
-         ADDTRIPLES=.TRUE.
-C
 C  Use the angle-axis system for rigid bodies
 
       ELSE IF (WORD.EQ.'ANGLEAXIS') THEN
@@ -346,6 +349,19 @@ C
           PRINT '(A)','keywords> ERROR - AMHQ '
           STOP
          ENDIF
+
+C
+C  Calculated  Q between minima and energy minimum.
+C
+       ELSE IF (WORD.EQ.'AMHQENGMIN') THEN
+        AMHQENGMINT=.TRUE.
+        CALL READI(WHICHMIN)
+         PRINT '(A,I6,A,I6)','keywords> Calculate AMH Q 2 ENERGY MINIMUM ',WHICHMIN
+        IF (NITEMS.GT.2) THEN
+         PRINT '(A)','keywords> ERROR - AMH Q 2 ENERGY MINIMUM '
+         STOP
+        ENDIF
+
 C
 C  Calculated  Q_contact  between minima and native .
 C
@@ -618,6 +634,8 @@ C  In a DIJINITSTART run C  file min.A is created exist with entries 1 1 and fil
 C  with entries 1 2. min.data is set up with the two entries for
 C  these minima. The coordinates are obtained via odata.start and odata.finish and put in records
 C  1 and 2 in the points.min file. 
+C  PAIRDISTMAX is the number of nearest neighbours to save in PAIRLIST judged by
+C  the chosen distance or interpolation metric.
 C
       ELSE IF (WORD.EQ.'DIJINITCONT') THEN
          IF (NITEMS.GT.1) THEN
@@ -630,6 +648,9 @@ C
                     READ(WW,'(I20)') COSTFUNCTIONPOWER
                ENDIF
          ENDIF
+         IF (NITEMS.GT.2) CALL READI(PAIRDISTMAX)
+         IF (NITEMS.GT.3) CALL READI(PAIRDIST1)
+         IF (NITEMS.GT.4) CALL READI(PAIRDIST2)
          DIJINITCONTT=.TRUE.
          DIJINITT=.TRUE.
          DIJPAIRT=.TRUE.
@@ -645,6 +666,7 @@ C
                     READ(WW,'(i20)') CostFunctionPower
                ENDIF
          ENDIF
+         IF (NITEMS.GT.2) CALL READI(PAIRDISTMAX)
          DIJINITSTARTT=.TRUE.
          DIJINITT=.TRUE.
          DIJPAIRT=.TRUE.
@@ -763,7 +785,7 @@ C
          CALL READF(EDIFFTOL)
 
 !  Turns on the electric field   
-      ELSE IF (WORD.EQ.'EFLD') THEN
+      ELSE IF (WORD.EQ.'EFIELD') THEN
          EFIELDT = .TRUE.
 C
       ELSE IF (WORD.EQ.'ENERGY') THEN
@@ -1144,6 +1166,32 @@ C  files. Should be the default for post-DPS database kinetics analysis such as 
 C
       ELSE IF (WORD.EQ.'NOPOINTS') THEN
          NOPOINTS=.TRUE.
+
+      ELSE IF (WORD.EQ.'NTIP') THEN
+
+         CALL READI(TIPID)
+
+         IF (TIPID == 4) THEN
+            NRBSITES = 4
+         ELSE
+            PRINT *, 'TIPID NOT EQUAL TO 4 NOT YET DEFINED'
+            STOP
+         ENDIF
+
+         NTIPT    = .TRUE.
+         ALLOCATE(RBSITE(NRBSITES,3))
+         ALLOCATE(SITEMASS(NRBSITES))
+
+         IF (TIPID == 4) THEN
+            CALL DEFTIP4(SITEMASS)
+         ENDIF
+
+C
+C  Specify Oh supercell to allow box symmetries in permutational alignment.
+C
+      ELSE IF (WORD.EQ.'OHCELL') THEN
+         OHCELLT=.TRUE.
+         WRITE(*,'(A)') 'Octahedral supercell specfied'
 C
 C  Read in an order parameter threshold, ORDERPARAM, that tells us when we are in the other 
 C  phase for a DOALLMIN run.
@@ -1199,7 +1247,7 @@ C
          IF (WORD.EQ.'PERMDIST') PERMDIST=.TRUE.
          IF (WORD.EQ.'PERMISOMER') PERMISOMER=.TRUE.
          INQUIRE(FILE='perm.allow',EXIST=PERMFILE)
-         ALLOCATE(NPERMSIZE(NR),PERMGROUP(NR),NSETS(NR),SETS(NATOMS,3))
+         ALLOCATE(NPERMSIZE(3*NATOMS),PERMGROUP(3*NATOMS),NSETS(3*NATOMS),SETS(NATOMS,3))
 !
 !  The above dimensions were fixed at NATOMS because:
 !  (a) Atoms were not allowed to appear in more than one group.
@@ -1207,7 +1255,7 @@ C
 !
 ! However, for flexible water models we need to exchange all waters,
 ! and we can exchange H's attached to the same O. The dimension required
-! becomes NR
+! becomes 3*NATOMS
 !
          IF (PERMFILE) THEN
             OPEN(UNIT=1,FILE='perm.allow',STATUS='OLD')
@@ -1222,7 +1270,7 @@ C
                   PRINT '(2(A,I8))','keyword> ERROR - number of secondary sets ',NSETS(J1),' is > 3'
                   STOP
                ENDIF
-               IF (NDUMMY+NPERMSIZE(J1)-1.GT.NR) THEN
+               IF (NDUMMY+NPERMSIZE(J1)-1.GT.3*NATOMS) THEN
                   PRINT '(2(A,I8))','keyword> ERROR - number of atoms to be permuted in all groups is > 3*number of atoms'
                   STOP
                ENDIF
@@ -1287,11 +1335,15 @@ C
 C  NPFOLD is the number of iterations per call to the global Pfold subroutine
 C  and PFOLDINT is the frequency at which we call this GPFOLD calculation, 
 C  i.e. PFOLDINT=1 means for every cycle, PFOLDINT=2 means every other cycle etc.
+C  PFOLDCONV is the threshold on the largest fractional difference between Pfold 
+C  values at consecutive iterations for possible early termination (before the 
+C  NPFOLD iterations have been performed).
 C
       ELSE IF (WORD.EQ.'PFOLD') THEN
          CALL READI(NPFOLD)
          CALL READI(PFOLDINT)
          CALL READF(OMEGA)
+         CALL READF(PFOLDCONV)
 C
 C  The value of the Planck constant in units of prevailing energy * seconds. 
 C  This is needed for regrouped ts free energies. 
@@ -1313,10 +1365,20 @@ C
       ELSE IF (WORD.EQ.'PULL') THEN
          PULLT=.TRUE.
          PRINT '(A)','keywords> Constant fulling force with 4 zero eigenvalues'
+
+      ELSE IF (WORD.EQ.'ST') THEN
+
+         STOCKAAT = .TRUE.
+         NRBSITES = 1
+         ALLOCATE(RBSITE(NRBSITES,3))
+         ALLOCATE(SITEMASS(NRBSITES))
+         RBSITE(1,:) = 0.D0
+         SITEMASS(1) = 1.D0
+
       ELSE IF (WORD.EQ.'RBAA') THEN
          CALL READI(NATOMS)
+         NTSITES  = NATOMS*NRBSITES
          NATOMS=NATOMS*2
-         NTSITES  = (NATOMS/2)*NRBSITES
          IF (DBPTDT) NTSITES = (NATOMS/2-1)*NRBSITES + 4
          IF (NRBSITES == 0) THEN
             PRINT *, 'NRBSITES not yet defined'
@@ -1485,12 +1547,12 @@ C
          NATOMS=1 ! Just setting this randomly in case it shouldn't be undefined...
          PRINT '(A,3I6,1X,3G15.10)','keywords> SIS parameters ',SMAX,IMAX,POPSS,SISMU,SISKAPPA,SISBETA
 
-      ELSE IF (WORD.EQ.'ST') THEN
+!      ELSE IF (WORD.EQ.'ST') THEN
 
-         STOCKAAT = .TRUE.
-         NRBSITES = 1
-         ALLOCATE(RBSITE(NRBSITES,3))
-         RBSITE(1,:) = 0.D0
+!         STOCKAAT = .TRUE.
+!         NRBSITES = 1
+!         ALLOCATE(RBSITE(NRBSITES,3))
+!         RBSITE(1,:) = 0.D0
 C
 C  Node specification in nodes.info file in slurm format.
 C
@@ -1509,12 +1571,6 @@ C
          CALL READA(PATHNAME)
          CALL READI(STARTMINA)
          CALL READI(STARTMINB)
-C
-C  Similarly, STARTTRIPLES and ADDTRIPLES specify the triples format for
-C  path.info files read using the STARTFROM and ADDPATH keywords.
-C
-      ELSE IF (WORD.EQ.'STARTTRIPLES') THEN
-         STARTTRIPLES=.TRUE.
 C
 C  OPTIM system symbol, e.g. AX, LS, etc.
 C
@@ -1554,13 +1610,11 @@ C
          IF (NITEMS.GT.3) CALL READF(TFOLDTHRESH)
          IF (NITEMS.GT.4) CALL READF(TOMEGA)
 C
-C  If TRIPLES is .TRUE. we read path.info as min-sad-min triples, rather
-C  than the traditional min-sad-min-sad-...
-C  This keyword must be used if odata.connect uses DUMPALLPATHS rather than
-C  DUMPPATH.
+C  Keyword TRAP sets an ion trap potential. 
+C  Needed to set the number of non-zero normal mode frequencies.
 C
-      ELSE IF (WORD.EQ.'TRIPLES') THEN
-         TRIPLES=.TRUE.
+      ELSE IF (WORD.EQ.'TRAP') THEN
+         TRAPT=.TRUE.
 C
 C  TSTHRESH discards transition states above the specfied threshold. May be useful
 C  for producing a better initial path and excluding CHARMM transition states with
@@ -1588,6 +1642,13 @@ C
          UNTRAPT=.TRUE.
          CALL READF(EINC)
          CALL READF(EUNTRAPTHRESH)
+         IF (NITEMS.GT.3) THEN
+           CALL READF(EDELTAMIN)
+           IF (EDELTAMIN.EQ.0.0D0) THEN 
+            PRINT '(A)','keywords> ERROR - EDELTAMIN cannot be zero'
+            STOP
+           ENDIF 
+         ENDIF 
 C
 C Choose connection pairs based on the sequence read from file USEPAIRSFILE
 C

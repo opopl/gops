@@ -24,10 +24,10 @@ C  Make an odata connect file for the minima in LOCALPOINTS1 and LOCALPOINTS2.
 C
       SUBROUTINE ORDERODATA(CONNID,LOCALPOINTS1)
       use key
-      USE common
+      USE COMMONS
       IMPLICIT NONE
       INTEGER J2, CONNID, STATUS
-      DOUBLE PRECISION LOCALPOINTS1(NR), SAVEPOINTS(NR)
+      DOUBLE PRECISION LOCALPOINTS1(3*NATOMS), SAVEPOINTS(3*NATOMS)
       CHARACTER(LEN=20) UNSTRING
       CHARACTER(LEN=10) CONNSTR
       CHARACTER(LEN=80) FPOO
@@ -38,18 +38,18 @@ C
 
       IF (CHARMMT) THEN
          if (machine) then ! SAT
-              DO J2=1,NR
+              DO J2=1,3*NATOMS
                  SAVEPOINTS(J2)=LOCALPOINTS1(J2)
               ENDDO
               CALL CHARMMDUMP(SAVEPOINTS,'points1.inp.'//TRIM(ADJUSTL(CONNSTR)))
          else
-              DO J2=1,NR
+              DO J2=1,3*NATOMS
                  SAVEPOINTS(J2)=LOCALPOINTS1(J2)
               ENDDO
               CALL CHARMMDUMP(SAVEPOINTS,'input.crd.'//TRIM(ADJUSTL(CONNSTR)))
          endif
       ELSE IF (UNRST) THEN
-         DO J2=1,NR
+         DO J2=1,3*NATOMS
             SAVEPOINTS(J2)=LOCALPOINTS1(J2)
          ENDDO
          WRITE(UNSTRING,'(A)') 'coords.'//TRIM(ADJUSTL(CONNSTR))

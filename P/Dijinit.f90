@@ -29,8 +29,14 @@ IMPLICIT NONE
 INTEGER J1, J2, J4, PARENT(NMIN), JMINW, NPERM, J5, LJ1, LJ2, NWORST, NSTEPS, NMINSTART, NMINEND
 INTEGER, ALLOCATABLE :: LOCATIONSTART(:), LOCATIONEND(:)
 LOGICAL PERMANENT(NMIN), ISA(NMIN), ISB(NMIN), ISSTART(NMIN), NOTDONE
-DOUBLE PRECISION MINWEIGHT, TMPWEIGHT, WEIGHT(NMIN), DUMMY, TNEW, ELAPSED, PFTOTALSTART, HUGESAVE, THRESH
-DOUBLE PRECISION MAXWEIGHT, SCALEFAC
+DOUBLE PRECISION MINWEIGHT, DUMMY, TNEW, ELAPSED, PFTOTALSTART, HUGESAVE, THRESH
+DOUBLE PRECISION MAXWEIGHT, SCALEFAC, PDMAX, PD
+!
+! KIND=16 is not supported by Portland. If you want extra precision, uncomment the following line
+! and use NAG.
+!
+! REAL(KIND=16) :: TMPWEIGHT, WEIGHT(NMIN)
+REAL(KIND=8) :: TMPWEIGHT, WEIGHT(NMIN)
 
 CALL CPU_TIME(ELAPSED)
 DEALLOCATE(DMIN1,DMIN2)
@@ -66,14 +72,27 @@ ELSEIF (DIRECTION.EQ.'BA') THEN
    ISSTART(1:NMIN)=ISA(1:NMIN)
    PFTOTALSTART=PFTOTALA
 ENDIF
+
+PDMAX=-1.0D0
+DO J2=1,NMIN
+   DO J5=1,PAIRDISTMAX
+      IF (PAIRDIST(J2,J5).GT.PDMAX) THEN
+         PDMAX=PAIRDIST(J2,J5)
+         IF (DEBUG) PRINT '(A,G20.10)','Dijinit> maximum neighbour metric value increased to',PDMAX
+         IF (DEBUG) PRINT '(A,2I8,G20.10)','Dijinit> J2,J5,PAIRDIST=',J2,J5,PAIRDIST(J2,J5)
+      ENDIF
+   ENDDO
+ENDDO
+PRINT '(A,G20.10)','Dijinit> maximum neighbour metric value=',PDMAX
 !
 !  Find largest weight for each B(A) minimum to all A(B) minima.
 !
-!  Added maximum weight condition via a distance scaling. 
+!  Added maximum weight condition via a scale factor.
 !  Otherwise loss of precision can cause connections to be missed completely. DJW 29/7/08
 !
+MAXWEIGHT=HUGE(1.0D0)/1.0D1
+! MAXWEIGHT=1.0D6
 loopstart: DO J1=1,NMINSTART ! cycle over all minima in the starting state
-   MAXWEIGHT=1.0D10
    SCALEFAC=1.0D0
 222   LJ1=LOCATIONSTART(J1)
    WEIGHT(1:NMIN)=HUGE(1.0D0)
@@ -90,7 +109,27 @@ loopstart: DO J1=1,NMINSTART ! cycle over all minima in the starting state
       DO J2=1,NMIN
          IF (J2.EQ.J4) CYCLE
          IF (PERMANENT(J2)) CYCLE
-         TMPWEIGHT=PAIRDIST(MAX(J2,J4)*(MAX(J2,J4)-1)/2+MIN(J4,J2))*SCALEFAC
+         PD=1.0D4*PDMAX
+         DO J5=1,NPAIRDONE ! skip
+            IF ((PAIR1(J5).EQ.J4).AND.(PAIR2(J5).EQ.J2)) GOTO 973
+            IF ((PAIR1(J5).EQ.J2).AND.(PAIR2(J5).EQ.J4)) GOTO 973
+         ENDDO 
+         DO J5=1,PAIRDISTMAX
+            IF (PAIRLIST(J4,J5).EQ.J2) THEN
+               PD=PAIRDIST(J4,J5)
+               GOTO 973
+            ENDIF
+         ENDDO
+         DO J5=1,PAIRDISTMAX
+            IF (PAIRLIST(J2,J5).EQ.J4) THEN
+               PD=PAIRDIST(J2,J5)
+               GOTO 973
+            ENDIF
+         ENDDO
+973      CONTINUE
+!        TMPWEIGHT=PAIRDIST(MAX(J2,J4)*(MAX(J2,J4)-1)/2+MIN(J4,J2))*SCALEFAC
+         TMPWEIGHT=PD*SCALEFAC
+!        PRINT '(A,3I8,G20.10)','Dijinit> J1,J4,J2,TMPWEIGHT=',J1,J4,J2,TMPWEIGHT
          IF (TMPWEIGHT.LT.HUGE(1.0D0)/10.0D0) THEN ! don;t raise a huge number to any power!
             IF (INDEXCOSTFUNCTION) THEN 
                IF (TMPWEIGHT.EQ.0.0D0) THEN ! minima are connected!
@@ -125,7 +164,7 @@ loopstart: DO J1=1,NMINSTART ! cycle over all minima in the starting state
          ENDIF
          
          IF (TMPWEIGHT+WEIGHT(J4).LT.WEIGHT(J2)) THEN ! relax J2
-            WEIGHT(J2)=TMPWEIGHT+WEIGHT(J4)
+            WEIGHT(J2)=WEIGHT(J4)+TMPWEIGHT
             PARENT(J2)=J4
          ENDIF
       ENDDO
@@ -141,14 +180,28 @@ loopstart: DO J1=1,NMINSTART ! cycle over all minima in the starting state
             ENDIF
          ENDIF
       ENDDO
-      IF (NOTDONE) PRINT '(A,I8,A,I8)','dijinit> WARNING - JMINW not set - value=',JMINW,' J4=',J4
+      IF (NOTDONE) THEN
+         PRINT '(A,I8,A,I8)','dijinit> WARNING - JMINW not set - value=',JMINW,' J4=',J4
+         PRINT '(A,I8)','dijinit> NPERM=',NPERM
+         DO J2=1,NMIN
+            PRINT '(A,I8,L5,2G20.10)','J2,PERMANENT,WEIGHT,MINWEIGHT=',J2,PERMANENT(J2),WEIGHT(J2),MINWEIGHT
+            IF (.NOT.PERMANENT(J2)) THEN
+               IF (WEIGHT(J2).LT.MINWEIGHT) THEN
+                  MINWEIGHT=WEIGHT(J2)
+                  JMINW=J2
+                  NOTDONE=.FALSE.
+               ENDIF
+            ENDIF
+         ENDDO
+         STOP !!! DJW
+      ENDIF
 
       J4=JMINW
       PERMANENT(J4)=.TRUE.
       NPERM=NPERM+1
       IF (WEIGHT(J4).GT.MAXWEIGHT) THEN
-         SCALEFAC=SCALEFAC/2.0D0
-         PRINT '(A,G20.10)','dijinit> Maximum weight is too large - scaling distances by ',SCALEFAC
+         SCALEFAC=SCALEFAC/10.0D0
+         PRINT '(A,G20.10)','dijinit> Maximum weight is too large - scaling by ',SCALEFAC
          GOTO 222
       ENDIF
 
@@ -173,7 +226,25 @@ DO
       PRINT '(A)',     'Dijinit> Suggests all possible pairs have been tried!'
       STOP
    ENDIF
-   DUMMY=PAIRDIST(MAX(J5,PARENT(J5))*(MAX(J5,PARENT(J5))-1)/2+MIN(J5,PARENT(J5)))*SCALEFAC
+!  DUMMY=PAIRDIST(MAX(J5,PARENT(J5))*(MAX(J5,PARENT(J5))-1)/2+MIN(J5,PARENT(J5)))*SCALEFAC
+   DUMMY=1.0D4*PDMAX*SCALEFAC
+   DO J2=1,NPAIRDONE ! skip
+      IF ((PAIR1(J2).EQ.J5).AND.(PAIR2(J2).EQ.PARENT(J5))) GOTO 864
+      IF ((PAIR1(J2).EQ.PARENT(J5)).AND.(PAIR2(J2).EQ.J5)) GOTO 864
+   ENDDO 
+   DO J2=1,PAIRDISTMAX
+      IF (PAIRLIST(J5,J2).EQ.PARENT(J5)) THEN
+         DUMMY=PAIRDIST(J5,J2)*SCALEFAC
+         GOTO 864
+      ENDIF
+   ENDDO
+   DO J2=1,PAIRDISTMAX
+      IF (PAIRLIST(PARENT(J5),J2).EQ.J5) THEN
+         DUMMY=PAIRDIST(PARENT(J5),J2)*SCALEFAC
+         GOTO 864
+      ENDIF
+   ENDDO
+864 CONTINUE
    IF (DUMMY.LT.HUGE(1.0D0)/10.0D0) THEN ! don;t raise a huge number to any power!
       IF (INDEXCOSTFUNCTION) THEN
          IF (DUMMY.EQ.0.0D0) THEN ! minima are connected!
@@ -231,7 +302,22 @@ DO
 !  we may need to choose the same best path several times before we can get
 !  more than one distinct candidate.
 !
-      IF (NMIN.GT.2) PAIRDIST(MAX(J5,PARENT(J5))*(MAX(J5,PARENT(J5))-1)/2+MIN(J5,PARENT(J5)))=HUGE(1.0D0)
+!      IF (NMIN.GT.2) THEN
+!         DO J4=1,PAIRDISTMAX
+!            IF (PAIRLIST(J5,J4).EQ.PARENT(J5)) THEN
+!               PAIRDIST(J5,J4)=HUGE(1.0D0)
+!               GOTO 753
+!            ENDIF
+!         ENDDO
+!753      CONTINUE
+!         DO J4=1,PAIRDISTMAX
+!            IF (PAIRLIST(PARENT(J5),J4).EQ.J5) THEN
+!               PAIRDIST(PARENT(J5),J4)=HUGE(1.0D0)
+!               GOTO 751
+!            ENDIF
+!         ENDDO
+!751      CONTINUE
+!      ENDIF
    ENDIF
    J5=PARENT(J5)
    IF (J5.EQ.LJ1) EXIT

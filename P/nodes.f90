@@ -156,7 +156,7 @@ MODULE NODES
 
      SUBROUTINE SSHSUBMIT(ICPU,STAT,JOBSTRING,CONNSTR1,LDEBUG)
           USE PORFUNCS, ONLY: SYSTEM_SUBR
-          USE COMMONS, ONLY: CHARMMT, ZSYM, TRIPLES, COPYFILES, COPYOPTIMT, BHINTERPT, BISECTT
+          USE COMMONS, ONLY: CHARMMT, ZSYM, COPYFILES, COPYOPTIMT, BHINTERPT, BISECTT
           IMPLICIT NONE
 
           INTEGER,INTENT(IN) :: ICPU
@@ -187,19 +187,20 @@ MODULE NODES
              TOTALJOBSTRING= 'ssh ' // TRIM(node) // ' " mkdir -p ' // TRIM(ADJUSTL(PATHSTRING)) 
 ! (2) move to the WORKINGDIRECTORY (saves unpicking the COPYFILES list!)
              TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' && cd ' // TRIM(ADJUSTL(WORKINGDIRECTORY)) 
-! (2b) delete any existing path.info.* file (a very rare but not impossible condition!)
-             TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' && rm -f path.info.* '
 ! (3) copy data from WORKINGDIRECTORY to the scratch directory on the node. 
 !     Note that if any file is missing an error condition will result, and subsequent commands will fail.
              TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) &
   &             // ' && cp -r  *.' // connstr1 // ' ' // TRIM(ADJUSTL(COPYFILES)) // ' ' // TRIM(ADJUSTL(PATHSTRING))
 ! (4) move to the scratch directory on the node
              TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' && cd ' // TRIM(ADJUSTL(PATHSTRING))
+! (4b) delete any existing path.info.* file (a very rare but not impossible condition!)
+             TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' && rm -f path.info.* '
 ! (5) run the OPTIM job
              TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' && ' // JOBSTRING
 ! (6) copy results back
              IF (LDEBUG) THEN ! copy everything back
-                TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' && cp  * ' // TRIM(ADJUSTL(WORKINGDIRECTORY))
+                TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' && cp  *.' // connstr1 &
+   &                       // ' ' // TRIM(ADJUSTL(WORKINGDIRECTORY))
              ELSEIF (COPYOPTIMT.AND.(BHINTERPT.OR.BISECTT)) THEN ! copy path.info, OPTIM
                 TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) &
    &               // ' && cp OPTIM* min.data.info* ' // TRIM(ADJUSTL(WORKINGDIRECTORY))
@@ -231,19 +232,20 @@ MODULE NODES
              TOTALJOBSTRING= 'rsh ' // TRIM(node) // ' " mkdir -p ' // TRIM(ADJUSTL(PATHSTRING)) 
 ! (2) move to the WORKINGDIRECTORY (saves unpicking the COPYFILES list!)
              TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' ; cd ' // TRIM(ADJUSTL(WORKINGDIRECTORY))
-! (2b) delete any existing path.info.* file (a very rare but not impossible condition!)
-             TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' && rm -f path.info.* '
 ! (3) copy data from WORKINGDIRECTORY to the scratch directory on the node. 
 !     Note that if any file is missing an error condition will result, and subsequent commands will fail.
              TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) &
   &             // ' ; cp -r  *.' // connstr1 // ' ' // TRIM(ADJUSTL(COPYFILES)) // ' ' // TRIM(ADJUSTL(PATHSTRING))
 ! (4) move to the scratch directory on the node
              TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' ; cd ' // TRIM(ADJUSTL(PATHSTRING))
+! (4b) delete any existing path.info.* file (a very rare but not impossible condition!)
+             TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' && rm -f path.info.* '
 ! (5) run the OPTIM job
              TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' ; ' // JOBSTRING
 ! (6) copy results back
              IF (LDEBUG) THEN ! copy everything back 
-                TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' ; cp  * ' // TRIM(ADJUSTL(WORKINGDIRECTORY))
+                TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) // ' ; cp  *.' // connstr1 &
+   &                         // ' ' // TRIM(ADJUSTL(WORKINGDIRECTORY))
              ELSEIF (COPYOPTIMT.AND.(BHINTERPT.OR.BISECTT)) THEN ! copy path.info, OPTIM
                 TOTALJOBSTRING=TRIM(ADJUSTL(TOTALJOBSTRING)) &
    &               // ' ; cp OPTIM* min.data.info* ' // TRIM(ADJUSTL(WORKINGDIRECTORY))

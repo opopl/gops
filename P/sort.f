@@ -92,3 +92,31 @@ C     WRITE(*,'(A,G20.10,A,I6)') 'In sort the minimum saved rate is ',A(N-1),' s
 C     WRITE(*,'(I6,G20.10,I6)') (J1,A(J1),NA(J1),J1=1,N)
       RETURN
       END
+
+C
+C     This subprogram performs a sort on the input data and
+C     arranges it from smallest to largest. The exchange-sort
+C     algorithm is used. In this case we sort on A, rather than NA
+C
+      SUBROUTINE SORT5(N,J3,A,NA)
+      IMPLICIT NONE
+      INTEGER J1, L, N, J3, J2, NA(J3), NTEMP
+      DOUBLE PRECISION TEMP, A(J3)
+C
+      DO 20 J1=1,N-1
+         L=J1
+         DO 10 J2=J1+1,N
+            IF (A(L).GT.A(J2)) L=J2
+10       CONTINUE
+         NTEMP=NA(L)
+         NA(L)=NA(J1)
+         NA(J1)=NTEMP
+         TEMP=A(L)
+         A(L)=A(J1)
+         A(J1)=TEMP
+20    CONTINUE
+C     WRITE(*,'(A,G20.10,A,I6)') 'In sort the minimum saved rate is ',A(N-1),' saved at position ',NA(N-1)
+C     WRITE(*,'(I6,G20.10,I6)') (J1,A(J1),NA(J1),J1=1,N)
+      RETURN
+      END
+

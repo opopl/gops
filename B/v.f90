@@ -32,7 +32,7 @@
       CHARACTER(LEN=130) BLNTYPE
 
       ! suffix to files
-      CHARACTER(LEN=130) SUF
+      CHARACTER(LEN=30) SUF
 
       ! list of energies, EA(1) is the total one 
       DOUBLE PRECISION, DIMENSION(10) :: EA

@@ -1,28 +1,22 @@
 #!/usr/bin/env bash
- 
+
+
+set_base_vars(){
+# {{{
+s_purpose="start pathsampling jobs"
+s_project="~/gops/pbs/s"
 # directory where this script resides
 export shd="`dirname $(readlink -f $0)`"
 # name of this script 
 export this_script=` basename $0 `
+# executable
+export pexe="PATHSAMPLE"
 
 vim_opts="-n -p"
 v="vim $vim_opts"
 repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
 
-define_base_dirs(){
-# {{{
-# main Wales group software directory
-export wg_dir="$shd/../../"
-packdir=$HOME/arch/packed
-unpackdir=$HOME/arch/unpacked
-# }}}
-}
 
-
-set_base_vars(){
-# {{{
-s_purpose="start PATHSAMPLE jobs"
-s_project="~/gops/pbs/s"
 # }}}
 }
 
@@ -74,7 +68,7 @@ main(){
 # {{{
 
 case "$1" in
-  [0-9]*) cp pdata.$1 pathdata; PATHSAMPLE ;;
+  [0-9]*) cp pdata.$1 pathdata; $pexe ;;
   *)
   ;;
 esac    # --- end of case ---
@@ -86,7 +80,6 @@ esac    # --- end of case ---
 # {{{
 
 script_opts=( $* )
-define_base_dirs
 
 while [ ! -z "$1" ]; do
   	case "$1" in

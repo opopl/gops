@@ -16,11 +16,11 @@
 !   along with this program; if not, write to the Free Software
 !   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-MODULE MATHSCONSTANTS
+MODULE mathsConstants
 
-  REAL (KIND=KIND(0.0D0)), PARAMETER :: PI = 3.14159265358979323846D0
-  REAL (KIND=KIND(0.0D0)), PARAMETER :: TWOPI = 2.0D0*PI
-  REAL (KIND=KIND(0.0D0)), PARAMETER :: DEGREESTORADIANS = PI/180.0D0
-  REAL (KIND=KIND(0.0D0)), PARAMETER :: RADIANSTODEGREES = 180.0D0/PI  
+  REAL (kind=KIND(0.0d0)), PARAMETER :: pi = 3.14159265358979323846d0
+  REAL (kind=KIND(0.0d0)), PARAMETER :: twopi = 2.0d0*pi
+  REAL (kind=KIND(0.0d0)), PARAMETER :: degreesToRadians = pi/180.0d0
+  REAL (kind=KIND(0.0d0)), PARAMETER :: radiansToDegrees = 180.0d0/pi  
 
-END MODULE MATHSCONSTANTS
+END MODULE mathsConstants

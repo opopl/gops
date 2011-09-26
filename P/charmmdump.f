@@ -24,7 +24,7 @@
       CHARACTER(LEN=4) SID
       CHARACTER(LEN=*)  FNAME
       INTEGER IUNIT,I,RID
-      DOUBLE PRECISION COORDS(NR)
+      DOUBLE PRECISION COORDS(3*NATOMS)
 
 C     CHARACTER(LEN=4) RESLABEL(NATOMS),ATOMLABEL(NATOMS)
 C     INTEGER RESNUMBER(NATOMS)
@@ -92,7 +92,7 @@ C
       CHARACTER(LEN=4) A1
       CHARACTER(LEN=*)  FNAME
       INTEGER I,I1
-      DOUBLE PRECISION COORDS(NR)
+      DOUBLE PRECISION COORDS(3*NATOMS)
 
       if (machine) then
            OPEN(19,FILE=FNAME,access='direct',form='unformatted',status='old',recl=3*8*Natoms,action='read')

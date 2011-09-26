@@ -32,7 +32,7 @@
       INTEGER M1, M2, J1, J2, J3, J4, MINMAP(NMIN), NLEFT, J5, NDUMMY, NLABEL(NMIN), NCONNDUM
       INTEGER NCOL(NMIN), NDEAD, NDISTA(NMIN), NDISTB(NMIN), NCYCLE, DMIN, DMAX, NUNCONA, NUNCONB
       LOGICAL DEADTS(NTS), MATCHED, CHANGED
-      INTEGER NAVAIL, ISTAT
+      INTEGER NAVAIL, ISTAT, NCONNMAXSAVE, NMINSAVE, NMINABSAVE, LNCONN(MAXMIN)
       DOUBLE PRECISION EMKSUM(NMIN), COMMIT, KBA, KAB, DUMMY, LKSUM(NMIN), GBMAX, SELF(NMIN)
       DOUBLE PRECISION TNEW, ELAPSED, PEMKSUM(NMIN)
       DOUBLE PRECISION DUMMYA, DUMMYB, KSSAB, KSSBA, EDUM
@@ -43,6 +43,8 @@
       INTEGER, ALLOCATABLE :: NVALSAVE(:,:), NCOLSAVE(:), NCONNSAVE(:)
       INTEGER, ALLOCATABLE :: NVALSAVE2(:,:), NCOLSAVE2(:), NCONNSAVE2(:)
       LOGICAL, ALLOCATABLE :: BCON(:)
+      INTEGER NONZERO, NCOUNT, NCOLPREV, ORIGNMINA, ORIGNMINB
+      DOUBLE PRECISION LDUMMY, NEWPFOLD(NMIN), GPDIFF(NMIN)
 
       CALL CPU_TIME(ELAPSED)
 !
@@ -116,13 +118,18 @@
 !
 !  For NGT add an initially zero self-branching probability.
 !
+      NCONNMAXSAVE=NCONNMAX
+      NMINSAVE=NMIN
+      NMINABSAVE=NMINA+NMINB
+      ORIGNMINA=NMINA
+      ORIGNMINB=NMINB
       NCONNMAX=NCONNMAX+1
       GBMAX=NCONNMAX*1.0D0*NMIN*8.0D0/1.0D9
 
       IF (GBMAX*1.5D0 .GT. NGTCRSWITCH) THEN
          WRITE(*,*) 'NGT> memory required for full, rectangular storage = ',GBMAX*1.5D0,' Gb'
          WRITE(*,*) 'NGT> switching to compressed row storage instead'
-         CALL NGT_CRSTORAGE(GBMAX,DEADTS,PEMKSUM,EMKSUM,LKSUM,NCOL,KBA,KAB,MINMAP,LPFOLDAB,LPFOLDBA)
+         CALL NGT_CRSTORAGE(GBMAX,DEADTS,PEMKSUM,EMKSUM,LKSUM,NCOL,KBA,KAB,MINMAP,LPFOLDAB,LPFOLDBA,LNCONN)
          NCONNMAX=NMINA+NMINB
          GO TO 558 ! to do the disconnection of other sources and sinks using rectangular storage
       END IF
@@ -361,6 +368,7 @@ C
          IF (NCONN(J1).GT.NCONNMIN) NLEFT=NLEFT+1
       ENDDO
       PRINT '(A,I8)','NGT> Number of connected minima remaining with sufficient neighbours=',NLEFT
+      LNCONN(1:NMIN)=NCONN(1:NMIN) ! save the nconn values for use in the pfold calculation at the end.
 !
 !  Remove I minima from the bottom up, i.e. from NMIN down to NMINA+NMINB+1.
 !
@@ -430,6 +438,11 @@ C
          ENDIF
          LPFOLDAB(MINMAP(LOCATIONA(J1)))=DUMMYA
          LPFOLDBA(MINMAP(LOCATIONA(J1)))=DUMMYB
+         IF (DIRECTION.EQ.'AB') THEN
+            GPFOLD(LOCATIONA(J1))=DUMMYA
+         ELSE
+            GPFOLD(LOCATIONA(J1))=DUMMYB
+         END IF
       ENDDO
       PRINT '(A)',' '
       DO J1=1,NMINB
@@ -461,6 +474,11 @@ C
          ENDIF
          LPFOLDAB(MINMAP(LOCATIONB(J1)))=DUMMYA
          LPFOLDBA(MINMAP(LOCATIONB(J1)))=DUMMYB
+         IF (DIRECTION.EQ.'AB') THEN
+            GPFOLD(LOCATIONB(J1))=DUMMYA
+         ELSE
+            GPFOLD(LOCATIONB(J1))=DUMMYB
+         END IF
       ENDDO
       PRINT '(A)',' '
 
@@ -859,6 +877,89 @@ C
 
       CALL CPU_TIME(TNEW)
       TGT=TGT+TNEW-ELAPSED
+
+      IF (NPFOLD.LE.0) RETURN ! Pfold calculation has not been requested.
+
+! JMC Pfold calculation seeded with the committor probabilites that we have just calculated for the end points
+
+      WRITE(*,'(A)') 'NGT> Pfold calculation seeded with the known committor probabilites for the end points'
+      IF (NGTDISCONNECTALL) THEN ! need to reset these values
+         NMIN=NMINSAVE
+         NMINA=ORIGNMINA
+         NMINB=ORIGNMINB
+      END IF
+      ALLOCATE(PBRANCH(NCONNMAXSAVE,NMIN),NVAL(NCONNMAXSAVE,NMIN))
+
+! Subroutine MAKED2 is in Pfold.f90 and sets up the arrays as appropriate for the Pfold calculation (different from those 
+! used in NGT above).
+      CALL MAKED2(PBRANCH,NCOL,NCONNMAXSAVE,NVAL,DEADTS,LKSUM,LNCONN)
+
+!  Now iterate GPFOLD's for a fixed number of cycles.
+!  Gauss-Seidel iteration if OMEGA=1: successive over-relaxation if 1<OMEGA<2.
+!
+      NEWPFOLD(1:NMIN)=GPFOLD(1:NMIN)
+      GPDIFF=0.0D0
+!
+!  Make compressed row storage for DMAT.
+!
+      NONZERO=0
+      DO J1=1,NMIN
+         NONZERO=NONZERO+NCOL(J1)
+      ENDDO
+      ALLOCATE(DVEC(NONZERO),COL_IND(NONZERO),ROW_PTR(NMIN+1))
+      NCOUNT=0
+      ROW_PTR(1)=1
+      DO J1=1,NMIN
+         IF (J1.GT.1) ROW_PTR(J1)=ROW_PTR(J1-1)+NCOLPREV
+         NCOLPREV=NCOL(J1)
+         DO J2=1,NCOL(J1)
+            NCOUNT=NCOUNT+1
+            DVEC(NCOUNT)=PBRANCH(J2,J1)
+            COL_IND(NCOUNT)=NVAL(J2,J1)
+         ENDDO
+      ENDDO
+      ROW_PTR(NMIN+1)=NONZERO+1
+!
+!  Main P^fold loop.
+!  OMEGA is the damping factor for successive overrelaxation method (SOR)
+!  OMEGA=1 is pure Gauss-Seidel. OMEGA should be < 2
+!
+      CALL CPU_TIME(TNEW)
+      DO J1=1,NPFOLD
+         DO J3=NMINABSAVE+1,NMIN ! i.e, freeze the known committor probabilities for the end point minima
+            IF (NCOL(J3).EQ.0) CYCLE
+            LDUMMY=0.0D0
+            DO J2=ROW_PTR(J3),ROW_PTR(J3+1)-1
+!              LDUMMY=LDUMMY+DVEC(J2)*GPFOLD(COL_IND(J2))    ! Jacobi
+               LDUMMY=LDUMMY+DVEC(J2)*NEWPFOLD(COL_IND(J2)) ! Gauss-Seidel, a bit faster
+            ENDDO
+!!!            NEWPFOLD(J3)=LDUMMY
+            GPDIFF(J3)=ABS(OMEGA*LDUMMY+(1.0D0-OMEGA)*GPFOLD(J3) - GPFOLD(J3))/MAX(GPFOLD(J3),tiny(1.0d0))
+            GPFOLD(J3)=OMEGA*LDUMMY+(1.0D0-OMEGA)*GPFOLD(J3)  ! SOR
+            NEWPFOLD(J3)=GPFOLD(J3)
+         ENDDO
+         IF(MAXVAL(GPDIFF).LT.PFOLDCONV) THEN
+           WRITE(*,'(A,2G20.10)') 'NGT> convergence criterion on the largest fractional change in GPFOLD has been met ',
+     &                     MAXVAL(GPDIFF),PFOLDCONV
+           WRITE(*,'(A,I10)') 'NGT> stopping after iteration ',J1
+           EXIT
+         END IF
+      ENDDO
+      CALL CPU_TIME(ELAPSED)
+      WRITE(*,*) 'NGT> CPU time spent iterating committor probability =',ELAPSED-TNEW,' s'
+
+! Now put the Pfold values into the ordering of the original database for writing to commit.data
+      DO J3=1,NMIN
+         NEWPFOLD(MINMAP(J3))=GPFOLD(J3)
+      END DO
+      WRITE(*,'(A)') 'NGT> Writing Pfold values to commit.data for minima in their original, possibly grouped, order (NOT RESORTED)'
+      OPEN(UNIT=1,FILE='commit.data',STATUS='UNKNOWN')
+      DO J3=1,NMIN
+         WRITE(1,'(G20.10)') NEWPFOLD(J3)
+      END DO
+      CLOSE(1)
+
+      DEALLOCATE(DVEC,COL_IND,ROW_PTR,NVAL,PBRANCH)
 
       RETURN
       END

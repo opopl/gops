@@ -34,10 +34,10 @@ C
      1        NDONE, PID(NCPU+NCPU+1), J2, LNTS, STATUS, J4, DUMMYI
 ! file numbers are offset by an additional NCPU to avoid overwriting output from connect runs.
       LOGICAL LTEST1, LTEST2, T1, T2, FINISHED(NCPU+NCPU+1), NOPATH(NCPU+NCPU+1), KILLED(NCPU+NCPU+1), LDEBUG
-      DOUBLE PRECISION POINTS(NR), POINTSPLUSLOCAL(NR), POINTSMINUSLOCAL(NR), POINTSTSLOCAL(NR),
-     1                 EPLUS, ETSLOCAL, EMINUS, FRQSPLUS(NR), FRQSTS(NR), FRQSMINUS(NR),
+      DOUBLE PRECISION POINTS(3*NATOMS), POINTSPLUSLOCAL(3*NATOMS), POINTSMINUSLOCAL(3*NATOMS), POINTSTSLOCAL(3*NATOMS),
+     1                 EPLUS, ETSLOCAL, EMINUS, FRQSPLUS(3*NATOMS), FRQSTS(3*NATOMS), FRQSMINUS(3*NATOMS),
      2                 IXPLUS, IYPLUS, IZPLUS, IXMINUS, IYMINUS, IZMINUS, IXM ,IYM ,IZM, DPERT, 
-     3                 DUMMY, RANDOM, RANARRAY(NR), DPRAND, LOCALPOINTS2(NR),
+     3                 DUMMY, RANDOM, RANARRAY(3*NATOMS), DPRAND, LOCALPOINTS2(3*NATOMS),
      4                 DISTANCE, DIST2, RMAT(3,3), NEWIXMIN,NEWIYMIN,NEWIZMIN,FRICTIONFAC
       CHARACTER(LEN=10) J3STR, PIDSTR
       CHARACTER(LEN=80) FPOO
@@ -68,8 +68,8 @@ C           IF (LTEST1) CONNECTEDMIN(NTOTAL)=MINUS(L1)
 C           IF (LTEST2) CONNECTEDMIN(NTOTAL)=PLUS(L1)
 C           CONNECTEDBYTS(NTOTAL)=L1
 C           IF (DEBUG) WRITE(*,'(A,I6,A,I6,A,I6)') 'minimum ',MINDEX,' is connected to minimum ',CONNECTEDMIN(NTOTAL),' by ts ',L1
-            READ(UTS,REC=L1) (POINTS(L2),L2=1,NR)
-C           WRITE(47,'(3F20.10)') (POINTS(L2),L2=1,NR)
+            READ(UTS,REC=L1) (POINTS(L2),L2=1,3*NATOMS)
+C           WRITE(47,'(3F20.10)') (POINTS(L2),L2=1,3*NATOMS)
          ENDIF
       ENDDO
 C     CLOSE(47)
@@ -78,7 +78,7 @@ C     CLOSE(47)
       IF (NTOTAL.GE.MAX(CONNECTIONS,NINIT+NADD)) RETURN
       WRITE(*,'(A,I6,A,I6,A)') 'tssearch> minimum ',MINDEX,' has ',NTOTAL,' connections to different structures - looking for more'
 
-      READ(UMIN,REC=MINDEX) (POINTS(L2),L2=1,NR)
+      READ(UMIN,REC=MINDEX) (POINTS(L2),L2=1,3*NATOMS)
       DO L1=1,MAXTSATTEMPTS
 C
 C  To use NCPU cpu.s first set up NCPU odata.n files and run
@@ -246,7 +246,7 @@ C
             ELSE
                FPOO='points.final.'//TRIM(ADJUSTL(PIDSTR)) ! work around for Sun compiler bug
                OPEN(1,FILE=TRIM(ADJUSTL(FPOO)),STATUS='OLD')
-               READ(1,*) (POINTSTSLOCAL(J1),J1=1,NR)
+               READ(1,*) (POINTSTSLOCAL(J1),J1=1,3*NATOMS)
                CLOSE(1)
             ENDIF
             CALL INERTIAWRAPPER(POINTSTSLOCAL,NATOMS,ANGLEAXIS,IXM,IYM,IZM)
@@ -254,7 +254,7 @@ C
                T1=(ABS(ETSLOCAL-ETS(J1)).LT.EDIFFTOL)
                T2=.FALSE.
                IF (T1) THEN
-                  READ(UTS,REC=J1) (LOCALPOINTS2(J4),J4=1,NR)
+                  READ(UTS,REC=J1) (LOCALPOINTS2(J4),J4=1,3*NATOMS)
                   CALL MINPERMDIST(POINTSTSLOCAL,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,
      &                             DIST2,RIGIDBODY,RMAT,.FALSE.)
                   IF (DISTANCE.LT.GEOMDIFFTOL) T2=.TRUE.
@@ -343,29 +343,29 @@ C
                  READ(1,*) HORDERPLUS
             endif
             IF (MACHINE) THEN
-               IF (.NOT.NOFRQS) READ(1) (FRQSPLUS(L2),L2=1,NR)
-               READ(1) (POINTSPLUSLOCAL(L2),L2=1,NR)
+               IF (.NOT.NOFRQS) READ(1) (FRQSPLUS(L2),L2=1,3*NATOMS)
+               READ(1) (POINTSPLUSLOCAL(L2),L2=1,3*NATOMS)
                READ(1) ETSLOCAL
                READ(1) HTS
             ELSE
-               IF (.NOT.NOFRQS) READ(1,*) (FRQSPLUS(L2),L2=1,NR)
-               READ(1,*) (POINTSPLUSLOCAL(L2),L2=1,NR), ETSLOCAL, HTS
+               IF (.NOT.NOFRQS) READ(1,*) (FRQSPLUS(L2),L2=1,3*NATOMS)
+               READ(1,*) (POINTSPLUSLOCAL(L2),L2=1,3*NATOMS), ETSLOCAL, HTS
             endif
             if (machine) then
-                 IF (.NOT.NOFRQS) READ(1) (FRQSTS(L2),L2=1,NR)
-                 READ(1) (POINTSTSLOCAL(L2),L2=1,NR)
+                 IF (.NOT.NOFRQS) READ(1) (FRQSTS(L2),L2=1,3*NATOMS)
+                 READ(1) (POINTSTSLOCAL(L2),L2=1,3*NATOMS)
                  READ(1) EMINUS
                  READ(1) HORDERMINUS
             else
-                 IF (.NOT.NOFRQS) READ(1,*) (FRQSTS(L2),L2=1,NR)
-                 READ(1,*) (POINTSTSLOCAL(L2),L2=1,NR),EMINUS,HORDERMINUS
+                 IF (.NOT.NOFRQS) READ(1,*) (FRQSTS(L2),L2=1,3*NATOMS)
+                 READ(1,*) (POINTSTSLOCAL(L2),L2=1,3*NATOMS),EMINUS,HORDERMINUS
             endif
             if (machine) then
-                 IF (.NOT.NOFRQS) READ(1) (FRQSMINUS(L2),L2=1,NR)
-                 READ(1) (POINTSMINUSLOCAL(L2),L2=1,NR)
+                 IF (.NOT.NOFRQS) READ(1) (FRQSMINUS(L2),L2=1,3*NATOMS)
+                 READ(1) (POINTSMINUSLOCAL(L2),L2=1,3*NATOMS)
             else
-                 IF (.NOT.NOFRQS) READ(1,*) (FRQSMINUS(L2),L2=1,NR)
-                 READ(1,*) (POINTSMINUSLOCAL(L2),L2=1,NR)
+                 IF (.NOT.NOFRQS) READ(1,*) (FRQSMINUS(L2),L2=1,3*NATOMS)
+                 READ(1,*) (POINTSMINUSLOCAL(L2),L2=1,3*NATOMS)
             endif
             CLOSE(1)
             CALL INERTIAWRAPPER(POINTSTSLOCAL,NATOMS,angleAxis,IXM,IYM,IZM) ! since the values obtained previously may have been overwritten
@@ -389,7 +389,7 @@ C
             CALL INERTIAWRAPPER(POINTSPLUSLOCAL,NATOMS,angleAxis,IXPLUS,IYPLUS,IZPLUS)
             LTEST1=ABS(EPLUS-EMIN(MINDEX)).LT.EDIFFTOL
             IF (LTEST1) THEN
-               READ(UMIN,REC=MINDEX) (LOCALPOINTS2(J4),J4=1,NR)
+               READ(UMIN,REC=MINDEX) (LOCALPOINTS2(J4),J4=1,3*NATOMS)
                CALL MINPERMDIST(POINTSPLUSLOCAL,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD, 
      &                          DISTANCE,DIST2,RIGIDBODY,RMAT,.FALSE.)
                LTEST1=.FALSE.
@@ -399,7 +399,7 @@ C
             CALL INERTIAWRAPPER(POINTSMINUSLOCAL,NATOMS,ANGLEAXIS,IXMINUS,IYMINUS,IZMINUS)
             LTEST2=ABS(EMINUS-EMIN(MINDEX)).LT.EDIFFTOL
             IF (LTEST2) THEN
-               READ(UMIN,REC=MINDEX) (LOCALPOINTS2(J4),J4=1,NR)
+               READ(UMIN,REC=MINDEX) (LOCALPOINTS2(J4),J4=1,3*NATOMS)
                CALL MINPERMDIST(POINTSMINUSLOCAL,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD, 
      &                          DISTANCE,DIST2,RIGIDBODY,RMAT,.FALSE.)
                LTEST2=.FALSE.
@@ -429,7 +429,7 @@ C  The other minimum need not be new.
 C
                DO L2=1,NMIN
                   IF (LTEST1.AND.(ABS(EMINUS-EMIN(L2)).LT.EDIFFTOL)) THEN
-                     READ(UMIN,REC=L2) (LOCALPOINTS2(J4),J4=1,NR)
+                     READ(UMIN,REC=L2) (LOCALPOINTS2(J4),J4=1,3*NATOMS)
                      CALL MINPERMDIST(POINTSMINUSLOCAL,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE, 
      &                                   DIST2,RIGIDBODY,RMAT,.FALSE.)
                      IF (DISTANCE.LT.GEOMDIFFTOL) THEN
@@ -439,7 +439,7 @@ C                       CONNECTEDMIN(NTOTAL)=L2
                         GOTO 11
                      ENDIF
                   ELSE IF (LTEST2.AND.(ABS(EPLUS-EMIN(L2)).LT.EDIFFTOL)) THEN
-                     READ(UMIN,REC=L2) (LOCALPOINTS2(J4),J4=1,NR)
+                     READ(UMIN,REC=L2) (LOCALPOINTS2(J4),J4=1,3*NATOMS)
                      CALL MINPERMDIST(POINTSPLUSLOCAL,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE, 
      &                                   DIST2,RIGIDBODY,RMAT,.FALSE.)
                      IF (DISTANCE.LT.GEOMDIFFTOL) THEN
@@ -496,7 +496,7 @@ C              CONNECTEDMIN(NTOTAL)=NMIN
      1                                             HORDERMIN(NMIN),IXMIN(NMIN),IYMIN(NMIN),IZMIN(NMIN)
                   CALL FLUSH(UMINDATA,ISTAT)
                   IF (CLOSEFILEST) CLOSE(UNIT=UMINDATA)
-                  WRITE(UMIN,REC=NMIN) (POINTSMINUSLOCAL(L2),L2=1,NR)
+                  WRITE(UMIN,REC=NMIN) (POINTSMINUSLOCAL(L2),L2=1,3*NATOMS)
                   CALL FLUSH(UMIN,ISTAT)
                
                ELSE IF (LTEST2) THEN
@@ -536,7 +536,7 @@ C              CONNECTEDMIN(NTOTAL)=NMIN
      &                                                   IZMIN(NMIN)
                   CALL FLUSH(UMINDATA,ISTAT)
                   IF (CLOSEFILEST) CLOSE(UNIT=UMINDATA)
-                  WRITE(UMIN,REC=NMIN) (POINTSPLUSLOCAL(L2),L2=1,NR)
+                  WRITE(UMIN,REC=NMIN) (POINTSPLUSLOCAL(L2),L2=1,3*NATOMS)
                   CALL FLUSH(UMIN,ISTAT)
                ENDIF
            
@@ -563,7 +563,7 @@ C              CONNECTEDBYTS(NTOTAL)=NTS
                         DUMMY=DUMMY+LOG(FRQSTS(L2))
                      ENDIF
                   ENDDO
-                  NEGEIG(NTS)=FRQSTS(NR)
+                  NEGEIG(NTS)=FRQSTS(3*NATOMS)
                ENDIF
                FVIBTS(NTS)=DUMMY
                IF (LTEST1) THEN
@@ -589,7 +589,7 @@ C              CONNECTEDBYTS(NTOTAL)=NTS
                ENDIF
                CALL FLUSH(UTSDATA,ISTAT)
                IF (CLOSEFILEST) CLOSE(UNIT=UTSDATA)
-               WRITE(UTS,REC=NTS) (POINTSTSLOCAL(L2),L2=1,NR)
+               WRITE(UTS,REC=NTS) (POINTSTSLOCAL(L2),L2=1,3*NATOMS)
                CALL FLUSH(UTS,ISTAT)
 C
 C  Update ts pointers.

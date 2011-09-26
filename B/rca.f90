@@ -36,7 +36,8 @@ IF (NARGS.GT.0) THEN
 				CASE('-p46') ;  BLNT=.TRUE.; P46=.TRUE.
 				CASE('-mbln') ; MYBLNT=.TRUE.
 				CASE('-nrg') ; READ(VAR,*) NRG
-				CASE('-s') ; READ(VAR,*) S; USESUF=.TRUE. ; SUF=S//"."
+				CASE('-steps') ; READ(VAR,*) MCSTEPS
+				CASE('-s') ; READ(VAR,*) S; USESUF=.TRUE. ; SUF=trim(S)//"."
                 CASE DEFAULT
          ENDSELECT
          !CALL MAKETEST(BFF)

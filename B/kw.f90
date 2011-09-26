@@ -212,6 +212,13 @@ CONTAINS
       ELSE IF (WORD.EQ.'NRG') THEN
          READ(ARGS(2),*) NRG
                   ! }}}
+                  !PULL {{{
+      ELSE IF (WORD.EQ.'PULL') THEN
+        PULLT=.TRUE.
+        READ(ARGS(2),*) PATOM1
+        READ(ARGS(3),*) PATOM2
+        READ(ARGS(4),*) PFORCE
+        ! }}}
       ELSE IF (WORD.EQ.'TRACKDATA') THEN
          TRACKDATAT=.TRUE.     
       ELSE

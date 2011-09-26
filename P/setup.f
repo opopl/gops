@@ -34,8 +34,9 @@ C
       USE KEY
       USE COMMONS
       IMPLICIT NONE
-      INTEGER J1, J2, STATUS, J3, NDUMMY, NRANDOM, NCOUNT, NMINREMOVE, NTSREMOVE, NMINRETAIN, NTSRETAIN, ISTAT, J4
-      DOUBLE PRECISION LOCALPOINTS(NR), IXM, IYM, IZM, LOCALPOINTS2(NR), DISTANCE, RMAT(3,3), DIST2, DPRAND
+      INTEGER J1, J2, STATUS, J3, NDUMMY, NRANDOM, NCOUNT, NMINREMOVE, NTSREMOVE, NMINRETAIN, 
+     &        J4, NTSRETAIN, ISTAT
+      DOUBLE PRECISION LOCALPOINTS(3*NATOMS), IXM, IYM, IZM, LOCALPOINTS2(3*NATOMS), DISTANCE, RMAT(3,3), DIST2, DPRAND
       DOUBLE PRECISION PFNORM1, PFNORM2
       DOUBLE PRECISION, ALLOCATABLE :: NEWPFMIN(:)
       INTEGER, ALLOCATABLE :: CANDIDATES(:), MINPREV(:), MINREMOVE(:), TSREMOVE(:), MINRETAIN(:), TSRETAIN(:)
@@ -43,12 +44,13 @@ C
      &                 TSFVIBGUESS, DUMMY, FRICTIONFAC
       DOUBLE PRECISION :: CUT_UNDERFLOW=-300.0D0
       LOGICAL DEADTS
+      CHARACTER(LEN=80) S1, S2, FNAME
       INTEGER NEWHORDERMIN!}}}
 
       IF (CHARMMT.and..not.machine) CALL READREF('input.crd')
 
-      OPEN(UNIT=UMIN,FILE='points.min',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*NR) 
-      OPEN(UNIT=UTS,FILE='points.ts',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*NR) 
+      OPEN(UNIT=UMIN,FILE='points.min',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*3*NATOMS) 
+      OPEN(UNIT=UTS,FILE='points.ts',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*3*NATOMS) 
 
       !op226> EXTRACTMINT  {{{
 
@@ -60,8 +62,8 @@ C
             CALL MYSYSTEM(STATUS,DEBUG,'cp points.min points.min.save')
             DO 
                NDUMMY=NDUMMY+1
-               READ(1,*,END=777) (LOCALPOINTS(J2),J2=1,NR)
-               WRITE(UMIN,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,NR)
+               READ(1,*,END=777) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+               WRITE(UMIN,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,3*NATOMS)
             ENDDO
 777         NDUMMY=NDUMMY-1
             PRINT '(A,I6)','setup> number of minima extracted=',NDUMMY
@@ -70,45 +72,49 @@ C
             PRINT '(A)', 'setup> extracting all minima '
             DO 
                NDUMMY=NDUMMY+1
-               READ(UMIN,REC=NDUMMY,ERR=877) (LOCALPOINTS(J2),J2=1,NR)
-               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,NR)
+               READ(UMIN,REC=NDUMMY,ERR=877) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,3*NATOMS)
             ENDDO
 877         NDUMMY=NDUMMY-1
             PRINT '(A,I6)','setup> number of minima extracted=',NDUMMY
          ELSE
             PRINT '(A,I6)', 'setup> extracting minimum ',WHICHMIN
-            READ(UMIN,REC=WHICHMIN) (LOCALPOINTS(J2),J2=1,NR)
+            READ(UMIN,REC=WHICHMIN) (LOCALPOINTS(J2),J2=1,3*NATOMS)
 
-!           IF (AMHT) THEN
-!              CALL AMHDUMP(LOCALPOINTS,'amhmin.pdb')
-!  
-!              IF (AMHQT)THEN
-!                 CALL AMHQ(WHICHMIN)
-!              ENDIF
-!  
-!              IF (AMHQCONTT)THEN
-!                 CALL AMHQCONT(WHICHMIN,QCONTCUT)
-!              ENDIF
-!  
-!              IF (AMHRMSDT)THEN
-!                 CALL AMHRMSD(WHICHMIN)
-!              ENDIF
-!  
-!              IF (AMHRELQT)THEN
-!                 CALL AMHRELQ(QRELONE, QRELTWO)
-!              ENDIF
-!  
-!              IF (AMH_RELCOT)THEN
-!                 CALL AMH_RELCO(WHICHMIN, RELCOCUT)
-!              ENDIF
-!  
-!              IF (AMHALLATOMMINT)THEN
-!                 CALL AMHALLATOMMIN
-!              ENDIF
-!           ELSE
-               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,NR)
+           IF (AMHT) THEN
+              CALL AMHDUMP(LOCALPOINTS,'amhmin.pdb')
+  
+              IF (AMHQT)THEN
+                 CALL AMHQ(WHICHMIN)
+              ENDIF
+  
+              IF (AMHQENGMINT)THEN
+                 CALL AMHQENGMIN(WHICHMIN)
+              ENDIF
+
+              IF (AMHQCONTT)THEN
+                 CALL AMHQCONT(WHICHMIN,QCONTCUT)
+              ENDIF
+  
+              IF (AMHRMSDT)THEN
+                 CALL AMHRMSD(WHICHMIN)
+             ENDIF
+  
+              IF (AMHRELQT)THEN
+                 CALL AMHRELQ(QRELONE, QRELTWO)
+              ENDIF
+  
+              IF (AMH_RELCOT)THEN
+                CALL AMH_RELCO(WHICHMIN, RELCOCUT)
+              ENDIF
+  
+              IF (AMHALLATOMMINT)THEN
+                 CALL AMHALLATOMMIN
+             ENDIF
+           ELSE
+               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,3*NATOMS)
                IF (CHARMMT) CALL CHARMMDUMP(LOCALPOINTS,'extractedmin.crd')
-!           ENDIF
+           ENDIF
 
          ENDIF
          CLOSE(1)
@@ -126,8 +132,8 @@ C
             CALL MYSYSTEM(STATUS,DEBUG,'cp points.ts points.ts.save')
             DO
                NDUMMY=NDUMMY+1
-               READ(1,*,END=778) (LOCALPOINTS(J2),J2=1,NR)
-               WRITE(UTS,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,NR)
+               READ(1,*,END=778) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+               WRITE(UTS,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,3*NATOMS)
             ENDDO
 778         NDUMMY=NDUMMY-1
             PRINT '(A,I6)','setup> number of ts extracted=',NDUMMY
@@ -136,19 +142,19 @@ C
             PRINT '(A)', 'setup> extracting all ts '
             DO
                NDUMMY=NDUMMY+1
-               READ(UTS,REC=NDUMMY,ERR=878) (LOCALPOINTS(J2),J2=1,NR)
-               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,NR)
+               READ(UTS,REC=NDUMMY,ERR=878) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,3*NATOMS)
             ENDDO
 878         NDUMMY=NDUMMY-1
             PRINT '(A,I6)','setup> number of ts extracted=',NDUMMY
          ELSE
             PRINT '(A,I6)', 'setup> extracting ts ',WHICHTS
-            READ(UTS,REC=WHICHTS) (LOCALPOINTS(J2),J2=1,NR)
+            READ(UTS,REC=WHICHTS) (LOCALPOINTS(J2),J2=1,3*NATOMS)
 
 !           IF (AMHT) THEN
 !              CALL AMHDUMP(LOCALPOINTS,'amhts.pdb')
 !           ELSE
-               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,NR)
+               WRITE(1,'(3F25.15)') (LOCALPOINTS(J2),J2=1,3*NATOMS)
                IF (CHARMMT) CALL CHARMMDUMP(LOCALPOINTS,'extractedts.crd')
 !          ENDIF
          ENDIF
@@ -203,8 +209,8 @@ C
                   READ(1,*) EMIN(1),FVIBMIN(1),HORDERMIN(1),IXMIN(1),IYMIN(1),IZMIN(1)
                   WRITE(UMINDATA,'(2F20.10,I6,3F20.10)') EMIN(1), FVIBMIN(1), HORDERMIN(1),IXMIN(1), IYMIN(1), IZMIN(1)
                ENDIF
-               READ(1,*) (LOCALPOINTS(J2),J2=1,NR)
-               WRITE(UMIN,REC=1) (LOCALPOINTS(J2),J2=1,NR)
+               READ(1,*) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+               WRITE(UMIN,REC=1) (LOCALPOINTS(J2),J2=1,3*NATOMS)
                CLOSE(1)
             ELSE
                PRINT *, 'setup> ERROR - no min.data.info.1 found - check OPTIM output in output.start'
@@ -228,8 +234,8 @@ C
                   WRITE(UMINDATA,'(2F20.10,I6,3F20.10)') EMIN(2), FVIBMIN(2), HORDERMIN(2),IXMIN(2), IYMIN(2), IZMIN(2)
                ENDIF
                CLOSE(UMINDATA)
-               READ(1,*) (LOCALPOINTS(J2),J2=1,NR)
-               WRITE(UMIN,REC=2) (LOCALPOINTS(J2),J2=1,NR)
+               READ(1,*) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+               WRITE(UMIN,REC=2) (LOCALPOINTS(J2),J2=1,3*NATOMS)
                CLOSE(1)
             ELSE
                PRINT *, 'setup> ERROR - no min.data.info.2 found - check OPTIM output in output.finish'
@@ -264,10 +270,9 @@ C
             WRITE(1,'(I6)') 2
             CLOSE(1)
             PRINT '(A)','setup> initial OPTIM jobs run for odata.start and odata.finish'
-
             IF (DUMMYTST) THEN
-               READ(UMIN,REC=1) (LOCALPOINTS(J2),J2=1,NR)
-               READ(UMIN,REC=2) (LOCALPOINTS2(J3),J3=1,NR)
+               READ(UMIN,REC=1) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+               READ(UMIN,REC=2) (LOCALPOINTS2(J3),J3=1,3*NATOMS)
                CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY,
      &                          RMAT,.FALSE.)
                IF (INTERPCOSTFUNCTION) CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD, 
@@ -321,11 +326,11 @@ C
          OPEN(UNIT=UTSDATA,FILE='ts.data',STATUS='NEW')
          IF (CLOSEFILEST) CLOSE(UNIT=UTSDATA)
          IF (CLOSEFILEST) CLOSE(UNIT=UMINDATA)
-         IF (STARTTRIPLES) THEN
+!        IF (STARTTRIPLES) THEN
             CALL GETALLPATHS
-         ELSE
-            CALL GETNEWPATH(0,0)
-         ENDIF
+!        ELSE
+!           CALL GETNEWPATH(0,0)
+!        ENDIF
          INQUIRE(FILE='min.A',EXIST=YESNO)
          IF (YESNO) THEN
             PRINT '(A)','ERROR - file min.A already exists. Will not overwrite.'
@@ -347,6 +352,7 @@ C
          CLOSE(UMINDATA)
          CLOSE(UTSDATA)
          PRINT '(A,I5,A,I5,A)','setup> The unique A and B minima are ',STARTMINA,' and ',STARTMINB,' respectively'
+         IF (NATTEMPT.LE.0) STOP
       ENDIF
       !op226 }}}
    
@@ -429,13 +435,13 @@ C
 !     IF (DEBUG) WRITE(*,'(I6,2F17.7,I6,3F15.5)') (J1,EMIN(J1),FVIBMIN(J1),HORDERMIN(J1),
 !    1                                         IXMIN(J1),IYMIN(J1),IZMIN(J1),J1=1,NMIN)
       DO J1=1,NMINA
-         IF (LOCATIONA(J1).GT.NMIN) THEN
+         IF ((LOCATIONA(J1).GT.NMIN).AND.(.NOT.STARTFROMPATH)) THEN
             PRINT '(3(A,I8))','setup> ERROR - A minimum ',J1,' is number ',LOCATIONA(J1),' but total minima=',NMIN
             STOP
          ENDIF
       ENDDO
       DO J1=1,NMINB
-         IF (LOCATIONB(J1).GT.NMIN) THEN
+         IF ((LOCATIONB(J1).GT.NMIN).AND.(.NOT.STARTFROMPATH)) THEN
             PRINT '(3(A,I8))','setup> ERROR - B minimum ',J1,' is number ',LOCATIONB(J1),' but total minima=',NMIN
             STOP
          ENDIF
@@ -459,7 +465,7 @@ C
             WRITE(*,*) 'setup> AVOIDING MOMENT OF INITERIA CALC FOR AMH'
           ELSE
            DO J1=1,NMIN
-            READ(UMIN,REC=J1) (LOCALPOINTS(J2),J2=1,NR)
+            READ(UMIN,REC=J1) (LOCALPOINTS(J2),J2=1,3*NATOMS)
             CALL INERTIAWRAPPER(LOCALPOINTS,NATOMS,angleAxis,IXM,IYM,IZM)
 C           IF (PRINTT) WRITE(*,'(2F20.10,I6,3F20.10)') EMIN(J1),FVIBMIN(J1),HORDERMIN(J1),IXM,IYM,IZM
             IF ((ABS(IXM-IXMIN(J1)).GT.IDIFFTOL).OR.
@@ -470,7 +476,7 @@ C           IF (PRINTT) WRITE(*,'(2F20.10,I6,3F20.10)') EMIN(J1),FVIBMIN(J1),HOR
                WRITE(*,'(A,2F20.10,I6,3F20.10)') 'setup> values from min.data: ', 
      &                     EMIN(J1),FVIBMIN(J1),HORDERMIN(J1),IXMIN(J1),IYMIN(J1),IZMIN(J1)
                PRINT '(A)','LOCALPOINTS:'
-               PRINT '(3G20.10)',LOCALPOINTS(1:NR)
+               PRINT '(3G20.10)',LOCALPOINTS(1:3*NATOMS)
                IXMIN(J1)=IXM
                IYMIN(J1)=IYM
                IZMIN(J1)=IZM
@@ -495,14 +501,14 @@ C           IF (PRINTT) WRITE(*,'(2F20.10,I6,3F20.10)') EMIN(J1),FVIBMIN(J1),HOR
                ELSE
                   READ(1,*,END=130) NEWEMIN,NEWFVIBMIN,NEWHORDERMIN,NEWIXMIN,NEWIYMIN,NEWIZMIN
                ENDIF
-               READ(1,*) (LOCALPOINTS(J2),J2=1,NR)
+               READ(1,*) (LOCALPOINTS(J2),J2=1,3*NATOMS)
 !
 ! Must check it is not an old minimum!
 !
                DO J2=1,NMIN
                   DISTANCE=1.0D100
                   IF (ABS(NEWEMIN-EMIN(J2)).LT.EDIFFTOL) THEN
-                     READ(UMIN,REC=J2) (LOCALPOINTS2(J3),J3=1,NR)
+                     READ(UMIN,REC=J2) (LOCALPOINTS2(J3),J3=1,3*NATOMS)
                      CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE, 
      &                                DIST2,RIGIDBODY,RMAT,.FALSE.)
                   ENDIF
@@ -540,14 +546,13 @@ C           IF (PRINTT) WRITE(*,'(2F20.10,I6,3F20.10)') EMIN(J1),FVIBMIN(J1),HOR
      &                                             IXMIN(NMIN), IYMIN(NMIN), IZMIN(NMIN)
                ENDIF
                CALL FLUSH(UMINDATA,ISTAT)
-               WRITE(UMIN,REC=NMIN) (LOCALPOINTS(J2),J2=1,NR)
+               WRITE(UMIN,REC=NMIN) (LOCALPOINTS(J2),J2=1,3*NATOMS)
 140            CONTINUE
             ENDDO
 130         CLOSE(1)
          ELSE
             PRINT '(A)','setup> ERROR - no file ',TRIM(ADJUSTL(MINNAME))
          ENDIF
-         STOP
       ENDIF
       !op226 }}}
 
@@ -628,7 +633,6 @@ C
 !     Optional change of reactant minima set via reweighting.
 !
       IF (REWEIGHTT) THEN
-         ! {{{
          ALLOCATE(CANDIDATES(NMIN))
          IF (DIRECTION.EQ.'AB') THEN
             ALLOCATE(NEWPFMIN(NMINB))
@@ -714,7 +718,6 @@ C
             PRINT '(A,I8,A)','setup> there are now ',NMINA,' minima of type A'
          ENDIF
          DEALLOCATE(NEWPFMIN,CANDIDATES)
-         ! }}}
       ENDIF
 C
 C  Load transition states.
@@ -722,7 +725,7 @@ C
       DO J1=1,NMIN
          TOPPOINTER(J1)=-1
       ENDDO
-      CALL INQF('ts.data',YESNO)
+      INQUIRE(FILE='ts.data',EXIST=YESNO)
       IF (YESNO.AND.DIJINITSTARTT) THEN
          IF (.NOT.DUMMYTST) THEN
             CALL MYSYSTEM(STATUS,DEBUG,'mv ts.data ts.data.save')
@@ -732,7 +735,7 @@ C
       ENDIF
       
       IF (YESNO) THEN
-         CALL OPENF(UTSDATA,'O','ts.data')
+         OPEN(UNIT=UTSDATA,FILE='ts.data',STATUS='OLD')
          J1=0
          DO 
             J1=J1+1
@@ -749,8 +752,8 @@ C
             ENDIF
 
             IF (DUMMYTST.AND.(.NOT.NOPOINTS).AND.(NATTEMPT.GT.0)) THEN
-               READ(UMIN,REC=PLUS(J1)) (LOCALPOINTS(J2),J2=1,NR)
-               READ(UMIN,REC=MINUS(J1)) (LOCALPOINTS2(J3),J3=1,NR)
+               READ(UMIN,REC=PLUS(J1)) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+               READ(UMIN,REC=MINUS(J1)) (LOCALPOINTS2(J3),J3=1,3*NATOMS)
                   CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY,
      &                             RMAT,.FALSE.)
                   IF (INTERPCOSTFUNCTION) CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD, 
@@ -822,7 +825,7 @@ C
               WRITE(*,*) 'setup> AVOIDING MOMENT OF INITERIA CALC FOR AMH'
             ELSE
                DO J1=1,NTS
-                  READ(UTS,REC=J1) (LOCALPOINTS(J2),J2=1,NR)
+                  READ(UTS,REC=J1) (LOCALPOINTS(J2),J2=1,3*NATOMS)
                   CALL INERTIAWRAPPER(LOCALPOINTS,NATOMS,angleAxis,IXM,IYM,IZM)
 !                 IF (DEBUG) WRITE(*,'(A,I6,2F17.7,3I6,3F15.5)') 'setup> ',J1,ETS(J1),FVIBTS(J1),HORDERTS(J1),
 !    1                                                            PLUS(J1),MINUS(J1),IXM,IYM,IZM
@@ -857,10 +860,10 @@ C
          DO J1=1,NMIN
             IF (MINDISTMIN(J1).GT.HUGE(1.0D0)/1.0D1) THEN
                PRINT '(A,I8,A,G20.10)',' setup> in setup, minimum ',J1,' shortest distance unassigned'
-               READ(UMIN,REC=J1) (LOCALPOINTS(J2),J2=1,NR)
+               READ(UMIN,REC=J1) (LOCALPOINTS(J2),J2=1,3*NATOMS)
                DO J3=1,NMIN
                   IF (J3.EQ.J1) CYCLE
-                  READ(UMIN,REC=J3) (LOCALPOINTS2(J2),J2=1,NR)
+                  READ(UMIN,REC=J3) (LOCALPOINTS2(J2),J2=1,3*NATOMS)
                   CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY,
      &                             RMAT,.FALSE.)
                   IF ((DISTANCE.LT.MINDISTMIN(J1)).OR.(DISTANCE.LT.MINDISTMIN(J3))) THEN
@@ -916,14 +919,6 @@ C
       ENDIF
       IF (CLOSEFILEST) CLOSE(UNIT=UTSDATA)
 !
-!  Procedure to remove stationary points that are unconnected from A or B sets (or both)
-!  according to the prevailing NCONNMIN value.
-!
-      IF (REMOVEUNCONNECTEDT) THEN
-         CALL REMOVE_UNCONNECTED
-         STOP
-      ENDIF
-!
 !  Procedure to remove selected stationary points specified by min.remove and ts.remove.
 !  First line of each file gives the numbers of structures to remove.
 !
@@ -936,7 +931,7 @@ C
          PRINT '(A)','setup> removing the following minima:'
          PRINT '(10I8)',MINREMOVE(1:NMINREMOVE)
          OPEN(UNIT=2,FILE='min.data.removed',STATUS='UNKNOWN')
-         OPEN(UNIT=4,FILE='points.min.removed',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*NR)
+         OPEN(UNIT=4,FILE='points.min.removed',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*3*NATOMS)
          NDUMMY=0
          MINPREV(1:NMIN)=0
          minloop: DO J1=1,NMIN
@@ -950,8 +945,8 @@ C
             NDUMMY=NDUMMY+1
             MINPREV(J1)=NDUMMY
             WRITE(2,'(2F20.10,I6,3F20.10)') EMIN(J1), FVIBMIN(J1), HORDERMIN(J1), IXMIN(J1), IYMIN(J1), IZMIN(J1)
-            READ(UMIN,REC=J1) (LOCALPOINTS(J2),J2=1,NR)
-            WRITE(4,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,NR)
+            READ(UMIN,REC=J1) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+            WRITE(4,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,3*NATOMS)
          ENDDO minloop
          CLOSE(2)
          CLOSE(4)
@@ -1014,7 +1009,7 @@ C
          PRINT '(10I8)',TSREMOVE(1:NTSREMOVE)
 444      CONTINUE
          OPEN(UNIT=3,FILE='ts.data.removed',STATUS='UNKNOWN')
-         OPEN(UNIT=5,FILE='points.ts.removed',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*NR)
+         OPEN(UNIT=5,FILE='points.ts.removed',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*3*NATOMS)
          NDUMMY=0
          tsloop: DO J1=1,NTS
             DO J2=1,NTSREMOVE
@@ -1038,8 +1033,8 @@ C
                WRITE(3,'(2F20.10,3I10,3F20.10)') ETS(J1),FVIBTS(J1),HORDERTS(J1),MINPREV(PLUS(J1)),MINPREV(MINUS(J1)),
      &                                        IXTS(J1),IYTS(J1),IZTS(J1)
             ENDIF
-            READ(UTS,REC=J1) (LOCALPOINTS(J2),J2=1,NR)
-            WRITE(5,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,NR)
+            READ(UTS,REC=J1) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+            WRITE(5,REC=NDUMMY) (LOCALPOINTS(J2),J2=1,3*NATOMS)
          ENDDO tsloop
          CLOSE(3); CLOSE(5)
          STOP
@@ -1058,7 +1053,7 @@ C
          PRINT '(A)','setup> retaining the following minima:'
          PRINT '(10I8)',MINRETAIN(1:NMINRETAIN)
          OPEN(UNIT=2,FILE='min.data.retained',STATUS='UNKNOWN')
-         OPEN(UNIT=4,FILE='points.min.retained',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*NR)
+         OPEN(UNIT=4,FILE='points.min.retained',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*3*NATOMS)
          NDUMMY=0
          MINPREV(1:NMIN)=0
          minloop2: DO J1=1,NMIN
@@ -1068,8 +1063,8 @@ C
                   NDUMMY=NDUMMY+1
                   MINPREV(J1)=NDUMMY
                   WRITE(2,'(2F20.10,I6,3F20.10)') EMIN(J1), FVIBMIN(J1), HORDERMIN(J1), IXMIN(J1), IYMIN(J1), IZMIN(J1)
-                  READ(UMIN,REC=J1) (LOCALPOINTS(J3),J3=1,NR)
-                  WRITE(4,REC=NDUMMY) (LOCALPOINTS(J3),J3=1,NR)
+                  READ(UMIN,REC=J1) (LOCALPOINTS(J3),J3=1,3*NATOMS)
+                  WRITE(4,REC=NDUMMY) (LOCALPOINTS(J3),J3=1,3*NATOMS)
                   CYCLE minloop2
                ENDIF
             ENDDO
@@ -1127,7 +1122,7 @@ C
          CLOSE(2)
 
          OPEN(UNIT=3,FILE='ts.data.retained',STATUS='UNKNOWN')
-         OPEN(UNIT=5,FILE='points.ts.retained',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*NR)
+         OPEN(UNIT=5,FILE='points.ts.retained',ACCESS='DIRECT',FORM='UNFORMATTED',STATUS='UNKNOWN',RECL=8*3*NATOMS)
          NDUMMY=0
          tsloop2: DO J1=1,NTS
             DO J2=1,NMINRETAIN
@@ -1143,8 +1138,8 @@ C
                            WRITE(3,'(2F20.10,3I10,3F20.10)') ETS(J1),FVIBTS(J1),HORDERTS(J1),MINPREV(PLUS(J1)),MINPREV(MINUS(J1)),
      &                                        IXTS(J1),IYTS(J1),IZTS(J1)
                         ENDIF
-                        READ(UTS,REC=J1) (LOCALPOINTS(J4),J4=1,NR)
-                        WRITE(5,REC=NDUMMY) (LOCALPOINTS(J4),J4=1,NR)
+                        READ(UTS,REC=J1) (LOCALPOINTS(J4),J4=1,3*NATOMS)
+                        WRITE(5,REC=NDUMMY) (LOCALPOINTS(J4),J4=1,3*NATOMS)
                         CYCLE tsloop2
                      ENDIF
                   ENDDO
@@ -1219,24 +1214,19 @@ C
 ! !        IF (DEBUG) WRITE(*,'(A,I6,2E20.10)') 'setup> J1,k+,k-=',J1,KPLUS(J1),KMINUS(J1)
 !       ENDDO
 !op226 }}}
+!
+!  Procedure to remove stationary points that are unconnected from A or B sets (or both)
+!  according to the prevailing NCONNMIN value.
+!
+      IF (REMOVEUNCONNECTEDT) THEN
+         CALL REMOVE_UNCONNECTED
+         STOP
+      ENDIF
+!
       IF (MERGEDBT) THEN
          CALL MERGEDB
          STOP
       ENDIF
-C
-C  Add transition states and minima from the <PATHNAME> file.
-C  Use GETNEWPATH to do the bookkeeping.
-C
-!op226 {{{
-      IF (ADDPATH) THEN
-         CALL MYSYSTEM(STATUS,DEBUG,'cp ' // TRIM(ADJUSTL(PATHNAME)) // ' path.info')
-         IF (ADDTRIPLES) THEN
-            CALL GETALLPATHS
-         ELSE
-            CALL GETNEWPATH(0,0)
-         ENDIF
-      ENDIF
-!op226 }}}
 
       IF (NPFOLD.GT.0) THEN
          INQUIRE(FILE='commit.data',EXIST=YESNO)
@@ -1314,52 +1304,134 @@ C
 C
 C  Initialise PAIRDIST array for use in making an intial connection.
 C  PAIRDIST should contain zero if the two minima are linked by a transition state.
+C  PAIRLIST contains the index of the other minimum.
 C
 ! {{{
       IF (DIJINITT) THEN
-         IF (.NOT.INDEXCOSTFUNCTION) THEN
-            DO J1=1,NMIN
-               READ(UMIN,REC=J1) (LOCALPOINTS(J2),J2=1,NR)
-               PAIRDIST(J1*(J1+1)/2)=0.0D0
-               DO J2=J1+1,NMIN
-                  READ(UMIN,REC=J2) (LOCALPOINTS2(J3),J3=1,NR)
-                  CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY,
-     &                             RMAT,.FALSE.)
-                  IF (INTERPCOSTFUNCTION) CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD,
-     &                                                     DISTANCE,DIST2,RIGIDBODY,RMAT,INTERPCOSTFUNCTION)
-                  PAIRDIST(J2*(J2-1)/2+J1)=DISTANCE
-!                 PRINT '(A,3I6,G20.10)','J1,J2,INDEX,DISTANCE=',J1,J2,J2*(J2-1)/2+J1,DISTANCE
-               ENDDO
-               PRINT '(A,I8)','setup> Finished pair distance calculation for minimum ',J1
-               CALL FLUSH(6,ISTAT)
-            ENDDO
-         ELSE
-            DO J1=1,NMIN
-               DO J2=J1+1,NMIN
-                  PAIRDIST(J2*(J2-1)/2+J1)=1.0D0 ! this is not actually used !
-               ENDDO
-            ENDDO
-         ENDIF
-         DO J1=1,NPAIRDONE
-            PAIRDIST(MAX(PAIR1(J1),PAIR2(J1))*(MAX(PAIR1(J1),PAIR2(J1))-1)/2+MIN(PAIR1(J1),PAIR2(J1)))=HUGE(1.0D0)
-         ENDDO
          DO J1=1,NTS
-C JMC n.b. don't apply the nconnmin criteria at this point, hence the huge(1) 's in place of NCONN() for the plus and minus minima.
+!
+! JMC n.b. don't apply the nconnmin criteria at this point, hence the huge(1) 's 
+! in place of NCONN() for the plus and minus minima.
+!
             CALL CHECKTS(ETS(J1),EMIN(PLUS(J1)),EMIN(MINUS(J1)),KPLUS(J1),KMINUS(J1),HUGE(1),HUGE(1), 
      &                   PLUS(J1),MINUS(J1),.TRUE.,CUT_UNDERFLOW,DEADTS)
-            IF (.NOT. DEADTS) THEN
-               J2=MAX(PLUS(J1),MINUS(J1))
-               J3=MIN(PLUS(J1),MINUS(J1))
-               PAIRDIST(J2*(J2-1)/2+J3)=0.0D0
-            ENDIF
          ENDDO
+         PAIRDIST(1:NMIN,1:PAIRDISTMAX)=1.0D100
+         PAIRLIST(1:NMIN,1:PAIRDISTMAX)=-1
+         INQUIRE(FILE='pairdist',EXIST=YESNO)
+         IF (PAIRDIST1.NE.0) YESNO=.FALSE. ! so we can write new entries for READMIN etc.
+         IF (YESNO) THEN
+            OPEN(UNIT=1,FILE='pairdist',STATUS='OLD')
+            DO J1=1,NMIN
+               READ(1,*) (PAIRDIST(J1,J2),J2=1,PAIRDISTMAX)
+            ENDDO
+            CLOSE(1)
+            OPEN(UNIT=1,FILE='pairlist',STATUS='OLD')
+            DO J1=1,NMIN
+               READ(1,*) (PAIRLIST(J1,J2),J2=1,PAIRDISTMAX)
+            ENDDO
+            CLOSE(1)
+            PRINT '(A,I8)','setup> Pair distance metric values read'
+         ELSE
+            IF (PAIRDIST1.EQ.0) PAIRDIST1=1
+            IF (PAIRDIST2.EQ.0) PAIRDIST2=NMIN
+            IF (PAIRDIST1.GT.NMIN) STOP
+            PAIRDIST2=MIN(PAIRDIST2,NMIN)
+            DO J1=PAIRDIST1,PAIRDIST2
+               READ(UMIN,REC=J1) (LOCALPOINTS(J2),J2=1,3*NATOMS)
+               min2: DO J2=1,NMIN ! allows us to do J1 and J2 separately
+                  IF (J2.EQ.J1) CYCLE
 !
 ! Set the pairs for which connections have already been tried to infinite distance,
-! so they are not tried again. Don;t overwrite zero distance settings for connections
+! so they are not tried again. Don't overwrite zero distance settings for connections
 ! that have actually been found!
+!
+                  DISTANCE=1.0D100
+                  DO J3=1,NTS
+                     IF ((PLUS(J3).EQ.J1).AND.(MINUS(J3).EQ.J2)) DISTANCE=0.0D0
+                     IF ((PLUS(J3).EQ.J2).AND.(MINUS(J3).EQ.J1)) DISTANCE=0.0D0
+                  ENDDO
+                  IF (DISTANCE.NE.0.0D0) THEN
+                     DO J3=1,NPAIRDONE
+                        IF ((PAIR1(J3).EQ.J1).AND.(PAIR2(J3).EQ.J2)) CYCLE min2
+                        IF ((PAIR1(J3).EQ.J2).AND.(PAIR2(J3).EQ.J1)) CYCLE min2
+                     ENDDO
+                  ENDIF
+                  IF (INDEXCOSTFUNCTION) THEN
+                     DISTANCE=ABS(J4-J2)
+                  ELSE
+                     IF (DISTANCE.NE.0.0D0) THEN
+                        READ(UMIN,REC=J2) (LOCALPOINTS2(J3),J3=1,3*NATOMS)
+                        CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,BOXLY,BOXLZ,BULKT,TWOD, 
+     &                                   DISTANCE,DIST2,RIGIDBODY,RMAT,.FALSE.)
+                        IF (INTERPCOSTFUNCTION) CALL MINPERMDIST(LOCALPOINTS,LOCALPOINTS2,NATOMS,DEBUG,BOXLX,
+     &                                                BOXLY,BOXLZ,BULKT,TWOD,DISTANCE,DIST2,RIGIDBODY,
+     &                                                RMAT,INTERPCOSTFUNCTION)
+                     ENDIF
+                  ENDIF
+!
+! Set up sorted list of nearest nodes according to the chosen interpolation metric.
+!
+                  sortloop: DO J3=1,PAIRDISTMAX
+                     IF (DISTANCE.LT.PAIRDIST(J1,J3)) THEN
+                        DO J4=PAIRDISTMAX,J3+1,-1
+                           PAIRDIST(J1,J4)=PAIRDIST(J1,J4-1)
+                           PAIRLIST(J1,J4)=PAIRLIST(J1,J4-1)
+                        ENDDO
+                        PAIRDIST(J1,J3)=DISTANCE
+                        PAIRLIST(J1,J3)=J2
+                        EXIT sortloop
+                     ENDIF
+                  ENDDO sortloop
+!                 PRINT '(A,2I8)','setup> Done ',J1,J2
+!                 PRINT '(10G13.3)',PAIRDIST(J1,1:PAIRDISTMAX)
+!                 PRINT '(10I13)',PAIRLIST(J1,1:PAIRDISTMAX)
+!                 CALL FLUSH(6,ISTAT)
+               ENDDO min2
+               PRINT '(A,I8)','setup> Finished pair distance calculation for minimum ',J1
+               PRINT '(A,I8)','setup> pairdist and pairlist for minimum ',J1
+               PRINT '(10G13.3)',PAIRDIST(J1,1:PAIRDISTMAX)
+               PRINT '(10I13)',PAIRLIST(J1,1:PAIRDISTMAX)
+               CALL FLUSH(6,ISTAT)
+            ENDDO
+            IF ((PAIRDIST1.EQ.1).AND.(PAIRDIST2.EQ.NMIN)) THEN
+               OPEN(UNIT=1,FILE='pairdist',STATUS='UNKNOWN')
+               WRITE(1,'(10G20.10)') ((PAIRDIST(J3,J4),J4=1,PAIRDISTMAX),J3=1,NMIN)
+               CLOSE(1)
+               OPEN(UNIT=1,FILE='pairlist',STATUS='UNKNOWN')
+               WRITE(1,'(10I10)') ((PAIRLIST(J3,J4),J4=1,PAIRDISTMAX),J3=1,NMIN)
+               CLOSE(1)
+            ELSE
+               WRITE(S1,'(I10)') PAIRDIST1
+               WRITE(S2,'(I10)') PAIRDIST2
+               WRITE(FNAME,'(A)') 'pairdist.' // TRIM(ADJUSTL(S1)) // '.' // TRIM(ADJUSTL(S2))
+               OPEN(UNIT=1,FILE=TRIM(ADJUSTL(FNAME)),STATUS='UNKNOWN')
+               WRITE(1,'(10G20.10)') ((PAIRDIST(J3,J4),J4=1,PAIRDISTMAX),J3=PAIRDIST1,PAIRDIST2)
+               CLOSE(1)
+               WRITE(FNAME,'(A)') 'pairlist.' // TRIM(ADJUSTL(S1)) // '.' // TRIM(ADJUSTL(S2))
+               OPEN(UNIT=1,FILE=TRIM(ADJUSTL(FNAME)),STATUS='UNKNOWN')
+               WRITE(1,'(10I10)') ((PAIRLIST(J3,J4),J4=1,PAIRDISTMAX),J3=PAIRDIST1,PAIRDIST2)
+               CLOSE(1)
+               STOP
+            ENDIF
+         ENDIF
 !
       ENDIF
 ! }}}
+C
+C  Add transition states and minima from the <PATHNAME> file.
+C  Use GETNEWPATH to do the bookkeeping.
+C
+!op226 {{{
+      IF (ADDPATH) THEN
+         CALL MYSYSTEM(STATUS,DEBUG,'cp ' // TRIM(ADJUSTL(PATHNAME)) // ' path.info')
+!        IF (ADDTRIPLES) THEN
+            CALL GETALLPATHS
+!        ELSE
+!           CALL GETNEWPATH(0,0)
+!        ENDIF
+      ENDIF
+!op226 }}}
 C
 C If USEPAIRST is true then read the sequence of minima from file USEPAIRSFILE
 C USEPAIRSFILE must be formatted as a single Epath file
@@ -1444,9 +1516,9 @@ C     ELSE
 C        TSFVIBGUESS=FVIB2-MINF2
 C     ENDIF
       IF (E1.GT.E2) THEN
-         TSFVIBGUESS=FVIB1*(NR-7)/(NR-6)
+         TSFVIBGUESS=FVIB1*(3*NATOMS-7)/(3*NATOMS-6)
       ELSE
-         TSFVIBGUESS=FVIB2*(NR-7)/(NR-6)
+         TSFVIBGUESS=FVIB2*(3*NATOMS-7)/(3*NATOMS-6)
       ENDIF
 
       

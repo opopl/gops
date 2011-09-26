@@ -27,7 +27,7 @@ C
       USE PORFUNCS
       IMPLICIT NONE
       INTEGER J1, IG, I, ITER, NCOUNT, NATOMS
-      DOUBLE PRECISION r(3,NATOMS),r0(3,NATOMS),R1(3,NATOMS),RA(NR),RB(NR)
+      DOUBLE PRECISION r(3,NATOMS),r0(3,NATOMS),R1(3,NATOMS),RA(3*NATOMS),RB(3*NATOMS)
       DOUBLE PRECISION P(3),DIST, DIST0, RG, RG0, OMEGA(3,3), RANDOM, R1SAVE(3,NATOMS), DSAVE,
      &                 OVEC(3), H1VEC(3), H2VEC(3), DPRAND
       INTEGER NSIZE
@@ -44,7 +44,7 @@ C     common /geom /r,r0,r1,nsize
         ! RA => (via CONVERT) OVEC,H1VEC,H2VEC => R 
         ! RB => (via CONVERT) OVEC,H1VEC,H2VEC => R0 
         !{{{
-         NSIZE=NR
+         NSIZE=3*NATOMS
          DO J1=1,NATOMS
             CALL CONVERT(RA(3*(J1-1)+1),RA(3*(J1-1)+2),RA(3*(J1-1)+3),
      1                 RA(3*(NATOMS+J1-1)+1),RA(3*(NATOMS+J1-1)+2),RA(3*(NATOMS+J1-1)+3),OVEC,H1VEC,H2VEC)
