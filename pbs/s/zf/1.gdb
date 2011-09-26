@@ -1,6 +1,8 @@
 
 file B
 source init.gdb
+#break eg46.f90:calc_energy
+break g46.f90:31
 #break p46merdiff.f90:298
 #break mc.f:239
 #break quench.f:286

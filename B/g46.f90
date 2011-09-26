@@ -11,12 +11,12 @@
         INTEGER,INTENT(IN) :: FH
         DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
         DOUBLE PRECISION,DIMENSION(3*N),INTENT(OUT) :: GRAD
-        DOUBLE PRECISION,INTENT(OUT),DIMENSION(:) :: E
+        DOUBLE PRECISION,DIMENSION(10) :: E
         LOGICAL,INTENT(IN) :: GTEST
         ! loc
         logical stest
         INTEGER ntype(46)
-        character(len=10) ptype
+        CHARACTER(LEN=10) PTYPE
         DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N),D_PARAM(N)
         DOUBLE PRECISION ::  c_param(n), rk_theta, rk_r, epsilon, sigma, theta_0, delta, rmass
         parameter (rmass = 40.0, epsilon = 0.0100570)

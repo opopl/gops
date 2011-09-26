@@ -78,7 +78,8 @@
         !           E(3) - bonded
         !           E(4) - bond angles
         !           E(5) - torsional angles
-        DOUBLE PRECISION, DIMENSION(:),INTENT(OUT) :: E
+        !DOUBLE PRECISION, DIMENSION(:),INTENT(OUT) :: E
+        DOUBLE PRECISION, DIMENSION(:) :: E
         ! }}}
 
         ! }}}

@@ -1,5 +1,6 @@
 
 default: dirs $(AUXF) $(DEPS) $(PROG)
+.PHONY: default clean rmdep deps tg bindir moddir libdir objdir dirs
 
 #SUFFIXES..., F => o {{{
 
@@ -38,20 +39,18 @@ header.f90: $(HEADER)
 	$(HEADER) > $@
 
 #}}}
-
 #deps help tg prog bindir cup {{{
 
 deps: rmdep $(DEPS)
+
 rmdep:
 	rm $(DEPS)
-
-$(DEPS): $(MKDEP)
-	$(MKDEP) $@
 
 tg:
 	ctags -R $(SOURCE)
 
-$(PROGNAME): $(PROG)
+cup:
+	rm -rf $(NOTUSEDSOURCE)
 
 bindir: 
 	mkdir -p $(BINPATH)
@@ -63,20 +62,41 @@ objdir:
 	mkdir -p $(OBJSPATH)
 
 dirs: bindir moddir libdir objdir
+#}}}
+# PROGNAME* {{{
 
-b$(PROGNAME): dirs $(OBJS) 
+# o => optimization
+# g => debug
+opts:= o g
+
+$(PROGNAME)_o: dirs $(DEPS) $(OBJS) 
+	$(FC) $(FFLAGS_o) $(SEARCH_PATH) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
+	cp $(PROG) ./
+	cp $(PROG) $(PROG)_o_$(FC)
+
+$(PROGNAME)_g: dirs $(DEPS) $(OBJS) 
+	$(FC) $(FFLAGS_g) $(SEARCH_PATH) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
+	cp $(PROG) ./
+	cp $(PROG) $(PROG)_g_$(FC)
+
+$(PROGNAME): $(PROG)
+$(PROGNAME)_use_base: dirs $(OBJS) 
 	$(FC) $(FFLAGS) $(SEARCH_PATH) -o $@ $(LPU_OBJS) $(LDFLAGS) $(LPBASE) $(LIBS)
 	cp $@ $(BINPATH)
 
-$(PROG): dirs $(OBJS)  
+# }}}
+# DEPS PROG {{{
+
+$(DEPS): $(MKDEP)
+	$(MKDEP) $@
+
+$(PROG): dirs $(DEPS) $(OBJS) 
 	$(FC) $(FFLAGS) $(SEARCH_PATH) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 	cp $(PROG) ./
 	cp $(PROG) $(PROG)_$(FC)
 
-cup:
-	rm -rf $(NOTUSEDSOURCE)
 #}}}
-
+#libs {{{
 libamh.a: $(AMH_OBJS)
 	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" 
 
@@ -103,14 +123,14 @@ $(LPBASE): $(LPBASE_OBJS)
 
 SAT-Ghost:
 #}}}
-
+#}}}
 #clean cleanall{{{
 
 cbase:
 	rm -f $(LPBASE)
 
 clean:
-	rm -f $(OBJS) $(AUXF) $(GENFFILES) $(MODPATH)/*.mod $(DEPS)
+	rm -f $(OBJS) $(AUXF) $(GENFFILES) $(MODPATH)/*.mod *.mod *.oo *.o *.ipa $(DEPS)
  
 cleanall:
 	rm -f $(PROG) $(OBJS) ${GENFFILES} $(LLIBS) *.o *.a *.lst

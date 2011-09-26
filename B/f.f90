@@ -16,7 +16,7 @@
             INTEGER,INTENT(IN) :: FH
             DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
             DOUBLE PRECISION,DIMENSION(3*N),INTENT(OUT) :: GRAD
-            DOUBLE PRECISION,INTENT(OUT),DIMENSION(:) :: E
+            DOUBLE PRECISION,DIMENSION(:) :: E
             LOGICAL,INTENT(IN) :: GTEST
         ENDSUBROUTINE EP46
         ! }}}
@@ -28,7 +28,7 @@
 	        INTEGER,INTENT(IN) :: FH
 	        DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
 	        DOUBLE PRECISION,DIMENSION(3*N),INTENT(OUT) :: GRAD
-            DOUBLE PRECISION,INTENT(OUT),DIMENSION(:) :: E
+            DOUBLE PRECISION,DIMENSION(10) :: E
 	        LOGICAL,INTENT(IN) :: GTEST
         ENDSUBROUTINE EG46
         ! }}}
@@ -56,12 +56,14 @@
 
         !  }}}
         ! calc_energy {{{
-        SUBROUTINE CALC_ENERGY(FH,DEB,QO,E,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
-     &                         BOND_ANGLE,TOR_ANGLE,RADII,NTYPE,PTYPE)
+        SUBROUTINE CALC_ENERGY(FH,DEB,QO,E,N,&
+                & A_PARAM,B_PARAM,C_PARAM,D_PARAM,&
+                & X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
+                & BOND_ANGLE,TOR_ANGLE,RADII,NTYPE,PTYPE)
             IMPLICIT NONE
             LOGICAL DEB
             INTEGER,INTENT(IN) :: FH
-            DOUBLE PRECISION,INTENT(OUT),DIMENSION(:) :: E
+            DOUBLE PRECISION,INTENT(OUT),DIMENSION(10) :: E
             DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
             INTEGER,INTENT(IN) :: N
             DOUBLE PRECISION,DIMENSION(N,N),INTENT(IN) :: A_PARAM,B_PARAM
@@ -418,7 +420,7 @@
       ENDDO
 
       RETURN
-      END
+      ENDSUBROUTINE GSAVEIT
       ! }}}
       ! trans gseed reseed pairdistance  {{{
 
@@ -1069,78 +1071,101 @@ END SUBROUTINE R_COORDS
       END SUBROUTINE COUNTATOMS
 
 !! initialize variables
-!SUBROUTINE INITVARS
-!! subroutine body {{{
-!! logicals {{{
-!BFGST=.FALSE.
-!LBFGST=.TRUE.
-!PULLT=.TRUE.
-!P46=.FALSE.
-!G46=.TRUE.
-!BLNT=.FALSE.
-!TARGET=.FALSE.
-!TRACKDATAT=.FALSE.
-!DEBUG=.FALSE.
-!NORESET=.FALSE.
-!LBFGST=.TRUE.
-!RMST=.FALSE.
-!! whether we are doing a final quench
+SUBROUTINE INITVARS
+
+INTEGER NPCALL
+COMMON /PCALL/ NPCALL
+! subroutine body {{{
+! logicals {{{
+LBFGST=.TRUE.
+PULLT=.TRUE.
+P46=.FALSE.
+G46=.TRUE.
+BLNT=.FALSE.
+MYBLNT=.FALSE.
+TARGET=.FALSE.
+TRACKDATAT=.FALSE.
+DEBUG=.FALSE.
+DUMPT=.FALSE.
+NORESET=.FALSE.
+RMST=.FALSE.
+      
+SAVEQ=.TRUE.
+SORTT=.FALSE.
+
+FIXSTEP=.FALSE.
+FIXTEMP=.FALSE.
+FIXBOTH=.FALSE.
+! whether we are doing a final quench
 !FQFLAG=.FALSE.
-!! }}}
-!! files {{{
-!LFH=FH+1
-!ENERGY_FH=FH+2
-!MARKOV_FH=FH+3
-!BEST_FH=FH+4
-!PAIRDIST_FH=FH+5
-!COORDS_FH=FH+6
-!DATA_FH=FH+7
-!RMSD_FH=FH+8
-!! }}}
-!! other {{{
-!NSAVE=10            ! number of saved lowest-energy geometries
+! }}}
+! files {{{
+IFH=50
+LFH=IFH+1
+ENERGY_FH=IFH+2
+MARKOV_FH=IFH+3
+BEST_FH=IFH+4
+PAIRDIST_FH=IFH+5
+COORDS_FH=IFH+6
+DATA_FH=IFH+7
+RMSD_FH=IFH+8
+EA_FH=IFH+9
+! }}}
+! other {{{
 
-!NATOMS=46
+NPCALL=0
+NSEED=0
+NS=0
 
-!PATOM1=1
-!PATOM2=NATOMS
+NSAVE=10            ! number of saved lowest-energy geometries
 
-!M_LBFGS=4           ! Number of LBFGS updates
-!MAXBFGS=0.4D0       ! Maximum BFGS step size
-!DGUESS=0.1D0        ! DGUESS: Guess for initial diagonal elements in LBFGS
+NATOMS=46
+
+EAMP=0.01D0
+
+PATOM1=1
+PATOM2=NATOMS
+
+MUPDATE=4           ! Number of LBFGS updates
+MAXBFGS=0.4D0       ! Maximum BFGS step size
+DGUESS=0.1D0        ! DGUESS: Guess for initial diagonal elements in LBFGS
 
 !FQMAX=1.0D-5        ! FQMAX: same meaning as for SQMAX, but for final quenches only.
 !SQMAX=1.0D-3        ! SQMAX: convergence criterion for the RMS force in the basin-hopping quenches.
-                    !! note: used in QUENCH() 
+                    ! note: used in QUENCH() 
 
-!TFAC=1.0D0
-!EDIFF=0.02D0
-!ACCRAT=0.5D0
-!TEMP=0.035D0        ! Temperature
-!RADIUS=0.0D0
-!! maximum number of iterations allowed in conjugate gradient searches
-!MAXIT=500
-!! Maximum allowed energy rise during a minimisation
-!MAXERISE=1.0D-10
-!! Maximum allowed energy fall during a minimisation
-!MAXEFALL=-HUGE(ONE)
-!! Used in ACCREJ
+TFAC=1.0D0
+ECONV=0.02D0
+ACCRAT=0.5D0
+TEMP=0.035D0        ! Temperature
+RADIUS=0.0D0
+! maximum number of iterations allowed in conjugate gradient searches
+MAXIT=500
+! Maximum allowed energy rise during a minimisation
+MAXERISE=1.0D-10
+! Maximum allowed energy fall during a minimisation
+MAXEFALL=-HUGE(ONE)
+! Used in ACCREJ
 !FAC0=1.05D0
-!! "Fixing" option (regarding STEP, TEMP and accept ratio for quenches) 
+! "Fixing" option (regarding STEP, TEMP and accept ratio for quenches) 
 !FIXOPT='T'
 
-!STEP=0.3D0
-!OSTEP=0.3D0
-!ASTEP=0.3D0
+ARMA=0.4D0
+ARMB=0.4D0
+EPSSPHERE=0.0D0
 
-!MCSTEPS=10000
+STEP=0.3D0
+OSTEP=0.3D0
+ASTEP=0.3D0
+
+MCSTEPS=10000
           
-!NACCEPT=50
-!NRELAX=0
-!! }}}
-!CALL SETVARS
-!! }}}
-!END SUBROUTINE INITVARS
+NACCEPT=50
+NRELAX=0
+! }}}
+CALL SETVARS
+! }}}
+END SUBROUTINE INITVARS
 
 !! print variables 
 !SUBROUTINE PRINTVARS
@@ -1199,11 +1224,17 @@ END SUBROUTINE R_COORDS
         CHARACTER(LEN=*) S
 
         selectcase(S)
-            case("main")
+            CASE("MAIN")
                ALLOCATE(MSCREENC(3*NATOMS),VT(NATOMS))
                ALLOCATE(BEADLETTER(NATOMS)) 
                ALLOCATE(FF(NSAVE),QMIN(NSAVE))
                ALLOCATE(QMINP(NSAVE,3*NATOMS))
+            CASE("INIT")
+      ALLOCATE(FIXSTEP(1),FIXTEMP(1),FIXBOTH(1),TEMP(1))
+      ALLOCATE(ACCRAT(1),STEP(1),ASTEP(1),OSTEP(1),BLOCK(1),NT(1),NQ(1),EPREV(1))
+      ALLOCATE(JUMPMOVE(1),JUMPINT(1),JDUMP(1),COORDS(3*NATOMS,1))
+      ALLOCATE(COORDSO(3*NATOMS,1),VAT(NATOMS,1),VATO(NATOMS,1),JUMPTO(1),SHELLMOVES(1),PTGROUP(1),NSURFMOVES(1),NCORE(1))
+
         endselect
     ENDSUBROUTINE AM
     ! }}}

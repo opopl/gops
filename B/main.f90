@@ -38,7 +38,7 @@
       call itime(now)     ! now(1)=hour, (2)=minute, (3)=second
 
       OPEN(LFH,FILE=O_FILE, STATUS="unknown", form="formatted")
-      OPEN(EAFH,FILE=EA_FILE, STATUS="unknown", form="formatted")
+      OPEN(EA_FH,FILE=EA_FILE, STATUS="unknown", form="formatted")
 
       WRITE(LFH, '(A,I10,A,I10,A)') "Starting serial execution"
       CALL ED(LFH) 
@@ -54,10 +54,12 @@
       MYNODE=0
       ! }}}
 !op226> Allocate memory; open files; initialize different things  {{{ 
+      CALL AM("INIT")
+      CALL INITVARS
       CALL COUNTATOMS
       CALL KEYWORD(1)
       CALL RCA
-      CALL AM("main")
+      CALL AM("MAIN")
       !CALL KW
       CALL SETVARS
 
@@ -187,7 +189,7 @@
       CALL FLUSH(LFH)
 
       CLOSE(LFH)
-      CLOSE(EAFH)
+      CLOSE(EA_FH)
 ! csw34> close pairdists.* files
       IF (PAIRDISTT) CLOSE(MYPUNIT)
 !op226> closing files for: TRACKDATAT RMST A9INTET {{{ 

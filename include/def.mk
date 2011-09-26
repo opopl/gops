@@ -68,36 +68,14 @@ MKDEP=$(SAPATH)/mkdep.pl
 AUXF = dv.f90 rca.f90
 
 #}}}
-
-export DL := "debug"
-
 # pgi {{{
 ifeq ($(FC),pgf90)
 
-MODFLAG:= -module $(MODPATH)
-DFFLAGS:= $(F0)
-
-#DFFLAGS += -Mextend -C -g -gopt -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mcoff -Mdwarf1 -Mdwarf2 -Mdwarf3 -Melf -Mnodwarf -Mpgicoff -traceback
-#FFLAGS := -Mextend -O0 -Mnoframe -g -traceback
-#FFLAGS := -Mextend -O0 -Mnoframe 
-#FFLAGS := -Mextend -O3 -Mnoframe 
-FFLAGS := -fast -Mipa=fast,inline -Msmartalloc
-
-#not working yet {{{
-ifeq ($(DL),debug)
-
-FFLAGS += -Mextend -C -g -gopt -Mbounds -Mchkfpstk -Mchkptr -Mchkstk -Mcoff -Mdwarf1 -Mdwarf2 -Mdwarf3 -Melf -Mnodwarf -Mpgicoff -traceback
-
-endif
-
-ifeq ($(DL),noopt)
-FFLAGS += -Mextend -O0 -Mnoframe 
-endif
-#}}}
-
-NOOPT = -O0 -Mextend
+MODFLAG:= -I. -module $(MODPATH)
+FFLAGS_o := -fast -Mipa=fast,inline -Msmartalloc
+FFLAGS_g := -Mextend -O0 -Mnoframe -g -traceback
+FFLAGS = $(FFLAGS_g) 
 LDFLAGS= -L.
-FREEFORMAT_FLAG= -Mfree
 SWITCH=pgi
 
 endif
@@ -106,27 +84,10 @@ endif
 
 ifeq ($(FC),nagfor)
 
-## {{{
-
-#FFLAGS = -132 -maxcontin=3000 -C -g -kind=byte -mismatch_all
-
-#ifeq ($(DL),noopt)
-#FFLAGS = -132 -maxcontin=3000 -kind=byte -mismatch_all -O0
-#endif
-
-#ifeq ($(DL),opt)
-#FFLAGS = -132 -maxcontin=3000 -kind=byte -mismatch_all -O3 
-#endif
-
-#ifeq ($(DL),debug)
- #FFLAGS = -132 -maxcontin=3000 -C=all -mtrace=all -gline -kind=byte
-#endif# }}}
-
 MODFLAG= -mdir $(MODPATH)
-FFLAGS = -132 -maxcontin=3000 -C=all -mtrace=all -gline -kind=byte 
-FFLAGS = -132 -g90 
-
-NOOPT= -O0 -132  -kind=byte
+FFLAGS_g = -132 -maxcontin=3000 -C=all -mtrace=all -gline -kind=byte 
+FFLAGS_g = -132 -g90 
+FFLAGS = $(FFLAGS_g) 
 LDFLAGS= -L.
 SWITCH=nag
 
@@ -136,28 +97,12 @@ endif
 
 ifeq ($(FC),ifort) 
 
-# FC = mpif77 
-# FC = mpif90  
-# DEFS+= -DMPI 
-#
-#FFLAGS= -132 -C -g -traceback -debug full
- #FFLAGS= -132 -O0 -g -traceback -fpe:0 -check all
- FFLAGS= -132 -g -debug all -check all -implicitnone -warn unused -fp-stack-check -heap-arrays -ftrapuv -check pointers -check bounds
-#
-#
-ifeq ($(DL),debug) 
-FFLAGS= -132 -C -g -traceback -debug full
-endif
-
-ifeq ($(DL),opt) 
-FFLAGS= -132 -O4
-endif
-
-NOOPT= -132 -O0
+FFLAGS_g= -g -debug all -check all -implicitnone -warn unused -fp-stack-check -heap-arrays -ftrapuv -check pointers -check bounds
+FFLAGS_o= -132 -O4
+FFLAGS := $(FFLAGS_o) 
 SWITCH=ifort
 LDFLAGS= -L.
-FREEFORMAT_FLAG= -free
-EXTRA_FLAGS=-I
+MODFLAG=-I. -module $(MODPATH)
 
 endif
 
@@ -167,35 +112,17 @@ endif
 ifeq ($(FC),gfortran)
 
 #F0=-ffree-form
-F0=-I.
-
-FFLAGS= -ffixed-line-length-265 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic
-FFLAGS= -ffixed-line-length-none -O0 
-
-ifeq ($(DL),noopt)
-FFLAGS= -ffixed-line-length-265 -O0 
-endif
-
-ifeq ($(DL),opt)
-FFLAGS= -ffixed-line-length-132 -O3 -ftree-vectorize
-endif
-
-ifeq ($(DL),debug)
-FFLAGS= -ffixed-line-length-132 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic
-endif
-
-NOOPT= -O0 -ffixed-line-length-132
+MODFLAG=-I. -J$(MODPATH)
 SWITCH=gfortran
-LDFLAGS = -lblas -llapack
-FREEFORMAT_FLAG= -ffree-form
-EXTRA_FLAGS=-I
-FFLAGS= -ffixed-line-length-265 -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic 
-#-Wall
-FFLAGS+=$(F0)
-
+LDFLAGS =-L.
+FFLAGS_g= -ffixed-line-length-none -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic 
+FFLAGS_o= -ffixed-line-length-none -O3 -ftree-vectorize
+FFLAGS := $(FFLAGS_g) 
 
 endif
 # }}}
 #
 FFLAGS += $(MODFLAG) 
+FFLAGS_o += $(MODFLAG) 
+FFLAGS_g += $(MODFLAG) 
 

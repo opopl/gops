@@ -86,8 +86,8 @@
         IF (PULLT) THEN
             WRITE(LFH,'(A,/)') 'Pulling:'
             WRITE(LFH,'(A,F15.10)') 'Force: ',PFORCE
-            WRITE(LFH,'(A,F15.10)') 'Atom 1: ',PATOM1
-            WRITE(LFH,'(A,F15.10)') 'Atom 2: ',PATOM2
+            WRITE(LFH,'(A,I10)') 'Atom 1: ',PATOM1
+            WRITE(LFH,'(A,I10)') 'Atom 2: ',PATOM2
             CALL ED(LFH)
         ENDIF
 

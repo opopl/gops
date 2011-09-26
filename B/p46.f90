@@ -8,21 +8,21 @@
         INTEGER,INTENT(IN) :: FH
         DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
         DOUBLE PRECISION,DIMENSION(3*N),INTENT(OUT) :: GRAD
-        DOUBLE PRECISION,INTENT(OUT),DIMENSION(:) :: E
+        DOUBLE PRECISION,DIMENSION(:) :: E
         LOGICAL,INTENT(IN) :: GTEST
         ! loc
         INTEGER NCALLMAX
         INTEGER,dimension(N) :: NTYPE
         LOGICAL STEST
-        character(len=10) ptype
+        CHARACTER(LEN=10) PTYPE
+        DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N), D_PARAM(N),C_PARAM(N), &
+     &                  x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n), &
+     &                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
         !
         DOUBLE PRECISION RMASS, EPSILON,SIGMA,DELTA,THETA_0,RK_R,RK_THETA
         parameter (rmass = 40.0, epsilon = 0.0100570)
         parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
         parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
-        DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N), D_PARAM(N),C_PARAM(N), &
-     &                  x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n), &
-     &                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
         ! }}}
         ! body {{{
         STEST=.FALSE.
@@ -118,18 +118,20 @@
 !       WRITE(*,'(A,I4,4F20.10)') 'i,tor_angle,cos_phi,dacos=',i,tor_angle(i+1),cos_phi,dacos(cos_phi)
         enddo
         return
-        end
+        ENDSUBROUTINE CALC_INT_COORDS
 ! }}}
 !> Calculate the energy
-        SUBROUTINE CALC_ENERGY(FH,DEB,QO,E,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
-     &                         BOND_ANGLE,TOR_ANGLE,RADII,NTYPE,PTYPE)
+        SUBROUTINE CALC_ENERGY(FH,DEB,QO,E,N,&
+            & A_PARAM,B_PARAM,C_PARAM,D_PARAM,&
+            & X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
+            & BOND_ANGLE,TOR_ANGLE,RADII,NTYPE,PTYPE)
 ! dec {{{
 
         ! sub {{{
             IMPLICIT NONE
             LOGICAL DEB
             INTEGER,INTENT(IN) :: FH
-            DOUBLE PRECISION,INTENT(OUT),DIMENSION(:) :: E
+            DOUBLE PRECISION,INTENT(OUT),DIMENSION(10) :: E 
             DOUBLE PRECISION,DIMENSION(3*N),INTENT(IN) :: QO
             INTEGER,INTENT(IN) :: N
             DOUBLE PRECISION,DIMENSION(N,N),INTENT(IN) :: A_PARAM,B_PARAM
@@ -184,7 +186,7 @@
      &  + d_param(i)*(1.0 + cos(3.0*tor_angle(i)))
         enddo
         energy = e_nbond + e_bond + e_bangle + e_tangle
-        e(1:5)=(/ energy,e_nbond,e_bond,e_bangle,e_tangle /)
+        E(1:5)=(/ ENERGY,E_NBOND,E_BOND,E_BANGLE,E_TANGLE /)
 
         include "deb.calc_energy.i.f90"
         !       WRITE(*,'(A,4F20.10)') 'nbond,bond,bangle,tangle=',e_nbond,e_bond,e_bangle,e_tangle
