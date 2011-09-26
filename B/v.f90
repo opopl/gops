@@ -3,12 +3,12 @@
       IMPLICIT NONE
       SAVE
         
-      LOGICAL ::  MYBLNT, RMST, USEKW
+      LOGICAL ::  MYBLNT, RMST, USEKW, USESUF
       LOGICAL ::    DEB_BLN=.FALSE.
       DOUBLE PRECISION ::   dE_fz
       INTEGER PATOM1,PATOM2
       INTEGER LFH, IFH, EA_FH, ENERGY_FH, MARKOV_FH, BEST_FH
-      INTEGER PAIRDIST_FH, COORDS_FH, DATA_FH, RMSD_FH
+      INTEGER PAIRDIST_FH, COORDS_FH, DATA_FH, RMSD_FH, LE_FH
       DOUBLE PRECISION :: PI,ZERO,ONE
       INTEGER ::      SLEN
       INTEGER THE_SEED
@@ -31,6 +31,9 @@
       CHARACTER(LEN=130) C_FILE,D_FILE,O_FILE,LE_FILE,E_FILE,SEED_FILE,EA_FILE
       CHARACTER(LEN=130) BLNTYPE
 
+      ! suffix to files
+      CHARACTER(LEN=130) SUF
+
       ! list of energies, EA(1) is the total one 
       DOUBLE PRECISION, DIMENSION(10) :: EA
 
@@ -40,10 +43,6 @@
 
       DOUBLE PRECISION, dimension(:), ALLOCATABLE :: MSCREENC
 
-      parameter(C_FILE="coords",D_FILE="data")
-      parameter(LE_FILE="le",E_FILE="e.tex")
-      parameter(O_FILE="out",SEED_FILE="seed")
-      parameter(EA_FILE="ea")
 
       ! from module PERMU
       DOUBLE PRECISION, ALLOCATABLE :: FIN(:)

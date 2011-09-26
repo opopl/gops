@@ -931,6 +931,7 @@ selectcase(S)
     case("LOG")
 ! logicals {{{
 LBFGST=.TRUE.
+USESUF=.FALSE.
 PULLT=.TRUE.
 P46=.FALSE.
 G46=.TRUE.
@@ -965,6 +966,22 @@ PAIRDIST_FH=IFH+5
 COORDS_FH=IFH+6
 DATA_FH=IFH+7
 RMSD_FH=IFH+8
+LE_FH=IFH+9
+
+C_FILE="coords"
+D_FILE="data"
+LE_FILE="le"
+E_FILE="e.tex"
+O_FILE="out"
+SEED_FILE="seed"
+EA_FILE="ea"
+
+IF (USESUF) THEN
+	LE_FILE=SUF//"le"
+	E_FILE=SUF//"e.tex"
+	O_FILE=SUF//"out"
+ENDIF
+
 ! }}}
     case("VARS")
 ! other {{{
@@ -977,7 +994,6 @@ RMSD_FH=IFH+8
         BLNTYPE="GO"
       ENDIF
       NRG=1
-
             
 TFAC=1.0D0          ! temperature multiplier
 
@@ -1219,6 +1235,7 @@ write(fh,*) '   -v  display version'
 write(fh,*) '   -pv display default parameter values'
 write(fh,*) ''
 write(fh,*) '   -h  print this help message'
+write(fh,*) '   -s SUF Output files with suffix SUF, e.g., out => SUF.out'
 write(fh,*) ''
 CALL ED(FH)
 

@@ -159,9 +159,6 @@
          QMIN=1.0D10
 !op226> End initializations and allocations }}} 
 
-!op226> Main program run
-      !IF ((NRUNS.GT.0).OR.PTMC.OR.BSPT) CALL MCRUNS(MSCREENC)
-
       CALL MC(MCSTEPS,TFAC,MSCREENC)
 
       CALL FINALQ

@@ -9,7 +9,7 @@ USE COMMONS
 IMPLICIT NONE
 
 INTEGER NARGS, I
-CHARACTER(LEN=80) BFF,VAR
+CHARACTER(LEN=80) BFF,VAR,S
 ! }}}
 ! subroutine body {{{
 
@@ -36,6 +36,7 @@ IF (NARGS.GT.0) THEN
 				CASE('-p46') ;  BLNT=.TRUE.; P46=.TRUE.
 				CASE('-mbln') ; MYBLNT=.TRUE.
 				CASE('-nrg') ; READ(VAR,*) NRG
+				CASE('-s') ; READ(VAR,*) S; USESUF=.TRUE. ; SUF=S//"."
                 CASE DEFAULT
          ENDSELECT
          !CALL MAKETEST(BFF)
