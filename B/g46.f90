@@ -60,53 +60,16 @@
         parameter (epsilon = 0.0100570)
 ! }}}
 ! Specify amino acid types by filling in the array ntype(:) {{{
-        ntype(1) = 1
-        ntype(2) = 1
-        ntype(3) = 1
-        ntype(4) = 1
-        ntype(5) = 1
-        ntype(6) = 1
-        ntype(7) = 1
-        ntype(8) = 1
-        ntype(9) = 1
-        ntype(10) = 3
-        ntype(11) = 3
-        ntype(12) = 3
-        ntype(13) = 2
-        ntype(14) = 1
-        ntype(15) = 2
-        ntype(16) = 1
-        ntype(17) = 2
-        ntype(18) = 1
-        ntype(19) = 2
-        ntype(20) = 1
-        ntype(21) = 3
-        ntype(22) = 3
-        ntype(23) = 3
-        ntype(24) = 1
-        ntype(25) = 1
-        ntype(26) = 1
-        ntype(27) = 1
-        ntype(28) = 1
-        ntype(29) = 1
-        ntype(30) = 1
-        ntype(31) = 1
-        ntype(32) = 1
-        ntype(33) = 3
-        ntype(34) = 3
-        ntype(35) = 3
-        ntype(36) = 2
-        ntype(37) = 1
-        ntype(38) = 2
-        ntype(39) = 1
-        ntype(40) = 2
-        ntype(41) = 1
-        ntype(42) = 2
-        ntype(43) = 1
-        ntype(44) = 2
-        ntype(45) = 1
-        ntype(46) = 2
-! }}}
+        ntype(1:9) = 1
+        ntype(10:12) = 3
+        ntype(13:19:2) = 2
+        ntype(14:20:2) = 1
+        ntype(21:23) = 3
+        ntype(24:32) = 1
+        ntype(33:35) = 3
+        ntype(36:46:2) = 2
+        ntype(37:45:2) = 1
+        ! }}}
 ! Go-like model connectivities: fill in array CONNECT(:,:) {{{
 !
         DO J1=1,46

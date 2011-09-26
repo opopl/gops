@@ -87,12 +87,12 @@
 ! }}}
       ! Add Fields {{{
 
-      IF (PULLT) THEN
-         dE_fz=-PFORCE*(X(3*(PATOM1-1)+3)-X(3*(PATOM2-1)+3))
-         EREAL=EREAL+dE_fz
-         GRAD(3*(PATOM1-1)+3)=GRAD(3*(PATOM1-1)+3)-PFORCE
-         GRAD(3*(PATOM2-1)+3)=GRAD(3*(PATOM2-1)+3)+PFORCE
-      ENDIF
+      !IF (PULLT) THEN
+         !dE_fz=-PFORCE*(X(3*(PATOM1-1)+3)-X(3*(PATOM2-1)+3))
+         !EREAL=EREAL+dE_fz
+         !GRAD(3*(PATOM1-1)+3)=GRAD(3*(PATOM1-1)+3)-PFORCE
+         !GRAD(3*(PATOM2-1)+3)=GRAD(3*(PATOM2-1)+3)+PFORCE
+      !ENDIF
       ! }}}
       ! other {{{
       

@@ -1,6 +1,3 @@
-
-      !include "kwde.i.f90"
-      !include "kwi.i.f90"
       
       MODULE KW
 ! {{{
@@ -25,9 +22,7 @@ CONTAINS
       INTEGER, PARAMETER :: DATA_FH = 15
       INTEGER :: IOS=0
       INTEGER NARGS
-
       COMMON /BUFINF/ BUFFER,POS,WORD
-      include "kwde.i.f90"
 !,IOS
       ! }}}
 ! body {{{

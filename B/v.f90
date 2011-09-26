@@ -41,7 +41,7 @@
       DOUBLE PRECISION, dimension(:), ALLOCATABLE :: MSCREENC
 
       parameter(C_FILE="coords",D_FILE="data")
-      parameter(LE_FILE="lowest",E_FILE="e.tex")
+      parameter(LE_FILE="le",E_FILE="e.tex")
       parameter(O_FILE="out",SEED_FILE="seed")
       parameter(EA_FILE="ea")
 
