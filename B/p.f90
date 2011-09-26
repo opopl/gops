@@ -33,7 +33,7 @@
       ! }}}
       ! body {{{
 !op226> potentials  {{{ 
-
+      ! com {{{
       GUIDECHANGET=.FALSE.
       BRUN=0
 
@@ -69,20 +69,22 @@
       NPCALL=NPCALL+1
       
 10    CONTINUE
-
+      ! }}}
       !IF...THEN {{{
       EA(1:10)=0.0D0
       IF (MYBLNT) THEN 
-         CALL EBLN(NATOMS,X,EA,GRAD,HESS,BLNTYPE,GRADT,SECT,EA_FH,.TRUE.)
+         CALL EBLN(NATOMS,X,EA,GRAD,HESS,BLNTYPE,GRADT,SECT,EA_FH,.false.)
       ELSE IF (P46) THEN
-         CALL EP46(EA_FH,DEB_BLN,X,NATOMS,GRAD,EA,GRADT)
+         !CALL EP46(EA_FH,DEB_BLN,X,NATOMS,GRAD,EA,GRADT)
+         CALL P46merdiff(X,NATOMS,GRAD,EREAL,GRADT)
       ELSE IF (G46) THEN
-         CALL EG46(EA_FH,DEB_BLN,X,NATOMS,GRAD,EA,GRADT)
+         !CALL EG46(EA_FH,DEB_BLN,X,NATOMS,GRAD,EA,GRADT)
+         CALL G46merdiff(X,NATOMS,GRAD,EREAL,GRADT)
       !ELSE IF (BLNT) THEN
          !CALL BLN(X,GRAD,EREAL,GRADT)
       !ELSE
       ENDIF
-      EREAL=EA(1)
+      !EREAL=EA(1)
       ! }}}
 ! }}}
       ! Add Fields {{{

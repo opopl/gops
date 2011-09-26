@@ -186,8 +186,6 @@
                ENDIF
             ELSE
                CALL TRANSITION(POTEL,EPREV(JP),ATEST,JP,RANDOM,MCTEMP)
-               !IF (ATEST) THEN
-               !ENDIF
 
 !  check: Markov energy agrees with COORDSO.{{{
 !  Stop if not true.

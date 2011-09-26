@@ -9,24 +9,12 @@
       USE DV
       USE PORFUNCS
       !op226>  }}}
-      !op226> Other {{{
       IMPLICIT NONE
-      !EXTERNAL READ_CMD_ARGS
-
-      INTEGER J1,J2, JP, MPIERR, NDUMMY3,NPTOTAL,VERSIONTEMP
-      DOUBLE PRECISION POTEL
-      DOUBLE PRECISION, ALLOCATABLE :: TMPCOORDS(:)
-      INTEGER, ALLOCATABLE :: NDUMMY(:), NDUMMY2(:,:)
-      LOGICAL LOPEN
-
-      CHARACTER(LEN=130) ISTR
-      CHARACTER(LEN=40) :: atom1,atom2,atompair
 
       INTEGER*4 TODAY(3), NOW(3)
+      integer j1
 
-      COMMON /MYPOT/ POTEL
-!op226>  }}}
-!op226> End declarations }}}
+! }}}
 ! intro {{{
       CALL CPU_TIME(TSTART)
       CALL RCA
@@ -88,21 +76,20 @@
       FF(1:NSAVE)=0 ! to prevent reading from uninitialised memorY
       VATO(1:NATOMS,1:NPAR)=0.0D0 ! to prevent reading from uninitialised memory
 
-!op226> DUMPT {{{ 
-      IF (DUMPT) THEN
-         DUMPXYZUNIT=40
-         DUMPVUNIT=39
-         DO J1=1,NPAR
-            WRITE (ISTR,'(A5,I1,A4)') 'dump.',J1,'.xyz'
-            J2=DUMPXYZUNIT+J1
-            OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
-            WRITE (ISTR,'(A5,I1,A2)') 'dump.',J1,'.V'
-            J2=DUMPVUNIT-J1
-            OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
-         ENDDO
-      ENDIF
-!op226>}}} 
-
+!!op226> DUMPT {{{ 
+      !IF (DUMPT) THEN
+         !DUMPXYZUNIT=40
+         !DUMPVUNIT=39
+         !DO J1=1,NPAR
+            !WRITE (ISTR,'(A5,I1,A4)') 'dump.',J1,'.xyz'
+            !J2=DUMPXYZUNIT+J1
+            !OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
+            !WRITE (ISTR,'(A5,I1,A2)') 'dump.',J1,'.V'
+            !J2=DUMPVUNIT-J1
+            !OPEN(UNIT=J2,FILE=TRIM(ADJUSTL(ISTR)),STATUS='UNKNOWN')
+         !ENDDO
+      !ENDIF
+!!op226>}}} 
 !        ! PAIRDIST {{{
       !IF (PAIRDISTT) THEN
          !MYPUNIT=3000+MYNODE
@@ -128,26 +115,26 @@
 !     to files for viewing during a run. If RMS is also specified it
 !     prints the rmsd from the comparison structure into a file.
 !
-      IF (TRACKDATAT) THEN
-         MYEUNIT=4000+MYNODE
-         MYMUNIT=6000+MYNODE
-         MYRUNIT=8000+MYNODE
-         MYBUNIT=10000+MYNODE
-         IF (NPAR.GT.1) THEN
-            OPEN(MYEUNIT,FILE="energy."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYMUNIT,FILE="markov."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYBUNIT,FILE="best."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-         ELSE
-            OPEN(MYEUNIT,FILE='energy',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYMUNIT,FILE='markov',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            IF (RMST) OPEN(MYRUNIT,FILE='rmsd',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            OPEN(MYBUNIT,FILE='best',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            IF (A9INTET) THEN
-               OPEN(UNIT=3998,FILE='intE.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-               OPEN(UNIT=3999,FILE='bestintE.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-            ENDIF            
-         ENDIF
-      ENDIF
+    !!  IF (TRACKDATAT) THEN
+         !MYEUNIT=4000+MYNODE
+         !MYMUNIT=6000+MYNODE
+         !MYRUNIT=8000+MYNODE
+         !MYBUNIT=10000+MYNODE
+         !IF (NPAR.GT.1) THEN
+            !OPEN(MYEUNIT,FILE="energy."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            !OPEN(MYMUNIT,FILE="markov."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            !OPEN(MYBUNIT,FILE="best."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+         !ELSE
+            !OPEN(MYEUNIT,FILE='energy',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            !OPEN(MYMUNIT,FILE='markov',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            !IF (RMST) OPEN(MYRUNIT,FILE='rmsd',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            !OPEN(MYBUNIT,FILE='best',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+            !IF (A9INTET) THEN
+               !OPEN(UNIT=3998,FILE='intE.dat',STATUS='UNKNOWN',FORM='FORMATTED')
+               !OPEN(UNIT=3999,FILE='bestintE.dat',STATUS='UNKNOWN',FORM='FORMATTED')
+            !ENDIF            
+         !ENDIF
+      !ENDIF
 !op226>}}} 
       CALL FLUSH(6)
       CALL IOM
@@ -168,12 +155,8 @@
       ENDIF
 !op226>}}} 
       
-      DO JP=1,NPAR
-         NQ(JP)=1
-      ENDDO
-      DO J1=1,NSAVE
-         QMIN(J1)=1.0D10
-      ENDDO
+         NQ=1
+         QMIN=1.0D10
 !op226> End initializations and allocations }}} 
 
 !op226> Main program run
