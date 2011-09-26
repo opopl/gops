@@ -54,7 +54,7 @@
 	        DOUBLE PRECISION,DIMENSION(N,N),INTENT(OUT) :: A_PARAM,B_PARAM
 	        DOUBLE PRECISION,DIMENSION(N),INTENT(OUT) :: C_PARAM,D_PARAM
             ! loc
-        logical connect(46,46)
+        LOGICAL CONNECT(N,N)
         INTEGER J, ICOUNT, I, J2, J1
         DOUBLE PRECISION EPSILON
         parameter (epsilon = 0.0100570)

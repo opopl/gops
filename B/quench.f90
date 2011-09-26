@@ -67,9 +67,9 @@
 !  QTEST is set for the final quenches with tighter convergence criteria.
 
       IF (QTEST) THEN
-         GMAX=CQMAX
+         GMAX=FQMAX
       ELSE
-         GMAX=BQMAX
+         GMAX=SQMAX
       ENDIF
 
       QDONE=0

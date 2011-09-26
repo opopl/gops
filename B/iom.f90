@@ -11,18 +11,21 @@
       INTEGER J1,J2,JP
       LOGICAL EXISTS,YESNO
       INTEGER NPCALL,NQTOT
+      INTEGER :: IOS=0
       DOUBLE PRECISION,DIMENSION(NATOMS,3) :: R
       ! }}}
       ! body {{{
       JP=1
 
       ! read in coordinates from C_FILE {{{
-         OPEN(UNIT=7,FILE=C_FILE,STATUS='OLD')
-         REWIND(7)
-               DO J1=1,NATOMS
-                   READ(7,*) R(J1,1:3)
-               ENDDO
-         CLOSE(7)
+         OPEN(UNIT=COORDS_FH,FILE=C_FILE,STATUS='OLD')
+         REWIND(COORDS_FH)
+         J1=1
+         DO WHILE((IOS==0).AND.(J1.LE.NATOMS))
+             READ(COORDS_FH,*,IOSTAT=IOS) R(J1,1:3)
+             J1=J1+1
+         ENDDO
+         CLOSE(COORDS_FH)
       !}}}
 
       !IF (.NOT.SEEDT.AND..NOT.AMHT) THEN
@@ -43,17 +46,7 @@
       ENDIF
       CALL ED(LFH) 
       
-      IF (RADIUS.EQ.0.0D0) THEN
-         RADIUS=2.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0)
-         IF (P46) THEN
-            RADIUS=RADIUS*3.0D0
-         ELSE 
-            RADIUS=RADIUS*2.0D0**(1.0D0/6.0D0)
-         ENDIF
-      ENDIF
 
-      RADIUS=RADIUS**2
-      
       IF (NORESET) THEN
          WRITE(LFH,'(A)') 'Configuration will not be reset to quench geometry'
          IF (CENT) THEN
@@ -77,9 +70,9 @@
         WRITE(LFH, '(A,G20.10)') 'Maximum allowed energy rise during a minimisation=',MAXERISE
       CALL ED(LFH)
         WRITE(LFH,'(A,/)') 'Quenches:'
-        WRITE(LFH,'(A,F15.10)') 'Sloppy quench tolerance for RMS gradient ',BQMAX
+        WRITE(LFH,'(A,F15.10)') 'Sloppy quench tolerance for RMS gradient ',SQMAX
         IF (EFAC.NE.0.0D0) WRITE(LFH,'(A,F12.4)') 'Exponential factor for proposed steps=',EFAC
-        WRITE(LFH,'(A,F15.10)') 'Final quench tolerance for RMS gradient ',CQMAX
+        WRITE(LFH,'(A,F15.10)') 'Final quench tolerance for RMS gradient ',FQMAX
         WRITE(LFH,'(A,F15.10)') 'Energy difference criterion for minima=',ECONV
         WRITE(LFH,'(A,I5,A,I5)') 'Maximum number of iterations: sloppy quenches ',MAXIT,' final quenches ',MAXIT2
       CALL ED(LFH)
@@ -91,7 +84,7 @@
             CALL ED(LFH)
         ENDIF
 
-      WRITE(LFH,120) MCSTEPS(1), TFAC(1)
+      WRITE(LFH,120) MCSTEPS, TFAC
 120   FORMAT(I9,' steps with temperature scaled by ',E15.8)
 
       IF (DEBUG) THEN
@@ -118,7 +111,7 @@
           WRITE(LFH,'(A)') 'reading dump information from file ssdump'
          READ(88,'(3G20.10)') ((COORDS(J1,J2),J1=1,3*NATOMS),J2=1,NPAR)
          READ(88,'(2I6)') NQTOT, NPCALL
-         MCSTEPS(1)=MAX(MCSTEPS(1)-NQTOT*NPAR,1)
+         MCSTEPS=MAX(MCSTEPS-NQTOT*NPAR,1)
          NQTOT=NQTOT*NPAR
          READ(88,'(G20.10)') (QMIN(J1),J1=1,NSAVE)
          READ(88,'(3G20.10)') ((QMINP(J2,J1),J1=1,3*NATOMS),J2=1,NSAVE)

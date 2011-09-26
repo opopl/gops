@@ -24,7 +24,6 @@
 
       INTEGER*4 TODAY(3), NOW(3)
 
-
       COMMON /MYPOT/ POTEL
 !op226>  }}}
 !op226> End declarations }}}
@@ -32,10 +31,10 @@
       CALL CPU_TIME(TSTART)
       CALL RCA
 
-      LFH=10
-
       call idate(today)   ! today(1)=day, (2)=month, (3)=year
       call itime(now)     ! now(1)=hour, (2)=minute, (3)=second
+
+      CALL INITVARS("FILES")
 
       OPEN(LFH,FILE=O_FILE, STATUS="unknown", form="formatted")
       OPEN(EA_FH,FILE=EA_FILE, STATUS="unknown", form="formatted")
@@ -55,12 +54,13 @@
       ! }}}
 !op226> Allocate memory; open files; initialize different things  {{{ 
       CALL AM("INIT")
-      CALL INITVARS
+      CALL INITVARS("LOG")
+      CALL INITVARS("VARS")
       CALL COUNTATOMS
+      CALL INITVARS("ARR")
       CALL KEYWORD(1)
       CALL RCA
       CALL AM("MAIN")
-      !CALL KW
       CALL SETVARS
 
 !!op226> RMST {{{ 
@@ -179,7 +179,7 @@
 !op226> Main program run
       !IF ((NRUNS.GT.0).OR.PTMC.OR.BSPT) CALL MCRUNS(MSCREENC)
 
-      CALL MC(MCSTEPS(1),TFAC(1),MSCREENC)
+      CALL MC(MCSTEPS,TFAC,MSCREENC)
 
       CALL FINALQ
       CALL FINALIO

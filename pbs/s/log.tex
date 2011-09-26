@@ -563,3 +563,34 @@ runs failed; do again
 21:57:20 (Sun, 25-Sep-2011):
 	384227
 	sb -m 2 -f 0.0 -exe B
+\subsection{26-Sep-2011}
+	13:52:15 (Mon, 26-Sep-2011):
+	sb -m 2 -f 0.0 -exe B
+	384231
+	fail due to:
+=====================
+./define_forces_0.sh: line 6: [: : integer expression expected
+FORTRAN STOP
+At line 116 of file kwif.i.f90
+Fortran runtime error: End of file
+Input data file:    data
+Input coords file:  coords
+Output runtime file:out
+awk: cmd. line:1: fatal: cannot open file `lowest' for reading (No such file or directory)
+=====================
+now, I put kwif.i.f90 inside kw.f90, recompile, re-run; see 
+what changes:
+	384232
+
+14:11:03 (Mon, 26-Sep-2011):
+	sb -m 2 -f 0.0 -exe B
+	384238
+14:57:13 (Mon, 26-Sep-2011):
+	ca=50
+	sb -m 2 -f 0.0 -exe B
+	384252
+mupdate=10, doesn't work?
+	change to 50
+
+14:59:31 (Mon, 26-Sep-2011):
+	384253

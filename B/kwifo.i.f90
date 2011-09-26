@@ -152,7 +152,7 @@ Cop226 BASIN, BFGS, BHPT, BINARY, BINSTRUCTURES
 Cop226 ==============================================
 Cop226> {{{
       ELSE IF ((WORD.EQ.'BASIN').OR.(WORD.EQ.'SLOPPYCONV')) THEN
-         IF (NITEMS.GT.1) CALL READF(BQMAX)
+         IF (NITEMS.GT.1) CALL READF(SQMAX)
 
       ELSE IF (WORD.EQ.'BFGS') THEN
          BFGS=.TRUE.
@@ -2400,7 +2400,7 @@ C
          QDT=.TRUE.
 
       ELSE IF ((WORD.EQ.'QMAX').OR.(WORD.EQ.'TIGHTCONV')) THEN
-         CALL READF(CQMAX)
+         CALL READF(FQMAX)
 
       ELSE IF (WORD.EQ.'QUAD') THEN
          QUADT=.TRUE.

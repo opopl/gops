@@ -29,8 +29,8 @@ default: dirs $(AUXF) $(DEPS) $(PROG)
 porfuncs.f90: $(PRF)
 	$(PRF) $(SWITCH) > $@
 
-rca.f90: $(RCA)
-	$(RCA) $(PROGNAME) > $@
+#rca.f90: $(RCA)
+	#$(RCA) $(PROGNAME) > $@
 
 dv.f90: $(DV)
 	$(DV) $(DVOPTS) > $@

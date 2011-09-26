@@ -233,7 +233,6 @@
       write(f,'(a)') "==========================================="
       endsubroutine ed
       ! }}}
-
       ! check_file {{{
 	   FUNCTION CHECK_FILE(FILE_UNIT, FOR_READ, FOR_WRITE)
 	   IMPLICIT NONE
@@ -603,17 +602,26 @@
 !> @param[in]    XMIN,XMAX      
 !
 ! }}}
+!SUBROUTINE GETSEED(seed)
+!integer seed
+
+
+!ENDSUBROUTINE GETSEED
+
 SUBROUTINE GETRND(RND,N,XMIN,XMAX)
 ! {{{
 IMPLICIT NONE
 
 ! random number vector
-DOUBLE PRECISION,dimension(:),INTENT(OUT) :: RND
+DOUBLE PRECISION,DIMENSION(:),INTENT(OUT) :: RND
 ! range
 DOUBLE PRECISION,INTENT(IN) :: XMIN,XMAX
 DOUBLE PRECISION :: DX
 ! dimension of RND(:)
 INTEGER,INTENT(IN) :: N
+! seed
+INTEGER :: ISEED
+! loc
 INTEGER I
 
 DX=XMAX-XMIN
@@ -893,10 +901,72 @@ ENDSUBROUTINE OPENF
       ENDSUBROUTINE CENTRECOM
       ! }}}
       ! }}}
-      ! setvars r_coords countatoms printvars initvars {{{
-      SUBROUTINE SETVARS
-!{{{
-      USE COMMONS, ONLY : P46,G46
+      ! setvars {{{
+SUBROUTINE SETVARS
+
+! container radius
+      IF (RADIUS.EQ.0.0D0) THEN
+         RADIUS=2.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0)
+         IF (P46) THEN
+            RADIUS=RADIUS*3.0D0
+         ELSE 
+            RADIUS=RADIUS*2.0D0**(1.0D0/6.0D0)
+         ENDIF
+      ENDIF
+
+      RADIUS=RADIUS**2
+
+END SUBROUTINE SETVARS
+! }}}
+! initvars {{{
+RECURSIVE SUBROUTINE INITVARS(S)
+
+INTEGER NPCALL
+COMMON /PCALL/ NPCALL
+character(len=*) S
+! subroutine body {{{
+
+selectcase(S)
+    case("LOG")
+! logicals {{{
+LBFGST=.TRUE.
+PULLT=.TRUE.
+P46=.FALSE.
+G46=.TRUE.
+BLNT=.FALSE.
+MYBLNT=.FALSE.
+TARGET=.FALSE.
+TRACKDATAT=.FALSE.
+DEBUG=.FALSE.
+DUMPT=.FALSE.
+NORESET=.FALSE.
+RMST=.FALSE.
+      
+SAVEQ=.TRUE.
+SORTT=.FALSE.
+
+ALLOCATE(FIXSTEP(1),FIXTEMP(1),FIXBOTH(1))
+FIXSTEP=.FALSE.
+FIXTEMP=.FALSE.
+FIXBOTH=.FALSE.
+! whether we are doing a final quench
+!FQFLAG=.FALSE.
+! }}}
+    case("FILES")
+! files {{{
+IFH=50
+LFH=IFH
+EA_FH=IFH+1
+ENERGY_FH=IFH+2
+MARKOV_FH=IFH+3
+BEST_FH=IFH+4
+PAIRDIST_FH=IFH+5
+COORDS_FH=IFH+6
+DATA_FH=IFH+7
+RMSD_FH=IFH+8
+! }}}
+    case("VARS")
+! other {{{
 
       BLNTYPE="GO"
 
@@ -905,6 +975,60 @@ ENDSUBROUTINE OPENF
       ELSEIF(G46)THEN
         BLNTYPE="GO"
       ENDIF
+      NRG=1
+
+            
+TFAC=1.0D0          ! temperature multiplier
+
+NPCALL=0
+NSEED=0
+NS=0
+
+NSAVE=10            ! number of saved lowest-energy geometries
+NATOMS=46           ! number of particles
+!EAMP=0.01D0         ! exponential multiplier
+
+
+PATOM1=1            ! atom 1 for pulling 
+PATOM2=NATOMS       ! atom 2 for pulling
+
+MUPDATE=4           ! Number of LBFGS updates
+MAXBFGS=0.4D0       ! Maximum BFGS step size
+DGUESS=0.1D0        ! DGUESS: Guess for initial diagonal elements in LBFGS
+
+FQMAX=1.0D-5        ! FQMAX: same meaning as for SQMAX, but for final quenches only.
+SQMAX=1.0D-3        ! SQMAX: convergence criterion for the RMS force in the basin-hopping quenches.
+                    ! note: used in QUENCH() 
+ECONV=0.02D0
+RADIUS=0.0D0
+! maximum number of iterations allowed in conjugate gradient searches
+MAXIT=500
+! Maximum allowed energy rise during a minimisation
+MAXERISE=1.0D-10
+! Maximum allowed energy fall during a minimisation
+MAXEFALL=-HUGE(ONE)
+! Used in ACCREJ
+!FAC0=1.05D0
+! "Fixing" option (regarding STEP, TEMP and accept ratio for quenches) 
+!FIXOPT='T'
+
+ARMA=0.4D0
+ARMB=0.4D0
+EPSSPHERE=0.0D0
+          
+NACCEPT=50
+NRELAX=0
+! }}}
+    case("ARR")
+! {{{
+    ALLOCATE(ACCRAT(1),STEP(1),OSTEP(1),ASTEP(1),TEMP(1))
+    ALLOCATE(BEADLETTER(NATOMS)) 
+    ACCRAT=0.5D0
+    TEMP=0.035D0        ! Temperature
+	STEP=0.3D0
+	OSTEP=0.3D0
+	ASTEP=0.3D0
+	MCSTEPS=10000
       ! hydrophobic - B 1
       ! neutral N    3
       ! hydrophilic L 2
@@ -917,37 +1041,45 @@ ENDSUBROUTINE OPENF
       BEADLETTER(33:35)="N"
       BEADLETTER(36:46:2)="L"
       BEADLETTER(37:45:2)="B"
-
-!}}}
-      END SUBROUTINE SETVARS
-
-! doxygen RCOORDS {{{
+! }}}
+    case("ALL")
+      CALL INITVARS("LOG")
+      CALL INITVARS("VARS")
+      CALL INITVARS("ARR")
+      CALL SETVARS
+endselect
+! }}}
+END SUBROUTINE INITVARS
+! }}}
+! r_coords {{{
+! doxygen R_COORDS {{{
 !> @name RCOORDS
 !> @brief Generate a random set of coordinates, based on:
 !> @param[in] NATOMS number of particles
 !> @param[in] RADIUS container radius
 !> @param[out] COORDS  randomly generated coordinates
 ! }}}
-SUBROUTINE R_COORDS(NATOMS,RADIUS,COORDS)
+SUBROUTINE R_COORDS(NATOMS,RADIUS,COORDS,ISEED)
 ! declarations {{{
 ! subroutine parameters 
 INTEGER, INTENT(IN) :: NATOMS
 DOUBLE PRECISION,INTENT(IN) :: RADIUS 
-DOUBLE PRECISION, DIMENSION(:,:), INTENT(OUT) :: COORDS
+DOUBLE PRECISION, DIMENSION(:), INTENT(OUT) :: COORDS
+DOUBLE PRECISION,DIMENSION(3*NATOMS) :: RND
+INTEGER,INTENT(IN) :: ISEED
 
 ! local parameters 
+INTEGER NR
 DOUBLE PRECISION :: SR3
-DOUBLE PRECISION, ALLOCATABLE :: RND(:)
 ! }}}
 ! {{{
+NR=3*NATOMS
 SR3=DSQRT(3.0D0)
-ALLOCATE(RND(3*NATOMS))
-CALL GETRND(RND,3*NATOMS,-1.0D0,1.0D0)
-RND=RADIUS*RND/SR3
-COORDS=RESHAPE(RND,(/ NATOMS, 3 /))
-DEALLOCATE(RND)
+CALL GETRND(RND,NR,-1.0D0,1.0D0)
+COORDS=RADIUS*RND/SR3
 ! }}}
 END SUBROUTINE R_COORDS
+! }}}
 
       SUBROUTINE COUNTATOMS
 !op226> Declarations {{{ 
@@ -981,16 +1113,18 @@ END SUBROUTINE R_COORDS
       INQUIRE(FILE=C_FILE,EXIST=YESNO)
 
       IF (YESNO) THEN
-
-         OPEN(UNIT=7,FILE=C_FILE,STATUS='OLD')
+         OPEN(UNIT=COORDS_FH,FILE=C_FILE,STATUS='OLD')
+         NATOMS=0
+         REWIND(COORDS_FH)
          DO
-            READ(7,*,IOSTAT=EOF)
+            READ(COORDS_FH,*,IOSTAT=EOF)
             IF (EOF==0) THEN
                NATOMS = NATOMS + 1
             ELSE
                EXIT
             ENDIF
          ENDDO
+         CLOSE(COORDS_FH)
         !ELSEIF (YESNOAMH) THEN 
 !        ! {{{
          !open(unit=30,file='pro.list',status='old',form='formatted')
@@ -1070,154 +1204,92 @@ END SUBROUTINE R_COORDS
       ! }}}
       END SUBROUTINE COUNTATOMS
 
-!! initialize variables
-SUBROUTINE INITVARS
+      ! getmodel printvars printhelp {{{
+SUBROUTINE GETMODEL
+! {{{
 
-INTEGER NPCALL
-COMMON /PCALL/ NPCALL
-! subroutine body {{{
-! logicals {{{
-LBFGST=.TRUE.
-PULLT=.TRUE.
-P46=.FALSE.
-G46=.TRUE.
-BLNT=.FALSE.
-MYBLNT=.FALSE.
-TARGET=.FALSE.
-TRACKDATAT=.FALSE.
-DEBUG=.FALSE.
-DUMPT=.FALSE.
-NORESET=.FALSE.
-RMST=.FALSE.
-      
-SAVEQ=.TRUE.
-SORTT=.FALSE.
-
-FIXSTEP=.FALSE.
-FIXTEMP=.FALSE.
-FIXBOTH=.FALSE.
-! whether we are doing a final quench
-!FQFLAG=.FALSE.
+IF (P46) THEN
+  MODEL="P46 THREE-COLOUR OFF-LATTICE PROTEIN MODEL, WILD-TYPE"
+ELSEIF(G46) THEN
+  MODEL="P46 THREE-COLOUR OFF-LATTICE PROTEIN MODEL, GO-LIKE"
+ELSEIF(BLNT) THEN
+  MODEL="GENERAL BLN MODEL"
+ENDIF
 ! }}}
-! files {{{
-IFH=50
-LFH=IFH+1
-ENERGY_FH=IFH+2
-MARKOV_FH=IFH+3
-BEST_FH=IFH+4
-PAIRDIST_FH=IFH+5
-COORDS_FH=IFH+6
-DATA_FH=IFH+7
-RMSD_FH=IFH+8
-EA_FH=IFH+9
-! }}}
-! other {{{
-
-NPCALL=0
-NSEED=0
-NS=0
-
-NSAVE=10            ! number of saved lowest-energy geometries
-
-NATOMS=46
-
-EAMP=0.01D0
-
-PATOM1=1
-PATOM2=NATOMS
-
-MUPDATE=4           ! Number of LBFGS updates
-MAXBFGS=0.4D0       ! Maximum BFGS step size
-DGUESS=0.1D0        ! DGUESS: Guess for initial diagonal elements in LBFGS
-
-!FQMAX=1.0D-5        ! FQMAX: same meaning as for SQMAX, but for final quenches only.
-!SQMAX=1.0D-3        ! SQMAX: convergence criterion for the RMS force in the basin-hopping quenches.
-                    ! note: used in QUENCH() 
-
-TFAC=1.0D0
-ECONV=0.02D0
-ACCRAT=0.5D0
-TEMP=0.035D0        ! Temperature
-RADIUS=0.0D0
-! maximum number of iterations allowed in conjugate gradient searches
-MAXIT=500
-! Maximum allowed energy rise during a minimisation
-MAXERISE=1.0D-10
-! Maximum allowed energy fall during a minimisation
-MAXEFALL=-HUGE(ONE)
-! Used in ACCREJ
-!FAC0=1.05D0
-! "Fixing" option (regarding STEP, TEMP and accept ratio for quenches) 
-!FIXOPT='T'
-
-ARMA=0.4D0
-ARMB=0.4D0
-EPSSPHERE=0.0D0
-
-STEP=0.3D0
-OSTEP=0.3D0
-ASTEP=0.3D0
-
-MCSTEPS=10000
-          
-NACCEPT=50
-NRELAX=0
-! }}}
-CALL SETVARS
-! }}}
-END SUBROUTINE INITVARS
+ENDSUBROUTINE GETMODEL
 
 !! print variables 
-!SUBROUTINE PRINTVARS
-!! {{{
-!! vars                                                                       {{{
-!character(100) fmt(10)
-!character(40) s
-!integer i
-!! }}}
-!include '../include/fmt.i.f90'
+SUBROUTINE PRINTVARS(FH)
+! {{{
+! vars                                                                       {{{
+! sub
+integer fh
+! loc
+character(100) fmt(10)
+character(40) s
+integer i
+! }}}
+include '../include/fmt.i.f90'
 
-!CALL ECHO_S
-!write(*,10) "PARAMETER VALUES" !                                             {{{
-!write(*,1)  "PARAMETER DESCRIPTION",         "NAME",                  "VALUE"
-!! pd:general                                                                 {{{
-!write(*,11) s_stars
-!write(*,10) "GENERAL" 
-!write(*,11) s_stars
+CALL ED(fh)
+write(fh,10) "PARAMETER VALUES" !                                             {{{
 
-!call getmodel
-!write(s,*) "Model" 
-!!s=adjustl(s)
-!!write(*,1)  "Model"                                         ,"Model",   trim(model)
-!write(*,*)  trim(model)
-!write(*,11) s_stars
-!write(*,3)  "Number of particles",                          "NATOMS",     NATOMS
-!write(*,2)  "Container radius",                          "RADIUS",     RADIUS
-!write(*,3)  "Number of saved lowest energy geometries",     "NSAVE",      NSAVE
-!write(*,3)  "Number of basin-hopping steps",                "MCSTEPS",    MCSTEPS
-!write(*,2)  "Temperature",                                  "TEMP",       TEMP
-!write(*,2)  "Acceptance ratio",                             "ACCRAT",     ACCRAT
-!write(*,2)  "Energy difference criterion for minima",       "EDIFF",      EDIFF
-!write(*,2)  "Final quench tolerance for RMS gradient ",     "FQMAX",      FQMAX
-!write(*,2)  "Quench convergence criterion for RMS gradient ", "SQMAX",      SQMAX
-!write(*,3)  "Maximum number of iterations",   "MAXIT", MAXIT
-!write(*,11) "(sloppy and final quenches)"
-!write(*,2)  "",                                             "TFAC",       TFAC
-!Write(*,3)  "",                                             "NACCEPT",    NACCEPT
-!write(*,3)  "",                                             "NRELAX",     NRELAX
-!write(*,11) s_stars !                                                        }}}
-!! pd:lbfgs                                                                     {{{
-!write(*,10) "LBFGS parameters"
-!write(*,11) s_stars
-!write(*,3) "Number of LBFGS updates",   "M_LBFGS",  M_LBFGS
-!write(*,2) "Maximum BFGS step size",   "MAXBFGS",   MAXBFGS
-!write(*,2) "Guess for initial diagonal elements in BFGS", "DGUESS", DGUESS
-!write(*,11) s_stars
-!! }}} 
-!! }}}
-!CALL ECHO_S
-!! }}}
-!END SUBROUTINE PRINTVARS
+CALL GETMODEL
+WRITE(fh,*) "MODEL" 
+write(fh,*) TRIM(MODEL)
+CALL ED(fh)
+write(fh,1)  "PARAMETER DESCRIPTION",         "NAME",                  "VALUE"
+! pd:general                                                                 {{{
+write(fh,11) s_stars
+write(fh,10) "GENERAL" 
+write(fh,11) s_stars
+!s=adjustl(s)
+write(fh,3)  "Number of particles",                          "NATOMS",     NATOMS
+write(fh,2)  "Container radius",                             "RADIUS",     RADIUS
+write(fh,3)  "Number of saved lowest energy geometries",     "NSAVE",      NSAVE
+write(fh,3)  "Number of basin-hopping steps",                "MCSTEPS",    MCSTEPS
+write(fh,2)  "Temperature",                                  "TEMP",       TEMP
+write(fh,2)  "Acceptance ratio",                             "ACCRAT",     ACCRAT
+write(fh,2)  "Energy difference criterion for minima",       "ECONV",      ECONV
+write(fh,2)  "Final quench tolerance for RMS gradient ",     "FQMAX",      FQMAX
+write(fh,2)  "Quench convergence criterion for RMS gradient ", "SQMAX",    SQMAX
+write(fh,3)  "Maximum number of iterations",   "MAXIT", MAXIT
+write(fh,11) "(sloppy and final quenches)"
+write(fh,2)  "Temperature multiplier",                       "TFAC",       TFAC
+write(fh,3)  "",                                             "NACCEPT",    NACCEPT
+write(fh,3)  "",                                             "NRELAX",     NRELAX
+write(fh,11) s_stars !                                                        }}}
+! pd:lbfgs                                                                     {{{
+write(fh,10) "LBFGS parameters"
+write(fh,11) s_stars
+write(fh,3) "Number of LBFGS updates",   "MUPDATE",  MUPDATE
+write(fh,2) "Maximum BFGS step size",   "MAXBFGS",   MAXBFGS
+write(fh,2) "Guess for initial diagonal elements in BFGS", "DGUESS", DGUESS
+! }}} 
+! }}}
+CALL ED(fh)
+! }}}
+END SUBROUTINE PRINTVARS
+
+SUBROUTINE PRINTHELP(FH)
+INTEGER FH
+
+CALL ED(FH)
+write(fh,*) ''
+write(fh,*) 'Command-line options:'
+write(fh,*) ''
+write(fh,*) '   -ca NACCEPT'
+write(fh,*) '   -f  PFORCE'
+write(fh,*) '   -g  turn on debug printing'
+write(fh,*) ''
+write(fh,*) '   -v  display version'
+write(fh,*) '   -pv display default parameter values'
+write(fh,*) ''
+write(fh,*) '   -h  print this help message'
+write(fh,*) ''
+CALL ED(FH)
+
+ENDSUBROUTINE PRINTHELP 
 ! }}}
     ! am {{{
     SUBROUTINE AM(S)
@@ -1226,15 +1298,12 @@ END SUBROUTINE INITVARS
         selectcase(S)
             CASE("MAIN")
                ALLOCATE(MSCREENC(3*NATOMS),VT(NATOMS))
-               ALLOCATE(BEADLETTER(NATOMS)) 
                ALLOCATE(FF(NSAVE),QMIN(NSAVE))
                ALLOCATE(QMINP(NSAVE,3*NATOMS))
+               ALLOCATE(COORDSO(3*NATOMS,1),VAT(NATOMS,1),VATO(NATOMS,1),COORDS(3*NATOMS,1))
             CASE("INIT")
-      ALLOCATE(FIXSTEP(1),FIXTEMP(1),FIXBOTH(1),TEMP(1))
-      ALLOCATE(ACCRAT(1),STEP(1),ASTEP(1),OSTEP(1),BLOCK(1),NT(1),NQ(1),EPREV(1))
-      ALLOCATE(JUMPMOVE(1),JUMPINT(1),JDUMP(1),COORDS(3*NATOMS,1))
-      ALLOCATE(COORDSO(3*NATOMS,1),VAT(NATOMS,1),VATO(NATOMS,1),JUMPTO(1),SHELLMOVES(1),PTGROUP(1),NSURFMOVES(1),NCORE(1))
-
+      ALLOCATE(NQ(1),EPREV(1))
+      ALLOCATE(NCORE(1))
         endselect
     ENDSUBROUTINE AM
     ! }}}

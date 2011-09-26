@@ -112,16 +112,16 @@
       ELSE IF (WORD.EQ.'EDIFF') THEN
           READ(ARGS(2),*) ECONV
       ELSE IF (WORD.EQ.'STEPS') THEN
-          READ(ARGS(2),*) MCSTEPS(1)
-          READ(ARGS(3),*) TFAC(1)
+          READ(ARGS(2),*) MCSTEPS
+          READ(ARGS(3),*) TFAC
       ELSE IF (WORD.EQ.'UPDATES') THEN
           READ(ARGS(2),*) MUPDATE
          ! }}}
          ! SLOPPYCONV TIGHTCONV DGUESS  {{{
       ELSE IF ((WORD.EQ.'BASIN').OR.(WORD.EQ.'SLOPPYCONV')) THEN
-          READ(ARGS(2),*) BQMAX
+          READ(ARGS(2),*) SQMAX
       ELSE IF ((WORD.EQ.'QMAX').OR.(WORD.EQ.'TIGHTCONV')) THEN
-          READ(ARGS(2),*) CQMAX
+          READ(ARGS(2),*) FQMAX
       ELSE IF (WORD.EQ.'DGUESS') THEN
          READ(ARGS(2),*) DGUESS
          ! }}}
@@ -150,6 +150,10 @@
          IF (NARGS.GT.4) READ(ARGS(5),*) BLOCK(1)
       ELSE IF (WORD.EQ.'TEMPERATURE') THEN
          READ(ARGS(2),*) TEMP(1)
+                  ! }}}
+                  !NRG {{{
+      ELSE IF (WORD.EQ.'NRG') THEN
+         READ(ARGS(2),*) NRG
                   ! }}}
       ELSE IF (WORD.EQ.'TRACKDATA') THEN
          TRACKDATAT=.TRUE.     

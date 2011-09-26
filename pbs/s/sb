@@ -10,12 +10,13 @@ export nf=10
 export nm=1
 export od="out"
 export force=0.00
-export ca=5
-export m_lbfgs=10
+export ca=50
+export m_lbfgs=50
 export nsteps=50000
 export fqmax="1.0D-4"
 export sqmax="1.0D-3"
 export data_ext="tex"
+export tfac=1.0
 
 export natoms=46
 export radius=10.0
