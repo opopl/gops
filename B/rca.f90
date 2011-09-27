@@ -45,6 +45,11 @@ IF (NARGS.GT.0) THEN
 				CASE('-p') ; READ(VAR,*) S; USEPREF=.TRUE. ; PREF=trim(S)//"."
 				CASE('-crd') ; READ(VAR,*) S; C_FILE=TRIM(S)
 				CASE('-cmarkov') ; CHECKMARKOVT=.TRUE.
+                ! tracking
+				CASE('-track') ; TRACKDATAT=.TRUE.
+				CASE('-tenergy') ; TRACKENERGY=.TRUE.
+				CASE('-tbest') ; TRACKBEST=.TRUE.
+				CASE('-tmarkov') ; TRACKMARKOV=.TRUE.
                 CASE DEFAULT
          ENDSELECT
      ENDSELECT

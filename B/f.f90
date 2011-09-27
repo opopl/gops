@@ -377,9 +377,8 @@
 !
             IF (EREAL.LT.QMIN(J1)) THEN
                QMIN(J1)=EREAL
-               DO J2=1,3*NATOMS
-                  QMINP(J1,J2)=P(J2)
-               ENDDO
+               QMINP(J1,1:NR)=P(1:NR)
+               EAMIN(J1,1:6)=EA(1:6)
             ENDIF
             GOTO 10
          ENDIF
@@ -391,24 +390,19 @@
             IF (NSAVE.GT.1) THEN
 
                QMIN(J2)=QMIN(J2-1)
+               QMINP(J2,1:NR)=QMINP(J2-1,1:NR)
                EAMIN(J2,1:6)=EAMIN(J2-1,1:6)
 
                FF(J2)=FF(J2-1)
-               DO J3=1,3*NATOMS
-                  QMINP(J2,J3)=QMINP(J2-1,J3)
-               ENDDO
 
                J2=J2-1
                IF (J2.GE.J1+1) GOTO 20
             ENDIF
 
             QMIN(J1)=EREAL
+            QMINP(J1,1:NR)=P(1:NR)
             EAMIN(J1,1:6)=EA(1:6)
             FF(J1)=NQ(NP)
-
-            DO J2=1,3*NATOMS
-               QMINP(J1,J2)=P(J2)
-            ENDDO
 
             GOTO 10
          ENDIF
@@ -916,6 +910,12 @@ SUBROUTINE SETVARS
         BLNTYPE="GO"
       ENDIF
 
+      if (trackdatat) then
+        trackenergy=.true.
+        trackbest=.true.
+        trackmarkov=.true.
+      endif
+
 END SUBROUTINE SETVARS
 ! }}}
 ! initvars {{{
@@ -939,6 +939,9 @@ BLNT=.FALSE.
 MYBLNT=.FALSE.
 TARGET=.FALSE.
 TRACKDATAT=.FALSE.
+TRACKENERGY=.FALSE.
+TRACKBEST=.FALSE.
+TRACKMARKOV=.FALSE.
 DEBUG=.FALSE.
 DUMPT=.FALSE.
 NORESET=.FALSE.
@@ -1153,9 +1156,10 @@ END SUBROUTINE R_COORDS
       ! }}}
       END SUBROUTINE COUNTATOMS
 
-      ! getmodel printvars printhelp {{{
+      ! getmodel printvars printhelp printtime {{{
+
+! getmodel {{{
 SUBROUTINE GETMODEL
-! {{{
 
 IF (P46) THEN
   MODEL="P46 THREE-COLOUR OFF-LATTICE PROTEIN MODEL, WILD-TYPE"
@@ -1164,12 +1168,10 @@ ELSEIF(G46) THEN
 ELSEIF(BLNT) THEN
   MODEL="GENERAL BLN MODEL"
 ENDIF
-! }}}
 ENDSUBROUTINE GETMODEL
-
-!! print variables 
+! }}}
+! printvars {{{
 SUBROUTINE PRINTVARS(FH)
-! {{{
 ! vars                                                                       {{{
 ! sub
 integer fh
@@ -1217,9 +1219,9 @@ write(fh,2) "Guess for initial diagonal elements in BFGS", "DGUESS", DGUESS
 ! }}} 
 ! }}}
 CALL ED(fh)
-! }}}
 END SUBROUTINE PRINTVARS
-
+! }}}
+! printhelp {{{
 SUBROUTINE PRINTHELP(FH)
 INTEGER FH
 
@@ -1227,22 +1229,54 @@ CALL ED(FH)
 write(fh,*) ''
 write(fh,*) 'Command-line options:'
 write(fh,*) ''
-write(fh,*) '   -ca NACCEPT'
-write(fh,*) '   -f  PFORCE'
-write(fh,*) '   -g  turn on debug printing'
+write(fh,*) '   -ca     NACCEPT'
+write(fh,*) '   -f      PFORCE'
+write(fh,*) '   -g              turn on debug printing'
 write(fh,*) ''
-write(fh,*) '   -v  display version'
-write(fh,*) '   -pv display default parameter values'
+write(fh,*) '   -v              display version'
+write(fh,*) '   -pv             display default parameter values'
 write(fh,*) ''
-write(fh,*) '   -h  print this help message'
-write(fh,*) '   -p PREF Output files with preffix PREF, e.g., out => PREF.out'
-write(fh,*) '   -steps STEPS Number of Monte-Carlo steps'
-write(fh,*) '   -crd C_FILE name for the file with input coordinates.'
-write(fh,*) '               Default:    coords'
+write(fh,*) '   -h              print this help message'
+write(fh,*) '   -p  PREF        Output files with preffix PREF, e.g., out => PREF.out'
+write(fh,*) '   -steps STEPS    Number of Monte-Carlo steps'
+write(fh,*) '   -crd C_FILE     name for the file with input coordinates.'
+write(fh,*) '                       Default:    coords'
 write(fh,*) ''
+write(fh,*) '   -cmarkov        Check Markov energy. Stop if wrong energy'
+write(fh,*) '   -track          Track in detail the Monte-Carlo simulation. '
+write(fh,*) '                   Additional output files are:'
+write(fh,*) '                           energy best markov'
 CALL ED(FH)
-
 ENDSUBROUTINE PRINTHELP 
+! }}}
+! printtime gettime {{{
+SUBROUTINE GETTIME(S)
+
+CHARACTER(LEN=*),INTENT(OUT) :: S
+INTEGER*4 TODAY(3), NOW(3)
+
+CALL IDATE(TODAY)   ! TODAY(1)=DAY, (2)=MONTH, (3)=YEAR
+CALL ITIME(NOW)     ! NOW(1)=HOUR, (2)=MINUTE, (3)=SECOND
+
+WRITE(S, 1000 )  TODAY(2), TODAY(1), TODAY(3), NOW
+1000 FORMAT ( I2.2, '/', I2.2, '/', I4.4,I2.2, ':', I2.2, ':', I2.2 )
+
+END SUBROUTINE GETTIME 
+SUBROUTINE PRINTTIME(fh)
+
+integer fh
+INTEGER*4 TODAY(3), NOW(3)
+
+CALL IDATE(TODAY)   ! TODAY(1)=DAY, (2)=MONTH, (3)=YEAR
+CALL ITIME(NOW)     ! NOW(1)=HOUR, (2)=MINUTE, (3)=SECOND
+
+WRITE(fh, 1000 )  TODAY(2), TODAY(1), TODAY(3), NOW
+1000 FORMAT ( 'Date ', I2.2, '/', I2.2, '/', I4.4, '; Time ',&
+&         I2.2, ':', I2.2, ':', I2.2 )
+
+
+END SUBROUTINE PRINTTIME 
+! }}}
 ! }}}
     ! am {{{
     SUBROUTINE AM(S)

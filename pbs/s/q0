@@ -25,12 +25,19 @@ source define_forces_0.sh
 # set initial parameters  {{{
 output_dir=$PWD
 outfiles=( ef.dat ) 
-GMIN_ofiles=( $o_file $le_file best markov energy data ) 
+all_ofiles=( $o_file $le_file best markov energy data ) 
 #}}}
 
 dn=$pbs_job_id
 mkdir -p $dn
 cd $dn
+
+# save submitted job info 
+jobsf=$output_dir/j.$sb_mode.$data_ext
+jobsall=$output_dir/j.$data_ext
+date_start=`date_dmy_hms`
+echo "$pbs_job_id $cmdline $exe $args $sys $date_start" >> $jobsf
+echo "$pbs_job_id $cmdline $exe $args $sys $date_start" >> $jobsall
 
 #force loop{{{
 for force in ${forces[@]}; do
@@ -59,19 +66,22 @@ EOF
 
 #for ((seed=1; seed<=$nrg; seed++)); do
 
+seed=`date +%s`; let seed%=1000
 echo $natoms $radius -$seed > randata
 rancoords # >& /dev/null
 cp newcoords coords
 
 time_start=`date_in_secs`
 date_start=`date_dmy_hms`
-$exe
+$exe $args
 
 case $sb_mode in 
 	2) ;;
 	*)
-		for ofile in ${GMIN_ofiles[@]}; do
-			cp $ofile $ofile.f.$force
+		for ofile in ${all_ofiles[@]}; do
+		  if [ -f $ofile ]; then 
+				cp $ofile f_"$force".$ofile
+		  fi
 		done 
 		;;
 esac
@@ -85,14 +95,13 @@ time_spent=$(($time_finish-$time_start))
 #{{{
 
 low_en=( ` awk '/^Energy/ { print $5 }' $le_file ` )
-ea_en=( ` cat $ea_file ` )
+ea_en=( ` cat $ea_file | sed '/^[\t ]*#/d' ` )
 
 gm_energy="${low_en[0]}"
 gme=$( echo "scale=10; ($gm_energy-($gs_energy))/($gs_energy)" | bc )
 
 outf=$output_dir/ef.$sb_mode.$data_ext
 ea_outf=$output_dir/ea.$sb_mode.$data_ext
-jobsf=$output_dir/j.$sb_mode.$data_ext
 
 if [ $printid -eq 1 ]; then
 	case "$idin" in 
@@ -100,10 +109,9 @@ if [ $printid -eq 1 ]; then
 	esac
 fi
 
-info="$varid $time_spent $exe $pbs_job_id $sys $date_start" 
+info="$varid $time_spent $exe $args $pbs_job_id $sys $date_start" 
 echo "` printvar 'float' $force` $gm_energy $info" >> $outf
 echo "` printvar 'float' $force` ${ea_en[@]} $info " >> $ea_outf
-echo "$pbs_job_id $exe $sys $date_start" >> $jobsf
 # formats: force_long
 
 #}}}
@@ -112,6 +120,7 @@ done
 
 echo
 qstat -f ${PBS_JOBID}@$HOSTNAME
-echo
-
+st= ` qstat -f ${PBS_JOBID}@$HOSTNAME `
+echo "$st $cmdline" >> jobs.tex
+echo 
 #vim:ft=sh:fdm=marker

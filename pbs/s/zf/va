@@ -80,18 +80,10 @@ main(){
 # {{{
 
 case "$1" in
-  1) 
-	  #B -p p46_new -p46 &
-	  #B -p g46_new -g46 &
-	  models=( p46 g46 )
-	  f=0.001
-	  forces=( 0.001 0.002 0.006 ) 
-	  for f in ${forces[@]}; do 
-	  	for m in ${models[@]}; do 
-	  		B -p "$m"_f_"$f" -f $f -$m &
-	  	done
-	  done
-  ;;
+  o) $v out le lowest ea *.out *.le *.ea *.lowest ;;
+  j) $v j*.tex ;;
+  c) rm -f *.out j*.tex *.le *.ea *.lowest *.u ;;
+  i) $v *coords *data  ;;
   *)
   ;;
 esac    # --- end of case ---

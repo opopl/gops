@@ -13,11 +13,12 @@ export od="out"
 export force=0.00
 export ca=50
 export m_lbfgs=10
-export nsteps=50000
+export nsteps=10000
 export fqmax="1.0D-4"
 export sqmax="1.0D-3"
 export data_ext="tex"
 export tfac=1.0
+export args=""
 
 export natoms=46
 export radius=10.0
@@ -30,7 +31,7 @@ export force=0.0
 export temp=0.03
 export exe=GMIN
 #export exe=Gb
-#export exe=B
+export exe=B
 export gs_energy=-0.2936531215
 
 export le_file="lowest"
@@ -127,6 +128,11 @@ cat << EOF
 		-nrg nrg					specify the number of starting random geometries.
 										Default: nrg=$nrg
 
+		-args ARGS			command-line arguments to be passed to 
+								the program (specified by the -exe switch)
+		-exe EXE			program name. 
+								Default is $exe
+
 
 		-m sb_mode		submission mode:
 							1	Go and WT in force ranges 0-3 
@@ -163,7 +169,7 @@ main(){
 export doid=0
 export printid=0
 export doa=0
-export sb_cmd_line="$*"
+export cmdline="$this_script $*"
 
 while [ ! -z "$1" ]; do
   # check other command-line arguments{{{
@@ -184,6 +190,7 @@ while [ ! -z "$1" ]; do
   		-N) export nsteps=$2 ;;
   		-ca) export ca=$2 ;;
   		-nrg) export nrg=$2 ;  ;;
+  		-args) export args="$2" ;  ;;
   		-exe) export exe=$2 ;  ;;
 		-m)  export sb_mode=$2 ;;
 		-idin)  export printid=1; export idin=$2 ;;
@@ -223,7 +230,13 @@ case "$sb_mode" in
  	1) # GO and WT in force ranges 0-3 {{{
 		let nm=8
 		cmd="sleep 3"
- 		echo "GO and WT in force ranges 0-3"
+cat << EOF
+ GO and WT in force ranges 0-3
+ 	range 0: 0.0001 0.001
+ 	range 1: 0.001 0.01
+ 	range 2: 0.01 0.1
+	range 3: 0.1 1.0
+EOF
 		;;
 		# }}}
 	2)	# force increment run within a single force range {{{
@@ -231,7 +244,7 @@ case "$sb_mode" in
 		echo "force increment run within a single force range"
 		# }}}
 	;;
-	[3-9]) ;;
+	[3-9][0-9]*) ;;
 esac
 # }}}
 
@@ -263,6 +276,7 @@ case "$sb_mode" in
 	5) fr=( 0.0016 0.0025 ) ;;
 	6) fr=( 0.0026 0.0035 ) ;;
 	7) fr=( 0.0036 0.01 ) ; nf=80 ;;
+	8) fr=( 0.0 0.001 ); nf=100 ;;
 esac
 
 export force_min="${fr[0]}"

@@ -221,8 +221,16 @@ CONTAINS
         READ(ARGS(3),*) PATOM2
         READ(ARGS(4),*) PFORCE
         ! }}}
+        ! track {{{
       ELSE IF (WORD.EQ.'TRACKDATA') THEN
          TRACKDATAT=.TRUE.     
+      ELSE IF (WORD.EQ.'TENERGY') THEN
+         TRACKENERGY=.TRUE.     
+      ELSE IF (WORD.EQ.'TBEST') THEN
+         TRACKBEST=.TRUE.     
+      ELSE IF (WORD.EQ.'TMARKOV') THEN
+         TRACKMARKOV=.TRUE.     
+         ! }}}
       ELSE
         GOTO 100
       ENDIF

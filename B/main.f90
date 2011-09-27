@@ -11,7 +11,6 @@
       !op226>  }}}
       IMPLICIT NONE
 
-      INTEGER*4 TODAY(3), NOW(3)
       integer j1
 
 ! }}}
@@ -22,19 +21,14 @@
       CALL INITVARS("PREFFILES")
 
       ! write initial output {{{
-
-      call idate(today)   ! today(1)=day, (2)=month, (3)=year
-      call itime(now)     ! now(1)=hour, (2)=minute, (3)=second
-
+  
       OPEN(LFH,FILE=O_FILE, STATUS="unknown", form="formatted")
       OPEN(EA_FH,FILE=EA_FILE, STATUS="unknown", form="formatted")
 
       WRITE(LFH, '(A,I10,A,I10,A)') "Starting serial execution"
 
       CALL ED(LFH) 
-      WRITE (LFH, 1000 )  TODAY(2), TODAY(1), TODAY(3), NOW
-1000 FORMAT ( 'Date ', I2.2, '/', I2.2, '/', I4.4, '; Time ',&
-     &         I2.2, ':', I2.2, ':', I2.2 )
+      CALL PRINTTIME(LFH)
       CALL DISPLAY_VERSION(LFH)
       IF (USERCA) then 
         WRITE(LFH,'(A)') 'Command-line:  '
@@ -126,31 +120,15 @@
          !! }}}
 
 !op226> TRACKDATAT {{{ 
-!
-!     csw34> TRACKDATA keyword prints the energy and markov energy 
-!     to files for viewing during a run. If RMS is also specified it
-!     prints the rmsd from the comparison structure into a file.
-!
-    !!  IF (TRACKDATAT) THEN
-         !MYEUNIT=4000+MYNODE
-         !MYMUNIT=6000+MYNODE
-         !MYRUNIT=8000+MYNODE
-         !MYBUNIT=10000+MYNODE
-         !IF (NPAR.GT.1) THEN
-            !OPEN(MYEUNIT,FILE="energy."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            !OPEN(MYMUNIT,FILE="markov."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            !OPEN(MYBUNIT,FILE="best."//trim(adjustl(istr)),STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-         !ELSE
-            !OPEN(MYEUNIT,FILE='energy',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            !OPEN(MYMUNIT,FILE='markov',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            !IF (RMST) OPEN(MYRUNIT,FILE='rmsd',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            !OPEN(MYBUNIT,FILE='best',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
-            !IF (A9INTET) THEN
-               !OPEN(UNIT=3998,FILE='intE.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-               !OPEN(UNIT=3999,FILE='bestintE.dat',STATUS='UNKNOWN',FORM='FORMATTED')
-            !ENDIF            
-         !ENDIF
-      !ENDIF
+      IF (TRACKENERGY) THEN
+            OPEN(ENERGY_FH,FILE='energy',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+      ENDIF
+      IF (TRACKMARKOV) THEN
+            OPEN(MARKOV_FH,FILE='markov',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+      ENDIF
+      IF (TRACKBEST) THEN
+            OPEN(BEST_FH,FILE='best',STATUS='UNKNOWN',FORM='FORMATTED',POSITION='APPEND')
+      ENDIF
 !op226>}}} 
       CALL FLUSH(6)
       CALL IOM
@@ -185,13 +163,16 @@
       CLOSE(LFH)
       CLOSE(EA_FH)
 ! csw34> close pairdists.* files
-      IF (PAIRDISTT) CLOSE(MYPUNIT)
-!op226> closing files for: TRACKDATAT RMST A9INTET {{{ 
-      IF (TRACKDATAT) THEN
-         CLOSE(MYEUNIT)
-         CLOSE(MYMUNIT)
-         IF (RMST) CLOSE(MYRUNIT)
-         CLOSE(MYBUNIT)
+      IF (PAIRDISTT) CLOSE(PAIRDIST_FH)
+!op226> closing files: energy best markov {{{ 
+      IF (TRACKENERGY) THEN
+         CLOSE(ENERGY_FH)
+      ENDIF
+      IF (TRACKMARKOV) THEN
+         CLOSE(MARKOV_FH)
+      ENDIF
+      IF (TRACKBEST) THEN
+         CLOSE(BEST_FH)
       ENDIF
 !op226>}}} 
 

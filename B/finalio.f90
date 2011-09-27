@@ -3,18 +3,24 @@
 !op226> Declarations {{{ 
       USE COMMONS
       USE V
+      USE F
 
       IMPLICIT NONE
 
       INTEGER J1, J2, J3
+      character(len=30) t
       ! }}}
 ! subroutine body {{{
 
       OPEN(LE_FH,FILE=LE_FILE,STATUS='UNKNOWN')
       OPEN(EA_FH,FILE=EA_FILE,STATUS='UNKNOWN')
 
+      CALL GETTIME(T)
+      T="# Time: "//adjustl(T)
       WRITE(EA_FH,'(A1,A)') "# Command-line: ",CMDLINE
-      WRITE(EA_FH,'(7E10.5)') PFORCE,EAMIN(1,1:6)
+      WRITE(EA_FH,'(A)') T
+      WRITE(EA_FH,'(E10.5,6E20.5)') PFORCE,EAMIN(1,1:6)
+
       DO J1=1,NSAVE
       ! {{{
 

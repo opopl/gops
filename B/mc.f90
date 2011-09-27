@@ -168,13 +168,17 @@
         CALL FLUSH(LFH)
 
         ! trackdata {{{
-        IF (TRACKDATAT) THEN
-             WRITE(MYEUNIT,'(I10,F20.10)') J1,POTEL
-             WRITE(MYMUNIT,'(I10,G20.10)') J1,EPREV(JP)
-             WRITE(MYBUNIT,'(I10,G20.10)') J1,QMIN(1)
-             CALL FLUSH(MYEUNIT)
-             CALL FLUSH(MYMUNIT)
-             CALL FLUSH(MYBUNIT)
+        IF (TRACKBEST) THEN
+             WRITE(BEST_FH,'(I10,6G20.10)') J1,EAMIN(1:6)
+             CALL FLUSH(BEST_FH)
+        ENDIF
+        IF (TRACKENERGY) THEN
+             WRITE(ENERGY_FH,'(I10,F20.10)') J1,POTEL
+             CALL FLUSH(ENERGY_FH)
+        ENDIF
+        IF (TRACKMARKOV) THEN 
+             WRITE(MARKOV_FH,'(I10,G20.10)') J1,EPREV(JP)
+             CALL FLUSH(MARKOV_FH)
         ENDIF
         ! }}}
             IF (EVAP .AND. .NOT.EVAPREJECT) THEN
