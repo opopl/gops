@@ -62,12 +62,14 @@ CONTAINS
 
          ! P46 G46 MYBLN BLN BLNGO {{{
       ELSE IF (WORD.EQ.'P46') THEN
-         P46=.TRUE.
          BLNT=.TRUE.
+         P46=.TRUE.
+         G46=.FALSE.
          BLNTYPE="WT"
       ELSE IF (WORD.EQ.'G46') THEN
-         G46=.TRUE.
          BLNT=.TRUE.
+         G46=.TRUE.
+         P46=.FALSE.
          BLNTYPE="GO"
       ELSE IF (WORD.EQ.'MYBLN') THEN
          MYBLNT=.TRUE.

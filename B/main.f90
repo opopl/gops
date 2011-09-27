@@ -18,27 +18,43 @@
 ! intro {{{
       CALL CPU_TIME(TSTART)
       CALL RCA
+      CALL INITVARS("FILES")
+      CALL INITVARS("PREFFILES")
+
+      ! write initial output {{{
 
       call idate(today)   ! today(1)=day, (2)=month, (3)=year
       call itime(now)     ! now(1)=hour, (2)=minute, (3)=second
-
-      CALL INITVARS("FILES")
 
       OPEN(LFH,FILE=O_FILE, STATUS="unknown", form="formatted")
       OPEN(EA_FH,FILE=EA_FILE, STATUS="unknown", form="formatted")
 
       WRITE(LFH, '(A,I10,A,I10,A)') "Starting serial execution"
-      CALL ED(LFH) 
-      write (lfh, 1000 )  today(2), today(1), today(3), now
-1000 format ( 'Date ', i2.2, '/', i2.2, '/', i4.4, '; time ',&
-     &         i2.2, ':', i2.2, ':', i2.2 )
-      call display_version(lfh)
 
-      write(*,'(2A20)') "Input data file:      ",D_FILE
-      write(*,'(2A20)') "Input coords file:    ",C_FILE
-      write(*,'(2A20)') "Output runtime file:  ",O_FILE
-      NPAR=1
-      MYNODE=0
+      CALL ED(LFH) 
+      WRITE (LFH, 1000 )  TODAY(2), TODAY(1), TODAY(3), NOW
+1000 FORMAT ( 'Date ', I2.2, '/', I2.2, '/', I4.4, '; Time ',&
+     &         I2.2, ':', I2.2, ':', I2.2 )
+      CALL DISPLAY_VERSION(LFH)
+      IF (USERCA) then 
+        WRITE(LFH,'(A)') 'Command-line:  '
+        WRITE(LFH,'(A)') ADJUSTL(CMDLINE)
+        CALL ED(LFH) 
+      ENDIF
+
+      WRITE(LFH,'(A)') "Input files:"
+      WRITE(LFH,'(A)') ''
+      WRITE(LFH,'(2A50)') "Input data file:      ",D_FILE
+      WRITE(LFH,'(2A50)') "Input coords file:    ",C_FILE
+      WRITE(LFH,'(A)') ''
+      WRITE(LFH,'(A)') "Output files:"
+      WRITE(LFH,'(A)') ''
+      WRITE(LFH,'(2A50)') "Runtime info file:  ",O_FILE
+      WRITE(LFH,'(2A50)') "Lowest energy geometries:  ",LE_FILE
+      WRITE(LFH,'(2A50)') "Lowest energies:  ",EA_FILE
+      CALL ED(LFH) 
+      ! }}}
+
       ! }}}
 !op226> Allocate memory; open files; initialize different things  {{{ 
       CALL AM("INIT")
@@ -161,9 +177,9 @@
 
       CALL FINALQ
       CALL FINALIO
+      CALL DEAM
 
 !op226> Deallocate memory; close files {{{ 
-      IF (ALLOCATED(FIN)) DEALLOCATE(FIN)
       CALL FLUSH(LFH)
 
       CLOSE(LFH)

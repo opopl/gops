@@ -78,6 +78,7 @@ CPP = /lib/cpp
 CPFLAGS = -traditional -P
 
 # }}}
+#CHARMM and AMBER {{{
 #
 # location of the source for the AMBER9 interface
 #
@@ -152,10 +153,9 @@ ifeq (${CTYPE},C35)
 #### end CHARMM 35 }}}
 
 endif
-
-###################################### COMPILERS AND COMPILER FLAGS ###################################### {{{
-#
-######## The Portland Group Compiler Technology Fortran 90 compiler {{
+#}}}
+# COMPILERS AND COMPILER FLAGS {{{
+#pgi {{{
 FC = pgf90
 # FC = mpif77  # for lam - don't forget to uncomment MPI!
 #FC = mpif90  # for mpich and openmpi - don't forget to uncomment MPI!
@@ -183,9 +183,7 @@ LIBS = libmyblas.a libmylapack.a libmyblas.a
 LDFLAGS= -L.
 SWITCH=pgi
 # }}}
-###### end of The Portland Group Compiler Technology Fortran 90 compiler }}}
-#
-### NAGWare Fortran {{{ 
+# nag {{{ 
 # use this compiler for nag/64/5.1
 # FC = f95
 # DEFS+=-DNAG
@@ -212,9 +210,7 @@ SWITCH=pgi
 # EXTRA_FLAGS=-I
 #
 ###### end of NAGWare Fortran 95 compiler flags }}}
-#
-##########################################################
-# Intel compilers {{{
+# ifort  {{{
 #
 # GMIN + CHARMM35 - tested with the options which contain "##" in front 
 # 
@@ -259,10 +255,11 @@ SWITCH=pgi
 #
 #  End Gfortran }}}
 # }}}
-###############################################################################################
+
 # Pass the subversion revision number into the code to print it in the output
    #DEFS+=-DSVNVERSION="`./svn_revision.sh`"
-###################################### RULES AND TARGETS ###################################### {{{
+
+#RULES AND TARGETS {{{
 .SUFFIXES:
 .SUFFIXES: .o .f .F .f90
 
@@ -392,7 +389,7 @@ display_version.f90: ${DISPLAY_VERSION}
 #read_cmd_args.f90: read_cmd_args.F90
 
 # }}}
-###################################### DEPENDENCIES ###################################### {{{
+# DEPENDENCIES {{{
 ${GPROG}: libmyblas.a libmylapack.a
 ${CPROG}: libmyblas.a libmylapack.a libcharmm.a
 ${AMHPROG}: commons.o libmyblas.a libmylapack.a libamh.a

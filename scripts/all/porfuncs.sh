@@ -41,9 +41,12 @@ fi
 
 #}}}
 
-echo "MODULE PORFUNCS" 
+cat << EOF
+MODULE PORFUNCS
+! Generated on: `date` 
+! Compiler: $compiler
+EOF
 #{{{
-
 
 case $compiler in 
  	nag)  

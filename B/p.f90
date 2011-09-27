@@ -74,17 +74,11 @@
       EA(1:10)=0.0D0
       IF (MYBLNT) THEN 
          CALL EBLN(NATOMS,X,EA,GRAD,HESS,BLNTYPE,GRADT,SECT,EA_FH,.false.)
-      ELSE IF (P46) THEN
-         CALL EP46(EA_FH,DEB_BLN,X,NATOMS,GRAD,EA,GRADT)
+      ELSE IF (P46.OR.G46) THEN
+         CALL EP46(EA_FH,DEB_BLN,X,NATOMS,GRAD,EA,GRADT,BLNTYPE); EREAL=EA(1)
          !CALL P46MERDIFF(X,NATOMS,GRAD,EREAL,GRADT)
-      ELSE IF (G46) THEN
-         CALL EG46(EA_FH,DEB_BLN,X,NATOMS,GRAD,EA,GRADT)
-         !CALL G46MERDIFF(X,NATOMS,GRAD,EREAL,GRADT)
-      !ELSE IF (BLNT) THEN
-         !CALL BLN(X,GRAD,EREAL,GRADT)
       !ELSE
       ENDIF
-      EREAL=EA(1)
       ! }}}
 ! }}}
       ! Add Fields {{{
@@ -95,7 +89,8 @@
          GRAD(3*(PATOM1-1)+3)=GRAD(3*(PATOM1-1)+3)-PFORCE
          GRAD(3*(PATOM2-1)+3)=GRAD(3*(PATOM2-1)+3)+PFORCE
       ENDIF
-      }}}
+      EA(6)=dE_fz
+      ! }}}
       ! other {{{
       
          IF (SEEDT.AND.FREEZECORE) THEN

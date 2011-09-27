@@ -41,6 +41,7 @@
 			&                ' time=',TIME-TSTART
 
             QMIN(J1)=POTEL
+            EAMIN(J1,1:6)=EA(1:6)
             QMINP(J1,1:NR)=COORDS(1:NR,1)
          ENDIF
       ENDDO

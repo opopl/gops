@@ -28,7 +28,7 @@
         ! body {{{
         STEST=.FALSE.
         PTYPE="GO"
-        CALL GPARAM_ARRAY(A_PARAM,B_PARAM,C_PARAM,D_PARAM,N,NTYPE)
+        CALL PARAM_ARRAY(N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,NTYPE)
         CALL CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE, &
      &                            RADII,NTYPE,PTYPE)
         CALL CALC_ENERGY(FH,DEB,QO,E,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, BOND_ANGLE,TOR_ANGLE, &
@@ -223,8 +223,7 @@
         !end
 !! }}}
 
-
-        subroutine gparam_array(a_param,b_param,c_param,d_param,n,ntype)
+        subroutine gparam_array(n,a_param,b_param,c_param,d_param,ntype)
 ! Declarations {{{
         IMPLICIT NONE
         logical connect(46,46)

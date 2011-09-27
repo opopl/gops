@@ -1,4 +1,6 @@
 MODULE PORFUNCS
+! Generated on: Tue Sep 27 15:51:24 BST 2011 
+! Compiler: pgi
 implicit none
 contains
           subroutine getarg_subr(position,value) ! wraps getarg function so it can be use-associated

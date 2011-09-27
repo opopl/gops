@@ -3,7 +3,7 @@
       IMPLICIT NONE
       SAVE
         
-      LOGICAL ::  MYBLNT, RMST, USEKW, USESUF
+      LOGICAL ::  MYBLNT, RMST, USEKW,USEPREF, USERCA
       LOGICAL ::    DEB_BLN=.FALSE.
       DOUBLE PRECISION ::   dE_fz
       INTEGER PATOM1,PATOM2
@@ -32,7 +32,13 @@
       CHARACTER(LEN=130) BLNTYPE
 
       ! suffix to files
-      CHARACTER(LEN=30) SUF
+      CHARACTER(LEN=30) SUF, PREF
+
+      !> @name CMDLINE 
+      !> @brief Contains command-line arguments
+      !> @name PROGNAME 
+      !> @brief program name, e.g. B 
+      CHARACTER(LEN=SLEN) CMDLINE, PROGNAME
 
       ! list of energies, EA(1) is the total one 
       DOUBLE PRECISION, DIMENSION(10) :: EA
@@ -55,7 +61,7 @@
       ! from qmodule
       integer,allocatable :: FF(:),INTEFF(:) ! NSAVE
       DOUBLE PRECISION, ALLOCATABLE :: QMIN(:), INTEQMIN(:) ! NSAVE
-      DOUBLE PRECISION, ALLOCATABLE :: EAMIN(:)! NSAVE
+      DOUBLE PRECISION, ALLOCATABLE :: EAMIN(:,:)! NSAVE
       DOUBLE PRECISION, ALLOCATABLE :: QMINP(:,:), INTEQMINP(:,:)
 
       INTEGER :: MXATMS=0

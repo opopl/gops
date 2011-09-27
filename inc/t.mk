@@ -1,6 +1,8 @@
 
-default: dirs $(AUXF) $(DEPS) $(PROG)
-.PHONY: default clean rmdep deps tg bindir moddir libdir objdir dirs
+default: init pgi debug dirs $(AUXF) deps $(PROG)
+
+.PHONY: default clean rmdep deps tg bindir moddir libdir objdir dirs init
+.PHONY: pgi nag gf ifort debug opt
 
 #SUFFIXES..., F => o {{{
 
@@ -22,9 +24,20 @@ default: dirs $(AUXF) $(DEPS) $(PROG)
 .F90.f90:
 	$(CPP) $(CPFLAGS) $(DEFS) $< > $@
 
+#}}}
+#compilers {{{
+pgi gf nag ifort: 
+	$(MKCOMP) $@ > $(COMP)
+debug opt: 
+	$(MKCOMP) $@ >> $(COMP)
+$(COMP): 
+	touch $@
 
 #}}}
-# porfuncs rca dv header {{{
+# init deps porfuncs rca dv header {{{
+
+init: 
+	touch $(INITFILES)
 
 porfuncs.f90: $(PRF)
 	$(PRF) $(SWITCH) > $@
@@ -41,7 +54,8 @@ header.f90: $(HEADER)
 #}}}
 #deps help tg prog bindir cup {{{
 
-deps: rmdep $(DEPS)
+deps: $(DEPS)
+	$(MKDEP) $@
 
 rmdep:
 	rm $(DEPS)
@@ -70,18 +84,18 @@ dirs: bindir moddir libdir objdir
 opts:= o g
 
 $(PROGNAME)_o: dirs $(DEPS) $(OBJS) 
-	$(FC) $(FFLAGS_o) $(SEARCH_PATH) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
+	$(FC) $(FFLAGS_o)  -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 	cp $(PROG) ./
 	cp $(PROG) $(PROG)_o_$(FC)
 
 $(PROGNAME)_g: dirs $(DEPS) $(OBJS) 
-	$(FC) $(FFLAGS_g) $(SEARCH_PATH) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
+	$(FC) $(FFLAGS_g)  -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 	cp $(PROG) ./
 	cp $(PROG) $(PROG)_g_$(FC)
 
 $(PROGNAME): $(PROG)
 $(PROGNAME)_use_base: dirs $(OBJS) 
-	$(FC) $(FFLAGS) $(SEARCH_PATH) -o $@ $(LPU_OBJS) $(LDFLAGS) $(LPBASE) $(LIBS)
+	$(FC) $(FFLAGS)  -o $@ $(LPU_OBJS) $(LDFLAGS) $(LPBASE) $(LIBS)
 	cp $@ $(BINPATH)
 
 # }}}
@@ -91,7 +105,7 @@ $(DEPS): $(MKDEP)
 	$(MKDEP) $@
 
 $(PROG): dirs $(DEPS) $(OBJS) 
-	$(FC) $(FFLAGS) $(SEARCH_PATH) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
+	$(FC) $(FFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 	cp $(PROG) ./
 	cp $(PROG) $(PROG)_$(FC)
 
@@ -130,7 +144,8 @@ cbase:
 	rm -f $(LPBASE)
 
 clean:
-	rm -f $(OBJS) $(AUXF) $(GENFFILES) $(MODPATH)/*.mod *.mod *.oo *.o *.ipa $(DEPS)
+	rm -f $(COMP) $(DEPS) $(GENFFILES)
+	rm -f $(OBJS) $(AUXF) $(GENFFILES) $(MODPATH)/*.mod *.mod *.oo *.o *.ipa
  
 cleanall:
 	rm -f $(PROG) $(OBJS) ${GENFFILES} $(LLIBS) *.o *.a *.lst

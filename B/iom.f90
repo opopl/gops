@@ -45,7 +45,6 @@
          WRITE(LFH,'(I4,A)') NATOMS,' atoms, general BLN model'
       ENDIF
       CALL ED(LFH) 
-      
 
       IF (NORESET) THEN
          WRITE(LFH,'(A)') 'Configuration will not be reset to quench geometry'

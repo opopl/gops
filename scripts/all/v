@@ -7,7 +7,7 @@ set_base_dirs(){
 # main Wales group software directory
 export rootdir="$shd/../../"
 salldir=$rootdir/scripts/all/
-incdir=$rootdir/include/
+incdir=$rootdir/inc/
 # }}}
 }
 
@@ -95,7 +95,7 @@ case "$1" in
   $v $0 $mkf old.mk deps.mk $incdir/nu_$PROGNAME.mk \
  		 $incdir/inc.mk inc.mk $incdir/def.mk $incdir/t.mk t.mk \
  		$salldir/rca.sh $salldir/dv.sh $salldir/mkdep.pl \
-		base_source.in 
+		base_source.in $salldir/mkcomp.sh
 		;;
   o)
   $v ` ls n.*.f90 n.*.f n.*.F ` keyword*.f true.in false.in num.in source.in data.in rif.log ;;

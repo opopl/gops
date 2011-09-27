@@ -5,12 +5,11 @@ GENFFILES = porfuncs.f90 dv.f90
 #
 #
 PPATH=$(PWD)
-INCPATH = $(PPATH)/../include/
+INCPATH = $(PPATH)/../inc/
 
 #include file
 include $(INCPATH)/inc.mk
 include inc.mk
-#
 # targets
 include $(INCPATH)/t.mk
 include t.mk

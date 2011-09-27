@@ -1,5 +1,5 @@
 
-        SUBROUTINE EP46(FH,DEB,QO, N, GRAD, E, GTEST)
+        SUBROUTINE EP46(FH,DEB,QO, N, GRAD, E, GTEST,PTYPE)
 ! dec {{{
         IMPLICIT NONE
         ! sub
@@ -26,8 +26,7 @@
         ! }}}
         ! body {{{
         STEST=.FALSE.
-        PTYPE="WT"
-        CALL PARAM_ARRAY(N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,NTYPE)
+        CALL PARAM_ARRAY(N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,NTYPE,PTYPE)
         CALL CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
      &                       BOND_ANGLE,TOR_ANGLE,RADII,NTYPE,PTYPE)
         CALL CALC_ENERGY(FH,DEB,QO,E,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
@@ -41,6 +40,113 @@
         RETURN
         ! }}}
         END SUBROUTINE EP46
+
+        SUBROUTINE PARAM_ARRAY(N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,NTYPE,PTYPE)
+! {{{
+! Declarations {{{
+        implicit NONE
+        
+        ! sub  
+        INTEGER,INTENT(IN) :: N
+        CHARACTER(LEN=10) PTYPE
+        INTEGER,DIMENSION(N),INTENT(OUT) :: NTYPE
+        DOUBLE PRECISION,DIMENSION(N,N),INTENT(OUT) :: A_PARAM,B_PARAM
+        DOUBLE PRECISION,DIMENSION(N),INTENT(OUT) :: C_PARAM,D_PARAM
+        ! loc
+        INTEGER ICOUNT, J, I
+        DOUBLE PRECISION EPSILON
+        parameter (epsilon = 0.0100570D0)
+! }}}
+! Firstly, specify amino acid types by filling in array ntype(:) {{{
+! 1 -> Hydrophobic (B)
+! 2 -> Hydrophilic (L)
+! 3 -> Neutral (N)
+        ntype(1:9) = 1
+        ntype(10:12) = 3
+        ntype(13:19:2) = 2
+        ntype(14:20:2) = 1
+        ntype(21:23) = 3
+        ntype(24:32) = 1
+        ntype(33:35) = 3
+        ntype(36:46:2) = 2
+        ntype(37:45:2) = 1
+! }}}
+! Specify parameters for the dihedral angle potential. {{{
+!       These are stored in arrays
+!       c_param(:), d_param(:)
+        do i = 1, n-3
+        icount = 0
+        do j = 0,3
+        if(ntype(i+j) .eq. 3)then
+        icount = icount + 1
+        endif
+        enddo
+        if(icount .ge. 2)then
+        c_param(i+1) = 0.0
+        d_param(i+1) = 0.2*epsilon
+        else
+        c_param(i+1) = 1.2*epsilon
+        d_param(i+1) = 1.2*epsilon
+        endif
+        icount = 0
+        enddo
+!}}}
+! Specify parameters for the L-J interaction between non-bonded particles. {{{
+!       These are stored in arrays
+!       a_param(:,:), b_param(:,:)
+        do i = 1, n-1
+	        do j = i+1, n
+			        if (ntype(i) .eq. 3 .or. ntype(j) .eq. 3)then
+				        a_param(i,j) = 1.0*epsilon
+				        b_param(i,j) = 0.0
+				        a_param(j,i) = 1.0*epsilon
+				        b_param(j,i) = 0.0
+			        elseif (ntype(i) .eq. 1 .and. ntype(j) .eq. 1)then
+				        a_param(i,j) =  epsilon
+				        a_param(j,i) =  epsilon
+				        b_param(i,j) = -epsilon
+				        b_param(j,i) = -epsilon
+			        else
+				        a_param(i,j) = epsilon*2.0/3.0
+				        b_param(i,j) = epsilon*2.0/3.0
+				        a_param(j,i) = epsilon*2.0/3.0
+				        b_param(j,i) = epsilon*2.0/3.0
+			        endif
+            enddo
+        enddo
+!        ! go {{{
+        !do i = 1, n-1
+           !do j = i+1, n
+           !if (ntype(i) .eq. 3 .or. ntype(j) .eq. 3) then
+             !a_param(i,j) = 1.0*epsilon
+             !b_param(i,j) = 0.0
+             !a_param(j,i) = 1.0*epsilon
+             !b_param(j,i) = 0.0
+           !elseif (ntype(i) .eq. 1 .and. ntype(j) .eq. 1)then
+             !a_param(i,j) =  epsilon
+             !a_param(j,i) =  epsilon
+             !IF (CONNECT(I,J)) THEN
+                !b_param(i,j) = -epsilon
+                !b_param(j,i) = -epsilon
+             !ELSE
+                !b_param(i,j) = 0.0D0
+                !b_param(j,i) = 0.0D0
+             !ENDIF
+           !else
+             !a_param(i,j) = epsilon*2.0/3.0
+             !b_param(i,j) = epsilon*2.0/3.0
+             !a_param(j,i) = epsilon*2.0/3.0
+             !b_param(j,i) = epsilon*2.0/3.0
+           !endif
+           !enddo
+        !enddo
+!! }}}
+
+!}}}
+!}}}
+        return
+        end
+
 ! }}}
 !> Calculate the internal coordinates
         SUBROUTINE CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
@@ -923,120 +1029,9 @@
 ! }}}
         return
         end
-! }}}!> Fill the parameter arrays
-        SUBROUTINE PARAM_ARRAY(N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,NTYPE)
-! {{{
-! Declarations {{{
-        implicit NONE
-        
-        ! sub  
-        INTEGER,INTENT(IN) :: N
-        INTEGER,DIMENSION(N),INTENT(OUT) :: NTYPE
-        DOUBLE PRECISION,DIMENSION(N,N),INTENT(OUT) :: A_PARAM,B_PARAM
-        DOUBLE PRECISION,DIMENSION(N),INTENT(OUT) :: C_PARAM,D_PARAM
-        ! loc
-        INTEGER ICOUNT, J, I
-        DOUBLE PRECISION EPSILON
-        parameter (epsilon = 0.0100570D0)
 ! }}}
-! Firstly, specify amino acid types by filling in array ntype(:) {{{
-! 1 -> Hydrophobic (B)
-! 2 -> Hydrophilic (L)
-! 3 -> Neutral (N)
-        ntype(1) = 1
-        ntype(2) = 1
-        ntype(3) = 1
-        ntype(4) = 1
-        ntype(5) = 1
-        ntype(6) = 1
-        ntype(7) = 1
-        ntype(8) = 1
-        ntype(9) = 1
-        ntype(10) = 3
-        ntype(11) = 3
-        ntype(12) = 3
-        ntype(13) = 2
-        ntype(14) = 1
-        ntype(15) = 2
-        ntype(16) = 1
-        ntype(17) = 2
-        ntype(18) = 1
-        ntype(19) = 2
-        ntype(20) = 1
-        ntype(21) = 3
-        ntype(22) = 3
-        ntype(23) = 3
-        ntype(24) = 1
-        ntype(25) = 1
-        ntype(26) = 1
-        ntype(27) = 1
-        ntype(28) = 1
-        ntype(29) = 1
-        ntype(30) = 1
-        ntype(31) = 1
-        ntype(32) = 1
-        ntype(33) = 3
-        ntype(34) = 3
-        ntype(35) = 3
-        ntype(36) = 2
-        ntype(37) = 1
-        ntype(38) = 2
-        ntype(39) = 1
-        ntype(40) = 2
-        ntype(41) = 1
-        ntype(42) = 2
-        ntype(43) = 1
-        ntype(44) = 2
-        ntype(45) = 1
-        ntype(46) = 2
-! }}}
-! Specify parameters for the dihedral angle potential. {{{
-!       These are stored in arrays
-!       c_param(:), d_param(:)
-        do i = 1, n-3
-        icount = 0
-        do j = 0,3
-        if(ntype(i+j) .eq. 3)then
-        icount = icount + 1
-        endif
-        enddo
-        if(icount .ge. 2)then
-        c_param(i+1) = 0.0
-        d_param(i+1) = 0.2*epsilon
-        else
-        c_param(i+1) = 1.2*epsilon
-        d_param(i+1) = 1.2*epsilon
-        endif
-        icount = 0
-        enddo
-!}}}
-! Specify parameters for the L-J interaction between non-bonded particles. {{{
-!       These are stored in arrays
-!       a_param(:,:), b_param(:,:)
-        do i = 1, n-1
-        do j = i+1, n
-        if (ntype(i) .eq. 3 .or. ntype(j) .eq. 3)then
-        a_param(i,j) = 1.0*epsilon
-        b_param(i,j) = 0.0
-        a_param(j,i) = 1.0*epsilon
-        b_param(j,i) = 0.0
-        elseif (ntype(i) .eq. 1 .and. ntype(j) .eq. 1)then
-        a_param(i,j) =  epsilon
-        b_param(i,j) = -epsilon
-        a_param(j,i) =  epsilon
-        b_param(j,i) = -epsilon
-        else
-        a_param(i,j) = epsilon*2.0/3.0
-        b_param(i,j) = epsilon*2.0/3.0
-        a_param(j,i) = epsilon*2.0/3.0
-        b_param(j,i) = epsilon*2.0/3.0
-        endif
-        enddo
-        enddo
-!}}}
-!}}}
-        return
-        end
-! }}}
+!> Fill the parameter arrays
+
+        ! }}}
 
 

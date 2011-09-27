@@ -389,7 +389,10 @@
 20          CONTINUE
       
             IF (NSAVE.GT.1) THEN
+
                QMIN(J2)=QMIN(J2-1)
+               EAMIN(J2,1:6)=EAMIN(J2-1,1:6)
+
                FF(J2)=FF(J2-1)
                DO J3=1,3*NATOMS
                   QMINP(J2,J3)=QMINP(J2-1,J3)
@@ -400,7 +403,9 @@
             ENDIF
 
             QMIN(J1)=EREAL
+            EAMIN(J1,1:6)=EA(1:6)
             FF(J1)=NQ(NP)
+
             DO J2=1,3*NATOMS
                QMINP(J1,J2)=P(J2)
             ENDDO
@@ -802,11 +807,6 @@ ENDSUBROUTINE OPENF
          TEMP=QMIN(L)
          QMIN(L)=QMIN(J1)
          QMIN(J1)=TEMP
-         IF (CSMT) THEN
-            TEMP=QMINAV(L)
-            QMINAV(L)=QMINAV(J1)
-            QMINAV(J1)=TEMP
-         ENDIF
          NTEMP=FF(L)
          FF(L)=FF(J1)
          FF(J1)=NTEMP
@@ -815,13 +815,6 @@ ENDSUBROUTINE OPENF
             QMINP(L,J2)=QMINP(J1,J2)
             QMINP(J1,J2)=C
          ENDDO
-         IF (CSMT) THEN
-            DO J2=1,3*NATOMS
-               C=QMINPCSMAV(L,J2)
-               QMINPCSMAV(L,J2)=QMINPCSMAV(J1,J2)
-               QMINPCSMAV(J1,J2)=C
-            ENDDO
-         ENDIF
 20    CONTINUE
       RETURN
       END SUBROUTINE GSORT2
@@ -908,7 +901,7 @@ SUBROUTINE SETVARS
 ! container radius
       IF (RADIUS.EQ.0.0D0) THEN
          RADIUS=2.0D0+(3.0D0*NATOMS/17.77153175D0)**(1.0D0/3.0D0)
-         IF (P46) THEN
+         IF (P46.OR.G46) THEN
             RADIUS=RADIUS*3.0D0
          ELSE 
             RADIUS=RADIUS*2.0D0**(1.0D0/6.0D0)
@@ -916,6 +909,12 @@ SUBROUTINE SETVARS
       ENDIF
 
       RADIUS=RADIUS**2
+
+      IF (P46) THEN
+        BLNTYPE="WT"
+      ELSEIF(G46)THEN
+        BLNTYPE="GO"
+      ENDIF
 
 END SUBROUTINE SETVARS
 ! }}}
@@ -931,10 +930,11 @@ selectcase(S)
     case("LOG")
 ! logicals {{{
 LBFGST=.TRUE.
-USESUF=.FALSE.
-PULLT=.TRUE.
+USERCA=.FALSE.
+USEPREF=.FALSE.
+PULLT=.FALSE.
 P46=.FALSE.
-G46=.TRUE.
+G46=.FALSE.
 BLNT=.FALSE.
 MYBLNT=.FALSE.
 TARGET=.FALSE.
@@ -976,25 +976,24 @@ O_FILE="out"
 SEED_FILE="seed"
 EA_FILE="ea"
 
-IF (USESUF) THEN
-	LE_FILE=adjustr(SUF)//"le"
-	E_FILE=SUF//"e.tex"
-	EA_FILE=SUF//"ea"
-	O_FILE=adjustr(SUF)//"out"
-ENDIF
-
 ! }}}
+    case("PREFFILES")
+  ! {{{
+    IF (USEPREF) THEN
+		LE_FILE=adjustr(PREF)//LE_FILE
+		E_FILE=adjustr(PREF)//EA_FILE
+		EA_FILE=adjustr(PREF)//EA_FILE
+		O_FILE=adjustr(PREF)//O_FILE
+    ENDIF
+     ! }}}
     case("VARS")
 ! other {{{
 
       BLNTYPE="GO"
-
-      IF (P46) THEN
-        BLNTYPE="WT"
-      ELSEIF(G46)THEN
-        BLNTYPE="GO"
-      ENDIF
       NRG=1
+
+      NPAR=1
+      MYNODE=0
             
 TFAC=1.0D0          ! temperature multiplier
 
@@ -1179,7 +1178,7 @@ character(100) fmt(10)
 character(40) s
 integer i
 ! }}}
-include '../include/fmt.i.f90'
+include '../inc/fmt.i.f90'
 
 CALL ED(fh)
 write(fh,10) "PARAMETER VALUES" !                                             {{{
@@ -1236,8 +1235,10 @@ write(fh,*) '   -v  display version'
 write(fh,*) '   -pv display default parameter values'
 write(fh,*) ''
 write(fh,*) '   -h  print this help message'
-write(fh,*) '   -s SUF Output files with suffix SUF, e.g., out => SUF.out'
+write(fh,*) '   -p PREF Output files with preffix PREF, e.g., out => PREF.out'
 write(fh,*) '   -steps STEPS Number of Monte-Carlo steps'
+write(fh,*) '   -crd C_FILE name for the file with input coordinates.'
+write(fh,*) '               Default:    coords'
 write(fh,*) ''
 CALL ED(FH)
 
@@ -1247,18 +1248,21 @@ ENDSUBROUTINE PRINTHELP
     SUBROUTINE AM(S)
         CHARACTER(LEN=*) S
 
-        selectcase(S)
+        SELECTCASE(S)
             CASE("MAIN")
                ALLOCATE(MSCREENC(3*NATOMS),VT(NATOMS))
-               ALLOCATE(FF(NSAVE),QMIN(NSAVE))
+               ALLOCATE(FF(NSAVE),QMIN(NSAVE),EAMIN(NSAVE,10))
                ALLOCATE(QMINP(NSAVE,3*NATOMS))
                ALLOCATE(COORDSO(3*NATOMS,1),VAT(NATOMS,1),VATO(NATOMS,1),COORDS(3*NATOMS,1))
             CASE("INIT")
-      ALLOCATE(NQ(1),EPREV(1))
-      ALLOCATE(NCORE(1))
-        endselect
+                ALLOCATE(NQ(1),EPREV(1))
+                ALLOCATE(NCORE(1))
+        ENDSELECT
     ENDSUBROUTINE AM
     ! }}}
+    subroutine DEAM
+        DEALLOCATE(FF,QMIN,QMINP,EAMIN,MSCREENC)
+    endsubroutine DEAM
 
 
       END MODULE F

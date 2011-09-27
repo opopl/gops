@@ -20,7 +20,6 @@ SOURCE=$(filter-out $(NOTUSEDSOURCE),$(ALLSOURCE))
 OBJS := $(sort $(patsubst %.F,%.o,$(patsubst %.f,%.o,$(patsubst %.f90,%.o,$(SOURCE)))))
 #OBJS := $(addprefix $(OBJSPATH),$(OBJS0))
 #}}}
-
 #libs {{{
 
 LPUSED := $(strip $(shell cat $(F_LPU)))
@@ -38,4 +37,3 @@ LAPACK_OBS := $(patsubst %.F,%.o,$(patsubst %.f,%.o,$(patsubst %.f90,%.o,$(LAPAC
 AMH_OBS := $(patsubst %.F,%.o,$(patsubst %.f,%.o,$(patsubst %.f90,%.o,$(AMH_SOURCE))))
 #}}}
 
-LDFLAGS = -L.

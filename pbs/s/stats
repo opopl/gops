@@ -1,0 +1,176 @@
+#!/usr/bin/env bash
+
+# set_base_vars set_base_dirs display_help {{{
+
+set_base_vars(){
+# {{{
+s_purpose="view source files with vim"
+s_project="~/scripts"
+
+# name of this script 
+export this_script=` basename $0 `
+
+vim_opts="-n -p"
+v="vim $vim_opts"
+repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
+
+export radius=10.0
+export natoms=46
+export exe=GMIN 
+export nrg=20 
+export dir="nrg0"
+export seed=1
+export d_file=base.data
+export sys=P46
+#export o_file=GMIN_out
+export o_file=GMIN_out
+
+# }}}
+}
+
+set_base_vars
+
+set_base_dirs(){
+# {{{
+export packdir=$HOME/arch/packed
+export unpackdir=$HOME/arch/unpacked
+export gopsdir="$shd/../../"
+# dir where this script resides
+export shd="`dirname $(readlink -f $0)`"
+# }}}
+}
+
+display_help(){
+# {{{
+# general beginning part {{{
+cat << EOF
+=============================================
+SCRIPT NAME: $this_script 
+PROJECT: $s_project
+PURPOSE: $s_purpose
+USAGE: $this_script [ OPTIONS ] 
+
+	OPTIONS:
+
+	============
+	General
+	============
+
+			display the help message
+
+	vm		v(iew) m(yself), i.e., edit this script
+	-g		gvim invocation
+	
+	============
+EOF
+# }}}
+# actual interesting part {{{
+cat << EOF
+
+	-rad radius
+	-n natoms
+	-exe exe
+	-nrg nrg
+	-dir dir
+	-seed seed
+	-df d_file
+	-of o_file
+	-sys sys
+
+EOF
+# }}}
+# final general part {{{
+cat << EOF
+REMARKS:
+AUTHOR: O. Poplavskyy
+SCRIPT LOCATION:
+    $shd/$this_script
+=============================================
+EOF
+# }}}
+# }}}
+}
+
+[ -z "$*" ] && ( display_help; exit 0 )
+
+#}}}
+
+main(){
+# {{{
+
+while [ ! -z "$1" ]; do
+	case "$1" in
+	  	"-rad")  export radius=$2 ;;
+  		"-n")  export natoms=$2 ;;
+  		"-exe")  export exe=$2 ;;
+  		"-nrg")  export nrg=$2 ;;
+  		"-dir")  export dir=$2 ;;
+  		"-seed")  export seed=$2 ;;
+  		"-df")  export d_file=$2 ;;
+  		"-of")  export o_file=$2 ;;
+  		"-sys")  export sys=$2 ;;
+	esac
+	args=( ${args[@]} $1 $2 ); shift; shift 
+done
+
+# main stats part {{{
+
+mkdir -p $dir
+cd $dir
+cp $data_file data
+rm hits >& /dev/null
+count=1
+
+cat << EOF
+
+Running $exe for $sys from $nrg random starting geometries
+Random number seeds start from $seed
+
+EOF
+
+while [ $count -le $nrg ]; do 
+   echo $natoms $radius -$seed > randata
+   rancoords # >& /dev/null
+   cp newcoords coords
+   echo count $count
+   $exe >& $dir.output.$natoms.$count
+   echo `grep hit $o_file | head -1 | sed -e 's/[a-zA-Z]//g' -e 's/[a-zA-Z]//g' -e 's/\.//' -e 's/>//'` \
+        `grep time= $o_file | tail -1 | sed 's/.*time=//'` >> hits
+   cp coords coords.$count
+   let count++
+   let seed++
+done
+
+gminconv2 < hits > temp ; head -1 temp > pdf
+cat << EOF
+
+Mean and standard deviation for global minimum first encounter time:
+
+EOF
+cat pdf
+#}}}
+
+# }}}
+}
+
+# main part 
+# {{{
+
+script_opts=( $* )
+set_base_dirs
+
+while [ ! -z "$1" ]; do
+  	case "$1" in
+		  #{{{
+	  	vm) $v $0 $hm/scripts/f.sh; exit ;;
+		h) display_help $*; exit ;;
+		-g) v="$v -g" ;;
+	  	*) main $* && exit 0 ;;
+	esac
+  	shift
+        #}}}
+done
+
+# }}}
+
+
