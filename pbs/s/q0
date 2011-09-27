@@ -74,13 +74,14 @@ cp newcoords coords
 time_start=`date_in_secs`
 date_start=`date_dmy_hms`
 $exe $args
+pref=f_"$force"
 
 case $sb_mode in 
 	2) ;;
 	*)
 		for ofile in ${all_ofiles[@]}; do
 		  if [ -f $ofile ]; then 
-				cp $ofile f_"$force".$ofile
+				cp $ofile $pref.$ofile
 		  fi
 		done 
 		;;
@@ -112,6 +113,12 @@ fi
 info="$varid $time_spent $exe $args $pbs_job_id $sys $date_start" 
 echo "` printvar 'float' $force` $gm_energy $info" >> $outf
 echo "` printvar 'float' $force` ${ea_en[@]} $info " >> $ea_outf
+cat le | awk 'NR==3,NR==48' >> $output_dir/$sb_mode.le
+
+if [ $rmout -eq 1]; then 
+  	rm -f out $pref.out
+fi
+
 # formats: force_long
 
 #}}}
