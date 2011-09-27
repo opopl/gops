@@ -230,6 +230,12 @@ CONTAINS
          TRACKBEST=.TRUE.     
       ELSE IF (WORD.EQ.'TMARKOV') THEN
          TRACKMARKOV=.TRUE.     
+      ELSE IF (WORD.EQ.'TXYZ') THEN
+         TXYZ=.TRUE.     
+         NSQ=NARGS-1
+         DO I=1,NARGS-1
+            READ(ARGS(I+1),*) SQU(I)
+         ENDDO
          ! }}}
       ELSE
         GOTO 100
