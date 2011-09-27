@@ -10,12 +10,11 @@
       ! }}}
 ! subroutine body {{{
 
-      LE_FH=25 
       OPEN(LE_FH,FILE=LE_FILE,STATUS='UNKNOWN')
-      OPEN(EA_FH,FILE=EA_FILE,STATUS='UNKNOWN',ACCESS='APPEND')
+      OPEN(EA_FH,FILE=EA_FILE,STATUS='UNKNOWN')
 
-      WRITE(EA_FH,'(A1,A)') "#",CMDLINE
-      WRITE(EA_FH,'()') PFORCE,EAMIN(1,1:6)
+      WRITE(EA_FH,'(A1,A)') "# Command-line: ",CMDLINE
+      WRITE(EA_FH,'(7E10.5)') PFORCE,EAMIN(1,1:6)
       DO J1=1,NSAVE
       ! {{{
 

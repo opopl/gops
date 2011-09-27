@@ -75,17 +75,11 @@
       ! intro {{{
       IF (.NOT.ALLOCATED(DIAG)) ALLOCATE(DIAG(N))       ! SAVE doesn't work otherwise for Sun
       IF (.NOT.ALLOCATED(W)) ALLOCATE(W(N*(2*M+1)+2*M)) ! SAVE doesn't work otherwise for Sun
-!     IF (QUENCHDOS) ALLOCATE(FRAMES(N,ITMAX), PE(ITMAX), MODGRAD(ITMAX))
       IF (SIZE(W,1).NE.N*(2*M+1)+2*M) THEN ! mustn't call mylbfgs with changing number of variables!!!
          WRITE(LFH, '(A,I10,A,I10,A)') 'ERROR, dimension of W=',SIZE(W,1),' but N*(2*M+1)+2*M=',N*(2*M+1)+2*M,' in mylbfgs'
          call exit(10)
       ENDIF
       COREDONE=.FALSE.
-      !SMINKCHANGET=.FALSE.
-      !SMINKCURRENT=0.0D0
-      !SMINKCURRENTP=0.0D0
-      !LOCALSTEEREDMINT=.FALSE.
-      !IF (STEEREDMINT) LOCALSTEEREDMINT=.TRUE.
 
       NFAIL=0
       IF (GUIDECHANGET) ITER=0
@@ -97,123 +91,15 @@
          IF (.NOT.(RESET.OR.GUIDECHANGET)) WRITE(LFH,'(A)') 'mylbfgs> Not resetting LBFGS minimiser'
       ENDIF
 
-
-      IF (DUMPT) THEN
-        ! {{{
-         IF (NCORE(NP).GT.0) THEN
-            WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
-            WRITE(DUMPXYZUNIT+NP,11) NQ(NP)
-            WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') ('LB',XCOORDS(3*(I-1)+1),XCOORDS(3*(I-1)+2),XCOORDS(3*(I-1)+3),&
-     &                                               I=1,NATOMS-NCORE(NP))
-            IF (NCORE(NP).GT.0) WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') &
-     &            ('LA ',XCOORDS(3*(I-1)+1),XCOORDS(3*(I-1)+2),XCOORDS(3*(I-1)+3),I=NATOMS-NCORE(NP)+1,NATOMS)
-         ELSE
-            WRITE(DUMPXYZUNIT+NP,'(I4)') NATOMS
-            WRITE(DUMPXYZUNIT+NP,11) NQ(NP)
-11          FORMAT(1X,'QUENCH NUMBER ',I6,' initial points in mylbfgs') 
-            WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') ('LA ',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=1,NATOMS-NS)
-            IF (NS.GT.0) WRITE(DUMPXYZUNIT+NP,'(A2,3F20.10)') &
-     &          ('LB',XCOORDS(3*(J1-1)+1),XCOORDS(3*(J1-1)+2),XCOORDS(3*(J1-1)+3),J1=NATOMS-NS+1,NATOMS)
-         ENDIF
-         ! }}}
-      ENDIF
       ! }}}
 
-      ! 
       CALL POTENTIAL(XCOORDS,GRAD,ENERGY,.TRUE.,.FALSE.)
     
-      ! intro2 {{{
-!  Catch cold fusion for ionic potentials and discard.
-!
-!  Changed EREAL for cold fusion to 1.0D6 rather than 0.0D0, which could result in steps being accepted
-!  for systems with positive energies. - khs26 26/11/09
-!
-!      IF ((TOSI.OR.WELCH.OR.RGCL2.OR.AMBER.OR.ARNO.OR.PACHECO.OR.TIP.OR.CHRMMT.OR.AMBERT 
-     !&   .OR.PYGPERIODICT.OR.PYBINARYT.OR.MULTISITEPYT.OR.JMT) 
-     !&   .AND.(ENERGY.LT.COLDFUSIONLIMIT)) THEN
-         !WRITE(LFH,'(A,G20.10)') 'ENERGY=',ENERGY
-         !ENERGY=1.0D6
-         !POTEL=1.0D6
-         !RMS=1.0D0
-         !WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
-!!     csw34> set COLDFUSION=.TRUE. so that ATEST=.FALSE. in MC
-         !COLDFUSION=.TRUE.
-!!        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
-         !RETURN
-      !ENDIF
-
-!     IF (QUENCHDOS) THEN
-!        MODGRAD(1)=DSQRT(DDOT(N,GRAD,1,GRAD,1))
-!        PE(1)=ENERGY
-!        FRAMES(1:N,1)=XCOORDS(1:N)
-!     ENDIF
-!
-! Stop the core from changing morphology easily, but allow it to relax
-!
-!     IF ((NCORE(NP).GT.0).AND.(.NOT.COREDONE)) THEN
-!        DUMMY2=0.0D0
-!        DO J1=1,3*(NATOMS-NCORE(NP))
-!           DUMMY2=DUMMY2+GRAD(J1)**2
-!        ENDDO
-!        DUMMY2=DSQRT(DUMMY2/(3*NATOMS))
-!        IF (DUMMY2.GT.EPS*2.0D0) THEN
-!           GRAD(3*(NATOMS-NCORE(NP))+1:3*NATOMS)=0.0D0
-!        ELSE
-!           COREDONE=.TRUE.
-!        ENDIF
-!     ENDIF
-
-!
-!  If INTMINT and CHRMMT need to transform to internal coordinates
-!  See COPTIM.2.3 for switching to internals from Cartesians using LIMINCUT.
-!
-      IF (INTMINT) THEN
-         OLDCART(1:3*NATOMS)=XCOORDS(1:3*NATOMS) ! store cartesians in OLDCART for both CHARMM and UNRES
-!         IF (UNRST) THEN
-!C
-!C store internals (in OLDQ) and update X to contain internals
-!C
-!            CALL geom_to_var(N,OLDQ)
-!            XCOORDS(1:N)=OLDQ(1:N)
-!         ELSE IF (CHRMMT) THEN
-!        CALL GETKD(KD) ! get width of sparse band in G matrix KD
-!            !CALL GETNNZ(NNZ) ! get number of non-zero elements in B-matrix
-!            !NOCOOR=.FALSE. ! calculate internals therefore NOCOOR is false
-!            !GINT(1:N)=0.0D0 ! to prevent NaN's for Sun!
-!            !XINT(1:N)=0.0D0 ! to prevent NaN's for Sun!
-!            !CALL TRANSFORM(XCOORDS,GRAD,XINT,GINT,N,3*NATOMS,NNZ,NOCOOR,KD)
-!            !OLDQ(1:N)=XINT(1:N)    ! store internals
-!            !OLDGINT(1:N)=GINT(1:N) ! store gradient in internals
-!         ENDIF
-      ENDIF
-!
-!  for CHRMMT:
-!  XCOORDS contains current Cartesians
-!  GRAD    contains current gradient
-!  XINT    contains current internals
-!  GINT    contains current gradient in internals
-!  OLDQ    contains internals for initial geometry
-!  OLDGINT contains gradient in internals for initial geometry
-!  OLDCART contains Cartesian coordinates for initial geometry
-!
       IF (EVAPREJECT) RETURN
       POTEL=ENERGY
 
       IF (DEBUG) WRITE(LFH,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
 
-!
-!  Catch cold fusion for ionic potentials and discard.
-!
-      !IF ((DBPT.OR.DBPTDT.OR.MSTBINT.OR.MSSTOCKT.OR.MULTPAHAT.OR.NPAHT.OR.PAHW99T.OR.PYGT.OR.TDHDT.OR.SILANET) 
-     !&   .AND.(ENERGY.LT.-5.0D4)) THEN
-         !WRITE(LFH,'(A,G20.10)') 'ENERGY=',ENERGY
-         !ENERGY=0.0D0
-         !POTEL=0.0D0
-         !RMS=1.0D0
-         !WRITE(LFH,'(A)') ' Cold fusion diagnosed - step discarded'
-         !RETURN
-      !ENDIF
-      ! }}}
 !
 !  Termination test.  {{{
 !
@@ -226,28 +112,6 @@
             FIXIMAGE=.FALSE.
             IF (DEBUG) WRITE(LFH,'(A,F20.10,G20.10,A,I6,A)') ' Energy and RMS force=',ENERGY,RMS,' after ',ITDONE,' LBFGS steps'
 
-!             IF (QUENCHDOS) THEN
-!                DO J1=1,ITDONE+1
-!                   DIST=0.0D0
-!                   DO J2=1,N
-!                      DIST=DIST+(FRAMES(J2,J1)-FRAMES(J2,ITDONE+1))**2
-!                   ENDDO
-!                   DIST=SQRT(DIST)
-!                   IF (J1.EQ.1) DIST1=DIST
-! !                   DOSSTATS(J1,1)=PE(J1)
-!                   IF ((MODGRAD(J1).GT.0.0D0).AND.(DIST.GT.0.0D0)) THEN
-! !                    DOSSTATS(J1,2)=(MODGRAD(1)/MODGRAD(J1))*(DIST/DIST1)**(N-1)
-! !                    DOSSTATS(J1,2)=(N-1)*LOG(DIST)-LOG(MODGRAD(J1))
-!                      DOSSTATS(J1,2)=DIST**(N-1)/MODGRAD(J1)
-!                   ELSE
-!                      DOSSTATS(J1,2)=0.0D0
-!                   ENDIF
-! !                 WRITE(LFH,'(A,I6,4G18.8)') 'lbfgs> J1,MODGRAD,DIST,DOSSTATS(J1,2),DOSSTATS(J1,1)=',&
-! !    &                      J1,MODGRAD(J1),DIST,DOSSTATS(J1,2),DOSSTATS(J1,1)
-!                ENDDO
-!                DEALLOCATE(FRAMES, PE, MODGRAD)
-!             ENDIF
-
             RETURN
          ENDIF
       ENDIF
@@ -255,7 +119,6 @@
       IF (ITDONE.EQ.ITMAX) THEN
          IF (DEBUG) FIXIMAGE=.FALSE.
          IF (DEBUG) WRITE(LFH,'(A,F20.10)') ' Diagonal inverse Hessian elements are now ',DIAG(1)
-!        IF (QUENCHDOS) DEALLOCATE(FRAMES, PE, MODGRAD)
          RETURN
       ENDIF
          ! }}}
@@ -280,13 +143,6 @@
                ENDIF
             ENDDO
          ELSE
-!           INQUIRE(FILE='diag',EXIST=YESNO)
-!           IF (YESNO) THEN
-!              OPEN(UNIT=34,FILE='diag',STATUS='OLD')
-!              READ(34,*) (DIAG(J1),J1=1,N)
-!              PRINT*,'diag read in LBFGS'
-!              WRITE(*,'(6F15.5)') (DIAG(J1),J1=1,N)
-!           ELSE
             DO J1=1,N
                DIAG(J1)=DGUESS
             ENDDO

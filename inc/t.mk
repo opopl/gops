@@ -105,6 +105,7 @@ $(DEPS): $(MKDEP)
 	$(MKDEP) $@
 
 $(PROG): dirs $(DEPS) $(OBJS) 
+	rm -f $(PROG) dv.f90
 	$(FC) $(FFLAGS) -o $@ $(OBJS) $(LDFLAGS) $(LIBS)
 	cp $(PROG) ./
 	cp $(PROG) $(PROG)_$(FC)
@@ -144,8 +145,9 @@ cbase:
 	rm -f $(LPBASE)
 
 clean:
-	rm -f $(COMP) $(DEPS) $(GENFFILES)
-	rm -f $(OBJS) $(AUXF) $(GENFFILES) $(MODPATH)/*.mod *.mod *.oo *.o *.ipa
+	rm -f $(PROG)
+	rm -f $(DEPS) $(GENFFILES)
+	rm -f $(OBJS) $(AUXF) $(GENFFILES) *.mod $(MODPATH)/*.mod *.mod *.oo *.o *.ipa
  
 cleanall:
 	rm -f $(PROG) $(OBJS) ${GENFFILES} $(LLIBS) *.o *.a *.lst

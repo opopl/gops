@@ -191,7 +191,7 @@
 !  Stop if not true.
 !
                IF (DEBUG.OR.CHECKMARKOVT) THEN
-                  CALL POTENTIAL(COORDSO(:,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
+                  CALL POTENTIAL(COORDSO(1:3*NATOMS,JP),GRAD,OPOTEL,.FALSE.,.FALSE.)
                   IF (ABS(OPOTEL-EPREV(JP)).GT.ECONV) THEN
                      IF (EVAP) THEN
                         WRITE(LFH,'(3(A,G20.10))') 'mc> WARNING - energy for saved coordinates ',OPOTEL,&
@@ -232,6 +232,9 @@
                   VATO(1:NATOMS,JP)=VAT(1:NATOMS,JP)
                ELSE
                   NFAIL(JP)=NFAIL(JP)+1
+                  ! myreset:
+                  !      coords=coordso
+                  !      vat=vato
                   CALL MYRESET(JP,NATOMS,NPAR,NSEED)
                   IF (DEBUG) THEN
                      WRITE(LFH,36) JP,RANDOM,POTEL,EPREV(JP),NSUCCESS(JP),NFAIL(JP)
@@ -241,7 +244,7 @@
             ENDIF
             ! }}}
 
-            IF ((MOD(J1,NACCEPT).EQ.0).AND.(NSEED.EQ.0).AND.(.NOT.STAY)) CALL ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
+            IF ((MOD(J1,NACCEPT).EQ.0)) CALL ACCREJ(NSUCCESS,NFAIL,JP,NSUCCESST,NFAILT)
             TEMP(JP)=TEMP(JP)*SCALEFAC
             IF (HIT) GOTO 37
             IF (DUMPINT.GT.0) THEN

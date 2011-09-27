@@ -76,7 +76,6 @@
       P=COORDS(1:NR,NP)
 
 10    CALL MYLBFGS(NR,MUPDATE,P,.FALSE.,GMAX,CFLAG,EREAL,MAXIT,ITER,.TRUE.,NP)
-
       IF (EVAPREJECT) RETURN
       POTEL=EREAL
 
@@ -90,25 +89,7 @@
       ENDIF
 
       CALL MYCPU_TIME(TIME)
-
       IF(SAVEQ)CALL GSAVEIT(EREAL,P,NP)
-
-      !  Deal with EPSSPHERE sampling.!{{{
-
-      IF (EPSSPHERE.NE.0.0D0) THEN
-         IF ((DISTMIN.GT.EPSSPHERE).OR.(ABS(EREAL-EPREV(NP)).LE.ECONV)) THEN
-            WRITE(LFH,'(A,F12.5,A,4F14.5)') 'step ',STEP(NP),' EREAL, EPREV, DISTMIN, EPSSPHERE=',&
-     &                                     EREAL, EPREV(NP), DISTMIN, EPSSPHERE
-            DO J1=1,3*NATOMS
-               COORDS(J1,NP)=COORDSO(J1,NP)
-            ENDDO
-            CALL TAKESTEP(NP)
-             WRITE(LFH,'(A,G20.10)' ) 'reseeding step, maximum displacement reset to ',STEP(NP)
-            GOTO 11
-         ELSE
-            WRITE(LFH,'(A,2F20.10)') 'valid step, DISTMIN, EPSSPHERE=',DISTMIN, EPSSPHERE
-         ENDIF
-      ENDIF!}}}
 
 !  NORESET true does not set the configuration point to the quench geometry
 !  A relaxed frozen core does not get saved, but the lowest minima are saved
@@ -121,6 +102,17 @@
          DO J1=1,NATOMS
             VAT(J1,NP)=VT(J1)
          ENDDO
+      ENDIF
+
+      IF ((NQ(NP).GE.NSSTOP).AND.SEEDT) THEN
+         SEEDT=.FALSE.
+         NSEED=0
+         WRITE(LFH,'(I6,A,G20.10)') NSSTOP,' quenches completed, setting coordinates to the lowest minimum, E=',QMIN(1)
+         DO J1=1,3*NATOMS
+            COORDS(J1,NP)=QMINP(1,J1)
+         ENDDO
+         POTEL=QMIN(1)
+         EREAL=POTEL
       ENDIF
 
       RETURN

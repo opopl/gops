@@ -16,66 +16,13 @@
 
       P0=1.D0*NSUCCESS(JP)/(1.D0*(NSUCCESS(JP)+NFAIL(JP)))
       
-      !IF (P0.GT.ACCRAT(JP)) THEN
-        !FAC=1.05D0
-        !! com {{{
- !!!        IF(ARMT) THEN
-           !!FAC=LOG(ARMA*ACCRAT(JP)+ARMB)/LOG(ARMA*P0+ARMB)
-         !!ELSE
-           !!FAC=1.05D0
-         !!ENDIF
-!!         IF (FIXBOTH(JP)) THEN
-         !!ELSE IF (FIXSTEP(JP)) THEN
-            !!IF (.NOT.FIXTEMP(JP)) TEMP(JP)=TEMP(JP)/1.05D0
-         !!ELSE
-            !!IF (FIXD) THEN
-               !!NHSMOVE=NHSMOVE+1 
-            !!ELSE
-               !!IF (RIGID) THEN
-                  !!IF (TMOVE(JP)) STEP(JP)=STEP(JP)*1.05D0 
-                  !!IF (OMOVE(JP)) OSTEP(JP)=OSTEP(JP)*1.05D0
-               !!ELSE
-                  !!STEP(JP)=FAC*STEP(JP)
-               !!ENDIF
-            !!ENDIF
-            !!ASTEP(JP)=ASTEP(JP)*1.05D0
-         !!ENDIF
-         !! }}}
-      !ELSE
-           !FAC=1.D0/1.05D0
-           !!STEP(JP)=FAC*STEP(JP)
-        !! com {{{
-!!         IF(ARMT) THEN
-           !!FAC=LOG(ARMA*ACCRAT(JP)+ARMB)/LOG(ARMA*P0+ARMB)
-         !!ELSE
-           !!FAC=1.D0/1.05D0
-         !!ENDIF
-!!         IF (FIXBOTH(JP)) THEN
-         !!ELSE IF (FIXSTEP(JP)) THEN
-            !!IF (.NOT.FIXTEMP(JP)) TEMP(JP)=TEMP(JP)*1.05D0
-         !!ELSE
-            !!STEP(JP)=FAC*STEP(JP)
-            !!!IF (FIXD) THEN
-               !!!NHSMOVE=MAX(1,NHSMOVE-1)
-            !!!ELSE
-               !!!IF (RIGID) THEN
-                  !!!IF (TMOVE(JP)) STEP(JP)=STEP(JP)/1.05D0
-                  !!!IF (OMOVE(JP)) OSTEP(JP)=OSTEP(JP)/1.05D0
-               !!!ELSE
-                  !!!STEP(JP)=FAC*STEP(JP)
-               !!!ENDIF
-            !!!ENDIF
-            !!ASTEP(JP)=ASTEP(JP)/1.05D0
-         !!ENDIF
-         !! }}}
-      !ENDIF
-      
       IF (P0.GT.ACCRAT(JP)) THEN
         FAC=1.05D0
       ELSE
         FAC=1.D0/1.05D0
       ENDIF
         STEP(JP)=FAC*STEP(JP)
+        ASTEP(JP)=FAC*ASTEP(JP)
 
       WRITE(LFH,'(A,I6,A,F8.4,A,F8.4)') &
 		&            'Acceptance ratio for previous ',NACCEPT,&

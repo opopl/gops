@@ -44,6 +44,7 @@ IF (NARGS.GT.0) THEN
 				CASE('-steps') ; READ(VAR,*) MCSTEPS
 				CASE('-p') ; READ(VAR,*) S; USEPREF=.TRUE. ; PREF=trim(S)//"."
 				CASE('-crd') ; READ(VAR,*) S; C_FILE=TRIM(S)
+				CASE('-cmarkov') ; CHECKMARKOVT=.TRUE.
                 CASE DEFAULT
          ENDSELECT
      ENDSELECT

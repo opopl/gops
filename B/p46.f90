@@ -1,5 +1,5 @@
 
-        SUBROUTINE EP46(FH,DEB,QO, N, GRAD, E, GTEST,PTYPE)
+        SUBROUTINE EP46(FH,DEB,QO, N, GRAD, E, GTEST,GOTYPE)
 ! dec {{{
         IMPLICIT NONE
         ! sub
@@ -14,23 +14,36 @@
         INTEGER NCALLMAX
         INTEGER,dimension(N) :: NTYPE
         LOGICAL STEST
-        CHARACTER(LEN=10) PTYPE
+        LOGICAL GOTYPE
+        character(len=10) ptype
         DOUBLE PRECISION A_PARAM(N,N), B_PARAM(N,N), D_PARAM(N),C_PARAM(N), &
      &                  x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n), &
      &                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
         !
         DOUBLE PRECISION RMASS, EPSILON,SIGMA,DELTA,THETA_0,RK_R,RK_THETA
+        integer,save :: ncall
+        DOUBLE PRECISION :: rms
         parameter (rmass = 40.0, epsilon = 0.0100570)
         parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
         parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
         ! }}}
         ! body {{{
+        ptype="GO"
         STEST=.FALSE.
-        CALL PARAM_ARRAY(N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,NTYPE,PTYPE)
+        CALL PARAM_ARRAY(N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,NTYPE,GOTYPE)
         CALL CALC_INT_COORDS(QO,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
      &                       BOND_ANGLE,TOR_ANGLE,RADII,NTYPE,PTYPE)
         CALL CALC_ENERGY(FH,DEB,QO,E,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
      &                   BOND_ANGLE,TOR_ANGLE,RADII,NTYPE,PTYPE)
+        !IF (NCALL .LE. 0) THEN
+            !NCALL=1
+          !ELSE
+            !NCALL=1+NCALL
+        !ENDIF
+        !if (ncall .gt. 2000) stop
+        !rms=sqrt(sum(grad**2)/(3*N))
+        !WRITE(*,*) PTYPE,E(1),NCALL,RMS
+
         IF ((.NOT.GTEST).AND.(.NOT.STEST)) RETURN
         CALL CALC_GRADIENT(FH,DEB,QO,GRAD,N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,X,Y,Z,XR,YR,ZR,DOT_PROD,X_PROD, &
      &                     BOND_ANGLE,TOR_ANGLE,RADII,NTYPE,PTYPE)
@@ -41,7 +54,7 @@
         ! }}}
         END SUBROUTINE EP46
 
-        SUBROUTINE PARAM_ARRAY(N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,NTYPE,PTYPE)
+        SUBROUTINE PARAM_ARRAY(N,A_PARAM,B_PARAM,C_PARAM,D_PARAM,NTYPE,GOTYPE)
 ! {{{
 ! Declarations {{{
         implicit NONE
@@ -52,9 +65,12 @@
         INTEGER,DIMENSION(N),INTENT(OUT) :: NTYPE
         DOUBLE PRECISION,DIMENSION(N,N),INTENT(OUT) :: A_PARAM,B_PARAM
         DOUBLE PRECISION,DIMENSION(N),INTENT(OUT) :: C_PARAM,D_PARAM
+        LOGICAL GOTYPE
         ! loc
-        INTEGER ICOUNT, J, I
+        INTEGER ICOUNT, J, I, j1, j2
         DOUBLE PRECISION EPSILON
+        LOGICAL CONNECT(N,N)
+        DOUBLE PRECISION :: CON(N,N)
         parameter (epsilon = 0.0100570D0)
 ! }}}
 ! Firstly, specify amino acid types by filling in array ntype(:) {{{
@@ -91,6 +107,105 @@
         icount = 0
         enddo
 !}}}
+! Go-like model connectivities: fill in array CONNECT(:,:) {{{
+!
+        con=0.0D0
+        CON(20, 1)=1.0D0
+        CON(24, 1)=1.0D0
+        CON(45, 1)=1.0D0
+        CON(24, 2)=1.0D0
+        CON(43, 2)=1.0D0
+        CON(45, 2)=1.0D0
+        CON(18, 3)=1.0D0
+        CON(20, 3)=1.0D0
+        CON(25, 3)=1.0D0
+        CON(26, 3)=1.0D0
+        CON(43, 3)=1.0D0
+        CON(26, 4)=1.0D0
+        CON(41, 4)=1.0D0
+        CON(16, 5)=1.0D0
+        CON(18, 5)=1.0D0
+        CON(26, 5)=1.0D0
+        CON(27, 5)=1.0D0
+        CON(28, 5)=1.0D0
+        CON(41, 5)=1.0D0
+        CON(28, 6)=1.0D0
+        CON(39, 6)=1.0D0
+        CON(16, 7)=1.0D0
+        CON(28, 7)=1.0D0
+        CON(29, 7)=1.0D0
+        CON(30, 7)=1.0D0
+        CON(39, 7)=1.0D0
+        CON(30, 8)=1.0D0
+        CON(37, 8)=1.0D0
+        CON(14, 9)=1.0D0
+        CON(30, 9)=1.0D0
+        CON(31, 9)=1.0D0
+        CON(32, 9)=1.0D0
+        CON(37, 9)=1.0D0
+        CON(30, 14)=1.0D0
+        CON(31, 14)=1.0D0
+        CON(28, 16)=1.0D0
+        CON(29, 16)=1.0D0
+        CON(26, 18)=1.0D0
+        CON(24, 20)=1.0D0
+        CON(25, 20)=1.0D0
+        CON(45, 24)=1.0D0
+        CON(41, 26)=1.0D0
+        CON(43, 26)=1.0D0
+        CON(39, 28)=1.0D0
+        CON(41, 28)=1.0D0
+        CON(39, 30)=1.0D0
+        CON(37, 32)=1.0D0
+        CON(1, 20)=1.0D0
+        CON(1, 24)=1.0D0
+        CON(1, 45)=1.0D0
+        CON(2, 24)=1.0D0
+        CON(2, 43)=1.0D0
+        CON(2, 45)=1.0D0
+        CON(3, 18)=1.0D0
+        CON(3, 20)=1.0D0
+        CON(3, 25)=1.0D0
+        CON(3, 26)=1.0D0
+        CON(3, 43)=1.0D0
+        CON(4, 26)=1.0D0
+        CON(4, 41)=1.0D0
+        CON(5, 16)=1.0D0
+        CON(5, 18)=1.0D0
+        CON(5, 26)=1.0D0
+        CON(5, 27)=1.0D0
+        CON(5, 28)=1.0D0
+        CON(5, 41)=1.0D0
+        CON(6, 28)=1.0D0
+        CON(6, 39)=1.0D0
+        CON(7, 16)=1.0D0
+        CON(7, 28)=1.0D0
+        CON(7, 29)=1.0D0
+        CON(7, 30)=1.0D0
+        CON(7, 39)=1.0D0
+        CON(8, 30)=1.0D0
+        CON(8, 37)=1.0D0
+        CON(9, 14)=1.0D0
+        CON(9, 30)=1.0D0
+        CON(9, 31)=1.0D0
+        CON(9, 32)=1.0D0
+        CON(9, 37)=1.0D0
+        CON(14, 30)=1.0D0
+        CON(14, 31)=1.0D0
+        CON(16, 28)=1.0D0
+        CON(16, 29)=1.0D0
+        CON(18, 26)=1.0D0
+        CON(20, 24)=1.0D0
+        CON(20, 25)=1.0D0
+        CON(24, 45)=1.0D0
+        CON(26, 41)=1.0D0
+        CON(26, 43)=1.0D0
+        CON(28, 39)=1.0D0
+        CON(28, 41)=1.0D0
+        CON(30, 39)=1.0D0
+        CON(32, 37)=1.0D0
+
+! }}}
 ! Specify parameters for the L-J interaction between non-bonded particles. {{{
 !       These are stored in arrays
 !       a_param(:,:), b_param(:,:)
@@ -104,8 +219,14 @@
 			        elseif (ntype(i) .eq. 1 .and. ntype(j) .eq. 1)then
 				        a_param(i,j) =  epsilon
 				        a_param(j,i) =  epsilon
-				        b_param(i,j) = -epsilon
-				        b_param(j,i) = -epsilon
+				        b_param(i,j) = -epsilon*con(i,j)
+				        b_param(j,i) = -epsilon*con(i,j)
+                        !IF (GOTYPE) THEN 
+                             !IF (.NOT. CONNECT(I,J)) THEN
+                                !b_param(i,j) = 0.0D0
+                                !b_param(j,i) = 0.0D0
+                             !ENDIF
+                        !endif
 			        else
 				        a_param(i,j) = epsilon*2.0/3.0
 				        b_param(i,j) = epsilon*2.0/3.0
@@ -114,33 +235,7 @@
 			        endif
             enddo
         enddo
-!        ! go {{{
-        !do i = 1, n-1
-           !do j = i+1, n
-           !if (ntype(i) .eq. 3 .or. ntype(j) .eq. 3) then
-             !a_param(i,j) = 1.0*epsilon
-             !b_param(i,j) = 0.0
-             !a_param(j,i) = 1.0*epsilon
-             !b_param(j,i) = 0.0
-           !elseif (ntype(i) .eq. 1 .and. ntype(j) .eq. 1)then
-             !a_param(i,j) =  epsilon
-             !a_param(j,i) =  epsilon
-             !IF (CONNECT(I,J)) THEN
-                !b_param(i,j) = -epsilon
-                !b_param(j,i) = -epsilon
-             !ELSE
-                !b_param(i,j) = 0.0D0
-                !b_param(j,i) = 0.0D0
-             !ENDIF
-           !else
-             !a_param(i,j) = epsilon*2.0/3.0
-             !b_param(i,j) = epsilon*2.0/3.0
-             !a_param(j,i) = epsilon*2.0/3.0
-             !b_param(j,i) = epsilon*2.0/3.0
-           !endif
-           !enddo
-        !enddo
-!! }}}
+!  !! }}}
 
 !}}}
 !}}}

@@ -81,8 +81,8 @@ main(){
 
 case "$1" in
   1) 
-  	B -p p46_new -p46 &
-  	B -p g46_new -g46 &
+	  B -p p46_new -p46 &
+	  B -p g46_new -g46 &
   ;;
   *)
   ;;
