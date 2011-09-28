@@ -1,17 +1,17 @@
 #
 # comp.mk. Compiler include file
-# Generated: Wed Sep 28 00:59:45 BST 2011 
-# Compiler: ifort
+# Generated: Wed Sep 28 09:05:49 BST 2011 
+# Compiler: pgi
 #
-export FC=ifort
+export FC=pgf90
 # path for the objects
 export OBJSPATH=$(ROOTPATH)/obj/$(PROGNAME)/fc_$(FC)/
 # modules path for specific compiler
 export MODPATH=$(MODGENPATH)/fc_$(FC)/
 # library path for *.a compiled with $(FC)
 export LIBAPATH=$(LIBPATH)/fc_$(FC)/
-FFLAGS_g= -g -debug all -check all -implicitnone -warn unused -fp-stack-check -heap-arrays -ftrapuv -check pointers -check bounds
-FFLAGS_o= -132 -O4
-SWITCH=ifort
+MODFLAG:= -I. -module $(MODPATH)
+FFLAGS_o := -fast -Mipa=fast,inline -Msmartalloc
+FFLAGS_g := -Mextend -O0 -Mnoframe -g -traceback
 LDFLAGS= -L.
-MODFLAG=-I. -module $(MODPATH)
+SWITCH=pgi

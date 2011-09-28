@@ -1102,62 +1102,6 @@ COORDS=RADIUS*RND/SR3
 ! }}}
 END SUBROUTINE R_COORDS
 ! }}}
-
-      SUBROUTINE COUNTATOMS
-!op226> Declarations {{{ 
-      USE COMMONS, ONLY : NATOMS
-
-      IMPLICIT NONE
-
-      INTEGER :: EOF
-      LOGICAL :: YESNO
-!op226>}}} 
-      ! {{{
-
-! commented  {{{
-!
-!  If the current working directory contains more than one of these files
-!  then the precedence is coords, then input.crd, then coords.amber
-!  OPTIM does this a bit better by calling getparams first to see if
-!  we are actually doing AMBER or CHARMM. 
-!
-
-      !YESNOA=.FALSE.
-      !YESNOAMH=.FALSE.
-      !YESNOA9=.FALSE.
-      !INQUIRE(FILE='pro.list',EXIST=YESNOAMH)
-      !INQUIRE(FILE='coords.amber',EXIST=YESNOA)
-      !INQUIRE(FILE='input.crd',EXIST=YESNOC)
-      !INQUIRE(FILE='coords.inpcrd',EXIST=YESNOA9)
-      ! }}}
-
-      YESNO=.FALSE.
-      INQUIRE(FILE=C_FILE,EXIST=YESNO)
-
-      IF (YESNO) THEN
-         OPEN(UNIT=COORDS_FH,FILE=C_FILE,STATUS='OLD')
-         NATOMS=0
-         REWIND(COORDS_FH)
-         DO
-            READ(COORDS_FH,*,IOSTAT=EOF)
-            IF (EOF==0) THEN
-               NATOMS = NATOMS + 1
-            ELSE
-               EXIT
-            ENDIF
-         ENDDO
-         CLOSE(COORDS_FH)
-      ELSE
-         PRINT '(A)','ERROR - no coords, input.crd, coords.inpcrd or coords.amber file'
-         STOP
-      ENDIF
-
-      NR=3*NATOMS
-
-      CLOSE(7)
-      ! }}}
-      END SUBROUTINE COUNTATOMS
-
       ! getmodel printvars printhelp printtime {{{
 
 ! getmodel {{{
@@ -1262,7 +1206,7 @@ CALL IDATE(TODAY)   ! TODAY(1)=DAY, (2)=MONTH, (3)=YEAR
 CALL ITIME(NOW)     ! NOW(1)=HOUR, (2)=MINUTE, (3)=SECOND
 
 WRITE(S, 1000 )  TODAY(2), TODAY(1), TODAY(3), NOW
-1000 FORMAT ( I2.2, '/', I2.2, '/', I4.4,I2.2, ':', I2.2, ':', I2.2 )
+1000 FORMAT ( I2.2, '/', I2.2, '/', I4.4,' ; ',I2.2, ':', I2.2, ':', I2.2 )
 
 END SUBROUTINE GETTIME 
 SUBROUTINE PRINTTIME(fh)
@@ -1281,7 +1225,7 @@ WRITE(fh, 1000 )  TODAY(2), TODAY(1), TODAY(3), NOW
 END SUBROUTINE PRINTTIME 
 ! }}}
 ! }}}
-    ! am {{{
+    ! am countatoms {{{
     SUBROUTINE AM(S)
         CHARACTER(LEN=*) S
 
@@ -1296,6 +1240,63 @@ END SUBROUTINE PRINTTIME
                 ALLOCATE(NCORE(1))
         ENDSELECT
     ENDSUBROUTINE AM
+
+
+      SUBROUTINE COUNTATOMS
+!op226> Declarations {{{ 
+      USE COMMONS, ONLY : NATOMS
+
+      IMPLICIT NONE
+
+      INTEGER :: EOF
+      LOGICAL :: YESNO
+!op226>}}} 
+      ! {{{
+
+! commented  {{{
+!
+!  If the current working directory contains more than one of these files
+!  then the precedence is coords, then input.crd, then coords.amber
+!  OPTIM does this a bit better by calling getparams first to see if
+!  we are actually doing AMBER or CHARMM. 
+!
+
+      !YESNOA=.FALSE.
+      !YESNOAMH=.FALSE.
+      !YESNOA9=.FALSE.
+      !INQUIRE(FILE='pro.list',EXIST=YESNOAMH)
+      !INQUIRE(FILE='coords.amber',EXIST=YESNOA)
+      !INQUIRE(FILE='input.crd',EXIST=YESNOC)
+      !INQUIRE(FILE='coords.inpcrd',EXIST=YESNOA9)
+      ! }}}
+
+      YESNO=.FALSE.
+      INQUIRE(FILE=C_FILE,EXIST=YESNO)
+
+      IF (YESNO) THEN
+         OPEN(UNIT=COORDS_FH,FILE=C_FILE,STATUS='OLD')
+         NATOMS=0
+         REWIND(COORDS_FH)
+         DO
+            READ(COORDS_FH,*,IOSTAT=EOF)
+            IF (EOF==0) THEN
+               NATOMS = NATOMS + 1
+            ELSE
+               EXIT
+            ENDIF
+         ENDDO
+         CLOSE(COORDS_FH)
+      ELSE
+         PRINT '(A)','ERROR - no coords, input.crd, coords.inpcrd or coords.amber file'
+         STOP
+      ENDIF
+
+      NR=3*NATOMS
+
+      CLOSE(7)
+      ! }}}
+      END SUBROUTINE COUNTATOMS
+
     ! }}}
     subroutine DEAM
         DEALLOCATE(FF,QMIN,QMINP,EAMIN,MSCREENC)

@@ -1,6 +1,6 @@
 MODULE PORFUNCS
-! Generated on: Wed Sep 28 01:00:21 BST 2011 
-! Compiler: ifort
+! Generated on: Wed Sep 28 09:05:49 BST 2011 
+! Compiler: pgi
 implicit none
 contains
           subroutine getarg_subr(position,value) ! wraps getarg function so it can be use-associated
@@ -28,9 +28,9 @@ end subroutine iargc_subr
                implicit none
                integer, intent(inout) :: pid
  
+               integer fork
  
-               integer ierror
-               call pxffork(pid,ierror)
+               pid=fork()
           end subroutine fork_subr
  
           subroutine system_subr(JobString,ExitStatus)
@@ -38,18 +38,20 @@ end subroutine iargc_subr
  
                character(len=*),intent(in) :: JobString
                integer,intent(out) :: ExitStatus
-               integer shiftr,system
+               integer system
  
                ExitStatus=system(JobString)
+               ExitStatus=ishft(ExitStatus,-8)
           end subroutine system_subr
  
           subroutine wait_subr(pid,ExitStatus)
                implicit none
  
                integer,intent(inout) :: pid,ExitStatus
-               integer shiftr,ierror
+               integer wait
  
-               call pxfwait(ExitStatus,pid,ierror)
+               pid=wait(ExitStatus)
+               ExitStatus=ishft(ExitStatus,-8)
 end subroutine wait_subr
           subroutine getpid_subr(pid)
                implicit none

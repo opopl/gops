@@ -112,7 +112,7 @@ fi
 
 info="$varid $time_spent $exe $args $pbs_job_id $sys $date_start" 
 echo "` printvar 'float' $force` $gm_energy $info" >> $outf
-echo "` printvar 'float' $force` ${ea_en[@]} $info " >> $ea_outf
+echo "` ${ea_en[@]} $info " >> $ea_outf
 cat le | awk 'NR==3,NR==48' >> $output_dir/$sb_mode.le
 
 if [ $rmout -eq 1]; then 
