@@ -116,3 +116,19 @@ ss=( P46 G46 )
 	#sb -m 5 -nf 40 -sys $sys -rmout
 #done
 #}}}
+
+#  p46, g46 {{{
+
+# 0.036 - 0.01 
+sb -m 7 -sys P46 -rmout
+sb -m 7 -sys G46 -rmout
+
+# 0.01 - 0.1
+sb -m 9 -sys P46 -rmout
+sb -m 9 -sys G46 -rmout
+
+# 
+sb -m 1 -sys P46 -rmout
+sb -m 1 -sys G46 -rmout
+
+# }}}

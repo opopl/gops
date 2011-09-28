@@ -2,18 +2,18 @@
 
 # copy into ef.*.sh from ../ef.*.tex
 
-#ff=( ` find ../ -name ef.\*.tex ` )
 deps=( ea ef ) 
 for dep in ${deps[@]}; do 
-	ff=( ${ff[@]} ` ack -f $dep.*.tex ` )
+	ff=( ${ff[@]} ` find ../ -name $dep.\*.tex ` )
 done 
 ss=( P46 G46 )
 
-for ff in ${ff[@]}; do
+for f in ${ff[@]}; do
 	for sys in ${ss[@]}; do
+		dep=` echo $f | sed 's/^\.\.\///g' | sed 's/\..*$//g' `
 	  	hf="$dep.$sys.sh"
 		if [ -f $f ]; then
-			echo "# aef: $f, $sys, `date` " >> $hf
+			echo "# adat: $f, $sys, $dep, `date` " >> $hf
 	  		cat $f | awk "/$sys/" >> $hf
 	  	fi
 	done

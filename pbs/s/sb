@@ -37,6 +37,7 @@ export gs_energy=-0.2936531215
 
 export le_file="lowest"
 export ea_file="ea"
+export fo_file="fo"
 
 allmodes=( 1 2 3 4 5 6 ) 
 queue=s1
@@ -290,8 +291,9 @@ case "$sb_mode" in
 	4) fr=( 0.0005 0.0015 ) ;;
 	5) fr=( 0.0016 0.0025 ) ;;
 	6) fr=( 0.0026 0.0035 ) ;;
-	7) fr=( 0.0036 0.01 ) ; nf=80 ;;
+	7) fr=( 0.0036 0.01 ) ; nf=100 ;;
 	8) fr=( 0.0 0.001 ); nf=100 ;;
+	9) fr=( 0.01 0.1 ); nf=50 ;;
 esac
 
 export force_min="${fr[0]}"
