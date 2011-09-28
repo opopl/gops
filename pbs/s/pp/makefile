@@ -11,3 +11,4 @@ c:
 
 a.pdf: $(sh)
 	ef.sh $(SYS) 
+	scp a.pdf $(ser):~/data/plots/

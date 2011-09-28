@@ -185,12 +185,6 @@
             INTEGER JP,NATOMS,NPAR,NSEED
         END SUBROUTINE MYRESET
 
-        !SUBROUTINE GSAVEIT(EREAL,P,NP)
-            !INTEGER,intent(in) :: NP
-            !DOUBLE PRECISION,intent(in) :: EREAL
-            !DOUBLE PRECISION,intent(in), DIMENSION(:) ::   P
-        !END SUBROUTINE GSAVEIT
-
         SUBROUTINE MYLBFGS(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET,NP)
 
 	      INTEGER :: N,M,ITMAX,ITDONE,NP
@@ -379,6 +373,8 @@
                QMIN(J1)=EREAL
                QMINP(J1,1:NR)=P(1:NR)
                EAMIN(J1,1:6)=EA(1:6)
+               CALL GETRGYR(NATOMS,P,RGYR)
+               RGMIN(J1)=RGYR
             ENDIF
             GOTO 10
          ENDIF
@@ -392,6 +388,7 @@
                QMIN(J2)=QMIN(J2-1)
                QMINP(J2,1:NR)=QMINP(J2-1,1:NR)
                EAMIN(J2,1:6)=EAMIN(J2-1,1:6)
+               RGMIN(J2)=RGMIN(J2-1)
 
                FF(J2)=FF(J2-1)
 
@@ -402,6 +399,7 @@
             QMIN(J1)=EREAL
             QMINP(J1,1:NR)=P(1:NR)
             EAMIN(J1,1:6)=EA(1:6)
+            RGMIN(J1)=RGYR
             FF(J1)=NQ(NP)
 
             GOTO 10
@@ -971,12 +969,14 @@ COORDS_FH=IFH+6
 DATA_FH=IFH+7
 RMSD_FH=IFH+8
 LE_FH=IFH+9
+FOFH=IFH+10
 
 C_FILE="coords"
 D_FILE="data"
 LE_FILE="le"
 E_FILE="e.tex"
-O_FILE="out"
+LO_FILE="out"
+FO_FILE="fo"
 SXYZ_FILE="xyz"
 SEED_FILE="seed"
 EA_FILE="ea"
@@ -988,7 +988,8 @@ EA_FILE="ea"
 		LE_FILE=adjustr(PREF)//LE_FILE
 		E_FILE=adjustr(PREF)//EA_FILE
 		EA_FILE=adjustr(PREF)//EA_FILE
-		O_FILE=adjustr(PREF)//O_FILE
+		LO_FILE=adjustr(PREF)//LO_FILE
+		fo_FILE=adjustr(PREF)//fo_FILE
     ENDIF
      ! }}}
     case("VARS")
@@ -1232,7 +1233,7 @@ END SUBROUTINE PRINTTIME
         SELECTCASE(S)
             CASE("MAIN")
                ALLOCATE(MSCREENC(3*NATOMS),VT(NATOMS))
-               ALLOCATE(FF(NSAVE),QMIN(NSAVE),EAMIN(NSAVE,10))
+               ALLOCATE(FF(NSAVE),QMIN(NSAVE),EAMIN(NSAVE,10),RGMIN(NSAVE))
                ALLOCATE(QMINP(NSAVE,3*NATOMS))
                ALLOCATE(COORDSO(3*NATOMS,1),VAT(NATOMS,1),VATO(NATOMS,1),COORDS(3*NATOMS,1))
             CASE("INIT")
@@ -1301,5 +1302,29 @@ END SUBROUTINE PRINTTIME
     subroutine DEAM
         DEALLOCATE(FF,QMIN,QMINP,EAMIN,MSCREENC)
     endsubroutine DEAM
+
+    SUBROUTINE GETRGYR(N,X,RGYR)
+    ! SUB
+    DOUBLE PRECISION, DIMENSION(:), INTENT(IN) ::  X
+    DOUBLE PRECISION, INTENT(OUT) :: RGYR
+    INTEGER,INTENT(IN) :: N
+    ! LOC
+    DOUBLE PRECISION, dimension(N,3) :: R
+    DOUBLE PRECISION, dimension(N) :: R2
+    DOUBLE PRECISION :: CMASS(3)
+    INTEGER I
+
+    R=RESHAPE(X, (/ N,3 /))
+    R2=0.0D0
+    CMASS=SUM(R,DIM=1)/N
+
+    DO I=1,N
+       R2(I)=R2(I)+SUM((R(I,1:3)-CMASS(1:3))**2)
+    ENDDO
+    RGYR=SQRT(SUM(R2)/N)
+
+    RETURN
+
+    END SUBROUTINE GETRGYR
 
       END MODULE F

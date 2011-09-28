@@ -14,9 +14,32 @@
 
       OPEN(LE_FH,FILE=LE_FILE,STATUS='UNKNOWN')
       OPEN(EA_FH,FILE=EA_FILE,STATUS='UNKNOWN')
+      OPEN(FOFH,FILE=FO_FILE,STATUS='UNKNOWN')
 
       CALL GETTIME(T)
       T="# Time: "//adjustl(T)
+
+      call ed(fofh)
+      write(fofh,'(a)') 'Final Output'
+      write(fofh,'(a)') T 
+      call ed(fofh)
+      write(fofh,'(a)') 'Energies'
+      write(fofh,'(a)') ''
+      write(fofh,'(a)') 'Global minimum: ' 
+      write(fofh,'(a)') ''
+      write(fofh,'(2a20,1x,e20.5)') 'Total energy: ', ' E_total=', eamin(1,1)
+      write(fofh,'(2a20,1x,e20.5)') 'Non-bonded interaction energy: '  ,'E_nbond= ', eamin(1,2)
+      write(fofh,'(2a20,1x,e20.5)') 'Bonded interaction energy: ','E_bond= ', eamin(1,3)
+      write(fofh,'(2a20,1x,e20.5)') 'Bond angle interaction energy: ','E_bangle= ', eamin(1,5)
+      write(fofh,'(2a20,1x,e20.5)') 'Torsional angle interaction energy: ','E_tangle= ', eamin(1,6)
+      write(fofh,'(2a20,1x,e20.5)') 'Radius of gyration: R_gyr=', rgmin(1)
+      write(fofh,'(a)') ''
+      write(fofh,'(i5,a)') NSAVE,'Saved lowest energies:' 
+      write(fofh,'(a)') ''
+      write(fofh,'(e20.5)') eamin(1:nsave,1) 
+      write(fofh,'(a)') ''
+      call ed(fofh)
+
       WRITE(EA_FH,'(A1,A)') "# Command-line: ",CMDLINE
       WRITE(EA_FH,'(A)') T
       WRITE(EA_FH,'(E10.5,6E20.5)') PFORCE,EAMIN(1,1:6)
@@ -34,6 +57,7 @@
 
       CLOSE(LE_FH)
       CLOSE(EA_FH)
+      CLOSE(FOFH)
 
       ! }}}
       RETURN

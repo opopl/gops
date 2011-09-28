@@ -20,10 +20,10 @@
      &                  x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n), &
      &                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
         !
-        DOUBLE PRECISION RMASS, EPSILON,SIGMA,DELTA,THETA_0,RK_R,RK_THETA
+        DOUBLE PRECISION EPSILON,SIGMA,DELTA,THETA_0,RK_R,RK_THETA
         integer,save :: ncall
         DOUBLE PRECISION :: rms
-        parameter (rmass = 40.0, epsilon = 0.0100570)
+        parameter (epsilon = 0.0100570)
         parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
         parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
         ! }}}
@@ -350,9 +350,9 @@
         DOUBLE PRECISION :: ENERGY
         INTEGER, SAVE :: NCALL
         INTEGER NCALLMAX
-        DOUBLE PRECISION RMASS, EPSILON, SIGMA, DELTA, THETA_0, RK_R, RK_THETA, RAD6, E_TANGLE, &
+        DOUBLE PRECISION EPSILON, SIGMA, DELTA, THETA_0, RK_R, RK_THETA, RAD6, E_TANGLE, &
      &                    S6, E_NBOND, E_BOND, E_BANGLE
-        parameter (rmass = 40.0, epsilon = 0.0100570)
+        parameter (epsilon = 0.0100570)
         parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
         parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
         ! }}}

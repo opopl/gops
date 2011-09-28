@@ -22,7 +22,7 @@
 
       ! write initial output {{{
   
-      OPEN(LFH,FILE=O_FILE, STATUS="unknown", form="formatted")
+      OPEN(LFH,FILE=LO_FILE, STATUS="unknown", form="formatted")
       OPEN(EA_FH,FILE=EA_FILE, STATUS="unknown", form="formatted")
 
       WRITE(LFH, '(A,I10,A,I10,A)') "Starting serial execution"
@@ -43,7 +43,7 @@
       WRITE(LFH,'(A)') ''
       WRITE(LFH,'(A)') "Output files:"
       WRITE(LFH,'(A)') ''
-      WRITE(LFH,'(2A50)') "Runtime info file:  ",O_FILE
+      WRITE(LFH,'(2A50)') "Runtime info file:  ",LO_FILE
       WRITE(LFH,'(2A50)') "Lowest energy geometries:  ",LE_FILE
       WRITE(LFH,'(2A50)') "Lowest energies:  ",EA_FILE
       CALL ED(LFH) 
