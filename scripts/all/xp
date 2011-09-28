@@ -1,15 +1,61 @@
 #!/bin/bash
 
+use(){
+source $shd/"$this_script"_$1.sh
+}
+
+set_base_vars(){
+  #{{{
+
 export shd="`dirname $(readlink -f $0)`"
 export this_script=` basename $0 `
 
-use(){
+export vim_opts="-n -p"
+export v="vim $vim_opts"
 
-source $shd/"$this_script"_$1.sh
+export r="$shd"
+export xyz_dir="$r/../xyz/"
+export tmp_dir="$r/tmp"
+export pics_dir="$r/../pics/"
+export file0="chf"
 
+export reset_f=0
+export reset_pof=0
+
+export frame_min=1
+export frame_max=1
+export font_size=30
+export show_date=0 
+export write_log_file=1
+export pic_ext="gif"
+export rotate=0
+export no_rotate=1
+export use_opt=0
+
+export append_angles=0
+export append_force=0
+export print_text="all"
+
+export zoom=70
+
+export rx=0 ; 
+export ry=0 ; 
+export rz=0
+
+export xai=10 ; 
+export yai=10  
+export zai=10
+export xamin=0; 
+export yamin=0; 
+export zamin=0
+export xamin=45; 
+export yamin=45; 
+export zamin=45
+
+#}}}
 }
 
-use set_pars
+set_base_vars
 
 if [ $no_rotate -eq 1 ]; then
   	xamax=$xamin
@@ -20,9 +66,63 @@ fi
 mkdir -p $tmp_dir
 mkdir -p $pics_dir
 
-if [ -z "$1" ]; then
-  		use print_help
-	else
+
+display_help(){
+# {{{
+# general beginning part {{{
+cat << EOF
+=============================================
+SCRIPT NAME: $this_script 
+PROJECT: $s_project
+PURPOSE: $s_purpose
+USAGE: $this_script [ OPTIONS ] 
+
+	OPTIONS:
+
+	============
+	General
+	============
+
+			display the help message
+
+	vm		v(iew) m(yself), i.e., edit this script
+	-g		gvim invocation
+	
+	============
+EOF
+# }}}
+# actual interesting part {{{
+cat << EOF
+
+some option
+
+EOF
+# }}}
+# final general part {{{
+cat << EOF
+REMARKS:
+AUTHOR: O. Poplavskyy
+=============================================
+EOF
+# }}}
+# }}}
+}
+
+main(){
+# {{{
+
+case "$1" in
+  "")
+  ;;
+  *)
+  ;;
+esac    # --- end of case ---
+
+# }}}
+}
+
+[ -z "$*" ] && ( display_help; exit 0 )
+
 	  #{{{
 	  cmd_args=( "$@" ) 
 	  use read_cmd_args
@@ -62,4 +162,47 @@ if [ -z "$1" ]; then
 	  source "$this_script"_loop_over_frames.sh	  
 	  cp $old_full_file $full_file
 	 #}}}
-fi
+
+
+define_base_dirs(){
+# {{{
+# main Wales group software directory
+export wg_dir="$shd/../../"
+packdir=$HOME/arch/packed
+unpackdir=$HOME/arch/unpacked
+# }}}
+}
+
+set_base_vars(){
+# {{{
+s_purpose="view source files with vim"
+s_project="~/scripts"
+# }}}
+}
+
+
+#}}}
+
+
+
+# main part 
+# {{{
+
+script_opts=( $* )
+define_base_dirs
+
+while [ ! -z "$1" ]; do
+  	case "$1" in
+		  #{{{
+	  	vm) $v $0 $hm/scripts/f.sh; exit ;;
+		h) display_help $*; exit ;;
+		-g) v="$v -g" ;;
+	  	*) main $* && exit 0 ;;
+	esac
+  	shift
+        #}}}
+done
+
+# }}}
+
+
