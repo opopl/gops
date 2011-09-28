@@ -72,12 +72,10 @@
       ! }}}
       !IF...THEN {{{
       EA(1:10)=0.0D0
-      !IF (MYBLNT) THEN 
-         !CALL EBLN(NATOMS,X,EA,GRAD,HESS,BLNTYPE,GRADT,SECT,EA_FH,.FALSE.)
-      IF (P46.OR.G46) THEN
+      IF (MYBLNT) THEN 
+         CALL EBLN(NATOMS,X,EA,GRAD,HESS,BLNTYPE,GRADT,SECT,EA_FH,DEB_BLN)
+      ELSEIF (P46.OR.G46) THEN
          CALL EP46(EA_FH,DEB_BLN,X,NATOMS,GRAD,EA,GRADT,G46); EREAL=EA(1)
-         !CALL P46MERDIFF(X,NATOMS,GRAD,EREAL,GRADT)
-      !ELSE
       ENDIF
       ! }}}
 ! }}}
@@ -86,6 +84,7 @@
       IF (PULLT) THEN
          dE_fz=-PFORCE*(X(3*(PATOM1-1)+3)-X(3*(PATOM2-1)+3))
          EREAL=EREAL+dE_fz
+         EA(1)=EA(1)+dE_fz
          GRAD(3*(PATOM1-1)+3)=GRAD(3*(PATOM1-1)+3)-PFORCE
          GRAD(3*(PATOM2-1)+3)=GRAD(3*(PATOM2-1)+3)+PFORCE
       ENDIF

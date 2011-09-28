@@ -169,7 +169,7 @@
 
         ! trackdata {{{
         IF (TRACKBEST) THEN
-             WRITE(BEST_FH,'(I10,6G20.10)') J1,EAMIN(1:6)
+             WRITE(BEST_FH,'(I10,6G20.10)') J1,EAMIN(1,1:6)
              CALL FLUSH(BEST_FH)
         ENDIF
         IF (TRACKENERGY) THEN

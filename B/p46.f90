@@ -20,10 +20,10 @@
      &                  x(n), y(n), z(n), xr(n,n), yr(n,n), zr(n,n), &
      &                  dot_prod(n,3), x_prod(n), bond_angle(n), tor_angle(n), radii(n,n)
         !
-        DOUBLE PRECISION RMASS, EPSILON,SIGMA,DELTA,THETA_0,RK_R,RK_THETA
+        DOUBLE PRECISION EPSILON,SIGMA,DELTA,THETA_0,RK_R,RK_THETA
         integer,save :: ncall
         DOUBLE PRECISION :: rms
-        parameter (rmass = 40.0, epsilon = 0.0100570)
+        parameter (epsilon = 0.0100570)
         parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
         parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
         ! }}}
@@ -110,6 +110,8 @@
 ! Go-like model connectivities: fill in array CONNECT(:,:) {{{
 !
         con=0.0D0
+        IF (GOTYPE) THEN 
+          ! {{{
         CON(20, 1)=1.0D0
         CON(24, 1)=1.0D0
         CON(45, 1)=1.0D0
@@ -204,6 +206,10 @@
         CON(28, 41)=1.0D0
         CON(30, 39)=1.0D0
         CON(32, 37)=1.0D0
+        !}}}
+      else
+        con=1.0D0
+      endif
 
 ! }}}
 ! Specify parameters for the L-J interaction between non-bonded particles. {{{
@@ -221,13 +227,7 @@
 				        a_param(j,i) =  epsilon
 				        b_param(i,j) = -epsilon*con(i,j)
 				        b_param(j,i) = -epsilon*con(i,j)
-                        !IF (GOTYPE) THEN 
-                             !IF (.NOT. CONNECT(I,J)) THEN
-                                !b_param(i,j) = 0.0D0
-                                !b_param(j,i) = 0.0D0
-                             !ENDIF
-                        !endif
-			        else
+   			        else
 				        a_param(i,j) = epsilon*2.0/3.0
 				        b_param(i,j) = epsilon*2.0/3.0
 				        a_param(j,i) = epsilon*2.0/3.0
@@ -350,9 +350,9 @@
         DOUBLE PRECISION :: ENERGY
         INTEGER, SAVE :: NCALL
         INTEGER NCALLMAX
-        DOUBLE PRECISION RMASS, EPSILON, SIGMA, DELTA, THETA_0, RK_R, RK_THETA, RAD6, E_TANGLE, &
+        DOUBLE PRECISION EPSILON, SIGMA, DELTA, THETA_0, RK_R, RK_THETA, RAD6, E_TANGLE, &
      &                    S6, E_NBOND, E_BOND, E_BANGLE
-        parameter (rmass = 40.0, epsilon = 0.0100570)
+        parameter (epsilon = 0.0100570)
         parameter (sigma=3.4, delta=1.0d-6, theta_0 = 1.8326)
         parameter (rk_r = 20.0*0.0100570, rk_theta = 20.0*0.0100570)
         ! }}}

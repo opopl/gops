@@ -185,12 +185,6 @@
             INTEGER JP,NATOMS,NPAR,NSEED
         END SUBROUTINE MYRESET
 
-        !SUBROUTINE GSAVEIT(EREAL,P,NP)
-            !INTEGER,intent(in) :: NP
-            !DOUBLE PRECISION,intent(in) :: EREAL
-            !DOUBLE PRECISION,intent(in), DIMENSION(:) ::   P
-        !END SUBROUTINE GSAVEIT
-
         SUBROUTINE MYLBFGS(N,M,XCOORDS,DIAGCO,EPS,MFLAG,ENERGY,ITMAX,ITDONE,RESET,NP)
 
 	      INTEGER :: N,M,ITMAX,ITDONE,NP
@@ -379,6 +373,8 @@
                QMIN(J1)=EREAL
                QMINP(J1,1:NR)=P(1:NR)
                EAMIN(J1,1:6)=EA(1:6)
+               CALL GETRGYR(NATOMS,P,RGYR)
+               RGMIN(J1)=RGYR
             ENDIF
             GOTO 10
          ENDIF
@@ -392,6 +388,7 @@
                QMIN(J2)=QMIN(J2-1)
                QMINP(J2,1:NR)=QMINP(J2-1,1:NR)
                EAMIN(J2,1:6)=EAMIN(J2-1,1:6)
+               RGMIN(J2)=RGMIN(J2-1)
 
                FF(J2)=FF(J2-1)
 
@@ -402,6 +399,7 @@
             QMIN(J1)=EREAL
             QMINP(J1,1:NR)=P(1:NR)
             EAMIN(J1,1:6)=EA(1:6)
+            RGMIN(J1)=RGYR
             FF(J1)=NQ(NP)
 
             GOTO 10
@@ -436,7 +434,7 @@
       ! {{{
       IMPLICIT NONE
       INTEGER J1, NATOMS
-      DOUBLE PRECISION DPRAND, P(3*NATOMS), RADIUS, SR3, RANDOM
+      DOUBLE PRECISION P(3*NATOMS), RADIUS, SR3, RANDOM
       
       SR3=DSQRT(3.0D0)
       DO J1=1,NATOMS
@@ -942,6 +940,7 @@ TRACKDATAT=.FALSE.
 TRACKENERGY=.FALSE.
 TRACKBEST=.FALSE.
 TRACKMARKOV=.FALSE.
+txyz=.false.
 DEBUG=.FALSE.
 DUMPT=.FALSE.
 NORESET=.FALSE.
@@ -970,12 +969,15 @@ COORDS_FH=IFH+6
 DATA_FH=IFH+7
 RMSD_FH=IFH+8
 LE_FH=IFH+9
+FOFH=IFH+10
 
 C_FILE="coords"
 D_FILE="data"
 LE_FILE="le"
 E_FILE="e.tex"
-O_FILE="out"
+LO_FILE="out"
+FO_FILE="fo"
+SXYZ_FILE="xyz"
 SEED_FILE="seed"
 EA_FILE="ea"
 
@@ -986,7 +988,8 @@ EA_FILE="ea"
 		LE_FILE=adjustr(PREF)//LE_FILE
 		E_FILE=adjustr(PREF)//EA_FILE
 		EA_FILE=adjustr(PREF)//EA_FILE
-		O_FILE=adjustr(PREF)//O_FILE
+		LO_FILE=adjustr(PREF)//LO_FILE
+		fo_FILE=adjustr(PREF)//fo_FILE
     ENDIF
      ! }}}
     case("VARS")
@@ -1100,6 +1103,145 @@ COORDS=RADIUS*RND/SR3
 ! }}}
 END SUBROUTINE R_COORDS
 ! }}}
+      ! getmodel printvars printhelp printtime {{{
+
+! getmodel {{{
+SUBROUTINE GETMODEL
+
+IF (P46) THEN
+  MODEL="P46 THREE-COLOUR OFF-LATTICE PROTEIN MODEL, WILD-TYPE"
+ELSEIF(G46) THEN
+  MODEL="P46 THREE-COLOUR OFF-LATTICE PROTEIN MODEL, GO-LIKE"
+ELSEIF(BLNT) THEN
+  MODEL="GENERAL BLN MODEL"
+ENDIF
+ENDSUBROUTINE GETMODEL
+! }}}
+! printvars {{{
+SUBROUTINE PRINTVARS(FH)
+! vars                                                                       {{{
+! sub
+integer fh
+! loc
+character(100) fmt(10)
+character(40) s
+integer i
+! }}}
+include '../inc/fmt.i.f90'
+
+CALL ED(fh)
+write(fh,10) "PARAMETER VALUES" !                                             {{{
+
+CALL GETMODEL
+WRITE(fh,*) "MODEL" 
+write(fh,*) TRIM(MODEL)
+CALL ED(fh)
+write(fh,1)  "PARAMETER DESCRIPTION",         "NAME",                  "VALUE"
+! pd:general                                                                 {{{
+write(fh,11) s_stars
+write(fh,10) "GENERAL" 
+write(fh,11) s_stars
+!s=adjustl(s)
+write(fh,3)  "Number of particles",                          "NATOMS",     NATOMS
+write(fh,2)  "Container radius",                             "RADIUS",     RADIUS
+write(fh,3)  "Number of saved lowest energy geometries",     "NSAVE",      NSAVE
+write(fh,3)  "Number of basin-hopping steps",                "MCSTEPS",    MCSTEPS
+write(fh,2)  "Temperature",                                  "TEMP",       TEMP
+write(fh,2)  "Acceptance ratio",                             "ACCRAT",     ACCRAT
+write(fh,2)  "Energy difference criterion for minima",       "ECONV",      ECONV
+write(fh,2)  "Final quench tolerance for RMS gradient ",     "FQMAX",      FQMAX
+write(fh,2)  "Quench convergence criterion for RMS gradient ", "SQMAX",    SQMAX
+write(fh,3)  "Maximum number of iterations",   "MAXIT", MAXIT
+write(fh,11) "(sloppy and final quenches)"
+write(fh,2)  "Temperature multiplier",                       "TFAC",       TFAC
+write(fh,3)  "",                                             "NACCEPT",    NACCEPT
+write(fh,3)  "",                                             "NRELAX",     NRELAX
+write(fh,1)  "BLN model type",                              "BLNTYPE",     trim(BLNTYPE)
+write(fh,11) s_stars !                                                        }}}
+! pd:lbfgs                                                                     {{{
+write(fh,10) "LBFGS parameters"
+write(fh,11) s_stars
+write(fh,3) "Number of LBFGS updates",   "MUPDATE",  MUPDATE
+write(fh,2) "Maximum BFGS step size",   "MAXBFGS",   MAXBFGS
+write(fh,2) "Guess for initial diagonal elements in BFGS", "DGUESS", DGUESS
+! }}} 
+! }}}
+CALL ED(fh)
+END SUBROUTINE PRINTVARS
+! }}}
+! printhelp {{{
+SUBROUTINE PRINTHELP(FH)
+INTEGER FH
+
+CALL ED(FH)
+write(fh,*) ''
+write(fh,*) 'Command-line options:'
+write(fh,*) ''
+write(fh,*) '   -ca     NACCEPT'
+write(fh,*) '   -f      PFORCE'
+write(fh,*) '   -g              turn on debug printing'
+write(fh,*) ''
+write(fh,*) '   -v              display version'
+write(fh,*) '   -pv             display default parameter values'
+write(fh,*) ''
+write(fh,*) '   -h              print this help message'
+write(fh,*) '   -p  PREF        Output files with preffix PREF, e.g., out => PREF.out'
+write(fh,*) '   -steps STEPS    Number of Monte-Carlo steps'
+write(fh,*) '   -crd C_FILE     name for the file with input coordinates.'
+write(fh,*) '                       Default:    coords'
+write(fh,*) ''
+write(fh,*) '   -cmarkov        Check Markov energy. Stop if wrong energy'
+write(fh,*) '   -track          Track in detail the Monte-Carlo simulation. '
+write(fh,*) '                   Additional output files are:'
+write(fh,*) '                           energy best markov'
+CALL ED(FH)
+ENDSUBROUTINE PRINTHELP 
+! }}}
+! printtime gettime {{{
+SUBROUTINE GETTIME(S)
+
+CHARACTER(LEN=*),INTENT(OUT) :: S
+INTEGER*4 TODAY(3), NOW(3)
+
+CALL IDATE(TODAY)   ! TODAY(1)=DAY, (2)=MONTH, (3)=YEAR
+CALL ITIME(NOW)     ! NOW(1)=HOUR, (2)=MINUTE, (3)=SECOND
+
+WRITE(S, 1000 )  TODAY(2), TODAY(1), TODAY(3), NOW
+1000 FORMAT ( I2.2, '/', I2.2, '/', I4.4,' ; ',I2.2, ':', I2.2, ':', I2.2 )
+
+END SUBROUTINE GETTIME 
+SUBROUTINE PRINTTIME(fh)
+
+integer fh
+INTEGER*4 TODAY(3), NOW(3)
+
+CALL IDATE(TODAY)   ! TODAY(1)=DAY, (2)=MONTH, (3)=YEAR
+CALL ITIME(NOW)     ! NOW(1)=HOUR, (2)=MINUTE, (3)=SECOND
+
+WRITE(fh, 1000 )  TODAY(2), TODAY(1), TODAY(3), NOW
+1000 FORMAT ( 'Date ', I2.2, '/', I2.2, '/', I4.4, '; Time ',&
+&         I2.2, ':', I2.2, ':', I2.2 )
+
+
+END SUBROUTINE PRINTTIME 
+! }}}
+! }}}
+    ! am countatoms {{{
+    SUBROUTINE AM(S)
+        CHARACTER(LEN=*) S
+
+        SELECTCASE(S)
+            CASE("MAIN")
+               ALLOCATE(MSCREENC(3*NATOMS),VT(NATOMS))
+               ALLOCATE(FF(NSAVE),QMIN(NSAVE),EAMIN(NSAVE,10),RGMIN(NSAVE))
+               ALLOCATE(QMINP(NSAVE,3*NATOMS))
+               ALLOCATE(COORDSO(3*NATOMS,1),VAT(NATOMS,1),VATO(NATOMS,1),COORDS(3*NATOMS,1))
+            CASE("INIT")
+                ALLOCATE(NQ(1),EPREV(1))
+                ALLOCATE(NCORE(1))
+        ENDSELECT
+    ENDSUBROUTINE AM
+
 
       SUBROUTINE COUNTATOMS
 !op226> Declarations {{{ 
@@ -1156,147 +1298,33 @@ END SUBROUTINE R_COORDS
       ! }}}
       END SUBROUTINE COUNTATOMS
 
-      ! getmodel printvars printhelp printtime {{{
-
-! getmodel {{{
-SUBROUTINE GETMODEL
-
-IF (P46) THEN
-  MODEL="P46 THREE-COLOUR OFF-LATTICE PROTEIN MODEL, WILD-TYPE"
-ELSEIF(G46) THEN
-  MODEL="P46 THREE-COLOUR OFF-LATTICE PROTEIN MODEL, GO-LIKE"
-ELSEIF(BLNT) THEN
-  MODEL="GENERAL BLN MODEL"
-ENDIF
-ENDSUBROUTINE GETMODEL
-! }}}
-! printvars {{{
-SUBROUTINE PRINTVARS(FH)
-! vars                                                                       {{{
-! sub
-integer fh
-! loc
-character(100) fmt(10)
-character(40) s
-integer i
-! }}}
-include '../inc/fmt.i.f90'
-
-CALL ED(fh)
-write(fh,10) "PARAMETER VALUES" !                                             {{{
-
-CALL GETMODEL
-WRITE(fh,*) "MODEL" 
-write(fh,*) TRIM(MODEL)
-CALL ED(fh)
-write(fh,1)  "PARAMETER DESCRIPTION",         "NAME",                  "VALUE"
-! pd:general                                                                 {{{
-write(fh,11) s_stars
-write(fh,10) "GENERAL" 
-write(fh,11) s_stars
-!s=adjustl(s)
-write(fh,3)  "Number of particles",                          "NATOMS",     NATOMS
-write(fh,2)  "Container radius",                             "RADIUS",     RADIUS
-write(fh,3)  "Number of saved lowest energy geometries",     "NSAVE",      NSAVE
-write(fh,3)  "Number of basin-hopping steps",                "MCSTEPS",    MCSTEPS
-write(fh,2)  "Temperature",                                  "TEMP",       TEMP
-write(fh,2)  "Acceptance ratio",                             "ACCRAT",     ACCRAT
-write(fh,2)  "Energy difference criterion for minima",       "ECONV",      ECONV
-write(fh,2)  "Final quench tolerance for RMS gradient ",     "FQMAX",      FQMAX
-write(fh,2)  "Quench convergence criterion for RMS gradient ", "SQMAX",    SQMAX
-write(fh,3)  "Maximum number of iterations",   "MAXIT", MAXIT
-write(fh,11) "(sloppy and final quenches)"
-write(fh,2)  "Temperature multiplier",                       "TFAC",       TFAC
-write(fh,3)  "",                                             "NACCEPT",    NACCEPT
-write(fh,3)  "",                                             "NRELAX",     NRELAX
-write(fh,11) s_stars !                                                        }}}
-! pd:lbfgs                                                                     {{{
-write(fh,10) "LBFGS parameters"
-write(fh,11) s_stars
-write(fh,3) "Number of LBFGS updates",   "MUPDATE",  MUPDATE
-write(fh,2) "Maximum BFGS step size",   "MAXBFGS",   MAXBFGS
-write(fh,2) "Guess for initial diagonal elements in BFGS", "DGUESS", DGUESS
-! }}} 
-! }}}
-CALL ED(fh)
-END SUBROUTINE PRINTVARS
-! }}}
-! printhelp {{{
-SUBROUTINE PRINTHELP(FH)
-INTEGER FH
-
-CALL ED(FH)
-write(fh,*) ''
-write(fh,*) 'Command-line options:'
-write(fh,*) ''
-write(fh,*) '   -ca     NACCEPT'
-write(fh,*) '   -f      PFORCE'
-write(fh,*) '   -g              turn on debug printing'
-write(fh,*) ''
-write(fh,*) '   -v              display version'
-write(fh,*) '   -pv             display default parameter values'
-write(fh,*) ''
-write(fh,*) '   -h              print this help message'
-write(fh,*) '   -p  PREF        Output files with preffix PREF, e.g., out => PREF.out'
-write(fh,*) '   -steps STEPS    Number of Monte-Carlo steps'
-write(fh,*) '   -crd C_FILE     name for the file with input coordinates.'
-write(fh,*) '                       Default:    coords'
-write(fh,*) ''
-write(fh,*) '   -cmarkov        Check Markov energy. Stop if wrong energy'
-write(fh,*) '   -track          Track in detail the Monte-Carlo simulation. '
-write(fh,*) '                   Additional output files are:'
-write(fh,*) '                           energy best markov'
-CALL ED(FH)
-ENDSUBROUTINE PRINTHELP 
-! }}}
-! printtime gettime {{{
-SUBROUTINE GETTIME(S)
-
-CHARACTER(LEN=*),INTENT(OUT) :: S
-INTEGER*4 TODAY(3), NOW(3)
-
-CALL IDATE(TODAY)   ! TODAY(1)=DAY, (2)=MONTH, (3)=YEAR
-CALL ITIME(NOW)     ! NOW(1)=HOUR, (2)=MINUTE, (3)=SECOND
-
-WRITE(S, 1000 )  TODAY(2), TODAY(1), TODAY(3), NOW
-1000 FORMAT ( I2.2, '/', I2.2, '/', I4.4,I2.2, ':', I2.2, ':', I2.2 )
-
-END SUBROUTINE GETTIME 
-SUBROUTINE PRINTTIME(fh)
-
-integer fh
-INTEGER*4 TODAY(3), NOW(3)
-
-CALL IDATE(TODAY)   ! TODAY(1)=DAY, (2)=MONTH, (3)=YEAR
-CALL ITIME(NOW)     ! NOW(1)=HOUR, (2)=MINUTE, (3)=SECOND
-
-WRITE(fh, 1000 )  TODAY(2), TODAY(1), TODAY(3), NOW
-1000 FORMAT ( 'Date ', I2.2, '/', I2.2, '/', I4.4, '; Time ',&
-&         I2.2, ':', I2.2, ':', I2.2 )
-
-
-END SUBROUTINE PRINTTIME 
-! }}}
-! }}}
-    ! am {{{
-    SUBROUTINE AM(S)
-        CHARACTER(LEN=*) S
-
-        SELECTCASE(S)
-            CASE("MAIN")
-               ALLOCATE(MSCREENC(3*NATOMS),VT(NATOMS))
-               ALLOCATE(FF(NSAVE),QMIN(NSAVE),EAMIN(NSAVE,10))
-               ALLOCATE(QMINP(NSAVE,3*NATOMS))
-               ALLOCATE(COORDSO(3*NATOMS,1),VAT(NATOMS,1),VATO(NATOMS,1),COORDS(3*NATOMS,1))
-            CASE("INIT")
-                ALLOCATE(NQ(1),EPREV(1))
-                ALLOCATE(NCORE(1))
-        ENDSELECT
-    ENDSUBROUTINE AM
     ! }}}
     subroutine DEAM
         DEALLOCATE(FF,QMIN,QMINP,EAMIN,MSCREENC)
     endsubroutine DEAM
 
+    SUBROUTINE GETRGYR(N,X,RGYR)
+    ! SUB
+    DOUBLE PRECISION, DIMENSION(:), INTENT(IN) ::  X
+    DOUBLE PRECISION, INTENT(OUT) :: RGYR
+    INTEGER,INTENT(IN) :: N
+    ! LOC
+    DOUBLE PRECISION, dimension(N,3) :: R
+    DOUBLE PRECISION, dimension(N) :: R2
+    DOUBLE PRECISION :: CMASS(3)
+    INTEGER I
+
+    R=RESHAPE(X, (/ N,3 /))
+    R2=0.0D0
+    CMASS=SUM(R,DIM=1)/N
+
+    DO I=1,N
+       R2(I)=R2(I)+SUM((R(I,1:3)-CMASS(1:3))**2)
+    ENDDO
+    RGYR=SQRT(SUM(R2)/N)
+
+    RETURN
+
+    END SUBROUTINE GETRGYR
 
       END MODULE F

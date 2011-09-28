@@ -39,7 +39,9 @@ IF (NARGS.GT.0) THEN
 				CASE('-g') ;  DEBUG=.TRUE.
 				CASE('-g46') ;  BLNT=.TRUE.; G46=.TRUE.; P46=.FALSE.
 				CASE('-p46') ;  BLNT=.TRUE.; P46=.TRUE.; G46=.FALSE.
-				CASE('-mbln') ; MYBLNT=.TRUE.
+				CASE('-mbln') ; MYBLNT=.TRUE.; 
+                  deb_bln=.true.
+                  deb_bln=.false.
 				CASE('-nrg') ; READ(VAR,*) NRG
 				CASE('-steps') ; READ(VAR,*) MCSTEPS
 				CASE('-p') ; READ(VAR,*) S; USEPREF=.TRUE. ; PREF=trim(S)//"."

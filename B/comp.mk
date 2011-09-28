@@ -1,6 +1,6 @@
 #
 # comp.mk. Compiler include file
-# Generated: Tue Sep 27 22:54:59 BST 2011 
+# Generated: Wed Sep 28 11:01:10 BST 2011 
 # Compiler: pgi
 #
 export FC=pgf90
@@ -15,5 +15,3 @@ FFLAGS_o := -fast -Mipa=fast,inline -Msmartalloc
 FFLAGS_g := -Mextend -O0 -Mnoframe -g -traceback
 LDFLAGS= -L.
 SWITCH=pgi
-FFLAGS = $(FFLAGS_g) 
-FFLAGS+=$(MODFLAG)

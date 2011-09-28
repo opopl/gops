@@ -13,6 +13,7 @@ done
 
 vim_opts="-n -p" 
 files_dir="./"
+pdir="pp"
 
 if [ -z "$*" ]; then 
   #{{{
@@ -41,7 +42,10 @@ while [ ! -z "$1" ]
 		case "$1" in
 		  "b") files=( ${bfiles[@]} ` ls $shd/*.sh ` ) ;;
 		  o) files=( ` ls ef*.tex ea*.tex ` )  ;;
-		  j) files=( ` ls j*.tex ` )  ;;
+		  j) files=( ` ls j.tex ` )  ;;
+		  c) files=( `ls ef.o* ` ); rm -rf ${files[@]} ; exit 1 ;;
+		  p) files=( ` ls $pdir/*.sh ` $pdir/makefile ) ;;
+		  cd) files=( `find . -name 38\* ` ); rm -rf ${files[@]} ; exit 1 ;;
 		  i) files=( ` ls data* odata* pdata.* pathdata* path.info* | sed 's/~$//g'` ) ;;
 		  *) exit ;;
 		esac

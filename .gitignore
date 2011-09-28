@@ -14,6 +14,7 @@ BUILDS/
 GMIN/source/porfuncs.f90
 DISCONNECT/source/manipulate
 DISCONNECT/source/disconnectionDPS
+[0-9]*
 *~
 *.le
 *.ea
