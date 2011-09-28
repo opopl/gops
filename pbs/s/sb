@@ -133,6 +133,9 @@ cat << EOF
 								the program (specified by the -exe switch)
 		-exe EXE			program name. 
 								Default is $exe
+		-sys SYS			system. 
+								Values: P46, G46
+								Default is $sys
 
 
 		-m sb_mode		submission mode:
@@ -193,6 +196,7 @@ while [ ! -z "$1" ]; do
   		-nrg) export nrg=$2 ;  ;;
   		-args) export args="$2" ;  ;;
   		-exe) export exe=$2 ;  ;;
+  		-sys) export sys=$2 ;  ;;
   		-rmout) export rmout=1 ;  ;;
 		-m)  export sb_mode=$2 ;;
 		-idin)  export printid=1; export idin=$2 ;;
@@ -253,6 +257,10 @@ esac
 if [ $rmout -eq 1 ]; then 
  	 echo "rmout=1: Remove out"
 fi
+
+case $sb_mode in
+ 	2)  echo "Force=$force" ;;
+esac
 
 
 for ((n=0;n<$nm;n++)); do 

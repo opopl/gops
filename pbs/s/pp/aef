@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# copy into ef.*.sh from ../ef.*.tex
+
+ff=( ` find ../ -name ef.\*.tex ` )
+ss=( P46 G46 )
+
+for f in ${ff[@]}; do
+	for sys in ${ss[@]}; do
+	  	hf="ef.$sys.sh"
+		if [ -f $f ]; then
+			echo "# aef: $f, $sys, `date` " >> $hf
+	  		cat $f | awk "/$sys/" >> $hf
+	  	fi
+	done
+		rm -f $f
+done

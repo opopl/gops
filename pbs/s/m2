@@ -1,0 +1,118 @@
+#/bin/bash
+# 
+#
+ss=( P46 G46 )
+
+## p46/g46 zf {{{
+#sb -m 2 -sys G46
+#sb -m 2 -sys P46
+## }}}
+## P46 diff forces {{{
+#sb -m 2 -f 0.0001 -sys P46
+#sb -m 2 -f 0.0002 -sys P46
+#sb -m 2 -f 0.0004 -sys P46
+#sb -m 2 -f 0.0005 -sys P46
+#sb -m 2 -f 0.0006 -sys P46
+#sb -m 2 -f 0.0008 -sys P46
+#sb -m 2 -f 0.001 -sys P46
+#sb -m 2 -f 0.0015 -sys P46
+#sb -m 2 -f 0.002 -sys P46
+#sb -m 2 -f 0.004 -sys P46
+#sb -m 2 -f 0.006 -sys P46
+##}}}
+## G46 diff forces {{{
+#sb -m 2 -f 0.0001 -sys G46
+#sb -m 2 -f 0.0002 -sys G46
+#sb -m 2 -f 0.0004 -sys G46
+#sb -m 2 -f 0.0005 -sys G46
+#sb -m 2 -f 0.0006 -sys G46
+#sb -m 2 -f 0.0008 -sys G46
+#sb -m 2 -f 0.001 -sys G46
+#sb -m 2 -f 0.0015 -sys G46
+#sb -m 2 -f 0.002 -sys G46
+#sb -m 2 -f 0.004 -sys G46
+#sb -m 2 -f 0.006 -sys G46
+##}}}
+## Larger MCSteps {{{
+#sb -m 2 -f 0.001 -sys P46 -N 50000 
+#sb -m 2 -f 0.001 -sys G46 -N 50000 
+#sb -m 2 -f 0.001 -sys P46 -N 100000
+#sb -m 2 -f 0.001 -sys G46 -N 100000
+#}}}
+## f=0.0005 {{{
+#f=0.0005
+#sb -m 2 -f $f -sys G46
+#sb -m 2 -f $f -sys P46
+#}}}
+## ca=5,100 f=0.001 {{{
+#sb -m 2 -f 0.001 -sys P46 -ca 5
+#sb -m 2 -f 0.001 -sys G46 -ca 5 
+#sb -m 2 -f 0.001 -sys P46 -ca 100
+#sb -m 2 -f 0.001 -sys G46 -ca 100
+##}}}
+#f=0.0003..0.0005 {{{
+#sb -m 2 -f 0.0003 -sys G46
+#sb -m 2 -f 0.00035 -sys G46
+#sb -m 2 -f 0.00045 -sys G46
+#sb -m 2 -f 0.0004 -sys G46
+#}}}
+##f=0.002..0.003, G46 {{{
+#inc=0.0001
+#f0=0.002
+#sys=G46
+#for i in {1..10}; do
+	#f=$( echo "$f0+$inc*$i" | bc ) 
+	#sb -m 2 -f $f -sys $sys
+#done
+##}}}
+##f=0.002..0.003, P46 {{{
+#inc=0.0001
+#f0=0.002
+#sys=P46
+#for i in {1..10}; do
+	#f=$( echo "$f0+$inc*$i" | bc ) 
+	#sb -m 2 -f $f -sys $sys
+#done
+#}}}
+# f=0.003..0.004, P46, G46 {{{
+#inc=0.0001
+#f0=0.003
+#for sys in ${ss[@]}; do
+	#for i in {1..10}; do
+		#f=$( echo "$f0+$inc*$i" | bc ) 
+		#sb -m 2 -f $f -sys $sys -rmout
+	#done
+#done
+#}}}
+# f=0.0005..0.001, P46, G46 {{{
+
+inc=0.00005
+f0=0.0005
+
+for sys in ${ss[@]}; do
+	for i in {1..20}; do
+		f=$( echo "$f0+$inc*$i" | bc ) 
+		sb -m 2 -f $f -sys $sys -rmout
+	done
+done
+
+#}}}
+# f=..., P46, G46 {{{
+
+force_min=0.004
+force_max=0.008
+nf=20
+force_i=$( echo "scale=10; ($force_max-$force_min)/$nf" | bc )
+source define_forces_0.sh
+
+for sys in ${ss[@]}; do
+	for f in ${forces[@]}; do
+		sb -m 2 -f $f -sys $sys -rmout
+	done
+done
+
+#}}}
+
+
+
+
