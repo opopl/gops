@@ -270,6 +270,7 @@
 
 ! INTER-PARTICLE DISTANCES: DR, LEN_DR; BOND VECTORS: BVR {{{
 
+        DR=0.0D0; LEN_DR=0.0D0
         DO I = 1, N-1
           DO J = I+1, N
             DR(I,J,1:3) = R(I,1:3) - R(J,1:3)
@@ -284,8 +285,14 @@
 
       DO I = 1, N-1
         B(I)= SQRT(SUM(BVR(I,1:3)**2))
+        ! EB - unit bond vector
         EB(I,1:3)=BVR(I,1:3)/B(I)
-        IF (I.LT.N-1) DPD(I)= SUM(BVR(I,1:3)*BVR(I+1,1:3))
+        IF (I.LT.N-1) then 
+            DPD(I)=0.0D0
+            DO K=1,3
+              DPD(I)= DPD(I)+BVR(I,K)*BVR(I+1,K)
+            enddo
+        endif
       ENDDO
 ! }}}
 ! Cross-products between adjacent bond vectors i and i+1 {{{
@@ -312,7 +319,10 @@
 ! TORSIONAL ANGLES: ANG(I,2), I=2,...,N-2 {{{
 
         DO I = 2, N-2
-            COS_PHI=-SUM(HVXPD(I-1,1:3)*HVXPD(I,1:3))
+            COS_PHI=0.0D0
+            DO K=1,3
+                COS_PHI=COS_PHI-HVXPD(I-1,K)*HVXPD(I,K)
+            ENDDO
             IF (ABS(COS_PHI).GT.1.0D0) COS_PHI=COS_PHI/ABS(COS_PHI)
             ANG(I,2) = ACOS(COS_PHI)
             AN=ANG(I,2)

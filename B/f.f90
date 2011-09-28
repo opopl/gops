@@ -436,7 +436,7 @@
       ! {{{
       IMPLICIT NONE
       INTEGER J1, NATOMS
-      DOUBLE PRECISION DPRAND, P(3*NATOMS), RADIUS, SR3, RANDOM
+      DOUBLE PRECISION P(3*NATOMS), RADIUS, SR3, RANDOM
       
       SR3=DSQRT(3.0D0)
       DO J1=1,NATOMS
@@ -1211,6 +1211,7 @@ write(fh,11) "(sloppy and final quenches)"
 write(fh,2)  "Temperature multiplier",                       "TFAC",       TFAC
 write(fh,3)  "",                                             "NACCEPT",    NACCEPT
 write(fh,3)  "",                                             "NRELAX",     NRELAX
+write(fh,1)  "BLN model type",                              "BLNTYPE",     trim(BLNTYPE)
 write(fh,11) s_stars !                                                        }}}
 ! pd:lbfgs                                                                     {{{
 write(fh,10) "LBFGS parameters"
@@ -1299,6 +1300,5 @@ END SUBROUTINE PRINTTIME
     subroutine DEAM
         DEALLOCATE(FF,QMIN,QMINP,EAMIN,MSCREENC)
     endsubroutine DEAM
-
 
       END MODULE F

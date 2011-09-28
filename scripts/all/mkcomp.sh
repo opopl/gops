@@ -57,7 +57,7 @@ EOF
 cat << EOF
 
 	COMPILERS:
-		gf 
+		gf (gfortran)
 		nag 
 		ifort
 		pgi
@@ -88,7 +88,7 @@ main(){
 
 while [ ! -z $1 ]; do   
 	case "$1" in
-	  pgi|gf|nag|ifort|gf) #{{{
+	  pgi|gf|gfortran|nag|ifort|gf) #{{{
 #define FC, intro part {{{
 compiler=$1
 case "$compiler" in

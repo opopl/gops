@@ -1,5 +1,5 @@
 
-default: init pgi debug dirs $(AUXF) deps $(PROG)
+default: init dirs $(AUXF) deps $(PROG)
 
 .PHONY: default clean rmdep deps tg bindir moddir libdir objdir dirs init
 .PHONY: pgi nag gf ifort debug opt

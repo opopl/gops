@@ -1,10 +1,6 @@
 
 ! Go-like model connectivities: fill in array CONNECT(:,:) {{{
-        DO J1=1,N
-           DO J2=J1,N
-              CONNECT(J2,J1)=.FALSE.
-           ENDDO
-        ENDDO
+        CONNECT=.FALSE.
         CONNECT(20, 1)=.TRUE.
         CONNECT(24, 1)=.TRUE.
         CONNECT(45, 1)=.TRUE.

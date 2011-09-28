@@ -22,6 +22,7 @@ CONTAINS
       INTEGER, PARAMETER :: DATA_FH = 15
       INTEGER :: IOS=0
       INTEGER NARGS
+      integer i
       COMMON /BUFINF/ BUFFER,POS,WORD
 !,IOS
       ! }}}
