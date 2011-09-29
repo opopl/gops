@@ -62,7 +62,7 @@ CONTAINS
          GOTO 100
 
          ! P46 G46 MYBLN BLN BLNGO {{{
-      ELSE IF (WORD.EQ.'P46') THEN
+      ELSE IF (WORD.EQ.'P46'.or.'P69') THEN
          BLNT=.TRUE.
          P46=.TRUE.
          G46=.FALSE.

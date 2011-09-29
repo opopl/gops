@@ -8,7 +8,7 @@
         ! PTYPE: type of BLN potential {{{
         !
         !       GO   Go-like
-        !       WT   Wild-type
+        !       P46   Wild-type
         !
         CHARACTER(LEN=*), INTENT(IN) :: PTYPE
         ! }}}

@@ -10,5 +10,5 @@ c:
 	rm -rf *.pdf *.ps
 
 a.pdf: $(sh)
-	ef.sh $(SYS) 
-	scp a.pdf $(ser):~/data/plots/
+	bash ef.sh $(SYS) 
+	#scp a.pdf $(ser):~/data/plots/

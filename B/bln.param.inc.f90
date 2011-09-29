@@ -8,7 +8,7 @@
       include "bln.go.ab.inc.f90"         ! parameters for the non-bonded LJ interaction 
       include "bln.go.cd.inc.f90"         ! parameters for the torsion angle interaction
       ! ==================================================
-                CASE("WT")                ! Wild-type (WT) original frustrated BLN model 
+                CASE("P46")                ! Wild-type (P46) original frustrated BLN model 
       ! ==================================================
       include "bln.wt.ab.inc.f90"         ! L-J interaction between non-bonded particles
       include "bln.go.cd.inc.f90"         ! Torsion angle potential

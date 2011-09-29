@@ -6,12 +6,12 @@ export shd="`dirname $(readlink -f $0)`"
 # name of this script 
 export this_script=` basename $0 `
 
-deps=( ef ea ea_fz ea_fvsz ea_ta ea_ba ea_nbond ea_bond ) 
+deps=( ef ea rgyr ea_fz ea_fvsz ea_ta ea_ba ea_nbond ea_bond ) 
 rm -rf *.ps *.pdf
 all="a.ps"
 
 while [ ! -z "$1" ]; do 
-          #intro {{{
+    # intro {{{
 	for dep in ${deps[@]}; do
 		xlabel="f"
 
@@ -26,13 +26,22 @@ while [ ! -z "$1" ]; do
 	  		P46) stitle="Wild-type" ;;
 		esac
 	  #}}}
-		#dep switch {{{
+		# dep switch {{{
 		xlabel="Force f"
 		case $dep in 
+			#ef {{{
 	  		ef) xn=1; yn=2; 
 					btitle="Total Energy vs Force" 
 					ylabel="E"
 					;;
+			# }}}
+			# rgyr {{{
+	  		rgyr) xn=1; yn=2; 
+					btitle="Radius of gyration vs Force" 
+					ylabel="R_g"
+					;;
+			# }}}
+			#ea {{{
 	  		ea_fz) xn=1; yn=7; 
 					btitle="-F*dZ vs Force" 
 					ylabel="-F*dZ"
@@ -61,6 +70,7 @@ while [ ! -z "$1" ]; do
 					btitle="Bonded Energy vs Force" 
 					ylabel="E"
 					;;
+			#}}}
 		esac
 	    #}}}
 	#gnuplot {{{
