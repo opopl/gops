@@ -16,27 +16,29 @@ repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
 
 # }}}
 #default {{{
-export f="ale"
+export ifile="ale"
 export font_size=100
 export xa=0
 export ya=0
 export za=0
 export jtext="BLN model"
 export zoom=70
-export i_frame=20
+export iframe=20
 export pic_ext=gif
 export apic=all.gif
-export picfile=$f.$i_frame.$pic_ext
+export picfile=$f.$iframe.$pic_ext
+export mode="all_frames"
 #}}}
 }
 
 # setvars {{{
 setvars(){
-	export picfile=$f.$i_frame.$pic_ext
+	export picfile=$f.$iframe.$pic_ext
 }
 #}}}
 
 set_base_vars
+setvars
 
 display_help(){
 # {{{
@@ -87,11 +89,13 @@ EOF
 
 pframe(){
 # process individual frame {{{
+iframe=$1
+
 # start message {{{
 cat << EOF
-Input file: $f
+Input file: $ifile
 Output file: $picfile
-Frame: $i_frame
+Frame: $iframe
 X angle: $xa
 Y angle: $ya
 Z angle: $za
@@ -102,7 +106,7 @@ EOF
 cat >& t.jmol << EOF
 
 load trajectory "$f"
-frame $i_frame
+frame $iframe
 
 width = 640;
 height = 480;
@@ -203,8 +207,8 @@ main(){
 # read cmd {{{
 while [ ! -z "$1" ]; do 
 	case "$1" in
-	  -i) export f=$2; shift ;;
-	  -f) export i_frame=$2; shift ;;
+	  -i) export ifile=$2; shift ;;
+	  -f) export iframe=$2; shift ;;
 	  -fa) export mode="all_frames" ;;
 	  -sf) export mode="single_frame" ;;
 	  -xa) export xa=$1; shift ;;
@@ -217,8 +221,13 @@ done
 #}}}
 # process frames {{{
 
+# number of frames
+sz=`wc -l $ifile `
+nfr=$(($sz/48))
+for i in {1..$nfr}; do 
+  	pframe $i
+done
 # }}}
-
 
 # }}}
 }
