@@ -1,5 +1,7 @@
 #!/bin/bash - 
 
+# loop over frames {{{
+
 for ((i_frame=$frame_min; i_frame<=$frame_max; i_frame++ )); do
 	  	# j.sh produces t.jmol
 		echo "File: $file Frame index: $i_frame"
@@ -54,4 +56,5 @@ for ((i_frame=$frame_min; i_frame<=$frame_max; i_frame++ )); do
 		
 		use rotate
 	  done
+	#}}}
 

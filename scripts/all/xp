@@ -1,11 +1,9 @@
 #!/bin/bash
 
-use(){
-source $shd/"$this_script"_$1.sh
-}
+# set_base_vars() use() intro() {{{
 
 set_base_vars(){
-  #{{{
+#{{{
 
 export shd="`dirname $(readlink -f $0)`"
 export this_script=` basename $0 `
@@ -13,10 +11,16 @@ export this_script=` basename $0 `
 export vim_opts="-n -p"
 export v="vim $vim_opts"
 
-export r="$shd"
-export xyz_dir="$r/../xyz/"
+#export r="$shd"
+#export xyz_dir="$r/../xyz/"
+#export tmp_dir="$r/tmp"
+#export pics_dir="$r/../pics/"
+#export file0="chf"
+
+export r="$PWD"
+export xyz_dir="$r/xyz/"
 export tmp_dir="$r/tmp"
-export pics_dir="$r/../pics/"
+export pics_dir="$r/pics/"
 export file0="chf"
 
 export reset_f=0
@@ -55,8 +59,12 @@ export zamin=45
 #}}}
 }
 
-set_base_vars
+use(){
+source $shd/"$this_script"_$1.sh
+}
 
+intro(){
+#{{{
 if [ $no_rotate -eq 1 ]; then
   	xamax=$xamin
   	yamax=$yamin
@@ -65,7 +73,13 @@ fi
 
 mkdir -p $tmp_dir
 mkdir -p $pics_dir
+#}}}
+}
 
+# }}}
+
+set_base_vars
+intro
 
 display_help(){
 # {{{
@@ -102,6 +116,8 @@ EOF
 cat << EOF
 REMARKS:
 AUTHOR: O. Poplavskyy
+SCRIPT LOCATION:
+	$0
 =============================================
 EOF
 # }}}
@@ -111,27 +127,78 @@ EOF
 main(){
 # {{{
 
-case "$1" in
-  "")
-  ;;
-  *)
-  ;;
-esac    # --- end of case ---
+#case .. in {{{
+	  	case "$1" in
+		  	# ==================
+			#
+		  	# Ground state of the WT/Go model
+			#
+		  	"-0") 
+				ax=$2; shift; ay=$2; shift; az=$2; shift; shift
+				./xp -ax $ax -ay $ay -az $az \
+					--in_file gogs \
+					--in_dir ../x0 \
+					--pics_dir ../pics-gogs \
+				       	--picoutfile gogs-$ax-$ay-$az $* ; 
+				exit 
+				;; 
+			"-00") ./xp -0 45 90 45 $* ; exit ;;
+			"-0x") shift; ./xp -00 -pof gogs-rx -rx 0 180 $*; exit  ;;
+			"-0y") shift; ./xp -00 -pof gogs-ry -ry 0 180 $*; exit  ;;
+			"-0z") shift; ./xp -00 -pof gogs-rz -rz 0 180 $*; exit  ;;
+			#
+			# printing text in output images
+			#
+			"-nt") print_text="no" ;;
+			"-pra") print_text="ra" ;;
+			#
+			# ===================
+			#
+		  	"-rm") rm -f $pics_dir/*.$pic_ext ; exit ;;
+	    		"-f" | "--in_file" ) file0="$2" ;;
+			"-p" | "--pics_dir") pics_dir="$2"
+				mkdir -p $pics_dir ;;
+			"-zm") zoom=$2 ;;
+			"-opt") use_opt=1 ;;
+			"-rot") rotate=1; no_rotate=0 ;;
+			"-pof" | "--picoutfile") reset_pof=1 ; pof="$2"."$pic_ext" ;;
+			"-a") source "$this_script"_cmd"$1".sh ;;
+			"-aa") append_angles=1 ;;
+			"-af") append_force=1 ;;
+			"-naf") append_force=0 ;;
+			"-ax") 
+				xamin=$2 
+				xamax=$xamin
+			;;
+			"-ay") 
+				yamin=$2 
+				yamax=$yamin
+			;;
+			"-az") 
+				zamin=$2
+				zamax=$zamin
+			       	;;
 
-# }}}
-}
+			"-rx") rx=1; no_rotate=0; xamin=$2; xamax=$3; xai=$4 ;;
+			"-ry") ry=1; no_rotate=0; yamin=$2; yamax=$3; yai=$4 ;;
+			"-rz") rz=1; no_rotate=0; zamin=$2; zamax=$3; zai=$4 ;;
 
-[ -z "$*" ] && ( display_help; exit 0 )
+			"-d" | "--in_dir") xyz_dir="$2" ;;
+			"-l") ls $xyz_dir ; exit ;;
+			"-fmin") frame_min=$2 ; reset_f=1 ;;
+			"-fmax") frame_max=$2 ; reset_f=1 ;;
+			"-fr") frame_min=$2 ; frame_max=$2 ; reset_f=1 ;;
+			"-fns") font_size=$2 ;;
+			"-fa") reset_f="2" ;;
+			"-log") write_log_file=1 ;;
+esac
+#}}}
 
-	  #{{{
-	  cmd_args=( "$@" ) 
-	  use read_cmd_args
-
-	  echo "*********************"
-	  echo "Starting $this_script..."
-	  echo "Command-line arguments supplied:"
-	  echo "${cmd_args[@]}"
-	  echo 
+echo "*********************"
+echo "Starting $this_script..."
+echo "Command-line arguments supplied:"
+echo "${cmd_args[@]}"
+echo 
 
 	  old_full_file=${full_file%.xyz}.old.xyz
 	  cp $full_file $old_full_file 
@@ -162,34 +229,19 @@ esac    # --- end of case ---
 	  source "$this_script"_loop_over_frames.sh	  
 	  cp $old_full_file $full_file
 	 #}}}
+  ;;
+esac    
 
-
-define_base_dirs(){
-# {{{
-# main Wales group software directory
-export wg_dir="$shd/../../"
-packdir=$HOME/arch/packed
-unpackdir=$HOME/arch/unpacked
 # }}}
 }
 
-set_base_vars(){
-# {{{
-s_purpose="view source files with vim"
-s_project="~/scripts"
-# }}}
-}
-
-
-#}}}
-
-
+[ -z "$*" ] && ( display_help; exit 0 )
 
 # main part 
 # {{{
 
 script_opts=( $* )
-define_base_dirs
+cmd_args=( "$@" ) 
 
 while [ ! -z "$1" ]; do
   	case "$1" in

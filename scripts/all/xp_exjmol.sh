@@ -1,4 +1,5 @@
 
+		#print header  {{{
 		lst="------------------------------------------------------------"
 
 		l[0]="XYZ file: $file0; Frame: $i_frame; Output image file: $pof" 
@@ -22,6 +23,7 @@
 			"no") jtext="" ;;
 			"ra") jtext="$x_angle $y_angle $z_angle" ;;
 		esac
+	  #}}}
 		
 		pic="$pics_dir/pic.$pic_ext"
 	   	source "$this_script"_j.sh 		
@@ -39,5 +41,5 @@
 
 		pic_file_size=$(stat -c%s "$output_pic_file")
 		
-		#echo "Total image file size: $pic_file_size"
+		echo "Total image file size: $pic_file_size"
 
