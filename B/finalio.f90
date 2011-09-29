@@ -30,11 +30,14 @@
       write(fofh,'(2a20,1x,e20.5)') 'Total energy: ', ' E_total=', eamin(1,1)
       write(fofh,'(2a20,1x,e20.5)') 'Non-bonded interaction energy: '  ,'E_nbond= ', eamin(1,2)
       write(fofh,'(2a20,1x,e20.5)') 'Bonded interaction energy: ','E_bond= ', eamin(1,3)
-      write(fofh,'(2a20,1x,e20.5)') 'Bond angle interaction energy: ','E_bangle= ', eamin(1,5)
-      write(fofh,'(2a20,1x,e20.5)') 'Torsional angle interaction energy: ','E_tangle= ', eamin(1,6)
-      write(fofh,'(2a20,1x,e20.5)') 'Radius of gyration: R_gyr=', rgmin(1)
+      write(fofh,'(2a20,1x,e20.5)') 'Bond angle interaction energy: ','E_bangle= ', eamin(1,4)
+      write(fofh,'(2a20,1x,e20.5)') 'Torsional angle interaction energy: ','E_tangle= ', eamin(1,5)
+      if (pullt) then 
+         write(fofh,'(2a20,1x,e20.5)') 'Applied force energy: ','E_dfz= ', eamin(1,6)
+      endif
+      write(fofh,'(2a20,1x,e20.5)') 'Radius of gyration: ',' R_gyr=', rgmin(1)
       write(fofh,'(a)') ''
-      write(fofh,'(i5,a)') NSAVE,'Saved lowest energies:' 
+      write(fofh,'(i5,2x,a)') NSAVE,'Saved lowest energies:' 
       write(fofh,'(a)') ''
       write(fofh,'(e20.5)') eamin(1:nsave,1) 
       write(fofh,'(a)') ''

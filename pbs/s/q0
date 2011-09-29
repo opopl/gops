@@ -97,11 +97,15 @@ time_spent=$(($time_finish-$time_start))
 
 low_en=( ` awk '/^Energy/ { print $5 }' $le_file ` )
 ea_en=( ` cat $ea_file | sed '/^[\t ]*#/d' ` )
+rgyr=( ` cat $fo_file | awk '/R_gyr=/ { print $NF }'  ` )
 
 gm_energy="${low_en[0]}"
 gme=$( echo "scale=10; ($gm_energy-($gs_energy))/($gs_energy)" | bc )
 
+# all energies, ea.*.tex
 ea_outf=$output_dir/ea.$sb_mode.$data_ext
+# radius of gyration, rgyr.*.tex
+rgyrf=$output_dir/rgyr.$sb_mode.$data_ext
 
 if [ $printid -eq 1 ]; then
 	case "$idin" in 
@@ -110,9 +114,10 @@ if [ $printid -eq 1 ]; then
 fi
 
 info="$varid $time_spent $exe $args $pbs_job_id $sys $date_start" 
-# >> ef*.tex
+# >> ef*.tex, global minimum energy vs force
 outf=$output_dir/ef.$sb_mode.$data_ext
 echo "` printvar 'float' $force` $gm_energy $info" >> $outf
+echo "` printvar 'float' $force` $rgyr $info" >> $rgyrf
 echo " ${ea_en[@]} $info " >> $ea_outf
 # >> *le
 head -1 le >> le $output_dir/$sb_mode.le
