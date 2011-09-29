@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# BLN {{{
 # bln.sh: this will give array xyz_headers 
 # 		 plus insert correct atom labels into the xyz file
 #		 plus it removes blank lines 
@@ -86,3 +87,4 @@ done
 let num_frames=$i
 
 cp $fnew $full_file
+#}}}

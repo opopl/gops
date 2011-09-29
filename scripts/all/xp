@@ -2,6 +2,10 @@
 
 # set_base_vars() use() intro() {{{
 
+eo(){
+echo "$this_script> Loop over frames..."
+}
+
 set_base_vars(){
 #{{{
 
@@ -83,13 +87,26 @@ intro
 
 display_help(){
 # {{{
-# general beginning part {{{
+case "$1" in
+ 	""|"a"|"all")  # {{{
+	display_help "header"
+	display_help "defaults"
+	display_help "options"
+	display_help "rotations"
+	display_help "final"
+	;;
+	# }}}
+  head|header) # general beginning part {{{
 cat << EOF
 =============================================
 SCRIPT NAME: $this_script 
-PROJECT: $s_project
-PURPOSE: $s_purpose
-USAGE: $this_script [ OPTIONS ] 
+PROJECT: gops
+PURPOSE:
+	convert a given XYZ file to an image (gif) file
+USAGE:
+	$this_script OPTS
+REQUIREMENTS:
+	jmol gifsicle imagemagick
 
 	OPTIONS:
 
@@ -104,58 +121,39 @@ USAGE: $this_script [ OPTIONS ]
 	
 	============
 EOF
+	;;
 # }}}
-# actual interesting part {{{
+	u|usage)
 cat << EOF
-
-some option
-
-EOF
-# }}}
-# final general part {{{
-cat << EOF
-REMARKS:
-AUTHOR: O. Poplavskyy
-SCRIPT LOCATION:
-	$0
-=============================================
-EOF
-# }}}
-# }}}
-}
-
-main(){
-# {{{
-
-#case .. in {{{
-	  	case "$1" in
-		  	# ==================
-			#
-		  	# Ground state of the WT/Go model
-			#
-		  	"-0") 
-				ax=$2; shift; ay=$2; shift; az=$2; shift; shift
-				./xp -ax $ax -ay $ay -az $az \
-					--in_file gogs \
-					--in_dir ../x0 \
-					--pics_dir ../pics-gogs \
-				       	--picoutfile gogs-$ax-$ay-$az $* ; 
-				exit 
-				;; 
-			"-00") ./xp -0 45 90 45 $* ; exit ;;
-			"-0x") shift; ./xp -00 -pof gogs-rx -rx 0 180 $*; exit  ;;
-			"-0y") shift; ./xp -00 -pof gogs-ry -ry 0 180 $*; exit  ;;
-			"-0z") shift; ./xp -00 -pof gogs-rz -rz 0 180 $*; exit  ;;
+	USAGE:
+		$this_script -f  FILE 
+		  	-0 
+				-f ( --in_file ) gogs 
+				-d ( --in_dir ) ../x0 
+				-p ( --pics_dir ) $pics_dir
+				--picoutfile gogs-$ax-$ay-$az 
+			-00
+		   		 -0 45 90 45 ARGS
+			-0x
+				-00 -pof gogs-rx -rx 0 180 ARGS
+			-0y
+				-00 -pof gogs-ry -ry 0 180 ARGS
+			-0z 
+				-00 -pof gogs-rz -rz 0 180 ARGS
 			#
 			# printing text in output images
 			#
-			"-nt") print_text="no" ;;
-			"-pra") print_text="ra" ;;
+			-nt 
+				print_text="no" 
+			-pra
+		   		print_text="ra" 
 			#
 			# ===================
 			#
-		  	"-rm") rm -f $pics_dir/*.$pic_ext ; exit ;;
-	    		"-f" | "--in_file" ) file0="$2" ;;
+		  	-rm 
+				rm -f $pics_dir/*.$pic_ext ; exit ;;
+			-f | --in_file 
+		   		input file file0
 			"-p" | "--pics_dir") pics_dir="$2"
 				mkdir -p $pics_dir ;;
 			"-zm") zoom=$2 ;;
@@ -191,48 +189,347 @@ main(){
 			"-fns") font_size=$2 ;;
 			"-fa") reset_f="2" ;;
 			"-log") write_log_file=1 ;;
-esac
+		esac
+		shift
+done
 #}}}
 
-echo "*********************"
-echo "Starting $this_script..."
-echo "Command-line arguments supplied:"
-echo "${cmd_args[@]}"
-echo 
+EOF
+	;;
+  opt|options) # {{{
+cat << EOF
+
+	SPECIAL
+
+	-0 AX AY AZ OPTS 	=> xp -ax AX -ay AY -az AZ 
+					--in_file gogs
+					--in_dir ../x0 
+					--pics_dir ../pics-gogs 
+					-pof gogs-ax-ay-az OPTS
+				
+					Input XYZ file: gogs.xyz
+					Input XYZ directory: ../x0
+					Output directory for images: ../pics-gogs
+					Output image filename: ax-ay-az
+						with ax, ay, az the rotation angles.
+	-0x INC 		=> xp -0 -rx 0 180 INC 			
+	-0y INC 		=> xp -0 -ry 0 180 INC 			 
+	-0z INC 		=> xp -0 -rz 0 180 INC 			 
+
+	============
+	TEXT IN IMAGES
+
+	-nt				no text in images
+	-pra				print only rotation angles 
+	
+	COMMON
+	
+
+	-rm 				= rm -f $pics_dir/*.$pic_ext
+	-f, --in_file file0			xyz filename (without xyz-extension!)
+	-a				all xyz files in a given xyz-directory, all frames
+	-d,--in_dir xyz_dir			specify directory for xyz files
+	-p, --pics_dir pics_dir			directory for images
+	-pof, --picoutfile NAME		pof name for the output image file (specify without extension!)
+	-l 				list xyz files
+
+	============
+	FRAMES
+	
+	-fmax		frame_max		maximal frame number
+	-fmin		frame_min		minimal frame number
+	-fr		frame_index		only this frame
+	-fa		all frames in the given file(s)
+	
+	============
+	
+	-fns		font_size		font size
+	-log		write output into log-file
+	-rot		rotate x, y, z angles
+
+	------------
+	-opt		use 'opt.txt' file which contains data for 
+				optimal parameters.
+				Format for file opt.txt:
+					FILE_LABEL xa ya za zoom   
+
+			# means comment
+	------------
+
+	-rx 		rotate x angle
+	-ry		rotate y angle
+	-rz		rotate z angle
+
+	-ax		x angle
+	-ay		y angle
+	-az		z angle
+	-aa		append angles info to the output image files
+	-af		append forces to the output image file
+	-naf		overwrite image file for the same value of force
+	-zm	zoom 	zoom value, default is $zoom
+
+EOF
+	;;
+# }}}
+	def|"defaults") # {{{
+cat << EOF
+
+DEFAULTS:
+	Directory with XYZ files:
+		xyz_dir=$xyz_dir
+
+	Directory for output pictures:
+		pics_dir=$pics_dir
+
+	file0=$file0
+		Start frame:
+	frame_min=$frame_min
+		Finish frame:
+	frame_max=$frame_max
+
+	font_size=$font_size
+		Write log file:
+	write_log_file=$write_log_file
+		Picture file extension:
+	pic_ext="$pic_ext"
+		Whether need to append force:
+	append_force=$append_force
+
+	use_opt=$use_opt
+	zoom=$zoom
+
+EOF
+;;
+#}}}
+	rot|rotations) # {{{
+cat << EOF
+	------------------
+	Rotations:
+	------------------
+
+	rotate=$rotate
+	rx=$rx,	ry=$ry,	rz=$rz
+	xai=$xai, yai=$yai, zai=$zai
+	xamin=$xamin, yamin=$yamin, zamin=$zamin
+	xamax=$xamax, yamax=$yamax, zamax=$zamax
+	append_angles=$append_angles
+EOF
+	;;
+  #}}}
+	fin|"final")  # {{{
+cat << EOF
+REMARKS:
+AUTHOR: O. Poplavskyy
+SCRIPT LOCATION:
+	$0
+=============================================
+EOF
+	;;
+# }}}
+  esac
+# }}}
+}
+
+main(){
+# {{{
+
+# read in cmd args
+# {{{ while [ ! -z "$1" ]; do 
+ while [ ! -z "$1" ]; do 
+	  	case "$1" in
+		  	# ==================
+			#
+		  	# Ground state of the WT/Go model
+			#
+		  	"-0") 
+				ax=$2; shift; ay=$2; shift; az=$2; shift; shift
+				./xp -ax $ax -ay $ay -az $az \
+					--in_file gogs \
+					--in_dir ../x0 \
+					--pics_dir ../pics-gogs \
+				       	--picoutfile gogs-$ax-$ay-$az $* ; 
+				exit 
+				;; 
+			"-00") ./xp -0 45 90 45 $* ; exit ;;
+			"-0x") shift; ./xp -00 -pof gogs-rx -rx 0 180 $*; exit  ;;
+			"-0y") shift; ./xp -00 -pof gogs-ry -ry 0 180 $*; exit  ;;
+			"-0z") shift; ./xp -00 -pof gogs-rz -rz 0 180 $*; exit  ;;
+			#
+			# printing text in output images
+			#
+			"-nt") print_text="no" ;;
+			"-pra") print_text="ra" ;;
+			#
+			# ===================
+			#
+		  	"-rm") rm -f $pics_dir/*.$pic_ext ; exit ;;
+	    	"-f" | "--in_file" ) file0="$2" ;;
+			"-p" | "--pics_dir") pics_dir="$2"
+				mkdir -p $pics_dir ;;
+			"-zm") zoom=$2 ;;
+			"-opt") use_opt=1 ;;
+			"-rot") rotate=1; no_rotate=0 ;;
+			"-pof" | "--picoutfile") reset_pof=1 ; pof="$2"."$pic_ext" ;;
+			"-a") source "$this_script"_cmd"$1".sh ;;
+			"-aa") append_angles=1 ;;
+			"-af") append_force=1 ;;
+			"-naf") append_force=0 ;;
+			"-ax") 
+				xamin=$2 
+				xamax=$xamin
+			;;
+			"-ay") 
+				yamin=$2 
+				yamax=$yamin
+			;;
+			"-az") 
+				zamin=$2
+				zamax=$zamin
+			       	;;
+
+			"-rx") rx=1; no_rotate=0; xamin=$2; xamax=$3; xai=$4 ;;
+			"-ry") ry=1; no_rotate=0; yamin=$2; yamax=$3; yai=$4 ;;
+			"-rz") rz=1; no_rotate=0; zamin=$2; zamax=$3; zai=$4 ;;
+
+			"-d" | "--in_dir") xyz_dir="$2" ;;
+			"-l") ls $xyz_dir ; exit ;;
+			"-fmin") frame_min=$2 ; reset_f=1 ;;
+			"-fmax") frame_max=$2 ; reset_f=1 ;;
+			"-fr") frame_min=$2 ; frame_max=$2 ; reset_f=1 ;;
+			"-fns") font_size=$2 ;;
+			"-fa") reset_f="2" ;;
+			"-log") write_log_file=1 ;;
+		esac
+		shift
+done
+#}}}
+# main execution {{{
+
+# intro {{{
+
+eo "*********************"
+eo "Starting $this_script..."
+eo "Command-line arguments supplied:"
+eo "${cmd_args[@]}"
+eo 
 
 	  old_full_file=${full_file%.xyz}.old.xyz
 	  cp $full_file $old_full_file 
 
-	  file=$file0.xyz ; full_file=$xyz_dir/$file
-	  source "$this_script"_bln.sh
+	  file=$file0
+	  full_file=$xyz_dir/$file
 
-	  # now sort with respect to forces #source sort_forces.sh
+#}}}
+# BLN {{{
+# bln.sh: this will give array xyz_headers 
+# 		 plus insert correct atom labels into the xyz file
+#		 plus it removes blank lines 
+
+#
+# the original BLN sequence is
+# is B9-N3-(LB)4-N3-B9-N3-(LB)5-L 
+#
+
+
+# remove blank lines
+
+cat $full_file | sed '/^$/d' > n; mv n $full_file
+
+subs(){
+
+fname=$4
+gawk -f $shd/"$this_script"_sub_symbol.awk -v start=$1 -v end=$2 -v symbol="$3" $fname >> $fname.1
+
+}
+
+f="$full_file.n"
+cp $full_file $f
+
+file_size=$(stat -c%s "$f")
+
+fnew=` mktemp `
+
+let i=0
+while [ $file_size -gt 0 ]; do
+
+	xyz=` mktemp `
+	head=` mktemp `
+	n=` mktemp ` 
+  	
+	cat $f | sed -n '1,2p' >& $head
+	xyz_header=` cat $f | sed -n "2p" `
+
+  	cat $f | sed -n '3,48p' >& $xyz
+	
+	cat $f | sed '1,48d' >& $n ; mv $n $f
+	
+	rm -f $xyz.1
+	
+	# B-9
+	subs 1 9 "H" $xyz
+	# N-3
+	subs 10 12 "N" $xyz
+	# (LB)-4
+	for (( j=0;j<4;j++)); do	
+		let j1=$((13+2*$j))
+	  	let j2=$((14+2*$j))
+		subs $j1 $j1 "C" $xyz
+		subs $j2 $j2 "H" $xyz
+      	done
+	# N-3
+	subs 21 23 "N" $xyz
+	# B-9
+	subs 24 32 "H" $xyz
+	# N-3
+	subs 33 35 "N" $xyz
+	# (LB)-5
+	for (( j=0;j<5;j++)); do	
+		let j1=$((36+2*$j))
+	  	let j2=$((37+2*$j))
+		subs $j1 $j1 "C" $xyz
+		subs $j2 $j2 "H" $xyz
+      	done
+	# L
+	subs 46 46 "C" $xyz
+
+	cat $head >> $fnew
+	cat $xyz.1 >> $fnew
+
+	file_size=$(stat -c%s "$f")
+	let i=$(($i+1))
+	
+	xyz_headers[$i]=$xyz_header
+	forces[$i]=` echo $xyz_header | awk '{ print $4 }' | sed 's/;$// ' ` 
+
+	rm -r $head $xyz $xyz.1
+done
+
+let num_frames=$i
+
+cp $fnew $full_file
+#}}}
+
+	  # now sort with respect to forces
 
 	  case "$reset_f" in
-	    	0)
-	  		frame_max=1
-	  		frame_min=1
-			;;
-		2)	frame_min=1
-			frame_max=$num_frames
-		;;
+	    0) frame_max=1 ; frame_min=1 ;;
+		2)	frame_min=1 ; frame_max=$num_frames ;;
 	  esac
 
 	  mkdir -p $pics_dir
 
-	  echo "Input XYZ file: $file0 "
-	  echo "Input XYZ-directory: $xyz_dir"
-	  echo "Number of frames: $num_frames"
-	  echo "Output image directory: $pics_dir"
- 	  echo "====================================="
+ 	  eo "====================================="
+	  eo "Input XYZ file: $file0 "
+	  eo "Input XYZ-directory: $xyz_dir"
+	  eo "Number of frames: $num_frames"
+	  eo "Output image directory: $pics_dir"
+ 	  eo "====================================="
+	  eo "Loop over frames ..."
 
 	  source "$this_script"_loop_over_frames.sh	  
 	  cp $old_full_file $full_file
 	 #}}}
-  ;;
-esac    
-
-# }}}
+#}}}
 }
 
 [ -z "$*" ] && ( display_help; exit 0 )
@@ -246,8 +543,8 @@ cmd_args=( "$@" )
 while [ ! -z "$1" ]; do
   	case "$1" in
 		  #{{{
-	  	vm) $v $0 $hm/scripts/f.sh; exit ;;
-		h) display_help $*; exit ;;
+	  	vm) $v $0*.sh $hm/scripts/f.sh; exit ;;
+		-h|h) shift; display_help $*; exit ;;
 		-g) v="$v -g" ;;
 	  	*) main $* && exit 0 ;;
 	esac
