@@ -1,2 +1,4 @@
 
-vim ef*.sh ea*.sh makefile
+#vim ef*.sh ea*.sh makefile
+vim p46.sh g46.sh gej.sh
+

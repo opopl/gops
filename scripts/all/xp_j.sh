@@ -1,4 +1,6 @@
 
+echo "$this_script> Generating file: $r/t.jmol"
+
 cat >& $r/t.jmol << EOF
 
 load trajectory "$xyzfile"

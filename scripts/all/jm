@@ -1,0 +1,254 @@
+#!/bin/bash
+
+# set_base_vars() setvars display_help() {{{
+
+set_base_vars(){
+# {{{
+s_purpose="generate images from XYZ files using JMOL"
+# directory where this script resides
+export shd="`dirname $(readlink -f $0)`"
+# name of this script 
+export this_script=` basename $0 `
+
+vim_opts="-n -p"
+v="vim $vim_opts"
+repos=( "config" "scripts" "templates" "vrt" "install" "doc-coms" "doc-cit" )
+
+# }}}
+#default {{{
+export ifile="ale"
+export font_size=100
+export xa=0
+export ya=0
+export za=0
+export jtext="BLN model"
+export zoom=70
+export iframe=20
+export pic_ext=gif
+export apic=all.gif
+export picfile=$f.$iframe.$pic_ext
+export mode="all_frames"
+#}}}
+}
+
+# setvars {{{
+setvars(){
+	export picfile=$f.$iframe.$pic_ext
+}
+#}}}
+
+set_base_vars
+setvars
+
+display_help(){
+# {{{
+# general beginning part {{{
+cat << EOF
+=============================================
+SCRIPT NAME: $this_script 
+PROJECT: $s_project
+PURPOSE: $s_purpose
+USAGE: $this_script [ OPTIONS ] 
+
+	OPTIONS:
+
+	============
+	General
+	============
+
+			display the help message
+
+	vm		v(iew) m(yself), i.e., edit this script
+	-g		gvim invocation
+	
+	============
+EOF
+# }}}
+# actual interesting part {{{
+cat << EOF
+
+	-i input file
+	-f frame
+	-xa,-ya,-za specify angles
+
+EOF
+# }}}
+# final general part {{{
+cat << EOF
+REMARKS:
+AUTHOR: O. Poplavskyy
+=============================================
+EOF
+# }}}
+# }}}
+}
+
+[ -z "$*" ] && ( display_help; exit 0 )
+
+#}}}
+
+pframe(){
+# process individual frame {{{
+iframe=$1
+
+# start message {{{
+cat << EOF
+Input file: $ifile
+Output file: $picfile
+Frame: $iframe
+X angle: $xa
+Y angle: $ya
+Z angle: $za
+Z angle: $zoom
+EOF
+#}}}
+# Generate JMOL script file: t.jmol {{{
+cat >& t.jmol << EOF
+
+load trajectory "$f"
+frame $iframe
+
+width = 640;
+height = 480;
+
+set axes on; color axes white
+axes scale 2.0
+
+axes unitcell
+
+rotate x $xa
+rotate y $ya
+rotate z $za
+
+zoom on
+zoom $zoom
+
+background green;
+select all; spacefill 200
+
+#set perspectiveModel 10;
+
+labels on
+color labels black
+color bonds blue
+
+set fontSize 14
+
+# BLN sequence is B9-N3-(LB)4-N3-B9-N3-(LB)5-L  {{{
+
+var Bc="red"
+var Nc="blue"
+var Lc="yellow"
+
+select { atomno>0 and atomno <10 } ; color @Bc; label "%i"
+select { atomno>9 and atomno <13 } ; color @Nc; label "%i"
+
+select atomno=13; color @Lc; label "%i"
+select atomno=14; color @Bc; label "%i"
+select atomno=15; color @Lc; label "%i"
+select atomno=16; color @Bc; label "%i"
+select atomno=17; color @Lc; label "%i"
+select atomno=18; color @Bc; label "%i"
+select atomno=19; color @Lc; label "%i"
+select atomno=20; color @Bc; label "%i"
+
+select { atomno>20 and atomno < 24 } ; color @Nc; label "%i"
+select { atomno>23 and atomno < 33 } ; color @Bc; label "%i"
+select { atomno>32 and atomno < 36 } ; color @Nc; label "%i"
+
+select atomno=36; color @Lc; label "%i"
+select atomno=37; color @Bc; label "%i"
+select atomno=38; color @Lc; label "%i"
+select atomno=39; color @Bc; label "%i"
+select atomno=40; color @Lc; label "%i"
+select atomno=41; color @Bc; label "%i"
+select atomno=42; color @Lc; label "%i"
+select atomno=43; color @Bc; label "%i"
+select atomno=44; color @Lc; label "%i"
+select atomno=45; color @Bc; label "%i"
+
+select atomno=46; color @Lc; label "%i"
+
+for (var an=1; an <=45; an=an+1)
+  		ann=an+1
+	  	select atomno=an,atomno=ann; connect (selected)
+end for
+
+# }}}
+
+set echo top left; font echo $font_size serif bolditalic ; color echo white
+echo "$jtext"
+
+#echo this is|myecho; set echo myecho center
+
+var filename = "$picfile" 
+write IMAGE 800 600 $pic_ext @filename
+
+EOF
+#}}}
+# Run JMOL and copy files  {{{
+jmol -ions t.jmol >& jmol.log
+
+if [ -f $picfile ]; then 
+  	eo "Generated: $picfile "
+	if [ -f $apic ]; then 
+		gifsicle $apic $picfile > $apic
+			else
+		cp $picfile $apic
+	fi
+fi
+#}}}
+#}}}
+}
+
+main(){
+# {{{
+
+# read cmd {{{
+while [ ! -z "$1" ]; do 
+	case "$1" in
+	  -i) export ifile=$2; shift ;;
+	  -f) export iframe=$2; shift ;;
+	  -fa) export mode="all_frames" ;;
+	  -sf) export mode="single_frame" ;;
+	  -xa) export xa=$1; shift ;;
+	  -ya) export ya=$1; shift ;;
+	  -za) export za=$1; shift ;;
+	  rma) rm -rf $apic; exit ;;
+	esac    
+	shift
+done 
+#}}}
+# process frames {{{
+
+# number of frames
+sz=`wc -l $ifile `
+nfr=$(($sz/48))
+for i in {1..$nfr}; do 
+  	pframe $i
+done
+# }}}
+
+# }}}
+}
+
+# main part 
+# {{{
+
+script_opts=( $* )
+
+while [ ! -z "$1" ]; do
+  	case "$1" in
+		  #{{{
+	  	vm) $v $0 $hm/scripts/f.sh; exit ;;
+		h) display_help $*; exit ;;
+		-g) v="$v -g" ;;
+	  	*) main $* && exit 0 ;;
+	esac
+  	shift
+        #}}}
+done
+
+# }}}
+
+
