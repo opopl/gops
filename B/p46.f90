@@ -77,6 +77,9 @@
 ! 1 -> Hydrophobic (B)
 ! 2 -> Hydrophilic (L)
 ! 3 -> Neutral (N)
+        selectcase(N)   
+            case(46)
+              ! B9-N3-(LB)4-N3-B9-N3-(LB)5-L {{{
         ntype(1:9) = 1
         ntype(10:12) = 3
         ntype(13:19:2) = 2
@@ -86,6 +89,34 @@
         ntype(33:35) = 3
         ntype(36:46:2) = 2
         ntype(37:45:2) = 1
+              ! }}}
+            case(69)
+              ! B9-N3-(LB)4-N3-B9-N3-(LB)4-N3-B9-N3-(LB)5-L {{{
+              ! B9-N3-(LB)4-N3-B9-N3 - coincides with P46 {{{
+        ntype(1:9) = 1
+        ntype(10:12) = 3
+        ntype(13:19:2) = 2
+        ntype(14:20:2) = 1
+        ntype(21:23) = 3
+        ntype(24:32) = 1
+        ntype(33:35) = 3
+        ! }}}
+        ! (LB)4
+        ntype(36:44:2) = 2
+        ntype(37:43:2) = 1
+        ! N3
+        ntype(45:47) = 3
+        ! B9
+        ntype(48:55) = 1
+        ! N3
+        ntype(56:58) = 3
+        ! (LB)5
+        ntype(59:67:2) = 2
+        ntype(60:68:2) = 1
+        ! L
+        ntype(69)=2
+             ! }}} 
+        endselect
 ! }}}
 ! Specify parameters for the dihedral angle potential. {{{
 !       These are stored in arrays
@@ -112,6 +143,9 @@
         con=0.0D0
         IF (GOTYPE) THEN 
           ! {{{
+          selectcase(N)
+            case(46) 
+            ! {{{
         CON(20, 1)=1.0D0
         CON(24, 1)=1.0D0
         CON(45, 1)=1.0D0
@@ -206,6 +240,10 @@
         CON(28, 41)=1.0D0
         CON(30, 39)=1.0D0
         CON(32, 37)=1.0D0
+        ! }}}
+      case(69)
+        ! B9N3(LB)4N3B9N3(LB)4N3B9N3(LB)5L - Kim10 sequence
+      endselect
         !}}}
       else
         con=1.0D0

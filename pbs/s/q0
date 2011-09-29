@@ -120,7 +120,7 @@ echo "` printvar 'float' $force` $gm_energy $info" >> $outf
 echo "` printvar 'float' $force` $rgyr $info" >> $rgyrf
 echo " ${ea_en[@]} $info " >> $ea_outf
 # >> *le
-head -1 le >> le $output_dir/$sb_mode.le
+head -1 $le_file >> $output_dir/$sb_mode.le
 echo "E=$gm_energy F=$force $pbs_job_id $sys" >> $output_dir/$sb_mode.le
 cat le | awk 'NR==3,NR==48' >> $output_dir/$sb_mode.le
 

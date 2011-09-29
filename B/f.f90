@@ -903,7 +903,7 @@ SUBROUTINE SETVARS
       RADIUS=RADIUS**2
 
       IF (P46) THEN
-        BLNTYPE="WT"
+        BLNTYPE="P46"
       ELSEIF(G46)THEN
         BLNTYPE="GO"
       ENDIF

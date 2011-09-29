@@ -27,7 +27,7 @@ export nrg=10
 export seed=1
 export n_en=5
 export pull_start=1
-export pull_end=46
+export pull_end=$natoms
 export force=0.0
 export temp=0.03
 export exe=GMIN
@@ -135,7 +135,7 @@ cat << EOF
 		-exe EXE			program name. 
 								Default is $exe
 		-sys SYS			system. 
-								Values: P46, G46
+								Values: P46, G46, P69
 								Default is $sys
 
 
@@ -197,7 +197,14 @@ while [ ! -z "$1" ]; do
   		-nrg) export nrg=$2 ;  ;;
   		-args) export args="$2" ;  ;;
   		-exe) export exe=$2 ;  ;;
-  		-sys) export sys=$2 ;  ;;
+  		-sys) export sys=$2 ; 
+	   		case $sys in
+		  		P69)	export natoms=69
+						export pull_end=$natoms
+			  			;;
+		  		P46|G46)	export natoms=46  ;;
+			esac
+			;;
   		-rmout) export rmout=1 ;  ;;
 		-m)  export sb_mode=$2 ;;
 		-idin)  export printid=1; export idin=$2 ;;

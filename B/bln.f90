@@ -27,7 +27,7 @@
 !>                      E(5)    torsional angles
 !> @param[in]    ch(*) PTYPE    model type. Values:
 !>                      GO      Go-like 
-!>                      WT      Wild-type 
+!>                      P46      Wild-type 
 !> @param[in]    logical GRADT  Do we need to calculate the gradient?
 !> @param[in]    logical HESST  Do we need to calculate the Hessian?
 ! }}}
@@ -54,7 +54,7 @@
         ! PTYPE: type of BLN potential {{{
         !
         !       GO   Go-like
-        !       WT   Wild-type
+        !       P46   Wild-type
         !
         CHARACTER(LEN=*), INTENT(IN) :: PTYPE
         ! }}}
@@ -258,7 +258,7 @@
       include "bln.go.ab.inc.f90"         ! parameters for the non-bonded LJ interaction 
       include "bln.go.cd.inc.f90"         ! parameters for the torsion angle interaction
       ! ==================================================
-                CASE("WT")                ! Wild-type (WT) original frustrated BLN model 
+                CASE("P46")                ! Wild-type (P46) original frustrated BLN model 
       ! ==================================================
       include "bln.wt.ab.inc.f90"         ! L-J interaction between non-bonded particles
       include "bln.go.cd.inc.f90"         ! Torsion angle potential

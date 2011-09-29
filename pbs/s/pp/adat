@@ -2,10 +2,12 @@
 
 # copy into ef.*.sh from ../ef.*.tex
 
-deps=( ea ef ) 
+deps=( ea ef rgyr ) 
+
 for dep in ${deps[@]}; do 
 	ff=( ${ff[@]} ` find ../ -name $dep.\*.tex ` )
 done 
+
 ss=( P46 G46 )
 
 for f in ${ff[@]}; do
