@@ -1,7 +1,7 @@
 
 default: init dirs $(AUXF) deps $(PROG)
 
-.PHONY: default clean rmdep deps tg bindir moddir libdir objdir dirs init
+.PHONY: default c clean rmdep deps tg bindir moddir libdir objdir dirs init
 .PHONY: pgi nag gf ifort debug opt
 
 #SUFFIXES..., F => o {{{
@@ -143,6 +143,8 @@ SAT-Ghost:
 
 cbase:
 	rm -f $(LPBASE)
+
+c: clean
 
 clean:
 	rm -f $(PROG)

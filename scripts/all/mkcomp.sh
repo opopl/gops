@@ -150,17 +150,21 @@ EOF
 ;;
 #}}}
 # gfortran {{{
-gf) 
+gf|gfortran) 
 cat << 'EOF'
 MODFLAG=-I. -J$(MODPATH)
 SWITCH=gfortran
 LDFLAGS =-L.
-FFLAGS_g= -ffixed-line-length-none -g -fbounds-check -Wuninitialized -O -ftrapv -fimplicit-none -fno-automatic 
+FFLAGS_g= -ffixed-line-length-none -g -fbounds-check -Wuninitialized -O -ftrapv 
+#FFLAGS_g += -fimplicit-none -fno-automatic 
 FFLAGS_o= -ffixed-line-length-none -O3 -ftree-vectorize
 EOF
 ;;
 #}}}
 esac
+cat << 'EOF'
+FFLAGS = $(FFLAGS_g) 
+EOF
 	;;
 #}}}
 	debug|opt)
@@ -187,7 +191,6 @@ EOF
 done 
 
 # }}}
-
 }
 
 # main part 

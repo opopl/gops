@@ -27,6 +27,22 @@ use vars qw/*name *dir *prune/;
 *dir    = *File::Find::dir;
 *prune  = *File::Find::prune;
 
+my $this_script=&basename($0);
+
+#}}}
+# here-doc{{{
+my %opt;
+@ARGV > 0 and getopts('n:s:m:', \%opt) and not (keys %opt > 1) or die 
++<< "USAGE";
+=========================================================
+PURPOSE: Generate dependencies for a Fortran project
+USAGE: 
+	$this_script FILE
+		FILE is output file with dependencies 
+SCRIPT LOCATION:
+	$0
+=========================================================
+USAGE
 #}}}
 # vars {{{
 
@@ -50,34 +66,24 @@ my @libdirs=keys %libs;
 my @nused;
 # does the nu.mk file exist? 0 for no, 1 for yes
 my $nu_exist;
-
 my $nu_dir;
+my($F_DP,$F_NU,$INCPATH,$ROOTPATH,$PPATH,$PROGNAME,$SAPATH);
 
 # current project full path, e.g., /home/op226/gops/G
-my $PPATH=&cwd();
+ $PPATH=&cwd();
 # current program name, e.g., G
-my $PROGNAME=&basename($PPATH);
+ $PROGNAME=&basename($PPATH);
 # scripts/all/
-my $SAPATH=&dirname($0);
+ $SAPATH=&dirname($0);
 # $HOME/gops/
-my $ROOTPATH="$SAPATH/../../";
-my $INCPATH="$ROOTPATH/include/";
-my $F_NU="$INCPATH/nu_$PROGNAME.mk";
-my $F_DP="$PPATH/$ARGV[0]";
+$ROOTPATH="$SAPATH/../../";
+ $INCPATH="$ROOTPATH/include/";
+$F_NU="$INCPATH/nu_$PROGNAME.mk";
+$F_DP="$PPATH/$ARGV[0]";
 open(DP, ">$F_DP") or die $!; 
 print DP "# Project dir: $PPATH\n";
 print DP "# Program name: $PROGNAME\n";
 
-#}}}
-# here-doc{{{
-my %opt;
-@ARGV > 0 and getopts('n:s:m:', \%opt) and not (keys %opt > 1) or die 
-+<< "USAGE";
-=========================================================
-PURPOSE: Generate dependencies for a Fortran project
-USAGE: $0 FILE
-=========================================================
-USAGE
 #}}}
 # Time stuff  {{{
 
