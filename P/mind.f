@@ -486,7 +486,7 @@ C }}}
 ! }}}
        SUBROUTINE CONVERT2(OVEC,H1VEC,H2VEC,X,Y,Z,A,B,C)
 ! Declarations {{{
-     IMPLICIT NONE
+      IMPLICIT NONE
 ! output
       DOUBLE PRECISION A,B,C
 ! input

@@ -58,6 +58,7 @@
 10	sort.f	/^10       CONTINUE$/;"	l	subroutine:SORT	file:
 10	sort.f	/^10       CONTINUE$/;"	l	subroutine:SORT2	file:
 10	sort.f	/^10       CONTINUE$/;"	l	subroutine:SORT4	file:
+10	sort.f	/^10       CONTINUE$/;"	l	subroutine:SORT5	file:
 100	input.f	/^100   IF (NULL .OR. XNULL) GO TO 99$/;"	l	subroutine:READF	file:
 100	input.f	/^100   L=L+1$/;"	l	file:
 100	minperm.f	/^  100 CONTINUE$/;"	l	subroutine:JOVOSAP	file:
@@ -77,7 +78,9 @@
 1000	amhdump.f90	/^1000          FORMAT(A5)$/;"	l	subroutine:AMHRELQ	file:
 1000	amhdump.f90	/^1000          FORMAT(A5)$/;"	l	subroutine:AMHRMSD	file:
 1000	amhdump.f90	/^1000          FORMAT(A5)$/;"	l	subroutine:AMH_RELCO	file:
+1000	amhdump.f90	/^1000       FORMAT(A5)$/;"	l	subroutine:AMHQENGMIN	file:
 1000	main.F	/^1000          FORMAT(A5)$/;"	l	program:PATHSAMPLE	file:
+1000	main.f	/^1000          FORMAT(A5)$/;"	l	program:PATHSAMPLE	file:
 1000	minperm.f	/^ 1000 END$/;"	l	subroutine:JOVOSAP	file:
 1001	input.f	/^1001    FORMAT ('0End of file while attempting to read a number')$/;"	l	subroutine:GETF	file:
 1001	input.f	/^1001    FORMAT$/;"	l	subroutine:GETA	file:
@@ -98,6 +101,7 @@
 11	input.f	/^11    IF (L+K .GT. LAST) GO TO 50$/;"	l	subroutine:READA	file:
 11	kshortestpaths.f90	/^11       CONTINUE$/;"	l	subroutine:MAKED4	file:
 11	main.F	/^11    DO J1=1,NMIN$/;"	l	subroutine:GETNCONN	file:
+11	main.f	/^11    DO J1=1,NMIN$/;"	l	subroutine:GETNCONN	file:
 11	mind.f	/^11    CONTINUE$/;"	l	subroutine:MIND	file:
 11	minperm.f	/^11         enddo$/;"	l	subroutine:minperm	file:
 11	minpermdist.f90	/^11 CONTINUE$/;"	l	subroutine:MINPERMDIST	file:
@@ -215,26 +219,32 @@
 20	sort.f	/^20    CONTINUE$/;"	l	subroutine:SORT	file:
 20	sort.f	/^20    CONTINUE$/;"	l	subroutine:SORT2	file:
 20	sort.f	/^20    CONTINUE$/;"	l	subroutine:SORT4	file:
+20	sort.f	/^20    CONTINUE$/;"	l	subroutine:SORT5	file:
 20	tssearch.f	/^20      TTSSEARCH=TTSSEARCH+TNEW-TINIT$/;"	l	subroutine:TSSEARCH	file:
 200	amhdump.f90	/^200     CONTINUE$/;"	l	subroutine:AMHQ	file:
 200	amhdump.f90	/^200     CONTINUE$/;"	l	subroutine:AMHQCONT	file:
+200	amhdump.f90	/^200     CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 200	amhdump.f90	/^200     CONTINUE$/;"	l	subroutine:AMHRELQ	file:
 200	input.f	/^200   TERM=SPACE$/;"	l	file:
 200	reweight.f	/^  200          CONTINUE$/;"	l	function:DLANTR	file:
 201	amhdump.f90	/^201        FORMAT (25(I2,1X))$/;"	l	subroutine:AMHDUMP	file:
 201	amhdump.f90	/^201        FORMAT (25(I2,1X))$/;"	l	subroutine:AMHQ	file:
 201	amhdump.f90	/^201        FORMAT (25(I2,1X))$/;"	l	subroutine:AMHQCONT	file:
+201	amhdump.f90	/^201        FORMAT (25(I2,1X))$/;"	l	subroutine:AMHQENGMIN	file:
 201	amhdump.f90	/^201        FORMAT (25(I2,1X))$/;"	l	subroutine:AMHRELQ	file:
 201	amhdump.f90	/^201        FORMAT (25(I2,1X))$/;"	l	subroutine:AMHRMSD	file:
 205	amhdump.f90	/^205     CONTINUE$/;"	l	subroutine:AMHQ	file:
 205	amhdump.f90	/^205     CONTINUE$/;"	l	subroutine:AMHQCONT	file:
+205	amhdump.f90	/^205     CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 205	amhdump.f90	/^205     CONTINUE$/;"	l	subroutine:AMHRELQ	file:
 206	amhdump.f90	/^206        CONTINUE$/;"	l	subroutine:AMHQ	file:
 206	amhdump.f90	/^206        CONTINUE$/;"	l	subroutine:AMHQCONT	file:
+206	amhdump.f90	/^206        CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 206	amhdump.f90	/^206        CONTINUE$/;"	l	subroutine:AMHRELQ	file:
 21	minperm.f	/^21               if (l2 .le. m) THEN ! split IF statements to avoid a segmentation fault$/;"	l	subroutine:minperm	file:
 210	amhdump.f90	/^210       CONTINUE$/;"	l	subroutine:AMHQ	file:
 210	amhdump.f90	/^210       CONTINUE$/;"	l	subroutine:AMHQCONT	file:
+210	amhdump.f90	/^210       CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 210	amhdump.f90	/^210       CONTINUE$/;"	l	subroutine:AMHRELQ	file:
 210	reweight.f	/^  210          CONTINUE$/;"	l	function:DLANTR	file:
 220	reweight.f	/^  220          CONTINUE$/;"	l	function:DLANTR	file:
@@ -246,18 +256,23 @@
 240	mindist.f	/^ 240        FORMAT(' IMPROPER INPUT PARAMETERS (N OR M ARE NOT POSITIVE)')$/;"	l	subroutine:MMYLBFGS	file:
 240	reweight.f	/^  240          CONTINUE$/;"	l	function:DLANTR	file:
 25	main.F	/^25           FORMAT(25(I2,1X))$/;"	l	program:PATHSAMPLE	file:
+25	main.f	/^25           FORMAT(25(I2,1X))$/;"	l	program:PATHSAMPLE	file:
+25	minpermdist.f90	/^25 OPNUM=OPNUM+1 ! Point group operation counter for Oh supercell if OHCELLT is true.$/;"	l	subroutine:MINPERMDIST	file:
 250	reweight.f	/^  250          CONTINUE$/;"	l	function:DLANTR	file:
 26	unresdump.f	/^26    CONTINUE$/;"	l	subroutine:UNRESREAD	file:
+260	amhdump.f90	/^ 260       CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 260	amhdump.f90	/^260       CONTINUE$/;"	l	subroutine:AMHQ	file:
 260	amhdump.f90	/^260       CONTINUE$/;"	l	subroutine:AMHRELQ	file:
 260	amhdump.f90	/^260     CONTINUE$/;"	l	subroutine:AMHQCONT	file:
 260	reweight.f	/^  260             CONTINUE$/;"	l	function:DLANTR	file:
 270	amhdump.f90	/^270       CONTINUE$/;"	l	subroutine:AMHQCONT	file:
 270	amhdump.f90	/^270      CONTINUE$/;"	l	subroutine:AMHQ	file:
+270	amhdump.f90	/^270      CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 270	amhdump.f90	/^270      CONTINUE$/;"	l	subroutine:AMHRELQ	file:
 270	reweight.f	/^  270          CONTINUE$/;"	l	function:DLANTR	file:
 280	amhdump.f90	/^280        CONTINUE$/;"	l	subroutine:AMHQ	file:
 280	amhdump.f90	/^280        CONTINUE$/;"	l	subroutine:AMHQCONT	file:
+280	amhdump.f90	/^280        CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 280	amhdump.f90	/^280        CONTINUE$/;"	l	subroutine:AMHRELQ	file:
 280	reweight.f	/^  280    CONTINUE$/;"	l	function:DLANTR	file:
 290	reweight.f	/^  290          CONTINUE$/;"	l	function:DLANTR	file:
@@ -286,19 +301,23 @@
 30	setup.f	/^30    IF (YESNO) CLOSE(UMINDATA) ! SAT need to reopen this file$/;"	l	subroutine:SETUP	file:
 300	amhdump.f90	/^300     CONTINUE$/;"	l	subroutine:AMHQ	file:
 300	amhdump.f90	/^300     CONTINUE$/;"	l	subroutine:AMHQCONT	file:
+300	amhdump.f90	/^300     CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 300	amhdump.f90	/^300     CONTINUE$/;"	l	subroutine:AMHRELQ	file:
 300	amhdump.f90	/^300     CONTINUE$/;"	l	subroutine:AMH_RELCO	file:
 300	kshortestpaths.f90	/^300 CONTINUE$/;"	l	subroutine:next_path	file:
 300	reweight.f	/^  300          CONTINUE$/;"	l	function:DLANTR	file:
 305	amhdump.f90	/^305     CONTINUE$/;"	l	subroutine:AMHQ	file:
 305	amhdump.f90	/^305     CONTINUE$/;"	l	subroutine:AMHQCONT	file:
+305	amhdump.f90	/^305     CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 305	amhdump.f90	/^305     CONTINUE$/;"	l	subroutine:AMH_RELCO	file:
 306	amhdump.f90	/^306        CONTINUE$/;"	l	subroutine:AMHQ	file:
 306	amhdump.f90	/^306        CONTINUE$/;"	l	subroutine:AMHQCONT	file:
+306	amhdump.f90	/^306        CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 306	amhdump.f90	/^306        CONTINUE$/;"	l	subroutine:AMH_RELCO	file:
 31	minperm.f	/^   31      CONTINUE$/;"	l	subroutine:JOVOSAP	file:
 310	amhdump.f90	/^310       CONTINUE$/;"	l	subroutine:AMHQ	file:
 310	amhdump.f90	/^310       CONTINUE$/;"	l	subroutine:AMHQCONT	file:
+310	amhdump.f90	/^310       CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 310	amhdump.f90	/^310       CONTINUE$/;"	l	subroutine:AMHRELQ	file:
 310	amhdump.f90	/^310       CONTINUE$/;"	l	subroutine:AMH_RELCO	file:
 310	reweight.f	/^  310          CONTINUE$/;"	l	function:DLANTR	file:
@@ -407,6 +426,7 @@
 52	minperm.f	/^   52    CONTINUE$/;"	l	subroutine:JOVOSAP	file:
 525	amhdump.f90	/^525       CONTINUE$/;"	l	subroutine:AMHDUMP	file:
 525	amhdump.f90	/^525      CONTINUE$/;"	l	subroutine:AMHQ	file:
+525	amhdump.f90	/^525      CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 525	amhdump.f90	/^525      CONTINUE$/;"	l	subroutine:AMH_RELCO	file:
 525	amhdump.f90	/^525     CONTINUE$/;"	l	subroutine:AMHQCONT	file:
 525	amhdump.f90	/^525     CONTINUE$/;"	l	subroutine:AMHRELQ	file:
@@ -446,6 +466,7 @@
 61	minperm.f	/^   61    T=T+1$/;"	l	subroutine:JOVOSAP	file:
 62	minperm.f	/^   62    CONTINUE$/;"	l	subroutine:JOVOSAP	file:
 625	amhdump.f90	/^625      CONTINUE$/;"	l	subroutine:AMHDUMP	file:
+625	amhdump.f90	/^625      CONTINUE$/;"	l	subroutine:AMHQENGMIN	file:
 625	amhdump.f90	/^625     CONTINUE$/;"	l	subroutine:AMHRELQ	file:
 63	minperm.f	/^   63    CONTINUE$/;"	l	subroutine:JOVOSAP	file:
 64	minperm.f	/^   64    CONTINUE$/;"	l	subroutine:JOVOSAP	file:
@@ -492,6 +513,7 @@
 800	KMCcommit.f	/^800   CONTINUE$/;"	l	subroutine:KMCCOMMIT	file:
 800	input.f	/^800   IF (SKIPBL .AND. NITEM .EQ. 0) GO TO 10$/;"	l	file:
 81	input.f	/^81    IF (I .EQ. 10) I=0$/;"	l	subroutine:READF	file:
+864	Dijinit.f90	/^864 CONTINUE$/;"	l	subroutine:DIJINIT	file:
 877	setup.f	/^877         NDUMMY=NDUMMY-1$/;"	l	subroutine:SETUP	file:
 878	setup.f	/^878         NDUMMY=NDUMMY-1$/;"	l	subroutine:SETUP	file:
 888	newconn.f	/^888         LASTONE=LASTONE+1$/;"	l	subroutine:NEWCONN	file:
@@ -507,7 +529,9 @@
 90	reweight.f	/^   90 CONTINUE$/;"	l	subroutine:DLACON	file:
 900	input.f	/^900   IF (CAT) THEN$/;"	l	file:
 950	input.f	/^950   CHAR(L)=SPACE$/;"	l	file:
+973	Dijinit.f90	/^973      CONTINUE$/;"	l	subroutine:DIJINIT	file:
 975	Dijkstra.f90	/^975 CONTINUE ! branch for testing whether ts corresponding to large downhill barriers can be removed$/;"	l	subroutine:DIJKSTRA	file:
+987	getupair.f90	/^987   CONTINUE$/;"	l	subroutine:GETUPAIR	file:
 987	regroupfree2.f90	/^987         CONTINUE$/;"	l	subroutine:REGROUPFREE2	file:
 99	input.f	/^99    IF (NERROR .LE. 1) THEN$/;"	l	subroutine:READF	file:
 999	regroupfree2.f90	/^999 CONTINUE$/;"	l	subroutine:REGROUPFREE2	file:
@@ -515,7 +539,6 @@ A	GT2data.f90	/^          type(NodeList),pointer :: A$/;"	k	type:Node
 ADDPATH	commons.f90	/^     &        KMCT, UNRST, KMCCOMMITT, REGROUPT, REGROUPRATET, REGROUPPET, NOPOINTS, ADDPATH,/;"	v	module:COMMONS
 ADDPERM	addperm.f	/^      SUBROUTINE ADDPERM(/;"	s
 ADDPT	commons.f90	/^      LOGICAL YESNO, TEST1, TEST2, DEBUG, PRINTT, ADDPT,/;"	v	module:COMMONS
-ADDTRIPLES	commons.f90	/^     &        STARTTRIPLES, ADDTRIPLES,/;"	v	module:COMMONS
 AMBERT	commons.f90	/^      LOGICAL YESNO, TEST1, TEST2, DEBUG, PRINTT, ADDPT, TWOD, BULKT, ANGLEAXIS, TAGT, CHARMMT, AMBERT,/;"	v	module:COMMONS
 AMHALLATOMMIN	amhdump.f90	/^      SUBROUTINE AMHALLATOMMIN$/;"	s
 AMHALLATOMMINT	commons.f90	/^     &        EXPCOSTFUNCTION, COPYOPTIMT, CALCORDERT, CONNECTREGIONT, SHORTCUTT, MERGEDBT, UNTRAPT, AMHT,  AMHALLATOMMINT,/;"	v	module:COMMONS
@@ -524,19 +547,21 @@ AMHALLATOMTST	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST,/;"	v
 AMHDUMP	amhdump.f90	/^      SUBROUTINE AMHDUMP(/;"	s
 AMHQ	amhdump.f90	/^      SUBROUTINE AMHQ(/;"	s
 AMHQCONT	amhdump.f90	/^      SUBROUTINE AMHQCONT(/;"	s
-AMHQCONTT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT, AMHQCONTT /;"	v	module:COMMONS
+AMHQCONTT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT,AMHQENGMINT, AMHQCONTT /;"	v	module:COMMONS
+AMHQENGMIN	amhdump.f90	/^      SUBROUTINE AMHQENGMIN(/;"	s
+AMHQENGMINT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT,AMHQENGMINT,/;"	v	module:COMMONS
 AMHQT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT,/;"	v	module:COMMONS
 AMHRELQ	amhdump.f90	/^      SUBROUTINE AMHRELQ(/;"	s
-AMHRELQT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT, AMHQCONTT ,AMHRMSDT, AMHRELQT,/;"	v	module:COMMONS
+AMHRELQT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT,AMHQENGMINT, AMHQCONTT ,AMHRMSDT, AMHRELQT,/;"	v	module:COMMONS
 AMHRMSD	amhdump.f90	/^      SUBROUTINE AMHRMSD(/;"	s
-AMHRMSDT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT, AMHQCONTT ,AMHRMSDT,/;"	v	module:COMMONS
+AMHRMSDT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT,AMHQENGMINT, AMHQCONTT ,AMHRMSDT,/;"	v	module:COMMONS
 AMHT	commons.f90	/^     &        EXPCOSTFUNCTION, COPYOPTIMT, CALCORDERT, CONNECTREGIONT, SHORTCUTT, MERGEDBT, UNTRAPT, AMHT,/;"	v	module:COMMONS
 AMH_RELCO	amhdump.f90	/^      SUBROUTINE AMH_RELCO(/;"	s
-AMH_RELCOT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT, AMHQCONTT ,AMHRMSDT, AMHRELQT, AMH_RELCOT,/;"	v	module:COMMONS
+AMH_RELCOT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT,AMHQENGMINT, AMHQCONTT ,AMHRMSDT, AMHRELQT, AMH_RELCOT,/;"	v	module:COMMONS
 ANALYSERESULTS	dock.f90	/^SUBROUTINE ANALYSERESULTS$/;"	s	module:DOCKMODULE
 ANGLEAXIS	commons.f90	/^      LOGICAL YESNO, TEST1, TEST2, DEBUG, PRINTT, ADDPT, TWOD, BULKT, ANGLEAXIS,/;"	v	module:COMMONS
 ANGLEAXIS2	commons.f90	/^     &        DUMMYTST, DOCKT, DSTAGE(6), USEPAIRST, LOWESTFRQT, BISECTT, NGTDISCONNECTALL, ANGLEAXIS2,/;"	v	module:COMMONS
-ARNOLDIT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT, AMHQCONTT ,AMHRMSDT, AMHRELQT, AMH_RELCOT, DIAGT, ARNOLDIT,/;"	v	module:COMMONS
+ARNOLDIT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT,AMHQENGMINT, AMHQCONTT ,AMHRMSDT, AMHRELQT, AMH_RELCOT, DIAGT, ARNOLDIT,/;"	v	module:COMMONS
 ASORT	reweight.f	/^      SUBROUTINE ASORT(/;"	s
 ATOMACTIVE	commons.f90	/^      LOGICAL, ALLOCATABLE :: ATOMACTIVE(/;"	v	module:COMMONS
 ATOMLABEL	commons.f90	/^      CHARACTER(LEN=4), ALLOCATABLE :: RESLABEL(:), ATOMLABEL(/;"	v	module:COMMONS
@@ -656,7 +681,7 @@ DEFDUM	rigidb.f90	/^      SUBROUTINE DEFDUM(/;"	s
 DEFMULTSTOCK	rigidb.f90	/^      SUBROUTINE DEFMULTSTOCK(/;"	s
 DEFPATCHYD	rigidb.f90	/^      SUBROUTINE DEFPATCHYD(/;"	s
 DEFTD	rigidb.f90	/^      SUBROUTINE DEFTD(/;"	s
-DEGREESTORADIANS	mathsconstants.f90	/^  REAL (KIND=KIND(0.0D0)), PARAMETER :: DEGREESTORADIANS /;"	v	module:MATHSCONSTANTS
+DEFTIP4	rigidb.f90	/^      SUBROUTINE DEFTIP4(/;"	s
 DETERMINELINES	dock.f90	/^SUBROUTINE DETERMINELINES(/;"	s	module:DOCKMODULE
 DFUNC	mind.f	/^      SUBROUTINE DFUNC(/;"	s
 DGECON	reweight.f	/^      SUBROUTINE DGECON(/;"	s
@@ -669,17 +694,17 @@ DGETRS	reweight.f	/^      SUBROUTINE DGETRS(/;"	s
 DGTOutput	GT2.f90	/^     SUBROUTINE DGTOutput(/;"	s	module:GRAPHTRANSFORMATIONMODULE
 DIAGONALISE2	diagonalise2.f	/^      SUBROUTINE DIAGONALISE2$/;"	s
 DIAGSCALE	commons.f90	/^     &                 BISECTMINDIST, BISECTMAXENERGY, NKMCCYCLES, NGTSWITCH, NTFOLD, TOMEGA, TFOLDTHRESH, DIAGSCALE,/;"	v	module:COMMONS
-DIAGT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT, AMHQCONTT ,AMHRMSDT, AMHRELQT, AMH_RELCOT, DIAGT,/;"	v	module:COMMONS
+DIAGT	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT,AMHQENGMINT, AMHQCONTT ,AMHRMSDT, AMHRELQT, AMH_RELCOT, DIAGT,/;"	v	module:COMMONS
 DIJINIT	Dijinit.f90	/^SUBROUTINE DIJINIT(/;"	s
 DIJINITCONTT	commons.f90	/^     &        PERMDIST, PERMISOMER, RIGIDBODY, DIJINITSTARTT, DIJINITCONTT,/;"	v	module:COMMONS
 DIJINITFLY	Dijinitfly.f90	/^SUBROUTINE DIJINITFLY(/;"	s
 DIJINITFLYT	commons.f90	/^     &        DUMPGROUPST, FREEPAIRT, KSHORTESTPATHST, KSHORT_FULL_PRINTT, DIJINITFLYT,/;"	v	module:COMMONS
 DIJINITSTARTT	commons.f90	/^     &        PERMDIST, PERMISOMER, RIGIDBODY, DIJINITSTARTT,/;"	v	module:COMMONS
-DIJINITT	commons.f90	/^     &        STARTTRIPLES, ADDTRIPLES, DIJKSTRAT, DIJPAIRT, DIJINITT,/;"	v	module:COMMONS
+DIJINITT	commons.f90	/^     &        DIJKSTRAT, DIJPAIRT, DIJINITT,/;"	v	module:COMMONS
 DIJKSTRA	Dijkstra.f90	/^SUBROUTINE DIJKSTRA(/;"	s
-DIJKSTRAT	commons.f90	/^     &        STARTTRIPLES, ADDTRIPLES, DIJKSTRAT,/;"	v	module:COMMONS
-DIJKSTRAWAITT	commons.f90	/^     &        STARTTRIPLES, ADDTRIPLES, DIJKSTRAT, DIJPAIRT, DIJINITT, EXTRACTMINT, EXTRACTTST, DIJKSTRAWAITT,/;"	v	module:COMMONS
-DIJPAIRT	commons.f90	/^     &        STARTTRIPLES, ADDTRIPLES, DIJKSTRAT, DIJPAIRT,/;"	v	module:COMMONS
+DIJKSTRAT	commons.f90	/^     &        KMCT, UNRST, KMCCOMMITT, REGROUPT, REGROUPRATET, REGROUPPET, NOPOINTS, ADDPATH, NGTT, GTT, GT2T, &$/;"	v	module:COMMONS
+DIJKSTRAWAITT	commons.f90	/^     &        DIJKSTRAT, DIJPAIRT, DIJINITT, EXTRACTMINT, EXTRACTTST, DIJKSTRAWAITT,/;"	v	module:COMMONS
+DIJPAIRT	commons.f90	/^     &        DIJKSTRAT, DIJPAIRT,/;"	v	module:COMMONS
 DIRECTION	commons.f90	/^      CHARACTER(LEN=2) DIRECTION$/;"	v	module:COMMONS
 DISCONNECT	GT2.f90	/^     SUBROUTINE DISCONNECT(/;"	s	module:GRAPHTRANSFORMATIONMODULE
 DISTFUNC	mind.f	/^      SUBROUTINE DISTFUNC(/;"	s
@@ -724,7 +749,9 @@ DRSCL	reweight.f	/^      SUBROUTINE DRSCL(/;"	s
 DSCALE	commons.f90	/^     &                 ORDERPARAM, BOXLX, BOXLY, BOXLZ, DSCALE,/;"	v	module:COMMONS
 DSTAGE	commons.f90	/^     &        DUMMYTST, DOCKT, DSTAGE(/;"	v	module:COMMONS
 DUMMY1	main.F	/^      DOUBLE PRECISION TINIT, TNEW, DUMMY1(/;"	v	program:PATHSAMPLE
+DUMMY1	main.f	/^      DOUBLE PRECISION TINIT, TNEW, DUMMY1(/;"	v	program:PATHSAMPLE
 DUMMY2	main.F	/^      DOUBLE PRECISION TINIT, TNEW, DUMMY1(1), DUMMY2(/;"	v	program:PATHSAMPLE
+DUMMY2	main.f	/^      DOUBLE PRECISION TINIT, TNEW, DUMMY1(1), DUMMY2(/;"	v	program:PATHSAMPLE
 DUMMYRUNT	commons.f90	/^     &        BARRIERSHORT, FREEZE, RATESHORT, DUMMYRUNT,/;"	v	module:COMMONS
 DUMMYTST	commons.f90	/^     &        DUMPGROUPST, FREEPAIRT, KSHORTESTPATHST, KSHORT_FULL_PRINTT, DIJINITFLYT, BHINTERPT, ICINTERPT, &$/;"	v	module:COMMONS
 DUMPGROUPST	commons.f90	/^     &        BARRIERSHORT, FREEZE, RATESHORT, DUMMYRUNT, REWEIGHTT, REGROUPFREET, REGROUPFREEABT, READMINT, &$/;"	v	module:COMMONS
@@ -733,6 +760,7 @@ DVECTEMP	NGTmem.f90	/^   DOUBLE PRECISION, ALLOCATABLE :: DVEC(:), DVECTEMP(/;"	
 DataModule	GT2data.f90	/^module DataModule$/;"	m
 DenseGraphTransformation	GT2.f90	/^     SUBROUTINE DenseGraphTransformation$/;"	s	module:GRAPHTRANSFORMATIONMODULE
 ECHO	input.f	/^      LOGICAL SKIPBL, CLEAR, ECHO,/;"	v	block data:INBLK
+EDELTAMIN	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH, OMEGA, EINC, EDELTAMIN,/;"	v	module:COMMONS
 EDIFFTOL	commons.f90	/^      DOUBLE PRECISION EDIFFTOL,/;"	v	module:COMMONS
 EFIELDT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT,/;"	v	module:COMMONS
 EINC	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH, OMEGA, EINC,/;"	v	module:COMMONS
@@ -749,9 +777,9 @@ EUNTRAPTHRESH	commons.f90	/^     &                 GT2RSwitch, GT2Ptol, EUNTRAPT
 EVCUT	commons.f90	/^     &                 CVTMIN, CVTMAX, CVTINC, DOSEMIN, DOSEMAX, DOSEINC, EVCUT,/;"	v	module:COMMONS
 EXEC	commons.f90	/^      CHARACTER(LEN=80) EXEC,/;"	v	module:COMMONS
 EXECGMIN	commons.f90	/^      CHARACTER(LEN=80) EXEC,EXECGMIN$/;"	v	module:COMMONS
-EXPCOSTFUNCTION	commons.f90	/^     &        STARTTRIPLES, ADDTRIPLES, DIJKSTRAT, DIJPAIRT, DIJINITT, EXTRACTMINT, EXTRACTTST, DIJKSTRAWAITT, &$/;"	v	module:COMMONS
-EXTRACTMINT	commons.f90	/^     &        STARTTRIPLES, ADDTRIPLES, DIJKSTRAT, DIJPAIRT, DIJINITT, EXTRACTMINT,/;"	v	module:COMMONS
-EXTRACTTST	commons.f90	/^     &        STARTTRIPLES, ADDTRIPLES, DIJKSTRAT, DIJPAIRT, DIJINITT, EXTRACTMINT, EXTRACTTST,/;"	v	module:COMMONS
+EXPCOSTFUNCTION	commons.f90	/^     &        DIJKSTRAT, DIJPAIRT, DIJINITT, EXTRACTMINT, EXTRACTTST, DIJKSTRAWAITT, &$/;"	v	module:COMMONS
+EXTRACTMINT	commons.f90	/^     &        DIJKSTRAT, DIJPAIRT, DIJINITT, EXTRACTMINT,/;"	v	module:COMMONS
+EXTRACTTST	commons.f90	/^     &        DIJKSTRAT, DIJPAIRT, DIJINITT, EXTRACTMINT, EXTRACTTST,/;"	v	module:COMMONS
 FECOMPLEX	dock.f90	/^double precision, allocatable :: FELIGAND(:), FECOMPLEX(/;"	v	module:DOCKMODULE
 FELIGAND	dock.f90	/^double precision, allocatable :: FELIGAND(/;"	v	module:DOCKMODULE
 FEPROTEIN	dock.f90	/^double precision, allocatable :: FELIGAND(:), FECOMPLEX(:), FEPROTEIN(/;"	v	module:DOCKMODULE
@@ -799,6 +827,7 @@ GETFREEBARRIER	getfreebarrier.f90	/^SUBROUTINE GETFREEBARRIER(/;"	s
 GETFREEPAIR	getfreepair.f90	/^SUBROUTINE GETFREEPAIR(/;"	s
 GETI	input.f	/^      SUBROUTINE GETI(/;"	s
 GETNCONN	main.F	/^      SUBROUTINE GETNCONN$/;"	s
+GETNCONN	main.f	/^      SUBROUTINE GETNCONN$/;"	s
 GETNEWPATH	getnewpath.f	/^      SUBROUTINE GETNEWPATH(/;"	s
 GETNODES	nodes.f90	/^     SUBROUTINE GETNODES(/;"	s	module:NODES
 GETPAIR	getpair.f90	/^SUBROUTINE GETPAIR(/;"	s
@@ -806,6 +835,7 @@ GETPPAIR	getppair.f90	/^SUBROUTINE GETPPAIR(/;"	s
 GETRPAIR	getrpair.f90	/^SUBROUTINE GETRPAIR(/;"	s
 GETS	input.f	/^      SUBROUTINE GETS(/;"	s
 GETSPAIR	getspair.f90	/^SUBROUTINE GETSPAIR(/;"	s
+GETUNIT	utils.f90	/^INTEGER FUNCTION GETUNIT(/;"	f	module:utils
 GETUPAIR	getupair.f90	/^SUBROUTINE GETUPAIR(/;"	s
 GETUSEPAIR	getusepair.f90	/^SUBROUTINE GETUSEPAIR(/;"	s
 GPFOLD	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: EMIN(:), FVIBMIN(:), PFMIN(:), IXMIN(:),  IYMIN(:), IZMIN(:), &$/;"	v	module:COMMONS
@@ -816,9 +846,9 @@ GT2AltPbb	commons.f90	/^     &        GT2Sparse, GT2Switch, GT2AltPbb,/;"	v	modu
 GT2DisconnectSources	commons.f90	/^     &        GT2Sparse, GT2Switch, GT2AltPbb, GT2Rescale, GT2Normalise, GT2DisconnectSources,/;"	v	module:COMMONS
 GT2Normalise	commons.f90	/^     &        GT2Sparse, GT2Switch, GT2AltPbb, GT2Rescale, GT2Normalise,/;"	v	module:COMMONS
 GT2Ptol	commons.f90	/^     &                 GT2RSwitch, GT2Ptol,/;"	v	module:COMMONS
-GT2RSwitch	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH, OMEGA, EINC, RWBINWIDTH, RWEMAX, RWEMIN, &$/;"	v	module:COMMONS
+GT2RSwitch	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH, OMEGA, EINC, EDELTAMIN, RWBINWIDTH, RWEMAX, RWEMIN, &$/;"	v	module:COMMONS
 GT2Rescale	commons.f90	/^     &        GT2Sparse, GT2Switch, GT2AltPbb, GT2Rescale,/;"	v	module:COMMONS
-GT2Sparse	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT, AMHQCONTT ,AMHRMSDT, AMHRELQT, AMH_RELCOT, DIAGT, ARNOLDIT, &$/;"	v	module:COMMONS
+GT2Sparse	commons.f90	/^     &        CHECKCONNECTIONST, AMHALLATOMTST, AMHQT,AMHQENGMINT, AMHQCONTT ,AMHRMSDT, AMHRELQT, AMH_RELCOT, DIAGT, ARNOLDIT, &$/;"	v	module:COMMONS
 GT2Switch	commons.f90	/^     &        GT2Sparse, GT2Switch,/;"	v	module:COMMONS
 GT2T	commons.f90	/^     &        KMCT, UNRST, KMCCOMMITT, REGROUPT, REGROUPRATET, REGROUPPET, NOPOINTS, ADDPATH, NGTT, GTT, GT2T,/;"	v	module:COMMONS
 GTINT	commons.f90	/^     &        MAXCONN, KAPPA, ISEED, NTAG, NDIHE, NCPU, GTINT,/;"	v	module:COMMONS
@@ -850,7 +880,7 @@ INTIMAGE	commons.f90	/^      INTEGER :: INTIMAGE=/;"	v	module:COMMONS
 INTLJDEL	commons.f90	/^     &                 INTEPSILON, INTCONSTRAINTDEL, INTCONSTRAINTREP, INTCONSTRAINREPCUT, INTLJDEL,/;"	v	module:COMMONS
 INTLJEPS	commons.f90	/^     &                 INTEPSILON, INTCONSTRAINTDEL, INTCONSTRAINTREP, INTCONSTRAINREPCUT, INTLJDEL, INTLJEPS,/;"	v	module:COMMONS
 INTLJT	commons.f90	/^     &        INTCONSTRAINTT, CHECKCONINT, INTLJT,/;"	v	module:COMMONS
-INTREPSEP	commons.f90	/^     &        INTCONSEP, INTREPSEP /;"	v	module:COMMONS
+INTREPSEP	commons.f90	/^     &        INTCONSEP, INTREPSEP,/;"	v	module:COMMONS
 INVMTRX	rbperm.f90	/^      SUBROUTINE INVMTRX(/;"	s
 ISEED	commons.f90	/^     &        MAXCONN, KAPPA, ISEED,/;"	v	module:COMMONS
 IXMIN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: EMIN(:), FVIBMIN(:), PFMIN(:), IXMIN(/;"	v	module:COMMONS
@@ -860,13 +890,16 @@ IYTS	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: ETS(:), FVIBTS(:), KPL
 IZMIN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: EMIN(:), FVIBMIN(:), PFMIN(:), IXMIN(:),  IYMIN(:), IZMIN(/;"	v	module:COMMONS
 IZTS	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: ETS(:), FVIBTS(:), KPLUS(:), KMINUS(:), IXTS(:),  IYTS(:), IZTS(/;"	v	module:COMMONS
 I_RES	main.F	/^      INTEGER :: NRES,I_RES,/;"	v	program:PATHSAMPLE
+I_RES	main.f	/^      INTEGER :: NRES,I_RES,/;"	v	program:PATHSAMPLE
 InputFile	GT2data.f90	/^     character(len=20) :: KeywordsFile="GTkeywords",InputFile=/;"	v	module:DataModule
 Insrt	dock.f90	/^  Subroutine Insrt(/;"	s	module:DOCKMODULE
 InsrtSwap	dock.f90	/^  Subroutine InsrtSwap(/;"	s	module:DOCKMODULE
 IntegerList	GT2data.f90	/^     type IntegerList$/;"	t	module:DataModule
 J1	main.F	/^      INTEGER J1,/;"	v	program:PATHSAMPLE
+J1	main.f	/^      INTEGER J1,/;"	v	program:PATHSAMPLE
 J1	nodes.f90	/^     INTEGER NSTART, NFINISH, NSTART2, NFINISH2, J1,/;"	v	module:NODES
 J2	main.F	/^      INTEGER :: NRES,I_RES,J2$/;"	v	program:PATHSAMPLE
+J2	main.f	/^      INTEGER :: NRES,I_RES,J2$/;"	v	program:PATHSAMPLE
 JOVOSAP	minperm.f	/^      SUBROUTINE JOVOSAP(/;"	s
 JPN	nodes.f90	/^     INTEGER :: JPN,/;"	v	module:NODES
 KAPPA	commons.f90	/^     &        MAXCONN, KAPPA,/;"	v	module:COMMONS
@@ -902,8 +935,8 @@ MAKED4	kshortestpaths.f90	/^      SUBROUTINE MAKED4(/;"	s
 MAKEDMAT3	KMC.f	/^      SUBROUTINE MAKEDMAT3(/;"	s
 MAKE_CONPOT	make_conpot.f90	/^SUBROUTINE MAKE_CONPOT(/;"	s
 MASS	commons.f90	/^      DOUBLE PRECISION, POINTER :: MASS(/;"	v	module:COMMONS
-MASSFILE	main.F	/^      LOGICAL MASSFILE$/;"	v	program:PATHSAMPLE
-MATHSCONSTANTS	mathsconstants.f90	/^MODULE MATHSCONSTANTS$/;"	m
+MASSFILE	main.F	/^      LOGICAL MASSFILE,/;"	v	program:PATHSAMPLE
+MASSFILE	main.f	/^      LOGICAL MASSFILE,/;"	v	program:PATHSAMPLE
 MAXATTEMPT	commons.f90	/^     &        STARTMINA, STARTMINB, WHICHMIN, SECONDMIN, WHICHTS, MAXATTEMPT,/;"	v	module:COMMONS
 MAXBARRIER	commons.f90	/^     &                 ORDERPARAM, BOXLX, BOXLY, BOXLZ, DSCALE, PSCALE, TSTHRESH, MAXBARRIER,/;"	v	module:COMMONS
 MAXBREAK	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK,/;"	v	module:COMMONS
@@ -939,6 +972,7 @@ MINDOUBLE	mindouble.f90	/^SUBROUTINE MINDOUBLE$/;"	s
 MINFRQ2	commons.f90	/^     &                                 GPFOLD(:), MINDISTMIN(:), MINCURVE(:), MINFRQ2(/;"	v	module:COMMONS
 MINGROUP	commons.f90	/^      INTEGER, ALLOCATABLE :: HORDERMIN(:), TOPPOINTER(:), MINGROUP(/;"	v	module:COMMONS
 MINMAP	main.F	/^      INTEGER, ALLOCATABLE :: MINMAP(/;"	v	program:PATHSAMPLE
+MINMAP	main.f	/^      INTEGER, ALLOCATABLE :: MINMAP(/;"	v	program:PATHSAMPLE
 MINMAXD2	make_conpot.f90	/^SUBROUTINE MINMAXD2(/;"	s
 MINMAXD2R	make_conpot.f90	/^SUBROUTINE MINMAXD2R(/;"	s
 MINNAME	commons.f90	/^      CHARACTER(LEN=80) PATHNAME, MINNAME$/;"	v	module:COMMONS
@@ -962,6 +996,7 @@ NAG	nag.f90	/^MODULE NAG$/;"	m
 NATOMS	commons.f90	/^      INTEGER NMINA, NMINB, NMIN, NTS, SAVELENGTH, NPFOLD, PFOLDINT, NRWBINS, NUSEPAIRS, &$/;"	v	module:COMMONS
 NATTEMPT	commons.f90	/^     &        NATOMS, MAXLENGTH, CONNECTIONS, HORDER, ERROR, MINSEP, NRWREACTANT, &$/;"	v	module:COMMONS
 NAVAIL	main.F	/^      INTEGER J1, NSIZE, NWORST, NAVAIL,/;"	v	program:PATHSAMPLE
+NAVAIL	main.f	/^      INTEGER J1, NSIZE, NWORST, NAVAIL,/;"	v	program:PATHSAMPLE
 NCONN	commons.f90	/^      INTEGER, ALLOCATABLE :: NCONN(/;"	v	module:COMMONS
 NCONNGROUP	commons.f90	/^      INTEGER, ALLOCATABLE :: NCONNGROUP(/;"	v	module:COMMONS
 NCONNMAX	commons.f90	/^     &        MAXCONN, KAPPA, ISEED, NTAG, NDIHE, NCPU, GTINT, NCONNMAX,/;"	v	module:COMMONS
@@ -986,7 +1021,7 @@ NFREEZE	commons.f90	/^      INTEGER NFSTART, NFFINISH, NINTS, NCONNMIN, CONNECTM
 NFSTART	commons.f90	/^      INTEGER NFSTART,/;"	v	module:COMMONS
 NGLY	commons.f90	/^     &        MAXCONN, KAPPA, ISEED, NTAG, NDIHE, NCPU, GTINT, NCONNMAX, BESTPATHLENGTH, NGLY,/;"	v	module:COMMONS
 NGT	NGT.f	/^      SUBROUTINE NGT$/;"	s
-NGTCRSWITCH	commons.f90	/^     &                 INTEPSILON, INTCONSTRAINTDEL, INTCONSTRAINTREP, INTCONSTRAINREPCUT, INTLJDEL, INTLJEPS, NGTCRSWITCH$/;"	v	module:COMMONS
+NGTCRSWITCH	commons.f90	/^     &                 INTEPSILON, INTCONSTRAINTDEL, INTCONSTRAINTREP, INTCONSTRAINREPCUT, INTLJDEL, INTLJEPS, NGTCRSWITCH,/;"	v	module:COMMONS
 NGTDISCONNECTALL	commons.f90	/^     &        DUMMYTST, DOCKT, DSTAGE(6), USEPAIRST, LOWESTFRQT, BISECTT, NGTDISCONNECTALL,/;"	v	module:COMMONS
 NGTMEM	NGTmem.f90	/^MODULE NGTMEM$/;"	m
 NGTREALLOC	NGTrealloc.f90	/^SUBROUTINE NGTREALLOC(/;"	s
@@ -1010,6 +1045,7 @@ NMINB	commons.f90	/^      INTEGER NMINA, NMINB,/;"	v	module:COMMONS
 NMINBSAVE	savestate.f90	/^      INTEGER NMINASAVE, NMINBSAVE,/;"	v	module:SAVESTATE
 NMINDONE	commons.f90	/^     &        STARTMINA, STARTMINB, WHICHMIN, SECONDMIN, WHICHTS, MAXATTEMPT, COSTFUNCTIONPOWER, NPAIRDONE, NMINDONE,/;"	v	module:COMMONS
 NMINSAVE	main.F	/^      INTEGER J1, NSIZE, NWORST, NAVAIL, NMINSAVE,/;"	v	program:PATHSAMPLE
+NMINSAVE	main.f	/^      INTEGER J1, NSIZE, NWORST, NAVAIL, NMINSAVE,/;"	v	program:PATHSAMPLE
 NMINSAVE	savestate.f90	/^      INTEGER NMINASAVE, NMINBSAVE, NMINSAVE,/;"	v	module:SAVESTATE
 NNEW	commons.f90	/^     &        NATTEMPT, NNEW,/;"	v	module:COMMONS
 NNEWNCOL	NGTmem.f90	/^   INTEGER, ALLOCATABLE :: NEWNVAL(:,:), NNEWNCOL(/;"	v	module:NGTMEM
@@ -1028,7 +1064,6 @@ NPATHS	commons.f90	/^      INTEGER NFSTART, NFFINISH, NINTS, NCONNMIN, CONNECTMI
 NPERMGROUP	commons.f90	/^     &        NATTEMPT, NNEW, NTOTAL, NEXCLUDE, NPERMGROUP,/;"	v	module:COMMONS
 NPERMSIZE	commons.f90	/^      INTEGER, ALLOCATABLE :: NPERMSIZE(/;"	v	module:COMMONS
 NPFOLD	commons.f90	/^      INTEGER NMINA, NMINB, NMIN, NTS, SAVELENGTH, NPFOLD,/;"	v	module:COMMONS
-NR	commons.f90	/^      INTEGER NR$/;"	v	module:COMMONS
 NRBGROUP	commons.f90	/^      INTEGER :: NRBSITES, NTSITES, NRBGROUP,/;"	v	module:COMMONS
 NRBSITES	commons.f90	/^      INTEGER :: NRBSITES,/;"	v	module:COMMONS
 NREPCUT	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: REPCUT(:),  NREPCUT(/;"	v	module:COMMONS
@@ -1037,14 +1072,17 @@ NREPJ	commons.f90	/^      INTEGER, ALLOCATABLE :: NREPI(:), NREPJ(/;"	v	module:C
 NREPMAX	commons.f90	/^      INTEGER :: NREPMAX=/;"	v	module:COMMONS
 NREPULSIVE	commons.f90	/^      INTEGER :: NNREPULSIVE,/;"	v	module:COMMONS
 NRES	main.F	/^      INTEGER :: NRES,/;"	v	program:PATHSAMPLE
+NRES	main.f	/^      INTEGER :: NRES,/;"	v	program:PATHSAMPLE
 NRWBINS	commons.f90	/^      INTEGER NMINA, NMINB, NMIN, NTS, SAVELENGTH, NPFOLD, PFOLDINT, NRWBINS,/;"	v	module:COMMONS
 NRWREACTANT	commons.f90	/^     &        NATOMS, MAXLENGTH, CONNECTIONS, HORDER, ERROR, MINSEP, NRWREACTANT,/;"	v	module:COMMONS
 NSETS	commons.f90	/^      INTEGER, ALLOCATABLE :: NSETS(/;"	v	module:COMMONS
 NSIZE	main.F	/^      INTEGER J1, NSIZE,/;"	v	program:PATHSAMPLE
+NSIZE	main.f	/^      INTEGER J1, NSIZE,/;"	v	program:PATHSAMPLE
 NSTART	nodes.f90	/^     INTEGER NSTART,/;"	v	module:NODES
 NSTART2	nodes.f90	/^     INTEGER NSTART, NFINISH, NSTART2,/;"	v	module:NODES
 NTAG	commons.f90	/^     &        MAXCONN, KAPPA, ISEED, NTAG,/;"	v	module:COMMONS
 NTFOLD	commons.f90	/^     &                 BISECTMINDIST, BISECTMAXENERGY, NKMCCYCLES, NGTSWITCH, NTFOLD,/;"	v	module:COMMONS
+NTIPT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, NTIPT,/;"	v	module:COMMONS
 NTOTAL	commons.f90	/^     &        NATTEMPT, NNEW, NTOTAL,/;"	v	module:COMMONS
 NTRYING	commons.f90	/^      INTEGER :: NTRYING=/;"	v	module:COMMONS
 NTS	commons.f90	/^      INTEGER NMINA, NMINB, NMIN, NTS,/;"	v	module:COMMONS
@@ -1055,6 +1093,7 @@ NVAL	NGTmem.f90	/^   INTEGER, ALLOCATABLE :: NVAL(/;"	v	module:NGTMEM
 NVALTEMP	NGTmem.f90	/^   INTEGER, ALLOCATABLE :: NVAL(:,:), NVALTEMP(/;"	v	module:NGTMEM
 NVALTMP	NGTmem.f90	/^   INTEGER, ALLOCATABLE :: NEWNVAL(:,:), NNEWNCOL(:), NVALTMP(/;"	v	module:NGTMEM
 NWORST	main.F	/^      INTEGER J1, NSIZE, NWORST,/;"	v	program:PATHSAMPLE
+NWORST	main.f	/^      INTEGER J1, NSIZE, NWORST,/;"	v	program:PATHSAMPLE
 Ninodes	GT2data.f90	/^     integer :: Nnodes,Nsources,Nsinks,Ninodes,/;"	v	module:DataModule
 Nnodes	GT2data.f90	/^     integer :: Nnodes,/;"	v	module:DataModule
 Node	GT2data.f90	/^     type Node$/;"	t	module:DataModule
@@ -1063,6 +1102,8 @@ NodeList	GT2data.f90	/^     type NodeList$/;"	t	module:DataModule
 Nsinks	GT2data.f90	/^     integer :: Nnodes,Nsources,Nsinks,/;"	v	module:DataModule
 Nsources	GT2data.f90	/^     integer :: Nnodes,Nsources,/;"	v	module:DataModule
 NunprocessedNodes	GT2data.f90	/^     integer :: Nnodes,Nsources,Nsinks,Ninodes,NunprocessedNodes$/;"	v	module:DataModule
+OHCELLT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, NTIPT, PAHAT, PATCHYDT, STOCKAAT, RBAAT, RBSYMT, TRAPT, OHCELLT$/;"	v	module:COMMONS
+OHOPS	bulkmindist.f90	/^SUBROUTINE OHOPS(/;"	s
 OMEGA	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH, OMEGA,/;"	v	module:COMMONS
 ORDERODATA	orderodata.f	/^      SUBROUTINE ORDERODATA(/;"	s
 ORDERPARAM	commons.f90	/^     &                 PERTVALUE, TAGMASS, PABCONV, REGROUPTHRESH, REGROUPRATETHRESH, CONNECTDIST, &$/;"	v	module:COMMONS
@@ -1072,18 +1113,22 @@ ORIENTA	minpermdistrbcom.f90	/^      SUBROUTINE ORIENTA(/;"	s
 P	GT2data.f90	/^          type(RealList),pointer :: P$/;"	k	type:Node
 P	GT2data.f90	/^     double precision,dimension(:,:),allocatable :: P$/;"	v	module:DataModule
 PABCONV	commons.f90	/^     &                 PERTVALUE, TAGMASS, PABCONV,/;"	v	module:COMMONS
-PAHAT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, PAHAT,/;"	v	module:COMMONS
-PAHID	commons.f90	/^      INTEGER :: NRBSITES, NTSITES, NRBGROUP, PAHID$/;"	v	module:COMMONS
+PAHAT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, NTIPT, PAHAT,/;"	v	module:COMMONS
+PAHID	commons.f90	/^      INTEGER :: NRBSITES, NTSITES, NRBGROUP, PAHID,/;"	v	module:COMMONS
 PAIR1	commons.f90	/^      INTEGER, ALLOCATABLE :: PAIR1(/;"	v	module:COMMONS
 PAIR2	commons.f90	/^      INTEGER, ALLOCATABLE :: PAIR1(:), PAIR2(/;"	v	module:COMMONS
 PAIRDIST	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: PAIRDIST(/;"	v	module:COMMONS
-PAIRDISTMAX	commons.f90	/^      INTEGER :: PAIRDISTMAX=/;"	v	module:COMMONS
+PAIRDIST1	commons.f90	/^     &        INTCONSEP, INTREPSEP, PAIRDISTMAX, PAIRDIST1,/;"	v	module:COMMONS
+PAIRDIST2	commons.f90	/^     &        INTCONSEP, INTREPSEP, PAIRDISTMAX, PAIRDIST1, PAIRDIST2$/;"	v	module:COMMONS
+PAIRDISTMAX	commons.f90	/^     &        INTCONSEP, INTREPSEP, PAIRDISTMAX,/;"	v	module:COMMONS
 PAIRDOUBLE	pairdouble.f90	/^SUBROUTINE PAIRDOUBLE$/;"	s
+PAIRLIST	commons.f90	/^      INTEGER, ALLOCATABLE :: PAIRLIST(/;"	v	module:COMMONS
 PAIRTHRESH	commons.f90	/^     &                 ORDERPARAM, BOXLX, BOXLY, BOXLZ, DSCALE, PSCALE, TSTHRESH, MAXBARRIER, MAXDOWNBARRIER, REGROUPPETHRESH, &$/;"	v	module:COMMONS
 PARALLEL	commons.f90	/^      INTEGER NFSTART, NFFINISH, NINTS, NCONNMIN, CONNECTMIN1, CONNECTMIN2, NFREEZE, NPATHS, PARALLEL$/;"	v	module:COMMONS
-PATCHYDT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, PAHAT, PATCHYDT,/;"	v	module:COMMONS
+PATCHYDT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, NTIPT, PAHAT, PATCHYDT,/;"	v	module:COMMONS
 PATHNAME	commons.f90	/^      CHARACTER(LEN=80) PATHNAME,/;"	v	module:COMMONS
 PATHSAMPLE	main.F	/^      PROGRAM PATHSAMPLE$/;"	p
+PATHSAMPLE	main.f	/^      PROGRAM PATHSAMPLE$/;"	p
 PATHSTRING	nodes.f90	/^     CHARACTER(LEN=200) :: PATHSTRING$/;"	v	module:NODES
 PATHSTRINGARRAY	dock.f90	/^character(len=30), allocatable  ::  PATHSTRINGARRAY(/;"	v	module:DOCKMODULE
 PBRANCH	NGTmem.f90	/^   DOUBLE PRECISION, ALLOCATABLE :: PBRANCH(/;"	v	module:NGTMEM
@@ -1100,13 +1145,13 @@ PFMEAN	commons.f90	/^      DOUBLE PRECISION EDIFFTOL, IDIFFTOL, GEOMDIFFTOL, PFM
 PFMIN	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: EMIN(:), FVIBMIN(:), PFMIN(/;"	v	module:COMMONS
 PFMINSAVE	savestate.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: EMINSAVE(:), PFMINSAVE(/;"	v	module:SAVESTATE
 PFOLD	Pfold.f90	/^SUBROUTINE PFOLD$/;"	s
+PFOLDCONV	commons.f90	/^     &                 INTEPSILON, INTCONSTRAINTDEL, INTCONSTRAINTREP, INTCONSTRAINREPCUT, INTLJDEL, INTLJEPS, NGTCRSWITCH, &$/;"	v	module:COMMONS
 PFOLDINT	commons.f90	/^      INTEGER NMINA, NMINB, NMIN, NTS, SAVELENGTH, NPFOLD, PFOLDINT,/;"	v	module:COMMONS
 PFTOTALA	commons.f90	/^      DOUBLE PRECISION EDIFFTOL, IDIFFTOL, GEOMDIFFTOL, PFMEAN, TOTALE, TEMPERATURE, PFTOTALA,/;"	v	module:COMMONS
 PFTOTALASAVE	savestate.f90	/^      DOUBLE PRECISION PFTOTALASAVE,/;"	v	module:SAVESTATE
 PFTOTALB	commons.f90	/^      DOUBLE PRECISION EDIFFTOL, IDIFFTOL, GEOMDIFFTOL, PFMEAN, TOTALE, TEMPERATURE, PFTOTALA, PFTOTALB,/;"	v	module:COMMONS
 PFTOTALBSAVE	savestate.f90	/^      DOUBLE PRECISION PFTOTALASAVE, PFTOTALBSAVE /;"	v	module:SAVESTATE
 PI	commons.f90	/^      DOUBLE PRECISION, PARAMETER :: PI=/;"	v	module:COMMONS
-PI	mathsconstants.f90	/^  REAL (KIND=KIND(0.0D0)), PARAMETER :: PI /;"	v	module:MATHSCONSTANTS
 PLANCK	commons.f90	/^     &                 GT2RSwitch, GT2Ptol, EUNTRAPTHRESH, PLANCK,/;"	v	module:COMMONS
 PLUS	commons.f90	/^      INTEGER, ALLOCATABLE :: HORDERTS(:), PLUS(/;"	v	module:COMMONS
 PLUSSAVE	savestate.f90	/^      INTEGER, ALLOCATABLE :: PLUSSAVE(/;"	v	module:SAVESTATE
@@ -1134,13 +1179,13 @@ QRELTWO	commons.f90	/^     &        BISECTSTEPS, BISECTMAXATTEMPTS, NDIAGEIG, QR
 QROTAA	rbperm.f90	/^      SUBROUTINE QROTAA(/;"	s
 QROTMAT	rbperm.f90	/^      SUBROUTINE QROTMAT(/;"	s
 QROTQ	rbperm.f90	/^      SUBROUTINE QROTQ(/;"	s
-RADIANSTODEGREES	mathsconstants.f90	/^  REAL (KIND=KIND(0.0D0)), PARAMETER :: RADIANSTODEGREES /;"	v	module:MATHSCONSTANTS
 RANDDP	dprand.f	30;"	c	function:DPRAND
 RANDDP	sdprnd.f	38;"	c	subroutine:SDPRND
 RATECONST_SETUP	rateconst_setup.f90	/^      SUBROUTINE RATECONST_SETUP(/;"	s
 RATESHORT	commons.f90	/^     &        BARRIERSHORT, FREEZE, RATESHORT,/;"	v	module:COMMONS
-RBAAT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, PAHAT, PATCHYDT, STOCKAAT, RBAAT,/;"	v	module:COMMONS
+RBAAT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, NTIPT, PAHAT, PATCHYDT, STOCKAAT, RBAAT,/;"	v	module:COMMONS
 RBCOMMINDIST	rigidb.f90	/^      SUBROUTINE RBCOMMINDIST(/;"	s
+RBINERTIA	rbinertia.f90	/^      SUBROUTINE RBINERTIA(/;"	s
 RBMINDIST	rigidb.f90	/^      SUBROUTINE RBMINDIST(/;"	s
 RBMINPERMDIST	rbperm.f90	/^      SUBROUTINE RBMINPERMDIST(/;"	s
 RBNEWROTGEOM	rigidb.f90	/^      SUBROUTINE RBNEWROTGEOM(/;"	s
@@ -1151,7 +1196,7 @@ RBROTXZ	rbperm.f90	/^      SUBROUTINE RBROTXZ(/;"	s
 RBSITE	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: RBSITE(/;"	v	module:COMMONS
 RBSITESORIENT	rbperm.f90	/^      SUBROUTINE RBSITESORIENT(/;"	s
 RBSITESROTXZ	rbperm.f90	/^      SUBROUTINE RBSITESROTXZ(/;"	s
-RBSYMT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, PAHAT, PATCHYDT, STOCKAAT, RBAAT, RBSYMT /;"	v	module:COMMONS
+RBSYMT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, NTIPT, PAHAT, PATCHYDT, STOCKAAT, RBAAT, RBSYMT,/;"	v	module:COMMONS
 RCA	rca.f90	/^SUBROUTINE RCA$/;"	s
 READA	input.f	/^      SUBROUTINE READA(/;"	s
 READCH	input.f	/^      SUBROUTINE READCH(/;"	s
@@ -1205,17 +1250,19 @@ ROTMAT	rigidb.f90	/^      SUBROUTINE ROTMAT(/;"	s
 ROTXZ	myorient.f	/^      SUBROUTINE ROTXZ(/;"	s
 ROTXZ	orient.f	/^      SUBROUTINE ROTXZ(/;"	s
 ROW_PTR	NGTmem.f90	/^   INTEGER, ALLOCATABLE :: ROW_PTR(/;"	v	module:NGTMEM
-RWBINWIDTH	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH, OMEGA, EINC, RWBINWIDTH,/;"	v	module:COMMONS
-RWEMAX	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH, OMEGA, EINC, RWBINWIDTH, RWEMAX,/;"	v	module:COMMONS
-RWEMIN	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH, OMEGA, EINC, RWBINWIDTH, RWEMAX, RWEMIN,/;"	v	module:COMMONS
+RWBINWIDTH	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH, OMEGA, EINC, EDELTAMIN, RWBINWIDTH,/;"	v	module:COMMONS
+RWEMAX	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH, OMEGA, EINC, EDELTAMIN, RWBINWIDTH, RWEMAX,/;"	v	module:COMMONS
+RWEMIN	commons.f90	/^     &                 PAIRTHRESH, MAXBREAK, PRODTHRESH, PBTHRESH, OMEGA, EINC, EDELTAMIN, RWBINWIDTH, RWEMAX, RWEMIN,/;"	v	module:COMMONS
 RWPROB	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: RWPROB(/;"	v	module:COMMONS
 RealList	GT2data.f90	/^     type RealList$/;"	t	module:DataModule
 SAVELENGTH	commons.f90	/^      INTEGER NMINA, NMINB, NMIN, NTS, SAVELENGTH,/;"	v	module:COMMONS
 SAVESTATE	savestate.f90	/^MODULE SAVESTATE$/;"	m
 SDPRND	sdprnd.f	/^        SUBROUTINE SDPRND(/;"	s
 SDUMMY	main.F	/^      CHARACTER(LEN=2) :: SDUMMY$/;"	v	program:PATHSAMPLE
+SDUMMY	main.f	/^      CHARACTER(LEN=2) :: SDUMMY$/;"	v	program:PATHSAMPLE
 SECONDMIN	commons.f90	/^     &        STARTMINA, STARTMINB, WHICHMIN, SECONDMIN,/;"	v	module:COMMONS
 SEQ	main.F	/^      INTEGER :: SEQ(/;"	v	program:PATHSAMPLE
+SEQ	main.f	/^      INTEGER :: SEQ(/;"	v	program:PATHSAMPLE
 SETS	commons.f90	/^      INTEGER, ALLOCATABLE :: SETS(/;"	v	module:COMMONS
 SETUP	setup.f	/^      SUBROUTINE SETUP$/;"	s
 SETUP_SIS	setup_sis.f	/^      SUBROUTINE SETUP_SIS$/;"	s
@@ -1228,6 +1275,7 @@ SISKAPPA	commons.f90	/^      DOUBLE PRECISION :: SISMU, SISKAPPA,/;"	v	module:CO
 SISMU	commons.f90	/^      DOUBLE PRECISION :: SISMU,/;"	v	module:COMMONS
 SIST	commons.f90	/^      LOGICAL :: SIST$/;"	v	module:COMMONS
 SITE	rigidbody.f90	/^     real (kind=kind(0.0d0)), allocatable :: SITE(/;"	k	type:rigidbodyPotential
+SITEMASS	commons.f90	/^      DOUBLE PRECISION, ALLOCATABLE :: RBSITE(:,:), SITEMASS(/;"	v	module:COMMONS
 SITEPOS	rbperm.f90	/^      SUBROUTINE SITEPOS(/;"	s
 SKIPBL	input.f	/^      LOGICAL SKIPBL,/;"	v	block data:INBLK
 SLURMT	commons.f90	/^     &        DUMMYTST, DOCKT, DSTAGE(6), USEPAIRST, LOWESTFRQT, BISECTT, NGTDISCONNECTALL, ANGLEAXIS2, TFOLDT, &$/;"	v	module:COMMONS
@@ -1236,6 +1284,7 @@ SORT	sort.f	/^      SUBROUTINE SORT(/;"	s
 SORT2	sort.f	/^      SUBROUTINE SORT2(/;"	s
 SORT3	Dijkstra.f90	/^      SUBROUTINE SORT3(/;"	s
 SORT4	sort.f	/^      SUBROUTINE SORT4(/;"	s
+SORT5	sort.f	/^      SUBROUTINE SORT5(/;"	s
 SPARSEGRAPHTRANSFORMATION	GT2.f90	/^     SUBROUTINE SPARSEGRAPHTRANSFORMATION$/;"	s	module:GRAPHTRANSFORMATIONMODULE
 SSHPARALLEL	nodes.f90	/^     LOGICAL :: SSHPARALLEL=/;"	v	module:NODES
 SSHSUBMIT	nodes.f90	/^     SUBROUTINE SSHSUBMIT(/;"	s	module:NODES
@@ -1244,8 +1293,7 @@ SSHSUBMITGMIN	dock.f90	/^SUBROUTINE SSHSUBMITGMIN(/;"	s	module:DOCKMODULE
 STARTFROMPATH	commons.f90	/^      LOGICAL YESNO, TEST1, TEST2, DEBUG, PRINTT, ADDPT, TWOD, BULKT, ANGLEAXIS, TAGT, CHARMMT, AMBERT, STARTFROMPATH,/;"	v	module:COMMONS
 STARTMINA	commons.f90	/^     &        MAXCONN, KAPPA, ISEED, NTAG, NDIHE, NCPU, GTINT, NCONNMAX, BESTPATHLENGTH, NGLY, &$/;"	v	module:COMMONS
 STARTMINB	commons.f90	/^     &        STARTMINA, STARTMINB,/;"	v	module:COMMONS
-STARTTRIPLES	commons.f90	/^     &        KMCT, UNRST, KMCCOMMITT, REGROUPT, REGROUPRATET, REGROUPPET, NOPOINTS, ADDPATH, NGTT, GTT, GT2T, TRIPLES, &$/;"	v	module:COMMONS
-STOCKAAT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, PAHAT, PATCHYDT, STOCKAAT,/;"	v	module:COMMONS
+STOCKAAT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, NTIPT, PAHAT, PATCHYDT, STOCKAAT,/;"	v	module:COMMONS
 SUBMITFRQJOBS	dock.f90	/^SUBROUTINE SUBMITFRQJOBS(/;"	s	module:DOCKMODULE
 SUBMITGMINJOBS	dock.f90	/^SUBROUTINE SUBMITGMINJOBS(/;"	s	module:DOCKMODULE
 SUBMITOPTIMJOB	submitoptimjob.f90	/^SUBROUTINE SUBMITOPTIMJOB(/;"	s
@@ -1255,6 +1303,7 @@ TAGMASS	commons.f90	/^     &                 PERTVALUE, TAGMASS,/;"	v	module:COM
 TAGNUM	commons.f90	/^      INTEGER, ALLOCATABLE :: TAGNUM(/;"	v	module:COMMONS
 TAGT	commons.f90	/^      LOGICAL YESNO, TEST1, TEST2, DEBUG, PRINTT, ADDPT, TWOD, BULKT, ANGLEAXIS, TAGT,/;"	v	module:COMMONS
 TARFL	main.F	/^      CHARACTER(LEN=5) :: TARFL$/;"	v	program:PATHSAMPLE
+TARFL	main.f	/^      CHARACTER(LEN=5) :: TARFL$/;"	v	program:PATHSAMPLE
 TCONNECTDIST	commons.f90	/^      DOUBLE PRECISION TTSSEARCH, TPFOLD, TTFOLD, TGT, TDIJKSTRA, TCONNECTDIST,/;"	v	module:COMMONS
 TDIJKSTRA	commons.f90	/^      DOUBLE PRECISION TTSSEARCH, TPFOLD, TTFOLD, TGT, TDIJKSTRA,/;"	v	module:COMMONS
 TEMPERATURE	commons.f90	/^      DOUBLE PRECISION EDIFFTOL, IDIFFTOL, GEOMDIFFTOL, PFMEAN, TOTALE, TEMPERATURE,/;"	v	module:COMMONS
@@ -1267,15 +1316,18 @@ TFOLDT	commons.f90	/^     &        DUMMYTST, DOCKT, DSTAGE(6), USEPAIRST, LOWEST
 TFOLDTHRESH	commons.f90	/^     &                 BISECTMINDIST, BISECTMAXENERGY, NKMCCYCLES, NGTSWITCH, NTFOLD, TOMEGA, TFOLDTHRESH,/;"	v	module:COMMONS
 TGT	commons.f90	/^      DOUBLE PRECISION TTSSEARCH, TPFOLD, TTFOLD, TGT,/;"	v	module:COMMONS
 TINIT	main.F	/^      DOUBLE PRECISION TINIT,/;"	v	program:PATHSAMPLE
+TINIT	main.f	/^      DOUBLE PRECISION TINIT,/;"	v	program:PATHSAMPLE
+TIPID	commons.f90	/^      INTEGER :: NRBSITES, NTSITES, NRBGROUP, PAHID, TIPID$/;"	v	module:COMMONS
 TKSHORTESTPATHS	commons.f90	/^      DOUBLE PRECISION TTSSEARCH, TPFOLD, TTFOLD, TGT, TDIJKSTRA, TCONNECTDIST, TKSHORTESTPATHS /;"	v	module:COMMONS
 TNEW	main.F	/^      DOUBLE PRECISION TINIT, TNEW,/;"	v	program:PATHSAMPLE
+TNEW	main.f	/^      DOUBLE PRECISION TINIT, TNEW,/;"	v	program:PATHSAMPLE
 TOMEGA	commons.f90	/^     &                 BISECTMINDIST, BISECTMAXENERGY, NKMCCYCLES, NGTSWITCH, NTFOLD, TOMEGA,/;"	v	module:COMMONS
 TOPPOINTER	commons.f90	/^      INTEGER, ALLOCATABLE :: HORDERMIN(:), TOPPOINTER(/;"	v	module:COMMONS
 TOPPOINTERSAVE	savestate.f90	/^      INTEGER, ALLOCATABLE :: TOPPOINTERSAVE(/;"	v	module:SAVESTATE
 TOTALE	commons.f90	/^      DOUBLE PRECISION EDIFFTOL, IDIFFTOL, GEOMDIFFTOL, PFMEAN, TOTALE,/;"	v	module:COMMONS
 TOTALJOBSTRING	nodes.f90	/^     CHARACTER(LEN=1000) :: TOTALJOBSTRING$/;"	v	module:NODES
 TPFOLD	commons.f90	/^      DOUBLE PRECISION TTSSEARCH, TPFOLD,/;"	v	module:COMMONS
-TRIPLES	commons.f90	/^     &        KMCT, UNRST, KMCCOMMITT, REGROUPT, REGROUPRATET, REGROUPPET, NOPOINTS, ADDPATH, NGTT, GTT, GT2T, TRIPLES,/;"	v	module:COMMONS
+TRAPT	commons.f90	/^     &        DBPT, DBPTDT, EFIELDT, MSSTOCKT, NTIPT, PAHAT, PATCHYDT, STOCKAAT, RBAAT, RBSYMT, TRAPT,/;"	v	module:COMMONS
 TSATTEMPT	commons.f90	/^      INTEGER, ALLOCATABLE :: HORDERTS(:), PLUS(:), MINUS(:), POINTERM(:), POINTERP(:), TSATTEMPT(/;"	v	module:COMMONS
 TSDOUBLE	tsdouble.f90	/^SUBROUTINE TSDOUBLE$/;"	s
 TSEGUESS	setup.f	/^      DOUBLE PRECISION FUNCTION TSEGUESS(/;"	f
@@ -1285,10 +1337,9 @@ TSTHRESH	commons.f90	/^     &                 ORDERPARAM, BOXLX, BOXLY, BOXLZ, D
 TTFOLD	commons.f90	/^      DOUBLE PRECISION TTSSEARCH, TPFOLD, TTFOLD,/;"	v	module:COMMONS
 TTSSEARCH	commons.f90	/^      DOUBLE PRECISION TTSSEARCH,/;"	v	module:COMMONS
 TWOD	commons.f90	/^      LOGICAL YESNO, TEST1, TEST2, DEBUG, PRINTT, ADDPT, TWOD,/;"	v	module:COMMONS
-TWOPI	mathsconstants.f90	/^  REAL (KIND=KIND(0.0D0)), PARAMETER :: TWOPI /;"	v	module:MATHSCONSTANTS
 UMIN	commons.f90	/^      INTEGER, PARAMETER :: UMIND/;"	v	module:COMMONS
 UMINDATA	commons.f90	/^      INTEGER, PARAMETER :: UMINDATA=/;"	v	module:COMMONS
-UNCONNECTEDS	commons.f90	/^      CHARACTER(LEN=2) UNCONNECTEDS$/;"	v	module:COMMONS
+UNCONNECTEDS	commons.f90	/^      CHARACTER(LEN=5) UNCONNECTEDS$/;"	v	module:COMMONS
 UNRESDUMP2	unresdump.f	/^      SUBROUTINE UNRESDUMP2(/;"	s
 UNRESREAD	unresdump.f	/^      SUBROUTINE UNRESREAD(/;"	s
 UNRST	commons.f90	/^     &        KMCT, UNRST,/;"	v	module:COMMONS
@@ -1301,6 +1352,7 @@ USERNAME	nodes.f90	/^     CHARACTER(LEN=80) :: USERNAME$/;"	v	module:NODES
 UTS	commons.f90	/^      INTEGER, PARAMETER :: UMINDATA=11, UTSD/;"	v	module:COMMONS
 UTSDATA	commons.f90	/^      INTEGER, PARAMETER :: UMINDATA=11, UTSDATA=/;"	v	module:COMMONS
 VERSIONTEMP	main.F	/^      INTEGER J1, NSIZE, NWORST, NAVAIL, NMINSAVE, VERSIONTEMP$/;"	v	program:PATHSAMPLE
+VERSIONTEMP	main.f	/^      INTEGER J1, NSIZE, NWORST, NAVAIL, NMINSAVE, VERSIONTEMP$/;"	v	program:PATHSAMPLE
 WCOMPLEX	dock.f90	/^double precision, allocatable :: WLIGAND(:), WCOMPLEX(/;"	v	module:DOCKMODULE
 WHICHMIN	commons.f90	/^     &        STARTMINA, STARTMINB, WHICHMIN,/;"	v	module:COMMONS
 WHICHTS	commons.f90	/^     &        STARTMINA, STARTMINB, WHICHMIN, SECONDMIN, WHICHTS,/;"	v	module:COMMONS
@@ -1309,6 +1361,8 @@ WORKINGDIRECTORY	nodes.f90	/^     CHARACTER(LEN=100) :: WORKINGDIRECTORY$/;"	v	m
 WPROTEIN	dock.f90	/^double precision, allocatable :: WLIGAND(:), WCOMPLEX(:), WPROTEIN(/;"	v	module:DOCKMODULE
 YESNO	commons.f90	/^      LOGICAL YESNO,/;"	v	module:COMMONS
 YESNO	nodes.f90	/^     LOGICAL :: SSHPARALLEL=.FALSE., YESNO$/;"	v	module:NODES
+YESNOT	main.F	/^      LOGICAL MASSFILE, YESNOT$/;"	v	program:PATHSAMPLE
+YESNOT	main.f	/^      LOGICAL MASSFILE, YESNOT$/;"	v	program:PATHSAMPLE
 ZSYM	commons.f90	/^      CHARACTER(LEN=5) ZSYM$/;"	v	module:COMMONS
 ZSYMBOL	commons.f90	/^      CHARACTER(LEN=2), ALLOCATABLE ::  ZSYMBOL(/;"	v	module:COMMONS
 ZSYMCOMPLEX	dock.f90	/^character(len=4), allocatable :: ZSYMLIGAND(:),ZSYMCOMPLEX(/;"	v	module:DOCKMODULE
@@ -1337,6 +1391,7 @@ d2fCoulombdR2	rigidbody.f90	/^  function d2fCoulombdR2 /;"	f	module:rigidbody
 d2fLJdR2	rigidbody.f90	/^  function d2fLJdR2(/;"	f	module:rigidbody
 d2fMorsedR2	rigidbody.f90	/^  function d2fMorsedR2(/;"	f	module:rigidbody
 degree	GT2data.f90	/^          integer :: degree,/;"	k	type:Node
+degreesToRadians	mathsconstants.f90	/^  REAL (kind=KIND(0.0d0)), PARAMETER :: degreesToRadians /;"	v	module:mathsConstants
 delete_candidate	kshortestpaths.f90	/^SUBROUTINE delete_candidate(/;"	s
 dfCoulombdR	rigidbody.f90	/^  function dfCoulombdR /;"	f	module:rigidbody
 dfLJdR	rigidbody.f90	/^  function dfLJdR(/;"	f	module:rigidbody
@@ -1354,7 +1409,6 @@ f	GT2data.f90	/^          type(RealList),pointer :: f,/;"	k	type:RealList
 fCoulomb	rigidbody.f90	/^  function fCoulomb /;"	f	module:rigidbody
 fLJ	rigidbody.f90	/^  function fLJ(/;"	f	module:rigidbody
 fMorse	rigidbody.f90	/^  function fMorse(/;"	f	module:rigidbody
-flush	porfuncs.f90	/^subroutine flush(/;"	s	module:PORFUNCS
 fork_subr	porfuncs.f90	/^          subroutine fork_subr(/;"	s	module:PORFUNCS
 freqConvFactor	rigidbody.f90	/^     real (kind=kind(0.0d0)) :: freqConvFactor /;"	k	type:rigidbodyPotential
 from	kshortestpaths.f90	/^   TYPE(node), POINTER :: from /;"	k	type:edge
@@ -1390,6 +1444,7 @@ l	kshortestpaths.f90	/^   DOUBLE PRECISION :: l /;"	k	type:path
 left	GT2data.f90	/^          type(Node),pointer :: left,/;"	k	type:Node
 mark	GT2data.f90	/^          logical :: FH,mark$/;"	k	type:Node
 mass	rigidbody.f90	/^     real (kind=kind(0.0d0)), allocatable :: mass(/;"	k	type:rigidbodyPotential
+mathsConstants	mathsconstants.f90	/^MODULE mathsConstants$/;"	m
 meane	dock.f90	/^double precision :: gminligand,gmincomplex,gminprotein,gminbinding,meane(/;"	v	module:DOCKMODULE
 minnode	kshortestpaths.f90	/^TYPE(node), TARGET, ALLOCATABLE :: minnode(/;"	v	module:GRAPH
 minperm	minperm.f	/^      subroutine minperm(/;"	s
@@ -1418,6 +1473,7 @@ parent	GT2data.f90	/^          type(Node),pointer :: left,right,parent,/;"	k	typ
 path	kshortestpaths.f90	/^TYPE path$/;"	t	module:GRAPH
 permanent	kshortestpaths.f90	/^   LOGICAL :: permanent /;"	k	type:node
 permdist	minperm.f	/^      double precision function permdist(/;"	f
+pi	mathsconstants.f90	/^  REAL (kind=KIND(0.0d0)), PARAMETER :: pi /;"	v	module:mathsConstants
 pred	kshortestpaths.f90	/^   TYPE(edge), POINTER :: pred /;"	k	type:node
 pred	kshortestpaths.f90	/^   TYPE(path), POINTER :: pred /;"	k	type:path
 print_nodes_in_path	kshortestpaths.f90	/^RECURSIVE SUBROUTINE print_nodes_in_path(/;"	s
@@ -1426,6 +1482,7 @@ prob	GT2data.f90	/^          double precision :: tau,prob$/;"	k	type:Node
 prod	mind.f	/^      subroutine prod(/;"	s
 quaternionMatch	quaternionmatch.f90	/^subroutine quaternionMatch /;"	s
 quaternionToAngleAxis	quaternionmatch.f90	/^subroutine quaternionToAngleAxis /;"	s
+radiansToDegrees	mathsconstants.f90	/^  REAL (kind=KIND(0.0d0)), PARAMETER :: radiansToDegrees /;"	v	module:mathsConstants
 radius	rigidbody.f90	/^     real (kind=kind(0.0d0)) :: rho, radius,/;"	k	type:capsomer
 rbPotential	rigidbody.f90	/^  type(rigidbodyPotential) :: rbPotential$/;"	v	module:rigidbody
 rho	rigidbody.f90	/^     real (kind=kind(0.0d0)) :: rho,/;"	k	type:capsomer
@@ -1453,6 +1510,7 @@ to	kshortestpaths.f90	/^   TYPE(node), POINTER :: to$/;"	k	type:edge
 totalmin	dock.f90	/^integer :: natomsligand, natomscomplex, natomsprotein,totalmin(/;"	v	module:DOCKMODULE
 totalw	dock.f90	/^double precision :: gminligand,gmincomplex,gminprotein,gminbinding,meane(3),totalw(/;"	v	module:DOCKMODULE
 tsedge	kshortestpaths.f90	/^TYPE(edge), TARGET, ALLOCATABLE :: tsedge(/;"	v	module:GRAPH
+twopi	mathsconstants.f90	/^  REAL (kind=KIND(0.0d0)), PARAMETER :: twopi /;"	v	module:mathsConstants
 updateC12	rigidbody.f90	/^  subroutine updateC12(/;"	s	module:rigidbody
 updateC6	rigidbody.f90	/^  subroutine updateC6(/;"	s	module:rigidbody
 utils	utils.f90	/^module utils$/;"	m

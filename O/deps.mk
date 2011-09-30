@@ -2,7 +2,11 @@
 # Program name: O
 # /home/op226/gops/O/deps.mk
 # Fortran dependency file
-# Created: 20:13:53, Sun Sep 25, 2011
+# Created: 10:53:7, Fri Sep 30, 2011
+minpermdist.o: intcommons.o intcoords.o key.o modamber9.o modcharmm.o
+mindist.o: key.o porfuncs.o
+minpermdistrbcom.o: commons.o key.o
+rad.o: commons.o key.o
 2Dfunc.o: commons.o modhess.o
 Ackland_wrapper.o: key.o
 BLN.o: key.o modhess.o
@@ -123,11 +127,7 @@ mdiff.o: modhess.o
 meccano.o: commons.o key.o libnn.a modcharmm.o modmec.o modneb.o modtwoend.o \
 	modunres.o porfuncs.o
 mied.o: modhess.o
-mindist.o: key.o porfuncs.o
-minpermdist.o: intcommons.o intcoords.o key.o modamber9.o modcharmm.o
-minpermdistrbcom.o: commons.o key.o
 minpermrb.o: commons.o intcommons.o intcoords.o key.o modcharmm.o
-rad.o: commons.o key.o
 morph.o: commons.o key.o modcharmm.o modtwoend.o porfuncs.o zwk.o
 morse.o: modhess.o
 mpdiff.o: key.o modhess.o
@@ -186,9 +186,9 @@ unresnebguessts.o: commons.o key.o libnn.a modunres.o
 unresoptim.o: commons.o modunres.o
 unressetdihe.o: modunres.o
 unrestransform.o: commons.o modhess.o modunres.o
-unrestwist.o: commons.o modunres.o
 utils.o: commons.o
-vdump.o: key.o modhess.o porfuncs.o
-welch.o: modhess.o porfuncs.o
-xmylbfgs.o: commons.o key.o modtwoend.o porfuncs.o
 rca.o: commons.o dv.o porfuncs.o v.o
+welch.o: modhess.o porfuncs.o
+unrestwist.o: commons.o modunres.o
+vdump.o: key.o modhess.o porfuncs.o
+xmylbfgs.o: commons.o key.o modtwoend.o porfuncs.o

@@ -92,7 +92,7 @@ case "$1" in
   m) 
   [ -f makefile ] && mkf="makefile"
   [ -f Makefile ] && mkf="Makefile"
-  $v $0 $mkf old.mk deps.mk $incdir/nu_$PROGNAME.mk \
+  $v $0 $mkf old.mk deps.mk comp.mk $incdir/nu_$PROGNAME.mk \
  		 $incdir/inc.mk inc.mk $incdir/def.mk $incdir/t.mk t.mk \
  		$salldir/rca.sh $salldir/dv.sh $salldir/mkdep.pl \
 		base_source.in $salldir/mkcomp.sh
