@@ -2,7 +2,7 @@
 default: init dirs $(AUXF) deps $(PROG)
 
 .PHONY: default c clean rmdep deps tg bindir moddir libdir objdir dirs init
-.PHONY: pgi nag gf ifort debug opt
+.PHONY: pgi nag gf ifort debug opt dx dxdir
 
 #SUFFIXES..., F => o {{{
 
@@ -112,8 +112,6 @@ $(PROG): dirs $(DEPS) $(OBJS)
 
 #}}}
 #libs {{{
-libamh.a: $(AMH_OBJS)
-	cd AMH; make FC="${FC}" FFLAGS="${FFLAGS} ${SEARCH_PATH}" 
 
 #blas lapack {{{
 
@@ -139,6 +137,9 @@ $(LPBASE): $(LPBASE_OBJS)
 SAT-Ghost:
 #}}}
 #}}}
+dx: $(dxfile) dxdir
+	$(DXSH)	$(PROGNAME) > $(dxfile)
+
 #clean cleanall{{{
 
 cbase:

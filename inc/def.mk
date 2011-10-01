@@ -55,6 +55,7 @@ DVOPTS=fflags "$(FFLAGS)" prog $(PROGNAME) fc_exec "$(FC)" make_opts "$(MAKE_OPT
 HEADER=$(SAPATH)/header.sh
 MKDEP=$(SAPATH)/mkdep.pl
 MKCOMP=$(SAPATH)/mkcomp.sh
+DX=$(SAPATH)/mkdx.pl
 #}}}
 
 #AUXF = dv.f90 rca.f90

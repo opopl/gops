@@ -2,7 +2,7 @@
 # Program name: O
 # /home/gates/gops/O/deps.mk
 # Fortran dependency file
-# Created: 21:36:21, Fri Sep 30, 2011
+# Created: 15:49:4, Sat Oct 1, 2011
 Clatmin.o: commons.o
 stock.o: commons.o key.o modhess.o vecck.o
 intsecdiag.o: commons.o key.o
