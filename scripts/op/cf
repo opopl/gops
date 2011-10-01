@@ -8,7 +8,7 @@ source $shd/sh_header.sh
 
 d="$wg_dir/GMIN"
 p="GMIN"
-file="keyword.f"
+kwfile="keyword.f"
 export p_arg="g"
 istex=false
 opts=""
@@ -69,7 +69,7 @@ $0 $p_arg tex catkwd | awk -F "}" "BEGIN{i=0} /$re0/ { i+=1; print NR, i, \$1 }"
 	  # }}}
 else
   # fortran section {{{
-	cat $d/$file | sed -e "/$ot/,/$ct/ { /$ot/b; /$ct/b } " | sed "$sed1"  \
+	cat $d/$kwfile | sed -e "/$ot/,/$ct/ { /$ot/b; /$ct/b } " | sed "$sed1"  \
 	| awk "BEGIN{i=0} /$re0/ { i+=1; print NR, i, \$0 }"  \
 	| sed "$seds" | sed '/!/d'
 # }}}
@@ -106,7 +106,7 @@ if $istex; then
 	cat_action="$0 $p_arg $opts catkwd" 
   else
 	num=1	
-	cat_action="cat $d/$file"
+	cat_action="cat $d/$kwfile"
 fi
 
 [ ! -z "$kwd_nr" ] && $cat_action | awk "NR==$kwd_ln_start+$num,NR==$kwd_ln_end-1"	 
@@ -258,10 +258,10 @@ while [ ! -z "$1" ]
 				tag=` echo "$1" | sed 's/^cat//g' `
 
 				case "$tag" in
-				  	"") cat $d/$file ;;
+				  	"") cat $d/$kwfile ;;
 					*) 
 						ot="<$tag>" ; ct="<\/$tag>"
-						cat $d/$file | awk "/$ot/,/$ct/" | sed "/$ot/d; /$ct/d"
+						cat $d/$kwfile | awk "/$ot/,/$ct/" | sed "/$ot/d; /$ct/d"
 					;;
 				esac
 			;;

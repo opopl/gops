@@ -182,7 +182,7 @@ echo "$jtext"
 #echo this is|myecho; set echo myecho center
 
 var filename = "$picfile" 
-write IMAGE 800 600 $pic_ext @filename
+# write IMAGE 800 600 $pic_ext @filename
 
 EOF
 #}}}
