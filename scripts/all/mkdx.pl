@@ -23,10 +23,12 @@
 use strict;
 use warnings;
 use File::Basename;
+use File::Path qw(mkpath);
 
 my $this_script=&basename($0);
 my $shd=&dirname($0);
 my $bdir="$shd/../../";
+my $incdir="$bdir/inc";
 
 if ( !@ARGV ){ 
 	&dhelp();
@@ -46,22 +48,23 @@ my $fo=$fold{o};
 my $fc=$fold{c};
 #}}}
 
-my($project_name);
-my(@pdirs,$dxfile,$dxdir,$dxlog,$pdir);
-my(@source);
+my($dxfile,$dxdir,$dxlog,$pdir);
+my(@nused,$F_NU);
 $dxlog="$shd/dx.log";
+
+my @prj=qw( $ARGV[0] );
 
 #}}}
 # subs {{{
 # gettime () {{{
 
 sub gettime(){
-my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
-my @weekDays = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
-my ($second, $minute, $hour, $dayOfMonth, $month, $yearOffset, $dayOfWeek, $dayOfYear, $daylightSavings) = localtime();
-my $year = 1900 + $yearOffset;
-my $time = "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $dayOfMonth, $year";
-return $time;
+	my @months = qw(Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec);
+	my @weekDays = qw(Sun Mon Tue Wed Thu Fri Sat Sun);
+	my ($second, $minute, $hour, $dayOfMonth, $month, $yearOffset, $dayOfWeek, $dayOfYear, $daylightSavings) = localtime();
+	my $year = 1900 + $yearOffset;
+	my $time = "$hour:$minute:$second, $weekDays[$dayOfWeek] $months[$month] $dayOfMonth, $year";
+	return $time;
 }
 
 #}}}
@@ -83,27 +86,55 @@ HELP
 #}}}
 # }}}
 
-my @prj=qw( B );
+sub main(){
 
-foreach $p (@prj){
-# {{{
-$dxdir=$bdir/dx/$p;
-$pdir=$bdir/$p;
+foreach my $p (@prj){
+# p-dependent definitions: pdir dxdir dxfile ... {{{
+$pdir="$bdir/$p";
+$dxdir="$bdir/dx/$p";
 $dxfile="$bdir/$p/Doxyfile";
-print << "eof";
-Project: $p
-eof
+$F_NU="$incdir/nu_$p.mk";
+#}}}
+# open files: NU DX {{{
 open(DX,">$dxfile");
+open(NU,"<$F_NU");
+#}}}
+# process NU {{{
 
+while(<NU>){
+	chomp;
+	my $line =~ s/^\s*#.*$//g;
+	push(@nused,split($line));
+}
+
+# }}}
+# INPUT EXCLUDE {{{
+print << "eof";
+Project: 
+	$p
+Input project directory:
+	$pdir
+Output doxygen directory:
+	$dxdir
+eof
+print DX "INPUT EXCLUDE $fo\n";
 print DX "INPUT $pdir\n";
-foreach my $file(@excluded){
+foreach my $file (@nused){
 	print DX "EXCLUDE $file\n";
 }
+print DX << "dx";
+EXCLUDE_PATTERNS       = 
+EXCLUDE_SYMBOLS        =
+EXCLUDE_SYMLINKS       = 
+dx
+print DX "$fc\n";
+# }}}
+# Print the rest of the Doxyfile {{{
 print DX << "dx";
 # Doxyfile template {{{
 # A-E{{{
 ABBREVIATE_BRIEF       =
-ALIASES                = "input=\par Input parameters:\n" 
+ALIASES                = "input=\\par Input parameters:\n" 
 ALLEXTERNALS           = NO
 ALPHABETICAL_INDEX     = YES
 ALWAYS_DETAILED_SEC    = NO
@@ -151,10 +182,6 @@ ENUM_VALUES_PER_LINE   = 4
 EXAMPLE_PATH           =
 EXAMPLE_PATTERNS       =
 EXAMPLE_RECURSIVE      = NO
-EXCLUDE                = 
-EXCLUDE_PATTERNS       = main.f mc.f 
-EXCLUDE_SYMBOLS        =
-EXCLUDE_SYMLINKS       = NO
 EXPAND_AS_DEFINED      =
 EXPAND_ONLY_PREDEF     = NO
 EXTENSION_MAPPING      =
@@ -270,7 +297,7 @@ PERLMOD_MAKEVAR_PREFIX =
 PERLMOD_PRETTY         = YES
 PERL_PATH              = /usr/bin/perl
 PREDEFINED             =
-PROJECT_NAME           = "$project_name"
+PROJECT_NAME           = $p
 QCH_FILE               =
 QHG_LOCATION           =
 QHP_CUST_FILTER_ATTRS  =
@@ -340,10 +367,14 @@ XML_SCHEMA             =
 # }}}
 # }}}
 dx
+#}}}
+# close files {{{
+close DX;
+close NU;
+# }}}
 
 exec "doxygen 2>> $dxlog";
 
-close DX;
-#}}}
+}
 }
 
