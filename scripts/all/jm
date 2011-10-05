@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# set_base_vars() setvars display_help() {{{
+# sbvars() setvars dhelp() {{{
 
-set_base_vars(){
+sbvars(){
 # {{{
 s_purpose="generate images from XYZ files using JMOL"
 # directory where this script resides
@@ -37,10 +37,10 @@ setvars(){
 }
 #}}}
 
-set_base_vars
+sbvars
 setvars
 
-display_help(){
+dhelp(){
 # {{{
 # general beginning part {{{
 cat << EOF
@@ -83,7 +83,7 @@ EOF
 # }}}
 }
 
-[ -z "$*" ] && ( display_help; exit 0 )
+[ -z "$*" ] && ( dhelp; exit 0 )
 
 #}}}
 
@@ -241,7 +241,7 @@ while [ ! -z "$1" ]; do
   	case "$1" in
 		  #{{{
 	  	vm) $v $0 $hm/scripts/f.sh; exit ;;
-		h) display_help $*; exit ;;
+		h) dhelp $*; exit ;;
 		-g) v="$v -g" ;;
 	  	*) main $* && exit 0 ;;
 	esac

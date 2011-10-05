@@ -242,8 +242,8 @@ sub uniq {
 # {{{
    local(@words);
    foreach $word (@_) {
-      #if ( ( (defined($word)) && ($word ne $words[$#words])) || ( $#words==0 )) {
-      if ( $word ne $words[$#words]) {
+      if ( ( (defined($word)) && ($word ne $words[$#words])) || ( $#words==0 )) {
+      #if ( $word ne $words[$#words]) {
 	 	push(@words, $word);
 	 	}
       }

@@ -87,7 +87,7 @@ HELP
 # }}}
 
 sub main(){
-
+#{{{
 foreach my $p (@prj){
 # p-dependent definitions: pdir dxdir dxfile ... {{{
 $pdir="$bdir/$p";
@@ -374,7 +374,8 @@ close NU;
 # }}}
 
 exec "doxygen 2>> $dxlog";
-
 }
+#}}}
 }
 
+&main();

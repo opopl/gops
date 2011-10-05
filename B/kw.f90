@@ -56,26 +56,25 @@ CONTAINS
            CALL PARSE(BUFFER,' ',ARGS,NARGS)
            BUFFER = BUFFER(POS+1:)
            WORD=ARGS(1)
-           !if..else loop{{{
-      IF (WORD.EQ.'    '.OR.WORD.EQ.'NOTE'.OR.WORD.EQ.'COMMENT'.OR.WORD.EQ.'!'&
-     &                          .OR. WORD .EQ. '\\') THEN 
-         GOTO 100
-
+           !select..case{{{
+           selectcase(word)
+         case('  ','NOTE','COMMENT','!','#','\\')
+            GOTO 100
          ! P46 G46 MYBLN BLN BLNGO {{{
-      ELSE IF (WORD.EQ.'P46'.or.'P69') THEN
+      CASE('P46','P69')
          BLNT=.TRUE.
          P46=.TRUE.
          G46=.FALSE.
          BLNTYPE="WT"
-      ELSE IF (WORD.EQ.'G46') THEN
+      CASE('G46')
          BLNT=.TRUE.
          G46=.TRUE.
          P46=.FALSE.
          BLNTYPE="GO"
-      ELSE IF (WORD.EQ.'MYBLN') THEN
+      CASE('MYBLN')
          MYBLNT=.TRUE.
          BLNT=.TRUE.
-      ELSE IF (WORD.EQ.'BLN') THEN
+      CASE('BLN')
 !        ! BLN {{{
          !BLNT=.TRUE.
          !READ(ARGS(2),*) RK_R
@@ -118,7 +117,7 @@ CONTAINS
 !C        call param_arrayBLN(LJREP_BLN,LJATT_BLN,A_BLN,B_BLN,C_BLN,D_BLN,BEADLETTER,BLNSSTRUCT,
 !C    &                       LJREPBB, LJATTBB, LJREPLL, LJATTLL, LJREPNN, LJATTNN, NATOMS) 
 !C End BLN }}}
-      ELSE IF (WORD.EQ.'BLNGO') THEN
+      CASE('BLNGO')
 !C BLN-Go Model {{{
          !GOTYPE=.TRUE.
          !BLNT=.TRUE.
@@ -169,78 +168,78 @@ CONTAINS
 !C End BLN }}}
          ! }}}
          ! EDIFF STEPS UPDATES {{{
-      ELSE IF (WORD.EQ.'EDIFF') THEN
+      CASE('EDIFF')
           READ(ARGS(2),*) ECONV
-      ELSE IF (WORD.EQ.'STEPS') THEN
+      CASE('STEPS')
           READ(ARGS(2),*) MCSTEPS
           IF (NARGS .GT. 2) READ(ARGS(3),*) TFAC
-      ELSE IF (WORD.EQ.'UPDATES') THEN
+      CASE('UPDATES')
           READ(ARGS(2),*) MUPDATE
          ! }}}
          ! SLOPPYCONV TIGHTCONV DGUESS  {{{
-      ELSE IF ((WORD.EQ.'BASIN').OR.(WORD.EQ.'SLOPPYCONV')) THEN
+      CASE('BASIN','SLOPPYCONV')
           READ(ARGS(2),*) SQMAX
-      ELSE IF ((WORD.EQ.'QMAX').OR.(WORD.EQ.'TIGHTCONV')) THEN
+      CASE('QMAX','TIGHTCONV')
           READ(ARGS(2),*) FQMAX
-      ELSE IF (WORD.EQ.'DGUESS') THEN
+      CASE('DGUESS')
          READ(ARGS(2),*) DGUESS
          ! }}}
          ! SAVE DEBUG CENTRE CHANGEACCEPT MAXBFGS  MAXIT  {{{
-      ELSE IF (WORD.EQ.'SAVE') THEN
+      CASE('SAVE')
          READ(ARGS(2),*) NSAVE
-      ELSE IF (WORD.EQ.'DEBUG') THEN
+      CASE('DEBUG')
          DEBUG=.TRUE.
-      ELSE IF (WORD.EQ.'CENTRE') THEN
+      CASE('CENTRE')
          CENT=.TRUE.
-      ELSE IF (WORD.EQ.'CHANGEACCEPT') THEN
+      CASE('CHANGEACCEPT')
          READ(ARGS(2),*) NACCEPT
-      ELSE IF (WORD.EQ.'MAXBFGS') THEN
+      CASE('MAXBFGS')
          READ(ARGS(2),*) MAXBFGS
-      ELSE IF (WORD.EQ.'MAXIT') THEN
+      CASE('MAXIT')
          READ(ARGS(2),*) MAXIT
          IF (NARGS.GT.2) THEN
             READ(ARGS(3),*) MAXIT2
          ENDIF
          ! }}}
          ! STEP TEMPERATURE  {{{
-      ELSE IF (WORD.EQ.'STEP') THEN
+      CASE('STEP')
          READ(ARGS(2),*) STEP(1)
          IF (NARGS.GT.2) READ(ARGS(3),*) ASTEP(1)
          IF (NARGS.GT.3) READ(ARGS(4),*) OSTEP(1)
          IF (NARGS.GT.4) READ(ARGS(5),*) BLOCK(1)
-      ELSE IF (WORD.EQ.'TEMPERATURE') THEN
+      CASE('TEMPERATURE')
          READ(ARGS(2),*) TEMP(1)
                   ! }}}
                   !NRG {{{
-      ELSE IF (WORD.EQ.'NRG') THEN
+      CASE('NRG')
          READ(ARGS(2),*) NRG
                   ! }}}
                   !PULL {{{
-      ELSE IF (WORD.EQ.'PULL') THEN
+      CASE('PULL')
         PULLT=.TRUE.
         READ(ARGS(2),*) PATOM1
         READ(ARGS(3),*) PATOM2
         READ(ARGS(4),*) PFORCE
         ! }}}
         ! track {{{
-      ELSE IF (WORD.EQ.'TRACKDATA') THEN
+      CASE('TRACKDATA')
          TRACKDATAT=.TRUE.     
-      ELSE IF (WORD.EQ.'TENERGY') THEN
+      CASE('TENERGY')
          TRACKENERGY=.TRUE.     
-      ELSE IF (WORD.EQ.'TBEST') THEN
+      CASE('TBEST')
          TRACKBEST=.TRUE.     
-      ELSE IF (WORD.EQ.'TMARKOV') THEN
+      CASE('TMARKOV')
          TRACKMARKOV=.TRUE.     
-      ELSE IF (WORD.EQ.'TXYZ') THEN
+      CASE('TXYZ')
          TXYZ=.TRUE.     
          NSQ=NARGS-1
          DO I=1,NARGS-1
             READ(ARGS(I+1),*) SQU(I)
          ENDDO
          ! }}}
-      ELSE
+       case default
         GOTO 100
-      ENDIF
+      endselect
 
            ! }}}
        END IF

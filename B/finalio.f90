@@ -50,7 +50,7 @@
       DO J1=1,NSAVE
       ! {{{
 
-         WRITE(LE_FH,'(I)') NATOMS
+         WRITE(LE_FH,'(I10)') NATOMS
          WRITE(LE_FH,10) J1,QMIN(J1), FF(J1)
 10       FORMAT('Energy of minimum ',I6,'=',F20.10,' first found at step ',I8)
             DO J2=1,NATOMS
