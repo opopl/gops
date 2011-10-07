@@ -2,5 +2,6 @@
         MODULE V
 
         !INTEGER NR
+        CHARACTER(LEN=100) PROGNAME
 
         ENDMODULE V
