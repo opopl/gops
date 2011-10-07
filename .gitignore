@@ -126,11 +126,9 @@ B/ea
 B/old/
 O/dv.f90
 O/porfuncs.f90
-O/rca.f90
 P/deps.mk
 P/dv.f90
 P/porfuncs.f90
-P/rca.f90
 pbs/s/ea
 pbs/s/zf/ea
 pbs/s/zf/fort.677218679
