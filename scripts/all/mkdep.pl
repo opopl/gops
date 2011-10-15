@@ -241,12 +241,15 @@ sub toLower {
 sub uniq {
 # {{{
    local(@words);
-   foreach $word (@_) {
-      if ( ( (defined($word)) && ($word ne $words[$#words])) || ( $#words==0 )) {
-      #if ( $word ne $words[$#words]) {
-	 	push(@words, $word);
-	 	}
-      }
+   local %seen = (); 
+   #foreach $word (@_) {
+      #if (  (defined($word)) && ( ($word ne $words[$#words]) || ( $#words==0 )) ) {
+      ##if ( $word ne $words[$#words]) {
+		 #push(@words, $word);
+		 #}
+      #}
+   #@words;
+   foreach my $word (@_) { push(@words, $word) unless $seen{$word}++; }
    @words;
 #}}}
 }

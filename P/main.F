@@ -39,7 +39,7 @@ C
       USE dockmodule
       use rigidBodymod, only: initialiseRigidBody, cleanRigidBodies
       IMPLICIT NONE
-      INTEGER J1, NSIZE, NWORST, NAVAIL, NMINSAVE, VERSIONTEMP
+      INTEGER J1, NSIZE, NWORST, NAVAIL, NMINSAVE
       INTEGER, ALLOCATABLE :: MINMAP(:)
 !     INTEGER, ALLOCATABLE :: NSEED(:)
       LOGICAL MASSFILE, YESNOT
@@ -50,8 +50,6 @@ C
       CHARACTER(LEN=5) :: TARFL
       CHARACTER(LEN=2) :: SDUMMY
       INTEGER :: SEQ(500)
-
-      VERSIONTEMP=SVNVERSION
 C
 C  CONNECTIONS is the minimum number of connected minima.
 C  TEMPERATURE is the temperature in reduced units.
@@ -75,7 +73,7 @@ C
       TKSHORTESTPATHS=0.0D0
       TCONNECTDIST=0.0D0
       TGT=0.0D0
-      PRINT '(A,I5)','PATHSAMPLE version r',VERSIONTEMP
+
       CALL KEYWORD
       IF ((PERMDIST.OR.PERMISOMER).AND.(CHARMMT).AND.(NPERMGROUP.EQ.NATOMS)) THEN
          PRINT '(A)','main> Likely error in input - PERM set without perm.allow file for CHARMM potential'
