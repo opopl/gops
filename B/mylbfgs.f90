@@ -64,8 +64,6 @@
       COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
       COMMON /MYPOT/ POTEL
       COMMON /Q4C/ QSTART, QFINISH
-      !LOGICAL ::    GUIDECHANGET, GUIDET, CSMDOGUIDET
-      !COMMON /GD/ GUIDECHANGET, GUIDET, CSMDOGUIDET
       COMMON /EV/ EVAP, evapreject
       SAVE W, DIAG, ITER, POINT, ISPT, IYPT, NPT
       ! }}}
@@ -143,9 +141,7 @@
                ENDIF
             ENDDO
          ELSE
-            DO J1=1,N
-               DIAG(J1)=DGUESS
-            ENDDO
+           DIAG=DGUESS
          ENDIF
 !
 !     THE WORK VECTOR W IS DIVIDED AS FOLLOWS:
