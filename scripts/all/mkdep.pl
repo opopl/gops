@@ -287,9 +287,8 @@ sub MakeDependsf90 {
    # {{{
    foreach $file (@fortranfiles) {
       open(FILE, $file);
-	  @flines=<FILE>;
 	  #get_use();
-      foreach (@flines) {
+      while(<FILE>){
 		#{{{
 	  		chomp;	  
 	  		#include files {{{	  
@@ -309,7 +308,11 @@ sub MakeDependsf90 {
 	   			}
 	 		}
      		#}}}
-	 	/^\s*use\s+([^\s,!]+)/i && push(@modules, &toLower($1));
+	 	if ( $_ =~ /^\s*use\s+([^\s,!]+)/i ) {
+		   		if (defined($1)){ 	
+						push(@modules, &toLower($1)); 
+					}
+				}
  	 	#}}}
 	 }
       if (defined @incs || defined @modules) {

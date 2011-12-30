@@ -163,7 +163,6 @@ include ps.setup.readmin.inc.f90
          STOP
       ENDIF
 
-
 !  Add transition states and minima from the <PATHNAME> file.
 !  Use GETNEWPATH to do the bookkeeping.
 ! ====================================

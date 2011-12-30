@@ -18,22 +18,22 @@
 !   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 !
 
-C  New version of PATHSAMPLE using the committor probability formulation
-C  and a new sampling strategy for stationary points. Paths themselves
-C  are not generally referenced directly.
-C  Initially we need to know
-C  which minima are in which funnel, i.e. members of the sets A and B for
-C  which the rate constant is required, and there may be pre-existing databases
-C  of minima and transition states containing energies and products of non-zero
-C  eigenvalues. We need the ability to start from a single
-C  path.info file.
-C
-C  We are allowing connections between any A and B permutational isomers.
-C  Use TAG to distinguish permutational isomers.
-C
-C SAT: BOUNDARYT variable is referenced but never set! Assume default value of .False. and ignore relevant bits of code.
-C SAT: SAVEALL variable is set to .True. in setup if 'paths' file exists and 'pathpointer' does not!
-C
+!  New version of PATHSAMPLE using the committor probability formulation
+!  and a new sampling strategy for stationary points. Paths themselves
+!  are not generally referenced directly.
+!  Initially we need to know
+!  which minima are in which funnel, i.e. members of the sets A and B for
+!  which the rate constant is required, and there may be pre-existing databases
+!  of minima and transition states containing energies and products of non-zero
+!  eigenvalues. We need the ability to start from a single
+!  path.info file.
+!
+!  We are allowing connections between any A and B permutational isomers.
+!  Use TAG to distinguish permutational isomers.
+!
+! SAT: BOUNDARYT variable is referenced but never set! Assume default value of .False. and ignore relevant bits of code.
+! SAT: SAVEALL variable is set to .True. in setup if 'paths' file exists and 'pathpointer' does not!
+!
       ! }}}
       PROGRAM PATHSAMPLE
       ! declarations {{{
